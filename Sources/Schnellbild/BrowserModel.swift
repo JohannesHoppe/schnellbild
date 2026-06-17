@@ -1,0 +1,374 @@
+import SwiftUI
+import AppKit
+import AVFoundation
+
+/// Ein Eintrag im Grid: „..“ (Ebene höher), Unterordner, Bild oder Video.
+struct GridEntry: Identifiable, Hashable {
+    enum Kind { case parent, folder, image, video }
+    let url: URL
+    let kind: Kind
+    var modDate: Date? = nil
+    var byteSize: Int? = nil
+
+    var id: URL { url }
+    var name: String { kind == .parent ? ".." : url.lastPathComponent }
+    var isMedia: Bool { kind == .image || kind == .video }
+    var isGIF: Bool { kind == .image && url.pathExtension.lowercased() == "gif" }
+}
+
+/// Single Source of Truth fürs gesamte Browsen.
+@MainActor
+final class BrowserModel: ObservableObject {
+    enum Mode { case grid, detail }
+    enum SortKey { case name, date, size }
+
+    @Published private(set) var folderURL: URL?
+    @Published private(set) var entries: [GridEntry] = []
+    @Published var selection: Int?
+    @Published var mode: Mode = .grid
+    @Published private(set) var isLoading = false
+
+    /// Vom Grid anhand der Fensterbreite gesetzt — für zeilengenaues ↑/↓.
+    @Published var columnCount: Int = 1
+    /// Kachelgröße im Grid (⌘+/⌘-).
+    @Published var thumbnailSide: CGFloat = 150
+
+    /// Zoom der Bild-Großansicht (1 = an Fenster angepasst).
+    @Published var zoom: CGFloat = 1
+    /// Von der Großansicht gesetzt: Faktor, der 100 % echter Pixel entspricht.
+    @Published var actualSizeFactor: CGFloat = 1
+    private let maxZoom: CGFloat = 8
+
+    @Published var sortKey: SortKey = .name
+    @Published var sortAscending = true
+
+    @Published private(set) var slideshowOn = false
+    private var slideshowTask: Task<Void, Never>?
+
+    /// Schwache Referenz auf den laufenden Video-Player — für Tastatur-
+    /// Steuerung (Pause/Spulen). Wird von VideoDetailView gesetzt.
+    weak var activePlayer: AVPlayer?
+
+    static let lastFolderKey = "lastFolderPath"
+
+    nonisolated static let imageExtensions: Set<String> = [
+        "jpg", "jpeg", "png", "gif", "heic", "heif", "tiff", "tif", "bmp",
+        "webp", "psd", "pdf", "cr2", "cr3", "nef", "arw", "dng", "raf",
+        "orf", "rw2", "raw", "icns", "svg"
+    ]
+    nonisolated static let videoExtensions: Set<String> = [
+        "mp4", "mov", "m4v", "avi", "mkv", "webm", "m2ts", "mts",
+        "mpg", "mpeg", "3gp", "wmv", "flv", "ogv"
+    ]
+
+    // MARK: - Ordner wählen / laden
+
+    func chooseFolder() {
+        let panel = NSOpenPanel()
+        panel.canChooseDirectories = true
+        panel.canChooseFiles = false
+        panel.allowsMultipleSelection = false
+        panel.prompt = "Öffnen"
+        panel.message = "Ordner mit Medien auswählen"
+        if panel.runModal() == .OK, let url = panel.url {
+            open(folder: url)
+        }
+    }
+
+    func open(folder url: URL, selecting target: URL? = nil, thenDetail: Bool = false) {
+        folderURL = url
+        entries = []
+        selection = nil
+        mode = .grid
+        zoom = 1
+        stopSlideshow()
+        isLoading = true
+        UserDefaults.standard.set(url.path, forKey: Self.lastFolderKey)
+        Task {
+            let scanned = await Self.scan(url)
+            var full = scanned
+            let parent = url.deletingLastPathComponent()
+            if parent != url {
+                full.insert(GridEntry(url: parent, kind: .parent), at: 0)
+            }
+            let sorted = Self.sortEntries(full, key: self.sortKey, ascending: self.sortAscending)
+            self.entries = sorted
+            if let target, let idx = sorted.firstIndex(where: { $0.url == target && $0.kind != .parent }) {
+                self.selection = idx
+                if thenDetail, sorted[idx].isMedia {
+                    self.zoom = 1
+                    self.mode = .detail
+                }
+            } else {
+                self.selection = sorted.firstIndex(where: { $0.kind != .parent }) ?? (sorted.isEmpty ? nil : 0)
+            }
+            self.isLoading = false
+        }
+    }
+
+    /// Letzten Ordner beim Start wieder öffnen (falls noch vorhanden).
+    func restoreLastFolder() {
+        guard folderURL == nil,
+              let path = UserDefaults.standard.string(forKey: Self.lastFolderKey) else { return }
+        var isDir: ObjCBool = false
+        if FileManager.default.fileExists(atPath: path, isDirectory: &isDir), isDir.boolValue {
+            open(folder: URL(fileURLWithPath: path))
+        }
+    }
+
+    /// Verzeichnis einlesen — inkl. versteckter Einträge, mit Datum/Größe.
+    /// Läuft weg vom Main-Thread; Metadaten werden in der Enumeration
+    /// vorgeladen (keine Extra-Roundtrips).
+    nonisolated static func scan(_ url: URL) async -> [GridEntry] {
+        await Task.detached(priority: .userInitiated) {
+            let fm = FileManager.default
+            let keys: Set<URLResourceKey> = [.isDirectoryKey, .contentModificationDateKey, .fileSizeKey]
+            let contents = (try? fm.contentsOfDirectory(
+                at: url,
+                includingPropertiesForKeys: Array(keys),
+                options: []
+            )) ?? []
+
+            var result: [GridEntry] = []
+            for item in contents {
+                let vals = try? item.resourceValues(forKeys: keys)
+                let isDir = vals?.isDirectory ?? false
+                let date = vals?.contentModificationDate
+                if isDir {
+                    result.append(GridEntry(url: item, kind: .folder, modDate: date, byteSize: nil))
+                    continue
+                }
+                let ext = item.pathExtension.lowercased()
+                if imageExtensions.contains(ext) {
+                    result.append(GridEntry(url: item, kind: .image, modDate: date, byteSize: vals?.fileSize))
+                } else if videoExtensions.contains(ext) {
+                    result.append(GridEntry(url: item, kind: .video, modDate: date, byteSize: vals?.fileSize))
+                }
+            }
+            return result
+        }.value
+    }
+
+    /// Sortiert: „..“ ganz oben, dann Ordner, dann Medien — jede Gruppe nach Key.
+    nonisolated static func sortEntries(_ entries: [GridEntry], key: SortKey, ascending: Bool) -> [GridEntry] {
+        let parents = entries.filter { $0.kind == .parent }
+        let folders = entries.filter { $0.kind == .folder }
+        let media   = entries.filter { $0.isMedia }
+        func asc(_ a: GridEntry, _ b: GridEntry) -> Bool {
+            switch key {
+            case .name: return a.name.localizedStandardCompare(b.name) == .orderedAscending
+            case .date: return (a.modDate ?? .distantPast) < (b.modDate ?? .distantPast)
+            case .size: return (a.byteSize ?? 0) < (b.byteSize ?? 0)
+            }
+        }
+        let cmp: (GridEntry, GridEntry) -> Bool = ascending ? { asc($0, $1) } : { asc($1, $0) }
+        return parents + folders.sorted(by: cmp) + media.sorted(by: cmp)
+    }
+
+    func setSort(_ key: SortKey) {
+        if sortKey == key { sortAscending.toggle() } else { sortKey = key; sortAscending = true }
+        let keepURL = selectedEntry?.url
+        entries = Self.sortEntries(entries, key: sortKey, ascending: sortAscending)
+        if let keepURL { selection = entries.firstIndex { $0.url == keepURL } }
+    }
+
+    /// Drag & Drop: Ordner öffnen, Datei → Elternordner öffnen und auswählen.
+    func openDropped(_ urls: [URL]) {
+        guard let first = urls.first else { return }
+        var isDir: ObjCBool = false
+        guard FileManager.default.fileExists(atPath: first.path, isDirectory: &isDir) else { return }
+        if isDir.boolValue {
+            open(folder: first)
+        } else {
+            open(folder: first.deletingLastPathComponent(), selecting: first, thenDetail: true)
+        }
+    }
+
+    // MARK: - Auswahl / Navigation
+
+    var selectedEntry: GridEntry? {
+        guard let i = selection, entries.indices.contains(i) else { return nil }
+        return entries[i]
+    }
+
+    var selectedMediaEntry: GridEntry? {
+        guard let entry = selectedEntry, entry.isMedia else { return nil }
+        return entry
+    }
+
+    func select(_ index: Int) {
+        guard entries.indices.contains(index) else { return }
+        selection = index
+    }
+
+    func step(_ delta: Int) {
+        guard !entries.isEmpty else { return }
+        let current = selection ?? 0
+        selection = min(max(current + delta, 0), entries.count - 1)
+    }
+
+    func stepRow(_ direction: Int) {
+        guard !entries.isEmpty else { return }
+        let current = selection ?? 0
+        let target = current + direction * columnCount
+        guard target >= 0, target < entries.count else { return }
+        selection = target
+    }
+
+    // MARK: - Zähler / Medien
+
+    var folderCount: Int { entries.filter { $0.kind == .folder }.count }
+    var imageCount:  Int { entries.filter { $0.kind == .image }.count }
+    var videoCount:  Int { entries.filter { $0.kind == .video }.count }
+
+    private var firstMediaIndex: Int? { entries.firstIndex { $0.isMedia } }
+
+    var mediaCount: Int {
+        guard let first = firstMediaIndex else { return 0 }
+        return entries.count - first
+    }
+    var currentMediaNumber: Int? {
+        guard let first = firstMediaIndex, let sel = selection, sel >= first else { return nil }
+        return sel - first + 1
+    }
+
+    /// In der Großansicht: nur durch Medien blättern (Ordner überspringen).
+    func stepMedia(_ delta: Int) {
+        guard let first = firstMediaIndex else { return }
+        let current = selection ?? first
+        selection = min(max(current + delta, first), entries.count - 1)
+        zoom = 1
+    }
+
+    // MARK: - Zoom (Großansicht)
+
+    func zoomIn()        { zoom = min(zoom * 1.25, maxZoom) }
+    func zoomOut()       { zoom = max(zoom / 1.25, 1) }
+    func zoomReset()     { zoom = 1 }
+    func zoomActualSize(){ zoom = min(max(actualSizeFactor, 1), maxZoom) }
+    func applyPinch(_ factor: CGFloat) { zoom = min(max(zoom * factor, 1), maxZoom) }
+
+    // MARK: - Grid-Kachelgröße
+
+    func growThumbnails()   { thumbnailSide = min(thumbnailSide + 30, 320) }
+    func shrinkThumbnails() { thumbnailSide = max(thumbnailSide - 30, 80) }
+
+    // MARK: - Aktivieren / Navigation
+
+    func activateSelection() {
+        guard let entry = selectedEntry else { return }
+        switch entry.kind {
+        case .parent:
+            goToParentFolder()
+        case .folder:
+            open(folder: entry.url)
+        case .image, .video:
+            zoom = 1
+            mode = .detail
+        }
+    }
+
+    func closeDetail() {
+        stopSlideshow()
+        zoom = 1
+        mode = .grid
+    }
+
+    func goToParentFolder() {
+        guard let current = folderURL else { return }
+        let parent = current.deletingLastPathComponent()
+        guard parent != current else { return }
+        open(folder: parent, selecting: current)
+    }
+
+    // MARK: - Diashow
+
+    func toggleSlideshow() {
+        if slideshowOn { stopSlideshow() } else { startSlideshow() }
+    }
+    private func startSlideshow() {
+        guard mode == .detail, firstMediaIndex != nil else { return }
+        slideshowOn = true
+        slideshowTask?.cancel()
+        slideshowTask = Task { [weak self] in
+            while !Task.isCancelled {
+                try? await Task.sleep(nanoseconds: 3_000_000_000)
+                guard let self, self.slideshowOn, self.mode == .detail else { return }
+                self.advanceSlideshow()
+            }
+        }
+    }
+    private func stopSlideshow() {
+        slideshowOn = false
+        slideshowTask?.cancel()
+        slideshowTask = nil
+    }
+    private func advanceSlideshow() {
+        guard let first = firstMediaIndex else { return }
+        let current = selection ?? first
+        selection = (current + 1 >= entries.count) ? first : current + 1
+        zoom = 1
+    }
+
+    // MARK: - Datei-Aktionen
+
+    func revealInFinder() {
+        guard let url = selectedEntry?.url else { return }
+        NSWorkspace.shared.activateFileViewerSelecting([url])
+    }
+
+    func openInDefaultApp() {
+        guard let entry = selectedEntry, entry.kind != .parent else { return }
+        NSWorkspace.shared.open(entry.url)
+    }
+
+    func moveSelectionToTrash() {
+        guard let entry = selectedEntry, entry.kind != .parent else { return }
+        let alert = NSAlert()
+        alert.messageText = "„\(entry.name)“ in den Papierkorb legen?"
+        alert.informativeText = "Die Datei wird in den Papierkorb verschoben."
+        alert.alertStyle = .warning
+        alert.addButton(withTitle: "In den Papierkorb")
+        alert.addButton(withTitle: "Abbrechen")
+        guard alert.runModal() == .alertFirstButtonReturn else { return }
+        do {
+            try FileManager.default.trashItem(at: entry.url, resultingItemURL: nil)
+            if let idx = entries.firstIndex(of: entry) {
+                entries.remove(at: idx)
+                if entries.isEmpty {
+                    selection = nil
+                } else if let sel = selection {
+                    selection = min(sel, entries.count - 1)
+                }
+            }
+            if mode == .detail, selectedMediaEntry == nil {
+                mode = .grid
+            }
+        } catch {
+            NSSound.beep()
+        }
+    }
+
+    // MARK: - Video-Steuerung
+
+    func togglePlayPause() {
+        guard let p = activePlayer else { return }
+        if p.rate != 0 { p.pause() } else { p.play() }
+    }
+
+    func seekVideo(by seconds: Double) {
+        guard let p = activePlayer, let item = p.currentItem else { return }
+        let now = CMTimeGetSeconds(p.currentTime())
+        var target = max(0, now + seconds)
+        let duration = CMTimeGetSeconds(item.duration)
+        if duration.isFinite, duration > 0 { target = min(target, duration) }
+        p.seek(to: CMTime(seconds: target, preferredTimescale: 600),
+               toleranceBefore: .zero, toleranceAfter: .zero)
+    }
+
+    // MARK: - Fenster
+
+    func toggleFullScreen() {
+        NSApp.keyWindow?.toggleFullScreen(nil)
+    }
+}
