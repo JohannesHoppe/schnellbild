@@ -16,6 +16,11 @@ let package = Package(
                 .linkedFramework("AVKit"),
                 .linkedFramework("AVFoundation")
             ]
+        ),
+        .testTarget(
+            name: "SchnellbildTests",
+            dependencies: ["Schnellbild"],
+            path: "Tests/SchnellbildTests"
         )
     ]
 )

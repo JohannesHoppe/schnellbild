@@ -1,5 +1,7 @@
 # Schnellbild
 
+[![CI](https://github.com/johanneshoppe/schnellbild/actions/workflows/ci.yml/badge.svg)](https://github.com/johanneshoppe/schnellbild/actions/workflows/ci.yml)
+
 A **fast** file/image viewer for macOS. Open a folder, see thumbnails,
 view one image large, page through with the keyboard. Nothing more — but
 without stalling, even over network volumes.
@@ -41,9 +43,20 @@ sudo xcodebuild -license accept
 # In the project folder:
 swift build
 swift run        # starts the app
+swift test       # run the unit tests
 # …or open in Xcode:
 open Package.swift
 ```
+
+To produce a proper **`.app` bundle** (icon + Info.plist, ad-hoc signed):
+
+```bash
+./Scripts/build_app.sh      # → build/Schnellbild.app
+```
+
+The icon is generated from `Scripts/make_icon.swift` (CoreGraphics, no external
+tools). CI builds, tests, and packages the app on every push; tagging `vX.Y.Z`
+publishes a GitHub Release with the zipped app.
 
 ## Features
 
@@ -112,4 +125,4 @@ Bindings follow [Phiewer](https://phiewer.com/) where it makes sense.
 
 ## License
 
-TBD.
+[MIT](LICENSE) © 2026 HAUS HOPPE - ITS (Johannes Hoppe)
