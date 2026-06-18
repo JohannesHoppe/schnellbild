@@ -23,7 +23,9 @@ final class BrowserModel: ObservableObject {
     enum SortKey { case name, date, size }
 
     @Published private(set) var folderURL: URL?
-    @Published private(set) var entries: [GridEntry] = []
+    @Published private(set) var entries: [GridEntry] = [] {
+        didSet { recomputeDerived() }
+    }
     @Published var selection: Int?
     @Published var mode: Mode = .grid
     @Published private(set) var isLoading = false
@@ -85,8 +87,7 @@ final class BrowserModel: ObservableObject {
         isLoading = true
         UserDefaults.standard.set(url.path, forKey: Self.lastFolderKey)
         Task {
-            let scanned = await Self.scan(url)
-            var full = scanned
+            var full = await Self.scan(url)
             let parent = url.deletingLastPathComponent()
             if parent != url {
                 full.insert(GridEntry(url: parent, kind: .parent), at: 0)
@@ -151,9 +152,16 @@ final class BrowserModel: ObservableObject {
 
     /// Sorted: ".." on top, then folders, then media — each group by key.
     nonisolated static func sortEntries(_ entries: [GridEntry], key: SortKey, ascending: Bool) -> [GridEntry] {
-        let parents = entries.filter { $0.kind == .parent }
-        let folders = entries.filter { $0.kind == .folder }
-        let media   = entries.filter { $0.isMedia }
+        var parents: [GridEntry] = []
+        var folders: [GridEntry] = []
+        var media:   [GridEntry] = []
+        for entry in entries {
+            switch entry.kind {
+            case .parent:        parents.append(entry)
+            case .folder:        folders.append(entry)
+            case .image, .video: media.append(entry)
+            }
+        }
         func asc(_ a: GridEntry, _ b: GridEntry) -> Bool {
             switch key {
             case .name: return a.name.localizedStandardCompare(b.name) == .orderedAscending
@@ -217,11 +225,29 @@ final class BrowserModel: ObservableObject {
 
     // MARK: - Counters / media
 
-    var folderCount: Int { entries.filter { $0.kind == .folder }.count }
-    var imageCount:  Int { entries.filter { $0.kind == .image }.count }
-    var videoCount:  Int { entries.filter { $0.kind == .video }.count }
+    /// Recomputed once whenever `entries` changes — avoids walking the array
+    /// (three filters + a firstIndex) on every render of the status bar / badge.
+    private(set) var folderCount = 0
+    private(set) var imageCount = 0
+    private(set) var videoCount = 0
+    private var firstMediaIndex: Int?
 
-    private var firstMediaIndex: Int? { entries.firstIndex { $0.isMedia } }
+    private func recomputeDerived() {
+        var folders = 0, images = 0, videos = 0
+        var first: Int?
+        for (idx, entry) in entries.enumerated() {
+            switch entry.kind {
+            case .folder: folders += 1
+            case .image:  images += 1; if first == nil { first = idx }
+            case .video:  videos += 1; if first == nil { first = idx }
+            case .parent: break
+            }
+        }
+        folderCount = folders
+        imageCount = images
+        videoCount = videos
+        firstMediaIndex = first
+    }
 
     var mediaCount: Int {
         guard let first = firstMediaIndex else { return 0 }
@@ -253,6 +279,10 @@ final class BrowserModel: ObservableObject {
     func growThumbnails()   { thumbnailSide = min(thumbnailSide + 30, 320) }
     func shrinkThumbnails() { thumbnailSide = max(thumbnailSide - 30, 80) }
 
+    /// Mode-aware "+"/"−": zoom the image in the full-size view, resize tiles in the grid.
+    func scaleUp()   { mode == .detail ? zoomIn()  : growThumbnails() }
+    func scaleDown() { mode == .detail ? zoomOut() : shrinkThumbnails() }
+
     // MARK: - Activation / navigation
 
     func activateSelection() {
@@ -273,6 +303,9 @@ final class BrowserModel: ObservableObject {
         zoom = 1
         mode = .grid
     }
+
+    /// "Go back": leave the full-size view, or go up one folder level in the grid.
+    func goBack() { mode == .detail ? closeDetail() : goToParentFolder() }
 
     func goToParentFolder() {
         guard let current = folderURL else { return }

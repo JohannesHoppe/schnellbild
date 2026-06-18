@@ -37,11 +37,7 @@ struct ContentView: View {
         // Handle Backspace separately — the catch-all onKeyPress doesn't deliver
         // it reliably. Full-size view: go back (like Esc). List: go up a level.
         .onKeyPress(.delete) {
-            if model.mode == .detail {
-                model.closeDetail()
-            } else {
-                model.goToParentFolder()
-            }
+            model.goBack()
             return .handled
         }
         .onKeyPress { press in handle(press) }
@@ -146,11 +142,9 @@ struct ContentView: View {
         if cmd {
             switch press.key {
             case "+", "=":
-                model.mode == .detail ? model.zoomIn() : model.growThumbnails()
-                return .handled
+                model.scaleUp(); return .handled
             case "-":
-                model.mode == .detail ? model.zoomOut() : model.shrinkThumbnails()
-                return .handled
+                model.scaleDown(); return .handled
             case .leftArrow:
                 if model.mode == .detail && isVideo { model.seekVideo(by: -10) }
                 else if model.mode == .detail { model.stepMedia(-1) }
@@ -169,8 +163,8 @@ struct ContentView: View {
         switch model.mode {
         case .grid:
             switch press.characters {
-            case "+", "=": model.growThumbnails();   return .handled
-            case "-":      model.shrinkThumbnails(); return .handled
+            case "+", "=": model.scaleUp();   return .handled
+            case "-":      model.scaleDown(); return .handled
             default:       break
             }
             switch press.key {
@@ -187,8 +181,8 @@ struct ContentView: View {
         case .detail:
             // Bare arrows ALWAYS page (even in a video) — like Phiewer.
             switch press.characters {
-            case "+", "=": model.zoomIn();          return .handled
-            case "-":      model.zoomOut();         return .handled
+            case "+", "=": model.scaleUp();         return .handled
+            case "-":      model.scaleDown();       return .handled
             case "0":      model.zoomReset();       return .handled
             case "1":      model.zoomActualSize();  return .handled
             case "i":      showInspector.toggle();  return .handled

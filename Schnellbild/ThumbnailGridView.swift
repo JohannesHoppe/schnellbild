@@ -61,17 +61,8 @@ struct ThumbnailGridView: View {
             FolderTile(side: side, isSelected: selected, systemImage: "arrow.up.circle.fill")
         case .folder:
             FolderTile(side: side, isSelected: selected)
-        case .image:
-            ThumbnailView(url: entry.url, side: side, isSelected: selected)
-        case .video:
-            ThumbnailView(url: entry.url, side: side, isSelected: selected)
-                .overlay(alignment: .bottomTrailing) {
-                    Image(systemName: "play.circle.fill")
-                        .symbolRenderingMode(.palette)
-                        .foregroundStyle(.white, .black.opacity(0.55))
-                        .font(.system(size: 26))
-                        .padding(6)
-                }
+        case .image, .video:
+            ThumbnailView(url: entry.url, side: side, isSelected: selected, isVideo: entry.kind == .video)
         }
     }
 }
@@ -83,17 +74,9 @@ struct FolderTile: View {
     var systemImage: String = "folder.fill"
 
     var body: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 6)
-                .fill(Color(nsColor: .quaternaryLabelColor).opacity(0.4))
-            Image(systemName: systemImage)
-                .font(.system(size: side * 0.36))
-                .foregroundStyle(Color.accentColor)
-        }
-        .frame(width: side, height: side)
-        .overlay(
-            RoundedRectangle(cornerRadius: 6)
-                .strokeBorder(isSelected ? Color.accentColor : .clear, lineWidth: 3)
-        )
+        Image(systemName: systemImage)
+            .font(.system(size: side * 0.36))
+            .foregroundStyle(Color.accentColor)
+            .tileChrome(side: side, isSelected: isSelected)
     }
 }

@@ -23,9 +23,7 @@ struct VideoDetailView: View {
             } else if let player {
                 VideoPlayer(player: player)
             } else if checking {
-                ProgressView()
-                    .controlSize(.large)
-                    .tint(.white)
+                LoadingSpinner()
             }
         }
         .task(id: url) {
@@ -67,13 +65,9 @@ struct VideoDetailView: View {
                 .font(.callout)
                 .foregroundStyle(.secondary)
             HStack(spacing: 10) {
-                Button("Open with Default App") {
-                    NSWorkspace.shared.open(url)
-                }
-                .keyboardShortcut(.defaultAction)
-                Button("Reveal in Finder") {
-                    NSWorkspace.shared.activateFileViewerSelecting([url])
-                }
+                Button("Open with Default App") { model.openInDefaultApp() }
+                    .keyboardShortcut(.defaultAction)
+                Button("Reveal in Finder") { model.revealInFinder() }
             }
             .padding(.top, 4)
         }

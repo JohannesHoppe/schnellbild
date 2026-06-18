@@ -28,34 +28,40 @@ struct ThumbnailView: View {
     let url: URL
     let side: CGFloat
     let isSelected: Bool
+    var isVideo: Bool = false
 
     @State private var image: NSImage?
     @State private var failed = false
 
     var body: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 6)
-                .fill(Color(nsColor: .quaternaryLabelColor).opacity(0.4))
-
-            if let image {
-                Image(nsImage: image)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .padding(4)
-            } else if failed {
-                Image(systemName: "exclamationmark.triangle")
-                    .foregroundStyle(.secondary)
-            } else {
-                ProgressView()
-                    .controlSize(.small)
+        content
+            .tileChrome(side: side, isSelected: isSelected)
+            .overlay(alignment: .bottomTrailing) {
+                if isVideo {
+                    Image(systemName: "play.circle.fill")
+                        .symbolRenderingMode(.palette)
+                        .foregroundStyle(.white, .black.opacity(0.55))
+                        .font(.system(size: 26))
+                        .padding(6)
+                }
             }
+            .task(id: url) { await load() }
+    }
+
+    @ViewBuilder
+    private var content: some View {
+        if let image {
+            Image(nsImage: image)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .padding(4)
+        } else if failed {
+            Image(systemName: "exclamationmark.triangle")
+                .foregroundStyle(.secondary)
+        } else {
+            ProgressView()
+                .controlSize(.small)
         }
-        .frame(width: side, height: side)
-        .overlay(
-            RoundedRectangle(cornerRadius: 6)
-                .strokeBorder(isSelected ? Color.accentColor : .clear, lineWidth: 3)
-        )
-        .task(id: url) { await load() }
     }
 
     private func load() async {
@@ -63,7 +69,7 @@ struct ThumbnailView: View {
             image = cached
             return
         }
-        let scale = NSScreen.main?.backingScaleFactor ?? 2
+        let scale = NSScreen.mainBackingScale
         let request = QLThumbnailGenerator.Request(
             fileAt: url,
             size: CGSize(width: side, height: side),
@@ -77,5 +83,30 @@ struct ThumbnailView: View {
         } catch {
             if !Task.isCancelled { failed = true }
         }
+    }
+}
+
+/// Shared tile chrome: rounded background, fixed square frame, selection ring.
+struct TileChrome: ViewModifier {
+    let side: CGFloat
+    let isSelected: Bool
+
+    func body(content: Content) -> some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 6)
+                .fill(Color(nsColor: .quaternaryLabelColor).opacity(0.4))
+            content
+        }
+        .frame(width: side, height: side)
+        .overlay(
+            RoundedRectangle(cornerRadius: 6)
+                .strokeBorder(isSelected ? Color.accentColor : .clear, lineWidth: 3)
+        )
+    }
+}
+
+extension View {
+    func tileChrome(side: CGFloat, isSelected: Bool) -> some View {
+        modifier(TileChrome(side: side, isSelected: isSelected))
     }
 }

@@ -22,7 +22,6 @@ struct AnimatedImageView: NSViewRepresentable {
         guard context.coordinator.url != url else { return }
         context.coordinator.url = url
         nsView.image = NSImage(contentsOf: url)
-        nsView.animates = true
     }
 
     final class Coordinator {
@@ -83,11 +82,39 @@ struct InspectorView: View {
         guard entry.kind == .image else { return }
         let url = entry.url
         dimensions = await Task.detached(priority: .utility) { () -> String? in
-            guard let src = CGImageSourceCreateWithURL(url as CFURL, nil),
-                  let props = CGImageSourceCopyPropertiesAtIndex(src, 0, nil) as? [CFString: Any],
-                  let w = (props[kCGImagePropertyPixelWidth] as? NSNumber)?.intValue,
-                  let h = (props[kCGImagePropertyPixelHeight] as? NSNumber)?.intValue else { return nil }
-            return "\(w) × \(h) px"
+            guard let size = MediaInfo.pixelSize(of: url) else { return nil }
+            return "\(Int(size.width)) × \(Int(size.height)) px"
         }.value
+    }
+}
+
+/// Shared ImageIO helpers.
+enum MediaInfo {
+    /// Pixel dimensions from an already-open image source (no extra file open).
+    static func pixelSize(from source: CGImageSource) -> CGSize? {
+        guard let props = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [CFString: Any],
+              let w = (props[kCGImagePropertyPixelWidth] as? NSNumber)?.doubleValue,
+              let h = (props[kCGImagePropertyPixelHeight] as? NSNumber)?.doubleValue else { return nil }
+        return CGSize(width: w, height: h)
+    }
+
+    /// Pixel dimensions for a file URL.
+    static func pixelSize(of url: URL) -> CGSize? {
+        guard let source = CGImageSourceCreateWithURL(url as CFURL, nil) else { return nil }
+        return pixelSize(from: source)
+    }
+}
+
+extension NSScreen {
+    /// Backing scale of the main display, with a sane fallback.
+    static var mainBackingScale: CGFloat { NSScreen.main?.backingScaleFactor ?? 2 }
+}
+
+/// The white loading spinner shown over the black full-size background.
+struct LoadingSpinner: View {
+    var body: some View {
+        ProgressView()
+            .controlSize(.large)
+            .tint(.white)
     }
 }
