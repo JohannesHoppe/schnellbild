@@ -8,6 +8,13 @@
   <a href="https://github.com/johanneshoppe/schnellbild/actions/workflows/ci.yml"><img src="https://github.com/johanneshoppe/schnellbild/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
 </p>
 
+<p align="center"><b>The fast macOS image &amp; video viewer that doesn't choke on network folders.</b></p>
+
+<!-- Demo: record a short clip (see "Demo GIF" in CONTRIBUTING/below), save it as
+     docs/demo.gif, then uncomment the next line:
+<p align="center"><img src="docs/demo.gif" width="680" alt="Schnellbild in action"></p>
+-->
+
 A **fast** file/image viewer for macOS. Open a folder, see thumbnails,
 view one image large, page through with the keyboard. Nothing more — but
 without stalling, even over network volumes.
