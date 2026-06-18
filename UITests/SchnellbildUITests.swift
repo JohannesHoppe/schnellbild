@@ -38,6 +38,15 @@ final class SchnellbildUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["c.jpg"].exists)
     }
 
+    /// F1 opens the keyboard-shortcuts help.
+    func testF1ShowsShortcutsHelp() {
+        let app = launchApp(openPath: tempDir.path)
+        XCTAssertTrue(app.staticTexts["a.jpg"].waitForExistence(timeout: 15))
+        app.typeKey(.F1, modifierFlags: [])
+        XCTAssertTrue(app.staticTexts["Keyboard Shortcuts"].waitForExistence(timeout: 5),
+                      "F1 should open the shortcuts help")
+    }
+
     /// Backspace in the grid navigates up one folder level.
     func testBackspaceGoesUpOneFolder() throws {
         let fm = FileManager.default

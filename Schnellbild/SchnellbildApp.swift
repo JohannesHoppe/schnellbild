@@ -34,6 +34,10 @@ struct SchnellbildApp: App {
                 Button("Sort by Date") { model.setSort(.date) }
                 Button("Sort by Size") { model.setSort(.size) }
             }
+            CommandGroup(replacing: .help) {
+                Button("Schnellbild Help") { model.showHelp = true }
+                    .keyboardShortcut("?", modifiers: .command)
+            }
         }
     }
 }

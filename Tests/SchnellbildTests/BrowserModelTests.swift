@@ -267,6 +267,30 @@ final class OpenFolderTests: XCTestCase {
                       "recursive search should find the file in the subfolder")
     }
 
+    func testKeyboardNavigationInGridViaHandleKey() async throws {
+        let fm = FileManager.default
+        let dir = fm.temporaryDirectory.appendingPathComponent("sb_keys_\(UUID().uuidString)")
+        try fm.createDirectory(at: dir, withIntermediateDirectories: true)
+        defer { try? fm.removeItem(at: dir) }
+        for n in ["a.jpg", "b.jpg", "c.jpg"] { try Data().write(to: dir.appendingPathComponent(n)) }
+
+        let m = BrowserModel()
+        m.open(folder: dir)
+        try await waitUntil { !m.isLoading && !m.entries.isEmpty }
+
+        let start = m.selection ?? 0
+        m.handleKey(.right, command: false)
+        XCTAssertEqual(m.selection, min(start + 1, m.entries.count - 1))
+        m.handleKey(.left, command: false)
+        XCTAssertEqual(m.selection, start)
+
+        // Return opens the selected image; Backspace returns to the grid.
+        m.handleKey(.enter, command: false)
+        XCTAssertEqual(m.mode, .detail)
+        m.handleKey(.backspace, command: false)
+        XCTAssertEqual(m.mode, .grid)
+    }
+
     private func waitUntil(_ condition: @escaping () -> Bool, timeout: TimeInterval = 3) async throws {
         let start = Date()
         while !condition() {
@@ -276,5 +300,61 @@ final class OpenFolderTests: XCTestCase {
             }
             try await Task.sleep(nanoseconds: 20_000_000)
         }
+    }
+}
+
+// MARK: - Key bindings (handleKey)
+
+@MainActor
+final class KeyBindingTests: XCTestCase {
+    func testBackspaceGoesBackFromDetail() {
+        let m = BrowserModel(); m.mode = .detail
+        XCTAssertTrue(m.handleKey(.backspace, command: false))
+        XCTAssertEqual(m.mode, .grid)
+    }
+
+    func testEscapeOnlyHandledInDetail() {
+        let m = BrowserModel()
+        m.mode = .grid
+        XCTAssertFalse(m.handleKey(.escape, command: false))
+        m.mode = .detail
+        XCTAssertTrue(m.handleKey(.escape, command: false))
+        XCTAssertEqual(m.mode, .grid)
+    }
+
+    func testZoomAndFitKeysInDetail() {
+        let m = BrowserModel(); m.mode = .detail
+        XCTAssertTrue(m.handleKey(.char("+"), command: false))
+        XCTAssertGreaterThan(m.zoom, 1)
+        XCTAssertTrue(m.handleKey(.char("0"), command: false))
+        XCTAssertEqual(m.zoom, 1, accuracy: 0.0001)
+    }
+
+    func testRotateKeyInDetail() {
+        let m = BrowserModel(); m.mode = .detail
+        XCTAssertTrue(m.handleKey(.char("]"), command: false))
+        XCTAssertEqual(m.rotation, 90, accuracy: 0.0001)
+    }
+
+    func testCommandFOpensSearch() {
+        let m = BrowserModel()
+        XCTAssertTrue(m.handleKey(.char("f"), command: true))
+        XCTAssertTrue(m.searchActive)
+        XCTAssertEqual(m.mode, .grid)
+    }
+
+    func testInspectorToggleIsDetailOnly() {
+        let m = BrowserModel()
+        m.mode = .grid
+        XCTAssertFalse(m.handleKey(.char("i"), command: false))
+        m.mode = .detail
+        XCTAssertTrue(m.handleKey(.char("i"), command: false))
+        XCTAssertTrue(m.showInspector)
+    }
+
+    func testUppercaseCharsStillMatch() {
+        let m = BrowserModel(); m.mode = .detail
+        XCTAssertTrue(m.handleKey(.char("I"), command: false))   // caps lock / shift
+        XCTAssertTrue(m.showInspector)
     }
 }

@@ -22,6 +22,10 @@ final class BrowserModel: ObservableObject {
     enum Mode { case grid, detail }
     enum SortKey { case name, date, size }
     enum SearchScope: Hashable { case folder, subfolders }
+    enum KeyInput: Equatable {
+        case left, right, up, down, space, enter, escape, backspace, home, end
+        case char(Character)
+    }
 
     @Published private(set) var folderURL: URL?
     @Published private(set) var entries: [GridEntry] = [] {
@@ -29,6 +33,8 @@ final class BrowserModel: ObservableObject {
     }
     @Published var selection: Int?
     @Published var mode: Mode = .grid
+    @Published var showInspector = false
+    @Published var showHelp = false
     @Published private(set) var isLoading = false
 
     /// Set by the grid based on window width — for row-accurate ↑/↓.
@@ -50,6 +56,7 @@ final class BrowserModel: ObservableObject {
     // Search
     @Published var searchText: String = ""
     @Published var searchScope: SearchScope = .folder
+    @Published var searchActive = false
     @Published private(set) var isSearching = false
     /// The full, unfiltered set of the current folder. `entries` is the
     /// currently visible (possibly search-filtered) view of it.
@@ -266,7 +273,7 @@ final class BrowserModel: ObservableObject {
         ) else { return [] }
 
         var result: [GridEntry] = []
-        for case let url as URL in enumerator {
+        while let url = enumerator.nextObject() as? URL {
             if Task.isCancelled { return result }
             guard url.lastPathComponent.localizedCaseInsensitiveContains(query) else { continue }
             let vals = try? url.resourceValues(forKeys: keys)
@@ -426,6 +433,76 @@ final class BrowserModel: ObservableObject {
         let parent = current.deletingLastPathComponent()
         guard parent != current else { return }
         open(folder: parent, selecting: current)
+    }
+
+    // MARK: - Keyboard dispatch
+
+    /// Single source of truth for key bindings. Returns true if the key was
+    /// handled (and should be consumed). Pure enough to unit-test exhaustively.
+    @discardableResult
+    func handleKey(_ key: KeyInput, command: Bool) -> Bool {
+        switch key {
+        case .backspace:
+            goBack(); return true
+        case .escape:
+            guard mode == .detail else { return false }
+            closeDetail(); return true
+        case .enter:
+            mode == .detail ? closeDetail() : activateSelection()
+            return true
+        case .space:
+            if mode == .detail {
+                (selectedMediaEntry?.kind == .video) ? togglePlayPause() : stepMedia(+1)
+            } else {
+                activateSelection()
+            }
+            return true
+        case .left:
+            if command, mode == .detail, selectedMediaEntry?.kind == .video { seekVideo(by: -10) }
+            else if mode == .detail { stepMedia(-1) }
+            else { step(-1) }
+            return true
+        case .right:
+            if command, mode == .detail, selectedMediaEntry?.kind == .video { seekVideo(by: +10) }
+            else if mode == .detail { stepMedia(+1) }
+            else { step(+1) }
+            return true
+        case .up:
+            mode == .detail ? stepMedia(-1) : stepRow(-1); return true
+        case .down:
+            mode == .detail ? stepMedia(+1) : stepRow(+1); return true
+        case .home:
+            guard mode == .grid else { return false }
+            select(0); return true
+        case .end:
+            guard mode == .grid, !entries.isEmpty else { return false }
+            select(entries.count - 1); return true
+        case .char(let character):
+            return handleCharacter(character, command: command)
+        }
+    }
+
+    private func handleCharacter(_ character: Character, command: Bool) -> Bool {
+        let c = Character(character.lowercased())
+        switch c {
+        case "+", "=": scaleUp();   return true
+        case "-":      scaleDown(); return true
+        case "f":
+            if command { mode = .grid; searchActive = true } else { toggleFullScreen() }
+            return true
+        default:
+            break
+        }
+        guard mode == .detail else { return false }
+        switch c {
+        case "0": zoomReset();            return true
+        case "1": zoomActualSize();       return true
+        case "[": rotateLeft();           return true
+        case "]": rotateRight();          return true
+        case "i": showInspector.toggle(); return true
+        case "s": toggleSlideshow();      return true
+        default:  return false
+        }
     }
 
     // MARK: - Slideshow

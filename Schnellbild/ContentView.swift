@@ -3,11 +3,8 @@ import AppKit
 
 struct ContentView: View {
     @EnvironmentObject var model: BrowserModel
-    @FocusState private var focused: Bool
     @FocusState private var searchFieldFocused: Bool
     @State private var isDropTargeted = false
-    @State private var showInspector = false
-    @State private var searchBarVisible = false
     @State private var keyMonitor: Any?
 
     var body: some View {
@@ -30,34 +27,24 @@ struct ContentView: View {
         }
         .overlay { if isDropTargeted { dropHighlight } }
         .safeAreaInset(edge: .top, spacing: 0) {
-            if model.mode == .grid, searchBarVisible { searchBar }
+            if model.mode == .grid, model.searchActive { searchBar }
         }
         .safeAreaInset(edge: .bottom, spacing: 0) {
             if model.mode == .grid, model.folderURL != nil { statusBar }
         }
-        // Keyboard focus sits on the whole content (but not while searching).
-        .focusable()
-        .focusEffectDisabled()
-        .focused($focused)
         .onAppear {
-            focused = true
             if !model.openFromLaunchArguments() { model.restoreLastFolder() }
-            installBackspaceMonitor()
+            installKeyMonitor()
         }
-        .onDisappear { removeBackspaceMonitor() }
-        .onChange(of: model.entries) { _, _ in
-            if model.searchText.isEmpty && !searchFieldFocused { focused = true }
-        }
+        .onDisappear { removeKeyMonitor() }
         .onChange(of: model.searchText) { _, _ in if !model.isLoading { model.applyFilter() } }
         .onChange(of: model.searchScope) { _, _ in if !model.isLoading { model.applyFilter() } }
-        // When the search field gives up focus, hand keyboard control back to
-        // the grid/detail so shortcuts keep working.
-        .onChange(of: searchFieldFocused) { _, isFocused in
-            if !isFocused { focused = true }
+        .onChange(of: model.searchActive) { _, active in
+            if active { DispatchQueue.main.async { searchFieldFocused = true } }
         }
-        .onKeyPress { press in handle(press) }
         .toolbar { toolbarContent }
         .navigationTitle(model.folderURL?.lastPathComponent ?? "Schnellbild")
+        .sheet(isPresented: $model.showHelp) { ShortcutsHelpView() }
     }
 
     private var dropHighlight: some View {
@@ -88,8 +75,7 @@ struct ContentView: View {
             }
             Button {
                 model.searchText = ""
-                searchBarVisible = false
-                focused = true
+                model.searchActive = false
             } label: {
                 Image(systemName: "xmark.circle.fill").foregroundStyle(.secondary)
             }
@@ -144,7 +130,7 @@ struct ContentView: View {
         }
         .overlay(alignment: .bottom) { positionBadge(entry: entry) }
         .overlay(alignment: .topTrailing) {
-            if showInspector { InspectorView(entry: entry).padding(12) }
+            if model.showInspector { InspectorView(entry: entry).padding(12) }
         }
     }
 
@@ -175,109 +161,46 @@ struct ContentView: View {
         }
     }
 
-    // MARK: - Keyboard
+    // MARK: - Keyboard (one NSEvent monitor — focus-independent)
 
-    private func handle(_ press: KeyPress) -> KeyPress.Result {
-        let cmd = press.modifiers.contains(.command)
-        let isVideo = model.selectedMediaEntry?.kind == .video
-
-        // f = full screen (without Command, regardless of mode).
-        if !cmd, press.characters == "f" {
-            model.toggleFullScreen(); return .handled
-        }
-
-        // ⌘ shortcuts: zoom/tile size (⌘+/⌘-) and video seek (⌘←/⌘→), like
-        // Phiewer. All other ⌘ combos are left to the menus.
-        if cmd {
-            switch press.key {
-            case "+", "=":
-                model.scaleUp(); return .handled
-            case "-":
-                model.scaleDown(); return .handled
-            case .leftArrow:
-                if model.mode == .detail && isVideo { model.seekVideo(by: -10) }
-                else if model.mode == .detail { model.stepMedia(-1) }
-                else { model.step(-1) }
-                return .handled
-            case .rightArrow:
-                if model.mode == .detail && isVideo { model.seekVideo(by: +10) }
-                else if model.mode == .detail { model.stepMedia(+1) }
-                else { model.step(+1) }
-                return .handled
-            case "f":                       // ⌘F → reveal & focus the search bar
-                model.mode = .grid
-                searchBarVisible = true
-                // Focus on the next tick — the field must exist first.
-                DispatchQueue.main.async { searchFieldFocused = true }
-                return .handled
-            default:
-                return .ignored
-            }
-        }
-
-        switch model.mode {
-        case .grid:
-            switch press.characters {
-            case "+", "=": model.scaleUp();   return .handled
-            case "-":      model.scaleDown(); return .handled
-            default:       break
-            }
-            switch press.key {
-            case .return, .space: model.activateSelection(); return .handled
-            case .rightArrow:     model.step(+1);   return .handled
-            case .leftArrow:      model.step(-1);   return .handled
-            case .downArrow:      model.stepRow(+1); return .handled
-            case .upArrow:        model.stepRow(-1); return .handled
-            case .home:           model.select(0); return .handled
-            case .end:            model.select(model.entries.count - 1); return .handled
-            default:              return .ignored
-            }
-
-        case .detail:
-            // Bare arrows ALWAYS page (even in a video) — like Phiewer.
-            switch press.characters {
-            case "+", "=": model.scaleUp();         return .handled
-            case "-":      model.scaleDown();       return .handled
-            case "0":      model.zoomReset();       return .handled
-            case "1":      model.zoomActualSize();  return .handled
-            case "[":      model.rotateLeft();      return .handled
-            case "]":      model.rotateRight();     return .handled
-            case "i":      showInspector.toggle();  return .handled
-            case "s":      model.toggleSlideshow(); return .handled
-            default:       break
-            }
-            switch press.key {
-            case .escape, .return:
-                model.closeDetail(); return .handled
-            case .space:
-                isVideo ? model.togglePlayPause() : model.stepMedia(+1)
-                return .handled
-            case .rightArrow, .downArrow: model.stepMedia(+1); return .handled
-            case .leftArrow,  .upArrow:   model.stepMedia(-1); return .handled
-            default: return .ignored
-            }
-        }
-    }
-
-    // MARK: - Backspace via NSEvent
-
-    /// SwiftUI's `onKeyPress(.delete)` doesn't reliably fire for the physical
-    /// Backspace key, so handle it at the event level by hardware key code.
-    private func installBackspaceMonitor() {
+    /// All shortcuts run through a local key monitor, so they work regardless
+    /// of SwiftUI focus (which kept losing the Backspace/arrow keys). The
+    /// actual bindings live in `BrowserModel.handleKey` (unit-tested).
+    private func installKeyMonitor() {
         guard keyMonitor == nil else { return }
         let model = self.model
         keyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
-            // keyCode 51 = Backspace (above Enter). Skip it while a text field
-            // (the search box) is being edited, or when Command is held.
-            guard event.keyCode == 51,
-                  !event.modifierFlags.contains(.command),
-                  !(NSApp.keyWindow?.firstResponder is NSText) else { return event }
-            Task { @MainActor in model.goBack() }
-            return nil
+            let code = event.keyCode
+            let command = event.modifierFlags.contains(.command)
+            let chars = (command ? event.charactersIgnoringModifiers : event.characters) ?? ""
+            // Decide on the main actor whether to consume the key.
+            let consume = MainActor.assumeIsolated { () -> Bool in
+                if code == 122 { model.showHelp.toggle(); return true }   // F1 → help
+                // Let the search field and the help sheet handle their own keys.
+                if NSApp.keyWindow?.firstResponder is NSText { return false }
+                if model.showHelp { return false }
+                let key: BrowserModel.KeyInput?
+                switch code {
+                case 51:     key = .backspace
+                case 53:     key = .escape
+                case 36, 76: key = .enter
+                case 49:     key = .space
+                case 123:    key = .left
+                case 124:    key = .right
+                case 125:    key = .down
+                case 126:    key = .up
+                case 115:    key = .home
+                case 119:    key = .end
+                default:     key = chars.first.map(BrowserModel.KeyInput.char)
+                }
+                guard let key else { return false }
+                return model.handleKey(key, command: command)
+            }
+            return consume ? nil : event
         }
     }
 
-    private func removeBackspaceMonitor() {
+    private func removeKeyMonitor() {
         if let keyMonitor { NSEvent.removeMonitor(keyMonitor) }
         keyMonitor = nil
     }
