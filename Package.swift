@@ -9,10 +9,10 @@ let package = Package(
     targets: [
         .executableTarget(
             name: "Schnellbild",
-            path: "Sources/Schnellbild",
+            path: "Schnellbild",
             linkerSettings: [
-                // SwiftUIs VideoPlayer referenziert AVKit nur intern — ohne
-                // explizites Linken fehlt AVPlayerView zur Laufzeit (Crash).
+                // SwiftUI's VideoPlayer references AVKit only internally — without
+                // explicit linking, AVPlayerView is missing at runtime (crash).
                 .linkedFramework("AVKit"),
                 .linkedFramework("AVFoundation")
             ]

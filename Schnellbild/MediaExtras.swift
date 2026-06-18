@@ -2,8 +2,8 @@ import SwiftUI
 import AppKit
 import ImageIO
 
-/// Animierte GIFs: `NSImageView` mit `animates = true` spielt sie ab —
-/// SwiftUIs `Image` zeigt nur ein Standbild.
+/// Animated GIFs: `NSImageView` with `animates = true` plays them —
+/// SwiftUI's `Image` shows only a still frame.
 struct AnimatedImageView: NSViewRepresentable {
     let url: URL
 
@@ -30,7 +30,7 @@ struct AnimatedImageView: NSViewRepresentable {
     }
 }
 
-/// Kleiner Datei-Inspektor (Taste „i“ in der Großansicht).
+/// Small file inspector (key "i" in the full-size view).
 struct InspectorView: View {
     let entry: GridEntry
     @State private var dimensions: String?
@@ -40,15 +40,15 @@ struct InspectorView: View {
             Text(entry.name)
                 .font(.headline)
                 .lineLimit(3)
-            infoRow("Typ", kindText)
+            infoRow("Type", kindText)
             if let dimensions {
-                infoRow("Auflösung", dimensions)
+                infoRow("Resolution", dimensions)
             }
             if let size = entry.byteSize {
-                infoRow("Größe", ByteCountFormatter.string(fromByteCount: Int64(size), countStyle: .file))
+                infoRow("Size", ByteCountFormatter.string(fromByteCount: Int64(size), countStyle: .file))
             }
             if let date = entry.modDate {
-                infoRow("Geändert", date.formatted(date: .abbreviated, time: .shortened))
+                infoRow("Modified", date.formatted(date: .abbreviated, time: .shortened))
             }
         }
         .padding(14)
@@ -59,10 +59,10 @@ struct InspectorView: View {
 
     private var kindText: String {
         switch entry.kind {
-        case .image: return "Bild"
+        case .image: return "Image"
         case .video: return "Video"
-        case .folder: return "Ordner"
-        case .parent: return "Übergeordnet"
+        case .folder: return "Folder"
+        case .parent: return "Parent"
         }
     }
 

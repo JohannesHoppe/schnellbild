@@ -2,7 +2,7 @@ import SwiftUI
 import AppKit
 import AVFoundation
 
-/// Ein Eintrag im Grid: „..“ (Ebene höher), Unterordner, Bild oder Video.
+/// A grid entry: ".." (parent level), subfolder, image, or video.
 struct GridEntry: Identifiable, Hashable {
     enum Kind { case parent, folder, image, video }
     let url: URL
@@ -16,7 +16,7 @@ struct GridEntry: Identifiable, Hashable {
     var isGIF: Bool { kind == .image && url.pathExtension.lowercased() == "gif" }
 }
 
-/// Single Source of Truth fürs gesamte Browsen.
+/// Single source of truth for all browsing.
 @MainActor
 final class BrowserModel: ObservableObject {
     enum Mode { case grid, detail }
@@ -28,14 +28,14 @@ final class BrowserModel: ObservableObject {
     @Published var mode: Mode = .grid
     @Published private(set) var isLoading = false
 
-    /// Vom Grid anhand der Fensterbreite gesetzt — für zeilengenaues ↑/↓.
+    /// Set by the grid based on window width — for row-accurate ↑/↓.
     @Published var columnCount: Int = 1
-    /// Kachelgröße im Grid (⌘+/⌘-).
+    /// Tile size in the grid (⌘+/⌘-).
     @Published var thumbnailSide: CGFloat = 150
 
-    /// Zoom der Bild-Großansicht (1 = an Fenster angepasst).
+    /// Zoom of the image full-size view (1 = fit to window).
     @Published var zoom: CGFloat = 1
-    /// Von der Großansicht gesetzt: Faktor, der 100 % echter Pixel entspricht.
+    /// Set by the full-size view: factor that corresponds to 100 % actual pixels.
     @Published var actualSizeFactor: CGFloat = 1
     private let maxZoom: CGFloat = 8
 
@@ -45,8 +45,8 @@ final class BrowserModel: ObservableObject {
     @Published private(set) var slideshowOn = false
     private var slideshowTask: Task<Void, Never>?
 
-    /// Schwache Referenz auf den laufenden Video-Player — für Tastatur-
-    /// Steuerung (Pause/Spulen). Wird von VideoDetailView gesetzt.
+    /// Weak reference to the running video player — for keyboard
+    /// control (pause/seek). Set by VideoDetailView.
     weak var activePlayer: AVPlayer?
 
     static let lastFolderKey = "lastFolderPath"
@@ -61,15 +61,15 @@ final class BrowserModel: ObservableObject {
         "mpg", "mpeg", "3gp", "wmv", "flv", "ogv"
     ]
 
-    // MARK: - Ordner wählen / laden
+    // MARK: - Choosing / loading a folder
 
     func chooseFolder() {
         let panel = NSOpenPanel()
         panel.canChooseDirectories = true
         panel.canChooseFiles = false
         panel.allowsMultipleSelection = false
-        panel.prompt = "Öffnen"
-        panel.message = "Ordner mit Medien auswählen"
+        panel.prompt = "Open"
+        panel.message = "Choose a folder with media"
         if panel.runModal() == .OK, let url = panel.url {
             open(folder: url)
         }
@@ -106,7 +106,7 @@ final class BrowserModel: ObservableObject {
         }
     }
 
-    /// Letzten Ordner beim Start wieder öffnen (falls noch vorhanden).
+    /// Reopen the last folder on launch (if it still exists).
     func restoreLastFolder() {
         guard folderURL == nil,
               let path = UserDefaults.standard.string(forKey: Self.lastFolderKey) else { return }
@@ -116,9 +116,9 @@ final class BrowserModel: ObservableObject {
         }
     }
 
-    /// Verzeichnis einlesen — inkl. versteckter Einträge, mit Datum/Größe.
-    /// Läuft weg vom Main-Thread; Metadaten werden in der Enumeration
-    /// vorgeladen (keine Extra-Roundtrips).
+    /// Read a directory — including hidden entries, with date/size.
+    /// Runs off the main thread; metadata is prefetched during
+    /// enumeration (no extra round-trips).
     nonisolated static func scan(_ url: URL) async -> [GridEntry] {
         await Task.detached(priority: .userInitiated) {
             let fm = FileManager.default
@@ -149,7 +149,7 @@ final class BrowserModel: ObservableObject {
         }.value
     }
 
-    /// Sortiert: „..“ ganz oben, dann Ordner, dann Medien — jede Gruppe nach Key.
+    /// Sorted: ".." on top, then folders, then media — each group by key.
     nonisolated static func sortEntries(_ entries: [GridEntry], key: SortKey, ascending: Bool) -> [GridEntry] {
         let parents = entries.filter { $0.kind == .parent }
         let folders = entries.filter { $0.kind == .folder }
@@ -172,7 +172,7 @@ final class BrowserModel: ObservableObject {
         if let keepURL { selection = entries.firstIndex { $0.url == keepURL } }
     }
 
-    /// Drag & Drop: Ordner öffnen, Datei → Elternordner öffnen und auswählen.
+    /// Drag & drop: open a folder; for a file → open the parent folder and select it.
     func openDropped(_ urls: [URL]) {
         guard let first = urls.first else { return }
         var isDir: ObjCBool = false
@@ -184,7 +184,7 @@ final class BrowserModel: ObservableObject {
         }
     }
 
-    // MARK: - Auswahl / Navigation
+    // MARK: - Selection / navigation
 
     var selectedEntry: GridEntry? {
         guard let i = selection, entries.indices.contains(i) else { return nil }
@@ -215,7 +215,7 @@ final class BrowserModel: ObservableObject {
         selection = target
     }
 
-    // MARK: - Zähler / Medien
+    // MARK: - Counters / media
 
     var folderCount: Int { entries.filter { $0.kind == .folder }.count }
     var imageCount:  Int { entries.filter { $0.kind == .image }.count }
@@ -232,7 +232,7 @@ final class BrowserModel: ObservableObject {
         return sel - first + 1
     }
 
-    /// In der Großansicht: nur durch Medien blättern (Ordner überspringen).
+    /// In the full-size view: page through media only (skip folders).
     func stepMedia(_ delta: Int) {
         guard let first = firstMediaIndex else { return }
         let current = selection ?? first
@@ -240,7 +240,7 @@ final class BrowserModel: ObservableObject {
         zoom = 1
     }
 
-    // MARK: - Zoom (Großansicht)
+    // MARK: - Zoom (full-size view)
 
     func zoomIn()        { zoom = min(zoom * 1.25, maxZoom) }
     func zoomOut()       { zoom = max(zoom / 1.25, 1) }
@@ -248,12 +248,12 @@ final class BrowserModel: ObservableObject {
     func zoomActualSize(){ zoom = min(max(actualSizeFactor, 1), maxZoom) }
     func applyPinch(_ factor: CGFloat) { zoom = min(max(zoom * factor, 1), maxZoom) }
 
-    // MARK: - Grid-Kachelgröße
+    // MARK: - Grid tile size
 
     func growThumbnails()   { thumbnailSide = min(thumbnailSide + 30, 320) }
     func shrinkThumbnails() { thumbnailSide = max(thumbnailSide - 30, 80) }
 
-    // MARK: - Aktivieren / Navigation
+    // MARK: - Activation / navigation
 
     func activateSelection() {
         guard let entry = selectedEntry else { return }
@@ -281,7 +281,7 @@ final class BrowserModel: ObservableObject {
         open(folder: parent, selecting: current)
     }
 
-    // MARK: - Diashow
+    // MARK: - Slideshow
 
     func toggleSlideshow() {
         if slideshowOn { stopSlideshow() } else { startSlideshow() }
@@ -310,7 +310,7 @@ final class BrowserModel: ObservableObject {
         zoom = 1
     }
 
-    // MARK: - Datei-Aktionen
+    // MARK: - File actions
 
     func revealInFinder() {
         guard let url = selectedEntry?.url else { return }
@@ -325,11 +325,11 @@ final class BrowserModel: ObservableObject {
     func moveSelectionToTrash() {
         guard let entry = selectedEntry, entry.kind != .parent else { return }
         let alert = NSAlert()
-        alert.messageText = "„\(entry.name)“ in den Papierkorb legen?"
-        alert.informativeText = "Die Datei wird in den Papierkorb verschoben."
+        alert.messageText = "Move “\(entry.name)” to the Trash?"
+        alert.informativeText = "The file will be moved to the Trash."
         alert.alertStyle = .warning
-        alert.addButton(withTitle: "In den Papierkorb")
-        alert.addButton(withTitle: "Abbrechen")
+        alert.addButton(withTitle: "Move to Trash")
+        alert.addButton(withTitle: "Cancel")
         guard alert.runModal() == .alertFirstButtonReturn else { return }
         do {
             try FileManager.default.trashItem(at: entry.url, resultingItemURL: nil)
@@ -349,7 +349,7 @@ final class BrowserModel: ObservableObject {
         }
     }
 
-    // MARK: - Video-Steuerung
+    // MARK: - Video control
 
     func togglePlayPause() {
         guard let p = activePlayer else { return }
@@ -366,7 +366,7 @@ final class BrowserModel: ObservableObject {
                toleranceBefore: .zero, toleranceAfter: .zero)
     }
 
-    // MARK: - Fenster
+    // MARK: - Window
 
     func toggleFullScreen() {
         NSApp.keyWindow?.toggleFullScreen(nil)

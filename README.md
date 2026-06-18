@@ -1,72 +1,115 @@
 # Schnellbild
 
-Ein **schneller** Datei-/Bild-Viewer für macOS. Ordner öffnen, Thumbnails sehen,
-ein Bild groß, per Tastatur durchblättern. Mehr nicht — aber das ohne Hängen,
-auch über Netzwerk-Volumes.
+A **fast** file/image viewer for macOS. Open a folder, see thumbnails,
+view one image large, page through with the keyboard. Nothing more — but
+without stalling, even over network volumes.
 
-Entstanden aus dem Frust über Viewer, die übers Netzwerk lahmen, während
-**macOS Preview** flüssig bleibt. Schnellbild macht es genau wie Preview:
-wenig lesen, parallel laden, aggressiv cachen, nie den UI-Thread blockieren.
+Born out of frustration with viewers that crawl over the network while
+**macOS Preview** stays smooth. Schnellbild does exactly what Preview does:
+read little, load in parallel, cache aggressively, never block the UI thread.
 
-## Warum schnell? (Die vier Tricks)
+## Why so fast? (The four tricks)
 
-1. **Trittbrett auf das System.** Thumbnails kommen von Apples
-   `QLThumbnailGenerator` (QuickLook). Das Framework zieht automatisch
-   **eingebettete Previews** (EXIF-Thumbnail, JPEG-im-RAW) — wenige KB statt
-   zig MB über Netz — und kann **jedes Format**, das QuickLook kennt (JPEG, PNG,
-   HEIC, RAW, PSD, PDF …), inklusive Drittanbieter-Plugins. Der persistente
-   Cache liegt im System; wir schreiben **null Cache-Code**.
+1. **Riding on the system.** Thumbnails come from Apple's
+   `QLThumbnailGenerator` (QuickLook). The framework automatically pulls
+   **embedded previews** (EXIF thumbnail, JPEG-in-RAW) — a few KB instead of
+   tens of MB over the network — and handles **any format** QuickLook knows
+   (JPEG, PNG, HEIC, RAW, PSD, PDF …), including third-party plugins. The
+   persistent cache lives in the system; we write **zero cache code**.
 
-2. **Lazy & parallel.** Das Grid (`LazyVGrid`) lädt nur sichtbare Kacheln. Das
-   System drosselt die Thumbnail-Erzeugung selbst nebenläufig.
+2. **Lazy & parallel.** The grid (`LazyVGrid`) only loads visible tiles. The
+   system throttles thumbnail generation concurrently on its own.
 
-3. **Großansicht heruntergerechnet.** Das Vollbild lädt das echte Bild, aber via
-   `ImageIO` (`CGImageSourceCreateThumbnailAtIndex`) direkt auf Bildschirmgröße
-   gesampelt — kein 8000px-Monster im RAM. Als Platzhalter erscheint sofort das
-   schon vorhandene Thumbnail.
+3. **Full view downsampled.** The full-size view loads the real image, but via
+   `ImageIO` (`CGImageSourceCreateThumbnailAtIndex`) sampled directly to screen
+   size — no 8000px monster in RAM. The already-available thumbnail appears
+   instantly as a placeholder.
 
-4. **Nichts blockiert den Main-Thread.** Verzeichnis-Scan und Voll-Dekodierung
-   laufen in `Task.detached`.
+4. **Nothing blocks the main thread.** Directory scanning and full decoding
+   run in `Task.detached`.
 
-## Bauen & Starten
+## Build & Run
 
-> **Voraussetzung:** vollständiges **Xcode** (nicht nur die Command Line Tools —
-> die haben keine macOS-Platform-Metadaten und können SwiftUI nicht bauen).
+> **Requirement:** a full **Xcode** install (not just the Command Line Tools —
+> those have no macOS platform metadata and can't build SwiftUI).
 
 ```bash
-# Xcode aktiv schalten (einmalig):
+# Activate Xcode (one-time):
 sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
 sudo xcodebuild -license accept
 
-# Im Projektordner:
+# In the project folder:
 swift build
-swift run        # startet die App
-# …oder in Xcode öffnen:
+swift run        # starts the app
+# …or open in Xcode:
 open Package.swift
 ```
 
-## Tastatur
+## Features
 
-| Taste | Im Grid | In der Großansicht |
-|---|---|---|
-| ← / ↑ | vorheriges Bild | vorheriges Bild |
-| → / ↓ | nächstes Bild | nächstes Bild |
-| Leertaste | öffnen | nächstes Bild |
-| Return | öffnen | zurück zum Grid |
-| Esc | — | zurück zum Grid |
-| Pos1 / Ende | erstes / letztes Bild | — |
-| ⌘O | Ordner öffnen | Ordner öffnen |
+- **Folders & drag-and-drop.** Open a folder (⌘O) or drag one onto the window.
+  Drag a single file to open it straight in the full view. Subfolders show up in
+  the grid (folders first) with a Norton-style `..` tile to go up a level.
+  Hidden files and folders are shown.
+- **Thumbnails for everything QuickLook supports** — images, RAW, PSD, PDF, and
+  a poster frame for videos.
+- **Full view** with zoom (keyboard + trackpad pinch) and drag-to-pan.
+- **Video** plays via AVKit (autoplay); formats macOS can't play natively
+  (AVI, MKV, WebM …) fall back to "Open with default app".
+- **Animated GIFs** play in the full view.
+- **Slideshow**, **file inspector** (resolution/size/date), **sorting**
+  (name/date/size), **Reveal in Finder**, **Open with default app**,
+  **Move to Trash**, a status bar, and last-folder restore.
+
+## Keyboard
+
+Bindings follow [Phiewer](https://phiewer.com/) where it makes sense.
+
+**Grid**
+
+| Key | Action |
+|---|---|
+| ← → | previous / next item |
+| ↑ ↓ | one row up / down |
+| Return / Space | open image, or enter folder |
+| Backspace | up one folder level |
+| Home / End | first / last item |
+| ⌘+ / ⌘− | larger / smaller thumbnails |
+
+**Full view**
+
+| Key | Action |
+|---|---|
+| ← → ↑ ↓ | previous / next item (always, even on video) |
+| Space | image: next · video: play/pause |
+| ⌘← / ⌘→ | video: seek −10 s / +10 s |
+| ⌘+ / ⌘− (or + / −) | zoom in / out |
+| 0 / 1 | fit to window / 100 % |
+| i | file info |
+| s | slideshow |
+| f | fullscreen |
+| Esc / Backspace / Return | back to grid |
+
+**Menus**
+
+| Shortcut | Action |
+|---|---|
+| ⌘O | open folder |
+| ⇧⌘R | reveal in Finder |
+| ⌘↩ | open with default app |
+| ⌘⌫ | move to Trash |
 
 ## Status
 
-**MVP / früher Stand.** Open Folder → Thumbnail-Grid → Großansicht →
-Tastatur-Navigation steht. Bekannte offene Punkte:
+**Early stage, but already a usable daily driver.** Known open items:
 
-- Tastatur-Fokus in SwiftUI ist erfahrungsgemäß zickig — muss auf echtem Gerät
-  feinjustiert werden.
-- Noch keine `.app`-Bundle-Verpackung, kein Icon, keine Sandbox-Entitlements.
-- Grid-Navigation per ↑/↓ springt aktuell ±1 (nicht zeilenweise).
+- No `.app` bundle yet — no icon, no sandbox/entitlements (runs as a SwiftPM
+  executable via `swift run`).
+- Slideshow interval is fixed at 3 s.
+- `1` (100 %) is approximate (assumes the main display's backing scale).
+- Animated GIFs don't zoom/pan in the full view.
+- AVI/MKV/WebM play only via an external app (no native macOS codecs).
 
-## Lizenz
+## License
 
 TBD.

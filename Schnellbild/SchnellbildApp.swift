@@ -14,34 +14,33 @@ struct SchnellbildApp: App {
         }
         .commands {
             CommandGroup(replacing: .newItem) {
-                Button("Ordner öffnen…") { model.chooseFolder() }
+                Button("Open Folder…") { model.chooseFolder() }
                     .keyboardShortcut("o")
             }
-            CommandMenu("Aktionen") {
-                Button("Im Finder zeigen") { model.revealInFinder() }
-                    .keyboardShortcut("r")
-                Button("Mit Standard-App öffnen") { model.openInDefaultApp() }
+            CommandMenu("Actions") {
+                Button("Reveal in Finder") { model.revealInFinder() }
+                    .keyboardShortcut("r", modifiers: [.command, .shift])
+                Button("Open with Default App") { model.openInDefaultApp() }
                     .keyboardShortcut(.return)
                 Divider()
-                Button("In den Papierkorb…") { model.moveSelectionToTrash() }
+                Button("Move to Trash…") { model.moveSelectionToTrash() }
                     .keyboardShortcut(.delete)
             }
-            CommandMenu("Ansicht") {
-                Button("Thumbnails größer") { model.growThumbnails() }
-                    .keyboardShortcut("+")
-                Button("Thumbnails kleiner") { model.shrinkThumbnails() }
-                    .keyboardShortcut("-")
+            CommandMenu("View") {
+                Button("Larger Thumbnails (⌘+)") { model.growThumbnails() }
+                Button("Smaller Thumbnails (⌘−)") { model.shrinkThumbnails() }
                 Divider()
-                Button("Nach Name sortieren")  { model.setSort(.name) }
-                Button("Nach Datum sortieren") { model.setSort(.date) }
-                Button("Nach Größe sortieren") { model.setSort(.size) }
+                Button("Sort by Name")  { model.setSort(.name) }
+                Button("Sort by Date") { model.setSort(.date) }
+                Button("Sort by Size") { model.setSort(.size) }
             }
         }
     }
 }
 
-/// Ohne `.app`-Bundle startet ein SwiftPM-Executable sonst als Hintergrund-
-/// prozess ohne Fenster-Fokus. Das macht daraus eine normale Vordergrund-App.
+/// Without a `.app` bundle, a SwiftPM executable otherwise launches as a
+/// background process with no window focus. This turns it into a normal
+/// foreground app.
 final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.regular)

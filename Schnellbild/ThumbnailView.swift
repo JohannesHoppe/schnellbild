@@ -1,9 +1,9 @@
 import SwiftUI
 import QuickLookThumbnailing
 
-/// Winziges In-Memory-Sicherheitsnetz, damit beim Scrollen nicht ständig neu
-/// generiert wird. Der eigentliche, persistente Cache liegt im System
-/// (QuickLook) — den fahren wir per `QLThumbnailGenerator` als Trittbrett mit.
+/// Tiny in-memory safety net so thumbnails aren't constantly regenerated
+/// while scrolling. The real, persistent cache lives in the system
+/// (QuickLook) — we piggyback on it via `QLThumbnailGenerator`.
 @MainActor
 final class ThumbnailCache {
     static let shared = ThumbnailCache()
@@ -22,8 +22,8 @@ final class ThumbnailCache {
     }
 }
 
-/// Eine Kachel. Holt ihr Thumbnail vom System (eingebettete Previews, RAW/PSD/PDF
-/// inklusive) und cached es in-memory.
+/// A tile. Fetches its thumbnail from the system (embedded previews, including
+/// RAW/PSD/PDF) and caches it in memory.
 struct ThumbnailView: View {
     let url: URL
     let side: CGFloat

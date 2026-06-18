@@ -17,7 +17,7 @@ struct ContentView: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        // Drag & Drop: Ordner (oder Mediendatei) aufs Fenster ziehen.
+        // Drag & drop: drag a folder (or media file) onto the window.
         .dropDestination(for: URL.self) { urls, _ in
             model.openDropped(urls)
             return !urls.isEmpty
@@ -28,14 +28,14 @@ struct ContentView: View {
         .safeAreaInset(edge: .bottom, spacing: 0) {
             if model.mode == .grid, model.folderURL != nil { statusBar }
         }
-        // Tastatur-Fokus liegt auf dem ganzen Inhalt.
+        // Keyboard focus sits on the whole content.
         .focusable()
         .focusEffectDisabled()
         .focused($focused)
         .onAppear { focused = true; model.restoreLastFolder() }
         .onChange(of: model.entries) { _, _ in focused = true }
-        // Backspace eigens behandeln — der Sammel-onKeyPress liefert sie nicht
-        // zuverlässig aus. Großansicht: zurück (wie Esc). Liste: Ebene höher.
+        // Handle Backspace separately — the catch-all onKeyPress doesn't deliver
+        // it reliably. Full-size view: go back (like Esc). List: go up a level.
         .onKeyPress(.delete) {
             if model.mode == .detail {
                 model.closeDetail()
@@ -56,13 +56,13 @@ struct ContentView: View {
             .allowsHitTesting(false)
     }
 
-    // MARK: - Statusleiste
+    // MARK: - Status bar
 
     private var statusBar: some View {
         HStack(spacing: 8) {
             Text(statusText).foregroundStyle(.secondary)
             if model.slideshowOn {
-                Label("Diashow", systemImage: "play.fill").foregroundStyle(.secondary)
+                Label("Slideshow", systemImage: "play.fill").foregroundStyle(.secondary)
             }
             Spacer()
             Text(model.folderURL?.path ?? "")
@@ -78,13 +78,13 @@ struct ContentView: View {
 
     private var statusText: String {
         var parts: [String] = []
-        if model.folderCount > 0 { parts.append("\(model.folderCount) Ordner") }
-        if model.imageCount  > 0 { parts.append("\(model.imageCount) Bilder") }
-        if model.videoCount  > 0 { parts.append("\(model.videoCount) Videos") }
-        return parts.isEmpty ? "Leer" : parts.joined(separator: " · ")
+        if model.folderCount > 0 { parts.append("\(model.folderCount) folders") }
+        if model.imageCount  > 0 { parts.append("\(model.imageCount) images") }
+        if model.videoCount  > 0 { parts.append("\(model.videoCount) videos") }
+        return parts.isEmpty ? "Empty" : parts.joined(separator: " · ")
     }
 
-    // MARK: - Großansicht (Bild / GIF / Video)
+    // MARK: - Full-size view (image / GIF / video)
 
     @ViewBuilder
     private func detail(entry: GridEntry) -> some View {
@@ -118,90 +118,92 @@ struct ContentView: View {
     private var toolbarContent: some ToolbarContent {
         ToolbarItem(placement: .navigation) {
             Button { model.chooseFolder() } label: {
-                Label("Ordner öffnen", systemImage: "folder")
+                Label("Open Folder", systemImage: "folder")
             }
         }
         if model.mode == .detail {
             ToolbarItem(placement: .principal) {
                 Button { model.closeDetail() } label: {
-                    Label("Übersicht", systemImage: "square.grid.2x2")
+                    Label("Overview", systemImage: "square.grid.2x2")
                 }
             }
         }
     }
 
-    // MARK: - Tastatur
+    // MARK: - Keyboard
 
     private func handle(_ press: KeyPress) -> KeyPress.Result {
-        // Vollbild modus-unabhängig.
-        if press.characters == "f" {
+        let cmd = press.modifiers.contains(.command)
+        let isVideo = model.selectedMediaEntry?.kind == .video
+
+        // f = full screen (without Command, regardless of mode).
+        if !cmd, press.characters == "f" {
             model.toggleFullScreen(); return .handled
         }
 
-        // ⌘ + Pfeil: immer vorheriges/nächstes Medium (wie Phiewer).
-        if press.modifiers.contains(.command) {
+        // ⌘ shortcuts: zoom/tile size (⌘+/⌘-) and video seek (⌘←/⌘→), like
+        // Phiewer. All other ⌘ combos are left to the menus.
+        if cmd {
             switch press.key {
-            case .leftArrow, .upArrow:
-                model.mode == .detail ? model.stepMedia(-1) : model.step(-1)
+            case "+", "=":
+                model.mode == .detail ? model.zoomIn() : model.growThumbnails()
                 return .handled
-            case .rightArrow, .downArrow:
-                model.mode == .detail ? model.stepMedia(+1) : model.step(+1)
+            case "-":
+                model.mode == .detail ? model.zoomOut() : model.shrinkThumbnails()
+                return .handled
+            case .leftArrow:
+                if model.mode == .detail && isVideo { model.seekVideo(by: -10) }
+                else if model.mode == .detail { model.stepMedia(-1) }
+                else { model.step(-1) }
+                return .handled
+            case .rightArrow:
+                if model.mode == .detail && isVideo { model.seekVideo(by: +10) }
+                else if model.mode == .detail { model.stepMedia(+1) }
+                else { model.step(+1) }
                 return .handled
             default:
-                break
+                return .ignored
             }
         }
 
         switch model.mode {
         case .grid:
+            switch press.characters {
+            case "+", "=": model.growThumbnails();   return .handled
+            case "-":      model.shrinkThumbnails(); return .handled
+            default:       break
+            }
             switch press.key {
-            case .return, .space:
-                model.activateSelection(); return .handled
-            case .rightArrow:
-                model.step(+1); return .handled
-            case .leftArrow:
-                model.step(-1); return .handled
-            case .downArrow:
-                model.stepRow(+1); return .handled
-            case .upArrow:
-                model.stepRow(-1); return .handled
-            case .home:
-                model.select(0); return .handled
-            case .end:
-                model.select(model.entries.count - 1); return .handled
-            default:
-                return .ignored
+            case .return, .space: model.activateSelection(); return .handled
+            case .rightArrow:     model.step(+1);   return .handled
+            case .leftArrow:      model.step(-1);   return .handled
+            case .downArrow:      model.stepRow(+1); return .handled
+            case .upArrow:        model.stepRow(-1); return .handled
+            case .home:           model.select(0); return .handled
+            case .end:            model.select(model.entries.count - 1); return .handled
+            default:              return .ignored
             }
 
         case .detail:
+            // Bare arrows ALWAYS page (even in a video) — like Phiewer.
             switch press.characters {
-            case "+", "=": model.zoomIn();         return .handled
-            case "-":      model.zoomOut();        return .handled
-            case "0":      model.zoomReset();      return .handled
-            case "1":      model.zoomActualSize(); return .handled
-            case "i":      showInspector.toggle(); return .handled
+            case "+", "=": model.zoomIn();          return .handled
+            case "-":      model.zoomOut();         return .handled
+            case "0":      model.zoomReset();       return .handled
+            case "1":      model.zoomActualSize();  return .handled
+            case "i":      showInspector.toggle();  return .handled
             case "s":      model.toggleSlideshow(); return .handled
             default:       break
             }
-            let isVideo = model.selectedMediaEntry?.kind == .video
             switch press.key {
             case .escape, .return:
                 model.closeDetail(); return .handled
             case .space:
                 isVideo ? model.togglePlayPause() : model.stepMedia(+1)
                 return .handled
-            case .leftArrow:
-                isVideo ? model.seekVideo(by: -10) : model.stepMedia(-1)
-                return .handled
-            case .rightArrow:
-                isVideo ? model.seekVideo(by: +10) : model.stepMedia(+1)
-                return .handled
-            case .upArrow:
-                model.stepMedia(-1); return .handled
-            case .downArrow:
-                model.stepMedia(+1); return .handled
-            default:
-                return .ignored
+            case .rightArrow, .downArrow: model.stepMedia(+1); return .handled
+            case .leftArrow,  .upArrow:   model.stepMedia(-1); return .handled
+            default: return .ignored
             }
         }
     }
@@ -215,28 +217,28 @@ struct EmptyStateView: View {
         VStack(spacing: 16) {
             if isLoading {
                 ProgressView()
-                Text("Lade Ordner…")
+                Text("Loading folder…")
                     .foregroundStyle(.secondary)
             } else if model.folderURL != nil {
                 Image(systemName: "folder")
                     .font(.system(size: 56))
                     .foregroundStyle(.secondary)
-                Text("Nichts zum Anzeigen")
+                Text("Nothing to show")
                     .font(.title2)
-                Text("Keine Bilder, Videos oder Unterordner hier.\nBackspace bringt dich eine Ebene höher.")
+                Text("No images, videos, or subfolders here.\nBackspace takes you up a level.")
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
-                Button("Anderen Ordner öffnen…") { model.chooseFolder() }
+                Button("Open Another Folder…") { model.chooseFolder() }
             } else {
                 Image(systemName: "photo.on.rectangle.angled")
                     .font(.system(size: 56))
                     .foregroundStyle(.secondary)
-                Text("Kein Ordner geöffnet")
+                Text("No folder open")
                     .font(.title2)
-                Text("Ordner hierher ziehen — oder ⌘O bzw. den Button.")
+                Text("Drag a folder here — or use ⌘O or the button.")
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
-                Button("Ordner öffnen…") { model.chooseFolder() }
+                Button("Open Folder…") { model.chooseFolder() }
             }
         }
         .padding(40)

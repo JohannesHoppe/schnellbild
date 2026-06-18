@@ -3,10 +3,10 @@ import AVKit
 import AVFoundation
 import AppKit
 
-/// Großansicht für Videos. Echter AVKit-Player mit Autoplay — aber nur für
-/// Formate, die AVFoundation kann (MP4/MOV/M4V …). AVI/MKV/WebM & Co. kann
-/// macOS nicht nativ abspielen; dafür gibt es einen sauberen Fallback statt
-/// eines Schwarzbilds.
+/// Full-size view for videos. A real AVKit player with autoplay — but only for
+/// formats AVFoundation supports (MP4/MOV/M4V …). macOS can't natively play
+/// AVI/MKV/WebM & co.; for those there's a clean fallback instead of a
+/// black frame.
 struct VideoDetailView: View {
     let url: URL
 
@@ -60,18 +60,18 @@ struct VideoDetailView: View {
             Image(systemName: "play.slash")
                 .font(.system(size: 48))
                 .foregroundStyle(.secondary)
-            Text("Dieses Format kann macOS nicht nativ abspielen")
+            Text("macOS can't play this format natively")
                 .font(.headline)
                 .foregroundStyle(.white)
             Text(url.lastPathComponent)
                 .font(.callout)
                 .foregroundStyle(.secondary)
             HStack(spacing: 10) {
-                Button("Mit Standard-App öffnen") {
+                Button("Open with Default App") {
                     NSWorkspace.shared.open(url)
                 }
                 .keyboardShortcut(.defaultAction)
-                Button("Im Finder zeigen") {
+                Button("Reveal in Finder") {
                     NSWorkspace.shared.activateFileViewerSelecting([url])
                 }
             }

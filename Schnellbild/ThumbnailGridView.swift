@@ -1,7 +1,7 @@
 import SwiftUI
 
-/// Das Raster. Lazy, damit nur sichtbare Kacheln geladen werden. „..“ und
-/// Ordner zuerst, dann Bilder/Videos.
+/// The grid. Lazy so only visible tiles are loaded. ".." and
+/// folders first, then images/videos.
 struct ThumbnailGridView: View {
     @EnvironmentObject var model: BrowserModel
 
@@ -76,7 +76,7 @@ struct ThumbnailGridView: View {
     }
 }
 
-/// Kachel für „..“ oder einen Unterordner.
+/// Tile for ".." or a subfolder.
 struct FolderTile: View {
     let side: CGFloat
     let isSelected: Bool

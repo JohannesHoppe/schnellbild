@@ -2,9 +2,9 @@ import SwiftUI
 import ImageIO
 import AppKit
 
-/// Großansicht für Standbilder. Lädt das Bild per ImageIO direkt auf
-/// Bildschirmgröße heruntergerechnet. Zoom: Tasten +/-/0/1 (über Model) und
-/// Trackpad-Pinch; Ziehen verschiebt, wenn reingezoomt.
+/// Full-size view for still images. Loads the image via ImageIO downsampled
+/// directly to screen size. Zoom: keys +/-/0/1 (via the model) and
+/// trackpad pinch; dragging pans when zoomed in.
 struct FullImageView: View {
     let url: URL
 
@@ -81,14 +81,14 @@ struct FullImageView: View {
             }
     }
 
-    /// Faktor berechnen, mit dem `zoom` 100 % echter Pixel entspricht.
+    /// Compute the factor at which `zoom` corresponds to 100 % actual pixels.
     private func updateActualSizeFactor(in container: CGSize) {
         guard let ns = nativeSize, ns.width > 0, ns.height > 0,
               container.width > 0, container.height > 0 else { return }
         let scale = NSScreen.main?.backingScaleFactor ?? 2
         let fitScale = min(container.width / ns.width, container.height / ns.height)
         let fitWidth = ns.width * fitScale
-        let actualWidth = ns.width / scale          // 100 % in Punkten
+        let actualWidth = ns.width / scale          // 100 % in points
         model.actualSizeFactor = max(actualWidth / max(fitWidth, 1), 0.01)
     }
 
