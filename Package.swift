@@ -9,6 +9,7 @@ let package = Package(
     targets: [
         .executableTarget(
             name: "Schnellbild",
+            dependencies: ["VLCKit"],
             path: "Schnellbild",
             linkerSettings: [
                 // SwiftUI's VideoPlayer references AVKit only internally — without
@@ -16,6 +17,12 @@ let package = Package(
                 .linkedFramework("AVKit"),
                 .linkedFramework("AVFoundation")
             ]
+        ),
+        // Official VideoLAN VLCKit, vendored locally — fetch it first with
+        // Scripts/fetch_vlckit.sh. The xcframework is gitignored (large binary).
+        .binaryTarget(
+            name: "VLCKit",
+            path: "Vendor/VLCKit.xcframework"
         ),
         .testTarget(
             name: "SchnellbildTests",

@@ -7,6 +7,9 @@ ROOT="$(pwd)"
 RES="$ROOT/Resources"
 APP="$ROOT/build/Schnellbild.app"
 
+echo "==> Ensuring VLCKit is vendored"
+"$ROOT/Scripts/fetch_vlckit.sh"
+
 echo "==> Rendering icon"
 swift Scripts/make_icon.swift "$RES/icon_1024.png"
 
@@ -29,12 +32,17 @@ sips -z 256 256 "$RES/icon_1024.png" --out "$RES/icon-256.png" >/dev/null
 
 echo "==> swift build -c release"
 swift build -c release
-BIN="$(swift build -c release --show-bin-path)/Schnellbild"
+BINDIR="$(swift build -c release --show-bin-path)"
+BIN="$BINDIR/Schnellbild"
 
 echo "==> Assembling bundle"
 rm -rf "$APP"
-mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
+mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources" "$APP/Contents/Frameworks"
 cp "$BIN" "$APP/Contents/MacOS/Schnellbild"
+
+echo "==> Embedding VLCKit.framework"
+ditto "$BINDIR/VLCKit.framework" "$APP/Contents/Frameworks/VLCKit.framework"
+install_name_tool -add_rpath "@executable_path/../Frameworks" "$APP/Contents/MacOS/Schnellbild" 2>/dev/null || true
 cp "$RES/AppIcon.icns" "$APP/Contents/Resources/AppIcon.icns"
 cp "$RES/Info.plist" "$APP/Contents/Info.plist"
 printf 'APPL????' > "$APP/Contents/PkgInfo"

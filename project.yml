@@ -35,6 +35,8 @@ targets:
     dependencies:
       - sdk: AVKit.framework
       - sdk: AVFoundation.framework
+      - framework: Vendor/VLCKit.xcframework
+        embed: true
 
   SchnellbildUITests:
     type: bundle.ui-testing

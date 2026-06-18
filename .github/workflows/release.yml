@@ -20,8 +20,11 @@ jobs:
         with:
           xcode-version: latest-stable
 
+      - name: Fetch VLCKit
+        run: ./Scripts/fetch_vlckit.sh
+
       - name: Run tests
-        run: swift test
+        run: ./Scripts/test.sh
 
       - name: Build app bundle (release)
         run: ./Scripts/build_app.sh

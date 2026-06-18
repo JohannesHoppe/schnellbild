@@ -47,12 +47,17 @@ sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
 sudo xcodebuild -license accept
 
 # In the project folder:
+./Scripts/fetch_vlckit.sh   # vendors the official VLCKit once (~80 MB download)
 swift build
-swift run        # starts the app
-swift test       # run the unit tests
+swift run                   # starts the app
+./Scripts/test.sh           # run the unit tests
 # …or open in Xcode:
 open Package.swift
 ```
+
+> Video formats macOS can't play natively (AVI, MKV, WebM …) are handled by a
+> vendored **VLCKit** (official VideoLAN binary, fetched and SHA-256-verified by
+> `Scripts/fetch_vlckit.sh`; gitignored). Native formats stay on AVKit.
 
 To produce a proper **`.app` bundle** (icon + Info.plist, ad-hoc signed):
 
@@ -66,10 +71,11 @@ publishes a GitHub Release with the zipped app.
 
 ## Tests
 
-Logic unit tests run via SwiftPM:
+Logic unit tests run via SwiftPM (the script vendors VLCKit and copies it into
+the test bundle, since SwiftPM doesn't embed binary frameworks there):
 
 ```bash
-swift test
+./Scripts/test.sh
 ```
 
 End-to-end UI tests use XCUITest, which needs an Xcode project generated from
@@ -94,7 +100,7 @@ CI runs both on every push.
   a poster frame for videos.
 - **Full view** with zoom (keyboard + trackpad pinch) and drag-to-pan.
 - **Video** plays via AVKit (autoplay); formats macOS can't play natively
-  (AVI, MKV, WebM …) fall back to "Open with default app".
+  (AVI, MKV, WebM …) play through a vendored **VLCKit** fallback.
 - **Animated GIFs** play in the full view.
 - **Slideshow**, **file inspector** (resolution/size/date), **sorting**
   (name/date/size), **Reveal in Finder**, **Open with default app**,
