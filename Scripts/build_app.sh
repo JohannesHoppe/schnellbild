@@ -24,6 +24,8 @@ sips -z 512 512 "$RES/icon_1024.png" --out "$ICONSET/icon_256x256@2x.png" >/dev/
 sips -z 512 512 "$RES/icon_1024.png" --out "$ICONSET/icon_512x512.png"    >/dev/null
 cp "$RES/icon_1024.png" "$ICONSET/icon_512x512@2x.png"
 iconutil -c icns "$ICONSET" -o "$RES/AppIcon.icns"
+# Small PNG for the README hero.
+sips -z 256 256 "$RES/icon_1024.png" --out "$RES/icon-256.png" >/dev/null
 
 echo "==> swift build -c release"
 swift build -c release

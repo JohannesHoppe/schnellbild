@@ -151,6 +151,26 @@ final class BrowserModelTests: XCTestCase {
         m.goBack()
         XCTAssertEqual(m.mode, .grid)
     }
+
+    func testRotationWraps() {
+        let m = BrowserModel()
+        XCTAssertEqual(m.rotation, 0, accuracy: 0.0001)
+        m.rotateRight()
+        XCTAssertEqual(m.rotation, 90, accuracy: 0.0001)
+        m.rotateRight(); m.rotateRight(); m.rotateRight()   // full turn → 0
+        XCTAssertEqual(m.rotation, 0, accuracy: 0.0001)
+        m.rotateLeft()
+        XCTAssertEqual(m.rotation, -90, accuracy: 0.0001)
+    }
+
+    func testCloseDetailResetsRotation() {
+        let m = BrowserModel()
+        m.mode = .detail
+        m.rotateRight()
+        m.closeDetail()
+        XCTAssertEqual(m.rotation, 0, accuracy: 0.0001)
+        XCTAssertEqual(m.mode, .grid)
+    }
 }
 
 // MARK: - Model integration via open() (async, MainActor)

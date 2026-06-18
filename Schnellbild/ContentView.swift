@@ -185,6 +185,8 @@ struct ContentView: View {
             case "-":      model.scaleDown();       return .handled
             case "0":      model.zoomReset();       return .handled
             case "1":      model.zoomActualSize();  return .handled
+            case "[":      model.rotateLeft();      return .handled
+            case "]":      model.rotateRight();     return .handled
             case "i":      showInspector.toggle();  return .handled
             case "s":      model.toggleSlideshow(); return .handled
             default:       break

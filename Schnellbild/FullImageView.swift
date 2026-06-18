@@ -24,7 +24,8 @@ struct FullImageView: View {
                         .resizable()
                         .interpolation(.high)
                         .aspectRatio(contentMode: .fit)
-                        .scaleEffect(model.zoom * pinch)
+                        .rotationEffect(.degrees(model.rotation))
+                        .scaleEffect(model.zoom * pinch * rotationFitScale(in: geo.size))
                         .offset(x: panOffset.width + dragTranslation.width,
                                 y: panOffset.height + dragTranslation.height)
                         .gesture(magnifyGesture)
@@ -88,6 +89,19 @@ struct FullImageView: View {
         let fitWidth = ns.width * fitScale
         let actualWidth = ns.width / scale          // 100 % in points
         model.actualSizeFactor = max(actualWidth / max(fitWidth, 1), 0.01)
+    }
+
+    /// When rotated a quarter turn, scale the image so its now-swapped bounding
+    /// box still fits the window.
+    private func rotationFitScale(in container: CGSize) -> CGFloat {
+        guard let ns = nativeSize, ns.width > 0, ns.height > 0,
+              container.width > 0, container.height > 0 else { return 1 }
+        let quarterTurned = Int((model.rotation / 90).rounded()) % 2 != 0
+        guard quarterTurned else { return 1 }
+        let fit = min(container.width / ns.width, container.height / ns.height)
+        let dispW = ns.width * fit
+        let dispH = ns.height * fit
+        return min(container.width / dispH, container.height / dispW)
     }
 
     private func load(maxPixel: Int) async {

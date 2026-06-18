@@ -1,6 +1,12 @@
-# Schnellbild
+<p align="center">
+  <img src="Resources/icon-256.png" width="168" alt="Schnellbild app icon">
+</p>
 
-[![CI](https://github.com/johanneshoppe/schnellbild/actions/workflows/ci.yml/badge.svg)](https://github.com/johanneshoppe/schnellbild/actions/workflows/ci.yml)
+<h1 align="center">Schnellbild</h1>
+
+<p align="center">
+  <a href="https://github.com/johanneshoppe/schnellbild/actions/workflows/ci.yml"><img src="https://github.com/johanneshoppe/schnellbild/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+</p>
 
 A **fast** file/image viewer for macOS. Open a folder, see thumbnails,
 view one image large, page through with the keyboard. Nothing more — but
@@ -98,6 +104,7 @@ Bindings follow [Phiewer](https://phiewer.com/) where it makes sense.
 | ⌘← / ⌘→ | video: seek −10 s / +10 s |
 | ⌘+ / ⌘− (or + / −) | zoom in / out |
 | 0 / 1 | fit to window / 100 % |
+| [ / ] | rotate left / right (view only) |
 | i | file info |
 | s | slideshow |
 | f | fullscreen |

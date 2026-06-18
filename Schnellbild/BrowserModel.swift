@@ -39,6 +39,8 @@ final class BrowserModel: ObservableObject {
     @Published var zoom: CGFloat = 1
     /// Set by the full-size view: factor that corresponds to 100 % actual pixels.
     @Published var actualSizeFactor: CGFloat = 1
+    /// View-only rotation in degrees (multiples of 90) — never written to disk.
+    @Published var rotation: Double = 0
     private let maxZoom: CGFloat = 8
 
     @Published var sortKey: SortKey = .name
@@ -82,7 +84,7 @@ final class BrowserModel: ObservableObject {
         entries = []
         selection = nil
         mode = .grid
-        zoom = 1
+        resetTransforms()
         stopSlideshow()
         isLoading = true
         UserDefaults.standard.set(url.path, forKey: Self.lastFolderKey)
@@ -97,7 +99,7 @@ final class BrowserModel: ObservableObject {
             if let target, let idx = sorted.firstIndex(where: { $0.url == target && $0.kind != .parent }) {
                 self.selection = idx
                 if thenDetail, sorted[idx].isMedia {
-                    self.zoom = 1
+                    self.resetTransforms()
                     self.mode = .detail
                 }
             } else {
@@ -263,7 +265,7 @@ final class BrowserModel: ObservableObject {
         guard let first = firstMediaIndex else { return }
         let current = selection ?? first
         selection = min(max(current + delta, first), entries.count - 1)
-        zoom = 1
+        resetTransforms()
     }
 
     // MARK: - Zoom (full-size view)
@@ -273,6 +275,14 @@ final class BrowserModel: ObservableObject {
     func zoomReset()     { zoom = 1 }
     func zoomActualSize(){ zoom = min(max(actualSizeFactor, 1), maxZoom) }
     func applyPinch(_ factor: CGFloat) { zoom = min(max(zoom * factor, 1), maxZoom) }
+
+    // MARK: - Rotation (view-only — the file on disk is never modified)
+
+    func rotateLeft()  { rotation = (rotation - 90).truncatingRemainder(dividingBy: 360) }
+    func rotateRight() { rotation = (rotation + 90).truncatingRemainder(dividingBy: 360) }
+
+    /// Reset the view transforms (zoom + rotation) when switching media.
+    private func resetTransforms() { zoom = 1; rotation = 0 }
 
     // MARK: - Grid tile size
 
@@ -293,14 +303,14 @@ final class BrowserModel: ObservableObject {
         case .folder:
             open(folder: entry.url)
         case .image, .video:
-            zoom = 1
+            resetTransforms()
             mode = .detail
         }
     }
 
     func closeDetail() {
         stopSlideshow()
-        zoom = 1
+        resetTransforms()
         mode = .grid
     }
 
@@ -340,7 +350,7 @@ final class BrowserModel: ObservableObject {
         guard let first = firstMediaIndex else { return }
         let current = selection ?? first
         selection = (current + 1 >= entries.count) ? first : current + 1
-        zoom = 1
+        resetTransforms()
     }
 
     // MARK: - File actions
