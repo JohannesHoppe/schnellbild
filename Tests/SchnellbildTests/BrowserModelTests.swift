@@ -224,6 +224,49 @@ final class OpenFolderTests: XCTestCase {
         XCTAssertEqual(m.selectedMediaEntry?.url.lastPathComponent, "b.jpg")
     }
 
+    func testSearchFiltersCurrentFolderByName() async throws {
+        let fm = FileManager.default
+        let dir = fm.temporaryDirectory.appendingPathComponent("sb_search_\(UUID().uuidString)")
+        try fm.createDirectory(at: dir, withIntermediateDirectories: true)
+        defer { try? fm.removeItem(at: dir) }
+        for n in ["apple.jpg", "banana.jpg", "cherry.jpg"] {
+            try Data().write(to: dir.appendingPathComponent(n))
+        }
+
+        let m = BrowserModel()
+        m.open(folder: dir)
+        try await waitUntil { !m.isLoading && !m.entries.isEmpty }
+
+        m.searchText = "ban"
+        m.applyFilter()
+        XCTAssertEqual(m.entries.map(\.name), ["banana.jpg"])
+
+        m.searchText = ""
+        m.applyFilter()
+        XCTAssertTrue(m.entries.contains { $0.name == "apple.jpg" }, "clearing search restores all entries")
+    }
+
+    func testRecursiveSearchFindsMatchesInSubfolders() async throws {
+        let fm = FileManager.default
+        let dir = fm.temporaryDirectory.appendingPathComponent("sb_rsearch_\(UUID().uuidString)")
+        let sub = dir.appendingPathComponent("vacation")
+        try fm.createDirectory(at: sub, withIntermediateDirectories: true)
+        defer { try? fm.removeItem(at: dir) }
+        try Data().write(to: dir.appendingPathComponent("readme.jpg"))
+        try Data().write(to: sub.appendingPathComponent("beach-sunset.jpg"))
+
+        let m = BrowserModel()
+        m.open(folder: dir)
+        try await waitUntil { !m.isLoading && !m.entries.isEmpty }
+
+        m.searchScope = .subfolders
+        m.searchText = "sunset"
+        m.applyFilter()
+        try await waitUntil { !m.isSearching }
+        XCTAssertTrue(m.entries.contains { $0.name == "beach-sunset.jpg" },
+                      "recursive search should find the file in the subfolder")
+    }
+
     private func waitUntil(_ condition: @escaping () -> Bool, timeout: TimeInterval = 3) async throws {
         let start = Date()
         while !condition() {

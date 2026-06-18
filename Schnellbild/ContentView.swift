@@ -3,8 +3,10 @@ import SwiftUI
 struct ContentView: View {
     @EnvironmentObject var model: BrowserModel
     @FocusState private var focused: Bool
+    @FocusState private var searchFieldFocused: Bool
     @State private var isDropTargeted = false
     @State private var showInspector = false
+    @State private var searchBarVisible = false
 
     var body: some View {
         Group {
@@ -25,15 +27,22 @@ struct ContentView: View {
             isDropTargeted = hovering
         }
         .overlay { if isDropTargeted { dropHighlight } }
+        .safeAreaInset(edge: .top, spacing: 0) {
+            if model.mode == .grid, searchBarVisible { searchBar }
+        }
         .safeAreaInset(edge: .bottom, spacing: 0) {
             if model.mode == .grid, model.folderURL != nil { statusBar }
         }
-        // Keyboard focus sits on the whole content.
+        // Keyboard focus sits on the whole content (but not while searching).
         .focusable()
         .focusEffectDisabled()
         .focused($focused)
         .onAppear { focused = true; if !model.openFromLaunchArguments() { model.restoreLastFolder() } }
-        .onChange(of: model.entries) { _, _ in focused = true }
+        .onChange(of: model.entries) { _, _ in
+            if model.searchText.isEmpty && !searchFieldFocused { focused = true }
+        }
+        .onChange(of: model.searchText) { _, _ in if !model.isLoading { model.applyFilter() } }
+        .onChange(of: model.searchScope) { _, _ in if !model.isLoading { model.applyFilter() } }
         // Handle Backspace separately — the catch-all onKeyPress doesn't deliver
         // it reliably. Full-size view: go back (like Esc). List: go up a level.
         .onKeyPress(.delete) {
@@ -50,6 +59,40 @@ struct ContentView: View {
             .strokeBorder(Color.accentColor, style: StrokeStyle(lineWidth: 3, dash: [10]))
             .padding(6)
             .allowsHitTesting(false)
+    }
+
+    // MARK: - Search bar
+
+    private var searchBar: some View {
+        HStack(spacing: 8) {
+            Image(systemName: "magnifyingglass")
+                .foregroundStyle(.secondary)
+            TextField("Filter by name", text: $model.searchText)
+                .textFieldStyle(.plain)
+                .focused($searchFieldFocused)
+            Picker("Scope", selection: $model.searchScope) {
+                Text("This Folder").tag(BrowserModel.SearchScope.folder)
+                Text("Subfolders").tag(BrowserModel.SearchScope.subfolders)
+            }
+            .pickerStyle(.segmented)
+            .labelsHidden()
+            .fixedSize()
+            if model.isSearching {
+                ProgressView().controlSize(.small)
+            }
+            Button {
+                model.searchText = ""
+                searchBarVisible = false
+                focused = true
+            } label: {
+                Image(systemName: "xmark.circle.fill").foregroundStyle(.secondary)
+            }
+            .buttonStyle(.plain)
+            .help("Close search")
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 8)
+        .background(.bar)
     }
 
     // MARK: - Status bar
@@ -155,6 +198,12 @@ struct ContentView: View {
                 else if model.mode == .detail { model.stepMedia(+1) }
                 else { model.step(+1) }
                 return .handled
+            case "f":                       // ⌘F → reveal & focus the search bar
+                model.mode = .grid
+                searchBarVisible = true
+                // Focus on the next tick — the field must exist first.
+                DispatchQueue.main.async { searchFieldFocused = true }
+                return .handled
             default:
                 return .ignored
             }
@@ -215,6 +264,21 @@ struct EmptyStateView: View {
                 ProgressView()
                 Text("Loading folder…")
                     .foregroundStyle(.secondary)
+            } else if !model.searchText.isEmpty {
+                if model.isSearching {
+                    ProgressView()
+                    Text("Searching subfolders…")
+                        .foregroundStyle(.secondary)
+                } else {
+                    Image(systemName: "magnifyingglass")
+                        .font(.system(size: 56))
+                        .foregroundStyle(.secondary)
+                    Text("No matches")
+                        .font(.title2)
+                    Text("Nothing named “\(model.searchText)” in this folder\(model.searchScope == .subfolders ? " or its subfolders" : "").")
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                }
             } else if model.folderURL != nil {
                 Image(systemName: "folder")
                     .font(.system(size: 56))

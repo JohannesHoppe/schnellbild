@@ -21,6 +21,7 @@ struct GridEntry: Identifiable, Hashable {
 final class BrowserModel: ObservableObject {
     enum Mode { case grid, detail }
     enum SortKey { case name, date, size }
+    enum SearchScope: Hashable { case folder, subfolders }
 
     @Published private(set) var folderURL: URL?
     @Published private(set) var entries: [GridEntry] = [] {
@@ -45,6 +46,15 @@ final class BrowserModel: ObservableObject {
 
     @Published var sortKey: SortKey = .name
     @Published var sortAscending = true
+
+    // Search
+    @Published var searchText: String = ""
+    @Published var searchScope: SearchScope = .folder
+    @Published private(set) var isSearching = false
+    /// The full, unfiltered set of the current folder. `entries` is the
+    /// currently visible (possibly search-filtered) view of it.
+    private var allEntries: [GridEntry] = []
+    private var searchTask: Task<Void, Never>?
 
     @Published private(set) var slideshowOn = false
     private var slideshowTask: Task<Void, Never>?
@@ -82,8 +92,12 @@ final class BrowserModel: ObservableObject {
     func open(folder url: URL, selecting target: URL? = nil, thenDetail: Bool = false) {
         folderURL = url
         entries = []
+        allEntries = []
         selection = nil
         mode = .grid
+        searchText = ""
+        searchTask?.cancel()
+        isSearching = false
         resetTransforms()
         stopSlideshow()
         isLoading = true
@@ -95,6 +109,7 @@ final class BrowserModel: ObservableObject {
                 full.insert(GridEntry(url: parent, kind: .parent), at: 0)
             }
             let sorted = Self.sortEntries(full, key: self.sortKey, ascending: self.sortAscending)
+            self.allEntries = sorted
             self.entries = sorted
             if let target,
                let idx = sorted.firstIndex(where: {
@@ -194,8 +209,81 @@ final class BrowserModel: ObservableObject {
     func setSort(_ key: SortKey) {
         if sortKey == key { sortAscending.toggle() } else { sortKey = key; sortAscending = true }
         let keepURL = selectedEntry?.url
+        allEntries = Self.sortEntries(allEntries, key: sortKey, ascending: sortAscending)
         entries = Self.sortEntries(entries, key: sortKey, ascending: sortAscending)
         if let keepURL { selection = entries.firstIndex { $0.url == keepURL } }
+    }
+
+    // MARK: - Search
+
+    /// Recompute the visible `entries` from the query and scope. Called by the
+    /// view whenever the search text or scope changes.
+    func applyFilter() {
+        searchTask?.cancel()
+        let query = searchText.trimmingCharacters(in: .whitespaces)
+        guard !query.isEmpty else {
+            isSearching = false
+            entries = allEntries
+            selection = allEntries.firstIndex { $0.kind != .parent } ?? (allEntries.isEmpty ? nil : 0)
+            return
+        }
+        mode = .grid
+        let matches = allEntries.filter {
+            $0.kind != .parent && $0.name.localizedCaseInsensitiveContains(query)
+        }
+        entries = Self.sortEntries(matches, key: sortKey, ascending: sortAscending)
+        selection = entries.isEmpty ? nil : 0
+
+        guard searchScope == .subfolders, let root = folderURL else {
+            isSearching = false
+            return
+        }
+        isSearching = true
+        let key = sortKey, ascending = sortAscending
+        searchTask = Task { [weak self] in
+            let deep = await Self.recursiveMatches(under: root, query: query)
+            guard let self, !Task.isCancelled else { return }
+            var seen = Set(matches.map { $0.url.resolvingSymlinksInPath().path })
+            var merged = matches
+            for entry in deep where seen.insert(entry.url.resolvingSymlinksInPath().path).inserted {
+                merged.append(entry)
+            }
+            self.entries = Self.sortEntries(merged, key: key, ascending: ascending)
+            self.selection = self.entries.isEmpty ? nil : 0
+            self.isSearching = false
+        }
+    }
+
+    /// Deep filename match under `root`. Skips hidden files and package
+    /// contents; checks `Task.isCancelled` so a new keystroke abandons it.
+    nonisolated static func recursiveMatches(under root: URL, query: String) async -> [GridEntry] {
+        let fm = FileManager.default
+        let keys: Set<URLResourceKey> = [.isDirectoryKey, .contentModificationDateKey, .fileSizeKey]
+        guard let enumerator = fm.enumerator(
+            at: root,
+            includingPropertiesForKeys: Array(keys),
+            options: [.skipsHiddenFiles, .skipsPackageDescendants]
+        ) else { return [] }
+
+        var result: [GridEntry] = []
+        for case let url as URL in enumerator {
+            if Task.isCancelled { return result }
+            guard url.lastPathComponent.localizedCaseInsensitiveContains(query) else { continue }
+            let vals = try? url.resourceValues(forKeys: keys)
+            if vals?.isDirectory == true {
+                result.append(GridEntry(url: url, kind: .folder, modDate: vals?.contentModificationDate))
+            } else {
+                let ext = url.pathExtension.lowercased()
+                if imageExtensions.contains(ext) {
+                    result.append(GridEntry(url: url, kind: .image,
+                                            modDate: vals?.contentModificationDate, byteSize: vals?.fileSize))
+                } else if videoExtensions.contains(ext) {
+                    result.append(GridEntry(url: url, kind: .video,
+                                            modDate: vals?.contentModificationDate, byteSize: vals?.fileSize))
+                }
+            }
+        }
+        return result
     }
 
     /// Drag & drop: open a folder; for a file → open the parent folder and select it.
