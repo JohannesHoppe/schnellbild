@@ -1,4 +1,5 @@
 import SwiftUI
+import AppKit
 
 struct ContentView: View {
     @EnvironmentObject var model: BrowserModel
@@ -7,6 +8,7 @@ struct ContentView: View {
     @State private var isDropTargeted = false
     @State private var showInspector = false
     @State private var searchBarVisible = false
+    @State private var keyMonitor: Any?
 
     var body: some View {
         Group {
@@ -37,22 +39,21 @@ struct ContentView: View {
         .focusable()
         .focusEffectDisabled()
         .focused($focused)
-        .onAppear { focused = true; if !model.openFromLaunchArguments() { model.restoreLastFolder() } }
+        .onAppear {
+            focused = true
+            if !model.openFromLaunchArguments() { model.restoreLastFolder() }
+            installBackspaceMonitor()
+        }
+        .onDisappear { removeBackspaceMonitor() }
         .onChange(of: model.entries) { _, _ in
             if model.searchText.isEmpty && !searchFieldFocused { focused = true }
         }
         .onChange(of: model.searchText) { _, _ in if !model.isLoading { model.applyFilter() } }
         .onChange(of: model.searchScope) { _, _ in if !model.isLoading { model.applyFilter() } }
         // When the search field gives up focus, hand keyboard control back to
-        // the grid/detail so shortcuts (Backspace, arrows, …) keep working.
+        // the grid/detail so shortcuts keep working.
         .onChange(of: searchFieldFocused) { _, isFocused in
             if !isFocused { focused = true }
-        }
-        // Handle Backspace separately — the catch-all onKeyPress doesn't deliver
-        // it reliably. Full-size view: go back (like Esc). List: go up a level.
-        .onKeyPress(.delete) {
-            model.goBack()
-            return .handled
         }
         .onKeyPress { press in handle(press) }
         .toolbar { toolbarContent }
@@ -256,6 +257,29 @@ struct ContentView: View {
             default: return .ignored
             }
         }
+    }
+
+    // MARK: - Backspace via NSEvent
+
+    /// SwiftUI's `onKeyPress(.delete)` doesn't reliably fire for the physical
+    /// Backspace key, so handle it at the event level by hardware key code.
+    private func installBackspaceMonitor() {
+        guard keyMonitor == nil else { return }
+        let model = self.model
+        keyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
+            // keyCode 51 = Backspace (above Enter). Skip it while a text field
+            // (the search box) is being edited, or when Command is held.
+            guard event.keyCode == 51,
+                  !event.modifierFlags.contains(.command),
+                  !(NSApp.keyWindow?.firstResponder is NSText) else { return event }
+            Task { @MainActor in model.goBack() }
+            return nil
+        }
+    }
+
+    private func removeBackspaceMonitor() {
+        if let keyMonitor { NSEvent.removeMonitor(keyMonitor) }
+        keyMonitor = nil
     }
 }
 
