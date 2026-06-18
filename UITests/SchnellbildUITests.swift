@@ -38,24 +38,59 @@ final class SchnellbildUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["c.jpg"].exists)
     }
 
+    /// Backspace in the grid navigates up one folder level.
+    func testBackspaceGoesUpOneFolder() throws {
+        let fm = FileManager.default
+        let album = tempDir.appendingPathComponent("album")
+        try fm.createDirectory(at: album, withIntermediateDirectories: true)
+        try Data().write(to: album.appendingPathComponent("inside.jpg"))
+
+        // Open the subfolder directly; it shows its own contents.
+        let app = launchApp(openPath: album.path)
+        XCTAssertTrue(app.staticTexts["inside.jpg"].waitForExistence(timeout: 15))
+
+        // Backspace → up to the parent (tempDir), which contains "album".
+        app.typeKey(.delete, modifierFlags: [])
+        XCTAssertTrue(app.staticTexts["album"].waitForExistence(timeout: 5),
+                      "Backspace should navigate up to the parent folder")
+    }
+
     /// Launching with a file path opens that image directly in the full-size
     /// view — the position badge ("2 / 3  ·  b.jpg") is the only static text
     /// containing " / ".
     func testOpensImageFileInFullView() {
         let app = launchApp(openPath: tempDir.appendingPathComponent("b.jpg").path)
-        // The position badge ("2 / 3  ·  b.jpg") is the only text containing
-        // " / ". SwiftUI exposes a Text via `label` *or* `value`, so check both;
-        // re-query each iteration (a cached firstMatch doesn't re-evaluate).
-        var text: String?
-        let deadline = Date().addingTimeInterval(20)
+        XCTAssertTrue(badge(app, contains: "b.jpg"), "launching a file should open the full-size view")
+    }
+
+    /// Return opens the full-size view; Escape returns to the grid (keyboard).
+    func testReturnOpensFullViewAndEscapeReturns() {
+        let app = launchApp(openPath: tempDir.path)
+        XCTAssertTrue(app.staticTexts["a.jpg"].waitForExistence(timeout: 15))
+
+        app.typeKey(.return, modifierFlags: [])
+        XCTAssertTrue(badge(app, contains: "a.jpg"), "Return should open the full-size view")
+
+        app.typeKey(.escape, modifierFlags: [])
+        XCTAssertTrue(app.staticTexts["a.jpg"].waitForExistence(timeout: 5),
+                      "Escape should return to the grid")
+    }
+
+    /// The position badge ("n / m  ·  name") is the only text containing " / ".
+    /// SwiftUI exposes a Text via `label` *or* `value`, so check both, and
+    /// re-query each iteration (a cached firstMatch doesn't re-evaluate).
+    private func badge(_ app: XCUIApplication, contains needle: String, timeout: TimeInterval = 15) -> Bool {
+        let deadline = Date().addingTimeInterval(timeout)
         while Date() < deadline {
             let match = app.staticTexts
                 .matching(NSPredicate(format: "label CONTAINS ' / ' OR value CONTAINS ' / '"))
                 .firstMatch
-            if match.exists { text = (match.value as? String) ?? match.label; break }
-            Thread.sleep(forTimeInterval: 0.4)
+            if match.exists {
+                let text = (match.value as? String) ?? match.label
+                if text.contains(needle) { return true }
+            }
+            Thread.sleep(forTimeInterval: 0.3)
         }
-        XCTAssertNotNil(text, "full-size view should open (position badge not found)")
-        XCTAssertTrue(text?.contains("b.jpg") ?? false, "badge: \(text ?? "nil")")
+        return false
     }
 }

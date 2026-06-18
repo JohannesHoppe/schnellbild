@@ -43,6 +43,11 @@ struct ContentView: View {
         }
         .onChange(of: model.searchText) { _, _ in if !model.isLoading { model.applyFilter() } }
         .onChange(of: model.searchScope) { _, _ in if !model.isLoading { model.applyFilter() } }
+        // When the search field gives up focus, hand keyboard control back to
+        // the grid/detail so shortcuts (Backspace, arrows, …) keep working.
+        .onChange(of: searchFieldFocused) { _, isFocused in
+            if !isFocused { focused = true }
+        }
         // Handle Backspace separately — the catch-all onKeyPress doesn't deliver
         // it reliably. Full-size view: go back (like Esc). List: go up a level.
         .onKeyPress(.delete) {
