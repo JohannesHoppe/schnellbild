@@ -32,7 +32,7 @@ struct ContentView: View {
         .focusable()
         .focusEffectDisabled()
         .focused($focused)
-        .onAppear { focused = true; model.restoreLastFolder() }
+        .onAppear { focused = true; if !model.openFromLaunchArguments() { model.restoreLastFolder() } }
         .onChange(of: model.entries) { _, _ in focused = true }
         // Handle Backspace separately — the catch-all onKeyPress doesn't deliver
         // it reliably. Full-size view: go back (like Esc). List: go up a level.

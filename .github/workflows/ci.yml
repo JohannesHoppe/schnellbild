@@ -50,3 +50,29 @@ jobs:
           name: Schnellbild-app
           path: build/Schnellbild.app.zip
           if-no-files-found: error
+
+  ui-tests:
+    name: UI tests (XCUITest)
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select latest stable Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: Install xcodegen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        run: xcodegen generate
+
+      - name: Run XCUITests
+        run: |
+          xcodebuild test \
+            -project Schnellbild.xcodeproj \
+            -scheme Schnellbild \
+            -destination 'platform=macOS' \
+            -only-testing:SchnellbildUITests \
+            -derivedDataPath build/DerivedData

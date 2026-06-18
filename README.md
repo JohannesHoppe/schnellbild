@@ -64,6 +64,26 @@ The icon is generated from `Scripts/make_icon.swift` (CoreGraphics, no external
 tools). CI builds, tests, and packages the app on every push; tagging `vX.Y.Z`
 publishes a GitHub Release with the zipped app.
 
+## Tests
+
+Logic unit tests run via SwiftPM:
+
+```bash
+swift test
+```
+
+End-to-end UI tests use XCUITest, which needs an Xcode project generated from
+`project.yml` with [xcodegen](https://github.com/yonaskolb/XcodeGen):
+
+```bash
+brew install xcodegen
+xcodegen generate
+xcodebuild test -project Schnellbild.xcodeproj -scheme Schnellbild \
+  -destination 'platform=macOS' -only-testing:SchnellbildUITests
+```
+
+CI runs both on every push.
+
 ## Features
 
 - **Folders & drag-and-drop.** Open a folder (⌘O) or drag one onto the window.

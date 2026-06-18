@@ -1,0 +1,58 @@
+# xcodegen spec — generates Schnellbild.xcodeproj for the app + XCUITests.
+# The .xcodeproj itself is generated (gitignored); this file is the source.
+# Run:  xcodegen generate
+name: Schnellbild
+options:
+  bundleIdPrefix: art.haushoppe
+  deploymentTarget:
+    macOS: "14.0"
+  createIntermediateGroups: true
+
+settings:
+  base:
+    SWIFT_VERSION: "5.0"          # match the SwiftPM build's language mode
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    # Ad-hoc sign (no Apple team needed) so the app + UI-test runner launch
+    # without Gatekeeper flagging them as "damaged".
+    CODE_SIGN_STYLE: Manual
+    CODE_SIGN_IDENTITY: "-"
+    CODE_SIGNING_REQUIRED: "NO"
+    GENERATE_INFOPLIST_FILE: "YES"
+
+targets:
+  Schnellbild:
+    type: application
+    platform: macOS
+    sources:
+      - path: Schnellbild
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: art.haushoppe.schnellbild
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.photography
+        INFOPLIST_KEY_NSHumanReadableCopyright: "© 2026 HAUS HOPPE - ITS (Johannes Hoppe). MIT License."
+    dependencies:
+      - sdk: AVKit.framework
+      - sdk: AVFoundation.framework
+
+  SchnellbildUITests:
+    type: bundle.ui-testing
+    platform: macOS
+    sources:
+      - path: UITests
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: art.haushoppe.schnellbild.uitests
+    dependencies:
+      - target: Schnellbild
+
+schemes:
+  Schnellbild:
+    build:
+      targets:
+        Schnellbild: all
+        SchnellbildUITests: [test]
+    test:
+      targets:
+        - SchnellbildUITests

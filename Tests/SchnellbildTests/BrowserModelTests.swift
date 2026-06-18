@@ -207,6 +207,23 @@ final class OpenFolderTests: XCTestCase {
         XCTAssertEqual(m.selection, m.entries.count - 1)
     }
 
+    func testDroppingAFileOpensItInDetail() async throws {
+        let fm = FileManager.default
+        let dir = fm.temporaryDirectory.appendingPathComponent("sb_drop_\(UUID().uuidString)")
+        try fm.createDirectory(at: dir, withIntermediateDirectories: true)
+        defer { try? fm.removeItem(at: dir) }
+        try Data().write(to: dir.appendingPathComponent("a.jpg"))
+        let file = dir.appendingPathComponent("b.jpg")
+        try Data().write(to: file)
+
+        let m = BrowserModel()
+        m.openDropped([file])
+        try await waitUntil { !m.isLoading && !m.entries.isEmpty }
+
+        XCTAssertEqual(m.mode, .detail, "dropping a file should open the full-size view")
+        XCTAssertEqual(m.selectedMediaEntry?.url.lastPathComponent, "b.jpg")
+    }
+
     private func waitUntil(_ condition: @escaping () -> Bool, timeout: TimeInterval = 3) async throws {
         let start = Date()
         while !condition() {

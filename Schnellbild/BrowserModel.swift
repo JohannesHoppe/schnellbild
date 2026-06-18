@@ -96,7 +96,11 @@ final class BrowserModel: ObservableObject {
             }
             let sorted = Self.sortEntries(full, key: self.sortKey, ascending: self.sortAscending)
             self.entries = sorted
-            if let target, let idx = sorted.firstIndex(where: { $0.url == target && $0.kind != .parent }) {
+            if let target,
+               let idx = sorted.firstIndex(where: {
+                   $0.kind != .parent &&
+                   $0.url.resolvingSymlinksInPath().path == target.resolvingSymlinksInPath().path
+               }) {
                 self.selection = idx
                 if thenDetail, sorted[idx].isMedia {
                     self.resetTransforms()
@@ -117,6 +121,18 @@ final class BrowserModel: ObservableObject {
         if FileManager.default.fileExists(atPath: path, isDirectory: &isDir), isDir.boolValue {
             open(folder: URL(fileURLWithPath: path))
         }
+    }
+
+    /// CLI / UI-test seam: `--open <path>` opens a folder (grid) or a file
+    /// (straight into the full-size view) on launch — same rules as drag & drop.
+    @discardableResult
+    func openFromLaunchArguments() -> Bool {
+        let args = ProcessInfo.processInfo.arguments
+        guard let i = args.firstIndex(of: "--open"), i + 1 < args.count else { return false }
+        let url = URL(fileURLWithPath: args[i + 1])
+        guard FileManager.default.fileExists(atPath: url.path) else { return false }
+        openDropped([url])
+        return true
     }
 
     /// Read a directory — including hidden entries, with date/size.
