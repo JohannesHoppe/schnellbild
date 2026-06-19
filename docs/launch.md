@@ -69,26 +69,7 @@ network volumes.
 
 ---
 
-## Recording the demo GIF
+## Demo GIF
 
-Screen recording can't be automated here, so record it by hand (30–40 s):
-
-1. Put a folder with a mix of images (incl. a RAW/PSD and a video) on a network
-   share if you have one — the speed is the story.
-2. `⌘⇧5` → record the Schnellbild window region → save the `.mov`.
-   Show the flow: open folder → thumbnails fill in → arrow keys → one big image
-   → `[`/`]` rotate → `⌘F` search → Esc back.
-3. Convert to a tidy GIF (needs `ffmpeg`, or `brew install gifski` for nicer output):
-
-   ```bash
-   # ffmpeg (good, two-pass palette):
-   ffmpeg -i demo.mov -vf "fps=15,scale=680:-1:flags=lanczos,palettegen" /tmp/p.png
-   ffmpeg -i demo.mov -i /tmp/p.png -lavfi "fps=15,scale=680:-1:flags=lanczos[x];[x][1:v]paletteuse" -loop 0 docs/demo.gif
-
-   # …or gifski (sharper):
-   gifski --fps 15 --width 680 -o docs/demo.gif demo.mov
-   ```
-4. Drop it at `docs/demo.gif` and uncomment the demo line near the top of `README.md`.
-
-Keep it short and silent; the first 3 seconds (thumbnails snapping in) are what
-sell it.
+See [`launch-storyboard.md`](launch-storyboard.md) for the shot list, production
+notes, and the recording recipe.

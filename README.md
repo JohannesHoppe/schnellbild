@@ -10,8 +10,8 @@
 
 <p align="center"><b>The fast macOS image &amp; video viewer that doesn't choke on network folders.</b></p>
 
-<!-- Demo: record a short clip (see "Demo GIF" in CONTRIBUTING/below), save it as
-     docs/demo.gif, then uncomment the next line:
+<!-- Demo: record per docs/launch-storyboard.md, save as docs/demo.gif, then
+     uncomment the next line:
 <p align="center"><img src="docs/demo.gif" width="680" alt="Schnellbild in action"></p>
 -->
 
@@ -156,12 +156,11 @@ Bindings follow [Phiewer](https://phiewer.com/) where it makes sense.
 
 **Early stage, but already a usable daily driver.** Known open items:
 
-- No `.app` bundle yet — no icon, no sandbox/entitlements (runs as a SwiftPM
-  executable via `swift run`).
+- Ships as an **ad-hoc-signed** `.app` — not notarized, so the first launch needs
+  right-click → Open (or `xattr -dr com.apple.quarantine Schnellbild.app`).
 - Slideshow interval is fixed at 3 s.
 - `1` (100 %) is approximate (assumes the main display's backing scale).
 - Animated GIFs don't zoom/pan in the full view.
-- AVI/MKV/WebM play only via an external app (no native macOS codecs).
 
 ## License
 
