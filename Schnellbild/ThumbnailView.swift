@@ -7,18 +7,41 @@ import QuickLookThumbnailing
 @MainActor
 final class ThumbnailCache {
     static let shared = ThumbnailCache()
-    private let cache = NSCache<NSURL, NSImage>()
+    /// Keyed by file and tile size, so a small folder preview never stands
+    /// in for a full-size tile.
+    private let cache = NSCache<NSString, NSImage>()
 
     init() {
         cache.countLimit = 512
     }
 
-    func image(for url: URL) -> NSImage? {
-        cache.object(forKey: url as NSURL)
+    private func key(_ url: URL, _ side: CGFloat) -> NSString {
+        "\(Int(side.rounded()))|\(url.path)" as NSString
     }
 
-    func store(_ image: NSImage, for url: URL) {
-        cache.setObject(image, forKey: url as NSURL)
+    func image(for url: URL, side: CGFloat) -> NSImage? {
+        cache.object(forKey: key(url, side))
+    }
+
+    func store(_ image: NSImage, for url: URL, side: CGFloat) {
+        cache.setObject(image, forKey: key(url, side))
+    }
+
+    /// The system thumbnail for a file (embedded previews, including
+    /// RAW/PSD/PDF/video), from memory when available.
+    func thumbnail(for url: URL, side: CGFloat) async -> NSImage? {
+        if let cached = image(for: url, side: side) { return cached }
+        let request = QLThumbnailGenerator.Request(
+            fileAt: url,
+            size: CGSize(width: side, height: side),
+            scale: NSScreen.mainBackingScale,
+            representationTypes: .all
+        )
+        guard let rep = try? await QLThumbnailGenerator.shared.generateBestRepresentation(for: request) else {
+            return nil
+        }
+        store(rep.nsImage, for: url, side: side)
+        return rep.nsImage
     }
 }
 
@@ -65,23 +88,10 @@ struct ThumbnailView: View {
     }
 
     private func load() async {
-        if let cached = ThumbnailCache.shared.image(for: url) {
-            image = cached
-            return
-        }
-        let scale = NSScreen.mainBackingScale
-        let request = QLThumbnailGenerator.Request(
-            fileAt: url,
-            size: CGSize(width: side, height: side),
-            scale: scale,
-            representationTypes: .all
-        )
-        do {
-            let rep = try await QLThumbnailGenerator.shared.generateBestRepresentation(for: request)
-            ThumbnailCache.shared.store(rep.nsImage, for: url)
-            if !Task.isCancelled { image = rep.nsImage }
-        } catch {
-            if !Task.isCancelled { failed = true }
+        if let img = await ThumbnailCache.shared.thumbnail(for: url, side: side) {
+            if !Task.isCancelled { image = img }
+        } else if !Task.isCancelled {
+            failed = true
         }
     }
 }

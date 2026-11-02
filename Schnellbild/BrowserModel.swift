@@ -16,15 +16,86 @@ struct GridEntry: Identifiable, Hashable {
     var isGIF: Bool { kind == .image && url.pathExtension.lowercased() == "gif" }
 }
 
+/// Transport control of the video currently on screen. Implemented for AVKit
+/// and for VLCKit, so the keyboard drives both players the same way.
+@MainActor
+protocol PlaybackControl: AnyObject {
+    func play()
+    func pause()
+    func seek(by seconds: Double)
+}
+
+/// Side effects on the file system and the workspace. Injectable, so tests
+/// can observe them without touching Finder, the Trash, or modal alerts.
+struct FileActions {
+    var reveal: @MainActor (URL) -> Void
+    var openInDefaultApp: @MainActor (URL) -> Void
+    var confirmTrash: @MainActor (_ name: String) -> Bool
+    var trash: @MainActor (URL) throws -> Void
+    var move: @MainActor (_ from: URL, _ to: URL) throws -> Void
+
+    static let live = FileActions(
+        reveal: { NSWorkspace.shared.activateFileViewerSelecting([$0]) },
+        openInDefaultApp: { NSWorkspace.shared.open($0) },
+        confirmTrash: { name in
+            let alert = NSAlert()
+            alert.messageText = "Move “\(name)” to the Trash?"
+            alert.informativeText = "The item will be moved to the Trash."
+            alert.alertStyle = .warning
+            alert.addButton(withTitle: "Move to Trash")
+            alert.addButton(withTitle: "Cancel")
+            return alert.runModal() == .alertFirstButtonReturn
+        },
+        trash: { try FileManager.default.trashItem(at: $0, resultingItemURL: nil) },
+        move: { from, to in
+            let fm = FileManager.default
+            // FileManager refuses a case-only rename ("photos" → "Photos") on
+            // case-insensitive volumes, because the target "exists"; go via a
+            // temporary name.
+            if from.path != to.path, from.path.lowercased() == to.path.lowercased() {
+                let temp = from.deletingLastPathComponent().appendingPathComponent(".rename-\(UUID().uuidString)")
+                try fm.moveItem(at: from, to: temp)
+                try fm.moveItem(at: temp, to: to)
+            } else {
+                try fm.moveItem(at: from, to: to)
+            }
+        }
+    )
+}
+
+/// Why a folder rename was rejected.
+enum RenameError: LocalizedError, Equatable {
+    case emptyName
+    case invalidName
+    case alreadyExists(String)
+    case failed(String)
+
+    var errorDescription: String? {
+        switch self {
+        case .emptyName:            return "Please enter a name."
+        case .invalidName:          return "Names can't contain “/” or “:”, and can't be “.” or “..”."
+        case .alreadyExists(let n): return "An item named “\(n)” already exists here."
+        case .failed(let reason):   return reason
+        }
+    }
+}
+
 /// Single source of truth for all browsing.
 @MainActor
 final class BrowserModel: ObservableObject {
     enum Mode { case grid, detail }
     enum SortKey { case name, date, size }
-    enum SearchScope: Hashable { case folder, subfolders }
     enum KeyInput: Equatable {
-        case left, right, up, down, space, enter, escape, backspace, home, end
+        case left, right, up, down, space, enter, escape, backspace, home, end, f1, f2
         case char(Character)
+    }
+
+    /// A place in the navigation history: a folder, the search shown in it,
+    /// and the selected item.
+    struct Location: Equatable {
+        var folder: URL
+        var query: String = ""
+        var selected: URL? = nil
     }
 
     @Published private(set) var folderURL: URL?
@@ -53,22 +124,64 @@ final class BrowserModel: ObservableObject {
     @Published var sortKey: SortKey = .name
     @Published var sortAscending = true
 
-    // Search
-    @Published var searchText: String = ""
-    @Published var searchScope: SearchScope = .folder
-    @Published var searchActive = false
+    // MARK: Search state
+
+    /// The query. Every change re-runs the search over folder and file names
+    /// in the current folder and all its subfolders.
+    @Published var searchText: String = "" {
+        didSet { if searchText != oldValue { applyFilter() } }
+    }
+    /// Whether the (always visible) search field has keyboard focus.
+    @Published var searchFocused = false
     @Published private(set) var isSearching = false
+    /// Delay before walking subfolders, so fast typing doesn't start a full
+    /// tree walk per keystroke.
+    var searchDebounce: Duration = .milliseconds(120)
     /// The full, unfiltered set of the current folder. `entries` is the
     /// currently visible (possibly search-filtered) view of it.
     private var allEntries: [GridEntry] = []
     private var searchTask: Task<Void, Never>?
+    /// A result to select as soon as the search produces it (history restore).
+    private var pendingResultSelection: URL?
+
+    // MARK: History
+
+    @Published private(set) var backStack: [Location] = []
+    @Published private(set) var forwardStack: [Location] = []
+    var canGoBack: Bool { !backStack.isEmpty }
+    var canGoForward: Bool { !forwardStack.isEmpty }
+    var canGoUp: Bool { folderURL.flatMap(Self.parentFolder(of:)) != nil }
+
+    /// The enclosing folder; nil at the file system root.
+    nonisolated static func parentFolder(of url: URL) -> URL? {
+        let path = url.standardizedFileURL.path
+        guard path != "/" else { return nil }
+        return url.standardizedFileURL.deletingLastPathComponent()
+    }
+
+    // MARK: Rename
+
+    /// The folder whose rename sheet is open.
+    @Published var renameTarget: GridEntry?
+
+    // MARK: Slideshow / video
 
     @Published private(set) var slideshowOn = false
+    var slideshowInterval: Duration = .seconds(3)
     private var slideshowTask: Task<Void, Never>?
 
-    /// Weak reference to the running video player — for keyboard
-    /// control (pause/seek). Set by VideoDetailView.
-    weak var activePlayer: AVPlayer?
+    /// The player of the video on screen — for keyboard control
+    /// (play/pause/seek). Set by the video views.
+    weak var activePlayer: PlaybackControl? {
+        didSet { videoPaused = false }
+    }
+    /// Whether the user paused the current video (videos autoplay).
+    @Published private(set) var videoPaused = false
+
+    // MARK: Dependencies
+
+    let defaults: UserDefaults
+    var fileActions: FileActions
 
     static let lastFolderKey = "lastFolderPath"
 
@@ -81,6 +194,21 @@ final class BrowserModel: ObservableObject {
         "mp4", "mov", "m4v", "avi", "mkv", "webm", "m2ts", "mts",
         "mpg", "mpeg", "3gp", "wmv", "flv", "ogv"
     ]
+
+    init(defaults: UserDefaults = .standard, fileActions: FileActions = .live) {
+        self.defaults = defaults
+        self.fileActions = fileActions
+    }
+
+    /// `--ui-testing` keeps UI-test runs out of the user's real preferences;
+    /// `--reset-state` starts such a run from empty preferences.
+    static func makeDefaults(arguments: [String] = ProcessInfo.processInfo.arguments) -> UserDefaults {
+        guard arguments.contains("--ui-testing") else { return .standard }
+        let suite = "art.haushoppe.schnellbild.uitests"
+        let defaults = UserDefaults(suiteName: suite) ?? .standard
+        if arguments.contains("--reset-state") { defaults.removePersistentDomain(forName: suite) }
+        return defaults
+    }
 
     // MARK: - Choosing / loading a folder
 
@@ -96,49 +224,62 @@ final class BrowserModel: ObservableObject {
         }
     }
 
+    /// Navigate to a folder. Records the current location in the history.
     func open(folder url: URL, selecting target: URL? = nil, thenDetail: Bool = false) {
-        folderURL = url
+        recordHistory()
+        load(Location(folder: url, selected: target), thenDetail: thenDetail)
+    }
+
+    private func load(_ location: Location, thenDetail: Bool = false) {
+        isLoading = true            // first: keeps the searchText reset below from searching
+        searchTask?.cancel()
+        isSearching = false
+        pendingResultSelection = nil
+        folderURL = location.folder
         entries = []
         allEntries = []
         selection = nil
         mode = .grid
-        searchText = ""
-        searchTask?.cancel()
-        isSearching = false
+        searchText = location.query
         resetTransforms()
         stopSlideshow()
-        isLoading = true
-        UserDefaults.standard.set(url.path, forKey: Self.lastFolderKey)
+        defaults.set(location.folder.path, forKey: Self.lastFolderKey)
+        let url = location.folder
+        let target = location.selected
         Task {
             var full = await Self.scan(url)
-            let parent = url.deletingLastPathComponent()
-            if parent != url {
+            guard self.folderURL == url else { return }   // a newer navigation won
+            if let parent = Self.parentFolder(of: url) {
                 full.insert(GridEntry(url: parent, kind: .parent), at: 0)
             }
             let sorted = Self.sortEntries(full, key: self.sortKey, ascending: self.sortAscending)
             self.allEntries = sorted
+            self.isLoading = false
+            if !self.searchText.isEmpty {
+                // Restoring a search (history) or the user typed while loading.
+                self.pendingResultSelection = target
+                self.applyFilter()
+                return
+            }
             self.entries = sorted
-            if let target,
-               let idx = sorted.firstIndex(where: {
-                   $0.kind != .parent &&
-                   $0.url.resolvingSymlinksInPath().path == target.resolvingSymlinksInPath().path
-               }) {
+            if let target, let idx = sorted.firstIndex(where: {
+                $0.kind != .parent && Self.samePath($0.url, target)
+            }) {
                 self.selection = idx
                 if thenDetail, sorted[idx].isMedia {
                     self.resetTransforms()
                     self.mode = .detail
                 }
             } else {
-                self.selection = sorted.firstIndex(where: { $0.kind != .parent }) ?? (sorted.isEmpty ? nil : 0)
+                self.selection = Self.defaultSelection(in: sorted)
             }
-            self.isLoading = false
         }
     }
 
     /// Reopen the last folder on launch (if it still exists).
     func restoreLastFolder() {
         guard folderURL == nil,
-              let path = UserDefaults.standard.string(forKey: Self.lastFolderKey) else { return }
+              let path = defaults.string(forKey: Self.lastFolderKey) else { return }
         var isDir: ObjCBool = false
         if FileManager.default.fileExists(atPath: path, isDirectory: &isDir), isDir.boolValue {
             open(folder: URL(fileURLWithPath: path))
@@ -148,8 +289,7 @@ final class BrowserModel: ObservableObject {
     /// CLI / UI-test seam: `--open <path>` opens a folder (grid) or a file
     /// (straight into the full-size view) on launch — same rules as drag & drop.
     @discardableResult
-    func openFromLaunchArguments() -> Bool {
-        let args = ProcessInfo.processInfo.arguments
+    func openFromLaunchArguments(_ args: [String] = ProcessInfo.processInfo.arguments) -> Bool {
         guard let i = args.firstIndex(of: "--open"), i + 1 < args.count else { return false }
         let url = URL(fileURLWithPath: args[i + 1])
         guard FileManager.default.fileExists(atPath: url.path) else { return false }
@@ -162,31 +302,50 @@ final class BrowserModel: ObservableObject {
     /// enumeration (no extra round-trips).
     nonisolated static func scan(_ url: URL) async -> [GridEntry] {
         await Task.detached(priority: .userInitiated) {
-            let fm = FileManager.default
             let keys: Set<URLResourceKey> = [.isDirectoryKey, .contentModificationDateKey, .fileSizeKey]
-            let contents = (try? fm.contentsOfDirectory(
+            let contents = (try? FileManager.default.contentsOfDirectory(
                 at: url,
                 includingPropertiesForKeys: Array(keys),
                 options: []
             )) ?? []
+            return contents.compactMap { entry(for: $0, keys: keys) }
+        }.value
+    }
 
-            var result: [GridEntry] = []
-            for item in contents {
-                let vals = try? item.resourceValues(forKeys: keys)
-                let isDir = vals?.isDirectory ?? false
-                let date = vals?.contentModificationDate
-                if isDir {
-                    result.append(GridEntry(url: item, kind: .folder, modDate: date, byteSize: nil))
-                    continue
+    /// Classify one file system item; nil for non-media files.
+    nonisolated private static func entry(for item: URL, keys: Set<URLResourceKey>) -> GridEntry? {
+        let vals = try? item.resourceValues(forKeys: keys)
+        let date = vals?.contentModificationDate
+        if vals?.isDirectory == true {
+            return GridEntry(url: item, kind: .folder, modDate: date)
+        }
+        let ext = item.pathExtension.lowercased()
+        if imageExtensions.contains(ext) {
+            return GridEntry(url: item, kind: .image, modDate: date, byteSize: vals?.fileSize)
+        }
+        if videoExtensions.contains(ext) {
+            return GridEntry(url: item, kind: .video, modDate: date, byteSize: vals?.fileSize)
+        }
+        return nil
+    }
+
+    /// The media files a folder tile previews: the first `limit` by name,
+    /// read from one shallow, non-recursive directory listing.
+    nonisolated static func folderPreviewFiles(in folder: URL, limit: Int = 3) async -> [URL] {
+        await Task.detached(priority: .utility) {
+            let contents = (try? FileManager.default.contentsOfDirectory(
+                at: folder,
+                includingPropertiesForKeys: nil,
+                options: [.skipsHiddenFiles]
+            )) ?? []
+            return contents
+                .filter {
+                    let ext = $0.pathExtension.lowercased()
+                    return imageExtensions.contains(ext) || videoExtensions.contains(ext)
                 }
-                let ext = item.pathExtension.lowercased()
-                if imageExtensions.contains(ext) {
-                    result.append(GridEntry(url: item, kind: .image, modDate: date, byteSize: vals?.fileSize))
-                } else if videoExtensions.contains(ext) {
-                    result.append(GridEntry(url: item, kind: .video, modDate: date, byteSize: vals?.fileSize))
-                }
-            }
-            return result
+                .sorted { $0.lastPathComponent.localizedStandardCompare($1.lastPathComponent) == .orderedAscending }
+                .prefix(limit)
+                .map { $0 }
         }.value
     }
 
@@ -221,76 +380,151 @@ final class BrowserModel: ObservableObject {
         if let keepURL { selection = entries.firstIndex { $0.url == keepURL } }
     }
 
+    nonisolated static func samePath(_ a: URL, _ b: URL) -> Bool {
+        canonicalPath(a) == canonicalPath(b)
+    }
+
+    /// A comparable path: symlinks resolved, and macOS's /private/var,
+    /// /private/tmp and /private/etc folded onto /var, /tmp and /etc — also for
+    /// paths that no longer exist (after a rename), which can't be resolved.
+    nonisolated static func canonicalPath(_ url: URL) -> String {
+        let path = url.resolvingSymlinksInPath().standardizedFileURL.path
+        for alias in ["/var", "/tmp", "/etc"] where path == "/private" + alias || path.hasPrefix("/private" + alias + "/") {
+            return String(path.dropFirst("/private".count))
+        }
+        return path
+    }
+
+    private static func defaultSelection(in list: [GridEntry]) -> Int? {
+        list.firstIndex { $0.kind != .parent } ?? (list.isEmpty ? nil : 0)
+    }
+
     // MARK: - Search
 
-    /// Recompute the visible `entries` from the query and scope. Called by the
-    /// view whenever the search text or scope changes.
+    /// Recompute the visible `entries` from the query: name matches (folders
+    /// and files) in the current folder appear at once, matches from all
+    /// subfolders stream in while the tree walk runs.
     func applyFilter() {
         searchTask?.cancel()
+        guard !isLoading else { return }
         let query = searchText.trimmingCharacters(in: .whitespaces)
         guard !query.isEmpty else {
             isSearching = false
+            pendingResultSelection = nil
+            let keep = selectedEntry?.url
             entries = allEntries
-            selection = allEntries.firstIndex { $0.kind != .parent } ?? (allEntries.isEmpty ? nil : 0)
+            selection = keep.flatMap { url in allEntries.firstIndex { $0.url == url } }
+                ?? Self.defaultSelection(in: allEntries)
             return
         }
         mode = .grid
-        let matches = allEntries.filter {
+        let local = allEntries.filter {
             $0.kind != .parent && $0.name.localizedCaseInsensitiveContains(query)
         }
-        entries = Self.sortEntries(matches, key: sortKey, ascending: sortAscending)
-        selection = entries.isEmpty ? nil : 0
+        showResults(local, initial: true)
 
-        guard searchScope == .subfolders, let root = folderURL else {
-            isSearching = false
-            return
-        }
+        guard let root = folderURL else { isSearching = false; return }
         isSearching = true
-        let key = sortKey, ascending = sortAscending
+        let debounce = searchDebounce
         searchTask = Task { [weak self] in
-            let deep = await Self.recursiveMatches(under: root, query: query)
-            guard let self, !Task.isCancelled else { return }
-            var seen = Set(matches.map { $0.url.resolvingSymlinksInPath().path })
-            var merged = matches
-            for entry in deep where seen.insert(entry.url.resolvingSymlinksInPath().path).inserted {
-                merged.append(entry)
+            if debounce > .zero { try? await Task.sleep(for: debounce) }
+            guard !Task.isCancelled else { return }
+            var seen = Set(local.map { Self.canonicalPath($0.url) })
+            var merged = local
+            for await batch in Self.recursiveMatches(under: root, query: query) {
+                guard let self, !Task.isCancelled else { return }
+                let fresh = batch.filter { seen.insert(Self.canonicalPath($0.url)).inserted }
+                guard !fresh.isEmpty else { continue }
+                merged += fresh
+                self.showResults(merged, initial: false)
             }
-            self.entries = Self.sortEntries(merged, key: key, ascending: ascending)
-            self.selection = self.entries.isEmpty ? nil : 0
+            guard let self, !Task.isCancelled else { return }
             self.isSearching = false
         }
     }
 
-    /// Deep filename match under `root`. Skips hidden files and package
-    /// contents; checks `Task.isCancelled` so a new keystroke abandons it.
-    nonisolated static func recursiveMatches(under root: URL, query: String) async -> [GridEntry] {
-        let fm = FileManager.default
-        let keys: Set<URLResourceKey> = [.isDirectoryKey, .contentModificationDateKey, .fileSizeKey]
-        guard let enumerator = fm.enumerator(
-            at: root,
-            includingPropertiesForKeys: Array(keys),
-            options: [.skipsHiddenFiles, .skipsPackageDescendants]
-        ) else { return [] }
-
-        var result: [GridEntry] = []
-        while let url = enumerator.nextObject() as? URL {
-            if Task.isCancelled { return result }
-            guard url.lastPathComponent.localizedCaseInsensitiveContains(query) else { continue }
-            let vals = try? url.resourceValues(forKeys: keys)
-            if vals?.isDirectory == true {
-                result.append(GridEntry(url: url, kind: .folder, modDate: vals?.contentModificationDate))
-            } else {
-                let ext = url.pathExtension.lowercased()
-                if imageExtensions.contains(ext) {
-                    result.append(GridEntry(url: url, kind: .image,
-                                            modDate: vals?.contentModificationDate, byteSize: vals?.fileSize))
-                } else if videoExtensions.contains(ext) {
-                    result.append(GridEntry(url: url, kind: .video,
-                                            modDate: vals?.contentModificationDate, byteSize: vals?.fileSize))
-                }
-            }
+    /// Publish search results, keeping the selected item selected while
+    /// results stream in.
+    private func showResults(_ results: [GridEntry], initial: Bool) {
+        let keep = initial ? nil : selectedEntry?.url
+        entries = Self.sortEntries(results, key: sortKey, ascending: sortAscending)
+        if let pending = pendingResultSelection,
+           let idx = entries.firstIndex(where: { Self.samePath($0.url, pending) }) {
+            selection = idx
+            pendingResultSelection = nil
+        } else if let keep, let idx = entries.firstIndex(where: { $0.url == keep }) {
+            selection = idx
+        } else {
+            selection = entries.isEmpty ? nil : 0
         }
-        return result
+    }
+
+    /// Deep name match (folders and files) under `root`, delivered in batches
+    /// so results appear while a large or slow tree is still being walked.
+    /// Skips hidden items and package contents; stops when the consumer
+    /// cancels.
+    nonisolated static func recursiveMatches(under root: URL, query: String) -> AsyncStream<[GridEntry]> {
+        AsyncStream { continuation in
+            let walker = Task.detached(priority: .userInitiated) {
+                let keys: Set<URLResourceKey> = [.isDirectoryKey, .contentModificationDateKey, .fileSizeKey]
+                guard let enumerator = FileManager.default.enumerator(
+                    at: root,
+                    includingPropertiesForKeys: Array(keys),
+                    options: [.skipsHiddenFiles, .skipsPackageDescendants]
+                ) else { continuation.finish(); return }
+
+                var batch: [GridEntry] = []
+                var lastFlush = ContinuousClock.now
+                while let url = enumerator.nextObject() as? URL {
+                    if Task.isCancelled { break }
+                    if url.lastPathComponent.localizedCaseInsensitiveContains(query),
+                       let match = entry(for: url, keys: keys) {
+                        batch.append(match)
+                    }
+                    if !batch.isEmpty, batch.count >= 64 || ContinuousClock.now - lastFlush > .milliseconds(200) {
+                        continuation.yield(batch)
+                        batch.removeAll()
+                        lastFlush = .now
+                    }
+                }
+                if !batch.isEmpty { continuation.yield(batch) }
+                continuation.finish()
+            }
+            continuation.onTermination = { _ in walker.cancel() }
+        }
+    }
+
+    /// Where a search result lives, relative to the searched folder
+    /// ("vacation/2024"); nil for items directly in it.
+    func relativeLocation(of entry: GridEntry) -> String? {
+        guard let root = folderURL, entry.kind != .parent else { return nil }
+        let rootPath = Self.canonicalPath(root)
+        let dirPath = Self.canonicalPath(entry.url.deletingLastPathComponent())
+        guard dirPath != rootPath, dirPath.hasPrefix(rootPath + "/") else { return nil }
+        return String(dirPath.dropFirst(rootPath.count + 1))
+    }
+
+    /// Keys typed while the search field has focus. Escape clears the query
+    /// (or leaves the field when it's empty); ↓ moves into the results;
+    /// Return opens the selected result.
+    @discardableResult
+    func handleSearchFieldKey(_ key: KeyInput) -> Bool {
+        switch key {
+        case .escape:
+            if searchText.isEmpty { searchFocused = false } else { searchText = "" }
+            return true
+        case .down:
+            searchFocused = false
+            mode = .grid
+            if selection == nil, !entries.isEmpty { selection = 0 }
+            return true
+        case .enter:
+            searchFocused = false
+            if mode == .grid { activateSelection() }
+            return true
+        default:
+            return false
+        }
     }
 
     /// Drag & drop: open a folder; for a file → open the parent folder and select it.
@@ -303,6 +537,31 @@ final class BrowserModel: ObservableObject {
         } else {
             open(folder: first.deletingLastPathComponent(), selecting: first, thenDetail: true)
         }
+    }
+
+    // MARK: - History (back / forward)
+
+    private var currentLocation: Location? {
+        guard let folderURL else { return nil }
+        return Location(folder: folderURL, query: searchText, selected: selectedEntry?.url)
+    }
+
+    private func recordHistory() {
+        guard let current = currentLocation else { return }
+        if backStack.last != current { backStack.append(current) }
+        forwardStack.removeAll()
+    }
+
+    func navigateBack() {
+        guard let target = backStack.popLast() else { return }
+        if let current = currentLocation { forwardStack.append(current) }
+        load(target)
+    }
+
+    func navigateForward() {
+        guard let target = forwardStack.popLast() else { return }
+        if let current = currentLocation { backStack.append(current) }
+        load(target)
     }
 
     // MARK: - Selection / navigation
@@ -425,13 +684,11 @@ final class BrowserModel: ObservableObject {
         mode = .grid
     }
 
-    /// "Go back": leave the full-size view, or go up one folder level in the grid.
-    func goBack() { mode == .detail ? closeDetail() : goToParentFolder() }
+    /// Backspace: leave the full-size view, or go up one folder level in the grid.
+    func leaveDetailOrGoUp() { mode == .detail ? closeDetail() : goToParentFolder() }
 
     func goToParentFolder() {
-        guard let current = folderURL else { return }
-        let parent = current.deletingLastPathComponent()
-        guard parent != current else { return }
+        guard let current = folderURL, let parent = Self.parentFolder(of: current) else { return }
         open(folder: parent, selecting: current)
     }
 
@@ -439,15 +696,23 @@ final class BrowserModel: ObservableObject {
 
     /// Single source of truth for key bindings. Returns true if the key was
     /// handled (and should be consumed). Pure enough to unit-test exhaustively.
+    /// ⌘⌫ and ⌘↩ return false so they reach their menu items.
     @discardableResult
     func handleKey(_ key: KeyInput, command: Bool) -> Bool {
         switch key {
+        case .f1:
+            showHelp.toggle(); return true
+        case .f2:
+            return beginRename()
         case .backspace:
-            goBack(); return true
+            guard !command else { return false }
+            leaveDetailOrGoUp(); return true
         case .escape:
-            guard mode == .detail else { return false }
-            closeDetail(); return true
+            if mode == .detail { closeDetail(); return true }
+            if !searchText.isEmpty { searchText = ""; return true }
+            return false
         case .enter:
+            guard !command else { return false }
             mode == .detail ? closeDetail() : activateSelection()
             return true
         case .space:
@@ -468,6 +733,7 @@ final class BrowserModel: ObservableObject {
             else { step(+1) }
             return true
         case .up:
+            if command { goToParentFolder(); return true }
             mode == .detail ? stepMedia(-1) : stepRow(-1); return true
         case .down:
             mode == .detail ? stepMedia(+1) : stepRow(+1); return true
@@ -488,12 +754,14 @@ final class BrowserModel: ObservableObject {
         case "+", "=": scaleUp();   return true
         case "-":      scaleDown(); return true
         case "f":
-            if command { mode = .grid; searchActive = true } else { toggleFullScreen() }
+            if command { searchFocused = true } else { toggleFullScreen() }
             return true
+        case "[" where command: navigateBack();    return true
+        case "]" where command: navigateForward(); return true
         default:
             break
         }
-        guard mode == .detail else { return false }
+        guard mode == .detail, !command else { return false }
         switch c {
         case "0": zoomReset();            return true
         case "1": zoomActualSize();       return true
@@ -514,9 +782,10 @@ final class BrowserModel: ObservableObject {
         guard mode == .detail, firstMediaIndex != nil else { return }
         slideshowOn = true
         slideshowTask?.cancel()
+        let interval = slideshowInterval
         slideshowTask = Task { [weak self] in
             while !Task.isCancelled {
-                try? await Task.sleep(nanoseconds: 3_000_000_000)
+                try? await Task.sleep(for: interval)
                 guard let self, self.slideshowOn, self.mode == .detail else { return }
                 self.advanceSlideshow()
             }
@@ -537,62 +806,140 @@ final class BrowserModel: ObservableObject {
     // MARK: - File actions
 
     func revealInFinder() {
-        guard let url = selectedEntry?.url else { return }
-        NSWorkspace.shared.activateFileViewerSelecting([url])
+        guard let entry = selectedEntry, entry.kind != .parent else { return }
+        fileActions.reveal(entry.url)
     }
 
     func openInDefaultApp() {
         guard let entry = selectedEntry, entry.kind != .parent else { return }
-        NSWorkspace.shared.open(entry.url)
+        fileActions.openInDefaultApp(entry.url)
     }
 
     func moveSelectionToTrash() {
         guard let entry = selectedEntry, entry.kind != .parent else { return }
-        let alert = NSAlert()
-        alert.messageText = "Move “\(entry.name)” to the Trash?"
-        alert.informativeText = "The file will be moved to the Trash."
-        alert.alertStyle = .warning
-        alert.addButton(withTitle: "Move to Trash")
-        alert.addButton(withTitle: "Cancel")
-        guard alert.runModal() == .alertFirstButtonReturn else { return }
+        guard fileActions.confirmTrash(entry.name) else { return }
         do {
-            try FileManager.default.trashItem(at: entry.url, resultingItemURL: nil)
-            if let idx = entries.firstIndex(of: entry) {
-                entries.remove(at: idx)
-                if entries.isEmpty {
-                    selection = nil
-                } else if let sel = selection {
-                    selection = min(sel, entries.count - 1)
-                }
-            }
-            if mode == .detail, selectedMediaEntry == nil {
-                mode = .grid
-            }
+            try fileActions.trash(entry.url)
         } catch {
             NSSound.beep()
+            return
         }
+        allEntries.removeAll { $0.url == entry.url }
+        if let idx = entries.firstIndex(of: entry) {
+            entries.remove(at: idx)
+            if entries.isEmpty {
+                selection = nil
+            } else if let sel = selection {
+                selection = min(sel, entries.count - 1)
+            }
+        }
+        if mode == .detail, selectedMediaEntry == nil {
+            mode = .grid
+        }
+    }
+
+    // MARK: - Rename folder
+
+    /// Open the rename sheet for the selected folder (grid only).
+    @discardableResult
+    func beginRename() -> Bool {
+        guard mode == .grid, let entry = selectedEntry, entry.kind == .folder else { return false }
+        renameTarget = entry
+        return true
+    }
+
+    /// Rename a folder in place. Updates the grid, the selection and every
+    /// history entry that points into the folder.
+    @discardableResult
+    func renameFolder(_ entry: GridEntry, to rawName: String) throws -> URL {
+        let name = rawName.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !name.isEmpty else { throw RenameError.emptyName }
+        guard name != ".", name != "..", !name.contains("/"), !name.contains(":") else {
+            throw RenameError.invalidName
+        }
+        let old = entry.url
+        guard name != old.lastPathComponent else { renameTarget = nil; return old }
+        let new = old.deletingLastPathComponent().appendingPathComponent(name, isDirectory: true)
+        // A case-only change ("photos" → "Photos") points at the same item on
+        // case-insensitive volumes and is allowed.
+        let caseOnlyChange = name.lowercased() == old.lastPathComponent.lowercased()
+        if FileManager.default.fileExists(atPath: new.path), !caseOnlyChange {
+            throw RenameError.alreadyExists(name)
+        }
+        do {
+            try fileActions.move(old, new)
+        } catch {
+            throw RenameError.failed(error.localizedDescription)
+        }
+
+        let renamed = GridEntry(url: new, kind: .folder, modDate: entry.modDate)
+        let keep = selectedEntry?.url
+        func withRenamed(_ list: [GridEntry]) -> [GridEntry] {
+            Self.sortEntries(list.map { $0.url == old ? renamed : $0 }, key: sortKey, ascending: sortAscending)
+        }
+        allEntries = withRenamed(allEntries)
+        entries = withRenamed(entries)
+        if let keep {
+            let target = keep == old ? new : keep
+            selection = entries.firstIndex { $0.url == target }
+        }
+        backStack = backStack.map { Self.rebase($0, from: old, to: new) }
+        forwardStack = forwardStack.map { Self.rebase($0, from: old, to: new) }
+        renameTarget = nil
+        return new
+    }
+
+    /// Point a history location at the renamed folder (or inside it).
+    private static func rebase(_ location: Location, from old: URL, to new: URL) -> Location {
+        func fix(_ url: URL) -> URL {
+            let oldPath = canonicalPath(old)
+            let path = canonicalPath(url)
+            if path == oldPath { return new }
+            guard path.hasPrefix(oldPath + "/") else { return url }
+            return URL(fileURLWithPath: canonicalPath(new) + path.dropFirst(oldPath.count))
+        }
+        var result = location
+        result.folder = fix(location.folder)
+        result.selected = location.selected.map(fix)
+        return result
     }
 
     // MARK: - Video control
 
     func togglePlayPause() {
         guard let p = activePlayer else { return }
-        if p.rate != 0 { p.pause() } else { p.play() }
+        if videoPaused { p.play() } else { p.pause() }
+        videoPaused.toggle()
     }
 
     func seekVideo(by seconds: Double) {
-        guard let p = activePlayer, let item = p.currentItem else { return }
-        let now = CMTimeGetSeconds(p.currentTime())
-        var target = max(0, now + seconds)
-        let duration = CMTimeGetSeconds(item.duration)
-        if duration.isFinite, duration > 0 { target = min(target, duration) }
-        p.seek(to: CMTime(seconds: target, preferredTimescale: 600),
-               toleranceBefore: .zero, toleranceAfter: .zero)
+        activePlayer?.seek(by: seconds)
     }
 
     // MARK: - Window
 
     func toggleFullScreen() {
         NSApp.keyWindow?.toggleFullScreen(nil)
+    }
+}
+
+/// AVKit playback, driven by the keyboard.
+@MainActor
+final class AVPlaybackControl: PlaybackControl {
+    let player: AVPlayer
+
+    init(player: AVPlayer) { self.player = player }
+
+    func play()  { player.play() }
+    func pause() { player.pause() }
+
+    func seek(by seconds: Double) {
+        guard let item = player.currentItem else { return }
+        let now = CMTimeGetSeconds(player.currentTime())
+        var target = max(0, now + seconds)
+        let duration = CMTimeGetSeconds(item.duration)
+        if duration.isFinite, duration > 0 { target = min(target, duration) }
+        player.seek(to: CMTime(seconds: target, preferredTimescale: 600),
+                    toleranceBefore: .zero, toleranceAfter: .zero)
     }
 }

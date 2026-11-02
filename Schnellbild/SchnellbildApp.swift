@@ -4,7 +4,7 @@ import AppKit
 @main
 struct SchnellbildApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
-    @StateObject private var model = BrowserModel()
+    @StateObject private var model = BrowserModel(defaults: BrowserModel.makeDefaults())
 
     var body: some Scene {
         WindowGroup {
@@ -17,7 +17,23 @@ struct SchnellbildApp: App {
                 Button("Open Folder…") { model.chooseFolder() }
                     .keyboardShortcut("o")
             }
+            CommandMenu("Go") {
+                Button("Back") { model.navigateBack() }
+                    .keyboardShortcut("[", modifiers: .command)
+                    .disabled(!model.canGoBack)
+                Button("Forward") { model.navigateForward() }
+                    .keyboardShortcut("]", modifiers: .command)
+                    .disabled(!model.canGoForward)
+                Button("Enclosing Folder") { model.goToParentFolder() }
+                    .keyboardShortcut(.upArrow, modifiers: .command)
+                    .disabled(!model.canGoUp)
+                Divider()
+                Button("Search") { model.searchFocused = true }
+                    .keyboardShortcut("f", modifiers: .command)
+            }
             CommandMenu("Actions") {
+                Button("Rename Folder… (F2)") { model.beginRename() }
+                    .disabled(model.selectedEntry?.kind != .folder || model.mode != .grid)
                 Button("Reveal in Finder") { model.revealInFinder() }
                     .keyboardShortcut("r", modifiers: [.command, .shift])
                 Button("Open with Default App") { model.openInDefaultApp() }

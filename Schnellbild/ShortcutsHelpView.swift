@@ -24,6 +24,8 @@ struct ShortcutsHelpView: View {
             Shortcut(keys: "Backspace", action: "Up one folder level"),
             Shortcut(keys: "Home / End", action: "First / last item"),
             Shortcut(keys: "⌘+ / ⌘−", action: "Larger / smaller thumbnails"),
+            Shortcut(keys: "F2", action: "Rename selected folder"),
+            Shortcut(keys: "Esc", action: "Clear search"),
         ]),
         Group(title: "Full view", shortcuts: [
             Shortcut(keys: "← → ↑ ↓", action: "Previous / next item"),
@@ -36,9 +38,16 @@ struct ShortcutsHelpView: View {
             Shortcut(keys: "s", action: "Slideshow"),
             Shortcut(keys: "Esc / Backspace / Return", action: "Back to grid"),
         ]),
+        Group(title: "Search field", shortcuts: [
+            Shortcut(keys: "⌘F", action: "Search folder and file names (incl. subfolders)"),
+            Shortcut(keys: "↓", action: "Move into the results"),
+            Shortcut(keys: "Return", action: "Open the selected result"),
+            Shortcut(keys: "Esc", action: "Clear · leave the field"),
+        ]),
         Group(title: "Anywhere", shortcuts: [
+            Shortcut(keys: "⌘[ / ⌘]", action: "Back / forward (history)"),
+            Shortcut(keys: "⌘↑", action: "Enclosing folder"),
             Shortcut(keys: "f", action: "Toggle full screen"),
-            Shortcut(keys: "⌘F", action: "Search (This Folder / Subfolders)"),
             Shortcut(keys: "⌘O", action: "Open folder"),
             Shortcut(keys: "⇧⌘R", action: "Reveal in Finder"),
             Shortcut(keys: "⌘↩", action: "Open with default app"),
@@ -79,6 +88,6 @@ struct ShortcutsHelpView: View {
                 .padding()
             }
         }
-        .frame(width: 480, height: 580)
+        .frame(width: 500, height: 680)
     }
 }

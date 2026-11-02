@@ -24,21 +24,43 @@ There is **no Xcode project for the app build**; `xcodegen` generates
 
 - **`BrowserModel.swift`** — `@MainActor ObservableObject`, the single source of
   truth. Holds `entries`/`allEntries`, `selection`, `mode` (.grid/.detail),
-  `zoom`, `rotation`, search (`searchText`/`searchScope`/`searchActive`/
-  `isSearching`), `showInspector`, `showHelp`, sort, `activePlayer` (AVPlayer).
+  `zoom`, `rotation`, search (`searchText` → `didSet` runs `applyFilter`;
+  `searchFocused`, `isSearching`), history (`backStack`/`forwardStack` of
+  `Location` = folder + query + selection), `renameTarget`, `showInspector`,
+  `showHelp`, sort, `activePlayer` (`PlaybackControl`, AVKit or VLCKit).
   **All key bindings live in `handleKey(_:command:) -> Bool`** with the
-  `KeyInput` enum — this is the unit-tested dispatch.
+  `KeyInput` enum — this is the unit-tested dispatch. Keys typed in the search
+  field go through `handleSearchFieldKey`.
+  - Search is **always recursive** and matches **folder and file names**: local
+    matches at once, then `recursiveMatches` streams batches (`AsyncStream`)
+    from a tree walk; debounced via `searchDebounce`.
+  - `open(folder:)` records history; `navigateBack/Forward` restore folder,
+    query and selection (so "Back" from a result folder shows the search again).
+    Backspace / ⌘↑ / `..` = enclosing folder (`goToParentFolder`).
+  - Side effects (Finder, open, trash + confirm alert, move/rename) go through
+    the injectable `FileActions`; tests pass a spy. `--ui-testing` makes the app
+    use its own `UserDefaults` suite (`--reset-state` clears it).
+  - ⌘⌫ / ⌘↩ return `false` from `handleKey` so they reach their menu items
+    (the local key monitor sees keys before menu key equivalents).
+- **`SearchField.swift`** — `NSSearchField` wrapper, always visible above the
+  content. It refuses first responder until clicked or ⌘F, otherwise AppKit
+  focuses it on launch and it swallows the grid keys.
+- **`RenameFolderView.swift`** — the F2 rename sheet (`model.renameFolder`).
 - **`ContentView.swift`** — one **local `NSEvent` keyDown monitor** dispatches
   *every* key through `model.handleKey` via `MainActor.assumeIsolated`. This is
   deliberate: SwiftUI focus kept losing Backspace/arrows, so keys are
-  focus-independent now. F1 = keyCode 122 → `showHelp`. The monitor passes keys
-  through when the first responder is `NSText` (search field) or `showHelp`.
-  Hardware keyCodes: 51 Backspace, 53 Esc, 36/76 Return, 49 Space, 123 ←,
-  124 →, 125 ↓, 126 ↑, 115 Home, 119 End, 122 F1.
+  focus-independent now. F1 works everywhere. The monitor passes keys through
+  when the first responder is `NSText` (search/rename field) or a sheet is open.
+  Hardware keyCodes (`ContentView.keyInput`, unit-tested): 51 Backspace, 53 Esc,
+  36/76 Return, 49 Space, 123 ←, 124 →, 125 ↓, 126 ↑, 115 Home, 119 End,
+  122 F1, 120 F2. Toolbar: Back / Forward / Up / Open Folder.
 - **`ShortcutsHelpView.swift`** — F1 / "Schnellbild Help" cheat sheet (same
   content as the README keyboard tables; keep them in sync).
 - **`ThumbnailView.swift` / `ThumbnailGridView.swift`** — `LazyVGrid`, thumbnails
-  from QuickLook (`QLThumbnailGenerator`), `NSCache`.
+  from QuickLook (`QLThumbnailGenerator`), `NSCache` keyed by file + size.
+  `FolderTile` fans up to three previews of a folder's first media files
+  (`BrowserModel.folderPreviewFiles`, one shallow listing per visible tile).
+  Tiles carry accessibility ids `tile.<name>` (value `selected`) for the UI tests.
 - **`FullImageView.swift`** — ImageIO downsample + zoom/pan/rotate (view-only;
   **never modifies files** — important user constraint).
 - **`VideoDetailView.swift`** — native formats via AVKit; non-native fall back to…
@@ -69,7 +91,9 @@ AVI/MKV/WebM and other non-native formats play **in-app via vendored VLCKit
 
 ## Build / test / run — gotchas that will bite you
 
-- Needs a **full Xcode** (not just Command Line Tools).
+- Needs a **full Xcode** (not just Command Line Tools). With only the CLT,
+  `swift build` fails ("SwiftUIMacros … plugin not found": `@State` is a macro
+  in the macOS 27 SDK). Without Xcode on the machine, build and test on CI.
 - **`swift test` ALONE FAILS.** VLCKit's `binaryTarget` links into the `.xctest`
   bundle but SwiftPM doesn't embed it (install name `@loader_path/../Frameworks/…`).
   **Always use `./Scripts/test.sh`** — it fetches VLCKit, `swift build --build-tests`,
@@ -82,8 +106,13 @@ AVI/MKV/WebM and other non-native formats play **in-app via vendored VLCKit
 - After editing `project.yml` **or adding/removing a `.swift` file**, re-run
   `xcodegen generate` before the Xcode/UITest build (the app target embeds
   `Vendor/VLCKit.xcframework`).
-- Tests: 27 unit (`BrowserModelTests.swift`, incl. `KeyBindingTests` for every
-  binding) + 5 XCUITest (`UITests/SchnellbildUITests.swift`, incl. F1).
+- Tests: 76 unit (`Tests/SchnellbildTests/BrowserModelTests.swift`: search,
+  history, rename, file actions via spy, playback via `PlayerSpy`, every key
+  binding) + 53 XCUITest in `UITests/*UITests.swift` (grid, search, navigation,
+  full view, video incl. VLC, actions), sharing `UITestSupport.swift`. Media
+  fixtures live in `UITests/Fixtures` (bundled as test resources). Not covered
+  end-to-end: drag & drop from Finder, Reveal in Finder, Open with default app
+  (unit-tested through `FileActions`).
   UI run: `xcodegen generate` → `xcodebuild test -project Schnellbild.xcodeproj
   -scheme Schnellbild -destination 'platform=macOS'
   -only-testing:SchnellbildUITests -derivedDataPath build/DerivedData`.
@@ -125,10 +154,12 @@ AVI/MKV/WebM and other non-native formats play **in-app via vendored VLCKit
 ## Current state & open threads (handover)
 
 Done & released as **v0.2.0**: folders + drag&drop, subfolder nav (Norton `..`),
-keyboard-first (NSEvent monitor, F1 help), search (⌘F, this-folder + recursive
-subfolders), zoom/pan/pinch/rotate (view-only), video (AVKit + VLCKit fallback),
+keyboard-first (NSEvent monitor, F1 help), zoom/pan/pinch/rotate (view-only), video (AVKit + VLCKit fallback),
 animated GIFs, slideshow, inspector, sort, reveal/open/trash, light/dark,
-last-folder restore. App is installed at `/Applications/Schnellbild.app`
+last-folder restore. Since then (unreleased): always-visible recursive search
+over folder + file names, back/forward/up history, folder rename, folder
+preview tiles, VLC keyboard control, ⌘⌫/⌘↩ reach their menu items, video badge at the top.
+App is installed at `/Applications/Schnellbild.app`
 (quarantine already cleared). CI + release green.
 
 Open / next-up:

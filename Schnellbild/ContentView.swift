@@ -3,7 +3,6 @@ import AppKit
 
 struct ContentView: View {
     @EnvironmentObject var model: BrowserModel
-    @FocusState private var searchFieldFocused: Bool
     @State private var isDropTargeted = false
     @State private var keyMonitor: Any?
 
@@ -26,9 +25,7 @@ struct ContentView: View {
             isDropTargeted = hovering
         }
         .overlay { if isDropTargeted { dropHighlight } }
-        .safeAreaInset(edge: .top, spacing: 0) {
-            if model.mode == .grid, model.searchActive { searchBar }
-        }
+        .safeAreaInset(edge: .top, spacing: 0) { searchBar }
         .safeAreaInset(edge: .bottom, spacing: 0) {
             if model.mode == .grid, model.folderURL != nil { statusBar }
         }
@@ -37,14 +34,10 @@ struct ContentView: View {
             installKeyMonitor()
         }
         .onDisappear { removeKeyMonitor() }
-        .onChange(of: model.searchText) { _, _ in if !model.isLoading { model.applyFilter() } }
-        .onChange(of: model.searchScope) { _, _ in if !model.isLoading { model.applyFilter() } }
-        .onChange(of: model.searchActive) { _, active in
-            if active { DispatchQueue.main.async { searchFieldFocused = true } }
-        }
         .toolbar { toolbarContent }
         .navigationTitle(model.folderURL?.lastPathComponent ?? "Schnellbild")
         .sheet(isPresented: $model.showHelp) { ShortcutsHelpView() }
+        .sheet(item: $model.renameTarget) { RenameFolderView(entry: $0) }
     }
 
     private var dropHighlight: some View {
@@ -54,36 +47,23 @@ struct ContentView: View {
             .allowsHitTesting(false)
     }
 
-    // MARK: - Search bar
+    // MARK: - Search bar (always visible)
 
     private var searchBar: some View {
         HStack(spacing: 8) {
-            Image(systemName: "magnifyingglass")
-                .foregroundStyle(.secondary)
-            TextField("Filter by name", text: $model.searchText)
-                .textFieldStyle(.plain)
-                .focused($searchFieldFocused)
-            Picker("Scope", selection: $model.searchScope) {
-                Text("This Folder").tag(BrowserModel.SearchScope.folder)
-                Text("Subfolders").tag(BrowserModel.SearchScope.subfolders)
-            }
-            .pickerStyle(.segmented)
-            .labelsHidden()
-            .fixedSize()
+            SearchField(
+                text: $model.searchText,
+                isFocused: $model.searchFocused,
+                placeholder: "Search folder and file names, including subfolders",
+                isEnabled: model.folderURL != nil,
+                onKey: { model.handleSearchFieldKey($0) }
+            )
             if model.isSearching {
                 ProgressView().controlSize(.small)
             }
-            Button {
-                model.searchText = ""
-                model.searchActive = false
-            } label: {
-                Image(systemName: "xmark.circle.fill").foregroundStyle(.secondary)
-            }
-            .buttonStyle(.plain)
-            .help("Close search")
         }
         .padding(.horizontal, 12)
-        .padding(.vertical, 8)
+        .padding(.vertical, 6)
         .background(.bar)
     }
 
@@ -91,7 +71,12 @@ struct ContentView: View {
 
     private var statusBar: some View {
         HStack(spacing: 8) {
-            Text(statusText).foregroundStyle(.secondary)
+            Text(statusText)
+                .foregroundStyle(.secondary)
+                .accessibilityIdentifier("statusText")
+            if model.isSearching {
+                Text("Searching subfolders…").foregroundStyle(.secondary)
+            }
             if model.slideshowOn {
                 Label("Slideshow", systemImage: "play.fill").foregroundStyle(.secondary)
             }
@@ -112,7 +97,11 @@ struct ContentView: View {
         if model.folderCount > 0 { parts.append("\(model.folderCount) folders") }
         if model.imageCount  > 0 { parts.append("\(model.imageCount) images") }
         if model.videoCount  > 0 { parts.append("\(model.videoCount) videos") }
-        return parts.isEmpty ? "Empty" : parts.joined(separator: " · ")
+        let summary = parts.isEmpty ? "Empty" : parts.joined(separator: " · ")
+        let query = model.searchText.trimmingCharacters(in: .whitespaces)
+        guard !query.isEmpty else { return summary }
+        let count = model.entries.count
+        return "\(count) \(count == 1 ? "result" : "results") for “\(query)”" + (count > 0 ? " · \(summary)" : "")
     }
 
     // MARK: - Full-size view (image / GIF / video)
@@ -124,33 +113,61 @@ struct ContentView: View {
                 VideoDetailView(url: entry.url)
             } else if entry.isGIF {
                 ZStack { Color.black; AnimatedImageView(url: entry.url) }
+                    .accessibilityElement(children: .contain)
+                    .accessibilityIdentifier("animatedImage")
             } else {
                 FullImageView(url: entry.url)
             }
         }
-        .overlay(alignment: .bottom) { positionBadge(entry: entry) }
+        // Videos keep the bottom edge free for the player's own controls.
+        .overlay(alignment: entry.kind == .video ? .top : .bottom) {
+            positionBadge(entry: entry, atTop: entry.kind == .video)
+        }
         .overlay(alignment: .topTrailing) {
             if model.showInspector { InspectorView(entry: entry).padding(12) }
         }
     }
 
-    private func positionBadge(entry: GridEntry) -> some View {
+    private func positionBadge(entry: GridEntry, atTop: Bool) -> some View {
         Text("\(model.currentMediaNumber ?? 0) / \(model.mediaCount)  ·  \(entry.name)")
             .font(.callout)
             .padding(.horizontal, 12)
             .padding(.vertical, 6)
             .background(.ultraThinMaterial, in: Capsule())
-            .padding(.bottom, 16)
+            .padding(atTop ? .top : .bottom, 16)
+            .accessibilityIdentifier("positionBadge")
     }
 
-    // MARK: - Toolbar
+    // MARK: - Toolbar (history, up, open)
 
     @ToolbarContentBuilder
     private var toolbarContent: some ToolbarContent {
-        ToolbarItem(placement: .navigation) {
+        ToolbarItemGroup(placement: .navigation) {
+            Button { model.navigateBack() } label: {
+                Label("Back", systemImage: "chevron.left")
+            }
+            .help("Back (⌘[)")
+            .disabled(!model.canGoBack)
+            .accessibilityIdentifier("backButton")
+
+            Button { model.navigateForward() } label: {
+                Label("Forward", systemImage: "chevron.right")
+            }
+            .help("Forward (⌘])")
+            .disabled(!model.canGoForward)
+            .accessibilityIdentifier("forwardButton")
+
+            Button { model.goToParentFolder() } label: {
+                Label("Up", systemImage: "arrow.up")
+            }
+            .help("Enclosing folder (⌘↑ / Backspace)")
+            .disabled(!model.canGoUp)
+            .accessibilityIdentifier("upButton")
+
             Button { model.chooseFolder() } label: {
                 Label("Open Folder", systemImage: "folder")
             }
+            .help("Open folder (⌘O)")
         }
         if model.mode == .detail {
             ToolbarItem(placement: .principal) {
@@ -175,28 +192,33 @@ struct ContentView: View {
             let chars = (command ? event.charactersIgnoringModifiers : event.characters) ?? ""
             // Decide on the main actor whether to consume the key.
             let consume = MainActor.assumeIsolated { () -> Bool in
-                if code == 122 { model.showHelp.toggle(); return true }   // F1 → help
-                // Let the search field and the help sheet handle their own keys.
+                if code == 122 { return model.handleKey(.f1, command: command) }
+                // Text fields (search, rename) and open sheets handle their own keys.
                 if NSApp.keyWindow?.firstResponder is NSText { return false }
-                if model.showHelp { return false }
-                let key: BrowserModel.KeyInput?
-                switch code {
-                case 51:     key = .backspace
-                case 53:     key = .escape
-                case 36, 76: key = .enter
-                case 49:     key = .space
-                case 123:    key = .left
-                case 124:    key = .right
-                case 125:    key = .down
-                case 126:    key = .up
-                case 115:    key = .home
-                case 119:    key = .end
-                default:     key = chars.first.map(BrowserModel.KeyInput.char)
-                }
-                guard let key else { return false }
+                if model.showHelp || model.renameTarget != nil { return false }
+                guard let key = Self.keyInput(code: code, characters: chars) else { return false }
                 return model.handleKey(key, command: command)
             }
             return consume ? nil : event
+        }
+    }
+
+    /// Hardware key code → key binding input.
+    static func keyInput(code: UInt16, characters: String) -> BrowserModel.KeyInput? {
+        switch code {
+        case 51:     return .backspace
+        case 53:     return .escape
+        case 36, 76: return .enter
+        case 49:     return .space
+        case 123:    return .left
+        case 124:    return .right
+        case 125:    return .down
+        case 126:    return .up
+        case 115:    return .home
+        case 119:    return .end
+        case 122:    return .f1
+        case 120:    return .f2
+        default:     return characters.first.map(BrowserModel.KeyInput.char)
         }
     }
 
@@ -227,7 +249,7 @@ struct EmptyStateView: View {
                         .foregroundStyle(.secondary)
                     Text("No matches")
                         .font(.title2)
-                    Text("Nothing named “\(model.searchText)” in this folder\(model.searchScope == .subfolders ? " or its subfolders" : "").")
+                    Text("No folder or file named “\(model.searchText)” in this folder or its subfolders.")
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
                 }

@@ -22,8 +22,8 @@ Quickly: `[`/`]` rotate, one `+` zoom, then briefly play a **video** (ideally an
 **AVI**, to show the VLCKit fallback in passing). Keep moving, don't linger.
 
 **14–19 s — Search (what Preview can't do).**
-⌘F → type three letters → grid filters live → flip to "Subfolders" → recursive
-matches pop in. A clear differentiator.
+⌘F → type three letters → matches from all subfolders (folders and files)
+pop in live. A clear differentiator.
 
 **19–24 s — Folder nav + F1.**
 Into a subfolder (Return on a folder tile), Backspace back up (Norton `..`) →

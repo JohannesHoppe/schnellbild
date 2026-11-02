@@ -26,8 +26,8 @@ Why it stays fast — the same tricks Preview uses that most viewers skip:
   screen size (no 8000px image sitting in RAM); nothing blocks the main thread.
 
 Kept deliberately lean: folder navigation (Norton-style `..`), keyboard-first
-(Phiewer-like bindings, F1 cheat sheet), search (current folder + optional
-recursive), zoom/pan/pinch/rotate (view-only — never touches your files), video
+(Phiewer-like bindings, F1 cheat sheet), search (folder and file names,
+always recursive), zoom/pan/pinch/rotate (view-only — never touches your files), video
 via AVKit with a VLCKit fallback for AVI/MKV/WebM, animated GIFs, slideshow,
 sort, trash, light/dark.
 
@@ -57,8 +57,8 @@ even over the network.
 
 - Rides macOS QuickLook for thumbnails, so RAW/PSD/PDF/HEIC and video posters
   just work, and it reads embedded previews instead of whole files.
-- Keyboard-first (F1 shows all shortcuts), folder browsing, search (with
-  optional subfolder search), zoom/rotate, slideshow, video (incl. AVI/MKV via
+- Keyboard-first (F1 shows all shortcuts), folder browsing, search (folder and file
+  names across all subfolders), back/forward history, folder rename, zoom/rotate, slideshow, video (incl. AVI/MKV via
   a bundled VLCKit fallback), animated GIFs, light/dark.
 - Free and open source (MIT). macOS 14+.
 

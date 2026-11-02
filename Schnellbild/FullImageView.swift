@@ -36,8 +36,11 @@ struct FullImageView: View {
             }
             .clipped()
             .contentShape(Rectangle())
+            .accessibilityElement(children: .ignore)
+            .accessibilityIdentifier("fullImage")
+            .accessibilityValue(accessibilityState)
             .task(id: url) {
-                if let thumb = ThumbnailCache.shared.image(for: url) {
+                if let thumb = ThumbnailCache.shared.image(for: url, side: model.thumbnailSide) {
                     image = thumb
                 }
                 let scale = NSScreen.mainBackingScale
@@ -56,6 +59,12 @@ struct FullImageView: View {
             panOffset = .zero
             nativeSize = nil
         }
+    }
+
+    /// Exposes the view transform, e.g. "zoom 125 %, rotation 90°, loaded".
+    private var accessibilityState: String {
+        "zoom \(Int((model.zoom * 100).rounded())) %, rotation \(Int(model.rotation))°, "
+            + (image == nil ? "loading" : "loaded")
     }
 
     private var panGesture: some Gesture {

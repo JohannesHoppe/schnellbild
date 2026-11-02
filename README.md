@@ -102,7 +102,14 @@ CI runs both on every push.
 - **Folders & drag-and-drop.** Open a folder (⌘O) or drag one onto the window.
   Drag a single file to open it straight in the full view. Subfolders show up in
   the grid (folders first) with a Norton-style `..` tile to go up a level.
-  Hidden files and folders are shown.
+  Folder tiles preview their first images, like Finder. Hidden files and
+  folders are shown.
+- **Back / Forward / Up** in the toolbar (⌘[ ⌘] ⌘↑), with a history that
+  remembers the folder, the search and the selection.
+- **Search, always visible.** Matches folder and file names in the current
+  folder and all subfolders; results stream in while the tree is walked and
+  show where they live.
+- **Rename folders** (F2, the Actions menu, or right-click).
 - **Thumbnails for everything QuickLook supports** — images, RAW, PSD, PDF, and
   a poster frame for videos.
 - **Full view** with zoom (keyboard + trackpad pinch) and drag-to-pan.
@@ -127,6 +134,8 @@ Bindings follow [Phiewer](https://phiewer.com/) where it makes sense.
 | Backspace | up one folder level |
 | Home / End | first / last item |
 | ⌘+ / ⌘− | larger / smaller thumbnails |
+| F2 | rename selected folder |
+| Esc | clear search |
 
 **Full view**
 
@@ -142,6 +151,22 @@ Bindings follow [Phiewer](https://phiewer.com/) where it makes sense.
 | s | slideshow |
 | f | fullscreen |
 | Esc / Backspace / Return | back to grid |
+
+**Search** (the field is always visible above the grid)
+
+| Key | Action |
+|---|---|
+| ⌘F | focus search: folder and file names, this folder and all subfolders |
+| ↓ | move into the results |
+| Return | open the selected result |
+| Esc | clear · leave the field |
+
+**Navigation**
+
+| Key | Action |
+|---|---|
+| ⌘[ / ⌘] | back / forward (history; restores the search you came from) |
+| ⌘↑ | enclosing folder |
 
 **Menus**
 
