@@ -35,7 +35,11 @@ There is **no Xcode project for the app build**; `xcodegen` generates
     matches at once, then `recursiveMatches` streams batches (`AsyncStream`)
     from a tree walk; debounced via `searchDebounce`.
   - `open(folder:)` records history; `navigateBack/Forward` restore folder,
-    query and selection (so "Back" from a result folder shows the search again).
+    query, selection and the **remembered search results** (not searched
+    again), so "Back" from a result folder shows the same, stable list.
+  - Renaming a folder (`renameFolder`) never navigates: folder, query and
+    results stay; the folder and everything listed inside it get the new path
+    (`rebased`), as do history entries and results still streaming in.
     Backspace / ⌘↑ / `..` = enclosing folder (`goToParentFolder`).
   - Side effects (Finder, open, trash + confirm alert, move/rename) go through
     the injectable `FileActions`; tests pass a spy. `--ui-testing` makes the app
@@ -106,9 +110,9 @@ AVI/MKV/WebM and other non-native formats play **in-app via vendored VLCKit
 - After editing `project.yml` **or adding/removing a `.swift` file**, re-run
   `xcodegen generate` before the Xcode/UITest build (the app target embeds
   `Vendor/VLCKit.xcframework`).
-- Tests: 76 unit (`Tests/SchnellbildTests/BrowserModelTests.swift`: search,
+- Tests: 82 unit (`Tests/SchnellbildTests/BrowserModelTests.swift`: search,
   history, rename, file actions via spy, playback via `PlayerSpy`, every key
-  binding) + 53 XCUITest in `UITests/*UITests.swift` (grid, search, navigation,
+  binding) + 55 XCUITest in `UITests/*UITests.swift` (grid, search, navigation,
   full view, video incl. VLC, actions), sharing `UITestSupport.swift`. Media
   fixtures live in `UITests/Fixtures` (bundled as test resources). Not covered
   end-to-end: drag & drop from Finder, Reveal in Finder, Open with default app

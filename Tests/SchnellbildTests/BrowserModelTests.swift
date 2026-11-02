@@ -803,6 +803,111 @@ final class RenameTests: XCTestCase {
     }
 }
 
+// MARK: - Rename while searching / with history
+
+@MainActor
+final class RenameSearchStabilityTests: XCTestCase {
+    /// archive/trip-2024/trip-beach.jpg + archive/trip-2024/sub, searched for "trip".
+    private func searchTrip() async throws -> (TempTree, BrowserModel) {
+        let tree = try TempTree(self)
+        try tree.file("archive/trip-2024/trip-beach.jpg")
+        try tree.folder("archive/trip-2024/sub")
+        try tree.file("other.jpg")
+        let m = makeModel(FileActionsSpy())
+        await openAndWait(m, tree.root)
+        await searchAndWait(m, "trip")
+        XCTAssertEqual(m.names, ["trip-2024", "trip-beach.jpg"])
+        return (tree, m)
+    }
+
+    func testRenameInResultsKeepsFolderQueryAndResults() async throws {
+        let (tree, m) = try await searchTrip()
+        m.selectEntry(named: "trip-2024")
+        try m.renameFolder(try XCTUnwrap(m.selectedEntry), to: "Holiday")
+
+        XCTAssertTrue(m.isAt(tree.root), "still in the same folder")
+        XCTAssertEqual(m.mode, .grid)
+        XCTAssertEqual(m.searchText, "trip", "query unchanged")
+        XCTAssertEqual(m.names, ["Holiday", "trip-beach.jpg"], "renamed folder stays although it no longer matches")
+        XCTAssertEqual(m.selectedEntry?.name, "Holiday")
+        let beach = try XCTUnwrap(m.entries.first { $0.name == "trip-beach.jpg" })
+        XCTAssertEqual(m.relativeLocation(of: beach), "archive/Holiday", "results inside get the new path")
+        XCTAssertTrue(FileManager.default.fileExists(atPath: beach.url.path))
+    }
+
+    func testBackToSearchShowsRememberedResultsWithRename() async throws {
+        let (tree, m) = try await searchTrip()
+        m.selectEntry(named: "trip-2024")
+        try m.renameFolder(try XCTUnwrap(m.selectedEntry), to: "Holiday")
+
+        m.activateSelection()   // enter the renamed folder
+        await waitUntil { m.folderURL?.lastPathComponent == "Holiday" && !m.isLoading }
+        XCTAssertEqual(m.names, ["..", "sub", "trip-beach.jpg"])
+
+        m.navigateBack()
+        await waitUntil { m.isAt(tree.root) && !m.entries.isEmpty }
+        XCTAssertEqual(m.searchText, "trip")
+        XCTAssertEqual(m.names, ["Holiday", "trip-beach.jpg"], "stable: not searched again")
+        XCTAssertEqual(m.selectedEntry?.name, "Holiday")
+
+        m.navigateForward()
+        await waitUntil { m.folderURL?.lastPathComponent == "Holiday" && !m.isLoading }
+    }
+
+    func testRenameInsideAResultFolderThenBack() async throws {
+        let (tree, m) = try await searchTrip()
+        m.selectEntry(named: "trip-2024")
+        m.activateSelection()
+        await waitUntil { m.folderURL?.lastPathComponent == "trip-2024" && !m.isLoading }
+        let inside = try XCTUnwrap(m.folderURL)
+
+        m.selectEntry(named: "sub")
+        try m.renameFolder(try XCTUnwrap(m.selectedEntry), to: "sub2")
+        XCTAssertTrue(m.isAt(inside), "still in the result folder")
+        XCTAssertEqual(m.names, ["..", "sub2", "trip-beach.jpg"])
+        XCTAssertEqual(m.selectedEntry?.name, "sub2")
+
+        m.navigateBack()
+        await waitUntil { m.isAt(tree.root) && !m.entries.isEmpty }
+        XCTAssertEqual(m.searchText, "trip")
+        XCTAssertEqual(m.names, ["trip-2024", "trip-beach.jpg"])
+        XCTAssertEqual(m.selectedEntry?.name, "trip-2024")
+    }
+
+    func testRenameThenBackFromResultsFolderListRestoresRename() async throws {
+        // Rename a result after coming back to it, then go forward again.
+        let (_, m) = try await searchTrip()
+        m.selectEntry(named: "trip-2024")
+        m.activateSelection()
+        await waitUntil { m.folderURL?.lastPathComponent == "trip-2024" && !m.isLoading }
+        m.navigateBack()
+        await waitUntil { m.searchText == "trip" && !m.isLoading && !m.entries.isEmpty }
+
+        m.selectEntry(named: "trip-2024")
+        try m.renameFolder(try XCTUnwrap(m.selectedEntry), to: "Renamed")
+        m.navigateForward()
+        await waitUntil { m.folderURL?.lastPathComponent == "Renamed" && !m.isLoading }
+        XCTAssertEqual(m.names, ["..", "sub", "trip-beach.jpg"])
+    }
+
+    func testEditingTheQueryAfterRestoreSearchesAgain() async throws {
+        let (tree, m) = try await searchTrip()
+        m.selectEntry(named: "trip-2024")
+        try m.renameFolder(try XCTUnwrap(m.selectedEntry), to: "Holiday")
+        await searchAndWait(m, "holi")
+        XCTAssertEqual(m.names, ["Holiday"], "a new query searches the disk")
+        XCTAssertTrue(m.isAt(tree.root))
+    }
+
+    func testRebasedPaths() {
+        let old = URL(fileURLWithPath: "/a/old")
+        let new = URL(fileURLWithPath: "/a/new")
+        XCTAssertEqual(BrowserModel.rebased(URL(fileURLWithPath: "/a/old"), from: old, to: new).path, "/a/new")
+        XCTAssertEqual(BrowserModel.rebased(URL(fileURLWithPath: "/a/old/x/y.jpg"), from: old, to: new).path, "/a/new/x/y.jpg")
+        XCTAssertEqual(BrowserModel.rebased(URL(fileURLWithPath: "/a/older/y.jpg"), from: old, to: new).path, "/a/older/y.jpg")
+    }
+}
+
 // MARK: - File actions
 
 @MainActor

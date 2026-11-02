@@ -193,6 +193,11 @@ struct ContentView: View {
             // Decide on the main actor whether to consume the key.
             let consume = MainActor.assumeIsolated { () -> Bool in
                 if code == 122 { return model.handleKey(.f1, command: command) }
+                // F2 renames the selected folder even while typing in the search field.
+                if code == 120, !model.showHelp, model.renameTarget == nil, model.beginRename() {
+                    model.searchFocused = false
+                    return true
+                }
                 // Text fields (search, rename) and open sheets handle their own keys.
                 if NSApp.keyWindow?.firstResponder is NSText { return false }
                 if model.showHelp || model.renameTarget != nil { return false }

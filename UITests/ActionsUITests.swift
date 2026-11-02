@@ -84,4 +84,59 @@ final class ActionsUITests: SchnellbildUITestCase {
         XCTAssertTrue(app.staticTexts["c.jpg"].exists)
         XCTAssertTrue(FileManager.default.fileExists(atPath: tempDir.appendingPathComponent("c.jpg").path))
     }
+
+    // MARK: Rename while searching
+
+    private func searchAlbum() {
+        searchField.click()
+        searchField.typeText("album")
+        XCTAssertTrue(app.staticTexts["album-photo.jpg"].waitForExistence(timeout: 10))
+        waitForSelected("album")
+    }
+
+    func testRenameASearchResultKeepsTheResultsAndBackShowsThem() throws {
+        try put("sample.jpg", at: "album/album-photo.jpg")
+        launchOnTempDir(waitFor: "album")
+        searchAlbum()
+
+        app.typeKey(.F2, modifierFlags: [])   // works straight from the search field
+        enterName("Holiday")
+        XCTAssertTrue(app.staticTexts["Holiday"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["album-photo.jpg"].exists, "results stay")
+        XCTAssertTrue(app.staticTexts["Holiday"].exists)
+        XCTAssertEqual(value(of: searchField), "album", "query stays")
+        waitForSelected("Holiday")
+        XCTAssertFalse(app.staticTexts["taken"].exists, "still the search results, not the folder")
+
+        app.typeKey(.return, modifierFlags: [])   // enter the renamed folder
+        XCTAssertTrue(app.staticTexts["inside.jpg"].waitForExistence(timeout: 10))
+        app.buttons["backButton"].click()
+        XCTAssertTrue(app.staticTexts["album-photo.jpg"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.staticTexts["Holiday"].exists, "the rename shows in the restored search")
+        XCTAssertEqual(value(of: searchField), "album")
+        waitForSelected("Holiday")
+    }
+
+    func testRenameInsideAResultFolderStaysThereAndBackWorks() throws {
+        try folder("album/sub")
+        launchOnTempDir(waitFor: "album")
+        searchField.click()
+        searchField.typeText("album")
+        XCTAssertTrue(app.staticTexts["album"].waitForExistence(timeout: 10))
+        app.typeKey(.return, modifierFlags: [])   // open the result
+        XCTAssertTrue(app.staticTexts["inside.jpg"].waitForExistence(timeout: 10))
+        waitForSelected("sub")
+
+        app.typeKey(.F2, modifierFlags: [])
+        enterName("sub2")
+        XCTAssertTrue(app.staticTexts["sub2"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["inside.jpg"].exists, "still inside the result folder")
+        waitForSelected("sub2")
+
+        app.buttons["backButton"].click()
+        XCTAssertTrue(app.staticTexts["album"].waitForExistence(timeout: 10))
+        XCTAssertFalse(app.staticTexts["inside.jpg"].exists)
+        XCTAssertEqual(value(of: searchField), "album")
+        waitForSelected("album")
+    }
 }

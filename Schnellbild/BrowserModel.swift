@@ -90,12 +90,15 @@ final class BrowserModel: ObservableObject {
         case char(Character)
     }
 
-    /// A place in the navigation history: a folder, the search shown in it,
-    /// and the selected item.
+    /// A place in the navigation history: a folder, the search shown in it
+    /// with its results, and the selected item. Going back to a search shows
+    /// exactly these results again (with any renames applied) instead of
+    /// searching anew, so the list stays stable.
     struct Location: Equatable {
         var folder: URL
         var query: String = ""
         var selected: URL? = nil
+        var results: [GridEntry]? = nil
     }
 
     @Published private(set) var folderURL: URL?
@@ -141,8 +144,11 @@ final class BrowserModel: ObservableObject {
     /// currently visible (possibly search-filtered) view of it.
     private var allEntries: [GridEntry] = []
     private var searchTask: Task<Void, Never>?
-    /// A result to select as soon as the search produces it (history restore).
+    /// A result to select as soon as the search produces it.
     private var pendingResultSelection: URL?
+    /// Folder renames done in this session (old canonical path → new URL),
+    /// applied to search results that are still streaming in.
+    private var renames: [(old: String, new: URL)] = []
 
     // MARK: History
 
@@ -256,9 +262,16 @@ final class BrowserModel: ObservableObject {
             self.allEntries = sorted
             self.isLoading = false
             if !self.searchText.isEmpty {
-                // Restoring a search (history) or the user typed while loading.
-                self.pendingResultSelection = target
-                self.applyFilter()
+                if let results = location.results, self.searchText == location.query {
+                    // History: show the remembered results as they were.
+                    self.entries = Self.sortEntries(results, key: self.sortKey, ascending: self.sortAscending)
+                    self.selection = target.flatMap { t in self.entries.firstIndex { Self.samePath($0.url, t) } }
+                        ?? (self.entries.isEmpty ? nil : 0)
+                } else {
+                    // The user typed while the folder loaded.
+                    self.pendingResultSelection = target
+                    self.applyFilter()
+                }
                 return
             }
             self.entries = sorted
@@ -433,7 +446,8 @@ final class BrowserModel: ObservableObject {
             var merged = local
             for await batch in Self.recursiveMatches(under: root, query: query) {
                 guard let self, !Task.isCancelled else { return }
-                let fresh = batch.filter { seen.insert(Self.canonicalPath($0.url)).inserted }
+                let fresh = self.applyingRenames(batch)
+                    .filter { seen.insert(Self.canonicalPath($0.url)).inserted }
                 guard !fresh.isEmpty else { continue }
                 merged += fresh
                 self.showResults(merged, initial: false)
@@ -543,7 +557,9 @@ final class BrowserModel: ObservableObject {
 
     private var currentLocation: Location? {
         guard let folderURL else { return nil }
-        return Location(folder: folderURL, query: searchText, selected: selectedEntry?.url)
+        let searching = !searchText.trimmingCharacters(in: .whitespaces).isEmpty
+        return Location(folder: folderURL, query: searchText, selected: selectedEntry?.url,
+                        results: searching && !isLoading ? entries : nil)
     }
 
     private func recordHistory() {
@@ -872,35 +888,58 @@ final class BrowserModel: ObservableObject {
             throw RenameError.failed(error.localizedDescription)
         }
 
-        let renamed = GridEntry(url: new, kind: .folder, modDate: entry.modDate)
-        let keep = selectedEntry?.url
-        func withRenamed(_ list: [GridEntry]) -> [GridEntry] {
-            Self.sortEntries(list.map { $0.url == old ? renamed : $0 }, key: sortKey, ascending: sortAscending)
-        }
-        allEntries = withRenamed(allEntries)
-        entries = withRenamed(entries)
+        // Stay where we are: same folder, same query, same results — only the
+        // renamed folder and everything listed inside it get the new path.
+        let keep = selectedEntry.map { Self.rebased($0.url, from: old, to: new) }
+        renames.append((old: Self.canonicalPath(old), new: new))
+        allEntries = Self.sortEntries(allEntries.map { Self.rebased($0, from: old, to: new) },
+                                      key: sortKey, ascending: sortAscending)
+        entries = Self.sortEntries(entries.map { Self.rebased($0, from: old, to: new) },
+                                   key: sortKey, ascending: sortAscending)
         if let keep {
-            let target = keep == old ? new : keep
-            selection = entries.firstIndex { $0.url == target }
+            selection = entries.firstIndex { Self.samePath($0.url, keep) }
         }
+        pendingResultSelection = pendingResultSelection.map { Self.rebased($0, from: old, to: new) }
         backStack = backStack.map { Self.rebase($0, from: old, to: new) }
         forwardStack = forwardStack.map { Self.rebase($0, from: old, to: new) }
         renameTarget = nil
         return new
     }
 
+    /// Search results found after a rename (the tree walk may still report
+    /// old paths) get the renamed paths.
+    private func applyingRenames(_ batch: [GridEntry]) -> [GridEntry] {
+        guard !renames.isEmpty else { return batch }
+        return batch.map { entry in
+            renames.reduce(entry) { current, rename in
+                Self.rebased(current, from: URL(fileURLWithPath: rename.old), to: rename.new)
+            }
+        }
+    }
+
+    /// `url` with the renamed folder's path swapped in, if it is that folder
+    /// or lies inside it; otherwise unchanged.
+    nonisolated static func rebased(_ url: URL, from old: URL, to new: URL) -> URL {
+        let oldPath = canonicalPath(old)
+        let path = canonicalPath(url)
+        if path == oldPath { return new }
+        guard path.hasPrefix(oldPath + "/") else { return url }
+        return URL(fileURLWithPath: canonicalPath(new) + path.dropFirst(oldPath.count))
+    }
+
+    nonisolated static func rebased(_ entry: GridEntry, from old: URL, to new: URL) -> GridEntry {
+        guard entry.kind != .parent else { return entry }
+        let url = rebased(entry.url, from: old, to: new)
+        guard url != entry.url else { return entry }
+        return GridEntry(url: url, kind: entry.kind, modDate: entry.modDate, byteSize: entry.byteSize)
+    }
+
     /// Point a history location at the renamed folder (or inside it).
     private static func rebase(_ location: Location, from old: URL, to new: URL) -> Location {
-        func fix(_ url: URL) -> URL {
-            let oldPath = canonicalPath(old)
-            let path = canonicalPath(url)
-            if path == oldPath { return new }
-            guard path.hasPrefix(oldPath + "/") else { return url }
-            return URL(fileURLWithPath: canonicalPath(new) + path.dropFirst(oldPath.count))
-        }
         var result = location
-        result.folder = fix(location.folder)
-        result.selected = location.selected.map(fix)
+        result.folder = rebased(location.folder, from: old, to: new)
+        result.selected = location.selected.map { rebased($0, from: old, to: new) }
+        result.results = location.results?.map { rebased($0, from: old, to: new) }
         return result
     }
 
