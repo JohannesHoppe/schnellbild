@@ -25,8 +25,12 @@ final class ActionsUITests: SchnellbildUITestCase {
         waitForSelected("album")
         app.typeKey(.F2, modifierFlags: [])
         enterName("Holiday")
+        eventually("renamed on disk") {
+            FileManager.default.fileExists(atPath: tempDir.appendingPathComponent("Holiday/inside.jpg").path)
+        }
+        eventually("rename sheet closes") { !renameField.exists }
         XCTAssertTrue(app.staticTexts["Holiday"].waitForExistence(timeout: 5))
-        XCTAssertFalse(app.staticTexts["album"].exists)
+        eventually("old name is gone") { !app.staticTexts["album"].exists }
         waitForSelected("Holiday")
         XCTAssertTrue(FileManager.default.fileExists(atPath: tempDir.appendingPathComponent("Holiday/inside.jpg").path))
     }
@@ -69,7 +73,7 @@ final class ActionsUITests: SchnellbildUITestCase {
         tile("c.jpg").click()
         waitForSelected("c.jpg")
         app.typeKey(.delete, modifierFlags: .command)
-        let confirm = app.buttons["Move to Trash"]
+        let confirm = app.buttons["Move to Trash"].firstMatch
         XCTAssertTrue(confirm.waitForExistence(timeout: 5), "⌘⌫ asks before trashing")
         confirm.click()
         eventually("tile disappears") { !app.staticTexts["c.jpg"].exists }
@@ -82,7 +86,7 @@ final class ActionsUITests: SchnellbildUITestCase {
         tile("c.jpg").click()
         waitForSelected("c.jpg")
         clickMenu("Actions", "Move to Trash…")
-        let cancel = app.buttons["Cancel"]
+        let cancel = app.buttons["Cancel"].firstMatch
         XCTAssertTrue(cancel.waitForExistence(timeout: 5))
         cancel.click()
         XCTAssertTrue(app.staticTexts["c.jpg"].exists)

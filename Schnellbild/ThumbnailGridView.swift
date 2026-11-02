@@ -18,16 +18,20 @@ struct ThumbnailGridView: View {
             ScrollViewReader { proxy in
                 ScrollView {
                     LazyVGrid(columns: columns, alignment: .leading, spacing: spacing) {
-                        ForEach(Array(model.entries.enumerated()), id: \.element) { index, entry in
+                        // Identity is the file URL only: an index-based id makes the lazy
+                        // grid keep showing stale cells when the list changes in place
+                        // (search, sort, rename).
+                        ForEach(Array(model.entries.enumerated()), id: \.element.id) { index, entry in
                             cell(entry: entry, index: index, side: side)
                         }
                     }
                     .padding(padding)
                 }
                 .onChange(of: model.selection) { _, newValue in
-                    guard let newValue else { return }
+                    guard let newValue, model.entries.indices.contains(newValue) else { return }
+                    let id = model.entries[newValue].id
                     withAnimation(.easeOut(duration: 0.15)) {
-                        proxy.scrollTo(newValue, anchor: .center)
+                        proxy.scrollTo(id, anchor: .center)
                     }
                 }
             }
@@ -59,7 +63,6 @@ struct ThumbnailGridView: View {
                     .foregroundStyle(.tertiary)
             }
         }
-        .id(index)
         .contentShape(Rectangle())
         .onTapGesture(count: 2) {
             model.searchFocused = false
