@@ -27,7 +27,6 @@ struct VideoDetailView: View {
         }
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier(useVLC ? "video.vlc" : "video.avkit")
-        .accessibilityValue(model.videoPaused ? "paused" : "playing")
         .task(id: url) {
             control?.pause()
             model.activePlayer = nil

@@ -10,10 +10,14 @@ final class ActionsUITests: SchnellbildUITestCase {
 
     private var renameField: XCUIElement { app.textFields["renameField"] }
 
-    private func enterName(_ name: String) {
-        XCTAssertTrue(renameField.waitForExistence(timeout: 5), "rename sheet appears")
+    private func enterName(_ name: String, file: StaticString = #filePath, line: UInt = #line) {
+        XCTAssertTrue(renameField.waitForExistence(timeout: 5), "rename sheet appears", file: file, line: line)
+        renameField.click()
         renameField.typeKey("a", modifierFlags: .command)
-        renameField.typeText(name + "\r")
+        renameField.typeKey(.delete, modifierFlags: [])
+        renameField.typeText(name)
+        XCTAssertEqual(value(of: renameField), name, "rename field holds the new name", file: file, line: line)
+        renameField.typeKey(.return, modifierFlags: [])
     }
 
     func testF2RenamesTheSelectedFolder() {
@@ -110,7 +114,7 @@ final class ActionsUITests: SchnellbildUITestCase {
 
         app.typeKey(.return, modifierFlags: [])   // enter the renamed folder
         XCTAssertTrue(app.staticTexts["inside.jpg"].waitForExistence(timeout: 10))
-        app.buttons["backButton"].click()
+        toolbarButton("backButton").click()
         XCTAssertTrue(app.staticTexts["album-photo.jpg"].waitForExistence(timeout: 10))
         XCTAssertTrue(app.staticTexts["Holiday"].exists, "the rename shows in the restored search")
         XCTAssertEqual(value(of: searchField), "album")
@@ -133,7 +137,7 @@ final class ActionsUITests: SchnellbildUITestCase {
         XCTAssertTrue(app.staticTexts["inside.jpg"].exists, "still inside the result folder")
         waitForSelected("sub2")
 
-        app.buttons["backButton"].click()
+        toolbarButton("backButton").click()
         XCTAssertTrue(app.staticTexts["album"].waitForExistence(timeout: 10))
         XCTAssertFalse(app.staticTexts["inside.jpg"].exists)
         XCTAssertEqual(value(of: searchField), "album")

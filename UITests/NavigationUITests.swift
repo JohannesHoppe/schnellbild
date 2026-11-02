@@ -27,7 +27,7 @@ final class NavigationUITests: SchnellbildUITestCase {
     func testUpButtonAndCommandUp() {
         let app = launch(open: tempDir.appendingPathComponent("album").path)
         XCTAssertTrue(app.staticTexts["inside.jpg"].waitForExistence(timeout: 15))
-        app.buttons["upButton"].click()
+        toolbarButton("upButton").click()
         XCTAssertTrue(app.staticTexts["album"].waitForExistence(timeout: 10))
 
         app.typeKey(.return, modifierFlags: [])   // back into album (selected)
@@ -38,19 +38,19 @@ final class NavigationUITests: SchnellbildUITestCase {
 
     func testBackAndForwardButtons() {
         launchOnTempDir(waitFor: "album")
-        XCTAssertFalse(app.buttons["backButton"].isEnabled)
-        XCTAssertFalse(app.buttons["forwardButton"].isEnabled)
+        XCTAssertFalse(toolbarButton("backButton").isEnabled)
+        XCTAssertFalse(toolbarButton("forwardButton").isEnabled)
 
         app.typeKey(.return, modifierFlags: [])
         XCTAssertTrue(app.staticTexts["inside.jpg"].waitForExistence(timeout: 10))
-        eventually("back enabled") { app.buttons["backButton"].isEnabled }
+        eventually("back enabled") { toolbarButton("backButton").isEnabled }
 
-        app.buttons["backButton"].click()
+        toolbarButton("backButton").click()
         XCTAssertTrue(app.staticTexts["a.jpg"].waitForExistence(timeout: 10))
         waitForSelected("album")
-        eventually("forward enabled") { app.buttons["forwardButton"].isEnabled }
+        eventually("forward enabled") { toolbarButton("forwardButton").isEnabled }
 
-        app.buttons["forwardButton"].click()
+        toolbarButton("forwardButton").click()
         XCTAssertTrue(app.staticTexts["inside.jpg"].waitForExistence(timeout: 10))
     }
 

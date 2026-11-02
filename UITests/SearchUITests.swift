@@ -61,7 +61,7 @@ final class SearchUITests: SchnellbildUITestCase {
         XCTAssertTrue(app.staticTexts["deep-photo.jpg"].waitForExistence(timeout: 10))
         app.typeKey(.escape, modifierFlags: [])
         XCTAssertTrue(app.staticTexts["a.jpg"].waitForExistence(timeout: 5), "Escape clears the search")
-        XCTAssertFalse(app.staticTexts["deep-photo.jpg"].exists)
+        eventually("results are gone") { !app.staticTexts["deep-photo.jpg"].exists }
     }
 
     func testEscapeInGridClearsSearch() {
@@ -109,7 +109,7 @@ final class SearchUITests: SchnellbildUITestCase {
         app.typeKey(.return, modifierFlags: [])   // open the result folder
         XCTAssertTrue(app.staticTexts["beach.jpg"].waitForExistence(timeout: 10))
 
-        app.buttons["backButton"].click()
+        toolbarButton("backButton").click()
         XCTAssertTrue(app.staticTexts["Urlaub 2024"].waitForExistence(timeout: 10))
         XCTAssertFalse(app.staticTexts["beach.jpg"].exists)
         XCTAssertEqual(value(of: searchField), "urlaub")

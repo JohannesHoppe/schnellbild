@@ -33,7 +33,7 @@ final class FullViewUITests: SchnellbildUITestCase {
 
     func testOverviewToolbarButtonLeaves() {
         openA()
-        app.buttons["Overview"].click()
+        app.buttons["Overview"].firstMatch.click()
         eventually("back to the grid") { !badge.exists }
     }
 

@@ -38,7 +38,7 @@ struct FullImageView: View {
             .contentShape(Rectangle())
             .accessibilityElement(children: .ignore)
             .accessibilityIdentifier("fullImage")
-            .accessibilityValue(accessibilityState)
+            .accessibilityLabel(accessibilityState)
             .task(id: url) {
                 if let thumb = ThumbnailCache.shared.image(for: url, side: model.thumbnailSide) {
                     image = thumb

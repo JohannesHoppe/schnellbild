@@ -68,6 +68,8 @@ struct ThumbnailView: View {
                         .padding(6)
                 }
             }
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel("\(isSelected ? "selected" : "not selected"), \(isVideo ? "video" : "image")")
             .task(id: url) { await load() }
     }
 

@@ -76,18 +76,18 @@ struct SearchField: NSViewRepresentable {
     }
 }
 
-/// An `NSSearchField` that refuses first responder until the user clicks it
-/// or focus is requested explicitly — AppKit would otherwise make it the
+/// An `NSSearchField` that only becomes first responder on a click or when
+/// focus is requested explicitly — AppKit would otherwise make it the
 /// window's initial first responder and swallow the grid's keys.
 final class FocusGatedSearchField: NSSearchField {
     private var focusAllowed = false
     var onFocusGained: (() -> Void)?
 
-    override var acceptsFirstResponder: Bool { focusAllowed && isEnabled }
-
-    override func mouseDown(with event: NSEvent) {
-        focusAllowed = true
-        super.mouseDown(with: event)
+    /// The window asks this before it delivers the click, so a mouse-down in
+    /// progress counts as permission.
+    override var acceptsFirstResponder: Bool {
+        guard isEnabled else { return false }
+        return focusAllowed || NSApp.currentEvent?.type == .leftMouseDown
     }
 
     override func becomeFirstResponder() -> Bool {

@@ -42,7 +42,7 @@ struct SchnellbildApp: App {
                 Button("Move to Trash…") { model.moveSelectionToTrash() }
                     .keyboardShortcut(.delete)
             }
-            CommandMenu("View") {
+            CommandGroup(after: .toolbar) {
                 Button("Larger Thumbnails (⌘+)") { model.growThumbnails() }
                 Button("Smaller Thumbnails (⌘−)") { model.shrinkThumbnails() }
                 Divider()

@@ -42,6 +42,7 @@ struct ThumbnailGridView: View {
         let location = model.searchText.isEmpty ? nil : model.relativeLocation(of: entry)
         return VStack(spacing: 2) {
             tile(for: entry, side: side, selected: selected)
+                .accessibilityIdentifier("tile.\(entry.name)")
             Text(entry.name)
                 .font(.caption2)
                 .lineLimit(1)
@@ -88,9 +89,6 @@ struct ThumbnailGridView: View {
             }
         }
         .help(location.map { "\($0)/\(entry.name)" } ?? "")
-        .accessibilityElement(children: .contain)
-        .accessibilityIdentifier("tile.\(entry.name)")
-        .accessibilityValue(selected ? "selected" : "")
     }
 
     @ViewBuilder
@@ -126,9 +124,7 @@ struct FolderTile: View {
         }
         .tileChrome(side: side, isSelected: isSelected)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(folder == nil ? "Parent folder" : "Folder")
-        .accessibilityValue("\(previews.count) previews")
-        .accessibilityIdentifier("folderTile")
+        .accessibilityLabel("\(isSelected ? "selected" : "not selected"), \(folder == nil ? "parent folder" : "folder"), \(previews.count) previews")
         .task(id: folder) { await loadPreviews() }
     }
 

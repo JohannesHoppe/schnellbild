@@ -7,12 +7,12 @@ final class VideoUITests: SchnellbildUITestCase {
         launch(open: tempDir.appendingPathComponent("clip.mp4").path)
         let video = element("video.avkit")
         XCTAssertTrue(video.waitForExistence(timeout: 15))
-        eventually("autoplays") { value(of: video) == "playing" }
-        app.typeKey(.space, modifierFlags: [])
-        eventually("Space pauses") { value(of: video) == "paused" }
-        app.typeKey(.space, modifierFlags: [])
-        eventually("Space plays") { value(of: video) == "playing" }
         waitForBadge(containing: "clip.mp4")
+        XCTAssertFalse(text(of: badge).contains("Paused"), "autoplays")
+        app.typeKey(.space, modifierFlags: [])
+        waitForBadge(containing: "Paused")
+        app.typeKey(.space, modifierFlags: [])
+        eventually("Space plays again") { !text(of: badge).contains("Paused") }
     }
 
     func testMKVFallsBackToVLCAndSpaceTogglesPause() throws {
@@ -20,10 +20,11 @@ final class VideoUITests: SchnellbildUITestCase {
         launch(open: tempDir.appendingPathComponent("clip.mkv").path)
         let video = element("video.vlc")
         XCTAssertTrue(video.waitForExistence(timeout: 20), "non-native formats use VLCKit")
+        waitForBadge(containing: "clip.mkv")
         app.typeKey(.space, modifierFlags: [])
-        eventually("Space pauses VLC playback") { value(of: video) == "paused" }
+        waitForBadge(containing: "Paused")
         app.typeKey(.space, modifierFlags: [])
-        eventually("Space resumes VLC playback") { value(of: video) == "playing" }
+        eventually("Space resumes VLC playback") { !text(of: badge).contains("Paused") }
     }
 
     func testCommandArrowsSeekWithoutPaging() throws {

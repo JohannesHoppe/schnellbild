@@ -69,7 +69,7 @@ class SchnellbildUITestCase: XCTestCase {
         app.descendants(matching: .any)[identifier]
     }
 
-    func tile(_ name: String) -> XCUIElement { element("tile.\(name)") }
+    func tile(_ name: String) -> XCUIElement { element("tile.\(name)").firstMatch }
 
     var searchField: XCUIElement { app.searchFields["searchField"] }
 
@@ -80,10 +80,14 @@ class SchnellbildUITestCase: XCTestCase {
         return value.isEmpty ? element.label : value
     }
 
-    func value(of element: XCUIElement) -> String {
-        guard element.exists else { return "" }
-        return (element.value as? String) ?? ""
-    }
+    /// Same as `text(of:)`: state is exposed as label (SwiftUI's
+    /// accessibilityValue doesn't reach XCUITest), a search field's text as value.
+    func value(of element: XCUIElement) -> String { text(of: element) }
+
+    /// A toolbar button (toolbar items show up more than once in the tree).
+    func toolbarButton(_ identifier: String) -> XCUIElement { app.buttons[identifier].firstMatch }
+
+    func isSelected(_ name: String) -> Bool { text(of: tile(name)).hasPrefix("selected") }
 
     // MARK: Waiting
 
@@ -112,12 +116,12 @@ class SchnellbildUITestCase: XCTestCase {
 
     func waitForSelected(_ name: String, file: StaticString = #filePath, line: UInt = #line) {
         eventually("\(name) should be selected", file: file, line: line) {
-            value(of: tile(name)) == "selected"
+            isSelected(name)
         }
     }
 
     func clickMenu(_ menu: String, _ item: String) {
-        app.menuBars.menuBarItems[menu].click()
-        app.menuBars.menuItems[item].click()
+        app.menuBars.menuBarItems[menu].firstMatch.click()
+        app.menuBars.menuItems[item].firstMatch.click()
     }
 }

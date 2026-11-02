@@ -17,6 +17,13 @@ struct ContentView: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .overlay {
+            // A folder without media or subfolders still shows its ".." tile.
+            if model.mode == .grid, !model.isLoading, model.searchText.isEmpty,
+               model.entries.count == 1, model.entries.first?.kind == .parent {
+                EmptyStateView(isLoading: false)
+            }
+        }
         // Drag & drop: drag a folder (or media file) onto the window.
         .dropDestination(for: URL.self) { urls, _ in
             model.openDropped(urls)
@@ -129,7 +136,8 @@ struct ContentView: View {
     }
 
     private func positionBadge(entry: GridEntry, atTop: Bool) -> some View {
-        Text("\(model.currentMediaNumber ?? 0) / \(model.mediaCount)  ·  \(entry.name)")
+        Text("\(model.currentMediaNumber ?? 0) / \(model.mediaCount)  ·  \(entry.name)"
+             + (entry.kind == .video && model.videoPaused ? "  ·  Paused" : ""))
             .font(.callout)
             .padding(.horizontal, 12)
             .padding(.vertical, 6)

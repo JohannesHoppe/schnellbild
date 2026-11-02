@@ -98,10 +98,8 @@ final class GridUITests: SchnellbildUITestCase {
         for name in ["1.jpg", "2.jpg", "3.jpg", "4.jpg"] { try put("sample.jpg", at: "album/\(name)") }
         try folder("empty")
         launchOnTempDir()
-        let albumPreview = tile("album").descendants(matching: .any)["folderTile"]
-        let emptyPreview = tile("empty").descendants(matching: .any)["folderTile"]
-        eventually("album shows three previews", timeout: 20) { value(of: albumPreview) == "3 previews" }
-        XCTAssertEqual(value(of: emptyPreview), "0 previews")
+        eventually("album shows three previews", timeout: 20) { text(of: tile("album")).hasSuffix("3 previews") }
+        XCTAssertTrue(text(of: tile("empty")).hasSuffix("0 previews"))
     }
 
     func testFullScreenToggle() {
@@ -129,7 +127,7 @@ final class GridUITests: SchnellbildUITestCase {
     func testCommandOShowsTheOpenPanel() {
         launchOnTempDir()
         app.typeKey("o", modifierFlags: .command)
-        let cancel = app.buttons["Cancel"]
+        let cancel = app.buttons["Cancel"].firstMatch
         XCTAssertTrue(cancel.waitForExistence(timeout: 10), "the open panel appears")
         cancel.click()
         XCTAssertTrue(app.staticTexts["a.jpg"].waitForExistence(timeout: 5))
