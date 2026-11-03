@@ -69,7 +69,7 @@ is_macho() {
 MAIN="$APP/Contents/MacOS/Schnellbild"
 # Longest paths first: nested code is signed before what contains it.
 find "$APP/Contents" -type f ! -path "$MAIN" -print0 \
-  | while IFS= read -r -d '' f; do is_macho "$f" && printf '%s\n' "$f"; done \
+  | while IFS= read -r -d '' f; do if is_macho "$f"; then printf '%s\n' "$f"; fi; done \
   | awk '{ print length, $0 }' | sort -rn | cut -d' ' -f2- \
   | while IFS= read -r f; do codesign "${OPTS[@]}" "$f"; done
 codesign "${OPTS[@]}" "$APP/Contents/Frameworks/VLCKit.framework"
