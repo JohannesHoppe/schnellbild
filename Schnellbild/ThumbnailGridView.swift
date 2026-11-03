@@ -43,7 +43,7 @@ struct ThumbnailGridView: View {
 
     private func cell(entry: GridEntry, index: Int, side: CGFloat) -> some View {
         let selected = model.selection == index
-        let location = model.searchText.isEmpty ? nil : model.relativeLocation(of: entry)
+        let location = model.isFiltering ? model.relativeLocation(of: entry) : nil
         return VStack(spacing: 2) {
             tile(for: entry, side: side, selected: selected)
                 .accessibilityIdentifier("tile.\(entry.name)")
@@ -154,14 +154,32 @@ struct FolderTile: View {
     private func loadPreviews() async {
         previews = []
         guard let folder else { return }
-        let files = await BrowserModel.folderPreviewFiles(in: folder)
+        let files = await FolderPreviewCache.shared.files(in: folder)
         var images: [NSImage] = []
         for file in files {
             if Task.isCancelled { return }
-            if let image = await ThumbnailCache.shared.thumbnail(for: file, side: side * 0.4) {
+            if let image = await ThumbnailCache.previews.thumbnail(for: file, side: side * 0.4) {
                 images.append(image)
             }
         }
         if !Task.isCancelled { previews = images }
+    }
+}
+
+/// Which files each folder tile previews, remembered per folder: scrolling
+/// recreates tiles, and listing a large folder on a network share again for
+/// every appearance would compete with the thumbnails.
+@MainActor
+final class FolderPreviewCache {
+    static let shared = FolderPreviewCache()
+    private let cache = NSCache<NSURL, NSArray>()
+
+    init() { cache.countLimit = 1024 }
+
+    func files(in folder: URL) async -> [URL] {
+        if let cached = cache.object(forKey: folder as NSURL) as? [URL] { return cached }
+        let files = await BrowserModel.folderPreviewFiles(in: folder)
+        cache.setObject(files as NSArray, forKey: folder as NSURL)
+        return files
     }
 }

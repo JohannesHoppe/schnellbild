@@ -25,21 +25,32 @@ There is **no Xcode project for the app build**; `xcodegen` generates
 - **`BrowserModel.swift`** — `@MainActor ObservableObject`, the single source of
   truth. Holds `entries`/`allEntries`, `selection`, `mode` (.grid/.detail),
   `zoom`, `rotation`, search (`searchText` → `didSet` runs `applyFilter`;
-  `searchFocused`, `isSearching`), history (`backStack`/`forwardStack` of
-  `Location` = folder + query + selection), `renameTarget`, `showInspector`,
+  `searchFocused`, `isSearching`, `isFiltering` = non-blank query), history
+  (`backStack`/`forwardStack` of `Location` = folder + query + selection +
+  finished results, capped at `historyLimit`), `renameTarget`, `showInspector`,
   `showHelp`, sort, `activePlayer` (`PlaybackControl`, AVKit or VLCKit).
   **All key bindings live in `handleKey(_:command:) -> Bool`** with the
   `KeyInput` enum — this is the unit-tested dispatch. Keys typed in the search
   field go through `handleSearchFieldKey`.
   - Search is **always recursive** and matches **folder and file names**: local
     matches at once, then `recursiveMatches` streams batches (`AsyncStream`)
-    from a tree walk; debounced via `searchDebounce`.
+    from a tree walk; debounced via `searchDebounce`. The model owns the
+    results (`searchResults`); batches are appended via `appendSearchBatch`,
+    which applies renames/trashes done during that walk (`searchRenames`,
+    `searchTrashed`, reset per search), so late batches never revive old paths.
+  - Paths are compared with `canonicalPath`: pure string work (standardized,
+    `/private/var` → `/var`), no file system access, because it runs per entry
+    on the main thread and must stay fast on network volumes.
   - `open(folder:)` records history; `navigateBack/Forward` restore folder,
     query, selection and the **remembered search results** (not searched
-    again), so "Back" from a result folder shows the same, stable list.
+    again), so "Back" from a result folder shows the same, stable list. A
+    search left before it finished is searched again instead.
   - Renaming a folder (`renameFolder`) never navigates: folder, query and
     results stay; the folder and everything listed inside it get the new path
     (`rebased`), as do history entries and results still streaming in.
+    `FileActions.conflicts` refuses a target that is a different item (also
+    the case-variant on case-sensitive volumes such as NAS shares); the live
+    case-only move goes via a temporary name and rolls back on failure.
     Backspace / ⌘↑ / `..` = enclosing folder (`goToParentFolder`).
   - Side effects (Finder, open, trash + confirm alert, move/rename) go through
     the injectable `FileActions`; tests pass a spy. `--ui-testing` makes the app
@@ -51,20 +62,27 @@ There is **no Xcode project for the app build**; `xcodegen` generates
   focuses it on launch and it swallows the grid keys.
 - **`RenameFolderView.swift`** — the F2 rename sheet (`model.renameFolder`).
 - **`ContentView.swift`** — one **local `NSEvent` keyDown monitor** dispatches
-  *every* key through `model.handleKey` via `MainActor.assumeIsolated`. This is
-  deliberate: SwiftUI focus kept losing Backspace/arrows, so keys are
-  focus-independent now. F1 works everywhere. The monitor passes keys through
-  when the first responder is `NSText` (search/rename field) or a sheet is open.
+  *every* key through `model.handleKey` via `MainActor.assumeIsolated`. Keys are
+  deliberately focus-independent, because SwiftUI focus can swallow
+  Backspace/arrows. F1 works everywhere except in the rename sheet (a second
+  sheet can't open on top). The monitor passes keys through when the first
+  responder is `NSText` (search/rename field) or a sheet is open.
+- **Video state:** `PlaybackControl.isPlaying` is the player's real state;
+  the players report changes (own controls, end of video) through
+  `model.playbackStateChanged`, which drives the "Paused" badge.
   Hardware keyCodes (`ContentView.keyInput`, unit-tested): 51 Backspace, 53 Esc,
   36/76 Return, 49 Space, 123 ←, 124 →, 125 ↓, 126 ↑, 115 Home, 119 End,
   122 F1, 120 F2. Toolbar: Back / Forward / Up / Open Folder.
 - **`ShortcutsHelpView.swift`** — F1 / "Schnellbild Help" cheat sheet (same
   content as the README keyboard tables; keep them in sync).
 - **`ThumbnailView.swift` / `ThumbnailGridView.swift`** — `LazyVGrid`, thumbnails
-  from QuickLook (`QLThumbnailGenerator`), `NSCache` keyed by file + size.
-  `FolderTile` fans up to three previews of a folder's first media files
-  (`BrowserModel.folderPreviewFiles`, one shallow listing per visible tile).
-  Tiles carry accessibility ids `tile.<name>` (value `selected`) for the UI tests.
+  from QuickLook (`QLThumbnailGenerator`). `ThumbnailCache` keeps one image per
+  file with the size it was made for (reused for smaller tiles, regenerated
+  for larger; the full view's placeholder). Folder previews use their own
+  `ThumbnailCache.previews`. `FolderTile` fans up to three previews of a
+  folder's first media files (`BrowserModel.folderPreviewFiles`, listed once
+  per folder via `FolderPreviewCache`). Tiles carry accessibility ids
+  `tile.<name>`; their label starts with `selected` / `not selected`.
 - **`FullImageView.swift`** — ImageIO downsample + zoom/pan/rotate (view-only;
   **never modifies files** — important user constraint).
 - **`VideoDetailView.swift`** — native formats via AVKit; non-native fall back to…
@@ -110,9 +128,9 @@ AVI/MKV/WebM and other non-native formats play **in-app via vendored VLCKit
 - After editing `project.yml` **or adding/removing a `.swift` file**, re-run
   `xcodegen generate` before the Xcode/UITest build (the app target embeds
   `Vendor/VLCKit.xcframework`).
-- Tests: 82 unit (`Tests/SchnellbildTests/BrowserModelTests.swift`: search,
+- Tests: 97 unit (`Tests/SchnellbildTests/BrowserModelTests.swift`: search,
   history, rename, file actions via spy, playback via `PlayerSpy`, every key
-  binding) + 55 XCUITest in `UITests/*UITests.swift` (grid, search, navigation,
+  binding) + 56 XCUITest in `UITests/*UITests.swift` (grid, search, navigation,
   full view, video incl. VLC, actions), sharing `UITestSupport.swift`. Media
   fixtures live in `UITests/Fixtures` (bundled as test resources). Not covered
   end-to-end: drag & drop from Finder, Reveal in Finder, Open with default app

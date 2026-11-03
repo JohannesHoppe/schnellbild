@@ -36,13 +36,17 @@ struct VideoDetailView: View {
 
             let asset = AVURLAsset(url: url)
             let playable = (try? await asset.load(.isPlayable)) ?? false
+            guard !Task.isCancelled else { return }   // the user moved on to another file
             checking = false
 
             guard playable else {
                 useVLC = true   // AVFoundation can't play it — hand off to VLCKit
                 return
             }
-            let new = AVPlaybackControl(player: AVPlayer(playerItem: AVPlayerItem(asset: asset)))
+            let model = self.model
+            let new = AVPlaybackControl(player: AVPlayer(playerItem: AVPlayerItem(asset: asset))) { control, playing in
+                model.playbackStateChanged(control, isPlaying: playing)
+            }
             control = new
             model.activePlayer = new
             new.play()

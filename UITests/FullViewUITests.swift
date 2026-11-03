@@ -13,7 +13,7 @@ final class FullViewUITests: SchnellbildUITestCase {
     func testOpensImageFileDirectlyInFullView() {
         launch(open: tempDir.appendingPathComponent("b.jpg").path)
         waitForBadge(containing: "2 / 3  ·  b.jpg")
-        eventually("the image loads") { value(of: fullImage).hasSuffix("loaded") }
+        eventually("the image loads") { text(of: fullImage).hasSuffix("loaded") }
     }
 
     func testReturnOpensAndEscapeBackspaceReturnLeave() {
@@ -55,32 +55,32 @@ final class FullViewUITests: SchnellbildUITestCase {
 
     func testZoomKeys() {
         openA()
-        eventually("starts at fit") { value(of: fullImage).hasPrefix("zoom 100 %") }
+        eventually("starts at fit") { text(of: fullImage).hasPrefix("zoom 100 %") }
         app.typeKey("+", modifierFlags: [])
-        eventually("+ zooms in") { value(of: fullImage).hasPrefix("zoom 125 %") }
+        eventually("+ zooms in") { text(of: fullImage).hasPrefix("zoom 125 %") }
         app.typeKey("=", modifierFlags: .command)
-        eventually("⌘+ zooms in") { value(of: fullImage).hasPrefix("zoom 156 %") }
+        eventually("⌘+ zooms in") { text(of: fullImage).hasPrefix("zoom 156 %") }
         app.typeKey("-", modifierFlags: [])
-        eventually("- zooms out") { value(of: fullImage).hasPrefix("zoom 125 %") }
+        eventually("- zooms out") { text(of: fullImage).hasPrefix("zoom 125 %") }
         app.typeKey("0", modifierFlags: [])
-        eventually("0 fits") { value(of: fullImage).hasPrefix("zoom 100 %") }
+        eventually("0 fits") { text(of: fullImage).hasPrefix("zoom 100 %") }
         app.typeKey("1", modifierFlags: [])
-        eventually("1 = actual size (tiny image: stays at fit)") { value(of: fullImage).hasPrefix("zoom 100 %") }
+        eventually("1 = actual size (tiny image: stays at fit)") { text(of: fullImage).hasPrefix("zoom 100 %") }
         app.typeKey("+", modifierFlags: [])
         app.typeKey(.rightArrow, modifierFlags: [])
-        eventually("paging resets zoom") { value(of: fullImage).hasPrefix("zoom 100 %") }
+        eventually("paging resets zoom") { text(of: fullImage).hasPrefix("zoom 100 %") }
     }
 
     func testRotateKeys() {
         openA()
         app.typeKey("]", modifierFlags: [])
-        eventually("] rotates right") { value(of: fullImage).contains("rotation 90°") }
+        eventually("] rotates right") { text(of: fullImage).contains("rotation 90°") }
         app.typeKey("[", modifierFlags: [])
         app.typeKey("[", modifierFlags: [])
-        eventually("[ rotates left") { value(of: fullImage).contains("rotation -90°") }
+        eventually("[ rotates left") { text(of: fullImage).contains("rotation -90°") }
         app.typeKey(.escape, modifierFlags: [])
         app.typeKey(.return, modifierFlags: [])
-        eventually("leaving resets rotation") { value(of: fullImage).contains("rotation 0°") }
+        eventually("leaving resets rotation") { text(of: fullImage).contains("rotation 0°") }
     }
 
     func testRotationNeverModifiesTheFile() throws {

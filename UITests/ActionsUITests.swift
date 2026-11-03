@@ -16,7 +16,7 @@ final class ActionsUITests: SchnellbildUITestCase {
         renameField.typeKey("a", modifierFlags: .command)
         renameField.typeKey(.delete, modifierFlags: [])
         renameField.typeText(name)
-        XCTAssertEqual(value(of: renameField), name, "rename field holds the new name", file: file, line: line)
+        XCTAssertEqual(text(of: renameField), name, "rename field holds the new name", file: file, line: line)
         renameField.typeKey(.return, modifierFlags: [])
     }
 
@@ -33,6 +33,18 @@ final class ActionsUITests: SchnellbildUITestCase {
         eventually("old name is gone") { !app.staticTexts["album"].exists }
         waitForSelected("Holiday")
         XCTAssertTrue(FileManager.default.fileExists(atPath: tempDir.appendingPathComponent("Holiday/inside.jpg").path))
+    }
+
+    func testF1InRenameSheetDoesNotBlockTheGrid() {
+        launchOnTempDir(waitFor: "album")
+        waitForSelected("album")
+        app.typeKey(.F2, modifierFlags: [])
+        XCTAssertTrue(renameField.waitForExistence(timeout: 5))
+        app.typeKey(.F1, modifierFlags: [])
+        app.buttons["Cancel"].firstMatch.click()
+        eventually("sheet closes") { !renameField.exists }
+        app.typeKey(.rightArrow, modifierFlags: [])
+        waitForSelected("taken")
     }
 
     func testRenameFromContextMenuAndActionsMenu() {
@@ -112,7 +124,7 @@ final class ActionsUITests: SchnellbildUITestCase {
         XCTAssertTrue(app.staticTexts["Holiday"].waitForExistence(timeout: 5))
         XCTAssertTrue(app.staticTexts["album-photo.jpg"].exists, "results stay")
         XCTAssertTrue(app.staticTexts["Holiday"].exists)
-        XCTAssertEqual(value(of: searchField), "album", "query stays")
+        XCTAssertEqual(text(of: searchField), "album", "query stays")
         waitForSelected("Holiday")
         XCTAssertFalse(app.staticTexts["taken"].exists, "still the search results, not the folder")
 
@@ -121,7 +133,7 @@ final class ActionsUITests: SchnellbildUITestCase {
         toolbarButton("backButton").click()
         XCTAssertTrue(app.staticTexts["album-photo.jpg"].waitForExistence(timeout: 10))
         XCTAssertTrue(app.staticTexts["Holiday"].exists, "the rename shows in the restored search")
-        XCTAssertEqual(value(of: searchField), "album")
+        XCTAssertEqual(text(of: searchField), "album")
         waitForSelected("Holiday")
     }
 
@@ -144,7 +156,7 @@ final class ActionsUITests: SchnellbildUITestCase {
         toolbarButton("backButton").click()
         XCTAssertTrue(app.staticTexts["album"].waitForExistence(timeout: 10))
         XCTAssertFalse(app.staticTexts["inside.jpg"].exists)
-        XCTAssertEqual(value(of: searchField), "album")
+        XCTAssertEqual(text(of: searchField), "album")
         waitForSelected("album")
     }
 }

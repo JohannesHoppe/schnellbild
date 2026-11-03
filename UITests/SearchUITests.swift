@@ -27,7 +27,7 @@ final class SearchUITests: SchnellbildUITestCase {
         waitForSelected("archive")   // folders sort first
         app.typeKey(.rightArrow, modifierFlags: [])
         waitForSelected("trips")
-        XCTAssertNotEqual(value(of: searchField), "→")
+        XCTAssertNotEqual(text(of: searchField), "→")
     }
 
     func testFindsFilesInSubfolders() {
@@ -112,7 +112,7 @@ final class SearchUITests: SchnellbildUITestCase {
         toolbarButton("backButton").click()
         XCTAssertTrue(app.staticTexts["Urlaub 2024"].waitForExistence(timeout: 10))
         XCTAssertFalse(app.staticTexts["beach.jpg"].exists)
-        XCTAssertEqual(value(of: searchField), "urlaub")
+        XCTAssertEqual(text(of: searchField), "urlaub")
         waitForSelected("Urlaub 2024")
     }
 }

@@ -73,16 +73,14 @@ class SchnellbildUITestCase: XCTestCase {
 
     var searchField: XCUIElement { app.searchFields["searchField"] }
 
-    /// Text of an element: SwiftUI exposes a Text via `label` *or* `value`.
+    /// Text of an element: SwiftUI exposes a Text via `label` *or* `value`;
+    /// state is exposed as label (SwiftUI's accessibilityValue doesn't reach
+    /// XCUITest), a search field's text as value.
     func text(of element: XCUIElement) -> String {
         guard element.exists else { return "" }
         let value = (element.value as? String) ?? ""
         return value.isEmpty ? element.label : value
     }
-
-    /// Same as `text(of:)`: state is exposed as label (SwiftUI's
-    /// accessibilityValue doesn't reach XCUITest), a search field's text as value.
-    func value(of element: XCUIElement) -> String { text(of: element) }
 
     /// A toolbar button (toolbar items show up more than once in the tree).
     func toolbarButton(_ identifier: String) -> XCUIElement { app.buttons[identifier].firstMatch }

@@ -19,7 +19,7 @@ struct ContentView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .overlay {
             // A folder without media or subfolders still shows its ".." tile.
-            if model.mode == .grid, !model.isLoading, model.searchText.isEmpty,
+            if model.mode == .grid, !model.isLoading, !model.isFiltering,
                model.entries.count == 1, model.entries.first?.kind == .parent {
                 EmptyStateView(isLoading: false)
             }
@@ -105,8 +105,8 @@ struct ContentView: View {
         if model.imageCount  > 0 { parts.append("\(model.imageCount) images") }
         if model.videoCount  > 0 { parts.append("\(model.videoCount) videos") }
         let summary = parts.isEmpty ? "Empty" : parts.joined(separator: " · ")
+        guard model.isFiltering else { return summary }
         let query = model.searchText.trimmingCharacters(in: .whitespaces)
-        guard !query.isEmpty else { return summary }
         let count = model.entries.count
         return "\(count) \(count == 1 ? "result" : "results") for “\(query)”" + (count > 0 ? " · \(summary)" : "")
     }
@@ -189,7 +189,7 @@ struct ContentView: View {
     // MARK: - Keyboard (one NSEvent monitor — focus-independent)
 
     /// All shortcuts run through a local key monitor, so they work regardless
-    /// of SwiftUI focus (which kept losing the Backspace/arrow keys). The
+    /// of SwiftUI focus, which can swallow Backspace and the arrow keys. The
     /// actual bindings live in `BrowserModel.handleKey` (unit-tested).
     private func installKeyMonitor() {
         guard keyMonitor == nil else { return }
@@ -200,7 +200,12 @@ struct ContentView: View {
             let chars = (command ? event.charactersIgnoringModifiers : event.characters) ?? ""
             // Decide on the main actor whether to consume the key.
             let consume = MainActor.assumeIsolated { () -> Bool in
-                if code == 122 { return model.handleKey(.f1, command: command) }
+                // F1 works everywhere except in the rename sheet: a second sheet
+                // can't be shown on top of it.
+                if code == 122 {
+                    guard model.renameTarget == nil else { return false }
+                    return model.handleKey(.f1, command: command)
+                }
                 // F2 renames the selected folder even while typing in the search field.
                 if code == 120, !model.showHelp, model.renameTarget == nil, model.beginRename() {
                     model.searchFocused = false
@@ -251,7 +256,7 @@ struct EmptyStateView: View {
                 ProgressView()
                 Text("Loading folder…")
                     .foregroundStyle(.secondary)
-            } else if !model.searchText.isEmpty {
+            } else if model.isFiltering {
                 if model.isSearching {
                     ProgressView()
                     Text("Searching subfolders…")
@@ -262,7 +267,7 @@ struct EmptyStateView: View {
                         .foregroundStyle(.secondary)
                     Text("No matches")
                         .font(.title2)
-                    Text("No folder or file named “\(model.searchText)” in this folder or its subfolders.")
+                    Text("No folder or file named “\(model.searchText.trimmingCharacters(in: .whitespaces))” in this folder or its subfolders.")
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
                 }

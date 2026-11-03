@@ -6,31 +6,35 @@ import QuickLookThumbnailing
 /// (QuickLook) — we piggyback on it via `QLThumbnailGenerator`.
 @MainActor
 final class ThumbnailCache {
-    static let shared = ThumbnailCache()
-    /// Keyed by file and tile size, so a small folder preview never stands
-    /// in for a full-size tile.
-    private let cache = NSCache<NSString, NSImage>()
+    /// Grid tiles; the full-size view uses these as its placeholder.
+    static let shared = ThumbnailCache(limit: 512)
+    /// The small images fanned over folder tiles, kept apart so they don't
+    /// push tile thumbnails out.
+    static let previews = ThumbnailCache(limit: 512)
 
-    init() {
-        cache.countLimit = 512
+    /// One image per file, with the tile size it was made for.
+    private final class Entry {
+        let image: NSImage
+        let side: CGFloat
+        init(image: NSImage, side: CGFloat) { self.image = image; self.side = side }
+    }
+    private let cache = NSCache<NSURL, Entry>()
+
+    init(limit: Int) {
+        cache.countLimit = limit
     }
 
-    private func key(_ url: URL, _ side: CGFloat) -> NSString {
-        "\(Int(side.rounded()))|\(url.path)" as NSString
-    }
-
-    func image(for url: URL, side: CGFloat) -> NSImage? {
-        cache.object(forKey: key(url, side))
-    }
-
-    func store(_ image: NSImage, for url: URL, side: CGFloat) {
-        cache.setObject(image, forKey: key(url, side))
+    /// Any cached image of the file, whatever size it was made for.
+    func image(for url: URL) -> NSImage? {
+        cache.object(forKey: url as NSURL)?.image
     }
 
     /// The system thumbnail for a file (embedded previews, including
-    /// RAW/PSD/PDF/video), from memory when available.
+    /// RAW/PSD/PDF/video), from memory when the cached one is at least
+    /// `side` big — so a smaller tile size reuses it, and a larger one gets
+    /// a sharper one.
     func thumbnail(for url: URL, side: CGFloat) async -> NSImage? {
-        if let cached = image(for: url, side: side) { return cached }
+        if let cached = cache.object(forKey: url as NSURL), cached.side >= side { return cached.image }
         let request = QLThumbnailGenerator.Request(
             fileAt: url,
             size: CGSize(width: side, height: side),
@@ -40,7 +44,7 @@ final class ThumbnailCache {
         guard let rep = try? await QLThumbnailGenerator.shared.generateBestRepresentation(for: request) else {
             return nil
         }
-        store(rep.nsImage, for: url, side: side)
+        cache.setObject(Entry(image: rep.nsImage, side: side), forKey: url as NSURL)
         return rep.nsImage
     }
 }
@@ -70,7 +74,7 @@ struct ThumbnailView: View {
             }
             .accessibilityElement(children: .ignore)
             .accessibilityLabel("\(isSelected ? "selected" : "not selected"), \(isVideo ? "video" : "image")")
-            .task(id: url) { await load() }
+            .task(id: TileKey(url: url, side: side)) { await load() }
     }
 
     @ViewBuilder
@@ -96,6 +100,12 @@ struct ThumbnailView: View {
             failed = true
         }
     }
+}
+
+/// Reloads a tile when its file or its size changes.
+private struct TileKey: Hashable {
+    let url: URL
+    let side: CGFloat
 }
 
 /// Shared tile chrome: rounded background, fixed square frame, selection ring.

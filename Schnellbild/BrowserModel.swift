@@ -20,6 +20,9 @@ struct GridEntry: Identifiable, Hashable {
 /// and for VLCKit, so the keyboard drives both players the same way.
 @MainActor
 protocol PlaybackControl: AnyObject {
+    /// The player's real state, so the keyboard stays in step with the
+    /// player's own on-screen controls and with the end of the video.
+    var isPlaying: Bool { get }
     func play()
     func pause()
     func seek(by seconds: Double)
@@ -33,6 +36,10 @@ struct FileActions {
     var confirmTrash: @MainActor (_ name: String) -> Bool
     var trash: @MainActor (URL) throws -> Void
     var move: @MainActor (_ from: URL, _ to: URL) throws -> Void
+    /// Whether `target` exists as an item other than `source`. On a
+    /// case-insensitive volume "Photos" is the same item as "photos"; on a
+    /// case-sensitive one (many NAS shares) it may be a different folder.
+    var conflicts: @MainActor (_ target: URL, _ source: URL) -> Bool
 
     static let live = FileActions(
         reveal: { NSWorkspace.shared.activateFileViewerSelecting([$0]) },
@@ -55,10 +62,22 @@ struct FileActions {
             if from.path != to.path, from.path.lowercased() == to.path.lowercased() {
                 let temp = from.deletingLastPathComponent().appendingPathComponent(".rename-\(UUID().uuidString)")
                 try fm.moveItem(at: from, to: temp)
-                try fm.moveItem(at: temp, to: to)
+                do {
+                    try fm.moveItem(at: temp, to: to)
+                } catch {
+                    try? fm.moveItem(at: temp, to: from)   // never leave the folder under the hidden name
+                    throw error
+                }
             } else {
                 try fm.moveItem(at: from, to: to)
             }
+        },
+        conflicts: { target, source in
+            guard FileManager.default.fileExists(atPath: target.path) else { return false }
+            let key: Set<URLResourceKey> = [.fileResourceIdentifierKey]
+            guard let a = try? target.resourceValues(forKeys: key).fileResourceIdentifier,
+                  let b = try? source.resourceValues(forKeys: key).fileResourceIdentifier else { return true }
+            return !a.isEqual(b)
         }
     )
 }
@@ -146,14 +165,27 @@ final class BrowserModel: ObservableObject {
     private var searchTask: Task<Void, Never>?
     /// A result to select as soon as the search produces it.
     private var pendingResultSelection: URL?
-    /// Folder renames done in this session (old canonical path → new URL),
-    /// applied to search results that are still streaming in.
-    private var renames: [(old: String, new: URL)] = []
+    /// Everything the running search has found so far; streamed batches are
+    /// appended here. Renames and trashing update it, so a later batch never
+    /// brings back an old path.
+    private var searchResults: [GridEntry] = []
+    /// Canonical paths in `searchResults`, plus trashed items, so neither
+    /// shows up twice nor comes back.
+    private var searchSeen: Set<String> = []
+    /// Changes made while the running search walks the tree. The walk may
+    /// still report paths it read before such a change; they are fixed (or
+    /// dropped) on arrival. Reset by every new search.
+    private var searchRenames: [(old: URL, new: URL)] = []
+    private var searchTrashed: [String] = []
+    /// Identifies the newest `load`, so an older scan that finishes late is ignored.
+    private var loadGeneration = 0
 
     // MARK: History
 
     @Published private(set) var backStack: [Location] = []
     @Published private(set) var forwardStack: [Location] = []
+    /// Each step can hold a full result list; older steps are dropped.
+    static let historyLimit = 50
     var canGoBack: Bool { !backStack.isEmpty }
     var canGoForward: Bool { !forwardStack.isEmpty }
     var canGoUp: Bool { folderURL.flatMap(Self.parentFolder(of:)) != nil }
@@ -181,7 +213,8 @@ final class BrowserModel: ObservableObject {
     weak var activePlayer: PlaybackControl? {
         didSet { videoPaused = false }
     }
-    /// Whether the user paused the current video (videos autoplay).
+    /// Whether the current video is paused (or has ended). Videos autoplay;
+    /// the players report changes via `playbackStateChanged`.
     @Published private(set) var videoPaused = false
 
     // MARK: Dependencies
@@ -200,6 +233,14 @@ final class BrowserModel: ObservableObject {
         "mp4", "mov", "m4v", "avi", "mkv", "webm", "m2ts", "mts",
         "mpg", "mpeg", "3gp", "wmv", "flv", "ogv"
     ]
+
+    /// The one rule for which files the app shows: image, video, or nil.
+    nonisolated static func mediaKind(of url: URL) -> GridEntry.Kind? {
+        let ext = url.pathExtension.lowercased()
+        if imageExtensions.contains(ext) { return .image }
+        if videoExtensions.contains(ext) { return .video }
+        return nil
+    }
 
     init(defaults: UserDefaults = .standard, fileActions: FileActions = .live) {
         self.defaults = defaults
@@ -238,6 +279,8 @@ final class BrowserModel: ObservableObject {
 
     private func load(_ location: Location, thenDetail: Bool = false) {
         isLoading = true            // first: keeps the searchText reset below from searching
+        loadGeneration += 1
+        let generation = loadGeneration
         searchTask?.cancel()
         isSearching = false
         pendingResultSelection = nil
@@ -254,14 +297,14 @@ final class BrowserModel: ObservableObject {
         let target = location.selected
         Task {
             var full = await Self.scan(url)
-            guard self.folderURL == url else { return }   // a newer navigation won
+            guard self.loadGeneration == generation else { return }   // a newer navigation won
             if let parent = Self.parentFolder(of: url) {
                 full.insert(GridEntry(url: parent, kind: .parent), at: 0)
             }
             let sorted = Self.sortEntries(full, key: self.sortKey, ascending: self.sortAscending)
             self.allEntries = sorted
             self.isLoading = false
-            if !self.searchText.isEmpty {
+            if self.isFiltering {
                 if let results = location.results, self.searchText == location.query {
                     // History: show the remembered results as they were.
                     self.entries = Self.sortEntries(results, key: self.sortKey, ascending: self.sortAscending)
@@ -332,14 +375,8 @@ final class BrowserModel: ObservableObject {
         if vals?.isDirectory == true {
             return GridEntry(url: item, kind: .folder, modDate: date)
         }
-        let ext = item.pathExtension.lowercased()
-        if imageExtensions.contains(ext) {
-            return GridEntry(url: item, kind: .image, modDate: date, byteSize: vals?.fileSize)
-        }
-        if videoExtensions.contains(ext) {
-            return GridEntry(url: item, kind: .video, modDate: date, byteSize: vals?.fileSize)
-        }
-        return nil
+        guard let kind = mediaKind(of: item) else { return nil }
+        return GridEntry(url: item, kind: kind, modDate: date, byteSize: vals?.fileSize)
     }
 
     /// The media files a folder tile previews: the first `limit` by name,
@@ -352,10 +389,7 @@ final class BrowserModel: ObservableObject {
                 options: [.skipsHiddenFiles]
             )) ?? []
             return contents
-                .filter {
-                    let ext = $0.pathExtension.lowercased()
-                    return imageExtensions.contains(ext) || videoExtensions.contains(ext)
-                }
+                .filter { mediaKind(of: $0) != nil }
                 .sorted { $0.lastPathComponent.localizedStandardCompare($1.lastPathComponent) == .orderedAscending }
                 .prefix(limit)
                 .map { $0 }
@@ -397,11 +431,13 @@ final class BrowserModel: ObservableObject {
         canonicalPath(a) == canonicalPath(b)
     }
 
-    /// A comparable path: symlinks resolved, and macOS's /private/var,
-    /// /private/tmp and /private/etc folded onto /var, /tmp and /etc — also for
-    /// paths that no longer exist (after a rename), which can't be resolved.
+    /// A comparable path: standardized, with macOS's /private/var,
+    /// /private/tmp and /private/etc folded onto /var, /tmp and /etc. Pure
+    /// string work without file system access, because it runs per entry on
+    /// the main thread and must stay fast on network volumes. Entries are
+    /// listed under the folder's own path, so they compare consistently.
     nonisolated static func canonicalPath(_ url: URL) -> String {
-        let path = url.resolvingSymlinksInPath().standardizedFileURL.path
+        let path = url.standardizedFileURL.path
         for alias in ["/var", "/tmp", "/etc"] where path == "/private" + alias || path.hasPrefix("/private" + alias + "/") {
             return String(path.dropFirst("/private".count))
         }
@@ -421,9 +457,13 @@ final class BrowserModel: ObservableObject {
         searchTask?.cancel()
         guard !isLoading else { return }
         let query = searchText.trimmingCharacters(in: .whitespaces)
+        searchRenames = []
+        searchTrashed = []
         guard !query.isEmpty else {
             isSearching = false
             pendingResultSelection = nil
+            searchResults = []
+            searchSeen = []
             let keep = selectedEntry?.url
             entries = allEntries
             selection = keep.flatMap { url in allEntries.firstIndex { $0.url == url } }
@@ -434,7 +474,9 @@ final class BrowserModel: ObservableObject {
         let local = allEntries.filter {
             $0.kind != .parent && $0.name.localizedCaseInsensitiveContains(query)
         }
-        showResults(local, initial: true)
+        searchResults = local
+        searchSeen = Set(local.map { Self.canonicalPath($0.url) })
+        showResults(initial: true)
 
         guard let root = folderURL else { isSearching = false; return }
         isSearching = true
@@ -442,28 +484,37 @@ final class BrowserModel: ObservableObject {
         searchTask = Task { [weak self] in
             if debounce > .zero { try? await Task.sleep(for: debounce) }
             guard !Task.isCancelled else { return }
-            var seen = Set(local.map { Self.canonicalPath($0.url) })
-            var merged = local
             for await batch in Self.recursiveMatches(under: root, query: query) {
                 guard let self, !Task.isCancelled else { return }
-                let fresh = self.applyingRenames(batch)
-                    .filter { seen.insert(Self.canonicalPath($0.url)).inserted }
-                guard !fresh.isEmpty else { continue }
-                merged += fresh
-                self.showResults(merged, initial: false)
+                self.appendSearchBatch(batch)
             }
             guard let self, !Task.isCancelled else { return }
             self.isSearching = false
         }
     }
 
+    /// Add a streamed batch to the running search's results. Internal so
+    /// tests can deliver a batch the walk read before a rename or trash.
+    func appendSearchBatch(_ batch: [GridEntry]) {
+        var fresh: [GridEntry] = []
+        for found in batch {
+            let entry = searchRenames.reduce(found) { Self.rebased($0, from: $1.old, to: $1.new) }
+            let path = Self.canonicalPath(entry.url)
+            if searchTrashed.contains(where: { path == $0 || path.hasPrefix($0 + "/") }) { continue }
+            if searchSeen.insert(path).inserted { fresh.append(entry) }
+        }
+        guard !fresh.isEmpty else { return }
+        searchResults += fresh
+        showResults(initial: false)
+    }
+
     /// Publish search results, keeping the selected item selected while
     /// results stream in.
-    private func showResults(_ results: [GridEntry], initial: Bool) {
+    private func showResults(initial: Bool) {
         let keep = initial ? nil : selectedEntry?.url
-        entries = Self.sortEntries(results, key: sortKey, ascending: sortAscending)
-        if let pending = pendingResultSelection,
-           let idx = entries.firstIndex(where: { Self.samePath($0.url, pending) }) {
+        entries = Self.sortEntries(searchResults, key: sortKey, ascending: sortAscending)
+        if let pending = pendingResultSelection.map(Self.canonicalPath),
+           let idx = entries.firstIndex(where: { Self.canonicalPath($0.url) == pending }) {
             selection = idx
             pendingResultSelection = nil
         } else if let keep, let idx = entries.firstIndex(where: { $0.url == keep }) {
@@ -510,6 +561,9 @@ final class BrowserModel: ObservableObject {
 
     /// Where a search result lives, relative to the searched folder
     /// ("vacation/2024"); nil for items directly in it.
+    /// Whether a (non-blank) query filters the grid.
+    var isFiltering: Bool { !searchText.trimmingCharacters(in: .whitespaces).isEmpty }
+
     func relativeLocation(of entry: GridEntry) -> String? {
         guard let root = folderURL, entry.kind != .parent else { return nil }
         let rootPath = Self.canonicalPath(root)
@@ -555,28 +609,44 @@ final class BrowserModel: ObservableObject {
 
     // MARK: - History (back / forward)
 
+    /// The place on screen. Results are remembered only once the search has
+    /// finished; an unfinished one runs again when the user comes back.
     private var currentLocation: Location? {
         guard let folderURL else { return nil }
-        let searching = !searchText.trimmingCharacters(in: .whitespaces).isEmpty
+        let complete = isFiltering && !isLoading && !isSearching
         return Location(folder: folderURL, query: searchText, selected: selectedEntry?.url,
-                        results: searching && !isLoading ? entries : nil)
+                        results: complete ? entries : nil)
     }
 
     private func recordHistory() {
         guard let current = currentLocation else { return }
-        if backStack.last != current { backStack.append(current) }
+        if let last = backStack.last, Self.sameSpot(last, current) {
+            backStack[backStack.count - 1] = current
+        } else {
+            push(current, onto: &backStack)
+        }
         forwardStack.removeAll()
+    }
+
+    /// Same folder, query and selection; the result lists aren't compared.
+    private static func sameSpot(_ a: Location, _ b: Location) -> Bool {
+        a.folder == b.folder && a.query == b.query && a.selected == b.selected
+    }
+
+    private func push(_ location: Location, onto stack: inout [Location]) {
+        stack.append(location)
+        if stack.count > Self.historyLimit { stack.removeFirst(stack.count - Self.historyLimit) }
     }
 
     func navigateBack() {
         guard let target = backStack.popLast() else { return }
-        if let current = currentLocation { forwardStack.append(current) }
+        if let current = currentLocation { push(current, onto: &forwardStack) }
         load(target)
     }
 
     func navigateForward() {
         guard let target = forwardStack.popLast() else { return }
-        if let current = currentLocation { backStack.append(current) }
+        if let current = currentLocation { push(current, onto: &backStack) }
         load(target)
     }
 
@@ -770,7 +840,9 @@ final class BrowserModel: ObservableObject {
         case "+", "=": scaleUp();   return true
         case "-":      scaleDown(); return true
         case "f":
-            if command { searchFocused = true } else { toggleFullScreen() }
+            // The search field is disabled without a folder; a focus request
+            // then would stay pending and grab focus later.
+            if command { searchFocused = folderURL != nil } else { toggleFullScreen() }
             return true
         case "[" where command: navigateBack();    return true
         case "]" where command: navigateForward(); return true
@@ -840,14 +912,23 @@ final class BrowserModel: ObservableObject {
             NSSound.beep()
             return
         }
-        allEntries.removeAll { $0.url == entry.url }
-        if let idx = entries.firstIndex(of: entry) {
-            entries.remove(at: idx)
-            if entries.isEmpty {
-                selection = nil
-            } else if let sel = selection {
-                selection = min(sel, entries.count - 1)
-            }
+        let gone = Self.canonicalPath(entry.url)
+        func isGone(_ url: URL) -> Bool {
+            let path = Self.canonicalPath(url)
+            return path == gone || path.hasPrefix(gone + "/")
+        }
+        allEntries.removeAll { isGone($0.url) }
+        searchResults.removeAll { isGone($0.url) }
+        searchSeen.insert(gone)
+        searchTrashed.append(gone)
+        backStack = backStack.map { Self.removing(isGone, from: $0) }
+        forwardStack = forwardStack.map { Self.removing(isGone, from: $0) }
+        let sel = selection
+        entries.removeAll { isGone($0.url) }
+        if entries.isEmpty {
+            selection = nil
+        } else if let sel {
+            selection = min(sel, entries.count - 1)
         }
         if mode == .detail, selectedMediaEntry == nil {
             mode = .grid
@@ -876,12 +957,7 @@ final class BrowserModel: ObservableObject {
         let old = entry.url
         guard name != old.lastPathComponent else { renameTarget = nil; return old }
         let new = old.deletingLastPathComponent().appendingPathComponent(name, isDirectory: true)
-        // A case-only change ("photos" → "Photos") points at the same item on
-        // case-insensitive volumes and is allowed.
-        let caseOnlyChange = name.lowercased() == old.lastPathComponent.lowercased()
-        if FileManager.default.fileExists(atPath: new.path), !caseOnlyChange {
-            throw RenameError.alreadyExists(name)
-        }
+        if fileActions.conflicts(new, old) { throw RenameError.alreadyExists(name) }
         do {
             try fileActions.move(old, new)
         } catch {
@@ -891,30 +967,23 @@ final class BrowserModel: ObservableObject {
         // Stay where we are: same folder, same query, same results — only the
         // renamed folder and everything listed inside it get the new path.
         let keep = selectedEntry.map { Self.rebased($0.url, from: old, to: new) }
-        renames.append((old: Self.canonicalPath(old), new: new))
+        if isFiltering {
+            searchRenames.append((old: old, new: new))
+            searchResults = searchResults.map { Self.rebased($0, from: old, to: new) }
+            searchSeen = Set(searchResults.map { Self.canonicalPath($0.url) }).union(searchTrashed)
+        }
         allEntries = Self.sortEntries(allEntries.map { Self.rebased($0, from: old, to: new) },
                                       key: sortKey, ascending: sortAscending)
         entries = Self.sortEntries(entries.map { Self.rebased($0, from: old, to: new) },
                                    key: sortKey, ascending: sortAscending)
         if let keep {
-            selection = entries.firstIndex { Self.samePath($0.url, keep) }
+            selection = entries.firstIndex { $0.url == keep }
         }
         pendingResultSelection = pendingResultSelection.map { Self.rebased($0, from: old, to: new) }
         backStack = backStack.map { Self.rebase($0, from: old, to: new) }
         forwardStack = forwardStack.map { Self.rebase($0, from: old, to: new) }
         renameTarget = nil
         return new
-    }
-
-    /// Search results found after a rename (the tree walk may still report
-    /// old paths) get the renamed paths.
-    private func applyingRenames(_ batch: [GridEntry]) -> [GridEntry] {
-        guard !renames.isEmpty else { return batch }
-        return batch.map { entry in
-            renames.reduce(entry) { current, rename in
-                Self.rebased(current, from: URL(fileURLWithPath: rename.old), to: rename.new)
-            }
-        }
     }
 
     /// `url` with the renamed folder's path swapped in, if it is that folder
@@ -943,12 +1012,29 @@ final class BrowserModel: ObservableObject {
         return result
     }
 
+    /// A history location without a trashed item (or anything inside it).
+    private static func removing(_ isGone: (URL) -> Bool, from location: Location) -> Location {
+        var result = location
+        result.results = location.results?.filter { !isGone($0.url) }
+        if let selected = location.selected, isGone(selected) { result.selected = nil }
+        return result
+    }
+
     // MARK: - Video control
 
+    /// Decides from the player's real state, not from the last key press.
     func togglePlayPause() {
         guard let p = activePlayer else { return }
-        if videoPaused { p.play() } else { p.pause() }
-        videoPaused.toggle()
+        let playing = p.isPlaying
+        if playing { p.pause() } else { p.play() }
+        videoPaused = playing
+    }
+
+    /// Called by the players when playback starts, pauses or ends — also
+    /// through their own on-screen controls.
+    func playbackStateChanged(_ player: PlaybackControl, isPlaying: Bool) {
+        guard player === activePlayer else { return }
+        if videoPaused == isPlaying { videoPaused = !isPlaying }
     }
 
     func seekVideo(by seconds: Double) {
@@ -962,14 +1048,37 @@ final class BrowserModel: ObservableObject {
     }
 }
 
-/// AVKit playback, driven by the keyboard.
+/// AVKit playback, driven by the keyboard. Reports state changes from any
+/// source (keys, the player's controls, the end of the video) to the model.
 @MainActor
 final class AVPlaybackControl: PlaybackControl {
     let player: AVPlayer
+    private var observation: NSKeyValueObservation?
 
-    init(player: AVPlayer) { self.player = player }
+    init(player: AVPlayer, onStateChange: @escaping @MainActor (AVPlaybackControl, Bool) -> Void = { _, _ in }) {
+        self.player = player
+        observation = player.observe(\.timeControlStatus) { [weak self] player, _ in
+            let playing = player.timeControlStatus != .paused
+            Task { @MainActor in
+                guard let self else { return }
+                onStateChange(self, playing)
+            }
+        }
+    }
 
-    func play()  { player.play() }
+    var isPlaying: Bool { player.timeControlStatus != .paused }
+
+    /// At the end, playing starts over.
+    func play() {
+        if let item = player.currentItem {
+            let duration = CMTimeGetSeconds(item.duration)
+            if duration.isFinite, duration > 0, CMTimeGetSeconds(player.currentTime()) >= duration - 0.05 {
+                player.seek(to: .zero)
+            }
+        }
+        player.play()
+    }
+
     func pause() { player.pause() }
 
     func seek(by seconds: Double) {

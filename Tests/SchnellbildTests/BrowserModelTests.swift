@@ -41,6 +41,8 @@ final class FileActionsSpy {
     var moved: [(URL, URL)] = []
     var confirm = true
     var moveError: Error?
+    /// Forces the "target exists" answer, e.g. to act as a case-sensitive volume.
+    var conflictOverride: Bool?
 
     var actions: FileActions {
         FileActions(
@@ -55,6 +57,9 @@ final class FileActionsSpy {
                 if let error = self.moveError { throw error }
                 self.moved.append((from, to))
                 try FileActions.live.move(from, to)
+            },
+            conflicts: { target, source in
+                self.conflictOverride ?? FileActions.live.conflicts(target, source)
             }
         )
     }
@@ -63,8 +68,9 @@ final class FileActionsSpy {
 @MainActor
 final class PlayerSpy: PlaybackControl {
     var calls: [String] = []
-    func play()  { calls.append("play") }
-    func pause() { calls.append("pause") }
+    var isPlaying = true   // videos autoplay
+    func play()  { calls.append("play"); isPlaying = true }
+    func pause() { calls.append("pause"); isPlaying = false }
     func seek(by seconds: Double) { calls.append("seek \(Int(seconds))") }
 }
 
@@ -1089,13 +1095,24 @@ final class KeyBindingTests: XCTestCase {
         XCTAssertEqual(m.rotation, 0)
     }
 
-    func testCommandFFocusesSearchInAnyMode() {
+    func testCommandFFocusesSearchInAnyMode() async throws {
+        let tree = try TempTree(self)
+        try tree.file("a.jpg")
         let m = makeModel()
+        await openAndWait(m, tree.root)
         XCTAssertTrue(m.handleKey(.char("f"), command: true))
         XCTAssertTrue(m.searchFocused)
-        let d = makeModel(); d.mode = .detail
-        XCTAssertTrue(d.handleKey(.char("f"), command: true))
-        XCTAssertTrue(d.searchFocused)
+        m.searchFocused = false
+        m.selectEntry(named: "a.jpg")
+        m.activateSelection()
+        XCTAssertTrue(m.handleKey(.char("f"), command: true))
+        XCTAssertTrue(m.searchFocused)
+    }
+
+    func testCommandFWithoutFolderLeavesNoPendingFocus() {
+        let m = makeModel()
+        XCTAssertTrue(m.handleKey(.char("f"), command: true))
+        XCTAssertFalse(m.searchFocused, "the disabled field must not grab focus later")
     }
 
     func testInspectorToggleIsDetailOnly() {
@@ -1203,5 +1220,213 @@ final class PathTests: XCTestCase {
         XCTAssertNil(BrowserModel.parentFolder(of: URL(fileURLWithPath: "/")))
         XCTAssertEqual(BrowserModel.parentFolder(of: URL(fileURLWithPath: "/a/b/"))?.path, "/a")
         XCTAssertEqual(BrowserModel.parentFolder(of: URL(fileURLWithPath: "/a"))?.path, "/")
+    }
+}
+
+// MARK: - Review fixes: search stays consistent with renames and trash
+
+@MainActor
+final class SearchConsistencyTests: XCTestCase {
+    /// Root with photos/beach.jpg and photos/sub, searched for "photos" or
+    /// "beach" with a debounce long enough that the walk hasn't started.
+    private func model(_ tree: TempTree, spy: FileActionsSpy = FileActionsSpy()) async throws -> BrowserModel {
+        try tree.file("photos/beach.jpg")
+        try tree.file("photos-beach.jpg")
+        let m = makeModel(spy)
+        await openAndWait(m, tree.root)
+        m.searchDebounce = .seconds(60)
+        return m
+    }
+
+    func testStaleBatchAfterRenameGetsTheNewPath() async throws {
+        let tree = try TempTree(self)
+        let m = try await model(tree)
+        m.searchText = "photos"
+        XCTAssertTrue(m.isSearching)
+        XCTAssertEqual(m.names, ["photos", "photos-beach.jpg"])
+        m.selectEntry(named: "photos")
+        try m.renameFolder(try XCTUnwrap(m.selectedEntry), to: "Pics")
+
+        // The walk read "photos" before the rename and reports it now.
+        let oldBeach = tree.root.appendingPathComponent("photos/beach.jpg")
+        let oldFolder = tree.root.appendingPathComponent("photos", isDirectory: true)
+        m.appendSearchBatch([GridEntry(url: oldFolder, kind: .folder), GridEntry(url: oldBeach, kind: .image)])
+
+        XCTAssertEqual(m.names, ["Pics", "beach.jpg", "photos-beach.jpg"], "no old path comes back")
+        let beach = try XCTUnwrap(m.entries.first { $0.name == "beach.jpg" })
+        XCTAssertEqual(m.relativeLocation(of: beach), "Pics")
+        XCTAssertEqual(m.selectedEntry?.name, "Pics")
+    }
+
+    func testStaleBatchAfterTrashDoesNotBringItBack() async throws {
+        let tree = try TempTree(self)
+        let m = try await model(tree)
+        m.searchText = "photos"
+        m.selectEntry(named: "photos")
+        m.moveSelectionToTrash()
+        XCTAssertEqual(m.names, ["photos-beach.jpg"])
+
+        m.appendSearchBatch([
+            GridEntry(url: tree.root.appendingPathComponent("photos", isDirectory: true), kind: .folder),
+            GridEntry(url: tree.root.appendingPathComponent("photos/beach.jpg"), kind: .image),
+        ])
+        XCTAssertEqual(m.names, ["photos-beach.jpg"], "neither the folder nor its contents come back")
+    }
+
+    func testTrashingAFolderRemovesItsResultsToo() async throws {
+        let tree = try TempTree(self)
+        let m = try await model(tree)
+        m.searchDebounce = .zero
+        await searchAndWait(m, "beach")
+        XCTAssertEqual(m.names, ["beach.jpg", "photos-beach.jpg"])
+        await searchAndWait(m, "p")
+        m.selectEntry(named: "photos")
+        m.moveSelectionToTrash()
+        XCTAssertFalse(m.names.contains("beach.jpg"), "contents of the trashed folder go with it")
+    }
+
+    func testRenamesDontLeakIntoLaterSearches() async throws {
+        let tree = try TempTree(self)
+        try tree.file("2024/a.jpg")
+        let m = makeModel(FileActionsSpy())
+        await openAndWait(m, tree.root)
+        m.selectEntry(named: "2024")
+        try m.renameFolder(try XCTUnwrap(m.selectedEntry), to: "2024-old")
+        try tree.file("2024/b.jpg")   // a new folder with the old name
+
+        await searchAndWait(m, "b.jpg")
+        let b = try XCTUnwrap(m.entries.first)
+        XCTAssertEqual(m.relativeLocation(of: b), "2024")
+        XCTAssertTrue(FileManager.default.fileExists(atPath: b.url.path))
+    }
+
+    func testUnfinishedSearchIsNotRememberedAsFinal() async throws {
+        let tree = try TempTree(self)
+        let m = try await model(tree)
+        m.searchText = "beach"
+        XCTAssertTrue(m.isSearching)
+        XCTAssertEqual(m.names, ["photos-beach.jpg"], "only the local match so far")
+        m.selectEntry(named: "photos-beach.jpg")
+        m.activateSelection()   // full view
+        await openAndWait(m, tree.root.appendingPathComponent("photos"))
+
+        m.searchDebounce = .zero
+        m.navigateBack()
+        await waitUntil { m.isAt(tree.root) && !m.isSearching }
+        XCTAssertEqual(m.names, ["beach.jpg", "photos-beach.jpg"], "searched again, complete now")
+        XCTAssertEqual(m.selectedEntry?.name, "photos-beach.jpg")
+    }
+
+    func testTrashRemovesItFromRememberedResults() async throws {
+        let tree = try TempTree(self)
+        try tree.file("picdir/pic1.jpg")
+        try tree.file("pic2.jpg")
+        let m = makeModel(FileActionsSpy())
+        await openAndWait(m, tree.root)
+        await searchAndWait(m, "pic")
+        XCTAssertEqual(m.names, ["picdir", "pic1.jpg", "pic2.jpg"])
+        m.selectEntry(named: "picdir")
+        m.activateSelection()
+        await waitUntil { m.folderURL?.lastPathComponent == "picdir" && !m.isLoading }
+        m.selectEntry(named: "pic1.jpg")
+        m.moveSelectionToTrash()
+
+        m.navigateBack()
+        await waitUntil { m.isAt(tree.root) && !m.entries.isEmpty }
+        XCTAssertEqual(m.names, ["picdir", "pic2.jpg"])
+    }
+
+    func testWhitespaceQueryDoesNotFilter() async throws {
+        let tree = try TempTree(self)
+        let m = try await model(tree)
+        m.searchText = "   "
+        XCTAssertFalse(m.isFiltering)
+        XCTAssertFalse(m.isSearching)
+        XCTAssertEqual(m.names, ["..", "photos", "photos-beach.jpg"])
+    }
+}
+
+@MainActor
+final class ReviewFixTests: XCTestCase {
+    func testRenameOntoAnExistingCaseVariantIsRefused() async throws {
+        // A case-sensitive volume where "Photos" is a different folder.
+        let tree = try TempTree(self)
+        try tree.folder("photos")
+        let spy = FileActionsSpy()
+        spy.conflictOverride = true
+        let m = makeModel(spy)
+        await openAndWait(m, tree.root)
+        let entry = try XCTUnwrap(m.entries.first { $0.name == "photos" })
+        XCTAssertThrowsError(try m.renameFolder(entry, to: "Photos")) {
+            XCTAssertEqual($0 as? RenameError, .alreadyExists("Photos"))
+        }
+        XCTAssertTrue(spy.moved.isEmpty)
+    }
+
+    func testLiveConflictCheckTellsSameItemFromAnother() throws {
+        let tree = try TempTree(self)
+        let a = try tree.folder("a")
+        let b = try tree.folder("b")
+        XCTAssertTrue(FileActions.live.conflicts(b, a))
+        XCTAssertFalse(FileActions.live.conflicts(a, a))
+        XCTAssertFalse(FileActions.live.conflicts(tree.root.appendingPathComponent("c"), a))
+    }
+
+    func testHistoryIsBounded() async throws {
+        let tree = try TempTree(self)
+        let a = try tree.folder("a")
+        let b = try tree.folder("b")
+        let m = makeModel()
+        for i in 0..<(BrowserModel.historyLimit + 10) {
+            await openAndWait(m, i.isMultiple(of: 2) ? a : b)
+        }
+        XCTAssertEqual(m.backStack.count, BrowserModel.historyLimit)
+    }
+
+    func testOverlappingLoadsOfTheSameFolderKeepTheNewest() async throws {
+        let tree = try TempTree(self)
+        let b = try tree.file("b.jpg")
+        try tree.file("a.jpg")
+        let m = makeModel()
+        m.open(folder: tree.root)
+        m.open(folder: tree.root, selecting: b)
+        await waitUntil { m.isAt(tree.root) }
+        try? await Task.sleep(nanoseconds: 100_000_000)
+        XCTAssertEqual(m.selectedEntry?.name, "b.jpg")
+    }
+
+    func testMediaKindIsTheOneRule() {
+        XCTAssertEqual(BrowserModel.mediaKind(of: URL(fileURLWithPath: "/x/a.JPG")), .image)
+        XCTAssertEqual(BrowserModel.mediaKind(of: URL(fileURLWithPath: "/x/a.mkv")), .video)
+        XCTAssertNil(BrowserModel.mediaKind(of: URL(fileURLWithPath: "/x/a.txt")))
+    }
+
+    func testFolderPreviewListIsCachedPerFolder() async throws {
+        let tree = try TempTree(self)
+        try tree.file("b.jpg")
+        let cache = FolderPreviewCache()
+        let first = await cache.files(in: tree.root)
+        try tree.file("a.jpg")
+        let second = await cache.files(in: tree.root)
+        XCTAssertEqual(first.map(\.lastPathComponent), ["b.jpg"])
+        XCTAssertEqual(second, first, "listed once, not on every tile appearance")
+    }
+
+    func testPlayPauseFollowsThePlayersRealState() {
+        let m = makeModel()
+        let player = PlayerSpy()
+        m.activePlayer = player
+        // Paused with the player's own controls:
+        player.isPlaying = false
+        m.playbackStateChanged(player, isPlaying: false)
+        XCTAssertTrue(m.videoPaused)
+        m.togglePlayPause()
+        XCTAssertEqual(player.calls, ["play"], "one Space resumes")
+        XCTAssertFalse(m.videoPaused)
+
+        // A player that is no longer on screen is ignored.
+        let old = PlayerSpy()
+        m.playbackStateChanged(old, isPlaying: false)
+        XCTAssertFalse(m.videoPaused)
     }
 }

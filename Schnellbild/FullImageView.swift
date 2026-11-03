@@ -40,7 +40,7 @@ struct FullImageView: View {
             .accessibilityIdentifier("fullImage")
             .accessibilityLabel(accessibilityState)
             .task(id: url) {
-                if let thumb = ThumbnailCache.shared.image(for: url, side: model.thumbnailSide) {
+                if let thumb = ThumbnailCache.shared.image(for: url) {
                     image = thumb
                 }
                 let scale = NSScreen.mainBackingScale
