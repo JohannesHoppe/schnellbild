@@ -21,8 +21,9 @@ struct ThumbnailGridView: View {
                         // Identity is the file URL only: an index-based id makes the lazy
                         // grid keep showing stale cells when the list changes in place
                         // (search, sort, rename).
+                        let filtering = model.isFiltering
                         ForEach(Array(model.entries.enumerated()), id: \.element.id) { index, entry in
-                            cell(entry: entry, index: index, side: side)
+                            cell(entry: entry, index: index, side: side, filtering: filtering)
                         }
                     }
                     .padding(padding)
@@ -41,9 +42,9 @@ struct ThumbnailGridView: View {
         }
     }
 
-    private func cell(entry: GridEntry, index: Int, side: CGFloat) -> some View {
+    private func cell(entry: GridEntry, index: Int, side: CGFloat, filtering: Bool) -> some View {
         let selected = model.selection == index
-        let location = model.isFiltering ? model.relativeLocation(of: entry) : nil
+        let location = filtering ? model.relativeLocation(of: entry) : nil
         return VStack(spacing: 2) {
             tile(for: entry, side: side, selected: selected)
                 .accessibilityIdentifier("tile.\(entry.name)")
@@ -127,7 +128,7 @@ struct FolderTile: View {
         }
         .tileChrome(side: side, isSelected: isSelected)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("\(isSelected ? "selected" : "not selected"), \(folder == nil ? "parent folder" : "folder"), \(previews.count) previews")
+        .accessibilityLabel("\(TileChrome.selectionLabel(isSelected)), \(folder == nil ? "parent folder" : "folder"), \(previews.count) previews")
         .task(id: folder) { await loadPreviews() }
     }
 
@@ -155,14 +156,18 @@ struct FolderTile: View {
         previews = []
         guard let folder else { return }
         let files = await FolderPreviewCache.shared.files(in: folder)
-        var images: [NSImage] = []
-        for file in files {
-            if Task.isCancelled { return }
-            if let image = await ThumbnailCache.previews.thumbnail(for: file, side: side * 0.4) {
-                images.append(image)
+        let thumbSide = side * 0.4
+        // Requested together: on a network volume one after another would
+        // take three round-trips.
+        let loaded = await withTaskGroup(of: (Int, NSImage?).self) { group in
+            for (i, file) in files.enumerated() {
+                group.addTask { @MainActor in (i, await ThumbnailCache.previews.thumbnail(for: file, side: thumbSide)) }
             }
+            var byIndex: [Int: NSImage] = [:]
+            for await (i, image) in group { byIndex[i] = image }
+            return byIndex
         }
-        if !Task.isCancelled { previews = images }
+        if !Task.isCancelled { previews = files.indices.compactMap { loaded[$0] } }
     }
 }
 

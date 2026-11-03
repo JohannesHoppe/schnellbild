@@ -20,7 +20,7 @@ struct ContentView: View {
         .overlay {
             // A folder without media or subfolders still shows its ".." tile.
             if model.mode == .grid, !model.isLoading, !model.isFiltering,
-               model.entries.count == 1, model.entries.first?.kind == .parent {
+               model.folderCount + model.mediaCount == 0 {
                 EmptyStateView(isLoading: false)
             }
         }
@@ -106,7 +106,7 @@ struct ContentView: View {
         if model.videoCount  > 0 { parts.append("\(model.videoCount) videos") }
         let summary = parts.isEmpty ? "Empty" : parts.joined(separator: " · ")
         guard model.isFiltering else { return summary }
-        let query = model.searchText.trimmingCharacters(in: .whitespaces)
+        let query = model.query
         let count = model.entries.count
         return "\(count) \(count == 1 ? "result" : "results") for “\(query)”" + (count > 0 ? " · \(summary)" : "")
     }
@@ -200,22 +200,9 @@ struct ContentView: View {
             let chars = (command ? event.charactersIgnoringModifiers : event.characters) ?? ""
             // Decide on the main actor whether to consume the key.
             let consume = MainActor.assumeIsolated { () -> Bool in
-                // F1 works everywhere except in the rename sheet: a second sheet
-                // can't be shown on top of it.
-                if code == 122 {
-                    guard model.renameTarget == nil else { return false }
-                    return model.handleKey(.f1, command: command)
-                }
-                // F2 renames the selected folder even while typing in the search field.
-                if code == 120, !model.showHelp, model.renameTarget == nil, model.beginRename() {
-                    model.searchFocused = false
-                    return true
-                }
-                // Text fields (search, rename) and open sheets handle their own keys.
-                if NSApp.keyWindow?.firstResponder is NSText { return false }
-                if model.showHelp || model.renameTarget != nil { return false }
                 guard let key = Self.keyInput(code: code, characters: chars) else { return false }
-                return model.handleKey(key, command: command)
+                return model.handleKey(key, command: command,
+                                       textEditing: NSApp.keyWindow?.firstResponder is NSText)
             }
             return consume ? nil : event
         }
@@ -267,7 +254,7 @@ struct EmptyStateView: View {
                         .foregroundStyle(.secondary)
                     Text("No matches")
                         .font(.title2)
-                    Text("No folder or file named “\(model.searchText.trimmingCharacters(in: .whitespaces))” in this folder or its subfolders.")
+                    Text("No folder or file named “\(model.query)” in this folder or its subfolders.")
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
                 }

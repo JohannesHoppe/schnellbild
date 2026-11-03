@@ -108,8 +108,7 @@ final class ActionsUITests: SchnellbildUITestCase {
     // MARK: Rename while searching
 
     private func searchAlbum() {
-        searchField.click()
-        searchField.typeText("album")
+        search("album")
         XCTAssertTrue(app.staticTexts["album-photo.jpg"].waitForExistence(timeout: 10))
         waitForSelected("album")
     }

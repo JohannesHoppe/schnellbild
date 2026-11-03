@@ -8,11 +8,6 @@ final class SearchUITests: SchnellbildUITestCase {
         try folder("archive/Urlaub 2024")
     }
 
-    private func search(_ query: String) {
-        searchField.click()
-        searchField.typeText(query)
-    }
-
     func testSearchFieldIsVisibleInGridAndFullView() {
         launchOnTempDir()
         XCTAssertTrue(searchField.exists)

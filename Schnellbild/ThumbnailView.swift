@@ -73,7 +73,7 @@ struct ThumbnailView: View {
                 }
             }
             .accessibilityElement(children: .ignore)
-            .accessibilityLabel("\(isSelected ? "selected" : "not selected"), \(isVideo ? "video" : "image")")
+            .accessibilityLabel("\(TileChrome.selectionLabel(isSelected)), \(isVideo ? "video" : "image")")
             .task(id: TileKey(url: url, side: side)) { await load() }
     }
 
@@ -112,6 +112,11 @@ private struct TileKey: Hashable {
 struct TileChrome: ViewModifier {
     let side: CGFloat
     let isSelected: Bool
+
+    /// Start of every tile's accessibility label; the UI tests read it.
+    static func selectionLabel(_ isSelected: Bool) -> String {
+        isSelected ? "selected" : "not selected"
+    }
 
     func body(content: Content) -> some View {
         ZStack {

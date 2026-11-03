@@ -28,7 +28,7 @@ struct SchnellbildApp: App {
                     .keyboardShortcut(.upArrow, modifiers: .command)
                     .disabled(!model.canGoUp)
                 Divider()
-                Button("Search") { model.searchFocused = true }
+                Button("Search") { model.focusSearch() }
                     .keyboardShortcut("f", modifiers: .command)
             }
             CommandMenu("Actions") {

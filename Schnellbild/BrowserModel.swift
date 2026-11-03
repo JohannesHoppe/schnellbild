@@ -99,6 +99,48 @@ enum RenameError: LocalizedError, Equatable {
     }
 }
 
+/// A change the app made on disk (rename, trash). One value is applied to
+/// every list the model holds — the folder, the search results, results
+/// still streaming in, the history — so they all agree.
+struct FileChange {
+    private enum Kind { case moved(to: String), removed }
+    private let path: String
+    private let kind: Kind
+
+    static func moved(_ old: URL, to new: URL) -> FileChange {
+        FileChange(path: BrowserModel.canonicalPath(old), kind: .moved(to: BrowserModel.canonicalPath(new)))
+    }
+    static func removed(_ url: URL) -> FileChange {
+        FileChange(path: BrowserModel.canonicalPath(url), kind: .removed)
+    }
+
+    /// `url` after the change; nil if it was removed (or lay inside what was).
+    func apply(to url: URL) -> URL? {
+        let current = BrowserModel.canonicalPath(url)
+        guard BrowserModel.isSameOrInside(current, path) else { return url }
+        switch kind {
+        case .removed:         return nil
+        case .moved(let to):   return URL(fileURLWithPath: to + current.dropFirst(path.count))
+        }
+    }
+
+    func apply(to entry: GridEntry) -> GridEntry? {
+        guard entry.kind != .parent else { return entry }
+        guard let url = apply(to: entry.url) else { return nil }
+        guard url != entry.url else { return entry }
+        return GridEntry(url: url, kind: entry.kind, modDate: entry.modDate, byteSize: entry.byteSize)
+    }
+
+    /// A removed folder stays in the history (it then shows as empty).
+    func apply(to location: BrowserModel.Location) -> BrowserModel.Location {
+        var result = location
+        result.folder = apply(to: location.folder) ?? location.folder
+        result.selected = location.selected.flatMap { apply(to: $0) }
+        result.results = location.results?.compactMap { apply(to: $0) }
+        return result
+    }
+}
+
 /// Single source of truth for all browsing.
 @MainActor
 final class BrowserModel: ObservableObject {
@@ -113,14 +155,18 @@ final class BrowserModel: ObservableObject {
     /// with its results, and the selected item. Going back to a search shows
     /// exactly these results again (with any renames applied) instead of
     /// searching anew, so the list stays stable.
-    struct Location: Equatable {
+    struct Location {
         var folder: URL
         var query: String = ""
         var selected: URL? = nil
         var results: [GridEntry]? = nil
     }
 
-    @Published private(set) var folderURL: URL?
+    @Published private(set) var folderURL: URL? {
+        didSet { folderPath = folderURL.map(Self.canonicalPath) }
+    }
+    /// `canonicalPath(folderURL)`, kept so grid cells don't recompute it.
+    private var folderPath: String?
     @Published private(set) var entries: [GridEntry] = [] {
         didSet { recomputeDerived() }
     }
@@ -151,8 +197,13 @@ final class BrowserModel: ObservableObject {
     /// The query. Every change re-runs the search over folder and file names
     /// in the current folder and all its subfolders.
     @Published var searchText: String = "" {
-        didSet { if searchText != oldValue { applyFilter() } }
+        didSet { if Self.trimmed(searchText) != Self.trimmed(oldValue) { applyFilter() } }
     }
+    /// The query as searched: `searchText` without surrounding blanks.
+    var query: String { Self.trimmed(searchText) }
+    /// Whether a (non-blank) query filters the grid.
+    var isFiltering: Bool { !query.isEmpty }
+    private static func trimmed(_ text: String) -> String { text.trimmingCharacters(in: .whitespaces) }
     /// Whether the (always visible) search field has keyboard focus.
     @Published var searchFocused = false
     @Published private(set) var isSearching = false
@@ -166,17 +217,14 @@ final class BrowserModel: ObservableObject {
     /// A result to select as soon as the search produces it.
     private var pendingResultSelection: URL?
     /// Everything the running search has found so far; streamed batches are
-    /// appended here. Renames and trashing update it, so a later batch never
-    /// brings back an old path.
+    /// appended here.
     private var searchResults: [GridEntry] = []
-    /// Canonical paths in `searchResults`, plus trashed items, so neither
-    /// shows up twice nor comes back.
+    /// Canonical paths in `searchResults`, so nothing shows up twice.
     private var searchSeen: Set<String> = []
-    /// Changes made while the running search walks the tree. The walk may
-    /// still report paths it read before such a change; they are fixed (or
-    /// dropped) on arrival. Reset by every new search.
-    private var searchRenames: [(old: URL, new: URL)] = []
-    private var searchTrashed: [String] = []
+    /// Changes made while the running search walks the tree, in order. The
+    /// walk may still report paths it read before such a change; they are
+    /// replayed on arrival. Reset by every new search.
+    private var searchChanges: [FileChange] = []
     /// Identifies the newest `load`, so an older scan that finishes late is ignored.
     private var loadGeneration = 0
 
@@ -301,15 +349,13 @@ final class BrowserModel: ObservableObject {
             if let parent = Self.parentFolder(of: url) {
                 full.insert(GridEntry(url: parent, kind: .parent), at: 0)
             }
-            let sorted = Self.sortEntries(full, key: self.sortKey, ascending: self.sortAscending)
-            self.allEntries = sorted
+            self.allEntries = self.sorted(full)
             self.isLoading = false
             if self.isFiltering {
                 if let results = location.results, self.searchText == location.query {
                     // History: show the remembered results as they were.
-                    self.entries = Self.sortEntries(results, key: self.sortKey, ascending: self.sortAscending)
-                    self.selection = target.flatMap { t in self.entries.firstIndex { Self.samePath($0.url, t) } }
-                        ?? (self.entries.isEmpty ? nil : 0)
+                    self.entries = self.sorted(results)
+                    self.selection = self.index(of: target) ?? (self.entries.isEmpty ? nil : 0)
                 } else {
                     // The user typed while the folder loaded.
                     self.pendingResultSelection = target
@@ -317,17 +363,15 @@ final class BrowserModel: ObservableObject {
                 }
                 return
             }
-            self.entries = sorted
-            if let target, let idx = sorted.firstIndex(where: {
-                $0.kind != .parent && Self.samePath($0.url, target)
-            }) {
+            self.entries = self.allEntries
+            if let idx = self.index(of: target) {
                 self.selection = idx
-                if thenDetail, sorted[idx].isMedia {
+                if thenDetail, self.entries[idx].isMedia {
                     self.resetTransforms()
                     self.mode = .detail
                 }
             } else {
-                self.selection = Self.defaultSelection(in: sorted)
+                self.selection = Self.defaultSelection(in: self.entries)
             }
         }
     }
@@ -388,11 +432,18 @@ final class BrowserModel: ObservableObject {
                 includingPropertiesForKeys: nil,
                 options: [.skipsHiddenFiles]
             )) ?? []
-            return contents
-                .filter { mediaKind(of: $0) != nil }
-                .sorted { $0.lastPathComponent.localizedStandardCompare($1.lastPathComponent) == .orderedAscending }
-                .prefix(limit)
-                .map { $0 }
+            // One pass keeping the `limit` first names, instead of sorting a
+            // possibly huge listing to take three.
+            func before(_ a: URL, _ b: URL) -> Bool {
+                a.lastPathComponent.localizedStandardCompare(b.lastPathComponent) == .orderedAscending
+            }
+            var first: [URL] = []
+            for url in contents where mediaKind(of: url) != nil {
+                guard first.count < limit || before(url, first[first.count - 1]) else { continue }
+                first.insert(url, at: first.firstIndex { before(url, $0) } ?? first.count)
+                if first.count > limit { first.removeLast() }
+            }
+            return first
         }.value
     }
 
@@ -421,10 +472,21 @@ final class BrowserModel: ObservableObject {
 
     func setSort(_ key: SortKey) {
         if sortKey == key { sortAscending.toggle() } else { sortKey = key; sortAscending = true }
-        let keepURL = selectedEntry?.url
-        allEntries = Self.sortEntries(allEntries, key: sortKey, ascending: sortAscending)
-        entries = Self.sortEntries(entries, key: sortKey, ascending: sortAscending)
-        if let keepURL { selection = entries.firstIndex { $0.url == keepURL } }
+        let keep = selectedEntry?.url
+        allEntries = sorted(allEntries)
+        entries = sorted(entries)
+        selection = index(of: keep)
+    }
+
+    private func sorted(_ list: [GridEntry]) -> [GridEntry] {
+        Self.sortEntries(list, key: sortKey, ascending: sortAscending)
+    }
+
+    /// Where `url` is in the visible list.
+    private func index(of url: URL?) -> Int? {
+        guard let url else { return nil }
+        let path = Self.canonicalPath(url)
+        return entries.firstIndex { Self.canonicalPath($0.url) == path }
     }
 
     nonisolated static func samePath(_ a: URL, _ b: URL) -> Bool {
@@ -444,6 +506,11 @@ final class BrowserModel: ObservableObject {
         return path
     }
 
+    /// `path` is `ancestor` or lies inside it ("/a/photos" is not inside "/a/photo").
+    nonisolated static func isSameOrInside(_ path: String, _ ancestor: String) -> Bool {
+        path == ancestor || path.hasPrefix(ancestor == "/" ? "/" : ancestor + "/")
+    }
+
     private static func defaultSelection(in list: [GridEntry]) -> Int? {
         list.firstIndex { $0.kind != .parent } ?? (list.isEmpty ? nil : 0)
     }
@@ -456,9 +523,8 @@ final class BrowserModel: ObservableObject {
     func applyFilter() {
         searchTask?.cancel()
         guard !isLoading else { return }
-        let query = searchText.trimmingCharacters(in: .whitespaces)
-        searchRenames = []
-        searchTrashed = []
+        let query = self.query
+        searchChanges = []
         guard !query.isEmpty else {
             isSearching = false
             pendingResultSelection = nil
@@ -466,8 +532,7 @@ final class BrowserModel: ObservableObject {
             searchSeen = []
             let keep = selectedEntry?.url
             entries = allEntries
-            selection = keep.flatMap { url in allEntries.firstIndex { $0.url == url } }
-                ?? Self.defaultSelection(in: allEntries)
+            selection = index(of: keep) ?? Self.defaultSelection(in: allEntries)
             return
         }
         mode = .grid
@@ -498,10 +563,10 @@ final class BrowserModel: ObservableObject {
     func appendSearchBatch(_ batch: [GridEntry]) {
         var fresh: [GridEntry] = []
         for found in batch {
-            let entry = searchRenames.reduce(found) { Self.rebased($0, from: $1.old, to: $1.new) }
-            let path = Self.canonicalPath(entry.url)
-            if searchTrashed.contains(where: { path == $0 || path.hasPrefix($0 + "/") }) { continue }
-            if searchSeen.insert(path).inserted { fresh.append(entry) }
+            guard let entry = searchChanges.reduce(Optional(found), { entry, change in
+                entry.flatMap { change.apply(to: $0) }
+            }) else { continue }
+            if searchSeen.insert(Self.canonicalPath(entry.url)).inserted { fresh.append(entry) }
         }
         guard !fresh.isEmpty else { return }
         searchResults += fresh
@@ -512,15 +577,12 @@ final class BrowserModel: ObservableObject {
     /// results stream in.
     private func showResults(initial: Bool) {
         let keep = initial ? nil : selectedEntry?.url
-        entries = Self.sortEntries(searchResults, key: sortKey, ascending: sortAscending)
-        if let pending = pendingResultSelection.map(Self.canonicalPath),
-           let idx = entries.firstIndex(where: { Self.canonicalPath($0.url) == pending }) {
+        entries = sorted(searchResults)
+        if let idx = index(of: pendingResultSelection) {
             selection = idx
             pendingResultSelection = nil
-        } else if let keep, let idx = entries.firstIndex(where: { $0.url == keep }) {
-            selection = idx
         } else {
-            selection = entries.isEmpty ? nil : 0
+            selection = index(of: keep) ?? (entries.isEmpty ? nil : 0)
         }
     }
 
@@ -561,12 +623,8 @@ final class BrowserModel: ObservableObject {
 
     /// Where a search result lives, relative to the searched folder
     /// ("vacation/2024"); nil for items directly in it.
-    /// Whether a (non-blank) query filters the grid.
-    var isFiltering: Bool { !searchText.trimmingCharacters(in: .whitespaces).isEmpty }
-
     func relativeLocation(of entry: GridEntry) -> String? {
-        guard let root = folderURL, entry.kind != .parent else { return nil }
-        let rootPath = Self.canonicalPath(root)
+        guard let rootPath = folderPath, entry.kind != .parent else { return nil }
         let dirPath = Self.canonicalPath(entry.url.deletingLastPathComponent())
         guard dirPath != rootPath, dirPath.hasPrefix(rootPath + "/") else { return nil }
         return String(dirPath.dropFirst(rootPath.count + 1))
@@ -630,7 +688,8 @@ final class BrowserModel: ObservableObject {
 
     /// Same folder, query and selection; the result lists aren't compared.
     private static func sameSpot(_ a: Location, _ b: Location) -> Bool {
-        a.folder == b.folder && a.query == b.query && a.selected == b.selected
+        samePath(a.folder, b.folder) && a.query == b.query
+            && a.selected.map(canonicalPath) == b.selected.map(canonicalPath)
     }
 
     private func push(_ location: Location, onto stack: inout [Location]) {
@@ -638,15 +697,12 @@ final class BrowserModel: ObservableObject {
         if stack.count > Self.historyLimit { stack.removeFirst(stack.count - Self.historyLimit) }
     }
 
-    func navigateBack() {
-        guard let target = backStack.popLast() else { return }
-        if let current = currentLocation { push(current, onto: &forwardStack) }
-        load(target)
-    }
+    func navigateBack()    { travel(from: &backStack, to: &forwardStack) }
+    func navigateForward() { travel(from: &forwardStack, to: &backStack) }
 
-    func navigateForward() {
-        guard let target = forwardStack.popLast() else { return }
-        if let current = currentLocation { push(current, onto: &backStack) }
+    private func travel(from source: inout [Location], to other: inout [Location]) {
+        guard let target = source.popLast() else { return }
+        if let current = currentLocation { push(current, onto: &other) }
         load(target)
     }
 
@@ -782,14 +838,27 @@ final class BrowserModel: ObservableObject {
 
     /// Single source of truth for key bindings. Returns true if the key was
     /// handled (and should be consumed). Pure enough to unit-test exhaustively.
-    /// ⌘⌫ and ⌘↩ return false so they reach their menu items.
+    /// ⌘⌫ and ⌘↩ return false so they reach their menu items. While a text
+    /// field is being edited (`textEditing`) or a sheet is open, keys belong
+    /// to them — except F1 and F2.
     @discardableResult
-    func handleKey(_ key: KeyInput, command: Bool) -> Bool {
+    func handleKey(_ key: KeyInput, command: Bool, textEditing: Bool = false) -> Bool {
+        let sheetOpen = showHelp || renameTarget != nil
         switch key {
         case .f1:
+            // Not over the rename sheet: a second sheet can't open on top of it.
+            guard renameTarget == nil else { return false }
             showHelp.toggle(); return true
         case .f2:
+            // Also while typing in the search field.
+            guard !sheetOpen else { return false }
             return beginRename()
+        default:
+            guard !textEditing, !sheetOpen else { return false }
+        }
+        switch key {
+        case .f1, .f2:
+            return false   // handled above
         case .backspace:
             guard !command else { return false }
             leaveDetailOrGoUp(); return true
@@ -842,7 +911,7 @@ final class BrowserModel: ObservableObject {
         case "f":
             // The search field is disabled without a folder; a focus request
             // then would stay pending and grab focus later.
-            if command { searchFocused = folderURL != nil } else { toggleFullScreen() }
+            if command { focusSearch() } else { toggleFullScreen() }
             return true
         case "[" where command: navigateBack();    return true
         case "]" where command: navigateForward(); return true
@@ -862,6 +931,10 @@ final class BrowserModel: ObservableObject {
     }
 
     // MARK: - Slideshow
+
+    /// Focus the search field — only when it is enabled (a folder is open);
+    /// a request on the disabled field would grab focus later.
+    func focusSearch() { searchFocused = folderURL != nil }
 
     func toggleSlideshow() {
         if slideshowOn { stopSlideshow() } else { startSlideshow() }
@@ -912,24 +985,7 @@ final class BrowserModel: ObservableObject {
             NSSound.beep()
             return
         }
-        let gone = Self.canonicalPath(entry.url)
-        func isGone(_ url: URL) -> Bool {
-            let path = Self.canonicalPath(url)
-            return path == gone || path.hasPrefix(gone + "/")
-        }
-        allEntries.removeAll { isGone($0.url) }
-        searchResults.removeAll { isGone($0.url) }
-        searchSeen.insert(gone)
-        searchTrashed.append(gone)
-        backStack = backStack.map { Self.removing(isGone, from: $0) }
-        forwardStack = forwardStack.map { Self.removing(isGone, from: $0) }
-        let sel = selection
-        entries.removeAll { isGone($0.url) }
-        if entries.isEmpty {
-            selection = nil
-        } else if let sel {
-            selection = min(sel, entries.count - 1)
-        }
+        apply(.removed(entry.url))
         if mode == .detail, selectedMediaEntry == nil {
             mode = .grid
         }
@@ -941,6 +997,7 @@ final class BrowserModel: ObservableObject {
     @discardableResult
     func beginRename() -> Bool {
         guard mode == .grid, let entry = selectedEntry, entry.kind == .folder else { return false }
+        searchFocused = false   // F2 works while typing in the search field
         renameTarget = entry
         return true
     }
@@ -966,58 +1023,26 @@ final class BrowserModel: ObservableObject {
 
         // Stay where we are: same folder, same query, same results — only the
         // renamed folder and everything listed inside it get the new path.
-        let keep = selectedEntry.map { Self.rebased($0.url, from: old, to: new) }
-        if isFiltering {
-            searchRenames.append((old: old, new: new))
-            searchResults = searchResults.map { Self.rebased($0, from: old, to: new) }
-            searchSeen = Set(searchResults.map { Self.canonicalPath($0.url) }).union(searchTrashed)
-        }
-        allEntries = Self.sortEntries(allEntries.map { Self.rebased($0, from: old, to: new) },
-                                      key: sortKey, ascending: sortAscending)
-        entries = Self.sortEntries(entries.map { Self.rebased($0, from: old, to: new) },
-                                   key: sortKey, ascending: sortAscending)
-        if let keep {
-            selection = entries.firstIndex { $0.url == keep }
-        }
-        pendingResultSelection = pendingResultSelection.map { Self.rebased($0, from: old, to: new) }
-        backStack = backStack.map { Self.rebase($0, from: old, to: new) }
-        forwardStack = forwardStack.map { Self.rebase($0, from: old, to: new) }
+        apply(.moved(old, to: new))
         renameTarget = nil
         return new
     }
 
-    /// `url` with the renamed folder's path swapped in, if it is that folder
-    /// or lies inside it; otherwise unchanged.
-    nonisolated static func rebased(_ url: URL, from old: URL, to new: URL) -> URL {
-        let oldPath = canonicalPath(old)
-        let path = canonicalPath(url)
-        if path == oldPath { return new }
-        guard path.hasPrefix(oldPath + "/") else { return url }
-        return URL(fileURLWithPath: canonicalPath(new) + path.dropFirst(oldPath.count))
-    }
-
-    nonisolated static func rebased(_ entry: GridEntry, from old: URL, to new: URL) -> GridEntry {
-        guard entry.kind != .parent else { return entry }
-        let url = rebased(entry.url, from: old, to: new)
-        guard url != entry.url else { return entry }
-        return GridEntry(url: url, kind: entry.kind, modDate: entry.modDate, byteSize: entry.byteSize)
-    }
-
-    /// Point a history location at the renamed folder (or inside it).
-    private static func rebase(_ location: Location, from old: URL, to new: URL) -> Location {
-        var result = location
-        result.folder = rebased(location.folder, from: old, to: new)
-        result.selected = location.selected.map { rebased($0, from: old, to: new) }
-        result.results = location.results?.map { rebased($0, from: old, to: new) }
-        return result
-    }
-
-    /// A history location without a trashed item (or anything inside it).
-    private static func removing(_ isGone: (URL) -> Bool, from location: Location) -> Location {
-        var result = location
-        result.results = location.results?.filter { !isGone($0.url) }
-        if let selected = location.selected, isGone(selected) { result.selected = nil }
-        return result
+    /// Bring every list the model holds in line with a change on disk, and
+    /// keep the selection on the same item (or near it, if it's gone).
+    private func apply(_ change: FileChange) {
+        let keep = selectedEntry.flatMap { change.apply(to: $0.url) }
+        let previous = selection
+        allEntries = sorted(allEntries.compactMap { change.apply(to: $0) })
+        searchResults = searchResults.compactMap { change.apply(to: $0) }
+        searchSeen = Set(searchResults.map { Self.canonicalPath($0.url) })
+        if isSearching { searchChanges.append(change) }
+        pendingResultSelection = pendingResultSelection.flatMap { change.apply(to: $0) }
+        backStack = backStack.map { change.apply(to: $0) }
+        forwardStack = forwardStack.map { change.apply(to: $0) }
+        entries = sorted(entries.compactMap { change.apply(to: $0) })
+        selection = index(of: keep)
+            ?? (entries.isEmpty ? nil : previous.map { min($0, entries.count - 1) })
     }
 
     // MARK: - Video control
@@ -1034,7 +1059,7 @@ final class BrowserModel: ObservableObject {
     /// through their own on-screen controls.
     func playbackStateChanged(_ player: PlaybackControl, isPlaying: Bool) {
         guard player === activePlayer else { return }
-        if videoPaused == isPlaying { videoPaused = !isPlaying }
+        videoPaused = !isPlaying
     }
 
     func seekVideo(by seconds: Double) {
@@ -1055,7 +1080,7 @@ final class AVPlaybackControl: PlaybackControl {
     let player: AVPlayer
     private var observation: NSKeyValueObservation?
 
-    init(player: AVPlayer, onStateChange: @escaping @MainActor (AVPlaybackControl, Bool) -> Void = { _, _ in }) {
+    init(player: AVPlayer, onStateChange: @escaping @MainActor (PlaybackControl, Bool) -> Void = { _, _ in }) {
         self.player = player
         observation = player.observe(\.timeControlStatus) { [weak self] player, _ in
             let playing = player.timeControlStatus != .paused

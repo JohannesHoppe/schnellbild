@@ -36,8 +36,12 @@ There is **no Xcode project for the app build**; `xcodegen` generates
     matches at once, then `recursiveMatches` streams batches (`AsyncStream`)
     from a tree walk; debounced via `searchDebounce`. The model owns the
     results (`searchResults`); batches are appended via `appendSearchBatch`,
-    which applies renames/trashes done during that walk (`searchRenames`,
-    `searchTrashed`, reset per search), so late batches never revive old paths.
+    which replays the changes made during that walk (`searchChanges`, reset
+    per search), so late batches never revive old paths.
+  - **`FileChange`** (`.moved` / `.removed`) is the one mechanism for changes
+    the app makes on disk: `apply(_:)` runs it over every list the model holds
+    (folder entries, search results, pending selection, history) and keeps
+    the selection. Rename and trash only create the change.
   - Paths are compared with `canonicalPath`: pure string work (standardized,
     `/private/var` → `/var`), no file system access, because it runs per entry
     on the main thread and must stay fast on network volumes.
@@ -47,7 +51,7 @@ There is **no Xcode project for the app build**; `xcodegen` generates
     search left before it finished is searched again instead.
   - Renaming a folder (`renameFolder`) never navigates: folder, query and
     results stay; the folder and everything listed inside it get the new path
-    (`rebased`), as do history entries and results still streaming in.
+    (`FileChange.moved`), as do history entries and results still streaming in.
     `FileActions.conflicts` refuses a target that is a different item (also
     the case-variant on case-sensitive volumes such as NAS shares); the live
     case-only move goes via a temporary name and rolls back on failure.
@@ -65,8 +69,9 @@ There is **no Xcode project for the app build**; `xcodegen` generates
   *every* key through `model.handleKey` via `MainActor.assumeIsolated`. Keys are
   deliberately focus-independent, because SwiftUI focus can swallow
   Backspace/arrows. F1 works everywhere except in the rename sheet (a second
-  sheet can't open on top). The monitor passes keys through when the first
-  responder is `NSText` (search/rename field) or a sheet is open.
+  sheet can't open on top), F2 also while typing in the search field. The
+  monitor only maps key codes; the gate (text field editing via
+  `textEditing:`, open sheets) lives in `handleKey` and is unit-tested.
 - **Video state:** `PlaybackControl.isPlaying` is the player's real state;
   the players report changes (own controls, end of video) through
   `model.playbackStateChanged`, which drives the "Paused" badge.
@@ -85,9 +90,11 @@ There is **no Xcode project for the app build**; `xcodegen` generates
   `tile.<name>`; their label starts with `selected` / `not selected`.
 - **`FullImageView.swift`** — ImageIO downsample + zoom/pan/rotate (view-only;
   **never modifies files** — important user constraint).
-- **`VideoDetailView.swift`** — native formats via AVKit; non-native fall back to…
-- **`VLCVideoView.swift`** — `NSViewRepresentable` over VLCKit (`VLCMediaPlayer`);
-  `import VLCKit`.
+- **`VideoDetailView.swift`** — native formats via AVKit; non-native fall back
+  to VLCKit. Creates and registers the one `PlaybackControl` per file
+  (`AVPlaybackControl` or `VLCPlaybackControl`) in its `.task(id: url)`.
+- **`VLCVideoView.swift`** — `VLCPlaybackControl` (owns the `VLCMediaPlayer`,
+  `import VLCKit`) and `VLCVideoView`, the `NSViewRepresentable` it draws into.
 - **`MediaExtras.swift`** — GIF (`AnimatedImageView`), `InspectorView`,
   `MediaInfo`, `LoadingSpinner`.
 
@@ -128,7 +135,7 @@ AVI/MKV/WebM and other non-native formats play **in-app via vendored VLCKit
 - After editing `project.yml` **or adding/removing a `.swift` file**, re-run
   `xcodegen generate` before the Xcode/UITest build (the app target embeds
   `Vendor/VLCKit.xcframework`).
-- Tests: 97 unit (`Tests/SchnellbildTests/BrowserModelTests.swift`: search,
+- Tests: 98 unit (`Tests/SchnellbildTests/BrowserModelTests.swift`: search,
   history, rename, file actions via spy, playback via `PlayerSpy`, every key
   binding) + 56 XCUITest in `UITests/*UITests.swift` (grid, search, navigation,
   full view, video incl. VLC, actions), sharing `UITestSupport.swift`. Media

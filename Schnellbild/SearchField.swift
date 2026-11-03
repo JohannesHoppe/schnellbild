@@ -36,12 +36,7 @@ struct SearchField: NSViewRepresentable {
         field.placeholderString = placeholder
         field.isEnabled = isEnabled
         let editing = field.currentEditor() != nil
-        if isFocused, !isEnabled {
-            // A disabled field can't take focus; drop the request instead of
-            // letting it grab focus once the field is enabled.
-            let coordinator = context.coordinator
-            DispatchQueue.main.async { coordinator.setFocused(false) }
-        } else if isFocused, !editing {
+        if isFocused, !editing {
             DispatchQueue.main.async { field.focus() }
         } else if !isFocused, editing {
             DispatchQueue.main.async { field.blur() }

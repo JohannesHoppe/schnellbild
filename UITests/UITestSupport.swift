@@ -73,6 +73,12 @@ class SchnellbildUITestCase: XCTestCase {
 
     var searchField: XCUIElement { app.searchFields["searchField"] }
 
+    /// Click into the search field and type a query.
+    func search(_ query: String) {
+        searchField.click()
+        searchField.typeText(query)
+    }
+
     /// Text of an element: SwiftUI exposes a Text via `label` *or* `value`;
     /// state is exposed as label (SwiftUI's accessibilityValue doesn't reach
     /// XCUITest), a search field's text as value.

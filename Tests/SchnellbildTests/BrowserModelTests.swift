@@ -74,9 +74,13 @@ final class PlayerSpy: PlaybackControl {
     func seek(by seconds: Double) { calls.append("seek \(Int(seconds))") }
 }
 
+func makeTestDefaults() -> UserDefaults {
+    UserDefaults(suiteName: "sb.tests.\(UUID().uuidString)")!
+}
+
 @MainActor
 func makeModel(_ spy: FileActionsSpy? = nil) -> BrowserModel {
-    let defaults = UserDefaults(suiteName: "sb.tests.\(UUID().uuidString)")!
+    let defaults = makeTestDefaults()
     let model = BrowserModel(defaults: defaults, fileActions: spy?.actions ?? .live)
     model.searchDebounce = .zero
     model.slideshowInterval = .milliseconds(50)
@@ -363,7 +367,6 @@ final class OpenFolderTests: XCTestCase {
         XCTAssertNil(m.folderURL)
         m.openDropped([sub])
         await waitUntil { m.isAt(sub) }
-        await waitUntil { m.isAt(sub) }
         XCTAssertEqual(m.names, ["..", "x.jpg"])
     }
 
@@ -381,7 +384,7 @@ final class OpenFolderTests: XCTestCase {
     func testLastFolderIsRememberedAndRestored() async throws {
         let tree = try TempTree(self)
         try tree.file("a.jpg")
-        let defaults = UserDefaults(suiteName: "sb.tests.\(UUID().uuidString)")!
+        let defaults = makeTestDefaults()
 
         let first = BrowserModel(defaults: defaults)
         await openAndWait(first, tree.root)
@@ -392,7 +395,7 @@ final class OpenFolderTests: XCTestCase {
     }
 
     func testRestoreIgnoresMissingFolder() {
-        let defaults = UserDefaults(suiteName: "sb.tests.\(UUID().uuidString)")!
+        let defaults = makeTestDefaults()
         defaults.set("/does/not/exist", forKey: BrowserModel.lastFolderKey)
         let m = BrowserModel(defaults: defaults)
         m.restoreLastFolder()
@@ -905,12 +908,15 @@ final class RenameSearchStabilityTests: XCTestCase {
         XCTAssertTrue(m.isAt(tree.root))
     }
 
-    func testRebasedPaths() {
-        let old = URL(fileURLWithPath: "/a/old")
-        let new = URL(fileURLWithPath: "/a/new")
-        XCTAssertEqual(BrowserModel.rebased(URL(fileURLWithPath: "/a/old"), from: old, to: new).path, "/a/new")
-        XCTAssertEqual(BrowserModel.rebased(URL(fileURLWithPath: "/a/old/x/y.jpg"), from: old, to: new).path, "/a/new/x/y.jpg")
-        XCTAssertEqual(BrowserModel.rebased(URL(fileURLWithPath: "/a/older/y.jpg"), from: old, to: new).path, "/a/older/y.jpg")
+    func testFileChangeAppliesToPathsInside() {
+        let moved = FileChange.moved(URL(fileURLWithPath: "/a/old"), to: URL(fileURLWithPath: "/a/new"))
+        XCTAssertEqual(moved.apply(to: URL(fileURLWithPath: "/a/old"))?.path, "/a/new")
+        XCTAssertEqual(moved.apply(to: URL(fileURLWithPath: "/a/old/x/y.jpg"))?.path, "/a/new/x/y.jpg")
+        XCTAssertEqual(moved.apply(to: URL(fileURLWithPath: "/a/older/y.jpg"))?.path, "/a/older/y.jpg")
+        let removed = FileChange.removed(URL(fileURLWithPath: "/a/old"))
+        XCTAssertNil(removed.apply(to: URL(fileURLWithPath: "/a/old/x.jpg")))
+        XCTAssertEqual(removed.apply(to: URL(fileURLWithPath: "/a/older"))?.path, "/a/older")
+        XCTAssertTrue(BrowserModel.isSameOrInside("/a", "/"))
     }
 }
 
@@ -1229,10 +1235,10 @@ final class PathTests: XCTestCase {
 final class SearchConsistencyTests: XCTestCase {
     /// Root with photos/beach.jpg and photos/sub, searched for "photos" or
     /// "beach" with a debounce long enough that the walk hasn't started.
-    private func model(_ tree: TempTree, spy: FileActionsSpy = FileActionsSpy()) async throws -> BrowserModel {
+    private func model(_ tree: TempTree) async throws -> BrowserModel {
         try tree.file("photos/beach.jpg")
         try tree.file("photos-beach.jpg")
-        let m = makeModel(spy)
+        let m = makeModel(FileActionsSpy())
         await openAndWait(m, tree.root)
         m.searchDebounce = .seconds(60)
         return m
@@ -1410,6 +1416,33 @@ final class ReviewFixTests: XCTestCase {
         let second = await cache.files(in: tree.root)
         XCTAssertEqual(first.map(\.lastPathComponent), ["b.jpg"])
         XCTAssertEqual(second, first, "listed once, not on every tile appearance")
+    }
+
+    func testTextFieldsAndSheetsKeepTheirKeysExceptF1AndF2() async throws {
+        let tree = try TempTree(self)
+        try tree.folder("dir")
+        try tree.file("a.jpg")
+        let m = makeModel()
+        await openAndWait(m, tree.root)
+        m.selectEntry(named: "dir")
+
+        XCTAssertFalse(m.handleKey(.right, command: false, textEditing: true), "typing in the search field")
+        XCTAssertEqual(m.selectedEntry?.name, "dir")
+        m.searchFocused = true
+        XCTAssertTrue(m.handleKey(.f2, command: false, textEditing: true), "F2 renames while typing")
+        XCTAssertFalse(m.searchFocused, "and leaves the search field")
+        XCTAssertNotNil(m.renameTarget)
+
+        XCTAssertFalse(m.handleKey(.f1, command: false), "no help on top of the rename sheet")
+        XCTAssertFalse(m.showHelp)
+        XCTAssertFalse(m.handleKey(.right, command: false), "the sheet keeps its keys")
+        m.renameTarget = nil
+
+        XCTAssertTrue(m.handleKey(.f1, command: false))
+        XCTAssertFalse(m.handleKey(.f2, command: false), "no rename over the help sheet")
+        XCTAssertFalse(m.handleKey(.right, command: false))
+        XCTAssertTrue(m.handleKey(.f1, command: false), "F1 closes help again")
+        XCTAssertTrue(m.handleKey(.right, command: false))
     }
 
     func testPlayPauseFollowsThePlayersRealState() {

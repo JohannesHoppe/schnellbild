@@ -4,34 +4,32 @@ import AVFoundation
 
 /// Full-size view for videos. Native formats (MP4/MOV/M4V …) play through AVKit
 /// with autoplay and standard controls. Formats AVFoundation can't handle
-/// (AVI/MKV/WebM …) fall back to the vendored VLCKit player. Both register a
-/// `PlaybackControl` with the model, so Space and ⌘←/⌘→ work for either.
+/// (AVI/MKV/WebM …) fall back to the vendored VLCKit player. Either way one
+/// `PlaybackControl` is created and registered with the model here, so Space
+/// and ⌘←/⌘→ work for both.
 struct VideoDetailView: View {
     let url: URL
 
     @EnvironmentObject var model: BrowserModel
-    @State private var control: AVPlaybackControl?
-    @State private var useVLC = false
+    @State private var avControl: AVPlaybackControl?
+    @State private var vlcControl: VLCPlaybackControl?
     @State private var checking = true
 
     var body: some View {
         ZStack {
             Color.black
-            if useVLC {
-                VLCVideoView(url: url, model: model)
-            } else if let control {
-                VideoPlayer(player: control.player)
+            if let vlcControl {
+                VLCVideoView(control: vlcControl)
+            } else if let avControl {
+                VideoPlayer(player: avControl.player)
             } else if checking {
                 LoadingSpinner()
             }
         }
         .accessibilityElement(children: .contain)
-        .accessibilityIdentifier(useVLC ? "video.vlc" : "video.avkit")
+        .accessibilityIdentifier(vlcControl != nil ? "video.vlc" : "video.avkit")
         .task(id: url) {
-            control?.pause()
-            model.activePlayer = nil
-            control = nil
-            useVLC = false
+            stop()
             checking = true
 
             let asset = AVURLAsset(url: url)
@@ -39,21 +37,31 @@ struct VideoDetailView: View {
             guard !Task.isCancelled else { return }   // the user moved on to another file
             checking = false
 
-            guard playable else {
-                useVLC = true   // AVFoundation can't play it — hand off to VLCKit
-                return
-            }
             let model = self.model
-            let new = AVPlaybackControl(player: AVPlayer(playerItem: AVPlayerItem(asset: asset))) { control, playing in
+            let report: @MainActor (PlaybackControl, Bool) -> Void = { control, playing in
                 model.playbackStateChanged(control, isPlaying: playing)
             }
-            control = new
-            model.activePlayer = new
-            new.play()
+            if playable {
+                let control = AVPlaybackControl(player: AVPlayer(playerItem: AVPlayerItem(asset: asset)), onStateChange: report)
+                avControl = control
+                model.activePlayer = control
+                control.play()
+            } else {
+                // AVFoundation can't play it — hand off to VLCKit. It starts
+                // playing once its view gives it somewhere to draw.
+                let control = VLCPlaybackControl(url: url, onStateChange: report)
+                vlcControl = control
+                model.activePlayer = control
+            }
         }
-        .onDisappear {
-            control?.pause()
-            model.activePlayer = nil
-        }
+        .onDisappear { stop() }
+    }
+
+    private func stop() {
+        avControl?.pause()
+        vlcControl?.stop()
+        model.activePlayer = nil
+        avControl = nil
+        vlcControl = nil
     }
 }
