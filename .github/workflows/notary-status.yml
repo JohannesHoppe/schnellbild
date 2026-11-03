@@ -1,0 +1,23 @@
+# Shows what Apple does with the submitted notarizations (IDs and status only).
+name: Notarization status
+on: workflow_dispatch
+permissions:
+  contents: read
+jobs:
+  status:
+    runs-on: macos-latest
+    environment: release
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up the Apple API key
+        env:
+          P8: ${{ secrets.NOTARY_KEY_P8 }}
+        run: ./Scripts/macos-signing.sh notary-key
+      - name: Ask Apple for the status
+        env:
+          NOTARY_KEY_ID: ${{ secrets.NOTARY_KEY_ID }}
+          NOTARY_ISSUER: ${{ secrets.NOTARY_ISSUER_ID }}
+        run: ./Scripts/package_dmg.sh history
+      - name: Remove the key
+        if: always()
+        run: ./Scripts/macos-signing.sh cleanup

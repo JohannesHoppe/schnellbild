@@ -12,7 +12,7 @@ little, load in parallel, cache via the system, never block the main thread.
 
 - Repo: <https://github.com/JohannesHoppe/schnellbild> — **public, MIT**,
   © 2026 HAUS HOPPE - ITS (Johannes Hoppe).
-- Bundle id: `art.haushoppe.schnellbild`. Current version: **0.2.0** (released).
+- Bundle id: `art.haushoppe.schnellbild`. Current version: **0.3.0**.
 - Everything (code, comments, UI strings, docs, commits) is in **English**.
   The user converses in **German**.
 
@@ -131,7 +131,9 @@ AVI/MKV/WebM and other non-native formats play **in-app via vendored VLCKit
   `./Scripts/fetch_vlckit.sh` first (`test.sh` and `build_app.sh` call it for you).
 - **`./Scripts/build_app.sh`** → `build/Schnellbild.app`: fetch VLCKit, render
   icon, `swift build -c release`, assemble bundle, **embed VLCKit.framework into
-  `Contents/Frameworks` + add `@executable_path/../Frameworks` rpath**, ad-hoc sign.
+  `Contents/Frameworks` + add `@executable_path/../Frameworks` rpath**, sign
+  inside out (Developer ID with `MACOS_SIGN_IDENTITY`, else ad hoc).
+  `./Scripts/package_dmg.sh dmg` packs it into `dist/Schnellbild.dmg`.
 - After editing `project.yml` **or adding/removing a `.swift` file**, re-run
   `xcodegen generate` before the Xcode/UITest build (the app target embeds
   `Vendor/VLCKit.xcframework`).
@@ -155,10 +157,35 @@ AVI/MKV/WebM and other non-native formats play **in-app via vendored VLCKit
   `build_app.sh` → upload zip) and `ui-tests` (fetch+cache VLCKit → `xcodegen` →
   `xcodebuild` UI). **`paths-ignore: ['**.md', 'LICENSE']`** → doc-only pushes
   don't trigger CI. Both jobs cache `Vendor/` keyed on `fetch_vlckit.sh`'s hash.
-- `.github/workflows/release.yml`: on tag `v*` → fetch VLCKit → `test.sh` →
-  `build_app.sh` → zip → publish GitHub Release. **Cut a release** by bumping
-  the version (`Resources/Info.plist` *and* `project.yml`) then
-  `git tag vX.Y.Z && git push origin vX.Y.Z`.
+- `.github/workflows/release.yml` (tag `v*`, or by hand): fetch VLCKit →
+  `test.sh` → signing setup → `build_app.sh` → DMG. With the Apple secrets the
+  app is signed with the Developer ID (Hardened Runtime, timestamp; every Mach-O
+  inside VLCKit and its plugins first, inside out), the DMG signed and
+  **submitted to Apple without waiting** (`Scripts/package_dmg.sh submit`),
+  kept as artifact `macos-signed` (90 days). The job `release` creates the
+  GitHub Release. Without secrets: ad-hoc signed DMG attached right away.
+- `.github/workflows/mac-release.yml`: after every Release run, every 30 min
+  and by hand. Finds the newest release without `Schnellbild.dmg`, fetches
+  `macos-signed`, runs `package_dmg.sh finish` (scripts from the same commit):
+  Apple still checking → green, the next run asks again; accepted → staple,
+  check like Gatekeeper, attach to the release; rejected → artifact deleted.
+- `.github/workflows/notary-status.yml` (manual): Apple's submissions + status.
+- Secrets in the GitHub environment `release` (only tags `v*` and `main`):
+  `MACOS_CERT_P12` (base64 .p12 of the "Developer ID Application" certificate),
+  `MACOS_CERT_PASSWORD`, `NOTARY_KEY_P8` (App Store Connect API key, content of
+  the .p8), `NOTARY_KEY_ID`, `NOTARY_ISSUER_ID`. Team ID `87884AP46G`
+  (in `mac-release.yml`). `Scripts/macos-signing.sh` sets them up in a
+  temporary keychain and removes them again.
+- Same setup as the author's other notarized project; the scripts are kept
+  close to it on purpose.
+- **Cut a release:** bump the version (`Resources/Info.plist` *and*
+  `project.yml`), push to `main`, wait for green CI, then
+  `git tag vX.Y.Z && git push origin vX.Y.Z`. Check: `gh release view vX.Y.Z`
+  lists `Schnellbild.dmg`, and
+  `curl -sIL https://github.com/JohannesHoppe/schnellbild/releases/latest/download/Schnellbild.dmg`
+  ends in HTTP 200. The file name never changes, so the README link always
+  points at the newest version. Never move or rebuild a published tag; ship a
+  patch version instead.
 
 ## Working conventions
 
@@ -170,11 +197,8 @@ AVI/MKV/WebM and other non-native formats play **in-app via vendored VLCKit
   - Prefer CI (push → watch): running the `.app`, XCUITest, `build_app.sh`,
     anything that signs or launches a freshly-built bundle.
   - Only fall back to local launches when CI genuinely can't answer — say so first.
-- The shipped `.app` is **ad-hoc signed, not notarized** → testers need
-  `xattr -dr com.apple.quarantine Schnellbild.app` or right-click → Open.
-  There is **no free Apple-trusted signing**; $99/yr is the only path that
-  removes the Gatekeeper prompt for everyone. (Homebrew doesn't sign — it relies
-  on notarized apps and on CLI downloads not getting the quarantine flag.)
+- Releases are **Developer ID signed and notarized** (see CI & release). CI
+  builds (`ci.yml`) stay ad-hoc signed.
 - Use the **`gh` CLI** for all GitHub work, never WebFetch. Grep freely.
 - Give honest, candid assessments — surface trade-offs and let the user decide,
   rather than cheerleading.
@@ -183,26 +207,24 @@ AVI/MKV/WebM and other non-native formats play **in-app via vendored VLCKit
 
 ## Current state & open threads (handover)
 
-Done & released as **v0.2.0**: folders + drag&drop, subfolder nav (Norton `..`),
+Version 0.3.0: folders + drag&drop, subfolder nav (Norton `..`),
 keyboard-first (NSEvent monitor, F1 help), zoom/pan/pinch/rotate (view-only), video (AVKit + VLCKit fallback),
 animated GIFs, slideshow, inspector, sort, reveal/open/trash, light/dark,
-last-folder restore. Since then (unreleased): always-visible recursive search
-over folder + file names, back/forward/up history, folder rename, folder
-preview tiles, VLC keyboard control, ⌘⌫/⌘↩ reach their menu items, video badge at the top.
-App is installed at `/Applications/Schnellbild.app`
-(quarantine already cleared). CI + release green.
+last-folder restore, always-visible recursive search over folder + file
+names, back/forward/up history, folder rename, folder preview tiles.
+Releases ship as a signed, notarized DMG.
 
 Open / next-up:
 - **Demo GIF** — storyboard ready in `docs/launch-storyboard.md`. User records it
   later, drops `docs/demo.gif`, uncomments the demo line near the top of README.
 - **Launch posts** — `docs/launch.md` has ready Show HN + r/macapps copy; user
   posts when ready. Validation strategy: free + OSS first, gauge interest, then
-  decide on paid (Developer ID + direct sale, not MAS).
-- **Homebrew tap** — discussed as the free "like Homebrew" distribution path for
-  techies (`JohannesHoppe/homebrew-tap` + a cask). **NOT yet verified** whether a
-  tap cask launches an *unsigned* app without the Gatekeeper prompt on current
-  macOS — verify before promising it. Not built yet.
+  decide on paid (direct sale, not MAS).
+- **Homebrew tap** — possible free distribution path for techies
+  (`JohannesHoppe/homebrew-tap` + a cask pointing at the notarized DMG). Not built yet.
+- **Universal build** — releases are built on an Apple-silicon runner and are
+  arm64 only; Intel would need a universal `swift build`.
 - **Speed benchmark** — "Schnellbild vs. Preview over the network" was offered to
   *prove* the speed claim (the GIF only sells the feel). Not built.
-- Known limits (README "Status"): not notarized; slideshow interval fixed at 3 s;
+- Known limits (README "Status"): slideshow interval fixed at 3 s;
   `1` (100 %) is approximate; animated GIFs don't zoom/pan.

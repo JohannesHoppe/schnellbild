@@ -47,7 +47,33 @@ cp "$RES/AppIcon.icns" "$APP/Contents/Resources/AppIcon.icns"
 cp "$RES/Info.plist" "$APP/Contents/Info.plist"
 printf 'APPL????' > "$APP/Contents/PkgInfo"
 
-echo "==> Ad-hoc code signing"
-codesign --force --deep --sign - "$APP" >/dev/null 2>&1 || true
+# Sign from the inside out: every file with machine code (VLCKit and its
+# plugins), then the frameworks, then the app. With MACOS_SIGN_IDENTITY
+# ("Developer ID Application: …") for notarization: Hardened Runtime and a
+# secure timestamp. Without it: ad hoc, for local and CI builds.
+IDENTITY="${MACOS_SIGN_IDENTITY:-}"
+IDENTITY="$(printf '%s' "$IDENTITY" | sed 's/^ *//; s/ *$//')"
+OPTS=(--force --sign "${IDENTITY:--}")
+if [ -n "$IDENTITY" ]; then
+  OPTS+=(--options runtime --timestamp)
+  echo "==> Signing with: $IDENTITY"
+else
+  echo "==> Ad-hoc code signing"
+fi
+is_macho() {
+  case "$(head -c 4 "$1" | xxd -p)" in
+    cffaedfe|cafebabe|cefaedfe|bebafeca) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+MAIN="$APP/Contents/MacOS/Schnellbild"
+# Longest paths first: nested code is signed before what contains it.
+find "$APP/Contents" -type f ! -path "$MAIN" -print0 \
+  | while IFS= read -r -d '' f; do is_macho "$f" && printf '%s\n' "$f"; done \
+  | awk '{ print length, $0 }' | sort -rn | cut -d' ' -f2- \
+  | while IFS= read -r f; do codesign "${OPTS[@]}" "$f"; done
+codesign "${OPTS[@]}" "$APP/Contents/Frameworks/VLCKit.framework"
+codesign "${OPTS[@]}" "$APP"
+codesign --verify --strict --deep "$APP"
 
 echo "==> Done: $APP"

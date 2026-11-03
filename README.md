@@ -43,6 +43,10 @@ read little, load in parallel, cache aggressively, never block the UI thread.
 4. **Nothing blocks the main thread.** Directory scanning and full decoding
    run in `Task.detached`.
 
+## Download
+
+**[Schnellbild.dmg](https://github.com/JohannesHoppe/schnellbild/releases/latest/download/Schnellbild.dmg)** (macOS 14+, Apple silicon) — open it and drag Schnellbild into Applications. Signed with a Developer ID and notarized by Apple.
+
 ## Build & Run
 
 > **Requirement:** a full **Xcode** install (not just the Command Line Tools —
@@ -181,8 +185,6 @@ Bindings follow [Phiewer](https://phiewer.com/) where it makes sense.
 
 **Early stage, but already a usable daily driver.** Known open items:
 
-- Ships as an **ad-hoc-signed** `.app` — not notarized, so the first launch needs
-  right-click → Open (or `xattr -dr com.apple.quarantine Schnellbild.app`).
 - Slideshow interval is fixed at 3 s.
 - `1` (100 %) is approximate (assumes the main display's backing scale).
 - Animated GIFs don't zoom/pan in the full view.

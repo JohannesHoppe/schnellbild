@@ -1,0 +1,146 @@
+# Attaches the DMG to the release once Apple has notarized it. The release
+# workflow already submitted the signed DMG and kept it as artifact
+# "macos-signed" (DMG + submission ID).
+#
+# Runs right after every release build, every 30 minutes (while a release lacks
+# its DMG) and by hand. If Apple is still checking, the run ends green and the
+# next one asks again. If Apple rejects it, the artifact is deleted so it isn't
+# asked about forever.
+name: Finish Mac release
+
+on:
+  workflow_run:
+    workflows: [Release]
+    types: [completed]
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: "Release build run (number); empty = newest release without DMG"
+        required: false
+
+permissions:
+  contents: read
+
+jobs:
+  find:
+    # Only our own builds from tags or manual starts, never from pull requests of forks
+    if: >-
+      github.event_name != 'workflow_run' ||
+      (github.event.workflow_run.head_repository.full_name == github.repository &&
+       contains(fromJSON('["push","workflow_dispatch"]'), github.event.workflow_run.event))
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+    outputs:
+      run_id: ${{ steps.find.outputs.run_id }}
+      artifact_id: ${{ steps.find.outputs.artifact_id }}
+      sha: ${{ steps.find.outputs.sha }}
+      tag: ${{ steps.find.outputs.tag }}
+    steps:
+      - id: find
+        env:
+          GH_TOKEN: ${{ github.token }}
+          R: ${{ github.repository }}
+          EVENT_RUN: ${{ github.event.workflow_run.id }}
+          INPUT_RUN: ${{ inputs.run_id }}
+        run: |
+          # ID of a run's unexpired artifact "macos-signed" (or empty)
+          signed_artifact() {
+            gh api "repos/$R/actions/runs/$1/artifacts" \
+              -q '[.artifacts[] | select(.name == "macos-signed" and (.expired | not)) | .id][0] // empty'
+          }
+          has_dmg() {
+            gh release view "$1" -R "$R" --json assets -q '.assets[].name' 2>/dev/null | grep -qx 'Schnellbild.dmg'
+          }
+          RUN="${EVENT_RUN:-$INPUT_RUN}"
+          RUN=$(printf '%s' "$RUN" | tr -d '[:space:]')
+          if [ -n "$RUN" ] && ! [[ "$RUN" =~ ^[0-9]+$ ]]; then
+            echo "The build run must be a number" >&2; exit 1
+          fi
+          if [ -z "$RUN" ]; then
+            # Newest release without DMG, and its newest build with a submitted DMG
+            for t in $(gh release list -R "$R" -L 5 --json tagName -q '.[].tagName'); do
+              has_dmg "$t" && continue
+              for id in $(gh run list -R "$R" -w release.yml -b "$t" -e push -L 10 --json databaseId -q '.[].databaseId'); do
+                if [ -n "$(signed_artifact "$id")" ]; then RUN=$id; break; fi
+              done
+              if [ -n "$RUN" ]; then break; fi
+            done
+            if [ -z "$RUN" ]; then echo "Nothing to do"; exit 0; fi
+          fi
+          ART=$(signed_artifact "$RUN")
+          if [ -z "$ART" ]; then echo "Run $RUN has no submitted DMG - nothing to do"; exit 0; fi
+          IFS=$'\t' read -r repo event branch sha < <(gh api "repos/$R/actions/runs/$RUN" \
+            -q '[.head_repository.full_name, .event, .head_branch, .head_sha] | @tsv')
+          if [ "$repo" != "$R" ]; then echo "Foreign run" >&2; exit 1; fi
+          [[ "$sha" =~ ^[0-9a-f]{40}$ ]] || { echo "Unexpected commit: $sha" >&2; exit 1; }
+          # Tag build: DMG to the release; otherwise (manual start on main) only as artifact
+          TAG=""
+          if [ "$event" = push ] && [[ "$branch" =~ ^v[0-9A-Za-z._-]+$ ]] \
+             && gh api "repos/$R/git/ref/tags/$branch" >/dev/null 2>&1; then
+            TAG=$branch
+            if has_dmg "$TAG"; then echo "$TAG already has a DMG"; exit 0; fi
+          fi
+          echo "Build run $RUN, commit $sha${TAG:+, release $TAG}"
+          {
+            echo "run_id=$RUN"
+            echo "artifact_id=$ART"
+            echo "sha=$sha"
+            echo "tag=$TAG"
+          } >> "$GITHUB_OUTPUT"
+
+  finish:
+    needs: find
+    if: needs.find.outputs.run_id != ''
+    runs-on: macos-latest
+    environment: release
+    timeout-minutes: 60
+    # One finish per build run at a time; different runs don't interfere
+    concurrency:
+      group: mac-release-${{ needs.find.outputs.run_id }}
+    permissions:
+      actions: write
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      RUN_ID: ${{ needs.find.outputs.run_id }}
+      ARTIFACT_ID: ${{ needs.find.outputs.artifact_id }}
+      TAG: ${{ needs.find.outputs.tag }}
+      MACOS_TEAM_ID: 87884AP46G
+    steps:
+      # Scripts from the same commit as the submitted DMG
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.find.outputs.sha }}
+      - name: Fetch the submitted DMG
+        run: gh run download "$RUN_ID" -R "$GITHUB_REPOSITORY" -n macos-signed -D dist/signed
+      - name: Set up the Apple API key
+        env:
+          P8: ${{ secrets.NOTARY_KEY_P8 }}
+        run: ./Scripts/macos-signing.sh notary-key
+      - name: Ask Apple, staple the ticket
+        id: pkg
+        env:
+          NOTARY_KEY_ID: ${{ secrets.NOTARY_KEY_ID }}
+          NOTARY_ISSUER: ${{ secrets.NOTARY_ISSUER_ID }}
+          # Right after the build wait a while (it usually takes minutes);
+          # the 30-minute schedule only asks once
+          NOTARY_WAIT_MINUTES: ${{ github.event_name == 'schedule' && '0' || '30' }}
+        run: ./Scripts/package_dmg.sh finish
+      - name: Remove the key
+        if: always()
+        run: ./Scripts/macos-signing.sh cleanup
+      - name: Stop retrying a rejected DMG
+        if: failure() && steps.pkg.outputs.result == 'invalid'
+        run: gh api -X DELETE "repos/$GITHUB_REPOSITORY/actions/artifacts/$ARTIFACT_ID"
+      - name: Attach the DMG to the release
+        if: steps.pkg.outputs.result == 'accepted' && env.TAG != ''
+        run: gh release upload "$TAG" -R "$GITHUB_REPOSITORY" --clobber dist/Schnellbild.dmg
+      - uses: actions/upload-artifact@v4
+        if: steps.pkg.outputs.result == 'accepted' && env.TAG == ''
+        with:
+          name: macos-dmg
+          path: dist/Schnellbild.dmg

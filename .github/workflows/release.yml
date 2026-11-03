@@ -1,17 +1,30 @@
+# Builds, tests and publishes a release for a version tag (e.g. v0.3.0).
+#
+# With the Apple secrets (environment "release": tags v* and main only) the app
+# is signed with the Developer ID, packed into a DMG and submitted to Apple for
+# notarization without waiting; the DMG is kept as artifact "macos-signed".
+# mac-release.yml attaches it to the release as soon as Apple accepts it —
+# after minutes or days. Without the secrets the DMG is ad-hoc signed and
+# attached right away.
 name: Release
 
 on:
   push:
-    tags: [ 'v*' ]          # e.g. git tag v0.1.0 && git push --tags
+    tags: [ 'v*' ]
   workflow_dispatch:
 
 permissions:
-  contents: write           # needed to create the GitHub Release
+  contents: read
 
 jobs:
-  release:
-    name: Build & publish release
+  build:
+    name: Build, sign & submit
     runs-on: macos-15
+    environment: release
+    outputs:
+      signed: ${{ steps.sign.outputs.signed }}
+    env:
+      SIGN: ${{ secrets.MACOS_CERT_P12 != '' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -20,20 +33,94 @@ jobs:
         with:
           xcode-version: latest-stable
 
+      - name: Cache VLCKit
+        uses: actions/cache@v4
+        with:
+          path: Vendor
+          key: vlckit-${{ hashFiles('Scripts/fetch_vlckit.sh') }}
+
       - name: Fetch VLCKit
         run: ./Scripts/fetch_vlckit.sh
 
-      - name: Run tests
+      - name: Test
         run: ./Scripts/test.sh
+
+      - name: Set up signing certificate
+        id: sign
+        if: env.SIGN == 'true'
+        env:
+          P12: ${{ secrets.MACOS_CERT_P12 }}
+          P12_PASSWORD: ${{ secrets.MACOS_CERT_PASSWORD }}
+          P8: ${{ secrets.NOTARY_KEY_P8 }}
+        run: |
+          ./Scripts/macos-signing.sh setup
+          echo "signed=true" >> "$GITHUB_OUTPUT"
 
       - name: Build app bundle (release)
         run: ./Scripts/build_app.sh
 
-      - name: Zip app
-        run: ditto -c -k --keepParent build/Schnellbild.app "Schnellbild-${{ github.ref_name }}.zip"
+      - name: Check the signature
+        run: |
+          codesign --verify --strict --deep --verbose=2 build/Schnellbild.app
+          codesign -dvv build/Schnellbild.app 2>&1 | grep -E 'Authority|TeamIdentifier|flags' || true
 
-      - name: Publish GitHub Release
-        uses: softprops/action-gh-release@v2
+      - name: Build DMG (unsigned)
+        if: env.SIGN != 'true'
+        run: ./Scripts/package_dmg.sh dmg
+
+      - name: Build DMG and submit to Apple
+        if: env.SIGN == 'true'
+        env:
+          NOTARY_KEY_ID: ${{ secrets.NOTARY_KEY_ID }}
+          NOTARY_ISSUER: ${{ secrets.NOTARY_ISSUER_ID }}
+        run: ./Scripts/package_dmg.sh submit
+
+      - name: Remove signing data
+        if: always() && env.SIGN == 'true'
+        run: ./Scripts/macos-signing.sh cleanup
+
+      - uses: actions/upload-artifact@v4
+        if: env.SIGN != 'true'
         with:
-          files: Schnellbild-${{ github.ref_name }}.zip
-          generate_release_notes: true
+          name: macos
+          path: dist/Schnellbild.dmg
+          if-no-files-found: error
+
+      - uses: actions/upload-artifact@v4
+        if: env.SIGN == 'true'
+        with:
+          name: macos-signed
+          path: dist/signed/
+          retention-days: 90
+          if-no-files-found: error
+
+  release:
+    name: Publish GitHub Release
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        if: needs.build.outputs.signed != 'true'
+        with:
+          name: macos
+      - name: Create the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SIGNED: ${{ needs.build.outputs.signed }}
+        run: |
+          files=()
+          if [ "$SIGNED" = true ]; then
+            notes="The notarized DMG is attached as soon as Apple has checked it (usually minutes)."
+          else
+            notes="Not notarized: on first launch right-click → Open, or run xattr -dr com.apple.quarantine /Applications/Schnellbild.app"
+            files=(Schnellbild.dmg)
+          fi
+          if gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            if [ ${#files[@]} -gt 0 ]; then gh release upload "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --clobber "${files[@]}"; fi
+          else
+            gh release create "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --title "$GITHUB_REF_NAME" \
+              --generate-notes --notes "$notes" "${files[@]}"
+          fi
