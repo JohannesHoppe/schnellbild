@@ -281,6 +281,47 @@ final class ScanTests: XCTestCase {
         XCTAssertNil(byName["notes.txt"], "non-media files are excluded")
     }
 
+    func testContainsMediaLooksAtEveryDepthAndIgnoresJunk() async throws {
+        let tree = try TempTree(self)
+        try tree.file("junk/Thumbs.db")
+        try tree.file("junk/desktop.ini")
+        try tree.file("junk/.DS_Store")
+        try tree.file("junk/.hidden.jpg")
+        try tree.file("junk/inner/notes.txt")
+        try tree.folder("bare")
+        try tree.file("deep/a/b/c/photo.heic")
+        try tree.file("flat/clip.mkv")
+        func contains(_ name: String) async -> Bool {
+            await BrowserModel.containsMedia(tree.root.appendingPathComponent(name))
+        }
+        let junk = await contains("junk"), bare = await contains("bare")
+        let deep = await contains("deep"), flat = await contains("flat")
+        XCTAssertFalse(junk, "Thumbs.db, desktop.ini and hidden files don't count")
+        XCTAssertFalse(bare)
+        XCTAssertTrue(deep, "found at any depth")
+        XCTAssertTrue(flat)
+    }
+
+    @MainActor
+    func testEmptyFoldersAreForgottenWhenTheirContentChanges() async throws {
+        let tree = try TempTree(self)
+        try tree.folder("empty")
+        try tree.file("photo.jpg")
+        let spy = FileActionsSpy()
+        let m = makeModel(spy)
+        await openAndWait(m, tree.root)
+        let empty = try XCTUnwrap(m.entries.first { $0.name == "empty" })
+        m.noteFolder(empty.url, empty: true)
+        m.noteFolder(tree.root, empty: true)
+        XCTAssertTrue(m.isEmptyFolder(empty))
+
+        m.selectEntry(named: "photo.jpg")
+        m.moveSelectionToTrash()   // a change in the root folder
+        XCTAssertEqual(spy.trashed.count, 1)
+        XCTAssertTrue(m.isEmptyFolder(empty), "a sibling stays as it was")
+        XCTAssertFalse(m.emptyFolders.contains(BrowserModel.canonicalPath(tree.root)), "the parent is checked again")
+    }
+
     func testFolderPreviewFilesAreFirstThreeMediaByNameShallow() async throws {
         let tree = try TempTree(self)
         for n in ["img10.jpg", "img2.jpg", "img1.jpg", "clip.mp4", "notes.txt", ".hidden.jpg"] {

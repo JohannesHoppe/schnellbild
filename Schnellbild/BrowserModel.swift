@@ -121,6 +121,22 @@ struct FileChange {
         FileChange(path: BrowserModel.canonicalPath(url), kind: .removed)
     }
 
+    /// The changed item and every folder above it, as canonical paths: their
+    /// contents (and so their previews and emptiness) changed.
+    var affectedFolders: [String] {
+        var result: [String] = []
+        var paths = [path]
+        if case .moved(let to) = kind { paths.append(to) }
+        for start in paths {
+            var current = start
+            while !current.isEmpty, current != "/" {
+                result.append(current)
+                current = (current as NSString).deletingLastPathComponent
+            }
+        }
+        return result
+    }
+
     /// `url` after the change; nil if it was removed (or lay inside what was).
     func apply(to url: URL) -> URL? {
         let current = BrowserModel.canonicalPath(url)
@@ -456,6 +472,34 @@ final class BrowserModel: ObservableObject {
         }
         guard let kind = mediaKind(of: item) else { return nil }
         return GridEntry(url: item, kind: kind, modDate: date, byteSize: vals?.fileSize)
+    }
+
+    /// Whether a photo or video lies anywhere below `folder`. Stops at the
+    /// first one, so only folders that are really empty are walked to the
+    /// end. Hidden files (".DS_Store", "._…") and anything that isn't a
+    /// picture or video ("Thumbs.db", "desktop.ini") don't count.
+    nonisolated static func containsMedia(_ folder: URL) async -> Bool {
+        await Task.detached(priority: .utility) {
+            guard let walk = FileManager.default.enumerator(
+                at: folder, includingPropertiesForKeys: nil,
+                options: [.skipsHiddenFiles, .skipsPackageDescendants]) else { return false }
+            for case let url as URL in walk where mediaKind(of: url) != nil { return true }
+            return false
+        }.value
+    }
+
+    /// Folders known to hold no photos or videos at any depth, as canonical
+    /// paths. Filled by the folder tiles as they find out; the grid greys
+    /// them out.
+    @Published private(set) var emptyFolders: Set<String> = []
+
+    func isEmptyFolder(_ entry: GridEntry) -> Bool {
+        entry.kind == .folder && emptyFolders.contains(Self.canonicalPath(entry.url))
+    }
+
+    func noteFolder(_ url: URL, empty: Bool) {
+        let path = Self.canonicalPath(url)
+        if empty { emptyFolders.insert(path) } else { emptyFolders.remove(path) }
     }
 
     /// The media files a folder tile previews: the first `limit` by name,
@@ -1177,6 +1221,9 @@ final class BrowserModel: ObservableObject {
     /// Bring every list the model holds in line with a change on disk, and
     /// keep the selection on the same item (or near it, if it's gone).
     private func apply(_ change: FileChange) {
+        // What the folders around the change contain is no longer known.
+        for path in change.affectedFolders { emptyFolders.remove(path) }
+        FolderPreviewCache.shared.forget(change.affectedFolders)
         let keep = selectedEntry.flatMap { change.apply(to: $0.url) }
         let previous = selection
         allEntries = sorted(allEntries.compactMap { change.apply(to: $0) })
