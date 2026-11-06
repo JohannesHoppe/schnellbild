@@ -3,7 +3,8 @@ import AppKit
 
 struct ContentView: View {
     @EnvironmentObject var model: BrowserModel
-    @State private var isDropTargeted = false
+    @State private var dropZone: DropZone?
+    @State private var width: CGFloat = 0
     @State private var keyMonitor: Any?
 
     var body: some View {
@@ -13,7 +14,7 @@ struct ContentView: View {
             } else {
                 // The grid stays alive under the full view, so it keeps its
                 // scroll position (and follows the item shown) for the way back.
-                let detailEntry = model.mode == .detail ? model.selectedMediaEntry : nil
+                let detailEntry = model.shownMediaEntry
                 ZStack {
                     ThumbnailGridView()
                         .opacity(detailEntry == nil ? 1 : 0)
@@ -33,18 +34,23 @@ struct ContentView: View {
                 EmptyStateView(isLoading: false)
             }
         }
-        // Drag & drop: drag a folder (or media file) onto the window.
-        .dropDestination(for: URL.self) { urls, _ in
-            model.openDropped(urls)
-            return !urls.isEmpty
-        } isTargeted: { hovering in
-            isDropTargeted = hovering
+        // Drag & drop: a folder (or media file) onto the window. The left
+        // half browses it, the right half starts a slideshow.
+        .background { GeometryReader { geo in
+            Color.clear.onAppear { width = geo.size.width }
+                .onChange(of: geo.size.width) { _, new in width = new }
+        } }
+        .onDrop(of: [.fileURL], delegate: DropZoneDelegate(zone: $dropZone, width: width) { urls, zone in
+            model.openDropped(urls, slideshow: zone == .slideshow)
+        })
+        .overlay { if let dropZone { DropZonesView(highlighted: dropZone) } }
+        .safeAreaInset(edge: .top, spacing: 0) {
+            if model.slideshow == nil { searchBar }
         }
-        .overlay { if isDropTargeted { dropHighlight } }
-        .safeAreaInset(edge: .top, spacing: 0) { searchBar }
         .safeAreaInset(edge: .bottom, spacing: 0) {
-            if model.mode == .grid, model.folderURL != nil { statusBar }
+            if model.mode == .grid, model.slideshow == nil, model.folderURL != nil { statusBar }
         }
+        .toolbar(model.slideshow == nil ? .visible : .hidden, for: .windowToolbar)
         .onAppear {
             if !model.openFromLaunchArguments() { model.restoreLastFolder() }
             installKeyMonitor()
@@ -56,12 +62,6 @@ struct ContentView: View {
         .sheet(item: $model.renameTarget) { RenameView(entry: $0) }
     }
 
-    private var dropHighlight: some View {
-        RoundedRectangle(cornerRadius: 10)
-            .strokeBorder(Color.accentColor, style: StrokeStyle(lineWidth: 3, dash: [10]))
-            .padding(6)
-            .allowsHitTesting(false)
-    }
 
     // MARK: - Search bar (always visible)
 
@@ -92,9 +92,6 @@ struct ContentView: View {
                 .accessibilityIdentifier("statusText")
             if model.isSearching {
                 Text("Searching subfolders…").foregroundStyle(.secondary)
-            }
-            if model.slideshowOn {
-                Label("Slideshow", systemImage: "play.fill").foregroundStyle(.secondary)
             }
             Spacer()
             Text(model.folderURL?.path ?? "")
@@ -145,14 +142,27 @@ struct ContentView: View {
     }
 
     private func positionBadge(entry: GridEntry, atTop: Bool) -> some View {
-        Text("\(model.currentMediaNumber ?? 0) / \(model.mediaCount)  ·  \(entry.name)"
-             + (entry.kind == .video && model.videoPaused ? "  ·  Paused" : ""))
+        Text(badgeText(entry: entry))
             .font(.callout)
             .padding(.horizontal, 12)
             .padding(.vertical, 6)
             .background(.ultraThinMaterial, in: Capsule())
             .padding(atTop ? .top : .bottom, 16)
             .accessibilityIdentifier("positionBadge")
+    }
+
+    /// "3 / 12 · name"; in a slideshow "Slideshow · 3 / 57 · name" (with "+"
+    /// while subfolders are still being walked).
+    private func badgeText(entry: GridEntry) -> String {
+        var text: String
+        if let show = model.slideshow {
+            text = "Slideshow  ·  \(show.index + 1) / \(show.items.count)\(show.loading ? "+" : "")  ·  \(entry.name)"
+            if show.paused { text += "  ·  Paused" }
+        } else {
+            text = "\(model.currentMediaNumber ?? 0) / \(model.mediaCount)  ·  \(entry.name)"
+        }
+        if entry.kind == .video && model.videoPaused { text += "  ·  Paused" }
+        return text
     }
 
     // MARK: - Toolbar (history, up, open)
@@ -185,6 +195,16 @@ struct ContentView: View {
                 Label("Open Folder", systemImage: "folder")
             }
             .help("Open folder (⌘O)")
+        }
+        ToolbarItem(placement: .primaryAction) {
+            Button { model.startSlideshow() } label: {
+                Label("Slideshow", systemImage: "play.fill")
+                    .labelStyle(.titleAndIcon)
+            }
+            .buttonStyle(.borderedProminent)
+            .help("Slideshow over everything in this folder and its subfolders (S)")
+            .disabled(model.folderURL == nil)
+            .accessibilityIdentifier("slideshowButton")
         }
         ToolbarItem(placement: .primaryAction) {
             Menu {
@@ -329,5 +349,69 @@ struct SortChoices: View {
         Toggle("Descending", isOn: Binding(
             get: { !model.sortAscending },
             set: { if $0 == model.sortAscending { model.setSort(model.sortKey) } }))
+    }
+}
+
+// MARK: - Drop zones
+
+enum DropZone { case browse, slideshow }
+
+/// While a folder is dragged over the window: two halves, "Browse" and
+/// "Slideshow"; the one under the pointer is highlighted.
+struct DropZonesView: View {
+    let highlighted: DropZone
+
+    var body: some View {
+        HStack(spacing: 12) {
+            zone(.browse, title: "Browse", systemImage: "square.grid.2x2")
+            zone(.slideshow, title: "Slideshow", systemImage: "play.fill")
+        }
+        .padding(12)
+        .background(.ultraThinMaterial)
+        .allowsHitTesting(false)
+    }
+
+    private func zone(_ zone: DropZone, title: String, systemImage: String) -> some View {
+        let on = zone == highlighted
+        return VStack(spacing: 12) {
+            Image(systemName: systemImage).font(.system(size: 44, weight: .semibold))
+            Text(title).font(.title2.weight(.semibold))
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .foregroundStyle(on ? Color.accentColor : .secondary)
+        .background(RoundedRectangle(cornerRadius: 14).fill(on ? Color.accentColor.opacity(0.15) : .clear))
+        .overlay(RoundedRectangle(cornerRadius: 14)
+            .strokeBorder(on ? Color.accentColor : .secondary.opacity(0.5), style: StrokeStyle(lineWidth: 3, dash: [10])))
+    }
+}
+
+/// Decides the zone from the pointer's position and loads the dropped URLs.
+struct DropZoneDelegate: DropDelegate {
+    @Binding var zone: DropZone?
+    let width: CGFloat
+    let onDrop: ([URL], DropZone) -> Void
+
+    private func zone(at info: DropInfo) -> DropZone {
+        info.location.x < width / 2 ? .browse : .slideshow
+    }
+
+    func validateDrop(info: DropInfo) -> Bool { info.hasItemsConforming(to: [.fileURL]) }
+    func dropEntered(info: DropInfo) { zone = zone(at: info) }
+    func dropUpdated(info: DropInfo) -> DropProposal? {
+        zone = zone(at: info)
+        return DropProposal(operation: .copy)
+    }
+    func dropExited(info: DropInfo) { zone = nil }
+
+    func performDrop(info: DropInfo) -> Bool {
+        let target = zone(at: info)
+        zone = nil
+        let providers = info.itemProviders(for: [.fileURL])
+        guard let provider = providers.first else { return false }
+        _ = provider.loadObject(ofClass: URL.self) { url, _ in
+            guard let url else { return }
+            DispatchQueue.main.async { onDrop([url], target) }
+        }
+        return true
     }
 }

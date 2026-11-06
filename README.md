@@ -88,8 +88,26 @@ One picture, as large as the window allows, with its position in the folder. The
 | ← → | previous / next picture (on a video: see below) |
 | ⌘← ⌘→ ↑ ↓ | previous / next item, also from a video |
 | Space | next picture |
-| s | slideshow |
 | Esc / Backspace / Return | back to the grid, at the same place |
+
+### Slideshow
+
+<p align="center"><picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/slideshow-dark.png">
+  <img src="docs/screenshots/slideshow-light.png" width="760" alt="The slideshow">
+</picture></p>
+
+One click on ▶︎ Slideshow (or `s`) plays every photo and video in the current folder and all its subfolders, in full screen: folder by folder, in the sort order you chose, so sorted by date taken your holiday plays from the first day to the last. Pictures stay three seconds, videos play to their end. It starts at once while the subfolders are still being read. With a folder tile selected it plays that folder; while searching, it plays the results.
+
+Drag a folder onto the window and choose: drop it on **Browse** to look around, or on **Slideshow** to start the show straight away.
+
+| Key | Action |
+|---|---|
+| s | start the slideshow (again: end it) |
+| Space | pause / resume |
+| ← → | previous / next picture; in a video skip a tenth |
+| ⌘← ⌘→ ↑ ↓ | previous / next item |
+| Esc | end the slideshow |
 
 ### Zoom and rotate
 

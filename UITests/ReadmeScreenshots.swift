@@ -95,6 +95,15 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         shoot("video")
 
         app.typeKey(.escape, modifierFlags: [])
+        tile("Lofoten").click()
+        waitForSelected("Lofoten")
+        app.typeKey("s", modifierFlags: [])   // the selected folder, full screen
+        waitForBadge(containing: "Slideshow")
+        shoot("slideshow")
+        app.typeKey(.escape, modifierFlags: [])
+        XCTAssertTrue(searchField.waitForExistence(timeout: 10))
+        RunLoop.current.run(until: Date().addingTimeInterval(2))   // out of full screen
+
         search("sunset")
         XCTAssertTrue(app.staticTexts["Sunset over the Dunes.jpg"].waitForExistence(timeout: 15))
         shoot("search")

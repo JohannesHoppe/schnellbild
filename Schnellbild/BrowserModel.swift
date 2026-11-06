@@ -297,9 +297,34 @@ final class BrowserModel: ObservableObject {
 
     // MARK: Slideshow / video
 
-    @Published private(set) var slideshowOn = false
+    /// A slideshow over every photo and video below a folder, folder by
+    /// folder in the sort order (a folder's own media first, then each
+    /// subfolder). It starts with the first pictures found while the walk
+    /// goes on, and plays in full screen over the grid.
+    struct Slideshow {
+        var items: [GridEntry] = []
+        var index = 0
+        /// Still walking subfolders: more items may come.
+        var loading = true
+        /// Pictures wait (videos pause through their player).
+        var paused = false
+        var current: GridEntry? { items.indices.contains(index) ? items[index] : nil }
+    }
+    @Published private(set) var slideshow: Slideshow?
+    /// How long a picture stays; a video plays to its end.
     var slideshowInterval: Duration = .seconds(3)
-    private var slideshowTask: Task<Void, Never>?
+    private var slideshowTimer: Task<Void, Never>?
+    private var slideshowWalk: Task<Void, Never>?
+    /// Whether starting the slideshow put the window into full screen.
+    private var slideshowEnteredFullScreen = false
+    /// Puts the window into (true) or out of (false) full screen; returns
+    /// whether that changed anything. Tests replace it.
+    var setFullScreen: @MainActor (Bool) -> Bool = { on in
+        guard let window = NSApp.keyWindow ?? NSApp.mainWindow,
+              window.styleMask.contains(.fullScreen) != on else { return false }
+        window.toggleFullScreen(nil)
+        return true
+    }
 
     /// The player of the video on screen — for keyboard control
     /// (play/pause, skimming). Set by the video views.
@@ -831,15 +856,23 @@ final class BrowserModel: ObservableObject {
         }
     }
 
-    /// Drag & drop: open a folder; for a file → open the parent folder and select it.
-    func openDropped(_ urls: [URL]) {
+    /// Drag & drop: open a folder; for a file → open the parent folder and
+    /// select it. Dropped on the "Slideshow" zone, a slideshow starts over
+    /// the folder (for a file: over its folder, at that file), the grid of
+    /// that folder behind it.
+    func openDropped(_ urls: [URL], slideshow: Bool = false) {
         guard let first = urls.first else { return }
         var isDir: ObjCBool = false
         guard FileManager.default.fileExists(atPath: first.path, isDirectory: &isDir) else { return }
-        if isDir.boolValue {
-            open(folder: first)
+        let folder = isDir.boolValue ? first : first.deletingLastPathComponent()
+        let file = isDir.boolValue ? nil : first
+        if slideshow {
+            open(folder: folder, selecting: file)
+            startSlideshow(over: folder, startingAt: file)
+        } else if let file {
+            open(folder: folder, selecting: file, thenDetail: true)
         } else {
-            open(folder: first.deletingLastPathComponent(), selecting: first, thenDetail: true)
+            open(folder: folder)
         }
     }
 
@@ -1043,6 +1076,7 @@ final class BrowserModel: ObservableObject {
         default:
             guard !textEditing, !sheetOpen else { return false }
         }
+        if slideshow != nil { return handleSlideshowKey(key, command: command) }
         switch key {
         case .f1, .f2:
             return false   // handled above
@@ -1099,6 +1133,7 @@ final class BrowserModel: ObservableObject {
             return true
         case "[" where command: navigateBack();    return true
         case "]" where command: navigateForward(); return true
+        case "s" where !command: startSlideshow(); return true
         default:
             break
         }
@@ -1109,7 +1144,6 @@ final class BrowserModel: ObservableObject {
         case "[": rotateLeft();           return true
         case "]": rotateRight();          return true
         case "i": showInspector.toggle(); return true
-        case "s": toggleSlideshow();      return true
         default:  return false
         }
     }
@@ -1120,33 +1154,6 @@ final class BrowserModel: ObservableObject {
     /// a request on the disabled field would grab focus later.
     func focusSearch() { searchFocused = folderURL != nil }
 
-    func toggleSlideshow() {
-        if slideshowOn { stopSlideshow() } else { startSlideshow() }
-    }
-    private func startSlideshow() {
-        guard mode == .detail, firstMediaIndex != nil else { return }
-        slideshowOn = true
-        slideshowTask?.cancel()
-        let interval = slideshowInterval
-        slideshowTask = Task { [weak self] in
-            while !Task.isCancelled {
-                try? await Task.sleep(for: interval)
-                guard let self, self.slideshowOn, self.mode == .detail else { return }
-                self.advanceSlideshow()
-            }
-        }
-    }
-    private func stopSlideshow() {
-        slideshowOn = false
-        slideshowTask?.cancel()
-        slideshowTask = nil
-    }
-    private func advanceSlideshow() {
-        guard let first = firstMediaIndex else { return }
-        let current = selection ?? first
-        selection = (current + 1 >= entries.count) ? first : current + 1
-        resetTransforms()
-    }
 
     // MARK: - File actions
 
@@ -1253,6 +1260,16 @@ final class BrowserModel: ObservableObject {
     func playbackStateChanged(_ player: PlaybackControl, isPlaying: Bool) {
         guard player === activePlayer else { return }
         videoPaused = !isPlaying
+        // In a slideshow a video that played to its end hands over to the next item.
+        if slideshow != nil, !isPlaying, (player.progress ?? 0) >= 0.99 {
+            slideshowStep(+1)
+        }
+    }
+
+    /// The photo or video on screen: the slideshow's, or the full view's.
+    var shownMediaEntry: GridEntry? {
+        if let slideshow { return slideshow.current }
+        return mode == .detail ? selectedMediaEntry : nil
     }
 
     /// One ←/→ step in a video: a tenth of its length.
@@ -1262,18 +1279,167 @@ final class BrowserModel: ObservableObject {
     /// of the length; past the end → next item, at the start → previous one.
     /// So one key pages through images and skims through videos.
     func skim(_ direction: Int) {
-        guard selectedMediaEntry?.kind == .video, let player = activePlayer,
+        guard shownMediaEntry?.kind == .video, let player = activePlayer,
               let progress = player.progress else {
-            stepMedia(direction); return
+            page(direction); return
         }
         if direction > 0 {
             let target = progress + Self.videoJump
-            if target >= 0.999 { stepMedia(+1) } else { player.seek(toProgress: target) }
+            if target >= 0.999 { page(+1) } else { player.seek(toProgress: target) }
         } else {
             // Close to the start counts as the start, so a playing video
             // doesn't keep catching the key.
-            if progress < Self.videoJump / 4 { stepMedia(-1) }
+            if progress < Self.videoJump / 4 { page(-1) }
             else { player.seek(toProgress: max(progress - Self.videoJump, 0)) }
+        }
+    }
+
+    /// Previous / next item: in the slideshow, or in the full view.
+    func page(_ direction: Int) {
+        if slideshow != nil { slideshowStep(direction) } else { stepMedia(direction) }
+    }
+
+    // MARK: - Slideshow
+
+    /// Start a slideshow. Over `folder` if given; otherwise over the selected
+    /// folder tile, the search results, or the current folder — in that
+    /// order. From the full view it starts at the item shown.
+    func startSlideshow(over folder: URL? = nil, startingAt start: URL? = nil) {
+        stopSlideshow()
+        var roots: [GridEntry] = []
+        if let folder {
+            roots = [GridEntry(url: folder, kind: .folder)]
+        } else if mode == .grid, let entry = selectedEntry, entry.kind == .folder {
+            roots = [entry]
+        } else if isFiltering {
+            roots = entries.filter { $0.kind != .parent }
+        } else if let folderURL {
+            roots = [GridEntry(url: folderURL, kind: .folder)]
+        }
+        guard !roots.isEmpty else { NSSound.beep(); return }
+        let startAt = start ?? (mode == .detail ? selectedMediaEntry?.url : nil)
+        searchFocused = false
+        slideshow = Slideshow()
+        slideshowEnteredFullScreen = setFullScreen(true)
+        let key = sortKey, ascending = sortAscending
+        slideshowWalk = Task { [weak self] in
+            // Media among the roots (search results) go in together, folders
+            // are walked where they stand.
+            var media: [GridEntry] = []
+            for root in roots {
+                if root.isMedia { media.append(root); continue }
+                if !media.isEmpty { self?.addToSlideshow(media, startAt: startAt); media = [] }
+                await Self.walkForSlideshow(root.url, key: key, ascending: ascending) { batch in
+                    self?.addToSlideshow(batch, startAt: startAt)
+                }
+                if Task.isCancelled { return }
+            }
+            if !media.isEmpty { self?.addToSlideshow(media, startAt: startAt) }
+            self?.slideshowWalkFinished()
+        }
+    }
+
+    /// Depth first: a folder's own media in the sort order, then each of its
+    /// subfolders in the sort order. Hands over one batch per folder.
+    nonisolated static func walkForSlideshow(_ folder: URL, key: SortKey, ascending: Bool,
+                                             found: @MainActor ([GridEntry]) -> Void) async {
+        guard !Task.isCancelled else { return }
+        let contents = await scan(folder)
+        var captured: [URL: Date] = [:]
+        if key == .captured { captured = await captureDates(of: contents.filter(\.isMedia).map(\.url)) }
+        let sorted = sortEntries(contents, key: key, ascending: ascending, captured: captured)
+        let media = sorted.filter(\.isMedia)
+        if !media.isEmpty { await found(media) }
+        for sub in sorted where sub.kind == .folder && !sub.name.hasPrefix(".") {
+            await walkForSlideshow(sub.url, key: key, ascending: ascending, found: found)
+        }
+    }
+
+    private func addToSlideshow(_ batch: [GridEntry], startAt: URL?) {
+        guard var show = slideshow else { return }
+        let wasEmpty = show.items.isEmpty
+        show.items += batch
+        // Started from the full view: its folder (or the results) come first.
+        if wasEmpty, let startAt, let i = batch.firstIndex(where: { Self.samePath($0.url, startAt) }) {
+            show.index = i
+        }
+        slideshow = show
+        if wasEmpty { showSlideshowItem() }
+    }
+
+    private func slideshowWalkFinished() {
+        guard var show = slideshow else { return }
+        show.loading = false
+        slideshow = show
+        if show.items.isEmpty { stopSlideshow(); NSSound.beep() }
+    }
+
+    /// Next / previous item; past the end it starts over (once the walk is done).
+    func slideshowStep(_ delta: Int) {
+        guard var show = slideshow, !show.items.isEmpty else { return }
+        var next = show.index + delta
+        if next >= show.items.count { next = show.loading ? show.items.count - 1 : 0 }
+        if next < 0 { next = show.loading ? 0 : show.items.count - 1 }
+        show.index = next
+        slideshow = show
+        showSlideshowItem()
+    }
+
+    /// Show the current item: pictures move on after the interval, videos
+    /// when they end (`playbackStateChanged`).
+    private func showSlideshowItem() {
+        slideshowTimer?.cancel()
+        resetTransforms()
+        guard let show = slideshow, !show.paused, let item = show.current, item.kind == .image else { return }
+        let interval = slideshowInterval
+        slideshowTimer = Task { [weak self] in
+            try? await Task.sleep(for: interval)
+            guard !Task.isCancelled, let self, self.slideshow != nil else { return }
+            self.slideshowStep(+1)
+        }
+    }
+
+    /// Space: pause or resume. Videos pause through their player.
+    func toggleSlideshowPause() {
+        guard var show = slideshow else { return }
+        if show.current?.kind == .video { togglePlayPause(); return }
+        show.paused.toggle()
+        slideshow = show
+        showSlideshowItem()
+    }
+
+    func stopSlideshow() {
+        slideshowTimer?.cancel()
+        slideshowWalk?.cancel()
+        slideshowTimer = nil
+        slideshowWalk = nil
+        guard slideshow != nil else { return }
+        slideshow = nil
+        if slideshowEnteredFullScreen { _ = setFullScreen(false) }
+        slideshowEnteredFullScreen = false
+    }
+
+    /// Keys while the slideshow runs.
+    private func handleSlideshowKey(_ key: KeyInput, command: Bool) -> Bool {
+        switch key {
+        case .escape, .backspace, .enter:
+            stopSlideshow(); return true
+        case .space:
+            toggleSlideshowPause(); return true
+        case .left, .right:
+            let direction = key == .right ? 1 : -1
+            if command { slideshowStep(direction) } else { skim(direction) }
+            return true
+        case .up, .down:
+            slideshowStep(key == .down ? 1 : -1); return true
+        case .char(let c) where c == "s" && !command:
+            stopSlideshow(); return true
+        case .char(let c) where c == "f" && !command:
+            toggleFullScreen(); return true
+        case .char(let c) where c == "i" && !command:
+            showInspector.toggle(); return true
+        default:
+            return false
         }
     }
 
