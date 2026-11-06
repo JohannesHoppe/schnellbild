@@ -114,7 +114,7 @@ final class FullViewUITests: SchnellbildUITestCase {
         app.typeKey(.rightArrow, modifierFlags: [])
         waitForBadge(containing: "b.jpg")
         eventually("still on for the next picture") { text(of: image).contains("enhanced") }
-        toolbarButton("enhanceButton").click()
+        element("enhanceButton").firstMatch.click()   // a toggle, not a plain button
         eventually("off again") { !text(of: badge).contains("Enhanced") && !text(of: image).contains("enhanced") }
     }
 

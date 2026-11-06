@@ -1030,8 +1030,11 @@ final class BrowserModel: ObservableObject {
     func shrinkThumbnails() { thumbnailSide = max(thumbnailSide - 30, 80) }
 
     /// Mode-aware "+"/"−": zoom the image in the full-size view, resize tiles in the grid.
-    func scaleUp()   { shownMediaEntry != nil ? zoomIn()  : growThumbnails() }
-    func scaleDown() { shownMediaEntry != nil ? zoomOut() : shrinkThumbnails() }
+    /// Whether the full view or the slideshow is up (zoom keys zoom it).
+    private var viewingMedia: Bool { mode == .detail || slideshow != nil }
+
+    func scaleUp()   { viewingMedia ? zoomIn()  : growThumbnails() }
+    func scaleDown() { viewingMedia ? zoomOut() : shrinkThumbnails() }
 
     // MARK: - Activation / navigation
 
@@ -1150,7 +1153,7 @@ final class BrowserModel: ObservableObject {
         default:
             break
         }
-        guard shownMediaEntry != nil, !command else { return false }
+        guard viewingMedia, !command else { return false }
         switch c {
         case "0": zoomReset();            return true
         case "1": zoomActualSize();       return true

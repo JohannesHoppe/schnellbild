@@ -46,7 +46,8 @@ class SchnellbildUITestCase: XCTestCase {
     @discardableResult
     func launch(open path: String? = nil, resetState: Bool = true) -> XCUIApplication {
         let app = XCUIApplication()
-        var args = ["--ui-testing"]
+        // Never restore window state (e.g. full screen) from an earlier test
+        var args = ["--ui-testing", "-ApplePersistenceIgnoreState", "YES"]
         if resetState { args.append("--reset-state") }
         if let path { args += ["--open", path] }
         app.launchArguments = args

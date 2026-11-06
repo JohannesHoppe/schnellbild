@@ -7,6 +7,9 @@ struct ContentView: View {
     @State private var width: CGFloat = 0
     @State private var keyMonitor: Any?
     @State private var pinchMonitor: Any?
+    /// The launch folder is opened once; the view can appear again (full
+    /// screen, toolbar shown or hidden) and must not reload it then.
+    @State private var launched = false
 
     var body: some View {
         Group {
@@ -53,7 +56,10 @@ struct ContentView: View {
         }
         .toolbar(model.slideshow == nil ? .visible : .hidden, for: .windowToolbar)
         .onAppear {
-            if !model.openFromLaunchArguments() { model.restoreLastFolder() }
+            if !launched {
+                launched = true
+                if !model.openFromLaunchArguments() { model.restoreLastFolder() }
+            }
             installKeyMonitor()
         }
         .onDisappear { removeKeyMonitor() }
