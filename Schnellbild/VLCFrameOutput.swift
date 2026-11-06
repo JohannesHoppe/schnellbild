@@ -6,7 +6,9 @@ import VLCKit
 
 /// Shows VLC's video without VLC's own OpenGL output: VLC hands every
 /// decoded picture to these callbacks, written into IOSurface-backed pixel
-/// buffers, and a layer shows them. So VLC videos need no OpenGL (which
+/// buffers in the video's own form (NV12: brightness, then colour at half
+/// resolution, so no colour conversion on the processor), and a layer shows
+/// them; the compositor turns them into RGB. So VLC videos need no OpenGL (which
 /// macOS deprecates and virtual Macs such as CI runners don't have). The
 /// look (`setLook`) is applied here with Core Image, the same `Look.apply`
 /// as for AVKit videos and photos; auto enhance measures the picture before
@@ -67,20 +69,25 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
         }, { _ in })
     }
 
-    /// VLC tells the picture size; the pictures are BGRA, one plane.
+    /// VLC tells the picture size; the pictures are NV12 (two planes).
     private func setUp(chroma: UnsafeMutablePointer<CChar>, width: UnsafeMutablePointer<UInt32>,
                        height: UnsafeMutablePointer<UInt32>, pitches: UnsafeMutablePointer<UInt32>,
                        lines: UnsafeMutablePointer<UInt32>) -> UInt32 {
-        for (i, c) in "BGRA".utf8.enumerated() { chroma[i] = CChar(bitPattern: c) }
+        for (i, c) in "NV12".utf8.enumerated() { chroma[i] = CChar(bitPattern: c) }
         let w = Int(width.pointee), h = Int(height.pointee)
-        guard let made = Self.makePool(width: w, height: h), let forLook = Self.makePool(width: w, height: h) else { return 0 }
-        // The row length the buffers really have, so VLC writes into them right
+        guard let made = Self.makePool(width: w, height: h, format: kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange),
+              let forLook = Self.makePool(width: w, height: h, format: kCVPixelFormatType_32BGRA) else { return 0 }
+        // The row lengths the buffers really have, so VLC writes into them right
         var probe: CVPixelBuffer?
         CVPixelBufferPoolCreatePixelBuffer(nil, made, &probe)
-        guard let probe else { return 0 }
-        pitches.pointee = UInt32(CVPixelBufferGetBytesPerRow(probe))
-        lines.pointee = UInt32(h)
+        guard let probe, CVPixelBufferGetPlaneCount(probe) == 2 else { return 0 }
+        for plane in 0..<2 {
+            pitches[plane] = UInt32(CVPixelBufferGetBytesPerRowOfPlane(probe, plane))
+            lines[plane] = UInt32(CVPixelBufferGetHeightOfPlane(probe, plane))
+        }
         lock.lock()
+        // HD and larger use the HD colour standard (BT.709), smaller ones SD (BT.601)
+        hd = h > 576
         pool = made
         lookPool = forLook
         latest = nil
@@ -90,10 +97,12 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
         return 1
     }
 
-    private static func makePool(width: Int, height: Int) -> CVPixelBufferPool? {
+    private var hd = true
+
+    private static func makePool(width: Int, height: Int, format: OSType) -> CVPixelBufferPool? {
         var made: CVPixelBufferPool?
         CVPixelBufferPoolCreate(nil, nil, [
-            kCVPixelBufferPixelFormatTypeKey: kCVPixelFormatType_32BGRA,
+            kCVPixelBufferPixelFormatTypeKey: format,
             kCVPixelBufferWidthKey: width, kCVPixelBufferHeightKey: height,
             kCVPixelBufferIOSurfacePropertiesKey: [:] as CFDictionary,
             kCVPixelBufferBytesPerRowAlignmentKey: 64,
@@ -109,9 +118,15 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
         CVPixelBufferPoolCreatePixelBuffer(nil, pool, &buffer)
         guard let buffer else { return nil }
         CVPixelBufferLockBaseAddress(buffer, [])
-        guard let base = CVPixelBufferGetBaseAddress(buffer) else { return nil }
-        CVBufferSetAttachment(buffer, kCVImageBufferCGColorSpaceKey, sRGB, .shouldPropagate)
+        guard let base = CVPixelBufferGetBaseAddressOfPlane(buffer, 0),
+              let colour = CVPixelBufferGetBaseAddressOfPlane(buffer, 1) else { return nil }
+        let matrix = hd ? kCVImageBufferYCbCrMatrix_ITU_R_709_2 : kCVImageBufferYCbCrMatrix_ITU_R_601_4
+        let primaries = hd ? kCVImageBufferColorPrimaries_ITU_R_709_2 : kCVImageBufferColorPrimaries_SMPTE_C
+        CVBufferSetAttachment(buffer, kCVImageBufferYCbCrMatrixKey, matrix, .shouldPropagate)
+        CVBufferSetAttachment(buffer, kCVImageBufferColorPrimariesKey, primaries, .shouldPropagate)
+        CVBufferSetAttachment(buffer, kCVImageBufferTransferFunctionKey, kCVImageBufferTransferFunction_ITU_R_709_2, .shouldPropagate)
         planes?.pointee = base
+        planes?.advanced(by: 1).pointee = colour
         drawing[base] = buffer
         drawingOrder.append(base)
         if drawingOrder.count > 8 { drawing[drawingOrder.removeFirst()] = nil }
@@ -158,9 +173,7 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
             if let pool { CVPixelBufferPoolCreatePixelBuffer(nil, pool, &out) }
             if let out {
                 CVBufferSetAttachment(out, kCVImageBufferCGColorSpaceKey, sRGB, .shouldPropagate)
-                // VLC's alpha byte isn't meant as transparency
-                let image = CIImage(cvPixelBuffer: buffer, options: [.colorSpace: sRGB])
-                    .settingAlphaOne(in: CGRect(x: 0, y: 0, width: CVPixelBufferGetWidth(buffer), height: CVPixelBufferGetHeight(buffer)))
+                let image = CIImage(cvPixelBuffer: buffer)
                 context.render(look.apply(to: image), to: out, bounds: image.extent, colorSpace: sRGB)
                 surfaceBuffer = out
                 lock.lock(); withLook += 1; lock.unlock()
@@ -187,22 +200,14 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
         lock.lock()
         let buffer = latest
         lock.unlock()
-        return buffer.flatMap {
-            let image = CIImage(cvPixelBuffer: $0, options: [.colorSpace: sRGB])
-            return PictureStats.of(image.settingAlphaOne(in: image.extent))
-        }
+        return buffer.flatMap { PictureStats.of(CIImage(cvPixelBuffer: $0)) }
     }
 
     /// For UI tests: what the output did.
     var diagnostics: String {
         lock.lock()
         defer { lock.unlock() }
-        var alpha = "-"
-        if let latest, CVPixelBufferLockBaseAddress(latest, .readOnly) == kCVReturnSuccess {
-            if let base = CVPixelBufferGetBaseAddress(latest) { alpha = "\(base.load(fromByteOffset: 3, as: UInt8.self))" }
-            CVPixelBufferUnlockBaseAddress(latest, .readOnly)
-        }
-        return "with look \(withLook), failed \(failed), exposure \(String(format: "%.2f", look.exposure)), alpha \(alpha)"
+        return "with look \(withLook), failed \(failed), exposure \(String(format: "%.2f", look.exposure))"
     }
 
     /// For UI tests: the mean luminance of what the layer holds (main thread).
@@ -214,8 +219,7 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
         var buffer: Unmanaged<CVPixelBuffer>?
         CVPixelBufferCreateWithIOSurface(nil, surface, nil, &buffer)
         guard let pixels = buffer?.takeRetainedValue() else { return "unreadable" }
-        let image = CIImage(cvPixelBuffer: pixels, options: [.colorSpace: sRGB])
-        return PictureStats.of(image.settingAlphaOne(in: image.extent)).map { String(format: "%.3f", $0.mean) } ?? "unmeasured"
+        return PictureStats.of(CIImage(cvPixelBuffer: pixels)).map { String(format: "%.3f", $0.mean) } ?? "unmeasured"
     }
 }
 

@@ -46,7 +46,9 @@ final class VisualUITests: SchnellbildUITestCase {
 
     /// Opens a fixture video, with VLC when `vlc`; returns the player view.
     private func openVideo(_ fixture: String, vlc: Bool) throws -> XCUIElement {
-        try put(fixture, at: fixture)
+        if !FileManager.default.fileExists(atPath: tempDir.appendingPathComponent(fixture).path) {
+            try put(fixture, at: fixture)
+        }
         launch(open: tempDir.appendingPathComponent(fixture).path, extra: vlc ? ["--force-vlc"] : [])
         let video = element(vlc ? "video.vlc" : "video.avkit")
         guard video.waitForExistence(timeout: 20) else {
@@ -75,6 +77,22 @@ final class VisualUITests: SchnellbildUITestCase {
         settle(3)
         let hovered = try screenBrightness(of: video)
         XCTAssertEqual(hovered, start, accuracy: 0.04, "hovering changes the brightness: \(start) → \(hovered)")
+    }
+
+    /// Both players show the same video alike: the same brightness and,
+    /// with the colour bars, the same colours (VLC's pictures are converted
+    /// to RGB by the compositor, AVKit's by AVKit).
+    func testAVKitAndVLCShowTheSamePicture() throws {
+        for fixture in ["grey.mp4", "clip.mp4"] {
+            var means: [Double] = []
+            for vlc in [false, true] {
+                let video = try openVideo(fixture, vlc: vlc)
+                means.append(try screenBrightness(of: video))
+                app.terminate()
+            }
+            print("\(fixture): AVKit \(means[0]), VLC \(means[1])")
+            XCTAssertEqual(means[1], means[0], accuracy: 0.03, "\(fixture): AVKit \(means[0]), VLC \(means[1])")
+        }
     }
 
     func testAVKitVideoIsShownAtFullBrightness() throws { try checkFullBrightness(vlc: false) }
@@ -143,8 +161,10 @@ final class VisualUITests: SchnellbildUITestCase {
     func testAutoEnhanceDarkensAnOverexposedVideoInAVKit() throws { try checkAutoEnhance("bright.mp4", vlc: false, brighter: false) }
     func testAutoEnhanceDarkensAnOverexposedVideoInVLC() throws { try checkAutoEnhance("bright.mp4", vlc: true, brighter: false) }
 
+    /// The grey video has mid-tones throughout, which exposure moves (pure
+    /// colours like a test pattern's bars stay as they are).
     private func checkExposureSlider(vlc: Bool) throws {
-        let video = try openVideo("clip.mp4", vlc: vlc)
+        let video = try openVideo("grey.mp4", vlc: vlc)
         let before = try screenBrightness(of: video)
         app.typeKey("a", modifierFlags: [])
         let slider = element("slider.exposure").firstMatch
