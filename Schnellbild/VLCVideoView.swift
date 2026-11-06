@@ -11,7 +11,7 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
     /// One LibVLC instance for all players, without VLC's on-screen display:
     /// the exposure snapshots (`snapshotLuminance`) would otherwise show
     /// "Snapshot taken: <path>" and a preview over the video.
-    private static let library = VLCLibrary(options: ["--no-osd", "--no-snapshot-preview"])
+    static let library = VLCLibrary(options: ["--no-osd", "--no-snapshot-preview"])
     let player = VLCMediaPlayer(library: VLCPlaybackControl.library)
     private let url: URL
     private let onStateChange: @MainActor (PlaybackControl, Bool) -> Void
@@ -204,5 +204,50 @@ struct VLCVideoView: NSViewRepresentable {
 
     func updateNSView(_ nsView: NSView, context: Context) {
         control.attach(to: nsView)   // a new control after switching files
+    }
+}
+
+/// Thumbnails of videos QuickLook can't read (AVI, MKV, WebM …): VLC decodes
+/// a frame at 30 % of the video. At most two run at a time, since each one
+/// opens and decodes the file.
+@MainActor
+final class VLCThumbnails: NSObject, VLCMediaThumbnailerDelegate {
+    static let shared = VLCThumbnails()
+    private static let limit = 2
+    private var running = 0
+    private var queue: [CheckedContinuation<Void, Never>] = []
+    private var pending: [ObjectIdentifier: (thumbnailer: VLCMediaThumbnailer, done: CheckedContinuation<CGImage?, Never>)] = [:]
+
+    /// A frame `width` pixels wide (the height follows the video), or nil.
+    func thumbnail(for url: URL, width: CGFloat) async -> CGImage? {
+        if running >= Self.limit {
+            await withCheckedContinuation { queue.append($0) }
+        }
+        running += 1
+        defer {
+            running -= 1
+            if !queue.isEmpty { queue.removeFirst().resume() }
+        }
+        guard !Task.isCancelled else { return nil }
+        return await withCheckedContinuation { done in
+            let thumbnailer = VLCMediaThumbnailer(media: VLCMedia(url: url), delegate: self,
+                                                  andVLCLibrary: VLCPlaybackControl.library)
+            thumbnailer.thumbnailWidth = width
+            thumbnailer.thumbnailHeight = 0
+            pending[ObjectIdentifier(thumbnailer)] = (thumbnailer, done)
+            thumbnailer.fetchThumbnail()
+        }
+    }
+
+    private func finish(_ thumbnailer: VLCMediaThumbnailer, with image: CGImage?) {
+        pending.removeValue(forKey: ObjectIdentifier(thumbnailer))?.done.resume(returning: image)
+    }
+
+    nonisolated func mediaThumbnailerDidTimeOut(_ mediaThumbnailer: VLCMediaThumbnailer) {
+        MainActor.assumeIsolated { finish(mediaThumbnailer, with: nil) }
+    }
+
+    nonisolated func mediaThumbnailer(_ mediaThumbnailer: VLCMediaThumbnailer, didFinishThumbnail thumbnail: CGImage) {
+        MainActor.assumeIsolated { finish(mediaThumbnailer, with: thumbnail) }
     }
 }
