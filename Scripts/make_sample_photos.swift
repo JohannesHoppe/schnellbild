@@ -3,7 +3,11 @@ import Foundation
 import ImageIO
 import UniformTypeIdentifiers
 
-/// Landscape pictures drawn with CoreGraphics for the README screenshots:
+// Writes the sample photo library the README screenshots show.
+// Usage: swift Scripts/make_sample_photos.swift <folder>
+// (.github/workflows/screenshots.yml; UITests/ReadmeScreenshots.swift opens it)
+
+/// Landscape pictures drawn with CoreGraphics:
 /// sky gradient, sun or moon, layered mountain ridges fading into haze,
 /// optional water, stars and aurora. Deterministic (seeded), no external
 /// images, so the screenshots look the same on every run.
@@ -180,12 +184,16 @@ enum SampleScenes {
                                    locations: [0, 1])!
             ctx.drawLinearGradient(shade, start: CGPoint(x: 0, y: horizon), end: .zero, options: [])
             if let sun = scene.sun {
-                ctx.setFillColor(color(sun.color, 0.35))
-                for k in 0..<18 {
-                    let y = horizon - CGFloat(k) * horizon / 18 - 6
-                    let w = H * sun.r * (2.2 - CGFloat(k) * 0.08) * (0.6 + rng.next() * 0.6)
-                    ctx.fill(CGRect(x: W * sun.x - w / 2, y: y, width: w, height: 4))
-                }
+                // Soft glow on the water below the sun, stretched downwards
+                ctx.saveGState()
+                ctx.clip(to: CGRect(x: 0, y: 0, width: W, height: horizon))
+                ctx.translateBy(x: W * sun.x, y: horizon)
+                ctx.scaleBy(x: 1, y: 3)
+                let glow = CGGradient(colorsSpace: cs, colors: [color(sun.color, 0.45), color(sun.color, 0)] as CFArray,
+                                      locations: [0, 1])!
+                ctx.drawRadialGradient(glow, startCenter: .zero, startRadius: 0, endCenter: .zero,
+                                       endRadius: H * sun.r * 1.6, options: [])
+                ctx.restoreGState()
             }
         }
         return ctx.makeImage()!
@@ -199,3 +207,7 @@ enum SampleScenes {
         guard CGImageDestinationFinalize(dest) else { throw CocoaError(.fileWriteUnknown) }
     }
 }
+
+let target = URL(fileURLWithPath: CommandLine.arguments.count > 1 ? CommandLine.arguments[1] : "Photos", isDirectory: true)
+try SampleScenes.writeLibrary(to: target)
+print("Wrote \(SampleScenes.library.count) pictures to \(target.path)")

@@ -6,6 +6,9 @@ import XCTest
 /// TEST_RUNNER_<name> to the test runner as <name>):
 ///   SCREENSHOTS=1      take them
 ///   SCREENSHOT_SUFFIX  appended to each name, e.g. "-dark"
+///   PHOTOS_DIR         the sample library (Scripts/make_sample_photos.swift),
+///                      outside the runner's container so the status bar
+///                      shows a short path
 final class ReadmeScreenshots: SchnellbildUITestCase {
     private var suffix = ""
 
@@ -17,11 +20,12 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         suffix = env["SCREENSHOT_SUFFIX"] ?? ""
         // Not super: its fixtures (a.jpg …) don't belong in the pictures
         continueAfterFailure = false
-        // The window title shows the folder name
-        tempDir = FileManager.default.temporaryDirectory
-            .appendingPathComponent("sbshots_\(UUID().uuidString)/Photos", isDirectory: true)
-        try FileManager.default.createDirectory(at: tempDir, withIntermediateDirectories: true)
-        try SampleScenes.writeLibrary(to: tempDir)
+        let photos = try XCTUnwrap(env["PHOTOS_DIR"], "PHOTOS_DIR missing")
+        tempDir = URL(fileURLWithPath: photos, isDirectory: true)
+    }
+
+    override func tearDownWithError() throws {
+        app?.terminate()   // keep the library: the dark run uses it too
     }
 
     private func shoot(_ name: String) {

@@ -1,5 +1,6 @@
-# Takes the README screenshots on a clean Mac (started by hand): the
-# ReadmeScreenshots UI test draws a sample photo library, opens the app on it
+# Takes the README screenshots on a clean Mac (started by hand):
+# Scripts/make_sample_photos.swift draws a sample photo library, the
+# ReadmeScreenshots UI test opens the app on it
 # and photographs grid, full view, inspector and search, in light and dark
 # mode as test attachments, exported from the result bundles into the artifact
 # "screenshots"; copy the chosen ones to docs/screenshots.
@@ -40,6 +41,9 @@ jobs:
           xcodebuild build-for-testing -project Schnellbild.xcodeproj -scheme Schnellbild \
             -destination 'platform=macOS' -derivedDataPath build/DerivedData
 
+      - name: Draw the sample photos
+        run: swift Scripts/make_sample_photos.swift /Users/Shared/Photos
+
       - name: Take the screenshots
         run: |
           set_dark() {
@@ -47,7 +51,7 @@ jobs:
           }
           for mode in light dark; do
             set_dark "$([ "$mode" = dark ] && echo true || echo false)"
-            TEST_RUNNER_SCREENSHOTS=1 TEST_RUNNER_SCREENSHOT_SUFFIX="-$mode" \
+            TEST_RUNNER_SCREENSHOTS=1 TEST_RUNNER_SCREENSHOT_SUFFIX="-$mode" TEST_RUNNER_PHOTOS_DIR=/Users/Shared/Photos \
               xcodebuild test-without-building -project Schnellbild.xcodeproj -scheme Schnellbild \
                 -destination 'platform=macOS' -derivedDataPath build/DerivedData \
                 -resultBundlePath "build/shots-$mode.xcresult" \
