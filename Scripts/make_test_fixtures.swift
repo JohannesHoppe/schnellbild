@@ -1,0 +1,79 @@
+// Draws the media fixtures the visual UI tests measure (UITests/Fixtures):
+// an underexposed and an overexposed video and photo, plus broken files.
+// Always the same output, no external images.
+//
+//   swift Scripts/make_test_fixtures.swift UITests/Fixtures
+import AVFoundation
+import AppKit
+import CoreImage
+
+let out = URL(fileURLWithPath: CommandLine.arguments.dropFirst().first ?? "UITests/Fixtures", isDirectory: true)
+try FileManager.default.createDirectory(at: out, withIntermediateDirectories: true)
+
+/// A horizontal gradient from `low` to `high` grey with a warm patch in the
+/// middle, so exposure, contrast and colour all have something to work on.
+func frame(width: Int, height: Int, low: Double, high: Double) -> CGImage {
+    let ctx = CGContext(data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: 0,
+                        space: CGColorSpace(name: CGColorSpace.sRGB)!,
+                        bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)!
+    for x in 0..<width {
+        let v = low + (high - low) * Double(x) / Double(width - 1)
+        ctx.setFillColor(CGColor(srgbRed: v, green: v, blue: v * 0.95, alpha: 1))
+        ctx.fill(CGRect(x: x, y: 0, width: 1, height: height))
+    }
+    let mid = (low + high) / 2
+    ctx.setFillColor(CGColor(srgbRed: min(mid * 1.3, 1), green: mid, blue: mid * 0.7, alpha: 1))
+    ctx.fill(CGRect(x: width / 3, y: height / 3, width: width / 3, height: height / 3))
+    return ctx.makeImage()!
+}
+
+func writeJPEG(_ image: CGImage, to name: String) throws {
+    let rep = NSBitmapImageRep(cgImage: image)
+    try rep.representation(using: .jpeg, properties: [.compressionFactor: 0.9])!
+        .write(to: out.appendingPathComponent(name))
+}
+
+/// Three seconds of the same frame, H.264.
+func writeVideo(_ image: CGImage, to name: String) throws {
+    let url = out.appendingPathComponent(name)
+    try? FileManager.default.removeItem(at: url)
+    let writer = try AVAssetWriter(outputURL: url, fileType: .mp4)
+    let input = AVAssetWriterInput(mediaType: .video, outputSettings: [
+        AVVideoCodecKey: AVVideoCodecType.h264, AVVideoWidthKey: image.width, AVVideoHeightKey: image.height,
+    ])
+    let adaptor = AVAssetWriterInputPixelBufferAdaptor(assetWriterInput: input, sourcePixelBufferAttributes: [
+        kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA,
+        kCVPixelBufferWidthKey as String: image.width, kCVPixelBufferHeightKey as String: image.height,
+    ])
+    writer.add(input)
+    writer.startWriting()
+    writer.startSession(atSourceTime: .zero)
+    let context = CIContext()
+    for i in 0..<30 {   // 10 frames per second
+        while !input.isReadyForMoreMediaData { Thread.sleep(forTimeInterval: 0.01) }
+        var buffer: CVPixelBuffer?
+        CVPixelBufferPoolCreatePixelBuffer(nil, adaptor.pixelBufferPool!, &buffer)
+        context.render(CIImage(cgImage: image), to: buffer!, bounds: CGRect(x: 0, y: 0, width: image.width, height: image.height),
+                       colorSpace: CGColorSpace(name: CGColorSpace.sRGB))
+        adaptor.append(buffer!, withPresentationTime: CMTime(value: CMTimeValue(i), timescale: 10))
+    }
+    input.markAsFinished()
+    let done = DispatchSemaphore(value: 0)
+    writer.finishWriting { done.signal() }
+    done.wait()
+    guard writer.status == .completed else { throw writer.error ?? CocoaError(.fileWriteUnknown) }
+}
+
+let dark = frame(width: 640, height: 360, low: 0.03, high: 0.2)
+let bright = frame(width: 640, height: 360, low: 0.82, high: 0.97)
+try writeJPEG(dark, to: "dark.jpg")
+try writeJPEG(bright, to: "bright.jpg")
+try writeVideo(dark, to: "dark.mp4")
+try writeVideo(bright, to: "bright.mp4")
+
+// Broken files: a media extension, but garbage inside (a fixed pattern).
+let garbage = Data((0..<4096).map { UInt8(truncatingIfNeeded: $0 &* 31 &+ 7) })
+for name in ["broken.jpg", "broken.mp4", "broken.mkv"] {
+    try garbage.write(to: out.appendingPathComponent(name))
+}
+print("fixtures written to \(out.path)")

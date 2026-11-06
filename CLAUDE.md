@@ -157,7 +157,16 @@ AVI/MKV/WebM and other non-native formats play **in-app via vendored VLCKit
   history, rename, file actions via spy, playback via `PlayerSpy`, every key
   binding) + 62 XCUITest (plus `ReadmeScreenshots`, skipped in CI) in `UITests/*UITests.swift` (grid, search, navigation,
   full view, video incl. VLC, actions), sharing `UITestSupport.swift`. Media
-  fixtures live in `UITests/Fixtures` (bundled as test resources). Not covered
+  fixtures live in `UITests/Fixtures` (bundled as test resources; the dark,
+  overexposed and broken ones are drawn by `swift Scripts/make_test_fixtures.swift UITests/Fixtures`).
+  **`VisualUITests` measure what the screen shows**: the CI shell of the
+  UI-test job answers "measure:<id>:<rect>" pasteboard requests with
+  `screencapture` + `Scripts/measure_brightness.swift` (the test runner can't
+  record the screen; XCUITest's own screenshot shows VLC's picture black).
+  They check that videos (AVKit, and VLC via `--force-vlc`) are bright from
+  the start, auto enhance and the exposure slider on videos and photos, and
+  that broken files don't take the app down. Anything visual gets such a
+  measured test, so it can't regress unnoticed. Not covered
   end-to-end: drag & drop from Finder, Reveal in Finder, Open with default app
   (unit-tested through `FileActions`).
   UI run: `xcodegen generate` → `xcodebuild test -project Schnellbild.xcodeproj
