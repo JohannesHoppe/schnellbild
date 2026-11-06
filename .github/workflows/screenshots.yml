@@ -1,8 +1,8 @@
 # Takes the README screenshots on a clean Mac (started by hand): the
 # ReadmeScreenshots UI test draws a sample photo library, opens the app on it
 # and photographs grid, full view, inspector and search, in light and dark
-# mode. The PNGs land in the artifact "screenshots"; copy the chosen ones to
-# docs/screenshots.
+# mode as test attachments, exported from the result bundles into the artifact
+# "screenshots"; copy the chosen ones to docs/screenshots.
 name: Screenshots
 
 on:
@@ -47,10 +47,27 @@ jobs:
           }
           for mode in light dark; do
             set_dark "$([ "$mode" = dark ] && echo true || echo false)"
-            TEST_RUNNER_SCREENSHOT_DIR="$PWD/shots" TEST_RUNNER_SCREENSHOT_SUFFIX="-$mode" \
+            TEST_RUNNER_SCREENSHOTS=1 TEST_RUNNER_SCREENSHOT_SUFFIX="-$mode" \
               xcodebuild test-without-building -project Schnellbild.xcodeproj -scheme Schnellbild \
                 -destination 'platform=macOS' -derivedDataPath build/DerivedData \
+                -resultBundlePath "build/shots-$mode.xcresult" \
                 -only-testing:SchnellbildUITests/ReadmeScreenshots
+            xcrun xcresulttool export attachments --path "build/shots-$mode.xcresult" --output-path "build/export-$mode"
+          done
+
+      - name: Name the files after their attachments
+        run: |
+          mkdir -p shots
+          for dir in build/export-*; do
+            python3 - "$dir" <<'PY'
+          import json, os, shutil, sys
+          d = sys.argv[1]
+          for test in json.load(open(os.path.join(d, "manifest.json"))):
+              for a in test["attachments"]:
+                  name = a["suggestedHumanReadableName"].split("_")[0]
+                  shutil.copy(os.path.join(d, a["exportedFileName"]), os.path.join("shots", name + ".png"))
+                  print(name)
+          PY
           done
           ls -la shots
 
