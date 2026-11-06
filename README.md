@@ -171,7 +171,7 @@ Press `a` (or the sliders button next to the wand) to see these values. With aut
 
 When auto gets a picture wrong, move a slider. Auto enhance switches off and you carry on from its values. Your settings stay while you page on, until you reset them or switch auto enhance on again. Switching it off shows the files as they are.
 
-It's a filter on the screen only: your files stay exactly as they are. For videos in AVI, MKV and other formats played by the VLC engine, sharpness applies from the next video you open.
+It's a filter on the screen only: your files stay exactly as they are. Photos and videos of every format go through the same filter, so the sliders work the same everywhere, at once.
 
 | Key | Action |
 |---|---|
