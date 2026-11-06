@@ -903,8 +903,8 @@ final class RenameTests: XCTestCase {
         XCTAssertThrowsError(try m.rename(entry, to: "b.txt")) {
             XCTAssertEqual($0 as? RenameError, .changesKind("jpg"))
         }
-        XCTAssertThrowsError(try m.rename(entry, to: "c.mp4")) {
-            XCTAssertEqual($0 as? RenameError, .alreadyExists("c.mp4"))
+        XCTAssertThrowsError(try m.rename(entry, to: "a.jpg")) {
+            XCTAssertEqual($0 as? RenameError, .alreadyExists("a.jpg"))
         }
         let new = try m.rename(entry, to: "Beach.jpg")
         XCTAssertTrue(FileManager.default.fileExists(atPath: new.path))
@@ -1819,6 +1819,42 @@ final class EnhanceTests: XCTestCase {
         XCTAssertEqual(result.height, 48)
         let after = try XCTUnwrap(EnhanceRecipe.meanLuminance(of: CIImage(cgImage: result)))
         XCTAssertGreaterThan(after, before * 2, "clearly brighter: \(before) → \(after)")
+    }
+
+    func testVideoExposureHoldsOnBlackAndTakesTheFirstPictureAtOnce() {
+        var exposure = AdaptiveExposure()
+        XCTAssertFalse(exposure.measure(luminance: 0.0, instant: false), "a black intro")
+        XCTAssertEqual(exposure.gamma, 1, "not lifted on black")
+        XCTAssertFalse(exposure.hasPicture)
+        XCTAssertTrue(exposure.measure(luminance: 0.1, instant: false), "the first real picture")
+        XCTAssertLessThan(exposure.gamma, 0.6, "taken at once")
+        XCTAssertFalse(exposure.measure(luminance: 0.0, instant: false), "a fade to black")
+        let held = exposure.gamma
+        exposure.advance(by: 5)
+        XCTAssertEqual(exposure.gamma, held, accuracy: 0.0001, "held through the fade")
+    }
+
+    func testVideoExposureGlidesBetweenMeasurementsAndJumpsAfterSeeking() {
+        var exposure = AdaptiveExposure()
+        _ = exposure.measure(luminance: 0.1, instant: false)
+        let dark = exposure.gamma
+        XCTAssertFalse(exposure.measure(luminance: 0.25, instant: false), "a gentle change, no cut")
+        XCTAssertEqual(exposure.gamma, dark, "not at once")
+        exposure.advance(by: 0.1)
+        XCTAssertGreaterThan(exposure.gamma, dark)
+        XCTAssertLessThan(exposure.gamma, EnhanceRecipe.gammaFor(luminance: 0.25)!, "on its way")
+        _ = exposure.measure(luminance: 0.6, instant: true)   // seeked to a bright scene
+        XCTAssertEqual(exposure.gamma, 1, "no lift for a bright scene, at once")
+    }
+
+    func testFilterValuesGlideTowardsTheNewAnalysis() throws {
+        let from = CIFilter(name: "CIVibrance", parameters: ["inputAmount": 0.0])!
+        let to = CIFilter(name: "CIVibrance", parameters: ["inputAmount": 1.0])!
+        let half = VideoEnhancer.glide([from], towards: [to], rate: 0.5)
+        XCTAssertEqual((half.first?.value(forKey: "inputAmount") as? NSNumber)?.doubleValue ?? -1, 0.5, accuracy: 0.0001)
+        let new = VideoEnhancer.glide([], towards: [to], rate: 0.1)
+        XCTAssertEqual((new.first?.value(forKey: "inputAmount") as? NSNumber)?.doubleValue ?? -1, 1, accuracy: 0.0001,
+                       "a filter new in the analysis starts at its values")
     }
 
     func testWellExposedPicturesGetNoGammaLift() throws {
