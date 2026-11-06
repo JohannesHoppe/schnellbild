@@ -82,4 +82,6 @@ public final class XCUIApplication: XCUIElement {
     public var launchArguments: [String] = []
     public func launch() {}
     public func terminate() {}
+    public enum State { case unknown, notRunning, runningBackground, runningForeground }
+    public var state: State { .unknown }
 }

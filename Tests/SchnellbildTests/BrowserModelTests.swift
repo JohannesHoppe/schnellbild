@@ -1177,7 +1177,7 @@ final class PlaybackTests: XCTestCase {
         XCTAssertNil(m.slideshow, "s ends it")
     }
 
-    func testSlideshowStartsAtTheItemShownAndOverSearchResultsOrTheSelectedFolder() async throws {
+    func testSlideshowStartsAtTheItemShownAndOverSearchResultsOrOneFolder() async throws {
         let tree = try TempTree(self)
         for n in ["a.jpg", "b.jpg", "c.jpg", "trip/x.jpg", "trip/y.jpg", "other/z.jpg"] { try tree.file(n) }
         let m = makeModel()
@@ -1195,7 +1195,11 @@ final class PlaybackTests: XCTestCase {
         m.selectEntry(named: "trip")
         m.startSlideshow()
         await waitUntil { m.slideshow?.loading == false }
-        XCTAssertEqual(m.slideshow?.items.map(\.name), ["x.jpg", "y.jpg"], "the selected folder tile")
+        XCTAssertEqual(m.slideshow?.items.count, 6, "▶︎ plays the folder, not the selected tile")
+        m.stopSlideshow()
+        m.startSlideshow(over: tree.root.appendingPathComponent("trip"))   // the tile's context menu
+        await waitUntil { m.slideshow?.loading == false }
+        XCTAssertEqual(m.slideshow?.items.map(\.name), ["x.jpg", "y.jpg"], "one folder from its tile")
         m.stopSlideshow()
 
         m.searchText = "z"

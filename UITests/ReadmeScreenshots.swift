@@ -95,9 +95,7 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         shoot("video")
 
         app.typeKey(.escape, modifierFlags: [])
-        tile("Lofoten").click()
-        waitForSelected("Lofoten")
-        app.typeKey("s", modifierFlags: [])   // the selected folder, full screen
+        app.typeKey("s", modifierFlags: [])   // the whole library, full screen
         waitForBadge(containing: "Slideshow")
         shoot("slideshow")
         app.typeKey(.escape, modifierFlags: [])

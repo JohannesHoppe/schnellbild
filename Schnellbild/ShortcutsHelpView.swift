@@ -39,7 +39,7 @@ struct ShortcutsHelpView: View {
             Shortcut(keys: "Esc / Backspace / Return", action: "Back to grid"),
         ]),
         Group(title: "Slideshow", shortcuts: [
-            Shortcut(keys: "s", action: "Start: everything in this folder and its subfolders (or the selected folder, or the search results)"),
+            Shortcut(keys: "s", action: "Start: everything in this folder and its subfolders (while searching: the results)"),
             Shortcut(keys: "Space", action: "Pause / resume"),
             Shortcut(keys: "← →", action: "Previous / next · video: skip a tenth"),
             Shortcut(keys: "⌘← ⌘→ ↑ ↓", action: "Previous / next item"),
