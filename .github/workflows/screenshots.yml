@@ -58,15 +58,12 @@ jobs:
               case "$request" in
                 shoot:*)
                   name=${request#shoot:}
+                  echo "== $name"
                   tmp=$(mktemp -d)
-                  build/shoot_window windows | while read -r id role; do
-                    if [ "$role" = main ]; then
-                      screencapture -x -l "$id" "$tmp/$id.png"
-                      screencapture -x -o -l "$id" "$tmp/$id-flat.png"
-                    else
-                      screencapture -x -o -l "$id" "$tmp/$id.png"
-                    fi
-                  done
+                  read -r id rect < <(build/shoot_window window)
+                  screencapture -x -l "$id" "$tmp/shadow.png"
+                  screencapture -x -o -l "$id" "$tmp/flat.png"
+                  screencapture -x -R "$rect" "$tmp/screen.png"
                   build/shoot_window compose "shots/$name.png" "$tmp" || true
                   rm -rf "$tmp"
                   printf 'done:%s' "$name" | pbcopy
