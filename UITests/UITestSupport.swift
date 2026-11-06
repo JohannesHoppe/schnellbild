@@ -54,8 +54,12 @@ class SchnellbildUITestCase: XCTestCase {
                 language: String = "en") -> XCUIApplication {
         let app = XCUIApplication()
         // English unless a test asks otherwise, whatever the runner's
-        // language: the tests match UI text.
-        var args = ["--ui-testing", "-AppleLanguages", "(\(language))", "-AppleLocale", language == "en" ? "en_US" : language] + extra
+        // language: the tests match UI text. AppKit reads "-name value"
+        // pairs, so these pairs come first and every argument after them
+        // starts with "-": a value left without its name would be taken
+        // for a file to open, and the app would show no window.
+        var args = ["-AppleLanguages", "(\(language))", "-AppleLocale", language == "en" ? "en_US" : language,
+                    "--ui-testing"] + extra
         if resetState { args.append("--reset-state") }
         if let path { args.append("--open=\(path)") }
         app.launchArguments = args
