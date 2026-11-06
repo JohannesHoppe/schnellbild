@@ -204,6 +204,19 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
         }
         return "with look \(withLook), failed \(failed), exposure \(String(format: "%.2f", look.exposure)), alpha \(alpha)"
     }
+
+    /// For UI tests: the mean luminance of what the layer holds (main thread).
+    @MainActor
+    var layerBrightness: String {
+        guard let contents = layer.contents else { return "none" }
+        guard CFGetTypeID(contents as CFTypeRef) == IOSurfaceGetTypeID() else { return "not a surface" }
+        let surface = unsafeBitCast(contents as AnyObject, to: IOSurfaceRef.self)
+        var buffer: Unmanaged<CVPixelBuffer>?
+        CVPixelBufferCreateWithIOSurface(nil, surface, nil, &buffer)
+        guard let pixels = buffer?.takeRetainedValue() else { return "unreadable" }
+        let image = CIImage(cvPixelBuffer: pixels, options: [.colorSpace: sRGB])
+        return PictureStats.of(image.settingAlphaOne(in: image.extent)).map { String(format: "%.3f", $0.mean) } ?? "unmeasured"
+    }
 }
 
 /// libVLC's video callback functions, looked up in VLCKit at run time.
