@@ -57,7 +57,7 @@ class SchnellbildUITestCase: XCTestCase {
         // language: the tests match UI text.
         var args = ["--ui-testing", "-AppleLanguages", "(\(language))", "-AppleLocale", language == "en" ? "en_US" : language] + extra
         if resetState { args.append("--reset-state") }
-        if let path { args += ["--open", path] }
+        if let path { args.append("--open=\(path)") }
         app.launchArguments = args
         app.launch()
         self.app = app
