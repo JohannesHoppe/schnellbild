@@ -102,10 +102,8 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         }
     }
 
-    /// The picture on screen, measured; nil unless it plays (a paused
-    /// picture doesn't change).
+    /// The decoded picture on screen, measured (also paused or at the end).
     private func pictureStats() async -> PictureStats? {
-        guard player.isPlaying else { return nil }
         let output = self.output
         return await Task.detached(priority: .utility) { output.latestStats }.value
     }
@@ -118,7 +116,7 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         let stats = player.media?.statistics
         return "vlc state \(player.state.rawValue), "
             + "size \(Int(player.videoSize.width))x\(Int(player.videoSize.height)), decoded \(decoded), "
-            + "shown \(stats?.displayedPictures ?? 0), lost \(stats?.lostPictures ?? 0)"
+            + "shown \(stats?.displayedPictures ?? 0), lost \(stats?.lostPictures ?? 0), \(output.diagnostics)"
     }
 
     /// Show the picture in `view`; the first view starts playback.

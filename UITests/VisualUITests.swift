@@ -128,9 +128,9 @@ final class VisualUITests: SchnellbildUITestCase {
         settle(3)   // measured once a second, then gliding
         let after = try screenBrightness(of: video)
         if brighter {
-            XCTAssertGreaterThan(after, before + 0.12, "\(fixture) not brightened: \(before) → \(after)")
+            XCTAssertGreaterThan(after, before + 0.12, "\(fixture) not brightened: \(before) → \(after); \(text(of: video))")
         } else {
-            XCTAssertLessThan(after, before - 0.1, "\(fixture) not darkened: \(before) → \(after)")
+            XCTAssertLessThan(after, before - 0.1, "\(fixture) not darkened: \(before) → \(after); \(text(of: video))")
         }
         app.typeKey("e", modifierFlags: [])
         settle()
@@ -154,7 +154,7 @@ final class VisualUITests: SchnellbildUITestCase {
         app.typeKey("a", modifierFlags: [])   // the popover would cover part of the picture
         settle()
         let after = try screenBrightness(of: video)
-        XCTAssertGreaterThan(after, before + 0.12, "the exposure slider does nothing: \(before) → \(after)")
+        XCTAssertGreaterThan(after, before + 0.12, "the exposure slider does nothing: \(before) → \(after); \(text(of: video))")
     }
 
     func testExposureSliderBrightensAnAVKitVideo() throws { try checkExposureSlider(vlc: false) }

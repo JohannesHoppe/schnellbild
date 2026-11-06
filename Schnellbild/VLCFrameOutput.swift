@@ -20,6 +20,8 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
     let layer: CALayer = {
         let layer = CALayer()
         layer.contentsGravity = .resizeAspect
+        layer.magnificationFilter = .linear
+        layer.minificationFilter = .trilinear
         layer.backgroundColor = NSColor.black.cgColor
         return layer
     }()
@@ -33,6 +35,10 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
     private var latest: CVPixelBuffer?
     private let context = CIContext(options: [.cacheIntermediates: false])
     private let sRGB = CGColorSpace(name: CGColorSpace.sRGB)!
+    /// Counts for UI-test diagnostics: pictures shown with a look, and
+    /// renders that failed.
+    private var withLook = 0
+    private var failed = 0
     /// Renders a new look onto a paused picture off the main thread.
     private let redraw = DispatchQueue(label: "schnellbild.vlc-look")
     /// Locked for VLC to draw into, by the address VLC knows them by. A few
@@ -152,9 +158,14 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
             if let pool { CVPixelBufferPoolCreatePixelBuffer(nil, pool, &out) }
             if let out {
                 CVBufferSetAttachment(out, kCVImageBufferCGColorSpaceKey, sRGB, .shouldPropagate)
+                // VLC's alpha byte isn't meant as transparency
                 let image = CIImage(cvPixelBuffer: buffer, options: [.colorSpace: sRGB])
+                    .settingAlphaOne(in: CGRect(x: 0, y: 0, width: CVPixelBufferGetWidth(buffer), height: CVPixelBufferGetHeight(buffer)))
                 context.render(look.apply(to: image), to: out, bounds: image.extent, colorSpace: sRGB)
                 surfaceBuffer = out
+                lock.lock(); withLook += 1; lock.unlock()
+            } else {
+                lock.lock(); failed += 1; lock.unlock()
             }
         }
         lock.lock()
@@ -176,7 +187,22 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
         lock.lock()
         let buffer = latest
         lock.unlock()
-        return buffer.flatMap { PictureStats.of(CIImage(cvPixelBuffer: $0, options: [.colorSpace: sRGB])) }
+        return buffer.flatMap {
+            let image = CIImage(cvPixelBuffer: $0, options: [.colorSpace: sRGB])
+            return PictureStats.of(image.settingAlphaOne(in: image.extent))
+        }
+    }
+
+    /// For UI tests: what the output did.
+    var diagnostics: String {
+        lock.lock()
+        defer { lock.unlock() }
+        var alpha = "-"
+        if let latest, CVPixelBufferLockBaseAddress(latest, .readOnly) == kCVReturnSuccess {
+            if let base = CVPixelBufferGetBaseAddress(latest) { alpha = "\(base.load(fromByteOffset: 3, as: UInt8.self))" }
+            CVPixelBufferUnlockBaseAddress(latest, .readOnly)
+        }
+        return "with look \(withLook), failed \(failed), exposure \(String(format: "%.2f", look.exposure)), alpha \(alpha)"
     }
 }
 
