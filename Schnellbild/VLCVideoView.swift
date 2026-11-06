@@ -8,7 +8,23 @@ import CoreImage
 /// state changes from any source (keys, the end of the video) to the model.
 @MainActor
 final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegate {
-    let player = VLCMediaPlayer()
+    let player: VLCMediaPlayer = {
+        _ = VLCPlaybackControl.testLog
+        return VLCMediaPlayer()
+    }()
+
+    /// UI tests: VLC logs everything to /tmp/schnellbild-vlc.log, which the
+    /// CI workflow shows when a test fails.
+    private static let testLog: Void = {
+        guard ProcessInfo.processInfo.arguments.contains("--ui-testing") else { return }
+        let path = "/tmp/schnellbild-vlc.log"
+        if !FileManager.default.fileExists(atPath: path) { FileManager.default.createFile(atPath: path, contents: nil) }
+        guard let handle = FileHandle(forWritingAtPath: path) else { return }
+        handle.seekToEndOfFile()
+        let logger = VLCFileLogger.create(with: handle)
+        logger.level = .debug
+        VLCLibrary.shared().loggers = [logger]
+    }()
     private let url: URL
     private let onStateChange: @MainActor (PlaybackControl, Bool) -> Void
     private weak var drawable: NSView?
