@@ -33,8 +33,8 @@ struct SchnellbildApp: App {
                     .keyboardShortcut("f", modifiers: .command)
             }
             CommandMenu("Actions") {
-                Button("Rename Folder… (F2)") { model.beginRename() }
-                    .disabled(model.selectedEntry?.kind != .folder || model.mode != .grid)
+                Button("Rename… (F2)") { model.beginRename() }
+                    .disabled(model.selectedEntry == nil || model.selectedEntry?.kind == .parent)
                 Button("Reveal in Finder") { model.revealInFinder() }
                     .keyboardShortcut("r", modifiers: [.command, .shift])
                 Button("Open with Default App") { model.openInDefaultApp() }

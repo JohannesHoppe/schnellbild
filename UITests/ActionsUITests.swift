@@ -50,11 +50,11 @@ final class ActionsUITests: SchnellbildUITestCase {
     func testRenameFromContextMenuAndActionsMenu() {
         launchOnTempDir(waitFor: "album")
         tile("album").rightClick()
-        app.menuItems["Rename Folder…"].click()
+        app.menuItems["Rename…"].click()
         enterName("Via Context")
         XCTAssertTrue(app.staticTexts["Via Context"].waitForExistence(timeout: 5))
 
-        clickMenu("Actions", "Rename Folder… (F2)")
+        clickMenu("Actions", "Rename… (F2)")
         enterName("Via Menu")
         XCTAssertTrue(app.staticTexts["Via Menu"].waitForExistence(timeout: 5))
     }
@@ -71,13 +71,29 @@ final class ActionsUITests: SchnellbildUITestCase {
         XCTAssertTrue(app.staticTexts["album"].exists)
     }
 
-    func testF2OnAnImageDoesNothing() {
+    func testF2RenamesAFileKeepingItsExtension() {
         launchOnTempDir(waitFor: "album")
         tile("a.jpg").click()
         waitForSelected("a.jpg")
         app.typeKey(.F2, modifierFlags: [])
-        RunLoop.current.run(until: Date().addingTimeInterval(1))
-        XCTAssertFalse(renameField.exists)
+        XCTAssertTrue(renameField.waitForExistence(timeout: 5))
+        renameField.typeText("Sunrise")   // replaces the selected base name only
+        XCTAssertEqual(text(of: renameField), "Sunrise.jpg")
+        renameField.typeKey(.return, modifierFlags: [])
+        eventually("renamed on disk") {
+            FileManager.default.fileExists(atPath: tempDir.appendingPathComponent("Sunrise.jpg").path)
+        }
+        waitForSelected("Sunrise.jpg")
+    }
+
+    func testF2InTheFullViewRenamesTheFileShown() {
+        launchOnTempDir(waitFor: "album")
+        tile("b.jpg").doubleClick()
+        waitForBadge(containing: "b.jpg")
+        app.typeKey(.F2, modifierFlags: [])
+        enterName("Harbour.jpg")
+        waitForBadge(containing: "Harbour.jpg")
+        XCTAssertTrue(FileManager.default.fileExists(atPath: tempDir.appendingPathComponent("Harbour.jpg").path))
     }
 
     func testCommandBackspaceMovesToTrash() {

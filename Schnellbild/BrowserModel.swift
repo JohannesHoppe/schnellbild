@@ -92,6 +92,7 @@ enum RenameError: LocalizedError, Equatable {
     case emptyName
     case invalidName
     case alreadyExists(String)
+    case changesKind(String)
     case failed(String)
 
     var errorDescription: String? {
@@ -99,6 +100,7 @@ enum RenameError: LocalizedError, Equatable {
         case .emptyName:            return "Please enter a name."
         case .invalidName:          return "Names can't contain “/” or “:”, and can't be “.” or “..”."
         case .alreadyExists(let n): return "An item named “\(n)” already exists here."
+        case .changesKind(let ext): return "Keep the extension “.\(ext)”, so the file stays a picture or video Schnellbild shows."
         case .failed(let reason):   return reason
         }
     }
@@ -274,7 +276,7 @@ final class BrowserModel: ObservableObject {
 
     // MARK: Rename
 
-    /// The folder whose rename sheet is open.
+    /// The folder or file whose rename sheet is open.
     @Published var renameTarget: GridEntry?
 
     // MARK: Slideshow / video
@@ -1129,21 +1131,22 @@ final class BrowserModel: ObservableObject {
         }
     }
 
-    // MARK: - Rename folder
+    // MARK: - Rename
 
-    /// Open the rename sheet for the selected folder (grid only).
+    /// Open the rename sheet for the selected folder or file, in the grid or
+    /// the full view.
     @discardableResult
     func beginRename() -> Bool {
-        guard mode == .grid, let entry = selectedEntry, entry.kind == .folder else { return false }
+        guard let entry = selectedEntry, entry.kind != .parent else { return false }
         searchFocused = false   // F2 works while typing in the search field
         renameTarget = entry
         return true
     }
 
-    /// Rename a folder in place. Updates the grid, the selection and every
-    /// history entry that points into the folder.
+    /// Rename a folder or file in place. Updates the grid, the selection and
+    /// every history entry that points to it (or, for a folder, into it).
     @discardableResult
-    func renameFolder(_ entry: GridEntry, to rawName: String) throws -> URL {
+    func rename(_ entry: GridEntry, to rawName: String) throws -> URL {
         let name = rawName.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !name.isEmpty else { throw RenameError.emptyName }
         guard name != ".", name != "..", !name.contains("/"), !name.contains(":") else {
@@ -1151,7 +1154,11 @@ final class BrowserModel: ObservableObject {
         }
         let old = entry.url
         guard name != old.lastPathComponent else { renameTarget = nil; return old }
-        let new = old.deletingLastPathComponent().appendingPathComponent(name, isDirectory: true)
+        let isFolder = entry.kind == .folder
+        let new = old.deletingLastPathComponent().appendingPathComponent(name, isDirectory: isFolder)
+        if !isFolder, Self.mediaKind(of: new) != entry.kind {
+            throw RenameError.changesKind(old.pathExtension)
+        }
         if fileActions.conflicts(new, old) { throw RenameError.alreadyExists(name) }
         do {
             try fileActions.move(old, new)
@@ -1159,8 +1166,9 @@ final class BrowserModel: ObservableObject {
             throw RenameError.failed(error.localizedDescription)
         }
 
-        // Stay where we are: same folder, same query, same results — only the
-        // renamed folder and everything listed inside it get the new path.
+        // Stay where we are: same folder, same query, same results (and the
+        // full view stays open) — only the renamed item and, for a folder,
+        // everything listed inside it get the new path.
         apply(.moved(old, to: new))
         renameTarget = nil
         return new

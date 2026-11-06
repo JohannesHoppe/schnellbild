@@ -53,7 +53,7 @@ struct ContentView: View {
         .toolbar { toolbarContent }
         .navigationTitle(model.folderURL?.lastPathComponent ?? "Schnellbild")
         .sheet(isPresented: $model.showHelp) { ShortcutsHelpView() }
-        .sheet(item: $model.renameTarget) { RenameFolderView(entry: $0) }
+        .sheet(item: $model.renameTarget) { RenameView(entry: $0) }
     }
 
     private var dropHighlight: some View {

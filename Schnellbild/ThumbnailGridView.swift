@@ -82,11 +82,9 @@ struct ThumbnailGridView: View {
         }
         .contextMenu {
             if entry.kind != .parent {
-                if entry.kind == .folder {
-                    Button("Rename Folder…") {
-                        model.select(index)
-                        model.beginRename()
-                    }
+                Button("Rename…") {
+                    model.select(index)
+                    model.beginRename()
                 }
                 Button("Reveal in Finder") {
                     model.select(index)
