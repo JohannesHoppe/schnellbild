@@ -1,6 +1,7 @@
 import SwiftUI
 import AppKit
 import VLCKit
+import CoreImage
 
 /// VLCKit (LibVLC) playback for formats AVFoundation can't handle (AVI, MKV,
 /// WebM …). Used only as a fallback; native formats stay on AVKit. Reports
@@ -40,17 +41,61 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         return media
     }
 
-    /// VLC can't measure the picture beforehand: a fixed, moderate lift of
-    /// the shadows (gamma > 1 brightens in VLC's adjust filter), a little
-    /// more contrast and colour.
+    private var exposure = AdaptiveExposure()
+    private var exposureTask: Task<Void, Never>?
+    /// The next measurement takes its value at once (after a seek).
+    private var measureNow = true
+
+    /// VLC hands out no frames to filter, so the picture is measured the way
+    /// AVKit videos are, from a small snapshot once a second, and corrected
+    /// through VLC's adjust filter: gamma both ways (VLC's gamma is the
+    /// inverse of Core Image's power: > 1 brightens), gliding in between,
+    /// plus a little more contrast and colour.
     func setEnhanced(_ on: Bool) {
         let adjust = player.adjustFilter
-        if on {
-            adjust.gamma.value = NSNumber(value: 1.35)
-            adjust.contrast.value = NSNumber(value: 1.1)
-            adjust.saturation.value = NSNumber(value: 1.15)
+        exposureTask?.cancel()
+        exposureTask = nil
+        guard on else { adjust.isEnabled = false; return }
+        adjust.contrast.value = NSNumber(value: 1.08)
+        adjust.saturation.value = NSNumber(value: 1.12)
+        adjust.gamma.value = NSNumber(value: 1 / exposure.gamma)
+        adjust.isEnabled = true
+        measureNow = true
+        exposureTask = Task { [weak self] in
+            var sinceMeasure = Double.infinity
+            while !Task.isCancelled {
+                guard let self else { return }
+                if self.measureNow || sinceMeasure >= 1 || !self.exposure.hasPicture {
+                    if let luminance = await self.snapshotLuminance() {
+                        _ = self.exposure.measure(luminance: luminance, instant: self.measureNow)
+                        self.measureNow = false
+                    }
+                    sinceMeasure = 0
+                } else {
+                    self.exposure.advance(by: 0.2)
+                }
+                self.player.adjustFilter.gamma.value = NSNumber(value: 1 / self.exposure.gamma)
+                try? await Task.sleep(for: .milliseconds(200))
+                sinceMeasure += 0.2
+            }
         }
-        adjust.isEnabled = on
+    }
+
+    /// Mean luminance of the frame on screen, from a 64-pixel-wide snapshot
+    /// VLC writes to a temporary file; nil while nothing plays.
+    private func snapshotLuminance() async -> Double? {
+        guard player.isPlaying || player.state == .paused else { return nil }
+        let file = FileManager.default.temporaryDirectory
+            .appendingPathComponent("schnellbild-vlc-\(UUID().uuidString).png")
+        player.saveVideoSnapshot(at: file.path, withWidth: 64, andHeight: 0)
+        defer { try? FileManager.default.removeItem(at: file) }
+        for _ in 0..<10 {   // written asynchronously
+            try? await Task.sleep(for: .milliseconds(50))
+            if let image = CIImage(contentsOf: file) {
+                return EnhanceRecipe.meanLuminance(of: image)
+            }
+        }
+        return nil
     }
 
     /// Render into `view`; the first view starts playback.
@@ -77,6 +122,8 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
     }
 
     func stop() {
+        exposureTask?.cancel()
+        exposureTask = nil
         player.delegate = nil
         player.stop()
     }
@@ -103,6 +150,7 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         let target = min(max(progress, 0), 1)
         pendingSeek = (target, Date())
         player.position = Float(target)
+        measureNow = true   // a new scene: measure again at once
     }
 
     nonisolated func mediaPlayerStateChanged(_ aNotification: Notification) {

@@ -1861,7 +1861,24 @@ final class EnhanceTests: XCTestCase {
                        "a filter new in the analysis starts at its values")
     }
 
-    func testWellExposedPicturesGetNoGammaLift() throws {
-        XCTAssertNil(EnhanceRecipe.analyse(CIImage(cgImage: try grey(0.55))).gamma)
+    func testWellExposedPicturesGetNoGammaCorrection() throws {
+        XCTAssertNil(EnhanceRecipe.analyse(CIImage(cgImage: try grey(0.42))).gamma)
+    }
+
+    func testOverexposedPicturesGetDarker() throws {
+        let bright = try grey(0.78)
+        let before = try XCTUnwrap(EnhanceRecipe.meanLuminance(of: CIImage(cgImage: bright)))
+        XCTAssertGreaterThan(try XCTUnwrap(EnhanceRecipe.analyse(CIImage(cgImage: bright)).gamma), 1, "a darkening gamma")
+        let after = try XCTUnwrap(EnhanceRecipe.meanLuminance(of: CIImage(cgImage: try XCTUnwrap(EnhanceRecipe.enhanced(bright)))))
+        XCTAssertLessThan(after, before - 0.1, "clearly darker: \(before) → \(after)")
+    }
+
+    func testVideoExposureHoldsOnAWhiteFlash() {
+        var exposure = AdaptiveExposure()
+        _ = exposure.measure(luminance: 0.3, instant: false)
+        let held = exposure.gamma
+        XCTAssertFalse(exposure.measure(luminance: 1.0, instant: false))
+        exposure.advance(by: 5)
+        XCTAssertEqual(exposure.gamma, held, accuracy: 0.0001)
     }
 }
