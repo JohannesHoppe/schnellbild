@@ -35,8 +35,14 @@ struct ShortcutsHelpView: View {
             Shortcut(keys: "0 / 1", action: "Fit to window / 100 %"),
             Shortcut(keys: "[ / ]", action: "Rotate left / right"),
             Shortcut(keys: "i", action: "File info"),
-            Shortcut(keys: "s", action: "Slideshow"),
             Shortcut(keys: "Esc / Backspace / Return", action: "Back to grid"),
+        ]),
+        Group(title: "Slideshow", shortcuts: [
+            Shortcut(keys: "s", action: "Start: everything in this folder and its subfolders (or the selected folder, or the search results)"),
+            Shortcut(keys: "Space", action: "Pause / resume"),
+            Shortcut(keys: "← →", action: "Previous / next · video: skip a tenth"),
+            Shortcut(keys: "⌘← ⌘→ ↑ ↓", action: "Previous / next item"),
+            Shortcut(keys: "Esc / s", action: "End the slideshow"),
         ]),
         Group(title: "Search field", shortcuts: [
             Shortcut(keys: "⌘F", action: "Search folder and file names (incl. subfolders)"),

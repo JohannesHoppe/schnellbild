@@ -78,6 +78,7 @@ There is **no Xcode project for the app build**; `xcodegen` generates
   Hardware keyCodes (`ContentView.keyInput`, unit-tested): 51 Backspace, 53 Esc,
   36/76 Return, 49 Space, 123 ←, 124 →, 125 ↓, 126 ↑, 115 Home, 119 End,
   122 F1, 120 F2. Toolbar: Back / Forward / Up / Open Folder.
+- **Slideshow** (`BrowserModel.Slideshow`, `startSlideshow`): its own item list, filled by `walkForSlideshow` folder by folder (a folder's media in the sort order, then each subfolder, hidden folders skipped) and shown while the walk goes on. Starts over the folder passed in (drop zone), else the selected folder tile, else the search results, else the current folder; from the full view at the item shown. Pictures advance after `slideshowInterval`, videos when `playbackStateChanged` reports their end. Full screen via the injectable `setFullScreen`; toolbar, search and status bar hide. Keys go through `handleSlideshowKey`. `shownMediaEntry` is the one item on screen (slideshow or full view); `page`/`skim` work on it. Dropping onto the window shows two zones (`DropZonesView`, `DropZoneDelegate`): Browse / Slideshow.
 - **`ShortcutsHelpView.swift`** — F1 / "Schnellbild Help" cheat sheet (same
   content as the README keyboard tables; keep them in sync).
 - **`ThumbnailView.swift` / `ThumbnailGridView.swift`** — `LazyVGrid`, thumbnails
@@ -229,9 +230,8 @@ Releases ship as a signed, notarized DMG.
 
 Open / next-up:
 - **Decided, to build (in this order):**
-  1. **Slideshow as its own entry point**: opening a folder always shows the grid. A big ▶︎ toolbar button (plus a key) starts a full-screen slideshow over all photos and videos in the current folder and every subfolder (or the search results, or the selected folder tile), folder by folder in the current sort order, no shuffle. Videos play to the end, then it moves on. Dragging a folder over the window shows two drop zones: "Browse" and "Slideshow".
-  2. **Auto enhance** (non-destructive, a view filter): one toolbar button + key, stays on while paging until switched off, with a visible badge. Photos: Core Image `autoAdjustmentFilters`. AVKit videos: measure once, apply fixed filters via a video composition (no per-frame flicker). VLC videos: VLCKit's adjust filter (brightness/contrast/gamma). Includes **sharpening like Photoshop's unsharp mask** (Core Image `CIUnsharpMask`), so pictures look crisper; for VLC videos VLC's sharpen filter.
-  3. **Zoom and pan for videos** exactly like for photos (keys, pinch, drag), for AVKit and VLC videos.
+  1. **Auto enhance** (non-destructive, a view filter): one toolbar button + key, stays on while paging until switched off, with a visible badge. Photos: Core Image `autoAdjustmentFilters`. AVKit videos: measure once, apply fixed filters via a video composition (no per-frame flicker). VLC videos: VLCKit's adjust filter (brightness/contrast/gamma). Includes **sharpening like Photoshop's unsharp mask** (Core Image `CIUnsharpMask`), so pictures look crisper; for VLC videos VLC's sharpen filter.
+  2. **Zoom and pan for videos** exactly like for photos (keys, pinch, drag), for AVKit and VLC videos.
 - **Demo GIF** — storyboard ready in `docs/launch-storyboard.md`. User records it
   later, drops `docs/demo.gif`, uncomments the demo line near the top of README.
 - **Launch posts** — `docs/launch.md` has ready Show HN + r/macapps copy; user

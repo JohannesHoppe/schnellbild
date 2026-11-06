@@ -107,11 +107,23 @@ final class FullViewUITests: SchnellbildUITestCase {
     func testSlideshowAdvancesAndStops() {
         openA()
         app.typeKey("s", modifierFlags: [])
+        waitForBadge(containing: "Slideshow")
         waitForBadge(containing: "2 / 3", timeout: 8)
-        app.typeKey("s", modifierFlags: [])
-        let stoppedAt = text(of: badge)
-        RunLoop.current.run(until: Date().addingTimeInterval(4))
-        XCTAssertEqual(text(of: badge), stoppedAt, "slideshow stopped")
+        app.typeKey(.escape, modifierFlags: [])
+        eventually("slideshow ended") { !text(of: badge).contains("Slideshow") }
+    }
+
+    func testSlideshowButtonPlaysTheFolderAndSubfolders() throws {
+        try put("sample.jpg", at: "sub/d.jpg")
+        launchOnTempDir()
+        toolbarButton("slideshowButton").click()
+        waitForBadge(containing: "Slideshow")
+        waitForBadge(containing: "/ 4  ·")   // the subfolder walked ("/ 3+" until then)
+        XCTAssertFalse(searchField.exists, "nothing but the pictures")
+        waitForBadge(containing: "d.jpg", timeout: 15)   // reaches the subfolder
+        app.typeKey(.escape, modifierFlags: [])
+        XCTAssertTrue(app.staticTexts["sub"].waitForExistence(timeout: 10), "back to the grid")
+        XCTAssertTrue(searchField.waitForExistence(timeout: 5))
     }
 
     func testAnimatedGIFUsesTheAnimatedView() throws {

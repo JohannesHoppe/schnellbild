@@ -89,6 +89,7 @@ func makeModel(_ spy: FileActionsSpy? = nil) -> BrowserModel {
     let model = BrowserModel(defaults: defaults, fileActions: spy?.actions ?? .live)
     model.searchDebounce = .zero
     model.slideshowInterval = .milliseconds(50)
+    model.setFullScreen = { _ in false }
     return model
 }
 
@@ -1116,21 +1117,104 @@ final class FileActionTests: XCTestCase {
 
 @MainActor
 final class PlaybackTests: XCTestCase {
-    func testSlideshowAdvancesWrapsAndStops() async throws {
+    func testSlideshowWalksFolderByFolderInSortOrder() async throws {
         let tree = try TempTree(self)
-        for n in ["a.jpg", "b.jpg"] { try tree.file(n) }
+        for n in ["b.jpg", "a.mp4", "sub1/c.jpg", "sub1/deeper/d.jpg", "sub2/e.jpg", ".hidden/x.jpg", "empty/Thumbs.db"] {
+            try tree.file(n)
+        }
         let m = makeModel()
         await openAndWait(m, tree.root)
-        m.selectEntry(named: "a.jpg")
-        XCTAssertFalse(m.handleKey(.char("s"), command: false), "slideshow is full-view only")
-        m.activateSelection()
+        m.slideshowInterval = .seconds(60)
+        XCTAssertTrue(m.handleKey(.char("s"), command: false), "s starts it from the grid")
+        await waitUntil { m.slideshow?.loading == false }
+        XCTAssertEqual(m.slideshow?.items.map(\.name), ["a.mp4", "b.jpg", "c.jpg", "d.jpg", "e.jpg"],
+                       "the folder's own media first, then each subfolder, depth first")
+        XCTAssertEqual(m.shownMediaEntry?.name, "a.mp4")
+        XCTAssertTrue(m.handleKey(.escape, command: false))
+        XCTAssertNil(m.slideshow)
+        XCTAssertEqual(m.mode, .grid)
+    }
 
-        XCTAssertTrue(m.handleKey(.char("s"), command: false))
-        XCTAssertTrue(m.slideshowOn)
-        await waitUntil { m.selectedEntry?.name == "b.jpg" }
-        await waitUntil { m.selectedEntry?.name == "a.jpg" }   // wraps around
+    func testSlideshowShowsPicturesForTheIntervalAndVideosToTheirEnd() async throws {
+        let tree = try TempTree(self)
+        for n in ["a.jpg", "b.mp4", "c.jpg"] { try tree.file(n) }
+        let m = makeModel()
+        await openAndWait(m, tree.root)
+        m.startSlideshow()
+        await waitUntil { m.shownMediaEntry?.name == "b.mp4" }   // a.jpg moved on by itself
+        let player = PlayerSpy()
+        m.activePlayer = player
+        try await Task.sleep(for: .milliseconds(200))
+        XCTAssertEqual(m.shownMediaEntry?.name, "b.mp4", "a video isn't cut off")
+        player.progress = 1
+        player.isPlaying = false
+        m.playbackStateChanged(player, isPlaying: false)   // it ended
+        XCTAssertEqual(m.shownMediaEntry?.name, "c.jpg")
+        await waitUntil { m.shownMediaEntry?.name == "a.jpg" }    // starts over
+    }
+
+    func testSlideshowKeys() async throws {
+        let tree = try TempTree(self)
+        for n in ["a.jpg", "b.jpg", "c.jpg"] { try tree.file(n) }
+        let m = makeModel()
+        await openAndWait(m, tree.root)
+        m.slideshowInterval = .milliseconds(80)
+        m.startSlideshow()
+        await waitUntil { m.slideshow?.loading == false }
+        m.handleKey(.space, command: false)
+        XCTAssertEqual(m.slideshow?.paused, true)
+        let shown = m.shownMediaEntry?.name
+        try await Task.sleep(for: .milliseconds(300))
+        XCTAssertEqual(m.shownMediaEntry?.name, shown, "paused")
+        m.handleKey(.right, command: false)
+        XCTAssertNotEqual(m.shownMediaEntry?.name, shown, "→ still pages")
+        m.handleKey(.char("s"), command: false)
+        XCTAssertNil(m.slideshow, "s ends it")
+    }
+
+    func testSlideshowStartsAtTheItemShownAndOverSearchResultsOrTheSelectedFolder() async throws {
+        let tree = try TempTree(self)
+        for n in ["a.jpg", "b.jpg", "c.jpg", "trip/x.jpg", "trip/y.jpg", "other/z.jpg"] { try tree.file(n) }
+        let m = makeModel()
+        m.slideshowInterval = .seconds(60)
+        await openAndWait(m, tree.root)
+
+        m.selectEntry(named: "b.jpg")
+        m.activateSelection()
+        m.startSlideshow()
+        await waitUntil { m.slideshow?.loading == false }
+        XCTAssertEqual(m.shownMediaEntry?.name, "b.jpg", "from the full view: at the item shown")
+        m.stopSlideshow()
         m.closeDetail()
-        XCTAssertFalse(m.slideshowOn)
+
+        m.selectEntry(named: "trip")
+        m.startSlideshow()
+        await waitUntil { m.slideshow?.loading == false }
+        XCTAssertEqual(m.slideshow?.items.map(\.name), ["x.jpg", "y.jpg"], "the selected folder tile")
+        m.stopSlideshow()
+
+        m.searchText = "z"
+        await waitUntil { !m.isSearching && m.names == ["z.jpg"] }
+        m.startSlideshow()
+        await waitUntil { m.slideshow?.loading == false }
+        XCTAssertEqual(m.slideshow?.items.map(\.name), ["z.jpg"], "the search results")
+    }
+
+    func testDropOnTheSlideshowZoneStartsOneAndFullScreenFollows() async throws {
+        let tree = try TempTree(self)
+        for n in ["trip/a.jpg", "trip/b.jpg"] { try tree.file(n) }
+        let m = makeModel()
+        m.slideshowInterval = .seconds(60)
+        var fullScreen: [Bool] = []
+        m.setFullScreen = { on in fullScreen.append(on); return true }
+        let trip = tree.root.appendingPathComponent("trip")
+        m.openDropped([trip.appendingPathComponent("b.jpg")], slideshow: true)
+        await waitUntil { m.slideshow?.loading == false && m.isAt(trip) }
+        XCTAssertEqual(m.shownMediaEntry?.name, "b.jpg", "a dropped file: its folder, from that file")
+        XCTAssertEqual(fullScreen, [true])
+        m.handleKey(.escape, command: false)
+        XCTAssertEqual(fullScreen, [true, false], "leaves full screen it entered")
+        XCTAssertTrue(m.isAt(trip), "the dropped folder's grid stays")
     }
 
     func testSpaceTogglesVideo() async throws {

@@ -19,6 +19,9 @@ struct SchnellbildApp: App {
                     .keyboardShortcut("o")
             }
             CommandMenu("Go") {
+                Button("Start Slideshow (S)") { model.startSlideshow() }
+                    .disabled(model.folderURL == nil)
+                Divider()
                 Button("Back") { model.navigateBack() }
                     .keyboardShortcut("[", modifiers: .command)
                     .disabled(!model.canGoBack)
