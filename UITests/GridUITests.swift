@@ -80,7 +80,7 @@ final class GridUITests: SchnellbildUITestCase {
             .map { "\($0.label) \(($0.value as? String) ?? "") \($0.title)" }.joined(separator: " | ")
     }
 
-    func testSortShortcutsShowInTheToolbarAndAreRemembered() {
+    func testSortShortcutsShowInTheToolbar() {
         launchOnTempDir()
         XCTAssertTrue(sortLabel.contains("Name ↑"), "toolbar shows the order: \(sortLabel)")
         app.typeKey("5", modifierFlags: .command)
@@ -89,14 +89,24 @@ final class GridUITests: SchnellbildUITestCase {
         eventually("⌘5 again reverses") { sortLabel.contains("Size ↑") }
         app.typeKey("4", modifierFlags: .command)
         eventually("⌘4: date taken") { sortLabel.contains("Date Taken ↓") }
-
-        app.terminate()
-        launch(open: tempDir.path, resetState: false)
-        let shown = app.staticTexts["a.jpg"].waitForExistence(timeout: 15)
-        if !shown { print("APP TREE:\n\(app.debugDescription)") }
-        XCTAssertTrue(shown)
-        XCTAssertTrue(sortLabel.contains("Date Taken ↓"), "remembered: \(sortLabel)")
+        XCTAssertEqual(app.windows.count, 1, "the window stays open")
     }
+
+    private func checkRemembered(_ key: String, shortcut: String) {
+        launchOnTempDir()
+        app.typeKey(XCUIKeyboardKey(rawValue: shortcut), modifierFlags: .command)
+        eventually("sorted by \(key)") { sortLabel.contains(key) }
+        XCTAssertEqual(app.windows.count, 1, "window before quitting")
+        app.terminate()
+        launch(resetState: false)
+        let shown = app.staticTexts["a.jpg"].waitForExistence(timeout: 15)
+        if !shown { print("WINDOWS after relaunch: \(app.windows.count)") }
+        XCTAssertTrue(shown, "the last folder reopens")
+        XCTAssertTrue(sortLabel.contains(key), "remembered: \(sortLabel)")
+    }
+
+    func testSortBySizeIsRemembered() { checkRemembered("Size", shortcut: "5") }
+    func testSortByDateTakenIsRemembered() { checkRemembered("Date Taken", shortcut: "4") }
 
     func testEmptyFolderState() throws {
         let empty = try folder("empty")
