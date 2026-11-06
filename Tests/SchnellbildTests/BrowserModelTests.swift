@@ -217,6 +217,17 @@ final class SortTests: XCTestCase {
                        ["c.jpg", "clip.mp4", "a.png", "b.png"])
     }
 
+    func testKindSortsFoldersByNameAndTiesStayAToZDescending() {
+        let input = [entry("2024.10 Trip", .folder), entry("2024.02 Ski", .folder), entry("Archive", .folder)]
+        XCTAssertEqual(BrowserModel.sortEntries(input, key: .kind, ascending: true).map(\.name),
+                       ["2024.02 Ski", "2024.10 Trip", "Archive"], "a dot in a folder name isn't a kind")
+        let same = Date(timeIntervalSince1970: 7)
+        let burst = [entry("IMG_0102.jpg", .image, date: same), entry("IMG_0101.jpg", .image, date: same),
+                     entry("later.jpg", .image, date: Date(timeIntervalSince1970: 9))]
+        XCTAssertEqual(BrowserModel.sortEntries(burst, key: .modified, ascending: false).map(\.name),
+                       ["later.jpg", "IMG_0101.jpg", "IMG_0102.jpg"], "newest first, a burst still A→Z")
+    }
+
     func testTiesFallBackToTheName() {
         let same = Date(timeIntervalSince1970: 500)
         let input = [entry("b.jpg", .image, date: same, size: 1), entry("a.jpg", .image, date: same, size: 1)]
@@ -1136,6 +1147,41 @@ final class PlaybackTests: XCTestCase {
         XCTAssertTrue(m.handleKey(.escape, command: false))
         XCTAssertNil(m.slideshow)
         XCTAssertEqual(m.mode, .grid)
+    }
+
+    func testSlideshowOverResultsPlaysEachItemOnceAndStartsAtTheShownOne() async throws {
+        let tree = try TempTree(self)
+        for n in ["beach/a.jpg", "beach/beach-2024/b.jpg", "beach/beach1.jpg", "beach2.jpg"] { try tree.file(n) }
+        let m = makeModel()
+        m.slideshowInterval = .seconds(60)
+        await openAndWait(m, tree.root)
+        m.searchText = "beach"
+        await waitUntil { !m.isSearching }
+        m.selectEntry(named: "beach2.jpg")   // a file result, after the folder results
+        m.activateSelection()
+        m.startSlideshow()
+        await waitUntil { m.slideshow?.loading == false }
+        let names = m.slideshow?.items.map(\.name) ?? []
+        XCTAssertEqual(names.sorted(), ["a.jpg", "b.jpg", "beach1.jpg", "beach2.jpg"], "each once: \(names)")
+        XCTAssertEqual(m.shownMediaEntry?.name, "beach2.jpg", "starts at the item the full view showed")
+    }
+
+    func testSlideshowKeepsSearchHistoryAndFileActionsAway() async throws {
+        let tree = try TempTree(self)
+        for n in ["a.jpg", "b.jpg"] { try tree.file(n) }
+        let spy = FileActionsSpy()
+        let m = makeModel(spy)
+        m.slideshowInterval = .seconds(60)
+        await openAndWait(m, tree.root)
+        m.startSlideshow()
+        await waitUntil { m.slideshow?.loading == false }
+        XCTAssertTrue(m.handleKey(.char("f"), command: true), "⌘F is swallowed")
+        XCTAssertFalse(m.searchFocused)
+        m.moveSelectionToTrash()
+        XCTAssertTrue(spy.trashed.isEmpty, "the hidden grid's selection isn't trashed")
+        XCTAssertFalse(m.beginRename())
+        XCTAssertTrue(m.handleKey(.char("S"), command: false), "S with Shift or Caps Lock")
+        XCTAssertNil(m.slideshow, "ends it, doesn't restart it")
     }
 
     func testSlideshowShowsPicturesForTheIntervalAndVideosToTheirEnd() async throws {

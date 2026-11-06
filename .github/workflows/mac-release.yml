@@ -112,7 +112,7 @@ jobs:
       MACOS_TEAM_ID: 87884AP46G
     steps:
       # Scripts from the same commit as the submitted DMG
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           ref: ${{ needs.find.outputs.sha }}
       - name: Fetch the submitted DMG
@@ -139,7 +139,7 @@ jobs:
       - name: Attach the DMG to the release
         if: steps.pkg.outputs.result == 'accepted' && env.TAG != ''
         run: gh release upload "$TAG" -R "$GITHUB_REPOSITORY" --clobber dist/Schnellbild.dmg
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: steps.pkg.outputs.result == 'accepted' && env.TAG == ''
         with:
           name: macos-dmg

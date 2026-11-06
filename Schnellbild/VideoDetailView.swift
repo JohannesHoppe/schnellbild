@@ -17,8 +17,11 @@ struct VideoDetailView: View {
     /// Pan while zoomed in, as for pictures.
     @State private var panOffset: CGSize = .zero
     @GestureState private var dragTranslation: CGSize = .zero
+    /// The video's picture size, for fitting it when turned a quarter.
+    @State private var videoSize: CGSize?
 
     var body: some View {
+        GeometryReader { geo in
         ZStack {
             Color.black
             Group {
@@ -34,7 +37,7 @@ struct VideoDetailView: View {
             // changes. Zoomed in, the player's own control bar is out of
             // reach, the keys still work.
             .rotationEffect(.degrees(model.rotation))
-            .scaleEffect(model.zoom)
+            .scaleEffect(model.zoom * quarterTurnFit(in: geo.size))
             .offset(x: panOffset.width + dragTranslation.width, y: panOffset.height + dragTranslation.height)
             if model.zoom > 1 {
                 // Takes the drag for panning while zoomed in
@@ -48,6 +51,7 @@ struct VideoDetailView: View {
                         })
             }
         }
+        }
         .clipped()
         .onChange(of: model.zoom) { _, zoom in if zoom == 1 { panOffset = .zero } }
         .onChange(of: url) { _, _ in panOffset = .zero }
@@ -57,6 +61,7 @@ struct VideoDetailView: View {
         .task(id: url) {
             stop()
             checking = true
+            videoSize = nil
             model.actualSizeFactor = 1   // "1": a video's 100 % is its fitted size
 
             let asset = AVURLAsset(url: url)
@@ -73,15 +78,36 @@ struct VideoDetailView: View {
                 avControl = control
                 model.activePlayer = control
                 control.play()
+                if let track = try? await asset.loadTracks(withMediaType: .video).first,
+                   let (size, transform) = try? await track.load(.naturalSize, .preferredTransform) {
+                    let turned = size.applying(transform)
+                    videoSize = CGSize(width: abs(turned.width), height: abs(turned.height))
+                }
             } else {
                 // AVFoundation can't play it — hand off to VLCKit. It starts
                 // playing once its view gives it somewhere to draw.
                 let control = VLCPlaybackControl(url: url, enhanced: model.enhance, onStateChange: report)
                 vlcControl = control
                 model.activePlayer = control
+                // VLC knows the size once the video plays
+                for _ in 0..<50 where !Task.isCancelled {
+                    let size = control.player.videoSize
+                    if size.width > 0, size.height > 0 { videoSize = size; break }
+                    try? await Task.sleep(for: .milliseconds(100))
+                }
             }
         }
         .onDisappear { stop() }
+    }
+
+    /// Turned a quarter, the fitted video's now-swapped box is scaled to fit
+    /// the view again (as `FullImageView` does for pictures).
+    private func quarterTurnFit(in container: CGSize) -> CGFloat {
+        guard Int((model.rotation / 90).rounded()) % 2 != 0, let size = videoSize,
+              size.width > 0, size.height > 0, container.width > 0, container.height > 0 else { return 1 }
+        let fit = min(container.width / size.width, container.height / size.height)
+        let shownWidth = size.width * fit, shownHeight = size.height * fit
+        return min(container.width / shownHeight, container.height / shownWidth)
     }
 
     private func stop() {

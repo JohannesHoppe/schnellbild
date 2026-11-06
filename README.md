@@ -193,7 +193,7 @@ F1 (or ⌘?) shows every key in the app.
 
 ## Why so fast?
 
-1. **Riding on the system.** Thumbnails come from Apple's QuickLook (`QLThumbnailGenerator`). It pulls **embedded previews** (EXIF thumbnail, JPEG in RAW): a few KB instead of tens of MB over the network, for any format QuickLook knows, including third-party plugins. The cache lives in the system; Schnellbild has no cache code of its own.
+1. **Riding on the system.** Thumbnails come from Apple's QuickLook (`QLThumbnailGenerator`). It pulls **embedded previews** (EXIF thumbnail, JPEG in RAW): a few KB instead of tens of MB over the network, for any format QuickLook knows, including third-party plugins. QuickLook keeps the thumbnails in the system's own cache; Schnellbild only remembers what's on screen right now.
 2. **Lazy and parallel.** The grid only loads the tiles on screen, and the system runs thumbnail generation in parallel.
 3. **Full view downsampled.** The full picture is read through ImageIO and sampled straight to screen size, no 8000 px monster in memory. The thumbnail shows instantly as a placeholder.
 4. **Nothing blocks the main thread.** Reading folders, searching and decoding run in the background.

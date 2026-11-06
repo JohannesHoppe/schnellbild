@@ -12,7 +12,7 @@ little, load in parallel, cache via the system, never block the main thread.
 
 - Repo: <https://github.com/JohannesHoppe/schnellbild> — **public, MIT**,
   © 2026 HAUS HOPPE - ITS (Johannes Hoppe).
-- Bundle id: `art.haushoppe.schnellbild`. Current version: **0.3.0**.
+- Bundle id: `art.haushoppe.schnellbild`. Current version: **0.4.0**.
 - Everything (code, comments, UI strings, docs, commits) is in **English**.
   The user converses in **German**.
 
@@ -223,11 +223,11 @@ AVI/MKV/WebM and other non-native formats play **in-app via vendored VLCKit
 
 ## Current state & open threads (handover)
 
-Version 0.3.0: folders + drag&drop, subfolder nav (Norton `..`),
+Version 0.4.0: folders + drag&drop, subfolder nav (Norton `..`),
 keyboard-first (NSEvent monitor, F1 help), zoom/pan/pinch/rotate (view-only), video (AVKit + VLCKit fallback),
 animated GIFs, slideshow, inspector, sort, reveal/open/trash, light/dark,
 last-folder restore, always-visible recursive search over folder + file
-names, back/forward/up history, folder rename, folder preview tiles.
+names, back/forward/up history, folder and file rename, folder preview tiles, greyed-out empty folders, sort by name/kind/date modified/date taken/size, arrow keys that skim through videos, recursive slideshow with drop zones, auto enhance (exposure both ways, tone, sharpening) for photos and videos, video zoom.
 Releases ship as a signed, notarized DMG.
 
 Open / next-up:
