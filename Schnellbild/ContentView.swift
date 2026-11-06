@@ -47,7 +47,11 @@ struct ContentView: View {
         .onDrop(of: [.fileURL], delegate: DropZoneDelegate(zone: $dropZone, width: width) { urls, zone in
             model.openDropped(urls, slideshow: zone == .slideshow)
         })
-        .overlay { if let dropZone { DropZonesView(highlighted: dropZone) } }
+        .overlay { if let dropZone, model.slideshow == nil { DropZonesView(highlighted: dropZone) } }
+        // Starting a slideshow or opening a folder ends any drag shown;
+        // AppKit does not always send "exited" once the window goes full screen.
+        .onChange(of: model.slideshow?.id) { dropZone = nil }
+        .onChange(of: model.folderURL) { dropZone = nil }
         .safeAreaInset(edge: .top, spacing: 0) {
             if model.slideshow == nil { searchBar }
         }
@@ -432,7 +436,9 @@ struct DropZoneDelegate: DropDelegate {
     func validateDrop(info: DropInfo) -> Bool { info.hasItemsConforming(to: [.fileURL]) }
     func dropEntered(info: DropInfo) { zone = zone(at: info) }
     func dropUpdated(info: DropInfo) -> DropProposal? {
-        zone = zone(at: info)
+        // A late update after the drop (mouse already released) must not
+        // bring the zones back.
+        zone = NSEvent.pressedMouseButtons == 0 ? nil : zone(at: info)
         return DropProposal(operation: .copy)
     }
     func dropExited(info: DropInfo) { zone = nil }
@@ -440,6 +446,8 @@ struct DropZoneDelegate: DropDelegate {
     func performDrop(info: DropInfo) -> Bool {
         let target = zone(at: info)
         zone = nil
+        // Once more after AppKit has finished the drag session.
+        DispatchQueue.main.async { [zone = $zone] in zone.wrappedValue = nil }
         let providers = info.itemProviders(for: [.fileURL])
         guard let provider = providers.first else { return false }
         _ = provider.loadObject(ofClass: URL.self) { url, _ in
