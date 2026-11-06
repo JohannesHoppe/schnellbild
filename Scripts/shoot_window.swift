@@ -1,28 +1,24 @@
-// Photographs Schnellbild's window like ⌘⇧4 + Space does: with its shadow
-// and rounded corners on a transparent background. Open sheets and menus are
-// separate windows; they are drawn into the picture at their place.
-// The pictures themselves come from `screencapture -l`, run by the shell
-// (the permission to record the screen belongs to the runner's shell, not to
+// Photographs Schnellbild's window like ⌘⇧4 + Space does: with its shadow and
+// rounded corners on a transparent background, including an open sheet or
+// menu. The pictures come from `screencapture`, run by the shell (the
+// permission to record the screen belongs to the runner's shell, not to
 // programs it starts). Compiled by .github/workflows/screenshots.yml:
-//   shoot_window windows               lists "<id> main|other", main first
-//   shoot_window compose <out> <dir>   <dir>/<main>.png (with shadow),
-//                                      <dir>/<main>-flat.png (without),
-//                                      <dir>/<other>.png (without) → <out>
+//   shoot_window window              prints "<id> <x>,<y>,<w>,<h>" of the main window
+//   shoot_window compose <out> <dir> from <dir>/shadow.png (screencapture -l),
+//                                    <dir>/flat.png (-o -l: the window's shape)
+//                                    and <dir>/screen.png (-R: what the screen
+//                                    shows there, sheets and menus included)
 import AppKit
 
-struct Window { let id: Int; let bounds: CGRect; let layer: Int }
-
-func appWindows() -> [Window] {
+func mainWindow() -> (id: Int, bounds: CGRect)? {
     let list = CGWindowListCopyWindowInfo([.optionOnScreenOnly], kCGNullWindowID) as? [[String: Any]] ?? []
-    return list.compactMap { info in
+    return list.compactMap { info -> (Int, CGRect)? in
         guard (info[kCGWindowOwnerName as String] as? String) == "Schnellbild",
+              (info[kCGWindowLayer as String] as? Int) == 0,
               let id = info[kCGWindowNumber as String] as? Int,
-              let b = info[kCGWindowBounds as String] as? [String: CGFloat],
-              (info[kCGWindowAlpha as String] as? Double ?? 1) > 0 else { return nil }
-        let bounds = CGRect(x: b["X"]!, y: b["Y"]!, width: b["Width"]!, height: b["Height"]!)
-        guard bounds.width > 40, bounds.height > 40 else { return nil }
-        return Window(id: id, bounds: bounds, layer: info[kCGWindowLayer as String] as? Int ?? 0)
-    }
+              let b = info[kCGWindowBounds as String] as? [String: CGFloat] else { return nil }
+        return (id, CGRect(x: b["X"]!, y: b["Y"]!, width: b["Width"]!, height: b["Height"]!))
+    }.max { $0.1.width * $0.1.height < $1.1.width * $1.1.height }
 }
 
 func load(_ url: URL) -> CGImage? {
@@ -30,62 +26,63 @@ func load(_ url: URL) -> CGImage? {
     return CGImageSourceCreateImageAtIndex(source, 0, nil)
 }
 
+func fail(_ message: String) -> Never {
+    FileHandle.standardError.write((message + "\n").data(using: .utf8)!)
+    exit(1)
+}
+
+func context(_ w: Int, _ h: Int) -> CGContext {
+    CGContext(data: nil, width: w, height: h, bitsPerComponent: 8, bytesPerRow: 0,
+              space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)!
+}
+
 /// Where the window itself sits inside its shadowed picture: the first fully
 /// opaque pixel along the middle row and column (the shadow is translucent).
-func contentOrigin(of image: CGImage) -> CGPoint {
+func contentOrigin(of image: CGImage) -> (x: Int, top: Int) {
     let w = image.width, h = image.height
-    let ctx = CGContext(data: nil, width: w, height: h, bitsPerComponent: 8, bytesPerRow: w * 4,
-                        space: CGColorSpaceCreateDeviceRGB(),
-                        bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)!
+    let ctx = context(w, h)
     ctx.draw(image, in: CGRect(x: 0, y: 0, width: w, height: h))
+    let row = ctx.bytesPerRow
     let pixels = ctx.data!.assumingMemoryBound(to: UInt8.self)
-    func alpha(_ x: Int, _ y: Int) -> UInt8 { pixels[(y * w + x) * 4 + 3] }   // y from the top
+    func alpha(_ x: Int, _ yFromTop: Int) -> UInt8 { pixels[yFromTop * row + x * 4 + 3] }
     let left = (0..<w).first { alpha($0, h / 2) == 255 } ?? 0
     let top = (0..<h).first { alpha(w / 2, $0) == 255 } ?? 0
-    return CGPoint(x: left, y: top)
+    return (left, top)
 }
 
 let args = CommandLine.arguments
-let windows = appWindows()
-guard let main = windows.filter({ $0.layer == 0 }).max(by: { $0.bounds.width * $0.bounds.height < $1.bounds.width * $1.bounds.height }) else {
-    FileHandle.standardError.write("No Schnellbild window\n".data(using: .utf8)!)
-    exit(1)
-}
-let others = windows.filter { $0.id != main.id }
+switch args.count > 1 ? args[1] : "" {
+case "window":
+    // All of the app's windows, for the log
+    for info in CGWindowListCopyWindowInfo([.optionOnScreenOnly], kCGNullWindowID) as? [[String: Any]] ?? []
+    where (info[kCGWindowOwnerName as String] as? String) == "Schnellbild" {
+        FileHandle.standardError.write("  window \(info[kCGWindowNumber as String] ?? "?") layer \(info[kCGWindowLayer as String] ?? "?") \(info[kCGWindowBounds as String] ?? "?")\n".data(using: .utf8)!)
+    }
+    guard let main = mainWindow() else { fail("No Schnellbild window") }
+    let b = main.bounds
+    print("\(main.id) \(Int(b.minX)),\(Int(b.minY)),\(Int(b.width)),\(Int(b.height))")
 
-if args.count > 1, args[1] == "windows" {
-    print("\(main.id) main")
-    for other in others { print("\(other.id) other") }
-    exit(0)
-}
-guard args.count > 3, args[1] == "compose" else {
-    FileHandle.standardError.write("Usage: shoot_window windows | compose <out> <dir>\n".data(using: .utf8)!)
-    exit(2)
-}
-let out = URL(fileURLWithPath: args[2])
-let dir = URL(fileURLWithPath: args[3], isDirectory: true)
-guard let base = load(dir.appendingPathComponent("\(main.id).png")) else {
-    FileHandle.standardError.write("No picture of window \(main.id)\n".data(using: .utf8)!)
-    exit(1)
-}
-// Pixels per point (1 on the runners' displays, 2 on Retina)
-let pxPerPt = load(dir.appendingPathComponent("\(main.id)-flat.png")).map { CGFloat($0.width) / main.bounds.width } ?? 1
-let origin = contentOrigin(of: base)
+case "compose" where args.count > 3:
+    let dir = URL(fileURLWithPath: args[3], isDirectory: true)
+    guard let shadow = load(dir.appendingPathComponent("shadow.png")),
+          let flat = load(dir.appendingPathComponent("flat.png")),
+          let screen = load(dir.appendingPathComponent("screen.png")) else { fail("Pictures missing in \(dir.path)") }
+    // The screen area cut to the window's shape (rounded corners)
+    let fw = flat.width, fh = flat.height
+    let cut = context(fw, fh)
+    cut.draw(screen, in: CGRect(x: 0, y: 0, width: fw, height: fh))
+    cut.setBlendMode(.destinationIn)
+    cut.draw(flat, in: CGRect(x: 0, y: 0, width: fw, height: fh))
+    // … laid over the window in the shadowed picture
+    let origin = contentOrigin(of: shadow)
+    let W = shadow.width, H = shadow.height
+    let out = context(W, H)
+    out.draw(shadow, in: CGRect(x: 0, y: 0, width: W, height: H))
+    out.draw(cut.makeImage()!, in: CGRect(x: origin.x, y: H - origin.top - fh, width: fw, height: fh))
+    let rep = NSBitmapImageRep(cgImage: out.makeImage()!)
+    try rep.representation(using: .png, properties: [:])!.write(to: URL(fileURLWithPath: args[2]))
+    print("Wrote \(args[2])")
 
-let W = base.width, H = base.height
-let ctx = CGContext(data: nil, width: W, height: H, bitsPerComponent: 8, bytesPerRow: 0,
-                    space: CGColorSpaceCreateDeviceRGB(),
-                    bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)!
-ctx.draw(base, in: CGRect(x: 0, y: 0, width: W, height: H))
-// Sheets and menus on top, at their place relative to the main window
-// (CG coordinates: y up, so flip from the top-based bounds)
-for other in others {
-    guard let image = load(dir.appendingPathComponent("\(other.id).png")) else { continue }
-    let x = origin.x + (other.bounds.minX - main.bounds.minX) * pxPerPt
-    let yTop = origin.y + (other.bounds.minY - main.bounds.minY) * pxPerPt
-    ctx.draw(image, in: CGRect(x: x, y: CGFloat(H) - yTop - CGFloat(image.height),
-                               width: CGFloat(image.width), height: CGFloat(image.height)))
+default:
+    fail("Usage: shoot_window window | compose <out> <dir>")
 }
-let rep = NSBitmapImageRep(cgImage: ctx.makeImage()!)
-try rep.representation(using: .png, properties: [:])!.write(to: out)
-print("Wrote \(out.path) (\(windows.count) window(s))")
