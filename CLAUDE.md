@@ -14,8 +14,8 @@ never block the main thread.
 - Repo: <https://github.com/JohannesHoppe/schnellbild> — **public, MIT**,
   © 2026 HAUS HOPPE - ITS (Johannes Hoppe).
 - Bundle id: `art.haushoppe.schnellbild`. Current version: **0.4.0**.
-- Everything (code, comments, UI strings, docs, commits) is in **English**.
-  The user converses in **German**.
+- Everything (code, comments, UI source strings, docs, commits) is in **English**;
+  the UI is translated (see Localization). The user converses in **German**.
 
 ## Architecture & key files
 
@@ -103,6 +103,7 @@ There is **no Xcode project for the app build**; `xcodegen` generates
   `import VLCKit`) and `VLCVideoView`, the `NSViewRepresentable` it draws into.
 - **`MediaExtras.swift`** — GIF (`AnimatedImageView`), `InspectorView`,
   `MediaInfo`, `LoadingSpinner`.
+- **Localization** — English is the source language; the UI follows the macOS language. Translations live in `Resources/Localization/<lang>.lproj/` (`Localizable.strings`, plus `Localizable.stringsdict` for the counted nouns "%lld folders / images / videos / results"); `build_app.sh` copies them into `Contents/Resources`, `project.yml` adds them to the UI-test build, and `Info.plist` lists them in `CFBundleLocalizations`. SwiftUI literals (`Text`, `Button`, `Label`, `.help`, menus) are looked up by their English text; strings built in code use `String(localized:)`, so interpolations become `%@` / `%lld` keys. **Every new or changed UI string needs an entry in every `.lproj`** (English key = value); `LocalizationTests` fails otherwise and checks the placeholders match. Key names in the F1 help (Return, Backspace …), file names and the accessibility labels the UI tests read (tile labels, zoom state) stay English. UI tests launch the app with `-AppleLanguages (en)`.
 
 ## VLCKit (the heavy dependency — read carefully)
 

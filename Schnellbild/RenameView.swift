@@ -17,7 +17,7 @@ struct RenameView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text(entry.kind == .folder ? "Rename Folder" : "Rename File").font(.headline)
+            (entry.kind == .folder ? Text("Rename Folder") : Text("Rename File")).font(.headline)
             TextField("Name", text: $name)
                 .textFieldStyle(.roundedBorder)
                 .focused($fieldFocused)

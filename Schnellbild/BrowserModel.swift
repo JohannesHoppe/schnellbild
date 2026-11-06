@@ -55,11 +55,11 @@ struct FileActions {
         openInDefaultApp: { NSWorkspace.shared.open($0) },
         confirmTrash: { name in
             let alert = NSAlert()
-            alert.messageText = "Move “\(name)” to the Trash?"
-            alert.informativeText = "The item will be moved to the Trash."
+            alert.messageText = String(localized: "Move “\(name)” to the Trash?")
+            alert.informativeText = String(localized: "The item will be moved to the Trash.")
             alert.alertStyle = .warning
-            alert.addButton(withTitle: "Move to Trash")
-            alert.addButton(withTitle: "Cancel")
+            alert.addButton(withTitle: String(localized: "Move to Trash"))
+            alert.addButton(withTitle: String(localized: "Cancel"))
             return alert.runModal() == .alertFirstButtonReturn
         },
         trash: { try FileManager.default.trashItem(at: $0, resultingItemURL: nil) },
@@ -101,10 +101,10 @@ enum RenameError: LocalizedError, Equatable {
 
     var errorDescription: String? {
         switch self {
-        case .emptyName:            return "Please enter a name."
-        case .invalidName:          return "Names can't contain “/” or “:”, and can't be “.” or “..”."
-        case .alreadyExists(let n): return "An item named “\(n)” already exists here."
-        case .changesKind(let ext): return "Keep the extension “.\(ext)”, so the file stays a picture or video Schnellbild shows."
+        case .emptyName:            return String(localized: "Please enter a name.")
+        case .invalidName:          return String(localized: "Names can't contain “/” or “:”, and can't be “.” or “..”.")
+        case .alreadyExists(let n): return String(localized: "An item named “\(n)” already exists here.")
+        case .changesKind(let ext): return String(localized: "Keep the extension “.\(ext)”, so the file stays a picture or video Schnellbild shows.")
         case .failed(let reason):   return reason
         }
     }
@@ -228,11 +228,11 @@ final class BrowserModel: ObservableObject {
 
         var title: String {
             switch self {
-            case .name:     return "Name"
-            case .kind:     return "Kind"
-            case .modified: return "Date Modified"
-            case .captured: return "Date Taken"
-            case .size:     return "Size"
+            case .name:     return String(localized: "Name")
+            case .kind:     return String(localized: "Kind")
+            case .modified: return String(localized: "Date Modified")
+            case .captured: return String(localized: "Date Taken")
+            case .size:     return String(localized: "Size")
             }
         }
         /// Like Finder: names A→Z, but dates and sizes newest/largest first.
@@ -500,8 +500,8 @@ final class BrowserModel: ObservableObject {
         panel.canChooseDirectories = true
         panel.canChooseFiles = false
         panel.allowsMultipleSelection = false
-        panel.prompt = "Open"
-        panel.message = "Choose a folder with media"
+        panel.prompt = String(localized: "Open")
+        panel.message = String(localized: "Choose a folder with media")
         if panel.runModal() == .OK, let url = panel.url {
             open(folder: url)
         }

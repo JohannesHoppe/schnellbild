@@ -7,12 +7,13 @@ struct ShortcutsHelpView: View {
 
     private struct Shortcut: Identifiable {
         let id = UUID()
+        /// Key glyphs and key names, shown as they are.
         let keys: String
-        let action: String
+        let action: LocalizedStringKey
     }
     private struct Group: Identifiable {
         let id = UUID()
-        let title: String
+        let title: LocalizedStringKey
         let shortcuts: [Shortcut]
     }
 
@@ -83,7 +84,7 @@ struct ShortcutsHelpView: View {
                                 .foregroundStyle(.secondary)
                             ForEach(group.shortcuts) { shortcut in
                                 HStack(alignment: .firstTextBaseline, spacing: 16) {
-                                    Text(shortcut.keys)
+                                    Text(verbatim: shortcut.keys)
                                         .font(.system(.callout, design: .monospaced))
                                         .frame(width: 180, alignment: .leading)
                                     Text(shortcut.action)

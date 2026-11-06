@@ -26,6 +26,9 @@ targets:
     platform: macOS
     sources:
       - path: Schnellbild
+      # The UI's translations; the .lproj folders become localized resources
+      - path: Resources/Localization
+        buildPhase: resources
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: art.haushoppe.schnellbild

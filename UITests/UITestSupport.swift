@@ -52,7 +52,8 @@ class SchnellbildUITestCase: XCTestCase {
     @discardableResult
     func launch(open path: String? = nil, resetState: Bool = true, extra: [String] = []) -> XCUIApplication {
         let app = XCUIApplication()
-        var args = ["--ui-testing"] + extra
+        // English, whatever the runner's language: the tests match UI text.
+        var args = ["--ui-testing", "-AppleLanguages", "(en)", "-AppleLocale", "en_US"] + extra
         if resetState { args.append("--reset-state") }
         if let path { args += ["--open", path] }
         app.launchArguments = args

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>%lld folders</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@count@</string>
+		<key>count</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld папки</string>
+			<key>many</key>
+			<string>%lld папок</string>
+			<key>one</key>
+			<string>%lld папка</string>
+			<key>other</key>
+			<string>%lld папки</string>
+		</dict>
+	</dict>
+	<key>%lld images</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@count@</string>
+		<key>count</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld изображения</string>
+			<key>many</key>
+			<string>%lld изображений</string>
+			<key>one</key>
+			<string>%lld изображение</string>
+			<key>other</key>
+			<string>%lld изображения</string>
+		</dict>
+	</dict>
+	<key>%lld results</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@count@</string>
+		<key>count</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld результата</string>
+			<key>many</key>
+			<string>%lld результатов</string>
+			<key>one</key>
+			<string>%lld результат</string>
+			<key>other</key>
+			<string>%lld результата</string>
+		</dict>
+	</dict>
+	<key>%lld videos</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@count@</string>
+		<key>count</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld видео</string>
+			<key>many</key>
+			<string>%lld видео</string>
+			<key>one</key>
+			<string>%lld видео</string>
+			<key>other</key>
+			<string>%lld видео</string>
+		</dict>
+	</dict>
+</dict>
+</plist>

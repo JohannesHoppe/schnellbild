@@ -85,7 +85,7 @@ struct ContentView: View {
             SearchField(
                 text: $model.searchText,
                 isFocused: $model.searchFocused,
-                placeholder: "Search folder and file names, including subfolders",
+                placeholder: String(localized: "Search folder and file names, including subfolders"),
                 isEnabled: model.folderURL != nil,
                 onKey: { model.handleSearchFieldKey($0) }
             )
@@ -129,14 +129,15 @@ struct ContentView: View {
 
     private var statusText: String {
         var parts: [String] = []
-        if model.folderCount > 0 { parts.append("\(model.folderCount) folders") }
-        if model.imageCount  > 0 { parts.append("\(model.imageCount) images") }
-        if model.videoCount  > 0 { parts.append("\(model.videoCount) videos") }
-        let summary = parts.isEmpty ? "Empty" : parts.joined(separator: " · ")
+        if model.folderCount > 0 { parts.append(String(localized: "\(model.folderCount) folders")) }
+        if model.imageCount  > 0 { parts.append(String(localized: "\(model.imageCount) images")) }
+        if model.videoCount  > 0 { parts.append(String(localized: "\(model.videoCount) videos")) }
+        let summary = parts.isEmpty ? String(localized: "Empty") : parts.joined(separator: " · ")
         guard model.isFiltering else { return summary }
         let query = model.query
         let count = model.entries.count
-        return "\(count) \(count == 1 ? "result" : "results") for “\(query)”" + (count > 0 ? " · \(summary)" : "")
+        let results = String(localized: "\(count) results")
+        return String(localized: "\(results) for “\(query)”") + (count > 0 ? " · \(summary)" : "")
     }
 
     // MARK: - Full-size view (image / GIF / video)
@@ -178,15 +179,15 @@ struct ContentView: View {
     private func badgeText(entry: GridEntry) -> String {
         var text: String
         if let show = model.slideshow {
-            text = "Slideshow  ·  \(show.index + 1) / \(show.items.count)\(show.loading ? "+" : "")  ·  \(entry.name)"
-            if show.paused && entry.kind == .image { text += "  ·  Paused" }
+            text = String(localized: "Slideshow") + "  ·  \(show.index + 1) / \(show.items.count)\(show.loading ? "+" : "")  ·  \(entry.name)"
+            if show.paused && entry.kind == .image { text += "  ·  " + String(localized: "Paused") }
         } else {
             text = "\(model.currentMediaNumber ?? 0) / \(model.mediaCount)  ·  \(entry.name)"
         }
-        if entry.kind == .video && model.videoPaused { text += "  ·  Paused" }
+        if entry.kind == .video && model.videoPaused { text += "  ·  " + String(localized: "Paused") }
         switch model.enhancement {
-        case .auto:   text += "  ·  Enhanced"
-        case .manual: text += "  ·  Adjusted"
+        case .auto:   text += "  ·  " + String(localized: "Enhanced")
+        case .manual: text += "  ·  " + String(localized: "Adjusted")
         case .off:    break
         }
         return text
@@ -430,7 +431,7 @@ struct DropZonesView: View {
         .allowsHitTesting(false)
     }
 
-    private func zone(_ zone: DropZone, title: String, systemImage: String) -> some View {
+    private func zone(_ zone: DropZone, title: LocalizedStringKey, systemImage: String) -> some View {
         let on = zone == highlighted
         return VStack(spacing: 12) {
             Image(systemName: systemImage).font(.system(size: 44, weight: .semibold))
@@ -510,7 +511,7 @@ struct AdjustmentsView: View {
         .frame(width: 300)
     }
 
-    private func slider(_ title: String, _ key: WritableKeyPath<Look, Double>,
+    private func slider(_ title: LocalizedStringKey, _ key: WritableKeyPath<Look, Double>,
                         _ range: ClosedRange<Double>, id: String) -> some View {
         VStack(alignment: .leading, spacing: 2) {
             HStack {

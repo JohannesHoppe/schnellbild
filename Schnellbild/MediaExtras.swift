@@ -58,14 +58,14 @@ struct InspectorView: View {
 
     private var kindText: String {
         switch entry.kind {
-        case .image: return "Image"
-        case .video: return "Video"
-        case .folder: return "Folder"
-        case .parent: return "Parent"
+        case .image: return String(localized: "Image")
+        case .video: return String(localized: "Video")
+        case .folder: return String(localized: "Folder")
+        case .parent: return String(localized: "Parent")
         }
     }
 
-    private func infoRow(_ label: String, _ value: String) -> some View {
+    private func infoRow(_ label: LocalizedStringKey, _ value: String) -> some View {
         HStack(alignment: .top) {
             Text(label)
                 .foregroundStyle(.secondary)
