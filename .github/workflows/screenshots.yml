@@ -1,9 +1,9 @@
 # Takes the README screenshots on a clean Mac (started by hand):
 # Scripts/make_sample_media.swift draws a sample library (photos and videos), the
-# ReadmeScreenshots UI test opens the app on it
-# and photographs grid, full view, inspector and search, in light and dark
-# mode as test attachments, exported from the result bundles into the artifact
-# "screenshots"; copy the chosen ones to docs/screenshots.
+# ReadmeScreenshots UI test opens the app on it and walks through its views,
+# in light and dark mode; Scripts/shoot_window.swift photographs the window
+# with its shadow. The PNGs land in the artifact "screenshots"; copy them to
+# docs/screenshots.
 name: Screenshots
 
 on:
@@ -41,39 +41,45 @@ jobs:
           xcodebuild build-for-testing -project Schnellbild.xcodeproj -scheme Schnellbild \
             -destination 'platform=macOS' -derivedDataPath build/DerivedData
 
-      - name: Draw the sample photos
+      - name: Draw the sample media
         run: swift Scripts/make_sample_media.swift /Users/Shared/Photos
+
+      - name: Build the window photographer
+        run: swiftc -O Scripts/shoot_window.swift -o build/shoot_window
 
       - name: Take the screenshots
         run: |
+          mkdir -p shots
+          # The test asks for each picture on the pasteboard ("shoot:<name>")
+          # and waits for "done:<name>".
+          (
+            while :; do
+              request=$(pbpaste 2>/dev/null || true)
+              case "$request" in
+                shoot:*)
+                  name=${request#shoot:}
+                  build/shoot_window "shots/$name.png" || true
+                  printf 'done:%s' "$name" | pbcopy
+                  ;;
+              esac
+              sleep 0.2
+            done
+          ) &
+          helper=$!
           set_dark() {
             osascript -e "tell application \"System Events\" to tell appearance preferences to set dark mode to $1"
           }
+          status=0
           for mode in light dark; do
             set_dark "$([ "$mode" = dark ] && echo true || echo false)"
             TEST_RUNNER_SCREENSHOTS=1 TEST_RUNNER_SCREENSHOT_SUFFIX="-$mode" TEST_RUNNER_PHOTOS_DIR=/Users/Shared/Photos \
               xcodebuild test-without-building -project Schnellbild.xcodeproj -scheme Schnellbild \
                 -destination 'platform=macOS' -derivedDataPath build/DerivedData \
-                -resultBundlePath "build/shots-$mode.xcresult" \
-                -only-testing:SchnellbildUITests/ReadmeScreenshots
-            xcrun xcresulttool export attachments --path "build/shots-$mode.xcresult" --output-path "build/export-$mode"
+                -only-testing:SchnellbildUITests/ReadmeScreenshots || status=1
           done
-
-      - name: Name the files after their attachments
-        run: |
-          mkdir -p shots
-          for dir in build/export-*; do
-            python3 - "$dir" <<'PY'
-          import json, os, shutil, sys
-          d = sys.argv[1]
-          for test in json.load(open(os.path.join(d, "manifest.json"))):
-              for a in test["attachments"]:
-                  name = a["suggestedHumanReadableName"].split("_")[0]
-                  shutil.copy(os.path.join(d, a["exportedFileName"]), os.path.join("shots", name + ".png"))
-                  print(name)
-          PY
-          done
+          kill "$helper"
           ls -la shots
+          exit $status
 
       - uses: actions/upload-artifact@v4
         with:

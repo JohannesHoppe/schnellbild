@@ -1,9 +1,12 @@
 import XCTest
+import AppKit
 
-/// Takes the README screenshots (docs/screenshots) as test attachments; the
-/// workflow .github/workflows/screenshots.yml exports them from the result
-/// bundle. Runs only with this environment (xcodebuild passes
-/// TEST_RUNNER_<name> to the test runner as <name>):
+/// Takes the README screenshots (docs/screenshots), driven by
+/// .github/workflows/screenshots.yml. A UI test can't photograph a window
+/// with its shadow (nor write outside its container), so for each picture it
+/// puts "shoot:<name>" on the pasteboard and waits for "done:<name>" from the
+/// workflow's helper (Scripts/shoot_window.swift). Runs only with this
+/// environment (xcodebuild passes TEST_RUNNER_<name> to the test runner as <name>):
 ///   SCREENSHOTS=1      take them
 ///   SCREENSHOT_SUFFIX  appended to each name, e.g. "-dark"
 ///   PHOTOS_DIR         the sample library (Scripts/make_sample_media.swift),
@@ -31,10 +34,13 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
     private func shoot(_ name: String) {
         // Let thumbnails and animations settle
         RunLoop.current.run(until: Date().addingTimeInterval(2.5))
-        let shot = XCTAttachment(screenshot: app.windows.firstMatch.screenshot())
-        shot.name = "\(name)\(suffix)"
-        shot.lifetime = .keepAlways
-        add(shot)
+        let picture = "\(name)\(suffix)"
+        let pasteboard = NSPasteboard.general
+        pasteboard.clearContents()
+        pasteboard.setString("shoot:\(picture)", forType: .string)
+        eventually("\(picture) photographed", timeout: 30) {
+            pasteboard.string(forType: .string) == "done:\(picture)"
+        }
     }
 
     func testReadmeScreenshots() throws {
@@ -58,7 +64,8 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         app.typeKey(.F1, modifierFlags: [])
         XCTAssertTrue(app.staticTexts["Full view"].waitForExistence(timeout: 5))
         shoot("help")
-        app.typeKey(.F1, modifierFlags: [])
+        app.buttons["Done"].firstMatch.click()
+        eventually("help closes") { !app.staticTexts["Full view"].exists }
 
         tile("Fjord at Sunset.jpg").click()
         app.typeKey(.return, modifierFlags: [])
