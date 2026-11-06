@@ -105,6 +105,19 @@ final class VideoUITests: SchnellbildUITestCase {
         eventually("a picture, not the file icon", timeout: 20) { self.text(of: self.tile("clip.mkv")).hasSuffix(", preview") }
     }
 
+    /// At the end of a video Space plays it again from the start.
+    private func checkSpaceAtTheEndPlaysAgain(vlc: Bool) throws {
+        try put("dark.mp4", at: "short.mp4")   // three seconds
+        launch(open: tempDir.appendingPathComponent("short.mp4").path, extra: vlc ? ["--force-vlc"] : [])
+        XCTAssertTrue(element(vlc ? "video.vlc" : "video.avkit").waitForExistence(timeout: 20))
+        waitForBadge(containing: "Paused", timeout: 20)   // it ended
+        app.typeKey(.space, modifierFlags: [])
+        eventually("plays again") { !self.text(of: self.badge).contains("Paused") }
+    }
+
+    func testSpaceAtTheEndPlaysAnAVKitVideoAgain() throws { try checkSpaceAtTheEndPlaysAgain(vlc: false) }
+    func testSpaceAtTheEndPlaysAVLCVideoAgain() throws { try checkSpaceAtTheEndPlaysAgain(vlc: true) }
+
     func testVideosZoomLikePictures() throws {
         try put("clip.mp4", at: "clip.mp4")
         launch(open: tempDir.appendingPathComponent("clip.mp4").path)

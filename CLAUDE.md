@@ -167,7 +167,13 @@ AVI/MKV/WebM and other non-native formats play **in-app via vendored VLCKit
   They check that videos (AVKit, and VLC via `--force-vlc`) are bright from
   the start, that VLC draws no messages over the video, that handing a 4K picture over from VLC costs under 3 ms (lost pictures are only reported: CI's virtual Macs vary too much), that AVKit and VLC show the same video with the same brightness, auto enhance and the exposure slider on videos and photos, and
   that broken files don't take the app down. Anything visual gets such a
-  measured test, so it can't regress unnoticed. Not covered
+  measured test, so it can't regress unnoticed. Launch switches for UI
+  tests (only with `--ui-testing`; every argument starts with "-" and a
+  value is joined with "=", since AppKit pairs "-name value" and takes an
+  unpaired value for a file to open): `--open=<path>`, `--force-vlc` (every
+  video through VLC), `--test-log=<path>` (the app logs what the screen
+  doesn't show, e.g. each rename), `--search-delay=<ms>` (a search that stays
+  running). Not covered
   end-to-end: drag & drop from Finder, Reveal in Finder, Open with default app
   (unit-tested through `FileActions`).
   UI run: `xcodegen generate` → `xcodebuild test -project Schnellbild.xcodeproj

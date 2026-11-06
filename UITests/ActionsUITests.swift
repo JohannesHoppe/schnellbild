@@ -59,6 +59,36 @@ final class ActionsUITests: SchnellbildUITestCase {
         XCTAssertTrue(app.staticTexts["Via Menu"].waitForExistence(timeout: 5))
     }
 
+    /// The context menu acts on the tile it was opened on, not on the
+    /// selected one: trashing the wrong file would lose data.
+    func testContextMenuTrashesTheTileItWasOpenedOn() {
+        launchOnTempDir(waitFor: "album")
+        tile("a.jpg").click()
+        waitForSelected("a.jpg")
+        tile("c.jpg").rightClick()
+        app.menuItems["Move to Trash…"].click()
+        let confirm = app.buttons["Move to Trash"].firstMatch
+        XCTAssertTrue(confirm.waitForExistence(timeout: 5))
+        confirm.click()
+        eventually("c.jpg is gone") { !self.app.staticTexts["c.jpg"].exists }
+        XCTAssertFalse(FileManager.default.fileExists(atPath: tempDir.appendingPathComponent("c.jpg").path))
+        XCTAssertTrue(FileManager.default.fileExists(atPath: tempDir.appendingPathComponent("a.jpg").path),
+                      "the selected a.jpg stays")
+    }
+
+    /// "Play Slideshow" on a folder tile plays that folder, not the one shown.
+    func testContextMenuPlaysTheFoldersSlideshow() throws {
+        try put("sample.jpg", at: "album/second.jpg")
+        launchOnTempDir(waitFor: "album")
+        tile("a.jpg").click()
+        tile("album").rightClick()
+        app.menuItems["Play Slideshow"].click()
+        waitForBadge(containing: "Slideshow")
+        eventually("only the folder's pictures") { self.text(of: self.badge).contains("/ 2") }
+        XCTAssertFalse(text(of: badge).contains("a.jpg"))
+        app.typeKey(.escape, modifierFlags: [])
+    }
+
     func testRenameRejectsExistingNameAndCancelKeepsIt() {
         launchOnTempDir(waitFor: "album")
         waitForSelected("album")

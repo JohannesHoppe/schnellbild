@@ -377,6 +377,9 @@ final class BrowserModel: ObservableObject {
     @Published private(set) var slideshow: Slideshow?
     /// How long a picture stays; a video plays to its end.
     var slideshowInterval: Duration = .seconds(3)
+    /// How often the slideshow checks that a video plays at all; four checks
+    /// without a length skip it (a file nothing can play).
+    var slideshowVideoCheck: Duration = .seconds(2)
     private var slideshowTimer: Task<Void, Never>?
     private var slideshowWalk: Task<Void, Never>?
     /// Whether starting the slideshow put the window into full screen.
@@ -484,6 +487,13 @@ final class BrowserModel: ObservableObject {
     init(defaults: UserDefaults = .standard, fileActions: FileActions = .live) {
         self.defaults = defaults
         self.fileActions = fileActions
+        // UI tests (`--search-delay=<ms>`): a search that stays running long
+        // enough to be watched and stopped
+        let args = ProcessInfo.processInfo.arguments
+        if args.contains("--ui-testing"), let arg = args.first(where: { $0.hasPrefix("--search-delay=") }),
+           let ms = Int(arg.dropFirst("--search-delay=".count)) {
+            searchDebounce = .milliseconds(ms)
+        }
         if let raw = defaults.string(forKey: Self.sortKeyKey), let key = SortKey(rawValue: raw) {
             sortKey = key
             sortAscending = defaults.object(forKey: Self.sortAscendingKey) as? Bool ?? key.startsAscending
@@ -1653,10 +1663,11 @@ final class BrowserModel: ObservableObject {
         if item.kind == .video {
             // A video moves on when it ends. One that can't be played (it never
             // gets a length) is skipped after a while instead of halting the show.
+            let check = slideshowVideoCheck
             slideshowTimer = Task { [weak self] in
                 var unknown = 0
                 while !Task.isCancelled {
-                    try? await Task.sleep(for: .seconds(2))
+                    try? await Task.sleep(for: check)
                     guard !Task.isCancelled, let self, self.slideshow?.current == item else { return }
                     unknown = self.activePlayer?.progress == nil ? unknown + 1 : 0
                     if unknown >= 4 { self.slideshowStep(+1); return }

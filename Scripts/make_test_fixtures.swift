@@ -81,6 +81,11 @@ try writeVideo(dark, to: "dark.mp4")
 try writeVideo(bright, to: "bright.mp4")
 try writeVideo(frame(width: 640, height: 360, low: 0.5, high: 0.5), to: "grey.mp4")
 
+// Dark left to bright right: zoom and pan move which part is where
+let gradient = frame(width: 640, height: 360, low: 0.05, high: 0.95)
+try writeJPEG(gradient, to: "gradient.jpg")
+try writeVideo(gradient, to: "gradient.mp4")
+
 // 4K at 60 frames per second, a bar crossing the picture: does playback keep up?
 let uhdBackground = frame(width: 3840, height: 2160, low: 0.2, high: 0.7)
 try writeVideo(width: 3840, height: 2160, frames: 300, fps: 60, to: "uhd60.mp4") { i in

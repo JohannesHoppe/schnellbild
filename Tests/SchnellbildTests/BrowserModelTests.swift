@@ -1241,6 +1241,51 @@ final class PlaybackTests: XCTestCase {
         await waitUntil { m.shownMediaEntry?.name == "a.jpg" }    // starts over
     }
 
+    /// A video nothing can play (it never gets a length) is skipped instead
+    /// of halting the show.
+    func testSlideshowSkipsAVideoThatNeverPlays() async throws {
+        let tree = try TempTree(self)
+        for n in ["a.jpg", "b.mkv", "c.jpg"] { try tree.file(n) }
+        let m = makeModel()
+        m.slideshowVideoCheck = .milliseconds(30)
+        await openAndWait(m, tree.root)
+        m.startSlideshow()
+        await waitUntil { m.shownMediaEntry?.name == "b.mkv" }
+        let broken = PlayerSpy()
+        broken.progress = nil   // never opens
+        m.activePlayer = broken
+        await waitUntil { m.shownMediaEntry?.name == "c.jpg" }
+    }
+
+    func testSlideshowOfAFolderWithoutMediaDoesNotStart() async throws {
+        let tree = try TempTree(self)
+        try tree.file("notes.txt")
+        try tree.folder("empty")
+        let m = makeModel()
+        var fullScreen: [Bool] = []
+        m.setFullScreen = { fullScreen.append($0); return true }
+        await openAndWait(m, tree.root)
+        m.startSlideshow()
+        await waitUntil { m.slideshow == nil }
+        try await Task.sleep(for: .milliseconds(200))
+        XCTAssertNil(m.slideshow, "nothing to show: no black full screen")
+        XCTAssertEqual(fullScreen.last ?? false, false, "and not left in full screen")
+    }
+
+    func testSlideshowBackFromTheFirstGoesToTheLast() async throws {
+        let tree = try TempTree(self)
+        for n in ["a.jpg", "b.jpg", "c.jpg"] { try tree.file(n) }
+        let m = makeModel()
+        m.slideshowInterval = .seconds(60)
+        await openAndWait(m, tree.root)
+        m.startSlideshow()
+        await waitUntil { m.slideshow?.loading == false && m.shownMediaEntry?.name == "a.jpg" }
+        m.slideshowStep(-1)
+        XCTAssertEqual(m.shownMediaEntry?.name, "c.jpg")
+        m.slideshowStep(1)
+        XCTAssertEqual(m.shownMediaEntry?.name, "a.jpg", "and on past the end to the first")
+    }
+
     func testASlideshowOfOneVideoPlaysItAgain() async throws {
         let tree = try TempTree(self)
         try tree.file("only.mp4")
@@ -2108,6 +2153,58 @@ final class EnhanceTests: XCTestCase {
     func testWashedOutColoursAreLiftedAndGarishOnesCalmed() {
         XCTAssertGreaterThan(Look.auto(for: PictureStats(mean: 0.5, low: 0.05, high: 0.95, chroma: 0.08)).saturation, 0)
         XCTAssertLessThan(Look.auto(for: PictureStats(mean: 0.5, low: 0.05, high: 0.95, chroma: 0.5)).saturation, 0)
+    }
+
+    /// A coloured gradient with a hard edge in the middle.
+    private func colourful() throws -> CGImage {
+        let ctx = try XCTUnwrap(CGContext(data: nil, width: 64, height: 48, bitsPerComponent: 8, bytesPerRow: 0,
+                                          space: CGColorSpaceCreateDeviceRGB(),
+                                          bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue))
+        for x in 0..<64 {
+            let v = 0.2 + 0.6 * CGFloat(x) / 63
+            ctx.setFillColor(CGColor(red: v, green: v * 0.7, blue: v * 0.4, alpha: 1))
+            ctx.fill(CGRect(x: x, y: 0, width: 1, height: 48))
+        }
+        ctx.setFillColor(CGColor(red: 0.2, green: 0.3, blue: 0.6, alpha: 1))
+        ctx.fill(CGRect(x: 0, y: 0, width: 64, height: 24))
+        return try XCTUnwrap(ctx.makeImage())
+    }
+
+    func testSaturationTakesAndAddsColour() throws {
+        let picture = try colourful()
+        let before = try stats(picture).chroma
+        let grey = try stats(try XCTUnwrap(Look.render(picture, with: Look(saturation: -1)))).chroma
+        let vivid = try stats(try XCTUnwrap(Look.render(picture, with: Look(saturation: 0.6)))).chroma
+        XCTAssertLessThan(grey, 0.01, "−1 is black and white")
+        XCTAssertGreaterThan(vivid, before * 1.2, "more is more colourful: \(before) → \(vivid)")
+    }
+
+    func testContrastSpreadsAndNarrowsTheTones() throws {
+        let picture = try colourful()
+        func spread(_ look: Look) throws -> Double {
+            let s = try stats(try XCTUnwrap(Look.render(picture, with: look)))
+            return s.high - s.low
+        }
+        let normal = try spread(.neutral)
+        XCTAssertGreaterThan(try spread(Look(contrast: 1)), normal + 0.05)
+        XCTAssertLessThan(try spread(Look(contrast: -1)), normal - 0.05)
+    }
+
+    func testSharpnessMakesTheEdgeHarder() throws {
+        let picture = try colourful()
+        // Around the edge between the blue half and the gradient
+        func edge(_ look: Look) throws -> Double {
+            let image = CIImage(cgImage: try XCTUnwrap(Look.render(picture, with: look)))
+                .cropped(to: CGRect(x: 0, y: 20, width: 64, height: 8))
+            var rgba = [UInt8](repeating: 0, count: 64 * 8 * 4)
+            Look.context.render(image.transformed(by: CGAffineTransform(translationX: 0, y: -20)), toBitmap: &rgba,
+                                rowBytes: 64 * 4, bounds: CGRect(x: 0, y: 0, width: 64, height: 8),
+                                format: .RGBA8, colorSpace: CGColorSpaceCreateDeviceRGB())
+            let lum = stride(from: 0, to: rgba.count, by: 4).map { Double(rgba[$0 + 1]) / 255 }
+            let mean = lum.reduce(0, +) / Double(lum.count)
+            return (lum.map { ($0 - mean) * ($0 - mean) }.reduce(0, +) / Double(lum.count)).squareRoot()
+        }
+        XCTAssertGreaterThan(try edge(Look(sharpness: 1)), try edge(.neutral) * 1.05, "the unsharp mask works")
     }
 
     func testNeutralLookLeavesThePictureAlone() throws {
