@@ -228,6 +228,11 @@ names, back/forward/up history, folder rename, folder preview tiles.
 Releases ship as a signed, notarized DMG.
 
 Open / next-up:
+- **Decided, to build (in this order):**
+  1. README: product page only (intro, features with screenshots, keyboard, "Why so fast?" at the end); build/test/CI move to `BUILDING.md`.
+  2. **Empty folders greyed out**: a folder counts as empty when nothing below it, at any depth, is a photo or video; `Thumbs.db`, `desktop.ini`, `.DS_Store` and other hidden files don't count. Checked lazily in the background (network!), the tile greys out once known.
+  3. **Slideshow as its own entry point**: opening a folder always shows the grid. A big ▶︎ toolbar button (plus a key) starts a full-screen slideshow over all photos and videos in the current folder and every subfolder (or the search results, or the selected folder tile), folder by folder in the current sort order, no shuffle. Videos play to the end, then it moves on. Dragging a folder over the window shows two drop zones: "Browse" and "Slideshow".
+  4. **Auto enhance** (non-destructive, a view filter): one toolbar button + key, stays on while paging until switched off, with a visible badge. Photos: Core Image `autoAdjustmentFilters`. AVKit videos: measure once, apply fixed filters via a video composition (no per-frame flicker). VLC videos: VLCKit's adjust filter (brightness/contrast/gamma).
 - **Demo GIF** — storyboard ready in `docs/launch-storyboard.md`. User records it
   later, drops `docs/demo.gif`, uncomments the demo line near the top of README.
 - **Launch posts** — `docs/launch.md` has ready Show HN + r/macapps copy; user
