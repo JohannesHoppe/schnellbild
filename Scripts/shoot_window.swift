@@ -1,8 +1,13 @@
 // Photographs Schnellbild's window like ⌘⇧4 + Space does: with its shadow
 // and rounded corners on a transparent background. Open sheets and menus are
 // separate windows; they are drawn into the picture at their place.
-// Usage: shoot_window <out.png>   (compiled by .github/workflows/screenshots.yml)
-// Needs screen recording permission, which the GitHub macOS runners have.
+// The pictures themselves come from `screencapture -l`, run by the shell
+// (the permission to record the screen belongs to the runner's shell, not to
+// programs it starts). Compiled by .github/workflows/screenshots.yml:
+//   shoot_window windows               lists "<id> main|other", main first
+//   shoot_window compose <out> <dir>   <dir>/<main>.png (with shadow),
+//                                      <dir>/<main>-flat.png (without),
+//                                      <dir>/<other>.png (without) → <out>
 import AppKit
 
 struct Window { let id: Int; let bounds: CGRect; let layer: Int }
@@ -20,16 +25,8 @@ func appWindows() -> [Window] {
     }
 }
 
-/// `screencapture -l` of one window; with or without its shadow.
-func capture(_ window: Window, shadow: Bool) -> CGImage? {
-    let file = FileManager.default.temporaryDirectory.appendingPathComponent("win-\(window.id)-\(UUID()).png")
-    let task = Process()
-    task.executableURL = URL(fileURLWithPath: "/usr/sbin/screencapture")
-    task.arguments = ["-x"] + (shadow ? [] : ["-o"]) + ["-l", String(window.id), file.path]
-    try? task.run()
-    task.waitUntilExit()
-    defer { try? FileManager.default.removeItem(at: file) }
-    guard let source = CGImageSourceCreateWithURL(file as CFURL, nil) else { return nil }
+func load(_ url: URL) -> CGImage? {
+    guard let source = CGImageSourceCreateWithURL(url as CFURL, nil) else { return nil }
     return CGImageSourceCreateImageAtIndex(source, 0, nil)
 }
 
@@ -48,15 +45,31 @@ func contentOrigin(of image: CGImage) -> CGPoint {
     return CGPoint(x: left, y: top)
 }
 
-let out = URL(fileURLWithPath: CommandLine.arguments[1])
+let args = CommandLine.arguments
 let windows = appWindows()
-guard let main = windows.filter({ $0.layer == 0 }).max(by: { $0.bounds.width * $0.bounds.height < $1.bounds.width * $1.bounds.height }),
-      let base = capture(main, shadow: true) else {
+guard let main = windows.filter({ $0.layer == 0 }).max(by: { $0.bounds.width * $0.bounds.height < $1.bounds.width * $1.bounds.height }) else {
     FileHandle.standardError.write("No Schnellbild window\n".data(using: .utf8)!)
     exit(1)
 }
+let others = windows.filter { $0.id != main.id }
+
+if args.count > 1, args[1] == "windows" {
+    print("\(main.id) main")
+    for other in others { print("\(other.id) other") }
+    exit(0)
+}
+guard args.count > 3, args[1] == "compose" else {
+    FileHandle.standardError.write("Usage: shoot_window windows | compose <out> <dir>\n".data(using: .utf8)!)
+    exit(2)
+}
+let out = URL(fileURLWithPath: args[2])
+let dir = URL(fileURLWithPath: args[3], isDirectory: true)
+guard let base = load(dir.appendingPathComponent("\(main.id).png")) else {
+    FileHandle.standardError.write("No picture of window \(main.id)\n".data(using: .utf8)!)
+    exit(1)
+}
 // Pixels per point (1 on the runners' displays, 2 on Retina)
-let pxPerPt = capture(main, shadow: false).map { CGFloat($0.width) / main.bounds.width } ?? 1
+let pxPerPt = load(dir.appendingPathComponent("\(main.id)-flat.png")).map { CGFloat($0.width) / main.bounds.width } ?? 1
 let origin = contentOrigin(of: base)
 
 let W = base.width, H = base.height
@@ -64,15 +77,14 @@ let ctx = CGContext(data: nil, width: W, height: H, bitsPerComponent: 8, bytesPe
                     space: CGColorSpaceCreateDeviceRGB(),
                     bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)!
 ctx.draw(base, in: CGRect(x: 0, y: 0, width: W, height: H))
-// Sheets and menus on top, without their own shadow, at their place relative
-// to the main window (CG coordinates: y up, so flip from the top-based bounds)
-for other in windows where other.id != main.id {
-    guard let image = capture(other, shadow: false) else { continue }
+// Sheets and menus on top, at their place relative to the main window
+// (CG coordinates: y up, so flip from the top-based bounds)
+for other in others {
+    guard let image = load(dir.appendingPathComponent("\(other.id).png")) else { continue }
     let x = origin.x + (other.bounds.minX - main.bounds.minX) * pxPerPt
     let yTop = origin.y + (other.bounds.minY - main.bounds.minY) * pxPerPt
-    let rect = CGRect(x: x, y: CGFloat(H) - yTop - CGFloat(image.height),
-                      width: CGFloat(image.width), height: CGFloat(image.height))
-    ctx.draw(image, in: rect)
+    ctx.draw(image, in: CGRect(x: x, y: CGFloat(H) - yTop - CGFloat(image.height),
+                               width: CGFloat(image.width), height: CGFloat(image.height)))
 }
 let rep = NSBitmapImageRep(cgImage: ctx.makeImage()!)
 try rep.representation(using: .png, properties: [:])!.write(to: out)
