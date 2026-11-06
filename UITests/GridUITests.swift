@@ -108,6 +108,19 @@ final class GridUITests: SchnellbildUITestCase {
     func testSortBySizeIsRemembered() { checkRemembered("Size", shortcut: "5") }
     func testSortByDateTakenIsRemembered() { checkRemembered("Date Taken", shortcut: "4") }
 
+    func testScrollPositionSurvivesTheFullView() throws {
+        for i in 10..<90 { try put("sample.jpg", at: "p\(i).jpg") }
+        launchOnTempDir()
+        app.typeKey(.end, modifierFlags: [])
+        waitForSelected("p89.jpg")
+        XCTAssertFalse(tile("a.jpg").isHittable, "scrolled down, the top is out of view")
+        app.typeKey(.return, modifierFlags: [])
+        waitForBadge(containing: "p89.jpg")
+        app.typeKey(.escape, modifierFlags: [])
+        eventually("back at the same place") { tile("p89.jpg").exists && tile("p89.jpg").isHittable }
+        XCTAssertFalse(tile("a.jpg").isHittable, "not jumped back to the top")
+    }
+
     func testEmptyFolderState() throws {
         let empty = try folder("empty")
         let app = launch(open: empty.path)
