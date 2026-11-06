@@ -187,6 +187,7 @@ struct ContentView: View {
             }
             .help("Sort order (⌘1 … ⌘5; the same again reverses it)")
             .accessibilityIdentifier("sortMenu")
+            .accessibilityLabel("Sort: \(model.sortKey.title) \(model.sortAscending ? "↑" : "↓")")
         }
         if model.mode == .detail {
             ToolbarItem(placement: .principal) {

@@ -53,15 +53,28 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         player.stop()
     }
 
+    /// The last seek target: VLC reports the new position only once it has
+    /// got there, so quick key presses would otherwise start from the old one.
+    private var pendingSeek: (target: Double, at: Date)?
+
     var progress: Double? {
         if player.state == .ended { return 1 }
         guard (player.media?.length.intValue ?? 0) > 0 else { return nil }
-        return Double(min(max(player.position, 0), 1))
+        let reported = Double(min(max(player.position, 0), 1))
+        if let pending = pendingSeek {
+            if abs(reported - pending.target) > 0.02, Date().timeIntervalSince(pending.at) < 1.5 {
+                return pending.target
+            }
+            pendingSeek = nil
+        }
+        return reported
     }
 
     func seek(toProgress progress: Double) {
         if player.state == .ended || player.state == .stopped { play() }
-        player.position = Float(min(max(progress, 0), 1))
+        let target = min(max(progress, 0), 1)
+        pendingSeek = (target, Date())
+        player.position = Float(target)
     }
 
     nonisolated func mediaPlayerStateChanged(_ aNotification: Notification) {

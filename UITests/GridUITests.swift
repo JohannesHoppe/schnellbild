@@ -73,22 +73,27 @@ final class GridUITests: SchnellbildUITestCase {
         eventually("oldest last") { tile("a.jpg").frame.minX > tile("c.jpg").frame.minX }
     }
 
-    private var sortMenu: XCUIElement { element("sortMenu").firstMatch }
+    /// The toolbar's sort menu (toolbar items show up more than once in the
+    /// tree, so all matches are read).
+    private var sortLabel: String {
+        app.descendants(matching: .any).matching(identifier: "sortMenu").allElementsBoundByIndex
+            .map { "\($0.label) \(($0.value as? String) ?? "") \($0.title)" }.joined(separator: " | ")
+    }
 
     func testSortShortcutsShowInTheToolbarAndAreRemembered() {
         launchOnTempDir()
-        XCTAssertTrue(text(of: sortMenu).contains("Name ↑"), "toolbar shows the order: \(text(of: sortMenu))")
+        XCTAssertTrue(sortLabel.contains("Name ↑"), "toolbar shows the order: \(sortLabel)")
         app.typeKey("5", modifierFlags: .command)
-        eventually("⌘5: size, largest first") { text(of: sortMenu).contains("Size ↓") }
+        eventually("⌘5: size, largest first") { sortLabel.contains("Size ↓") }
         app.typeKey("5", modifierFlags: .command)
-        eventually("⌘5 again reverses") { text(of: sortMenu).contains("Size ↑") }
+        eventually("⌘5 again reverses") { sortLabel.contains("Size ↑") }
         app.typeKey("4", modifierFlags: .command)
-        eventually("⌘4: date taken") { text(of: sortMenu).contains("Date Taken ↓") }
+        eventually("⌘4: date taken") { sortLabel.contains("Date Taken ↓") }
 
         app.terminate()
         launch(open: tempDir.path, resetState: false)
         XCTAssertTrue(app.staticTexts["a.jpg"].waitForExistence(timeout: 15))
-        XCTAssertTrue(text(of: sortMenu).contains("Date Taken ↓"), "remembered: \(text(of: sortMenu))")
+        XCTAssertTrue(sortLabel.contains("Date Taken ↓"), "remembered: \(sortLabel)")
     }
 
     func testEmptyFolderState() throws {
