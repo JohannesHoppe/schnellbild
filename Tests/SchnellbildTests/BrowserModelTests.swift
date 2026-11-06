@@ -1434,6 +1434,27 @@ final class SearchConsistencyTests: XCTestCase {
         XCTAssertEqual(m.selectedEntry?.name, "photos-beach.jpg")
     }
 
+    func testBackFromTheFullViewReturnsToTheResults() async throws {
+        let tree = try TempTree(self)
+        let m = try await model(tree)
+        m.searchText = "beach"
+        await waitUntil { !m.isSearching }
+        let results = m.names
+        m.selectEntry(named: "photos-beach.jpg")
+        m.activateSelection()
+        XCTAssertEqual(m.mode, .detail)
+        XCTAssertTrue(m.canGoBack)
+        let history = m.backStack.count
+
+        m.navigateBack()
+        XCTAssertEqual(m.mode, .grid)
+        XCTAssertTrue(m.isAt(tree.root))
+        XCTAssertEqual(m.searchText, "beach", "the search stays")
+        XCTAssertEqual(m.names, results)
+        XCTAssertEqual(m.selectedEntry?.name, "photos-beach.jpg")
+        XCTAssertEqual(m.backStack.count, history, "no history step used up")
+    }
+
     func testTrashRemovesItFromRememberedResults() async throws {
         let tree = try TempTree(self)
         try tree.file("picdir/pic1.jpg")

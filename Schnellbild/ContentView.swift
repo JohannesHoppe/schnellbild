@@ -10,10 +10,19 @@ struct ContentView: View {
         Group {
             if model.entries.isEmpty {
                 EmptyStateView(isLoading: model.isLoading)
-            } else if model.mode == .detail, let entry = model.selectedMediaEntry {
-                detail(entry: entry)
             } else {
-                ThumbnailGridView()
+                // The grid stays alive under the full view, so it keeps its
+                // scroll position (and follows the item shown) for the way back.
+                let detailEntry = model.mode == .detail ? model.selectedMediaEntry : nil
+                ZStack {
+                    ThumbnailGridView()
+                        .opacity(detailEntry == nil ? 1 : 0)
+                        .allowsHitTesting(detailEntry == nil)
+                        .accessibilityHidden(detailEntry != nil)
+                    if let detailEntry {
+                        detail(entry: detailEntry)
+                    }
+                }
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)

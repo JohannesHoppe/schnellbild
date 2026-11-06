@@ -36,6 +36,18 @@ final class SearchUITests: SchnellbildUITestCase {
         }
     }
 
+    func testBackButtonFromAnOpenedResultKeepsTheSearch() {
+        launchOnTempDir()
+        search("deep")
+        XCTAssertTrue(app.staticTexts["deep-photo.jpg"].waitForExistence(timeout: 10))
+        tile("deep-photo.jpg").doubleClick()
+        waitForBadge(containing: "deep-photo.jpg")
+        toolbarButton("backButton").click()
+        XCTAssertTrue(app.staticTexts["deep-photo.jpg"].waitForExistence(timeout: 5), "back to the results")
+        XCTAssertEqual(text(of: searchField), "deep", "the search stays")
+        XCTAssertFalse(app.staticTexts["a.jpg"].exists)
+    }
+
     func testFindsFolderNamesInSubfolders() {
         launchOnTempDir()
         search("urlaub")

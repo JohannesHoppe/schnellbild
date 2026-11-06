@@ -260,7 +260,8 @@ final class BrowserModel: ObservableObject {
     @Published private(set) var forwardStack: [Location] = []
     /// Each step can hold a full result list; older steps are dropped.
     static let historyLimit = 50
-    var canGoBack: Bool { !backStack.isEmpty }
+    /// From the full view, Back first returns to the grid it was opened from.
+    var canGoBack: Bool { mode == .detail || !backStack.isEmpty }
     var canGoForward: Bool { !forwardStack.isEmpty }
     var canGoUp: Bool { folderURL.flatMap(Self.parentFolder(of:)) != nil }
 
@@ -828,7 +829,13 @@ final class BrowserModel: ObservableObject {
         if stack.count > Self.historyLimit { stack.removeFirst(stack.count - Self.historyLimit) }
     }
 
-    func navigateBack()    { travel(from: &backStack, to: &forwardStack) }
+    /// Back. The full view isn't a history step of its own (it opens in
+    /// place, over the folder or the search results), so from there Back
+    /// returns to that grid, with the search and its results as they were.
+    func navigateBack() {
+        if mode == .detail { closeDetail(); return }
+        travel(from: &backStack, to: &forwardStack)
+    }
     func navigateForward() { travel(from: &forwardStack, to: &backStack) }
 
     private func travel(from source: inout [Location], to other: inout [Location]) {
