@@ -203,4 +203,13 @@ final class GridUITests: SchnellbildUITestCase {
         cancel.click()
         XCTAssertTrue(app.staticTexts["a.jpg"].waitForExistence(timeout: 5))
     }
+
+    /// The app follows the macOS language (here German): the translations
+    /// are in the bundle and used.
+    func testSpeaksTheSystemLanguage() {
+        launch(open: tempDir.path, language: "de")
+        XCTAssertTrue(app.staticTexts["a.jpg"].waitForExistence(timeout: 15))
+        XCTAssertTrue(app.buttons["Diashow"].firstMatch.waitForExistence(timeout: 5), "the toolbar speaks German")
+        eventually("the status bar speaks German") { self.text(of: self.element("statusText")).contains("Bilder") }
+    }
 }
