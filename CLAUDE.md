@@ -139,7 +139,11 @@ AVI/MKV/WebM and other non-native formats play **in-app via vendored VLCKit
   venv): the window shows the app, an arrow and the Applications folder, laid
   out by `Installer/dmg-settings.py` on `Resources/dmg-background*.png`.
   Redraw the background with `swift Scripts/make_dmg_background.swift`
-  (positions must match the settings file).
+  (positions must match the settings file). Check the result with
+  `gh workflow run dmg-preview.yml -f run_id=<release run>`: it opens that
+  run's DMG in Finder on the runner and uploads screenshots in light and dark
+  mode (artifact `dmg-preview`, `Scripts/dmg_preview.sh`). The terminal on the
+  dev Mac has no screen recording permission, so look at DMGs this way.
 - After editing `project.yml` **or adding/removing a `.swift` file**, re-run
   `xcodegen generate` before the Xcode/UITest build (the app target embeds
   `Vendor/VLCKit.xcframework`).
