@@ -134,6 +134,16 @@ final class GridUITests: SchnellbildUITestCase {
         eventually("scrolled to it") { tile("f79").isHittable }
     }
 
+    func testFoldersWithoutPicturesAreGreyedOut() throws {
+        try put("sample.jpg", at: "trip/day1/beach.jpg")   // media only deep down
+        try folder("junk/inner")
+        FileManager.default.createFile(atPath: tempDir.appendingPathComponent("junk/Thumbs.db").path, contents: Data())
+        FileManager.default.createFile(atPath: tempDir.appendingPathComponent("junk/inner/desktop.ini").path, contents: Data())
+        launchOnTempDir(waitFor: "junk")
+        eventually("junk is greyed out") { text(of: tile("junk")).contains("empty folder") }
+        XCTAssertFalse(text(of: tile("trip")).contains("empty"), "pictures further down count")
+    }
+
     func testEmptyFolderState() throws {
         let empty = try folder("empty")
         let app = launch(open: empty.path)

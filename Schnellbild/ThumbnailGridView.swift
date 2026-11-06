@@ -60,6 +60,7 @@ struct ThumbnailGridView: View {
                 .truncationMode(.middle)
                 .frame(width: side)
                 .foregroundStyle(selected ? .primary : .secondary)
+                .opacity(model.isEmptyFolder(entry) ? 0.5 : 1)
             if let location {
                 // Search results from subfolders: where they live.
                 Text(location)
@@ -105,7 +106,7 @@ struct ThumbnailGridView: View {
         case .parent:
             FolderTile(folder: nil, side: side, isSelected: selected, systemImage: "arrow.up.circle.fill")
         case .folder:
-            FolderTile(folder: entry.url, side: side, isSelected: selected)
+            FolderTile(folder: entry.url, side: side, isSelected: selected, isEmpty: model.isEmptyFolder(entry))
         case .image, .video:
             ThumbnailView(url: entry.url, side: side, isSelected: selected, isVideo: entry.kind == .video)
         }
@@ -120,7 +121,10 @@ struct FolderTile: View {
     let side: CGFloat
     let isSelected: Bool
     var systemImage: String = "folder.fill"
+    /// Nothing below it is a photo or video: drawn greyed out.
+    var isEmpty = false
 
+    @EnvironmentObject var model: BrowserModel
     @State private var previews: [NSImage] = []
 
     var body: some View {
@@ -130,9 +134,11 @@ struct FolderTile: View {
                 .foregroundStyle(Color.accentColor)
             if !previews.isEmpty { fan }
         }
+        .saturation(isEmpty ? 0 : 1)
+        .opacity(isEmpty ? 0.4 : 1)
         .tileChrome(side: side, isSelected: isSelected)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("\(TileChrome.selectionLabel(isSelected)), \(folder == nil ? "parent folder" : "folder"), \(previews.count) previews")
+        .accessibilityLabel("\(TileChrome.selectionLabel(isSelected)), \(folder == nil ? "parent folder" : isEmpty ? "empty folder" : "folder"), \(previews.count) previews")
         .task(id: folder) { await loadPreviews() }
     }
 
@@ -171,24 +177,55 @@ struct FolderTile: View {
             for await (i, image) in group { byIndex[i] = image }
             return byIndex
         }
-        if !Task.isCancelled { previews = files.indices.compactMap { loaded[$0] } }
+        guard !Task.isCancelled else { return }
+        previews = files.indices.compactMap { loaded[$0] }
+        if files.isEmpty {
+            let empty = !(await FolderPreviewCache.shared.containsMedia(folder))
+            if !Task.isCancelled { model.noteFolder(folder, empty: empty) }
+        } else {
+            model.noteFolder(folder, empty: false)
+        }
     }
 }
 
 /// Which files each folder tile previews, remembered per folder: scrolling
 /// recreates tiles, and listing a large folder on a network share again for
 /// every appearance would compete with the thumbnails.
+/// The same for whether a folder holds any media at all (a walk of the whole
+/// tree when it doesn't).
 @MainActor
 final class FolderPreviewCache {
     static let shared = FolderPreviewCache()
-    private let cache = NSCache<NSURL, NSArray>()
+    private let files = NSCache<NSString, NSArray>()
+    private let hasMedia = NSCache<NSString, NSNumber>()
 
-    init() { cache.countLimit = 1024 }
+    init() {
+        files.countLimit = 1024
+        hasMedia.countLimit = 4096
+    }
+
+    private func key(_ folder: URL) -> NSString { BrowserModel.canonicalPath(folder) as NSString }
 
     func files(in folder: URL) async -> [URL] {
-        if let cached = cache.object(forKey: folder as NSURL) as? [URL] { return cached }
-        let files = await BrowserModel.folderPreviewFiles(in: folder)
-        cache.setObject(files as NSArray, forKey: folder as NSURL)
-        return files
+        if let cached = files.object(forKey: key(folder)) as? [URL] { return cached }
+        let found = await BrowserModel.folderPreviewFiles(in: folder)
+        files.setObject(found as NSArray, forKey: key(folder))
+        return found
+    }
+
+    func containsMedia(_ folder: URL) async -> Bool {
+        if let cached = hasMedia.object(forKey: key(folder)) { return cached.boolValue }
+        // The preview listing usually answers it already
+        let found = await files(in: folder).isEmpty ? await BrowserModel.containsMedia(folder) : true
+        hasMedia.setObject(NSNumber(value: found), forKey: key(folder))
+        return found
+    }
+
+    /// Forget what is known about these folders (canonical paths).
+    func forget(_ paths: [String]) {
+        for path in paths {
+            files.removeObject(forKey: path as NSString)
+            hasMedia.removeObject(forKey: path as NSString)
+        }
     }
 }

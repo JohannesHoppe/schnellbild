@@ -86,7 +86,7 @@ There is **no Xcode project for the app build**; `xcodegen` generates
   for larger; the full view's placeholder). Folder previews use their own
   `ThumbnailCache.previews`. `FolderTile` fans up to three previews of a
   folder's first media files (`BrowserModel.folderPreviewFiles`, listed once
-  per folder via `FolderPreviewCache`). Tiles carry accessibility ids
+  per folder via `FolderPreviewCache`). Folders with no photo or video at any depth (`BrowserModel.containsMedia`, stops at the first hit; hidden files and non-media like `Thumbs.db` don't count) are greyed out; the model keeps them in `emptyFolders`, and a `FileChange` forgets the folders around it. Tiles carry accessibility ids
   `tile.<name>`; their label starts with `selected` / `not selected`.
 - **`FullImageView.swift`** — ImageIO downsample + zoom/pan/rotate (view-only;
   **never modifies files** — important user constraint).
@@ -229,10 +229,9 @@ Releases ship as a signed, notarized DMG.
 
 Open / next-up:
 - **Decided, to build (in this order):**
-  1. **Empty folders greyed out**: a folder counts as empty when nothing below it, at any depth, is a photo or video; `Thumbs.db`, `desktop.ini`, `.DS_Store` and other hidden files don't count. Checked lazily in the background (network!), the tile greys out once known.
-  2. **Slideshow as its own entry point**: opening a folder always shows the grid. A big ▶︎ toolbar button (plus a key) starts a full-screen slideshow over all photos and videos in the current folder and every subfolder (or the search results, or the selected folder tile), folder by folder in the current sort order, no shuffle. Videos play to the end, then it moves on. Dragging a folder over the window shows two drop zones: "Browse" and "Slideshow".
-  3. **Auto enhance** (non-destructive, a view filter): one toolbar button + key, stays on while paging until switched off, with a visible badge. Photos: Core Image `autoAdjustmentFilters`. AVKit videos: measure once, apply fixed filters via a video composition (no per-frame flicker). VLC videos: VLCKit's adjust filter (brightness/contrast/gamma). Includes **sharpening like Photoshop's unsharp mask** (Core Image `CIUnsharpMask`), so pictures look crisper; for VLC videos VLC's sharpen filter.
-  4. **Zoom and pan for videos** exactly like for photos (keys, pinch, drag), for AVKit and VLC videos.
+  1. **Slideshow as its own entry point**: opening a folder always shows the grid. A big ▶︎ toolbar button (plus a key) starts a full-screen slideshow over all photos and videos in the current folder and every subfolder (or the search results, or the selected folder tile), folder by folder in the current sort order, no shuffle. Videos play to the end, then it moves on. Dragging a folder over the window shows two drop zones: "Browse" and "Slideshow".
+  2. **Auto enhance** (non-destructive, a view filter): one toolbar button + key, stays on while paging until switched off, with a visible badge. Photos: Core Image `autoAdjustmentFilters`. AVKit videos: measure once, apply fixed filters via a video composition (no per-frame flicker). VLC videos: VLCKit's adjust filter (brightness/contrast/gamma). Includes **sharpening like Photoshop's unsharp mask** (Core Image `CIUnsharpMask`), so pictures look crisper; for VLC videos VLC's sharpen filter.
+  3. **Zoom and pan for videos** exactly like for photos (keys, pinch, drag), for AVKit and VLC videos.
 - **Demo GIF** — storyboard ready in `docs/launch-storyboard.md`. User records it
   later, drops `docs/demo.gif`, uncomments the demo line near the top of README.
 - **Launch posts** — `docs/launch.md` has ready Show HN + r/macapps copy; user
