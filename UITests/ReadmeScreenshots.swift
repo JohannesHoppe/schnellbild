@@ -68,6 +68,7 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         eventually("help closes") { !app.staticTexts["Full view"].exists }
 
         tile("Fjord at Sunset.jpg").click()
+        waitForSelected("Fjord at Sunset.jpg")
         app.typeKey(.return, modifierFlags: [])
         let fullImage = element("fullImage")
         eventually("the image loads", timeout: 15) { text(of: fullImage).hasSuffix("loaded") }
@@ -83,6 +84,7 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
 
         app.typeKey(.escape, modifierFlags: [])
         tile("Sunset Timelapse.mp4").click()
+        waitForSelected("Sunset Timelapse.mp4")
         app.typeKey(.return, modifierFlags: [])
         XCTAssertTrue(element("video.avkit").waitForExistence(timeout: 15))
         RunLoop.current.run(until: Date().addingTimeInterval(1))
