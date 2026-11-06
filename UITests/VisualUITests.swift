@@ -13,23 +13,31 @@ final class VisualUITests: SchnellbildUITestCase {
 
     /// Mean luminance (0 … 1) of the middle half of an element, as on screen.
     private func screenBrightness(of element: XCUIElement, file: StaticString = #filePath, line: UInt = #line) throws -> Double {
+        let f = element.frame
+        return try screenStats(of: CGRect(x: f.midX - f.width / 4, y: f.midY - f.height / 4,
+                                          width: f.width / 2, height: f.height / 2), file: file, line: line).mean
+    }
+
+    /// Mean luminance and its standard deviation (how even it is) of a
+    /// screen region, in screen points.
+    private func screenStats(of region: CGRect, file: StaticString = #filePath, line: UInt = #line) throws -> (mean: Double, spread: Double) {
         guard ProcessInfo.processInfo.environment["SCREEN_MEASURE"] == "1" else {
             throw XCTSkip("needs the screen-measuring shell of the CI workflow")
         }
-        let f = element.frame
-        let region = CGRect(x: f.midX - f.width / 4, y: f.midY - f.height / 4, width: f.width / 2, height: f.height / 2)
         let id = UUID().uuidString.prefix(8)
         let pasteboard = NSPasteboard.general
         pasteboard.clearContents()
         pasteboard.setString("measure:\(id):\(Int(region.minX)),\(Int(region.minY)),\(Int(region.width)),\(Int(region.height))",
                              forType: .string)
-        var answer: Double?
+        var answer: (Double, Double)?
         eventually("the screen was measured", timeout: 30, file: file, line: line) {
             guard let text = pasteboard.string(forType: .string), text.hasPrefix("measured:\(id):") else { return false }
-            answer = Double(text.dropFirst("measured:\(id):".count))
+            let numbers = text.dropFirst("measured:\(id):".count).split(separator: ":").compactMap { Double($0) }
+            if numbers.count == 2 { answer = (numbers[0], numbers[1]) }
             return true
         }
-        return try XCTUnwrap(answer, file: file, line: line)
+        let (mean, spread) = try XCTUnwrap(answer, file: file, line: line)
+        return (mean, spread)
     }
 
     private func settle(_ seconds: TimeInterval = 2) {
@@ -71,6 +79,27 @@ final class VisualUITests: SchnellbildUITestCase {
 
     func testAVKitVideoIsShownAtFullBrightness() throws { try checkFullBrightness(vlc: false) }
     func testVLCVideoIsShownAtFullBrightness() throws { try checkFullBrightness(vlc: true) }
+
+    /// VLC shows no messages over the video (auto enhance takes a snapshot
+    /// every second; VLC would announce each one with its path and a
+    /// preview). The grey video is even, so the top corners of the
+    /// picture, where VLC puts them, stay even too.
+    func testVLCShowsNoMessagesOverTheVideo() throws {
+        let video = try openVideo("grey.mp4", vlc: true)
+        app.typeKey("e", modifierFlags: [])
+        waitForBadge(containing: "Enhanced")
+        settle(2.5)
+        // The video is 16:9, fitted into the view
+        let f = video.frame
+        let width = min(f.width, f.height * 16 / 9), height = width * 9 / 16
+        let picture = CGRect(x: f.midX - width / 2, y: f.midY - height / 2, width: width, height: height)
+        for (side, x) in [("left", picture.minX + width * 0.03), ("right", picture.minX + width * 0.62)] {
+            let corner = CGRect(x: x, y: picture.minY + height * 0.03, width: width * 0.35, height: height * 0.3)
+            let stats = try screenStats(of: corner)
+            XCTAssertGreaterThan(stats.mean, 0.3, "the picture is there (\(side))")
+            XCTAssertLessThan(stats.spread, 0.04, "something is drawn over the top \(side) of the video: ± \(stats.spread)")
+        }
+    }
 
     // MARK: Auto enhance and sliders on videos
 

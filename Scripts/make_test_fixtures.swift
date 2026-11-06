@@ -1,5 +1,6 @@
 // Draws the media fixtures the visual UI tests measure (UITests/Fixtures):
-// an underexposed and an overexposed video and photo, plus broken files.
+// an underexposed and an overexposed video and photo, an even grey video,
+// plus broken files.
 // Always the same output, no external images.
 //
 //   swift Scripts/make_test_fixtures.swift UITests/Fixtures
@@ -70,6 +71,7 @@ try writeJPEG(dark, to: "dark.jpg")
 try writeJPEG(bright, to: "bright.jpg")
 try writeVideo(dark, to: "dark.mp4")
 try writeVideo(bright, to: "bright.mp4")
+try writeVideo(frame(width: 640, height: 360, low: 0.5, high: 0.5), to: "grey.mp4")
 
 // Broken files: a media extension, but garbage inside (a fixed pattern).
 let garbage = Data((0..<4096).map { UInt8(truncatingIfNeeded: $0 &* 31 &+ 7) })

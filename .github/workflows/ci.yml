@@ -89,7 +89,7 @@ jobs:
         run: |
           # VisualUITests measure the screen through this shell, which may
           # record it: the test asks with "measure:<id>:<x>,<y>,<w>,<h>" on the
-          # pasteboard and gets "measured:<id>:<mean luminance>" back.
+          # pasteboard and gets "measured:<id>:<mean luminance>:<std deviation>" back.
           mkdir -p measurements
           (
             while :; do
@@ -102,9 +102,9 @@ jobs:
                   shot=measurements/$id-region.png
                   screencapture -x -R "$rect" "$shot"
                   screencapture -x "measurements/$id-screen.png"
-                  value=$(build/measure_brightness "$shot" || echo -1)
-                  echo "== measure $id $rect: $value"
-                  printf 'measured:%s:%s' "$id" "$value" | pbcopy
+                  read -r mean spread < <(build/measure_brightness "$shot" || echo "-1 -1")
+                  echo "== measure $id $rect: $mean ± $spread"
+                  printf 'measured:%s:%s:%s' "$id" "$mean" "$spread" | pbcopy
                   ;;
               esac
               sleep 0.2

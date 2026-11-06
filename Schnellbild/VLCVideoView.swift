@@ -8,11 +8,7 @@ import CoreImage
 /// state changes from any source (keys, the end of the video) to the model.
 @MainActor
 final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegate {
-    /// One LibVLC instance for all players, without VLC's on-screen display:
-    /// the auto enhance snapshots (`snapshotStats`) would otherwise show
-    /// "Snapshot taken: <path>" and a preview over the video.
-    static let library = VLCLibrary(options: ["--no-osd", "--no-snapshot-preview"])
-    let player = VLCMediaPlayer(library: VLCPlaybackControl.library)
+    let player = VLCMediaPlayer()
     private let url: URL
     private let onStateChange: @MainActor (PlaybackControl, Bool) -> Void
     private weak var drawable: NSView?
@@ -44,6 +40,11 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
 
     private func makeMedia() -> VLCMedia {
         let media = VLCMedia(url: url)
+        // No on-screen messages: the auto enhance snapshots (`snapshotStats`)
+        // would otherwise show "Snapshot taken: <path>" and a preview over
+        // the video.
+        media.addOption(":no-osd")
+        media.addOption(":no-snapshot-preview")
         if sharpen {
             media.addOption(":video-filter=sharpen")
             media.addOption(":sharpen-sigma=0.08")
@@ -261,8 +262,7 @@ final class VLCThumbnails: NSObject, VLCMediaThumbnailerDelegate {
         }
         guard !Task.isCancelled else { return nil }
         return await withCheckedContinuation { done in
-            let thumbnailer = VLCMediaThumbnailer(media: VLCMedia(url: url), delegate: self,
-                                                  andVLCLibrary: VLCPlaybackControl.library)
+            let thumbnailer = VLCMediaThumbnailer(media: VLCMedia(url: url), delegate: self, andVLCLibrary: nil)
             thumbnailer.thumbnailWidth = width
             thumbnailer.thumbnailHeight = 0
             pending[ObjectIdentifier(thumbnailer)] = (thumbnailer, done)
