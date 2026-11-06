@@ -187,12 +187,16 @@ final class VisualUITests: SchnellbildUITestCase {
 
     // MARK: Paused videos, paging, zoom
 
-    /// The left quarter of an element (the dark end of the test pictures'
+    /// The left quarter of a region (the dark end of the test pictures'
     /// left-to-right gradient).
-    private func leftQuarter(of element: XCUIElement) throws -> Double {
-        let f = element.frame
-        return try screenStats(of: CGRect(x: f.minX + f.width * 0.1, y: f.midY - f.height / 8,
-                                          width: f.width * 0.15, height: f.height / 4)).mean
+    private func leftQuarter(of f: CGRect) throws -> Double {
+        try screenStats(of: CGRect(x: f.minX + f.width * 0.1, y: f.midY - f.height / 8,
+                                   width: f.width * 0.15, height: f.height / 4)).mean
+    }
+
+    private func middle(of f: CGRect) throws -> Double {
+        try screenStats(of: CGRect(x: f.midX - f.width / 4, y: f.midY - f.height / 4,
+                                   width: f.width / 2, height: f.height / 2)).mean
     }
 
     /// A new look reaches a paused video at once, not only when it plays on.
@@ -233,19 +237,26 @@ final class VisualUITests: SchnellbildUITestCase {
 
     /// Zooming in really enlarges the picture: the dark left edge of the
     /// gradient moves out, so the left quarter gets brighter. Dragging right
-    /// then moves the darker part back into the middle.
+    /// then moves the darker part back into the middle. Measured in the area
+    /// the view had before zooming (a video view's own frame grows with it).
     private func checkZoomAndPan(_ element: XCUIElement) throws {
-        let fit = try leftQuarter(of: element)
+        let area = element.frame
+        let fit = try leftQuarter(of: area)
         for _ in 0..<3 { app.typeKey("+", modifierFlags: []) }
         settle(1)
-        let zoomed = try leftQuarter(of: element)
+        let zoomed = try leftQuarter(of: area)
         XCTAssertGreaterThan(zoomed, fit + 0.03, "zoom doesn't enlarge the picture: \(fit) → \(zoomed)")
-        let middle = try screenBrightness(of: element)
-        let start = element.coordinate(withNormalizedOffset: CGVector(dx: 0.3, dy: 0.5))
-        start.press(forDuration: 0.1, thenDragTo: element.coordinate(withNormalizedOffset: CGVector(dx: 0.7, dy: 0.5)))
+        let before = try middle(of: area)
+        let window = app.windows.firstMatch
+        let origin = window.frame.origin
+        func point(_ x: CGFloat, _ y: CGFloat) -> XCUICoordinate {
+            window.coordinate(withNormalizedOffset: .zero).withOffset(CGVector(dx: x - origin.x, dy: y - origin.y))
+        }
+        point(area.minX + area.width * 0.3, area.midY)
+            .press(forDuration: 0.1, thenDragTo: point(area.minX + area.width * 0.7, area.midY))
         settle(1)
-        let panned = try screenBrightness(of: element)
-        XCTAssertLessThan(panned, middle - 0.03, "dragging doesn't move the picture: \(middle) → \(panned)")
+        let panned = try middle(of: area)
+        XCTAssertLessThan(panned, before - 0.03, "dragging doesn't move the picture: \(before) → \(panned)")
     }
 
     func testZoomAndPanMoveAPhoto() throws {
