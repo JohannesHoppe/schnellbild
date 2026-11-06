@@ -44,6 +44,8 @@ echo "==> Embedding VLCKit.framework"
 ditto "$BINDIR/VLCKit.framework" "$APP/Contents/Frameworks/VLCKit.framework"
 install_name_tool -add_rpath "@executable_path/../Frameworks" "$APP/Contents/MacOS/Schnellbild" 2>/dev/null || true
 cp "$RES/AppIcon.icns" "$APP/Contents/Resources/AppIcon.icns"
+# The UI's translations (en.lproj, de.lproj, …), found through Bundle.main
+cp -R "$RES/Localization/"*.lproj "$APP/Contents/Resources/"
 cp "$RES/Info.plist" "$APP/Contents/Info.plist"
 printf 'APPL????' > "$APP/Contents/PkgInfo"
 
