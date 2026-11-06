@@ -64,6 +64,12 @@ jobs:
           codesign --verify --strict --deep --verbose=2 build/Schnellbild.app
           codesign -dvv build/Schnellbild.app 2>&1 | grep -E 'Authority|TeamIdentifier|flags' || true
 
+      - name: Install dmgbuild (pinned, hash-checked)
+        run: |
+          python3 -m venv "$RUNNER_TEMP/dmgbuild"
+          "$RUNNER_TEMP/dmgbuild/bin/pip" install --require-hashes --only-binary :all: -r Installer/requirements.txt
+          echo "$RUNNER_TEMP/dmgbuild/bin" >> "$GITHUB_PATH"
+
       - name: Build DMG (unsigned)
         if: env.SIGN != 'true'
         run: ./Scripts/package_dmg.sh dmg

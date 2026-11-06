@@ -69,15 +69,16 @@ wait_status() {
 build_dmg() {
   # Opens as "Schnellbild 1.2.3". The file name stays the same, so the
   # download link in the README always points at the newest version.
-  local version stage
+  # Window layout (app, arrow, Applications) comes from Installer/dmg-settings.py.
+  local version
+  command -v dmgbuild >/dev/null || {
+    echo "dmgbuild missing: pip install --require-hashes --only-binary :all: -r Installer/requirements.txt" >&2
+    exit 1
+  }
   version=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$APP/Contents/Info.plist")
-  stage=$(mktemp -d)
-  ditto "$APP" "$stage/$NAME.app"
-  ln -s /Applications "$stage/Applications"
   mkdir -p dist
   rm -f "$DMG"
-  hdiutil create -volname "$NAME $version" -srcfolder "$stage" -fs HFS+ -format UDZO -ov "$DMG" >/dev/null
-  rm -rf "$stage"
+  dmgbuild -s Installer/dmg-settings.py -D app="$APP" "$NAME $version" "$DMG"
   echo "Built $DMG ($NAME $version)"
 }
 

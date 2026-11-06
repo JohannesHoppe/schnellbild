@@ -133,7 +133,13 @@ AVI/MKV/WebM and other non-native formats play **in-app via vendored VLCKit
   icon, `swift build -c release`, assemble bundle, **embed VLCKit.framework into
   `Contents/Frameworks` + add `@executable_path/../Frameworks` rpath**, sign
   inside out (Developer ID with `MACOS_SIGN_IDENTITY`, else ad hoc).
-  `./Scripts/package_dmg.sh dmg` packs it into `dist/Schnellbild.dmg`.
+  `./Scripts/package_dmg.sh dmg` packs it into `dist/Schnellbild.dmg` with
+  **`dmgbuild`** (Python, pinned with wheel hashes in
+  `Installer/requirements.txt`, installed only in the release workflow into a
+  venv): the window shows the app, an arrow and the Applications folder, laid
+  out by `Installer/dmg-settings.py` on `Resources/dmg-background*.png`.
+  Redraw the background with `swift Scripts/make_dmg_background.swift`
+  (positions must match the settings file).
 - After editing `project.yml` **or adding/removing a `.swift` file**, re-run
   `xcodegen generate` before the Xcode/UITest build (the app target embeds
   `Vendor/VLCKit.xcframework`).
