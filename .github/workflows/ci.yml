@@ -7,6 +7,11 @@ on:
   pull_request:
     paths-ignore: [ '**.md', 'LICENSE' ]
   workflow_dispatch:
+    inputs:
+      only:
+        description: "UI tests to run (xcodebuild -only-testing), e.g. SchnellbildUITests/VisualUITests"
+        required: false
+        default: SchnellbildUITests
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -86,6 +91,8 @@ jobs:
         run: mkdir -p build && swiftc -O Scripts/measure_brightness.swift -o build/measure_brightness
 
       - name: Run XCUITests
+        env:
+          ONLY: ${{ inputs.only || 'SchnellbildUITests' }}
         run: |
           # VisualUITests measure the screen through this shell, which may
           # record it: the test asks with "measure:<id>:<x>,<y>,<w>,<h>" on the
@@ -116,7 +123,7 @@ jobs:
             -project Schnellbild.xcodeproj \
             -scheme Schnellbild \
             -destination 'platform=macOS' \
-            -only-testing:SchnellbildUITests \
+            -only-testing:"$ONLY" \
             -derivedDataPath build/DerivedData || status=1
           kill "$helper"
           exit $status

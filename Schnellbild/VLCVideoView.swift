@@ -116,7 +116,8 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         let stats = player.media?.statistics
         return "vlc state \(player.state.rawValue), "
             + "size \(Int(player.videoSize.width))x\(Int(player.videoSize.height)), decoded \(decoded), "
-            + "shown \(stats?.displayedPictures ?? 0), lost \(stats?.lostPictures ?? 0), \(output.diagnostics)"
+            + "shown \(stats?.displayedPictures ?? 0), lost \(stats?.lostPictures ?? 0), \(output.diagnostics), "
+            + "layer \(output.layerBrightness), layers in view \(drawable?.layer?.sublayers?.count ?? -1)"
     }
 
     /// Show the picture in `view`; the first view starts playback.
