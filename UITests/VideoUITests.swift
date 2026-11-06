@@ -57,6 +57,18 @@ final class VideoUITests: SchnellbildUITestCase {
         try checkSkimming("clip.mkv", player: "video.vlc")
     }
 
+    func testVideosZoomLikePictures() throws {
+        try put("clip.mp4", at: "clip.mp4")
+        launch(open: tempDir.appendingPathComponent("clip.mp4").path)
+        let video = element("video.avkit")
+        XCTAssertTrue(video.waitForExistence(timeout: 15))
+        app.typeKey("+", modifierFlags: [])
+        app.typeKey("+", modifierFlags: [])
+        eventually("zoomed") { text(of: video).contains("zoom 156 %") }
+        app.typeKey("0", modifierFlags: [])
+        eventually("fit again") { text(of: video).contains("zoom 100 %") }
+    }
+
     func testBadgeDoesNotCoverThePlayerControls() throws {
         try put("clip.mp4", at: "clip.mp4")
         launch(open: tempDir.appendingPathComponent("clip.mp4").path)

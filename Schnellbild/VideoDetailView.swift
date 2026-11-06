@@ -14,23 +14,50 @@ struct VideoDetailView: View {
     @State private var avControl: AVPlaybackControl?
     @State private var vlcControl: VLCPlaybackControl?
     @State private var checking = true
+    /// Pan while zoomed in, as for pictures.
+    @State private var panOffset: CGSize = .zero
+    @GestureState private var dragTranslation: CGSize = .zero
 
     var body: some View {
         ZStack {
             Color.black
-            if let vlcControl {
-                VLCVideoView(control: vlcControl)
-            } else if let avControl {
-                VideoPlayer(player: avControl.player)
-            } else if checking {
-                LoadingSpinner()
+            Group {
+                if let vlcControl {
+                    VLCVideoView(control: vlcControl)
+                } else if let avControl {
+                    VideoPlayer(player: avControl.player)
+                } else if checking {
+                    LoadingSpinner()
+                }
+            }
+            // Zoom (keys, pinch) and rotation like a picture; only the view
+            // changes. Zoomed in, the player's own control bar is out of
+            // reach, the keys still work.
+            .rotationEffect(.degrees(model.rotation))
+            .scaleEffect(model.zoom)
+            .offset(x: panOffset.width + dragTranslation.width, y: panOffset.height + dragTranslation.height)
+            if model.zoom > 1 {
+                // Takes the drag for panning while zoomed in
+                Color.clear
+                    .contentShape(Rectangle())
+                    .gesture(DragGesture()
+                        .updating($dragTranslation) { value, state, _ in state = value.translation }
+                        .onEnded { value in
+                            panOffset.width += value.translation.width
+                            panOffset.height += value.translation.height
+                        })
             }
         }
+        .clipped()
+        .onChange(of: model.zoom) { _, zoom in if zoom == 1 { panOffset = .zero } }
+        .onChange(of: url) { _, _ in panOffset = .zero }
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier(vlcControl != nil ? "video.vlc" : "video.avkit")
+        .accessibilityLabel("zoom \(Int((model.zoom * 100).rounded())) %, rotation \(Int(model.rotation))°")
         .task(id: url) {
             stop()
             checking = true
+            model.actualSizeFactor = 1   // "1": a video's 100 % is its fitted size
 
             let asset = AVURLAsset(url: url)
             let playable = (try? await asset.load(.isPlayable)) ?? false

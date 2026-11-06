@@ -1234,6 +1234,23 @@ final class PlaybackTests: XCTestCase {
         XCTAssertFalse(next.enhanced)
     }
 
+    func testZoomAndRotateWorkOnVideosAndInTheSlideshow() async throws {
+        let (m, _) = try await openOnVideo()
+        m.handleKey(.char("+"), command: false)
+        XCTAssertEqual(m.zoom, 1.25, accuracy: 0.001, "videos zoom like pictures")
+        m.handleKey(.char("]"), command: false)
+        XCTAssertEqual(m.rotation, 90)
+        m.handleKey(.char("0"), command: false)
+        XCTAssertEqual(m.zoom, 1)
+        m.closeDetail()
+        m.slideshowInterval = .seconds(60)
+        m.startSlideshow()
+        await waitUntil { m.slideshow?.loading == false }
+        m.handleKey(.char("+"), command: false)
+        XCTAssertEqual(m.zoom, 1.25, accuracy: 0.001, "and in the slideshow")
+        XCTAssertEqual(m.thumbnailSide, 150, "not the grid's tiles")
+    }
+
     func testSpaceTogglesVideo() async throws {
         let tree = try TempTree(self)
         try tree.file("clip.mp4")

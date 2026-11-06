@@ -6,6 +6,7 @@ struct ContentView: View {
     @State private var dropZone: DropZone?
     @State private var width: CGFloat = 0
     @State private var keyMonitor: Any?
+    @State private var pinchMonitor: Any?
 
     var body: some View {
         Group {
@@ -256,6 +257,18 @@ struct ContentView: View {
             }
             return consume ? nil : event
         }
+        // Trackpad pinch on a video: AVKit's player view would take it for
+        // itself, so it's caught here, like the keys. Pictures use their own
+        // gesture.
+        pinchMonitor = NSEvent.addLocalMonitorForEvents(matching: .magnify) { event in
+            let magnification = event.magnification
+            let used = MainActor.assumeIsolated { () -> Bool in
+                guard model.shownMediaEntry?.kind == .video else { return false }
+                model.applyPinch(1 + magnification)
+                return true
+            }
+            return used ? nil : event
+        }
     }
 
     /// Hardware key code → key binding input.
@@ -280,6 +293,8 @@ struct ContentView: View {
     private func removeKeyMonitor() {
         if let keyMonitor { NSEvent.removeMonitor(keyMonitor) }
         keyMonitor = nil
+        if let pinchMonitor { NSEvent.removeMonitor(pinchMonitor) }
+        pinchMonitor = nil
     }
 }
 
