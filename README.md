@@ -169,9 +169,9 @@ Bindings follow [Phiewer](https://phiewer.com/) where it makes sense.
 
 | Key | Action |
 |---|---|
-| ← → ↑ ↓ | previous / next item (always, even on video) |
+| ← → | image: previous / next · video: skip a tenth of its length back / ahead; at the end on to the next item, at the start back to the previous one |
+| ⌘← ⌘→ ↑ ↓ | previous / next item, also from a video |
 | Space | image: next · video: play/pause |
-| ⌘← / ⌘→ | video: seek −10 s / +10 s |
 | ⌘+ / ⌘− (or + / −) | zoom in / out |
 | 0 / 1 | fit to window / 100 % |
 | [ / ] | rotate left / right (view only) |
@@ -195,6 +195,7 @@ Bindings follow [Phiewer](https://phiewer.com/) where it makes sense.
 |---|---|
 | ⌘[ / ⌘] | back / forward (history; restores the search you came from) |
 | ⌘↑ | enclosing folder |
+| ⌘1 … ⌘5 | sort by name, kind, date modified, date taken, size (the same again reverses) |
 
 **Menus**
 

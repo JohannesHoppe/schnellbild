@@ -47,9 +47,7 @@ struct SchnellbildApp: App {
                 Button("Larger Thumbnails (⌘+)") { model.growThumbnails() }
                 Button("Smaller Thumbnails (⌘−)") { model.shrinkThumbnails() }
                 Divider()
-                Button("Sort by Name")  { model.setSort(.name) }
-                Button("Sort by Date") { model.setSort(.date) }
-                Button("Sort by Size") { model.setSort(.size) }
+                SortChoices(model: model, shortcuts: true)
             }
             CommandGroup(replacing: .help) {
                 Button("Schnellbild Help") { model.showHelp = true }

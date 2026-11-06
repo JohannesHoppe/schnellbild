@@ -1,6 +1,7 @@
 import SwiftUI
 import AppKit
 import AVFoundation
+import ImageIO
 
 /// A grid entry: ".." (parent level), subfolder, image, or video.
 struct GridEntry: Identifiable, Hashable {
@@ -23,9 +24,13 @@ protocol PlaybackControl: AnyObject {
     /// The player's real state, so the keyboard stays in step with the
     /// player's own on-screen controls and with the end of the video.
     var isPlaying: Bool { get }
+    /// Position in the video, 0 (start) … 1 (end); nil while the length
+    /// isn't known yet.
+    var progress: Double? { get }
     func play()
     func pause()
-    func seek(by seconds: Double)
+    /// Jump to a position (0 … 1). From the end, playing resumes.
+    func seek(toProgress progress: Double)
 }
 
 /// Side effects on the file system and the workspace. Injectable, so tests
@@ -145,7 +150,21 @@ struct FileChange {
 @MainActor
 final class BrowserModel: ObservableObject {
     enum Mode { case grid, detail }
-    enum SortKey { case name, date, size }
+    enum SortKey: String, CaseIterable {
+        case name, kind, modified, captured, size
+
+        var title: String {
+            switch self {
+            case .name:     return "Name"
+            case .kind:     return "Kind"
+            case .modified: return "Date Modified"
+            case .captured: return "Date Taken"
+            case .size:     return "Size"
+            }
+        }
+        /// Like Finder: names A→Z, but dates and sizes newest/largest first.
+        var startsAscending: Bool { self == .name || self == .kind }
+    }
     enum KeyInput: Equatable {
         case left, right, up, down, space, enter, escape, backspace, home, end, f1, f2
         case char(Character)
@@ -168,7 +187,7 @@ final class BrowserModel: ObservableObject {
     /// `canonicalPath(folderURL)`, kept so grid cells don't recompute it.
     private var folderPath: String?
     @Published private(set) var entries: [GridEntry] = [] {
-        didSet { recomputeDerived() }
+        didSet { recomputeDerived(); readCaptureDatesIfNeeded() }
     }
     @Published var selection: Int?
     @Published var mode: Mode = .grid
@@ -189,8 +208,15 @@ final class BrowserModel: ObservableObject {
     @Published var rotation: Double = 0
     private let maxZoom: CGFloat = 8
 
-    @Published var sortKey: SortKey = .name
-    @Published var sortAscending = true
+    @Published private(set) var sortKey: SortKey = .name
+    @Published private(set) var sortAscending = true
+    /// When each photo or video was taken (EXIF / QuickTime metadata), read
+    /// only while sorting by `.captured`. Files without it sort by their
+    /// modification date.
+    private var captureDates: [URL: Date] = [:]
+    /// Files whose capture date was already read (found or not).
+    private var captureDatesRead: Set<URL> = []
+    private var captureDateTask: Task<Void, Never>?
 
     // MARK: Search state
 
@@ -257,7 +283,7 @@ final class BrowserModel: ObservableObject {
     private var slideshowTask: Task<Void, Never>?
 
     /// The player of the video on screen — for keyboard control
-    /// (play/pause/seek). Set by the video views.
+    /// (play/pause, skimming). Set by the video views.
     weak var activePlayer: PlaybackControl? {
         didSet { videoPaused = false }
     }
@@ -271,6 +297,8 @@ final class BrowserModel: ObservableObject {
     var fileActions: FileActions
 
     static let lastFolderKey = "lastFolderPath"
+    static let sortKeyKey = "sortKey"
+    static let sortAscendingKey = "sortAscending"
 
     nonisolated static let imageExtensions: Set<String> = [
         "jpg", "jpeg", "png", "gif", "heic", "heif", "tiff", "tif", "bmp",
@@ -293,6 +321,10 @@ final class BrowserModel: ObservableObject {
     init(defaults: UserDefaults = .standard, fileActions: FileActions = .live) {
         self.defaults = defaults
         self.fileActions = fileActions
+        if let raw = defaults.string(forKey: Self.sortKeyKey), let key = SortKey(rawValue: raw) {
+            sortKey = key
+            sortAscending = defaults.object(forKey: Self.sortAscendingKey) as? Bool ?? key.startsAscending
+        }
     }
 
     /// `--ui-testing` keeps UI-test runs out of the user's real preferences;
@@ -448,7 +480,10 @@ final class BrowserModel: ObservableObject {
     }
 
     /// Sorted: ".." on top, then folders, then media — each group by key.
-    nonisolated static func sortEntries(_ entries: [GridEntry], key: SortKey, ascending: Bool) -> [GridEntry] {
+    /// Ties (same kind, date or size) fall back to the name, so the order is
+    /// stable. `captured` holds the capture dates read so far.
+    nonisolated static func sortEntries(_ entries: [GridEntry], key: SortKey, ascending: Bool,
+                                        captured: [URL: Date] = [:]) -> [GridEntry] {
         var parents: [GridEntry] = []
         var folders: [GridEntry] = []
         var media:   [GridEntry] = []
@@ -459,27 +494,123 @@ final class BrowserModel: ObservableObject {
             case .image, .video: media.append(entry)
             }
         }
-        func asc(_ a: GridEntry, _ b: GridEntry) -> Bool {
+        func byName(_ a: GridEntry, _ b: GridEntry) -> ComparisonResult {
+            a.name.localizedStandardCompare(b.name)
+        }
+        func compare(_ a: GridEntry, _ b: GridEntry) -> ComparisonResult {
+            func order<T: Comparable>(_ x: T, _ y: T) -> ComparisonResult {
+                x < y ? .orderedAscending : (y < x ? .orderedDescending : .orderedSame)
+            }
             switch key {
-            case .name: return a.name.localizedStandardCompare(b.name) == .orderedAscending
-            case .date: return (a.modDate ?? .distantPast) < (b.modDate ?? .distantPast)
-            case .size: return (a.byteSize ?? 0) < (b.byteSize ?? 0)
+            case .name:
+                return .orderedSame
+            case .kind:
+                return a.url.pathExtension.lowercased().localizedStandardCompare(b.url.pathExtension.lowercased())
+            case .modified:
+                return order(a.modDate ?? .distantPast, b.modDate ?? .distantPast)
+            case .captured:
+                return order(captured[a.url] ?? a.modDate ?? .distantPast,
+                             captured[b.url] ?? b.modDate ?? .distantPast)
+            case .size:
+                return order(a.byteSize ?? 0, b.byteSize ?? 0)
             }
         }
-        let cmp: (GridEntry, GridEntry) -> Bool = ascending ? { asc($0, $1) } : { asc($1, $0) }
-        return parents + folders.sorted(by: cmp) + media.sorted(by: cmp)
+        func before(_ a: GridEntry, _ b: GridEntry) -> Bool {
+            var result = compare(a, b)
+            if result == .orderedSame { result = byName(a, b) }
+            return ascending ? result == .orderedAscending : result == .orderedDescending
+        }
+        return parents + folders.sorted(by: before) + media.sorted(by: before)
     }
 
+    /// Choose the sort order. The same key again reverses the direction; a
+    /// new key starts in its natural direction. Remembered across launches.
     func setSort(_ key: SortKey) {
-        if sortKey == key { sortAscending.toggle() } else { sortKey = key; sortAscending = true }
+        if sortKey == key { sortAscending.toggle() } else { sortKey = key; sortAscending = key.startsAscending }
+        defaults.set(key.rawValue, forKey: Self.sortKeyKey)
+        defaults.set(sortAscending, forKey: Self.sortAscendingKey)
+        resort()
+        readCaptureDatesIfNeeded()
+    }
+
+    /// Sort the lists again, keeping the selection.
+    private func resort() {
         let keep = selectedEntry?.url
         allEntries = sorted(allEntries)
         entries = sorted(entries)
-        selection = index(of: keep)
+        selection = index(of: keep) ?? selection
     }
 
+    /// While sorting by capture date, read the dates of the media on screen
+    /// that aren't known yet (off the main thread, a few files at a time)
+    /// and sort again once they're in.
+    func readCaptureDatesIfNeeded() {
+        guard sortKey == .captured else { return }
+        let missing = Set((allEntries + entries).filter { $0.isMedia }.map(\.url)).subtracting(captureDatesRead)
+        guard !missing.isEmpty else { return }
+        captureDatesRead.formUnion(missing)
+        let previous = captureDateTask
+        captureDateTask = Task { [weak self] in
+            await previous?.value
+            let found = await Self.captureDates(of: Array(missing))
+            guard let self, !Task.isCancelled else { return }
+            self.captureDates.merge(found) { _, new in new }
+            if self.sortKey == .captured { self.resort() }
+        }
+    }
+
+    /// Capture dates of the given files, read in parallel (8 at a time).
+    nonisolated static func captureDates(of urls: [URL]) async -> [URL: Date] {
+        await withTaskGroup(of: (URL, Date?).self) { group in
+            var result: [URL: Date] = [:]
+            var pending = urls[...]
+            func addNext() {
+                guard let url = pending.popFirst() else { return }
+                group.addTask { (url, await captureDate(of: url)) }
+            }
+            for _ in 0..<8 { addNext() }
+            for await (url, date) in group {
+                if let date { result[url] = date }
+                addNext()
+            }
+            return result
+        }
+    }
+
+    /// When a photo or video was taken: EXIF DateTimeOriginal for images
+    /// (only the header is read), the QuickTime creation date for videos.
+    nonisolated static func captureDate(of url: URL) async -> Date? {
+        switch mediaKind(of: url) {
+        case .image:
+            guard let source = CGImageSourceCreateWithURL(url as CFURL, nil),
+                  let props = CGImageSourceCopyPropertiesAtIndex(
+                      source, 0, [kCGImageSourceShouldCache: false] as CFDictionary) as? [CFString: Any]
+            else { return nil }
+            let exif = props[kCGImagePropertyExifDictionary] as? [CFString: Any]
+            let tiff = props[kCGImagePropertyTIFFDictionary] as? [CFString: Any]
+            guard let text = (exif?[kCGImagePropertyExifDateTimeOriginal]
+                              ?? exif?[kCGImagePropertyExifDateTimeDigitized]
+                              ?? tiff?[kCGImagePropertyTIFFDateTime]) as? String else { return nil }
+            return exifDateFormatter.date(from: text)
+        case .video:
+            let asset = AVURLAsset(url: url)
+            guard let item = try? await asset.load(.creationDate) else { return nil }
+            return try? await item.load(.dateValue)
+        default:
+            return nil
+        }
+    }
+
+    /// EXIF dates: "2024:07:14 18:32:05", in the camera's local time.
+    nonisolated private static let exifDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "yyyy:MM:dd HH:mm:ss"
+        return formatter
+    }()
+
     private func sorted(_ list: [GridEntry]) -> [GridEntry] {
-        Self.sortEntries(list, key: sortKey, ascending: sortAscending)
+        Self.sortEntries(list, key: sortKey, ascending: sortAscending, captured: captureDates)
     }
 
     /// Where `url` is in the visible list.
@@ -877,15 +1008,12 @@ final class BrowserModel: ObservableObject {
                 activateSelection()
             }
             return true
-        case .left:
-            if command, mode == .detail, selectedMediaEntry?.kind == .video { seekVideo(by: -10) }
-            else if mode == .detail { stepMedia(-1) }
-            else { step(-1) }
-            return true
-        case .right:
-            if command, mode == .detail, selectedMediaEntry?.kind == .video { seekVideo(by: +10) }
-            else if mode == .detail { stepMedia(+1) }
-            else { step(+1) }
+        case .left, .right:
+            // ⌘←/⌘→ always page; plain ←/→ skim through a video first.
+            let direction = key == .right ? 1 : -1
+            if mode == .grid { step(direction) }
+            else if command { stepMedia(direction) }
+            else { skim(direction) }
             return true
         case .up:
             if command { goToParentFolder(); return true }
@@ -1062,8 +1190,26 @@ final class BrowserModel: ObservableObject {
         videoPaused = !isPlaying
     }
 
-    func seekVideo(by seconds: Double) {
-        activePlayer?.seek(by: seconds)
+    /// One ←/→ step in a video: a tenth of its length.
+    static let videoJump = 0.1
+
+    /// ←/→ in the full view. Images: previous/next item. Videos: jump a tenth
+    /// of the length; past the end → next item, at the start → previous one.
+    /// So one key pages through images and skims through videos.
+    func skim(_ direction: Int) {
+        guard selectedMediaEntry?.kind == .video, let player = activePlayer,
+              let progress = player.progress else {
+            stepMedia(direction); return
+        }
+        if direction > 0 {
+            let target = progress + Self.videoJump
+            if target >= 0.999 { stepMedia(+1) } else { player.seek(toProgress: target) }
+        } else {
+            // Close to the start counts as the start, so a playing video
+            // doesn't keep catching the key.
+            if progress < Self.videoJump / 4 { stepMedia(-1) }
+            else { player.seek(toProgress: max(progress - Self.videoJump, 0)) }
+        }
     }
 
     // MARK: - Window
@@ -1106,13 +1252,22 @@ final class AVPlaybackControl: PlaybackControl {
 
     func pause() { player.pause() }
 
-    func seek(by seconds: Double) {
-        guard let item = player.currentItem else { return }
-        let now = CMTimeGetSeconds(player.currentTime())
-        var target = max(0, now + seconds)
-        let duration = CMTimeGetSeconds(item.duration)
-        if duration.isFinite, duration > 0 { target = min(target, duration) }
-        player.seek(to: CMTime(seconds: target, preferredTimescale: 600),
+    private var duration: Double? {
+        guard let item = player.currentItem else { return nil }
+        let seconds = CMTimeGetSeconds(item.duration)
+        return seconds.isFinite && seconds > 0 ? seconds : nil
+    }
+
+    var progress: Double? {
+        guard let duration else { return nil }
+        return min(max(CMTimeGetSeconds(player.currentTime()) / duration, 0), 1)
+    }
+
+    func seek(toProgress progress: Double) {
+        guard let duration else { return }
+        let ended = !isPlaying && (self.progress ?? 0) >= 0.999
+        player.seek(to: CMTime(seconds: duration * min(max(progress, 0), 1), preferredTimescale: 600),
                     toleranceBefore: .zero, toleranceAfter: .zero)
+        if ended { player.play() }
     }
 }

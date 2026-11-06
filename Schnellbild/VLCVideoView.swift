@@ -53,9 +53,15 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         player.stop()
     }
 
-    func seek(by seconds: Double) {
-        let step = Int32(abs(seconds).rounded())
-        if seconds < 0 { player.jumpBackward(step) } else { player.jumpForward(step) }
+    var progress: Double? {
+        if player.state == .ended { return 1 }
+        guard (player.media?.length.intValue ?? 0) > 0 else { return nil }
+        return Double(min(max(player.position, 0), 1))
+    }
+
+    func seek(toProgress progress: Double) {
+        if player.state == .ended || player.state == .stopped { play() }
+        player.position = Float(min(max(progress, 0), 1))
     }
 
     nonisolated func mediaPlayerStateChanged(_ aNotification: Notification) {

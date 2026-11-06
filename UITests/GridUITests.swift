@@ -53,24 +53,42 @@ final class GridUITests: SchnellbildUITestCase {
     func testSortByNameTogglesDirection() {
         launchOnTempDir()
         XCTAssertLessThan(tile("a.jpg").frame.minX, tile("c.jpg").frame.minX)
-        clickMenu("View", "Sort by Name")
+        clickMenu("View", "Name")
         eventually("descending: c before a") { tile("c.jpg").frame.minX < tile("a.jpg").frame.minX }
     }
 
-    func testSortBySize() throws {
-        try put("large.jpg", at: "0-large.jpg")
+    func testSortBySizeLargestFirst() throws {
+        try put("large.jpg", at: "z-large.jpg")
         launchOnTempDir()
-        XCTAssertLessThan(tile("0-large.jpg").frame.minX, tile("a.jpg").frame.minX, "by name first")
-        clickMenu("View", "Sort by Size")
-        eventually("large file sorts last") { tile("0-large.jpg").frame.minX > tile("c.jpg").frame.minX }
+        XCTAssertGreaterThan(tile("z-large.jpg").frame.minX, tile("c.jpg").frame.minX, "by name first")
+        clickMenu("View", "Size")
+        eventually("largest first") { tile("z-large.jpg").frame.minX < tile("a.jpg").frame.minX }
     }
 
-    func testSortByDate() throws {
-        let old = tempDir.appendingPathComponent("c.jpg")
+    func testSortByDateModifiedNewestFirst() throws {
+        let old = tempDir.appendingPathComponent("a.jpg")
         try FileManager.default.setAttributes([.modificationDate: Date(timeIntervalSince1970: 0)], ofItemAtPath: old.path)
         launchOnTempDir()
-        clickMenu("View", "Sort by Date")
-        eventually("oldest first") { tile("c.jpg").frame.minX < tile("a.jpg").frame.minX }
+        clickMenu("View", "Date Modified")
+        eventually("oldest last") { tile("a.jpg").frame.minX > tile("c.jpg").frame.minX }
+    }
+
+    private var sortMenu: XCUIElement { element("sortMenu").firstMatch }
+
+    func testSortShortcutsShowInTheToolbarAndAreRemembered() {
+        launchOnTempDir()
+        XCTAssertTrue(text(of: sortMenu).contains("Name ↑"), "toolbar shows the order: \(text(of: sortMenu))")
+        app.typeKey("5", modifierFlags: .command)
+        eventually("⌘5: size, largest first") { text(of: sortMenu).contains("Size ↓") }
+        app.typeKey("5", modifierFlags: .command)
+        eventually("⌘5 again reverses") { text(of: sortMenu).contains("Size ↑") }
+        app.typeKey("4", modifierFlags: .command)
+        eventually("⌘4: date taken") { text(of: sortMenu).contains("Date Taken ↓") }
+
+        app.terminate()
+        launch(open: tempDir.path, resetState: false)
+        XCTAssertTrue(app.staticTexts["a.jpg"].waitForExistence(timeout: 15))
+        XCTAssertTrue(text(of: sortMenu).contains("Date Taken ↓"), "remembered: \(text(of: sortMenu))")
     }
 
     func testEmptyFolderState() throws {

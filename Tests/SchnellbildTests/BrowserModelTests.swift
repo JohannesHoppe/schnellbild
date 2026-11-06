@@ -1,4 +1,5 @@
 import XCTest
+import ImageIO
 @testable import Schnellbild
 
 // MARK: - Helpers
@@ -69,9 +70,13 @@ final class FileActionsSpy {
 final class PlayerSpy: PlaybackControl {
     var calls: [String] = []
     var isPlaying = true   // videos autoplay
+    var progress: Double? = 0
     func play()  { calls.append("play"); isPlaying = true }
     func pause() { calls.append("pause"); isPlaying = false }
-    func seek(by seconds: Double) { calls.append("seek \(Int(seconds))") }
+    func seek(toProgress progress: Double) {
+        calls.append("seek \(Int((progress * 100).rounded())) %")
+        self.progress = progress
+    }
 }
 
 func makeTestDefaults() -> UserDefaults {
@@ -179,7 +184,7 @@ final class SortTests: XCTestCase {
     func testSortByDateAndSize() {
         let input = [entry("new.jpg", .image, date: Date(timeIntervalSince1970: 1000), size: 10),
                      entry("old.jpg", .image, date: Date(timeIntervalSince1970: 0), size: 99)]
-        XCTAssertEqual(BrowserModel.sortEntries(input, key: .date, ascending: true).map(\.name), ["old.jpg", "new.jpg"])
+        XCTAssertEqual(BrowserModel.sortEntries(input, key: .modified, ascending: true).map(\.name), ["old.jpg", "new.jpg"])
         XCTAssertEqual(BrowserModel.sortEntries(input, key: .size, ascending: true).map(\.name), ["new.jpg", "old.jpg"])
     }
 
@@ -195,9 +200,64 @@ final class SortTests: XCTestCase {
         XCTAssertEqual(m.names, ["..", "c.jpg", "b.jpg", "a.jpg"])
         XCTAssertEqual(m.selectedEntry?.name, "b.jpg")
 
-        m.setSort(.size)   // new key → ascending again
+        m.setSort(.size)   // new key → its natural direction: largest first
         XCTAssertEqual(m.sortKey, .size)
+        XCTAssertFalse(m.sortAscending)
+        m.setSort(.kind)   // names and kinds start A→Z
         XCTAssertTrue(m.sortAscending)
+    }
+
+    func testSortByKindGroupsExtensionsThenNames() {
+        let input = [entry("b.png", .image), entry("c.jpg", .image), entry("a.png", .image), entry("clip.mp4", .video)]
+        XCTAssertEqual(BrowserModel.sortEntries(input, key: .kind, ascending: true).map(\.name),
+                       ["c.jpg", "clip.mp4", "a.png", "b.png"])
+    }
+
+    func testTiesFallBackToTheName() {
+        let same = Date(timeIntervalSince1970: 500)
+        let input = [entry("b.jpg", .image, date: same, size: 1), entry("a.jpg", .image, date: same, size: 1)]
+        for key in BrowserModel.SortKey.allCases {
+            XCTAssertEqual(BrowserModel.sortEntries(input, key: key, ascending: true).map(\.name), ["a.jpg", "b.jpg"], "\(key)")
+        }
+    }
+
+    func testDateTakenFallsBackToDateModified() {
+        let photo = entry("photo.jpg", .image, date: Date(timeIntervalSince1970: 9000))   // copied late
+        let other = entry("other.jpg", .image, date: Date(timeIntervalSince1970: 5000))
+        let taken = [photo.url: Date(timeIntervalSince1970: 100)]                         // but taken early
+        XCTAssertEqual(BrowserModel.sortEntries([photo, other], key: .captured, ascending: true, captured: taken)
+                        .map(\.name), ["photo.jpg", "other.jpg"])
+        XCTAssertEqual(BrowserModel.sortEntries([photo, other], key: .modified, ascending: true)
+                        .map(\.name), ["other.jpg", "photo.jpg"])
+    }
+
+    func testSortIsRemembered() {
+        let defaults = makeTestDefaults()
+        let first = BrowserModel(defaults: defaults)
+        first.setSort(.modified)
+        first.setSort(.modified)   // reversed: oldest first
+        let second = BrowserModel(defaults: defaults)
+        XCTAssertEqual(second.sortKey, .modified)
+        XCTAssertTrue(second.sortAscending)
+    }
+
+    func testCaptureDateIsReadFromExif() async throws {
+        let tree = try TempTree(self)
+        let url = tree.root.appendingPathComponent("taken.jpg")
+        let dest = try XCTUnwrap(CGImageDestinationCreateWithURL(url as CFURL, "public.jpeg" as CFString, 1, nil))
+        let ctx = try XCTUnwrap(CGContext(data: nil, width: 4, height: 4, bitsPerComponent: 8, bytesPerRow: 0,
+                                          space: CGColorSpaceCreateDeviceRGB(),
+                                          bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue))
+        let exif = [kCGImagePropertyExifDateTimeOriginal: "2021:07:14 18:32:05"] as CFDictionary
+        CGImageDestinationAddImage(dest, try XCTUnwrap(ctx.makeImage()),
+                                   [kCGImagePropertyExifDictionary: exif] as CFDictionary)
+        XCTAssertTrue(CGImageDestinationFinalize(dest))
+
+        let date = await BrowserModel.captureDate(of: url)
+        let parts = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: try XCTUnwrap(date))
+        XCTAssertEqual([parts.year, parts.month, parts.day, parts.hour, parts.minute], [2021, 7, 14, 18, 32])
+        let none = await BrowserModel.captureDate(of: try tree.file("plain.jpg"))
+        XCTAssertNil(none, "no EXIF, no date")
     }
 }
 
@@ -1007,7 +1067,7 @@ final class PlaybackTests: XCTestCase {
         XCTAssertFalse(m.slideshowOn)
     }
 
-    func testSpaceTogglesVideoAndCommandArrowsSeek() async throws {
+    func testSpaceTogglesVideo() async throws {
         let tree = try TempTree(self)
         try tree.file("clip.mp4")
         let m = makeModel()
@@ -1022,10 +1082,61 @@ final class PlaybackTests: XCTestCase {
         XCTAssertTrue(m.videoPaused)
         m.handleKey(.space, command: false)
         XCTAssertFalse(m.videoPaused)
+        XCTAssertEqual(player.calls, ["pause", "play"])
+    }
+
+    /// a.jpg, clip.mp4, z.jpg — open on the video with a player at the start.
+    private func openOnVideo() async throws -> (BrowserModel, PlayerSpy) {
+        let tree = try TempTree(self)
+        for n in ["a.jpg", "clip.mp4", "z.jpg"] { try tree.file(n) }
+        let m = makeModel()
+        await openAndWait(m, tree.root)
+        m.selectEntry(named: "clip.mp4")
+        m.activateSelection()
+        let player = PlayerSpy()
+        m.activePlayer = player
+        return (m, player)
+    }
+
+    func testRightArrowSkimsThroughAVideoThenMovesOn() async throws {
+        let (m, player) = try await openOnVideo()
+        for _ in 0..<9 { m.handleKey(.right, command: false) }
+        XCTAssertEqual(player.calls, (1...9).map { "seek \($0 * 10) %" })
+        XCTAssertEqual(m.selectedEntry?.name, "clip.mp4", "nine tenths: still the video")
+        m.handleKey(.right, command: false)
+        XCTAssertEqual(m.selectedEntry?.name, "z.jpg", "past the end: the next item")
+        XCTAssertEqual(m.mode, .detail)
+    }
+
+    func testLeftArrowSkimsBackThenMovesToThePreviousItem() async throws {
+        let (m, player) = try await openOnVideo()
+        player.progress = 0.55
+        m.handleKey(.left, command: false)
+        XCTAssertEqual(player.calls, ["seek 45 %"])
+        player.progress = 0.01   // at the start
+        m.handleKey(.left, command: false)
+        XCTAssertEqual(m.selectedEntry?.name, "a.jpg")
+    }
+
+    func testCommandArrowsAndUpDownPageStraightAwayFromAVideo() async throws {
+        let (m, player) = try await openOnVideo()
+        player.progress = 0.3
         m.handleKey(.right, command: true)
+        XCTAssertEqual(m.selectedEntry?.name, "z.jpg")
         m.handleKey(.left, command: true)
-        XCTAssertEqual(player.calls, ["pause", "play", "seek 10", "seek -10"])
-        XCTAssertEqual(m.mode, .detail, "seeking doesn't page")
+        m.handleKey(.left, command: true)
+        XCTAssertEqual(m.selectedEntry?.name, "a.jpg")
+        m.selectEntry(named: "clip.mp4")
+        m.handleKey(.down, command: false)
+        XCTAssertEqual(m.selectedEntry?.name, "z.jpg")
+        XCTAssertEqual(player.calls, [], "no seeking")
+    }
+
+    func testArrowsPageWhileTheVideoLengthIsUnknown() async throws {
+        let (m, player) = try await openOnVideo()
+        player.progress = nil   // still opening, or not playable
+        m.handleKey(.right, command: false)
+        XCTAssertEqual(m.selectedEntry?.name, "z.jpg")
     }
 
     func testNewPlayerStartsUnpaused() {

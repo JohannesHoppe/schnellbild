@@ -177,6 +177,17 @@ struct ContentView: View {
             }
             .help("Open folder (⌘O)")
         }
+        ToolbarItem(placement: .primaryAction) {
+            Menu {
+                SortChoices(model: model, shortcuts: false)
+            } label: {
+                Label("Sort: \(model.sortKey.title) \(model.sortAscending ? "↑" : "↓")",
+                      systemImage: "arrow.up.arrow.down")
+                    .labelStyle(.titleAndIcon)
+            }
+            .help("Sort order (⌘1 … ⌘5; the same again reverses it)")
+            .accessibilityIdentifier("sortMenu")
+        }
         if model.mode == .detail {
             ToolbarItem(placement: .principal) {
                 Button { model.closeDetail() } label: {
@@ -281,5 +292,32 @@ struct EmptyStateView: View {
             }
         }
         .padding(40)
+    }
+}
+
+/// The sort choices, in the View menu (with ⌘1 … ⌘5) and in the toolbar.
+/// Choosing the current key again reverses the direction.
+struct SortChoices: View {
+    @ObservedObject var model: BrowserModel
+    let shortcuts: Bool
+
+    var body: some View {
+        ForEach(Array(BrowserModel.SortKey.allCases.enumerated()), id: \.element) { index, key in
+            let toggle = Toggle(key.title, isOn: Binding(
+                get: { model.sortKey == key },
+                set: { _ in model.setSort(key) }))
+            if shortcuts {
+                toggle.keyboardShortcut(KeyEquivalent(Character(String(index + 1))), modifiers: .command)
+            } else {
+                toggle
+            }
+        }
+        Divider()
+        Toggle("Ascending", isOn: Binding(
+            get: { model.sortAscending },
+            set: { if $0 != model.sortAscending { model.setSort(model.sortKey) } }))
+        Toggle("Descending", isOn: Binding(
+            get: { !model.sortAscending },
+            set: { if $0 == model.sortAscending { model.setSort(model.sortKey) } }))
     }
 }
