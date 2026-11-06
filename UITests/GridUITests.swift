@@ -23,6 +23,36 @@ final class GridUITests: SchnellbildUITestCase {
         waitForSelected("..")
     }
 
+    /// ↑ ↓ move by one row of the grid as laid out on screen, also after
+    /// the tile size (and with it the number of columns) changes.
+    func testUpAndDownMoveByTheRowsOnScreen() throws {
+        let photos = (0..<20).map { String(format: "p%02d.jpg", $0) }
+        for name in photos { try put("sample.jpg", at: name) }
+        launchOnTempDir(waitFor: "p00.jpg")
+        let names = ["..", "a.jpg", "b.jpg", "c.jpg"] + photos
+        func columns() -> Int {
+            let top = tile("..").frame.minY
+            return names.prefix { abs(tile($0).frame.minY - top) < 2 }.count
+        }
+        let wide = columns()
+        XCTAssertGreaterThan(wide, 1, "several columns")
+        tile("a.jpg").click()
+        waitForSelected("a.jpg")
+        app.typeKey(.downArrow, modifierFlags: [])
+        waitForSelected(names[1 + wide])
+        XCTAssertEqual(tile(names[1 + wide]).frame.minX, tile("a.jpg").frame.minX, accuracy: 2, "straight below")
+        app.typeKey(.upArrow, modifierFlags: [])
+        waitForSelected("a.jpg")
+
+        app.typeKey("-", modifierFlags: .command)
+        app.typeKey("-", modifierFlags: .command)
+        eventually("more columns with smaller tiles") { columns() > wide }
+        let narrow = columns()
+        app.typeKey(.downArrow, modifierFlags: [])
+        waitForSelected(names[1 + narrow])
+        XCTAssertEqual(tile(names[1 + narrow]).frame.minX, tile("a.jpg").frame.minX, accuracy: 2, "straight below")
+    }
+
     func testClickSelectsAndDoubleClickOpens() {
         launchOnTempDir()
         tile("c.jpg").click()

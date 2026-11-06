@@ -159,13 +159,13 @@ AVI/MKV/WebM and other non-native formats play **in-app via vendored VLCKit
   binding; `LocalizationTests.swift`) + XCUITests (`ReadmeScreenshots` is skipped in CI) in `UITests/*UITests.swift` (grid, search, navigation,
   full view, video incl. VLC, actions), sharing `UITestSupport.swift`. Media
   fixtures live in `UITests/Fixtures` (bundled as test resources; the dark,
-  overexposed, even grey, 4K60 and broken ones are drawn by `swift Scripts/make_test_fixtures.swift UITests/Fixtures`).
+  overexposed, even grey, gradient, upright (EXIF orientation 6), colour-band, 4K60 and broken ones are drawn by `swift Scripts/make_test_fixtures.swift UITests/Fixtures`).
   **`VisualUITests` measure what the screen shows**: the CI shell of the
   UI-test job answers "measure:<id>:<rect>" pasteboard requests with
-  `screencapture` + `Scripts/measure_brightness.swift` (the test runner can't
+  `screencapture` + `Scripts/measure_brightness.swift` (mean luminance, its spread, mean red/green/blue) (the test runner can't
   record the screen; XCUITest's own screenshot shows VLC's picture black).
   They check that videos (AVKit, and VLC via `--force-vlc`) are bright from
-  the start, that VLC draws no messages over the video, that handing a 4K picture over from VLC costs under 3 ms (lost pictures are only reported: CI's virtual Macs vary too much), that AVKit and VLC show the same video with the same brightness, auto enhance and the exposure slider on videos and photos, and
+  the start, that VLC draws no messages over the video, that handing a 4K picture over from VLC costs under 3 ms (lost pictures are only reported: CI's virtual Macs vary too much), that AVKit and VLC show the same video with the same brightness and the same colours channel by channel (unfiltered NV12 and filtered BGRA), that a photo with EXIF orientation stands upright at fit and zoomed in, auto enhance and the exposure slider on videos and photos, and
   that broken files don't take the app down. Anything visual gets such a
   measured test, so it can't regress unnoticed. Launch switches for UI
   tests (only with `--ui-testing`; every argument starts with "-" and a
