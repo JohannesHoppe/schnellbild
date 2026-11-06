@@ -1171,6 +1171,8 @@ final class PlaybackTests: XCTestCase {
         XCTAssertEqual(m.shownMediaEntry?.name, shown, "paused")
         m.handleKey(.right, command: false)
         XCTAssertNotEqual(m.shownMediaEntry?.name, shown, "→ still pages")
+        XCTAssertFalse(m.handleKey(.f2, command: false), "no rename during the slideshow")
+        XCTAssertNil(m.renameTarget)
         m.handleKey(.char("s"), command: false)
         XCTAssertNil(m.slideshow, "s ends it")
     }
