@@ -12,7 +12,7 @@ struct SchnellbildApp: App {
                 .environmentObject(model)
                 .frame(minWidth: 720, minHeight: 520)
         }
-        .defaultSize(width: 1100, height: 720)
+        .defaultSize(width: 960, height: 640)
         .commands {
             CommandGroup(replacing: .newItem) {
                 Button("Open Folder…") { model.chooseFolder() }
