@@ -49,6 +49,7 @@ struct RenameView: View {
     }
 
     private func commit() {
+        BrowserModel.testLog("rename confirmed")
         guard !done else { return }
         do {
             try model.rename(entry, to: name)

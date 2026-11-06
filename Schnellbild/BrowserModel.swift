@@ -577,6 +577,19 @@ final class BrowserModel: ObservableObject {
         }
     }
 
+    /// UI tests (`--test-log=<path>`): what happened, a line each, for
+    /// what the screen doesn't show (how often a rename ran).
+    nonisolated static func testLog(_ line: String, arguments: [String] = ProcessInfo.processInfo.arguments) {
+        guard arguments.contains("--ui-testing"),
+              let arg = arguments.first(where: { $0.hasPrefix("--test-log=") }) else { return }
+        let path = String(arg.dropFirst("--test-log=".count))
+        if !FileManager.default.fileExists(atPath: path) { FileManager.default.createFile(atPath: path, contents: nil) }
+        guard let handle = FileHandle(forWritingAtPath: path) else { return }
+        handle.seekToEndOfFile()
+        handle.write(Data((line + "\n").utf8))
+        try? handle.close()
+    }
+
     /// Reopen the last folder on launch (if it still exists).
     /// Checked off the main thread: a share that is mounted but unreachable
     /// (Wi-Fi asleep, VPN down) answers only after its timeout.
@@ -1416,6 +1429,7 @@ final class BrowserModel: ObservableObject {
     /// every history entry that points to it (or, for a folder, into it).
     @discardableResult
     func rename(_ entry: GridEntry, to rawName: String) throws -> URL {
+        Self.testLog("rename \(entry.name) → \(rawName)")
         let name = rawName.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !name.isEmpty else { throw RenameError.emptyName }
         guard name != ".", name != "..", !name.contains("/"), !name.contains(":") else {

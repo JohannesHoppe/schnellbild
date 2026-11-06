@@ -86,6 +86,30 @@ final class ActionsUITests: SchnellbildUITestCase {
         waitForSelected("Sunrise.jpg")
     }
 
+    /// Return in the rename sheet renames once. The text field and the
+    /// default button can both react to Return; the second confirmation must
+    /// not rename again (it would work on the old name and fail, or move a
+    /// case-only rename twice). The app logs each confirmation and each
+    /// rename it runs.
+    func testReturnInTheRenameSheetRenamesOnce() throws {
+        let log = tempDir.appendingPathComponent("test.log")
+        launch(open: tempDir.path, extra: ["--test-log=\(log.path)"])
+        XCTAssertTrue(app.staticTexts["album"].waitForExistence(timeout: 15))
+        waitForSelected("album")
+        app.typeKey(.F2, modifierFlags: [])
+        enterName("Album")   // case only, the trickiest rename; confirmed with Return
+        eventually("rename sheet closes") { !self.renameField.exists }
+        XCTAssertFalse(app.staticTexts["renameError"].exists, "no error on the way out")
+        RunLoop.current.run(until: Date().addingTimeInterval(1))   // a late second confirmation
+        let lines = (try? String(contentsOf: log, encoding: .utf8))?.split(separator: "\n").map(String.init) ?? []
+        print("rename log: \(lines)")
+        XCTAssertEqual(lines.filter { $0.hasPrefix("rename album") }.count, 1, "renamed exactly once: \(lines)")
+        let names = try FileManager.default.contentsOfDirectory(atPath: tempDir.path)
+        XCTAssertTrue(names.contains("Album"), "\(names)")
+        XCTAssertFalse(names.contains("album"), "\(names)")
+        XCTAssertFalse(names.contains { $0.hasPrefix(".rename-") }, "no half-done rename left: \(names)")
+    }
+
     func testF2InTheFullViewRenamesTheFileShown() {
         launchOnTempDir(waitFor: "album")
         tile("b.jpg").doubleClick()
