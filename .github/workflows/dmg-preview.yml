@@ -1,0 +1,40 @@
+# Shows how the DMG window looks in Finder: opens the DMG of a release build
+# and uploads screenshots in light and dark mode as artifact "dmg-preview".
+name: DMG preview
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: "Release build run (number) whose DMG to show"
+        required: true
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  preview:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch the DMG
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN: ${{ inputs.run_id }}
+        run: |
+          [[ "$RUN" =~ ^[0-9]+$ ]] || { echo "run_id must be a number" >&2; exit 1; }
+          for name in macos-signed macos; do
+            gh run download "$RUN" -R "$GITHUB_REPOSITORY" -n "$name" -D dmg && break
+          done
+          find dmg -name '*.dmg'
+
+      - name: Photograph the window
+        run: ./Scripts/dmg_preview.sh "$(find dmg -name '*.dmg' | head -1)" preview
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dmg-preview
+          path: preview/
+          if-no-files-found: error
