@@ -95,6 +95,7 @@ There is **no Xcode project for the app build**; `xcodegen` generates
 - **`VideoDetailView.swift`** — native formats via AVKit; non-native fall back
   to VLCKit. Creates and registers the one `PlaybackControl` per file
   (`AVPlaybackControl` or `VLCPlaybackControl`) in its `.task(id: url)`.
+- **Video zoom**: `VideoDetailView` scales, rotates and pans the player view like `FullImageView` (model `zoom`/`rotation`); a clear layer takes the drag only while zoomed (the player's control bar stays usable at fit). Trackpad pinch on videos goes through a `.magnify` event monitor in `ContentView`, since AVKit's view would take it. On videos `1` = fit.
 - **`VLCVideoView.swift`** — `VLCPlaybackControl` (owns the `VLCMediaPlayer`,
   `import VLCKit`) and `VLCVideoView`, the `NSViewRepresentable` it draws into.
 - **`MediaExtras.swift`** — GIF (`AnimatedImageView`), `InspectorView`,
@@ -230,8 +231,6 @@ names, back/forward/up history, folder rename, folder preview tiles.
 Releases ship as a signed, notarized DMG.
 
 Open / next-up:
-- **Decided, to build (in this order):**
-  1. **Zoom and pan for videos** exactly like for photos (keys, pinch, drag), for AVKit and VLC videos.
 - **Demo GIF** — storyboard ready in `docs/launch-storyboard.md`. User records it
   later, drops `docs/demo.gif`, uncomments the demo line near the top of README.
 - **Launch posts** — `docs/launch.md` has ready Show HN + r/macapps copy; user

@@ -116,7 +116,7 @@ Drag a folder onto the window and choose: drop it on **Browse** to look around, 
   <img src="docs/screenshots/zoom-light.png" width="760" alt="A photo zoomed in">
 </picture></p>
 
-Zoom with the keyboard or a trackpad pinch, drag to pan, rotate in steps of 90°. Only the view changes; Schnellbild never modifies your files.
+Zoom with the keyboard or a trackpad pinch, drag to pan, rotate in steps of 90°, for photos and videos alike, also in the slideshow. Only the view changes; Schnellbild never modifies your files.
 
 | Key | Action |
 |---|---|

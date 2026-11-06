@@ -1030,8 +1030,8 @@ final class BrowserModel: ObservableObject {
     func shrinkThumbnails() { thumbnailSide = max(thumbnailSide - 30, 80) }
 
     /// Mode-aware "+"/"−": zoom the image in the full-size view, resize tiles in the grid.
-    func scaleUp()   { mode == .detail ? zoomIn()  : growThumbnails() }
-    func scaleDown() { mode == .detail ? zoomOut() : shrinkThumbnails() }
+    func scaleUp()   { shownMediaEntry != nil ? zoomIn()  : growThumbnails() }
+    func scaleDown() { shownMediaEntry != nil ? zoomOut() : shrinkThumbnails() }
 
     // MARK: - Activation / navigation
 
@@ -1149,7 +1149,7 @@ final class BrowserModel: ObservableObject {
         default:
             break
         }
-        guard mode == .detail, !command else { return false }
+        guard shownMediaEntry != nil, !command else { return false }
         switch c {
         case "0": zoomReset();            return true
         case "1": zoomActualSize();       return true
@@ -1452,6 +1452,8 @@ final class BrowserModel: ObservableObject {
             showInspector.toggle(); return true
         case .char(let c) where c == "e" && !command:
             enhance.toggle(); return true
+        case .char(let c):
+            return handleCharacter(c, command: command)   // zoom, rotate
         default:
             return false
         }
