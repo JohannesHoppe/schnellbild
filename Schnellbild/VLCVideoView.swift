@@ -133,10 +133,24 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         if first { player.play() }
     }
 
+    /// At its end (ended, or paused on the last pictures: VLC reports
+    /// either) the video is opened again; resuming there would end it at once.
+    private var atEnd: Bool {
+        switch player.state {
+        case .ended, .stopped: return true
+        case .paused:
+            // Within a quarter second of the end (VLC counts the time left negative)
+            guard (player.media?.length.intValue ?? 0) > 0, let left = player.remainingTime?.intValue else { return false }
+            return left > -250
+        default: return false
+        }
+    }
+
     /// At the end, playing starts over.
     func play() {
-        BrowserModel.testLog("vlc play, state \(player.state.rawValue)")
-        if player.state == .ended || player.state == .stopped {
+        BrowserModel.testLog("vlc play, state \(player.state.rawValue), position \(player.position), "
+                             + "remaining \(player.remainingTime?.intValue ?? 0) ms")
+        if atEnd {
             player.media = makeMedia()
         }
         player.play()
@@ -179,7 +193,7 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
     func seek(toProgress progress: Double) {
         let target = min(max(progress, 0), 1)
         pendingSeek = (target, Date())
-        if player.state == .ended || player.state == .stopped {
+        if atEnd {
             positionOnceOpen = Float(target)
             play()
         } else {

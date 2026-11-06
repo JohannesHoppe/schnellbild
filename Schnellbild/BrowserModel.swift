@@ -1755,6 +1755,9 @@ final class AVPlaybackControl: PlaybackControl {
             let playing = player.timeControlStatus != .paused
             Task { @MainActor in
                 guard let self else { return }
+                // A look set while the last frames were already drawn (just
+                // before the end) reaches the picture it stops on
+                if !playing, self.composition != nil { self.redrawIfPaused() }
                 onStateChange(self, playing)
             }
         }
@@ -1818,6 +1821,7 @@ final class AVPlaybackControl: PlaybackControl {
             guard let made else { return }
             self.composition = made
             item.videoComposition = made
+            self.redrawIfPaused()   // a paused item doesn't draw its frame again by itself
         }
     }
 
