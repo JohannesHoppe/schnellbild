@@ -6,7 +6,7 @@ import XCTest
 /// TEST_RUNNER_<name> to the test runner as <name>):
 ///   SCREENSHOTS=1      take them
 ///   SCREENSHOT_SUFFIX  appended to each name, e.g. "-dark"
-///   PHOTOS_DIR         the sample library (Scripts/make_sample_photos.swift),
+///   PHOTOS_DIR         the sample library (Scripts/make_sample_media.swift),
 ///                      outside the runner's container so the status bar
 ///                      shows a short path
 final class ReadmeScreenshots: SchnellbildUITestCase {
@@ -43,14 +43,47 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         waitForSelected("Fjord at Sunset.jpg")
         shoot("grid")
 
+        element("sortMenu").firstMatch.click()
+        XCTAssertTrue(app.menuItems["Date Taken"].waitForExistence(timeout: 5))
+        shoot("sort")
+        app.typeKey(.escape, modifierFlags: [])
+
+        tile("Lofoten").click()
+        waitForSelected("Lofoten")
+        app.typeKey(.F2, modifierFlags: [])
+        XCTAssertTrue(app.textFields["renameField"].waitForExistence(timeout: 5))
+        shoot("rename")
+        app.buttons["Cancel"].firstMatch.click()
+
+        app.typeKey(.F1, modifierFlags: [])
+        XCTAssertTrue(app.staticTexts["Full view"].waitForExistence(timeout: 5))
+        shoot("help")
+        app.typeKey(.F1, modifierFlags: [])
+
+        tile("Fjord at Sunset.jpg").click()
         app.typeKey(.return, modifierFlags: [])
         let fullImage = element("fullImage")
         eventually("the image loads", timeout: 15) { text(of: fullImage).hasSuffix("loaded") }
         shoot("full")
 
+        for _ in 0..<4 { app.typeKey("+", modifierFlags: []) }
+        shoot("zoom")
+        app.typeKey("0", modifierFlags: [])
+
         app.typeKey("i", modifierFlags: [])
         shoot("inspector")
         app.typeKey("i", modifierFlags: [])
+
+        app.typeKey(.escape, modifierFlags: [])
+        tile("Sunset Timelapse.mp4").click()
+        app.typeKey(.return, modifierFlags: [])
+        XCTAssertTrue(element("video.avkit").waitForExistence(timeout: 15))
+        RunLoop.current.run(until: Date().addingTimeInterval(1))
+        app.typeKey(.rightArrow, modifierFlags: [])   // skim ahead, as in the README
+        app.typeKey(.rightArrow, modifierFlags: [])
+        app.typeKey(.space, modifierFlags: [])
+        waitForBadge(containing: "Paused")
+        shoot("video")
 
         app.typeKey(.escape, modifierFlags: [])
         search("sunset")

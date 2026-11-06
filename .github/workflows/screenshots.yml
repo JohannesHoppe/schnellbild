@@ -1,5 +1,5 @@
 # Takes the README screenshots on a clean Mac (started by hand):
-# Scripts/make_sample_photos.swift draws a sample photo library, the
+# Scripts/make_sample_media.swift draws a sample library (photos and videos), the
 # ReadmeScreenshots UI test opens the app on it
 # and photographs grid, full view, inspector and search, in light and dark
 # mode as test attachments, exported from the result bundles into the artifact
@@ -42,7 +42,7 @@ jobs:
             -destination 'platform=macOS' -derivedDataPath build/DerivedData
 
       - name: Draw the sample photos
-        run: swift Scripts/make_sample_photos.swift /Users/Shared/Photos
+        run: swift Scripts/make_sample_media.swift /Users/Shared/Photos
 
       - name: Take the screenshots
         run: |
