@@ -122,6 +122,21 @@ final class VideoUITests: SchnellbildUITestCase {
         }
     }
 
+    /// The slideshow moves on once a video has played to its end, with
+    /// either player.
+    private func checkSlideshowMovesOnAfterAVideo(vlc: Bool) throws {
+        try put("dark.mp4", at: "show/v1.mp4")   // three seconds each
+        try put("bright.mp4", at: "show/v2.mp4")
+        launch(open: tempDir.appendingPathComponent("show").path, extra: vlc ? ["--force-vlc"] : [])
+        XCTAssertTrue(tile("v1.mp4").waitForExistence(timeout: 15))
+        app.typeKey("s", modifierFlags: [])
+        waitForBadge(containing: "v1.mp4", timeout: 20)
+        waitForBadge(containing: "v2.mp4", timeout: 20)
+    }
+
+    func testSlideshowMovesOnAfterAnAVKitVideo() throws { try checkSlideshowMovesOnAfterAVideo(vlc: false) }
+    func testSlideshowMovesOnAfterAVLCVideo() throws { try checkSlideshowMovesOnAfterAVideo(vlc: true) }
+
     func testSpaceAtTheEndPlaysAnAVKitVideoAgain() throws { try checkSpaceAtTheEndPlaysAgain(vlc: false) }
     func testSpaceAtTheEndPlaysAVLCVideoAgain() throws { try checkSpaceAtTheEndPlaysAgain(vlc: true) }
 
