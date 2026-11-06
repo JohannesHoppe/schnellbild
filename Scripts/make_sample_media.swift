@@ -2,9 +2,11 @@ import CoreGraphics
 import Foundation
 import ImageIO
 import UniformTypeIdentifiers
+import AVFoundation
 
-// Writes the sample photo library the README screenshots show.
-// Usage: swift Scripts/make_sample_photos.swift <folder>
+// Writes the sample library the README screenshots show: photos and two
+// short timelapse videos, drawn with CoreGraphics, the same on every run.
+// Usage: swift Scripts/make_sample_media.swift <folder>
 // (.github/workflows/screenshots.yml; UITests/ReadmeScreenshots.swift opens it)
 
 /// Landscape pictures drawn with CoreGraphics:
@@ -20,6 +22,8 @@ enum SampleScenes {
         var stars = false
         var aurora = false
         var seed: UInt64 = 1
+        /// How far the sun sinks over a video (fraction of the height).
+        var sunDrift: CGFloat = 0
     }
 
     static let fjord = Scene(sky: [(34, 24, 74), (196, 82, 122), (255, 176, 96)],
@@ -70,12 +74,66 @@ enum SampleScenes {
 
     static func with(_ scene: Scene, seed: UInt64) -> Scene { var s = scene; s.seed = seed; return s }
 
-    static func writeLibrary(to folder: URL) throws {
+    /// Timelapse videos: 6 s, 1280×720, 30 fps.
+    static let videos: [(path: String, scene: Scene)] = [
+        ("Sunset Timelapse.mp4", { var s = fjord; s.sunDrift = 0.32; s.seed = 61; return s }()),
+        ("Lofoten/Aurora Timelapse.mp4", with(night, seed: 67)),
+    ]
+
+    static func writeLibrary(to folder: URL) async throws {
         for (path, scene) in library {
-            let url = folder.appendingPathComponent(path)
-            try FileManager.default.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true)
+            let url = try prepare(path, in: folder)
             try writeJPEG(render(scene), to: url)
         }
+        for (path, scene) in videos {
+            try await writeVideo(scene, to: try prepare(path, in: folder))
+        }
+    }
+
+    private static func prepare(_ path: String, in folder: URL) throws -> URL {
+        let url = folder.appendingPathComponent(path)
+        try FileManager.default.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true)
+        try? FileManager.default.removeItem(at: url)
+        return url
+    }
+
+    static func writeVideo(_ scene: Scene, to url: URL, seconds: Int = 6, fps: Int32 = 30) async throws {
+        let width = 1280, height = 720
+        let writer = try AVAssetWriter(outputURL: url, fileType: .mp4)
+        let input = AVAssetWriterInput(mediaType: .video, outputSettings: [
+            AVVideoCodecKey: AVVideoCodecType.h264,
+            AVVideoWidthKey: width,
+            AVVideoHeightKey: height,
+        ])
+        input.expectsMediaDataInRealTime = false
+        let adaptor = AVAssetWriterInputPixelBufferAdaptor(assetWriterInput: input, sourcePixelBufferAttributes: [
+            kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32ARGB,
+            kCVPixelBufferWidthKey as String: width,
+            kCVPixelBufferHeightKey as String: height,
+        ])
+        writer.add(input)
+        guard writer.startWriting() else { throw writer.error ?? CocoaError(.fileWriteUnknown) }
+        writer.startSession(atSourceTime: .zero)
+        let frames = seconds * Int(fps)
+        for frame in 0..<frames {
+            while !input.isReadyForMoreMediaData { try await Task.sleep(for: .milliseconds(5)) }
+            let image = render(scene, width: width, height: height, time: CGFloat(frame) / CGFloat(frames - 1))
+            guard let pool = adaptor.pixelBufferPool else { throw CocoaError(.fileWriteUnknown) }
+            var buffer: CVPixelBuffer?
+            CVPixelBufferPoolCreatePixelBuffer(nil, pool, &buffer)
+            guard let buffer else { throw CocoaError(.fileWriteUnknown) }
+            CVPixelBufferLockBaseAddress(buffer, [])
+            let ctx = CGContext(data: CVPixelBufferGetBaseAddress(buffer), width: width, height: height,
+                                bitsPerComponent: 8, bytesPerRow: CVPixelBufferGetBytesPerRow(buffer),
+                                space: CGColorSpaceCreateDeviceRGB(),
+                                bitmapInfo: CGImageAlphaInfo.noneSkipFirst.rawValue)
+            ctx?.draw(image, in: CGRect(x: 0, y: 0, width: width, height: height))
+            CVPixelBufferUnlockBaseAddress(buffer, [])
+            adaptor.append(buffer, withPresentationTime: CMTime(value: CMTimeValue(frame), timescale: fps))
+        }
+        input.markAsFinished()
+        await writer.finishWriting()
+        if writer.status != .completed { throw writer.error ?? CocoaError(.fileWriteUnknown) }
     }
 
     // MARK: Drawing
@@ -92,7 +150,11 @@ enum SampleScenes {
         CGColor(red: c.0 / 255, green: c.1 / 255, blue: c.2 / 255, alpha: a)
     }
 
-    static func render(_ scene: Scene, width: Int = 2400, height: Int = 1600) -> CGImage {
+    /// `time` (0 … 1) animates a video frame: the sun sinks by `sunDrift`,
+    /// the aurora waves move.
+    static func render(_ scene: Scene, width: Int = 2400, height: Int = 1600, time: CGFloat = 0) -> CGImage {
+        var scene = scene
+        if let sun = scene.sun { scene.sun = (sun.x, sun.y - scene.sunDrift * time, sun.r, sun.color) }
         let W = CGFloat(width), H = CGFloat(height)
         let cs = CGColorSpaceCreateDeviceRGB()
         let ctx = CGContext(data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: 0,
@@ -120,7 +182,7 @@ enum SampleScenes {
             for band in 0..<5 {
                 let path = CGMutablePath()
                 let base = H * (0.62 + CGFloat(band) * 0.045)
-                let phase = rng.next() * 6
+                let phase = rng.next() * 6 + time * 4
                 path.move(to: CGPoint(x: 0, y: base))
                 for x in stride(from: CGFloat(0), through: W, by: 12) {
                     path.addLine(to: CGPoint(x: x, y: base + sin(x / W * 5 + phase) * H * 0.07))
@@ -209,5 +271,5 @@ enum SampleScenes {
 }
 
 let target = URL(fileURLWithPath: CommandLine.arguments.count > 1 ? CommandLine.arguments[1] : "Photos", isDirectory: true)
-try SampleScenes.writeLibrary(to: target)
-print("Wrote \(SampleScenes.library.count) pictures to \(target.path)")
+try await SampleScenes.writeLibrary(to: target)
+print("Wrote \(SampleScenes.library.count) pictures and \(SampleScenes.videos.count) videos to \(target.path)")
