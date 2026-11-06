@@ -102,6 +102,13 @@ final class VideoUITests: SchnellbildUITestCase {
         try checkFullBrightness("clip.mkv", player: "video.vlc")
     }
 
+    /// Videos QuickLook can't read get their tile picture from VLC.
+    func testMKVTileShowsAFrame() throws {
+        try put("clip.mkv", at: "clip.mkv")
+        launchOnTempDir(waitFor: "clip.mkv")
+        eventually("a picture, not the file icon", timeout: 20) { self.text(of: self.tile("clip.mkv")).hasSuffix(", preview") }
+    }
+
     func testVideosZoomLikePictures() throws {
         try put("clip.mp4", at: "clip.mp4")
         launch(open: tempDir.appendingPathComponent("clip.mp4").path)

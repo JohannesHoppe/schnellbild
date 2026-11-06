@@ -24,6 +24,9 @@ final class ThumbnailCache {
         cache.countLimit = limit
     }
 
+    /// Marks an image that is only the file's icon, not a picture of it.
+    static let fileIcon = "file icon"
+
     /// Any cached image of the file, whatever size it was made for.
     func image(for url: URL) -> NSImage? {
         cache.object(forKey: url as NSURL)?.image
@@ -41,11 +44,18 @@ final class ThumbnailCache {
             scale: NSScreen.mainBackingScale,
             representationTypes: .all
         )
-        guard let rep = try? await QLThumbnailGenerator.shared.generateBestRepresentation(for: request) else {
-            return nil
+        let rep = try? await QLThumbnailGenerator.shared.generateBestRepresentation(for: request)
+        var image = rep?.nsImage
+        if rep?.type == .icon { image?.accessibilityDescription = Self.fileIcon }
+        // QuickLook has only the file icon for videos it can't read (AVI,
+        // MKV …); VLC, which plays them, makes the frame.
+        if rep?.type != .thumbnail, BrowserModel.mediaKind(of: url) == .video, !Task.isCancelled,
+           let frame = await VLCThumbnails.shared.thumbnail(for: url, width: side * NSScreen.mainBackingScale) {
+            image = NSImage(cgImage: frame, size: NSSize(width: frame.width, height: frame.height))
         }
-        cache.setObject(Entry(image: rep.nsImage, side: side), forKey: url as NSURL)
-        return rep.nsImage
+        guard let image else { return nil }
+        cache.setObject(Entry(image: image, side: side), forKey: url as NSURL)
+        return image
     }
 }
 
@@ -73,7 +83,9 @@ struct ThumbnailView: View {
                 }
             }
             .accessibilityElement(children: .ignore)
-            .accessibilityLabel("\(TileChrome.selectionLabel(isSelected)), \(isVideo ? "video" : "image")")
+            .accessibilityLabel("\(TileChrome.selectionLabel(isSelected)), \(isVideo ? "video" : "image")"
+                                + (image.map { $0.accessibilityDescription == ThumbnailCache.fileIcon ? ", file icon" : ", preview" }
+                                   ?? (failed ? ", no preview" : "")))
             .task(id: TileKey(url: url, side: side)) { await load() }
     }
 
