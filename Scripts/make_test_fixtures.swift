@@ -1,12 +1,13 @@
 // Draws the media fixtures the visual UI tests measure (UITests/Fixtures):
 // an underexposed and an overexposed video and photo, an even grey video,
-// plus broken files.
+// a photo taken upright, red, green and blue bands, plus broken files.
 // Always the same output, no external images.
 //
 //   swift Scripts/make_test_fixtures.swift UITests/Fixtures
 import AVFoundation
 import AppKit
 import CoreImage
+import ImageIO
 
 let out = URL(fileURLWithPath: CommandLine.arguments.dropFirst().first ?? "UITests/Fixtures", isDirectory: true)
 try FileManager.default.createDirectory(at: out, withIntermediateDirectories: true)
@@ -85,6 +86,32 @@ try writeVideo(frame(width: 640, height: 360, low: 0.5, high: 0.5), to: "grey.mp
 let gradient = frame(width: 640, height: 360, low: 0.05, high: 0.95)
 try writeJPEG(gradient, to: "gradient.jpg")
 try writeVideo(gradient, to: "gradient.mp4")
+
+// Taken with the camera upright: stored lying, dark on the left, with EXIF
+// orientation 6 (turn a quarter clockwise), so it stands dark at the top
+let lying = frame(width: 2400, height: 1350, low: 0.05, high: 0.95)
+let uprightURL = out.appendingPathComponent("upright.jpg")
+let upright = CGImageDestinationCreateWithURL(uprightURL as CFURL, "public.jpeg" as CFString, 1, nil)!
+CGImageDestinationAddImage(upright, lying, [
+    kCGImagePropertyOrientation: NSNumber(value: 6),
+    kCGImagePropertyTIFFDictionary: [kCGImagePropertyTIFFOrientation: NSNumber(value: 6)],
+    kCGImageDestinationLossyCompressionQuality: 0.9,
+] as CFDictionary)
+guard CGImageDestinationFinalize(upright) else { fatalError("upright.jpg") }
+
+// Red, green and blue bands, left to right: do both players show the same colours?
+let bands: CGImage = {
+    let ctx = CGContext(data: nil, width: 640, height: 360, bitsPerComponent: 8, bytesPerRow: 0,
+                        space: CGColorSpace(name: CGColorSpace.sRGB)!,
+                        bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)!
+    let colours = [(0.75, 0.2, 0.2), (0.2, 0.65, 0.25), (0.2, 0.3, 0.75)]
+    for (i, c) in colours.enumerated() {
+        ctx.setFillColor(CGColor(srgbRed: c.0, green: c.1, blue: c.2, alpha: 1))
+        ctx.fill(CGRect(x: i * 640 / 3, y: 0, width: 640 / 3 + 1, height: 360))
+    }
+    return ctx.makeImage()!
+}()
+try writeVideo(bands, to: "colours.mp4")
 
 // 4K at 60 frames per second, a bar crossing the picture: does playback keep up?
 let uhdBackground = frame(width: 3840, height: 2160, low: 0.2, high: 0.7)

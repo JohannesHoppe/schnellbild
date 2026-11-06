@@ -454,16 +454,22 @@ struct DropZoneDelegate: DropDelegate {
     let width: CGFloat
     let onDrop: ([URL], DropZone) -> Void
 
+    /// The zone under the pointer: the left half browses, the right half
+    /// plays. None once the mouse is up: a late update after the drop must
+    /// not bring the zones back.
+    static func zone(atX x: CGFloat, width: CGFloat, mouseDown: Bool = true) -> DropZone? {
+        guard mouseDown else { return nil }
+        return x < width / 2 ? .browse : .slideshow
+    }
+
     private func zone(at info: DropInfo) -> DropZone {
-        info.location.x < width / 2 ? .browse : .slideshow
+        Self.zone(atX: info.location.x, width: width) ?? .browse
     }
 
     func validateDrop(info: DropInfo) -> Bool { info.hasItemsConforming(to: [.fileURL]) }
     func dropEntered(info: DropInfo) { zone = zone(at: info) }
     func dropUpdated(info: DropInfo) -> DropProposal? {
-        // A late update after the drop (mouse already released) must not
-        // bring the zones back.
-        zone = NSEvent.pressedMouseButtons == 0 ? nil : zone(at: info)
+        zone = Self.zone(atX: info.location.x, width: width, mouseDown: NSEvent.pressedMouseButtons != 0)
         return DropProposal(operation: .copy)
     }
     func dropExited(info: DropInfo) { zone = nil }

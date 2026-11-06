@@ -18,9 +18,18 @@ final class VisualUITests: SchnellbildUITestCase {
                                           width: f.width / 2, height: f.height / 2), file: file, line: line).mean
     }
 
-    /// Mean luminance and its standard deviation (how even it is) of a
-    /// screen region, in screen points.
-    private func screenStats(of region: CGRect, file: StaticString = #filePath, line: UInt = #line) throws -> (mean: Double, spread: Double) {
+    /// What a screen region shows: mean luminance, its standard deviation
+    /// (how even it is) and the mean of each colour channel, all 0 … 1.
+    private struct ScreenStats {
+        let mean: Double
+        let spread: Double
+        let red: Double
+        let green: Double
+        let blue: Double
+    }
+
+    /// Measures a screen region, in screen points.
+    private func screenStats(of region: CGRect, file: StaticString = #filePath, line: UInt = #line) throws -> ScreenStats {
         guard ProcessInfo.processInfo.environment["SCREEN_MEASURE"] == "1" else {
             throw XCTSkip("needs the screen-measuring shell of the CI workflow")
         }
@@ -29,15 +38,14 @@ final class VisualUITests: SchnellbildUITestCase {
         pasteboard.clearContents()
         pasteboard.setString("measure:\(id):\(Int(region.minX)),\(Int(region.minY)),\(Int(region.width)),\(Int(region.height))",
                              forType: .string)
-        var answer: (Double, Double)?
+        var answer: ScreenStats?
         eventually("the screen was measured", timeout: 30, file: file, line: line) {
             guard let text = pasteboard.string(forType: .string), text.hasPrefix("measured:\(id):") else { return false }
-            let numbers = text.dropFirst("measured:\(id):".count).split(separator: ":").compactMap { Double($0) }
-            if numbers.count == 2 { answer = (numbers[0], numbers[1]) }
+            let n = text.dropFirst("measured:\(id):".count).split(separator: ":").compactMap { Double($0) }
+            if n.count == 5, n[0] >= 0 { answer = ScreenStats(mean: n[0], spread: n[1], red: n[2], green: n[3], blue: n[4]) }
             return true
         }
-        let (mean, spread) = try XCTUnwrap(answer, file: file, line: line)
-        return (mean, spread)
+        return try XCTUnwrap(answer, "the region couldn't be measured", file: file, line: line)
     }
 
     private func settle(_ seconds: TimeInterval = 2) {
@@ -95,6 +103,60 @@ final class VisualUITests: SchnellbildUITestCase {
         }
     }
 
+    /// The picture of a 16:9 video fitted into its player view.
+    private func picture(in video: XCUIElement) -> CGRect {
+        let f = video.frame
+        let width = min(f.width, f.height * 16 / 9), height = width * 9 / 16
+        return CGRect(x: f.midX - width / 2, y: f.midY - height / 2, width: width, height: height)
+    }
+
+    /// The red, green and blue bands of `colours.mp4`, each measured in
+    /// its middle.
+    private func bands(of video: XCUIElement) throws -> [ScreenStats] {
+        let p = picture(in: video)
+        return try (0..<3).map { band in
+            let midX = p.minX + p.width * (Double(band) + 0.5) / 3
+            return try screenStats(of: CGRect(x: midX - p.width / 12, y: p.midY - p.height / 6,
+                                              width: p.width / 6, height: p.height / 3))
+        }
+    }
+
+    /// Both players show colours alike, channel by channel: VLC's pictures
+    /// go to the screen as NV12 when unfiltered and as BGRA through the
+    /// filter, so both ways are compared with AVKit (a swapped channel or
+    /// the wrong colour matrix shows up here, not in the brightness).
+    func testAVKitAndVLCShowTheSameColours() throws {
+        var shown: [String: [ScreenStats]] = [:]
+        for vlc in [false, true] {
+            let video = try openVideo("colours.mp4", vlc: vlc)
+            let player = vlc ? "VLC" : "AVKit"
+            shown["\(player) as is"] = try bands(of: video)
+            app.typeKey("a", modifierFlags: [])
+            let slider = element("slider.contrast").firstMatch
+            XCTAssertTrue(slider.waitForExistence(timeout: 5))
+            slider.adjust(toNormalizedSliderPosition: 0.6)
+            waitForBadge(containing: "Adjusted")
+            app.typeKey("a", modifierFlags: [])
+            settle()
+            shown["\(player) filtered"] = try bands(of: video)
+            app.terminate()
+        }
+        for (key, stats) in shown.sorted(by: { $0.key < $1.key }) {
+            print("\(key): " + stats.map { String(format: "(%.3f %.3f %.3f)", $0.red, $0.green, $0.blue) }.joined(separator: " "))
+        }
+        for way in ["as is", "filtered"] {
+            let avkit = try XCTUnwrap(shown["AVKit \(way)"]), vlc = try XCTUnwrap(shown["VLC \(way)"])
+            for (band, name) in ["red", "green", "blue"].enumerated() {
+                let a = avkit[band], v = vlc[band]
+                let channels = [a.red, a.green, a.blue]
+                XCTAssertEqual(channels.firstIndex(of: channels.max()!), band, "AVKit \(way), \(name) band: \(channels)")
+                for (channel, (x, y)) in ["red", "green", "blue"].enumerated().map({ ($0.element, [(a.red, v.red), (a.green, v.green), (a.blue, v.blue)][$0.offset]) }) {
+                    XCTAssertEqual(y, x, accuracy: 0.04, "\(way), \(name) band, \(channel): AVKit \(x), VLC \(y)")
+                }
+            }
+        }
+    }
+
     func testAVKitVideoIsShownAtFullBrightness() throws { try checkFullBrightness(vlc: false) }
     func testVLCVideoIsShownAtFullBrightness() throws { try checkFullBrightness(vlc: true) }
 
@@ -107,10 +169,8 @@ final class VisualUITests: SchnellbildUITestCase {
         app.typeKey("e", modifierFlags: [])
         waitForBadge(containing: "Enhanced")
         settle(2.5)
-        // The video is 16:9, fitted into the view
-        let f = video.frame
-        let width = min(f.width, f.height * 16 / 9), height = width * 9 / 16
-        let picture = CGRect(x: f.midX - width / 2, y: f.midY - height / 2, width: width, height: height)
+        let picture = picture(in: video)
+        let width = picture.width, height = picture.height
         for (side, x) in [("left", picture.minX + width * 0.03), ("right", picture.minX + width * 0.62)] {
             let corner = CGRect(x: x, y: picture.minY + height * 0.03, width: width * 0.35, height: height * 0.3)
             let stats = try screenStats(of: corner)
@@ -299,6 +359,31 @@ final class VisualUITests: SchnellbildUITestCase {
 
     func testAutoEnhanceBrightensADarkPhoto() throws { try checkAutoEnhancePhoto("dark.jpg", brighter: true) }
     func testAutoEnhanceDarkensAnOverexposedPhoto() throws { try checkAutoEnhancePhoto("bright.jpg", brighter: false) }
+
+    /// A photo taken with the camera held upright: stored lying (dark on the
+    /// left), with EXIF orientation 6 to turn it. On screen it stands, dark
+    /// at the top, at fit and when zoomed in (decoded again at full size).
+    func testAnUprightPhotoIsShownTurned() throws {
+        try put("upright.jpg", at: "upright.jpg")
+        launch(open: tempDir.appendingPathComponent("upright.jpg").path)
+        let image = element("fullImage")
+        eventually("loaded", timeout: 15) { text(of: image).hasSuffix("loaded") }
+        settle()
+        let area = image.frame
+        func strip(atHeight fraction: Double) throws -> Double {
+            try screenStats(of: CGRect(x: area.midX - area.width * 0.04, y: area.minY + area.height * fraction,
+                                       width: area.width * 0.08, height: area.height * 0.08)).mean
+        }
+        for state in ["fit", "zoomed in"] {
+            let top = try strip(atHeight: 0.12), bottom = try strip(atHeight: 0.8)
+            XCTAssertLessThan(top, bottom - 0.2, "\(state): not turned upright (top \(top), bottom \(bottom)); \(text(of: image))")
+            if state == "fit" {
+                for _ in 0..<2 { app.typeKey("+", modifierFlags: []) }
+                eventually("decoded at full size", timeout: 15) { text(of: image).contains("decoded 2400 px") }
+                settle()
+            }
+        }
+    }
 
     // MARK: Broken files
 
