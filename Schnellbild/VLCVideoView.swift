@@ -25,6 +25,8 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         logger.level = .debug
         VLCLibrary.shared().loggers = [logger]
     }()
+    /// Where the picture goes (no OpenGL; see `VLCFrameOutput`).
+    let output = VLCFrameOutput()
     private let url: URL
     private let onStateChange: @MainActor (PlaybackControl, Bool) -> Void
     private weak var drawable: NSView?
@@ -34,37 +36,22 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
     /// start it instead of pausing it.
     private(set) var isPlaying = true
 
-    /// Sharpening is a VLC video filter chosen when the media opens, so it
-    /// follows the look from the next video on; the adjust filter (gamma,
-    /// contrast, saturation) switches at once.
-    private var sharpen: Bool
     /// Where auto enhance's look goes (the model, for the sliders).
     var onAutoLook: @MainActor (PlaybackControl, Look) -> Void = { _, _ in }
 
-    init(url: URL, enhancement: Enhancement = .off, onStateChange: @escaping @MainActor (PlaybackControl, Bool) -> Void) {
+    init(url: URL, onStateChange: @escaping @MainActor (PlaybackControl, Bool) -> Void) {
         self.url = url
         self.onStateChange = onStateChange
-        switch enhancement {
-        case .off: sharpen = false
-        case .auto: sharpen = true
-        case .manual(let look): sharpen = look.sharpness > 0
-        }
         super.init()
         player.media = makeMedia()
         player.delegate = self
+        output.attach(to: player)
     }
 
     private func makeMedia() -> VLCMedia {
         let media = VLCMedia(url: url)
-        // No on-screen messages: the auto enhance snapshots (`snapshotStats`)
-        // would otherwise show "Snapshot taken: <path>" and a preview over
-        // the video.
+        // No on-screen messages (VLC would draw them into the picture)
         media.addOption(":no-osd")
-        media.addOption(":no-snapshot-preview")
-        if sharpen {
-            media.addOption(":video-filter=sharpen")
-            media.addOption(":sharpen-sigma=0.08")
-        }
         return media
     }
 
@@ -73,20 +60,19 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
     /// The next measurement takes its value at once (after a seek).
     private var measureNow = true
 
-    /// VLC hands out no frames to filter, so for auto enhance the picture is
-    /// measured from a small snapshot once a second, gliding in between;
-    /// the look goes to VLC's adjust filter (VLC's gamma is the inverse of
-    /// Core Image's power: > 1 brightens).
+    /// The look is applied by `VLCFrameOutput`, as Core Image does for
+    /// AVKit. For auto enhance the decoded picture is measured once a
+    /// second, gliding in between.
     func setEnhancement(_ enhancement: Enhancement) {
         measureTask?.cancel()
         measureTask = nil
         switch enhancement {
         case .off:
-            player.adjustFilter.isEnabled = false
+            output.setLook(.neutral)
         case .manual(let look):
-            show(look)
+            output.setLook(look)
         case .auto:
-            show(adaptive.look)
+            output.setLook(adaptive.look)
             measureNow = true
             measureTask = Task { [weak self] in
                 var sinceMeasure = Double.infinity
@@ -94,7 +80,7 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
                 while !Task.isCancelled {
                     guard let self else { return }
                     if self.measureNow || sinceMeasure >= 1 || !self.adaptive.hasPicture {
-                        if let stats = await self.snapshotStats(), !Task.isCancelled {
+                        if let stats = await self.pictureStats(), !Task.isCancelled {
                             self.adaptive.measure(stats, instant: self.measureNow)
                             self.measureNow = false
                         }
@@ -103,7 +89,7 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
                         self.adaptive.advance(by: 0.2)
                     }
                     guard !Task.isCancelled else { return }
-                    self.show(self.adaptive.look)
+                    self.output.setLook(self.adaptive.look)
                     if sinceReport >= 0.25 {
                         self.onAutoLook(self, self.adaptive.look)
                         sinceReport = 0
@@ -116,53 +102,33 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         }
     }
 
-    private func show(_ look: Look) {
-        let adjust = player.adjustFilter
-        adjust.gamma.value = NSNumber(value: 1 / look.gammaPower)
-        adjust.contrast.value = NSNumber(value: look.contrastFactor)
-        adjust.saturation.value = NSNumber(value: look.saturationFactor)
-        adjust.isEnabled = true
-    }
-
-    /// Where the snapshots go: one folder per player, emptied before each
-    /// snapshot and removed in `stop()`, so late ones don't pile up.
-    private lazy var snapshotFolder = FileManager.default.temporaryDirectory
-        .appendingPathComponent("schnellbild-vlc-\(UUID().uuidString)", isDirectory: true)
-
-    /// Mean luminance of the frame on screen, from a 64-pixel-wide snapshot
-    /// VLC writes to a temporary file; nil unless it plays (a paused picture
-    /// doesn't change).
-    private func snapshotStats() async -> PictureStats? {
+    /// The picture on screen, measured; nil unless it plays (a paused
+    /// picture doesn't change).
+    private func pictureStats() async -> PictureStats? {
         guard player.isPlaying else { return nil }
-        let fm = FileManager.default
-        try? fm.removeItem(at: snapshotFolder)
-        try? fm.createDirectory(at: snapshotFolder, withIntermediateDirectories: true)
-        let file = snapshotFolder.appendingPathComponent("frame.png")
-        player.saveVideoSnapshot(at: file.path, withWidth: 64, andHeight: 0)
-        for _ in 0..<10 {   // written asynchronously
-            try? await Task.sleep(for: .milliseconds(50))
-            if let image = CIImage(contentsOf: file) {
-                return PictureStats.of(image)
-            }
-        }
-        return nil
+        let output = self.output
+        return await Task.detached(priority: .utility) { output.latestStats }.value
     }
 
-    /// For UI tests: VLC's state and the brightness of the decoded picture
-    /// (from a snapshot), to tell "VLC decodes nothing" from "the picture
-    /// doesn't reach the screen".
+    /// For UI tests: VLC's state and the brightness of the picture it hands
+    /// over, to tell "VLC decodes nothing" from "the picture doesn't reach
+    /// the screen".
     func diagnostics() async -> String {
-        let decoded = await snapshotStats().map { String(format: "%.3f", $0.mean) } ?? "none"
-        return "vlc state \(player.state.rawValue), video out \(player.hasVideoOut), "
-            + "size \(Int(player.videoSize.width))x\(Int(player.videoSize.height)), decoded \(decoded)"
+        let decoded = await pictureStats().map { String(format: "%.3f", $0.mean) } ?? "none"
+        let stats = player.media?.statistics
+        return "vlc state \(player.state.rawValue), "
+            + "size \(Int(player.videoSize.width))x\(Int(player.videoSize.height)), decoded \(decoded), "
+            + "shown \(stats?.displayedPictures ?? 0), lost \(stats?.lostPictures ?? 0)"
     }
 
-    /// Render into `view`; the first view starts playback.
+    /// Show the picture in `view`; the first view starts playback.
     func attach(to view: NSView) {
         guard drawable !== view else { return }
         let first = drawable == nil
         drawable = view
-        player.drawable = view
+        output.layer.frame = view.bounds
+        output.layer.autoresizingMask = [.layerWidthSizable, .layerHeightSizable]
+        view.layer?.addSublayer(output.layer)
         if first { player.play() }
     }
 
@@ -183,7 +149,6 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
     func stop() {
         measureTask?.cancel()
         measureTask = nil
-        try? FileManager.default.removeItem(at: snapshotFolder)
         player.delegate = nil
         player.stop()
     }
