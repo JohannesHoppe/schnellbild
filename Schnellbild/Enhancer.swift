@@ -7,10 +7,11 @@ import CoreImage.CIFilterBuiltins
 /// For a photo a recipe is worked out once and applied; videos follow their
 /// scenes through `VideoEnhancer`.
 ///
-/// 1. Dark material (mean luminance below 0.4) is brightened with a gamma
-///    curve towards a mean of about 0.45.
+/// 1. Exposure, both ways: dark material (mean luminance below 0.4) is
+///    brightened with a gamma curve towards about 0.45, overexposed material
+///    (above 0.62) darkened towards about 0.55; in between it stays as is.
 /// 2. Core Image's automatic adjustments (tone curve, highlights/shadows,
-///    vibrance, face balance) are worked out on the brightened picture.
+///    vibrance, face balance) are worked out on the corrected picture.
 /// 3. An unsharp mask makes edges crisper, like Photoshop's.
 struct EnhanceRecipe: @unchecked Sendable {   // CIFilters are only copied, never shared while in use
     let gamma: Double?
@@ -28,12 +29,18 @@ struct EnhanceRecipe: @unchecked Sendable {   // CIFilters are only copied, neve
         return EnhanceRecipe(gamma: gamma, adjustments: adjustments, sharpenRadius: max(1, side / 900))
     }
 
-    /// The gamma lift for a mean luminance: none from 0.4 up; below, a power
-    /// < 1 aiming the mean at about 0.45, never stronger than 0.35.
+    /// The gamma correction for a mean luminance (Core Image's power: < 1
+    /// brightens, > 1 darkens). Dark: aims the mean at 0.45, never stronger
+    /// than 0.35. Overexposed: aims it at 0.55, never stronger than 2.5.
+    /// nil in between (0.4 … 0.62): well exposed, left alone.
     static func gammaFor(luminance: Double) -> Double? {
-        guard luminance < 0.4 else { return nil }
-        return min(max(log(0.45) / log(max(luminance, 0.02)), 0.35), 1)
+        if luminance < 0.4 { return min(max(log(0.45) / log(max(luminance, 0.02)), 0.35), 1) }
+        if luminance > 0.62 { return max(min(log(0.55) / log(min(luminance, 0.98)), 2.5), 1) }
+        return nil
     }
+
+    /// Whether a gamma power changes anything.
+    static func corrects(_ power: Double) -> Bool { abs(power - 1) > 0.001 }
 
     func apply(to image: CIImage) -> CIImage {
         var out = image
@@ -88,11 +95,11 @@ struct EnhanceRecipe: @unchecked Sendable {   // CIFilters are only copied, neve
     }
 }
 
-/// How strongly to lift a video's shadows. It is measured now and then, not
+/// How strongly to correct a video's exposure (either way). It is measured now and then, not
 /// for every frame (`VideoEnhancer` decides when), and glides towards the
 /// measured value in between, so it follows the scenes without pumping. A
 /// jump in time (seeking) or the first real picture takes the new value at
-/// once. Black frames (a dark intro, a fade) are held, not lifted.
+/// once. Black or white frames (a dark intro, a fade, a flash) are held.
 struct AdaptiveExposure {
     private(set) var gamma = 1.0
     private var target = 1.0
@@ -105,7 +112,8 @@ struct AdaptiveExposure {
     /// something new (first picture, a cut to a much brighter or darker
     /// scene), so the tone analysis should run again.
     mutating func measure(luminance measured: Double, instant: Bool) -> Bool {
-        guard measured >= 0.03 else { return false }   // black: hold
+        // Black or white (a dark intro, a fade, a flash): hold, don't chase it
+        guard measured >= 0.03, measured <= 0.97 else { return false }
         let first = luminance == nil
         let cut = luminance.map { abs(measured - $0) > 0.2 } ?? false
         target = EnhanceRecipe.gammaFor(luminance: measured) ?? 1
@@ -164,14 +172,14 @@ final class VideoEnhancer: @unchecked Sendable {   // all state behind `lock`
         }
         let gamma = exposure.gamma
         if fresh || time - lastAnalysis >= 2 {
-            let base = gamma < 1 ? EnhanceRecipe.applyGamma(gamma, to: thumbnail()) : thumbnail()
+            let base = EnhanceRecipe.corrects(gamma) ? EnhanceRecipe.applyGamma(gamma, to: thumbnail()) : thumbnail()
             target = base.autoAdjustmentFilters(options: [.redEye: false])
             lastAnalysis = time
             if fresh { current = target.compactMap { $0.copy() as? CIFilter } }
         }
         current = Self.glide(current, towards: target, rate: fresh ? 1 : 1 - exp(-elapsed / 0.7))
 
-        var out = gamma < 1 ? EnhanceRecipe.applyGamma(gamma, to: source) : source
+        var out = EnhanceRecipe.corrects(gamma) ? EnhanceRecipe.applyGamma(gamma, to: source) : source
         for filter in current {
             filter.setValue(out, forKey: kCIInputImageKey)
             if let result = filter.outputImage { out = result }

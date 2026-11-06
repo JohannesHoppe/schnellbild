@@ -147,7 +147,7 @@ Videos play right away, MP4 and MOV through AVKit, formats macOS can't play (AVI
 
 ### Auto enhance
 
-Night shots and dark videos: press `e` (or the wand in the toolbar) and Schnellbild brightens dark material with a gamma lift, lets macOS correct tone, contrast and colour as the Photos app's magic wand does, and sharpens edges like an unsharp mask. Videos follow their scenes: the brightness is measured once a second and the tone every two seconds, and the correction glides to the new values instead of jumping, so a dark intro or a cut doesn't throw it and nothing flickers. After you skip, it measures again at once. It's a filter on the screen only: your files stay exactly as they are. It stays on while you page on, until you switch it off.
+Night shots and dark videos, or washed-out, overexposed ones: press `e` (or the wand in the toolbar) and Schnellbild brightens dark material and tones down overexposed material, lets macOS correct tone, contrast and colour as the Photos app's magic wand does, and sharpens edges like an unsharp mask. Videos follow their scenes: the brightness is measured once a second and the tone every two seconds, and the correction glides to the new values instead of jumping, so a dark intro or a cut doesn't throw it and nothing flickers. After you skip, it measures again at once. It's a filter on the screen only: your files stay exactly as they are. It stays on while you page on, until you switch it off.
 
 | Key | Action |
 |---|---|
