@@ -17,12 +17,40 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
     /// start it instead of pausing it.
     private(set) var isPlaying = true
 
-    init(url: URL, onStateChange: @escaping @MainActor (PlaybackControl, Bool) -> Void) {
+    /// Sharpening is a VLC video filter chosen when the media opens, so it
+    /// follows auto enhance from the next video on; the adjust filter
+    /// (gamma, contrast, saturation) switches at once.
+    private var sharpen: Bool
+
+    init(url: URL, enhanced: Bool = false, onStateChange: @escaping @MainActor (PlaybackControl, Bool) -> Void) {
         self.url = url
         self.onStateChange = onStateChange
+        sharpen = enhanced
         super.init()
-        player.media = VLCMedia(url: url)
+        player.media = makeMedia()
         player.delegate = self
+    }
+
+    private func makeMedia() -> VLCMedia {
+        let media = VLCMedia(url: url)
+        if sharpen {
+            media.addOption(":video-filter=sharpen")
+            media.addOption(":sharpen-sigma=0.08")
+        }
+        return media
+    }
+
+    /// VLC can't measure the picture beforehand: a fixed, moderate lift of
+    /// the shadows (gamma > 1 brightens in VLC's adjust filter), a little
+    /// more contrast and colour.
+    func setEnhanced(_ on: Bool) {
+        let adjust = player.adjustFilter
+        if on {
+            adjust.gamma.value = NSNumber(value: 1.35)
+            adjust.contrast.value = NSNumber(value: 1.1)
+            adjust.saturation.value = NSNumber(value: 1.15)
+        }
+        adjust.isEnabled = on
     }
 
     /// Render into `view`; the first view starts playback.
@@ -37,7 +65,7 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
     /// At the end, playing starts over.
     func play() {
         if player.state == .ended || player.state == .stopped {
-            player.media = VLCMedia(url: url)
+            player.media = makeMedia()
         }
         player.play()
         isPlaying = true

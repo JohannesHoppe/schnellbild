@@ -1,5 +1,6 @@
 import XCTest
 import ImageIO
+import CoreImage
 @testable import Schnellbild
 
 // MARK: - Helpers
@@ -77,6 +78,8 @@ final class PlayerSpy: PlaybackControl {
         calls.append("seek \(Int((progress * 100).rounded())) %")
         self.progress = progress
     }
+    var enhanced = false
+    func setEnhanced(_ on: Bool) { enhanced = on }
 }
 
 func makeTestDefaults() -> UserDefaults {
@@ -1217,6 +1220,20 @@ final class PlaybackTests: XCTestCase {
         XCTAssertTrue(m.isAt(trip), "the dropped folder's grid stays")
     }
 
+    func testEnhanceKeyTogglesItAndThePlayersFollow() {
+        let m = makeModel()
+        let first = PlayerSpy()
+        m.activePlayer = first
+        XCTAssertTrue(m.handleKey(.char("e"), command: false))
+        XCTAssertTrue(m.enhance)
+        XCTAssertTrue(first.enhanced)
+        let next = PlayerSpy()
+        m.activePlayer = next   // paging on: stays on
+        XCTAssertTrue(next.enhanced)
+        m.handleKey(.char("e"), command: false)
+        XCTAssertFalse(next.enhanced)
+    }
+
     func testSpaceTogglesVideo() async throws {
         let tree = try TempTree(self)
         try tree.file("clip.mp4")
@@ -1757,5 +1774,35 @@ final class ReviewFixTests: XCTestCase {
         let old = PlayerSpy()
         m.playbackStateChanged(old, isPlaying: false)
         XCTAssertFalse(m.videoPaused)
+    }
+}
+
+// MARK: - Auto enhance
+
+final class EnhanceTests: XCTestCase {
+    private func grey(_ value: CGFloat) throws -> CGImage {
+        let ctx = try XCTUnwrap(CGContext(data: nil, width: 64, height: 48, bitsPerComponent: 8, bytesPerRow: 0,
+                                          space: CGColorSpaceCreateDeviceRGB(),
+                                          bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue))
+        ctx.setFillColor(CGColor(red: value, green: value, blue: value * 0.9, alpha: 1))
+        ctx.fill(CGRect(x: 0, y: 0, width: 64, height: 48))
+        ctx.setFillColor(CGColor(red: value * 2, green: value * 1.5, blue: value, alpha: 1))
+        ctx.fill(CGRect(x: 16, y: 12, width: 20, height: 20))
+        return try XCTUnwrap(ctx.makeImage())
+    }
+
+    func testDarkPicturesGetBrighterAndKeepTheirSize() throws {
+        let dark = try grey(0.08)
+        let before = try XCTUnwrap(EnhanceRecipe.meanLuminance(of: CIImage(cgImage: dark)))
+        XCTAssertNotNil(EnhanceRecipe.analyse(CIImage(cgImage: dark)).gamma, "a gamma lift for dark material")
+        let result = try XCTUnwrap(EnhanceRecipe.enhanced(dark))
+        XCTAssertEqual(result.width, 64)
+        XCTAssertEqual(result.height, 48)
+        let after = try XCTUnwrap(EnhanceRecipe.meanLuminance(of: CIImage(cgImage: result)))
+        XCTAssertGreaterThan(after, before * 2, "clearly brighter: \(before) → \(after)")
+    }
+
+    func testWellExposedPicturesGetNoGammaLift() throws {
+        XCTAssertNil(EnhanceRecipe.analyse(CIImage(cgImage: try grey(0.55))).gamma)
     }
 }

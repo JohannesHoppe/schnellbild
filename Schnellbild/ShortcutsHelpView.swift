@@ -35,6 +35,7 @@ struct ShortcutsHelpView: View {
             Shortcut(keys: "0 / 1", action: "Fit to window / 100 %"),
             Shortcut(keys: "[ / ]", action: "Rotate left / right"),
             Shortcut(keys: "i", action: "File info"),
+            Shortcut(keys: "e", action: "Auto enhance on / off (brighten, correct, sharpen; files stay untouched)"),
             Shortcut(keys: "Esc / Backspace / Return", action: "Back to grid"),
         ]),
         Group(title: "Slideshow", shortcuts: [

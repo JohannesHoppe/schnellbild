@@ -31,6 +31,8 @@ protocol PlaybackControl: AnyObject {
     func pause()
     /// Jump to a position (0 … 1). From the end, playing resumes.
     func seek(toProgress progress: Double)
+    /// Auto enhance as a filter on the picture (see `EnhanceRecipe`).
+    func setEnhanced(_ on: Bool)
 }
 
 /// Side effects on the file system and the workspace. Injectable, so tests
@@ -329,7 +331,16 @@ final class BrowserModel: ObservableObject {
     /// The player of the video on screen — for keyboard control
     /// (play/pause, skimming). Set by the video views.
     weak var activePlayer: PlaybackControl? {
-        didSet { videoPaused = false }
+        didSet {
+            videoPaused = false
+            if enhance { activePlayer?.setEnhanced(true) }
+        }
+    }
+    /// Auto enhance (E): brightens dark material, corrects tone and colour
+    /// and sharpens, as a view filter on photos and videos. Stays on while
+    /// paging until switched off.
+    @Published var enhance = false {
+        didSet { if enhance != oldValue { activePlayer?.setEnhanced(enhance) } }
     }
     /// Whether the current video is paused (or has ended). Videos autoplay;
     /// the players report changes via `playbackStateChanged`.
@@ -1134,6 +1145,7 @@ final class BrowserModel: ObservableObject {
         case "[" where command: navigateBack();    return true
         case "]" where command: navigateForward(); return true
         case "s" where !command: startSlideshow(); return true
+        case "e" where !command: enhance.toggle(); return true
         default:
             break
         }
@@ -1438,6 +1450,8 @@ final class BrowserModel: ObservableObject {
             toggleFullScreen(); return true
         case .char(let c) where c == "i" && !command:
             showInspector.toggle(); return true
+        case .char(let c) where c == "e" && !command:
+            enhance.toggle(); return true
         default:
             return false
         }
@@ -1482,6 +1496,25 @@ final class AVPlaybackControl: PlaybackControl {
     }
 
     func pause() { player.pause() }
+
+    private var composition: AVVideoComposition?
+    private var enhanceTask: Task<Void, Never>?
+
+    /// Works out the recipe once per video (from one frame), then switches
+    /// the composition on and off.
+    func setEnhanced(_ on: Bool) {
+        enhanceTask?.cancel()
+        guard let item = player.currentItem else { return }
+        guard on else { item.videoComposition = nil; return }
+        if let composition { item.videoComposition = composition; return }
+        let asset = item.asset
+        enhanceTask = Task { [weak self] in
+            guard let found = await EnhanceRecipe.videoComposition(for: asset),
+                  !Task.isCancelled, let self else { return }
+            self.composition = found
+            item.videoComposition = found
+        }
+    }
 
     private var duration: Double? {
         guard let item = player.currentItem else { return nil }
