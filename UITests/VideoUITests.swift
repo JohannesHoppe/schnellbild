@@ -40,6 +40,7 @@ final class VideoUITests: SchnellbildUITestCase {
         XCTAssertTrue(text(of: badge).contains(clip), "→ skips within the video first")
         for _ in 0..<12 where !text(of: badge).contains("z.jpg") {
             app.typeKey(.rightArrow, modifierFlags: [])
+            RunLoop.current.run(until: Date().addingTimeInterval(0.2))
         }
         waitForBadge(containing: "z.jpg")   // past the end: the next item
         app.typeKey(.leftArrow, modifierFlags: .command)
