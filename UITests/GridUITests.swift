@@ -92,7 +92,9 @@ final class GridUITests: SchnellbildUITestCase {
 
         app.terminate()
         launch(open: tempDir.path, resetState: false)
-        XCTAssertTrue(app.staticTexts["a.jpg"].waitForExistence(timeout: 15))
+        let shown = app.staticTexts["a.jpg"].waitForExistence(timeout: 15)
+        if !shown { print("APP TREE:\n\(app.debugDescription)") }
+        XCTAssertTrue(shown)
         XCTAssertTrue(sortLabel.contains("Date Taken ↓"), "remembered: \(sortLabel)")
     }
 
