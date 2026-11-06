@@ -52,6 +52,10 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         let media = VLCMedia(url: url)
         // No on-screen messages (VLC would draw them into the picture)
         media.addOption(":no-osd")
+        // VLCKit turns on "play-and-pause": VLC would pause as soon as it has
+        // read the file to its end, before the last pictures are shown, and
+        // never report the end (the slideshow waits for it)
+        media.addOption(":no-play-and-pause")
         return media
     }
 
@@ -133,23 +137,12 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         if first { player.play() }
     }
 
-    /// At its end (ended, or paused on the last pictures: VLC reports
-    /// either) the video is opened again; resuming there would end it at once.
-    private var atEnd: Bool {
-        switch player.state {
-        case .ended, .stopped: return true
-        case .paused:
-            // Within a quarter second of the end (VLC counts the time left negative)
-            guard (player.media?.length.intValue ?? 0) > 0, let left = player.remainingTime?.intValue else { return false }
-            return left > -250
-        default: return false
-        }
-    }
+    /// Ended or stopped: playing opens the video again.
+    private var atEnd: Bool { player.state == .ended || player.state == .stopped }
 
     /// At the end, playing starts over.
     func play() {
-        BrowserModel.testLog("vlc play, state \(player.state.rawValue), position \(player.position), "
-                             + "remaining \(player.remainingTime?.intValue ?? 0) ms")
+        BrowserModel.testLog("vlc play, state \(player.state.rawValue), position \(player.position)")
         if atEnd {
             player.media = makeMedia()
         }
