@@ -41,7 +41,10 @@ final class VisualUITests: SchnellbildUITestCase {
         try put(fixture, at: fixture)
         launch(open: tempDir.appendingPathComponent(fixture).path, extra: vlc ? ["--force-vlc"] : [])
         let video = element(vlc ? "video.vlc" : "video.avkit")
-        XCTAssertTrue(video.waitForExistence(timeout: 20))
+        guard video.waitForExistence(timeout: 20) else {
+            XCTFail("no \(vlc ? "VLC" : "AVKit") player for \(fixture); the window holds:\n\(app.debugDescription)")
+            throw XCTSkip("no player")
+        }
         waitForBadge(containing: fixture)
         settle()
         return video
