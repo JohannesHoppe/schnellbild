@@ -583,9 +583,12 @@ final class BrowserModel: ObservableObject {
     /// CLI / UI-test seam: `--open <path>` opens a folder (grid) or a file
     /// (straight into the full-size view) on launch — same rules as drag & drop.
     @discardableResult
+    /// `--open=<path>` as one argument: AppKit reads "-name value" pairs as
+    /// settings, so a path as an argument of its own can end up unpaired,
+    /// and AppKit then takes it for a file to open and shows no window.
     func openFromLaunchArguments(_ args: [String] = ProcessInfo.processInfo.arguments) -> Bool {
-        guard let i = args.firstIndex(of: "--open"), i + 1 < args.count else { return false }
-        let url = URL(fileURLWithPath: args[i + 1])
+        guard let arg = args.first(where: { $0.hasPrefix("--open=") }) else { return false }
+        let url = URL(fileURLWithPath: String(arg.dropFirst("--open=".count)))
         guard FileManager.default.fileExists(atPath: url.path) else { return false }
         openDropped([url])
         return true

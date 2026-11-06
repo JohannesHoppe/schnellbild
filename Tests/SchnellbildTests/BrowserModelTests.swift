@@ -492,8 +492,8 @@ final class OpenFolderTests: XCTestCase {
         let file = try tree.file("a.jpg")
         let m = makeModel()
         XCTAssertFalse(m.openFromLaunchArguments(["app"]))
-        XCTAssertFalse(m.openFromLaunchArguments(["app", "--open", "/does/not/exist"]))
-        XCTAssertTrue(m.openFromLaunchArguments(["app", "--open", file.path]))
+        XCTAssertFalse(m.openFromLaunchArguments(["app", "--open=/does/not/exist"]))
+        XCTAssertTrue(m.openFromLaunchArguments(["app", "-AppleLocale", "en_US", "--open=\(file.path)"]))
         await waitUntil { m.mode == .detail }
         XCTAssertEqual(m.selectedMediaEntry?.name, "a.jpg")
     }
