@@ -1081,8 +1081,9 @@ final class BrowserModel: ObservableObject {
             guard renameTarget == nil else { return false }
             showHelp.toggle(); return true
         case .f2:
-            // Also while typing in the search field.
-            guard !sheetOpen else { return false }
+            // Also while typing in the search field; not during a slideshow
+            // (the selection is in the hidden grid).
+            guard !sheetOpen, slideshow == nil else { return false }
             return beginRename()
         default:
             guard !textEditing, !sheetOpen else { return false }
