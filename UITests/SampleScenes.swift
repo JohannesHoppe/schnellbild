@@ -1,0 +1,201 @@
+import CoreGraphics
+import Foundation
+import ImageIO
+import UniformTypeIdentifiers
+
+/// Landscape pictures drawn with CoreGraphics for the README screenshots:
+/// sky gradient, sun or moon, layered mountain ridges fading into haze,
+/// optional water, stars and aurora. Deterministic (seeded), no external
+/// images, so the screenshots look the same on every run.
+enum SampleScenes {
+    struct Scene {
+        var sky: [(CGFloat, CGFloat, CGFloat)]          // top → horizon
+        var ridges: [(CGFloat, CGFloat, CGFloat)]       // far → near
+        var sun: (x: CGFloat, y: CGFloat, r: CGFloat, color: (CGFloat, CGFloat, CGFloat))?
+        var water = false
+        var stars = false
+        var aurora = false
+        var seed: UInt64 = 1
+    }
+
+    static let fjord = Scene(sky: [(34, 24, 74), (196, 82, 122), (255, 176, 96)],
+                             ridges: [(150, 86, 130), (98, 52, 104), (52, 28, 70)],
+                             sun: (0.62, 0.55, 0.06, (255, 214, 140)), water: true, seed: 3)
+    static let alpine = Scene(sky: [(74, 136, 222), (170, 208, 246), (246, 238, 222)],
+                              ridges: [(166, 186, 214), (112, 136, 170), (64, 84, 112), (36, 52, 70)],
+                              sun: (0.28, 0.78, 0.05, (255, 250, 230)), seed: 7)
+    static let desert = Scene(sky: [(58, 40, 92), (228, 112, 82), (255, 204, 128)],
+                              ridges: [(214, 126, 92), (172, 86, 64), (112, 52, 46)],
+                              sun: (0.5, 0.3, 0.09, (255, 226, 160)), seed: 11)
+    static let night = Scene(sky: [(4, 8, 28), (16, 34, 74), (36, 84, 104)],
+                             ridges: [(28, 56, 74), (16, 36, 50), (6, 18, 28)],
+                             sun: (0.78, 0.8, 0.03, (236, 240, 255)), water: true, stars: true, aurora: true, seed: 5)
+    static let mist = Scene(sky: [(140, 168, 164), (196, 212, 202), (226, 232, 220)],
+                            ridges: [(170, 190, 178), (122, 152, 132), (74, 108, 84), (38, 66, 48)],
+                            seed: 13)
+    static let blueHour = Scene(sky: [(18, 36, 96), (66, 96, 168), (222, 150, 168)],
+                                ridges: [(84, 82, 140), (50, 50, 100), (24, 26, 58)],
+                                water: true, stars: true, seed: 17)
+    static let golden = Scene(sky: [(110, 162, 226), (198, 210, 216), (250, 208, 138)],
+                              ridges: [(190, 168, 112), (140, 132, 72), (86, 90, 44), (46, 54, 26)],
+                              sun: (0.82, 0.36, 0.06, (255, 236, 180)), seed: 19)
+    static let lagoon = Scene(sky: [(250, 118, 92), (255, 160, 110), (255, 214, 150)],
+                              ridges: [(206, 96, 96), (128, 54, 76)],
+                              sun: (0.4, 0.54, 0.07, (255, 240, 190)), water: true, seed: 23)
+
+    /// The folder the screenshots show: a few trips as subfolders, loose
+    /// pictures next to them.
+    static let library: [(path: String, scene: Scene)] = [
+        ("Lofoten/Sunset over Reine.jpg", fjord),
+        ("Lofoten/Northern Lights.jpg", night),
+        ("Lofoten/Blue Hour Harbour.jpg", blueHour),
+        ("Dolomites/Alpine Morning.jpg", alpine),
+        ("Dolomites/Golden Ridge.jpg", golden),
+        ("Dolomites/Misty Valley.jpg", mist),
+        ("Sahara/Desert Dusk.jpg", desert),
+        ("Sahara/Sunset over the Dunes.jpg", with(desert, seed: 29)),
+        ("Fjord at Sunset.jpg", with(fjord, seed: 31)),
+        ("Lagoon Sunset.jpg", lagoon),
+        ("Blue Hour.jpg", with(blueHour, seed: 37)),
+        ("Morning Mist.jpg", with(mist, seed: 41)),
+        ("Golden Valley.jpg", with(golden, seed: 43)),
+        ("Aurora.jpg", with(night, seed: 47)),
+        ("Alpine Lake.jpg", { var s = alpine; s.water = true; s.seed = 53; return s }()),
+        ("Red Rocks.jpg", with(desert, seed: 59)),
+    ]
+
+    static func with(_ scene: Scene, seed: UInt64) -> Scene { var s = scene; s.seed = seed; return s }
+
+    static func writeLibrary(to folder: URL) throws {
+        for (path, scene) in library {
+            let url = folder.appendingPathComponent(path)
+            try FileManager.default.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true)
+            try writeJPEG(render(scene), to: url)
+        }
+    }
+
+    // MARK: Drawing
+
+    private struct RNG {
+        var state: UInt64
+        mutating func next() -> CGFloat {
+            state = state &* 6364136223846793005 &+ 1442695040888963407
+            return CGFloat(state >> 11) / CGFloat(1 << 53)
+        }
+    }
+
+    private static func color(_ c: (CGFloat, CGFloat, CGFloat), _ a: CGFloat = 1) -> CGColor {
+        CGColor(red: c.0 / 255, green: c.1 / 255, blue: c.2 / 255, alpha: a)
+    }
+
+    static func render(_ scene: Scene, width: Int = 2400, height: Int = 1600) -> CGImage {
+        let W = CGFloat(width), H = CGFloat(height)
+        let cs = CGColorSpaceCreateDeviceRGB()
+        let ctx = CGContext(data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: 0,
+                            space: cs, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)!
+        var rng = RNG(state: scene.seed &* 2654435761 &+ 1)
+        let horizon = scene.water ? H * 0.34 : 0   // y counts up from the bottom
+
+        // Sky
+        let sky = CGGradient(colorsSpace: cs, colors: scene.sky.map { color($0) } as CFArray,
+                             locations: nil)!
+        ctx.drawLinearGradient(sky, start: CGPoint(x: 0, y: H), end: CGPoint(x: 0, y: horizon), options: [.drawsAfterEndLocation])
+
+        if scene.stars {
+            for _ in 0..<420 {
+                let p = CGPoint(x: rng.next() * W, y: H * 0.45 + rng.next() * H * 0.55)
+                let r = 0.8 + rng.next() * 2.2
+                ctx.setFillColor(CGColor(gray: 1, alpha: 0.35 + rng.next() * 0.6))
+                ctx.fillEllipse(in: CGRect(x: p.x - r, y: p.y - r, width: 2 * r, height: 2 * r))
+            }
+        }
+
+        if scene.aurora {
+            ctx.saveGState()
+            ctx.setBlendMode(.screen)
+            for band in 0..<5 {
+                let path = CGMutablePath()
+                let base = H * (0.62 + CGFloat(band) * 0.045)
+                let phase = rng.next() * 6
+                path.move(to: CGPoint(x: 0, y: base))
+                for x in stride(from: CGFloat(0), through: W, by: 12) {
+                    path.addLine(to: CGPoint(x: x, y: base + sin(x / W * 5 + phase) * H * 0.07))
+                }
+                ctx.addPath(path)
+                ctx.setLineWidth(H * 0.05)
+                ctx.setLineCap(.round)
+                ctx.setShadow(offset: .zero, blur: H * 0.06, color: color((60, 255, 170), 0.8))
+                ctx.setStrokeColor(color((70, 230, 160), 0.16))
+                ctx.strokePath()
+            }
+            ctx.restoreGState()
+        }
+
+        if let sun = scene.sun {
+            let c = CGPoint(x: W * sun.x, y: H * sun.y), r = H * sun.r
+            let glow = CGGradient(colorsSpace: cs, colors: [color(sun.color, 0.55), color(sun.color, 0)] as CFArray,
+                                  locations: [0, 1])!
+            ctx.drawRadialGradient(glow, startCenter: c, startRadius: r, endCenter: c, endRadius: r * 6, options: [])
+            ctx.setFillColor(color(sun.color))
+            ctx.fillEllipse(in: CGRect(x: c.x - r, y: c.y - r, width: 2 * r, height: 2 * r))
+        }
+
+        // Ridges: far ones higher and hazier, near ones lower and darker
+        let count = scene.ridges.count
+        for (i, tone) in scene.ridges.enumerated() {
+            let t = CGFloat(i) / CGFloat(max(count - 1, 1))
+            let base = scene.water ? horizon + H * (0.13 - 0.08 * t) : H * (0.36 - 0.2 * t)
+            let amp = H * (scene.water ? 0.05 + 0.03 * (1 - t) : 0.07 + 0.04 * (1 - t))
+            var waves: [(a: CGFloat, f: CGFloat, p: CGFloat)] = []
+            for k in 1...3 { waves.append((amp / CGFloat(k) * (0.6 + rng.next() * 0.8), CGFloat(k) * (1 + rng.next() * 1.4), rng.next() * 6)) }
+            let path = CGMutablePath()
+            path.move(to: CGPoint(x: 0, y: horizon))
+            for x in stride(from: CGFloat(0), through: W, by: 6) {
+                let u = x / W * .pi * 2
+                var y = base
+                for w in waves { y += w.a * sin(u * w.f + w.p) }
+                path.addLine(to: CGPoint(x: x, y: max(y, horizon)))
+            }
+            path.addLine(to: CGPoint(x: W, y: horizon))
+            path.closeSubpath()
+            ctx.addPath(path)
+            ctx.setFillColor(color(tone))
+            ctx.fillPath()
+        }
+
+        if scene.water {
+            // Mirror the sky band above the horizon, darkened
+            // (image rows count from the top, the context's y from the bottom)
+            let h = Int(horizon)
+            if let image = ctx.makeImage(),
+               let band = image.cropping(to: CGRect(x: 0, y: height - 2 * h, width: width, height: h)) {
+                ctx.saveGState()
+                ctx.translateBy(x: 0, y: horizon)
+                ctx.scaleBy(x: 1, y: -1)
+                ctx.setAlpha(0.8)
+                ctx.draw(band, in: CGRect(x: 0, y: 0, width: W, height: horizon))
+                ctx.restoreGState()
+            }
+            let shade = CGGradient(colorsSpace: cs, colors: [color((0, 0, 20), 0.15), color((0, 0, 20), 0.55)] as CFArray,
+                                   locations: [0, 1])!
+            ctx.drawLinearGradient(shade, start: CGPoint(x: 0, y: horizon), end: .zero, options: [])
+            if let sun = scene.sun {
+                ctx.setFillColor(color(sun.color, 0.35))
+                for k in 0..<18 {
+                    let y = horizon - CGFloat(k) * horizon / 18 - 6
+                    let w = H * sun.r * (2.2 - CGFloat(k) * 0.08) * (0.6 + rng.next() * 0.6)
+                    ctx.fill(CGRect(x: W * sun.x - w / 2, y: y, width: w, height: 4))
+                }
+            }
+        }
+        return ctx.makeImage()!
+    }
+
+    static func writeJPEG(_ image: CGImage, to url: URL) throws {
+        guard let dest = CGImageDestinationCreateWithURL(url as CFURL, UTType.jpeg.identifier as CFString, 1, nil) else {
+            throw CocoaError(.fileWriteUnknown)
+        }
+        CGImageDestinationAddImage(dest, image, [kCGImageDestinationLossyCompressionQuality: 0.88] as CFDictionary)
+        guard CGImageDestinationFinalize(dest) else { throw CocoaError(.fileWriteUnknown) }
+    }
+}

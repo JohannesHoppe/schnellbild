@@ -1,0 +1,61 @@
+# Takes the README screenshots on a clean Mac (started by hand): the
+# ReadmeScreenshots UI test draws a sample photo library, opens the app on it
+# and photographs grid, full view, inspector and search, in light and dark
+# mode. The PNGs land in the artifact "screenshots"; copy the chosen ones to
+# docs/screenshots.
+name: Screenshots
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  screenshots:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select latest stable Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: Install xcodegen
+        run: brew install xcodegen
+
+      - name: Cache VLCKit
+        uses: actions/cache@v4
+        with:
+          path: Vendor
+          key: vlckit-${{ hashFiles('Scripts/fetch_vlckit.sh') }}
+
+      - name: Fetch VLCKit
+        run: ./Scripts/fetch_vlckit.sh
+
+      - name: Build for testing
+        run: |
+          xcodegen generate
+          xcodebuild build-for-testing -project Schnellbild.xcodeproj -scheme Schnellbild \
+            -destination 'platform=macOS' -derivedDataPath build/DerivedData
+
+      - name: Take the screenshots
+        run: |
+          set_dark() {
+            osascript -e "tell application \"System Events\" to tell appearance preferences to set dark mode to $1"
+          }
+          for mode in light dark; do
+            set_dark "$([ "$mode" = dark ] && echo true || echo false)"
+            TEST_RUNNER_SCREENSHOT_DIR="$PWD/shots" TEST_RUNNER_SCREENSHOT_SUFFIX="-$mode" \
+              xcodebuild test-without-building -project Schnellbild.xcodeproj -scheme Schnellbild \
+                -destination 'platform=macOS' -derivedDataPath build/DerivedData \
+                -only-testing:SchnellbildUITests/ReadmeScreenshots
+          done
+          ls -la shots
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: screenshots
+          path: shots/*.png
+          if-no-files-found: error
