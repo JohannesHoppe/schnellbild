@@ -72,6 +72,19 @@ final class SearchUITests: SchnellbildUITestCase {
         XCTAssertTrue(app.staticTexts["No matches"].waitForExistence(timeout: 10))
     }
 
+    /// The stop button ends a running search; what it found stays.
+    func testStopButtonEndsTheSearchAndKeepsTheResults() {
+        launch(open: tempDir.path, extra: ["--search-delay=30000"])   // the walk waits: a running search
+        XCTAssertTrue(app.staticTexts["a.jpg"].waitForExistence(timeout: 15))
+        search("a.jpg")
+        let stop = app.buttons["stopSearch"].firstMatch
+        XCTAssertTrue(stop.waitForExistence(timeout: 5), "a running search can be stopped")
+        XCTAssertTrue(app.staticTexts["Searching subfolders…"].exists)
+        stop.click()
+        eventually("stopped") { !stop.exists && !self.app.staticTexts["Searching subfolders…"].exists }
+        XCTAssertTrue(app.staticTexts["a.jpg"].exists, "the result found so far stays")
+    }
+
     func testCommandFFocusesSearchAndEscapeClears() {
         launchOnTempDir()
         app.typeKey("f", modifierFlags: .command)

@@ -160,4 +160,18 @@ final class FullViewUITests: SchnellbildUITestCase {
         app.typeKey("+", modifierFlags: [])
         eventually("decoded at full size", timeout: 15) { self.text(of: image).contains("decoded 4000 px") }
     }
+
+    /// "1" shows a photo larger than the window at its pixels: zoomed in.
+    func testOneShowsALargePhotoAtItsPixels() throws {
+        try put("huge.jpg", at: "huge.jpg")
+        launch(open: tempDir.appendingPathComponent("huge.jpg").path)
+        let image = element("fullImage")
+        eventually("loaded", timeout: 15) { self.text(of: image).hasSuffix("loaded") }
+        app.typeKey("1", modifierFlags: [])
+        eventually("zoomed to 100 %, well past fit") {
+            let label = self.text(of: image)
+            guard let range = label.range(of: "zoom ") else { return false }
+            return (Int(label[range.upperBound...].prefix { $0.isNumber }) ?? 0) > 150
+        }
+    }
 }

@@ -48,6 +48,9 @@ public final class XCUIElementQuery {
     public var menuBarItems: XCUIElementQuery { self }
     public var menuItems: XCUIElementQuery { self }
 }
+public final class XCUICoordinate {
+    public func press(forDuration duration: TimeInterval, thenDragTo other: XCUICoordinate) {}
+}
 public final class XCUIScreenshot { public var image: NSImage { NSImage() } }
 public class XCUIElement {
     public struct KeyModifierFlags: OptionSet {
@@ -68,6 +71,7 @@ public class XCUIElement {
     public func screenshot() -> XCUIScreenshot { XCUIScreenshot() }
     public func doubleClick() {}
     public func hover() {}
+    public func coordinate(withNormalizedOffset offset: CGVector) -> XCUICoordinate { XCUICoordinate() }
     public func adjust(toNormalizedSliderPosition position: CGFloat) {}
     public func rightClick() {}
     public func typeText(_ text: String) {}

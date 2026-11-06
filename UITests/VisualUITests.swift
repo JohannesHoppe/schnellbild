@@ -185,6 +185,86 @@ final class VisualUITests: SchnellbildUITestCase {
     func testExposureSliderBrightensAnAVKitVideo() throws { try checkExposureSlider(vlc: false) }
     func testExposureSliderBrightensAVLCVideo() throws { try checkExposureSlider(vlc: true) }
 
+    // MARK: Paused videos, paging, zoom
+
+    /// The left quarter of an element (the dark end of the test pictures'
+    /// left-to-right gradient).
+    private func leftQuarter(of element: XCUIElement) throws -> Double {
+        let f = element.frame
+        return try screenStats(of: CGRect(x: f.minX + f.width * 0.1, y: f.midY - f.height / 8,
+                                          width: f.width * 0.15, height: f.height / 4)).mean
+    }
+
+    /// A new look reaches a paused video at once, not only when it plays on.
+    private func checkPausedVideoTakesTheLook(vlc: Bool) throws {
+        let video = try openVideo("dark.mp4", vlc: vlc)
+        app.typeKey(.space, modifierFlags: [])
+        waitForBadge(containing: "Paused")
+        settle()
+        let before = try screenBrightness(of: video)
+        app.typeKey("e", modifierFlags: [])
+        settle(2)
+        let after = try screenBrightness(of: video)
+        XCTAssertGreaterThan(after, before + 0.12, "paused, not brightened: \(before) → \(after); \(text(of: video))")
+    }
+
+    func testAPausedAVKitVideoTakesTheLook() throws { try checkPausedVideoTakesTheLook(vlc: false) }
+    func testAPausedVLCVideoTakesTheLook() throws { try checkPausedVideoTakesTheLook(vlc: true) }
+
+    /// Paging from one video to the next shows the next one's picture, not
+    /// the last frame of the one before.
+    private func checkPagingBetweenVideos(vlc: Bool) throws {
+        try put("dark.mp4", at: "v1.mp4")
+        try put("bright.mp4", at: "v2.mp4")
+        let video = try openVideo("v1.mp4", vlc: vlc)
+        let first = try screenBrightness(of: video)
+        XCTAssertLessThan(first, 0.3, "the dark one: \(first)")
+        app.typeKey(.rightArrow, modifierFlags: .command)
+        waitForBadge(containing: "v2.mp4")
+        let next = element(vlc ? "video.vlc" : "video.avkit")
+        XCTAssertTrue(next.waitForExistence(timeout: 20))
+        settle()
+        let second = try screenBrightness(of: next)
+        XCTAssertGreaterThan(second, 0.7, "the bright one, not the last frame before: \(second)")
+    }
+
+    func testPagingBetweenAVKitVideosShowsTheNextOne() throws { try checkPagingBetweenVideos(vlc: false) }
+    func testPagingBetweenVLCVideosShowsTheNextOne() throws { try checkPagingBetweenVideos(vlc: true) }
+
+    /// Zooming in really enlarges the picture: the dark left edge of the
+    /// gradient moves out, so the left quarter gets brighter. Dragging right
+    /// then moves the darker part back into the middle.
+    private func checkZoomAndPan(_ element: XCUIElement) throws {
+        let fit = try leftQuarter(of: element)
+        for _ in 0..<3 { app.typeKey("+", modifierFlags: []) }
+        settle(1)
+        let zoomed = try leftQuarter(of: element)
+        XCTAssertGreaterThan(zoomed, fit + 0.03, "zoom doesn't enlarge the picture: \(fit) → \(zoomed)")
+        let middle = try screenBrightness(of: element)
+        let start = element.coordinate(withNormalizedOffset: CGVector(dx: 0.3, dy: 0.5))
+        start.press(forDuration: 0.1, thenDragTo: element.coordinate(withNormalizedOffset: CGVector(dx: 0.7, dy: 0.5)))
+        settle(1)
+        let panned = try screenBrightness(of: element)
+        XCTAssertLessThan(panned, middle - 0.03, "dragging doesn't move the picture: \(middle) → \(panned)")
+    }
+
+    func testZoomAndPanMoveAPhoto() throws {
+        try put("gradient.jpg", at: "gradient.jpg")
+        launch(open: tempDir.appendingPathComponent("gradient.jpg").path)
+        let image = element("fullImage")
+        eventually("loaded", timeout: 15) { text(of: image).hasSuffix("loaded") }
+        settle()
+        try checkZoomAndPan(image)
+    }
+
+    func testZoomAndPanMoveAnAVKitVideo() throws {
+        try checkZoomAndPan(try openVideo("gradient.mp4", vlc: false))
+    }
+
+    func testZoomAndPanMoveAVLCVideo() throws {
+        try checkZoomAndPan(try openVideo("gradient.mp4", vlc: true))
+    }
+
     // MARK: Photos
 
     private func checkAutoEnhancePhoto(_ fixture: String, brighter: Bool) throws {
