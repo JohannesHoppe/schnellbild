@@ -953,6 +953,9 @@ final class BrowserModel: ObservableObject {
         case .folder:
             open(folder: entry.url)
         case .image, .video:
+            // The full view takes the keys, also when it was opened with the
+            // mouse while the search field had focus.
+            searchFocused = false
             resetTransforms()
             mode = .detail
         }

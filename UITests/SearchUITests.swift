@@ -48,6 +48,17 @@ final class SearchUITests: SchnellbildUITestCase {
         XCTAssertFalse(app.staticTexts["a.jpg"].exists)
     }
 
+    func testArrowsPageAfterOpeningAResultWithTheMouse() {
+        launchOnTempDir()
+        search("jpg")   // the search field keeps focus while typing
+        XCTAssertTrue(app.staticTexts["deep-photo.jpg"].waitForExistence(timeout: 10))
+        tile("a.jpg").doubleClick()
+        waitForBadge(containing: "a.jpg")
+        app.typeKey(.rightArrow, modifierFlags: [])
+        waitForBadge(containing: "b.jpg")
+        XCTAssertEqual(text(of: searchField), "jpg", "the arrow didn't go into the search field")
+    }
+
     func testFindsFolderNamesInSubfolders() {
         launchOnTempDir()
         search("urlaub")

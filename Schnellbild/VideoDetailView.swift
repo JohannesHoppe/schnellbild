@@ -6,7 +6,7 @@ import AVFoundation
 /// with autoplay and standard controls. Formats AVFoundation can't handle
 /// (AVI/MKV/WebM …) fall back to the vendored VLCKit player. Either way one
 /// `PlaybackControl` is created and registered with the model here, so Space
-/// and ⌘←/⌘→ work for both.
+/// and the arrow keys work for both.
 struct VideoDetailView: View {
     let url: URL
 
