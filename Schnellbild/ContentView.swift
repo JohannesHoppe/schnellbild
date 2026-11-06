@@ -162,6 +162,7 @@ struct ContentView: View {
             text = "\(model.currentMediaNumber ?? 0) / \(model.mediaCount)  ·  \(entry.name)"
         }
         if entry.kind == .video && model.videoPaused { text += "  ·  Paused" }
+        if model.enhance { text += "  ·  Enhanced" }
         return text
     }
 
@@ -195,6 +196,14 @@ struct ContentView: View {
                 Label("Open Folder", systemImage: "folder")
             }
             .help("Open folder (⌘O)")
+        }
+        ToolbarItem(placement: .primaryAction) {
+            Toggle(isOn: $model.enhance) {
+                Label("Enhance", systemImage: "wand.and.stars")
+            }
+            .toggleStyle(.button)
+            .help("Auto enhance: brighten, correct and sharpen photos and videos, without changing the files (E)")
+            .accessibilityIdentifier("enhanceButton")
         }
         ToolbarItem(placement: .primaryAction) {
             Button { model.startSlideshow() } label: {

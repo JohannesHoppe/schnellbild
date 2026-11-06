@@ -10,6 +10,9 @@ struct FullImageView: View {
 
     @EnvironmentObject var model: BrowserModel
     @State private var image: NSImage?
+    /// The loaded picture, and its enhanced version while auto enhance is on.
+    @State private var picture: CGImage?
+    @State private var enhanced: NSImage?
     @State private var nativeSize: CGSize?
     @State private var panOffset: CGSize = .zero
     @GestureState private var dragTranslation: CGSize = .zero
@@ -19,8 +22,8 @@ struct FullImageView: View {
         GeometryReader { geo in
             ZStack {
                 Color.black
-                if let image {
-                    Image(nsImage: image)
+                if let shown = model.enhance ? (enhanced ?? image) : image {
+                    Image(nsImage: shown)
                         .resizable()
                         .interpolation(.high)
                         .aspectRatio(contentMode: .fit)
@@ -51,6 +54,9 @@ struct FullImageView: View {
             .onChange(of: geo.size) { _, newSize in
                 updateActualSizeFactor(in: newSize)
             }
+            .task(id: EnhanceJob(url: url, on: model.enhance, ready: picture != nil)) {
+                await enhance()
+            }
         }
         .onChange(of: model.zoom) { _, newValue in
             if newValue == 1 { panOffset = .zero }
@@ -58,6 +64,8 @@ struct FullImageView: View {
         .onChange(of: url) { _, _ in
             panOffset = .zero
             nativeSize = nil
+            picture = nil
+            enhanced = nil
         }
     }
 
@@ -65,6 +73,7 @@ struct FullImageView: View {
     private var accessibilityState: String {
         "zoom \(Int((model.zoom * 100).rounded())) %, rotation \(Int(model.rotation))°, "
             + (image == nil ? "loading" : "loaded")
+            + (model.enhance && enhanced != nil ? ", enhanced" : "")
     }
 
     private var panGesture: some Gesture {
@@ -115,7 +124,7 @@ struct FullImageView: View {
 
     private func load(maxPixel: Int) async {
         let url = self.url
-        let result = await Task.detached(priority: .userInitiated) { () -> (NSImage, CGSize)? in
+        let result = await Task.detached(priority: .userInitiated) { () -> (NSImage, CGSize, CGImage)? in
             guard let src = CGImageSourceCreateWithURL(url as CFURL, nil) else { return nil }
             let native = MediaInfo.pixelSize(from: src) ?? .zero
 
@@ -129,12 +138,31 @@ struct FullImageView: View {
                 return nil
             }
             let img = NSImage(cgImage: cg, size: NSSize(width: cg.width, height: cg.height))
-            return (img, native)
+            return (img, native, cg)
         }.value
 
         if !Task.isCancelled, let result {
             image = result.0
             nativeSize = result.1
+            enhanced = nil
+            picture = result.2
         }
+    }
+
+    private struct EnhanceJob: Equatable {
+        let url: URL
+        let on: Bool
+        let ready: Bool
+    }
+
+    /// Work out the enhanced picture when auto enhance is on (off the main
+    /// thread; kept while it stays on).
+    private func enhance() async {
+        guard model.enhance, enhanced == nil, let picture else { return }
+        let result = await Task.detached(priority: .userInitiated) {
+            EnhanceRecipe.enhanced(picture)
+        }.value
+        guard !Task.isCancelled, let result else { return }
+        enhanced = NSImage(cgImage: result, size: NSSize(width: result.width, height: result.height))
     }
 }

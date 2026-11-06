@@ -104,6 +104,20 @@ final class FullViewUITests: SchnellbildUITestCase {
         eventually("i hides it") { !app.staticTexts["Resolution"].exists }
     }
 
+    func testEnhanceIsAFilterThatStaysOnWhilePaging() throws {
+        openA()
+        let image = element("fullImage")
+        eventually("loaded") { text(of: image).contains("loaded") }
+        app.typeKey("e", modifierFlags: [])
+        eventually("enhanced") { text(of: image).contains("enhanced") }
+        waitForBadge(containing: "Enhanced")
+        app.typeKey(.rightArrow, modifierFlags: [])
+        waitForBadge(containing: "b.jpg")
+        eventually("still on for the next picture") { text(of: image).contains("enhanced") }
+        toolbarButton("enhanceButton").click()
+        eventually("off again") { !text(of: badge).contains("Enhanced") && !text(of: image).contains("enhanced") }
+    }
+
     func testSlideshowAdvancesAndStops() {
         openA()
         app.typeKey("s", modifierFlags: [])
