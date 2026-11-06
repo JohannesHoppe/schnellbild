@@ -3,6 +3,7 @@
 // tests themselves run on CI.
 import Foundation
 import CoreGraphics
+import AppKit
 
 open class XCTestCase {
     public init() {}
@@ -45,6 +46,7 @@ public final class XCUIElementQuery {
     public var menuBarItems: XCUIElementQuery { self }
     public var menuItems: XCUIElementQuery { self }
 }
+public final class XCUIScreenshot { public var image: NSImage { NSImage() } }
 public class XCUIElement {
     public struct KeyModifierFlags: OptionSet {
         public let rawValue: Int
@@ -61,6 +63,7 @@ public class XCUIElement {
     public var firstMatch: XCUIElement { self }
     public var debugDescription: String { "" }
     public func click() {}
+    public func screenshot() -> XCUIScreenshot { XCUIScreenshot() }
     public func doubleClick() {}
     public func rightClick() {}
     public func typeText(_ text: String) {}

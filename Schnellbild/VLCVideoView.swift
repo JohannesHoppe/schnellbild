@@ -8,7 +8,11 @@ import CoreImage
 /// state changes from any source (keys, the end of the video) to the model.
 @MainActor
 final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegate {
-    let player = VLCMediaPlayer()
+    /// One LibVLC instance for all players, without VLC's on-screen display:
+    /// the exposure snapshots (`snapshotLuminance`) would otherwise show
+    /// "Snapshot taken: <path>" and a preview over the video.
+    private static let library = VLCLibrary(options: ["--no-osd", "--no-snapshot-preview"])
+    let player = VLCMediaPlayer(library: VLCPlaybackControl.library)
     private let url: URL
     private let onStateChange: @MainActor (PlaybackControl, Bool) -> Void
     private weak var drawable: NSView?
