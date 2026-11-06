@@ -3,7 +3,8 @@ import AppKit
 import ImageIO
 
 /// Animated GIFs: `NSImageView` with `animates = true` plays them —
-/// SwiftUI's `Image` shows only a still frame.
+/// SwiftUI's `Image` shows only a still frame. The file is read off the main
+/// thread (a large GIF on a slow share would freeze the app).
 struct AnimatedImageView: NSViewRepresentable {
     let url: URL
 
@@ -13,19 +14,30 @@ struct AnimatedImageView: NSViewRepresentable {
         let view = NSImageView()
         view.imageScaling = .scaleProportionallyDown
         view.animates = true
-        context.coordinator.url = url
-        view.image = NSImage(contentsOf: url)
+        context.coordinator.show(url, in: view)
         return view
     }
 
     func updateNSView(_ nsView: NSImageView, context: Context) {
         guard context.coordinator.url != url else { return }
-        context.coordinator.url = url
-        nsView.image = NSImage(contentsOf: url)
+        context.coordinator.show(url, in: nsView)
     }
 
+    @MainActor
     final class Coordinator {
         var url: URL?
+        private var loading: Task<Void, Never>?
+
+        func show(_ url: URL, in view: NSImageView) {
+            self.url = url
+            view.image = nil
+            loading?.cancel()
+            loading = Task { [weak view] in
+                let data = await Task.detached(priority: .userInitiated) { try? Data(contentsOf: url) }.value
+                guard !Task.isCancelled, self.url == url, let data else { return }
+                view?.image = NSImage(data: data)
+            }
+        }
     }
 }
 
@@ -90,12 +102,15 @@ struct InspectorView: View {
 
 /// Shared ImageIO helpers.
 enum MediaInfo {
-    /// Pixel dimensions from an already-open image source (no extra file open).
+    /// Pixel dimensions as shown, from an already-open image source (no
+    /// extra file open): EXIF orientations 5 to 8 (a camera held upright)
+    /// swap width and height, as the picture is shown turned.
     static func pixelSize(from source: CGImageSource) -> CGSize? {
         guard let props = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [CFString: Any],
               let w = (props[kCGImagePropertyPixelWidth] as? NSNumber)?.doubleValue,
               let h = (props[kCGImagePropertyPixelHeight] as? NSNumber)?.doubleValue else { return nil }
-        return CGSize(width: w, height: h)
+        let orientation = (props[kCGImagePropertyOrientation] as? NSNumber)?.intValue ?? 1
+        return (5...8).contains(orientation) ? CGSize(width: h, height: w) : CGSize(width: w, height: h)
     }
 
     /// Pixel dimensions for a file URL.

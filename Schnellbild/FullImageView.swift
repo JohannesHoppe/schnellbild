@@ -18,6 +18,11 @@ struct FullImageView: View {
     @State private var enhanced: (look: Look, image: NSImage)?
     @State private var nativeSize: CGSize?
     @State private var panOffset: CGSize = .zero
+    /// The file couldn't be read as a picture.
+    @State private var failed = false
+    /// The longest side the picture was decoded at: screen size first, the
+    /// full size once the user zooms in (a sharp picture where it matters).
+    @State private var decodedSide = 0
     @GestureState private var dragTranslation: CGSize = .zero
     @GestureState private var pinch: CGFloat = 1
 
@@ -36,6 +41,10 @@ struct FullImageView: View {
                                 y: panOffset.height + dragTranslation.height)
                         .gesture(magnifyGesture)
                         .simultaneousGesture(panGesture)
+                } else if failed {
+                    Image(systemName: "exclamationmark.triangle")
+                        .font(.system(size: 48))
+                        .foregroundStyle(.secondary)
                 } else {
                     LoadingSpinner()
                 }
@@ -46,18 +55,25 @@ struct FullImageView: View {
             .accessibilityIdentifier("fullImage")
             .accessibilityLabel(accessibilityState)
             .task(id: url) {
-                if let thumb = ThumbnailCache.shared.image(for: url) {
-                    image = thumb
-                }
+                // Never the previous file's picture: the cached tile, or nothing yet
+                image = ThumbnailCache.shared.image(for: url)
+                failed = false
+                decodedSide = 0
                 let scale = NSScreen.mainBackingScale
                 let maxPixel = max(Int(max(geo.size.width, geo.size.height) * scale), 1)
                 await load(maxPixel: maxPixel)
                 updateActualSizeFactor(in: geo.size)
             }
+            .task(id: FullSizeJob(url: url, zoomedIn: model.zoom > 1.01, ready: picture != nil)) {
+                guard model.zoom > 1.01, let native = nativeSize else { return }
+                let full = Int(max(native.width, native.height))
+                guard full > decodedSide else { return }
+                await load(maxPixel: full)
+            }
             .onChange(of: geo.size) { _, newSize in
                 updateActualSizeFactor(in: newSize)
             }
-            .task(id: EnhanceJob(url: url, enhancement: model.enhancement, ready: picture != nil)) {
+            .task(id: EnhanceJob(url: url, enhancement: model.enhancement, ready: picture != nil, side: decodedSide)) {
                 await enhance()
             }
         }
@@ -93,7 +109,8 @@ struct FullImageView: View {
     /// Exposes the view transform, e.g. "zoom 125 %, rotation 90°, loaded".
     private var accessibilityState: String {
         "zoom \(Int((model.zoom * 100).rounded())) %, rotation \(Int(model.rotation))°, "
-            + (image == nil ? "loading" : "loaded")
+            + (decodedSide > 0 ? "decoded \(decodedSide) px, " : "")
+            + (failed ? "failed" : image == nil ? "loading" : "loaded")
             + (shownLook != nil && enhanced?.look == shownLook ? (model.enhance ? ", enhanced" : ", adjusted") : "")
     }
 
@@ -162,19 +179,32 @@ struct FullImageView: View {
             return (img, native, cg)
         }.value
 
-        if !Task.isCancelled, let result {
-            image = result.0
-            nativeSize = result.1
-            enhanced = nil
-            autoLook = nil
-            picture = result.2
+        guard !Task.isCancelled else { return }
+        guard let result else {
+            image = nil   // not the tile's file icon: the file can't be shown
+            failed = true
+            return
         }
+        image = result.0
+        nativeSize = result.1
+        decodedSide = max(result.2.width, result.2.height)
+        enhanced = nil
+        autoLook = nil
+        picture = result.2
+    }
+
+    private struct FullSizeJob: Equatable {
+        let url: URL
+        let zoomedIn: Bool
+        let ready: Bool
     }
 
     private struct EnhanceJob: Equatable {
         let url: URL
         let enhancement: Enhancement
         let ready: Bool
+        /// Decoded again at full size: rendered again
+        let side: Int
     }
 
     /// Measures the picture for auto enhance (once per picture) and renders

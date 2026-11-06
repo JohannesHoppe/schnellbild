@@ -94,7 +94,8 @@ struct VideoDetailView: View {
                 model.activePlayer = control
                 control.play()
                 if let track = try? await asset.loadTracks(withMediaType: .video).first,
-                   let (size, transform) = try? await track.load(.naturalSize, .preferredTransform) {
+                   let (size, transform) = try? await track.load(.naturalSize, .preferredTransform),
+                   !Task.isCancelled {   // still this video
                     let turned = size.applying(transform)
                     videoSize = CGSize(width: abs(turned.width), height: abs(turned.height))
                 }

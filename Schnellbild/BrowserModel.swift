@@ -49,6 +49,9 @@ struct FileActions {
     /// case-insensitive volume "Photos" is the same item as "photos"; on a
     /// case-sensitive one (many NAS shares) it may be a different folder.
     var conflicts: @MainActor (_ target: URL, _ source: URL) -> Bool
+    /// Tells why an action failed (a share without a Trash, no permission),
+    /// in the system's words and language.
+    var report: @MainActor (Error) -> Void
 
     static let live = FileActions(
         reveal: { NSWorkspace.shared.activateFileViewerSelecting([$0]) },
@@ -87,7 +90,8 @@ struct FileActions {
             guard let a = try? target.resourceValues(forKeys: key).fileResourceIdentifier,
                   let b = try? source.resourceValues(forKeys: key).fileResourceIdentifier else { return true }
             return !a.isEqual(b)
-        }
+        },
+        report: { NSAlert(error: $0).runModal() }
     )
 }
 
@@ -467,7 +471,10 @@ final class BrowserModel: ObservableObject {
     ]
 
     /// The one rule for which files the app shows: image, video, or nil.
+    /// "._" files are never pictures: macOS keeps a file's extra data in them
+    /// on volumes that can't hold it (SMB shares, exFAT, FAT).
     nonisolated static func mediaKind(of url: URL) -> GridEntry.Kind? {
+        guard !url.lastPathComponent.hasPrefix("._") else { return nil }
         let ext = url.pathExtension.lowercased()
         if imageExtensions.contains(ext) { return .image }
         if videoExtensions.contains(ext) { return .video }
@@ -571,21 +578,27 @@ final class BrowserModel: ObservableObject {
     }
 
     /// Reopen the last folder on launch (if it still exists).
+    /// Checked off the main thread: a share that is mounted but unreachable
+    /// (Wi-Fi asleep, VPN down) answers only after its timeout.
     func restoreLastFolder() {
         guard folderURL == nil,
               let path = defaults.string(forKey: Self.lastFolderKey) else { return }
-        var isDir: ObjCBool = false
-        if FileManager.default.fileExists(atPath: path, isDirectory: &isDir), isDir.boolValue {
-            open(folder: URL(fileURLWithPath: path))
+        Task {
+            let exists = await Task.detached(priority: .userInitiated) {
+                var isDir: ObjCBool = false
+                return FileManager.default.fileExists(atPath: path, isDirectory: &isDir) && isDir.boolValue
+            }.value
+            // Unless the user opened something meanwhile
+            if exists, folderURL == nil { open(folder: URL(fileURLWithPath: path)) }
         }
     }
 
-    /// CLI / UI-test seam: `--open <path>` opens a folder (grid) or a file
-    /// (straight into the full-size view) on launch — same rules as drag & drop.
+    /// CLI / UI-test seam: `--open=<path>` opens a folder (grid) or a file
+    /// (straight into the full-size view) on launch — same rules as drag &
+    /// drop. One argument: AppKit reads "-name value" pairs as settings, so a
+    /// path as an argument of its own can end up unpaired, and AppKit then
+    /// takes it for a file to open and shows no window.
     @discardableResult
-    /// `--open=<path>` as one argument: AppKit reads "-name value" pairs as
-    /// settings, so a path as an argument of its own can end up unpaired,
-    /// and AppKit then takes it for a file to open and shows no window.
     func openFromLaunchArguments(_ args: [String] = ProcessInfo.processInfo.arguments) -> Bool {
         guard let arg = args.first(where: { $0.hasPrefix("--open=") }) else { return false }
         let url = URL(fileURLWithPath: String(arg.dropFirst("--open=".count)))
@@ -624,17 +637,30 @@ final class BrowserModel: ObservableObject {
     /// first one, so only folders that are really empty are walked to the
     /// end. Hidden files (".DS_Store", "._…") and anything that isn't a
     /// picture or video ("Thumbs.db", "desktop.ini") don't count.
-    nonisolated static func containsMedia(_ folder: URL) async -> Bool {
-        await Task.detached(priority: .utility) { anyMedia(below: folder) }.value
+    /// nil when cancelled before it knew (the tile went away): no answer to
+    /// remember.
+    nonisolated static func containsMedia(_ folder: URL) async -> Bool? {
+        let walk = Task.detached(priority: .utility) { anyMedia(below: folder) }
+        return await withTaskCancellationHandler { await walk.value } onCancel: { walk.cancel() }
     }
 
-    /// The walk itself, synchronous (a directory enumerator isn't for async code).
-    nonisolated private static func anyMedia(below folder: URL) -> Bool {
+    /// The walk itself, synchronous (a directory enumerator isn't for async
+    /// code); nil when its task is cancelled.
+    nonisolated private static func anyMedia(below folder: URL) -> Bool? {
         guard let walk = FileManager.default.enumerator(
-            at: folder, includingPropertiesForKeys: nil,
+            at: folder, includingPropertiesForKeys: [.isRegularFileKey],
             options: [.skipsHiddenFiles, .skipsPackageDescendants]) else { return false }
-        for case let url as URL in walk where mediaKind(of: url) != nil { return true }
+        for case let url as URL in walk {
+            if Task.isCancelled { return nil }
+            if mediaKind(of: url) != nil, isFile(url) { return true }
+        }
         return false
+    }
+
+    /// A file, not a folder named like one ("Export.mov"). The enumerators
+    /// read this along with the listing.
+    nonisolated private static func isFile(_ url: URL) -> Bool {
+        (try? url.resourceValues(forKeys: [.isRegularFileKey]))?.isRegularFile ?? false
     }
 
     /// Folders known to hold no photos or videos at any depth, as canonical
@@ -659,7 +685,7 @@ final class BrowserModel: ObservableObject {
         await Task.detached(priority: .utility) {
             let contents = (try? FileManager.default.contentsOfDirectory(
                 at: folder,
-                includingPropertiesForKeys: nil,
+                includingPropertiesForKeys: [.isRegularFileKey],
                 options: [.skipsHiddenFiles]
             )) ?? []
             // One pass keeping the `limit` first names, instead of sorting a
@@ -668,7 +694,7 @@ final class BrowserModel: ObservableObject {
                 a.lastPathComponent.localizedStandardCompare(b.lastPathComponent) == .orderedAscending
             }
             var first: [URL] = []
-            for url in contents where mediaKind(of: url) != nil {
+            for url in contents where mediaKind(of: url) != nil && isFile(url) {
                 guard first.count < limit || before(url, first[first.count - 1]) else { continue }
                 first.insert(url, at: first.firstIndex { before(url, $0) } ?? first.count)
                 if first.count > limit { first.removeLast() }
@@ -1041,9 +1067,22 @@ final class BrowserModel: ObservableObject {
         if let last = backStack.last, Self.sameSpot(last, current) {
             backStack[backStack.count - 1] = current
         } else {
-            push(current, onto: &backStack)
+            let pushed = Self.pushing(current, onto: backStack)
+            backStack = pushed.stack
+            stopSearches(of: pushed.dropped)
         }
+        let dropped = forwardStack
         forwardStack.removeAll()
+        stopSearches(of: dropped)
+    }
+
+    /// Searches of locations that left the history stop, unless the screen
+    /// or another history step still shows them.
+    private func stopSearches(of dropped: [Location]) {
+        let kept = allSearches
+        for run in dropped.compactMap(\.search) where !run.finished && !kept.contains(where: { $0 === run }) {
+            run.stop(incomplete: true)
+        }
     }
 
     /// Same folder, query and selection; the result lists aren't compared.
@@ -1052,9 +1091,12 @@ final class BrowserModel: ObservableObject {
             && a.selected.map(canonicalPath) == b.selected.map(canonicalPath)
     }
 
-    private func push(_ location: Location, onto stack: inout [Location]) {
-        stack.append(location)
-        if stack.count > Self.historyLimit { stack.removeFirst(stack.count - Self.historyLimit) }
+    /// `stack` with `location` on top, at most `historyLimit` deep, and the
+    /// steps that fell off the far end (their searches stop once the stack
+    /// is stored).
+    private static func pushing(_ location: Location, onto stack: [Location]) -> (stack: [Location], dropped: [Location]) {
+        let all = stack + [location]
+        return (Array(all.suffix(historyLimit)), Array(all.dropLast(historyLimit)))
     }
 
     /// Back. The full view isn't a history step of its own (it opens in
@@ -1062,13 +1104,22 @@ final class BrowserModel: ObservableObject {
     /// returns to that grid, with the search and its results as they were.
     func navigateBack() {
         if mode == .detail { closeDetail(); return }
-        travel(from: &backStack, to: &forwardStack)
+        guard let target = backStack.popLast() else { return }
+        if let current = currentLocation {
+            let pushed = Self.pushing(current, onto: forwardStack)
+            forwardStack = pushed.stack
+            stopSearches(of: pushed.dropped)
+        }
+        load(target)
     }
-    func navigateForward() { travel(from: &forwardStack, to: &backStack) }
 
-    private func travel(from source: inout [Location], to other: inout [Location]) {
-        guard let target = source.popLast() else { return }
-        if let current = currentLocation { push(current, onto: &other) }
+    func navigateForward() {
+        guard let target = forwardStack.popLast() else { return }
+        if let current = currentLocation {
+            let pushed = Self.pushing(current, onto: backStack)
+            backStack = pushed.stack
+            stopSearches(of: pushed.dropped)
+        }
         load(target)
     }
 
@@ -1087,6 +1138,15 @@ final class BrowserModel: ObservableObject {
     func select(_ index: Int) {
         guard entries.indices.contains(index) else { return }
         selection = index
+    }
+
+    /// Selects an item by its file, wherever it is in the list now (search
+    /// results may have moved it since a menu was opened); false if it's gone.
+    @discardableResult
+    func select(_ entry: GridEntry) -> Bool {
+        guard let index = index(of: entry.url) else { return false }
+        selection = index
+        return true
     }
 
     func step(_ delta: Int) {
@@ -1331,7 +1391,7 @@ final class BrowserModel: ObservableObject {
         do {
             try fileActions.trash(entry.url)
         } catch {
-            NSSound.beep()
+            fileActions.report(error)
             return
         }
         apply(.removed(entry.url))
@@ -1561,10 +1621,13 @@ final class BrowserModel: ObservableObject {
             next = 0
         }
         if next < 0 { next = show.loading ? 0 : show.items.count - 1 }
+        // A show of one video: it stays on screen, so it plays again from the start
+        let again = next == show.index && show.current?.kind == .video
         show.index = next
         show.waitingForMore = false
         slideshow = show
         showSlideshowItem()
+        if again { activePlayer?.play() }
     }
 
     /// Show the current item: pictures move on after the interval, videos
@@ -1725,8 +1788,9 @@ final class AVPlaybackControl: PlaybackControl {
             let made = try? await AVVideoComposition.videoComposition(with: asset) { request in
                 enhancer.process(request)
             }
-            guard let self, let made, !Task.isCancelled else { return }
-            self.compositionTask = nil
+            guard let self, !Task.isCancelled else { return }
+            self.compositionTask = nil   // also after a failure: the next change tries again
+            guard let made else { return }
             self.composition = made
             item.videoComposition = made
         }

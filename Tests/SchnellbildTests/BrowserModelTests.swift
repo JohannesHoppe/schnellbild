@@ -43,6 +43,8 @@ final class FileActionsSpy {
     var moved: [(URL, URL)] = []
     var confirm = true
     var moveError: Error?
+    var trashError: Error?
+    var reported: [Error] = []
     /// Forces the "target exists" answer, e.g. to act as a case-sensitive volume.
     var conflictOverride: Bool?
 
@@ -52,6 +54,7 @@ final class FileActionsSpy {
             openInDefaultApp: { self.opened.append($0) },
             confirmTrash: { _ in self.confirm },
             trash: { url in
+                if let error = self.trashError { throw error }
                 self.trashed.append(url)
                 try FileManager.default.removeItem(at: url)
             },
@@ -62,7 +65,8 @@ final class FileActionsSpy {
             },
             conflicts: { target, source in
                 self.conflictOverride ?? FileActions.live.conflicts(target, source)
-            }
+            },
+            report: { self.reported.append($0) }
         )
     }
 }
@@ -297,6 +301,20 @@ final class ScanTests: XCTestCase {
         XCTAssertNil(byName["notes.txt"], "non-media files are excluded")
     }
 
+    /// On SMB shares and exFAT disks every photo has a "._" twin holding its
+    /// extra data; the grid lists only the photo.
+    @MainActor
+    func testFolderListingLeavesOutDotUnderscoreFiles() async throws {
+        let tree = try TempTree(self)
+        try tree.file("IMG_1.jpg")
+        try tree.file("._IMG_1.jpg")
+        try tree.folder("Export.mov")
+        let m = makeModel()
+        await openAndWait(m, tree.root)
+        XCTAssertEqual(m.names, ["..", "Export.mov", "IMG_1.jpg"])
+        XCTAssertEqual(m.entries.first { $0.name == "Export.mov" }?.kind, .folder)
+    }
+
     func testContainsMediaLooksAtEveryDepthAndIgnoresJunk() async throws {
         let tree = try TempTree(self)
         try tree.file("junk/Thumbs.db")
@@ -307,15 +325,20 @@ final class ScanTests: XCTestCase {
         try tree.folder("bare")
         try tree.file("deep/a/b/c/photo.heic")
         try tree.file("flat/clip.mkv")
-        func contains(_ name: String) async -> Bool {
+        try tree.file("double/._IMG_1.jpg")
+        try tree.folder("named/Export.mov")
+        func contains(_ name: String) async -> Bool? {
             await BrowserModel.containsMedia(tree.root.appendingPathComponent(name))
         }
         let junk = await contains("junk"), bare = await contains("bare")
         let deep = await contains("deep"), flat = await contains("flat")
-        XCTAssertFalse(junk, "Thumbs.db, desktop.ini and hidden files don't count")
-        XCTAssertFalse(bare)
-        XCTAssertTrue(deep, "found at any depth")
-        XCTAssertTrue(flat)
+        let double = await contains("double"), named = await contains("named")
+        XCTAssertEqual(double, false, "macOS's '._' files are never pictures")
+        XCTAssertEqual(named, false, "a folder named like a video isn't one")
+        XCTAssertEqual(junk, false, "Thumbs.db, desktop.ini and hidden files don't count")
+        XCTAssertEqual(bare, false)
+        XCTAssertEqual(deep, true, "found at any depth")
+        XCTAssertEqual(flat, true)
     }
 
     @MainActor
@@ -511,11 +534,12 @@ final class OpenFolderTests: XCTestCase {
         await waitUntil { second.isAt(tree.root) }
     }
 
-    func testRestoreIgnoresMissingFolder() {
+    func testRestoreIgnoresMissingFolder() async throws {
         let defaults = makeTestDefaults()
         defaults.set("/does/not/exist", forKey: BrowserModel.lastFolderKey)
         let m = BrowserModel(defaults: defaults)
         m.restoreLastFolder()
+        try await Task.sleep(for: .milliseconds(300))   // checked in the background
         XCTAssertNil(m.folderURL)
     }
 
@@ -1114,6 +1138,20 @@ final class FileActionTests: XCTestCase {
         XCTAssertEqual(m.names, ["..", "a.jpg"])
     }
 
+    /// A share without a Trash: the reason is shown, the file stays listed.
+    func testFailedTrashTellsWhy() async throws {
+        let tree = try TempTree(self)
+        try tree.file("a.jpg")
+        let spy = FileActionsSpy()
+        spy.trashError = CocoaError(.featureUnsupported)
+        let m = makeModel(spy)
+        await openAndWait(m, tree.root)
+        m.selectEntry(named: "a.jpg")
+        m.moveSelectionToTrash()
+        XCTAssertEqual(spy.reported.count, 1, "the reason is shown")
+        XCTAssertEqual(m.names, ["..", "a.jpg"])
+    }
+
     func testTrashLastMediaInFullViewReturnsToGrid() async throws {
         let tree = try TempTree(self)
         try tree.folder("sub")
@@ -1201,6 +1239,22 @@ final class PlaybackTests: XCTestCase {
         m.playbackStateChanged(player, isPlaying: false)   // it ended
         XCTAssertEqual(m.shownMediaEntry?.name, "c.jpg")
         await waitUntil { m.shownMediaEntry?.name == "a.jpg" }    // starts over
+    }
+
+    func testASlideshowOfOneVideoPlaysItAgain() async throws {
+        let tree = try TempTree(self)
+        try tree.file("only.mp4")
+        let m = makeModel()
+        await openAndWait(m, tree.root)
+        m.startSlideshow()
+        await waitUntil { m.shownMediaEntry?.name == "only.mp4" && m.slideshow?.loading == false }
+        let player = PlayerSpy()
+        m.activePlayer = player
+        player.progress = 1
+        player.isPlaying = false
+        m.playbackStateChanged(player, isPlaying: false)   // it ended
+        XCTAssertEqual(m.shownMediaEntry?.name, "only.mp4")
+        XCTAssertEqual(player.calls.last, "play", "plays again instead of standing still")
     }
 
     func testSlideshowKeys() async throws {
@@ -1746,6 +1800,21 @@ final class SearchConsistencyTests: XCTestCase {
         XCTAssertEqual(m.names, ["photos-beach.jpg"])
     }
 
+    func testASearchDroppedFromTheHistoryStops() async throws {
+        let tree = try TempTree(self)
+        let m = try await model(tree)   // a long debounce: the walk stays unfinished
+        let photos = tree.root.appendingPathComponent("photos")
+        await openAndWait(m, photos)
+        await openAndWait(m, tree.root)
+        m.searchText = "beach"
+        m.navigateBack()   // the running search goes to the forward history
+        await waitUntil { m.isAt(photos) && !m.isLoading }
+        let run = try XCTUnwrap(m.forwardStack.last?.search)
+        XCTAssertFalse(run.finished, "kept running while it can be come back to")
+        await openAndWait(m, tree.root)   // a new path: the forward history goes
+        XCTAssertTrue(run.finished, "nothing can come back to it, so it stops")
+    }
+
     func testOnlyTheNewestSearchesKeepRunningInTheHistory() async throws {
         let tree = try TempTree(self)
         let m = try await model(tree)   // long debounce: every walk stays unfinished
@@ -1880,6 +1949,7 @@ final class ReviewFixTests: XCTestCase {
         XCTAssertEqual(BrowserModel.mediaKind(of: URL(fileURLWithPath: "/x/a.JPG")), .image)
         XCTAssertEqual(BrowserModel.mediaKind(of: URL(fileURLWithPath: "/x/a.mkv")), .video)
         XCTAssertNil(BrowserModel.mediaKind(of: URL(fileURLWithPath: "/x/a.txt")))
+        XCTAssertNil(BrowserModel.mediaKind(of: URL(fileURLWithPath: "/x/._a.jpg")), "macOS's '._' companion files")
     }
 
     func testFolderPreviewListIsCachedPerFolder() async throws {
@@ -1936,6 +2006,45 @@ final class ReviewFixTests: XCTestCase {
         let old = PlayerSpy()
         m.playbackStateChanged(old, isPlaying: false)
         XCTAssertFalse(m.videoPaused)
+    }
+}
+
+// MARK: - Media info
+
+final class MediaInfoTests: XCTestCase {
+    /// A photo taken upright is stored landscape with an EXIF orientation;
+    /// its size is reported as shown.
+    func testUprightPhotoReportsItsShownSize() throws {
+        let ctx = try XCTUnwrap(CGContext(data: nil, width: 40, height: 30, bitsPerComponent: 8, bytesPerRow: 0,
+                                          space: CGColorSpaceCreateDeviceRGB(),
+                                          bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue))
+        let image = try XCTUnwrap(ctx.makeImage())
+        for (orientation, expected) in [(1, CGSize(width: 40, height: 30)), (6, CGSize(width: 30, height: 40))] {
+            let data = NSMutableData()
+            let destination = try XCTUnwrap(CGImageDestinationCreateWithData(data, "public.jpeg" as CFString, 1, nil))
+            CGImageDestinationAddImage(destination, image, [kCGImagePropertyOrientation: orientation] as CFDictionary)
+            XCTAssertTrue(CGImageDestinationFinalize(destination))
+            let source = try XCTUnwrap(CGImageSourceCreateWithData(data, nil))
+            XCTAssertEqual(MediaInfo.pixelSize(from: source), expected, "orientation \(orientation)")
+        }
+    }
+
+    /// A menu opened on a tile acts on that file, even if the list moved
+    /// under it meanwhile (results streaming in, a new sort order).
+    @MainActor
+    func testSelectingByFileFindsItWhereverItMoved() async throws {
+        let tree = try TempTree(self)
+        for n in ["a.jpg", "b.jpg", "c.jpg", "d.jpg"] { try tree.file(n) }
+        let m = makeModel()
+        await openAndWait(m, tree.root)
+        let b = try XCTUnwrap(m.entries.first { $0.name == "b.jpg" })
+        let before = m.entries.firstIndex(of: b)
+        m.setSort(.name)   // name again: reversed, so b.jpg sits elsewhere
+        XCTAssertNotEqual(m.entries.firstIndex(of: b), before)
+        XCTAssertTrue(m.select(b))
+        XCTAssertEqual(m.selectedEntry?.name, "b.jpg")
+        XCTAssertFalse(m.select(GridEntry(url: tree.root.appendingPathComponent("gone.jpg"), kind: .image)),
+                       "a file no longer listed selects nothing")
     }
 }
 

@@ -282,6 +282,9 @@ struct ContentView: View {
         guard keyMonitor == nil else { return }
         let model = self.model
         keyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
+            // A modal dialog (the Trash confirmation, the open panel) keeps
+            // its keys: Return confirms it, Esc cancels it.
+            if NSApp.modalWindow != nil || event.window is NSSavePanel { return event }
             let code = event.keyCode
             let command = event.modifierFlags.contains(.command)
             let chars = (command ? event.charactersIgnoringModifiers : event.characters) ?? ""

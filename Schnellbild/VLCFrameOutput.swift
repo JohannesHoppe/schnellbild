@@ -41,6 +41,17 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
     /// renders that failed.
     private var withLook = 0
     private var failed = 0
+    /// Time spent in the callbacks, to show the handover costs little.
+    private var callbackSeconds = 0.0
+    private var callbacks = 0
+    /// Each picture's number, so an older one never replaces a newer one on
+    /// the layer; and when VLC last showed one (a redraw is only needed
+    /// while it doesn't, i.e. paused).
+    private var sequence = 0
+    private var onLayer = 0
+    private var lastDisplay = Date.distantPast
+    /// The newest look waiting for a redraw; older ones are skipped.
+    private var pendingRedraw: Look?
     /// Renders a new look onto a paused picture off the main thread.
     private let redraw = DispatchQueue(label: "schnellbild.vlc-look")
     /// Locked for VLC to draw into, by the address VLC knows them by. A few
@@ -55,7 +66,10 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
     func attach(to player: VLCMediaPlayer) {
         guard let api = LibVLCVideo.shared,
               let native = LibVLCVideo.nativePlayer(of: player) else { return }
-        let opaque = Unmanaged.passUnretained(self).toOpaque()
+        // VLC holds the output until its video output closes (the cleanup
+        // callback), so a frame arriving after the player went can't reach a
+        // freed object.
+        let opaque = Unmanaged.passRetained(self).toOpaque()
         api.setCallbacks(native, { opaque, planes in
             Unmanaged<VLCFrameOutput>.fromOpaque(opaque!).takeUnretainedValue().lockPicture(planes)
         }, { opaque, picture, _ in
@@ -66,7 +80,9 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
         api.setFormatCallbacks(native, { opaque, chroma, width, height, pitches, lines in
             Unmanaged<VLCFrameOutput>.fromOpaque(opaque!.pointee!).takeUnretainedValue()
                 .setUp(chroma: chroma!, width: width!, height: height!, pitches: pitches!, lines: lines!)
-        }, { _ in })
+        }, { opaque in
+            Unmanaged<VLCFrameOutput>.fromOpaque(opaque!).release()
+        })
     }
 
     /// VLC tells the picture size; the pictures are NV12 (two planes).
@@ -111,15 +127,22 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
     }
 
     private func lockPicture(_ planes: UnsafeMutablePointer<UnsafeMutableRawPointer?>?) -> UnsafeMutableRawPointer? {
+        let start = Date()
         lock.lock()
-        defer { lock.unlock() }
+        defer {
+            callbackSeconds += Date().timeIntervalSince(start)
+            lock.unlock()
+        }
         var buffer: CVPixelBuffer?
         guard let pool else { return nil }
         CVPixelBufferPoolCreatePixelBuffer(nil, pool, &buffer)
         guard let buffer else { return nil }
         CVPixelBufferLockBaseAddress(buffer, [])
         guard let base = CVPixelBufferGetBaseAddressOfPlane(buffer, 0),
-              let colour = CVPixelBufferGetBaseAddressOfPlane(buffer, 1) else { return nil }
+              let colour = CVPixelBufferGetBaseAddressOfPlane(buffer, 1) else {
+            CVPixelBufferUnlockBaseAddress(buffer, [])
+            return nil
+        }
         let matrix = hd ? kCVImageBufferYCbCrMatrix_ITU_R_709_2 : kCVImageBufferYCbCrMatrix_ITU_R_601_4
         let primaries = hd ? kCVImageBufferColorPrimaries_ITU_R_709_2 : kCVImageBufferColorPrimaries_SMPTE_C
         CVBufferSetAttachment(buffer, kCVImageBufferYCbCrMatrixKey, matrix, .shouldPropagate)
@@ -141,12 +164,20 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
     }
 
     private func display(_ picture: UnsafeMutableRawPointer?) {
+        let start = Date()
         lock.lock()
         guard let picture, let buffer = drawing[picture] else { lock.unlock(); return }
         latest = buffer
+        lastDisplay = start
+        sequence += 1
+        let number = sequence
         let look = self.look
         lock.unlock()
-        present(buffer, with: look)
+        present(buffer, with: look, number: number)
+        lock.lock()
+        callbackSeconds += Date().timeIntervalSince(start)
+        callbacks += 1
+        lock.unlock()
     }
 
     /// The settings to show the pictures with; a paused picture is drawn
@@ -155,15 +186,26 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
         lock.lock()
         guard new != look else { lock.unlock(); return }
         look = new
-        let buffer = latest
+        // While VLC shows pictures, the next one carries the new look
+        let paused = latest != nil && Date().timeIntervalSince(lastDisplay) > 0.15
+        let queued = pendingRedraw != nil
+        if paused { pendingRedraw = new }
         lock.unlock()
-        guard let buffer else { return }
-        redraw.async { [self] in present(buffer, with: new) }
+        guard paused, !queued else { return }
+        redraw.async { [self] in
+            lock.lock()
+            let look = pendingRedraw
+            pendingRedraw = nil
+            let buffer = latest
+            let number = sequence
+            lock.unlock()
+            if let look, let buffer { present(buffer, with: look, number: number) }
+        }
     }
 
     /// Puts a picture on the layer, with the look applied (Core Image, on
     /// the GPU) unless it is neutral.
-    private func present(_ buffer: CVPixelBuffer, with look: Look) {
+    private func present(_ buffer: CVPixelBuffer, with look: Look, number: Int) {
         var surfaceBuffer = buffer
         if !look.isNeutral {
             lock.lock()
@@ -186,7 +228,12 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
         if shown.count > 4 { shown.removeFirst() }   // the compositor may still read the last ones
         lock.unlock()
         guard let surface = CVPixelBufferGetIOSurface(surfaceBuffer)?.takeUnretainedValue() else { return }
-        DispatchQueue.main.async { [layer] in
+        DispatchQueue.main.async { [self] in
+            lock.lock()
+            let newer = number >= onLayer
+            if newer { onLayer = number }
+            lock.unlock()
+            guard newer else { return }
             CATransaction.begin()
             CATransaction.setDisableActions(true)
             layer.contents = surface
@@ -207,7 +254,9 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
     var diagnostics: String {
         lock.lock()
         defer { lock.unlock() }
-        return "with look \(withLook), failed \(failed), exposure \(String(format: "%.2f", look.exposure))"
+        let perFrame = callbacks > 0 ? callbackSeconds / Double(callbacks) * 1000 : 0
+        return "with look \(withLook), failed \(failed), exposure \(String(format: "%.2f", look.exposure)), "
+            + "handover \(String(format: "%.2f", perFrame)) ms per picture"
     }
 
     /// For UI tests: the mean luminance of what the layer holds (main thread).

@@ -74,31 +74,31 @@ struct ThumbnailGridView: View {
         .contentShape(Rectangle())
         .onTapGesture(count: 2) {
             model.searchFocused = false
-            model.select(index)
+            guard model.select(entry) else { return }
             model.activateSelection()
         }
         .onTapGesture(count: 1) {
             model.searchFocused = false
-            model.select(index)
+            model.select(entry)
         }
         .contextMenu {
             if entry.kind != .parent {
                 if entry.kind == .folder {
                     Button("Play Slideshow") {
-                        model.select(index)
+                        model.select(entry)
                         model.startSlideshow(over: entry.url)
                     }
                 }
                 Button("Rename…") {
-                    model.select(index)
+                    guard model.select(entry) else { return }
                     model.beginRename()
                 }
                 Button("Reveal in Finder") {
-                    model.select(index)
+                    guard model.select(entry) else { return }
                     model.revealInFinder()
                 }
                 Button("Move to Trash…") {
-                    model.select(index)
+                    guard model.select(entry) else { return }
                     model.moveSelectionToTrash()
                 }
             }
@@ -186,8 +186,8 @@ struct FolderTile: View {
         guard !Task.isCancelled else { return }
         previews = files.indices.compactMap { loaded[$0] }
         if files.isEmpty {
-            let empty = !(await FolderPreviewCache.shared.containsMedia(folder))
-            if !Task.isCancelled { model.noteFolder(folder, empty: empty) }
+            guard let found = await FolderPreviewCache.shared.containsMedia(folder), !Task.isCancelled else { return }
+            model.noteFolder(folder, empty: !found)
         } else {
             model.noteFolder(folder, empty: false)
         }
@@ -219,10 +219,11 @@ final class FolderPreviewCache {
         return found
     }
 
-    func containsMedia(_ folder: URL) async -> Bool {
+    /// nil when cancelled before it knew.
+    func containsMedia(_ folder: URL) async -> Bool? {
         if let cached = hasMedia.object(forKey: key(folder)) { return cached.boolValue }
         // The preview listing usually answers it already
-        let found = await files(in: folder).isEmpty ? await BrowserModel.containsMedia(folder) : true
+        guard let found = await files(in: folder).isEmpty ? await BrowserModel.containsMedia(folder) : true else { return nil }
         hasMedia.setObject(NSNumber(value: found), forKey: key(folder))
         return found
     }
