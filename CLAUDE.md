@@ -154,9 +154,9 @@ AVI/MKV/WebM and other non-native formats play **in-app via vendored VLCKit
 - After editing `project.yml` **or adding/removing a `.swift` file**, re-run
   `xcodegen generate` before the Xcode/UITest build (the app target embeds
   `Vendor/VLCKit.xcframework`).
-- Tests: 108 unit (`Tests/SchnellbildTests/BrowserModelTests.swift`: search,
+- Tests: unit tests (`Tests/SchnellbildTests/BrowserModelTests.swift`: search,
   history, rename, file actions via spy, playback via `PlayerSpy`, every key
-  binding) + 62 XCUITest (plus `ReadmeScreenshots`, skipped in CI) in `UITests/*UITests.swift` (grid, search, navigation,
+  binding; `LocalizationTests.swift`) + XCUITests (`ReadmeScreenshots` is skipped in CI) in `UITests/*UITests.swift` (grid, search, navigation,
   full view, video incl. VLC, actions), sharing `UITestSupport.swift`. Media
   fixtures live in `UITests/Fixtures` (bundled as test resources; the dark,
   overexposed, even grey, 4K60 and broken ones are drawn by `swift Scripts/make_test_fixtures.swift UITests/Fixtures`).
@@ -165,7 +165,7 @@ AVI/MKV/WebM and other non-native formats play **in-app via vendored VLCKit
   `screencapture` + `Scripts/measure_brightness.swift` (the test runner can't
   record the screen; XCUITest's own screenshot shows VLC's picture black).
   They check that videos (AVKit, and VLC via `--force-vlc`) are bright from
-  the start, that VLC draws no messages over the video, that VLC keeps up with 4K at 60 fps, that AVKit and VLC show the same video with the same brightness, auto enhance and the exposure slider on videos and photos, and
+  the start, that VLC draws no messages over the video, that handing a 4K picture over from VLC costs under 3 ms (lost pictures are only reported: CI's virtual Macs vary too much), that AVKit and VLC show the same video with the same brightness, auto enhance and the exposure slider on videos and photos, and
   that broken files don't take the app down. Anything visual gets such a
   measured test, so it can't regress unnoticed. Not covered
   end-to-end: drag & drop from Finder, Reveal in Finder, Open with default app

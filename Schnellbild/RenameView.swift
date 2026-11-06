@@ -9,6 +9,9 @@ struct RenameView: View {
     @State private var name: String
     @State private var error: String?
     @FocusState private var fieldFocused: Bool
+    /// Renamed already: Return can reach both the field and the default
+    /// button, and a second rename would work on the old name.
+    @State private var done = false
 
     init(entry: GridEntry) {
         self.entry = entry
@@ -46,8 +49,10 @@ struct RenameView: View {
     }
 
     private func commit() {
+        guard !done else { return }
         do {
             try model.rename(entry, to: name)
+            done = true
         } catch {
             self.error = error.localizedDescription
         }

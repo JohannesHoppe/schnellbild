@@ -109,6 +109,27 @@ final class ActionsUITests: SchnellbildUITestCase {
         XCTAssertTrue(app.staticTexts["album"].exists, "⌘⌫ didn't navigate up")
     }
 
+    /// The dialog keeps its keys: Return confirms, Esc cancels (the app's
+    /// own key handling stays out of it).
+    func testTrashDialogAnswersReturnAndEscape() {
+        launchOnTempDir(waitFor: "album")
+        tile("c.jpg").click()
+        waitForSelected("c.jpg")
+        app.typeKey(.delete, modifierFlags: .command)
+        XCTAssertTrue(app.buttons["Move to Trash"].firstMatch.waitForExistence(timeout: 5))
+        app.typeKey(.escape, modifierFlags: [])
+        eventually("Esc cancels") { !self.app.buttons["Move to Trash"].firstMatch.exists }
+        XCTAssertTrue(FileManager.default.fileExists(atPath: tempDir.appendingPathComponent("c.jpg").path))
+        XCTAssertTrue(isSelected("c.jpg"), "still in the grid, nothing opened")
+
+        app.typeKey(.delete, modifierFlags: .command)
+        XCTAssertTrue(app.buttons["Move to Trash"].firstMatch.waitForExistence(timeout: 5))
+        app.typeKey(.return, modifierFlags: [])
+        eventually("Return confirms") { !self.app.staticTexts["c.jpg"].exists }
+        XCTAssertFalse(FileManager.default.fileExists(atPath: tempDir.appendingPathComponent("c.jpg").path))
+        XCTAssertFalse(app.descendants(matching: .any)["fullImage"].exists, "Return didn't open anything")
+    }
+
     func testTrashCancelKeepsTheFile() {
         launchOnTempDir(waitFor: "album")
         tile("c.jpg").click()

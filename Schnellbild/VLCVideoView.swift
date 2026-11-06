@@ -127,6 +127,8 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         drawable = view
         output.layer.frame = view.bounds
         output.layer.autoresizingMask = [.layerWidthSizable, .layerHeightSizable]
+        // A view reused for the next video holds only that one's picture
+        view.layer?.sublayers?.filter { $0 !== output.layer }.forEach { $0.removeFromSuperlayer() }
         view.layer?.addSublayer(output.layer)
         if first { player.play() }
     }
@@ -232,13 +234,15 @@ final class VLCThumbnails: NSObject, VLCMediaThumbnailerDelegate {
 
     /// A frame `width` pixels wide (the height follows the video), or nil.
     func thumbnail(for url: URL, width: CGFloat) async -> CGImage? {
+        // A finishing call hands its place straight to the next waiting one,
+        // so no new call can slip in between
         if running >= Self.limit {
             await withCheckedContinuation { queue.append($0) }
+        } else {
+            running += 1
         }
-        running += 1
         defer {
-            running -= 1
-            if !queue.isEmpty { queue.removeFirst().resume() }
+            if queue.isEmpty { running -= 1 } else { queue.removeFirst().resume() }
         }
         guard !Task.isCancelled else { return nil }
         return await withCheckedContinuation { done in

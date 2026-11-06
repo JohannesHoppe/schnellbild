@@ -75,6 +75,8 @@ let dark = frame(width: 640, height: 360, low: 0.03, high: 0.2)
 let bright = frame(width: 640, height: 360, low: 0.82, high: 0.97)
 try writeJPEG(dark, to: "dark.jpg")
 try writeJPEG(bright, to: "bright.jpg")
+// Larger than any screen: zooming in decodes it at full size
+try writeJPEG(frame(width: 4000, height: 3000, low: 0.2, high: 0.8), to: "huge.jpg")
 try writeVideo(dark, to: "dark.mp4")
 try writeVideo(bright, to: "bright.mp4")
 try writeVideo(frame(width: 640, height: 360, low: 0.5, high: 0.5), to: "grey.mp4")

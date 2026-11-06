@@ -214,6 +214,19 @@ final class VideoEnhancer: @unchecked Sendable {   // all state behind `lock`
         let source = request.sourceImage
         let time = request.compositionTime.seconds
 
+        // Decide under the lock, measure outside it (a GPU render and read
+        // back), so `set` from the main thread never waits for a measurement.
+        lock.lock()
+        let auto = mode == .auto
+        let jumped = lastFrame.map { time < $0 || time - $0 > 1 } ?? true
+        let elapsed = jumped ? 0 : time - (lastFrame ?? time)
+        let measure = auto && (jumped || !adaptive.hasPicture || time - lastMeasure >= 1)
+        if measure { lastMeasure = time }
+        lastFrame = time
+        lock.unlock()
+
+        let stats = measure ? PictureStats.of(source) : nil
+
         lock.lock()
         let look: Look
         var toReport: Look?
@@ -223,21 +236,13 @@ final class VideoEnhancer: @unchecked Sendable {   // all state behind `lock`
         case .manual(let manual):
             look = manual
         case .auto:
-            let jumped = lastFrame.map { time < $0 || time - $0 > 1 } ?? true
-            let elapsed = jumped ? 0 : time - (lastFrame ?? time)
-            if jumped || !adaptive.hasPicture || time - lastMeasure >= 1 {
-                if let stats = PictureStats.of(source) { adaptive.measure(stats, instant: jumped) }
-                lastMeasure = time
-            } else {
-                adaptive.advance(by: elapsed)
-            }
+            if let stats { adaptive.measure(stats, instant: jumped) } else if !measure { adaptive.advance(by: elapsed) }
             look = adaptive.look
             if Date().timeIntervalSince(lastReport) >= 0.25 {
                 lastReport = Date()
                 toReport = look
             }
         }
-        lastFrame = time
         lock.unlock()
 
         if let toReport { report(toReport) }
