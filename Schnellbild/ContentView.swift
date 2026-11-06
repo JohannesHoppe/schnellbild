@@ -55,6 +55,10 @@ struct ContentView: View {
             if model.mode == .grid, model.slideshow == nil, model.folderURL != nil { statusBar }
         }
         .toolbar(model.slideshow == nil ? .visible : .hidden, for: .windowToolbar)
+        // The slideshow fills the whole screen, also where the (hidden) title
+        // bar would be.
+        .background(model.slideshow == nil ? Color.clear : Color.black)
+        .ignoresSafeArea(.container, edges: model.slideshow == nil ? [] : .all)
         .onAppear {
             if !launched {
                 launched = true
