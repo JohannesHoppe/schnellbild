@@ -203,7 +203,7 @@ AVI/MKV/WebM and other non-native formats play **in-app via vendored VLCKit
 - **Verify heavy / UI changes on CI, not locally.** Local runs of the app,
   XCUITests, code-signing, or `sudo` pop macOS dialogs (Gatekeeper, Touch ID,
   license) that interrupt the user.
-  - Fine locally (no popups): `./Scripts/test.sh`, `swift build`.
+  - Fine locally (no popups): `./Scripts/typecheck.sh` (works with only the Command Line Tools: app, unit and UI tests are typechecked, with stand-ins for SwiftUI's `@State` macro and for XCTest in `Scripts/typecheck/`; run it before every commit), and with a full Xcode `./Scripts/test.sh`, `swift build`.
   - Prefer CI (push → watch): running the `.app`, XCUITest, `build_app.sh`,
     anything that signs or launches a freshly-built bundle.
   - Only fall back to local launches when CI genuinely can't answer — say so first.
