@@ -105,14 +105,21 @@ final class VideoUITests: SchnellbildUITestCase {
         eventually("a picture, not the file icon", timeout: 20) { self.text(of: self.tile("clip.mkv")).hasSuffix(", preview") }
     }
 
-    /// At the end of a video Space plays it again from the start.
+    /// At the end of a video Space plays it again from the start, every
+    /// time. The app logs the player's states (shown when it fails).
     private func checkSpaceAtTheEndPlaysAgain(vlc: Bool) throws {
         try put("dark.mp4", at: "short.mp4")   // three seconds
-        launch(open: tempDir.appendingPathComponent("short.mp4").path, extra: vlc ? ["--force-vlc"] : [])
+        let log = tempDir.appendingPathComponent("test.log")
+        launch(open: tempDir.appendingPathComponent("short.mp4").path,
+               extra: (vlc ? ["--force-vlc"] : []) + ["--test-log=\(log.path)"])
         XCTAssertTrue(element(vlc ? "video.vlc" : "video.avkit").waitForExistence(timeout: 20))
-        waitForBadge(containing: "Paused", timeout: 20)   // it ended
-        app.typeKey(.space, modifierFlags: [])
-        eventually("plays again") { !self.text(of: self.badge).contains("Paused") }
+        continueAfterFailure = true
+        defer { print("player log:\n" + ((try? String(contentsOf: log, encoding: .utf8)) ?? "(none)")) }
+        for round in 1...3 {
+            waitForBadge(containing: "Paused", timeout: 20)   // it ended
+            app.typeKey(.space, modifierFlags: [])
+            eventually("plays again (round \(round))") { !self.text(of: self.badge).contains("Paused") }
+        }
     }
 
     func testSpaceAtTheEndPlaysAnAVKitVideoAgain() throws { try checkSpaceAtTheEndPlaysAgain(vlc: false) }

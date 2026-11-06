@@ -135,6 +135,7 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
 
     /// At the end, playing starts over.
     func play() {
+        BrowserModel.testLog("vlc play, state \(player.state.rawValue)")
         if player.state == .ended || player.state == .stopped {
             player.media = makeMedia()
         }
@@ -189,6 +190,7 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
 
     nonisolated func mediaPlayerStateChanged(_ aNotification: Notification) {
         Task { @MainActor in
+            BrowserModel.testLog("vlc state \(self.player.state.rawValue)")
             switch self.player.state {
             case .playing:
                 self.isPlaying = true
