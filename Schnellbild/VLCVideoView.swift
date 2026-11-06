@@ -131,6 +131,15 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         return nil
     }
 
+    /// For UI tests: VLC's state and the brightness of the decoded picture
+    /// (from a snapshot), to tell "VLC decodes nothing" from "the picture
+    /// doesn't reach the screen".
+    func diagnostics() async -> String {
+        let decoded = await snapshotStats().map { String(format: "%.3f", $0.mean) } ?? "none"
+        return "vlc state \(player.state.rawValue), video out \(player.hasVideoOut), "
+            + "size \(Int(player.videoSize.width))x\(Int(player.videoSize.height)), decoded \(decoded)"
+    }
+
     /// Render into `view`; the first view starts playback.
     func attach(to view: NSView) {
         guard drawable !== view else { return }

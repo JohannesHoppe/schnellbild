@@ -47,6 +47,7 @@ final class VisualUITests: SchnellbildUITestCase {
         }
         waitForBadge(containing: fixture)
         settle()
+        print("player: \(text(of: video))")
         return video
     }
 
@@ -57,7 +58,7 @@ final class VisualUITests: SchnellbildUITestCase {
     private func checkFullBrightness(vlc: Bool) throws {
         let video = try openVideo(vlc ? "clip.mkv" : "clip.mp4", vlc: vlc)
         let start = try screenBrightness(of: video)
-        XCTAssertGreaterThan(start, 0.45, "shown dimmed from the start: \(start)")
+        XCTAssertGreaterThan(start, 0.45, "shown dimmed from the start: \(start); \(text(of: video))")
         video.click()
         settle()
         let clicked = try screenBrightness(of: video)

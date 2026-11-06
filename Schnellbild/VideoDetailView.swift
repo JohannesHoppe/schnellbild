@@ -19,6 +19,8 @@ struct VideoDetailView: View {
     @GestureState private var dragTranslation: CGSize = .zero
     /// The video's picture size, for fitting it when turned a quarter.
     @State private var videoSize: CGSize?
+    /// UI tests only: what VLC reports (`VLCPlaybackControl.diagnostics`).
+    @State private var vlcDiagnostics = ""
 
     var body: some View {
         GeometryReader { geo in
@@ -57,7 +59,16 @@ struct VideoDetailView: View {
         .onChange(of: url) { _, _ in panOffset = .zero }
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier(vlcControl != nil ? "video.vlc" : "video.avkit")
-        .accessibilityLabel("zoom \(Int((model.zoom * 100).rounded())) %, rotation \(Int(model.rotation))°")
+        .accessibilityLabel("zoom \(Int((model.zoom * 100).rounded())) %, rotation \(Int(model.rotation))°"
+                            + (vlcDiagnostics.isEmpty ? "" : ", \(vlcDiagnostics)"))
+        .task(id: vlcControl.map(ObjectIdentifier.init)) {
+            vlcDiagnostics = ""
+            guard Self.uiTesting, let control = vlcControl else { return }
+            while !Task.isCancelled {
+                vlcDiagnostics = await control.diagnostics()
+                try? await Task.sleep(for: .seconds(1))
+            }
+        }
         .task(id: url) {
             stop()
             checking = true
@@ -107,6 +118,7 @@ struct VideoDetailView: View {
 
     /// UI tests (`--ui-testing --force-vlc`) play every video through VLC, so
     /// the same test videos check both players.
+    static let uiTesting = ProcessInfo.processInfo.arguments.contains("--ui-testing")
     static let forceVLC = ProcessInfo.processInfo.arguments.contains("--ui-testing")
         && ProcessInfo.processInfo.arguments.contains("--force-vlc")
 
