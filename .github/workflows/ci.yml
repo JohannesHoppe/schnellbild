@@ -121,6 +121,13 @@ jobs:
           kill "$helper"
           exit $status
 
+      - name: Show VLC's log
+        if: failure()
+        run: |
+          [ -f /tmp/schnellbild-vlc.log ] || { echo "no VLC log"; exit 0; }
+          wc -l /tmp/schnellbild-vlc.log
+          grep -i -E "vout|video output|opengl|gl |display|window|drawable|caopengl|macosx|error|failed|cannot" /tmp/schnellbild-vlc.log | sort | uniq -c | sort -rn | head -80
+
       - name: Keep what was measured
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
