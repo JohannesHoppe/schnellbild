@@ -12,7 +12,7 @@ little, load in parallel, cache via the system, never block the main thread.
 
 - Repo: <https://github.com/JohannesHoppe/schnellbild> — **public, MIT**,
   © 2026 HAUS HOPPE - ITS (Johannes Hoppe).
-- Bundle id: `art.haushoppe.schnellbild`. Current version: **0.3.0**.
+- Bundle id: `art.haushoppe.schnellbild`. Current version: **0.3.1**.
 - Everything (code, comments, UI strings, docs, commits) is in **English**.
   The user converses in **German**.
 
@@ -207,6 +207,7 @@ AVI/MKV/WebM and other non-native formats play **in-app via vendored VLCKit
   - Prefer CI (push → watch): running the `.app`, XCUITest, `build_app.sh`,
     anything that signs or launches a freshly-built bundle.
   - Only fall back to local launches when CI genuinely can't answer — say so first.
+  - **Check anything visual yourself on CI with screenshots** (e.g. `dmg-preview.yml`), don't hand it to the user to look at. A GitHub runner is a clean Mac: what works there works everywhere, while the dev Mac has much installed that users don't have.
 - Releases are **Developer ID signed and notarized** (see CI & release). CI
   builds (`ci.yml`) stay ad-hoc signed.
 - Use the **`gh` CLI** for all GitHub work, never WebFetch. Grep freely.
@@ -217,7 +218,7 @@ AVI/MKV/WebM and other non-native formats play **in-app via vendored VLCKit
 
 ## Current state & open threads (handover)
 
-Version 0.3.0: folders + drag&drop, subfolder nav (Norton `..`),
+Version 0.3.1: folders + drag&drop, subfolder nav (Norton `..`),
 keyboard-first (NSEvent monitor, F1 help), zoom/pan/pinch/rotate (view-only), video (AVKit + VLCKit fallback),
 animated GIFs, slideshow, inspector, sort, reveal/open/trash, light/dark,
 last-folder restore, always-visible recursive search over folder + file
