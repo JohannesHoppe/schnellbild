@@ -89,6 +89,6 @@ struct ShortcutsHelpView: View {
                 .padding()
             }
         }
-        .frame(width: 500, height: 680)
+        .frame(width: 520, height: 560)
     }
 }
