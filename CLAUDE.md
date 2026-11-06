@@ -199,7 +199,7 @@ AVI/MKV/WebM and other non-native formats play **in-app via vendored VLCKit
 
 ## Working conventions
 
-- **Work directly on `main`, no feature branches.** There is a single developer; commit and push to `main`, CI runs on every push.
+- **Work directly on `main`, no feature branches.** There is a single developer. **Commit locally while working on a set of features and push once when they're all done**, so CI doesn't run (and cancel itself) on every small commit. Typecheck locally as far as possible before that push (see Build / test / run).
 - **Verify heavy / UI changes on CI, not locally.** Local runs of the app,
   XCUITests, code-signing, or `sudo` pop macOS dialogs (Gatekeeper, Touch ID,
   license) that interrupt the user.
