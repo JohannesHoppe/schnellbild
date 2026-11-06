@@ -49,7 +49,7 @@ There is **no Xcode project for the app build**; `xcodegen` generates
     query, selection and the **remembered search results** (not searched
     again), so "Back" from a result folder shows the same, stable list. A
     search left before it finished is searched again instead.
-  - Renaming a folder (`renameFolder`) never navigates: folder, query and
+  - Renaming a folder or file (`rename`, also from the full view; a file must keep a media extension) never navigates: folder, query and
     results stay; the folder and everything listed inside it get the new path
     (`FileChange.moved`), as do history entries and results still streaming in.
     `FileActions.conflicts` refuses a target that is a different item (also
@@ -64,7 +64,7 @@ There is **no Xcode project for the app build**; `xcodegen` generates
 - **`SearchField.swift`** — `NSSearchField` wrapper, always visible above the
   content. It refuses first responder until clicked or ⌘F, otherwise AppKit
   focuses it on launch and it swallows the grid keys.
-- **`RenameFolderView.swift`** — the F2 rename sheet (`model.renameFolder`).
+- **`RenameView.swift`** — the F2 rename sheet (`model.rename`); for files the base name is preselected.
 - **`ContentView.swift`** — one **local `NSEvent` keyDown monitor** dispatches
   *every* key through `model.handleKey` via `MainActor.assumeIsolated`. Keys are
   deliberately focus-independent, because SwiftUI focus can swallow

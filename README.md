@@ -141,11 +141,11 @@ Name, type, resolution, size and date of the item on screen.
   <img src="docs/screenshots/rename-light.png" width="760" alt="Renaming a folder">
 </picture></p>
 
-Rename a folder in place (F2, the Actions menu, or right-click); the search results and the history follow the new name. Reveal an item in Finder, open it in its default app, or move it to the Trash after a confirmation.
+Rename a folder or file in place (F2, the Actions menu, or right-click), in the grid or straight from the full view. For files the name without its extension is selected, like in Finder. The search results and the history follow the new name. Reveal an item in Finder, open it in its default app, or move it to the Trash after a confirmation.
 
 | Key | Action |
 |---|---|
-| F2 | rename the selected folder |
+| F2 | rename the selected folder or file, also in the full view |
 | ⇧⌘R | reveal in Finder |
 | ⌘↩ | open with the default app |
 | ⌘⌫ | move to Trash |

@@ -24,7 +24,7 @@ struct ShortcutsHelpView: View {
             Shortcut(keys: "Backspace", action: "Up one folder level"),
             Shortcut(keys: "Home / End", action: "First / last item"),
             Shortcut(keys: "⌘+ / ⌘−", action: "Larger / smaller thumbnails"),
-            Shortcut(keys: "F2", action: "Rename selected folder"),
+            Shortcut(keys: "F2", action: "Rename the selected folder or file (also in the full view)"),
             Shortcut(keys: "Esc", action: "Clear search"),
         ]),
         Group(title: "Full view", shortcuts: [
