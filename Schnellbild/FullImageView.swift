@@ -1,5 +1,6 @@
 import SwiftUI
 import ImageIO
+import CoreImage
 import AppKit
 
 /// Full-size view for still images. Loads the image via ImageIO downsampled
@@ -10,9 +11,11 @@ struct FullImageView: View {
 
     @EnvironmentObject var model: BrowserModel
     @State private var image: NSImage?
-    /// The loaded picture, and its enhanced version while auto enhance is on.
+    /// The loaded picture, auto enhance's look for it, and the picture with
+    /// the look on screen (`model.enhancement`).
     @State private var picture: CGImage?
-    @State private var enhanced: NSImage?
+    @State private var autoLook: Look?
+    @State private var enhanced: (look: Look, image: NSImage)?
     @State private var nativeSize: CGSize?
     @State private var panOffset: CGSize = .zero
     @GestureState private var dragTranslation: CGSize = .zero
@@ -22,7 +25,7 @@ struct FullImageView: View {
         GeometryReader { geo in
             ZStack {
                 Color.black
-                if let shown = model.enhance ? (enhanced ?? image) : image {
+                if let shown = shownImage {
                     Image(nsImage: shown)
                         .resizable()
                         .interpolation(.high)
@@ -54,7 +57,7 @@ struct FullImageView: View {
             .onChange(of: geo.size) { _, newSize in
                 updateActualSizeFactor(in: newSize)
             }
-            .task(id: EnhanceJob(url: url, on: model.enhance, ready: picture != nil)) {
+            .task(id: EnhanceJob(url: url, enhancement: model.enhancement, ready: picture != nil)) {
                 await enhance()
             }
         }
@@ -65,7 +68,25 @@ struct FullImageView: View {
             panOffset = .zero
             nativeSize = nil
             picture = nil
+            autoLook = nil
             enhanced = nil
+        }
+    }
+
+    /// With a look: the picture rendered with it; while a slider moves, the
+    /// last rendered one until the next is ready.
+    private var shownImage: NSImage? {
+        if shownLook != nil, let enhanced { return enhanced.image }
+        return image
+    }
+
+    /// The look to show, nil for the picture as it is (or while auto
+    /// enhance is still measuring).
+    private var shownLook: Look? {
+        switch model.enhancement {
+        case .off: return nil
+        case .auto: return autoLook
+        case .manual(let look): return look
         }
     }
 
@@ -73,7 +94,7 @@ struct FullImageView: View {
     private var accessibilityState: String {
         "zoom \(Int((model.zoom * 100).rounded())) %, rotation \(Int(model.rotation))°, "
             + (image == nil ? "loading" : "loaded")
-            + (model.enhance && enhanced != nil ? ", enhanced" : "")
+            + (shownLook != nil && enhanced?.look == shownLook ? (model.enhance ? ", enhanced" : ", adjusted") : "")
     }
 
     private var panGesture: some Gesture {
@@ -145,24 +166,39 @@ struct FullImageView: View {
             image = result.0
             nativeSize = result.1
             enhanced = nil
+            autoLook = nil
             picture = result.2
         }
     }
 
     private struct EnhanceJob: Equatable {
         let url: URL
-        let on: Bool
+        let enhancement: Enhancement
         let ready: Bool
     }
 
-    /// Work out the enhanced picture when auto enhance is on (off the main
-    /// thread; kept while it stays on).
+    /// Measures the picture for auto enhance (once per picture) and renders
+    /// it with the look, off the main thread. While sliders move, the last
+    /// rendered picture stays until the new one is ready.
     private func enhance() async {
-        guard model.enhance, enhanced == nil, let picture else { return }
+        guard model.enhancement != .off, let picture else { return }
+        if model.enhance {
+            if autoLook == nil {
+                let measured = await Task.detached(priority: .userInitiated) {
+                    PictureStats.of(CIImage(cgImage: picture)).map(Look.auto(for:))
+                }.value
+                guard !Task.isCancelled else { return }
+                autoLook = measured ?? .neutral
+            }
+            if let autoLook { model.autoLookMeasured(autoLook) }
+        } else {
+            try? await Task.sleep(for: .milliseconds(30))   // a slider still moving
+        }
+        guard !Task.isCancelled, let look = shownLook, enhanced?.look != look else { return }
         let result = await Task.detached(priority: .userInitiated) {
-            EnhanceRecipe.enhanced(picture)
+            Look.render(picture, with: look)
         }.value
         guard !Task.isCancelled, let result else { return }
-        enhanced = NSImage(cgImage: result, size: NSSize(width: result.width, height: result.height))
+        enhanced = (look, NSImage(cgImage: result, size: NSSize(width: result.width, height: result.height)))
     }
 }

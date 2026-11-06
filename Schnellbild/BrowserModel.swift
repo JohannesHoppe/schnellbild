@@ -31,8 +31,10 @@ protocol PlaybackControl: AnyObject {
     func pause()
     /// Jump to a position (0 … 1). From the end, playing resumes.
     func seek(toProgress progress: Double)
-    /// Auto enhance as a filter on the picture (see `EnhanceRecipe`).
-    func setEnhanced(_ on: Bool)
+    /// The look as a filter on the picture (see `Look`); with `.auto` the
+    /// player measures the video and reports its look through
+    /// `BrowserModel.autoLookMeasured`.
+    func setEnhancement(_ enhancement: Enhancement)
 }
 
 /// Side effects on the file system and the workspace. Injectable, so tests
@@ -161,8 +163,59 @@ struct FileChange {
         var result = location
         result.folder = apply(to: location.folder) ?? location.folder
         result.selected = location.selected.flatMap { apply(to: $0) }
-        result.results = location.results?.compactMap { apply(to: $0) }
         return result
+    }
+}
+
+/// One search: what it has found so far and the tree walk adding to it.
+/// The history keeps it, so going back shows the same results, and a walk
+/// still running goes on in the background.
+@MainActor
+final class SearchRun {
+    let query: String
+    private(set) var results: [GridEntry]
+    /// Canonical paths in `results`, so nothing shows up twice.
+    private var seen: Set<String>
+    /// Changes made while the walk runs, in order. The walk may still report
+    /// paths it read before such a change; they are replayed on arrival.
+    private var changes: [FileChange] = []
+    var task: Task<Void, Never>?
+    /// The walk is done (or was stopped).
+    var finished = false
+    /// Stopped to save work (too many running in the history) before the
+    /// walk was through: coming back searches again. A search the user
+    /// stopped keeps what it found.
+    private(set) var stoppedEarly = false
+
+    init(query: String, results: [GridEntry]) {
+        self.query = query
+        self.results = results
+        seen = Set(results.map { BrowserModel.canonicalPath($0.url) })
+    }
+
+    /// Adds a batch from the walk; whether anything was new.
+    func add(_ batch: [GridEntry]) -> Bool {
+        var fresh: [GridEntry] = []
+        for found in batch {
+            guard let entry = changes.reduce(Optional(found), { entry, change in
+                entry.flatMap { change.apply(to: $0) }
+            }) else { continue }
+            if seen.insert(BrowserModel.canonicalPath(entry.url)).inserted { fresh.append(entry) }
+        }
+        results += fresh
+        return !fresh.isEmpty
+    }
+
+    func apply(_ change: FileChange) {
+        results = results.compactMap { change.apply(to: $0) }
+        seen = Set(results.map { BrowserModel.canonicalPath($0.url) })
+        if !finished { changes.append(change) }
+    }
+
+    func stop(incomplete: Bool) {
+        task?.cancel()
+        if !finished && incomplete { stoppedEarly = true }
+        finished = true
     }
 }
 
@@ -190,15 +243,16 @@ final class BrowserModel: ObservableObject {
         case char(Character)
     }
 
-    /// A place in the navigation history: a folder, the search shown in it
-    /// with its results, and the selected item. Going back to a search shows
-    /// exactly these results again (with any renames applied) instead of
-    /// searching anew, so the list stays stable.
+    /// A place in the navigation history: a folder, the search shown in it,
+    /// and the selected item. Going back to a search shows its results
+    /// again (with any renames applied) instead of searching anew, so the
+    /// list stays stable; a search that was still running when the user
+    /// left keeps running and shows what it has found by then.
     struct Location {
         var folder: URL
         var query: String = ""
         var selected: URL? = nil
-        var results: [GridEntry]? = nil
+        var search: SearchRun? = nil
     }
 
     @Published private(set) var folderURL: URL? {
@@ -259,18 +313,12 @@ final class BrowserModel: ObservableObject {
     /// The full, unfiltered set of the current folder. `entries` is the
     /// currently visible (possibly search-filtered) view of it.
     private var allEntries: [GridEntry] = []
-    private var searchTask: Task<Void, Never>?
+    /// The search shown; the history can hold more (`Location.search`).
+    private var search: SearchRun?
+    /// Unfinished searches kept running in the history; older ones stop.
+    static let backgroundSearchLimit = 3
     /// A result to select as soon as the search produces it.
     private var pendingResultSelection: URL?
-    /// Everything the running search has found so far; streamed batches are
-    /// appended here.
-    private var searchResults: [GridEntry] = []
-    /// Canonical paths in `searchResults`, so nothing shows up twice.
-    private var searchSeen: Set<String> = []
-    /// Changes made while the running search walks the tree, in order. The
-    /// walk may still report paths it read before such a change; they are
-    /// replayed on arrival. Reset by every new search.
-    private var searchChanges: [FileChange] = []
     /// Identifies the newest `load`, so an older scan that finishes late is ignored.
     private var loadGeneration = 0
 
@@ -343,14 +391,57 @@ final class BrowserModel: ObservableObject {
     weak var activePlayer: PlaybackControl? {
         didSet {
             videoPaused = false
-            if enhance { activePlayer?.setEnhanced(true) }
+            if enhancement != .off { activePlayer?.setEnhancement(enhancement) }
         }
     }
-    /// Auto enhance (E): brightens dark material, corrects tone and colour
-    /// and sharpens, as a view filter on photos and videos. Stays on while
-    /// paging until switched off.
+    /// Auto enhance (E, the wand): works out exposure, contrast, saturation
+    /// and sharpness for each photo and, now and then, for the video
+    /// playing; the sliders (`look`) follow it. Stays on while paging until
+    /// switched off, which shows the files as they are again.
     @Published var enhance = false {
-        didSet { if enhance != oldValue { activePlayer?.setEnhanced(enhance) } }
+        didSet {
+            guard enhance != oldValue else { return }
+            if !enhance && !adjustingByHand { manualLook = .neutral; look = .neutral }
+            activePlayer?.setEnhancement(enhancement)
+        }
+    }
+    /// The settings shown on the sliders: auto's for the item on screen
+    /// while auto enhance is on, else the ones set by hand.
+    @Published private(set) var look = Look.neutral
+    /// Settings by hand; they stay while paging until reset.
+    @Published private(set) var manualLook = Look.neutral
+    private var adjustingByHand = false
+    /// Whether the adjustment panel is open.
+    @Published var showAdjustments = false
+
+    /// What photos and videos show.
+    var enhancement: Enhancement {
+        enhance ? .auto : manualLook.isNeutral ? .off : .manual(manualLook)
+    }
+
+    /// A slider moved by hand: auto enhance goes off, and the look carries
+    /// on from what was on screen.
+    func adjust(_ new: Look) {
+        adjustingByHand = true
+        enhance = false
+        adjustingByHand = false
+        manualLook = new
+        look = new
+        activePlayer?.setEnhancement(enhancement)
+    }
+
+    /// Back to the files as they are.
+    func resetLook() {
+        enhance = false
+        adjust(.neutral)
+    }
+
+    /// Auto enhance's look for the item on screen (a photo once, a video
+    /// now and then), for the sliders. Ignored from a player no longer shown.
+    func autoLookMeasured(_ measured: Look, from player: PlaybackControl? = nil) {
+        guard enhance else { return }
+        if let player, player !== activePlayer { return }
+        look = measured
     }
     /// Whether the current video is paused (or has ended). Videos autoplay;
     /// the players report changes via `playbackStateChanged`.
@@ -430,8 +521,7 @@ final class BrowserModel: ObservableObject {
         FolderPreviewCache.shared.forgetAll()
         loadGeneration += 1
         let generation = loadGeneration
-        searchTask?.cancel()
-        isSearching = false
+        leaveSearch()
         pendingResultSelection = nil
         folderURL = location.folder
         entries = []
@@ -453,9 +543,12 @@ final class BrowserModel: ObservableObject {
             self.allEntries = self.sorted(full)
             self.isLoading = false
             if self.isFiltering {
-                if let results = location.results, self.searchText == location.query {
-                    // History: show the remembered results as they were.
-                    self.entries = self.sorted(results)
+                if let run = location.search, run.query == self.query, !run.stoppedEarly {
+                    // History: the remembered results; a search still
+                    // running goes on adding to them.
+                    self.search = run
+                    self.isSearching = !run.finished
+                    self.entries = self.sorted(run.results)
                     self.selection = self.index(of: target) ?? (self.entries.isEmpty ? nil : 0)
                 } else {
                     // The user typed while the folder loaded.
@@ -757,15 +850,11 @@ final class BrowserModel: ObservableObject {
     /// and files) in the current folder appear at once, matches from all
     /// subfolders stream in while the tree walk runs.
     func applyFilter() {
-        searchTask?.cancel()
         guard !isLoading else { return }
+        leaveSearch()
         let query = self.query
-        searchChanges = []
         guard !query.isEmpty else {
-            isSearching = false
             pendingResultSelection = nil
-            searchResults = []
-            searchSeen = []
             let keep = selectedEntry?.url
             entries = allEntries
             selection = index(of: keep) ?? Self.defaultSelection(in: allEntries)
@@ -775,37 +864,63 @@ final class BrowserModel: ObservableObject {
         let local = allEntries.filter {
             $0.kind != .parent && $0.name.localizedCaseInsensitiveContains(query)
         }
-        searchResults = local
-        searchSeen = Set(local.map { Self.canonicalPath($0.url) })
+        let run = SearchRun(query: query, results: local)
+        search = run
         showResults(initial: true)
 
-        guard let root = folderURL else { isSearching = false; return }
+        guard let root = folderURL else { run.finished = true; return }
         isSearching = true
         let debounce = searchDebounce
-        searchTask = Task { [weak self] in
+        run.task = Task { [weak self, weak run] in
             if debounce > .zero { try? await Task.sleep(for: debounce) }
             guard !Task.isCancelled else { return }
             for await batch in Self.recursiveMatches(under: root, query: query) {
-                guard let self, !Task.isCancelled else { return }
-                self.appendSearchBatch(batch)
+                guard let self, let run, !Task.isCancelled else { return }
+                self.add(batch, to: run)
             }
-            guard let self, !Task.isCancelled else { return }
-            self.isSearching = false
+            guard let self, let run, !Task.isCancelled else { return }
+            run.finished = true
+            if run === self.search { self.isSearching = false }
         }
     }
 
-    /// Add a streamed batch to the running search's results. Internal so
-    /// tests can deliver a batch the walk read before a rename or trash.
-    func appendSearchBatch(_ batch: [GridEntry]) {
-        var fresh: [GridEntry] = []
-        for found in batch {
-            guard let entry = searchChanges.reduce(Optional(found), { entry, change in
-                entry.flatMap { change.apply(to: $0) }
-            }) else { continue }
-            if searchSeen.insert(Self.canonicalPath(entry.url)).inserted { fresh.append(entry) }
+    /// The search on screen goes: it keeps running if the history holds
+    /// it (the user went into a result and may come back), else it stops.
+    private func leaveSearch() {
+        if let search, !search.finished, !historySearches.contains(where: { $0 === search }) {
+            search.stop(incomplete: true)
         }
-        guard !fresh.isEmpty else { return }
-        searchResults += fresh
+        search = nil
+        isSearching = false
+        // Only the newest few unfinished searches in the history go on.
+        let running = historySearches.filter { !$0.finished }
+        for old in running.dropLast(Self.backgroundSearchLimit) { old.stop(incomplete: true) }
+    }
+
+    /// Every search the history holds, oldest first, each once.
+    private var historySearches: [SearchRun] { Self.distinct((backStack + forwardStack.reversed()).compactMap(\.search)) }
+    /// The search on screen and those in the history.
+    private var allSearches: [SearchRun] { Self.distinct(historySearches + [search].compactMap { $0 }) }
+    private static func distinct(_ runs: [SearchRun]) -> [SearchRun] {
+        var seen = Set<ObjectIdentifier>()
+        return runs.filter { seen.insert(ObjectIdentifier($0)).inserted }
+    }
+
+    /// Stops the running search (the stop button); what it has found stays.
+    func stopSearch() {
+        guard let search, !search.finished else { return }
+        search.stop(incomplete: false)
+        isSearching = false
+    }
+
+    /// Add a streamed batch to the search on screen. Internal so tests can
+    /// deliver a batch the walk read before a rename or trash.
+    func appendSearchBatch(_ batch: [GridEntry]) {
+        if let search { add(batch, to: search) }
+    }
+
+    private func add(_ batch: [GridEntry], to run: SearchRun) {
+        guard run.add(batch), run === search else { return }
         showResults(initial: false)
     }
 
@@ -813,7 +928,7 @@ final class BrowserModel: ObservableObject {
     /// results stream in.
     private func showResults(initial: Bool) {
         let keep = initial ? nil : selectedEntry?.url
-        entries = sorted(searchResults)
+        entries = sorted(search?.results ?? [])
         if let idx = index(of: pendingResultSelection) {
             selection = idx
             pendingResultSelection = nil
@@ -911,13 +1026,11 @@ final class BrowserModel: ObservableObject {
 
     // MARK: - History (back / forward)
 
-    /// The place on screen. Results are remembered only once the search has
-    /// finished; an unfinished one runs again when the user comes back.
+    /// The place on screen, with its search (finished or still running).
     private var currentLocation: Location? {
         guard let folderURL else { return nil }
-        let complete = isFiltering && !isLoading && !isSearching
-        return Location(folder: folderURL, query: searchText, selected: selectedEntry?.url,
-                        results: complete ? entries : nil)
+        let run = isFiltering && !isLoading ? search : nil
+        return Location(folder: folderURL, query: searchText, selected: selectedEntry?.url, search: run)
     }
 
     private func recordHistory() {
@@ -1172,6 +1285,7 @@ final class BrowserModel: ObservableObject {
         case "]" where command: navigateForward(); return true
         case "s" where !command: startSlideshow(); return true
         case "e" where !command: enhance.toggle(); return true
+        case "a" where !command: showAdjustments.toggle(); return true
         default:
             break
         }
@@ -1276,9 +1390,7 @@ final class BrowserModel: ObservableObject {
         let keep = selectedEntry.flatMap { change.apply(to: $0.url) }
         let previous = selection
         allEntries = sorted(allEntries.compactMap { change.apply(to: $0) })
-        searchResults = searchResults.compactMap { change.apply(to: $0) }
-        searchSeen = Set(searchResults.map { Self.canonicalPath($0.url) })
-        if isSearching { searchChanges.append(change) }
+        for run in allSearches { run.apply(change) }
         pendingResultSelection = pendingResultSelection.flatMap { change.apply(to: $0) }
         backStack = backStack.map { change.apply(to: $0) }
         forwardStack = forwardStack.map { change.apply(to: $0) }
@@ -1521,6 +1633,7 @@ final class BrowserModel: ObservableObject {
             case "f" where !command: toggleFullScreen(); return true
             case "i" where !command: showInspector.toggle(); return true
             case "e" where !command: enhance.toggle(); return true
+            case "a" where !command: showAdjustments.toggle(); return true
             // No search, history or file actions while the hidden grid's
             // selection isn't what's on screen
             case "f" where command, "[" where command, "]" where command: return true
@@ -1572,22 +1685,54 @@ final class AVPlaybackControl: PlaybackControl {
     func pause() { player.pause() }
 
     private var composition: AVVideoComposition?
-    private var enhanceTask: Task<Void, Never>?
+    private var enhancer: VideoEnhancer?
+    private var compositionTask: Task<Void, Never>?
+    /// Where auto enhance's look goes (the model, for the sliders).
+    var onAutoLook: @MainActor (PlaybackControl, Look) -> Void = { _, _ in }
 
-    /// Works out the recipe once per video (from one frame), then switches
-    /// the composition on and off.
-    func setEnhanced(_ on: Bool) {
-        enhanceTask?.cancel()
+    /// One video composition per video, made the first time a look is
+    /// asked for; it reads the current look for every frame. Off, the
+    /// composition is taken away so the video plays unfiltered.
+    func setEnhancement(_ enhancement: Enhancement) {
         guard let item = player.currentItem else { return }
-        guard on else { item.videoComposition = nil; return }
-        if let composition { item.videoComposition = composition; return }
-        let asset = item.asset
-        enhanceTask = Task { [weak self] in
-            guard let found = await EnhanceRecipe.videoComposition(for: asset),
-                  !Task.isCancelled, let self else { return }
-            self.composition = found
-            item.videoComposition = found
+        if enhancement == .off {
+            compositionTask?.cancel()
+            compositionTask = nil
+            enhancer?.set(.off)
+            item.videoComposition = nil
+            return
         }
+        if let enhancer, let composition {
+            enhancer.set(enhancement)
+            if item.videoComposition == nil { item.videoComposition = composition }
+            redrawIfPaused()
+            return
+        }
+        let enhancer = self.enhancer ?? VideoEnhancer(report: { [weak self] look in
+            Task { @MainActor in
+                guard let self else { return }
+                self.onAutoLook(self, look)
+            }
+        })
+        self.enhancer = enhancer
+        enhancer.set(enhancement)
+        guard compositionTask == nil else { return }
+        let asset = item.asset
+        compositionTask = Task { [weak self] in
+            let made = try? await AVVideoComposition.videoComposition(with: asset) { request in
+                enhancer.process(request)
+            }
+            guard let self, let made, !Task.isCancelled else { return }
+            self.compositionTask = nil
+            self.composition = made
+            item.videoComposition = made
+        }
+    }
+
+    /// A paused video shows a new look only once its frame is drawn again.
+    private func redrawIfPaused() {
+        guard !isPlaying else { return }
+        player.seek(to: player.currentTime(), toleranceBefore: .zero, toleranceAfter: .zero)
     }
 
     private var duration: Double? {

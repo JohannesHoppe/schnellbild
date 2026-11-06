@@ -3,210 +3,244 @@ import AVFoundation
 import CoreImage
 import CoreImage.CIFilterBuiltins
 
-/// Automatic enhancement as a view filter: the files are never changed.
-/// For a photo a recipe is worked out once and applied; videos follow their
-/// scenes through `VideoEnhancer`.
-///
-/// 1. Exposure, both ways: dark material (mean luminance below 0.4) is
-///    brightened with a gamma curve towards about 0.45, overexposed material
-///    (above 0.62) darkened towards about 0.55; in between it stays as is.
-/// 2. Core Image's automatic adjustments (tone curve, highlights/shadows,
-///    vibrance, face balance) are worked out on the corrected picture.
-/// 3. An unsharp mask makes edges crisper, like Photoshop's.
-struct EnhanceRecipe: @unchecked Sendable {   // CIFilters are only copied, never shared while in use
-    let gamma: Double?
-    let adjustments: [CIFilter]
-    let sharpenRadius: Double
+/// How a photo or video is shown: four settings, all 0 = the file as it is.
+/// A view filter; the files are never changed. Auto enhance works out these
+/// same values from the picture (`Look.auto`), so the sliders show what it
+/// does and carry on from there when moved by hand.
+struct Look: Equatable, Sendable {
+    /// −1 … 1: darker … brighter, through the mid-tones (a gamma curve).
+    var exposure = 0.0
+    /// −1 … 1: flatter … punchier.
+    var contrast = 0.0
+    /// −1 … 1: black and white … vivid.
+    var saturation = 0.0
+    /// 0 … 1: an unsharp mask, from off to strong.
+    var sharpness = 0.0
 
-    static let context = CIContext(options: [.cacheIntermediates: false])
+    static let neutral = Look()
+    var isNeutral: Bool { self == .neutral }
 
-    static func analyse(_ image: CIImage) -> EnhanceRecipe {
-        let gamma = meanLuminance(of: image).flatMap(gammaFor(luminance:))
-        let base = gamma.map { applyGamma($0, to: image) } ?? image
-        let adjustments = base.autoAdjustmentFilters(options: [.redEye: false])
-        // Scaled to the picture, so a 4K frame and a screen-sized photo look alike
-        let side = max(image.extent.width, image.extent.height)
-        return EnhanceRecipe(gamma: gamma, adjustments: adjustments, sharpenRadius: max(1, side / 900))
+    /// Core Image's gamma power for the exposure (< 1 brightens, > 1
+    /// darkens): at most 0.35 one way and 4 the other.
+    var gammaPower: Double { exposure >= 0 ? pow(0.35, exposure) : pow(4, -exposure) }
+    static func exposure(forGammaPower power: Double) -> Double {
+        power <= 1 ? log(power) / log(0.35) : -log(power) / log(4)
+    }
+    var contrastFactor: Double { 1 + 0.6 * contrast }
+    var saturationFactor: Double { 1 + saturation }
+
+    /// The filters work on sRGB-encoded values, the scale `PictureStats`
+    /// measures on (Core Image works in linear light otherwise, where a
+    /// contrast pivot of 0.5 is a light grey and darkens the mid-tones).
+    func apply(to image: CIImage) -> CIImage {
+        guard !isNeutral else { return image }
+        var out = image.applyingFilter("CILinearToSRGBToneCurve")
+        if abs(gammaPower - 1) > 0.001 {
+            let gamma = CIFilter.gammaAdjust()
+            gamma.inputImage = out
+            gamma.power = Float(gammaPower)
+            out = gamma.outputImage ?? out
+        }
+        if contrast != 0 || saturation != 0 {
+            let colour = CIFilter.colorControls()
+            colour.inputImage = out
+            colour.contrast = Float(contrastFactor)
+            colour.saturation = Float(saturationFactor)
+            out = colour.outputImage ?? out
+        }
+        if sharpness > 0 {
+            // Scaled to the picture, so a 4K frame and a screen-sized photo look alike
+            let sharpen = CIFilter.unsharpMask()
+            sharpen.inputImage = out
+            sharpen.radius = Float(max(1, max(image.extent.width, image.extent.height) / 900))
+            sharpen.intensity = Float(1.2 * sharpness)
+            out = sharpen.outputImage ?? out
+        }
+        return out.applyingFilter("CISRGBToneCurveToLinear").cropped(to: image.extent)
+    }
+
+    /// Part of the way to `target` (0 … 1).
+    func glided(towards target: Look, rate: Double) -> Look {
+        func step(_ a: Double, _ b: Double) -> Double { a + (b - a) * rate }
+        return Look(exposure: step(exposure, target.exposure), contrast: step(contrast, target.contrast),
+                    saturation: step(saturation, target.saturation), sharpness: step(sharpness, target.sharpness))
+    }
+
+    /// What auto enhance sets for a picture:
+    /// - Exposure, both ways: dark material (mean luminance below 0.4) is
+    ///   brightened towards about 0.45, overexposed material (above 0.62)
+    ///   darkened towards about 0.55; in between it stays as is.
+    /// - Contrast: a flat picture (its darkest and brightest 2 % close
+    ///   together) is stretched, a harsh one softened a little.
+    /// - Saturation: washed-out colours are lifted, garish ones calmed;
+    ///   black and white stays black and white.
+    /// - A moderate unsharp mask.
+    static func auto(for stats: PictureStats) -> Look {
+        var look = Look(sharpness: 0.5)
+        let power = gammaFor(luminance: stats.mean) ?? 1
+        look.exposure = exposure(forGammaPower: power)
+        let spread = pow(stats.high, power) - pow(stats.low, power)
+        if spread > 0.01 {
+            look.contrast = min(max((0.8 / spread - 1) / 0.6, -0.15), 1)
+        }
+        // Contrast spreads the colours as well
+        let chroma = stats.chroma * look.contrastFactor
+        if stats.chroma > 0.03 {
+            look.saturation = min(max((0.2 / chroma - 1) * 0.5, -0.3), 0.35)
+        }
+        return look
     }
 
     /// The gamma correction for a mean luminance (Core Image's power: < 1
     /// brightens, > 1 darkens). Dark: aims the mean at 0.45, never stronger
-    /// than 0.35. Overexposed: aims it at 0.55, never stronger than 2.5.
+    /// than 0.35. Overexposed: aims it at 0.55, never stronger than 4.
     /// nil in between (0.4 … 0.62): well exposed, left alone.
     static func gammaFor(luminance: Double) -> Double? {
         if luminance < 0.4 { return min(max(log(0.45) / log(max(luminance, 0.02)), 0.35), 1) }
-        if luminance > 0.62 { return max(min(log(0.55) / log(min(luminance, 0.98)), 2.5), 1) }
+        if luminance > 0.62 { return max(min(log(0.55) / log(min(luminance, 0.98)), 4), 1) }
         return nil
     }
 
-    /// Whether a gamma power changes anything.
-    static func corrects(_ power: Double) -> Bool { abs(power - 1) > 0.001 }
+    static let context = CIContext(options: [.cacheIntermediates: false])
 
-    func apply(to image: CIImage) -> CIImage {
-        var out = image
-        if let gamma { out = Self.applyGamma(gamma, to: out) }
-        for filter in adjustments {
-            guard let copy = filter.copy() as? CIFilter else { continue }
-            copy.setValue(out, forKey: kCIInputImageKey)
-            if let result = copy.outputImage { out = result }
-        }
-        return Self.sharpen(out, radius: sharpenRadius).cropped(to: image.extent)
-    }
-
-    /// A still picture, enhanced.
-    static func enhanced(_ picture: CGImage) -> CGImage? {
+    /// A still picture with a look.
+    static func render(_ picture: CGImage, with look: Look) -> CGImage? {
         let image = CIImage(cgImage: picture)
-        return context.createCGImage(analyse(image).apply(to: image), from: image.extent)
-    }
-
-    /// A video composition that follows the video's scenes (`VideoEnhancer`).
-    static func videoComposition(for asset: AVAsset) async -> AVVideoComposition? {
-        let enhancer = VideoEnhancer()
-        return try? await AVVideoComposition.videoComposition(with: asset) { request in
-            enhancer.process(request)
-        }
-    }
-
-    static func sharpen(_ image: CIImage, radius: Double) -> CIImage {
-        let sharpen = CIFilter.unsharpMask()
-        sharpen.inputImage = image
-        sharpen.radius = Float(radius)
-        sharpen.intensity = 0.6
-        return sharpen.outputImage ?? image
-    }
-
-    static func applyGamma(_ power: Double, to image: CIImage) -> CIImage {
-        let filter = CIFilter.gammaAdjust()
-        filter.inputImage = image
-        filter.power = Float(power)
-        return filter.outputImage ?? image
-    }
-
-    /// Mean luminance (0 … 1) of the whole picture.
-    static func meanLuminance(of image: CIImage) -> Double? {
-        let average = CIFilter.areaAverage()
-        average.inputImage = image
-        average.extent = image.extent
-        guard let pixel = average.outputImage else { return nil }
-        var rgba = [UInt8](repeating: 0, count: 4)
-        context.render(pixel, toBitmap: &rgba, rowBytes: 4, bounds: CGRect(x: 0, y: 0, width: 1, height: 1),
-                       format: .RGBA8, colorSpace: CGColorSpaceCreateDeviceRGB())
-        return (0.2126 * Double(rgba[0]) + 0.7152 * Double(rgba[1]) + 0.0722 * Double(rgba[2])) / 255
+        return context.createCGImage(look.apply(to: image), from: image.extent)
     }
 }
 
-/// How strongly to correct a video's exposure (either way). It is measured now and then, not
-/// for every frame (`VideoEnhancer` decides when), and glides towards the
-/// measured value in between, so it follows the scenes without pumping. A
-/// jump in time (seeking) or the first real picture takes the new value at
-/// once. Black or white frames (a dark intro, a fade, a flash) are held.
-struct AdaptiveExposure {
-    private(set) var gamma = 1.0
-    private var target = 1.0
+/// What auto enhance measures in a picture (all 0 … 1): mean luminance, the
+/// luminance below which the darkest 2 % lie and above which the brightest
+/// 2 %, and the mean colourfulness (largest minus smallest channel).
+struct PictureStats: Equatable, Sendable {
+    var mean: Double
+    var low: Double
+    var high: Double
+    var chroma: Double
+
+    /// Measured on a copy at most 128 pixels wide.
+    static func of(_ image: CIImage) -> PictureStats? {
+        let extent = image.extent
+        guard extent.width >= 1, extent.height >= 1, extent.width.isFinite, extent.height.isFinite else { return nil }
+        let scale = min(1, 128 / max(extent.width, extent.height))
+        let small = image.transformed(by: CGAffineTransform(translationX: -extent.minX, y: -extent.minY)
+                                        .scaledBy(x: scale, y: scale))
+        let width = max(Int(extent.width * scale), 1), height = max(Int(extent.height * scale), 1)
+        var rgba = [UInt8](repeating: 0, count: width * height * 4)
+        Look.context.render(small, toBitmap: &rgba, rowBytes: width * 4,
+                            bounds: CGRect(x: 0, y: 0, width: width, height: height),
+                            format: .RGBA8, colorSpace: CGColorSpaceCreateDeviceRGB())
+        var histogram = [Int](repeating: 0, count: 256)
+        var sum = 0.0, chroma = 0.0
+        for i in stride(from: 0, to: rgba.count, by: 4) {
+            let r = Double(rgba[i]), g = Double(rgba[i + 1]), b = Double(rgba[i + 2])
+            let y = 0.2126 * r + 0.7152 * g + 0.0722 * b
+            sum += y
+            histogram[min(Int(y.rounded()), 255)] += 1
+            chroma += max(r, g, b) - min(r, g, b)
+        }
+        let count = width * height
+        func percentile(_ p: Double) -> Double {
+            let goal = Int(Double(count) * p)
+            var seen = 0
+            for (level, n) in histogram.enumerated() {
+                seen += n
+                if seen > goal { return Double(level) / 255 }
+            }
+            return 1
+        }
+        return PictureStats(mean: sum / Double(count) / 255, low: percentile(0.02), high: percentile(0.98),
+                            chroma: chroma / Double(count) / 255)
+    }
+}
+
+/// What the player shows: the file as it is, auto enhance, or settings by hand.
+enum Enhancement: Equatable, Sendable {
+    case off
+    case auto
+    case manual(Look)
+}
+
+/// Auto enhance for a video: measured now and then, not for every frame
+/// (the players decide when), gliding towards the measured look in between,
+/// so it follows the scenes without pumping. A jump in time (seeking) or the
+/// first real picture takes the new look at once. Black or white frames (a
+/// dark intro, a fade, a flash) are held.
+struct AdaptiveLook {
+    private(set) var look = Look.neutral
+    private var target = Look.neutral
     private var luminance: Double?
 
     /// Whether a real picture has been measured yet.
     var hasPicture: Bool { luminance != nil }
 
-    /// One measurement of a frame's mean luminance. Returns whether it starts
-    /// something new (first picture, a cut to a much brighter or darker
-    /// scene), so the tone analysis should run again.
-    mutating func measure(luminance measured: Double, instant: Bool) -> Bool {
-        // Black or white (a dark intro, a fade, a flash): hold, don't chase it
-        guard measured >= 0.03, measured <= 0.97 else { return false }
-        let first = luminance == nil
-        let cut = luminance.map { abs(measured - $0) > 0.2 } ?? false
-        target = EnhanceRecipe.gammaFor(luminance: measured) ?? 1
-        if instant || first { gamma = target }
-        luminance = measured
-        return first || cut
+    mutating func measure(_ stats: PictureStats, instant: Bool) {
+        guard stats.mean >= 0.03, stats.mean <= 0.97 else { return }
+        target = Look.auto(for: stats)
+        if instant || luminance == nil { look = target }
+        luminance = stats.mean
     }
 
     /// Between measurements: glide towards the last one (about 0.7 s).
     mutating func advance(by elapsed: Double) {
-        gamma += (target - gamma) * (1 - exp(-max(elapsed, 0) / 0.7))
+        look = look.glided(towards: target, rate: 1 - exp(-max(elapsed, 0) / 0.7))
     }
 }
 
-/// Enhances a video frame by frame (AVKit, through a video composition).
-/// The brightness is measured once a second (every frame only until the
-/// first real picture), the tone and colour analysis (Core Image's automatic
-/// adjustments) runs every 2 s; in between both glide to their new values,
-/// so a short misjudgement corrects itself softly. After seeking both are
-/// measured again at once.
+/// Filters an AVKit video frame by frame through a video composition: either
+/// a fixed look (by hand) or auto enhance, measured once a second (every
+/// frame until the first real picture, and at once after seeking). Auto
+/// reports its current look about four times a second, for the sliders.
 final class VideoEnhancer: @unchecked Sendable {   // all state behind `lock`
     private let lock = NSLock()
-    private var exposure = AdaptiveExposure()
-    private var current: [CIFilter] = []
-    private var target: [CIFilter] = []
+    private var mode = Enhancement.off
+    private var adaptive = AdaptiveLook()
     private var lastMeasure = -Double.infinity
-    private var lastAnalysis = -Double.infinity
     private var lastFrame: Double?
+    private var lastReport = Date.distantPast
+    private let report: @Sendable (Look) -> Void
+
+    init(report: @escaping @Sendable (Look) -> Void) { self.report = report }
+
+    func set(_ mode: Enhancement) {
+        lock.lock()
+        self.mode = mode
+        lastMeasure = -.infinity   // auto again: measure at once
+        lock.unlock()
+    }
 
     func process(_ request: AVAsynchronousCIImageFilteringRequest) {
         let source = request.sourceImage
         let time = request.compositionTime.seconds
-        let side = max(source.extent.width, source.extent.height)
 
         lock.lock()
-        defer { lock.unlock() }
-        let jumped = lastFrame.map { time < $0 || time - $0 > 1 } ?? true
-        let elapsed = jumped ? 0 : time - (lastFrame ?? time)
-        lastFrame = time
-
-        var fresh = false
-        var small: CIImage?
-        func thumbnail() -> CIImage {   // a small copy is enough to measure
-            if let small { return small }
-            let scale = min(1, 256 / max(side, 1))
-            let made = source.transformed(by: CGAffineTransform(scaleX: scale, y: scale))
-            small = made
-            return made
-        }
-        if jumped || !exposure.hasPicture || time - lastMeasure >= 1 {
-            let measured = EnhanceRecipe.meanLuminance(of: thumbnail()) ?? 0.5
-            fresh = exposure.measure(luminance: measured, instant: jumped) || jumped
-            lastMeasure = time
-        } else {
-            exposure.advance(by: elapsed)
-        }
-        let gamma = exposure.gamma
-        if fresh || time - lastAnalysis >= 2 {
-            let base = EnhanceRecipe.corrects(gamma) ? EnhanceRecipe.applyGamma(gamma, to: thumbnail()) : thumbnail()
-            target = base.autoAdjustmentFilters(options: [.redEye: false])
-            lastAnalysis = time
-            if fresh { current = target.compactMap { $0.copy() as? CIFilter } }
-        }
-        current = Self.glide(current, towards: target, rate: fresh ? 1 : 1 - exp(-elapsed / 0.7))
-
-        var out = EnhanceRecipe.corrects(gamma) ? EnhanceRecipe.applyGamma(gamma, to: source) : source
-        for filter in current {
-            filter.setValue(out, forKey: kCIInputImageKey)
-            if let result = filter.outputImage { out = result }
-        }
-        out = EnhanceRecipe.sharpen(out, radius: max(1, side / 900))
-        request.finish(with: out.cropped(to: source.extent), context: nil)
-    }
-
-    /// Moves each filter's numbers (and vectors, e.g. tone curve points) a
-    /// part of the way to the target's. A filter new in the target starts
-    /// at its target values.
-    static func glide(_ current: [CIFilter], towards target: [CIFilter], rate: Double) -> [CIFilter] {
-        target.compactMap { goal in
-            guard let next = goal.copy() as? CIFilter else { return nil }
-            guard let now = current.first(where: { $0.name == goal.name }) else { return next }
-            for key in goal.inputKeys where key != kCIInputImageKey {
-                switch (now.value(forKey: key), goal.value(forKey: key)) {
-                case let (a as NSNumber, b as NSNumber):
-                    next.setValue(a.doubleValue + (b.doubleValue - a.doubleValue) * rate, forKey: key)
-                case let (a as CIVector, b as CIVector) where a.count == b.count:
-                    let values = (0..<a.count).map { a.value(at: $0) + (b.value(at: $0) - a.value(at: $0)) * CGFloat(rate) }
-                    next.setValue(CIVector(values: values, count: values.count), forKey: key)
-                default:
-                    break
-                }
+        let look: Look
+        var toReport: Look?
+        switch mode {
+        case .off:
+            look = .neutral
+        case .manual(let manual):
+            look = manual
+        case .auto:
+            let jumped = lastFrame.map { time < $0 || time - $0 > 1 } ?? true
+            let elapsed = jumped ? 0 : time - (lastFrame ?? time)
+            if jumped || !adaptive.hasPicture || time - lastMeasure >= 1 {
+                if let stats = PictureStats.of(source) { adaptive.measure(stats, instant: jumped) }
+                lastMeasure = time
+            } else {
+                adaptive.advance(by: elapsed)
             }
-            return next
+            look = adaptive.look
+            if Date().timeIntervalSince(lastReport) >= 0.25 {
+                lastReport = Date()
+                toReport = look
+            }
         }
+        lastFrame = time
+        lock.unlock()
+
+        if let toReport { report(toReport) }
+        request.finish(with: look.apply(to: source), context: nil)
     }
 }
