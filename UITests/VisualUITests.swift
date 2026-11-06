@@ -101,6 +101,23 @@ final class VisualUITests: SchnellbildUITestCase {
         }
     }
 
+    /// 4K at 60 frames per second through VLC (and its picture handover to
+    /// the app): playback keeps up, at most a tenth of the pictures lost.
+    func testVLCKeepsUpWith4KAt60FramesPerSecond() throws {
+        let video = try openVideo("uhd60.mp4", vlc: true)
+        settle(3)
+        let label = text(of: video)
+        func number(after word: String) -> Int {
+            guard let range = label.range(of: "\(word) ") else { return -1 }
+            return Int(label[range.upperBound...].prefix { $0.isNumber }) ?? -1
+        }
+        let shown = number(after: "shown"), lost = number(after: "lost")
+        print("4K60 through VLC: \(shown) pictures shown, \(lost) lost in about 5 s")
+        XCTAssertGreaterThan(try screenBrightness(of: video), 0.15, "the picture is on screen")
+        XCTAssertGreaterThan(shown, 150, "too few pictures shown: \(label)")
+        XCTAssertLessThanOrEqual(lost * 10, shown, "too many pictures lost: \(label)")
+    }
+
     // MARK: Auto enhance and sliders on videos
 
     private func checkAutoEnhance(_ fixture: String, vlc: Bool, brighter: Bool) throws {

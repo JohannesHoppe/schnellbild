@@ -36,27 +36,33 @@ func writeJPEG(_ image: CGImage, to name: String) throws {
 
 /// Three seconds of the same frame, H.264.
 func writeVideo(_ image: CGImage, to name: String) throws {
+    try writeVideo(width: image.width, height: image.height, frames: 30, fps: 10, to: name) { _ in image }
+}
+
+/// `frames` pictures at `fps`, H.264.
+func writeVideo(width: Int, height: Int, frames: Int, fps: Int32, to name: String, frame picture: (Int) -> CGImage) throws {
     let url = out.appendingPathComponent(name)
     try? FileManager.default.removeItem(at: url)
     let writer = try AVAssetWriter(outputURL: url, fileType: .mp4)
     let input = AVAssetWriterInput(mediaType: .video, outputSettings: [
-        AVVideoCodecKey: AVVideoCodecType.h264, AVVideoWidthKey: image.width, AVVideoHeightKey: image.height,
+        AVVideoCodecKey: AVVideoCodecType.h264, AVVideoWidthKey: width, AVVideoHeightKey: height,
     ])
     let adaptor = AVAssetWriterInputPixelBufferAdaptor(assetWriterInput: input, sourcePixelBufferAttributes: [
         kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA,
-        kCVPixelBufferWidthKey as String: image.width, kCVPixelBufferHeightKey as String: image.height,
+        kCVPixelBufferWidthKey as String: width, kCVPixelBufferHeightKey as String: height,
     ])
     writer.add(input)
     writer.startWriting()
     writer.startSession(atSourceTime: .zero)
     let context = CIContext()
-    for i in 0..<30 {   // 10 frames per second
+    for i in 0..<frames {
+        let image = picture(i)
         while !input.isReadyForMoreMediaData { Thread.sleep(forTimeInterval: 0.01) }
         var buffer: CVPixelBuffer?
         CVPixelBufferPoolCreatePixelBuffer(nil, adaptor.pixelBufferPool!, &buffer)
         context.render(CIImage(cgImage: image), to: buffer!, bounds: CGRect(x: 0, y: 0, width: image.width, height: image.height),
                        colorSpace: CGColorSpace(name: CGColorSpace.sRGB))
-        adaptor.append(buffer!, withPresentationTime: CMTime(value: CMTimeValue(i), timescale: 10))
+        adaptor.append(buffer!, withPresentationTime: CMTime(value: CMTimeValue(i), timescale: fps))
     }
     input.markAsFinished()
     let done = DispatchSemaphore(value: 0)
@@ -72,6 +78,18 @@ try writeJPEG(bright, to: "bright.jpg")
 try writeVideo(dark, to: "dark.mp4")
 try writeVideo(bright, to: "bright.mp4")
 try writeVideo(frame(width: 640, height: 360, low: 0.5, high: 0.5), to: "grey.mp4")
+
+// 4K at 60 frames per second, a bar crossing the picture: does playback keep up?
+let uhdBackground = frame(width: 3840, height: 2160, low: 0.2, high: 0.7)
+try writeVideo(width: 3840, height: 2160, frames: 300, fps: 60, to: "uhd60.mp4") { i in
+    let ctx = CGContext(data: nil, width: 3840, height: 2160, bitsPerComponent: 8, bytesPerRow: 0,
+                        space: CGColorSpace(name: CGColorSpace.sRGB)!,
+                        bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)!
+    ctx.draw(uhdBackground, in: CGRect(x: 0, y: 0, width: 3840, height: 2160))
+    ctx.setFillColor(CGColor(srgbRed: 0.95, green: 0.9, blue: 0.3, alpha: 1))
+    ctx.fill(CGRect(x: (i * 12) % 3840, y: 0, width: 160, height: 2160))
+    return ctx.makeImage()!
+}
 
 // Broken files: a media extension, but garbage inside (a fixed pattern).
 let garbage = Data((0..<4096).map { UInt8(truncatingIfNeeded: $0 &* 31 &+ 7) })

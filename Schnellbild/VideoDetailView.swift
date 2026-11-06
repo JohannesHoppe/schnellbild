@@ -101,7 +101,7 @@ struct VideoDetailView: View {
             } else {
                 // AVFoundation can't play it — hand off to VLCKit. It starts
                 // playing once its view gives it somewhere to draw.
-                let control = VLCPlaybackControl(url: url, enhancement: model.enhancement, onStateChange: report)
+                let control = VLCPlaybackControl(url: url, onStateChange: report)
                 control.onAutoLook = reportLook
                 vlcControl = control
                 model.activePlayer = control
