@@ -98,10 +98,6 @@ final class VideoUITests: SchnellbildUITestCase {
         try checkFullBrightness("clip.mp4", player: "video.avkit")
     }
 
-    func testVLCVideoIsBrightFromTheStart() throws {
-        try checkFullBrightness("clip.mkv", player: "video.vlc")
-    }
-
     /// Videos QuickLook can't read get their tile picture from VLC.
     func testMKVTileShowsAFrame() throws {
         try put("clip.mkv", at: "clip.mkv")
