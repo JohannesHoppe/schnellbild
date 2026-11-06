@@ -61,12 +61,14 @@ final class ActionsUITests: SchnellbildUITestCase {
 
     /// The context menu acts on the tile it was opened on, not on the
     /// selected one: trashing the wrong file would lose data.
-    func testContextMenuTrashesTheTileItWasOpenedOn() {
+    func testContextMenuTrashesTheTileItWasOpenedOn() throws {
         launchOnTempDir(waitFor: "album")
         tile("a.jpg").click()
         waitForSelected("a.jpg")
         tile("c.jpg").rightClick()
-        app.menuItems["Move to Trash…"].click()
+        // The Actions menu has an item of the same name: the one on screen
+        let item = app.menuItems.allElementsBoundByIndex.first { $0.title == "Move to Trash…" && $0.isHittable }
+        try XCTUnwrap(item, "the context menu shows Move to Trash…").click()
         let confirm = app.buttons["Move to Trash"].firstMatch
         XCTAssertTrue(confirm.waitForExistence(timeout: 5))
         confirm.click()
