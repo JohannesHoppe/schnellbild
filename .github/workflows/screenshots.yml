@@ -47,6 +47,14 @@ jobs:
       - name: Build the window photographer
         run: swiftc -O Scripts/shoot_window.swift -o build/shoot_window
 
+      - name: Hide the Dock
+        # The runner's screen is small; the Dock would cover the window's bottom.
+        run: |
+          defaults write com.apple.dock autohide -bool true
+          defaults write com.apple.dock autohide-delay -float 1000
+          killall Dock
+          sleep 2
+
       - name: Take the screenshots
         run: |
           mkdir -p shots

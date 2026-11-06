@@ -36,18 +36,47 @@ func context(_ w: Int, _ h: Int) -> CGContext {
               space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)!
 }
 
-/// Where the window itself sits inside its shadowed picture: the first fully
-/// opaque pixel along the middle row and column (the shadow is translucent).
-func contentOrigin(of image: CGImage) -> (x: Int, top: Int) {
-    let w = image.width, h = image.height
-    let ctx = context(w, h)
-    ctx.draw(image, in: CGRect(x: 0, y: 0, width: w, height: h))
-    let row = ctx.bytesPerRow
-    let pixels = ctx.data!.assumingMemoryBound(to: UInt8.self)
-    func alpha(_ x: Int, _ yFromTop: Int) -> UInt8 { pixels[yFromTop * row + x * 4 + 3] }
-    let left = (0..<w).first { alpha($0, h / 2) == 255 } ?? 0
-    let top = (0..<h).first { alpha(w / 2, $0) == 255 } ?? 0
-    return (left, top)
+/// RGBA bytes of an image, rows from the top.
+struct Pixels {
+    let width: Int, height: Int, row: Int
+    let data: [UInt8]
+    init(_ image: CGImage) {
+        width = image.width; height = image.height
+        let ctx = context(width, height)
+        ctx.draw(image, in: CGRect(x: 0, y: 0, width: width, height: height))
+        row = ctx.bytesPerRow
+        data = Array(UnsafeBufferPointer(start: ctx.data!.assumingMemoryBound(to: UInt8.self), count: row * height))
+    }
+    func at(_ x: Int, _ y: Int) -> (Int, Int, Int, Int) {
+        let i = y * row + x * 4
+        return (Int(data[i]), Int(data[i + 1]), Int(data[i + 2]), Int(data[i + 3]))
+    }
+}
+
+/// Where the window (`flat`, no shadow) sits inside the shadowed picture:
+/// the offset at which the opaque pixels of both match best. The shadow is
+/// wider at the bottom and differs between light and dark mode, so it is
+/// searched for rather than derived.
+func contentOrigin(of flat: CGImage, in shadow: CGImage) -> (x: Int, top: Int) {
+    let f = Pixels(flat), s = Pixels(shadow)
+    var samples: [(Int, Int)] = []
+    for gy in 1..<24 { for gx in 1..<24 {
+        let x = f.width * gx / 24, y = f.height * gy / 24
+        if f.at(x, y).3 == 255 { samples.append((x, y)) }
+    }}
+    var best = (x: (s.width - f.width) / 2, top: 0, cost: Int.max)
+    for dy in 0...max(s.height - f.height, 0) {
+        for dx in 0...max(s.width - f.width, 0) {
+            var cost = 0
+            for (x, y) in samples {
+                let a = f.at(x, y), b = s.at(x + dx, y + dy)
+                cost += abs(a.0 - b.0) + abs(a.1 - b.1) + abs(a.2 - b.2)
+                if cost >= best.cost { break }
+            }
+            if cost < best.cost { best = (dx, dy, cost) }
+        }
+    }
+    return (best.x, best.top)
 }
 
 let args = CommandLine.arguments
@@ -74,7 +103,7 @@ case "compose" where args.count > 3:
     cut.setBlendMode(.destinationIn)
     cut.draw(flat, in: CGRect(x: 0, y: 0, width: fw, height: fh))
     // … laid over the window in the shadowed picture
-    let origin = contentOrigin(of: shadow)
+    let origin = contentOrigin(of: flat, in: shadow)
     let W = shadow.width, H = shadow.height
     let out = context(W, H)
     out.draw(shadow, in: CGRect(x: 0, y: 0, width: W, height: H))
