@@ -1437,6 +1437,7 @@ final class SearchConsistencyTests: XCTestCase {
     func testBackFromTheFullViewReturnsToTheResults() async throws {
         let tree = try TempTree(self)
         let m = try await model(tree)
+        m.searchDebounce = .zero
         m.searchText = "beach"
         await waitUntil { !m.isSearching }
         let results = m.names
