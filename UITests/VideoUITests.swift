@@ -27,17 +27,33 @@ final class VideoUITests: SchnellbildUITestCase {
         eventually("Space resumes VLC playback") { !text(of: badge).contains("Paused") }
     }
 
-    func testCommandArrowsSeekWithoutPaging() throws {
-        try put("clip.mp4", at: "clip.mp4")
-        launch(open: tempDir.appendingPathComponent("clip.mp4").path)
-        XCTAssertTrue(element("video.avkit").waitForExistence(timeout: 15))
-        waitForBadge(containing: "clip.mp4")
-        app.typeKey(.rightArrow, modifierFlags: .command)
+    /// → skims through the video in tenths, then moves on; ⌘← pages at once.
+    private func checkSkimming(_ clip: String, player: String) throws {
+        try put(clip, at: clip)
+        try put("sample.jpg", at: "z.jpg")
+        launch(open: tempDir.appendingPathComponent(clip).path)
+        XCTAssertTrue(element(player).waitForExistence(timeout: 20))
+        waitForBadge(containing: clip)
+        RunLoop.current.run(until: Date().addingTimeInterval(1))   // length known
+        app.typeKey(.rightArrow, modifierFlags: [])
+        RunLoop.current.run(until: Date().addingTimeInterval(0.5))
+        XCTAssertTrue(text(of: badge).contains(clip), "→ skips within the video first")
+        for _ in 0..<12 where !text(of: badge).contains("z.jpg") {
+            app.typeKey(.rightArrow, modifierFlags: [])
+        }
+        waitForBadge(containing: "z.jpg")   // past the end: the next item
         app.typeKey(.leftArrow, modifierFlags: .command)
-        RunLoop.current.run(until: Date().addingTimeInterval(1))
-        XCTAssertTrue(text(of: badge).contains("clip.mp4"), "⌘←/⌘→ seek instead of paging")
-        app.typeKey(.leftArrow, modifierFlags: [])
-        waitForBadge(containing: "c.jpg")   // plain arrows still page
+        waitForBadge(containing: clip)
+        app.typeKey(.leftArrow, modifierFlags: .command)
+        waitForBadge(containing: "c.jpg")   // ⌘← pages straight away
+    }
+
+    func testArrowsSkimThroughAnAVKitVideo() throws {
+        try checkSkimming("clip.mp4", player: "video.avkit")
+    }
+
+    func testArrowsSkimThroughAVLCVideo() throws {
+        try checkSkimming("clip.mkv", player: "video.vlc")
     }
 
     func testBadgeDoesNotCoverThePlayerControls() throws {

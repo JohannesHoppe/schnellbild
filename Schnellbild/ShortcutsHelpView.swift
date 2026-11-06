@@ -28,9 +28,9 @@ struct ShortcutsHelpView: View {
             Shortcut(keys: "Esc", action: "Clear search"),
         ]),
         Group(title: "Full view", shortcuts: [
-            Shortcut(keys: "← → ↑ ↓", action: "Previous / next item"),
+            Shortcut(keys: "← →", action: "Previous / next image · video: skip a tenth back / ahead, then on to the previous / next item"),
+            Shortcut(keys: "⌘← ⌘→ ↑ ↓", action: "Previous / next item, also from a video"),
             Shortcut(keys: "Space", action: "Next image · play/pause video"),
-            Shortcut(keys: "⌘← / ⌘→", action: "Video: seek −10 s / +10 s"),
             Shortcut(keys: "+ / −", action: "Zoom in / out"),
             Shortcut(keys: "0 / 1", action: "Fit to window / 100 %"),
             Shortcut(keys: "[ / ]", action: "Rotate left / right"),
@@ -47,6 +47,7 @@ struct ShortcutsHelpView: View {
         Group(title: "Anywhere", shortcuts: [
             Shortcut(keys: "⌘[ / ⌘]", action: "Back / forward (history)"),
             Shortcut(keys: "⌘↑", action: "Enclosing folder"),
+            Shortcut(keys: "⌘1 … ⌘5", action: "Sort by name, kind, date modified, date taken, size (again: reverse)"),
             Shortcut(keys: "f", action: "Toggle full screen"),
             Shortcut(keys: "⌘O", action: "Open folder"),
             Shortcut(keys: "⇧⌘R", action: "Reveal in Finder"),
