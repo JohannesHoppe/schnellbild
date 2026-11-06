@@ -73,8 +73,12 @@ struct VideoDetailView: View {
             let report: @MainActor (PlaybackControl, Bool) -> Void = { control, playing in
                 model.playbackStateChanged(control, isPlaying: playing)
             }
+            let reportLook: @MainActor (PlaybackControl, Look) -> Void = { control, look in
+                model.autoLookMeasured(look, from: control)
+            }
             if playable {
                 let control = AVPlaybackControl(player: AVPlayer(playerItem: AVPlayerItem(asset: asset)), onStateChange: report)
+                control.onAutoLook = reportLook
                 avControl = control
                 model.activePlayer = control
                 control.play()
@@ -86,7 +90,8 @@ struct VideoDetailView: View {
             } else {
                 // AVFoundation can't play it — hand off to VLCKit. It starts
                 // playing once its view gives it somewhere to draw.
-                let control = VLCPlaybackControl(url: url, enhanced: model.enhance, onStateChange: report)
+                let control = VLCPlaybackControl(url: url, enhancement: model.enhancement, onStateChange: report)
+                control.onAutoLook = reportLook
                 vlcControl = control
                 model.activePlayer = control
                 // VLC knows the size once the video plays

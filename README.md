@@ -8,7 +8,7 @@
   <a href="https://github.com/johanneshoppe/schnellbild/actions/workflows/ci.yml"><img src="https://github.com/johanneshoppe/schnellbild/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
 </p>
 
-<p align="center"><b>The fast macOS image &amp; video viewer that doesn't choke on network folders.</b></p>
+<p align="center"><b>An image &amp; video viewer for macOS that just doesn't suck.</b></p>
 
 <!-- Demo: record per docs/launch-storyboard.md, save as docs/demo.gif, then
      uncomment the next line:
@@ -20,9 +20,7 @@
   <img src="docs/screenshots/grid-light.png" width="820" alt="Schnellbild: folders with previews and photo thumbnails">
 </picture></p>
 
-Open a folder, see thumbnails, look at one picture large, page through with the keyboard. Videos play right there, too, even AVI, MKV and WebM. Nothing more, but without stalling, even over network volumes where other viewers crawl.
-
-Schnellbild does what macOS Preview does well: read little, load in parallel, let the system cache, never block the UI.
+Open a folder, see thumbnails, look at one picture large, page through with the keyboard. Videos play right there, too, even AVI, MKV and WebM. No library to import into, no waiting, no clutter: it opens what you point it at, stays quick on big folders and network shares alike, and gets out of your way.
 
 ## Download
 
@@ -65,7 +63,7 @@ By name, kind, date modified, date taken or size, from the toolbar or with one k
   <img src="docs/screenshots/search-light.png" width="760" alt="Search results from the folder and its subfolders">
 </picture></p>
 
-The search field is always there. It matches folder and file names in the current folder and everything below it; results stream in while the tree is walked and show where they live. Back from an opened result returns to the same results.
+The search field is always there. It matches folder and file names in the current folder and everything below it; results stream in while the tree is walked and show where they live. The stop button next to the spinner ends a long search over a slow network share and keeps what it has found. Back from an opened result returns to the same results without searching again; a search that was still running when you opened a result goes on in the background meanwhile.
 
 | Key | Action |
 |---|---|
@@ -137,7 +135,7 @@ Zoom with the keyboard or a trackpad pinch, drag to pan, rotate in steps of 90°
   <img src="docs/screenshots/video-light.png" width="760" alt="A video in the full view, paused">
 </picture></p>
 
-Videos play right away, MP4 and MOV through AVKit, formats macOS can't play (AVI, MKV, WebM …) through the built-in VLC engine. The arrow keys skim: each press jumps a tenth of the video ahead or back, past the end on to the next item. So one key pages through photos and skims through videos; ⌘← ⌘→ skip a video at once.
+Videos play right away, MP4 and MOV through AVKit, formats macOS can't play (AVI, MKV, WebM …) through the built-in VLC engine, which also draws their tiles in the grid. The arrow keys skim: each press jumps a tenth of the video ahead or back, past the end on to the next item. So one key pages through photos and skims through videos; ⌘← ⌘→ skip a video at once.
 
 | Key | Action |
 |---|---|
@@ -145,13 +143,30 @@ Videos play right away, MP4 and MOV through AVKit, formats macOS can't play (AVI
 | ← → | skip a tenth back / ahead; at the end on to the next item, at the start back to the previous one |
 | ⌘← ⌘→ | previous / next item straight away |
 
-### Auto enhance
+### Auto enhance and adjustments
 
-Night shots and dark videos, or washed-out, overexposed ones: press `e` (or the wand in the toolbar) and Schnellbild brightens dark material and tones down overexposed material, lets macOS correct tone, contrast and colour as the Photos app's magic wand does, and sharpens edges like an unsharp mask. Videos follow their scenes: the brightness is measured once a second and the tone every two seconds, and the correction glides to the new values instead of jumping, so a dark intro or a cut doesn't throw it and nothing flickers. After you skip, it measures again at once. It's a filter on the screen only: your files stay exactly as they are. It stays on while you page on, until you switch it off.
+Night shots and dark videos, or washed-out, overexposed ones: press `e` (or the wand in the toolbar) and Schnellbild sets four values for the picture on screen:
+
+- **Exposure:** brightens dark material and tones down overexposed material.
+- **Contrast:** stretches flat, hazy pictures.
+- **Saturation:** lifts washed-out colours and calms garish ones.
+- **Sharpness:** crisper edges, like an unsharp mask.
+
+<p align="center"><picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/adjust-dark.png">
+  <img src="docs/screenshots/adjust-light.png" width="760" alt="The sliders for exposure, contrast, saturation and sharpness over a photo">
+</picture></p>
+
+Press `a` (or the sliders button next to the wand) to see these values. With auto enhance on, the sliders show what it sets for each photo, and for videos they move with the scenes. Videos are measured once a second, and the values glide instead of jumping, so a dark intro or a cut doesn't throw them and nothing flickers. After you skip, they're measured again at once.
+
+When auto gets a picture wrong, move a slider. Auto enhance switches off and you carry on from its values. Your settings stay while you page on, until you reset them or switch auto enhance on again. Switching it off shows the files as they are.
+
+It's a filter on the screen only: your files stay exactly as they are. For videos in AVI, MKV and other formats played by the VLC engine, sharpness applies from the next video you open.
 
 | Key | Action |
 |---|---|
 | e | auto enhance on / off |
+| a | show / hide the sliders |
 
 ### File info
 

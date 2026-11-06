@@ -35,7 +35,8 @@ struct ShortcutsHelpView: View {
             Shortcut(keys: "0 / 1", action: "Fit to window / 100 %"),
             Shortcut(keys: "[ / ]", action: "Rotate left / right"),
             Shortcut(keys: "i", action: "File info"),
-            Shortcut(keys: "e", action: "Auto enhance on / off (brighten, correct, sharpen; files stay untouched)"),
+            Shortcut(keys: "e", action: "Auto enhance on / off (exposure, contrast, saturation, sharpness; files stay untouched)"),
+            Shortcut(keys: "a", action: "Sliders: adjust by hand (switches auto enhance off)"),
             Shortcut(keys: "Esc / Backspace / Return", action: "Back to grid"),
         ]),
         Group(title: "Slideshow", shortcuts: [
@@ -96,6 +97,6 @@ struct ShortcutsHelpView: View {
                 .padding()
             }
         }
-        .frame(width: 520, height: 560)
+        .frame(width: 520, height: 580)
     }
 }

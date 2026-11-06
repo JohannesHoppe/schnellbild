@@ -91,6 +91,13 @@ struct ContentView: View {
             )
             if model.isSearching {
                 ProgressView().controlSize(.small)
+                Button { model.stopSearch() } label: {
+                    Image(systemName: "stop.circle.fill")
+                }
+                .buttonStyle(.borderless)
+                .help("Stop searching; the results so far stay")
+                .accessibilityLabel("Stop search")
+                .accessibilityIdentifier("stopSearch")
             }
         }
         .padding(.horizontal, 12)
@@ -177,7 +184,11 @@ struct ContentView: View {
             text = "\(model.currentMediaNumber ?? 0) / \(model.mediaCount)  ·  \(entry.name)"
         }
         if entry.kind == .video && model.videoPaused { text += "  ·  Paused" }
-        if model.enhance { text += "  ·  Enhanced" }
+        switch model.enhancement {
+        case .auto:   text += "  ·  Enhanced"
+        case .manual: text += "  ·  Adjusted"
+        case .off:    break
+        }
         return text
     }
 
@@ -219,6 +230,16 @@ struct ContentView: View {
             .toggleStyle(.button)
             .help("Auto enhance: brighten, correct and sharpen photos and videos, without changing the files (E)")
             .accessibilityIdentifier("enhanceButton")
+        }
+        ToolbarItem(placement: .primaryAction) {
+            Button { model.showAdjustments.toggle() } label: {
+                Label("Adjust", systemImage: "slider.horizontal.3")
+            }
+            .help("Exposure, contrast, saturation and sharpness by hand (A)")
+            .accessibilityIdentifier("adjustButton")
+            .popover(isPresented: $model.showAdjustments, arrowEdge: .bottom) {
+                AdjustmentsView().environmentObject(model)
+            }
         }
         ToolbarItem(placement: .primaryAction) {
             Button { model.startSlideshow() } label: {
@@ -455,5 +476,65 @@ struct DropZoneDelegate: DropDelegate {
             DispatchQueue.main.async { onDrop([url], target) }
         }
         return true
+    }
+}
+
+// MARK: - Adjustments
+
+/// The look by hand: four sliders and the auto switch. With auto on, the
+/// sliders show what it sets for the item on screen; moving one switches
+/// auto off and carries on from there.
+struct AdjustmentsView: View {
+    @EnvironmentObject var model: BrowserModel
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Toggle("Auto enhance", isOn: $model.enhance)
+                .toggleStyle(.switch)
+                .accessibilityIdentifier("autoSwitch")
+            slider("Exposure", \.exposure, -1...1, id: "exposure")
+            slider("Contrast", \.contrast, -1...1, id: "contrast")
+            slider("Saturation", \.saturation, -1...1, id: "saturation")
+            slider("Sharpness", \.sharpness, 0...1, id: "sharpness")
+            HStack {
+                Text("Files stay untouched.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                Spacer()
+                Button("Reset") { model.resetLook() }
+                    .disabled(model.enhancement == .off)
+                    .accessibilityIdentifier("resetLook")
+            }
+        }
+        .padding(16)
+        .frame(width: 300)
+    }
+
+    private func slider(_ title: String, _ key: WritableKeyPath<Look, Double>,
+                        _ range: ClosedRange<Double>, id: String) -> some View {
+        VStack(alignment: .leading, spacing: 2) {
+            HStack {
+                Text(title)
+                Spacer()
+                Text(Self.format(model.look[keyPath: key]))
+                    .monospacedDigit()
+                    .foregroundStyle(.secondary)
+            }
+            Slider(value: Binding(
+                get: { model.look[keyPath: key] },
+                set: { value in
+                    var look = model.look
+                    look[keyPath: key] = value
+                    model.adjust(look)
+                }), in: range)
+            .accessibilityIdentifier("slider.\(id)")
+            .accessibilityValue(Self.format(model.look[keyPath: key]))
+        }
+    }
+
+    /// −100 … +100 for the reader.
+    static func format(_ value: Double) -> String {
+        let percent = Int((value * 100).rounded())
+        return percent > 0 ? "+\(percent)" : "\(percent)"
     }
 }

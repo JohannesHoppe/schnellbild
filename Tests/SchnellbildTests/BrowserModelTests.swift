@@ -78,8 +78,9 @@ final class PlayerSpy: PlaybackControl {
         calls.append("seek \(Int((progress * 100).rounded())) %")
         self.progress = progress
     }
-    var enhanced = false
-    func setEnhanced(_ on: Bool) { enhanced = on }
+    var enhancement = Enhancement.off
+    var enhanced: Bool { enhancement == .auto }
+    func setEnhancement(_ enhancement: Enhancement) { self.enhancement = enhancement }
 }
 
 func makeTestDefaults() -> UserDefaults {
@@ -1286,6 +1287,53 @@ final class PlaybackTests: XCTestCase {
         XCTAssertFalse(next.enhanced)
     }
 
+    func testAutoMovesTheSlidersAndASliderByHandSwitchesAutoOff() {
+        let m = makeModel()
+        let player = PlayerSpy()
+        m.activePlayer = player
+        m.enhance = true
+        let measured = Look(exposure: 0.4, contrast: 0.2, saturation: 0.1, sharpness: 0.5)
+        m.autoLookMeasured(measured, from: player)
+        XCTAssertEqual(m.look, measured, "the sliders show what auto sets")
+        m.autoLookMeasured(.neutral, from: PlayerSpy())
+        XCTAssertEqual(m.look, measured, "a player no longer on screen is ignored")
+
+        var byHand = m.look
+        byHand.exposure = 0.6
+        m.adjust(byHand)
+        XCTAssertFalse(m.enhance, "moving a slider switches auto off")
+        XCTAssertEqual(m.look, byHand, "and carries on from auto's values")
+        XCTAssertEqual(player.enhancement, .manual(byHand))
+        m.autoLookMeasured(.neutral, from: player)
+        XCTAssertEqual(m.look, byHand, "auto's reports no longer move the sliders")
+
+        let next = PlayerSpy()
+        m.activePlayer = next
+        XCTAssertEqual(next.enhancement, .manual(byHand), "settings by hand stay while paging")
+
+        m.resetLook()
+        XCTAssertEqual(m.look, .neutral)
+        XCTAssertEqual(next.enhancement, .off)
+    }
+
+    func testSwitchingAutoOffShowsTheFilesAsTheyAre() {
+        let m = makeModel()
+        let player = PlayerSpy()
+        m.activePlayer = player
+        m.adjust(Look(exposure: 0.3))
+        m.handleKey(.char("e"), command: false)
+        XCTAssertEqual(player.enhancement, .auto)
+        m.handleKey(.char("e"), command: false)
+        XCTAssertEqual(player.enhancement, .off)
+        XCTAssertEqual(m.look, .neutral)
+    }
+
+    func testAKeyOpensTheAdjustments() {
+        let m = makeModel()
+        XCTAssertTrue(m.handleKey(.char("a"), command: false))
+        XCTAssertTrue(m.showAdjustments)
+    }
+
     func testZoomAndRotateWorkOnVideosAndInTheSlideshow() async throws {
         let (m, _) = try await openOnVideo()
         m.handleKey(.char("+"), command: false)
@@ -1653,21 +1701,66 @@ final class SearchConsistencyTests: XCTestCase {
         XCTAssertTrue(FileManager.default.fileExists(atPath: b.url.path))
     }
 
-    func testUnfinishedSearchIsNotRememberedAsFinal() async throws {
+    func testAnUnfinishedSearchGoesOnWhileTheUserLooksAtAResult() async throws {
+        let tree = try TempTree(self)
+        let m = try await model(tree)
+        m.searchDebounce = .milliseconds(300)
+        m.searchText = "beach"
+        XCTAssertTrue(m.isSearching)
+        XCTAssertEqual(m.names, ["photos-beach.jpg"], "only the local match so far")
+        await openAndWait(m, tree.root.appendingPathComponent("photos"))
+        XCTAssertFalse(m.isSearching, "the result folder shows no search")
+        try await Task.sleep(for: .seconds(1))   // the walk finishes meanwhile
+
+        m.navigateBack()
+        await waitUntil { m.isAt(tree.root) && !m.isLoading }
+        XCTAssertFalse(m.isSearching, "not searched again")
+        XCTAssertEqual(m.names, ["beach.jpg", "photos-beach.jpg"], "with what it found in the background")
+    }
+
+    func testComingBackToASearchStillRunningShowsItRunning() async throws {
+        let tree = try TempTree(self)
+        let m = try await model(tree)   // a long debounce: the walk is still waiting
+        m.searchText = "beach"
+        await openAndWait(m, tree.root.appendingPathComponent("photos"))
+        m.navigateBack()
+        await waitUntil { m.isAt(tree.root) && !m.isLoading }
+        XCTAssertTrue(m.isSearching, "the same search, still running")
+        m.appendSearchBatch([GridEntry(url: tree.root.appendingPathComponent("photos/beach.jpg"), kind: .image)])
+        XCTAssertEqual(m.names, ["beach.jpg", "photos-beach.jpg"], "its batches still arrive")
+    }
+
+    func testStoppedSearchKeepsItsResultsAlsoAfterGoingBack() async throws {
         let tree = try TempTree(self)
         let m = try await model(tree)
         m.searchText = "beach"
         XCTAssertTrue(m.isSearching)
-        XCTAssertEqual(m.names, ["photos-beach.jpg"], "only the local match so far")
-        m.selectEntry(named: "photos-beach.jpg")
-        m.activateSelection()   // full view
+        m.stopSearch()
+        XCTAssertFalse(m.isSearching)
+        XCTAssertEqual(m.names, ["photos-beach.jpg"], "what it had found stays")
         await openAndWait(m, tree.root.appendingPathComponent("photos"))
-
         m.searchDebounce = .zero
         m.navigateBack()
-        await waitUntil { m.isAt(tree.root) && !m.isSearching }
-        XCTAssertEqual(m.names, ["beach.jpg", "photos-beach.jpg"], "searched again, complete now")
-        XCTAssertEqual(m.selectedEntry?.name, "photos-beach.jpg")
+        await waitUntil { m.isAt(tree.root) && !m.isLoading }
+        XCTAssertFalse(m.isSearching, "not started again")
+        XCTAssertEqual(m.names, ["photos-beach.jpg"])
+    }
+
+    func testOnlyTheNewestSearchesKeepRunningInTheHistory() async throws {
+        let tree = try TempTree(self)
+        let m = try await model(tree)   // long debounce: every walk stays unfinished
+        let photos = tree.root.appendingPathComponent("photos")
+        for query in ["b", "be", "bea", "beac", "beach"] {
+            m.searchText = query
+            await openAndWait(m, photos)
+            await openAndWait(m, tree.root)
+        }
+        m.searchDebounce = .zero
+        // Back to the oldest one ("b"), stopped meanwhile: searched again
+        for _ in 0..<10 { m.navigateBack(); await waitUntil { !m.isLoading } }
+        XCTAssertEqual(m.searchText, "b")
+        await waitUntil { !m.isSearching }
+        XCTAssertTrue(m.names.contains("beach.jpg"), "searched afresh and finished: \(m.names)")
     }
 
     func testBackFromTheFullViewReturnsToTheResults() async throws {
@@ -1860,71 +1953,85 @@ final class EnhanceTests: XCTestCase {
         return try XCTUnwrap(ctx.makeImage())
     }
 
+    private func stats(_ image: CGImage) throws -> PictureStats {
+        try XCTUnwrap(PictureStats.of(CIImage(cgImage: image)))
+    }
+
+    private func auto(_ image: CGImage) throws -> CGImage {
+        try XCTUnwrap(Look.render(image, with: Look.auto(for: try stats(image))))
+    }
+
     func testDarkPicturesGetBrighterAndKeepTheirSize() throws {
         let dark = try grey(0.08)
-        let before = try XCTUnwrap(EnhanceRecipe.meanLuminance(of: CIImage(cgImage: dark)))
-        XCTAssertNotNil(EnhanceRecipe.analyse(CIImage(cgImage: dark)).gamma, "a gamma lift for dark material")
-        let result = try XCTUnwrap(EnhanceRecipe.enhanced(dark))
+        XCTAssertGreaterThan(Look.auto(for: try stats(dark)).exposure, 0, "brightened")
+        let result = try auto(dark)
         XCTAssertEqual(result.width, 64)
         XCTAssertEqual(result.height, 48)
-        let after = try XCTUnwrap(EnhanceRecipe.meanLuminance(of: CIImage(cgImage: result)))
+        let before = try stats(dark).mean, after = try stats(result).mean
         XCTAssertGreaterThan(after, before * 2, "clearly brighter: \(before) → \(after)")
-    }
-
-    func testVideoExposureHoldsOnBlackAndTakesTheFirstPictureAtOnce() {
-        var exposure = AdaptiveExposure()
-        XCTAssertFalse(exposure.measure(luminance: 0.0, instant: false), "a black intro")
-        XCTAssertEqual(exposure.gamma, 1, "not lifted on black")
-        XCTAssertFalse(exposure.hasPicture)
-        XCTAssertTrue(exposure.measure(luminance: 0.1, instant: false), "the first real picture")
-        XCTAssertLessThan(exposure.gamma, 0.6, "taken at once")
-        XCTAssertFalse(exposure.measure(luminance: 0.0, instant: false), "a fade to black")
-        let held = exposure.gamma
-        exposure.advance(by: 5)
-        XCTAssertEqual(exposure.gamma, held, accuracy: 0.0001, "held through the fade")
-    }
-
-    func testVideoExposureGlidesBetweenMeasurementsAndJumpsAfterSeeking() {
-        var exposure = AdaptiveExposure()
-        _ = exposure.measure(luminance: 0.1, instant: false)
-        let dark = exposure.gamma
-        XCTAssertFalse(exposure.measure(luminance: 0.25, instant: false), "a gentle change, no cut")
-        XCTAssertEqual(exposure.gamma, dark, "not at once")
-        exposure.advance(by: 0.1)
-        XCTAssertGreaterThan(exposure.gamma, dark)
-        XCTAssertLessThan(exposure.gamma, EnhanceRecipe.gammaFor(luminance: 0.25)!, "on its way")
-        _ = exposure.measure(luminance: 0.6, instant: true)   // seeked to a bright scene
-        XCTAssertEqual(exposure.gamma, 1, "no lift for a bright scene, at once")
-    }
-
-    func testFilterValuesGlideTowardsTheNewAnalysis() throws {
-        let from = CIFilter(name: "CIVibrance", parameters: ["inputAmount": 0.0])!
-        let to = CIFilter(name: "CIVibrance", parameters: ["inputAmount": 1.0])!
-        let half = VideoEnhancer.glide([from], towards: [to], rate: 0.5)
-        XCTAssertEqual((half.first?.value(forKey: "inputAmount") as? NSNumber)?.doubleValue ?? -1, 0.5, accuracy: 0.0001)
-        let new = VideoEnhancer.glide([], towards: [to], rate: 0.1)
-        XCTAssertEqual((new.first?.value(forKey: "inputAmount") as? NSNumber)?.doubleValue ?? -1, 1, accuracy: 0.0001,
-                       "a filter new in the analysis starts at its values")
-    }
-
-    func testWellExposedPicturesGetNoGammaCorrection() throws {
-        XCTAssertNil(EnhanceRecipe.analyse(CIImage(cgImage: try grey(0.42))).gamma)
     }
 
     func testOverexposedPicturesGetDarker() throws {
         let bright = try grey(0.78)
-        let before = try XCTUnwrap(EnhanceRecipe.meanLuminance(of: CIImage(cgImage: bright)))
-        XCTAssertGreaterThan(try XCTUnwrap(EnhanceRecipe.analyse(CIImage(cgImage: bright)).gamma), 1, "a darkening gamma")
-        let after = try XCTUnwrap(EnhanceRecipe.meanLuminance(of: CIImage(cgImage: try XCTUnwrap(EnhanceRecipe.enhanced(bright)))))
+        XCTAssertLessThan(Look.auto(for: try stats(bright)).exposure, 0, "darkened")
+        let before = try stats(bright).mean, after = try stats(try auto(bright)).mean
         XCTAssertLessThan(after, before - 0.1, "clearly darker: \(before) → \(after)")
     }
 
-    func testVideoExposureHoldsOnAWhiteFlash() {
-        var exposure = AdaptiveExposure()
-        _ = exposure.measure(luminance: 0.3, instant: false)
-        let held = exposure.gamma
-        XCTAssertFalse(exposure.measure(luminance: 1.0, instant: false))
-        exposure.advance(by: 5)
-        XCTAssertEqual(exposure.gamma, held, accuracy: 0.0001)
+    func testWellExposedPicturesKeepTheirExposure() throws {
+        XCTAssertEqual(Look.auto(for: try stats(try grey(0.42))).exposure, 0)
+    }
+
+    func testExposureAndGammaPowerAreInverse() {
+        for exposure in [-1.0, -0.4, 0, 0.3, 1] {
+            XCTAssertEqual(Look.exposure(forGammaPower: Look(exposure: exposure).gammaPower), exposure, accuracy: 0.0001)
+        }
+        XCTAssertLessThan(Look(exposure: 0.5).gammaPower, 1, "positive brightens (Core Image power < 1)")
+    }
+
+    func testFlatGreyPicturesGetMoreContrastAndBlackAndWhiteStaysGrey() {
+        let flat = PictureStats(mean: 0.5, low: 0.4, high: 0.6, chroma: 0.0)
+        let look = Look.auto(for: flat)
+        XCTAssertGreaterThan(look.contrast, 0)
+        XCTAssertEqual(look.saturation, 0, "no colour to lift")
+    }
+
+    func testWashedOutColoursAreLiftedAndGarishOnesCalmed() {
+        XCTAssertGreaterThan(Look.auto(for: PictureStats(mean: 0.5, low: 0.05, high: 0.95, chroma: 0.08)).saturation, 0)
+        XCTAssertLessThan(Look.auto(for: PictureStats(mean: 0.5, low: 0.05, high: 0.95, chroma: 0.5)).saturation, 0)
+    }
+
+    func testNeutralLookLeavesThePictureAlone() throws {
+        let picture = try grey(0.3)
+        let result = try XCTUnwrap(Look.render(picture, with: .neutral))
+        XCTAssertEqual(try stats(result).mean, try stats(picture).mean, accuracy: 0.01)
+    }
+
+    func testVideoLookHoldsOnBlackAndTakesTheFirstPictureAtOnce() {
+        var adaptive = AdaptiveLook()
+        adaptive.measure(PictureStats(mean: 0, low: 0, high: 0, chroma: 0), instant: false)
+        XCTAssertEqual(adaptive.look, .neutral, "not lifted on a black intro")
+        XCTAssertFalse(adaptive.hasPicture)
+        let dark = PictureStats(mean: 0.1, low: 0.02, high: 0.3, chroma: 0.1)
+        adaptive.measure(dark, instant: false)
+        XCTAssertEqual(adaptive.look, Look.auto(for: dark), "the first picture at once")
+        adaptive.measure(PictureStats(mean: 0.99, low: 0.98, high: 1, chroma: 0), instant: false)
+        adaptive.advance(by: 5)
+        XCTAssertEqual(adaptive.look, Look.auto(for: dark), "held through a white flash")
+    }
+
+    func testVideoLookGlidesBetweenMeasurementsAndJumpsAfterSeeking() {
+        var adaptive = AdaptiveLook()
+        let dark = PictureStats(mean: 0.1, low: 0.02, high: 0.3, chroma: 0.1)
+        let lighter = PictureStats(mean: 0.25, low: 0.05, high: 0.6, chroma: 0.1)
+        adaptive.measure(dark, instant: false)
+        adaptive.measure(lighter, instant: false)
+        XCTAssertEqual(adaptive.look, Look.auto(for: dark), "not at once")
+        adaptive.advance(by: 0.1)
+        XCTAssertLessThan(adaptive.look.exposure, Look.auto(for: dark).exposure)
+        XCTAssertGreaterThan(adaptive.look.exposure, Look.auto(for: lighter).exposure, "on its way")
+        let bright = PictureStats(mean: 0.5, low: 0.05, high: 0.95, chroma: 0.2)
+        adaptive.measure(bright, instant: true)   // seeked
+        XCTAssertEqual(adaptive.look, Look.auto(for: bright), "at once after seeking")
     }
 }

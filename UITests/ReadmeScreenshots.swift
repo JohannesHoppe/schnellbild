@@ -82,6 +82,14 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         shoot("inspector")
         app.typeKey("i", modifierFlags: [])
 
+        app.typeKey("e", modifierFlags: [])   // auto enhance, its values on the sliders
+        eventually("enhanced", timeout: 15) { text(of: fullImage).contains("enhanced") }
+        app.typeKey("a", modifierFlags: [])
+        XCTAssertTrue(element("slider.exposure").firstMatch.waitForExistence(timeout: 5))
+        shoot("adjust")
+        app.typeKey("a", modifierFlags: [])   // closes the sliders
+        app.typeKey("e", modifierFlags: [])
+
         app.typeKey(.escape, modifierFlags: [])
         tile("Sunset Timelapse.mp4").click()
         waitForSelected("Sunset Timelapse.mp4")

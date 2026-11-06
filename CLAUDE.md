@@ -6,9 +6,10 @@ update it when the facts change.
 ## What this is
 
 A **fast, lean macOS image/video viewer** (SwiftUI, macOS 14+) — "Phiewer but
-minimal". Core promise: stays fast **even over network volumes**, where most
-viewers (and sometimes Preview) stall. It does what Preview does well: read
-little, load in parallel, cache via the system, never block the main thread.
+minimal". Motto: **an image & video viewer that just doesn't suck.** Speed
+(also over network volumes) is one part of that, not the headline. It does
+what Preview does well: read little, load in parallel, cache via the system,
+never block the main thread.
 
 - Repo: <https://github.com/JohannesHoppe/schnellbild> — **public, MIT**,
   © 2026 HAUS HOPPE - ITS (Johannes Hoppe).
@@ -34,10 +35,10 @@ There is **no Xcode project for the app build**; `xcodegen` generates
   field go through `handleSearchFieldKey`.
   - Search is **always recursive** and matches **folder and file names**: local
     matches at once, then `recursiveMatches` streams batches (`AsyncStream`)
-    from a tree walk; debounced via `searchDebounce`. The model owns the
-    results (`searchResults`); batches are appended via `appendSearchBatch`,
-    which replays the changes made during that walk (`searchChanges`, reset
-    per search), so late batches never revive old paths.
+    from a tree walk; debounced via `searchDebounce`. Each search is a
+    `SearchRun` (results, the walk's task, the changes made during the walk,
+    replayed on every late batch so it never revives old paths); the model
+    shows one (`search`), the history may hold more.
   - **`FileChange`** (`.moved` / `.removed`) is the one mechanism for changes
     the app makes on disk: `apply(_:)` runs it over every list the model holds
     (folder entries, search results, pending selection, history) and keeps
@@ -46,9 +47,11 @@ There is **no Xcode project for the app build**; `xcodegen` generates
     `/private/var` → `/var`), no file system access, because it runs per entry
     on the main thread and must stay fast on network volumes.
   - `open(folder:)` records history; `navigateBack/Forward` restore folder,
-    query, selection and the **remembered search results** (not searched
-    again), so "Back" from a result folder shows the same, stable list. A
-    search left before it finished is searched again instead.
+    query, selection and the search (`SearchRun`: results, the walk, changes
+    to replay). A search still running when the user leaves keeps running
+    in the history (the newest `backgroundSearchLimit`; older ones stop and
+    are searched again on return), so "Back" shows it without starting over.
+    The stop button (`stopSearch`) ends a walk and keeps its results.
   - Renaming a folder or file (`rename`, also from the full view; a file must keep a media extension) never navigates: folder, query and
     results stay; the folder and everything listed inside it get the new path
     (`FileChange.moved`), as do history entries and results still streaming in.
@@ -79,11 +82,11 @@ There is **no Xcode project for the app build**; `xcodegen` generates
   36/76 Return, 49 Space, 123 ←, 124 →, 125 ↓, 126 ↑, 115 Home, 119 End,
   122 F1, 120 F2. Toolbar: Back / Forward / Up / Open Folder.
 - **Slideshow** (`BrowserModel.Slideshow`, `startSlideshow`): its own item list, filled by `walkForSlideshow` folder by folder (a folder's media in the sort order, then each subfolder, hidden folders skipped) and shown while the walk goes on. Starts over the folder passed in (drop zone, a folder tile's context menu "Play Slideshow"), else the search results, else the current folder — never over the selected tile (a folder is selected by default); from the full view at the item shown. Pictures advance after `slideshowInterval`, videos when `playbackStateChanged` reports their end. Full screen via the injectable `setFullScreen`; toolbar, search and status bar hide. Keys go through `handleSlideshowKey`. `shownMediaEntry` is the one item on screen (slideshow or full view); `page`/`skim` work on it. Dropping onto the window shows two zones (`DropZonesView`, `DropZoneDelegate`): Browse / Slideshow.
-- **Auto enhance** (`Enhancer.swift`, `EnhanceRecipe`; model `enhance`, key E, toolbar wand): a view filter, files untouched. Photos: one recipe (`EnhanceRecipe`): exposure gamma both ways (dark < 0.4 brightened, overexposed > 0.62 darkened, `gammaFor`), Core Image `autoAdjustmentFilters`, unsharp mask. Photos: `FullImageView` enhances the loaded picture off the main thread. AVKit: an `AVVideoComposition` with a `VideoEnhancer` that follows the scenes: brightness measured once a second (`AdaptiveExposure`: black frames held, first picture and seeks taken at once, gliding in between), tone analysis every 2 s with the filter values gliding (`VideoEnhancer.glide`). VLC: a 64-px snapshot (`saveVideoSnapshot`) measured once a second through the same `AdaptiveExposure`, applied as VLC's adjust-filter gamma (the inverse of Core Image's power), plus slightly more contrast/saturation and VLC's `sharpen` video filter for media opened while it's on. Players get it through `PlaybackControl.setEnhanced`.
+- **Auto enhance and adjustments** (`Enhancer.swift`): a view filter, files untouched. One parametric `Look` (exposure as a gamma curve, contrast, saturation, sharpness; filters run on sRGB-encoded values, the scale `PictureStats` measures on). Auto (`enhance`, key E, the wand) works out a `Look` from `PictureStats` (`Look.auto`); the sliders (`AdjustmentsView`, key A, model `look`) show it live. Moving a slider calls `model.adjust`: auto goes off, `manualLook` carries on from the shown values and stays while paging; auto off via E/the switch resets to the file as is. Players get `Enhancement` (.off/.auto/.manual) through `PlaybackControl.setEnhancement` and report auto's look via `onAutoLook` → `model.autoLookMeasured`. Photos: `FullImageView` measures once per picture and renders off the main thread. AVKit: one `AVVideoComposition` per video whose `VideoEnhancer` reads the current mode per frame (`AdaptiveLook`: measured once a second, black/white frames held, first picture and seeks at once, gliding in between); a paused video is redrawn by a zero-tolerance seek. VLC: a 64-px snapshot (`saveVideoSnapshot`) measured once a second, applied through VLC's adjust filter (gamma = 1 / Core Image power); `sharpen` is a media option, so it applies from the next video. All players share `VLCPlaybackControl.library`, started with `--no-osd --no-snapshot-preview` (else VLC prints the snapshot path over the video).
 - **`ShortcutsHelpView.swift`** — F1 / "Schnellbild Help" cheat sheet (same
   content as the README keyboard tables; keep them in sync).
 - **`ThumbnailView.swift` / `ThumbnailGridView.swift`** — `LazyVGrid`, thumbnails
-  from QuickLook (`QLThumbnailGenerator`). `ThumbnailCache` keeps one image per
+  from QuickLook (`QLThumbnailGenerator`); videos QuickLook only has an icon for (AVI, MKV …) get a frame from VLC (`VLCThumbnails`, two at a time). `ThumbnailCache` keeps one image per
   file with the size it was made for (reused for smaller tiles, regenerated
   for larger; the full view's placeholder). Folder previews use their own
   `ThumbnailCache.previews`. `FolderTile` fans up to three previews of a

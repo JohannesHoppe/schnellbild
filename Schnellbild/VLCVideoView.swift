@@ -9,7 +9,7 @@ import CoreImage
 @MainActor
 final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegate {
     /// One LibVLC instance for all players, without VLC's on-screen display:
-    /// the exposure snapshots (`snapshotLuminance`) would otherwise show
+    /// the auto enhance snapshots (`snapshotStats`) would otherwise show
     /// "Snapshot taken: <path>" and a preview over the video.
     static let library = VLCLibrary(options: ["--no-osd", "--no-snapshot-preview"])
     let player = VLCMediaPlayer(library: VLCPlaybackControl.library)
@@ -23,14 +23,20 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
     private(set) var isPlaying = true
 
     /// Sharpening is a VLC video filter chosen when the media opens, so it
-    /// follows auto enhance from the next video on; the adjust filter
-    /// (gamma, contrast, saturation) switches at once.
+    /// follows the look from the next video on; the adjust filter (gamma,
+    /// contrast, saturation) switches at once.
     private var sharpen: Bool
+    /// Where auto enhance's look goes (the model, for the sliders).
+    var onAutoLook: @MainActor (PlaybackControl, Look) -> Void = { _, _ in }
 
-    init(url: URL, enhanced: Bool = false, onStateChange: @escaping @MainActor (PlaybackControl, Bool) -> Void) {
+    init(url: URL, enhancement: Enhancement = .off, onStateChange: @escaping @MainActor (PlaybackControl, Bool) -> Void) {
         self.url = url
         self.onStateChange = onStateChange
-        sharpen = enhanced
+        switch enhancement {
+        case .off: sharpen = false
+        case .auto: sharpen = true
+        case .manual(let look): sharpen = look.sharpness > 0
+        }
         super.init()
         player.media = makeMedia()
         player.delegate = self
@@ -45,44 +51,60 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         return media
     }
 
-    private var exposure = AdaptiveExposure()
-    private var exposureTask: Task<Void, Never>?
+    private var adaptive = AdaptiveLook()
+    private var measureTask: Task<Void, Never>?
     /// The next measurement takes its value at once (after a seek).
     private var measureNow = true
 
-    /// VLC hands out no frames to filter, so the picture is measured the way
-    /// AVKit videos are, from a small snapshot once a second, and corrected
-    /// through VLC's adjust filter: gamma both ways (VLC's gamma is the
-    /// inverse of Core Image's power: > 1 brightens), gliding in between,
-    /// plus a little more contrast and colour.
-    func setEnhanced(_ on: Bool) {
-        let adjust = player.adjustFilter
-        exposureTask?.cancel()
-        exposureTask = nil
-        guard on else { adjust.isEnabled = false; return }
-        adjust.contrast.value = NSNumber(value: 1.08)
-        adjust.saturation.value = NSNumber(value: 1.12)
-        adjust.gamma.value = NSNumber(value: 1 / exposure.gamma)
-        adjust.isEnabled = true
-        measureNow = true
-        exposureTask = Task { [weak self] in
-            var sinceMeasure = Double.infinity
-            while !Task.isCancelled {
-                guard let self else { return }
-                if self.measureNow || sinceMeasure >= 1 || !self.exposure.hasPicture {
-                    if let luminance = await self.snapshotLuminance() {
-                        _ = self.exposure.measure(luminance: luminance, instant: self.measureNow)
-                        self.measureNow = false
+    /// VLC hands out no frames to filter, so for auto enhance the picture is
+    /// measured from a small snapshot once a second, gliding in between;
+    /// the look goes to VLC's adjust filter (VLC's gamma is the inverse of
+    /// Core Image's power: > 1 brightens).
+    func setEnhancement(_ enhancement: Enhancement) {
+        measureTask?.cancel()
+        measureTask = nil
+        switch enhancement {
+        case .off:
+            player.adjustFilter.isEnabled = false
+        case .manual(let look):
+            show(look)
+        case .auto:
+            show(adaptive.look)
+            measureNow = true
+            measureTask = Task { [weak self] in
+                var sinceMeasure = Double.infinity
+                var sinceReport = Double.infinity
+                while !Task.isCancelled {
+                    guard let self else { return }
+                    if self.measureNow || sinceMeasure >= 1 || !self.adaptive.hasPicture {
+                        if let stats = await self.snapshotStats(), !Task.isCancelled {
+                            self.adaptive.measure(stats, instant: self.measureNow)
+                            self.measureNow = false
+                        }
+                        sinceMeasure = 0
+                    } else {
+                        self.adaptive.advance(by: 0.2)
                     }
-                    sinceMeasure = 0
-                } else {
-                    self.exposure.advance(by: 0.2)
+                    guard !Task.isCancelled else { return }
+                    self.show(self.adaptive.look)
+                    if sinceReport >= 0.25 {
+                        self.onAutoLook(self, self.adaptive.look)
+                        sinceReport = 0
+                    }
+                    try? await Task.sleep(for: .milliseconds(200))
+                    sinceMeasure += 0.2
+                    sinceReport += 0.2
                 }
-                self.player.adjustFilter.gamma.value = NSNumber(value: 1 / self.exposure.gamma)
-                try? await Task.sleep(for: .milliseconds(200))
-                sinceMeasure += 0.2
             }
         }
+    }
+
+    private func show(_ look: Look) {
+        let adjust = player.adjustFilter
+        adjust.gamma.value = NSNumber(value: 1 / look.gammaPower)
+        adjust.contrast.value = NSNumber(value: look.contrastFactor)
+        adjust.saturation.value = NSNumber(value: look.saturationFactor)
+        adjust.isEnabled = true
     }
 
     /// Where the snapshots go: one folder per player, emptied before each
@@ -93,7 +115,7 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
     /// Mean luminance of the frame on screen, from a 64-pixel-wide snapshot
     /// VLC writes to a temporary file; nil unless it plays (a paused picture
     /// doesn't change).
-    private func snapshotLuminance() async -> Double? {
+    private func snapshotStats() async -> PictureStats? {
         guard player.isPlaying else { return nil }
         let fm = FileManager.default
         try? fm.removeItem(at: snapshotFolder)
@@ -103,7 +125,7 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         for _ in 0..<10 {   // written asynchronously
             try? await Task.sleep(for: .milliseconds(50))
             if let image = CIImage(contentsOf: file) {
-                return EnhanceRecipe.meanLuminance(of: image)
+                return PictureStats.of(image)
             }
         }
         return nil
@@ -133,8 +155,8 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
     }
 
     func stop() {
-        exposureTask?.cancel()
-        exposureTask = nil
+        measureTask?.cancel()
+        measureTask = nil
         try? FileManager.default.removeItem(at: snapshotFolder)
         player.delegate = nil
         player.stop()
