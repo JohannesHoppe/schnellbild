@@ -605,7 +605,7 @@ final class BrowserModel: ObservableObject {
             }
             switch key {
             case .name:
-                return .orderedSame
+                return byName(a, b)   // the key itself, reversed with the direction
             case .kind:
                 // Folders are all one kind (a dot in a folder name isn't an extension)
                 guard a.isMedia, b.isMedia else { return .orderedSame }
