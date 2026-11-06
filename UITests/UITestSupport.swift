@@ -15,6 +15,12 @@ class SchnellbildUITestCase: XCTestCase {
     }
 
     override func tearDownWithError() throws {
+        // A failed test may leave a slideshow in full screen, which macOS would
+        // bring back on the next launch (and hide the menu bar): Esc ends it.
+        if let app, app.state == .runningForeground {
+            app.typeKey(.escape, modifierFlags: [])
+            app.typeKey(.escape, modifierFlags: [])
+        }
         app?.terminate()   // macOS apps are single-instance; the next test launches fresh
         if let tempDir { try? FileManager.default.removeItem(at: tempDir) }
     }
@@ -46,8 +52,7 @@ class SchnellbildUITestCase: XCTestCase {
     @discardableResult
     func launch(open path: String? = nil, resetState: Bool = true) -> XCUIApplication {
         let app = XCUIApplication()
-        // Never restore window state (e.g. full screen) from an earlier test
-        var args = ["--ui-testing", "-ApplePersistenceIgnoreState", "YES"]
+        var args = ["--ui-testing"]
         if resetState { args.append("--reset-state") }
         if let path { args += ["--open", path] }
         app.launchArguments = args

@@ -83,6 +83,12 @@ struct ThumbnailGridView: View {
         }
         .contextMenu {
             if entry.kind != .parent {
+                if entry.kind == .folder {
+                    Button("Play Slideshow") {
+                        model.select(index)
+                        model.startSlideshow(over: entry.url)
+                    }
+                }
                 Button("Rename…") {
                     model.select(index)
                     model.beginRename()

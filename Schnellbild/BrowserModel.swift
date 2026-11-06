@@ -515,13 +515,16 @@ final class BrowserModel: ObservableObject {
     /// end. Hidden files (".DS_Store", "._…") and anything that isn't a
     /// picture or video ("Thumbs.db", "desktop.ini") don't count.
     nonisolated static func containsMedia(_ folder: URL) async -> Bool {
-        await Task.detached(priority: .utility) {
-            guard let walk = FileManager.default.enumerator(
-                at: folder, includingPropertiesForKeys: nil,
-                options: [.skipsHiddenFiles, .skipsPackageDescendants]) else { return false }
-            for case let url as URL in walk where mediaKind(of: url) != nil { return true }
-            return false
-        }.value
+        await Task.detached(priority: .utility) { anyMedia(below: folder) }.value
+    }
+
+    /// The walk itself, synchronous (a directory enumerator isn't for async code).
+    nonisolated private static func anyMedia(below folder: URL) -> Bool {
+        guard let walk = FileManager.default.enumerator(
+            at: folder, includingPropertiesForKeys: nil,
+            options: [.skipsHiddenFiles, .skipsPackageDescendants]) else { return false }
+        for case let url as URL in walk where mediaKind(of: url) != nil { return true }
+        return false
     }
 
     /// Folders known to hold no photos or videos at any depth, as canonical
@@ -1317,16 +1320,16 @@ final class BrowserModel: ObservableObject {
 
     // MARK: - Slideshow
 
-    /// Start a slideshow. Over `folder` if given; otherwise over the selected
-    /// folder tile, the search results, or the current folder — in that
-    /// order. From the full view it starts at the item shown.
+    /// Start a slideshow. Over `folder` if given (a folder tile's context
+    /// menu, the drop zone); otherwise over the search results while
+    /// searching, else the current folder. (Not over the selected tile: a
+    /// folder is selected by default, and ▶︎ means "this folder".) From the
+    /// full view it starts at the item shown.
     func startSlideshow(over folder: URL? = nil, startingAt start: URL? = nil) {
         stopSlideshow()
         var roots: [GridEntry] = []
         if let folder {
             roots = [GridEntry(url: folder, kind: .folder)]
-        } else if mode == .grid, let entry = selectedEntry, entry.kind == .folder {
-            roots = [entry]
         } else if isFiltering {
             roots = entries.filter { $0.kind != .parent }
         } else if let folderURL {
