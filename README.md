@@ -97,9 +97,15 @@ One picture, as large as the window allows, with its position in the folder. The
   <img src="docs/screenshots/slideshow-light.png" width="760" alt="The slideshow">
 </picture></p>
 
-One click on ▶︎ Slideshow (or `s`) plays every photo and video in the current folder and all its subfolders, in full screen: folder by folder, in the sort order you chose, so sorted by date taken your holiday plays from the first day to the last. Pictures stay three seconds, videos play to their end. It starts at once while the subfolders are still being read. While searching, it plays the results; to play just one subfolder, right-click its tile and choose Play Slideshow.
+Schnellbild has two ways of looking at a folder: **browse** it in the grid, or sit back and watch a **slideshow** of everything in it. The slideshow plays every photo and video in the folder **and all its subfolders**, in full screen, folder by folder in the sort order you chose. Sorted by date taken, your holiday plays from the first day to the last, even when the pictures are spread over many folders. Pictures stay three seconds, videos play to their end, then it moves on. It starts at once, while the subfolders are still being read.
 
-Drag a folder onto the window and choose: drop it on **Browse** to look around, or on **Slideshow** to start the show straight away.
+Three ways to start it:
+
+- **▶︎ Slideshow** in the toolbar, or the `s` key: plays the folder you're in, with everything below it. While you search, it plays the search results instead.
+- **Right-click a folder tile → Play Slideshow:** plays just that folder (and its subfolders), without opening it first.
+- **Drag a folder onto the window:** the window splits into two halves. Drop it on **Browse** to look around in the grid, or on **Slideshow** to start the show straight away. A single dropped picture starts the slideshow of its folder at that picture.
+
+From the full view, the slideshow starts at the picture you're looking at. `Esc` ends it and brings you back to where you were.
 
 | Key | Action |
 |---|---|
