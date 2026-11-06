@@ -82,11 +82,39 @@ jobs:
       - name: Generate Xcode project
         run: xcodegen generate
 
+      - name: Build the brightness meter
+        run: mkdir -p build && swiftc -O Scripts/measure_brightness.swift -o build/measure_brightness
+
       - name: Run XCUITests
         run: |
-          xcodebuild test \
+          # VisualUITests measure the screen through this shell, which may
+          # record it: the test asks with "measure:<id>:<x>,<y>,<w>,<h>" on the
+          # pasteboard and gets "measured:<id>:<mean luminance>" back.
+          (
+            while :; do
+              request=$(pbpaste 2>/dev/null || true)
+              case "$request" in
+                measure:*)
+                  rest=${request#measure:}
+                  id=${rest%%:*}
+                  rect=${rest#*:}
+                  shot=$(mktemp -d)/region.png
+                  screencapture -x -R "$rect" "$shot"
+                  value=$(build/measure_brightness "$shot" || echo -1)
+                  echo "== measure $id $rect: $value"
+                  printf 'measured:%s:%s' "$id" "$value" | pbcopy
+                  ;;
+              esac
+              sleep 0.2
+            done
+          ) &
+          helper=$!
+          status=0
+          TEST_RUNNER_SCREEN_MEASURE=1 xcodebuild test \
             -project Schnellbild.xcodeproj \
             -scheme Schnellbild \
             -destination 'platform=macOS' \
             -only-testing:SchnellbildUITests \
-            -derivedDataPath build/DerivedData
+            -derivedDataPath build/DerivedData || status=1
+          kill "$helper"
+          exit $status

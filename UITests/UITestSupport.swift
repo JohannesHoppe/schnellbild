@@ -50,9 +50,9 @@ class SchnellbildUITestCase: XCTestCase {
     // MARK: Launch
 
     @discardableResult
-    func launch(open path: String? = nil, resetState: Bool = true) -> XCUIApplication {
+    func launch(open path: String? = nil, resetState: Bool = true, extra: [String] = []) -> XCUIApplication {
         let app = XCUIApplication()
-        var args = ["--ui-testing"]
+        var args = ["--ui-testing"] + extra
         if resetState { args.append("--reset-state") }
         if let path { args += ["--open", path] }
         app.launchArguments = args

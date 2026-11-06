@@ -14,3 +14,4 @@ Vendor/
 build/
 # Intermediate icon master — the committed AppIcon.icns is derived from it.
 Resources/icon_1024.png
+.claude/worktrees/

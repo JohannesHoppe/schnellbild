@@ -76,7 +76,7 @@ struct VideoDetailView: View {
             let reportLook: @MainActor (PlaybackControl, Look) -> Void = { control, look in
                 model.autoLookMeasured(look, from: control)
             }
-            if playable {
+            if playable && !Self.forceVLC {
                 let control = AVPlaybackControl(player: AVPlayer(playerItem: AVPlayerItem(asset: asset)), onStateChange: report)
                 control.onAutoLook = reportLook
                 avControl = control
@@ -104,6 +104,11 @@ struct VideoDetailView: View {
         }
         .onDisappear { stop() }
     }
+
+    /// UI tests (`--ui-testing --force-vlc`) play every video through VLC, so
+    /// the same test videos check both players.
+    static let forceVLC = ProcessInfo.processInfo.arguments.contains("--ui-testing")
+        && ProcessInfo.processInfo.arguments.contains("--force-vlc")
 
     /// Turned a quarter, the fitted video's now-swapped box is scaled to fit
     /// the view again (as `FullImageView` does for pictures).

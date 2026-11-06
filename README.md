@@ -22,6 +22,14 @@
 
 Open a folder, see thumbnails, look at one picture large, page through with the keyboard. Videos play right there, too, even AVI, MKV and WebM. No library to import into, no waiting, no clutter: it opens what you point it at, stays quick on big folders and network shares alike, and gets out of your way.
 
+## Why it doesn't suck
+
+- **No ads, no tracking, no account.** It shows your pictures and talks to nobody.
+- **No upselling.** No pro version, no subscription, no "unlock" button. Every feature is in.
+- **No bloat.** No library to import into, no editor, no cloud. Just looking at photos and videos, done well.
+- **Fast.** Thumbnails appear while you scroll, big folders and network shares included (see [Why so fast?](#why-so-fast)).
+- **Doesn't fall over.** Broken files, odd formats and slow disks show a placeholder instead of taking the app down. Your files are only changed when you rename or trash them.
+
 ## Download
 
 **[Schnellbild.dmg](https://github.com/JohannesHoppe/schnellbild/releases/latest/download/Schnellbild.dmg)** (macOS 14+, Apple silicon): open it and drag Schnellbild into Applications. Signed with a Developer ID and notarized by Apple.

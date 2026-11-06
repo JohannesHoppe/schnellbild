@@ -65,6 +65,8 @@ public class XCUIElement {
     public func click() {}
     public func screenshot() -> XCUIScreenshot { XCUIScreenshot() }
     public func doubleClick() {}
+    public func hover() {}
+    public func adjust(toNormalizedSliderPosition position: CGFloat) {}
     public func rightClick() {}
     public func typeText(_ text: String) {}
     public func typeKey(_ key: XCUIKeyboardKey, modifierFlags: KeyModifierFlags) {}
