@@ -97,7 +97,7 @@ One picture, as large as the window allows, with its position in the folder. The
   <img src="docs/screenshots/slideshow-light.png" width="760" alt="The slideshow">
 </picture></p>
 
-Schnellbild has two ways of looking at a folder: **browse** it in the grid, or sit back and watch a **slideshow** of everything in it. The slideshow plays every photo and video in the folder **and all its subfolders**, in full screen, folder by folder in the sort order you chose. Sorted by date taken, your holiday plays from the first day to the last, even when the pictures are spread over many folders. Pictures stay three seconds, videos play to their end, then it moves on. It starts at once, while the subfolders are still being read.
+Schnellbild has two ways of looking at a folder: **browse** it in the grid, or sit back and watch a **slideshow** of everything in it. The slideshow plays every photo and video in the folder **and all its subfolders**, in full screen, folder by folder in the sort order you chose. The sort order applies within each folder and to the order of the subfolders: sorted by name, folders like `Day 1`, `Day 2` … play one after the other; sorted by date taken, the pictures in each folder play in the order they were shot. Pictures stay three seconds, videos play to their end, then it moves on. It starts at once, while the subfolders are still being read.
 
 Three ways to start it:
 
