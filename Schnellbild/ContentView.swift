@@ -13,7 +13,7 @@ struct ContentView: View {
 
     var body: some View {
         Group {
-            if model.entries.isEmpty {
+            if model.entries.isEmpty && model.slideshow == nil {
                 EmptyStateView(isLoading: model.isLoading)
             } else {
                 // The grid stays alive under the full view, so it keeps its
@@ -168,7 +168,7 @@ struct ContentView: View {
         var text: String
         if let show = model.slideshow {
             text = "Slideshow  ·  \(show.index + 1) / \(show.items.count)\(show.loading ? "+" : "")  ·  \(entry.name)"
-            if show.paused { text += "  ·  Paused" }
+            if show.paused && entry.kind == .image { text += "  ·  Paused" }
         } else {
             text = "\(model.currentMediaNumber ?? 0) / \(model.mediaCount)  ·  \(entry.name)"
         }

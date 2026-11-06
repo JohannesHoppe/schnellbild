@@ -53,15 +53,20 @@ struct RenameView: View {
         }
     }
 
-    /// Files: select the name without the extension once the field is
-    /// editing (AppKit selects all when it gains focus).
+    /// Files: select the name without the extension, once the field is
+    /// being edited (AppKit selects everything when it gains focus; that has
+    /// happened once the field editor is first responder).
     private func selectBaseName() {
         guard entry.kind != .folder else { return }
-        let base = (entry.url.lastPathComponent as NSString).deletingPathExtension
-        // After the field has become first responder and selected everything
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            guard let editor = NSApp.keyWindow?.firstResponder as? NSTextView else { return }
-            editor.setSelectedRange(NSRange(location: 0, length: (base as NSString).length))
+        let length = ((entry.url.lastPathComponent as NSString).deletingPathExtension as NSString).length
+        Task { @MainActor in
+            for _ in 0..<50 {   // up to a second
+                if let editor = NSApp.keyWindow?.firstResponder as? NSTextView {
+                    editor.setSelectedRange(NSRange(location: 0, length: length))
+                    return
+                }
+                try? await Task.sleep(for: .milliseconds(20))
+            }
         }
     }
 }

@@ -36,15 +36,20 @@ struct SchnellbildApp: App {
                     .keyboardShortcut("f", modifiers: .command)
             }
             CommandMenu("Actions") {
+                // Not during a slideshow: the selection is in the hidden grid,
+                // not what's on screen.
                 Button("Rename… (F2)") { model.beginRename() }
-                    .disabled(model.selectedEntry == nil || model.selectedEntry?.kind == .parent)
+                    .disabled(model.slideshow != nil || model.selectedEntry == nil || model.selectedEntry?.kind == .parent)
                 Button("Reveal in Finder") { model.revealInFinder() }
                     .keyboardShortcut("r", modifiers: [.command, .shift])
+                    .disabled(model.slideshow != nil)
                 Button("Open with Default App") { model.openInDefaultApp() }
                     .keyboardShortcut(.return)
+                    .disabled(model.slideshow != nil)
                 Divider()
                 Button("Move to Trash…") { model.moveSelectionToTrash() }
                     .keyboardShortcut(.delete)
+                    .disabled(model.slideshow != nil)
             }
             CommandGroup(after: .toolbar) {
                 Button("Larger Thumbnails (⌘+)") { model.growThumbnails() }

@@ -310,6 +310,16 @@ final class BrowserModel: ObservableObject {
         var loading = true
         /// Pictures wait (videos pause through their player).
         var paused = false
+        /// Stepped past the last item while the walk still runs: the next
+        /// batch moves the show on.
+        var waitingForMore = false
+        /// The item to start at (from the full view), until it has arrived
+        /// or the user has moved on.
+        var startAt: URL?
+        /// Every item once (search results can hold a folder and files in it).
+        var seen: Set<String> = []
+        /// Tells this slideshow's walk from an earlier, cancelled one.
+        let id = UUID()
         var current: GridEntry? { items.indices.contains(index) ? items[index] : nil }
     }
     @Published private(set) var slideshow: Slideshow?
@@ -414,6 +424,10 @@ final class BrowserModel: ObservableObject {
 
     private func load(_ location: Location, thenDetail: Bool = false) {
         isLoading = true            // first: keeps the searchText reset below from searching
+        // What folders contain may have changed outside the app (Finder, a
+        // camera import): previews and emptiness are found out afresh.
+        emptyFolders = []
+        FolderPreviewCache.shared.forgetAll()
         loadGeneration += 1
         let generation = loadGeneration
         searchTask?.cancel()
@@ -538,6 +552,8 @@ final class BrowserModel: ObservableObject {
 
     func noteFolder(_ url: URL, empty: Bool) {
         let path = Self.canonicalPath(url)
+        // Only on a change: every write publishes and redraws the grid
+        guard emptyFolders.contains(path) != empty else { return }
         if empty { emptyFolders.insert(path) } else { emptyFolders.remove(path) }
     }
 
@@ -566,8 +582,8 @@ final class BrowserModel: ObservableObject {
     }
 
     /// Sorted: ".." on top, then folders, then media — each group by key.
-    /// Ties (same kind, date or size) fall back to the name, so the order is
-    /// stable. `captured` holds the capture dates read so far.
+    /// Ties (same kind, date or size) fall back to the name, always A→Z, so
+    /// the order is stable. `captured` holds the capture dates read so far.
     nonisolated static func sortEntries(_ entries: [GridEntry], key: SortKey, ascending: Bool,
                                         captured: [URL: Date] = [:]) -> [GridEntry] {
         var parents: [GridEntry] = []
@@ -591,6 +607,8 @@ final class BrowserModel: ObservableObject {
             case .name:
                 return .orderedSame
             case .kind:
+                // Folders are all one kind (a dot in a folder name isn't an extension)
+                guard a.isMedia, b.isMedia else { return .orderedSame }
                 return a.url.pathExtension.lowercased().localizedStandardCompare(b.url.pathExtension.lowercased())
             case .modified:
                 return order(a.modDate ?? .distantPast, b.modDate ?? .distantPast)
@@ -602,8 +620,9 @@ final class BrowserModel: ObservableObject {
             }
         }
         func before(_ a: GridEntry, _ b: GridEntry) -> Bool {
-            var result = compare(a, b)
-            if result == .orderedSame { result = byName(a, b) }
+            let result = compare(a, b)
+            // Ties go by name A→Z in either direction, like Finder
+            if result == .orderedSame { return byName(a, b) == .orderedAscending }
             return ascending ? result == .orderedAscending : result == .orderedDescending
         }
         return parents + folders.sorted(by: before) + media.sorted(by: before)
@@ -1177,16 +1196,19 @@ final class BrowserModel: ObservableObject {
     // MARK: - File actions
 
     func revealInFinder() {
+        guard slideshow == nil else { return }   // the selection is in the hidden grid
         guard let entry = selectedEntry, entry.kind != .parent else { return }
         fileActions.reveal(entry.url)
     }
 
     func openInDefaultApp() {
+        guard slideshow == nil else { return }   // the selection is in the hidden grid
         guard let entry = selectedEntry, entry.kind != .parent else { return }
         fileActions.openInDefaultApp(entry.url)
     }
 
     func moveSelectionToTrash() {
+        guard slideshow == nil else { return }   // the selection is in the hidden grid
         guard let entry = selectedEntry, entry.kind != .parent else { return }
         guard fileActions.confirmTrash(entry.name) else { return }
         do {
@@ -1207,7 +1229,7 @@ final class BrowserModel: ObservableObject {
     /// the full view.
     @discardableResult
     func beginRename() -> Bool {
-        guard let entry = selectedEntry, entry.kind != .parent else { return false }
+        guard slideshow == nil, let entry = selectedEntry, entry.kind != .parent else { return false }
         searchFocused = false   // F2 works while typing in the search field
         renameTarget = entry
         return true
@@ -1248,7 +1270,8 @@ final class BrowserModel: ObservableObject {
     /// keep the selection on the same item (or near it, if it's gone).
     private func apply(_ change: FileChange) {
         // What the folders around the change contain is no longer known.
-        for path in change.affectedFolders { emptyFolders.remove(path) }
+        let affected = Set(change.affectedFolders)
+        if !emptyFolders.isDisjoint(with: affected) { emptyFolders.subtract(affected) }
         FolderPreviewCache.shared.forget(change.affectedFolders)
         let keep = selectedEntry.flatMap { change.apply(to: $0.url) }
         let previous = selection
@@ -1336,9 +1359,11 @@ final class BrowserModel: ObservableObject {
             roots = [GridEntry(url: folderURL, kind: .folder)]
         }
         guard !roots.isEmpty else { NSSound.beep(); return }
-        let startAt = start ?? (mode == .detail ? selectedMediaEntry?.url : nil)
+        var show = Slideshow()
+        show.startAt = start ?? (mode == .detail ? selectedMediaEntry?.url : nil)
+        let id = show.id
         searchFocused = false
-        slideshow = Slideshow()
+        slideshow = show
         slideshowEnteredFullScreen = setFullScreen(true)
         let key = sortKey, ascending = sortAscending
         slideshowWalk = Task { [weak self] in
@@ -1347,14 +1372,14 @@ final class BrowserModel: ObservableObject {
             var media: [GridEntry] = []
             for root in roots {
                 if root.isMedia { media.append(root); continue }
-                if !media.isEmpty { self?.addToSlideshow(media, startAt: startAt); media = [] }
+                if !media.isEmpty { self?.addToSlideshow(media, id: id); media = [] }
                 await Self.walkForSlideshow(root.url, key: key, ascending: ascending) { batch in
-                    self?.addToSlideshow(batch, startAt: startAt)
+                    self?.addToSlideshow(batch, id: id)
                 }
                 if Task.isCancelled { return }
             }
-            if !media.isEmpty { self?.addToSlideshow(media, startAt: startAt) }
-            self?.slideshowWalkFinished()
+            if !media.isEmpty { self?.addToSlideshow(media, id: id) }
+            if !Task.isCancelled { self?.slideshowWalkFinished(id: id) }
         }
     }
 
@@ -1366,6 +1391,7 @@ final class BrowserModel: ObservableObject {
         let contents = await scan(folder)
         var captured: [URL: Date] = [:]
         if key == .captured { captured = await captureDates(of: contents.filter(\.isMedia).map(\.url)) }
+        guard !Task.isCancelled else { return }
         let sorted = sortEntries(contents, key: key, ascending: ascending, captured: captured)
         let media = sorted.filter(\.isMedia)
         if !media.isEmpty { await found(media) }
@@ -1374,32 +1400,54 @@ final class BrowserModel: ObservableObject {
         }
     }
 
-    private func addToSlideshow(_ batch: [GridEntry], startAt: URL?) {
-        guard var show = slideshow else { return }
+    private func addToSlideshow(_ batch: [GridEntry], id: UUID) {
+        guard var show = slideshow, show.id == id else { return }   // from a cancelled walk
+        let new = batch.filter { show.seen.insert(Self.canonicalPath($0.url)).inserted }
+        guard !new.isEmpty else { return }
         let wasEmpty = show.items.isEmpty
-        show.items += batch
-        // Started from the full view: its folder (or the results) come first.
-        if wasEmpty, let startAt, let i = batch.firstIndex(where: { Self.samePath($0.url, startAt) }) {
-            show.index = i
+        let offset = show.items.count
+        show.items += new
+        var moved = wasEmpty
+        if let startAt = show.startAt, let i = new.firstIndex(where: { Self.samePath($0.url, startAt) }) {
+            show.index = offset + i   // the item the full view showed has arrived
+            show.startAt = nil
+            moved = true
+        } else if show.waitingForMore {
+            show.index = offset
+            moved = true
         }
+        if moved { show.waitingForMore = false }
         slideshow = show
-        if wasEmpty { showSlideshowItem() }
+        if moved { showSlideshowItem() }
     }
 
-    private func slideshowWalkFinished() {
-        guard var show = slideshow else { return }
+    private func slideshowWalkFinished(id: UUID) {
+        guard var show = slideshow, show.id == id else { return }
         show.loading = false
+        show.startAt = nil
+        let wrap = show.waitingForMore
+        show.waitingForMore = false
         slideshow = show
-        if show.items.isEmpty { stopSlideshow(); NSSound.beep() }
+        if show.items.isEmpty { stopSlideshow(); NSSound.beep() } else if wrap { slideshowStep(+1) }
     }
 
     /// Next / previous item; past the end it starts over (once the walk is done).
     func slideshowStep(_ delta: Int) {
         guard var show = slideshow, !show.items.isEmpty else { return }
+        show.startAt = nil   // the user (or the show) has moved on
         var next = show.index + delta
-        if next >= show.items.count { next = show.loading ? show.items.count - 1 : 0 }
+        if next >= show.items.count {
+            if show.loading {
+                // Past the end while subfolders are still read: the next batch moves on
+                show.waitingForMore = true
+                slideshow = show
+                return
+            }
+            next = 0
+        }
         if next < 0 { next = show.loading ? 0 : show.items.count - 1 }
         show.index = next
+        show.waitingForMore = false
         slideshow = show
         showSlideshowItem()
     }
@@ -1409,7 +1457,22 @@ final class BrowserModel: ObservableObject {
     private func showSlideshowItem() {
         slideshowTimer?.cancel()
         resetTransforms()
-        guard let show = slideshow, !show.paused, let item = show.current, item.kind == .image else { return }
+        guard let show = slideshow, let item = show.current else { return }
+        if item.kind == .video {
+            // A video moves on when it ends. One that can't be played (it never
+            // gets a length) is skipped after a while instead of halting the show.
+            slideshowTimer = Task { [weak self] in
+                var unknown = 0
+                while !Task.isCancelled {
+                    try? await Task.sleep(for: .seconds(2))
+                    guard !Task.isCancelled, let self, self.slideshow?.current == item else { return }
+                    unknown = self.activePlayer?.progress == nil ? unknown + 1 : 0
+                    if unknown >= 4 { self.slideshowStep(+1); return }
+                }
+            }
+            return
+        }
+        guard !show.paused else { return }
         let interval = slideshowInterval
         slideshowTimer = Task { [weak self] in
             try? await Task.sleep(for: interval)
@@ -1451,16 +1514,18 @@ final class BrowserModel: ObservableObject {
             return true
         case .up, .down:
             slideshowStep(key == .down ? 1 : -1); return true
-        case .char(let c) where c == "s" && !command:
-            stopSlideshow(); return true
-        case .char(let c) where c == "f" && !command:
-            toggleFullScreen(); return true
-        case .char(let c) where c == "i" && !command:
-            showInspector.toggle(); return true
-        case .char(let c) where c == "e" && !command:
-            enhance.toggle(); return true
-        case .char(let c):
-            return handleCharacter(c, command: command)   // zoom, rotate
+        case .char(let raw):
+            let c = Character(raw.lowercased())   // also with Shift or Caps Lock
+            switch c {
+            case "s" where !command: stopSlideshow(); return true
+            case "f" where !command: toggleFullScreen(); return true
+            case "i" where !command: showInspector.toggle(); return true
+            case "e" where !command: enhance.toggle(); return true
+            // No search, history or file actions while the hidden grid's
+            // selection isn't what's on screen
+            case "f" where command, "[" where command, "]" where command: return true
+            default: return handleCharacter(c, command: command)   // zoom, rotate
+            }
         default:
             return false
         }

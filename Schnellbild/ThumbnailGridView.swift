@@ -227,6 +227,11 @@ final class FolderPreviewCache {
         return found
     }
 
+    func forgetAll() {
+        files.removeAllObjects()
+        hasMedia.removeAllObjects()
+    }
+
     /// Forget what is known about these folders (canonical paths).
     func forget(_ paths: [String]) {
         for path in paths {

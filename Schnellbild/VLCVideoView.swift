@@ -81,14 +81,21 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         }
     }
 
+    /// Where the snapshots go: one folder per player, emptied before each
+    /// snapshot and removed in `stop()`, so late ones don't pile up.
+    private lazy var snapshotFolder = FileManager.default.temporaryDirectory
+        .appendingPathComponent("schnellbild-vlc-\(UUID().uuidString)", isDirectory: true)
+
     /// Mean luminance of the frame on screen, from a 64-pixel-wide snapshot
-    /// VLC writes to a temporary file; nil while nothing plays.
+    /// VLC writes to a temporary file; nil unless it plays (a paused picture
+    /// doesn't change).
     private func snapshotLuminance() async -> Double? {
-        guard player.isPlaying || player.state == .paused else { return nil }
-        let file = FileManager.default.temporaryDirectory
-            .appendingPathComponent("schnellbild-vlc-\(UUID().uuidString).png")
+        guard player.isPlaying else { return nil }
+        let fm = FileManager.default
+        try? fm.removeItem(at: snapshotFolder)
+        try? fm.createDirectory(at: snapshotFolder, withIntermediateDirectories: true)
+        let file = snapshotFolder.appendingPathComponent("frame.png")
         player.saveVideoSnapshot(at: file.path, withWidth: 64, andHeight: 0)
-        defer { try? FileManager.default.removeItem(at: file) }
         for _ in 0..<10 {   // written asynchronously
             try? await Task.sleep(for: .milliseconds(50))
             if let image = CIImage(contentsOf: file) {
@@ -124,6 +131,7 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
     func stop() {
         exposureTask?.cancel()
         exposureTask = nil
+        try? FileManager.default.removeItem(at: snapshotFolder)
         player.delegate = nil
         player.stop()
     }
@@ -145,18 +153,31 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         return reported
     }
 
+    /// From the end the media is opened again; VLC ignores a position set
+    /// before it plays, so it's applied once playback has started.
+    private var positionOnceOpen: Float?
+
     func seek(toProgress progress: Double) {
-        if player.state == .ended || player.state == .stopped { play() }
         let target = min(max(progress, 0), 1)
         pendingSeek = (target, Date())
-        player.position = Float(target)
+        if player.state == .ended || player.state == .stopped {
+            positionOnceOpen = Float(target)
+            play()
+        } else {
+            player.position = Float(target)
+        }
         measureNow = true   // a new scene: measure again at once
     }
 
     nonisolated func mediaPlayerStateChanged(_ aNotification: Notification) {
         Task { @MainActor in
             switch self.player.state {
-            case .playing:                  self.isPlaying = true
+            case .playing:
+                self.isPlaying = true
+                if let position = self.positionOnceOpen {
+                    self.positionOnceOpen = nil
+                    self.player.position = position
+                }
             case .paused, .ended, .error:   self.isPlaying = false
             default:                        return
             }
