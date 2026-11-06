@@ -28,11 +28,17 @@ struct ThumbnailGridView: View {
                     }
                     .padding(padding)
                 }
-                .onChange(of: model.selection) { _, newValue in
+                // Also when the grid first appears (a folder loaded, Back from a
+                // subfolder): the selection may be far down, so show it at once.
+                .onChange(of: model.selection, initial: true) { oldValue, newValue in
                     guard let newValue, model.entries.indices.contains(newValue) else { return }
                     let id = model.entries[newValue].id
-                    withAnimation(.easeOut(duration: 0.15)) {
+                    if oldValue == newValue {
                         proxy.scrollTo(id, anchor: .center)
+                    } else {
+                        withAnimation(.easeOut(duration: 0.15)) {
+                            proxy.scrollTo(id, anchor: .center)
+                        }
                     }
                 }
             }

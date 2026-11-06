@@ -121,6 +121,19 @@ final class GridUITests: SchnellbildUITestCase {
         XCTAssertFalse(tile("a.jpg").isHittable, "not jumped back to the top")
     }
 
+    func testBackFromASubfolderShowsTheFolderItCameFrom() throws {
+        for i in 10..<80 { try folder("f\(i)") }
+        launchOnTempDir(waitFor: "f10")
+        app.typeKey(.end, modifierFlags: [])                 // c.jpg, the last item
+        for _ in 0..<3 { app.typeKey(.leftArrow, modifierFlags: []) }
+        waitForSelected("f79")
+        app.typeKey(.return, modifierFlags: [])
+        eventually("inside f79") { !tile("f79").exists }
+        app.typeKey("[", modifierFlags: .command)
+        waitForSelected("f79")
+        eventually("scrolled to it") { tile("f79").isHittable }
+    }
+
     func testEmptyFolderState() throws {
         let empty = try folder("empty")
         let app = launch(open: empty.path)
