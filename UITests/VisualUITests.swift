@@ -202,8 +202,9 @@ final class VisualUITests: SchnellbildUITestCase {
     /// A new look reaches a paused video at once, not only when it plays on.
     private func checkPausedVideoTakesTheLook(vlc: Bool) throws {
         let video = try openVideo("dark.mp4", vlc: vlc)
-        app.typeKey(.space, modifierFlags: [])
-        waitForBadge(containing: "Paused")
+        // The three-second video ends and stays paused on its last picture
+        // (pressing Space could come just after its end and play it again)
+        waitForBadge(containing: "Paused", timeout: 20)
         settle()
         let before = try screenBrightness(of: video)
         app.typeKey("e", modifierFlags: [])
