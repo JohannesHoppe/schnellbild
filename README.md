@@ -15,6 +15,13 @@
 <p align="center"><img src="docs/demo.gif" width="680" alt="Schnellbild in action"></p>
 -->
 
+<p align="center">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/grid-dark.png">
+  <img src="docs/screenshots/grid-light.png" width="820" alt="Schnellbild: folder grid with folder previews and thumbnails">
+</picture>
+</p>
+
 A **fast** file/image viewer for macOS. Open a folder, see thumbnails,
 view one image large, page through with the keyboard. Nothing more — but
 without stalling, even over network volumes.
@@ -102,6 +109,23 @@ xcodebuild test -project Schnellbild.xcodeproj -scheme Schnellbild \
 CI runs both on every push.
 
 ## Features
+
+<table>
+  <tr>
+    <td><picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/inspector-dark.png">
+  <img src="docs/screenshots/inspector-light.png" alt="Full view with the file inspector">
+</picture></td>
+    <td><picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/search-dark.png">
+  <img src="docs/screenshots/search-light.png" alt="Search across folder and file names, including subfolders">
+</picture></td>
+  </tr>
+  <tr>
+    <td align="center">Full view with the inspector (<kbd>I</kbd>)</td>
+    <td align="center">Search, including subfolders</td>
+  </tr>
+</table>
 
 - **Folders & drag-and-drop.** Open a folder (⌘O) or drag one onto the window.
   Drag a single file to open it straight in the full view. Subfolders show up in
