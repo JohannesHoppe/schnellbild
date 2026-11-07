@@ -199,6 +199,7 @@ final class VideoEnhancer: @unchecked Sendable {   // all state behind `lock`
     private var lastMeasure = -Double.infinity
     private var lastFrame: Double?
     private var lastReport = Date.distantPast
+    private var drawnMode = Enhancement.off
     private let report: @Sendable (Look) -> Void
 
     init(report: @escaping @Sendable (Look) -> Void) { self.report = report }
@@ -206,8 +207,18 @@ final class VideoEnhancer: @unchecked Sendable {   // all state behind `lock`
     func set(_ mode: Enhancement) {
         lock.lock()
         self.mode = mode
+        // Off takes the composition away: frames are drawn as they are
+        if mode == .off { drawnMode = .off }
         lastMeasure = -.infinity   // auto again: measure at once
         lock.unlock()
+    }
+
+    /// Whether the last frame was drawn in another mode than the current
+    /// one (a look set after the last frame, e.g. just before the end).
+    var isStale: Bool {
+        lock.lock()
+        defer { lock.unlock() }
+        return drawnMode != mode
     }
 
     func process(_ request: AVAsynchronousCIImageFilteringRequest) {
@@ -218,6 +229,7 @@ final class VideoEnhancer: @unchecked Sendable {   // all state behind `lock`
         // back), so `set` from the main thread never waits for a measurement.
         lock.lock()
         let auto = mode == .auto
+        drawnMode = mode
         let jumped = lastFrame.map { time < $0 || time - $0 > 1 } ?? true
         let elapsed = jumped ? 0 : time - (lastFrame ?? time)
         let measure = auto && (jumped || !adaptive.hasPicture || time - lastMeasure >= 1)

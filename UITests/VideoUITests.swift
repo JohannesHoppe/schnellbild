@@ -106,7 +106,8 @@ final class VideoUITests: SchnellbildUITestCase {
     }
 
     /// At the end of a video Space plays it again from the start, every
-    /// time. The app logs the player's states (shown when it fails).
+    /// time: it takes the whole clip to end again. The app logs the
+    /// player's states (shown when it fails).
     private func checkSpaceAtTheEndPlaysAgain(vlc: Bool) throws {
         try put("dark.mp4", at: "short.mp4")   // three seconds
         let log = tempDir.appendingPathComponent("test.log")
@@ -115,10 +116,13 @@ final class VideoUITests: SchnellbildUITestCase {
         XCTAssertTrue(element(vlc ? "video.vlc" : "video.avkit").waitForExistence(timeout: 20))
         continueAfterFailure = true
         defer { print("player log:\n" + ((try? String(contentsOf: log, encoding: .utf8)) ?? "(none)")) }
+        waitForBadge(containing: "Paused", timeout: 20)   // it ended
         for round in 1...3 {
-            waitForBadge(containing: "Paused", timeout: 20)   // it ended
             app.typeKey(.space, modifierFlags: [])
+            let start = Date()
             eventually("plays again (round \(round))") { !self.text(of: self.badge).contains("Paused") }
+            waitForBadge(containing: "Paused", timeout: 20)   // it ended again
+            XCTAssertGreaterThan(Date().timeIntervalSince(start), 2, "round \(round) played from the start")
         }
     }
 

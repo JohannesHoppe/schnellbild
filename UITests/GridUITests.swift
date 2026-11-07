@@ -45,13 +45,13 @@ final class GridUITests: SchnellbildUITestCase {
         let wide = names.prefix { abs(tile($0).frame.minY - top) < 2 }.count
         XCTAssertGreaterThan(wide, 1, "several columns")
         XCTAssertEqual(reported().keys, wide, "the keys step by the columns on screen: \(text(of: grid))")
-        let from = tile("a.jpg").frame
         app.typeKey(.downArrow, modifierFlags: [])
         waitForSelected(names[1 + wide])
-        let below = tile(names[1 + wide]).frame
-        XCTAssertEqual(below.minX, from.minX, accuracy: 2, "straight below")
-        XCTAssertGreaterThan(below.minY, from.maxY, "on the next row")
-        XCTAssertLessThan(below.minY, from.maxY + from.height, "on the very next row")
+        // Both frames at the same moment: ↓ scrolls the grid
+        eventually("straight below, on the very next row") {
+            let from = self.tile("a.jpg").frame, below = self.tile(names[1 + wide]).frame
+            return abs(below.minX - from.minX) < 2 && below.minY > from.maxY && below.minY < from.maxY + from.height
+        }
         app.typeKey(.upArrow, modifierFlags: [])
         waitForSelected("a.jpg")
 
