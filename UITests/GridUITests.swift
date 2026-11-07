@@ -31,37 +31,42 @@ final class GridUITests: SchnellbildUITestCase {
         for name in photos { try put("sample.jpg", at: name) }
         launchOnTempDir(waitFor: "p00.jpg")
         let names = ["..", "a.jpg", "b.jpg", "c.jpg"] + photos
-        func columns() -> Int {
-            let top = tile("..").frame.minY
-            return names.prefix { abs(tile($0).frame.minY - top) < 2 }.count
+        let grid = element("grid").firstMatch
+        /// "<columns the keys use> columns, <columns laid out> laid out, selection <index>"
+        func reported() -> (keys: Int, laidOut: Int, selection: Int) {
+            let n = text(of: grid).split(whereSeparator: { !$0.isNumber }).compactMap { Int($0) }
+            return n.count == 3 ? (n[0], n[1], n[2]) : (-1, -1, -1)
         }
-        /// ↓ from a.jpg selects the tile straight below it, ↑ goes back.
-        func checkDownAndUp(_ state: String) {
-            tile("a.jpg").click()
-            waitForSelected("a.jpg")
-            let from = tile("a.jpg").frame
-            app.typeKey(.downArrow, modifierFlags: [])
-            var selected: String?
-            eventually("\(state): ↓ moved; grid: \(text(of: element("grid").firstMatch))") {
-                selected = names.first { self.isSelected($0) }
-                return selected != nil && selected != "a.jpg"
-            }
-            print("\(state): ↓ from a.jpg to \(selected ?? "-"); grid: \(text(of: element("grid").firstMatch))")
-            let to = tile(selected ?? "").frame
-            XCTAssertEqual(to.minX, from.minX, accuracy: 2, "\(state): \(selected ?? "-") isn't straight below a.jpg")
-            XCTAssertGreaterThan(to.minY, from.maxY, "\(state): \(selected ?? "-") is on the next row")
-            XCTAssertLessThan(to.minY, from.maxY + from.height, "\(state): \(selected ?? "-") is on the very next row")
-            app.typeKey(.upArrow, modifierFlags: [])
-            waitForSelected("a.jpg")
-        }
-        let wide = columns()
+
+        // As laid out: a.jpg's neighbour straight below is the selection
+        tile("a.jpg").click()
+        waitForSelected("a.jpg")
+        let top = tile("..").frame.minY
+        let wide = names.prefix { abs(tile($0).frame.minY - top) < 2 }.count
         XCTAssertGreaterThan(wide, 1, "several columns")
-        checkDownAndUp("\(wide) columns")
+        XCTAssertEqual(reported().keys, wide, "the keys step by the columns on screen: \(text(of: grid))")
+        let from = tile("a.jpg").frame
+        app.typeKey(.downArrow, modifierFlags: [])
+        waitForSelected(names[1 + wide])
+        let below = tile(names[1 + wide]).frame
+        XCTAssertEqual(below.minX, from.minX, accuracy: 2, "straight below")
+        XCTAssertGreaterThan(below.minY, from.maxY, "on the next row")
+        XCTAssertLessThan(below.minY, from.maxY + from.height, "on the very next row")
+        app.typeKey(.upArrow, modifierFlags: [])
+        waitForSelected("a.jpg")
+
+        // Smaller tiles, more columns: the keys follow (the grid's old
+        // cells may linger in the accessibility tree, so its report is read)
         app.typeKey("-", modifierFlags: .command)
         app.typeKey("-", modifierFlags: .command)
-        eventually("more columns with smaller tiles") { columns() > wide }
-        RunLoop.current.run(until: Date().addingTimeInterval(1))   // the grid settles
-        checkDownAndUp("\(columns()) columns")
+        eventually("more columns with smaller tiles: \(text(of: grid))") { reported().laidOut > wide }
+        let narrow = reported()
+        XCTAssertEqual(narrow.keys, narrow.laidOut, "the keys step by the columns laid out: \(text(of: grid))")
+        XCTAssertEqual(narrow.selection, 1)
+        app.typeKey(.downArrow, modifierFlags: [])
+        eventually("↓ moves one row of \(narrow.laidOut): \(text(of: grid))") { reported().selection == 1 + narrow.laidOut }
+        app.typeKey(.upArrow, modifierFlags: [])
+        eventually("↑ back: \(text(of: grid))") { reported().selection == 1 }
     }
 
     func testClickSelectsAndDoubleClickOpens() {
