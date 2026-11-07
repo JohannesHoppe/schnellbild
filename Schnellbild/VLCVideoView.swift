@@ -195,21 +195,30 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         measureNow = true   // a new scene: measure again at once
     }
 
+    /// The state is read while the notification is delivered (VLCKit posts
+    /// it on the main thread): read later, a quick "ended" would already
+    /// be "stopped" and the end missed.
     nonisolated func mediaPlayerStateChanged(_ aNotification: Notification) {
-        Task { @MainActor in
-            BrowserModel.testLog("vlc state \(self.player.state.rawValue)")
-            switch self.player.state {
-            case .playing:
-                self.isPlaying = true
-                if let position = self.positionOnceOpen {
-                    self.positionOnceOpen = nil
-                    self.player.position = position
-                }
-            case .paused, .ended, .error:   self.isPlaying = false
-            default:                        return
-            }
-            self.onStateChange(self, self.isPlaying)
+        if Thread.isMainThread {
+            MainActor.assumeIsolated { stateChanged(to: player.state) }
+        } else {
+            Task { @MainActor in self.stateChanged(to: self.player.state) }
         }
+    }
+
+    private func stateChanged(to state: VLCMediaPlayerState) {
+        BrowserModel.testLog("vlc state \(state.rawValue)\(Thread.isMainThread ? "" : " (late)")")
+        switch state {
+        case .playing:
+            isPlaying = true
+            if let position = positionOnceOpen {
+                positionOnceOpen = nil
+                player.position = position
+            }
+        case .paused, .ended, .error:   isPlaying = false
+        default:                        return
+        }
+        onStateChange(self, isPlaying)
     }
 }
 
