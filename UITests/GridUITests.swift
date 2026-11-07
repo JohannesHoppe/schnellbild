@@ -42,10 +42,11 @@ final class GridUITests: SchnellbildUITestCase {
             let from = tile("a.jpg").frame
             app.typeKey(.downArrow, modifierFlags: [])
             var selected: String?
-            eventually("\(state): ↓ moved") {
+            eventually("\(state): ↓ moved; grid: \(text(of: element("grid").firstMatch))") {
                 selected = names.first { self.isSelected($0) }
                 return selected != nil && selected != "a.jpg"
             }
+            print("\(state): ↓ from a.jpg to \(selected ?? "-"); grid: \(text(of: element("grid").firstMatch))")
             let to = tile(selected ?? "").frame
             XCTAssertEqual(to.minX, from.minX, accuracy: 2, "\(state): \(selected ?? "-") isn't straight below a.jpg")
             XCTAssertGreaterThan(to.minY, from.maxY, "\(state): \(selected ?? "-") is on the next row")
