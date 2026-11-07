@@ -23,8 +23,9 @@ final class GridUITests: SchnellbildUITestCase {
         waitForSelected("..")
     }
 
-    /// ↑ ↓ move by one row of the grid as laid out on screen, also after
-    /// the tile size (and with it the number of columns) changes.
+    /// ↑ ↓ move by one row of the grid as laid out on screen, straight up
+    /// and down, also after the tile size (and with it the number of
+    /// columns) changes.
     func testUpAndDownMoveByTheRowsOnScreen() throws {
         let photos = (0..<20).map { String(format: "p%02d.jpg", $0) }
         for name in photos { try put("sample.jpg", at: name) }
@@ -34,23 +35,32 @@ final class GridUITests: SchnellbildUITestCase {
             let top = tile("..").frame.minY
             return names.prefix { abs(tile($0).frame.minY - top) < 2 }.count
         }
+        /// ↓ from a.jpg selects the tile straight below it, ↑ goes back.
+        func checkDownAndUp(_ state: String) {
+            tile("a.jpg").click()
+            waitForSelected("a.jpg")
+            let from = tile("a.jpg").frame
+            app.typeKey(.downArrow, modifierFlags: [])
+            var selected: String?
+            eventually("\(state): ↓ moved") {
+                selected = names.first { self.isSelected($0) }
+                return selected != nil && selected != "a.jpg"
+            }
+            let to = tile(selected ?? "").frame
+            XCTAssertEqual(to.minX, from.minX, accuracy: 2, "\(state): \(selected ?? "-") isn't straight below a.jpg")
+            XCTAssertGreaterThan(to.minY, from.maxY, "\(state): \(selected ?? "-") is on the next row")
+            XCTAssertLessThan(to.minY, from.maxY + from.height, "\(state): \(selected ?? "-") is on the very next row")
+            app.typeKey(.upArrow, modifierFlags: [])
+            waitForSelected("a.jpg")
+        }
         let wide = columns()
         XCTAssertGreaterThan(wide, 1, "several columns")
-        tile("a.jpg").click()
-        waitForSelected("a.jpg")
-        app.typeKey(.downArrow, modifierFlags: [])
-        waitForSelected(names[1 + wide])
-        XCTAssertEqual(tile(names[1 + wide]).frame.minX, tile("a.jpg").frame.minX, accuracy: 2, "straight below")
-        app.typeKey(.upArrow, modifierFlags: [])
-        waitForSelected("a.jpg")
-
+        checkDownAndUp("\(wide) columns")
         app.typeKey("-", modifierFlags: .command)
         app.typeKey("-", modifierFlags: .command)
         eventually("more columns with smaller tiles") { columns() > wide }
-        let narrow = columns()
-        app.typeKey(.downArrow, modifierFlags: [])
-        waitForSelected(names[1 + narrow])
-        XCTAssertEqual(tile(names[1 + narrow]).frame.minX, tile("a.jpg").frame.minX, accuracy: 2, "straight below")
+        RunLoop.current.run(until: Date().addingTimeInterval(1))   // the grid settles
+        checkDownAndUp("\(columns()) columns")
     }
 
     func testClickSelectsAndDoubleClickOpens() {
