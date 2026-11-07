@@ -92,9 +92,8 @@ class SchnellbildUITestCase: XCTestCase {
         searchField.typeText(query)
     }
 
-    /// Text of an element: SwiftUI exposes a Text via `label` *or* `value`;
-    /// state is exposed as label (SwiftUI's accessibilityValue doesn't reach
-    /// XCUITest), a search field's text as value.
+    /// Text of an element: its `label` or its `value` (a Text shows up as
+    /// either, a search field's text and `accessibilityValue` as value).
     func text(of element: XCUIElement) -> String {
         guard element.exists else { return "" }
         let value = (element.value as? String) ?? ""
