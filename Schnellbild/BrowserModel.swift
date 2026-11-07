@@ -1827,9 +1827,17 @@ final class AVPlaybackControl: PlaybackControl {
     }
 
     /// A paused video shows a new look only once its frame is drawn again.
-    private func redrawIfPaused() {
+    /// Seeks in quick succession (a slider dragged) can leave the frame
+    /// drawn with an earlier look, so a stale frame is drawn once more.
+    private func redrawIfPaused(attempts: Int = 3) {
         guard !isPlaying else { return }
-        player.seek(to: player.currentTime(), toleranceBefore: .zero, toleranceAfter: .zero)
+        player.seek(to: player.currentTime(), toleranceBefore: .zero, toleranceAfter: .zero) { [weak self] finished in
+            guard finished else { return }   // a newer seek takes over
+            Task { @MainActor in
+                guard let self, attempts > 1, self.enhancer?.isStale == true else { return }
+                self.redrawIfPaused(attempts: attempts - 1)
+            }
+        }
     }
 
     private var duration: Double? {
