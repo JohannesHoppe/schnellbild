@@ -83,8 +83,11 @@ final class ActionsUITests: SchnellbildUITestCase {
         try put("sample.jpg", at: "album/second.jpg")
         launchOnTempDir(waitFor: "album")
         tile("a.jpg").click()
+        waitForSelected("a.jpg")
         tile("album").rightClick()
-        app.menuItems["Play Slideshow"].click()
+        let item = app.menuItems["Play Slideshow"].firstMatch
+        XCTAssertTrue(item.waitForExistence(timeout: 5), "the folder's context menu")
+        item.click()
         waitForBadge(containing: "Slideshow")
         eventually("only the folder's pictures") { self.text(of: self.badge).contains("/ 2") }
         XCTAssertFalse(text(of: badge).contains("a.jpg"))

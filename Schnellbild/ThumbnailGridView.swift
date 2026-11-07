@@ -28,6 +28,9 @@ struct ThumbnailGridView: View {
                     }
                     .padding(padding)
                 }
+                // For the UI tests: the columns the keys step by, and as laid out
+                .accessibilityIdentifier("grid")
+                .accessibilityValue("\(model.columnCount) columns, \(count) laid out, selection \(model.selection.map(String.init) ?? "none")")
                 // Also when the grid first appears (a folder loaded, Back from a
                 // subfolder): the selection may be far down, so show it at once.
                 .onChange(of: model.selection, initial: true) { oldValue, newValue in
