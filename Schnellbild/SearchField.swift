@@ -96,10 +96,14 @@ final class FocusGatedSearchField: NSSearchField {
         return became
     }
 
+    /// Already editing, it stays so: making the field first responder again
+    /// ends the editing session (macOS 26), and two requests can come in a
+    /// row (the model's and SwiftUI's update).
     func focus() {
         focusAllowed = true
-        let made = window?.makeFirstResponder(self)
-        BrowserModel.testLog("search field focus: window \(window != nil), made \(String(describing: made)), editing \(currentEditor() != nil)")
+        guard currentEditor() == nil else { return }
+        window?.makeFirstResponder(self)
+        BrowserModel.testLog("search field focus: editing \(currentEditor() != nil)")
     }
 
     func blur() {
