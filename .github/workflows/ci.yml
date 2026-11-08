@@ -12,6 +12,10 @@ on:
         description: "UI tests to run (xcodebuild -only-testing), e.g. SchnellbildUITests/VisualUITests"
         required: false
         default: SchnellbildUITests
+      macos:
+        description: "Runner image for the UI tests, e.g. macos-26 (what users run may be newer than the default)"
+        required: false
+        default: macos-15
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -63,7 +67,7 @@ jobs:
 
   ui-tests:
     name: UI tests (XCUITest)
-    runs-on: macos-15
+    runs-on: ${{ inputs.macos || 'macos-15' }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
