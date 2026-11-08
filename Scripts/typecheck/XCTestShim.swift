@@ -50,6 +50,7 @@ public final class XCUIElementQuery {
 }
 public final class XCUICoordinate {
     public func withOffset(_ offset: CGVector) -> XCUICoordinate { self }
+    public func hover() {}
     public func press(forDuration duration: TimeInterval, thenDragTo other: XCUICoordinate) {}
 }
 public final class XCUIScreenshot { public var image: NSImage { NSImage() } }
