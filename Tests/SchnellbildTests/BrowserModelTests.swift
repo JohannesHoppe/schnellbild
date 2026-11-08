@@ -1238,10 +1238,10 @@ final class PlaybackTests: XCTestCase {
         player.isPlaying = false
         m.playbackStateChanged(player, isPlaying: false)   // it ended
         XCTAssertEqual(m.shownMediaEntry?.name, "c.jpg")
+        // c.jpg keeps the short interval it was shown with; a.jpg stays long
+        // enough to be seen (else the show is on the video again at once)
+        m.slideshowInterval = .seconds(60)
         await waitUntil { m.shownMediaEntry?.name == "a.jpg" }    // starts over
-        if let s = m.slideshow, m.shownMediaEntry?.name != "a.jpg" {
-            print("slideshow: at \(s.index) of \(s.items.map(\.name)), loading \(s.loading), waiting for more \(s.waitingForMore), paused \(s.paused)")
-        }
     }
 
     /// A video nothing can play (it never gets a length) is skipped instead
