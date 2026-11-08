@@ -1390,7 +1390,10 @@ final class BrowserModel: ObservableObject {
 
     /// Focus the search field — only when it is enabled (a folder is open);
     /// a request on the disabled field would grab focus later.
-    func focusSearch() { searchFocused = folderURL != nil }
+    func focusSearch() {
+        searchFocused = folderURL != nil
+        Self.testLog("focus search: \(searchFocused)")
+    }
 
 
     // MARK: - File actions
