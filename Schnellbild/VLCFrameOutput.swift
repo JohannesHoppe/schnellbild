@@ -66,10 +66,11 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
     func attach(to player: VLCMediaPlayer) {
         guard let api = LibVLCVideo.shared,
               let native = LibVLCVideo.nativePlayer(of: player) else { return }
-        // VLC holds the output until its video output closes (the cleanup
-        // callback), so a frame arriving after the player went can't reach a
-        // freed object.
-        let opaque = Unmanaged.passRetained(self).toOpaque()
+        // Each time VLC opens its video output (`setUp`, again for every
+        // media played and every format change) it holds the output, until
+        // that output closes (the cleanup callback), so a frame arriving
+        // after the player went can't reach a freed object.
+        let opaque = Unmanaged.passUnretained(self).toOpaque()
         api.setCallbacks(native, { opaque, planes in
             Unmanaged<VLCFrameOutput>.fromOpaque(opaque!).takeUnretainedValue().lockPicture(planes)
         }, { opaque, picture, _ in
@@ -110,6 +111,7 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
         drawing = [:]
         drawingOrder = []
         lock.unlock()
+        _ = Unmanaged.passUnretained(self).retain()   // released by the cleanup callback
         return 1
     }
 
