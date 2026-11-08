@@ -96,7 +96,9 @@ There is **no Xcode project for the app build**; `xcodegen` generates
 - **`FullImageView.swift`** — ImageIO downsample + zoom/pan/rotate (view-only;
   **never modifies files** — important user constraint).
 - **`VideoDetailView.swift`** — native formats via AVKit; non-native fall back
-  to VLCKit. Creates and registers the one `PlaybackControl` per file
+  to VLCKit. AVKit plays in an `AVPlayerView` (`AVPlayerViewHost`) with
+  **floating** controls: the inline ones (SwiftUI's `VideoPlayer`) and the
+  minimal ones dim the whole picture while they show, from macOS 26 on. Creates and registers the one `PlaybackControl` per file
   (`AVPlaybackControl` or `VLCPlaybackControl`) in its `.task(id: url)`.
 - **Video zoom**: `VideoDetailView` scales, rotates and pans the player view like `FullImageView` (model `zoom`/`rotation`); a clear layer takes the drag only while zoomed (the player's control bar stays usable at fit). Trackpad pinch on videos goes through a `.magnify` event monitor in `ContentView`, since AVKit's view would take it. On videos `1` = fit.
 - **`VLCVideoView.swift`** — `VLCPlaybackControl` (owns the `VLCMediaPlayer`,
@@ -165,7 +167,7 @@ AVI/MKV/WebM and other non-native formats play **in-app via vendored VLCKit
   `screencapture` + `Scripts/measure_brightness.swift` (mean luminance, its spread, mean red/green/blue) (the test runner can't
   record the screen; XCUITest's own screenshot shows VLC's picture black).
   They check that videos (AVKit, and VLC via `--force-vlc`) are bright from
-  the start, that VLC draws no messages over the video, that handing a 4K picture over from VLC costs under 3 ms (lost pictures are only reported: CI's virtual Macs vary too much), that AVKit and VLC show the same video with the same brightness and the same colours channel by channel (unfiltered NV12 and filtered BGRA), that a photo with EXIF orientation stands upright at fit and zoomed in, auto enhance and the exposure slider on videos and photos, and
+  the start, that VLC draws no messages over the video, that handing a 4K picture over from VLC costs under 3 ms (lost pictures are only reported: CI's virtual Macs vary too much), that AVKit and VLC show the same video with the same brightness and the same colours channel by channel (unfiltered NV12 and filtered BGRA), that a photo with EXIF orientation stands upright at fit and zoomed in, that moving the mouse on and off a video never dims it, auto enhance and the exposure slider on videos and photos, and
   that broken files don't take the app down. Anything visual gets such a
   measured test, so it can't regress unnoticed. Launch switches for UI
   tests (only with `--ui-testing`; every argument starts with "-" and a
@@ -173,7 +175,7 @@ AVI/MKV/WebM and other non-native formats play **in-app via vendored VLCKit
   unpaired value for a file to open): `--open=<path>`, `--force-vlc` (every
   video through VLC), `--test-log=<path>` (the app logs what the screen
   doesn't show, e.g. each rename), `--search-delay=<ms>` (a search that stays
-  running). Not covered
+  running), `--avkit-controls=inline|minimal|floating` (AVKit's controls style, to compare). Not covered
   end-to-end: drag & drop from Finder, Reveal in Finder, Open with default app
   (unit-tested through `FileActions`).
   UI run: `xcodegen generate` → `xcodebuild test -project Schnellbild.xcodeproj
@@ -187,7 +189,8 @@ AVI/MKV/WebM and other non-native formats play **in-app via vendored VLCKit
 
 - `.github/workflows/ci.yml`: `build-test` (fetch+cache VLCKit → `test.sh` →
   `build_app.sh` → upload zip) and `ui-tests` (fetch+cache VLCKit → `xcodegen` →
-  `xcodebuild` UI). **`paths-ignore: ['**.md', 'LICENSE']`** → doc-only pushes
+  `xcodebuild` UI, on **macos-15 and macos-26**, since AVKit behaves differently
+  from macOS 26 on; by hand with `-f only=<tests>` and `-f macos=<image>`). **`paths-ignore: ['**.md', 'LICENSE']`** → doc-only pushes
   don't trigger CI. Both jobs cache `Vendor/` keyed on `fetch_vlckit.sh`'s hash.
 - `.github/workflows/release.yml` (tag `v*`, or by hand): fetch VLCKit →
   `test.sh` → signing setup → `build_app.sh` → DMG. With the Apple secrets the

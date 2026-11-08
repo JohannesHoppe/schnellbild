@@ -13,9 +13,9 @@ on:
         required: false
         default: SchnellbildUITests
       macos:
-        description: "Runner image for the UI tests, e.g. macos-26 (what users run may be newer than the default)"
+        description: "Run the UI tests on this runner image only, e.g. macos-26 (empty: macos-15 and macos-26)"
         required: false
-        default: macos-15
+        default: ""
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -66,8 +66,14 @@ jobs:
           if-no-files-found: error
 
   ui-tests:
-    name: UI tests (XCUITest)
-    runs-on: ${{ inputs.macos || 'macos-15' }}
+    # Both macOS versions: AVKit's controls look and behave differently
+    # from macOS 26 on (the inline ones dim the whole picture there)
+    name: UI tests (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ${{ fromJSON(inputs.macos && format('["{0}"]', inputs.macos) || '["macos-15", "macos-26"]') }}
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
@@ -143,7 +149,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: measurements
+          name: measurements-${{ matrix.os }}
           path: measurements/
           if-no-files-found: ignore
           retention-days: 14
