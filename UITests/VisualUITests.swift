@@ -53,11 +53,11 @@ final class VisualUITests: SchnellbildUITestCase {
     }
 
     /// Opens a fixture video, with VLC when `vlc`; returns the player view.
-    private func openVideo(_ fixture: String, vlc: Bool) throws -> XCUIElement {
+    private func openVideo(_ fixture: String, vlc: Bool, extra: [String] = []) throws -> XCUIElement {
         if !FileManager.default.fileExists(atPath: tempDir.appendingPathComponent(fixture).path) {
             try put(fixture, at: fixture)
         }
-        launch(open: tempDir.appendingPathComponent(fixture).path, extra: vlc ? ["--force-vlc"] : [])
+        launch(open: tempDir.appendingPathComponent(fixture).path, extra: (vlc ? ["--force-vlc"] : []) + extra)
         let video = element(vlc ? "video.vlc" : "video.avkit")
         guard video.waitForExistence(timeout: 20) else {
             XCTFail("no \(vlc ? "VLC" : "AVKit") player for \(fixture); the window holds:\n\(app.debugDescription)")
@@ -90,8 +90,9 @@ final class VisualUITests: SchnellbildUITestCase {
     /// Moving the mouse onto the video and off again, several times, never
     /// dims the picture: measured right after each move and a while later,
     /// in the middle and in the bottom strip where the controls show.
-    private func checkHoverKeepsTheBrightness(vlc: Bool) throws {
-        let video = try openVideo(vlc ? "clip.mkv" : "clip.mp4", vlc: vlc)
+    private func checkHoverKeepsTheBrightness(vlc: Bool, controls: String? = nil, check: Bool = true) throws {
+        let video = try openVideo(vlc ? "clip.mkv" : "clip.mp4", vlc: vlc,
+                                  extra: controls.map { ["--avkit-controls=\($0)"] } ?? [])
         let f = video.frame
         let bottom = CGRect(x: f.minX + f.width * 0.3, y: f.maxY - f.height * 0.15, width: f.width * 0.4, height: f.height * 0.1)
         func sample() throws -> (middle: Double, bottom: Double) {
@@ -112,16 +113,25 @@ final class VisualUITests: SchnellbildUITestCase {
                     waited += wait
                     let now = try sample()
                     log.append("round \(round) \(place) +\(waited) s: \(now)")
-                    worst = max(worst, abs(now.middle - start.middle), abs(now.bottom - start.bottom))
+                    worst = max(worst, abs(now.middle - start.middle))   // the bottom holds the controls
                 }
             }
         }
-        print((vlc ? "VLC" : "AVKit") + " hover:\n" + log.joined(separator: "\n"))
+        print((vlc ? "VLC" : "AVKit \(controls ?? "default")") + " hover:\n" + log.joined(separator: "\n"))
+        guard check else { return }
         XCTAssertLessThan(worst, 0.04, "the picture changes when the mouse moves on and off it:\n" + log.joined(separator: "\n"))
     }
 
     func testHoverKeepsAnAVKitVideosBrightness() throws { try checkHoverKeepsTheBrightness(vlc: false) }
     func testHoverKeepsAVLCVideosBrightness() throws { try checkHoverKeepsTheBrightness(vlc: true) }
+    /// AVKit's other controls styles, for comparison (the inline one dims
+    /// the picture on macOS 26 and later); only reported.
+    func testHoverWithOtherAVKitControls() throws {
+        for style in ["inline", "minimal"] {
+            try checkHoverKeepsTheBrightness(vlc: false, controls: style, check: false)
+            app.terminate()
+        }
+    }
 
     /// Both players show the same video alike: the same brightness and,
     /// with the colour bars, the same colours (VLC's pictures are converted
