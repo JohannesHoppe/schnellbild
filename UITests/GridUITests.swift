@@ -244,10 +244,13 @@ final class GridUITests: SchnellbildUITestCase {
     func testCommandOShowsTheOpenPanel() {
         launchOnTempDir()
         app.typeKey("o", modifierFlags: .command)
-        // In a window: the Touch Bar has a Cancel button of its own
-        let cancel = app.windows.buttons["Cancel"].firstMatch
-        XCTAssertTrue(cancel.waitForExistence(timeout: 10), "the open panel appears")
-        cancel.click()
+        // Not the Touch Bar's Cancel: the panel's, whatever kind of
+        // element holds it
+        XCTAssertTrue(app.buttons["Cancel"].firstMatch.waitForExistence(timeout: 10), "the open panel appears")
+        let all = app.buttons.matching(identifier: "Cancel").allElementsBoundByIndex
+        let inPanel = all.first { $0.frame.width > 0 && app.windows.firstMatch.frame.intersects($0.frame) }
+        XCTAssertNotNil(inPanel, "the panel's Cancel button: \(all.map(\.frame))")
+        inPanel?.click()
         XCTAssertTrue(app.staticTexts["a.jpg"].waitForExistence(timeout: 5))
     }
 

@@ -86,7 +86,10 @@ final class SearchUITests: SchnellbildUITestCase {
     }
 
     func testCommandFFocusesSearchAndEscapeClears() {
-        launchOnTempDir()
+        let log = tempDir.appendingPathComponent("test.log")
+        launch(open: tempDir.path, extra: ["--test-log=\(log.path)"])
+        XCTAssertTrue(app.staticTexts["a.jpg"].waitForExistence(timeout: 15))
+        defer { print("app log:\n" + ((try? String(contentsOf: log, encoding: .utf8)) ?? "(none)")) }
         app.typeKey("f", modifierFlags: .command)
         app.typeText("deep")
         eventually("typed into the search field: “\(text(of: searchField))”") { self.text(of: self.searchField) == "deep" }
