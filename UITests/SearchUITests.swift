@@ -89,10 +89,11 @@ final class SearchUITests: SchnellbildUITestCase {
         let log = tempDir.appendingPathComponent("test.log")
         launch(open: tempDir.path, extra: ["--test-log=\(log.path)"])
         XCTAssertTrue(app.staticTexts["a.jpg"].waitForExistence(timeout: 15))
-        defer { print("app log:\n" + ((try? String(contentsOf: log, encoding: .utf8)) ?? "(none)")) }
+        func appLog() -> String { (try? String(contentsOf: log, encoding: .utf8)) ?? "(none)" }
         app.typeKey("f", modifierFlags: .command)
         app.typeText("deep")
-        eventually("typed into the search field: “\(text(of: searchField))”") { self.text(of: self.searchField) == "deep" }
+        eventually("typed into the search field") { self.text(of: self.searchField) == "deep" }
+        if text(of: searchField) != "deep" { XCTFail("search field holds “\(text(of: searchField))”; app log:\n\(appLog())") }
         XCTAssertTrue(app.staticTexts["deep-photo.jpg"].waitForExistence(timeout: 10))
         app.typeKey(.escape, modifierFlags: [])
         XCTAssertTrue(app.staticTexts["a.jpg"].waitForExistence(timeout: 5), "Escape clears the search")
