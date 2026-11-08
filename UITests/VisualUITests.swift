@@ -275,7 +275,8 @@ final class VisualUITests: SchnellbildUITestCase {
     /// The grey video has mid-tones throughout, which exposure moves (pure
     /// colours like a test pattern's bars stay as they are).
     private func checkExposureSlider(vlc: Bool) throws {
-        let video = try openVideo("grey.mp4", vlc: vlc)
+        let log = tempDir.appendingPathComponent("test.log")
+        let video = try openVideo("grey.mp4", vlc: vlc, extra: ["--test-log=\(log.path)"])
         let before = try screenBrightness(of: video)
         app.typeKey("a", modifierFlags: [])
         let slider = element("slider.exposure").firstMatch
@@ -283,9 +284,12 @@ final class VisualUITests: SchnellbildUITestCase {
         slider.adjust(toNormalizedSliderPosition: 0.9)
         waitForBadge(containing: "Adjusted")
         app.typeKey("a", modifierFlags: [])   // the popover would cover part of the picture
-        settle()
+        // The mouse off the video, so the player's controls don't cover it
+        app.windows.firstMatch.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.02)).hover()
+        settle(4)
         let after = try screenBrightness(of: video)
-        XCTAssertGreaterThan(after, before + 0.12, "the exposure slider does nothing: \(before) → \(after); \(text(of: video))")
+        XCTAssertGreaterThan(after, before + 0.12, "the exposure slider does nothing: \(before) → \(after); \(text(of: video)); app log:\n"
+                             + ((try? String(contentsOf: log, encoding: .utf8)) ?? "(none)"))
     }
 
     func testExposureSliderBrightensAnAVKitVideo() throws { try checkExposureSlider(vlc: false) }

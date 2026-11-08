@@ -1834,7 +1834,9 @@ final class AVPlaybackControl: PlaybackControl {
     /// drawn with an earlier look, so a stale frame is drawn once more.
     private func redrawIfPaused(attempts: Int = 3) {
         guard !isPlaying else { return }
+        BrowserModel.testLog("avkit redraw at \(player.currentTime().seconds)")
         player.seek(to: player.currentTime(), toleranceBefore: .zero, toleranceAfter: .zero) { [weak self] finished in
+            BrowserModel.testLog("avkit redraw finished \(finished)")
             guard finished else { return }   // a newer seek takes over
             Task { @MainActor in
                 guard let self, attempts > 1, self.enhancer?.isStale == true else { return }

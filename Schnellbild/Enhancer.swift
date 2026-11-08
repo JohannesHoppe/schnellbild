@@ -229,6 +229,7 @@ final class VideoEnhancer: @unchecked Sendable {   // all state behind `lock`
         // back), so `set` from the main thread never waits for a measurement.
         lock.lock()
         let auto = mode == .auto
+        let changed = drawnMode != mode
         drawnMode = mode
         let jumped = lastFrame.map { time < $0 || time - $0 > 1 } ?? true
         let elapsed = jumped ? 0 : time - (lastFrame ?? time)
@@ -258,6 +259,7 @@ final class VideoEnhancer: @unchecked Sendable {   // all state behind `lock`
         lock.unlock()
 
         if let toReport { report(toReport) }
+        if changed { BrowserModel.testLog("avkit frame at \(time) drawn with \(look)") }
         request.finish(with: look.apply(to: source), context: nil)
     }
 }
