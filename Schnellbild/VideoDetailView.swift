@@ -30,7 +30,7 @@ struct VideoDetailView: View {
                 if let vlcControl {
                     VLCVideoView(control: vlcControl)
                 } else if let avControl {
-                    VideoPlayer(player: avControl.player)
+                    AVPlayerViewHost(player: avControl.player, controls: Self.avControlsStyle)
                 } else if checking {
                     LoadingSpinner()
                 }
@@ -120,6 +120,17 @@ struct VideoDetailView: View {
     /// UI tests (`--ui-testing --force-vlc`) play every video through VLC, so
     /// the same test videos check both players.
     static let uiTesting = ProcessInfo.processInfo.arguments.contains("--ui-testing")
+    /// AVKit's controls as a floating bar: the inline ones dim the whole
+    /// picture while they show (macOS 26 and later). UI tests may pick
+    /// another style (`--avkit-controls=inline|minimal|floating`) to compare.
+    static let avControlsStyle: AVPlayerViewControlsStyle = {
+        let arg = uiTesting ? ProcessInfo.processInfo.arguments.first { $0.hasPrefix("--avkit-controls=") } : nil
+        switch arg?.split(separator: "=").last {
+        case "inline":  return .inline
+        case "minimal": return .minimal
+        default:        return .floating
+        }
+    }()
     static let forceVLC = ProcessInfo.processInfo.arguments.contains("--ui-testing")
         && ProcessInfo.processInfo.arguments.contains("--force-vlc")
 
@@ -139,5 +150,25 @@ struct VideoDetailView: View {
         model.activePlayer = nil
         avControl = nil
         vlcControl = nil
+    }
+}
+
+/// AVKit's player view with a chosen controls style (SwiftUI's
+/// `VideoPlayer` only has the inline one).
+struct AVPlayerViewHost: NSViewRepresentable {
+    let player: AVPlayer
+    let controls: AVPlayerViewControlsStyle
+
+    func makeNSView(context: Context) -> AVPlayerView {
+        let view = AVPlayerView()
+        view.controlsStyle = controls
+        view.showsFullScreenToggleButton = false
+        view.player = player
+        return view
+    }
+
+    func updateNSView(_ view: AVPlayerView, context: Context) {
+        if view.player !== player { view.player = player }
+        if view.controlsStyle != controls { view.controlsStyle = controls }
     }
 }
