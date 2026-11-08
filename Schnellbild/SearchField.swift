@@ -36,7 +36,6 @@ struct SearchField: NSViewRepresentable {
         field.placeholderString = placeholder
         field.isEnabled = isEnabled
         let editing = field.currentEditor() != nil
-        BrowserModel.testLog("search field update: focused \(isFocused), editing \(editing)")
         if isFocused, !editing {
             DispatchQueue.main.async { field.focus() }
         } else if !isFocused, editing {
