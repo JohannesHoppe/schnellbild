@@ -87,6 +87,42 @@ final class VisualUITests: SchnellbildUITestCase {
         XCTAssertEqual(hovered, start, accuracy: 0.04, "hovering changes the brightness: \(start) → \(hovered)")
     }
 
+    /// Moving the mouse onto the video and off again, several times, never
+    /// dims the picture: measured right after each move and a while later,
+    /// in the middle and in the bottom strip where the controls show.
+    private func checkHoverKeepsTheBrightness(vlc: Bool) throws {
+        let video = try openVideo(vlc ? "clip.mkv" : "clip.mp4", vlc: vlc)
+        let f = video.frame
+        let bottom = CGRect(x: f.minX + f.width * 0.3, y: f.maxY - f.height * 0.15, width: f.width * 0.4, height: f.height * 0.1)
+        func sample() throws -> (middle: Double, bottom: Double) {
+            (try screenBrightness(of: video), try screenStats(of: bottom).mean)
+        }
+        let away = app.windows.firstMatch.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.02))
+        away.hover()
+        settle(3)
+        let start = try sample()
+        var log = ["start \(start)"]
+        var worst = 0.0
+        for round in 1...3 {
+            for (place, move) in [("on", { video.hover() }), ("off", { away.hover() })] {
+                move()
+                var waited = 0.0
+                for wait in [0.3, 0.7, 2.0] {   // 0.3, 1 and 3 s after the move
+                    settle(wait)
+                    waited += wait
+                    let now = try sample()
+                    log.append("round \(round) \(place) +\(waited) s: \(now)")
+                    worst = max(worst, abs(now.middle - start.middle), abs(now.bottom - start.bottom))
+                }
+            }
+        }
+        print((vlc ? "VLC" : "AVKit") + " hover:\n" + log.joined(separator: "\n"))
+        XCTAssertLessThan(worst, 0.04, "the picture changes when the mouse moves on and off it:\n" + log.joined(separator: "\n"))
+    }
+
+    func testHoverKeepsAnAVKitVideosBrightness() throws { try checkHoverKeepsTheBrightness(vlc: false) }
+    func testHoverKeepsAVLCVideosBrightness() throws { try checkHoverKeepsTheBrightness(vlc: true) }
+
     /// Both players show the same video alike: the same brightness and,
     /// with the colour bars, the same colours (VLC's pictures are converted
     /// to RGB by the compositor, AVKit's by AVKit).
