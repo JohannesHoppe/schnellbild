@@ -47,6 +47,7 @@ public final class XCUIElementQuery {
     public func matching(identifier: String) -> XCUIElementQuery { self }
     public var menuBarItems: XCUIElementQuery { self }
     public var menuItems: XCUIElementQuery { self }
+    public var buttons: XCUIElementQuery { self }
 }
 public final class XCUICoordinate {
     public func withOffset(_ offset: CGVector) -> XCUICoordinate { self }
