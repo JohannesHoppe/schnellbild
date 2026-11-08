@@ -89,6 +89,7 @@ final class SearchUITests: SchnellbildUITestCase {
         let log = tempDir.appendingPathComponent("test.log")
         launch(open: tempDir.path, extra: ["--test-log=\(log.path)"])
         XCTAssertTrue(app.staticTexts["a.jpg"].waitForExistence(timeout: 15))
+        continueAfterFailure = true   // to report the log below
         func appLog() -> String { (try? String(contentsOf: log, encoding: .utf8)) ?? "(none)" }
         app.typeKey("f", modifierFlags: .command)
         app.typeText("deep")
