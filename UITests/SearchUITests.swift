@@ -89,6 +89,7 @@ final class SearchUITests: SchnellbildUITestCase {
         launchOnTempDir()
         app.typeKey("f", modifierFlags: .command)
         app.typeText("deep")
+        eventually("typed into the search field: “\(text(of: searchField))”") { self.text(of: self.searchField) == "deep" }
         XCTAssertTrue(app.staticTexts["deep-photo.jpg"].waitForExistence(timeout: 10))
         app.typeKey(.escape, modifierFlags: [])
         XCTAssertTrue(app.staticTexts["a.jpg"].waitForExistence(timeout: 5), "Escape clears the search")
