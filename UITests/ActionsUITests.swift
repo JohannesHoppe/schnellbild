@@ -293,8 +293,9 @@ final class ActionsUITests: SchnellbildUITestCase {
         // The right pane opens on the same folder: into "Sorted" there
         let rightSorted = right.descendants(matching: .any).matching(identifier: "tile.Sorted").firstMatch
         XCTAssertTrue(rightSorted.waitForExistence(timeout: 15))
-        eventually("the right pane's tile is laid out", timeout: 10) { rightSorted.isHittable }
-        if !rightSorted.isHittable { XCTFail("TEMP tree:\n" + right.debugDescription.prefix(6000)) }
+        let deadline = Date().addingTimeInterval(10)
+        while !rightSorted.isHittable, Date() < deadline { RunLoop.current.run(until: Date().addingTimeInterval(0.3)) }
+        if !rightSorted.isHittable { XCTFail("TEMP tree:\n" + app.windows.firstMatch.debugDescription.prefix(12000)) }
         rightSorted.doubleClick()
         XCTAssertTrue(right.descendants(matching: .any).matching(identifier: "tile...").firstMatch.waitForExistence(timeout: 10))
 
