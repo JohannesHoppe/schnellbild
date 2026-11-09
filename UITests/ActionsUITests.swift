@@ -318,4 +318,22 @@ final class ActionsUITests: SchnellbildUITestCase {
         app.typeKey("d", modifierFlags: [])
         eventually("one pane again") { !self.element("pane.right").exists }
     }
+
+    /// A click on the folder's name in the title bar renames the folder shown.
+    func testRenamingTheFolderShownFromItsTitle() throws {
+        try put("sample.jpg", at: "Trip/x.jpg")
+        launch(open: tempDir.appendingPathComponent("Trip").path)
+        XCTAssertTrue(tile("x.jpg").waitForExistence(timeout: 15))
+        let title = app.windows.firstMatch.staticTexts["Trip"].firstMatch
+        XCTAssertTrue(title.waitForExistence(timeout: 5), "the folder's name in the title bar")
+        title.click()
+        let field = app.windows.firstMatch.textFields.firstMatch
+        XCTAssertTrue(field.waitForExistence(timeout: 5), "an editable title")
+        field.typeKey("a", modifierFlags: .command)
+        field.typeText("Iceland\r")
+        eventually("renamed on disk", timeout: 10) {
+            FileManager.default.fileExists(atPath: self.tempDir.appendingPathComponent("Iceland/x.jpg").path)
+        }
+        XCTAssertTrue(tile("x.jpg").exists, "still in the folder, under its new name")
+    }
 }
