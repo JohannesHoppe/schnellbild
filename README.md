@@ -162,6 +162,11 @@ Videos play right away, MP4 and MOV through AVKit, formats macOS can't play (AVI
 | ↑ ↓ | volume up / down in tenths, for every video, remembered (shown while it changes) |
 | ⇧← ⇧→ | 1 % of the length back / ahead, to find a place exactly |
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/volume-dark.png">
+  <img src="docs/screenshots/volume-light.png" width="760" alt="The volume shown while it changes, over a paused video">
+</picture>
+
 ### Auto enhance and adjustments
 
 Night shots and dark videos, or washed-out, overexposed ones: press `e` (or the wand in the toolbar) and Schnellbild sets four values for the picture on screen:
@@ -217,6 +222,11 @@ Rename a folder or file in place (F2, the Actions menu, or right-click), in the 
 | ⌘↩ | open with the default app |
 | ⌘⌫ | move to Trash |
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/newfolder-dark.png">
+  <img src="docs/screenshots/newfolder-light.png" width="760" alt="Making a new folder">
+</picture>
+
 ### Dual pane: sort your holiday photos
 
 **Dual Pane** in the toolbar (or `D`) splits the window in two, like the classic two-panel file managers. Each half is a browser of its own: its own folder, search, history and sort order; the one outlined in color is the one the keys work on, `Tab` switches. A picture or video opens large in its own half. Mark several items with ⌘-click, ⇧-click or ⇧-arrows (⌘A all, Esc none), then press `F5` to copy or `F6` to move them into the other half's folder, or drag them over onto the other half or a folder tile in it. A name that is taken there asks first: keep both (the new one is numbered) or skip. Both halves always show what is on disk. `D` again (or the button) goes back to one pane.
@@ -251,6 +261,21 @@ ZIP, RAR and 7z archives open like folders: browse their folders, page through t
 > [!WARNING]
 > **Schnellbild remembers every archive password you type, permanently, and tries all of them on every protected archive**, without tying a password to a file. That's on purpose: type a password once, and every archive with it opens by itself from then on. They are kept in your login keychain (entry "Schnellbild archive passwords"); delete that entry in Keychain Access to forget them.
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/archives-dark.png">
+  <img src="docs/screenshots/archives-light.png" width="760" alt="Archives next to folders, and the files the app doesn't show listed below">
+</picture>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/archive-inside-dark.png">
+  <img src="docs/screenshots/archive-inside-light.png" width="760" alt="Inside a ZIP archive: its pictures like a folder's">
+</picture>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/password-dark.png">
+  <img src="docs/screenshots/password-light.png" width="760" alt="The password asked for a protected archive">
+</picture>
+
 ### All keys at hand
 
 <p align="center"><picture>
@@ -259,6 +284,11 @@ ZIP, RAR and 7z archives open like folders: browse their folders, page through t
 </picture></p>
 
 F1 (or ⌘?) shows every key in the app. `K` (or View → Mini Keyboard, or the keyboard switch in the status bar) slides up the **mini keyboard** under the window: the keys that work on what's on screen right now (the grid, a picture, a video, the slideshow), each with what it does. It is a cheat sheet you can click, handy with only a trackpad; a key you press on the real keyboard lights up on it, so you see what just happened. In a slideshow it shows while you move the mouse. The action buttons (Dual Pane, Auto Enhance, Adjust, Slideshow, Grid) show their key on the button; the others name it in their tooltip.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/keyboard-dark.png">
+  <img src="docs/screenshots/keyboard-light.png" width="760" alt="The mini keyboard under the grid">
+</picture>
 
 ## Why so fast?
 
