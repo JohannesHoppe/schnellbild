@@ -378,7 +378,13 @@ struct EntryInteractions: ViewModifier {
             .onHover { inside in
                 if inside { hover() } else { ModifierClicks.leave(key) }
             }
-            .onDisappear { ModifierClicks.leave(key) }
+            .background(GeometryReader { geometry in
+                let frame = geometry.frame(in: .global)
+                Color.clear
+                    .onAppear { ModifierClicks.place(key, frame: frame) }
+                    .onChange(of: frame) { _, now in ModifierClicks.place(key, frame: now) }
+            })
+            .onDisappear { ModifierClicks.leave(key); ModifierClicks.place(key, frame: nil) }
             .contextMenu {
                 if entry.kind != .parent {
                     if entry.kind == .folder {
@@ -450,6 +456,11 @@ enum ModifierClicks {
         if hovered?.key == key { hovered = nil }
     }
 
+    /// Where each tile is (SwiftUI's global space), for clicks the pointer
+    /// came to without moving.
+    private static var frames: [String: CGRect] = [:]
+    static func place(_ key: String, frame: CGRect?) { frames[key] = frame }
+
     /// The modifiers taken off the last click, once.
     static func takeStripped() -> NSEvent.ModifierFlags {
         defer { stripped = [] }
@@ -478,6 +489,12 @@ enum ModifierClicks {
             BrowserModel.testLog("modifier click on \(hovered.key)")
             hovered.action(flags)
             return nil
+        }
+        if let content = window.contentView {
+            let local = content.convert(event.locationInWindow, from: nil)
+            let point = CGPoint(x: local.x, y: content.isFlipped ? local.y : content.bounds.height - local.y)
+            let hits = frames.filter { $0.value.contains(point) }.map(\.key)
+            BrowserModel.testLog("modifier click at \(point) in \(content.bounds.size), \(frames.count) tiles, under it: \(hits); some: \(frames.prefix(3).map { "\($0.key.suffix(12)) \($0.value)" })")
         }
         // A text field keeps ⇧-click (extend the selection)
         if let content = window.contentView,

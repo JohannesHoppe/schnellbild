@@ -128,7 +128,7 @@ final class GridUITests: SchnellbildUITestCase {
 
     func testSortShortcutsShowInTheToolbar() {
         launchOnTempDir()
-        XCTAssertTrue(sortLabel.contains("Name ↑"), "toolbar shows the order: \(sortLabel)")
+        XCTAssertTrue(sortLabel.contains("Name ↑"), "toolbar shows the order: \(sortLabel); toolbar: \(app.windows.firstMatch.toolbars.firstMatch.debugDescription.prefix(4000))")
         app.typeKey("5", modifierFlags: .command)
         eventually("⌘5: size, largest first") { sortLabel.contains("Size ↓") }
         app.typeKey("5", modifierFlags: .command)
