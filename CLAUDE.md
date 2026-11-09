@@ -106,7 +106,7 @@ There is **no Xcode project for the app build**; `xcodegen` generates
   file with the size it was made for (reused for smaller tiles, regenerated
   for larger; the full view's placeholder). Folder previews use their own
   `ThumbnailCache.previews`. `FolderTile` fans up to three previews of a
-  folder's first media files (`BrowserModel.folderPreviewFiles`, listed once
+  folder's first media files, from its subfolders when it has none itself (`BrowserModel.folderPreviewFiles`, listed once
   per folder via `FolderPreviewCache`). Folders with no photo or video at any depth (`BrowserModel.containsMedia`, stops at the first hit; hidden files and non-media like `Thumbs.db` don't count) are greyed out; the model keeps them in `emptyFolders`, and a `FileChange` forgets the folders around it. Tiles carry accessibility ids
   `tile.<name>`; their label starts with `selected` / `not selected`. A cached
   thumbnail is used only for the modification date it was made for; folder

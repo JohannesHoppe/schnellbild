@@ -40,7 +40,7 @@ Schnellbild follows your Mac's language: English, Deutsch, Français, Español, 
 
 ### Browse folders
 
-Open a folder with ⌘O or drag it onto the window; drag a single file to open it straight in the full view. Subfolders come first, each previewing its first pictures like Finder, with a `..` tile to go up. Folders without a single photo or video anywhere inside are greyed out, so you don't bother opening them (a `Thumbs.db` or `desktop.ini` doesn't count). Files that aren't pictures, videos or archives are listed by name and size under the grid, so a folder that holds only such files never looks empty; "This folder is empty" means it holds nothing at all. Thumbnails come from QuickLook, so everything macOS can preview shows up: JPEG, HEIC, PNG, RAW, PSD, PDF, and a poster frame for videos. Schnellbild reopens the last folder on launch.
+Open a folder with ⌘O or drag it onto the window; drag a single file to open it straight in the full view. Subfolders come first, each previewing its first pictures or videos like Finder (from its subfolders when it holds none itself), with a `..` tile to go up. Folders without a single photo or video anywhere inside are greyed out, so you don't bother opening them (a `Thumbs.db` or `desktop.ini` doesn't count). Files that aren't pictures, videos or archives are listed by name and size under the grid, so a folder that holds only such files never looks empty; "This folder is empty" means it holds nothing at all. Thumbnails come from QuickLook, so everything macOS can preview shows up: JPEG, HEIC, PNG, RAW, PSD, PDF, and a poster frame for videos. Schnellbild reopens the last folder on launch.
 
 | Key | Action |
 |---|---|

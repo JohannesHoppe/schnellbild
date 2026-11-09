@@ -898,6 +898,21 @@ final class BrowserModel: ObservableObject {
                 first.insert(url, at: first.firstIndex { before(url, $0) } ?? first.count)
                 if first.count > limit { first.removeLast() }
             }
+            if !first.isEmpty { return first }
+            // None at the top: the first ones further down, so a folder of
+            // folders previews what's inside them too
+            guard let walk = FileManager.default.enumerator(
+                at: folder, includingPropertiesForKeys: [.isRegularFileKey],
+                options: [.skipsHiddenFiles, .skipsPackageDescendants]) else { return [] }
+            var looked = 0
+            for case let url as URL in walk {
+                looked += 1
+                if looked > 20_000 || Task.isCancelled { break }   // a huge tree: give up, not hang
+                if mediaKind(of: url) != nil, isFile(url) {
+                    first.append(url)
+                    if first.count == limit { break }
+                }
+            }
             return first
         }.value
     }

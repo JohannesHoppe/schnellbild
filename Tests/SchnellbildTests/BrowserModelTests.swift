@@ -1816,7 +1816,7 @@ final class KeyBindingTests: XCTestCase {
         XCTAssertTrue(m.lastKeyPress?.matches(.char("K"), command: false, shift: false) == true)
         XCTAssertFalse(m.lastKeyPress?.matches(.char("k"), command: true, shift: false) == true)
         let before = m.lastKeyPress
-        XCTAssertFalse(m.handleKey(.home, command: false), "nothing to do in an empty grid")
+        XCTAssertFalse(m.handleKey(.end, command: false), "nothing to do in an empty grid")
         XCTAssertEqual(m.lastKeyPress, before, "a key that didn't act isn't lit")
         m.handleKey(.char("K"), command: false)
         XCTAssertFalse(m.showMiniKeyboard)
@@ -2232,6 +2232,19 @@ final class ReviewFixTests: XCTestCase {
         m.startSlideshow()
         await waitUntil { m.slideshow?.loading == false }
         XCTAssertEqual(m.slideshow?.items.map(\.name), ["a.jpg", "b.jpg"])
+    }
+
+    /// A folder with media only in its subfolders previews those.
+    func testFolderPreviewsLookIntoSubfolders() async throws {
+        let tree = try TempTree(self)
+        for n in ["trip/day1/a.jpg", "trip/day1/b.mp4", "trip/day2/c.jpg", "trip/day2/d.jpg"] { try tree.file(n) }
+        let found = await BrowserModel.folderPreviewFiles(in: tree.root.appendingPathComponent("trip"))
+        XCTAssertEqual(found.count, 3)
+        XCTAssertTrue(found.allSatisfy { BrowserModel.mediaKind(of: $0) != nil })
+        try tree.file("top/x.png")
+        try tree.file("top/sub/y.jpg")
+        let top = await BrowserModel.folderPreviewFiles(in: tree.root.appendingPathComponent("top"))
+        XCTAssertEqual(top.map(\.lastPathComponent), ["x.png"], "the folder's own first")
     }
 
     func testFolderPreviewListIsCachedPerFolder() async throws {
