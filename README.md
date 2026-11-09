@@ -40,7 +40,7 @@ Schnellbild follows your Mac's language: English, Deutsch, Français, Español, 
 
 ### Browse folders
 
-Open a folder with ⌘O or drag it onto the window; drag a single file to open it straight in the full view. Subfolders come first, each previewing its first pictures like Finder, with a `..` tile to go up. Folders without a single photo or video anywhere inside are greyed out, so you don't bother opening them (a `Thumbs.db` or `desktop.ini` doesn't count). Thumbnails come from QuickLook, so everything macOS can preview shows up: JPEG, HEIC, PNG, RAW, PSD, PDF, and a poster frame for videos. Schnellbild reopens the last folder on launch.
+Open a folder with ⌘O or drag it onto the window; drag a single file to open it straight in the full view. Subfolders come first, each previewing its first pictures like Finder, with a `..` tile to go up. Folders without a single photo or video anywhere inside are greyed out, so you don't bother opening them (a `Thumbs.db` or `desktop.ini` doesn't count). Files that aren't pictures, videos or archives are listed by name and size under the grid, so a folder that holds only such files never looks empty; "This folder is empty" means it holds nothing at all. Thumbnails come from QuickLook, so everything macOS can preview shows up: JPEG, HEIC, PNG, RAW, PSD, PDF, and a poster frame for videos. Schnellbild reopens the last folder on launch.
 
 | Key | Action |
 |---|---|
@@ -112,16 +112,17 @@ Schnellbild has two ways of looking at a folder: **browse** it in the grid, or s
 Three ways to start it:
 
 - **▶︎ Slideshow** in the toolbar, or the `s` key: plays the folder you're in, with everything below it. While you search, it plays the search results instead.
-- **Right-click a folder tile → Play Slideshow:** plays just that folder (and its subfolders), without opening it first.
+- **Right-click a folder tile → Start Slideshow of This Folder:** plays just that folder (and its subfolders), without opening it first.
 - **Drag a folder onto the window:** the window splits into two halves. Drop it on **Browse** to look around in the grid, or on **Slideshow** to start the show straight away. A single dropped picture starts the slideshow of its folder at that picture.
 
-From the full view, the slideshow starts at the picture you're looking at. `Esc` ends it and brings you back to where you were.
+It starts where you are: from the full view at the picture you're looking at; in the grid at the file you selected, or at the first picture inside the folder you selected (also deep in the subfolders), and goes on from there, round to the start at the end. `Esc` ends it and brings you back to where you were.
 
 | Key | Action |
 |---|---|
 | s | start the slideshow (again: end it) |
 | Space | pause / resume |
-| ← → | previous / next picture; in a video skip a tenth |
+| ← → | previous / next picture; in a video 10 % of its length back / ahead |
+| ⇧← ⇧→ | in a video 2 seconds back / ahead |
 | ⌘← ⌘→ ↑ ↓ | previous / next item |
 | f / i / e / a | full screen, file info, auto enhance, sliders, as in the full view |
 | Esc | end the slideshow |
@@ -153,8 +154,9 @@ Videos play right away, MP4 and MOV through AVKit, formats macOS can't play (AVI
 | Key | Action |
 |---|---|
 | Space | play / pause |
-| ← → | skip a tenth back / ahead; at the end on to the next item, at the start back to the previous one |
+| ← → | 10 % of the length back / ahead; at the end on to the next item, at the start back to the previous one |
 | ⌘← ⌘→ | previous / next item straight away |
+| ⇧← ⇧→ | 2 seconds back / ahead, to find a place exactly |
 
 ### Auto enhance and adjustments
 

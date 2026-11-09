@@ -199,6 +199,11 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
     /// got there, so quick key presses would otherwise start from the old one.
     private var pendingSeek: (target: Double, at: Date)?
 
+    var duration: Double? {
+        let ms = player.media?.length.intValue ?? 0
+        return ms > 0 ? Double(ms) / 1000 : nil
+    }
+
     var progress: Double? {
         if player.state == .ended { return 1 }
         guard (player.media?.length.intValue ?? 0) > 0 else { return nil }

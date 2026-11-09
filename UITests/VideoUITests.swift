@@ -17,6 +17,24 @@ final class VideoUITests: SchnellbildUITestCase {
         eventually("Space plays again") { !text(of: badge).contains("Paused") }
     }
 
+    /// The badge shows how far the video has played, in both players.
+    private func checkProgressBar(vlc: Bool) throws {
+        try put("clip.mp4", at: "clip.mp4")
+        launch(open: tempDir.appendingPathComponent("clip.mp4").path, extra: vlc ? ["--force-vlc"] : [])
+        let bar = element("videoProgress")
+        XCTAssertTrue(bar.waitForExistence(timeout: 20))
+        func percent() -> Int { Int((bar.value as? String ?? "").filter(\.isNumber)) ?? -1 }
+        eventually("moves on while playing", timeout: 15) { percent() > 10 }
+        app.typeKey(.space, modifierFlags: [])
+        waitForBadge(containing: "Paused")
+        let paused = percent()
+        RunLoop.current.run(until: Date().addingTimeInterval(1))
+        XCTAssertLessThanOrEqual(abs(percent() - paused), 2, "stands while paused")
+    }
+
+    func testTheProgressBarFollowsAnAVKitVideo() throws { try checkProgressBar(vlc: false) }
+    func testTheProgressBarFollowsAVLCVideo() throws { try checkProgressBar(vlc: true) }
+
     func testMKVFallsBackToVLCAndSpaceTogglesPause() throws {
         try put("clip.mkv", at: "clip.mkv")
         launch(open: tempDir.appendingPathComponent("clip.mkv").path)

@@ -42,7 +42,7 @@ struct ContentView: View {
         .overlay {
             // A folder without media or subfolders still shows its ".." tile.
             if model.mode == .grid, !model.isLoading, !model.isFiltering,
-               model.folderCount + model.mediaCount == 0 {
+               model.folderCount + model.mediaCount == 0, model.otherFiles.isEmpty {
                 EmptyStateView(isLoading: false)
             }
         }
@@ -101,7 +101,7 @@ struct ContentView: View {
             SearchField(
                 text: $model.searchText,
                 isFocused: $model.searchFocused,
-                placeholder: String(localized: "Search folder and file names, including subfolders"),
+                placeholder: String(localized: "Search names of folders, archives, pictures and videos (incl. subfolders)"),
                 isEnabled: model.folderURL != nil,
                 onKey: { model.handleSearchFieldKey($0) }
             )
@@ -111,7 +111,7 @@ struct ContentView: View {
                     Image(systemName: "stop.circle.fill")
                 }
                 .buttonStyle(.borderless)
-                .help("Stop searching; the results so far stay")
+                .help("Stop search (keeps the results found so far)")
                 .accessibilityLabel("Stop search")
                 .accessibilityIdentifier("stopSearch")
             }
@@ -148,6 +148,7 @@ struct ContentView: View {
         if model.folderCount > 0 { parts.append(String(localized: "\(model.folderCount) folders")) }
         if model.imageCount  > 0 { parts.append(String(localized: "\(model.imageCount) images")) }
         if model.videoCount  > 0 { parts.append(String(localized: "\(model.videoCount) videos")) }
+        if !model.otherFiles.isEmpty { parts.append(String(localized: "Other files: \(model.otherFiles.count)")) }
         let summary = parts.isEmpty ? String(localized: "Empty") : parts.joined(separator: " · ")
         guard model.isFiltering else { return summary }
         let query = model.query
@@ -181,13 +182,17 @@ struct ContentView: View {
     }
 
     private func positionBadge(entry: GridEntry, atTop: Bool) -> some View {
-        Text(badgeText(entry: entry))
-            .font(.callout)
-            .padding(.horizontal, 12)
-            .padding(.vertical, 6)
-            .background(.ultraThinMaterial, in: Capsule())
-            .padding(atTop ? .top : .bottom, 16)
-            .accessibilityIdentifier("positionBadge")
+        VStack(spacing: 4) {
+            Text(badgeText(entry: entry))
+                .font(.callout)
+                .accessibilityIdentifier("positionBadge")
+            // A video: how far it has played
+            if entry.kind == .video { VideoProgressBar() }
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 6)
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 14))
+        .padding(atTop ? .top : .bottom, 16)
     }
 
     /// "3 / 12 · name"; in a slideshow "Slideshow · 3 / 57 · name" (with "+"
@@ -229,7 +234,7 @@ struct ContentView: View {
             .accessibilityIdentifier("forwardButton")
 
             Button { model.goToParentFolder() } label: {
-                Label("Up", systemImage: "arrow.up")
+                Label("Enclosing Folder", systemImage: "arrow.up")
             }
             .help("Enclosing folder (⌘↑ / Backspace)")
             .disabled(!model.canGoUp)
@@ -242,10 +247,10 @@ struct ContentView: View {
         }
         ToolbarItem(placement: .primaryAction) {
             Toggle(isOn: $model.enhance) {
-                Label("Enhance", systemImage: "wand.and.stars")
+                Label("Auto Enhance", systemImage: "wand.and.stars")
             }
             .toggleStyle(.button)
-            .help("Auto enhance: brighten, correct and sharpen photos and videos, without changing the files (E)")
+            .help("Auto enhance: sets exposure, contrast, saturation and sharpness per picture or video, for display only; files are not changed (E)")
             .accessibilityIdentifier("enhanceButton")
         }
         ToolbarItem(placement: .primaryAction) {
@@ -267,7 +272,7 @@ struct ContentView: View {
                     .labelStyle(.titleAndIcon)
             }
             .buttonStyle(.borderedProminent)
-            .help("Slideshow over everything in this folder and its subfolders (S)")
+            .help("Slideshow of all pictures and videos in this folder and its subfolders; while searching: of the results (S)")
             .disabled(model.folderURL == nil)
             .accessibilityIdentifier("slideshowButton")
         }
@@ -279,14 +284,14 @@ struct ContentView: View {
                       systemImage: "arrow.up.arrow.down")
                     .labelStyle(.titleAndIcon)
             }
-            .help("Sort order (⌘1 … ⌘5; the same again reverses it)")
+            .help("Sort by (⌘1 … ⌘5; press again to reverse)")
             .accessibilityIdentifier("sortMenu")
             .accessibilityLabel("Sort: \(model.sortKey.title) \(model.sortAscending ? "↑" : "↓")")
         }
         if model.mode == .detail {
             ToolbarItem(placement: .principal) {
                 Button { model.closeDetail() } label: {
-                    Label("Overview", systemImage: "square.grid.2x2")
+                    Label("Grid", systemImage: "square.grid.2x2")
                 }
             }
         }
@@ -324,7 +329,8 @@ struct ContentView: View {
                 guard !control, let key = Self.keyInput(code: code, characters: chars, latin: {
                     LatinKeys.character(for: code, shift: event.modifierFlags.contains(.shift))
                 }) else { return false }
-                return model.handleKey(key, command: command, textEditing: editor != nil)
+                return model.handleKey(key, command: command, shift: event.modifierFlags.contains(.shift),
+                                       textEditing: editor != nil)
             }
             return consume ? nil : event
         }
@@ -401,19 +407,32 @@ struct EmptyStateView: View {
                         .foregroundStyle(.secondary)
                     Text("No matches")
                         .font(.title2)
-                    Text("No folder or file named “\(model.query)” in this folder or its subfolders.")
+                    Text(model.searchStopped ? "Search stopped. No matches so far."
+                         : "No folder, archive, picture or video whose name contains “\(model.query)”, in this folder or its subfolders.")
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
                 }
+            } else if let failure = model.loadError {
+                Image(systemName: "exclamationmark.triangle")
+                    .font(.system(size: 56))
+                    .foregroundStyle(.secondary)
+                Text(failure.archive ? "This archive can't be read" : "This folder can't be read")
+                    .font(.title2)
+                Text(failure.reason)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                    .accessibilityIdentifier("loadError")
             } else if model.folderURL != nil {
                 Image(systemName: "folder")
                     .font(.system(size: 56))
                     .foregroundStyle(.secondary)
-                Text("Nothing to show")
+                Text("This folder is empty")
                     .font(.title2)
-                Text("No images, videos, or subfolders here.\nBackspace takes you up a level.")
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
+                if model.canGoUp {
+                    Text("Backspace goes up one folder level.")
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                }
                 Button("Open Another Folder…") { model.chooseFolder() }
             } else {
                 Image(systemName: "photo.on.rectangle.angled")
@@ -421,7 +440,7 @@ struct EmptyStateView: View {
                     .foregroundStyle(.secondary)
                 Text("No folder open")
                     .font(.title2)
-                Text("Drag a folder here — or use ⌘O or the button.")
+                Text("Drag a folder here, press ⌘O, or click Open Folder…")
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
                 Button("Open Folder…") { model.chooseFolder() }
@@ -550,11 +569,11 @@ struct AdjustmentsView: View {
             slider("Saturation", \.saturation, -1...1, id: "saturation")
             slider("Sharpness", \.sharpness, 0...1, id: "sharpness")
             HStack {
-                Text("Files stay untouched.")
+                Text("Files are not changed.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 Spacer()
-                Button("Reset") { model.resetLook() }
+                Button("Reset to original") { model.resetLook() }
                     .disabled(model.enhancement == .off)
                     .accessibilityIdentifier("resetLook")
             }
@@ -610,6 +629,29 @@ enum LatinKeys {
                                         &deadKeys, chars.count, &length, &chars)
             guard status == noErr, length > 0 else { return nil }
             return String(utf16CodeUnits: chars, count: length)
+        }
+    }
+}
+
+/// A thin bar under the position badge: how far the video on screen has
+/// played (read from its player four times a second).
+struct VideoProgressBar: View {
+    @EnvironmentObject var model: BrowserModel
+
+    var body: some View {
+        TimelineView(.periodic(from: .now, by: 0.25)) { _ in
+            let progress = model.activePlayer?.progress ?? 0
+            GeometryReader { geo in
+                ZStack(alignment: .leading) {
+                    Capsule().fill(Color.primary.opacity(0.18))
+                    Capsule().fill(Color.primary.opacity(0.75))
+                        .frame(width: geo.size.width * min(max(progress, 0), 1))
+                }
+            }
+            .frame(height: 3)
+            .accessibilityElement()
+            .accessibilityIdentifier("videoProgress")
+            .accessibilityValue("\(Int((progress * 100).rounded())) %")
         }
     }
 }

@@ -78,14 +78,14 @@ final class ActionsUITests: SchnellbildUITestCase {
                       "the selected a.jpg stays")
     }
 
-    /// "Play Slideshow" on a folder tile plays that folder, not the one shown.
+    /// "Start Slideshow of This Folder" on a folder tile plays that folder, not the one shown.
     func testContextMenuPlaysTheFoldersSlideshow() throws {
         try put("sample.jpg", at: "album/second.jpg")
         launchOnTempDir(waitFor: "album")
         tile("a.jpg").click()
         waitForSelected("a.jpg")
         tile("album").rightClick()
-        let item = app.menuItems["Play Slideshow"].firstMatch
+        let item = app.menuItems["Start Slideshow of This Folder"].firstMatch
         XCTAssertTrue(item.waitForExistence(timeout: 5), "the folder's context menu")
         item.click()
         waitForBadge(containing: "Slideshow")

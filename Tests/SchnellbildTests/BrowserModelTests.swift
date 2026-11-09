@@ -43,6 +43,7 @@ final class FileActionsSpy {
     var trashed: [URL] = []
     var moved: [(URL, URL)] = []
     var confirm = true
+    var confirmDetails: [String] = []
     var moveError: Error?
     var trashError: Error?
     var reported: [Error] = []
@@ -53,7 +54,7 @@ final class FileActionsSpy {
         FileActions(
             reveal: { self.revealed.append($0) },
             openInDefaultApp: { self.opened.append($0) },
-            confirmTrash: { _ in self.confirm },
+            confirmTrash: { _, detail in self.confirmDetails.append(detail); return self.confirm },
             trash: { url in
                 if let error = self.trashError { throw error }
                 self.trashed.append(url)
@@ -78,6 +79,7 @@ final class PlayerSpy: PlaybackControl {
     var isPlaying = true   // videos autoplay
     var progress: Double? = 0
     var playsWithoutLength = false
+    var duration: Double? = 100
     func play()  { calls.append("play"); isPlaying = true }
     func pause() { calls.append("pause"); isPlaying = false }
     func seek(toProgress progress: Double) {
@@ -984,7 +986,7 @@ final class RenameTests: XCTestCase {
         let entry = try XCTUnwrap(m.selectedEntry)
 
         XCTAssertThrowsError(try m.rename(entry, to: "b.txt")) {
-            XCTAssertEqual($0 as? RenameError, .changesKind("jpg"))
+            XCTAssertEqual($0 as? RenameError, .changesKind("jpg", video: false))
         }
         XCTAssertThrowsError(try m.rename(entry, to: "a.jpg")) {
             XCTAssertEqual($0 as? RenameError, .alreadyExists("a.jpg"))
@@ -1252,6 +1254,44 @@ final class PlaybackTests: XCTestCase {
         XCTAssertTrue(m.handleKey(.escape, command: false))
         XCTAssertNil(m.slideshow)
         XCTAssertEqual(m.mode, .grid)
+    }
+
+    /// A file selected in the grid: the show starts there, also deep in the
+    /// tree, and goes on (and round) from it. A folder selected: at its
+    /// first item. The tile selected on opening a folder doesn't count.
+    func testSlideshowStartsAtTheSelection() async throws {
+        let tree = try TempTree(self)
+        for n in ["a.jpg", "b.jpg", "sub1/c.jpg", "sub1/d.jpg", "sub2/e.jpg"] { try tree.file(n) }
+        let m = makeModel()
+        m.slideshowInterval = .seconds(60)
+        await openAndWait(m, tree.root)
+        XCTAssertEqual(m.selectedEntry?.name, "sub1", "selected on opening")
+        m.startSlideshow()
+        await waitUntil { m.slideshow?.loading == false }
+        XCTAssertEqual(m.shownMediaEntry?.name, "a.jpg", "not at the folder selected on opening")
+        m.stopSlideshow()
+
+        m.selectEntry(named: "b.jpg")
+        m.startSlideshow()
+        await waitUntil { m.shownMediaEntry != nil }
+        XCTAssertEqual(m.shownMediaEntry?.name, "b.jpg")
+        m.slideshowStep(+1)
+        XCTAssertEqual(m.shownMediaEntry?.name, "c.jpg", "goes on into the subfolders")
+        m.stopSlideshow()
+
+        m.selectEntry(named: "sub2")
+        m.startSlideshow()
+        await waitUntil { m.shownMediaEntry != nil }
+        XCTAssertEqual(m.shownMediaEntry?.name, "e.jpg", "the selected folder's first item")
+        await waitUntil { m.slideshow?.loading == false }
+        m.slideshowStep(+1)
+        XCTAssertEqual(m.shownMediaEntry?.name, "a.jpg", "and round to the start")
+        m.stopSlideshow()
+
+        m.selectEntry(named: "sub1")
+        m.handleKey(.char("s"), command: false)
+        await waitUntil { m.shownMediaEntry != nil }
+        XCTAssertEqual(m.shownMediaEntry?.name, "c.jpg", "a folder the user selected (again) counts")
     }
 
     func testSlideshowOverResultsPlaysEachItemOnceAndStartsAtTheShownOne() async throws {
@@ -1597,6 +1637,22 @@ final class PlaybackTests: XCTestCase {
         m.handleKey(.right, command: false)
         XCTAssertEqual(m.selectedEntry?.name, "z.jpg", "past the end: the next item")
         XCTAssertEqual(m.mode, .detail)
+    }
+
+    /// ⇧←/⇧→: two seconds, staying in the video at its ends.
+    func testShiftArrowsStepTwoSeconds() async throws {
+        let (m, player) = try await openOnVideo()
+        player.progress = 0.5
+        m.handleKey(.right, command: false, shift: true)
+        XCTAssertEqual(player.calls.last, "seek 52 %", "2 s of 100 s")
+        m.handleKey(.left, command: false, shift: true)
+        m.handleKey(.left, command: false, shift: true)
+        XCTAssertEqual(player.calls.last, "seek 48 %")
+        player.progress = 0.005
+        let shown = m.shownMediaEntry
+        m.handleKey(.left, command: false, shift: true)
+        XCTAssertEqual(player.calls.last, "seek 0 %")
+        XCTAssertEqual(m.shownMediaEntry, shown, "no paging at the start")
     }
 
     func testLeftArrowSkimsBackThenMovesToThePreviousItem() async throws {
