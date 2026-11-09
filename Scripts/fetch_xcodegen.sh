@@ -15,7 +15,7 @@ DEST="$ROOT/build/xcodegen"
 if [ ! -x "$DEST/bin/xcodegen" ]; then
     TMP="$(mktemp -d)"
     trap 'rm -rf "$TMP"' EXIT
-    curl -fsSL --retry 3 -o "$TMP/xcodegen.zip" "$URL"
+    curl -fsSL --retry 5 --retry-delay 5 --retry-all-errors -o "$TMP/xcodegen.zip" "$URL"
     ACTUAL="$(shasum -a 256 "$TMP/xcodegen.zip" | awk '{print $1}')"
     if [ "$ACTUAL" != "$SHA256" ]; then
         echo "XcodeGen checksum mismatch: expected $SHA256, got $ACTUAL" >&2
