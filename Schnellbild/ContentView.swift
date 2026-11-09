@@ -971,7 +971,7 @@ private struct FolderNameField: View {
             if editing {
                 TextField("Name", text: $name)
                     .textFieldStyle(.roundedBorder)
-                    .frame(width: 220)
+                    .frame(width: 150)
                     .focused($focused)
                     .onSubmit {
                         editing = false
@@ -995,7 +995,7 @@ private struct FolderNameField: View {
                 .accessibilityIdentifier("folderTitle")
             }
         }
-        .frame(maxWidth: 260)
+        .frame(maxWidth: 150)
         .onChange(of: model.folderURL) { editing = false }
     }
 }
