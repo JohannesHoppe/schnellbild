@@ -121,3 +121,13 @@
 "Open folder" = "Open map";
 "Open with default app" = "Open met standaardapp";
 "Show this list" = "Toon deze lijst";
+
+/* Archives */
+"Password for “%@”" = "Wachtwoord voor ‘%@’";
+"Password" = "Wachtwoord";
+"Schnellbild remembers every password typed here and tries all of them on every protected archive." = "Schnellbild onthoudt elk wachtwoord dat je hier invoert en probeert ze allemaal bij elk beveiligd archief.";
+"That password doesn't open it. Try another one." = "Dit wachtwoord opent het niet. Probeer een ander.";
+"Encrypted 7z archives can't be opened." = "Versleutelde 7z-archieven kunnen niet worden geopend.";
+"The archive ends early: it is still downloading, or a part is missing." = "Het archief houdt te vroeg op: het wordt nog gedownload, of er ontbreekt een deel.";
+"The archive can't be read: %@" = "Het archief kan niet worden gelezen: %@";
+"About Schnellbild" = "Over Schnellbild";

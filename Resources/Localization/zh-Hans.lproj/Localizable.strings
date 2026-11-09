@@ -121,3 +121,13 @@
 "Open folder" = "打开文件夹";
 "Open with default app" = "使用默认 App 打开";
 "Show this list" = "显示此列表";
+
+/* Archives */
+"Password for “%@”" = "“%@”的密码";
+"Password" = "密码";
+"Schnellbild remembers every password typed here and tries all of them on every protected archive." = "Schnellbild 会记住在这里输入的每个密码，并在每个受保护的归档上逐一尝试。";
+"That password doesn't open it. Try another one." = "这个密码无法打开它。请换一个试试。";
+"Encrypted 7z archives can't be opened." = "无法打开加密的 7z 归档。";
+"The archive ends early: it is still downloading, or a part is missing." = "归档提前结束：仍在下载中，或缺少某一部分。";
+"The archive can't be read: %@" = "无法读取归档：%@";
+"About Schnellbild" = "关于 Schnellbild";

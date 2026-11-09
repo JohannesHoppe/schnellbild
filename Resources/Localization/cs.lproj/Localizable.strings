@@ -121,3 +121,13 @@
 "Open folder" = "Otevřít složku";
 "Open with default app" = "Otevřít ve výchozí aplikaci";
 "Show this list" = "Zobrazit tento seznam";
+
+/* Archives */
+"Password for “%@”" = "Heslo pro „%@“";
+"Password" = "Heslo";
+"Schnellbild remembers every password typed here and tries all of them on every protected archive." = "Schnellbild si pamatuje každé zde zadané heslo a zkouší je všechna u každého chráněného archivu.";
+"That password doesn't open it. Try another one." = "Toto heslo ho neotevře. Zkuste jiné.";
+"Encrypted 7z archives can't be opened." = "Šifrované archivy 7z nelze otevřít.";
+"The archive ends early: it is still downloading, or a part is missing." = "Archiv končí předčasně: stále se stahuje, nebo chybí jeho část.";
+"The archive can't be read: %@" = "Archiv nelze přečíst: %@";
+"About Schnellbild" = "O aplikaci Schnellbild";

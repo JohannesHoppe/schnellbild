@@ -75,7 +75,12 @@ struct VideoDetailView: View {
             videoSize = nil
             model.actualSizeFactor = 1   // "1": a video's 100 % is its fitted size
 
-            let asset = AVURLAsset(url: url)
+            // Inside an archive: a copy the players can read
+            guard let file = try? await MediaData.playableFile(url), !Task.isCancelled else {
+                checking = false
+                return
+            }
+            let asset = AVURLAsset(url: file)
             let playable = (try? await asset.load(.isPlayable)) ?? false
             guard !Task.isCancelled else { return }   // the user moved on to another file
             checking = false
@@ -102,7 +107,7 @@ struct VideoDetailView: View {
             } else {
                 // AVFoundation can't play it — hand off to VLCKit. It starts
                 // playing once its view gives it somewhere to draw.
-                let control = VLCPlaybackControl(url: url, onStateChange: report)
+                let control = VLCPlaybackControl(url: file, onStateChange: report)
                 control.onAutoLook = reportLook
                 vlcControl = control
                 model.activePlayer = control

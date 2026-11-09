@@ -121,3 +121,13 @@
 "Open folder" = "Avaa kansio";
 "Open with default app" = "Avaa oletusapilla";
 "Show this list" = "Näytä tämä luettelo";
+
+/* Archives */
+"Password for “%@”" = "Arkiston ”%@” salasana";
+"Password" = "Salasana";
+"Schnellbild remembers every password typed here and tries all of them on every protected archive." = "Schnellbild muistaa jokaisen tähän kirjoitetun salasanan ja kokeilee niitä kaikkia jokaiseen suojattuun arkistoon.";
+"That password doesn't open it. Try another one." = "Tämä salasana ei avaa sitä. Kokeile toista.";
+"Encrypted 7z archives can't be opened." = "Salattuja 7z-arkistoja ei voi avata.";
+"The archive ends early: it is still downloading, or a part is missing." = "Arkisto loppuu kesken: sitä ladataan vielä, tai osa puuttuu.";
+"The archive can't be read: %@" = "Arkistoa ei voi lukea: %@";
+"About Schnellbild" = "Tietoja: Schnellbild";

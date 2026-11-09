@@ -121,3 +121,13 @@
 "Open folder" = "폴더 열기";
 "Open with default app" = "기본 앱으로 열기";
 "Show this list" = "이 목록 보기";
+
+/* Archives */
+"Password for “%@”" = "“%@”의 암호";
+"Password" = "암호";
+"Schnellbild remembers every password typed here and tries all of them on every protected archive." = "Schnellbild는 여기에 입력한 모든 암호를 기억하고 보호된 모든 아카이브에 하나씩 시도합니다.";
+"That password doesn't open it. Try another one." = "이 암호로는 열 수 없습니다. 다른 암호를 입력하세요.";
+"Encrypted 7z archives can't be opened." = "암호화된 7z 아카이브는 열 수 없습니다.";
+"The archive ends early: it is still downloading, or a part is missing." = "아카이브가 일찍 끝납니다. 아직 다운로드 중이거나 일부가 없습니다.";
+"The archive can't be read: %@" = "아카이브를 읽을 수 없습니다: %@";
+"About Schnellbild" = "Schnellbild에 관하여";

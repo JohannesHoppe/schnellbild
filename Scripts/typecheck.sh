@@ -10,7 +10,7 @@ SDK=$(xcrun --show-sdk-path)
 VLC=Vendor/VLCKit.xcframework/macos-arm64_x86_64
 WORK=$(mktemp -d)
 trap 'rm -rf "$WORK"' EXIT
-FLAGS=(-typecheck -sdk "$SDK" -target arm64-apple-macos14.0 -F "$VLC" -swift-version 5)
+FLAGS=(-typecheck -sdk "$SDK" -target arm64-apple-macos14.0 -F "$VLC" -I Native/CArchives/include -swift-version 5)
 
 mkdir -p "$WORK/app" "$WORK/unit" "$WORK/ui"
 for f in Schnellbild/*.swift; do perl -pe 's/\@State\b/\@_State/g; s/\bState\(initialValue/_State(initialValue/g' "$f" > "$WORK/app/$(basename "$f")"; done

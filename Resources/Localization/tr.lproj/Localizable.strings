@@ -121,3 +121,13 @@
 "Open folder" = "Klasör aç";
 "Open with default app" = "Varsayılan uygulamayla aç";
 "Show this list" = "Bu listeyi göster";
+
+/* Archives */
+"Password for “%@”" = "“%@” için parola";
+"Password" = "Parola";
+"Schnellbild remembers every password typed here and tries all of them on every protected archive." = "Schnellbild buraya yazılan her parolayı hatırlar ve hepsini her korumalı arşivde dener.";
+"That password doesn't open it. Try another one." = "Bu parola onu açmıyor. Başka bir parola deneyin.";
+"Encrypted 7z archives can't be opened." = "Şifreli 7z arşivleri açılamaz.";
+"The archive ends early: it is still downloading, or a part is missing." = "Arşiv erken bitiyor: hâlâ indiriliyor ya da bir parçası eksik.";
+"The archive can't be read: %@" = "Arşiv okunamıyor: %@";
+"About Schnellbild" = "Schnellbild Hakkında";

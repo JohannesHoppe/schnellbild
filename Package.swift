@@ -1,6 +1,17 @@
 // swift-tools-version:5.9
 import PackageDescription
 
+/// UnRAR's library build: OBJECTS and LIB_OBJ of its makefile (the other
+/// .cpp files are included by these or belong to the command-line tool).
+let unrarSources = [
+    "rar", "strlist", "strfn", "pathfn", "smallfn", "global", "file", "filefn", "filcreat",
+    "archive", "arcread", "unicode", "system", "crypt", "crc", "rawread", "encname",
+    "resource", "match", "timefn", "rdwrfn", "consio", "options", "errhnd", "rarvm", "secpassword",
+    "rijndael", "getbits", "sha1", "sha256", "blake2s", "hash", "extinfo", "extract", "volume",
+    "list", "find", "unpack", "headers", "threadpool", "rs16", "cmddata", "ui", "largepage",
+    "filestr", "scantree", "dll", "qopen"
+]
+
 let package = Package(
     name: "Schnellbild",
     platforms: [
@@ -9,7 +20,7 @@ let package = Package(
     targets: [
         .executableTarget(
             name: "Schnellbild",
-            dependencies: ["VLCKit"],
+            dependencies: ["VLCKit", "CArchives"],
             path: "Schnellbild",
             linkerSettings: [
                 // Linked explicitly: without it, AVPlayerView can be missing
@@ -17,6 +28,23 @@ let package = Package(
                 .linkedFramework("AVKit"),
                 .linkedFramework("AVFoundation")
             ]
+        ),
+        // Archives: the official UnRAR source (Scripts/fetch_unrar.sh vendors
+        // it; Native/CArchives/unrar points there) behind a small C face, and
+        // the system's libarchive for ZIP and 7z.
+        .target(
+            name: "CArchives",
+            path: "Native/CArchives",
+            sources: ["rar_shim.cpp"] + unrarSources.map { "unrar/\($0).cpp" },
+            publicHeadersPath: "include",
+            cxxSettings: [
+                .define("RARDLL"),
+                .define("_FILE_OFFSET_BITS", to: "64"),
+                .define("_LARGEFILE_SOURCE"),
+                .define("RAR_SMP"),
+                .unsafeFlags(["-Wno-logical-op-parentheses", "-Wno-switch", "-Wno-dangling-else", "-w"])
+            ],
+            linkerSettings: [.linkedLibrary("archive")]
         ),
         // Official VideoLAN VLCKit, vendored locally — fetch it first with
         // Scripts/fetch_vlckit.sh. The xcframework is gitignored (large binary).
@@ -27,7 +55,9 @@ let package = Package(
         .testTarget(
             name: "SchnellbildTests",
             dependencies: ["Schnellbild"],
-            path: "Tests/SchnellbildTests"
+            path: "Tests/SchnellbildTests",
+            resources: [.copy("Archives")]
         )
-    ]
+    ],
+    cxxLanguageStandard: .cxx17
 )

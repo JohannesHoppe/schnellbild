@@ -21,6 +21,71 @@ settings:
     GENERATE_INFOPLIST_FILE: "YES"
 
 targets:
+  # Archives: the vendored UnRAR source (Scripts/fetch_unrar.sh) behind a small
+  # C face; Swift imports it as the module CArchives. The same build as in
+  # Package.swift (sources: UnRAR's makefile, OBJECTS and LIB_OBJ).
+  CArchives:
+    type: library.static
+    platform: macOS
+    sources:
+      - path: Native/CArchives/rar_shim.cpp
+      - path: Vendor/unrar
+        includes:
+          - rar.cpp
+          - strlist.cpp
+          - strfn.cpp
+          - pathfn.cpp
+          - smallfn.cpp
+          - global.cpp
+          - file.cpp
+          - filefn.cpp
+          - filcreat.cpp
+          - archive.cpp
+          - arcread.cpp
+          - unicode.cpp
+          - system.cpp
+          - crypt.cpp
+          - crc.cpp
+          - rawread.cpp
+          - encname.cpp
+          - resource.cpp
+          - match.cpp
+          - timefn.cpp
+          - rdwrfn.cpp
+          - consio.cpp
+          - options.cpp
+          - errhnd.cpp
+          - rarvm.cpp
+          - secpassword.cpp
+          - rijndael.cpp
+          - getbits.cpp
+          - sha1.cpp
+          - sha256.cpp
+          - blake2s.cpp
+          - hash.cpp
+          - extinfo.cpp
+          - extract.cpp
+          - volume.cpp
+          - list.cpp
+          - find.cpp
+          - unpack.cpp
+          - headers.cpp
+          - threadpool.cpp
+          - rs16.cpp
+          - cmddata.cpp
+          - ui.cpp
+          - largepage.cpp
+          - filestr.cpp
+          - scantree.cpp
+          - dll.cpp
+          - qopen.cpp
+    settings:
+      base:
+        GCC_PREPROCESSOR_DEFINITIONS: ["RARDLL", "_FILE_OFFSET_BITS=64", "_LARGEFILE_SOURCE", "RAR_SMP"]
+        CLANG_CXX_LANGUAGE_STANDARD: c++17
+        GCC_WARN_INHIBIT_ALL_WARNINGS: YES
+        HEADER_SEARCH_PATHS: ["$(SRCROOT)/Native/CArchives"]
+
   Schnellbild:
     type: application
     platform: macOS
@@ -29,13 +94,20 @@ targets:
       # The UI's translations; the .lproj folders become localized resources
       - path: Resources/Localization
         buildPhase: resources
+      # The libraries' license texts (the About window points here)
+      - path: Resources/Licenses
+        type: folder
+        buildPhase: resources
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: art.haushoppe.schnellbild
         GENERATE_INFOPLIST_FILE: YES
         INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.photography
         INFOPLIST_KEY_NSHumanReadableCopyright: "© 2026 HAUS HOPPE - ITS (Johannes Hoppe). MIT License."
+        SWIFT_INCLUDE_PATHS: ["$(SRCROOT)/Native/CArchives/include"]
+        OTHER_LDFLAGS: ["-larchive", "-lc++"]
     dependencies:
+      - target: CArchives
       - sdk: AVKit.framework
       - sdk: AVFoundation.framework
       - framework: Vendor/VLCKit.xcframework

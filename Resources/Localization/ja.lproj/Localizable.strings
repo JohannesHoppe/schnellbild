@@ -121,3 +121,13 @@
 "Open folder" = "フォルダを開く";
 "Open with default app" = "デフォルトのAppで開く";
 "Show this list" = "この一覧を表示";
+
+/* Archives */
+"Password for “%@”" = "“%@”のパスワード";
+"Password" = "パスワード";
+"Schnellbild remembers every password typed here and tries all of them on every protected archive." = "Schnellbild はここで入力されたパスワードをすべて記憶し、保護されたアーカイブごとにすべて試します。";
+"That password doesn't open it. Try another one." = "このパスワードでは開けません。別のパスワードを試してください。";
+"Encrypted 7z archives can't be opened." = "暗号化された 7z アーカイブは開けません。";
+"The archive ends early: it is still downloading, or a part is missing." = "アーカイブが途中で終わっています。ダウンロード中か、一部が欠けています。";
+"The archive can't be read: %@" = "アーカイブを読み込めません: %@";
+"About Schnellbild" = "Schnellbild について";

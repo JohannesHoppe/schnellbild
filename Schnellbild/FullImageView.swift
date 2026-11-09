@@ -167,11 +167,14 @@ struct FullImageView: View {
         let url = self.url
         let result = await Task.detached(priority: .userInitiated) { () -> (NSImage, CGSize, CGImage)? in
             if VectorPicture.isVector(url) {
-                guard let rendered = VectorPicture.render(url, longestSide: maxPixel) else { return nil }
+                let inArchive = ArchivePath.isInside(url)
+                let data = inArchive ? try? await MediaData.read(url) : nil
+                guard let rendered = inArchive ? data.flatMap({ VectorPicture.render(data: $0, longestSide: maxPixel) })
+                                               : VectorPicture.render(url, longestSide: maxPixel) else { return nil }
                 let cg = rendered.0
                 return (NSImage(cgImage: cg, size: NSSize(width: cg.width, height: cg.height)), rendered.1, cg)
             }
-            guard let src = CGImageSourceCreateWithURL(url as CFURL, nil) else { return nil }
+            guard let src = await MediaData.imageSource(url) else { return nil }
             let native = MediaInfo.pixelSize(from: src) ?? .zero
 
             let options: [CFString: Any] = [
@@ -273,7 +276,18 @@ enum VectorPicture {
     /// Drawn with its longest side `longestSide` pixels, on its own
     /// background (transparent where the SVG draws nothing); with its size.
     static func render(_ url: URL, longestSide: Int) -> (CGImage, CGSize)? {
-        guard let image = NSImage(contentsOf: url), image.size.width > 0, image.size.height > 0 else { return nil }
+        guard let image = NSImage(contentsOf: url) else { return nil }
+        return render(image, longestSide: longestSide)
+    }
+
+    /// An SVG from its bytes (inside an archive).
+    static func render(data: Data, longestSide: Int) -> (CGImage, CGSize)? {
+        guard let image = NSImage(data: data) else { return nil }
+        return render(image, longestSide: longestSide)
+    }
+
+    private static func render(_ image: NSImage, longestSide: Int) -> (CGImage, CGSize)? {
+        guard image.size.width > 0, image.size.height > 0 else { return nil }
         let size = image.size
         let scale = CGFloat(max(longestSide, 1)) / max(size.width, size.height)
         let width = max(Int((size.width * scale).rounded()), 1)

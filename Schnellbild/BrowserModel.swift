@@ -364,6 +364,35 @@ final class BrowserModel: ObservableObject {
     /// The folder or file whose rename sheet is open.
     @Published var renameTarget: GridEntry?
 
+    // MARK: Archive passwords
+
+    /// A protected archive none of the remembered passwords opens: the
+    /// password sheet asks for one.
+    struct PasswordRequest: Identifiable {
+        let id = UUID()
+        let archive: String
+        let location: Location
+        let thenDetail: Bool
+        /// The password typed last time didn't open it.
+        let wrong: Bool
+    }
+    @Published var passwordRequest: PasswordRequest?
+
+    /// The password sheet's "Open": tried on the archive, and remembered
+    /// (for every archive) once it opens it.
+    func submitPassword(_ password: String) {
+        guard let request = passwordRequest else { return }
+        passwordRequest = nil
+        guard !password.isEmpty else { passwordRequest = request; return }
+        load(request.location, thenDetail: request.thenDetail, password: password)
+    }
+
+    /// The password sheet's "Cancel": back to where the user came from.
+    func cancelPassword() {
+        passwordRequest = nil
+        if canGoBack { navigateBack() } else { goToParentFolder() }
+    }
+
     // MARK: Slideshow / video
 
     /// A slideshow over every photo and video below a folder, folder by
@@ -548,7 +577,7 @@ final class BrowserModel: ObservableObject {
         load(Location(folder: url, selected: target), thenDetail: thenDetail)
     }
 
-    private func load(_ location: Location, thenDetail: Bool = false) {
+    private func load(_ location: Location, thenDetail: Bool = false, password: String? = nil) {
         isLoading = true            // first: keeps the searchText reset below from searching
         loadingLocation = location
         // What folders contain may have changed outside the app (Finder, a
@@ -571,8 +600,19 @@ final class BrowserModel: ObservableObject {
         let url = location.folder
         let target = location.selected
         Task {
-            var full = await Self.scan(url)
+            let scanned = await Self.scanResult(url, password: password)
             guard self.loadGeneration == generation else { return }   // a newer navigation won
+            var full: [GridEntry] = []
+            switch scanned {
+            case .success(let entries):
+                full = entries
+            case .failure(ArchiveError.needsPassword):
+                // Asked once; what is typed is remembered for every archive
+                self.passwordRequest = PasswordRequest(archive: ArchivePath.split(url)?.archive.lastPathComponent ?? url.lastPathComponent,
+                                                       location: location, thenDetail: thenDetail, wrong: password != nil)
+            case .failure(let error):
+                self.fileActions.report(error)
+            }
             if let parent = Self.parentFolder(of: url) {
                 full.insert(GridEntry(url: parent, kind: .parent), at: 0)
             }
@@ -628,6 +668,10 @@ final class BrowserModel: ObservableObject {
               let path = defaults.string(forKey: Self.lastFolderKey) else { return }
         Task {
             let exists = await Task.detached(priority: .userInitiated) {
+                // A folder inside an archive: the archive file must still be there
+                if let (archive, _) = ArchivePath.splitChecked(URL(fileURLWithPath: path)) {
+                    return FileManager.default.fileExists(atPath: archive.path)
+                }
                 var isDir: ObjCBool = false
                 return FileManager.default.fileExists(atPath: path, isDirectory: &isDir) && isDir.boolValue
             }.value
@@ -654,6 +698,20 @@ final class BrowserModel: ObservableObject {
     /// Runs off the main thread; metadata is prefetched during
     /// enumeration (no extra round-trips).
     nonisolated static func scan(_ url: URL) async -> [GridEntry] {
+        (try? await scanResult(url).get()) ?? []
+    }
+
+    /// A folder's listing, or why it can't be read (an archive that needs
+    /// a password; `password` is one just typed for it).
+    nonisolated static func scanResult(_ url: URL, password: String? = nil) async -> Result<[GridEntry], Error> {
+        if await Task.detached(priority: .userInitiated, operation: { ArchivePath.splitChecked(url) }).value != nil {
+            do { return .success(try await ArchiveStore.shared.entries(in: url, trying: password)) }
+            catch { return .failure(error) }
+        }
+        return .success(await scanFolder(url))
+    }
+
+    nonisolated private static func scanFolder(_ url: URL) async -> [GridEntry] {
         await Task.detached(priority: .userInitiated) {
             let keys = entryKeys
             let contents = (try? FileManager.default.contentsOfDirectory(
@@ -680,6 +738,10 @@ final class BrowserModel: ObservableObject {
         if vals?.isDirectory == true {
             return GridEntry(url: item, kind: .folder, modDate: date)
         }
+        // An archive opens like a folder
+        if ArchiveName.format(of: item.lastPathComponent) != nil {
+            return GridEntry(url: item, kind: .folder, modDate: date, byteSize: vals?.fileSize)
+        }
         guard let kind = mediaKind(of: item) else { return nil }
         return GridEntry(url: item, kind: kind, modDate: date, byteSize: vals?.fileSize)
     }
@@ -691,6 +753,11 @@ final class BrowserModel: ObservableObject {
     /// nil when cancelled before it knew (the tile went away): no answer to
     /// remember.
     nonisolated static func containsMedia(_ folder: URL) async -> Bool? {
+        if ArchivePath.split(folder) != nil, await Task.detached(operation: { ArchivePath.splitChecked(folder) }).value != nil {
+            // An archive that needs a password: not known (not greyed out)
+            guard let media = try? await ArchiveStore.shared.media(below: folder) else { return nil }
+            return !media.isEmpty
+        }
         let walk = Task.detached(priority: .utility) { anyMedia(below: folder) }
         return await withTaskCancellationHandler { await walk.value } onCancel: { walk.cancel() }
     }
@@ -733,7 +800,13 @@ final class BrowserModel: ObservableObject {
     /// The media files a folder tile previews: the first `limit` by name,
     /// read from one shallow, non-recursive directory listing.
     nonisolated static func folderPreviewFiles(in folder: URL, limit: Int = 3) async -> [URL] {
-        await Task.detached(priority: .utility) {
+        if ArchivePath.split(folder) != nil, await Task.detached(operation: { ArchivePath.splitChecked(folder) }).value != nil {
+            // An archive: its first pictures at any depth (archives often
+            // hold one folder at the top). Not videos: they'd be unpacked.
+            let media = (try? await ArchiveStore.shared.media(below: folder)) ?? []
+            return Array(media.filter { mediaKind(of: $0) == .image }.prefix(limit))
+        }
+        return await Task.detached(priority: .utility) {
             let contents = (try? FileManager.default.contentsOfDirectory(
                 at: folder,
                 includingPropertiesForKeys: [.isRegularFileKey],
@@ -858,6 +931,7 @@ final class BrowserModel: ObservableObject {
     /// When a photo or video was taken: EXIF DateTimeOriginal for images
     /// (only the header is read), the QuickTime creation date for videos.
     nonisolated static func captureDate(of url: URL) async -> Date? {
+        guard !ArchivePath.isInside(url) else { return nil }   // not unpacked for sorting
         switch mediaKind(of: url) {
         case .image:
             guard let source = CGImageSourceCreateWithURL(url as CFURL, nil),
@@ -1022,7 +1096,20 @@ final class BrowserModel: ObservableObject {
     /// Skips hidden items and package contents; stops when the consumer
     /// cancels.
     nonisolated static func recursiveMatches(under root: URL, query: String) -> AsyncStream<[GridEntry]> {
-        AsyncStream { continuation in
+        if ArchivePath.split(root) != nil {
+            // In an archive: its list of names, known already
+            return AsyncStream { continuation in
+                let task = Task.detached(priority: .userInitiated) {
+                    if ArchivePath.splitChecked(root) != nil,
+                       let found = try? await ArchiveStore.shared.matches(below: root, query: query), !found.isEmpty {
+                        continuation.yield(found)
+                    }
+                    continuation.finish()
+                }
+                continuation.onTermination = { _ in task.cancel() }
+            }
+        }
+        return AsyncStream { continuation in
             let walker = Task.detached(priority: .userInitiated) {
                 let keys = entryKeys
                 guard let enumerator = FileManager.default.enumerator(
@@ -1092,8 +1179,10 @@ final class BrowserModel: ObservableObject {
         guard let first = urls.first else { return }
         var isDir: ObjCBool = false
         guard FileManager.default.fileExists(atPath: first.path, isDirectory: &isDir) else { return }
-        let folder = isDir.boolValue ? first : first.deletingLastPathComponent()
-        let file = isDir.boolValue ? nil : first
+        // An archive opens like a folder
+        let opensAsFolder = isDir.boolValue || ArchiveName.format(of: first.lastPathComponent) != nil
+        let folder = opensAsFolder ? first : first.deletingLastPathComponent()
+        let file = opensAsFolder ? nil : first
         if slideshow {
             open(folder: folder, selecting: file)
             startSlideshow(over: folder, startingAt: file)
@@ -1332,10 +1421,10 @@ final class BrowserModel: ObservableObject {
     /// to them — except F1 and F2.
     @discardableResult
     func handleKey(_ key: KeyInput, command: Bool, textEditing: Bool = false) -> Bool {
-        let sheetOpen = showHelp || renameTarget != nil
+        let sheetOpen = showHelp || renameTarget != nil || passwordRequest != nil
         switch key {
         case .f1:
-            guard renameTarget == nil else { return false }
+            guard renameTarget == nil, passwordRequest == nil else { return false }
             if showHelp { showHelp = false } else { openHelp() }
             return true
         case .f2:
@@ -1437,21 +1526,33 @@ final class BrowserModel: ObservableObject {
     func revealInFinder() {
         guard slideshow == nil else { return }   // the selection is in the hidden grid
         guard let entry = selectedEntry, entry.kind != .parent else { return }
-        fileActions.reveal(entry.url)
+        // Inside an archive: the archive file
+        fileActions.reveal(ArchivePath.isInside(entry.url) ? ArchivePath.split(entry.url)!.archive : entry.url)
     }
 
     func openInDefaultApp() {
         guard slideshow == nil else { return }   // the selection is in the hidden grid
         guard let entry = selectedEntry, entry.kind != .parent else { return }
+        guard !ArchivePath.isInside(entry.url) else { NSSound.beep(); return }   // not a file other apps can open
         fileActions.openInDefaultApp(entry.url)
+    }
+
+    /// Whether the selection is a file on disk the app may change (not
+    /// something inside an archive: archives are only read).
+    var selectionIsChangeable: Bool {
+        guard let entry = selectedEntry, entry.kind != .parent else { return false }
+        return !ArchivePath.isInside(entry.url)
     }
 
     func moveSelectionToTrash() {
         guard slideshow == nil else { return }   // the selection is in the hidden grid
         guard let entry = selectedEntry, entry.kind != .parent else { return }
+        guard !ArchivePath.isInside(entry.url) else { NSSound.beep(); return }   // archives are only read
         guard fileActions.confirmTrash(entry.name) else { return }
         do {
-            try fileActions.trash(entry.url)
+            // An archive goes with all its volumes
+            let files = ArchiveName.format(of: entry.name) != nil ? ArchiveName.allFiles(of: entry.url) : [entry.url]
+            for file in files { try fileActions.trash(file) }
         } catch {
             fileActions.report(error)
             return
@@ -1467,7 +1568,7 @@ final class BrowserModel: ObservableObject {
     /// F1 / "Schnellbild Help". Not over the rename sheet: a second sheet
     /// can't open on top of it.
     func openHelp() {
-        guard renameTarget == nil else { return }
+        guard renameTarget == nil, passwordRequest == nil else { return }
         showHelp = true
     }
 
@@ -1478,8 +1579,12 @@ final class BrowserModel: ObservableObject {
     @discardableResult
     func beginRename() -> Bool {
         // Not over the help: a second sheet can't open on top of it.
-        guard slideshow == nil, !showHelp, renameTarget == nil,
-              let entry = selectedEntry, entry.kind != .parent else { return false }
+        guard slideshow == nil, !showHelp, renameTarget == nil, passwordRequest == nil,
+              let entry = selectedEntry, entry.kind != .parent,
+              // Archives are only read; a split one is renamed by renaming all its volumes, not here
+              !ArchivePath.isInside(entry.url),
+              !(ArchiveName.format(of: entry.name) != nil && ArchiveName.allFiles(of: entry.url).count > 1)
+        else { return false }
         searchFocused = false   // F2 works while typing in the search field
         renameTarget = entry
         return true
@@ -1820,7 +1925,10 @@ final class FullScreenSwitch {
         ]
         for (name, target) in starts {
             observers.append(center.addObserver(forName: name, object: nil, queue: .main) { _ in
-                MainActor.assumeIsolated { FullScreenSwitch.shared.moving = (target, Date()) }
+                MainActor.assumeIsolated {
+                    BrowserModel.testLog("full screen: will \(target ? "enter" : "exit")")
+                    FullScreenSwitch.shared.moving = (target, Date())
+                }
             })
         }
         let ends: [Notification.Name] = [
@@ -1840,6 +1948,7 @@ final class FullScreenSwitch {
 
     /// Returns whether the window ends up changed by this request.
     func set(_ on: Bool, window: NSWindow?) -> Bool {
+        BrowserModel.testLog("full screen: set \(on), window \(window != nil), moving \(String(describing: movingTo)), is \(window?.styleMask.contains(.fullScreen) ?? false)")
         guard let window else { return false }
         if let movingTo {
             wanted = on
@@ -1853,6 +1962,7 @@ final class FullScreenSwitch {
     }
 
     private func ended(_ window: NSWindow?) {
+        BrowserModel.testLog("full screen: ended, wanted \(String(describing: wanted)), is \(window?.styleMask.contains(.fullScreen) ?? false)")
         moving = nil
         guard let wanted, let window else { return }
         self.wanted = nil

@@ -121,3 +121,13 @@
 "Open folder" = "Öppna mapp";
 "Open with default app" = "Öppna med standardappen";
 "Show this list" = "Visa den här listan";
+
+/* Archives */
+"Password for “%@”" = "Lösenord för ”%@”";
+"Password" = "Lösenord";
+"Schnellbild remembers every password typed here and tries all of them on every protected archive." = "Schnellbild kommer ihåg varje lösenord som skrivs här och provar alla på varje skyddat arkiv.";
+"That password doesn't open it. Try another one." = "Det lösenordet öppnar det inte. Försök med ett annat.";
+"Encrypted 7z archives can't be opened." = "Krypterade 7z-arkiv kan inte öppnas.";
+"The archive ends early: it is still downloading, or a part is missing." = "Arkivet tar slut för tidigt: det laddas fortfarande ner, eller så saknas en del.";
+"The archive can't be read: %@" = "Arkivet kan inte läsas: %@";
+"About Schnellbild" = "Om Schnellbild";
