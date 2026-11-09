@@ -30,7 +30,9 @@ final class WindowModel: ObservableObject {
 
     var active: BrowserModel { rightIsActive ? (right ?? left) : left }
     var other: BrowserModel? { dual ? (rightIsActive ? left : right) : nil }
-    var panes: [BrowserModel] { dual ? [left, right].compactMap { $0 } : [left] }
+    var panes: [BrowserModel] { dual ? allPanes : [left] }
+    /// Both panes, the right one also while hidden.
+    private var allPanes: [BrowserModel] { [left, right].compactMap { $0 } }
 
     /// Menus and the toolbar read the active pane: its changes are the window's.
     private func watch(_ pane: BrowserModel) {
@@ -39,9 +41,14 @@ final class WindowModel: ObservableObject {
             guard let self, let pane else { return }
             self.activate(pane)
         }
+        // The other pane (also while hidden) follows what this one changes
+        pane.onFileChange = { [weak self, weak pane] change in
+            guard let self, let pane else { return }
+            for other in self.allPanes where other !== pane { other.adopt(change) }
+        }
         pane.onFoldersChanged = { [weak self, weak pane] folders in
             guard let self, let pane else { return }
-            for other in self.panes where other !== pane && other.shows(any: folders) { other.refresh() }
+            for other in self.allPanes where other !== pane && other.shows(any: folders) { other.refresh() }
         }
         // One volume and one mini keyboard for the window. @Published sends
         // before the value is stored, so the other pane's own sink would see
@@ -61,7 +68,7 @@ final class WindowModel: ObservableObject {
         guard !syncing else { return }
         syncing = true
         defer { syncing = false }
-        apply([left, right].compactMap { $0 })
+        apply(allPanes)
     }
 
     func toggleDual() { setDual(!dual) }
@@ -72,7 +79,8 @@ final class WindowModel: ObservableObject {
             right = pane
             watch(pane)
             // Its own last folder, else the same as the left one
-            if !pane.restoreLastFolderNow(), let folder = left.folderURL { pane.open(folder: folder) }
+            // (checked off the main thread: an unreachable share answers only after its timeout)
+            pane.restoreLastFolder { [weak self] in self?.left.folderURL }
         }
         dual = on
         if !on { rightIsActive = false }

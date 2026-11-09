@@ -84,15 +84,13 @@ enum ArchiveName {
     /// "x.z01", "x.z02" … and "x.zip" last; else the file itself. Reads the
     /// folder, so off the main thread.
     static func volumes(of url: URL) -> [URL] {
-        let fm = FileManager.default
-        let folder = url.deletingLastPathComponent()
+        let folder = Siblings(of: url)
         let name = url.lastPathComponent
         if name.lowercased().hasSuffix(".001") {
             let stem = String(name.dropLast(4))
             var parts: [URL] = []
             for i in 1... {
-                let part = folder.appendingPathComponent(stem + String(format: ".%03d", i))
-                guard fm.fileExists(atPath: part.path) else { break }
+                guard let part = folder[stem + String(format: ".%03d", i)] else { break }
                 parts.append(part)
             }
             return parts.isEmpty ? [url] : parts
@@ -101,8 +99,7 @@ enum ArchiveName {
             let stem = (name as NSString).deletingPathExtension
             var parts: [URL] = []
             for i in 1... {
-                let part = folder.appendingPathComponent(stem + String(format: ".z%02d", i))
-                guard fm.fileExists(atPath: part.path) else { break }
+                guard let part = folder[stem + String(format: ".z%02d", i)] else { break }
                 parts.append(part)
             }
             return parts + [url]
@@ -110,12 +107,11 @@ enum ArchiveName {
         return [url]
     }
 
-    /// Every file of the archive on disk (for the Trash): its volumes, for a
-    /// RAR also "x.partN.rar" or "x.r00" ….
+    /// Every file of the archive on disk (for the Trash and for moving): its
+    /// volumes, for a RAR also "x.partN.rar" or "x.r00" ….
     static func allFiles(of url: URL) -> [URL] {
         guard format(of: url.lastPathComponent) == .rar else { return volumes(of: url) }
-        let fm = FileManager.default
-        let folder = url.deletingLastPathComponent()
+        let folder = Siblings(of: url)
         let lower = url.lastPathComponent.lowercased()
         var files = [url]
         if rarPart(of: lower) != nil {
@@ -123,20 +119,37 @@ enum ArchiveName {
             for i in 2... {
                 let candidates = [String(format: "%@.part%d.rar", stem, i), String(format: "%@.part%02d.rar", stem, i),
                                   String(format: "%@.part%03d.rar", stem, i)]
-                guard let found = candidates.map({ folder.appendingPathComponent($0) })
-                    .first(where: { fm.fileExists(atPath: $0.path) }) else { break }
+                guard let found = candidates.lazy.compactMap({ folder[$0] }).first else { break }
                 files.append(found)
             }
         } else {
             let stem = (url.lastPathComponent as NSString).deletingPathExtension
             for i in 0... {
-                let part = folder.appendingPathComponent(String(format: "%@.r%02d", stem, i))
-                guard fm.fileExists(atPath: part.path) else { break }
+                guard let part = folder[String(format: "%@.r%02d", stem, i)] else { break }
                 files.append(part)
             }
         }
         return files
     }
+
+    /// The files next to an archive, looked up by name ignoring case (the
+    /// volumes of "MOVIE.PART1.RAR" are "MOVIE.PART2.RAR" …, also on
+    /// case-sensitive volumes). The folder is listed once.
+    private struct Siblings {
+        private let byName: [String: URL]
+        init(of url: URL) {
+            let folder = url.deletingLastPathComponent()
+            let names = (try? FileManager.default.contentsOfDirectory(atPath: folder.path)) ?? []
+            byName = Dictionary(names.map { ($0.lowercased(), folder.appendingPathComponent($0)) }, uniquingKeysWith: { a, _ in a })
+        }
+        subscript(name: String) -> URL? { byName[name.lowercased()] }
+    }
+}
+
+extension GridEntry {
+    /// An archive on disk, shown as a folder (not one inside another archive,
+    /// not a real folder named like one).
+    var isArchive: Bool { kind == .folder && ArchivePath.split(url).map { $0.inner.isEmpty } ?? false }
 }
 
 /// A place inside an archive is a file URL running through the archive
@@ -145,15 +158,32 @@ enum ArchiveName {
 enum ArchivePath {
     /// The archive and the path inside it ("" for its top), for a URL
     /// through an archive; nil otherwise. By the name only (no file system
-    /// access): a folder named like an archive is told apart when listing.
+    /// access), except that folders named like an archive which a listing
+    /// has met (`noteFolder`) are folders.
     static func split(_ url: URL) -> (archive: URL, inner: String)? {
         let components = url.standardizedFileURL.pathComponents
         guard components.count > 1 else { return nil }
         for i in 1..<components.count where ArchiveName.format(of: components[i]) != nil {
-            let archive = URL(fileURLWithPath: NSString.path(withComponents: Array(components[...i])))
+            let path = NSString.path(withComponents: Array(components[...i]))
+            if isNotedFolder(path) { continue }
+            let archive = URL(fileURLWithPath: path, isDirectory: false)
             return (archive, components[(i + 1)...].joined(separator: "/"))
         }
         return nil
+    }
+
+    private static let foldersLock = NSLock()
+    nonisolated(unsafe) private static var folders: Set<String> = []
+
+    /// A real folder with an archive's name ("Trip.zip/"), met when listing.
+    static func noteFolder(_ url: URL) {
+        let path = url.standardizedFileURL.path
+        foldersLock.lock(); folders.insert(path); foldersLock.unlock()
+    }
+
+    private static func isNotedFolder(_ path: String) -> Bool {
+        foldersLock.lock(); defer { foldersLock.unlock() }
+        return folders.contains(path)
     }
 
     /// A file or folder inside an archive (not the archive itself).
@@ -167,8 +197,11 @@ enum ArchivePath {
     static func splitChecked(_ url: URL) -> (archive: URL, inner: String)? {
         guard let found = split(url) else { return nil }
         var isDirectory: ObjCBool = false
-        guard FileManager.default.fileExists(atPath: found.archive.path, isDirectory: &isDirectory),
-              !isDirectory.boolValue else { return nil }
+        guard FileManager.default.fileExists(atPath: found.archive.path, isDirectory: &isDirectory) else { return nil }
+        if isDirectory.boolValue {
+            noteFolder(found.archive)
+            return splitChecked(url)   // an archive further in, if any
+        }
         return found
     }
 }
@@ -203,7 +236,9 @@ enum ArchiveError: LocalizedError, Equatable {
 struct ArchiveItem: Equatable {
     let path: String
     let isDirectory: Bool
+    /// Unpacked; -1 where the archive doesn't say.
     let size: Int64
+    var knownSize: Int? { size >= 0 ? Int(size) : nil }
     let modified: Date?
     let encrypted: Bool
 }
@@ -252,7 +287,9 @@ struct RarReader: ArchiveReader {
             seen += 1
             if entry.split_before != 0 { _ = sb_rar_skip(rar); continue }   // the rest of a file from the last volume
             let name = withUnsafeBytes(of: &entry.name) { String(cString: $0.bindMemory(to: CChar.self).baseAddress!) }
-            let item = ArchiveItem(path: Self.clean(name), isDirectory: entry.is_directory != 0, size: Int64(entry.size),
+            // UnRAR's placeholder for a size not stored (a file packed from a stream)
+            let size = entry.size == 0x7fff_ffff_7fff_ffff ? -1 : Int64(clamping: entry.size)
+            let item = ArchiveItem(path: Self.clean(name), isDirectory: entry.is_directory != 0, size: size,
                                    modified: entry.modified > 0 ? Date(timeIntervalSince1970: TimeInterval(entry.modified)) : nil,
                                    encrypted: entry.is_encrypted != 0)
             switch visit(item) {
@@ -347,7 +384,8 @@ struct LibArchiveReader: ArchiveReader {
             let name = raw.map { String(cString: $0) } ?? ""
             let isDirectory = (archive_entry_filetype(entry) & mode_t(SB_AE_IFMT)) == mode_t(SB_AE_IFDIR) || name.hasSuffix("/")
             let item = ArchiveItem(path: RarReader.clean(name), isDirectory: isDirectory,
-                                   size: archive_entry_size(entry),
+                                   // Not stored in the header (a ZIP written with data descriptors, read as a stream)
+                                   size: archive_entry_size_is_set(entry) != 0 ? archive_entry_size(entry) : -1,
                                    modified: { let t = archive_entry_mtime(entry); return t > 0 ? Date(timeIntervalSince1970: TimeInterval(t)) : nil }(),
                                    encrypted: archive_entry_is_encrypted(entry) != 0)
             switch visit(item) {
@@ -504,6 +542,7 @@ final class ArchiveStore: @unchecked Sendable {
         let queue: DispatchQueue
         var version: FileVersion?
         var index: Index?
+        var indexedAt = Date.distantPast
         var pending: [String: [CheckedContinuation<Data, Error>]] = [:]
         var passRunning = false
         init(path: String) { queue = DispatchQueue(label: "archive \(path)", qos: .userInitiated) }
@@ -557,7 +596,10 @@ final class ArchiveStore: @unchecked Sendable {
 
     private func indexOnQueue(_ archive: Archive, url: URL, trying typed: String?) throws -> Index {
         let version = FileVersion(url)
-        if let index = archive.index, archive.version == version, typed == nil { return index }
+        // An archive read only in part (a later volume still downloading:
+        // the first one's size and date don't change) is read again after a while
+        if let index = archive.index, archive.version == version, typed == nil,
+           index.complete || Date().timeIntervalSince(archive.indexedAt) < 10 { return index }
         guard let reader = Self.reader(for: url) else { throw ArchiveError.unreadable("unknown format") }
         let remembered = passwords.all
         // A password just typed is the only one tried; else none first, then
@@ -577,8 +619,10 @@ final class ArchiveStore: @unchecked Sendable {
             if !protected.isEmpty, ArchiveName.format(of: url.lastPathComponent) == .sevenZip {
                 throw ArchiveError.encryptionUnsupported
             }
-            // Encrypted data: the password that unpacks the smallest protected file
-            if let probe = protected.min(by: { $0.size < $1.size }) {
+            // Encrypted data: the password that unpacks the smallest protected
+            // file with something in it (an empty one opens with any password)
+            if let probe = protected.filter({ $0.size > 0 }).min(by: { $0.size < $1.size })
+                ?? protected.min(by: { $0.size < $1.size }) {
                 let tries: [String] = candidate.map { [$0] } ?? remembered
                 guard let working = tries.first(where: { Self.opens(reader, probe, with: $0) }) else {
                     if candidate == nil { throw ArchiveError.needsPassword }   // all were tried
@@ -590,6 +634,7 @@ final class ArchiveStore: @unchecked Sendable {
             let index = Index(items: items, complete: complete, password: password)
             archive.index = index
             archive.version = version
+            archive.indexedAt = Date()
             return index
         }
         throw ArchiveError.needsPassword
@@ -696,9 +741,9 @@ final class ArchiveStore: @unchecked Sendable {
             if item.isDirectory {
                 listing.entries.append(GridEntry(url: itemURL, kind: .folder, modDate: item.modified))
             } else if let kind = BrowserModel.mediaKind(of: itemURL) {
-                listing.entries.append(GridEntry(url: itemURL, kind: kind, modDate: item.modified, byteSize: Int(item.size)))
+                listing.entries.append(GridEntry(url: itemURL, kind: kind, modDate: item.modified, byteSize: item.knownSize))
             } else if !itemURL.lastPathComponent.hasPrefix(".") {
-                listing.others.append(OtherFile(url: itemURL, byteSize: Int(item.size)))
+                listing.others.append(OtherFile(url: itemURL, byteSize: item.knownSize))
             }
         }
         listing.others.sort { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
@@ -728,7 +773,7 @@ final class ArchiveStore: @unchecked Sendable {
             let itemURL = archiveURL.appendingPathComponent(item.path, isDirectory: item.isDirectory)
             if item.isDirectory { return GridEntry(url: itemURL, kind: .folder, modDate: item.modified) }
             guard let kind = BrowserModel.mediaKind(of: itemURL) else { return nil }
-            return GridEntry(url: itemURL, kind: kind, modDate: item.modified, byteSize: Int(item.size))
+            return GridEntry(url: itemURL, kind: kind, modDate: item.modified, byteSize: item.knownSize)
         }
     }
 }

@@ -31,6 +31,7 @@ struct EntryListView: View {
                 }
                 .onChange(of: model.selection, initial: true) { _, newValue in
                     guard let newValue, model.entries.indices.contains(newValue) else { return }
+                    if model.clickedSelection == newValue { model.clickedSelection = nil; return }
                     proxy.scrollTo(model.entries[newValue].id)
                 }
             }
@@ -133,7 +134,7 @@ struct EntryListView: View {
         case .parent:
             Image(systemName: "arrow.up.circle.fill").font(.title3).foregroundStyle(Color.accentColor)
         case .folder:
-            let archive = ArchiveName.format(of: entry.name) != nil && !ArchivePath.isInside(entry.url)
+            let archive = entry.isArchive
             Image(systemName: archive ? "archivebox.fill" : "folder.fill").font(.title3)
                 .foregroundStyle(Color.accentColor)
                 .opacity(model.isEmptyFolder(entry) ? 0.4 : 1)
@@ -146,7 +147,7 @@ struct EntryListView: View {
         switch entry.kind {
         case .parent: return ""
         case .folder:
-            return ArchiveName.format(of: entry.name) != nil && !ArchivePath.isInside(entry.url)
+            return entry.isArchive
                 ? String(localized: "Archive") : String(localized: "Folder")
         case .image: return String(localized: "Picture")
         case .video: return String(localized: "Video")
@@ -154,7 +155,7 @@ struct EntryListView: View {
     }
 
     private func size(of entry: GridEntry) -> String {
-        guard entry.isMedia || ArchiveName.format(of: entry.name) != nil, let bytes = entry.byteSize else { return "" }
+        guard entry.isMedia || entry.isArchive, let bytes = entry.byteSize else { return "" }
         return ByteCountFormatter.string(fromByteCount: Int64(bytes), countStyle: .file)
     }
 

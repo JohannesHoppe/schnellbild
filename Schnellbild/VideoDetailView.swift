@@ -13,6 +13,9 @@ struct VideoDetailView: View {
     @EnvironmentObject var model: BrowserModel
     @State private var avControl: AVPlaybackControl?
     @State private var vlcControl: VLCPlaybackControl?
+    /// The video's stream when it lies inside an archive; closed with the
+    /// player, whichever plays it (its unpacking thread stops then).
+    @State private var archiveStream: ArchiveEntryStream?
     @State private var checking = true
     /// Pan while zoomed in, as for pictures.
     @State private var panOffset: CGSize = .zero
@@ -79,12 +82,13 @@ struct VideoDetailView: View {
             var stream: ArchiveEntryStream?
             if ArchivePath.isInside(url) {
                 stream = try? await ArchiveStore.shared.stream(of: url)
-                guard stream != nil, !Task.isCancelled else { checking = false; return }
+                guard stream != nil, !Task.isCancelled else { stream?.close(); checking = false; return }
+                archiveStream = stream
             }
             let loader = stream.map { ArchiveResourceLoader(stream: $0, fileName: url.lastPathComponent) }
             let asset = loader?.makeAsset(fileName: url.lastPathComponent) ?? AVURLAsset(url: url)
             let playable = (try? await asset.load(.isPlayable)) ?? false
-            guard !Task.isCancelled else { return }   // the user moved on to another file
+            guard !Task.isCancelled else { stream?.close(); return }   // the user moved on to another file
             checking = false
 
             let model = self.model
@@ -154,7 +158,8 @@ struct VideoDetailView: View {
     }
 
     private func stop() {
-        avControl?.resourceLoader?.stream.close()
+        archiveStream?.close()
+        archiveStream = nil
         avControl?.pause()
         vlcControl?.stop()
         model.activePlayer = nil

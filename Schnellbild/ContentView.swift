@@ -92,17 +92,19 @@ private struct WindowView: View {
     }
 
     /// One pane, or both side by side with the active one outlined. A
-    /// slideshow takes the whole window.
-    @ViewBuilder
+    /// slideshow takes the whole window. The left pane keeps its place in
+    /// the view tree either way, so D doesn't rebuild it (a video playing
+    /// in it goes on).
     private var panes: some View {
-        if window.dual, model.slideshow == nil, let right = window.right {
-            HStack(spacing: 0) {
-                pane(window.left)
-                Divider()
+        let rightShows = model.slideshow != nil && model === window.right
+        let showsLeft = !(window.dual && rightShows)
+        let showsRight = window.dual && (model.slideshow == nil || rightShows)
+        return HStack(spacing: 0) {
+            if showsLeft { pane(window.left) }
+            if showsRight, let right = window.right {
+                if showsLeft { Divider() }
                 pane(right)
             }
-        } else {
-            PaneView().environmentObject(model)
         }
     }
 
@@ -110,7 +112,7 @@ private struct WindowView: View {
         PaneView()
             .environmentObject(pane)
             .overlay {
-                if pane === model {
+                if window.dual, model.slideshow == nil, pane === model {
                     Rectangle().strokeBorder(Color.accentColor.opacity(0.8), lineWidth: 2).allowsHitTesting(false)
                 }
             }
@@ -305,9 +307,10 @@ private struct WindowView: View {
 
 extension ContentView {
     /// Keys that go straight to the text field being edited, ahead of the
-    /// menu: ⌘⌫ and ⌘↩.
+    /// menu: ⌘⌫, ⌘↩ and ⌘ with an arrow.
     static func textFieldTakes(code: UInt16, command: Bool) -> Bool {
-        command && [51, 36, 76].contains(code)
+        // ⌘⌫ ⌘↩ edit, ⌘← ⌘→ ⌘↑ ⌘↓ move the cursor
+        command && [51, 36, 76, 123, 124, 125, 126].contains(code)
     }
 
     /// Hardware key code → key binding input. On a layout without Latin

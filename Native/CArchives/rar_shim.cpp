@@ -9,8 +9,11 @@
 // its CRC32 here instead of trusting the shared state (unpacking can take
 // long and must not block other archives). An unpacking thread can still set
 // the state while another reads a header (a pass stopped by its reader is a
-// "user break"): UnRAR then reports ERAR_UNKNOWN for a header read whole, so
-// that code counts as success where the result itself shows it is one.
+// "user break", a wrong password probed in another archive), and a handle
+// keeps the last file's error until its next file is processed: a header
+// read whole (it has a name) counts as read, whatever code comes with it,
+// except a password error where the headers themselves are encrypted; a
+// password error for a file that isn't encrypted is someone else's.
 #include <wchar.h>
 #include <string.h>
 #include <string>
@@ -50,6 +53,7 @@ struct SBRar {
     uint32_t expectedCRC = 0;
     bool checkCRC = false;
     uint64_t expectedSize = 0;
+    bool encrypted = false;
     uint32_t crc = 0;
     uint64_t received = 0;
 };
@@ -150,7 +154,9 @@ extern "C" int sb_rar_next(SBRar *rar, SBRarEntry *entry) {
         ErrHandler.Clean();
         r = RARReadHeaderEx(rar->handle, header);
     }
-    if (r == ERAR_UNKNOWN && header->FileNameW[0] != 0) r = ERAR_SUCCESS;
+    bool passwordError = r == ERAR_BAD_PASSWORD || r == ERAR_MISSING_PASSWORD;
+    if (r != ERAR_SUCCESS && r != ERAR_END_ARCHIVE && header->FileNameW[0] != 0
+        && !(passwordError && rar->headersEncrypted)) r = ERAR_SUCCESS;
     if (r == ERAR_SUCCESS) {
         toUTF8(header->FileNameW, entry->name, sizeof(entry->name));
         entry->size = ((uint64_t)header->UnpSizeHigh << 32) | header->UnpSize;
@@ -166,6 +172,7 @@ extern "C" int sb_rar_next(SBRar *rar, SBRarEntry *entry) {
             && !entry->split_before && !entry->split_after;
         rar->expectedCRC = header->FileCRC;
         rar->expectedSize = entry->size;
+        rar->encrypted = entry->is_encrypted;
     }
     delete header;
     return r;
@@ -183,12 +190,18 @@ extern "C" int sb_rar_read(SBRar *rar, SBRarData data, void *context) {
     rar->context = nullptr;
     if (rar->stopped) return ERAR_SUCCESS;
     if (rar->volumeMissing) return ERAR_EOPEN;
-    if (r == ERAR_MISSING_PASSWORD || r == ERAR_BAD_PASSWORD) return r;
-    // The data itself says whether it came out whole
+    if ((r == ERAR_MISSING_PASSWORD || r == ERAR_BAD_PASSWORD) && rar->encrypted) return r;
+    // The size UnRAR reports for a file stored from a stream is a placeholder
+    bool sizeKnown = rar->expectedSize != (uint64_t)INT64NDF;
+    bool whole = !sizeKnown || rar->received == rar->expectedSize;
+    // The data itself says whether it came out whole. RAR 1.4 keeps a
+    // 16-bit checksum that the DLL reports as CRC32: there UnRAR's own
+    // check (a success no other thread can fake) decides.
     if (rar->checkCRC) {
-        return rar->received == rar->expectedSize && rar->crc == rar->expectedCRC ? ERAR_SUCCESS : ERAR_BAD_DATA;
+        if (whole && rar->crc == rar->expectedCRC) return ERAR_SUCCESS;
+        return whole && r == ERAR_SUCCESS ? ERAR_SUCCESS : ERAR_BAD_DATA;
     }
-    if (r == ERAR_UNKNOWN && rar->received == rar->expectedSize) return ERAR_SUCCESS;
+    if (r == ERAR_UNKNOWN && whole) return ERAR_SUCCESS;
     return r;
 }
 

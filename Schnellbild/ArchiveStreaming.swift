@@ -85,7 +85,8 @@ final class ArchiveEntryStream: @unchecked Sendable {
                 markRead(index)
                 return found
             }
-            if let failure, !running { throw failure }
+            // The failed pass didn't get this far; what it got past is unpacked again
+            if let failure, !running, index >= producing { throw failure }
             wanted = index
             // Behind the unpacking and no longer in memory: from the start
             if !running || index < producing {
@@ -190,8 +191,27 @@ extension ArchiveStore {
         let index = try await index(of: archiveURL)
         guard let item = index.byPath[inner], !item.isDirectory,
               let reader = Self.reader(for: archiveURL) else { throw ArchiveError.notFound }
-        return ArchiveEntryStream(size: item.size, reader: reader, path: item.path, password: index.password,
+        // A size the archive doesn't state: counted by unpacking it once
+        let size = item.size >= 0 ? item.size : try await Task.detached {
+            try Self.unpackedSize(reader, path: item.path, password: index.password)
+        }.value
+        return ArchiveEntryStream(size: size, reader: reader, path: item.path, password: index.password,
                                   chunkSize: chunkSize, unreadLimit: unreadLimit, readLimit: readLimit)
+    }
+}
+
+extension ArchiveStore {
+    /// How many bytes an entry unpacks to.
+    nonisolated static func unpackedSize(_ reader: ArchiveReader, path: String, password: String?) throws -> Int64 {
+        var count: Int64 = 0
+        var outcome: ArchiveError? = .notFound
+        _ = try reader.walk(password: password, listOnly: false) { item in
+            guard item.path == path else { return .skip }
+            return .read(sink: { bytes in count += Int64(bytes.count); return true },
+                         done: { failure in outcome = failure })
+        }
+        if let outcome { throw outcome }
+        return count
     }
 }
 
