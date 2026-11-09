@@ -368,6 +368,16 @@ struct EntryInteractions: ViewModifier {
                 let flags = NSApp.currentEvent?.modifierFlags ?? NSEvent.modifierFlags
                 model.click(entry, command: flags.contains(.command), shift: flags.contains(.shift))
             }
+            // ⌘- and ⇧-clicks as gestures of their own: the plain tap above
+            // doesn't fire for them
+            .highPriorityGesture(TapGesture().modifiers(.command).onEnded {
+                model.searchFocused = false
+                model.click(entry, command: true, shift: false)
+            })
+            .highPriorityGesture(TapGesture().modifiers(.shift).onEnded {
+                model.searchFocused = false
+                model.click(entry, command: false, shift: true)
+            })
             .contextMenu {
                 if entry.kind != .parent {
                     if entry.kind == .folder {

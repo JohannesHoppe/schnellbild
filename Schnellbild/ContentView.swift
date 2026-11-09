@@ -936,7 +936,10 @@ private struct FolderTitle: ViewModifier {
     @ObservedObject var model: BrowserModel
 
     func body(content: Content) -> some View {
-        content.navigationTitle(Binding(
+        content
+            // A click on the title shows this menu; Rename makes the title editable
+            .toolbarTitleMenu { RenameButton() }
+            .navigationTitle(Binding(
             get: { model.folderURL?.lastPathComponent ?? "Schnellbild" },
             set: { name in
                 guard name != model.folderURL?.lastPathComponent else { return }

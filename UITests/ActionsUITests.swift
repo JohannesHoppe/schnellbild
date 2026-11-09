@@ -327,6 +327,10 @@ final class ActionsUITests: SchnellbildUITestCase {
         let title = app.windows.firstMatch.staticTexts["Trip"].firstMatch
         XCTAssertTrue(title.waitForExistence(timeout: 5), "the folder's name in the title bar")
         title.click()
+        // The title's menu: Rename makes the title editable
+        let rename = app.menuItems["Rename"].firstMatch
+        XCTAssertTrue(rename.waitForExistence(timeout: 5), "the title's menu")
+        rename.click()
         let field = app.windows.firstMatch.textFields.firstMatch
         XCTAssertTrue(field.waitForExistence(timeout: 5), "an editable title")
         field.typeKey("a", modifierFlags: .command)
