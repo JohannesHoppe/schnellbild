@@ -2070,6 +2070,7 @@ final class BrowserModel: ObservableObject {
     /// both (the new one numbered) or skip. Not into archives, not into
     /// themselves.
     func move(_ sources: [URL], into folder: URL, how: Transfer = .asFinder) {
+        Self.testLog("move \(sources.map(\.lastPathComponent)) into \(folder.lastPathComponent)")
         guard ArchivePath.split(folder) == nil else { NSSound.beep(); return }
         let target = Self.canonicalPath(folder)
         var changed = [folder]
