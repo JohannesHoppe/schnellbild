@@ -529,6 +529,7 @@ final class BrowserModel: ObservableObject {
     /// (play/pause, skimming). Set by the video views.
     weak var activePlayer: PlaybackControl? {
         didSet {
+            shownSince = Date()
             videoPaused = false
             if enhancement != .off { activePlayer?.setEnhancement(enhancement) }
             activePlayer?.setVolume(volume)
@@ -1697,7 +1698,10 @@ final class BrowserModel: ObservableObject {
     /// field is being edited (`textEditing`) or a sheet is open, keys belong
     /// to them — except F1 and F2.
     @discardableResult
-    func handleKey(_ key: KeyInput, command: Bool, shift: Bool = false, textEditing: Bool = false) -> Bool {
+    func handleKey(_ key: KeyInput, command: Bool, shift: Bool = false, textEditing: Bool = false,
+                   repeating: Bool = false) -> Bool {
+        keyRepeating = repeating
+        defer { keyRepeating = false }
         let handled = dispatchKey(key, command: command, shift: shift, textEditing: textEditing)
         // The mini keyboard lights up the key that acted, typed or clicked
         if handled { lastKeyPress = KeyPress(key: key, command: command, shift: shift) }
@@ -2241,18 +2245,31 @@ final class BrowserModel: ObservableObject {
     /// ←/→ in the full view. Images: previous/next item. Videos: jump a tenth
     /// of the length; past the end → next item, at the start → previous one.
     /// So one key pages through images and skims through videos.
+    /// The key being handled repeats (held down).
+    private var keyRepeating = false
+    /// When the item on screen came up: a video's length is unknown at first.
+    private var shownSince = Date()
+    /// How long a video may take to report its length before ←/→ count it
+    /// as unplayable and page on.
+    var lengthGrace: TimeInterval = 1.5
+
     func skim(_ direction: Int) {
-        guard shownMediaEntry?.kind == .video, let player = activePlayer,
-              let progress = player.progress else {
-            page(direction); return
+        guard shownMediaEntry?.kind == .video else { page(direction); return }
+        guard let player = activePlayer, let progress = player.progress else {
+            // Length not known yet: wait for it (a key held down would race
+            // through video after video); only one that never gets a length
+            // is left with ←/→, and not by a repeating key.
+            if !keyRepeating, Date().timeIntervalSince(shownSince) > lengthGrace { page(direction) }
+            return
         }
         if direction > 0 {
             let target = progress + Self.videoJump
-            if target >= 0.999 { page(+1) } else { player.seek(toProgress: target) }
+            // At the end: on to the next item, but not with a key held down
+            if target >= 0.999 { if !keyRepeating { page(+1) } } else { player.seek(toProgress: target) }
         } else {
             // Close to the start counts as the start, so a playing video
             // doesn't keep catching the key.
-            if progress < Self.videoJump / 4 { page(-1) }
+            if progress < Self.videoJump / 4 { if !keyRepeating { page(-1) } }
             else { player.seek(toProgress: max(progress - Self.videoJump, 0)) }
         }
     }
