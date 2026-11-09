@@ -403,9 +403,10 @@ struct EntryInteractions: ViewModifier {
     }
 }
 
-/// The drop target of a folder tile (or ".."): what is dropped goes into
-/// it. Other tiles have none, so a drop on them reaches the pane around
-/// them (the dual pane: into that pane's folder).
+/// The drop target of a tile. A folder tile (or "..") takes what is dropped
+/// into it; any other tile passes it on to the pane's folder (the dual pane:
+/// dragged across from the other pane). Every tile has one: tiles with and
+/// without a drop target side by side kept ⌘-clicks from arriving.
 private struct FolderDrop: ViewModifier {
     let entry: GridEntry
     let accepts: Bool
@@ -413,15 +414,12 @@ private struct FolderDrop: ViewModifier {
     @EnvironmentObject var model: BrowserModel
 
     func body(content: Content) -> some View {
-        if accepts {
-            content.onDrop(of: [.fileURL], isTargeted: $targeted) { providers in
-                guard !model.isFiltering || entry.kind == .folder else { return false }
-                let folder = entry.url
-                TileDrag.loadURLs(providers) { urls in model.move(urls, into: folder) }
-                return true
-            }
-        } else {
-            content
+        content.onDrop(of: [.fileURL], isTargeted: accepts ? $targeted : .constant(false)) { providers in
+            let target = accepts ? entry.url : model.folderURL
+            guard let folder = target, ArchivePath.split(folder) == nil,
+                  !model.isFiltering || entry.kind == .folder || !accepts else { return false }
+            TileDrag.loadURLs(providers) { urls in model.move(urls, into: folder) }
+            return true
         }
     }
 }

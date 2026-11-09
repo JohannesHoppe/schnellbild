@@ -333,6 +333,7 @@ final class ActionsUITests: SchnellbildUITestCase {
         title.click()
         let field = app.textFields["folderTitleField"].firstMatch
         XCTAssertTrue(field.waitForExistence(timeout: 5), "an editable name")
+        field.click()
         field.typeKey("a", modifierFlags: .command)
         field.typeText("Iceland\r")
         eventually("renamed on disk", timeout: 10) {
