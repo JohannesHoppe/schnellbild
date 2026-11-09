@@ -193,7 +193,7 @@ final class GridUITests: SchnellbildUITestCase {
     func testEmptyFolderState() throws {
         let empty = try folder("empty")
         let app = launch(open: empty.path)
-        XCTAssertTrue(app.staticTexts["Nothing to show"].waitForExistence(timeout: 15))
+        XCTAssertTrue(app.staticTexts["This folder is empty"].waitForExistence(timeout: 15))
     }
 
     func testNoFolderStateWithDisabledSearch() {

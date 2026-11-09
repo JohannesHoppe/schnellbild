@@ -23,7 +23,7 @@ struct PasswordView: View {
                     .foregroundStyle(.red)
                     .accessibilityIdentifier("passwordWrong")
             }
-            Text("Schnellbild remembers every password typed here and tries all of them on every protected archive.")
+            Text("Passwords that open an archive are saved in your login keychain and tried on every protected archive.")
                 .font(.callout)
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)

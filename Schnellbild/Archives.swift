@@ -58,6 +58,22 @@ enum ArchiveName {
         return Int(stem.pathExtension.dropFirst(4))
     }
 
+    /// For a later volume, the names its first volume can have
+    /// ("x.part2.rar" → "x.part1.rar", "x.part01.rar" …); empty for anything else.
+    static func firstVolumeNames(of name: String) -> [String] {
+        let lower = name.lowercased() as NSString
+        let ext = lower.pathExtension
+        let stem = (name as NSString).deletingPathExtension
+        if ext == "rar", let part = rarPart(of: name), part > 1 {
+            let base = (stem as NSString).deletingPathExtension
+            return ["\(base).part1.rar", "\(base).part01.rar", "\(base).part001.rar"]
+        }
+        if ext.count == 3, ext.hasPrefix("r"), Int(ext.dropFirst()) != nil { return ["\(stem).rar"] }
+        if ext.count == 3, ext.hasPrefix("z"), Int(ext.dropFirst()) != nil { return ["\(stem).zip"] }
+        if ext.count == 3, let n = Int(ext), n > 1 { return ["\(stem).001"] }
+        return []
+    }
+
     /// Whether a name alone says the archive has further volumes.
     static func isSplitByName(_ name: String) -> Bool {
         let base = finalName(of: name).lowercased()
@@ -171,10 +187,10 @@ enum ArchiveError: LocalizedError, Equatable {
 
     var errorDescription: String? {
         switch self {
-        case .needsPassword:          return String(localized: "That password doesn't open it. Try another one.")
-        case .encryptionUnsupported:  return String(localized: "Encrypted 7z archives can't be opened.")
-        case .incomplete:             return String(localized: "The archive ends early: it is still downloading, or a part is missing.")
-        case .notFound:               return String(localized: "The archive can't be read: \("missing entry")")
+        case .needsPassword:          return String(localized: "Wrong password for this archive.")
+        case .encryptionUnsupported:  return String(localized: "Schnellbild can't open encrypted 7z archives.")
+        case .incomplete:             return String(localized: "The archive is incomplete: still downloading, a part missing, or damaged.")
+        case .notFound:               return String(localized: "A file listed in this archive is missing.")
         case .unreadable(let reason): return String(localized: "The archive can't be read: \(reason)")
         }
     }
@@ -666,15 +682,27 @@ final class ArchiveStore: @unchecked Sendable {
 
     /// The folders and media files in a folder of an archive, as grid entries.
     func entries(in url: URL, trying password: String? = nil) async throws -> [GridEntry] {
-        guard let (archiveURL, inner) = ArchivePath.split(url) else { return [] }
+        try await listing(in: url, trying: password).entries
+    }
+
+    /// A folder of an archive: its folders and media files as grid entries,
+    /// and its other files (archives inside archives among them: not opened).
+    func listing(in url: URL, trying password: String? = nil) async throws -> FolderListing {
+        guard let (archiveURL, inner) = ArchivePath.split(url) else { return FolderListing() }
         let index = try await index(of: archiveURL, trying: password)
-        return (index.children[inner] ?? []).compactMap { item in
+        var listing = FolderListing()
+        for item in index.children[inner] ?? [] {
             let itemURL = archiveURL.appendingPathComponent(item.path, isDirectory: item.isDirectory)
-            if item.isDirectory { return GridEntry(url: itemURL, kind: .folder, modDate: item.modified) }
-            guard let kind = BrowserModel.mediaKind(of: itemURL),
-                  ArchiveName.format(of: item.path) == nil else { return nil }   // no archives in archives
-            return GridEntry(url: itemURL, kind: kind, modDate: item.modified, byteSize: Int(item.size))
+            if item.isDirectory {
+                listing.entries.append(GridEntry(url: itemURL, kind: .folder, modDate: item.modified))
+            } else if let kind = BrowserModel.mediaKind(of: itemURL) {
+                listing.entries.append(GridEntry(url: itemURL, kind: kind, modDate: item.modified, byteSize: Int(item.size)))
+            } else if !itemURL.lastPathComponent.hasPrefix(".") {
+                listing.others.append(OtherFile(url: itemURL, byteSize: Int(item.size)))
+            }
         }
+        listing.others.sort { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
+        return listing
     }
 
     /// The media files at any depth below a folder of an archive, in path order.

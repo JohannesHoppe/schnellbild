@@ -1,4 +1,5 @@
 import SwiftUI
+import UniformTypeIdentifiers
 
 /// The grid. Lazy so only visible tiles are loaded. ".." and
 /// folders first, then images/videos.
@@ -27,6 +28,13 @@ struct ThumbnailGridView: View {
                         }
                     }
                     .padding(padding)
+                    // The files the grid doesn't show, by name: a folder with
+                    // only these isn't empty
+                    if !model.isFiltering, !model.otherFiles.isEmpty {
+                        OtherFilesList(files: model.otherFiles)
+                            .padding(.horizontal, padding)
+                            .padding(.bottom, padding)
+                    }
                 }
                 // For the UI tests only (VoiceOver would read it): the columns the keys
                 // step by, and as laid out
@@ -88,7 +96,7 @@ struct ThumbnailGridView: View {
         .contextMenu {
             if entry.kind != .parent {
                 if entry.kind == .folder {
-                    Button("Play Slideshow") {
+                    Button("Start Slideshow of This Folder") {
                         model.select(entry)
                         model.startSlideshow(over: entry.url)
                     }
@@ -261,5 +269,48 @@ final class FolderPreviewCache {
             files.removeObject(forKey: path as NSString)
             hasMedia.removeObject(forKey: path as NSString)
         }
+    }
+}
+
+/// The files of a folder that aren't pictures, videos or archives, by name
+/// and size, under the grid.
+struct OtherFilesList: View {
+    let files: [OtherFile]
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Divider().padding(.bottom, 6)
+            Text("Other files, not pictures or videos")
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(.secondary)
+            ForEach(files) { file in
+                HStack(spacing: 8) {
+                    Image(nsImage: Self.icon(for: file))
+                        .resizable()
+                        .frame(width: 16, height: 16)
+                    Text(file.name)
+                        .lineLimit(1)
+                        .truncationMode(.middle)
+                    Spacer(minLength: 12)
+                    if let size = file.byteSize {
+                        Text(ByteCountFormatter.string(fromByteCount: Int64(size), countStyle: .file))
+                            .monospacedDigit()
+                    }
+                }
+                .font(.callout)
+                .foregroundStyle(.secondary)
+                .accessibilityElement(children: .combine)
+                .accessibilityIdentifier("other.\(file.name)")
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .accessibilityIdentifier("otherFiles")
+    }
+
+    /// The icon of the file's type (no file system access: also fast on a
+    /// network share, also for a file inside an archive).
+    static func icon(for file: OtherFile) -> NSImage {
+        let type = UTType(filenameExtension: file.url.pathExtension) ?? .data
+        return NSWorkspace.shared.icon(for: type)
     }
 }
