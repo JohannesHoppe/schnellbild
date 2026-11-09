@@ -27,7 +27,8 @@ final class DualPaneTests: XCTestCase {
         m.click(m.entries.first { $0.name == "a.jpg" }!, command: true, shift: false)
         XCTAssertEqual(m.actionEntries.map(\.name), ["c.jpg"], "⌘-click again removes")
         m.click(m.entries.first { $0.name == "d.jpg" }!, command: false, shift: true)
-        XCTAssertEqual(m.actionEntries.map(\.name), ["c.jpg", "d.jpg"], "⇧-click: the range")
+        XCTAssertEqual(m.actionEntries.map(\.name), ["a.jpg", "b.jpg", "c.jpg", "d.jpg"],
+                       "⇧-click: the range from the item clicked last, as in the Finder")
         XCTAssertTrue(m.handleKey(.char("a"), command: true))
         XCTAssertEqual(m.actionEntries.count, 4, "⌘A: all, not ..")
         XCTAssertTrue(m.handleKey(.escape, command: false))

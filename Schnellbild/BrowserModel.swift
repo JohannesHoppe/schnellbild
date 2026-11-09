@@ -1543,8 +1543,9 @@ final class BrowserModel: ObservableObject {
             let path = Self.canonicalPath(entry.url)
             if marked.contains(path) { marked.remove(path) } else { marked.insert(path) }
         }
-        markAnchor = index
+        // A range (⇧) goes on from where the cursor is now
         if index + 1 < entries.count { selection = index + 1 }
+        markAnchor = selection
     }
 
     func markAll() {
