@@ -7,7 +7,10 @@
 // archives. So the state is cleared before each call, opening and reading
 // headers (short) run one at a time, and a file's data is checked against
 // its CRC32 here instead of trusting the shared state (unpacking can take
-// long and must not block other archives).
+// long and must not block other archives). An unpacking thread can still set
+// the state while another reads a header (a pass stopped by its reader is a
+// "user break"): UnRAR then reports ERAR_UNKNOWN for a header read whole, so
+// that code counts as success where the result itself shows it is one.
 #include <wchar.h>
 #include <string.h>
 #include <string>
@@ -125,6 +128,7 @@ extern "C" SBRar *sb_rar_open(const char *path, const char *password, int list_o
         ErrHandler.Clean();
         rar->handle = RAROpenArchiveEx(&data);
     }
+    if (rar->handle && data.OpenResult == ERAR_UNKNOWN) data.OpenResult = ERAR_SUCCESS;
     *result = (int)data.OpenResult;
     *password_asked = rar->passwordAsked;
     if (!rar->handle || data.OpenResult != ERAR_SUCCESS) {
@@ -146,6 +150,7 @@ extern "C" int sb_rar_next(SBRar *rar, SBRarEntry *entry) {
         ErrHandler.Clean();
         r = RARReadHeaderEx(rar->handle, header);
     }
+    if (r == ERAR_UNKNOWN && header->FileNameW[0] != 0) r = ERAR_SUCCESS;
     if (r == ERAR_SUCCESS) {
         toUTF8(header->FileNameW, entry->name, sizeof(entry->name));
         entry->size = ((uint64_t)header->UnpSizeHigh << 32) | header->UnpSize;
@@ -183,6 +188,7 @@ extern "C" int sb_rar_read(SBRar *rar, SBRarData data, void *context) {
     if (rar->checkCRC) {
         return rar->received == rar->expectedSize && rar->crc == rar->expectedCRC ? ERAR_SUCCESS : ERAR_BAD_DATA;
     }
+    if (r == ERAR_UNKNOWN && rar->received == rar->expectedSize) return ERAR_SUCCESS;
     return r;
 }
 

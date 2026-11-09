@@ -116,7 +116,9 @@ private struct WindowView: View {
             }
             // A click anywhere in a pane makes it the active one
             .simultaneousGesture(TapGesture().onEnded { window.activate(pane) })
-            // Tiles dropped onto a pane's free space go into its folder
+            // Tiles dropped onto a pane's free space go into its folder (the
+            // whole pane takes drops, also where nothing is drawn)
+            .contentShape(Rectangle())
             .onDrop(of: [.fileURL], isTargeted: nil) { providers in
                 BrowserModel.testLog("drop on pane \(pane.folderURL?.lastPathComponent ?? "-")")
                 guard let folder = pane.folderURL else { return false }
@@ -162,6 +164,10 @@ private struct WindowView: View {
                 Label("Open Folder", systemImage: "folder")
             }
             .help("Open folder (⌘O)")
+
+            // The folder's name, where the window's title stands; a click
+            // makes it editable to rename the folder
+            FolderNameField(model: model)
         }
         ToolbarItem(placement: .primaryAction) {
             // Two panes side by side, as in the file commanders (D, ⌃O)
@@ -217,8 +223,6 @@ private struct WindowView: View {
             .accessibilityLabel("Sort: \(model.sortKey.title) \(model.sortAscending ? "↑" : "↓")")
         }
         ToolbarItemGroup(placement: .principal) {
-            // The folder's name; a click makes it editable to rename the folder
-            FolderNameField(model: model)
             if model.mode == .detail {
                 Button { model.closeDetail() } label: {
                     ShortcutLabel("Grid", systemImage: "square.grid.2x2", keys: "esc", showsTitle: true)
@@ -951,7 +955,7 @@ private struct TitleTextHidden: NSViewRepresentable {
     }
 }
 
-/// The folder's name in the middle of the title bar. A click (where the
+/// The folder's name in the title bar, after the navigation buttons. A click (where the
 /// folder can be renamed) turns it into a field: ↩ renames the folder shown,
 /// Esc keeps the name.
 private struct FolderNameField: View {
