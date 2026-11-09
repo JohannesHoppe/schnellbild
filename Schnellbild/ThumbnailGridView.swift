@@ -44,6 +44,7 @@ struct ThumbnailGridView: View {
                 // subfolder): the selection may be far down, so show it at once.
                 .onChange(of: model.selection, initial: true) { oldValue, newValue in
                     guard let newValue, model.entries.indices.contains(newValue) else { return }
+                    if model.clickedSelection == newValue { model.clickedSelection = nil; return }
                     let id = model.entries[newValue].id
                     if oldValue == newValue {
                         proxy.scrollTo(id, anchor: .center)
@@ -95,7 +96,7 @@ struct ThumbnailGridView: View {
         case .parent:
             FolderTile(folder: nil, side: side, isSelected: selected, systemImage: "arrow.up.circle.fill")
         case .folder:
-            let archive = ArchiveName.format(of: entry.name) != nil && !ArchivePath.isInside(entry.url)
+            let archive = entry.isArchive
             FolderTile(folder: entry.url, side: side, isSelected: selected,
                        systemImage: archive ? "archivebox.fill" : "folder.fill",
                        isEmpty: model.isEmptyFolder(entry), kindLabel: archive ? "archive" : "folder")
@@ -310,7 +311,7 @@ struct TileDrag: ViewModifier {
     /// around the one shown; an archive's items have no file of their own).
     private var drags: Bool { entry.kind != .parent && !inArchive }
     private var acceptsDrops: Bool {
-        (entry.kind == .folder || entry.kind == .parent) && !inArchive && ArchiveName.format(of: entry.name) == nil
+        (entry.kind == .folder || entry.kind == .parent) && !inArchive && !entry.isArchive
     }
 
     func body(content: Content) -> some View {

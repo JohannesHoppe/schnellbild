@@ -2072,6 +2072,7 @@ final class KeyBindingTests: XCTestCase {
         XCTAssertTrue(ContentView.textFieldTakes(code: 76, command: true))
         XCTAssertFalse(ContentView.textFieldTakes(code: 51, command: false))
         XCTAssertFalse(ContentView.textFieldTakes(code: 3, command: true), "⌘F")
+        XCTAssertTrue(ContentView.textFieldTakes(code: 126, command: true), "⌘↑ moves the cursor, not up a folder")
     }
 }
 

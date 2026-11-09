@@ -37,20 +37,21 @@ struct SchnellbildApp: App {
             }
             CommandMenu("Go") {
                 Button("Start Slideshow (S)") { model.startSlideshow() }
-                    .disabled(model.folderURL == nil)
+                    .disabled(model.folderURL == nil || model.anySheetOpen)
                 Divider()
                 Button("Back") { model.navigateBack() }
                     .keyboardShortcut("[", modifiers: .command)
-                    .disabled(!model.canGoBack)
+                    .disabled(!model.canGoBack || model.anySheetOpen)
                 Button("Forward") { model.navigateForward() }
                     .keyboardShortcut("]", modifiers: .command)
-                    .disabled(!model.canGoForward)
+                    .disabled(!model.canGoForward || model.anySheetOpen)
                 Button("Enclosing Folder") { model.goToParentFolder() }
                     .keyboardShortcut(.upArrow, modifiers: .command)
-                    .disabled(!model.canGoUp)
+                    .disabled(!model.canGoUp || model.anySheetOpen)
                 Divider()
                 Button("Search") { model.focusSearch() }
                     .keyboardShortcut("f", modifiers: .command)
+                    .disabled(model.anySheetOpen)
             }
             CommandMenu("Actions") {
                 // Not during a slideshow: the selection is in the hidden grid,
@@ -62,20 +63,20 @@ struct SchnellbildApp: App {
                     .disabled(model.slideshow != nil || model.anySheetOpen || !model.selectionIsChangeable)
                 Button("Reveal in Finder") { model.revealInFinder() }
                     .keyboardShortcut("r", modifiers: [.command, .shift])
-                    .disabled(model.slideshow != nil)
+                    .disabled(model.slideshow != nil || model.anySheetOpen)
                 Button("Open with Default App") { model.openInDefaultApp() }
                     .keyboardShortcut(.return)
-                    .disabled(model.slideshow != nil || !model.selectionIsChangeable)
+                    .disabled(model.slideshow != nil || model.anySheetOpen || !model.selectionIsChangeable)
                 Divider()
                 // The dual pane (D): the marked items into the other pane's folder
                 Button("Copy to Other Pane (F5)") { _ = window.sendToOtherPane(how: .copy) }
-                    .disabled(!window.dual || model.slideshow != nil)
+                    .disabled(!window.dual || model.slideshow != nil || model.anySheetOpen)
                 Button("Move to Other Pane (F6)") { _ = window.sendToOtherPane(how: .move) }
-                    .disabled(!window.dual || model.slideshow != nil)
+                    .disabled(!window.dual || model.slideshow != nil || model.anySheetOpen)
                 Divider()
                 Button("Move to Trash…") { model.moveSelectionToTrash() }
                     .keyboardShortcut(.delete)
-                    .disabled(!model.canTrash)
+                    .disabled(!model.canTrash || model.anySheetOpen)
             }
             CommandGroup(after: .toolbar) {
                 Toggle("as Grid", isOn: Binding(get: { model.viewMode == .grid }, set: { if $0 { model.viewMode = .grid } }))
