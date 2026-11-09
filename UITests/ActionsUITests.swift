@@ -294,6 +294,7 @@ final class ActionsUITests: SchnellbildUITestCase {
         let rightSorted = right.descendants(matching: .any).matching(identifier: "tile.Sorted").firstMatch
         XCTAssertTrue(rightSorted.waitForExistence(timeout: 15))
         eventually("the right pane's tile is laid out", timeout: 10) { rightSorted.isHittable }
+        if !rightSorted.isHittable { XCTFail("TEMP tree:\n" + right.debugDescription.prefix(6000)) }
         rightSorted.doubleClick()
         XCTAssertTrue(right.descendants(matching: .any).matching(identifier: "tile...").firstMatch.waitForExistence(timeout: 10))
 
