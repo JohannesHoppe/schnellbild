@@ -1846,6 +1846,8 @@ final class FullScreenSwitch {
             return movingTo != on
         }
         guard window.styleMask.contains(.fullScreen) != on else { return false }
+        // Moving from now on: AppKit announces the animation only later.
+        moving = (on, Date())
         window.toggleFullScreen(nil)
         return true
     }
@@ -1854,7 +1856,10 @@ final class FullScreenSwitch {
         moving = nil
         guard let wanted, let window else { return }
         self.wanted = nil
-        if window.styleMask.contains(.fullScreen) != wanted { window.toggleFullScreen(nil) }
+        if window.styleMask.contains(.fullScreen) != wanted {
+            moving = (wanted, Date())
+            window.toggleFullScreen(nil)
+        }
     }
 }
 

@@ -1,5 +1,6 @@
 import XCTest
 import AppKit
+import AVFoundation
 
 /// Video: AVKit for native formats, VLCKit fallback, keyboard control, layout.
 final class VideoUITests: SchnellbildUITestCase {
@@ -28,19 +29,36 @@ final class VideoUITests: SchnellbildUITestCase {
         eventually("Space resumes VLC playback") { !text(of: badge).contains("Paused") }
     }
 
-    /// The Inspector shows a video's resolution, from either player.
-    private func checkInspectorResolution(_ clip: String, player: String) throws {
-        try put(clip, at: clip)
-        launch(open: tempDir.appendingPathComponent(clip).path)
-        XCTAssertTrue(element(player).waitForExistence(timeout: 20))
+    /// The Inspector shows a video's resolution, from either player (VLC
+    /// through `--force-vlc`, so AVFoundation can tell the test the size).
+    private func checkInspectorResolution(vlc: Bool) throws {
+        try put("clip.mp4", at: "clip.mp4")
+        let url = tempDir.appendingPathComponent("clip.mp4")
+        launch(open: url.path, extra: vlc ? ["--force-vlc"] : [])
+        XCTAssertTrue(element(vlc ? "video.vlc" : "video.avkit").waitForExistence(timeout: 20))
+        let size = try XCTUnwrap(Self.videoSize(of: url))
+        let expected = "\(Int(size.width)) × \(Int(size.height)) px"
         app.typeKey("i", modifierFlags: [])
         XCTAssertTrue(app.staticTexts["Resolution"].waitForExistence(timeout: 15))
-        let size = app.staticTexts.matching(NSPredicate(format: "label MATCHES %@", "[0-9]+ × [0-9]+ px")).firstMatch
-        XCTAssertTrue(size.waitForExistence(timeout: 5), "a resolution like 640 × 360 px")
+        XCTAssertTrue(app.staticTexts[expected].waitForExistence(timeout: 10), "the Inspector shows \(expected)")
     }
 
-    func testInspectorShowsAnAVKitVideosResolution() throws { try checkInspectorResolution("clip.mp4", player: "video.avkit") }
-    func testInspectorShowsAVLCVideosResolution() throws { try checkInspectorResolution("clip.mkv", player: "video.vlc") }
+    /// The video's size as AVFoundation reads it (waits for it).
+    private static func videoSize(of url: URL) -> CGSize? {
+        let done = DispatchSemaphore(value: 0)
+        nonisolated(unsafe) var size: CGSize?
+        Task.detached {
+            if let track = try? await AVURLAsset(url: url).loadTracks(withMediaType: .video).first {
+                size = try? await track.load(.naturalSize)
+            }
+            done.signal()
+        }
+        done.wait()
+        return size
+    }
+
+    func testInspectorShowsAnAVKitVideosResolution() throws { try checkInspectorResolution(vlc: false) }
+    func testInspectorShowsAVLCVideosResolution() throws { try checkInspectorResolution(vlc: true) }
 
     /// → skims through the video in tenths, then moves on; ⌘← pages at once.
     private func checkSkimming(_ clip: String, player: String) throws {
