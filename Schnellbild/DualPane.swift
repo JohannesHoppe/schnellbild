@@ -35,19 +35,33 @@ final class WindowModel: ObservableObject {
     /// Menus and the toolbar read the active pane: its changes are the window's.
     private func watch(_ pane: BrowserModel) {
         forwarding.append(pane.objectWillChange.sink { [weak self] _ in self?.objectWillChange.send() })
+        pane.onActivate = { [weak self, weak pane] in
+            guard let self, let pane else { return }
+            self.activate(pane)
+        }
         pane.onFoldersChanged = { [weak self, weak pane] folders in
             guard let self, let pane else { return }
             for other in self.panes where other !== pane && other.shows(any: folders) { other.refresh() }
         }
-        // One volume and one mini keyboard for the window
+        // One volume and one mini keyboard for the window. @Published sends
+        // before the value is stored, so the other pane's own sink would see
+        // this one's old value and send it back: `syncing` stops that echo.
         forwarding.append(pane.$volume.dropFirst().sink { [weak self, weak pane] volume in
-            guard let self else { return }
-            for other in self.panes where other !== pane { other.adoptVolume(volume) }
+            self?.sync { for other in $0 where other !== pane { other.adoptVolume(volume) } }
         })
         forwarding.append(pane.$showMiniKeyboard.dropFirst().sink { [weak self, weak pane] shown in
-            guard let self else { return }
-            for other in self.panes where other !== pane && other.showMiniKeyboard != shown { other.showMiniKeyboard = shown }
+            self?.sync { for other in $0 where other !== pane && other.showMiniKeyboard != shown { other.showMiniKeyboard = shown } }
         })
+    }
+
+    private var syncing = false
+
+    /// Hands a change to the other panes (both of them, also the hidden right one).
+    private func sync(_ apply: ([BrowserModel]) -> Void) {
+        guard !syncing else { return }
+        syncing = true
+        defer { syncing = false }
+        apply([left, right].compactMap { $0 })
     }
 
     func toggleDual() { setDual(!dual) }
@@ -115,11 +129,6 @@ final class WindowModel: ObservableObject {
             return false
         }
     }
-}
-
-extension BrowserModel {
-    /// Any of the sheets is open (they keep their keys).
-    var anySheetOpen: Bool { showHelp || renameTarget != nil || passwordRequest != nil || newFolderRequested }
 }
 
 /// F9 and F10, as in Norton Commander: the app's menus in the window

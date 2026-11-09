@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- The UI-test build's Info.plist is generated; this adds what Resources/Info.plist declares beyond the defaults -->
+<plist version="1.0">
+<dict>
+    <!-- The app's own tile drags (TileDrag.type): only its own drop targets take them -->
+    <key>UTExportedTypeDeclarations</key>
+    <array>
+        <dict>
+            <key>UTTypeIdentifier</key>
+            <string>art.haushoppe.schnellbild.tile</string>
+            <key>UTTypeDescription</key>
+            <string>Schnellbild tiles</string>
+            <key>UTTypeConformsTo</key>
+            <array>
+                <string>public.data</string>
+            </array>
+        </dict>
+    </array>
+</dict>
+</plist>

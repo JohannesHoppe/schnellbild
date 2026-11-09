@@ -406,7 +406,12 @@ final class BrowserModel: ObservableObject {
     var isFiltering: Bool { !query.isEmpty }
     private static func trimmed(_ text: String) -> String { text.trimmingCharacters(in: .whitespaces) }
     /// Whether the (always visible) search field has keyboard focus.
-    @Published var searchFocused = false
+    @Published var searchFocused = false {
+        didSet { if searchFocused { onActivate?() } }
+    }
+    /// Told when the user turns to this pane (a click, a menu on one of its
+    /// tiles, its search field): the window makes it the active one.
+    var onActivate: (() -> Void)?
     @Published private(set) var isSearching = false
     /// Delay before walking subfolders, so fast typing doesn't start a full
     /// tree walk per keystroke.
@@ -1510,9 +1515,12 @@ final class BrowserModel: ObservableObject {
     /// it, ⇧ marks the range from the last one.
     func click(_ entry: GridEntry, command: Bool, shift: Bool) {
         guard let index = index(of: entry.url) else { return }
+        onActivate?()
         if shift { markRange(to: index); return }
         if command {
-            if marked.isEmpty, let current = selectedEntry, current.kind != .parent, current.url != entry.url {
+            // The one selected joins, if the user chose it (not the tile
+            // selected by default on opening the folder)
+            if marked.isEmpty, selectionChosen, let current = selectedEntry, current.kind != .parent, current.url != entry.url {
                 marked.insert(Self.canonicalPath(current.url))   // the one selected joins
             }
             let path = Self.canonicalPath(entry.url)
@@ -1529,7 +1537,8 @@ final class BrowserModel: ObservableObject {
     /// Marks everything from the anchor to `index` and moves the selection there.
     func markRange(to index: Int) {
         guard entries.indices.contains(index) else { return }
-        let anchor = markAnchor ?? selection ?? index
+        // The anchor can be past the end once items left the listing
+        let anchor = min(markAnchor ?? selection ?? index, entries.count - 1)
         let range = min(anchor, index)...max(anchor, index)
         marked = Set(entries[range].filter { $0.kind != .parent }.map { Self.canonicalPath($0.url) })
         markAnchor = anchor
@@ -1559,6 +1568,7 @@ final class BrowserModel: ObservableObject {
     @discardableResult
     func select(_ entry: GridEntry) -> Bool {
         guard let index = index(of: entry.url) else { return false }
+        onActivate?()
         selection = index
         return true
     }
@@ -1748,10 +1758,10 @@ final class BrowserModel: ObservableObject {
     }
 
     private func dispatchKey(_ key: KeyInput, command: Bool, shift: Bool, textEditing: Bool) -> Bool {
-        let sheetOpen = showHelp || renameTarget != nil || passwordRequest != nil || newFolderRequested
+        let sheetOpen = anySheetOpen
         switch key {
         case .f1:
-            guard renameTarget == nil, passwordRequest == nil else { return false }
+            guard !otherSheetOpen else { return false }
             if showHelp { showHelp = false } else { openHelp() }
             return true
         case .f2, .f6:
@@ -1786,7 +1796,7 @@ final class BrowserModel: ObservableObject {
         case .f7:
             return beginNewFolder()
         case .f8:
-            guard mode == .grid, !actionEntries.isEmpty else { return false }
+            guard mode == .grid, canTrash else { return false }
             moveSelectionToTrash(); return true
         case .backspace:
             guard !command else { return false }
@@ -1906,11 +1916,21 @@ final class BrowserModel: ObservableObject {
         return !ArchivePath.isInside(entry.url)
     }
 
+    /// What the Trash takes: the marked items (grid), else the selected one.
+    private var trashEntries: [GridEntry] {
+        guard mode == .grid else { return selectedMediaEntry.map { [$0] } ?? [] }
+        return actionEntries.filter { !ArchivePath.isInside($0.url) }
+    }
+
+    /// The Trash has something to take (the menu item and ⌘⌫).
+    var canTrash: Bool { slideshow == nil && !trashEntries.isEmpty }
+
     func moveSelectionToTrash() {
         guard slideshow == nil else { return }   // the selection is in the hidden grid
-        // Several marked (grid): all of them, after one confirmation
-        if mode == .grid, marked.count > 1 { trashMarked(); return }
-        guard let entry = selectedEntry, entry.kind != .parent else { return }
+        let items = trashEntries
+        // Several (marked): all of them, after one confirmation
+        if items.count > 1 { trashMarked(items); return }
+        guard let entry = items.first ?? selectedEntry, entry.kind != .parent else { return }
         guard !ArchivePath.isInside(entry.url) else { NSSound.beep(); return }   // archives are only read
         // What goes with it, said exactly: a folder's whole contents (also
         // what the grid doesn't show), all parts of a split archive
@@ -1927,6 +1947,7 @@ final class BrowserModel: ObservableObject {
             fileActions.report(error)
             return
         }
+        clearMarks()
         apply(.removed(entry.url))
         notifyFolderChanges([entry.url.deletingLastPathComponent()])
         if mode == .detail {
@@ -1936,24 +1957,28 @@ final class BrowserModel: ObservableObject {
         }
     }
 
-    private func trashMarked() {
-        let items = actionEntries.filter { !ArchivePath.isInside($0.url) }
-        guard !items.isEmpty else { NSSound.beep(); return }
+    /// Every item confirmed goes, also after one that fails (it is reported;
+    /// an item inside a folder trashed before it is gone with it).
+    private func trashMarked(_ items: [GridEntry]) {
         let names = items.prefix(4).map(\.name).joined(separator: ", ") + (items.count > 4 ? ", …" : "")
         let detail = String(localized: "The marked items will be moved to the Trash, folders with everything in them.")
         guard fileActions.confirmTrash(names, detail) else { return }
+        clearMarks()
+        var trashed: [URL] = []
+        var reported = false
         for item in items {
+            let path = Self.canonicalPath(item.url)
+            if trashed.contains(where: { path.hasPrefix(Self.canonicalPath($0) + "/") }) { continue }
             let files = ArchiveName.format(of: item.name) != nil ? ArchiveName.allFiles(of: item.url) : [item.url]
             do {
                 for file in files { try fileActions.trash(file) }
-                apply(.removed(item.url))
+                trashed.append(item.url)
             } catch {
-                fileActions.report(error)
-                break
+                if !reported { fileActions.report(error); reported = true }
             }
         }
-        clearMarks()
-        notifyFolderChanges([items.first!.url.deletingLastPathComponent()])
+        for url in trashed { apply(.removed(url)) }
+        notifyFolderChanges(Array(Set(trashed.map { $0.deletingLastPathComponent() })))
     }
 
     // MARK: Changes the other pane must see
@@ -1989,9 +2014,14 @@ final class BrowserModel: ObservableObject {
     /// F1 / "Schnellbild Help". Not over the rename sheet: a second sheet
     /// can't open on top of it.
     func openHelp() {
-        guard renameTarget == nil, passwordRequest == nil else { return }
+        guard !otherSheetOpen else { return }
         showHelp = true
     }
+
+    /// A sheet other than the help is open (a second sheet can't open on top).
+    var otherSheetOpen: Bool { renameTarget != nil || passwordRequest != nil || newFolderRequested }
+    /// Any of the sheets is open (they keep their keys).
+    var anySheetOpen: Bool { showHelp || otherSheetOpen }
 
     // MARK: - New folder, moving into folders
 
@@ -2000,8 +2030,10 @@ final class BrowserModel: ObservableObject {
     @Published var newFolderRequested = false
 
     /// "IMG 2.jpg", "IMG 3.jpg" … for a name taken in `folder`.
-    static func freeName(for name: String, in folder: URL, taken: (URL) -> Bool) -> URL {
-        let stem = (name as NSString).deletingPathExtension, ext = (name as NSString).pathExtension
+    static func freeName(for name: String, in folder: URL, isFolder: Bool = false, taken: (URL) -> Bool) -> URL {
+        // As the Finder: a folder's number goes after its whole name
+        let stem = isFolder ? name : (name as NSString).deletingPathExtension
+        let ext = isFolder ? "" : (name as NSString).pathExtension
         for n in 2... {
             let candidate = folder.appendingPathComponent(ext.isEmpty ? "\(stem) \(n)" : "\(stem) \(n).\(ext)")
             if !taken(candidate) { return candidate }
@@ -2022,8 +2054,9 @@ final class BrowserModel: ObservableObject {
     /// Whether a folder can be made here: a real folder, not inside an
     /// archive, no slideshow or sheet in the way.
     var canCreateFolder: Bool {
-        guard let folderURL, slideshow == nil, !isLoading else { return false }
-        return !showHelp && renameTarget == nil && passwordRequest == nil && ArchivePath.split(folderURL) == nil
+        // In the grid: what it makes is selected there
+        guard let folderURL, mode == .grid, slideshow == nil, !isLoading else { return false }
+        return !anySheetOpen && ArchivePath.split(folderURL) == nil
     }
 
     @discardableResult
@@ -2071,22 +2104,34 @@ final class BrowserModel: ObservableObject {
     func move(_ sources: [URL], into folder: URL, how: Transfer = .asFinder) {
         guard ArchivePath.split(folder) == nil else { NSSound.beep(); return }
         let target = Self.canonicalPath(folder)
+        let shown = folderPath
         var changed = [folder]
         for source in sources {
             let path = Self.canonicalPath(source)
             guard !ArchivePath.isInside(source), path != target, !target.hasPrefix(path + "/"),
+                  // Never the folder shown or one around it
+                  shown.map({ $0 != path && !$0.hasPrefix(path + "/") }) ?? true,
                   Self.canonicalPath(source.deletingLastPathComponent()) != target else { continue }
+            // A split archive goes with all its parts
+            let files = ArchiveName.format(of: source.lastPathComponent) != nil ? ArchiveName.allFiles(of: source) : [source]
             var destination = folder.appendingPathComponent(source.lastPathComponent)
             if fileActions.conflicts(destination, source) {
                 guard fileActions.askKeepBoth(source.lastPathComponent, folder.lastPathComponent) else { continue }
-                destination = Self.freeName(for: source.lastPathComponent, in: folder, taken: { self.fileActions.conflicts($0, source) })
+                // Renamed, the parts of a split archive no longer belong together
+                guard files.count == 1 else { NSSound.beep(); continue }
+                let isFolder = (try? source.resourceValues(forKeys: [.isDirectoryKey]).isDirectory) == true
+                destination = Self.freeName(for: source.lastPathComponent, in: folder, isFolder: isFolder,
+                                            taken: { self.fileActions.conflicts($0, source) })
             }
             do {
-                let moved: Bool
-                switch how {
-                case .asFinder: moved = try fileActions.transfer(source, destination)
-                case .copy:     try fileActions.copy(source, destination); moved = false
-                case .move:     try fileActions.move(source, destination); moved = true
+                var moved = false
+                for file in files {
+                    let to = file == source ? destination : folder.appendingPathComponent(file.lastPathComponent)
+                    switch how {
+                    case .asFinder: moved = try fileActions.transfer(file, to)
+                    case .copy:     try fileActions.copy(file, to); moved = false
+                    case .move:     try fileActions.move(file, to); moved = true
+                    }
                 }
                 if moved {
                     apply(.moved(source, to: destination))
@@ -2100,17 +2145,25 @@ final class BrowserModel: ObservableObject {
             }
         }
         notifyFolderChanges(changed)
-        guard let folderPath else { return }
+        // What was moved is no longer marked here
+        clearMarks()
+        guard let shown else { return }
         // Into the folder shown (a drop onto the pane): read it again to show what came
-        if target == folderPath { refresh(); return }
+        if target == shown { refresh(); return }
         // What went into a subfolder leaves this folder's listing
-        let here: (GridEntry) -> Bool = { $0.kind == .parent || Self.canonicalPath($0.url.deletingLastPathComponent()) == folderPath }
+        let here: (GridEntry) -> Bool = { $0.kind == .parent || Self.canonicalPath($0.url.deletingLastPathComponent()) == shown }
         let keep = selectedEntry?.url
         allEntries = allEntries.filter(here)
         if !isFiltering {
             entries = allEntries
-            selection = index(of: keep) ?? Self.defaultSelection(in: entries)
+            if let index = index(of: keep) {
+                if selection != index { selection = index }
+            } else {
+                selectDefault(in: entries)
+            }
         }
+        // The full view shows media only: back to the grid when what it showed left
+        if mode == .detail, selectedMediaEntry == nil { mode = .grid }
     }
 
     /// Whether the folder shown can be renamed in place (its name in the
@@ -2151,7 +2204,7 @@ final class BrowserModel: ObservableObject {
     @discardableResult
     func beginRename() -> Bool {
         // Not over the help: a second sheet can't open on top of it.
-        guard slideshow == nil, !showHelp, renameTarget == nil, passwordRequest == nil,
+        guard slideshow == nil, !anySheetOpen,
               let entry = selectedEntry, entry.kind != .parent,
               // Archives are only read; a split one is renamed by renaming all its volumes, not here
               !ArchivePath.isInside(entry.url),
@@ -2503,7 +2556,7 @@ final class BrowserModel: ObservableObject {
             case "k" where !command: showMiniKeyboard.toggle(); return true
             // No search, history or file actions while the hidden grid's
             // selection isn't what's on screen
-            case "f" where command, "[" where command, "]" where command: return true
+            case "f" where command, "[" where command, "]" where command, "a" where command: return true
             default: return handleCharacter(c, command: command)   // zoom, rotate
             }
         default:

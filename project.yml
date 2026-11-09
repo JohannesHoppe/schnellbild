@@ -102,6 +102,7 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: art.haushoppe.schnellbild
         GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_FILE: Resources/ExportedTypes.plist
         INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.photography
         INFOPLIST_KEY_NSHumanReadableCopyright: "© 2026 HAUS HOPPE - ITS (Johannes Hoppe). MIT License."
         SWIFT_INCLUDE_PATHS: ["$(SRCROOT)/Native/CArchives/include"]
