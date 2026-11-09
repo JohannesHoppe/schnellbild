@@ -1509,7 +1509,6 @@ final class BrowserModel: ObservableObject {
     /// A click on a tile: plain selects it (and unmarks), ⌘ marks or unmarks
     /// it, ⇧ marks the range from the last one.
     func click(_ entry: GridEntry, command: Bool, shift: Bool) {
-        Self.testLog("click \(entry.name) command \(command) shift \(shift)")
         guard let index = index(of: entry.url) else { return }
         if shift { markRange(to: index); return }
         if command {
@@ -1704,7 +1703,6 @@ final class BrowserModel: ObservableObject {
         keyRepeating = repeating
         defer { keyRepeating = false }
         let handled = dispatchKey(key, command: command, shift: shift, textEditing: textEditing)
-        Self.testLog("key \(key) command \(command) shift \(shift) typing \(textEditing): \(handled), marked \(marked.count)")
         // The mini keyboard lights up the key that acted, typed or clicked
         if handled { lastKeyPress = KeyPress(key: key, command: command, shift: shift) }
         return handled
@@ -2071,7 +2069,6 @@ final class BrowserModel: ObservableObject {
     /// both (the new one numbered) or skip. Not into archives, not into
     /// themselves.
     func move(_ sources: [URL], into folder: URL, how: Transfer = .asFinder) {
-        Self.testLog("move \(sources.map(\.lastPathComponent)) into \(folder.lastPathComponent)")
         guard ArchivePath.split(folder) == nil else { NSSound.beep(); return }
         let target = Self.canonicalPath(folder)
         var changed = [folder]

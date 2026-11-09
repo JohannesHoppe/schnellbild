@@ -1004,12 +1004,10 @@ private struct PaneDrop: DropDelegate {
 
     func validateDrop(info: DropInfo) -> Bool {
         let valid = pane.folderURL != nil && info.hasItemsConforming(to: [.fileURL])
-        BrowserModel.testLog("pane drop valid \(valid)")
         return valid
     }
     func dropUpdated(info: DropInfo) -> DropProposal? { DropProposal(operation: .move) }
     func performDrop(info: DropInfo) -> Bool {
-        BrowserModel.testLog("drop on pane \(pane.folderURL?.lastPathComponent ?? "-")")
         guard let folder = pane.folderURL else { return false }
         let pane = pane
         TileDrag.loadURLs(info.itemProviders(for: [.fileURL])) { urls in pane.move(urls, into: folder) }
