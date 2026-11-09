@@ -203,6 +203,82 @@ final class VisualUITests: SchnellbildUITestCase {
         }
     }
 
+    /// The same video in both players, every correction one after the
+    /// other: AVKit (what the app uses for MP4) and VLC (its pipeline,
+    /// tested on the same file) show each the same, channel by channel.
+    func testBothPlayersApplyEveryCorrectionAlike() throws {
+        let steps: [(name: String, slider: String?, position: Double)] = [
+            ("as is", nil, 0),
+            ("brighter", "exposure", 0.85),
+            ("darker", "exposure", 0.2),
+            ("more contrast", "contrast", 0.85),
+            ("less saturation", "saturation", 0.1),
+            ("sharper", "sharpness", 1),
+            ("reset", "reset", 0),
+            ("auto", "auto", 0),
+        ]
+        var shown: [String: [ScreenStats]] = [:]
+        for vlc in [false, true] {
+            let player = vlc ? "VLC" : "AVKit"
+            let video = try openVideo("colours.mp4", vlc: vlc)
+            for step in steps {
+                switch step.slider {
+                case nil:
+                    break
+                case "auto":
+                    app.typeKey("e", modifierFlags: [])
+                    waitForBadge(containing: "Enhanced")
+                case "reset":
+                    app.typeKey("a", modifierFlags: [])
+                    let reset = element("resetLook").firstMatch
+                    XCTAssertTrue(reset.waitForExistence(timeout: 5))
+                    reset.click()
+                    eventually("back to the file as is") { !self.text(of: self.badge).contains("Adjusted") }
+                    app.typeKey("a", modifierFlags: [])
+                case let id?:
+                    app.typeKey("a", modifierFlags: [])
+                    let reset = element("resetLook").firstMatch
+                    XCTAssertTrue(reset.waitForExistence(timeout: 5))
+                    reset.click()   // each step from the file as is
+                    let slider = element("slider.\(id)").firstMatch
+                    XCTAssertTrue(slider.waitForExistence(timeout: 5))
+                    slider.adjust(toNormalizedSliderPosition: step.position)
+                    waitForBadge(containing: "Adjusted")
+                    app.typeKey("a", modifierFlags: [])   // the sliders would cover the picture
+                }
+                app.windows.firstMatch.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.02)).hover()
+                settle(3)
+                shown["\(player) \(step.name)"] = try bands(of: video)
+            }
+            app.terminate()
+        }
+        func describe(_ stats: [ScreenStats]) -> String {
+            stats.map { String(format: "(%.3f %.3f %.3f)", $0.red, $0.green, $0.blue) }.joined(separator: " ")
+        }
+        for step in steps {
+            print("\(step.name): AVKit \(describe(shown["AVKit \(step.name)"] ?? [])), VLC \(describe(shown["VLC \(step.name)"] ?? []))")
+        }
+        for step in steps {
+            let avkit = try XCTUnwrap(shown["AVKit \(step.name)"]), vlc = try XCTUnwrap(shown["VLC \(step.name)"])
+            for (band, name) in ["red", "green", "blue"].enumerated() {
+                let a = avkit[band], v = vlc[band]
+                for (channel, x, y) in [("red", a.red, v.red), ("green", a.green, v.green), ("blue", a.blue, v.blue)] {
+                    XCTAssertEqual(y, x, accuracy: 0.05, "\(step.name), \(name) band, \(channel): AVKit \(x), VLC \(y)")
+                }
+            }
+        }
+        // And each correction does what it says, in AVKit
+        let base = try XCTUnwrap(shown["AVKit as is"])
+        func mean(_ stats: [ScreenStats]) -> Double { stats.map(\.mean).reduce(0, +) / Double(stats.count) }
+        func chroma(_ stats: [ScreenStats]) -> Double {
+            stats.map { [$0.red, $0.green, $0.blue].max()! - [$0.red, $0.green, $0.blue].min()! }.reduce(0, +)
+        }
+        XCTAssertGreaterThan(mean(shown["AVKit brighter"]!), mean(base) + 0.05, "brighter")
+        XCTAssertLessThan(mean(shown["AVKit darker"]!), mean(base) - 0.05, "darker")
+        XCTAssertLessThan(chroma(shown["AVKit less saturation"]!), chroma(base) - 0.2, "less saturation")
+        XCTAssertEqual(mean(shown["AVKit reset"]!), mean(base), accuracy: 0.02, "reset: the file as is")
+    }
+
     func testAVKitVideoIsShownAtFullBrightness() throws { try checkFullBrightness(vlc: false) }
     func testVLCVideoIsShownAtFullBrightness() throws { try checkFullBrightness(vlc: true) }
 
