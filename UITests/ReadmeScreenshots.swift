@@ -118,31 +118,12 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         try newFeatureScreenshots()
     }
 
-    /// Zips some of the library's pictures into `name` at its top (once:
-    /// the dark run finds it there).
-    private func makeArchive(_ name: String, from files: [String], password: String? = nil) throws {
-        let target = tempDir.appendingPathComponent(name)
-        guard !FileManager.default.fileExists(atPath: target.path) else { return }
-        let process = Process()
-        process.executableURL = URL(fileURLWithPath: "/usr/bin/zip")
-        process.arguments = ["-q", "-0", "-j"] + (password.map { ["-P", $0] } ?? []) + [target.path]
-            + files.map { tempDir.appendingPathComponent($0).path }
-        try process.run()
-        process.waitUntilExit()
-    }
-
     /// Archives, other files, the password sheet, the mini keyboard, a new
     /// folder, the volume.
     private func newFeatureScreenshots() throws {
-        let fm = FileManager.default
-        let photos = try fm.subpathsOfDirectory(atPath: tempDir.path)
+        // The archives and other files are made by the workflow (screenshots.yml)
+        let photos = try FileManager.default.subpathsOfDirectory(atPath: tempDir.path)
             .filter { $0.hasSuffix(".jpg") && !$0.hasPrefix(".") }.sorted()
-        try makeArchive("Iceland 2025.zip", from: Array(photos.prefix(6)))
-        try makeArchive("Private.zip", from: Array(photos.suffix(2)), password: "secret")
-        for (name, text) in [("Packing list.txt", "Rain jacket, tripod, spare batteries\n"), ("Route.gpx", "<gpx/>\n")] {
-            let url = tempDir.appendingPathComponent(name)
-            if !fm.fileExists(atPath: url.path) { try Data(text.utf8).write(to: url) }
-        }
 
         launch(open: tempDir.path, extra: ["--hold-volume-display"])
         XCTAssertTrue(tile("Iceland 2025.zip").waitForExistence(timeout: 15))
