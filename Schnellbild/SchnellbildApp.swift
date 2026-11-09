@@ -59,7 +59,7 @@ struct SchnellbildApp: App {
                     .keyboardShortcut("n", modifiers: [.command, .shift])
                     .disabled(!model.canCreateFolder)
                 Button("Rename… (F2)") { model.beginRename() }
-                    .disabled(model.slideshow != nil || model.showHelp || !model.selectionIsChangeable)
+                    .disabled(model.slideshow != nil || model.anySheetOpen || !model.selectionIsChangeable)
                 Button("Reveal in Finder") { model.revealInFinder() }
                     .keyboardShortcut("r", modifiers: [.command, .shift])
                     .disabled(model.slideshow != nil)
@@ -75,7 +75,7 @@ struct SchnellbildApp: App {
                 Divider()
                 Button("Move to Trash…") { model.moveSelectionToTrash() }
                     .keyboardShortcut(.delete)
-                    .disabled(model.slideshow != nil || !model.selectionIsChangeable)
+                    .disabled(!model.canTrash)
             }
             CommandGroup(after: .toolbar) {
                 Toggle("as Grid", isOn: Binding(get: { model.viewMode == .grid }, set: { if $0 { model.viewMode = .grid } }))

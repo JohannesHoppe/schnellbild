@@ -293,30 +293,22 @@ struct TileDrag: ViewModifier {
     /// (Browse / Slideshow) stay out of the way; carries every item dragged.
     static let type = UTType(exportedAs: "art.haushoppe.schnellbild.tile")
 
-    /// The files of a drop: all of a tile drag (several marked items),
-    /// else the file URLs (from the Finder).
+    /// The files of a tile drag (every marked item it carries). Only drags
+    /// from the app's own tiles are taken this way: a drop from the Finder
+    /// goes to the window's drop zones (browse / slideshow), never moves.
     static func loadURLs(_ providers: [NSItemProvider], then use: @escaping @MainActor ([URL]) -> Void) {
-        if let own = providers.first(where: { $0.hasItemConformingToTypeIdentifier(type.identifier) }) {
-            own.loadDataRepresentation(forTypeIdentifier: type.identifier) { data, _ in
-                let urls = data.map { String(decoding: $0, as: UTF8.self).split(separator: "\n").map { URL(fileURLWithPath: String($0)) } } ?? []
-                DispatchQueue.main.async { MainActor.assumeIsolated { use(urls) } }
-            }
-            return
+        guard let own = providers.first(where: { $0.hasItemConformingToTypeIdentifier(type.identifier) }) else { return }
+        own.loadDataRepresentation(forTypeIdentifier: type.identifier) { data, _ in
+            let paths = data.flatMap { try? PropertyListDecoder().decode([String].self, from: $0) } ?? []
+            let urls = paths.map { URL(fileURLWithPath: $0) }
+            DispatchQueue.main.async { MainActor.assumeIsolated { use(urls) } }
         }
-        let group = DispatchGroup()
-        let lock = NSLock()
-        nonisolated(unsafe) var urls: [URL] = []
-        for provider in providers {
-            group.enter()
-            _ = provider.loadObject(ofClass: URL.self) { url, _ in
-                if let url { lock.lock(); urls.append(url); lock.unlock() }
-                group.leave()
-            }
-        }
-        group.notify(queue: .main) { MainActor.assumeIsolated { use(urls) } }
     }
 
     private var inArchive: Bool { ArchivePath.split(entry.url) != nil }
+    /// ".." and what lies inside an archive don't drag (".." is the folder
+    /// around the one shown; an archive's items have no file of their own).
+    private var drags: Bool { entry.kind != .parent && !inArchive }
     private var acceptsDrops: Bool {
         (entry.kind == .folder || entry.kind == .parent) && !inArchive && ArchiveName.format(of: entry.name) == nil
     }
@@ -328,17 +320,7 @@ struct TileDrag: ViewModifier {
                     RoundedRectangle(cornerRadius: 8).strokeBorder(Color.accentColor, lineWidth: 3)
                 }
             }
-            .onDrag {
-                // A marked tile takes all the marked ones along (the Finder
-                // gets the one dragged)
-                let paths = model.isMarked(entry) ? model.actionEntries.map(\.url.path) : [entry.url.path]
-                let provider = NSItemProvider(object: entry.url as NSURL)
-                provider.registerDataRepresentation(forTypeIdentifier: Self.type.identifier, visibility: .ownProcess) { done in
-                    done(Data(paths.joined(separator: "\n").utf8), nil)
-                    return nil
-                }
-                return provider
-            }
+            .modifier(TileDragSource(entry: entry, drags: drags))
             .modifier(FolderDrop(entry: entry, accepts: acceptsDrops, targeted: $targeted))
     }
 }
@@ -354,6 +336,8 @@ struct EntryInteractions: ViewModifier {
     private func hover() {
         let entry = entry, model = model
         ModifierClicks.enter(key) { flags in
+            // Not on the grid kept under the full view or a slideshow
+            guard model.mode == .grid, model.slideshow == nil else { return }
             model.searchFocused = false
             model.click(entry, command: flags.contains(.command), shift: flags.contains(.shift))
         }
@@ -370,6 +354,8 @@ struct EntryInteractions: ViewModifier {
             // At once, not after the double-click interval: a key pressed
             // right after the click must find it done
             .simultaneousGesture(TapGesture().onEnded {
+                // ⌘- and ⇧-clicks are ModifierClicks'
+                guard NSEvent.modifierFlags.intersection([.command, .shift]).isEmpty else { return }
                 model.searchFocused = false
                 model.click(entry, command: false, shift: false)
             })
@@ -409,10 +395,35 @@ struct EntryInteractions: ViewModifier {
     }
 }
 
-/// The drop target of a tile. A folder tile (or "..") takes what is dropped
-/// into it; any other tile passes it on to the pane's folder (the dual pane:
-/// dragged across from the other pane). Every tile has one: tiles with and
-/// without a drop target side by side kept ⌘-clicks from arriving.
+/// The drag of a tile: the file for the Finder, and for the app's own drop
+/// targets every marked item along (when the dragged tile is marked).
+private struct TileDragSource: ViewModifier {
+    let entry: GridEntry
+    let drags: Bool
+    @EnvironmentObject var model: BrowserModel
+
+    func body(content: Content) -> some View {
+        if drags {
+            content.onDrag {
+                let paths = model.isMarked(entry) ? model.actionEntries.map(\.url.path) : [entry.url.path]
+                let provider = NSItemProvider(object: entry.url as NSURL)
+                provider.registerDataRepresentation(forTypeIdentifier: TileDrag.type.identifier, visibility: .ownProcess) { done in
+                    done(try? PropertyListEncoder().encode(paths), nil)
+                    return nil
+                }
+                return provider
+            }
+        } else {
+            content
+        }
+    }
+}
+
+/// The drop target of a tile, for the app's own tile drags only. A folder
+/// tile (or "..") takes what is dropped into it; any other tile passes it on
+/// to the pane's folder (the dual pane: dragged across from the other pane),
+/// but not while results are shown (their folder is not the one searched).
+/// Every tile has one, so ⌘-clicks meet the same views on every tile.
 private struct FolderDrop: ViewModifier {
     let entry: GridEntry
     let accepts: Bool
@@ -420,10 +431,9 @@ private struct FolderDrop: ViewModifier {
     @EnvironmentObject var model: BrowserModel
 
     func body(content: Content) -> some View {
-        content.onDrop(of: [.fileURL], isTargeted: accepts ? $targeted : .constant(false)) { providers in
-            let target = accepts ? entry.url : model.folderURL
-            guard let folder = target, ArchivePath.split(folder) == nil,
-                  !model.isFiltering || entry.kind == .folder || !accepts else { return false }
+        content.onDrop(of: [TileDrag.type], isTargeted: accepts ? $targeted : .constant(false)) { providers in
+            let target = accepts ? entry.url : (model.isFiltering ? nil : model.folderURL)
+            guard let folder = target, ArchivePath.split(folder) == nil else { return false }
             TileDrag.loadURLs(providers) { urls in model.move(urls, into: folder) }
             return true
         }
@@ -431,11 +441,13 @@ private struct FolderDrop: ViewModifier {
 }
 
 /// ⌘- and ⇧-clicks on tiles and rows. SwiftUI's tap gestures don't fire
-/// while ⌘ is held, so a mouse-down monitor acts on the tile the pointer is
-/// over (tiles report it by hovering); other clicks pass.
+/// while ⌘ is held, so a monitor acts on the tile the pointer is over (tiles
+/// report it by hovering). It acts when the button comes up near where it
+/// went down: a ⌘- or ⇧-drag of marked tiles still drags.
 @MainActor
 enum ModifierClicks {
     private static var hovered: (key: String, action: (NSEvent.ModifierFlags) -> Void)?
+    private static var pending: (action: (NSEvent.ModifierFlags) -> Void, flags: NSEvent.ModifierFlags, at: NSPoint)?
     private static var monitor: Any?
 
     static func enter(_ key: String, action: @escaping (NSEvent.ModifierFlags) -> Void) {
@@ -447,15 +459,23 @@ enum ModifierClicks {
 
     static func start() {
         guard monitor == nil else { return }
-        monitor = NSEvent.addLocalMonitorForEvents(matching: .leftMouseDown) { event in
-            MainActor.assumeIsolated { handle(event) } ? nil : event
+        monitor = NSEvent.addLocalMonitorForEvents(matching: [.leftMouseDown, .leftMouseUp]) { event in
+            MainActor.assumeIsolated { handle(event) }
+            return event
         }
     }
 
-    private static func handle(_ event: NSEvent) -> Bool {
-        let flags = event.modifierFlags.intersection([.command, .shift])
-        guard !flags.isEmpty, let hovered, event.window === BrowserModel.appWindow else { return false }
-        hovered.action(flags)
-        return true
+    private static func handle(_ event: NSEvent) {
+        if event.type == .leftMouseDown {
+            pending = nil
+            let flags = event.modifierFlags.intersection([.command, .shift])
+            guard !flags.isEmpty, let hovered, event.window === BrowserModel.appWindow else { return }
+            pending = (hovered.action, flags, event.locationInWindow)
+            return
+        }
+        guard let click = pending else { return }
+        pending = nil
+        let moved = hypot(event.locationInWindow.x - click.at.x, event.locationInWindow.y - click.at.y)
+        if moved < 4 { click.action(click.flags) }
     }
 }

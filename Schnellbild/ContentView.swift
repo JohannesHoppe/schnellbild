@@ -119,7 +119,7 @@ private struct WindowView: View {
             // Tiles dropped onto a pane's free space go into its folder (the
             // whole pane takes drops, also where nothing is drawn)
             .contentShape(Rectangle())
-            .onDrop(of: [.fileURL], delegate: PaneDrop(pane: pane, window: window))
+            .onDrop(of: [TileDrag.type], delegate: PaneDrop(pane: pane, window: window))
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier(pane === window.left ? "pane.left" : "pane.right")
     }
@@ -997,20 +997,21 @@ private struct FolderNameField: View {
     }
 }
 
-/// Tiles dropped onto a pane's free space: into its folder.
+/// Tiles dropped onto a pane's free space: into its folder (not while it
+/// shows results, whose folder is not the one searched). Only the app's own
+/// tile drags: a drop from the Finder goes to the window's drop zones.
 private struct PaneDrop: DropDelegate {
     let pane: BrowserModel
     let window: WindowModel
 
     func validateDrop(info: DropInfo) -> Bool {
-        let valid = pane.folderURL != nil && info.hasItemsConforming(to: [.fileURL])
-        return valid
+        pane.folderURL != nil && !pane.isFiltering && info.hasItemsConforming(to: [TileDrag.type])
     }
     func dropUpdated(info: DropInfo) -> DropProposal? { DropProposal(operation: .move) }
     func performDrop(info: DropInfo) -> Bool {
-        guard let folder = pane.folderURL else { return false }
+        guard let folder = pane.folderURL, !pane.isFiltering else { return false }
         let pane = pane
-        TileDrag.loadURLs(info.itemProviders(for: [.fileURL])) { urls in pane.move(urls, into: folder) }
+        TileDrag.loadURLs(info.itemProviders(for: [TileDrag.type])) { urls in pane.move(urls, into: folder) }
         window.activate(pane)
         return true
     }

@@ -53,5 +53,19 @@
     <true/>
     <key>NSHumanReadableCopyright</key>
     <string>© 2026 HAUS HOPPE - ITS (Johannes Hoppe). MIT License.</string>
+    <!-- The app's own tile drags (TileDrag.type): only its own drop targets take them -->
+    <key>UTExportedTypeDeclarations</key>
+    <array>
+        <dict>
+            <key>UTTypeIdentifier</key>
+            <string>art.haushoppe.schnellbild.tile</string>
+            <key>UTTypeDescription</key>
+            <string>Schnellbild tiles</string>
+            <key>UTTypeConformsTo</key>
+            <array>
+                <string>public.data</string>
+            </array>
+        </dict>
+    </array>
 </dict>
 </plist>
