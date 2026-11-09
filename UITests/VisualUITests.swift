@@ -428,7 +428,6 @@ final class VisualUITests: SchnellbildUITestCase {
     /// A photo changed in another app gets a new tile once its folder is
     /// opened again, not the old picture from the session's cache.
     func testAChangedPhotoGetsANewTile() throws {
-        try put("sample.jpg", at: "a.jpg")
         let photo = try put("dark.jpg", at: "sub/x.jpg")
         launch(open: tempDir.appendingPathComponent("sub").path)
         let x = tile("x.jpg")

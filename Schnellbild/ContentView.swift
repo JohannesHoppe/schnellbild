@@ -56,6 +56,13 @@ struct ContentView: View {
             model.openDropped(urls, slideshow: zone == .slideshow)
         })
         .overlay { if let dropZone, model.slideshow == nil { DropZonesView(highlighted: dropZone) } }
+        .overlay(alignment: .topTrailing) {
+            if model.slideshow != nil, model.showAdjustments {
+                AdjustmentsView()
+                    .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 12))
+                    .padding(24)
+            }
+        }
         // Starting a slideshow or opening a folder ends any drag shown;
         // AppKit does not always send "exited" once the window goes full screen.
         .onChange(of: model.slideshow?.id) { dropZone = nil }
@@ -246,7 +253,10 @@ struct ContentView: View {
             }
             .help("Exposure, contrast, saturation and sharpness by hand (A)")
             .accessibilityIdentifier("adjustButton")
-            .popover(isPresented: $model.showAdjustments, arrowEdge: .bottom) {
+            // In the window; during a slideshow the toolbar is hidden, so the
+            // sliders show as a panel over the picture instead (see body).
+            .popover(isPresented: Binding(get: { model.showAdjustments && model.slideshow == nil },
+                                          set: { model.showAdjustments = $0 }), arrowEdge: .bottom) {
                 AdjustmentsView().environmentObject(model)
             }
         }
@@ -307,7 +317,9 @@ struct ContentView: View {
                     editor.keyDown(with: event)
                     return true
                 }
-                // ⌃⌘F and other ⌃ combinations are the system's (full screen).
+                // ⌃⌘F: full screen, as the system's shortcut; other ⌃
+                // combinations are the system's.
+                if control, command, code == 3 { model.toggleFullScreen(); return true }
                 guard !control, let key = Self.keyInput(code: code, characters: chars, latin: {
                     LatinKeys.character(for: code, shift: event.modifierFlags.contains(.shift))
                 }) else { return false }

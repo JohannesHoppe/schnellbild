@@ -82,6 +82,12 @@ jobs:
         with:
           xcode-version: latest-stable
 
+      - name: Cache xcodegen
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: build/xcodegen
+          key: xcodegen-${{ hashFiles('Scripts/fetch_xcodegen.sh') }}
+
       - name: Install xcodegen
         run: ./Scripts/fetch_xcodegen.sh >> "$GITHUB_PATH"
 
