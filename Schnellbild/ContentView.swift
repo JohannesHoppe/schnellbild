@@ -2,8 +2,20 @@ import SwiftUI
 import AppKit
 import Carbon.HIToolbox
 
+/// The window: one pane or two (the dual pane), with what belongs to the
+/// window — toolbar, keys, drop zones, the mini keyboard, the slideshow's
+/// full screen. It works on the active pane.
 struct ContentView: View {
-    @EnvironmentObject var model: BrowserModel
+    @EnvironmentObject var window: WindowModel
+
+    var body: some View {
+        WindowView(model: window.active)
+    }
+}
+
+private struct WindowView: View {
+    @ObservedObject var model: BrowserModel
+    @EnvironmentObject var window: WindowModel
     @State private var dropZone: DropZone?
     @State private var width: CGFloat = 0
     @State private var keyMonitor: Any?
@@ -14,6 +26,319 @@ struct ContentView: View {
     /// In a slideshow the mini keyboard shows while the mouse moves.
     @State private var slideshowKeysShown = false
     @State private var hideSlideshowKeys: Task<Void, Never>?
+
+    var body: some View {
+        panes
+        // Drag & drop: a folder (or media file) onto the window. The left
+        // half browses it, the right half starts a slideshow.
+        .background { GeometryReader { geo in
+            Color.clear.onAppear { width = geo.size.width }
+                .onChange(of: geo.size.width) { _, new in width = new }
+        } }
+        .onDrop(of: [.fileURL], delegate: DropZoneDelegate(zone: $dropZone, width: width) { urls, zone in
+            model.openDropped(urls, slideshow: zone == .slideshow)
+        })
+        .overlay { if let dropZone, model.slideshow == nil { DropZonesView(highlighted: dropZone) } }
+        // Starting a slideshow or opening a folder ends any drag shown;
+        // AppKit does not always send "exited" once the window goes full screen.
+        .onChange(of: model.slideshow?.id) { dropZone = nil }
+        .onChange(of: model.folderURL) { dropZone = nil }
+        .safeAreaInset(edge: .bottom, spacing: 0) {
+            // The mini keyboard slides up under everything (K)
+            VStack(spacing: 0) {
+                if model.showMiniKeyboard, model.slideshow == nil {
+                    MiniKeyboard().transition(.move(edge: .bottom))
+                }
+            }
+            .animation(.easeOut(duration: 0.2), value: model.showMiniKeyboard)
+        }
+        .overlay(alignment: .bottom) {
+            // In a slideshow: while the mouse moves, then it slides away
+            if model.showMiniKeyboard, model.slideshow != nil, slideshowKeysShown {
+                MiniKeyboard().transition(.move(edge: .bottom).combined(with: .opacity))
+            }
+        }
+        .animation(.easeOut(duration: 0.25), value: slideshowKeysShown)
+        .onContinuousHover { phase in
+            guard model.slideshow != nil, case .active = phase else { return }
+            slideshowKeysShown = true
+            hideSlideshowKeys?.cancel()
+            hideSlideshowKeys = Task { @MainActor in
+                try? await Task.sleep(for: .seconds(3))
+                guard !Task.isCancelled else { return }
+                slideshowKeysShown = false
+            }
+        }
+        .toolbar(model.slideshow == nil ? .visible : .hidden, for: .windowToolbar)
+        // The slideshow fills the whole screen, also where the (hidden) title
+        // bar would be.
+        .background(model.slideshow == nil ? Color.clear : Color.black)
+        .ignoresSafeArea(.container, edges: model.slideshow == nil ? [] : .all)
+        .onAppear {
+            if !launched {
+                launched = true
+                if !window.left.openFromLaunchArguments() { window.left.restoreLastFolder() }
+            }
+            installKeyMonitor()
+        }
+        .onDisappear { removeKeyMonitor() }
+        .toolbar { toolbarContent }
+        .navigationTitle(model.folderURL?.lastPathComponent ?? "Schnellbild")
+        .environmentObject(model)
+    }
+
+    /// One pane, or both side by side with the active one outlined. A
+    /// slideshow takes the whole window.
+    @ViewBuilder
+    private var panes: some View {
+        if window.dual, model.slideshow == nil, let right = window.right {
+            HStack(spacing: 0) {
+                pane(window.left)
+                Divider()
+                pane(right)
+            }
+        } else {
+            PaneView().environmentObject(model)
+        }
+    }
+
+    private func pane(_ pane: BrowserModel) -> some View {
+        PaneView()
+            .environmentObject(pane)
+            .overlay {
+                if pane === model {
+                    Rectangle().strokeBorder(Color.accentColor.opacity(0.8), lineWidth: 2).allowsHitTesting(false)
+                }
+            }
+            // A click anywhere in a pane makes it the active one
+            .simultaneousGesture(TapGesture().onEnded { window.activate(pane) })
+            // Tiles dropped onto a pane's free space go into its folder
+            .onDrop(of: [.fileURL], isTargeted: nil) { providers in
+                guard let folder = pane.folderURL else { return false }
+                TileDrag.loadURLs(providers) { urls in pane.move(urls, into: folder) }
+                window.activate(pane)
+                return true
+            }
+            .accessibilityElement(children: .contain)
+            .accessibilityIdentifier(pane === window.left ? "pane.left" : "pane.right")
+    }
+
+    // MARK: - Toolbar (history, up, open)
+
+    @ToolbarContentBuilder
+    private var toolbarContent: some ToolbarContent {
+        ToolbarItemGroup(placement: .navigation) {
+            Button { model.navigateBack() } label: {
+                ShortcutLabel("Back", systemImage: "chevron.left", keys: "⌘[")
+            }
+            .help("Back (⌘[)")
+            .disabled(!model.canGoBack)
+            .accessibilityIdentifier("backButton")
+
+            Button { model.navigateForward() } label: {
+                ShortcutLabel("Forward", systemImage: "chevron.right", keys: "⌘]")
+            }
+            .help("Forward (⌘])")
+            .disabled(!model.canGoForward)
+            .accessibilityIdentifier("forwardButton")
+
+            Button { model.goToParentFolder() } label: {
+                ShortcutLabel("Enclosing Folder", systemImage: "arrow.up", keys: "⌘↑")
+            }
+            .help("Enclosing folder (⌘↑ / Backspace)")
+            .disabled(!model.canGoUp)
+            .accessibilityIdentifier("upButton")
+
+            Button { model.chooseFolder() } label: {
+                ShortcutLabel("Open Folder", systemImage: "folder", keys: "⌘O")
+            }
+            .help("Open folder (⌘O)")
+        }
+        ToolbarItem(placement: .primaryAction) {
+            // Two panes side by side, as in the file commanders (D, ⌃O)
+            Toggle(isOn: Binding(get: { window.dual }, set: { window.setDual($0) })) {
+                ShortcutLabel("Dual Pane", systemImage: "rectangle.split.2x1", keys: "D", showsTitle: true)
+            }
+            .toggleStyle(.button)
+            .help("Dual pane: two folders side by side; Tab switches, F5 copies, F6 moves to the other (D, ⌃O)")
+            .accessibilityIdentifier("dualPaneButton")
+        }
+        ToolbarItem(placement: .primaryAction) {
+            Toggle(isOn: $model.enhance) {
+                ShortcutLabel("Auto Enhance", systemImage: "wand.and.stars", keys: "E")
+            }
+            .toggleStyle(.button)
+            .help("Auto enhance: sets exposure, contrast, saturation and sharpness per picture or video, for display only; files are not changed (E)")
+            .accessibilityIdentifier("enhanceButton")
+        }
+        ToolbarItem(placement: .primaryAction) {
+            Button { model.showAdjustments.toggle() } label: {
+                ShortcutLabel("Adjust", systemImage: "slider.horizontal.3", keys: "A")
+            }
+            .help("Exposure, contrast, saturation and sharpness by hand (A)")
+            .accessibilityIdentifier("adjustButton")
+            // In the window; during a slideshow the toolbar is hidden, so the
+            // sliders show as a panel over the picture instead (see body).
+            .popover(isPresented: Binding(get: { model.showAdjustments && model.slideshow == nil },
+                                          set: { model.showAdjustments = $0 }), arrowEdge: .bottom) {
+                AdjustmentsView().environmentObject(model)
+            }
+        }
+        ToolbarItem(placement: .primaryAction) {
+            Button { model.startSlideshow() } label: {
+                ShortcutLabel("Slideshow", systemImage: "play.fill", keys: "S", showsTitle: true)
+            }
+            .buttonStyle(.borderedProminent)
+            .help("Slideshow of all pictures and videos in this folder and its subfolders; while searching: of the results (S)")
+            .disabled(model.folderURL == nil)
+            .accessibilityIdentifier("slideshowButton")
+        }
+        ToolbarItem(placement: .primaryAction) {
+            Menu {
+                SortChoices(model: model, shortcuts: false)
+            } label: {
+                // No key cap here: a toolbar menu with a label of its own
+                // drops out of the accessibility tree (⌘1 … ⌘5: tooltip, help)
+                Label("\(model.sortKey.title) \(model.sortAscending ? "↑" : "↓")",
+                      systemImage: "arrow.up.arrow.down")
+                    .labelStyle(.titleAndIcon)
+            }
+            .help("Sort by (⌘1 … ⌘5; press again to reverse)")
+            .accessibilityIdentifier("sortMenu")
+            .accessibilityLabel("Sort: \(model.sortKey.title) \(model.sortAscending ? "↑" : "↓")")
+        }
+        if model.mode == .detail {
+            ToolbarItem(placement: .principal) {
+                Button { model.closeDetail() } label: {
+                    ShortcutLabel("Grid", systemImage: "square.grid.2x2", keys: "esc", showsTitle: true)
+                }
+            }
+        }
+    }
+
+    // MARK: - Keyboard (one NSEvent monitor — focus-independent)
+
+    /// All shortcuts run through a local key monitor, so they work regardless
+    /// of SwiftUI focus, which can swallow Backspace and the arrow keys. The
+    /// actual bindings live in `BrowserModel.handleKey` (unit-tested).
+    private func installKeyMonitor() {
+        guard keyMonitor == nil else { return }
+        let window = self.window
+        keyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
+            // A modal dialog (the Trash confirmation, the open panel) keeps
+            // its keys: Return confirms it, Esc cancels it.
+            if NSApp.modalWindow != nil || event.window is NSSavePanel { return event }
+            let code = event.keyCode
+            let command = event.modifierFlags.contains(.command)
+            let control = event.modifierFlags.contains(.control)
+            let chars = (command ? event.charactersIgnoringModifiers : event.characters) ?? ""
+            // Decide on the main actor whether to consume the key.
+            let consume = MainActor.assumeIsolated { () -> Bool in
+                let model = window.active
+                let editor = NSApp.keyWindow?.firstResponder as? NSText
+                // ⌘⌫ / ⌘↩ while typing are the text field's (delete to the
+                // line start): menu key equivalents would run first and
+                // trash or open the selected tile.
+                if let editor, ContentView.textFieldTakes(code: code, command: command) {
+                    editor.keyDown(with: event)
+                    return true
+                }
+                // ⌃⌘F: full screen, as the system's shortcut; other ⌃
+                // combinations are the system's.
+                if control, command, code == 3 { model.toggleFullScreen(); return true }
+                // ⌃O: the commanders' "panels on / off" (the dual pane)
+                if control, !command, code == 31, editor == nil {
+                    return window.handleWindowKey(.char("o"), command: false, control: true, textEditing: false)
+                }
+                guard !control, let key = ContentView.keyInput(code: code, characters: chars, latin: {
+                    LatinKeys.character(for: code, shift: event.modifierFlags.contains(.shift))
+                }) else { return false }
+                // F9 / F10 as in Norton Commander: the app's menus, quit (after asking)
+                if editor == nil, !command, model.slideshow == nil, !model.anySheetOpen {
+                    switch key {
+                    case .f9:  NortonMenus.showMainMenus(); model.noteKeyPress(key, command: false); return true
+                    case .f10: NortonMenus.askToQuit(); return true
+                    default:   break
+                    }
+                }
+                // The window's keys first (D, Tab, F5, F6), then the active pane's
+                if window.handleWindowKey(key, command: command, control: false,
+                                          shift: event.modifierFlags.contains(.shift), textEditing: editor != nil) { return true }
+                return model.handleKey(key, command: command, shift: event.modifierFlags.contains(.shift),
+                                       textEditing: editor != nil)
+            }
+            return consume ? nil : event
+        }
+        // Trackpad pinch on a video: AVKit's player view would take it for
+        // itself, so it's caught here, like the keys. Pictures use their own
+        // gesture.
+        pinchMonitor = NSEvent.addLocalMonitorForEvents(matching: .magnify) { event in
+            let magnification = event.magnification
+            let used = MainActor.assumeIsolated { () -> Bool in
+                let model = window.active
+                guard model.shownMediaEntry?.kind == .video else { return false }
+                model.applyPinch(1 + magnification)
+                return true
+            }
+            return used ? nil : event
+        }
+    }
+
+    private func removeKeyMonitor() {
+        if let keyMonitor { NSEvent.removeMonitor(keyMonitor) }
+        keyMonitor = nil
+        if let pinchMonitor { NSEvent.removeMonitor(pinchMonitor) }
+        pinchMonitor = nil
+    }
+}
+
+extension ContentView {
+    /// Keys that go straight to the text field being edited, ahead of the
+    /// menu: ⌘⌫ and ⌘↩.
+    static func textFieldTakes(code: UInt16, command: Bool) -> Bool {
+        command && [51, 36, 76].contains(code)
+    }
+
+    /// Hardware key code → key binding input. On a layout without Latin
+    /// letters (Russian, Greek …) a letter key is read as on the user's Latin
+    /// layout (`latin`), as macOS does for menu shortcuts.
+    static func keyInput(code: UInt16, characters: String,
+                         latin: () -> String? = { nil }) -> BrowserModel.KeyInput? {
+        switch code {
+        case 51:     return .backspace
+        case 53:     return .escape
+        case 36, 76: return .enter
+        case 49:     return .space
+        case 123:    return .left
+        case 124:    return .right
+        case 125:    return .down
+        case 126:    return .up
+        case 115:    return .home
+        case 119:    return .end
+        case 122:    return .f1
+        case 120:    return .f2
+        case 99:     return .f3
+        case 118:    return .f4
+        case 96:     return .f5
+        case 97:     return .f6
+        case 98:     return .f7
+        case 100:    return .f8
+        case 101:    return .f9
+        case 109:    return .f10
+        case 114:    return .insert   // Insert / Help on full keyboards
+        case 48:     return .tab
+        default:
+            let typed = characters.first.map { $0.isASCII ? characters : (latin() ?? characters) } ?? ""
+            return typed.first.map(BrowserModel.KeyInput.char)
+        }
+    }
+
+}
+
+/// One pane: its grid or full view, search bar and status bar, its sheets.
+/// The window shows one, or two side by side (the dual pane).
+struct PaneView: View {
+    @EnvironmentObject var model: BrowserModel
 
     var body: some View {
         Group {
@@ -49,16 +374,6 @@ struct ContentView: View {
                 EmptyStateView(isLoading: false)
             }
         }
-        // Drag & drop: a folder (or media file) onto the window. The left
-        // half browses it, the right half starts a slideshow.
-        .background { GeometryReader { geo in
-            Color.clear.onAppear { width = geo.size.width }
-                .onChange(of: geo.size.width) { _, new in width = new }
-        } }
-        .onDrop(of: [.fileURL], delegate: DropZoneDelegate(zone: $dropZone, width: width) { urls, zone in
-            model.openDropped(urls, slideshow: zone == .slideshow)
-        })
-        .overlay { if let dropZone, model.slideshow == nil { DropZonesView(highlighted: dropZone) } }
         .overlay(alignment: .topTrailing) {
             if model.slideshow != nil, model.showAdjustments {
                 AdjustmentsView()
@@ -66,61 +381,17 @@ struct ContentView: View {
                     .padding(24)
             }
         }
-        // Starting a slideshow or opening a folder ends any drag shown;
-        // AppKit does not always send "exited" once the window goes full screen.
-        .onChange(of: model.slideshow?.id) { dropZone = nil }
-        .onChange(of: model.folderURL) { dropZone = nil }
         .safeAreaInset(edge: .top, spacing: 0) {
             if model.slideshow == nil { searchBar }
         }
         .safeAreaInset(edge: .bottom, spacing: 0) {
-            VStack(spacing: 0) {
-                if model.mode == .grid, model.slideshow == nil, model.folderURL != nil { statusBar }
-                // The mini keyboard slides up under everything (K)
-                if model.showMiniKeyboard, model.slideshow == nil {
-                    MiniKeyboard().transition(.move(edge: .bottom))
-                }
-            }
-            .animation(.easeOut(duration: 0.2), value: model.showMiniKeyboard)
+            if model.mode == .grid, model.slideshow == nil, model.folderURL != nil { statusBar }
         }
-        .overlay(alignment: .bottom) {
-            // In a slideshow: while the mouse moves, then it slides away
-            if model.showMiniKeyboard, model.slideshow != nil, slideshowKeysShown {
-                MiniKeyboard().transition(.move(edge: .bottom).combined(with: .opacity))
-            }
-        }
-        .animation(.easeOut(duration: 0.25), value: slideshowKeysShown)
-        .onContinuousHover { phase in
-            guard model.slideshow != nil, case .active = phase else { return }
-            slideshowKeysShown = true
-            hideSlideshowKeys?.cancel()
-            hideSlideshowKeys = Task { @MainActor in
-                try? await Task.sleep(for: .seconds(3))
-                guard !Task.isCancelled else { return }
-                slideshowKeysShown = false
-            }
-        }
-        .toolbar(model.slideshow == nil ? .visible : .hidden, for: .windowToolbar)
-        // The slideshow fills the whole screen, also where the (hidden) title
-        // bar would be.
-        .background(model.slideshow == nil ? Color.clear : Color.black)
-        .ignoresSafeArea(.container, edges: model.slideshow == nil ? [] : .all)
-        .onAppear {
-            if !launched {
-                launched = true
-                if !model.openFromLaunchArguments() { model.restoreLastFolder() }
-            }
-            installKeyMonitor()
-        }
-        .onDisappear { removeKeyMonitor() }
-        .toolbar { toolbarContent }
-        .navigationTitle(model.folderURL?.lastPathComponent ?? "Schnellbild")
         .sheet(isPresented: $model.showHelp) { ShortcutsHelpView() }
         .sheet(item: $model.renameTarget) { RenameView(entry: $0) }
         .sheet(item: $model.passwordRequest) { PasswordView(request: $0) }
         .sheet(isPresented: $model.newFolderRequested) { NewFolderView() }
     }
-
 
     // MARK: - Search bar (always visible)
 
@@ -255,178 +526,8 @@ struct ContentView: View {
         return text
     }
 
-    // MARK: - Toolbar (history, up, open)
-
-    @ToolbarContentBuilder
-    private var toolbarContent: some ToolbarContent {
-        ToolbarItemGroup(placement: .navigation) {
-            Button { model.navigateBack() } label: {
-                ShortcutLabel("Back", systemImage: "chevron.left", keys: "⌘[")
-            }
-            .help("Back (⌘[)")
-            .disabled(!model.canGoBack)
-            .accessibilityIdentifier("backButton")
-
-            Button { model.navigateForward() } label: {
-                ShortcutLabel("Forward", systemImage: "chevron.right", keys: "⌘]")
-            }
-            .help("Forward (⌘])")
-            .disabled(!model.canGoForward)
-            .accessibilityIdentifier("forwardButton")
-
-            Button { model.goToParentFolder() } label: {
-                ShortcutLabel("Enclosing Folder", systemImage: "arrow.up", keys: "⌘↑")
-            }
-            .help("Enclosing folder (⌘↑ / Backspace)")
-            .disabled(!model.canGoUp)
-            .accessibilityIdentifier("upButton")
-
-            Button { model.chooseFolder() } label: {
-                ShortcutLabel("Open Folder", systemImage: "folder", keys: "⌘O")
-            }
-            .help("Open folder (⌘O)")
-        }
-        ToolbarItem(placement: .primaryAction) {
-            Toggle(isOn: $model.enhance) {
-                ShortcutLabel("Auto Enhance", systemImage: "wand.and.stars", keys: "E")
-            }
-            .toggleStyle(.button)
-            .help("Auto enhance: sets exposure, contrast, saturation and sharpness per picture or video, for display only; files are not changed (E)")
-            .accessibilityIdentifier("enhanceButton")
-        }
-        ToolbarItem(placement: .primaryAction) {
-            Button { model.showAdjustments.toggle() } label: {
-                ShortcutLabel("Adjust", systemImage: "slider.horizontal.3", keys: "A")
-            }
-            .help("Exposure, contrast, saturation and sharpness by hand (A)")
-            .accessibilityIdentifier("adjustButton")
-            // In the window; during a slideshow the toolbar is hidden, so the
-            // sliders show as a panel over the picture instead (see body).
-            .popover(isPresented: Binding(get: { model.showAdjustments && model.slideshow == nil },
-                                          set: { model.showAdjustments = $0 }), arrowEdge: .bottom) {
-                AdjustmentsView().environmentObject(model)
-            }
-        }
-        ToolbarItem(placement: .primaryAction) {
-            Button { model.startSlideshow() } label: {
-                ShortcutLabel("Slideshow", systemImage: "play.fill", keys: "S", showsTitle: true)
-            }
-            .buttonStyle(.borderedProminent)
-            .help("Slideshow of all pictures and videos in this folder and its subfolders; while searching: of the results (S)")
-            .disabled(model.folderURL == nil)
-            .accessibilityIdentifier("slideshowButton")
-        }
-        ToolbarItem(placement: .primaryAction) {
-            Menu {
-                SortChoices(model: model, shortcuts: false)
-            } label: {
-                // No key cap here: a toolbar menu with a label of its own
-                // drops out of the accessibility tree (⌘1 … ⌘5: tooltip, help)
-                Label("Sort: \(model.sortKey.title) \(model.sortAscending ? "↑" : "↓")",
-                      systemImage: "arrow.up.arrow.down")
-                    .labelStyle(.titleAndIcon)
-            }
-            .help("Sort by (⌘1 … ⌘5; press again to reverse)")
-            .accessibilityIdentifier("sortMenu")
-            .accessibilityLabel("Sort: \(model.sortKey.title) \(model.sortAscending ? "↑" : "↓")")
-        }
-        if model.mode == .detail {
-            ToolbarItem(placement: .principal) {
-                Button { model.closeDetail() } label: {
-                    ShortcutLabel("Grid", systemImage: "square.grid.2x2", keys: "esc", showsTitle: true)
-                }
-            }
-        }
-    }
-
-    // MARK: - Keyboard (one NSEvent monitor — focus-independent)
-
-    /// All shortcuts run through a local key monitor, so they work regardless
-    /// of SwiftUI focus, which can swallow Backspace and the arrow keys. The
-    /// actual bindings live in `BrowserModel.handleKey` (unit-tested).
-    private func installKeyMonitor() {
-        guard keyMonitor == nil else { return }
-        let model = self.model
-        keyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
-            // A modal dialog (the Trash confirmation, the open panel) keeps
-            // its keys: Return confirms it, Esc cancels it.
-            if NSApp.modalWindow != nil || event.window is NSSavePanel { return event }
-            let code = event.keyCode
-            let command = event.modifierFlags.contains(.command)
-            let control = event.modifierFlags.contains(.control)
-            let chars = (command ? event.charactersIgnoringModifiers : event.characters) ?? ""
-            // Decide on the main actor whether to consume the key.
-            let consume = MainActor.assumeIsolated { () -> Bool in
-                let editor = NSApp.keyWindow?.firstResponder as? NSText
-                // ⌘⌫ / ⌘↩ while typing are the text field's (delete to the
-                // line start): menu key equivalents would run first and
-                // trash or open the selected tile.
-                if let editor, Self.textFieldTakes(code: code, command: command) {
-                    editor.keyDown(with: event)
-                    return true
-                }
-                // ⌃⌘F: full screen, as the system's shortcut; other ⌃
-                // combinations are the system's.
-                if control, command, code == 3 { model.toggleFullScreen(); return true }
-                guard !control, let key = Self.keyInput(code: code, characters: chars, latin: {
-                    LatinKeys.character(for: code, shift: event.modifierFlags.contains(.shift))
-                }) else { return false }
-                return model.handleKey(key, command: command, shift: event.modifierFlags.contains(.shift),
-                                       textEditing: editor != nil)
-            }
-            return consume ? nil : event
-        }
-        // Trackpad pinch on a video: AVKit's player view would take it for
-        // itself, so it's caught here, like the keys. Pictures use their own
-        // gesture.
-        pinchMonitor = NSEvent.addLocalMonitorForEvents(matching: .magnify) { event in
-            let magnification = event.magnification
-            let used = MainActor.assumeIsolated { () -> Bool in
-                guard model.shownMediaEntry?.kind == .video else { return false }
-                model.applyPinch(1 + magnification)
-                return true
-            }
-            return used ? nil : event
-        }
-    }
-
-    /// Keys that go straight to the text field being edited, ahead of the
-    /// menu: ⌘⌫ and ⌘↩.
-    static func textFieldTakes(code: UInt16, command: Bool) -> Bool {
-        command && [51, 36, 76].contains(code)
-    }
-
-    /// Hardware key code → key binding input. On a layout without Latin
-    /// letters (Russian, Greek …) a letter key is read as on the user's Latin
-    /// layout (`latin`), as macOS does for menu shortcuts.
-    static func keyInput(code: UInt16, characters: String,
-                         latin: () -> String? = { nil }) -> BrowserModel.KeyInput? {
-        switch code {
-        case 51:     return .backspace
-        case 53:     return .escape
-        case 36, 76: return .enter
-        case 49:     return .space
-        case 123:    return .left
-        case 124:    return .right
-        case 125:    return .down
-        case 126:    return .up
-        case 115:    return .home
-        case 119:    return .end
-        case 122:    return .f1
-        case 120:    return .f2
-        default:
-            let typed = characters.first.map { $0.isASCII ? characters : (latin() ?? characters) } ?? ""
-            return typed.first.map(BrowserModel.KeyInput.char)
-        }
-    }
-
-    private func removeKeyMonitor() {
-        if let keyMonitor { NSEvent.removeMonitor(keyMonitor) }
-        keyMonitor = nil
-        if let pinchMonitor { NSEvent.removeMonitor(pinchMonitor) }
-        pinchMonitor = nil
-    }
 }
+
 
 struct EmptyStateView: View {
     let isLoading: Bool

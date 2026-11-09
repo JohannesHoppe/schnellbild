@@ -4,7 +4,9 @@ import AppKit
 @main
 struct SchnellbildApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
-    @StateObject private var model: BrowserModel
+    /// One window of one or two panes; menus act on the active pane.
+    @StateObject private var window: WindowModel
+    private var model: BrowserModel { window.active }
 
     init() {
         let defaults = BrowserModel.makeDefaults()
@@ -12,13 +14,16 @@ struct SchnellbildApp: App {
         // their own preferences (`--reset-state` clears them)
         ArchiveStore.shared.passwords = ProcessInfo.processInfo.arguments.contains("--ui-testing")
             ? .defaults(defaults) : .keychain()
-        _model = StateObject(wrappedValue: BrowserModel(defaults: defaults))
+        let left = BrowserModel(defaults: defaults)
+        _window = StateObject(wrappedValue: WindowModel(left: left, defaults: defaults) {
+            BrowserModel(defaults: defaults, settingsPrefix: "rightPane.")
+        })
     }
 
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environmentObject(model)
+                .environmentObject(window)
                 .frame(minWidth: 720, minHeight: 520)
         }
         .defaultSize(width: 960, height: 640)
@@ -62,12 +67,19 @@ struct SchnellbildApp: App {
                     .keyboardShortcut(.return)
                     .disabled(model.slideshow != nil || !model.selectionIsChangeable)
                 Divider()
+                // The dual pane (D): the marked items into the other pane's folder
+                Button("Copy to Other Pane (F5)") { _ = window.sendToOtherPane(how: .copy) }
+                    .disabled(!window.dual || model.slideshow != nil)
+                Button("Move to Other Pane (F6)") { _ = window.sendToOtherPane(how: .move) }
+                    .disabled(!window.dual || model.slideshow != nil)
+                Divider()
                 Button("Move to Trash…") { model.moveSelectionToTrash() }
                     .keyboardShortcut(.delete)
                     .disabled(model.slideshow != nil || !model.selectionIsChangeable)
             }
             CommandGroup(after: .toolbar) {
-                Toggle("Mini Keyboard (K)", isOn: $model.showMiniKeyboard)
+                Toggle("Dual Pane (D)", isOn: Binding(get: { window.dual }, set: { window.setDual($0) }))
+                Toggle("Mini Keyboard (K)", isOn: Binding(get: { model.showMiniKeyboard }, set: { model.showMiniKeyboard = $0 }))
                 Divider()
                 Button("Larger Thumbnails (⌘+)") { model.growThumbnails() }
                 Button("Smaller Thumbnails (⌘−)") { model.shrinkThumbnails() }

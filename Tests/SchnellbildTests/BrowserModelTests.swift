@@ -43,6 +43,8 @@ final class FileActionsSpy {
     var trashed: [URL] = []
     var moved: [(URL, URL)] = []
     var created: [URL] = []
+    var copied: [(URL, URL)] = []
+    var keepBoth = true
     var confirm = true
     var confirmDetails: [String] = []
     var moveError: Error?
@@ -75,6 +77,11 @@ final class FileActionsSpy {
                 self.created.append(url)
                 try FileActions.live.createFolder(url)
             },
+            copy: { from, to in
+                self.copied.append((from, to))
+                try FileActions.live.copy(from, to)
+            },
+            askKeepBoth: { _, _ in self.keepBoth },
             conflicts: { target, source in
                 self.conflictOverride ?? FileActions.live.conflicts(target, source)
             },
@@ -986,6 +993,8 @@ final class RenameTests: XCTestCase {
         m.renameTarget = nil
         m.activateSelection()   // full view
         XCTAssertTrue(m.handleKey(.f2, command: false), "also in the full view")
+        m.renameTarget = nil
+        XCTAssertTrue(m.handleKey(.f6, command: false), "Norton Commander's F6 in a single pane")
     }
 
     func testRenameAFileInTheFullViewStaysOnIt() async throws {
@@ -1982,7 +1991,7 @@ final class KeyBindingTests: XCTestCase {
         let cases: [(UInt16, BrowserModel.KeyInput)] = [
             (51, .backspace), (53, .escape), (36, .enter), (76, .enter), (49, .space),
             (123, .left), (124, .right), (125, .down), (126, .up),
-            (115, .home), (119, .end), (122, .f1), (120, .f2),
+            (115, .home), (119, .end), (122, .f1), (120, .f2), (99, .f3), (118, .f4), (96, .f5), (97, .f6), (98, .f7), (100, .f8), (101, .f9), (109, .f10), (114, .insert), (48, .tab),
         ]
         for (code, key) in cases {
             XCTAssertEqual(ContentView.keyInput(code: code, characters: ""), key, "keyCode \(code)")

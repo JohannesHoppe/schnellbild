@@ -19,7 +19,7 @@ struct MiniKeyboard: View {
     }
 
     /// What's on screen decides the keys.
-    enum Context { case grid, picture, video, slideshow }
+    enum Context { case grid, dualGrid, picture, video, slideshow }
 
     static func keys(for context: Context) -> [Key] {
         switch context {
@@ -38,6 +38,23 @@ struct MiniKeyboard: View {
                 Key(cap: "A", word: "Adjust", input: .char("a")),
                 Key(cap: "F", word: "Full Screen", input: .char("f")),
                 Key(cap: "⌘F", word: "Search", input: .char("f"), command: true),
+                Key(cap: "F1", word: "Help", input: .f1),
+            ]
+        case .dualGrid:
+            return [
+                Key(cap: "Tab", word: "Other pane", input: .tab),
+                Key(cap: "F5", word: "Copy there", input: .f5),
+                Key(cap: "F6", word: "Move there", input: .f6),
+                Key(cap: "F7", word: "New folder", input: .f7),
+                Key(cap: "ins", word: "Mark", input: .insert),
+                Key(cap: "⌘[", word: "Back", input: .char("["), command: true),
+                Key(cap: "⌫", word: "Up", input: .backspace),
+                Key(cap: "←", word: "Previous", input: .left),
+                Key(cap: "→", word: "Next", input: .right),
+                Key(cap: "↩", word: "Open", input: .enter),
+                Key(cap: "S", word: "Slideshow", input: .char("s")),
+                Key(cap: "⌘F", word: "Search", input: .char("f"), command: true),
+                Key(cap: "D", word: "Single pane", input: .char("d")),
                 Key(cap: "F1", word: "Help", input: .f1),
             ]
         case .picture:
@@ -88,9 +105,11 @@ struct MiniKeyboard: View {
         }
     }
 
+    @EnvironmentObject var window: WindowModel
+
     private var context: Context {
         if model.slideshow != nil { return .slideshow }
-        guard model.mode == .detail else { return .grid }
+        guard model.mode == .detail else { return window.dual ? .dualGrid : .grid }
         return model.shownMediaEntry?.kind == .video ? .video : .picture
     }
 
@@ -115,13 +134,17 @@ struct MiniKeyboard: View {
 private struct MiniKeyButton: View {
     let key: MiniKeyboard.Key
     @EnvironmentObject var model: BrowserModel
+    @EnvironmentObject var window: WindowModel
     @State private var lit = false
     /// How often it acted (UI tests read it: lighting up is too short to catch).
     @State private var presses = 0
 
     var body: some View {
         Button {
-            model.handleKey(key.input, command: key.command, shift: key.shift)
+            // As typed: the window's keys first (D, Tab, F5, F6), then the pane's
+            if !window.handleWindowKey(key.input, command: key.command, control: false, textEditing: false) {
+                model.handleKey(key.input, command: key.command, shift: key.shift)
+            }
         } label: {
             VStack(spacing: 3) {
                 Text(verbatim: key.cap)
