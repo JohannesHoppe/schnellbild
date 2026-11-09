@@ -126,38 +126,42 @@ private struct WindowView: View {
     // MARK: - Toolbar (history, up, open)
 
     @ToolbarContentBuilder
+    /// The navigation buttons carry no key caps: their shortcuts (⌘[ ⌘] ⌘↑
+    /// ⌘O) are the Mac's usual ones, in the tooltips and menus, and a
+    /// narrow window has no room for more (the sort menu would drop into
+    /// the overflow).
     private var toolbarContent: some ToolbarContent {
         ToolbarItemGroup(placement: .navigation) {
             Button { model.navigateBack() } label: {
-                ShortcutLabel("Back", systemImage: "chevron.left", keys: "⌘[")
+                Label("Back", systemImage: "chevron.left")
             }
             .help("Back (⌘[)")
             .disabled(!model.canGoBack)
             .accessibilityIdentifier("backButton")
 
             Button { model.navigateForward() } label: {
-                ShortcutLabel("Forward", systemImage: "chevron.right", keys: "⌘]")
+                Label("Forward", systemImage: "chevron.right")
             }
             .help("Forward (⌘])")
             .disabled(!model.canGoForward)
             .accessibilityIdentifier("forwardButton")
 
             Button { model.goToParentFolder() } label: {
-                ShortcutLabel("Enclosing Folder", systemImage: "arrow.up", keys: "⌘↑")
+                Label("Enclosing Folder", systemImage: "arrow.up")
             }
             .help("Enclosing folder (⌘↑ / Backspace)")
             .disabled(!model.canGoUp)
             .accessibilityIdentifier("upButton")
 
             Button { model.chooseFolder() } label: {
-                ShortcutLabel("Open Folder", systemImage: "folder", keys: "⌘O")
+                Label("Open Folder", systemImage: "folder")
             }
             .help("Open folder (⌘O)")
         }
         ToolbarItem(placement: .primaryAction) {
             // Two panes side by side, as in the file commanders (D, ⌃O)
             Toggle(isOn: Binding(get: { window.dual }, set: { window.setDual($0) })) {
-                ShortcutLabel("Dual Pane", systemImage: "rectangle.split.2x1", keys: "D", showsTitle: true)
+                ShortcutLabel("Dual Pane", systemImage: "rectangle.split.2x1", keys: "D")
             }
             .toggleStyle(.button)
             .help("Dual pane: two folders side by side; Tab switches, F5 copies, F6 moves to the other (D, ⌃O)")
@@ -242,6 +246,10 @@ private struct WindowView: View {
             let consume = MainActor.assumeIsolated { () -> Bool in
                 let model = window.active
                 let editor = NSApp.keyWindow?.firstResponder as? NSText
+                // Typing: the field editor, or a text field about to get it
+                // (a click into the search field makes it first responder
+                // before editing starts; its first key must not act as D, E …)
+                let typing = editor != nil || NSApp.keyWindow?.firstResponder is NSTextField
                 // ⌘⌫ / ⌘↩ while typing are the text field's (delete to the
                 // line start): menu key equivalents would run first and
                 // trash or open the selected tile.
@@ -253,14 +261,14 @@ private struct WindowView: View {
                 // combinations are the system's.
                 if control, command, code == 3 { model.toggleFullScreen(); return true }
                 // ⌃O: the commanders' "panels on / off" (the dual pane)
-                if control, !command, code == 31, editor == nil {
+                if control, !command, code == 31, !typing {
                     return window.handleWindowKey(.char("o"), command: false, control: true, textEditing: false)
                 }
                 guard !control, let key = ContentView.keyInput(code: code, characters: chars, latin: {
                     LatinKeys.character(for: code, shift: event.modifierFlags.contains(.shift))
                 }) else { return false }
                 // F9 / F10 as in Norton Commander: the app's menus, quit (after asking)
-                if editor == nil, !command, model.slideshow == nil, !model.anySheetOpen {
+                if !typing, !command, model.slideshow == nil, !model.anySheetOpen {
                     switch key {
                     case .f9:  NortonMenus.showMainMenus(); model.noteKeyPress(key, command: false); return true
                     case .f10: NortonMenus.askToQuit(); return true
@@ -269,9 +277,9 @@ private struct WindowView: View {
                 }
                 // The window's keys first (D, Tab, F5, F6), then the active pane's
                 if window.handleWindowKey(key, command: command, control: false,
-                                          shift: event.modifierFlags.contains(.shift), textEditing: editor != nil) { return true }
+                                          shift: event.modifierFlags.contains(.shift), textEditing: typing) { return true }
                 return model.handleKey(key, command: command, shift: event.modifierFlags.contains(.shift),
-                                       textEditing: editor != nil)
+                                       textEditing: typing)
             }
             return consume ? nil : event
         }

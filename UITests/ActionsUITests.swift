@@ -259,13 +259,13 @@ final class ActionsUITests: SchnellbildUITestCase {
     /// onto it goes into it.
     func testNewFolderAndDraggingIntoIt() throws {
         launchOnTempDir()
+        let before = Set(try FileManager.default.contentsOfDirectory(atPath: tempDir.path))
         app.typeKey("n", modifierFlags: [.command, .shift])
         let field = app.textFields["newFolderField"]
         XCTAssertTrue(field.waitForExistence(timeout: 5))
         app.typeKey(.escape, modifierFlags: [])
         eventually("closed") { !field.exists }
-        XCTAssertEqual(try FileManager.default.contentsOfDirectory(atPath: tempDir.path).filter { !$0.hasSuffix(".jpg") }, [],
-                       "Esc: no folder made")
+        XCTAssertEqual(Set(try FileManager.default.contentsOfDirectory(atPath: tempDir.path)), before, "Esc: no folder made")
 
         app.typeKey("n", modifierFlags: [.command, .shift])
         XCTAssertTrue(field.waitForExistence(timeout: 5))

@@ -364,7 +364,8 @@ struct EntryInteractions: ViewModifier {
             }
             .onTapGesture(count: 1) {
                 model.searchFocused = false
-                let flags = NSEvent.modifierFlags
+                // The click's own modifiers (the global state can lag behind)
+                let flags = NSApp.currentEvent?.modifierFlags ?? NSEvent.modifierFlags
                 model.click(entry, command: flags.contains(.command), shift: flags.contains(.shift))
             }
             .contextMenu {
