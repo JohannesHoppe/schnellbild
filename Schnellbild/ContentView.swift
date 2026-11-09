@@ -980,12 +980,13 @@ private struct FolderNameField: View {
                     .onExitCommand { editing = false }
                     .onChange(of: focused) { _, now in if !now { editing = false } }
                     .accessibilityIdentifier("folderTitleField")
+                    .onAppear { focused = true }
             } else {
                 Button {
                     guard model.canRenameCurrentFolder else { return }
                     name = current
                     editing = true
-                    DispatchQueue.main.async { focused = true }
+                    focused = true
                 } label: {
                     Text(verbatim: current).font(.headline).lineLimit(1).truncationMode(.middle)
                 }
