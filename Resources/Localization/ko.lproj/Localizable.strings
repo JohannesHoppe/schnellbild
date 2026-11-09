@@ -220,3 +220,5 @@
 "read error" = "읽기 오류";
 "UnRAR error %lld" = "UnRAR 오류 %lld";
 "Copying or moving…" = "복사 또는 이동 중…";
+"This archive needs a password" = "이 아카이브에는 암호가 필요합니다";
+"Password required" = "암호 필요";

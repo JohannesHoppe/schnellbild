@@ -567,14 +567,15 @@ final class VisualUITests: SchnellbildUITestCase {
         for name in ["broken.jpg", "broken.mp4", "broken.mkv"] { try put(name, at: name) }
         launchOnTempDir(waitFor: "broken.mkv")
         settle(3)   // thumbnails tried
-        for name in Array(repeating: ["broken.jpg", "broken.mp4", "broken.mkv"], count: 6).flatMap({ $0 }) {   // TEMP: 6 rounds
+        for name in ["broken.jpg", "broken.mp4", "broken.mkv"] {
             tile(name).click()
             waitForSelected(name)
             app.typeKey(.return, modifierFlags: [])
             let deadline = Date().addingTimeInterval(20)
             while !text(of: badge).contains(name), Date() < deadline { RunLoop.current.run(until: Date().addingTimeInterval(0.5)) }
             if !text(of: badge).contains(name) {
-                XCTFail("TEMP no badge for \(name); the app's threads:\n" + Self.sampleApp())
+                // A hang shows what each thread was doing
+                XCTFail("no badge for \(name); the app's threads:\n" + Self.sampleApp())
                 return
             }
             settle(3)
@@ -599,7 +600,8 @@ final class VisualUITests: SchnellbildUITestCase {
 }
 
 extension VisualUITests {
-    /// What the app's threads are doing (TEMP: a hang on a broken video).
+    /// What the app's threads are doing (`sample`), for a test that finds
+    /// the app hanging.
     static func sampleApp() -> String {
         func run(_ tool: String, _ args: [String]) -> String {
             let process = Process()

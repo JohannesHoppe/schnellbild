@@ -220,3 +220,5 @@
 "read error" = "讀取錯誤";
 "UnRAR error %lld" = "UnRAR 錯誤 %lld";
 "Copying or moving…" = "正在拷貝或移動…";
+"This archive needs a password" = "此封存檔需要密碼";
+"Password required" = "需要密碼";

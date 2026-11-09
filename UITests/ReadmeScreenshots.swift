@@ -129,7 +129,7 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         XCTAssertTrue(tile("Iceland 2025.zip").waitForExistence(timeout: 15))
         XCTAssertTrue(element("otherFiles").waitForExistence(timeout: 10))
         tile("Iceland 2025.zip").click()
-        app.windows.firstMatch.scroll(byDeltaX: 0, deltaY: -2000)   // down to the other files
+        element("grid").firstMatch.scroll(byDeltaX: 0, deltaY: -2000)   // down to the other files
         shoot("archives")
 
         tile("Iceland 2025.zip").doubleClick()
