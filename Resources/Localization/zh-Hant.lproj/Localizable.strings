@@ -53,10 +53,8 @@
 "Please enter a name." = "請輸入名稱。";
 "Names can't contain “/” or “:”, and can't be “.” or “..”." = "名稱不能包含「/」或「:」，也不能是「.」或「..」。";
 "Open" = "打開";
-"Type" = "種類";
 "Resolution" = "解析度";
-"Modified" = "修改時間";
-"Image" = "影像";
+"Picture" = "影像";
 "Video" = "影片";
 "Folder" = "檔案夾";
 "Parent" = "上層";
@@ -75,7 +73,7 @@
 "Rename the selected folder or file (also in the full view)" = "重新命名所選檔案夾或檔案（完整顯示中也可）";
 "Clear search" = "清除搜尋";
 "Previous / next item, also from a video" = "上一個 / 下一個項目，影片中也可";
-"Next image · play/pause video" = "下一張影像 · 播放 / 暫停影片";
+"Next picture · play/pause video" = "下一張影像 · 播放 / 暫停影片";
 "Zoom in / out" = "放大 / 縮小";
 "Fit to window / 100 %" = "符合視窗 / 100 %";
 "Rotate left / right" = "向左 / 向右旋轉";
@@ -120,7 +118,7 @@
 "The name must end in a picture extension, such as “.%@”." = "名稱必須以影像副檔名結尾，例如「.%@」。";
 "The name must end in a video extension, such as “.%@”." = "名稱必須以影片副檔名結尾，例如「.%@」。";
 "Grid and full view" = "格狀和完整顯示";
-"Images: previous / next · Videos: 10 % of the length back / ahead; at the start / end: previous / next item" = "影像：上一張 / 下一張 · 影片：倒退 / 快轉長度的 10 %；在開頭 / 結尾：上一個 / 下一個項目";
+"Pictures: previous / next · Videos: 10 % of the length back / ahead; at the start / end: previous / next item" = "影像：上一張 / 下一張 · 影片：倒退 / 快轉長度的 10 %；在開頭 / 結尾：上一個 / 下一個項目";
 "Previous / next · Videos: 10 % of the length back / ahead" = "上一個 / 下一個 · 影片：倒退 / 快轉長度的 10 %";
 "Wrong password for this archive." = "此封存檔的密碼錯誤。";
 "The archive is incomplete: still downloading, a part missing, or damaged." = "封存檔不完整：仍在下載中、缺少某一部分或已損毀。";
@@ -168,3 +166,4 @@
 "Louder" = "調高音量";
 "Quieter" = "調低音量";
 "Pictures zoomed in: look further up / down · Videos: volume up / down (remembered)" = "放大的影像：向上 / 向下查看 · 影片：調高 / 調低音量（會記住）";
+"%lld so far" = "目前 %lld";

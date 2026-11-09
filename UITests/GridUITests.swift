@@ -7,7 +7,7 @@ final class GridUITests: SchnellbildUITestCase {
         XCTAssertTrue(app.staticTexts["b.jpg"].exists)
         XCTAssertTrue(app.staticTexts["c.jpg"].exists)
         XCTAssertTrue(app.staticTexts[".."].exists, "parent tile")
-        eventually("status bar counts the images") { text(of: app.staticTexts["statusText"]) == "3 images" }
+        eventually("status bar counts the pictures") { text(of: app.staticTexts["statusText"]) == "3 pictures" }
     }
 
     func testArrowKeysHomeAndEndMoveTheSelection() {

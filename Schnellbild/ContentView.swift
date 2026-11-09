@@ -45,7 +45,7 @@ struct ContentView: View {
         .overlay {
             // A folder without media or subfolders still shows its ".." tile.
             if model.mode == .grid, !model.isLoading, !model.isFiltering,
-               model.folderCount + model.mediaCount == 0, model.otherFiles.isEmpty {
+               model.folderCount + model.archiveCount + model.mediaCount == 0, model.otherFiles.isEmpty {
                 EmptyStateView(isLoading: false)
             }
         }
@@ -173,7 +173,8 @@ struct ContentView: View {
     private var statusText: String {
         var parts: [String] = []
         if model.folderCount > 0 { parts.append(String(localized: "\(model.folderCount) folders")) }
-        if model.imageCount  > 0 { parts.append(String(localized: "\(model.imageCount) images")) }
+        if model.archiveCount > 0 { parts.append(String(localized: "\(model.archiveCount) archives")) }
+        if model.imageCount  > 0 { parts.append(String(localized: "\(model.imageCount) pictures")) }
         if model.videoCount  > 0 { parts.append(String(localized: "\(model.videoCount) videos")) }
         if !model.otherFiles.isEmpty { parts.append(String(localized: "Other files: \(model.otherFiles.count)")) }
         let summary = parts.isEmpty ? String(localized: "Empty") : parts.joined(separator: " · ")
@@ -228,7 +229,9 @@ struct ContentView: View {
     private func badgeText(entry: GridEntry) -> String {
         var text: String
         if let show = model.slideshow {
-            text = String(localized: "Slideshow") + "  ·  \(show.index + 1) / \(show.items.count)\(show.loading ? "+" : "")  ·  \(entry.name)"
+            // While subfolders are still read the count isn't final: "57 so far"
+            let count = show.loading ? String(localized: "\(show.items.count) so far") : "\(show.items.count)"
+            text = String(localized: "Slideshow") + "  ·  \(show.index + 1) / \(count)  ·  \(entry.name)"
             if show.paused && entry.kind == .image { text += "  ·  " + String(localized: "Paused") }
         } else {
             text = "\(model.currentMediaNumber ?? 0) / \(model.mediaCount)  ·  \(entry.name)"

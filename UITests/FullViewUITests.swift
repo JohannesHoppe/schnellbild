@@ -101,7 +101,7 @@ final class FullViewUITests: SchnellbildUITestCase {
         app.typeKey("i", modifierFlags: [])
         XCTAssertTrue(app.staticTexts["Resolution"].waitForExistence(timeout: 5))
         XCTAssertTrue(app.staticTexts["64 × 48 px"].waitForExistence(timeout: 5))
-        XCTAssertTrue(app.staticTexts["Image"].exists)
+        XCTAssertTrue(app.staticTexts["Picture"].exists)
         XCTAssertTrue(app.staticTexts["Size"].exists)
         app.typeKey("i", modifierFlags: [])
         eventually("i hides it") { !app.staticTexts["Resolution"].exists }

@@ -53,10 +53,8 @@
 "Please enter a name." = "Inserisci un nome.";
 "Names can't contain “/” or “:”, and can't be “.” or “..”." = "I nomi non possono contenere «/» o «:», né essere «.» o «..».";
 "Open" = "Apri";
-"Type" = "Tipo";
 "Resolution" = "Risoluzione";
-"Modified" = "Modificato";
-"Image" = "Immagine";
+"Picture" = "Immagine";
 "Video" = "Video";
 "Folder" = "Cartella";
 "Parent" = "Superiore";
@@ -75,7 +73,7 @@
 "Rename the selected folder or file (also in the full view)" = "Rinomina la cartella o il file selezionato (anche nella vista completa)";
 "Clear search" = "Cancella la ricerca";
 "Previous / next item, also from a video" = "Elemento precedente / successivo, anche da un video";
-"Next image · play/pause video" = "Immagine successiva · riproduci / metti in pausa il video";
+"Next picture · play/pause video" = "Immagine successiva · riproduci / metti in pausa il video";
 "Zoom in / out" = "Ingrandisci / riduci";
 "Fit to window / 100 %" = "Adatta alla finestra / 100 %";
 "Rotate left / right" = "Ruota a sinistra / destra";
@@ -120,7 +118,7 @@
 "The name must end in a picture extension, such as “.%@”." = "Il nome deve terminare con un’estensione di immagine, come «.%@».";
 "The name must end in a video extension, such as “.%@”." = "Il nome deve terminare con un’estensione video, come «.%@».";
 "Grid and full view" = "Griglia e vista completa";
-"Images: previous / next · Videos: 10 % of the length back / ahead; at the start / end: previous / next item" = "Immagini: precedente / successiva · Video: 10 % della durata indietro / avanti; all’inizio / alla fine: elemento precedente / successivo";
+"Pictures: previous / next · Videos: 10 % of the length back / ahead; at the start / end: previous / next item" = "Immagini: precedente / successiva · Video: 10 % della durata indietro / avanti; all’inizio / alla fine: elemento precedente / successivo";
 "Previous / next · Videos: 10 % of the length back / ahead" = "Precedente / successivo · Video: 10 % della durata indietro / avanti";
 "Wrong password for this archive." = "Password errata per questo archivio.";
 "The archive is incomplete: still downloading, a part missing, or damaged." = "L’archivio è incompleto: è ancora in download, manca una parte oppure è danneggiato.";
@@ -168,3 +166,4 @@
 "Louder" = "Più alto";
 "Quieter" = "Più basso";
 "Pictures zoomed in: look further up / down · Videos: volume up / down (remembered)" = "Immagini ingrandite: guarda più in alto / in basso · Video: volume su / giù (memorizzato)";
+"%lld so far" = "%lld finora";

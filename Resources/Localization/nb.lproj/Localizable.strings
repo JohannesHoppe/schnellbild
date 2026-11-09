@@ -53,10 +53,8 @@
 "Please enter a name." = "Skriv inn et navn.";
 "Names can't contain “/” or “:”, and can't be “.” or “..”." = "Navn kan ikke inneholde «/» eller «:», og kan ikke være «.» eller «..».";
 "Open" = "Åpne";
-"Type" = "Type";
 "Resolution" = "Oppløsning";
-"Modified" = "Endret";
-"Image" = "Bilde";
+"Picture" = "Bilde";
 "Video" = "Video";
 "Folder" = "Mappe";
 "Parent" = "Overordnet";
@@ -75,7 +73,7 @@
 "Rename the selected folder or file (also in the full view)" = "Gi den valgte mappen eller filen nytt navn (også i full visning)";
 "Clear search" = "Tøm søket";
 "Previous / next item, also from a video" = "Forrige / neste objekt, også fra en video";
-"Next image · play/pause video" = "Neste bilde · spill av / sett video på pause";
+"Next picture · play/pause video" = "Neste bilde · spill av / sett video på pause";
 "Zoom in / out" = "Zoom inn / ut";
 "Fit to window / 100 %" = "Tilpass til vinduet / 100 %";
 "Rotate left / right" = "Roter mot venstre / høyre";
@@ -120,7 +118,7 @@
 "The name must end in a picture extension, such as “.%@”." = "Navnet må slutte med en bildefiltype, for eksempel «.%@».";
 "The name must end in a video extension, such as “.%@”." = "Navnet må slutte med en videofiltype, for eksempel «.%@».";
 "Grid and full view" = "Rutenett og full visning";
-"Images: previous / next · Videos: 10 % of the length back / ahead; at the start / end: previous / next item" = "Bilder: forrige / neste · Videoer: 10 % av lengden bakover / fremover; ved starten / slutten: forrige / neste objekt";
+"Pictures: previous / next · Videos: 10 % of the length back / ahead; at the start / end: previous / next item" = "Bilder: forrige / neste · Videoer: 10 % av lengden bakover / fremover; ved starten / slutten: forrige / neste objekt";
 "Previous / next · Videos: 10 % of the length back / ahead" = "Forrige / neste · Videoer: 10 % av lengden bakover / fremover";
 "Wrong password for this archive." = "Feil passord for dette arkivet.";
 "The archive is incomplete: still downloading, a part missing, or damaged." = "Arkivet er ufullstendig: det lastes fortsatt ned, en del mangler, eller det er skadet.";
@@ -168,3 +166,4 @@
 "Louder" = "Høyere";
 "Quieter" = "Lavere";
 "Pictures zoomed in: look further up / down · Videos: volume up / down (remembered)" = "Bilder zoomet inn: se lenger opp / ned · Videoer: høyere / lavere lyd (huskes)";
+"%lld so far" = "%lld så langt";

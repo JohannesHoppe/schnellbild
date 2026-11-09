@@ -29,11 +29,11 @@ struct ShortcutsHelpView: View {
             Shortcut(keys: "Esc", action: "Clear search"),
         ]),
         Group(title: "Full view", shortcuts: [
-            Shortcut(keys: "← →", action: "Images: previous / next · Videos: 10 % of the length back / ahead; at the start / end: previous / next item"),
+            Shortcut(keys: "← →", action: "Pictures: previous / next · Videos: 10 % of the length back / ahead; at the start / end: previous / next item"),
             Shortcut(keys: "⌘← ⌘→", action: "Previous / next item, also from a video"),
             Shortcut(keys: "↑ ↓", action: "Pictures zoomed in: look further up / down · Videos: volume up / down (remembered)"),
             Shortcut(keys: "⇧← ⇧→", action: "Video: 1 % of the length back / ahead"),
-            Shortcut(keys: "Space", action: "Next image · play/pause video"),
+            Shortcut(keys: "Space", action: "Next picture · play/pause video"),
             Shortcut(keys: "+ / −", action: "Zoom in / out"),
             Shortcut(keys: "0 / 1", action: "Fit to window / 100 %"),
             Shortcut(keys: "[ / ]", action: "Rotate left / right"),

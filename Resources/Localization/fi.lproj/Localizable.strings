@@ -53,10 +53,8 @@
 "Please enter a name." = "Anna nimi.";
 "Names can't contain “/” or “:”, and can't be “.” or “..”." = "Nimissä ei voi olla merkkejä ”/” tai ”:”, eikä nimi voi olla ”.” tai ”..”.";
 "Open" = "Avaa";
-"Type" = "Laji";
 "Resolution" = "Resoluutio";
-"Modified" = "Muokattu";
-"Image" = "Kuva";
+"Picture" = "Kuva";
 "Video" = "Video";
 "Folder" = "Kansio";
 "Parent" = "Yläkansio";
@@ -75,7 +73,7 @@
 "Rename the selected folder or file (also in the full view)" = "Nimeä valittu kansio tai tiedosto uudelleen (myös koko näkymässä)";
 "Clear search" = "Tyhjennä haku";
 "Previous / next item, also from a video" = "Edellinen / seuraava kohde, myös videosta";
-"Next image · play/pause video" = "Seuraava kuva · toista / keskeytä video";
+"Next picture · play/pause video" = "Seuraava kuva · toista / keskeytä video";
 "Zoom in / out" = "Lähennä / loitonna";
 "Fit to window / 100 %" = "Sovita ikkunaan / 100 %";
 "Rotate left / right" = "Kierrä vasemmalle / oikealle";
@@ -120,7 +118,7 @@
 "The name must end in a picture extension, such as “.%@”." = "Nimen on päätyttävä kuvan päätteeseen, kuten ”.%@”.";
 "The name must end in a video extension, such as “.%@”." = "Nimen on päätyttävä videon päätteeseen, kuten ”.%@”.";
 "Grid and full view" = "Ruudukko ja koko näkymä";
-"Images: previous / next · Videos: 10 % of the length back / ahead; at the start / end: previous / next item" = "Kuvat: edellinen / seuraava · Videot: 10 % pituudesta taakse / eteen; alussa / lopussa: edellinen / seuraava kohde";
+"Pictures: previous / next · Videos: 10 % of the length back / ahead; at the start / end: previous / next item" = "Kuvat: edellinen / seuraava · Videot: 10 % pituudesta taakse / eteen; alussa / lopussa: edellinen / seuraava kohde";
 "Previous / next · Videos: 10 % of the length back / ahead" = "Edellinen / seuraava · Videot: 10 % pituudesta taakse / eteen";
 "Wrong password for this archive." = "Väärä salasana tähän arkistoon.";
 "The archive is incomplete: still downloading, a part missing, or damaged." = "Arkisto on keskeneräinen: sitä ladataan vielä, osa puuttuu tai se on vahingoittunut.";
@@ -168,3 +166,4 @@
 "Louder" = "Kovemmalle";
 "Quieter" = "Hiljemmalle";
 "Pictures zoomed in: look further up / down · Videos: volume up / down (remembered)" = "Lähennetyt kuvat: katso ylemmäs / alemmas · Videot: äänenvoimakkuus ylös / alas (muistetaan)";
+"%lld so far" = "tähän mennessä %lld";
