@@ -167,7 +167,7 @@ private struct WindowView: View {
 
             // The folder's name, where the window's title stands; a click
             // makes it editable to rename the folder
-            FolderNameField(model: model)
+            // FolderNameField(model: model)   // TEMP: does it push the sort menu out?
         }
         ToolbarItem(placement: .primaryAction) {
             // Two panes side by side, as in the file commanders (D, ⌃O)
