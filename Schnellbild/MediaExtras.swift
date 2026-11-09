@@ -108,7 +108,9 @@ struct InspectorView: View {
         let url = entry.url
         dimensions = await Task.detached(priority: .utility) { () -> String? in
             guard let size = await MediaInfo.pixelSize(ofAnywhere: url) else { return nil }
-            return "\(Int(size.width)) × \(Int(size.height)) px"
+            // An SVG states its size as it likes ("1e20")
+            guard size.width.isFinite, size.height.isFinite else { return nil }
+            return "\(Int(max(0, min(size.width, 1e15)))) × \(Int(max(0, min(size.height, 1e15)))) px"
         }.value
     }
 }

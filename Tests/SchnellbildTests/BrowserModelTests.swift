@@ -1815,7 +1815,7 @@ final class PlaybackTests: XCTestCase {
     }
 
     /// ↑/↓ on a video: one volume for all videos, in tenths, from 100 %,
-    /// remembered; on a picture they still page.
+    /// remembered.
     func testUpAndDownSetTheVolumeOfEveryVideo() async throws {
         let (m, player) = try await openOnVideo()
         XCTAssertEqual(m.volume, 1, "starts at 100 %")

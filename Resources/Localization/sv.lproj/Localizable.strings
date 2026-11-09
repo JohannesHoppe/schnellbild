@@ -20,7 +20,7 @@
 "Sort: %@ %@" = "Sortera: %@ %@";
 "Back (⌘[)" = "Bakåt (⌘[)";
 "Forward (⌘])" = "Framåt (⌘])";
-"Enclosing folder (⌘↑ / Backspace)" = "Överordnad mapp (⌘↑ / backsteg)";
+"Enclosing folder (⌘↑)" = "Överordnad mapp (⌘↑)";
 "Open folder (⌘O)" = "Öppna mapp (⌘O)";
 "Exposure, contrast, saturation and sharpness by hand (A)" = "Exponering, kontrast, mättnad och skärpa för hand (A)";
 "Stop search" = "Stoppa sökningen";
@@ -135,7 +135,6 @@
 "Start Slideshow of This Folder" = "Starta bildspel av den här mappen";
 "Auto Enhance" = "Autoförbättra";
 /* Mini keyboard */
-"Up" = "Upp";
 "Previous" = "Föregående";
 "Next" = "Nästa";
 "Row up" = "Rad upp";
@@ -191,7 +190,6 @@
 "Dual pane on / off: two folders side by side" = "Två paneler på / av: två mappar sida vid sida";
 "Switch to the other pane" = "Växla till den andra panelen";
 "Copy / move the marked items into the other pane's folder" = "Kopiera / flytta de markerade objekten till mappen i den andra panelen";
-"New folder / move the marked items to the Trash" = "Ny mapp / flytta de markerade objekten till papperskorgen";
 "Mark / unmark an item" = "Markera / avmarkera ett objekt";
 "Mark a range" = "Markera ett intervall";
 "Mark all / unmark all" = "Markera alla / avmarkera alla";
@@ -200,7 +198,6 @@
 "The app's menus in the window" = "Appens menyer i fönstret";
 "Do you want to quit Schnellbild?" = "Vill du avsluta Schnellbild?";
 "Quit" = "Avsluta";
-"Full screen on / off (F, ⌃⌘F)" = "Helskärm på / av (F, ⌃⌘F)";
 "Archive" = "Arkiv";
 "as Grid" = "som rutnät";
 "as List" = "som lista";
@@ -209,3 +206,16 @@
 "Back (where you were, also a search); without history the enclosing folder" = "Tillbaka (där du var, även till en sökning); utan historik till överordnad mapp";
 "⌘↑ goes up one folder level." = "⌘↑ går en mappnivå upp.";
 "Click to rename this folder" = "Klicka för att byta namn på mappen";
+"Schnellbild is free software under the MIT License." = "Schnellbild är fri programvara under MIT-licensen.";
+"Built with" = "Byggd med";
+"The full license texts are in the app (Contents/Resources/Licenses)." = "De fullständiga licenstexterna finns i appen (Contents/Resources/Licenses).";
+"plays the video formats macOS can't (AVI, MKV, WebM …)" = "spelar upp de videoformat som macOS inte kan (AVI, MKV, WebM …)";
+"reads RAR archives" = "läser RAR-arkiv";
+"reads ZIP and 7z archives (the copy built into macOS)" = "läser ZIP- och 7z-arkiv (versionen som är inbyggd i macOS)";
+"out of memory" = "inte tillräckligt med minne";
+"damaged data" = "skadade data";
+"damaged archive" = "skadat arkiv";
+"unknown format" = "okänt format";
+"can't open the file" = "filen kan inte öppnas";
+"read error" = "läsfel";
+"UnRAR error %lld" = "UnRAR-fel %lld";

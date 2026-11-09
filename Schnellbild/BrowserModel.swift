@@ -65,8 +65,6 @@ protocol PlaybackControl: AnyObject {
 extension PlaybackControl {
     var playsWithoutLength: Bool { false }
     var videoSize: CGSize? { nil }
-    var duration: Double? { nil }
-    func setVolume(_ volume: Double) {}
 }
 
 /// Side effects on the file system and the workspace. Injectable, so tests
@@ -1101,6 +1099,8 @@ final class BrowserModel: ObservableObject {
             await previous?.value
             let found = await Self.captureDates(of: Array(missing))
             guard let self, !Task.isCancelled else { return }
+            // The list view's Date Taken column shows them
+            if !found.isEmpty { self.objectWillChange.send() }
             self.captureDates.merge(found) { _, new in new }
             if self.sortKey == .captured { self.resort() }
         }
@@ -1691,7 +1691,6 @@ final class BrowserModel: ObservableObject {
         mode = .grid
     }
 
-    /// Backspace: leave the full-size view, or go up one folder level in the grid.
     /// Backspace, like a browser's Back: out of the full view, else where
     /// the user was before (also back to a search and its results); with no
     /// history yet, the enclosing folder.
@@ -2631,6 +2630,9 @@ final class FullScreenSwitch {
         return moving.to
     }
     private var wanted: Bool?
+    /// Where a retry after an animation is still taking the window; a new
+    /// request cancels it.
+    private var retrying: Bool?
     private var observers: [NSObjectProtocol] = []
 
     private init() {
@@ -2669,6 +2671,11 @@ final class FullScreenSwitch {
             wanted = on
             return movingTo != on
         }
+        // A retry still on its way elsewhere: cancelled, the window stays as asked
+        if let retrying {
+            self.retrying = nil
+            if retrying != on, window.styleMask.contains(.fullScreen) == on { return true }
+        }
         guard window.styleMask.contains(.fullScreen) != on else { return false }
         // Moving from now on: AppKit announces the animation only later.
         moving = (on, Date())
@@ -2687,20 +2694,24 @@ final class FullScreenSwitch {
     /// Right as the animation ends AppKit still ignores a toggle: asked a
     /// moment later, and again until the window is where it was asked to be.
     private func apply(_ on: Bool, to window: NSWindow, tries: Int) {
+        retrying = on
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
             MainActor.assumeIsolated {
-                guard self.movingTo == nil, self.wanted == nil else { return }   // a newer request takes over
-                guard window.styleMask.contains(.fullScreen) != on else { return }
+                // A newer request takes over
+                guard self.retrying == on, self.movingTo == nil, self.wanted == nil else { return }
+                guard window.styleMask.contains(.fullScreen) != on else { self.retrying = nil; return }
                 BrowserModel.testLog("full screen: toggling to \(on), \(tries) tries left")
                 window.toggleFullScreen(nil)
                 if tries > 1 {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                         MainActor.assumeIsolated {
-                            guard self.movingTo == nil, self.wanted == nil,
-                                  window.styleMask.contains(.fullScreen) != on else { return }
+                            guard self.retrying == on, self.movingTo == nil, self.wanted == nil,
+                                  window.styleMask.contains(.fullScreen) != on else { self.retrying = nil; return }
                             self.apply(on, to: window, tries: tries - 1)
                         }
                     }
+                } else {
+                    self.retrying = nil
                 }
             }
         }

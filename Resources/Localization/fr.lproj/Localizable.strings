@@ -20,7 +20,7 @@
 "Sort: %@ %@" = "Tri : %@ %@";
 "Back (⌘[)" = "Précédent (⌘[)";
 "Forward (⌘])" = "Suivant (⌘])";
-"Enclosing folder (⌘↑ / Backspace)" = "Dossier parent (⌘↑ / Retour arrière)";
+"Enclosing folder (⌘↑)" = "Dossier parent (⌘↑)";
 "Open folder (⌘O)" = "Ouvrir un dossier (⌘O)";
 "Exposure, contrast, saturation and sharpness by hand (A)" = "Exposition, contraste, saturation et netteté à la main (A)";
 "Stop search" = "Arrêter la recherche";
@@ -135,7 +135,6 @@
 "Start Slideshow of This Folder" = "Lancer le diaporama de ce dossier";
 "Auto Enhance" = "Amélioration auto";
 /* Mini keyboard */
-"Up" = "Remonter";
 "Previous" = "Précédent";
 "Next" = "Suivant";
 "Row up" = "Ligne vers le haut";
@@ -168,7 +167,7 @@
 "%lld so far" = "%lld pour l’instant";
 "New Folder" = "Nouveau dossier";
 "Create" = "Créer";
-"New folder: type its name, ↩ creates it, Esc creates none" = "Nouveau dossier : saisissez son nom, ↩ le crée, Échap n’en crée aucun";
+"New folder: type its name, ↩ creates it, Esc creates none" = "Nouveau dossier : saisissez son nom, ↩ le crée, Esc n’en crée aucun";
 "Mini Keyboard (K)" = "Mini-clavier (K)";
 /* Dual pane */
 "Dual Pane" = "Double panneau";
@@ -191,7 +190,6 @@
 "Dual pane on / off: two folders side by side" = "Double panneau activé / désactivé : deux dossiers côte à côte";
 "Switch to the other pane" = "Passer à l’autre panneau";
 "Copy / move the marked items into the other pane's folder" = "Copier / déplacer les éléments marqués dans le dossier de l’autre panneau";
-"New folder / move the marked items to the Trash" = "Nouveau dossier / placer les éléments marqués dans la corbeille";
 "Mark / unmark an item" = "Marquer / démarquer un élément";
 "Mark a range" = "Marquer une plage";
 "Mark all / unmark all" = "Tout marquer / tout démarquer";
@@ -200,7 +198,6 @@
 "The app's menus in the window" = "Les menus de l’app dans la fenêtre";
 "Do you want to quit Schnellbild?" = "Voulez-vous quitter Schnellbild ?";
 "Quit" = "Quitter";
-"Full screen on / off (F, ⌃⌘F)" = "Plein écran activé / désactivé (F, ⌃⌘F)";
 "Archive" = "Archive";
 "as Grid" = "en grille";
 "as List" = "en liste";
@@ -209,3 +206,16 @@
 "Back (where you were, also a search); without history the enclosing folder" = "Retour (là où vous étiez, aussi à une recherche) ; sans historique, au dossier parent";
 "⌘↑ goes up one folder level." = "⌘↑ remonte d’un niveau de dossier.";
 "Click to rename this folder" = "Cliquez pour renommer ce dossier";
+"Schnellbild is free software under the MIT License." = "Schnellbild est un logiciel libre sous licence MIT.";
+"Built with" = "Réalisé avec";
+"The full license texts are in the app (Contents/Resources/Licenses)." = "Les textes complets des licences se trouvent dans l’app (Contents/Resources/Licenses).";
+"plays the video formats macOS can't (AVI, MKV, WebM …)" = "lit les formats vidéo que macOS ne lit pas (AVI, MKV, WebM …)";
+"reads RAR archives" = "lit les archives RAR";
+"reads ZIP and 7z archives (the copy built into macOS)" = "lit les archives ZIP et 7z (la version intégrée à macOS)";
+"out of memory" = "mémoire insuffisante";
+"damaged data" = "données endommagées";
+"damaged archive" = "archive endommagée";
+"unknown format" = "format inconnu";
+"can't open the file" = "impossible d’ouvrir le fichier";
+"read error" = "erreur de lecture";
+"UnRAR error %lld" = "Erreur UnRAR %lld";

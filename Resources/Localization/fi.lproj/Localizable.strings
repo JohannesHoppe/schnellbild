@@ -20,7 +20,7 @@
 "Sort: %@ %@" = "Järjestys: %@ %@";
 "Back (⌘[)" = "Takaisin (⌘[)";
 "Forward (⌘])" = "Eteenpäin (⌘])";
-"Enclosing folder (⌘↑ / Backspace)" = "Yläkansio (⌘↑ / askelpalautin)";
+"Enclosing folder (⌘↑)" = "Yläkansio (⌘↑)";
 "Open folder (⌘O)" = "Avaa kansio (⌘O)";
 "Exposure, contrast, saturation and sharpness by hand (A)" = "Valotus, kontrasti, värikylläisyys ja terävyys käsin (A)";
 "Stop search" = "Lopeta haku";
@@ -135,7 +135,6 @@
 "Start Slideshow of This Folder" = "Aloita tämän kansion diaesitys";
 "Auto Enhance" = "Automaattinen parannus";
 /* Mini keyboard */
-"Up" = "Ylös";
 "Previous" = "Edellinen";
 "Next" = "Seuraava";
 "Row up" = "Rivi ylös";
@@ -191,7 +190,6 @@
 "Dual pane on / off: two folders side by side" = "Kaksi paneelia päälle / pois: kaksi kansiota rinnakkain";
 "Switch to the other pane" = "Vaihda toiseen paneeliin";
 "Copy / move the marked items into the other pane's folder" = "Kopioi / siirrä merkityt kohteet toisen paneelin kansioon";
-"New folder / move the marked items to the Trash" = "Uusi kansio / siirrä merkityt kohteet roskakoriin";
 "Mark / unmark an item" = "Merkitse kohde / poista merkintä";
 "Mark a range" = "Merkitse alue";
 "Mark all / unmark all" = "Merkitse kaikki / poista kaikki merkinnät";
@@ -200,7 +198,6 @@
 "The app's menus in the window" = "Apin valikot ikkunassa";
 "Do you want to quit Schnellbild?" = "Haluatko lopettaa Schnellbildin?";
 "Quit" = "Lopeta";
-"Full screen on / off (F, ⌃⌘F)" = "Koko näyttö päälle / pois (F, ⌃⌘F)";
 "Archive" = "Arkisto";
 "as Grid" = "ruudukkona";
 "as List" = "luettelona";
@@ -209,3 +206,16 @@
 "Back (where you were, also a search); without history the enclosing folder" = "Takaisin (missä olit, myös hakuun); ilman historiaa ylempään kansioon";
 "⌘↑ goes up one folder level." = "⌘↑ siirtyy yhden kansiotason ylös.";
 "Click to rename this folder" = "Nimeä kansio uudelleen osoittamalla";
+"Schnellbild is free software under the MIT License." = "Schnellbild on vapaa ohjelmisto MIT-lisenssillä.";
+"Built with" = "Tehty käyttäen";
+"The full license texts are in the app (Contents/Resources/Licenses)." = "Lisenssien koko tekstit ovat apissa (Contents/Resources/Licenses).";
+"plays the video formats macOS can't (AVI, MKV, WebM …)" = "toistaa videomuodot, joita macOS ei osaa (AVI, MKV, WebM …)";
+"reads RAR archives" = "lukee RAR-arkistoja";
+"reads ZIP and 7z archives (the copy built into macOS)" = "lukee ZIP- ja 7z-arkistoja (macOSiin sisäänrakennettu versio)";
+"out of memory" = "muisti ei riitä";
+"damaged data" = "vahingoittunutta dataa";
+"damaged archive" = "vahingoittunut arkisto";
+"unknown format" = "tuntematon muoto";
+"can't open the file" = "tiedostoa ei voi avata";
+"read error" = "lukuvirhe";
+"UnRAR error %lld" = "UnRAR-virhe %lld";

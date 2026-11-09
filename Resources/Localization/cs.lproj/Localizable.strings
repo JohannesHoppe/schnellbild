@@ -20,7 +20,7 @@
 "Sort: %@ %@" = "Řazení: %@ %@";
 "Back (⌘[)" = "Zpět (⌘[)";
 "Forward (⌘])" = "Vpřed (⌘])";
-"Enclosing folder (⌘↑ / Backspace)" = "Nadřazená složka (⌘↑ / Backspace)";
+"Enclosing folder (⌘↑)" = "Nadřazená složka (⌘↑)";
 "Open folder (⌘O)" = "Otevřít složku (⌘O)";
 "Exposure, contrast, saturation and sharpness by hand (A)" = "Expozice, kontrast, sytost a ostrost ručně (A)";
 "Stop search" = "Zastavit hledání";
@@ -135,7 +135,6 @@
 "Start Slideshow of This Folder" = "Spustit prezentaci této složky";
 "Auto Enhance" = "Automatické vylepšení";
 /* Mini keyboard */
-"Up" = "Nahoru";
 "Previous" = "Předchozí";
 "Next" = "Další";
 "Row up" = "Řádek nahoru";
@@ -191,7 +190,6 @@
 "Dual pane on / off: two folders side by side" = "Dva panely zapnout / vypnout: dvě složky vedle sebe";
 "Switch to the other pane" = "Přepnout do druhého panelu";
 "Copy / move the marked items into the other pane's folder" = "Kopírovat / přesunout označené položky do složky druhého panelu";
-"New folder / move the marked items to the Trash" = "Nová složka / přesunout označené položky do koše";
 "Mark / unmark an item" = "Označit / odznačit položku";
 "Mark a range" = "Označit rozsah";
 "Mark all / unmark all" = "Označit vše / odznačit vše";
@@ -200,7 +198,6 @@
 "The app's menus in the window" = "Nabídky aplikace v okně";
 "Do you want to quit Schnellbild?" = "Chcete ukončit Schnellbild?";
 "Quit" = "Ukončit";
-"Full screen on / off (F, ⌃⌘F)" = "Celá obrazovka zap. / vyp. (F, ⌃⌘F)";
 "Archive" = "Archiv";
 "as Grid" = "jako mřížka";
 "as List" = "jako seznam";
@@ -209,3 +206,16 @@
 "Back (where you were, also a search); without history the enclosing folder" = "Zpět (kde jste byli, i k hledání); bez historie do nadřazené složky";
 "⌘↑ goes up one folder level." = "⌘↑ přejde o úroveň složek výš.";
 "Click to rename this folder" = "Kliknutím složku přejmenujete";
+"Schnellbild is free software under the MIT License." = "Schnellbild je svobodný software pod licencí MIT.";
+"Built with" = "Vytvořeno s";
+"The full license texts are in the app (Contents/Resources/Licenses)." = "Úplné texty licencí jsou v aplikaci (Contents/Resources/Licenses).";
+"plays the video formats macOS can't (AVI, MKV, WebM …)" = "přehrává formáty videa, které macOS neumí (AVI, MKV, WebM …)";
+"reads RAR archives" = "čte archivy RAR";
+"reads ZIP and 7z archives (the copy built into macOS)" = "čte archivy ZIP a 7z (verze vestavěná v macOS)";
+"out of memory" = "nedostatek paměti";
+"damaged data" = "poškozená data";
+"damaged archive" = "poškozený archiv";
+"unknown format" = "neznámý formát";
+"can't open the file" = "soubor nelze otevřít";
+"read error" = "chyba čtení";
+"UnRAR error %lld" = "Chyba UnRAR %lld";

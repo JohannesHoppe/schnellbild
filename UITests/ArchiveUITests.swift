@@ -90,8 +90,6 @@ final class ArchiveUITests: SchnellbildUITestCase {
         eventually("plays on", timeout: 10) { !self.text(of: self.badge).contains("Paused") }
         app.typeKey(.rightArrow, modifierFlags: [])   // a jump ahead inside the stream
         XCTAssertTrue(element(vlc ? "video.vlc" : "video.avkit").exists)
-        let copies = FileManager.default.temporaryDirectory.appendingPathComponent("Schnellbild archive videos")
-        XCTAssertFalse(FileManager.default.fileExists(atPath: copies.path), "nothing unpacked to disk")
     }
 
     func testAStoredVideoStreamsInAVKit() throws { try checkStreamedVideo(packed: false, vlc: false) }

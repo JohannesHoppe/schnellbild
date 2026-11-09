@@ -294,7 +294,7 @@ enum VectorPicture {
     }
 
     private static func render(_ image: NSImage, longestSide: Int) -> (CGImage, CGSize)? {
-        guard image.size.width > 0, image.size.height > 0 else { return nil }
+        guard image.size.width > 0, image.size.height > 0, image.size.width.isFinite, image.size.height.isFinite else { return nil }
         let size = image.size
         let scale = CGFloat(max(longestSide, 1)) / max(size.width, size.height)
         let width = max(Int((size.width * scale).rounded()), 1)

@@ -20,7 +20,7 @@
 "Sort: %@ %@" = "Sortieren: %@ %@";
 "Back (⌘[)" = "Zurück (⌘[)";
 "Forward (⌘])" = "Vorwärts (⌘])";
-"Enclosing folder (⌘↑ / Backspace)" = "Übergeordneter Ordner (⌘↑ / Rückschritt)";
+"Enclosing folder (⌘↑)" = "Übergeordneter Ordner (⌘↑)";
 "Open folder (⌘O)" = "Ordner öffnen (⌘O)";
 "Exposure, contrast, saturation and sharpness by hand (A)" = "Belichtung, Kontrast, Sättigung und Schärfe von Hand (A)";
 "Stop search" = "Suche anhalten";
@@ -135,7 +135,6 @@
 "Start Slideshow of This Folder" = "Diashow dieses Ordners starten";
 "Auto Enhance" = "Automatisch verbessern";
 /* Mini keyboard */
-"Up" = "Hoch";
 "Previous" = "Vorheriges";
 "Next" = "Nächstes";
 "Row up" = "Zeile hoch";
@@ -191,7 +190,6 @@
 "Dual pane on / off: two folders side by side" = "Doppelansicht ein / aus: zwei Ordner nebeneinander";
 "Switch to the other pane" = "Zur anderen Seite wechseln";
 "Copy / move the marked items into the other pane's folder" = "Markierte Objekte in den Ordner der anderen Seite kopieren / verschieben";
-"New folder / move the marked items to the Trash" = "Neuer Ordner / markierte Objekte in den Papierkorb legen";
 "Mark / unmark an item" = "Objekt markieren / Markierung aufheben";
 "Mark a range" = "Bereich markieren";
 "Mark all / unmark all" = "Alle markieren / alle Markierungen aufheben";
@@ -200,7 +198,6 @@
 "The app's menus in the window" = "Die Menüs der App im Fenster";
 "Do you want to quit Schnellbild?" = "Möchtest du Schnellbild beenden?";
 "Quit" = "Beenden";
-"Full screen on / off (F, ⌃⌘F)" = "Vollbild ein / aus (F, ⌃⌘F)";
 "Archive" = "Archiv";
 "as Grid" = "als Raster";
 "as List" = "als Liste";
@@ -209,3 +206,16 @@
 "Back (where you were, also a search); without history the enclosing folder" = "Zurück (wo du warst, auch zu einer Suche); ohne Verlauf in den übergeordneten Ordner";
 "⌘↑ goes up one folder level." = "⌘↑ geht eine Ordnerebene nach oben.";
 "Click to rename this folder" = "Klicken, um diesen Ordner umzubenennen";
+"Schnellbild is free software under the MIT License." = "Schnellbild ist freie Software unter der MIT-Lizenz.";
+"Built with" = "Erstellt mit";
+"The full license texts are in the app (Contents/Resources/Licenses)." = "Die vollständigen Lizenztexte liegen in der App (Contents/Resources/Licenses).";
+"plays the video formats macOS can't (AVI, MKV, WebM …)" = "spielt die Videoformate, die macOS nicht kann (AVI, MKV, WebM …)";
+"reads RAR archives" = "liest RAR-Archive";
+"reads ZIP and 7z archives (the copy built into macOS)" = "liest ZIP- und 7z-Archive (die in macOS eingebaute Fassung)";
+"out of memory" = "zu wenig Arbeitsspeicher";
+"damaged data" = "beschädigte Daten";
+"damaged archive" = "beschädigtes Archiv";
+"unknown format" = "unbekanntes Format";
+"can't open the file" = "Datei lässt sich nicht öffnen";
+"read error" = "Lesefehler";
+"UnRAR error %lld" = "UnRAR-Fehler %lld";

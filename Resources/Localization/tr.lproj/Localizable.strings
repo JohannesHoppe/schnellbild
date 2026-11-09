@@ -20,7 +20,7 @@
 "Sort: %@ %@" = "Sırala: %@ %@";
 "Back (⌘[)" = "Geri (⌘[)";
 "Forward (⌘])" = "İleri (⌘])";
-"Enclosing folder (⌘↑ / Backspace)" = "Üst klasör (⌘↑ / Geri Sil)";
+"Enclosing folder (⌘↑)" = "Üst klasör (⌘↑)";
 "Open folder (⌘O)" = "Klasör aç (⌘O)";
 "Exposure, contrast, saturation and sharpness by hand (A)" = "Pozlama, kontrast, doygunluk ve keskinlik elle (A)";
 "Stop search" = "Aramayı durdur";
@@ -135,7 +135,6 @@
 "Start Slideshow of This Folder" = "Bu Klasörün Slayt Gösterisini Başlat";
 "Auto Enhance" = "Otomatik İyileştirme";
 /* Mini keyboard */
-"Up" = "Yukarı";
 "Previous" = "Önceki";
 "Next" = "Sonraki";
 "Row up" = "Satır yukarı";
@@ -191,7 +190,6 @@
 "Dual pane on / off: two folders side by side" = "Çift bölme aç / kapat: iki klasör yan yana";
 "Switch to the other pane" = "Diğer bölmeye geç";
 "Copy / move the marked items into the other pane's folder" = "İşaretli öğeleri diğer bölmenin klasörüne kopyala / taşı";
-"New folder / move the marked items to the Trash" = "Yeni klasör / işaretli öğeleri Çöp Sepetine taşı";
 "Mark / unmark an item" = "Öğeyi işaretle / işareti kaldır";
 "Mark a range" = "Bir aralığı işaretle";
 "Mark all / unmark all" = "Tümünü işaretle / tüm işaretleri kaldır";
@@ -200,7 +198,6 @@
 "The app's menus in the window" = "Uygulamanın menüleri pencerede";
 "Do you want to quit Schnellbild?" = "Schnellbild’den çıkmak istiyor musunuz?";
 "Quit" = "Çık";
-"Full screen on / off (F, ⌃⌘F)" = "Tam ekran aç / kapat (F, ⌃⌘F)";
 "Archive" = "Arşiv";
 "as Grid" = "Izgara Olarak";
 "as List" = "Liste Olarak";
@@ -209,3 +206,16 @@
 "Back (where you were, also a search); without history the enclosing folder" = "Geri (bulunduğunuz yere, bir aramaya da); geçmiş yoksa üst klasöre";
 "⌘↑ goes up one folder level." = "⌘↑ bir klasör düzeyi yukarı çıkar.";
 "Click to rename this folder" = "Bu klasörü yeniden adlandırmak için tıklayın";
+"Schnellbild is free software under the MIT License." = "Schnellbild, MIT Lisansı altında özgür bir yazılımdır.";
+"Built with" = "Kullanılanlar";
+"The full license texts are in the app (Contents/Resources/Licenses)." = "Lisansların tam metinleri uygulamanın içinde (Contents/Resources/Licenses).";
+"plays the video formats macOS can't (AVI, MKV, WebM …)" = "macOS’in oynatamadığı video biçimlerini oynatır (AVI, MKV, WebM …)";
+"reads RAR archives" = "RAR arşivlerini okur";
+"reads ZIP and 7z archives (the copy built into macOS)" = "ZIP ve 7z arşivlerini okur (macOS’te yerleşik sürüm)";
+"out of memory" = "bellek yetersiz";
+"damaged data" = "hasarlı veri";
+"damaged archive" = "hasarlı arşiv";
+"unknown format" = "bilinmeyen biçim";
+"can't open the file" = "dosya açılamıyor";
+"read error" = "okuma hatası";
+"UnRAR error %lld" = "UnRAR hatası %lld";

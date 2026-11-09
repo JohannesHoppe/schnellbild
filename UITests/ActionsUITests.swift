@@ -286,10 +286,7 @@ final class ActionsUITests: SchnellbildUITestCase {
     /// into the other pane moves it there; D closes it again.
     func testTheDualPane() throws {
         try folder("Sorted")
-        let log = tempDir.appendingPathComponent("app.log")
-        launch(open: tempDir.path, extra: ["--test-log=\(log.path)"])
-        XCTAssertTrue(app.staticTexts["a.jpg"].waitForExistence(timeout: 15))
-        continueAfterFailure = true
+        launchOnTempDir()
         app.typeKey("d", modifierFlags: [])
         let left = element("pane.left"), right = element("pane.right")
         XCTAssertTrue(right.waitForExistence(timeout: 10), "two panes")
@@ -302,14 +299,12 @@ final class ActionsUITests: SchnellbildUITestCase {
         // Left: a.jpg and b.jpg marked (⇧→; a ⌘-click lands a row off here,
         // the grid's accessibility frames lag behind its scrolling), F5
         let leftA = left.descendants(matching: .any).matching(identifier: "tile.a.jpg").firstMatch
-        let leftB = left.descendants(matching: .any).matching(identifier: "tile.b.jpg").firstMatch
         leftA.click()
         app.typeKey(.rightArrow, modifierFlags: .shift)
         app.typeKey(.F5, modifierFlags: [])
         let rightA = right.descendants(matching: .any).matching(identifier: "tile.a.jpg").firstMatch
         XCTAssertTrue(rightA.waitForExistence(timeout: 10), "copied into the other pane")
-        XCTAssertTrue(right.descendants(matching: .any).matching(identifier: "tile.b.jpg").firstMatch.exists,
-                      "b too; app log:\n" + ((try? String(contentsOf: log, encoding: .utf8)) ?? "none"))
+        XCTAssertTrue(right.descendants(matching: .any).matching(identifier: "tile.b.jpg").firstMatch.exists, "b too")
         XCTAssertTrue(leftA.exists, "a copy: still on the left")
         XCTAssertTrue(FileManager.default.fileExists(atPath: tempDir.appendingPathComponent("Sorted/b.jpg").path))
 
@@ -319,7 +314,6 @@ final class ActionsUITests: SchnellbildUITestCase {
         eventually("moved into the right pane", timeout: 10) {
             right.descendants(matching: .any).matching(identifier: "tile.c.jpg").firstMatch.exists && !leftC.exists
         }
-        if !right.descendants(matching: .any).matching(identifier: "tile.c.jpg").firstMatch.exists { XCTFail("app log:\n" + ((try? String(contentsOf: log, encoding: .utf8)) ?? "none")) }
 
         app.typeKey("d", modifierFlags: [])
         eventually("one pane again") { !self.element("pane.right").exists }

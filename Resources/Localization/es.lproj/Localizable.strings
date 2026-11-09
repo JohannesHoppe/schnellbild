@@ -20,7 +20,7 @@
 "Sort: %@ %@" = "Orden: %@ %@";
 "Back (⌘[)" = "Atrás (⌘[)";
 "Forward (⌘])" = "Adelante (⌘])";
-"Enclosing folder (⌘↑ / Backspace)" = "Carpeta superior (⌘↑ / Retroceso)";
+"Enclosing folder (⌘↑)" = "Carpeta superior (⌘↑)";
 "Open folder (⌘O)" = "Abrir carpeta (⌘O)";
 "Exposure, contrast, saturation and sharpness by hand (A)" = "Exposición, contraste, saturación y nitidez a mano (A)";
 "Stop search" = "Detener búsqueda";
@@ -135,7 +135,6 @@
 "Start Slideshow of This Folder" = "Iniciar pase de diapositivas de esta carpeta";
 "Auto Enhance" = "Mejora automática";
 /* Mini keyboard */
-"Up" = "Subir";
 "Previous" = "Anterior";
 "Next" = "Siguiente";
 "Row up" = "Fila arriba";
@@ -191,7 +190,6 @@
 "Dual pane on / off: two folders side by side" = "Activar / desactivar doble panel: dos carpetas una al lado de la otra";
 "Switch to the other pane" = "Cambiar al otro panel";
 "Copy / move the marked items into the other pane's folder" = "Copiar / mover los elementos marcados a la carpeta del otro panel";
-"New folder / move the marked items to the Trash" = "Nueva carpeta / trasladar los elementos marcados a la papelera";
 "Mark / unmark an item" = "Marcar / desmarcar un elemento";
 "Mark a range" = "Marcar un intervalo";
 "Mark all / unmark all" = "Marcar todo / desmarcar todo";
@@ -200,7 +198,6 @@
 "The app's menus in the window" = "Los menús de la app en la ventana";
 "Do you want to quit Schnellbild?" = "¿Quieres salir de Schnellbild?";
 "Quit" = "Salir";
-"Full screen on / off (F, ⌃⌘F)" = "Pantalla completa sí / no (F, ⌃⌘F)";
 "Archive" = "Archivo comprimido";
 "as Grid" = "como cuadrícula";
 "as List" = "como lista";
@@ -209,3 +206,16 @@
 "Back (where you were, also a search); without history the enclosing folder" = "Atrás (donde estabas, también a una búsqueda); sin historial, a la carpeta superior";
 "⌘↑ goes up one folder level." = "⌘↑ sube un nivel de carpeta.";
 "Click to rename this folder" = "Haz clic para renombrar esta carpeta";
+"Schnellbild is free software under the MIT License." = "Schnellbild es software libre bajo la licencia MIT.";
+"Built with" = "Creado con";
+"The full license texts are in the app (Contents/Resources/Licenses)." = "Los textos completos de las licencias están en la app (Contents/Resources/Licenses).";
+"plays the video formats macOS can't (AVI, MKV, WebM …)" = "reproduce los formatos de vídeo que macOS no puede (AVI, MKV, WebM …)";
+"reads RAR archives" = "lee archivos RAR";
+"reads ZIP and 7z archives (the copy built into macOS)" = "lee archivos ZIP y 7z (la versión integrada en macOS)";
+"out of memory" = "sin memoria suficiente";
+"damaged data" = "datos dañados";
+"damaged archive" = "archivo comprimido dañado";
+"unknown format" = "formato desconocido";
+"can't open the file" = "no se puede abrir el archivo";
+"read error" = "error de lectura";
+"UnRAR error %lld" = "Error de UnRAR %lld";

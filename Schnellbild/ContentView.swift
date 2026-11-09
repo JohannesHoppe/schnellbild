@@ -21,8 +21,6 @@ private struct WindowView: View {
     @EnvironmentObject var window: WindowModel
     @State private var dropZone: DropZone?
     @State private var width: CGFloat = 0
-    @State private var keyMonitor: Any?
-    @State private var pinchMonitor: Any?
     /// The launch folder is opened once; the view can appear again (full
     /// screen, toolbar shown or hidden) and must not reload it then.
     @State private var launched = false
@@ -84,8 +82,6 @@ private struct WindowView: View {
             }
             installKeyMonitor()
         }
-        // The monitors stay while the app runs (it quits with its window): a
-        // view rebuilt must never take them away
         .toolbar { toolbarContent }
         .modifier(FolderTitle(model: model))
         .environmentObject(model)
@@ -152,7 +148,7 @@ private struct WindowView: View {
             Button { model.goToParentFolder() } label: {
                 Label("Enclosing Folder", systemImage: "arrow.up")
             }
-            .help("Enclosing folder (⌘↑ / Backspace)")
+            .help("Enclosing folder (⌘↑)")
             .disabled(!model.canGoUp)
             .accessibilityIdentifier("upButton")
 
@@ -233,11 +229,13 @@ private struct WindowView: View {
     /// of SwiftUI focus, which can swallow Backspace and the arrow keys. The
     /// actual bindings live in `BrowserModel.handleKey` (unit-tested).
     private func installKeyMonitor() {
-        guard keyMonitor == nil, !Self.monitorsInstalled else { return }
+        // Once for the app's life (it quits with its window): a view rebuilt
+        // must neither add a second monitor nor take one away
+        guard !Self.monitorsInstalled else { return }
         Self.monitorsInstalled = true
         ModifierClicks.start()
         let window = self.window
-        keyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
+        _ = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
             // A modal dialog (the Trash confirmation, the open panel) keeps
             // its keys: Return confirms it, Esc cancels it.
             if NSApp.modalWindow != nil || event.window is NSSavePanel { return event }
@@ -252,8 +250,7 @@ private struct WindowView: View {
                 // Typing: a field editor at work, or the search field about to
                 // get one (a click makes it first responder before editing
                 // starts; its first key must not act as D, E …). Not any text
-                // field: the window's editable title is one, and holds the
-                // keyboard at launch without being edited.
+                // field that merely holds the keyboard without being edited.
                 let typing = editor != nil || NSApp.keyWindow?.firstResponder is FocusGatedSearchField
                 // ⌘⌫ / ⌘↩ while typing are the text field's (delete to the
                 // line start): menu key equivalents would run first and
@@ -291,7 +288,7 @@ private struct WindowView: View {
         // Trackpad pinch on a video: AVKit's player view would take it for
         // itself, so it's caught here, like the keys. Pictures use their own
         // gesture.
-        pinchMonitor = NSEvent.addLocalMonitorForEvents(matching: .magnify) { event in
+        _ = NSEvent.addLocalMonitorForEvents(matching: .magnify) { event in
             let magnification = event.magnification
             let used = MainActor.assumeIsolated { () -> Bool in
                 let model = window.active
