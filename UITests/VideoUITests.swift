@@ -201,11 +201,17 @@ final class VideoUITests: SchnellbildUITestCase {
     private func checkSlideshowMovesOnAfterAVideo(vlc: Bool) throws {
         try put("dark.mp4", at: "show/v1.mp4")   // three seconds each
         try put("bright.mp4", at: "show/v2.mp4")
-        launch(open: tempDir.appendingPathComponent("show").path, extra: vlc ? ["--force-vlc"] : [])
+        let log = tempDir.appendingPathComponent("app.log")
+        launch(open: tempDir.appendingPathComponent("show").path,
+               extra: (vlc ? ["--force-vlc"] : []) + ["--test-log=\(log.path)"])
         XCTAssertTrue(tile("v1.mp4").waitForExistence(timeout: 15))
         app.typeKey("s", modifierFlags: [])
         waitForBadge(containing: "v1.mp4", timeout: 20)
-        waitForBadge(containing: "v2.mp4", timeout: 20)
+        let deadline = Date().addingTimeInterval(20)
+        while !text(of: badge).contains("v2.mp4"), Date() < deadline { RunLoop.current.run(until: Date().addingTimeInterval(0.3)) }
+        if !text(of: badge).contains("v2.mp4") {
+            XCTFail("the slideshow stayed on “\(text(of: badge))”; app log:\n" + ((try? String(contentsOf: log, encoding: .utf8)) ?? "none"))
+        }
     }
 
     func testSlideshowMovesOnAfterAnAVKitVideo() throws { try checkSlideshowMovesOnAfterAVideo(vlc: false) }
