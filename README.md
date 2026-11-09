@@ -51,7 +51,7 @@ Open a folder with ⌘O or drag it onto the window; drag a single file to open i
 | Home / End | first / last item |
 | ⌘+ / ⌘− | larger / smaller thumbnails |
 | ⌘[ / ⌘] | back / forward, restoring the folder, the search and the selection |
-| f / ⌃⌘F | full screen |
+| f / ⌃⌘F | full screen (also the button in the middle of the title bar) |
 | F2 | rename the selected folder or file |
 | Esc | clear the search |
 

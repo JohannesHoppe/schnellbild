@@ -231,6 +231,19 @@ final class GridUITests: SchnellbildUITestCase {
         eventually("window leaves full screen", timeout: 10) { window.frame.size == before }
     }
 
+    /// The full-screen button in the middle of the title bar.
+    func testTheFullScreenButton() {
+        launchOnTempDir()
+        let window = app.windows.firstMatch
+        let before = window.frame.size
+        toolbarButton("fullScreenButton").click()
+        eventually("window enters full screen", timeout: 10) {
+            window.frame.width > before.width || window.frame.height > before.height
+        }
+        app.typeKey("f", modifierFlags: [])
+        eventually("window leaves full screen", timeout: 10) { window.frame.size == before }
+    }
+
     /// ⌃⌘F is the system's full screen, not ⌘F's search.
     func testControlCommandFEntersFullScreen() {
         launchOnTempDir()
