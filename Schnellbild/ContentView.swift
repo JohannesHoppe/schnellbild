@@ -206,6 +206,7 @@ struct ContentView: View {
         .overlay(alignment: .topTrailing) {
             if model.showInspector { InspectorView(entry: entry).padding(12) }
         }
+        .overlay { if entry.kind == .video { VolumeDisplay() } }
     }
 
     private func positionBadge(entry: GridEntry, atTop: Bool) -> some View {
@@ -733,6 +734,54 @@ struct ShortcutLabel: View {
                 Label(title, systemImage: systemImage).labelStyle(.iconOnly)
             }
             KeyCap(keys)
+        }
+    }
+}
+
+/// The volume, shown a moment while ↑ / ↓ change it.
+struct VolumeDisplay: View {
+    @EnvironmentObject var model: BrowserModel
+    @State private var shown = false
+    @State private var hide: Task<Void, Never>?
+
+    var body: some View {
+        ZStack {
+            if shown {
+                HStack(spacing: 10) {
+                    Image(systemName: model.volume == 0 ? "speaker.slash.fill"
+                          : model.volume < 0.5 ? "speaker.wave.1.fill" : "speaker.wave.3.fill")
+                        .font(.title2)
+                        .frame(width: 30)
+                    GeometryReader { geo in
+                        ZStack(alignment: .leading) {
+                            Capsule().fill(Color.primary.opacity(0.18))
+                            Capsule().fill(Color.primary.opacity(0.8)).frame(width: geo.size.width * model.volume)
+                        }
+                    }
+                    .frame(width: 160, height: 6)
+                    Text(verbatim: "\(Int((model.volume * 100).rounded())) %")
+                        .monospacedDigit()
+                        .frame(width: 48, alignment: .trailing)
+                }
+                .padding(.horizontal, 18)
+                .padding(.vertical, 12)
+                .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 14))
+                .transition(.opacity)
+                .accessibilityElement(children: .ignore)
+                .accessibilityIdentifier("volumeDisplay")
+                .accessibilityLabel("volume \(Int((model.volume * 100).rounded())) %")
+            }
+        }
+        .animation(.easeOut(duration: 0.15), value: shown)
+        .onChange(of: model.volumeChange) { _, change in
+            guard change != nil else { return }
+            shown = true
+            hide?.cancel()
+            hide = Task { @MainActor in
+                try? await Task.sleep(for: .seconds(1.2))
+                guard !Task.isCancelled else { return }
+                shown = false
+            }
         }
     }
 }

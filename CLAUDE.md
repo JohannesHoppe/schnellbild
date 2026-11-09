@@ -44,7 +44,7 @@ There is **no Xcode project for the app build**; `xcodegen` generates
     (folder entries, search results, pending selection, history) and keeps
     the selection. Rename and trash only create the change.
   - A listing (`listing` → `FolderListing`) has the grid's entries and `otherFiles`: every other file (not hidden, not a later volume of an archive shown, packages included), listed by name under the grid (`OtherFilesList`) and counted in the status bar, so a folder with only such files never reads as empty. A folder or archive that can't be listed sets `loadError` ("This folder / archive can't be read" with the system's reason), never "This folder is empty". Labels say exactly what is and what happens (no prose): check them when adding UI text.
-  - Videos: ←/→ jump 10 % of the length (`skim`), ⇧←/⇧→ 1 % (`fineVideoJump`, `fineSkim`, staying in the video); `VideoProgressBar` under the position badge reads `activePlayer.progress` four times a second.
+  - Videos: ↑/↓ the volume of every video in tenths (`changeVolume`, remembered, `PlaybackControl.setVolume`, shown by `VolumeDisplay` a moment), ←/→ jump 10 % of the length (`skim`), ⇧←/⇧→ 1 % (`fineVideoJump`, `fineSkim`, staying in the video); `VideoProgressBar` under the position badge reads `activePlayer.progress` four times a second.
   - Paths are compared with `canonicalPath`: pure string work (standardized,
     `/private/var` → `/var`), no file system access, because it runs per entry
     on the main thread and must stay fast on network volumes.
