@@ -1698,8 +1698,13 @@ final class PlaybackTests: XCTestCase {
         m.activePlayer = next
         XCTAssertEqual(next.volume ?? -1, 0.8, accuracy: 0.001, "the next video gets it too")
         m.selectEntry(named: "z.jpg")
-        m.handleKey(.up, command: false)
-        XCTAssertEqual(m.selectedEntry?.name, "clip.mp4", "on a picture ↑ pages")
+        XCTAssertFalse(m.handleKey(.up, command: false), "on a picture at fit ↑ does nothing")
+        XCTAssertEqual(m.selectedEntry?.name, "z.jpg", "no paging")
+        m.handleKey(.char("+"), command: false)
+        XCTAssertTrue(m.handleKey(.down, command: false), "zoomed in: look further down")
+        XCTAssertEqual(m.panRequest?.up, false)
+        XCTAssertEqual(m.selectedEntry?.name, "z.jpg")
+        m.zoomReset()
         for _ in 0..<12 { m.selectEntry(named: "clip.mp4"); m.handleKey(.down, command: false) }
         XCTAssertEqual(m.volume, 0, "no quieter than silent")
     }

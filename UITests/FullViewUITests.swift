@@ -41,11 +41,14 @@ final class FullViewUITests: SchnellbildUITestCase {
         openA()
         app.typeKey(.rightArrow, modifierFlags: [])
         waitForBadge(containing: "2 / 3  ·  b.jpg")
-        app.typeKey(.downArrow, modifierFlags: [])
+        app.typeKey(.downArrow, modifierFlags: [])   // ↓ doesn't page pictures
+        RunLoop.current.run(until: Date().addingTimeInterval(0.5))
+        XCTAssertTrue(text(of: badge).contains("2 / 3  ·  b.jpg"), text(of: badge))
+        app.typeKey(.rightArrow, modifierFlags: [])
         waitForBadge(containing: "3 / 3  ·  c.jpg")
         app.typeKey(.rightArrow, modifierFlags: [])
         waitForBadge(containing: "3 / 3", timeout: 2)   // clamps at the end
-        app.typeKey(.upArrow, modifierFlags: [])
+        app.typeKey(.leftArrow, modifierFlags: [])
         waitForBadge(containing: "2 / 3")
         app.typeKey(.leftArrow, modifierFlags: [])
         waitForBadge(containing: "1 / 3")

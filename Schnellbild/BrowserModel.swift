@@ -506,6 +506,23 @@ final class BrowserModel: ObservableObject {
     /// Changes with every volume step: the volume display shows a while.
     @Published private(set) var volumeChange: UUID?
 
+    /// ↑ / ↓ on what's shown: a video's volume; a zoomed-in picture moves
+    /// to show more of its top / bottom; otherwise nothing (paging is ← →).
+    private func verticalKey(up: Bool) -> Bool {
+        if shownMediaEntry?.kind == .video { changeVolume(by: up ? 0.1 : -0.1); return true }
+        guard zoom > 1.01 else { return false }
+        panRequest = PanRequest(up: up)
+        return true
+    }
+
+    /// A step of looking further up or down in a zoomed-in picture (the
+    /// picture view moves by part of its height).
+    struct PanRequest: Equatable {
+        let up: Bool
+        let id = UUID()
+    }
+    @Published private(set) var panRequest: PanRequest?
+
     func changeVolume(by delta: Double) {
         volume = (min(max(volume + delta, 0), 1) * 10).rounded() / 10
         defaults.set(volume, forKey: Self.volumeKey)
@@ -1612,11 +1629,11 @@ final class BrowserModel: ObservableObject {
             return true
         case .up:
             if command { goToParentFolder(); return true }
-            if mode == .detail, shownMediaEntry?.kind == .video { changeVolume(by: 0.1); return true }
-            mode == .detail ? stepMedia(-1) : stepRow(-1); return true
+            if mode == .detail { return verticalKey(up: true) }
+            stepRow(-1); return true
         case .down:
-            if mode == .detail, shownMediaEntry?.kind == .video { changeVolume(by: -0.1); return true }
-            mode == .detail ? stepMedia(+1) : stepRow(+1); return true
+            if mode == .detail { return verticalKey(up: false) }
+            stepRow(+1); return true
         case .home:
             guard mode == .grid else { return false }
             select(0); return true
@@ -2059,9 +2076,7 @@ final class BrowserModel: ObservableObject {
             if command { slideshowStep(direction) } else if shift { fineSkim(direction) } else { skim(direction) }
             return true
         case .up, .down:
-            // A video: its volume; a picture: the next / previous one
-            if shownMediaEntry?.kind == .video { changeVolume(by: key == .up ? 0.1 : -0.1); return true }
-            slideshowStep(key == .down ? 1 : -1); return true
+            return verticalKey(up: key == .up)
         case .char(let raw):
             let c = Character(raw.lowercased())   // also with Shift or Caps Lock
             switch c {

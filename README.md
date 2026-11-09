@@ -97,7 +97,7 @@ One picture, as large as the window allows, with its position in the folder. The
 |---|---|
 | ← → | previous / next picture (on a video: see below) |
 | ⌘← ⌘→ | previous / next item, also from a video |
-| ↑ ↓ | pictures: previous / next; videos: volume up / down |
+| ↑ ↓ | pictures zoomed in: look further up / down; videos: volume up / down |
 | Space | next picture |
 | Esc / Backspace / Return | back to the grid, at the same place |
 
@@ -125,7 +125,7 @@ It starts where you are: from the full view at the picture you're looking at; in
 | ← → | previous / next picture; in a video 10 % of its length back / ahead |
 | ⇧← ⇧→ | in a video 1 % of its length back / ahead |
 | ⌘← ⌘→ | previous / next item |
-| ↑ ↓ | pictures: previous / next; videos: volume up / down |
+| ↑ ↓ | pictures zoomed in: look further up / down; videos: volume up / down |
 | f / i / e / a | full screen, file info, auto enhance, sliders, as in the full view |
 | Esc | end the slideshow |
 
