@@ -18,6 +18,10 @@ struct SearchField: NSViewRepresentable {
     func makeNSView(context: Context) -> FocusGatedSearchField {
         BrowserModel.testLog("search field made")
         let field = FocusGatedSearchField()
+        // Made again while the search has focus (SwiftUI rebuilt the bar):
+        // focused with the cursor at the end, not everything selected, or
+        // the next key would replace what was typed
+        field.keepsTextOnFocus = isFocused
         field.placeholderString = placeholder
         field.delegate = context.coordinator
         field.target = context.coordinator
@@ -84,6 +88,8 @@ struct SearchField: NSViewRepresentable {
 final class FocusGatedSearchField: NSSearchField {
     private var focusAllowed = false
     var onFocusGained: (() -> Void)?
+    /// Focus puts the cursor at the end instead of selecting the text.
+    var keepsTextOnFocus = false
 
     /// The window asks this before it delivers the click, so a mouse-down in
     /// progress counts as permission.
@@ -105,6 +111,10 @@ final class FocusGatedSearchField: NSSearchField {
         focusAllowed = true
         guard currentEditor() == nil else { return }
         window?.makeFirstResponder(self)
+        if keepsTextOnFocus, let editor = currentEditor() {
+            editor.selectedRange = NSRange(location: (stringValue as NSString).length, length: 0)
+            keepsTextOnFocus = false
+        }
         BrowserModel.testLog("search field focus: editing \(currentEditor() != nil)")
     }
 

@@ -400,7 +400,8 @@ struct PaneView: View {
             }
         }
         .safeAreaInset(edge: .top, spacing: 0) {
-            if model.slideshow == nil { searchBar }
+            // One identity per pane, so the field is kept across updates
+            if model.slideshow == nil { searchBar.id(ObjectIdentifier(model)) }
         }
         .safeAreaInset(edge: .bottom, spacing: 0) {
             if model.mode == .grid, model.slideshow == nil, model.folderURL != nil { statusBar }
