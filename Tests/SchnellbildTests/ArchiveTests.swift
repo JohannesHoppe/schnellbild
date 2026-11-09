@@ -217,11 +217,21 @@ final class ArchiveTests: XCTestCase {
 
     func testSevenZip() async throws {
         let tree = try TempTree(self)
-        let archive = try copy(["lzma2.7z"], into: tree)
+        let archive = try copy(["deflate.7z"], into: tree)
         let index = try await ArchiveStore.shared.index(of: archive)
         XCTAssertEqual(paths(index), ["file1"])
         let data = try await ArchiveStore.shared.data(of: archive.appendingPathComponent("file1"))
         XCTAssertEqual(data.count, 2844)
+
+        // LZMA (7-Zip's default): macOS 15's libarchive lacks the codec,
+        // later ones have it. Either it reads, or it says why.
+        let lzma = try copy(["lzma2.7z"], into: tree)
+        do {
+            let read = try await ArchiveStore.shared.data(of: lzma.appendingPathComponent("file1"))
+            XCTAssertEqual(read.count, 2844)
+        } catch ArchiveError.unreadable(let reason) {
+            XCTAssertTrue(reason.contains("unsupported"), reason)
+        }
 
         let encrypted = try copy(["encrypted.7z"], into: tree)
         do {
