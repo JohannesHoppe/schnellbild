@@ -208,3 +208,4 @@
 "Grid or list (a click on a column sorts by it)" = "网格或列表（点按某一栏按其排序）";
 "Back (where you were, also a search); without history the enclosing folder" = "返回（之前的位置，也包括搜索）；没有历史时前往上一级文件夹";
 "⌘↑ goes up one folder level." = "按 ⌘↑ 返回上一级文件夹。";
+"Click to rename this folder" = "点按以重新命名此文件夹";

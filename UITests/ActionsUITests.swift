@@ -328,15 +328,11 @@ final class ActionsUITests: SchnellbildUITestCase {
         try put("sample.jpg", at: "Trip/x.jpg")
         launch(open: tempDir.appendingPathComponent("Trip").path)
         XCTAssertTrue(tile("x.jpg").waitForExistence(timeout: 15))
-        let title = app.windows.firstMatch.staticTexts["Trip"].firstMatch
+        let title = element("folderTitle").firstMatch
         XCTAssertTrue(title.waitForExistence(timeout: 5), "the folder's name in the title bar")
         title.click()
-        // The title's menu: Rename makes the title editable
-        let rename = app.menuItems["Rename"].firstMatch
-        XCTAssertTrue(rename.waitForExistence(timeout: 5), "the title's menu; toolbar: " + app.windows.firstMatch.toolbars.firstMatch.debugDescription.prefix(3000))
-        rename.click()
-        let field = app.windows.firstMatch.textFields.firstMatch
-        XCTAssertTrue(field.waitForExistence(timeout: 5), "an editable title")
+        let field = app.textFields["folderTitleField"].firstMatch
+        XCTAssertTrue(field.waitForExistence(timeout: 5), "an editable name")
         field.typeKey("a", modifierFlags: .command)
         field.typeText("Iceland\r")
         eventually("renamed on disk", timeout: 10) {

@@ -339,12 +339,7 @@ struct TileDrag: ViewModifier {
                 }
                 return provider
             }
-            .onDrop(of: [.fileURL], isTargeted: acceptsDrops ? $targeted : .constant(false)) { providers in
-                guard acceptsDrops, !model.isFiltering || entry.kind == .folder else { return false }
-                let folder = entry.url
-                Self.loadURLs(providers) { urls in model.move(urls, into: folder) }
-                return true
-            }
+            .modifier(FolderDrop(entry: entry, accepts: acceptsDrops, targeted: $targeted))
     }
 }
 
@@ -405,5 +400,28 @@ struct EntryInteractions: ViewModifier {
                     }
                 }
             }
+    }
+}
+
+/// The drop target of a folder tile (or ".."): what is dropped goes into
+/// it. Other tiles have none, so a drop on them reaches the pane around
+/// them (the dual pane: into that pane's folder).
+private struct FolderDrop: ViewModifier {
+    let entry: GridEntry
+    let accepts: Bool
+    @Binding var targeted: Bool
+    @EnvironmentObject var model: BrowserModel
+
+    func body(content: Content) -> some View {
+        if accepts {
+            content.onDrop(of: [.fileURL], isTargeted: $targeted) { providers in
+                guard !model.isFiltering || entry.kind == .folder else { return false }
+                let folder = entry.url
+                TileDrag.loadURLs(providers) { urls in model.move(urls, into: folder) }
+                return true
+            }
+        } else {
+            content
+        }
     }
 }

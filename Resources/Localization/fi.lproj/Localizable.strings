@@ -208,3 +208,4 @@
 "Grid or list (a click on a column sorts by it)" = "Ruudukko tai luettelo (sarakkeen osoitus järjestää sen mukaan)";
 "Back (where you were, also a search); without history the enclosing folder" = "Takaisin (missä olit, myös hakuun); ilman historiaa ylempään kansioon";
 "⌘↑ goes up one folder level." = "⌘↑ siirtyy yhden kansiotason ylös.";
+"Click to rename this folder" = "Nimeä kansio uudelleen osoittamalla";
