@@ -118,6 +118,7 @@ struct ContentView: View {
         .sheet(isPresented: $model.showHelp) { ShortcutsHelpView() }
         .sheet(item: $model.renameTarget) { RenameView(entry: $0) }
         .sheet(item: $model.passwordRequest) { PasswordView(request: $0) }
+        .sheet(isPresented: $model.newFolderRequested) { NewFolderView() }
     }
 
 
@@ -568,7 +569,10 @@ struct DropZoneDelegate: DropDelegate {
         Self.zone(atX: info.location.x, width: width) ?? .browse
     }
 
-    func validateDrop(info: DropInfo) -> Bool { info.hasItemsConforming(to: [.fileURL]) }
+    /// Not for a tile dragged inside the app: that goes onto a folder tile.
+    func validateDrop(info: DropInfo) -> Bool {
+        info.hasItemsConforming(to: [.fileURL]) && !info.hasItemsConforming(to: [TileDrag.type])
+    }
     func dropEntered(info: DropInfo) { zone = zone(at: info) }
     func dropUpdated(info: DropInfo) -> DropProposal? {
         zone = Self.zone(atX: info.location.x, width: width, mouseDown: NSEvent.pressedMouseButtons != 0)

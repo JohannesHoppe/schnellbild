@@ -167,3 +167,6 @@
 "Quieter" = "Sesi kıs";
 "Pictures zoomed in: look further up / down · Videos: volume up / down (remembered)" = "Yakınlaştırılmış resimler: daha yukarı / aşağı bak · Videolar: sesi aç / kıs (hatırlanır)";
 "%lld so far" = "şimdilik %lld";
+"New Folder" = "Yeni Klasör";
+"Create" = "Oluştur";
+"New folder: type its name, ↩ creates it, Esc creates none" = "Yeni klasör: adını yazın, ↩ oluşturur, Esc hiçbir şey oluşturmaz";

@@ -167,3 +167,6 @@
 "Quieter" = "Lavere";
 "Pictures zoomed in: look further up / down · Videos: volume up / down (remembered)" = "Bilder zoomet inn: se lenger opp / ned · Videoer: høyere / lavere lyd (huskes)";
 "%lld so far" = "%lld så langt";
+"New Folder" = "Ny mappe";
+"Create" = "Opprett";
+"New folder: type its name, ↩ creates it, Esc creates none" = "Ny mappe: skriv navnet, ↩ oppretter den, Esc oppretter ingen";

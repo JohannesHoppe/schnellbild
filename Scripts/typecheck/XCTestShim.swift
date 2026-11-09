@@ -59,10 +59,11 @@ public final class XCUICoordinate {
 }
 public final class XCUIScreenshot { public var image: NSImage { NSImage() } }
 public class XCUIElement {
+    public func press(forDuration duration: TimeInterval, thenDragTo element: XCUIElement) {}
     public struct KeyModifierFlags: OptionSet {
         public let rawValue: Int
         public init(rawValue: Int) { self.rawValue = rawValue }
-        public static let command = KeyModifierFlags(rawValue: 1), control = KeyModifierFlags(rawValue: 2)
+        public static let command = KeyModifierFlags(rawValue: 1), control = KeyModifierFlags(rawValue: 2), shift = KeyModifierFlags(rawValue: 4)
     }
     public var exists: Bool { false }
     public var isHittable: Bool { false }

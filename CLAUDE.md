@@ -54,6 +54,7 @@ There is **no Xcode project for the app build**; `xcodegen` generates
     in the history (the newest `backgroundSearchLimit`; older ones stop and
     are searched again on return), so "Back" shows it without starting over.
     The stop button (`stopSearch`) ends a walk and keeps its results.
+  - New folder (⇧⌘N, `beginNewFolder` → `NewFolderView` → `createFolder`): nothing is made until the name is confirmed; the folder is added to the listing and selected. Tiles drag (`TileDrag`: the file for the Finder, plus an own-process type so the window's drop zones stay away) onto a folder tile or `..`: `move(_:into:)` moves on the same volume and copies to another (`FileActions.transfer`), applies `FileChange.moved`, and drops what left the folder from its listing. Not in archives.
   - Renaming a folder or file (`rename`, also from the full view; a file must keep a media extension) never navigates: folder, query and
     results stay; the folder and everything listed inside it get the new path
     (`FileChange.moved`), as do history entries and results still streaming in.

@@ -167,3 +167,6 @@
 "Quieter" = "音量を下げる";
 "Pictures zoomed in: look further up / down · Videos: volume up / down (remembered)" = "拡大した画像: 上 / 下を表示 · ビデオ: 音量を上げる / 下げる（記憶されます）";
 "%lld so far" = "現在 %lld";
+"New Folder" = "新規フォルダ";
+"Create" = "作成";
+"New folder: type its name, ↩ creates it, Esc creates none" = "新規フォルダ: 名前を入力し、↩ で作成、Esc で作成しない";

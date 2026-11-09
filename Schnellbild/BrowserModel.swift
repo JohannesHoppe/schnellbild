@@ -78,6 +78,10 @@ struct FileActions {
     var confirmTrash: @MainActor (_ name: String, _ detail: String) -> Bool
     var trash: @MainActor (URL) throws -> Void
     var move: @MainActor (_ from: URL, _ to: URL) throws -> Void
+    /// Into another folder: moved on the same volume, copied to another
+    /// (as the Finder does). Returns whether it was moved.
+    var transfer: @MainActor (_ from: URL, _ to: URL) throws -> Bool
+    var createFolder: @MainActor (URL) throws -> Void
     /// Whether `target` exists as an item other than `source`. On a
     /// case-insensitive volume "Photos" is the same item as "photos"; on a
     /// case-sensitive one (many NAS shares) it may be a different folder.
@@ -117,6 +121,18 @@ struct FileActions {
                 try fm.moveItem(at: from, to: to)
             }
         },
+        transfer: { from, to in
+            let key: Set<URLResourceKey> = [.volumeIdentifierKey]
+            let a = try? from.resourceValues(forKeys: key).volumeIdentifier
+            let b = try? to.deletingLastPathComponent().resourceValues(forKeys: key).volumeIdentifier
+            if let a, let b, a.isEqual(b) {
+                try FileManager.default.moveItem(at: from, to: to)
+                return true
+            }
+            try FileManager.default.copyItem(at: from, to: to)
+            return false
+        },
+        createFolder: { try FileManager.default.createDirectory(at: $0, withIntermediateDirectories: false) },
         conflicts: { target, source in
             guard FileManager.default.fileExists(atPath: target.path) else { return false }
             let key: Set<URLResourceKey> = [.fileResourceIdentifierKey]
@@ -1585,7 +1601,7 @@ final class BrowserModel: ObservableObject {
     }
 
     private func dispatchKey(_ key: KeyInput, command: Bool, shift: Bool, textEditing: Bool) -> Bool {
-        let sheetOpen = showHelp || renameTarget != nil || passwordRequest != nil
+        let sheetOpen = showHelp || renameTarget != nil || passwordRequest != nil || newFolderRequested
         switch key {
         case .f1:
             guard renameTarget == nil, passwordRequest == nil else { return false }
@@ -1746,6 +1762,97 @@ final class BrowserModel: ObservableObject {
         showHelp = true
     }
 
+    // MARK: - New folder, moving into folders
+
+    /// The new-folder sheet is open (⇧⌘N): nothing exists until a name is
+    /// given and confirmed; Esc leaves no folder behind.
+    @Published var newFolderRequested = false
+
+    /// A name as typed, checked: not empty, no "/" or ":", not "." / "..".
+    static func validName(_ raw: String) throws -> String {
+        let name = raw.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !name.isEmpty else { throw RenameError.emptyName }
+        guard name != ".", name != "..", !name.contains("/"), !name.contains(":") else {
+            throw RenameError.invalidName
+        }
+        return name
+    }
+
+    /// Whether a folder can be made here: a real folder, not inside an
+    /// archive, no slideshow or sheet in the way.
+    var canCreateFolder: Bool {
+        guard let folderURL, slideshow == nil, !isLoading else { return false }
+        return !showHelp && renameTarget == nil && passwordRequest == nil && ArchivePath.split(folderURL) == nil
+    }
+
+    @discardableResult
+    func beginNewFolder() -> Bool {
+        guard canCreateFolder else { return false }
+        searchFocused = false
+        newFolderRequested = true
+        return true
+    }
+
+    /// Makes the folder named in the sheet in the folder shown, and selects it.
+    @discardableResult
+    func createFolder(named raw: String) throws -> URL {
+        guard let folderURL, canCreateFolder || newFolderRequested else { throw RenameError.invalidName }
+        let name = try Self.validName(raw)
+        let url = folderURL.appendingPathComponent(name, isDirectory: true)
+        if fileActions.conflicts(url, url) { throw RenameError.alreadyExists(name) }
+        do {
+            try fileActions.createFolder(url)
+        } catch {
+            throw RenameError.failed(error.localizedDescription)
+        }
+        newFolderRequested = false
+        let entry = GridEntry(url: url, kind: .folder, modDate: Date())
+        allEntries = sorted(allEntries + [entry])
+        noteFolder(url, empty: true)
+        if !isFiltering {
+            entries = allEntries
+            selection = index(of: url)
+        }
+        return url
+    }
+
+    /// Files or folders dropped onto a folder tile (or "..") go into it:
+    /// moved on the same volume, copied to another. Not into archives, not
+    /// into themselves.
+    func move(_ sources: [URL], into folder: URL) {
+        guard ArchivePath.split(folder) == nil else { NSSound.beep(); return }
+        let target = Self.canonicalPath(folder)
+        for source in sources {
+            let path = Self.canonicalPath(source)
+            guard !ArchivePath.isInside(source), path != target, !target.hasPrefix(path + "/"),
+                  Self.canonicalPath(source.deletingLastPathComponent()) != target else { continue }
+            let destination = folder.appendingPathComponent(source.lastPathComponent)
+            if fileActions.conflicts(destination, source) {
+                fileActions.report(RenameError.alreadyExists(source.lastPathComponent))
+                continue
+            }
+            do {
+                if try fileActions.transfer(source, destination) {
+                    apply(.moved(source, to: destination))
+                } else {
+                    FolderPreviewCache.shared.forget([target])
+                    folderChanges += 1
+                }
+            } catch {
+                fileActions.report(error)
+            }
+        }
+        // What went into a subfolder leaves this folder's listing
+        guard let folderPath else { return }
+        let here: (GridEntry) -> Bool = { $0.kind == .parent || Self.canonicalPath($0.url.deletingLastPathComponent()) == folderPath }
+        let keep = selectedEntry?.url
+        allEntries = allEntries.filter(here)
+        if !isFiltering {
+            entries = allEntries
+            selection = index(of: keep) ?? Self.defaultSelection(in: entries)
+        }
+    }
+
     // MARK: - Rename
 
     /// Open the rename sheet for the selected folder or file, in the grid or
@@ -1769,11 +1876,7 @@ final class BrowserModel: ObservableObject {
     @discardableResult
     func rename(_ entry: GridEntry, to rawName: String) throws -> URL {
         Self.testLog("rename \(entry.name) → \(rawName)")
-        let name = rawName.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !name.isEmpty else { throw RenameError.emptyName }
-        guard name != ".", name != "..", !name.contains("/"), !name.contains(":") else {
-            throw RenameError.invalidName
-        }
+        let name = try Self.validName(rawName)
         let old = entry.url
         guard name != old.lastPathComponent else { renameTarget = nil; return old }
         let isFolder = entry.kind == .folder

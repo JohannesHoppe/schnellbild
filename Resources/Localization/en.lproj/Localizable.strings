@@ -167,3 +167,6 @@
 "Quieter" = "Quieter";
 "Pictures zoomed in: look further up / down · Videos: volume up / down (remembered)" = "Pictures zoomed in: look further up / down · Videos: volume up / down (remembered)";
 "%lld so far" = "%lld so far";
+"New Folder" = "New Folder";
+"Create" = "Create";
+"New folder: type its name, ↩ creates it, Esc creates none" = "New folder: type its name, ↩ creates it, Esc creates none";
