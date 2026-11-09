@@ -747,6 +747,10 @@ struct ShortcutLabel: View {
 
 /// The volume, shown a moment while ↑ / ↓ change it.
 struct VolumeDisplay: View {
+    /// How long it stays; UI tests (`--hold-volume-display`, the README
+    /// screenshots) keep it long enough to photograph.
+    static let shownFor: Duration = VideoDetailView.uiTesting
+        && ProcessInfo.processInfo.arguments.contains("--hold-volume-display") ? .seconds(15) : .seconds(1.2)
     @EnvironmentObject var model: BrowserModel
     @State private var shown = false
     @State private var hide: Task<Void, Never>?
@@ -785,7 +789,7 @@ struct VolumeDisplay: View {
             shown = true
             hide?.cancel()
             hide = Task { @MainActor in
-                try? await Task.sleep(for: .seconds(1.2))
+                try? await Task.sleep(for: Self.shownFor)
                 guard !Task.isCancelled else { return }
                 shown = false
             }

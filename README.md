@@ -40,7 +40,7 @@ Schnellbild follows your Mac's language: English, Deutsch, Français, Español, 
 
 ### Browse folders
 
-Open a folder with ⌘O or drag it onto the window; drag a single file to open it straight in the full view. Subfolders come first, each previewing its first pictures or videos like Finder (from its subfolders when it holds none itself), with a `..` tile to go up. Folders without a single photo or video anywhere inside are greyed out, so you don't bother opening them (a `Thumbs.db` or `desktop.ini` doesn't count). Files that aren't pictures, videos or archives are listed by name and size under the grid, so a folder that holds only such files never looks empty; "This folder is empty" means it holds nothing at all. Thumbnails come from QuickLook, so everything macOS can preview shows up: JPEG, HEIC, PNG, RAW, PSD, PDF, and a poster frame for videos. Schnellbild reopens the last folder on launch.
+Open a folder with ⌘O or drag it onto the window; drag a single file to open it straight in the full view. Subfolders come first, each previewing its first pictures or videos like Finder (from its subfolders when it holds none itself), with a `..` tile to go up. Folders without a single photo or video anywhere inside are greyed out, so you don't bother opening them (a `Thumbs.db` or `desktop.ini` doesn't count). Files that aren't pictures, videos or archives are listed by name and size under the grid, so a folder that holds only such files never looks empty; "This folder is empty" means it holds nothing at all; a folder Schnellbild can't read (no permission, a share that went away) says "This folder can't be read" with the reason, never "empty". Thumbnails come from QuickLook, so everything macOS can preview shows up: JPEG, HEIC, PNG, SVG, RAW, PSD, PDF, and a poster frame for videos. Schnellbild reopens the last folder on launch.
 
 | Key | Action |
 |---|---|
@@ -108,7 +108,7 @@ One picture, as large as the window allows, with its position in the folder. The
   <img src="docs/screenshots/slideshow-light.png" width="760" alt="The slideshow">
 </picture></p>
 
-Schnellbild has two ways of looking at a folder: **browse** it in the grid, or sit back and watch a **slideshow** of everything in it. The slideshow plays every photo and video in the folder **and all its subfolders**, in full screen, folder by folder in the sort order you chose. The sort order applies within each folder and to the order of the subfolders: sorted by name, folders like `Day 1`, `Day 2` … play one after the other; sorted by date taken, the pictures in each folder play in the order they were shot. Pictures stay three seconds, videos play to their end, then it moves on. It starts at once, while the subfolders are still being read.
+Schnellbild has two ways of looking at a folder: **browse** it in the grid, or sit back and watch a **slideshow** of everything in it. The slideshow plays every photo and video in the folder **and all its subfolders**, in full screen, folder by folder in the sort order you chose. The sort order applies within each folder and to the order of the subfolders: sorted by name, folders like `Day 1`, `Day 2` … play one after the other; sorted by date taken, the pictures in each folder play in the order they were shot. Pictures stay three seconds, videos play to their end, then it moves on. It starts at once, while the subfolders are still being read; until then the count at the top says "so far" ("3 / 57 so far").
 
 Three ways to start it:
 
@@ -151,7 +151,7 @@ Zoom with the keyboard or a trackpad pinch, drag to pan, rotate in steps of 90°
   <img src="docs/screenshots/video-light.png" width="760" alt="A video in the full view, paused">
 </picture></p>
 
-Videos play right away, MP4 and MOV through AVKit, formats macOS can't play (AVI, MKV, WebM …) through the built-in VLC engine, which also draws their tiles in the grid. The arrow keys skim: each press jumps a tenth of the video ahead or back, past the end on to the next item. So one key pages through photos and skims through videos; ⌘← ⌘→ skip a video at once.
+Videos play right away, MP4 and MOV through AVKit, formats macOS can't play (AVI, MKV, WebM …) through the built-in VLC engine, which also draws their tiles in the grid. The arrow keys skim: each press jumps a tenth of the video ahead or back, past the end on to the next item, with ⇧ a hundredth. So one key pages through photos and skims through videos; ⌘← ⌘→ skip a video at once. A thin bar under the name at the top shows how far the video has played. ↑ ↓ set the volume of every video, shown a moment while it changes, and kept for the next launch.
 
 | Key | Action |
 |---|---|

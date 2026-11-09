@@ -31,9 +31,9 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         app?.terminate()   // keep the library: the dark run uses it too
     }
 
-    private func shoot(_ name: String) {
+    private func shoot(_ name: String, settle: TimeInterval = 2.5) {
         // Let thumbnails and animations settle
-        RunLoop.current.run(until: Date().addingTimeInterval(2.5))
+        RunLoop.current.run(until: Date().addingTimeInterval(settle))
         let picture = "\(name)\(suffix)"
         let pasteboard = NSPasteboard.general
         pasteboard.clearContents()
@@ -113,5 +113,78 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         search("sunset")
         XCTAssertTrue(app.staticTexts["Sunset over the Dunes.jpg"].waitForExistence(timeout: 15))
         shoot("search")
+        app.terminate()
+
+        try newFeatureScreenshots()
+    }
+
+    /// Zips some of the library's pictures into `name` at its top (once:
+    /// the dark run finds it there).
+    private func makeArchive(_ name: String, from files: [String], password: String? = nil) throws {
+        let target = tempDir.appendingPathComponent(name)
+        guard !FileManager.default.fileExists(atPath: target.path) else { return }
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: "/usr/bin/zip")
+        process.arguments = ["-q", "-0", "-j"] + (password.map { ["-P", $0] } ?? []) + [target.path]
+            + files.map { tempDir.appendingPathComponent($0).path }
+        try process.run()
+        process.waitUntilExit()
+    }
+
+    /// Archives, other files, the password sheet, the mini keyboard, a new
+    /// folder, the volume.
+    private func newFeatureScreenshots() throws {
+        let fm = FileManager.default
+        let photos = try fm.subpathsOfDirectory(atPath: tempDir.path)
+            .filter { $0.hasSuffix(".jpg") && !$0.hasPrefix(".") }.sorted()
+        try makeArchive("Iceland 2025.zip", from: Array(photos.prefix(6)))
+        try makeArchive("Private.zip", from: Array(photos.suffix(2)), password: "secret")
+        for (name, text) in [("Packing list.txt", "Rain jacket, tripod, spare batteries\n"), ("Route.gpx", "<gpx/>\n")] {
+            let url = tempDir.appendingPathComponent(name)
+            if !fm.fileExists(atPath: url.path) { try Data(text.utf8).write(to: url) }
+        }
+
+        launch(open: tempDir.path, extra: ["--hold-volume-display"])
+        XCTAssertTrue(tile("Iceland 2025.zip").waitForExistence(timeout: 15))
+        XCTAssertTrue(element("otherFiles").waitForExistence(timeout: 10))
+        tile("Iceland 2025.zip").click()
+        app.windows.firstMatch.scroll(byDeltaX: 0, deltaY: -2000)   // down to the other files
+        shoot("archives")
+
+        tile("Iceland 2025.zip").doubleClick()
+        XCTAssertTrue(app.staticTexts[(photos.first! as NSString).lastPathComponent].waitForExistence(timeout: 15))
+        shoot("archive-inside")
+        app.typeKey(.delete, modifierFlags: [])   // Backspace: up
+        XCTAssertTrue(tile("Private.zip").waitForExistence(timeout: 15))
+
+        tile("Private.zip").doubleClick()
+        XCTAssertTrue(app.secureTextFields["passwordField"].waitForExistence(timeout: 15))
+        shoot("password")
+        app.typeKey(.escape, modifierFlags: [])
+        XCTAssertTrue(tile("Private.zip").waitForExistence(timeout: 15))
+
+        app.typeKey("k", modifierFlags: [])
+        XCTAssertTrue(element("miniKeyboard").waitForExistence(timeout: 5))
+        tile("Lofoten").click()
+        shoot("keyboard")
+        app.typeKey("k", modifierFlags: [])
+
+        app.typeKey("n", modifierFlags: [.command, .shift])
+        let field = app.textFields["newFolderField"]
+        XCTAssertTrue(field.waitForExistence(timeout: 5))
+        field.typeText("Best of")
+        shoot("newfolder")
+        app.typeKey(.escape, modifierFlags: [])   // made none
+
+        tile("Sunset Timelapse.mp4").doubleClick()
+        XCTAssertTrue(element("video.avkit").waitForExistence(timeout: 15))
+        RunLoop.current.run(until: Date().addingTimeInterval(1.5))
+        app.typeKey(.space, modifierFlags: [])
+        waitForBadge(containing: "Paused")
+        app.typeKey(.downArrow, modifierFlags: [])
+        app.typeKey(.downArrow, modifierFlags: [])
+        app.typeKey(.downArrow, modifierFlags: [])
+        XCTAssertTrue(element("volumeDisplay").waitForExistence(timeout: 5))
+        shoot("volume", settle: 0.5)
     }
 }
