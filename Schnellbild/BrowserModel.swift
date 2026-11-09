@@ -82,6 +82,10 @@ struct FileActions {
     /// (as the Finder does). Returns whether it was moved.
     var transfer: @MainActor (_ from: URL, _ to: URL) throws -> Bool
     var createFolder: @MainActor (URL) throws -> Void
+    var copy: @MainActor (_ from: URL, _ to: URL) throws -> Void
+    /// A name already taken in the target folder: true to keep both (the
+    /// new one gets a number), false to skip it.
+    var askKeepBoth: @MainActor (_ name: String, _ folder: String) -> Bool
     /// Whether `target` exists as an item other than `source`. On a
     /// case-insensitive volume "Photos" is the same item as "photos"; on a
     /// case-sensitive one (many NAS shares) it may be a different folder.
@@ -133,6 +137,15 @@ struct FileActions {
             return false
         },
         createFolder: { try FileManager.default.createDirectory(at: $0, withIntermediateDirectories: false) },
+        copy: { try FileManager.default.copyItem(at: $0, to: $1) },
+        askKeepBoth: { name, folder in
+            let alert = NSAlert()
+            alert.messageText = String(localized: "“\(name)” already exists in “\(folder)”.")
+            alert.informativeText = String(localized: "Keep both: the new one gets a number. Skip: it stays where it is.")
+            alert.addButton(withTitle: String(localized: "Keep Both"))
+            alert.addButton(withTitle: String(localized: "Skip"))
+            return alert.runModal() == .alertFirstButtonReturn
+        },
         conflicts: { target, source in
             guard FileManager.default.fileExists(atPath: target.path) else { return false }
             let key: Set<URLResourceKey> = [.fileResourceIdentifierKey]
@@ -295,6 +308,13 @@ final class BrowserModel: ObservableObject {
     }
     enum KeyInput: Equatable {
         case left, right, up, down, space, enter, escape, backspace, home, end, f1, f2
+        /// The Norton Commander keys, a second way next to the Mac ones:
+        /// F3 view, F4 edit (the default app), F5 copy and F6 move to the
+        /// other pane (the window's), F6 alone / ⇧F6 rename, F7 new folder,
+        /// F8 trash, F9 the menus, F10 quit; Insert marks, Tab switches panes.
+        /// (Norton's F2, its user menu, stays rename here: the Mac-style key
+        /// comes first.)
+        case insert, tab, f3, f4, f5, f6, f7, f8, f9, f10
         case char(Character)
     }
 
@@ -539,6 +559,13 @@ final class BrowserModel: ObservableObject {
     }
     @Published private(set) var panRequest: PanRequest?
 
+    /// The volume another pane set (one volume for the window).
+    func adoptVolume(_ value: Double) {
+        guard value != volume else { return }
+        volume = value
+        activePlayer?.setVolume(value)
+    }
+
     func changeVolume(by delta: Double) {
         volume = (min(max(volume + delta, 0), 1) * 10).rounded() / 10
         defaults.set(volume, forKey: Self.volumeKey)
@@ -608,6 +635,12 @@ final class BrowserModel: ObservableObject {
     static let lastFolderKey = "lastFolderPath"
     static let sortKeyKey = "sortKey"
     static let sortAscendingKey = "sortAscending"
+    /// Prefixes this pane's own settings (last folder, sort): the right pane
+    /// of the dual pane remembers its own.
+    let settingsPrefix: String
+    private var lastFolderKey: String { settingsPrefix + Self.lastFolderKey }
+    private var sortKeyKey: String { settingsPrefix + Self.sortKeyKey }
+    private var sortAscendingKey: String { settingsPrefix + Self.sortAscendingKey }
 
     nonisolated static let imageExtensions: Set<String> = [
         "jpg", "jpeg", "png", "gif", "heic", "heif", "tiff", "tif", "bmp",
@@ -630,7 +663,8 @@ final class BrowserModel: ObservableObject {
         return nil
     }
 
-    init(defaults: UserDefaults = .standard, fileActions: FileActions = .live) {
+    init(defaults: UserDefaults = .standard, fileActions: FileActions = .live, settingsPrefix: String = "") {
+        self.settingsPrefix = settingsPrefix
         self.defaults = defaults
         self.fileActions = fileActions
         // UI tests (`--search-delay=<ms>`): a search that stays running long
@@ -642,9 +676,9 @@ final class BrowserModel: ObservableObject {
         }
         showMiniKeyboard = defaults.bool(forKey: Self.miniKeyboardKey)
         if let stored = defaults.object(forKey: Self.volumeKey) as? Double { volume = min(max(stored, 0), 1) }
-        if let raw = defaults.string(forKey: Self.sortKeyKey), let key = SortKey(rawValue: raw) {
+        if let raw = defaults.string(forKey: sortKeyKey), let key = SortKey(rawValue: raw) {
             sortKey = key
-            sortAscending = defaults.object(forKey: Self.sortAscendingKey) as? Bool ?? key.startsAscending
+            sortAscending = defaults.object(forKey: sortAscendingKey) as? Bool ?? key.startsAscending
         }
     }
 
@@ -694,12 +728,13 @@ final class BrowserModel: ObservableObject {
         allEntries = []
         otherFiles = []
         loadError = nil
+        clearMarks()
         selection = nil
         mode = .grid
         searchText = location.query
         resetTransforms()
         stopSlideshow()
-        defaults.set(location.folder.path, forKey: Self.lastFolderKey)
+        defaults.set(location.folder.path, forKey: lastFolderKey)
         let url = location.folder
         let target = location.selected
         Task {
@@ -767,12 +802,25 @@ final class BrowserModel: ObservableObject {
         try? handle.close()
     }
 
+    /// The last folder at once, when its path still exists (the right pane
+    /// on opening the dual pane); false when there is none.
+    @discardableResult
+    func restoreLastFolderNow() -> Bool {
+        guard let path = defaults.string(forKey: lastFolderKey) else { return false }
+        let url = URL(fileURLWithPath: path)
+        let known = ArchivePath.splitChecked(url).map { FileManager.default.fileExists(atPath: $0.archive.path) }
+            ?? FileManager.default.fileExists(atPath: path)
+        guard known else { return false }
+        open(folder: url)
+        return true
+    }
+
     /// Reopen the last folder on launch (if it still exists).
     /// Checked off the main thread: a share that is mounted but unreachable
     /// (Wi-Fi asleep, VPN down) answers only after its timeout.
     func restoreLastFolder() {
         guard folderURL == nil,
-              let path = defaults.string(forKey: Self.lastFolderKey) else { return }
+              let path = defaults.string(forKey: lastFolderKey) else { return }
         Task {
             let exists = await Task.detached(priority: .userInitiated) {
                 // A folder inside an archive: the archive file must still be there
@@ -1020,8 +1068,8 @@ final class BrowserModel: ObservableObject {
     /// new key starts in its natural direction. Remembered across launches.
     func setSort(_ key: SortKey) {
         if sortKey == key { sortAscending.toggle() } else { sortKey = key; sortAscending = key.startsAscending }
-        defaults.set(key.rawValue, forKey: Self.sortKeyKey)
-        defaults.set(sortAscending, forKey: Self.sortAscendingKey)
+        defaults.set(key.rawValue, forKey: sortKeyKey)
+        defaults.set(sortAscending, forKey: sortAscendingKey)
         resort()
         readCaptureDatesIfNeeded()
     }
@@ -1148,6 +1196,7 @@ final class BrowserModel: ObservableObject {
     func applyFilter() {
         guard !isLoading else { return }
         searchStopped = false
+        clearMarks()
         leaveSearch()
         let query = self.query
         guard !query.isEmpty else {
@@ -1433,6 +1482,75 @@ final class BrowserModel: ObservableObject {
         selection = index
     }
 
+    // MARK: Marking several items
+
+    /// Items marked besides the selection (⌘-click, ⇧-click, ⇧-arrows, ⌘A,
+    /// Insert), as canonical paths. Empty: the selection alone counts.
+    @Published private(set) var marked: Set<String> = []
+    /// Where a range (⇧) starts.
+    private var markAnchor: Int?
+
+    func isMarked(_ entry: GridEntry) -> Bool { marked.contains(Self.canonicalPath(entry.url)) }
+
+    /// What file actions work on: the marked items in grid order, else the
+    /// selected one. Never "..".
+    var actionEntries: [GridEntry] {
+        if marked.isEmpty { return selectedEntry.map { $0.kind == .parent ? [] : [$0] } ?? [] }
+        return entries.filter { $0.kind != .parent && marked.contains(Self.canonicalPath($0.url)) }
+    }
+
+    func clearMarks() {
+        if !marked.isEmpty { marked = [] }
+        markAnchor = nil
+    }
+
+    /// A click on a tile: plain selects it (and unmarks), ⌘ marks or unmarks
+    /// it, ⇧ marks the range from the last one.
+    func click(_ entry: GridEntry, command: Bool, shift: Bool) {
+        guard let index = index(of: entry.url) else { return }
+        if shift { markRange(to: index); return }
+        if command {
+            if marked.isEmpty, let current = selectedEntry, current.kind != .parent, current.url != entry.url {
+                marked.insert(Self.canonicalPath(current.url))   // the one selected joins
+            }
+            let path = Self.canonicalPath(entry.url)
+            if entry.kind != .parent { if marked.contains(path) { marked.remove(path) } else { marked.insert(path) } }
+            selection = index
+            markAnchor = index
+            return
+        }
+        clearMarks()
+        selection = index
+        markAnchor = index
+    }
+
+    /// Marks everything from the anchor to `index` and moves the selection there.
+    func markRange(to index: Int) {
+        guard entries.indices.contains(index) else { return }
+        let anchor = markAnchor ?? selection ?? index
+        let range = min(anchor, index)...max(anchor, index)
+        marked = Set(entries[range].filter { $0.kind != .parent }.map { Self.canonicalPath($0.url) })
+        markAnchor = anchor
+        selection = index
+    }
+
+    /// Insert (as in the commanders): marks or unmarks the selected item and
+    /// moves on to the next.
+    func toggleMarkAndAdvance() {
+        guard let entry = selectedEntry, let index = selection else { return }
+        if entry.kind != .parent {
+            let path = Self.canonicalPath(entry.url)
+            if marked.contains(path) { marked.remove(path) } else { marked.insert(path) }
+        }
+        markAnchor = index
+        if index + 1 < entries.count { selection = index + 1 }
+    }
+
+    func markAll() {
+        marked = Set(entries.filter { $0.kind != .parent }.map { Self.canonicalPath($0.url) })
+        markAnchor = selection
+    }
+
     /// Selects an item by its file, wherever it is in the list now (search
     /// results may have moved it since a menu was opened); false if it's gone.
     @discardableResult
@@ -1593,6 +1711,11 @@ final class BrowserModel: ObservableObject {
     }
     @Published private(set) var lastKeyPress: KeyPress?
 
+    /// A key the window handled (D, Tab, F5, F6), for the mini keyboard.
+    func noteKeyPress(_ key: KeyInput, command: Bool) {
+        lastKeyPress = KeyPress(key: key, command: command, shift: false)
+    }
+
     static let miniKeyboardKey = "showMiniKeyboard"
     /// The mini keyboard under the window (K): the keys of what's on screen,
     /// clickable, lit up when used. Remembered.
@@ -1607,9 +1730,11 @@ final class BrowserModel: ObservableObject {
             guard renameTarget == nil, passwordRequest == nil else { return false }
             if showHelp { showHelp = false } else { openHelp() }
             return true
-        case .f2:
-            // Also while typing in the search field; not during a slideshow
-            // (the selection is in the hidden grid).
+        case .f2, .f6:
+            // Rename: F2, and Norton's F6 (in a single pane; ⇧F6 anywhere —
+            // in the dual pane F6 moves, the window's). Also while typing in
+            // the search field; not during a slideshow (the selection is in
+            // the hidden grid).
             guard !sheetOpen, slideshow == nil else { return false }
             return beginRename()
         default:
@@ -1621,11 +1746,30 @@ final class BrowserModel: ObservableObject {
         switch key {
         case .f1, .f2:
             return false   // handled above
+        case .f9, .f10:
+            return false   // the window's: the menus, quit
+        case .tab, .f5, .f6:
+            return false   // the window's (two panes), F6 above
+        case .f3:
+            guard mode == .grid, selectedEntry != nil else { return false }
+            activateSelection(); return true
+        case .f4:
+            guard mode == .grid || selectedMediaEntry != nil, selectionIsChangeable else { return false }
+            openInDefaultApp(); return true
+        case .insert:
+            guard mode == .grid else { return false }
+            toggleMarkAndAdvance(); return true
+        case .f7:
+            return beginNewFolder()
+        case .f8:
+            guard mode == .grid, !actionEntries.isEmpty else { return false }
+            moveSelectionToTrash(); return true
         case .backspace:
             guard !command else { return false }
             leaveDetailOrGoUp(); return true
         case .escape:
             if mode == .detail { closeDetail(); return true }
+            if !marked.isEmpty { clearMarks(); return true }   // first the marks
             if !searchText.isEmpty { searchText = ""; return true }
             return false
         case .enter:
@@ -1642,7 +1786,11 @@ final class BrowserModel: ObservableObject {
         case .left, .right:
             // ⌘←/⌘→ always page; plain ←/→ skim through a video first.
             let direction = key == .right ? 1 : -1
-            if mode == .grid { step(direction) }
+            if mode == .grid {
+                // ⇧: marks the range on the way
+                if shift, let current = selection { markRange(to: min(max(current + direction, 0), entries.count - 1)) }
+                else { step(direction) }
+            }
             else if command { stepMedia(direction) }
             else if shift { fineSkim(direction) }
             else { skim(direction) }
@@ -1650,9 +1798,11 @@ final class BrowserModel: ObservableObject {
         case .up:
             if command { goToParentFolder(); return true }
             if mode == .detail { return verticalKey(up: true) }
+            if shift, let current = selection, current - columnCount >= 0 { markRange(to: current - columnCount); return true }
             stepRow(-1); return true
         case .down:
             if mode == .detail { return verticalKey(up: false) }
+            if shift, let current = selection, current + columnCount < entries.count { markRange(to: current + columnCount); return true }
             stepRow(+1); return true
         case .home:
             guard mode == .grid else { return false }
@@ -1675,6 +1825,9 @@ final class BrowserModel: ObservableObject {
             // then would stay pending and grab focus later.
             if command { focusSearch() } else { toggleFullScreen() }
             return true
+        case "a" where command:
+            guard mode == .grid else { return false }
+            markAll(); return true
         case "[" where command: navigateBack();    return true
         case "]" where command: navigateForward(); return true
         case "s" where !command: startSlideshow(); return true
@@ -1730,6 +1883,8 @@ final class BrowserModel: ObservableObject {
 
     func moveSelectionToTrash() {
         guard slideshow == nil else { return }   // the selection is in the hidden grid
+        // Several marked (grid): all of them, after one confirmation
+        if mode == .grid, marked.count > 1 { trashMarked(); return }
         guard let entry = selectedEntry, entry.kind != .parent else { return }
         guard !ArchivePath.isInside(entry.url) else { NSSound.beep(); return }   // archives are only read
         // What goes with it, said exactly: a folder's whole contents (also
@@ -1748,10 +1903,61 @@ final class BrowserModel: ObservableObject {
             return
         }
         apply(.removed(entry.url))
+        notifyFolderChanges([entry.url.deletingLastPathComponent()])
         if mode == .detail {
             // The next item comes up as paging shows it: at fit, upright.
             resetTransforms()
             if selectedMediaEntry == nil { mode = .grid }
+        }
+    }
+
+    private func trashMarked() {
+        let items = actionEntries.filter { !ArchivePath.isInside($0.url) }
+        guard !items.isEmpty else { NSSound.beep(); return }
+        let names = items.prefix(4).map(\.name).joined(separator: ", ") + (items.count > 4 ? ", …" : "")
+        let detail = String(localized: "The marked items will be moved to the Trash, folders with everything in them.")
+        guard fileActions.confirmTrash(names, detail) else { return }
+        for item in items {
+            let files = ArchiveName.format(of: item.name) != nil ? ArchiveName.allFiles(of: item.url) : [item.url]
+            do {
+                for file in files { try fileActions.trash(file) }
+                apply(.removed(item.url))
+            } catch {
+                fileActions.report(error)
+                break
+            }
+        }
+        clearMarks()
+        notifyFolderChanges([items.first!.url.deletingLastPathComponent()])
+    }
+
+    // MARK: Changes the other pane must see
+
+    /// Told about every folder whose contents this pane changed on disk (the
+    /// window passes it to the other pane).
+    var onFoldersChanged: (([URL]) -> Void)?
+
+    private func notifyFolderChanges(_ folders: [URL]) {
+        onFoldersChanged?(folders)
+    }
+
+    /// The folder shown, read again (another pane changed it): query,
+    /// selection and marks stay where they can.
+    func refresh() {
+        guard let folderURL, !isLoading, slideshow == nil else { return }
+        let keepMarks = marked
+        let location = Location(folder: folderURL, query: searchText, selected: selectedEntry?.url)
+        load(location)
+        marked = keepMarks
+    }
+
+    /// Whether a change in `folders` shows here: the folder itself, or one
+    /// below it while searching.
+    func shows(any folders: [URL]) -> Bool {
+        guard let folderPath else { return false }
+        return folders.contains { folder in
+            let path = Self.canonicalPath(folder)
+            return path == folderPath || (isFiltering && path.hasPrefix(folderPath + "/"))
         }
     }
 
@@ -1767,6 +1973,16 @@ final class BrowserModel: ObservableObject {
     /// The new-folder sheet is open (⇧⌘N): nothing exists until a name is
     /// given and confirmed; Esc leaves no folder behind.
     @Published var newFolderRequested = false
+
+    /// "IMG 2.jpg", "IMG 3.jpg" … for a name taken in `folder`.
+    static func freeName(for name: String, in folder: URL, taken: (URL) -> Bool) -> URL {
+        let stem = (name as NSString).deletingPathExtension, ext = (name as NSString).pathExtension
+        for n in 2... {
+            let candidate = folder.appendingPathComponent(ext.isEmpty ? "\(stem) \(n)" : "\(stem) \(n).\(ext)")
+            if !taken(candidate) { return candidate }
+        }
+        return folder.appendingPathComponent(name)
+    }
 
     /// A name as typed, checked: not empty, no "/" or ":", not "." / "..".
     static func validName(_ raw: String) throws -> String {
@@ -1799,13 +2015,16 @@ final class BrowserModel: ObservableObject {
         guard let folderURL, canCreateFolder || newFolderRequested else { throw RenameError.invalidName }
         let name = try Self.validName(raw)
         let url = folderURL.appendingPathComponent(name, isDirectory: true)
-        if fileActions.conflicts(url, url) { throw RenameError.alreadyExists(name) }
+        // Any item of that name there (compared with the folder itself: a
+        // different item, so an existing one counts)
+        if fileActions.conflicts(url, folderURL) { throw RenameError.alreadyExists(name) }
         do {
             try fileActions.createFolder(url)
         } catch {
             throw RenameError.failed(error.localizedDescription)
         }
         newFolderRequested = false
+        notifyFolderChanges([folderURL])
         let entry = GridEntry(url: url, kind: .folder, modDate: Date())
         allEntries = sorted(allEntries + [entry])
         noteFolder(url, empty: true)
@@ -1816,24 +2035,37 @@ final class BrowserModel: ObservableObject {
         return url
     }
 
-    /// Files or folders dropped onto a folder tile (or "..") go into it:
-    /// moved on the same volume, copied to another. Not into archives, not
-    /// into themselves.
-    func move(_ sources: [URL], into folder: URL) {
+    /// How items go into another folder: dropped (moved on the same
+    /// volume, copied to another, as in the Finder), F5 (copied), F6 (moved).
+    enum Transfer { case asFinder, copy, move }
+
+    /// Files or folders dropped onto a folder tile (or ".."), or sent to the
+    /// other pane (F5 / F6), go into `folder`. A name taken there asks: keep
+    /// both (the new one numbered) or skip. Not into archives, not into
+    /// themselves.
+    func move(_ sources: [URL], into folder: URL, how: Transfer = .asFinder) {
         guard ArchivePath.split(folder) == nil else { NSSound.beep(); return }
         let target = Self.canonicalPath(folder)
+        var changed = [folder]
         for source in sources {
             let path = Self.canonicalPath(source)
             guard !ArchivePath.isInside(source), path != target, !target.hasPrefix(path + "/"),
                   Self.canonicalPath(source.deletingLastPathComponent()) != target else { continue }
-            let destination = folder.appendingPathComponent(source.lastPathComponent)
+            var destination = folder.appendingPathComponent(source.lastPathComponent)
             if fileActions.conflicts(destination, source) {
-                fileActions.report(RenameError.alreadyExists(source.lastPathComponent))
-                continue
+                guard fileActions.askKeepBoth(source.lastPathComponent, folder.lastPathComponent) else { continue }
+                destination = Self.freeName(for: source.lastPathComponent, in: folder, taken: { self.fileActions.conflicts($0, source) })
             }
             do {
-                if try fileActions.transfer(source, destination) {
+                let moved: Bool
+                switch how {
+                case .asFinder: moved = try fileActions.transfer(source, destination)
+                case .copy:     try fileActions.copy(source, destination); moved = false
+                case .move:     try fileActions.move(source, destination); moved = true
+                }
+                if moved {
                     apply(.moved(source, to: destination))
+                    changed.append(source.deletingLastPathComponent())
                 } else {
                     FolderPreviewCache.shared.forget([target])
                     folderChanges += 1
@@ -1842,6 +2074,7 @@ final class BrowserModel: ObservableObject {
                 fileActions.report(error)
             }
         }
+        notifyFolderChanges(changed)
         // What went into a subfolder leaves this folder's listing
         guard let folderPath else { return }
         let here: (GridEntry) -> Bool = { $0.kind == .parent || Self.canonicalPath($0.url.deletingLastPathComponent()) == folderPath }
@@ -1896,6 +2129,7 @@ final class BrowserModel: ObservableObject {
         // everything listed inside it get the new path.
         apply(.moved(old, to: new))
         renameTarget = nil
+        notifyFolderChanges([old.deletingLastPathComponent()])
         return new
     }
 
@@ -1909,6 +2143,9 @@ final class BrowserModel: ObservableObject {
         folderChanges += 1
         let keep = selectedEntry.flatMap { change.apply(to: $0.url) }
         let previous = selection
+        if !marked.isEmpty {
+            marked = Set(marked.compactMap { change.apply(to: URL(fileURLWithPath: $0)).map(Self.canonicalPath) })
+        }
         allEntries = sorted(allEntries.compactMap { change.apply(to: $0) })
         for run in allSearches { run.apply(change) }
         pendingResultSelection = pendingResultSelection.flatMap { change.apply(to: $0) }

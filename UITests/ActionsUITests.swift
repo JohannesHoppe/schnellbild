@@ -145,11 +145,11 @@ final class ActionsUITests: SchnellbildUITestCase {
         XCTAssertFalse(names.contains { $0.hasPrefix(".rename-") }, "no half-done rename left: \(names)")
     }
 
-    func testF2InTheFullViewRenamesTheFileShown() {
+    func testF6InTheFullViewRenamesTheFileShown() {
         launchOnTempDir(waitFor: "album")
         tile("b.jpg").doubleClick()
         waitForBadge(containing: "b.jpg")
-        app.typeKey(.F2, modifierFlags: [])
+        app.typeKey(.F6, modifierFlags: [])   // Norton Commander's rename
         enterName("Harbour.jpg")
         waitForBadge(containing: "Harbour.jpg")
         XCTAssertTrue(FileManager.default.fileExists(atPath: tempDir.appendingPathComponent("Harbour.jpg").path))
@@ -279,5 +279,43 @@ final class ActionsUITests: SchnellbildUITestCase {
         XCTAssertTrue(FileManager.default.fileExists(atPath: tempDir.appendingPathComponent("Sorted/b.jpg").path))
         folder.doubleClick()
         XCTAssertTrue(tile("b.jpg").waitForExistence(timeout: 10), "inside the folder")
+    }
+
+    /// D opens the dual pane (the button shows it on); Tab switches; F5
+    /// copies the marked items into the other pane's folder; dragging a tile
+    /// into the other pane moves it there; D closes it again.
+    func testTheDualPane() throws {
+        try folder("Sorted")
+        launchOnTempDir()
+        app.typeKey("d", modifierFlags: [])
+        let left = element("pane.left"), right = element("pane.right")
+        XCTAssertTrue(right.waitForExistence(timeout: 10), "two panes")
+        // The right pane opens on the same folder: into "Sorted" there
+        let rightSorted = right.descendants(matching: .any).matching(identifier: "tile.Sorted").firstMatch
+        XCTAssertTrue(rightSorted.waitForExistence(timeout: 15))
+        rightSorted.doubleClick()
+        XCTAssertTrue(right.descendants(matching: .any).matching(identifier: "tile...").firstMatch.waitForExistence(timeout: 10))
+
+        // Left: a.jpg and b.jpg marked, F5
+        let leftA = left.descendants(matching: .any).matching(identifier: "tile.a.jpg").firstMatch
+        let leftB = left.descendants(matching: .any).matching(identifier: "tile.b.jpg").firstMatch
+        leftA.click()
+        XCUIElement.perform(withKeyModifiers: .command) { leftB.click() }
+        app.typeKey(.F5, modifierFlags: [])
+        let rightA = right.descendants(matching: .any).matching(identifier: "tile.a.jpg").firstMatch
+        XCTAssertTrue(rightA.waitForExistence(timeout: 10), "copied into the other pane")
+        XCTAssertTrue(right.descendants(matching: .any).matching(identifier: "tile.b.jpg").firstMatch.exists)
+        XCTAssertTrue(leftA.exists, "a copy: still on the left")
+        XCTAssertTrue(FileManager.default.fileExists(atPath: tempDir.appendingPathComponent("Sorted/b.jpg").path))
+
+        // c.jpg dragged into the right pane: moved
+        let leftC = left.descendants(matching: .any).matching(identifier: "tile.c.jpg").firstMatch
+        leftC.press(forDuration: 0.6, thenDragTo: right)
+        eventually("moved into the right pane", timeout: 10) {
+            right.descendants(matching: .any).matching(identifier: "tile.c.jpg").firstMatch.exists && !leftC.exists
+        }
+
+        app.typeKey("d", modifierFlags: [])
+        eventually("one pane again") { !self.element("pane.right").exists }
     }
 }

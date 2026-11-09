@@ -216,6 +216,27 @@ Rename a folder or file in place (F2, the Actions menu, or right-click), in the 
 | ⌘↩ | open with the default app |
 | ⌘⌫ | move to Trash |
 
+### Dual pane: sort your holiday photos
+
+**Dual Pane** in the toolbar (or `D`) splits the window in two, like the classic two-panel file managers. Each half is a browser of its own: its own folder, search, history and sort order; the one outlined in color is the one the keys work on, `Tab` switches. A picture or video opens large in its own half. Mark several items with ⌘-click, ⇧-click or ⇧-arrows (⌘A all, Esc none), then press `F5` to copy or `F6` to move them into the other half's folder, or drag them over onto the other half or a folder tile in it. A name that is taken there asks first: keep both (the new one is numbered) or skip. Both halves always show what is on disk. `D` again (or the button) goes back to one pane.
+
+**Use your old Norton Commander muscle memory:** the function keys work as they did there, as a second way next to the Mac shortcuts.
+
+| Key | Norton Commander | Here |
+|---|---|---|
+| F1 | Help | help |
+| F3 | View | open the picture, video or folder (also ↩) |
+| F4 | Edit | open with the default app (also ⌘↩) |
+| F5 | Copy | copy the marked items into the other pane |
+| F6 | RenMov | move them into the other pane; rename in a single pane (⇧F6 always renames, also F2) |
+| F7 | Mkdir | new folder (also ⇧⌘N) |
+| F8 | Delete | move the marked items to the Trash, after asking (also ⌘⌫) |
+| F9 | PullDn | the menus, in the window |
+| F10 | Quit | quit, after asking (also ⌘Q) |
+| Tab / Insert / ⌃O | | switch pane / mark and move on / dual pane on and off |
+
+Norton's F2 opened its user menu; here F2 renames, as on most computers. On a MacBook the F-keys need fn, unless "Use F1, F2, etc. keys as standard function keys" is on in System Settings → Keyboard.
+
 ### Archives as folders
 
 ZIP, RAR and 7z archives open like folders: browse their folders, page through their pictures, play their videos, start a slideshow, search their names. Nothing is unpacked to disk: pictures are unpacked into memory, videos stream from the archive while they play (packed or not), and jumping back in a long packed video unpacks it again from its start, which takes a moment. Archives are only read: renaming or trashing something inside them isn't offered.

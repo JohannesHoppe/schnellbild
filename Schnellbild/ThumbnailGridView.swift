@@ -61,7 +61,8 @@ struct ThumbnailGridView: View {
     }
 
     private func cell(entry: GridEntry, index: Int, side: CGFloat, filtering: Bool) -> some View {
-        let selected = model.selection == index
+        // The selection, and every marked item (⌘ / ⇧ / Insert), carry the ring
+        let selected = model.selection == index || model.isMarked(entry)
         let location = filtering ? model.relativeLocation(of: entry) : nil
         return VStack(spacing: 2) {
             tile(for: entry, side: side, selected: selected)
@@ -93,7 +94,8 @@ struct ThumbnailGridView: View {
         }
         .onTapGesture(count: 1) {
             model.searchFocused = false
-            model.select(entry)
+            let flags = NSEvent.modifierFlags
+            model.click(entry, command: flags.contains(.command), shift: flags.contains(.shift))
         }
         .contextMenu {
             if entry.kind != .parent {
@@ -326,8 +328,31 @@ struct TileDrag: ViewModifier {
     @State private var targeted = false
 
     /// Marks drags that start on a tile, so the window's drop zones
-    /// (Browse / Slideshow) stay out of the way.
+    /// (Browse / Slideshow) stay out of the way; carries every item dragged.
     static let type = UTType(exportedAs: "art.haushoppe.schnellbild.tile")
+
+    /// The files of a drop: all of a tile drag (several marked items),
+    /// else the file URLs (from the Finder).
+    static func loadURLs(_ providers: [NSItemProvider], then use: @escaping @MainActor ([URL]) -> Void) {
+        if let own = providers.first(where: { $0.hasItemConformingToTypeIdentifier(type.identifier) }) {
+            own.loadDataRepresentation(forTypeIdentifier: type.identifier) { data, _ in
+                let urls = data.map { String(decoding: $0, as: UTF8.self).split(separator: "\n").map { URL(fileURLWithPath: String($0)) } } ?? []
+                DispatchQueue.main.async { MainActor.assumeIsolated { use(urls) } }
+            }
+            return
+        }
+        let group = DispatchGroup()
+        let lock = NSLock()
+        nonisolated(unsafe) var urls: [URL] = []
+        for provider in providers {
+            group.enter()
+            _ = provider.loadObject(ofClass: URL.self) { url, _ in
+                if let url { lock.lock(); urls.append(url); lock.unlock() }
+                group.leave()
+            }
+        }
+        group.notify(queue: .main) { MainActor.assumeIsolated { use(urls) } }
+    }
 
     private var inArchive: Bool { ArchivePath.split(entry.url) != nil }
     private var acceptsDrops: Bool {
@@ -342,9 +367,12 @@ struct TileDrag: ViewModifier {
                 }
             }
             .onDrag {
+                // A marked tile takes all the marked ones along (the Finder
+                // gets the one dragged)
+                let paths = model.isMarked(entry) ? model.actionEntries.map(\.url.path) : [entry.url.path]
                 let provider = NSItemProvider(object: entry.url as NSURL)
                 provider.registerDataRepresentation(forTypeIdentifier: Self.type.identifier, visibility: .ownProcess) { done in
-                    done(Data(entry.url.path.utf8), nil)
+                    done(Data(paths.joined(separator: "\n").utf8), nil)
                     return nil
                 }
                 return provider
@@ -352,17 +380,7 @@ struct TileDrag: ViewModifier {
             .onDrop(of: [.fileURL], isTargeted: acceptsDrops ? $targeted : .constant(false)) { providers in
                 guard acceptsDrops, !model.isFiltering || entry.kind == .folder else { return false }
                 let folder = entry.url
-                let group = DispatchGroup()
-                var urls: [URL] = []
-                let lock = NSLock()
-                for provider in providers {
-                    group.enter()
-                    _ = provider.loadObject(ofClass: URL.self) { url, _ in
-                        if let url { lock.lock(); urls.append(url); lock.unlock() }
-                        group.leave()
-                    }
-                }
-                group.notify(queue: .main) { model.move(urls, into: folder) }
+                Self.loadURLs(providers) { urls in model.move(urls, into: folder) }
                 return true
             }
     }
