@@ -281,7 +281,7 @@ private struct WindowView: View {
                 if window.handleWindowKey(key, command: command, control: false,
                                           shift: event.modifierFlags.contains(.shift), textEditing: typing) { return true }
                 return model.handleKey(key, command: command, shift: event.modifierFlags.contains(.shift),
-                                       textEditing: typing)
+                                       textEditing: typing, repeating: event.isARepeat)
             }
             return consume ? nil : event
         }

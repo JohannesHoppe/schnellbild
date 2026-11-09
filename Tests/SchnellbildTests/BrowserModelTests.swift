@@ -1768,6 +1768,27 @@ final class PlaybackTests: XCTestCase {
         XCTAssertEqual(m.shownMediaEntry, shown, "no paging at the start")
     }
 
+    /// → held down skims through a video and stops at its end; a new press
+    /// moves on. A video whose length isn't known yet isn't left at once.
+    func testAHeldArrowStaysInTheVideo() async throws {
+        let (m, player) = try await openOnVideo()
+        player.progress = 0.85
+        m.handleKey(.right, command: false, repeating: true)
+        XCTAssertEqual(player.calls.last, "seek 95 %")
+        player.progress = 0.95
+        m.handleKey(.right, command: false, repeating: true)
+        XCTAssertEqual(m.selectedEntry?.name, "clip.mp4", "held down: stays at the end")
+        m.handleKey(.right, command: false)
+        XCTAssertEqual(m.selectedEntry?.name, "z.jpg", "pressed again: on to the next item")
+
+        m.selectEntry(named: "clip.mp4")
+        let fresh = PlayerSpy()
+        fresh.progress = nil   // just opened, no length yet
+        m.activePlayer = fresh
+        m.handleKey(.right, command: false)
+        XCTAssertEqual(m.selectedEntry?.name, "clip.mp4", "waits for the length")
+    }
+
     func testLeftArrowSkimsBackThenMovesToThePreviousItem() async throws {
         let (m, player) = try await openOnVideo()
         player.progress = 0.55
@@ -1820,9 +1841,12 @@ final class PlaybackTests: XCTestCase {
         XCTAssertEqual(m.volume, 0, "no quieter than silent")
     }
 
-    func testArrowsPageWhileTheVideoLengthIsUnknown() async throws {
+    /// A video that never gets a length (not playable) is left with →,
+    /// once it had its moment to open.
+    func testArrowsPageFromAVideoThatNeverGetsALength() async throws {
         let (m, player) = try await openOnVideo()
-        player.progress = nil   // still opening, or not playable
+        player.progress = nil   // not playable
+        m.lengthGrace = 0
         m.handleKey(.right, command: false)
         XCTAssertEqual(m.selectedEntry?.name, "z.jpg")
     }
