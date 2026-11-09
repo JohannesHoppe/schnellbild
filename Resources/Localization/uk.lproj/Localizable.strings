@@ -202,3 +202,8 @@
 "Do you want to quit Schnellbild?" = "Вийти зі Schnellbild?";
 "Quit" = "Вийти";
 "Full screen on / off (F, ⌃⌘F)" = "Повний екран увімк. / вимк. (F, ⌃⌘F)";
+"Archive" = "Архів";
+"as Grid" = "сіткою";
+"as List" = "списком";
+"Grid or list (L)" = "Сітка або список (L)";
+"Grid or list (a click on a column sorts by it)" = "Сітка або список (клік по стовпцю сортує за ним)";

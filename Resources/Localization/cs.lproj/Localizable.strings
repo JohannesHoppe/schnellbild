@@ -202,3 +202,8 @@
 "Do you want to quit Schnellbild?" = "Chcete ukončit Schnellbild?";
 "Quit" = "Ukončit";
 "Full screen on / off (F, ⌃⌘F)" = "Celá obrazovka zap. / vyp. (F, ⌃⌘F)";
+"Archive" = "Archiv";
+"as Grid" = "jako mřížka";
+"as List" = "jako seznam";
+"Grid or list (L)" = "Mřížka nebo seznam (L)";
+"Grid or list (a click on a column sorts by it)" = "Mřížka nebo seznam (klik na sloupec podle něj seřadí)";

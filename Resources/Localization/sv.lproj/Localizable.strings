@@ -202,3 +202,8 @@
 "Do you want to quit Schnellbild?" = "Vill du avsluta Schnellbild?";
 "Quit" = "Avsluta";
 "Full screen on / off (F, ⌃⌘F)" = "Helskärm på / av (F, ⌃⌘F)";
+"Archive" = "Arkiv";
+"as Grid" = "som rutnät";
+"as List" = "som lista";
+"Grid or list (L)" = "Rutnät eller lista (L)";
+"Grid or list (a click on a column sorts by it)" = "Rutnät eller lista (ett klick på en kolumn sorterar efter den)";

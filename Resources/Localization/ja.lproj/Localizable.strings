@@ -202,3 +202,8 @@
 "Do you want to quit Schnellbild?" = "Schnellbild を終了しますか？";
 "Quit" = "終了";
 "Full screen on / off (F, ⌃⌘F)" = "フルスクリーンのオン / オフ（F、⌃⌘F）";
+"Archive" = "アーカイブ";
+"as Grid" = "グリッドで表示";
+"as List" = "リストで表示";
+"Grid or list (L)" = "グリッドまたはリスト (L)";
+"Grid or list (a click on a column sorts by it)" = "グリッドまたはリスト（列をクリックするとその列で並べ替え）";

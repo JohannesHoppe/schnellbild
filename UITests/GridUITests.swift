@@ -231,6 +231,28 @@ final class GridUITests: SchnellbildUITestCase {
         eventually("window leaves full screen", timeout: 10) { window.frame.size == before }
     }
 
+    /// L shows the list: whole names in rows; a click on a column's header
+    /// sorts by it (again: the other way), like the sort menu; a double
+    /// click opens the picture.
+    func testTheListView() throws {
+        try put("huge.jpg", at: "d-large.jpg")
+        launchOnTempDir()
+        app.typeKey("l", modifierFlags: [])
+        XCTAssertTrue(element("list").waitForExistence(timeout: 5))
+        XCTAssertTrue(element("row.a.jpg").waitForExistence(timeout: 5))
+        element("column.size").firstMatch.click()
+        eventually("sorted by size, largest first") { self.sortLabel.contains("Size ↓") }
+        element("column.size").firstMatch.click()
+        eventually("again: smallest first") { self.sortLabel.contains("Size ↑") }
+        element("column.name").firstMatch.click()
+        eventually("by name") { self.sortLabel.contains("Name ↑") }
+        element("row.b.jpg").firstMatch.doubleClick()
+        eventually("the picture opens", timeout: 15) { self.text(of: self.element("fullImage")).hasSuffix("loaded") }
+        app.typeKey(.escape, modifierFlags: [])
+        app.typeKey("l", modifierFlags: [])
+        XCTAssertTrue(tile("a.jpg").waitForExistence(timeout: 5), "tiles again")
+    }
+
     /// The full-screen button in the middle of the title bar.
     func testTheFullScreenButton() {
         launchOnTempDir()

@@ -358,7 +358,9 @@ struct PaneView: View {
                 let detailEntry = model.shownMediaEntry
                 let gridShown = detailEntry == nil && model.slideshow == nil
                 ZStack {
-                    ThumbnailGridView()
+                    Group {
+                        if model.viewMode == .list { EntryListView() } else { ThumbnailGridView() }
+                    }
                         .opacity(gridShown ? 1 : 0)
                         .allowsHitTesting(gridShown)
                         .accessibilityHidden(!gridShown)
@@ -441,6 +443,17 @@ struct PaneView: View {
                 .foregroundStyle(.tertiary)
                 .lineLimit(1)
                 .truncationMode(.head)
+            // Tiles or a list (L)
+            Picker("", selection: $model.viewMode) {
+                Image(systemName: "square.grid.2x2").tag(BrowserModel.ViewMode.grid)
+                Image(systemName: "list.bullet").tag(BrowserModel.ViewMode.list)
+            }
+            .pickerStyle(.segmented)
+            .labelsHidden()
+            .fixedSize()
+            .help("Grid or list (L)")
+            .accessibilityIdentifier("viewModePicker")
+            KeyCap("L")
             // The mini keyboard's switch (here, not in the toolbar: that has
             // no room left in a narrow window)
             Button { model.showMiniKeyboard.toggle() } label: {

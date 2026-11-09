@@ -202,3 +202,8 @@
 "Do you want to quit Schnellbild?" = "¿Quieres salir de Schnellbild?";
 "Quit" = "Salir";
 "Full screen on / off (F, ⌃⌘F)" = "Pantalla completa sí / no (F, ⌃⌘F)";
+"Archive" = "Archivo comprimido";
+"as Grid" = "como cuadrícula";
+"as List" = "como lista";
+"Grid or list (L)" = "Cuadrícula o lista (L)";
+"Grid or list (a click on a column sorts by it)" = "Cuadrícula o lista (un clic en una columna ordena por ella)";

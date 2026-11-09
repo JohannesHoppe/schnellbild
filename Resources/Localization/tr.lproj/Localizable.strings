@@ -202,3 +202,8 @@
 "Do you want to quit Schnellbild?" = "Schnellbild’den çıkmak istiyor musunuz?";
 "Quit" = "Çık";
 "Full screen on / off (F, ⌃⌘F)" = "Tam ekran aç / kapat (F, ⌃⌘F)";
+"Archive" = "Arşiv";
+"as Grid" = "Izgara Olarak";
+"as List" = "Liste Olarak";
+"Grid or list (L)" = "Izgara veya liste (L)";
+"Grid or list (a click on a column sorts by it)" = "Izgara veya liste (bir sütuna tıklamak ona göre sıralar)";

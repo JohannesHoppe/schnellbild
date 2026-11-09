@@ -202,3 +202,8 @@
 "Do you want to quit Schnellbild?" = "Voulez-vous quitter Schnellbild ?";
 "Quit" = "Quitter";
 "Full screen on / off (F, ⌃⌘F)" = "Plein écran activé / désactivé (F, ⌃⌘F)";
+"Archive" = "Archive";
+"as Grid" = "en grille";
+"as List" = "en liste";
+"Grid or list (L)" = "Grille ou liste (L)";
+"Grid or list (a click on a column sorts by it)" = "Grille ou liste (un clic sur une colonne trie selon elle)";

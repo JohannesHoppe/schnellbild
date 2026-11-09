@@ -675,6 +675,7 @@ final class BrowserModel: ObservableObject {
             searchDebounce = .milliseconds(ms)
         }
         showMiniKeyboard = defaults.bool(forKey: Self.miniKeyboardKey)
+        if let raw = defaults.string(forKey: settingsPrefix + "viewMode"), let mode = ViewMode(rawValue: raw) { viewMode = mode }
         if let stored = defaults.object(forKey: Self.volumeKey) as? Double { volume = min(max(stored, 0), 1) }
         if let raw = defaults.string(forKey: sortKeyKey), let key = SortKey(rawValue: raw) {
             sortKey = key
@@ -1086,7 +1087,7 @@ final class BrowserModel: ObservableObject {
     /// that aren't known yet (off the main thread, a few files at a time)
     /// and sort again once they're in.
     func readCaptureDatesIfNeeded() {
-        guard sortKey == .captured else { return }
+        guard sortKey == .captured || viewMode == .list else { return }   // the list shows them
         let missing = Set((allEntries + entries).filter { $0.isMedia }.map(\.url)).subtracting(captureDatesRead)
         guard !missing.isEmpty else { return }
         captureDatesRead.formUnion(missing)
@@ -1716,6 +1717,18 @@ final class BrowserModel: ObservableObject {
         lastKeyPress = KeyPress(key: key, command: command, shift: false)
     }
 
+    /// Tiles or a list (L): per pane, remembered.
+    enum ViewMode: String { case grid, list }
+    @Published var viewMode: ViewMode = .grid {
+        didSet {
+            defaults.set(viewMode.rawValue, forKey: settingsPrefix + "viewMode")
+            if viewMode == .list { columnCount = 1; readCaptureDatesIfNeeded() }
+        }
+    }
+
+    /// A capture date read already (the list's Date Taken column).
+    func knownCaptureDate(of url: URL) -> Date? { captureDates[url] }
+
     static let miniKeyboardKey = "showMiniKeyboard"
     /// The mini keyboard under the window (K): the keys of what's on screen,
     /// clickable, lit up when used. Remembered.
@@ -1834,6 +1847,7 @@ final class BrowserModel: ObservableObject {
         case "e" where !command: enhance.toggle(); return true
         case "a" where !command: showAdjustments.toggle(); return true
         case "k" where !command: showMiniKeyboard.toggle(); return true
+        case "l" where !command: viewMode = viewMode == .grid ? .list : .grid; return true
         default:
             break
         }

@@ -78,6 +78,9 @@ struct SchnellbildApp: App {
                     .disabled(model.slideshow != nil || !model.selectionIsChangeable)
             }
             CommandGroup(after: .toolbar) {
+                Toggle("as Grid", isOn: Binding(get: { model.viewMode == .grid }, set: { if $0 { model.viewMode = .grid } }))
+                Toggle("as List", isOn: Binding(get: { model.viewMode == .list }, set: { if $0 { model.viewMode = .list } }))
+                Divider()
                 Toggle("Dual Pane (D)", isOn: Binding(get: { window.dual }, set: { window.setDual($0) }))
                 Toggle("Mini Keyboard (K)", isOn: Binding(get: { model.showMiniKeyboard }, set: { model.showMiniKeyboard = $0 }))
                 Divider()

@@ -85,50 +85,12 @@ struct ThumbnailGridView: View {
             }
         }
         .contentShape(Rectangle())
-        // Dragged onto a folder tile (or ".."), into the Finder too
-        .modifier(TileDrag(entry: entry))
-        .onTapGesture(count: 2) {
-            model.searchFocused = false
-            guard model.select(entry) else { return }
-            model.activateSelection()
-        }
-        .onTapGesture(count: 1) {
-            model.searchFocused = false
-            let flags = NSEvent.modifierFlags
-            model.click(entry, command: flags.contains(.command), shift: flags.contains(.shift))
-        }
-        .contextMenu {
-            if entry.kind != .parent {
-                if entry.kind == .folder {
-                    Button("Start Slideshow of This Folder") {
-                        model.select(entry)
-                        model.startSlideshow(over: entry.url)
-                    }
-                }
-                // Inside an archive nothing is changed
-                if !ArchivePath.isInside(entry.url) {
-                    Button("Rename…") {
-                        guard model.select(entry) else { return }
-                        model.beginRename()
-                    }
-                }
-                Button("Reveal in Finder") {
-                    guard model.select(entry) else { return }
-                    model.revealInFinder()
-                }
-                if !ArchivePath.isInside(entry.url) {
-                    Button("Move to Trash…") {
-                        guard model.select(entry) else { return }
-                        model.moveSelectionToTrash()
-                    }
-                }
-            }
-        }
+        .modifier(EntryInteractions(entry: entry))
         .help(location.map { "\($0)/\(entry.name)" } ?? "")
     }
 
     @ViewBuilder
-    private func tile(for entry: GridEntry, side: CGFloat, selected: Bool) -> some View {
+    func tile(for entry: GridEntry, side: CGFloat, selected: Bool) -> some View {
         switch entry.kind {
         case .parent:
             FolderTile(folder: nil, side: side, isSelected: selected, systemImage: "arrow.up.circle.fill")
@@ -382,6 +344,55 @@ struct TileDrag: ViewModifier {
                 let folder = entry.url
                 Self.loadURLs(providers) { urls in model.move(urls, into: folder) }
                 return true
+            }
+    }
+}
+
+/// What a tile or a list row does: click (⌘ / ⇧ mark), double click (open),
+/// drag (onto folders, the other pane, the Finder), the context menu.
+struct EntryInteractions: ViewModifier {
+    let entry: GridEntry
+    @EnvironmentObject var model: BrowserModel
+
+    func body(content: Content) -> some View {
+        content
+            .modifier(TileDrag(entry: entry))
+            .onTapGesture(count: 2) {
+                model.searchFocused = false
+                guard model.select(entry) else { return }
+                model.activateSelection()
+            }
+            .onTapGesture(count: 1) {
+                model.searchFocused = false
+                let flags = NSEvent.modifierFlags
+                model.click(entry, command: flags.contains(.command), shift: flags.contains(.shift))
+            }
+            .contextMenu {
+                if entry.kind != .parent {
+                    if entry.kind == .folder {
+                        Button("Start Slideshow of This Folder") {
+                            model.select(entry)
+                            model.startSlideshow(over: entry.url)
+                        }
+                    }
+                    // Inside an archive nothing is changed
+                    if !ArchivePath.isInside(entry.url) {
+                        Button("Rename…") {
+                            guard model.select(entry) else { return }
+                            model.beginRename()
+                        }
+                    }
+                    Button("Reveal in Finder") {
+                        guard model.select(entry) else { return }
+                        model.revealInFinder()
+                    }
+                    if !ArchivePath.isInside(entry.url) {
+                        Button("Move to Trash…") {
+                            guard model.select(entry) else { return }
+                            model.moveSelectionToTrash()
+                        }
+                    }
+                }
             }
     }
 }
