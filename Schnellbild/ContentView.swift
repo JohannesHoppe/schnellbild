@@ -14,6 +14,9 @@ struct ContentView: View {
 }
 
 private struct WindowView: View {
+    /// Once per app: a rebuilt view must neither add a second monitor nor
+    /// remove the one there.
+    @MainActor private static var monitorsInstalled = false
     @ObservedObject var model: BrowserModel
     @EnvironmentObject var window: WindowModel
     @State private var dropZone: DropZone?
@@ -81,7 +84,8 @@ private struct WindowView: View {
             }
             installKeyMonitor()
         }
-        .onDisappear { removeKeyMonitor() }
+        // The monitors stay while the app runs (it quits with its window): a
+        // view rebuilt must never take them away
         .toolbar { toolbarContent }
         .modifier(FolderTitle(model: model))
         .environmentObject(model)
@@ -232,7 +236,8 @@ private struct WindowView: View {
     /// of SwiftUI focus, which can swallow Backspace and the arrow keys. The
     /// actual bindings live in `BrowserModel.handleKey` (unit-tested).
     private func installKeyMonitor() {
-        guard keyMonitor == nil else { return }
+        guard keyMonitor == nil, !Self.monitorsInstalled else { return }
+        Self.monitorsInstalled = true
         let window = self.window
         keyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
             // A modal dialog (the Trash confirmation, the open panel) keeps
@@ -300,12 +305,6 @@ private struct WindowView: View {
         }
     }
 
-    private func removeKeyMonitor() {
-        if let keyMonitor { NSEvent.removeMonitor(keyMonitor) }
-        keyMonitor = nil
-        if let pinchMonitor { NSEvent.removeMonitor(pinchMonitor) }
-        pinchMonitor = nil
-    }
 }
 
 extension ContentView {
@@ -929,17 +928,19 @@ struct VolumeDisplay: View {
 }
 
 /// The window title: the folder's name, which a click makes editable to
-/// rename the folder in place (where it can be renamed).
+/// rename the folder in place. Always the same modifier: switching between
+/// an editable and a fixed title rebuilt the window's content, and the old
+/// content's disappearing removed the key monitor the new one had just
+/// installed. Where the folder can't be renamed, confirming beeps.
 private struct FolderTitle: ViewModifier {
     @ObservedObject var model: BrowserModel
 
     func body(content: Content) -> some View {
-        if model.canRenameCurrentFolder {
-            content.navigationTitle(Binding(
-                get: { model.folderURL?.lastPathComponent ?? "" },
-                set: { model.renameCurrentFolder(to: $0) }))
-        } else {
-            content.navigationTitle(model.folderURL?.lastPathComponent ?? "Schnellbild")
-        }
+        content.navigationTitle(Binding(
+            get: { model.folderURL?.lastPathComponent ?? "Schnellbild" },
+            set: { name in
+                guard name != model.folderURL?.lastPathComponent else { return }
+                if model.canRenameCurrentFolder { model.renameCurrentFolder(to: name) } else { NSSound.beep() }
+            }))
     }
 }
