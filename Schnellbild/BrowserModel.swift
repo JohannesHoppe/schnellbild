@@ -2054,8 +2054,14 @@ final class AVPlaybackControl: PlaybackControl {
         }
         if let enhancer, let composition {
             enhancer.set(enhancement)
-            if item.videoComposition == nil { item.videoComposition = composition }
-            redrawIfPaused()
+            if item.videoComposition == nil {
+                // Put back after "off": a paused item takes it only a moment
+                // later, so a redraw at once would still draw without it.
+                item.videoComposition = composition
+                redrawIfPaused(after: .milliseconds(100))
+            } else {
+                redrawIfPaused()
+            }
             return
         }
         let enhancer = self.enhancer ?? VideoEnhancer(report: { [weak self] look in
@@ -2082,17 +2088,22 @@ final class AVPlaybackControl: PlaybackControl {
     }
 
     /// A paused video shows a new look only once its frame is drawn again.
-    /// Seeks in quick succession (a slider dragged) can leave the frame
-    /// drawn with an earlier look, so a stale frame is drawn once more.
-    private func redrawIfPaused(attempts: Int = 3) {
+    /// Seeks in quick succession (a slider dragged), or a composition put
+    /// back just now, can leave the frame drawn with an earlier look: a
+    /// stale frame is drawn again, a little later each time.
+    private func redrawIfPaused(after delay: Duration = .zero, attempts: Int = 6) {
         guard !isPlaying else { return }
-        BrowserModel.testLog("avkit redraw at \(player.currentTime().seconds)")
-        player.seek(to: player.currentTime(), toleranceBefore: .zero, toleranceAfter: .zero) { [weak self] finished in
-            BrowserModel.testLog("avkit redraw finished \(finished)")
-            guard finished else { return }   // a newer seek takes over
-            Task { @MainActor in
-                guard let self, attempts > 1, self.enhancer?.isStale == true else { return }
-                self.redrawIfPaused(attempts: attempts - 1)
+        Task { @MainActor [weak self] in
+            if delay > .zero { try? await Task.sleep(for: delay) }
+            guard let self, !self.isPlaying else { return }
+            BrowserModel.testLog("avkit redraw at \(self.player.currentTime().seconds)")
+            self.player.seek(to: self.player.currentTime(), toleranceBefore: .zero, toleranceAfter: .zero) { [weak self] finished in
+                BrowserModel.testLog("avkit redraw finished \(finished)")
+                guard finished else { return }   // a newer seek takes over
+                Task { @MainActor in
+                    guard let self, attempts > 1, self.enhancer?.isStale == true else { return }
+                    self.redrawIfPaused(after: .milliseconds(150), attempts: attempts - 1)
+                }
             }
         }
     }
