@@ -68,6 +68,7 @@ struct ShortcutsHelpView: View {
             Shortcut(keys: "⇧⌘R", action: "Reveal in Finder"),
             Shortcut(keys: "⌘↩", action: "Open with default app"),
             Shortcut(keys: "⌘⌫", action: "Move to Trash"),
+            Shortcut(keys: "K", action: "Show / hide the mini keyboard"),
             Shortcut(keys: "F1 / ⌘?", action: "Show this list"),
         ]),
     ]
@@ -77,7 +78,8 @@ struct ShortcutsHelpView: View {
             HStack {
                 Text("Keyboard Shortcuts").font(.title2.weight(.semibold))
                 Spacer()
-                Button("Done") { dismiss() }.keyboardShortcut(.defaultAction)
+                Button { dismiss() } label: { HStack(spacing: 6) { Text("Done"); KeyCap("↩") } }
+                    .keyboardShortcut(.defaultAction)
                 // Esc closes it too
                 Button { dismiss() } label: { EmptyView() }
                     .keyboardShortcut(.cancelAction)

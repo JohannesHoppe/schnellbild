@@ -11,6 +11,9 @@ struct ContentView: View {
     /// The launch folder is opened once; the view can appear again (full
     /// screen, toolbar shown or hidden) and must not reload it then.
     @State private var launched = false
+    /// In a slideshow the mini keyboard shows while the mouse moves.
+    @State private var slideshowKeysShown = false
+    @State private var hideSlideshowKeys: Task<Void, Never>?
 
     var body: some View {
         Group {
@@ -71,7 +74,31 @@ struct ContentView: View {
             if model.slideshow == nil { searchBar }
         }
         .safeAreaInset(edge: .bottom, spacing: 0) {
-            if model.mode == .grid, model.slideshow == nil, model.folderURL != nil { statusBar }
+            VStack(spacing: 0) {
+                if model.mode == .grid, model.slideshow == nil, model.folderURL != nil { statusBar }
+                // The mini keyboard slides up under everything (K)
+                if model.showMiniKeyboard, model.slideshow == nil {
+                    MiniKeyboard().transition(.move(edge: .bottom))
+                }
+            }
+            .animation(.easeOut(duration: 0.2), value: model.showMiniKeyboard)
+        }
+        .overlay(alignment: .bottom) {
+            // In a slideshow: while the mouse moves, then it slides away
+            if model.showMiniKeyboard, model.slideshow != nil, slideshowKeysShown {
+                MiniKeyboard().transition(.move(edge: .bottom).combined(with: .opacity))
+            }
+        }
+        .animation(.easeOut(duration: 0.25), value: slideshowKeysShown)
+        .onContinuousHover { phase in
+            guard model.slideshow != nil, case .active = phase else { return }
+            slideshowKeysShown = true
+            hideSlideshowKeys?.cancel()
+            hideSlideshowKeys = Task { @MainActor in
+                try? await Task.sleep(for: .seconds(3))
+                guard !Task.isCancelled else { return }
+                slideshowKeysShown = false
+            }
         }
         .toolbar(model.slideshow == nil ? .visible : .hidden, for: .windowToolbar)
         // The slideshow fills the whole screen, also where the (hidden) title
@@ -220,34 +247,42 @@ struct ContentView: View {
     private var toolbarContent: some ToolbarContent {
         ToolbarItemGroup(placement: .navigation) {
             Button { model.navigateBack() } label: {
-                Label("Back", systemImage: "chevron.left")
+                ShortcutLabel("Back", systemImage: "chevron.left", keys: "⌘[")
             }
             .help("Back (⌘[)")
             .disabled(!model.canGoBack)
             .accessibilityIdentifier("backButton")
 
             Button { model.navigateForward() } label: {
-                Label("Forward", systemImage: "chevron.right")
+                ShortcutLabel("Forward", systemImage: "chevron.right", keys: "⌘]")
             }
             .help("Forward (⌘])")
             .disabled(!model.canGoForward)
             .accessibilityIdentifier("forwardButton")
 
             Button { model.goToParentFolder() } label: {
-                Label("Enclosing Folder", systemImage: "arrow.up")
+                ShortcutLabel("Enclosing Folder", systemImage: "arrow.up", keys: "⌘↑")
             }
             .help("Enclosing folder (⌘↑ / Backspace)")
             .disabled(!model.canGoUp)
             .accessibilityIdentifier("upButton")
 
             Button { model.chooseFolder() } label: {
-                Label("Open Folder", systemImage: "folder")
+                ShortcutLabel("Open Folder", systemImage: "folder", keys: "⌘O")
             }
             .help("Open folder (⌘O)")
         }
         ToolbarItem(placement: .primaryAction) {
+            Toggle(isOn: $model.showMiniKeyboard) {
+                ShortcutLabel("Keyboard", systemImage: "keyboard", keys: "K")
+            }
+            .toggleStyle(.button)
+            .help("Mini keyboard: the keys of what's on screen, clickable (K)")
+            .accessibilityIdentifier("keyboardButton")
+        }
+        ToolbarItem(placement: .primaryAction) {
             Toggle(isOn: $model.enhance) {
-                Label("Auto Enhance", systemImage: "wand.and.stars")
+                ShortcutLabel("Auto Enhance", systemImage: "wand.and.stars", keys: "E")
             }
             .toggleStyle(.button)
             .help("Auto enhance: sets exposure, contrast, saturation and sharpness per picture or video, for display only; files are not changed (E)")
@@ -255,7 +290,7 @@ struct ContentView: View {
         }
         ToolbarItem(placement: .primaryAction) {
             Button { model.showAdjustments.toggle() } label: {
-                Label("Adjust", systemImage: "slider.horizontal.3")
+                ShortcutLabel("Adjust", systemImage: "slider.horizontal.3", keys: "A")
             }
             .help("Exposure, contrast, saturation and sharpness by hand (A)")
             .accessibilityIdentifier("adjustButton")
@@ -268,8 +303,7 @@ struct ContentView: View {
         }
         ToolbarItem(placement: .primaryAction) {
             Button { model.startSlideshow() } label: {
-                Label("Slideshow", systemImage: "play.fill")
-                    .labelStyle(.titleAndIcon)
+                ShortcutLabel("Slideshow", systemImage: "play.fill", keys: "S", showsTitle: true)
             }
             .buttonStyle(.borderedProminent)
             .help("Slideshow of all pictures and videos in this folder and its subfolders; while searching: of the results (S)")
@@ -280,9 +314,12 @@ struct ContentView: View {
             Menu {
                 SortChoices(model: model, shortcuts: false)
             } label: {
-                Label("Sort: \(model.sortKey.title) \(model.sortAscending ? "↑" : "↓")",
-                      systemImage: "arrow.up.arrow.down")
-                    .labelStyle(.titleAndIcon)
+                HStack(spacing: 5) {
+                    Label("Sort: \(model.sortKey.title) \(model.sortAscending ? "↑" : "↓")",
+                          systemImage: "arrow.up.arrow.down")
+                        .labelStyle(.titleAndIcon)
+                    KeyCap("⌘1–5")
+                }
             }
             .help("Sort by (⌘1 … ⌘5; press again to reverse)")
             .accessibilityIdentifier("sortMenu")
@@ -291,7 +328,7 @@ struct ContentView: View {
         if model.mode == .detail {
             ToolbarItem(placement: .principal) {
                 Button { model.closeDetail() } label: {
-                    Label("Grid", systemImage: "square.grid.2x2")
+                    ShortcutLabel("Grid", systemImage: "square.grid.2x2", keys: "esc", showsTitle: true)
                 }
             }
         }
@@ -433,7 +470,7 @@ struct EmptyStateView: View {
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
                 }
-                Button("Open Another Folder…") { model.chooseFolder() }
+                Button { model.chooseFolder() } label: { HStack(spacing: 6) { Text("Open Another Folder…"); KeyCap("⌘O") } }
             } else {
                 Image(systemName: "photo.on.rectangle.angled")
                     .font(.system(size: 56))
@@ -443,7 +480,7 @@ struct EmptyStateView: View {
                 Text("Drag a folder here, press ⌘O, or click Open Folder…")
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
-                Button("Open Folder…") { model.chooseFolder() }
+                Button { model.chooseFolder() } label: { HStack(spacing: 6) { Text("Open Folder…"); KeyCap("⌘O") } }
             }
         }
         .padding(40)
@@ -649,9 +686,54 @@ struct VideoProgressBar: View {
                 }
             }
             .frame(height: 3)
-            .accessibilityElement()
+            .accessibilityElement(children: .ignore)
             .accessibilityIdentifier("videoProgress")
+            .accessibilityLabel("\(Int((progress * 100).rounded())) %")
             .accessibilityValue("\(Int((progress * 100).rounded())) %")
+        }
+    }
+}
+
+/// A key as it looks on the keyboard: the shortcut of a button, shown on
+/// it so it is learnt by using the button.
+struct KeyCap: View {
+    let key: String
+    init(_ key: String) { self.key = key }
+
+    var body: some View {
+        Text(verbatim: key)
+            .font(.system(size: 10, weight: .semibold))
+            .padding(.horizontal, 4)
+            .padding(.vertical, 1)
+            .overlay(RoundedRectangle(cornerRadius: 4).strokeBorder(Color.secondary.opacity(0.7), lineWidth: 1))
+            .foregroundStyle(.secondary)
+            .fixedSize()
+            .accessibilityHidden(true)
+    }
+}
+
+/// A button's icon (with its title when `showsTitle`) and its shortcut.
+struct ShortcutLabel: View {
+    let title: LocalizedStringKey
+    let systemImage: String
+    let keys: String
+    var showsTitle = false
+
+    init(_ title: LocalizedStringKey, systemImage: String, keys: String, showsTitle: Bool = false) {
+        self.title = title
+        self.systemImage = systemImage
+        self.keys = keys
+        self.showsTitle = showsTitle
+    }
+
+    var body: some View {
+        HStack(spacing: 5) {
+            if showsTitle {
+                Label(title, systemImage: systemImage).labelStyle(.titleAndIcon)
+            } else {
+                Label(title, systemImage: systemImage).labelStyle(.iconOnly)
+            }
+            KeyCap(keys)
         }
     }
 }

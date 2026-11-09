@@ -288,7 +288,8 @@ final class VisualUITests: SchnellbildUITestCase {
     /// VLC shows no messages over the video (auto enhance takes a snapshot
     /// every second; VLC would announce each one with its path and a
     /// preview). The grey video is even, so the top corners of the
-    /// picture, where VLC puts them, stay even too.
+    /// picture, where VLC puts them, stay even too (the app's own badge
+    /// sits in the middle between them).
     func testVLCShowsNoMessagesOverTheVideo() throws {
         let video = try openVideo("grey.mp4", vlc: true)
         app.typeKey("e", modifierFlags: [])
@@ -296,8 +297,8 @@ final class VisualUITests: SchnellbildUITestCase {
         settle(2.5)
         let picture = picture(in: video)
         let width = picture.width, height = picture.height
-        for (side, x) in [("left", picture.minX + width * 0.03), ("right", picture.minX + width * 0.62)] {
-            let corner = CGRect(x: x, y: picture.minY + height * 0.03, width: width * 0.35, height: height * 0.3)
+        for (side, x) in [("left", picture.minX + width * 0.03), ("right", picture.minX + width * 0.67)] {
+            let corner = CGRect(x: x, y: picture.minY + height * 0.03, width: width * 0.3, height: height * 0.3)
             let stats = try screenStats(of: corner)
             XCTAssertGreaterThan(stats.mean, 0.3, "the picture is there (\(side))")
             XCTAssertLessThan(stats.spread, 0.04, "something is drawn over the top \(side) of the video: ± \(stats.spread)")

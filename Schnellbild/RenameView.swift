@@ -35,9 +35,9 @@ struct RenameView: View {
             }
             HStack {
                 Spacer()
-                Button("Cancel") { model.renameTarget = nil }
+                Button { model.renameTarget = nil } label: { HStack(spacing: 6) { Text("Cancel"); KeyCap("esc") } }
                     .keyboardShortcut(.cancelAction)
-                Button("Rename", action: commit)
+                Button(action: commit) { HStack(spacing: 6) { Text("Rename"); KeyCap("↩") } }
                     .keyboardShortcut(.defaultAction)
             }
         }

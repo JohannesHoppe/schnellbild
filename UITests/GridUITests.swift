@@ -244,6 +244,30 @@ final class GridUITests: SchnellbildUITestCase {
         eventually("window leaves full screen", timeout: 10) { window.frame.size == before }
     }
 
+    /// K slides up the mini keyboard: its keys act when clicked, light up
+    /// when typed, change with what's on screen, and it stays after a restart.
+    func testTheMiniKeyboard() {
+        launchOnTempDir()
+        let keyboard = element("miniKeyboard")
+        XCTAssertFalse(keyboard.exists)
+        app.typeKey("k", modifierFlags: [])
+        XCTAssertTrue(keyboard.waitForExistence(timeout: 5))
+        waitForSelected("a.jpg")
+        element("key.→").firstMatch.click()
+        waitForSelected("b.jpg")
+        app.typeKey(.rightArrow, modifierFlags: [])
+        eventually("the typed key lights up", timeout: 3) { (self.element("key.→").firstMatch.value as? String) == "pressed" }
+        XCTAssertTrue(element("key.⌘[").exists, "grid keys")
+        element("key.↩").firstMatch.click()   // opens the picture
+        XCTAssertTrue(element("key.+").firstMatch.waitForExistence(timeout: 10), "picture keys")
+        XCTAssertFalse(element("key.⌘[").exists)
+        app.terminate()
+        launch(open: tempDir.path, resetState: false)
+        XCTAssertTrue(element("miniKeyboard").waitForExistence(timeout: 15), "remembered")
+        app.typeKey("k", modifierFlags: [])
+        eventually("hidden again") { !self.element("miniKeyboard").exists }
+    }
+
     func testEscapeClosesTheHelp() {
         launchOnTempDir()
         app.typeKey(.F1, modifierFlags: [])
