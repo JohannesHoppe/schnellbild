@@ -23,8 +23,9 @@ final class VideoUITests: SchnellbildUITestCase {
         launch(open: tempDir.appendingPathComponent("clip.mp4").path, extra: vlc ? ["--force-vlc"] : [])
         let bar = element("videoProgress")
         XCTAssertTrue(bar.waitForExistence(timeout: 20))
-        func percent() -> Int { Int((bar.value as? String ?? "").filter(\.isNumber)) ?? -1 }
+        func percent() -> Int { Int(text(of: bar).filter(\.isNumber)) ?? -1 }
         eventually("moves on while playing", timeout: 15) { percent() > 10 }
+        XCTAssertLessThanOrEqual(percent(), 100)
         app.typeKey(.space, modifierFlags: [])
         waitForBadge(containing: "Paused")
         let paused = percent()

@@ -1804,6 +1804,24 @@ final class KeyBindingTests: XCTestCase {
         XCTAssertEqual(m.mode, .detail)
     }
 
+    /// K shows and hides the mini keyboard, remembered; every key that acts
+    /// is reported for it to light up.
+    func testKTogglesTheMiniKeyboardAndKeysAreReported() {
+        let defaults = makeTestDefaults()
+        let m = BrowserModel(defaults: defaults, fileActions: FileActionsSpy().actions)
+        XCTAssertFalse(m.showMiniKeyboard)
+        XCTAssertTrue(m.handleKey(.char("k"), command: false))
+        XCTAssertTrue(m.showMiniKeyboard)
+        XCTAssertTrue(BrowserModel(defaults: defaults).showMiniKeyboard, "remembered")
+        XCTAssertTrue(m.lastKeyPress?.matches(.char("K"), command: false, shift: false) == true)
+        XCTAssertFalse(m.lastKeyPress?.matches(.char("k"), command: true, shift: false) == true)
+        let before = m.lastKeyPress
+        XCTAssertFalse(m.handleKey(.home, command: false), "nothing to do in an empty grid")
+        XCTAssertEqual(m.lastKeyPress, before, "a key that didn't act isn't lit")
+        m.handleKey(.char("K"), command: false)
+        XCTAssertFalse(m.showMiniKeyboard)
+    }
+
     func testF1TogglesHelp() {
         let m = makeModel()
         XCTAssertTrue(m.handleKey(.f1, command: false))

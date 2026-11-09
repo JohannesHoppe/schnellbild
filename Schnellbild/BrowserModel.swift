@@ -589,6 +589,7 @@ final class BrowserModel: ObservableObject {
            let ms = Int(arg.dropFirst("--search-delay=".count)) {
             searchDebounce = .milliseconds(ms)
         }
+        showMiniKeyboard = defaults.bool(forKey: Self.miniKeyboardKey)
         if let raw = defaults.string(forKey: Self.sortKeyKey), let key = SortKey(rawValue: raw) {
             sortKey = key
             sortAscending = defaults.object(forKey: Self.sortAscendingKey) as? Bool ?? key.startsAscending
@@ -1500,6 +1501,35 @@ final class BrowserModel: ObservableObject {
     /// to them — except F1 and F2.
     @discardableResult
     func handleKey(_ key: KeyInput, command: Bool, shift: Bool = false, textEditing: Bool = false) -> Bool {
+        let handled = dispatchKey(key, command: command, shift: shift, textEditing: textEditing)
+        // The mini keyboard lights up the key that acted, typed or clicked
+        if handled { lastKeyPress = KeyPress(key: key, command: command, shift: shift) }
+        return handled
+    }
+
+    /// A key that acted, for the mini keyboard to light it up.
+    struct KeyPress: Equatable {
+        let key: KeyInput
+        let command: Bool
+        let shift: Bool
+        let id = UUID()
+        /// The same key, whenever pressed (letters in any case).
+        func matches(_ key: KeyInput, command: Bool, shift: Bool) -> Bool {
+            guard self.command == command, self.shift == shift else { return false }
+            if case .char(let a) = self.key, case .char(let b) = key { return a.lowercased() == b.lowercased() }
+            return self.key == key
+        }
+    }
+    @Published private(set) var lastKeyPress: KeyPress?
+
+    static let miniKeyboardKey = "showMiniKeyboard"
+    /// The mini keyboard under the window (K): the keys of what's on screen,
+    /// clickable, lit up when used. Remembered.
+    @Published var showMiniKeyboard = false {
+        didSet { defaults.set(showMiniKeyboard, forKey: Self.miniKeyboardKey) }
+    }
+
+    private func dispatchKey(_ key: KeyInput, command: Bool, shift: Bool, textEditing: Bool) -> Bool {
         let sheetOpen = showHelp || renameTarget != nil || passwordRequest != nil
         switch key {
         case .f1:
@@ -1577,6 +1607,7 @@ final class BrowserModel: ObservableObject {
         case "s" where !command: startSlideshow(); return true
         case "e" where !command: enhance.toggle(); return true
         case "a" where !command: showAdjustments.toggle(); return true
+        case "k" where !command: showMiniKeyboard.toggle(); return true
         default:
             break
         }
@@ -2000,6 +2031,7 @@ final class BrowserModel: ObservableObject {
             case "i" where !command: showInspector.toggle(); return true
             case "e" where !command: enhance.toggle(); return true
             case "a" where !command: showAdjustments.toggle(); return true
+            case "k" where !command: showMiniKeyboard.toggle(); return true
             // No search, history or file actions while the hidden grid's
             // selection isn't what's on screen
             case "f" where command, "[" where command, "]" where command: return true

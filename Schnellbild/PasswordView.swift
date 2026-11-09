@@ -29,9 +29,9 @@ struct PasswordView: View {
                 .fixedSize(horizontal: false, vertical: true)
             HStack {
                 Spacer()
-                Button("Cancel") { model.cancelPassword() }
+                Button { model.cancelPassword() } label: { HStack(spacing: 6) { Text("Cancel"); KeyCap("esc") } }
                     .keyboardShortcut(.cancelAction)
-                Button("Open") { model.submitPassword(password) }
+                Button { model.submitPassword(password) } label: { HStack(spacing: 6) { Text("Open"); KeyCap("↩") } }
                     .keyboardShortcut(.defaultAction)
             }
         }
