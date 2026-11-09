@@ -177,6 +177,69 @@ final class ArchiveTests: XCTestCase {
         XCTAssertEqual(data.count, 6)
     }
 
+    // MARK: RAR made with RAR 7 (UITests/Fixtures/rar)
+
+    /// The RAR archives the UI tests use: three photos and a video, made
+    /// with the official RAR 7.23 (packed, stored, solid, in volumes, with a
+    /// password, with encrypted names, a download cut off).
+    private func realRar(_ name: String) -> URL {
+        URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
+            .appendingPathComponent("UITests/Fixtures/rar/\(name)")
+    }
+
+    private func uiFixture(_ name: String) throws -> Data {
+        try Data(contentsOf: URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent()
+            .deletingLastPathComponent().appendingPathComponent("UITests/Fixtures/\(name)"))
+    }
+
+    func testRealRarArchivesReadByteForByte() async throws {
+        ArchiveStore.shared.passwords.remember("secret")
+        let big = try uiFixture("huge.jpg"), clip = try uiFixture("clip.mp4")
+        for name in ["photos-rar5.rar", "photos-stored.rar", "photos-solid.rar", "photos-vols.part1.rar",
+                     "photos-psw.rar", "photos-hpsw.rar"] {
+            let tree = try TempTree(self)
+            for file in try FileManager.default.contentsOfDirectory(atPath: realRar("").path)
+            where file == name || (name.hasPrefix("photos-vols") && file.hasPrefix("photos-vols")) {
+                try FileManager.default.copyItem(at: realRar(file), to: tree.root.appendingPathComponent(file))
+            }
+            let rar = tree.root.appendingPathComponent(name)
+            let index = try await ArchiveStore.shared.index(of: rar)
+            XCTAssertEqual(paths(index), ["Day 1/big.jpg", "Day 1/sun.jpg", "beach.jpg", "clip.mp4"], name)
+            XCTAssertTrue(index.complete, name)
+            let picture = try await ArchiveStore.shared.data(of: rar.appendingPathComponent("Day 1/big.jpg"))
+            XCTAssertEqual(picture, big, "\(name): the picture byte for byte")
+            let stream = try await ArchiveStore.shared.stream(of: rar.appendingPathComponent("clip.mp4"),
+                                                              chunkSize: 8 << 10, unreadLimit: 2, readLimit: 2)
+            for offset in [40_000, 0, 20_000, 46_000] {
+                XCTAssertEqual(try stream.read(at: Int64(offset), count: 4000), clip[offset..<min(offset + 4000, clip.count)],
+                               "\(name): the video at \(offset)")
+            }
+            stream.close()
+        }
+    }
+
+    /// A download cut off: the files before the cut are there, whole; the
+    /// one it cuts says so. And it doesn't spoil reading other archives
+    /// (UnRAR keeps its error state for the whole process).
+    func testACutRarDownloadAndTheNextArchive() async throws {
+        let tree = try TempTree(self)
+        let cut = tree.root.appendingPathComponent("photos-cut.rar.part")
+        try FileManager.default.copyItem(at: realRar("photos-cut.rar.part"), to: cut)
+        let index = try await ArchiveStore.shared.index(of: cut)
+        XCTAssertFalse(index.complete)
+        XCTAssertEqual(paths(index), ["Day 1/big.jpg", "beach.jpg", "clip.mp4"])
+        let beach = try await ArchiveStore.shared.data(of: cut.appendingPathComponent("beach.jpg"))
+        XCTAssertEqual(beach, try uiFixture("dark.jpg"))
+        do {
+            _ = try await ArchiveStore.shared.data(of: cut.appendingPathComponent("Day 1/big.jpg"))
+            XCTFail("cut off in the middle")
+        } catch {}
+
+        let good = try copy(["rar5-subdirs.rar"], into: tree)
+        let data = try await ArchiveStore.shared.data(of: good.appendingPathComponent("sub/dir1/file1.txt"))
+        XCTAssertEqual(data.count, 6, "the next archive reads as usual")
+    }
+
     // MARK: ZIP and 7z
 
     func testZipWithPassword() async throws {

@@ -1,11 +1,37 @@
 // A small C face for UnRAR's DLL interface (unrar/dll.hpp): UTF-8 names,
 // data through a callback, passwords and volumes answered here.
+//
+// UnRAR keeps its error state in one global object (ErrHandler) and returns
+// it after every header and every file: a warning from one archive (an
+// unfinished download) would make every later call fail, also for other
+// archives. So the state is cleared before each call, opening and reading
+// headers (short) run one at a time, and a file's data is checked against
+// its CRC32 here instead of trusting the shared state (unpacking can take
+// long and must not block other archives).
 #include <wchar.h>
 #include <string.h>
 #include <string>
 #include <new>
+#include <mutex>
 #include "unrar/rar.hpp"
 #include "include/CArchives.h"
+
+static std::mutex headerLock;
+
+static uint32_t crcTable[256];
+static std::once_flag crcOnce;
+static uint32_t crc32Update(uint32_t crc, const uint8_t *bytes, size_t count) {
+    std::call_once(crcOnce, [] {
+        for (uint32_t i = 0; i < 256; i++) {
+            uint32_t c = i;
+            for (int k = 0; k < 8; k++) c = (c & 1) ? 0xEDB88320u ^ (c >> 1) : c >> 1;
+            crcTable[i] = c;
+        }
+    });
+    crc = ~crc;
+    for (size_t i = 0; i < count; i++) crc = crcTable[(crc ^ bytes[i]) & 0xFF] ^ (crc >> 8);
+    return ~crc;
+}
 
 struct SBRar {
     HANDLE handle = nullptr;
@@ -17,6 +43,12 @@ struct SBRar {
     SBRarData data = nullptr;
     void *context = nullptr;
     bool stopped = false;
+    // The current entry, for checking its data
+    uint32_t expectedCRC = 0;
+    bool checkCRC = false;
+    uint64_t expectedSize = 0;
+    uint32_t crc = 0;
+    uint64_t received = 0;
 };
 
 static std::wstring fromUTF8(const char *s) {
@@ -59,6 +91,8 @@ static int CALLBACK callback(UINT message, LPARAM user, LPARAM p1, LPARAM p2) {
         return 1;
     case UCM_PROCESSDATA:
         if (!rar->data) return 1;
+        rar->crc = crc32Update(rar->crc, (const uint8_t *)p1, (size_t)p2);
+        rar->received += (uint64_t)p2;
         if (rar->data(rar->context, (const uint8_t *)p1, (size_t)p2)) return 1;
         rar->stopped = true;
         return -1;
@@ -86,7 +120,11 @@ extern "C" SBRar *sb_rar_open(const char *path, const char *password, int list_o
     data.OpenMode = list_only ? RAR_OM_LIST : RAR_OM_EXTRACT;
     data.Callback = callback;
     data.UserData = (LPARAM)rar;
-    rar->handle = RAROpenArchiveEx(&data);
+    {
+        std::lock_guard<std::mutex> guard(headerLock);
+        ErrHandler.Clean();
+        rar->handle = RAROpenArchiveEx(&data);
+    }
     *result = (int)data.OpenResult;
     *password_asked = rar->passwordAsked;
     if (!rar->handle || data.OpenResult != ERAR_SUCCESS) {
@@ -102,7 +140,12 @@ extern "C" int sb_rar_next(SBRar *rar, SBRarEntry *entry) {
     RARHeaderDataEx *header = new (std::nothrow) RARHeaderDataEx();
     if (!header) return ERAR_NO_MEMORY;
     memset(header, 0, sizeof(*header));
-    int r = RARReadHeaderEx(rar->handle, header);
+    int r;
+    {
+        std::lock_guard<std::mutex> guard(headerLock);
+        ErrHandler.Clean();
+        r = RARReadHeaderEx(rar->handle, header);
+    }
     if (r == ERAR_SUCCESS) {
         toUTF8(header->FileNameW, entry->name, sizeof(entry->name));
         entry->size = ((uint64_t)header->UnpSizeHigh << 32) | header->UnpSize;
@@ -112,6 +155,12 @@ extern "C" int sb_rar_next(SBRar *rar, SBRarEntry *entry) {
         entry->is_encrypted = (header->Flags & RHDF_ENCRYPTED) != 0;
         entry->split_before = (header->Flags & RHDF_SPLITBEFORE) != 0;
         entry->split_after = (header->Flags & RHDF_SPLITAFTER) != 0;
+        // The CRC of unencrypted, unsplit files (encrypted RAR5 keeps a
+        // keyed one; a split file's covers only its part)
+        rar->checkCRC = header->HashType == RAR_HASH_CRC32 && !entry->is_encrypted
+            && !entry->split_before && !entry->split_after;
+        rar->expectedCRC = header->FileCRC;
+        rar->expectedSize = entry->size;
     }
     delete header;
     return r;
@@ -121,14 +170,27 @@ extern "C" int sb_rar_read(SBRar *rar, SBRarData data, void *context) {
     rar->data = data;
     rar->context = context;
     rar->stopped = false;
+    rar->crc = 0;
+    rar->received = 0;
+    ErrHandler.Clean();
     int r = RARProcessFile(rar->handle, RAR_TEST, nullptr, nullptr);
     rar->data = nullptr;
     rar->context = nullptr;
-    return rar->stopped ? ERAR_SUCCESS : r;
+    if (rar->stopped) return ERAR_SUCCESS;
+    if (rar->volumeMissing) return ERAR_EOPEN;
+    if (r == ERAR_MISSING_PASSWORD || r == ERAR_BAD_PASSWORD) return r;
+    // The data itself says whether it came out whole
+    if (rar->checkCRC) {
+        return rar->received == rar->expectedSize && rar->crc == rar->expectedCRC ? ERAR_SUCCESS : ERAR_BAD_DATA;
+    }
+    return r;
 }
 
 extern "C" int sb_rar_skip(SBRar *rar) {
-    return RARProcessFile(rar->handle, RAR_SKIP, nullptr, nullptr);
+    ErrHandler.Clean();
+    RARProcessFile(rar->handle, RAR_SKIP, nullptr, nullptr);
+    // Only a missing volume ends it here; anything else shows at the next header
+    return rar->volumeMissing ? ERAR_EOPEN : ERAR_SUCCESS;
 }
 
 extern "C" int sb_rar_volume_missing(const SBRar *rar) { return rar->volumeMissing; }
