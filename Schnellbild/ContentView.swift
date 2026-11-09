@@ -207,8 +207,14 @@ private struct WindowView: View {
             .accessibilityIdentifier("sortMenu")
             .accessibilityLabel("Sort: \(model.sortKey.title) \(model.sortAscending ? "↑" : "↓")")
         }
-        if model.mode == .detail {
-            ToolbarItem(placement: .principal) {
+        ToolbarItemGroup(placement: .principal) {
+            // Full screen at once, in the middle of the title bar (F, ⌃⌘F)
+            Button { model.toggleFullScreen() } label: {
+                ShortcutLabel("Full Screen", systemImage: "arrow.up.left.and.arrow.down.right", keys: "F")
+            }
+            .help("Full screen on / off (F, ⌃⌘F)")
+            .accessibilityIdentifier("fullScreenButton")
+            if model.mode == .detail {
                 Button { model.closeDetail() } label: {
                     ShortcutLabel("Grid", systemImage: "square.grid.2x2", keys: "esc", showsTitle: true)
                 }
