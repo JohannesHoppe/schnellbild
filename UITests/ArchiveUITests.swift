@@ -99,6 +99,66 @@ final class ArchiveUITests: SchnellbildUITestCase {
     func testAPackedVideoStreamsInAVKit() throws { try checkStreamedVideo(packed: true, vlc: false) }
     func testAPackedVideoStreamsInVLC() throws { try checkStreamedVideo(packed: true, vlc: true) }
 
+    /// A RAR made with RAR 7: photos with thumbnails, a picture in a folder,
+    /// a packed video streamed, in AVKit and VLC.
+    private func checkRarPhotosAndVideo(_ fixture: String, vlc: Bool) throws {
+        try put(fixture, at: fixture)
+        launch(open: tempDir.appendingPathComponent(fixture).path, extra: vlc ? ["--force-vlc"] : [])
+        let beach = tile("beach.jpg")
+        XCTAssertTrue(beach.waitForExistence(timeout: 15))
+        eventually("a thumbnail from the RAR", timeout: 15) { self.text(of: beach).hasSuffix("preview") }
+        tile("Day 1").doubleClick()
+        let big = tile("big.jpg")
+        XCTAssertTrue(big.waitForExistence(timeout: 15))
+        big.doubleClick()
+        eventually("the picture opens", timeout: 15) { self.text(of: self.element("fullImage")).hasSuffix("loaded") }
+        app.typeKey(.escape, modifierFlags: [])
+        app.typeKey(.upArrow, modifierFlags: .command)
+        let clip = tile("clip.mp4")
+        XCTAssertTrue(clip.waitForExistence(timeout: 15))
+        clip.doubleClick()
+        XCTAssertTrue(element(vlc ? "video.vlc" : "video.avkit").waitForExistence(timeout: 20), "the video plays")
+        waitForBadge(containing: "clip.mp4")
+        app.typeKey(.space, modifierFlags: [])
+        waitForBadge(containing: "Paused")
+    }
+
+    func testASolidRarInAVKit() throws { try checkRarPhotosAndVideo("photos-solid.rar", vlc: false) }
+    func testAPackedRarInVLC() throws { try checkRarPhotosAndVideo("photos-rar5.rar", vlc: true) }
+
+    func testARarWithEncryptedNamesAsksOnce() throws {
+        try put("photos-hpsw.rar", at: "photos-hpsw.rar")
+        launch(open: tempDir.appendingPathComponent("photos-hpsw.rar").path)
+        let field = app.secureTextFields["passwordField"]
+        XCTAssertTrue(field.waitForExistence(timeout: 15), "even the names need the password")
+        field.typeText("secret\r")
+        XCTAssertTrue(tile("beach.jpg").waitForExistence(timeout: 15))
+    }
+
+    /// The volumes of a RAR show as one tile and read as one archive.
+    func testRarVolumesShowAsOne() throws {
+        for part in 1...4 { try put("photos-vols.part\(part).rar", at: "photos-vols.part\(part).rar") }
+        launchOnTempDir()
+        let first = tile("photos-vols.part1.rar")
+        XCTAssertTrue(first.waitForExistence(timeout: 15))
+        XCTAssertFalse(tile("photos-vols.part2.rar").exists, "later volumes aren't shown")
+        first.doubleClick()
+        tile("Day 1").doubleClick()
+        XCTAssertTrue(tile("big.jpg").waitForExistence(timeout: 15), "a picture spread over the volumes")
+        tile("big.jpg").doubleClick()
+        eventually("opens", timeout: 15) { self.text(of: self.element("fullImage")).hasSuffix("loaded") }
+    }
+
+    /// A RAR download in progress shows the pictures that have arrived.
+    func testAnUnfinishedRarDownload() throws {
+        try put("photos-cut.rar.part", at: "photos-cut.rar.part")
+        launch(open: tempDir.appendingPathComponent("photos-cut.rar.part").path)
+        let beach = tile("beach.jpg")
+        XCTAssertTrue(beach.waitForExistence(timeout: 15))
+        beach.doubleClick()
+        eventually("opens", timeout: 15) { self.text(of: self.element("fullImage")).hasSuffix("loaded") }
+    }
+
     func testRarFolders() throws {
         try put("subdirs.rar", at: "subdirs.rar")
         launch(open: tempDir.appendingPathComponent("subdirs.rar").path)

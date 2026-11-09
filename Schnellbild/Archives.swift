@@ -225,7 +225,8 @@ struct RarReader: ArchiveReader {
         var seen = 0
         while true {
             let r = sb_rar_next(rar, &entry)
-            if r == 10 { return sb_rar_volume_missing(rar) == 0 }   // ERAR_END_ARCHIVE
+            // ERAR_END_ARCHIVE; a download still in progress ends where it has got to
+            if r == 10 { return sb_rar_volume_missing(rar) == 0 && !ArchiveName.isPartial(url.lastPathComponent) }
             if r != 0 {
                 // Encrypted names: a wrong password shows as damaged data
                 if seen == 0, sb_rar_headers_encrypted(rar) != 0 { throw ArchiveError.needsPassword }

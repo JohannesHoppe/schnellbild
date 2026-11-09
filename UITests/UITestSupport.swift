@@ -30,9 +30,10 @@ class SchnellbildUITestCase: XCTestCase {
     /// Copy a bundled fixture (UITests/Fixtures) to `path` inside the temp folder.
     @discardableResult
     func put(_ fixture: String, at path: String) throws -> URL {
-        let parts = fixture.split(separator: ".")
+        // The last extension only: "photos-vols.part1.rar", "photos-cut.rar.part"
+        let name = (fixture as NSString).deletingPathExtension, ext = (fixture as NSString).pathExtension
         let source = try XCTUnwrap(
-            Bundle(for: SchnellbildUITestCase.self).url(forResource: String(parts[0]), withExtension: String(parts[1])),
+            Bundle(for: SchnellbildUITestCase.self).url(forResource: name, withExtension: ext),
             "missing fixture \(fixture)")
         let target = tempDir.appendingPathComponent(path)
         try FileManager.default.createDirectory(at: target.deletingLastPathComponent(), withIntermediateDirectories: true)

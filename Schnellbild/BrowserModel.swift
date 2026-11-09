@@ -2047,6 +2047,7 @@ final class AVPlaybackControl: PlaybackControl {
     /// composition is taken away so the video plays unfiltered.
     func setEnhancement(_ enhancement: Enhancement) {
         guard let item = player.currentItem else { return }
+        BrowserModel.testLog("avkit enhancement \(enhancement), composition \(composition != nil), attached \(item.videoComposition != nil), playing \(isPlaying)")
         if enhancement == .off {
             compositionTask?.cancel()
             compositionTask = nil

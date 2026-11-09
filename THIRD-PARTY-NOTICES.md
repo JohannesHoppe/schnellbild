@@ -22,3 +22,4 @@ Schnellbild itself is under the MIT License (see [LICENSE](LICENSE)). It is buil
 | [dmgbuild](https://github.com/dmgbuild/dmgbuild) 1.6.7, [ds_store](https://github.com/al45tair/ds_store) 1.3.3, [mac_alias](https://github.com/al45tair/mac_alias) 2.2.3 | Making the DMG | MIT |
 | Test archives from [rarfile](https://github.com/markokr/rarfile) | Unit tests of RAR reading | ISC ([text](Tests/SchnellbildTests/Archives/LICENSE-rarfile.txt)) |
 | Test archives from [libarchive](https://github.com/libarchive/libarchive) 3.7.4 | Unit tests of 7z reading | BSD 2-clause |
+| [RAR](https://www.rarlab.com) 7.23 for macOS (trial), © Alexander Roshal | Making the RAR test archives in `UITests/Fixtures/rar` once (see its README); not used by the build | RAR license (the archives it made are plain data) |

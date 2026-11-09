@@ -218,10 +218,12 @@ final class VisualUITests: SchnellbildUITestCase {
             ("auto", "auto", 0),
         ]
         var shown: [String: [ScreenStats]] = [:]
+        let log = tempDir.appendingPathComponent("avkit.log")
         for vlc in [false, true] {
             let player = vlc ? "VLC" : "AVKit"
-            let video = try openVideo("colours.mp4", vlc: vlc)
+            let video = try openVideo("colours.mp4", vlc: vlc, extra: vlc ? [] : ["--test-log=\(log.path)"])
             for step in steps {
+                if !vlc { BrowserModelLogMarker.write("step \(step.name)", to: log) }
                 switch step.slider {
                 case nil:
                     break
@@ -263,7 +265,8 @@ final class VisualUITests: SchnellbildUITestCase {
             for (band, name) in ["red", "green", "blue"].enumerated() {
                 let a = avkit[band], v = vlc[band]
                 for (channel, x, y) in [("red", a.red, v.red), ("green", a.green, v.green), ("blue", a.blue, v.blue)] {
-                    XCTAssertEqual(y, x, accuracy: 0.05, "\(step.name), \(name) band, \(channel): AVKit \(x), VLC \(y)")
+                    XCTAssertEqual(y, x, accuracy: 0.05, "\(step.name), \(name) band, \(channel): AVKit \(x), VLC \(y)"
+                                   + (abs(y - x) > 0.05 ? "\nAVKit log:\n" + ((try? String(contentsOf: log, encoding: .utf8)) ?? "none") : ""))
                 }
             }
         }
@@ -586,5 +589,16 @@ final class VisualUITests: SchnellbildUITestCase {
         app.typeKey(.rightArrow, modifierFlags: [])
         waitForBadge(containing: "b-broken.jpg")
         eventually("shown as broken", timeout: 15) { text(of: image).hasSuffix("failed") }
+    }
+}
+
+/// Marks in the app's test log where a test step begins.
+enum BrowserModelLogMarker {
+    static func write(_ line: String, to log: URL) {
+        if !FileManager.default.fileExists(atPath: log.path) { FileManager.default.createFile(atPath: log.path, contents: nil) }
+        guard let handle = try? FileHandle(forWritingTo: log) else { return }
+        handle.seekToEndOfFile()
+        handle.write(Data(("--- " + line + "\n").utf8))
+        try? handle.close()
     }
 }
