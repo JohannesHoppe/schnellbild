@@ -246,10 +246,12 @@ private struct WindowView: View {
             let consume = MainActor.assumeIsolated { () -> Bool in
                 let model = window.active
                 let editor = NSApp.keyWindow?.firstResponder as? NSText
-                // Typing: the field editor, or a text field about to get it
-                // (a click into the search field makes it first responder
-                // before editing starts; its first key must not act as D, E …)
-                let typing = editor != nil || NSApp.keyWindow?.firstResponder is NSTextField
+                // Typing: a field editor at work, or the search field about to
+                // get one (a click makes it first responder before editing
+                // starts; its first key must not act as D, E …). Not any text
+                // field: the window's editable title is one, and holds the
+                // keyboard at launch without being edited.
+                let typing = editor != nil || NSApp.keyWindow?.firstResponder is FocusGatedSearchField
                 // ⌘⌫ / ⌘↩ while typing are the text field's (delete to the
                 // line start): menu key equivalents would run first and
                 // trash or open the selected tile.
