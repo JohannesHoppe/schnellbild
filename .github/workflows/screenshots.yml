@@ -44,6 +44,19 @@ jobs:
       - name: Draw the sample media
         run: swift Scripts/make_sample_media.swift /Users/Shared/Photos
 
+      # Made here: the UI-test runner may not write into the library. Two
+      # archives (one with a password) from the photos sorted by path, as
+      # ReadmeScreenshots expects them, and two files the app doesn't show.
+      - name: Archives and other files for the screenshots
+        working-directory: /Users/Shared/Photos
+        run: |
+          photos=()
+          while IFS= read -r f; do photos+=("$f"); done < <(find . -name '*.jpg' -not -path './.*' | sed 's|^\./||' | LC_ALL=C sort)
+          zip -q -0 -j "Iceland 2025.zip" "${photos[@]:0:6}"
+          zip -q -0 -j -P secret "Private.zip" "${photos[@]: -2}"
+          printf 'Rain jacket, tripod, spare batteries\n' > "Packing list.txt"
+          printf '<gpx/>\n' > Route.gpx
+
       - name: Build the window photographer
         run: swiftc -O Scripts/shoot_window.swift -o build/shoot_window
 
