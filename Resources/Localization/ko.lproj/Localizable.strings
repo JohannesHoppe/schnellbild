@@ -102,7 +102,6 @@
 "Other files, not pictures or videos" = "기타 파일(이미지나 비디오가 아님)";
 "This folder is empty" = "이 폴더는 비어 있습니다";
 "Backspace goes up one folder level." = "Backspace를 누르면 한 단계 위 폴더로 이동합니다.";
-"Video: 2 seconds back / ahead" = "비디오: 2초 뒤로 / 앞으로";
 "Other files: %lld" = "기타 파일: %lld";
 "This folder can't be read" = "이 폴더를 읽을 수 없음";
 "This archive can't be read" = "이 아카이브를 읽을 수 없음";
@@ -156,8 +155,6 @@
 "Play / Pause" = "재생 / 일시 정지";
 "−10 %" = "−10 %";
 "+10 %" = "+10 %";
-"−2 s" = "−2초";
-"+2 s" = "+2초";
 "Previous item" = "이전 항목";
 "Next item" = "다음 항목";
 "Pause" = "일시 정지";
@@ -165,3 +162,6 @@
 "Keyboard" = "키보드";
 "Mini keyboard: the keys of what's on screen, clickable (K)" = "미니 키보드: 화면에 있는 항목의 키, 클릭 가능 (K)";
 "Show / hide the mini keyboard" = "미니 키보드 보기 / 가리기";
+"Video: 1 % of the length back / ahead" = "비디오: 길이의 1 % 뒤로 / 앞으로";
+"−1 %" = "−1 %";
+"+1 %" = "+1 %";

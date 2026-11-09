@@ -102,7 +102,6 @@
 "Other files, not pictures or videos" = "Další soubory, ne obrázky ani videa";
 "This folder is empty" = "Tato složka je prázdná";
 "Backspace goes up one folder level." = "Klávesa Backspace přejde o úroveň složek výš.";
-"Video: 2 seconds back / ahead" = "Video: o 2 sekundy zpět / vpřed";
 "Other files: %lld" = "Další soubory: %lld";
 "This folder can't be read" = "Tuto složku nelze přečíst";
 "This archive can't be read" = "Tento archiv nelze přečíst";
@@ -156,8 +155,6 @@
 "Play / Pause" = "Přehrát / pozastavit";
 "−10 %" = "−10 %";
 "+10 %" = "+10 %";
-"−2 s" = "−2 s";
-"+2 s" = "+2 s";
 "Previous item" = "Předchozí položka";
 "Next item" = "Další položka";
 "Pause" = "Pozastavit";
@@ -165,3 +162,6 @@
 "Keyboard" = "Klávesnice";
 "Mini keyboard: the keys of what's on screen, clickable (K)" = "Miniklávesnice: klávesy pro to, co je na obrazovce, klikací (K)";
 "Show / hide the mini keyboard" = "Zobrazit / skrýt miniklávesnici";
+"Video: 1 % of the length back / ahead" = "Video: o 1 % délky zpět / vpřed";
+"−1 %" = "−1 %";
+"+1 %" = "+1 %";

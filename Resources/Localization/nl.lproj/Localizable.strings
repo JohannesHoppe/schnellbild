@@ -102,7 +102,6 @@
 "Other files, not pictures or videos" = "Overige bestanden, geen afbeeldingen of video’s";
 "This folder is empty" = "Deze map is leeg";
 "Backspace goes up one folder level." = "Backspace gaat één mapniveau omhoog.";
-"Video: 2 seconds back / ahead" = "Video: 2 seconden terug / vooruit";
 "Other files: %lld" = "Overige bestanden: %lld";
 "This folder can't be read" = "Deze map kan niet worden gelezen";
 "This archive can't be read" = "Dit archief kan niet worden gelezen";
@@ -156,8 +155,6 @@
 "Play / Pause" = "Afspelen / pauzeren";
 "−10 %" = "−10 %";
 "+10 %" = "+10 %";
-"−2 s" = "−2 s";
-"+2 s" = "+2 s";
 "Previous item" = "Vorig onderdeel";
 "Next item" = "Volgend onderdeel";
 "Pause" = "Pauzeer";
@@ -165,3 +162,6 @@
 "Keyboard" = "Toetsenbord";
 "Mini keyboard: the keys of what's on screen, clickable (K)" = "Minitoetsenbord: de toetsen van wat er op het scherm staat, klikbaar (K)";
 "Show / hide the mini keyboard" = "Toon / verberg het minitoetsenbord";
+"Video: 1 % of the length back / ahead" = "Video: 1 % van de lengte terug / vooruit";
+"−1 %" = "−1 %";
+"+1 %" = "+1 %";

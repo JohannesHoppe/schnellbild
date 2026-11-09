@@ -1639,15 +1639,15 @@ final class PlaybackTests: XCTestCase {
         XCTAssertEqual(m.mode, .detail)
     }
 
-    /// ⇧←/⇧→: two seconds, staying in the video at its ends.
-    func testShiftArrowsStepTwoSeconds() async throws {
+    /// ⇧←/⇧→: a hundredth of the length, staying in the video at its ends.
+    func testShiftArrowsStepOnePercent() async throws {
         let (m, player) = try await openOnVideo()
         player.progress = 0.5
         m.handleKey(.right, command: false, shift: true)
-        XCTAssertEqual(player.calls.last, "seek 52 %", "2 s of 100 s")
+        XCTAssertEqual(player.calls.last, "seek 51 %")
         m.handleKey(.left, command: false, shift: true)
         m.handleKey(.left, command: false, shift: true)
-        XCTAssertEqual(player.calls.last, "seek 48 %")
+        XCTAssertEqual(player.calls.last, "seek 49 %")
         player.progress = 0.005
         let shown = m.shownMediaEntry
         m.handleKey(.left, command: false, shift: true)

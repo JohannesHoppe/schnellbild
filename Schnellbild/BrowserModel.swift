@@ -1808,14 +1808,15 @@ final class BrowserModel: ObservableObject {
         }
     }
 
-    /// ⇧←/⇧→ in a video: a fine step of `fineStep` seconds, to find a
-    /// place exactly. Stays in the video at its start and end (no paging).
-    static let fineStep = 2.0
+    /// ⇧←/⇧→ in a video: a fine step of a hundredth of its length (←/→
+    /// jump a tenth), to find a place exactly. Stays in the video at its
+    /// start and end (no paging).
+    static let fineVideoJump = 0.01
 
     func fineSkim(_ direction: Int) {
         guard shownMediaEntry?.kind == .video, let player = activePlayer,
-              let progress = player.progress, let duration = player.duration, duration > 0 else { return }
-        let target = min(max(progress + Double(direction) * Self.fineStep / duration, 0), 1)
+              let progress = player.progress else { return }
+        let target = min(max(progress + Double(direction) * Self.fineVideoJump, 0), 1)
         player.seek(toProgress: direction > 0 ? min(target, 0.999) : target)
     }
 

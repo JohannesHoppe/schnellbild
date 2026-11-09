@@ -102,7 +102,6 @@
 "Other files, not pictures or videos" = "Diğer dosyalar, resim veya video değil";
 "This folder is empty" = "Bu klasör boş";
 "Backspace goes up one folder level." = "Geri tuşu bir klasör düzeyi yukarı çıkar.";
-"Video: 2 seconds back / ahead" = "Video: 2 saniye geri / ileri";
 "Other files: %lld" = "Diğer dosyalar: %lld";
 "This folder can't be read" = "Bu klasör okunamıyor";
 "This archive can't be read" = "Bu arşiv okunamıyor";
@@ -156,8 +155,6 @@
 "Play / Pause" = "Oynat / duraklat";
 "−10 %" = "−%10";
 "+10 %" = "+%10";
-"−2 s" = "−2 sn";
-"+2 s" = "+2 sn";
 "Previous item" = "Önceki öğe";
 "Next item" = "Sonraki öğe";
 "Pause" = "Duraklat";
@@ -165,3 +162,6 @@
 "Keyboard" = "Klavye";
 "Mini keyboard: the keys of what's on screen, clickable (K)" = "Mini klavye: ekrandakinin tuşları, tıklanabilir (K)";
 "Show / hide the mini keyboard" = "Mini klavyeyi göster / gizle";
+"Video: 1 % of the length back / ahead" = "Video: uzunluğun %1’i geri / ileri";
+"−1 %" = "−%1";
+"+1 %" = "+%1";

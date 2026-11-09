@@ -122,7 +122,7 @@ It starts where you are: from the full view at the picture you're looking at; in
 | s | start the slideshow (again: end it) |
 | Space | pause / resume |
 | ← → | previous / next picture; in a video 10 % of its length back / ahead |
-| ⇧← ⇧→ | in a video 2 seconds back / ahead |
+| ⇧← ⇧→ | in a video 1 % of its length back / ahead |
 | ⌘← ⌘→ ↑ ↓ | previous / next item |
 | f / i / e / a | full screen, file info, auto enhance, sliders, as in the full view |
 | Esc | end the slideshow |
@@ -156,7 +156,7 @@ Videos play right away, MP4 and MOV through AVKit, formats macOS can't play (AVI
 | Space | play / pause |
 | ← → | 10 % of the length back / ahead; at the end on to the next item, at the start back to the previous one |
 | ⌘← ⌘→ | previous / next item straight away |
-| ⇧← ⇧→ | 2 seconds back / ahead, to find a place exactly |
+| ⇧← ⇧→ | 1 % of the length back / ahead, to find a place exactly |
 
 ### Auto enhance and adjustments
 

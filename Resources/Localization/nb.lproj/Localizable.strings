@@ -102,7 +102,6 @@
 "Other files, not pictures or videos" = "Andre filer, ikke bilder eller videoer";
 "This folder is empty" = "Denne mappen er tom";
 "Backspace goes up one folder level." = "Tilbaketasten går ett mappenivå opp.";
-"Video: 2 seconds back / ahead" = "Video: 2 sekunder tilbake / frem";
 "Other files: %lld" = "Andre filer: %lld";
 "This folder can't be read" = "Denne mappen kan ikke leses";
 "This archive can't be read" = "Dette arkivet kan ikke leses";
@@ -156,8 +155,6 @@
 "Play / Pause" = "Spill av / pause";
 "−10 %" = "−10 %";
 "+10 %" = "+10 %";
-"−2 s" = "−2 s";
-"+2 s" = "+2 s";
 "Previous item" = "Forrige objekt";
 "Next item" = "Neste objekt";
 "Pause" = "Pause";
@@ -165,3 +162,6 @@
 "Keyboard" = "Tastatur";
 "Mini keyboard: the keys of what's on screen, clickable (K)" = "Minitastatur: tastene for det som er på skjermen, klikkbare (K)";
 "Show / hide the mini keyboard" = "Vis / skjul minitastaturet";
+"Video: 1 % of the length back / ahead" = "Video: 1 % av lengden tilbake / frem";
+"−1 %" = "−1 %";
+"+1 %" = "+1 %";
