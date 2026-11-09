@@ -91,6 +91,7 @@ public class XCUIElement {
     public var staticTexts: XCUIElementQuery { XCUIElementQuery() }
     public var buttons: XCUIElementQuery { XCUIElementQuery() }
     public var textFields: XCUIElementQuery { XCUIElementQuery() }
+    public var toolbars: XCUIElementQuery { XCUIElementQuery() }
     public var searchFields: XCUIElementQuery { XCUIElementQuery() }
     public var secureTextFields: XCUIElementQuery { XCUIElementQuery() }
     public var menuItems: XCUIElementQuery { XCUIElementQuery() }

@@ -16,6 +16,7 @@ struct SearchField: NSViewRepresentable {
     func makeCoordinator() -> Coordinator { Coordinator(self) }
 
     func makeNSView(context: Context) -> FocusGatedSearchField {
+        BrowserModel.testLog("search field made")
         let field = FocusGatedSearchField()
         field.placeholderString = placeholder
         field.delegate = context.coordinator

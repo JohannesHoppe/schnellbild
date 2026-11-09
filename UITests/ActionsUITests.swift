@@ -286,7 +286,10 @@ final class ActionsUITests: SchnellbildUITestCase {
     /// into the other pane moves it there; D closes it again.
     func testTheDualPane() throws {
         try folder("Sorted")
-        launchOnTempDir()
+        let log = tempDir.appendingPathComponent("app.log")
+        launch(open: tempDir.path, extra: ["--test-log=\(log.path)"])
+        XCTAssertTrue(app.staticTexts["a.jpg"].waitForExistence(timeout: 15))
+        continueAfterFailure = true
         app.typeKey("d", modifierFlags: [])
         let left = element("pane.left"), right = element("pane.right")
         XCTAssertTrue(right.waitForExistence(timeout: 10), "two panes")
@@ -304,7 +307,8 @@ final class ActionsUITests: SchnellbildUITestCase {
         app.typeKey(.F5, modifierFlags: [])
         let rightA = right.descendants(matching: .any).matching(identifier: "tile.a.jpg").firstMatch
         XCTAssertTrue(rightA.waitForExistence(timeout: 10), "copied into the other pane")
-        XCTAssertTrue(right.descendants(matching: .any).matching(identifier: "tile.b.jpg").firstMatch.exists)
+        XCTAssertTrue(right.descendants(matching: .any).matching(identifier: "tile.b.jpg").firstMatch.exists,
+                      "b too; app log:\n" + ((try? String(contentsOf: log, encoding: .utf8)) ?? "none"))
         XCTAssertTrue(leftA.exists, "a copy: still on the left")
         XCTAssertTrue(FileManager.default.fileExists(atPath: tempDir.appendingPathComponent("Sorted/b.jpg").path))
 
@@ -329,7 +333,7 @@ final class ActionsUITests: SchnellbildUITestCase {
         title.click()
         // The title's menu: Rename makes the title editable
         let rename = app.menuItems["Rename"].firstMatch
-        XCTAssertTrue(rename.waitForExistence(timeout: 5), "the title's menu")
+        XCTAssertTrue(rename.waitForExistence(timeout: 5), "the title's menu; toolbar: " + app.windows.firstMatch.toolbars.firstMatch.debugDescription.prefix(3000))
         rename.click()
         let field = app.windows.firstMatch.textFields.firstMatch
         XCTAssertTrue(field.waitForExistence(timeout: 5), "an editable title")
