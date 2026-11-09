@@ -4,7 +4,17 @@ import AppKit
 @main
 struct SchnellbildApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
-    @StateObject private var model = BrowserModel(defaults: BrowserModel.makeDefaults())
+    @StateObject private var model: BrowserModel
+
+    init() {
+        let defaults = BrowserModel.makeDefaults()
+        // Archive passwords: the login keychain; UI tests keep theirs in
+        // their own preferences (`--reset-state` clears them)
+        ArchiveStore.shared.passwords = ProcessInfo.processInfo.arguments.contains("--ui-testing")
+            ? .defaults(defaults) : .keychain()
+        MediaData.removeOldCopies()
+        _model = StateObject(wrappedValue: BrowserModel(defaults: defaults))
+    }
 
     var body: some Scene {
         WindowGroup {
@@ -14,6 +24,9 @@ struct SchnellbildApp: App {
         }
         .defaultSize(width: 960, height: 640)
         .commands {
+            CommandGroup(replacing: .appInfo) {
+                Button("About Schnellbild") { AboutPanel.show() }
+            }
             CommandGroup(replacing: .newItem) {
                 Button("Open Folder…") { model.chooseFolder() }
                     .keyboardShortcut("o")
@@ -39,17 +52,17 @@ struct SchnellbildApp: App {
                 // Not during a slideshow: the selection is in the hidden grid,
                 // not what's on screen.
                 Button("Rename… (F2)") { model.beginRename() }
-                    .disabled(model.slideshow != nil || model.showHelp || model.selectedEntry == nil || model.selectedEntry?.kind == .parent)
+                    .disabled(model.slideshow != nil || model.showHelp || !model.selectionIsChangeable)
                 Button("Reveal in Finder") { model.revealInFinder() }
                     .keyboardShortcut("r", modifiers: [.command, .shift])
                     .disabled(model.slideshow != nil)
                 Button("Open with Default App") { model.openInDefaultApp() }
                     .keyboardShortcut(.return)
-                    .disabled(model.slideshow != nil)
+                    .disabled(model.slideshow != nil || !model.selectionIsChangeable)
                 Divider()
                 Button("Move to Trash…") { model.moveSelectionToTrash() }
                     .keyboardShortcut(.delete)
-                    .disabled(model.slideshow != nil)
+                    .disabled(model.slideshow != nil || !model.selectionIsChangeable)
             }
             CommandGroup(after: .toolbar) {
                 Button("Larger Thumbnails (⌘+)") { model.growThumbnails() }

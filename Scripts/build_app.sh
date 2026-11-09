@@ -46,6 +46,8 @@ install_name_tool -add_rpath "@executable_path/../Frameworks" "$APP/Contents/Mac
 cp "$RES/AppIcon.icns" "$APP/Contents/Resources/AppIcon.icns"
 # The UI's translations (en.lproj, de.lproj, …), found through Bundle.main
 cp -R "$RES/Localization/"*.lproj "$APP/Contents/Resources/"
+# The libraries' license texts (the About window points here)
+cp -R "$RES/Licenses" "$APP/Contents/Resources/Licenses"
 cp "$RES/Info.plist" "$APP/Contents/Info.plist"
 printf 'APPL????' > "$APP/Contents/PkgInfo"
 

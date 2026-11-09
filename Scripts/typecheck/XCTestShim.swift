@@ -12,6 +12,8 @@ open class XCTestCase {
     open var continueAfterFailure = true
     public func addTeardownBlock(_ block: @escaping () -> Void) {}
 }
+/// SwiftPM's resource bundle of a test target.
+extension Bundle { public static var module: Bundle { .main } }
 public struct XCTSkip: Error { public init(_ message: String = "") {} }
 
 public func XCTAssertEqual<T: Equatable>(_ a: @autoclosure () throws -> T, _ b: @autoclosure () throws -> T, _ message: @autoclosure () -> String = "", file: StaticString = #filePath, line: UInt = #line) {}
@@ -87,6 +89,7 @@ public class XCUIElement {
     public var buttons: XCUIElementQuery { XCUIElementQuery() }
     public var textFields: XCUIElementQuery { XCUIElementQuery() }
     public var searchFields: XCUIElementQuery { XCUIElementQuery() }
+    public var secureTextFields: XCUIElementQuery { XCUIElementQuery() }
     public var menuItems: XCUIElementQuery { XCUIElementQuery() }
     public var menuBars: XCUIElementQuery { XCUIElementQuery() }
     public var menuBarItems: XCUIElementQuery { XCUIElementQuery() }

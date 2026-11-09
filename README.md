@@ -210,6 +210,18 @@ Rename a folder or file in place (F2, the Actions menu, or right-click), in the 
 | ⌘↩ | open with the default app |
 | ⌘⌫ | move to Trash |
 
+### Archives as folders
+
+ZIP, RAR and 7z archives open like folders: browse their folders, page through their pictures, play their videos, start a slideshow, search their names. Nothing is unpacked to disk, except a video you play from an archive: the players need a file, so it is copied to the temporary folder (the last three stay). Archives are only read: renaming or trashing something inside them isn't offered.
+
+- **RAR** of every version, also solid archives (the official UnRAR inside).
+- **Split archives** show once, by their first part: `x.part1.rar` …, `x.rar` + `x.r00` …, `x.z01` … + `x.zip`, `x.7z.001` ….
+- **Downloads still in progress** (`x.rar.part`, `x.zip.crdownload`) already show what has arrived; a later part that is missing ends the list there.
+- **Passwords:** a protected archive asks for its password once. ZIP and RAR with a password work, also RAR with encrypted file names; encrypted 7z can't be opened.
+
+> [!WARNING]
+> **Schnellbild remembers every archive password you type, permanently, and tries all of them on every protected archive**, without tying a password to a file. That's on purpose: type a password once, and every archive with it opens by itself from then on. They are kept in your login keychain (entry "Schnellbild archive passwords"); delete that entry in Keychain Access to forget them.
+
 ### All keys at hand
 
 <p align="center"><picture>
@@ -234,9 +246,12 @@ Early, but already a usable daily driver. Known limits:
 - `1` (100 %) is approximate (it assumes the main display's scale).
 - Animated GIFs don't zoom or pan.
 - Packages such as the Photos library count as one file, as in the Finder: they aren't browsed, searched or played.
+- Archives inside archives aren't opened. Thumbnails of videos inside archives are an icon. Sorting by date taken uses the date modified inside archives.
 
 Building from source, tests and releases: [BUILDING.md](BUILDING.md).
 
 ## License
 
 [MIT](LICENSE) © 2026 HAUS HOPPE - ITS (Johannes Hoppe)
+
+Schnellbild is built with VLCKit (LGPL 2.1), UnRAR (UnRAR license) and the libarchive of macOS (BSD): see [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) and the app's About window.

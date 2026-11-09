@@ -93,17 +93,22 @@ struct ThumbnailGridView: View {
                         model.startSlideshow(over: entry.url)
                     }
                 }
-                Button("Rename…") {
-                    guard model.select(entry) else { return }
-                    model.beginRename()
+                // Inside an archive nothing is changed
+                if !ArchivePath.isInside(entry.url) {
+                    Button("Rename…") {
+                        guard model.select(entry) else { return }
+                        model.beginRename()
+                    }
                 }
                 Button("Reveal in Finder") {
                     guard model.select(entry) else { return }
                     model.revealInFinder()
                 }
-                Button("Move to Trash…") {
-                    guard model.select(entry) else { return }
-                    model.moveSelectionToTrash()
+                if !ArchivePath.isInside(entry.url) {
+                    Button("Move to Trash…") {
+                        guard model.select(entry) else { return }
+                        model.moveSelectionToTrash()
+                    }
                 }
             }
         }
@@ -116,7 +121,10 @@ struct ThumbnailGridView: View {
         case .parent:
             FolderTile(folder: nil, side: side, isSelected: selected, systemImage: "arrow.up.circle.fill")
         case .folder:
-            FolderTile(folder: entry.url, side: side, isSelected: selected, isEmpty: model.isEmptyFolder(entry))
+            let archive = ArchiveName.format(of: entry.name) != nil && !ArchivePath.isInside(entry.url)
+            FolderTile(folder: entry.url, side: side, isSelected: selected,
+                       systemImage: archive ? "archivebox.fill" : "folder.fill",
+                       isEmpty: model.isEmptyFolder(entry), kindLabel: archive ? "archive" : "folder")
         case .image, .video:
             ThumbnailView(url: entry.url, side: side, isSelected: selected, isVideo: entry.kind == .video,
                           modified: entry.modDate)
@@ -134,6 +142,8 @@ struct FolderTile: View {
     var systemImage: String = "folder.fill"
     /// Nothing below it is a photo or video: drawn greyed out.
     var isEmpty = false
+    /// What the accessibility label calls it ("folder", "archive").
+    var kindLabel = "folder"
 
     @EnvironmentObject var model: BrowserModel
     @State private var previews: [NSImage] = []
@@ -149,7 +159,7 @@ struct FolderTile: View {
         .opacity(isEmpty ? 0.4 : 1)
         .tileChrome(side: side, isSelected: isSelected)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("\(TileChrome.selectionLabel(isSelected)), \(folder == nil ? "parent folder" : isEmpty ? "empty folder" : "folder"), \(previews.count) previews")
+        .accessibilityLabel("\(TileChrome.selectionLabel(isSelected)), \(folder == nil ? "parent folder" : isEmpty ? "empty \(kindLabel)" : kindLabel), \(previews.count) previews")
         // Again after a change made inside the folder (trash, rename): what
         // it previews may have gone.
         .task(id: FolderKey(folder: folder, changes: model.folderChanges)) { await loadPreviews() }

@@ -44,6 +44,11 @@ final class ThumbnailCache {
     func thumbnail(for url: URL, side: CGFloat, modified: Date? = nil) async -> NSImage? {
         if let cached = cache.object(forKey: url as NSURL), cached.side >= side,
            modified == nil || cached.modified == modified { return cached.image }
+        if ArchivePath.isInside(url) {
+            guard let image = await Self.archiveThumbnail(for: url, side: side) else { return nil }
+            cache.setObject(Entry(image: image, side: side, modified: modified), forKey: url as NSURL)
+            return image
+        }
         let request = QLThumbnailGenerator.Request(
             fileAt: url,
             size: CGSize(width: side, height: side),
@@ -62,6 +67,32 @@ final class ThumbnailCache {
         guard let image else { return nil }
         cache.setObject(Entry(image: image, side: side, modified: modified), forKey: url as NSURL)
         return image
+    }
+}
+
+extension ThumbnailCache {
+    /// Inside an archive QuickLook can't look: pictures are unpacked and
+    /// scaled down here; videos get a film icon (they'd be unpacked whole).
+    static func archiveThumbnail(for url: URL, side: CGFloat) async -> NSImage? {
+        guard BrowserModel.mediaKind(of: url) == .image else {
+            let icon = NSImage(systemSymbolName: "film", accessibilityDescription: fileIcon)
+            icon?.accessibilityDescription = fileIcon
+            return icon
+        }
+        let maxPixel = Int(side * NSScreen.mainBackingScale)
+        return await Task.detached(priority: .utility) { () -> NSImage? in
+            if VectorPicture.isVector(url) {
+                guard let data = try? await ArchiveStore.shared.data(of: url),
+                      let rendered = VectorPicture.render(data: data, longestSide: maxPixel) else { return nil }
+                return NSImage(cgImage: rendered.0, size: NSSize(width: rendered.0.width, height: rendered.0.height))
+            }
+            guard let source = await MediaData.imageSource(url) else { return nil }
+            let options: [CFString: Any] = [kCGImageSourceCreateThumbnailFromImageIfAbsent: true,
+                                            kCGImageSourceCreateThumbnailWithTransform: true,
+                                            kCGImageSourceThumbnailMaxPixelSize: maxPixel]
+            guard let cg = CGImageSourceCreateThumbnailAtIndex(source, 0, options as CFDictionary) else { return nil }
+            return NSImage(cgImage: cg, size: NSSize(width: cg.width, height: cg.height))
+        }.value
     }
 }
 

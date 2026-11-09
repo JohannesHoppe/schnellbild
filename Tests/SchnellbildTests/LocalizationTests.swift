@@ -77,7 +77,7 @@ final class LocalizationTests: XCTestCase {
     /// interpolation `\(…)` kept as a marker. A small scanner, not a regular
     /// expression: interpolations can hold quotes of their own.
     static func uiTexts(in source: String) -> [String] {
-        let starts = ["Text(\"", "Button(\"", "Label(\"", "Toggle(\"", "TextField(\"", "CommandMenu(\"",
+        let starts = ["Text(\"", "Button(\"", "Label(\"", "Toggle(\"", "TextField(\"", "SecureField(\"", "CommandMenu(\"",
                       ".help(\"", "String(localized: \"", "action: \"", "Group(title: \"", "title: \"", "slider(\"", "infoRow(\""]
         let chars = Array(source)
         var texts: [String] = []

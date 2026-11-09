@@ -121,3 +121,13 @@
 "Open folder" = "Відкрити папку";
 "Open with default app" = "Відкрити в типовій програмі";
 "Show this list" = "Показати цей список";
+
+/* Archives */
+"Password for “%@”" = "Пароль для «%@»";
+"Password" = "Пароль";
+"Schnellbild remembers every password typed here and tries all of them on every protected archive." = "Schnellbild запам’ятовує кожен введений тут пароль і пробує їх усі для кожного захищеного архіву.";
+"That password doesn't open it. Try another one." = "Цей пароль не підходить. Спробуйте інший.";
+"Encrypted 7z archives can't be opened." = "Зашифровані архіви 7z відкрити не можна.";
+"The archive ends early: it is still downloading, or a part is missing." = "Архів обривається: він ще завантажується, або бракує частини.";
+"The archive can't be read: %@" = "Не вдається прочитати архів: %@";
+"About Schnellbild" = "Про Schnellbild";

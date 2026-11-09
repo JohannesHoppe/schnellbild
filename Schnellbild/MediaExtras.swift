@@ -33,7 +33,7 @@ struct AnimatedImageView: NSViewRepresentable {
             view.image = nil
             loading?.cancel()
             loading = Task { [weak view] in
-                let data = await Task.detached(priority: .userInitiated) { try? Data(contentsOf: url) }.value
+                let data = await Task.detached(priority: .userInitiated) { try? await MediaData.read(url) }.value
                 guard !Task.isCancelled, self.url == url, let data else { return }
                 view?.image = NSImage(data: data)
             }
@@ -107,7 +107,7 @@ struct InspectorView: View {
         guard entry.kind == .image else { return }
         let url = entry.url
         dimensions = await Task.detached(priority: .utility) { () -> String? in
-            guard let size = MediaInfo.pixelSize(of: url) else { return nil }
+            guard let size = await MediaInfo.pixelSize(ofAnywhere: url) else { return nil }
             return "\(Int(size.width)) × \(Int(size.height)) px"
         }.value
     }
@@ -124,6 +124,17 @@ enum MediaInfo {
               let h = (props[kCGImagePropertyPixelHeight] as? NSNumber)?.doubleValue else { return nil }
         let orientation = (props[kCGImagePropertyOrientation] as? NSNumber)?.intValue ?? 1
         return (5...8).contains(orientation) ? CGSize(width: h, height: w) : CGSize(width: w, height: h)
+    }
+
+    /// Pixel dimensions, also of a picture inside an archive.
+    static func pixelSize(ofAnywhere url: URL) async -> CGSize? {
+        guard ArchivePath.isInside(url) else { return pixelSize(of: url) }
+        if VectorPicture.isVector(url) {
+            guard let data = try? await MediaData.read(url), let image = NSImage(data: data) else { return nil }
+            return image.size
+        }
+        guard let source = await MediaData.imageSource(url) else { return nil }
+        return pixelSize(from: source)
     }
 
     /// Pixel dimensions for a file URL; for an SVG its own size.

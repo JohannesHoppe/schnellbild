@@ -11,6 +11,10 @@ VERSION="3.6.0"
 URL="https://download.videolan.org/pub/cocoapods/prod/VLCKit-3.6.0-c73b779f-dd8bfdba.tar.xz"
 SHA256="23f8f7bb0f8e0321393f51ad5da65ea37ecbc1e148ac2d97fd9f05073ec01075"
 
+# The UnRAR source is vendored alongside (every build that needs VLCKit
+# needs it too).
+"$ROOT/Scripts/fetch_unrar.sh"
+
 DEST="$ROOT/Vendor"
 FRAMEWORK="$DEST/VLCKit.xcframework"
 

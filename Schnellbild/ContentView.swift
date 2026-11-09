@@ -90,6 +90,7 @@ struct ContentView: View {
         .navigationTitle(model.folderURL?.lastPathComponent ?? "Schnellbild")
         .sheet(isPresented: $model.showHelp) { ShortcutsHelpView() }
         .sheet(item: $model.renameTarget) { RenameView(entry: $0) }
+        .sheet(item: $model.passwordRequest) { PasswordView(request: $0) }
     }
 
 

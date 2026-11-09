@@ -121,3 +121,13 @@
 "Open folder" = "Open folder";
 "Open with default app" = "Open with default app";
 "Show this list" = "Show this list";
+
+/* Archives */
+"Password for “%@”" = "Password for “%@”";
+"Password" = "Password";
+"Schnellbild remembers every password typed here and tries all of them on every protected archive." = "Schnellbild remembers every password typed here and tries all of them on every protected archive.";
+"That password doesn't open it. Try another one." = "That password doesn't open it. Try another one.";
+"Encrypted 7z archives can't be opened." = "Encrypted 7z archives can't be opened.";
+"The archive ends early: it is still downloading, or a part is missing." = "The archive ends early: it is still downloading, or a part is missing.";
+"The archive can't be read: %@" = "The archive can't be read: %@";
+"About Schnellbild" = "About Schnellbild";
