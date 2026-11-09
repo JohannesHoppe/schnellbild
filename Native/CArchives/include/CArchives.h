@@ -49,6 +49,8 @@ int sb_rar_volume_missing(const SBRar *rar);
 int sb_rar_password_asked(const SBRar *rar);
 /// The archive's names are encrypted too.
 int sb_rar_headers_encrypted(const SBRar *rar);
+// Solid: a file is unpacked only after all before it
+int sb_rar_solid(const SBRar *rar);
 void sb_rar_close(SBRar *rar);
 
 // MARK: libarchive (system)

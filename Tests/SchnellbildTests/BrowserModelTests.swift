@@ -1292,12 +1292,14 @@ final class FileActionTests: XCTestCase {
         let m = makeModel(spy)
         await openAndWait(m, tree.root)
         m.move([a, b], into: sorted)
+        await waitUntil { m.transfersRunning == 0 }
         XCTAssertEqual(m.names, ["..", "Sorted"])
         XCTAssertTrue(FileManager.default.fileExists(atPath: sorted.appendingPathComponent("a.jpg").path))
         m.move([sorted], into: sorted)
         XCTAssertTrue(FileManager.default.fileExists(atPath: sorted.path), "not into itself")
         await openAndWait(m, sorted)
         m.move([sorted.appendingPathComponent("a.jpg")], into: tree.root)   // onto ".."
+        await waitUntil { m.transfersRunning == 0 }
         XCTAssertEqual(m.names, ["..", "b.jpg"])
         XCTAssertTrue(FileManager.default.fileExists(atPath: tree.root.appendingPathComponent("a.jpg").path))
         let archive = tree.root.appendingPathComponent("photos.zip")

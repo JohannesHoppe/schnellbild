@@ -219,3 +219,4 @@
 "can't open the file" = "无法打开文件";
 "read error" = "读取错误";
 "UnRAR error %lld" = "UnRAR 错误 %lld";
+"Copying or moving…" = "正在拷贝或移动…";

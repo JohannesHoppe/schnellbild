@@ -6,6 +6,7 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 ROOT="$(pwd)"
+source "$ROOT/Scripts/fetch_verified.sh"
 
 VERSION="2.46.0"
 URL="https://github.com/yonaskolb/XcodeGen/releases/download/$VERSION/xcodegen.zip"
@@ -15,12 +16,7 @@ DEST="$ROOT/build/xcodegen"
 if [ ! -x "$DEST/bin/xcodegen" ]; then
     TMP="$(mktemp -d)"
     trap 'rm -rf "$TMP"' EXIT
-    curl -fsSL --retry 5 --retry-delay 5 --retry-all-errors -o "$TMP/xcodegen.zip" "$URL"
-    ACTUAL="$(shasum -a 256 "$TMP/xcodegen.zip" | awk '{print $1}')"
-    if [ "$ACTUAL" != "$SHA256" ]; then
-        echo "XcodeGen checksum mismatch: expected $SHA256, got $ACTUAL" >&2
-        exit 1
-    fi
+    fetch_verified "XcodeGen $VERSION" "$URL" "$SHA256" "$TMP/xcodegen.zip"
     unzip -q "$TMP/xcodegen.zip" -d "$TMP/unpacked"
     rm -rf "$DEST"
     mkdir -p "$ROOT/build"

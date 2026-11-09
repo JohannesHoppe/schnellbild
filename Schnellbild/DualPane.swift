@@ -34,17 +34,21 @@ final class WindowModel: ObservableObject {
     /// Both panes, the right one also while hidden.
     private var allPanes: [BrowserModel] { [left, right].compactMap { $0 } }
 
-    /// Menus and the toolbar read the active pane: its changes are the window's.
+    /// Menus and the toolbar read the active pane: its changes are the
+    /// window's (each pane's own view watches that pane itself).
     private func watch(_ pane: BrowserModel) {
-        forwarding.append(pane.objectWillChange.sink { [weak self] _ in self?.objectWillChange.send() })
+        forwarding.append(pane.objectWillChange.sink { [weak self, weak pane] _ in
+            guard let self, pane === self.active else { return }
+            self.objectWillChange.send()
+        })
         pane.onActivate = { [weak self, weak pane] in
             guard let self, let pane else { return }
             self.activate(pane)
         }
         // The other pane (also while hidden) follows what this one changes
-        pane.onFileChange = { [weak self, weak pane] change in
+        pane.onFileChange = { [weak self, weak pane] changes in
             guard let self, let pane else { return }
-            for other in self.allPanes where other !== pane { other.adopt(change) }
+            for other in self.allPanes where other !== pane { other.adopt(changes) }
         }
         pane.onFoldersChanged = { [weak self, weak pane] folders in
             guard let self, let pane else { return }

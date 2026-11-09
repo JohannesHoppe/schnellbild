@@ -6,6 +6,7 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 ROOT="$(pwd)"
+source "$ROOT/Scripts/fetch_verified.sh"
 
 VERSION="3.6.0"
 URL="https://download.videolan.org/pub/cocoapods/prod/VLCKit-3.6.0-c73b779f-dd8bfdba.tar.xz"
@@ -26,18 +27,8 @@ fi
 TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
 
-echo "==> Downloading official VLCKit $VERSION (macOS) from videolan.org…"
-curl -fL --retry 3 -o "$TMP/VLCKit.tar.xz" "$URL"
-
-echo "==> Verifying SHA-256 against VideoLAN's published checksum…"
-ACTUAL="$(shasum -a 256 "$TMP/VLCKit.tar.xz" | awk '{print $1}')"
-if [ "$ACTUAL" != "$SHA256" ]; then
-    echo "!! SHA-256 mismatch — refusing this download."
-    echo "   expected $SHA256"
-    echo "   got      $ACTUAL"
-    exit 1
-fi
-echo "   ok: $ACTUAL"
+# Checked against VideoLAN's published checksum
+fetch_verified "official VLCKit $VERSION (macOS) from videolan.org" "$URL" "$SHA256" "$TMP/VLCKit.tar.xz"
 
 echo "==> Extracting…"
 tar -xf "$TMP/VLCKit.tar.xz" -C "$TMP"

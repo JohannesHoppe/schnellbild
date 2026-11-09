@@ -83,6 +83,7 @@ final class DualPaneTests: XCTestCase {
         w.left.selectEntry(named: "b.jpg")
         w.left.click(w.left.entries.first { $0.name == "c.jpg" }!, command: true, shift: false)
         XCTAssertTrue(w.handleWindowKey(.f6, command: false, control: false, textEditing: false))
+        await waitUntil { w.left.transfersRunning == 0 }
         XCTAssertEqual(w.left.names, ["..", "a.jpg"], "moved: gone here")
         await waitUntil { right.isAt(rightFolder) && right.names.contains("c.jpg") }
         XCTAssertEqual(right.names, ["..", "a.jpg", "b.jpg", "c.jpg"])
@@ -91,9 +92,11 @@ final class DualPaneTests: XCTestCase {
         w.left.selectEntry(named: "a.jpg")
         spy.keepBoth = false
         _ = w.sendToOtherPane(how: .copy)
+        await waitUntil { w.left.transfersRunning == 0 }
         XCTAssertFalse(FileManager.default.fileExists(atPath: rightFolder.appendingPathComponent("a 2.jpg").path), "skipped")
         spy.keepBoth = true
         _ = w.sendToOtherPane(how: .copy)
+        await waitUntil { w.left.transfersRunning == 0 }
         XCTAssertTrue(FileManager.default.fileExists(atPath: rightFolder.appendingPathComponent("a 2.jpg").path), "kept both")
         XCTAssertFalse(w.handleWindowKey(.f6, command: false, control: false, shift: true, textEditing: false),
                        "⇧F6 is the pane's rename")

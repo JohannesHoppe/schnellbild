@@ -460,13 +460,16 @@ enum ModifierClicks {
 
     static func start() {
         guard monitor == nil else { return }
-        monitor = NSEvent.addLocalMonitorForEvents(matching: [.leftMouseDown, .leftMouseUp]) { event in
+        monitor = NSEvent.addLocalMonitorForEvents(matching: [.leftMouseDown, .leftMouseUp, .scrollWheel]) { event in
             MainActor.assumeIsolated { handle(event) }
             return event
         }
     }
 
     private static func handle(_ event: NSEvent) {
+        // Scrolled: the tile under the pointer is another one, known again
+        // once the pointer moves
+        if event.type == .scrollWheel { hovered = nil; return }
         if event.type == .leftMouseDown {
             pending = nil
             let flags = event.modifierFlags.intersection([.command, .shift])

@@ -219,3 +219,4 @@
 "can't open the file" = "can't open the file";
 "read error" = "read error";
 "UnRAR error %lld" = "UnRAR error %lld";
+"Copying or moving…" = "Copying or moving…";

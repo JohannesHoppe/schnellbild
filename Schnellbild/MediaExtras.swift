@@ -95,7 +95,8 @@ struct InspectorView: View {
         if entry.kind == .video {
             // The player knows it once the video has opened.
             for _ in 0..<40 {
-                if let size = model.activePlayer?.videoSize, size.width > 0, size.height > 0 {
+                if model.activePlayerURL == entry.url,
+                   let size = model.activePlayer?.videoSize, size.width > 0, size.height > 0 {
                     dimensions = "\(Int(size.width)) × \(Int(size.height)) px"
                     return
                 }

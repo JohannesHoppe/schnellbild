@@ -206,9 +206,15 @@ private struct WindowView: View {
             } label: {
                 // No key cap here: a toolbar menu with a label of its own
                 // drops out of the accessibility tree (⌘1 … ⌘5: tooltip, help)
-                Label("\(model.sortKey.title) \(model.sortAscending ? "↑" : "↓")",
-                      systemImage: "arrow.up.arrow.down")
-                    .labelStyle(.titleAndIcon)
+                // Bounded: the sort key's name is long in some languages
+                // ("Date de prise de vue"), and the toolbar is full
+                Label {
+                    Text(verbatim: "\(model.sortKey.title) \(model.sortAscending ? "↑" : "↓")")
+                        .lineLimit(1).truncationMode(.middle).frame(maxWidth: 130)
+                } icon: {
+                    Image(systemName: "arrow.up.arrow.down")
+                }
+                .labelStyle(.titleAndIcon)
             }
             .help("Sort by (⌘1 … ⌘5; press again to reverse)")
             .accessibilityIdentifier("sortMenu")
@@ -443,6 +449,10 @@ struct PaneView: View {
                 .accessibilityIdentifier("statusText")
             if model.isSearching {
                 Text("Searching subfolders…").foregroundStyle(.secondary)
+            }
+            if model.transfersRunning > 0 {
+                ProgressView().controlSize(.small)
+                Text("Copying or moving…").foregroundStyle(.secondary)
             }
             Spacer()
             Text(model.folderURL?.path ?? "")

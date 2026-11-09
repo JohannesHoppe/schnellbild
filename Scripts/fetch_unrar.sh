@@ -9,6 +9,7 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 ROOT="$(pwd)"
+source "$ROOT/Scripts/fetch_verified.sh"
 
 VERSION="7.3.2"
 URL="https://www.rarlab.com/rar/unrarsrc-$VERSION.tar.gz"
@@ -21,15 +22,7 @@ fi
 
 TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
-echo "==> Downloading UnRAR $VERSION source from rarlab.com…"
-curl -fsSL --retry 5 --retry-delay 5 --retry-all-errors -o "$TMP/unrar.tar.gz" "$URL"
-ACTUAL="$(shasum -a 256 "$TMP/unrar.tar.gz" | awk '{print $1}')"
-if [ "$ACTUAL" != "$SHA256" ]; then
-    echo "!! UnRAR SHA-256 mismatch — refusing this download." >&2
-    echo "   expected $SHA256" >&2
-    echo "   got      $ACTUAL" >&2
-    exit 1
-fi
+fetch_verified "UnRAR $VERSION source from rarlab.com" "$URL" "$SHA256" "$TMP/unrar.tar.gz"
 tar -xzf "$TMP/unrar.tar.gz" -C "$TMP"
 [ -f "$TMP/unrar/dll.hpp" ] || { echo "!! unexpected UnRAR archive layout" >&2; exit 1; }
 rm -rf "$DEST"

@@ -219,3 +219,4 @@
 "can't open the file" = "не удаётся открыть файл";
 "read error" = "ошибка чтения";
 "UnRAR error %lld" = "Ошибка UnRAR %lld";
+"Copying or moving…" = "Копирование или перемещение…";

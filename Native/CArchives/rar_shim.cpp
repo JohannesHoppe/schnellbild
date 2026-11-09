@@ -24,19 +24,10 @@
 
 static std::mutex headerLock;
 
-static uint32_t crcTable[256];
-static std::once_flag crcOnce;
+// A running CRC32 over a file's data, through UnRAR's own (fast) CRC32,
+// which leaves the start and end inversion to its caller
 static uint32_t crc32Update(uint32_t crc, const uint8_t *bytes, size_t count) {
-    std::call_once(crcOnce, [] {
-        for (uint32_t i = 0; i < 256; i++) {
-            uint32_t c = i;
-            for (int k = 0; k < 8; k++) c = (c & 1) ? 0xEDB88320u ^ (c >> 1) : c >> 1;
-            crcTable[i] = c;
-        }
-    });
-    crc = ~crc;
-    for (size_t i = 0; i < count; i++) crc = crcTable[(crc ^ bytes[i]) & 0xFF] ^ (crc >> 8);
-    return ~crc;
+    return ~CRC32(~crc, bytes, count);
 }
 
 struct SBRar {
@@ -46,6 +37,7 @@ struct SBRar {
     bool passwordAsked = false;
     bool volumeMissing = false;
     bool headersEncrypted = false;
+    bool solid = false;
     SBRarData data = nullptr;
     void *context = nullptr;
     bool stopped = false;
@@ -58,34 +50,15 @@ struct SBRar {
     uint64_t received = 0;
 };
 
+// UTF-8 ⇄ the wide strings UnRAR takes, with UnRAR's own converters
 static std::wstring fromUTF8(const char *s) {
     std::wstring out;
-    const unsigned char *p = (const unsigned char *)s;
-    while (*p) {
-        uint32_t c = *p++;
-        int extra = c >= 0xF0 ? 3 : c >= 0xE0 ? 2 : c >= 0xC0 ? 1 : 0;
-        if (extra) c &= (0x3F >> extra);
-        for (int i = 0; i < extra && (*p & 0xC0) == 0x80; i++) c = (c << 6) | (*p++ & 0x3F);
-        out.push_back((wchar_t)c);
-    }
+    UtfToWide(s, out);
     return out;
 }
 
 static void toUTF8(const wchar_t *w, char *out, size_t size) {
-    size_t n = 0;
-    for (; *w && n + 4 < size; w++) {
-        uint32_t c = (uint32_t)*w;
-        if (c < 0x80) out[n++] = (char)c;
-        else if (c < 0x800) { out[n++] = (char)(0xC0 | (c >> 6)); out[n++] = (char)(0x80 | (c & 0x3F)); }
-        else if (c < 0x10000) {
-            out[n++] = (char)(0xE0 | (c >> 12)); out[n++] = (char)(0x80 | ((c >> 6) & 0x3F));
-            out[n++] = (char)(0x80 | (c & 0x3F));
-        } else {
-            out[n++] = (char)(0xF0 | (c >> 18)); out[n++] = (char)(0x80 | ((c >> 12) & 0x3F));
-            out[n++] = (char)(0x80 | ((c >> 6) & 0x3F)); out[n++] = (char)(0x80 | (c & 0x3F));
-        }
-    }
-    out[n] = 0;
+    WideToUtf(w, out, size);
 }
 
 static int CALLBACK callback(UINT message, LPARAM user, LPARAM p1, LPARAM p2) {
@@ -141,6 +114,7 @@ extern "C" SBRar *sb_rar_open(const char *path, const char *password, int list_o
         return nullptr;
     }
     rar->headersEncrypted = (data.Flags & ROADF_ENCHEADERS) != 0;
+    rar->solid = (data.Flags & ROADF_SOLID) != 0;
     return rar;
 }
 
@@ -215,6 +189,7 @@ extern "C" int sb_rar_skip(SBRar *rar) {
 extern "C" int sb_rar_volume_missing(const SBRar *rar) { return rar->volumeMissing; }
 extern "C" int sb_rar_password_asked(const SBRar *rar) { return rar->passwordAsked; }
 extern "C" int sb_rar_headers_encrypted(const SBRar *rar) { return rar->headersEncrypted; }
+extern "C" int sb_rar_solid(const SBRar *rar) { return rar->solid; }
 
 extern "C" void sb_rar_close(SBRar *rar) {
     if (!rar) return;

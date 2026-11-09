@@ -47,7 +47,6 @@ public final class XCUIElementQuery {
     public var count: Int { 0 }
     public var allElementsBoundByIndex: [XCUIElement] { [] }
     public func matching(identifier: String) -> XCUIElementQuery { self }
-    public func matching(_ predicate: NSPredicate) -> XCUIElementQuery { self }
     public var menuBarItems: XCUIElementQuery { self }
     public var menuItems: XCUIElementQuery { self }
     public var buttons: XCUIElementQuery { self }
@@ -59,7 +58,6 @@ public final class XCUICoordinate {
 }
 public final class XCUIScreenshot { public var image: NSImage { NSImage() } }
 public class XCUIElement {
-    public static func perform(withKeyModifiers flags: KeyModifierFlags, block: () -> Void) { block() }
     public func scroll(byDeltaX deltaX: CGFloat, deltaY: CGFloat) {}
     public func press(forDuration duration: TimeInterval, thenDragTo element: XCUIElement) {}
     public struct KeyModifierFlags: OptionSet {
@@ -91,7 +89,6 @@ public class XCUIElement {
     public var staticTexts: XCUIElementQuery { XCUIElementQuery() }
     public var buttons: XCUIElementQuery { XCUIElementQuery() }
     public var textFields: XCUIElementQuery { XCUIElementQuery() }
-    public var toolbars: XCUIElementQuery { XCUIElementQuery() }
     public var searchFields: XCUIElementQuery { XCUIElementQuery() }
     public var secureTextFields: XCUIElementQuery { XCUIElementQuery() }
     public var menuItems: XCUIElementQuery { XCUIElementQuery() }

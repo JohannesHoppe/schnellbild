@@ -219,3 +219,4 @@
 "can't open the file" = "dosya açılamıyor";
 "read error" = "okuma hatası";
 "UnRAR error %lld" = "UnRAR hatası %lld";
+"Copying or moving…" = "Kopyalanıyor veya taşınıyor…";
