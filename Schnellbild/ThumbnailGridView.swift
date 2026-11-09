@@ -359,20 +359,9 @@ struct EntryInteractions: ViewModifier {
             }
             .onTapGesture(count: 1) {
                 model.searchFocused = false
-                // The click's own modifiers (the global state can lag behind)
-                let flags = NSApp.currentEvent?.modifierFlags ?? NSEvent.modifierFlags
+                let flags = ClickModifiers.last
                 model.click(entry, command: flags.contains(.command), shift: flags.contains(.shift))
             }
-            // ⌘- and ⇧-clicks as gestures of their own: the plain tap above
-            // doesn't fire for them
-            .highPriorityGesture(TapGesture().modifiers(.command).onEnded {
-                model.searchFocused = false
-                model.click(entry, command: true, shift: false)
-            })
-            .highPriorityGesture(TapGesture().modifiers(.shift).onEnded {
-                model.searchFocused = false
-                model.click(entry, command: false, shift: true)
-            })
             .contextMenu {
                 if entry.kind != .parent {
                     if entry.kind == .folder {
@@ -420,6 +409,26 @@ private struct FolderDrop: ViewModifier {
                   !model.isFiltering || entry.kind == .folder || !accepts else { return false }
             TileDrag.loadURLs(providers) { urls in model.move(urls, into: folder) }
             return true
+        }
+    }
+}
+
+/// The modifier keys held when the mouse button went down. A tap gesture
+/// ends after the button is up, when the current event and the global
+/// modifier state can already be other ones.
+@MainActor
+enum ClickModifiers {
+    private(set) static var last: NSEvent.ModifierFlags = []
+    private static var monitor: Any?
+
+    static func start() {
+        guard monitor == nil else { return }
+        monitor = NSEvent.addLocalMonitorForEvents(matching: .leftMouseDown) { event in
+            MainActor.assumeIsolated {
+                last = event.modifierFlags.intersection([.command, .shift, .option, .control])
+                BrowserModel.testLog("mouse down, modifiers \(last.rawValue)")
+            }
+            return event
         }
     }
 }

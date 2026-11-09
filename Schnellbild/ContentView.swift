@@ -240,6 +240,7 @@ private struct WindowView: View {
     private func installKeyMonitor() {
         guard keyMonitor == nil, !Self.monitorsInstalled else { return }
         Self.monitorsInstalled = true
+        ClickModifiers.start()
         let window = self.window
         keyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
             // A modal dialog (the Trash confirmation, the open panel) keeps

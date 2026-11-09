@@ -81,6 +81,7 @@ final class WindowModel: ObservableObject {
     func sendToOtherPane(how: BrowserModel.Transfer) -> Bool {
         guard let other, let folder = other.folderURL else { return false }
         let sources = active.actionEntries.map(\.url)
+        BrowserModel.testLog("to the other pane: \(sources.map(\.lastPathComponent))")
         guard !sources.isEmpty else { NSSound.beep(); return true }
         active.move(sources, into: folder, how: how)
         active.clearMarks()
