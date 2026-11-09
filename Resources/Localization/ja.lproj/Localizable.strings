@@ -208,3 +208,4 @@
 "Grid or list (a click on a column sorts by it)" = "グリッドまたはリスト（列をクリックするとその列で並べ替え）";
 "Back (where you were, also a search); without history the enclosing folder" = "戻る（前の場所、検索にも）。履歴がなければ上のフォルダへ";
 "⌘↑ goes up one folder level." = "⌘↑ で 1 つ上のフォルダに移動します。";
+"Click to rename this folder" = "クリックしてこのフォルダの名前を変更";

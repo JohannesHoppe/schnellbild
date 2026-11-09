@@ -216,6 +216,8 @@ private struct WindowView: View {
             .accessibilityLabel("Sort: \(model.sortKey.title) \(model.sortAscending ? "↑" : "↓")")
         }
         ToolbarItemGroup(placement: .principal) {
+            // The folder's name; a click makes it editable to rename the folder
+            FolderNameField(model: model)
             // Full screen at once, in the middle of the title bar (F, ⌃⌘F)
             Button { model.toggleFullScreen() } label: {
                 ShortcutLabel("Full Screen", systemImage: "arrow.up.left.and.arrow.down.right", keys: "F")
@@ -929,23 +931,70 @@ struct VolumeDisplay: View {
     }
 }
 
-/// The window title: the folder's name, which a click makes editable to
-/// rename the folder in place. Always the same modifier: switching between
-/// an editable and a fixed title rebuilt the window's content, and the old
-/// content's disappearing removed the key monitor the new one had just
-/// installed. Where the folder can't be renamed, confirming beeps.
+/// The window title: the folder's name, for the Window menu and Mission
+/// Control. In the title bar itself the name is `FolderNameField` (it can be
+/// clicked to rename), so the window's own title text is hidden.
 private struct FolderTitle: ViewModifier {
     @ObservedObject var model: BrowserModel
 
     func body(content: Content) -> some View {
         content
-            // A click on the title shows this menu; Rename makes the title editable
-            .toolbarTitleMenu { RenameButton() }
-            .navigationTitle(Binding(
-            get: { model.folderURL?.lastPathComponent ?? "Schnellbild" },
-            set: { name in
-                guard name != model.folderURL?.lastPathComponent else { return }
-                if model.canRenameCurrentFolder { model.renameCurrentFolder(to: name) } else { NSSound.beep() }
-            }))
+            .navigationTitle(model.folderURL?.lastPathComponent ?? "Schnellbild")
+            .background(TitleTextHidden())
+    }
+}
+
+/// Hides the window's title text (the toolbar shows the name instead).
+private struct TitleTextHidden: NSViewRepresentable {
+    func makeNSView(context: Context) -> NSView {
+        let view = NSView()
+        DispatchQueue.main.async { view.window?.titleVisibility = .hidden }
+        return view
+    }
+    func updateNSView(_ view: NSView, context: Context) {
+        if let window = view.window, window.titleVisibility != .hidden { window.titleVisibility = .hidden }
+    }
+}
+
+/// The folder's name in the middle of the title bar. A click (where the
+/// folder can be renamed) turns it into a field: ↩ renames the folder shown,
+/// Esc keeps the name.
+private struct FolderNameField: View {
+    @ObservedObject var model: BrowserModel
+    @State private var editing = false
+    @State private var name = ""
+    @FocusState private var focused: Bool
+
+    var body: some View {
+        let current = model.folderURL?.lastPathComponent ?? "Schnellbild"
+        Group {
+            if editing {
+                TextField("Name", text: $name)
+                    .textFieldStyle(.roundedBorder)
+                    .frame(width: 220)
+                    .focused($focused)
+                    .onSubmit {
+                        editing = false
+                        model.renameCurrentFolder(to: name)
+                    }
+                    .onExitCommand { editing = false }
+                    .onChange(of: focused) { _, now in if !now { editing = false } }
+                    .accessibilityIdentifier("folderTitleField")
+            } else {
+                Button {
+                    guard model.canRenameCurrentFolder else { return }
+                    name = current
+                    editing = true
+                    DispatchQueue.main.async { focused = true }
+                } label: {
+                    Text(verbatim: current).font(.headline).lineLimit(1).truncationMode(.middle)
+                }
+                .buttonStyle(.plain)
+                .help(model.canRenameCurrentFolder ? Text("Click to rename this folder") : Text(verbatim: current))
+                .accessibilityIdentifier("folderTitle")
+            }
+        }
+        .frame(maxWidth: 260)
+        .onChange(of: model.folderURL) { editing = false }
     }
 }
