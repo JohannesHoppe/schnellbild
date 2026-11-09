@@ -1245,6 +1245,30 @@ final class FileActionTests: XCTestCase {
         XCTAssertTrue(m.canCreateFolder)
     }
 
+    /// The folder shown, renamed from its title: it stays open under the
+    /// new name, its pictures with it; Back leads to the parent.
+    func testRenamingTheFolderShown() async throws {
+        let tree = try TempTree(self)
+        try tree.file("Trip/a.jpg")
+        try tree.folder("Taken")
+        let spy = FileActionsSpy()
+        let m = makeModel(spy)
+        await openAndWait(m, tree.root)
+        await openAndWait(m, tree.root.appendingPathComponent("Trip"))
+        XCTAssertTrue(m.canRenameCurrentFolder)
+        m.renameCurrentFolder(to: "Taken")
+        XCTAssertEqual(spy.reported.count, 1, "the name is taken")
+        m.renameCurrentFolder(to: "Iceland 2025")
+        let renamed = tree.root.appendingPathComponent("Iceland 2025")
+        XCTAssertTrue(m.isAt(renamed))
+        XCTAssertTrue(FileManager.default.fileExists(atPath: renamed.appendingPathComponent("a.jpg").path))
+        XCTAssertEqual(m.names, ["..", "a.jpg"])
+        XCTAssertTrue(BrowserModel.samePath(m.entries[1].url, renamed.appendingPathComponent("a.jpg")), "its pictures follow")
+        m.navigateBack()
+        await waitUntil { m.isAt(tree.root) }
+        XCTAssertTrue(m.names.contains("Iceland 2025"))
+    }
+
     /// Dropped onto a folder tile: into it (and out of this listing); onto
     /// ".." a level up; not into itself, not into an archive.
     func testMovingIntoAFolder() async throws {

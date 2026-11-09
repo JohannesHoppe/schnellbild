@@ -2086,6 +2086,37 @@ final class BrowserModel: ObservableObject {
         }
     }
 
+    /// Whether the folder shown can be renamed in place (its name in the
+    /// title bar): a real folder, not inside an archive, not a volume's top.
+    var canRenameCurrentFolder: Bool {
+        guard let folderURL, slideshow == nil, !isLoading, ArchivePath.split(folderURL) == nil else { return false }
+        return Self.parentFolder(of: folderURL) != nil && folderURL.pathComponents.count > 3   // not "/" or "/Volumes/X"
+    }
+
+    /// The folder shown, renamed from its name in the title bar: it stays
+    /// open under the new name; history and results follow. A name that
+    /// can't be used is reported.
+    func renameCurrentFolder(to raw: String) {
+        guard canRenameCurrentFolder, let old = folderURL else { return }
+        do {
+            let name = try Self.validName(raw)
+            guard name != old.lastPathComponent else { return }
+            let new = old.deletingLastPathComponent().appendingPathComponent(name, isDirectory: true)
+            if fileActions.conflicts(new, old) { throw RenameError.alreadyExists(name) }
+            do { try fileActions.move(old, new) } catch { throw RenameError.failed(error.localizedDescription) }
+            apply(.moved(old, to: new))
+            folderURL = new
+            defaults.set(new.path, forKey: lastFolderKey)
+            if let parent = Self.parentFolder(of: new), let i = allEntries.firstIndex(where: { $0.kind == .parent }) {
+                allEntries[i] = GridEntry(url: parent, kind: .parent)
+                if let j = entries.firstIndex(where: { $0.kind == .parent }) { entries[j] = allEntries[i] }
+            }
+            notifyFolderChanges([old.deletingLastPathComponent(), new])
+        } catch {
+            fileActions.report(error)
+        }
+    }
+
     // MARK: - Rename
 
     /// Open the rename sheet for the selected folder or file, in the grid or

@@ -83,7 +83,7 @@ private struct WindowView: View {
         }
         .onDisappear { removeKeyMonitor() }
         .toolbar { toolbarContent }
-        .navigationTitle(model.folderURL?.lastPathComponent ?? "Schnellbild")
+        .modifier(FolderTitle(model: model))
         .environmentObject(model)
     }
 
@@ -901,6 +901,22 @@ struct VolumeDisplay: View {
                 guard !Task.isCancelled else { return }
                 shown = false
             }
+        }
+    }
+}
+
+/// The window title: the folder's name, which a click makes editable to
+/// rename the folder in place (where it can be renamed).
+private struct FolderTitle: ViewModifier {
+    @ObservedObject var model: BrowserModel
+
+    func body(content: Content) -> some View {
+        if model.canRenameCurrentFolder {
+            content.navigationTitle(Binding(
+                get: { model.folderURL?.lastPathComponent ?? "" },
+                set: { model.renameCurrentFolder(to: $0) }))
+        } else {
+            content.navigationTitle(model.folderURL?.lastPathComponent ?? "Schnellbild")
         }
     }
 }
