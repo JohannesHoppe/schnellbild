@@ -67,6 +67,8 @@ struct SchnellbildApp: App {
                     .disabled(model.slideshow != nil || !model.selectionIsChangeable)
             }
             CommandGroup(after: .toolbar) {
+                Toggle("Mini Keyboard (K)", isOn: $model.showMiniKeyboard)
+                Divider()
                 Button("Larger Thumbnails (⌘+)") { model.growThumbnails() }
                 Button("Smaller Thumbnails (⌘−)") { model.shrinkThumbnails() }
                 Divider()

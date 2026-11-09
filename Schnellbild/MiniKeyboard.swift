@@ -116,6 +116,8 @@ private struct MiniKeyButton: View {
     let key: MiniKeyboard.Key
     @EnvironmentObject var model: BrowserModel
     @State private var lit = false
+    /// How often it acted (UI tests read it: lighting up is too short to catch).
+    @State private var presses = 0
 
     var body: some View {
         Button {
@@ -141,9 +143,10 @@ private struct MiniKeyButton: View {
         }
         .buttonStyle(.plain)
         .accessibilityIdentifier("key.\(key.id)")
-        .accessibilityValue(lit ? "pressed" : "")
+        .accessibilityValue(presses > 0 ? "pressed \(presses)" : "")
         .onChange(of: model.lastKeyPress) { _, press in
             guard let press, press.matches(key.input, command: key.command, shift: key.shift) else { return }
+            presses += 1
             withAnimation(.easeOut(duration: 0.08)) { lit = true }
             Task { @MainActor in
                 try? await Task.sleep(for: .milliseconds(350))
