@@ -299,11 +299,12 @@ final class ActionsUITests: SchnellbildUITestCase {
         rightSorted.doubleClick()
         XCTAssertTrue(right.descendants(matching: .any).matching(identifier: "tile...").firstMatch.waitForExistence(timeout: 10))
 
-        // Left: a.jpg and b.jpg marked, F5
+        // Left: a.jpg and b.jpg marked (⇧→; a ⌘-click lands a row off here,
+        // the grid's accessibility frames lag behind its scrolling), F5
         let leftA = left.descendants(matching: .any).matching(identifier: "tile.a.jpg").firstMatch
         let leftB = left.descendants(matching: .any).matching(identifier: "tile.b.jpg").firstMatch
         leftA.click()
-        XCUIElement.perform(withKeyModifiers: .command) { leftB.click() }
+        app.typeKey(.rightArrow, modifierFlags: .shift)
         app.typeKey(.F5, modifierFlags: [])
         let rightA = right.descendants(matching: .any).matching(identifier: "tile.a.jpg").firstMatch
         XCTAssertTrue(rightA.waitForExistence(timeout: 10), "copied into the other pane")
@@ -318,6 +319,7 @@ final class ActionsUITests: SchnellbildUITestCase {
         eventually("moved into the right pane", timeout: 10) {
             right.descendants(matching: .any).matching(identifier: "tile.c.jpg").firstMatch.exists && !leftC.exists
         }
+        if leftC.exists { XCTFail("app log:\n" + ((try? String(contentsOf: log, encoding: .utf8)) ?? "none")) }
 
         app.typeKey("d", modifierFlags: [])
         eventually("one pane again") { !self.element("pane.right").exists }

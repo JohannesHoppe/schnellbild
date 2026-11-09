@@ -369,22 +369,14 @@ struct EntryInteractions: ViewModifier {
             }
             .onTapGesture(count: 1) {
                 model.searchFocused = false
-                // ⌘ / ⇧ the monitor took off the click (see ModifierClicks)
-                let flags = ModifierClicks.takeStripped()
-                model.click(entry, command: flags.contains(.command), shift: flags.contains(.shift))
+                model.click(entry, command: false, shift: false)
             }
             // SwiftUI's tap gestures don't fire while ⌘ is held: ⌘- and
             // ⇧-clicks go to the tile under the pointer at mouse-down
             .onHover { inside in
                 if inside { hover() } else { ModifierClicks.leave(key) }
             }
-            .background(GeometryReader { geometry in
-                let frame = geometry.frame(in: .global)
-                Color.clear
-                    .onAppear { ModifierClicks.place(key, frame: frame) }
-                    .onChange(of: frame) { _, now in ModifierClicks.place(key, frame: now) }
-            })
-            .onDisappear { ModifierClicks.leave(key); ModifierClicks.place(key, frame: nil) }
+            .onDisappear { ModifierClicks.leave(key) }
             .contextMenu {
                 if entry.kind != .parent {
                     if entry.kind == .folder {
@@ -439,14 +431,10 @@ private struct FolderDrop: ViewModifier {
 
 /// ⌘- and ⇧-clicks on tiles and rows. SwiftUI's tap gestures don't fire
 /// while ⌘ is held, so a mouse-down monitor acts on the tile the pointer is
-/// over (tiles report it by hovering). Where no tile reported it (the pointer
-/// arrived without moving), the click goes on without ⌘ / ⇧ and the tile's
-/// tap reads them from `takeStripped`. Clicks into text fields keep them.
+/// over (tiles report it by hovering); other clicks pass.
 @MainActor
 enum ModifierClicks {
     private static var hovered: (key: String, action: (NSEvent.ModifierFlags) -> Void)?
-    private static var stripped: NSEvent.ModifierFlags = []
-    private static var stripping = false
     private static var monitor: Any?
 
     static func enter(_ key: String, action: @escaping (NSEvent.ModifierFlags) -> Void) {
@@ -456,61 +444,17 @@ enum ModifierClicks {
         if hovered?.key == key { hovered = nil }
     }
 
-    /// Where each tile is (SwiftUI's global space), for clicks the pointer
-    /// came to without moving.
-    private static var frames: [String: CGRect] = [:]
-    static func place(_ key: String, frame: CGRect?) { frames[key] = frame }
-
-    /// The modifiers taken off the last click, once.
-    static func takeStripped() -> NSEvent.ModifierFlags {
-        defer { stripped = [] }
-        return stripped
-    }
-
     static func start() {
         guard monitor == nil else { return }
-        monitor = NSEvent.addLocalMonitorForEvents(matching: [.leftMouseDown, .leftMouseUp]) { event in
-            MainActor.assumeIsolated { handle(event) }
+        monitor = NSEvent.addLocalMonitorForEvents(matching: .leftMouseDown) { event in
+            MainActor.assumeIsolated { handle(event) } ? nil : event
         }
     }
 
-    private static let keys: NSEvent.ModifierFlags = [.command, .shift]
-
-    private static func handle(_ event: NSEvent) -> NSEvent? {
-        if event.type == .leftMouseUp {
-            guard stripping else { return event }
-            stripping = false
-            return plain(event) ?? event
-        }
-        stripped = []
-        let flags = event.modifierFlags.intersection(keys)
-        guard !flags.isEmpty, let window = event.window, window === BrowserModel.appWindow else { return event }
-        if let hovered {
-            BrowserModel.testLog("modifier click on \(hovered.key)")
-            hovered.action(flags)
-            return nil
-        }
-        if let content = window.contentView {
-            let local = content.convert(event.locationInWindow, from: nil)
-            let point = CGPoint(x: local.x, y: content.isFlipped ? local.y : content.bounds.height - local.y)
-            let hits = frames.filter { $0.value.contains(point) }.map(\.key)
-            BrowserModel.testLog("modifier click at \(point) in \(content.bounds.size), \(frames.count) tiles, under it: \(hits); all: \(frames.map { "\($0.key.split(separator: "/").last ?? "") \($0.value)" })")
-        }
-        // A text field keeps ⇧-click (extend the selection)
-        if let content = window.contentView,
-           let hit = content.hitTest(content.superview?.convert(event.locationInWindow, from: nil) ?? event.locationInWindow),
-           hit is NSText || hit is NSTextField { return event }
-        guard let plain = plain(event) else { return event }
-        BrowserModel.testLog("modifier click passed on plain")
-        stripped = flags
-        stripping = true
-        return plain
-    }
-
-    private static func plain(_ event: NSEvent) -> NSEvent? {
-        NSEvent.mouseEvent(with: event.type, location: event.locationInWindow,
-                           modifierFlags: event.modifierFlags.subtracting(keys), timestamp: event.timestamp,
-                           windowNumber: event.windowNumber, context: nil, eventNumber: event.eventNumber,
-                           clickCount: event.clickCount, pressure: event.pressure)
+    private static func handle(_ event: NSEvent) -> Bool {
+        let flags = event.modifierFlags.intersection([.command, .shift])
+        guard !flags.isEmpty, let hovered, event.window === BrowserModel.appWindow else { return false }
+        hovered.action(flags)
+        return true
     }
 }
