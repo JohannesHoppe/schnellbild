@@ -422,7 +422,6 @@ private struct FolderDrop: ViewModifier {
     func body(content: Content) -> some View {
         content.onDrop(of: [.fileURL], isTargeted: accepts ? $targeted : .constant(false)) { providers in
             let target = accepts ? entry.url : model.folderURL
-            BrowserModel.testLog("drop on tile \(entry.name), into \(target?.lastPathComponent ?? "-")")
             guard let folder = target, ArchivePath.split(folder) == nil,
                   !model.isFiltering || entry.kind == .folder || !accepts else { return false }
             TileDrag.loadURLs(providers) { urls in model.move(urls, into: folder) }
