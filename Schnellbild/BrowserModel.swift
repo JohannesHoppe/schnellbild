@@ -1509,6 +1509,7 @@ final class BrowserModel: ObservableObject {
     /// A click on a tile: plain selects it (and unmarks), ⌘ marks or unmarks
     /// it, ⇧ marks the range from the last one.
     func click(_ entry: GridEntry, command: Bool, shift: Bool) {
+        Self.testLog("click \(entry.name) command \(command) shift \(shift)")
         guard let index = index(of: entry.url) else { return }
         if shift { markRange(to: index); return }
         if command {
