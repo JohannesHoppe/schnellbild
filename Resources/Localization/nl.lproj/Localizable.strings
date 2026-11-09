@@ -53,10 +53,8 @@
 "Please enter a name." = "Voer een naam in.";
 "Names can't contain “/” or “:”, and can't be “.” or “..”." = "Namen mogen geen ‘/’ of ‘:’ bevatten en niet ‘.’ of ‘..’ zijn.";
 "Open" = "Open";
-"Type" = "Soort";
 "Resolution" = "Resolutie";
-"Modified" = "Gewijzigd";
-"Image" = "Afbeelding";
+"Picture" = "Afbeelding";
 "Video" = "Video";
 "Folder" = "Map";
 "Parent" = "Bovenliggend";
@@ -75,7 +73,7 @@
 "Rename the selected folder or file (also in the full view)" = "Wijzig de naam van de geselecteerde map of het bestand (ook in de volledige weergave)";
 "Clear search" = "Wis zoekopdracht";
 "Previous / next item, also from a video" = "Vorig / volgend onderdeel, ook vanuit een video";
-"Next image · play/pause video" = "Volgende afbeelding · video afspelen / pauzeren";
+"Next picture · play/pause video" = "Volgende afbeelding · video afspelen / pauzeren";
 "Zoom in / out" = "Zoom in / uit";
 "Fit to window / 100 %" = "Passend in venster / 100 %";
 "Rotate left / right" = "Draai naar links / rechts";
@@ -120,7 +118,7 @@
 "The name must end in a picture extension, such as “.%@”." = "De naam moet eindigen op een afbeeldingsextensie, zoals ‘.%@’.";
 "The name must end in a video extension, such as “.%@”." = "De naam moet eindigen op een video-extensie, zoals ‘.%@’.";
 "Grid and full view" = "Raster en volledige weergave";
-"Images: previous / next · Videos: 10 % of the length back / ahead; at the start / end: previous / next item" = "Afbeeldingen: vorige / volgende · Video’s: 10 % van de lengte terug / vooruit; aan het begin / einde: vorige / volgende onderdeel";
+"Pictures: previous / next · Videos: 10 % of the length back / ahead; at the start / end: previous / next item" = "Afbeeldingen: vorige / volgende · Video’s: 10 % van de lengte terug / vooruit; aan het begin / einde: vorige / volgende onderdeel";
 "Previous / next · Videos: 10 % of the length back / ahead" = "Vorige / volgende · Video’s: 10 % van de lengte terug / vooruit";
 "Wrong password for this archive." = "Onjuist wachtwoord voor dit archief.";
 "The archive is incomplete: still downloading, a part missing, or damaged." = "Het archief is onvolledig: het wordt nog gedownload, er ontbreekt een deel, of het is beschadigd.";
@@ -168,3 +166,4 @@
 "Louder" = "Harder";
 "Quieter" = "Zachter";
 "Pictures zoomed in: look further up / down · Videos: volume up / down (remembered)" = "Ingezoomde afbeeldingen: verder omhoog / omlaag kijken · Video’s: volume harder / zachter (onthouden)";
+"%lld so far" = "%lld tot nu toe";

@@ -53,10 +53,8 @@
 "Please enter a name." = "名前を入力してください。";
 "Names can't contain “/” or “:”, and can't be “.” or “..”." = "名前に “/” や “:” は使えません。また “.” や “..” にはできません。";
 "Open" = "開く";
-"Type" = "種類";
 "Resolution" = "解像度";
-"Modified" = "変更日";
-"Image" = "画像";
+"Picture" = "画像";
 "Video" = "ビデオ";
 "Folder" = "フォルダ";
 "Parent" = "親";
@@ -75,7 +73,7 @@
 "Rename the selected folder or file (also in the full view)" = "選択したフォルダやファイルの名前を変更 (全体表示でも)";
 "Clear search" = "検索をクリア";
 "Previous / next item, also from a video" = "前 / 次の項目 (ビデオからも)";
-"Next image · play/pause video" = "次の画像 · ビデオを再生 / 一時停止";
+"Next picture · play/pause video" = "次の画像 · ビデオを再生 / 一時停止";
 "Zoom in / out" = "拡大 / 縮小";
 "Fit to window / 100 %" = "ウインドウに合わせる / 100 %";
 "Rotate left / right" = "左 / 右に回転";
@@ -120,7 +118,7 @@
 "The name must end in a picture extension, such as “.%@”." = "名前は “.%@” などの画像の拡張子で終わる必要があります。";
 "The name must end in a video extension, such as “.%@”." = "名前は “.%@” などのビデオの拡張子で終わる必要があります。";
 "Grid and full view" = "グリッドと全体表示";
-"Images: previous / next · Videos: 10 % of the length back / ahead; at the start / end: previous / next item" = "画像: 前 / 次 · ビデオ: 長さの 10 % 戻る / 進む。先頭 / 末尾では前 / 次の項目へ";
+"Pictures: previous / next · Videos: 10 % of the length back / ahead; at the start / end: previous / next item" = "画像: 前 / 次 · ビデオ: 長さの 10 % 戻る / 進む。先頭 / 末尾では前 / 次の項目へ";
 "Previous / next · Videos: 10 % of the length back / ahead" = "前 / 次 · ビデオ: 長さの 10 % 戻る / 進む";
 "Wrong password for this archive." = "このアーカイブのパスワードが違います。";
 "The archive is incomplete: still downloading, a part missing, or damaged." = "アーカイブが不完全です。ダウンロード中か、一部が欠けているか、破損しています。";
@@ -168,3 +166,4 @@
 "Louder" = "音量を上げる";
 "Quieter" = "音量を下げる";
 "Pictures zoomed in: look further up / down · Videos: volume up / down (remembered)" = "拡大した画像: 上 / 下を表示 · ビデオ: 音量を上げる / 下げる（記憶されます）";
+"%lld so far" = "現在 %lld";

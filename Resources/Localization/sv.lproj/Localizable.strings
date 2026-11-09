@@ -53,10 +53,8 @@
 "Please enter a name." = "Ange ett namn.";
 "Names can't contain “/” or “:”, and can't be “.” or “..”." = "Namn får inte innehålla ”/” eller ”:” och får inte vara ”.” eller ”..”.";
 "Open" = "Öppna";
-"Type" = "Typ";
 "Resolution" = "Upplösning";
-"Modified" = "Ändrad";
-"Image" = "Bild";
+"Picture" = "Bild";
 "Video" = "Video";
 "Folder" = "Mapp";
 "Parent" = "Överordnad";
@@ -75,7 +73,7 @@
 "Rename the selected folder or file (also in the full view)" = "Byt namn på den markerade mappen eller filen (även i helvyn)";
 "Clear search" = "Rensa sökningen";
 "Previous / next item, also from a video" = "Föregående / nästa objekt, även från en video";
-"Next image · play/pause video" = "Nästa bild · spela upp / pausa video";
+"Next picture · play/pause video" = "Nästa bild · spela upp / pausa video";
 "Zoom in / out" = "Zooma in / ut";
 "Fit to window / 100 %" = "Anpassa till fönstret / 100 %";
 "Rotate left / right" = "Rotera åt vänster / höger";
@@ -120,7 +118,7 @@
 "The name must end in a picture extension, such as “.%@”." = "Namnet måste sluta med en bildfiländelse, till exempel ”.%@”.";
 "The name must end in a video extension, such as “.%@”." = "Namnet måste sluta med en videofiländelse, till exempel ”.%@”.";
 "Grid and full view" = "Rutnät och helvy";
-"Images: previous / next · Videos: 10 % of the length back / ahead; at the start / end: previous / next item" = "Bilder: föregående / nästa · Videor: 10 % av längden bakåt / framåt; i början / slutet: föregående / nästa objekt";
+"Pictures: previous / next · Videos: 10 % of the length back / ahead; at the start / end: previous / next item" = "Bilder: föregående / nästa · Videor: 10 % av längden bakåt / framåt; i början / slutet: föregående / nästa objekt";
 "Previous / next · Videos: 10 % of the length back / ahead" = "Föregående / nästa · Videor: 10 % av längden bakåt / framåt";
 "Wrong password for this archive." = "Fel lösenord för det här arkivet.";
 "The archive is incomplete: still downloading, a part missing, or damaged." = "Arkivet är ofullständigt: det laddas fortfarande ner, en del saknas eller så är det skadat.";
@@ -168,3 +166,4 @@
 "Louder" = "Högre";
 "Quieter" = "Lägre";
 "Pictures zoomed in: look further up / down · Videos: volume up / down (remembered)" = "Inzoomade bilder: titta längre upp / ner · Videor: högre / lägre volym (sparas)";
+"%lld so far" = "%lld hittills";

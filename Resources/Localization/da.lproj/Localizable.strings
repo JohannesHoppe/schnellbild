@@ -53,10 +53,8 @@
 "Please enter a name." = "Skriv et navn.";
 "Names can't contain “/” or “:”, and can't be “.” or “..”." = "Navne må ikke indeholde “/” eller “:” og må ikke være “.” eller “..”.";
 "Open" = "Åbn";
-"Type" = "Type";
 "Resolution" = "Opløsning";
-"Modified" = "Ændret";
-"Image" = "Billede";
+"Picture" = "Billede";
 "Video" = "Video";
 "Folder" = "Mappe";
 "Parent" = "Overordnet";
@@ -75,7 +73,7 @@
 "Rename the selected folder or file (also in the full view)" = "Omdøb den valgte mappe eller fil (også i fuld visning)";
 "Clear search" = "Ryd søgningen";
 "Previous / next item, also from a video" = "Forrige / næste emne, også fra en video";
-"Next image · play/pause video" = "Næste billede · afspil / sæt video på pause";
+"Next picture · play/pause video" = "Næste billede · afspil / sæt video på pause";
 "Zoom in / out" = "Zoom ind / ud";
 "Fit to window / 100 %" = "Tilpas til vindue / 100 %";
 "Rotate left / right" = "Rotér til venstre / højre";
@@ -120,7 +118,7 @@
 "The name must end in a picture extension, such as “.%@”." = "Navnet skal slutte med en billedendelse, f.eks. “.%@”.";
 "The name must end in a video extension, such as “.%@”." = "Navnet skal slutte med en videoendelse, f.eks. “.%@”.";
 "Grid and full view" = "Gitter og fuld visning";
-"Images: previous / next · Videos: 10 % of the length back / ahead; at the start / end: previous / next item" = "Billeder: forrige / næste · Videoer: 10 % af længden tilbage / frem; i starten / slutningen: forrige / næste emne";
+"Pictures: previous / next · Videos: 10 % of the length back / ahead; at the start / end: previous / next item" = "Billeder: forrige / næste · Videoer: 10 % af længden tilbage / frem; i starten / slutningen: forrige / næste emne";
 "Previous / next · Videos: 10 % of the length back / ahead" = "Forrige / næste · Videoer: 10 % af længden tilbage / frem";
 "Wrong password for this archive." = "Forkert adgangskode til dette arkiv.";
 "The archive is incomplete: still downloading, a part missing, or damaged." = "Arkivet er ufuldstændigt: det hentes stadig, en del mangler, eller det er beskadiget.";
@@ -168,3 +166,4 @@
 "Louder" = "Højere";
 "Quieter" = "Lavere";
 "Pictures zoomed in: look further up / down · Videos: volume up / down (remembered)" = "Billeder zoomet ind: se længere op / ned · Videoer: højere / lavere lyd (huskes)";
+"%lld so far" = "%lld indtil videre";

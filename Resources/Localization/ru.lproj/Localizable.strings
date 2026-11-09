@@ -53,10 +53,8 @@
 "Please enter a name." = "Введите имя.";
 "Names can't contain “/” or “:”, and can't be “.” or “..”." = "Имена не могут содержать «/» или «:» и не могут быть «.» или «..».";
 "Open" = "Открыть";
-"Type" = "Тип";
 "Resolution" = "Разрешение";
-"Modified" = "Изменен";
-"Image" = "Изображение";
+"Picture" = "Изображение";
 "Video" = "Видео";
 "Folder" = "Папка";
 "Parent" = "Вложившая";
@@ -75,7 +73,7 @@
 "Rename the selected folder or file (also in the full view)" = "Переименовать выбранную папку или файл (также в полном виде)";
 "Clear search" = "Очистить поиск";
 "Previous / next item, also from a video" = "Предыдущий / следующий объект, также из видео";
-"Next image · play/pause video" = "Следующее изображение · воспроизвести / пауза";
+"Next picture · play/pause video" = "Следующее изображение · воспроизвести / пауза";
 "Zoom in / out" = "Увеличить / уменьшить";
 "Fit to window / 100 %" = "По размеру окна / 100 %";
 "Rotate left / right" = "Повернуть влево / вправо";
@@ -120,7 +118,7 @@
 "The name must end in a picture extension, such as “.%@”." = "Имя должно заканчиваться расширением изображения, например «.%@».";
 "The name must end in a video extension, such as “.%@”." = "Имя должно заканчиваться расширением видео, например «.%@».";
 "Grid and full view" = "Сетка и полный вид";
-"Images: previous / next · Videos: 10 % of the length back / ahead; at the start / end: previous / next item" = "Изображения: предыдущее / следующее · Видео: 10 % длительности назад / вперед; в начале / конце: предыдущий / следующий объект";
+"Pictures: previous / next · Videos: 10 % of the length back / ahead; at the start / end: previous / next item" = "Изображения: предыдущее / следующее · Видео: 10 % длительности назад / вперед; в начале / конце: предыдущий / следующий объект";
 "Previous / next · Videos: 10 % of the length back / ahead" = "Предыдущий / следующий · Видео: 10 % длительности назад / вперед";
 "Wrong password for this archive." = "Неверный пароль для этого архива.";
 "The archive is incomplete: still downloading, a part missing, or damaged." = "Архив неполный: он ещё загружается, не хватает части, или он повреждён.";
@@ -168,3 +166,4 @@
 "Louder" = "Громче";
 "Quieter" = "Тише";
 "Pictures zoomed in: look further up / down · Videos: volume up / down (remembered)" = "Увеличенные изображения: смотреть выше / ниже · Видео: громче / тише (запоминается)";
+"%lld so far" = "пока %lld";

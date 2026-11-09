@@ -53,10 +53,8 @@
 "Please enter a name." = "이름을 입력하십시오.";
 "Names can't contain “/” or “:”, and can't be “.” or “..”." = "이름에 ‘/’ 또는 ‘:’를 포함할 수 없으며 ‘.’ 또는 ‘..’일 수 없습니다.";
 "Open" = "열기";
-"Type" = "종류";
 "Resolution" = "해상도";
-"Modified" = "수정일";
-"Image" = "이미지";
+"Picture" = "이미지";
 "Video" = "비디오";
 "Folder" = "폴더";
 "Parent" = "상위";
@@ -75,7 +73,7 @@
 "Rename the selected folder or file (also in the full view)" = "선택한 폴더나 파일 이름 변경(전체 보기에서도)";
 "Clear search" = "검색 지우기";
 "Previous / next item, also from a video" = "이전 / 다음 항목(비디오에서도)";
-"Next image · play/pause video" = "다음 이미지 · 비디오 재생 / 일시 정지";
+"Next picture · play/pause video" = "다음 이미지 · 비디오 재생 / 일시 정지";
 "Zoom in / out" = "확대 / 축소";
 "Fit to window / 100 %" = "윈도우에 맞추기 / 100 %";
 "Rotate left / right" = "왼쪽 / 오른쪽으로 회전";
@@ -120,7 +118,7 @@
 "The name must end in a picture extension, such as “.%@”." = "이름은 ‘.%@’ 같은 이미지 확장자로 끝나야 합니다.";
 "The name must end in a video extension, such as “.%@”." = "이름은 ‘.%@’ 같은 비디오 확장자로 끝나야 합니다.";
 "Grid and full view" = "격자 및 전체 보기";
-"Images: previous / next · Videos: 10 % of the length back / ahead; at the start / end: previous / next item" = "이미지: 이전 / 다음 · 비디오: 길이의 10 % 뒤로 / 앞으로, 처음 / 끝에서는 이전 / 다음 항목";
+"Pictures: previous / next · Videos: 10 % of the length back / ahead; at the start / end: previous / next item" = "이미지: 이전 / 다음 · 비디오: 길이의 10 % 뒤로 / 앞으로, 처음 / 끝에서는 이전 / 다음 항목";
 "Previous / next · Videos: 10 % of the length back / ahead" = "이전 / 다음 · 비디오: 길이의 10 % 뒤로 / 앞으로";
 "Wrong password for this archive." = "이 아카이브의 암호가 올바르지 않습니다.";
 "The archive is incomplete: still downloading, a part missing, or damaged." = "아카이브가 불완전합니다. 아직 다운로드 중이거나, 일부가 없거나, 손상되었습니다.";
@@ -168,3 +166,4 @@
 "Louder" = "크게";
 "Quieter" = "작게";
 "Pictures zoomed in: look further up / down · Videos: volume up / down (remembered)" = "확대한 이미지: 위 / 아래 보기 · 비디오: 음량 높이기 / 낮추기(기억됨)";
+"%lld so far" = "현재까지 %lld";

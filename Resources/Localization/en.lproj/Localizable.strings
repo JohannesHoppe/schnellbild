@@ -53,10 +53,8 @@
 "Please enter a name." = "Please enter a name.";
 "Names can't contain “/” or “:”, and can't be “.” or “..”." = "Names can't contain “/” or “:”, and can't be “.” or “..”.";
 "Open" = "Open";
-"Type" = "Type";
 "Resolution" = "Resolution";
-"Modified" = "Modified";
-"Image" = "Image";
+"Picture" = "Picture";
 "Video" = "Video";
 "Folder" = "Folder";
 "Parent" = "Parent";
@@ -75,7 +73,7 @@
 "Rename the selected folder or file (also in the full view)" = "Rename the selected folder or file (also in the full view)";
 "Clear search" = "Clear search";
 "Previous / next item, also from a video" = "Previous / next item, also from a video";
-"Next image · play/pause video" = "Next image · play/pause video";
+"Next picture · play/pause video" = "Next picture · play/pause video";
 "Zoom in / out" = "Zoom in / out";
 "Fit to window / 100 %" = "Fit to window / 100 %";
 "Rotate left / right" = "Rotate left / right";
@@ -120,7 +118,7 @@
 "The name must end in a picture extension, such as “.%@”." = "The name must end in a picture extension, such as “.%@”.";
 "The name must end in a video extension, such as “.%@”." = "The name must end in a video extension, such as “.%@”.";
 "Grid and full view" = "Grid and full view";
-"Images: previous / next · Videos: 10 % of the length back / ahead; at the start / end: previous / next item" = "Images: previous / next · Videos: 10 % of the length back / ahead; at the start / end: previous / next item";
+"Pictures: previous / next · Videos: 10 % of the length back / ahead; at the start / end: previous / next item" = "Pictures: previous / next · Videos: 10 % of the length back / ahead; at the start / end: previous / next item";
 "Previous / next · Videos: 10 % of the length back / ahead" = "Previous / next · Videos: 10 % of the length back / ahead";
 "Wrong password for this archive." = "Wrong password for this archive.";
 "The archive is incomplete: still downloading, a part missing, or damaged." = "The archive is incomplete: still downloading, a part missing, or damaged.";
@@ -168,3 +166,4 @@
 "Louder" = "Louder";
 "Quieter" = "Quieter";
 "Pictures zoomed in: look further up / down · Videos: volume up / down (remembered)" = "Pictures zoomed in: look further up / down · Videos: volume up / down (remembered)";
+"%lld so far" = "%lld so far";

@@ -52,7 +52,7 @@ struct InspectorView: View {
             Text(entry.name)
                 .font(.headline)
                 .lineLimit(3)
-            infoRow("Type", kindText)
+            infoRow("Kind", kindText)
             if let dimensions {
                 infoRow("Resolution", dimensions)
             }
@@ -60,7 +60,7 @@ struct InspectorView: View {
                 infoRow("Size", ByteCountFormatter.string(fromByteCount: Int64(size), countStyle: .file))
             }
             if let date = entry.modDate {
-                infoRow("Modified", date.formatted(date: .abbreviated, time: .shortened))
+                infoRow("Date Modified", date.formatted(date: .abbreviated, time: .shortened))
             }
         }
         .padding(14)
@@ -71,7 +71,7 @@ struct InspectorView: View {
 
     private var kindText: String {
         switch entry.kind {
-        case .image: return String(localized: "Image")
+        case .image: return String(localized: "Picture")
         case .video: return String(localized: "Video")
         case .folder: return String(localized: "Folder")
         case .parent: return String(localized: "Parent")

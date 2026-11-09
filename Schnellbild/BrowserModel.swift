@@ -1445,22 +1445,26 @@ final class BrowserModel: ObservableObject {
     /// Recomputed once whenever `entries` changes — avoids walking the array
     /// (three filters + a firstIndex) on every render of the status bar / badge.
     private(set) var folderCount = 0
+    /// Archives, counted apart from folders (they open like folders).
+    private(set) var archiveCount = 0
     private(set) var imageCount = 0
     private(set) var videoCount = 0
     private var firstMediaIndex: Int?
 
     private func recomputeDerived() {
-        var folders = 0, images = 0, videos = 0
+        var folders = 0, archives = 0, images = 0, videos = 0
         var first: Int?
         for (idx, entry) in entries.enumerated() {
             switch entry.kind {
-            case .folder: folders += 1
+            case .folder:
+                if ArchiveName.format(of: entry.name) != nil, !ArchivePath.isInside(entry.url) { archives += 1 } else { folders += 1 }
             case .image:  images += 1; if first == nil { first = idx }
             case .video:  videos += 1; if first == nil { first = idx }
             case .parent: break
             }
         }
         folderCount = folders
+        archiveCount = archives
         imageCount = images
         videoCount = videos
         firstMediaIndex = first

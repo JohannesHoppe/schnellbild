@@ -53,10 +53,8 @@
 "Please enter a name." = "Введіть назву.";
 "Names can't contain “/” or “:”, and can't be “.” or “..”." = "Назви не можуть містити «/» або «:» і не можуть бути «.» або «..».";
 "Open" = "Відкрити";
-"Type" = "Тип";
 "Resolution" = "Роздільність";
-"Modified" = "Змінено";
-"Image" = "Зображення";
+"Picture" = "Зображення";
 "Video" = "Відео";
 "Folder" = "Папка";
 "Parent" = "Батьківська";
@@ -75,7 +73,7 @@
 "Rename the selected folder or file (also in the full view)" = "Перейменувати вибрану папку чи файл (також у повному вигляді)";
 "Clear search" = "Очистити пошук";
 "Previous / next item, also from a video" = "Попередній / наступний об’єкт, також із відео";
-"Next image · play/pause video" = "Наступне зображення · відтворити / пауза";
+"Next picture · play/pause video" = "Наступне зображення · відтворити / пауза";
 "Zoom in / out" = "Збільшити / зменшити";
 "Fit to window / 100 %" = "За розміром вікна / 100 %";
 "Rotate left / right" = "Повернути ліворуч / праворуч";
@@ -120,7 +118,7 @@
 "The name must end in a picture extension, such as “.%@”." = "Назва має закінчуватися розширенням зображення, наприклад «.%@».";
 "The name must end in a video extension, such as “.%@”." = "Назва має закінчуватися розширенням відео, наприклад «.%@».";
 "Grid and full view" = "Сітка й повний вигляд";
-"Images: previous / next · Videos: 10 % of the length back / ahead; at the start / end: previous / next item" = "Зображення: попереднє / наступне · Відео: 10 % тривалості назад / вперед; на початку / в кінці: попередній / наступний об’єкт";
+"Pictures: previous / next · Videos: 10 % of the length back / ahead; at the start / end: previous / next item" = "Зображення: попереднє / наступне · Відео: 10 % тривалості назад / вперед; на початку / в кінці: попередній / наступний об’єкт";
 "Previous / next · Videos: 10 % of the length back / ahead" = "Попередній / наступний · Відео: 10 % тривалості назад / вперед";
 "Wrong password for this archive." = "Неправильний пароль для цього архіву.";
 "The archive is incomplete: still downloading, a part missing, or damaged." = "Архів неповний: він ще завантажується, бракує частини або його пошкоджено.";
@@ -168,3 +166,4 @@
 "Louder" = "Гучніше";
 "Quieter" = "Тихіше";
 "Pictures zoomed in: look further up / down · Videos: volume up / down (remembered)" = "Збільшені зображення: дивитися вище / нижче · Відео: гучніше / тихіше (запам’ятовується)";
+"%lld so far" = "поки %lld";

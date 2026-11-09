@@ -53,10 +53,8 @@
 "Please enter a name." = "Lütfen bir ad girin.";
 "Names can't contain “/” or “:”, and can't be “.” or “..”." = "Adlar “/” veya “:” içeremez ve “.” ya da “..” olamaz.";
 "Open" = "Aç";
-"Type" = "Tür";
 "Resolution" = "Çözünürlük";
-"Modified" = "Değiştirilme";
-"Image" = "Resim";
+"Picture" = "Resim";
 "Video" = "Video";
 "Folder" = "Klasör";
 "Parent" = "Üst";
@@ -75,7 +73,7 @@
 "Rename the selected folder or file (also in the full view)" = "Seçili klasörü veya dosyayı yeniden adlandır (tam görünümde de)";
 "Clear search" = "Aramayı temizle";
 "Previous / next item, also from a video" = "Önceki / sonraki öğe, videodan da";
-"Next image · play/pause video" = "Sonraki resim · videoyu oynat / duraklat";
+"Next picture · play/pause video" = "Sonraki resim · videoyu oynat / duraklat";
 "Zoom in / out" = "Yakınlaştır / uzaklaştır";
 "Fit to window / 100 %" = "Pencereye sığdır / %100";
 "Rotate left / right" = "Sola / sağa döndür";
@@ -120,7 +118,7 @@
 "The name must end in a picture extension, such as “.%@”." = "Ad, “.%@” gibi bir resim uzantısıyla bitmelidir.";
 "The name must end in a video extension, such as “.%@”." = "Ad, “.%@” gibi bir video uzantısıyla bitmelidir.";
 "Grid and full view" = "Izgara ve tam görünüm";
-"Images: previous / next · Videos: 10 % of the length back / ahead; at the start / end: previous / next item" = "Resimler: önceki / sonraki · Videolar: uzunluğun 10 %’u geri / ileri; başta / sonda: önceki / sonraki öğe";
+"Pictures: previous / next · Videos: 10 % of the length back / ahead; at the start / end: previous / next item" = "Resimler: önceki / sonraki · Videolar: uzunluğun 10 %’u geri / ileri; başta / sonda: önceki / sonraki öğe";
 "Previous / next · Videos: 10 % of the length back / ahead" = "Önceki / sonraki · Videolar: uzunluğun 10 %’u geri / ileri";
 "Wrong password for this archive." = "Bu arşiv için yanlış parola.";
 "The archive is incomplete: still downloading, a part missing, or damaged." = "Arşiv eksik: hâlâ indiriliyor, bir parçası eksik ya da hasarlı.";
@@ -168,3 +166,4 @@
 "Louder" = "Sesi aç";
 "Quieter" = "Sesi kıs";
 "Pictures zoomed in: look further up / down · Videos: volume up / down (remembered)" = "Yakınlaştırılmış resimler: daha yukarı / aşağı bak · Videolar: sesi aç / kıs (hatırlanır)";
+"%lld so far" = "şimdilik %lld";
