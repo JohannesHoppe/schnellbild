@@ -1966,9 +1966,28 @@ final class FullScreenSwitch {
         moving = nil
         guard let wanted, let window else { return }
         self.wanted = nil
-        if window.styleMask.contains(.fullScreen) != wanted {
-            moving = (wanted, Date())
-            window.toggleFullScreen(nil)
+        apply(wanted, to: window, tries: 4)
+    }
+
+    /// Right as the animation ends AppKit still ignores a toggle: asked a
+    /// moment later, and again until the window is where it was asked to be.
+    private func apply(_ on: Bool, to window: NSWindow, tries: Int) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            MainActor.assumeIsolated {
+                guard self.movingTo == nil, self.wanted == nil else { return }   // a newer request takes over
+                guard window.styleMask.contains(.fullScreen) != on else { return }
+                BrowserModel.testLog("full screen: toggling to \(on), \(tries) tries left")
+                window.toggleFullScreen(nil)
+                if tries > 1 {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                        MainActor.assumeIsolated {
+                            guard self.movingTo == nil, self.wanted == nil,
+                                  window.styleMask.contains(.fullScreen) != on else { return }
+                            self.apply(on, to: window, tries: tries - 1)
+                        }
+                    }
+                }
+            }
         }
     }
 }
