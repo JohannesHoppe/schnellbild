@@ -74,12 +74,6 @@ enum ArchiveName {
         return []
     }
 
-    /// Whether a name alone says the archive has further volumes.
-    static func isSplitByName(_ name: String) -> Bool {
-        let base = finalName(of: name).lowercased()
-        return rarPart(of: base) != nil || base.hasSuffix(".001")
-    }
-
     /// The files libarchive reads one after the other: "x.7z.001", ".002" …;
     /// "x.z01", "x.z02" … and "x.zip" last; else the file itself. Reads the
     /// folder, so off the main thread.
@@ -264,6 +258,15 @@ protocol ArchiveReader {
 /// RAR (all versions, solid, volumes, passwords) through UnRAR.
 struct RarReader: ArchiveReader {
     let url: URL
+
+    /// A solid archive: reaching a file means unpacking every file before it.
+    static func isSolid(_ url: URL, password: String?) -> Bool {
+        var result: Int32 = 0
+        var asked: Int32 = 0
+        guard let rar = sb_rar_open(url.path, password, 1, &result, &asked) else { return false }
+        defer { sb_rar_close(rar) }
+        return sb_rar_solid(rar) != 0
+    }
 
     func walk(password: String?, listOnly: Bool, _ visit: (ArchiveItem) -> ArchiveVisit) throws -> Bool {
         var result: Int32 = 0
@@ -510,6 +513,11 @@ final class ArchiveStore: @unchecked Sendable {
         /// Read to the end (false: a partial download, or a missing volume).
         let complete: Bool
         let password: String?
+        /// Reaching a file unpacks all before it (solid RAR, 7z): a pass
+        /// keeps the pictures it unpacks on the way.
+        var solid = false
+        /// Told apart from an older index of the same archive (the byte cache's keys).
+        let id = UUID()
         /// Entries by their folder ("" for the top), folders implied by
         /// the paths included.
         let children: [String: [ArchiveItem]]
@@ -545,6 +553,7 @@ final class ArchiveStore: @unchecked Sendable {
         var indexedAt = Date.distantPast
         var pending: [String: [CheckedContinuation<Data, Error>]] = [:]
         var passRunning = false
+        var lastUse = 0
         init(path: String) { queue = DispatchQueue(label: "archive \(path)", qos: .userInitiated) }
     }
 
@@ -561,13 +570,24 @@ final class ArchiveStore: @unchecked Sendable {
     }
 
     private var archives: [String: Archive] = [:]
+    private var uses = 0
+    /// Archives kept with their index; the ones not used longest (and idle) go.
+    private static let keptArchives = 200
 
     private func archive(_ url: URL) -> Archive {
         let key = BrowserModel.canonicalPath(url)
         lock.lock(); defer { lock.unlock() }
-        if let found = archives[key] { return found }
+        uses += 1
+        if let found = archives[key] { found.lastUse = uses; return found }
         let made = Archive(path: key)
+        made.lastUse = uses
         archives[key] = made
+        if archives.count > Self.keptArchives {
+            let idle = archives.filter { $0.value.pending.isEmpty && !$0.value.passRunning && $0.value !== made }
+            for (old, _) in idle.sorted(by: { $0.value.lastUse < $1.value.lastUse }).prefix(archives.count - Self.keptArchives) {
+                archives[old] = nil
+            }
+        }
         return made
     }
 
@@ -587,6 +607,8 @@ final class ArchiveStore: @unchecked Sendable {
     /// the archive. Throws `.needsPassword` when no password opens it.
     func index(of url: URL, trying password: String? = nil) async throws -> Index {
         let archive = archive(url)
+        // Known: at once, not behind an unpacking pass on the archive's queue
+        if password == nil, let known = current(archive, version: FileVersion(url)) { return known }
         return try await withCheckedThrowingContinuation { continuation in
             archive.queue.async {
                 continuation.resume(with: Result { try self.indexOnQueue(archive, url: url, trying: password) })
@@ -596,10 +618,7 @@ final class ArchiveStore: @unchecked Sendable {
 
     private func indexOnQueue(_ archive: Archive, url: URL, trying typed: String?) throws -> Index {
         let version = FileVersion(url)
-        // An archive read only in part (a later volume still downloading:
-        // the first one's size and date don't change) is read again after a while
-        if let index = archive.index, archive.version == version, typed == nil,
-           index.complete || Date().timeIntervalSince(archive.indexedAt) < 10 { return index }
+        if typed == nil, let known = current(archive, version: version) { return known }
         guard let reader = Self.reader(for: url) else { throw ArchiveError.unreadable(String(localized: "unknown format")) }
         let remembered = passwords.all
         // A password just typed is the only one tried; else none first, then
@@ -632,12 +651,26 @@ final class ArchiveStore: @unchecked Sendable {
             }
             if let password { passwords.remember(password) }
             let index = Index(items: items, complete: complete, password: password)
+            let format = ArchiveName.format(of: url.lastPathComponent)
+            index.solid = format == .sevenZip || (format == .rar && RarReader.isSolid(url, password: password))
+            lock.lock()
             archive.index = index
             archive.version = version
             archive.indexedAt = Date()
+            lock.unlock()
             return index
         }
         throw ArchiveError.needsPassword
+    }
+
+    /// The index read for this version of the file, if still good. An
+    /// archive read only in part (a later volume still downloading: the
+    /// first one's size and date don't change) is read again after a while.
+    private func current(_ archive: Archive, version: FileVersion?) -> Index? {
+        lock.lock(); defer { lock.unlock() }
+        guard let index = archive.index, archive.version == version,
+              index.complete || Date().timeIntervalSince(archive.indexedAt) < 10 else { return nil }
+        return index
     }
 
     private static func opens(_ reader: ArchiveReader, _ probe: ArchiveItem, with password: String?) -> Bool {
@@ -658,6 +691,7 @@ final class ArchiveStore: @unchecked Sendable {
         guard let (archiveURL, inner) = ArchivePath.split(url), !inner.isEmpty else { throw ArchiveError.notFound }
         let index = try await index(of: archiveURL)
         guard let item = index.byPath[inner], !item.isDirectory else { throw ArchiveError.notFound }
+        if let cached = bytes.object(forKey: Self.bytesKey(index, item.path)) { return cached as Data }
         let archive = archive(archiveURL)
         return try await withCheckedThrowingContinuation { continuation in
             lock.lock()
@@ -685,10 +719,20 @@ final class ArchiveStore: @unchecked Sendable {
                     let anyLeft = archive.pending.keys.contains { !served.contains($0) }
                     lock.unlock()
                     guard anyLeft else { return .stop }
-                    guard waiting, !item.isDirectory else { return .skip }
+                    guard !item.isDirectory else { return .skip }
+                    let key = Self.bytesKey(index, item.path)
+                    // In a solid archive the pictures on the way are unpacked
+                    // anyway: kept for the next request (paging through a comic)
+                    let keep = !waiting && index.solid && item.size > 0 && item.size < Self.keptEntryLimit
+                        && BrowserModel.mediaKind(of: URL(fileURLWithPath: item.path, isDirectory: false)) == .image && self.bytes.object(forKey: key) == nil
+                    guard waiting || keep else { return .skip }
                     var data = Data()
                     if item.size > 0 { data.reserveCapacity(Int(min(item.size, 512 << 20))) }
                     return .read(sink: { data.append(contentsOf: $0); return true }, done: { failure in
+                        if failure == nil, item.size < Self.keptEntryLimit {
+                            self.bytes.setObject(data as NSData, forKey: key, cost: data.count)
+                        }
+                        guard waiting else { return }
                         served.insert(item.path)
                         self.finish(archive, item.path, failure.map { .failure($0) } ?? .success(data))
                     })
@@ -710,6 +754,19 @@ final class ArchiveStore: @unchecked Sendable {
         }
     }
 
+    /// Entries read lately (pictures, up to 32 MB each), by index and path;
+    /// the system empties it when memory runs short.
+    private let bytes: NSCache<NSString, NSData> = {
+        let cache = NSCache<NSString, NSData>()
+        cache.totalCostLimit = 256 << 20
+        return cache
+    }()
+    private static let keptEntryLimit: Int64 = 32 << 20
+
+    private static func bytesKey(_ index: Index, _ path: String) -> NSString {
+        "\(index.id.uuidString)/\(path)" as NSString
+    }
+
     private func finish(_ archive: Archive, _ path: String, _ result: Result<Data, Error>) {
         lock.lock()
         let waiting = archive.pending.removeValue(forKey: path) ?? []
@@ -718,11 +775,6 @@ final class ArchiveStore: @unchecked Sendable {
     }
 
     // MARK: For the grid
-
-    /// The folders and media files in a folder of an archive, as grid entries.
-    func entries(in url: URL, trying password: String? = nil) async throws -> [GridEntry] {
-        try await listing(in: url, trying: password).entries
-    }
 
     /// A folder of an archive: its folders and media files as grid entries,
     /// and its other files (archives inside archives among them: not opened).
@@ -750,10 +802,12 @@ final class ArchiveStore: @unchecked Sendable {
         let index = try await index(of: archiveURL)
         let prefix = inner.isEmpty ? "" : inner + "/"
         return index.byPath.values
-            .filter { !$0.isDirectory && $0.path.hasPrefix(prefix) && BrowserModel.mediaKind(of: URL(fileURLWithPath: $0.path)) != nil }
+            // (URLs built without asking the file system whether they are folders)
+            .filter { !$0.isDirectory && $0.path.hasPrefix(prefix)
+                && BrowserModel.mediaKind(of: URL(fileURLWithPath: $0.path, isDirectory: false)) != nil }
             .map(\.path)
             .sorted { $0.localizedStandardCompare($1) == .orderedAscending }
-            .map { archiveURL.appendingPathComponent($0) }
+            .map { archiveURL.appendingPathComponent($0, isDirectory: false) }
     }
 
     /// Names matching `query` at any depth below a folder of an archive.

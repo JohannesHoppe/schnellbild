@@ -219,3 +219,4 @@
 "can't open the file" = "tiedostoa ei voi avata";
 "read error" = "lukuvirhe";
 "UnRAR error %lld" = "UnRAR-virhe %lld";
+"Copying or moving…" = "Kopioidaan tai siirretään…";

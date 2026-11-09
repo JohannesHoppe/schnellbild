@@ -57,7 +57,6 @@ final class ArchiveTests: XCTestCase {
         XCTAssertNil(ArchiveName.format(of: "notes.part"))
         XCTAssertNil(ArchiveName.format(of: "._x.zip"))
         XCTAssertTrue(ArchiveName.isPartial("x.rar.part"))
-        XCTAssertTrue(ArchiveName.isSplitByName("x.part1.rar"))
     }
 
     func testPathsRunThroughTheArchive() {
@@ -78,7 +77,7 @@ final class ArchiveTests: XCTestCase {
         let index = try await ArchiveStore.shared.index(of: rar)
         XCTAssertEqual(paths(index), ["sub/dir1/file1.txt", "sub/dir2/file2.txt", "sub/with space/long fn.txt", "sub/üȵĩöḋè/file.txt"])
         XCTAssertTrue(index.complete)
-        let entries = try await ArchiveStore.shared.entries(in: rar)
+        let entries = try await ArchiveStore.shared.listing(in: rar).entries
         XCTAssertEqual(entries.map(\.name), ["sub"])
         let data = try await ArchiveStore.shared.data(of: rar.appendingPathComponent("sub/with space/long fn.txt"))
         XCTAssertEqual(data.count, 8)

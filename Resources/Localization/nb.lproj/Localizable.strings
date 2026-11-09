@@ -219,3 +219,4 @@
 "can't open the file" = "filen kan ikke åpnes";
 "read error" = "lesefeil";
 "UnRAR error %lld" = "UnRAR-feil %lld";
+"Copying or moving…" = "Kopierer eller flytter …";

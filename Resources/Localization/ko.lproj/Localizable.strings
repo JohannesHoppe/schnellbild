@@ -219,3 +219,4 @@
 "can't open the file" = "파일을 열 수 없음";
 "read error" = "읽기 오류";
 "UnRAR error %lld" = "UnRAR 오류 %lld";
+"Copying or moving…" = "복사 또는 이동 중…";

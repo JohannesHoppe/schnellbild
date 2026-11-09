@@ -104,6 +104,7 @@ struct VideoDetailView: View {
                 control.onAutoLook = reportLook
                 avControl = control
                 model.activePlayer = control
+                model.activePlayerURL = url
                 control.play()
                 if let track = try? await asset.loadTracks(withMediaType: .video).first,
                    let (size, transform) = try? await track.load(.naturalSize, .preferredTransform),
@@ -119,6 +120,7 @@ struct VideoDetailView: View {
                 control.onAutoLook = reportLook
                 vlcControl = control
                 model.activePlayer = control
+                model.activePlayerURL = url
                 // VLC knows the size once the video plays
                 for _ in 0..<50 where !Task.isCancelled {
                     let size = control.player.videoSize
@@ -163,6 +165,7 @@ struct VideoDetailView: View {
         avControl?.pause()
         vlcControl?.stop()
         model.activePlayer = nil
+        model.activePlayerURL = nil
         avControl = nil
         vlcControl = nil
     }

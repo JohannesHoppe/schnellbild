@@ -91,6 +91,36 @@ struct FileActions {
     /// Tells why an action failed (a share without a Trash, no permission),
     /// in the system's words and language.
     var report: @MainActor (Error) -> Void
+    /// Where moves and copies into folders run: the live actions off the
+    /// main thread (a copy to a share takes long), others (a test's spy)
+    /// through their own closures.
+    var runsOffMain = false
+
+    /// Carries out the steps of a move; per step whether it was moved
+    /// (false: copied) or why it failed.
+    @MainActor
+    func run(_ steps: [BrowserModel.TransferStep], _ how: BrowserModel.Transfer) async -> [Result<Bool, Error>] {
+        if runsOffMain {
+            return await Task.detached(priority: .userInitiated) {
+                steps.map { step in Result { try Self.perform(step, how, move: LiveFiles.move, transfer: LiveFiles.transfer, copy: LiveFiles.copy) } }
+            }.value
+        }
+        return steps.map { step in Result { try Self.perform(step, how, move: move, transfer: transfer, copy: copy) } }
+    }
+
+    private static func perform(_ step: BrowserModel.TransferStep, _ how: BrowserModel.Transfer,
+                                move: (URL, URL) throws -> Void, transfer: (URL, URL) throws -> Bool,
+                                copy: (URL, URL) throws -> Void) throws -> Bool {
+        var moved = false
+        for (file, to) in step.files {
+            switch how {
+            case .asFinder: moved = try transfer(file, to)
+            case .copy:     try copy(file, to); moved = false
+            case .move:     try move(file, to); moved = true
+            }
+        }
+        return moved
+    }
 
     static let live = FileActions(
         reveal: { NSWorkspace.shared.activateFileViewerSelecting([$0]) },
@@ -105,37 +135,10 @@ struct FileActions {
             return alert.runModal() == .alertFirstButtonReturn
         },
         trash: { try FileManager.default.trashItem(at: $0, resultingItemURL: nil) },
-        move: { from, to in
-            let fm = FileManager.default
-            // FileManager refuses a case-only rename ("photos" → "Photos") on
-            // case-insensitive volumes, because the target "exists"; go via a
-            // temporary name.
-            if from.path != to.path, from.path.lowercased() == to.path.lowercased() {
-                let temp = from.deletingLastPathComponent().appendingPathComponent(".rename-\(UUID().uuidString)")
-                try fm.moveItem(at: from, to: temp)
-                do {
-                    try fm.moveItem(at: temp, to: to)
-                } catch {
-                    try? fm.moveItem(at: temp, to: from)   // never leave the folder under the hidden name
-                    throw error
-                }
-            } else {
-                try fm.moveItem(at: from, to: to)
-            }
-        },
-        transfer: { from, to in
-            let key: Set<URLResourceKey> = [.volumeIdentifierKey]
-            let a = try? from.resourceValues(forKeys: key).volumeIdentifier
-            let b = try? to.deletingLastPathComponent().resourceValues(forKeys: key).volumeIdentifier
-            if let a, let b, a.isEqual(b) {
-                try FileManager.default.moveItem(at: from, to: to)
-                return true
-            }
-            try FileManager.default.copyItem(at: from, to: to)
-            return false
-        },
+        move: { try LiveFiles.move($0, $1) },
+        transfer: { try LiveFiles.transfer($0, $1) },
         createFolder: { try FileManager.default.createDirectory(at: $0, withIntermediateDirectories: false) },
-        copy: { try FileManager.default.copyItem(at: $0, to: $1) },
+        copy: { try LiveFiles.copy($0, $1) },
         askKeepBoth: { name, folder in
             let alert = NSAlert()
             alert.messageText = String(localized: "“\(name)” already exists in “\(folder)”.")
@@ -151,8 +154,48 @@ struct FileActions {
                   let b = try? source.resourceValues(forKeys: key).fileResourceIdentifier else { return true }
             return !a.isEqual(b)
         },
-        report: { NSAlert(error: $0).runModal() }
+        report: { NSAlert(error: $0).runModal() },
+        runsOffMain: true
     )
+}
+
+/// The file system work of the live actions, on any thread.
+enum LiveFiles {
+    static func move(_ from: URL, _ to: URL) throws {
+        let fm = FileManager.default
+        // FileManager refuses a case-only rename ("photos" → "Photos") on
+        // case-insensitive volumes, because the target "exists"; go via a
+        // temporary name.
+        if from.path != to.path, from.path.lowercased() == to.path.lowercased() {
+            let temp = from.deletingLastPathComponent().appendingPathComponent(".rename-\(UUID().uuidString)")
+            try fm.moveItem(at: from, to: temp)
+            do {
+                try fm.moveItem(at: temp, to: to)
+            } catch {
+                try? fm.moveItem(at: temp, to: from)   // never leave the folder under the hidden name
+                throw error
+            }
+        } else {
+            try fm.moveItem(at: from, to: to)
+        }
+    }
+
+    /// Moved on the same volume, copied to another (as the Finder does).
+    static func transfer(_ from: URL, _ to: URL) throws -> Bool {
+        let key: Set<URLResourceKey> = [.volumeIdentifierKey]
+        let a = try? from.resourceValues(forKeys: key).volumeIdentifier
+        let b = try? to.deletingLastPathComponent().resourceValues(forKeys: key).volumeIdentifier
+        if let a, let b, a.isEqual(b) {
+            try FileManager.default.moveItem(at: from, to: to)
+            return true
+        }
+        try FileManager.default.copyItem(at: from, to: to)
+        return false
+    }
+
+    static func copy(_ from: URL, _ to: URL) throws {
+        try FileManager.default.copyItem(at: from, to: to)
+    }
 }
 
 /// Why a folder rename was rejected.
@@ -354,7 +397,9 @@ final class BrowserModel: ObservableObject {
     }
     @Published var showInspector = false
     @Published var showHelp = false
-    @Published private(set) var isLoading = false
+    @Published private(set) var isLoading = false {
+        didSet { if !isLoading { refreshIfDeferred() } }
+    }
     /// Counts the changes the app made on disk; folder tiles read their
     /// previews again on each.
     @Published private(set) var folderChanges = 0
@@ -534,6 +579,8 @@ final class BrowserModel: ObservableObject {
 
     /// The player of the video on screen — for keyboard control
     /// (play/pause, skimming). Set by the video views.
+    /// The file `activePlayer` plays (the Inspector asks only that one).
+    var activePlayerURL: URL?
     weak var activePlayer: PlaybackControl? {
         didSet {
             shownSince = Date()
@@ -853,16 +900,12 @@ final class BrowserModel: ObservableObject {
     /// Runs off the main thread; metadata is prefetched during
     /// enumeration (no extra round-trips).
     nonisolated static func scan(_ url: URL) async -> [GridEntry] {
-        (try? await scanResult(url).get()) ?? []
+        (try? await listing(url).get().entries) ?? []
     }
 
-    /// A folder's listing, or why it can't be read (an archive that needs
-    /// a password; `password` is one just typed for it).
-    nonisolated static func scanResult(_ url: URL, password: String? = nil) async -> Result<[GridEntry], Error> {
-        await listing(url, password: password).map(\.entries)
-    }
-
-    /// What the grid shows of a folder, plus its other files.
+    /// What the grid shows of a folder, plus its other files, or why it
+    /// can't be read (an archive that needs a password; `password` is one
+    /// just typed for it).
     nonisolated static func listing(_ url: URL, password: String? = nil) async -> Result<FolderListing, Error> {
         if await Task.detached(priority: .userInitiated, operation: { ArchivePath.splitChecked(url) }).value != nil {
             do { return .success(try await ArchiveStore.shared.listing(in: url, trying: password)) }
@@ -1009,7 +1052,7 @@ final class BrowserModel: ObservableObject {
                 at: folder, includingPropertiesForKeys: [.isRegularFileKey],
                 options: [.skipsHiddenFiles, .skipsPackageDescendants]) else { return [] }
             var looked = 0
-            for case let url as URL in walk {
+            while let url = walk.nextObject() as? URL {
                 looked += 1
                 if looked > 20_000 || Task.isCancelled { break }   // a huge tree: give up, not hang
                 if mediaKind(of: url) != nil, isFile(url) {
@@ -1086,12 +1129,34 @@ final class BrowserModel: ObservableObject {
         selection = index(of: keep) ?? selection
     }
 
-    /// While sorting by capture date, read the dates of the media on screen
+    /// While sorting by capture date, read the dates of the media listed
     /// that aren't known yet (off the main thread, a few files at a time)
     /// and sort again once they're in.
     func readCaptureDatesIfNeeded() {
-        guard sortKey == .captured || viewMode == .list else { return }   // the list shows them
-        let missing = Set((allEntries + entries).filter { $0.isMedia }.map(\.url)).subtracting(captureDatesRead)
+        guard sortKey == .captured else { return }
+        readCaptureDates(of: Set((allEntries + entries).filter { $0.isMedia }.map(\.url)))
+    }
+
+    /// A list row showing a file's Date Taken: read with the other rows
+    /// coming into view (not the whole folder's headers).
+    func wantCaptureDate(of url: URL) {
+        guard !captureDatesRead.contains(url) else { return }
+        wantedCaptureDates.insert(url)
+        guard !captureDateRequestPending else { return }
+        captureDateRequestPending = true
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            self.captureDateRequestPending = false
+            let wanted = self.wantedCaptureDates
+            self.wantedCaptureDates = []
+            self.readCaptureDates(of: wanted)
+        }
+    }
+    private var wantedCaptureDates: Set<URL> = []
+    private var captureDateRequestPending = false
+
+    private func readCaptureDates(of urls: Set<URL>) {
+        let missing = urls.subtracting(captureDatesRead)
         guard !missing.isEmpty else { return }
         captureDatesRead.formUnion(missing)
         let previous = captureDateTask
@@ -1747,7 +1812,7 @@ final class BrowserModel: ObservableObject {
     @Published var viewMode: ViewMode = .grid {
         didSet {
             defaults.set(viewMode.rawValue, forKey: settingsPrefix + "viewMode")
-            if viewMode == .list { columnCount = 1; readCaptureDatesIfNeeded() }
+            if viewMode == .list { columnCount = 1 }
         }
     }
 
@@ -1981,7 +2046,7 @@ final class BrowserModel: ObservableObject {
                 if !reported { fileActions.report(error); reported = true }
             }
         }
-        for url in trashed { apply(.removed(url)) }
+        apply(trashed.map { FileChange.removed($0) })
         notifyFolderChanges(Array(Set(trashed.map { $0.deletingLastPathComponent() })))
     }
 
@@ -1998,9 +2063,10 @@ final class BrowserModel: ObservableObject {
     /// The folder shown, read again (another pane changed it): query,
     /// selection and marks stay where they can.
     func refresh() {
-        guard folderURL != nil, !isLoading else { return }
-        // Not under the full view or a slideshow: read again once back in the grid
-        guard mode == .grid, slideshow == nil else { refreshDeferred = true; return }
+        guard folderURL != nil else { return }
+        // Not while loading, under the full view or a slideshow: read again
+        // once the listing is there, or back in the grid
+        guard !isLoading, mode == .grid, slideshow == nil else { refreshDeferred = true; return }
         guard let folderURL else { return }
         let keepMarks = marked
         let location = Location(folder: folderURL, query: searchText, selected: selectedEntry?.url)
@@ -2120,7 +2186,8 @@ final class BrowserModel: ObservableObject {
         guard ArchivePath.split(folder) == nil else { NSSound.beep(); return }
         let target = Self.canonicalPath(folder)
         let shown = folderPath
-        var changed = [folder]
+        // What goes where, decided here (a name taken there asks)
+        var steps: [TransferStep] = []
         for source in sources {
             let path = Self.canonicalPath(source)
             guard !ArchivePath.isInside(source), path != target, !target.hasPrefix(path + "/"),
@@ -2138,31 +2205,50 @@ final class BrowserModel: ObservableObject {
                 destination = Self.freeName(for: source.lastPathComponent, in: folder, isFolder: isFolder,
                                             taken: { self.fileActions.conflicts($0, source) })
             }
-            do {
-                var moved = false
-                for file in files {
-                    let to = file == source ? destination : folder.appendingPathComponent(file.lastPathComponent)
-                    switch how {
-                    case .asFinder: moved = try fileActions.transfer(file, to)
-                    case .copy:     try fileActions.copy(file, to); moved = false
-                    case .move:     try fileActions.move(file, to); moved = true
-                    }
-                }
-                if moved {
-                    apply(.moved(source, to: destination))
-                    changed.append(source.deletingLastPathComponent())
-                } else {
-                    FolderPreviewCache.shared.forget([target])
-                    folderChanges += 1
-                }
-            } catch {
-                fileActions.report(error)
+            let pairs = files.map { ($0, $0 == source ? destination : folder.appendingPathComponent($0.lastPathComponent)) }
+            steps.append(TransferStep(source: source, destination: destination, files: pairs))
+        }
+        // What was moved is no longer marked here
+        clearMarks()
+        guard !steps.isEmpty else { return }
+        // Copies (to another volume, F5) can take long: off the main thread,
+        // the app stays usable meanwhile
+        transfersRunning += 1
+        Task {
+            let outcomes = await fileActions.run(steps, how)
+            transfersRunning -= 1
+            finishMove(steps, outcomes, into: folder)
+        }
+    }
+
+    /// One item of a move: its files (a split archive's parts) and where they go.
+    struct TransferStep: Sendable {
+        let source: URL
+        let destination: URL
+        let files: [(URL, URL)]
+    }
+
+    /// Copies and moves under way (the status bar says so).
+    @Published private(set) var transfersRunning = 0
+
+    private func finishMove(_ steps: [TransferStep], _ outcomes: [Result<Bool, Error>], into folder: URL) {
+        let target = Self.canonicalPath(folder)
+        var changed = [folder]
+        var reported = false
+        for (step, outcome) in zip(steps, outcomes) {
+            switch outcome {
+            case .success(true):
+                apply(.moved(step.source, to: step.destination))
+                changed.append(step.source.deletingLastPathComponent())
+            case .success(false):
+                FolderPreviewCache.shared.forget([target])
+                folderChanges += 1
+            case .failure(let error):
+                if !reported { fileActions.report(error); reported = true }
             }
         }
         notifyFolderChanges(changed)
-        // What was moved is no longer marked here
-        clearMarks()
-        guard let shown else { return }
+        guard let shown = folderPath else { return }
         // Into the folder shown (a drop onto the pane): read it again to show what came
         if target == shown { refresh(); return }
         // What went into a subfolder leaves this folder's listing
@@ -2262,50 +2348,69 @@ final class BrowserModel: ObservableObject {
     /// Bring every list the model holds in line with a change on disk, and
     /// keep the selection on the same item (or near it, if it's gone).
     /// A change this pane made on disk: its own lists, then the other panes.
-    private func apply(_ change: FileChange) {
-        applyHere(change)
-        onFileChange?(change)
+    private func apply(_ change: FileChange) { apply([change]) }
+
+    /// Changes this pane made on disk: its own lists, then the other panes.
+    /// Several at once (a marked set trashed) are applied in one go.
+    private func apply(_ changes: [FileChange]) {
+        guard !changes.isEmpty else { return }
+        applyHere(changes)
+        onFileChange?(changes)
     }
 
     /// Told about every change this pane makes on disk (the window hands it
     /// to the other pane, `adopt`).
-    var onFileChange: ((FileChange) -> Void)?
+    var onFileChange: (([FileChange]) -> Void)?
 
-    /// A change another pane made on disk: lists and history follow it, and
+    /// Changes another pane made on disk: lists and history follow them, and
     /// so does the folder shown when it was moved, renamed or trashed (then
     /// the nearest folder around it that is still there opens).
-    func adopt(_ change: FileChange) {
-        applyHere(change)
+    func adopt(_ changes: [FileChange]) {
+        applyHere(changes)
         guard let folderURL else { return }
-        if let moved = change.apply(to: folderURL) {
+        if let moved = Self.through(changes, folderURL) {
             guard Self.canonicalPath(moved) != Self.canonicalPath(folderURL) else { return }
             self.folderURL = moved
             defaults.set(moved.path, forKey: lastFolderKey)
             refresh()
         } else {
             var parent = Self.parentFolder(of: folderURL)
-            while let candidate = parent, change.apply(to: candidate) == nil { parent = Self.parentFolder(of: candidate) }
+            while let candidate = parent, Self.through(changes, candidate) == nil { parent = Self.parentFolder(of: candidate) }
             if let parent { open(folder: parent) }
         }
     }
 
-    private func applyHere(_ change: FileChange) {
-        // What the folders around the change contain is no longer known.
-        let affected = Set(change.affectedFolders)
-        if !emptyFolders.isDisjoint(with: affected) { emptyFolders.subtract(affected) }
-        FolderPreviewCache.shared.forget(change.affectedFolders)
+    /// Where a URL ends up after all the changes; nil when it is gone.
+    private static func through(_ changes: [FileChange], _ url: URL) -> URL? {
+        var current: URL? = url
+        for change in changes { current = current.flatMap { change.apply(to: $0) } }
+        return current
+    }
+
+    private func applyHere(_ changes: [FileChange]) {
+        // What the folders around the changes contain is no longer known.
+        let affected = changes.flatMap(\.affectedFolders)
+        let affectedSet = Set(affected)
+        if !emptyFolders.isDisjoint(with: affectedSet) { emptyFolders.subtract(affectedSet) }
+        FolderPreviewCache.shared.forget(affected)
         folderChanges += 1
-        let keep = selectedEntry.flatMap { change.apply(to: $0.url) }
+        func entry(_ e: GridEntry) -> GridEntry? {
+            var current: GridEntry? = e
+            for change in changes { current = current.flatMap { change.apply(to: $0) } }
+            return current
+        }
+        let keep = selectedEntry.flatMap { Self.through(changes, $0.url) }
         let previous = selection
         if !marked.isEmpty {
-            marked = Set(marked.compactMap { change.apply(to: URL(fileURLWithPath: $0)).map(Self.canonicalPath) })
+            // (no isDirectory lookup: the paths are only compared)
+            marked = Set(marked.compactMap { Self.through(changes, URL(fileURLWithPath: $0, isDirectory: false)).map(Self.canonicalPath) })
         }
-        allEntries = sorted(allEntries.compactMap { change.apply(to: $0) })
-        for run in allSearches { run.apply(change) }
-        pendingResultSelection = pendingResultSelection.flatMap { change.apply(to: $0) }
-        backStack = backStack.map { change.apply(to: $0) }
-        forwardStack = forwardStack.map { change.apply(to: $0) }
-        entries = sorted(entries.compactMap { change.apply(to: $0) })
+        allEntries = sorted(allEntries.compactMap(entry))
+        for run in allSearches { for change in changes { run.apply(change) } }
+        pendingResultSelection = pendingResultSelection.flatMap { Self.through(changes, $0) }
+        backStack = backStack.map { location in changes.reduce(location) { $1.apply(to: $0) } }
+        forwardStack = forwardStack.map { location in changes.reduce(location) { $1.apply(to: $0) } }
+        entries = sorted(entries.compactMap(entry))
         selection = index(of: keep)
             ?? (entries.isEmpty ? nil : previous.map { min($0, entries.count - 1) })
     }
@@ -2821,11 +2926,14 @@ final class AVPlaybackControl: PlaybackControl {
 
     /// A paused video shows a new look only once its frame is drawn again.
     /// A seek to the very time it stands at reuses the picture already
-    /// composed, so the seek goes 1/600 s off, the other way each time (the
-    /// same video frame). Seeks in quick succession (a slider dragged), or a
+    /// composed, so the seek goes 1/600 s ahead, and from there back to where
+    /// it stood, and so on: always within the frame shown (a frame starts at
+    /// the time it stands at; going back from there would show the one
+    /// before). Seeks in quick succession (a slider dragged), or a
     /// composition put back just now, can still leave the frame drawn with
     /// an earlier look: a stale frame is drawn again, a little later each time.
-    private var nudgeBack = false
+    /// Where the last nudge went ahead to (the next goes back from there).
+    private var nudgedAhead: CMTime?
     private func redrawIfPaused(after delay: Duration = .zero, attempts: Int = 6) {
         guard !isPlaying else { return }
         Task { @MainActor [weak self] in
@@ -2833,10 +2941,12 @@ final class AVPlaybackControl: PlaybackControl {
             guard let self, !self.isPlaying else { return }
             let now = self.player.currentTime()
             let step = CMTime(value: 1, timescale: 600)
-            self.nudgeBack.toggle()
-            var target = self.nudgeBack ? CMTimeSubtract(now, step) : CMTimeAdd(now, step)
-            if CMTimeCompare(target, .zero) < 0 { target = CMTimeAdd(now, step) }
+            // (compared loosely: the time read back may come in another timescale)
+            let back = self.nudgedAhead.map { abs($0.seconds - now.seconds) < 1.0 / 1200 } ?? false
+            var target = back ? CMTimeSubtract(now, step) : CMTimeAdd(now, step)
             if let duration = self.duration, target.seconds > duration { target = CMTimeSubtract(now, step) }
+            if CMTimeCompare(target, .zero) < 0 { target = CMTimeAdd(now, step) }
+            self.nudgedAhead = CMTimeCompare(target, now) > 0 ? target : nil
             BrowserModel.testLog("avkit redraw at \(target.seconds)")
             self.player.seek(to: target, toleranceBefore: .zero, toleranceAfter: .zero) { [weak self] finished in
                 BrowserModel.testLog("avkit redraw finished \(finished)")

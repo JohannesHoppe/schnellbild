@@ -100,6 +100,7 @@ struct EntryListView: View {
         .background(selected ? Color.accentColor : (index % 2 == 1 ? Color.primary.opacity(0.04) : Color.clear))
         .contentShape(Rectangle())
         .modifier(EntryInteractions(entry: entry))
+        .onAppear { if entry.isMedia { model.wantCaptureDate(of: entry.url) } }
         .id(entry.id)
         .accessibilityElement(children: .ignore)
         .accessibilityIdentifier("row.\(entry.name)")
