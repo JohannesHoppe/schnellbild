@@ -220,3 +220,5 @@
 "read error" = "lukuvirhe";
 "UnRAR error %lld" = "UnRAR-virhe %lld";
 "Copying or moving…" = "Kopioidaan tai siirretään…";
+"This archive needs a password" = "Tämä arkisto tarvitsee salasanan";
+"Password required" = "Salasana tarvitaan";

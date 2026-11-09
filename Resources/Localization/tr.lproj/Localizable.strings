@@ -220,3 +220,5 @@
 "read error" = "okuma hatası";
 "UnRAR error %lld" = "UnRAR hatası %lld";
 "Copying or moving…" = "Kopyalanıyor veya taşınıyor…";
+"This archive needs a password" = "Bu arşiv parola gerektiriyor";
+"Password required" = "Parola gerekli";

@@ -487,6 +487,7 @@ struct PaneView: View {
     }
 
     private var statusText: String {
+        if model.passwordRequest != nil { return String(localized: "Password required") }
         var parts: [String] = []
         if model.folderCount > 0 { parts.append(String(localized: "\(model.folderCount) folders")) }
         if model.archiveCount > 0 { parts.append(String(localized: "\(model.archiveCount) archives")) }
@@ -590,6 +591,12 @@ struct EmptyStateView: View {
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
                 }
+            } else if model.passwordRequest != nil {
+                Image(systemName: "lock")
+                    .font(.system(size: 56))
+                    .foregroundStyle(.secondary)
+                Text("This archive needs a password")
+                    .font(.title2)
             } else if let failure = model.loadError {
                 Image(systemName: "exclamationmark.triangle")
                     .font(.system(size: 56))

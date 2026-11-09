@@ -220,3 +220,5 @@
 "read error" = "lesefeil";
 "UnRAR error %lld" = "UnRAR-feil %lld";
 "Copying or moving…" = "Kopierer eller flytter …";
+"This archive needs a password" = "Dette arkivet krever et passord";
+"Password required" = "Passord kreves";

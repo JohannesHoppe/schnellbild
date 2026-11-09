@@ -220,3 +220,5 @@
 "read error" = "error de lectura";
 "UnRAR error %lld" = "Error de UnRAR %lld";
 "Copying or moving…" = "Copiando o moviendo…";
+"This archive needs a password" = "Este archivo comprimido necesita una contraseña";
+"Password required" = "Se necesita contraseña";

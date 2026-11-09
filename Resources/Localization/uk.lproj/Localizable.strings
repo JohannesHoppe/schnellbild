@@ -220,3 +220,5 @@
 "read error" = "помилка читання";
 "UnRAR error %lld" = "Помилка UnRAR %lld";
 "Copying or moving…" = "Копіювання або переміщення…";
+"This archive needs a password" = "Цей архів потребує пароля";
+"Password required" = "Потрібен пароль";
