@@ -1,4 +1,5 @@
 import XCTest
+import Combine
 import ImageIO
 import CoreImage
 @testable import Schnellbild
@@ -76,6 +77,7 @@ final class PlayerSpy: PlaybackControl {
     var calls: [String] = []
     var isPlaying = true   // videos autoplay
     var progress: Double? = 0
+    var playsWithoutLength = false
     func play()  { calls.append("play"); isPlaying = true }
     func pause() { calls.append("pause"); isPlaying = false }
     func seek(toProgress progress: Double) {
@@ -747,6 +749,51 @@ final class HistoryTests: XCTestCase {
         XCTAssertTrue(m.canGoBack)
     }
 
+    /// Back twice in quick succession (a slow share still loading the first
+    /// step): the step passed over keeps its selection for Forward.
+    func testBackWhileLoadingKeepsTheSelectionForForward() async throws {
+        let tree = try TempTree(self)
+        let a = try tree.folder("a")
+        let b = try tree.folder("a/b")
+        try tree.folder("a/c")
+        let m = makeModel()
+        await openAndWait(m, tree.root)
+        await openAndWait(m, a)
+        m.selectEntry(named: "b")
+        await openAndWait(m, b)
+
+        m.navigateBack()       // starts loading a, where b is selected
+        XCTAssertTrue(m.isLoading)
+        m.navigateBack()       // before a has loaded
+        await waitUntil { m.isAt(tree.root) }
+        m.navigateForward()
+        await waitUntil { m.isAt(a) }
+        XCTAssertEqual(m.selectedEntry?.name, "b")
+    }
+
+    /// Back while a folder of search results loads keeps the search: Forward
+    /// shows the remembered results, not a search started over.
+    func testBackWhileLoadingKeepsTheSearchForForward() async throws {
+        let tree = try TempTree(self)
+        let start = try tree.folder("start")
+        let sub = try tree.folder("sub")
+        try tree.file("deep/x/album.jpg")
+        let m = makeModel()
+        await openAndWait(m, start)
+        await openAndWait(m, tree.root)
+        await searchAndWait(m, "album")
+        XCTAssertEqual(m.names, ["album.jpg"])
+        await openAndWait(m, sub)
+
+        m.navigateBack()       // to the results, still loading
+        m.navigateBack()       // on to start before they are on screen
+        await waitUntil { m.isAt(start) }
+        m.navigateForward()
+        await waitUntil { m.isAt(tree.root) && !m.isLoading }
+        XCTAssertEqual(m.searchText, "album")
+        XCTAssertEqual(m.names, ["album.jpg"])
+    }
+
     func testNewNavigationClearsForward() async throws {
         let tree = try TempTree(self)
         let a = try tree.folder("a")
@@ -1125,6 +1172,25 @@ final class FileActionTests: XCTestCase {
         XCTAssertEqual(m.names, ["..", "a.jpg"], "trashed file doesn't come back")
     }
 
+    /// Trashed in the full view: the next picture comes up at fit, upright.
+    func testTrashInTheFullViewResetsZoomAndRotation() async throws {
+        let tree = try TempTree(self)
+        for n in ["a.jpg", "b.jpg"] { try tree.file(n) }
+        let spy = FileActionsSpy()
+        let m = makeModel(spy)
+        await openAndWait(m, tree.root)
+        m.selectEntry(named: "a.jpg")
+        m.activateSelection()
+        XCTAssertEqual(m.mode, .detail)
+        m.handleKey(.char("+"), command: false)
+        m.handleKey(.char("]"), command: false)
+        XCTAssertNotEqual(m.zoom, 1)
+        m.moveSelectionToTrash()
+        XCTAssertEqual(m.shownMediaEntry?.name, "b.jpg")
+        XCTAssertEqual(m.zoom, 1)
+        XCTAssertEqual(m.rotation, 0)
+    }
+
     func testTrashCancelledKeepsFile() async throws {
         let tree = try TempTree(self)
         try tree.file("a.jpg")
@@ -1260,6 +1326,29 @@ final class PlaybackTests: XCTestCase {
         await waitUntil { m.shownMediaEntry?.name == "c.jpg" }
     }
 
+    /// A video that plays without a known length (a browser's WebM) stays
+    /// until it ends.
+    func testSlideshowWaitsForAVideoWithoutALength() async throws {
+        let tree = try TempTree(self)
+        for n in ["a.jpg", "b.webm", "c.jpg"] { try tree.file(n) }
+        let m = makeModel()
+        m.slideshowVideoCheck = .milliseconds(30)
+        await openAndWait(m, tree.root)
+        m.startSlideshow()
+        await waitUntil { m.shownMediaEntry?.name == "b.webm" }
+        m.slideshowInterval = .seconds(60)
+        let player = PlayerSpy()
+        player.progress = nil
+        player.playsWithoutLength = true
+        m.activePlayer = player
+        try await Task.sleep(for: .milliseconds(300))
+        XCTAssertEqual(m.shownMediaEntry?.name, "b.webm", "not skipped while it plays")
+        player.progress = 1   // VLC reports the end
+        player.isPlaying = false
+        m.playbackStateChanged(player, isPlaying: false)
+        XCTAssertEqual(m.shownMediaEntry?.name, "c.jpg")
+    }
+
     func testSlideshowOfAFolderWithoutMediaDoesNotStart() async throws {
         let tree = try TempTree(self)
         try tree.file("notes.txt")
@@ -1387,6 +1476,22 @@ final class PlaybackTests: XCTestCase {
         XCTAssertTrue(next.enhanced)
         m.handleKey(.char("e"), command: false)
         XCTAssertFalse(next.enhanced)
+    }
+
+    /// Auto reports a video's look four times a second: the same look again
+    /// publishes nothing (each change redraws the grid behind the video).
+    func testTheSameAutoLookAgainPublishesNothing() {
+        let m = makeModel()
+        let player = PlayerSpy()
+        m.activePlayer = player
+        m.enhance = true
+        let measured = Look(exposure: 0.4, contrast: 0.2, saturation: 0.1, sharpness: 0.5)
+        m.autoLookMeasured(measured, from: player)
+        var changes = 0
+        let watch = m.objectWillChange.sink { changes += 1 }
+        m.autoLookMeasured(measured, from: player)
+        watch.cancel()
+        XCTAssertEqual(changes, 0)
     }
 
     func testAutoMovesTheSlidersAndASliderByHandSwitchesAutoOff() {
@@ -1634,6 +1739,15 @@ final class KeyBindingTests: XCTestCase {
         XCTAssertTrue(m.showInspector)
     }
 
+    /// Esc with the sliders open closes them, not the full view.
+    func testEscapeClosesTheAdjustmentsFirst() {
+        let m = makeModel(); m.mode = .detail
+        m.showAdjustments = true
+        XCTAssertTrue(m.handleKey(.escape, command: false))
+        XCTAssertFalse(m.showAdjustments)
+        XCTAssertEqual(m.mode, .detail)
+    }
+
     func testF1TogglesHelp() {
         let m = makeModel()
         XCTAssertTrue(m.handleKey(.f1, command: false))
@@ -1706,6 +1820,19 @@ final class KeyBindingTests: XCTestCase {
         }
         XCTAssertEqual(ContentView.keyInput(code: 0, characters: "a"), .char("a"))
         XCTAssertNil(ContentView.keyInput(code: 0, characters: ""))
+        XCTAssertEqual(ContentView.keyInput(code: 1, characters: "ы", latin: { "s" }), .char("s"),
+                       "a Cyrillic layout: the key read as on the Latin one")
+        XCTAssertEqual(ContentView.keyInput(code: 1, characters: "s", latin: { "x" }), .char("s"))
+        XCTAssertEqual(ContentView.keyInput(code: 1, characters: "ы"), .char("ы"), "no Latin layout")
+    }
+
+    /// ⌘⌫ / ⌘↩ while typing go to the text field, not to Trash / Open.
+    func testCommandBackspaceAndReturnGoToTheTextField() {
+        XCTAssertTrue(ContentView.textFieldTakes(code: 51, command: true))
+        XCTAssertTrue(ContentView.textFieldTakes(code: 36, command: true))
+        XCTAssertTrue(ContentView.textFieldTakes(code: 76, command: true))
+        XCTAssertFalse(ContentView.textFieldTakes(code: 51, command: false))
+        XCTAssertFalse(ContentView.textFieldTakes(code: 3, command: true), "⌘F")
     }
 }
 
@@ -2000,6 +2127,29 @@ final class ReviewFixTests: XCTestCase {
         XCTAssertNil(BrowserModel.mediaKind(of: URL(fileURLWithPath: "/x/._a.jpg")), "macOS's '._' companion files")
     }
 
+    /// SVG: ImageIO can't decode it, so the full view couldn't show it.
+    func testSVGIsNotShown() {
+        XCTAssertNil(BrowserModel.mediaKind(of: URL(fileURLWithPath: "/x/logo.svg")))
+    }
+
+    /// A package (".app", ".photoslibrary") is one item to the user, as in
+    /// the Finder: not listed as a folder, not walked by the slideshow or the
+    /// search, the same as for the greyed-out check.
+    func testPackagesAreNeitherFoldersNorWalked() async throws {
+        let tree = try TempTree(self)
+        for n in ["a.jpg", "Tool.app/Contents/Resources/inside.jpg", "sub/b.jpg"] { try tree.file(n) }
+        let m = makeModel()
+        await openAndWait(m, tree.root)
+        XCTAssertEqual(m.names.filter { $0 != ".." }, ["sub", "a.jpg"])
+        await searchAndWait(m, "inside")
+        XCTAssertEqual(m.names, [])
+        m.searchText = ""
+        m.slideshowInterval = .seconds(60)
+        m.startSlideshow()
+        await waitUntil { m.slideshow?.loading == false }
+        XCTAssertEqual(m.slideshow?.items.map(\.name), ["a.jpg", "b.jpg"])
+    }
+
     func testFolderPreviewListIsCachedPerFolder() async throws {
         let tree = try TempTree(self)
         try tree.file("b.jpg")
@@ -2029,9 +2179,13 @@ final class ReviewFixTests: XCTestCase {
         XCTAssertFalse(m.handleKey(.f1, command: false), "no help on top of the rename sheet")
         XCTAssertFalse(m.showHelp)
         XCTAssertFalse(m.handleKey(.right, command: false), "the sheet keeps its keys")
+        m.openHelp()
+        XCTAssertFalse(m.showHelp, "the Help menu neither, during a rename")
         m.renameTarget = nil
 
         XCTAssertTrue(m.handleKey(.f1, command: false))
+        XCTAssertFalse(m.beginRename(), "the Rename menu neither, over the help")
+        XCTAssertNil(m.renameTarget)
         XCTAssertFalse(m.handleKey(.f2, command: false), "no rename over the help sheet")
         XCTAssertFalse(m.handleKey(.right, command: false))
         XCTAssertTrue(m.handleKey(.f1, command: false), "F1 closes help again")

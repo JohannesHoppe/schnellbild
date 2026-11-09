@@ -45,6 +45,10 @@ struct ShortcutsHelpView: View {
             Shortcut(keys: "Space", action: "Pause / resume"),
             Shortcut(keys: "← →", action: "Previous / next · video: skip a tenth"),
             Shortcut(keys: "⌘← ⌘→ ↑ ↓", action: "Previous / next item"),
+            Shortcut(keys: "f", action: "Toggle full screen"),
+            Shortcut(keys: "i", action: "File info"),
+            Shortcut(keys: "e", action: "Auto enhance on / off (exposure, contrast, saturation, sharpness; files stay untouched)"),
+            Shortcut(keys: "a", action: "Sliders: adjust by hand (switches auto enhance off)"),
             Shortcut(keys: "Esc / s", action: "End the slideshow"),
         ]),
         Group(title: "Search field", shortcuts: [
@@ -57,7 +61,7 @@ struct ShortcutsHelpView: View {
             Shortcut(keys: "⌘[ / ⌘]", action: "Back / forward (history)"),
             Shortcut(keys: "⌘↑", action: "Enclosing folder"),
             Shortcut(keys: "⌘1 … ⌘5", action: "Sort by name, kind, date modified, date taken, size (again: reverse)"),
-            Shortcut(keys: "f", action: "Toggle full screen"),
+            Shortcut(keys: "f / ⌃⌘F", action: "Toggle full screen"),
             Shortcut(keys: "⌘O", action: "Open folder"),
             Shortcut(keys: "⇧⌘R", action: "Reveal in Finder"),
             Shortcut(keys: "⌘↩", action: "Open with default app"),
@@ -72,6 +76,12 @@ struct ShortcutsHelpView: View {
                 Text("Keyboard Shortcuts").font(.title2.weight(.semibold))
                 Spacer()
                 Button("Done") { dismiss() }.keyboardShortcut(.defaultAction)
+                // Esc closes it too
+                Button { dismiss() } label: { EmptyView() }
+                    .keyboardShortcut(.cancelAction)
+                    .frame(width: 0, height: 0)
+                    .opacity(0)
+                    .accessibilityHidden(true)
             }
             .padding()
             Divider()

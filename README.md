@@ -51,7 +51,9 @@ Open a folder with ⌘O or drag it onto the window; drag a single file to open i
 | Home / End | first / last item |
 | ⌘+ / ⌘− | larger / smaller thumbnails |
 | ⌘[ / ⌘] | back / forward, restoring the folder, the search and the selection |
-| f | full screen |
+| f / ⌃⌘F | full screen |
+| F2 | rename the selected folder or file |
+| Esc | clear the search |
 
 ### Sort
 
@@ -121,6 +123,7 @@ From the full view, the slideshow starts at the picture you're looking at. `Esc`
 | Space | pause / resume |
 | ← → | previous / next picture; in a video skip a tenth |
 | ⌘← ⌘→ ↑ ↓ | previous / next item |
+| f / i / e / a | full screen, file info, auto enhance, sliders, as in the full view |
 | Esc | end the slideshow |
 
 ### Zoom and rotate
@@ -176,7 +179,7 @@ It's a filter on the screen only: your files stay exactly as they are. Photos an
 | Key | Action |
 |---|---|
 | e | auto enhance on / off |
-| a | show / hide the sliders |
+| a | show / hide the sliders (Esc hides them too) |
 
 ### File info
 
@@ -230,6 +233,7 @@ Early, but already a usable daily driver. Known limits:
 - The slideshow interval is fixed at 3 s.
 - `1` (100 %) is approximate (it assumes the main display's scale).
 - Animated GIFs don't zoom or pan.
+- SVG files aren't shown. Packages such as the Photos library count as one file, as in the Finder: they aren't browsed, searched or played.
 
 Building from source, tests and releases: [BUILDING.md](BUILDING.md).
 

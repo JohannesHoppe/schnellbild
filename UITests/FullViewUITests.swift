@@ -127,6 +127,34 @@ final class FullViewUITests: SchnellbildUITestCase {
         eventually("slideshow ended") { !text(of: badge).contains("Slideshow") }
     }
 
+    /// `a` during a slideshow shows the sliders (the toolbar they hang
+    /// from is hidden then); Esc closes them and the show goes on.
+    func testAdjustmentsOpenDuringASlideshow() {
+        openA()
+        app.typeKey("s", modifierFlags: [])
+        waitForBadge(containing: "Slideshow")
+        app.typeKey("a", modifierFlags: [])
+        XCTAssertTrue(element("resetLook").firstMatch.waitForExistence(timeout: 5), "the sliders show")
+        app.typeKey(.escape, modifierFlags: [])
+        eventually("the sliders close") { !self.element("resetLook").firstMatch.exists }
+        XCTAssertTrue(text(of: badge).contains("Slideshow"), "the show goes on")
+        app.typeKey(.escape, modifierFlags: [])
+    }
+
+    /// A slideshow over a folder without media ends at once, and the window
+    /// doesn't stay in full screen (the end comes during the animation in).
+    func testAnEmptySlideshowLeavesNoFullScreen() throws {
+        try folder("nothing/inner")
+        launch(open: tempDir.appendingPathComponent("nothing").path)
+        XCTAssertTrue(app.staticTexts["inner"].waitForExistence(timeout: 15))
+        let window = app.windows.firstMatch
+        let before = window.frame.size
+        app.typeKey("s", modifierFlags: [])
+        RunLoop.current.run(until: Date().addingTimeInterval(4))
+        eventually("not in full screen", timeout: 10) { window.frame.size == before }
+        XCTAssertTrue(searchField.exists, "back in the browser")
+    }
+
     func testSlideshowButtonPlaysTheFolderAndSubfolders() throws {
         try put("sample.jpg", at: "sub/d.jpg")
         launchOnTempDir()
@@ -159,6 +187,27 @@ final class FullViewUITests: SchnellbildUITestCase {
         }
         app.typeKey("+", modifierFlags: [])
         eventually("decoded at full size", timeout: 15) { self.text(of: image).contains("decoded 4000 px") }
+    }
+
+    /// A photo opened in the window is decoded again when the view grows
+    /// (full screen), not stretched from the window-size copy.
+    func testFullScreenDecodesAPhotoAgain() throws {
+        try put("huge.jpg", at: "huge.jpg")
+        launch(open: tempDir.appendingPathComponent("huge.jpg").path)
+        let image = element("fullImage")
+        eventually("loaded", timeout: 15) { self.text(of: image).hasSuffix("loaded") }
+        let before = decodedSide(text(of: image))
+        XCTAssertGreaterThan(before, 0, text(of: image))
+        app.typeKey("f", modifierFlags: [])
+        eventually("decoded again, larger, in full screen", timeout: 15) {
+            self.decodedSide(self.text(of: image)) > before
+        }
+        app.typeKey("f", modifierFlags: [])
+    }
+
+    private func decodedSide(_ label: String) -> Int {
+        guard let range = label.range(of: "decoded ") else { return 0 }
+        return Int(label[range.upperBound...].prefix { $0.isNumber }) ?? 0
     }
 
     /// "1" shows a photo larger than the window at its pixels: zoomed in.

@@ -12,11 +12,15 @@ final class ThumbnailCache {
     /// push tile thumbnails out.
     static let previews = ThumbnailCache(limit: 512)
 
-    /// One image per file, with the tile size it was made for.
+    /// One image per file, with the tile size it was made for and the
+    /// file's modification date then (a file changed since gets a new one).
     private final class Entry {
         let image: NSImage
         let side: CGFloat
-        init(image: NSImage, side: CGFloat) { self.image = image; self.side = side }
+        let modified: Date?
+        init(image: NSImage, side: CGFloat, modified: Date?) {
+            self.image = image; self.side = side; self.modified = modified
+        }
     }
     private let cache = NSCache<NSURL, Entry>()
 
@@ -35,9 +39,11 @@ final class ThumbnailCache {
     /// The system thumbnail for a file (embedded previews, including
     /// RAW/PSD/PDF/video), from memory when the cached one is at least
     /// `side` big — so a smaller tile size reuses it, and a larger one gets
-    /// a sharper one.
-    func thumbnail(for url: URL, side: CGFloat) async -> NSImage? {
-        if let cached = cache.object(forKey: url as NSURL), cached.side >= side { return cached.image }
+    /// a sharper one. `modified` is the file's date as listed: a file
+    /// changed in another app since gets a fresh thumbnail.
+    func thumbnail(for url: URL, side: CGFloat, modified: Date? = nil) async -> NSImage? {
+        if let cached = cache.object(forKey: url as NSURL), cached.side >= side,
+           modified == nil || cached.modified == modified { return cached.image }
         let request = QLThumbnailGenerator.Request(
             fileAt: url,
             size: CGSize(width: side, height: side),
@@ -54,7 +60,7 @@ final class ThumbnailCache {
             image = NSImage(cgImage: frame, size: NSSize(width: frame.width, height: frame.height))
         }
         guard let image else { return nil }
-        cache.setObject(Entry(image: image, side: side), forKey: url as NSURL)
+        cache.setObject(Entry(image: image, side: side, modified: modified), forKey: url as NSURL)
         return image
     }
 }
@@ -66,6 +72,7 @@ struct ThumbnailView: View {
     let side: CGFloat
     let isSelected: Bool
     var isVideo: Bool = false
+    var modified: Date? = nil
 
     @State private var image: NSImage?
     @State private var failed = false
@@ -86,7 +93,7 @@ struct ThumbnailView: View {
             .accessibilityLabel("\(TileChrome.selectionLabel(isSelected)), \(isVideo ? "video" : "image")"
                                 + (image.map { $0.accessibilityDescription == ThumbnailCache.fileIcon ? ", file icon" : ", preview" }
                                    ?? (failed ? ", no preview" : "")))
-            .task(id: TileKey(url: url, side: side)) { await load() }
+            .task(id: TileKey(url: url, side: side, modified: modified)) { await load() }
     }
 
     @ViewBuilder
@@ -106,7 +113,7 @@ struct ThumbnailView: View {
     }
 
     private func load() async {
-        if let img = await ThumbnailCache.shared.thumbnail(for: url, side: side) {
+        if let img = await ThumbnailCache.shared.thumbnail(for: url, side: side, modified: modified) {
             if !Task.isCancelled { image = img }
         } else if !Task.isCancelled {
             failed = true
@@ -114,10 +121,11 @@ struct ThumbnailView: View {
     }
 }
 
-/// Reloads a tile when its file or its size changes.
+/// Reloads a tile when its file, its size or the file's date changes.
 private struct TileKey: Hashable {
     let url: URL
     let side: CGFloat
+    let modified: Date?
 }
 
 /// Shared tile chrome: rounded background, fixed square frame, selection ring.

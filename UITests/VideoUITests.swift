@@ -28,6 +28,20 @@ final class VideoUITests: SchnellbildUITestCase {
         eventually("Space resumes VLC playback") { !text(of: badge).contains("Paused") }
     }
 
+    /// The Inspector shows a video's resolution, from either player.
+    private func checkInspectorResolution(_ clip: String, player: String) throws {
+        try put(clip, at: clip)
+        launch(open: tempDir.appendingPathComponent(clip).path)
+        XCTAssertTrue(element(player).waitForExistence(timeout: 20))
+        app.typeKey("i", modifierFlags: [])
+        XCTAssertTrue(app.staticTexts["Resolution"].waitForExistence(timeout: 15))
+        let size = app.staticTexts.matching(NSPredicate(format: "label MATCHES %@", "[0-9]+ × [0-9]+ px")).firstMatch
+        XCTAssertTrue(size.waitForExistence(timeout: 5), "a resolution like 640 × 360 px")
+    }
+
+    func testInspectorShowsAnAVKitVideosResolution() throws { try checkInspectorResolution("clip.mp4", player: "video.avkit") }
+    func testInspectorShowsAVLCVideosResolution() throws { try checkInspectorResolution("clip.mkv", player: "video.vlc") }
+
     /// → skims through the video in tenths, then moves on; ⌘← pages at once.
     private func checkSkimming(_ clip: String, player: String) throws {
         try put(clip, at: clip)

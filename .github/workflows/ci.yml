@@ -83,7 +83,7 @@ jobs:
           xcode-version: latest-stable
 
       - name: Install xcodegen
-        run: brew install xcodegen
+        run: ./Scripts/fetch_xcodegen.sh >> "$GITHUB_PATH"
 
       - name: Cache VLCKit
         uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0

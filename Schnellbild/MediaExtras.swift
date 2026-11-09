@@ -44,6 +44,7 @@ struct AnimatedImageView: NSViewRepresentable {
 /// Small file inspector (key "i" in the full-size view).
 struct InspectorView: View {
     let entry: GridEntry
+    @EnvironmentObject var model: BrowserModel
     @State private var dimensions: String?
 
     var body: some View {
@@ -91,6 +92,18 @@ struct InspectorView: View {
 
     private func loadDimensions() async {
         dimensions = nil
+        if entry.kind == .video {
+            // The player knows it once the video has opened.
+            for _ in 0..<40 {
+                if let size = model.activePlayer?.videoSize, size.width > 0, size.height > 0 {
+                    dimensions = "\(Int(size.width)) × \(Int(size.height)) px"
+                    return
+                }
+                try? await Task.sleep(for: .milliseconds(250))
+                if Task.isCancelled { return }
+            }
+            return
+        }
         guard entry.kind == .image else { return }
         let url = entry.url
         dimensions = await Task.detached(priority: .utility) { () -> String? in

@@ -12,8 +12,8 @@ let package = Package(
             dependencies: ["VLCKit"],
             path: "Schnellbild",
             linkerSettings: [
-                // SwiftUI's VideoPlayer references AVKit only internally — without
-                // explicit linking, AVPlayerView is missing at runtime (crash).
+                // Linked explicitly: without it, AVPlayerView can be missing
+                // at runtime (crash).
                 .linkedFramework("AVKit"),
                 .linkedFramework("AVFoundation")
             ]

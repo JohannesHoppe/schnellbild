@@ -39,7 +39,7 @@ struct SchnellbildApp: App {
                 // Not during a slideshow: the selection is in the hidden grid,
                 // not what's on screen.
                 Button("Rename… (F2)") { model.beginRename() }
-                    .disabled(model.slideshow != nil || model.selectedEntry == nil || model.selectedEntry?.kind == .parent)
+                    .disabled(model.slideshow != nil || model.showHelp || model.selectedEntry == nil || model.selectedEntry?.kind == .parent)
                 Button("Reveal in Finder") { model.revealInFinder() }
                     .keyboardShortcut("r", modifiers: [.command, .shift])
                     .disabled(model.slideshow != nil)
@@ -58,8 +58,9 @@ struct SchnellbildApp: App {
                 SortChoices(model: model, shortcuts: true)
             }
             CommandGroup(replacing: .help) {
-                Button("Schnellbild Help") { model.showHelp = true }
+                Button("Schnellbild Help") { model.openHelp() }
                     .keyboardShortcut("?", modifiers: .command)
+                    .disabled(model.renameTarget != nil)
             }
         }
     }

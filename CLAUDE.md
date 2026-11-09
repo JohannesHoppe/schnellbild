@@ -63,7 +63,19 @@ There is **no Xcode project for the app build**; `xcodegen` generates
     the injectable `FileActions`; tests pass a spy. `--ui-testing` makes the app
     use its own `UserDefaults` suite (`--reset-state` clears it).
   - ⌘⌫ / ⌘↩ return `false` from `handleKey` so they reach their menu items
-    (the local key monitor sees keys before menu key equivalents).
+    (the local key monitor sees keys before menu key equivalents). While a
+    text field is edited the monitor hands them to the field editor instead
+    (`ContentView.textFieldTakes`), so they edit the text. Keys with ⌃ pass
+    untouched (⌃⌘F is the system's full screen). On a layout without Latin
+    letters a letter key is read as on the user's Latin layout (`LatinKeys`).
+  - Packages (`.photoslibrary`, `.app`) are single items, as in the Finder:
+    `entry(for:keys:)` drops them, so listing, search and slideshow never
+    walk into them (`containsMedia` skips them too). SVG isn't an image type
+    (ImageIO can't decode it).
+  - Full screen goes through `FullScreenSwitch`: a request during the
+    window's animation (an empty slideshow ending at once) is carried out
+    when it ends. Window actions use `BrowserModel.appWindow` (the main
+    window; the key one can be the Adjustments popover).
 - **`SearchField.swift`** — `NSSearchField` wrapper, always visible above the
   content. It refuses first responder until clicked or ⌘F, otherwise AppKit
   focuses it on launch and it swallows the grid keys.
@@ -92,9 +104,13 @@ There is **no Xcode project for the app build**; `xcodegen` generates
   `ThumbnailCache.previews`. `FolderTile` fans up to three previews of a
   folder's first media files (`BrowserModel.folderPreviewFiles`, listed once
   per folder via `FolderPreviewCache`). Folders with no photo or video at any depth (`BrowserModel.containsMedia`, stops at the first hit; hidden files and non-media like `Thumbs.db` don't count) are greyed out; the model keeps them in `emptyFolders`, and a `FileChange` forgets the folders around it. Tiles carry accessibility ids
-  `tile.<name>`; their label starts with `selected` / `not selected`.
+  `tile.<name>`; their label starts with `selected` / `not selected`. A cached
+  thumbnail is used only for the modification date it was made for; folder
+  tiles read their previews again after every `FileChange` (`folderChanges`).
 - **`FullImageView.swift`** — ImageIO downsample + zoom/pan/rotate (view-only;
-  **never modifies files** — important user constraint).
+  **never modifies files** — important user constraint). Decoded at the
+  view's size, again larger when the view grows (full screen) or at full
+  size when zoomed in.
 - **`VideoDetailView.swift`** — native formats via AVKit; non-native fall back
   to VLCKit. AVKit plays in an `AVPlayerView` (`AVPlayerViewHost`) with
   **floating** controls: the inline ones (SwiftUI's `VideoPlayer`) and the
@@ -103,6 +119,9 @@ There is **no Xcode project for the app build**; `xcodegen` generates
 - **Video zoom**: `VideoDetailView` scales, rotates and pans the player view like `FullImageView` (model `zoom`/`rotation`); a clear layer takes the drag only while zoomed (the player's control bar stays usable at fit). Trackpad pinch on videos goes through a `.magnify` event monitor in `ContentView`, since AVKit's view would take it. On videos `1` = fit.
 - **`VLCVideoView.swift`** — `VLCPlaybackControl` (owns the `VLCMediaPlayer`,
   `import VLCKit`) and `VLCVideoView`, the `NSViewRepresentable` it draws into.
+  `stop()` stops the player off the main thread (VLC waits for its reading
+  thread, long on a stalled share). A video VLC plays without a known
+  length (`playsWithoutLength`) is not skipped by the slideshow.
 - **`MediaExtras.swift`** — GIF (`AnimatedImageView`), `InspectorView`,
   `MediaInfo`, `LoadingSpinner`.
 - **Localization** — English is the source language; the UI follows the macOS language. Translations live in `Resources/Localization/<lang>.lproj/` (`Localizable.strings`, plus `Localizable.stringsdict` for the counted nouns "%lld folders / images / videos / results"); `build_app.sh` copies them into `Contents/Resources`, `project.yml` adds them to the UI-test build, and `Info.plist` lists them in `CFBundleLocalizations`. SwiftUI literals (`Text`, `Button`, `Label`, `.help`, menus) are looked up by their English text; strings built in code use `String(localized:)`, so interpolations become `%@` / `%lld` keys. **Every new or changed UI string needs an entry in every `.lproj`** (English key = value); `LocalizationTests` fails otherwise and checks the placeholders match. Key names in the F1 help (Return, Backspace …), file names and the accessibility labels the UI tests read (tile labels, zoom state) stay English. UI tests launch the app with `-AppleLanguages (en)`.
@@ -188,7 +207,7 @@ AVI/MKV/WebM and other non-native formats play **in-app via vendored VLCKit
 ## CI & release
 
 - `.github/workflows/ci.yml`: `build-test` (fetch+cache VLCKit → `test.sh` →
-  `build_app.sh` → upload zip) and `ui-tests` (fetch+cache VLCKit → `xcodegen` →
+  `build_app.sh` → upload zip) and `ui-tests` (fetch+cache VLCKit → `xcodegen`, pinned and SHA-256-checked by `Scripts/fetch_xcodegen.sh` →
   `xcodebuild` UI, on **macos-15 and macos-26**, since AVKit behaves differently
   from macOS 26 on; by hand with `-f only=<tests>` and `-f macos=<image>`). **`paths-ignore: ['**.md', 'LICENSE']`** → doc-only pushes
   don't trigger CI. Both jobs cache `Vendor/` keyed on `fetch_vlckit.sh`'s hash.

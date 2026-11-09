@@ -1,5 +1,6 @@
 import SwiftUI
 import AppKit
+import Carbon.HIToolbox
 
 struct ContentView: View {
     @EnvironmentObject var model: BrowserModel
@@ -18,14 +19,21 @@ struct ContentView: View {
             } else {
                 // The grid stays alive under the full view, so it keeps its
                 // scroll position (and follows the item shown) for the way back.
+                // A slideshow still looking for its first item shows black,
+                // not the grid (clicking a tile there would end the show).
                 let detailEntry = model.shownMediaEntry
+                let gridShown = detailEntry == nil && model.slideshow == nil
                 ZStack {
                     ThumbnailGridView()
-                        .opacity(detailEntry == nil ? 1 : 0)
-                        .allowsHitTesting(detailEntry == nil)
-                        .accessibilityHidden(detailEntry != nil)
+                        .opacity(gridShown ? 1 : 0)
+                        .allowsHitTesting(gridShown)
+                        .accessibilityHidden(!gridShown)
                     if let detailEntry {
                         detail(entry: detailEntry)
+                    } else if model.slideshow != nil {
+                        LoadingSpinner()
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            .accessibilityIdentifier("slideshowLoading")
                     }
                 }
             }
@@ -287,12 +295,23 @@ struct ContentView: View {
             if NSApp.modalWindow != nil || event.window is NSSavePanel { return event }
             let code = event.keyCode
             let command = event.modifierFlags.contains(.command)
+            let control = event.modifierFlags.contains(.control)
             let chars = (command ? event.charactersIgnoringModifiers : event.characters) ?? ""
             // Decide on the main actor whether to consume the key.
             let consume = MainActor.assumeIsolated { () -> Bool in
-                guard let key = Self.keyInput(code: code, characters: chars) else { return false }
-                return model.handleKey(key, command: command,
-                                       textEditing: NSApp.keyWindow?.firstResponder is NSText)
+                let editor = NSApp.keyWindow?.firstResponder as? NSText
+                // ⌘⌫ / ⌘↩ while typing are the text field's (delete to the
+                // line start): menu key equivalents would run first and
+                // trash or open the selected tile.
+                if let editor, Self.textFieldTakes(code: code, command: command) {
+                    editor.keyDown(with: event)
+                    return true
+                }
+                // ⌃⌘F and other ⌃ combinations are the system's (full screen).
+                guard !control, let key = Self.keyInput(code: code, characters: chars, latin: {
+                    LatinKeys.character(for: code, shift: event.modifierFlags.contains(.shift))
+                }) else { return false }
+                return model.handleKey(key, command: command, textEditing: editor != nil)
             }
             return consume ? nil : event
         }
@@ -310,8 +329,17 @@ struct ContentView: View {
         }
     }
 
-    /// Hardware key code → key binding input.
-    static func keyInput(code: UInt16, characters: String) -> BrowserModel.KeyInput? {
+    /// Keys that go straight to the text field being edited, ahead of the
+    /// menu: ⌘⌫ and ⌘↩.
+    static func textFieldTakes(code: UInt16, command: Bool) -> Bool {
+        command && [51, 36, 76].contains(code)
+    }
+
+    /// Hardware key code → key binding input. On a layout without Latin
+    /// letters (Russian, Greek …) a letter key is read as on the user's Latin
+    /// layout (`latin`), as macOS does for menu shortcuts.
+    static func keyInput(code: UInt16, characters: String,
+                         latin: () -> String? = { nil }) -> BrowserModel.KeyInput? {
         switch code {
         case 51:     return .backspace
         case 53:     return .escape
@@ -325,7 +353,9 @@ struct ContentView: View {
         case 119:    return .end
         case 122:    return .f1
         case 120:    return .f2
-        default:     return characters.first.map(BrowserModel.KeyInput.char)
+        default:
+            let typed = characters.first.map { $0.isASCII ? characters : (latin() ?? characters) } ?? ""
+            return typed.first.map(BrowserModel.KeyInput.char)
         }
     }
 
@@ -546,5 +576,27 @@ struct AdjustmentsView: View {
     static func format(_ value: Double) -> String {
         let percent = Int((value * 100).rounded())
         return percent > 0 ? "+\(percent)" : "\(percent)"
+    }
+}
+
+/// What a key types on the user's Latin layout (the one macOS uses for
+/// shortcuts while a Cyrillic or Greek layout is active).
+enum LatinKeys {
+    static func character(for keyCode: UInt16, shift: Bool) -> String? {
+        guard let source = TISCopyCurrentASCIICapableKeyboardLayoutInputSource()?.takeRetainedValue(),
+              let raw = TISGetInputSourceProperty(source, kTISPropertyUnicodeKeyLayoutData) else { return nil }
+        let data = Unmanaged<CFData>.fromOpaque(raw).takeUnretainedValue() as Data
+        return data.withUnsafeBytes { bytes -> String? in
+            guard let layout = bytes.baseAddress?.assumingMemoryBound(to: UCKeyboardLayout.self) else { return nil }
+            var deadKeys: UInt32 = 0
+            var length = 0
+            var chars = [UniChar](repeating: 0, count: 4)
+            let modifiers: UInt32 = shift ? UInt32(shiftKey >> 8) & 0xFF : 0
+            let status = UCKeyTranslate(layout, keyCode, UInt16(kUCKeyActionDown), modifiers,
+                                        UInt32(LMGetKbdType()), OptionBits(kUCKeyTranslateNoDeadKeysBit),
+                                        &deadKeys, chars.count, &length, &chars)
+            guard status == noErr, length > 0 else { return nil }
+            return String(utf16CodeUnits: chars, count: length)
+        }
     }
 }
