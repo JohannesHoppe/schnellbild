@@ -1997,6 +1997,9 @@ final class FullScreenSwitch {
 @MainActor
 final class AVPlaybackControl: PlaybackControl {
     let player: AVPlayer
+    /// Feeds the player a video inside an archive (held here: the asset
+    /// holds it weakly).
+    var resourceLoader: ArchiveResourceLoader?
     private var observation: NSKeyValueObservation?
 
     init(player: AVPlayer, onStateChange: @escaping @MainActor (PlaybackControl, Bool) -> Void = { _, _ in }) {

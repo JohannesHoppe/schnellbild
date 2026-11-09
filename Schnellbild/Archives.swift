@@ -655,38 +655,6 @@ final class ArchiveStore: @unchecked Sendable {
         waiting.forEach { $0.resume(with: result) }
     }
 
-    /// An entry written to `file`, in chunks (videos: the players read
-    /// files).
-    func extract(_ url: URL, to file: URL) async throws {
-        guard let (archiveURL, inner) = ArchivePath.split(url), !inner.isEmpty else { throw ArchiveError.notFound }
-        let index = try await index(of: archiveURL)
-        guard index.byPath[inner] != nil, let reader = Self.reader(for: archiveURL) else { throw ArchiveError.notFound }
-        let archive = archive(archiveURL)
-        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-            archive.queue.async {
-                FileManager.default.createFile(atPath: file.path, contents: nil)
-                guard let handle = try? FileHandle(forWritingTo: file) else {
-                    continuation.resume(throwing: ArchiveError.unreadable("can't write \(file.lastPathComponent)"))
-                    return
-                }
-                var outcome: ArchiveError? = .notFound
-                do {
-                    _ = try reader.walk(password: index.password, listOnly: false) { item in
-                        guard item.path == inner else { return .skip }
-                        return .read(sink: { chunk in handle.write(Data(chunk)); return true },
-                                     done: { outcome = $0 })
-                    }
-                } catch let error as ArchiveError {
-                    outcome = error
-                } catch {
-                    outcome = .unreadable(error.localizedDescription)
-                }
-                try? handle.close()
-                if let outcome { continuation.resume(throwing: outcome) } else { continuation.resume() }
-            }
-        }
-    }
-
     /// Forget an archive (a changed password list tries it afresh).
     func forget(_ url: URL) {
         let archive = archive(url)
@@ -754,47 +722,5 @@ enum MediaData {
             return CGImageSourceCreateWithData(data as CFData, nil)
         }
         return CGImageSourceCreateWithURL(url as CFURL, nil)
-    }
-
-    /// A file the players can open: the file itself, or for a video inside
-    /// an archive a copy in the temporary folder (the last few are kept).
-    static func playableFile(_ url: URL) async throws -> URL {
-        guard ArchivePath.isInside(url), ArchivePath.splitChecked(url) != nil else { return url }
-        let folder = FileManager.default.temporaryDirectory.appendingPathComponent("Schnellbild archive videos", isDirectory: true)
-        let key = BrowserModel.canonicalPath(url)
-        if let cached = await PlayableCopies.shared.file(for: key) { return cached }
-        let dir = folder.appendingPathComponent(UUID().uuidString, isDirectory: true)
-        try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
-        let file = dir.appendingPathComponent(url.lastPathComponent)
-        try await ArchiveStore.shared.extract(url, to: file)
-        await PlayableCopies.shared.add(file, for: key)
-        return file
-    }
-
-    /// Copies left from an earlier run.
-    static func removeOldCopies() {
-        let folder = FileManager.default.temporaryDirectory.appendingPathComponent("Schnellbild archive videos", isDirectory: true)
-        try? FileManager.default.removeItem(at: folder)
-    }
-}
-
-/// The videos copied out of archives: the newest few stay, older ones go.
-actor PlayableCopies {
-    static let shared = PlayableCopies()
-    private var copies: [(key: String, file: URL)] = []
-    private let keep = 3
-
-    func file(for key: String) -> URL? {
-        guard let found = copies.first(where: { $0.key == key }),
-              FileManager.default.fileExists(atPath: found.file.path) else { return nil }
-        return found.file
-    }
-
-    func add(_ file: URL, for key: String) {
-        copies.append((key, file))
-        while copies.count > keep {
-            let old = copies.removeFirst()
-            try? FileManager.default.removeItem(at: old.file.deletingLastPathComponent())
-        }
     }
 }

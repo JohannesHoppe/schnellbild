@@ -212,7 +212,7 @@ Rename a folder or file in place (F2, the Actions menu, or right-click), in the 
 
 ### Archives as folders
 
-ZIP, RAR and 7z archives open like folders: browse their folders, page through their pictures, play their videos, start a slideshow, search their names. Nothing is unpacked to disk, except a video you play from an archive: the players need a file, so it is copied to the temporary folder (the last three stay). Archives are only read: renaming or trashing something inside them isn't offered.
+ZIP, RAR and 7z archives open like folders: browse their folders, page through their pictures, play their videos, start a slideshow, search their names. Nothing is unpacked to disk: pictures are unpacked into memory, videos stream from the archive while they play (packed or not), and jumping back in a long packed video unpacks it again from its start, which takes a moment. Archives are only read: renaming or trashing something inside them isn't offered.
 
 - **RAR** of every version, also solid archives (the official UnRAR inside).
 - **Split archives** show once, by their first part: `x.part1.rar` …, `x.rar` + `x.r00` …, `x.z01` … + `x.zip`, `x.7z.001` ….

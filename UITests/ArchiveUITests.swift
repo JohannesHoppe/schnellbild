@@ -64,17 +64,40 @@ final class ArchiveUITests: SchnellbildUITestCase {
         XCTAssertFalse(app.secureTextFields["passwordField"].exists)
     }
 
-    func testAVideoInsideAZipPlays() throws {
+    /// A video inside a ZIP streams from it, unpacked in memory as it
+    /// plays: stored or packed, in AVKit and in VLC (the same file through
+    /// both). Space pauses it, → skims through it.
+    private func checkStreamedVideo(packed: Bool, vlc: Bool) throws {
         try put("clip.mp4", at: "src/clip.mp4")
-        let archive = try zip("Videos.zip")
-        launch(open: archive.path)
+        let src = tempDir.appendingPathComponent("src")
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: "/usr/bin/zip")
+        process.arguments = ["-q", packed ? "-9" : "-0", "../Videos.zip", "clip.mp4"]
+        process.currentDirectoryURL = src
+        try process.run()
+        process.waitUntilExit()
+        let archive = tempDir.appendingPathComponent("Videos.zip")
+        launch(open: archive.path, extra: vlc ? ["--force-vlc"] : [])
         let clip = tile("clip.mp4")
         XCTAssertTrue(clip.waitForExistence(timeout: 15))
         clip.doubleClick()
-        XCTAssertTrue(element("video.avkit").waitForExistence(timeout: 20), "plays")
+        XCTAssertTrue(element(vlc ? "video.vlc" : "video.avkit").waitForExistence(timeout: 20), "plays")
         waitForBadge(containing: "clip.mp4")
+        RunLoop.current.run(until: Date().addingTimeInterval(1))
+        app.typeKey(.space, modifierFlags: [])
+        waitForBadge(containing: "Paused")
+        app.typeKey(.space, modifierFlags: [])
         eventually("plays on", timeout: 10) { !self.text(of: self.badge).contains("Paused") }
+        app.typeKey(.rightArrow, modifierFlags: [])   // a jump ahead inside the stream
+        XCTAssertTrue(element(vlc ? "video.vlc" : "video.avkit").exists)
+        let copies = FileManager.default.temporaryDirectory.appendingPathComponent("Schnellbild archive videos")
+        XCTAssertFalse(FileManager.default.fileExists(atPath: copies.path), "nothing unpacked to disk")
     }
+
+    func testAStoredVideoStreamsInAVKit() throws { try checkStreamedVideo(packed: false, vlc: false) }
+    func testAStoredVideoStreamsInVLC() throws { try checkStreamedVideo(packed: false, vlc: true) }
+    func testAPackedVideoStreamsInAVKit() throws { try checkStreamedVideo(packed: true, vlc: false) }
+    func testAPackedVideoStreamsInVLC() throws { try checkStreamedVideo(packed: true, vlc: true) }
 
     func testRarFolders() throws {
         try put("subdirs.rar", at: "subdirs.rar")
