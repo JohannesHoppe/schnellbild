@@ -2103,8 +2103,10 @@ final class BrowserModel: ObservableObject {
             }
         }
         notifyFolderChanges(changed)
-        // What went into a subfolder leaves this folder's listing
         guard let folderPath else { return }
+        // Into the folder shown (a drop onto the pane): read it again to show what came
+        if target == folderPath { refresh(); return }
+        // What went into a subfolder leaves this folder's listing
         let here: (GridEntry) -> Bool = { $0.kind == .parent || Self.canonicalPath($0.url.deletingLastPathComponent()) == folderPath }
         let keep = selectedEntry?.url
         allEntries = allEntries.filter(here)

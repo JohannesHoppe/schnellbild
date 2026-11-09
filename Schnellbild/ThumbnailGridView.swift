@@ -367,10 +367,12 @@ struct EntryInteractions: ViewModifier {
                 guard model.select(entry) else { return }
                 model.activateSelection()
             }
-            .onTapGesture(count: 1) {
+            // At once, not after the double-click interval: a key pressed
+            // right after the click must find it done
+            .simultaneousGesture(TapGesture().onEnded {
                 model.searchFocused = false
                 model.click(entry, command: false, shift: false)
-            }
+            })
             // SwiftUI's tap gestures don't fire while ⌘ is held: ⌘- and
             // ⇧-clicks go to the tile under the pointer at mouse-down
             .onHover { inside in
