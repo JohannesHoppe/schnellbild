@@ -349,6 +349,16 @@ struct EntryInteractions: ViewModifier {
     let entry: GridEntry
     @EnvironmentObject var model: BrowserModel
 
+    private var key: String { "\(ObjectIdentifier(model).hashValue)|\(entry.url.path)" }
+
+    private func register(_ frame: CGRect) {
+        let entry = entry, model = model
+        ModifierClicks.set(key, frame: frame) { flags in
+            model.searchFocused = false
+            model.click(entry, command: flags.contains(.command), shift: flags.contains(.shift))
+        }
+    }
+
     func body(content: Content) -> some View {
         content
             .modifier(TileDrag(entry: entry))
@@ -362,10 +372,13 @@ struct EntryInteractions: ViewModifier {
                 model.click(entry, command: false, shift: false)
             }
             // SwiftUI's tap gestures don't fire while ⌘ is held: ⌘- and
-            // ⇧-clicks go to a view of their own
-            .overlay(ModifierClickCatcher { flags in
-                model.searchFocused = false
-                model.click(entry, command: flags.contains(.command), shift: flags.contains(.shift))
+            // ⇧-clicks are taken at mouse-down by the tile's frame
+            .background(GeometryReader { geometry in
+                let frame = geometry.frame(in: .global)
+                Color.clear
+                    .onAppear { register(frame) }
+                    .onChange(of: frame) { _, now in register(now) }
+                    .onDisappear { ModifierClicks.remove(key) }
             })
             .contextMenu {
                 if entry.kind != .parent {
@@ -418,28 +431,36 @@ private struct FolderDrop: ViewModifier {
     }
 }
 
-/// Takes the clicks made with ⌘ or ⇧ held and lets every other click
-/// (plain, right, drag) through to the views below.
-private struct ModifierClickCatcher: NSViewRepresentable {
-    let onClick: (NSEvent.ModifierFlags) -> Void
+/// ⌘- and ⇧-clicks on tiles and rows. SwiftUI's tap gestures don't fire
+/// while ⌘ is held, so a mouse-down monitor finds the tile under the pointer
+/// by the frames the tiles report and acts on it; other clicks pass.
+@MainActor
+enum ModifierClicks {
+    private struct Target { let frame: CGRect; let action: (NSEvent.ModifierFlags) -> Void }
+    private static var targets: [String: Target] = [:]
+    private static var monitor: Any?
 
-    final class CatcherView: NSView {
-        var onClick: ((NSEvent.ModifierFlags) -> Void)?
-        override func hitTest(_ point: NSPoint) -> NSView? {
-            guard let event = NSApp.currentEvent, event.type == .leftMouseDown,
-                  !event.modifierFlags.intersection([.command, .shift]).isEmpty else { return nil }
-            return super.hitTest(point)
-        }
-        override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
-        override func mouseDown(with event: NSEvent) {
-            onClick?(event.modifierFlags)
+    static func set(_ key: String, frame: CGRect, action: @escaping (NSEvent.ModifierFlags) -> Void) {
+        targets[key] = Target(frame: frame, action: action)
+    }
+    static func remove(_ key: String) { targets[key] = nil }
+
+    static func start() {
+        guard monitor == nil else { return }
+        monitor = NSEvent.addLocalMonitorForEvents(matching: .leftMouseDown) { event in
+            MainActor.assumeIsolated { handle(event) } ? nil : event
         }
     }
 
-    func makeNSView(context: Context) -> CatcherView {
-        let view = CatcherView()
-        view.onClick = onClick
-        return view
+    private static func handle(_ event: NSEvent) -> Bool {
+        let flags = event.modifierFlags.intersection([.command, .shift])
+        guard !flags.isEmpty, let window = event.window, window === BrowserModel.appWindow,
+              let content = window.contentView else { return false }
+        // SwiftUI's global space: the window's content, origin top left
+        let local = content.convert(event.locationInWindow, from: nil)
+        let point = CGPoint(x: local.x, y: content.isFlipped ? local.y : content.bounds.height - local.y)
+        guard let target = targets.values.first(where: { $0.frame.contains(point) }) else { return false }
+        target.action(flags)
+        return true
     }
-    func updateNSView(_ view: CatcherView, context: Context) { view.onClick = onClick }
 }
