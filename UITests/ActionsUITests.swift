@@ -293,10 +293,9 @@ final class ActionsUITests: SchnellbildUITestCase {
         // The right pane opens on the same folder: into "Sorted" there
         let rightSorted = right.descendants(matching: .any).matching(identifier: "tile.Sorted").firstMatch
         XCTAssertTrue(rightSorted.waitForExistence(timeout: 15))
-        let deadline = Date().addingTimeInterval(10)
-        while !rightSorted.isHittable, Date() < deadline { RunLoop.current.run(until: Date().addingTimeInterval(0.3)) }
-        if !rightSorted.isHittable { XCTFail("TEMP tree:\n" + app.windows.firstMatch.debugDescription.prefix(12000)) }
-        rightSorted.doubleClick()
+        // By its place on screen: on macOS 26 the tile of a pane added next
+        // to the first one reports itself as not hittable
+        rightSorted.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).doubleClick()
         XCTAssertTrue(right.descendants(matching: .any).matching(identifier: "tile...").firstMatch.waitForExistence(timeout: 10))
 
         // Left: a.jpg and b.jpg marked (⇧→; a ⌘-click lands a row off here,
