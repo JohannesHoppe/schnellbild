@@ -24,6 +24,7 @@ struct ShortcutsHelpView: View {
             Shortcut(keys: "Return / Space / F3", action: "Open picture or video · open folder or archive"),
             Shortcut(keys: "Backspace", action: "Enclosing folder"),
             Shortcut(keys: "Home / End", action: "First / last item"),
+            Shortcut(keys: "L", action: "Grid or list (a click on a column sorts by it)"),
             Shortcut(keys: "⌘+ / ⌘−", action: "Larger / smaller thumbnails"),
             Shortcut(keys: "F2 / ⇧F6", action: "Rename the selected folder or file (also in the full view)"),
             Shortcut(keys: "Esc", action: "Clear search"),

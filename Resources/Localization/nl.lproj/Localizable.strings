@@ -202,3 +202,8 @@
 "Do you want to quit Schnellbild?" = "Wil je Schnellbild stoppen?";
 "Quit" = "Stop";
 "Full screen on / off (F, ⌃⌘F)" = "Schermvullend aan / uit (F, ⌃⌘F)";
+"Archive" = "Archief";
+"as Grid" = "als raster";
+"as List" = "als lijst";
+"Grid or list (L)" = "Raster of lijst (L)";
+"Grid or list (a click on a column sorts by it)" = "Raster of lijst (een klik op een kolom sorteert erop)";

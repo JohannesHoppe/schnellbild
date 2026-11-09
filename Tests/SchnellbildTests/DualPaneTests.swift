@@ -124,4 +124,24 @@ final class DualPaneTests: XCTestCase {
         XCTAssertEqual(defaults.string(forKey: "lastFolderPath"), one.path)
         XCTAssertEqual(defaults.string(forKey: "rightPane.lastFolderPath"), two.path)
     }
+
+    /// L: the list view, per pane and remembered; ↑↓ step one row.
+    func testLSwitchesToTheList() async throws {
+        let tree = try TempTree(self)
+        for n in ["a.jpg", "b.jpg", "c.jpg"] { try tree.file(n) }
+        let defaults = makeTestDefaults()
+        let m = BrowserModel(defaults: defaults)
+        await openAndWait(m, tree.root)
+        m.columnCount = 3
+        XCTAssertTrue(m.handleKey(.char("l"), command: false))
+        XCTAssertEqual(m.viewMode, .list)
+        XCTAssertEqual(m.columnCount, 1, "rows, one item each")
+        m.selectEntry(named: "a.jpg")
+        m.handleKey(.down, command: false)
+        XCTAssertEqual(m.selectedEntry?.name, "b.jpg")
+        XCTAssertEqual(BrowserModel(defaults: defaults).viewMode, .list, "remembered")
+        XCTAssertEqual(BrowserModel(defaults: defaults, settingsPrefix: "rightPane.").viewMode, .grid, "per pane")
+        m.handleKey(.char("L"), command: false)
+        XCTAssertEqual(m.viewMode, .grid)
+    }
 }
