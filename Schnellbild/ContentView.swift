@@ -119,13 +119,7 @@ private struct WindowView: View {
             // Tiles dropped onto a pane's free space go into its folder (the
             // whole pane takes drops, also where nothing is drawn)
             .contentShape(Rectangle())
-            .onDrop(of: [.fileURL], isTargeted: nil) { providers in
-                BrowserModel.testLog("drop on pane \(pane.folderURL?.lastPathComponent ?? "-")")
-                guard let folder = pane.folderURL else { return false }
-                TileDrag.loadURLs(providers) { urls in pane.move(urls, into: folder) }
-                window.activate(pane)
-                return true
-            }
+            .onDrop(of: [.fileURL], delegate: PaneDrop(pane: pane, window: window))
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier(pane === window.left ? "pane.left" : "pane.right")
     }
@@ -167,7 +161,7 @@ private struct WindowView: View {
 
             // The folder's name, where the window's title stands; a click
             // makes it editable to rename the folder
-            // FolderNameField(model: model)   // TEMP: does it push the sort menu out?
+            FolderNameField(model: model)
         }
         ToolbarItem(placement: .primaryAction) {
             // Two panes side by side, as in the file commanders (D, ⌃O)
@@ -932,14 +926,18 @@ struct VolumeDisplay: View {
 
 /// The window title: the folder's name, for the Window menu and Mission
 /// Control. In the title bar itself the name is `FolderNameField` (it can be
-/// clicked to rename), so the window's own title text is hidden.
+/// clicked to rename), so the toolbar leaves out the window's own title,
+/// and with it the room the title takes (the toolbar is full).
 private struct FolderTitle: ViewModifier {
     @ObservedObject var model: BrowserModel
 
     func body(content: Content) -> some View {
-        content
-            .navigationTitle(model.folderURL?.lastPathComponent ?? "Schnellbild")
-            // .background(TitleTextHidden())   // TEMP: does hiding the title drop the sort menu?
+        let titled = content.navigationTitle(model.folderURL?.lastPathComponent ?? "Schnellbild")
+        if #available(macOS 15, *) {
+            titled.toolbar(removing: .title)
+        } else {
+            titled.background(TitleTextHidden())
+        }
     }
 }
 
@@ -996,5 +994,26 @@ private struct FolderNameField: View {
         }
         .frame(maxWidth: 150)
         .onChange(of: model.folderURL) { editing = false }
+    }
+}
+
+/// Tiles dropped onto a pane's free space: into its folder.
+private struct PaneDrop: DropDelegate {
+    let pane: BrowserModel
+    let window: WindowModel
+
+    func validateDrop(info: DropInfo) -> Bool {
+        let valid = pane.folderURL != nil && info.hasItemsConforming(to: [.fileURL])
+        BrowserModel.testLog("pane drop valid \(valid)")
+        return valid
+    }
+    func dropUpdated(info: DropInfo) -> DropProposal? { DropProposal(operation: .move) }
+    func performDrop(info: DropInfo) -> Bool {
+        BrowserModel.testLog("drop on pane \(pane.folderURL?.lastPathComponent ?? "-")")
+        guard let folder = pane.folderURL else { return false }
+        let pane = pane
+        TileDrag.loadURLs(info.itemProviders(for: [.fileURL])) { urls in pane.move(urls, into: folder) }
+        window.activate(pane)
+        return true
     }
 }

@@ -1704,6 +1704,7 @@ final class BrowserModel: ObservableObject {
         keyRepeating = repeating
         defer { keyRepeating = false }
         let handled = dispatchKey(key, command: command, shift: shift, textEditing: textEditing)
+        Self.testLog("key \(key) command \(command) shift \(shift) typing \(textEditing): \(handled), marked \(marked.count)")
         // The mini keyboard lights up the key that acted, typed or clicked
         if handled { lastKeyPress = KeyPress(key: key, command: command, shift: shift) }
         return handled
