@@ -167,3 +167,6 @@
 "Quieter" = "Moins fort";
 "Pictures zoomed in: look further up / down · Videos: volume up / down (remembered)" = "Images agrandies : voir plus haut / plus bas · Vidéos : volume plus fort / moins fort (mémorisé)";
 "%lld so far" = "%lld pour l’instant";
+"New Folder" = "Nouveau dossier";
+"Create" = "Créer";
+"New folder: type its name, ↩ creates it, Esc creates none" = "Nouveau dossier : saisissez son nom, ↩ le crée, Échap n’en crée aucun";

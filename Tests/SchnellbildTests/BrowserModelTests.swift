@@ -42,6 +42,7 @@ final class FileActionsSpy {
     var opened: [URL] = []
     var trashed: [URL] = []
     var moved: [(URL, URL)] = []
+    var created: [URL] = []
     var confirm = true
     var confirmDetails: [String] = []
     var moveError: Error?
@@ -64,6 +65,15 @@ final class FileActionsSpy {
                 if let error = self.moveError { throw error }
                 self.moved.append((from, to))
                 try FileActions.live.move(from, to)
+            },
+            transfer: { from, to in
+                if let error = self.moveError { throw error }
+                self.moved.append((from, to))
+                return try FileActions.live.transfer(from, to)
+            },
+            createFolder: { url in
+                self.created.append(url)
+                try FileActions.live.createFolder(url)
             },
             conflicts: { target, source in
                 self.conflictOverride ?? FileActions.live.conflicts(target, source)
@@ -1193,6 +1203,61 @@ final class FileActionTests: XCTestCase {
         XCTAssertEqual(m.shownMediaEntry?.name, "b.jpg")
         XCTAssertEqual(m.zoom, 1)
         XCTAssertEqual(m.rotation, 0)
+    }
+
+    /// ⇧⌘N: the folder exists only once named; it is listed and selected.
+    func testNewFolderIsMadeOnlyWhenNamed() async throws {
+        let tree = try TempTree(self)
+        try tree.file("a.jpg")
+        try tree.folder("Taken")
+        let spy = FileActionsSpy()
+        let m = makeModel(spy)
+        await openAndWait(m, tree.root)
+        XCTAssertTrue(m.beginNewFolder())
+        XCTAssertTrue(m.newFolderRequested)
+        XCTAssertFalse(m.handleKey(.right, command: false), "the sheet keeps the keys")
+        XCTAssertThrowsError(try m.createFolder(named: "  ")) { XCTAssertEqual($0 as? RenameError, .emptyName) }
+        XCTAssertThrowsError(try m.createFolder(named: "a/b")) { XCTAssertEqual($0 as? RenameError, .invalidName) }
+        XCTAssertThrowsError(try m.createFolder(named: "Taken")) { XCTAssertEqual($0 as? RenameError, .alreadyExists("Taken")) }
+        XCTAssertTrue(spy.created.isEmpty, "nothing made yet")
+        let made = try m.createFolder(named: "Sorted")
+        XCTAssertTrue(FileManager.default.fileExists(atPath: made.path))
+        XCTAssertFalse(m.newFolderRequested)
+        XCTAssertEqual(m.selectedEntry?.name, "Sorted")
+        XCTAssertEqual(m.names, ["..", "Sorted", "Taken", "a.jpg"])
+
+        m.newFolderRequested = true   // Esc
+        m.newFolderRequested = false
+        XCTAssertEqual(spy.created.count, 1, "cancelled: no folder")
+
+        let zip = try tree.file("x.zip")
+        _ = zip
+        await openAndWait(m, tree.root.appendingPathComponent("Sorted"))
+        XCTAssertTrue(m.canCreateFolder)
+    }
+
+    /// Dropped onto a folder tile: into it (and out of this listing); onto
+    /// ".." a level up; not into itself, not into an archive.
+    func testMovingIntoAFolder() async throws {
+        let tree = try TempTree(self)
+        let a = try tree.file("a.jpg"), b = try tree.file("b.jpg")
+        let sorted = try tree.folder("Sorted")
+        let spy = FileActionsSpy()
+        let m = makeModel(spy)
+        await openAndWait(m, tree.root)
+        m.move([a, b], into: sorted)
+        XCTAssertEqual(m.names, ["..", "Sorted"])
+        XCTAssertTrue(FileManager.default.fileExists(atPath: sorted.appendingPathComponent("a.jpg").path))
+        m.move([sorted], into: sorted)
+        XCTAssertTrue(FileManager.default.fileExists(atPath: sorted.path), "not into itself")
+        await openAndWait(m, sorted)
+        m.move([sorted.appendingPathComponent("a.jpg")], into: tree.root)   // onto ".."
+        XCTAssertEqual(m.names, ["..", "b.jpg"])
+        XCTAssertTrue(FileManager.default.fileExists(atPath: tree.root.appendingPathComponent("a.jpg").path))
+        let archive = tree.root.appendingPathComponent("photos.zip")
+        let before = spy.moved.count
+        m.move([sorted.appendingPathComponent("b.jpg")], into: archive)
+        XCTAssertEqual(spy.moved.count, before, "nothing goes into an archive")
     }
 
     func testTrashCancelledKeepsFile() async throws {

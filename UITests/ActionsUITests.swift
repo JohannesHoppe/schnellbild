@@ -254,4 +254,30 @@ final class ActionsUITests: SchnellbildUITestCase {
         XCTAssertEqual(text(of: searchField), "album")
         waitForSelected("album")
     }
+
+    /// ⇧⌘N, a name, ↩: a folder; Esc instead: none. Then a tile dragged
+    /// onto it goes into it.
+    func testNewFolderAndDraggingIntoIt() throws {
+        launchOnTempDir()
+        app.typeKey("n", modifierFlags: [.command, .shift])
+        let field = app.textFields["newFolderField"]
+        XCTAssertTrue(field.waitForExistence(timeout: 5))
+        app.typeKey(.escape, modifierFlags: [])
+        eventually("closed") { !field.exists }
+        XCTAssertEqual(try FileManager.default.contentsOfDirectory(atPath: tempDir.path).filter { !$0.hasSuffix(".jpg") }, [],
+                       "Esc: no folder made")
+
+        app.typeKey("n", modifierFlags: [.command, .shift])
+        XCTAssertTrue(field.waitForExistence(timeout: 5))
+        field.typeText("Sorted\r")
+        let folder = tile("Sorted")
+        XCTAssertTrue(folder.waitForExistence(timeout: 10))
+        waitForSelected("Sorted")
+
+        tile("b.jpg").press(forDuration: 0.6, thenDragTo: folder)
+        eventually("b.jpg went into the folder", timeout: 10) { !self.tile("b.jpg").exists }
+        XCTAssertTrue(FileManager.default.fileExists(atPath: tempDir.appendingPathComponent("Sorted/b.jpg").path))
+        folder.doubleClick()
+        XCTAssertTrue(tile("b.jpg").waitForExistence(timeout: 10), "inside the folder")
+    }
 }

@@ -84,6 +84,8 @@ struct ThumbnailGridView: View {
             }
         }
         .contentShape(Rectangle())
+        // Dragged onto a folder tile (or ".."), into the Finder too
+        .modifier(TileDrag(entry: entry))
         .onTapGesture(count: 2) {
             model.searchFocused = false
             guard model.select(entry) else { return }
@@ -312,5 +314,56 @@ struct OtherFilesList: View {
     static func icon(for file: OtherFile) -> NSImage {
         let type = UTType(filenameExtension: file.url.pathExtension) ?? .data
         return NSWorkspace.shared.icon(for: type)
+    }
+}
+
+/// A tile as a drag source (its file, for folder tiles and the Finder) and,
+/// for a folder tile or "..", a drop target: what is dropped moves into it
+/// (copied when on another volume). Nothing inside archives takes part.
+struct TileDrag: ViewModifier {
+    let entry: GridEntry
+    @EnvironmentObject var model: BrowserModel
+    @State private var targeted = false
+
+    /// Marks drags that start on a tile, so the window's drop zones
+    /// (Browse / Slideshow) stay out of the way.
+    static let type = UTType(exportedAs: "art.haushoppe.schnellbild.tile")
+
+    private var inArchive: Bool { ArchivePath.split(entry.url) != nil }
+    private var acceptsDrops: Bool {
+        (entry.kind == .folder || entry.kind == .parent) && !inArchive && ArchiveName.format(of: entry.name) == nil
+    }
+
+    func body(content: Content) -> some View {
+        content
+            .overlay {
+                if targeted {
+                    RoundedRectangle(cornerRadius: 8).strokeBorder(Color.accentColor, lineWidth: 3)
+                }
+            }
+            .onDrag {
+                let provider = NSItemProvider(object: entry.url as NSURL)
+                provider.registerDataRepresentation(forTypeIdentifier: Self.type.identifier, visibility: .ownProcess) { done in
+                    done(Data(entry.url.path.utf8), nil)
+                    return nil
+                }
+                return provider
+            }
+            .onDrop(of: [.fileURL], isTargeted: acceptsDrops ? $targeted : .constant(false)) { providers in
+                guard acceptsDrops, !model.isFiltering || entry.kind == .folder else { return false }
+                let folder = entry.url
+                let group = DispatchGroup()
+                var urls: [URL] = []
+                let lock = NSLock()
+                for provider in providers {
+                    group.enter()
+                    _ = provider.loadObject(ofClass: URL.self) { url, _ in
+                        if let url { lock.lock(); urls.append(url); lock.unlock() }
+                        group.leave()
+                    }
+                }
+                group.notify(queue: .main) { model.move(urls, into: folder) }
+                return true
+            }
     }
 }

@@ -167,3 +167,6 @@
 "Quieter" = "Mais baixo";
 "Pictures zoomed in: look further up / down · Videos: volume up / down (remembered)" = "Imagens ampliadas: ver mais acima / abaixo · Vídeos: volume mais alto / mais baixo (lembrado)";
 "%lld so far" = "%lld até agora";
+"New Folder" = "Nova Pasta";
+"Create" = "Criar";
+"New folder: type its name, ↩ creates it, Esc creates none" = "Nova pasta: digite o nome, ↩ a cria, Esc não cria nenhuma";

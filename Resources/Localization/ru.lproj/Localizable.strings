@@ -167,3 +167,6 @@
 "Quieter" = "Тише";
 "Pictures zoomed in: look further up / down · Videos: volume up / down (remembered)" = "Увеличенные изображения: смотреть выше / ниже · Видео: громче / тише (запоминается)";
 "%lld so far" = "пока %lld";
+"New Folder" = "Новая папка";
+"Create" = "Создать";
+"New folder: type its name, ↩ creates it, Esc creates none" = "Новая папка: введите имя, ↩ создаёт её, Esc не создаёт ничего";

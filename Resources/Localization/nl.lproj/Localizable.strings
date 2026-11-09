@@ -167,3 +167,6 @@
 "Quieter" = "Zachter";
 "Pictures zoomed in: look further up / down · Videos: volume up / down (remembered)" = "Ingezoomde afbeeldingen: verder omhoog / omlaag kijken · Video’s: volume harder / zachter (onthouden)";
 "%lld so far" = "%lld tot nu toe";
+"New Folder" = "Nieuwe map";
+"Create" = "Maak aan";
+"New folder: type its name, ↩ creates it, Esc creates none" = "Nieuwe map: typ de naam, ↩ maakt hem aan, Esc maakt er geen";

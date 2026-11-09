@@ -167,3 +167,6 @@
 "Quieter" = "작게";
 "Pictures zoomed in: look further up / down · Videos: volume up / down (remembered)" = "확대한 이미지: 위 / 아래 보기 · 비디오: 음량 높이기 / 낮추기(기억됨)";
 "%lld so far" = "현재까지 %lld";
+"New Folder" = "새로운 폴더";
+"Create" = "생성";
+"New folder: type its name, ↩ creates it, Esc creates none" = "새로운 폴더: 이름을 입력하고 ↩로 생성, Esc는 생성하지 않음";

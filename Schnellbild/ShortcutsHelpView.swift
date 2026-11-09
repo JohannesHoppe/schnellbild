@@ -67,6 +67,7 @@ struct ShortcutsHelpView: View {
             Shortcut(keys: "⌘1 … ⌘5", action: "Sort by name, kind, date modified, date taken, size (again: reverse)"),
             Shortcut(keys: "f / ⌃⌘F", action: "Toggle full screen"),
             Shortcut(keys: "⌘O", action: "Open folder"),
+            Shortcut(keys: "⇧⌘N", action: "New folder: type its name, ↩ creates it, Esc creates none"),
             Shortcut(keys: "⇧⌘R", action: "Reveal in Finder"),
             Shortcut(keys: "⌘↩", action: "Open with default app"),
             Shortcut(keys: "⌘⌫", action: "Move to Trash"),

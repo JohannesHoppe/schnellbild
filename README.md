@@ -199,18 +199,19 @@ Name, type, resolution, size and date of the item on screen.
 |---|---|
 | i | show / hide the file info |
 
-### Rename, reveal, trash
+### Rename, reveal, trash, sort into folders
 
 <p align="center"><picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/rename-dark.png">
   <img src="docs/screenshots/rename-light.png" width="760" alt="Renaming a folder">
 </picture></p>
 
-Rename a folder or file in place (F2, the Actions menu, or right-click), in the grid or straight from the full view. For files the name without its extension is selected, like in Finder. The search results and the history follow the new name. Reveal an item in Finder, open it in its default app, or move it to the Trash after a confirmation.
+Rename a folder or file in place (F2, the Actions menu, or right-click), in the grid or straight from the full view. For files the name without its extension is selected, like in Finder. The search results and the history follow the new name. Reveal an item in Finder, open it in its default app, or move it to the Trash after a confirmation. To sort pictures into folders: ⇧⌘N makes a folder (it exists only once you have named it and pressed ↩), then drag tiles onto a folder tile, or onto `..` to move them up a level. On the same volume they are moved, onto another one copied, as in the Finder. Tiles can be dragged to the Finder too. Inside archives nothing is changed.
 
 | Key | Action |
 |---|---|
 | F2 | rename the selected folder or file, also in the full view |
+| ⇧⌘N | new folder: type its name, ↩ creates it, Esc creates none |
 | ⇧⌘R | reveal in Finder |
 | ⌘↩ | open with the default app |
 | ⌘⌫ | move to Trash |

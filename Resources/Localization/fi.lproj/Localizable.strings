@@ -167,3 +167,6 @@
 "Quieter" = "Hiljemmalle";
 "Pictures zoomed in: look further up / down · Videos: volume up / down (remembered)" = "Lähennetyt kuvat: katso ylemmäs / alemmas · Videot: äänenvoimakkuus ylös / alas (muistetaan)";
 "%lld so far" = "tähän mennessä %lld";
+"New Folder" = "Uusi kansio";
+"Create" = "Luo";
+"New folder: type its name, ↩ creates it, Esc creates none" = "Uusi kansio: kirjoita nimi, ↩ luo sen, Esc ei luo mitään";

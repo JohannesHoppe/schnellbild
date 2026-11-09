@@ -167,3 +167,6 @@
 "Quieter" = "调低音量";
 "Pictures zoomed in: look further up / down · Videos: volume up / down (remembered)" = "放大的图像：向上 / 向下查看 · 视频：调高 / 调低音量（会记住）";
 "%lld so far" = "目前 %lld";
+"New Folder" = "新建文件夹";
+"Create" = "创建";
+"New folder: type its name, ↩ creates it, Esc creates none" = "新建文件夹：输入名称，↩ 创建，Esc 不创建";

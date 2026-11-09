@@ -50,6 +50,9 @@ struct SchnellbildApp: App {
             CommandMenu("Actions") {
                 // Not during a slideshow: the selection is in the hidden grid,
                 // not what's on screen.
+                Button("New Folder") { model.beginNewFolder() }
+                    .keyboardShortcut("n", modifiers: [.command, .shift])
+                    .disabled(!model.canCreateFolder)
                 Button("Rename… (F2)") { model.beginRename() }
                     .disabled(model.slideshow != nil || model.showHelp || !model.selectionIsChangeable)
                 Button("Reveal in Finder") { model.revealInFinder() }

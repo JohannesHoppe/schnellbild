@@ -167,3 +167,6 @@
 "Quieter" = "Tišeji";
 "Pictures zoomed in: look further up / down · Videos: volume up / down (remembered)" = "Přiblížené obrázky: posun nahoru / dolů · Videa: hlasitěji / tišeji (zapamatuje se)";
 "%lld so far" = "zatím %lld";
+"New Folder" = "Nová složka";
+"Create" = "Vytvořit";
+"New folder: type its name, ↩ creates it, Esc creates none" = "Nová složka: zadejte název, ↩ ji vytvoří, Esc žádnou nevytvoří";
