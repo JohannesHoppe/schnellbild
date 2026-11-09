@@ -89,6 +89,8 @@ final class PlayerSpy: PlaybackControl {
     var enhancement = Enhancement.off
     var enhanced: Bool { enhancement == .auto }
     func setEnhancement(_ enhancement: Enhancement) { self.enhancement = enhancement }
+    var volume: Double?
+    func setVolume(_ volume: Double) { self.volume = volume }
 }
 
 func makeTestDefaults() -> UserDefaults {
@@ -1675,8 +1677,31 @@ final class PlaybackTests: XCTestCase {
         XCTAssertEqual(m.selectedEntry?.name, "a.jpg")
         m.selectEntry(named: "clip.mp4")
         m.handleKey(.down, command: false)
-        XCTAssertEqual(m.selectedEntry?.name, "z.jpg")
+        XCTAssertEqual(m.selectedEntry?.name, "clip.mp4", "↓ on a video is its volume")
+        XCTAssertEqual(player.volume ?? -1, 0.9, accuracy: 0.001)
         XCTAssertEqual(player.calls, [], "no seeking")
+    }
+
+    /// ↑/↓ on a video: one volume for all videos, in tenths, from 100 %,
+    /// remembered; on a picture they still page.
+    func testUpAndDownSetTheVolumeOfEveryVideo() async throws {
+        let (m, player) = try await openOnVideo()
+        XCTAssertEqual(m.volume, 1, "starts at 100 %")
+        m.handleKey(.up, command: false)
+        XCTAssertEqual(m.volume, 1, "no louder than 100 %")
+        m.handleKey(.down, command: false)
+        m.handleKey(.down, command: false)
+        XCTAssertEqual(m.volume, 0.8, accuracy: 0.001)
+        XCTAssertEqual(player.volume ?? -1, 0.8, accuracy: 0.001)
+        XCTAssertEqual(BrowserModel(defaults: m.defaults).volume, 0.8, accuracy: 0.001, "remembered")
+        let next = PlayerSpy()
+        m.activePlayer = next
+        XCTAssertEqual(next.volume ?? -1, 0.8, accuracy: 0.001, "the next video gets it too")
+        m.selectEntry(named: "z.jpg")
+        m.handleKey(.up, command: false)
+        XCTAssertEqual(m.selectedEntry?.name, "clip.mp4", "on a picture ↑ pages")
+        for _ in 0..<12 { m.selectEntry(named: "clip.mp4"); m.handleKey(.down, command: false) }
+        XCTAssertEqual(m.volume, 0, "no quieter than silent")
     }
 
     func testArrowsPageWhileTheVideoLengthIsUnknown() async throws {

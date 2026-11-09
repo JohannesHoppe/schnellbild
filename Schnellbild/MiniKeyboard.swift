@@ -64,6 +64,8 @@ struct MiniKeyboard: View {
                 Key(cap: "→", word: "+10 %", input: .right),
                 Key(cap: "⇧←", word: "−1 %", input: .left, shift: true),
                 Key(cap: "⇧→", word: "+1 %", input: .right, shift: true),
+                Key(cap: "↑", word: "Louder", input: .up),
+                Key(cap: "↓", word: "Quieter", input: .down),
                 Key(cap: "⌘←", word: "Previous item", input: .left, command: true),
                 Key(cap: "⌘→", word: "Next item", input: .right, command: true),
                 Key(cap: "E", word: "Auto Enhance", input: .char("e")),

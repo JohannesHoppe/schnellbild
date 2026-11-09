@@ -199,6 +199,14 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
     /// got there, so quick key presses would otherwise start from the old one.
     private var pendingSeek: (target: Double, at: Date)?
 
+    /// The app's volume, set again once VLC has its audio output (it
+    /// opens with the media).
+    private var volume = 1.0
+    func setVolume(_ volume: Double) {
+        self.volume = volume
+        player.audio?.volume = Int32((volume * 100).rounded())
+    }
+
     var duration: Double? {
         let ms = player.media?.length.intValue ?? 0
         return ms > 0 ? Double(ms) / 1000 : nil
@@ -247,6 +255,7 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         switch state {
         case .playing:
             isPlaying = true
+            player.audio?.volume = Int32((volume * 100).rounded())
             if let position = positionOnceOpen {
                 positionOnceOpen = nil
                 player.position = position

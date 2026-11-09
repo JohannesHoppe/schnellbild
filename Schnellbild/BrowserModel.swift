@@ -56,14 +56,17 @@ protocol PlaybackControl: AnyObject {
     var playsWithoutLength: Bool { get }
     /// The picture's size in pixels as shown, once known (the Inspector).
     var videoSize: CGSize? { get }
-    /// The length in seconds, once known (fine steps in seconds).
+    /// The length in seconds, once known.
     var duration: Double? { get }
+    /// Sound, 0 … 1 (the app's one volume for all videos).
+    func setVolume(_ volume: Double)
 }
 
 extension PlaybackControl {
     var playsWithoutLength: Bool { false }
     var videoSize: CGSize? { nil }
     var duration: Double? { nil }
+    func setVolume(_ volume: Double) {}
 }
 
 /// Side effects on the file system and the workspace. Injectable, so tests
@@ -492,7 +495,22 @@ final class BrowserModel: ObservableObject {
         didSet {
             videoPaused = false
             if enhancement != .off { activePlayer?.setEnhancement(enhancement) }
+            activePlayer?.setVolume(volume)
         }
+    }
+
+    static let volumeKey = "videoVolume"
+    /// The volume of every video, 0 … 1 (↑ / ↓ on a video, in tenths);
+    /// starts at 100 %, remembered.
+    @Published private(set) var volume: Double = 1
+    /// Changes with every volume step: the volume display shows a while.
+    @Published private(set) var volumeChange: UUID?
+
+    func changeVolume(by delta: Double) {
+        volume = (min(max(volume + delta, 0), 1) * 10).rounded() / 10
+        defaults.set(volume, forKey: Self.volumeKey)
+        activePlayer?.setVolume(volume)
+        volumeChange = UUID()
     }
     /// Auto enhance (E, the wand): works out exposure, contrast, saturation
     /// and sharpness for each photo and, now and then, for the video
@@ -590,6 +608,7 @@ final class BrowserModel: ObservableObject {
             searchDebounce = .milliseconds(ms)
         }
         showMiniKeyboard = defaults.bool(forKey: Self.miniKeyboardKey)
+        if let stored = defaults.object(forKey: Self.volumeKey) as? Double { volume = min(max(stored, 0), 1) }
         if let raw = defaults.string(forKey: Self.sortKeyKey), let key = SortKey(rawValue: raw) {
             sortKey = key
             sortAscending = defaults.object(forKey: Self.sortAscendingKey) as? Bool ?? key.startsAscending
@@ -1593,8 +1612,10 @@ final class BrowserModel: ObservableObject {
             return true
         case .up:
             if command { goToParentFolder(); return true }
+            if mode == .detail, shownMediaEntry?.kind == .video { changeVolume(by: 0.1); return true }
             mode == .detail ? stepMedia(-1) : stepRow(-1); return true
         case .down:
+            if mode == .detail, shownMediaEntry?.kind == .video { changeVolume(by: -0.1); return true }
             mode == .detail ? stepMedia(+1) : stepRow(+1); return true
         case .home:
             guard mode == .grid else { return false }
@@ -2038,6 +2059,8 @@ final class BrowserModel: ObservableObject {
             if command { slideshowStep(direction) } else if shift { fineSkim(direction) } else { skim(direction) }
             return true
         case .up, .down:
+            // A video: its volume; a picture: the next / previous one
+            if shownMediaEntry?.kind == .video { changeVolume(by: key == .up ? 0.1 : -0.1); return true }
             slideshowStep(key == .down ? 1 : -1); return true
         case .char(let raw):
             let c = Character(raw.lowercased())   // also with Shift or Caps Lock
@@ -2182,6 +2205,8 @@ final class AVPlaybackControl: PlaybackControl {
     }
 
     var isPlaying: Bool { player.timeControlStatus != .paused }
+
+    func setVolume(_ volume: Double) { player.volume = Float(volume) }
 
     var videoSize: CGSize? {
         let size = player.currentItem?.presentationSize ?? .zero

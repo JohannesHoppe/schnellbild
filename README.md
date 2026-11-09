@@ -96,7 +96,8 @@ One picture, as large as the window allows, with its position in the folder. The
 | Key | Action |
 |---|---|
 | ← → | previous / next picture (on a video: see below) |
-| ⌘← ⌘→ ↑ ↓ | previous / next item, also from a video |
+| ⌘← ⌘→ | previous / next item, also from a video |
+| ↑ ↓ | pictures: previous / next; videos: volume up / down |
 | Space | next picture |
 | Esc / Backspace / Return | back to the grid, at the same place |
 
@@ -123,7 +124,8 @@ It starts where you are: from the full view at the picture you're looking at; in
 | Space | pause / resume |
 | ← → | previous / next picture; in a video 10 % of its length back / ahead |
 | ⇧← ⇧→ | in a video 1 % of its length back / ahead |
-| ⌘← ⌘→ ↑ ↓ | previous / next item |
+| ⌘← ⌘→ | previous / next item |
+| ↑ ↓ | pictures: previous / next; videos: volume up / down |
 | f / i / e / a | full screen, file info, auto enhance, sliders, as in the full view |
 | Esc | end the slideshow |
 
@@ -156,6 +158,7 @@ Videos play right away, MP4 and MOV through AVKit, formats macOS can't play (AVI
 | Space | play / pause |
 | ← → | 10 % of the length back / ahead; at the end on to the next item, at the start back to the previous one |
 | ⌘← ⌘→ | previous / next item straight away |
+| ↑ ↓ | volume up / down in tenths, for every video, remembered (shown while it changes) |
 | ⇧← ⇧→ | 1 % of the length back / ahead, to find a place exactly |
 
 ### Auto enhance and adjustments

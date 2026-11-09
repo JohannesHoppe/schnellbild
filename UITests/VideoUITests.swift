@@ -36,6 +36,26 @@ final class VideoUITests: SchnellbildUITestCase {
     func testTheProgressBarFollowsAnAVKitVideo() throws { try checkProgressBar(vlc: false) }
     func testTheProgressBarFollowsAVLCVideo() throws { try checkProgressBar(vlc: true) }
 
+    /// ↓ / ↑ on a video set the volume, shown a moment; remembered across launches.
+    func testUpAndDownSetTheVolume() throws {
+        try put("clip.mp4", at: "clip.mp4")
+        let path = tempDir.appendingPathComponent("clip.mp4").path
+        launch(open: path)
+        XCTAssertTrue(element("video.avkit").waitForExistence(timeout: 20))
+        app.typeKey(.downArrow, modifierFlags: [])
+        let display = element("volumeDisplay")
+        XCTAssertTrue(display.waitForExistence(timeout: 5))
+        XCTAssertTrue(text(of: display).contains("90 %"), text(of: display))
+        waitForBadge(containing: "clip.mp4")   // still the video, not the next item
+        eventually("the display goes", timeout: 5) { !display.exists }
+        app.terminate()
+        launch(open: path, resetState: false)
+        XCTAssertTrue(element("video.avkit").waitForExistence(timeout: 20))
+        app.typeKey(.downArrow, modifierFlags: [])
+        XCTAssertTrue(element("volumeDisplay").waitForExistence(timeout: 5))
+        XCTAssertTrue(text(of: element("volumeDisplay")).contains("80 %"), "remembered: \(text(of: element("volumeDisplay")))")
+    }
+
     func testMKVFallsBackToVLCAndSpaceTogglesPause() throws {
         try put("clip.mkv", at: "clip.mkv")
         launch(open: tempDir.appendingPathComponent("clip.mkv").path)
