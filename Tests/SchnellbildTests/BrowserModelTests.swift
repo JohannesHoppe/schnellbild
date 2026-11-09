@@ -2127,9 +2127,19 @@ final class ReviewFixTests: XCTestCase {
         XCTAssertNil(BrowserModel.mediaKind(of: URL(fileURLWithPath: "/x/._a.jpg")), "macOS's '._' companion files")
     }
 
-    /// SVG: ImageIO can't decode it, so the full view couldn't show it.
-    func testSVGIsNotShown() {
-        XCTAssertNil(BrowserModel.mediaKind(of: URL(fileURLWithPath: "/x/logo.svg")))
+    /// SVG is a picture like any other, drawn sharp at the size asked for.
+    func testSVGIsAPictureDrawnAtAnySize() throws {
+        XCTAssertEqual(BrowserModel.mediaKind(of: URL(fileURLWithPath: "/x/logo.SVG")), .image)
+        let tree = try TempTree(self)
+        let svg = try tree.file("logo.svg")
+        try Data(##"<svg xmlns="http://www.w3.org/2000/svg" width="200" height="100"><rect width="200" height="100" fill="#ff0000"/></svg>"##.utf8).write(to: svg)
+        let (picture, size) = try XCTUnwrap(VectorPicture.render(svg, longestSide: 1600))
+        XCTAssertEqual(size, CGSize(width: 200, height: 100))
+        XCTAssertEqual(picture.width, 1600)
+        XCTAssertEqual(picture.height, 800)
+        let stats = try XCTUnwrap(PictureStats.of(CIImage(cgImage: picture)))
+        XCTAssertGreaterThan(stats.mean, 0.2, "drawn, not empty")
+        XCTAssertEqual(MediaInfo.pixelSize(of: svg), CGSize(width: 200, height: 100), "the Inspector's resolution")
     }
 
     /// A package (".app", ".photoslibrary") is one item to the user, as in

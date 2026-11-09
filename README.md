@@ -233,7 +233,7 @@ Early, but already a usable daily driver. Known limits:
 - The slideshow interval is fixed at 3 s.
 - `1` (100 %) is approximate (it assumes the main display's scale).
 - Animated GIFs don't zoom or pan.
-- SVG files aren't shown. Packages such as the Photos library count as one file, as in the Finder: they aren't browsed, searched or played.
+- Packages such as the Photos library count as one file, as in the Finder: they aren't browsed, searched or played.
 
 Building from source, tests and releases: [BUILDING.md](BUILDING.md).
 

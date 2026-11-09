@@ -126,8 +126,9 @@ enum MediaInfo {
         return (5...8).contains(orientation) ? CGSize(width: h, height: w) : CGSize(width: w, height: h)
     }
 
-    /// Pixel dimensions for a file URL.
+    /// Pixel dimensions for a file URL; for an SVG its own size.
     static func pixelSize(of url: URL) -> CGSize? {
+        if VectorPicture.isVector(url) { return VectorPicture.size(of: url) }
         guard let source = CGImageSourceCreateWithURL(url as CFURL, nil) else { return nil }
         return pixelSize(from: source)
     }

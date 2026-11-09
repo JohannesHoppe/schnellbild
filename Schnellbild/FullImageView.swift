@@ -166,6 +166,11 @@ struct FullImageView: View {
     private func load(maxPixel: Int) async {
         let url = self.url
         let result = await Task.detached(priority: .userInitiated) { () -> (NSImage, CGSize, CGImage)? in
+            if VectorPicture.isVector(url) {
+                guard let rendered = VectorPicture.render(url, longestSide: maxPixel) else { return nil }
+                let cg = rendered.0
+                return (NSImage(cgImage: cg, size: NSSize(width: cg.width, height: cg.height)), rendered.1, cg)
+            }
             guard let src = CGImageSourceCreateWithURL(url as CFURL, nil) else { return nil }
             let native = MediaInfo.pixelSize(from: src) ?? .zero
 
@@ -203,12 +208,17 @@ struct FullImageView: View {
     }
 
     /// The longest side to decode at: the full size when zoomed in, else
-    /// the view's size in pixels (never more than the file has).
+    /// the view's size in pixels (never more than the file has). A vector
+    /// picture (SVG) has no pixels of its own: drawn at the view's size,
+    /// zoomed in at the zoomed size.
     private func wantedSide(in container: CGSize) -> Int {
         guard let native = nativeSize, native.width > 0, native.height > 0 else { return 0 }
+        let view = Int(max(container.width, container.height) * NSScreen.mainBackingScale)
+        if VectorPicture.isVector(url) {
+            return min(Int(CGFloat(view) * max(model.zoom, 1)), VectorPicture.largestSide)
+        }
         let full = Int(max(native.width, native.height))
         if model.zoom > 1.01 { return full }
-        let view = Int(max(container.width, container.height) * NSScreen.mainBackingScale)
         return min(view, full)
     }
 
@@ -243,5 +253,40 @@ struct FullImageView: View {
         }.value
         guard !Task.isCancelled, let result else { return }
         enhanced = (look, NSImage(cgImage: result, size: NSSize(width: result.width, height: result.height)))
+    }
+}
+
+/// SVG: ImageIO doesn't read it, AppKit's `NSImage` draws it, as a vector
+/// picture at any size.
+enum VectorPicture {
+    /// Drawn no larger than this (a 64 MB picture at full zoom).
+    static let largestSide = 8192
+
+    static func isVector(_ url: URL) -> Bool { url.pathExtension.lowercased() == "svg" }
+
+    /// The picture's own size (points from its width/height or viewBox).
+    static func size(of url: URL) -> CGSize? {
+        guard let image = NSImage(contentsOf: url), image.size.width > 0, image.size.height > 0 else { return nil }
+        return image.size
+    }
+
+    /// Drawn with its longest side `longestSide` pixels, on its own
+    /// background (transparent where the SVG draws nothing); with its size.
+    static func render(_ url: URL, longestSide: Int) -> (CGImage, CGSize)? {
+        guard let image = NSImage(contentsOf: url), image.size.width > 0, image.size.height > 0 else { return nil }
+        let size = image.size
+        let scale = CGFloat(max(longestSide, 1)) / max(size.width, size.height)
+        let width = max(Int((size.width * scale).rounded()), 1)
+        let height = max(Int((size.height * scale).rounded()), 1)
+        guard let context = CGContext(data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: 0,
+                                      space: CGColorSpace(name: CGColorSpace.sRGB)!,
+                                      bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else { return nil }
+        let graphics = NSGraphicsContext(cgContext: context, flipped: false)
+        NSGraphicsContext.saveGraphicsState()
+        NSGraphicsContext.current = graphics
+        image.draw(in: NSRect(x: 0, y: 0, width: width, height: height))
+        NSGraphicsContext.restoreGraphicsState()
+        guard let cg = context.makeImage() else { return nil }
+        return (cg, size)
     }
 }
