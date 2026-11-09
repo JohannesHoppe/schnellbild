@@ -357,7 +357,6 @@ extension ContentView {
 /// The window shows one, or two side by side (the dual pane).
 struct PaneView: View {
     @EnvironmentObject var model: BrowserModel
-    @State private var made = { BrowserModel.testLog("pane view state made"); return true }()
 
     var body: some View {
         Group {
