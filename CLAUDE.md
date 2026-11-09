@@ -70,8 +70,10 @@ There is **no Xcode project for the app build**; `xcodegen` generates
     letters a letter key is read as on the user's Latin layout (`LatinKeys`).
   - Packages (`.photoslibrary`, `.app`) are single items, as in the Finder:
     `entry(for:keys:)` drops them, so listing, search and slideshow never
-    walk into them (`containsMedia` skips them too). SVG isn't an image type
-    (ImageIO can't decode it).
+    walk into them (`containsMedia` skips them too).
+  - SVG is an image like any other. ImageIO can't read it, so the full view
+    draws it with `NSImage` (`VectorPicture`, in `FullImageView.swift`) at
+    the view's size, larger when zoomed in; QuickLook makes its tiles.
   - Full screen goes through `FullScreenSwitch`: a request during the
     window's animation (an empty slideshow ending at once) is carried out
     when it ends. Window actions use `BrowserModel.appWindow` (the main

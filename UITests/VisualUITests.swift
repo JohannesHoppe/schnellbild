@@ -407,6 +407,24 @@ final class VisualUITests: SchnellbildUITestCase {
         }
     }
 
+    /// An SVG shows like any picture: drawn sharp at the window's size, its
+    /// colours as in the file, its size in the Inspector.
+    func testAnSVGIsShownLikeAPhoto() throws {
+        try put("vector.svg", at: "vector.svg")
+        launch(open: tempDir.appendingPathComponent("vector.svg").path)
+        let image = element("fullImage")
+        eventually("the SVG loads", timeout: 15) { self.text(of: image).hasSuffix("loaded") }
+        XCTAssertFalse(text(of: image).contains("decoded 200 px"), "drawn at the window's size: \(text(of: image))")
+        settle(1)
+        let f = image.frame
+        // Left of the white circle in the middle: the red background
+        let red = try screenStats(of: CGRect(x: f.midX - f.width * 0.35, y: f.midY - 10, width: f.width * 0.15, height: 20))
+        XCTAssertGreaterThan(red.red, 0.6, "red as in the file: \(red)")
+        XCTAssertLessThan(red.green, 0.3, "red as in the file: \(red)")
+        app.typeKey("i", modifierFlags: [])
+        XCTAssertTrue(app.staticTexts["200 × 100 px"].waitForExistence(timeout: 5))
+    }
+
     /// A photo changed in another app gets a new tile once its folder is
     /// opened again, not the old picture from the session's cache.
     func testAChangedPhotoGetsANewTile() throws {

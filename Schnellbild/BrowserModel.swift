@@ -484,7 +484,7 @@ final class BrowserModel: ObservableObject {
     nonisolated static let imageExtensions: Set<String> = [
         "jpg", "jpeg", "png", "gif", "heic", "heif", "tiff", "tif", "bmp",
         "webp", "psd", "pdf", "cr2", "cr3", "nef", "arw", "dng", "raf",
-        "orf", "rw2", "raw", "icns"
+        "orf", "rw2", "raw", "icns", "svg"
     ]
     nonisolated static let videoExtensions: Set<String> = [
         "mp4", "mov", "m4v", "avi", "mkv", "webm", "m2ts", "mts",
