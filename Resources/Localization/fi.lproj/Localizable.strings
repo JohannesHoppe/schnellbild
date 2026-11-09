@@ -99,7 +99,6 @@
 "About Schnellbild" = "Tietoja: Schnellbild";
 "Other files, not pictures or videos" = "Muut tiedostot, eivät kuvia tai videoita";
 "This folder is empty" = "Tämä kansio on tyhjä";
-"Backspace goes up one folder level." = "Askelpalautin siirtyy yhden kansiotason ylös.";
 "Other files: %lld" = "Muut tiedostot: %lld";
 "This folder can't be read" = "Tätä kansiota ei voi lukea";
 "This archive can't be read" = "Tätä arkistoa ei voi lukea";
@@ -207,3 +206,5 @@
 "as List" = "luettelona";
 "Grid or list (L)" = "Ruudukko tai luettelo (L)";
 "Grid or list (a click on a column sorts by it)" = "Ruudukko tai luettelo (sarakkeen osoitus järjestää sen mukaan)";
+"Back (where you were, also a search); without history the enclosing folder" = "Takaisin (missä olit, myös hakuun); ilman historiaa ylempään kansioon";
+"⌘↑ goes up one folder level." = "⌘↑ siirtyy yhden kansiotason ylös.";

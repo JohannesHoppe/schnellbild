@@ -99,7 +99,6 @@
 "About Schnellbild" = "Om Schnellbild";
 "Other files, not pictures or videos" = "Andre filer, ikke bilder eller videoer";
 "This folder is empty" = "Denne mappen er tom";
-"Backspace goes up one folder level." = "Tilbaketasten går ett mappenivå opp.";
 "Other files: %lld" = "Andre filer: %lld";
 "This folder can't be read" = "Denne mappen kan ikke leses";
 "This archive can't be read" = "Dette arkivet kan ikke leses";
@@ -207,3 +206,5 @@
 "as List" = "som liste";
 "Grid or list (L)" = "Rutenett eller liste (L)";
 "Grid or list (a click on a column sorts by it)" = "Rutenett eller liste (et klikk på en kolonne sorterer etter den)";
+"Back (where you were, also a search); without history the enclosing folder" = "Tilbake (dit du var, også til et søk); uten historikk til overordnet mappe";
+"⌘↑ goes up one folder level." = "⌘↑ går ett mappenivå opp.";

@@ -99,7 +99,6 @@
 "About Schnellbild" = "关于 Schnellbild";
 "Other files, not pictures or videos" = "其他文件（不是图像或视频）";
 "This folder is empty" = "此文件夹为空";
-"Backspace goes up one folder level." = "按 Backspace 返回上一级文件夹。";
 "Other files: %lld" = "其他文件：%lld";
 "This folder can't be read" = "无法读取此文件夹";
 "This archive can't be read" = "无法读取此归档";
@@ -207,3 +206,5 @@
 "as List" = "以列表显示";
 "Grid or list (L)" = "网格或列表 (L)";
 "Grid or list (a click on a column sorts by it)" = "网格或列表（点按某一栏按其排序）";
+"Back (where you were, also a search); without history the enclosing folder" = "返回（之前的位置，也包括搜索）；没有历史时前往上一级文件夹";
+"⌘↑ goes up one folder level." = "按 ⌘↑ 返回上一级文件夹。";

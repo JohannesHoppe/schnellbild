@@ -99,7 +99,6 @@
 "About Schnellbild" = "Schnellbild について";
 "Other files, not pictures or videos" = "その他のファイル（画像・ビデオ以外）";
 "This folder is empty" = "このフォルダは空です";
-"Backspace goes up one folder level." = "Backspace で 1 つ上のフォルダに移動します。";
 "Other files: %lld" = "その他のファイル: %lld";
 "This folder can't be read" = "このフォルダは読み込めません";
 "This archive can't be read" = "このアーカイブは読み込めません";
@@ -207,3 +206,5 @@
 "as List" = "リストで表示";
 "Grid or list (L)" = "グリッドまたはリスト (L)";
 "Grid or list (a click on a column sorts by it)" = "グリッドまたはリスト（列をクリックするとその列で並べ替え）";
+"Back (where you were, also a search); without history the enclosing folder" = "戻る（前の場所、検索にも）。履歴がなければ上のフォルダへ";
+"⌘↑ goes up one folder level." = "⌘↑ で 1 つ上のフォルダに移動します。";

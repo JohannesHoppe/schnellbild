@@ -99,7 +99,6 @@
 "About Schnellbild" = "Schnellbild Hakkında";
 "Other files, not pictures or videos" = "Diğer dosyalar, resim veya video değil";
 "This folder is empty" = "Bu klasör boş";
-"Backspace goes up one folder level." = "Geri tuşu bir klasör düzeyi yukarı çıkar.";
 "Other files: %lld" = "Diğer dosyalar: %lld";
 "This folder can't be read" = "Bu klasör okunamıyor";
 "This archive can't be read" = "Bu arşiv okunamıyor";
@@ -207,3 +206,5 @@
 "as List" = "Liste Olarak";
 "Grid or list (L)" = "Izgara veya liste (L)";
 "Grid or list (a click on a column sorts by it)" = "Izgara veya liste (bir sütuna tıklamak ona göre sıralar)";
+"Back (where you were, also a search); without history the enclosing folder" = "Geri (bulunduğunuz yere, bir aramaya da); geçmiş yoksa üst klasöre";
+"⌘↑ goes up one folder level." = "⌘↑ bir klasör düzeyi yukarı çıkar.";

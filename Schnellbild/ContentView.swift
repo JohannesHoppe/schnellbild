@@ -599,7 +599,7 @@ struct EmptyStateView: View {
                 Text("This folder is empty")
                     .font(.title2)
                 if model.canGoUp {
-                    Text("Backspace goes up one folder level.")
+                    Text("⌘↑ goes up one folder level.")
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
                 }

@@ -1,6 +1,6 @@
 import XCTest
 
-/// Folder navigation: enter, up (button, Backspace, ⌘↑, ".."), back/forward history.
+/// Folder navigation: enter, up (button, ⌘↑, ".."), back/forward history (also Backspace).
 final class NavigationUITests: SchnellbildUITestCase {
     override func setUpWithError() throws {
         try super.setUpWithError()
@@ -17,7 +17,8 @@ final class NavigationUITests: SchnellbildUITestCase {
         waitForSelected("album")
     }
 
-    func testBackspaceGoesUpOneFolder() {
+    /// Backspace with no history yet goes up a level (after that it is Back).
+    func testBackspaceWithoutHistoryGoesUp() {
         let app = launch(open: tempDir.appendingPathComponent("album").path)
         XCTAssertTrue(app.staticTexts["inside.jpg"].waitForExistence(timeout: 15))
         app.typeKey(.delete, modifierFlags: [])

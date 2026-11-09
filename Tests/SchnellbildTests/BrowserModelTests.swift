@@ -456,7 +456,7 @@ final class BrowserModelTests: XCTestCase {
     func testLeaveDetailReturnsToGrid() {
         let m = makeModel()
         m.mode = .detail
-        m.leaveDetailOrGoUp()
+        m.leaveDetailOrGoBack()
         XCTAssertEqual(m.mode, .grid)
     }
 
@@ -881,13 +881,26 @@ final class HistoryTests: XCTestCase {
         XCTAssertTrue(m.canGoBack, "going up is recorded in the history")
     }
 
-    func testBackspaceAndParentTileGoUp() async throws {
+    /// Backspace is Back (also back to a search); with no history it goes up.
+    func testBackspaceGoesBackElseUp() async throws {
         let tree = try TempTree(self)
         let sub = try tree.folder("sub")
+        try tree.file("sub/deep/album/x.jpg")
         let m = makeModel()
         await openAndWait(m, sub)
         m.handleKey(.backspace, command: false)
-        await waitUntil { m.isAt(tree.root) }
+        await waitUntil { m.isAt(tree.root) }   // no history: up
+
+        await openAndWait(m, sub)
+        await searchAndWait(m, "album")
+        m.selectEntry(named: "album")
+        m.activateSelection()
+        await waitUntil { m.isAt(sub.appendingPathComponent("deep/album")) }
+        m.handleKey(.backspace, command: false)
+        await waitUntil { m.isAt(sub) && !m.isLoading }
+        XCTAssertEqual(m.searchText, "album", "back to the search, not up to deep")
+        XCTAssertEqual(m.names, ["album"])
+        await searchAndWait(m, "")
 
         await openAndWait(m, sub)
         m.select(0)   // ".."

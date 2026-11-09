@@ -99,7 +99,6 @@
 "About Schnellbild" = "O aplikaci Schnellbild";
 "Other files, not pictures or videos" = "Další soubory, ne obrázky ani videa";
 "This folder is empty" = "Tato složka je prázdná";
-"Backspace goes up one folder level." = "Klávesa Backspace přejde o úroveň složek výš.";
 "Other files: %lld" = "Další soubory: %lld";
 "This folder can't be read" = "Tuto složku nelze přečíst";
 "This archive can't be read" = "Tento archiv nelze přečíst";
@@ -207,3 +206,5 @@
 "as List" = "jako seznam";
 "Grid or list (L)" = "Mřížka nebo seznam (L)";
 "Grid or list (a click on a column sorts by it)" = "Mřížka nebo seznam (klik na sloupec podle něj seřadí)";
+"Back (where you were, also a search); without history the enclosing folder" = "Zpět (kde jste byli, i k hledání); bez historie do nadřazené složky";
+"⌘↑ goes up one folder level." = "⌘↑ přejde o úroveň složek výš.";

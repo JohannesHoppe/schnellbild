@@ -99,7 +99,6 @@
 "About Schnellbild" = "Over Schnellbild";
 "Other files, not pictures or videos" = "Overige bestanden, geen afbeeldingen of video’s";
 "This folder is empty" = "Deze map is leeg";
-"Backspace goes up one folder level." = "Backspace gaat één mapniveau omhoog.";
 "Other files: %lld" = "Overige bestanden: %lld";
 "This folder can't be read" = "Deze map kan niet worden gelezen";
 "This archive can't be read" = "Dit archief kan niet worden gelezen";
@@ -207,3 +206,5 @@
 "as List" = "als lijst";
 "Grid or list (L)" = "Raster of lijst (L)";
 "Grid or list (a click on a column sorts by it)" = "Raster of lijst (een klik op een kolom sorteert erop)";
+"Back (where you were, also a search); without history the enclosing folder" = "Terug (waar je was, ook naar een zoekopdracht); zonder geschiedenis naar de bovenliggende map";
+"⌘↑ goes up one folder level." = "⌘↑ gaat één mapniveau omhoog.";

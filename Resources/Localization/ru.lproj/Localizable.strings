@@ -99,7 +99,6 @@
 "About Schnellbild" = "О программе Schnellbild";
 "Other files, not pictures or videos" = "Другие файлы, не изображения и не видео";
 "This folder is empty" = "Эта папка пуста";
-"Backspace goes up one folder level." = "Backspace — на одну папку выше.";
 "Other files: %lld" = "Другие файлы: %lld";
 "This folder can't be read" = "Не удаётся прочитать эту папку";
 "This archive can't be read" = "Не удаётся прочитать этот архив";
@@ -207,3 +206,5 @@
 "as List" = "списком";
 "Grid or list (L)" = "Сетка или список (L)";
 "Grid or list (a click on a column sorts by it)" = "Сетка или список (щелчок по столбцу сортирует по нему)";
+"Back (where you were, also a search); without history the enclosing folder" = "Назад (где вы были, и к поиску); без истории — в папку выше";
+"⌘↑ goes up one folder level." = "⌘↑ — на одну папку выше.";
