@@ -134,7 +134,8 @@ final class SearchUITests: SchnellbildUITestCase {
         tile("a.jpg").doubleClick()
         waitForBadge(containing: "a.jpg")
         search("deep")
-        XCTAssertTrue(app.staticTexts["deep-photo.jpg"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.staticTexts["deep-photo.jpg"].waitForExistence(timeout: 10),
+                      "search field holds “\(text(of: searchField))”")
         XCTAssertFalse(badge.exists, "results show in the grid")
     }
 

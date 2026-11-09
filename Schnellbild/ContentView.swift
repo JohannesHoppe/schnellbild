@@ -118,6 +118,7 @@ private struct WindowView: View {
             .simultaneousGesture(TapGesture().onEnded { window.activate(pane) })
             // Tiles dropped onto a pane's free space go into its folder
             .onDrop(of: [.fileURL], isTargeted: nil) { providers in
+                BrowserModel.testLog("drop on pane \(pane.folderURL?.lastPathComponent ?? "-")")
                 guard let folder = pane.folderURL else { return false }
                 TileDrag.loadURLs(providers) { urls in pane.move(urls, into: folder) }
                 window.activate(pane)
@@ -218,12 +219,6 @@ private struct WindowView: View {
         ToolbarItemGroup(placement: .principal) {
             // The folder's name; a click makes it editable to rename the folder
             FolderNameField(model: model)
-            // Full screen at once, in the middle of the title bar (F, ⌃⌘F)
-            Button { model.toggleFullScreen() } label: {
-                ShortcutLabel("Full Screen", systemImage: "arrow.up.left.and.arrow.down.right", keys: "F")
-            }
-            .help("Full screen on / off (F, ⌃⌘F)")
-            .accessibilityIdentifier("fullScreenButton")
             if model.mode == .detail {
                 Button { model.closeDetail() } label: {
                     ShortcutLabel("Grid", systemImage: "square.grid.2x2", keys: "esc", showsTitle: true)
