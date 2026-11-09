@@ -27,7 +27,13 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
     }()
     /// Where the picture goes (no OpenGL; see `VLCFrameOutput`).
     let output = VLCFrameOutput()
-    private let url: URL
+    /// What VLC opens: a file, or a stream (a video inside an archive; a new
+    /// one for every opening).
+    enum Source {
+        case file(URL)
+        case stream(() -> InputStream)
+    }
+    private let source: Source
     private let onStateChange: @MainActor (PlaybackControl, Bool) -> Void
     private weak var drawable: NSView?
 
@@ -39,8 +45,12 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
     /// Where auto enhance's look goes (the model, for the sliders).
     var onAutoLook: @MainActor (PlaybackControl, Look) -> Void = { _, _ in }
 
-    init(url: URL, onStateChange: @escaping @MainActor (PlaybackControl, Bool) -> Void) {
-        self.url = url
+    convenience init(url: URL, onStateChange: @escaping @MainActor (PlaybackControl, Bool) -> Void) {
+        self.init(source: .file(url), onStateChange: onStateChange)
+    }
+
+    init(source: Source, onStateChange: @escaping @MainActor (PlaybackControl, Bool) -> Void) {
+        self.source = source
         self.onStateChange = onStateChange
         super.init()
         player.media = makeMedia()
@@ -49,7 +59,11 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
     }
 
     private func makeMedia() -> VLCMedia {
-        let media = VLCMedia(url: url)
+        let media: VLCMedia
+        switch source {
+        case .file(let url):        media = VLCMedia(url: url)
+        case .stream(let makeStream): media = VLCMedia(stream: makeStream())
+        }
         // No on-screen messages (VLC would draw them into the picture)
         media.addOption(":no-osd")
         // VLCKit turns on "play-and-pause": VLC would pause as soon as it has

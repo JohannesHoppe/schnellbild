@@ -12,7 +12,6 @@ struct SchnellbildApp: App {
         // their own preferences (`--reset-state` clears them)
         ArchiveStore.shared.passwords = ProcessInfo.processInfo.arguments.contains("--ui-testing")
             ? .defaults(defaults) : .keychain()
-        MediaData.removeOldCopies()
         _model = StateObject(wrappedValue: BrowserModel(defaults: defaults))
     }
 

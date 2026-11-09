@@ -75,12 +75,14 @@ struct VideoDetailView: View {
             videoSize = nil
             model.actualSizeFactor = 1   // "1": a video's 100 % is its fitted size
 
-            // Inside an archive: a copy the players can read
-            guard let file = try? await MediaData.playableFile(url), !Task.isCancelled else {
-                checking = false
-                return
+            // Inside an archive: streamed from it, unpacked in memory as it plays
+            var stream: ArchiveEntryStream?
+            if ArchivePath.isInside(url) {
+                stream = try? await ArchiveStore.shared.stream(of: url)
+                guard stream != nil, !Task.isCancelled else { checking = false; return }
             }
-            let asset = AVURLAsset(url: file)
+            let loader = stream.map { ArchiveResourceLoader(stream: $0, fileName: url.lastPathComponent) }
+            let asset = loader?.makeAsset(fileName: url.lastPathComponent) ?? AVURLAsset(url: url)
             let playable = (try? await asset.load(.isPlayable)) ?? false
             guard !Task.isCancelled else { return }   // the user moved on to another file
             checking = false
@@ -94,6 +96,7 @@ struct VideoDetailView: View {
             }
             if playable && !Self.forceVLC {
                 let control = AVPlaybackControl(player: AVPlayer(playerItem: AVPlayerItem(asset: asset)), onStateChange: report)
+                control.resourceLoader = loader   // the asset holds its delegate weakly
                 control.onAutoLook = reportLook
                 avControl = control
                 model.activePlayer = control
@@ -107,7 +110,8 @@ struct VideoDetailView: View {
             } else {
                 // AVFoundation can't play it — hand off to VLCKit. It starts
                 // playing once its view gives it somewhere to draw.
-                let control = VLCPlaybackControl(url: file, onStateChange: report)
+                let source: VLCPlaybackControl.Source = stream.map { stream in .stream({ ArchiveInputStream(stream) }) } ?? .file(url)
+                let control = VLCPlaybackControl(source: source, onStateChange: report)
                 control.onAutoLook = reportLook
                 vlcControl = control
                 model.activePlayer = control
@@ -150,6 +154,7 @@ struct VideoDetailView: View {
     }
 
     private func stop() {
+        avControl?.resourceLoader?.stream.close()
         avControl?.pause()
         vlcControl?.stop()
         model.activePlayer = nil

@@ -240,6 +240,58 @@ final class ArchiveTests: XCTestCase {
         } catch ArchiveError.encryptionUnsupported {}
     }
 
+    // MARK: Streaming
+
+    /// Reads at offsets all over the file, forward and back, with chunks
+    /// small enough to be dropped from memory and unpacked again: every
+    /// byte as in the original. Stored and packed ZIP, a packed RAR across
+    /// volumes, a password-protected RAR.
+    func testStreamingReadsAnyOffset() async throws {
+        let tree = try TempTree(self)
+        var original = Data(count: 3_000_000)
+        original.withUnsafeMutableBytes { bytes in
+            for i in 0..<bytes.count { bytes[i] = UInt8(truncatingIfNeeded: (i &* 2654435761) >> 13) }
+        }
+        try tree.folder("src")
+        try original.write(to: tree.root.appendingPathComponent("src/movie.mp4"))
+        let src = tree.root.appendingPathComponent("src")
+        try zip(["../stored.zip", "movie.mp4"], in: src)
+        let packing = Process()
+        packing.executableURL = URL(fileURLWithPath: "/usr/bin/zip")
+        packing.arguments = ["-q", "-9", "../packed.zip", "movie.mp4"]
+        packing.currentDirectoryURL = src
+        try packing.run(); packing.waitUntilExit()
+
+        let offsets: [Int] = [0, 2_900_000, 70_000, 1_500_000, 10, 2_999_990, 500_000, 0]
+        for name in ["stored.zip", "packed.zip"] {
+            let url = tree.root.appendingPathComponent(name).appendingPathComponent("movie.mp4")
+            let stream = try await ArchiveStore.shared.stream(of: url, chunkSize: 64 << 10, unreadLimit: 4, readLimit: 4)
+            XCTAssertEqual(stream.size, Int64(original.count))
+            for offset in offsets {
+                let read = try stream.read(at: Int64(offset), count: 100_000)
+                XCTAssertEqual(read, original[offset..<min(offset + 100_000, original.count)], "\(name) at \(offset)")
+            }
+            XCTAssertEqual(try stream.read(at: Int64(original.count), count: 10), Data(), "past the end")
+            stream.close()
+        }
+
+        let rar = try copy(["rar5-vols.part1.rar", "rar5-vols.part2.rar", "rar5-vols.part3.rar"], into: tree)
+        let big = rar.appendingPathComponent("vols/bigfile.txt")
+        let whole = try await ArchiveStore.shared.data(of: big)
+        let stream = try await ArchiveStore.shared.stream(of: big, chunkSize: 16 << 10, unreadLimit: 2, readLimit: 2)
+        for offset in [150_000, 0, 204_000, 30_000] {
+            XCTAssertEqual(try stream.read(at: Int64(offset), count: 5000), whole[offset..<min(offset + 5000, whole.count)], "rar at \(offset)")
+        }
+        stream.close()
+
+        ArchiveStore.shared.passwords.remember("password")
+        let locked = try copy(["rar5-psw.rar"], into: tree)
+        let protected = try await ArchiveStore.shared.stream(of: locked.appendingPathComponent("stest2.txt"), chunkSize: 512, unreadLimit: 2, readLimit: 2)
+        XCTAssertEqual(try protected.read(at: 1000, count: 100).count, 100)
+        XCTAssertEqual(try protected.read(at: 0, count: 2048).count, 2048)
+        protected.close()
+    }
+
     // MARK: The model
 
     private func makeZip(_ tree: TempTree, name: String = "Holiday.zip", password: String? = nil) throws -> URL {
