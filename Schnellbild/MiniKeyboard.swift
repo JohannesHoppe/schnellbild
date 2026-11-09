@@ -93,18 +93,18 @@ struct MiniKeyboard: View {
     }
 
     var body: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 6) {
-                ForEach(Self.keys(for: context)) { key in
-                    MiniKeyButton(key: key)
-                }
+        // One row; at most 14 keys fit the narrowest window
+        HStack(spacing: 6) {
+            ForEach(Self.keys(for: context)) { key in
+                MiniKeyButton(key: key)
             }
-            .padding(.horizontal, 12)
-            .padding(.vertical, 8)
-            .frame(maxWidth: .infinity)
         }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 8)
+        .frame(maxWidth: .infinity)
         .background(.regularMaterial)
         .overlay(alignment: .top) { Divider() }
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("miniKeyboard")
     }
 }

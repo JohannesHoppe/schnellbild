@@ -314,12 +314,11 @@ struct ContentView: View {
             Menu {
                 SortChoices(model: model, shortcuts: false)
             } label: {
-                HStack(spacing: 5) {
-                    Label("Sort: \(model.sortKey.title) \(model.sortAscending ? "↑" : "↓")",
-                          systemImage: "arrow.up.arrow.down")
-                        .labelStyle(.titleAndIcon)
-                    KeyCap("⌘1–5")
-                }
+                // No key cap here: a toolbar menu with a label of its own
+                // drops out of the accessibility tree (⌘1 … ⌘5: tooltip, help)
+                Label("Sort: \(model.sortKey.title) \(model.sortAscending ? "↑" : "↓")",
+                      systemImage: "arrow.up.arrow.down")
+                    .labelStyle(.titleAndIcon)
             }
             .help("Sort by (⌘1 … ⌘5; press again to reverse)")
             .accessibilityIdentifier("sortMenu")
