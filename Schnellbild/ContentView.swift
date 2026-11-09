@@ -939,7 +939,7 @@ private struct FolderTitle: ViewModifier {
     func body(content: Content) -> some View {
         content
             .navigationTitle(model.folderURL?.lastPathComponent ?? "Schnellbild")
-            .background(TitleTextHidden())
+            // .background(TitleTextHidden())   // TEMP: does hiding the title drop the sort menu?
     }
 }
 

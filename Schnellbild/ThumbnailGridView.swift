@@ -494,7 +494,7 @@ enum ModifierClicks {
             let local = content.convert(event.locationInWindow, from: nil)
             let point = CGPoint(x: local.x, y: content.isFlipped ? local.y : content.bounds.height - local.y)
             let hits = frames.filter { $0.value.contains(point) }.map(\.key)
-            BrowserModel.testLog("modifier click at \(point) in \(content.bounds.size), \(frames.count) tiles, under it: \(hits); some: \(frames.prefix(3).map { "\($0.key.suffix(12)) \($0.value)" })")
+            BrowserModel.testLog("modifier click at \(point) in \(content.bounds.size), \(frames.count) tiles, under it: \(hits); all: \(frames.map { "\($0.key.split(separator: "/").last ?? "") \($0.value)" })")
         }
         // A text field keeps ⇧-click (extend the selection)
         if let content = window.contentView,
