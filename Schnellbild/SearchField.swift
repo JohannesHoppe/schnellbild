@@ -61,6 +61,7 @@ struct SearchField: NSViewRepresentable {
         }
 
         func controlTextDidEndEditing(_ obj: Notification) {
+            BrowserModel.testLog("search field editing ended; first responder now \(String(describing: NSApp.keyWindow?.firstResponder.map { type(of: $0) }))")
             (obj.object as? FocusGatedSearchField)?.closeFocusGate()
             setFocused(false)
         }
@@ -107,6 +108,7 @@ final class FocusGatedSearchField: NSSearchField {
     }
 
     func blur() {
+        BrowserModel.testLog("search field blur, editing \(currentEditor() != nil)")
         if currentEditor() != nil { window?.makeFirstResponder(nil) }
         focusAllowed = false
     }
