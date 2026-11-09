@@ -567,11 +567,16 @@ final class VisualUITests: SchnellbildUITestCase {
         for name in ["broken.jpg", "broken.mp4", "broken.mkv"] { try put(name, at: name) }
         launchOnTempDir(waitFor: "broken.mkv")
         settle(3)   // thumbnails tried
-        for name in ["broken.jpg", "broken.mp4", "broken.mkv"] {
+        for name in Array(repeating: ["broken.jpg", "broken.mp4", "broken.mkv"], count: 6).flatMap({ $0 }) {   // TEMP: 6 rounds
             tile(name).click()
             waitForSelected(name)
             app.typeKey(.return, modifierFlags: [])
-            waitForBadge(containing: name)
+            let deadline = Date().addingTimeInterval(20)
+            while !text(of: badge).contains(name), Date() < deadline { RunLoop.current.run(until: Date().addingTimeInterval(0.5)) }
+            if !text(of: badge).contains(name) {
+                XCTFail("TEMP no badge for \(name); the app's threads:\n" + Self.sampleApp())
+                return
+            }
             settle(3)
             XCTAssertEqual(app.state, .runningForeground, "still running after opening \(name)")
             app.typeKey(.escape, modifierFlags: [])
@@ -590,6 +595,27 @@ final class VisualUITests: SchnellbildUITestCase {
         app.typeKey(.rightArrow, modifierFlags: [])
         waitForBadge(containing: "b-broken.jpg")
         eventually("shown as broken", timeout: 15) { text(of: image).hasSuffix("failed") }
+    }
+}
+
+extension VisualUITests {
+    /// What the app's threads are doing (TEMP: a hang on a broken video).
+    static func sampleApp() -> String {
+        func run(_ tool: String, _ args: [String]) -> String {
+            let process = Process()
+            process.executableURL = URL(fileURLWithPath: tool)
+            process.arguments = args
+            let pipe = Pipe()
+            process.standardOutput = pipe
+            process.standardError = pipe
+            guard (try? process.run()) != nil else { return "\(tool) didn't start" }
+            let data = pipe.fileHandleForReading.readDataToEndOfFile()
+            process.waitUntilExit()
+            return String(decoding: data, as: UTF8.self)
+        }
+        let pid = run("/usr/bin/pgrep", ["-n", "-x", "Schnellbild"]).trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !pid.isEmpty else { return "no Schnellbild process" }
+        return String(run("/usr/bin/sample", [pid, "2"]).prefix(30000))
     }
 }
 
