@@ -5,12 +5,12 @@
 #   fetch_verified <name> <url> <sha256> <output file>
 fetch_verified() {
     local name="$1" url="$2" expected="$3" out="$4"
-    echo "==> Downloading $name…" >&2
+    echo "==> Downloading ${name} …" >&2
     curl -fsSL --retry 5 --retry-delay 5 --retry-all-errors -o "$out" "$url"
     local actual
     actual="$(shasum -a 256 "$out" | awk '{print $1}')"
     if [ "$actual" != "$expected" ]; then
-        echo "!! $name: SHA-256 mismatch — refusing this download." >&2
+        echo "!! ${name}: SHA-256 mismatch — refusing this download." >&2
         echo "   expected $expected" >&2
         echo "   got      $actual" >&2
         exit 1
