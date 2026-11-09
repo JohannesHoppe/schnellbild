@@ -76,6 +76,13 @@ struct FullImageView: View {
             .onChange(of: geo.size) { _, newSize in
                 updateActualSizeFactor(in: newSize)
             }
+            // ↑ / ↓ zoomed in: a fifth of the view further up / down
+            .onChange(of: model.panRequest) { _, request in
+                guard let request, model.zoom > 1.01 else { return }
+                withAnimation(.easeOut(duration: 0.15)) {
+                    panOffset.height += (request.up ? 1 : -1) * geo.size.height / 5
+                }
+            }
             .task(id: EnhanceJob(url: url, enhancement: model.enhancement, ready: picture != nil, side: decodedSide)) {
                 await enhance()
             }

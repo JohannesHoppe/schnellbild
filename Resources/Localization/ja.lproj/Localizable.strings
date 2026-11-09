@@ -165,6 +165,6 @@
 "Video: 1 % of the length back / ahead" = "ビデオ: 長さの 1 % 戻る / 進む";
 "−1 %" = "−1 %";
 "+1 %" = "+1 %";
-"Pictures: previous / next · Videos: volume up / down (remembered)" = "画像: 前へ / 次へ · ビデオ: 音量を上げる / 下げる（記憶されます）";
 "Louder" = "音量を上げる";
 "Quieter" = "音量を下げる";
+"Pictures zoomed in: look further up / down · Videos: volume up / down (remembered)" = "拡大した画像: 上 / 下を表示 · ビデオ: 音量を上げる / 下げる（記憶されます）";
