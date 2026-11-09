@@ -258,6 +258,17 @@ private struct WindowView: View {
                 // starts; its first key must not act as D, E …). Not any text
                 // field that merely holds the keyboard without being edited.
                 let typing = editor != nil || NSApp.keyWindow?.firstResponder is FocusGatedSearchField
+                // The search has the focus, but its field is just being made
+                // again (SwiftUI rebuilt the bar) and has no editor yet: the
+                // letter goes into the search, not to D, E …
+                if editor == nil, model.searchFocused, !command, !control,
+                   let typed = event.characters, typed.count == 1,
+                   let scalar = typed.unicodeScalars.first, scalar.value >= 0x20, scalar.value != 0x7F,
+                   !(0xF700...0xF8FF).contains(scalar.value) {   // not an arrow or function key
+                    BrowserModel.testLog("typed into the search while its field was made again: \(typed)")
+                    model.searchText += typed
+                    return true
+                }
                 // ⌘⌫ / ⌘↩ while typing are the text field's (delete to the
                 // line start): menu key equivalents would run first and
                 // trash or open the selected tile.
@@ -284,6 +295,7 @@ private struct WindowView: View {
                     }
                 }
                 // The window's keys first (D, Tab, F5, F6), then the active pane's
+                BrowserModel.testLog("key \(key) typing \(typing), first responder \(NSApp.keyWindow?.firstResponder.map { String(describing: type(of: $0)) } ?? "none"), sheet \(model.anySheetOpen)")
                 if window.handleWindowKey(key, command: command, control: false,
                                           shift: event.modifierFlags.contains(.shift), textEditing: typing) { return true }
                 return model.handleKey(key, command: command, shift: event.modifierFlags.contains(.shift),
