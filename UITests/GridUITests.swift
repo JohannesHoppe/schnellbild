@@ -231,6 +231,27 @@ final class GridUITests: SchnellbildUITestCase {
         eventually("window leaves full screen", timeout: 10) { window.frame.size == before }
     }
 
+    /// ⌃⌘F is the system's full screen, not ⌘F's search.
+    func testControlCommandFEntersFullScreen() {
+        launchOnTempDir()
+        let window = app.windows.firstMatch
+        let before = window.frame.size
+        app.typeKey("f", modifierFlags: [.control, .command])
+        eventually("window enters full screen", timeout: 10) {
+            window.frame.width > before.width || window.frame.height > before.height
+        }
+        app.typeKey("f", modifierFlags: [.control, .command])
+        eventually("window leaves full screen", timeout: 10) { window.frame.size == before }
+    }
+
+    func testEscapeClosesTheHelp() {
+        launchOnTempDir()
+        app.typeKey(.F1, modifierFlags: [])
+        XCTAssertTrue(app.staticTexts["Keyboard Shortcuts"].waitForExistence(timeout: 5))
+        app.typeKey(.escape, modifierFlags: [])
+        eventually("help closes") { !app.staticTexts["Keyboard Shortcuts"].exists }
+    }
+
     func testF1AndHelpMenuShowShortcuts() {
         launchOnTempDir()
         app.typeKey(.F1, modifierFlags: [])

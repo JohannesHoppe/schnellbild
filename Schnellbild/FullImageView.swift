@@ -64,11 +64,14 @@ struct FullImageView: View {
                 await load(maxPixel: maxPixel)
                 updateActualSizeFactor(in: geo.size)
             }
-            .task(id: FullSizeJob(url: url, zoomedIn: model.zoom > 1.01, ready: picture != nil)) {
-                guard model.zoom > 1.01, let native = nativeSize else { return }
-                let full = Int(max(native.width, native.height))
-                guard full > decodedSide else { return }
-                await load(maxPixel: full)
+            .task(id: SharpnessJob(url: url, side: wantedSide(in: geo.size), ready: picture != nil)) {
+                // The view grew (full screen) or the user zoomed in: decoded
+                // again, larger. Not while a window resize is still going on.
+                let side = wantedSide(in: geo.size)
+                guard picture != nil, side > decodedSide else { return }
+                try? await Task.sleep(for: .milliseconds(150))
+                guard !Task.isCancelled else { return }
+                await load(maxPixel: side)
             }
             .onChange(of: geo.size) { _, newSize in
                 updateActualSizeFactor(in: newSize)
@@ -193,10 +196,20 @@ struct FullImageView: View {
         picture = result.2
     }
 
-    private struct FullSizeJob: Equatable {
+    private struct SharpnessJob: Equatable {
         let url: URL
-        let zoomedIn: Bool
+        let side: Int
         let ready: Bool
+    }
+
+    /// The longest side to decode at: the full size when zoomed in, else
+    /// the view's size in pixels (never more than the file has).
+    private func wantedSide(in container: CGSize) -> Int {
+        guard let native = nativeSize, native.width > 0, native.height > 0 else { return 0 }
+        let full = Int(max(native.width, native.height))
+        if model.zoom > 1.01 { return full }
+        let view = Int(max(container.width, container.height) * NSScreen.mainBackingScale)
+        return min(view, full)
     }
 
     private struct EnhanceJob: Equatable {

@@ -118,7 +118,8 @@ struct ThumbnailGridView: View {
         case .folder:
             FolderTile(folder: entry.url, side: side, isSelected: selected, isEmpty: model.isEmptyFolder(entry))
         case .image, .video:
-            ThumbnailView(url: entry.url, side: side, isSelected: selected, isVideo: entry.kind == .video)
+            ThumbnailView(url: entry.url, side: side, isSelected: selected, isVideo: entry.kind == .video,
+                          modified: entry.modDate)
         }
     }
 }
@@ -149,7 +150,9 @@ struct FolderTile: View {
         .tileChrome(side: side, isSelected: isSelected)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("\(TileChrome.selectionLabel(isSelected)), \(folder == nil ? "parent folder" : isEmpty ? "empty folder" : "folder"), \(previews.count) previews")
-        .task(id: folder) { await loadPreviews() }
+        // Again after a change made inside the folder (trash, rename): what
+        // it previews may have gone.
+        .task(id: FolderKey(folder: folder, changes: model.folderChanges)) { await loadPreviews() }
     }
 
     /// Thumbnails fanned out over the lower part of the folder body.
@@ -196,6 +199,11 @@ struct FolderTile: View {
             model.noteFolder(folder, empty: false)
         }
     }
+}
+
+private struct FolderKey: Hashable {
+    let folder: URL?
+    let changes: Int
 }
 
 /// Which files each folder tile previews, remembered per folder: scrolling

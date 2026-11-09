@@ -45,6 +45,7 @@ public final class XCUIElementQuery {
     public var count: Int { 0 }
     public var allElementsBoundByIndex: [XCUIElement] { [] }
     public func matching(identifier: String) -> XCUIElementQuery { self }
+    public func matching(_ predicate: NSPredicate) -> XCUIElementQuery { self }
     public var menuBarItems: XCUIElementQuery { self }
     public var menuItems: XCUIElementQuery { self }
     public var buttons: XCUIElementQuery { self }
@@ -59,7 +60,7 @@ public class XCUIElement {
     public struct KeyModifierFlags: OptionSet {
         public let rawValue: Int
         public init(rawValue: Int) { self.rawValue = rawValue }
-        public static let command = KeyModifierFlags(rawValue: 1)
+        public static let command = KeyModifierFlags(rawValue: 1), control = KeyModifierFlags(rawValue: 2)
     }
     public var exists: Bool { false }
     public var isHittable: Bool { false }

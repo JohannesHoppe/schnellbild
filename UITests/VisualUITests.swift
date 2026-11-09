@@ -407,6 +407,33 @@ final class VisualUITests: SchnellbildUITestCase {
         }
     }
 
+    /// A photo changed in another app gets a new tile once its folder is
+    /// opened again, not the old picture from the session's cache.
+    func testAChangedPhotoGetsANewTile() throws {
+        try put("sample.jpg", at: "a.jpg")
+        let photo = try put("dark.jpg", at: "sub/x.jpg")
+        launch(open: tempDir.appendingPathComponent("sub").path)
+        let x = tile("x.jpg")
+        eventually("the tile shows the photo", timeout: 15) { self.text(of: x).hasSuffix("preview") }
+        settle(1)
+        let before = try screenBrightness(of: x)
+
+        try FileManager.default.removeItem(at: photo)
+        try put("bright.jpg", at: "sub/x.jpg")
+        try FileManager.default.setAttributes([.modificationDate: Date().addingTimeInterval(60)], ofItemAtPath: photo.path)
+        app.typeKey(.upArrow, modifierFlags: .command)
+        XCTAssertTrue(app.staticTexts["a.jpg"].waitForExistence(timeout: 15))
+        app.typeKey("[", modifierFlags: .command)
+        eventually("back in the folder", timeout: 15) { x.exists && self.text(of: x).hasSuffix("preview") }
+        var after = before
+        eventually("the tile shows the changed photo", timeout: 20) {
+            settle(1)
+            after = (try? screenBrightness(of: x)) ?? before
+            return after > before + 0.3
+        }
+        XCTAssertGreaterThan(after, before + 0.3, "tile still the old photo: \(before) → \(after)")
+    }
+
     func testAutoEnhanceBrightensADarkPhoto() throws { try checkAutoEnhancePhoto("dark.jpg", brighter: true) }
     func testAutoEnhanceDarkensAnOverexposedPhoto() throws { try checkAutoEnhancePhoto("bright.jpg", brighter: false) }
 

@@ -137,6 +137,17 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         if first { player.play() }
     }
 
+    var videoSize: CGSize? {
+        let size = player.videoSize
+        return size.width > 0 && size.height > 0 ? size : nil
+    }
+
+    /// Playing, its clock running, with no length (VLC knows none for a
+    /// WebM a browser recorded).
+    var playsWithoutLength: Bool {
+        player.state == .playing && (player.media?.length.intValue ?? 0) <= 0 && player.time.intValue > 0
+    }
+
     /// Ended or stopped: playing opens the video again.
     private var atEnd: Bool { player.state == .ended || player.state == .stopped }
 
@@ -155,11 +166,19 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         isPlaying = false
     }
 
+    /// Stopping waits for VLC's reading thread; with a read stalled on a
+    /// network share that takes until it times out, so it waits off the
+    /// main thread (the block keeps the player until then).
     func stop() {
         measureTask?.cancel()
         measureTask = nil
         player.delegate = nil
-        player.stop()
+        // Nothing else touches it once stopping: the control is going away.
+        nonisolated(unsafe) let player = self.player
+        DispatchQueue.global(qos: .userInitiated).async {
+            player.stop()
+            BrowserModel.testLog("vlc stopped")
+        }
     }
 
     /// The last seek target: VLC reports the new position only once it has

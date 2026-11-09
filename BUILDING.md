@@ -37,7 +37,7 @@ Unit tests run via SwiftPM. The script vendors VLCKit and copies it into the tes
 End-to-end UI tests use XCUITest, which needs an Xcode project generated from `project.yml` with [xcodegen](https://github.com/yonaskolb/XcodeGen):
 
 ```bash
-brew install xcodegen
+export PATH="$(./Scripts/fetch_xcodegen.sh):$PATH"   # the version CI uses, checksum-verified
 xcodegen generate
 xcodebuild test -project Schnellbild.xcodeproj -scheme Schnellbild \
   -destination 'platform=macOS' -only-testing:SchnellbildUITests

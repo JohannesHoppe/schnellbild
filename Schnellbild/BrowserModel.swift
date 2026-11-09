@@ -35,6 +35,16 @@ protocol PlaybackControl: AnyObject {
     /// player measures the video and reports its look through
     /// `BrowserModel.autoLookMeasured`.
     func setEnhancement(_ enhancement: Enhancement)
+    /// Plays although its length isn't known (a WebM recorded in a
+    /// browser): the slideshow waits for its end instead of skipping it.
+    var playsWithoutLength: Bool { get }
+    /// The picture's size in pixels as shown, once known (the Inspector).
+    var videoSize: CGSize? { get }
+}
+
+extension PlaybackControl {
+    var playsWithoutLength: Bool { false }
+    var videoSize: CGSize? { nil }
 }
 
 /// Side effects on the file system and the workspace. Injectable, so tests
@@ -272,6 +282,11 @@ final class BrowserModel: ObservableObject {
     @Published var showInspector = false
     @Published var showHelp = false
     @Published private(set) var isLoading = false
+    /// Counts the changes the app made on disk; folder tiles read their
+    /// previews again on each.
+    @Published private(set) var folderChanges = 0
+    /// The place `load` is reading, for the history while it loads.
+    private var loadingLocation: Location?
 
     /// Set by the grid based on window width — for row-accurate ↑/↓.
     @Published var columnCount: Int = 1
@@ -387,11 +402,12 @@ final class BrowserModel: ObservableObject {
     /// Puts the window into (true) or out of (false) full screen; returns
     /// whether that changed anything. Tests replace it.
     var setFullScreen: @MainActor (Bool) -> Bool = { on in
-        guard let window = NSApp.keyWindow ?? NSApp.mainWindow,
-              window.styleMask.contains(.fullScreen) != on else { return false }
-        window.toggleFullScreen(nil)
-        return true
+        FullScreenSwitch.shared.set(on, window: BrowserModel.appWindow)
     }
+
+    /// The browser window: the main one (the key window can be the
+    /// Adjustments popover's).
+    static var appWindow: NSWindow? { NSApp.mainWindow ?? NSApp.keyWindow }
 
     /// The player of the video on screen — for keyboard control
     /// (play/pause, skimming). Set by the video views.
@@ -448,6 +464,8 @@ final class BrowserModel: ObservableObject {
     func autoLookMeasured(_ measured: Look, from player: PlaybackControl? = nil) {
         guard enhance else { return }
         if let player, player !== activePlayer { return }
+        // Only a change: every write publishes and redraws the grid behind
+        guard look != measured else { return }
         look = measured
     }
     /// Whether the current video is paused (or has ended). Videos autoplay;
@@ -466,7 +484,7 @@ final class BrowserModel: ObservableObject {
     nonisolated static let imageExtensions: Set<String> = [
         "jpg", "jpeg", "png", "gif", "heic", "heif", "tiff", "tif", "bmp",
         "webp", "psd", "pdf", "cr2", "cr3", "nef", "arw", "dng", "raf",
-        "orf", "rw2", "raw", "icns", "svg"
+        "orf", "rw2", "raw", "icns"
     ]
     nonisolated static let videoExtensions: Set<String> = [
         "mp4", "mov", "m4v", "avi", "mkv", "webm", "m2ts", "mts",
@@ -532,6 +550,7 @@ final class BrowserModel: ObservableObject {
 
     private func load(_ location: Location, thenDetail: Bool = false) {
         isLoading = true            // first: keeps the searchText reset below from searching
+        loadingLocation = location
         // What folders contain may have changed outside the app (Finder, a
         // camera import): previews and emptiness are found out afresh.
         emptyFolders = []
@@ -559,6 +578,7 @@ final class BrowserModel: ObservableObject {
             }
             self.allEntries = self.sorted(full)
             self.isLoading = false
+            self.loadingLocation = nil
             if self.isFiltering {
                 if let run = location.search, run.query == self.query, !run.stoppedEarly {
                     // History: the remembered results; a search still
@@ -635,7 +655,7 @@ final class BrowserModel: ObservableObject {
     /// enumeration (no extra round-trips).
     nonisolated static func scan(_ url: URL) async -> [GridEntry] {
         await Task.detached(priority: .userInitiated) {
-            let keys: Set<URLResourceKey> = [.isDirectoryKey, .contentModificationDateKey, .fileSizeKey]
+            let keys = entryKeys
             let contents = (try? FileManager.default.contentsOfDirectory(
                 at: url,
                 includingPropertiesForKeys: Array(keys),
@@ -645,10 +665,18 @@ final class BrowserModel: ObservableObject {
         }.value
     }
 
-    /// Classify one file system item; nil for non-media files.
+    /// What `entry(for:keys:)` reads, prefetched by the listings.
+    nonisolated static let entryKeys: Set<URLResourceKey> = [
+        .isDirectoryKey, .isPackageKey, .contentModificationDateKey, .fileSizeKey
+    ]
+
+    /// Classify one file system item; nil for non-media files. Packages
+    /// (".photoslibrary", ".app") are single files to the user, as in the
+    /// Finder: not a folder to browse, walk in a slideshow or search.
     nonisolated private static func entry(for item: URL, keys: Set<URLResourceKey>) -> GridEntry? {
         let vals = try? item.resourceValues(forKeys: keys)
         let date = vals?.contentModificationDate
+        if vals?.isPackage == true { return nil }
         if vals?.isDirectory == true {
             return GridEntry(url: item, kind: .folder, modDate: date)
         }
@@ -996,7 +1024,7 @@ final class BrowserModel: ObservableObject {
     nonisolated static func recursiveMatches(under root: URL, query: String) -> AsyncStream<[GridEntry]> {
         AsyncStream { continuation in
             let walker = Task.detached(priority: .userInitiated) {
-                let keys: Set<URLResourceKey> = [.isDirectoryKey, .contentModificationDateKey, .fileSizeKey]
+                let keys = entryKeys
                 guard let enumerator = FileManager.default.enumerator(
                     at: root,
                     includingPropertiesForKeys: Array(keys),
@@ -1081,6 +1109,12 @@ final class BrowserModel: ObservableObject {
     /// The place on screen, with its search (finished or still running).
     private var currentLocation: Location? {
         guard let folderURL else { return nil }
+        // Still loading: the place being loaded, with its selection and
+        // search (the grid has neither yet).
+        if isLoading, var loading = loadingLocation {
+            if loading.query != searchText { loading.query = searchText; loading.search = nil }
+            return loading
+        }
         let run = isFiltering && !isLoading ? search : nil
         return Location(folder: folderURL, query: searchText, selected: selectedEntry?.url, search: run)
     }
@@ -1301,9 +1335,9 @@ final class BrowserModel: ObservableObject {
         let sheetOpen = showHelp || renameTarget != nil
         switch key {
         case .f1:
-            // Not over the rename sheet: a second sheet can't open on top of it.
             guard renameTarget == nil else { return false }
-            showHelp.toggle(); return true
+            if showHelp { showHelp = false } else { openHelp() }
+            return true
         case .f2:
             // Also while typing in the search field; not during a slideshow
             // (the selection is in the hidden grid).
@@ -1312,6 +1346,8 @@ final class BrowserModel: ObservableObject {
         default:
             guard !textEditing, !sheetOpen else { return false }
         }
+        // Esc closes the Adjustments popover first, as it would by itself.
+        if key == .escape, showAdjustments { showAdjustments = false; return true }
         if slideshow != nil { return handleSlideshowKey(key, command: command) }
         switch key {
         case .f1, .f2:
@@ -1421,9 +1457,18 @@ final class BrowserModel: ObservableObject {
             return
         }
         apply(.removed(entry.url))
-        if mode == .detail, selectedMediaEntry == nil {
-            mode = .grid
+        if mode == .detail {
+            // The next item comes up as paging shows it: at fit, upright.
+            resetTransforms()
+            if selectedMediaEntry == nil { mode = .grid }
         }
+    }
+
+    /// F1 / "Schnellbild Help". Not over the rename sheet: a second sheet
+    /// can't open on top of it.
+    func openHelp() {
+        guard renameTarget == nil else { return }
+        showHelp = true
     }
 
     // MARK: - Rename
@@ -1432,7 +1477,9 @@ final class BrowserModel: ObservableObject {
     /// the full view.
     @discardableResult
     func beginRename() -> Bool {
-        guard slideshow == nil, let entry = selectedEntry, entry.kind != .parent else { return false }
+        // Not over the help: a second sheet can't open on top of it.
+        guard slideshow == nil, !showHelp, renameTarget == nil,
+              let entry = selectedEntry, entry.kind != .parent else { return false }
         searchFocused = false   // F2 works while typing in the search field
         renameTarget = entry
         return true
@@ -1477,6 +1524,7 @@ final class BrowserModel: ObservableObject {
         let affected = Set(change.affectedFolders)
         if !emptyFolders.isDisjoint(with: affected) { emptyFolders.subtract(affected) }
         FolderPreviewCache.shared.forget(change.affectedFolders)
+        folderChanges += 1
         let keep = selectedEntry.flatMap { change.apply(to: $0.url) }
         let previous = selection
         allEntries = sorted(allEntries.compactMap { change.apply(to: $0) })
@@ -1672,7 +1720,9 @@ final class BrowserModel: ObservableObject {
                 while !Task.isCancelled {
                     try? await Task.sleep(for: check)
                     guard !Task.isCancelled, let self, self.slideshow?.current == item else { return }
-                    unknown = self.activePlayer?.progress == nil ? unknown + 1 : 0
+                    let player = self.activePlayer
+                    let stuck = player?.progress == nil && player?.playsWithoutLength != true
+                    unknown = stuck ? unknown + 1 : 0
                     if unknown >= 4 { self.slideshowStep(+1); return }
                 }
             }
@@ -1741,7 +1791,70 @@ final class BrowserModel: ObservableObject {
     // MARK: - Window
 
     func toggleFullScreen() {
-        NSApp.keyWindow?.toggleFullScreen(nil)
+        guard let window = Self.appWindow else { return }
+        _ = FullScreenSwitch.shared.set(!FullScreenSwitch.shared.isOrBecomesFullScreen(window), window: window)
+    }
+}
+
+/// Full screen on request, also while the window is still on its way in or
+/// out: AppKit ignores a toggle during that animation (an empty slideshow
+/// ends at once), so the last request is carried out once it has ended.
+@MainActor
+final class FullScreenSwitch {
+    static let shared = FullScreenSwitch()
+    /// Where the window is going while it animates, since when.
+    private var moving: (to: Bool, since: Date)?
+    /// An animation that never reported its end (it failed) stops counting
+    /// after this long.
+    private var movingTo: Bool? {
+        guard let moving, Date().timeIntervalSince(moving.since) < 3 else { return nil }
+        return moving.to
+    }
+    private var wanted: Bool?
+    private var observers: [NSObjectProtocol] = []
+
+    private init() {
+        let center = NotificationCenter.default
+        let starts: [(Notification.Name, Bool)] = [
+            (NSWindow.willEnterFullScreenNotification, true), (NSWindow.willExitFullScreenNotification, false)
+        ]
+        for (name, target) in starts {
+            observers.append(center.addObserver(forName: name, object: nil, queue: .main) { _ in
+                MainActor.assumeIsolated { FullScreenSwitch.shared.moving = (target, Date()) }
+            })
+        }
+        let ends: [Notification.Name] = [
+            NSWindow.didEnterFullScreenNotification, NSWindow.didExitFullScreenNotification
+        ]
+        for name in ends {
+            observers.append(center.addObserver(forName: name, object: nil, queue: .main) { note in
+                let window = note.object as? NSWindow
+                MainActor.assumeIsolated { FullScreenSwitch.shared.ended(window) }
+            })
+        }
+    }
+
+    func isOrBecomesFullScreen(_ window: NSWindow) -> Bool {
+        wanted ?? movingTo ?? window.styleMask.contains(.fullScreen)
+    }
+
+    /// Returns whether the window ends up changed by this request.
+    func set(_ on: Bool, window: NSWindow?) -> Bool {
+        guard let window else { return false }
+        if let movingTo {
+            wanted = on
+            return movingTo != on
+        }
+        guard window.styleMask.contains(.fullScreen) != on else { return false }
+        window.toggleFullScreen(nil)
+        return true
+    }
+
+    private func ended(_ window: NSWindow?) {
+        moving = nil
+        guard let wanted, let window else { return }
+        self.wanted = nil
+        if window.styleMask.contains(.fullScreen) != wanted { window.toggleFullScreen(nil) }
     }
 }
 
@@ -1767,6 +1880,11 @@ final class AVPlaybackControl: PlaybackControl {
     }
 
     var isPlaying: Bool { player.timeControlStatus != .paused }
+
+    var videoSize: CGSize? {
+        let size = player.currentItem?.presentationSize ?? .zero
+        return size.width > 0 && size.height > 0 ? size : nil
+    }
 
     /// At the end, playing starts over.
     func play() {
