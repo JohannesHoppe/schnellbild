@@ -20,7 +20,7 @@
 "Sort: %@ %@" = "Sort: %@ %@";
 "Back (⌘[)" = "Back (⌘[)";
 "Forward (⌘])" = "Forward (⌘])";
-"Enclosing folder (⌘↑ / Backspace)" = "Enclosing folder (⌘↑ / Backspace)";
+"Enclosing folder (⌘↑)" = "Enclosing folder (⌘↑)";
 "Open folder (⌘O)" = "Open folder (⌘O)";
 "Exposure, contrast, saturation and sharpness by hand (A)" = "Exposure, contrast, saturation and sharpness by hand (A)";
 "Stop search" = "Stop search";
@@ -135,7 +135,6 @@
 "Start Slideshow of This Folder" = "Start Slideshow of This Folder";
 "Auto Enhance" = "Auto Enhance";
 /* Mini keyboard */
-"Up" = "Up";
 "Previous" = "Previous";
 "Next" = "Next";
 "Row up" = "Row up";
@@ -191,7 +190,6 @@
 "Dual pane on / off: two folders side by side" = "Dual pane on / off: two folders side by side";
 "Switch to the other pane" = "Switch to the other pane";
 "Copy / move the marked items into the other pane's folder" = "Copy / move the marked items into the other pane's folder";
-"New folder / move the marked items to the Trash" = "New folder / move the marked items to the Trash";
 "Mark / unmark an item" = "Mark / unmark an item";
 "Mark a range" = "Mark a range";
 "Mark all / unmark all" = "Mark all / unmark all";
@@ -200,7 +198,6 @@
 "The app's menus in the window" = "The app's menus in the window";
 "Do you want to quit Schnellbild?" = "Do you want to quit Schnellbild?";
 "Quit" = "Quit";
-"Full screen on / off (F, ⌃⌘F)" = "Full screen on / off (F, ⌃⌘F)";
 "Archive" = "Archive";
 "as Grid" = "as Grid";
 "as List" = "as List";
@@ -209,3 +206,16 @@
 "Back (where you were, also a search); without history the enclosing folder" = "Back (where you were, also a search); without history the enclosing folder";
 "⌘↑ goes up one folder level." = "⌘↑ goes up one folder level.";
 "Click to rename this folder" = "Click to rename this folder";
+"Schnellbild is free software under the MIT License." = "Schnellbild is free software under the MIT License.";
+"Built with" = "Built with";
+"The full license texts are in the app (Contents/Resources/Licenses)." = "The full license texts are in the app (Contents/Resources/Licenses).";
+"plays the video formats macOS can't (AVI, MKV, WebM …)" = "plays the video formats macOS can't (AVI, MKV, WebM …)";
+"reads RAR archives" = "reads RAR archives";
+"reads ZIP and 7z archives (the copy built into macOS)" = "reads ZIP and 7z archives (the copy built into macOS)";
+"out of memory" = "out of memory";
+"damaged data" = "damaged data";
+"damaged archive" = "damaged archive";
+"unknown format" = "unknown format";
+"can't open the file" = "can't open the file";
+"read error" = "read error";
+"UnRAR error %lld" = "UnRAR error %lld";

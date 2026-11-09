@@ -114,6 +114,72 @@ final class DualPaneTests: XCTestCase {
         XCTAssertEqual(right.names, ["..", "Sorted", "a.jpg"])
     }
 
+    /// The mini keyboard and the volume are the window's: set in one pane,
+    /// the other follows, without the two answering each other for ever.
+    func testKeyboardAndVolumeAreKeptInStep() async throws {
+        let tree = try TempTree(self)
+        try tree.file("a.jpg")
+        let w = window(FileActionsSpy())
+        await openAndWait(w.left, tree.root)
+        w.setDual(true)
+        let right = try XCTUnwrap(w.right)
+        w.left.showMiniKeyboard = true
+        XCTAssertTrue(right.showMiniKeyboard)
+        right.showMiniKeyboard = false
+        XCTAssertFalse(w.left.showMiniKeyboard)
+        w.left.changeVolume(by: -0.1)
+        XCTAssertEqual(right.volume, 0.9, accuracy: 0.001)
+    }
+
+    /// The Trash takes what F5 / F6 take: one marked item is the one, not
+    /// the cursor's; ⇧-arrows after it still work (the anchor left the list).
+    func testTheTrashTakesTheMarkedItem() async throws {
+        let tree = try TempTree(self)
+        for n in ["a.jpg", "b.jpg", "c.jpg"] { try tree.file(n) }
+        let spy = FileActionsSpy()
+        let m = BrowserModel(defaults: makeTestDefaults(), fileActions: spy.actions)
+        await openAndWait(m, tree.root)
+        m.selectEntry(named: "a.jpg")
+        XCTAssertTrue(m.handleKey(.insert, command: false))   // marks a, the cursor goes to b
+        XCTAssertTrue(m.handleKey(.f8, command: false))
+        XCTAssertEqual(spy.trashed.map(\.lastPathComponent), ["a.jpg"])
+        m.selectEntry(named: "c.jpg")
+        XCTAssertTrue(m.handleKey(.f8, command: false))
+        XCTAssertEqual(m.names, ["..", "b.jpg"])
+        m.handleKey(.left, command: false, shift: true)   // must not trap
+        XCTAssertNotNil(m.selectedEntry)
+    }
+
+    /// Nothing moves the folder shown or one around it ("..").
+    func testTheFolderShownNeverMoves() async throws {
+        let tree = try TempTree(self)
+        try tree.file("trip/a.jpg")
+        let target = try tree.folder("elsewhere")
+        let trip = tree.root.appendingPathComponent("trip")
+        let spy = FileActionsSpy()
+        let m = BrowserModel(defaults: makeTestDefaults(), fileActions: spy.actions)
+        await openAndWait(m, trip)
+        m.move([tree.root, trip], into: target)
+        XCTAssertTrue(spy.moved.isEmpty)
+        XCTAssertTrue(FileManager.default.fileExists(atPath: trip.appendingPathComponent("a.jpg").path))
+    }
+
+    /// A folder the other pane shows, renamed here: the other pane follows.
+    func testTheOtherPaneFollowsARename() async throws {
+        let tree = try TempTree(self)
+        try tree.file("Trip/a.jpg")
+        let w = window(FileActionsSpy())
+        await openAndWait(w.left, tree.root)
+        w.setDual(true)
+        let right = try XCTUnwrap(w.right)
+        await waitUntil { right.isAt(tree.root) }
+        await openAndWait(right, tree.root.appendingPathComponent("Trip"))
+        let trip = try XCTUnwrap(w.left.entries.first { $0.name == "Trip" })
+        _ = try w.left.rename(trip, to: "Iceland")
+        XCTAssertEqual(right.folderURL?.lastPathComponent, "Iceland")
+        await waitUntil { right.names.contains("a.jpg") }
+    }
+
     func testEachPaneRemembersItsFolder() async throws {
         let tree = try TempTree(self)
         let one = try tree.folder("one"), two = try tree.folder("two")

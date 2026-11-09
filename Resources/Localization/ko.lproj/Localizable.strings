@@ -20,7 +20,7 @@
 "Sort: %@ %@" = "정렬: %@ %@";
 "Back (⌘[)" = "뒤로 (⌘[)";
 "Forward (⌘])" = "앞으로 (⌘])";
-"Enclosing folder (⌘↑ / Backspace)" = "상위 폴더 (⌘↑ / Backspace)";
+"Enclosing folder (⌘↑)" = "상위 폴더 (⌘↑)";
 "Open folder (⌘O)" = "폴더 열기 (⌘O)";
 "Exposure, contrast, saturation and sharpness by hand (A)" = "노출, 대비, 채도, 선명도를 직접 조절 (A)";
 "Stop search" = "검색 중단";
@@ -135,7 +135,6 @@
 "Start Slideshow of This Folder" = "이 폴더의 슬라이드 쇼 시작";
 "Auto Enhance" = "자동 향상";
 /* Mini keyboard */
-"Up" = "위로";
 "Previous" = "이전";
 "Next" = "다음";
 "Row up" = "한 줄 위";
@@ -191,7 +190,6 @@
 "Dual pane on / off: two folders side by side" = "이중 패널 켜기 / 끄기: 두 폴더를 나란히 표시";
 "Switch to the other pane" = "다른 패널로 전환";
 "Copy / move the marked items into the other pane's folder" = "표시한 항목을 다른 패널의 폴더로 복사 / 이동";
-"New folder / move the marked items to the Trash" = "새로운 폴더 / 표시한 항목을 휴지통으로 이동";
 "Mark / unmark an item" = "항목 표시 / 표시 해제";
 "Mark a range" = "범위 표시";
 "Mark all / unmark all" = "모두 표시 / 모두 표시 해제";
@@ -200,7 +198,6 @@
 "The app's menus in the window" = "윈도우 안의 앱 메뉴";
 "Do you want to quit Schnellbild?" = "Schnellbild를 종료하겠습니까?";
 "Quit" = "종료";
-"Full screen on / off (F, ⌃⌘F)" = "전체 화면 켜기 / 끄기(F, ⌃⌘F)";
 "Archive" = "아카이브";
 "as Grid" = "격자로 보기";
 "as List" = "목록으로 보기";
@@ -209,3 +206,16 @@
 "Back (where you were, also a search); without history the enclosing folder" = "뒤로(이전 위치, 검색으로도); 기록이 없으면 상위 폴더로";
 "⌘↑ goes up one folder level." = "⌘↑를 누르면 한 단계 위 폴더로 이동합니다.";
 "Click to rename this folder" = "클릭하여 이 폴더의 이름 변경";
+"Schnellbild is free software under the MIT License." = "Schnellbild는 MIT 라이선스의 자유 소프트웨어입니다.";
+"Built with" = "사용한 구성 요소";
+"The full license texts are in the app (Contents/Resources/Licenses)." = "라이선스 전문은 앱 안에 있습니다(Contents/Resources/Licenses).";
+"plays the video formats macOS can't (AVI, MKV, WebM …)" = "macOS가 재생하지 못하는 비디오 형식 재생(AVI, MKV, WebM …)";
+"reads RAR archives" = "RAR 아카이브 읽기";
+"reads ZIP and 7z archives (the copy built into macOS)" = "ZIP 및 7z 아카이브 읽기(macOS 내장 버전)";
+"out of memory" = "메모리 부족";
+"damaged data" = "손상된 데이터";
+"damaged archive" = "손상된 아카이브";
+"unknown format" = "알 수 없는 형식";
+"can't open the file" = "파일을 열 수 없음";
+"read error" = "읽기 오류";
+"UnRAR error %lld" = "UnRAR 오류 %lld";

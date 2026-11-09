@@ -20,7 +20,7 @@
 "Sort: %@ %@" = "Sorter: %@ %@";
 "Back (⌘[)" = "Tilbake (⌘[)";
 "Forward (⌘])" = "Fremover (⌘])";
-"Enclosing folder (⌘↑ / Backspace)" = "Overordnet mappe (⌘↑ / slett bakover)";
+"Enclosing folder (⌘↑)" = "Overordnet mappe (⌘↑)";
 "Open folder (⌘O)" = "Åpne mappe (⌘O)";
 "Exposure, contrast, saturation and sharpness by hand (A)" = "Eksponering, kontrast, metning og skarphet for hånd (A)";
 "Stop search" = "Stopp søket";
@@ -135,7 +135,6 @@
 "Start Slideshow of This Folder" = "Start lysbildefremvisning av denne mappen";
 "Auto Enhance" = "Autoforbedring";
 /* Mini keyboard */
-"Up" = "Opp";
 "Previous" = "Forrige";
 "Next" = "Neste";
 "Row up" = "Rad opp";
@@ -191,7 +190,6 @@
 "Dual pane on / off: two folders side by side" = "To paneler på / av: to mapper side om side";
 "Switch to the other pane" = "Bytt til det andre panelet";
 "Copy / move the marked items into the other pane's folder" = "Kopier / flytt de merkede objektene til mappen i det andre panelet";
-"New folder / move the marked items to the Trash" = "Ny mappe / flytt de merkede objektene til papirkurven";
 "Mark / unmark an item" = "Merk et objekt / fjern merking";
 "Mark a range" = "Merk et område";
 "Mark all / unmark all" = "Merk alle / fjern all merking";
@@ -200,7 +198,6 @@
 "The app's menus in the window" = "Appens menyer i vinduet";
 "Do you want to quit Schnellbild?" = "Vil du avslutte Schnellbild?";
 "Quit" = "Avslutt";
-"Full screen on / off (F, ⌃⌘F)" = "Fullskjerm på / av (F, ⌃⌘F)";
 "Archive" = "Arkiv";
 "as Grid" = "som rutenett";
 "as List" = "som liste";
@@ -209,3 +206,16 @@
 "Back (where you were, also a search); without history the enclosing folder" = "Tilbake (dit du var, også til et søk); uten historikk til overordnet mappe";
 "⌘↑ goes up one folder level." = "⌘↑ går ett mappenivå opp.";
 "Click to rename this folder" = "Klikk for å gi mappen nytt navn";
+"Schnellbild is free software under the MIT License." = "Schnellbild er fri programvare under MIT-lisensen.";
+"Built with" = "Laget med";
+"The full license texts are in the app (Contents/Resources/Licenses)." = "De fullstendige lisenstekstene ligger i appen (Contents/Resources/Licenses).";
+"plays the video formats macOS can't (AVI, MKV, WebM …)" = "spiller av videoformatene macOS ikke kan (AVI, MKV, WebM …)";
+"reads RAR archives" = "leser RAR-arkiver";
+"reads ZIP and 7z archives (the copy built into macOS)" = "leser ZIP- og 7z-arkiver (utgaven som er innebygd i macOS)";
+"out of memory" = "ikke nok minne";
+"damaged data" = "skadede data";
+"damaged archive" = "skadet arkiv";
+"unknown format" = "ukjent format";
+"can't open the file" = "filen kan ikke åpnes";
+"read error" = "lesefeil";
+"UnRAR error %lld" = "UnRAR-feil %lld";

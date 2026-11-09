@@ -269,7 +269,7 @@ struct RarReader: ArchiveReader {
         var result: Int32 = 0
         var asked: Int32 = 0
         guard let rar = sb_rar_open(url.path, password, listOnly ? 1 : 0, &result, &asked) else {
-            throw Self.error(result, passwordGiven: password != nil, passwordAsked: asked != 0)
+            throw Self.error(result, passwordAsked: asked != 0)
         }
         defer { sb_rar_close(rar) }
         var entry = SBRarEntry()
@@ -282,7 +282,7 @@ struct RarReader: ArchiveReader {
                 // Encrypted names: a wrong password shows as damaged data
                 if seen == 0, sb_rar_headers_encrypted(rar) != 0 { throw ArchiveError.needsPassword }
                 if seen > 0 || sb_rar_volume_missing(rar) != 0 { return false }   // ends early
-                throw Self.error(r, passwordGiven: password != nil, passwordAsked: sb_rar_password_asked(rar) != 0)
+                throw Self.error(r, passwordAsked: sb_rar_password_asked(rar) != 0)
             }
             seen += 1
             if entry.split_before != 0 { _ = sb_rar_skip(rar); continue }   // the rest of a file from the last volume
@@ -308,7 +308,7 @@ struct RarReader: ArchiveReader {
                 if sb_rar_volume_missing(rar) != 0 { done(.incomplete); return false }
                 // A wrong password: RAR5 says so, RAR4 fails its checksum
                 if r == 22 || r == 24 || (item.encrypted && r == 12) { done(.needsPassword) }
-                else { done(Self.error(r, passwordGiven: false, passwordAsked: false)) }
+                else { done(Self.error(r, passwordAsked: false)) }
             }
         }
     }
@@ -322,17 +322,17 @@ struct RarReader: ArchiveReader {
         path.split(separator: "/").filter { !$0.isEmpty && $0 != "." }.joined(separator: "/")
     }
 
-    static func error(_ code: Int32, passwordGiven: Bool, passwordAsked: Bool) -> ArchiveError {
+    static func error(_ code: Int32, passwordAsked: Bool) -> ArchiveError {
         switch code {
         case 22, 24: return .needsPassword
         case 12 where passwordAsked: return .needsPassword
-        case 11: return .unreadable("out of memory")
-        case 12: return .unreadable("damaged data")
-        case 13: return .unreadable("damaged archive")
-        case 14: return .unreadable("unknown format")
-        case 15: return .unreadable("can't open the file")
-        case 18: return .unreadable("read error")
-        default: return .unreadable("UnRAR error \(code)")
+        case 11: return .unreadable(String(localized: "out of memory"))
+        case 12: return .unreadable(String(localized: "damaged data"))
+        case 13: return .unreadable(String(localized: "damaged archive"))
+        case 14: return .unreadable(String(localized: "unknown format"))
+        case 15: return .unreadable(String(localized: "can't open the file"))
+        case 18: return .unreadable(String(localized: "read error"))
+        default: return .unreadable(String(localized: "UnRAR error \(Int(code))"))
         }
     }
 }
@@ -356,7 +356,7 @@ struct LibArchiveReader: ArchiveReader {
     }
 
     private func walk(seekable: Bool, password: String?, _ visit: (ArchiveItem) -> ArchiveVisit) throws -> Bool {
-        guard let archive = archive_read_new() else { throw ArchiveError.unreadable("out of memory") }
+        guard let archive = archive_read_new() else { throw ArchiveError.unreadable(String(localized: "out of memory")) }
         defer { archive_read_free(archive) }
         switch format {
         case .zip where seekable: archive_read_support_format_zip_seekable(archive)
@@ -600,7 +600,7 @@ final class ArchiveStore: @unchecked Sendable {
         // the first one's size and date don't change) is read again after a while
         if let index = archive.index, archive.version == version, typed == nil,
            index.complete || Date().timeIntervalSince(archive.indexedAt) < 10 { return index }
-        guard let reader = Self.reader(for: url) else { throw ArchiveError.unreadable("unknown format") }
+        guard let reader = Self.reader(for: url) else { throw ArchiveError.unreadable(String(localized: "unknown format")) }
         let remembered = passwords.all
         // A password just typed is the only one tried; else none first, then
         // every remembered one.
@@ -715,12 +715,6 @@ final class ArchiveStore: @unchecked Sendable {
         let waiting = archive.pending.removeValue(forKey: path) ?? []
         lock.unlock()
         waiting.forEach { $0.resume(with: result) }
-    }
-
-    /// Forget an archive (a changed password list tries it afresh).
-    func forget(_ url: URL) {
-        let archive = archive(url)
-        archive.queue.async { archive.index = nil; archive.version = nil }
     }
 
     // MARK: For the grid

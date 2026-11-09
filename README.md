@@ -258,7 +258,7 @@ ZIP, RAR and 7z archives open like folders: browse their folders, page through t
   <img src="docs/screenshots/help-light.png" width="760" alt="The keyboard cheat sheet">
 </picture></p>
 
-F1 (or ⌘?) shows every key in the app. `K` (or View → Mini Keyboard, or the keyboard switch in the status bar) slides up the **mini keyboard** under the window: the keys that work on what's on screen right now (the grid, a picture, a video, the slideshow), each with what it does. It is a cheat sheet you can click, handy with only a trackpad; a key you press on the real keyboard lights up on it, so you see what just happened. In a slideshow it shows while you move the mouse. Buttons with a shortcut show it on the button as a key.
+F1 (or ⌘?) shows every key in the app. `K` (or View → Mini Keyboard, or the keyboard switch in the status bar) slides up the **mini keyboard** under the window: the keys that work on what's on screen right now (the grid, a picture, a video, the slideshow), each with what it does. It is a cheat sheet you can click, handy with only a trackpad; a key you press on the real keyboard lights up on it, so you see what just happened. In a slideshow it shows while you move the mouse. The action buttons (Dual Pane, Auto Enhance, Adjust, Slideshow, Grid) show their key on the button; the others name it in their tooltip.
 
 ## Why so fast?
 

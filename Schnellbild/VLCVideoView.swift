@@ -45,10 +45,6 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
     /// Where auto enhance's look goes (the model, for the sliders).
     var onAutoLook: @MainActor (PlaybackControl, Look) -> Void = { _, _ in }
 
-    convenience init(url: URL, onStateChange: @escaping @MainActor (PlaybackControl, Bool) -> Void) {
-        self.init(source: .file(url), onStateChange: onStateChange)
-    }
-
     init(source: Source, onStateChange: @escaping @MainActor (PlaybackControl, Bool) -> Void) {
         self.source = source
         self.onStateChange = onStateChange

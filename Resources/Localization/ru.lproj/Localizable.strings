@@ -20,7 +20,7 @@
 "Sort: %@ %@" = "Сортировка: %@ %@";
 "Back (⌘[)" = "Назад (⌘[)";
 "Forward (⌘])" = "Вперед (⌘])";
-"Enclosing folder (⌘↑ / Backspace)" = "Вложившая папка (⌘↑ / Backspace)";
+"Enclosing folder (⌘↑)" = "Вложившая папка (⌘↑)";
 "Open folder (⌘O)" = "Открыть папку (⌘O)";
 "Exposure, contrast, saturation and sharpness by hand (A)" = "Экспозиция, контраст, насыщенность и резкость вручную (A)";
 "Stop search" = "Остановить поиск";
@@ -135,7 +135,6 @@
 "Start Slideshow of This Folder" = "Начать слайд-шоу этой папки";
 "Auto Enhance" = "Автоулучшение";
 /* Mini keyboard */
-"Up" = "Вверх";
 "Previous" = "Предыдущий";
 "Next" = "Следующий";
 "Row up" = "Строка вверх";
@@ -191,7 +190,6 @@
 "Dual pane on / off: two folders side by side" = "Две панели вкл. / выкл.: две папки рядом";
 "Switch to the other pane" = "Перейти в другую панель";
 "Copy / move the marked items into the other pane's folder" = "Скопировать / переместить отмеченные объекты в папку другой панели";
-"New folder / move the marked items to the Trash" = "Новая папка / переместить отмеченные объекты в Корзину";
 "Mark / unmark an item" = "Отметить объект / снять отметку";
 "Mark a range" = "Отметить диапазон";
 "Mark all / unmark all" = "Отметить все / снять все отметки";
@@ -200,7 +198,6 @@
 "The app's menus in the window" = "Меню приложения в окне";
 "Do you want to quit Schnellbild?" = "Завершить Schnellbild?";
 "Quit" = "Завершить";
-"Full screen on / off (F, ⌃⌘F)" = "Полный экран вкл. / выкл. (F, ⌃⌘F)";
 "Archive" = "Архив";
 "as Grid" = "сеткой";
 "as List" = "списком";
@@ -209,3 +206,16 @@
 "Back (where you were, also a search); without history the enclosing folder" = "Назад (где вы были, и к поиску); без истории — в папку выше";
 "⌘↑ goes up one folder level." = "⌘↑ — на одну папку выше.";
 "Click to rename this folder" = "Щёлкните, чтобы переименовать папку";
+"Schnellbild is free software under the MIT License." = "Schnellbild — свободное ПО под лицензией MIT.";
+"Built with" = "Использует";
+"The full license texts are in the app (Contents/Resources/Licenses)." = "Полные тексты лицензий находятся в приложении (Contents/Resources/Licenses).";
+"plays the video formats macOS can't (AVI, MKV, WebM …)" = "воспроизводит видеоформаты, которые не поддерживает macOS (AVI, MKV, WebM …)";
+"reads RAR archives" = "читает архивы RAR";
+"reads ZIP and 7z archives (the copy built into macOS)" = "читает архивы ZIP и 7z (встроенная в macOS версия)";
+"out of memory" = "недостаточно памяти";
+"damaged data" = "повреждённые данные";
+"damaged archive" = "повреждённый архив";
+"unknown format" = "неизвестный формат";
+"can't open the file" = "не удаётся открыть файл";
+"read error" = "ошибка чтения";
+"UnRAR error %lld" = "Ошибка UnRAR %lld";

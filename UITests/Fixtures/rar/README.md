@@ -12,4 +12,4 @@ Made with the official RAR 7.23 for macOS (rarlab.com, trial version) from Schne
 | `photos-vols.part1.rar` … `part4` | `rar a -r -m0 -v120k` (volumes) |
 | `photos-cut.rar.part` | the first 150 000 bytes of `photos-stored.rar` (a download in progress) |
 
-RAR 7 no longer makes the old RAR4 format; RAR4 is covered by the rarfile fixtures in `Tests/SchnellbildTests/Archives`.
+RAR 7 makes RAR5 archives only; RAR4 is covered by the rarfile fixtures in `Tests/SchnellbildTests/Archives`.

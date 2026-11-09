@@ -20,7 +20,7 @@
 "Sort: %@ %@" = "Ordina: %@ %@";
 "Back (⌘[)" = "Indietro (⌘[)";
 "Forward (⌘])" = "Avanti (⌘])";
-"Enclosing folder (⌘↑ / Backspace)" = "Cartella superiore (⌘↑ / Backspace)";
+"Enclosing folder (⌘↑)" = "Cartella superiore (⌘↑)";
 "Open folder (⌘O)" = "Apri cartella (⌘O)";
 "Exposure, contrast, saturation and sharpness by hand (A)" = "Esposizione, contrasto, saturazione e nitidezza a mano (A)";
 "Stop search" = "Interrompi ricerca";
@@ -135,7 +135,6 @@
 "Start Slideshow of This Folder" = "Avvia presentazione di questa cartella";
 "Auto Enhance" = "Miglioramento automatico";
 /* Mini keyboard */
-"Up" = "Su";
 "Previous" = "Precedente";
 "Next" = "Successivo";
 "Row up" = "Riga su";
@@ -191,7 +190,6 @@
 "Dual pane on / off: two folders side by side" = "Doppio pannello sì / no: due cartelle affiancate";
 "Switch to the other pane" = "Passa all’altro pannello";
 "Copy / move the marked items into the other pane's folder" = "Copia / sposta gli elementi contrassegnati nella cartella dell’altro pannello";
-"New folder / move the marked items to the Trash" = "Nuova cartella / sposta gli elementi contrassegnati nel Cestino";
 "Mark / unmark an item" = "Contrassegna un elemento / rimuovi il contrassegno";
 "Mark a range" = "Contrassegna un intervallo";
 "Mark all / unmark all" = "Contrassegna tutto / rimuovi tutti i contrassegni";
@@ -200,7 +198,6 @@
 "The app's menus in the window" = "I menu dell’app nella finestra";
 "Do you want to quit Schnellbild?" = "Vuoi uscire da Schnellbild?";
 "Quit" = "Esci";
-"Full screen on / off (F, ⌃⌘F)" = "Schermo intero sì / no (F, ⌃⌘F)";
 "Archive" = "Archivio";
 "as Grid" = "come griglia";
 "as List" = "come elenco";
@@ -209,3 +206,16 @@
 "Back (where you were, also a search); without history the enclosing folder" = "Indietro (dove eri, anche a una ricerca); senza cronologia alla cartella superiore";
 "⌘↑ goes up one folder level." = "⌘↑ sale di un livello di cartella.";
 "Click to rename this folder" = "Fai clic per rinominare questa cartella";
+"Schnellbild is free software under the MIT License." = "Schnellbild è software libero con licenza MIT.";
+"Built with" = "Realizzato con";
+"The full license texts are in the app (Contents/Resources/Licenses)." = "I testi completi delle licenze sono nell’app (Contents/Resources/Licenses).";
+"plays the video formats macOS can't (AVI, MKV, WebM …)" = "riproduce i formati video che macOS non supporta (AVI, MKV, WebM …)";
+"reads RAR archives" = "legge gli archivi RAR";
+"reads ZIP and 7z archives (the copy built into macOS)" = "legge gli archivi ZIP e 7z (la versione integrata in macOS)";
+"out of memory" = "memoria insufficiente";
+"damaged data" = "dati danneggiati";
+"damaged archive" = "archivio danneggiato";
+"unknown format" = "formato sconosciuto";
+"can't open the file" = "impossibile aprire il file";
+"read error" = "errore di lettura";
+"UnRAR error %lld" = "Errore UnRAR %lld";

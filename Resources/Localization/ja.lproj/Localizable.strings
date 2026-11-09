@@ -20,7 +20,7 @@
 "Sort: %@ %@" = "並べ替え: %@ %@";
 "Back (⌘[)" = "戻る (⌘[)";
 "Forward (⌘])" = "進む (⌘])";
-"Enclosing folder (⌘↑ / Backspace)" = "内包フォルダ (⌘↑ / Backspace)";
+"Enclosing folder (⌘↑)" = "内包フォルダ (⌘↑)";
 "Open folder (⌘O)" = "フォルダを開く (⌘O)";
 "Exposure, contrast, saturation and sharpness by hand (A)" = "露出、コントラスト、彩度、シャープネスを手動で (A)";
 "Stop search" = "検索を停止";
@@ -135,7 +135,6 @@
 "Start Slideshow of This Folder" = "このフォルダのスライドショーを開始";
 "Auto Enhance" = "自動補正";
 /* Mini keyboard */
-"Up" = "上へ";
 "Previous" = "前へ";
 "Next" = "次へ";
 "Row up" = "1行上";
@@ -191,7 +190,6 @@
 "Dual pane on / off: two folders side by side" = "デュアルペインのオン / オフ: 2 つのフォルダを並べて表示";
 "Switch to the other pane" = "反対側のペインに切り替え";
 "Copy / move the marked items into the other pane's folder" = "マークした項目を反対側のペインのフォルダにコピー / 移動";
-"New folder / move the marked items to the Trash" = "新規フォルダ / マークした項目をゴミ箱に入れる";
 "Mark / unmark an item" = "項目をマーク / マークを解除";
 "Mark a range" = "範囲をマーク";
 "Mark all / unmark all" = "すべてマーク / すべてのマークを解除";
@@ -200,7 +198,6 @@
 "The app's menus in the window" = "ウインドウ内のアプリのメニュー";
 "Do you want to quit Schnellbild?" = "Schnellbild を終了しますか？";
 "Quit" = "終了";
-"Full screen on / off (F, ⌃⌘F)" = "フルスクリーンのオン / オフ（F、⌃⌘F）";
 "Archive" = "アーカイブ";
 "as Grid" = "グリッドで表示";
 "as List" = "リストで表示";
@@ -209,3 +206,16 @@
 "Back (where you were, also a search); without history the enclosing folder" = "戻る（前の場所、検索にも）。履歴がなければ上のフォルダへ";
 "⌘↑ goes up one folder level." = "⌘↑ で 1 つ上のフォルダに移動します。";
 "Click to rename this folder" = "クリックしてこのフォルダの名前を変更";
+"Schnellbild is free software under the MIT License." = "SchnellbildはMITライセンスのフリーソフトウェアです。";
+"Built with" = "使用しているもの";
+"The full license texts are in the app (Contents/Resources/Licenses)." = "ライセンスの全文はApp内にあります(Contents/Resources/Licenses)。";
+"plays the video formats macOS can't (AVI, MKV, WebM …)" = "macOSで再生できないビデオ形式を再生(AVI、MKV、WebM …)";
+"reads RAR archives" = "RARアーカイブを読み込み";
+"reads ZIP and 7z archives (the copy built into macOS)" = "ZIPと7zアーカイブを読み込み(macOS内蔵のもの)";
+"out of memory" = "メモリ不足";
+"damaged data" = "データが破損しています";
+"damaged archive" = "アーカイブが破損しています";
+"unknown format" = "不明な形式";
+"can't open the file" = "ファイルを開けません";
+"read error" = "読み込みエラー";
+"UnRAR error %lld" = "UnRARエラー %lld";
