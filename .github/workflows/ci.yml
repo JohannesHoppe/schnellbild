@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
     inputs:
       only:
-        description: "UI tests to run (xcodebuild -only-testing), e.g. SchnellbildUITests/VisualUITests"
+        description: "UI tests to run (xcodebuild -only-testing; several separated by commas), e.g. SchnellbildUITests/VisualUITests"
         required: false
         default: SchnellbildUITests
       macos:
@@ -135,11 +135,15 @@ jobs:
           ) &
           helper=$!
           status=0
+          # Several tests or classes: separated by commas
+          only=()
+          IFS=',' read -ra selected <<< "$ONLY"
+          for test in "${selected[@]}"; do only+=(-only-testing:"$test"); done
           TEST_RUNNER_SCREEN_MEASURE=1 xcodebuild test \
             -project Schnellbild.xcodeproj \
             -scheme Schnellbild \
             -destination 'platform=macOS' \
-            -only-testing:"$ONLY" \
+            "${only[@]}" \
             -derivedDataPath build/DerivedData || status=1
           kill "$helper"
           exit $status
