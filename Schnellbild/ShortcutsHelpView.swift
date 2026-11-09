@@ -31,7 +31,7 @@ struct ShortcutsHelpView: View {
         Group(title: "Full view", shortcuts: [
             Shortcut(keys: "← →", action: "Images: previous / next · Videos: 10 % of the length back / ahead; at the start / end: previous / next item"),
             Shortcut(keys: "⌘← ⌘→ ↑ ↓", action: "Previous / next item, also from a video"),
-            Shortcut(keys: "⇧← ⇧→", action: "Video: 2 seconds back / ahead"),
+            Shortcut(keys: "⇧← ⇧→", action: "Video: 1 % of the length back / ahead"),
             Shortcut(keys: "Space", action: "Next image · play/pause video"),
             Shortcut(keys: "+ / −", action: "Zoom in / out"),
             Shortcut(keys: "0 / 1", action: "Fit to window / 100 %"),
@@ -45,7 +45,7 @@ struct ShortcutsHelpView: View {
             Shortcut(keys: "s", action: "Start: all pictures and videos in this folder and its subfolders (while searching: the results)"),
             Shortcut(keys: "Space", action: "Pause / resume"),
             Shortcut(keys: "← →", action: "Previous / next · Videos: 10 % of the length back / ahead"),
-            Shortcut(keys: "⇧← ⇧→", action: "Video: 2 seconds back / ahead"),
+            Shortcut(keys: "⇧← ⇧→", action: "Video: 1 % of the length back / ahead"),
             Shortcut(keys: "⌘← ⌘→ ↑ ↓", action: "Previous / next item"),
             Shortcut(keys: "f", action: "Toggle full screen"),
             Shortcut(keys: "i", action: "File info"),

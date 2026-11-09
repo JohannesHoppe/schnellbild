@@ -102,7 +102,6 @@
 "Other files, not pictures or videos" = "Other files, not pictures or videos";
 "This folder is empty" = "This folder is empty";
 "Backspace goes up one folder level." = "Backspace goes up one folder level.";
-"Video: 2 seconds back / ahead" = "Video: 2 seconds back / ahead";
 "Other files: %lld" = "Other files: %lld";
 "This folder can't be read" = "This folder can't be read";
 "This archive can't be read" = "This archive can't be read";
@@ -156,8 +155,6 @@
 "Play / Pause" = "Play / Pause";
 "−10 %" = "−10 %";
 "+10 %" = "+10 %";
-"−2 s" = "−2 s";
-"+2 s" = "+2 s";
 "Previous item" = "Previous item";
 "Next item" = "Next item";
 "Pause" = "Pause";
@@ -165,3 +162,6 @@
 "Keyboard" = "Keyboard";
 "Mini keyboard: the keys of what's on screen, clickable (K)" = "Mini keyboard: the keys of what's on screen, clickable (K)";
 "Show / hide the mini keyboard" = "Show / hide the mini keyboard";
+"Video: 1 % of the length back / ahead" = "Video: 1 % of the length back / ahead";
+"−1 %" = "−1 %";
+"+1 %" = "+1 %";

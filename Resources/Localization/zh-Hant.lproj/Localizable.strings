@@ -102,7 +102,6 @@
 "Other files, not pictures or videos" = "其他檔案（不是影像或影片）";
 "This folder is empty" = "此檔案夾是空的";
 "Backspace goes up one folder level." = "按 Backspace 返回上一層檔案夾。";
-"Video: 2 seconds back / ahead" = "影片：倒退 / 前進 2 秒";
 "Other files: %lld" = "其他檔案：%lld";
 "This folder can't be read" = "無法讀取此檔案夾";
 "This archive can't be read" = "無法讀取此封存檔";
@@ -156,8 +155,6 @@
 "Play / Pause" = "播放 / 暫停";
 "−10 %" = "−10 %";
 "+10 %" = "+10 %";
-"−2 s" = "−2 秒";
-"+2 s" = "+2 秒";
 "Previous item" = "上一個項目";
 "Next item" = "下一個項目";
 "Pause" = "暫停";
@@ -165,3 +162,6 @@
 "Keyboard" = "鍵盤";
 "Mini keyboard: the keys of what's on screen, clickable (K)" = "迷你鍵盤：螢幕上內容的按鍵，可點按 (K)";
 "Show / hide the mini keyboard" = "顯示 / 隱藏迷你鍵盤";
+"Video: 1 % of the length back / ahead" = "影片：倒退 / 前進全長的 1 %";
+"−1 %" = "−1 %";
+"+1 %" = "+1 %";

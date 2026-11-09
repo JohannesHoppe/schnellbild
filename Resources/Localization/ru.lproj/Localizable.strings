@@ -102,7 +102,6 @@
 "Other files, not pictures or videos" = "Другие файлы, не изображения и не видео";
 "This folder is empty" = "Эта папка пуста";
 "Backspace goes up one folder level." = "Backspace — на одну папку выше.";
-"Video: 2 seconds back / ahead" = "Видео: на 2 секунды назад / вперёд";
 "Other files: %lld" = "Другие файлы: %lld";
 "This folder can't be read" = "Не удаётся прочитать эту папку";
 "This archive can't be read" = "Не удаётся прочитать этот архив";
@@ -156,8 +155,6 @@
 "Play / Pause" = "Воспроизвести / пауза";
 "−10 %" = "−10 %";
 "+10 %" = "+10 %";
-"−2 s" = "−2 с";
-"+2 s" = "+2 с";
 "Previous item" = "Предыдущий объект";
 "Next item" = "Следующий объект";
 "Pause" = "Пауза";
@@ -165,3 +162,6 @@
 "Keyboard" = "Клавиатура";
 "Mini keyboard: the keys of what's on screen, clickable (K)" = "Мини-клавиатура: клавиши того, что на экране, нажимаются щелчком (K)";
 "Show / hide the mini keyboard" = "Показать / скрыть мини-клавиатуру";
+"Video: 1 % of the length back / ahead" = "Видео: на 1 % длины назад / вперёд";
+"−1 %" = "−1 %";
+"+1 %" = "+1 %";
