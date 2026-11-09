@@ -351,9 +351,9 @@ struct EntryInteractions: ViewModifier {
 
     private var key: String { "\(ObjectIdentifier(model).hashValue)|\(entry.url.path)" }
 
-    private func register(_ frame: CGRect) {
+    private func hover() {
         let entry = entry, model = model
-        ModifierClicks.set(key, frame: frame) { flags in
+        ModifierClicks.enter(key) { flags in
             model.searchFocused = false
             model.click(entry, command: flags.contains(.command), shift: flags.contains(.shift))
         }
@@ -372,14 +372,11 @@ struct EntryInteractions: ViewModifier {
                 model.click(entry, command: false, shift: false)
             }
             // SwiftUI's tap gestures don't fire while ⌘ is held: ⌘- and
-            // ⇧-clicks are taken at mouse-down by the tile's frame
-            .background(GeometryReader { geometry in
-                let frame = geometry.frame(in: .global)
-                Color.clear
-                    .onAppear { register(frame) }
-                    .onChange(of: frame) { _, now in register(now) }
-                    .onDisappear { ModifierClicks.remove(key) }
-            })
+            // ⇧-clicks go to the tile under the pointer at mouse-down
+            .onHover { inside in
+                if inside { hover() } else { ModifierClicks.leave(key) }
+            }
+            .onDisappear { ModifierClicks.leave(key) }
             .contextMenu {
                 if entry.kind != .parent {
                     if entry.kind == .folder {
@@ -432,18 +429,19 @@ private struct FolderDrop: ViewModifier {
 }
 
 /// ⌘- and ⇧-clicks on tiles and rows. SwiftUI's tap gestures don't fire
-/// while ⌘ is held, so a mouse-down monitor finds the tile under the pointer
-/// by the frames the tiles report and acts on it; other clicks pass.
+/// while ⌘ is held, so a mouse-down monitor acts on the tile the pointer is
+/// over (tiles report it by hovering); other clicks pass.
 @MainActor
 enum ModifierClicks {
-    private struct Target { let frame: CGRect; let action: (NSEvent.ModifierFlags) -> Void }
-    private static var targets: [String: Target] = [:]
+    private static var hovered: (key: String, action: (NSEvent.ModifierFlags) -> Void)?
     private static var monitor: Any?
 
-    static func set(_ key: String, frame: CGRect, action: @escaping (NSEvent.ModifierFlags) -> Void) {
-        targets[key] = Target(frame: frame, action: action)
+    static func enter(_ key: String, action: @escaping (NSEvent.ModifierFlags) -> Void) {
+        hovered = (key, action)
     }
-    static func remove(_ key: String) { targets[key] = nil }
+    static func leave(_ key: String) {
+        if hovered?.key == key { hovered = nil }
+    }
 
     static func start() {
         guard monitor == nil else { return }
@@ -454,13 +452,10 @@ enum ModifierClicks {
 
     private static func handle(_ event: NSEvent) -> Bool {
         let flags = event.modifierFlags.intersection([.command, .shift])
-        guard !flags.isEmpty, let window = event.window, window === BrowserModel.appWindow,
-              let content = window.contentView else { return false }
-        // SwiftUI's global space: the window's content, origin top left
-        let local = content.convert(event.locationInWindow, from: nil)
-        let point = CGPoint(x: local.x, y: content.isFlipped ? local.y : content.bounds.height - local.y)
-        guard let target = targets.values.first(where: { $0.frame.contains(point) }) else { return false }
-        target.action(flags)
+        guard !flags.isEmpty else { return false }
+        BrowserModel.testLog("modifier click on \(hovered?.key ?? "nothing")")
+        guard let hovered, event.window === BrowserModel.appWindow else { return false }
+        hovered.action(flags)
         return true
     }
 }
