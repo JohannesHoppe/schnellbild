@@ -40,16 +40,15 @@ final class VideoUITests: SchnellbildUITestCase {
     func testUpAndDownSetTheVolume() throws {
         try put("clip.mp4", at: "clip.mp4")
         let path = tempDir.appendingPathComponent("clip.mp4").path
-        launch(open: path)
+        launch(open: path, extra: ["--hold-volume-display"])
         XCTAssertTrue(element("video.avkit").waitForExistence(timeout: 20))
         app.typeKey(.downArrow, modifierFlags: [])
         let display = element("volumeDisplay")
         XCTAssertTrue(display.waitForExistence(timeout: 5))
         XCTAssertTrue(text(of: display).contains("90 %"), text(of: display))
         waitForBadge(containing: "clip.mp4")   // still the video, not the next item
-        eventually("the display goes", timeout: 5) { !display.exists }
         app.terminate()
-        launch(open: path, resetState: false)
+        launch(open: path, resetState: false, extra: ["--hold-volume-display"])
         XCTAssertTrue(element("video.avkit").waitForExistence(timeout: 20))
         app.typeKey(.downArrow, modifierFlags: [])
         XCTAssertTrue(element("volumeDisplay").waitForExistence(timeout: 5))

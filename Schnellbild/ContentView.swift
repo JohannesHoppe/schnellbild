@@ -164,6 +164,15 @@ struct ContentView: View {
                 .foregroundStyle(.tertiary)
                 .lineLimit(1)
                 .truncationMode(.head)
+            // The mini keyboard's switch (here, not in the toolbar: that has
+            // no room left in a narrow window)
+            Button { model.showMiniKeyboard.toggle() } label: {
+                ShortcutLabel("Keyboard", systemImage: "keyboard", keys: "K")
+            }
+            .buttonStyle(.plain)
+            .foregroundStyle(model.showMiniKeyboard ? Color.accentColor : Color.secondary)
+            .help("Mini keyboard: the keys of what's on screen, clickable (K)")
+            .accessibilityIdentifier("keyboardButton")
         }
         .font(.caption)
         .padding(.horizontal, 12)
@@ -276,14 +285,6 @@ struct ContentView: View {
                 ShortcutLabel("Open Folder", systemImage: "folder", keys: "⌘O")
             }
             .help("Open folder (⌘O)")
-        }
-        ToolbarItem(placement: .primaryAction) {
-            Toggle(isOn: $model.showMiniKeyboard) {
-                ShortcutLabel("Keyboard", systemImage: "keyboard", keys: "K")
-            }
-            .toggleStyle(.button)
-            .help("Mini keyboard: the keys of what's on screen, clickable (K)")
-            .accessibilityIdentifier("keyboardButton")
         }
         ToolbarItem(placement: .primaryAction) {
             Toggle(isOn: $model.enhance) {
@@ -692,7 +693,7 @@ struct VideoProgressBar: View {
                         .frame(width: geo.size.width * min(max(progress, 0), 1))
                 }
             }
-            .frame(height: 3)
+            .frame(width: 200, height: 3)   // not the badge's whole width
             .accessibilityElement(children: .ignore)
             .accessibilityIdentifier("videoProgress")
             .accessibilityLabel("\(Int((progress * 100).rounded())) %")
