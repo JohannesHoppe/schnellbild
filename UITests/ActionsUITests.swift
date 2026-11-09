@@ -319,7 +319,7 @@ final class ActionsUITests: SchnellbildUITestCase {
         eventually("moved into the right pane", timeout: 10) {
             right.descendants(matching: .any).matching(identifier: "tile.c.jpg").firstMatch.exists && !leftC.exists
         }
-        if leftC.exists { XCTFail("app log:\n" + ((try? String(contentsOf: log, encoding: .utf8)) ?? "none")) }
+        if !right.descendants(matching: .any).matching(identifier: "tile.c.jpg").firstMatch.exists { XCTFail("app log:\n" + ((try? String(contentsOf: log, encoding: .utf8)) ?? "none")) }
 
         app.typeKey("d", modifierFlags: [])
         eventually("one pane again") { !self.element("pane.right").exists }
