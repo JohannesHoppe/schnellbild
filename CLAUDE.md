@@ -61,7 +61,7 @@ There is **no Xcode project for the app build**; `xcodegen` generates
     `FileActions.conflicts` refuses a target that is a different item (also
     the case-variant on case-sensitive volumes such as NAS shares); the live
     case-only move goes via a temporary name and rolls back on failure.
-    Backspace / ⌘↑ / `..` = enclosing folder (`goToParentFolder`).
+    ⌘↑ / `..` = enclosing folder (`goToParentFolder`); Backspace is Back (`leaveDetailOrGoBack`: out of the full view, else `navigateBack`, with no history the enclosing folder).
   - Side effects (Finder, open, trash + confirm alert, move/rename) go through
     the injectable `FileActions`; tests pass a spy. `--ui-testing` makes the app
     use its own `UserDefaults` suite (`--reset-state` clears it).

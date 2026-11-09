@@ -1676,7 +1676,13 @@ final class BrowserModel: ObservableObject {
     }
 
     /// Backspace: leave the full-size view, or go up one folder level in the grid.
-    func leaveDetailOrGoUp() { mode == .detail ? closeDetail() : goToParentFolder() }
+    /// Backspace, like a browser's Back: out of the full view, else where
+    /// the user was before (also back to a search and its results); with no
+    /// history yet, the enclosing folder.
+    func leaveDetailOrGoBack() {
+        if mode == .detail { closeDetail(); return }
+        if canGoBack { navigateBack() } else { goToParentFolder() }
+    }
 
     func goToParentFolder() {
         guard let current = folderURL, let parent = Self.parentFolder(of: current) else { return }
@@ -1780,7 +1786,7 @@ final class BrowserModel: ObservableObject {
             moveSelectionToTrash(); return true
         case .backspace:
             guard !command else { return false }
-            leaveDetailOrGoUp(); return true
+            leaveDetailOrGoBack(); return true
         case .escape:
             if mode == .detail { closeDetail(); return true }
             if !marked.isEmpty { clearMarks(); return true }   // first the marks

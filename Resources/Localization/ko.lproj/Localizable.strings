@@ -99,7 +99,6 @@
 "About Schnellbild" = "Schnellbild에 관하여";
 "Other files, not pictures or videos" = "기타 파일(이미지나 비디오가 아님)";
 "This folder is empty" = "이 폴더는 비어 있습니다";
-"Backspace goes up one folder level." = "Backspace를 누르면 한 단계 위 폴더로 이동합니다.";
 "Other files: %lld" = "기타 파일: %lld";
 "This folder can't be read" = "이 폴더를 읽을 수 없음";
 "This archive can't be read" = "이 아카이브를 읽을 수 없음";
@@ -207,3 +206,5 @@
 "as List" = "목록으로 보기";
 "Grid or list (L)" = "격자 또는 목록(L)";
 "Grid or list (a click on a column sorts by it)" = "격자 또는 목록(열을 클릭하면 그 열로 정렬)";
+"Back (where you were, also a search); without history the enclosing folder" = "뒤로(이전 위치, 검색으로도); 기록이 없으면 상위 폴더로";
+"⌘↑ goes up one folder level." = "⌘↑를 누르면 한 단계 위 폴더로 이동합니다.";

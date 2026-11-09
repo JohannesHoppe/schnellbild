@@ -47,7 +47,8 @@ Open a folder with ⌘O or drag it onto the window; drag a single file to open i
 | ← → | previous / next item |
 | ↑ ↓ | one row up / down |
 | Return / Space | open the picture or video, or enter the folder |
-| Backspace / ⌘↑ | up one folder level |
+| Backspace | back to where you were, also to a search and its results (with no history yet: up a level) |
+| ⌘↑ / `..` | up one folder level |
 | Home / End | first / last item |
 | ⌘+ / ⌘− | larger / smaller thumbnails |
 | ⌘[ / ⌘] | back / forward, restoring the folder, the search and the selection |

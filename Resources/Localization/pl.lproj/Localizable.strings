@@ -99,7 +99,6 @@
 "About Schnellbild" = "Schnellbild – informacje";
 "Other files, not pictures or videos" = "Inne pliki, nie obrazy ani wideo";
 "This folder is empty" = "Ten folder jest pusty";
-"Backspace goes up one folder level." = "Backspace przechodzi o jeden poziom folderu wyżej.";
 "Other files: %lld" = "Inne pliki: %lld";
 "This folder can't be read" = "Nie można odczytać tego folderu";
 "This archive can't be read" = "Nie można odczytać tego archiwum";
@@ -207,3 +206,5 @@
 "as List" = "jako lista";
 "Grid or list (L)" = "Siatka lub lista (L)";
 "Grid or list (a click on a column sorts by it)" = "Siatka lub lista (kliknięcie kolumny sortuje według niej)";
+"Back (where you were, also a search); without history the enclosing folder" = "Wstecz (tam, gdzie byłeś, także do wyszukiwania); bez historii do folderu nadrzędnego";
+"⌘↑ goes up one folder level." = "⌘↑ przechodzi o jeden poziom folderu wyżej.";

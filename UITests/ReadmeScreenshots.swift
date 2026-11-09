@@ -154,7 +154,7 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         tile("Iceland 2025.zip").doubleClick()
         XCTAssertTrue(app.staticTexts[(photos.first! as NSString).lastPathComponent].waitForExistence(timeout: 15))
         shoot("archive-inside")
-        app.typeKey(.delete, modifierFlags: [])   // Backspace: up
+        app.typeKey(.delete, modifierFlags: [])   // Backspace: back
         XCTAssertTrue(tile("Private.zip").waitForExistence(timeout: 15))
 
         tile("Private.zip").doubleClick()
