@@ -359,9 +359,14 @@ struct EntryInteractions: ViewModifier {
             }
             .onTapGesture(count: 1) {
                 model.searchFocused = false
-                let flags = ClickModifiers.last
-                model.click(entry, command: flags.contains(.command), shift: flags.contains(.shift))
+                model.click(entry, command: false, shift: false)
             }
+            // SwiftUI's tap gestures don't fire while ⌘ is held: ⌘- and
+            // ⇧-clicks go to a view of their own
+            .overlay(ModifierClickCatcher { flags in
+                model.searchFocused = false
+                model.click(entry, command: flags.contains(.command), shift: flags.contains(.shift))
+            })
             .contextMenu {
                 if entry.kind != .parent {
                     if entry.kind == .folder {
@@ -413,22 +418,28 @@ private struct FolderDrop: ViewModifier {
     }
 }
 
-/// The modifier keys held when the mouse button went down. A tap gesture
-/// ends after the button is up, when the current event and the global
-/// modifier state can already be other ones.
-@MainActor
-enum ClickModifiers {
-    private(set) static var last: NSEvent.ModifierFlags = []
-    private static var monitor: Any?
+/// Takes the clicks made with ⌘ or ⇧ held and lets every other click
+/// (plain, right, drag) through to the views below.
+private struct ModifierClickCatcher: NSViewRepresentable {
+    let onClick: (NSEvent.ModifierFlags) -> Void
 
-    static func start() {
-        guard monitor == nil else { return }
-        monitor = NSEvent.addLocalMonitorForEvents(matching: .leftMouseDown) { event in
-            MainActor.assumeIsolated {
-                last = event.modifierFlags.intersection([.command, .shift, .option, .control])
-                BrowserModel.testLog("mouse down, modifiers \(last.rawValue)")
-            }
-            return event
+    final class CatcherView: NSView {
+        var onClick: ((NSEvent.ModifierFlags) -> Void)?
+        override func hitTest(_ point: NSPoint) -> NSView? {
+            guard let event = NSApp.currentEvent, event.type == .leftMouseDown,
+                  !event.modifierFlags.intersection([.command, .shift]).isEmpty else { return nil }
+            return super.hitTest(point)
+        }
+        override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
+        override func mouseDown(with event: NSEvent) {
+            onClick?(event.modifierFlags)
         }
     }
+
+    func makeNSView(context: Context) -> CatcherView {
+        let view = CatcherView()
+        view.onClick = onClick
+        return view
+    }
+    func updateNSView(_ view: CatcherView, context: Context) { view.onClick = onClick }
 }
