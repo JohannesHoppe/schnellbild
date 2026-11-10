@@ -65,6 +65,17 @@ jobs:
       - name: Build app bundle (release)
         run: ./Scripts/build_app.sh
 
+      - name: QuickLook thumbnail extension (MKV through macOS, kept in its cache)
+        run: ./Scripts/check_thumbnail_extension.sh
+
+      - name: Keep the extension's thumbnail
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: thumbnail-check
+          path: build/thumbnail-check/*.png
+          if-no-files-found: ignore
+
       - name: Zip app
         run: ditto -c -k --keepParent build/Schnellbild.app build/Schnellbild.app.zip
 

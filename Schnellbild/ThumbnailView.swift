@@ -83,8 +83,9 @@ final class ThumbnailCache {
         guard !Task.isCancelled else { return nil }
         var image = rep?.nsImage
         if rep?.type == .icon { image?.accessibilityDescription = Self.fileIcon }
-        // QuickLook has only the file icon for videos it can't read (AVI,
-        // MKV …); VLC, which plays them, makes the frame.
+        // MKV, WebM, AVI … come from Schnellbild's QuickLook extension; a
+        // video QuickLook still has only the icon for (the extension not
+        // registered yet, a type it doesn't take): VLC makes the frame here.
         if rep?.type != .thumbnail, BrowserModel.mediaKind(of: url) == .video, !Task.isCancelled,
            let frame = await VLCThumbnails.shared.thumbnail(for: url, width: side * NSScreen.mainBackingScale) {
             image = NSImage(cgImage: frame, size: NSSize(width: frame.width, height: frame.height))

@@ -51,6 +51,18 @@ cp -R "$RES/Licenses" "$APP/Contents/Resources/Licenses"
 cp "$RES/Info.plist" "$APP/Contents/Info.plist"
 printf 'APPL????' > "$APP/Contents/PkgInfo"
 
+echo "==> Thumbnail extension (QuickLook, for MKV, WebM, AVI …)"
+APPEX="$APP/Contents/PlugIns/SchnellbildThumbnails.appex"
+mkdir -p "$APPEX/Contents/MacOS"
+cp "$BINDIR/SchnellbildThumbnails" "$APPEX/Contents/MacOS/SchnellbildThumbnails"
+# VLCKit is the app's, four levels up from the extension's binary
+install_name_tool -change @loader_path/../Frameworks/VLCKit.framework/Versions/A/VLCKit \
+  @executable_path/../../../../Frameworks/VLCKit.framework/Versions/A/VLCKit "$APPEX/Contents/MacOS/SchnellbildThumbnails"
+cp "$ROOT/ThumbnailExtension/Info.plist" "$APPEX/Contents/Info.plist"
+for key in CFBundleShortVersionString CFBundleVersion; do
+  /usr/libexec/PlistBuddy -c "Set :$key $(/usr/libexec/PlistBuddy -c "Print :$key" "$RES/Info.plist")" "$APPEX/Contents/Info.plist"
+done
+
 # Sign from the inside out: every file with machine code (VLCKit and its
 # plugins), then the frameworks, then the app. With MACOS_SIGN_IDENTITY
 # ("Developer ID Application: …") for notarization: Hardened Runtime and a
@@ -77,6 +89,8 @@ find "$APP/Contents" -type f ! -path "$MAIN" -print0 \
   | awk '{ print length, $0 }' | sort -rn | cut -d' ' -f2- \
   | while IFS= read -r f; do codesign "${OPTS[@]}" "$f"; done
 codesign "${OPTS[@]}" "$APP/Contents/Frameworks/VLCKit.framework"
+# The extension in the App Sandbox (its entitlements), before the app around it
+codesign "${OPTS[@]}" --entitlements "$ROOT/ThumbnailExtension/ThumbnailExtension.entitlements" "$APPEX"
 codesign "${OPTS[@]}" "$APP"
 codesign --verify --strict --deep "$APP"
 

@@ -86,6 +86,39 @@ targets:
         GCC_WARN_INHIBIT_ALL_WARNINGS: YES
         HEADER_SEARCH_PATHS: ["$(SRCROOT)/Native/CArchives"]
 
+  # What the app and its thumbnail extension share of VLC
+  VLCFrames:
+    type: library.static
+    platform: macOS
+    sources:
+      - path: VLCFrames
+    dependencies:
+      - framework: Vendor/VLCKit.xcframework
+        embed: false
+
+  # QuickLook thumbnails of the videos QuickLook can't read (MKV, WebM, AVI …),
+  # in the App Sandbox; uses the app's VLCKit
+  SchnellbildThumbnails:
+    type: app-extension
+    platform: macOS
+    sources:
+      - path: ThumbnailExtension
+        excludes: ["Info.plist", "ThumbnailExtension.entitlements"]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: art.haushoppe.schnellbild.thumbnails
+        PRODUCT_NAME: SchnellbildThumbnails
+        GENERATE_INFOPLIST_FILE: NO
+        INFOPLIST_FILE: ThumbnailExtension/Info.plist
+        CODE_SIGN_ENTITLEMENTS: ThumbnailExtension/ThumbnailExtension.entitlements
+        LD_RUNPATH_SEARCH_PATHS: ["@executable_path/../Frameworks", "@executable_path/../../../../Frameworks"]
+        OTHER_SWIFT_FLAGS: ["-parse-as-library"]   # no main.swift: the entry point is the system's extension main
+    dependencies:
+      - target: VLCFrames
+      - sdk: QuickLookThumbnailing.framework
+      - framework: Vendor/VLCKit.xcframework
+        embed: false
+
   Schnellbild:
     type: application
     platform: macOS
@@ -109,6 +142,9 @@ targets:
         OTHER_LDFLAGS: ["-larchive", "-lc++"]
     dependencies:
       - target: CArchives
+      - target: VLCFrames
+      - target: SchnellbildThumbnails
+        embed: true
       - sdk: AVKit.framework
       - sdk: AVFoundation.framework
       - framework: Vendor/VLCKit.xcframework

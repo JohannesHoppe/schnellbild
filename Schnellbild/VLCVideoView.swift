@@ -1,6 +1,7 @@
 import SwiftUI
 import AppKit
 import VLCKit
+import VLCFrames
 import CoreImage
 
 /// VLCKit (LibVLC) playback for formats AVFoundation can't handle (AVI, MKV,
@@ -293,7 +294,8 @@ struct VLCVideoView: NSViewRepresentable {
     }
 }
 
-/// Thumbnails of videos QuickLook can't read (AVI, MKV, WebM …): VLC decodes
+/// Thumbnails of videos QuickLook has only an icon for (Schnellbild's
+/// QuickLook extension not registered yet, or a type it doesn't take): VLC decodes
 /// a frame at 30 % of the video (`VLCFrameGrab`). At most two run at a
 /// time, since each one opens and decodes the file.
 @MainActor
@@ -317,29 +319,5 @@ final class VLCThumbnails {
         }
         guard !Task.isCancelled else { return nil }
         return await VLCFrameGrab.frame(of: url, width: Int(width.rounded()))
-    }
-}
-
-/// What VLC may do with a file someone else made. VLC picks its reader by
-/// the content, not the name: a file named "video.mkv" that is really a
-/// streaming playlist (HLS) would make it fetch from the internet, also for
-/// a thumbnail. Only the readers of local video files are allowed.
-enum VLCSafety {
-    /// Matroska / WebM, AVI, MP4 / MOV / 3GP, MPEG program and transport
-    /// streams, elementary streams, Ogg, ASF / WMV, DV, and FFmpeg's readers
-    /// for the rest (FLV …).
-    static let demuxers = "mkv,avi,mp4,ps,ts,es,ogg,asf,rawdv,avformat,none"
-
-    static func restrict(_ media: VLCMedia) {
-        media.addOption(":demux=\(demuxers)")
-        // No subtitles or other files picked up from next to the video
-        media.addOption(":no-sub-autodetect-file")
-    }
-
-    /// VLCKit reads extra libVLC options from the app's preferences
-    /// ("VLCParams"); another program could put some there. Removed before
-    /// VLC starts.
-    static func forgetInjectedOptions(in defaults: UserDefaults = .standard) {
-        defaults.removeObject(forKey: "VLCParams")
     }
 }

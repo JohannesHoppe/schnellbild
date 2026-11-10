@@ -67,5 +67,30 @@
             </array>
         </dict>
     </array>
+    <!-- Matroska has no system type; declared so QuickLook can hand MKV files to the thumbnail extension (the identifier VLC uses) -->
+    <key>UTImportedTypeDeclarations</key>
+    <array>
+        <dict>
+            <key>UTTypeIdentifier</key>
+            <string>org.matroska.mkv</string>
+            <key>UTTypeDescription</key>
+            <string>Matroska video</string>
+            <key>UTTypeConformsTo</key>
+            <array>
+                <string>public.movie</string>
+            </array>
+            <key>UTTypeTagSpecification</key>
+            <dict>
+                <key>public.filename-extension</key>
+                <array>
+                    <string>mkv</string>
+                </array>
+                <key>public.mime-type</key>
+                <array>
+                    <string>video/x-matroska</string>
+                </array>
+            </dict>
+        </dict>
+    </array>
 </dict>
 </plist>
