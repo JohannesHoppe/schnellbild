@@ -14,7 +14,7 @@ WORK=$(mktemp -d)
 trap 'rm -rf "$WORK"; [ -n "${finished:-}" ] || exit 1' EXIT
 FLAGS=(-typecheck -sdk "$SDK" -target arm64-apple-macos14.0 -F "$VLC" -I Native/CArchives/include -swift-version 5)
 
-mkdir -p "$WORK/app" "$WORK/unit" "$WORK/ui"
+mkdir -p "$WORK/app" "$WORK/unit" "$WORK/ui" "$WORK/mod"
 for f in Schnellbild/*.swift; do perl -pe 's/\@State\b/\@_State/g; s/\bState\(initialValue/_State(initialValue/g' "$f" > "$WORK/app/$(basename "$f")"; done
 for f in Tests/SchnellbildTests/*.swift; do
   sed -e 's/^import XCTest$/import Foundation/' -e '/^@testable import Schnellbild$/d' "$f" > "$WORK/unit/$(basename "$f")"
@@ -22,6 +22,12 @@ done
 for f in UITests/*.swift; do sed 's/^import XCTest$/import Foundation/' "$f" > "$WORK/ui/$(basename "$f")"; done
 
 status=0
+echo "== VLCFrames (shared by the app and the thumbnail extension)"
+swiftc -emit-module -emit-module-path "$WORK/mod/VLCFrames.swiftmodule" -module-name VLCFrames -parse-as-library \
+  "${FLAGS[@]/-typecheck/}" VLCFrames/*.swift || status=1
+FLAGS+=(-I "$WORK/mod")
+echo "== thumbnail extension"
+swiftc "${FLAGS[@]}" -parse-as-library ThumbnailExtension/*.swift || status=1
 echo "== app"
 swiftc "${FLAGS[@]}" Scripts/typecheck/StateShim.swift "$WORK"/app/*.swift || status=1
 echo "== unit tests (with the app)"

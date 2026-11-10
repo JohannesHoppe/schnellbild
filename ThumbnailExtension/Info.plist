@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- The versions are the app's: Xcode fills them in, Scripts/build_app.sh copies them from Resources/Info.plist -->
+    <key>CFBundleDevelopmentRegion</key>
+    <string>en</string>
+    <key>CFBundleName</key>
+    <string>Schnellbild Video Thumbnails</string>
+    <key>CFBundleDisplayName</key>
+    <string>Schnellbild Video Thumbnails</string>
+    <key>CFBundleIdentifier</key>
+    <string>art.haushoppe.schnellbild.thumbnails</string>
+    <key>CFBundleExecutable</key>
+    <string>SchnellbildThumbnails</string>
+    <key>CFBundlePackageType</key>
+    <string>XPC!</string>
+    <key>CFBundleInfoDictionaryVersion</key>
+    <string>6.0</string>
+    <key>CFBundleShortVersionString</key>
+    <string>$(MARKETING_VERSION)</string>
+    <key>CFBundleVersion</key>
+    <string>$(CURRENT_PROJECT_VERSION)</string>
+    <key>LSMinimumSystemVersion</key>
+    <string>14.0</string>
+    <key>NSHumanReadableCopyright</key>
+    <string>© 2026 HAUS HOPPE - ITS (Johannes Hoppe). MIT License.</string>
+    <key>NSExtension</key>
+    <dict>
+        <key>NSExtensionPointIdentifier</key>
+        <string>com.apple.quicklook.thumbnail</string>
+        <key>NSExtensionPrincipalClass</key>
+        <string>ThumbnailProvider</string>
+        <key>NSExtensionAttributes</key>
+        <dict>
+            <!-- The videos QuickLook has only an icon for. Matroska has no
+                 system type: Schnellbild declares org.matroska.mkv (as VLC
+                 does); IINA declares io.iina.mkv. WebM and Ogg also under
+                 VLC's names, for Macs where VLC's declaration wins. -->
+            <key>QLSupportedContentTypes</key>
+            <array>
+                <string>org.matroska.mkv</string>
+                <string>io.iina.mkv</string>
+                <string>org.webmproject.webm</string>
+                <string>org.videolan.webm</string>
+                <string>public.avi</string>
+                <string>com.microsoft.windows-media-wmv</string>
+                <string>com.microsoft.advanced-systems-format</string>
+                <string>com.adobe.flash.video</string>
+                <string>org.xiph.ogv</string>
+                <string>org.xiph.ogg-video</string>
+            </array>
+            <key>QLThumbnailMinimumDimension</key>
+            <integer>16</integer>
+        </dict>
+    </dict>
+</dict>
+</plist>

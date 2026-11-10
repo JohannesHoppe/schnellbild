@@ -1,5 +1,6 @@
 import SwiftUI
 import AppKit
+import VLCFrames
 
 @main
 struct SchnellbildApp: App {

@@ -20,13 +20,35 @@ let package = Package(
     targets: [
         .executableTarget(
             name: "Schnellbild",
-            dependencies: ["VLCKit", "CArchives"],
+            dependencies: ["VLCKit", "VLCFrames", "CArchives"],
             path: "Schnellbild",
             linkerSettings: [
                 // Linked explicitly: without it, AVPlayerView can be missing
                 // at runtime (crash).
                 .linkedFramework("AVKit"),
                 .linkedFramework("AVFoundation")
+            ]
+        ),
+        // What the app and its thumbnail extension share of VLC: one frame of
+        // a video, and what VLC may do with a file someone else made.
+        .target(
+            name: "VLCFrames",
+            dependencies: ["VLCKit"],
+            path: "VLCFrames"
+        ),
+        // The QuickLook thumbnail extension for the videos QuickLook can't
+        // read (MKV, WebM, AVI …): Scripts/build_app.sh wraps the binary into
+        // Contents/PlugIns/SchnellbildThumbnails.appex. Its entry point is the
+        // system's extension main.
+        .executableTarget(
+            name: "SchnellbildThumbnails",
+            dependencies: ["VLCKit", "VLCFrames"],
+            path: "ThumbnailExtension",
+            exclude: ["Info.plist", "ThumbnailExtension.entitlements"],
+            swiftSettings: [.unsafeFlags(["-parse-as-library"])],
+            linkerSettings: [
+                .linkedFramework("QuickLookThumbnailing"),
+                .unsafeFlags(["-Xlinker", "-e", "-Xlinker", "_NSExtensionMain"])
             ]
         ),
         // Archives: the official UnRAR source (Scripts/fetch_unrar.sh vendors
