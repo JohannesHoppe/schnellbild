@@ -14,7 +14,6 @@ struct GridEntry: Identifiable, Hashable {
     var id: URL { url }
     var name: String { kind == .parent ? ".." : url.lastPathComponent }
     var isMedia: Bool { kind == .image || kind == .video }
-    var isGIF: Bool { kind == .image && url.pathExtension.lowercased() == "gif" }
 }
 
 /// A file in a folder that the grid doesn't show (not a picture, video or

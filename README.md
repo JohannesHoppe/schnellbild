@@ -96,7 +96,7 @@ The search field is always there. It matches the names of folders, archives, pic
   <img src="docs/screenshots/full-light.png" width="760" alt="A photo in the full view">
 </picture></p>
 
-One picture, as large as the window allows, with its position in the folder. The full image is sampled to screen size, the thumbnail shows instantly until it's there. Animated GIFs play.
+One picture, as large as the window allows, with its position in the folder. The full image is sampled to screen size, the thumbnail shows instantly until it's there. Animated GIFs play, and zoom, turn and take the enhance filter like any photo.
 
 | Key | Action |
 |---|---|
@@ -305,7 +305,6 @@ F1 (or ⌘?) shows every key in the app. `K` (or View → Mini Keyboard, or the 
 
 Early, but already a usable daily driver. Known limits:
 
-- Animated GIFs don't zoom, pan, rotate or take the enhance filter (still GIFs do, like any photo).
 - Things the Finder shows as a single file although they are folders inside (apps, the Photos library) stay closed: Schnellbild doesn't show, search or play what's in them, so it never changes a library behind its app's back.
 - Archives inside archives aren't opened. Thumbnails of videos inside archives are an icon. Sorting by date taken uses the date modified inside archives.
 

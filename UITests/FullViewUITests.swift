@@ -176,12 +176,25 @@ final class FullViewUITests: SchnellbildUITestCase {
         XCTAssertTrue(searchField.waitForExistence(timeout: 5))
     }
 
-    func testAnimatedGIFUsesTheAnimatedView() throws {
+    /// An animated GIF plays in the full view like any picture: its frames
+    /// change, and it zooms and turns while it plays.
+    func testAnimatedGIFPlaysAndZooms() throws {
         try put("anim.gif", at: "d-anim.gif")
         launch(open: tempDir.appendingPathComponent("d-anim.gif").path)
         waitForBadge(containing: "d-anim.gif")
-        XCTAssertTrue(element("animatedImage").waitForExistence(timeout: 5))
-        XCTAssertFalse(fullImage.exists)
+        func frame() -> String? {
+            let text = text(of: fullImage)
+            guard let range = text.range(of: #"frame \d+ of \d+"#, options: .regularExpression) else { return nil }
+            return String(text[range])
+        }
+        eventually("it plays", timeout: 10) { frame() != nil }
+        let first = frame()
+        eventually("the frames change", timeout: 10) { frame() != nil && frame() != first }
+        app.typeKey("+", modifierFlags: [])
+        app.typeKey(.rightArrow, modifierFlags: .option)
+        eventually("zoomed and turned while playing") {
+            text(of: fullImage).hasPrefix("zoom 125 %, rotation 90°") && frame() != nil
+        }
     }
 
     /// At 100 % (`1`), a photo larger than the screen is shown at its full

@@ -557,8 +557,6 @@ struct PaneView: View {
         ZStack {
             if entry.kind == .video {
                 VideoDetailView(url: entry.url)
-            } else if entry.isGIF {
-                GIFView(url: entry.url)
             } else {
                 FullImageView(url: entry.url)
             }

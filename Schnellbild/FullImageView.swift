@@ -3,9 +3,12 @@ import ImageIO
 import CoreImage
 import AppKit
 
-/// Full-size view for still images. Loads the image via ImageIO downsampled
-/// directly to screen size. Zoom: keys +/-/0/1 (via the model) and
-/// trackpad pinch; dragging pans when zoomed in.
+/// Full-size view for pictures, animated GIFs included. Loads the image via
+/// ImageIO downsampled directly to screen size. Zoom: keys +/-/0/1 (via the
+/// model) and trackpad pinch; dragging pans when zoomed in. An animation
+/// (a GIF of several frames) plays its frames in place of the picture, at
+/// the same size and with the same look, so zoom, rotation and auto
+/// enhance work on it alike.
 struct FullImageView: View {
     let url: URL
 
@@ -23,6 +26,8 @@ struct FullImageView: View {
     /// The longest side the picture was decoded at: screen size first, the
     /// full size once the user zooms in (a sharp picture where it matters).
     @State private var decodedSide = 0
+    /// The animation's frame on screen (with the look), and which one.
+    @State private var frame: (image: NSImage, index: Int, count: Int)?
     @GestureState private var dragTranslation: CGSize = .zero
     @GestureState private var pinch: CGFloat = 1
 
@@ -86,6 +91,9 @@ struct FullImageView: View {
             .task(id: EnhanceJob(url: url, enhancement: model.enhancement, ready: picture != nil, side: decodedSide)) {
                 await enhance()
             }
+            .task(id: AnimationJob(url: url, side: decodedSide, look: picture == nil ? nil : shownLook, ready: picture != nil)) {
+                await animate()
+            }
         }
         .onChange(of: model.zoom) { _, newValue in
             if newValue <= 1.01 { panOffset = .zero }
@@ -96,12 +104,14 @@ struct FullImageView: View {
             picture = nil
             autoLook = nil
             enhanced = nil
+            frame = nil
         }
     }
 
     /// With a look: the picture rendered with it; while a slider moves, the
     /// last rendered one until the next is ready.
     private var shownImage: NSImage? {
+        if let frame { return frame.image }
         if shownLook != nil, let enhanced { return enhanced.image }
         return image
     }
@@ -122,6 +132,7 @@ struct FullImageView: View {
             + (decodedSide > 0 ? "decoded \(decodedSide) px, " : "")
             + (failed ? "failed" : image == nil ? "loading" : "loaded")
             + (shownLook != nil && enhanced?.look == shownLook ? (model.enhance ? ", enhanced" : ", adjusted") : "")
+            + (frame.map { ", frame \($0.index + 1) of \($0.count)" } ?? "")
     }
 
     private var panGesture: some Gesture {
@@ -278,6 +289,108 @@ struct FullImageView: View {
         }.value
         guard !Task.isCancelled, let result else { return }
         enhanced = (look, side, NSImage(cgImage: result, size: NSSize(width: result.width, height: result.height)))
+    }
+}
+
+extension FullImageView {
+    struct AnimationJob: Equatable {
+        let url: URL
+        let side: Int
+        let look: Look?
+        let ready: Bool
+    }
+
+    /// Plays an animation's frames in a loop, each for its own time, at the
+    /// size the picture was decoded at and with the look shown. Nothing
+    /// for a picture of one frame.
+    private func animate() async {
+        guard picture != nil, decodedSide > 0, !VectorPicture.isVector(url) else { return }
+        let url = self.url, side = decodedSide, look = shownLook
+        guard let frames = await detachedCancellable(priority: .userInitiated, {
+            await AnimationFrames.open(url, side: side)
+        }) else { frame = nil; return }
+        var index = frame?.count == frames.count ? frame?.index ?? 0 : 0
+        while !Task.isCancelled {
+            let started = ContinuousClock.now
+            let current = index
+            let next = await detachedCancellable(priority: .userInitiated) { frames.frame(current, look: look) }
+            guard !Task.isCancelled else { return }
+            if let next {
+                frame = (NSImage(cgImage: next, size: NSSize(width: next.width, height: next.height)), index, frames.count)
+            }
+            // Its own time, less what decoding it took
+            let wait = Duration.seconds(frames.delays[index]) - (ContinuousClock.now - started)
+            if wait > .zero { try? await Task.sleep(for: wait) }
+            index = (index + 1) % frames.count
+        }
+    }
+}
+
+/// The frames of an animated picture (GIF, also animated PNG and WebP):
+/// decoded at a given size, kept while they fit in `budget`, else decoded
+/// again each round.
+final class AnimationFrames: @unchecked Sendable {
+    let count: Int
+    /// Seconds per frame, as browsers show them (under 20 ms counts as 100 ms).
+    let delays: [Double]
+    private let source: CGImageSource
+    private let side: Int
+    private let keeps: Bool
+    private let lock = NSLock()
+    private var kept: [Int: CGImage] = [:]
+    /// The most the decoded frames of one animation may take.
+    static let budget = 256_000_000
+
+    private init(source: CGImageSource, count: Int, side: Int) {
+        self.source = source
+        self.count = count
+        self.side = side
+        delays = (0..<count).map { Self.delay(of: source, at: $0) }
+        keeps = count * side * side * 4 <= Self.budget
+    }
+
+    /// nil for a picture of one frame (or one that can't be read).
+    static func open(_ url: URL, side: Int) async -> AnimationFrames? {
+        guard let source = await MediaData.imageSource(url) else { return nil }
+        let count = CGImageSourceGetCount(source)
+        guard count > 1 else { return nil }
+        return AnimationFrames(source: source, count: count, side: side)
+    }
+
+    static func delay(of source: CGImageSource, at index: Int) -> Double {
+        let props = CGImageSourceCopyPropertiesAtIndex(source, index, nil) as? [CFString: Any]
+        let dictionaries = [kCGImagePropertyGIFDictionary, kCGImagePropertyPNGDictionary, kCGImagePropertyWebPDictionary]
+        for key in dictionaries {
+            guard let info = props?[key] as? [CFString: Any] else { continue }
+            let unclamped = info[kCGImagePropertyGIFUnclampedDelayTime] ?? info[kCGImagePropertyAPNGUnclampedDelayTime]
+                ?? info[kCGImagePropertyWebPUnclampedDelayTime]
+            let clamped = info[kCGImagePropertyGIFDelayTime] ?? info[kCGImagePropertyAPNGDelayTime] ?? info[kCGImagePropertyWebPDelayTime]
+            if let seconds = ((unclamped ?? clamped) as? NSNumber)?.doubleValue {
+                return seconds < 0.02 ? 0.1 : seconds
+            }
+        }
+        return 0.1
+    }
+
+    /// Frame `index`, with `look` when it changes anything.
+    func frame(_ index: Int, look: Look?) -> CGImage? {
+        guard index >= 0, index < count else { return nil }
+        lock.lock()
+        var decoded = kept[index]
+        lock.unlock()
+        if decoded == nil {
+            let options: [CFString: Any] = [
+                kCGImageSourceCreateThumbnailFromImageAlways: true,
+                kCGImageSourceCreateThumbnailWithTransform: true,
+                kCGImageSourceShouldCacheImmediately: true,
+                kCGImageSourceThumbnailMaxPixelSize: side
+            ]
+            decoded = CGImageSourceCreateThumbnailAtIndex(source, index, options as CFDictionary)
+            if keeps, let decoded { lock.lock(); kept[index] = decoded; lock.unlock() }
+        }
+        guard let decoded else { return nil }
+        guard let look, !look.isNeutral else { return decoded }
+        return Look.render(decoded, with: look) ?? decoded
     }
 }
 
