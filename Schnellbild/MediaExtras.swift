@@ -14,6 +14,7 @@ struct InspectorView: View {
     let entry: GridEntry
     @EnvironmentObject var model: BrowserModel
     @State private var dimensions: String?
+    @State private var taken: Date?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -27,6 +28,9 @@ struct InspectorView: View {
             if let size = entry.byteSize {
                 infoRow("Size", ByteCountFormatter.string(fromByteCount: Int64(size), countStyle: .file))
             }
+            if let taken {
+                infoRow("Date Taken", taken.formatted(date: .abbreviated, time: .shortened))
+            }
             if let date = entry.modDate {
                 infoRow("Date Modified", date.formatted(date: .abbreviated, time: .shortened))
             }
@@ -35,6 +39,7 @@ struct InspectorView: View {
         .frame(width: 260, alignment: .leading)
         .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12))
         .task(id: entry.url) { await loadDimensions() }
+        .task(id: entry.url) { await loadCaptureDate() }
     }
 
     /// The inspector shows only what the full view shows: a picture or a video.
@@ -52,6 +57,15 @@ struct InspectorView: View {
             Spacer(minLength: 0)
         }
         .font(.callout)
+    }
+
+    /// EXIF's capture date (pictures), the creation date (videos).
+    private func loadCaptureDate() async {
+        taken = nil
+        let url = entry.url
+        let found = await detachedCancellable(priority: .utility) { await BrowserModel.captureDate(of: url) }
+        guard !Task.isCancelled else { return }
+        taken = found
     }
 
     private func loadDimensions() async {
