@@ -133,6 +133,14 @@ jobs:
                   echo "== measure $id $rect: $mean ± $spread (RGB $red $green $blue)"
                   printf 'measured:%s:%s:%s:%s:%s:%s' "$id" "$mean" "$spread" "$red" "$green" "$blue" | pbcopy
                   ;;
+                sample:*)
+                  # A test found the app hanging: what its threads are doing
+                  id=${request#sample:}
+                  echo "== sample $id"
+                  sample Schnellbild 3 -file "measurements/sample-$id.txt" >/dev/null 2>&1
+                  head -c 60000 "measurements/sample-$id.txt" 2>/dev/null || echo "(no sample)"
+                  printf 'sampled:%s' "$id" | pbcopy
+                  ;;
               esac
               sleep 0.2
             done

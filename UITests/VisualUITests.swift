@@ -594,7 +594,10 @@ final class VisualUITests: SchnellbildUITestCase {
             let shown = WatchFlag()
             DispatchQueue.global().asyncAfter(deadline: .now() + 12) {
                 guard !shown.isSet else { return }
-                print("== \(name): no badge after 12 s; the app's threads:\n" + Self.sampleApp())
+                // The CI shell may sample it (the test runner may not)
+                print("== \(name): no badge after 12 s; asking the shell for a sample")
+                NSPasteboard.general.clearContents()
+                NSPasteboard.general.setString("sample:\(name)", forType: .string)
             }
             defer { shown.set() }
             let deadline = Date().addingTimeInterval(20)
