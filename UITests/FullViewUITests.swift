@@ -76,11 +76,11 @@ final class FullViewUITests: SchnellbildUITestCase {
 
     func testRotateKeys() {
         openA()
-        app.typeKey("]", modifierFlags: [])
-        eventually("] rotates right") { text(of: fullImage).contains("rotation 90°") }
-        app.typeKey("[", modifierFlags: [])
-        app.typeKey("[", modifierFlags: [])
-        eventually("[ rotates left") { text(of: fullImage).contains("rotation -90°") }
+        app.typeKey(.rightArrow, modifierFlags: .option)
+        eventually("⌥→ rotates right") { text(of: fullImage).contains("rotation 90°") }
+        app.typeKey(.leftArrow, modifierFlags: .option)
+        app.typeKey(.leftArrow, modifierFlags: .option)
+        eventually("⌥← rotates left") { text(of: fullImage).contains("rotation -90°") }
         app.typeKey(.escape, modifierFlags: [])
         app.typeKey(.return, modifierFlags: [])
         eventually("leaving resets rotation") { text(of: fullImage).contains("rotation 0°") }
@@ -90,7 +90,7 @@ final class FullViewUITests: SchnellbildUITestCase {
         let file = tempDir.appendingPathComponent("a.jpg")
         let before = try Data(contentsOf: file)
         openA()
-        app.typeKey("]", modifierFlags: [])
+        app.typeKey(.rightArrow, modifierFlags: .option)
         app.typeKey("+", modifierFlags: [])
         app.typeKey(.escape, modifierFlags: [])
         XCTAssertEqual(try Data(contentsOf: file), before)

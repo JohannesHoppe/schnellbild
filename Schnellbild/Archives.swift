@@ -592,6 +592,18 @@ final class PasswordStore: @unchecked Sendable {
         save(merged)
     }
 
+    /// Every saved password goes (Settings): archives that need one ask again.
+    func forgetAll() {
+        lock.lock(); defer { lock.unlock() }
+        unsaved = []
+        cached = []
+        failedAt = nil
+        save([])
+    }
+
+    /// How many are saved (Settings).
+    var count: Int { all.count }
+
     static func memory() -> PasswordStore {
         let box = Box()
         return PasswordStore(load: { box.list }, save: { box.list = $0 })
@@ -727,6 +739,17 @@ final class ArchiveStore: @unchecked Sendable {
     private var uses = 0
     /// Archives kept with their index; the ones not used longest (and idle) go.
     private static let keptArchives = 200
+
+    /// Forgets the saved passwords, and the archives a password opened
+    /// (those not being read right now): they ask again when opened next.
+    func forgetPasswords() {
+        passwords.forgetAll()
+        lock.lock(); defer { lock.unlock() }
+        for (key, archive) in archives where archive.index?.password != nil
+            && archive.pending.isEmpty && !archive.passRunning {
+            archives[key] = nil
+        }
+    }
 
     private func archive(_ url: URL) -> Archive {
         let key = BrowserModel.canonicalPath(url)

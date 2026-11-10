@@ -101,6 +101,10 @@ struct SchnellbildApp: App {
                     .disabled(model.otherSheetOpen)
             }
         }
+        Settings {
+            SettingsView()
+                .environmentObject(window)
+        }
     }
 }
 

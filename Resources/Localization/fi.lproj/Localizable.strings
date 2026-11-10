@@ -240,3 +240,14 @@
 "© Tim Kientzle and the libarchive contributors. BSD 2-clause license." = "© Tim Kientzle ja libarchiven tekijät. Kahden lausekkeen BSD-lisenssi.";
 "© Alexander Roshal. The UnRAR license, in its own words:" = "© Alexander Roshal. UnRAR-lisenssi alkuperäisessä muodossaan:";
 "This file is too large to show from inside an archive." = "Tämä tiedosto on liian suuri näytettäväksi arkiston sisältä.";
+/* Settings */
+"Archive passwords" = "Arkistojen salasanat";
+"Each picture stays" = "Kukin kuva näkyy";
+"%lld s" = "%lld s";
+"Videos play to their end." = "Videot toistetaan loppuun.";
+"Saved passwords" = "Tallennetut salasanat";
+"Forget Saved Passwords…" = "Unohda tallennetut salasanat…";
+"Passwords that opened an archive are kept in your keychain, so the archive opens without asking." = "Arkiston avanneet salasanat säilytetään avainnipussasi, joten arkisto aukeaa kysymättä.";
+"Forget all saved archive passwords?" = "Unohdetaanko kaikki tallennetut arkistojen salasanat?";
+"Forget Passwords" = "Unohda salasanat";
+"Archives that need a password ask for it again." = "Salasanaa vaativat arkistot kysyvät sitä uudelleen.";

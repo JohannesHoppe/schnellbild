@@ -240,3 +240,14 @@
 "© Tim Kientzle and the libarchive contributors. BSD 2-clause license." = "© Tim Kientzle a přispěvatelé libarchive. Licence BSD se 2 klauzulemi.";
 "© Alexander Roshal. The UnRAR license, in its own words:" = "© Alexander Roshal. Licence UnRAR v původním znění:";
 "This file is too large to show from inside an archive." = "Tento soubor je příliš velký, aby se dal zobrazit z archivu.";
+/* Settings */
+"Archive passwords" = "Hesla archivů";
+"Each picture stays" = "Každý obrázek zůstane";
+"%lld s" = "%lld s";
+"Videos play to their end." = "Videa se přehrají do konce.";
+"Saved passwords" = "Uložená hesla";
+"Forget Saved Passwords…" = "Zapomenout uložená hesla…";
+"Passwords that opened an archive are kept in your keychain, so the archive opens without asking." = "Hesla, která otevřela archiv, jsou uložena ve vaší klíčence, takže se archiv otevře bez ptaní.";
+"Forget all saved archive passwords?" = "Zapomenout všechna uložená hesla archivů?";
+"Forget Passwords" = "Zapomenout hesla";
+"Archives that need a password ask for it again." = "Archivy, které potřebují heslo, se na něj znovu zeptají.";

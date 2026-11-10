@@ -240,3 +240,14 @@
 "© Tim Kientzle and the libarchive contributors. BSD 2-clause license." = "© Tim Kientzle en de bijdragers aan libarchive. BSD-licentie met 2 clausules.";
 "© Alexander Roshal. The UnRAR license, in its own words:" = "© Alexander Roshal. De UnRAR-licentie, letterlijk:";
 "This file is too large to show from inside an archive." = "Dit bestand is te groot om vanuit een archief te tonen.";
+/* Settings */
+"Archive passwords" = "Archiefwachtwoorden";
+"Each picture stays" = "Elke foto blijft";
+"%lld s" = "%lld s";
+"Videos play to their end." = "Video’s spelen tot het einde.";
+"Saved passwords" = "Bewaarde wachtwoorden";
+"Forget Saved Passwords…" = "Bewaarde wachtwoorden vergeten…";
+"Passwords that opened an archive are kept in your keychain, so the archive opens without asking." = "Wachtwoorden die een archief hebben geopend, staan in je sleutelhanger, zodat het archief zonder vragen opent.";
+"Forget all saved archive passwords?" = "Alle bewaarde archiefwachtwoorden vergeten?";
+"Forget Passwords" = "Wachtwoorden vergeten";
+"Archives that need a password ask for it again." = "Archieven die een wachtwoord nodig hebben, vragen er opnieuw om.";

@@ -37,6 +37,18 @@ final class WindowModel: ObservableObject {
     var active: BrowserModel { rightIsActive ? (right ?? left) : left }
     var other: BrowserModel? { dual ? (rightIsActive ? left : right) : nil }
     var panes: [BrowserModel] { dual ? allPanes : [left] }
+    /// How long a picture stays in the slideshow, in seconds (Settings):
+    /// remembered, and the same in both panes.
+    var slideshowSeconds: Int {
+        get { Int(left.slideshowInterval.components.seconds) }
+        set {
+            let seconds = min(max(newValue, BrowserModel.slideshowSecondsRange.lowerBound), BrowserModel.slideshowSecondsRange.upperBound)
+            objectWillChange.send()
+            defaults.set(seconds, forKey: BrowserModel.slideshowSecondsKey)
+            for pane in allPanes { pane.slideshowInterval = .seconds(seconds) }
+        }
+    }
+
     /// A sheet is open in either pane: it keeps the keys and the menus.
     var anySheetOpen: Bool { panes.contains { $0.anySheetOpen } }
     /// Both panes, the right one also while hidden.

@@ -1249,7 +1249,7 @@ final class FileActionTests: XCTestCase {
         m.activateSelection()
         XCTAssertEqual(m.mode, .detail)
         m.handleKey(.char("+"), command: false)
-        m.handleKey(.char("]"), command: false)
+        m.handleKey(.right, command: false, option: true)
         XCTAssertNotEqual(m.zoom, 1)
         m.moveSelectionToTrash()
         XCTAssertEqual(m.shownMediaEntry?.name, "b.jpg")
@@ -1735,7 +1735,7 @@ final class PlaybackTests: XCTestCase {
         let (m, _) = try await openOnVideo()
         m.handleKey(.char("+"), command: false)
         XCTAssertEqual(m.zoom, 1.25, accuracy: 0.001, "videos zoom like pictures")
-        m.handleKey(.char("]"), command: false)
+        m.handleKey(.right, command: false, option: true)
         XCTAssertEqual(m.rotation, 90)
         m.handleKey(.char("0"), command: false)
         XCTAssertEqual(m.zoom, 1)
@@ -1951,13 +1951,16 @@ final class KeyBindingTests: XCTestCase {
         XCTAssertEqual(m.zoom, 3, accuracy: 0.0001)
     }
 
-    func testRotateKeysInDetailOnlyWithoutCommand() {
-        let m = makeModel(); m.mode = .detail
-        XCTAssertTrue(m.handleKey(.char("]"), command: false))
-        XCTAssertEqual(m.rotation, 90)
-        XCTAssertTrue(m.handleKey(.char("["), command: false))
+    func testOptionArrowsRotateInDetailOnly() {
+        let m = makeModel()
+        XCTAssertFalse(m.handleKey(.right, command: false, option: true), "nothing in the grid")
         XCTAssertEqual(m.rotation, 0)
-        m.handleKey(.char("["), command: true)   // ⌘[ = Back, not rotate
+        m.mode = .detail
+        XCTAssertTrue(m.handleKey(.right, command: false, option: true))
+        XCTAssertEqual(m.rotation, 90)
+        XCTAssertTrue(m.handleKey(.left, command: false, option: true))
+        XCTAssertEqual(m.rotation, 0)
+        XCTAssertFalse(m.handleKey(.char("]"), command: false), "] no longer turns")
         XCTAssertEqual(m.rotation, 0)
     }
 

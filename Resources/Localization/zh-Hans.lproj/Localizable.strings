@@ -240,3 +240,14 @@
 "© Tim Kientzle and the libarchive contributors. BSD 2-clause license." = "© Tim Kientzle 及 libarchive 贡献者。2 条款 BSD 许可证。";
 "© Alexander Roshal. The UnRAR license, in its own words:" = "© Alexander Roshal。UnRAR 许可证原文：";
 "This file is too large to show from inside an archive." = "此文件太大，无法从归档内显示。";
+/* Settings */
+"Archive passwords" = "归档密码";
+"Each picture stays" = "每张图片停留";
+"%lld s" = "%lld 秒";
+"Videos play to their end." = "视频播放到结尾。";
+"Saved passwords" = "已存储的密码";
+"Forget Saved Passwords…" = "忘记已存储的密码…";
+"Passwords that opened an archive are kept in your keychain, so the archive opens without asking." = "打开过归档的密码保存在你的钥匙串中，归档无需询问即可打开。";
+"Forget all saved archive passwords?" = "忘记所有已存储的归档密码？";
+"Forget Passwords" = "忘记密码";
+"Archives that need a password ask for it again." = "需要密码的归档会再次询问。";

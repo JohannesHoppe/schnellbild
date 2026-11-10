@@ -240,3 +240,14 @@
 "© Tim Kientzle and the libarchive contributors. BSD 2-clause license." = "© Tim Kientzle ve libarchive katkıda bulunanları. 2 maddeli BSD lisansı.";
 "© Alexander Roshal. The UnRAR license, in its own words:" = "© Alexander Roshal. UnRAR lisansı, orijinal metniyle:";
 "This file is too large to show from inside an archive." = "Bu dosya bir arşivin içinden gösterilemeyecek kadar büyük.";
+/* Settings */
+"Archive passwords" = "Arşiv parolaları";
+"Each picture stays" = "Her resim kalma süresi";
+"%lld s" = "%lld sn";
+"Videos play to their end." = "Videolar sonuna kadar oynatılır.";
+"Saved passwords" = "Kayıtlı parolalar";
+"Forget Saved Passwords…" = "Kayıtlı parolaları unut…";
+"Passwords that opened an archive are kept in your keychain, so the archive opens without asking." = "Bir arşivi açan parolalar anahtar zincirinizde saklanır, böylece arşiv sormadan açılır.";
+"Forget all saved archive passwords?" = "Kayıtlı tüm arşiv parolaları unutulsun mu?";
+"Forget Passwords" = "Parolaları unut";
+"Archives that need a password ask for it again." = "Parola gerektiren arşivler yeniden sorar.";

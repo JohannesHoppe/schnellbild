@@ -65,7 +65,7 @@ public class XCUIElement {
     public struct KeyModifierFlags: OptionSet {
         public let rawValue: Int
         public init(rawValue: Int) { self.rawValue = rawValue }
-        public static let command = KeyModifierFlags(rawValue: 1), control = KeyModifierFlags(rawValue: 2), shift = KeyModifierFlags(rawValue: 4)
+        public static let command = KeyModifierFlags(rawValue: 1), control = KeyModifierFlags(rawValue: 2), shift = KeyModifierFlags(rawValue: 4), option = KeyModifierFlags(rawValue: 8)
     }
     public var exists: Bool { false }
     public var isHittable: Bool { false }

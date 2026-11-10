@@ -18,7 +18,7 @@ Arrow keys race through the grid, selection moving → Return → one image big 
 ImageIO-downsampled full view). This is the core loop: browse fast with keys.
 
 **9–14 s — Breadth, fast.**
-Quickly: `[`/`]` rotate, one `+` zoom, then briefly play a **video** (ideally an
+Quickly: `⌥←`/`⌥→` rotate, one `+` zoom, then briefly play a **video** (ideally an
 **AVI**, to show the VLCKit fallback in passing). Keep moving, don't linger.
 
 **14–19 s — Search (what Preview can't do).**
