@@ -324,7 +324,7 @@ private struct WindowView: View {
                                        textEditing: typing, repeating: event.isARepeat)
             }
             // For the UI tests: where each key went
-            BrowserModel.testLog("key \(chars.debugDescription) consumed=\(consume) window=\(event.window.map { String(describing: type(of: $0)) } ?? "nil") "
+            BrowserModel.testLog("\(Date().timeIntervalSince1970) key \(chars.debugDescription) handled \(String(format: "%.2f", ProcessInfo.processInfo.systemUptime - event.timestamp)) s after it was typed consumed=\(consume) window=\(event.window.map { String(describing: type(of: $0)) } ?? "nil") "
                                  + "keyWindowIsMain=\(NSApp.keyWindow === BrowserModel.appWindow) "
                                  + "firstResponder=\(NSApp.keyWindow?.firstResponder.map { String(describing: type(of: $0)) } ?? "nil")")
             return consume ? nil : event

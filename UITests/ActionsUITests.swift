@@ -321,10 +321,10 @@ final class ActionsUITests: SchnellbildUITestCase {
         }
 
         app.typeKey("d", modifierFlags: [])
+        let closed = Date()
         eventually("one pane again") { !self.element("pane.right").exists }
-        if element("pane.right").exists {
-            print("key log:\n" + ((try? String(contentsOf: log, encoding: .utf8)) ?? "(none)"))
-        }
+        print("closed after \(String(format: "%.1f", Date().timeIntervalSince(closed))) s; key log:\n"
+              + ((try? String(contentsOf: log, encoding: .utf8)) ?? "(none)"))
     }
 
     /// A click on the folder's name in the title bar renames the folder shown.
