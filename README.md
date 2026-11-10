@@ -213,7 +213,7 @@ It's a filter on the screen only: your files stay exactly as they are. Photos an
   <img src="docs/screenshots/inspector-light.png" width="760" alt="The file inspector over a photo">
 </picture></p>
 
-Name, type, resolution, size and date of the item on screen.
+Name, type, resolution, size, when it was taken (from the photo's EXIF or the video's creation date) and when it was last changed, for the item on screen.
 
 | Key | Action |
 |---|---|
