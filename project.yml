@@ -113,6 +113,15 @@ targets:
         CODE_SIGN_ENTITLEMENTS: ThumbnailExtension/ThumbnailExtension.entitlements
         LD_RUNPATH_SEARCH_PATHS: ["@executable_path/../Frameworks", "@executable_path/../../../../Frameworks"]
         OTHER_SWIFT_FLAGS: ["-parse-as-library"]   # no main: the entry point is the system's extension main
+        ENABLE_DEBUG_DYLIB: NO   # one binary, so the step below finds VLCKit's load command in it
+    postBuildScripts:
+      # VLCKit is the app's, four levels up from the extension's binary (its
+      # own install name points next to an app's binary). Xcode signs after this.
+      - name: Load the app's VLCKit
+        basedOnDependencyAnalysis: false
+        script: |
+          install_name_tool -change @loader_path/../Frameworks/VLCKit.framework/Versions/A/VLCKit \
+            @executable_path/../../../../Frameworks/VLCKit.framework/Versions/A/VLCKit "$TARGET_BUILD_DIR/$EXECUTABLE_PATH"
     dependencies:
       - target: VLCFrames
       - sdk: QuickLookThumbnailing.framework
