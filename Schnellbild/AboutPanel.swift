@@ -19,10 +19,10 @@ enum AboutPanel {
     }
 
     static let components: [Component] = [
-        Component(name: "VLCKit 3.6.0 (libVLC)", use: String(localized: "plays the video formats macOS can't (AVI, MKV, WebM …)"),
+        Component(name: "VLCKit 3.6.0 (libVLC 3.0.21)", use: String(localized: "plays the video formats macOS can't (AVI, MKV, WebM …)"),
                   license: "© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later; "
                       + "some of its modules GNU General Public License 2 or later.",
-                  link: "https://code.videolan.org/videolan/VLCKit"),
+                  link: "https://code.videolan.org/videolan/VLCKit"),   // its source; THIRD-PARTY-NOTICES.md has the exact version
         Component(name: "UnRAR 7.2.7", use: String(localized: "reads RAR archives"),
                   license: "© Alexander Roshal. UnRAR license: UnRAR source code may be used in any software to handle "
                       + "RAR archives without limitations free of charge, but cannot be used to develop RAR (WinRAR) "
@@ -46,7 +46,7 @@ enum AboutPanel {
             if let link, let url = URL(string: link) { attributes[.link] = url }
             text.append(NSAttributedString(string: string, attributes: attributes))
         }
-        add(String(localized: "Schnellbild is free software under the MIT License.") + "\n", font: body)
+        add(String(localized: "Schnellbild's own code is free software under the MIT License. The components below keep their own licenses.") + "\n", font: body)
         add("https://github.com/JohannesHoppe/schnellbild\n\n", font: body, link: "https://github.com/JohannesHoppe/schnellbild")
         add(String(localized: "Built with") + "\n", font: bold)
         for component in components {

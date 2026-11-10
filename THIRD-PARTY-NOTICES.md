@@ -1,6 +1,6 @@
 # Third-party notices
 
-Schnellbild itself is under the MIT License (see [LICENSE](LICENSE)). It is built with the components below. The app shows the same list in its About window, and ships the full license texts in `Schnellbild.app/Contents/Resources/Licenses`.
+Schnellbild's own source code is under the MIT License (see [LICENSE](LICENSE)). The app as distributed (`Schnellbild.app`, the DMG) also contains the components below. Each keeps its own license; the MIT License covers only Schnellbild's own code. The app shows the same list in its About window and ships the full license texts in `Schnellbild.app/Contents/Resources/Licenses`.
 
 ## In the app
 
@@ -10,9 +10,16 @@ Schnellbild itself is under the MIT License (see [LICENSE](LICENSE)). It is buil
 | [UnRAR](https://www.rarlab.com/rar_add.htm) 7.2.7, © Alexander Roshal | Reading RAR archives | [UnRAR license](Resources/Licenses/UnRAR-license.txt) |
 | [libarchive](https://www.libarchive.org), © Tim Kientzle and contributors | Reading ZIP and 7z archives | BSD 2-clause; the copy built into macOS, not shipped with the app |
 
-**VLCKit** is the official binary from VideoLAN (`Scripts/fetch_vlckit.sh` checks its SHA-256), embedded unmodified as its own framework in `Contents/Frameworks` and loaded dynamically. Its source is at the link above.
+**VLCKit** is the official binary from VideoLAN (`Scripts/fetch_vlckit.sh` checks its SHA-256), embedded unmodified as its own framework in `Contents/Frameworks` and linked dynamically. It contains libVLC 3.0.21 (`3.0.21-49-g608e9fb467`). Most of it is under the GNU LGPL 2.1 or later; some of its modules are under the GNU GPL 2 or later, so the GPL's terms apply to those modules as distributed in the app.
+
+- **Source code:** VLCKit 3.6.0 at <https://code.videolan.org/videolan/VLCKit> (tag `3.6.0`) and VLC 3.0.21 at <https://code.videolan.org/videolan/vlc> (`3.0.21-49-g608e9fb467`). On request we send a copy of exactly this source, for no more than the cost of sending it; write to us via the issues of this repository. This offer is valid for three years from each release of the app.
+- **Replacing VLCKit:** the app's complete source is in this repository. `Scripts/build_app.sh` builds it against whatever `Vendor/VLCKit.xcframework` holds, so the app can be rebuilt and run with a modified VLCKit.
 
 **UnRAR** is compiled from the unmodified official source (`Scripts/fetch_unrar.sh` checks its SHA-256); `Native/CArchives/rar_shim.cpp` is Schnellbild's own code around it. From its license: *UnRAR source code may be used in any software to handle RAR archives without limitations free of charge, but cannot be used to develop RAR (WinRAR) compatible archiver and to re-create RAR compression algorithm, which is proprietary.*
+
+## No warranty
+
+The components are provided by their authors "as is", without warranty of any kind; see their licenses for the exact terms. The same holds for Schnellbild itself (see [LICENSE](LICENSE)).
 
 ## Only for building and testing (not in the app)
 

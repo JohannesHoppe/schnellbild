@@ -206,7 +206,6 @@
 "Back (where you were, also a search); without history the enclosing folder" = "返回（之前的位置，也包括搜尋）；沒有歷史時前往上一層檔案夾";
 "⌘↑ goes up one folder level." = "按 ⌘↑ 返回上一層檔案夾。";
 "Click to rename this folder" = "按一下以重新命名此檔案夾";
-"Schnellbild is free software under the MIT License." = "Schnellbild 是採用 MIT 授權條款的自由軟體。";
 "Built with" = "使用的元件";
 "The full license texts are in the app (Contents/Resources/Licenses)." = "完整的授權條款文字位於 App 內(Contents/Resources/Licenses)。";
 "plays the video formats macOS can't (AVI, MKV, WebM …)" = "播放 macOS 無法播放的影片格式(AVI、MKV、WebM …)";
@@ -230,3 +229,4 @@
 "⌘-click / Insert" = "⌘-按一下 / Insert";
 "⇧-click / ⇧ arrows" = "⇧-按一下 / ⇧ 方向鍵";
 "drag" = "拖移";
+"Schnellbild's own code is free software under the MIT License. The components below keep their own licenses." = "Schnellbild 本身的程式碼是採用 MIT 授權條款的自由軟體。以下元件保留各自的授權條款。";

@@ -317,4 +317,4 @@ Building from source, tests and releases: [BUILDING.md](BUILDING.md).
 
 [MIT](LICENSE) © 2026 HAUS HOPPE - ITS (Johannes Hoppe)
 
-Schnellbild is built with VLCKit (LGPL 2.1, some modules GPL 2), UnRAR (UnRAR license) and the libarchive of macOS (BSD): see [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) and the app's About window.
+The MIT License covers Schnellbild's own code. The app also contains VLCKit (GNU LGPL 2.1 or later, some modules GNU GPL 2 or later), UnRAR (UnRAR license) and uses the libarchive built into macOS (BSD); each keeps its own license. Details, the source of VLCKit and the license texts: [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) and the app's About window.

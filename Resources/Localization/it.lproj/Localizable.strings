@@ -206,7 +206,6 @@
 "Back (where you were, also a search); without history the enclosing folder" = "Indietro (dove eri, anche a una ricerca); senza cronologia alla cartella superiore";
 "⌘↑ goes up one folder level." = "⌘↑ sale di un livello di cartella.";
 "Click to rename this folder" = "Fai clic per rinominare questa cartella";
-"Schnellbild is free software under the MIT License." = "Schnellbild è software libero con licenza MIT.";
 "Built with" = "Realizzato con";
 "The full license texts are in the app (Contents/Resources/Licenses)." = "I testi completi delle licenze sono nell’app (Contents/Resources/Licenses).";
 "plays the video formats macOS can't (AVI, MKV, WebM …)" = "riproduce i formati video che macOS non supporta (AVI, MKV, WebM …)";
@@ -230,3 +229,4 @@
 "⌘-click / Insert" = "⌘-clic / Insert";
 "⇧-click / ⇧ arrows" = "⇧-clic / ⇧ frecce";
 "drag" = "trascina";
+"Schnellbild's own code is free software under the MIT License. The components below keep their own licenses." = "Il codice di Schnellbild è software libero con licenza MIT. I componenti qui sotto mantengono le proprie licenze.";
