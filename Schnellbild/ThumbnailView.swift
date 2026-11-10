@@ -1,16 +1,19 @@
 import SwiftUI
 import QuickLookThumbnailing
 
-/// Tiny in-memory safety net so thumbnails aren't constantly regenerated
-/// while scrolling. The real, persistent cache lives in the system
-/// (QuickLook) — we piggyback on it via `QLThumbnailGenerator`.
+/// The thumbnails of this session in memory, limited by their pixels
+/// rather than their number: a search with thousands of results stays
+/// whole while scrolling back and forth. Beyond it, QuickLook keeps its own
+/// thumbnails on disk.
 @MainActor
 final class ThumbnailCache {
-    /// Grid tiles; the full-size view uses these as its placeholder.
-    static let shared = ThumbnailCache(limit: 512)
+    /// Grid tiles; the full-size view uses these as its placeholder. An
+    /// eighth of the Mac's memory, at most 2 GB (a 256-pixel tile is a
+    /// quarter of a megabyte: about 8000 tiles in 2 GB).
+    static let shared = ThumbnailCache(megabytes: min(2048, Int(ProcessInfo.processInfo.physicalMemory >> 23)))
     /// The small images fanned over folder tiles, kept apart so they don't
     /// push tile thumbnails out.
-    static let previews = ThumbnailCache(limit: 512)
+    static let previews = ThumbnailCache(megabytes: 256)
 
     /// One image per file, with the tile size it was made for and the
     /// file's modification date then (a file changed since gets a new one).
@@ -24,8 +27,18 @@ final class ThumbnailCache {
     }
     private let cache = NSCache<NSURL, Entry>()
 
-    init(limit: Int) {
-        cache.countLimit = limit
+    init(megabytes: Int) {
+        cache.totalCostLimit = megabytes << 20
+    }
+
+    /// What an image takes in memory: its pixels, four bytes each.
+    private static func cost(of image: NSImage) -> Int {
+        let pixels = image.representations.map { $0.pixelsWide * $0.pixelsHigh }.max() ?? 0
+        return max(pixels, Int(image.size.width * image.size.height)) * 4
+    }
+
+    private func keep(_ image: NSImage, side: CGFloat, modified: Date?, for url: URL) {
+        cache.setObject(Entry(image: image, side: side, modified: modified), forKey: url as NSURL, cost: Self.cost(of: image))
     }
 
     /// Marks an image that is only the file's icon, not a picture of it.
@@ -50,7 +63,7 @@ final class ThumbnailCache {
            modified == nil || cached.modified == modified { return cached.image }
         if archive != nil {
             guard let image = await Self.archiveThumbnail(for: url, side: side), !Task.isCancelled else { return nil }
-            cache.setObject(Entry(image: image, side: side, modified: modified), forKey: url as NSURL)
+            keep(image, side: side, modified: modified, for: url)
             return image
         }
         let request = QLThumbnailGenerator.Request(
@@ -77,7 +90,7 @@ final class ThumbnailCache {
             image = NSImage(cgImage: frame, size: NSSize(width: frame.width, height: frame.height))
         }
         guard let image, !Task.isCancelled else { return nil }
-        cache.setObject(Entry(image: image, side: side, modified: modified), forKey: url as NSURL)
+        keep(image, side: side, modified: modified, for: url)
         return image
     }
 

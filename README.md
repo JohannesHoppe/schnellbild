@@ -338,7 +338,7 @@ Schnellbild → Settings (⌘,) has two things: how long a picture stays in the 
 
 ## Why so fast?
 
-1. **Riding on the system.** Thumbnails come from Apple's QuickLook (`QLThumbnailGenerator`). It pulls **embedded previews** (EXIF thumbnail, JPEG in RAW): a few KB instead of tens of MB over the network. QuickLook keeps the thumbnails in the system's own cache; Schnellbild only remembers what's on screen right now.
+1. **Riding on the system.** Thumbnails come from Apple's QuickLook (`QLThumbnailGenerator`). It pulls **embedded previews** (EXIF thumbnail, JPEG in RAW): a few KB instead of tens of MB over the network. QuickLook keeps the thumbnails in the system's own cache on your Mac. Schnellbild also keeps the thumbnails of the session in memory (up to an eighth of the Mac's memory), so scrolling back through thousands of search results asks no one again.
 2. **Lazy and parallel.** The grid only loads the tiles on screen, and the system runs thumbnail generation in parallel.
 3. **Full view downsampled.** The full picture is read through ImageIO and sampled straight to screen size, no 8000 px monster in memory. The thumbnail shows instantly as a placeholder.
 4. **Nothing blocks the main thread.** Reading folders, searching and decoding run in the background.
