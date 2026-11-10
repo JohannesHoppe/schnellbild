@@ -112,7 +112,7 @@ targets:
         INFOPLIST_FILE: ThumbnailExtension/Info.plist
         CODE_SIGN_ENTITLEMENTS: ThumbnailExtension/ThumbnailExtension.entitlements
         LD_RUNPATH_SEARCH_PATHS: ["@executable_path/../Frameworks", "@executable_path/../../../../Frameworks"]
-        OTHER_SWIFT_FLAGS: ["-parse-as-library"]   # no main.swift: the entry point is the system's extension main
+        OTHER_SWIFT_FLAGS: ["-parse-as-library"]   # no main: the entry point is the system's extension main
     dependencies:
       - target: VLCFrames
       - sdk: QuickLookThumbnailing.framework

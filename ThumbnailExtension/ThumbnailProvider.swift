@@ -35,3 +35,10 @@ final class ThumbnailProvider: QLThumbnailProvider {
         }
     }
 }
+
+/// Never called. `swift test` links every executable target with its main
+/// renamed to `<module>_main`; the extension has none (its entry point is
+/// the system's `NSExtensionMain`, and the system's extension start calls
+/// a `main` if there is one).
+@_cdecl("SchnellbildThumbnails_main")
+func testBuildMain(_ argc: Int32, _ argv: UnsafeMutablePointer<UnsafeMutablePointer<CChar>?>?) -> Int32 { 0 }

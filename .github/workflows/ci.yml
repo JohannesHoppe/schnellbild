@@ -191,6 +191,10 @@ jobs:
           wc -l /tmp/schnellbild-vlc.log
           grep -i -E "vout|video output|vmem|error|failed|cannot" /tmp/schnellbild-vlc.log | sort | uniq -c | sort -rn | head -80
 
+      - name: Show what macOS did with the thumbnail extension
+        if: failure()
+        run: ./Scripts/thumbnail_extension_report.sh
+
       - name: Keep what was measured
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2

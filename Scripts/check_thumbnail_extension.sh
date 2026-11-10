@@ -4,6 +4,7 @@
 # thumbnail kept by the system (a second process gets it from the cache).
 set -euo pipefail
 cd "$(dirname "$0")/.."
+trap '[ -n "${finished:-}" ] || { ./Scripts/thumbnail_extension_report.sh; exit 1; }' EXIT
 APP="${1:-build/Schnellbild.app}"
 APPEX="$APP/Contents/PlugIns/SchnellbildThumbnails.appex"
 OUT="${2:-build/thumbnail-check}"
@@ -23,3 +24,4 @@ cp UITests/Fixtures/clip.mkv "$FILES/clip.mkv"
 "$OUT/probe" "$FILES/clip.mkv"      # a new process: from the system's cache
 # A damaged video gets no thumbnail and doesn't hang
 "$OUT/probe" UITests/Fixtures/broken.mkv && { echo "broken.mkv got a thumbnail"; exit 1; } || true
+finished=1
