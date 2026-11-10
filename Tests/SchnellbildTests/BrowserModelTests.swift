@@ -891,7 +891,7 @@ final class HistoryTests: XCTestCase {
         await searchAndWait(m, "album")
         XCTAssertEqual(m.names, ["Album 2024"])
 
-        m.handleKey(.enter, command: false)   // enter the result folder
+        m.handleKey(.space, command: false)   // enter the result folder
         await waitUntil { m.isAt(album) }
         XCTAssertEqual(m.searchText, "", "the result folder shows its own contents")
         XCTAssertEqual(m.names, ["..", "inside.jpg"])
@@ -913,7 +913,7 @@ final class HistoryTests: XCTestCase {
         let m = makeModel()
         await openAndWait(m, tree.root)
         await searchAndWait(m, "target")
-        m.handleKey(.enter, command: false)
+        m.handleKey(.space, command: false)
         XCTAssertEqual(m.mode, .detail)
         m.handleKey(.escape, command: false)
         XCTAssertEqual(m.mode, .grid)
@@ -1972,6 +1972,25 @@ final class KeyBindingTests: XCTestCase {
         m.actualSizeFactor = 3
         XCTAssertTrue(m.handleKey(.char("1"), command: false))
         XCTAssertEqual(m.zoom, 3, accuracy: 0.0001)
+    }
+
+    /// As in the Finder: Return renames the selected item, Space opens it;
+    /// in the full view Return goes back to the grid.
+    func testReturnRenamesAndSpaceOpens() async throws {
+        let tree = try TempTree(self)
+        try tree.file("a.jpg")
+        let m = makeModel()
+        await openAndWait(m, tree.root)
+        m.selectEntry(named: "a.jpg")
+        XCTAssertTrue(m.handleKey(.enter, command: false))
+        XCTAssertEqual(m.renameTarget?.name, "a.jpg", "Return renames")
+        m.renameTarget = nil
+        XCTAssertEqual(m.mode, .grid)
+        XCTAssertTrue(m.handleKey(.space, command: false))
+        XCTAssertEqual(m.mode, .detail, "Space opens")
+        XCTAssertTrue(m.handleKey(.enter, command: false))
+        XCTAssertEqual(m.mode, .grid, "Return leaves the full view")
+        XCTAssertNil(m.renameTarget)
     }
 
     func testOptionArrowsRotateInDetailOnly() {

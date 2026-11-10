@@ -160,7 +160,7 @@ final class GridUITests: SchnellbildUITestCase {
         app.typeKey(.end, modifierFlags: [])
         waitForSelected("p89.jpg")
         XCTAssertFalse(tile("a.jpg").isHittable, "scrolled down, the top is out of view")
-        app.typeKey(.return, modifierFlags: [])
+        app.typeKey(.space, modifierFlags: [])
         waitForBadge(containing: "p89.jpg")
         app.typeKey(.escape, modifierFlags: [])
         eventually("back at the same place") { tile("p89.jpg").exists && tile("p89.jpg").isHittable }
@@ -173,7 +173,7 @@ final class GridUITests: SchnellbildUITestCase {
         app.typeKey(.end, modifierFlags: [])                 // c.jpg, the last item
         for _ in 0..<3 { app.typeKey(.leftArrow, modifierFlags: []) }
         waitForSelected("f79")
-        app.typeKey(.return, modifierFlags: [])
+        app.typeKey(.space, modifierFlags: [])
         eventually("inside f79") { !tile("f79").exists }
         app.typeKey("[", modifierFlags: .command)
         waitForSelected("f79")

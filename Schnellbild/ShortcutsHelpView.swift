@@ -23,11 +23,12 @@ struct ShortcutsHelpView: View {
         Group(title: "Grid", shortcuts: [
             Shortcut(keys: "← →", action: "Previous / next item"),
             Shortcut(keys: "↑ ↓", action: "One row up / down"),
-            Shortcut(keys: "Return / Space / F3", action: "Open picture or video · open folder or archive"),
+            Shortcut(keys: "Space / F3", action: "Open picture or video · open folder or archive"),
             Shortcut(keys: "Backspace", action: "Back (where you were, also a search); without history the enclosing folder"),
             Shortcut(keys: "Home / End", action: "First / last item"),
             Shortcut(keys: "L", action: "Grid or list (a click on a column sorts by it)"),
             Shortcut(keys: "+ / − · ⌘+ / ⌘−", action: "Larger / smaller thumbnails"),
+            Shortcut(keys: "Return", action: "Rename"),
             Shortcut(keys: "F2 / ⇧F6", action: "Rename the selected folder or file (also in the full view)"),
             Shortcut(keys: "⇧⌘N / F7", action: "New folder: type its name, ↩ creates it, Esc creates none"),
             Shortcut(keys: "F8", action: "Move to Trash"),

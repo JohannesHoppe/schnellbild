@@ -6,7 +6,7 @@ final class FullViewUITests: SchnellbildUITestCase {
 
     private func openA() {
         launchOnTempDir()
-        app.typeKey(.return, modifierFlags: [])
+        app.typeKey(.space, modifierFlags: [])
         waitForBadge(containing: "1 / 3  ·  a.jpg")
     }
 
@@ -20,11 +20,11 @@ final class FullViewUITests: SchnellbildUITestCase {
         openA()
         app.typeKey(.escape, modifierFlags: [])
         eventually("Escape leaves") { !badge.exists }
-        app.typeKey(.return, modifierFlags: [])
+        app.typeKey(.space, modifierFlags: [])
         waitForBadge(containing: "a.jpg")
         app.typeKey(.delete, modifierFlags: [])
         eventually("Backspace leaves") { !badge.exists }
-        app.typeKey(.return, modifierFlags: [])
+        app.typeKey(.space, modifierFlags: [])
         waitForBadge(containing: "a.jpg")
         app.typeKey(.return, modifierFlags: [])
         eventually("Return leaves") { !badge.exists }
@@ -82,7 +82,7 @@ final class FullViewUITests: SchnellbildUITestCase {
         app.typeKey(.leftArrow, modifierFlags: .option)
         eventually("⌥← rotates left") { text(of: fullImage).contains("rotation -90°") }
         app.typeKey(.escape, modifierFlags: [])
-        app.typeKey(.return, modifierFlags: [])
+        app.typeKey(.space, modifierFlags: [])
         eventually("leaving resets rotation") { text(of: fullImage).contains("rotation 0°") }
     }
 

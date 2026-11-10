@@ -7,10 +7,10 @@ final class NavigationUITests: SchnellbildUITestCase {
         try put("sample.jpg", at: "album/inside.jpg")
     }
 
-    func testReturnEntersFolderAndParentTileGoesUp() {
+    func testSpaceEntersFolderAndParentTileGoesUp() {
         launchOnTempDir(waitFor: "album")
         waitForSelected("album")
-        app.typeKey(.return, modifierFlags: [])
+        app.typeKey(.space, modifierFlags: [])
         XCTAssertTrue(app.staticTexts["inside.jpg"].waitForExistence(timeout: 10))
         tile("..").doubleClick()
         XCTAssertTrue(app.staticTexts["a.jpg"].waitForExistence(timeout: 10))
@@ -31,7 +31,7 @@ final class NavigationUITests: SchnellbildUITestCase {
         toolbarButton("upButton").click()
         XCTAssertTrue(app.staticTexts["album"].waitForExistence(timeout: 10))
 
-        app.typeKey(.return, modifierFlags: [])   // back into album (selected)
+        app.typeKey(.space, modifierFlags: [])   // back into album (selected)
         XCTAssertTrue(app.staticTexts["inside.jpg"].waitForExistence(timeout: 10))
         app.typeKey(.upArrow, modifierFlags: .command)
         XCTAssertTrue(app.staticTexts["a.jpg"].waitForExistence(timeout: 10))
@@ -42,7 +42,7 @@ final class NavigationUITests: SchnellbildUITestCase {
         XCTAssertFalse(toolbarButton("backButton").isEnabled)
         XCTAssertFalse(toolbarButton("forwardButton").isEnabled)
 
-        app.typeKey(.return, modifierFlags: [])
+        app.typeKey(.space, modifierFlags: [])
         XCTAssertTrue(app.staticTexts["inside.jpg"].waitForExistence(timeout: 10))
         eventually("back enabled") { toolbarButton("backButton").isEnabled }
 
@@ -57,7 +57,7 @@ final class NavigationUITests: SchnellbildUITestCase {
 
     func testCommandBracketsNavigateHistory() {
         launchOnTempDir(waitFor: "album")
-        app.typeKey(.return, modifierFlags: [])
+        app.typeKey(.space, modifierFlags: [])
         XCTAssertTrue(app.staticTexts["inside.jpg"].waitForExistence(timeout: 10))
         app.typeKey("[", modifierFlags: .command)
         XCTAssertTrue(app.staticTexts["a.jpg"].waitForExistence(timeout: 10))
@@ -67,7 +67,7 @@ final class NavigationUITests: SchnellbildUITestCase {
 
     func testGoMenu() {
         launchOnTempDir(waitFor: "album")
-        app.typeKey(.return, modifierFlags: [])
+        app.typeKey(.space, modifierFlags: [])
         XCTAssertTrue(app.staticTexts["inside.jpg"].waitForExistence(timeout: 10))
         clickMenu("Go", "Back")
         XCTAssertTrue(app.staticTexts["a.jpg"].waitForExistence(timeout: 10))
