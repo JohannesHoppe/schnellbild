@@ -28,7 +28,7 @@ Open a folder, see thumbnails, look at one picture large, page through with the 
 - **No upselling.** No pro version, no subscription, no "unlock" button. Every feature is in.
 - **No bloat.** No library to import into, no editor, no cloud. Just looking at photos and videos, done well.
 - **Fast.** Thumbnails appear while you scroll, big folders and network shares included (see [Why so fast?](#why-so-fast)).
-- **Doesn't fall over.** Broken files, odd formats and slow disks show a placeholder instead of taking the app down. Your files are only changed when you rename or trash them.
+- **Doesn't fall over.** Broken files, odd formats and slow disks show a placeholder instead of taking the app down. Your files are only changed when you say so: rename, trash, a new folder, or moving and copying them (dragging tiles onto a folder, F5 / F6 in the dual pane).
 
 ## Download
 
@@ -40,7 +40,7 @@ Schnellbild follows your Mac's language: English, Deutsch, Français, Español, 
 
 ### Browse folders
 
-Open a folder with ⌘O or drag it onto the window; drag a single file to open it straight in the full view. Subfolders come first, each previewing its first pictures or videos like Finder (from its subfolders when it holds none itself), with a `..` tile to go up. Folders without a single photo or video anywhere inside are greyed out, so you don't bother opening them (a `Thumbs.db` or `desktop.ini` doesn't count). `L` (or the switch in the status bar) shows the folder as a **list** instead: a small preview, the whole name, kind, date modified, date taken and size in columns; a click on a column's header sorts by it, another reverses it, the same sort as the sort menu. Files that aren't pictures, videos or archives are listed by name and size under the grid (in the list as grey rows), so a folder that holds only such files never looks empty; "This folder is empty" means it holds nothing at all; a folder Schnellbild can't read (no permission, a share that went away) says "This folder can't be read" with the reason, never "empty". Thumbnails come from QuickLook, so everything macOS can preview shows up: JPEG, HEIC, PNG, SVG, RAW, PSD, PDF, and a poster frame for videos. Schnellbild reopens the last folder on launch.
+Open a folder with ⌘O or drag it onto the window; drag a single file to open it straight in the full view. Subfolders come first, each previewing its first pictures or videos like Finder (from its subfolders when it holds none itself), with a `..` tile to go up. Folders without a single photo or video anywhere inside are greyed out, so you don't bother opening them (a `Thumbs.db` or `desktop.ini` doesn't count). `L` (or the switch in the status bar) shows the folder as a **list** instead: a small preview, the whole name, kind, date modified, date taken and size in columns; a click on a column's header sorts by it, another reverses it, the same sort as the sort menu. Files that aren't pictures, videos or archives are listed by name and size under the grid (in the list as grey rows), so a folder that holds only such files never looks empty; "This folder is empty" means it holds nothing at all; a folder Schnellbild can't read (no permission, a share that went away) says "This folder can't be read" with the reason, never "empty". Thumbnails come from QuickLook: JPEG, HEIC, PNG, GIF, SVG, camera RAW, PSD, PDF, and a poster frame for videos. Schnellbild reopens the last folder on launch.
 
 | Key | Action |
 |---|---|
@@ -50,7 +50,7 @@ Open a folder with ⌘O or drag it onto the window; drag a single file to open i
 | Backspace | back to where you were, also to a search and its results (with no history yet: up a level) |
 | ⌘↑ / `..` | up one folder level |
 | Home / End | first / last item |
-| ⌘+ / ⌘− | larger / smaller thumbnails |
+| + / − (or ⌘+ / ⌘−) | larger / smaller thumbnails |
 | ⌘[ / ⌘] | back / forward, restoring the folder, the search and the selection |
 | f / ⌃⌘F | full screen |
 | F2 | rename the selected folder or file |
@@ -80,14 +80,14 @@ By name, kind, date modified, date taken or size, from the toolbar or with one k
   <img src="docs/screenshots/search-light.png" width="760" alt="Search results from the folder and its subfolders">
 </picture></p>
 
-The search field is always there. It matches folder and file names in the current folder and everything below it; results stream in while the tree is walked and show where they live. The stop button next to the spinner ends a long search over a slow network share and keeps what it has found. Back from an opened result returns to the same results without searching again; a search that was still running when you opened a result goes on in the background meanwhile.
+The search field is always there. It matches the names of folders, archives, pictures and videos in the current folder and everything below it (inside an archive when you search there; a search doesn't open the archives it passes); results stream in while the tree is walked and show where they live. The stop button next to the spinner ends a long search over a slow network share and keeps what it has found. Back from an opened result returns to the same results without searching again; a search that was still running when you opened a result goes on in the background meanwhile.
 
 | Key | Action |
 |---|---|
 | ⌘F | focus the search field |
 | ↓ | move into the results |
 | Return | open the selected result |
-| Esc | clear the search, leave the field |
+| Esc | clear the search; once more: leave the field |
 
 ### Full view
 
@@ -132,7 +132,7 @@ It starts where you are: from the full view at the picture you're looking at; in
 | ⌘← ⌘→ | previous / next item |
 | ↑ ↓ | pictures zoomed in: look further up / down; videos: volume up / down |
 | f / i / e / a | full screen, file info, auto enhance, sliders, as in the full view |
-| Esc | end the slideshow |
+| Esc / Return / Backspace | end the slideshow |
 
 ### Zoom and rotate
 
@@ -146,7 +146,7 @@ Zoom with the keyboard or a trackpad pinch, drag to pan, rotate in steps of 90°
 | Key | Action |
 |---|---|
 | + / − (or ⌘+ / ⌘−) | zoom in / out |
-| 0 / 1 | fit to window / 100 % |
+| 0 / 1 | fit to window / a photo's real size (100 %; a photo smaller than the window stays fitted, a video always) |
 | [ / ] | rotate left / right |
 
 ### Videos
@@ -296,7 +296,7 @@ F1 (or ⌘?) shows every key in the app. `K` (or View → Mini Keyboard, or the 
 
 ## Why so fast?
 
-1. **Riding on the system.** Thumbnails come from Apple's QuickLook (`QLThumbnailGenerator`). It pulls **embedded previews** (EXIF thumbnail, JPEG in RAW): a few KB instead of tens of MB over the network, for any format QuickLook knows, including third-party plugins. QuickLook keeps the thumbnails in the system's own cache; Schnellbild only remembers what's on screen right now.
+1. **Riding on the system.** Thumbnails come from Apple's QuickLook (`QLThumbnailGenerator`). It pulls **embedded previews** (EXIF thumbnail, JPEG in RAW): a few KB instead of tens of MB over the network. QuickLook keeps the thumbnails in the system's own cache; Schnellbild only remembers what's on screen right now.
 2. **Lazy and parallel.** The grid only loads the tiles on screen, and the system runs thumbnail generation in parallel.
 3. **Full view downsampled.** The full picture is read through ImageIO and sampled straight to screen size, no 8000 px monster in memory. The thumbnail shows instantly as a placeholder.
 4. **Nothing blocks the main thread.** Reading folders, searching and decoding run in the background.

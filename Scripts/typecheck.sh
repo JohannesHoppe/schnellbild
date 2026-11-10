@@ -9,7 +9,9 @@ cd "$(dirname "$0")/.."
 SDK=$(xcrun --show-sdk-path)
 VLC=Vendor/VLCKit.xcframework/macos-arm64_x86_64
 WORK=$(mktemp -d)
-trap 'rm -rf "$WORK"' EXIT
+# bash 3.2 reports an aborted expansion (an unset variable) as success once an
+# EXIT trap runs: the trap fails unless the script got to its end.
+trap 'rm -rf "$WORK"; [ -n "${finished:-}" ] || exit 1' EXIT
 FLAGS=(-typecheck -sdk "$SDK" -target arm64-apple-macos14.0 -F "$VLC" -I Native/CArchives/include -swift-version 5)
 
 mkdir -p "$WORK/app" "$WORK/unit" "$WORK/ui"
@@ -28,4 +30,5 @@ swiftc "${FLAGS[@]}" Scripts/typecheck/StateShim.swift Scripts/typecheck/XCTestS
 echo "== UI tests"
 swiftc "${FLAGS[@]}" Scripts/typecheck/XCTestShim.swift "$WORK"/ui/*.swift || status=1
 [ $status -eq 0 ] && echo "Typecheck OK"
+finished=1
 exit $status

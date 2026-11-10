@@ -230,3 +230,7 @@
 "⇧-click / ⇧ arrows" = "⇧-клацання / ⇧ стрілки";
 "drag" = "перетягування";
 "Schnellbild's own code is free software under the MIT License. The components below keep their own licenses." = "Власний код Schnellbild — вільне ПЗ за ліцензією MIT. Компоненти нижче зберігають власні ліцензії.";
+
+/* VoiceOver: the sorted column of the list */
+"ascending" = "за зростанням";
+"descending" = "за спаданням";

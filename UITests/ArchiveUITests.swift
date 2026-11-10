@@ -88,7 +88,24 @@ final class ArchiveUITests: SchnellbildUITestCase {
         waitForBadge(containing: "Paused")
         app.typeKey(.space, modifierFlags: [])
         eventually("plays on", timeout: 10) { !self.text(of: self.badge).contains("Paused") }
-        app.typeKey(.rightArrow, modifierFlags: [])   // a jump ahead inside the stream
+        // → jumps a tenth ahead inside the stream, and it plays on from
+        // there. The clip is 30 s long: playing alone moves it 3.3 % a second,
+        // so what goes beyond that is the jump. Read once the player has
+        // landed (VLC reports the target itself for a moment).
+        let bar = element("videoProgress")
+        XCTAssertTrue(bar.waitForExistence(timeout: 5))
+        func percent() -> Int { Int(text(of: bar).filter(\.isNumber)) ?? -1 }
+        let before = percent(), pressed = Date()
+        XCTAssertGreaterThanOrEqual(before, 0)
+        XCTAssertLessThan(before, 60, "room for the jump")
+        app.typeKey(.rightArrow, modifierFlags: [])
+        RunLoop.current.run(until: Date().addingTimeInterval(2))
+        func beyondPlaying() -> Double {
+            Double(percent() - before) - Date().timeIntervalSince(pressed) * 100 / 30
+        }
+        eventually("→ jumps ahead inside the stream", timeout: 10) { beyondPlaying() >= 5 }
+        let landed = percent()
+        eventually("plays on after the jump", timeout: 10) { percent() >= landed + 3 }
         XCTAssertTrue(element(vlc ? "video.vlc" : "video.avkit").exists)
     }
 

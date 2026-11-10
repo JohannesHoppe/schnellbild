@@ -17,8 +17,10 @@ on:
         required: false
         default: ""
 
+# A newer push cancels an older one; a run started by hand (a few UI tests)
+# has its own group, so it never cancels the full run of a push.
 concurrency:
-  group: ci-${{ github.ref }}
+  group: ci-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -115,6 +117,8 @@ jobs:
           # pasteboard and gets "measured:<id>:<mean luminance>:<std deviation>:<red>:<green>:<blue>" back.
           mkdir -p measurements
           (
+            # One failed capture must not end the helper (the step runs with -e)
+            set +e
             while :; do
               request=$(pbpaste 2>/dev/null || true)
               case "$request" in
@@ -148,7 +152,7 @@ jobs:
             -destination 'platform=macOS' \
             "${only[@]}" \
             -derivedDataPath build/DerivedData || status=1
-          kill "$helper"
+          kill "$helper" 2>/dev/null || true
           exit $status
 
       - name: Show VLC's log
@@ -156,7 +160,7 @@ jobs:
         run: |
           [ -f /tmp/schnellbild-vlc.log ] || { echo "no VLC log"; exit 0; }
           wc -l /tmp/schnellbild-vlc.log
-          grep -i -E "vout|video output|opengl|gl |display|window|drawable|caopengl|macosx|error|failed|cannot" /tmp/schnellbild-vlc.log | sort | uniq -c | sort -rn | head -80
+          grep -i -E "vout|video output|vmem|error|failed|cannot" /tmp/schnellbild-vlc.log | sort | uniq -c | sort -rn | head -80
 
       - name: Keep what was measured
         if: always()

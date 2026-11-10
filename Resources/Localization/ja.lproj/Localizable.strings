@@ -230,3 +230,7 @@
 "⇧-click / ⇧ arrows" = "⇧-クリック / ⇧ 矢印";
 "drag" = "ドラッグ";
 "Schnellbild's own code is free software under the MIT License. The components below keep their own licenses." = "Schnellbild自体のコードはMITライセンスのフリーソフトウェアです。以下のコンポーネントはそれぞれのライセンスに従います。";
+
+/* VoiceOver: the sorted column of the list */
+"ascending" = "昇順";
+"descending" = "降順";

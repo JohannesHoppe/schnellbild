@@ -230,3 +230,7 @@
 "⇧-click / ⇧ arrows" = "⇧-클릭 / ⇧ 화살표";
 "drag" = "드래그";
 "Schnellbild's own code is free software under the MIT License. The components below keep their own licenses." = "Schnellbild 자체 코드는 MIT 라이선스의 자유 소프트웨어입니다. 아래 구성 요소는 각자의 라이선스를 따릅니다.";
+
+/* VoiceOver: the sorted column of the list */
+"ascending" = "오름차순";
+"descending" = "내림차순";
