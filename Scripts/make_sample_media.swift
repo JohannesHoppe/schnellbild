@@ -52,24 +52,25 @@ enum SampleScenes {
                               sun: (0.4, 0.54, 0.07, (255, 240, 190)), water: true, seed: 23)
 
     /// The folder the screenshots show: a few trips as subfolders, loose
-    /// pictures next to them.
-    static let library: [(path: String, scene: Scene)] = [
-        ("Lofoten/Sunset over Reine.jpg", fjord),
-        ("Lofoten/Northern Lights.jpg", night),
-        ("Lofoten/Blue Hour Harbour.jpg", blueHour),
-        ("Dolomites/Alpine Morning.jpg", alpine),
-        ("Dolomites/Golden Ridge.jpg", golden),
-        ("Dolomites/Misty Valley.jpg", mist),
-        ("Sahara/Desert Dusk.jpg", desert),
-        ("Sahara/Sunset over the Dunes.jpg", with(desert, seed: 29)),
-        ("Fjord at Sunset.jpg", with(fjord, seed: 31)),
-        ("Lagoon Sunset.jpg", lagoon),
-        ("Blue Hour.jpg", with(blueHour, seed: 37)),
-        ("Morning Mist.jpg", with(mist, seed: 41)),
-        ("Golden Valley.jpg", with(golden, seed: 43)),
-        ("Aurora.jpg", with(night, seed: 47)),
-        ("Alpine Lake.jpg", { var s = alpine; s.water = true; s.seed = 53; return s }()),
-        ("Red Rocks.jpg", with(desert, seed: 59)),
+    /// pictures next to them. Each picture carries a capture date (EXIF
+    /// DateTimeOriginal), so the list view's "Date Taken" column has values.
+    static let library: [(path: String, taken: String, scene: Scene)] = [
+        ("Lofoten/Sunset over Reine.jpg", "2026:02:14 16:42:08", fjord),
+        ("Lofoten/Northern Lights.jpg", "2026:02:14 22:17:35", night),
+        ("Lofoten/Blue Hour Harbour.jpg", "2026:02:15 08:51:12", blueHour),
+        ("Dolomites/Alpine Morning.jpg", "2025:07:22 06:34:50", alpine),
+        ("Dolomites/Golden Ridge.jpg", "2025:07:22 19:58:03", golden),
+        ("Dolomites/Misty Valley.jpg", "2025:07:23 07:12:44", mist),
+        ("Sahara/Desert Dusk.jpg", "2025:11:03 18:05:21", desert),
+        ("Sahara/Sunset over the Dunes.jpg", "2025:11:04 17:49:37", with(desert, seed: 29)),
+        ("Fjord at Sunset.jpg", "2024:06:18 22:31:09", with(fjord, seed: 31)),
+        ("Lagoon Sunset.jpg", "2024:09:02 19:44:56", lagoon),
+        ("Blue Hour.jpg", "2025:01:11 17:02:18", with(blueHour, seed: 37)),
+        ("Morning Mist.jpg", "2024:10:27 07:26:40", with(mist, seed: 41)),
+        ("Golden Valley.jpg", "2025:05:09 20:13:27", with(golden, seed: 43)),
+        ("Aurora.jpg", "2024:03:08 23:48:15", with(night, seed: 47)),
+        ("Alpine Lake.jpg", "2025:08:16 10:05:33", { var s = alpine; s.water = true; s.seed = 53; return s }()),
+        ("Red Rocks.jpg", "2024:04:21 18:37:02", with(desert, seed: 59)),
     ]
 
     static func with(_ scene: Scene, seed: UInt64) -> Scene { var s = scene; s.seed = seed; return s }
@@ -81,9 +82,9 @@ enum SampleScenes {
     ]
 
     static func writeLibrary(to folder: URL) async throws {
-        for (path, scene) in library {
+        for (path, taken, scene) in library {
             let url = try prepare(path, in: folder)
-            try writeJPEG(render(scene), to: url)
+            try writeJPEG(render(scene), taken: taken, to: url)
         }
         for (path, scene) in videos {
             try await writeVideo(scene, to: try prepare(path, in: folder))
@@ -261,11 +262,19 @@ enum SampleScenes {
         return ctx.makeImage()!
     }
 
-    static func writeJPEG(_ image: CGImage, to url: URL) throws {
+    /// `taken` is the EXIF form "yyyy:MM:dd HH:mm:ss" (local time, no offset).
+    static func writeJPEG(_ image: CGImage, taken: String, to url: URL) throws {
         guard let dest = CGImageDestinationCreateWithURL(url as CFURL, UTType.jpeg.identifier as CFString, 1, nil) else {
             throw CocoaError(.fileWriteUnknown)
         }
-        CGImageDestinationAddImage(dest, image, [kCGImageDestinationLossyCompressionQuality: 0.88] as CFDictionary)
+        let properties: [CFString: Any] = [
+            kCGImageDestinationLossyCompressionQuality: 0.88,
+            kCGImagePropertyExifDictionary: [
+                kCGImagePropertyExifDateTimeOriginal: taken,
+                kCGImagePropertyExifDateTimeDigitized: taken,
+            ],
+        ]
+        CGImageDestinationAddImage(dest, image, properties as CFDictionary)
         guard CGImageDestinationFinalize(dest) else { throw CocoaError(.fileWriteUnknown) }
     }
 }
