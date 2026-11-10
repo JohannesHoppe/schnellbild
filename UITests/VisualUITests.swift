@@ -71,8 +71,9 @@ final class VisualUITests: SchnellbildUITestCase {
 
     // MARK: Videos show at full brightness
 
-    /// The grey test clip (about 0.54) is shown as bright as it is from the
-    /// start, and stays so when clicked or hovered.
+    /// The test clip (ffmpeg's colour-bar pattern, its middle half about
+    /// 0.55 bright) is shown as bright as it is from the start, and stays so
+    /// when clicked or hovered.
     private func checkFullBrightness(vlc: Bool) throws {
         let video = try openVideo(vlc ? "clip.mkv" : "clip.mp4", vlc: vlc)
         let start = try screenBrightness(of: video)
@@ -324,7 +325,8 @@ final class VisualUITests: SchnellbildUITestCase {
         }
         print("4K60 through VLC: \(Int(number(after: "shown"))) pictures shown, \(Int(number(after: "lost"))) lost, "
               + "handover \(number(after: "handover")) ms per picture")
-        XCTAssertGreaterThan(try screenBrightness(of: video), 0.15, "the picture is on screen")
+        let brightness = try screenBrightness(of: video)   // not inside the assertion: its skip stays a skip
+        XCTAssertGreaterThan(brightness, 0.15, "the picture is on screen")
         XCTAssertGreaterThan(number(after: "shown"), 30, "pictures are shown: \(label)")
         let handover = number(after: "handover")
         XCTAssertGreaterThanOrEqual(handover, 0, "handover measured: \(label)")
@@ -489,6 +491,27 @@ final class VisualUITests: SchnellbildUITestCase {
         } else {
             XCTAssertLessThan(after, before - 0.1, "\(fixture) not darkened: \(before) → \(after)")
         }
+    }
+
+    /// The exposure slider brightens a photo's mid-tones (the gradient has
+    /// them across its middle), and the picture shown is the adjusted one.
+    func testExposureSliderBrightensAPhoto() throws {
+        try put("gradient.jpg", at: "gradient.jpg")
+        launch(open: tempDir.appendingPathComponent("gradient.jpg").path)
+        let image = element("fullImage")
+        eventually("the image loads", timeout: 15) { text(of: image).hasSuffix("loaded") }
+        settle()
+        let before = try screenBrightness(of: image)
+        app.typeKey("a", modifierFlags: [])
+        let slider = element("slider.exposure").firstMatch
+        XCTAssertTrue(slider.waitForExistence(timeout: 5))
+        slider.adjust(toNormalizedSliderPosition: 0.9)
+        waitForBadge(containing: "Adjusted")
+        eventually("the adjusted picture is shown", timeout: 15) { text(of: image).contains("adjusted") }
+        app.typeKey("a", modifierFlags: [])   // the popover would cover part of the picture
+        settle(1)
+        let after = try screenBrightness(of: image)
+        XCTAssertGreaterThan(after, before + 0.1, "the exposure slider does nothing on a photo: \(before) → \(after); \(text(of: image))")
     }
 
     /// An SVG shows like any picture: drawn sharp at the window's size, its

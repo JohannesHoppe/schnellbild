@@ -17,6 +17,9 @@ was_dark=$(osascript -e 'tell application "System Events" to tell appearance pre
 cleanup() {
   appearance "$was_dark"
   if [ -n "$VOL" ]; then hdiutil detach "$VOL" >/dev/null 2>&1 || true; fi
+  # bash 3.2 reports an aborted expansion (an unset variable) as success once
+  # an EXIT trap runs: fail unless the script got to its end.
+  [ -n "${finished:-}" ] || exit 1
 }
 trap cleanup EXIT
 
@@ -54,3 +57,4 @@ for mode in light dark; do
   screencapture -x -R "$RECT" "$OUT/dmg-$mode.png"
   echo "Wrote $OUT/dmg-$mode.png"
 done
+finished=1
