@@ -121,7 +121,7 @@ There is **no Xcode project for the app build**; `xcodegen` generates
 - **`ShortcutsHelpView.swift`** — F1 / "Schnellbild Help" cheat sheet (same
   content as the README keyboard tables; keep them in sync).
 - **`ThumbnailView.swift` / `ThumbnailGridView.swift`** — `LazyVGrid`, thumbnails
-  from QuickLook (`QLThumbnailGenerator`); videos QuickLook only has an icon for (AVI, MKV …) get a frame from VLC (`VLCThumbnails`, two at a time). `ThumbnailCache` keeps one image per
+  from QuickLook (`QLThumbnailGenerator`); videos QuickLook only has an icon for (AVI, MKV …) get a frame from VLC (`VLCThumbnails`, two at a time, each a `VLCFrameGrab`: its own player on its own queue, decoding into memory; nothing in it waits for the main thread. VLCKit's `VLCMediaThumbnailer` is not used: its picture callback waits for the main thread, which then asks the player that is being stopped, and both hang). `ThumbnailCache` keeps one image per
   file with the size it was made for (reused for smaller tiles, regenerated
   for larger; the full view's placeholder). Folder previews use their own
   `ThumbnailCache.previews`. `FolderTile` fans up to three previews of a
@@ -326,5 +326,4 @@ Open / next-up:
   arm64 only; Intel would need a universal `swift build`.
 - **Speed benchmark** — "Schnellbild vs. Preview over the network" was offered to
   *prove* the speed claim (the GIF only sells the feel). Not built.
-- Known limits (README "Status"): slideshow interval fixed at 3 s;
-  `1` (100 %) is approximate; animated GIFs don't zoom/pan.
+- Known limits: see the README's "Status" section.
