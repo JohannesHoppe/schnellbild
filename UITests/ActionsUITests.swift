@@ -223,7 +223,7 @@ final class ActionsUITests: SchnellbildUITestCase {
         waitForSelected("Holiday")
         XCTAssertFalse(app.staticTexts["taken"].exists, "still the search results, not the folder")
 
-        app.typeKey(.return, modifierFlags: [])   // enter the renamed folder
+        app.typeKey(.space, modifierFlags: [])   // enter the renamed folder
         XCTAssertTrue(app.staticTexts["inside.jpg"].waitForExistence(timeout: 10))
         toolbarButton("backButton").click()
         XCTAssertTrue(app.staticTexts["album-photo.jpg"].waitForExistence(timeout: 10))

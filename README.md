@@ -47,14 +47,14 @@ Open a folder with ⌘O or drag it onto the window; drag a single file to open i
 |---|---|
 | ← → | previous / next item |
 | ↑ ↓ | one row up / down |
-| Return / Space | open the picture or video, or enter the folder |
+| Space | open the picture or video, or enter the folder |
 | Backspace | back to where you were, also to a search and its results (with no history yet: up a level) |
 | ⌘↑ / `..` | up one folder level |
 | Home / End | first / last item |
 | + / − (or ⌘+ / ⌘−) | larger / smaller thumbnails |
 | ⌘[ / ⌘] | back / forward, restoring the folder, the search and the selection |
 | f / ⌃⌘F | full screen |
-| F2 | rename the selected folder or file |
+| Return / F2 | rename the selected folder or file, as in the Finder |
 | L | grid or list (a click on a column header sorts by it) |
 | D / ⌃O | dual pane on / off |
 | K | mini keyboard on / off |
@@ -226,7 +226,7 @@ Name, type, resolution, size and date of the item on screen.
   <img src="docs/screenshots/rename-light.png" width="760" alt="Renaming a folder">
 </picture></p>
 
-Rename a folder or file in place (F2, the Actions menu, or right-click), in the grid or straight from the full view. The folder you are in is renamed by clicking its name in the title bar. For files the name without its extension is selected, like in Finder. The search results and the history follow the new name. Reveal an item in Finder, open it in its default app, or move it to the Trash after a confirmation. To sort pictures into folders: ⇧⌘N makes a folder (it exists only once you have named it and pressed ↩), then drag tiles onto a folder tile, or onto `..` to move them up a level. On the same volume they are moved, onto another one copied, as in the Finder. Tiles can be dragged to the Finder too. Inside archives nothing is changed.
+Rename a folder or file in place (Return or F2 as in the Finder, the Actions menu, or right-click), in the grid or straight from the full view. The folder you are in is renamed by clicking its name in the title bar. For files the name without its extension is selected, like in Finder. The search results and the history follow the new name. Reveal an item in Finder, open it in its default app, or move it to the Trash after a confirmation. To sort pictures into folders: ⇧⌘N makes a folder (it exists only once you have named it and pressed ↩), then drag tiles onto a folder tile, or onto `..` to move them up a level. On the same volume they are moved, onto another one copied, as in the Finder. Tiles can be dragged to the Finder too. Inside archives nothing is changed.
 
 | Key | Action |
 |---|---|
@@ -255,7 +255,7 @@ Rename a folder or file in place (F2, the Actions menu, or right-click), in the 
 | Key | Norton Commander | Here |
 |---|---|---|
 | F1 | Help | help |
-| F3 | View | open the picture, video or folder (also ↩) |
+| F3 | View | open the picture, video or folder (also Space) |
 | F4 | Edit | open with the default app (also ⌘↩) |
 | F5 | Copy | copy the marked items into the other pane |
 | F6 | RenMov | move them into the other pane; rename in a single pane (⇧F6 always renames, also F2) |

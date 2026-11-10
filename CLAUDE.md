@@ -67,6 +67,7 @@ There is **no Xcode project for the app build**; `xcodegen` generates
   - Side effects (Finder, open, trash + confirm alert, move/rename) go through
     the injectable `FileActions`; tests pass a spy. `--ui-testing` makes the app
     use its own `UserDefaults` suite (`--reset-state` clears it).
+  - As in the Finder, Space opens the selected item and Return renames it (`beginRename`); in the full view Return goes back to the grid, in the search field it opens the selected result.
   - ⌘⌫ / ⌘↩ return `false` from `handleKey` so they reach their menu items
     (the local key monitor sees keys before menu key equivalents). While a
     text field is edited the monitor hands them to the field editor instead

@@ -587,7 +587,7 @@ final class VisualUITests: SchnellbildUITestCase {
         for name in ["broken.jpg", "broken.mp4", "broken.mkv"] {
             tile(name).click()
             waitForSelected(name)
-            app.typeKey(.return, modifierFlags: [])
+            app.typeKey(.space, modifierFlags: [])
             // A hung app can't answer the accessibility queries below (they
             // fail before any check of ours): a watchdog on its own thread
             // samples it after 12 s unless the badge has come

@@ -2286,9 +2286,11 @@ final class BrowserModel: ObservableObject {
             if !searchText.isEmpty { searchText = ""; return true }
             return false
         case .enter:
+            // As in the Finder: ↩ renames the selected item (Space opens it);
+            // in the full view it goes back to the grid
             guard !command else { return false }
-            mode == .detail ? closeDetail() : activateSelection()
-            return true
+            if mode == .detail { closeDetail(); return true }
+            return beginRename()
         case .space:
             if mode == .detail {
                 (selectedMediaEntry?.kind == .video) ? togglePlayPause() : stepMedia(+1)
