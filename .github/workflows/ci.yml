@@ -16,6 +16,10 @@ on:
         description: "Run the UI tests on this runner image only, e.g. macos-26 (empty: macos-15 and macos-26)"
         required: false
         default: ""
+      repeat:
+        description: "Run each selected UI test up to this many times, until one fails (to catch a rare failure); empty: once"
+        required: false
+        default: ""
 
 # A newer push cancels an older one; a run started by hand (a few UI tests)
 # has its own group, so it never cancels the full run of a push.
@@ -111,6 +115,7 @@ jobs:
       - name: Run XCUITests
         env:
           ONLY: ${{ inputs.only || 'SchnellbildUITests' }}
+          REPEAT: ${{ inputs.repeat }}
         run: |
           # VisualUITests measure the screen through this shell, which may
           # record it: the test asks with "measure:<id>:<x>,<y>,<w>,<h>" on the
@@ -159,7 +164,8 @@ jobs:
             -scheme Schnellbild \
             -destination 'platform=macOS' \
             "${only[@]}" \
-            -derivedDataPath build/DerivedData || status=1
+            -derivedDataPath build/DerivedData \
+            ${REPEAT:+-test-iterations "$REPEAT" -run-tests-until-failure} || status=1
           kill "$helper" 2>/dev/null || true
           exit $status
 
