@@ -309,17 +309,26 @@ final class ArchiveTests: XCTestCase {
     /// byte as in the original. Stored and packed ZIP, a packed RAR across
     /// volumes, a password-protected RAR.
     /// A store that can't be read now (a locked keychain) is never written
-    /// over: a password that opened something is used, not saved.
+    /// over: a password that opened something is used, and written into the
+    /// stored list once it can be read; a store that refuses isn't asked
+    /// again at once.
     func testPasswordsAreNotLostWhenTheStoreCantBeRead() {
         var saved: [[String]] = []
         var readable = false
-        let store = PasswordStore(load: { readable ? ["old"] : nil }, save: { saved.append($0) })
+        var loads = 0
+        let store = PasswordStore(load: { loads += 1; return readable ? ["old"] : nil }, save: { saved.append($0) }, retryAfter: 0)
         store.remember("new")
         XCTAssertTrue(saved.isEmpty, "the stored list isn't overwritten")
         XCTAssertEqual(store.all, ["new"])
         readable = true
         store.remember("newer")
-        XCTAssertEqual(saved.last, ["newer", "old"], "readable again: added to what is stored")
+        XCTAssertEqual(saved.last, ["newer", "new", "old"], "readable again: both added to what is stored")
+        XCTAssertEqual(store.all, ["newer", "new", "old"])
+
+        loads = 0
+        let refusing = PasswordStore(load: { loads += 1; return nil }, save: { _ in })
+        for _ in 0..<5 { _ = refusing.all }
+        XCTAssertEqual(loads, 1, "asked once, not for every archive")
     }
 
     /// Names beyond ASCII ("Übersicht.jpg") in a ZIP with UTF-8 names.
