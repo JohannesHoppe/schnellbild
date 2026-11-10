@@ -560,7 +560,7 @@ final class VisualUITests: SchnellbildUITestCase {
             let top = try strip(atHeight: 0.12), bottom = try strip(atHeight: 0.8)
             XCTAssertLessThan(top, bottom - 0.2, "\(state): not turned upright (top \(top), bottom \(bottom)); \(text(of: image))")
             if state == "fit" {
-                app.typeKey("1", modifierFlags: [])
+                for _ in 0..<2 { app.typeKey("+", modifierFlags: []) }
                 eventually("decoded at full size", timeout: 15) { text(of: image).contains("decoded 2400 px") }
                 settle()
             }
@@ -579,8 +579,18 @@ final class VisualUITests: SchnellbildUITestCase {
             tile(name).click()
             waitForSelected(name)
             app.typeKey(.return, modifierFlags: [])
+            // A hung app can't answer the accessibility queries below (they
+            // fail before any check of ours): a watchdog on its own thread
+            // samples it after 12 s unless the badge has come
+            let shown = WatchFlag()
+            DispatchQueue.global().asyncAfter(deadline: .now() + 12) {
+                guard !shown.isSet else { return }
+                print("== \(name): no badge after 12 s; the app's threads:\n" + Self.sampleApp())
+            }
+            defer { shown.set() }
             let deadline = Date().addingTimeInterval(20)
             while !text(of: badge).contains(name), Date() < deadline { RunLoop.current.run(until: Date().addingTimeInterval(0.5)) }
+            if text(of: badge).contains(name) { shown.set() }
             if !text(of: badge).contains(name) {
                 // A hang shows what each thread was doing
                 XCTFail("no badge for \(name); the app's threads:\n" + Self.sampleApp())
@@ -627,6 +637,14 @@ extension VisualUITests {
         guard !pid.isEmpty else { return "no Schnellbild process" }
         return String(run("/usr/bin/sample", [pid, "2"]).prefix(30000))
     }
+}
+
+/// A flag set on one thread and read on another.
+final class WatchFlag: @unchecked Sendable {
+    private let lock = NSLock()
+    private var value = false
+    var isSet: Bool { lock.lock(); defer { lock.unlock() }; return value }
+    func set() { lock.lock(); value = true; lock.unlock() }
 }
 
 /// Marks in the app's test log where a test step begins.
