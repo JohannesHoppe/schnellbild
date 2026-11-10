@@ -90,15 +90,10 @@ final class VisualUITests: SchnellbildUITestCase {
 
     /// Moving the mouse onto the video and off again, several times, never
     /// dims the picture: measured right after each move and a while later,
-    /// in the middle and in the bottom strip where the controls show.
-    private func checkHoverKeepsTheBrightness(vlc: Bool, controls: String? = nil, check: Bool = true) throws {
-        let video = try openVideo(vlc ? "clip.mkv" : "clip.mp4", vlc: vlc,
-                                  extra: controls.map { ["--avkit-controls=\($0)"] } ?? [])
-        let f = video.frame
-        let bottom = CGRect(x: f.minX + f.width * 0.3, y: f.maxY - f.height * 0.15, width: f.width * 0.4, height: f.height * 0.1)
-        func sample() throws -> (middle: Double, bottom: Double) {
-            (try screenBrightness(of: video), try screenStats(of: bottom).mean)
-        }
+    /// in the middle of the picture (the controls show at the bottom).
+    private func checkHoverKeepsTheBrightness(vlc: Bool) throws {
+        let video = try openVideo(vlc ? "clip.mkv" : "clip.mp4", vlc: vlc)
+        func sample() throws -> Double { try screenBrightness(of: video) }
         let away = app.windows.firstMatch.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.02))
         away.hover()
         settle(3)
@@ -114,30 +109,16 @@ final class VisualUITests: SchnellbildUITestCase {
                     waited += wait
                     let now = try sample()
                     log.append("round \(round) \(place) +\(waited) s: \(now)")
-                    worst = max(worst, abs(now.middle - start.middle))   // the bottom holds the controls
+                    worst = max(worst, abs(now - start))
                 }
             }
         }
-        print((vlc ? "VLC" : "AVKit \(controls ?? "default")") + " hover:\n" + log.joined(separator: "\n"))
-        guard check else { return }
+        print((vlc ? "VLC" : "AVKit") + " hover:\n" + log.joined(separator: "\n"))
         XCTAssertLessThan(worst, 0.04, "the picture changes when the mouse moves on and off it:\n" + log.joined(separator: "\n"))
     }
 
     func testHoverKeepsAnAVKitVideosBrightness() throws { try checkHoverKeepsTheBrightness(vlc: false) }
     func testHoverKeepsAVLCVideosBrightness() throws { try checkHoverKeepsTheBrightness(vlc: true) }
-    /// AVKit's other controls styles, for comparison (the inline one dims
-    /// the picture on macOS 26 and later); only reported, so only when asked
-    /// for (xcodebuild run with TEST_RUNNER_COMPARE_CONTROLS=1).
-    func testHoverWithOtherAVKitControls() throws {
-        guard ProcessInfo.processInfo.environment["COMPARE_CONTROLS"] == "1" else {
-            throw XCTSkip("a comparison, not a check")
-        }
-        for style in ["inline", "minimal"] {
-            try checkHoverKeepsTheBrightness(vlc: false, controls: style, check: false)
-            app.terminate()
-        }
-    }
-
     /// Both players show the same video alike: the same brightness and,
     /// with the colour bars, the same colours (VLC's pictures are converted
     /// to RGB by the compositor, AVKit's by AVKit).
@@ -579,7 +560,7 @@ final class VisualUITests: SchnellbildUITestCase {
             let top = try strip(atHeight: 0.12), bottom = try strip(atHeight: 0.8)
             XCTAssertLessThan(top, bottom - 0.2, "\(state): not turned upright (top \(top), bottom \(bottom)); \(text(of: image))")
             if state == "fit" {
-                for _ in 0..<2 { app.typeKey("+", modifierFlags: []) }
+                app.typeKey("1", modifierFlags: [])
                 eventually("decoded at full size", timeout: 15) { text(of: image).contains("decoded 2400 px") }
                 settle()
             }

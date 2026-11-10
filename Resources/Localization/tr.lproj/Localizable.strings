@@ -57,7 +57,6 @@
 "Picture" = "Resim";
 "Video" = "Video";
 "Folder" = "Klasör";
-"Parent" = "Üst";
 "Rename Folder" = "Klasörü Yeniden Adlandır";
 "Rename File" = "Dosyayı Yeniden Adlandır";
 "Rename" = "Yeniden Adlandır";
@@ -234,3 +233,9 @@
 /* VoiceOver: the sorted column of the list */
 "ascending" = "artan";
 "descending" = "azalan";
+"selected" = "seçili";
+"not selected" = "seçili değil";
+/* About window: the libraries' licenses */
+"© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later; some of its modules GNU General Public License 2 or later." = "© VideoLAN ve VLC yazarları. GNU Lesser General Public License 2.1 veya üstü; bazı modülleri GNU General Public License 2 veya üstü.";
+"© Tim Kientzle and the libarchive contributors. BSD 2-clause license." = "© Tim Kientzle ve libarchive katkıda bulunanları. 2 maddeli BSD lisansı.";
+"© Alexander Roshal. The UnRAR license, in its own words:" = "© Alexander Roshal. UnRAR lisansı, orijinal metniyle:";

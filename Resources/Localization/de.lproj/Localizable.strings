@@ -57,7 +57,6 @@
 "Picture" = "Bild";
 "Video" = "Video";
 "Folder" = "Ordner";
-"Parent" = "Übergeordnet";
 "Rename Folder" = "Ordner umbenennen";
 "Rename File" = "Datei umbenennen";
 "Rename" = "Umbenennen";
@@ -234,3 +233,9 @@
 /* VoiceOver: the sorted column of the list */
 "ascending" = "aufsteigend";
 "descending" = "absteigend";
+"selected" = "ausgewählt";
+"not selected" = "nicht ausgewählt";
+/* About window: the libraries' licenses */
+"© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later; some of its modules GNU General Public License 2 or later." = "© VideoLAN und die VLC-Autoren. GNU Lesser General Public License 2.1 oder neuer; einige ihrer Module GNU General Public License 2 oder neuer.";
+"© Tim Kientzle and the libarchive contributors. BSD 2-clause license." = "© Tim Kientzle und die libarchive-Mitwirkenden. BSD-Lizenz mit 2 Klauseln.";
+"© Alexander Roshal. The UnRAR license, in its own words:" = "© Alexander Roshal. Die UnRAR-Lizenz im Wortlaut:";

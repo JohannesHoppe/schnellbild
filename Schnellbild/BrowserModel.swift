@@ -56,8 +56,6 @@ protocol PlaybackControl: AnyObject {
     var playsWithoutLength: Bool { get }
     /// The picture's size in pixels as shown, once known (the Inspector).
     var videoSize: CGSize? { get }
-    /// The length in seconds, once known.
-    var duration: Double? { get }
     /// Sound, 0 … 1 (the app's one volume for all videos).
     func setVolume(_ volume: Double)
 }
@@ -2006,10 +2004,17 @@ final class BrowserModel: ObservableObject {
     // MARK: - Zoom (full-size view)
 
     func zoomIn()        { zoom = min(zoom * 1.25, maxZoom) }
-    func zoomOut()       { zoom = max(zoom / 1.25, 1) }
+    func zoomOut()       { zoom = clampedZoom(zoom / 1.25) }
     func zoomReset()     { zoom = 1 }
-    func zoomActualSize(){ zoom = min(max(actualSizeFactor, 1), maxZoom) }
+    func zoomActualSize(){ zoom = clampedZoom(actualSizeFactor) }
+    /// (Not snapped: a pinch grows in small steps from fit.)
     func applyPinch(_ factor: CGFloat) { zoom = min(max(zoom * factor, 1), maxZoom) }
+    /// Within 1 … maxZoom; a hair above fit (100 % of a picture barely
+    /// larger than the view) is fit, as the views count it.
+    private func clampedZoom(_ z: CGFloat) -> CGFloat {
+        let clamped = min(max(z, 1), maxZoom)
+        return clamped <= 1.01 ? 1 : clamped
+    }
 
     // MARK: - Rotation (view-only — the file on disk is never modified)
 
@@ -2296,10 +2301,14 @@ final class BrowserModel: ObservableObject {
     }
 
     /// The Trash has something to take (the menu item and ⌘⌫).
-    var canTrash: Bool { slideshow == nil && !trashEntries.isEmpty }
+    var canTrash: Bool { slideshow == nil && !trashLookupPending && !trashEntries.isEmpty }
+
+    /// The parts of an archive are being looked up before its Trash prompt:
+    /// a second ⌘⌫ meanwhile would ask twice for the same item.
+    @Published private(set) var trashLookupPending = false
 
     func moveSelectionToTrash() {
-        guard slideshow == nil else { return }   // the selection is in the hidden grid
+        guard slideshow == nil, !trashLookupPending else { return }   // the selection is in the hidden grid
         let items = trashEntries
         // Several (marked): all of them, after one confirmation
         if items.count > 1 { trashMarked(items); return }
@@ -2310,7 +2319,9 @@ final class BrowserModel: ObservableObject {
         // by listing its folder: off the main thread)
         let isArchive = entry.isArchive
         let url = entry.url
+        trashLookupPending = true
         onFiles({ isArchive ? ArchiveName.allFiles(of: url) : [url] }) { [self] files in
+            trashLookupPending = false
             let detail = entry.kind == .folder && !isArchive
                 ? String(localized: "The folder and everything in it, including files Schnellbild doesn't show, will be moved to the Trash.")
                 : files.count > 1 ? String(localized: "All parts of this archive will be moved to the Trash.")
@@ -3311,15 +3322,10 @@ final class BrowserModel: ObservableObject {
             let c = Character(raw.lowercased())   // also with Shift or Caps Lock
             switch c {
             case "s" where !command: stopSlideshow(); return true
-            case "f" where !command: toggleFullScreen(); return true
-            case "i" where !command: showInspector.toggle(); return true
-            case "e" where !command: enhance.toggle(); return true
-            case "a" where !command: showAdjustments.toggle(); return true
-            case "k" where !command: showMiniKeyboard.toggle(); return true
             // No search, history or file actions while the hidden grid's
             // selection isn't what's on screen
             case "f" where command, "[" where command, "]" where command, "a" where command: return true
-            default: return handleCharacter(c, command: command)   // zoom, rotate
+            default: return handleCharacter(c, command: command)   // F, I, E, A, K, zoom, rotate: as in the full view
             }
         default:
             return false
@@ -3526,6 +3532,11 @@ final class AVPlaybackControl: PlaybackControl {
         guard compositionTask == nil else { return }
         let asset = item.asset
         compositionTask = Task { [weak self] in
+            // How long a frame lasts: a redraw stays within the frame shown
+            if self?.frameDuration == nil, let track = try? await asset.loadTracks(withMediaType: .video).first,
+               let duration = try? await track.load(.minFrameDuration), duration.seconds > 0, duration.seconds.isFinite {
+                self?.frameDuration = duration.seconds
+            }
             let made = try? await AVVideoComposition.videoComposition(with: asset) { request in
                 enhancer.process(request)
             }
@@ -3540,6 +3551,10 @@ final class AVPlaybackControl: PlaybackControl {
 
     /// Where the last nudge went ahead to (the next goes back from there).
     private var nudgedAhead: CMTime?
+    /// The video's shortest frame duration, once known; redraws then seek
+    /// to two points inside the frame on screen, never across its edge.
+    private var frameDuration: Double?
+    private var nudgeLater = false
 
     /// A paused video shows a new look only once its frame is drawn again.
     /// A seek to the very time it stands at reuses the picture already
@@ -3555,6 +3570,21 @@ final class AVPlaybackControl: PlaybackControl {
             if delay > .zero { try? await Task.sleep(for: delay) }
             guard let self, !self.isPlaying else { return }
             let now = self.player.currentTime()
+            if let frame = self.frameDuration, now.seconds.isFinite {
+                // A quarter and a half into the frame shown, by turns
+                let start = (now.seconds / frame).rounded(.down) * frame
+                self.nudgeLater.toggle()
+                let target = CMTime(seconds: start + frame * (self.nudgeLater ? 0.5 : 0.25), preferredTimescale: 600_000)
+                BrowserModel.testLog("avkit redraw at \(target.seconds)")
+                self.player.seek(to: target, toleranceBefore: .zero, toleranceAfter: .zero) { [weak self] finished in
+                    guard finished else { return }
+                    Task { @MainActor in
+                        guard let self, attempts > 1, self.enhancer?.isStale == true else { return }
+                        self.redrawIfPaused(after: .milliseconds(150), attempts: attempts - 1)
+                    }
+                }
+                return
+            }
             let step = CMTime(value: 1, timescale: 600)
             // (compared loosely: the time read back may come in another timescale)
             let back = self.nudgedAhead.map { abs($0.seconds - now.seconds) < 1.0 / 1200 } ?? false
@@ -3574,7 +3604,7 @@ final class AVPlaybackControl: PlaybackControl {
         }
     }
 
-    var duration: Double? {
+    private var duration: Double? {
         guard let item = player.currentItem else { return nil }
         let seconds = CMTimeGetSeconds(item.duration)
         return seconds.isFinite && seconds > 0 ? seconds : nil
