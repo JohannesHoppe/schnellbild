@@ -2,6 +2,47 @@ import SwiftUI
 import AppKit
 import ImageIO
 
+/// Runs `work` off the main actor; cancelling the caller cancels it too, so
+/// what it awaits (an archive read) stops, and it can skip what is left.
+func detachedCancellable<T: Sendable>(priority: TaskPriority, _ work: @escaping @Sendable () async -> T) async -> T {
+    let task = Task.detached(priority: priority, operation: work)
+    return await withTaskCancellationHandler { await task.value } onCancel: { task.cancel() }
+}
+
+/// A GIF in the full view: an animated one plays (`AnimatedImageView`); a
+/// still one is a picture like any other (`FullImageView`: zoom, rotation,
+/// auto enhance and the sliders).
+struct GIFView: View {
+    let url: URL
+    /// Whether the GIF at `url` has more than one frame.
+    @State private var animated: (url: URL, value: Bool)?
+
+    var body: some View {
+        Group {
+            if let animated, animated.url == url {
+                if animated.value {
+                    ZStack { Color.black; AnimatedImageView(url: url) }
+                        .accessibilityElement(children: .contain)
+                        .accessibilityIdentifier("animatedImage")
+                } else {
+                    FullImageView(url: url)
+                }
+            } else {
+                ZStack { Color.black; LoadingSpinner() }
+            }
+        }
+        .task(id: url) {
+            let url = self.url
+            let frames = await detachedCancellable(priority: .userInitiated) {
+                await MediaData.imageSource(url).map(CGImageSourceGetCount)
+            }
+            guard !Task.isCancelled else { return }
+            // Unreadable: the picture view shows it can't be read
+            animated = (url, (frames ?? 0) > 1)
+        }
+    }
+}
+
 /// Animated GIFs: `NSImageView` with `animates = true` plays them —
 /// SwiftUI's `Image` shows only a still frame. The file is read off the main
 /// thread (a large GIF on a slow share would freeze the app).
@@ -33,7 +74,7 @@ struct AnimatedImageView: NSViewRepresentable {
             view.image = nil
             loading?.cancel()
             loading = Task { [weak view] in
-                let data = await Task.detached(priority: .userInitiated) { try? await MediaData.read(url) }.value
+                let data = await detachedCancellable(priority: .userInitiated) { try? await MediaData.read(url) }
                 guard !Task.isCancelled, self.url == url, let data else { return }
                 view?.image = NSImage(data: data)
             }
@@ -69,13 +110,9 @@ struct InspectorView: View {
         .task(id: entry.url) { await loadDimensions() }
     }
 
+    /// The inspector shows only what the full view shows: a picture or a video.
     private var kindText: String {
-        switch entry.kind {
-        case .image: return String(localized: "Picture")
-        case .video: return String(localized: "Video")
-        case .folder: return String(localized: "Folder")
-        case .parent: return String(localized: "Parent")
-        }
+        entry.kind == .video ? String(localized: "Video") : String(localized: "Picture")
     }
 
     private func infoRow(_ label: LocalizedStringKey, _ value: String) -> some View {
@@ -107,12 +144,15 @@ struct InspectorView: View {
         }
         guard entry.kind == .image else { return }
         let url = entry.url
-        dimensions = await Task.detached(priority: .utility) { () -> String? in
+        let found = await detachedCancellable(priority: .utility) { () -> String? in
             guard let size = await MediaInfo.pixelSize(ofAnywhere: url) else { return nil }
             // An SVG states its size as it likes ("1e20")
             guard size.width.isFinite, size.height.isFinite else { return nil }
             return "\(Int(max(0, min(size.width, 1e15)))) × \(Int(max(0, min(size.height, 1e15)))) px"
-        }.value
+        }
+        // Paged on meanwhile: the next picture's size is on its way
+        guard !Task.isCancelled else { return }
+        dimensions = found
     }
 }
 
@@ -129,9 +169,8 @@ enum MediaInfo {
         return (5...8).contains(orientation) ? CGSize(width: h, height: w) : CGSize(width: w, height: h)
     }
 
-    /// Pixel dimensions, also of a picture inside an archive.
-    /// Pixel dimensions, also of a picture inside an archive; for an SVG
-    /// its own size.
+    /// Pixel dimensions, also of a picture inside an archive; for an SVG or
+    /// PDF its own size.
     static func pixelSize(ofAnywhere url: URL) async -> CGSize? {
         if VectorPicture.isVector(url) { return await VectorPicture.size(of: url) }
         guard let source = await MediaData.imageSource(url) else { return nil }

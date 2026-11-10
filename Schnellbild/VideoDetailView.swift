@@ -24,6 +24,9 @@ struct VideoDetailView: View {
     @State private var videoSize: CGSize?
     /// UI tests only: what VLC reports (`VLCPlaybackControl.diagnostics`).
     @State private var vlcDiagnostics = ""
+    /// The file playing and its identity on disk: renamed or moved on the
+    /// same volume (F2, the other pane), it plays on where it is.
+    @State private var playing: (url: URL, file: FileIdentity?)?
 
     var body: some View {
         GeometryReader { geo in
@@ -33,7 +36,7 @@ struct VideoDetailView: View {
                 if let vlcControl {
                     VLCVideoView(control: vlcControl)
                 } else if let avControl {
-                    AVPlayerViewHost(player: avControl.player, controls: Self.avControlsStyle)
+                    AVPlayerViewHost(player: avControl.player)
                 } else if checking {
                     LoadingSpinner()
                 }
@@ -44,7 +47,7 @@ struct VideoDetailView: View {
             .rotationEffect(.degrees(model.rotation))
             .scaleEffect(model.zoom * quarterTurnFit(in: geo.size))
             .offset(x: panOffset.width + dragTranslation.width, y: panOffset.height + dragTranslation.height)
-            if model.zoom > 1 {
+            if model.zoom > 1.01 {
                 // Takes the drag for panning while zoomed in
                 Color.clear
                     .contentShape(Rectangle())
@@ -58,8 +61,7 @@ struct VideoDetailView: View {
         }
         }
         .clipped()
-        .onChange(of: model.zoom) { _, zoom in if zoom == 1 { panOffset = .zero } }
-        .onChange(of: url) { _, _ in panOffset = .zero }
+        .onChange(of: model.zoom) { _, zoom in if zoom <= 1.01 { panOffset = .zero } }
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier(vlcControl != nil ? "video.vlc" : "video.avkit")
         .accessibilityLabel("zoom \(Int((model.zoom * 100).rounded())) %, rotation \(Int(model.rotation))°"
@@ -68,11 +70,24 @@ struct VideoDetailView: View {
             vlcDiagnostics = ""
             guard Self.uiTesting, let control = vlcControl else { return }
             while !Task.isCancelled {
-                vlcDiagnostics = await control.diagnostics()
+                vlcDiagnostics = control.diagnostics()
                 try? await Task.sleep(for: .seconds(1))
             }
         }
         .task(id: url) {
+            // The same file under a new name (renamed, or its folder): the
+            // player goes on, position and pause kept
+            if let playing, playing.url != url, let file = playing.file,
+               avControl != nil || vlcControl != nil, !ArchivePath.isInside(url) {
+                let same = await FileIdentity.of(url, is: file)
+                guard !Task.isCancelled else { return }
+                if same {
+                    self.playing = (url, file)
+                    model.activePlayerURL = url
+                    return
+                }
+            }
+            panOffset = .zero
             stop()
             checking = true
             videoSize = nil
@@ -95,6 +110,7 @@ struct VideoDetailView: View {
             let playable = (try? await asset.load(.isPlayable)) ?? false
             guard !Task.isCancelled else { stream?.close(); return }   // the user moved on to another file
             checking = false
+            playing = (url, nil)
 
             let model = self.model
             let report: @MainActor (PlaybackControl, Bool) -> Void = { control, playing in
@@ -111,6 +127,7 @@ struct VideoDetailView: View {
                 model.activePlayer = control
                 model.activePlayerURL = url
                 control.play()
+                await noteFile(url)
                 if let track = try? await asset.loadTracks(withMediaType: .video).first,
                    let (size, transform) = try? await track.load(.naturalSize, .preferredTransform),
                    !Task.isCancelled {   // still this video
@@ -126,11 +143,15 @@ struct VideoDetailView: View {
                 vlcControl = control
                 model.activePlayer = control
                 model.activePlayerURL = url
-                // VLC knows the size once the video plays
-                for _ in 0..<50 where !Task.isCancelled {
-                    let size = control.player.videoSize
-                    if size.width > 0, size.height > 0 { videoSize = size; break }
-                    try? await Task.sleep(for: .milliseconds(100))
+                await noteFile(url)
+                // VLC knows the size once the video plays: an AVI inside an
+                // archive on a share may take long to open
+                var waited = 0.0
+                while !Task.isCancelled {
+                    if let size = control.videoSize { videoSize = size; break }
+                    let step = waited < 5 ? 0.1 : 0.5
+                    try? await Task.sleep(for: .seconds(step))
+                    waited += step
                 }
             }
         }
@@ -140,17 +161,6 @@ struct VideoDetailView: View {
     /// UI tests (`--ui-testing --force-vlc`) play every video through VLC, so
     /// the same test videos check both players.
     static let uiTesting = ProcessInfo.processInfo.arguments.contains("--ui-testing")
-    /// AVKit's controls as a floating bar: the inline ones dim the whole
-    /// picture while they show (macOS 26 and later). UI tests may pick
-    /// another style (`--avkit-controls=inline|minimal|floating`) to compare.
-    static let avControlsStyle: AVPlayerViewControlsStyle = {
-        let arg = uiTesting ? ProcessInfo.processInfo.arguments.first { $0.hasPrefix("--avkit-controls=") } : nil
-        switch arg?.split(separator: "=").last {
-        case "inline":  return .inline
-        case "minimal": return .minimal
-        default:        return .floating
-        }
-    }()
     static let forceVLC = ProcessInfo.processInfo.arguments.contains("--ui-testing")
         && ProcessInfo.processInfo.arguments.contains("--force-vlc")
 
@@ -164,7 +174,16 @@ struct VideoDetailView: View {
         return min(container.width / shownHeight, container.height / shownWidth)
     }
 
+    /// Notes the identity of the file playing (not inside an archive: the
+    /// stream reads the archive by its path).
+    private func noteFile(_ url: URL) async {
+        guard !ArchivePath.isInside(url) else { return }
+        let file = await Task.detached(priority: .utility) { FileIdentity(of: url) }.value
+        if !Task.isCancelled, playing?.url == url { playing = (url, file) }
+    }
+
     private func stop() {
+        playing = nil
         archiveStream?.close()
         archiveStream = nil
         avControl?.pause()
@@ -176,15 +195,15 @@ struct VideoDetailView: View {
     }
 }
 
-/// AVKit's player view with a chosen controls style (SwiftUI's
-/// `VideoPlayer` only has the inline one).
+/// AVKit's player view with floating controls: SwiftUI's `VideoPlayer` has
+/// only the inline ones, which (like the minimal ones) dim the whole picture
+/// while they show (macOS 26 and later).
 struct AVPlayerViewHost: NSViewRepresentable {
     let player: AVPlayer
-    let controls: AVPlayerViewControlsStyle
 
     func makeNSView(context: Context) -> AVPlayerView {
         let view = AVPlayerView()
-        view.controlsStyle = controls
+        view.controlsStyle = .floating
         view.showsFullScreenToggleButton = false
         view.player = player
         return view
@@ -192,6 +211,40 @@ struct AVPlayerViewHost: NSViewRepresentable {
 
     func updateNSView(_ view: AVPlayerView, context: Context) {
         if view.player !== player { view.player = player }
-        if view.controlsStyle != controls { view.controlsStyle = controls }
+    }
+}
+
+/// A file's identity on disk (volume and file number): the same after a
+/// rename or a move on the same volume.
+struct FileIdentity: Equatable, Sendable {
+    let device: UInt64
+    let inode: UInt64
+
+    init?(of url: URL) {
+        var info = stat()
+        guard stat(url.path, &info) == 0 else { return nil }
+        device = UInt64(bitPattern: Int64(info.st_dev))
+        inode = info.st_ino
+    }
+
+    /// Whether `url` is `file`, read off the main thread; a file system
+    /// that doesn't answer within 0.3 s counts as another file, so paging
+    /// on never waits for it.
+    static func of(_ url: URL, is file: FileIdentity) async -> Bool {
+        final class Once: @unchecked Sendable {
+            private let lock = NSLock()
+            private var done = false
+            func claim() -> Bool { lock.withLock { defer { done = true }; return !done } }
+        }
+        let once = Once()
+        return await withCheckedContinuation { answer in
+            DispatchQueue.global(qos: .userInitiated).async {
+                let same = FileIdentity(of: url) == file
+                if once.claim() { answer.resume(returning: same) }
+            }
+            DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: .now() + 0.3) {
+                if once.claim() { answer.resume(returning: false) }
+            }
+        }
     }
 }

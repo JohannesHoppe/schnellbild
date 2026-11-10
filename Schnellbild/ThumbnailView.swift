@@ -45,11 +45,11 @@ final class ThumbnailCache {
         // Inside an archive: the archive file's date (an entry may have none,
         // and a replaced archive can hold other pictures under the same names)
         let archive = ArchivePath.isInside(url) ? ArchivePath.split(url)?.archive : nil
-        let modified = archive.map { (try? $0.resourceValues(forKeys: [.contentModificationDateKey]))?.contentModificationDate } ?? modified
+        let modified = await archive.asyncMap(archiveDate(of:)) ?? modified
         if let cached = cache.object(forKey: url as NSURL), cached.side >= side,
            modified == nil || cached.modified == modified { return cached.image }
         if archive != nil {
-            guard let image = await Self.archiveThumbnail(for: url, side: side) else { return nil }
+            guard let image = await Self.archiveThumbnail(for: url, side: side), !Task.isCancelled else { return nil }
             cache.setObject(Entry(image: image, side: side, modified: modified), forKey: url as NSURL)
             return image
         }
@@ -59,7 +59,15 @@ final class ThumbnailCache {
             scale: NSScreen.mainBackingScale,
             representationTypes: .all
         )
-        let rep = try? await QLThumbnailGenerator.shared.generateBestRepresentation(for: request)
+        // Cancelled with its tile (scrolled away), so QuickLook works on the
+        // tiles still shown; a cancelled request answers with the file's
+        // icon, which is never kept
+        let rep = await withTaskCancellationHandler {
+            try? await QLThumbnailGenerator.shared.generateBestRepresentation(for: request)
+        } onCancel: {
+            QLThumbnailGenerator.shared.cancel(request)
+        }
+        guard !Task.isCancelled else { return nil }
         var image = rep?.nsImage
         if rep?.type == .icon { image?.accessibilityDescription = Self.fileIcon }
         // QuickLook has only the file icon for videos it can't read (AVI,
@@ -68,9 +76,30 @@ final class ThumbnailCache {
            let frame = await VLCThumbnails.shared.thumbnail(for: url, width: side * NSScreen.mainBackingScale) {
             image = NSImage(cgImage: frame, size: NSSize(width: frame.width, height: frame.height))
         }
-        guard let image else { return nil }
+        guard let image, !Task.isCancelled else { return nil }
         cache.setObject(Entry(image: image, side: side, modified: modified), forKey: url as NSURL)
         return image
+    }
+
+    /// Archive dates as read lately: every picture of an archive asks, and
+    /// the date is read off the main thread (a stalled share would block it).
+    private var archiveDates: [URL: (date: Date?, read: Date)] = [:]
+
+    private func archiveDate(of archive: URL) async -> Date? {
+        if let known = archiveDates[archive], Date().timeIntervalSince(known.read) < 2 { return known.date }
+        let date = await Task.detached(priority: .utility) {
+            (try? archive.resourceValues(forKeys: [.contentModificationDateKey]))?.contentModificationDate
+        }.value
+        if archiveDates.count > 256 { archiveDates.removeAll() }
+        archiveDates[archive] = (date, Date())
+        return date
+    }
+}
+
+private extension Optional {
+    func asyncMap<T>(_ transform: (Wrapped) async -> T) async -> T? {
+        guard let self else { return nil }
+        return await transform(self)
     }
 }
 
@@ -85,19 +114,18 @@ extension ThumbnailCache {
         }
         let maxPixel = Int(side * NSScreen.mainBackingScale)
         // Cancelled with its tile (scrolled away): the archive read leaves the line
-        let work = Task.detached(priority: .utility) { () -> NSImage? in
+        return await detachedCancellable(priority: .utility) { () -> NSImage? in
             if VectorPicture.isVector(url) {
                 guard let rendered = await VectorPicture.render(url, longestSide: maxPixel) else { return nil }
                 return NSImage(cgImage: rendered.0, size: NSSize(width: rendered.0.width, height: rendered.0.height))
             }
-            guard let source = await MediaData.imageSource(url) else { return nil }
+            guard let source = await MediaData.imageSource(url), !Task.isCancelled else { return nil }
             let options: [CFString: Any] = [kCGImageSourceCreateThumbnailFromImageAlways: true,   // not the small preview a camera embeds
                                             kCGImageSourceCreateThumbnailWithTransform: true,
                                             kCGImageSourceThumbnailMaxPixelSize: maxPixel]
             guard let cg = CGImageSourceCreateThumbnailAtIndex(source, 0, options as CFDictionary) else { return nil }
             return NSImage(cgImage: cg, size: NSSize(width: cg.width, height: cg.height))
         }
-        return await withTaskCancellationHandler { await work.value } onCancel: { work.cancel() }
     }
 }
 
