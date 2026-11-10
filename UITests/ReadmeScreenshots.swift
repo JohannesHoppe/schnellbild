@@ -31,13 +31,14 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         app?.terminate()   // keep the library: the dark run uses it too
     }
 
-    private func shoot(_ name: String, settle: TimeInterval = 2.5) {
+    /// `front`: the frontmost window (Settings), else the main one.
+    private func shoot(_ name: String, settle: TimeInterval = 2.5, front: Bool = false) {
         // Let thumbnails and animations settle
         RunLoop.current.run(until: Date().addingTimeInterval(settle))
         let picture = "\(name)\(suffix)"
         let pasteboard = NSPasteboard.general
         pasteboard.clearContents()
-        pasteboard.setString("shoot:\(picture)", forType: .string)
+        pasteboard.setString("\(front ? "shoot-front" : "shoot"):\(picture)", forType: .string)
         eventually("\(picture) photographed", timeout: 30) {
             pasteboard.string(forType: .string) == "done:\(picture)"
         }
@@ -170,5 +171,36 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         app.typeKey(.downArrow, modifierFlags: [])
         XCTAssertTrue(element("volumeDisplay").waitForExistence(timeout: 5))
         shoot("volume", settle: 0.5)
+
+        // The list view of the library (archives and other files included)
+        app.typeKey(.escape, modifierFlags: [])
+        XCTAssertTrue(tile("Lofoten").waitForExistence(timeout: 10))
+        app.typeKey("l", modifierFlags: [])
+        XCTAssertTrue(element("list").waitForExistence(timeout: 5))
+        shoot("list")
+        app.typeKey("l", modifierFlags: [])
+
+        // The dual pane: the trip on the right, two photos marked on the left
+        app.typeKey("d", modifierFlags: [])
+        let left = element("pane.left"), right = element("pane.right")
+        XCTAssertTrue(right.waitForExistence(timeout: 10))
+        let rightTrip = right.descendants(matching: .any).matching(identifier: "tile.Lofoten").firstMatch
+        XCTAssertTrue(rightTrip.waitForExistence(timeout: 15))
+        rightTrip.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).doubleClick()
+        XCTAssertTrue(right.descendants(matching: .any).matching(identifier: "tile...").firstMatch.waitForExistence(timeout: 10))
+        let leftPhoto = left.descendants(matching: .any).matching(identifier: "tile.Fjord at Sunset.jpg").firstMatch
+        XCTAssertTrue(leftPhoto.waitForExistence(timeout: 10))
+        leftPhoto.click()
+        app.typeKey(.rightArrow, modifierFlags: .shift)
+        shoot("dualpane")
+        app.typeKey(.escape, modifierFlags: [])
+        app.typeKey("d", modifierFlags: [])
+        eventually("one pane again") { !self.element("pane.right").exists }
+
+        // Settings (⌘,)
+        app.typeKey(",", modifierFlags: .command)
+        XCTAssertTrue(element("settings.slideshowSeconds").waitForExistence(timeout: 5))
+        shoot("settings", front: true)
+        app.typeKey("w", modifierFlags: .command)
     }
 }

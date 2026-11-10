@@ -79,11 +79,13 @@ jobs:
             while :; do
               request=$(pbpaste 2>/dev/null || true)
               case "$request" in
-                shoot:*)
-                  name=${request#shoot:}
+                shoot:*|shoot-front:*)
+                  # shoot-front: the frontmost window (Settings), else the main one
+                  which=; [ "${request%%:*}" = shoot-front ] && which=front
+                  name=${request#*:}
                   echo "== $name"
                   tmp=$(mktemp -d)
-                  read -r id rect < <(build/shoot_window window)
+                  read -r id rect < <(build/shoot_window window $which)
                   screencapture -x -l "$id" "$tmp/shadow.png"
                   screencapture -x -o -l "$id" "$tmp/flat.png"
                   screencapture -x -R "$rect" "$tmp/screen.png"

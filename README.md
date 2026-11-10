@@ -40,7 +40,7 @@ Schnellbild follows your Mac's language: English, Deutsch, Français, Español, 
 
 ### Browse folders
 
-Open a folder with ⌘O or drag it onto the window; drag a single file to open it straight in the full view. Subfolders come first, each previewing its first pictures or videos like Finder (from its subfolders when it holds none itself), with a `..` tile to go up. Folders without a single photo or video anywhere inside are greyed out, so you don't bother opening them (a `Thumbs.db` or `desktop.ini` doesn't count). `L` (or the switch in the status bar) shows the folder as a **list** instead: a small preview, the whole name, kind, date modified, date taken and size in columns; a click on a column's header sorts by it, another reverses it, the same sort as the sort menu. Files that aren't pictures, videos or archives are listed by name and size under the grid (in the list as grey rows), so a folder that holds only such files never looks empty; "This folder is empty" means it holds nothing at all; a folder Schnellbild can't read (no permission, a share that went away) says "This folder can't be read" with the reason, never "empty". Thumbnails come from QuickLook: JPEG, HEIC, AVIF, JPEG XL, PNG, GIF, WebP, TIFF, SVG, PDF, PSD, OpenEXR, the camera RAW formats macOS reads, and a poster frame for videos. A symbolic link shows as what it points to (a link to a folder on a share opens like that folder); walks through subfolders don't follow links. Schnellbild reopens the last folder on launch.
+Open a folder with ⌘O or drag it onto the window; drag a single file to open it straight in the full view. Subfolders come first, each previewing its first pictures or videos like Finder (from its subfolders when it holds none itself), with a `..` tile to go up. Folders without a single photo or video anywhere inside are greyed out, so you don't bother opening them (a `Thumbs.db` or `desktop.ini` doesn't count). `L` shows it as a [list](#list-view) instead. Files that aren't pictures, videos or archives are listed by name and size under the grid (in the list as grey rows), so a folder that holds only such files never looks empty; "This folder is empty" means it holds nothing at all; a folder Schnellbild can't read (no permission, a share that went away) says "This folder can't be read" with the reason, never "empty". Thumbnails come from QuickLook: JPEG, HEIC, AVIF, JPEG XL, PNG, GIF, WebP, TIFF, SVG, PDF, PSD, OpenEXR, the camera RAW formats macOS reads, and a poster frame for videos. A symbolic link shows as what it points to (a link to a folder on a share opens like that folder); walks through subfolders don't follow links. Schnellbild reopens the last folder on launch.
 
 | Key | Action |
 |---|---|
@@ -59,6 +59,15 @@ Open a folder with ⌘O or drag it onto the window; drag a single file to open i
 | K | mini keyboard on / off |
 | ⌘A / Esc | mark all / unmark (Esc unmarks first, then clears the search) |
 | Esc | clear the search |
+
+### List view
+
+<p align="center"><picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/list-dark.png">
+  <img src="docs/screenshots/list-light.png" width="760" alt="A folder as a list: preview, name, kind, dates and size in columns">
+</picture></p>
+
+`L` (or the switch in the status bar) shows the folder as a list: a small preview, the whole name, kind, date modified, date taken and size in columns. A click on a column's header sorts by it, another reverses it, the same sort as the sort menu. Everything else works as in the grid: clicking, marking, dragging, opening. Each half of the dual pane keeps its own choice, and Schnellbild remembers it.
 
 ### Sort
 
@@ -233,6 +242,11 @@ Rename a folder or file in place (F2, the Actions menu, or right-click), in the 
 
 ### Dual pane: sort your holiday photos
 
+<p align="center"><picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/dualpane-dark.png">
+  <img src="docs/screenshots/dualpane-light.png" width="760" alt="Two panes side by side: the library on the left with two photos marked, a trip's folder on the right">
+</picture></p>
+
 **Dual Pane** in the toolbar (or `D`) splits the window in two, like the classic two-panel file managers. Each half is a browser of its own: its own folder, search, history and sort order; the one outlined in color is the one the keys work on, `Tab` switches. A picture or video opens large in its own half. Mark several items with ⌘-click, ⇧-click or ⇧-arrows (⌘A all, Esc none), then press `F5` to copy or `F6` to move them into the other half's folder, or drag them over onto the other half or a folder tile in it. A name that is taken there asks first: keep both (the new one is numbered) or skip. Both halves always show what is on disk. `D` again (or the button) goes back to one pane.
 
 **Use your old Norton Commander muscle memory:** the function keys work as they did there, as a second way next to the Mac shortcuts.
@@ -293,6 +307,33 @@ F1 (or ⌘?) shows every key in the app. `K` (or View → Mini Keyboard, or the 
   <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/keyboard-dark.png">
   <img src="docs/screenshots/keyboard-light.png" width="760" alt="The mini keyboard under the grid">
 </picture></p>
+
+### Settings
+
+<p align="center"><picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/settings-dark.png">
+  <img src="docs/screenshots/settings-light.png" width="460" alt="Settings: how long a picture stays in the slideshow, and the saved archive passwords">
+</picture></p>
+
+Schnellbild → Settings (⌘,) has two things: how long a picture stays in the slideshow (1 to 60 seconds), and the archive passwords Schnellbild has saved, which you can forget all at once. Everything else it simply remembers: the folder, the sort order, grid or list, the dual pane, the volume.
+
+## A free Phiewer alternative
+
+[Phiewer](https://phiewer.com/) is a good image viewer for the Mac and was the model for Schnellbild's keyboard-first browsing. If you are looking for a free, open-source alternative to Phiewer, this is how the two compare. Phiewer's side is what [phiewer.com](https://phiewer.com/) lists (as of November 2026); "not listed" means the site doesn't mention it.
+
+| | Schnellbild | Phiewer |
+|---|---|---|
+| Price | free, open source (MIT), no pro version | lite free; PRO a one-time purchase |
+| macOS | 14 and later | 15 and later |
+| Grid, full view, slideshow through subfolders | yes | yes |
+| Search | names of folders and files, all subfolders | name, tags, comments, date, EXIF |
+| ZIP, RAR and 7z archives as folders (also with passwords) | yes | not listed |
+| MKV, WebM and other formats macOS can't play | yes (built-in VLC engine) | not listed (MP4, MOV, AVI, MPG, 3GP, MTS, TS …) |
+| Two panes side by side, Norton Commander keys | yes | not listed |
+| Auto enhance and sliders for photos and videos | yes, as a view: files are never changed | edits with filters and undo; crop in PRO |
+| Compare 2 to 9 pictures side by side | no | yes |
+| Audio files, Finder tags, export, print | no | yes |
+| Your own keyboard shortcuts | no (F1 shows every key) | yes (in PRO) |
 
 ## Why so fast?
 

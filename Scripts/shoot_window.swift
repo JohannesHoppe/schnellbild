@@ -4,21 +4,25 @@
 // permission to record the screen belongs to the runner's shell, not to
 // programs it starts). Compiled by .github/workflows/screenshots.yml:
 //   shoot_window window              prints "<id> <x>,<y>,<w>,<h>" of the main window
+//   shoot_window window front        the same of the frontmost window (Settings)
 //   shoot_window compose <out> <dir> from <dir>/shadow.png (screencapture -l),
 //                                    <dir>/flat.png (-o -l: the window's shape)
 //                                    and <dir>/screen.png (-R: what the screen
 //                                    shows there, sheets and menus included)
 import AppKit
 
-func mainWindow() -> (id: Int, bounds: CGRect)? {
+/// The largest of the app's windows, or with `front` the frontmost (the
+/// list runs front to back).
+func mainWindow(front: Bool = false) -> (id: Int, bounds: CGRect)? {
     let list = CGWindowListCopyWindowInfo([.optionOnScreenOnly], kCGNullWindowID) as? [[String: Any]] ?? []
-    return list.compactMap { info -> (Int, CGRect)? in
+    let windows = list.compactMap { info -> (Int, CGRect)? in
         guard (info[kCGWindowOwnerName as String] as? String) == "Schnellbild",
               (info[kCGWindowLayer as String] as? Int) == 0,
               let id = info[kCGWindowNumber as String] as? Int,
               let b = info[kCGWindowBounds as String] as? [String: CGFloat] else { return nil }
         return (id, CGRect(x: b["X"]!, y: b["Y"]!, width: b["Width"]!, height: b["Height"]!))
-    }.max { $0.1.width * $0.1.height < $1.1.width * $1.1.height }
+    }
+    return front ? windows.first : windows.max { $0.1.width * $0.1.height < $1.1.width * $1.1.height }
 }
 
 func load(_ url: URL) -> CGImage? {
@@ -87,7 +91,7 @@ case "window":
     where (info[kCGWindowOwnerName as String] as? String) == "Schnellbild" {
         FileHandle.standardError.write("  window \(info[kCGWindowNumber as String] ?? "?") layer \(info[kCGWindowLayer as String] ?? "?") \(info[kCGWindowBounds as String] ?? "?")\n".data(using: .utf8)!)
     }
-    guard let main = mainWindow() else { fail("No Schnellbild window") }
+    guard let main = mainWindow(front: args.count > 2 && args[2] == "front") else { fail("No Schnellbild window") }
     let b = main.bounds
     print("\(main.id) \(Int(b.minX)),\(Int(b.minY)),\(Int(b.width)),\(Int(b.height))")
 
