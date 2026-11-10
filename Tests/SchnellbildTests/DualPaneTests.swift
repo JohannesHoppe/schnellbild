@@ -184,6 +184,22 @@ final class DualPaneTests: XCTestCase {
         await waitUntil { right.names.contains("a.jpg") }
     }
 
+    /// What the other pane moves out of the folder this one shows leaves it.
+    func testWhatMovesAwayLeavesTheOtherPane() async throws {
+        let tree = try TempTree(self)
+        try tree.file("a.jpg")
+        try tree.file("b.jpg")
+        let sub = try tree.folder("Sub")
+        let w = window(FileActionsSpy())
+        await openAndWait(w.left, tree.root)
+        w.setDual(true)
+        let right = try XCTUnwrap(w.right)
+        await waitUntil { right.isAt(tree.root) }
+        right.move([tree.root.appendingPathComponent("a.jpg")], into: sub)
+        await waitUntil { right.transfersRunning == 0 }
+        XCTAssertEqual(w.left.names, ["..", "Sub", "b.jpg"])
+    }
+
     func testEachPaneRemembersItsFolder() async throws {
         let tree = try TempTree(self)
         let one = try tree.folder("one"), two = try tree.folder("two")
