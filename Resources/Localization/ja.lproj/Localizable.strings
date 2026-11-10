@@ -222,3 +222,11 @@
 "Copying or moving…" = "コピーまたは移動中…";
 "This archive needs a password" = "このアーカイブにはパスワードが必要です";
 "Password required" = "パスワードが必要";
+"Copying or moving is still under way." = "まだコピーまたは移動中です。";
+"Schnellbild quits once it is done. Quitting now would leave files half copied." = "完了したらSchnellbildを終了します。今終了すると、ファイルが途中までしかコピーされません。";
+"Quit When Done" = "完了したら終了";
+"The name must end in “.%@”, as the archive does." = "名前はアーカイブと同じく「.%@」で終わる必要があります。";
+"unknown error" = "不明なエラー";
+"⌘-click / Insert" = "⌘-クリック / Insert";
+"⇧-click / ⇧ arrows" = "⇧-クリック / ⇧ 矢印";
+"drag" = "ドラッグ";

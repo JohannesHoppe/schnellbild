@@ -222,3 +222,11 @@
 "Copying or moving…" = "Copiando ou movendo…";
 "This archive needs a password" = "Este arquivo compactado precisa de uma senha";
 "Password required" = "Senha necessária";
+"Copying or moving is still under way." = "Ainda há uma cópia ou movimentação em andamento.";
+"Schnellbild quits once it is done. Quitting now would leave files half copied." = "O Schnellbild será encerrado quando terminar. Encerrar agora deixaria arquivos copiados pela metade.";
+"Quit When Done" = "Encerrar ao Terminar";
+"The name must end in “.%@”, as the archive does." = "O nome deve terminar em “.%@”, como o arquivo compactado.";
+"unknown error" = "erro desconhecido";
+"⌘-click / Insert" = "⌘-clique / Insert";
+"⇧-click / ⇧ arrows" = "⇧-clique / ⇧ setas";
+"drag" = "arrastar";

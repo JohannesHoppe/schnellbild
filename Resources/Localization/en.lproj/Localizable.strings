@@ -222,3 +222,11 @@
 "Copying or moving…" = "Copying or moving…";
 "This archive needs a password" = "This archive needs a password";
 "Password required" = "Password required";
+"Copying or moving is still under way." = "Copying or moving is still under way.";
+"Schnellbild quits once it is done. Quitting now would leave files half copied." = "Schnellbild quits once it is done. Quitting now would leave files half copied.";
+"Quit When Done" = "Quit When Done";
+"The name must end in “.%@”, as the archive does." = "The name must end in “.%@”, as the archive does.";
+"unknown error" = "unknown error";
+"⌘-click / Insert" = "⌘-click / Insert";
+"⇧-click / ⇧ arrows" = "⇧-click / ⇧ arrows";
+"drag" = "drag";

@@ -222,3 +222,11 @@
 "Copying or moving…" = "Wird kopiert oder bewegt …";
 "This archive needs a password" = "Dieses Archiv braucht ein Passwort";
 "Password required" = "Passwort erforderlich";
+"Copying or moving is still under way." = "Es wird noch kopiert oder bewegt.";
+"Schnellbild quits once it is done. Quitting now would leave files half copied." = "Schnellbild wird beendet, sobald es fertig ist. Jetzt zu beenden würde Dateien halb kopiert zurücklassen.";
+"Quit When Done" = "Beenden, wenn fertig";
+"The name must end in “.%@”, as the archive does." = "Der Name muss auf „.%@“ enden, wie das Archiv.";
+"unknown error" = "unbekannter Fehler";
+"⌘-click / Insert" = "⌘-Klick / Insert";
+"⇧-click / ⇧ arrows" = "⇧-Klick / ⇧ Pfeile";
+"drag" = "Ziehen";

@@ -42,9 +42,13 @@ final class ThumbnailCache {
     /// a sharper one. `modified` is the file's date as listed: a file
     /// changed in another app since gets a fresh thumbnail.
     func thumbnail(for url: URL, side: CGFloat, modified: Date? = nil) async -> NSImage? {
+        // Inside an archive: the archive file's date (an entry may have none,
+        // and a replaced archive can hold other pictures under the same names)
+        let archive = ArchivePath.isInside(url) ? ArchivePath.split(url)?.archive : nil
+        let modified = archive.map { (try? $0.resourceValues(forKeys: [.contentModificationDateKey]))?.contentModificationDate } ?? modified
         if let cached = cache.object(forKey: url as NSURL), cached.side >= side,
            modified == nil || cached.modified == modified { return cached.image }
-        if ArchivePath.isInside(url) {
+        if archive != nil {
             guard let image = await Self.archiveThumbnail(for: url, side: side) else { return nil }
             cache.setObject(Entry(image: image, side: side, modified: modified), forKey: url as NSURL)
             return image
@@ -80,19 +84,20 @@ extension ThumbnailCache {
             return icon
         }
         let maxPixel = Int(side * NSScreen.mainBackingScale)
-        return await Task.detached(priority: .utility) { () -> NSImage? in
+        // Cancelled with its tile (scrolled away): the archive read leaves the line
+        let work = Task.detached(priority: .utility) { () -> NSImage? in
             if VectorPicture.isVector(url) {
-                guard let data = try? await ArchiveStore.shared.data(of: url),
-                      let rendered = VectorPicture.render(data: data, longestSide: maxPixel) else { return nil }
+                guard let rendered = await VectorPicture.render(url, longestSide: maxPixel) else { return nil }
                 return NSImage(cgImage: rendered.0, size: NSSize(width: rendered.0.width, height: rendered.0.height))
             }
             guard let source = await MediaData.imageSource(url) else { return nil }
-            let options: [CFString: Any] = [kCGImageSourceCreateThumbnailFromImageIfAbsent: true,
+            let options: [CFString: Any] = [kCGImageSourceCreateThumbnailFromImageAlways: true,   // not the small preview a camera embeds
                                             kCGImageSourceCreateThumbnailWithTransform: true,
                                             kCGImageSourceThumbnailMaxPixelSize: maxPixel]
             guard let cg = CGImageSourceCreateThumbnailAtIndex(source, 0, options as CFDictionary) else { return nil }
             return NSImage(cgImage: cg, size: NSSize(width: cg.width, height: cg.height))
-        }.value
+        }
+        return await withTaskCancellationHandler { await work.value } onCancel: { work.cancel() }
     }
 }
 

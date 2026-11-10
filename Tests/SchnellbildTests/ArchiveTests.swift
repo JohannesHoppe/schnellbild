@@ -36,7 +36,7 @@ final class ArchiveTests: XCTestCase {
     }
 
     private func paths(_ index: ArchiveStore.Index) -> [String] {
-        index.items.filter { !$0.isDirectory }.map(\.path).sorted()
+        index.byPath.values.filter { !$0.isDirectory }.map(\.path).sorted()
     }
 
     // MARK: Names and paths
@@ -308,6 +308,29 @@ final class ArchiveTests: XCTestCase {
     /// small enough to be dropped from memory and unpacked again: every
     /// byte as in the original. Stored and packed ZIP, a packed RAR across
     /// volumes, a password-protected RAR.
+    /// A store that can't be read now (a locked keychain) is never written
+    /// over: a password that opened something is used, not saved.
+    func testPasswordsAreNotLostWhenTheStoreCantBeRead() {
+        var saved: [[String]] = []
+        var readable = false
+        let store = PasswordStore(load: { readable ? ["old"] : nil }, save: { saved.append($0) })
+        store.remember("new")
+        XCTAssertTrue(saved.isEmpty, "the stored list isn't overwritten")
+        XCTAssertEqual(store.all, ["new"])
+        readable = true
+        store.remember("newer")
+        XCTAssertEqual(saved.last, ["newer", "old"], "readable again: added to what is stored")
+    }
+
+    /// Names beyond ASCII ("Übersicht.jpg") in a ZIP with UTF-8 names.
+    func testNamesBeyondASCII() async throws {
+        let tree = try TempTree(self)
+        try tree.file("src/März/Übersicht.jpg")
+        try zip(["-r", "../umlaut.zip", "März"], in: tree.root.appendingPathComponent("src"))
+        let index = try await ArchiveStore.shared.index(of: tree.root.appendingPathComponent("umlaut.zip"))
+        XCTAssertEqual(paths(index).map { $0.precomposedStringWithCanonicalMapping }, ["März/Übersicht.jpg"])
+    }
+
     func testStreamingReadsAnyOffset() async throws {
         let tree = try TempTree(self)
         var original = Data(count: 3_000_000)

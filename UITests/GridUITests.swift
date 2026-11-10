@@ -253,6 +253,21 @@ final class GridUITests: SchnellbildUITestCase {
         XCTAssertTrue(tile("a.jpg").waitForExistence(timeout: 5), "tiles again")
     }
 
+    /// ⌘-click marks one more item, ⇧-click the range from the last one,
+    /// a plain click unmarks.
+    func testCommandAndShiftClicksMark() {
+        launchOnTempDir()
+        tile("a.jpg").click()
+        waitForSelected("a.jpg")
+        XCUIElement.perform(withKeyModifiers: .command) { tile("c.jpg").click() }
+        eventually("⌘-click marks c.jpg, a.jpg stays") { self.isSelected("c.jpg") && self.isSelected("a.jpg") }
+        XCTAssertFalse(isSelected("b.jpg"))
+        XCUIElement.perform(withKeyModifiers: .shift) { tile("a.jpg").click() }
+        eventually("⇧-click marks the range") { self.isSelected("a.jpg") && self.isSelected("b.jpg") && self.isSelected("c.jpg") }
+        tile("b.jpg").click()
+        eventually("a plain click unmarks") { !self.isSelected("a.jpg") && !self.isSelected("c.jpg") }
+    }
+
     /// ⌃⌘F is the system's full screen, not ⌘F's search.
     func testControlCommandFEntersFullScreen() {
         launchOnTempDir()

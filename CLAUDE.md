@@ -30,9 +30,11 @@ There is **no Xcode project for the app build**; `xcodegen` generates
   (`backStack`/`forwardStack` of `Location` = folder + query + selection +
   finished results, capped at `historyLimit`), `renameTarget`, `showInspector`,
   `showHelp`, sort, `activePlayer` (`PlaybackControl`, AVKit or VLCKit).
-  **All key bindings live in `handleKey(_:command:) -> Bool`** with the
-  `KeyInput` enum — this is the unit-tested dispatch. Keys typed in the search
-  field go through `handleSearchFieldKey`.
+  **The pane's key bindings live in `handleKey(_:command:) -> Bool`** with the
+  `KeyInput` enum — the unit-tested dispatch; the window's (D, ⌃O, Tab, F5,
+  F6) in `WindowModel.handleWindowKey`, and F9, F10, ⌃⌘F in the key monitor
+  (`ContentView`). Keys typed in the search field go through
+  `handleSearchFieldKey`.
   - Search is **always recursive** and matches **folder and file names**: local
     matches at once, then `recursiveMatches` streams batches (`AsyncStream`)
     from a tree walk; debounced via `searchDebounce`. Each search is a
@@ -197,9 +199,12 @@ AVI/MKV/WebM and other non-native formats play **in-app via vendored VLCKit
   `xcodegen generate` before the Xcode/UITest build (the app target embeds
   `Vendor/VLCKit.xcframework`).
 - Tests: unit tests (`Tests/SchnellbildTests/BrowserModelTests.swift`: search,
-  history, rename, file actions via spy, playback via `PlayerSpy`, every key
-  binding; `LocalizationTests.swift`) + XCUITests (`ReadmeScreenshots` is skipped in CI) in `UITests/*UITests.swift` (grid, search, navigation,
-  full view, video incl. VLC, actions), sharing `UITestSupport.swift`. Media
+  history, rename, file actions via spy, playback via `PlayerSpy`, the pane's
+  key bindings; `DualPaneTests.swift`: the window's keys, marking, F5/F6, the
+  other pane following; `ArchiveTests.swift`: readers, passwords, streaming,
+  against the fixtures in `Tests/SchnellbildTests/Archives`;
+  `LocalizationTests.swift`) + XCUITests (`ReadmeScreenshots` is skipped in CI) in `UITests/*UITests.swift` (grid, search, navigation,
+  full view, video incl. VLC, actions incl. the dual pane, archives incl. RAR fixtures in `UITests/Fixtures/rar`), sharing `UITestSupport.swift`. Media
   fixtures live in `UITests/Fixtures` (bundled as test resources; the dark,
   overexposed, even grey, gradient, upright (EXIF orientation 6), colour-band, 4K60 and broken ones are drawn by `swift Scripts/make_test_fixtures.swift UITests/Fixtures`).
   **`VisualUITests` measure what the screen shows**: the CI shell of the
@@ -215,7 +220,8 @@ AVI/MKV/WebM and other non-native formats play **in-app via vendored VLCKit
   unpaired value for a file to open): `--open=<path>`, `--force-vlc` (every
   video through VLC), `--test-log=<path>` (the app logs what the screen
   doesn't show, e.g. each rename), `--search-delay=<ms>` (a search that stays
-  running), `--avkit-controls=inline|minimal|floating` (AVKit's controls style, to compare). Not covered
+  running), `--avkit-controls=inline|minimal|floating` (AVKit's controls style, to compare),
+  `--hold-volume-display` (the volume display stays, for a test to read it). Not covered
   end-to-end: drag & drop from Finder, Reveal in Finder, Open with default app
   (unit-tested through `FileActions`).
   UI run: `xcodegen generate` → `xcodebuild test -project Schnellbild.xcodeproj
@@ -231,7 +237,7 @@ AVI/MKV/WebM and other non-native formats play **in-app via vendored VLCKit
   `build_app.sh` → upload zip) and `ui-tests` (fetch+cache VLCKit → `xcodegen`, pinned and SHA-256-checked by `Scripts/fetch_xcodegen.sh` →
   `xcodebuild` UI, on **macos-15 and macos-26**, since AVKit behaves differently
   from macOS 26 on; by hand with `-f only=<tests>` and `-f macos=<image>`). **`paths-ignore: ['**.md', 'LICENSE']`** → doc-only pushes
-  don't trigger CI. Both jobs cache `Vendor/` keyed on `fetch_vlckit.sh`'s hash.
+  don't trigger CI. Both jobs cache `Vendor/` keyed on the hashes of `fetch_vlckit.sh` and `fetch_unrar.sh`.
 - `.github/workflows/release.yml` (tag `v*`, or by hand): fetch VLCKit →
   `test.sh` → signing setup → `build_app.sh` → DMG. With the Apple secrets the
   app is signed with the Developer ID (Hardened Runtime, timestamp; every Mach-O
@@ -290,7 +296,7 @@ keyboard-first (NSEvent monitor, F1 help), zoom/pan/pinch/rotate (view-only), vi
 animated GIFs, slideshow, inspector, sort, reveal/open/trash, light/dark,
 last-folder restore, always-visible recursive search over folder + file
 names, back/forward/up history, folder and file rename, folder preview tiles, greyed-out empty folders, sort by name/kind/date modified/date taken/size, arrow keys that skim through videos, recursive slideshow with drop zones, auto enhance (exposure both ways, tone, sharpening) for photos and videos, video zoom.
-Releases ship as a signed, notarized DMG, archives as folders (ZIP, RAR via UnRAR, 7z; split, unfinished, passwords remembered; videos streamed), other files listed, SVG, mini keyboard (K), shortcuts on buttons, About window with licenses.
+Releases ship as a signed, notarized DMG, archives as folders (ZIP, RAR via UnRAR, 7z; split, unfinished, passwords remembered; videos streamed), other files listed, SVG, mini keyboard (K), shortcuts on buttons, About window with licenses, dual pane with Norton Commander's F-keys (marking, F5/F6, dragging between panes), list view (L), new folder (⇧⌘N / F7), the folder's name in the title bar renames it, video volume on ↑↓.
 
 Open / next-up:
 - **Demo GIF** — storyboard ready in `docs/launch-storyboard.md`. User records it

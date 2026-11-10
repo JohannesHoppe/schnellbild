@@ -222,3 +222,11 @@
 "Copying or moving…" = "Kopioidaan tai siirretään…";
 "This archive needs a password" = "Tämä arkisto tarvitsee salasanan";
 "Password required" = "Salasana tarvitaan";
+"Copying or moving is still under way." = "Kopiointi tai siirto on vielä kesken.";
+"Schnellbild quits once it is done. Quitting now would leave files half copied." = "Schnellbild lopetetaan, kun se on valmis. Lopettaminen nyt jättäisi tiedostoja puoliksi kopioiduiksi.";
+"Quit When Done" = "Lopeta, kun valmis";
+"The name must end in “.%@”, as the archive does." = "Nimen on päätyttävä ”.%@”, kuten arkistolla.";
+"unknown error" = "tuntematon virhe";
+"⌘-click / Insert" = "⌘-osoitus / Insert";
+"⇧-click / ⇧ arrows" = "⇧-osoitus / ⇧ nuolet";
+"drag" = "vedä";

@@ -35,9 +35,14 @@ struct NewFolderView: View {
         .onAppear { fieldFocused = true }
     }
 
+    /// Return reaches both the field and the default button: one folder.
+    @State private var done = false
+
     private func create() {
+        guard !done else { return }
         do {
             try model.createFolder(named: name)
+            done = true
         } catch {
             self.error = error.localizedDescription
         }

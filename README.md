@@ -54,6 +54,10 @@ Open a folder with ⌘O or drag it onto the window; drag a single file to open i
 | ⌘[ / ⌘] | back / forward, restoring the folder, the search and the selection |
 | f / ⌃⌘F | full screen |
 | F2 | rename the selected folder or file |
+| L | grid or list (a click on a column header sorts by it) |
+| D / ⌃O | dual pane on / off |
+| K | mini keyboard on / off |
+| ⌘A / Esc | mark all / unmark (Esc unmarks first, then clears the search) |
 | Esc | clear the search |
 
 ### Sort
@@ -162,10 +166,10 @@ Videos play right away, MP4 and MOV through AVKit, formats macOS can't play (AVI
 | ↑ ↓ | volume up / down in tenths, for every video, remembered (shown while it changes) |
 | ⇧← ⇧→ | 1 % of the length back / ahead, to find a place exactly |
 
-<picture>
+<p align="center"><picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/volume-dark.png">
   <img src="docs/screenshots/volume-light.png" width="760" alt="The volume shown while it changes, over a paused video">
-</picture>
+</picture></p>
 
 ### Auto enhance and adjustments
 
@@ -222,10 +226,10 @@ Rename a folder or file in place (F2, the Actions menu, or right-click), in the 
 | ⌘↩ | open with the default app |
 | ⌘⌫ | move to Trash |
 
-<picture>
+<p align="center"><picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/newfolder-dark.png">
   <img src="docs/screenshots/newfolder-light.png" width="760" alt="Making a new folder">
-</picture>
+</picture></p>
 
 ### Dual pane: sort your holiday photos
 
@@ -261,20 +265,20 @@ ZIP, RAR and 7z archives open like folders: browse their folders, page through t
 > [!WARNING]
 > **Schnellbild remembers every archive password you type, permanently, and tries all of them on every protected archive**, without tying a password to a file. That's on purpose: type a password once, and every archive with it opens by itself from then on. They are kept in your login keychain (entry "Schnellbild archive passwords"); delete that entry in Keychain Access to forget them.
 
-<picture>
+<p align="center"><picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/archives-dark.png">
   <img src="docs/screenshots/archives-light.png" width="760" alt="Archives next to folders, and the files the app doesn't show listed below">
-</picture>
+</picture></p>
 
-<picture>
+<p align="center"><picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/archive-inside-dark.png">
   <img src="docs/screenshots/archive-inside-light.png" width="760" alt="Inside a ZIP archive: its pictures like a folder's">
-</picture>
+</picture></p>
 
-<picture>
+<p align="center"><picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/password-dark.png">
   <img src="docs/screenshots/password-light.png" width="760" alt="The password asked for a protected archive">
-</picture>
+</picture></p>
 
 ### All keys at hand
 
@@ -285,10 +289,10 @@ ZIP, RAR and 7z archives open like folders: browse their folders, page through t
 
 F1 (or ⌘?) shows every key in the app. `K` (or View → Mini Keyboard, or the keyboard switch in the status bar) slides up the **mini keyboard** under the window: the keys that work on what's on screen right now (the grid, a picture, a video, the slideshow), each with what it does. It is a cheat sheet you can click, handy with only a trackpad; a key you press on the real keyboard lights up on it, so you see what just happened. In a slideshow it shows while you move the mouse. The action buttons (Dual Pane, Auto Enhance, Adjust, Slideshow, Grid) show their key on the button; the others name it in their tooltip.
 
-<picture>
+<p align="center"><picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/keyboard-dark.png">
   <img src="docs/screenshots/keyboard-light.png" width="760" alt="The mini keyboard under the grid">
-</picture>
+</picture></p>
 
 ## Why so fast?
 
@@ -313,4 +317,4 @@ Building from source, tests and releases: [BUILDING.md](BUILDING.md).
 
 [MIT](LICENSE) © 2026 HAUS HOPPE - ITS (Johannes Hoppe)
 
-Schnellbild is built with VLCKit (LGPL 2.1), UnRAR (UnRAR license) and the libarchive of macOS (BSD): see [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) and the app's About window.
+Schnellbild is built with VLCKit (LGPL 2.1, some modules GPL 2), UnRAR (UnRAR license) and the libarchive of macOS (BSD): see [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) and the app's About window.

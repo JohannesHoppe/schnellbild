@@ -2,7 +2,8 @@ import SwiftUI
 
 /// The mini keyboard (K): a row of the keys that work on what's on screen,
 /// each with what it does. A cheat sheet that can be clicked: a click goes
-/// through `BrowserModel.handleKey`, exactly like the key itself. A key that
+/// through `WindowModel.handleWindowKey`, then `BrowserModel.handleKey`,
+/// exactly like the key itself. A key that
 /// acts, typed or clicked, lights up.
 struct MiniKeyboard: View {
     @EnvironmentObject var model: BrowserModel
@@ -168,7 +169,9 @@ private struct MiniKeyButton: View {
         .accessibilityIdentifier("key.\(key.id)")
         .accessibilityValue(presses > 0 ? "pressed \(presses)" : "")
         .onChange(of: model.lastKeyPress) { _, press in
-            guard let press, press.matches(key.input, command: key.command, shift: key.shift) else { return }
+            // Just now: a press stored in the other pane (now active) is old
+            guard let press, Date().timeIntervalSince(press.at) < 0.5,
+                  press.matches(key.input, command: key.command, shift: key.shift) else { return }
             presses += 1
             withAnimation(.easeOut(duration: 0.08)) { lit = true }
             Task { @MainActor in

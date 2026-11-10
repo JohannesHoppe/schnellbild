@@ -133,6 +133,9 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         shoot("archives")
 
         tile("Iceland 2025.zip").doubleClick()
+        // Inside the archive: its name in the title bar (its pictures are named
+        // like some outside it)
+        eventually("the archive opened", timeout: 15) { self.text(of: self.element("folderTitle").firstMatch) == "Iceland 2025.zip" }
         XCTAssertTrue(app.staticTexts[(photos.first! as NSString).lastPathComponent].waitForExistence(timeout: 15))
         shoot("archive-inside")
         app.typeKey(.delete, modifierFlags: [])   // Backspace: back

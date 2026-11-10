@@ -82,7 +82,12 @@ struct VideoDetailView: View {
             var stream: ArchiveEntryStream?
             if ArchivePath.isInside(url) {
                 stream = try? await ArchiveStore.shared.stream(of: url)
-                guard stream != nil, !Task.isCancelled else { stream?.close(); checking = false; return }
+                guard stream != nil, !Task.isCancelled else {
+                    stream?.close()
+                    // (the spinner is the next video's once this task was left)
+                    if !Task.isCancelled { checking = false }
+                    return
+                }
                 archiveStream = stream
             }
             let loader = stream.map { ArchiveResourceLoader(stream: $0, fileName: url.lastPathComponent) }

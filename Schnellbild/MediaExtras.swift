@@ -130,20 +130,11 @@ enum MediaInfo {
     }
 
     /// Pixel dimensions, also of a picture inside an archive.
+    /// Pixel dimensions, also of a picture inside an archive; for an SVG
+    /// its own size.
     static func pixelSize(ofAnywhere url: URL) async -> CGSize? {
-        guard ArchivePath.isInside(url) else { return pixelSize(of: url) }
-        if VectorPicture.isVector(url) {
-            guard let data = try? await MediaData.read(url), let image = NSImage(data: data) else { return nil }
-            return image.size
-        }
+        if VectorPicture.isVector(url) { return await VectorPicture.size(of: url) }
         guard let source = await MediaData.imageSource(url) else { return nil }
-        return pixelSize(from: source)
-    }
-
-    /// Pixel dimensions for a file URL; for an SVG its own size.
-    static func pixelSize(of url: URL) -> CGSize? {
-        if VectorPicture.isVector(url) { return VectorPicture.size(of: url) }
-        guard let source = CGImageSourceCreateWithURL(url as CFURL, nil) else { return nil }
         return pixelSize(from: source)
     }
 }

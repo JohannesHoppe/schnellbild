@@ -6,11 +6,11 @@ Schnellbild itself is under the MIT License (see [LICENSE](LICENSE)). It is buil
 
 | Component | Used for | License |
 |---|---|---|
-| [VLCKit](https://code.videolan.org/videolan/VLCKit) 3.6.0 (libVLC), © VideoLAN and the VLC authors | Playing the video formats macOS can't (AVI, MKV, WebM …) | [GNU LGPL 2.1](Resources/Licenses/VLCKit-LGPL-2.1.txt) or later |
-| [UnRAR](https://www.rarlab.com/rar_add.htm) 7.3.2, © Alexander Roshal | Reading RAR archives | [UnRAR license](Resources/Licenses/UnRAR-license.txt) |
+| [VLCKit](https://code.videolan.org/videolan/VLCKit) 3.6.0 (libVLC), © VideoLAN and the VLC authors | Playing the video formats macOS can't (AVI, MKV, WebM …) | [GNU LGPL 2.1](Resources/Licenses/VLCKit-LGPL-2.1.txt) or later; some of its modules [GNU GPL 2](Resources/Licenses/VLCKit-GPL-2.0.txt) or later |
+| [UnRAR](https://www.rarlab.com/rar_add.htm) 7.2.7, © Alexander Roshal | Reading RAR archives | [UnRAR license](Resources/Licenses/UnRAR-license.txt) |
 | [libarchive](https://www.libarchive.org), © Tim Kientzle and contributors | Reading ZIP and 7z archives | BSD 2-clause; the copy built into macOS, not shipped with the app |
 
-**VLCKit** is the official binary from VideoLAN (`Scripts/fetch_vlckit.sh` checks its SHA-256), embedded unmodified as its own framework in `Contents/Frameworks` and loaded dynamically, so it can be replaced by another build of the same version. Its source is at the link above.
+**VLCKit** is the official binary from VideoLAN (`Scripts/fetch_vlckit.sh` checks its SHA-256), embedded unmodified as its own framework in `Contents/Frameworks` and loaded dynamically. Its source is at the link above.
 
 **UnRAR** is compiled from the unmodified official source (`Scripts/fetch_unrar.sh` checks its SHA-256); `Native/CArchives/rar_shim.cpp` is Schnellbild's own code around it. From its license: *UnRAR source code may be used in any software to handle RAR archives without limitations free of charge, but cannot be used to develop RAR (WinRAR) compatible archiver and to re-create RAR compression algorithm, which is proprietary.*
 

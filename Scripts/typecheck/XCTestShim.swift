@@ -59,6 +59,7 @@ public final class XCUICoordinate {
 }
 public final class XCUIScreenshot { public var image: NSImage { NSImage() } }
 public class XCUIElement {
+    public static func perform(withKeyModifiers flags: KeyModifierFlags, block: () -> Void) { block() }
     public func scroll(byDeltaX deltaX: CGFloat, deltaY: CGFloat) {}
     public func press(forDuration duration: TimeInterval, thenDragTo element: XCUIElement) {}
     public struct KeyModifierFlags: OptionSet {

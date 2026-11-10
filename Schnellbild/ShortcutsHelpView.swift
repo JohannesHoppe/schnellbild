@@ -10,6 +10,8 @@ struct ShortcutsHelpView: View {
         /// Key glyphs and key names, shown as they are.
         let keys: String
         let action: LocalizedStringKey
+        /// The keys column holds words besides key names ("drag"): translated.
+        var wordsInKeys = false
     }
     private struct Group: Identifiable {
         let id = UUID()
@@ -27,6 +29,8 @@ struct ShortcutsHelpView: View {
             Shortcut(keys: "L", action: "Grid or list (a click on a column sorts by it)"),
             Shortcut(keys: "⌘+ / ⌘−", action: "Larger / smaller thumbnails"),
             Shortcut(keys: "F2 / ⇧F6", action: "Rename the selected folder or file (also in the full view)"),
+            Shortcut(keys: "⇧⌘N / F7", action: "New folder: type its name, ↩ creates it, Esc creates none"),
+            Shortcut(keys: "F8", action: "Move to Trash"),
             Shortcut(keys: "Esc", action: "Clear search"),
         ]),
         Group(title: "Full view", shortcuts: [
@@ -61,10 +65,10 @@ struct ShortcutsHelpView: View {
             Shortcut(keys: "Tab", action: "Switch to the other pane"),
             Shortcut(keys: "F5 / F6", action: "Copy / move the marked items into the other pane's folder"),
 
-            Shortcut(keys: "⌘-click / Insert", action: "Mark / unmark an item"),
-            Shortcut(keys: "⇧-click / ⇧ arrows", action: "Mark a range"),
+            Shortcut(keys: "⌘-click / Insert", action: "Mark / unmark an item", wordsInKeys: true),
+            Shortcut(keys: "⇧-click / ⇧ arrows", action: "Mark a range", wordsInKeys: true),
             Shortcut(keys: "⌘A / Esc", action: "Mark all / unmark all"),
-            Shortcut(keys: "drag", action: "Marked items onto a folder or into the other pane: moved (copied to another volume)"),
+            Shortcut(keys: "drag", action: "Marked items onto a folder or into the other pane: moved (copied to another volume)", wordsInKeys: true),
         ]),
         Group(title: "Search field", shortcuts: [
             Shortcut(keys: "⌘F", action: "Search names of folders, archives, pictures and videos (incl. subfolders)"),
@@ -78,10 +82,9 @@ struct ShortcutsHelpView: View {
             Shortcut(keys: "⌘1 … ⌘5", action: "Sort by name, kind, date modified, date taken, size (again: reverse)"),
             Shortcut(keys: "f / ⌃⌘F", action: "Toggle full screen"),
             Shortcut(keys: "⌘O", action: "Open folder"),
-            Shortcut(keys: "⇧⌘N / F7", action: "New folder: type its name, ↩ creates it, Esc creates none"),
             Shortcut(keys: "⇧⌘R", action: "Reveal in Finder"),
             Shortcut(keys: "⌘↩ / F4", action: "Open with default app"),
-            Shortcut(keys: "⌘⌫ / F8", action: "Move to Trash"),
+            Shortcut(keys: "⌘⌫", action: "Move to Trash"),
             Shortcut(keys: "⌘Q / F10", action: "Quit (F10 asks first)"),
             Shortcut(keys: "F9", action: "The app's menus in the window"),
             Shortcut(keys: "K", action: "Show / hide the mini keyboard"),
@@ -114,7 +117,7 @@ struct ShortcutsHelpView: View {
                                 .foregroundStyle(.secondary)
                             ForEach(group.shortcuts) { shortcut in
                                 HStack(alignment: .firstTextBaseline, spacing: 16) {
-                                    Text(verbatim: shortcut.keys)
+                                    (shortcut.wordsInKeys ? Text(LocalizedStringKey(shortcut.keys)) : Text(verbatim: shortcut.keys))
                                         .font(.system(.callout, design: .monospaced))
                                         .frame(width: 180, alignment: .leading)
                                     Text(shortcut.action)

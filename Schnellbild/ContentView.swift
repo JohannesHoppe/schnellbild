@@ -233,7 +233,8 @@ private struct WindowView: View {
 
     /// All shortcuts run through a local key monitor, so they work regardless
     /// of SwiftUI focus, which can swallow Backspace and the arrow keys. The
-    /// actual bindings live in `BrowserModel.handleKey` (unit-tested).
+    /// bindings live in `WindowModel.handleWindowKey` and the active pane's
+    /// `BrowserModel.handleKey` (unit-tested); F9, F10 and ⌃⌘F here.
     private func installKeyMonitor() {
         // Once for the app's life (it quits with its window): a view rebuilt
         // must neither add a second monitor nor take one away
@@ -262,6 +263,8 @@ private struct WindowView: View {
                 // again (SwiftUI rebuilt the bar) and has no editor yet: the
                 // letter goes into the search, not to D, E …
                 if editor == nil, model.searchFocused, !command, !control,
+                   // the main window itself has the keys (no sheet, no popover)
+                   NSApp.keyWindow === BrowserModel.appWindow, !model.anySheetOpen, !model.showAdjustments,
                    let typed = event.characters, typed.count == 1,
                    let scalar = typed.unicodeScalars.first, scalar.value >= 0x20, scalar.value != 0x7F,
                    !(0xF700...0xF8FF).contains(scalar.value) {   // not an arrow or function key
@@ -278,11 +281,18 @@ private struct WindowView: View {
                 }
                 // ⌃⌘F: full screen, as the system's shortcut; other ⌃
                 // combinations are the system's.
-                if control, command, code == 3 { model.toggleFullScreen(); return true }
+                // (by the letter on the key, as the menus read it, on any layout)
+                let plain = event.charactersIgnoringModifiers?.lowercased() ?? ""
+                let letter = plain.unicodeScalars.allSatisfy(\.isASCII) ? plain : (LatinKeys.character(for: code, shift: false) ?? plain)
+                if control, command, letter == "f" { model.toggleFullScreen(); return true }
                 // ⌃O: the commanders' "panels on / off" (the dual pane)
-                if control, !command, code == 31, !typing {
+                if control, !command, letter == "o", !typing {
                     return window.handleWindowKey(.char("o"), command: false, control: true, textEditing: false)
                 }
+                // A key can scroll the grid under the still pointer
+                ModifierClicks.forgetHover()
+                // ⌥ makes other characters ("∂", "ß"): no shortcut of the app has ⌥
+                if event.modifierFlags.contains(.option) { return false }
                 guard !control, let key = ContentView.keyInput(code: code, characters: chars, latin: {
                     LatinKeys.character(for: code, shift: event.modifierFlags.contains(.shift))
                 }) else { return false }
@@ -308,8 +318,13 @@ private struct WindowView: View {
         _ = NSEvent.addLocalMonitorForEvents(matching: .magnify) { event in
             let magnification = event.magnification
             let used = MainActor.assumeIsolated { () -> Bool in
-                let model = window.active
-                guard model.shownMediaEntry?.kind == .video else { return false }
+                // The pane under the fingers (the two halves are equally wide),
+                // in the main window only (not over a sheet)
+                guard let main = BrowserModel.appWindow, event.window === main,
+                      let width = main.contentView?.bounds.width else { return false }
+                let model = window.active.slideshow != nil || !window.dual ? window.active
+                    : event.locationInWindow.x >= width / 2 ? (window.right ?? window.left) : window.left
+                guard model.shownMediaEntry?.kind == .video, !model.anySheetOpen else { return false }
                 model.applyPinch(1 + magnification)
                 return true
             }
@@ -552,8 +567,8 @@ struct PaneView: View {
         .padding(atTop ? .top : .bottom, 16)
     }
 
-    /// "3 / 12 · name"; in a slideshow "Slideshow · 3 / 57 · name" (with "+"
-    /// while subfolders are still being walked).
+    /// "3 / 12 · name"; in a slideshow "Slideshow · 3 / 57 · name" ("57 so
+    /// far" while subfolders are still being walked).
     private func badgeText(entry: GridEntry) -> String {
         var text: String
         if let show = model.slideshow {
@@ -824,7 +839,7 @@ enum LatinKeys {
             var chars = [UniChar](repeating: 0, count: 4)
             let modifiers: UInt32 = shift ? UInt32(shiftKey >> 8) & 0xFF : 0
             let status = UCKeyTranslate(layout, keyCode, UInt16(kUCKeyActionDown), modifiers,
-                                        UInt32(LMGetKbdType()), OptionBits(kUCKeyTranslateNoDeadKeysBit),
+                                        UInt32(LMGetKbdType()), OptionBits(1 << kUCKeyTranslateNoDeadKeysBit),
                                         &deadKeys, chars.count, &length, &chars)
             guard status == noErr, length > 0 else { return nil }
             return String(utf16CodeUnits: chars, count: length)

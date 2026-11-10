@@ -222,3 +222,11 @@
 "Copying or moving…" = "Копіювання або переміщення…";
 "This archive needs a password" = "Цей архів потребує пароля";
 "Password required" = "Потрібен пароль";
+"Copying or moving is still under way." = "Копіювання або переміщення ще триває.";
+"Schnellbild quits once it is done. Quitting now would leave files half copied." = "Schnellbild завершиться, щойно все буде готово. Завершення зараз залишить файли скопійованими наполовину.";
+"Quit When Done" = "Завершити після закінчення";
+"The name must end in “.%@”, as the archive does." = "Назва має закінчуватися на «.%@», як в архіву.";
+"unknown error" = "невідома помилка";
+"⌘-click / Insert" = "⌘-клацання / Insert";
+"⇧-click / ⇧ arrows" = "⇧-клацання / ⇧ стрілки";
+"drag" = "перетягування";

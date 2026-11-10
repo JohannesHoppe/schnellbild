@@ -1,28 +1,22 @@
 // A small C face for UnRAR's DLL interface (unrar/dll.hpp): UTF-8 names,
 // data through a callback, passwords and volumes answered here.
 //
-// UnRAR keeps its error state in one global object (ErrHandler) and returns
-// it after every header and every file: a warning from one archive (an
-// unfinished download) would make every later call fail, also for other
-// archives. So the state is cleared before each call, opening and reading
-// headers (short) run one at a time, and a file's data is checked against
-// its CRC32 here instead of trusting the shared state (unpacking can take
-// long and must not block other archives). An unpacking thread can still set
-// the state while another reads a header (a pass stopped by its reader is a
-// "user break", a wrong password probed in another archive), and a handle
-// keeps the last file's error until its next file is processed: a header
-// read whole (it has a name) counts as read, whatever code comes with it,
-// except a password error where the headers themselves are encrypted; a
-// password error for a file that isn't encrypted is someone else's.
+// UnRAR keeps its error state (ErrHandler) per thread here (fetch_unrar.sh
+// makes it thread_local) and returns it after every header and every file:
+// a warning from an earlier archive on the same thread (an unfinished
+// download) would make the next call fail, so the state is cleared before
+// each call. A handle keeps the last file's error until its next file is
+// processed: a header read whole (it has a name) counts as read, whatever
+// code comes with it, except a password error where the headers themselves
+// are encrypted. A file's data is checked against its CRC32 here where it
+// has one.
 #include <wchar.h>
 #include <string.h>
 #include <string>
 #include <new>
-#include <mutex>
 #include "unrar/rar.hpp"
 #include "include/CArchives.h"
 
-static std::mutex headerLock;
 
 // A running CRC32 over a file's data, through UnRAR's own (fast) CRC32,
 // which leaves the start and end inversion to its caller
@@ -101,7 +95,6 @@ extern "C" SBRar *sb_rar_open(const char *path, const char *password, int list_o
     data.Callback = callback;
     data.UserData = (LPARAM)rar;
     {
-        std::lock_guard<std::mutex> guard(headerLock);
         ErrHandler.Clean();
         rar->handle = RAROpenArchiveEx(&data);
     }
@@ -124,7 +117,6 @@ extern "C" int sb_rar_next(SBRar *rar, SBRarEntry *entry) {
     memset(header, 0, sizeof(*header));
     int r;
     {
-        std::lock_guard<std::mutex> guard(headerLock);
         ErrHandler.Clean();
         r = RARReadHeaderEx(rar->handle, header);
     }
@@ -140,6 +132,7 @@ extern "C" int sb_rar_next(SBRar *rar, SBRarEntry *entry) {
         entry->is_encrypted = (header->Flags & RHDF_ENCRYPTED) != 0;
         entry->split_before = (header->Flags & RHDF_SPLITBEFORE) != 0;
         entry->split_after = (header->Flags & RHDF_SPLITAFTER) != 0;
+        entry->is_link = header->RedirType != 0;
         // The CRC of unencrypted, unsplit files (encrypted RAR5 keeps a
         // keyed one; a split file's covers only its part)
         rar->checkCRC = header->HashType == RAR_HASH_CRC32 && !entry->is_encrypted
@@ -176,6 +169,9 @@ extern "C" int sb_rar_read(SBRar *rar, SBRarData data, void *context) {
         return whole && r == ERAR_SUCCESS ? ERAR_SUCCESS : ERAR_BAD_DATA;
     }
     if (r == ERAR_UNKNOWN && whole) return ERAR_SUCCESS;
+    // Less data than the file holds is no success (a wrong password can
+    // end a read early without an error)
+    if (r == ERAR_SUCCESS && !whole) return ERAR_BAD_DATA;
     return r;
 }
 
