@@ -2429,11 +2429,19 @@ final class BrowserModel: ObservableObject {
         guard let shown = folderPath else { return }
         // Into the folder shown (a drop onto the pane): read it again to show what came
         if target == shown { refresh(); return }
-        // What went elsewhere leaves this folder's listing and its results
+        dropWhatLeft(keeping: keep)
+    }
+
+    /// After a move: what went elsewhere leaves this folder's listing and
+    /// its results; the selection stays on `keep` where it is still listed.
+    private func dropWhatLeft(keeping keep: URL?) {
+        guard let shown = folderPath else { return }
         let inShown: (GridEntry) -> Bool = { $0.kind == .parent || Self.canonicalPath($0.url.deletingLastPathComponent()) == shown }
-        let belowShown: (GridEntry) -> Bool = { Self.canonicalPath($0.url).hasPrefix(shown + "/") }
+        let belowShown: (GridEntry) -> Bool = { Self.isSameOrInside(Self.canonicalPath($0.url), shown) }
+        let before = (allEntries.count, entries.count)
         allEntries = allEntries.filter(inShown)
         entries = isFiltering ? entries.filter(belowShown) : allEntries
+        guard (allEntries.count, entries.count) != before else { return }
         if let index = index(of: keep) {
             keepSelection(index)
         } else {
@@ -2556,8 +2564,10 @@ final class BrowserModel: ObservableObject {
     /// so does the folder shown when it was moved, renamed or trashed (then
     /// the nearest folder around it that is still there opens).
     func adopt(_ changes: [FileChange]) {
+        let keep = selectedEntry?.url
         applyHere(changes)
         if followFolder(through: changes) { return }
+        dropWhatLeft(keeping: keep)
         // The picture shown full size went: back to the grid
         if mode == .detail, selectedMediaEntry == nil { mode = .grid }
     }
