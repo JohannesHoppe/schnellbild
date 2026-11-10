@@ -323,6 +323,10 @@ private struct WindowView: View {
                 return model.handleKey(key, command: command, shift: event.modifierFlags.contains(.shift),
                                        textEditing: typing, repeating: event.isARepeat)
             }
+            // For the UI tests: where each key went
+            BrowserModel.testLog("key \(chars.debugDescription) consumed=\(consume) window=\(event.window.map { String(describing: type(of: $0)) } ?? "nil") "
+                                 + "keyWindowIsMain=\(NSApp.keyWindow === BrowserModel.appWindow) "
+                                 + "firstResponder=\(NSApp.keyWindow?.firstResponder.map { String(describing: type(of: $0)) } ?? "nil")")
             return consume ? nil : event
         }
         // Trackpad pinch on a video: AVKit's player view would take it for

@@ -39,7 +39,8 @@ let package = Package(
         // The QuickLook thumbnail extension for the videos QuickLook can't
         // read (MKV, WebM, AVI …): Scripts/build_app.sh wraps the binary into
         // Contents/PlugIns/SchnellbildThumbnails.appex. Its entry point is the
-        // system's extension main.
+        // system's extension main (no main of its own: the system's calls
+        // `main` if there is one).
         .executableTarget(
             name: "SchnellbildThumbnails",
             dependencies: ["VLCKit", "VLCFrames"],
