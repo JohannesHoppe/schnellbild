@@ -37,10 +37,6 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
     private var latest: CVPixelBuffer?
     private let context = CIContext(options: [.cacheIntermediates: false])
     private let sRGB = CGColorSpace(name: CGColorSpace.sRGB)!
-    /// Counts for UI-test diagnostics: pictures shown with a look, and
-    /// renders that failed.
-    private var withLook = 0
-    private var failed = 0
     /// Time spent in the callbacks, to show the handover costs little.
     private var callbackSeconds = 0.0
     private var callbacks = 0
@@ -63,6 +59,20 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
 
     nonisolated(unsafe) private static var heldByPlayer: UInt8 = 0
 
+    /// The player, for its video track's size and pixel shape when VLC
+    /// opens its output.
+    private weak var player: VLCMediaPlayer?
+    /// The pictures' size as shown (the track's visible size, its pixels
+    /// made square); nil until VLC has opened its output.
+    private var shownSize: CGSize?
+    /// Where VLC draws a picture no buffer could be had for (it writes
+    /// through the plane pointers whatever `lock` returns): two planes,
+    /// freed with the output.
+    private var scratch: UnsafeMutableRawPointer?
+    private var scratchColour: UnsafeMutableRawPointer?
+
+    deinit { scratch?.deallocate() }
+
     /// Connects to a player; call before it plays.
     @MainActor
     func attach(to player: VLCMediaPlayer) {
@@ -72,6 +82,7 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
         // asynchronously and keeps it until then, and its decoder may still
         // open the video output (and call back here) after the app let go
         objc_setAssociatedObject(player, &Self.heldByPlayer, self, .OBJC_ASSOCIATION_RETAIN)
+        self.player = player
         // Each time VLC opens its video output (`setUp`, again for every
         // media played and every format change) it holds the output, until
         // that output closes (the cleanup callback), so a frame arriving
@@ -92,13 +103,27 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
         })
     }
 
-    /// VLC tells the picture size; the pictures are NV12 (two planes).
+    /// VLC tells the decoder's picture format and size and takes the one
+    /// asked for here: NV12 (two planes) at the size to show. VLC's size is
+    /// the decoder's buffer, often padded (1080 rows decode into 1088 or
+    /// 1152), and VLC scales its visible part to whatever size is set here;
+    /// so the buffers get the track's visible size with its pixels made
+    /// square (a 720 × 576 PAL video at 16:9 is shown 1024 × 576), and VLC
+    /// scales only for such non-square pixels.
     private func setUp(chroma: UnsafeMutablePointer<CChar>, width: UnsafeMutablePointer<UInt32>,
                        height: UnsafeMutablePointer<UInt32>, pitches: UnsafeMutablePointer<UInt32>,
                        lines: UnsafeMutablePointer<UInt32>) -> UInt32 {
+        // JPEG-style chromas (J420, J422 …) use the full 0-255 range; VLC
+        // converts them to NV12 without changing the values
+        let fullRange = chroma[0] == CChar(bitPattern: UInt8(ascii: "J"))
         for (i, c) in "NV12".utf8.enumerated() { chroma[i] = CChar(bitPattern: c) }
-        let w = Int(width.pointee), h = Int(height.pointee)
-        guard let made = Self.makePool(width: w, height: h, format: kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange),
+        let shown = Self.shownSize(track: player.flatMap(Self.videoTrack(of:)),
+                                   decoded: (Int(width.pointee), Int(height.pointee)))
+        let w = shown.width, h = shown.height
+        width.pointee = UInt32(w)
+        height.pointee = UInt32(h)
+        let format = fullRange ? kCVPixelFormatType_420YpCbCr8BiPlanarFullRange : kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange
+        guard let made = Self.makePool(width: w, height: h, format: format),
               let forLook = Self.makePool(width: w, height: h, format: kCVPixelFormatType_32BGRA) else { return 0 }
         // The row lengths the buffers really have, so VLC writes into them right
         var probe: CVPixelBuffer?
@@ -108,20 +133,82 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
             pitches[plane] = UInt32(CVPixelBufferGetBytesPerRowOfPlane(probe, plane))
             lines[plane] = UInt32(CVPixelBufferGetHeightOfPlane(probe, plane))
         }
+        let lumaBytes = Int(pitches[0]) * Int(lines[0])
+        let newScratch = UnsafeMutableRawPointer.allocate(byteCount: lumaBytes + Int(pitches[1]) * Int(lines[1]), alignment: 64)
         lock.lock()
-        // HD and larger use the HD colour standard (BT.709), smaller ones SD (BT.601)
-        hd = h > 576
+        // HD and larger use the HD colour standard (BT.709), smaller ones SD
+        // (BT.601), decided by the visible height as VLC does
+        hd = shown.visibleHeight > 576
         pool = made
         lookPool = forLook
         latest = nil
         drawing = [:]
         drawingOrder = []
+        shownSize = CGSize(width: w, height: h)
+        // VLC's earlier output has closed: nothing draws into the old scratch
+        let oldScratch = scratch
+        scratch = newScratch
+        scratchColour = newScratch + lumaBytes
         lock.unlock()
+        oldScratch?.deallocate()
         _ = Unmanaged.passUnretained(self).retain()   // released by the cleanup callback
         return 1
     }
 
     private var hd = true
+
+    /// The video track's pixel size and pixel shape (VLCKit's track
+    /// information).
+    struct Track: Equatable {
+        var width: Int
+        var height: Int
+        var sampleAspect: Double
+    }
+
+    static func videoTrack(of player: VLCMediaPlayer) -> Track? {
+        guard let tracks = player.media?.tracksInformation as? [[String: Any]] else { return nil }
+        for track in tracks where track[VLCMediaTracksInformationType] as? String == VLCMediaTracksInformationTypeVideo {
+            let number = { (key: String) in (track[key] as? NSNumber)?.intValue ?? 0 }
+            let width = number(VLCMediaTracksInformationVideoWidth), height = number(VLCMediaTracksInformationVideoHeight)
+            guard width > 0, height > 0 else { continue }
+            let num = number(VLCMediaTracksInformationSourceAspectRatio)
+            let den = number(VLCMediaTracksInformationSourceAspectRatioDenominator)
+            return Track(width: width, height: height, sampleAspect: num > 0 && den > 0 ? Double(num) / Double(den) : 1)
+        }
+        return nil
+    }
+
+    /// The size the pictures are shown at: the track's visible size when it
+    /// fits in what VLC decodes (else VLC's own size), turned as VLC turns
+    /// the picture, with non-square pixels widened (or made taller); even
+    /// sides, as NV12 needs. `visibleHeight`: before the pixels are made
+    /// square.
+    static func shownSize(track: Track?, decoded: (width: Int, height: Int)) -> (width: Int, height: Int, visibleHeight: Int) {
+        var w = decoded.width, h = decoded.height
+        var aspect = 1.0
+        if var track {
+            // VLC hands over an upright picture of a video stored turned
+            if (track.width > track.height) != (w > h), track.width != track.height, w != h {
+                swap(&track.width, &track.height)
+                track.sampleAspect = 1 / track.sampleAspect
+            }
+            if track.width <= w, track.height <= h { w = track.width; h = track.height }
+            if track.sampleAspect.isFinite, abs(track.sampleAspect - 1) > 0.01 {
+                aspect = min(max(track.sampleAspect, 0.25), 4)
+            }
+        }
+        let visibleHeight = h
+        if aspect > 1 { w = Int((Double(w) * aspect).rounded()) } else if aspect < 1 { h = Int((Double(h) / aspect).rounded()) }
+        func even(_ side: Int) -> Int { max(2, side + side % 2) }
+        return (even(w), even(h), visibleHeight)
+    }
+
+    /// The pictures' size as shown, once VLC has opened its output.
+    var pictureSize: CGSize? {
+        lock.lock()
+        defer { lock.unlock() }
+        return shownSize
+    }
 
     private static func makePool(width: Int, height: Int, format: OSType) -> CVPixelBufferPool? {
         var made: CVPixelBufferPool?
@@ -141,15 +228,22 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
             callbackSeconds += Date().timeIntervalSince(start)
             lock.unlock()
         }
+        // Without a buffer VLC draws into the scratch planes: a picture
+        // never shown
+        func intoScratch() -> UnsafeMutableRawPointer? {
+            planes?.pointee = scratch
+            planes?.advanced(by: 1).pointee = scratchColour
+            return scratch
+        }
         var buffer: CVPixelBuffer?
-        guard let pool else { return nil }
+        guard let pool else { return intoScratch() }
         CVPixelBufferPoolCreatePixelBuffer(nil, pool, &buffer)
-        guard let buffer else { return nil }
+        guard let buffer else { return intoScratch() }
         CVPixelBufferLockBaseAddress(buffer, [])
         guard let base = CVPixelBufferGetBaseAddressOfPlane(buffer, 0),
               let colour = CVPixelBufferGetBaseAddressOfPlane(buffer, 1) else {
             CVPixelBufferUnlockBaseAddress(buffer, [])
-            return nil
+            return intoScratch()
         }
         let matrix = hd ? kCVImageBufferYCbCrMatrix_ITU_R_709_2 : kCVImageBufferYCbCrMatrix_ITU_R_601_4
         let primaries = hd ? kCVImageBufferColorPrimaries_ITU_R_709_2 : kCVImageBufferColorPrimaries_SMPTE_C
@@ -226,9 +320,6 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
                 let image = CIImage(cvPixelBuffer: buffer)
                 context.render(look.apply(to: image), to: out, bounds: image.extent, colorSpace: sRGB)
                 surfaceBuffer = out
-                lock.lock(); withLook += 1; lock.unlock()
-            } else {
-                lock.lock(); failed += 1; lock.unlock()
             }
         }
         lock.lock()
@@ -263,20 +354,7 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
         lock.lock()
         defer { lock.unlock() }
         let perFrame = callbacks > 0 ? callbackSeconds / Double(callbacks) * 1000 : 0
-        return "with look \(withLook), failed \(failed), exposure \(String(format: "%.2f", look.exposure)), "
-            + "handover \(String(format: "%.2f", perFrame)) ms per picture"
-    }
-
-    /// For UI tests: the mean luminance of what the layer holds (main thread).
-    @MainActor
-    var layerBrightness: String {
-        guard let contents = layer.contents else { return "none" }
-        guard CFGetTypeID(contents as CFTypeRef) == IOSurfaceGetTypeID() else { return "not a surface" }
-        let surface = unsafeBitCast(contents as AnyObject, to: IOSurfaceRef.self)
-        var buffer: Unmanaged<CVPixelBuffer>?
-        CVPixelBufferCreateWithIOSurface(nil, surface, nil, &buffer)
-        guard let pixels = buffer?.takeRetainedValue() else { return "unreadable" }
-        return PictureStats.of(CIImage(cvPixelBuffer: pixels)).map { String(format: "%.3f", $0.mean) } ?? "unmeasured"
+        return "handover \(String(format: "%.2f", perFrame)) ms per picture"
     }
 }
 
