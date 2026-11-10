@@ -297,7 +297,7 @@ final class GridUITests: SchnellbildUITestCase {
         app.typeKey(.rightArrow, modifierFlags: [])
         eventually("the typed key lights up", timeout: 3) { self.text(of: self.element("key.→").firstMatch) == "pressed 2" }
         XCTAssertTrue(element("key.⌘[").exists, "grid keys")
-        element("key.↩").firstMatch.click()   // opens the picture
+        element("key.space").firstMatch.click()   // opens the picture
         XCTAssertTrue(element("key.+").firstMatch.waitForExistence(timeout: 10), "picture keys")
         XCTAssertFalse(element("key.⌘[").exists)
         app.terminate()
