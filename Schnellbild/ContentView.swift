@@ -1015,7 +1015,7 @@ private struct FolderNameField: View {
                     .focused($focused)
                     .onSubmit {
                         editing = false
-                        model.renameCurrentFolder(to: name)
+                        Task { await model.renameCurrentFolder(to: name) }
                     }
                     .onExitCommand { editing = false }
                     .onChange(of: focused) { _, now in if !now { editing = false } }

@@ -209,29 +209,62 @@ final class FolderPreviewCache {
 
     private func key(_ folder: URL) -> NSString { BrowserModel.canonicalPath(folder) as NSString }
 
+    /// Counts the forgets: a listing read before one isn't kept.
+    private var generation = 0
+    /// Listings under way, shared by the tiles that wait for them; one
+    /// nobody waits for any more is stopped.
+    private var running: [NSString: (task: Task<[URL], Never>, waiters: Int)] = [:]
+
     func files(in folder: URL) async -> [URL] {
-        if let cached = files.object(forKey: key(folder)) as? [URL] { return cached }
-        let found = await BrowserModel.folderPreviewFiles(in: folder)
-        files.setObject(found as NSArray, forKey: key(folder))
+        let key = key(folder)
+        if let cached = files.object(forKey: key) as? [URL] { return cached }
+        let started = generation
+        let task: Task<[URL], Never>
+        if let under = running[key] {
+            task = under.task
+            running[key]?.waiters += 1
+        } else {
+            task = Task.detached(priority: .utility) { await BrowserModel.folderPreviewFiles(in: folder) }
+            running[key] = (task, 1)
+        }
+        let found = await withTaskCancellationHandler { await task.value } onCancel: { Task { @MainActor in self.leave(key, task) } }
+        let current = generation == started
+        if running[key]?.task == task, !task.isCancelled { running[key] = nil }
+        if current, !task.isCancelled { files.setObject(found as NSArray, forKey: key) }
         return found
+    }
+
+    private func leave(_ key: NSString, _ task: Task<[URL], Never>) {
+        guard running[key]?.task == task else { return }
+        running[key]?.waiters -= 1
+        if running[key]?.waiters == 0 {
+            task.cancel()
+            running[key] = nil
+        }
     }
 
     /// nil when cancelled before it knew.
     func containsMedia(_ folder: URL) async -> Bool? {
         if let cached = hasMedia.object(forKey: key(folder)) { return cached.boolValue }
+        let started = generation
         // The preview listing usually answers it already
         guard let found = await files(in: folder).isEmpty ? await BrowserModel.containsMedia(folder) : true else { return nil }
-        hasMedia.setObject(NSNumber(value: found), forKey: key(folder))
+        let current = generation == started
+        if current { hasMedia.setObject(NSNumber(value: found), forKey: key(folder)) }
         return found
     }
 
     func forgetAll() {
+        generation += 1
+        running.removeAll()
         files.removeAllObjects()
         hasMedia.removeAllObjects()
     }
 
     /// Forget what is known about these folders (canonical paths).
     func forget(_ paths: [String]) {
+        generation += 1
+        for path in paths { running[path as NSString] = nil }
         for path in paths {
             files.removeObject(forKey: path as NSString)
             hasMedia.removeObject(forKey: path as NSString)

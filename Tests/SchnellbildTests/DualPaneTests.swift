@@ -112,7 +112,7 @@ final class DualPaneTests: XCTestCase {
         w.setDual(true)
         let right = try XCTUnwrap(w.right)
         await waitUntil { right.isAt(tree.root) }
-        _ = try w.left.createFolder(named: "Sorted")
+        _ = try await w.left.createFolder(named: "Sorted")
         await waitUntil { right.names.contains("Sorted") }
         XCTAssertEqual(right.names, ["..", "Sorted", "a.jpg"])
     }
@@ -179,7 +179,7 @@ final class DualPaneTests: XCTestCase {
         await waitUntil { right.isAt(tree.root) }
         await openAndWait(right, tree.root.appendingPathComponent("Trip"))
         let trip = try XCTUnwrap(w.left.entries.first { $0.name == "Trip" })
-        _ = try w.left.rename(trip, to: "Iceland")
+        _ = try await w.left.rename(trip, to: "Iceland")
         XCTAssertEqual(right.folderURL?.lastPathComponent, "Iceland")
         await waitUntil { right.names.contains("a.jpg") }
     }
