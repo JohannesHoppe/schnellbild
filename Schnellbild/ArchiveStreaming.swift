@@ -31,6 +31,8 @@ final class ArchiveEntryStream: @unchecked Sendable {
     /// place, which the read-ahead follows), and the run.
     private var producing = 0
     private var wanted = 0
+    /// The chunks readers are waiting for.
+    private var waiters: [Int] = []
     private var run = 0
     private var running = false
     private var failure: ArchiveError?
@@ -57,8 +59,9 @@ final class ArchiveEntryStream: @unchecked Sendable {
     /// `abandoned`: the reader no longer wants it (a cancelled request): it
     /// stops waiting and no longer steers the unpacking.
     func read(at offset: Int64, count: Int, abandoned: @escaping () -> Bool = { false }) throws -> Data {
-        guard offset < size, count > 0 else { return Data() }
-        let end = min(offset + Int64(count), size)
+        guard offset >= 0, offset < size, count > 0 else { return Data() }
+        // (no overflow for a size near Int64.max, as an archive may state)
+        let end = Int64(count) >= size - offset ? size : offset + Int64(count)
         var result = Data(capacity: Int(end - offset))
         var position = offset
         while position < end {
@@ -66,7 +69,12 @@ final class ArchiveEntryStream: @unchecked Sendable {
             let chunk = try self.chunk(index, abandoned: abandoned)
             let start = Int(position - Int64(index) * Int64(chunkSize))
             let take = min(chunk.count - start, Int(end - position))
-            guard take > 0 else { break }
+            guard take > 0 else {
+                // The entry ends before its stated size: what there is, and
+                // past it an error (an empty answer would read as its end)
+                if result.isEmpty { throw ArchiveError.incomplete }
+                break
+            }
             result.append(chunk[chunk.startIndex + start ..< chunk.startIndex + start + take])
             position += Int64(take)
         }
@@ -94,8 +102,13 @@ final class ArchiveEntryStream: @unchecked Sendable {
 
     private func chunk(_ index: Int, abandoned: () -> Bool) throws -> Data {
         condition.lock()
-        defer { condition.unlock() }
+        var waiting = false
+        defer {
+            if waiting, let i = waiters.firstIndex(of: index) { waiters.remove(at: i) }
+            condition.unlock()
+        }
         while true {
+            // (a reader given up no longer holds the unpacking back or on)
             if closed || abandoned() { throw ArchiveError.notFound }
             if let found = chunks[index] {
                 markRead(index)
@@ -104,17 +117,26 @@ final class ArchiveEntryStream: @unchecked Sendable {
             // The failed pass didn't get this far; what it got past is unpacked again
             if let failure, !running, index >= producing { throw failure }
             if let endedAt, !running, index >= endedAt { throw ArchiveError.incomplete }
-            wanted = index
             // Behind the unpacking and no longer in memory: from the start
             if !running || index < producing {
+                wanted = index
                 start()
+                condition.broadcast()
             }
-            condition.broadcast()   // the unpacking may wait for a reader
+            // The unpacking may wait for a reader: told once per read, so
+            // readers waiting at once don't keep waking each other
+            if !waiting {
+                waiting = true
+                waiters.append(index)
+                condition.broadcast()
+            }
             condition.wait()
         }
     }
 
     private func markRead(_ index: Int) {
+        // The reader's place: the read-ahead follows it
+        if wanted != index { wanted = index; condition.broadcast() }
         if let i = unreadOrder.firstIndex(of: index) { unreadOrder.remove(at: i) }
         if let i = readOrder.firstIndex(of: index) { readOrder.remove(at: i) }
         readOrder.append(index)
@@ -139,8 +161,7 @@ final class ArchiveEntryStream: @unchecked Sendable {
         let chunkSize = self.chunkSize
         var buffer = Data(capacity: chunkSize)
         var index = 0
-        var outcome: ArchiveError? = .notFound
-        var done = false
+        var outcome: ArchiveError?
         func current() -> Bool {
             condition.lock(); defer { condition.unlock() }
             return run == myRun
@@ -160,32 +181,26 @@ final class ArchiveEntryStream: @unchecked Sendable {
             producing = i + 1
             condition.broadcast()
             // Far enough ahead of the reader: wait (another chunk asked for, or a new pass)
-            while run == myRun, !closed, i >= wanted + unreadLimit / 2 { condition.wait() }
+            // (unless a reader waits for a chunk further on)
+            while run == myRun, !closed, i >= wanted + unreadLimit / 2, !waiters.contains(where: { $0 > i }) { condition.wait() }
             return run == myRun && !closed
         }
         do {
-            _ = try reader.walk(password: password, listOnly: false) { item in
-                guard current(), !done else { return .stop }   // nothing after the entry is needed
-                guard item.path == path else { return .skip }
-                return .read(sink: { bytes in
-                    var rest = bytes[...]
-                    while !rest.isEmpty {
-                        let take = min(chunkSize - buffer.count, rest.count)
-                        buffer.append(contentsOf: rest.prefix(take))
-                        rest = rest.dropFirst(take)
-                        if buffer.count == chunkSize {
-                            guard store(buffer, index) else { return false }
-                            index += 1
-                            buffer = Data(capacity: chunkSize)
-                        }
+            outcome = try reader.readEntry(path, password: password, stop: { !current() }) { bytes in
+                var rest = bytes[...]
+                while !rest.isEmpty {
+                    let take = min(chunkSize - buffer.count, rest.count)
+                    buffer.append(contentsOf: rest.prefix(take))
+                    rest = rest.dropFirst(take)
+                    if buffer.count == chunkSize {
+                        guard store(buffer, index) else { return false }
+                        index += 1
+                        buffer = Data(capacity: chunkSize)
                     }
-                    return true
-                }, done: { failure in
-                    if !buffer.isEmpty { _ = store(buffer, index) }
-                    outcome = failure
-                    done = true
-                })
+                }
+                return true
             }
+            if !buffer.isEmpty { _ = store(buffer, index) }
         } catch let error as ArchiveError {
             outcome = error
         } catch {
@@ -208,8 +223,10 @@ extension ArchiveStore {
                 unreadLimit: Int = 48, readLimit: Int = 96) async throws -> ArchiveEntryStream {
         guard let (archiveURL, inner) = ArchivePath.split(url), !inner.isEmpty else { throw ArchiveError.notFound }
         let index = try await index(of: archiveURL)
-        guard let item = index.byPath[inner], !item.isDirectory,
-              let reader = Self.reader(for: archiveURL) else { throw ArchiveError.notFound }
+        guard let listed = index.byPath[inner], !listed.isDirectory,
+              // A hard link or file copy reads its source's data
+              let item = listed.source.map({ index.byPath[$0] }) ?? listed, !item.isDirectory,
+              let reader = index.reader ?? Self.reader(for: archiveURL) else { throw ArchiveError.notFound }
         // A size the archive doesn't state: counted by unpacking it once
         // (stopped when the video is left)
         var size = item.size
@@ -227,14 +244,11 @@ extension ArchiveStore {
     /// How many bytes an entry unpacks to.
     nonisolated static func unpackedSize(_ reader: ArchiveReader, path: String, password: String?) throws -> Int64 {
         var count: Int64 = 0
-        var outcome: ArchiveError? = .notFound
-        var done = false
-        _ = try reader.walk(password: password, listOnly: false) { item in
-            if done || Task.isCancelled { return .stop }   // the first entry of that path only
-            guard item.path == path else { return .skip }
-            return .read(sink: { bytes in count += Int64(bytes.count); return !Task.isCancelled },
-                         done: { failure in outcome = failure; done = true })
+        let outcome = try reader.readEntry(path, password: password, stop: { Task.isCancelled }) { bytes in
+            count += Int64(bytes.count)
+            return !Task.isCancelled
         }
+        try Task.checkCancellation()
         if let outcome { throw outcome }
         return count
     }
@@ -285,7 +299,11 @@ final class ArchiveResourceLoader: NSObject, AVAssetResourceLoaderDelegate, @unc
         }
         guard let data = request.dataRequest else { request.finishLoading(); return }
         var offset = data.currentOffset
-        let end = data.requestsAllDataToEndOfResource ? stream.size : data.requestedOffset + Int64(data.requestedLength)
+        let size = stream.size
+        let length = Int64(data.requestedLength)
+        // (no overflow for a size near Int64.max)
+        let end = data.requestsAllDataToEndOfResource || data.requestedOffset >= size || length >= size - data.requestedOffset
+            ? size : data.requestedOffset + length
         do {
             while offset < end, !request.isCancelled {
                 let chunk = try stream.read(at: offset, count: Int(min(Int64(stream.chunkSize), end - offset)),

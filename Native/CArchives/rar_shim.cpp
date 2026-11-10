@@ -5,11 +5,12 @@
 // makes it thread_local) and returns it after every header and every file:
 // a warning from an earlier archive on the same thread (an unfinished
 // download) would make the next call fail, so the state is cleared before
-// each call. A handle keeps the last file's error until its next file is
-// processed: a header read whole (it has a name) counts as read, whatever
-// code comes with it, except a password error where the headers themselves
-// are encrypted. A file's data is checked against its CRC32 here where it
-// has one.
+// each call. A handle also keeps the code of the last file it processed
+// and returns it with the next header: a header read whole (it has a name)
+// that comes with exactly that code counts as read, except a password
+// error where the headers themselves are encrypted; any other code (a
+// damaged header) stands. A file's
+// data is checked against its CRC32 here where it has one.
 #include <wchar.h>
 #include <string.h>
 #include <string>
@@ -32,9 +33,13 @@ struct SBRar {
     bool volumeMissing = false;
     bool headersEncrypted = false;
     bool solid = false;
+    bool volume = false;
     SBRarData data = nullptr;
     void *context = nullptr;
     bool stopped = false;
+    // What the last RARProcessFile returned: UnRAR hands it back with the
+    // next header
+    int lastProcessed = ERAR_SUCCESS;
     // The current entry, for checking its data
     uint32_t expectedCRC = 0;
     bool checkCRC = false;
@@ -91,14 +96,16 @@ extern "C" SBRar *sb_rar_open(const char *path, const char *password, int list_o
     RAROpenArchiveDataEx data;
     memset(&data, 0, sizeof(data));
     data.ArcNameW = (wchar_t *)widePath.c_str();
-    data.OpenMode = list_only ? RAR_OM_LIST : RAR_OM_EXTRACT;
+    // RAR_OM_LIST would skip the headers of files continued from an
+    // earlier volume by calling itself once per header (a crafted archive
+    // of many such headers overflows the stack); the caller skips them
+    data.OpenMode = list_only ? RAR_OM_LIST_INCSPLIT : RAR_OM_EXTRACT;
     data.Callback = callback;
     data.UserData = (LPARAM)rar;
     {
         ErrHandler.Clean();
         rar->handle = RAROpenArchiveEx(&data);
     }
-    if (rar->handle && data.OpenResult == ERAR_UNKNOWN) data.OpenResult = ERAR_SUCCESS;
     *result = (int)data.OpenResult;
     *password_asked = rar->passwordAsked;
     if (!rar->handle || data.OpenResult != ERAR_SUCCESS) {
@@ -108,6 +115,7 @@ extern "C" SBRar *sb_rar_open(const char *path, const char *password, int list_o
     }
     rar->headersEncrypted = (data.Flags & ROADF_ENCHEADERS) != 0;
     rar->solid = (data.Flags & ROADF_SOLID) != 0;
+    rar->volume = (data.Flags & ROADF_VOLUME) != 0;
     return rar;
 }
 
@@ -115,14 +123,18 @@ extern "C" int sb_rar_next(SBRar *rar, SBRarEntry *entry) {
     RARHeaderDataEx *header = new (std::nothrow) RARHeaderDataEx();
     if (!header) return ERAR_NO_MEMORY;
     memset(header, 0, sizeof(*header));
+    header->RedirName = entry->redirect;
+    header->RedirNameSize = sizeof(entry->redirect) / sizeof(wchar_t);
+    entry->redirect[0] = 0;
     int r;
     {
         ErrHandler.Clean();
         r = RARReadHeaderEx(rar->handle, header);
     }
+    // The last file's code, handed back with this header (see the top)
     bool passwordError = r == ERAR_BAD_PASSWORD || r == ERAR_MISSING_PASSWORD;
     if (r != ERAR_SUCCESS && r != ERAR_END_ARCHIVE && header->FileNameW[0] != 0
-        && !(passwordError && rar->headersEncrypted)) r = ERAR_SUCCESS;
+        && r == rar->lastProcessed && !(passwordError && rar->headersEncrypted)) r = ERAR_SUCCESS;
     if (r == ERAR_SUCCESS) {
         toUTF8(header->FileNameW, entry->name, sizeof(entry->name));
         entry->size = ((uint64_t)header->UnpSizeHigh << 32) | header->UnpSize;
@@ -132,7 +144,10 @@ extern "C" int sb_rar_next(SBRar *rar, SBRarEntry *entry) {
         entry->is_encrypted = (header->Flags & RHDF_ENCRYPTED) != 0;
         entry->split_before = (header->Flags & RHDF_SPLITBEFORE) != 0;
         entry->split_after = (header->Flags & RHDF_SPLITAFTER) != 0;
-        entry->is_link = header->RedirType != 0;
+        // Hard links and file copies are files whose data is another
+        // entry's: kept, with that entry's name; links to outside are not
+        entry->redirect_type = (int)header->RedirType;
+        if (header->RedirType != FSREDIR_HARDLINK && header->RedirType != FSREDIR_FILECOPY) entry->redirect[0] = 0;
         // The CRC of unencrypted, unsplit files (encrypted RAR5 keeps a
         // keyed one; a split file's covers only its part)
         rar->checkCRC = header->HashType == RAR_HASH_CRC32 && !entry->is_encrypted
@@ -153,6 +168,7 @@ extern "C" int sb_rar_read(SBRar *rar, SBRarData data, void *context) {
     rar->received = 0;
     ErrHandler.Clean();
     int r = RARProcessFile(rar->handle, RAR_TEST, nullptr, nullptr);
+    rar->lastProcessed = r;
     rar->data = nullptr;
     rar->context = nullptr;
     if (rar->stopped) return ERAR_SUCCESS;
@@ -177,7 +193,7 @@ extern "C" int sb_rar_read(SBRar *rar, SBRarData data, void *context) {
 
 extern "C" int sb_rar_skip(SBRar *rar) {
     ErrHandler.Clean();
-    RARProcessFile(rar->handle, RAR_SKIP, nullptr, nullptr);
+    rar->lastProcessed = RARProcessFile(rar->handle, RAR_SKIP, nullptr, nullptr);
     // Only a missing volume ends it here; anything else shows at the next header
     return rar->volumeMissing ? ERAR_EOPEN : ERAR_SUCCESS;
 }
@@ -186,6 +202,11 @@ extern "C" int sb_rar_volume_missing(const SBRar *rar) { return rar->volumeMissi
 extern "C" int sb_rar_password_asked(const SBRar *rar) { return rar->passwordAsked; }
 extern "C" int sb_rar_headers_encrypted(const SBRar *rar) { return rar->headersEncrypted; }
 extern "C" int sb_rar_solid(const SBRar *rar) { return rar->solid; }
+extern "C" int sb_rar_volume(const SBRar *rar) { return rar->volume; }
+
+extern "C" void sb_rar_redirect_utf8(const SBRarEntry *entry, char *out, size_t size) {
+    toUTF8(entry->redirect, out, size);
+}
 
 extern "C" void sb_rar_close(SBRar *rar) {
     if (!rar) return;
