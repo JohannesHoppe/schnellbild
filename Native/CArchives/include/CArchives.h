@@ -9,6 +9,7 @@
 #include <stdint.h>
 #include <sys/types.h>
 #include <time.h>
+#include <wchar.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -26,7 +27,8 @@ typedef struct {
     int is_encrypted;
     int split_before;         // continues from the previous volume
     int split_after;          // continues in the next volume
-    int is_link;              // a symbolic or hard link, a junction (no data of its own)
+    int redirect_type;        // 0, or UnRAR's FSREDIR_*: 1-3 links and junctions, 4 hard link, 5 file copy
+    wchar_t redirect[4096];   // for a hard link or file copy: the entry whose data it has
 } SBRarEntry;
 
 /// Receives an entry's data; returns nonzero to go on, zero to stop.
@@ -52,6 +54,10 @@ int sb_rar_password_asked(const SBRar *rar);
 int sb_rar_headers_encrypted(const SBRar *rar);
 // Solid: a file is unpacked only after all before it
 int sb_rar_solid(const SBRar *rar);
+/// Part of a set of volumes.
+int sb_rar_volume(const SBRar *rar);
+/// A hard link's or file copy's source entry, UTF-8 ('/' or '\\' separated as stored).
+void sb_rar_redirect_utf8(const SBRarEntry *entry, char *out, size_t size);
 void sb_rar_close(SBRar *rar);
 
 // MARK: libarchive (system)
