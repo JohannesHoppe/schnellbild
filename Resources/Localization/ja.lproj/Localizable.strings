@@ -206,7 +206,6 @@
 "Back (where you were, also a search); without history the enclosing folder" = "戻る（前の場所、検索にも）。履歴がなければ上のフォルダへ";
 "⌘↑ goes up one folder level." = "⌘↑ で 1 つ上のフォルダに移動します。";
 "Click to rename this folder" = "クリックしてこのフォルダの名前を変更";
-"Schnellbild is free software under the MIT License." = "SchnellbildはMITライセンスのフリーソフトウェアです。";
 "Built with" = "使用しているもの";
 "The full license texts are in the app (Contents/Resources/Licenses)." = "ライセンスの全文はApp内にあります(Contents/Resources/Licenses)。";
 "plays the video formats macOS can't (AVI, MKV, WebM …)" = "macOSで再生できないビデオ形式を再生(AVI、MKV、WebM …)";
@@ -230,3 +229,4 @@
 "⌘-click / Insert" = "⌘-クリック / Insert";
 "⇧-click / ⇧ arrows" = "⇧-クリック / ⇧ 矢印";
 "drag" = "ドラッグ";
+"Schnellbild's own code is free software under the MIT License. The components below keep their own licenses." = "Schnellbild自体のコードはMITライセンスのフリーソフトウェアです。以下のコンポーネントはそれぞれのライセンスに従います。";

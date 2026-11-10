@@ -135,7 +135,7 @@ struct FileActions {
             alert.addButton(withTitle: String(localized: "Cancel"))
             return alert.runModal() == .alertFirstButtonReturn
         },
-        trash: { try FileManager.default.trashItem(at: $0, resultingItemURL: nil) },
+        trash: { try LiveFiles.trash($0) },
         move: { try LiveFiles.move($0, $1) },
         transfer: { try LiveFiles.transfer($0, $1) },
         createFolder: { try FileManager.default.createDirectory(at: $0, withIntermediateDirectories: false) },
@@ -148,13 +148,7 @@ struct FileActions {
             alert.addButton(withTitle: String(localized: "Skip"))
             return alert.runModal() == .alertFirstButtonReturn
         },
-        conflicts: { target, source in
-            guard FileManager.default.fileExists(atPath: target.path) else { return false }
-            let key: Set<URLResourceKey> = [.fileResourceIdentifierKey]
-            guard let a = try? target.resourceValues(forKeys: key).fileResourceIdentifier,
-                  let b = try? source.resourceValues(forKeys: key).fileResourceIdentifier else { return true }
-            return !a.isEqual(b)
-        },
+        conflicts: { LiveFiles.conflicts($0, $1) },
         report: { NSAlert(error: $0).runModal() },
         runsOffMain: true
     )
@@ -196,6 +190,19 @@ enum LiveFiles {
 
     static func copy(_ from: URL, _ to: URL) throws {
         try FileManager.default.copyItem(at: from, to: to)
+    }
+
+    /// Whether `target` exists as an item other than `source`.
+    static func conflicts(_ target: URL, _ source: URL) -> Bool {
+        guard FileManager.default.fileExists(atPath: target.path) else { return false }
+        let key: Set<URLResourceKey> = [.fileResourceIdentifierKey]
+        guard let a = try? target.resourceValues(forKeys: key).fileResourceIdentifier,
+              let b = try? source.resourceValues(forKeys: key).fileResourceIdentifier else { return true }
+        return !a.isEqual(b)
+    }
+
+    static func trash(_ url: URL) throws {
+        try FileManager.default.trashItem(at: url, resultingItemURL: nil)
     }
 }
 
@@ -257,10 +264,17 @@ struct FileChange {
     /// `url` after the change; nil if it was removed (or lay inside what was).
     func apply(to url: URL) -> URL? {
         let current = BrowserModel.canonicalPath(url)
-        guard BrowserModel.isSameOrInside(current, path) else { return url }
+        guard let changed = apply(toPath: current) else { return nil }
+        // (built without asking the file system whether it is a folder)
+        return changed == current ? url : URL(fileURLWithPath: changed, isDirectory: url.hasDirectoryPath)
+    }
+
+    /// A canonical path after the change; nil if it was removed.
+    func apply(toPath current: String) -> String? {
+        guard BrowserModel.isSameOrInside(current, path) else { return current }
         switch kind {
         case .removed:         return nil
-        case .moved(let to):   return URL(fileURLWithPath: to + current.dropFirst(path.count))
+        case .moved(let to):   return to + current.dropFirst(path.count)
         }
     }
 
@@ -319,10 +333,16 @@ final class SearchRun {
         return !fresh.isEmpty
     }
 
-    func apply(_ change: FileChange) {
-        results = results.compactMap { change.apply(to: $0) }
+    func apply(_ change: FileChange) { apply([change]) }
+
+    /// Several changes in one pass over the results.
+    func apply(_ batch: [FileChange]) {
+        results = results.compactMap { entry in
+            guard let url = BrowserModel.through(batch, entry.url) else { return nil }
+            return url == entry.url ? entry : GridEntry(url: url, kind: entry.kind, modDate: entry.modDate, byteSize: entry.byteSize)
+        }
         seen = Set(results.map { BrowserModel.canonicalPath($0.url) })
-        if !finished { changes.append(change) }
+        if !finished { changes.append(contentsOf: batch) }
     }
 
     func stop(incomplete: Bool) {
@@ -2059,23 +2079,27 @@ final class BrowserModel: ObservableObject {
         guard let entry = items.first ?? selectedEntry, entry.kind != .parent else { return }
         guard !ArchivePath.isInside(entry.url) else { NSSound.beep(); return }   // archives are only read
         // What goes with it, said exactly: a folder's whole contents (also
-        // what the grid doesn't show), all parts of a split archive
+        // what the grid doesn't show), all parts of a split archive (found
+        // by listing its folder: off the main thread)
         let isArchive = entry.isArchive
-        let files = isArchive ? ArchiveName.allFiles(of: entry.url) : [entry.url]
-        let detail = entry.kind == .folder && !isArchive
-            ? String(localized: "The folder and everything in it, including files Schnellbild doesn't show, will be moved to the Trash.")
-            : files.count > 1 ? String(localized: "All parts of this archive will be moved to the Trash.")
-            : String(localized: "The file will be moved to the Trash.")
-        guard fileActions.confirmTrash(entry.name, detail) else { return }
-        // (the other pane follows through `onFileChange`)
-        let trashed = trashItems([entry])
-        guard !trashed.isEmpty else { return }
-        clearMarks()
-        apply(.removed(entry.url))
-        if mode == .detail {
-            // The next item comes up as paging shows it: at fit, upright.
-            resetTransforms()
-            if selectedMediaEntry == nil { mode = .grid }
+        let url = entry.url
+        onFiles({ isArchive ? ArchiveName.allFiles(of: url) : [url] }) { [self] files in
+            let detail = entry.kind == .folder && !isArchive
+                ? String(localized: "The folder and everything in it, including files Schnellbild doesn't show, will be moved to the Trash.")
+                : files.count > 1 ? String(localized: "All parts of this archive will be moved to the Trash.")
+                : String(localized: "The file will be moved to the Trash.")
+            guard fileActions.confirmTrash(entry.name, detail) else { return }
+            trashItems([entry]) { [self] trashed in
+                guard !trashed.isEmpty else { return }
+                // (the other pane follows through `onFileChange`)
+                clearMarks()
+                apply(.removed(entry.url))
+                if mode == .detail {
+                    // The next item comes up as paging shows it: at fit, upright.
+                    resetTransforms()
+                    if selectedMediaEntry == nil { mode = .grid }
+                }
+            }
         }
     }
 
@@ -2086,32 +2110,61 @@ final class BrowserModel: ObservableObject {
         let detail = String(localized: "The marked items will be moved to the Trash, folders with everything in them.")
         guard fileActions.confirmTrash(names, detail) else { return }
         clearMarks()
-        apply(trashItems(items).map { FileChange.removed($0) })
+        trashItems(items) { [self] trashed in apply(trashed.map { FileChange.removed($0) }) }
+    }
+
+    /// File-system work: off the main thread for the live actions (a share
+    /// can take long), right here for a test's spy (its closures belong to
+    /// the main thread). `then` runs on the main thread.
+    private func onFiles<T>(_ work: @escaping @Sendable () -> T, then: @escaping @MainActor (T) -> Void) {
+        guard fileActions.runsOffMain else { then(work()); return }
+        Self.transfersUnderWay += 1
+        Task {
+            let result = await Task.detached(priority: .userInitiated) { work() }.value
+            Self.transfersUnderWay -= 1
+            then(result)
+        }
     }
 
     /// Moves items to the Trash, an archive with all its parts (a part that
     /// can't go doesn't keep the others: the set is broken either way, and
-    /// the tile goes with its first part). Returns what went, at least in
+    /// the tile goes with its first part). Hands on what went, at least in
     /// part; the first failure is reported.
-    private func trashItems(_ items: [GridEntry]) -> [URL] {
-        var trashed: [URL] = []
-        var reported = false
-        for item in items {
-            let path = Self.canonicalPath(item.url)
-            if trashed.contains(where: { path.hasPrefix(Self.canonicalPath($0) + "/") }) { continue }
-            let files = item.isArchive ? ArchiveName.allFiles(of: item.url) : [item.url]
-            var gone = false
-            for file in files {
-                do {
-                    try fileActions.trash(file)
-                    gone = true
-                } catch {
-                    if !reported { fileActions.report(error); reported = true }
+    private func trashItems(_ items: [GridEntry], then: @escaping @MainActor ([URL]) -> Void) {
+        let urls = items.map { ($0.url, $0.isArchive) }
+        let spy = fileActions.runsOffMain ? nil : fileActions.trash
+        let work: @Sendable () -> (trashed: [URL], error: Error?) = {
+            var trashed: [URL] = []
+            var firstError: Error?
+            var gonePaths: Set<String> = []
+            for (url, isArchive) in urls {
+                let path = BrowserModel.canonicalPath(url)
+                // Inside something already gone: gone with it (checked up its folders)
+                var above = (path as NSString).deletingLastPathComponent
+                var inside = false
+                while !above.isEmpty, above != "/" {
+                    if gonePaths.contains(above) { inside = true; break }
+                    above = (above as NSString).deletingLastPathComponent
                 }
+                if inside { continue }
+                let files = isArchive ? ArchiveName.allFiles(of: url) : [url]
+                var gone = false
+                for file in files {
+                    do {
+                        if let spy { try MainActor.assumeIsolated { try spy(file) } } else { try LiveFiles.trash(file) }
+                        gone = true
+                    } catch {
+                        if firstError == nil { firstError = error }
+                    }
+                }
+                if gone { trashed.append(url); gonePaths.insert(path) }
             }
-            if gone { trashed.append(item.url) }
+            return (trashed, firstError)
         }
-        return trashed
+        onFiles(work) { [self] result in
+            if let error = result.error { fileActions.report(error) }
+            then(result.trashed)
+        }
     }
 
     // MARK: Changes the other pane must see
@@ -2248,55 +2301,89 @@ final class BrowserModel: ObservableObject {
         guard ArchivePath.split(folder) == nil else { NSSound.beep(); return }
         let target = Self.canonicalPath(folder)
         let shown = folderPath
-        // What goes where, decided here (a name taken there asks); the
-        // destinations of the items before count as taken too
+        // By their paths alone (no file system): what can go at all
+        let sourcePaths = sources.map(Self.canonicalPath)
+        let candidates = sources.filter { source in
+            let path = Self.canonicalPath(source)
+            return !ArchivePath.isInside(source) && path != target && !target.hasPrefix(path + "/")
+                // Not inside another item that goes along
+                && !sourcePaths.contains(where: { path.hasPrefix($0 + "/") })
+                // Never the folder shown or one around it
+                && (shown.map { $0 != path && !$0.hasPrefix(path + "/") } ?? true)
+                && Self.canonicalPath(source.deletingLastPathComponent()) != target
+        }
+        guard !candidates.isEmpty else { return }
+        transfersRunning += 1
+        // What each item is and what is taken there: looked up off the main
+        // thread (a share answers slowly, item by item)
+        let conflicts = fileActions.runsOffMain ? nil : fileActions.conflicts
+        let look: @Sendable () -> [TransferProbe] = {
+            candidates.map { source in
+                let taken: (URL, URL) -> Bool = { target, source in
+                    if let conflicts { return MainActor.assumeIsolated { conflicts(target, source) } }
+                    return LiveFiles.conflicts(target, source)
+                }
+                // A split archive goes with all its parts (an archive is a
+                // file; a folder named like one is a folder)
+                let isFolder = (try? source.resourceValues(forKeys: [.isDirectoryKey]).isDirectory) == true
+                let files = !isFolder && ArchiveName.format(of: source.lastPathComponent) != nil ? ArchiveName.allFiles(of: source) : [source]
+                let destination = folder.appendingPathComponent(source.lastPathComponent, isDirectory: isFolder)
+                return TransferProbe(source: source, isFolder: isFolder, files: files,
+                                     destinationTaken: taken(destination, source),
+                                     partTaken: files.dropFirst().contains { taken(folder.appendingPathComponent($0.lastPathComponent), $0) })
+            }
+        }
+        onFiles(look) { [self] probes in
+            let steps = planMove(probes, into: folder)
+            guard !steps.isEmpty else { transfersRunning -= 1; return }
+            // What goes is no longer marked here
+            clearMarks()
+            // Copies (to another volume, F5) can take long: off the main
+            // thread, the app stays usable meanwhile
+            Self.transfersUnderWay += 1
+            Task {
+                let outcomes = await fileActions.run(steps, how)
+                transfersRunning -= 1
+                Self.transfersUnderWay -= 1
+                finishMove(steps, outcomes, into: folder)
+            }
+        }
+    }
+
+    /// What a source of a move is, and what is taken in the target folder.
+    struct TransferProbe: Sendable {
+        let source: URL
+        let isFolder: Bool
+        let files: [URL]
+        let destinationTaken: Bool
+        let partTaken: Bool
+    }
+
+    /// Where each item goes: a name taken there asks (keep both, numbered,
+    /// or skip); the destinations of the items before count as taken too.
+    private func planMove(_ probes: [TransferProbe], into folder: URL) -> [TransferStep] {
         var steps: [TransferStep] = []
         var planned: Set<String> = []
-        let sourcePaths = sources.map(Self.canonicalPath)
-        func taken(_ url: URL, by source: URL) -> Bool {
-            planned.contains(Self.canonicalPath(url)) || fileActions.conflicts(url, source)
-        }
-        for source in sources {
-            let path = Self.canonicalPath(source)
-            guard !ArchivePath.isInside(source), path != target, !target.hasPrefix(path + "/"),
-                  // Not inside another item that goes along
-                  !sourcePaths.contains(where: { path.hasPrefix($0 + "/") }),
-                  // Never the folder shown or one around it
-                  shown.map({ $0 != path && !$0.hasPrefix(path + "/") }) ?? true,
-                  Self.canonicalPath(source.deletingLastPathComponent()) != target else { continue }
-            // A split archive goes with all its parts (an archive is a file;
-            // a folder named like one is a folder)
-            let isFolder = (try? source.resourceValues(forKeys: [.isDirectoryKey]).isDirectory) == true
-            let files = !isFolder && ArchiveName.format(of: source.lastPathComponent) != nil ? ArchiveName.allFiles(of: source) : [source]
+        for probe in probes {
+            let source = probe.source
+            let isPlanned: (URL) -> Bool = { planned.contains(Self.canonicalPath($0)) }
             // A later part taken there: the set would be mixed
-            if files.dropFirst().contains(where: { taken(folder.appendingPathComponent($0.lastPathComponent), by: $0) }) {
+            if probe.partTaken || probe.files.dropFirst().contains(where: { isPlanned(folder.appendingPathComponent($0.lastPathComponent)) }) {
                 NSSound.beep(); continue
             }
-            var destination = folder.appendingPathComponent(source.lastPathComponent)
-            if taken(destination, by: source) {
+            var destination = folder.appendingPathComponent(source.lastPathComponent, isDirectory: probe.isFolder)
+            if probe.destinationTaken || isPlanned(destination) {
                 guard fileActions.askKeepBoth(source.lastPathComponent, folder.lastPathComponent) else { continue }
                 // Renamed, the parts of a split archive no longer belong together
-                guard files.count == 1 else { NSSound.beep(); continue }
-                destination = Self.freeName(for: source.lastPathComponent, in: folder, isFolder: isFolder,
-                                            taken: { taken($0, by: source) })
+                guard probe.files.count == 1 else { NSSound.beep(); continue }
+                destination = Self.freeName(for: source.lastPathComponent, in: folder, isFolder: probe.isFolder,
+                                            taken: { isPlanned($0) || self.fileActions.conflicts($0, source) })
             }
-            let pairs = files.map { ($0, $0 == source ? destination : folder.appendingPathComponent($0.lastPathComponent)) }
+            let pairs = probe.files.map { ($0, $0 == source ? destination : folder.appendingPathComponent($0.lastPathComponent)) }
             for (_, to) in pairs { planned.insert(Self.canonicalPath(to)) }
             steps.append(TransferStep(source: source, destination: destination, files: pairs))
         }
-        guard !steps.isEmpty else { return }
-        // What goes is no longer marked here
-        clearMarks()
-        // Copies (to another volume, F5) can take long: off the main thread,
-        // the app stays usable meanwhile
-        transfersRunning += 1
-        Self.transfersUnderWay += 1
-        Task {
-            let outcomes = await fileActions.run(steps, how)
-            transfersRunning -= 1
-            Self.transfersUnderWay -= 1
-            finishMove(steps, outcomes, into: folder)
-        }
+        return steps
     }
 
     /// One item of a move: its files (a split archive's parts) and where they go.
@@ -2495,11 +2582,16 @@ final class BrowserModel: ObservableObject {
         return true
     }
 
-    /// Where a URL ends up after all the changes; nil when it is gone.
-    private static func through(_ changes: [FileChange], _ url: URL) -> URL? {
-        var current: URL? = url
-        for change in changes { current = current.flatMap { change.apply(to: $0) } }
-        return current
+    /// Where a URL ends up after all the changes; nil when it is gone. The
+    /// path is made canonical once, whatever the number of changes.
+    static func through(_ changes: [FileChange], _ url: URL) -> URL? {
+        let start = canonicalPath(url)
+        var path = start
+        for change in changes {
+            guard let next = change.apply(toPath: path) else { return nil }
+            path = next
+        }
+        return path == start ? url : URL(fileURLWithPath: path, isDirectory: url.hasDirectoryPath)
     }
 
     private func applyHere(_ changes: [FileChange]) {
@@ -2510,9 +2602,9 @@ final class BrowserModel: ObservableObject {
         FolderPreviewCache.shared.forget(affected)
         folderChanges += 1
         func entry(_ e: GridEntry) -> GridEntry? {
-            var current: GridEntry? = e
-            for change in changes { current = current.flatMap { change.apply(to: $0) } }
-            return current
+            guard e.kind != .parent else { return e }
+            guard let url = Self.through(changes, e.url) else { return nil }
+            return url == e.url ? e : GridEntry(url: url, kind: e.kind, modDate: e.modDate, byteSize: e.byteSize)
         }
         let keep = selectedEntry.flatMap { Self.through(changes, $0.url) }
         let previous = selection
@@ -2521,7 +2613,7 @@ final class BrowserModel: ObservableObject {
             marked = Set(marked.compactMap { Self.through(changes, URL(fileURLWithPath: $0, isDirectory: false)).map(Self.canonicalPath) })
         }
         allEntries = sorted(allEntries.compactMap(entry))
-        for run in allSearches { for change in changes { run.apply(change) } }
+        for run in allSearches { run.apply(changes) }
         pendingResultSelection = pendingResultSelection.flatMap { Self.through(changes, $0) }
         backStack = backStack.map { location in changes.reduce(location) { $1.apply(to: $0) } }
         forwardStack = forwardStack.map { location in changes.reduce(location) { $1.apply(to: $0) } }

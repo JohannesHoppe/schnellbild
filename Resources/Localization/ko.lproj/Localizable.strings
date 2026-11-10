@@ -206,7 +206,6 @@
 "Back (where you were, also a search); without history the enclosing folder" = "뒤로(이전 위치, 검색으로도); 기록이 없으면 상위 폴더로";
 "⌘↑ goes up one folder level." = "⌘↑를 누르면 한 단계 위 폴더로 이동합니다.";
 "Click to rename this folder" = "클릭하여 이 폴더의 이름 변경";
-"Schnellbild is free software under the MIT License." = "Schnellbild는 MIT 라이선스의 자유 소프트웨어입니다.";
 "Built with" = "사용한 구성 요소";
 "The full license texts are in the app (Contents/Resources/Licenses)." = "라이선스 전문은 앱 안에 있습니다(Contents/Resources/Licenses).";
 "plays the video formats macOS can't (AVI, MKV, WebM …)" = "macOS가 재생하지 못하는 비디오 형식 재생(AVI, MKV, WebM …)";
@@ -230,3 +229,4 @@
 "⌘-click / Insert" = "⌘-클릭 / Insert";
 "⇧-click / ⇧ arrows" = "⇧-클릭 / ⇧ 화살표";
 "drag" = "드래그";
+"Schnellbild's own code is free software under the MIT License. The components below keep their own licenses." = "Schnellbild 자체 코드는 MIT 라이선스의 자유 소프트웨어입니다. 아래 구성 요소는 각자의 라이선스를 따릅니다.";
