@@ -230,3 +230,7 @@
 "⇧-click / ⇧ arrows" = "⇧-按一下 / ⇧ 方向鍵";
 "drag" = "拖移";
 "Schnellbild's own code is free software under the MIT License. The components below keep their own licenses." = "Schnellbild 本身的程式碼是採用 MIT 授權條款的自由軟體。以下元件保留各自的授權條款。";
+
+/* VoiceOver: the sorted column of the list */
+"ascending" = "遞增";
+"descending" = "遞減";

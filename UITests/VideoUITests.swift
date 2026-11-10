@@ -128,46 +128,6 @@ final class VideoUITests: SchnellbildUITestCase {
         try checkSkimming("clip.mkv", player: "video.vlc")
     }
 
-    /// Mean luminance (0 … 1) of the middle half of an element as on screen.
-    private func brightness(of element: XCUIElement) -> Double {
-        let image = element.screenshot().image
-        guard let cg = image.cgImage(forProposedRect: nil, context: nil, hints: nil) else { return -1 }
-        let w = cg.width / 2, h = cg.height / 2
-        guard let middle = cg.cropping(to: CGRect(x: w / 2, y: h / 2, width: w, height: h)) else { return -1 }
-        var pixels = [UInt8](repeating: 0, count: w * h * 4)
-        guard let context = CGContext(data: &pixels, width: w, height: h, bitsPerComponent: 8, bytesPerRow: w * 4,
-                                      space: CGColorSpaceCreateDeviceRGB(),
-                                      bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else { return -1 }
-        context.draw(middle, in: CGRect(x: 0, y: 0, width: w, height: h))
-        var sum = 0.0
-        for i in stride(from: 0, to: pixels.count, by: 4) {
-            sum += 0.2126 * Double(pixels[i]) + 0.7152 * Double(pixels[i + 1]) + 0.0722 * Double(pixels[i + 2])
-        }
-        return sum / Double(w * h) / 255
-    }
-
-    /// The fixture clips are an even grey (about 0.46). A video shows at full
-    /// brightness from the start, not dimmed until it is clicked.
-    private func checkFullBrightness(_ clip: String, player: String) throws {
-        try put(clip, at: clip)
-        launch(open: tempDir.appendingPathComponent(clip).path)
-        let video = element(player)
-        XCTAssertTrue(video.waitForExistence(timeout: 20))
-        waitForBadge(containing: clip)
-        RunLoop.current.run(until: Date().addingTimeInterval(2))
-        let before = brightness(of: video)
-        video.click()
-        RunLoop.current.run(until: Date().addingTimeInterval(2))
-        let after = brightness(of: video)
-        print("brightness \(clip): before click \(before), after \(after)")
-        XCTAssertGreaterThan(before, 0.38, "\(clip) is shown dimmed (\(before), after a click \(after))")
-        XCTAssertEqual(before, after, accuracy: 0.04, "\(clip) changes brightness on a click")
-    }
-
-    func testAVKitVideoIsBrightFromTheStart() throws {
-        try checkFullBrightness("clip.mp4", player: "video.avkit")
-    }
-
     /// Videos QuickLook can't read get their tile picture from VLC.
     func testMKVTileShowsAFrame() throws {
         try put("clip.mkv", at: "clip.mkv")

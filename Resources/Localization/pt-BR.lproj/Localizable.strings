@@ -230,3 +230,7 @@
 "⇧-click / ⇧ arrows" = "⇧-clique / ⇧ setas";
 "drag" = "arrastar";
 "Schnellbild's own code is free software under the MIT License. The components below keep their own licenses." = "O código próprio do Schnellbild é software livre sob a licença MIT. Os componentes abaixo mantêm suas próprias licenças.";
+
+/* VoiceOver: the sorted column of the list */
+"ascending" = "crescente";
+"descending" = "decrescente";

@@ -9,11 +9,12 @@ sudo xcodebuild -license accept
 
 # In the project folder:
 ./Scripts/fetch_vlckit.sh   # vendors the official VLCKit once (~80 MB download)
-swift build
-swift run                   # starts the app
-# …or open in Xcode:
-open Package.swift
+swift build                 # compiles (checks the code)
+./Scripts/build_app.sh      # → build/Schnellbild.app
+open build/Schnellbild.app  # starts the app
 ```
+
+`swift run` can't start the app: the executable looks for VLCKit in `../Frameworks` next to it (VLCKit's install name), where only the app bundle has it. `build_app.sh` embeds it there.
 
 Video formats macOS can't play natively (AVI, MKV, WebM …) are handled by a vendored **VLCKit**: the official VideoLAN binary, fetched and SHA-256-verified by `Scripts/fetch_vlckit.sh` (gitignored). Native formats stay on AVKit.
 

@@ -19,7 +19,17 @@ SHA256="23f8f7bb0f8e0321393f51ad5da65ea37ecbc1e148ac2d97fd9f05073ec01075"
 DEST="$ROOT/Vendor"
 FRAMEWORK="$DEST/VLCKit.xcframework"
 
-# Vendored already, of this version (a stamp next to it says which)
+# A VLCKit of one's own (a modified build, as the LGPL allows): with
+# SCHNELLBILD_OWN_VLCKIT=1 whatever Vendor/VLCKit.xcframework holds is used
+# as it is.
+if [ "${SCHNELLBILD_OWN_VLCKIT:-}" = "1" ]; then
+    [ -d "$FRAMEWORK" ] || { echo "!! SCHNELLBILD_OWN_VLCKIT=1, but there is no $FRAMEWORK" >&2; exit 1; }
+    echo "==> Using the VLCKit.xcframework in Vendor as it is (SCHNELLBILD_OWN_VLCKIT=1)."
+    exit 0
+fi
+
+# Vendored already, of this version (a stamp next to it says which; it is
+# written only once the framework is complete)
 STAMP="$DEST/.vlckit-version"
 if [ -d "$FRAMEWORK" ] && [ -f "$STAMP" ] && [ "$(cat "$STAMP")" = "$VERSION $SHA256" ]; then
     echo "==> VLCKit.xcframework $VERSION already vendored — skipping."
@@ -27,7 +37,9 @@ if [ -d "$FRAMEWORK" ] && [ -f "$STAMP" ] && [ "$(cat "$STAMP")" = "$VERSION $SH
 fi
 
 TMP="$(mktemp -d)"
-trap 'rm -rf "$TMP"' EXIT
+# bash 3.2 reports an aborted expansion (an unset variable) as success once an
+# EXIT trap runs: the trap fails unless the script got to its end.
+trap 'rm -rf "$TMP"; [ -n "${finished:-}" ] || exit 1' EXIT
 
 # Checked against VideoLAN's published checksum
 fetch_verified "official VLCKit $VERSION (macOS) from videolan.org" "$URL" "$SHA256" "$TMP/VLCKit.tar.xz"
@@ -38,8 +50,10 @@ SRC="$(find "$TMP" -maxdepth 3 -name 'VLCKit.xcframework' -type d | head -1)"
 [ -d "$SRC" ] || { echo "!! VLCKit.xcframework not found in the archive."; exit 1; }
 
 mkdir -p "$DEST"
+rm -f "$STAMP"
 rm -rf "$FRAMEWORK"
 ditto "$SRC" "$FRAMEWORK"
 echo "$VERSION $SHA256" > "$STAMP"
 echo "==> Vendored: $FRAMEWORK"
 du -sh "$FRAMEWORK" 2>/dev/null | awk '{print "    size: "$1}'
+finished=1

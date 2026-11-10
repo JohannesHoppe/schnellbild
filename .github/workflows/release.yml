@@ -120,13 +120,17 @@ jobs:
           files=()
           if [ "$SIGNED" = true ]; then
             notes="The notarized DMG is attached as soon as Apple has checked it (usually minutes)."
+            # Not "Latest" until the DMG is attached (Finish Mac release marks
+            # it), so releases/latest/download/Schnellbild.dmg keeps working
+            latest=--latest=false
           else
             notes="Not notarized: on first launch right-click → Open, or run xattr -dr com.apple.quarantine /Applications/Schnellbild.app"
             files=(Schnellbild.dmg)
+            latest=--latest
           fi
           if gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
             if [ ${#files[@]} -gt 0 ]; then gh release upload "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --clobber "${files[@]}"; fi
           else
             gh release create "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --title "$GITHUB_REF_NAME" \
-              --generate-notes --notes "$notes" "${files[@]}"
+              --generate-notes --notes "$notes" "$latest" "${files[@]}"
           fi

@@ -24,7 +24,9 @@ if [ -f "$DEST/.version" ] && [ "$(cat "$DEST/.version")" = "$VERSION+$PATCHLEVE
 fi
 
 TMP="$(mktemp -d)"
-trap 'rm -rf "$TMP"' EXIT
+# bash 3.2 reports an aborted expansion (an unset variable) as success once an
+# EXIT trap runs: the trap fails unless the script got to its end.
+trap 'rm -rf "$TMP"; [ -n "${finished:-}" ] || exit 1' EXIT
 fetch_verified "UnRAR $VERSION source from rarlab.com" "$URL" "$SHA256" "$TMP/unrar.tar.gz"
 tar -xzf "$TMP/unrar.tar.gz" -C "$TMP"
 [ -f "$TMP/unrar/dll.hpp" ] || { echo "!! unexpected UnRAR archive layout" >&2; exit 1; }
@@ -39,3 +41,4 @@ mkdir -p "$ROOT/Vendor"
 mv "$TMP/unrar" "$DEST"
 echo "$VERSION+$PATCHLEVEL" > "$DEST/.version"
 echo "==> Vendored: $DEST"
+finished=1

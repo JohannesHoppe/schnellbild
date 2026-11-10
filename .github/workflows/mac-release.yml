@@ -64,7 +64,8 @@ jobs:
             # Newest release without DMG, and its newest build with a submitted DMG
             for t in $(gh release list -R "$R" -L 5 --json tagName -q '.[].tagName'); do
               has_dmg "$t" && continue
-              for id in $(gh run list -R "$R" -w release.yml -b "$t" -e push -L 10 --json databaseId -q '.[].databaseId'); do
+              # Pushed tags and runs started by hand on the tag alike
+              for id in $(gh run list -R "$R" -w release.yml -b "$t" -L 10 --json databaseId -q '.[].databaseId'); do
                 if [ -n "$(signed_artifact "$id")" ]; then RUN=$id; break; fi
               done
               if [ -n "$RUN" ]; then break; fi
@@ -79,7 +80,7 @@ jobs:
           [[ "$sha" =~ ^[0-9a-f]{40}$ ]] || { echo "Unexpected commit: $sha" >&2; exit 1; }
           # Tag build: DMG to the release; otherwise (manual start on main) only as artifact
           TAG=""
-          if [ "$event" = push ] && [[ "$branch" =~ ^v[0-9A-Za-z._-]+$ ]] \
+          if { [ "$event" = push ] || [ "$event" = workflow_dispatch ]; } && [[ "$branch" =~ ^v[0-9A-Za-z._-]+$ ]] \
              && gh api "repos/$R/git/ref/tags/$branch" >/dev/null 2>&1; then
             TAG=$branch
             if has_dmg "$TAG"; then echo "$TAG already has a DMG"; exit 0; fi
@@ -115,13 +116,25 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           ref: ${{ needs.find.outputs.sha }}
+      # Another finish (queued behind this one's group) may have attached it
+      # since find looked
+      - name: Check the release still lacks the DMG
+        id: check
+        run: |
+          if [ -n "$TAG" ] && gh release view "$TAG" -R "$GITHUB_REPOSITORY" --json assets -q '.assets[].name' | grep -qx 'Schnellbild.dmg'; then
+            echo "$TAG already has a DMG"
+            echo "done=true" >> "$GITHUB_OUTPUT"
+          fi
       - name: Fetch the submitted DMG
+        if: steps.check.outputs.done != 'true'
         run: gh run download "$RUN_ID" -R "$GITHUB_REPOSITORY" -n macos-signed -D dist/signed
       - name: Set up the Apple API key
+        if: steps.check.outputs.done != 'true'
         env:
           P8: ${{ secrets.NOTARY_KEY_P8 }}
         run: ./Scripts/macos-signing.sh notary-key
       - name: Ask Apple, staple the ticket
+        if: steps.check.outputs.done != 'true'
         id: pkg
         env:
           NOTARY_KEY_ID: ${{ secrets.NOTARY_KEY_ID }}
@@ -138,7 +151,11 @@ jobs:
         run: gh api -X DELETE "repos/$GITHUB_REPOSITORY/actions/artifacts/$ARTIFACT_ID"
       - name: Attach the DMG to the release
         if: steps.pkg.outputs.result == 'accepted' && env.TAG != ''
-        run: gh release upload "$TAG" -R "$GITHUB_REPOSITORY" --clobber dist/Schnellbild.dmg
+        run: |
+          gh release upload "$TAG" -R "$GITHUB_REPOSITORY" --clobber dist/Schnellbild.dmg
+          # The release becomes "Latest" with its DMG, unless a newer one exists
+          newest=$(gh release list -R "$GITHUB_REPOSITORY" -L 1 --exclude-drafts --exclude-pre-releases --json tagName -q '.[0].tagName')
+          if [ "$newest" = "$TAG" ]; then gh release edit "$TAG" -R "$GITHUB_REPOSITORY" --latest; fi
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: steps.pkg.outputs.result == 'accepted' && env.TAG == ''
         with:
