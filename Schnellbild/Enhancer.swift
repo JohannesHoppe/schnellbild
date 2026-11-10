@@ -132,15 +132,23 @@ struct PictureStats: Equatable, Sendable {
                             bounds: CGRect(x: 0, y: 0, width: width, height: height),
                             format: .RGBA8, colorSpace: CGColorSpaceCreateDeviceRGB())
         var histogram = [Int](repeating: 0, count: 256)
-        var sum = 0.0, chroma = 0.0
+        var sum = 0.0, chroma = 0.0, count = 0
         for i in stride(from: 0, to: rgba.count, by: 4) {
-            let r = Double(rgba[i]), g = Double(rgba[i + 1]), b = Double(rgba[i + 2])
+            // Only what the picture draws: transparent pixels (a logo's
+            // background) are left out, half transparent ones counted with
+            // their own colour (the bitmap is premultiplied)
+            let alpha = Double(rgba[i + 3])
+            guard alpha >= 8 else { continue }
+            let unpremultiply = 255 / alpha
+            let r = min(Double(rgba[i]) * unpremultiply, 255), g = min(Double(rgba[i + 1]) * unpremultiply, 255),
+                b = min(Double(rgba[i + 2]) * unpremultiply, 255)
             let y = 0.2126 * r + 0.7152 * g + 0.0722 * b
             sum += y
             histogram[min(Int(y.rounded()), 255)] += 1
             chroma += max(r, g, b) - min(r, g, b)
+            count += 1
         }
-        let count = width * height
+        guard count > 0 else { return nil }
         func percentile(_ p: Double) -> Double {
             let goal = Int(Double(count) * p)
             var seen = 0

@@ -15,7 +15,7 @@ struct FullImageView: View {
     /// the look on screen (`model.enhancement`).
     @State private var picture: CGImage?
     @State private var autoLook: Look?
-    @State private var enhanced: (look: Look, image: NSImage)?
+    @State private var enhanced: (look: Look, side: Int, image: NSImage)?
     @State private var nativeSize: CGSize?
     @State private var panOffset: CGSize = .zero
     /// The file couldn't be read as a picture.
@@ -61,7 +61,7 @@ struct FullImageView: View {
                 decodedSide = 0
                 let scale = NSScreen.mainBackingScale
                 let maxPixel = max(Int(max(geo.size.width, geo.size.height) * scale), 1)
-                await load(maxPixel: maxPixel)
+                await load(maxPixel: maxPixel, sharper: false)
                 updateActualSizeFactor(in: geo.size)
             }
             .task(id: SharpnessJob(url: url, side: wantedSide(in: geo.size), ready: picture != nil)) {
@@ -71,7 +71,7 @@ struct FullImageView: View {
                 guard picture != nil, side > decodedSide else { return }
                 try? await Task.sleep(for: .milliseconds(150))
                 guard !Task.isCancelled else { return }
-                await load(maxPixel: side)
+                await load(maxPixel: side, sharper: true)
             }
             .onChange(of: geo.size) { _, newSize in
                 updateActualSizeFactor(in: newSize)
@@ -88,7 +88,7 @@ struct FullImageView: View {
             }
         }
         .onChange(of: model.zoom) { _, newValue in
-            if newValue == 1 { panOffset = .zero }
+            if newValue <= 1.01 { panOffset = .zero }
         }
         .onChange(of: url) { _, _ in
             panOffset = .zero
@@ -127,10 +127,10 @@ struct FullImageView: View {
     private var panGesture: some Gesture {
         DragGesture()
             .updating($dragTranslation) { value, state, _ in
-                if model.zoom > 1 { state = value.translation }
+                if model.zoom > 1.01 { state = value.translation }
             }
             .onEnded { value in
-                guard model.zoom > 1 else { return }
+                guard model.zoom > 1.01 else { return }
                 panOffset.width += value.translation.width
                 panOffset.height += value.translation.height
             }
@@ -170,15 +170,19 @@ struct FullImageView: View {
         return min(container.width / dispH, container.height / dispW)
     }
 
-    private func load(maxPixel: Int) async {
+    /// Decodes the picture with its longest side `maxPixel`. Paging on
+    /// cancels it: an archive read stops, and a decode not yet begun is
+    /// skipped. `sharper`: the picture is on screen already and is decoded
+    /// again larger; if that fails, the one shown stays.
+    private func load(maxPixel: Int, sharper: Bool) async {
         let url = self.url
-        let result = await Task.detached(priority: .userInitiated) { () -> (NSImage, CGSize, CGImage)? in
+        let result = await detachedCancellable(priority: .userInitiated) { () -> (NSImage, CGSize, CGImage)? in
             if VectorPicture.isVector(url) {
                 guard let rendered = await VectorPicture.render(url, longestSide: maxPixel) else { return nil }
                 let cg = rendered.0
                 return (NSImage(cgImage: cg, size: NSSize(width: cg.width, height: cg.height)), rendered.1, cg)
             }
-            guard let src = await MediaData.imageSource(url) else { return nil }
+            guard let src = await MediaData.imageSource(url), !Task.isCancelled else { return nil }
             let native = MediaInfo.pixelSize(from: src) ?? .zero
 
             let options: [CFString: Any] = [
@@ -192,10 +196,11 @@ struct FullImageView: View {
             }
             let img = NSImage(cgImage: cg, size: NSSize(width: cg.width, height: cg.height))
             return (img, native, cg)
-        }.value
+        }
 
         guard !Task.isCancelled else { return }
         guard let result else {
+            if sharper { return }
             image = nil   // not the tile's file icon: the file can't be shown
             failed = true
             return
@@ -203,8 +208,12 @@ struct FullImageView: View {
         image = result.0
         nativeSize = result.1
         decodedSide = max(result.2.width, result.2.height)
-        enhanced = nil
-        autoLook = nil
+        if !sharper {
+            // The same picture decoded larger keeps its look (measured on the
+            // smaller one) and the rendered picture until the new one is ready
+            enhanced = nil
+            autoLook = nil
+        }
         picture = result.2
     }
 
@@ -214,20 +223,28 @@ struct FullImageView: View {
         let ready: Bool
     }
 
-    /// The longest side to decode at: the full size when zoomed in, else
-    /// the view's size in pixels (never more than the file has). A vector
-    /// picture (SVG) has no pixels of its own: drawn at the view's size,
-    /// zoomed in at the zoomed size.
+    /// The longest side to decode at: the view's size in pixels, times the
+    /// zoom when zoomed in (a step ahead, so not every zoom step decodes
+    /// again), never more than the file has nor more than `largestPixels`
+    /// (a picture of 30000 × 30000 pixels would need gigabytes). A vector
+    /// picture (SVG, PDF) has no pixels of its own: drawn at the view's
+    /// size, zoomed in at the zoomed size.
     private func wantedSide(in container: CGSize) -> Int {
         guard let native = nativeSize, native.width > 0, native.height > 0 else { return 0 }
-        let view = Int(max(container.width, container.height) * NSScreen.mainBackingScale)
+        let view = CGFloat(max(container.width, container.height) * NSScreen.mainBackingScale)
         if VectorPicture.isVector(url) {
-            return min(Int(CGFloat(view) * max(model.zoom, 1)), VectorPicture.largestSide)
+            return min(Int(view * max(model.zoom, 1)), VectorPicture.largestSide)
         }
-        let full = Int(max(native.width, native.height))
-        if model.zoom > 1.01 { return full }
-        return min(view, full)
+        let long = max(native.width, native.height), short = max(min(native.width, native.height), 1)
+        let full = Int(long)
+        let bounded = Int((Self.largestPixels * long / short).squareRoot())
+        let zoomed = model.zoom > 1.01 ? view * model.zoom * 1.5 : view
+        return max(min(Int(zoomed), full, bounded), 1)
     }
+
+    /// The most pixels a picture is decoded with (256 MB at 4 bytes each;
+    /// the adjusted copy needs as much again).
+    private static let largestPixels: CGFloat = 64_000_000
 
     private struct EnhanceJob: Equatable {
         let url: URL
@@ -254,23 +271,25 @@ struct FullImageView: View {
         } else {
             try? await Task.sleep(for: .milliseconds(30))   // a slider still moving
         }
-        guard !Task.isCancelled, let look = shownLook, enhanced?.look != look else { return }
+        let side = decodedSide
+        guard !Task.isCancelled, let look = shownLook, enhanced?.look != look || enhanced?.side != side else { return }
         let result = await Task.detached(priority: .userInitiated) {
             Look.render(picture, with: look)
         }.value
         guard !Task.isCancelled, let result else { return }
-        enhanced = (look, NSImage(cgImage: result, size: NSSize(width: result.width, height: result.height)))
+        enhanced = (look, side, NSImage(cgImage: result, size: NSSize(width: result.width, height: result.height)))
     }
 }
 
-/// SVG: ImageIO doesn't read it, AppKit's `NSImage` draws it, as a vector
-/// picture at any size.
+/// SVG and PDF: AppKit's `NSImage` draws them as vector pictures at any
+/// size (ImageIO doesn't read SVG, and gives a PDF page neither a size nor
+/// more than its 72 dpi pixels). A PDF shows its first page.
 enum VectorPicture {
     /// Drawn no larger than this (at most a 64 MB picture, 4096 × 4096 × 4
     /// bytes, at full zoom; the adjusted copy needs as much again).
     static let largestSide = 4096
 
-    static func isVector(_ url: URL) -> Bool { url.pathExtension.lowercased() == "svg" }
+    static func isVector(_ url: URL) -> Bool { ["svg", "pdf"].contains(url.pathExtension.lowercased()) }
 
     /// The picture, from disk or from inside an archive (`MediaData`).
     private static func image(_ url: URL) async -> NSImage? {
