@@ -1082,7 +1082,7 @@ final class ArchiveStore: @unchecked Sendable {
         let prefix = inner.isEmpty ? "" : inner + "/"
         return index.byPath.values.compactMap { item in
             guard item.path.hasPrefix(prefix),
-                  (item.path as NSString).lastPathComponent.localizedCaseInsensitiveContains(query) else { return nil }
+                  BrowserModel.nameMatches((item.path as NSString).lastPathComponent, query) else { return nil }
             let itemURL = archiveURL.appendingPathComponent(item.path, isDirectory: item.isDirectory)
             if item.isDirectory { return GridEntry(url: itemURL, kind: .folder, modDate: item.modified) }
             guard let kind = BrowserModel.mediaKind(of: itemURL) else { return nil }
