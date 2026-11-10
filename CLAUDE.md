@@ -122,7 +122,7 @@ There is **no Xcode project for the app build**; `xcodegen` generates
   content as the README keyboard tables; keep them in sync).
 - **`ThumbnailView.swift` / `ThumbnailGridView.swift`** — `LazyVGrid`, thumbnails
   from QuickLook (`QLThumbnailGenerator`); videos QuickLook only has an icon for (AVI, MKV …) get a frame from VLC (`VLCThumbnails`, two at a time, each a `VLCFrameGrab`: its own player on its own queue, decoding into memory; nothing in it waits for the main thread. VLCKit's `VLCMediaThumbnailer` is not used: its picture callback waits for the main thread, which then asks the player that is being stopped, and both hang). `ThumbnailCache` keeps one image per
-  file with the size it was made for (reused for smaller tiles, regenerated
+  file with the size it was made for, limited by pixel bytes (an eighth of the Mac's memory, at most 2 GB; previews 256 MB), not by count (reused for smaller tiles, regenerated
   for larger; the full view's placeholder). Folder previews use their own
   `ThumbnailCache.previews`. `FolderTile` fans up to three previews of a
   folder's first media files, from its subfolders when it has none itself (`BrowserModel.folderPreviewFiles`, listed once
