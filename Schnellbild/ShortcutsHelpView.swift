@@ -27,7 +27,7 @@ struct ShortcutsHelpView: View {
             Shortcut(keys: "Backspace", action: "Back (where you were, also a search); without history the enclosing folder"),
             Shortcut(keys: "Home / End", action: "First / last item"),
             Shortcut(keys: "L", action: "Grid or list (a click on a column sorts by it)"),
-            Shortcut(keys: "⌘+ / ⌘−", action: "Larger / smaller thumbnails"),
+            Shortcut(keys: "+ / − · ⌘+ / ⌘−", action: "Larger / smaller thumbnails"),
             Shortcut(keys: "F2 / ⇧F6", action: "Rename the selected folder or file (also in the full view)"),
             Shortcut(keys: "⇧⌘N / F7", action: "New folder: type its name, ↩ creates it, Esc creates none"),
             Shortcut(keys: "F8", action: "Move to Trash"),
@@ -58,7 +58,7 @@ struct ShortcutsHelpView: View {
             Shortcut(keys: "i", action: "File info"),
             Shortcut(keys: "e", action: "Auto enhance on / off (exposure, contrast, saturation, sharpness; files are not changed)"),
             Shortcut(keys: "a", action: "Sliders: adjust by hand (switches auto enhance off)"),
-            Shortcut(keys: "Esc / s", action: "End the slideshow"),
+            Shortcut(keys: "Esc / s / Return / Backspace", action: "End the slideshow"),
         ]),
         Group(title: "Dual pane and marking", shortcuts: [
             Shortcut(keys: "D / ⌃O", action: "Dual pane on / off: two folders side by side"),

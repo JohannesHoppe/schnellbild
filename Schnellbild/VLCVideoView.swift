@@ -211,11 +211,6 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         player.audio?.volume = Int32((volume * 100).rounded())
     }
 
-    var duration: Double? {
-        let ms = player.media?.length.intValue ?? 0
-        return ms > 0 ? Double(ms) / 1000 : nil
-    }
-
     /// Played to its end: VLC goes on from "ended" to "stopped" quickly,
     /// and its position then is that of the last picture, short of 1.
     private var reachedEnd = false

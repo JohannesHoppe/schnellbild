@@ -57,7 +57,6 @@
 "Picture" = "Afbeelding";
 "Video" = "Video";
 "Folder" = "Map";
-"Parent" = "Bovenliggend";
 "Rename Folder" = "Wijzig naam van map";
 "Rename File" = "Wijzig naam van bestand";
 "Rename" = "Wijzig naam";
@@ -234,3 +233,9 @@
 /* VoiceOver: the sorted column of the list */
 "ascending" = "oplopend";
 "descending" = "aflopend";
+"selected" = "geselecteerd";
+"not selected" = "niet geselecteerd";
+/* About window: the libraries' licenses */
+"© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later; some of its modules GNU General Public License 2 or later." = "© VideoLAN en de VLC-auteurs. GNU Lesser General Public License 2.1 of later; sommige modules GNU General Public License 2 of later.";
+"© Tim Kientzle and the libarchive contributors. BSD 2-clause license." = "© Tim Kientzle en de bijdragers aan libarchive. BSD-licentie met 2 clausules.";
+"© Alexander Roshal. The UnRAR license, in its own words:" = "© Alexander Roshal. De UnRAR-licentie, letterlijk:";

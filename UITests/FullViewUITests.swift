@@ -184,7 +184,7 @@ final class FullViewUITests: SchnellbildUITestCase {
         XCTAssertFalse(fullImage.exists)
     }
 
-    /// Zoomed in, a photo larger than the screen is shown at its full
+    /// At 100 % (`1`), a photo larger than the screen is shown at its full
     /// resolution, not as a stretched screen-size copy.
     func testZoomingInDecodesTheFullPicture() throws {
         try put("huge.jpg", at: "huge.jpg")
@@ -193,7 +193,7 @@ final class FullViewUITests: SchnellbildUITestCase {
         eventually("loaded at screen size", timeout: 15) {
             self.text(of: image).hasSuffix("loaded") && !self.text(of: image).contains("decoded 4000 px")
         }
-        app.typeKey("+", modifierFlags: [])
+        app.typeKey("1", modifierFlags: [])
         eventually("decoded at full size", timeout: 15) { self.text(of: image).contains("decoded 4000 px") }
     }
 

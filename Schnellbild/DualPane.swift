@@ -37,6 +37,8 @@ final class WindowModel: ObservableObject {
     var active: BrowserModel { rightIsActive ? (right ?? left) : left }
     var other: BrowserModel? { dual ? (rightIsActive ? left : right) : nil }
     var panes: [BrowserModel] { dual ? allPanes : [left] }
+    /// A sheet is open in either pane: it keeps the keys and the menus.
+    var anySheetOpen: Bool { panes.contains { $0.anySheetOpen } }
     /// Both panes, the right one also while hidden.
     private var allPanes: [BrowserModel] { [left, right].compactMap { $0 } }
 
@@ -47,6 +49,13 @@ final class WindowModel: ObservableObject {
             guard let self, pane === self.active else { return }
             self.objectWillChange.send()
         })
+        // The other pane's sheets too: they disable the menus
+        forwarding.append(Publishers.Merge4(pane.$passwordRequest.map { _ in () }, pane.$renameTarget.map { _ in () },
+                                            pane.$newFolderRequested.map { _ in () }, pane.$showHelp.map { _ in () })
+            .sink { [weak self, weak pane] in
+                guard let self, pane !== self.active else { return }
+                self.objectWillChange.send()
+            })
         pane.onActivate = { [weak self, weak pane] in
             guard let self, let pane else { return }
             self.activate(pane)

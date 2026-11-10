@@ -57,7 +57,6 @@
 "Picture" = "Kuva";
 "Video" = "Video";
 "Folder" = "Kansio";
-"Parent" = "Yläkansio";
 "Rename Folder" = "Nimeä kansio uudelleen";
 "Rename File" = "Nimeä tiedosto uudelleen";
 "Rename" = "Nimeä uudelleen";
@@ -234,3 +233,9 @@
 /* VoiceOver: the sorted column of the list */
 "ascending" = "nouseva";
 "descending" = "laskeva";
+"selected" = "valittu";
+"not selected" = "ei valittu";
+/* About window: the libraries' licenses */
+"© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later; some of its modules GNU General Public License 2 or later." = "© VideoLAN ja VLC:n tekijät. GNU Lesser General Public License 2.1 tai uudempi; osa sen moduuleista GNU General Public License 2 tai uudempi.";
+"© Tim Kientzle and the libarchive contributors. BSD 2-clause license." = "© Tim Kientzle ja libarchiven tekijät. Kahden lausekkeen BSD-lisenssi.";
+"© Alexander Roshal. The UnRAR license, in its own words:" = "© Alexander Roshal. UnRAR-lisenssi alkuperäisessä muodossaan:";

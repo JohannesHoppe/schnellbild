@@ -246,6 +246,10 @@ private struct WindowView: View {
             // A modal dialog (the Trash confirmation, the open panel) keeps
             // its keys: Return confirms it, Esc cancels it.
             if NSApp.modalWindow != nil || event.window is NSSavePanel { return event }
+            // Another window of the app (the About panel) keeps its keys;
+            // the Adjustments popover passes them on, as the main window
+            if let other = event.window, other !== BrowserModel.appWindow,
+               !NSStringFromClass(type(of: other)).contains("Popover") { return event }
             let code = event.keyCode
             let command = event.modifierFlags.contains(.command)
             let control = event.modifierFlags.contains(.control)
@@ -289,14 +293,18 @@ private struct WindowView: View {
                 if control, !command, letter == "o", !typing {
                     return window.handleWindowKey(.char("o"), command: false, control: true, textEditing: false)
                 }
-                // A key can scroll the grid under the still pointer
-                ModifierClicks.forgetHover()
-                // ⌥ makes other characters ("∂", "ß"): no shortcut of the app has ⌥
-                if event.modifierFlags.contains(.option) { return false }
+                // A key that moves the selection or the search scrolls the
+                // grid under the still pointer: the hovered tile is no longer known
+                if typing || [115, 116, 119, 121, 123, 124, 125, 126].contains(code) { ModifierClicks.forgetHover() }
+                // ⌥ makes other characters ("∂", "ß"): no shortcut of the app
+                // has ⌥, but [ and ] need it on many layouts (German ⌥5 / ⌥6)
+                if event.modifierFlags.contains(.option), !(event.characters == "[" || event.characters == "]") { return false }
                 guard !control, let key = ContentView.keyInput(code: code, characters: chars, latin: {
                     LatinKeys.character(for: code, shift: event.modifierFlags.contains(.shift))
                 }) else { return false }
                 // F9 / F10 as in Norton Commander: the app's menus, quit (after asking)
+                // The other pane's sheet (a password asked for) keeps the keys
+                if window.panes.contains(where: { $0 !== model && $0.anySheetOpen }) { return false }
                 if !typing, !command, model.slideshow == nil, !model.anySheetOpen {
                     switch key {
                     case .f9:  NortonMenus.showMainMenus(); model.noteKeyPress(key, command: false); return true
@@ -384,7 +392,10 @@ struct PaneView: View {
     @EnvironmentObject var model: BrowserModel
 
     var body: some View {
-        Group {
+        // One container, not a Group: a Group hands its modifiers to each
+        // branch, so the search bar and the sheets would be made anew each
+        // time the list turns empty or not (a field rebuilt while typing)
+        ZStack {
             if model.entries.isEmpty && model.slideshow == nil {
                 EmptyStateView(isLoading: model.isLoading)
             } else {
@@ -514,12 +525,18 @@ struct PaneView: View {
 
     private var statusText: String {
         if model.passwordRequest != nil { return String(localized: "Password required") }
+        // Not "Empty" before the listing is there, nor for one that failed
+        if model.isLoading { return String(localized: "Loading folder…") }
+        if let error = model.loadError {
+            return error.archive ? String(localized: "This archive can't be read") : String(localized: "This folder can't be read")
+        }
         var parts: [String] = []
         if model.folderCount > 0 { parts.append(String(localized: "\(model.folderCount) folders")) }
         if model.archiveCount > 0 { parts.append(String(localized: "\(model.archiveCount) archives")) }
         if model.imageCount  > 0 { parts.append(String(localized: "\(model.imageCount) pictures")) }
         if model.videoCount  > 0 { parts.append(String(localized: "\(model.videoCount) videos")) }
-        if !model.otherFiles.isEmpty { parts.append(String(localized: "Other files: \(model.otherFiles.count)")) }
+        // (the folder's other files: not searched, not shown during a search)
+        if !model.otherFiles.isEmpty, !model.isFiltering { parts.append(String(localized: "Other files: \(model.otherFiles.count)")) }
         let summary = parts.isEmpty ? String(localized: "Empty") : parts.joined(separator: " · ")
         guard model.isFiltering else { return summary }
         let query = model.query
@@ -536,9 +553,7 @@ struct PaneView: View {
             if entry.kind == .video {
                 VideoDetailView(url: entry.url)
             } else if entry.isGIF {
-                ZStack { Color.black; AnimatedImageView(url: entry.url) }
-                    .accessibilityElement(children: .contain)
-                    .accessibilityIdentifier("animatedImage")
+                GIFView(url: entry.url)
             } else {
                 FullImageView(url: entry.url)
             }
@@ -1047,12 +1062,17 @@ private struct PaneDrop: DropDelegate {
     let pane: BrowserModel
     let window: WindowModel
 
+    /// Not into an archive (only read), as a tile there refuses it too.
+    private var target: URL? {
+        guard let folder = pane.folderURL, !pane.isFiltering, ArchivePath.split(folder) == nil else { return nil }
+        return folder
+    }
     func validateDrop(info: DropInfo) -> Bool {
-        pane.folderURL != nil && !pane.isFiltering && info.hasItemsConforming(to: [TileDrag.type])
+        target != nil && info.hasItemsConforming(to: [TileDrag.type])
     }
     func dropUpdated(info: DropInfo) -> DropProposal? { DropProposal(operation: .move) }
     func performDrop(info: DropInfo) -> Bool {
-        guard let folder = pane.folderURL, !pane.isFiltering else { return false }
+        guard let folder = target else { return false }
         let pane = pane
         TileDrag.loadURLs(info.itemProviders(for: [TileDrag.type])) { urls in pane.move(urls, into: folder) }
         window.activate(pane)

@@ -20,16 +20,17 @@ enum AboutPanel {
 
     static let components: [Component] = [
         Component(name: "VLCKit 3.6.0 (libVLC 3.0.21)", use: String(localized: "plays the video formats macOS can't (AVI, MKV, WebM …)"),
-                  license: "© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later; "
-                      + "some of its modules GNU General Public License 2 or later.",
+                  license: String(localized: "© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later; some of its modules GNU General Public License 2 or later."),
                   link: "https://code.videolan.org/videolan/VLCKit"),   // its source; THIRD-PARTY-NOTICES.md has the exact version
         Component(name: "UnRAR 7.2.7", use: String(localized: "reads RAR archives"),
-                  license: "© Alexander Roshal. UnRAR license: UnRAR source code may be used in any software to handle "
+                  // The license's own sentence stays as written (English)
+                  license: String(localized: "© Alexander Roshal. The UnRAR license, in its own words:") + " "
+                      + "UnRAR source code may be used in any software to handle "
                       + "RAR archives without limitations free of charge, but cannot be used to develop RAR (WinRAR) "
                       + "compatible archiver and to re-create RAR compression algorithm, which is proprietary.",
                   link: "https://www.rarlab.com"),
         Component(name: "libarchive", use: String(localized: "reads ZIP and 7z archives (the copy built into macOS)"),
-                  license: "© Tim Kientzle and the libarchive contributors. BSD 2-clause license.",
+                  license: String(localized: "© Tim Kientzle and the libarchive contributors. BSD 2-clause license."),
                   link: "https://www.libarchive.org"),
     ]
 

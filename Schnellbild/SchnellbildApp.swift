@@ -35,24 +35,26 @@ struct SchnellbildApp: App {
             CommandGroup(replacing: .newItem) {
                 Button("Open Folder…") { model.chooseFolder() }
                     .keyboardShortcut("o")
+                    .disabled(window.anySheetOpen)
             }
             CommandMenu("Go") {
                 Button("Start Slideshow (S)") { model.startSlideshow() }
-                    .disabled(model.folderURL == nil || model.anySheetOpen)
+                    .disabled(model.folderURL == nil || window.anySheetOpen)
                 Divider()
                 Button("Back") { model.navigateBack() }
                     .keyboardShortcut("[", modifiers: .command)
-                    .disabled(!model.canGoBack || model.anySheetOpen)
+                    .disabled(!model.canGoBack || window.anySheetOpen)
                 Button("Forward") { model.navigateForward() }
                     .keyboardShortcut("]", modifiers: .command)
-                    .disabled(!model.canGoForward || model.anySheetOpen)
+                    .disabled(!model.canGoForward || window.anySheetOpen)
                 Button("Enclosing Folder") { model.goToParentFolder() }
                     .keyboardShortcut(.upArrow, modifiers: .command)
-                    .disabled(!model.canGoUp || model.anySheetOpen)
+                    .disabled(!model.canGoUp || window.anySheetOpen)
                 Divider()
+                // (not in a slideshow: the search bar is hidden there)
                 Button("Search") { model.focusSearch() }
                     .keyboardShortcut("f", modifiers: .command)
-                    .disabled(model.anySheetOpen)
+                    .disabled(window.anySheetOpen || model.slideshow != nil)
             }
             CommandMenu("Actions") {
                 // Not during a slideshow: the selection is in the hidden grid,
@@ -61,23 +63,23 @@ struct SchnellbildApp: App {
                     .keyboardShortcut("n", modifiers: [.command, .shift])
                     .disabled(!model.canCreateFolder)
                 Button("Rename… (F2)") { model.beginRename() }
-                    .disabled(model.slideshow != nil || model.anySheetOpen || !(model.selectedEntry.map(model.canRename) ?? false))
+                    .disabled(model.slideshow != nil || window.anySheetOpen || !(model.selectedEntry.map(model.canRename) ?? false))
                 Button("Reveal in Finder") { model.revealInFinder() }
                     .keyboardShortcut("r", modifiers: [.command, .shift])
-                    .disabled(model.slideshow != nil || model.anySheetOpen)
+                    .disabled(model.slideshow != nil || window.anySheetOpen)
                 Button("Open with Default App") { model.openInDefaultApp() }
                     .keyboardShortcut(.return)
-                    .disabled(model.slideshow != nil || model.anySheetOpen || !model.selectionIsChangeable)
+                    .disabled(model.slideshow != nil || window.anySheetOpen || !model.selectionIsChangeable)
                 Divider()
                 // The dual pane (D): the marked items into the other pane's folder
                 Button("Copy to Other Pane (F5)") { _ = window.sendToOtherPane(how: .copy) }
-                    .disabled(!window.dual || model.slideshow != nil || model.anySheetOpen)
+                    .disabled(!window.dual || model.slideshow != nil || window.anySheetOpen)
                 Button("Move to Other Pane (F6)") { _ = window.sendToOtherPane(how: .move) }
-                    .disabled(!window.dual || model.slideshow != nil || model.anySheetOpen)
+                    .disabled(!window.dual || model.slideshow != nil || window.anySheetOpen)
                 Divider()
                 Button("Move to Trash…") { model.moveSelectionToTrash() }
                     .keyboardShortcut(.delete)
-                    .disabled(!model.canTrash || model.anySheetOpen)
+                    .disabled(!model.canTrash || window.anySheetOpen)
             }
             CommandGroup(after: .toolbar) {
                 Toggle("as Grid", isOn: Binding(get: { model.viewMode == .grid }, set: { if $0 { model.viewMode = .grid } }))
@@ -109,6 +111,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.regular)
         NSApp.activate(ignoringOtherApps: true)
+        // One window: tabs ("Show Tab Bar", its "+") would show the same
+        // panes twice, each video playing in both
+        NSWindow.allowsAutomaticWindowTabbing = false
     }
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {

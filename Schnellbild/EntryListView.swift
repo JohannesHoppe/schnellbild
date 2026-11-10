@@ -69,7 +69,7 @@ struct EntryListView: View {
         }
         .buttonStyle(.plain)
         .accessibilityIdentifier("column.\(key.rawValue)")
-        .accessibilityValue(model.sortKey == key ? (model.sortAscending ? "ascending" : "descending") : "")
+        .accessibilityValue(model.sortKey == key ? (model.sortAscending ? String(localized: "ascending") : String(localized: "descending")) : "")
     }
 
     // MARK: Rows
@@ -104,7 +104,8 @@ struct EntryListView: View {
         .id(entry.id)
         .accessibilityElement(children: .ignore)
         .accessibilityIdentifier("row.\(entry.name)")
-        .accessibilityLabel("\(TileChrome.selectionLabel(selected)), \(entry.name)")
+        // (spoken, so translated; the UI tests find rows by their identifier)
+        .accessibilityLabel((selected ? String(localized: "selected") : String(localized: "not selected")) + ", " + entry.name)
     }
 
     private func otherRow(_ file: OtherFile) -> some View {
