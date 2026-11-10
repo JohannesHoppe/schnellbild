@@ -294,15 +294,14 @@ struct VLCVideoView: NSViewRepresentable {
 }
 
 /// Thumbnails of videos QuickLook can't read (AVI, MKV, WebM …): VLC decodes
-/// a frame at 30 % of the video. At most two run at a time, since each one
-/// opens and decodes the file.
+/// a frame at 30 % of the video (`VLCFrameGrab`). At most two run at a
+/// time, since each one opens and decodes the file.
 @MainActor
-final class VLCThumbnails: NSObject, VLCMediaThumbnailerDelegate {
+final class VLCThumbnails {
     static let shared = VLCThumbnails()
     private static let limit = 2
     private var running = 0
     private var queue: [CheckedContinuation<Void, Never>] = []
-    private var pending: [ObjectIdentifier: (thumbnailer: VLCMediaThumbnailer, done: CheckedContinuation<CGImage?, Never>)] = [:]
 
     /// A frame `width` pixels wide (the height follows the video), or nil.
     func thumbnail(for url: URL, width: CGFloat) async -> CGImage? {
@@ -317,27 +316,7 @@ final class VLCThumbnails: NSObject, VLCMediaThumbnailerDelegate {
             if queue.isEmpty { running -= 1 } else { queue.removeFirst().resume() }
         }
         guard !Task.isCancelled else { return nil }
-        return await withCheckedContinuation { done in
-            let media = VLCMedia(url: url)
-            VLCSafety.restrict(media)
-            let thumbnailer = VLCMediaThumbnailer(media: media, delegate: self, andVLCLibrary: nil)
-            thumbnailer.thumbnailWidth = width
-            thumbnailer.thumbnailHeight = 0
-            pending[ObjectIdentifier(thumbnailer)] = (thumbnailer, done)
-            thumbnailer.fetchThumbnail()
-        }
-    }
-
-    private func finish(_ thumbnailer: VLCMediaThumbnailer, with image: CGImage?) {
-        pending.removeValue(forKey: ObjectIdentifier(thumbnailer))?.done.resume(returning: image)
-    }
-
-    nonisolated func mediaThumbnailerDidTimeOut(_ mediaThumbnailer: VLCMediaThumbnailer) {
-        MainActor.assumeIsolated { finish(mediaThumbnailer, with: nil) }
-    }
-
-    nonisolated func mediaThumbnailer(_ mediaThumbnailer: VLCMediaThumbnailer, didFinishThumbnail thumbnail: CGImage) {
-        MainActor.assumeIsolated { finish(mediaThumbnailer, with: thumbnail) }
+        return await VLCFrameGrab.frame(of: url, width: Int(width.rounded()))
     }
 }
 
