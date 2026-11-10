@@ -240,3 +240,14 @@
 "© Tim Kientzle and the libarchive contributors. BSD 2-clause license." = "© Tim Kientzle 및 libarchive 기여자. 2조항 BSD 라이선스.";
 "© Alexander Roshal. The UnRAR license, in its own words:" = "© Alexander Roshal. UnRAR 라이선스 원문:";
 "This file is too large to show from inside an archive." = "이 파일은 압축 파일 안에서 보여 주기에 너무 큽니다.";
+/* Settings */
+"Archive passwords" = "압축 파일 암호";
+"Each picture stays" = "각 사진 표시 시간";
+"%lld s" = "%lld초";
+"Videos play to their end." = "비디오는 끝까지 재생됩니다.";
+"Saved passwords" = "저장된 암호";
+"Forget Saved Passwords…" = "저장된 암호 지우기…";
+"Passwords that opened an archive are kept in your keychain, so the archive opens without asking." = "압축 파일을 연 암호는 키체인에 보관되어 다음부터 묻지 않고 열립니다.";
+"Forget all saved archive passwords?" = "저장된 압축 파일 암호를 모두 지우시겠습니까?";
+"Forget Passwords" = "암호 지우기";
+"Archives that need a password ask for it again." = "암호가 필요한 압축 파일은 다시 묻습니다.";

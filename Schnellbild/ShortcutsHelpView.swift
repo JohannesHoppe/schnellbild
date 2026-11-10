@@ -41,7 +41,7 @@ struct ShortcutsHelpView: View {
             Shortcut(keys: "Space", action: "Next picture · play/pause video"),
             Shortcut(keys: "+ / −", action: "Zoom in / out"),
             Shortcut(keys: "0 / 1", action: "Fit to window / 100 %"),
-            Shortcut(keys: "[ / ]", action: "Rotate left / right"),
+            Shortcut(keys: "⌥← / ⌥→", action: "Rotate left / right"),
             Shortcut(keys: "i", action: "File info"),
             Shortcut(keys: "e", action: "Auto enhance on / off (exposure, contrast, saturation, sharpness; files are not changed)"),
             Shortcut(keys: "a", action: "Sliders: adjust by hand (switches auto enhance off)"),

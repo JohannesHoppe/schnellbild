@@ -703,8 +703,11 @@ final class BrowserModel: ObservableObject {
     @Published private(set) var slideshow: Slideshow? {
         didSet { if slideshow == nil { refreshIfDeferred() } }
     }
-    /// How long a picture stays; a video plays to its end.
+    /// How long a picture stays; a video plays to its end. Set in Settings
+    /// (`slideshowSecondsKey`, the same for both panes).
     var slideshowInterval: Duration = .seconds(3)
+    static let slideshowSecondsKey = "slideshowSeconds"
+    static let slideshowSecondsRange = 1...60
     /// How often the slideshow checks that a video plays at all; four checks
     /// without a length skip it (a file nothing can play).
     var slideshowVideoCheck: Duration = .seconds(2)
@@ -879,6 +882,8 @@ final class BrowserModel: ObservableObject {
             searchDebounce = .milliseconds(ms)
         }
         showMiniKeyboard = defaults.bool(forKey: Self.miniKeyboardKey)
+        if let seconds = defaults.object(forKey: Self.slideshowSecondsKey) as? Int,
+           Self.slideshowSecondsRange.contains(seconds) { slideshowInterval = .seconds(seconds) }
         if let raw = defaults.string(forKey: settingsPrefix + "viewMode"), let mode = ViewMode(rawValue: raw) { viewMode = mode }
         if let stored = defaults.object(forKey: Self.volumeKey) as? Double { volume = min(max(stored, 0), 1) }
         if let raw = defaults.string(forKey: sortKeyKey), let key = SortKey(rawValue: raw) {
@@ -2103,14 +2108,27 @@ final class BrowserModel: ObservableObject {
     /// field is being edited (`textEditing`) or a sheet is open, keys belong
     /// to them — except F1 and F2.
     @discardableResult
-    func handleKey(_ key: KeyInput, command: Bool, shift: Bool = false, textEditing: Bool = false,
-                   repeating: Bool = false) -> Bool {
+    func handleKey(_ key: KeyInput, command: Bool, shift: Bool = false, option: Bool = false,
+                   textEditing: Bool = false, repeating: Bool = false) -> Bool {
         keyRepeating = repeating
         defer { keyRepeating = false }
-        let handled = dispatchKey(key, command: command, shift: shift, textEditing: textEditing)
+        let handled = option
+            ? !textEditing && optionKey(key, command: command, shift: shift)
+            : dispatchKey(key, command: command, shift: shift, textEditing: textEditing)
         // The mini keyboard lights up the key that acted, typed or clicked
-        if handled { lastKeyPress = KeyPress(key: key, command: command, shift: shift) }
+        if handled { lastKeyPress = KeyPress(key: key, command: command, shift: shift, option: option) }
         return handled
+    }
+
+    /// Keys with ⌥: ⌥← / ⌥→ turn the photo or video on screen a quarter
+    /// (the arrows page and skim; with ⌥ they turn). Nothing else.
+    private func optionKey(_ key: KeyInput, command: Bool, shift: Bool) -> Bool {
+        guard !command, !shift, viewingMedia, !anySheetOpen else { return false }
+        switch key {
+        case .left:  rotateLeft();  return true
+        case .right: rotateRight(); return true
+        default:     return false
+        }
     }
 
     /// A key that acted, for the mini keyboard to light it up.
@@ -2118,11 +2136,12 @@ final class BrowserModel: ObservableObject {
         let key: KeyInput
         let command: Bool
         let shift: Bool
+        var option = false
         let id = UUID()
         let at = Date()
         /// The same key, whenever pressed (letters in any case).
-        func matches(_ key: KeyInput, command: Bool, shift: Bool) -> Bool {
-            guard self.command == command, self.shift == shift else { return false }
+        func matches(_ key: KeyInput, command: Bool, shift: Bool, option: Bool = false) -> Bool {
+            guard self.command == command, self.shift == shift, self.option == option else { return false }
             if case .char(let a) = self.key, case .char(let b) = key { return a.lowercased() == b.lowercased() }
             return self.key == key
         }
@@ -2275,8 +2294,6 @@ final class BrowserModel: ObservableObject {
         switch c {
         case "0": zoomReset();            return true
         case "1": zoomActualSize();       return true
-        case "[": rotateLeft();           return true
-        case "]": rotateRight();          return true
         case "i": showInspector.toggle(); return true
         default:  return false
         }
@@ -3346,7 +3363,7 @@ final class BrowserModel: ObservableObject {
             // No search, history or file actions while the hidden grid's
             // selection isn't what's on screen
             case "f" where command, "[" where command, "]" where command, "a" where command: return true
-            default: return handleCharacter(c, command: command)   // F, I, E, A, K, zoom, rotate: as in the full view
+            default: return handleCharacter(c, command: command)   // F, I, E, A, K, zoom: as in the full view
             }
         default:
             return false

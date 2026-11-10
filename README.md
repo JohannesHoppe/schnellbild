@@ -113,7 +113,7 @@ One picture, as large as the window allows, with its position in the folder. The
   <img src="docs/screenshots/slideshow-light.png" width="760" alt="The slideshow">
 </picture></p>
 
-Schnellbild has two ways of looking at a folder: **browse** it in the grid, or sit back and watch a **slideshow** of everything in it. The slideshow plays every photo and video in the folder **and all its subfolders**, in full screen, folder by folder in the sort order you chose. The sort order applies within each folder and to the order of the subfolders: sorted by name, folders like `Day 1`, `Day 2` … play one after the other; sorted by date taken, the pictures in each folder play in the order they were shot. Pictures stay three seconds, videos play to their end, then it moves on. It starts at once, while the subfolders are still being read; until then the count at the top says "so far" ("3 / 57 so far").
+Schnellbild has two ways of looking at a folder: **browse** it in the grid, or sit back and watch a **slideshow** of everything in it. The slideshow plays every photo and video in the folder **and all its subfolders**, in full screen, folder by folder in the sort order you chose. The sort order applies within each folder and to the order of the subfolders: sorted by name, folders like `Day 1`, `Day 2` … play one after the other; sorted by date taken, the pictures in each folder play in the order they were shot. Pictures stay three seconds (Settings, ⌘, sets 1 to 60), videos play to their end, then it moves on. It starts at once, while the subfolders are still being read; until then the count at the top says "so far" ("3 / 57 so far").
 
 Three ways to start it:
 
@@ -147,7 +147,7 @@ Zoom with the keyboard or a trackpad pinch, drag to pan, rotate in steps of 90°
 |---|---|
 | + / − (or ⌘+ / ⌘−) | zoom in / out |
 | 0 / 1 | fit to window / a photo's real size (100 %; a photo smaller than the window stays fitted, a video always) |
-| [ / ] | rotate left / right |
+| ⌥← / ⌥→ | rotate left / right |
 
 ### Videos
 
@@ -305,10 +305,8 @@ F1 (or ⌘?) shows every key in the app. `K` (or View → Mini Keyboard, or the 
 
 Early, but already a usable daily driver. Known limits:
 
-- The slideshow interval is fixed at 3 s.
-- `1` (100 %) is approximate (it assumes the main display's scale).
 - Animated GIFs don't zoom, pan, rotate or take the enhance filter (still GIFs do, like any photo).
-- Packages such as the Photos library count as one file, as in the Finder: they aren't browsed, searched or played, also when dropped onto the window (their folder opens with them selected).
+- Things the Finder shows as a single file although they are folders inside (apps, the Photos library) stay closed: Schnellbild doesn't show, search or play what's in them, so it never changes a library behind its app's back.
 - Archives inside archives aren't opened. Thumbnails of videos inside archives are an icon. Sorting by date taken uses the date modified inside archives.
 
 Building from source, tests and releases: [BUILDING.md](BUILDING.md).

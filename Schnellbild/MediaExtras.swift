@@ -181,6 +181,9 @@ enum MediaInfo {
 extension NSScreen {
     /// Backing scale of the main display, with a sane fallback.
     static var mainBackingScale: CGFloat { NSScreen.main?.backingScaleFactor ?? 2 }
+    /// Backing scale of the display the app's window is on (100 % means
+    /// one picture pixel per pixel there, also on a second display).
+    @MainActor static var windowBackingScale: CGFloat { BrowserModel.appWindow?.backingScaleFactor ?? mainBackingScale }
 }
 
 /// The white loading spinner shown over the black full-size background.

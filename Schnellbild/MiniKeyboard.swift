@@ -15,6 +15,7 @@ struct MiniKeyboard: View {
         let input: BrowserModel.KeyInput
         var command = false
         var shift = false
+        var option = false
         /// The cap is unique within a row ("F" and "⌘F" are two keys).
         var id: String { cap }
     }
@@ -66,8 +67,8 @@ struct MiniKeyboard: View {
                 Key(cap: "−", word: "Zoom out", input: .char("-")),
                 Key(cap: "0", word: "Fit", input: .char("0")),
                 Key(cap: "1", word: "100 %", input: .char("1")),
-                Key(cap: "[", word: "Rotate left", input: .char("[")),
-                Key(cap: "]", word: "Rotate right", input: .char("]")),
+                Key(cap: "⌥←", word: "Rotate left", input: .left, option: true),
+                Key(cap: "⌥→", word: "Rotate right", input: .right, option: true),
                 Key(cap: "I", word: "Info", input: .char("i")),
                 Key(cap: "E", word: "Auto Enhance", input: .char("e")),
                 Key(cap: "A", word: "Adjust", input: .char("a")),
@@ -144,7 +145,7 @@ private struct MiniKeyButton: View {
         Button {
             // As typed: the window's keys first (D, Tab, F5, F6), then the pane's
             if !window.handleWindowKey(key.input, command: key.command, control: false, textEditing: false) {
-                model.handleKey(key.input, command: key.command, shift: key.shift)
+                model.handleKey(key.input, command: key.command, shift: key.shift, option: key.option)
             }
         } label: {
             VStack(spacing: 3) {
@@ -171,7 +172,7 @@ private struct MiniKeyButton: View {
         .onChange(of: model.lastKeyPress) { _, press in
             // Just now: a press stored in the other pane (now active) is old
             guard let press, Date().timeIntervalSince(press.at) < 0.5,
-                  press.matches(key.input, command: key.command, shift: key.shift) else { return }
+                  press.matches(key.input, command: key.command, shift: key.shift, option: key.option) else { return }
             presses += 1
             withAnimation(.easeOut(duration: 0.08)) { lit = true }
             Task { @MainActor in

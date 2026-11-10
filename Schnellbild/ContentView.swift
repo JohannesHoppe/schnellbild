@@ -296,9 +296,10 @@ private struct WindowView: View {
                 // A key that moves the selection or the search scrolls the
                 // grid under the still pointer: the hovered tile is no longer known
                 if typing || [115, 116, 119, 121, 123, 124, 125, 126].contains(code) { ModifierClicks.forgetHover() }
-                // ⌥ makes other characters ("∂", "ß"): no shortcut of the app
-                // has ⌥, but [ and ] need it on many layouts (German ⌥5 / ⌥6)
-                if event.modifierFlags.contains(.option), !(event.characters == "[" || event.characters == "]") { return false }
+                // ⌥ makes other characters ("∂", "ß"): the app's only ⌥ keys
+                // are ⌥← / ⌥→ (turn the picture)
+                let option = event.modifierFlags.contains(.option)
+                if option, code != 123, code != 124 { return false }
                 guard !control, let key = ContentView.keyInput(code: code, characters: chars, latin: {
                     LatinKeys.character(for: code, shift: event.modifierFlags.contains(.shift))
                 }) else { return false }
@@ -315,6 +316,10 @@ private struct WindowView: View {
                 // The window's keys first (D, Tab, F5, F6), then the active pane's
                 if window.handleWindowKey(key, command: command, control: false,
                                           shift: event.modifierFlags.contains(.shift), textEditing: typing) { return true }
+                if option {
+                    return model.handleKey(key, command: command, shift: event.modifierFlags.contains(.shift),
+                                           option: true, textEditing: typing, repeating: event.isARepeat)
+                }
                 return model.handleKey(key, command: command, shift: event.modifierFlags.contains(.shift),
                                        textEditing: typing, repeating: event.isARepeat)
             }

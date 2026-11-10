@@ -59,7 +59,7 @@ struct FullImageView: View {
                 image = ThumbnailCache.shared.image(for: url)
                 failed = false
                 decodedSide = 0
-                let scale = NSScreen.mainBackingScale
+                let scale = NSScreen.windowBackingScale
                 let maxPixel = max(Int(max(geo.size.width, geo.size.height) * scale), 1)
                 await load(maxPixel: maxPixel, sharper: false)
                 updateActualSizeFactor(in: geo.size)
@@ -150,7 +150,7 @@ struct FullImageView: View {
     private func updateActualSizeFactor(in container: CGSize) {
         guard let ns = nativeSize, ns.width > 0, ns.height > 0,
               container.width > 0, container.height > 0 else { return }
-        let scale = NSScreen.mainBackingScale
+        let scale = NSScreen.windowBackingScale
         let fitScale = min(container.width / ns.width, container.height / ns.height)
         let fitWidth = ns.width * fitScale
         let actualWidth = ns.width / scale          // 100 % in points
@@ -231,7 +231,7 @@ struct FullImageView: View {
     /// size, zoomed in at the zoomed size.
     private func wantedSide(in container: CGSize) -> Int {
         guard let native = nativeSize, native.width > 0, native.height > 0 else { return 0 }
-        let view = CGFloat(max(container.width, container.height) * NSScreen.mainBackingScale)
+        let view = CGFloat(max(container.width, container.height) * NSScreen.windowBackingScale)
         if VectorPicture.isVector(url) {
             return min(Int(view * max(model.zoom, 1)), VectorPicture.largestSide)
         }
