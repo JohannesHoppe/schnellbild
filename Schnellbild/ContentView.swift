@@ -295,7 +295,6 @@ private struct WindowView: View {
                     }
                 }
                 // The window's keys first (D, Tab, F5, F6), then the active pane's
-                BrowserModel.testLog("key \(key) typing \(typing), first responder \(NSApp.keyWindow?.firstResponder.map { String(describing: type(of: $0)) } ?? "none"), sheet \(model.anySheetOpen)")
                 if window.handleWindowKey(key, command: command, control: false,
                                           shift: event.modifierFlags.contains(.shift), textEditing: typing) { return true }
                 return model.handleKey(key, command: command, shift: event.modifierFlags.contains(.shift),
