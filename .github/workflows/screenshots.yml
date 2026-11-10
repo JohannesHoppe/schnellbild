@@ -74,6 +74,8 @@ jobs:
           # The test asks for each picture on the pasteboard ("shoot:<name>")
           # and waits for "done:<name>".
           (
+            # One failed capture must not end the helper (the step runs with -e)
+            set +e
             while :; do
               request=$(pbpaste 2>/dev/null || true)
               case "$request" in
@@ -107,7 +109,7 @@ jobs:
                 -destination 'platform=macOS' -derivedDataPath build/DerivedData \
                 -only-testing:SchnellbildUITests/ReadmeScreenshots || status=1
           done
-          kill "$helper"
+          kill "$helper" 2>/dev/null || true
           ls -la shots
           exit $status
 

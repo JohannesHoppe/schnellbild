@@ -110,8 +110,36 @@ final class PlayerSpy: PlaybackControl {
     func setVolume(_ volume: Double) { self.volume = volume }
 }
 
+/// A fresh preferences suite per model; every suite made is removed when the
+/// test process ends, so test runs leave no files in ~/Library/Preferences.
 func makeTestDefaults() -> UserDefaults {
-    UserDefaults(suiteName: "sb.tests.\(UUID().uuidString)")!
+    TestDefaults.make()
+}
+
+enum TestDefaults {
+    private static let lock = NSLock()
+    private static var names: [String] = []
+
+    static func make() -> UserDefaults {
+        let name = "sb.tests.\(UUID().uuidString)"
+        lock.lock()
+        if names.isEmpty { atexit { TestDefaults.removeAll() } }
+        names.append(name)
+        lock.unlock()
+        return UserDefaults(suiteName: name)!
+    }
+
+    static func removeAll() {
+        lock.lock()
+        let made = names
+        names = []
+        lock.unlock()
+        let preferences = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Library/Preferences")
+        for name in made {
+            UserDefaults.standard.removePersistentDomain(forName: name)
+            try? FileManager.default.removeItem(at: preferences.appendingPathComponent("\(name).plist"))
+        }
+    }
 }
 
 @MainActor
@@ -563,7 +591,8 @@ final class OpenFolderTests: XCTestCase {
         defaults.set("/does/not/exist", forKey: BrowserModel.lastFolderKey)
         let m = BrowserModel(defaults: defaults)
         m.restoreLastFolder()
-        try await Task.sleep(for: .milliseconds(300))   // checked in the background
+        XCTAssertTrue(m.restoringLastFolder)
+        await waitUntil { !m.restoringLastFolder }   // decided in the background
         XCTAssertNil(m.folderURL)
     }
 
@@ -1297,9 +1326,12 @@ final class FileActionTests: XCTestCase {
         await waitUntil { m.transfersRunning == 0 }
         XCTAssertEqual(m.names, ["..", "Sorted"])
         XCTAssertTrue(FileManager.default.fileExists(atPath: sorted.appendingPathComponent("a.jpg").path))
+        let movesBefore = spy.moved.count, reportsBefore = spy.reported.count
         m.move([sorted], into: sorted)
         await waitUntil { m.transfersRunning == 0 }
-        XCTAssertTrue(FileManager.default.fileExists(atPath: sorted.path), "not into itself")
+        XCTAssertEqual(spy.moved.count, movesBefore, "not into itself: nothing is tried")
+        XCTAssertEqual(spy.reported.count, reportsBefore, "and nothing fails")
+        XCTAssertTrue(FileManager.default.fileExists(atPath: sorted.path))
         await openAndWait(m, sorted)
         m.move([sorted.appendingPathComponent("a.jpg")], into: tree.root)   // onto ".."
         await waitUntil { m.transfersRunning == 0 }

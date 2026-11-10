@@ -16,7 +16,9 @@ DEST="$ROOT/build/xcodegen"
 # Fetched already, of this version (a stamp next to it says which)
 if [ ! -x "$DEST/bin/xcodegen" ] || [ "$(cat "$DEST/.version" 2>/dev/null)" != "$VERSION $SHA256" ]; then
     TMP="$(mktemp -d)"
-    trap 'rm -rf "$TMP"' EXIT
+    # bash 3.2 reports an aborted expansion (an unset variable) as success
+    # once an EXIT trap runs: the trap fails unless the script got to its end.
+    trap 'rm -rf "$TMP"; [ -n "${finished:-}" ] || exit 1' EXIT
     fetch_verified "XcodeGen $VERSION" "$URL" "$SHA256" "$TMP/xcodegen.zip"
     unzip -q "$TMP/xcodegen.zip" -d "$TMP/unpacked"
     rm -rf "$DEST"
@@ -26,3 +28,4 @@ if [ ! -x "$DEST/bin/xcodegen" ] || [ "$(cat "$DEST/.version" 2>/dev/null)" != "
 fi
 "$DEST/bin/xcodegen" --version >&2
 echo "$DEST/bin"
+finished=1

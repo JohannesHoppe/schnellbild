@@ -50,18 +50,26 @@ check_notary_env() {
 nt() { xcrun notarytool "$@" --key "$NOTARY_KEY" --key-id "$NOTARY_KEY_ID" --issuer "$NOTARY_ISSUER"; }
 
 # Poll until Accepted/Invalid or the wait time is up. Network hiccups count as
-# "?" and polling goes on. Prints the last status.
+# "?" and polling goes on; Apple refusing the key (revoked, a changed issuer,
+# an agreement to accept) counts as "Unauthorized", which no later run fixes.
+# notarytool's own message is shown. Prints the last status.
 wait_status() {
-  local id=$1 minutes=$2 status deadline
+  local id=$1 minutes=$2 status deadline out err
   deadline=$(( $(date +%s) + minutes * 60 ))
+  err=$(mktemp)
   while :; do
-    status=$(nt info "$id" --output-format json 2>/dev/null \
-             | python3 -c 'import json,sys; print(json.load(sys.stdin)["status"])' 2>/dev/null || echo "?")
+    status="?"
+    if out=$(nt info "$id" --output-format json 2>"$err"); then
+      status=$(python3 -c 'import json,sys; print(json.load(sys.stdin)["status"])' <<< "$out" 2>/dev/null || echo "?")
+    else
+      sed 's/^/   notarytool: /' "$err" >&2
+      if grep -qiE '(^|[^0-9a-f-])40[13]([^0-9a-f-]|$)|unauthori[sz]ed|forbidden|authenticat|agreement' "$err"; then status="Unauthorized"; fi
+    fi
     echo "$(date -u +%H:%M) $id: $status" >&2
     case "$status" in
-      Accepted|Invalid|Rejected) echo "$status"; return ;;
+      Accepted|Invalid|Rejected|Unauthorized) rm -f "$err"; echo "$status"; return ;;
     esac
-    if [ "$(date +%s)" -ge "$deadline" ]; then echo "$status"; return; fi
+    if [ "$(date +%s)" -ge "$deadline" ]; then rm -f "$err"; echo "$status"; return; fi
     sleep 60
   done
 }
@@ -119,6 +127,10 @@ case "${1:-}" in
         nt log "$id" || true
         echo "Apple rejected the DMG ($status), see the log above." >&2
         output result=invalid
+        exit 1
+        ;;
+      Unauthorized)
+        echo "Apple refused the API key (see notarytool's message above): check the NOTARY_* secrets and the developer agreement." >&2
         exit 1
         ;;
       *)

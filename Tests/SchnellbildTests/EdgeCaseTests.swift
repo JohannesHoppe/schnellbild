@@ -112,15 +112,18 @@ final class UnreadableFolderTests: XCTestCase {
         return url
     }
 
-    /// Opening it shows an empty folder (with `..` to get out), it doesn't
-    /// hang in loading.
+    /// Opening it shows only `..` to get out and says it can't be read
+    /// (never "This folder is empty"); it doesn't hang in loading.
     @MainActor
-    func testAnUnreadableFolderOpensEmpty() async throws {
+    func testAnUnreadableFolderSaysItCantBeRead() async throws {
         let tree = try TempTree(self)
         let locked = try lockedFolder(tree, "locked", holding: "secret.jpg")
         let m = makeModel()
         await openAndWait(m, locked)
+        await waitUntil { m.loadError != nil }
         XCTAssertEqual(m.names, [".."])
+        XCTAssertEqual(m.loadError?.archive, false)
+        XCTAssertFalse(m.loadError?.reason.isEmpty ?? true, "with the system's reason")
         m.handleKey(.backspace, command: false)
         await waitUntil { m.isAt(tree.root) }
         XCTAssertEqual(m.selectedEntry?.name, "locked", "back out, on the folder it came from")
@@ -182,10 +185,12 @@ final class UnreadableFolderTests: XCTestCase {
         try FileManager.default.removeItem(at: gone)
         m.navigateBack()
         await waitUntil { m.isAt(gone) }
-        XCTAssertEqual(m.names, [".."], "nothing left in it")
+        await waitUntil { m.loadError != nil }
+        XCTAssertEqual(m.names, [".."], "nothing left in it, and it says it can't be read")
         m.navigateForward()
         await waitUntil { m.isAt(next) }
-        XCTAssertEqual(m.names, ["..", "q.jpg"])
+        await waitUntil { m.names == ["..", "q.jpg"] }
+        XCTAssertNil(m.loadError)
         m.navigateBack()
         await waitUntil { m.isAt(gone) }
         m.handleKey(.backspace, command: false)
