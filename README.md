@@ -40,7 +40,7 @@ Schnellbild follows your Mac's language: English, Deutsch, Français, Español, 
 
 ### Browse folders
 
-Open a folder with ⌘O or drag it onto the window; drag a single file to open it straight in the full view. Subfolders come first, each previewing its first pictures or videos like Finder (from its subfolders when it holds none itself), with a `..` tile to go up. Folders without a single photo or video anywhere inside are greyed out, so you don't bother opening them (a `Thumbs.db` or `desktop.ini` doesn't count). `L` (or the switch in the status bar) shows the folder as a **list** instead: a small preview, the whole name, kind, date modified, date taken and size in columns; a click on a column's header sorts by it, another reverses it, the same sort as the sort menu. Files that aren't pictures, videos or archives are listed by name and size under the grid (in the list as grey rows), so a folder that holds only such files never looks empty; "This folder is empty" means it holds nothing at all; a folder Schnellbild can't read (no permission, a share that went away) says "This folder can't be read" with the reason, never "empty". Thumbnails come from QuickLook: JPEG, HEIC, PNG, GIF, SVG, camera RAW, PSD, PDF, and a poster frame for videos. Schnellbild reopens the last folder on launch.
+Open a folder with ⌘O or drag it onto the window; drag a single file to open it straight in the full view. Subfolders come first, each previewing its first pictures or videos like Finder (from its subfolders when it holds none itself), with a `..` tile to go up. Folders without a single photo or video anywhere inside are greyed out, so you don't bother opening them (a `Thumbs.db` or `desktop.ini` doesn't count). `L` (or the switch in the status bar) shows the folder as a **list** instead: a small preview, the whole name, kind, date modified, date taken and size in columns; a click on a column's header sorts by it, another reverses it, the same sort as the sort menu. Files that aren't pictures, videos or archives are listed by name and size under the grid (in the list as grey rows), so a folder that holds only such files never looks empty; "This folder is empty" means it holds nothing at all; a folder Schnellbild can't read (no permission, a share that went away) says "This folder can't be read" with the reason, never "empty". Thumbnails come from QuickLook: JPEG, HEIC, AVIF, JPEG XL, PNG, GIF, WebP, TIFF, SVG, PDF, PSD, OpenEXR, the camera RAW formats macOS reads, and a poster frame for videos. A symbolic link shows as what it points to (a link to a folder on a share opens like that folder); walks through subfolders don't follow links. Schnellbild reopens the last folder on launch.
 
 | Key | Action |
 |---|---|
@@ -307,8 +307,8 @@ Early, but already a usable daily driver. Known limits:
 
 - The slideshow interval is fixed at 3 s.
 - `1` (100 %) is approximate (it assumes the main display's scale).
-- Animated GIFs don't zoom or pan.
-- Packages such as the Photos library count as one file, as in the Finder: they aren't browsed, searched or played.
+- Animated GIFs don't zoom, pan, rotate or take the enhance filter (still GIFs do, like any photo).
+- Packages such as the Photos library count as one file, as in the Finder: they aren't browsed, searched or played, also when dropped onto the window (their folder opens with them selected).
 - Archives inside archives aren't opened. Thumbnails of videos inside archives are an icon. Sorting by date taken uses the date modified inside archives.
 
 Building from source, tests and releases: [BUILDING.md](BUILDING.md).

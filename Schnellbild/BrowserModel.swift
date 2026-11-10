@@ -843,13 +843,17 @@ final class BrowserModel: ObservableObject {
     private var sortAscendingKey: String { settingsPrefix + Self.sortAscendingKey }
 
     nonisolated static let imageExtensions: Set<String> = [
-        "jpg", "jpeg", "png", "gif", "heic", "heif", "tiff", "tif", "bmp",
-        "webp", "psd", "pdf", "cr2", "cr3", "nef", "arw", "dng", "raf",
-        "orf", "rw2", "raw", "icns", "svg"
+        "jpg", "jpeg", "jpe", "png", "gif", "heic", "heif", "hif", "heics", "avif", "jxl",
+        "tiff", "tif", "bmp", "webp", "psd", "pdf", "jp2", "j2k", "exr", "hdr", "tga",
+        "ico", "icns", "mpo", "dds", "svg",
+        // camera RAW formats ImageIO reads
+        "cr2", "cr3", "crw", "nef", "nrw", "arw", "sr2", "srf", "dng", "raf", "orf",
+        "rw2", "rwl", "raw", "pef", "srw", "3fr", "fff", "erf", "dcr", "mos", "mrw", "iiq"
     ]
     nonisolated static let videoExtensions: Set<String> = [
-        "mp4", "mov", "m4v", "avi", "mkv", "webm", "m2ts", "mts",
-        "mpg", "mpeg", "3gp", "wmv", "flv", "ogv"
+        "mp4", "mov", "qt", "m4v", "avi", "mkv", "webm", "m2ts", "mts",
+        "mpg", "mpeg", "m2v", "3gp", "3g2", "dv", "wmv", "flv", "ogv"
+        // (not "ts": far more often TypeScript than an MPEG transport stream)
     ]
 
     /// The one rule for which files the app shows: image, video, or nil.
@@ -1100,7 +1104,8 @@ final class BrowserModel: ObservableObject {
             var listing = FolderListing()
             for item in contents {
                 if let entry = entry(for: item, keys: keys) { listing.entries.append(entry); continue }
-                let vals = try? item.resourceValues(forKeys: keys)
+                var vals = try? item.resourceValues(forKeys: keys)
+                if vals?.isSymbolicLink == true { vals = try? item.resolvingSymlinksInPath().resourceValues(forKeys: keys) }
                 // Hidden files (".DS_Store", "._…") aren't listed; folders that
                 // aren't shown are packages, which count as files
                 guard !item.lastPathComponent.hasPrefix("."),
@@ -1119,14 +1124,19 @@ final class BrowserModel: ObservableObject {
 
     /// What `entry(for:keys:)` reads, prefetched by the listings.
     nonisolated static let entryKeys: Set<URLResourceKey> = [
-        .isDirectoryKey, .isPackageKey, .contentModificationDateKey, .fileSizeKey
+        .isDirectoryKey, .isPackageKey, .contentModificationDateKey, .fileSizeKey, .isSymbolicLinkKey
     ]
 
     /// Classify one file system item; nil for non-media files. Packages
     /// (".photoslibrary", ".app") are single files to the user, as in the
     /// Finder: not a folder to browse, walk in a slideshow or search.
     nonisolated private static func entry(for item: URL, keys: Set<URLResourceKey>) -> GridEntry? {
-        let vals = try? item.resourceValues(forKeys: keys)
+        var vals = try? item.resourceValues(forKeys: keys)
+        // A symbolic link is what it points to, as in the Finder (a link to
+        // a folder on a share opens like that folder), under its own name
+        if vals?.isSymbolicLink == true {
+            vals = try? item.resolvingSymlinksInPath().resourceValues(forKeys: keys)
+        }
         let date = vals?.contentModificationDate
         if vals?.isPackage == true { return nil }
         if vals?.isDirectory == true {
@@ -1162,7 +1172,7 @@ final class BrowserModel: ObservableObject {
     /// code); nil when its task is cancelled.
     nonisolated private static func anyMedia(below folder: URL) -> Bool? {
         guard let walk = FileManager.default.enumerator(
-            at: folder, includingPropertiesForKeys: [.isRegularFileKey],
+            at: folder, includingPropertiesForKeys: [.isRegularFileKey, .isSymbolicLinkKey],
             options: [.skipsHiddenFiles, .skipsPackageDescendants]) else { return false }
         while true {
             if Task.isCancelled { return nil }
@@ -1181,7 +1191,12 @@ final class BrowserModel: ObservableObject {
     /// A file, not a folder named like one ("Export.mov"). The enumerators
     /// read this along with the listing.
     nonisolated private static func isFile(_ url: URL) -> Bool {
-        (try? url.resourceValues(forKeys: [.isRegularFileKey]))?.isRegularFile ?? false
+        let values = try? url.resourceValues(forKeys: [.isRegularFileKey, .isSymbolicLinkKey])
+        // A link to a file counts as that file
+        if values?.isSymbolicLink == true {
+            return (try? url.resolvingSymlinksInPath().resourceValues(forKeys: [.isRegularFileKey]))?.isRegularFile ?? false
+        }
+        return values?.isRegularFile ?? false
     }
 
     /// Folders known to hold no photos or videos at any depth, as canonical
@@ -1212,7 +1227,7 @@ final class BrowserModel: ObservableObject {
         let walk = Task.detached(priority: .utility) { () -> [URL] in
             let contents = (try? FileManager.default.contentsOfDirectory(
                 at: folder,
-                includingPropertiesForKeys: [.isRegularFileKey],
+                includingPropertiesForKeys: [.isRegularFileKey, .isSymbolicLinkKey, .contentModificationDateKey],
                 options: [.skipsHiddenFiles]
             )) ?? []
             // One pass keeping the `limit` first names, instead of sorting a
@@ -1230,7 +1245,7 @@ final class BrowserModel: ObservableObject {
             // None at the top: the first ones further down, so a folder of
             // folders previews what's inside them too
             guard let walk = FileManager.default.enumerator(
-                at: folder, includingPropertiesForKeys: [.isRegularFileKey],
+                at: folder, includingPropertiesForKeys: [.isRegularFileKey, .isSymbolicLinkKey, .contentModificationDateKey],
                 options: [.skipsHiddenFiles, .skipsPackageDescendants]) else { return [] }
             var looked = 0
             while looked <= 20_000, !Task.isCancelled, first.count < limit {   // a huge tree: give up, not hang
@@ -1494,6 +1509,12 @@ final class BrowserModel: ObservableObject {
             return String(path.dropFirst("/private".count))
         }
         return path
+    }
+
+    /// A symbolic link: walks don't follow one into the tree (it may point
+    /// back up, around and around).
+    nonisolated static func isLink(_ url: URL) -> Bool {
+        (try? url.resourceValues(forKeys: [.isSymbolicLinkKey]))?.isSymbolicLink == true
     }
 
     /// A folder the Finder shows as one item (`.photoslibrary`, `.app`).
@@ -3173,7 +3194,7 @@ final class BrowserModel: ObservableObject {
         let sorted = sortEntries(contents, key: key, ascending: ascending, captured: captured)
         let media = sorted.filter(\.isMedia)
         if !media.isEmpty { await found(media) }
-        for sub in sorted where sub.kind == .folder && !sub.name.hasPrefix(".") {
+        for sub in sorted where sub.kind == .folder && !sub.name.hasPrefix(".") && !isLink(sub.url) {
             await walkForSlideshow(sub.url, key: key, ascending: ascending, found: found)
         }
     }

@@ -101,6 +101,13 @@ struct EntryListView: View {
         .contentShape(Rectangle())
         .modifier(EntryInteractions(entry: entry))
         .onAppear { if entry.isMedia { model.wantCaptureDate(of: entry.url) } }
+        // A folder with no photo or video at any depth is greyed out here
+        // too (the grid's folder tiles find it out the same way)
+        .task(id: entry.kind == .folder && !entry.isArchive ? entry.url : nil) {
+            guard entry.kind == .folder, !entry.isArchive,
+                  let found = await FolderPreviewCache.shared.containsMedia(entry.url), !Task.isCancelled else { return }
+            model.noteFolder(entry.url, empty: !found)
+        }
         .id(entry.id)
         .accessibilityElement(children: .ignore)
         .accessibilityIdentifier("row.\(entry.name)")
