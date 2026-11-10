@@ -138,7 +138,10 @@ jobs:
           # Several tests or classes: separated by commas
           only=()
           IFS=',' read -ra selected <<< "$ONLY"
-          for test in "${selected[@]}"; do only+=(-only-testing:"$test"); done
+          for test in "${selected[@]}"; do
+            test="$(echo "$test" | xargs)"   # "A, B": no blanks around a name
+            [ -n "$test" ] && only+=(-only-testing:"$test")
+          done
           TEST_RUNNER_SCREEN_MEASURE=1 xcodebuild test \
             -project Schnellbild.xcodeproj \
             -scheme Schnellbild \

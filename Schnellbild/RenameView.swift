@@ -60,11 +60,11 @@ struct RenameView: View {
         }
     }
 
-    /// Files: select the name without the extension, once the field is
-    /// being edited (AppKit selects everything when it gains focus; that has
-    /// happened once the field editor is first responder).
+    /// Files and archives: select the name without the extension, once the
+    /// field is being edited (AppKit selects everything when it gains focus;
+    /// that has happened once the field editor is first responder).
     private func selectBaseName() {
-        guard entry.kind != .folder else { return }
+        guard entry.kind != .folder || entry.isArchive else { return }
         let length = ((entry.url.lastPathComponent as NSString).deletingPathExtension as NSString).length
         Task { @MainActor in
             for _ in 0..<50 {   // up to a second

@@ -163,6 +163,7 @@ final class DualPaneTests: XCTestCase {
         let m = BrowserModel(defaults: makeTestDefaults(), fileActions: spy.actions)
         await openAndWait(m, trip)
         m.move([tree.root, trip], into: target)
+        await waitUntil { m.transfersRunning == 0 }
         XCTAssertTrue(spy.moved.isEmpty)
         XCTAssertTrue(FileManager.default.fileExists(atPath: trip.appendingPathComponent("a.jpg").path))
     }

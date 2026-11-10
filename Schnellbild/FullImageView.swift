@@ -174,10 +174,7 @@ struct FullImageView: View {
         let url = self.url
         let result = await Task.detached(priority: .userInitiated) { () -> (NSImage, CGSize, CGImage)? in
             if VectorPicture.isVector(url) {
-                let inArchive = ArchivePath.isInside(url)
-                let data = inArchive ? try? await MediaData.read(url) : nil
-                guard let rendered = inArchive ? data.flatMap({ VectorPicture.render(data: $0, longestSide: maxPixel) })
-                                               : VectorPicture.render(url, longestSide: maxPixel) else { return nil }
+                guard let rendered = await VectorPicture.render(url, longestSide: maxPixel) else { return nil }
                 let cg = rendered.0
                 return (NSImage(cgImage: cg, size: NSSize(width: cg.width, height: cg.height)), rendered.1, cg)
             }
@@ -269,27 +266,28 @@ struct FullImageView: View {
 /// SVG: ImageIO doesn't read it, AppKit's `NSImage` draws it, as a vector
 /// picture at any size.
 enum VectorPicture {
-    /// Drawn no larger than this (a 64 MB picture at full zoom).
-    static let largestSide = 8192
+    /// Drawn no larger than this (at most a 64 MB picture, 4096 × 4096 × 4
+    /// bytes, at full zoom; the adjusted copy needs as much again).
+    static let largestSide = 4096
 
     static func isVector(_ url: URL) -> Bool { url.pathExtension.lowercased() == "svg" }
 
+    /// The picture, from disk or from inside an archive (`MediaData`).
+    private static func image(_ url: URL) async -> NSImage? {
+        guard let data = try? await MediaData.read(url) else { return nil }
+        return NSImage(data: data)
+    }
+
     /// The picture's own size (points from its width/height or viewBox).
-    static func size(of url: URL) -> CGSize? {
-        guard let image = NSImage(contentsOf: url), image.size.width > 0, image.size.height > 0 else { return nil }
+    static func size(of url: URL) async -> CGSize? {
+        guard let image = await image(url), image.size.width > 0, image.size.height > 0 else { return nil }
         return image.size
     }
 
     /// Drawn with its longest side `longestSide` pixels, on its own
     /// background (transparent where the SVG draws nothing); with its size.
-    static func render(_ url: URL, longestSide: Int) -> (CGImage, CGSize)? {
-        guard let image = NSImage(contentsOf: url) else { return nil }
-        return render(image, longestSide: longestSide)
-    }
-
-    /// An SVG from its bytes (inside an archive).
-    static func render(data: Data, longestSide: Int) -> (CGImage, CGSize)? {
-        guard let image = NSImage(data: data) else { return nil }
+    static func render(_ url: URL, longestSide: Int) async -> (CGImage, CGSize)? {
+        guard let image = await image(url) else { return nil }
         return render(image, longestSide: longestSide)
     }
 

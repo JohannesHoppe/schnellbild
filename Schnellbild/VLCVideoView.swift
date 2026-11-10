@@ -184,13 +184,15 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         measureTask = nil
         player.delegate = nil
         // Nothing else touches it once stopping: the control is going away.
-        // The picture output stays alive until the player has stopped, so a
-        // video output VLC still opens meanwhile finds it.
+        // (The picture output lives as long as the player: `VLCFrameOutput.attach`.)
+        // VLCKit stops asynchronously and waits for its reading thread when
+        // the player goes: held here until it has stopped (or a while), so
+        // that last release, and its wait on a stalled share, happen here
+        // and not on the main thread with the control.
         nonisolated(unsafe) let player = self.player
-        let output = self.output
         DispatchQueue.global(qos: .userInitiated).async {
             player.stop()
-            withExtendedLifetime(output) {}
+            for _ in 0..<100 where player.state != .stopped { usleep(50_000) }
             BrowserModel.testLog("vlc stopped")
         }
     }

@@ -125,8 +125,12 @@ final class VisualUITests: SchnellbildUITestCase {
     func testHoverKeepsAnAVKitVideosBrightness() throws { try checkHoverKeepsTheBrightness(vlc: false) }
     func testHoverKeepsAVLCVideosBrightness() throws { try checkHoverKeepsTheBrightness(vlc: true) }
     /// AVKit's other controls styles, for comparison (the inline one dims
-    /// the picture on macOS 26 and later); only reported.
+    /// the picture on macOS 26 and later); only reported, so only when asked
+    /// for (xcodebuild run with TEST_RUNNER_COMPARE_CONTROLS=1).
     func testHoverWithOtherAVKitControls() throws {
+        guard ProcessInfo.processInfo.environment["COMPARE_CONTROLS"] == "1" else {
+            throw XCTSkip("a comparison, not a check")
+        }
         for style in ["inline", "minimal"] {
             try checkHoverKeepsTheBrightness(vlc: false, controls: style, check: false)
             app.terminate()

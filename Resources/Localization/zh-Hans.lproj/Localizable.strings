@@ -222,3 +222,11 @@
 "Copying or moving…" = "正在拷贝或移动…";
 "This archive needs a password" = "此归档需要密码";
 "Password required" = "需要密码";
+"Copying or moving is still under way." = "仍在拷贝或移动。";
+"Schnellbild quits once it is done. Quitting now would leave files half copied." = "完成后 Schnellbild 将退出。现在退出会留下拷贝了一半的文件。";
+"Quit When Done" = "完成后退出";
+"The name must end in “.%@”, as the archive does." = "名称必须像归档一样以“.%@”结尾。";
+"unknown error" = "未知错误";
+"⌘-click / Insert" = "⌘-点按 / Insert";
+"⇧-click / ⇧ arrows" = "⇧-点按 / ⇧ 箭头";
+"drag" = "拖移";

@@ -222,3 +222,11 @@
 "Copying or moving…" = "正在拷貝或移動…";
 "This archive needs a password" = "此封存檔需要密碼";
 "Password required" = "需要密碼";
+"Copying or moving is still under way." = "仍在拷貝或移動。";
+"Schnellbild quits once it is done. Quitting now would leave files half copied." = "完成後 Schnellbild 將結束。現在結束會留下拷貝了一半的檔案。";
+"Quit When Done" = "完成後結束";
+"The name must end in “.%@”, as the archive does." = "名稱必須像封存檔一樣以「.%@」結尾。";
+"unknown error" = "未知錯誤";
+"⌘-click / Insert" = "⌘-按一下 / Insert";
+"⇧-click / ⇧ arrows" = "⇧-按一下 / ⇧ 方向鍵";
+"drag" = "拖移";

@@ -222,3 +222,11 @@
 "Copying or moving…" = "Kopierer eller flytter …";
 "This archive needs a password" = "Dette arkiv kræver en adgangskode";
 "Password required" = "Adgangskode kræves";
+"Copying or moving is still under way." = "Der kopieres eller flyttes stadig.";
+"Schnellbild quits once it is done. Quitting now would leave files half copied." = "Schnellbild afsluttes, når det er færdigt. At afslutte nu ville efterlade halvt kopierede filer.";
+"Quit When Done" = "Afslut, når færdig";
+"The name must end in “.%@”, as the archive does." = "Navnet skal ende på “.%@” ligesom arkivet.";
+"unknown error" = "ukendt fejl";
+"⌘-click / Insert" = "⌘-klik / Insert";
+"⇧-click / ⇧ arrows" = "⇧-klik / ⇧ pile";
+"drag" = "træk";

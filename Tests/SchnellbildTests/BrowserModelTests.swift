@@ -239,10 +239,11 @@ final class SortTests: XCTestCase {
         XCTAssertTrue(m.sortAscending)
     }
 
-    func testSortByKindGroupsExtensionsThenNames() {
+    /// As the list's Kind column: pictures before videos, then by extension and name.
+    func testSortByKindGroupsKindsThenExtensionsThenNames() {
         let input = [entry("b.png", .image), entry("c.jpg", .image), entry("a.png", .image), entry("clip.mp4", .video)]
         XCTAssertEqual(BrowserModel.sortEntries(input, key: .kind, ascending: true).map(\.name),
-                       ["c.jpg", "clip.mp4", "a.png", "b.png"])
+                       ["c.jpg", "a.png", "b.png", "clip.mp4"])
     }
 
     func testKindSortsFoldersByNameAndTiesStayAToZDescending() {
@@ -1296,6 +1297,7 @@ final class FileActionTests: XCTestCase {
         XCTAssertEqual(m.names, ["..", "Sorted"])
         XCTAssertTrue(FileManager.default.fileExists(atPath: sorted.appendingPathComponent("a.jpg").path))
         m.move([sorted], into: sorted)
+        await waitUntil { m.transfersRunning == 0 }
         XCTAssertTrue(FileManager.default.fileExists(atPath: sorted.path), "not into itself")
         await openAndWait(m, sorted)
         m.move([sorted.appendingPathComponent("a.jpg")], into: tree.root)   // onto ".."
@@ -1305,6 +1307,7 @@ final class FileActionTests: XCTestCase {
         let archive = tree.root.appendingPathComponent("photos.zip")
         let before = spy.moved.count
         m.move([sorted.appendingPathComponent("b.jpg")], into: archive)
+        await waitUntil { m.transfersRunning == 0 }
         XCTAssertEqual(spy.moved.count, before, "nothing goes into an archive")
     }
 
@@ -2370,18 +2373,20 @@ final class ReviewFixTests: XCTestCase {
     }
 
     /// SVG is a picture like any other, drawn sharp at the size asked for.
-    func testSVGIsAPictureDrawnAtAnySize() throws {
+    func testSVGIsAPictureDrawnAtAnySize() async throws {
         XCTAssertEqual(BrowserModel.mediaKind(of: URL(fileURLWithPath: "/x/logo.SVG")), .image)
         let tree = try TempTree(self)
         let svg = try tree.file("logo.svg")
         try Data(##"<svg xmlns="http://www.w3.org/2000/svg" width="200" height="100"><rect width="200" height="100" fill="#ff0000"/></svg>"##.utf8).write(to: svg)
-        let (picture, size) = try XCTUnwrap(VectorPicture.render(svg, longestSide: 1600))
+        let rendered = await VectorPicture.render(svg, longestSide: 1600)
+        let (picture, size) = try XCTUnwrap(rendered)
         XCTAssertEqual(size, CGSize(width: 200, height: 100))
         XCTAssertEqual(picture.width, 1600)
         XCTAssertEqual(picture.height, 800)
         let stats = try XCTUnwrap(PictureStats.of(CIImage(cgImage: picture)))
         XCTAssertGreaterThan(stats.mean, 0.2, "drawn, not empty")
-        XCTAssertEqual(MediaInfo.pixelSize(of: svg), CGSize(width: 200, height: 100), "the Inspector's resolution")
+        let inspected = await MediaInfo.pixelSize(ofAnywhere: svg)
+        XCTAssertEqual(inspected, CGSize(width: 200, height: 100), "the Inspector's resolution")
     }
 
     /// A package (".app", ".photoslibrary") is one item to the user, as in

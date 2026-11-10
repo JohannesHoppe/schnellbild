@@ -13,7 +13,8 @@ URL="https://github.com/yonaskolb/XcodeGen/releases/download/$VERSION/xcodegen.z
 SHA256="4d9e34b62172d645eed6457cac13fc222569974098ef4ee9c3368bedf0196806"
 
 DEST="$ROOT/build/xcodegen"
-if [ ! -x "$DEST/bin/xcodegen" ]; then
+# Fetched already, of this version (a stamp next to it says which)
+if [ ! -x "$DEST/bin/xcodegen" ] || [ "$(cat "$DEST/.version" 2>/dev/null)" != "$VERSION $SHA256" ]; then
     TMP="$(mktemp -d)"
     trap 'rm -rf "$TMP"' EXIT
     fetch_verified "XcodeGen $VERSION" "$URL" "$SHA256" "$TMP/xcodegen.zip"
@@ -21,6 +22,7 @@ if [ ! -x "$DEST/bin/xcodegen" ]; then
     rm -rf "$DEST"
     mkdir -p "$ROOT/build"
     mv "$TMP/unpacked/xcodegen" "$DEST"
+    echo "$VERSION $SHA256" > "$DEST/.version"
 fi
 "$DEST/bin/xcodegen" --version >&2
 echo "$DEST/bin"

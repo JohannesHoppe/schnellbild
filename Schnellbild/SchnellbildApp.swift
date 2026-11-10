@@ -24,7 +24,8 @@ struct SchnellbildApp: App {
         WindowGroup {
             ContentView()
                 .environmentObject(window)
-                .frame(minWidth: 720, minHeight: 520)
+                // As narrow as the toolbar keeps all its items (the full view's included)
+                .frame(minWidth: 800, minHeight: 520)
         }
         .defaultSize(width: 960, height: 640)
         .commands {
@@ -60,7 +61,7 @@ struct SchnellbildApp: App {
                     .keyboardShortcut("n", modifiers: [.command, .shift])
                     .disabled(!model.canCreateFolder)
                 Button("Rename… (F2)") { model.beginRename() }
-                    .disabled(model.slideshow != nil || model.anySheetOpen || !model.selectionIsChangeable)
+                    .disabled(model.slideshow != nil || model.anySheetOpen || !(model.selectedEntry.map(model.canRename) ?? false))
                 Button("Reveal in Finder") { model.revealInFinder() }
                     .keyboardShortcut("r", modifiers: [.command, .shift])
                     .disabled(model.slideshow != nil || model.anySheetOpen)
@@ -83,6 +84,8 @@ struct SchnellbildApp: App {
                 Toggle("as List", isOn: Binding(get: { model.viewMode == .list }, set: { if $0 { model.viewMode = .list } }))
                 Divider()
                 Toggle("Dual Pane (D)", isOn: Binding(get: { window.dual }, set: { window.setDual($0) }))
+                    // As the key: not during a slideshow, not over a sheet (of either pane)
+                    .disabled(window.panes.contains { $0.slideshow != nil || $0.anySheetOpen })
                 Toggle("Mini Keyboard (K)", isOn: Binding(get: { model.showMiniKeyboard }, set: { model.showMiniKeyboard = $0 }))
                 Divider()
                 Button("Larger Thumbnails (⌘+)") { model.growThumbnails() }
@@ -93,7 +96,7 @@ struct SchnellbildApp: App {
             CommandGroup(replacing: .help) {
                 Button("Schnellbild Help") { model.openHelp() }
                     .keyboardShortcut("?", modifiers: .command)
-                    .disabled(model.renameTarget != nil)
+                    .disabled(model.otherSheetOpen)
             }
         }
     }
@@ -110,5 +113,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
         true
+    }
+
+    /// Not in the middle of a copy or move: the app quits once it is done.
+    func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
+        guard BrowserModel.transfersUnderWay > 0 else { return .terminateNow }
+        let alert = NSAlert()
+        alert.messageText = String(localized: "Copying or moving is still under way.")
+        alert.informativeText = String(localized: "Schnellbild quits once it is done. Quitting now would leave files half copied.")
+        alert.addButton(withTitle: String(localized: "Quit When Done"))
+        alert.addButton(withTitle: String(localized: "Cancel"))
+        guard alert.runModal() == .alertFirstButtonReturn else { return .terminateCancel }
+        BrowserModel.onTransfersDone = { NSApp.reply(toApplicationShouldTerminate: true) }
+        return .terminateLater
     }
 }

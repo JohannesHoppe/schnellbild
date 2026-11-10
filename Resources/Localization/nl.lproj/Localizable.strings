@@ -222,3 +222,11 @@
 "Copying or moving…" = "Kopiëren of verplaatsen…";
 "This archive needs a password" = "Dit archief heeft een wachtwoord nodig";
 "Password required" = "Wachtwoord vereist";
+"Copying or moving is still under way." = "Er wordt nog gekopieerd of verplaatst.";
+"Schnellbild quits once it is done. Quitting now would leave files half copied." = "Schnellbild stopt zodra het klaar is. Nu stoppen zou half gekopieerde bestanden achterlaten.";
+"Quit When Done" = "Stoppen wanneer klaar";
+"The name must end in “.%@”, as the archive does." = "De naam moet eindigen op ‘.%@’, zoals het archief.";
+"unknown error" = "onbekende fout";
+"⌘-click / Insert" = "⌘-klik / Insert";
+"⇧-click / ⇧ arrows" = "⇧-klik / ⇧ pijlen";
+"drag" = "slepen";

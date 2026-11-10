@@ -19,8 +19,10 @@ SHA256="23f8f7bb0f8e0321393f51ad5da65ea37ecbc1e148ac2d97fd9f05073ec01075"
 DEST="$ROOT/Vendor"
 FRAMEWORK="$DEST/VLCKit.xcframework"
 
-if [ -d "$FRAMEWORK" ]; then
-    echo "==> VLCKit.xcframework already vendored — skipping (rm -rf Vendor to refetch)."
+# Vendored already, of this version (a stamp next to it says which)
+STAMP="$DEST/.vlckit-version"
+if [ -d "$FRAMEWORK" ] && [ -f "$STAMP" ] && [ "$(cat "$STAMP")" = "$VERSION $SHA256" ]; then
+    echo "==> VLCKit.xcframework $VERSION already vendored — skipping."
     exit 0
 fi
 
@@ -38,5 +40,6 @@ SRC="$(find "$TMP" -maxdepth 3 -name 'VLCKit.xcframework' -type d | head -1)"
 mkdir -p "$DEST"
 rm -rf "$FRAMEWORK"
 ditto "$SRC" "$FRAMEWORK"
+echo "$VERSION $SHA256" > "$STAMP"
 echo "==> Vendored: $FRAMEWORK"
 du -sh "$FRAMEWORK" 2>/dev/null | awk '{print "    size: "$1}'

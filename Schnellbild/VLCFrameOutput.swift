@@ -61,11 +61,17 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
     /// On screen, and the last few before (the compositor may still read them).
     private var shown: [CVPixelBuffer] = []
 
+    nonisolated(unsafe) private static var heldByPlayer: UInt8 = 0
+
     /// Connects to a player; call before it plays.
     @MainActor
     func attach(to player: VLCMediaPlayer) {
         guard let api = LibVLCVideo.shared,
               let native = LibVLCVideo.nativePlayer(of: player) else { return }
+        // The player holds the output as long as it lives: VLCKit stops it
+        // asynchronously and keeps it until then, and its decoder may still
+        // open the video output (and call back here) after the app let go
+        objc_setAssociatedObject(player, &Self.heldByPlayer, self, .OBJC_ASSOCIATION_RETAIN)
         // Each time VLC opens its video output (`setUp`, again for every
         // media played and every format change) it holds the output, until
         // that output closes (the cleanup callback), so a frame arriving

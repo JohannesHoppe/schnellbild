@@ -78,9 +78,10 @@ enum ArchiveName {
     /// "x.z01", "x.z02" … and "x.zip" last; else the file itself. Reads the
     /// folder, so off the main thread.
     static func volumes(of url: URL) -> [URL] {
-        let folder = Siblings(of: url)
         let name = url.lastPathComponent
+        // The folder is listed only for names that can have further parts
         if name.lowercased().hasSuffix(".001") {
+            let folder = Siblings(of: url)
             let stem = String(name.dropLast(4))
             var parts: [URL] = []
             for i in 1... {
@@ -90,6 +91,7 @@ enum ArchiveName {
             return parts.isEmpty ? [url] : parts
         }
         if (name as NSString).pathExtension.lowercased() == "zip" {
+            let folder = Siblings(of: url)
             let stem = (name as NSString).deletingPathExtension
             var parts: [URL] = []
             for i in 1... {
@@ -106,10 +108,13 @@ enum ArchiveName {
     static func allFiles(of url: URL) -> [URL] {
         guard format(of: url.lastPathComponent) == .rar else { return volumes(of: url) }
         let folder = Siblings(of: url)
-        let lower = url.lastPathComponent.lowercased()
+        // The parts are named after the archive's final name (the first part
+        // can still be downloading: "x.part1.rar.part")
+        let name = finalName(of: url.lastPathComponent)
+        let lower = name.lowercased()
         var files = [url]
         if rarPart(of: lower) != nil {
-            let stem = ((url.lastPathComponent as NSString).deletingPathExtension as NSString).deletingPathExtension
+            let stem = ((name as NSString).deletingPathExtension as NSString).deletingPathExtension
             for i in 2... {
                 let candidates = [String(format: "%@.part%d.rar", stem, i), String(format: "%@.part%02d.rar", stem, i),
                                   String(format: "%@.part%03d.rar", stem, i)]
@@ -117,7 +122,7 @@ enum ArchiveName {
                 files.append(found)
             }
         } else {
-            let stem = (url.lastPathComponent as NSString).deletingPathExtension
+            let stem = (name as NSString).deletingPathExtension
             for i in 0... {
                 guard let part = folder[String(format: "%@.r%02d", stem, i)] else { break }
                 files.append(part)
@@ -173,6 +178,13 @@ enum ArchivePath {
     static func noteFolder(_ url: URL) {
         let path = url.standardizedFileURL.path
         foldersLock.lock(); folders.insert(path); foldersLock.unlock()
+    }
+
+    /// An archive file met when listing, where a folder of that name was
+    /// before (trashed and replaced).
+    static func noteArchive(_ url: URL) {
+        let path = url.standardizedFileURL.path
+        foldersLock.lock(); folders.remove(path); foldersLock.unlock()
     }
 
     private static func isNotedFolder(_ path: String) -> Bool {
@@ -289,6 +301,7 @@ struct RarReader: ArchiveReader {
             }
             seen += 1
             if entry.split_before != 0 { _ = sb_rar_skip(rar); continue }   // the rest of a file from the last volume
+            if entry.is_link != 0 { _ = sb_rar_skip(rar); continue }   // a link: nothing to show (and no data to check a password on)
             let name = withUnsafeBytes(of: &entry.name) { String(cString: $0.bindMemory(to: CChar.self).baseAddress!) }
             // UnRAR's placeholder for a size not stored (a file packed from a stream)
             let size = entry.size == 0x7fff_ffff_7fff_ffff ? -1 : Int64(clamping: entry.size)
@@ -321,8 +334,10 @@ struct RarReader: ArchiveReader {
         init(_ sink: @escaping (UnsafeRawBufferPointer) -> Bool) { self.sink = sink }
     }
 
+    /// A path inside the archive: no empty, "." or ".." parts (an entry
+    /// named "../x.jpg" stays inside the archive, as "x.jpg").
     static func clean(_ path: String) -> String {
-        path.split(separator: "/").filter { !$0.isEmpty && $0 != "." }.joined(separator: "/")
+        path.split(separator: "/").filter { !$0.isEmpty && $0 != "." && $0 != ".." }.joined(separator: "/")
     }
 
     static func error(_ code: Int32, passwordAsked: Bool) -> ArchiveError {
@@ -347,7 +362,14 @@ struct LibArchiveReader: ArchiveReader {
     let volumes: [URL]
     let format: ArchiveFormat
 
+    /// libarchive converts entry names (7z's UTF-16, ZIP's UTF-8 flag) into
+    /// the locale's character set; the app's is plain ASCII unless set, and
+    /// a name with "Ü" would then be lost. Set for the reading thread only.
+    nonisolated(unsafe) private static let utf8 = newlocale(LC_CTYPE_MASK, "UTF-8", nil)
+
     func walk(password: String?, listOnly: Bool, _ visit: (ArchiveItem) -> ArchiveVisit) throws -> Bool {
+        let previous = uselocale(Self.utf8)
+        defer { uselocale(previous) }
         let seekable = format == .zip && volumes.count == 1
         do {
             return try walk(seekable: seekable, password: password, visit)
@@ -412,7 +434,7 @@ struct LibArchiveReader: ArchiveReader {
     }
 
     static func error(_ archive: OpaquePointer) -> ArchiveError {
-        let message = archive_error_string(archive).map { String(cString: $0) } ?? "unknown error"
+        let message = archive_error_string(archive).map { String(cString: $0) } ?? String(localized: "unknown error")
         let lower = message.lowercased()
         if lower.contains("passphrase") { return .needsPassword }
         if lower.contains("encrypt") { return .encryptionUnsupported }
@@ -428,11 +450,16 @@ struct LibArchiveReader: ArchiveReader {
 /// UI tests keep them in their own preferences, unit tests in memory.
 final class PasswordStore: @unchecked Sendable {
     private let lock = NSLock()
-    private let load: () -> [String]
+    /// nil: the store can't be read now (a locked keychain, access denied),
+    /// which is not the same as no passwords.
+    private let load: () -> [String]?
     private let save: ([String]) -> Void
     private var cached: [String]?
+    /// Passwords that opened something while the store couldn't be read:
+    /// used, but not written over the list that is stored.
+    private var unsaved: [String] = []
 
-    init(load: @escaping () -> [String], save: @escaping ([String]) -> Void) {
+    init(load: @escaping () -> [String]?, save: @escaping ([String]) -> Void) {
         self.load = load
         self.save = save
     }
@@ -440,14 +467,19 @@ final class PasswordStore: @unchecked Sendable {
     var all: [String] {
         lock.lock(); defer { lock.unlock() }
         if cached == nil { cached = load() }
-        return cached ?? []
+        return unsaved + (cached ?? []).filter { !unsaved.contains($0) }
     }
 
     /// A password that opened an archive: first in line from now on.
     func remember(_ password: String) {
         lock.lock(); defer { lock.unlock() }
-        var list = cached ?? load()
-        if list.first == password { cached = list; return }
+        if cached == nil { cached = load() }
+        guard var list = cached else {
+            unsaved.removeAll { $0 == password }
+            unsaved.insert(password, at: 0)
+            return
+        }
+        if list.first == password { return }
         list.removeAll { $0 == password }
         list.insert(password, at: 0)
         cached = list
@@ -473,9 +505,10 @@ final class PasswordStore: @unchecked Sendable {
             var found: CFTypeRef?
             var search = query
             search[kSecReturnData] = true
-            guard SecItemCopyMatching(search as CFDictionary, &found) == errSecSuccess,
-                  let data = found as? Data,
-                  let list = try? JSONDecoder().decode([String].self, from: data) else { return [] }
+            let status = SecItemCopyMatching(search as CFDictionary, &found)
+            if status == errSecItemNotFound { return [] }
+            guard status == errSecSuccess, let data = found as? Data,
+                  let list = try? JSONDecoder().decode([String].self, from: data) else { return nil }
             return list
         }, save: { list in
             guard let data = try? JSONEncoder().encode(list) else { return }
@@ -509,25 +542,28 @@ final class ArchiveStore: @unchecked Sendable {
 
     /// One archive's entries.
     final class Index {
-        let items: [ArchiveItem]
         /// Read to the end (false: a partial download, or a missing volume).
         let complete: Bool
         let password: String?
         /// Reaching a file unpacks all before it (solid RAR, 7z): a pass
         /// keeps the pictures it unpacks on the way.
         var solid = false
-        /// Told apart from an older index of the same archive (the byte cache's keys).
-        let id = UUID()
+        /// The archive file's path and version: the byte cache's keys (the
+        /// index of the same version read again finds its bytes; a new
+        /// version of the file never gets an old one's).
+        let bytesKey: String
         /// Entries by their folder ("" for the top), folders implied by
         /// the paths included.
         let children: [String: [ArchiveItem]]
         let byPath: [String: ArchiveItem]
 
-        init(items: [ArchiveItem], complete: Bool, password: String?) {
+        init(items: [ArchiveItem], complete: Bool, password: String?, bytesKey: String) {
             self.complete = complete
             self.password = password
+            self.bytesKey = bytesKey
             var byPath: [String: ArchiveItem] = [:]
-            for item in items where !item.path.isEmpty {
+            // Not the AppleDouble files the Finder adds to ZIPs ("__MACOSX/")
+            for item in items where !item.path.isEmpty && item.path != "__MACOSX" && !item.path.hasPrefix("__MACOSX/") {
                 if byPath[item.path] == nil || item.isDirectory { byPath[item.path] = item }
                 // The folders above it, which archives often don't list
                 var parent = (item.path as NSString).deletingLastPathComponent
@@ -537,7 +573,6 @@ final class ArchiveStore: @unchecked Sendable {
                 }
             }
             self.byPath = byPath
-            self.items = items
             var children: [String: [ArchiveItem]] = [:]
             for item in byPath.values {
                 children[(item.path as NSString).deletingLastPathComponent, default: []].append(item)
@@ -551,7 +586,9 @@ final class ArchiveStore: @unchecked Sendable {
         var version: FileVersion?
         var index: Index?
         var indexedAt = Date.distantPast
-        var pending: [String: [CheckedContinuation<Data, Error>]] = [:]
+        /// The version no remembered password opened, and the passwords then.
+        var failed: (version: FileVersion?, passwords: [String])?
+        var pending: [String: [(id: UUID, continuation: CheckedContinuation<Data, Error>)]] = [:]
         var passRunning = false
         var lastUse = 0
         init(path: String) { queue = DispatchQueue(label: "archive \(path)", qos: .userInitiated) }
@@ -592,12 +629,26 @@ final class ArchiveStore: @unchecked Sendable {
     }
 
     static func reader(for url: URL) -> ArchiveReader? {
-        switch ArchiveName.format(of: url.lastPathComponent) {
+        // What the file is, by its first bytes (comics are often named .cbr
+        // although they are ZIPs, and the other way round); else by its name
+        switch sniffedFormat(url) ?? ArchiveName.format(of: url.lastPathComponent) {
         case .rar:      return RarReader(url: url)
         case .zip:      return LibArchiveReader(volumes: ArchiveName.volumes(of: url), format: .zip)
         case .sevenZip: return LibArchiveReader(volumes: ArchiveName.volumes(of: url), format: .sevenZip)
         case nil:       return nil
         }
+    }
+
+    /// The format a file's signature says, if it says one.
+    static func sniffedFormat(_ url: URL) -> ArchiveFormat? {
+        guard let handle = try? FileHandle(forReadingFrom: url) else { return nil }
+        defer { try? handle.close() }
+        guard let head = try? handle.read(upToCount: 6), head.count >= 4 else { return nil }
+        let bytes = [UInt8](head)
+        if bytes.starts(with: [0x52, 0x61, 0x72, 0x21]) { return .rar }               // "Rar!"
+        if bytes.starts(with: [0x50, 0x4B, 0x03, 0x04]) || bytes.starts(with: [0x50, 0x4B, 0x07, 0x08]) { return .zip }   // "PK"
+        if bytes.starts(with: [0x37, 0x7A, 0xBC, 0xAF, 0x27, 0x1C]) { return .sevenZip }
+        return nil
     }
 
     // MARK: Index
@@ -621,6 +672,13 @@ final class ArchiveStore: @unchecked Sendable {
         if typed == nil, let known = current(archive, version: version) { return known }
         guard let reader = Self.reader(for: url) else { throw ArchiveError.unreadable(String(localized: "unknown format")) }
         let remembered = passwords.all
+        // No remembered password opened this version of the file: not tried
+        // again until a password is typed or another is remembered
+        lock.lock()
+        let failedBefore = typed == nil && archive.failed.map { $0.version == version && $0.passwords == remembered } == true
+        lock.unlock()
+        if failedBefore { throw ArchiveError.needsPassword }
+        let format = Self.sniffedFormat(url) ?? ArchiveName.format(of: url.lastPathComponent)
         // A password just typed is the only one tried; else none first, then
         // every remembered one.
         let candidates: [String?] = typed.map { [$0] } ?? ([nil] + remembered.map(Optional.some))
@@ -635,28 +693,35 @@ final class ArchiveStore: @unchecked Sendable {
             var password = candidate
             let protected = items.filter { $0.encrypted && !$0.isDirectory }
             // libarchive can't decrypt 7z: no password would help
-            if !protected.isEmpty, ArchiveName.format(of: url.lastPathComponent) == .sevenZip {
+            if !protected.isEmpty, format == .sevenZip {
                 throw ArchiveError.encryptionUnsupported
             }
-            // Encrypted data: the password that unpacks the smallest protected
-            // file with something in it (an empty one opens with any password)
-            if let probe = protected.filter({ $0.size > 0 }).min(by: { $0.size < $1.size })
-                ?? protected.min(by: { $0.size < $1.size }) {
+            // Encrypted data: the password that unpacks a protected file with
+            // something in it (an empty one opens with any password): in a
+            // solid archive the first such (reaching a later one unpacks all
+            // before it), else the smallest
+            let solid = format == .sevenZip || (format == .rar && RarReader.isSolid(url, password: candidate))
+            let filled = protected.filter { $0.size > 0 }
+            if let probe = (solid ? filled.first : filled.min(by: { $0.size < $1.size })) ?? protected.first {
                 let tries: [String] = candidate.map { [$0] } ?? remembered
                 guard let working = tries.first(where: { Self.opens(reader, probe, with: $0) }) else {
-                    if candidate == nil { throw ArchiveError.needsPassword }   // all were tried
+                    if candidate == nil {   // all were tried
+                        lock.lock(); archive.failed = (version, remembered); lock.unlock()
+                        throw ArchiveError.needsPassword
+                    }
                     continue
                 }
                 password = working
             }
             if let password { passwords.remember(password) }
-            let index = Index(items: items, complete: complete, password: password)
-            let format = ArchiveName.format(of: url.lastPathComponent)
-            index.solid = format == .sevenZip || (format == .rar && RarReader.isSolid(url, password: password))
+            let index = Index(items: items, complete: complete, password: password,
+                              bytesKey: "\(BrowserModel.canonicalPath(url))|\(version?.size ?? 0)|\(version?.modified?.timeIntervalSince1970 ?? 0)")
+            index.solid = solid
             lock.lock()
             archive.index = index
             archive.version = version
             archive.indexedAt = Date()
+            archive.failed = nil
             lock.unlock()
             return index
         }
@@ -676,9 +741,11 @@ final class ArchiveStore: @unchecked Sendable {
     private static func opens(_ reader: ArchiveReader, _ probe: ArchiveItem, with password: String?) -> Bool {
         guard let password else { return false }
         var ok = false
+        var done = false
         _ = try? reader.walk(password: password, listOnly: false) { item in
+            if done { return .stop }   // nothing after the probe is needed
             guard item.path == probe.path else { return .skip }
-            return .read(sink: { _ in true }, done: { ok = $0 == nil })
+            return .read(sink: { _ in true }, done: { ok = $0 == nil; done = true })
         }
         return ok
     }
@@ -693,13 +760,25 @@ final class ArchiveStore: @unchecked Sendable {
         guard let item = index.byPath[inner], !item.isDirectory else { throw ArchiveError.notFound }
         if let cached = bytes.object(forKey: Self.bytesKey(index, item.path)) { return cached as Data }
         let archive = archive(archiveURL)
-        return try await withCheckedThrowingContinuation { continuation in
+        // A request given up (a tile scrolled away) leaves the line: the
+        // pass doesn't unpack it for nobody
+        let id = UUID()
+        return try await withTaskCancellationHandler {
+            try await withCheckedThrowingContinuation { continuation in
+                lock.lock()
+                archive.pending[item.path, default: []].append((id, continuation))
+                let start = !archive.passRunning
+                archive.passRunning = true
+                lock.unlock()
+                if start { archive.queue.async { self.servePending(archive, url: archiveURL, index: index) } }
+            }
+        } onCancel: {
             lock.lock()
-            archive.pending[item.path, default: []].append(continuation)
-            let start = !archive.passRunning
-            archive.passRunning = true
+            let mine = archive.pending[item.path]?.first { $0.id == id }
+            archive.pending[item.path]?.removeAll { $0.id == id }
+            if archive.pending[item.path]?.isEmpty == true { archive.pending[item.path] = nil }
             lock.unlock()
-            if start { archive.queue.async { self.servePending(archive, url: archiveURL, index: index) } }
+            mine?.continuation.resume(throwing: CancellationError())
         }
     }
 
@@ -729,7 +808,7 @@ final class ArchiveStore: @unchecked Sendable {
                     var data = Data()
                     if item.size > 0 { data.reserveCapacity(Int(min(item.size, 512 << 20))) }
                     return .read(sink: { data.append(contentsOf: $0); return true }, done: { failure in
-                        if failure == nil, item.size < Self.keptEntryLimit {
+                        if failure == nil, data.count < Self.keptEntryLimit {
                             self.bytes.setObject(data as NSData, forKey: key, cost: data.count)
                         }
                         guard waiting else { return }
@@ -764,14 +843,14 @@ final class ArchiveStore: @unchecked Sendable {
     private static let keptEntryLimit: Int64 = 32 << 20
 
     private static func bytesKey(_ index: Index, _ path: String) -> NSString {
-        "\(index.id.uuidString)/\(path)" as NSString
+        "\(index.bytesKey)/\(path)" as NSString
     }
 
     private func finish(_ archive: Archive, _ path: String, _ result: Result<Data, Error>) {
         lock.lock()
         let waiting = archive.pending.removeValue(forKey: path) ?? []
         lock.unlock()
-        waiting.forEach { $0.resume(with: result) }
+        waiting.forEach { $0.continuation.resume(with: result) }
     }
 
     // MARK: For the grid

@@ -245,7 +245,8 @@ struct OtherFilesList: View {
     let files: [OtherFile]
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
+        // Lazy: a camera folder can hold thousands of sidecar files
+        LazyVStack(alignment: .leading, spacing: 4) {
             Divider().padding(.bottom, 6)
             Text("Other files, not pictures or videos")
                 .font(.subheadline.weight(.semibold))
@@ -306,7 +307,8 @@ struct TileDrag: ViewModifier {
         }
     }
 
-    private var inArchive: Bool { ArchivePath.split(entry.url) != nil }
+    /// Inside an archive (not the archive itself, which drags like a file).
+    private var inArchive: Bool { ArchivePath.isInside(entry.url) }
     /// ".." and what lies inside an archive don't drag (".." is the folder
     /// around the one shown; an archive's items have no file of their own).
     private var drags: Bool { entry.kind != .parent && !inArchive }
@@ -375,7 +377,7 @@ struct EntryInteractions: ViewModifier {
                         }
                     }
                     // Inside an archive nothing is changed
-                    if !ArchivePath.isInside(entry.url) {
+                    if model.canRename(entry) {
                         Button("Rename…") {
                             guard model.select(entry) else { return }
                             model.beginRename()
@@ -387,6 +389,8 @@ struct EntryInteractions: ViewModifier {
                     }
                     if !ArchivePath.isInside(entry.url) {
                         Button("Move to Trash…") {
+                            // The marked items when this is one of them, else this one
+                            if !model.isMarked(entry) { model.clearMarks() }
                             guard model.select(entry) else { return }
                             model.moveSelectionToTrash()
                         }
@@ -457,6 +461,10 @@ enum ModifierClicks {
     static func leave(_ key: String) {
         if hovered?.key == key { hovered = nil }
     }
+
+    /// The grid moved under a still pointer (a key scrolled it): which tile
+    /// is under it is known again once the pointer moves.
+    static func forgetHover() { hovered = nil }
 
     static func start() {
         guard monitor == nil else { return }

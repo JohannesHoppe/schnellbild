@@ -25,6 +25,12 @@ final class WindowModel: ObservableObject {
         self.defaults = defaults
         self.makeRight = makeRight
         watch(left)
+        // A right pane with no folder of its own (and none being checked)
+        // shows the left one's, also when that opens only after launch
+        forwarding.append(left.$folderURL.compactMap { $0 }.sink { [weak self] folder in
+            guard let right = self?.right, right.folderURL == nil, !right.restoringLastFolder, !right.isLoading else { return }
+            right.open(folder: folder)
+        })
         if defaults.bool(forKey: Self.dualKey) { setDual(true) }
     }
 
@@ -87,6 +93,7 @@ final class WindowModel: ObservableObject {
             pane.restoreLastFolder { [weak self] in self?.left.folderURL }
         }
         dual = on
+        for pane in allPanes { pane.inDualPane = on }
         if !on { rightIsActive = false }
         defaults.set(on, forKey: Self.dualKey)
     }
@@ -94,7 +101,11 @@ final class WindowModel: ObservableObject {
     func activate(_ pane: BrowserModel) {
         guard dual else { return }
         let isRight = pane === right
-        if rightIsActive != isRight { rightIsActive = isRight }
+        guard rightIsActive != isRight else { return }
+        // The pane left behind stops typing in its search field: keys go to
+        // the active one
+        active.searchFocused = false
+        rightIsActive = isRight
     }
 
     func switchPane() {
@@ -106,10 +117,10 @@ final class WindowModel: ObservableObject {
     /// pane's folder.
     func sendToOtherPane(how: BrowserModel.Transfer) -> Bool {
         guard let other, let folder = other.folderURL else { return false }
-        let sources = active.actionEntries.map(\.url)
+        // In the full view: what it shows (the marks belong to the grid)
+        let sources = active.mode == .detail ? (active.selectedMediaEntry.map { [$0.url] } ?? []) : active.actionEntries.map(\.url)
         guard !sources.isEmpty else { NSSound.beep(); return true }
         active.move(sources, into: folder, how: how)
-        active.clearMarks()
         return true
     }
 
@@ -117,7 +128,8 @@ final class WindowModel: ObservableObject {
     /// Tab (switch), F5 / F6 (to the other pane). Not while typing.
     func handleWindowKey(_ key: BrowserModel.KeyInput, command: Bool, control: Bool, shift: Bool = false,
                          textEditing: Bool) -> Bool {
-        guard !textEditing, active.slideshow == nil, !active.anySheetOpen else { return false }
+        // Not while typing, not during a slideshow, not over a sheet of either pane
+        guard !textEditing, !panes.contains(where: { $0.slideshow != nil || $0.anySheetOpen }) else { return false }
         // ⇧F6 renames (the pane's), as in Total Commander
         if key == .f6, shift { return false }
         let handled = dispatchWindowKey(key, command: command, control: control)

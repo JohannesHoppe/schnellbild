@@ -26,6 +26,7 @@ typedef struct {
     int is_encrypted;
     int split_before;         // continues from the previous volume
     int split_after;          // continues in the next volume
+    int is_link;              // a symbolic or hard link, a junction (no data of its own)
 } SBRarEntry;
 
 /// Receives an entry's data; returns nonzero to go on, zero to stop.

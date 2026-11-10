@@ -222,3 +222,11 @@
 "Copying or moving…" = "Kopyalanıyor veya taşınıyor…";
 "This archive needs a password" = "Bu arşiv parola gerektiriyor";
 "Password required" = "Parola gerekli";
+"Copying or moving is still under way." = "Kopyalama veya taşıma hâlâ sürüyor.";
+"Schnellbild quits once it is done. Quitting now would leave files half copied." = "Schnellbild iş bitince kapanır. Şimdi kapatmak dosyaları yarım kopyalanmış bırakır.";
+"Quit When Done" = "Bitince Çık";
+"The name must end in “.%@”, as the archive does." = "Ad, arşivdeki gibi “.%@” ile bitmelidir.";
+"unknown error" = "bilinmeyen hata";
+"⌘-click / Insert" = "⌘-tıklama / Insert";
+"⇧-click / ⇧ arrows" = "⇧-tıklama / ⇧ oklar";
+"drag" = "sürükle";
