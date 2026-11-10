@@ -177,6 +177,10 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         XCTAssertTrue(tile("Lofoten").waitForExistence(timeout: 10))
         app.typeKey("l", modifierFlags: [])
         XCTAssertTrue(element("list").waitForExistence(timeout: 5))
+        // A photo selected, in full view (not the video below the edge)
+        let row = element("row.Fjord at Sunset.jpg").firstMatch
+        XCTAssertTrue(row.waitForExistence(timeout: 5))
+        row.click()
         shoot("list")
         app.typeKey("l", modifierFlags: [])
 
