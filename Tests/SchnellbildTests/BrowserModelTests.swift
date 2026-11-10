@@ -658,7 +658,7 @@ final class SearchTests: XCTestCase {
         for i in 0..<150 { try tree.file("d\(i % 7)/hit\(i).jpg") }
         var found: [GridEntry] = []
         for await batch in BrowserModel.recursiveMatches(under: tree.root, query: "hit") {
-            found += batch
+            found += batch.entries
         }
         XCTAssertEqual(found.count, 150)
     }
@@ -932,7 +932,7 @@ final class RenameTests: XCTestCase {
 
         XCTAssertTrue(m.beginRename())
         let entry = try XCTUnwrap(m.renameTarget)
-        let new = try m.rename(entry, to: "  Zebra  ")
+        let new = try await m.rename(entry, to: "  Zebra  ")
 
         XCTAssertEqual(new.lastPathComponent, "Zebra", "whitespace is trimmed")
         XCTAssertTrue(FileManager.default.fileExists(atPath: tree.root.appendingPathComponent("Zebra/x.jpg").path))
@@ -951,14 +951,15 @@ final class RenameTests: XCTestCase {
         await openAndWait(m, tree.root)
         let a = try XCTUnwrap(m.entries.first { $0.name == "a" })
 
-        XCTAssertThrowsError(try m.rename(a, to: "   ")) { XCTAssertEqual($0 as? RenameError, .emptyName) }
-        XCTAssertThrowsError(try m.rename(a, to: "x/y")) { XCTAssertEqual($0 as? RenameError, .invalidName) }
-        XCTAssertThrowsError(try m.rename(a, to: "x:y")) { XCTAssertEqual($0 as? RenameError, .invalidName) }
-        XCTAssertThrowsError(try m.rename(a, to: "..")) { XCTAssertEqual($0 as? RenameError, .invalidName) }
-        XCTAssertThrowsError(try m.rename(a, to: "b")) { XCTAssertEqual($0 as? RenameError, .alreadyExists("b")) }
+        await assertThrowsAsync(try await m.rename(a, to: "   ")) { XCTAssertEqual($0 as? RenameError, .emptyName) }
+        await assertThrowsAsync(try await m.rename(a, to: "x/y")) { XCTAssertEqual($0 as? RenameError, .invalidName) }
+        await assertThrowsAsync(try await m.rename(a, to: "x:y")) { XCTAssertEqual($0 as? RenameError, .invalidName) }
+        await assertThrowsAsync(try await m.rename(a, to: "..")) { XCTAssertEqual($0 as? RenameError, .invalidName) }
+        await assertThrowsAsync(try await m.rename(a, to: "b")) { XCTAssertEqual($0 as? RenameError, .alreadyExists("b")) }
         XCTAssertTrue(spy.moved.isEmpty, "nothing touched the disk")
 
-        XCTAssertEqual(try m.rename(a, to: "a"), a.url, "same name is a no-op")
+        let same = try await m.rename(a, to: "a")
+        XCTAssertEqual(same, a.url, "same name is a no-op")
         XCTAssertTrue(spy.moved.isEmpty)
     }
 
@@ -969,7 +970,7 @@ final class RenameTests: XCTestCase {
         let m = makeModel(spy)
         await openAndWait(m, tree.root)
         let entry = try XCTUnwrap(m.entries.first { $0.name == "photos" })
-        try m.rename(entry, to: "Photos")
+        try await m.rename(entry, to: "Photos")
         XCTAssertEqual(spy.moved.count, 1)
         XCTAssertEqual(m.names, ["..", "Photos"])
     }
@@ -982,7 +983,7 @@ final class RenameTests: XCTestCase {
         let m = makeModel(spy)
         await openAndWait(m, tree.root)
         let a = try XCTUnwrap(m.entries.first { $0.name == "a" })
-        XCTAssertThrowsError(try m.rename(a, to: "b")) { error in
+        await assertThrowsAsync(try await m.rename(a, to: "b")) { error in
             guard case .failed? = error as? RenameError else { return XCTFail("expected .failed") }
         }
         XCTAssertEqual(m.names, ["..", "a"])
@@ -1020,13 +1021,13 @@ final class RenameTests: XCTestCase {
         m.activateSelection()
         let entry = try XCTUnwrap(m.selectedEntry)
 
-        XCTAssertThrowsError(try m.rename(entry, to: "b.txt")) {
+        await assertThrowsAsync(try await m.rename(entry, to: "b.txt")) {
             XCTAssertEqual($0 as? RenameError, .changesKind("jpg", video: false))
         }
-        XCTAssertThrowsError(try m.rename(entry, to: "a.jpg")) {
+        await assertThrowsAsync(try await m.rename(entry, to: "a.jpg")) {
             XCTAssertEqual($0 as? RenameError, .alreadyExists("a.jpg"))
         }
-        let new = try m.rename(entry, to: "Beach.jpg")
+        let new = try await m.rename(entry, to: "Beach.jpg")
         XCTAssertTrue(FileManager.default.fileExists(atPath: new.path))
         XCTAssertFalse(FileManager.default.fileExists(atPath: entry.url.path))
         XCTAssertEqual(m.mode, .detail, "the full view stays open")
@@ -1042,7 +1043,7 @@ final class RenameTests: XCTestCase {
         await openAndWait(m, tree.root)          // back stack: old/inner
         m.selectEntry(named: "old")
         let entry = try XCTUnwrap(m.selectedEntry)
-        try m.rename(entry, to: "new")
+        try await m.rename(entry, to: "new")
 
         m.navigateBack()
         await waitUntil { !m.isLoading && m.folderURL?.lastPathComponent == "inner" }
@@ -1056,7 +1057,7 @@ final class RenameTests: XCTestCase {
         await openAndWait(m, tree.root)
         await searchAndWait(m, "target")
         let entry = try XCTUnwrap(m.selectedEntry)
-        try m.rename(entry, to: "Target 2")
+        try await m.rename(entry, to: "Target 2")
         XCTAssertEqual(m.names, ["Target 2"])
         XCTAssertTrue(FileManager.default.fileExists(atPath: tree.root.appendingPathComponent("deep/Target 2").path))
     }
@@ -1082,7 +1083,7 @@ final class RenameSearchStabilityTests: XCTestCase {
     func testRenameInResultsKeepsFolderQueryAndResults() async throws {
         let (tree, m) = try await searchTrip()
         m.selectEntry(named: "trip-2024")
-        try m.rename(try XCTUnwrap(m.selectedEntry), to: "Holiday")
+        try await m.rename(try XCTUnwrap(m.selectedEntry), to: "Holiday")
 
         XCTAssertTrue(m.isAt(tree.root), "still in the same folder")
         XCTAssertEqual(m.mode, .grid)
@@ -1097,7 +1098,7 @@ final class RenameSearchStabilityTests: XCTestCase {
     func testBackToSearchShowsRememberedResultsWithRename() async throws {
         let (tree, m) = try await searchTrip()
         m.selectEntry(named: "trip-2024")
-        try m.rename(try XCTUnwrap(m.selectedEntry), to: "Holiday")
+        try await m.rename(try XCTUnwrap(m.selectedEntry), to: "Holiday")
 
         m.activateSelection()   // enter the renamed folder
         await waitUntil { m.folderURL?.lastPathComponent == "Holiday" && !m.isLoading }
@@ -1121,7 +1122,7 @@ final class RenameSearchStabilityTests: XCTestCase {
         let inside = try XCTUnwrap(m.folderURL)
 
         m.selectEntry(named: "sub")
-        try m.rename(try XCTUnwrap(m.selectedEntry), to: "sub2")
+        try await m.rename(try XCTUnwrap(m.selectedEntry), to: "sub2")
         XCTAssertTrue(m.isAt(inside), "still in the result folder")
         XCTAssertEqual(m.names, ["..", "sub2", "trip-beach.jpg"])
         XCTAssertEqual(m.selectedEntry?.name, "sub2")
@@ -1143,7 +1144,7 @@ final class RenameSearchStabilityTests: XCTestCase {
         await waitUntil { m.searchText == "trip" && !m.isLoading && !m.entries.isEmpty }
 
         m.selectEntry(named: "trip-2024")
-        try m.rename(try XCTUnwrap(m.selectedEntry), to: "Renamed")
+        try await m.rename(try XCTUnwrap(m.selectedEntry), to: "Renamed")
         m.navigateForward()
         await waitUntil { m.folderURL?.lastPathComponent == "Renamed" && !m.isLoading }
         XCTAssertEqual(m.names, ["..", "sub", "trip-beach.jpg"])
@@ -1152,7 +1153,7 @@ final class RenameSearchStabilityTests: XCTestCase {
     func testEditingTheQueryAfterRestoreSearchesAgain() async throws {
         let (tree, m) = try await searchTrip()
         m.selectEntry(named: "trip-2024")
-        try m.rename(try XCTUnwrap(m.selectedEntry), to: "Holiday")
+        try await m.rename(try XCTUnwrap(m.selectedEntry), to: "Holiday")
         await searchAndWait(m, "holi")
         XCTAssertEqual(m.names, ["Holiday"], "a new query searches the disk")
         XCTAssertTrue(m.isAt(tree.root))
@@ -1239,11 +1240,11 @@ final class FileActionTests: XCTestCase {
         XCTAssertTrue(m.beginNewFolder())
         XCTAssertTrue(m.newFolderRequested)
         XCTAssertFalse(m.handleKey(.right, command: false), "the sheet keeps the keys")
-        XCTAssertThrowsError(try m.createFolder(named: "  ")) { XCTAssertEqual($0 as? RenameError, .emptyName) }
-        XCTAssertThrowsError(try m.createFolder(named: "a/b")) { XCTAssertEqual($0 as? RenameError, .invalidName) }
-        XCTAssertThrowsError(try m.createFolder(named: "Taken")) { XCTAssertEqual($0 as? RenameError, .alreadyExists("Taken")) }
+        await assertThrowsAsync(try await m.createFolder(named: "  ")) { XCTAssertEqual($0 as? RenameError, .emptyName) }
+        await assertThrowsAsync(try await m.createFolder(named: "a/b")) { XCTAssertEqual($0 as? RenameError, .invalidName) }
+        await assertThrowsAsync(try await m.createFolder(named: "Taken")) { XCTAssertEqual($0 as? RenameError, .alreadyExists("Taken")) }
         XCTAssertTrue(spy.created.isEmpty, "nothing made yet")
-        let made = try m.createFolder(named: "Sorted")
+        let made = try await m.createFolder(named: "Sorted")
         XCTAssertTrue(FileManager.default.fileExists(atPath: made.path))
         XCTAssertFalse(m.newFolderRequested)
         XCTAssertEqual(m.selectedEntry?.name, "Sorted")
@@ -1270,9 +1271,9 @@ final class FileActionTests: XCTestCase {
         await openAndWait(m, tree.root)
         await openAndWait(m, tree.root.appendingPathComponent("Trip"))
         XCTAssertTrue(m.canRenameCurrentFolder)
-        m.renameCurrentFolder(to: "Taken")
+        await m.renameCurrentFolder(to: "Taken")
         XCTAssertEqual(spy.reported.count, 1, "the name is taken")
-        m.renameCurrentFolder(to: "Iceland 2025")
+        await m.renameCurrentFolder(to: "Iceland 2025")
         let renamed = tree.root.appendingPathComponent("Iceland 2025")
         XCTAssertTrue(m.isAt(renamed))
         XCTAssertTrue(FileManager.default.fileExists(atPath: renamed.appendingPathComponent("a.jpg").path))
@@ -2120,7 +2121,7 @@ final class SearchConsistencyTests: XCTestCase {
         XCTAssertTrue(m.isSearching)
         XCTAssertEqual(m.names, ["photos", "photos-beach.jpg"])
         m.selectEntry(named: "photos")
-        try m.rename(try XCTUnwrap(m.selectedEntry), to: "Pics")
+        try await m.rename(try XCTUnwrap(m.selectedEntry), to: "Pics")
 
         // The walk read "photos" before the rename and reports it now.
         let oldBeach = tree.root.appendingPathComponent("photos/beach.jpg")
@@ -2166,7 +2167,7 @@ final class SearchConsistencyTests: XCTestCase {
         let m = makeModel(FileActionsSpy())
         await openAndWait(m, tree.root)
         m.selectEntry(named: "2024")
-        try m.rename(try XCTUnwrap(m.selectedEntry), to: "2024-old")
+        try await m.rename(try XCTUnwrap(m.selectedEntry), to: "2024-old")
         try tree.file("2024/b.jpg")   // a new folder with the old name
 
         await searchAndWait(m, "b.jpg")
@@ -2327,7 +2328,7 @@ final class ReviewFixTests: XCTestCase {
         let m = makeModel(spy)
         await openAndWait(m, tree.root)
         let entry = try XCTUnwrap(m.entries.first { $0.name == "photos" })
-        XCTAssertThrowsError(try m.rename(entry, to: "Photos")) {
+        await assertThrowsAsync(try await m.rename(entry, to: "Photos")) {
             XCTAssertEqual($0 as? RenameError, .alreadyExists("Photos"))
         }
         XCTAssertTrue(spy.moved.isEmpty)

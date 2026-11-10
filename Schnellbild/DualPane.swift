@@ -58,7 +58,7 @@ final class WindowModel: ObservableObject {
         }
         pane.onFoldersChanged = { [weak self, weak pane] folders in
             guard let self, let pane else { return }
-            for other in self.allPanes where other !== pane && other.shows(any: folders) { other.refresh() }
+            for other in self.allPanes where other !== pane && other.shows(any: folders) { other.refresh(changed: folders) }
         }
         // One volume and one mini keyboard for the window. @Published sends
         // before the value is stored, so the other pane's own sink would see

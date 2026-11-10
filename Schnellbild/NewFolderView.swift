@@ -40,11 +40,14 @@ struct NewFolderView: View {
 
     private func create() {
         guard !done else { return }
-        do {
-            try model.createFolder(named: name)
-            done = true
-        } catch {
-            self.error = error.localizedDescription
+        done = true
+        Task {
+            do {
+                try await model.createFolder(named: name)
+            } catch {
+                self.error = error.localizedDescription
+                done = false
+            }
         }
     }
 }

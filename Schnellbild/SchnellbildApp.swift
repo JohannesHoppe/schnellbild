@@ -124,6 +124,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         alert.addButton(withTitle: String(localized: "Quit When Done"))
         alert.addButton(withTitle: String(localized: "Cancel"))
         guard alert.runModal() == .alertFirstButtonReturn else { return .terminateCancel }
+        // Done while the alert was open
+        guard BrowserModel.transfersUnderWay > 0 else { return .terminateNow }
         BrowserModel.onTransfersDone = { NSApp.reply(toApplicationShouldTerminate: true) }
         return .terminateLater
     }

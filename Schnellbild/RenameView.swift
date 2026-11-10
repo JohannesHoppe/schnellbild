@@ -52,11 +52,14 @@ struct RenameView: View {
     private func commit() {
         BrowserModel.testLog("rename confirmed")
         guard !done else { return }
-        do {
-            try model.rename(entry, to: name)
-            done = true
-        } catch {
-            self.error = error.localizedDescription
+        done = true
+        Task {
+            do {
+                try await model.rename(entry, to: name)
+            } catch {
+                self.error = error.localizedDescription
+                done = false
+            }
         }
     }
 
