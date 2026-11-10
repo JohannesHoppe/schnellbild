@@ -122,16 +122,13 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         return await Task.detached(priority: .utility) { output.latestStats }.value
     }
 
-    /// For UI tests: VLC's state and the brightness of the picture it hands
-    /// over, to tell "VLC decodes nothing" from "the picture doesn't reach
-    /// the screen".
-    func diagnostics() async -> String {
-        let decoded = await pictureStats().map { String(format: "%.3f", $0.mean) } ?? "none"
+    /// For UI tests: VLC's state, the pictures it showed and lost, and what
+    /// handing them over costs.
+    func diagnostics() -> String {
         let stats = player.media?.statistics
-        return "vlc state \(player.state.rawValue), "
-            + "size \(Int(player.videoSize.width))x\(Int(player.videoSize.height)), decoded \(decoded), "
-            + "shown \(stats?.displayedPictures ?? 0), lost \(stats?.lostPictures ?? 0), \(output.diagnostics), "
-            + "layer \(output.layerBrightness), layers in view \(drawable?.layer?.sublayers?.count ?? -1)"
+        let size = videoSize ?? .zero
+        return "vlc state \(player.state.rawValue), size \(Int(size.width))x\(Int(size.height)), "
+            + "shown \(stats?.displayedPictures ?? 0), lost \(stats?.lostPictures ?? 0), \(output.diagnostics)"
     }
 
     /// Show the picture in `view`; the first view starts playback.
@@ -147,7 +144,10 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         if first { player.play() }
     }
 
+    /// The picture's size as shown (non-square pixels made square), once
+    /// VLC has opened its output.
     var videoSize: CGSize? {
+        if let shown = output.pictureSize { return shown }
         let size = player.videoSize
         return size.width > 0 && size.height > 0 ? size : nil
     }
@@ -185,14 +185,16 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         player.delegate = nil
         // Nothing else touches it once stopping: the control is going away.
         // (The picture output lives as long as the player: `VLCFrameOutput.attach`.)
-        // VLCKit stops asynchronously and waits for its reading thread when
-        // the player goes: held here until it has stopped (or a while), so
-        // that last release, and its wait on a stalled share, happen here
-        // and not on the main thread with the control.
+        // VLCKit reports "stopped" at once and waits for its reading thread
+        // only when the player goes (the last release). This block holds the
+        // player until the control has gone too, so that last release, and
+        // its wait on a read stalled on a network share, happen here and
+        // never on the main thread.
         nonisolated(unsafe) let player = self.player
-        DispatchQueue.global(qos: .userInitiated).async {
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             player.stop()
             for _ in 0..<100 where player.state != .stopped { usleep(50_000) }
+            for _ in 0..<1200 where self != nil { usleep(50_000) }
             BrowserModel.testLog("vlc stopped")
         }
     }
