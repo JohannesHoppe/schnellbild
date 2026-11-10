@@ -251,3 +251,4 @@
 "Forget all saved archive passwords?" = "Alle bewaarde archiefwachtwoorden vergeten?";
 "Forget Passwords" = "Wachtwoorden vergeten";
 "Archives that need a password ask for it again." = "Archieven die een wachtwoord nodig hebben, vragen er opnieuw om.";
+"Schnellbild quit unexpectedly last time while showing “%@”, so it wasn't opened again." = "Schnellbild stopte de vorige keer onverwacht terwijl ‘%@’ werd getoond, daarom is het niet opnieuw geopend.";

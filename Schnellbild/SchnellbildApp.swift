@@ -9,6 +9,8 @@ struct SchnellbildApp: App {
     private var model: BrowserModel { window.active }
 
     init() {
+        // Before anything starts VLC
+        VLCSafety.forgetInjectedOptions()
         let defaults = BrowserModel.makeDefaults()
         // Archive passwords: the login keychain; UI tests keep theirs in
         // their own preferences (`--reset-state` clears them)
@@ -118,6 +120,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // One window: tabs ("Show Tab Bar", its "+") would show the same
         // panes twice, each video playing in both
         NSWindow.allowsAutomaticWindowTabbing = false
+    }
+
+    func applicationWillTerminate(_ notification: Notification) {
+        BrowserModel.confirmRestore(in: BrowserModel.makeDefaults())
     }
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {

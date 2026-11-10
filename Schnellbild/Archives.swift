@@ -1122,6 +1122,10 @@ enum MediaData {
         if ArchivePath.isInside(url), ArchivePath.splitChecked(url) != nil {
             return try await ArchiveStore.shared.data(of: url)
         }
+        // The same limit as inside archives: a multi-gigabyte "picture.svg"
+        // isn't read into memory
+        let size = (try? url.resourceValues(forKeys: [.fileSizeKey]))?.fileSize ?? 0
+        if Int64(size) > ArchiveStore.largestRead { throw ArchiveError.tooLarge }
         return try Data(contentsOf: url)
     }
 

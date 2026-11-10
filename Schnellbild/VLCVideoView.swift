@@ -60,6 +60,7 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         case .file(let url):        media = VLCMedia(url: url)
         case .stream(let makeStream): media = VLCMedia(stream: makeStream())
         }
+        VLCSafety.restrict(media)
         // No on-screen messages (VLC would draw them into the picture)
         media.addOption(":no-osd")
         // VLCKit turns on "play-and-pause": VLC would pause as soon as it has
@@ -317,7 +318,9 @@ final class VLCThumbnails: NSObject, VLCMediaThumbnailerDelegate {
         }
         guard !Task.isCancelled else { return nil }
         return await withCheckedContinuation { done in
-            let thumbnailer = VLCMediaThumbnailer(media: VLCMedia(url: url), delegate: self, andVLCLibrary: nil)
+            let media = VLCMedia(url: url)
+            VLCSafety.restrict(media)
+            let thumbnailer = VLCMediaThumbnailer(media: media, delegate: self, andVLCLibrary: nil)
             thumbnailer.thumbnailWidth = width
             thumbnailer.thumbnailHeight = 0
             pending[ObjectIdentifier(thumbnailer)] = (thumbnailer, done)
@@ -335,5 +338,29 @@ final class VLCThumbnails: NSObject, VLCMediaThumbnailerDelegate {
 
     nonisolated func mediaThumbnailer(_ mediaThumbnailer: VLCMediaThumbnailer, didFinishThumbnail thumbnail: CGImage) {
         MainActor.assumeIsolated { finish(mediaThumbnailer, with: thumbnail) }
+    }
+}
+
+/// What VLC may do with a file someone else made. VLC picks its reader by
+/// the content, not the name: a file named "video.mkv" that is really a
+/// streaming playlist (HLS) would make it fetch from the internet, also for
+/// a thumbnail. Only the readers of local video files are allowed.
+enum VLCSafety {
+    /// Matroska / WebM, AVI, MP4 / MOV / 3GP, MPEG program and transport
+    /// streams, elementary streams, Ogg, ASF / WMV, DV, and FFmpeg's readers
+    /// for the rest (FLV …).
+    static let demuxers = "mkv,avi,mp4,ps,ts,es,ogg,asf,rawdv,avformat,none"
+
+    static func restrict(_ media: VLCMedia) {
+        media.addOption(":demux=\(demuxers)")
+        // No subtitles or other files picked up from next to the video
+        media.addOption(":no-sub-autodetect-file")
+    }
+
+    /// VLCKit reads extra libVLC options from the app's preferences
+    /// ("VLCParams"); another program could put some there. Removed before
+    /// VLC starts.
+    static func forgetInjectedOptions(in defaults: UserDefaults = .standard) {
+        defaults.removeObject(forKey: "VLCParams")
     }
 }

@@ -251,3 +251,4 @@
 "Forget all saved archive passwords?" = "저장된 압축 파일 암호를 모두 지우시겠습니까?";
 "Forget Passwords" = "암호 지우기";
 "Archives that need a password ask for it again." = "암호가 필요한 압축 파일은 다시 묻습니다.";
+"Schnellbild quit unexpectedly last time while showing “%@”, so it wasn't opened again." = "지난번 ‘%@’을(를) 보는 중에 Schnellbild가 예기치 않게 종료되어 다시 열지 않았습니다.";

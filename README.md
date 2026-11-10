@@ -28,6 +28,7 @@ Open a folder, see thumbnails, look at one picture large, page through with the 
 - **No upselling.** No pro version, no subscription, no "unlock" button. Every feature is in.
 - **No bloat.** No library to import into, no editor, no cloud. Just looking at photos and videos, done well.
 - **Fast.** Thumbnails appear while you scroll, big folders and network shares included (see [Why so fast?](#why-so-fast)).
+- **Careful with files from others.** Looking never runs anything: archives are only read, never unpacked to disk; videos are read only as local files (a "video" can't make it go online); "Open with Default App" opens only real pictures, videos, PDFs, archives and folders, never an app hiding behind a picture's name; and if a file ever made Schnellbild quit, it doesn't reopen that folder at the next start.
 - **Doesn't fall over.** Broken files, odd formats and slow disks show a placeholder instead of taking the app down. Your files are only changed when you say so: rename, trash, a new folder, or moving and copying them (dragging tiles onto a folder, F5 / F6 in the dual pane).
 
 ## Download

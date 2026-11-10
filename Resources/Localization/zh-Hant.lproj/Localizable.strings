@@ -251,3 +251,4 @@
 "Forget all saved archive passwords?" = "要忘記所有已儲存的封存檔密碼嗎？";
 "Forget Passwords" = "忘記密碼";
 "Archives that need a password ask for it again." = "需要密碼的封存檔會再次詢問。";
+"Schnellbild quit unexpectedly last time while showing “%@”, so it wasn't opened again." = "上次顯示「%@」時 Schnellbild 意外結束，因此沒有再次開啟。";

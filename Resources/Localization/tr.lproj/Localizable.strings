@@ -251,3 +251,4 @@
 "Forget all saved archive passwords?" = "Kayıtlı tüm arşiv parolaları unutulsun mu?";
 "Forget Passwords" = "Parolaları unut";
 "Archives that need a password ask for it again." = "Parola gerektiren arşivler yeniden sorar.";
+"Schnellbild quit unexpectedly last time while showing “%@”, so it wasn't opened again." = "Schnellbild geçen sefer “%@” gösterilirken beklenmedik şekilde kapandı, bu yüzden yeniden açılmadı.";
