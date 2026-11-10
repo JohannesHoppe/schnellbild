@@ -212,8 +212,12 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         return ms > 0 ? Double(ms) / 1000 : nil
     }
 
+    /// Played to its end: VLC goes on from "ended" to "stopped" quickly,
+    /// and its position then is that of the last picture, short of 1.
+    private var reachedEnd = false
+
     var progress: Double? {
-        if player.state == .ended { return 1 }
+        if reachedEnd || player.state == .ended { return 1 }
         guard (player.media?.length.intValue ?? 0) > 0 else { return nil }
         let reported = Double(min(max(player.position, 0), 1))
         if let pending = pendingSeek {
@@ -231,6 +235,7 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
 
     func seek(toProgress progress: Double) {
         let target = min(max(progress, 0), 1)
+        reachedEnd = false
         pendingSeek = (target, Date())
         if atEnd {
             positionOnceOpen = Float(target)
@@ -254,13 +259,17 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         BrowserModel.testLog("vlc state \(state.rawValue)")
         switch state {
         case .playing:
+            reachedEnd = false
             isPlaying = true
             player.audio?.volume = Int32((volume * 100).rounded())
             if let position = positionOnceOpen {
                 positionOnceOpen = nil
                 player.position = position
             }
-        case .paused, .ended, .error:   isPlaying = false
+        case .ended:
+            reachedEnd = true
+            isPlaying = false
+        case .paused, .error:   isPlaying = false
         default:                        return
         }
         onStateChange(self, isPlaying)
