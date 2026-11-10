@@ -286,9 +286,7 @@ final class ActionsUITests: SchnellbildUITestCase {
     /// into the other pane moves it there; D closes it again.
     func testTheDualPane() throws {
         try folder("Sorted")
-        let log = tempDir.appendingPathComponent("app.log")
-        launch(open: tempDir.path, extra: ["--test-log=\(log.path)"])
-        XCTAssertTrue(app.staticTexts["a.jpg"].waitForExistence(timeout: 15))
+        launchOnTempDir()
         app.typeKey("d", modifierFlags: [])
         let left = element("pane.left"), right = element("pane.right")
         XCTAssertTrue(right.waitForExistence(timeout: 10), "two panes")
@@ -320,11 +318,7 @@ final class ActionsUITests: SchnellbildUITestCase {
         }
 
         app.typeKey("d", modifierFlags: [])
-        let deadline = Date().addingTimeInterval(10)
-        while element("pane.right").exists, Date() < deadline { RunLoop.current.run(until: Date().addingTimeInterval(0.3)) }
-        if element("pane.right").exists {
-            XCTFail("TEMP still two panes; app log:\n" + ((try? String(contentsOf: log, encoding: .utf8)) ?? "none"))
-        }
+        eventually("one pane again") { !self.element("pane.right").exists }
     }
 
     /// A click on the folder's name in the title bar renames the folder shown.
