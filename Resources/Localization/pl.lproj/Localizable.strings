@@ -251,3 +251,4 @@
 "Forget all saved archive passwords?" = "Zapomnieć wszystkie zapisane hasła archiwów?";
 "Forget Passwords" = "Zapomnij hasła";
 "Archives that need a password ask for it again." = "Archiwa wymagające hasła ponownie o nie zapytają.";
+"Schnellbild quit unexpectedly last time while showing “%@”, so it wasn't opened again." = "Schnellbild ostatnio nieoczekiwanie się zamknął podczas wyświetlania „%@”, więc nie otwarto go ponownie.";

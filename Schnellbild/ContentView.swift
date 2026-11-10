@@ -672,6 +672,13 @@ struct EmptyStateView: View {
                 Text("Drag a folder here, press ⌘O, or click Open Folder…")
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
+                if let skipped = model.skippedRestore {
+                    let name = (skipped as NSString).lastPathComponent
+                    Text("Schnellbild quit unexpectedly last time while showing “\(name)”, so it wasn't opened again.")
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                        .accessibilityIdentifier("skippedRestore")
+                }
                 Button { model.chooseFolder() } label: { HStack(spacing: 6) { Text("Open Folder…"); KeyCap("⌘O") } }
             }
         }

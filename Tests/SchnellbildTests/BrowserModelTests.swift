@@ -580,6 +580,34 @@ final class OpenFolderTests: XCTestCase {
         await waitUntil { second.isAt(tree.root) }
     }
 
+    /// A launch that reopened the last folder and didn't last (a file there
+    /// may crash the app): the next launch doesn't reopen it, and says so.
+    func testAFolderThatEndedTheLastLaunchIsNotReopened() async throws {
+        let tree = try TempTree(self)
+        try tree.file("a.jpg")
+        let defaults = makeTestDefaults()
+        await openAndWait(BrowserModel(defaults: defaults), tree.root)
+
+        let crashed = BrowserModel(defaults: defaults)
+        crashed.restoreLastFolder()
+        await waitUntil { crashed.isAt(tree.root) }
+        // (the app ends here without quitting normally)
+
+        let next = BrowserModel(defaults: defaults)
+        next.restoreLastFolder()
+        XCTAssertNil(next.folderURL)
+        XCTAssertEqual(next.skippedRestore.map { URL(fileURLWithPath: $0).lastPathComponent }, tree.root.lastPathComponent)
+
+        let after = BrowserModel(defaults: defaults)
+        after.restoreLastFolder()
+        await waitUntil { after.isAt(tree.root) }   // once only
+
+        BrowserModel.confirmRestore(in: defaults)   // a normal quit
+        let again = BrowserModel(defaults: defaults)
+        again.restoreLastFolder()
+        await waitUntil { again.isAt(tree.root) }
+    }
+
     func testRestoreIgnoresMissingFolder() async throws {
         let defaults = makeTestDefaults()
         defaults.set("/does/not/exist", forKey: BrowserModel.lastFolderKey)

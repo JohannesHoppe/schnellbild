@@ -2,6 +2,7 @@ import SwiftUI
 import AppKit
 import AVFoundation
 import ImageIO
+import UniformTypeIdentifiers
 
 /// A grid entry: ".." (parent level), subfolder, image, or video.
 struct GridEntry: Identifiable, Hashable {
@@ -122,7 +123,7 @@ struct FileActions {
 
     static let live = FileActions(
         reveal: { NSWorkspace.shared.activateFileViewerSelecting([$0]) },
-        openInDefaultApp: { NSWorkspace.shared.open($0) },
+        openInDefaultApp: { LiveFiles.openWithDefaultApp($0) },
         confirmTrash: { name, detail in
             let alert = NSAlert()
             alert.messageText = String(localized: "Move “\(name)” to the Trash?")
@@ -153,6 +154,34 @@ struct FileActions {
 
 /// The file system work of the live actions, on any thread.
 enum LiveFiles {
+    /// Opens a picture, video, archive or folder with the app the Mac uses
+    /// for it. A file someone else made can pretend: a link or alias named
+    /// "Holiday.jpg" may point to an app or a script, which LaunchServices
+    /// would launch. So what is opened is what the item really is: links
+    /// and aliases resolved, and only pictures, videos, PDFs, archives and
+    /// folders (not apps or packages), each with the app for its type.
+    @MainActor
+    static func openWithDefaultApp(_ url: URL) {
+        guard let target = openableTarget(url) else { NSSound.beep(); return }
+        guard let app = NSWorkspace.shared.urlForApplication(toOpen: target) else { NSSound.beep(); return }
+        NSWorkspace.shared.open([target], withApplicationAt: app, configuration: NSWorkspace.OpenConfiguration())
+    }
+
+    /// The item behind links and aliases, if it may be opened at all.
+    static func openableTarget(_ url: URL) -> URL? {
+        var target = url.resolvingSymlinksInPath()
+        if (try? target.resourceValues(forKeys: [.isAliasFileKey, .isSymbolicLinkKey]))?.isAliasFile == true {
+            guard let resolved = try? URL(resolvingAliasFileAt: target) else { return nil }
+            target = resolved.resolvingSymlinksInPath()
+        }
+        guard let values = try? target.resourceValues(forKeys: [.contentTypeKey, .isPackageKey, .isDirectoryKey, .isAliasFileKey]),
+              values.isPackage != true, values.isAliasFile != true || values.isDirectory == true,
+              let type = values.contentType else { return nil }
+        if values.isDirectory == true { return type.conforms(to: .folder) ? target : nil }
+        let allowed: [UTType] = [.image, .movie, .audiovisualContent, .pdf, .archive]
+        return allowed.contains(where: type.conforms(to:)) && !type.conforms(to: .executable) ? target : nil
+    }
+
     static func move(_ from: URL, _ to: URL) throws {
         let fm = FileManager.default
         // FileManager refuses a case-only rename ("photos" → "Photos") on
@@ -1040,11 +1069,36 @@ final class BrowserModel: ObservableObject {
     /// The last folder is being checked (`restoreLastFolder`).
     private(set) var restoringLastFolder = false
 
+    /// The last folder wasn't opened again: the app quit unexpectedly last
+    /// time soon after opening it (a file there may crash it; reopening it
+    /// at every launch would crash every launch).
+    @Published private(set) var skippedRestore: String?
+    /// The folder being reopened at launch, until the app has run a while.
+    private var restoreUnconfirmedKey: String { settingsPrefix + Self.restoreUnconfirmedKey }
+    static let restoreUnconfirmedKey = "restoreUnconfirmed"
+
+    /// The app quits normally: the folders reopened at launch did no harm.
+    static func confirmRestore(in defaults: UserDefaults, prefixes: [String] = ["", "rightPane."]) {
+        for prefix in prefixes { defaults.removeObject(forKey: prefix + restoreUnconfirmedKey) }
+    }
+
     func restoreLastFolder(orElse fallback: @escaping @MainActor () -> URL? = { nil }) {
         guard folderURL == nil else { return }
         guard let path = defaults.string(forKey: lastFolderKey) else {
             if let other = fallback() { open(folder: other) }
             return
+        }
+        if defaults.string(forKey: restoreUnconfirmedKey) == path {
+            defaults.removeObject(forKey: restoreUnconfirmedKey)
+            skippedRestore = path
+            return
+        }
+        defaults.set(path, forKey: restoreUnconfirmedKey)
+        let key = restoreUnconfirmedKey, defaults = defaults
+        Task {
+            // Still running after a while: it didn't take the app down
+            try? await Task.sleep(for: .seconds(15))
+            defaults.removeObject(forKey: key)
         }
         restoringLastFolder = true
         Task {
@@ -1128,7 +1182,7 @@ final class BrowserModel: ObservableObject {
 
     /// What `entry(for:keys:)` reads, prefetched by the listings.
     nonisolated static let entryKeys: Set<URLResourceKey> = [
-        .isDirectoryKey, .isPackageKey, .contentModificationDateKey, .fileSizeKey, .isSymbolicLinkKey
+        .isDirectoryKey, .isPackageKey, .contentModificationDateKey, .fileSizeKey, .isSymbolicLinkKey, .isAliasFileKey
     ]
 
     /// Classify one file system item; nil for non-media files. Packages
@@ -1136,17 +1190,25 @@ final class BrowserModel: ObservableObject {
     /// Finder: not a folder to browse, walk in a slideshow or search.
     nonisolated private static func entry(for item: URL, keys: Set<URLResourceKey>) -> GridEntry? {
         var vals = try? item.resourceValues(forKeys: keys)
-        // A symbolic link is what it points to, as in the Finder (a link to
-        // a folder on a share opens like that folder), under its own name
+        // A Finder alias is a file that LaunchServices follows anywhere (an
+        // app): listed among the other files, never shown or opened as media
+        if vals?.isAliasFile == true, vals?.isSymbolicLink != true { return nil }
+        // A symbolic link is what it points to: a link to a folder is that
+        // folder, at its real place (what is done in it is done there, so it
+        // says where); a link to a file counts by the file it points to (a
+        // "photo.jpg" pointing to a script is no photo)
+        var target = item
         if vals?.isSymbolicLink == true {
-            vals = try? item.resolvingSymlinksInPath().resourceValues(forKeys: keys)
+            target = item.resolvingSymlinksInPath()
+            vals = try? target.resourceValues(forKeys: keys)
         }
         let date = vals?.contentModificationDate
         if vals?.isPackage == true { return nil }
         if vals?.isDirectory == true {
-            if ArchiveName.format(of: item.lastPathComponent) != nil { ArchivePath.noteFolder(item) }
-            return GridEntry(url: item, kind: .folder, modDate: date)
+            if ArchiveName.format(of: target.lastPathComponent) != nil { ArchivePath.noteFolder(target) }
+            return GridEntry(url: target, kind: .folder, modDate: date)
         }
+        if target != item, mediaKind(of: target) != mediaKind(of: item) { return nil }
         // An archive opens like a folder
         if ArchiveName.format(of: item.lastPathComponent) != nil {
             ArchivePath.noteArchive(item)
@@ -1176,7 +1238,7 @@ final class BrowserModel: ObservableObject {
     /// code); nil when its task is cancelled.
     nonisolated private static func anyMedia(below folder: URL) -> Bool? {
         guard let walk = FileManager.default.enumerator(
-            at: folder, includingPropertiesForKeys: [.isRegularFileKey, .isSymbolicLinkKey],
+            at: folder, includingPropertiesForKeys: [.isRegularFileKey, .isSymbolicLinkKey, .isAliasFileKey],
             options: [.skipsHiddenFiles, .skipsPackageDescendants]) else { return false }
         while true {
             if Task.isCancelled { return nil }
@@ -1195,7 +1257,9 @@ final class BrowserModel: ObservableObject {
     /// A file, not a folder named like one ("Export.mov"). The enumerators
     /// read this along with the listing.
     nonisolated private static func isFile(_ url: URL) -> Bool {
-        let values = try? url.resourceValues(forKeys: [.isRegularFileKey, .isSymbolicLinkKey])
+        let values = try? url.resourceValues(forKeys: [.isRegularFileKey, .isSymbolicLinkKey, .isAliasFileKey])
+        // A Finder alias is no picture, whatever its name
+        if values?.isAliasFile == true, values?.isSymbolicLink != true { return false }
         // A link to a file counts as that file
         if values?.isSymbolicLink == true {
             return (try? url.resolvingSymlinksInPath().resourceValues(forKeys: [.isRegularFileKey]))?.isRegularFile ?? false

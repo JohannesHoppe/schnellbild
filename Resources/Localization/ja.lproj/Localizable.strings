@@ -251,3 +251,4 @@
 "Forget all saved archive passwords?" = "保存済みのアーカイブのパスワードをすべて消去しますか?";
 "Forget Passwords" = "パスワードを消去";
 "Archives that need a password ask for it again." = "パスワードが必要なアーカイブは再び尋ねます。";
+"Schnellbild quit unexpectedly last time while showing “%@”, so it wasn't opened again." = "前回「%@」の表示中に Schnellbild が予期せず終了したため、再度開きませんでした。";
