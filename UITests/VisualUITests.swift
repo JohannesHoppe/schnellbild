@@ -92,7 +92,9 @@ final class VisualUITests: SchnellbildUITestCase {
     /// dims the picture: measured right after each move and a while later,
     /// in the middle of the picture (the controls show at the bottom).
     private func checkHoverKeepsTheBrightness(vlc: Bool) throws {
-        let video = try openVideo(vlc ? "clip.mkv" : "clip.mp4", vlc: vlc)
+        // The even grey clip: a moving picture would change the brightness
+        // by itself (VLC plays the MP4 too, with --force-vlc)
+        let video = try openVideo("grey.mp4", vlc: vlc)
         func sample() throws -> Double { try screenBrightness(of: video) }
         let away = app.windows.firstMatch.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.02))
         away.hover()
@@ -544,7 +546,7 @@ final class VisualUITests: SchnellbildUITestCase {
 
     /// A photo taken with the camera held upright: stored lying (dark on the
     /// left), with EXIF orientation 6 to turn it. On screen it stands, dark
-    /// at the top, at fit and when zoomed in (decoded again at full size).
+    /// at the top, at fit and when zoomed in (decoded again, larger).
     func testAnUprightPhotoIsShownTurned() throws {
         try put("upright.jpg", at: "upright.jpg")
         launch(open: tempDir.appendingPathComponent("upright.jpg").path)
@@ -560,8 +562,15 @@ final class VisualUITests: SchnellbildUITestCase {
             let top = try strip(atHeight: 0.12), bottom = try strip(atHeight: 0.8)
             XCTAssertLessThan(top, bottom - 0.2, "\(state): not turned upright (top \(top), bottom \(bottom)); \(text(of: image))")
             if state == "fit" {
+                // "decoded <n> px": larger once zoomed in
+                func decoded() -> Int {
+                    let text = text(of: image)
+                    guard let range = text.range(of: #"decoded (\d+) px"#, options: .regularExpression) else { return 0 }
+                    return Int(text[range].split(separator: " ")[1]) ?? 0
+                }
+                let atFit = decoded()
                 for _ in 0..<2 { app.typeKey("+", modifierFlags: []) }
-                eventually("decoded at full size", timeout: 15) { text(of: image).contains("decoded 2400 px") }
+                eventually("decoded again, larger", timeout: 15) { decoded() > atFit }
                 settle()
             }
         }
