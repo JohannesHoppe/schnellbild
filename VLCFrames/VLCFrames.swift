@@ -82,7 +82,7 @@ public final class VLCFrameGrab: @unchecked Sendable {   // state behind `lock`
         lock.unlock()
         guard !over, let api = LibVLCVideo.shared else { return finish(with: nil) }
         let media = VLCMedia(url: url)
-        VLCSafety.restrict(media)
+        VLCSafety.restrict(media, for: url)
         for option in [":no-audio", ":no-spu", ":no-osd", ":avcodec-threads=1", ":avcodec-skip-idct=4",
                        ":avcodec-skiploopfilter=3", ":deinterlace=-1", ":avi-index=3"] {
             media.addOption(option)
@@ -187,15 +187,39 @@ public final class VLCFrameGrab: @unchecked Sendable {   // state behind `lock`
 /// What VLC may do with a file someone else made. VLC picks its reader by
 /// the content, not the name: a file named "video.mkv" that is really a
 /// streaming playlist (HLS) would make it fetch from the internet, also for
-/// a thumbnail. Only the readers of local video files are allowed.
+/// a thumbnail. So the file's extension names the one reader VLC may use.
+/// One, not a list: VLC takes a reader it is told to use as forced, and some
+/// (MPEG program and transport streams) then take any file, so every reader
+/// after them in a list would never be asked.
 public enum VLCSafety {
-    /// Matroska / WebM, AVI, MP4 / MOV / 3GP, MPEG program and transport
-    /// streams, elementary streams, Ogg, ASF / WMV, DV, and FFmpeg's readers
-    /// for the rest (FLV …).
-    public static let demuxers = "mkv,avi,mp4,ps,ts,es,ogg,asf,rawdv,avformat,none"
+    /// The reader for a file's extension, and FFmpeg's format where FFmpeg
+    /// reads it (held to that one format, so FFmpeg can't pick a playlist
+    /// reader either); nil: VLC opens nothing.
+    public static func reader(for url: URL) -> (demux: String, ffmpegFormat: String?)? {
+        switch url.pathExtension.lowercased() {
+        case "mkv", "webm":                                  return ("mkv", nil)
+        case "avi":                                          return ("avi", nil)
+        case "mp4", "m4v", "mov", "qt", "3gp", "3g2":        return ("mp4", nil)
+        case "mpg", "mpeg", "vob":                           return ("ps", nil)
+        case "ts", "m2ts", "mts":                            return ("ts", nil)
+        case "m2v":                                          return ("mpgv", nil)   // an MPEG video stream on its own
+        case "wmv", "asf":                                   return ("asf", nil)
+        case "ogv", "ogg":                                   return ("ogg", nil)
+        case "dv":                                           return ("rawdv", nil)
+        case "flv":                                          return ("avformat", "flv")
+        default:                                             return nil
+        }
+    }
 
-    public static func restrict(_ media: VLCMedia) {
-        media.addOption(":demux=\(demuxers)")
+    /// `url` names the file (for a video inside an archive: its path through
+    /// the archive).
+    public static func restrict(_ media: VLCMedia, for url: URL) {
+        if let reader = reader(for: url) {
+            media.addOption(":demux=\(reader.demux),none")
+            if let format = reader.ffmpegFormat { media.addOption(":avformat-format=\(format)") }
+        } else {
+            media.addOption(":demux=none")
+        }
         // No subtitles or other files picked up from next to the video
         media.addOption(":no-sub-autodetect-file")
     }

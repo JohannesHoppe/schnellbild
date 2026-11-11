@@ -77,9 +77,9 @@ let package = Package(
         ),
         .testTarget(
             name: "SchnellbildTests",
-            dependencies: ["Schnellbild"],
+            dependencies: ["Schnellbild", "VLCFrames"],
             path: "Tests/SchnellbildTests",
-            resources: [.copy("Archives")]
+            resources: [.copy("Archives"), .copy("Videos")]
         )
     ],
     cxxLanguageStandard: .cxx17

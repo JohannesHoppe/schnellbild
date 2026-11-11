@@ -28,11 +28,11 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
     }()
     /// Where the picture goes (no OpenGL; see `VLCFrameOutput`).
     let output = VLCFrameOutput()
-    /// What VLC opens: a file, or a stream (a video inside an archive; a new
-    /// one for every opening).
+    /// What VLC opens: a file, or a stream (a video inside an archive, named
+    /// by its path through the archive; a new stream for every opening).
     enum Source {
         case file(URL)
-        case stream(() -> InputStream)
+        case stream(URL, () -> InputStream)
     }
     private let source: Source
     private let onStateChange: @MainActor (PlaybackControl, Bool) -> Void
@@ -57,11 +57,12 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
 
     private func makeMedia() -> VLCMedia {
         let media: VLCMedia
+        let name: URL
         switch source {
-        case .file(let url):        media = VLCMedia(url: url)
-        case .stream(let makeStream): media = VLCMedia(stream: makeStream())
+        case .file(let url):                media = VLCMedia(url: url); name = url
+        case .stream(let url, let makeStream): media = VLCMedia(stream: makeStream()); name = url
         }
-        VLCSafety.restrict(media)
+        VLCSafety.restrict(media, for: name)
         // No on-screen messages (VLC would draw them into the picture)
         media.addOption(":no-osd")
         // VLCKit turns on "play-and-pause": VLC would pause as soon as it has
