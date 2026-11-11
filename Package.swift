@@ -15,7 +15,7 @@ let unrarSources = [
 let package = Package(
     name: "Schnellbild",
     platforms: [
-        .macOS(.v15)
+        .macOS("15.0")   // (.v15 needs swift-tools-version 6)
     ],
     targets: [
         .executableTarget(
