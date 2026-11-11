@@ -2834,3 +2834,22 @@ final class EnhanceTests: XCTestCase {
         XCTAssertEqual(adaptive.look, Look.auto(for: bright), "at once after seeking")
     }
 }
+
+/// The boss key comes back only on X typed three times in a row, each
+/// within a second of the one before.
+final class BossKeyTests: XCTestCase {
+    func testThreeXInARowBringTheAppBack() {
+        var c = BossKey.Counter()
+        let t = Date()
+        XCTAssertFalse(c.typed(x: true, at: t))
+        XCTAssertFalse(c.typed(x: true, at: t + 0.3))
+        XCTAssertTrue(c.typed(x: true, at: t + 0.6))
+        XCTAssertFalse(c.typed(x: true, at: t + 1), "counting starts over")
+        XCTAssertFalse(c.typed(x: false, at: t + 1.2), "another key")
+        XCTAssertFalse(c.typed(x: true, at: t + 1.4))
+        XCTAssertFalse(c.typed(x: true, at: t + 1.6))
+        XCTAssertFalse(c.typed(x: true, at: t + 3), "too slow: one X again")
+        XCTAssertFalse(c.typed(x: true, at: t + 3.5))
+        XCTAssertTrue(c.typed(x: true, at: t + 4))
+    }
+}

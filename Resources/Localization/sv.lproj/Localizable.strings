@@ -258,3 +258,4 @@
 "Search mode" = "Sökläge";
 "No folder, archive, picture or video whose name matches “%@”, in this folder or its subfolders." = "Ingen mapp, inget arkiv, ingen bild eller video vars namn matchar ”%@”, i den här mappen eller dess undermappar.";
 "“%@” is not a valid regular expression." = "”%@” är inte ett giltigt reguljärt uttryck.";
+"Boss key: hidden and silent at once; X X X brings it back" = "Chefsknapp: dold och tyst direkt; X X X tar tillbaka det";

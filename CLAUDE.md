@@ -92,6 +92,7 @@ There is **no Xcode project for the app build**; `xcodegen` generates
 - **`SearchField.swift`** — `NSSearchField` wrapper, always visible above the
   content. It refuses first responder until clicked or ⌘F, otherwise AppKit
   focuses it on launch and it swallows the grid keys.
+- **`BossKey.swift`** — X (not while typing) makes every window invisible and click-through (alpha 0, kept open so the app's keys still arrive), hides the app and mutes the players (`BrowserModel.audibleVolume`, `BossKey.changed`); while engaged the key monitor hands every key to `BossKey.typed`, and only X X X (`Counter`, each within a second) restores. The Dock icon reopens nothing (`applicationShouldHandleReopen`).
 - **`SettingsView.swift`** — Settings (⌘,, SwiftUI's `Settings` scene): the slideshow's picture time (`WindowModel.slideshowSeconds`, 1–60 s, `BrowserModel.slideshowSecondsKey`, both panes) and forgetting the saved archive passwords (`ArchiveStore.forgetPasswords`: the keychain list and the archives a password opened).
 - **`RenameView.swift`** — the F2 rename sheet (`model.rename`); for files the base name is preselected.
 - **`ContentView.swift`** — one **local `NSEvent` keyDown monitor** maps key

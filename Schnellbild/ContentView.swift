@@ -243,6 +243,11 @@ private struct WindowView: View {
         ModifierClicks.start()
         let window = self.window
         _ = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
+            // Hidden by the boss key: every key is its (X X X brings the app back)
+            if MainActor.assumeIsolated({ BossKey.engaged }) {
+                MainActor.assumeIsolated { BossKey.typed(event) }
+                return nil
+            }
             // A modal dialog (the Trash confirmation, the open panel) keeps
             // its keys: Return confirms it, Esc cancels it.
             if NSApp.modalWindow != nil || event.window is NSSavePanel { return event }
@@ -289,6 +294,11 @@ private struct WindowView: View {
                 let plain = event.charactersIgnoringModifiers?.lowercased() ?? ""
                 let letter = plain.unicodeScalars.allSatisfy(\.isASCII) ? plain : (LatinKeys.character(for: code, shift: false) ?? plain)
                 if control, command, letter == "f" { model.toggleFullScreen(); return true }
+                // X: the boss key (everywhere but while typing)
+                if letter == "x", !typing, !command, !control, !event.modifierFlags.contains(.option) {
+                    BossKey.engage()
+                    return true
+                }
                 // ⌃O: the commanders' "panels on / off" (the dual pane)
                 if control, !command, letter == "o", !typing {
                     return window.handleWindowKey(.char("o"), command: false, control: true, textEditing: false)

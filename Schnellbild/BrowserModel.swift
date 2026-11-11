@@ -814,7 +814,7 @@ final class BrowserModel: ObservableObject {
             shownSince = Date()
             videoPaused = false
             if enhancement != .off { activePlayer?.setEnhancement(enhancement) }
-            activePlayer?.setVolume(volume)
+            activePlayer?.setVolume(audibleVolume)
         }
     }
 
@@ -822,6 +822,10 @@ final class BrowserModel: ObservableObject {
     /// The volume of every video, 0 … 1 (↑ / ↓ on a video, in tenths);
     /// starts at 100 %, remembered.
     @Published private(set) var volume: Double = 1
+    /// What the player plays at: silent while the boss key hides the app.
+    var audibleVolume: Double { BossKey.engaged ? 0 : volume }
+    private var bossKeyObserver: NSObjectProtocol?
+
     /// Changes with every volume step: the volume display shows a while.
     @Published private(set) var volumeChange: UUID?
 
@@ -846,13 +850,13 @@ final class BrowserModel: ObservableObject {
     func adoptVolume(_ value: Double) {
         guard value != volume else { return }
         volume = value
-        activePlayer?.setVolume(value)
+        activePlayer?.setVolume(audibleVolume)
     }
 
     func changeVolume(by delta: Double) {
         volume = (min(max(volume + delta, 0), 1) * 10).rounded() / 10
         defaults.set(volume, forKey: Self.volumeKey)
-        activePlayer?.setVolume(volume)
+        activePlayer?.setVolume(audibleVolume)
         volumeChange = UUID()
     }
     /// Auto enhance (E, the wand): works out exposure, contrast, saturation
@@ -970,6 +974,10 @@ final class BrowserModel: ObservableObject {
         if let raw = defaults.string(forKey: sortKeyKey), let key = SortKey(rawValue: raw) {
             sortKey = key
             sortAscending = defaults.object(forKey: sortAscendingKey) as? Bool ?? key.startsAscending
+        }
+        // The boss key mutes the video playing at once, and gives it its sound back
+        bossKeyObserver = NotificationCenter.default.addObserver(forName: BossKey.changed, object: nil, queue: .main) { [weak self] _ in
+            MainActor.assumeIsolated { guard let self else { return }; self.activePlayer?.setVolume(self.audibleVolume) }
         }
     }
 

@@ -92,6 +92,7 @@ struct ShortcutsHelpView: View {
             Shortcut(keys: "⌘Q / F10", action: "Quit (F10 asks first)"),
             Shortcut(keys: "F9", action: "The app's menus in the window"),
             Shortcut(keys: "K", action: "Show / hide the mini keyboard"),
+            Shortcut(keys: "X", action: "Boss key: hidden and silent at once; X X X brings it back"),
             Shortcut(keys: "F1 / ⌘?", action: "Show this list"),
         ]),
     ]

@@ -258,3 +258,4 @@
 "Search mode" = "Режим поиска";
 "No folder, archive, picture or video whose name matches “%@”, in this folder or its subfolders." = "Нет папки, архива, изображения или видео, имя которого соответствует «%@», в этой папке или ее подпапках.";
 "“%@” is not a valid regular expression." = "«%@» — недопустимое регулярное выражение.";
+"Boss key: hidden and silent at once; X X X brings it back" = "Клавиша «босс»: сразу скрыто и без звука; X X X возвращает";

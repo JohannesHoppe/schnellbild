@@ -131,6 +131,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         true
     }
 
+    /// Hidden by the boss key: a click on the Dock icon shows nothing.
+    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
+        !BossKey.engaged
+    }
+
     /// Not in the middle of a copy or move: the app quits once it is done.
     func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
         guard BrowserModel.transfersUnderWay > 0 else { return .terminateNow }
