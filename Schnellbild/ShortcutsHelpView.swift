@@ -6,8 +6,17 @@ private struct Shortcut: Identifiable {
     /// Key glyphs and key names, shown as they are.
     let keys: String
     let action: LocalizedStringKey
+    /// The action's English text (its localization key), for sizing.
+    let actionKey: String
     /// The keys column holds words besides key names ("drag"): translated.
     var wordsInKeys = false
+
+    init(keys: String, action: String, wordsInKeys: Bool = false) {
+        self.keys = keys
+        self.action = LocalizedStringKey(action)
+        actionKey = action
+        self.wordsInKeys = wordsInKeys
+    }
 
     var keysText: Text { wordsInKeys ? Text(LocalizedStringKey(keys)) : Text(verbatim: keys) }
 }
@@ -187,8 +196,8 @@ private struct CheatSheetPage: View {
         let (left, right) = Self.columns(ShortcutsHelpView.groups)
         VStack(alignment: .leading, spacing: 10) {
             HStack(alignment: .firstTextBaseline) {
-                Text(verbatim: "Schnellbild").font(.system(size: 15, weight: .bold))
-                Text("Keyboard Shortcuts").font(.system(size: 15))
+                Text(verbatim: "Schnellbild").font(.system(size: 17, weight: .bold))
+                Text("Keyboard Shortcuts").font(.system(size: 17))
             }
             HStack(alignment: .top, spacing: 18) {
                 column(left)
@@ -204,15 +213,16 @@ private struct CheatSheetPage: View {
         VStack(alignment: .leading, spacing: 9) {
             ForEach(groups) { group in
                 VStack(alignment: .leading, spacing: 2.5) {
-                    Text(group.title).font(.system(size: 9.5, weight: .bold))
+                    Text(group.title).font(.system(size: 11, weight: .bold))
                         .padding(.bottom, 1)
                     ForEach(group.shortcuts) { shortcut in
                         HStack(alignment: .firstTextBaseline, spacing: 6) {
                             shortcut.keysText
-                                .font(.system(size: 7.5, weight: .semibold, design: .monospaced))
-                                .frame(width: 78, alignment: .leading)
+                                .font(.system(size: 8.5, weight: .semibold, design: .monospaced))
+                                .fixedSize(horizontal: false, vertical: true)
+                                .frame(width: 84, alignment: .leading)
                             Text(shortcut.action)
-                                .font(.system(size: 7.5))
+                                .font(.system(size: 8.5))
                                 .fixedSize(horizontal: false, vertical: true)
                             Spacer(minLength: 0)
                         }
@@ -224,9 +234,14 @@ private struct CheatSheetPage: View {
         .frame(maxWidth: .infinity, alignment: .topLeading)
     }
 
-    /// The groups in order, split where both columns hold about as many lines.
+    /// The groups in order, split where both columns are about as tall
+    /// (a long action or key list takes more than one line).
     static func columns(_ groups: [Group]) -> ([Group], [Group]) {
-        let lines = groups.map { $0.shortcuts.count + 2 }
+        func lines(_ shortcut: Shortcut) -> Int {
+            let action = String(localized: String.LocalizationValue(stringLiteral: shortcut.actionKey)).count
+            return max(1, (action + 43) / 44, (shortcut.keys.count + 12) / 13)
+        }
+        let lines = groups.map { $0.shortcuts.map(lines).reduce(0, +) + 2 }
         let total = lines.reduce(0, +)
         var best = 0, bestDiff = Int.max, sum = 0
         for i in 0...groups.count {
