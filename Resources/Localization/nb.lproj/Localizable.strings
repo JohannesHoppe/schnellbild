@@ -260,3 +260,12 @@
 "“%@” is not a valid regular expression." = "«%@» er ikke et gyldig regulært uttrykk.";
 "Boss key: hidden and silent at once; X X X brings it back" = "Sjefstast: skjult og stille med en gang; X X X henter det tilbake";
 "Into “%@”" = "Til «%@»";
+"Bookmarks" = "Bokmerker";
+"Bookmark This Folder" = "Bokmerk denne mappen";
+"Remove Bookmark for This Folder" = "Fjern bokmerket for denne mappen";
+"Remove Bookmark" = "Fjern bokmerke";
+"Add Bookmark" = "Legg til bokmerke";
+"Bookmarks (⌘D: this folder; ⌃1 … ⌃9: go)" = "Bokmerker (⌘D: denne mappen; ⌃1 … ⌃9: åpne)";
+"bookmarked" = "bokmerket";
+"Bookmark the folder shown, or remove its bookmark" = "Bokmerk mappen som vises, eller fjern bokmerket";
+"Open bookmark 1 … 9" = "Åpne bokmerke 1 … 9";

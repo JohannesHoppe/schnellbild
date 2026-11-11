@@ -260,3 +260,12 @@
 "“%@” is not a valid regular expression." = "‘%@’은(는) 올바른 정규 표현식이 아닙니다.";
 "Boss key: hidden and silent at once; X X X brings it back" = "보스 키: 즉시 숨기고 음소거; X X X로 다시 표시";
 "Into “%@”" = "‘%@’(으)로";
+"Bookmarks" = "책갈피";
+"Bookmark This Folder" = "이 폴더를 책갈피에 추가";
+"Remove Bookmark for This Folder" = "이 폴더의 책갈피 제거";
+"Remove Bookmark" = "책갈피 제거";
+"Add Bookmark" = "책갈피 추가";
+"Bookmarks (⌘D: this folder; ⌃1 … ⌃9: go)" = "책갈피 (⌘D: 이 폴더, ⌃1 … ⌃9: 열기)";
+"bookmarked" = "책갈피됨";
+"Bookmark the folder shown, or remove its bookmark" = "표시된 폴더를 책갈피에 추가하거나 제거";
+"Open bookmark 1 … 9" = "책갈피 1 … 9 열기";

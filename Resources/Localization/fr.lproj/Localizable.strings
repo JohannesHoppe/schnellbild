@@ -260,3 +260,12 @@
 "“%@” is not a valid regular expression." = "« %@ » n’est pas une expression régulière valide.";
 "Boss key: hidden and silent at once; X X X brings it back" = "Touche patron : masqué et muet aussitôt ; X X X le fait revenir";
 "Into “%@”" = "Dans « %@ »";
+"Bookmarks" = "Signets";
+"Bookmark This Folder" = "Ajouter un signet pour ce dossier";
+"Remove Bookmark for This Folder" = "Supprimer le signet de ce dossier";
+"Remove Bookmark" = "Supprimer le signet";
+"Add Bookmark" = "Ajouter un signet";
+"Bookmarks (⌘D: this folder; ⌃1 … ⌃9: go)" = "Signets (⌘D : ce dossier ; ⌃1 … ⌃9 : ouvrir)";
+"bookmarked" = "avec signet";
+"Bookmark the folder shown, or remove its bookmark" = "Ajouter ou supprimer le signet du dossier affiché";
+"Open bookmark 1 … 9" = "Ouvrir le signet 1 … 9";

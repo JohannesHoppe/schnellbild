@@ -462,6 +462,9 @@ struct EntryInteractions: ViewModifier {
                             model.select(entry)
                             model.startSlideshow(over: entry.url)
                         }
+                        Button(Bookmarks.shared.contains(entry.url) ? "Remove Bookmark" : "Add Bookmark") {
+                            Bookmarks.shared.toggle(entry.url)
+                        }
                     }
                     // Inside an archive nothing is changed
                     if model.canRename(entry) {

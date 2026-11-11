@@ -260,3 +260,12 @@
 "“%@” is not a valid regular expression." = "“%@” is not a valid regular expression.";
 "Boss key: hidden and silent at once; X X X brings it back" = "Boss key: hidden and silent at once; X X X brings it back";
 "Into “%@”" = "Into “%@”";
+"Bookmarks" = "Bookmarks";
+"Bookmark This Folder" = "Bookmark This Folder";
+"Remove Bookmark for This Folder" = "Remove Bookmark for This Folder";
+"Remove Bookmark" = "Remove Bookmark";
+"Add Bookmark" = "Add Bookmark";
+"Bookmarks (⌘D: this folder; ⌃1 … ⌃9: go)" = "Bookmarks (⌘D: this folder; ⌃1 … ⌃9: go)";
+"bookmarked" = "bookmarked";
+"Bookmark the folder shown, or remove its bookmark" = "Bookmark the folder shown, or remove its bookmark";
+"Open bookmark 1 … 9" = "Open bookmark 1 … 9";

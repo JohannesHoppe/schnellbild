@@ -260,3 +260,12 @@
 "“%@” is not a valid regular expression." = "«%@» — недопустимое регулярное выражение.";
 "Boss key: hidden and silent at once; X X X brings it back" = "Клавиша «босс»: сразу скрыто и без звука; X X X возвращает";
 "Into “%@”" = "В «%@»";
+"Bookmarks" = "Закладки";
+"Bookmark This Folder" = "Добавить закладку на эту папку";
+"Remove Bookmark for This Folder" = "Удалить закладку этой папки";
+"Remove Bookmark" = "Удалить закладку";
+"Add Bookmark" = "Добавить закладку";
+"Bookmarks (⌘D: this folder; ⌃1 … ⌃9: go)" = "Закладки (⌘D: эта папка; ⌃1 … ⌃9: открыть)";
+"bookmarked" = "в закладках";
+"Bookmark the folder shown, or remove its bookmark" = "Добавить или удалить закладку показанной папки";
+"Open bookmark 1 … 9" = "Открыть закладку 1 … 9";

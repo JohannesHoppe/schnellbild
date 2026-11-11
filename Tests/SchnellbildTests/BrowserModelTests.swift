@@ -2853,3 +2853,31 @@ final class BossKeyTests: XCTestCase {
         XCTAssertTrue(c.typed(x: true, at: t + 4))
     }
 }
+
+/// Folder bookmarks: set and removed by the same action, remembered, they
+/// follow a rename the app makes, and two of the same name tell their folders.
+@MainActor
+final class BookmarkTests: XCTestCase {
+    func testBookmarksToggleRememberAndFollowARename() async throws {
+        let tree = try TempTree(self)
+        let a = try tree.folder("Photos/Holiday")
+        let b = try tree.folder("Videos/Holiday")
+        try tree.file("Photos/Holiday/x.jpg")
+        let defaults = makeTestDefaults()
+        let bookmarks = Bookmarks(defaults: defaults)
+        bookmarks.toggle(a)
+        bookmarks.toggle(b)
+        XCTAssertTrue(bookmarks.contains(a))
+        XCTAssertEqual(bookmarks.folders.map(bookmarks.title(of:)), ["Photos/Holiday", "Videos/Holiday"])
+        bookmarks.toggle(b)
+        XCTAssertFalse(bookmarks.contains(b))
+        XCTAssertEqual(bookmarks.folders.map(bookmarks.title(of:)), ["Holiday"])
+        XCTAssertEqual(Bookmarks(defaults: defaults).folders.count, 1, "remembered")
+
+        let renamed = tree.root.appendingPathComponent("Photos/Summer")
+        bookmarks.follow([.moved(a, to: renamed)])
+        XCTAssertTrue(bookmarks.contains(renamed))
+        XCTAssertFalse(bookmarks.contains(a))
+        XCTAssertTrue(Bookmarks(defaults: defaults).contains(renamed), "saved")
+    }
+}
