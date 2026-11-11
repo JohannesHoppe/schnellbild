@@ -355,12 +355,7 @@ Schnellbild → Settings (⌘,) has two things: how long a picture stays in the 
 3. **Full view downsampled.** The full picture is read through ImageIO and sampled straight to screen size, no 8000 px monster in memory. The thumbnail shows instantly as a placeholder.
 4. **Nothing blocks the main thread.** Reading folders, searching and decoding run in the background.
 
-## Status
-
-Early, but already a usable daily driver. Known limits:
-
-- Things the Finder shows as a single file although they are folders inside (apps, the Photos library) stay closed: Schnellbild doesn't show, search or play what's in them, so it never changes a library behind its app's back.
-- Archives inside archives aren't opened. Thumbnails of videos inside archives are an icon. Sorting by date taken uses the date modified inside archives.
+## Building
 
 Building from source, tests and releases: [BUILDING.md](BUILDING.md).
 

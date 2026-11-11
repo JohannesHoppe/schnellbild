@@ -339,4 +339,4 @@ Open / next-up:
   arm64 only; Intel would need a universal `swift build`.
 - **Speed benchmark** — "Schnellbild vs. Preview over the network" was offered to
   *prove* the speed claim (the GIF only sells the feel). Not built.
-- Known limits: see the README's "Status" section.
+- Known limits (not planned): packages (apps, the Photos library) stay closed; archives inside archives aren't opened; videos inside archives get an icon as thumbnail; sorting by date taken uses the date modified inside archives.
