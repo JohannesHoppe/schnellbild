@@ -332,6 +332,32 @@ F1 (or ⌘?) shows a cheat sheet of the keys; Print… (⌘P) in it prints it on
 
 Schnellbild → Settings (⌘,) has three things: how long a picture stays in the slideshow (1 to 60 seconds), whether macOS reads MKV itself (the media extension, with a button to System Settings), and the archive passwords Schnellbild has saved, which you can forget all at once. Everything else it simply remembers: the folder, the sort order, grid or list, the search mode, the dual pane, the mini keyboard, the volume, the bookmarks. Quitting while files are still being copied or moved asks first and can wait until they are done.
 
+### Supported file formats
+
+**Pictures** (shown with macOS' own ImageIO, so a newer macOS can read more):
+
+| | Formats |
+|---|---|
+| Photos and graphics | JPEG (`.jpg`, `.jpeg`, `.jpe`), HEIC / HEIF (`.heic`, `.heif`, `.hif`, `.heics`), AVIF, JPEG XL (`.jxl`), PNG, GIF, WebP, TIFF (`.tif`, `.tiff`), BMP, JPEG 2000 (`.jp2`, `.j2k`), MPO |
+| Vector and documents | SVG, PDF (every page as a vector picture) |
+| HDR and editing | OpenEXR (`.exr`), Radiance (`.hdr`), Photoshop (`.psd`), Targa (`.tga`), DDS, icons (`.ico`, `.icns`) |
+| Camera RAW (the models macOS knows) | Canon `.cr2` `.cr3` `.crw`, Nikon `.nef` `.nrw`, Sony `.arw` `.sr2` `.srf`, Fujifilm `.raf`, Olympus / OM `.orf`, Panasonic / Leica `.rw2` `.rwl` `.raw`, Pentax `.pef`, Samsung `.srw`, Hasselblad `.3fr` `.fff`, Phase One `.iiq`, Adobe `.dng`, Epson `.erf`, Kodak `.dcr`, Leaf `.mos`, Minolta `.mrw` |
+
+Animated GIF, PNG and WebP play. RAW files show their built-in preview as a tile and are developed by macOS in the full view.
+
+**Videos:**
+
+| | Formats | Plays through |
+|---|---|---|
+| What macOS plays | MP4, MOV (`.mov`, `.qt`), M4V, 3GP / 3G2 | AVKit |
+| Everything else | MKV, WebM, AVI, WMV, FLV, Ogg video (`.ogv`), MPEG (`.mpg`, `.mpeg`, `.m2v`), DVD video (`.vob`), AVCHD (`.mts`, `.m2ts`), DV | VLC, built in |
+
+`.ts` isn't listed: far more such files are TypeScript code than video. Thumbnails in the Finder for these videos: see [Finder previews for more videos](#finder-previews-for-more-videos).
+
+**Archives** (opened like folders, see [Archives as folders](#archives-as-folders)): ZIP and comic books (`.zip`, `.cbz`), RAR (`.rar`, `.cbr`, all versions, also in volumes `.part1.rar` … and `.rar` / `.r00` …), 7z (`.7z`, `.cb7`), and archives split by bytes (`.zip.001`, `.7z.001`) or as ZIP volumes (`.z01` …). Still downloading (`.part`, `.crdownload`, `.download`, `.partial`, `.!qb`), they open with what is there so far.
+
+**Everything else** is listed by name and size under the grid; documents among it open with their app on a double click.
+
 ## A free Phiewer alternative
 
 [Phiewer](https://phiewer.com/) is a good image viewer for the Mac and was the model for Schnellbild's keyboard-first browsing. If you are looking for a free, open-source alternative to Phiewer, this is how the two compare. Phiewer's side is what [phiewer.com](https://phiewer.com/) lists (as of November 2026) and what we found using it; "not listed" means the site doesn't mention it.
