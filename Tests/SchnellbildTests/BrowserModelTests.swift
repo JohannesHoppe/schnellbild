@@ -3006,3 +3006,30 @@ final class OpenOtherFileTests: XCTestCase {
         XCTAssertFalse(LiveFiles.canOpenOtherFile(link))
     }
 }
+
+/// A search's walk tells the folder tiles what it saw: whether a found folder
+/// holds media and its first pictures (as the tile would look them up), so
+/// the tiles needn't walk the same folders again over the network.
+final class FolderFactsTests: XCTestCase {
+    func testTheWalkLearnsWhatTheFolderTilesNeed() async throws {
+        let tree = try TempTree(self)
+        for name in ["d.jpg", "b.jpg", "a.jpg", "c.jpg"] { try tree.file("trip-top/\(name)") }
+        try tree.file("trip-deep/day/x.jpg")
+        try tree.file("trip-none/notes.txt")
+        try tree.folder("other")
+        var learnt = FolderFacts.Learnt()
+        for await batch in BrowserModel.recursiveMatches(under: tree.root, query: "trip") {
+            learnt.withMedia += batch.facts.withMedia
+            learnt.previews.merge(batch.facts.previews) { $1 }
+            learnt.withoutMedia += batch.facts.withoutMedia
+        }
+        func name(_ urls: [URL]?) -> [String] { (urls ?? []).map(\.lastPathComponent) }
+        func previews(_ folder: String) -> [String] {
+            name(learnt.previews.first { $0.key.lastPathComponent == folder }?.value)
+        }
+        XCTAssertEqual(Set(name(learnt.withMedia)), ["trip-top", "trip-deep"])
+        XCTAssertEqual(previews("trip-top"), ["a.jpg", "b.jpg", "c.jpg"], "the first three by name")
+        XCTAssertEqual(previews("trip-deep"), ["x.jpg"], "none at the top: from further down")
+        XCTAssertEqual(name(learnt.withoutMedia), ["trip-none"])
+    }
+}

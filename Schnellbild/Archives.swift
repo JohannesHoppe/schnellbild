@@ -147,8 +147,10 @@ enum ArchiveName {
 
 extension GridEntry {
     /// An archive on disk, shown as a folder (not one inside another archive,
-    /// not a real folder named like one).
-    var isArchive: Bool { kind == .folder && ArchivePath.split(url).map { $0.inner.isEmpty } ?? false }
+    /// not a real folder named like one). By its path only.
+    static func isArchive(_ url: URL, kind: Kind) -> Bool {
+        kind == .folder && ArchivePath.split(url).map { $0.inner.isEmpty } ?? false
+    }
 }
 
 /// A place inside an archive is a file URL running through the archive
