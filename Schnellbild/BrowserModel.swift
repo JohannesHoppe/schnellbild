@@ -2130,12 +2130,23 @@ final class BrowserModel: ObservableObject {
     /// that folder behind it.
     func openDropped(_ urls: [URL], slideshow: Bool = false) {
         guard let first = urls.first else { return }
-        var isDir: ObjCBool = false
-        guard FileManager.default.fileExists(atPath: first.path, isDirectory: &isDir) else { return }
+        // What it is: looked up off the main thread (dropped from a share
+        // that answers slowly)
+        let look: @Sendable () -> (exists: Bool, isFolder: Bool, isPackage: Bool) = {
+            var isDir: ObjCBool = false
+            let exists = FileManager.default.fileExists(atPath: first.path, isDirectory: &isDir)
+            return (exists, isDir.boolValue, isDir.boolValue && BrowserModel.isPackage(first))
+        }
+        guard fileActions.runsOffMain else { openDropped(first, look(), slideshow: slideshow); return }
+        Task { openDropped(first, await Blocking.run(.userInitiated, look), slideshow: slideshow) }
+    }
+
+    private func openDropped(_ first: URL, _ found: (exists: Bool, isFolder: Bool, isPackage: Bool), slideshow: Bool) {
+        guard found.exists else { return }
         // An archive opens like a folder; a package (a Photos library, an
         // app) is one item, as in the Finder: its folder opens, with it selected
-        let isPackage = isDir.boolValue && Self.isPackage(first)
-        let opensAsFolder = (isDir.boolValue && !isPackage) || ArchiveName.format(of: first.lastPathComponent) != nil
+        let isPackage = found.isPackage
+        let opensAsFolder = (found.isFolder && !isPackage) || ArchiveName.format(of: first.lastPathComponent) != nil
         let folder = opensAsFolder ? first : first.deletingLastPathComponent()
         let file = opensAsFolder ? nil : first
         if slideshow {
@@ -3671,7 +3682,9 @@ final class BrowserModel: ObservableObject {
         let sorted = sortEntries(contents, key: key, ascending: ascending, captured: captured)
         let media = sorted.filter(\.isMedia)
         if !media.isEmpty { await found(media) }
-        for sub in sorted where sub.kind == .folder && !sub.name.hasPrefix(".") && !isLink(sub.url) {
+        let folders = sorted.filter { $0.kind == .folder && !$0.name.hasPrefix(".") }
+        let links = await Blocking.run { Set(folders.filter { isLink($0.url) }.map(\.url)) }
+        for sub in folders where !links.contains(sub.url) {
             await walkForSlideshow(sub.url, key: key, ascending: ascending, found: found)
         }
     }
