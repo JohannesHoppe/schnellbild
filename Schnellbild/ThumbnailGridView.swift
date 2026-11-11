@@ -353,9 +353,14 @@ struct OtherFileInteractions: ViewModifier {
                 }
                 return provider
             }
+            // Opened like a document in the Finder, but only documents (no apps, no scripts)
+            .onTapGesture(count: 2) { model.open(file) }
             .contextMenu {
                 UndoMenuItems(history: model.undoHistory, model: model)
                 if changeable {
+                    Button("Open") { model.open(file) }
+                        .disabled(!LiveFiles.canOpenOtherFile(file.url))
+                    Divider()
                     Button("Rename…") { model.beginRename(file) }
                 }
                 Button("Reveal in Finder") { model.reveal(file) }
