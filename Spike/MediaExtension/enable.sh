@@ -73,6 +73,13 @@ section "host after UI scripting"; host
 swift click.swift 675 297 2>&1
 sleep 4; shot 2-switched
 section "host after"; host
+section "the reader's own notes (its container)"
+cat "$HOME/Library/Containers/art.haushoppe.schnellbild.spikehost.reader/Data/spike-notes.txt" 2>&1
+section "quick look thumbnail of clip.spk, now that it is on"
+mkdir -p "$CLIPS/ql"; perl -e 'alarm 40; exec @ARGV' qlmanage -t -s 256 -o "$CLIPS/ql" "$CLIPS/clip.spk" 2>&1 | tail -3; ls -l "$CLIPS/ql"
+cat "$HOME/Library/Containers/art.haushoppe.schnellbild.spikehost.reader/Data/spike-notes.txt" 2>&1
+section "the reader process in the log"
+/usr/bin/log show --info --debug --start "$(date -v-4M '+%Y-%m-%d %H:%M:%S')" --style compact --predicate 'process == "SpikeReader"' 2>/dev/null | tail -30
 section "settings containers"
 for d in "$HOME/Library/Containers/com.apple.MediaExtensions-Settings" "$HOME/Library/Containers/com.apple.ExtensionsSettings.DefaultExtensionEnablement"; do
   echo "--- $d"; find "$d" -type f -newer "$MARK" 2>/dev/null | head; done
