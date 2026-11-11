@@ -412,7 +412,10 @@ final class ScanTests: XCTestCase {
         XCTAssertFalse(m.emptyFolders.contains(BrowserModel.canonicalPath(tree.root)), "the parent is checked again")
     }
 
-    func testFolderPreviewFilesAreFirstThreeMediaByNameShallow() async throws {
+    /// Any three of the folder's own media (as the disk lists them: a big
+    /// folder isn't listed to its end), never hidden ones or other files,
+    /// not from a subfolder while the folder has its own.
+    func testFolderPreviewFilesAreThreeOfTheFoldersOwnMedia() async throws {
         let tree = try TempTree(self)
         for n in ["img10.jpg", "img2.jpg", "img1.jpg", "clip.mp4", "notes.txt", ".hidden.jpg"] {
             try tree.file(n)
@@ -420,7 +423,8 @@ final class ScanTests: XCTestCase {
         try tree.file("deeper/aaa.jpg")
 
         let files = await BrowserModel.folderPreviewFiles(in: tree.root)
-        XCTAssertEqual(files.map(\.lastPathComponent), ["clip.mp4", "img1.jpg", "img2.jpg"])
+        XCTAssertEqual(files.count, 3)
+        XCTAssertTrue(Set(files.map(\.lastPathComponent)).isSubset(of: ["img10.jpg", "img2.jpg", "img1.jpg", "clip.mp4"]))
     }
 
     func testFolderPreviewFilesOfEmptyOrMissingFolder() async throws {
@@ -3028,7 +3032,8 @@ final class FolderFactsTests: XCTestCase {
             name(learnt.previews.first { $0.key.lastPathComponent == folder }?.value)
         }
         XCTAssertEqual(Set(name(learnt.withMedia)), ["trip-top", "trip-deep"])
-        XCTAssertEqual(previews("trip-top"), ["a.jpg", "b.jpg", "c.jpg"], "the first three by name")
+        XCTAssertEqual(previews("trip-top").count, 3, "three of the four at the top")
+        XCTAssertTrue(Set(previews("trip-top")).isSubset(of: ["a.jpg", "b.jpg", "c.jpg", "d.jpg"]))
         XCTAssertEqual(previews("trip-deep"), ["x.jpg"], "none at the top: from further down")
         XCTAssertEqual(name(learnt.withoutMedia), ["trip-none"])
     }
