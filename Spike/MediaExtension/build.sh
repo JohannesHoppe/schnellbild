@@ -11,11 +11,11 @@ EX="$APP/Contents/Extensions/SpikeReader.appex"
 rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$EX/Contents/MacOS"
 TARGET=arm64-apple-macos15.0
-swiftc -O -target $TARGET -module-name SpikeReader -parse-as-library Reader.swift \
+swiftc -O -target $TARGET -module-name SpikeReader -parse-as-library MKVParser.swift Reader.swift \
   -framework MediaExtension -framework ExtensionFoundation \
   -Xlinker -e -Xlinker _EXExtensionMain -o "$EX/Contents/MacOS/SpikeReader"
 swiftc -O -target $TARGET -module-name SpikeHost -parse-as-library Host.swift \
-  -framework AVFoundation -framework MediaToolbox -o "$APP/Contents/MacOS/SpikeHost"
+  -framework AVFoundation -framework MediaToolbox -framework VideoToolbox -framework AppKit -o "$APP/Contents/MacOS/SpikeHost"
 cp Reader-Info.plist "$EX/Contents/Info.plist"
 cp Host-Info.plist "$APP/Contents/Info.plist"
 if [ "$VARIANT" = signed ]; then

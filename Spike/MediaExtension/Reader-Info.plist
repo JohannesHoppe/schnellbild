@@ -32,12 +32,13 @@
         <string>SpikeReader.SpikeFactory</string>
         <key>MTFileNameExtensionArray</key>
         <array>
-            <string>avi</string>
+            <string>mkv</string>
             <string>spk</string>
         </array>
         <key>MTUTTypeArray</key>
         <array>
-            <string>public.avi</string>
+            <string>org.matroska.mkv</string>
+            <string>io.iina.mkv</string>
             <string>art.haushoppe.spike-movie</string>
         </array>
         <key>ObjectName</key>
@@ -45,6 +46,23 @@
     </dict>
     <key>UTExportedTypeDeclarations</key>
     <array>
+        <dict>
+            <key>UTTypeConformsTo</key>
+            <array>
+                <string>public.movie</string>
+            </array>
+            <key>UTTypeDescription</key>
+            <string>Matroska video</string>
+            <key>UTTypeIdentifier</key>
+            <string>org.matroska.mkv</string>
+            <key>UTTypeTagSpecification</key>
+            <dict>
+                <key>public.filename-extension</key>
+                <array>
+                    <string>mkv</string>
+                </array>
+            </dict>
+        </dict>
         <dict>
             <!-- public.movie, not com.apple.mediaextension-content: QuickLook
                  Video's reader does the same, and its types get Finder
