@@ -436,6 +436,7 @@ struct TileDrag: ViewModifier {
 struct EntryInteractions: ViewModifier {
     let entry: GridEntry
     @EnvironmentObject var model: BrowserModel
+    @EnvironmentObject var window: WindowModel
 
     private var key: String { "\(ObjectIdentifier(model).hashValue)|\(entry.url.path)" }
 
@@ -489,6 +490,10 @@ struct EntryInteractions: ViewModifier {
                         }
                         Button(Bookmarks.shared.contains(entry.url) ? "Remove Bookmark" : "Add Bookmark") {
                             Bookmarks.shared.toggle(entry.url)
+                        }
+                        // The dual pane: this folder (or archive) in the other half
+                        if window.dual, let other = window.panes.first(where: { $0 !== model }) {
+                            Button("Open in Other Pane") { other.open(folder: entry.url) }
                         }
                     }
                     // Inside an archive nothing is changed
