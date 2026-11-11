@@ -7,6 +7,11 @@ name: Spike — Media Extension
 
 on:
   workflow_dispatch:
+    inputs:
+      signed:
+        description: "Also run Schnellbild's own signed reader"
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -14,6 +19,7 @@ permissions:
 jobs:
   signed:
     name: Signed reader (${{ matrix.os }})
+    if: inputs.signed
     runs-on: ${{ matrix.os }}
     environment: release
     strategy:
