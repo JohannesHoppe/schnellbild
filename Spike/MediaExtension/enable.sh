@@ -13,6 +13,10 @@ LSREGISTER=/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchSe
 CLIPS=$(mktemp -d)
 cp ../../Tests/SchnellbildTests/Videos/clip.mkv "$CLIPS/clip.spk"
 cp ../../Tests/SchnellbildTests/Videos/clip.mkv "$CLIPS/clip.mkv"
+# AVCHD: our small clip, and a real camcorder's (Canon HG10, 1080/50i, from FFmpeg's sample archive)
+cp ../../Tests/SchnellbildTests/Videos/clip.mts "$CLIPS/before.mts"
+cp ../../Tests/SchnellbildTests/Videos/clip.mts "$CLIPS/after.mts"
+curl -sf -o "$CLIPS/canon.mts" "https://samples.ffmpeg.org/archive/all/mpegts%2Bh264%2Bac3%2B%2Bcanon-hg10-avchd-1080-50i-plays-half-speed.mts" || echo "(no Canon clip)"
 section() { echo; echo "== $*"; }
 host() { SPIKE_FRAMES="$OUT" perl -e 'alarm 30; exec @ARGV' "$APP/Contents/MacOS/SpikeHost" "$CLIPS/clip.mkv" "$CLIPS/clip.spk"; }
 shot() { screencapture -x "$OUT/$1.png" 2>&1 || echo "(no screenshot)"; }
@@ -21,6 +25,9 @@ section system; sw_vers; csrutil status
 rm -rf "$APP"; ditto "${1:-build}/SpikeHost.app" "$APP"
 "$LSREGISTER" -f -R -trusted "$APP"; sleep 3
 section "host before"; host
+swiftc -O probe-me.swift -o "$CLIPS/probe" 2>&1 | tail -3
+section "quick look thumbnail of an AVCHD clip, the reader installed but off"
+PROBE_MEDIA_EXTENSIONS=1 perl -e 'alarm 60; exec @ARGV' "$CLIPS/probe" "$CLIPS/before.mts" "$OUT/0-thumbnail-mts-off.png" 2>&1
 
 MARK=$(mktemp); sleep 1
 section "System Settings"
@@ -96,6 +103,12 @@ PROBE_MEDIA_EXTENSIONS=1 perl -e 'alarm 60; exec @ARGV' "$CLIPS/probe" "$CLIPS/o
 # The product's reader claims .mkv only: a copy Quick Look hasn't seen yet, after the reset
 cp ../../Tests/SchnellbildTests/Videos/clip.mkv "$CLIPS/other.mkv"
 PROBE_MEDIA_EXTENSIONS=1 perl -e 'alarm 60; exec @ARGV' "$CLIPS/probe" "$CLIPS/other.mkv" "$OUT/4-thumbnail-mkv-after-reset.png" 2>&1
+section "AVCHD, the reader on (it claims the type; macOS reads the file itself)"
+PROBE_MEDIA_EXTENSIONS=1 perl -e 'alarm 60; exec @ARGV' "$CLIPS/probe" "$CLIPS/after.mts" "$OUT/5-thumbnail-mts-on.png" 2>&1
+PROBE_MEDIA_EXTENSIONS=1 perl -e 'alarm 60; exec @ARGV' "$CLIPS/probe" "$CLIPS/canon.mts" "$OUT/5-thumbnail-canon.png" 2>&1
+section "AVCHD from a process that doesn't opt in"
+cp ../../Tests/SchnellbildTests/Videos/clip.mts "$CLIPS/plain.mts"
+perl -e 'alarm 60; exec @ARGV' "$CLIPS/probe" "$CLIPS/plain.mts" "$OUT/5-thumbnail-mts-plain.png" 2>&1
 echo "asks after a second, never seen file: $(grep -c 'asked for' "$NOTES" 2>/dev/null || echo 0)"
 cat "$NOTES" 2>&1
 section "who handled the thumbnail request"

@@ -66,12 +66,17 @@
         <key>MTFileNameExtensionArray</key>
         <array>
             <string>mkv</string>
+            <string>mts</string>
+            <string>m2ts</string>
         </array>
         <key>MTUTTypeArray</key>
         <array>
             <string>org.matroska.mkv</string>
             <string>io.iina.mkv</string>
             <string>com.firecore.fileformat.mkv</string>
+            <!-- AVCHD (.mts, .m2ts): macOS reads it itself (the reader refuses
+                 it); claimed so Quick Look reads it through AVFoundation -->
+            <string>public.avchd-mpeg-2-transport-stream</string>
         </array>
         <key>ObjectName</key>
         <string>Schnellbild Matroska reader</string>
