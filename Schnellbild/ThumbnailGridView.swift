@@ -292,8 +292,10 @@ final class FolderPreviewCache {
     /// index is kept by its own version).
     nonisolated static func stamp(of folder: URL) async -> Date? {
         guard !ArchivePath.isInside(folder) else { return .distantPast }
+        // A URL keeps the values it read once: asked afresh
+        let path = folder.path
         return await Blocking.run(.utility) {
-            (try? folder.resourceValues(forKeys: [.contentModificationDateKey]))?.contentModificationDate
+            (try? URL(fileURLWithPath: path).resourceValues(forKeys: [.contentModificationDateKey]))?.contentModificationDate
         }
     }
 

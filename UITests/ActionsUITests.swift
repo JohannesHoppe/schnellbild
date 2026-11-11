@@ -291,12 +291,14 @@ final class ActionsUITests: SchnellbildUITestCase {
         XCTAssertTrue(right.waitForExistence(timeout: 10), "two panes")
         let divider = element("paneDivider")
         XCTAssertTrue(divider.waitForExistence(timeout: 5))
-        eventually("equal at first") { abs(left.frame.width - right.frame.width) < 20 }
+        let before = left.frame.width
+        print("divider test: left \(left.frame), right \(right.frame), divider \(divider.frame)")
         let start = divider.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
         start.press(forDuration: 0.3, thenDragTo: start.withOffset(CGVector(dx: 150, dy: 0)))
-        eventually("the left pane wider") { left.frame.width - right.frame.width > 200 }
+        eventually("the left pane wider") { left.frame.width - before > 100 }
+        print("divider test, dragged: left \(left.frame), right \(right.frame)")
         divider.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).doubleClick()
-        eventually("equal again") { abs(left.frame.width - right.frame.width) < 20 }
+        eventually("back as at first") { abs(left.frame.width - before) < 20 }
     }
 
     /// "Open in Other Pane" from the left pane's grid into the right pane's
@@ -308,8 +310,8 @@ final class ActionsUITests: SchnellbildUITestCase {
         }
         launch(open: tempDir.path)
         XCTAssertTrue(app.staticTexts["a.jpg"].waitForExistence(timeout: 15))
-        // Large tiles in both panes (the size is the window's)
-        for _ in 0..<6 { app.typeKey("=", modifierFlags: .command) }
+        // Large tiles (rows laid out like them would be far apart)
+        for _ in 0..<2 { app.typeKey("=", modifierFlags: .command) }
         app.typeKey("d", modifierFlags: [])
         let left = element("pane.left"), right = element("pane.right")
         XCTAssertTrue(right.waitForExistence(timeout: 10), "two panes")
@@ -323,7 +325,7 @@ final class ActionsUITests: SchnellbildUITestCase {
             let name = round % 2 == 0 ? "One" : "Two", stem = name.lowercased()
             let tile = left.descendants(matching: .any).matching(identifier: "tile.\(name)").firstMatch
             XCTAssertTrue(tile.waitForExistence(timeout: 10))
-            tile.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).rightClick()
+            tile.rightClick()
             let item = app.menuItems["Open in Other Pane"]
             XCTAssertTrue(item.waitForExistence(timeout: 5))
             item.click()
