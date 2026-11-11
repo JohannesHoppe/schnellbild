@@ -2,12 +2,22 @@
 
 Phiewer's default shortcuts, copied from its Settings → Shortcuts (as of November 2026), for comparing with Schnellbild's keys and for the planned own keyboard shortcuts (see CLAUDE.md, "Open / next-up"). In Phiewer every one of them can be changed in the PRO version.
 
-The groups are in the order Phiewer's settings show them. The top of the list, above "Natural Scroll Direction On/Off", wasn't captured; that group's name isn't known.
+The groups are in the order Phiewer's settings show them.
 
-## (Group name not captured)
+## Control
 
 | Action | Keys |
 |---|---|
+| Next | → |
+| Previous | ← |
+| Start/Stop Video | Space |
+| Video Seek Forward | ⌘→ |
+| Video Seek Backward | ⌘← |
+| Zoom In | ⌘+ |
+| Zoom Out | ⌘- |
+| Loop Video | ⌘L |
+| Autoplay videos | ⇧⌘P |
+| Crossfade On/Off | ⌥⌘X |
 | Natural Scroll Direction On/Off | ⌥⇧⌘W |
 | Mouse Scroll Navigation On/Off | ⌥⌘M |
 | Always On Top | ⌥⇧⌘T |
@@ -94,4 +104,4 @@ The groups are in the order Phiewer's settings show them. The top of the list, a
 | Play videos completely On/Off | ⌥⌘F |
 | Controls & Sidebar On/Off | ⌥⌘K |
 | Include subfolders | ⌥⌘U |
-| Stop Slideshow | (no key set) |
+| Stop Slideshow | none by default (the field shows only its reset button) |
