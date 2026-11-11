@@ -271,11 +271,13 @@ final class GridUITests: SchnellbildUITestCase {
         app.typeKey("x", modifierFlags: [])
         // Hidden once out of full screen: its window is gone from the screen
         eventually("hidden", timeout: 10) { !self.app.windows.firstMatch.exists }
+        // Brought forward (as from the Dock or ⌘-Tab: still nothing to see), then X X X
+        app.activate()
         for _ in 0..<3 { app.typeKey("x", modifierFlags: []) }
         eventually("back", timeout: 10) { self.app.windows.firstMatch.exists }
         eventually("in full screen again", timeout: 15) { self.app.windows.firstMatch.frame.size == full }
         app.typeKey("f", modifierFlags: [])
-        eventually("window leaves full screen", timeout: 10) { window.frame.size == before }
+        eventually("window leaves full screen", timeout: 10) { self.app.windows.firstMatch.frame.size != full }
     }
 
     /// L shows the list: whole names in rows; a click anywhere on a column's

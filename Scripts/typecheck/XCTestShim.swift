@@ -89,6 +89,7 @@ public class XCUIElement {
     public func rightClick() {}
     public func typeText(_ text: String) {}
     public func typeKey(_ key: XCUIKeyboardKey, modifierFlags: KeyModifierFlags) {}
+    public func activate() {}
     public func typeKey(_ key: String, modifierFlags: KeyModifierFlags) {}
     public func waitForExistence(timeout: TimeInterval) -> Bool { false }
     public func descendants(matching type: XCUIElementType) -> XCUIElementQuery { XCUIElementQuery() }
