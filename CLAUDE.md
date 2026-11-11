@@ -317,6 +317,23 @@ AVI/MKV/WebM and other non-native formats play **in-app via vendored VLCKit
 - This is a **public repo**: never write personal/identifying details (emails,
   private notes about the user) into tracked files.
 
+## Media Extensions (native thumbnails) — what is known
+
+Goal: teach macOS the formats it can't read (AVI, MKV …) with a MediaExtension format reader (and later a video decoder), so Quick Look, Finder and Schnellbild's own grid get system-cached thumbnails. The experiments live in `Spike/MediaExtension/` and the manual workflow `spike-media-extension.yml` (CI ignores `Spike/**`).
+
+Seen on CI (macOS 15 and 26 runners):
+- macOS lists and matches the reader when ad hoc signed, but starts it only with the entitlement `com.apple.developer.mediaextension.formatreader`, and that needs Developer ID plus the provisioning profile (App IDs `art.haushoppe.schnellbild.formatreader` / `.videodecoder`, profiles as secrets `MACOS_PROFILE_FORMATREADER` / `MACOS_PROFILE_VIDEODECODER` in the `release` environment; the profiles carry the Developer ID certificate that expires 2027-02-01 and must be generated again with a new one). Ad hoc with the entitlement: AMFI refuses it; without it: it starts, but is never asked.
+- It is off until turned on in System Settings → General → Login Items & Extensions → Media Extensions; CI turns it on through the accessibility API (`ax-enable.swift`); `pluginkit -e use` doesn't.
+- An app that calls `MTRegisterProfessionalVideoWorkflowFormatReaders()` gets it from AVFoundation.
+- Quick Look thumbnails (`QLThumbnailGenerator`) didn't use it, nor QuickLook Video's own extensions on the same runners, when the asking process hadn't opted in.
+
+Where the leads came from (QuickLook Video by Marginal, which moved to Media Extensions in its version 3):
+- The asking app must opt in itself — `MTRegisterProfessionalVideoWorkflowFormatReaders` and `VTRegisterProfessionalVideoWorkflowVideoDecoders` — for Quick Look thumbnails to use Media Extensions (Finder does; ForkLift did from 4.7): https://github.com/Marginal/QuickLookVideo/issues/191, https://github.com/Marginal/QuickLookVideo/issues/197
+- The thumbnailing process sometimes sees the extensions but doesn't use them (a macOS bug in the maintainer's words); its "Refresh" (`qlmanage -r cache`, killing `AudiovisualThumbnailExtension` and the extensions, Finder) helps: https://github.com/Marginal/QuickLookVideo/issues/172, https://github.com/Marginal/QuickLookVideo/issues/173, commit https://github.com/Marginal/QuickLookVideo/commit/107f71307f96e0b14e37edaad3f4f76231c7dcea
+- Thumbnails need the video decoder too, and VideoToolbox hardware decoding (`VTIsHardwareDecodeSupported(kCMVideoCodecType_HEVC)`; virtual machines may lack it): commit https://github.com/Marginal/QuickLookVideo/commit/0835ef7
+- Its exported types conform to `public.movie`, not `com.apple.mediaextension-content` (else the CoreMedia importer takes them): `formatreader/Info.plist` in that repo.
+- A video-only AVI is read by AVFoundation itself, so the reader isn't asked; then only a decoder for its FourCC helps: https://github.com/Marginal/QuickLookVideo/issues/203
+
 ## Current state & open threads (handover)
 
 Version 0.7.0: folders + drag&drop, subfolder nav (Norton `..`),
