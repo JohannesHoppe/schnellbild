@@ -281,6 +281,24 @@ final class ActionsUITests: SchnellbildUITestCase {
         XCTAssertTrue(tile("b.jpg").waitForExistence(timeout: 10), "inside the folder")
     }
 
+    /// The divider between the panes: dragged, the left pane grows; a
+    /// double click shares the window equally again.
+    func testThePaneDivider() throws {
+        launch(open: tempDir.path)
+        XCTAssertTrue(app.staticTexts["a.jpg"].waitForExistence(timeout: 15))
+        app.typeKey("d", modifierFlags: [])
+        let left = element("pane.left"), right = element("pane.right")
+        XCTAssertTrue(right.waitForExistence(timeout: 10), "two panes")
+        let divider = element("paneDivider")
+        XCTAssertTrue(divider.waitForExistence(timeout: 5))
+        eventually("equal at first") { abs(left.frame.width - right.frame.width) < 20 }
+        let start = divider.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+        start.press(forDuration: 0.3, thenDragTo: start.withOffset(CGVector(dx: 150, dy: 0)))
+        eventually("the left pane wider") { left.frame.width - right.frame.width > 200 }
+        divider.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).doubleClick()
+        eventually("equal again") { abs(left.frame.width - right.frame.width) < 20 }
+    }
+
     /// "Open in Other Pane" from the left pane's grid into the right pane's
     /// list, back and forth: the rows stay rows (seen once: rows 325 pt
     /// apart without their name, as if laid out by the grid's large tiles).

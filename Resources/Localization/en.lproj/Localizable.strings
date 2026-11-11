@@ -286,3 +286,5 @@
 "Checking…" = "Checking…";
 "Open System Settings…" = "Open System Settings…";
 "Turned on (“Schnellbild Video Formats” under Media Extensions), macOS makes the thumbnails of MKV videos and AVCHD camcorder clips itself: Finder and Schnellbild show them at once and macOS keeps them (macOS 26). Off, Schnellbild makes them itself." = "Turned on (“Schnellbild Video Formats” under Media Extensions), macOS makes the thumbnails of MKV videos and AVCHD camcorder clips itself: Finder and Schnellbild show them at once and macOS keeps them (macOS 26). Off, Schnellbild makes them itself.";
+"Divider between the panes" = "Divider between the panes";
+"Drag to give one pane more room; double-click to share equally" = "Drag to give one pane more room; double-click to share equally";

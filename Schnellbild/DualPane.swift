@@ -19,6 +19,11 @@ final class WindowModel: ObservableObject {
     @Published var dropZone: DropZone?
 
     static let dualKey = "dualPane"
+    static let splitKey = "dualPaneSplit"
+    /// The left pane's share of the window's width (the divider between the
+    /// panes), remembered.
+    @Published private(set) var split = 0.5
+    static let splitRange = 0.15...0.85
     private let defaults: UserDefaults
     private let makeRight: () -> BrowserModel
     private var forwarding: [AnyCancellable] = []
@@ -34,7 +39,16 @@ final class WindowModel: ObservableObject {
             guard let right = self?.right, right.folderURL == nil, !right.restoringLastFolder, !right.isLoading else { return }
             right.open(folder: folder)
         })
+        if defaults.object(forKey: Self.splitKey) != nil {
+            split = min(max(defaults.double(forKey: Self.splitKey), Self.splitRange.lowerBound), Self.splitRange.upperBound)
+        }
         if defaults.bool(forKey: Self.dualKey) { setDual(true) }
+    }
+
+    /// Moves the divider; `remember` when the drag ends.
+    func setSplit(_ value: Double, remember: Bool = false) {
+        split = min(max(value, Self.splitRange.lowerBound), Self.splitRange.upperBound)
+        if remember { defaults.set(split, forKey: Self.splitKey) }
     }
 
     var active: BrowserModel { rightIsActive ? (right ?? left) : left }

@@ -87,21 +87,30 @@ private struct WindowView: View {
         .environmentObject(model)
     }
 
-    /// One pane, or both side by side with the active one outlined. A
-    /// slideshow takes the whole window. The left pane keeps its place in
-    /// the view tree either way, so D doesn't rebuild it (a video playing
-    /// in it goes on).
+    /// One pane, or both side by side with the active one outlined and a
+    /// divider between them to drag (`WindowModel.split`, remembered; a
+    /// double click puts it back in the middle). A slideshow takes the whole
+    /// window. The left pane keeps its place in the view tree either way, so
+    /// D doesn't rebuild it (a video playing in it goes on).
     private var panes: some View {
         let rightShows = model.slideshow != nil && model === window.right
         let showsLeft = !(window.dual && rightShows)
         let showsRight = window.dual && (model.slideshow == nil || rightShows)
-        return HStack(spacing: 0) {
-            if showsLeft { pane(window.left) }
-            if showsRight, let right = window.right {
-                if showsLeft { Divider() }
-                pane(right)
+        let both = showsLeft && showsRight && window.right != nil
+        return GeometryReader { geometry in
+            let total = geometry.size.width
+            // Each pane keeps room for its toolbar-less grid
+            let minimum = min(220, total / 3)
+            let leftWidth = min(max(total * window.split, minimum), max(minimum, total - minimum - PaneDivider.width))
+            HStack(spacing: 0) {
+                if showsLeft { pane(window.left).frame(width: both ? leftWidth : nil) }
+                if showsRight, let right = window.right {
+                    if showsLeft { PaneDivider(window: window, total: total) }
+                    pane(right)
+                }
             }
         }
+        .coordinateSpace(name: PaneDivider.space)
     }
 
     private func pane(_ pane: BrowserModel) -> some View {
@@ -1223,6 +1232,44 @@ enum FinderDrop {
             DispatchQueue.main.async { window.active.openDropped([url], slideshow: target == .slideshow) }
         }
         return true
+    }
+}
+
+/// The line between the two panes: dragged, it gives one pane more of the
+/// window; a double click shares it equally again.
+struct PaneDivider: View {
+    @ObservedObject var window: WindowModel
+    let total: CGFloat
+    static let width: CGFloat = 7
+    static let space = "panes"
+    @State private var hovering = false
+
+    var body: some View {
+        ZStack {
+            Rectangle().fill(Color.clear)
+            Divider()
+        }
+        .frame(width: Self.width)
+        .contentShape(Rectangle())
+        .onHover { inside in
+            guard inside != hovering else { return }
+            hovering = inside
+            if inside { NSCursor.resizeLeftRight.push() } else { NSCursor.pop() }
+        }
+        .onDisappear { if hovering { NSCursor.pop(); hovering = false } }
+        .gesture(
+            DragGesture(minimumDistance: 1, coordinateSpace: .named(Self.space))
+                .onChanged { drag in
+                    guard total > 0 else { return }
+                    window.setSplit(Double(drag.location.x / total))
+                }
+                .onEnded { _ in window.setSplit(window.split, remember: true) }
+        )
+        .onTapGesture(count: 2) { window.setSplit(0.5, remember: true) }
+        .accessibilityElement()
+        .accessibilityIdentifier("paneDivider")
+        .accessibilityLabel("Divider between the panes")
+        .help("Drag to give one pane more room; double-click to share equally")
     }
 }
 
