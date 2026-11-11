@@ -1,6 +1,7 @@
 # Experiment (by hand): does macOS start a Media Extension format reader
-# that is ad-hoc signed, can it be enabled without System Settings, and do
-# an opted-in app and Quick Look ask it? Spike/MediaExtension/probe.sh
+# that is ad-hoc signed, and how is it turned on without a person
+# (Spike/MediaExtension/enable.sh: System Settings by UI scripting, what
+# that changes on disk). probe.sh: discovery and pluginkit.
 name: Spike — Media Extension
 
 on:
@@ -26,5 +27,12 @@ jobs:
           xcode-version: latest-stable
       - name: Build
         run: ./Spike/MediaExtension/build.sh ${{ matrix.variant }} "$PWD/build"
-      - name: Probe
-        run: ./Spike/MediaExtension/probe.sh "$PWD/build"
+      - name: Turn it on in System Settings
+        run: ./Spike/MediaExtension/enable.sh "$PWD/build" "$PWD/out"
+      - name: Keep the screenshots
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: spike-${{ matrix.os }}-${{ matrix.variant }}
+          path: out/*.png
+          if-no-files-found: ignore
