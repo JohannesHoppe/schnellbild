@@ -67,6 +67,8 @@ final class VideoUITests: SchnellbildUITestCase {
         app.typeKey(.rightArrow, modifierFlags: .command)   // the next video
         RunLoop.current.run(until: Date().addingTimeInterval(1))
         print("key log after ⌘→:\n" + ((try? String(contentsOf: log, encoding: .utf8)) ?? "(none)"))
+        print("badge after ⌘→: \(text(of: badge)); avkit: \(element("video.avkit").exists), vlc: \(element("video.vlc").exists)")
+        print(app.windows.firstMatch.debugDescription.split(separator: "\n").prefix(60).joined(separator: "\n"))
         waitForBadge(containing: "b.mp4")
         app.typeKey(.space, modifierFlags: [])
         waitForBadge(containing: "Paused")
