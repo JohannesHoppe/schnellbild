@@ -78,7 +78,15 @@ private struct WindowView: View {
         .onAppear {
             if !launched {
                 launched = true
-                if !window.left.openFromLaunchArguments() { window.left.restoreLastFolder() }
+                if window.left.folderURL == nil {
+                    if window.number == 1 {
+                        if !window.left.openFromLaunchArguments() { window.left.restoreLastFolder() }
+                    } else {
+                        // A new window: its own last folder, else the one it was opened from
+                        let start = window.startFolder
+                        window.left.restoreLastFolder { start }
+                    }
+                }
             }
             installKeyMonitor()
         }
@@ -251,12 +259,12 @@ private struct WindowView: View {
     /// bindings live in `WindowModel.handleWindowKey` and the active pane's
     /// `BrowserModel.handleKey` (unit-tested); F9, F10 and ⌃⌘F here.
     private func installKeyMonitor() {
-        // Once for the app's life (it quits with its window): a view rebuilt
-        // must neither add a second monitor nor take one away
+        // Once for the app's life, for all its windows (each key goes to the
+        // window it was typed in): a view rebuilt must neither add a second
+        // monitor nor take one away
         guard !Self.monitorsInstalled else { return }
         Self.monitorsInstalled = true
         ModifierClicks.start()
-        let window = self.window
         _ = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
             // Hidden by the boss key: every key is its (X X X brings the app back)
             if MainActor.assumeIsolated({ BossKey.engaged }) {
@@ -266,10 +274,12 @@ private struct WindowView: View {
             // A modal dialog (the Trash confirmation, the open panel) keeps
             // its keys: Return confirms it, Esc cancels it.
             if NSApp.modalWindow != nil || event.window is NSSavePanel { return event }
-            // Another window of the app (the About panel) keeps its keys;
-            // the Adjustments popover passes them on, as the main window
-            if let other = event.window, other !== BrowserModel.appWindow,
-               !NSStringFromClass(type(of: other)).contains("Popover") { return event }
+            // The browser window the key was typed in; the Adjustments
+            // popover passes its keys on to the window in front; another
+            // window of the app (the About panel) keeps its keys
+            let popover = event.window.map { NSStringFromClass(type(of: $0)).contains("Popover") } ?? false
+            guard let window = MainActor.assumeIsolated({ WindowModel.of(event.window) ?? (popover ? WindowModel.current : nil) })
+            else { return event }
             let code = event.keyCode
             let command = event.modifierFlags.contains(.command)
             let control = event.modifierFlags.contains(.control)
@@ -288,7 +298,7 @@ private struct WindowView: View {
                 // letter goes into the search, not to D, E …
                 if editor == nil, model.searchFocused, !command, !control,
                    // the main window itself has the keys (no sheet, no popover)
-                   NSApp.keyWindow === BrowserModel.appWindow, !model.anySheetOpen, !model.showAdjustments,
+                   NSApp.keyWindow === window.nsWindow, !model.anySheetOpen, !model.showAdjustments,
                    let typed = event.characters, typed.count == 1,
                    let scalar = typed.unicodeScalars.first, scalar.value >= 0x20, scalar.value != 0x7F,
                    !(0xF700...0xF8FF).contains(scalar.value) {   // not an arrow or function key
@@ -350,7 +360,7 @@ private struct WindowView: View {
             }
             // For the UI tests: where each key went
             BrowserModel.testLog("\(Date().timeIntervalSince1970) key \(chars.debugDescription) handled \(String(format: "%.2f", ProcessInfo.processInfo.systemUptime - event.timestamp)) s after it was typed consumed=\(consume) window=\(event.window.map { String(describing: type(of: $0)) } ?? "nil") "
-                                 + "keyWindowIsMain=\(NSApp.keyWindow === BrowserModel.appWindow) "
+                                 + "keyWindowIsMain=\(MainActor.assumeIsolated { NSApp.keyWindow === window.nsWindow }) "
                                  + "firstResponder=\(NSApp.keyWindow?.firstResponder.map { String(describing: type(of: $0)) } ?? "nil")")
             return consume ? nil : event
         }
@@ -362,7 +372,7 @@ private struct WindowView: View {
             let used = MainActor.assumeIsolated { () -> Bool in
                 // The pane under the fingers (the two halves are equally wide),
                 // in the main window only (not over a sheet)
-                guard let main = BrowserModel.appWindow, event.window === main,
+                guard let window = WindowModel.of(event.window), let main = window.nsWindow,
                       let width = main.contentView?.bounds.width else { return false }
                 let model = window.active.slideshow != nil || !window.dual ? window.active
                     : event.locationInWindow.x >= width / 2 ? (window.right ?? window.left) : window.left
@@ -1210,20 +1220,20 @@ enum FinderDrop {
         info.hasItemsConforming(to: [.fileURL]) && !info.hasItemsConforming(to: [TileDrag.type])
     }
 
-    /// The zone under the pointer in the main window.
-    private static func zone(mouseDown: Bool) -> DropZone? {
-        guard let appWindow = BrowserModel.appWindow, let content = appWindow.contentView else { return nil }
+    /// The zone under the pointer in the window.
+    private static func zone(in window: WindowModel, mouseDown: Bool) -> DropZone? {
+        guard let appWindow = window.nsWindow ?? BrowserModel.appWindow, let content = appWindow.contentView else { return nil }
         return DropZoneDelegate.zone(atX: appWindow.mouseLocationOutsideOfEventStream.x,
                                      width: content.bounds.width, mouseDown: mouseDown)
     }
 
     static func update(_ window: WindowModel) {
         guard window.active.slideshow == nil else { return }
-        window.dropZone = zone(mouseDown: NSEvent.pressedMouseButtons != 0)
+        window.dropZone = zone(in: window, mouseDown: NSEvent.pressedMouseButtons != 0)
     }
 
     static func perform(_ info: DropInfo, _ window: WindowModel) -> Bool {
-        let target = zone(mouseDown: true) ?? .browse
+        let target = zone(in: window, mouseDown: true) ?? .browse
         window.dropZone = nil
         DispatchQueue.main.async { window.dropZone = nil }   // once more after AppKit ends the session
         guard let provider = info.itemProviders(for: [.fileURL]).first else { return false }

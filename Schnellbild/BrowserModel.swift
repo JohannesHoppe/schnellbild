@@ -990,13 +990,25 @@ final class BrowserModel: ObservableObject {
     private var slideshowEnteredFullScreen = false
     /// Puts the window into (true) or out of (false) full screen; returns
     /// whether that changed anything. Tests replace it.
-    var setFullScreen: @MainActor (Bool) -> Bool = { on in
-        FullScreenSwitch.shared.set(on, window: BrowserModel.appWindow)
+    lazy var setFullScreen: @MainActor (Bool) -> Bool = { [weak self] on in
+        FullScreenSwitch.shared.set(on, window: self?.hostWindow)
     }
 
-    /// The browser window: the main one (the key window can be the
-    /// Adjustments popover's).
-    static var appWindow: NSWindow? { NSApp.mainWindow ?? NSApp.keyWindow }
+    /// The window this pane is in (set by it, `WindowModel.watch`).
+    weak var owner: WindowModel?
+    /// The AppKit window showing this pane.
+    var hostWindow: NSWindow? { owner?.nsWindow ?? Self.appWindow }
+
+    /// The browser window keys and menus act on: the key window's (the key
+    /// window can be the Adjustments popover's: then the main one).
+    static var appWindow: NSWindow? { WindowModel.current?.nsWindow ?? NSApp.mainWindow ?? NSApp.keyWindow }
+
+    /// The window showing this pane closed: nothing goes on playing in it.
+    func leaveWindow() {
+        if slideshow != nil { stopSlideshow() }
+        if mode == .detail { closeDetail() }
+        if isSearching { stopSearch() }
+    }
 
     /// The file `activePlayer` plays (the Inspector asks only that one).
     var activePlayerURL: URL?
@@ -3852,7 +3864,7 @@ final class BrowserModel: ObservableObject {
     // MARK: - Window
 
     func toggleFullScreen() {
-        guard let window = Self.appWindow else { return }
+        guard let window = hostWindow else { return }
         _ = FullScreenSwitch.shared.set(!FullScreenSwitch.shared.isOrBecomesFullScreen(window), window: window)
     }
 }

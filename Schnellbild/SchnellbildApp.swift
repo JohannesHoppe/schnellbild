@@ -7,8 +7,12 @@ import VLCFrames
 @main
 struct SchnellbildApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
-    /// One window of one or two panes; menus act on the active pane.
-    @StateObject private var window: WindowModel
+    /// The first window of one or two panes (more with ⌘N, each its own
+    /// `WindowModel`); menus act on the active pane of the window in front.
+    @StateObject private var first: WindowModel
+    @StateObject private var focus = WindowFocus.shared
+    private let defaults: UserDefaults
+    private var window: WindowModel { focus.current ?? first }
     private var model: BrowserModel { window.active }
 
     init() {
@@ -26,22 +30,20 @@ struct SchnellbildApp: App {
         MTRegisterProfessionalVideoWorkflowFormatReaders()
         VTRegisterProfessionalVideoWorkflowVideoDecoders()
         let defaults = BrowserModel.makeDefaults()
+        self.defaults = defaults
         // Archive passwords: the login keychain; UI tests keep theirs in
         // their own preferences (`--reset-state` clears them)
         ArchiveStore.shared.passwords = ProcessInfo.processInfo.arguments.contains("--ui-testing")
             ? .defaults(defaults) : .keychain()
         let left = BrowserModel(defaults: defaults)
-        _window = StateObject(wrappedValue: WindowModel(left: left, defaults: defaults) {
+        _first = StateObject(wrappedValue: WindowModel(left: left, defaults: defaults) {
             BrowserModel(defaults: defaults, settingsPrefix: "rightPane.")
         })
     }
 
     var body: some Scene {
-        WindowGroup {
-            ContentView()
-                .environmentObject(window)
-                // As narrow as the toolbar keeps all its items (the full view's included)
-                .frame(minWidth: 800, minHeight: 520)
+        WindowGroup(id: "browser") {
+            WindowRoot(first: first, defaults: defaults)
         }
         .defaultSize(width: 960, height: 640)
         .commands {
@@ -49,6 +51,7 @@ struct SchnellbildApp: App {
                 Button("About Schnellbild") { AboutPanel.show() }
             }
             CommandGroup(replacing: .newItem) {
+                NewWindowButton()
                 Button("Open Folder…") { model.chooseFolder() }
                     .keyboardShortcut("o")
                     .disabled(window.anySheetOpen)
@@ -128,6 +131,34 @@ struct SchnellbildApp: App {
     }
 }
 
+/// One window: its own model (the first window's while no other window
+/// shows that one), tied to its AppKit window.
+struct WindowRoot: View {
+    @StateObject private var window: WindowModel
+
+    init(first: WindowModel, defaults: UserDefaults) {
+        _window = StateObject(wrappedValue: WindowModel.claim(first, defaults: defaults))
+    }
+
+    var body: some View {
+        ContentView()
+            .environmentObject(window)
+            // As narrow as the toolbar keeps all its items (the full view's included)
+            .frame(minWidth: 800, minHeight: 520)
+            .background(WindowAttach(window: window))
+    }
+}
+
+/// File → New Window (⌘N): another window, e.g. for another display.
+struct NewWindowButton: View {
+    @Environment(\.openWindow) private var openWindow
+
+    var body: some View {
+        Button("New Window") { openWindow(id: "browser") }
+            .keyboardShortcut("n")
+    }
+}
+
 /// Without a `.app` bundle, a SwiftPM executable otherwise launches as a
 /// background process with no window focus. This turns it into a normal
 /// foreground app.
@@ -135,8 +166,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.regular)
         NSApp.activate(ignoringOtherApps: true)
-        // One window: tabs ("Show Tab Bar", its "+") would show the same
-        // panes twice, each video playing in both
+        // Windows, no tabs: a tab of its own is a new window anyway (⌘N)
         NSWindow.allowsAutomaticWindowTabbing = false
     }
 
