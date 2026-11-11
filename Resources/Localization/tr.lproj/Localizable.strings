@@ -278,3 +278,4 @@
 "Redo Move" = "Taşımayı yinele";
 "Redo Copy" = "Kopyalamayı yinele";
 "Open in Other Pane" = "Diğer bölmede aç";
+"Version %@ (%@)" = "Sürüm %@ (%@)";

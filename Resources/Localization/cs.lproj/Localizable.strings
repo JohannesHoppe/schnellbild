@@ -278,3 +278,4 @@
 "Redo Move" = "Znovu přesunout";
 "Redo Copy" = "Znovu kopírovat";
 "Open in Other Pane" = "Otevřít v druhém panelu";
+"Version %@ (%@)" = "Verze %@ (%@)";

@@ -278,3 +278,4 @@
 "Redo Move" = "Ripeti spostamento";
 "Redo Copy" = "Ripeti copia";
 "Open in Other Pane" = "Apri nell’altro pannello";
+"Version %@ (%@)" = "Versione %@ (%@)";

@@ -278,3 +278,4 @@
 "Redo Move" = "Tee siirto uudelleen";
 "Redo Copy" = "Tee kopiointi uudelleen";
 "Open in Other Pane" = "Avaa toisessa paneelissa";
+"Version %@ (%@)" = "Versio %@ (%@)";

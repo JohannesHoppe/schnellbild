@@ -142,10 +142,11 @@ There is **no Xcode project for the app build**; `xcodegen` generates
 - **`VideoDetailView.swift`** — native formats via AVKit; non-native fall back
   to VLCKit. AVKit plays in an `AVPlayerView` (`AVPlayerViewHost`) with
   **floating** controls: the inline ones (SwiftUI's `VideoPlayer`) and the
-  minimal ones dim the whole picture while they show, from macOS 26 on. One
-  `AVPlayerView` per pane (`AVPlayerViewHost.view(for:)`) is kept from video
-  to video, so the floating bar stays where the user dragged it; while the
-  video is turned its controls are off (they would turn with it). The badge's
+  minimal ones dim the whole picture while they show, from macOS 26 on. While
+  the video is turned its controls are off (they would turn with it). Where
+  the user dragged the floating bar is not kept for the next video: AVKit
+  puts it back with every new player, also in a reused `AVPlayerView`
+  (seen on CI). The badge's
   `VideoProgressBar` shows the time left (`PlaybackControl.lengthSeconds`). Creates and registers the one `PlaybackControl` per file
   (`AVPlaybackControl` or `VLCPlaybackControl`) in its `.task(id: url)`.
 - **Video zoom**: `VideoDetailView` scales, rotates and pans the player view like `FullImageView` (model `zoom`/`rotation`); a clear layer takes the drag only while zoomed (the player's control bar stays usable at fit). Trackpad pinch on videos goes through a `.magnify` event monitor in `ContentView`, since AVKit's view would take it. On videos `1` = fit.

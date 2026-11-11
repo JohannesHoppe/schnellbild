@@ -278,3 +278,4 @@
 "Redo Move" = "Bewegen wiederholen";
 "Redo Copy" = "Kopieren wiederholen";
 "Open in Other Pane" = "In der anderen Hälfte öffnen";
+"Version %@ (%@)" = "Version %@ (%@)";

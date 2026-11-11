@@ -36,45 +36,6 @@ final class VideoUITests: SchnellbildUITestCase {
     func testTheProgressBarFollowsAnAVKitVideo() throws { try checkProgressBar(vlc: false) }
     func testTheProgressBarFollowsAVLCVideo() throws { try checkProgressBar(vlc: true) }
 
-    /// AVKit's floating controls stay where they were dragged, also for the
-    /// next video.
-    func testTheControlBarKeepsItsPlaceFromVideoToVideo() throws {
-        // Named to follow each other (the folder holds pictures too)
-        try put("clip.mp4", at: "zz1.mp4")
-        try put("clip.mp4", at: "zz2.mp4")
-        launch(open: tempDir.appendingPathComponent("zz1.mp4").path)
-        let video = element("video.avkit")
-        XCTAssertTrue(video.waitForExistence(timeout: 20))
-        waitForBadge(containing: "zz1.mp4")
-        app.typeKey(.space, modifierFlags: [])   // paused: the controls stay up
-        waitForBadge(containing: "Paused")
-        // AVKit's play button is a check box "play/pause" inside the player view
-        func playButton() -> XCUIElement { video.checkBoxes["play/pause"].firstMatch }
-        video.hover()
-        let button = playButton()
-        guard button.waitForExistence(timeout: 10) else {
-            XCTFail("no play/pause button; the player's elements: \(video.debugDescription)")
-            return
-        }
-        let before = button.frame
-        // Grab the bar left of its buttons (no control there) and drag it up
-        let grab = button.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).withOffset(CGVector(dx: -100, dy: 0))
-        grab.press(forDuration: 0.3, thenDragTo: grab.withOffset(CGVector(dx: 0, dy: -150)))
-        video.hover()
-        let dragged = playButton().frame
-        print("control bar: \(before) → dragged \(dragged)")
-        XCTAssertLessThan(dragged.midY, before.midY - 100, "the bar moved up")
-        app.typeKey(.rightArrow, modifierFlags: .command)   // the next video
-        waitForBadge(containing: "zz2.mp4")
-        app.typeKey(.space, modifierFlags: [])
-        waitForBadge(containing: "Paused")
-        video.hover()
-        let next = playButton()
-        XCTAssertTrue(next.waitForExistence(timeout: 10))
-        print("control bar on the next video: \(next.frame)")
-        XCTAssertEqual(next.frame.midY, dragged.midY, accuracy: 4, "kept for the next video")
-    }
-
     /// ↓ / ↑ on a video set the volume, shown a moment; remembered across launches.
     func testUpAndDownSetTheVolume() throws {
         try put("clip.mp4", at: "clip.mp4")

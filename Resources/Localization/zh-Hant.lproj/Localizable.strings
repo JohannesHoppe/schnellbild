@@ -278,3 +278,4 @@
 "Redo Move" = "重做搬移";
 "Redo Copy" = "重做拷貝";
 "Open in Other Pane" = "在另一個面板中打開";
+"Version %@ (%@)" = "版本 %@ (%@)";

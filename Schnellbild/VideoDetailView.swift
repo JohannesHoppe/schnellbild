@@ -38,7 +38,7 @@ struct VideoDetailView: View {
                 } else if let avControl {
                     // Turned, its control bar would turn with the picture
                     // (upside down): hidden then, the keys still work
-                    AVPlayerViewHost(player: avControl.player, view: AVPlayerViewHost.view(for: model),
+                    AVPlayerViewHost(player: avControl.player,
                                      showsControls: Int(model.rotation.rounded()) % 360 == 0)
                 } else if checking {
                     LoadingSpinner()
@@ -181,7 +181,7 @@ struct VideoDetailView: View {
     /// stream reads the archive by its path).
     private func noteFile(_ url: URL) async {
         guard !ArchivePath.isInside(url) else { return }
-        let file = await Task.detached(priority: .utility) { FileIdentity(of: url) }.value
+        let file = await Blocking.run(.utility) { FileIdentity(of: url) }
         if !Task.isCancelled, playing?.url == url { playing = (url, file) }
     }
 
@@ -201,38 +201,15 @@ struct VideoDetailView: View {
 /// AVKit's player view with floating controls: SwiftUI's `VideoPlayer` has
 /// only the inline ones, which (like the minimal ones) dim the whole picture
 /// while they show (macOS 26 and later).
-/// One view per pane, kept from video to video: the floating controls stay
-/// where the user dragged them.
 struct AVPlayerViewHost: NSViewRepresentable {
     let player: AVPlayer
-    let view: AVPlayerView
     var showsControls = true
 
-    private static var views: [ObjectIdentifier: AVPlayerView] = [:]
-
-    /// The pane's player view (made on its first video).
-    static func view(for model: BrowserModel) -> AVPlayerView {
-        let key = ObjectIdentifier(model)
-        if let view = views[key] { return view }
-        let view = AVPlayerView()
-        view.controlsStyle = .floating
-        view.showsFullScreenToggleButton = false
-        views[key] = view
-        return view
-    }
-
-    final class Coordinator {
-        var player: AVPlayer?
-    }
-
-    func makeCoordinator() -> Coordinator { Coordinator() }
-
     func makeNSView(context: Context) -> AVPlayerView {
-        // Still in the hierarchy of a view being replaced: SwiftUI places it anew
-        view.removeFromSuperview()
+        let view = AVPlayerView()
         view.controlsStyle = showsControls ? .floating : .none
+        view.showsFullScreenToggleButton = false
         view.player = player
-        context.coordinator.player = player
         return view
     }
 
@@ -240,12 +217,6 @@ struct AVPlayerViewHost: NSViewRepresentable {
         if view.player !== player { view.player = player }
         let style: AVPlayerViewControlsStyle = showsControls ? .floating : .none
         if view.controlsStyle != style { view.controlsStyle = style }
-        context.coordinator.player = player
-    }
-
-    static func dismantleNSView(_ view: AVPlayerView, coordinator: Coordinator) {
-        // Not the player of the video shown next, when that took the view already
-        if view.player === coordinator.player { view.player = nil }
     }
 }
 
