@@ -46,9 +46,12 @@
     <key>UTExportedTypeDeclarations</key>
     <array>
         <dict>
+            <!-- public.movie, not com.apple.mediaextension-content: QuickLook
+                 Video's reader does the same, and its types get Finder
+                 thumbnails from Apple's own thumbnail extension -->
             <key>UTTypeConformsTo</key>
             <array>
-                <string>com.apple.mediaextension-content</string>
+                <string>public.movie</string>
             </array>
             <key>UTTypeDescription</key>
             <string>Spike movie</string>

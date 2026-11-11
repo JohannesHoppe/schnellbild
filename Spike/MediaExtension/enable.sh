@@ -85,7 +85,7 @@ perl -e 'alarm 60; exec @ARGV' "$CLIPS/probe" "$CLIPS/clip.spk" "$OUT/3-thumbnai
 echo "asks before: $ASKED, after: $(grep -c 'asked for' "$NOTES" 2>/dev/null || echo 0)"
 section "again after Quick Look is reset and restarted (it may have read the switch before it was on)"
 qlmanage -r 2>&1 | tail -1; qlmanage -r cache 2>&1 | tail -1
-killall -9 com.apple.quicklook.ThumbnailsAgent AudiovisualThumbnailExtension QuickLookUIService 2>/dev/null; sleep 3
+killall AudiovisualThumbnailExtension 2>/dev/null; killall -kill -m SpikeReader 2>/dev/null; killall -9 com.apple.quicklook.ThumbnailsAgent QuickLookUIService 2>/dev/null; sleep 3
 ASKED=$(grep -c 'asked for' "$NOTES" 2>/dev/null || echo 0)
 perl -e 'alarm 60; exec @ARGV' "$CLIPS/probe" "$CLIPS/clip.spk" "$OUT/4-thumbnail-after-reset.png" 2>&1
 echo "asks before: $ASKED, after: $(grep -c 'asked for' "$NOTES" 2>/dev/null || echo 0)"
