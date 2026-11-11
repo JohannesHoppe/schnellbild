@@ -57,7 +57,15 @@ jobs:
           echo "signed=true" >> "$GITHUB_OUTPUT"
 
       - name: Build app bundle (release)
-        run: ./Scripts/build_app.sh
+        env:
+          # The media extension's provisioning profile (its entitlement needs it)
+          PROFILE: ${{ secrets.MACOS_PROFILE_FORMATREADER }}
+        run: |
+          if [ -n "$PROFILE" ]; then
+            printf '%s' "$PROFILE" | base64 --decode > "$RUNNER_TEMP/formats.provisionprofile"
+            export FORMATS_PROFILE="$RUNNER_TEMP/formats.provisionprofile"
+          fi
+          ./Scripts/build_app.sh
 
       - name: Check the signature
         run: |
