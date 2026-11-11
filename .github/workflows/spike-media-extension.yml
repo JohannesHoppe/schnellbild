@@ -1,0 +1,30 @@
+# Experiment (by hand): does macOS start a Media Extension format reader
+# that is ad-hoc signed, can it be enabled without System Settings, and do
+# an opted-in app and Quick Look ask it? Spike/MediaExtension/probe.sh
+name: Spike — Media Extension
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    name: Probe (${{ matrix.os }}, ${{ matrix.variant }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ macos-15, macos-26 ]
+        variant: [ entitled, plain ]
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - name: Select latest stable Xcode
+        uses: maxim-lobanov/setup-xcode@ed7a3b1fda3918c0306d1b724322adc0b8cc0a90 # v1.7.0
+        with:
+          xcode-version: latest-stable
+      - name: Build
+        run: ./Spike/MediaExtension/build.sh ${{ matrix.variant }} "$PWD/build"
+      - name: Probe
+        run: ./Spike/MediaExtension/probe.sh "$PWD/build"
