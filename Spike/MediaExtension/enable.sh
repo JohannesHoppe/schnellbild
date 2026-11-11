@@ -93,6 +93,9 @@ PROBE_MEDIA_EXTENSIONS=1 perl -e 'alarm 60; exec @ARGV' "$CLIPS/probe" "$CLIPS/c
 echo "asks before: $ASKED, after: $(grep -c 'asked for' "$NOTES" 2>/dev/null || echo 0)"
 cp ../../Tests/SchnellbildTests/Videos/clip.mkv "$CLIPS/other.spk"
 PROBE_MEDIA_EXTENSIONS=1 perl -e 'alarm 60; exec @ARGV' "$CLIPS/probe" "$CLIPS/other.spk" 2>&1
+# The product's reader claims .mkv only: a copy Quick Look hasn't seen yet, after the reset
+cp ../../Tests/SchnellbildTests/Videos/clip.mkv "$CLIPS/other.mkv"
+PROBE_MEDIA_EXTENSIONS=1 perl -e 'alarm 60; exec @ARGV' "$CLIPS/probe" "$CLIPS/other.mkv" "$OUT/4-thumbnail-mkv-after-reset.png" 2>&1
 echo "asks after a second, never seen file: $(grep -c 'asked for' "$NOTES" 2>/dev/null || echo 0)"
 cat "$NOTES" 2>&1
 section "who handled the thumbnail request"
