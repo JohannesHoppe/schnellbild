@@ -25,12 +25,12 @@ status=0
 echo "== VLCFrames (shared by the app and the thumbnail extension)"
 swiftc -emit-module -emit-module-path "$WORK/mod/VLCFrames.swiftmodule" -module-name VLCFrames -parse-as-library \
   "${FLAGS[@]/-typecheck/}" VLCFrames/*.swift || status=1
-echo "== Matroska (the media extension's parser, a module for the tests)"
-swiftc -emit-module -emit-module-path "$WORK/mod/Matroska.swiftmodule" -module-name Matroska -parse-as-library -enable-testing \
-  "${FLAGS[@]/-typecheck/}" FormatReader/MatroskaIndex.swift || status=1
+echo "== VideoContainers (the media extension's parsers, a module for the tests)"
+swiftc -emit-module -emit-module-path "$WORK/mod/VideoContainers.swiftmodule" -module-name VideoContainers -parse-as-library -enable-testing \
+  "${FLAGS[@]/-typecheck/}" FormatReader/MatroskaIndex.swift FormatReader/TransportIndex.swift || status=1
 FLAGS+=(-I "$WORK/mod")
 echo "== media extension"
-swiftc "${FLAGS[@]}" -parse-as-library FormatReader/MatroskaIndex.swift FormatReader/FormatReader.swift || status=1
+swiftc "${FLAGS[@]}" -parse-as-library FormatReader/MatroskaIndex.swift FormatReader/TransportIndex.swift FormatReader/FormatReader.swift || status=1
 echo "== thumbnail extension"
 swiftc "${FLAGS[@]}" -parse-as-library ThumbnailExtension/*.swift || status=1
 echo "== app"

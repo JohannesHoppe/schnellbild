@@ -62,19 +62,23 @@
         <key>EXPrincipalClass</key>
         <string>SchnellbildFormats.FormatReaderFactory</string>
         <!-- Matroska under the identifiers the apps that declare it use
-             (Schnellbild and VLC: org.matroska.mkv; IINA; Infuse) -->
+             (Schnellbild and VLC: org.matroska.mkv; IINA; Infuse), and AVCHD -->
         <key>MTFileNameExtensionArray</key>
         <array>
             <string>mkv</string>
+            <string>mts</string>
+            <string>m2ts</string>
         </array>
         <key>MTUTTypeArray</key>
         <array>
             <string>org.matroska.mkv</string>
             <string>io.iina.mkv</string>
             <string>com.firecore.fileformat.mkv</string>
+            <!-- AVCHD: macOS's own type for .mts and .m2ts -->
+            <string>public.avchd-mpeg-2-transport-stream</string>
         </array>
         <key>ObjectName</key>
-        <string>Schnellbild Matroska reader</string>
+        <string>Schnellbild video reader (MKV, AVCHD)</string>
     </dict>
 </dict>
 </plist>
