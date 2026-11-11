@@ -52,3 +52,31 @@ jobs:
           name: spike-signed-${{ matrix.os }}
           path: out/*.png
           if-no-files-found: ignore
+
+  qlvideo:
+    # The counter-test: QuickLook Video's own Media Extensions (release
+    # rel-313, Developer ID R8954VZGV2), turned on as a user would: do they
+    # give Quick Look thumbnails on these runners at all?
+    name: QuickLook Video (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ macos-15, macos-26 ]
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - name: Get QuickLook Video rel-313
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download rel-313 --repo Marginal/QuickLookVideo --pattern 'QLVideo_313.dmg' --dir "$RUNNER_TEMP"
+          shasum -a 256 "$RUNNER_TEMP/QLVideo_313.dmg"
+      - name: Turn it on, ask for thumbnails
+        run: ./Spike/MediaExtension/qlvideo.sh "$RUNNER_TEMP/QLVideo_313.dmg" "$PWD/out"
+      - name: Keep the screenshots and thumbnails
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: qlvideo-${{ matrix.os }}
+          path: out/*.png
+          if-no-files-found: ignore
