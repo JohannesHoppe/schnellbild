@@ -322,9 +322,12 @@ final class ActionsUITests: SchnellbildUITestCase {
 
         app.typeKey("d", modifierFlags: [])
         let closed = Date()
-        eventually("one pane again") { !self.element("pane.right").exists }
+        let deadline = Date().addingTimeInterval(10)
+        while element("pane.right").exists, Date() < deadline { RunLoop.current.run(until: Date().addingTimeInterval(0.2)) }
+        // Printed before the check, so a failing run says where D went
         print("closed after \(String(format: "%.1f", Date().timeIntervalSince(closed))) s; key log:\n"
               + ((try? String(contentsOf: log, encoding: .utf8)) ?? "(none)"))
+        XCTAssertFalse(element("pane.right").exists, "one pane again")
     }
 
     /// A click on the folder's name in the title bar renames the folder shown.

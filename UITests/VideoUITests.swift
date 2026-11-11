@@ -41,7 +41,8 @@ final class VideoUITests: SchnellbildUITestCase {
     func testTheControlBarKeepsItsPlaceFromVideoToVideo() throws {
         try put("clip.mp4", at: "a.mp4")
         try put("clip.mp4", at: "b.mp4")
-        launch(open: tempDir.appendingPathComponent("a.mp4").path)
+        let log = tempDir.appendingPathComponent("keys.log")
+        launch(open: tempDir.appendingPathComponent("a.mp4").path, extra: ["--test-log=\(log.path)"])
         let video = element("video.avkit")
         XCTAssertTrue(video.waitForExistence(timeout: 20))
         waitForBadge(containing: "a.mp4")
@@ -64,6 +65,8 @@ final class VideoUITests: SchnellbildUITestCase {
         print("control bar: \(before) → dragged \(dragged)")
         XCTAssertLessThan(dragged.midY, before.midY - 100, "the bar moved up")
         app.typeKey(.rightArrow, modifierFlags: .command)   // the next video
+        RunLoop.current.run(until: Date().addingTimeInterval(1))
+        print("key log after ⌘→:\n" + ((try? String(contentsOf: log, encoding: .utf8)) ?? "(none)"))
         waitForBadge(containing: "b.mp4")
         app.typeKey(.space, modifierFlags: [])
         waitForBadge(containing: "Paused")
