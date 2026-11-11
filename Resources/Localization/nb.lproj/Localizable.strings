@@ -259,3 +259,4 @@
 "No folder, archive, picture or video whose name matches “%@”, in this folder or its subfolders." = "Ingen mappe, arkiv, bilde eller video med navn som samsvarer med «%@», i denne mappen eller undermappene.";
 "“%@” is not a valid regular expression." = "«%@» er ikke et gyldig regulært uttrykk.";
 "Boss key: hidden and silent at once; X X X brings it back" = "Sjefstast: skjult og stille med en gang; X X X henter det tilbake";
+"Into “%@”" = "Til «%@»";

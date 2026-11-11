@@ -523,8 +523,14 @@ private struct FolderDrop: ViewModifier {
     @EnvironmentObject var model: BrowserModel
 
     func body(content: Content) -> some View {
-        content.onDrop(of: [TileDrag.type], isTargeted: accepts ? $targeted : .constant(false)) { providers in
-            let target = accepts ? entry.url : (model.isFiltering ? nil : model.folderURL)
+        let model = model
+        // A folder tile outlines itself; any other tile outlines the pane
+        let over: Binding<Bool> = accepts
+            ? Binding(get: { targeted }, set: { targeted = $0; if $0 { model.dropIntoFolderTargeted = false } })
+            : Binding(get: { model.dropIntoFolderTargeted }, set: { model.dropIntoFolderTargeted = $0 && model.paneDropFolder != nil })
+        return content.onDrop(of: [TileDrag.type], isTargeted: over) { providers in
+            model.dropIntoFolderTargeted = false
+            let target = accepts ? entry.url : model.paneDropFolder
             guard let folder = target, ArchivePath.split(folder) == nil else { return false }
             TileDrag.loadURLs(providers) { urls in model.move(urls, into: folder) }
             return true
