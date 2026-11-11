@@ -319,7 +319,7 @@ AVI/MKV/WebM and other non-native formats play **in-app via vendored VLCKit
 
 ## Media Extensions (native thumbnails) — what is known
 
-Goal: teach macOS the formats it can't read (AVI, MKV …) with a MediaExtension format reader (and later a video decoder), so Quick Look, Finder and Schnellbild's own grid get system-cached thumbnails. The experiments live in `Spike/MediaExtension/` and the manual workflow `spike-media-extension.yml` (CI ignores `Spike/**`).
+Goal: teach macOS the formats it can't read (AVI, MKV …) with a MediaExtension format reader (and later a video decoder), so Quick Look, Finder and Schnellbild's own grid get system-cached thumbnails. The experiments live in `Spike/MediaExtension/` and the manual workflow `spike-media-extension.yml` (CI ignores `Spike/**`). What QuickLook Video teaches (architecture, FFmpeg build, pitfalls, links): `docs/quicklook-video-research.md`.
 
 Seen on CI (macOS 15 and 26 runners):
 - macOS lists and matches the reader when ad hoc signed, but starts it only with the entitlement `com.apple.developer.mediaextension.formatreader`, and that needs Developer ID plus the provisioning profile (App IDs `art.haushoppe.schnellbild.formatreader` / `.videodecoder`, profiles as secrets `MACOS_PROFILE_FORMATREADER` / `MACOS_PROFILE_VIDEODECODER` in the `release` environment; the profiles carry the Developer ID certificate that expires 2027-02-01 and must be generated again with a new one). Ad hoc with the entitlement: AMFI refuses it; without it: it starts, but is never asked.
