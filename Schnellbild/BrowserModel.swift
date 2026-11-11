@@ -75,7 +75,8 @@ struct FileActions {
     var openInDefaultApp: @MainActor (URL) -> Void
     /// `detail` says what goes with it (a folder's contents, an archive's parts).
     var confirmTrash: @MainActor (_ name: String, _ detail: String) -> Bool
-    var trash: @MainActor (URL) throws -> Void
+    /// Returns where the item now lies in the Trash (for Undo), if known.
+    var trash: @MainActor (URL) throws -> URL?
     var move: @MainActor (_ from: URL, _ to: URL) throws -> Void
     /// Into another folder: moved on the same volume, copied to another
     /// (as the Finder does). Returns whether it was moved.
@@ -230,8 +231,12 @@ enum LiveFiles {
         return !a.isEqual(b)
     }
 
-    static func trash(_ url: URL) throws {
-        try FileManager.default.trashItem(at: url, resultingItemURL: nil)
+    /// Where the item now lies in the Trash, if the volume says.
+    @discardableResult
+    static func trash(_ url: URL) throws -> URL? {
+        var result: NSURL?
+        try FileManager.default.trashItem(at: url, resultingItemURL: &result)
+        return result as URL?
     }
 }
 
@@ -918,6 +923,8 @@ final class BrowserModel: ObservableObject {
 
     let defaults: UserDefaults
     var fileActions: FileActions
+    /// Renames, trashing and moves, to undo and redo (the window's panes share one).
+    var undoHistory = FileHistory()
 
     static let lastFolderKey = "lastFolderPath"
     static let sortKeyKey = "sortKey"
@@ -2478,6 +2485,7 @@ final class BrowserModel: ObservableObject {
         guard name != old.lastPathComponent else { renameFileTarget = nil; return old }
         let new = old.deletingLastPathComponent().appendingPathComponent(name)
         try await renameOnDisk(old, new, name: name)
+        undoHistory.record(UndoStep(kind: .rename, parts: [.moved(old, to: new)]))
         apply(.moved(old, to: new))
         // A new extension can make it a picture, video or archive: the grid
         // shows it then
@@ -2566,7 +2574,7 @@ final class BrowserModel: ObservableObject {
     /// File-system work: off the main thread for the live actions (a share
     /// can take long), right here for a test's spy (its closures belong to
     /// the main thread). `then` runs on the main thread.
-    private func onFiles<T>(_ work: @escaping @Sendable () -> T, then: @escaping @MainActor (T) -> Void) {
+    func onFiles<T>(_ work: @escaping @Sendable () -> T, then: @escaping @MainActor (T) -> Void) {
         guard fileActions.runsOffMain else { then(work()); return }
         Self.transfersUnderWay += 1
         Task {
@@ -2588,8 +2596,9 @@ final class BrowserModel: ObservableObject {
 
     private func trashFiles(_ urls: [(URL, Bool)], then: @escaping @MainActor ([URL]) -> Void) {
         let spy = fileActions.runsOffMain ? nil : fileActions.trash
-        let work: @Sendable () -> (trashed: [URL], error: Error?) = {
+        let work: @Sendable () -> (trashed: [URL], parts: [UndoStep.Part], error: Error?) = {
             var trashed: [URL] = []
+            var parts: [UndoStep.Part] = []
             var firstError: Error?
             var gonePaths: Set<String> = []
             for (url, isArchive) in urls {
@@ -2606,7 +2615,8 @@ final class BrowserModel: ObservableObject {
                 var gone = false
                 for file in files {
                     do {
-                        if let spy { try MainActor.assumeIsolated { try spy(file) } } else { try LiveFiles.trash(file) }
+                        let inTrash = if let spy { try MainActor.assumeIsolated { try spy(file) } } else { try LiveFiles.trash(file) }
+                        if let inTrash { parts.append(.trashed(file, inTrash: inTrash)) }
                         gone = true
                     } catch {
                         if firstError == nil { firstError = error }
@@ -2614,10 +2624,11 @@ final class BrowserModel: ObservableObject {
                 }
                 if gone { trashed.append(url); gonePaths.insert(path) }
             }
-            return (trashed, firstError)
+            return (trashed, parts, firstError)
         }
         onFiles(work) { [self] result in
             if let error = result.error { fileActions.report(error) }
+            undoHistory.record(UndoStep(kind: .trash, parts: result.parts))
             then(result.trashed)
         }
     }
@@ -2628,7 +2639,7 @@ final class BrowserModel: ObservableObject {
     /// window passes it to the other pane).
     var onFoldersChanged: (([URL]) -> Void)?
 
-    private func notifyFolderChanges(_ folders: [URL]) {
+    func notifyFolderChanges(_ folders: [URL]) {
         onFoldersChanged?(folders)
     }
 
@@ -2936,7 +2947,11 @@ final class BrowserModel: ObservableObject {
         let target = Self.canonicalPath(folder)
         var moves: [FileChange] = []
         var reported = false
+        var undoParts: [UndoStep.Part] = []
         for (step, outcome) in zip(steps, outcomes) {
+            if case .success(let moved) = outcome {
+                undoParts += step.files.map { moved ? UndoStep.Part.moved($0.0, to: $0.1) : .copied($0.0, to: $0.1) }
+            }
             switch outcome {
             case .success(true):
                 moves.append(.moved(step.source, to: step.destination))
@@ -2950,6 +2965,8 @@ final class BrowserModel: ObservableObject {
                 if !reported { fileActions.report(error); reported = true }
             }
         }
+        undoHistory.record(UndoStep(kind: undoParts.contains { if case .copied = $0 { return true }; return false } ? .copy : .move,
+                                    parts: undoParts))
         // The selection as it was, before the moves rewrite its path
         let keep = selectedEntry?.url
         // What left a folder: the other pane follows the changes; what
@@ -3076,6 +3093,7 @@ final class BrowserModel: ObservableObject {
             throw RenameError.changesKind(old.pathExtension, video: entry.kind == .video)
         }
         try await renameOnDisk(old, new, name: name)
+        undoHistory.record(UndoStep(kind: .rename, parts: [.moved(old, to: new)]))
 
         // Stay where we are: same folder, same query, same results (and the
         // full view stays open) — only the renamed item and, for a folder,
@@ -3105,11 +3123,11 @@ final class BrowserModel: ObservableObject {
     }
 
     /// A change this pane made on disk: its own lists, then the other panes.
-    private func apply(_ change: FileChange) { apply([change]) }
+    func apply(_ change: FileChange) { apply([change]) }
 
     /// Changes this pane made on disk: its own lists, then the other panes.
     /// Several at once (a marked set trashed) are applied in one go.
-    private func apply(_ changes: [FileChange]) {
+    func apply(_ changes: [FileChange]) {
         guard !changes.isEmpty else { return }
         Bookmarks.shared.follow(changes)
         applyHere(changes)

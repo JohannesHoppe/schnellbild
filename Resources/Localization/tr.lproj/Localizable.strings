@@ -269,3 +269,11 @@
 "bookmarked" = "yer işaretli";
 "Bookmark the folder shown, or remove its bookmark" = "Gösterilen klasöre yer işareti koy ya da kaldır";
 "Open bookmark 1 … 9" = "Yer işareti 1 … 9’u aç";
+"Undo Rename" = "Yeniden adlandırmayı geri al";
+"Undo Move to Trash" = "Çöp Sepeti’ne taşımayı geri al";
+"Undo Move" = "Taşımayı geri al";
+"Undo Copy" = "Kopyalamayı geri al";
+"Redo Rename" = "Yeniden adlandırmayı yinele";
+"Redo Move to Trash" = "Çöp Sepeti’ne taşımayı yinele";
+"Redo Move" = "Taşımayı yinele";
+"Redo Copy" = "Kopyalamayı yinele";

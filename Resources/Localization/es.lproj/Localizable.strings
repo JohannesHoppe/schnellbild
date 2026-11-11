@@ -269,3 +269,11 @@
 "bookmarked" = "con marcador";
 "Bookmark the folder shown, or remove its bookmark" = "Añadir o eliminar el marcador de la carpeta mostrada";
 "Open bookmark 1 … 9" = "Abrir el marcador 1 … 9";
+"Undo Rename" = "Deshacer cambio de nombre";
+"Undo Move to Trash" = "Deshacer traslado a la papelera";
+"Undo Move" = "Deshacer traslado";
+"Undo Copy" = "Deshacer copia";
+"Redo Rename" = "Rehacer cambio de nombre";
+"Redo Move to Trash" = "Rehacer traslado a la papelera";
+"Redo Move" = "Rehacer traslado";
+"Redo Copy" = "Rehacer copia";

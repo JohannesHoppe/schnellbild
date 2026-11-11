@@ -29,6 +29,9 @@ struct EntryListView: View {
                         }
                     }
                 }
+                // Undo / Redo also below the rows (a row's own menu has them on top)
+                .contentShape(Rectangle())
+                .contextMenu { UndoMenuItems(history: model.undoHistory, model: model) }
                 .onChange(of: model.selection, initial: true) { _, newValue in
                     guard let newValue, model.entries.indices.contains(newValue) else { return }
                     if model.clickedSelection == newValue { model.clickedSelection = nil; return }

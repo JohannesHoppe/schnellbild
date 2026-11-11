@@ -107,6 +107,7 @@ final class WindowModel: ObservableObject {
     func setDual(_ on: Bool) {
         if on, right == nil {
             let pane = makeRight()
+            pane.undoHistory = left.undoHistory   // one history for the window
             right = pane
             watch(pane)
             // Its own last folder, else the same as the left one

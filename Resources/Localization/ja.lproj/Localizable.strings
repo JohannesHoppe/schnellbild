@@ -269,3 +269,11 @@
 "bookmarked" = "ブックマーク済み";
 "Bookmark the folder shown, or remove its bookmark" = "表示中のフォルダをブックマーク、またはブックマークを削除";
 "Open bookmark 1 … 9" = "ブックマーク 1 … 9 を開く";
+"Undo Rename" = "名前の変更を取り消す";
+"Undo Move to Trash" = "ゴミ箱に入れるを取り消す";
+"Undo Move" = "移動を取り消す";
+"Undo Copy" = "コピーを取り消す";
+"Redo Rename" = "名前の変更をやり直す";
+"Redo Move to Trash" = "ゴミ箱に入れるをやり直す";
+"Redo Move" = "移動をやり直す";
+"Redo Copy" = "コピーをやり直す";

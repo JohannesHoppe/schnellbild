@@ -269,3 +269,11 @@
 "bookmarked" = "con segnalibro";
 "Bookmark the folder shown, or remove its bookmark" = "Aggiungi o rimuovi il segnalibro della cartella mostrata";
 "Open bookmark 1 … 9" = "Apri il segnalibro 1 … 9";
+"Undo Rename" = "Annulla rinomina";
+"Undo Move to Trash" = "Annulla spostamento nel Cestino";
+"Undo Move" = "Annulla spostamento";
+"Undo Copy" = "Annulla copia";
+"Redo Rename" = "Ripeti rinomina";
+"Redo Move to Trash" = "Ripeti spostamento nel Cestino";
+"Redo Move" = "Ripeti spostamento";
+"Redo Copy" = "Ripeti copia";

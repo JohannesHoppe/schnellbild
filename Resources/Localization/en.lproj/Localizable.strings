@@ -269,3 +269,11 @@
 "bookmarked" = "bookmarked";
 "Bookmark the folder shown, or remove its bookmark" = "Bookmark the folder shown, or remove its bookmark";
 "Open bookmark 1 … 9" = "Open bookmark 1 … 9";
+"Undo Rename" = "Undo Rename";
+"Undo Move to Trash" = "Undo Move to Trash";
+"Undo Move" = "Undo Move";
+"Undo Copy" = "Undo Copy";
+"Redo Rename" = "Redo Rename";
+"Redo Move to Trash" = "Redo Move to Trash";
+"Redo Move" = "Redo Move";
+"Redo Copy" = "Redo Copy";

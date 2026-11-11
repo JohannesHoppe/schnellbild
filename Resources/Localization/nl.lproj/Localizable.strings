@@ -269,3 +269,11 @@
 "bookmarked" = "met bladwijzer";
 "Bookmark the folder shown, or remove its bookmark" = "Bladwijzer voor de getoonde map toevoegen of verwijderen";
 "Open bookmark 1 … 9" = "Bladwijzer 1 … 9 openen";
+"Undo Rename" = "Naamswijziging herstellen";
+"Undo Move to Trash" = "Verplaatsen naar prullenmand herstellen";
+"Undo Move" = "Verplaatsen herstellen";
+"Undo Copy" = "Kopiëren herstellen";
+"Redo Rename" = "Naamswijziging opnieuw";
+"Redo Move to Trash" = "Verplaatsen naar prullenmand opnieuw";
+"Redo Move" = "Verplaatsen opnieuw";
+"Redo Copy" = "Kopiëren opnieuw";

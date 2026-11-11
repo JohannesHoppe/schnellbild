@@ -269,3 +269,11 @@
 "bookmarked" = "已加入書籤";
 "Bookmark the folder shown, or remove its bookmark" = "為顯示的檔案夾加入或移除書籤";
 "Open bookmark 1 … 9" = "打開書籤 1 … 9";
+"Undo Rename" = "還原重新命名";
+"Undo Move to Trash" = "還原丟到垃圾桶";
+"Undo Move" = "還原搬移";
+"Undo Copy" = "還原拷貝";
+"Redo Rename" = "重做重新命名";
+"Redo Move to Trash" = "重做丟到垃圾桶";
+"Redo Move" = "重做搬移";
+"Redo Copy" = "重做拷貝";

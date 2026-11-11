@@ -269,3 +269,11 @@
 "bookmarked" = "nos favoritos";
 "Bookmark the folder shown, or remove its bookmark" = "Adicionar ou remover a pasta mostrada dos favoritos";
 "Open bookmark 1 … 9" = "Abrir o favorito 1 … 9";
+"Undo Rename" = "Desfazer renomeação";
+"Undo Move to Trash" = "Desfazer mover para o Lixo";
+"Undo Move" = "Desfazer movimentação";
+"Undo Copy" = "Desfazer cópia";
+"Redo Rename" = "Refazer renomeação";
+"Redo Move to Trash" = "Refazer mover para o Lixo";
+"Redo Move" = "Refazer movimentação";
+"Redo Copy" = "Refazer cópia";

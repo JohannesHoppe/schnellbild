@@ -269,3 +269,11 @@
 "bookmarked" = "mit Lesezeichen";
 "Bookmark the folder shown, or remove its bookmark" = "Lesezeichen für den gezeigten Ordner setzen oder entfernen";
 "Open bookmark 1 … 9" = "Lesezeichen 1 … 9 öffnen";
+"Undo Rename" = "Umbenennen widerrufen";
+"Undo Move to Trash" = "In den Papierkorb legen widerrufen";
+"Undo Move" = "Bewegen widerrufen";
+"Undo Copy" = "Kopieren widerrufen";
+"Redo Rename" = "Umbenennen wiederholen";
+"Redo Move to Trash" = "In den Papierkorb legen wiederholen";
+"Redo Move" = "Bewegen wiederholen";
+"Redo Copy" = "Kopieren wiederholen";
