@@ -522,7 +522,7 @@ final class WalkStop: @unchecked Sendable {
 
 /// What a search's walk learns about the folders it finds: whether they
 /// hold media and their first pictures, as a folder tile would look them up
-/// (`BrowserModel.folderPreviewFiles`): the first three by name at the top,
+/// (`BrowserModel.folderPreviewFiles`): the first three met at the top,
 /// else the first ones further down.
 struct FolderFacts {
     struct Learnt: Sendable {
@@ -558,10 +558,7 @@ struct FolderFacts {
             if var folder = folders[path] {
                 let had = folder.hasMedia
                 if path == parent {
-                    // The first three by name
-                    folder.top.append(url)
-                    folder.top.sort { $0.lastPathComponent.localizedStandardCompare($1.lastPathComponent) == .orderedAscending }
-                    if folder.top.count > 3 { folder.top.removeLast() }
+                    if folder.top.count < 3 { folder.top.append(url) }
                 } else if folder.below.count < 3 {
                     folder.below.append(url)
                 }
@@ -1558,8 +1555,10 @@ final class BrowserModel: ObservableObject {
         if empty { emptyFolders.insert(path) } else { emptyFolders.remove(path) }
     }
 
-    /// The media files a folder tile previews: the first `limit` by name,
-    /// read from one shallow, non-recursive directory listing.
+    /// The media files a folder tile previews: the first `limit` the disk
+    /// lists at the folder's top (any three: listing a big folder on a
+    /// network share to its end to sort it would cost far more), else the
+    /// first ones further down.
     nonisolated static func folderPreviewFiles(in folder: URL, limit: Int = 3) async -> [URL] {
         if ArchivePath.split(folder) != nil, await Task.detached(operation: { ArchivePath.splitChecked(folder) }).value != nil {
             // An archive: its first pictures at any depth (archives often
@@ -1568,27 +1567,28 @@ final class BrowserModel: ObservableObject {
             return Array(media.filter { mediaKind(of: $0) == .image }.prefix(limit))
         }
         return await FolderProbes.run { cancelled -> [URL]? in
-            let contents = (try? FileManager.default.contentsOfDirectory(
-                at: folder,
-                includingPropertiesForKeys: [.isRegularFileKey, .isSymbolicLinkKey, .contentModificationDateKey],
-                options: [.skipsHiddenFiles]
-            )) ?? []
-            // One pass keeping the `limit` first names, instead of sorting a
-            // possibly huge listing to take three.
-            func before(_ a: URL, _ b: URL) -> Bool {
-                a.lastPathComponent.localizedStandardCompare(b.lastPathComponent) == .orderedAscending
-            }
+            let keys: [URLResourceKey] = [.isRegularFileKey, .isSymbolicLinkKey, .isAliasFileKey, .contentModificationDateKey]
+            // The first ones the disk lists at the top, not the first by
+            // name: a big folder on a network share isn't listed to its end
+            // for three pictures
             var first: [URL] = []
-            for url in contents where mediaKind(of: url) != nil && isFile(url) {
-                guard first.count < limit || before(url, first[first.count - 1]) else { continue }
-                first.insert(url, at: first.firstIndex { before(url, $0) } ?? first.count)
-                if first.count > limit { first.removeLast() }
+            if let top = FileManager.default.enumerator(
+                at: folder, includingPropertiesForKeys: keys,
+                options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants, .skipsPackageDescendants]) {
+                while first.count < limit, !cancelled() {
+                    let more: Bool = autoreleasepool {
+                        guard let url = top.nextObject() as? URL else { return false }
+                        if mediaKind(of: url) != nil, isFile(url) { first.append(url) }
+                        return true
+                    }
+                    if !more { break }
+                }
             }
             if !first.isEmpty { return first }
             // None at the top: the first ones further down, so a folder of
             // folders previews what's inside them too
             guard let walk = FileManager.default.enumerator(
-                at: folder, includingPropertiesForKeys: [.isRegularFileKey, .isSymbolicLinkKey, .contentModificationDateKey],
+                at: folder, includingPropertiesForKeys: keys,
                 options: [.skipsHiddenFiles, .skipsPackageDescendants]) else { return [] }
             var looked = 0
             let most = probeLimit(for: folder)
