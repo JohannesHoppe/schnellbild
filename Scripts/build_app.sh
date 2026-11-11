@@ -51,6 +51,8 @@ cp "$RES/AppIcon.icns" "$APP/Contents/Resources/AppIcon.icns"
 cp -R "$RES/Localization/"*.lproj "$APP/Contents/Resources/"
 # The libraries' license texts (the About window points here)
 cp -R "$RES/Licenses" "$APP/Contents/Resources/Licenses"
+# A short MKV: Settings plays it through macOS to tell whether the media extension is on
+cp "$RES/FormatsCheck.mkv" "$APP/Contents/Resources/FormatsCheck.mkv"
 cp "$RES/Info.plist" "$APP/Contents/Info.plist"
 printf 'APPL????' > "$APP/Contents/PkgInfo"
 
@@ -64,6 +66,19 @@ install_name_tool -change @loader_path/../Frameworks/VLCKit.framework/Versions/A
 cp "$ROOT/ThumbnailExtension/Info.plist" "$APPEX/Contents/Info.plist"
 for key in CFBundleShortVersionString CFBundleVersion; do
   /usr/libexec/PlistBuddy -c "Set :$key $(/usr/libexec/PlistBuddy -c "Print :$key" "$RES/Info.plist")" "$APPEX/Contents/Info.plist"
+done
+
+echo "==> Media extension (Matroska format reader for macOS's own pipeline)"
+FORMATS="$APP/Contents/Extensions/SchnellbildFormats.appex"
+mkdir -p "$FORMATS/Contents/MacOS"
+# Its entry is ExtensionKit's; it has no main of its own
+xcrun swiftc -O -target arm64-apple-macos15.0 -module-name SchnellbildFormats -parse-as-library \
+  "$ROOT/FormatReader/MatroskaIndex.swift" "$ROOT/FormatReader/FormatReader.swift" \
+  -framework MediaExtension -framework ExtensionFoundation -Xlinker -e -Xlinker _EXExtensionMain \
+  -o "$FORMATS/Contents/MacOS/SchnellbildFormats"
+cp "$ROOT/FormatReader/Info.plist" "$FORMATS/Contents/Info.plist"
+for key in CFBundleShortVersionString CFBundleVersion; do
+  /usr/libexec/PlistBuddy -c "Set :$key $(/usr/libexec/PlistBuddy -c "Print :$key" "$RES/Info.plist")" "$FORMATS/Contents/Info.plist"
 done
 
 # Sign from the inside out: every file with machine code (VLCKit and its
@@ -94,6 +109,16 @@ find "$APP/Contents" -type f ! -path "$MAIN" -print0 \
 codesign "${OPTS[@]}" "$APP/Contents/Frameworks/VLCKit.framework"
 # The extension in the App Sandbox (its entitlements), before the app around it
 codesign "${OPTS[@]}" --entitlements "$ROOT/ThumbnailExtension/ThumbnailExtension.entitlements" "$APPEX"
+# The media extension: macOS starts it only with its entitlement, which
+# needs the Developer ID and the provisioning profile for its App ID
+# (FORMATS_PROFILE); otherwise it is signed without (and stays unused)
+if [ -n "$IDENTITY" ] && [ -n "${FORMATS_PROFILE:-}" ] && [ -f "$FORMATS_PROFILE" ]; then
+  cp "$FORMATS_PROFILE" "$FORMATS/Contents/embedded.provisionprofile"
+  codesign "${OPTS[@]}" --entitlements "$ROOT/FormatReader/FormatReader.entitlements" "$FORMATS"
+else
+  echo "   (media extension without its entitlement: no Developer ID or no FORMATS_PROFILE)"
+  codesign "${OPTS[@]}" --entitlements "$ROOT/ThumbnailExtension/ThumbnailExtension.entitlements" "$FORMATS"
+fi
 codesign "${OPTS[@]}" "$APP"
 codesign --verify --strict --deep "$APP"
 

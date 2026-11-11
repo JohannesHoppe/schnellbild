@@ -52,6 +52,14 @@ let package = Package(
                 .unsafeFlags(["-Xlinker", "-e", "-Xlinker", "_NSExtensionMain"])
             ]
         ),
+        // The media extension's Matroska parser, as a module of its own for
+        // the tests (Scripts/build_app.sh builds the extension itself with
+        // FormatReader.swift, which needs the MediaExtension framework).
+        .target(
+            name: "Matroska",
+            path: "FormatReader",
+            exclude: ["FormatReader.swift", "Info.plist", "FormatReader.entitlements"]
+        ),
         // Archives: the official UnRAR source (Scripts/fetch_unrar.sh vendors
         // it; Native/CArchives/unrar points there) behind a small C face, and
         // the system's libarchive for ZIP and 7z.
@@ -77,7 +85,7 @@ let package = Package(
         ),
         .testTarget(
             name: "SchnellbildTests",
-            dependencies: ["Schnellbild", "VLCFrames"],
+            dependencies: ["Schnellbild", "VLCFrames", "Matroska"],
             path: "Tests/SchnellbildTests",
             resources: [.copy("Archives"), .copy("Videos")]
         )

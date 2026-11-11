@@ -279,3 +279,10 @@
 "Redo Copy" = "Rehacer copia";
 "Open in Other Pane" = "Abrir en el otro panel";
 "Version %@ (%@)" = "Versión %@ (%@)";
+"Video formats for macOS" = "Formatos de vídeo para macOS";
+"MKV through macOS" = "MKV a través de macOS";
+"On" = "Activado";
+"Off" = "Desactivado";
+"Checking…" = "Comprobando…";
+"Open System Settings…" = "Abrir Ajustes del Sistema…";
+"Turned on (“Schnellbild Video Formats” under Media Extensions), macOS reads MKV videos itself: Finder and Schnellbild show their thumbnails at once and keep them (macOS 26), QuickTime Player plays them. Off, Schnellbild makes them itself." = "Activado («Schnellbild Video Formats» en Extensiones multimedia), macOS lee por sí mismo los vídeos MKV: Finder y Schnellbild muestran sus miniaturas al instante y las conservan (macOS 26), QuickTime Player los reproduce. Desactivado, Schnellbild las genera por sí mismo.";

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- The versions are the app's: Scripts/build_app.sh copies them from Resources/Info.plist -->
+    <key>CFBundleDevelopmentRegion</key>
+    <string>en</string>
+    <!-- The name System Settings lists under Media Extensions -->
+    <key>CFBundleDisplayName</key>
+    <string>Schnellbild Video Formats</string>
+    <key>CFBundleName</key>
+    <string>SchnellbildFormats</string>
+    <key>CFBundleExecutable</key>
+    <string>SchnellbildFormats</string>
+    <key>CFBundleIdentifier</key>
+    <string>art.haushoppe.schnellbild.formatreader</string>
+    <key>CFBundleInfoDictionaryVersion</key>
+    <string>6.0</string>
+    <key>CFBundlePackageType</key>
+    <string>XPC!</string>
+    <key>CFBundleShortVersionString</key>
+    <string>0</string>
+    <key>CFBundleVersion</key>
+    <string>0</string>
+    <key>LSMinimumSystemVersion</key>
+    <string>15.0</string>
+    <key>NSHumanReadableCopyright</key>
+    <string>© 2026 HAUS HOPPE - ITS (Johannes Hoppe). MIT License.</string>
+    <key>EXAppExtensionAttributes</key>
+    <dict>
+        <key>ClassImplementationID</key>
+        <string>art.haushoppe.schnellbild.formatreader.matroska</string>
+        <key>EXExtensionPointIdentifier</key>
+        <string>com.apple.mediaextension.formatreader</string>
+        <key>EXPrincipalClass</key>
+        <string>SchnellbildFormats.FormatReaderFactory</string>
+        <!-- Matroska under the identifiers the apps that declare it use
+             (Schnellbild and VLC: org.matroska.mkv; IINA; Infuse) -->
+        <key>MTFileNameExtensionArray</key>
+        <array>
+            <string>mkv</string>
+        </array>
+        <key>MTUTTypeArray</key>
+        <array>
+            <string>org.matroska.mkv</string>
+            <string>io.iina.mkv</string>
+            <string>com.firecore.fileformat.mkv</string>
+        </array>
+        <key>ObjectName</key>
+        <string>Schnellbild Matroska reader</string>
+    </dict>
+</dict>
+</plist>

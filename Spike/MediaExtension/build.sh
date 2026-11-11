@@ -19,13 +19,18 @@ swiftc -O -target $TARGET -module-name SpikeHost -parse-as-library Host.swift \
 cp Reader-Info.plist "$EX/Contents/Info.plist"
 cp Host-Info.plist "$APP/Contents/Info.plist"
 if [ "$VARIANT" = signed ]; then
-  # Developer ID with the provisioning profile: the reader under the App ID
-  # the profile is for, inside an app whose ID it extends
+  # The product: FormatReader/ as Scripts/build_app.sh builds it, signed with
+  # the Developer ID and its profile, in a host app with the app's id
   : "${MACOS_SIGN_IDENTITY:?no signing identity}" "${READER_PROFILE:?no profile}"
+  rm -rf "$EX"; EX="$APP/Contents/Extensions/SchnellbildFormats.appex"; mkdir -p "$EX/Contents/MacOS"
+  swiftc -O -target $TARGET -module-name SchnellbildFormats -parse-as-library \
+    ../../FormatReader/MatroskaIndex.swift ../../FormatReader/FormatReader.swift \
+    -framework MediaExtension -framework ExtensionFoundation -Xlinker -e -Xlinker _EXExtensionMain \
+    -o "$EX/Contents/MacOS/SchnellbildFormats"
+  cp ../../FormatReader/Info.plist "$EX/Contents/Info.plist"
   /usr/libexec/PlistBuddy -c "Set :CFBundleIdentifier art.haushoppe.schnellbild" "$APP/Contents/Info.plist"
-  /usr/libexec/PlistBuddy -c "Set :CFBundleIdentifier art.haushoppe.schnellbild.formatreader" "$EX/Contents/Info.plist"
   cp "$READER_PROFILE" "$EX/Contents/embedded.provisionprofile"
-  codesign --force --sign "$MACOS_SIGN_IDENTITY" --options runtime --timestamp --entitlements Reader-signed.entitlements "$EX"
+  codesign --force --sign "$MACOS_SIGN_IDENTITY" --options runtime --timestamp --entitlements ../../FormatReader/FormatReader.entitlements "$EX"
   codesign --force --sign "$MACOS_SIGN_IDENTITY" --options runtime --timestamp "$APP"
   codesign --verify --strict --deep --verbose=2 "$APP"
 else

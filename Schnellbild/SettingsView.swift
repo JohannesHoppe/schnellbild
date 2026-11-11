@@ -1,11 +1,14 @@
 import SwiftUI
+import AVFoundation
 
-/// Settings (⌘,): how long a picture stays in the slideshow, and the
-/// archive passwords Schnellbild has saved.
+/// Settings (⌘,): how long a picture stays in the slideshow, the archive
+/// passwords Schnellbild has saved, and whether macOS reads MKV itself
+/// (Schnellbild's media extension, turned on in System Settings).
 struct SettingsView: View {
     @EnvironmentObject var window: WindowModel
     @State private var savedPasswords = ArchiveStore.shared.passwords.count
     @State private var confirming = false
+    @State private var formatsOn: Bool?
 
     var body: some View {
         Form {
@@ -16,6 +19,15 @@ struct SettingsView: View {
                 }
                 .accessibilityIdentifier("settings.slideshowSeconds")
                 Text("Videos play to their end.")
+                    .font(.callout)
+                    .foregroundStyle(.secondary)
+            }
+            Section("Video formats for macOS") {
+                LabeledContent("MKV through macOS",
+                               value: formatsOn.map { $0 ? String(localized: "On") : String(localized: "Off") } ?? String(localized: "Checking…"))
+                    .accessibilityIdentifier("settings.formatsStatus")
+                Button("Open System Settings…") { MediaFormats.openSystemSettings() }
+                Text("Turned on (“Schnellbild Video Formats” under Media Extensions), macOS reads MKV videos itself: Finder and Schnellbild show their thumbnails at once and keep them (macOS 26), QuickTime Player plays them. Off, Schnellbild makes them itself.")
                     .font(.callout)
                     .foregroundStyle(.secondary)
             }
@@ -33,6 +45,11 @@ struct SettingsView: View {
         .frame(width: 420)
         .fixedSize(horizontal: false, vertical: true)
         .onAppear { savedPasswords = ArchiveStore.shared.passwords.count }
+        // Again whenever the window comes back (the user may have turned it on meanwhile)
+        .task { formatsOn = await MediaFormats.isOn() }
+        .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in
+            Task { formatsOn = await MediaFormats.isOn() }
+        }
         .confirmationDialog("Forget all saved archive passwords?", isPresented: $confirming) {
             Button("Forget Passwords", role: .destructive) {
                 ArchiveStore.shared.forgetPasswords()
@@ -44,3 +61,21 @@ struct SettingsView: View {
         }
     }
 }
+
+/// Schnellbild's media extension (the Matroska format reader). There is no
+/// call that tells whether it is turned on; a short MKV in the app that
+/// AVFoundation can play says so (an app opted in, as Schnellbild is at
+/// launch), as QuickLook Video's app checks its own.
+enum MediaFormats {
+    static func isOn() async -> Bool {
+        guard let url = Bundle.main.url(forResource: "FormatsCheck", withExtension: "mkv") else { return false }
+        return (try? await AVURLAsset(url: url).load(.isPlayable)) ?? false
+    }
+
+    /// System Settings at its Media Extensions page.
+    static func openSystemSettings() {
+        let page = "x-apple.systempreferences:com.apple.ExtensionsPreferences?extensionPointIdentifier=com.apple.mediaextension.formatreader"
+        if let url = URL(string: page) { NSWorkspace.shared.open(url) }
+    }
+}
+

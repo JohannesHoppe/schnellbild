@@ -193,6 +193,8 @@ macOS shows many video formats as plain icons, in the Finder too. Schnellbild te
 - Runs in Apple's App Sandbox: no network, and it may read only the one file macOS hands it.
 - Can be switched off in System Settings → General → Login Items & Extensions → Quick Look. Schnellbild then draws these tiles itself, for as long as it runs.
 
+Schnellbild also brings a **media extension**, "Schnellbild Video Formats": it teaches macOS itself to read MKV videos (H.264 and HEVC). Turned on, the Finder and Schnellbild get their thumbnails straight from macOS on macOS 26, the fastest way and kept by macOS, and QuickTime Player and the space-bar preview play them. It is off until you turn it on under System Settings → General → Login Items & Extensions → Media Extensions; Schnellbild → Settings shows whether it is on and opens that page. Like the Quick Look extension it runs in the App Sandbox and reads only the file macOS hands it. Off, or on macOS 15, everything works as described above.
+
 ### Auto enhance and adjustments
 
 Night shots and dark videos, or washed-out, overexposed ones: press `e` (or the wand in the toolbar) and Schnellbild sets four values for the picture on screen:
@@ -328,7 +330,7 @@ F1 (or ⌘?) shows a cheat sheet of the keys; Print… (⌘P) in it prints it on
   <img src="docs/screenshots/settings-light.png" width="460" alt="Settings: how long a picture stays in the slideshow, and the saved archive passwords">
 </picture></p>
 
-Schnellbild → Settings (⌘,) has two things: how long a picture stays in the slideshow (1 to 60 seconds), and the archive passwords Schnellbild has saved, which you can forget all at once. Everything else it simply remembers: the folder, the sort order, grid or list, the search mode, the dual pane, the mini keyboard, the volume, the bookmarks. Quitting while files are still being copied or moved asks first and can wait until they are done.
+Schnellbild → Settings (⌘,) has three things: how long a picture stays in the slideshow (1 to 60 seconds), whether macOS reads MKV itself (the media extension, with a button to System Settings), and the archive passwords Schnellbild has saved, which you can forget all at once. Everything else it simply remembers: the folder, the sort order, grid or list, the search mode, the dual pane, the mini keyboard, the volume, the bookmarks. Quitting while files are still being copied or moved asks first and can wait until they are done.
 
 ## A free Phiewer alternative
 
