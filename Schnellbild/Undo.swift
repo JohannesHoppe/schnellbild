@@ -110,7 +110,10 @@ extension BrowserModel {
                     if undoing { undoHistory.pushUndo(left) } else { undoHistory.pushRedo(left) }
                 }
             }
+            let keep = selectedEntry?.url
             apply(result.changes)
+            // What went to another folder leaves this one's listing (as after a move)
+            dropWhatLeft(keeping: keep)
             // What came back (out of the Trash, a copy made again) is read anew
             let folders = result.folders + result.changes.compactMap { change in
                 change.destination.map { URL(fileURLWithPath: ($0 as NSString).deletingLastPathComponent, isDirectory: true) }

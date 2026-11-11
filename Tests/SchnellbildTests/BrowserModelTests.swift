@@ -1005,12 +1005,20 @@ final class HistoryTests: XCTestCase {
         await waitUntil { m.isAt(tree.root) }
     }
 
-    func testCannotGoUpFromFilesystemRoot() async {
+    /// Above "/" lie the drives (/Volumes, the startup disk among them);
+    /// above them nothing.
+    func testAboveTheRootLieTheDrivesAndThenNothing() async {
         let m = makeModel()
         XCTAssertFalse(m.canGoUp)
         await openAndWait(m, URL(fileURLWithPath: "/"))
+        XCTAssertTrue(m.canGoUp)
+        XCTAssertEqual(m.entries.first?.kind, .parent)
+        m.goToParentFolder()
+        await waitUntil { m.isAt(URL(fileURLWithPath: "/Volumes")) }
         XCTAssertFalse(m.canGoUp)
         XCTAssertNotEqual(m.entries.first?.kind, .parent)
+        XCTAssertTrue(m.entries.contains { $0.kind == .folder }, "the startup disk at least")
+        XCTAssertFalse(m.entries.contains { $0.name.hasPrefix("com.apple.") })
     }
 }
 

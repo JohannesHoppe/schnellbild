@@ -3090,7 +3090,7 @@ final class BrowserModel: ObservableObject {
 
     /// After a move: what went elsewhere leaves this folder's listing and
     /// its results; the selection stays on `keep` where it is still listed.
-    private func dropWhatLeft(keeping keep: URL?) {
+    func dropWhatLeft(keeping keep: URL?) {
         guard let shown = folderPath else { return }
         let inShown: (GridEntry) -> Bool = { $0.kind == .parent || Self.canonicalPath($0.url.deletingLastPathComponent()) == shown }
         let belowShown: (GridEntry) -> Bool = { Self.isSameOrInside(Self.canonicalPath($0.url), shown) }
