@@ -13,9 +13,8 @@ LSREGISTER=/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchSe
 CLIPS=$(mktemp -d)
 cp ../../Tests/SchnellbildTests/Videos/clip.mkv "$CLIPS/clip.spk"
 cp ../../Tests/SchnellbildTests/Videos/clip.mkv "$CLIPS/clip.mkv"
-cp ../../Tests/SchnellbildTests/Videos/clip.mts "$CLIPS/clip.mts"
 section() { echo; echo "== $*"; }
-host() { SPIKE_FRAMES="$OUT" perl -e 'alarm 30; exec @ARGV' "$APP/Contents/MacOS/SpikeHost" "$CLIPS/clip.mkv" "$CLIPS/clip.spk" "$CLIPS/clip.mts"; }
+host() { SPIKE_FRAMES="$OUT" perl -e 'alarm 30; exec @ARGV' "$APP/Contents/MacOS/SpikeHost" "$CLIPS/clip.mkv" "$CLIPS/clip.spk"; }
 shot() { screencapture -x "$OUT/$1.png" 2>&1 || echo "(no screenshot)"; }
 
 section system; sw_vers; csrutil status
@@ -97,10 +96,6 @@ PROBE_MEDIA_EXTENSIONS=1 perl -e 'alarm 60; exec @ARGV' "$CLIPS/probe" "$CLIPS/o
 # The product's reader claims .mkv only: a copy Quick Look hasn't seen yet, after the reset
 cp ../../Tests/SchnellbildTests/Videos/clip.mkv "$CLIPS/other.mkv"
 PROBE_MEDIA_EXTENSIONS=1 perl -e 'alarm 60; exec @ARGV' "$CLIPS/probe" "$CLIPS/other.mkv" "$OUT/4-thumbnail-mkv-after-reset.png" 2>&1
-# AVCHD: a system type, which Apple's thumbnail extension takes and reads through AVFoundation
-PROBE_MEDIA_EXTENSIONS=1 perl -e 'alarm 60; exec @ARGV' "$CLIPS/probe" "$CLIPS/clip.mts" "$OUT/4-thumbnail-mts.png" 2>&1
-cp ../../Tests/SchnellbildTests/Videos/clip.m2ts "$CLIPS/other.m2ts"
-PROBE_MEDIA_EXTENSIONS=1 perl -e 'alarm 60; exec @ARGV' "$CLIPS/probe" "$CLIPS/other.m2ts" "$OUT/4-thumbnail-m2ts.png" 2>&1
 echo "asks after a second, never seen file: $(grep -c 'asked for' "$NOTES" 2>/dev/null || echo 0)"
 cat "$NOTES" 2>&1
 section "who handled the thumbnail request"
