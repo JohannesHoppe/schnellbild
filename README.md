@@ -54,15 +54,14 @@ Open a folder with ⌘O or drag it onto the window; drag a single file to open i
 | + / − (or ⌘+ / ⌘−) | larger / smaller thumbnails |
 | ⌘[ / ⌘] | back / forward, restoring the folder, the search and the selection |
 | f / ⌃⌘F | full screen |
-| Return / F2 | rename the selected folder or file, as in the Finder (on `..`: up a level) |
+| Return / F2 | rename the selected folder or file, as in the Finder (Return on `..`: up a level) |
 | L | grid or list (a click on a column header sorts by it) |
 | D / ⌃O | dual pane on / off |
 | K | mini keyboard on / off |
 | ⌘D | bookmark the folder shown, or remove its bookmark (also the star in the toolbar, the Bookmarks menu and a folder's right-click menu) |
 | ⌃1 … ⌃9 | open bookmark 1 … 9 |
-| X | boss key: every window turns invisible and every video silent at once; only X X X brings them back (the Dock icon shows nothing meanwhile) |
-| ⌘A / Esc | mark all / unmark (Esc unmarks first, then clears the search) |
-| Esc | clear the search |
+| X | boss key: every window turns invisible and every video silent at once; only X X X, typed with Schnellbild in front (Dock or ⌘-Tab, which show no window meanwhile), brings them back |
+| ⌘A / Esc | mark all / unmark; Esc with nothing marked clears the search |
 
 ### List view
 
@@ -239,7 +238,7 @@ Name, type, resolution, size, when it was taken (from the photo's EXIF or the vi
   <img src="docs/screenshots/rename-light.png" width="760" alt="Renaming a folder">
 </picture></p>
 
-Rename a folder or file in place (Return or F2 as in the Finder, the Actions menu, or right-click), in the grid or straight from the full view. The folder you are in is renamed by clicking its name in the title bar. For files the name without its extension is selected, like in Finder. The search results and the history follow the new name. Reveal an item in Finder, open it in its default app, or move it to the Trash after a confirmation. To sort pictures into folders: ⇧⌘N makes a folder (it exists only once you have named it and pressed ↩), then drag tiles onto a folder tile, or onto `..` to move them up a level. On the same volume they are moved, onto another one copied, as in the Finder. Tiles can be dragged to the Finder too. The other files listed under the grid (anything that isn't a picture, video or archive) are renamed, revealed and trashed by right-click, and dragged onto a folder like a tile. A double click (or Open in that menu) opens a document with its app: text, PDFs, office documents, sound and the like; a web location (.webloc, .url) opens its web address in the browser. Apps, scripts, installers, disk images and anything else that runs a program are never opened from Schnellbild, nor a web location that points anywhere but to a web page. Inside archives nothing is changed. Renaming, trashing, moving and copying can be undone and redone as often as you like: the top of the right-click menu says what ("Undo Move to Trash", "Redo Rename"), on purpose without a key, so no stray ⌘Z moves files around. A trashed item comes back out of the Trash to where it was; an undone copy goes to the Trash.
+Rename a folder or file in place: Return (as in the Finder) or F2 in the grid, F2 also in the full view, the Actions menu, or right-click. The folder you are in is renamed by clicking its name in the title bar. For files the name without its extension is selected, like in Finder. The search results and the history follow the new name. Reveal an item in Finder, open it in its default app, or move it to the Trash after a confirmation. To sort pictures into folders: ⇧⌘N makes a folder (it exists only once you have named it and pressed ↩), then drag tiles onto a folder tile, or onto `..` to move them up a level. On the same volume they are moved, onto another one copied, as in the Finder. Tiles can be dragged to the Finder too. The other files listed under the grid (anything that isn't a picture, video or archive) are renamed, revealed and trashed by right-click, and dragged onto a folder like a tile. A double click (or Open in that menu) opens a document with its app: text, PDFs, office documents, sound and the like; a web location (.webloc, .url) opens its web address in the browser. Apps, scripts, installers, disk images and anything else that runs a program are never opened from Schnellbild, nor a web location that points anywhere but to a web page. Inside archives nothing is changed. Renaming, trashing, moving and copying can be undone and redone as often as you like: the top of the right-click menu says what ("Undo Move to Trash", "Redo Rename"), on purpose without a key, so no stray ⌘Z moves files around. A trashed item comes back out of the Trash to where it was; an undone copy goes to the Trash.
 
 | Key | Action |
 |---|---|
@@ -273,16 +272,16 @@ Rename a folder or file in place (Return or F2 as in the Finder, the Actions men
 | F5 | Copy | copy the marked items into the other pane |
 | F6 | RenMov | move them into the other pane; rename in a single pane (⇧F6 always renames, also F2) |
 | F7 | Mkdir | new folder (also ⇧⌘N) |
-| F8 | Delete | move the marked items to the Trash, after asking (also ⌘⌫) |
+| F8 | Delete | move the marked items to the Trash, after asking (in the grid; ⌘⌫ also in the full view) |
 | F9 | PullDn | the menus, in the window |
 | F10 | Quit | quit, after asking (also ⌘Q) |
 | Tab / Insert / ⌃O | | switch pane / mark and move on / dual pane on and off |
 
-Norton's F2 opened its user menu; here F2 renames, as on most computers. On a MacBook the F-keys need fn, unless "Use F1, F2, etc. keys as standard function keys" is on in System Settings → Keyboard.
+Norton's F2 opened its user menu; here F2 renames, as in Windows (Return renames too, as in the Finder). On a MacBook the F-keys need fn, unless "Use F1, F2, etc. keys as standard function keys" is on in System Settings → Keyboard.
 
 ### Archives as folders
 
-ZIP, RAR and 7z archives open like folders: browse their folders, page through their pictures, play their videos, start a slideshow, search their names. Nothing is unpacked to disk: pictures are unpacked into memory, videos stream from the archive while they play (packed or not), and jumping back in a long packed video unpacks it again from its start, which takes a moment. Archives are only read: renaming or trashing something inside them isn't offered.
+ZIP, RAR and 7z archives (comic books as .cbz and .cbr too) open like folders: browse their folders, page through their pictures, play their videos, start a slideshow, search their names. Nothing is unpacked to disk: pictures are unpacked into memory, videos stream from the archive while they play (packed or not), and jumping back in a long packed video unpacks it again from its start, which takes a moment. Archives are only read: renaming or trashing something inside them isn't offered.
 
 - **RAR** of every version, also solid archives (the official UnRAR inside).
 - **Split archives** show once, by their first part: `x.part1.rar` …, `x.rar` + `x.r00` …, `x.z01` … + `x.zip`, `x.7z.001` ….
@@ -315,7 +314,7 @@ ZIP, RAR and 7z archives open like folders: browse their folders, page through t
   <img src="docs/screenshots/help-light.png" width="760" alt="The keyboard cheat sheet">
 </picture></p>
 
-F1 (or ⌘?) shows every key in the app. `K` (or View → Mini Keyboard, or the keyboard switch in the status bar) slides up the **mini keyboard** under the window: the keys that work on what's on screen right now (the grid, a picture, a video, the slideshow), each with what it does. It is a cheat sheet you can click, handy with only a trackpad; a key you press on the real keyboard lights up on it, so you see what just happened. In a slideshow it shows while you move the mouse. The action buttons (Dual Pane, Auto Enhance, Adjust, Slideshow, Grid) show their key on the button; the others name it in their tooltip.
+F1 (or ⌘?) shows a cheat sheet of the keys; Print… (⌘P) in it prints it on one page, or saves it as a PDF. `K` (or View → Mini Keyboard, or the keyboard switch in the status bar) slides up the **mini keyboard** under the window: the keys that work on what's on screen right now (the grid, a picture, a video, the slideshow), each with what it does. It is a cheat sheet you can click, handy with only a trackpad; a key you press on the real keyboard lights up on it, so you see what just happened. In a slideshow it shows while you move the mouse. The action buttons (Dual Pane, Auto Enhance, Adjust, Slideshow, Grid) show their key on the button; the others name it in their tooltip.
 
 <p align="center"><picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/keyboard-dark.png">
@@ -329,7 +328,7 @@ F1 (or ⌘?) shows every key in the app. `K` (or View → Mini Keyboard, or the 
   <img src="docs/screenshots/settings-light.png" width="460" alt="Settings: how long a picture stays in the slideshow, and the saved archive passwords">
 </picture></p>
 
-Schnellbild → Settings (⌘,) has two things: how long a picture stays in the slideshow (1 to 60 seconds), and the archive passwords Schnellbild has saved, which you can forget all at once. Everything else it simply remembers: the folder, the sort order, grid or list, the dual pane, the volume.
+Schnellbild → Settings (⌘,) has two things: how long a picture stays in the slideshow (1 to 60 seconds), and the archive passwords Schnellbild has saved, which you can forget all at once. Everything else it simply remembers: the folder, the sort order, grid or list, the search mode, the dual pane, the mini keyboard, the volume, the bookmarks. Quitting while files are still being copied or moved asks first and can wait until they are done.
 
 ## A free Phiewer alternative
 
@@ -346,7 +345,7 @@ Schnellbild → Settings (⌘,) has two things: how long a picture stays in the 
 | Two panes side by side, Norton Commander keys | yes | no |
 | Auto enhance and sliders for photos and videos | yes, as a view: files are never changed | edits with filters and undo; crop in PRO |
 | Compare 2 to 9 pictures side by side | no | yes |
-| Audio files, Finder tags, export, print | no | yes |
+| Audio files, Finder tags, export, printing pictures | no | yes |
 | Your own keyboard shortcuts | no (F1 shows every key) | yes (in PRO) |
 
 ## Why so fast?
