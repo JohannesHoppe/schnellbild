@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleDevelopmentRegion</key>
+    <string>en</string>
+    <key>CFBundleDisplayName</key>
+    <string>Schnellbild Spike Reader</string>
+    <key>CFBundleExecutable</key>
+    <string>SpikeReader</string>
+    <key>CFBundleIdentifier</key>
+    <string>art.haushoppe.schnellbild.spikehost.reader</string>
+    <key>CFBundleInfoDictionaryVersion</key>
+    <string>6.0</string>
+    <key>CFBundleName</key>
+    <string>SpikeReader</string>
+    <key>CFBundlePackageType</key>
+    <string>XPC!</string>
+    <key>CFBundleShortVersionString</key>
+    <string>0.1</string>
+    <key>CFBundleVersion</key>
+    <string>1</string>
+    <key>LSMinimumSystemVersion</key>
+    <string>15.0</string>
+    <key>EXAppExtensionAttributes</key>
+    <dict>
+        <key>ClassImplementationID</key>
+        <string>art.haushoppe.schnellbild.formatreader.spike</string>
+        <key>EXExtensionPointIdentifier</key>
+        <string>com.apple.mediaextension.formatreader</string>
+        <key>EXPrincipalClass</key>
+        <string>SpikeReader.SpikeFactory</string>
+        <key>MTFileNameExtensionArray</key>
+        <array>
+            <string>avi</string>
+            <string>spk</string>
+        </array>
+        <key>MTUTTypeArray</key>
+        <array>
+            <string>public.avi</string>
+            <string>art.haushoppe.spike-movie</string>
+        </array>
+        <key>ObjectName</key>
+        <string>Schnellbild spike format reader</string>
+    </dict>
+    <key>UTExportedTypeDeclarations</key>
+    <array>
+        <dict>
+            <key>UTTypeConformsTo</key>
+            <array>
+                <string>com.apple.mediaextension-content</string>
+            </array>
+            <key>UTTypeDescription</key>
+            <string>Spike movie</string>
+            <key>UTTypeIdentifier</key>
+            <string>art.haushoppe.spike-movie</string>
+            <key>UTTypeTagSpecification</key>
+            <dict>
+                <key>public.filename-extension</key>
+                <array>
+                    <string>spk</string>
+                </array>
+            </dict>
+        </dict>
+    </array>
+</dict>
+</plist>
