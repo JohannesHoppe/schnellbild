@@ -78,7 +78,20 @@
             <key>UTTypeConformsTo</key>
             <array>
                 <string>public.movie</string>
-                <dict>
+            </array>
+            <key>UTTypeTagSpecification</key>
+            <dict>
+                <key>public.filename-extension</key>
+                <array>
+                    <string>mkv</string>
+                </array>
+                <key>public.mime-type</key>
+                <array>
+                    <string>video/x-matroska</string>
+                </array>
+            </dict>
+        </dict>
+        <dict>
             <key>UTTypeIdentifier</key>
             <string>org.videolan.vob</string>
             <key>UTTypeDescription</key>
@@ -92,19 +105,6 @@
                 <key>public.filename-extension</key>
                 <array>
                     <string>vob</string>
-                </array>
-            </dict>
-        </dict>
-    </array>
-            <key>UTTypeTagSpecification</key>
-            <dict>
-                <key>public.filename-extension</key>
-                <array>
-                    <string>mkv</string>
-                </array>
-                <key>public.mime-type</key>
-                <array>
-                    <string>video/x-matroska</string>
                 </array>
             </dict>
         </dict>
