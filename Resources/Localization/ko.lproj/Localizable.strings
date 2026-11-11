@@ -286,3 +286,5 @@
 "Checking…" = "확인 중…";
 "Open System Settings…" = "시스템 설정 열기…";
 "Turned on (“Schnellbild Video Formats” under Media Extensions), macOS makes the thumbnails of MKV videos and AVCHD camcorder clips itself: Finder and Schnellbild show them at once and macOS keeps them (macOS 26). Off, Schnellbild makes them itself." = "켜면(미디어 확장 프로그램의 ‘Schnellbild Video Formats’) macOS가 MKV 비디오와 AVCHD 캠코더 클립의 미리보기 이미지를 직접 만듭니다. Finder와 Schnellbild가 바로 보여 주고 macOS가 보관합니다(macOS 26). 끄면 Schnellbild가 직접 만듭니다.";
+"Divider between the panes" = "패널 사이의 구분선";
+"Drag to give one pane more room; double-click to share equally" = "드래그하면 한쪽 패널이 더 넓어지고, 이중 클릭하면 똑같이 나뉩니다";
