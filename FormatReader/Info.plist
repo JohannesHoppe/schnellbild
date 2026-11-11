@@ -26,6 +26,33 @@
     <string>15.0</string>
     <key>NSHumanReadableCopyright</key>
     <string>© 2026 HAUS HOPPE - ITS (Johannes Hoppe). MIT License.</string>
+    <!-- Matroska has no system type: declared as a movie (as the app does), so
+         Quick Look hands .mkv files to Media Extensions and not to the CoreMedia
+         importer -->
+    <key>UTImportedTypeDeclarations</key>
+    <array>
+        <dict>
+            <key>UTTypeIdentifier</key>
+            <string>org.matroska.mkv</string>
+            <key>UTTypeDescription</key>
+            <string>Matroska video</string>
+            <key>UTTypeConformsTo</key>
+            <array>
+                <string>public.movie</string>
+            </array>
+            <key>UTTypeTagSpecification</key>
+            <dict>
+                <key>public.filename-extension</key>
+                <array>
+                    <string>mkv</string>
+                </array>
+                <key>public.mime-type</key>
+                <array>
+                    <string>video/x-matroska</string>
+                </array>
+            </dict>
+        </dict>
+    </array>
     <key>EXAppExtensionAttributes</key>
     <dict>
         <key>ClassImplementationID</key>
