@@ -142,7 +142,7 @@ There is **no Xcode project for the app build**; `xcodegen` generates
   decode that fails keeps the picture shown. Animations (GIF, also animated PNG and WebP) play there too (`AnimationFrames`): their frames decoded at the same size, each for its own time, with the same look, so zoom, rotation and enhance apply while they play; frames are kept up to 256 MB, else decoded again each round.
 - **Media Extensions:** `SchnellbildApp.init` calls `MTRegisterProfessionalVideoWorkflowFormatReaders()` and `VTRegisterProfessionalVideoWorkflowVideoDecoders()`, so the format readers and decoders the user has turned on (Apple's, another app's) open videos in AVKit and give the grid Quick Look thumbnails (macOS 26); each runs sandboxed in its own process. See "Media Extensions (native thumbnails)" below.
 - **`VideoDetailView.swift`** — native formats via AVKit; non-native fall back
-  to VLCKit. AVKit plays in an `AVPlayerView` (`AVPlayerViewHost`) with
+  to VLCKit. MKV, WebM, WMV, ASF, FLV, Ogg and VOB always play in VLC (`vlcFormats`): with the app opted in to Media Extensions, AVFoundation calls an MKV playable through Schnellbild's own reader, which has no sound (it is for thumbnails). AVKit plays in an `AVPlayerView` (`AVPlayerViewHost`) with
   **floating** controls: the inline ones (SwiftUI's `VideoPlayer`) and the
   minimal ones dim the whole picture while they show, from macOS 26 on. While
   the video is turned its controls are off (they would turn with it). Where

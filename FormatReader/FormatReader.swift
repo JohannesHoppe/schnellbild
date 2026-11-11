@@ -136,7 +136,8 @@ final class VideoFormatReader: NSObject, MEFormatReader, @unchecked Sendable {
         let index = try MatroskaIndex(reader)
         let timescale = CMTimeScale(clamping: 1_000_000_000 / index.timestampScale)
         let sources = index.tracks.compactMap { track -> VideoTrackSource? in
-            guard track.type == 1, track.width > 0, track.height > 0, !track.codecPrivate.isEmpty else { return nil }
+            // (frames compressed in the file, e.g. header stripping, would decode to nothing)
+            guard track.type == 1, track.width > 0, track.height > 0, !track.codecPrivate.isEmpty, !track.encoded else { return nil }
             let codec: CMVideoCodecType, atom: String
             switch track.codecID {
             case "V_MPEG4/ISO/AVC": (codec, atom) = (kCMVideoCodecType_H264, "avcC")

@@ -122,7 +122,7 @@ struct VideoDetailView: View {
             let reportLook: @MainActor (PlaybackControl, Look) -> Void = { control, look in
                 model.autoLookMeasured(look, from: control)
             }
-            if playable && !Self.forceVLC {
+            if playable && !Self.forceVLC && !Self.playsInVLC(url) {
                 let control = AVPlaybackControl(player: AVPlayer(playerItem: AVPlayerItem(asset: asset)), onStateChange: report)
                 control.resourceLoader = loader   // the asset holds its delegate weakly
                 control.onAutoLook = reportLook
@@ -166,6 +166,13 @@ struct VideoDetailView: View {
     static let uiTesting = ProcessInfo.processInfo.arguments.contains("--ui-testing")
     static let forceVLC = ProcessInfo.processInfo.arguments.contains("--ui-testing")
         && ProcessInfo.processInfo.arguments.contains("--force-vlc")
+
+    /// Formats macOS reads only through a media extension: VLC plays them,
+    /// with their sound. AVFoundation would call them playable through
+    /// Schnellbild's own (picture only, for thumbnails) or another app's
+    /// extension, once one is turned on.
+    static let vlcFormats: Set<String> = ["mkv", "webm", "wmv", "asf", "flv", "ogv", "vob"]
+    static func playsInVLC(_ url: URL) -> Bool { vlcFormats.contains(url.pathExtension.lowercased()) }
 
     /// Turned a quarter, the fitted video's now-swapped box is scaled to fit
     /// the view again (as `FullImageView` does for pictures).
