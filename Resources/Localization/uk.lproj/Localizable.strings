@@ -251,3 +251,10 @@
 "Forget Passwords" = "Забути паролі";
 "Archives that need a password ask for it again." = "Архіви, яким потрібен пароль, знову його запитають.";
 "Schnellbild quit unexpectedly last time while showing “%@”, so it wasn't opened again." = "Минулого разу Schnellbild неочікувано завершився, показуючи «%@», тому її не відкрито знову.";
+"Print…" = "Друк…";
+"Ignore case" = "Без урахування регістру";
+"Match case" = "З урахуванням регістру";
+"Regular expression" = "Регулярний вираз";
+"Search mode" = "Режим пошуку";
+"No folder, archive, picture or video whose name matches “%@”, in this folder or its subfolders." = "Немає папки, архіву, зображення чи відео, назва яких відповідає «%@», у цій папці та її підпапках.";
+"“%@” is not a valid regular expression." = "«%@» — недійсний регулярний вираз.";

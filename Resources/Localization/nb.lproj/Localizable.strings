@@ -251,3 +251,10 @@
 "Forget Passwords" = "Glem passord";
 "Archives that need a password ask for it again." = "Arkiver som trenger passord, spør igjen.";
 "Schnellbild quit unexpectedly last time while showing “%@”, so it wasn't opened again." = "Schnellbild ble uventet avsluttet sist mens «%@» ble vist, så det ble ikke åpnet igjen.";
+"Print…" = "Skriv ut…";
+"Ignore case" = "Ignorer store/små bokstaver";
+"Match case" = "Skill mellom store/små bokstaver";
+"Regular expression" = "Regulært uttrykk";
+"Search mode" = "Søkemodus";
+"No folder, archive, picture or video whose name matches “%@”, in this folder or its subfolders." = "Ingen mappe, arkiv, bilde eller video med navn som samsvarer med «%@», i denne mappen eller undermappene.";
+"“%@” is not a valid regular expression." = "«%@» er ikke et gyldig regulært uttrykk.";

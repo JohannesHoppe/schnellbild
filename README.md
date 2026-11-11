@@ -54,7 +54,7 @@ Open a folder with ⌘O or drag it onto the window; drag a single file to open i
 | + / − (or ⌘+ / ⌘−) | larger / smaller thumbnails |
 | ⌘[ / ⌘] | back / forward, restoring the folder, the search and the selection |
 | f / ⌃⌘F | full screen |
-| Return / F2 | rename the selected folder or file, as in the Finder |
+| Return / F2 | rename the selected folder or file, as in the Finder (on `..`: up a level) |
 | L | grid or list (a click on a column header sorts by it) |
 | D / ⌃O | dual pane on / off |
 | K | mini keyboard on / off |
@@ -90,7 +90,7 @@ By name, kind, date modified, date taken or size, from the toolbar or with one k
   <img src="docs/screenshots/search-light.png" width="760" alt="Search results from the folder and its subfolders">
 </picture></p>
 
-The search field is always there. It matches the names of folders, archives, pictures and videos in the current folder and everything below it (inside an archive when you search there; a search doesn't open the archives it passes); results stream in while the tree is walked and show where they live. The stop button next to the spinner ends a long search over a slow network share and keeps what it has found. Back from an opened result returns to the same results without searching again; a search that was still running when you opened a result goes on in the background meanwhile.
+The search field is always there. It matches the names of folders, archives, pictures and videos in the current folder and everything below it (inside an archive when you search there; a search doesn't open the archives it passes); results stream in while the tree is walked and show where they live. The stop button next to the spinner ends a long search over a slow network share and keeps what it has found. Back from an opened result returns to the same results without searching again; a search that was still running when you opened a result goes on in the background meanwhile. The switch beside the field sets how names match: `abc` ignores case, `Aa` matches the case as typed, `.*` takes a regular expression (found anywhere in the name; `^`, `$` and `(?i)` work as usual). Each half of the dual pane remembers its choice.
 
 | Key | Action |
 |---|---|
@@ -166,7 +166,7 @@ Zoom with the keyboard or a trackpad pinch, drag to pan, rotate in steps of 90°
   <img src="docs/screenshots/video-light.png" width="760" alt="A video in the full view, paused">
 </picture></p>
 
-Videos play right away, MP4 and MOV through AVKit, formats macOS can't play (AVI, MKV, WebM, DVD's VOB …) through the built-in VLC engine. The arrow keys skim: each press jumps a tenth of the video ahead or back, past the end on to the next item, with ⇧ a hundredth. So one key pages through photos and skims through videos; ⌘← ⌘→ skip a video at once. A thin bar under the name at the top shows how far the video has played. ↑ ↓ set the volume of every video, shown a moment while it changes, and kept for the next launch.
+Videos play right away, MP4 and MOV through AVKit, formats macOS can't play (AVI, MKV, WebM, DVD's VOB …) through the built-in VLC engine. The arrow keys skim: each press jumps a tenth of the video ahead or back, past the end on to the next item, with ⇧ a hundredth. So one key pages through photos and skims through videos; ⌘← ⌘→ skip a video at once. A thin bar under the name at the top shows how far the video has played, the time left beside it. The player's own control bar stays where you drag it, also for the next video; while a video is turned it is hidden (it would turn with the picture), the keys work as always. ↑ ↓ set the volume of every video, shown a moment while it changes, and kept for the next launch.
 
 | Key | Action |
 |---|---|

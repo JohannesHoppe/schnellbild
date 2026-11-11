@@ -471,6 +471,7 @@ struct PaneView: View {
                 isEnabled: model.folderURL != nil,
                 onKey: { model.handleSearchFieldKey($0) }
             )
+            SearchModePicker(model: model)
             if model.isSearching {
                 ProgressView().controlSize(.small)
                 Button { model.stopSearch() } label: {
@@ -635,7 +636,9 @@ struct EmptyStateView: View {
                         .foregroundStyle(.secondary)
                     Text("No matches")
                         .font(.title2)
-                    Text(model.searchStopped ? "Search stopped. No matches so far."
+                    Text(!model.matcher.isValid ? "“\(model.query)” is not a valid regular expression."
+                         : model.searchStopped ? "Search stopped. No matches so far."
+                         : model.searchMode == .regex ? "No folder, archive, picture or video whose name matches “\(model.query)”, in this folder or its subfolders."
                          : "No folder, archive, picture or video whose name contains “\(model.query)”, in this folder or its subfolders.")
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
@@ -885,19 +888,35 @@ struct VideoProgressBar: View {
     var body: some View {
         TimelineView(.periodic(from: .now, by: 0.25)) { _ in
             let progress = model.activePlayer?.progress ?? 0
-            GeometryReader { geo in
-                ZStack(alignment: .leading) {
-                    Capsule().fill(Color.primary.opacity(0.18))
-                    Capsule().fill(Color.primary.opacity(0.75))
-                        .frame(width: geo.size.width * min(max(progress, 0), 1))
+            HStack(spacing: 8) {
+                GeometryReader { geo in
+                    ZStack(alignment: .leading) {
+                        Capsule().fill(Color.primary.opacity(0.18))
+                        Capsule().fill(Color.primary.opacity(0.75))
+                            .frame(width: geo.size.width * min(max(progress, 0), 1))
+                    }
+                }
+                .frame(width: 200, height: 3)   // not the badge's whole width
+                .accessibilityElement(children: .ignore)
+                .accessibilityIdentifier("videoProgress")
+                .accessibilityLabel("\(Int((progress * 100).rounded())) %")
+                .accessibilityValue("\(Int((progress * 100).rounded())) %")
+                // The time left, once the length is known
+                if let length = model.activePlayer?.lengthSeconds, model.activePlayer?.progress != nil {
+                    Text(verbatim: "−" + Self.clock(length * (1 - min(max(progress, 0), 1))))
+                        .font(.caption.monospacedDigit())
+                        .foregroundStyle(.secondary)
+                        .accessibilityIdentifier("videoTimeLeft")
                 }
             }
-            .frame(width: 200, height: 3)   // not the badge's whole width
-            .accessibilityElement(children: .ignore)
-            .accessibilityIdentifier("videoProgress")
-            .accessibilityLabel("\(Int((progress * 100).rounded())) %")
-            .accessibilityValue("\(Int((progress * 100).rounded())) %")
         }
+    }
+
+    /// "1:05", "1:02:05" (rounded up: the last second shows as 0:01)
+    static func clock(_ seconds: Double) -> String {
+        let total = Int(max(seconds, 0).rounded(.up))
+        let h = total / 3600, m = total / 60 % 60, s = total % 60
+        return h > 0 ? String(format: "%d:%02d:%02d", h, m, s) : String(format: "%d:%02d", m, s)
     }
 }
 
@@ -1051,6 +1070,8 @@ private struct FolderNameField: View {
             }
         }
         .frame(maxWidth: 150)
+        // Room before the end of the toolbar's group, as its buttons have
+        .padding(.trailing, 8)
         .onChange(of: model.folderURL) { editing = false }
     }
 }
@@ -1077,5 +1098,28 @@ private struct PaneDrop: DropDelegate {
         TileDrag.loadURLs(info.itemProviders(for: [TileDrag.type])) { urls in pane.move(urls, into: folder) }
         window.activate(pane)
         return true
+    }
+}
+
+/// Beside the search field: how names are matched (ignoring case, with the
+/// case as typed, or as a regular expression).
+private struct SearchModePicker: View {
+    @ObservedObject var model: BrowserModel
+
+    var body: some View {
+        Picker("", selection: $model.searchMode) {
+            Text(verbatim: "abc").help("Ignore case").tag(NameMatcher.Mode.ignoringCase)
+            Text(verbatim: "Aa").help("Match case").tag(NameMatcher.Mode.matchingCase)
+            Text(verbatim: ".*").help("Regular expression").tag(NameMatcher.Mode.regex)
+        }
+        .pickerStyle(.segmented)
+        .labelsHidden()
+        .font(.system(.callout, design: .monospaced))
+        .fixedSize()
+        .help(model.searchMode == .ignoringCase ? "Ignore case"
+              : model.searchMode == .matchingCase ? "Match case" : "Regular expression")
+        .accessibilityLabel("Search mode")
+        .accessibilityValue(model.searchMode.rawValue)
+        .accessibilityIdentifier("searchMode")
     }
 }

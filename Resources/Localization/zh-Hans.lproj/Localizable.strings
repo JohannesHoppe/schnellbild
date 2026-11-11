@@ -251,3 +251,10 @@
 "Forget Passwords" = "忘记密码";
 "Archives that need a password ask for it again." = "需要密码的归档会再次询问。";
 "Schnellbild quit unexpectedly last time while showing “%@”, so it wasn't opened again." = "上次显示“%@”时 Schnellbild 意外退出，因此没有再次打开。";
+"Print…" = "打印…";
+"Ignore case" = "忽略大小写";
+"Match case" = "区分大小写";
+"Regular expression" = "正则表达式";
+"Search mode" = "搜索模式";
+"No folder, archive, picture or video whose name matches “%@”, in this folder or its subfolders." = "此文件夹及其子文件夹中没有名称匹配“%@”的文件夹、归档、图像或视频。";
+"“%@” is not a valid regular expression." = "“%@”不是有效的正则表达式。";

@@ -36,7 +36,10 @@ struct VideoDetailView: View {
                 if let vlcControl {
                     VLCVideoView(control: vlcControl)
                 } else if let avControl {
-                    AVPlayerViewHost(player: avControl.player)
+                    // Turned, its control bar would turn with the picture
+                    // (upside down): hidden then, the keys still work
+                    AVPlayerViewHost(player: avControl.player, view: AVPlayerViewHost.view(for: model),
+                                     showsControls: Int(model.rotation.rounded()) % 360 == 0)
                 } else if checking {
                     LoadingSpinner()
                 }
@@ -198,19 +201,51 @@ struct VideoDetailView: View {
 /// AVKit's player view with floating controls: SwiftUI's `VideoPlayer` has
 /// only the inline ones, which (like the minimal ones) dim the whole picture
 /// while they show (macOS 26 and later).
+/// One view per pane, kept from video to video: the floating controls stay
+/// where the user dragged them.
 struct AVPlayerViewHost: NSViewRepresentable {
     let player: AVPlayer
+    let view: AVPlayerView
+    var showsControls = true
 
-    func makeNSView(context: Context) -> AVPlayerView {
+    private static var views: [ObjectIdentifier: AVPlayerView] = [:]
+
+    /// The pane's player view (made on its first video).
+    static func view(for model: BrowserModel) -> AVPlayerView {
+        let key = ObjectIdentifier(model)
+        if let view = views[key] { return view }
         let view = AVPlayerView()
         view.controlsStyle = .floating
         view.showsFullScreenToggleButton = false
+        views[key] = view
+        return view
+    }
+
+    final class Coordinator {
+        var player: AVPlayer?
+    }
+
+    func makeCoordinator() -> Coordinator { Coordinator() }
+
+    func makeNSView(context: Context) -> AVPlayerView {
+        // Still in the hierarchy of a view being replaced: SwiftUI places it anew
+        view.removeFromSuperview()
+        view.controlsStyle = showsControls ? .floating : .none
         view.player = player
+        context.coordinator.player = player
         return view
     }
 
     func updateNSView(_ view: AVPlayerView, context: Context) {
         if view.player !== player { view.player = player }
+        let style: AVPlayerViewControlsStyle = showsControls ? .floating : .none
+        if view.controlsStyle != style { view.controlsStyle = style }
+        context.coordinator.player = player
+    }
+
+    static func dismantleNSView(_ view: AVPlayerView, coordinator: Coordinator) {
+        // Not the player of the video shown next, when that took the view already
+        if view.player === coordinator.player { view.player = nil }
     }
 }
 

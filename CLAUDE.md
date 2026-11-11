@@ -39,7 +39,7 @@ There is **no Xcode project for the app build**; `xcodegen` generates
     matches at once, then `recursiveMatches` streams batches (`AsyncStream`)
     from a tree walk; debounced via `searchDebounce`. Each search is a
     `SearchRun` (results, the walk's task, the changes made during the walk,
-    replayed on a late batch when they came after the batch began: `ChangeClock`, `SearchBatch.stamp`; what moves out of the searched folder leaves the results); streamed batches are merged into the sorted list (`EntryOrder.merged`), not sorted anew; the model shows one (`search`), the history may hold more. A change below the folder of a search on screen (the other pane copies into it) searches only the changed folders (`refresh(changed:)`, `searchArrivals`); the folder's listing is read again once the search is cleared. Names match case-insensitively without the language's rules (`nameMatches`: Turkish "I" would miss "img").
+    replayed on a late batch when they came after the batch began: `ChangeClock`, `SearchBatch.stamp`; what moves out of the searched folder leaves the results); streamed batches are merged into the sorted list (`EntryOrder.merged`), not sorted anew; the model shows one (`search`), the history may hold more. A change below the folder of a search on screen (the other pane copies into it) searches only the changed folders (`refresh(changed:)`, `searchArrivals`); the folder's listing is read again once the search is cleared. Names match through `NameMatcher` in the mode beside the field (`searchMode`, per pane, remembered; `SearchModePicker`): ignoring case without the language's rules (Turkish "I" would miss "img"), the case as typed, or an ICU regular expression (one that doesn't compile matches nothing, no walk). A `SearchRun` keeps its matcher; history reuses a run only for the same query and mode.
   - **`FileChange`** (`.moved` / `.removed`) is the one mechanism for changes
     the app makes on disk: `apply(_:)` runs it over every list the model holds
     (folder entries, search results, pending selection, history, the slideshow's items) and keeps
@@ -67,7 +67,7 @@ There is **no Xcode project for the app build**; `xcodegen` generates
   - Side effects (Finder, open, trash + confirm alert, move/rename) go through
     the injectable `FileActions`; tests pass a spy. `--ui-testing` makes the app
     use its own `UserDefaults` suite (`--reset-state` clears it).
-  - As in the Finder, Space opens the selected item and Return renames it (`beginRename`); in the full view Return goes back to the grid, in the search field it opens the selected result.
+  - As in the Finder, Space opens the selected item and Return renames it (`beginRename`; on `..` both go up); in the full view Return goes back to the grid, in the search field it opens the selected result.
   - ⌘⌫ / ⌘↩ return `false` from `handleKey` so they reach their menu items
     (the local key monitor sees keys before menu key equivalents). While a
     text field is edited the monitor hands them to the field editor instead
@@ -139,7 +139,11 @@ There is **no Xcode project for the app build**; `xcodegen` generates
 - **`VideoDetailView.swift`** — native formats via AVKit; non-native fall back
   to VLCKit. AVKit plays in an `AVPlayerView` (`AVPlayerViewHost`) with
   **floating** controls: the inline ones (SwiftUI's `VideoPlayer`) and the
-  minimal ones dim the whole picture while they show, from macOS 26 on. Creates and registers the one `PlaybackControl` per file
+  minimal ones dim the whole picture while they show, from macOS 26 on. One
+  `AVPlayerView` per pane (`AVPlayerViewHost.view(for:)`) is kept from video
+  to video, so the floating bar stays where the user dragged it; while the
+  video is turned its controls are off (they would turn with it). The badge's
+  `VideoProgressBar` shows the time left (`PlaybackControl.lengthSeconds`). Creates and registers the one `PlaybackControl` per file
   (`AVPlaybackControl` or `VLCPlaybackControl`) in its `.task(id: url)`.
 - **Video zoom**: `VideoDetailView` scales, rotates and pans the player view like `FullImageView` (model `zoom`/`rotation`); a clear layer takes the drag only while zoomed (the player's control bar stays usable at fit). Trackpad pinch on videos goes through a `.magnify` event monitor in `ContentView`, since AVKit's view would take it. On videos `1` = fit.
 - **`VLCVideoView.swift`** — `VLCPlaybackControl` (owns the `VLCMediaPlayer`,

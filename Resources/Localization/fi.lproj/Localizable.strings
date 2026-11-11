@@ -251,3 +251,10 @@
 "Forget Passwords" = "Unohda salasanat";
 "Archives that need a password ask for it again." = "Salasanaa vaativat arkistot kysyvät sitä uudelleen.";
 "Schnellbild quit unexpectedly last time while showing “%@”, so it wasn't opened again." = "Schnellbild sulkeutui viime kerralla odottamatta, kun ”%@” oli auki, joten sitä ei avattu uudelleen.";
+"Print…" = "Tulosta…";
+"Ignore case" = "Ohita kirjainkoko";
+"Match case" = "Huomioi kirjainkoko";
+"Regular expression" = "Säännöllinen lauseke";
+"Search mode" = "Hakutila";
+"No folder, archive, picture or video whose name matches “%@”, in this folder or its subfolders." = "Tässä kansiossa tai sen alikansioissa ei ole kansiota, arkistoa, kuvaa tai videota, jonka nimi vastaa lauseketta ”%@”.";
+"“%@” is not a valid regular expression." = "”%@” ei ole kelvollinen säännöllinen lauseke.";

@@ -218,6 +218,11 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
     /// and its position then is that of the last picture, short of 1.
     private var reachedEnd = false
 
+    var lengthSeconds: Double? {
+        let ms = player.media?.length.intValue ?? 0
+        return ms > 0 ? Double(ms) / 1000 : nil
+    }
+
     var progress: Double? {
         if reachedEnd || player.state == .ended { return 1 }
         guard (player.media?.length.intValue ?? 0) > 0 else { return nil }

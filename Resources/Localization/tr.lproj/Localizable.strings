@@ -251,3 +251,10 @@
 "Forget Passwords" = "Parolaları unut";
 "Archives that need a password ask for it again." = "Parola gerektiren arşivler yeniden sorar.";
 "Schnellbild quit unexpectedly last time while showing “%@”, so it wasn't opened again." = "Schnellbild geçen sefer “%@” gösterilirken beklenmedik şekilde kapandı, bu yüzden yeniden açılmadı.";
+"Print…" = "Yazdır…";
+"Ignore case" = "Büyük/küçük harfi yok say";
+"Match case" = "Büyük/küçük harfe duyarlı";
+"Regular expression" = "Normal ifade";
+"Search mode" = "Arama modu";
+"No folder, archive, picture or video whose name matches “%@”, in this folder or its subfolders." = "Bu klasörde veya alt klasörlerinde adı “%@” ile eşleşen klasör, arşiv, resim ya da video yok.";
+"“%@” is not a valid regular expression." = "“%@” geçerli bir normal ifade değil.";
