@@ -8,6 +8,7 @@ cd "$(dirname "$0")"
 APP=/Applications/SpikeHost.app
 OUT=${2:-$PWD/out}
 mkdir -p "$OUT"
+READER_ID=${READER_ID:-art.haushoppe.schnellbild.spikehost.reader}
 LSREGISTER=/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister
 CLIPS=$(mktemp -d)
 cp ../../Tests/SchnellbildTests/Videos/clip.avi "$CLIPS/clip.spk"
@@ -74,10 +75,10 @@ swift click.swift 675 297 2>&1
 sleep 4; shot 2-switched
 section "host after"; host
 section "the reader's own notes (its container)"
-cat "$HOME/Library/Containers/art.haushoppe.schnellbild.spikehost.reader/Data/spike-notes.txt" 2>&1
+cat "$HOME/Library/Containers/$READER_ID/Data/spike-notes.txt" 2>&1
 section "quick look thumbnail of clip.spk, now that it is on"
 mkdir -p "$CLIPS/ql"; perl -e 'alarm 40; exec @ARGV' qlmanage -t -s 256 -o "$CLIPS/ql" "$CLIPS/clip.spk" 2>&1 | tail -3; ls -l "$CLIPS/ql"
-cat "$HOME/Library/Containers/art.haushoppe.schnellbild.spikehost.reader/Data/spike-notes.txt" 2>&1
+cat "$HOME/Library/Containers/$READER_ID/Data/spike-notes.txt" 2>&1
 section "the reader process in the log"
 /usr/bin/log show --info --debug --start "$(date -v-4M '+%Y-%m-%d %H:%M:%S')" --style compact --predicate 'process == "SpikeReader"' 2>/dev/null | tail -30
 section "settings containers"
