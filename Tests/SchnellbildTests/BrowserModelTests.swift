@@ -2445,6 +2445,7 @@ final class ReviewFixTests: XCTestCase {
     func testMediaKindIsTheOneRule() {
         XCTAssertEqual(BrowserModel.mediaKind(of: URL(fileURLWithPath: "/x/a.JPG")), .image)
         XCTAssertEqual(BrowserModel.mediaKind(of: URL(fileURLWithPath: "/x/a.mkv")), .video)
+        XCTAssertEqual(BrowserModel.mediaKind(of: URL(fileURLWithPath: "/x/VTS_01_1.VOB")), .video, "a DVD's video")
         XCTAssertNil(BrowserModel.mediaKind(of: URL(fileURLWithPath: "/x/a.txt")))
         XCTAssertNil(BrowserModel.mediaKind(of: URL(fileURLWithPath: "/x/._a.jpg")), "macOS's '._' companion files")
     }

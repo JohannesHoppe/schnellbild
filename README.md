@@ -166,7 +166,7 @@ Zoom with the keyboard or a trackpad pinch, drag to pan, rotate in steps of 90°
   <img src="docs/screenshots/video-light.png" width="760" alt="A video in the full view, paused">
 </picture></p>
 
-Videos play right away, MP4 and MOV through AVKit, formats macOS can't play (AVI, MKV, WebM …) through the built-in VLC engine, which also draws their tiles in the grid. The arrow keys skim: each press jumps a tenth of the video ahead or back, past the end on to the next item, with ⇧ a hundredth. So one key pages through photos and skims through videos; ⌘← ⌘→ skip a video at once. A thin bar under the name at the top shows how far the video has played. ↑ ↓ set the volume of every video, shown a moment while it changes, and kept for the next launch.
+Videos play right away, MP4 and MOV through AVKit, formats macOS can't play (AVI, MKV, WebM, DVD's VOB …) through the built-in VLC engine. The arrow keys skim: each press jumps a tenth of the video ahead or back, past the end on to the next item, with ⇧ a hundredth. So one key pages through photos and skims through videos; ⌘← ⌘→ skip a video at once. A thin bar under the name at the top shows how far the video has played. ↑ ↓ set the volume of every video, shown a moment while it changes, and kept for the next launch.
 
 | Key | Action |
 |---|---|
@@ -180,6 +180,15 @@ Videos play right away, MP4 and MOV through AVKit, formats macOS can't play (AVI
   <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/volume-dark.png">
   <img src="docs/screenshots/volume-light.png" width="760" alt="The volume shown while it changes, over a paused video">
 </picture></p>
+
+### Finder previews for more videos
+
+macOS shows MKV, WebM, AVI, AVCHD camcorder clips (`.mts`, `.m2ts`) and DVD video (`.vob`) as plain icons, in the Finder too. Schnellbild teaches macOS these formats: it brings a QuickLook extension that takes a frame from such a video. The Finder and Schnellbild's grid then show a picture, and macOS keeps it in its own thumbnail cache, so a video on a network share is read once, not on every visit.
+
+- Formats: MKV, WebM, AVI, WMV, ASF, FLV, Ogg video, AVCHD (H.264 in `.mts` / `.m2ts`), VOB. What macOS can read itself (MP4, MOV, MPEG, …) stays with macOS.
+- Works whether Schnellbild is open or not: macOS starts the extension when a picture is needed and ends it afterwards. It is known to macOS once Schnellbild has been opened, and goes away with the app.
+- Runs in Apple's App Sandbox: no network, and it may read only the one file macOS hands it.
+- Can be switched off in System Settings → General → Login Items & Extensions → Quick Look (on macOS 14: Privacy & Security → Extensions → Quick Look). Schnellbild then draws these tiles itself, for as long as it runs.
 
 ### Auto enhance and adjustments
 
@@ -338,7 +347,7 @@ Schnellbild → Settings (⌘,) has two things: how long a picture stays in the 
 
 ## Why so fast?
 
-1. **Riding on the system.** Thumbnails come from Apple's QuickLook (`QLThumbnailGenerator`). It pulls **embedded previews** (EXIF thumbnail, JPEG in RAW): a few KB instead of tens of MB over the network. QuickLook keeps the thumbnails in the system's own cache on your Mac, for folders on network shares too. For the videos QuickLook can't read itself (MKV, WebM, AVI, WMV, FLV, Ogg), Schnellbild brings a QuickLook extension: VLC takes a frame, macOS keeps it like any other thumbnail, so such a video is read once, not on every visit, and Finder shows these videos with a picture too. Schnellbild also keeps the thumbnails of the session in memory (up to an eighth of the Mac's memory), so scrolling back through thousands of search results asks no one again.
+1. **Riding on the system.** Thumbnails come from Apple's QuickLook (`QLThumbnailGenerator`). It pulls **embedded previews** (EXIF thumbnail, JPEG in RAW): a few KB instead of tens of MB over the network. QuickLook keeps the thumbnails in the system's own cache on your Mac, for folders on network shares too. For the videos QuickLook can't read itself (MKV, WebM, AVI, AVCHD, VOB …), Schnellbild brings a QuickLook extension: VLC takes a frame, macOS keeps it like any other thumbnail, so such a video is read once, not on every visit (see [Finder previews for more videos](#finder-previews-for-more-videos)). Schnellbild also keeps the thumbnails of the session in memory (up to an eighth of the Mac's memory), so scrolling back through thousands of search results asks no one again.
 2. **Lazy and parallel.** The grid only loads the tiles on screen, and the system runs thumbnail generation in parallel.
 3. **Full view downsampled.** The full picture is read through ImageIO and sampled straight to screen size, no 8000 px monster in memory. The thumbnail shows instantly as a placeholder.
 4. **Nothing blocks the main thread.** Reading folders, searching and decoding run in the background.

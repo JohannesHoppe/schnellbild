@@ -49,6 +49,8 @@
                 <string>com.adobe.flash.video</string>
                 <string>org.xiph.ogv</string>
                 <string>org.xiph.ogg-video</string>
+                <string>public.avchd-mpeg-2-transport-stream</string>
+                <string>org.videolan.vob</string>
             </array>
             <key>QLThumbnailMinimumDimension</key>
             <integer>16</integer>
