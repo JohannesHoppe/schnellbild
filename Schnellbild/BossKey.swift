@@ -4,12 +4,16 @@ import AppKit
 /// only X typed three times brings it back (or quitting and starting again).
 /// The windows stay open, invisible and letting clicks through, so the Dock
 /// icon or ⌘-Tab bring the app forward with nothing to see, and its keys
-/// still arrive here.
+/// still arrive here. A window in full screen has a space of its own, black
+/// behind an invisible window: it leaves full screen first (the app hides
+/// once it has) and goes back into it on return.
 @MainActor
 enum BossKey {
     private(set) static var engaged = false
     private static var counter = Counter()
     private static var reopenGuard: NSObjectProtocol?
+    private static var fullScreenWindows: [NSWindow] = []
+    private static var exitWatch: NSObjectProtocol?
 
     /// Posted when the app goes quiet or comes back: players set their volume.
     static let changed = Notification.Name("BossKeyChanged")
@@ -20,12 +24,30 @@ enum BossKey {
         counter = Counter()
         NotificationCenter.default.post(name: changed, object: nil)
         hideWindows()
-        NSApp.hide(nil)
+        fullScreenWindows = NSApp.windows.filter { $0.styleMask.contains(.fullScreen) }
+        if fullScreenWindows.isEmpty {
+            NSApp.hide(nil)
+        } else {
+            // Hidden in full screen, the app would leave its black space on screen
+            exitWatch = NotificationCenter.default.addObserver(forName: NSWindow.didExitFullScreenNotification,
+                                                               object: nil, queue: .main) { _ in
+                MainActor.assumeIsolated { hideAfterFullScreen() }
+            }
+            for window in fullScreenWindows { _ = FullScreenSwitch.shared.set(false, window: window) }
+            // Should the end of the animation never be reported
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3) { MainActor.assumeIsolated { hideAfterFullScreen() } }
+        }
         // Brought forward (Dock, ⌘-Tab): a window macOS shows again stays invisible
         reopenGuard = NotificationCenter.default.addObserver(forName: NSApplication.didBecomeActiveNotification,
                                                              object: nil, queue: .main) { _ in
             MainActor.assumeIsolated { if engaged { hideWindows() } }
         }
+    }
+
+    private static func hideAfterFullScreen() {
+        if let exitWatch { NotificationCenter.default.removeObserver(exitWatch) }
+        exitWatch = nil
+        if engaged, !NSApp.isHidden { NSApp.hide(nil) }
     }
 
     /// Every key while engaged goes here and nowhere else.
@@ -43,8 +65,12 @@ enum BossKey {
             window.alphaValue = 1
             window.ignoresMouseEvents = false
         }
+        if let exitWatch { NotificationCenter.default.removeObserver(exitWatch) }
+        exitWatch = nil
         NotificationCenter.default.post(name: changed, object: nil)
         NSApp.activate(ignoringOtherApps: true)
+        for window in fullScreenWindows { _ = FullScreenSwitch.shared.set(true, window: window) }
+        fullScreenWindows = []
     }
 
     private static func hideWindows() {

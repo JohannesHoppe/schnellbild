@@ -231,6 +231,26 @@ final class GridUITests: SchnellbildUITestCase {
         eventually("window leaves full screen", timeout: 10) { window.frame.size == before }
     }
 
+    /// The boss key in full screen: X leaves full screen (its space would stay
+    /// black behind the invisible window) and hides the app; X X X brings
+    /// the window back, in full screen again.
+    func testBossKeyInFullScreen() {
+        launchOnTempDir()
+        let window = app.windows.firstMatch
+        let before = window.frame.size
+        app.typeKey("f", modifierFlags: [])
+        eventually("window enters full screen", timeout: 10) {
+            window.frame.width > before.width || window.frame.height > before.height
+        }
+        let full = window.frame.size
+        app.typeKey("x", modifierFlags: [])
+        eventually("out of full screen", timeout: 10) { window.frame.size == before }
+        for _ in 0..<3 { app.typeKey("x", modifierFlags: []) }
+        eventually("in full screen again", timeout: 15) { window.frame.size == full }
+        app.typeKey("f", modifierFlags: [])
+        eventually("window leaves full screen", timeout: 10) { window.frame.size == before }
+    }
+
     /// L shows the list: whole names in rows; a click anywhere on a column's
     /// header sorts by it (again: the other way), like the sort menu; a double
     /// click opens the picture.
