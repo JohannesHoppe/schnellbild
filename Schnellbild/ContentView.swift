@@ -1004,24 +1004,9 @@ private struct FolderTitle: ViewModifier {
     @ObservedObject var model: BrowserModel
 
     func body(content: Content) -> some View {
-        let titled = content.navigationTitle(model.folderURL?.lastPathComponent ?? "Schnellbild")
-        if #available(macOS 15, *) {
-            titled.toolbar(removing: .title)
-        } else {
-            titled.background(TitleTextHidden())
-        }
-    }
-}
-
-/// Hides the window's title text (the toolbar shows the name instead).
-private struct TitleTextHidden: NSViewRepresentable {
-    func makeNSView(context: Context) -> NSView {
-        let view = NSView()
-        DispatchQueue.main.async { view.window?.titleVisibility = .hidden }
-        return view
-    }
-    func updateNSView(_ view: NSView, context: Context) {
-        if let window = view.window, window.titleVisibility != .hidden { window.titleVisibility = .hidden }
+        content
+            .navigationTitle(model.folderURL?.lastPathComponent ?? "Schnellbild")
+            .toolbar(removing: .title)
     }
 }
 

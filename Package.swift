@@ -15,7 +15,7 @@ let unrarSources = [
 let package = Package(
     name: "Schnellbild",
     platforms: [
-        .macOS(.v14)
+        .macOS(.v15)
     ],
     targets: [
         .executableTarget(

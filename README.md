@@ -33,7 +33,7 @@ Open a folder, see thumbnails, look at one picture large, page through with the 
 
 ## Download
 
-**[Schnellbild.dmg](https://github.com/JohannesHoppe/schnellbild/releases/latest/download/Schnellbild.dmg)** (macOS 14+, Apple silicon): open it and drag Schnellbild into Applications. Signed with a Developer ID and notarized by Apple.
+**[Schnellbild.dmg](https://github.com/JohannesHoppe/schnellbild/releases/latest/download/Schnellbild.dmg)** (macOS 15+, Apple silicon): open it and drag Schnellbild into Applications. Signed with a Developer ID and notarized by Apple.
 
 Schnellbild follows your Mac's language: English, Deutsch, Français, Español, Italiano, Português (Brasil), Nederlands, Polski, Svenska, Dansk, Norsk, Suomi, Čeština, Türkçe, Русский, Українська, 日本語, 한국어, 简体中文 and 繁體中文.
 
@@ -185,11 +185,11 @@ Videos play right away, MP4 and MOV through AVKit, formats macOS can't play (AVI
 
 macOS shows many video formats as plain icons, in the Finder too. Schnellbild teaches macOS some of them: it brings a QuickLook extension that takes a frame from such a video. The Finder and Schnellbild's grid then show a picture, and macOS keeps it in its own thumbnail cache, so a video on a network share is read once, not on every visit.
 
-- Formats: MKV, WMV, ASF, FLV, Ogg video and DVD video (`.vob`); WebM where macOS can't read it itself (macOS 26 can). What macOS reads itself (MP4, MOV, MPEG, …) stays with macOS.
+- Formats: MKV, WebM, WMV, ASF, FLV, Ogg video and DVD video (`.vob`). What macOS reads itself (MP4, MOV, MPEG, …) stays with macOS.
 - AVI and AVCHD camcorder clips (`.mts`, `.m2ts`) stay icons in the Finder: macOS hands these formats to its own extension, not to Schnellbild's. Schnellbild's grid still shows a picture for them.
 - Works whether Schnellbild is open or not: macOS starts the extension when a picture is needed and ends it afterwards. It is known to macOS once Schnellbild has been opened, and goes away with the app.
 - Runs in Apple's App Sandbox: no network, and it may read only the one file macOS hands it.
-- Can be switched off in System Settings → General → Login Items & Extensions → Quick Look (on macOS 14: Privacy & Security → Extensions → Quick Look). Schnellbild then draws these tiles itself, for as long as it runs.
+- Can be switched off in System Settings → General → Login Items & Extensions → Quick Look. Schnellbild then draws these tiles itself, for as long as it runs.
 
 ### Auto enhance and adjustments
 

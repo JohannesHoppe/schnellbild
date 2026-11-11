@@ -12,7 +12,7 @@ WORK=$(mktemp -d)
 # bash 3.2 reports an aborted expansion (an unset variable) as success once an
 # EXIT trap runs: the trap fails unless the script got to its end.
 trap 'rm -rf "$WORK"; [ -n "${finished:-}" ] || exit 1' EXIT
-FLAGS=(-typecheck -sdk "$SDK" -target arm64-apple-macos14.0 -F "$VLC" -I Native/CArchives/include -swift-version 5)
+FLAGS=(-typecheck -sdk "$SDK" -target arm64-apple-macos15.0 -F "$VLC" -I Native/CArchives/include -swift-version 5)
 
 mkdir -p "$WORK/app" "$WORK/unit" "$WORK/ui" "$WORK/mod"
 for f in Schnellbild/*.swift; do perl -pe 's/\@State\b/\@_State/g; s/\bState\(initialValue/_State(initialValue/g' "$f" > "$WORK/app/$(basename "$f")"; done

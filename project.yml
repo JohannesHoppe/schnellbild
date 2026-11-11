@@ -5,14 +5,14 @@ name: Schnellbild
 options:
   bundleIdPrefix: art.haushoppe
   deploymentTarget:
-    macOS: "14.0"
+    macOS: "15.0"
   createIntermediateGroups: true
 
 settings:
   base:
     SWIFT_VERSION: "5.0"          # match the SwiftPM build's language mode
-    MARKETING_VERSION: "0.6.0"
-    CURRENT_PROJECT_VERSION: "6"
+    MARKETING_VERSION: "0.6.1"
+    CURRENT_PROJECT_VERSION: "7"
     # Ad-hoc sign (no Apple team needed) so the app + UI-test runner launch
     # without Gatekeeper flagging them as "damaged".
     CODE_SIGN_STYLE: Manual
