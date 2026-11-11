@@ -14,6 +14,9 @@ final class WindowModel: ObservableObject {
     @Published private(set) var right: BrowserModel?
     @Published private(set) var dual = false
     @Published private(set) var rightIsActive = false
+    /// A folder or file from the Finder dragged over the window: the zone
+    /// under the pointer (left half browses, right half plays).
+    @Published var dropZone: DropZone?
 
     static let dualKey = "dualPane"
     private let defaults: UserDefaults

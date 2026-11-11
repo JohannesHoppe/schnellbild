@@ -534,20 +534,54 @@ private struct FolderDrop: ViewModifier {
     let accepts: Bool
     @Binding var targeted: Bool
     @EnvironmentObject var model: BrowserModel
+    @EnvironmentObject var window: WindowModel
 
     func body(content: Content) -> some View {
-        let model = model
-        // A folder tile outlines itself; any other tile outlines the pane
-        let over: Binding<Bool> = accepts
-            ? Binding(get: { targeted }, set: { targeted = $0; if $0 { model.dropIntoFolderTargeted = false } })
-            : Binding(get: { model.dropIntoFolderTargeted }, set: { model.dropIntoFolderTargeted = $0 && model.paneDropFolder != nil })
-        return content.onDrop(of: [TileDrag.type], isTargeted: over) { providers in
-            model.dropIntoFolderTargeted = false
-            let target = accepts ? entry.url : model.paneDropFolder
-            guard let folder = target, ArchivePath.split(folder) == nil else { return false }
-            TileDrag.loadURLs(providers) { urls in model.move(urls, into: folder) }
-            return true
+        content.onDrop(of: [TileDrag.type, .fileURL],
+                       delegate: TileDropDelegate(entry: entry, accepts: accepts, targeted: $targeted, model: model, window: window))
+    }
+}
+
+/// A folder tile outlines itself; any other tile outlines the pane (its
+/// folder takes the drop). A drag from the Finder goes on to the window's
+/// zones (`FinderDrop`).
+private struct TileDropDelegate: DropDelegate {
+    let entry: GridEntry
+    let accepts: Bool
+    @Binding var targeted: Bool
+    let model: BrowserModel
+    let window: WindowModel
+
+    private func over(_ on: Bool) {
+        if accepts {
+            targeted = on
+            if on { model.dropIntoFolderTargeted = false }
+        } else {
+            model.dropIntoFolderTargeted = on && model.paneDropFolder != nil
         }
+    }
+
+    func validateDrop(info: DropInfo) -> Bool {
+        FinderDrop.isFromFinder(info) || info.hasItemsConforming(to: [TileDrag.type])
+    }
+    func dropEntered(info: DropInfo) {
+        if FinderDrop.isFromFinder(info) { FinderDrop.update(window) } else { over(true) }
+    }
+    func dropUpdated(info: DropInfo) -> DropProposal? {
+        if FinderDrop.isFromFinder(info) { FinderDrop.update(window); return DropProposal(operation: .copy) }
+        return DropProposal(operation: .move)
+    }
+    func dropExited(info: DropInfo) {
+        if FinderDrop.isFromFinder(info) { window.dropZone = nil } else { over(false) }
+    }
+    func performDrop(info: DropInfo) -> Bool {
+        if FinderDrop.isFromFinder(info) { return FinderDrop.perform(info, window) }
+        over(false)
+        model.dropIntoFolderTargeted = false
+        let target = accepts ? entry.url : model.paneDropFolder
+        guard let folder = target, ArchivePath.split(folder) == nil else { return false }
+        TileDrag.loadURLs(info.itemProviders(for: [TileDrag.type])) { urls in model.move(urls, into: folder) }
+        return true
     }
 }
 
