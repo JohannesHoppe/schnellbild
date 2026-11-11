@@ -1,7 +1,8 @@
-# Experiment (by hand): does macOS start a Media Extension format reader
-# that is ad-hoc signed, and how is it turned on without a person
-# (Spike/MediaExtension/enable.sh: System Settings by UI scripting, what
-# that changes on disk). probe.sh: discovery and pluginkit.
+# Experiment (by hand): a Media Extension format reader signed with the
+# Developer ID and its provisioning profile (ad hoc, macOS refuses it with
+# the entitlement and never asks it without). Spike/MediaExtension/enable.sh
+# turns it on in System Settings (a mouse click, as a person would) and
+# asks it through AVFoundation and Quick Look.
 name: Spike — Media Extension
 
 on:
@@ -11,28 +12,43 @@ permissions:
   contents: read
 
 jobs:
-  probe:
-    name: Probe (${{ matrix.os }}, ${{ matrix.variant }})
+  signed:
+    name: Signed reader (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
+    environment: release
     strategy:
       fail-fast: false
       matrix:
         os: [ macos-15, macos-26 ]
-        variant: [ entitled, plain ]
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
       - name: Select latest stable Xcode
         uses: maxim-lobanov/setup-xcode@ed7a3b1fda3918c0306d1b724322adc0b8cc0a90 # v1.7.0
         with:
           xcode-version: latest-stable
-      - name: Build
-        run: ./Spike/MediaExtension/build.sh ${{ matrix.variant }} "$PWD/build"
-      - name: Turn it on in System Settings
+      - name: Set up signing certificate
+        env:
+          P12: ${{ secrets.MACOS_CERT_P12 }}
+          P12_PASSWORD: ${{ secrets.MACOS_CERT_PASSWORD }}
+          P8: ${{ secrets.NOTARY_KEY_P8 }}
+        run: ./Scripts/macos-signing.sh setup
+      - name: Build (Developer ID, provisioning profile)
+        env:
+          PROFILE: ${{ secrets.MACOS_PROFILE_FORMATREADER }}
+        run: |
+          printf '%s' "$PROFILE" | base64 --decode > "$RUNNER_TEMP/reader.provisionprofile"
+          READER_PROFILE="$RUNNER_TEMP/reader.provisionprofile" ./Spike/MediaExtension/build.sh signed "$PWD/build"
+      - name: Remove signing data
+        if: always()
+        run: ./Scripts/macos-signing.sh cleanup
+      - name: Turn it on in System Settings, ask it
+        env:
+          READER_ID: art.haushoppe.schnellbild.formatreader
         run: ./Spike/MediaExtension/enable.sh "$PWD/build" "$PWD/out"
       - name: Keep the screenshots
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: spike-${{ matrix.os }}-${{ matrix.variant }}
+          name: spike-signed-${{ matrix.os }}
           path: out/*.png
           if-no-files-found: ignore
