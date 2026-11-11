@@ -165,6 +165,15 @@ private struct WindowView: View {
 
             BookmarksButton(model: model)
         }
+        // Back to the grid, first in the row of actions: a centred item
+        // would push the others to the window's right edge
+        ToolbarItemGroup(placement: .primaryAction) {
+            if model.mode == .detail {
+                Button { model.closeDetail() } label: {
+                    ShortcutLabel("Grid", systemImage: "square.grid.2x2", keys: "esc", showsTitle: true)
+                }
+            }
+        }
         ToolbarItem(placement: .primaryAction) {
             // Two panes side by side, as in the file commanders (D, ⌃O)
             Toggle(isOn: Binding(get: { window.dual }, set: { window.setDual($0) })) {
@@ -223,13 +232,6 @@ private struct WindowView: View {
             .help("Sort by (⌘1 … ⌘5; press again to reverse)")
             .accessibilityIdentifier("sortMenu")
             .accessibilityLabel("Sort: \(model.sortKey.title) \(model.sortAscending ? "↑" : "↓")")
-        }
-        ToolbarItemGroup(placement: .principal) {
-            if model.mode == .detail {
-                Button { model.closeDetail() } label: {
-                    ShortcutLabel("Grid", systemImage: "square.grid.2x2", keys: "esc", showsTitle: true)
-                }
-            }
         }
     }
 
