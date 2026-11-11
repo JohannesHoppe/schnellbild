@@ -171,4 +171,27 @@ final class ContainerTests: XCTestCase {
             exercise(MemoryBytes(bad))
         }
     }
+
+    /// A track whose frames are compressed in the file (here header
+    /// stripping) is marked: the decoder couldn't take its frames as they lie.
+    func testAnEncodedTrackIsMarked() throws {
+        func element(_ id: [UInt8], _ body: [UInt8]) -> [UInt8] {
+            precondition(body.count < 0x7F)
+            return id + [0x80 | UInt8(body.count)] + body
+        }
+        let compression = element([0x50, 0x34], element([0x42, 0x54], [3]) + element([0x42, 0x55], [0, 0, 0, 1]))
+        let encodings = element([0x6D, 0x80], element([0x62, 0x40], compression))
+        let video = element([0xE0], element([0xB0], [64]) + element([0xBA], [48]))
+        let entry = element([0xAE], element([0xD7], [1]) + element([0x83], [1]) + element([0x86], Array("V_MPEG4/ISO/AVC".utf8))
+                            + element([0x63, 0xA2], [1, 2, 3]) + video + encodings)
+        let tracks = element([0x16, 0x54, 0xAE, 0x6B], entry)
+        let cluster = element([0x1F, 0x43, 0xB6, 0x75], element([0xE7], [0]) + element([0xA3], [0x81, 0, 0, 0x80, 1, 2]))
+        let header = element([0x1A, 0x45, 0xDF, 0xA3], element([0x42, 0x82], Array("matroska".utf8)))
+        let segment: [UInt8] = [0x18, 0x53, 0x80, 0x67, 0x01, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF] + tracks + cluster
+        let index = try MatroskaIndex(MemoryBytes(Data(header + segment)))
+        XCTAssertEqual(index.tracks.first?.encoded, true)
+        let plain = try MatroskaIndex(MemoryBytes(try clip("clip.mkv")))
+        XCTAssertEqual(plain.tracks.first?.encoded, false)
+    }
 }
+

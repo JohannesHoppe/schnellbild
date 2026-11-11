@@ -25,6 +25,9 @@ final class MatroskaIndex: @unchecked Sendable {
         var width = 0
         var height = 0
         var defaultDuration: UInt64 = 0   // nanoseconds per frame, 0 if not given
+        /// Its frames are compressed or encrypted (ContentEncodings: header
+        /// stripping, zlib …): not as the decoder takes them.
+        var encoded = false
     }
     struct Cluster {
         let offset: Int64       // of its contents (after its header)
@@ -209,6 +212,7 @@ final class MatroskaIndex: @unchecked Sendable {
                 case 0x86: track.codecID = try reader.string(element)
                 case 0x63A2: track.codecPrivate = try reader.bytes(element)
                 case 0x23E383: track.defaultDuration = try reader.uint(element)
+                case 0x6D80: track.encoded = true; try reader.skip(element)
                 case 0xE0:
                     let videoEnd = try reader.end(of: element)
                     while reader.position < videoEnd, let video = reader.element() {
