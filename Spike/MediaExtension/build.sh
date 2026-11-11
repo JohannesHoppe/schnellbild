@@ -24,7 +24,7 @@ if [ "$VARIANT" = signed ]; then
   : "${MACOS_SIGN_IDENTITY:?no signing identity}" "${READER_PROFILE:?no profile}"
   rm -rf "$EX"; EX="$APP/Contents/Extensions/SchnellbildFormats.appex"; mkdir -p "$EX/Contents/MacOS"
   swiftc -O -target $TARGET -module-name SchnellbildFormats -parse-as-library \
-    ../../FormatReader/MatroskaIndex.swift ../../FormatReader/TransportIndex.swift ../../FormatReader/FormatReader.swift \
+    ../../FormatReader/MatroskaIndex.swift ../../FormatReader/FormatReader.swift \
     -framework MediaExtension -framework ExtensionFoundation -Xlinker -e -Xlinker _EXExtensionMain \
     -o "$EX/Contents/MacOS/SchnellbildFormats"
   cp ../../FormatReader/Info.plist "$EX/Contents/Info.plist"
