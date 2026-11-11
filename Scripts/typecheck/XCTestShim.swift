@@ -38,7 +38,7 @@ public struct XCUIKeyboardKey: RawRepresentable, ExpressibleByStringLiteral {
     public init(stringLiteral value: String) { rawValue = value }
     public static let `return`: Self = "r", escape: Self = "e", space: Self = " ", delete: Self = "d",
                       end: Self = "E", home: Self = "H", leftArrow: Self = "l", rightArrow: Self = "R",
-                      upArrow: Self = "u", downArrow: Self = "D", F1: Self = "1", F2: Self = "2", F5: Self = "5", F6: Self = "6"
+                      upArrow: Self = "u", downArrow: Self = "D", F1: Self = "1", F2: Self = "2", F5: Self = "5", F6: Self = "6", tab: Self = "t"
 }
 public struct XCUIElementType { public static let any = XCUIElementType() }
 public final class XCUIElementQuery {
@@ -58,6 +58,7 @@ public final class XCUICoordinate {
     public func hover() {}
     public func press(forDuration duration: TimeInterval, thenDragTo other: XCUICoordinate) {}
     public func click() {}
+    public func rightClick() {}
 }
 public final class XCUIScreenshot { public var image: NSImage { NSImage() } }
 public class XCUIElement {
