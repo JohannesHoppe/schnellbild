@@ -112,7 +112,7 @@ struct EntryListView: View {
         // A folder with no photo or video at any depth is greyed out here
         // too (the grid's folder tiles find it out the same way)
         .task(id: entry.kind == .folder && !entry.isArchive ? entry.url : nil) {
-            guard entry.kind == .folder, !entry.isArchive,
+            guard entry.kind == .folder, !entry.isArchive, FolderTile.driveImage(entry.url) == nil,
                   let found = await FolderPreviewCache.shared.containsMedia(entry.url), !Task.isCancelled else { return }
             model.noteFolder(entry.url, empty: !found)
         }
@@ -154,9 +154,14 @@ struct EntryListView: View {
             Image(systemName: "arrow.up.circle.fill").font(.title3).foregroundStyle(Color.accentColor)
         case .folder:
             let archive = entry.isArchive
-            FolderTile(folder: entry.url, side: Self.previewSide, isSelected: false,
-                       systemImage: archive ? "archivebox.fill" : "folder.fill",
-                       isEmpty: model.isEmptyFolder(entry), kindLabel: archive ? "archive" : "folder")
+            if let drive = FolderTile.driveImage(entry.url) {
+                FolderTile(folder: entry.url, side: Self.previewSide, isSelected: false, systemImage: drive,
+                           kindLabel: "drive", previews: false)
+            } else {
+                FolderTile(folder: entry.url, side: Self.previewSide, isSelected: false,
+                           systemImage: archive ? "archivebox.fill" : "folder.fill",
+                           isEmpty: model.isEmptyFolder(entry), kindLabel: archive ? "archive" : "folder")
+            }
         case .image, .video:
             ThumbnailView(url: entry.url, side: Self.previewSide, isSelected: false, isVideo: false, modified: entry.modDate)
         }
