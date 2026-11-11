@@ -327,6 +327,7 @@ names, back/forward/up history, folder and file rename, folder preview tiles, gr
 Releases ship as a signed, notarized DMG, archives as folders (ZIP, RAR via UnRAR, 7z; split, unfinished, passwords remembered; videos streamed), other files listed, SVG, mini keyboard (K), shortcuts on buttons, About window with licenses, dual pane with Norton Commander's F-keys (marking, F5/F6, dragging between panes), list view (L), new folder (⇧⌘N / F7), the folder's name in the title bar renames it, video volume on ↑↓, search modes (case, regular expression), folder bookmarks, undo / redo of file actions, the drives' level above /, boss key, printable cheat sheet, other files renamed / moved / trashed / opened.
 
 Open / next-up:
+- **Own keyboard shortcuts** — let users assign their own keys to the actions (Phiewer offers this in its PRO version). Today the keys are fixed; F1 lists them all and prints them.
 - **Demo GIF** — storyboard ready in `docs/launch-storyboard.md`. User records it
   later, drops `docs/demo.gif`, uncomments the demo line near the top of README.
 - **Launch posts** — `docs/launch.md` has ready Show HN + r/macapps copy; user

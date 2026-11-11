@@ -136,8 +136,14 @@ struct FolderTile: View {
     /// startup disk (its link to "/") or another; nil for anything else.
     static func driveImage(_ url: URL) -> String? {
         guard BrowserModel.isDrivesLevel(url.deletingLastPathComponent()) else { return nil }
-        return url.resolvingSymlinksInPath().path == "/" ? "internaldrive.fill" : "externaldrive.fill"
+        // By name, not by following the link: asked on every redraw, and a
+        // network share that doesn't answer would hold the main thread
+        return url.lastPathComponent == startupDiskName ? "internaldrive.fill" : "externaldrive.fill"
     }
+
+    /// The startup disk's name as /Volumes lists it ("Macintosh HD"), read once.
+    private static let startupDiskName: String? =
+        (try? URL(fileURLWithPath: "/").resourceValues(forKeys: [.volumeNameKey]))?.volumeName
 
     @EnvironmentObject var model: BrowserModel
     @State private var previewImages: [NSImage]
