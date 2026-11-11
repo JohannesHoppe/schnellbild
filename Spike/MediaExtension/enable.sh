@@ -24,42 +24,62 @@ MARK=$(mktemp); sleep 1
 section "System Settings"
 open "x-apple.systempreferences:com.apple.ExtensionsPreferences?extensionPointIdentifier=com.apple.mediaextension.formatreader"
 sleep 10; shot 1-opened
-osascript <<'AS' 2>&1 | head -150
+osascript <<'AS' 2>&1 | head -80
 tell application "System Events" to tell process "System Settings"
   set frontmost to true
   delay 1
-  set out to ""
-  repeat with e in (entire contents of window 1)
-    try
-      set out to out & (class of e as text) & " | " & (name of e as text) & " | " & (description of e as text) & " | " & (value of e as text) & linefeed
-    on error
-      try
-        set out to out & (class of e as text) & linefeed
-      end try
-    end try
+  set out to "windows: " & (count of windows) & linefeed
+  repeat with w in windows
+    set out to out & "window " & (name of w as text) & ", sheets: " & (count of sheets of w) & linefeed
+    repeat with s in sheets of w
+      repeat with e in (entire contents of s)
+        try
+          set out to out & (class of e as text) & " | " & (name of e as text) & " | " & (description of e as text) & " | " & (value of e as text) & linefeed
+        on error
+          try
+            set out to out & (class of e as text) & linefeed
+          end try
+        end try
+      end repeat
+    end repeat
   end repeat
   return out
 end tell
 AS
-section "turn on every switch on that page"
+section "turn the reader's switch on"
 osascript <<'AS' 2>&1
 tell application "System Events" to tell process "System Settings"
   set n to 0
-  repeat with e in (entire contents of window 1)
-    try
-      if class of e is checkbox then
-        if value of e is 0 then
-          click e
-          set n to n + 1
-        end if
-      end if
-    end try
+  repeat with w in windows
+    repeat with s in sheets of w
+      repeat with e in (entire contents of s)
+        try
+          if (class of e is checkbox) or (role of e is "AXSwitch") then
+            if value of e is 0 then
+              click e
+              set n to n + 1
+            end if
+          end if
+        end try
+      end repeat
+    end repeat
   end repeat
-  return "clicked " & n
+  return "clicked by UI scripting: " & n
 end tell
 AS
+sleep 3; shot 2a-after-scripting
+section "host after UI scripting"; host
+# Where the screenshots show the switch (1024 × 768 screen, the sheet centred)
+swift click.swift 675 297 2>&1
 sleep 4; shot 2-switched
 section "host after"; host
+section "settings containers"
+for d in "$HOME/Library/Containers/com.apple.MediaExtensions-Settings" "$HOME/Library/Containers/com.apple.ExtensionsSettings.DefaultExtensionEnablement"; do
+  echo "--- $d"; find "$d" -type f -newer "$MARK" 2>/dev/null | head; done
+section "every plist changed, searched for the reader"
+for f in $(find "$HOME/Library" -newer "$MARK" -name '*.plist' -type f 2>/dev/null) $(sudo find /Library /private/var/db -newer "$MARK" -name '*.plist' -type f 2>/dev/null); do
+  if sudo plutil -p "$f" 2>/dev/null | grep -qiE 'spike|formatreader|haushoppe'; then echo "--- $f"; sudo plutil -p "$f" | grep -i -B3 -A3 -E 'spike|formatreader|haushoppe' | head -40; fi
+done
 section "files changed meanwhile (home)"
 find "$HOME/Library" -newer "$MARK" -type f 2>/dev/null | grep -vE '/Caches/|/Logs/|\.db-(wal|shm)$|/Saved Application State/|/Biome/|/Metadata/|/Assistants/' | head -60
 section "files changed meanwhile (system)"
