@@ -31,7 +31,7 @@ always recursive), zoom/pan/pinch/rotate (view-only — never touches your files
 via AVKit with a VLCKit fallback for AVI/MKV/WebM, animated GIFs, slideshow,
 sort, trash, light/dark.
 
-SwiftUI, ~1k LOC, MIT, unit + XCUITest E2E, CI. macOS 14+.
+SwiftUI, ~1k LOC, MIT, unit + XCUITest E2E, CI. macOS 15+.
 
 It's a viewer, not an organizer — no library, no tagging, no AI. If you browse
 big image folders (especially over a network) and just want something that
@@ -60,7 +60,7 @@ even over the network.
 - Keyboard-first (F1 shows all shortcuts), folder browsing, search (folder and file
   names across all subfolders), back/forward history, folder rename, zoom/rotate, slideshow, video (incl. AVI/MKV via
   a bundled VLCKit fallback), animated GIFs, light/dark.
-- Free and open source (MIT). macOS 14+.
+- Free and open source (MIT). macOS 15+.
 
 Download/build: https://github.com/JohannesHoppe/schnellbild
 
