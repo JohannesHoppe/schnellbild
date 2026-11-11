@@ -42,6 +42,9 @@ cp "$BIN" "$APP/Contents/MacOS/Schnellbild"
 
 echo "==> Embedding VLCKit.framework"
 ditto "$BINDIR/VLCKit.framework" "$APP/Contents/Frameworks/VLCKit.framework"
+# Apple silicon only, like the app: VideoLAN's build also carries Intel code (45 MB)
+VLCBIN="$APP/Contents/Frameworks/VLCKit.framework/Versions/A/VLCKit"
+if lipo -archs "$VLCBIN" | grep -q x86_64; then lipo "$VLCBIN" -thin arm64 -output "$VLCBIN.arm64" && mv "$VLCBIN.arm64" "$VLCBIN"; fi
 install_name_tool -add_rpath "@executable_path/../Frameworks" "$APP/Contents/MacOS/Schnellbild" 2>/dev/null || true
 cp "$RES/AppIcon.icns" "$APP/Contents/Resources/AppIcon.icns"
 # The UI's translations (en.lproj, de.lproj, …), found through Bundle.main

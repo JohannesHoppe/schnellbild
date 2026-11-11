@@ -354,8 +354,7 @@ Open / next-up:
   decide on paid (direct sale, not MAS).
 - **Homebrew tap** — possible free distribution path for techies
   (`JohannesHoppe/homebrew-tap` + a cask pointing at the notarized DMG). Not built yet.
-- **Universal build** — releases are built on an Apple-silicon runner and are
-  arm64 only; Intel would need a universal `swift build`.
+- **Apple silicon only**, on purpose: no Intel build; `build_app.sh` also cuts VLCKit down to arm64 (VideoLAN's binary carries Intel code too).
 - **Speed benchmark** — "Schnellbild vs. Preview over the network" was offered to
   *prove* the speed claim (the GIF only sells the feel). Not built.
 - Known limits (not planned): packages (apps, the Photos library) stay closed; archives inside archives aren't opened; videos inside archives get an icon as thumbnail; sorting by date taken uses the date modified inside archives.
