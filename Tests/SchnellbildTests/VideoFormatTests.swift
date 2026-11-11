@@ -52,17 +52,27 @@ final class VideoFormatTests: XCTestCase {
         XCTAssertNil(VLCSafety.reader(for: URL(fileURLWithPath: "/x/a")))
     }
 
-    /// The reader is held to the file's format: a clip under another
-    /// format's name gives no picture (VLC doesn't go looking for a reader
-    /// that takes it).
-    func testAClipUnderAnotherFormatsNameOpensNothing() async throws {
+    /// A clip under another format's name (a transport stream recorded as
+    /// ".mkv", a WMV named ".mkv") opens through the container its first
+    /// bytes show; not a video at all under a video's name opens nothing.
+    func testAClipUnderAnotherFormatsNameOpensByItsContent() async throws {
         let dir = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
         defer { try? FileManager.default.removeItem(at: dir) }
-        let renamed = dir.appendingPathComponent("clip.mkv")
-        try FileManager.default.copyItem(at: try clip("wmv"), to: renamed)
-        let frame = await VLCFrameGrab.frame(of: renamed, width: 128, timeout: 4)
-        XCTAssertNil(frame)
+        for (source, expected) in [("m2ts", "ts"), ("ts", "ts"), ("wmv", "asf"), ("mp4", "mp4"), ("avi", "avi")] {
+            let renamed = dir.appendingPathComponent("\(source).mkv")
+            try FileManager.default.copyItem(at: try clip(source), to: renamed)
+            XCTAssertEqual(VLCSafety.reader(for: renamed, head: VLCSafety.head(of: renamed))?.demux, expected, source)
+            let frame = await VLCFrameGrab.frame(of: renamed, width: 128, timeout: 8)
+            XCTAssertNotNil(frame, "\(source) named .mkv")
+        }
+        let text = dir.appendingPathComponent("notes.mkv")
+        try "not a video".write(to: text, atomically: true, encoding: .utf8)
+        XCTAssertEqual(VLCSafety.reader(for: text, head: VLCSafety.head(of: text))?.demux, "mkv", "the extension's reader")
+        let none = await VLCFrameGrab.frame(of: text, width: 128, timeout: 4)
+        XCTAssertNil(none)
+        XCTAssertNil(VLCSafety.reader(for: dir.appendingPathComponent("a.txt"), head: VLCSafety.head(of: try clip("mkv"))),
+                     "no video extension: nothing, whatever the content")
     }
 
     /// A streaming playlist (HLS) named like a video: VLC must not follow it.

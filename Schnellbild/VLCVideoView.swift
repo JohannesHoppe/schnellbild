@@ -31,7 +31,8 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
     /// What VLC opens: a file, or a stream (a video inside an archive, named
     /// by its path through the archive; a new stream for every opening).
     enum Source {
-        case file(URL)
+        /// A file and its first bytes (which reader VLC may use, `VLCSafety`)
+        case file(URL, head: Data?)
         case stream(URL, () -> InputStream)
     }
     private let source: Source
@@ -58,11 +59,12 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
     private func makeMedia() -> VLCMedia {
         let media: VLCMedia
         let name: URL
+        var head: Data?
         switch source {
-        case .file(let url):                media = VLCMedia(url: url); name = url
+        case .file(let url, let first):     media = VLCMedia(url: url); name = url; head = first
         case .stream(let url, let makeStream): media = VLCMedia(stream: makeStream()); name = url
         }
-        VLCSafety.restrict(media, for: name)
+        VLCSafety.restrict(media, for: name, head: head)
         // No on-screen messages (VLC would draw them into the picture)
         media.addOption(":no-osd")
         // VLCKit turns on "play-and-pause": VLC would pause as soon as it has
