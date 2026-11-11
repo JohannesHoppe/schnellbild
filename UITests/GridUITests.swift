@@ -231,8 +231,8 @@ final class GridUITests: SchnellbildUITestCase {
         eventually("window leaves full screen", timeout: 10) { window.frame.size == before }
     }
 
-    /// L shows the list: whole names in rows; a click on a column's header
-    /// sorts by it (again: the other way), like the sort menu; a double
+    /// L shows the list: whole names in rows; a click anywhere on a column's
+    /// header sorts by it (again: the other way), like the sort menu; a double
     /// click opens the picture.
     func testTheListView() throws {
         try put("huge.jpg", at: "d-large.jpg")
@@ -244,7 +244,13 @@ final class GridUITests: SchnellbildUITestCase {
         eventually("sorted by size, largest first") { self.sortLabel.contains("Size ↓") }
         element("column.size").firstMatch.click()
         eventually("again: smallest first") { self.sortLabel.contains("Size ↑") }
-        element("column.name").firstMatch.click()
+        // The whole column header takes the click, not only its word
+        let kind = element("column.kind").firstMatch
+        XCTAssertGreaterThan(kind.frame.width, 80, "as wide as the column")
+        kind.coordinate(withNormalizedOffset: CGVector(dx: 0.95, dy: 0.5)).click()
+        eventually("by kind, from the column's far end") { self.sortLabel.contains("Kind ↑") }
+        let name = element("column.name").firstMatch
+        name.coordinate(withNormalizedOffset: CGVector(dx: 0.9, dy: 0.5)).click()
         eventually("by name") { self.sortLabel.contains("Name ↑") }
         element("row.b.jpg").firstMatch.doubleClick()
         eventually("the picture opens", timeout: 15) { self.text(of: self.element("fullImage")).hasSuffix("loaded") }

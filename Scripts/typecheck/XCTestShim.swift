@@ -57,6 +57,7 @@ public final class XCUICoordinate {
     public func doubleClick() {}
     public func hover() {}
     public func press(forDuration duration: TimeInterval, thenDragTo other: XCUICoordinate) {}
+    public func click() {}
 }
 public final class XCUIScreenshot { public var image: NSImage { NSImage() } }
 public class XCUIElement {
