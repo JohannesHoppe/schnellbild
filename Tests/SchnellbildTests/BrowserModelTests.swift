@@ -330,6 +330,30 @@ final class SortTests: XCTestCase {
         let none = await BrowserModel.captureDate(of: try tree.file("plain.jpg"))
         XCTAssertNil(none, "no EXIF, no date")
     }
+
+    /// A camera whose clock was never set writes zeros: no date (not the
+    /// year 2), or the next date the file has.
+    func testAZeroCaptureDateIsNone() async throws {
+        let tree = try TempTree(self)
+        func photo(_ name: String, _ properties: [CFString: Any]) throws -> URL {
+            let url = tree.root.appendingPathComponent(name)
+            let dest = try XCTUnwrap(CGImageDestinationCreateWithURL(url as CFURL, "public.jpeg" as CFString, 1, nil))
+            let ctx = try XCTUnwrap(CGContext(data: nil, width: 4, height: 4, bitsPerComponent: 8, bytesPerRow: 0,
+                                              space: CGColorSpaceCreateDeviceRGB(),
+                                              bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue))
+            CGImageDestinationAddImage(dest, try XCTUnwrap(ctx.makeImage()), properties as CFDictionary)
+            XCTAssertTrue(CGImageDestinationFinalize(dest))
+            return url
+        }
+        let zero = [kCGImagePropertyExifDateTimeOriginal: "0000:00:00 00:00:00"] as CFDictionary
+        let none = await BrowserModel.captureDate(of: try photo("zero.jpg", [kCGImagePropertyExifDictionary: zero]))
+        XCTAssertNil(none)
+        let fallback = await BrowserModel.captureDate(of: try photo("tiff.jpg", [
+            kCGImagePropertyExifDictionary: zero,
+            kCGImagePropertyTIFFDictionary: [kCGImagePropertyTIFFDateTime: "2019:11:19 13:47:00"] as CFDictionary
+        ]))
+        XCTAssertEqual(Calendar.current.component(.year, from: try XCTUnwrap(fallback)), 2019)
+    }
 }
 
 // MARK: - Directory scan & folder previews
