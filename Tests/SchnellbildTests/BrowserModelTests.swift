@@ -2915,7 +2915,7 @@ final class UndoTests: XCTestCase {
         XCTAssertEqual(m.undoHistory.undoSteps.map(\.kind), [.rename, .trash, .move])
 
         m.undo()   // the move
-        await waitUntil { exists("c.jpg") }
+        await waitUntil { exists("c.jpg") && !m.isLoading && m.names.contains("c.jpg") }
         XCTAssertFalse(exists("Sorted/c.jpg"))
         m.undo()   // the trash
         await waitUntil { exists("b.jpg") && m.names.contains("b.jpg") }
@@ -2930,12 +2930,12 @@ final class UndoTests: XCTestCase {
         m.redo()   // the trash
         await waitUntil { !exists("b.jpg") && !m.names.contains("b.jpg") }
         m.redo()   // the move
-        await waitUntil { exists("Sorted/c.jpg") }
+        await waitUntil { exists("Sorted/c.jpg") && !m.isLoading }
         XCTAssertEqual(m.names, ["..", "Sorted"])
         XCTAssertTrue(m.undoHistory.redoSteps.isEmpty)
 
         m.undo()
-        await waitUntil { exists("c.jpg") }
+        await waitUntil { exists("c.jpg") && !m.isLoading && m.names.contains("c.jpg") }
         // Something new: what was undone can't be redone any more
         m.selectEntry(named: "c.jpg")
         XCTAssertTrue(m.beginRename())
