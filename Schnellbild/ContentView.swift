@@ -112,6 +112,8 @@ private struct WindowView: View {
                     Rectangle().strokeBorder(Color.accentColor.opacity(0.8), lineWidth: 2).allowsHitTesting(false)
                 }
             }
+            // Dragged tiles over it: where they will land
+            .overlay { PaneDropHint(pane: pane) }
             // A click anywhere in a pane makes it the active one
             .simultaneousGesture(TapGesture().onEnded { window.activate(pane) })
             // Tiles dropped onto a pane's free space go into its folder (the
@@ -1094,15 +1096,15 @@ private struct PaneDrop: DropDelegate {
     let window: WindowModel
 
     /// Not into an archive (only read), as a tile there refuses it too.
-    private var target: URL? {
-        guard let folder = pane.folderURL, !pane.isFiltering, ArchivePath.split(folder) == nil else { return nil }
-        return folder
-    }
+    private var target: URL? { pane.paneDropFolder }
     func validateDrop(info: DropInfo) -> Bool {
         target != nil && info.hasItemsConforming(to: [TileDrag.type])
     }
+    func dropEntered(info: DropInfo) { pane.dropIntoFolderTargeted = target != nil }
+    func dropExited(info: DropInfo) { pane.dropIntoFolderTargeted = false }
     func dropUpdated(info: DropInfo) -> DropProposal? { DropProposal(operation: .move) }
     func performDrop(info: DropInfo) -> Bool {
+        pane.dropIntoFolderTargeted = false
         guard let folder = target else { return false }
         let pane = pane
         TileDrag.loadURLs(info.itemProviders(for: [TileDrag.type])) { urls in pane.move(urls, into: folder) }
@@ -1133,3 +1135,27 @@ private struct SearchModePicker: View {
         .accessibilityIdentifier("searchMode")
     }
 }
+
+/// While tiles are dragged over a pane where they would land in the folder
+/// it shows: the pane outlined, the folder named at its foot.
+private struct PaneDropHint: View {
+    @ObservedObject var pane: BrowserModel
+
+    var body: some View {
+        if pane.dropIntoFolderTargeted, let folder = pane.paneDropFolder {
+            ZStack(alignment: .bottom) {
+                Rectangle().strokeBorder(Color.accentColor, lineWidth: 4)
+                Text("Into “\(folder.lastPathComponent)”")
+                    .font(.callout.weight(.semibold))
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 7)
+                    .background(Color.accentColor, in: Capsule())
+                    .padding(.bottom, 44)
+                    .accessibilityIdentifier("dropHint")
+            }
+            .allowsHitTesting(false)
+        }
+    }
+}
+

@@ -259,3 +259,4 @@
 "No folder, archive, picture or video whose name matches “%@”, in this folder or its subfolders." = "Tässä kansiossa tai sen alikansioissa ei ole kansiota, arkistoa, kuvaa tai videota, jonka nimi vastaa lauseketta ”%@”.";
 "“%@” is not a valid regular expression." = "”%@” ei ole kelvollinen säännöllinen lauseke.";
 "Boss key: hidden and silent at once; X X X brings it back" = "Pomonäppäin: heti piiloon ja hiljaiseksi; X X X tuo takaisin";
+"Into “%@”" = "Kansioon ”%@”";

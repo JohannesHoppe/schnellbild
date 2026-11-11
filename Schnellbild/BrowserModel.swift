@@ -2715,6 +2715,18 @@ final class BrowserModel: ObservableObject {
     /// given and confirmed; Esc leaves no folder behind.
     @Published var newFolderRequested = false
 
+    /// Tiles are being dragged over this pane where a drop goes into the
+    /// folder it shows (free space, a picture or video tile, the bars):
+    /// the pane is outlined and names that folder.
+    @Published var dropIntoFolderTargeted = false
+
+    /// The folder a drop onto the pane goes into: none while results are
+    /// shown (their folder is not the one searched) or inside an archive.
+    var paneDropFolder: URL? {
+        guard let folder = folderURL, !isFiltering, ArchivePath.split(folder) == nil else { return nil }
+        return folder
+    }
+
     /// "IMG 2.jpg", "IMG 3.jpg" … for a name taken in `folder`.
     nonisolated static func freeName(for name: String, in folder: URL, isFolder: Bool = false, taken: (URL) -> Bool) -> URL {
         // As the Finder: a folder's number goes after its whole name

@@ -259,3 +259,4 @@
 "No folder, archive, picture or video whose name matches “%@”, in this folder or its subfolders." = "このフォルダとサブフォルダに、名前が “%@” に一致するフォルダ、アーカイブ、画像、ビデオはありません。";
 "“%@” is not a valid regular expression." = "“%@” は有効な正規表現ではありません。";
 "Boss key: hidden and silent at once; X X X brings it back" = "ボスキー：すぐに非表示・消音。X X X で元に戻る";
+"Into “%@”" = "“%@” へ";

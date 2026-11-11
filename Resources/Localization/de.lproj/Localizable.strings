@@ -259,3 +259,4 @@
 "No folder, archive, picture or video whose name matches “%@”, in this folder or its subfolders." = "Kein Ordner, Archiv, Bild oder Video, dessen Name zu „%@“ passt, in diesem Ordner oder seinen Unterordnern.";
 "“%@” is not a valid regular expression." = "„%@“ ist kein gültiger regulärer Ausdruck.";
 "Boss key: hidden and silent at once; X X X brings it back" = "Boss-Key: sofort unsichtbar und stumm; X X X holt es zurück";
+"Into “%@”" = "In „%@“";
