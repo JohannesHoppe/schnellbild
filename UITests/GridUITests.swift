@@ -269,9 +269,11 @@ final class GridUITests: SchnellbildUITestCase {
         }
         let full = window.frame.size
         app.typeKey("x", modifierFlags: [])
-        eventually("out of full screen", timeout: 10) { window.frame.size == before }
+        // Hidden once out of full screen: its window is gone from the screen
+        eventually("hidden", timeout: 10) { !self.app.windows.firstMatch.exists }
         for _ in 0..<3 { app.typeKey("x", modifierFlags: []) }
-        eventually("in full screen again", timeout: 15) { window.frame.size == full }
+        eventually("back", timeout: 10) { self.app.windows.firstMatch.exists }
+        eventually("in full screen again", timeout: 15) { self.app.windows.firstMatch.frame.size == full }
         app.typeKey("f", modifierFlags: [])
         eventually("window leaves full screen", timeout: 10) { window.frame.size == before }
     }
