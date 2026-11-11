@@ -343,7 +343,7 @@ Schnellbild → Settings (⌘,) has two things: how long a picture stays in the 
 | Search | names of folders and files, all subfolders | name, tags, comments, date, EXIF |
 | ZIP, RAR and 7z archives as folders (also with passwords) | yes | no |
 | MKV, WebM and other formats macOS can't play | yes (built-in VLC engine) | not listed (MP4, MOV, AVI, MPG, 3GP, MTS, TS …) |
-| Two panes side by side, Norton Commander keys | yes | not listed |
+| Two panes side by side, Norton Commander keys | yes | no |
 | Auto enhance and sliders for photos and videos | yes, as a view: files are never changed | edits with filters and undo; crop in PRO |
 | Compare 2 to 9 pictures side by side | no | yes |
 | Audio files, Finder tags, export, print | no | yes |
