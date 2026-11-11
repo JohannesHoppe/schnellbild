@@ -19,7 +19,6 @@ private struct WindowView: View {
     @MainActor private static var monitorsInstalled = false
     @ObservedObject var model: BrowserModel
     @EnvironmentObject var window: WindowModel
-    @State private var dropZone: DropZone?
     @State private var width: CGFloat = 0
     /// The launch folder is opened once; the view can appear again (full
     /// screen, toolbar shown or hidden) and must not reload it then.
@@ -36,14 +35,15 @@ private struct WindowView: View {
             Color.clear.onAppear { width = geo.size.width }
                 .onChange(of: geo.size.width) { _, new in width = new }
         } }
-        .onDrop(of: [.fileURL], delegate: DropZoneDelegate(zone: $dropZone, width: width) { urls, zone in
+        // (the panes and tiles take such drags too, and pass them on: `FinderDrop`)
+        .onDrop(of: [.fileURL], delegate: DropZoneDelegate(zone: $window.dropZone, width: width) { urls, zone in
             model.openDropped(urls, slideshow: zone == .slideshow)
         })
-        .overlay { if let dropZone, model.slideshow == nil { DropZonesView(highlighted: dropZone) } }
+        .overlay { if let dropZone = window.dropZone, model.slideshow == nil { DropZonesView(highlighted: dropZone) } }
         // Starting a slideshow or opening a folder ends any drag shown;
         // AppKit does not always send "exited" once the window goes full screen.
-        .onChange(of: model.slideshow?.id) { dropZone = nil }
-        .onChange(of: model.folderURL) { dropZone = nil }
+        .onChange(of: model.slideshow?.id) { window.dropZone = nil }
+        .onChange(of: model.folderURL) { window.dropZone = nil }
         .safeAreaInset(edge: .bottom, spacing: 0) {
             // The mini keyboard slides up under everything (K)
             VStack(spacing: 0) {
@@ -119,7 +119,7 @@ private struct WindowView: View {
             // Tiles dropped onto a pane's free space go into its folder (the
             // whole pane takes drops, also where nothing is drawn)
             .contentShape(Rectangle())
-            .onDrop(of: [TileDrag.type], delegate: PaneDrop(pane: pane, window: window))
+            .onDrop(of: [TileDrag.type, .fileURL], delegate: PaneDrop(pane: pane, window: window))
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier(pane === window.left ? "pane.left" : "pane.right")
     }
@@ -1100,12 +1100,22 @@ private struct PaneDrop: DropDelegate {
     /// Not into an archive (only read), as a tile there refuses it too.
     private var target: URL? { pane.paneDropFolder }
     func validateDrop(info: DropInfo) -> Bool {
-        target != nil && info.hasItemsConforming(to: [TileDrag.type])
+        FinderDrop.isFromFinder(info) || (target != nil && info.hasItemsConforming(to: [TileDrag.type]))
     }
-    func dropEntered(info: DropInfo) { pane.dropIntoFolderTargeted = target != nil }
-    func dropExited(info: DropInfo) { pane.dropIntoFolderTargeted = false }
-    func dropUpdated(info: DropInfo) -> DropProposal? { DropProposal(operation: .move) }
+    func dropEntered(info: DropInfo) {
+        if FinderDrop.isFromFinder(info) { FinderDrop.update(window); return }
+        pane.dropIntoFolderTargeted = target != nil
+    }
+    func dropExited(info: DropInfo) {
+        if FinderDrop.isFromFinder(info) { window.dropZone = nil; return }
+        pane.dropIntoFolderTargeted = false
+    }
+    func dropUpdated(info: DropInfo) -> DropProposal? {
+        if FinderDrop.isFromFinder(info) { FinderDrop.update(window); return DropProposal(operation: .copy) }
+        return DropProposal(operation: .move)
+    }
     func performDrop(info: DropInfo) -> Bool {
+        if FinderDrop.isFromFinder(info) { return FinderDrop.perform(info, window) }
         pane.dropIntoFolderTargeted = false
         guard let folder = target else { return false }
         let pane = pane
@@ -1176,6 +1186,41 @@ private struct BookmarksButton: View {
         .help("Bookmarks (⌘D: this folder; ⌃1 … ⌃9: go)")
         .accessibilityIdentifier("bookmarksMenu")
         .accessibilityValue(marked ? "bookmarked" : "")
+    }
+}
+
+/// A folder or file from the Finder, dropped where a pane or a tile takes
+/// drops of the app's own tiles: those views would swallow it, so they pass
+/// it on to the window's zones (Browse / Slideshow), by where the pointer
+/// is in the window.
+@MainActor
+enum FinderDrop {
+    static func isFromFinder(_ info: DropInfo) -> Bool {
+        info.hasItemsConforming(to: [.fileURL]) && !info.hasItemsConforming(to: [TileDrag.type])
+    }
+
+    /// The zone under the pointer in the main window.
+    private static func zone(mouseDown: Bool) -> DropZone? {
+        guard let appWindow = BrowserModel.appWindow, let content = appWindow.contentView else { return nil }
+        return DropZoneDelegate.zone(atX: appWindow.mouseLocationOutsideOfEventStream.x,
+                                     width: content.bounds.width, mouseDown: mouseDown)
+    }
+
+    static func update(_ window: WindowModel) {
+        guard window.active.slideshow == nil else { return }
+        window.dropZone = zone(mouseDown: NSEvent.pressedMouseButtons != 0)
+    }
+
+    static func perform(_ info: DropInfo, _ window: WindowModel) -> Bool {
+        let target = zone(mouseDown: true) ?? .browse
+        window.dropZone = nil
+        DispatchQueue.main.async { window.dropZone = nil }   // once more after AppKit ends the session
+        guard let provider = info.itemProviders(for: [.fileURL]).first else { return false }
+        _ = provider.loadObject(ofClass: URL.self) { url, _ in
+            guard let url else { return }
+            DispatchQueue.main.async { window.active.openDropped([url], slideshow: target == .slideshow) }
+        }
+        return true
     }
 }
 
