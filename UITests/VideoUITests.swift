@@ -47,18 +47,17 @@ final class VideoUITests: SchnellbildUITestCase {
         waitForBadge(containing: "a.mp4")
         app.typeKey(.space, modifierFlags: [])   // paused: the controls stay up
         waitForBadge(containing: "Paused")
-        func playButton() -> XCUIElement {
-            app.buttons.matching(NSPredicate(format: "label ==[c] 'Play' OR identifier ==[c] 'Play'")).firstMatch
-        }
+        // AVKit's play button is a check box "play/pause" inside the player view
+        func playButton() -> XCUIElement { video.checkBoxes["play/pause"].firstMatch }
         video.hover()
         let button = playButton()
         guard button.waitForExistence(timeout: 10) else {
-            XCTFail("no Play button; the player's elements: \(video.debugDescription)")
+            XCTFail("no play/pause button; the player's elements: \(video.debugDescription)")
             return
         }
         let before = button.frame
-        // Grab the bar just above its buttons and drag it up
-        let grab = button.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: -0.35))
+        // Grab the bar left of its buttons (no control there) and drag it up
+        let grab = button.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).withOffset(CGVector(dx: -100, dy: 0))
         grab.press(forDuration: 0.3, thenDragTo: grab.withOffset(CGVector(dx: 0, dy: -150)))
         video.hover()
         let dragged = playButton().frame

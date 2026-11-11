@@ -92,6 +92,7 @@ public class XCUIElement {
     public func descendants(matching type: XCUIElementType) -> XCUIElementQuery { XCUIElementQuery() }
     public var staticTexts: XCUIElementQuery { XCUIElementQuery() }
     public var buttons: XCUIElementQuery { XCUIElementQuery() }
+    public var checkBoxes: XCUIElementQuery { XCUIElementQuery() }
     public var textFields: XCUIElementQuery { XCUIElementQuery() }
     public var searchFields: XCUIElementQuery { XCUIElementQuery() }
     public var secureTextFields: XCUIElementQuery { XCUIElementQuery() }
