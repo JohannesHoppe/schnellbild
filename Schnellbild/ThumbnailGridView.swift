@@ -108,7 +108,8 @@ struct ThumbnailGridView: View {
 }
 
 /// Tile for ".." or a subfolder. Subfolders show up to three thumbnails of
-/// their first media files fanned over the folder icon, like Finder.
+/// their first media files fanned over the folder icon, like Finder. The list
+/// view's rows show it small.
 struct FolderTile: View {
     /// nil for the ".." tile (no previews).
     let folder: URL?
@@ -126,7 +127,7 @@ struct FolderTile: View {
     var body: some View {
         ZStack {
             Image(systemName: systemImage)
-                .font(.system(size: side * (previews.isEmpty ? 0.36 : 0.5)))
+                .font(.system(size: side * (previews.isEmpty ? (small ? 0.6 : 0.36) : (small ? 0.75 : 0.5))))
                 .foregroundStyle(Color.accentColor)
             if !previews.isEmpty { fan }
         }
@@ -140,9 +141,13 @@ struct FolderTile: View {
         .task(id: FolderKey(folder: folder, changes: model.folderChanges)) { await loadPreviews() }
     }
 
+    /// A list row's preview: the thumbnails take more of it, or they would
+    /// be specks
+    private var small: Bool { side < 60 }
+
     /// Thumbnails fanned out over the lower part of the folder body.
     private var fan: some View {
-        let thumb = side * 0.34
+        let thumb = side * (small ? 0.5 : 0.34)
         let angles: [Double] = previews.count == 1 ? [0] : previews.count == 2 ? [-7, 7] : [-10, 0, 10]
         return ZStack {
             ForEach(Array(previews.enumerated()), id: \.offset) { i, image in
@@ -151,7 +156,7 @@ struct FolderTile: View {
                     .aspectRatio(contentMode: .fill)
                     .frame(width: thumb, height: thumb * 0.75)
                     .clipped()
-                    .border(Color.white, width: 2)
+                    .border(Color.white, width: small ? 1 : 2)
                     .shadow(color: .black.opacity(0.3), radius: 2, y: 1)
                     .rotationEffect(.degrees(angles[i]))
                     .offset(x: CGFloat(angles[i]) * side * 0.012)
@@ -306,6 +311,8 @@ struct OtherFilesList: View {
                 }
                 .font(.callout)
                 .foregroundStyle(.secondary)
+                .contentShape(Rectangle())
+                .modifier(OtherFileInteractions(file: file))
                 .accessibilityElement(children: .combine)
                 .accessibilityIdentifier("other.\(file.name)")
             }
@@ -319,6 +326,39 @@ struct OtherFilesList: View {
     static func icon(for file: OtherFile) -> NSImage {
         let type = UTType(filenameExtension: file.url.pathExtension) ?? .data
         return NSWorkspace.shared.icon(for: type)
+    }
+}
+
+/// What an other file's row does: the context menu (rename, reveal, trash)
+/// and dragging onto a folder, the other pane or the Finder. Nothing inside
+/// an archive changes.
+struct OtherFileInteractions: ViewModifier {
+    let file: OtherFile
+    @EnvironmentObject var model: BrowserModel
+
+    func body(content: Content) -> some View {
+        let changeable = !ArchivePath.isInside(file.url)
+        content
+            .onDrag {
+                let provider = NSItemProvider(object: file.url as NSURL)
+                if changeable {
+                    let paths = [file.url.path]
+                    provider.registerDataRepresentation(forTypeIdentifier: TileDrag.type.identifier, visibility: .ownProcess) { done in
+                        done(try? PropertyListEncoder().encode(paths), nil)
+                        return nil
+                    }
+                }
+                return provider
+            }
+            .contextMenu {
+                if changeable {
+                    Button("Rename…") { model.beginRename(file) }
+                }
+                Button("Reveal in Finder") { model.reveal(file) }
+                if changeable {
+                    Button("Move to Trash…") { model.moveToTrash(file) }
+                }
+            }
     }
 }
 

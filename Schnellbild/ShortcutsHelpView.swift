@@ -29,7 +29,6 @@ struct ShortcutsHelpView: View {
             Shortcut(keys: "L", action: "Grid or list (a click on a column sorts by it)"),
             Shortcut(keys: "+ / − · ⌘+ / ⌘−", action: "Larger / smaller thumbnails"),
             Shortcut(keys: "Return", action: "Rename"),
-            Shortcut(keys: "F2 / ⇧F6", action: "Rename the selected folder or file (also in the full view)"),
             Shortcut(keys: "⇧⌘N / F7", action: "New folder: type its name, ↩ creates it, Esc creates none"),
             Shortcut(keys: "F8", action: "Move to Trash"),
             Shortcut(keys: "Esc", action: "Clear search"),

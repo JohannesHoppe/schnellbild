@@ -27,7 +27,6 @@ struct MiniKeyboard: View {
         switch context {
         case .grid:
             return [
-                Key(cap: "⌘[", word: "Back", input: .char("["), command: true),
                 Key(cap: "⌘]", word: "Forward", input: .char("]"), command: true),
                 Key(cap: "⌫", word: "Back", input: .backspace),
                 Key(cap: "←", word: "Previous", input: .left),
@@ -50,7 +49,6 @@ struct MiniKeyboard: View {
                 Key(cap: "F6", word: "Move there", input: .f6),
                 Key(cap: "F7", word: "New folder", input: .f7),
                 Key(cap: "ins", word: "Mark", input: .insert),
-                Key(cap: "⌘[", word: "Back", input: .char("["), command: true),
                 Key(cap: "⌫", word: "Back", input: .backspace),
                 Key(cap: "←", word: "Previous", input: .left),
                 Key(cap: "→", word: "Next", input: .right),
