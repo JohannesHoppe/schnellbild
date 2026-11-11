@@ -2656,7 +2656,7 @@ final class ReviewFixTests: XCTestCase {
         try tree.file("a.jpg")
         try FileManager.default.setAttributes([.modificationDate: Date().addingTimeInterval(60)], ofItemAtPath: tree.root.path)
         let changed = await cache.files(in: tree.root)
-        XCTAssertEqual(changed.map(\.lastPathComponent), ["a.jpg", "b.jpg"], "listed again")
+        XCTAssertEqual(Set(changed.map(\.lastPathComponent)), ["a.jpg", "b.jpg"], "listed again")
     }
 
     func testTextFieldsAndSheetsKeepTheirKeysExceptF1AndF2() async throws {

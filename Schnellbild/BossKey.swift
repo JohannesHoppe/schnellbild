@@ -68,6 +68,8 @@ enum BossKey {
         if let exitWatch { NotificationCenter.default.removeObserver(exitWatch) }
         exitWatch = nil
         NotificationCenter.default.post(name: changed, object: nil)
+        // X X X typed while hidden (the keys still arrive): shown again
+        NSApp.unhide(nil)
         NSApp.activate(ignoringOtherApps: true)
         for window in fullScreenWindows { _ = FullScreenSwitch.shared.set(true, window: window) }
         fullScreenWindows = []

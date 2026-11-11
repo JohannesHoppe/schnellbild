@@ -291,14 +291,16 @@ final class ActionsUITests: SchnellbildUITestCase {
         XCTAssertTrue(right.waitForExistence(timeout: 10), "two panes")
         let divider = element("paneDivider")
         XCTAssertTrue(divider.waitForExistence(timeout: 5))
-        let before = left.frame.width
+        // By the divider's place (on macOS 26 the left pane reports the whole window's width)
+        let before = divider.frame.minX
         print("divider test: left \(left.frame), right \(right.frame), divider \(divider.frame)")
         let start = divider.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
         start.press(forDuration: 0.3, thenDragTo: start.withOffset(CGVector(dx: 150, dy: 0)))
-        eventually("the left pane wider") { left.frame.width - before > 100 }
-        print("divider test, dragged: left \(left.frame), right \(right.frame)")
+        eventually("the divider further right") { divider.frame.minX - before > 100 }
+        eventually("the right pane narrower") { right.frame.minX - divider.frame.maxX < 5 && right.frame.width < 400 }
+        print("divider test, dragged: left \(left.frame), right \(right.frame), divider \(divider.frame)")
         divider.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).doubleClick()
-        eventually("back as at first") { abs(left.frame.width - before) < 20 }
+        eventually("back as at first") { abs(divider.frame.minX - before) < 20 }
     }
 
     /// "Open in Other Pane" from the left pane's grid into the right pane's
