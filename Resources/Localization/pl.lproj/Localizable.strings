@@ -280,9 +280,9 @@
 "Open in Other Pane" = "Otwórz w drugim panelu";
 "Version %@ (%@)" = "Wersja %@ (%@)";
 "Video formats for macOS" = "Formaty wideo dla macOS";
-"MKV through macOS" = "MKV przez macOS";
+"MKV and AVCHD through macOS" = "MKV i AVCHD przez macOS";
 "On" = "Wł.";
 "Off" = "Wył.";
 "Checking…" = "Sprawdzanie…";
 "Open System Settings…" = "Otwórz Ustawienia systemowe…";
-"Turned on (“Schnellbild Video Formats” under Media Extensions), macOS reads MKV videos itself: Finder and Schnellbild show their thumbnails at once and keep them (macOS 26), QuickTime Player plays them. Off, Schnellbild makes them itself." = "Po włączeniu („Schnellbild Video Formats” w Rozszerzeniach multimediów) macOS sam odczytuje wideo MKV: Finder i Schnellbild od razu pokazują ich miniatury i je zachowują (macOS 26), a QuickTime Player je odtwarza. Po wyłączeniu Schnellbild tworzy je sam.";
+"Turned on (“Schnellbild Video Formats” under Media Extensions), macOS makes the thumbnails of MKV videos and AVCHD camcorder clips itself: Finder and Schnellbild show them at once and macOS keeps them (macOS 26). Off, Schnellbild makes them itself." = "Po włączeniu („Schnellbild Video Formats” w Rozszerzeniach multimediów) macOS sam tworzy miniatury wideo MKV i klipów AVCHD z kamer: Finder i Schnellbild od razu je pokazują, a macOS je zachowuje (macOS 26). Po wyłączeniu Schnellbild tworzy je sam.";
