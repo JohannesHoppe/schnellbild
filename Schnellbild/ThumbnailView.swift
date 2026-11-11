@@ -44,6 +44,16 @@ final class ThumbnailCache {
     /// Marks an image that is only the file's icon, not a picture of it.
     static let fileIcon = "file icon"
 
+    /// From memory only, asking no one: what a tile made again (scrolled
+    /// back into view) shows at once. `modified` nil takes any date; the
+    /// tile's own load checks it afterwards. Not for archive entries (their
+    /// date is the archive's, read off the main thread).
+    func cached(for url: URL, side: CGFloat, modified: Date?) -> NSImage? {
+        guard !ArchivePath.isInside(url), let entry = cache.object(forKey: url as NSURL), entry.side >= side,
+              modified == nil || entry.modified == modified else { return nil }
+        return entry.image
+    }
+
     /// Any cached image of the file, whatever size it was made for.
     func image(for url: URL) -> NSImage? {
         cache.object(forKey: url as NSURL)?.image
@@ -154,6 +164,16 @@ struct ThumbnailView: View {
 
     @State private var image: NSImage?
     @State private var failed = false
+
+    init(url: URL, side: CGFloat, isSelected: Bool, isVideo: Bool = false, modified: Date? = nil) {
+        self.url = url
+        self.side = side
+        self.isSelected = isSelected
+        self.isVideo = isVideo
+        self.modified = modified
+        // Scrolled back into view: the picture at once, not a spinner first
+        _image = State(initialValue: ThumbnailCache.shared.cached(for: url, side: side, modified: modified))
+    }
 
     var body: some View {
         content

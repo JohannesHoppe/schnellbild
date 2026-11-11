@@ -140,7 +140,23 @@ struct FolderTile: View {
     }
 
     @EnvironmentObject var model: BrowserModel
-    @State private var previewImages: [NSImage] = []
+    @State private var previewImages: [NSImage]
+
+    init(folder: URL?, side: CGFloat, isSelected: Bool, systemImage: String = "folder.fill",
+         isEmpty: Bool = false, kindLabel: String = "folder", previews: Bool = true) {
+        self.folder = folder
+        self.side = side
+        self.isSelected = isSelected
+        self.systemImage = systemImage
+        self.isEmpty = isEmpty
+        self.kindLabel = kindLabel
+        self.previews = previews
+        // Scrolled back into view: its previews at once from memory, not a
+        // bare folder that fills in again
+        let files = previews ? folder.flatMap(FolderPreviewCache.shared.knownFiles(in:)) ?? [] : []
+        let images = files.compactMap { ThumbnailCache.previews.cached(for: $0, side: side * 0.4, modified: nil) }
+        _previewImages = State(initialValue: images.count == files.count ? images : [])
+    }
 
     var body: some View {
         ZStack {
@@ -184,8 +200,8 @@ struct FolderTile: View {
     }
 
     private func loadPreviews() async {
-        previewImages = []
-        guard previews, let folder else { return }
+        // (what the tile shows stays until the new previews are there: no flicker)
+        guard previews, let folder else { previewImages = []; return }
         let files = await FolderPreviewCache.shared.files(in: folder)
         let thumbSide = side * 0.4
         // Requested together: on a network volume one after another would
@@ -244,6 +260,11 @@ final class FolderPreviewCache {
     /// nobody waits for any more is stopped.
     private var running: [NSString: (task: Task<[URL], Never>, waiters: Int)] = [:]
 
+    /// The files known for the folder, without reading anything.
+    func knownFiles(in folder: URL) -> [URL]? {
+        files.object(forKey: key(folder)) as? [URL]
+    }
+
     func files(in folder: URL) async -> [URL] {
         let key = key(folder)
         if let cached = files.object(forKey: key) as? [URL] { return cached }
@@ -281,6 +302,15 @@ final class FolderPreviewCache {
         let current = generation == started
         if current { hasMedia.setObject(NSNumber(value: found), forKey: key(folder)) }
         return found
+    }
+
+    /// What a search's walk found out (it went through the folder anyway).
+    func learn(_ folder: URL, hasMedia: Bool) {
+        self.hasMedia.setObject(NSNumber(value: hasMedia), forKey: key(folder))
+    }
+
+    func learn(_ folder: URL, files: [URL]) {
+        self.files.setObject(files as NSArray, forKey: key(folder))
     }
 
     func forgetAll() {

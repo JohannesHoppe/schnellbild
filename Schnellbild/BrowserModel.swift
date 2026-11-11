@@ -11,6 +11,17 @@ struct GridEntry: Identifiable, Hashable {
     let kind: Kind
     var modDate: Date? = nil
     var byteSize: Int? = nil
+    /// Worked out once (`GridEntry.isArchive(_:kind:)`): the grid asks on
+    /// every redraw, the counts for every entry of every search batch.
+    let isArchive: Bool
+
+    init(url: URL, kind: Kind, modDate: Date? = nil, byteSize: Int? = nil) {
+        self.url = url
+        self.kind = kind
+        self.modDate = modDate
+        self.byteSize = byteSize
+        isArchive = Self.isArchive(url, kind: kind)
+    }
 
     var id: URL { url }
     var name: String { kind == .parent ? ".." : url.lastPathComponent }
@@ -496,6 +507,90 @@ final class ChangeClock: @unchecked Sendable {
 struct SearchBatch: Sendable {
     var stamp: Int
     var entries: [GridEntry]
+    /// What the walk learnt about the folders it found, for their tiles
+    /// (they needn't walk the same folders again over the network).
+    var facts = FolderFacts.Learnt()
+}
+
+/// Tells a walk on its own thread to stop (the search went away).
+final class WalkStop: @unchecked Sendable {
+    private let lock = NSLock()
+    private var stopped = false
+    var isSet: Bool { lock.withLock { stopped } }
+    func set() { lock.withLock { stopped = true } }
+}
+
+/// What a search's walk learns about the folders it finds: whether they
+/// hold media and their first pictures, as a folder tile would look them up
+/// (`BrowserModel.folderPreviewFiles`): the first three by name at the top,
+/// else the first ones further down.
+struct FolderFacts {
+    struct Learnt: Sendable {
+        /// Known to hold media (as soon as one is met).
+        var withMedia: [URL] = []
+        /// At the end of a whole walk: each found folder's previews…
+        var previews: [URL: [URL]] = [:]
+        /// …and the found folders with no media at any depth.
+        var withoutMedia: [URL] = []
+        var isEmpty: Bool { withMedia.isEmpty && previews.isEmpty && withoutMedia.isEmpty }
+    }
+
+    private struct Folder {
+        let url: URL
+        var top: [URL] = []
+        var below: [URL] = []
+        var hasMedia: Bool { !top.isEmpty || !below.isEmpty }
+    }
+    private var folders: [String: Folder] = [:]
+    private(set) var learnt = Learnt()
+
+    /// A folder found by the search (not an archive).
+    mutating func found(folder url: URL) {
+        folders[url.standardizedFileURL.path] = Folder(url: url)
+    }
+
+    /// A picture or video met anywhere in the walk.
+    mutating func met(media url: URL) {
+        guard !folders.isEmpty else { return }
+        let parent = url.deletingLastPathComponent().standardizedFileURL.path
+        var path = parent
+        while true {
+            if var folder = folders[path] {
+                let had = folder.hasMedia
+                if path == parent {
+                    // The first three by name
+                    folder.top.append(url)
+                    folder.top.sort { $0.lastPathComponent.localizedStandardCompare($1.lastPathComponent) == .orderedAscending }
+                    if folder.top.count > 3 { folder.top.removeLast() }
+                } else if folder.below.count < 3 {
+                    folder.below.append(url)
+                }
+                folders[path] = folder
+                if !had { learnt.withMedia.append(folder.url) }
+            }
+            guard path != "/", !path.isEmpty else { break }
+            path = (path as NSString).deletingLastPathComponent
+        }
+    }
+
+    /// Hands on what was learnt since the last call.
+    mutating func take() -> Learnt {
+        defer { learnt = Learnt() }
+        return learnt
+    }
+
+    /// The walk went through everything: the previews and the empty folders are known.
+    mutating func finish() -> Learnt {
+        var result = take()
+        for folder in folders.values {
+            if folder.hasMedia {
+                result.previews[folder.url] = folder.top.isEmpty ? folder.below : folder.top
+            } else {
+                result.withoutMedia.append(folder.url)
+            }
+        }
+        return result
+    }
 }
 
 /// One search: what it has found so far and the tree walk adding to it.
@@ -1398,18 +1493,30 @@ final class BrowserModel: ObservableObject {
             guard let media = try? await ArchiveStore.shared.media(below: folder) else { return nil }
             return !media.isEmpty
         }
-        let walk = Task.detached(priority: .utility) { anyMedia(below: folder) }
-        return await withTaskCancellationHandler { await walk.value } onCancel: { walk.cancel() }
+        return await FolderProbes.run { cancelled in anyMedia(below: folder, cancelled: cancelled) }
+    }
+
+    /// How far a folder tile looks into a folder (its previews, whether it
+    /// holds media) before it gives up: on a network share each item is a
+    /// round trip.
+    nonisolated static func probeLimit(for folder: URL) -> Int {
+        let local = (try? folder.resourceValues(forKeys: [.volumeIsLocalKey]))?.volumeIsLocal ?? true
+        return local ? 20_000 : 2_000
     }
 
     /// The walk itself, synchronous (a directory enumerator isn't for async
-    /// code); nil when its task is cancelled.
-    nonisolated private static func anyMedia(below folder: URL) -> Bool? {
+    /// code); nil when cancelled or when it gave up (not known: the folder
+    /// isn't greyed out).
+    nonisolated private static func anyMedia(below folder: URL, cancelled: () -> Bool) -> Bool? {
         guard let walk = FileManager.default.enumerator(
             at: folder, includingPropertiesForKeys: [.isRegularFileKey, .isSymbolicLinkKey, .isAliasFileKey],
             options: [.skipsHiddenFiles, .skipsPackageDescendants]) else { return false }
+        let limit = probeLimit(for: folder)
+        var looked = 0
         while true {
-            if Task.isCancelled { return nil }
+            if cancelled() { return nil }
+            looked += 1
+            if looked > limit { return nil }
             // A pool per item: a big tree would pile up autoreleased objects
             let found: Bool? = autoreleasepool {
                 guard let url = walk.nextObject() as? URL else { return false }
@@ -1460,7 +1567,7 @@ final class BrowserModel: ObservableObject {
             let media = (try? await ArchiveStore.shared.media(below: folder)) ?? []
             return Array(media.filter { mediaKind(of: $0) == .image }.prefix(limit))
         }
-        let walk = Task.detached(priority: .utility) { () -> [URL] in
+        return await FolderProbes.run { cancelled -> [URL]? in
             let contents = (try? FileManager.default.contentsOfDirectory(
                 at: folder,
                 includingPropertiesForKeys: [.isRegularFileKey, .isSymbolicLinkKey, .contentModificationDateKey],
@@ -1484,7 +1591,8 @@ final class BrowserModel: ObservableObject {
                 at: folder, includingPropertiesForKeys: [.isRegularFileKey, .isSymbolicLinkKey, .contentModificationDateKey],
                 options: [.skipsHiddenFiles, .skipsPackageDescendants]) else { return [] }
             var looked = 0
-            while looked <= 20_000, !Task.isCancelled, first.count < limit {   // a huge tree: give up, not hang
+            let most = probeLimit(for: folder)
+            while looked <= most, !cancelled(), first.count < limit {   // a huge tree: give up, not hang
                 looked += 1
                 let more: Bool = autoreleasepool {
                     guard let url = walk.nextObject() as? URL else { return false }
@@ -1494,8 +1602,7 @@ final class BrowserModel: ObservableObject {
                 if !more { break }
             }
             return first
-        }
-        return await withTaskCancellationHandler { await walk.value } onCancel: { walk.cancel() }
+        } ?? []
     }
 
     /// Sorted: ".." on top, then folders, then media — each group by key.
@@ -1860,6 +1967,7 @@ final class BrowserModel: ObservableObject {
     }
 
     private func add(_ batch: SearchBatch, to run: SearchRun) {
+        if !batch.facts.isEmpty { learn(batch.facts) }
         let fresh = run.add(batch)
         guard !fresh.isEmpty, run === search else { return }
         showResults(adding: fresh)
@@ -1912,7 +2020,11 @@ final class BrowserModel: ObservableObject {
             }
         }
         return AsyncStream { continuation in
-            let walker = Task.detached(priority: .userInitiated) {
+            // On a thread of its own, not one of Swift's (as many as the Mac
+            // has cores): the walk waits on the disk the whole search long
+            let stop = WalkStop()
+            continuation.onTermination = { _ in stop.set() }
+            DispatchQueue.global(qos: .userInitiated).async {
                 let keys = entryKeys
                 guard let enumerator = FileManager.default.enumerator(
                     at: root,
@@ -1921,8 +2033,10 @@ final class BrowserModel: ObservableObject {
                 ) else { continuation.finish(); return }
 
                 var batch = SearchBatch(stamp: clock?.now ?? 0, entries: [])
+                var facts = FolderFacts()
                 var lastFlush = ContinuousClock.now
-                while !Task.isCancelled {
+                var whole = false
+                while !stop.isSet {
                     // A pool per item: a walk over a million files would
                     // otherwise hold every autoreleased object until it ends
                     let more: Bool = autoreleasepool {
@@ -1935,20 +2049,43 @@ final class BrowserModel: ObservableObject {
                         if matcher.matches(url.lastPathComponent),
                            let match = entry(for: url, keys: keys) {
                             batch.entries.append(match)
+                            if match.kind == .folder, !match.isArchive { facts.found(folder: match.url) }
+                        }
+                        // (read along with the listing: no extra trip) A file,
+                        // not a folder named like one, not a Finder alias
+                        if mediaKind(of: url) != nil, let values = try? url.resourceValues(forKeys: keys),
+                           values.isDirectory != true, values.isAliasFile != true || values.isSymbolicLink == true {
+                            facts.met(media: url)
                         }
                         return true
                     }
-                    guard more else { break }
-                    if !batch.entries.isEmpty, batch.entries.count >= 64 || ContinuousClock.now - lastFlush > .milliseconds(200) {
+                    guard more else { whole = true; break }
+                    if !batch.entries.isEmpty || !facts.learnt.isEmpty,
+                       batch.entries.count >= 64 || ContinuousClock.now - lastFlush > .milliseconds(200) {
+                        batch.facts = facts.take()
                         continuation.yield(batch)
                         batch = SearchBatch(stamp: clock?.now ?? 0, entries: [])
                         lastFlush = .now
                     }
                 }
-                if !batch.entries.isEmpty { continuation.yield(batch) }
+                // Only a walk that went through knows which folders hold nothing
+                batch.facts = whole ? facts.finish() : facts.take()
+                if !batch.entries.isEmpty || !batch.facts.isEmpty { continuation.yield(batch) }
                 continuation.finish()
             }
-            continuation.onTermination = { _ in walker.cancel() }
+        }
+    }
+
+    /// What a search's walk learnt about the folders it found: their tiles
+    /// take it from the cache instead of walking them again.
+    private func learn(_ facts: FolderFacts.Learnt) {
+        let cache = FolderPreviewCache.shared
+        for folder in facts.withMedia { cache.learn(folder, hasMedia: true) }
+        for (folder, files) in facts.previews { cache.learn(folder, files: files) }
+        for folder in facts.withoutMedia {
+            cache.learn(folder, hasMedia: false)
+            cache.learn(folder, files: [])
+            noteFolder(folder, empty: true)
         }
     }
 
