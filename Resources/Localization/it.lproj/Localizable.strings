@@ -258,3 +258,4 @@
 "Search mode" = "Modalità di ricerca";
 "No folder, archive, picture or video whose name matches “%@”, in this folder or its subfolders." = "Nessuna cartella, archivio, immagine o video il cui nome corrisponde a «%@», in questa cartella o nelle sue sottocartelle.";
 "“%@” is not a valid regular expression." = "«%@» non è un'espressione regolare valida.";
+"Boss key: hidden and silent at once; X X X brings it back" = "Tasto capo: subito nascosto e muto; X X X lo riporta";

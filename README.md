@@ -58,6 +58,7 @@ Open a folder with ⌘O or drag it onto the window; drag a single file to open i
 | L | grid or list (a click on a column header sorts by it) |
 | D / ⌃O | dual pane on / off |
 | K | mini keyboard on / off |
+| X | boss key: every window turns invisible and every video silent at once; only X X X brings them back (the Dock icon shows nothing meanwhile) |
 | ⌘A / Esc | mark all / unmark (Esc unmarks first, then clears the search) |
 | Esc | clear the search |
 

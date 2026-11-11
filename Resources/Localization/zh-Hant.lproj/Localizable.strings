@@ -258,3 +258,4 @@
 "Search mode" = "搜尋模式";
 "No folder, archive, picture or video whose name matches “%@”, in this folder or its subfolders." = "此檔案夾及其子檔案夾中沒有名稱符合「%@」的檔案夾、封存檔、影像或影片。";
 "“%@” is not a valid regular expression." = "「%@」不是有效的正規表示式。";
+"Boss key: hidden and silent at once; X X X brings it back" = "老闆鍵：立即隱藏並靜音；X X X 恢復";
