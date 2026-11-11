@@ -260,3 +260,12 @@
 "“%@” is not a valid regular expression." = "“%@” は有効な正規表現ではありません。";
 "Boss key: hidden and silent at once; X X X brings it back" = "ボスキー：すぐに非表示・消音。X X X で元に戻る";
 "Into “%@”" = "“%@” へ";
+"Bookmarks" = "ブックマーク";
+"Bookmark This Folder" = "このフォルダをブックマーク";
+"Remove Bookmark for This Folder" = "このフォルダのブックマークを削除";
+"Remove Bookmark" = "ブックマークを削除";
+"Add Bookmark" = "ブックマークを追加";
+"Bookmarks (⌘D: this folder; ⌃1 … ⌃9: go)" = "ブックマーク（⌘D：このフォルダ、⌃1 … ⌃9：開く）";
+"bookmarked" = "ブックマーク済み";
+"Bookmark the folder shown, or remove its bookmark" = "表示中のフォルダをブックマーク、またはブックマークを削除";
+"Open bookmark 1 … 9" = "ブックマーク 1 … 9 を開く";

@@ -260,3 +260,12 @@
 "“%@” is not a valid regular expression." = "„%@” nie jest prawidłowym wyrażeniem regularnym.";
 "Boss key: hidden and silent at once; X X X brings it back" = "Klawisz szefa: od razu ukryte i wyciszone; X X X przywraca";
 "Into “%@”" = "Do „%@”";
+"Bookmarks" = "Zakładki";
+"Bookmark This Folder" = "Dodaj zakładkę do tego folderu";
+"Remove Bookmark for This Folder" = "Usuń zakładkę tego folderu";
+"Remove Bookmark" = "Usuń zakładkę";
+"Add Bookmark" = "Dodaj zakładkę";
+"Bookmarks (⌘D: this folder; ⌃1 … ⌃9: go)" = "Zakładki (⌘D: ten folder; ⌃1 … ⌃9: otwórz)";
+"bookmarked" = "z zakładką";
+"Bookmark the folder shown, or remove its bookmark" = "Dodaj lub usuń zakładkę pokazanego folderu";
+"Open bookmark 1 … 9" = "Otwórz zakładkę 1 … 9";

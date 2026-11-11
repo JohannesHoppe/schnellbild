@@ -260,3 +260,12 @@
 "“%@” is not a valid regular expression." = "‘%@’ is geen geldige reguliere expressie.";
 "Boss key: hidden and silent at once; X X X brings it back" = "Baastoets: meteen verborgen en stil; X X X haalt het terug";
 "Into “%@”" = "Naar ‘%@’";
+"Bookmarks" = "Bladwijzers";
+"Bookmark This Folder" = "Bladwijzer voor deze map";
+"Remove Bookmark for This Folder" = "Bladwijzer voor deze map verwijderen";
+"Remove Bookmark" = "Bladwijzer verwijderen";
+"Add Bookmark" = "Bladwijzer toevoegen";
+"Bookmarks (⌘D: this folder; ⌃1 … ⌃9: go)" = "Bladwijzers (⌘D: deze map; ⌃1 … ⌃9: openen)";
+"bookmarked" = "met bladwijzer";
+"Bookmark the folder shown, or remove its bookmark" = "Bladwijzer voor de getoonde map toevoegen of verwijderen";
+"Open bookmark 1 … 9" = "Bladwijzer 1 … 9 openen";

@@ -260,3 +260,12 @@
 "“%@” is not a valid regular expression." = "„%@“ není platný regulární výraz.";
 "Boss key: hidden and silent at once; X X X brings it back" = "Šéfovo tlačítko: hned skryté a ztlumené; X X X vše vrátí";
 "Into “%@”" = "Do „%@“";
+"Bookmarks" = "Záložky";
+"Bookmark This Folder" = "Přidat záložku pro tuto složku";
+"Remove Bookmark for This Folder" = "Odstranit záložku této složky";
+"Remove Bookmark" = "Odstranit záložku";
+"Add Bookmark" = "Přidat záložku";
+"Bookmarks (⌘D: this folder; ⌃1 … ⌃9: go)" = "Záložky (⌘D: tato složka; ⌃1 … ⌃9: otevřít)";
+"bookmarked" = "se záložkou";
+"Bookmark the folder shown, or remove its bookmark" = "Přidat nebo odstranit záložku zobrazené složky";
+"Open bookmark 1 … 9" = "Otevřít záložku 1 … 9";

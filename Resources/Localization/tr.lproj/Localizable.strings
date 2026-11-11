@@ -260,3 +260,12 @@
 "“%@” is not a valid regular expression." = "“%@” geçerli bir normal ifade değil.";
 "Boss key: hidden and silent at once; X X X brings it back" = "Patron tuşu: anında gizli ve sessiz; X X X geri getirir";
 "Into “%@”" = "“%@” içine";
+"Bookmarks" = "Yer İşaretleri";
+"Bookmark This Folder" = "Bu klasöre yer işareti koy";
+"Remove Bookmark for This Folder" = "Bu klasörün yer işaretini kaldır";
+"Remove Bookmark" = "Yer işaretini kaldır";
+"Add Bookmark" = "Yer işareti ekle";
+"Bookmarks (⌘D: this folder; ⌃1 … ⌃9: go)" = "Yer işaretleri (⌘D: bu klasör; ⌃1 … ⌃9: aç)";
+"bookmarked" = "yer işaretli";
+"Bookmark the folder shown, or remove its bookmark" = "Gösterilen klasöre yer işareti koy ya da kaldır";
+"Open bookmark 1 … 9" = "Yer işareti 1 … 9’u aç";

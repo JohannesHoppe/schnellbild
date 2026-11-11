@@ -3111,6 +3111,7 @@ final class BrowserModel: ObservableObject {
     /// Several at once (a marked set trashed) are applied in one go.
     private func apply(_ changes: [FileChange]) {
         guard !changes.isEmpty else { return }
+        Bookmarks.shared.follow(changes)
         applyHere(changes)
         onFileChange?(changes)
     }

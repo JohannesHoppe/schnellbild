@@ -162,6 +162,8 @@ private struct WindowView: View {
             // The folder's name, where the window's title stands; a click
             // makes it editable to rename the folder
             FolderNameField(model: model)
+
+            BookmarksButton(model: model)
         }
         ToolbarItem(placement: .primaryAction) {
             // Two panes side by side, as in the file commanders (D, ⌃O)
@@ -1156,6 +1158,24 @@ private struct PaneDropHint: View {
             }
             .allowsHitTesting(false)
         }
+    }
+}
+
+/// The star in the toolbar: the bookmarks (filled when the folder shown is one).
+private struct BookmarksButton: View {
+    @ObservedObject var model: BrowserModel
+    @ObservedObject var bookmarks = Bookmarks.shared
+
+    var body: some View {
+        let marked = model.folderURL.map(bookmarks.contains) ?? false
+        Menu {
+            BookmarkItems(model: model, shortcuts: false)
+        } label: {
+            Label("Bookmarks", systemImage: marked ? "star.fill" : "star")
+        }
+        .help("Bookmarks (⌘D: this folder; ⌃1 … ⌃9: go)")
+        .accessibilityIdentifier("bookmarksMenu")
+        .accessibilityValue(marked ? "bookmarked" : "")
     }
 }
 

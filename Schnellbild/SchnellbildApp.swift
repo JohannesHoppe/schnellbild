@@ -59,6 +59,10 @@ struct SchnellbildApp: App {
                     .keyboardShortcut("f", modifiers: .command)
                     .disabled(window.anySheetOpen || model.slideshow != nil)
             }
+            CommandMenu("Bookmarks") {
+                BookmarkItems(model: model, shortcuts: true)
+                    .disabled(window.anySheetOpen || model.slideshow != nil)
+            }
             CommandMenu("Actions") {
                 // Not during a slideshow: the selection is in the hidden grid,
                 // not what's on screen.
