@@ -2958,3 +2958,41 @@ final class UndoTests: XCTestCase {
         XCTAssertEqual(m.undoHistory.undoSteps.count, 1, "still there to try again")
     }
 }
+
+/// Other files open only when they hold no program; a web location only
+/// to a web address.
+final class OpenOtherFileTests: XCTestCase {
+    func testOnlyDocumentsAndWebAddressesOpen() throws {
+        let tree = try TempTree(self)
+        func webloc(_ name: String, _ address: String) throws -> URL {
+            let url = tree.root.appendingPathComponent(name)
+            let data = try PropertyListSerialization.data(fromPropertyList: ["URL": address], format: .xml, options: 0)
+            try data.write(to: url)
+            return url
+        }
+        func text(_ name: String, _ content: String) throws -> URL {
+            let url = tree.root.appendingPathComponent(name)
+            try content.write(to: url, atomically: true, encoding: .utf8)
+            return url
+        }
+        XCTAssertEqual(LiveFiles.webAddress(in: try webloc("site.webloc", "https://example.com/a"))?.absoluteString, "https://example.com/a")
+        XCTAssertNil(LiveFiles.webAddress(in: try webloc("app.webloc", "file:///System/Applications/Calculator.app")))
+        XCTAssertNil(LiveFiles.webAddress(in: try webloc("scheme.webloc", "x-apple.systempreferences:com.apple.preference.security")))
+        XCTAssertEqual(LiveFiles.webAddress(in: try text("site.url", "[InternetShortcut]\r\nURL=http://example.org/\r\n"))?.host, "example.org")
+        XCTAssertNil(LiveFiles.webAddress(in: try text("bad.url", "[InternetShortcut]\nURL=smb://server/share\n")))
+        XCTAssertFalse(LiveFiles.canOpenOtherFile(try webloc("app2.webloc", "file:///Applications/")))
+
+        XCTAssertTrue(LiveFiles.canOpenOtherFile(try text("notes.txt", "hello")))
+        XCTAssertTrue(LiveFiles.canOpenOtherFile(try text("data.csv", "a,b")))
+        for name in ["run.command", "run.sh", "tool.scpt", "setup.pkg", "disk.dmg", "x.terminal"] {
+            XCTAssertFalse(LiveFiles.canOpenOtherFile(try text(name, "#!/bin/sh\necho hi\n")), name)
+        }
+        let app = try tree.folder("Fake.app/Contents/MacOS")
+        XCTAssertFalse(LiveFiles.canOpenOtherFile(app.deletingLastPathComponent().deletingLastPathComponent()))
+        // A link named like a document, pointing to a script
+        let script = try text("evil.command", "#!/bin/sh\n")
+        let link = tree.root.appendingPathComponent("readme.txt")
+        try FileManager.default.createSymbolicLink(at: link, withDestinationURL: script)
+        XCTAssertFalse(LiveFiles.canOpenOtherFile(link))
+    }
+}

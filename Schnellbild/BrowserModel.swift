@@ -73,6 +73,9 @@ extension PlaybackControl {
 struct FileActions {
     var reveal: @MainActor (URL) -> Void
     var openInDefaultApp: @MainActor (URL) -> Void
+    /// An other file (not a picture, video or archive): only documents
+    /// that hold no program, web locations only to web addresses.
+    var openOtherFile: @MainActor (URL) -> Void = { if !LiveFiles.openOtherFile($0) { NSSound.beep() } }
     /// `detail` says what goes with it (a folder's contents, an archive's parts).
     var confirmTrash: @MainActor (_ name: String, _ detail: String) -> Bool
     /// Returns where the item now lies in the Trash (for Undo), if known.
@@ -184,6 +187,90 @@ enum LiveFiles {
         if values.isDirectory == true { return type.conforms(to: .folder) ? target : nil }
         let allowed: [UTType] = [.image, .movie, .audiovisualContent, .pdf, .archive]
         return allowed.contains(where: type.conforms(to:)) && !type.conforms(to: .executable) ? target : nil
+    }
+
+    /// One of the other files (not a picture, video or archive), with the
+    /// app the Mac uses for it. Only kinds that hold no program: text,
+    /// documents, PDFs, sound, spreadsheets and the like; never apps,
+    /// packages, scripts, installers, disk images or anything executable.
+    /// A web location (.webloc, .url) opens its address in the browser,
+    /// and only when it is a web address (http, https): a "link" to a
+    /// file or another app's scheme is refused.
+    @MainActor
+    static func openOtherFile(_ url: URL) -> Bool {
+        if let web = webAddress(in: url) {
+            NSWorkspace.shared.open(web)
+            return true
+        }
+        guard let target = openableDocument(url),
+              let app = NSWorkspace.shared.urlForApplication(toOpen: target) else { return false }
+        NSWorkspace.shared.open([target], withApplicationAt: app, configuration: NSWorkspace.OpenConfiguration())
+        return true
+    }
+
+    /// Whether `openOtherFile` would open it (the context menu's "Open").
+    static func canOpenOtherFile(_ url: URL) -> Bool {
+        isWebLocation(url) ? webAddress(in: url) != nil : openableDocument(url) != nil
+    }
+
+    private static let refusedExtensions: Set<String> = [
+        "app", "command", "tool", "terminal", "sh", "zsh", "bash", "csh", "ksh", "py", "pl", "rb", "php",
+        "scpt", "scptd", "applescript", "workflow", "action", "shortcut", "pkg", "mpkg", "dmg", "iso",
+        "jar", "class", "fileloc", "inetloc", "afploc", "ftploc", "mailloc", "newsloc", "configprofile",
+        "mobileconfig", "prefpane", "kext", "plugin", "osax", "bundle", "framework", "dylib", "so",
+        "exe", "msi", "bat", "cmd", "com", "ps1", "vbs", "js", "jse", "wsf", "lnk", "url", "webloc"]
+
+    private static func isWebLocation(_ url: URL) -> Bool {
+        ["webloc", "url"].contains(url.pathExtension.lowercased())
+    }
+
+    /// The http(s) address a .webloc (a property list) or .url (Windows'
+    /// INI form) holds; nil for anything else.
+    static func webAddress(in url: URL) -> URL? {
+        guard isWebLocation(url),
+              let values = try? url.resourceValues(forKeys: [.fileSizeKey, .isRegularFileKey]),
+              values.isRegularFile == true, (values.fileSize ?? .max) < 64 * 1024,
+              let data = try? Data(contentsOf: url) else { return nil }
+        var address: String?
+        if url.pathExtension.lowercased() == "webloc" {
+            let plist = try? PropertyListSerialization.propertyList(from: data, format: nil) as? [String: Any]
+            address = plist?["URL"] as? String
+        } else if let text = String(data: data, encoding: .utf8) ?? String(data: data, encoding: .isoLatin1) {
+            address = text.split(whereSeparator: \.isNewline)
+                .first { $0.trimmingCharacters(in: .whitespaces).lowercased().hasPrefix("url=") }
+                .map { String($0.trimmingCharacters(in: .whitespaces).dropFirst(4)) }
+        }
+        guard let address, let web = URL(string: address.trimmingCharacters(in: .whitespacesAndNewlines)),
+              let scheme = web.scheme?.lowercased(), scheme == "http" || scheme == "https", web.host != nil else { return nil }
+        return web
+    }
+
+    /// The file behind links and aliases when it is a document that holds
+    /// no program; nil otherwise.
+    static func openableDocument(_ url: URL) -> URL? {
+        var target = url.resolvingSymlinksInPath()
+        if (try? target.resourceValues(forKeys: [.isAliasFileKey]))?.isAliasFile == true {
+            guard let resolved = try? URL(resolvingAliasFileAt: target) else { return nil }
+            target = resolved.resolvingSymlinksInPath()
+        }
+        guard let values = try? target.resourceValues(forKeys: [.contentTypeKey, .isPackageKey, .isDirectoryKey, .isRegularFileKey]),
+              values.isRegularFile == true, values.isPackage != true, values.isDirectory != true,
+              let type = values.contentType else { return nil }
+        let refused: [UTType] = [.executable, .application, .applicationBundle, .script, .shellScript,
+                                 .package, .bundle, .diskImage, .systemPreferencesPane,
+                                 UTType("com.apple.installer-package-archive"), UTType("com.apple.terminal.shell-script"),
+                                 UTType("com.apple.automator-workflow"), UTType("com.apple.applescript.script"),
+                                 UTType("com.apple.applescript.text"), UTType("com.apple.configprofile"),
+                                 UTType("com.apple.internet-location"), UTType("com.apple.web-internet-location")].compactMap { $0 }
+        if refused.contains(where: type.conforms(to:)) { return nil }
+        // By name too: kinds that run or open something when opened, also
+        // where the Mac files them under a harmless type (Terminal settings
+        // are XML and can hold a command)
+        if refusedExtensions.contains(target.pathExtension.lowercased())
+            || refusedExtensions.contains(url.pathExtension.lowercased()) { return nil }
+        let allowed: [UTType] = [.text, .pdf, .image, .audiovisualContent, .audio, .compositeContent,
+                                 .spreadsheet, .presentation, .rtf, .rtfd, .font, .vCard]
+        return allowed.contains(where: type.conforms(to:)) ? target : nil
     }
 
     static func move(_ from: URL, _ to: URL) throws {
@@ -2463,6 +2550,13 @@ final class BrowserModel: ObservableObject {
     /// not inside an archive (archives are only read).
     func canChange(_ file: OtherFile) -> Bool {
         slideshow == nil && !ArchivePath.isInside(file.url)
+    }
+
+    /// Opens an other file with its app, when it is a document (see
+    /// `LiveFiles.openOtherFile`); otherwise a beep.
+    func open(_ file: OtherFile) {
+        guard !ArchivePath.isInside(file.url) else { NSSound.beep(); return }   // no file other apps can open
+        fileActions.openOtherFile(file.url)
     }
 
     func reveal(_ file: OtherFile) {
