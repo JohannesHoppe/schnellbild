@@ -333,15 +333,15 @@ Schnellbild → Settings (⌘,) has two things: how long a picture stays in the 
 
 ## A free Phiewer alternative
 
-[Phiewer](https://phiewer.com/) is a good image viewer for the Mac and was the model for Schnellbild's keyboard-first browsing. If you are looking for a free, open-source alternative to Phiewer, this is how the two compare. Phiewer's side is what [phiewer.com](https://phiewer.com/) lists (as of November 2026); "not listed" means the site doesn't mention it.
+[Phiewer](https://phiewer.com/) is a good image viewer for the Mac and was the model for Schnellbild's keyboard-first browsing. If you are looking for a free, open-source alternative to Phiewer, this is how the two compare. Phiewer's side is what [phiewer.com](https://phiewer.com/) lists (as of November 2026) and what we found using it; "not listed" means the site doesn't mention it.
 
 | | Schnellbild | Phiewer |
 |---|---|---|
 | Price | free, open source (MIT), no pro version | lite free; PRO a one-time purchase |
-| macOS | 14 and later | 15 and later |
+| macOS | 15 and later | 15 and later |
 | Grid, full view, slideshow through subfolders | yes | yes |
 | Search | names of folders and files, all subfolders | name, tags, comments, date, EXIF |
-| ZIP, RAR and 7z archives as folders (also with passwords) | yes | not listed |
+| ZIP, RAR and 7z archives as folders (also with passwords) | yes | no |
 | MKV, WebM and other formats macOS can't play | yes (built-in VLC engine) | not listed (MP4, MOV, AVI, MPG, 3GP, MTS, TS …) |
 | Two panes side by side, Norton Commander keys | yes | not listed |
 | Auto enhance and sliders for photos and videos | yes, as a view: files are never changed | edits with filters and undo; crop in PRO |
