@@ -61,7 +61,12 @@ final class FileActionsSpy {
             trash: { url in
                 if let error = self.trashError { throw error }
                 self.trashed.append(url)
-                try FileManager.default.removeItem(at: url)
+                // A trash of its own, so Undo can bring it back
+                let bin = FileManager.default.temporaryDirectory.appendingPathComponent("spy-trash-\(UUID().uuidString)")
+                try FileManager.default.createDirectory(at: bin, withIntermediateDirectories: true)
+                let inTrash = bin.appendingPathComponent(url.lastPathComponent)
+                try FileManager.default.moveItem(at: url, to: inTrash)
+                return inTrash
             },
             move: { from, to in
                 if let error = self.moveError { throw error }
@@ -2879,5 +2884,77 @@ final class BookmarkTests: XCTestCase {
         XCTAssertTrue(bookmarks.contains(renamed))
         XCTAssertFalse(bookmarks.contains(a))
         XCTAssertTrue(Bookmarks(defaults: defaults).contains(renamed), "saved")
+    }
+}
+
+
+/// Undo and redo of renames, trashing and moves, as often as wanted.
+@MainActor
+final class UndoTests: XCTestCase {
+    func testRenameTrashAndMoveAreUndoneAndRedone() async throws {
+        let tree = try TempTree(self)
+        try tree.file("a.jpg")
+        try tree.file("b.jpg")
+        let sorted = try tree.folder("Sorted")
+        let spy = FileActionsSpy()
+        let m = makeModel(spy)
+        await openAndWait(m, tree.root)
+        func exists(_ path: String) -> Bool { FileManager.default.fileExists(atPath: tree.root.appendingPathComponent(path).path) }
+
+        m.selectEntry(named: "a.jpg")
+        XCTAssertTrue(m.beginRename())
+        try await m.rename(try XCTUnwrap(m.renameTarget), to: "c.jpg")
+        m.selectEntry(named: "b.jpg")
+        m.moveSelectionToTrash()
+        XCTAssertFalse(exists("b.jpg"))
+        m.move([tree.root.appendingPathComponent("c.jpg")], into: sorted)
+        await waitUntil { m.transfersRunning == 0 }
+        XCTAssertTrue(exists("Sorted/c.jpg"))
+        XCTAssertEqual(m.undoHistory.undoSteps.map(\.kind), [.rename, .trash, .move])
+
+        m.undo()   // the move
+        await waitUntil { exists("c.jpg") }
+        XCTAssertFalse(exists("Sorted/c.jpg"))
+        m.undo()   // the trash
+        await waitUntil { exists("b.jpg") && m.names.contains("b.jpg") }
+        m.undo()   // the rename
+        await waitUntil { exists("a.jpg") && m.names.contains("a.jpg") }
+        XCTAssertFalse(exists("c.jpg"))
+        XCTAssertTrue(m.undoHistory.undoSteps.isEmpty)
+        XCTAssertEqual(m.undoHistory.redoSteps.map(\.kind), [.move, .trash, .rename])
+
+        m.redo()   // the rename
+        await waitUntil { exists("c.jpg") && m.names.contains("c.jpg") }
+        m.redo()   // the trash
+        await waitUntil { !exists("b.jpg") && !m.names.contains("b.jpg") }
+        m.redo()   // the move
+        await waitUntil { exists("Sorted/c.jpg") }
+        XCTAssertEqual(m.names, ["..", "Sorted"])
+        XCTAssertTrue(m.undoHistory.redoSteps.isEmpty)
+
+        m.undo()
+        await waitUntil { exists("c.jpg") }
+        // Something new: what was undone can't be redone any more
+        m.selectEntry(named: "c.jpg")
+        XCTAssertTrue(m.beginRename())
+        try await m.rename(try XCTUnwrap(m.renameTarget), to: "d.jpg")
+        XCTAssertTrue(m.undoHistory.redoSteps.isEmpty)
+    }
+
+    /// The name was taken meanwhile: nothing is overwritten, it is reported.
+    func testUndoNeverOverwrites() async throws {
+        let tree = try TempTree(self)
+        try tree.file("a.jpg")
+        let spy = FileActionsSpy()
+        let m = makeModel(spy)
+        await openAndWait(m, tree.root)
+        m.selectEntry(named: "a.jpg")
+        XCTAssertTrue(m.beginRename())
+        try await m.rename(try XCTUnwrap(m.renameTarget), to: "b.jpg")
+        try tree.file("a.jpg")   // someone else took the old name
+        m.undo()
+        await waitUntil { !spy.reported.isEmpty }
+        XCTAssertTrue(FileManager.default.fileExists(atPath: tree.root.appendingPathComponent("b.jpg").path))
+        XCTAssertEqual(m.undoHistory.undoSteps.count, 1, "still there to try again")
     }
 }

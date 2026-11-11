@@ -269,3 +269,11 @@
 "bookmarked" = "kirjanmerkitty";
 "Bookmark the folder shown, or remove its bookmark" = "Lisää näytetylle kansiolle kirjanmerkki tai poista se";
 "Open bookmark 1 … 9" = "Avaa kirjanmerkki 1 … 9";
+"Undo Rename" = "Kumoa nimeäminen";
+"Undo Move to Trash" = "Kumoa siirto roskakoriin";
+"Undo Move" = "Kumoa siirto";
+"Undo Copy" = "Kumoa kopiointi";
+"Redo Rename" = "Tee nimeäminen uudelleen";
+"Redo Move to Trash" = "Tee siirto roskakoriin uudelleen";
+"Redo Move" = "Tee siirto uudelleen";
+"Redo Copy" = "Tee kopiointi uudelleen";

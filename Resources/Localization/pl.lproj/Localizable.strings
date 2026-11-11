@@ -269,3 +269,11 @@
 "bookmarked" = "z zakładką";
 "Bookmark the folder shown, or remove its bookmark" = "Dodaj lub usuń zakładkę pokazanego folderu";
 "Open bookmark 1 … 9" = "Otwórz zakładkę 1 … 9";
+"Undo Rename" = "Cofnij zmianę nazwy";
+"Undo Move to Trash" = "Cofnij przeniesienie do kosza";
+"Undo Move" = "Cofnij przeniesienie";
+"Undo Copy" = "Cofnij kopiowanie";
+"Redo Rename" = "Przywróć zmianę nazwy";
+"Redo Move to Trash" = "Przywróć przeniesienie do kosza";
+"Redo Move" = "Przywróć przeniesienie";
+"Redo Copy" = "Przywróć kopiowanie";

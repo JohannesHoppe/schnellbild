@@ -269,3 +269,11 @@
 "bookmarked" = "se záložkou";
 "Bookmark the folder shown, or remove its bookmark" = "Přidat nebo odstranit záložku zobrazené složky";
 "Open bookmark 1 … 9" = "Otevřít záložku 1 … 9";
+"Undo Rename" = "Odvolat přejmenování";
+"Undo Move to Trash" = "Odvolat přesunutí do koše";
+"Undo Move" = "Odvolat přesunutí";
+"Undo Copy" = "Odvolat kopírování";
+"Redo Rename" = "Znovu přejmenovat";
+"Redo Move to Trash" = "Znovu přesunout do koše";
+"Redo Move" = "Znovu přesunout";
+"Redo Copy" = "Znovu kopírovat";

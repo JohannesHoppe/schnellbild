@@ -269,3 +269,11 @@
 "bookmarked" = "已加书签";
 "Bookmark the folder shown, or remove its bookmark" = "为显示的文件夹添加或移除书签";
 "Open bookmark 1 … 9" = "打开书签 1 … 9";
+"Undo Rename" = "撤销重新命名";
+"Undo Move to Trash" = "撤销移到废纸篓";
+"Undo Move" = "撤销移动";
+"Undo Copy" = "撤销拷贝";
+"Redo Rename" = "重做重新命名";
+"Redo Move to Trash" = "重做移到废纸篓";
+"Redo Move" = "重做移动";
+"Redo Copy" = "重做拷贝";

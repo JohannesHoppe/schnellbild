@@ -36,6 +36,9 @@ struct ThumbnailGridView: View {
                             .padding(.bottom, padding)
                     }
                 }
+                // Undo / Redo also where there is no tile (a tile's own menu has them on top)
+                .contentShape(Rectangle())
+                .contextMenu { UndoMenuItems(history: model.undoHistory, model: model) }
                 // For the UI tests only (VoiceOver would read it): the columns the keys
                 // step by, and as laid out
                 .accessibilityIdentifier("grid")
@@ -351,6 +354,7 @@ struct OtherFileInteractions: ViewModifier {
                 return provider
             }
             .contextMenu {
+                UndoMenuItems(history: model.undoHistory, model: model)
                 if changeable {
                     Button("Rename…") { model.beginRename(file) }
                 }
@@ -456,6 +460,7 @@ struct EntryInteractions: ViewModifier {
             }
             .onDisappear { ModifierClicks.remove(key) }
             .contextMenu {
+                UndoMenuItems(history: model.undoHistory, model: model)
                 if entry.kind != .parent {
                     if entry.kind == .folder {
                         Button("Start Slideshow of This Folder") {

@@ -269,3 +269,11 @@
 "bookmarked" = "avec signet";
 "Bookmark the folder shown, or remove its bookmark" = "Ajouter ou supprimer le signet du dossier affiché";
 "Open bookmark 1 … 9" = "Ouvrir le signet 1 … 9";
+"Undo Rename" = "Annuler le renommage";
+"Undo Move to Trash" = "Annuler le placement dans la corbeille";
+"Undo Move" = "Annuler le déplacement";
+"Undo Copy" = "Annuler la copie";
+"Redo Rename" = "Rétablir le renommage";
+"Redo Move to Trash" = "Rétablir le placement dans la corbeille";
+"Redo Move" = "Rétablir le déplacement";
+"Redo Copy" = "Rétablir la copie";

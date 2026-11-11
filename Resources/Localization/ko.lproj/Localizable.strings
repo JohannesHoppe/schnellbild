@@ -269,3 +269,11 @@
 "bookmarked" = "책갈피됨";
 "Bookmark the folder shown, or remove its bookmark" = "표시된 폴더를 책갈피에 추가하거나 제거";
 "Open bookmark 1 … 9" = "책갈피 1 … 9 열기";
+"Undo Rename" = "이름 변경 실행 취소";
+"Undo Move to Trash" = "휴지통으로 이동 실행 취소";
+"Undo Move" = "이동 실행 취소";
+"Undo Copy" = "복사 실행 취소";
+"Redo Rename" = "이름 변경 실행 복귀";
+"Redo Move to Trash" = "휴지통으로 이동 실행 복귀";
+"Redo Move" = "이동 실행 복귀";
+"Redo Copy" = "복사 실행 복귀";

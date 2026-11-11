@@ -269,3 +269,11 @@
 "bookmarked" = "bokmärkt";
 "Bookmark the folder shown, or remove its bookmark" = "Bokmärk den visade mappen eller ta bort dess bokmärke";
 "Open bookmark 1 … 9" = "Öppna bokmärke 1 … 9";
+"Undo Rename" = "Ångra namnbyte";
+"Undo Move to Trash" = "Ångra flytta till papperskorgen";
+"Undo Move" = "Ångra flytt";
+"Undo Copy" = "Ångra kopiering";
+"Redo Rename" = "Gör om namnbyte";
+"Redo Move to Trash" = "Gör om flytta till papperskorgen";
+"Redo Move" = "Gör om flytt";
+"Redo Copy" = "Gör om kopiering";
