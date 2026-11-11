@@ -280,9 +280,9 @@
 "Open in Other Pane" = "Avaa toisessa paneelissa";
 "Version %@ (%@)" = "Versio %@ (%@)";
 "Video formats for macOS" = "Videomuodot macOS:lle";
-"MKV through macOS" = "MKV macOS:n kautta";
+"MKV and AVCHD through macOS" = "MKV ja AVCHD macOS:n kautta";
 "On" = "Päällä";
 "Off" = "Pois";
 "Checking…" = "Tarkistetaan…";
 "Open System Settings…" = "Avaa Järjestelmäasetukset…";
-"Turned on (“Schnellbild Video Formats” under Media Extensions), macOS reads MKV videos itself: Finder and Schnellbild show their thumbnails at once and keep them (macOS 26), QuickTime Player plays them. Off, Schnellbild makes them itself." = "Päällä ollessaan (”Schnellbild Video Formats” kohdassa Medialaajennukset) macOS lukee MKV-videot itse: Finder ja Schnellbild näyttävät niiden esikatselukuvat heti ja säilyttävät ne (macOS 26), QuickTime Player toistaa ne. Pois päältä Schnellbild tekee ne itse.";
+"Turned on (“Schnellbild Video Formats” under Media Extensions), macOS makes the thumbnails of MKV videos and AVCHD camcorder clips itself: Finder and Schnellbild show them at once and macOS keeps them (macOS 26). Off, Schnellbild makes them itself." = "Päällä ollessaan (”Schnellbild Video Formats” kohdassa Medialaajennukset) macOS tekee MKV-videoiden ja AVCHD-videokameraleikkeiden esikatselukuvat itse: Finder ja Schnellbild näyttävät ne heti ja macOS säilyttää ne (macOS 26). Pois päältä Schnellbild tekee ne itse.";

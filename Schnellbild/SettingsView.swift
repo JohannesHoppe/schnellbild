@@ -2,7 +2,7 @@ import SwiftUI
 import AVFoundation
 
 /// Settings (⌘,): how long a picture stays in the slideshow, the archive
-/// passwords Schnellbild has saved, and whether macOS reads MKV itself
+/// passwords Schnellbild has saved, and whether macOS reads MKV and AVCHD itself
 /// (Schnellbild's media extension, turned on in System Settings).
 struct SettingsView: View {
     @EnvironmentObject var window: WindowModel
@@ -23,11 +23,11 @@ struct SettingsView: View {
                     .foregroundStyle(.secondary)
             }
             Section("Video formats for macOS") {
-                LabeledContent("MKV through macOS",
+                LabeledContent("MKV and AVCHD through macOS",
                                value: formatsOn.map { $0 ? String(localized: "On") : String(localized: "Off") } ?? String(localized: "Checking…"))
                     .accessibilityIdentifier("settings.formatsStatus")
                 Button("Open System Settings…") { MediaFormats.openSystemSettings() }
-                Text("Turned on (“Schnellbild Video Formats” under Media Extensions), macOS reads MKV videos itself: Finder and Schnellbild show their thumbnails at once and keep them (macOS 26), QuickTime Player plays them. Off, Schnellbild makes them itself.")
+                Text("Turned on (“Schnellbild Video Formats” under Media Extensions), macOS makes the thumbnails of MKV videos and AVCHD camcorder clips itself: Finder and Schnellbild show them at once and macOS keeps them (macOS 26). Off, Schnellbild makes them itself.")
                     .font(.callout)
                     .foregroundStyle(.secondary)
             }

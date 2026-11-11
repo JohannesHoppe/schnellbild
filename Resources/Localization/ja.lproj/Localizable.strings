@@ -280,9 +280,9 @@
 "Open in Other Pane" = "もう一方のパネルで開く";
 "Version %@ (%@)" = "バージョン %@ (%@)";
 "Video formats for macOS" = "macOS用のビデオフォーマット";
-"MKV through macOS" = "macOSによるMKV";
+"MKV and AVCHD through macOS" = "macOSによるMKVとAVCHD";
 "On" = "オン";
 "Off" = "オフ";
 "Checking…" = "確認中…";
 "Open System Settings…" = "システム設定を開く…";
-"Turned on (“Schnellbild Video Formats” under Media Extensions), macOS reads MKV videos itself: Finder and Schnellbild show their thumbnails at once and keep them (macOS 26), QuickTime Player plays them. Off, Schnellbild makes them itself." = "オンにすると（メディア拡張機能の“Schnellbild Video Formats”）、macOSがMKVビデオを自分で読み込みます。FinderとSchnellbildはサムネールをすぐに表示して保持し（macOS 26）、QuickTime Playerで再生できます。オフの場合はSchnellbildが自分で作成します。";
+"Turned on (“Schnellbild Video Formats” under Media Extensions), macOS makes the thumbnails of MKV videos and AVCHD camcorder clips itself: Finder and Schnellbild show them at once and macOS keeps them (macOS 26). Off, Schnellbild makes them itself." = "オンにすると（メディア拡張機能の“Schnellbild Video Formats”）、MKVビデオとAVCHDビデオカメラのクリップのサムネールをmacOSが自分で作成します。FinderとSchnellbildがすぐに表示し、macOSが保持します（macOS 26）。オフの場合はSchnellbildが自分で作成します。";

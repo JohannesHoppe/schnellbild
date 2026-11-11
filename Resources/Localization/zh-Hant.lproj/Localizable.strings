@@ -280,9 +280,9 @@
 "Open in Other Pane" = "在另一個面板中打開";
 "Version %@ (%@)" = "版本 %@ (%@)";
 "Video formats for macOS" = "macOS 的影片格式";
-"MKV through macOS" = "透過 macOS 讀取 MKV";
+"MKV and AVCHD through macOS" = "透過 macOS 讀取 MKV 與 AVCHD";
 "On" = "開啟";
 "Off" = "關閉";
 "Checking…" = "正在檢查…";
 "Open System Settings…" = "打開系統設定…";
-"Turned on (“Schnellbild Video Formats” under Media Extensions), macOS reads MKV videos itself: Finder and Schnellbild show their thumbnails at once and keep them (macOS 26), QuickTime Player plays them. Off, Schnellbild makes them itself." = "開啟後（「媒體延伸功能」中的「Schnellbild Video Formats」），macOS 會自行讀取 MKV 影片：Finder 與 Schnellbild 會立即顯示並保留其縮覽圖（macOS 26），QuickTime Player 可以播放。關閉時由 Schnellbild 自行產生。";
+"Turned on (“Schnellbild Video Formats” under Media Extensions), macOS makes the thumbnails of MKV videos and AVCHD camcorder clips itself: Finder and Schnellbild show them at once and macOS keeps them (macOS 26). Off, Schnellbild makes them itself." = "開啟後（「媒體延伸功能」中的「Schnellbild Video Formats」），macOS 會自行產生 MKV 影片與 AVCHD 攝影機片段的縮覽圖：Finder 與 Schnellbild 會立即顯示，並由 macOS 保留（macOS 26）。關閉時由 Schnellbild 自行產生。";

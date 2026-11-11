@@ -280,9 +280,9 @@
 "Open in Other Pane" = "Diğer bölmede aç";
 "Version %@ (%@)" = "Sürüm %@ (%@)";
 "Video formats for macOS" = "macOS için video biçimleri";
-"MKV through macOS" = "macOS üzerinden MKV";
+"MKV and AVCHD through macOS" = "macOS üzerinden MKV ve AVCHD";
 "On" = "Açık";
 "Off" = "Kapalı";
 "Checking…" = "Denetleniyor…";
 "Open System Settings…" = "Sistem Ayarları’nı Aç…";
-"Turned on (“Schnellbild Video Formats” under Media Extensions), macOS reads MKV videos itself: Finder and Schnellbild show their thumbnails at once and keep them (macOS 26), QuickTime Player plays them. Off, Schnellbild makes them itself." = "Açıkken (Ortam Genişletmeleri altında “Schnellbild Video Formats”) macOS MKV videolarını kendisi okur: Finder ve Schnellbild küçük resimlerini hemen gösterir ve saklar (macOS 26), QuickTime Player oynatır. Kapalıyken Schnellbild bunları kendisi oluşturur.";
+"Turned on (“Schnellbild Video Formats” under Media Extensions), macOS makes the thumbnails of MKV videos and AVCHD camcorder clips itself: Finder and Schnellbild show them at once and macOS keeps them (macOS 26). Off, Schnellbild makes them itself." = "Açıkken (Ortam Genişletmeleri altında “Schnellbild Video Formats”) macOS, MKV videolarının ve AVCHD kamera kliplerinin küçük resimlerini kendisi oluşturur: Finder ve Schnellbild bunları hemen gösterir, macOS da saklar (macOS 26). Kapalıyken Schnellbild bunları kendisi oluşturur.";
