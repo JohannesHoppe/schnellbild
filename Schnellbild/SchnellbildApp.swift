@@ -1,5 +1,7 @@
 import SwiftUI
 import AppKit
+import MediaToolbox
+import VideoToolbox
 import VLCFrames
 
 @main
@@ -12,6 +14,17 @@ struct SchnellbildApp: App {
     init() {
         // Before anything starts VLC
         VLCSafety.forgetInjectedOptions()
+        // Media Extensions the user has turned on in System Settings (format
+        // readers and video decoders, Apple's own for ProRes RAW too, or
+        // another app's for MKV, AVI …) open those videos in AVKit, and
+        // Quick Look makes the grid's thumbnails with them (macOS 26) — but
+        // only for an app that opts in, as Finder does:
+        // https://github.com/Marginal/QuickLookVideo/issues/191,
+        // https://github.com/Marginal/QuickLookVideo/issues/197.
+        // Each extension runs in a sandboxed process of its own, outside the app.
+        // Before AVFoundation or Quick Look is first asked.
+        MTRegisterProfessionalVideoWorkflowFormatReaders()
+        VTRegisterProfessionalVideoWorkflowVideoDecoders()
         let defaults = BrowserModel.makeDefaults()
         // Archive passwords: the login keychain; UI tests keep theirs in
         // their own preferences (`--reset-state` clears them)

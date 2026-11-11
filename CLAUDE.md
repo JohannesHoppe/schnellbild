@@ -139,6 +139,7 @@ There is **no Xcode project for the app build**; `xcodegen` generates
   in, at the view's size × zoom (with room for a few more steps) up to the
   full size and at most 64 Mpx; at 100 % (`1`) at full size. A sharper
   decode that fails keeps the picture shown. Animations (GIF, also animated PNG and WebP) play there too (`AnimationFrames`): their frames decoded at the same size, each for its own time, with the same look, so zoom, rotation and enhance apply while they play; frames are kept up to 256 MB, else decoded again each round.
+- **Media Extensions:** `SchnellbildApp.init` calls `MTRegisterProfessionalVideoWorkflowFormatReaders()` and `VTRegisterProfessionalVideoWorkflowVideoDecoders()`, so the format readers and decoders the user has turned on (Apple's, another app's) open videos in AVKit and give the grid Quick Look thumbnails (macOS 26); each runs sandboxed in its own process. See "Media Extensions (native thumbnails)" below.
 - **`VideoDetailView.swift`** — native formats via AVKit; non-native fall back
   to VLCKit. AVKit plays in an `AVPlayerView` (`AVPlayerViewHost`) with
   **floating** controls: the inline ones (SwiftUI's `VideoPlayer`) and the
@@ -173,6 +174,7 @@ Viewing must never run anything. What is in place:
 - Other files (`LiveFiles.openOtherFile`, double click / Open in their menu): only documents that hold no program (an allow list of types: text, PDF, office, audio …; a refuse list of types and extensions: executables, apps, packages, scripts, installers, disk images, Terminal settings, Finder locations …; links and aliases resolved first), a .webloc / .url only to an http(s) address, opened with `NSWorkspace.open`. `OpenOtherFileTests`.
 - A folder reopened at launch is remembered until the app has run 15 s or quits normally (`restoreUnconfirmed`): if the app ended before, the next launch doesn't reopen it (`skippedRestore`), so a file that crashes the app can't crash every launch.
 - The release app has the Hardened Runtime (library validation) and no entitlements; its thumbnail extension runs VLC in the App Sandbox (read access only to the file QuickLook hands it, no network), also when Finder asks for an MKV's thumbnail; no document types or URL schemes; `--open=` and the UI-test switches are command-line only.
+- Media Extensions (opted in at launch) run each in its own sandboxed process, and only those the user turned on in System Settings.
 - Remaining risk: the parsers run in the app's process without a sandbox (VLC with FFmpeg, UnRAR, the system's libarchive, ImageIO, CoreGraphics for PDF/SVG), several already while a folder is browsed (thumbnails, archive indexes). A bug in one of them could run code with the user's rights (except VLC's frames for MKV, WMV, FLV, VOB … taken by the sandboxed thumbnail extension). The structural fix is a sandboxed XPC helper (no network, no process launch, read-only) for VLC and the archive readers; VLC's frames are IOSurfaces already, which can cross XPC. Until then: keep VLCKit and UnRAR current with their security releases.
 
 ## VLCKit (the heavy dependency — read carefully)
