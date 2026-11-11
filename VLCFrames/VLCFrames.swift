@@ -82,7 +82,8 @@ public final class VLCFrameGrab: @unchecked Sendable {   // state behind `lock`
         lock.unlock()
         guard !over, let api = LibVLCVideo.shared else { return finish(with: nil) }
         let media = VLCMedia(url: url)
-        VLCSafety.restrict(media, for: url)
+        let head = VLCSafety.head(of: url)
+        VLCSafety.restrict(media, for: url, head: head)
         for option in [":no-audio", ":no-spu", ":no-osd", ":avcodec-threads=1", ":avcodec-skip-idct=4",
                        ":avcodec-skiploopfilter=3", ":deinterlace=-1", ":avi-index=3"] {
             media.addOption(option)
@@ -187,16 +188,52 @@ public final class VLCFrameGrab: @unchecked Sendable {   // state behind `lock`
 /// What VLC may do with a file someone else made. VLC picks its reader by
 /// the content, not the name: a file named "video.mkv" that is really a
 /// streaming playlist (HLS) would make it fetch from the internet, also for
-/// a thumbnail. So the file's extension names the one reader VLC may use.
+/// a thumbnail. So VLC is told the one reader it may use: the container the
+/// file's first bytes show (a recording named ".mkv" that is a transport
+/// stream), from a fixed list of video containers, else the one its
+/// extension names; and only for a file with a video extension.
 /// One, not a list: VLC takes a reader it is told to use as forced, and some
 /// (MPEG program and transport streams) then take any file, so every reader
 /// after them in a list would never be asked.
 public enum VLCSafety {
-    /// The reader for a file's extension, and FFmpeg's format where FFmpeg
-    /// reads it (held to that one format, so FFmpeg can't pick a playlist
-    /// reader either); nil: VLC opens nothing.
-    public static func reader(for url: URL) -> (demux: String, ffmpegFormat: String?)? {
-        switch url.pathExtension.lowercased() {
+    public typealias Reader = (demux: String, ffmpegFormat: String?)
+
+    /// The reader for a file, and FFmpeg's format where FFmpeg reads it
+    /// (held to that one format, so FFmpeg can't pick a playlist reader
+    /// either); nil: VLC opens nothing. `head`: the file's first bytes.
+    public static func reader(for url: URL, head: Data? = nil) -> Reader? {
+        guard let named = reader(forExtension: url.pathExtension) else { return nil }
+        return head.flatMap(container(in:)) ?? named
+    }
+
+    /// The video container its first bytes show; nil when they show none
+    /// of them (a playlist, text, anything else).
+    public static func container(in head: Data) -> Reader? {
+        let b = [UInt8](head.prefix(400))
+        func at(_ i: Int, _ bytes: [UInt8]) -> Bool { b.count >= i + bytes.count && Array(b[i..<i + bytes.count]) == bytes }
+        func ascii(_ i: Int, _ text: String) -> Bool { at(i, Array(text.utf8)) }
+        if at(0, [0x1A, 0x45, 0xDF, 0xA3]) { return ("mkv", nil) }
+        // Transport streams: a sync byte every 188 bytes, or every 192 after a 4-byte time code
+        if b.count >= 377, b[0] == 0x47, b[188] == 0x47, b[376] == 0x47 { return ("ts", nil) }
+        if b.count >= 389, b[4] == 0x47, b[196] == 0x47, b[388] == 0x47 { return ("ts", nil) }
+        if ["ftyp", "moov", "mdat", "wide", "free", "skip"].contains(where: { ascii(4, $0) }) { return ("mp4", nil) }
+        if ascii(0, "RIFF"), ascii(8, "AVI ") { return ("avi", nil) }
+        if at(0, [0x00, 0x00, 0x01, 0xBA]) { return ("ps", nil) }
+        if at(0, [0x30, 0x26, 0xB2, 0x75, 0x8E, 0x66, 0xCF, 0x11]) { return ("asf", nil) }
+        if ascii(0, "FLV") { return ("avformat", "flv") }
+        if ascii(0, "OggS") { return ("ogg", nil) }
+        return nil
+    }
+
+    /// A file's first bytes (nil: none to read, e.g. a path through an archive).
+    public static func head(of url: URL) -> Data? {
+        guard let handle = try? FileHandle(forReadingFrom: url) else { return nil }
+        defer { try? handle.close() }
+        return try? handle.read(upToCount: 512)
+    }
+
+    static func reader(forExtension ext: String) -> Reader? {
+        switch ext.lowercased() {
         case "mkv", "webm":                                  return ("mkv", nil)
         case "avi":                                          return ("avi", nil)
         case "mp4", "m4v", "mov", "qt", "3gp", "3g2":        return ("mp4", nil)
@@ -213,8 +250,8 @@ public enum VLCSafety {
 
     /// `url` names the file (for a video inside an archive: its path through
     /// the archive).
-    public static func restrict(_ media: VLCMedia, for url: URL) {
-        if let reader = reader(for: url) {
+    public static func restrict(_ media: VLCMedia, for url: URL, head: Data? = nil) {
+        if let reader = reader(for: url, head: head) {
             media.addOption(":demux=\(reader.demux),none")
             if let format = reader.ffmpegFormat { media.addOption(":avformat-format=\(format)") }
         } else {
