@@ -52,11 +52,12 @@ let package = Package(
                 .unsafeFlags(["-Xlinker", "-e", "-Xlinker", "_NSExtensionMain"])
             ]
         ),
-        // The media extension's Matroska parser, as a module of its own for
-        // the tests (Scripts/build_app.sh builds the extension itself with
-        // FormatReader.swift, which needs the MediaExtension framework).
+        // The media extension's container parsers (Matroska, MPEG transport
+        // streams), as a module of its own for the tests (Scripts/build_app.sh
+        // builds the extension itself with FormatReader.swift, which needs the
+        // MediaExtension framework).
         .target(
-            name: "Matroska",
+            name: "VideoContainers",
             path: "FormatReader",
             exclude: ["FormatReader.swift", "Info.plist", "FormatReader.entitlements"]
         ),
@@ -85,7 +86,7 @@ let package = Package(
         ),
         .testTarget(
             name: "SchnellbildTests",
-            dependencies: ["Schnellbild", "VLCFrames", "Matroska"],
+            dependencies: ["Schnellbild", "VLCFrames", "VideoContainers"],
             path: "Tests/SchnellbildTests",
             resources: [.copy("Archives"), .copy("Videos")]
         )
