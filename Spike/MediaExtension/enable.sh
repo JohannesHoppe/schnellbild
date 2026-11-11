@@ -79,18 +79,18 @@ cat "$HOME/Library/Containers/$READER_ID/Data/spike-notes.txt" 2>&1
 section "quick look thumbnail of clip.spk, now that it is on (as Finder asks)"
 NOTES="$HOME/Library/Containers/$READER_ID/Data/spike-notes.txt"
 ASKED=$(grep -c 'asked for' "$NOTES" 2>/dev/null || echo 0)
-swiftc -O ../../Scripts/thumbnail_probe.swift -o "$CLIPS/probe" 2>&1 | tail -3
+swiftc -O probe-me.swift -o "$CLIPS/probe" 2>&1 | tail -3
 QLSINCE=$(date '+%Y-%m-%d %H:%M:%S')
-perl -e 'alarm 60; exec @ARGV' "$CLIPS/probe" "$CLIPS/clip.spk" "$OUT/3-thumbnail.png" 2>&1
+PROBE_MEDIA_EXTENSIONS=1 perl -e 'alarm 60; exec @ARGV' "$CLIPS/probe" "$CLIPS/clip.spk" "$OUT/3-thumbnail.png" 2>&1
 echo "asks before: $ASKED, after: $(grep -c 'asked for' "$NOTES" 2>/dev/null || echo 0)"
 section "again after Quick Look is reset and restarted (it may have read the switch before it was on)"
 qlmanage -r 2>&1 | tail -1; qlmanage -r cache 2>&1 | tail -1
 killall AudiovisualThumbnailExtension 2>/dev/null; killall -kill -m SpikeReader 2>/dev/null; killall -9 com.apple.quicklook.ThumbnailsAgent QuickLookUIService 2>/dev/null; sleep 3
 ASKED=$(grep -c 'asked for' "$NOTES" 2>/dev/null || echo 0)
-perl -e 'alarm 60; exec @ARGV' "$CLIPS/probe" "$CLIPS/clip.spk" "$OUT/4-thumbnail-after-reset.png" 2>&1
+PROBE_MEDIA_EXTENSIONS=1 perl -e 'alarm 60; exec @ARGV' "$CLIPS/probe" "$CLIPS/clip.spk" "$OUT/4-thumbnail-after-reset.png" 2>&1
 echo "asks before: $ASKED, after: $(grep -c 'asked for' "$NOTES" 2>/dev/null || echo 0)"
 cp ../../Tests/SchnellbildTests/Videos/clip.mkv "$CLIPS/other.spk"
-perl -e 'alarm 60; exec @ARGV' "$CLIPS/probe" "$CLIPS/other.spk" 2>&1
+PROBE_MEDIA_EXTENSIONS=1 perl -e 'alarm 60; exec @ARGV' "$CLIPS/probe" "$CLIPS/other.spk" 2>&1
 echo "asks after a second, never seen file: $(grep -c 'asked for' "$NOTES" 2>/dev/null || echo 0)"
 cat "$NOTES" 2>&1
 section "who handled the thumbnail request"

@@ -11,7 +11,7 @@ section() { echo; echo "== $*"; }
 LSREGISTER=/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister
 CLIPS=$(mktemp -d)
 for ext in mkv avi webm; do cp ../../Tests/SchnellbildTests/Videos/clip.$ext "$CLIPS/"; done
-swiftc -O ../../Scripts/thumbnail_probe.swift -o "$CLIPS/probe" 2>&1 | tail -2
+swiftc -O probe-me.swift -o "$CLIPS/probe" 2>&1 | tail -2
 probe() { for ext in mkv avi webm; do perl -e 'alarm 60; exec @ARGV' "$CLIPS/probe" "$CLIPS/clip.$ext" "$OUT/$1-$ext.png" 2>&1; done; }
 
 section system; sw_vers
@@ -41,6 +41,8 @@ section "Refresh, as its app does (Quick Look cache, the thumbnailer, its extens
 qlmanage -r cache 2>&1 | tail -1
 killall AudiovisualThumbnailExtension 2>/dev/null; killall -kill -m "QLVideo (Formats|Codecs)" 2>/dev/null; sleep 3
 section "thumbnails with its Media Extensions on"; probe 5-after
+section "the same, the asking process opted in to Media Extensions (as Finder, ForkLift 4.7)"
+export PROBE_MEDIA_EXTENSIONS=1; probe 5b-after-optin; unset PROBE_MEDIA_EXTENSIONS
 section "every agent that may have read the switches before, ended (launchd starts them again on demand)"
 for p in pkd MENotificationAgent com.apple.quicklook.ThumbnailsAgent quicklookd QuickLookUIService AudiovisualThumbnailExtension extensionkitservice cfprefsd mediaanalysisd; do
   if pgrep -x "$p" >/dev/null; then killall -9 "$p" 2>/dev/null && echo "ended $p"; fi
@@ -48,7 +50,7 @@ done
 killall -kill -m "QLVideo (Formats|Codecs)" 2>/dev/null; sleep 5
 qlmanage -r cache 2>&1 | tail -1; sleep 2
 MARK=$(date '+%Y-%m-%d %H:%M:%S')
-section "thumbnails after ending the agents"; probe 6-after-agents
+section "thumbnails after ending the agents (opted in)"; PROBE_MEDIA_EXTENSIONS=1 probe 6-after-agents
 section "does the thumbnailer look for media extensions at all"
 /usr/bin/log show --info --debug --start "$MARK" --style compact \
   --predicate 'process == "AudiovisualThumbnailExtension" AND (subsystem CONTAINS "extensionkit" OR eventMessage CONTAINS[c] "mediaextension" OR eventMessage CONTAINS[c] "MEFormat" OR eventMessage CONTAINS[c] "format reader" OR eventMessage CONTAINS[c] "ProfessionalVideo" OR eventMessage CONTAINS[c] "QLVideo")' 2>/dev/null | grep -v 'log run' | tail -25
