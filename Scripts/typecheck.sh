@@ -29,8 +29,8 @@ echo "== Matroska (the media extension's parser, a module for the tests)"
 swiftc -emit-module -emit-module-path "$WORK/mod/Matroska.swiftmodule" -module-name Matroska -parse-as-library -enable-testing \
   "${FLAGS[@]/-typecheck/}" FormatReader/MatroskaIndex.swift || status=1
 FLAGS+=(-I "$WORK/mod")
-echo "== media extension"
-swiftc "${FLAGS[@]}" -parse-as-library FormatReader/MatroskaIndex.swift FormatReader/FormatReader.swift || status=1
+echo "== media extension (to SIL: also the checks after typechecking, such as a missing return)"
+swiftc "${FLAGS[@]/-typecheck/-emit-sil}" -wmo -o /dev/null -parse-as-library FormatReader/MatroskaIndex.swift FormatReader/FormatReader.swift || status=1
 echo "== thumbnail extension"
 swiftc "${FLAGS[@]}" -parse-as-library ThumbnailExtension/*.swift || status=1
 echo "== app"

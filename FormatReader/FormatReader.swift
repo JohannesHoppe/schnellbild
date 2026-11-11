@@ -22,7 +22,7 @@ final class FormatReaderFactory: NSObject, MEFormatReaderExtension {
     func formatReader(with primaryByteSource: MEByteSource, options: MEFormatReaderInstantiationOptions?) throws -> any MEFormatReader {
         // AVCHD is claimed only for Quick Look's sake (Info.plist): macOS reads it itself
         guard (primaryByteSource.fileName as NSString).pathExtension.lowercased() == "mkv" else { throw MEError(.unsupportedFeature) }
-        MatroskaFormatReader(source: primaryByteSource)
+        return MatroskaFormatReader(source: primaryByteSource)
     }
 }
 
