@@ -641,6 +641,46 @@ final class OpenFolderTests: XCTestCase {
 
 @MainActor
 final class SearchTests: XCTestCase {
+    /// The three modes beside the field: ignoring case, matching case, a
+    /// regular expression (anywhere in the name; one that doesn't compile
+    /// matches nothing).
+    func testNameMatcherModes() {
+        XCTAssertTrue(NameMatcher("img").matches("IMG_0001.JPG"))
+        XCTAssertFalse(NameMatcher("img", mode: .matchingCase).matches("IMG_0001.JPG"))
+        XCTAssertTrue(NameMatcher("IMG", mode: .matchingCase).matches("IMG_0001.JPG"))
+        XCTAssertTrue(NameMatcher("a.c", mode: .matchingCase).matches("a.c.jpg"))
+        XCTAssertFalse(NameMatcher("a.c", mode: .matchingCase).matches("abc.jpg"), "taken as typed, not as a pattern")
+        XCTAssertTrue(NameMatcher(#"^IMG_\d{4}\.jpe?g$"#, mode: .regex).matches("IMG_0001.jpg"))
+        XCTAssertFalse(NameMatcher(#"^IMG_\d{4}\.jpe?g$"#, mode: .regex).matches("IMG_0001.png"))
+        XCTAssertTrue(NameMatcher("(?i)^img", mode: .regex).matches("Img_7.jpg"))
+        XCTAssertTrue(NameMatcher("[", mode: .regex).isValid == false)
+        XCTAssertFalse(NameMatcher("[", mode: .regex).matches("[a].jpg"))
+        XCTAssertTrue(NameMatcher("[").isValid)
+        XCTAssertTrue(NameMatcher("[").matches("[a].jpg"))
+    }
+
+    /// Switching the mode searches again, in subfolders too, and is remembered.
+    func testTheSearchModeSearchesAgainAndIsRemembered() async throws {
+        let tree = try TempTree(self)
+        for n in ["Beach.jpg", "beach2.jpg", "sub/BEACH-3.jpg", "sub/dune.jpg"] { try tree.file(n) }
+        let defaults = makeTestDefaults()
+        let m = BrowserModel(defaults: defaults)
+        m.searchDebounce = .zero
+        await openAndWait(m, tree.root)
+        await searchAndWait(m, "beach")
+        XCTAssertEqual(Set(m.names), ["Beach.jpg", "beach2.jpg", "BEACH-3.jpg"])
+        m.searchMode = .matchingCase
+        await waitUntil { !m.isSearching }
+        XCTAssertEqual(m.names, ["beach2.jpg"])
+        m.searchMode = .regex
+        await searchAndWait(m, "^(?i)beach-?\\d")
+        XCTAssertEqual(Set(m.names), ["beach2.jpg", "BEACH-3.jpg"])
+        await searchAndWait(m, "beach(")
+        XCTAssertEqual(m.names, [], "not an expression: nothing")
+        XCTAssertFalse(m.matcher.isValid)
+        XCTAssertEqual(BrowserModel(defaults: defaults).searchMode, .regex, "remembered")
+    }
+
     func testSearchMatchesFileNamesInCurrentFolder() async throws {
         let tree = try TempTree(self)
         for n in ["apple.jpg", "banana.jpg", "cherry.jpg"] { try tree.file(n) }
@@ -2025,6 +2065,20 @@ final class KeyBindingTests: XCTestCase {
         XCTAssertTrue(m.handleKey(.enter, command: false))
         XCTAssertEqual(m.mode, .grid, "Return leaves the full view")
         XCTAssertNil(m.renameTarget)
+    }
+
+    /// On ".." Return and Space both go up (".." has nothing to rename).
+    func testReturnAndSpaceOnTheParentTileGoUp() async throws {
+        let tree = try TempTree(self)
+        try tree.file("inner/a.jpg")
+        let m = makeModel()
+        for key in [BrowserModel.KeyInput.enter, .space] {
+            await openAndWait(m, tree.root.appendingPathComponent("inner"))
+            m.selectEntry(named: "..")
+            XCTAssertTrue(m.handleKey(key, command: false))
+            await waitUntil { !m.isLoading && m.folderURL?.lastPathComponent == tree.root.lastPathComponent }
+            XCTAssertNil(m.renameTarget)
+        }
     }
 
     func testOptionArrowsRotateInDetailOnly() {

@@ -251,3 +251,10 @@
 "Forget Passwords" = "Wachtwoorden vergeten";
 "Archives that need a password ask for it again." = "Archieven die een wachtwoord nodig hebben, vragen er opnieuw om.";
 "Schnellbild quit unexpectedly last time while showing “%@”, so it wasn't opened again." = "Schnellbild stopte de vorige keer onverwacht terwijl ‘%@’ werd getoond, daarom is het niet opnieuw geopend.";
+"Print…" = "Druk af…";
+"Ignore case" = "Hoofdletters negeren";
+"Match case" = "Hoofdlettergevoelig";
+"Regular expression" = "Reguliere expressie";
+"Search mode" = "Zoekmodus";
+"No folder, archive, picture or video whose name matches “%@”, in this folder or its subfolders." = "Geen map, archief, afbeelding of video waarvan de naam overeenkomt met ‘%@’, in deze map of de submappen.";
+"“%@” is not a valid regular expression." = "‘%@’ is geen geldige reguliere expressie.";

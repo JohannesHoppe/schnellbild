@@ -251,3 +251,10 @@
 "Forget Passwords" = "Forget Passwords";
 "Archives that need a password ask for it again." = "Archives that need a password ask for it again.";
 "Schnellbild quit unexpectedly last time while showing “%@”, so it wasn't opened again." = "Schnellbild quit unexpectedly last time while showing “%@”, so it wasn't opened again.";
+"Print…" = "Print…";
+"Ignore case" = "Ignore case";
+"Match case" = "Match case";
+"Regular expression" = "Regular expression";
+"Search mode" = "Search mode";
+"No folder, archive, picture or video whose name matches “%@”, in this folder or its subfolders." = "No folder, archive, picture or video whose name matches “%@”, in this folder or its subfolders.";
+"“%@” is not a valid regular expression." = "“%@” is not a valid regular expression.";

@@ -58,11 +58,14 @@ protocol PlaybackControl: AnyObject {
     var videoSize: CGSize? { get }
     /// Sound, 0 … 1 (the app's one volume for all videos).
     func setVolume(_ volume: Double)
+    /// The video's length in seconds, once known (the time left).
+    var lengthSeconds: Double? { get }
 }
 
 extension PlaybackControl {
     var playsWithoutLength: Bool { false }
     var videoSize: CGSize? { nil }
+    var lengthSeconds: Double? { nil }
 }
 
 /// Side effects on the file system and the workspace. Injectable, so tests
@@ -407,8 +410,44 @@ struct SearchBatch: Sendable {
 /// The history keeps it, so going back shows the same results, and a walk
 /// still running goes on in the background.
 @MainActor
-final class SearchRun {
+/// How a search matches names: a part of the name ignoring case (by the
+/// same rules in every language: Turkish rules would keep "img" from
+/// "IMG_0001.JPG"), a part with the case as typed, or a regular expression
+/// (ICU syntax, found anywhere in the name; `(?i)` ignores case).
+struct NameMatcher: Equatable, @unchecked Sendable {
+    enum Mode: String, CaseIterable, Sendable {
+        case ignoringCase, matchingCase, regex
+    }
     let query: String
+    let mode: Mode
+    /// (NSRegularExpression is immutable and safe to share across threads)
+    private let expression: NSRegularExpression?
+
+    nonisolated init(_ query: String, mode: Mode = .ignoringCase) {
+        self.query = query
+        self.mode = mode
+        expression = mode == .regex ? try? NSRegularExpression(pattern: query) : nil
+    }
+
+    /// A regular expression that compiles (the other modes always are).
+    nonisolated var isValid: Bool { mode != .regex || expression != nil }
+
+    nonisolated func matches(_ name: String) -> Bool {
+        switch mode {
+        case .ignoringCase: return name.range(of: query, options: .caseInsensitive, locale: nil) != nil
+        case .matchingCase: return name.range(of: query, options: .literal) != nil
+        case .regex:
+            guard let expression else { return false }
+            return expression.firstMatch(in: name, range: NSRange(name.startIndex..., in: name)) != nil
+        }
+    }
+
+    nonisolated static func == (a: NameMatcher, b: NameMatcher) -> Bool { a.query == b.query && a.mode == b.mode }
+}
+
+final class SearchRun {
+    let matcher: NameMatcher
+    var query: String { matcher.query }
     /// The searched folder (canonical): what moves out of it is no result.
     let root: String?
     let clock = ChangeClock()
@@ -428,8 +467,8 @@ final class SearchRun {
     /// The user stopped the walk (the stop button): "no matches" means none so far.
     private(set) var stoppedByUser = false
 
-    init(query: String, root: URL?, results: [GridEntry]) {
-        self.query = query
+    init(matcher: NameMatcher, root: URL?, results: [GridEntry]) {
+        self.matcher = matcher
         self.root = root.map(BrowserModel.canonicalPath)
         self.results = results
         seen = Set(results.map { BrowserModel.canonicalPath($0.url) })
@@ -607,6 +646,16 @@ final class BrowserModel: ObservableObject {
     @Published var searchText: String = "" {
         didSet { if Self.trimmed(searchText) != Self.trimmed(oldValue) { applyFilter() } }
     }
+    /// How names are matched (the switch beside the search field),
+    /// remembered per pane: a change searches again.
+    @Published var searchMode: NameMatcher.Mode = .ignoringCase {
+        didSet {
+            guard searchMode != oldValue else { return }
+            defaults.set(searchMode.rawValue, forKey: settingsPrefix + "searchMode")
+            if !query.isEmpty { applyFilter() }
+        }
+    }
+
     /// The query as searched: `searchText` without surrounding blanks.
     var query: String { Self.trimmed(searchText) }
     /// Whether a (non-blank) query filters the grid.
@@ -916,6 +965,7 @@ final class BrowserModel: ObservableObject {
         if let seconds = defaults.object(forKey: Self.slideshowSecondsKey) as? Int,
            Self.slideshowSecondsRange.contains(seconds) { slideshowInterval = .seconds(seconds) }
         if let raw = defaults.string(forKey: settingsPrefix + "viewMode"), let mode = ViewMode(rawValue: raw) { viewMode = mode }
+        if let raw = defaults.string(forKey: settingsPrefix + "searchMode"), let mode = NameMatcher.Mode(rawValue: raw) { searchMode = mode }
         if let stored = defaults.object(forKey: Self.volumeKey) as? Double { volume = min(max(stored, 0), 1) }
         if let raw = defaults.string(forKey: sortKeyKey), let key = SortKey(rawValue: raw) {
             sortKey = key
@@ -1022,7 +1072,7 @@ final class BrowserModel: ObservableObject {
             self.isLoading = false
             self.loadingLocation = nil
             if self.isFiltering {
-                if let run = location.search, run.query == self.query, !run.stoppedEarly {
+                if let run = location.search, run.matcher == self.matcher, !run.stoppedEarly {
                     // History: the remembered results; a search still
                     // running goes on adding to them.
                     self.search = run
@@ -1613,6 +1663,7 @@ final class BrowserModel: ObservableObject {
         clearMarks()
         leaveSearch()
         let query = self.query
+        let matcher = self.matcher
         guard !query.isEmpty else {
             if listingStale, let folderURL {
                 // Changed while the search was shown: read it again
@@ -1628,20 +1679,21 @@ final class BrowserModel: ObservableObject {
         }
         mode = .grid
         let local = allEntries.filter {
-            $0.kind != .parent && Self.nameMatches($0.name, query)
+            $0.kind != .parent && matcher.matches($0.name)
         }
-        let run = SearchRun(query: query, root: folderURL, results: local)
+        let run = SearchRun(matcher: matcher, root: folderURL, results: local)
         search = run
         showResults()
 
-        guard let root = folderURL else { run.finished = true; return }
+        // (an expression that doesn't compile matches nothing: no walk)
+        guard let root = folderURL, matcher.isValid else { run.finished = true; return }
         isSearching = true
         let debounce = searchDebounce
         let clock = run.clock
         run.task = Task { [weak self, weak run] in
             if debounce > .zero { try? await Task.sleep(for: debounce) }
             guard !Task.isCancelled else { return }
-            for await batch in Self.recursiveMatches(under: root, query: query, clock: clock) {
+            for await batch in Self.recursiveMatches(under: root, matching: matcher, clock: clock) {
                 guard let self, let run, !Task.isCancelled else { return }
                 self.add(batch, to: run)
             }
@@ -1725,13 +1777,18 @@ final class BrowserModel: ObservableObject {
     /// cancels.
     nonisolated static func recursiveMatches(under root: URL, query: String,
                                              clock: ChangeClock? = nil) -> AsyncStream<SearchBatch> {
+        recursiveMatches(under: root, matching: NameMatcher(query), clock: clock)
+    }
+
+    nonisolated static func recursiveMatches(under root: URL, matching matcher: NameMatcher,
+                                             clock: ChangeClock? = nil) -> AsyncStream<SearchBatch> {
         if ArchivePath.split(root) != nil {
             // In an archive: its list of names, known already
             return AsyncStream { continuation in
                 let task = Task.detached(priority: .userInitiated) {
                     let stamp = clock?.now ?? 0
                     if ArchivePath.splitChecked(root) != nil,
-                       let found = try? await ArchiveStore.shared.matches(below: root, query: query), !found.isEmpty {
+                       let found = try? await ArchiveStore.shared.matches(below: root, matching: matcher), !found.isEmpty {
                         continuation.yield(SearchBatch(stamp: stamp, entries: found))
                     }
                     continuation.finish()
@@ -1760,7 +1817,7 @@ final class BrowserModel: ObservableObject {
                            (try? url.resourceValues(forKeys: [.isDirectoryKey]))?.isDirectory == true {
                             ArchivePath.noteFolder(url)
                         }
-                        if nameMatches(url.lastPathComponent, query),
+                        if matcher.matches(url.lastPathComponent),
                            let match = entry(for: url, keys: keys) {
                             batch.entries.append(match)
                         }
@@ -1780,11 +1837,8 @@ final class BrowserModel: ObservableObject {
         }
     }
 
-    /// A name matches a query ignoring case, by the same rules in every
-    /// language (Turkish rules would keep "img" from "IMG_0001.JPG").
-    nonisolated static func nameMatches(_ name: String, _ query: String) -> Bool {
-        name.range(of: query, options: .caseInsensitive, locale: nil) != nil
-    }
+    /// The search as typed, in the mode chosen beside the field.
+    var matcher: NameMatcher { NameMatcher(query, mode: searchMode) }
 
     /// Where a search result lives, relative to the searched folder
     /// ("vacation/2024"); nil for items directly in it.
@@ -2289,10 +2343,12 @@ final class BrowserModel: ObservableObject {
             if !searchText.isEmpty { searchText = ""; return true }
             return false
         case .enter:
-            // As in the Finder: ↩ renames the selected item (Space opens it);
-            // in the full view it goes back to the grid
+            // As in the Finder: ↩ renames the selected item (Space opens it),
+            // on ".." it goes up; in the full view it goes back to the grid
             guard !command else { return false }
             if mode == .detail { closeDetail(); return true }
+            // ".." can't be renamed: ↩ goes up
+            if selectedEntry?.kind == .parent { goToParentFolder(); return true }
             return beginRename()
         case .space:
             if mode == .detail {
@@ -2597,18 +2653,18 @@ final class BrowserModel: ObservableObject {
     /// folder itself by its listing, a folder below it by a walk of it.
     private func searchArrivals(in folders: [URL], below root: URL, for run: SearchRun) {
         let rootPath = Self.canonicalPath(root)
-        let query = run.query
+        let matcher = run.matcher
         let clock = run.clock
         for folder in folders where Self.isSameOrInside(Self.canonicalPath(folder), rootPath) {
             let shallow = Self.canonicalPath(folder) == rootPath
             Task { [weak self, weak run] in
                 if shallow {
                     let stamp = clock.now
-                    let found = await Self.scan(folder).filter { $0.kind != .parent && Self.nameMatches($0.name, query) }
+                    let found = await Self.scan(folder).filter { $0.kind != .parent && matcher.matches($0.name) }
                     guard let self, let run else { return }
                     self.add(SearchBatch(stamp: stamp, entries: found), to: run)
                 } else {
-                    for await batch in Self.recursiveMatches(under: folder, query: query, clock: clock) {
+                    for await batch in Self.recursiveMatches(under: folder, matching: matcher, clock: clock) {
                         guard let self, let run else { return }
                         self.add(batch, to: run)
                     }
@@ -3773,6 +3829,8 @@ final class AVPlaybackControl: PlaybackControl {
         guard let duration else { return nil }
         return min(max(CMTimeGetSeconds(player.currentTime()) / duration, 0), 1)
     }
+
+    var lengthSeconds: Double? { duration }
 
     func seek(toProgress progress: Double) {
         guard let duration else { return }

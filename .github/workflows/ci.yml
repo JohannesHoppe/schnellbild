@@ -60,7 +60,16 @@ jobs:
         run: ./Scripts/fetch_vlckit.sh
 
       - name: Test
-        run: ./Scripts/test.sh
+        env:
+          CHEATSHEET_PDF: ${{ github.workspace }}/build/cheat-sheet.pdf
+        run: mkdir -p build && ./Scripts/test.sh
+
+      - name: Keep the printed cheat sheet
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: cheat-sheet
+          path: build/cheat-sheet.pdf
+          if-no-files-found: error
 
       - name: Build app bundle (release)
         run: ./Scripts/build_app.sh

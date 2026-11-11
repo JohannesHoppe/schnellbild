@@ -251,3 +251,10 @@
 "Forget Passwords" = "Zapomenout hesla";
 "Archives that need a password ask for it again." = "Archivy, které potřebují heslo, se na něj znovu zeptají.";
 "Schnellbild quit unexpectedly last time while showing “%@”, so it wasn't opened again." = "Schnellbild se minule neočekávaně ukončil, když zobrazoval „%@“, proto se znovu neotevřelo.";
+"Print…" = "Tisk…";
+"Ignore case" = "Ignorovat velikost písmen";
+"Match case" = "Rozlišovat velikost písmen";
+"Regular expression" = "Regulární výraz";
+"Search mode" = "Režim hledání";
+"No folder, archive, picture or video whose name matches “%@”, in this folder or its subfolders." = "V této složce ani v jejích podsložkách není složka, archiv, obrázek ani video, jehož název odpovídá „%@“.";
+"“%@” is not a valid regular expression." = "„%@“ není platný regulární výraz.";

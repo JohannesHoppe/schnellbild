@@ -251,3 +251,10 @@
 "Forget Passwords" = "암호 지우기";
 "Archives that need a password ask for it again." = "암호가 필요한 압축 파일은 다시 묻습니다.";
 "Schnellbild quit unexpectedly last time while showing “%@”, so it wasn't opened again." = "지난번 ‘%@’을(를) 보는 중에 Schnellbild가 예기치 않게 종료되어 다시 열지 않았습니다.";
+"Print…" = "프린트…";
+"Ignore case" = "대소문자 무시";
+"Match case" = "대소문자 구분";
+"Regular expression" = "정규 표현식";
+"Search mode" = "검색 모드";
+"No folder, archive, picture or video whose name matches “%@”, in this folder or its subfolders." = "이 폴더와 하위 폴더에 이름이 ‘%@’과(와) 일치하는 폴더, 아카이브, 이미지 또는 비디오가 없습니다.";
+"“%@” is not a valid regular expression." = "‘%@’은(는) 올바른 정규 표현식이 아닙니다.";

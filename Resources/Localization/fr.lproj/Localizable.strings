@@ -251,3 +251,10 @@
 "Forget Passwords" = "Oublier les mots de passe";
 "Archives that need a password ask for it again." = "Les archives protégées redemanderont leur mot de passe.";
 "Schnellbild quit unexpectedly last time while showing “%@”, so it wasn't opened again." = "Schnellbild s’est fermé de manière inattendue la dernière fois en affichant « %@ » ; il n’a donc pas été rouvert.";
+"Print…" = "Imprimer…";
+"Ignore case" = "Ignorer la casse";
+"Match case" = "Respecter la casse";
+"Regular expression" = "Expression régulière";
+"Search mode" = "Mode de recherche";
+"No folder, archive, picture or video whose name matches “%@”, in this folder or its subfolders." = "Aucun dossier, archive, image ou vidéo dont le nom correspond à « %@ », dans ce dossier ou ses sous-dossiers.";
+"“%@” is not a valid regular expression." = "« %@ » n’est pas une expression régulière valide.";

@@ -1098,14 +1098,14 @@ final class ArchiveStore: @unchecked Sendable {
             .map { archiveURL.appendingPathComponent($0, isDirectory: false) }
     }
 
-    /// Names matching `query` at any depth below a folder of an archive.
-    func matches(below url: URL, query: String) async throws -> [GridEntry] {
+    /// Names `matcher` takes, at any depth below a folder of an archive.
+    func matches(below url: URL, matching matcher: NameMatcher) async throws -> [GridEntry] {
         guard let (archiveURL, inner) = ArchivePath.split(url) else { return [] }
         let index = try await index(of: archiveURL)
         let prefix = inner.isEmpty ? "" : inner + "/"
         return index.byPath.values.compactMap { item in
             guard item.path.hasPrefix(prefix),
-                  BrowserModel.nameMatches((item.path as NSString).lastPathComponent, query) else { return nil }
+                  matcher.matches((item.path as NSString).lastPathComponent) else { return nil }
             let itemURL = archiveURL.appendingPathComponent(item.path, isDirectory: item.isDirectory)
             if item.isDirectory { return GridEntry(url: itemURL, kind: .folder, modDate: item.modified) }
             guard let kind = BrowserModel.mediaKind(of: itemURL) else { return nil }
