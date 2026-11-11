@@ -117,7 +117,10 @@ extension BrowserModel {
             }
             if !folders.isEmpty {
                 notifyFolderChanges(folders)
-                refresh(changed: folders)
+                // Read again only when the folder shown (or a search over it) got something
+                if let shown = folderURL, isFiltering || folders.contains(where: { BrowserModel.samePath($0, shown) }) {
+                    refresh(changed: folders)
+                }
             }
         }
     }
