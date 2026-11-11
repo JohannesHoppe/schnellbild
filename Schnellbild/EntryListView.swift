@@ -45,19 +45,20 @@ struct EntryListView: View {
 
     private var header: some View {
         HStack(spacing: 8) {
-            headerButton("Name", key: .name).frame(maxWidth: .infinity, alignment: .leading)
-            headerButton("Kind", key: .kind).frame(width: Self.kindWidth, alignment: .leading)
-            headerButton("Date Modified", key: .modified).frame(width: Self.dateWidth, alignment: .leading)
-            headerButton("Date Taken", key: .captured).frame(width: Self.dateWidth, alignment: .leading)
-            headerButton("Size", key: .size).frame(width: Self.sizeWidth, alignment: .trailing)
+            headerButton("Name", key: .name, width: nil, alignment: .leading)
+            headerButton("Kind", key: .kind, width: Self.kindWidth, alignment: .leading)
+            headerButton("Date Modified", key: .modified, width: Self.dateWidth, alignment: .leading)
+            headerButton("Date Taken", key: .captured, width: Self.dateWidth, alignment: .leading)
+            headerButton("Size", key: .size, width: Self.sizeWidth, alignment: .trailing)
         }
         .font(.caption.weight(.semibold))
         .padding(.horizontal, 12)
-        .padding(.vertical, 5)
         .background(.bar)
     }
 
-    private func headerButton(_ title: LocalizedStringKey, key: BrowserModel.SortKey) -> some View {
+    /// A column's header: the whole of its width and height is the button.
+    private func headerButton(_ title: LocalizedStringKey, key: BrowserModel.SortKey,
+                              width: CGFloat?, alignment: Alignment) -> some View {
         Button { model.setSort(key) } label: {
             HStack(spacing: 3) {
                 Text(title)
@@ -66,6 +67,10 @@ struct EntryListView: View {
                 }
             }
             .foregroundStyle(model.sortKey == key ? Color.primary : Color.secondary)
+            .padding(.vertical, 5)
+            .frame(maxWidth: width ?? .infinity, alignment: alignment)
+            .frame(width: width)
+            .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
         .accessibilityIdentifier("column.\(key.rawValue)")
