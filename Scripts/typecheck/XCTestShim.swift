@@ -46,6 +46,7 @@ public final class XCUIElementQuery {
     public var firstMatch: XCUIElement { XCUIElement() }
     public var count: Int { 0 }
     public var allElementsBoundByIndex: [XCUIElement] { [] }
+    public func element(boundBy index: Int) -> XCUIElement { XCUIElement() }
     public func matching(identifier: String) -> XCUIElementQuery { self }
     public func matching(_ predicate: NSPredicate) -> XCUIElementQuery { self }
     public var menuBarItems: XCUIElementQuery { self }

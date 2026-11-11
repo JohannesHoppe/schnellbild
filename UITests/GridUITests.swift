@@ -231,6 +231,31 @@ final class GridUITests: SchnellbildUITestCase {
         eventually("window leaves full screen", timeout: 10) { window.frame.size == before }
     }
 
+    /// ⌘N: a second window, on the same folder at first, that goes its own
+    /// way (into a folder) while the first stays where it was; closing it
+    /// leaves the first.
+    func testANewWindow() throws {
+        try folder("sub")
+        try put("sample.jpg", at: "sub/x.jpg")
+        launchOnTempDir()
+        app.typeKey("n", modifierFlags: .command)
+        eventually("two windows", timeout: 10) { self.app.windows.count == 2 }
+        func tiles(_ name: String, in window: XCUIElement) -> XCUIElement {
+            window.descendants(matching: .any).matching(identifier: "tile.\(name)").firstMatch
+        }
+        // The new window is in front (windows come front to back)
+        let second = app.windows.element(boundBy: 0)
+        eventually("the new window on the same folder", timeout: 15) { tiles("sub", in: second).exists }
+        tiles("sub", in: second).coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).doubleClick()
+        eventually("into sub in that window", timeout: 10) { tiles("x.jpg", in: second).exists }
+        let first = app.windows.element(boundBy: 1)
+        XCTAssertTrue(tiles("sub", in: first).exists, "the first window stays where it was")
+        XCTAssertFalse(tiles("x.jpg", in: first).exists)
+        app.typeKey("w", modifierFlags: .command)
+        eventually("one window again", timeout: 10) { self.app.windows.count == 1 }
+        XCTAssertTrue(tiles("a.jpg", in: app.windows.firstMatch).exists)
+    }
+
     /// The boss key in full screen: X leaves full screen (its space would stay
     /// black behind the invisible window) and hides the app; X X X brings
     /// the window back, in full screen again.

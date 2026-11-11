@@ -2,12 +2,17 @@ import SwiftUI
 import AppKit
 import Combine
 
-/// The window: one pane, or two side by side (the dual pane, D or ⌃O, as in
+/// A window: one pane, or two side by side (the dual pane, D or ⌃O, as in
 /// the file commanders). Each pane is a `BrowserModel` of its own — folder,
 /// search, history, sort, full view; keys and the toolbar act on the active
 /// one (Tab switches). F5 copies, F6 moves the active pane's marked items
-/// into the other pane's folder; what one pane changes on disk, the other
-/// reads again.
+/// into the other pane's folder; what one pane changes on disk, every other
+/// pane (of this window and the others) follows.
+/// The app has one or more windows (⌘N, e.g. one per display), each its own
+/// `WindowModel` with its own remembered folders, sort, dual pane and divider
+/// (`settingsPrefix`: none for the first window, "window2." … for the
+/// others); keys, menus, full screen and slideshows act on the window they
+/// happen in (`current`: the key window's).
 @MainActor
 final class WindowModel: ObservableObject {
     let left: BrowserModel
@@ -20,6 +25,11 @@ final class WindowModel: ObservableObject {
 
     static let dualKey = "dualPane"
     static let splitKey = "dualPaneSplit"
+    /// 1 for the first window; its settings carry no prefix.
+    let number: Int
+    let settingsPrefix: String
+    /// The AppKit window showing it (set by its view).
+    weak var nsWindow: NSWindow?
     /// The left pane's share of the window's width (the divider between the
     /// panes), remembered.
     @Published private(set) var split = 0.5
@@ -28,10 +38,13 @@ final class WindowModel: ObservableObject {
     private let makeRight: () -> BrowserModel
     private var forwarding: [AnyCancellable] = []
 
-    init(left: BrowserModel, defaults: UserDefaults, makeRight: @escaping () -> BrowserModel) {
+    init(left: BrowserModel, defaults: UserDefaults, number: Int = 1, makeRight: @escaping () -> BrowserModel) {
         self.left = left
         self.defaults = defaults
+        self.number = number
+        settingsPrefix = Self.prefix(number)
         self.makeRight = makeRight
+        Self.windows.append(Weak(self))
         watch(left)
         // A right pane with no folder of its own (and none being checked)
         // shows the left one's, also when that opens only after launch
@@ -39,16 +52,73 @@ final class WindowModel: ObservableObject {
             guard let right = self?.right, right.folderURL == nil, !right.restoringLastFolder, !right.isLoading else { return }
             right.open(folder: folder)
         })
-        if defaults.object(forKey: Self.splitKey) != nil {
-            split = min(max(defaults.double(forKey: Self.splitKey), Self.splitRange.lowerBound), Self.splitRange.upperBound)
+        if defaults.object(forKey: settingsPrefix + Self.splitKey) != nil {
+            split = min(max(defaults.double(forKey: settingsPrefix + Self.splitKey), Self.splitRange.lowerBound), Self.splitRange.upperBound)
         }
-        if defaults.bool(forKey: Self.dualKey) { setDual(true) }
+        if defaults.bool(forKey: settingsPrefix + Self.dualKey) { setDual(true) }
+    }
+
+    // MARK: The app's windows
+
+    private struct Weak { weak var model: WindowModel?; init(_ model: WindowModel) { self.model = model } }
+    private static var windows: [Weak] = []
+    /// The first window's model, made at launch; a window that opens while
+    /// it shows in none takes it.
+    private(set) var claimed = false
+
+    /// Every window's model still alive, in the order they were made.
+    static var all: [WindowModel] {
+        windows.removeAll { $0.model == nil }
+        return windows.compactMap(\.model)
+    }
+
+    static func prefix(_ number: Int) -> String { number == 1 ? "" : "window\(number)." }
+
+    /// The model of an AppKit window of the app.
+    static func of(_ window: NSWindow?) -> WindowModel? {
+        guard let window else { return nil }
+        return all.first { $0.nsWindow === window }
+    }
+
+    /// The window keys, menus and Settings act on: the key window's, else
+    /// the main window's, else the first one showing.
+    static var current: WindowModel? {
+        of(NSApp.keyWindow) ?? of(NSApp.mainWindow) ?? all.first { $0.nsWindow?.isVisible == true }
+    }
+
+    /// The model for a window opening: the first one while no window shows
+    /// it, else a new one with the lowest number no open window has.
+    static func claim(_ first: WindowModel, defaults: UserDefaults) -> WindowModel {
+        if !first.claimed { first.claimed = true; return first }
+        let opener = current?.active.folderURL
+        let taken = Set(all.filter(\.claimed).map(\.number))
+        let number = (2...).first { !taken.contains($0) }!
+        let prefix = Self.prefix(number)
+        let left = BrowserModel(defaults: defaults, settingsPrefix: prefix)
+        let model = WindowModel(left: left, defaults: defaults, number: number) {
+            BrowserModel(defaults: defaults, settingsPrefix: prefix + "rightPane.")
+        }
+        model.claimed = true
+        model.startFolder = opener
+        return model
+    }
+
+    /// Where a new window opens when it has no last folder of its own: the
+    /// folder of the window it was opened from.
+    private(set) var startFolder: URL?
+
+    /// Its window closed: free for the next one (the first window's model)
+    /// and quiet (a video or slideshow in it ends).
+    func windowClosed() {
+        claimed = false
+        nsWindow = nil
+        for pane in allPanes { pane.leaveWindow() }
     }
 
     /// Moves the divider; `remember` when the drag ends.
     func setSplit(_ value: Double, remember: Bool = false) {
         split = min(max(value, Self.splitRange.lowerBound), Self.splitRange.upperBound)
-        if remember { defaults.set(split, forKey: Self.splitKey) }
+        if remember { defaults.set(split, forKey: settingsPrefix + Self.splitKey) }
     }
 
     var active: BrowserModel { rightIsActive ? (right ?? left) : left }
@@ -62,7 +132,7 @@ final class WindowModel: ObservableObject {
             let seconds = min(max(newValue, BrowserModel.slideshowSecondsRange.lowerBound), BrowserModel.slideshowSecondsRange.upperBound)
             objectWillChange.send()
             defaults.set(seconds, forKey: BrowserModel.slideshowSecondsKey)
-            for pane in allPanes { pane.slideshowInterval = .seconds(seconds) }
+            for window in Self.all { for pane in window.allPanes { pane.slideshowInterval = .seconds(seconds) } }
         }
     }
 
@@ -70,6 +140,8 @@ final class WindowModel: ObservableObject {
     var anySheetOpen: Bool { panes.contains { $0.anySheetOpen } }
     /// Both panes, the right one also while hidden.
     private var allPanes: [BrowserModel] { [left, right].compactMap { $0 } }
+    /// Every pane of every window.
+    private static var everyPane: [BrowserModel] { all.flatMap(\.allPanes) }
 
     /// Menus and the toolbar read the active pane: its changes are the
     /// window's (each pane's own view watches that pane itself).
@@ -89,14 +161,16 @@ final class WindowModel: ObservableObject {
             guard let self, let pane else { return }
             self.activate(pane)
         }
-        // The other pane (also while hidden) follows what this one changes
-        pane.onFileChange = { [weak self, weak pane] changes in
-            guard let self, let pane else { return }
-            for other in self.allPanes where other !== pane { other.adopt(changes) }
+        pane.owner = self
+        // The other panes (also a hidden one, also in the other windows)
+        // follow what this one changes
+        pane.onFileChange = { [weak pane] changes in
+            guard let pane else { return }
+            for other in Self.everyPane where other !== pane { other.adopt(changes) }
         }
-        pane.onFoldersChanged = { [weak self, weak pane] folders in
-            guard let self, let pane else { return }
-            for other in self.allPanes where other !== pane && other.shows(any: folders) { other.refresh(changed: folders) }
+        pane.onFoldersChanged = { [weak pane] folders in
+            guard let pane else { return }
+            for other in Self.everyPane where other !== pane && other.shows(any: folders) { other.refresh(changed: folders) }
         }
         // One volume and one mini keyboard for the window. @Published sends
         // before the value is stored, so the other pane's own sink would see
@@ -134,7 +208,7 @@ final class WindowModel: ObservableObject {
         dual = on
         for pane in allPanes { pane.inDualPane = on }
         if !on { rightIsActive = false }
-        defaults.set(on, forKey: Self.dualKey)
+        defaults.set(on, forKey: settingsPrefix + Self.dualKey)
     }
 
     func activate(_ pane: BrowserModel) {
@@ -199,7 +273,7 @@ final class WindowModel: ObservableObject {
 @MainActor
 enum NortonMenus {
     private static func popUp(_ menu: NSMenu) {
-        guard let window = BrowserModel.appWindow, let view = window.contentView else { return }
+        guard let window = WindowModel.current?.nsWindow ?? BrowserModel.appWindow, let view = window.contentView else { return }
         menu.autoenablesItems = false
         let point = NSPoint(x: view.bounds.midX - 120, y: view.bounds.midY + 100)
         menu.popUp(positioning: nil, at: point, in: view)
@@ -224,3 +298,61 @@ enum NortonMenus {
         if alert.runModal() == .alertFirstButtonReturn { NSApp.terminate(nil) }
     }
 }
+
+/// The window keys, menus and Settings act on (`WindowModel.current`), for
+/// the app's menus to follow: they redraw when it or its active pane changes.
+@MainActor
+final class WindowFocus: ObservableObject {
+    static let shared = WindowFocus()
+    @Published private(set) var current: WindowModel?
+    private var forwarding: AnyCancellable?
+    private var observers: [NSObjectProtocol] = []
+
+    private init() {
+        for name in [NSWindow.didBecomeKeyNotification, NSWindow.didBecomeMainNotification, NSWindow.willCloseNotification] {
+            observers.append(NotificationCenter.default.addObserver(forName: name, object: nil, queue: .main) { _ in
+                MainActor.assumeIsolated { WindowFocus.shared.update() }
+            })
+        }
+    }
+
+    func update() {
+        let now = WindowModel.current
+        guard now !== current else { return }
+        current = now
+        forwarding = now?.objectWillChange.sink { [weak self] _ in self?.objectWillChange.send() }
+    }
+}
+
+/// Ties a window's model to the AppKit window showing it, and tells it when
+/// that window closes.
+struct WindowAttach: NSViewRepresentable {
+    let window: WindowModel
+
+    func makeNSView(context: Context) -> AttachView { AttachView(model: window) }
+    func updateNSView(_ view: AttachView, context: Context) {}
+
+    final class AttachView: NSView {
+        let model: WindowModel
+        private var closing: NSObjectProtocol?
+        init(model: WindowModel) {
+            self.model = model
+            super.init(frame: .zero)
+        }
+        required init?(coder: NSCoder) { fatalError() }
+
+        override func viewDidMoveToWindow() {
+            super.viewDidMoveToWindow()
+            guard let window, model.nsWindow !== window else { return }
+            model.nsWindow = window
+            if let closing { NotificationCenter.default.removeObserver(closing) }
+            closing = NotificationCenter.default.addObserver(forName: NSWindow.willCloseNotification, object: window, queue: .main) { [model] _ in
+                MainActor.assumeIsolated { model.windowClosed() }
+            }
+            WindowFocus.shared.update()
+        }
+
+        deinit { if let closing { NotificationCenter.default.removeObserver(closing) } }
+    }
+}
+

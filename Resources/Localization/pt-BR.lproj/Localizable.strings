@@ -288,3 +288,5 @@
 "Turned on (“Schnellbild Video Formats” under Media Extensions), macOS makes the thumbnails of MKV videos and AVCHD camcorder clips itself: Finder and Schnellbild show them at once and macOS keeps them (macOS 26). Off, Schnellbild makes them itself." = "Ativado (“Schnellbild Video Formats” em Extensões de Mídia), o macOS cria por conta própria as miniaturas de vídeos MKV e de clipes AVCHD de filmadoras: o Finder e o Schnellbild as mostram na hora e o macOS as guarda (macOS 26). Desativado, o Schnellbild as cria por conta própria.";
 "Divider between the panes" = "Divisor entre os painéis";
 "Drag to give one pane more room; double-click to share equally" = "Arraste para dar mais espaço a um painel; clique duas vezes para dividir igualmente";
+"New Window" = "Nova Janela";
+"New window (e.g. for another display)" = "Nova janela (ex.: para outro monitor)";

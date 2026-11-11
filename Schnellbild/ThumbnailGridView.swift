@@ -565,7 +565,7 @@ struct EntryInteractions: ViewModifier {
             }
             .onGeometryChange(for: CGRect.self) { $0.frame(in: .global) } action: { frame in
                 let entry = entry, model = model
-                ModifierClicks.place(key, frame: frame) { flags in
+                ModifierClicks.place(key, frame: frame, in: window) { flags in
                     guard model.mode == .grid, model.slideshow == nil else { return }
                     model.searchFocused = false
                     model.click(entry, command: flags.contains(.command), shift: flags.contains(.shift))
@@ -710,7 +710,7 @@ enum ModifierClicks {
     /// left origin): the click goes to the one under the pointer even when
     /// the grid moved under a still pointer (a re-sort, a search batch, a
     /// scroll to the selection), which sends no hover.
-    private static var frames: [String: (frame: CGRect, action: (NSEvent.ModifierFlags) -> Void)] = [:]
+    private static var frames: [String: (frame: CGRect, window: ObjectIdentifier, action: (NSEvent.ModifierFlags) -> Void)] = [:]
 
     static func enter(_ key: String, action: @escaping (NSEvent.ModifierFlags) -> Void) {
         hovered = (key, action)
@@ -718,20 +718,20 @@ enum ModifierClicks {
     static func leave(_ key: String) {
         if hovered?.key == key { hovered = nil }
     }
-    static func place(_ key: String, frame: CGRect, action: @escaping (NSEvent.ModifierFlags) -> Void) {
-        frames[key] = (frame, action)
+    static func place(_ key: String, frame: CGRect, in window: WindowModel, action: @escaping (NSEvent.ModifierFlags) -> Void) {
+        frames[key] = (frame, ObjectIdentifier(window), action)
     }
     static func remove(_ key: String) {
         frames[key] = nil
         leave(key)
     }
 
-    /// The tile under a point of the main window, by the frames reported.
+    /// The tile under a point of a browser window, by the frames its tiles reported.
     private static func tile(at event: NSEvent) -> ((NSEvent.ModifierFlags) -> Void)? {
-        guard let content = event.window?.contentView else { return nil }
+        guard let content = event.window?.contentView, let window = WindowModel.of(event.window) else { return nil }
         let local = content.convert(event.locationInWindow, from: nil)
         let point = content.isFlipped ? local : NSPoint(x: local.x, y: content.bounds.height - local.y)
-        return frames.values.first { $0.frame.contains(point) }?.action
+        return frames.values.first { $0.window == ObjectIdentifier(window) && $0.frame.contains(point) }?.action
     }
 
     /// The grid moved under a still pointer (a key scrolled it): which tile
@@ -753,7 +753,7 @@ enum ModifierClicks {
         if event.type == .leftMouseDown {
             pending = nil
             let flags = event.modifierFlags.intersection([.command, .shift])
-            guard !flags.isEmpty, event.window === BrowserModel.appWindow,
+            guard !flags.isEmpty, WindowModel.of(event.window) != nil,
                   let action = tile(at: event) ?? hovered?.action else { return }
             pending = (action, flags, event.locationInWindow)
             return
