@@ -41,6 +41,19 @@ section "Refresh, as its app does (Quick Look cache, the thumbnailer, its extens
 qlmanage -r cache 2>&1 | tail -1
 killall AudiovisualThumbnailExtension 2>/dev/null; killall -kill -m "QLVideo (Formats|Codecs)" 2>/dev/null; sleep 3
 section "thumbnails with its Media Extensions on"; probe 5-after
+section "every agent that may have read the switches before, ended (launchd starts them again on demand)"
+for p in pkd MENotificationAgent com.apple.quicklook.ThumbnailsAgent quicklookd QuickLookUIService AudiovisualThumbnailExtension extensionkitservice cfprefsd mediaanalysisd; do
+  if pgrep -x "$p" >/dev/null; then killall -9 "$p" 2>/dev/null && echo "ended $p"; fi
+done
+killall -kill -m "QLVideo (Formats|Codecs)" 2>/dev/null; sleep 5
+qlmanage -r cache 2>&1 | tail -1; sleep 2
+MARK=$(date '+%Y-%m-%d %H:%M:%S')
+section "thumbnails after ending the agents"; probe 6-after-agents
+section "does the thumbnailer look for media extensions at all"
+/usr/bin/log show --info --debug --start "$MARK" --style compact \
+  --predicate 'process == "AudiovisualThumbnailExtension" AND (subsystem CONTAINS "extensionkit" OR eventMessage CONTAINS[c] "mediaextension" OR eventMessage CONTAINS[c] "MEFormat" OR eventMessage CONTAINS[c] "format reader" OR eventMessage CONTAINS[c] "ProfessionalVideo" OR eventMessage CONTAINS[c] "QLVideo")' 2>/dev/null | grep -v 'log run' | tail -25
+/usr/bin/log show --info --debug --start "$MARK" --style compact \
+  --predicate 'process == "MENotificationAgent" OR process CONTAINS "QLVideo" OR eventMessage CONTAINS "uk.org.marginal.qlvideo"' 2>/dev/null | grep -v 'log run' | tail -25
 section "who handled them"
 /usr/bin/log show --info --start "$(date -v-2M '+%Y-%m-%d %H:%M:%S')" --style compact \
   --predicate 'process CONTAINS "QLVideo" OR (process == "AudiovisualThumbnailExtension" AND messageType == error)' 2>/dev/null | grep -v 'log run' | tail -30
