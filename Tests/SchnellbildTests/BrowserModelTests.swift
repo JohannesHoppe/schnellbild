@@ -2262,7 +2262,9 @@ final class PathTests: XCTestCase {
     }
 
     func testParentFolder() {
-        XCTAssertNil(BrowserModel.parentFolder(of: URL(fileURLWithPath: "/")))
+        XCTAssertEqual(BrowserModel.parentFolder(of: URL(fileURLWithPath: "/"))?.path, "/Volumes", "above /: every drive")
+        XCTAssertNil(BrowserModel.parentFolder(of: URL(fileURLWithPath: "/Volumes")), "nothing above the drives")
+        XCTAssertEqual(BrowserModel.parentFolder(of: URL(fileURLWithPath: "/Volumes/NAS/Photos"))?.path, "/Volumes/NAS")
         XCTAssertEqual(BrowserModel.parentFolder(of: URL(fileURLWithPath: "/a/b/"))?.path, "/a")
         XCTAssertEqual(BrowserModel.parentFolder(of: URL(fileURLWithPath: "/a"))?.path, "/")
     }

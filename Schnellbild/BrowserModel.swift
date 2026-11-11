@@ -788,11 +788,20 @@ final class BrowserModel: ObservableObject {
     var canGoUp: Bool { folderURL.flatMap(Self.parentFolder(of:)) != nil }
 
     /// The enclosing folder; nil at the file system root.
+    /// Above "/" lies the level of all drives: `/Volumes`, where macOS
+    /// lists every mounted disk and network share (the startup disk as a
+    /// link to "/"). Nothing lies above that.
     nonisolated static func parentFolder(of url: URL) -> URL? {
         let path = url.standardizedFileURL.path
-        guard path != "/" else { return nil }
+        if path == "/" { return URL(fileURLWithPath: volumesPath, isDirectory: true) }
+        guard path != volumesPath else { return nil }
         return url.standardizedFileURL.deletingLastPathComponent()
     }
+
+    nonisolated static let volumesPath = "/Volumes"
+
+    /// The level of all drives (`/Volumes`): no parent of its own.
+    nonisolated static func isDrivesLevel(_ url: URL) -> Bool { url.standardizedFileURL.path == volumesPath }
 
     // MARK: Rename
 
@@ -1315,7 +1324,11 @@ final class BrowserModel: ObservableObject {
                 options: []
             )
             var listing = FolderListing()
+            let drives = isDrivesLevel(url)
             for item in contents {
+                // The drives' level: the system's own mounts (Time Machine's
+                // snapshots) aren't drives one browses
+                if drives, item.lastPathComponent.hasPrefix("com.apple.") { continue }
                 if let entry = entry(for: item, keys: keys) { listing.entries.append(entry); continue }
                 var vals = try? item.resourceValues(forKeys: keys)
                 if vals?.isSymbolicLink == true { vals = try? item.resolvingSymlinksInPath().resourceValues(forKeys: keys) }

@@ -100,9 +100,14 @@ struct ThumbnailGridView: View {
             FolderTile(folder: nil, side: side, isSelected: selected, systemImage: "arrow.up.circle.fill")
         case .folder:
             let archive = entry.isArchive
-            FolderTile(folder: entry.url, side: side, isSelected: selected,
-                       systemImage: archive ? "archivebox.fill" : "folder.fill",
-                       isEmpty: model.isEmptyFolder(entry), kindLabel: archive ? "archive" : "folder")
+            if let drive = FolderTile.driveImage(entry.url) {
+                FolderTile(folder: entry.url, side: side, isSelected: selected, systemImage: drive,
+                           kindLabel: "drive", previews: false)
+            } else {
+                FolderTile(folder: entry.url, side: side, isSelected: selected,
+                           systemImage: archive ? "archivebox.fill" : "folder.fill",
+                           isEmpty: model.isEmptyFolder(entry), kindLabel: archive ? "archive" : "folder")
+            }
         case .image, .video:
             ThumbnailView(url: entry.url, side: side, isSelected: selected, isVideo: entry.kind == .video,
                           modified: entry.modDate)
@@ -121,24 +126,34 @@ struct FolderTile: View {
     var systemImage: String = "folder.fill"
     /// Nothing below it is a photo or video: drawn greyed out.
     var isEmpty = false
-    /// What the accessibility label calls it ("folder", "archive").
+    /// What the accessibility label calls it ("folder", "archive", "drive").
     var kindLabel = "folder"
+    /// A drive on the drives' level: its icon, nothing read from it (a
+    /// network share would be walked for a preview).
+    var previews = true
+
+    /// A drive's icon, for an item of the drives' level (`/Volumes`): the
+    /// startup disk (its link to "/") or another; nil for anything else.
+    static func driveImage(_ url: URL) -> String? {
+        guard BrowserModel.isDrivesLevel(url.deletingLastPathComponent()) else { return nil }
+        return url.resolvingSymlinksInPath().path == "/" ? "internaldrive.fill" : "externaldrive.fill"
+    }
 
     @EnvironmentObject var model: BrowserModel
-    @State private var previews: [NSImage] = []
+    @State private var previewImages: [NSImage] = []
 
     var body: some View {
         ZStack {
             Image(systemName: systemImage)
-                .font(.system(size: side * (previews.isEmpty ? (small ? 0.6 : 0.36) : (small ? 0.75 : 0.5))))
+                .font(.system(size: side * (previewImages.isEmpty ? (small ? 0.6 : 0.36) : (small ? 0.75 : 0.5))))
                 .foregroundStyle(Color.accentColor)
-            if !previews.isEmpty { fan }
+            if !previewImages.isEmpty { fan }
         }
         .saturation(isEmpty ? 0 : 1)
         .opacity(isEmpty ? 0.4 : 1)
         .tileChrome(side: side, isSelected: isSelected)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("\(TileChrome.selectionLabel(isSelected)), \(folder == nil ? "parent folder" : isEmpty ? "empty \(kindLabel)" : kindLabel), \(previews.count) previews")
+        .accessibilityLabel("\(TileChrome.selectionLabel(isSelected)), \(folder == nil ? "parent folder" : isEmpty ? "empty \(kindLabel)" : kindLabel), \(previewImages.count) previews")
         // Again after a change made inside the folder (trash, rename): what
         // it previews may have gone.
         .task(id: FolderKey(folder: folder, changes: model.folderChanges)) { await loadPreviews() }
@@ -151,9 +166,9 @@ struct FolderTile: View {
     /// Thumbnails fanned out over the lower part of the folder body.
     private var fan: some View {
         let thumb = side * (small ? 0.5 : 0.34)
-        let angles: [Double] = previews.count == 1 ? [0] : previews.count == 2 ? [-7, 7] : [-10, 0, 10]
+        let angles: [Double] = previewImages.count == 1 ? [0] : previewImages.count == 2 ? [-7, 7] : [-10, 0, 10]
         return ZStack {
-            ForEach(Array(previews.enumerated()), id: \.offset) { i, image in
+            ForEach(Array(previewImages.enumerated()), id: \.offset) { i, image in
                 Image(nsImage: image)
                     .resizable()
                     .aspectRatio(contentMode: .fill)
@@ -169,8 +184,8 @@ struct FolderTile: View {
     }
 
     private func loadPreviews() async {
-        previews = []
-        guard let folder else { return }
+        previewImages = []
+        guard previews, let folder else { return }
         let files = await FolderPreviewCache.shared.files(in: folder)
         let thumbSide = side * 0.4
         // Requested together: on a network volume one after another would
@@ -190,7 +205,7 @@ struct FolderTile: View {
             return byIndex
         }
         guard !Task.isCancelled else { return }
-        previews = files.indices.compactMap { loaded[$0] }
+        previewImages = files.indices.compactMap { loaded[$0] }
         if files.isEmpty {
             guard let found = await FolderPreviewCache.shared.containsMedia(folder), !Task.isCancelled else { return }
             model.noteFolder(folder, empty: !found)
