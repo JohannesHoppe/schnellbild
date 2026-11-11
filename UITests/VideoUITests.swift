@@ -39,13 +39,13 @@ final class VideoUITests: SchnellbildUITestCase {
     /// AVKit's floating controls stay where they were dragged, also for the
     /// next video.
     func testTheControlBarKeepsItsPlaceFromVideoToVideo() throws {
-        try put("clip.mp4", at: "a.mp4")
-        try put("clip.mp4", at: "b.mp4")
-        let log = tempDir.appendingPathComponent("keys.log")
-        launch(open: tempDir.appendingPathComponent("a.mp4").path, extra: ["--test-log=\(log.path)"])
+        // Named to follow each other (the folder holds pictures too)
+        try put("clip.mp4", at: "zz1.mp4")
+        try put("clip.mp4", at: "zz2.mp4")
+        launch(open: tempDir.appendingPathComponent("zz1.mp4").path)
         let video = element("video.avkit")
         XCTAssertTrue(video.waitForExistence(timeout: 20))
-        waitForBadge(containing: "a.mp4")
+        waitForBadge(containing: "zz1.mp4")
         app.typeKey(.space, modifierFlags: [])   // paused: the controls stay up
         waitForBadge(containing: "Paused")
         // AVKit's play button is a check box "play/pause" inside the player view
@@ -65,11 +65,7 @@ final class VideoUITests: SchnellbildUITestCase {
         print("control bar: \(before) → dragged \(dragged)")
         XCTAssertLessThan(dragged.midY, before.midY - 100, "the bar moved up")
         app.typeKey(.rightArrow, modifierFlags: .command)   // the next video
-        RunLoop.current.run(until: Date().addingTimeInterval(1))
-        print("key log after ⌘→:\n" + ((try? String(contentsOf: log, encoding: .utf8)) ?? "(none)"))
-        print("badge after ⌘→: \(text(of: badge)); avkit: \(element("video.avkit").exists), vlc: \(element("video.vlc").exists)")
-        print(app.windows.firstMatch.debugDescription.split(separator: "\n").prefix(60).joined(separator: "\n"))
-        waitForBadge(containing: "b.mp4")
+        waitForBadge(containing: "zz2.mp4")
         app.typeKey(.space, modifierFlags: [])
         waitForBadge(containing: "Paused")
         video.hover()
