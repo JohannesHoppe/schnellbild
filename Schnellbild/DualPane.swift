@@ -62,7 +62,7 @@ final class WindowModel: ObservableObject {
             self.objectWillChange.send()
         })
         // The other pane's sheets too: they disable the menus
-        forwarding.append(Publishers.Merge4(pane.$passwordRequest.map { _ in () }, pane.$renameTarget.map { _ in () },
+        forwarding.append(Publishers.Merge4(pane.$passwordRequest.map { _ in () }, pane.$renameTarget.map { _ in () }.merge(with: pane.$renameFileTarget.map { _ in () }),
                                             pane.$newFolderRequested.map { _ in () }, pane.$showHelp.map { _ in () })
             .sink { [weak self, weak pane] in
                 guard let self, pane !== self.active else { return }

@@ -133,6 +133,8 @@ struct EntryListView: View {
         .foregroundStyle(.tertiary)
         .padding(.horizontal, 12)
         .padding(.vertical, 3)
+        .contentShape(Rectangle())
+        .modifier(OtherFileInteractions(file: file))
         .accessibilityElement(children: .combine)
         .accessibilityIdentifier("other.\(file.name)")
     }
@@ -144,9 +146,9 @@ struct EntryListView: View {
             Image(systemName: "arrow.up.circle.fill").font(.title3).foregroundStyle(Color.accentColor)
         case .folder:
             let archive = entry.isArchive
-            Image(systemName: archive ? "archivebox.fill" : "folder.fill").font(.title3)
-                .foregroundStyle(Color.accentColor)
-                .opacity(model.isEmptyFolder(entry) ? 0.4 : 1)
+            FolderTile(folder: entry.url, side: Self.previewSide, isSelected: false,
+                       systemImage: archive ? "archivebox.fill" : "folder.fill",
+                       isEmpty: model.isEmptyFolder(entry), kindLabel: archive ? "archive" : "folder")
         case .image, .video:
             ThumbnailView(url: entry.url, side: Self.previewSide, isSelected: false, isVideo: false, modified: entry.modDate)
         }

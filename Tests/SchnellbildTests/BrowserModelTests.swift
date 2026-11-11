@@ -993,6 +993,40 @@ final class RenameTests: XCTestCase {
         XCTAssertNil(m.renameTarget, "sheet closes")
     }
 
+    /// The files listed under the grid (not pictures or videos) are renamed,
+    /// moved and trashed too; the list follows.
+    func testOtherFilesAreRenamedMovedAndTrashed() async throws {
+        let tree = try TempTree(self)
+        try tree.file("notes.txt")
+        try tree.file("b.log")
+        try tree.file("c.dat")
+        let sorted = try tree.folder("Sorted")
+        try tree.file("Sorted/x.jpg")
+        let spy = FileActionsSpy()
+        let m = makeModel(spy)
+        await openAndWait(m, tree.root)
+        XCTAssertEqual(m.otherFiles.map(\.name), ["b.log", "c.dat", "notes.txt"])
+
+        let notes = try XCTUnwrap(m.otherFiles.first { $0.name == "notes.txt" })
+        m.beginRename(notes)
+        XCTAssertEqual(m.renameFileTarget?.name, "notes.txt")
+        XCTAssertTrue(m.otherSheetOpen)
+        try await m.rename(notes, to: "a.md")
+        XCTAssertNil(m.renameFileTarget, "sheet closes")
+        XCTAssertEqual(m.otherFiles.map(\.name), ["a.md", "b.log", "c.dat"], "renamed in place, sorted")
+        XCTAssertTrue(FileManager.default.fileExists(atPath: tree.root.appendingPathComponent("a.md").path))
+
+        let b = try XCTUnwrap(m.otherFiles.first { $0.name == "b.log" })
+        m.moveToTrash(b)
+        XCTAssertEqual(spy.trashed.map(\.lastPathComponent), ["b.log"])
+        XCTAssertEqual(m.otherFiles.map(\.name), ["a.md", "c.dat"])
+
+        m.move([tree.root.appendingPathComponent("c.dat")], into: sorted)
+        await waitUntil { m.transfersRunning == 0 }
+        XCTAssertEqual(m.otherFiles.map(\.name), ["a.md"], "moved out of the folder shown")
+        XCTAssertTrue(FileManager.default.fileExists(atPath: sorted.appendingPathComponent("c.dat").path))
+    }
+
     func testRenameValidation() async throws {
         let tree = try TempTree(self)
         try tree.folder("a")

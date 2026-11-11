@@ -455,6 +455,7 @@ struct PaneView: View {
         }
         .sheet(isPresented: $model.showHelp) { ShortcutsHelpView() }
         .sheet(item: $model.renameTarget) { RenameView(entry: $0) }
+        .sheet(item: $model.renameFileTarget) { RenameView(file: $0) }
         .sheet(item: $model.passwordRequest) { PasswordView(request: $0) }
         .sheet(isPresented: $model.newFolderRequested) { NewFolderView() }
     }

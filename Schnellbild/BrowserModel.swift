@@ -657,6 +657,9 @@ final class BrowserModel: ObservableObject {
 
     /// The folder or file whose rename sheet is open.
     @Published var renameTarget: GridEntry?
+    /// The other file (not a picture, video or archive) whose rename sheet
+    /// is open.
+    @Published var renameFileTarget: OtherFile?
 
     // MARK: Archive passwords
 
@@ -2383,6 +2386,48 @@ final class BrowserModel: ObservableObject {
         fileActions.reveal(ArchivePath.isInside(entry.url) ? ArchivePath.split(entry.url)!.archive : entry.url)
     }
 
+    // MARK: Other files (not pictures, videos or archives)
+
+    /// Whether an other file may be renamed, moved or trashed: one on disk,
+    /// not inside an archive (archives are only read).
+    func canChange(_ file: OtherFile) -> Bool {
+        slideshow == nil && !ArchivePath.isInside(file.url)
+    }
+
+    func reveal(_ file: OtherFile) {
+        fileActions.reveal(ArchivePath.split(file.url)?.archive ?? file.url)
+    }
+
+    func beginRename(_ file: OtherFile) {
+        guard canChange(file), !anySheetOpen else { return }
+        searchFocused = false
+        renameFileTarget = file
+    }
+
+    /// Renames an other file in place; any name, it isn't shown as a picture
+    /// or video either way.
+    @discardableResult
+    func rename(_ file: OtherFile, to rawName: String) async throws -> URL {
+        Self.testLog("rename \(file.name) → \(rawName)")
+        let name = try Self.validName(rawName)
+        let old = file.url
+        guard name != old.lastPathComponent else { renameFileTarget = nil; return old }
+        let new = old.deletingLastPathComponent().appendingPathComponent(name)
+        try await renameOnDisk(old, new, name: name)
+        apply(.moved(old, to: new))
+        // A new extension can make it a picture, video or archive: the grid
+        // shows it then
+        if Self.mediaKind(of: new) != nil || ArchiveName.format(of: name) != nil { refresh(changed: [old.deletingLastPathComponent()]) }
+        renameFileTarget = nil
+        return new
+    }
+
+    func moveToTrash(_ file: OtherFile) {
+        guard canChange(file) else { return }
+        guard fileActions.confirmTrash(file.name, String(localized: "The file will be moved to the Trash.")) else { return }
+        trashFiles([(file.url, false)]) { [self] trashed in apply(trashed.map { FileChange.removed($0) }) }
+    }
+
     func openInDefaultApp() {
         guard slideshow == nil else { return }   // the selection is in the hidden grid
         guard let entry = selectedEntry, entry.kind != .parent else { return }
@@ -2474,7 +2519,10 @@ final class BrowserModel: ObservableObject {
     /// the tile goes with its first part). Hands on what went, at least in
     /// part; the first failure is reported.
     private func trashItems(_ items: [GridEntry], then: @escaping @MainActor ([URL]) -> Void) {
-        let urls = items.map { ($0.url, $0.isArchive) }
+        trashFiles(items.map { ($0.url, $0.isArchive) }, then: then)
+    }
+
+    private func trashFiles(_ urls: [(URL, Bool)], then: @escaping @MainActor ([URL]) -> Void) {
         let spy = fileActions.runsOffMain ? nil : fileActions.trash
         let work: @Sendable () -> (trashed: [URL], error: Error?) = {
             var trashed: [URL] = []
@@ -2593,7 +2641,7 @@ final class BrowserModel: ObservableObject {
     }
 
     /// A sheet other than the help is open (a second sheet can't open on top).
-    var otherSheetOpen: Bool { renameTarget != nil || passwordRequest != nil || newFolderRequested }
+    var otherSheetOpen: Bool { renameTarget != nil || renameFileTarget != nil || passwordRequest != nil || newFolderRequested }
     /// Any of the sheets is open (they keep their keys).
     var anySheetOpen: Bool { showHelp || otherSheetOpen }
 
@@ -3055,6 +3103,14 @@ final class BrowserModel: ObservableObject {
         backStack = backStack.map { location in changes.reduce(location) { $1.apply(to: $0) } }
         forwardStack = forwardStack.map { location in changes.reduce(location) { $1.apply(to: $0) } }
         entries = sorted(entries.compactMap(entry))
+        // The other files too: renamed in place, gone when trashed or moved
+        // out of the folder shown
+        if !otherFiles.isEmpty, let shown = folderPath {
+            otherFiles = otherFiles.compactMap { file -> OtherFile? in
+                guard let url = lookup.url(file.url), Self.canonicalPath(url.deletingLastPathComponent()) == shown else { return nil }
+                return url == file.url ? file : OtherFile(url: url, byteSize: file.byteSize)
+            }.sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
+        }
         // Marks only on what is still listed (a mark no tile shows would
         // take F5 / F6 / the Trash away from the selection)
         if !marked.isEmpty { marked.formIntersection(entries.map { Self.canonicalPath($0.url) }) }

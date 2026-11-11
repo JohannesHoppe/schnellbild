@@ -68,7 +68,7 @@ Open a folder with ⌘O or drag it onto the window; drag a single file to open i
   <img src="docs/screenshots/list-light.png" width="760" alt="A folder as a list: preview, name, kind, dates and size in columns">
 </picture></p>
 
-`L` (or the switch in the status bar) shows the folder as a list: a small preview, the whole name, kind, date modified, date taken and size in columns. A click on a column's header sorts by it, another reverses it, the same sort as the sort menu. Everything else works as in the grid: clicking, marking, dragging, opening. Each half of the dual pane keeps its own choice, and Schnellbild remembers it.
+`L` (or the switch in the status bar) shows the folder as a list: a small preview (for a folder, its first pictures fanned out as on its tile), the whole name, kind, date modified, date taken and size in columns. A click on a column's header sorts by it, another reverses it, the same sort as the sort menu. Everything else works as in the grid: clicking, marking, dragging, opening. Each half of the dual pane keeps its own choice, and Schnellbild remembers it.
 
 ### Sort
 
@@ -236,7 +236,7 @@ Name, type, resolution, size, when it was taken (from the photo's EXIF or the vi
   <img src="docs/screenshots/rename-light.png" width="760" alt="Renaming a folder">
 </picture></p>
 
-Rename a folder or file in place (Return or F2 as in the Finder, the Actions menu, or right-click), in the grid or straight from the full view. The folder you are in is renamed by clicking its name in the title bar. For files the name without its extension is selected, like in Finder. The search results and the history follow the new name. Reveal an item in Finder, open it in its default app, or move it to the Trash after a confirmation. To sort pictures into folders: ⇧⌘N makes a folder (it exists only once you have named it and pressed ↩), then drag tiles onto a folder tile, or onto `..` to move them up a level. On the same volume they are moved, onto another one copied, as in the Finder. Tiles can be dragged to the Finder too. Inside archives nothing is changed.
+Rename a folder or file in place (Return or F2 as in the Finder, the Actions menu, or right-click), in the grid or straight from the full view. The folder you are in is renamed by clicking its name in the title bar. For files the name without its extension is selected, like in Finder. The search results and the history follow the new name. Reveal an item in Finder, open it in its default app, or move it to the Trash after a confirmation. To sort pictures into folders: ⇧⌘N makes a folder (it exists only once you have named it and pressed ↩), then drag tiles onto a folder tile, or onto `..` to move them up a level. On the same volume they are moved, onto another one copied, as in the Finder. Tiles can be dragged to the Finder too. The other files listed under the grid (anything that isn't a picture, video or archive) are renamed, revealed and trashed by right-click, and dragged onto a folder like a tile. Inside archives nothing is changed.
 
 | Key | Action |
 |---|---|

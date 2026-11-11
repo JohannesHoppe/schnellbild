@@ -1,9 +1,14 @@
 import SwiftUI
 
 /// Sheet for renaming a folder or file (F2, the Actions menu, or the context
-/// menu). For a file the name without its extension is selected, like Finder.
+/// menu), also one of the other files listed under the grid. For a file the
+/// name without its extension is selected, like Finder.
 struct RenameView: View {
-    let entry: GridEntry
+    enum Subject {
+        case entry(GridEntry)
+        case file(OtherFile)
+    }
+    let subject: Subject
 
     @EnvironmentObject var model: BrowserModel
     @State private var name: String
@@ -14,14 +19,42 @@ struct RenameView: View {
     @State private var done = false
 
     init(entry: GridEntry) {
-        self.entry = entry
+        subject = .entry(entry)
         _name = State(initialValue: entry.url.lastPathComponent)
+    }
+
+    init(file: OtherFile) {
+        subject = .file(file)
+        _name = State(initialValue: file.url.lastPathComponent)
+    }
+
+    private var title: Text {
+        switch subject {
+        case .entry(let entry):
+            return entry.kind != .folder ? Text("Rename File")
+                : entry.isArchive ? Text("Rename Archive") : Text("Rename Folder")
+        case .file:
+            return Text("Rename File")
+        }
+    }
+
+    private var url: URL {
+        switch subject {
+        case .entry(let entry): return entry.url
+        case .file(let file): return file.url
+        }
+    }
+
+    private func close() {
+        switch subject {
+        case .entry: model.renameTarget = nil
+        case .file: model.renameFileTarget = nil
+        }
     }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            (entry.kind != .folder ? Text("Rename File")
-             : entry.isArchive ? Text("Rename Archive") : Text("Rename Folder")).font(.headline)
+            title.font(.headline)
             TextField("Name", text: $name)
                 .textFieldStyle(.roundedBorder)
                 .focused($fieldFocused)
@@ -35,7 +68,7 @@ struct RenameView: View {
             }
             HStack {
                 Spacer()
-                Button { model.renameTarget = nil } label: { HStack(spacing: 6) { Text("Cancel"); KeyCap("esc") } }
+                Button(action: close) { HStack(spacing: 6) { Text("Cancel"); KeyCap("esc") } }
                     .keyboardShortcut(.cancelAction)
                 Button(action: commit) { HStack(spacing: 6) { Text("Rename"); KeyCap("↩") } }
                     .keyboardShortcut(.defaultAction)
@@ -55,7 +88,10 @@ struct RenameView: View {
         done = true
         Task {
             do {
-                try await model.rename(entry, to: name)
+                switch subject {
+                case .entry(let entry): try await model.rename(entry, to: name)
+                case .file(let file): try await model.rename(file, to: name)
+                }
             } catch {
                 self.error = error.localizedDescription
                 done = false
@@ -67,8 +103,8 @@ struct RenameView: View {
     /// field is being edited (AppKit selects everything when it gains focus;
     /// that has happened once the field editor is first responder).
     private func selectBaseName() {
-        guard entry.kind != .folder || entry.isArchive else { return }
-        let length = ((entry.url.lastPathComponent as NSString).deletingPathExtension as NSString).length
+        if case .entry(let entry) = subject, entry.kind == .folder, !entry.isArchive { return }
+        let length = ((url.lastPathComponent as NSString).deletingPathExtension as NSString).length
         Task { @MainActor in
             for _ in 0..<50 {   // up to a second
                 if let editor = NSApp.keyWindow?.firstResponder as? NSTextView {
