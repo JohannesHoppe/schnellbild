@@ -281,6 +281,56 @@ final class ActionsUITests: SchnellbildUITestCase {
         XCTAssertTrue(tile("b.jpg").waitForExistence(timeout: 10), "inside the folder")
     }
 
+    /// "Open in Other Pane" from the left pane's grid into the right pane's
+    /// list, back and forth: the rows stay rows (seen once: rows 325 pt
+    /// apart without their name, as if laid out by the grid's large tiles).
+    func testOpenInOtherPaneKeepsTheListsRows() throws {
+        for folderName in ["One", "Two"] {
+            for i in 0..<30 { try put("sample.jpg", at: "\(folderName)/\(folderName.lowercased())\(i).jpg") }
+        }
+        launch(open: tempDir.path)
+        XCTAssertTrue(app.staticTexts["a.jpg"].waitForExistence(timeout: 15))
+        // Large tiles in both panes (the size is the window's)
+        for _ in 0..<6 { app.typeKey("=", modifierFlags: .command) }
+        app.typeKey("d", modifierFlags: [])
+        let left = element("pane.left"), right = element("pane.right")
+        XCTAssertTrue(right.waitForExistence(timeout: 10), "two panes")
+        app.typeKey(.tab, modifierFlags: [])
+        app.typeKey("l", modifierFlags: [])
+        XCTAssertTrue(right.descendants(matching: .any).matching(identifier: "list").firstMatch.waitForExistence(timeout: 10))
+        app.typeKey(.tab, modifierFlags: [])
+
+        func row(_ name: String) -> XCUIElement { right.descendants(matching: .any).matching(identifier: "row.\(name)").firstMatch }
+        for round in 0..<6 {
+            let name = round % 2 == 0 ? "One" : "Two", stem = name.lowercased()
+            let tile = left.descendants(matching: .any).matching(identifier: "tile.\(name)").firstMatch
+            XCTAssertTrue(tile.waitForExistence(timeout: 10))
+            tile.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).rightClick()
+            let item = app.menuItems["Open in Other Pane"]
+            XCTAssertTrue(item.waitForExistence(timeout: 5))
+            item.click()
+            XCTAssertTrue(row("\(stem)0.jpg").waitForExistence(timeout: 10), "round \(round): \(name) in the list")
+            // Rows a row apart, each a row high (also after the list settles)
+            for check in 0..<2 {
+                let frames = (0..<4).map { row("\(stem)\($0).jpg").frame }
+                let report = "round \(round), check \(check): " + frames.map { "\(Int($0.minY))/\(Int($0.height))" }.joined(separator: " ")
+                print(report)
+                for (a, b) in zip(frames, frames.dropFirst()) {
+                    XCTAssertLessThan(b.minY - a.minY, 60, report)
+                }
+                for frame in frames {
+                    XCTAssertLessThan(frame.height, 60, report)
+                    XCTAssertGreaterThan(frame.width, 400, "the row spans the list: " + report)
+                }
+                RunLoop.current.run(until: Date().addingTimeInterval(1))
+            }
+            // Back up in the right pane, so the next round opens anew
+            app.typeKey(.tab, modifierFlags: [])
+            app.typeKey(.upArrow, modifierFlags: .command)
+            app.typeKey(.tab, modifierFlags: [])
+        }
+    }
+
     /// D opens the dual pane (the button shows it on); Tab switches; F5
     /// copies the marked items into the other pane's folder; dragging a tile
     /// into the other pane moves it there; D closes it again.
