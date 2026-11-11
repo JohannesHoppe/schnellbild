@@ -11,9 +11,10 @@ mkdir -p "$OUT"
 READER_ID=${READER_ID:-art.haushoppe.schnellbild.spikehost.reader}
 LSREGISTER=/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister
 CLIPS=$(mktemp -d)
-cp ../../Tests/SchnellbildTests/Videos/clip.avi "$CLIPS/clip.spk"
+cp ../../Tests/SchnellbildTests/Videos/clip.mkv "$CLIPS/clip.spk"
+cp ../../Tests/SchnellbildTests/Videos/clip.mkv "$CLIPS/clip.mkv"
 section() { echo; echo "== $*"; }
-host() { perl -e 'alarm 30; exec @ARGV' "$APP/Contents/MacOS/SpikeHost" "$CLIPS/clip.spk"; }
+host() { SPIKE_FRAMES="$OUT" perl -e 'alarm 30; exec @ARGV' "$APP/Contents/MacOS/SpikeHost" "$CLIPS/clip.mkv" "$CLIPS/clip.spk"; }
 shot() { screencapture -x "$OUT/$1.png" 2>&1 || echo "(no screenshot)"; }
 
 section system; sw_vers; csrutil status
@@ -81,7 +82,8 @@ NOTES="$HOME/Library/Containers/$READER_ID/Data/spike-notes.txt"
 ASKED=$(grep -c 'asked for' "$NOTES" 2>/dev/null || echo 0)
 swiftc -O probe-me.swift -o "$CLIPS/probe" 2>&1 | tail -3
 QLSINCE=$(date '+%Y-%m-%d %H:%M:%S')
-PROBE_MEDIA_EXTENSIONS=1 perl -e 'alarm 60; exec @ARGV' "$CLIPS/probe" "$CLIPS/clip.spk" "$OUT/3-thumbnail.png" 2>&1
+PROBE_MEDIA_EXTENSIONS=1 perl -e 'alarm 60; exec @ARGV' "$CLIPS/probe" "$CLIPS/clip.mkv" "$OUT/3-thumbnail-mkv.png" 2>&1
+PROBE_MEDIA_EXTENSIONS=1 perl -e 'alarm 60; exec @ARGV' "$CLIPS/probe" "$CLIPS/clip.spk" "$OUT/3-thumbnail-spk.png" 2>&1
 echo "asks before: $ASKED, after: $(grep -c 'asked for' "$NOTES" 2>/dev/null || echo 0)"
 section "again after Quick Look is reset and restarted (it may have read the switch before it was on)"
 qlmanage -r 2>&1 | tail -1; qlmanage -r cache 2>&1 | tail -1
