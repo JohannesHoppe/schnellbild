@@ -883,7 +883,7 @@ final class BrowserModel: ObservableObject {
     ]
     nonisolated static let videoExtensions: Set<String> = [
         "mp4", "mov", "qt", "m4v", "avi", "mkv", "webm", "m2ts", "mts",
-        "mpg", "mpeg", "m2v", "3gp", "3g2", "dv", "wmv", "flv", "ogv"
+        "mpg", "mpeg", "m2v", "vob", "3gp", "3g2", "dv", "wmv", "flv", "ogv"
         // (not "ts": far more often TypeScript than an MPEG transport stream)
     ]
 

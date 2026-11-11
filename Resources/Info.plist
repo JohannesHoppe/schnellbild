@@ -67,7 +67,7 @@
             </array>
         </dict>
     </array>
-    <!-- Matroska has no system type; declared so QuickLook can hand MKV files to the thumbnail extension (the identifier VLC uses) -->
+    <!-- Matroska and VOB have no system type; declared so QuickLook can hand them to the thumbnail extension (the identifiers VLC uses) -->
     <key>UTImportedTypeDeclarations</key>
     <array>
         <dict>
@@ -78,7 +78,24 @@
             <key>UTTypeConformsTo</key>
             <array>
                 <string>public.movie</string>
+                <dict>
+            <key>UTTypeIdentifier</key>
+            <string>org.videolan.vob</string>
+            <key>UTTypeDescription</key>
+            <string>DVD video</string>
+            <key>UTTypeConformsTo</key>
+            <array>
+                <string>public.video</string>
             </array>
+            <key>UTTypeTagSpecification</key>
+            <dict>
+                <key>public.filename-extension</key>
+                <array>
+                    <string>vob</string>
+                </array>
+            </dict>
+        </dict>
+    </array>
             <key>UTTypeTagSpecification</key>
             <dict>
                 <key>public.filename-extension</key>

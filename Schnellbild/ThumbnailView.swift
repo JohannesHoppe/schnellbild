@@ -83,7 +83,7 @@ final class ThumbnailCache {
         guard !Task.isCancelled else { return nil }
         var image = rep?.nsImage
         if rep?.type == .icon { image?.accessibilityDescription = Self.fileIcon }
-        // MKV, WebM, AVI … come from Schnellbild's QuickLook extension; a
+        // MKV, WebM, AVI, AVCHD, VOB … come from Schnellbild's QuickLook extension; a
         // video QuickLook still has only the icon for (the extension not
         // registered yet, a type it doesn't take): VLC makes the frame here.
         if rep?.type != .thumbnail, BrowserModel.mediaKind(of: url) == .video, !Task.isCancelled,

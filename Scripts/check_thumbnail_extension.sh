@@ -1,7 +1,8 @@
 #!/bin/bash
 # Checks the built app's QuickLook thumbnail extension the way macOS uses it:
 # registered, asked for an MKV's thumbnail from another process, and that
-# thumbnail kept by the system (a second process gets it from the cache).
+# thumbnail kept by the system (a second process gets it from the cache);
+# also an AVCHD clip and a DVD's VOB, which macOS has no picture for itself.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 trap '[ -n "${finished:-}" ] || { ./Scripts/thumbnail_extension_report.sh; exit 1; }' EXIT
@@ -19,9 +20,11 @@ done
 pluginkit -m -v -i art.haushoppe.schnellbild.thumbnails
 swiftc -O Scripts/thumbnail_probe.swift -o "$OUT/probe"
 FILES=$(mktemp -d)
-cp UITests/Fixtures/clip.mkv "$FILES/clip.mkv"
+cp UITests/Fixtures/clip.mkv UITests/Fixtures/clip.m2ts UITests/Fixtures/clip.vob "$FILES/"
 "$OUT/probe" "$FILES/clip.mkv" "$OUT/clip-mkv.png"
 "$OUT/probe" "$FILES/clip.mkv"      # a new process: from the system's cache
+"$OUT/probe" "$FILES/clip.m2ts" "$OUT/clip-m2ts.png"
+"$OUT/probe" "$FILES/clip.vob" "$OUT/clip-vob.png"
 # A damaged video gets no thumbnail and doesn't hang
 "$OUT/probe" UITests/Fixtures/broken.mkv && { echo "broken.mkv got a thumbnail"; exit 1; } || true
 finished=1
