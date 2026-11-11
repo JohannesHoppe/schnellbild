@@ -1791,14 +1791,21 @@ final class BrowserModel: ObservableObject {
             else { return nil }
             let exif = props[kCGImagePropertyExifDictionary] as? [CFString: Any]
             let tiff = props[kCGImagePropertyTIFFDictionary] as? [CFString: Any]
-            guard let text = (exif?[kCGImagePropertyExifDateTimeOriginal]
-                              ?? exif?[kCGImagePropertyExifDateTimeDigitized]
-                              ?? tiff?[kCGImagePropertyTIFFDateTime]) as? String else { return nil }
-            // With the camera's offset from UTC when it wrote one (as video
-            // dates are), else in the Mac's time zone
-            let offset = (exif?[kCGImagePropertyExifOffsetTimeOriginal] ?? exif?[kCGImagePropertyExifOffsetTimeDigitized]) as? String
-            if let offset, let date = exifOffsetDateFormatter.date(from: text + offset) { return date }
-            return exifDateFormatter.date(from: text)
+            // The first date that is one: a camera whose clock was never set
+            // writes "0000:00:00 00:00:00" (or blanks), which the lenient
+            // parser would turn into the year 2
+            let candidates: [(text: String?, offset: String?)] = [
+                (exif?[kCGImagePropertyExifDateTimeOriginal] as? String, exif?[kCGImagePropertyExifOffsetTimeOriginal] as? String),
+                (exif?[kCGImagePropertyExifDateTimeDigitized] as? String, exif?[kCGImagePropertyExifOffsetTimeDigitized] as? String),
+                (tiff?[kCGImagePropertyTIFFDateTime] as? String, nil)
+            ]
+            for case let (text?, offset) in candidates {
+                // With the camera's offset from UTC when it wrote one (as video
+                // dates are), else in the Mac's time zone
+                let date = offset.flatMap { exifOffsetDateFormatter.date(from: text + $0) } ?? exifDateFormatter.date(from: text)
+                if let date, Calendar(identifier: .gregorian).component(.year, from: date) >= 1900 { return date }
+            }
+            return nil
         case .video:
             let asset = AVURLAsset(url: url)
             guard let item = try? await asset.load(.creationDate) else { return nil }
