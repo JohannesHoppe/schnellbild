@@ -74,12 +74,12 @@
             <string>org.matroska.mkv</string>
             <string>io.iina.mkv</string>
             <string>com.firecore.fileformat.mkv</string>
-            <!-- AVCHD (.mts, .m2ts): macOS reads it itself (the reader refuses
-                 it); claimed so Quick Look reads it through AVFoundation -->
+            <!-- AVCHD (.mts, .m2ts): AVFoundation reads it itself, but Quick
+                 Look's thumbnails of it come only through this reader -->
             <string>public.avchd-mpeg-2-transport-stream</string>
         </array>
         <key>ObjectName</key>
-        <string>Schnellbild Matroska reader</string>
+        <string>Schnellbild video reader (MKV, AVCHD)</string>
     </dict>
 </dict>
 </plist>
