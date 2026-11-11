@@ -243,19 +243,41 @@ private struct FolderKey: Hashable {
 }
 
 /// Which files each folder tile previews, remembered per folder: scrolling
-/// recreates tiles, and listing a large folder on a network share again for
-/// every appearance would compete with the thumbnails.
-/// The same for whether a folder holds any media at all (a walk of the whole
-/// tree when it doesn't).
+/// recreates tiles, going back (out of a search, up a folder) shows the same
+/// folders again, and listing them anew on a network share each time would
+/// compete with the thumbnails. The same for whether a folder holds any
+/// media at all (a walk of the whole tree when it doesn't).
+/// Kept as long as the folder's modification date stays the same: checked
+/// (one stat, off the main thread) when a tile asks and the last check is
+/// older than `recheckAfter`. A folder's date changes with what it holds
+/// directly, not with what changes deeper down; the app's own changes forget
+/// the folders around them (`forget`).
 @MainActor
 final class FolderPreviewCache {
     static let shared = FolderPreviewCache()
-    private let files = NSCache<NSString, NSArray>()
-    private let hasMedia = NSCache<NSString, NSNumber>()
 
-    init() {
-        files.countLimit = 1024
-        hasMedia.countLimit = 4096
+    /// What is known of one folder, the folder's date it was found with
+    /// (nil: not known yet, taken at the next check) and when that was checked.
+    @MainActor
+    final class Known<Value>: NSObject {
+        let value: Value
+        var stamp: Date?
+        var checked: Date
+        init(_ value: Value, stamp: Date?) {
+            self.value = value
+            self.stamp = stamp
+            checked = Date()
+        }
+    }
+
+    private let files = NSCache<NSString, Known<[URL]>>()
+    private let hasMedia = NSCache<NSString, Known<Bool>>()
+    let recheckAfter: TimeInterval
+
+    init(recheckAfter: TimeInterval = 30) {
+        self.recheckAfter = recheckAfter
+        files.countLimit = 4096
+        hasMedia.countLimit = 8192
     }
 
     private func key(_ folder: URL) -> NSString { BrowserModel.canonicalPath(folder) as NSString }
@@ -264,33 +286,62 @@ final class FolderPreviewCache {
     private var generation = 0
     /// Listings under way, shared by the tiles that wait for them; one
     /// nobody waits for any more is stopped.
-    private var running: [NSString: (task: Task<[URL], Never>, waiters: Int)] = [:]
+    private var running: [NSString: (task: Task<(files: [URL], stamp: Date?), Never>, waiters: Int)] = [:]
 
-    /// The files known for the folder, without reading anything.
+    /// The folder's modification date (inside an archive: none, the archive's
+    /// index is kept by its own version).
+    nonisolated static func stamp(of folder: URL) async -> Date? {
+        guard !ArchivePath.isInside(folder) else { return .distantPast }
+        return await Blocking.run(.utility) {
+            (try? folder.resourceValues(forKeys: [.contentModificationDateKey]))?.contentModificationDate
+        }
+    }
+
+    /// Whether what is known still holds: checked lately, or the folder's date unchanged.
+    private func holds<Value>(_ known: Known<Value>, for folder: URL) async -> Bool {
+        if Date().timeIntervalSince(known.checked) < recheckAfter { return true }
+        let now = await Self.stamp(of: folder)
+        guard let now else { return false }
+        if known.stamp == nil { known.stamp = now }
+        guard known.stamp == now else { return false }
+        known.checked = Date()
+        return true
+    }
+
+    /// The files known for the folder, without reading anything (a tile
+    /// shows them at once; `files(in:)` checks them).
     func knownFiles(in folder: URL) -> [URL]? {
-        files.object(forKey: key(folder)) as? [URL]
+        files.object(forKey: key(folder))?.value
     }
 
     func files(in folder: URL) async -> [URL] {
         let key = key(folder)
-        if let cached = files.object(forKey: key) as? [URL] { return cached }
+        if let known = files.object(forKey: key) {
+            if await holds(known, for: folder) { return known.value }
+            if files.object(forKey: key) === known { files.removeObject(forKey: key) }
+            hasMedia.removeObject(forKey: key)
+        }
         let started = generation
-        let task: Task<[URL], Never>
+        let task: Task<(files: [URL], stamp: Date?), Never>
         if let under = running[key] {
             task = under.task
             running[key]?.waiters += 1
         } else {
-            task = Task.detached(priority: .utility) { await BrowserModel.folderPreviewFiles(in: folder) }
+            // The date first: a change during the listing makes the next check list again
+            task = Task.detached(priority: .utility) {
+                let stamp = await Self.stamp(of: folder)
+                return (await BrowserModel.folderPreviewFiles(in: folder), stamp)
+            }
             running[key] = (task, 1)
         }
         let found = await withTaskCancellationHandler { await task.value } onCancel: { Task { @MainActor in self.leave(key, task) } }
         let current = generation == started
         if running[key]?.task == task, !task.isCancelled { running[key] = nil }
-        if current, !task.isCancelled { files.setObject(found as NSArray, forKey: key) }
-        return found
+        if current, !task.isCancelled { files.setObject(Known(found.files, stamp: found.stamp), forKey: key) }
+        return found.files
     }
 
-    private func leave(_ key: NSString, _ task: Task<[URL], Never>) {
+    private func leave(_ key: NSString, _ task: Task<(files: [URL], stamp: Date?), Never>) {
         guard running[key]?.task == task else { return }
         running[key]?.waiters -= 1
         if running[key]?.waiters == 0 {
@@ -301,22 +352,27 @@ final class FolderPreviewCache {
 
     /// nil when cancelled before it knew.
     func containsMedia(_ folder: URL) async -> Bool? {
-        if let cached = hasMedia.object(forKey: key(folder)) { return cached.boolValue }
+        let key = key(folder)
+        if let known = hasMedia.object(forKey: key) {
+            if await holds(known, for: folder) { return known.value }
+            if hasMedia.object(forKey: key) === known { hasMedia.removeObject(forKey: key) }
+        }
         let started = generation
         // The preview listing usually answers it already
         guard let found = await files(in: folder).isEmpty ? await BrowserModel.containsMedia(folder) : true else { return nil }
-        let current = generation == started
-        if current { hasMedia.setObject(NSNumber(value: found), forKey: key(folder)) }
+        if generation == started {
+            hasMedia.setObject(Known(found, stamp: files.object(forKey: key)?.stamp), forKey: key)
+        }
         return found
     }
 
     /// What a search's walk found out (it went through the folder anyway).
     func learn(_ folder: URL, hasMedia: Bool) {
-        self.hasMedia.setObject(NSNumber(value: hasMedia), forKey: key(folder))
+        self.hasMedia.setObject(Known(hasMedia, stamp: nil), forKey: key(folder))
     }
 
     func learn(_ folder: URL, files: [URL]) {
-        self.files.setObject(files as NSArray, forKey: key(folder))
+        self.files.setObject(Known(files, stamp: nil), forKey: key(folder))
     }
 
     func forgetAll() {

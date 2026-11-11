@@ -2640,6 +2640,25 @@ final class ReviewFixTests: XCTestCase {
         XCTAssertEqual(second, first, "listed once, not on every tile appearance")
     }
 
+    /// Kept while the folder's date stays; listed again once it changes
+    /// (a file added outside the app), checked at the next ask.
+    func testFolderPreviewListFollowsTheFoldersDate() async throws {
+        let tree = try TempTree(self)
+        try tree.file("b.jpg")
+        let cache = FolderPreviewCache(recheckAfter: 0)
+        let first = await cache.files(in: tree.root)
+        XCTAssertEqual(first.map(\.lastPathComponent), ["b.jpg"])
+        let again = await cache.files(in: tree.root)
+        XCTAssertEqual(again, first, "unchanged folder: kept")
+        let found = await cache.containsMedia(tree.root)
+        XCTAssertEqual(found, true)
+        // A date the folder didn't have: as after a file arrived
+        try tree.file("a.jpg")
+        try FileManager.default.setAttributes([.modificationDate: Date().addingTimeInterval(60)], ofItemAtPath: tree.root.path)
+        let changed = await cache.files(in: tree.root)
+        XCTAssertEqual(changed.map(\.lastPathComponent), ["a.jpg", "b.jpg"], "listed again")
+    }
+
     func testTextFieldsAndSheetsKeepTheirKeysExceptF1AndF2() async throws {
         let tree = try TempTree(self)
         try tree.folder("dir")

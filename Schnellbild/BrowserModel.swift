@@ -1211,10 +1211,9 @@ final class BrowserModel: ObservableObject {
         isLoading = true            // first: keeps the searchText reset below from searching
         loadingLocation = location
         refreshDeferred = false     // this reading is the one it waited for
-        // What folders contain may have changed outside the app (Finder, a
-        // camera import): previews and emptiness are found out afresh.
+        // Previews and emptiness come from FolderPreviewCache, which checks
+        // each folder's date (changes outside the app: Finder, a camera import)
         emptyFolders = []
-        FolderPreviewCache.shared.forgetAll()
         loadGeneration += 1
         let generation = loadGeneration
         listingStale = false
