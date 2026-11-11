@@ -1,0 +1,73 @@
+#!/bin/bash
+# On a CI runner: installs the spike app, turns its format reader on in
+# System Settings by UI scripting (as a user would), and shows what that
+# changed on disk and whether the reader then runs. Prints everything,
+# keeps screenshots in $OUT.
+set -uo pipefail
+cd "$(dirname "$0")"
+APP=/Applications/SpikeHost.app
+OUT=${2:-$PWD/out}
+mkdir -p "$OUT"
+LSREGISTER=/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister
+CLIPS=$(mktemp -d)
+cp ../../Tests/SchnellbildTests/Videos/clip.avi "$CLIPS/clip.spk"
+section() { echo; echo "== $*"; }
+host() { perl -e 'alarm 30; exec @ARGV' "$APP/Contents/MacOS/SpikeHost" "$CLIPS/clip.spk"; }
+shot() { screencapture -x "$OUT/$1.png" 2>&1 || echo "(no screenshot)"; }
+
+section system; sw_vers; csrutil status
+rm -rf "$APP"; ditto "${1:-build}/SpikeHost.app" "$APP"
+"$LSREGISTER" -f -R -trusted "$APP"; sleep 3
+section "host before"; host
+
+MARK=$(mktemp); sleep 1
+section "System Settings"
+open "x-apple.systempreferences:com.apple.ExtensionsPreferences?extensionPointIdentifier=com.apple.mediaextension.formatreader"
+sleep 10; shot 1-opened
+osascript <<'AS' 2>&1 | head -150
+tell application "System Events" to tell process "System Settings"
+  set frontmost to true
+  delay 1
+  set out to ""
+  repeat with e in (entire contents of window 1)
+    try
+      set out to out & (class of e as text) & " | " & (name of e as text) & " | " & (description of e as text) & " | " & (value of e as text) & linefeed
+    on error
+      try
+        set out to out & (class of e as text) & linefeed
+      end try
+    end try
+  end repeat
+  return out
+end tell
+AS
+section "turn on every switch on that page"
+osascript <<'AS' 2>&1
+tell application "System Events" to tell process "System Settings"
+  set n to 0
+  repeat with e in (entire contents of window 1)
+    try
+      if class of e is checkbox then
+        if value of e is 0 then
+          click e
+          set n to n + 1
+        end if
+      end if
+    end try
+  end repeat
+  return "clicked " & n
+end tell
+AS
+sleep 4; shot 2-switched
+section "host after"; host
+section "files changed meanwhile (home)"
+find "$HOME/Library" -newer "$MARK" -type f 2>/dev/null | grep -vE '/Caches/|/Logs/|\.db-(wal|shm)$|/Saved Application State/|/Biome/|/Metadata/|/Assistants/' | head -60
+section "files changed meanwhile (system)"
+sudo find /Library /private/var/db /private/var/root/Library -newer "$MARK" -type f 2>/dev/null | grep -vE '/Caches/|/Logs/|/uuidtext/|/diagnostics/|\.db-(wal|shm)$' | head -60
+section "plists among them"
+for f in $(find "$HOME/Library/Preferences" "$HOME/Library/Group Containers" -newer "$MARK" -name '*.plist' -type f 2>/dev/null | head -20); do
+  echo "--- $f"; plutil -p "$f" 2>/dev/null | grep -i -B2 -A2 -E 'spike|mediaextension|formatreader|haushoppe' | head -30
+done
+section "who logged about it"
+/usr/bin/log show --start "$(date -v-3M '+%Y-%m-%d %H:%M:%S')" --style compact \
+  --predicate 'eventMessage CONTAINS[c] "spikehost" OR eventMessage CONTAINS[c] "formatreader.spike" OR subsystem == "art.haushoppe.schnellbild.spike"' 2>/dev/null | tail -60
