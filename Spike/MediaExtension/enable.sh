@@ -76,9 +76,18 @@ sleep 4; shot 2-switched
 section "host after"; host
 section "the reader's own notes (its container)"
 cat "$HOME/Library/Containers/$READER_ID/Data/spike-notes.txt" 2>&1
-section "quick look thumbnail of clip.spk, now that it is on"
-mkdir -p "$CLIPS/ql"; perl -e 'alarm 40; exec @ARGV' qlmanage -t -s 256 -o "$CLIPS/ql" "$CLIPS/clip.spk" 2>&1 | tail -3; ls -l "$CLIPS/ql"
-cat "$HOME/Library/Containers/$READER_ID/Data/spike-notes.txt" 2>&1
+section "quick look thumbnail of clip.spk, now that it is on (as Finder asks)"
+NOTES="$HOME/Library/Containers/$READER_ID/Data/spike-notes.txt"
+ASKED=$(grep -c 'asked for' "$NOTES" 2>/dev/null || echo 0)
+swiftc -O ../../Scripts/thumbnail_probe.swift -o "$CLIPS/probe" 2>&1 | tail -3
+QLSINCE=$(date '+%Y-%m-%d %H:%M:%S')
+perl -e 'alarm 60; exec @ARGV' "$CLIPS/probe" "$CLIPS/clip.spk" "$OUT/3-thumbnail.png" 2>&1
+echo "asks before: $ASKED, after: $(grep -c 'asked for' "$NOTES" 2>/dev/null || echo 0)"
+cat "$NOTES" 2>&1
+section "who handled the thumbnail request"
+/usr/bin/log show --info --start "$QLSINCE" --style compact \
+  --predicate 'process CONTAINS[c] "Thumbnail" OR process CONTAINS[c] "quicklook" OR eventMessage CONTAINS[c] "clip.spk" OR eventMessage CONTAINS[c] "mediaextension"' \
+  2>/dev/null | grep -vE 'log run' | tail -40
 section "the reader process in the log"
 /usr/bin/log show --info --debug --start "$(date -v-4M '+%Y-%m-%d %H:%M:%S')" --style compact --predicate 'process == "SpikeReader"' 2>/dev/null | tail -30
 section "settings containers"
