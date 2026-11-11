@@ -278,3 +278,4 @@
 "Redo Move" = "이동 실행 복귀";
 "Redo Copy" = "복사 실행 복귀";
 "Open in Other Pane" = "다른 패널에서 열기";
+"Version %@ (%@)" = "버전 %@ (%@)";

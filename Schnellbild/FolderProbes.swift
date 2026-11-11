@@ -54,3 +54,23 @@ enum FolderProbes {
         }
     }
 }
+
+/// Work that waits on the disk (reading a folder, copying, renaming), on a
+/// dispatch thread rather than one of Swift's: those are as many as the Mac
+/// has cores, and a few calls waiting on a network share would leave none
+/// for the rest of the app.
+enum Blocking {
+    static func run<T: Sendable>(_ qos: DispatchQoS.QoSClass = .userInitiated,
+                                 _ work: @escaping @Sendable () -> T) async -> T {
+        await withCheckedContinuation { answer in
+            DispatchQueue.global(qos: qos).async { answer.resume(returning: work()) }
+        }
+    }
+
+    static func run<T: Sendable>(_ qos: DispatchQoS.QoSClass = .userInitiated,
+                                 _ work: @escaping @Sendable () throws -> T) async throws -> T {
+        try await withCheckedThrowingContinuation { answer in
+            DispatchQueue.global(qos: qos).async { answer.resume(with: Result { try work() }) }
+        }
+    }
+}

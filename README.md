@@ -169,7 +169,7 @@ Zoom with the keyboard or a trackpad pinch, drag to pan, rotate in steps of 90°
   <img src="docs/screenshots/video-light.png" width="760" alt="A video in the full view, paused">
 </picture></p>
 
-Videos play right away, MP4 and MOV through AVKit, formats macOS can't play (AVI, MKV, WebM, DVD's VOB …) through the built-in VLC engine. The arrow keys skim: each press jumps a tenth of the video ahead or back, past the end on to the next item, with ⇧ a hundredth. So one key pages through photos and skims through videos; ⌘← ⌘→ skip a video at once. A thin bar under the name at the top shows how far the video has played, the time left beside it. The player's own control bar stays where you drag it, also for the next video; while a video is turned it is hidden (it would turn with the picture), the keys work as always. ↑ ↓ set the volume of every video, shown a moment while it changes, and kept for the next launch.
+Videos play right away, MP4 and MOV through AVKit, formats macOS can't play (AVI, MKV, WebM, DVD's VOB …) through the built-in VLC engine. The arrow keys skim: each press jumps a tenth of the video ahead or back, past the end on to the next item, with ⇧ a hundredth. So one key pages through photos and skims through videos; ⌘← ⌘→ skip a video at once. A thin bar under the name at the top shows how far the video has played, the time left beside it. While a video is turned, the player's own control bar is hidden (it would turn with the picture); the keys work as always. ↑ ↓ set the volume of every video, shown a moment while it changes, and kept for the next launch.
 
 | Key | Action |
 |---|---|

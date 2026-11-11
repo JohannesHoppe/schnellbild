@@ -1,12 +1,27 @@
 import AppKit
+import SwiftUI
 
 /// The About window: version and copyright from the bundle, and the
 /// libraries the app is built with, with their licenses. The full license
 /// texts ship in the bundle (Contents/Resources/Licenses) and in
 /// THIRD-PARTY-NOTICES.md.
+@MainActor
 enum AboutPanel {
+    private static var window: NSWindow?
+
+    /// A window of its own: the system's About panel is narrow and can't be
+    /// made wider, so the license lines broke into short scraps.
     static func show() {
-        NSApp.orderFrontStandardAboutPanel(options: [.credits: credits()])
+        if window == nil {
+            let panel = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 560, height: 560),
+                                 styleMask: [.titled, .closable], backing: .buffered, defer: false)
+            panel.title = String(localized: "About Schnellbild")
+            panel.isReleasedWhenClosed = false
+            panel.contentView = NSHostingView(rootView: AboutView())
+            panel.center()
+            window = panel
+        }
+        window?.makeKeyAndOrderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
     }
 
@@ -33,29 +48,51 @@ enum AboutPanel {
                   license: String(localized: "© Tim Kientzle and the libarchive contributors. BSD 2-clause license."),
                   link: "https://www.libarchive.org"),
     ]
+}
 
-    static func credits() -> NSAttributedString {
-        let text = NSMutableAttributedString()
-        let body = NSFont.systemFont(ofSize: NSFont.smallSystemFontSize)
-        let bold = NSFont.boldSystemFont(ofSize: NSFont.smallSystemFontSize)
-        let paragraph = NSMutableParagraphStyle()
-        paragraph.alignment = .center
-        paragraph.paragraphSpacing = 6
-        func add(_ string: String, font: NSFont, link: String? = nil) {
-            var attributes: [NSAttributedString.Key: Any] = [.font: font, .foregroundColor: NSColor.labelColor,
-                                                             .paragraphStyle: paragraph]
-            if let link, let url = URL(string: link) { attributes[.link] = url }
-            text.append(NSAttributedString(string: string, attributes: attributes))
+/// What the About window shows: the app, its version and copyright, then
+/// every component with what it does here and its license.
+private struct AboutView: View {
+    private let info = Bundle.main.infoDictionary ?? [:]
+
+    var body: some View {
+        let version = info["CFBundleShortVersionString"] as? String ?? ""
+        let build = info["CFBundleVersion"] as? String ?? ""
+        VStack(spacing: 6) {
+            Image(nsImage: NSApp.applicationIconImage).resizable().frame(width: 72, height: 72)
+            Text(verbatim: "Schnellbild").font(.title2.weight(.semibold))
+            Text("Version \(version) (\(build))").font(.callout).foregroundStyle(.secondary)
+            Text(verbatim: info["NSHumanReadableCopyright"] as? String ?? "").font(.caption).foregroundStyle(.secondary)
+            Divider().padding(.vertical, 8)
+            ScrollView {
+                VStack(spacing: 14) {
+                    Text("Schnellbild's own code is free software under the MIT License. The components below keep their own licenses.")
+                    link("https://github.com/JohannesHoppe/schnellbild")
+                    Text("Built with").font(.headline).padding(.top, 4)
+                    ForEach(AboutPanel.components, id: \.name) { component in
+                        VStack(spacing: 3) {
+                            Text(verbatim: component.name).fontWeight(.semibold)
+                            Text(verbatim: component.use)
+                            Text(verbatim: component.license).foregroundStyle(.secondary)
+                            link(component.link)
+                        }
+                    }
+                    Text("The full license texts are in the app (Contents/Resources/Licenses).").foregroundStyle(.secondary)
+                }
+                .font(.callout)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+                .frame(maxWidth: .infinity)
+                .padding(.horizontal, 8)
+            }
         }
-        add(String(localized: "Schnellbild's own code is free software under the MIT License. The components below keep their own licenses.") + "\n", font: body)
-        add("https://github.com/JohannesHoppe/schnellbild\n\n", font: body, link: "https://github.com/JohannesHoppe/schnellbild")
-        add(String(localized: "Built with") + "\n", font: bold)
-        for component in components {
-            add("\(component.name)\n", font: bold)
-            add("\(component.use)\n\(component.license)\n", font: body)
-            add("\(component.link)\n\n", font: body, link: component.link)
-        }
-        add(String(localized: "The full license texts are in the app (Contents/Resources/Licenses)."), font: body)
-        return text
+        .padding(24)
+        .frame(width: 560, height: 560)
+        .textSelection(.enabled)
+    }
+
+    private func link(_ address: String) -> some View {
+        Link(destination: URL(string: address)!) { Text(verbatim: address) }
     }
 }
+

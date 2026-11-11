@@ -118,9 +118,9 @@ struct FileActions {
     @MainActor
     func run(_ steps: [BrowserModel.TransferStep], _ how: BrowserModel.Transfer) async -> [Result<Bool, Error>] {
         if runsOffMain {
-            return await Task.detached(priority: .userInitiated) {
+            return await Blocking.run {
                 steps.map { step in Result { try Self.perform(step, how, move: LiveFiles.move, transfer: LiveFiles.transfer, copy: LiveFiles.copy) } }
-            }.value
+            }
         }
         return steps.map { step in Result { try Self.perform(step, how, move: move, transfer: transfer, copy: copy) } }
     }
@@ -1359,7 +1359,7 @@ final class BrowserModel: ObservableObject {
         restoringLastFolder = true
         Task {
             defer { restoringLastFolder = false }
-            let exists = await Task.detached(priority: .userInitiated) {
+            let exists = await Blocking.run {
                 // A folder inside an archive: the archive file must still be there
                 if let (archive, _) = ArchivePath.splitChecked(URL(fileURLWithPath: path)) {
                     return FileManager.default.fileExists(atPath: archive.path)
@@ -1367,7 +1367,7 @@ final class BrowserModel: ObservableObject {
                 var isDir: ObjCBool = false
                 return FileManager.default.fileExists(atPath: path, isDirectory: &isDir) && isDir.boolValue
                     && !BrowserModel.isPackage(URL(fileURLWithPath: path))
-            }.value
+            }
             // Unless the user opened something meanwhile
             guard folderURL == nil else { return }
             if exists { open(folder: URL(fileURLWithPath: path)) } else if let other = fallback() { open(folder: other) }
@@ -1399,7 +1399,7 @@ final class BrowserModel: ObservableObject {
     /// can't be read (an archive that needs a password; `password` is one
     /// just typed for it).
     nonisolated static func listing(_ url: URL, password: String? = nil) async -> Result<FolderListing, Error> {
-        if await Task.detached(priority: .userInitiated, operation: { ArchivePath.splitChecked(url) }).value != nil {
+        if await Blocking.run(.userInitiated, { ArchivePath.splitChecked(url) != nil }) {
             do { return .success(try await ArchiveStore.shared.listing(in: url, trying: password)) }
             catch { return .failure(error) }
         }
@@ -1408,7 +1408,7 @@ final class BrowserModel: ObservableObject {
     }
 
     nonisolated private static func scanFolder(_ url: URL) async throws -> FolderListing {
-        try await Task.detached(priority: .userInitiated) {
+        try await Blocking.run {
             let keys = entryKeys
             let contents = try FileManager.default.contentsOfDirectory(
                 at: url,
@@ -1437,7 +1437,7 @@ final class BrowserModel: ObservableObject {
             listing.others.removeAll { ArchiveName.firstVolumeNames(of: $0.name).contains { names.contains($0.lowercased()) } }
             listing.others.sort { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
             return listing
-        }.value
+        }
     }
 
     /// What `entry(for:keys:)` reads, prefetched by the listings.
@@ -1485,7 +1485,7 @@ final class BrowserModel: ObservableObject {
     /// nil when cancelled before it knew (the tile went away): no answer to
     /// remember.
     nonisolated static func containsMedia(_ folder: URL) async -> Bool? {
-        if ArchivePath.split(folder) != nil, await Task.detached(operation: { ArchivePath.splitChecked(folder) }).value != nil {
+        if ArchivePath.split(folder) != nil, await Blocking.run(.userInitiated, { ArchivePath.splitChecked(folder) != nil }) {
             // An archive that needs a password: not known (not greyed out)
             guard let media = try? await ArchiveStore.shared.media(below: folder) else { return nil }
             return !media.isEmpty
@@ -1560,7 +1560,7 @@ final class BrowserModel: ObservableObject {
     /// network share to its end to sort it would cost far more), else the
     /// first ones further down.
     nonisolated static func folderPreviewFiles(in folder: URL, limit: Int = 3) async -> [URL] {
-        if ArchivePath.split(folder) != nil, await Task.detached(operation: { ArchivePath.splitChecked(folder) }).value != nil {
+        if ArchivePath.split(folder) != nil, await Blocking.run(.userInitiated, { ArchivePath.splitChecked(folder) != nil }) {
             // An archive: its first pictures at any depth (archives often
             // hold one folder at the top). Not videos: they'd be unpacked.
             let media = (try? await ArchiveStore.shared.media(below: folder)) ?? []
@@ -2822,7 +2822,7 @@ final class BrowserModel: ObservableObject {
         guard fileActions.runsOffMain else { then(work()); return }
         Self.transfersUnderWay += 1
         Task {
-            let result = await Task.detached(priority: .userInitiated) { work() }.value
+            let result = await Blocking.run { work() }
             // Counted down after `then`: a move's copy, which `then` starts,
             // counts itself first, so the count never touches 0 in between.
             then(result)
@@ -3034,9 +3034,9 @@ final class BrowserModel: ObservableObject {
             do { try create() } catch { throw RenameError.failed(error.localizedDescription) }
         }
         if fileActions.runsOffMain {
-            try await Task.detached(priority: .userInitiated) {
+            try await Blocking.run {
                 try make(LiveFiles.conflicts(url, folderURL)) { try FileManager.default.createDirectory(at: url, withIntermediateDirectories: false) }
-            }.value
+            }
         } else {
             try make(fileActions.conflicts(url, folderURL)) { try fileActions.createFolder(url) }
         }
@@ -3309,7 +3309,7 @@ final class BrowserModel: ObservableObject {
         // thread, a share answers slowly)
         let url = entry.url
         Task {
-            let parts = await Task.detached(priority: .userInitiated) { ArchiveName.allFiles(of: url).count }.value
+            let parts = await Blocking.run { ArchiveName.allFiles(of: url).count }
             guard selectedEntry?.url == url, !anySheetOpen, slideshow == nil else { return }
             if parts > 1 { NSSound.beep() } else { renameTarget = entry }
         }
@@ -3360,10 +3360,10 @@ final class BrowserModel: ObservableObject {
             do { try fileActions.move(old, new) } catch { throw RenameError.failed(error.localizedDescription) }
             return
         }
-        try await Task.detached(priority: .userInitiated) {
+        try await Blocking.run {
             try check(LiveFiles.conflicts(new, old))
             do { try LiveFiles.move(old, new) } catch { throw RenameError.failed(error.localizedDescription) }
-        }.value
+        }
     }
 
     /// A change this pane made on disk: its own lists, then the other panes.

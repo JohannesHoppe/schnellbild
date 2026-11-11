@@ -278,3 +278,4 @@
 "Redo Move" = "Rétablir le déplacement";
 "Redo Copy" = "Rétablir la copie";
 "Open in Other Pane" = "Ouvrir dans l’autre volet";
+"Version %@ (%@)" = "Version %@ (%@)";
