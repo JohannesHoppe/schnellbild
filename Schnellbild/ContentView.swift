@@ -257,9 +257,7 @@ private struct WindowView: View {
             if NSApp.modalWindow != nil || event.window is NSSavePanel { return event }
             // Another window of the app (the About panel) keeps its keys;
             // the Adjustments popover passes them on, as the main window
-            // (a window of the main one's own, such as AVKit's floating
-            // control bar once clicked, is the main window's)
-            if let other = event.window, other !== BrowserModel.appWindow, other.parent !== BrowserModel.appWindow,
+            if let other = event.window, other !== BrowserModel.appWindow,
                !NSStringFromClass(type(of: other)).contains("Popover") { return event }
             let code = event.keyCode
             let command = event.modifierFlags.contains(.command)
