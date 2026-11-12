@@ -6,6 +6,8 @@ import XCTest
 class SchnellbildUITestCase: XCTestCase {
     var tempDir: URL!
     var app: XCUIApplication!
+    /// The app's language where a launch names none.
+    var uiLanguage = "en"
 
     override func setUpWithError() throws {
         continueAfterFailure = false
@@ -52,7 +54,8 @@ class SchnellbildUITestCase: XCTestCase {
 
     @discardableResult
     func launch(open path: String? = nil, resetState: Bool = true, extra: [String] = [],
-                language: String = "en") -> XCUIApplication {
+                language: String? = nil) -> XCUIApplication {
+        let language = language ?? uiLanguage
         let app = XCUIApplication()
         // English unless a test asks otherwise, whatever the runner's
         // language: the tests match UI text. AppKit reads "-name value"

@@ -9,6 +9,8 @@ import AppKit
 /// environment (xcodebuild passes TEST_RUNNER_<name> to the test runner as <name>):
 ///   SCREENSHOTS=1      take them
 ///   SCREENSHOT_SUFFIX  appended to each name, e.g. "-dark"
+///   LANGUAGE           the app's language (default "en"; "de" for the
+///                      German website)
 ///   PHOTOS_DIR         the sample library (Scripts/make_sample_media.swift),
 ///                      outside the runner's container so the status bar
 ///                      shows a short path
@@ -21,6 +23,7 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
             throw XCTSkip("README screenshots only run with SCREENSHOTS=1")
         }
         suffix = env["SCREENSHOT_SUFFIX"] ?? ""
+        uiLanguage = env["LANGUAGE"] ?? "en"
         // Not super: its fixtures (a.jpg …) don't belong in the pictures
         continueAfterFailure = false
         let photos = try XCTUnwrap(env["PHOTOS_DIR"], "PHOTOS_DIR missing")
@@ -29,6 +32,14 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
 
     override func tearDownWithError() throws {
         app?.terminate()   // keep the library: the dark run uses it too
+    }
+
+    /// The words the test looks for, in the app's language (the app's own
+    /// translations, Resources/Localization).
+    private func ui(_ english: String) -> String {
+        let german = ["Date Taken": "Aufnahmedatum", "Cancel": "Abbrechen", "Full view": "Vollansicht",
+                      "Done": "Fertig", "Paused": "Angehalten", "Slideshow": "Diashow"]
+        return uiLanguage == "de" ? german[english] ?? english : english
     }
 
     /// `front`: the frontmost window (Settings), else the main one.
@@ -51,7 +62,7 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         shoot("grid")
 
         element("sortMenu").firstMatch.click()
-        XCTAssertTrue(app.menuItems["Date Taken"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.menuItems[ui("Date Taken")].waitForExistence(timeout: 5))
         shoot("sort")
         app.typeKey(.escape, modifierFlags: [])
 
@@ -60,13 +71,13 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         app.typeKey(.F2, modifierFlags: [])
         XCTAssertTrue(app.textFields["renameField"].waitForExistence(timeout: 5))
         shoot("rename")
-        app.buttons["Cancel"].firstMatch.click()
+        app.buttons[ui("Cancel")].firstMatch.click()
 
         app.typeKey(.F1, modifierFlags: [])
-        XCTAssertTrue(app.staticTexts["Full view"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts[ui("Full view")].waitForExistence(timeout: 5))
         shoot("help")
-        app.buttons["Done"].firstMatch.click()
-        eventually("help closes") { !app.staticTexts["Full view"].exists }
+        app.buttons[ui("Done")].firstMatch.click()
+        eventually("help closes") { !app.staticTexts[ui("Full view")].exists }
 
         tile("Fjord at Sunset.jpg").click()
         waitForSelected("Fjord at Sunset.jpg")
@@ -100,12 +111,12 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         app.typeKey(.rightArrow, modifierFlags: [])   // skim ahead, as in the README
         app.typeKey(.rightArrow, modifierFlags: [])
         app.typeKey(.space, modifierFlags: [])
-        waitForBadge(containing: "Paused")
+        waitForBadge(containing: ui("Paused"))
         shoot("video")
 
         app.typeKey(.escape, modifierFlags: [])
         app.typeKey("s", modifierFlags: [])   // the whole library, full screen
-        waitForBadge(containing: "Slideshow")
+        waitForBadge(containing: ui("Slideshow"))
         shoot("slideshow")
         app.typeKey(.escape, modifierFlags: [])
         XCTAssertTrue(searchField.waitForExistence(timeout: 10))
@@ -165,7 +176,7 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         XCTAssertTrue(element("video.avkit").waitForExistence(timeout: 15))
         RunLoop.current.run(until: Date().addingTimeInterval(1.5))
         app.typeKey(.space, modifierFlags: [])
-        waitForBadge(containing: "Paused")
+        waitForBadge(containing: ui("Paused"))
         app.typeKey(.downArrow, modifierFlags: [])
         app.typeKey(.downArrow, modifierFlags: [])
         app.typeKey(.downArrow, modifierFlags: [])
