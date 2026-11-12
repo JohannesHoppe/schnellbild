@@ -33,9 +33,15 @@ enum AboutPanel {
         let link: String
     }
 
+    /// The Mac App Store build (Scripts/build_app.sh writes the key): its
+    /// VLCKit is built without VLC's GPL modules (Scripts/build_vlckit_lgpl.sh).
+    static let isAppStoreBuild = Bundle.main.object(forInfoDictionaryKey: "SchnellbildAppStore") as? Bool == true
+
     static let components: [Component] = [
         Component(name: "VLCKit 3.6.0 (libVLC 3.0.21)", use: String(localized: "plays the video formats macOS can't (AVI, MKV, WebM …)"),
-                  license: String(localized: "© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later; some of its modules GNU General Public License 2 or later."),
+                  license: isAppStoreBuild
+                      ? String(localized: "© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later. Built from its source without VLC's modules under the GPL; the build script and its changes are in Schnellbild's repository (github.com/JohannesHoppe/schnellbild).")
+                      : String(localized: "© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later; some of its modules GNU General Public License 2 or later."),
                   link: "https://code.videolan.org/videolan/VLCKit"),   // its source; THIRD-PARTY-NOTICES.md has the exact version
         Component(name: "UnRAR 7.2.7", use: String(localized: "reads RAR archives"),
                   // The license's own sentence stays as written (English)

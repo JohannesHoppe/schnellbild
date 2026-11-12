@@ -303,3 +303,15 @@
 "Same as System" = "与系统相同";
 "Light" = "浅色";
 "Dark" = "深色";
+"Schnellbild needs your permission for this folder" = "Schnellbild 需要你允许访问此文件夹";
+"Allow Access…" = "允许访问…";
+"Allow Access" = "允许访问";
+"Choose this folder, or one that holds it, so Schnellbild may show it. Schnellbild remembers your choice." = "请选择此文件夹或包含它的文件夹，以便 Schnellbild 显示。Schnellbild 会记住你的选择。";
+"Folder access" = "文件夹访问";
+"Folders opened to Schnellbild" = "已向 Schnellbild 开放的文件夹";
+"Forget Folder Access…" = "忘记文件夹访问…";
+"Schnellbild may show only the folders you choose or drop on its window, with everything inside them." = "Schnellbild 只能显示你选择或拖到其窗口中的文件夹及其中的全部内容。";
+"Forget the access to every folder?" = "要忘记对所有文件夹的访问吗？";
+"Forget Folder Access" = "忘记文件夹访问";
+"Each folder asks for your permission again." = "每个文件夹都会再次请求你的允许。";
+"© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later. Built from its source without VLC's modules under the GPL; the build script and its changes are in Schnellbild's repository (github.com/JohannesHoppe/schnellbild)." = "© VideoLAN 和 VLC 作者。GNU Lesser General Public License 2.1 或更高版本。从源代码构建，不含 GPL 授权的 VLC 模块；构建脚本及其更改位于 Schnellbild 的代码仓库（github.com/JohannesHoppe/schnellbild）。";

@@ -303,3 +303,15 @@
 "Same as System" = "Как в системе";
 "Light" = "Светлое";
 "Dark" = "Тёмное";
+"Schnellbild needs your permission for this folder" = "Schnellbild нужно ваше разрешение для этой папки";
+"Allow Access…" = "Разрешить доступ…";
+"Allow Access" = "Разрешить доступ";
+"Choose this folder, or one that holds it, so Schnellbild may show it. Schnellbild remembers your choice." = "Выберите эту папку или папку, которая её содержит, чтобы Schnellbild мог её показать. Schnellbild запомнит ваш выбор.";
+"Folder access" = "Доступ к папкам";
+"Folders opened to Schnellbild" = "Папки, открытые для Schnellbild";
+"Forget Folder Access…" = "Забыть доступ к папкам…";
+"Schnellbild may show only the folders you choose or drop on its window, with everything inside them." = "Schnellbild может показывать только папки, которые вы выбрали или перетащили на его окно, со всем содержимым.";
+"Forget the access to every folder?" = "Забыть доступ ко всем папкам?";
+"Forget Folder Access" = "Забыть доступ к папкам";
+"Each folder asks for your permission again." = "Каждая папка снова спросит разрешение.";
+"© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later. Built from its source without VLC's modules under the GPL; the build script and its changes are in Schnellbild's repository (github.com/JohannesHoppe/schnellbild)." = "© VideoLAN и авторы VLC. GNU Lesser General Public License 2.1 или новее. Собрано из исходного кода без модулей VLC под GPL; скрипт сборки и изменения находятся в репозитории Schnellbild (github.com/JohannesHoppe/schnellbild).";

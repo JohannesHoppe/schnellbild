@@ -10,6 +10,8 @@ struct SettingsView: View {
     @State private var confirming = false
     @State private var formatsOn: Bool?
     @State private var appearance = AppAppearance.chosen
+    @State private var grantedFolders = FolderAccess.shared.count
+    @State private var forgettingAccess = false
 
     var body: some View {
         Form {
@@ -41,6 +43,16 @@ struct SettingsView: View {
                     .font(.callout)
                     .foregroundStyle(.secondary)
             }
+            if FolderAccess.isSandboxed {
+                Section("Folder access") {
+                    LabeledContent("Folders opened to Schnellbild", value: "\(grantedFolders)")
+                    Button("Forget Folder Access…") { forgettingAccess = true }
+                        .disabled(grantedFolders == 0)
+                    Text("Schnellbild may show only the folders you choose or drop on its window, with everything inside them.")
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
+                }
+            }
             Section("Archive passwords") {
                 LabeledContent("Saved passwords", value: "\(savedPasswords)")
                 Button("Forget Saved Passwords…") { confirming = true }
@@ -54,11 +66,23 @@ struct SettingsView: View {
         .formStyle(.grouped)
         .frame(width: 420)
         .fixedSize(horizontal: false, vertical: true)
-        .onAppear { savedPasswords = ArchiveStore.shared.passwords.count }
+        .onAppear {
+            savedPasswords = ArchiveStore.shared.passwords.count
+            grantedFolders = FolderAccess.shared.count
+        }
         // Again whenever the window comes back (the user may have turned it on meanwhile)
         .task { formatsOn = await MediaFormats.isOn() }
         .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in
             Task { formatsOn = await MediaFormats.isOn() }
+        }
+        .confirmationDialog("Forget the access to every folder?", isPresented: $forgettingAccess) {
+            Button("Forget Folder Access", role: .destructive) {
+                FolderAccess.shared.forgetAll()
+                grantedFolders = FolderAccess.shared.count
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("Each folder asks for your permission again.")
         }
         .confirmationDialog("Forget all saved archive passwords?", isPresented: $confirming) {
             Button("Forget Passwords", role: .destructive) {

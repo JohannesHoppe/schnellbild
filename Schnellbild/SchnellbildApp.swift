@@ -32,6 +32,9 @@ struct SchnellbildApp: App {
         let defaults = BrowserModel.makeDefaults()
         self.defaults = defaults
         AppAppearance.defaults = defaults
+        // The folders opened to the app before (App Sandbox), before any is read
+        FolderAccess.shared.defaults = defaults
+        FolderAccess.shared.restore()
         // Archive passwords: the login keychain; UI tests keep theirs in
         // their own preferences (`--reset-state` clears them)
         ArchiveStore.shared.passwords = ProcessInfo.processInfo.arguments.contains("--ui-testing")

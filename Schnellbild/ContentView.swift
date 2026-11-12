@@ -684,6 +684,16 @@ struct EmptyStateView: View {
                     .foregroundStyle(.secondary)
                 Text("This archive needs a password")
                     .font(.title2)
+            } else if let failure = model.loadError, failure.needsAccess {
+                Image(systemName: "lock.open")
+                    .font(.system(size: 56))
+                    .foregroundStyle(.secondary)
+                Text("Schnellbild needs your permission for this folder")
+                    .font(.title2)
+                    .multilineTextAlignment(.center)
+                Button("Allow Access…") { model.allowAccess() }
+                    .keyboardShortcut(.defaultAction)
+                    .accessibilityIdentifier("allowAccess")
             } else if let failure = model.loadError {
                 Image(systemName: "exclamationmark.triangle")
                     .font(.system(size: 56))

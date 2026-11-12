@@ -303,3 +303,15 @@
 "Same as System" = "Sistemle aynı";
 "Light" = "Açık";
 "Dark" = "Koyu";
+"Schnellbild needs your permission for this folder" = "Schnellbild bu klasör için izninize ihtiyaç duyuyor";
+"Allow Access…" = "Erişime İzin Ver…";
+"Allow Access" = "Erişime İzin Ver";
+"Choose this folder, or one that holds it, so Schnellbild may show it. Schnellbild remembers your choice." = "Schnellbild'in gösterebilmesi için bu klasörü veya onu içeren bir klasörü seçin. Schnellbild seçiminizi hatırlar.";
+"Folder access" = "Klasör erişimi";
+"Folders opened to Schnellbild" = "Schnellbild'e açılan klasörler";
+"Forget Folder Access…" = "Klasör Erişimini Unut…";
+"Schnellbild may show only the folders you choose or drop on its window, with everything inside them." = "Schnellbild yalnızca seçtiğiniz veya penceresine bıraktığınız klasörleri, içindekilerle birlikte gösterebilir.";
+"Forget the access to every folder?" = "Tüm klasörlere erişim unutulsun mu?";
+"Forget Folder Access" = "Klasör Erişimini Unut";
+"Each folder asks for your permission again." = "Her klasör yeniden izninizi isteyecek.";
+"© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later. Built from its source without VLC's modules under the GPL; the build script and its changes are in Schnellbild's repository (github.com/JohannesHoppe/schnellbild)." = "© VideoLAN ve VLC yazarları. GNU Lesser General Public License 2.1 veya üstü. VLC'nin GPL altındaki modülleri olmadan kaynak kodundan derlendi; derleme betiği ve değişiklikleri Schnellbild deposunda (github.com/JohannesHoppe/schnellbild).";
