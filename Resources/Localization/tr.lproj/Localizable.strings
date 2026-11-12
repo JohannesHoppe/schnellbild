@@ -290,3 +290,11 @@
 "Drag to give one pane more room; double-click to share equally" = "Bir bölmeye daha fazla yer vermek için sürükleyin; eşit paylaştırmak için çift tıklayın";
 "New Window" = "Yeni Pencere";
 "New window (e.g. for another display)" = "Yeni pencere (ör. başka bir ekran için)";
+"Format" = "Biçim";
+"Audio" = "Ses";
+"Duration" = "Süre";
+"Bitrate" = "Bit hızı";
+"Bit Depth" = "Bit derinliği";
+"Profile" = "Profil";
+"Camera" = "Kamera";
+"The file extension doesn't match the content (%@). Recommended: .%@" = "Dosya uzantısı içerikle uyuşmuyor (%@). Önerilen: .%@";

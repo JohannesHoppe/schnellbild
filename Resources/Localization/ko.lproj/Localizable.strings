@@ -290,3 +290,11 @@
 "Drag to give one pane more room; double-click to share equally" = "드래그하면 한쪽 패널이 더 넓어지고, 이중 클릭하면 똑같이 나뉩니다";
 "New Window" = "새로운 윈도우";
 "New window (e.g. for another display)" = "새로운 윈도우(예: 다른 디스플레이용)";
+"Format" = "포맷";
+"Audio" = "오디오";
+"Duration" = "길이";
+"Bitrate" = "비트레이트";
+"Bit Depth" = "비트 심도";
+"Profile" = "프로파일";
+"Camera" = "카메라";
+"The file extension doesn't match the content (%@). Recommended: .%@" = "파일 확장자가 내용(%@)과 맞지 않습니다. 권장: .%@";

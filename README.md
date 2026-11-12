@@ -28,7 +28,7 @@ Open a folder, see thumbnails, look at one picture large, page through with the 
 - **No upselling.** No pro version, no subscription, no "unlock" button. Every feature is in.
 - **No bloat.** No library to import into, no editor, no cloud. Just looking at photos and videos, done well.
 - **Fast.** Thumbnails appear while you scroll, big folders and network shares included (see [Why so fast?](#why-so-fast)).
-- **Careful with files from others.** Looking never runs anything: archives are only read, never unpacked to disk; videos are read only as local files (a "video" can't make it go online); "Open with Default App" opens only real pictures, videos, PDFs, archives and folders, never an app hiding behind a picture's name; and if a file ever made Schnellbild quit, it doesn't reopen that folder at the next start.
+- **Safe by default.** Looking at pictures, videos and archives from others runs nothing and goes online nowhere, with nothing to switch on first: archives are only read, never unpacked to disk; a "video" can't make it fetch anything from the internet; a double click never starts an app hiding behind a picture's name; and the parts macOS runs for the Finder stay in Apple's sandbox. What it does, and where its limit is: [Safe with files from others](#safe-with-files-from-others).
 - **Doesn't fall over.** Broken files, odd formats and slow disks show a placeholder instead of taking the app down. Your files are only changed when you say so: rename, trash, a new folder, or moving and copying them (dragging tiles onto a folder, F5 / F6 in the dual pane).
 
 ## Download
@@ -228,7 +228,9 @@ It's a filter on the screen only: your files stay exactly as they are. Photos an
   <img src="docs/screenshots/inspector-light.png" width="760" alt="The file inspector over a photo">
 </picture></p>
 
-Name, type, resolution, size, when it was taken (from the photo's EXIF or the video's creation date) and when it was last changed, for the item on screen.
+For the item on screen: name, type, the format its content shows, resolution, size, when it was taken (from the photo's EXIF or the video's creation date) and when it was last changed. For a video also its codecs (video with frames per second, audio with channels and sample rate), length and bitrate; for a photo its bit depth, colour profile and camera.
+
+A file whose extension names another format than its content (a recording named `.mkv` that is really an MPEG transport stream, a PNG named `.jpg`) gets a note with the extension that fits. Schnellbild shows it anyway, by its content.
 
 | Key | Action |
 |---|---|
@@ -359,7 +361,22 @@ Animated GIF, PNG and WebP play. RAW files show their built-in preview as a tile
 
 **Everything else** is listed by name and size under the grid; documents among it open with their app on a double click.
 
+## Safe with files from others
+
+Pictures, videos and archives from strangers are exactly what a viewer is for, so Schnellbild is built to treat every file as hostile, out of the box:
+
+- **Only reading.** Looking at something never changes it and never unpacks it to disk. Archives are read in memory; names inside them that try to climb out of the archive (`../`) are cleaned, and no read takes more than 256 MB.
+- **Videos can't go online.** VLC gets exactly one reader per file, the video format its first bytes show (else the one its extension names), never a playlist or stream reader. So a "video" that is really a playlist pointing to the internet plays nothing, and no subtitle files are picked up from next to it. Options another program could plant in Schnellbild's preferences for VLC are removed at every start, and the VLC inside has no script engine.
+- **Double click opens documents, not programs.** "Open with Default App" opens only pictures, videos, PDFs, archives and folders. Other files open only from an allow list of document types (text, PDF, office, audio …); apps, scripts, installers, disk images and Terminal settings never, and links and aliases are followed first, so a picture's name can't hide one of them. A `.webloc` opens only an `http(s)` address.
+- **Finder previews in Apple's sandbox.** The Quick Look extension and the media extension run in Apple's App Sandbox, each in its own process: no network, and read access only to the one file macOS hands it. Media extensions are used only when you turned them on in System Settings.
+- **A signed, closed app.** Signed with a Developer ID and notarized by Apple, with the Hardened Runtime: only Apple's code and Schnellbild's own libraries can load into it. It asks for no exceptions (no entitlements) and registers no URL schemes or document types that a web page or another app could use to make it open something.
+- **No crash loops.** If a file ever made Schnellbild quit, it doesn't reopen that folder at the next start.
+
+The limit, honestly: the app itself doesn't run in the App Sandbox, so the decoders run in its process: VLC with FFmpeg for videos, UnRAR and macOS' libarchive for archives, macOS' ImageIO for pictures. A flaw in one of them could in principle run code with your rights, as in any player built on them. That's why VLCKit and UnRAR are kept at their latest security releases.
+
 ## A free Phiewer alternative
+
+Three programs were the models for Schnellbild: Phiewer for browsing pictures by keyboard, IINA for handling videos quickly, and Norton Commander for the [dual pane](#dual-pane-sort-your-holiday-photos) with its F-keys.
 
 [Phiewer](https://phiewer.com/) is a good image viewer for the Mac and was the model for Schnellbild's keyboard-first browsing. If you are looking for a free, open-source alternative to Phiewer, this is how the two compare. Phiewer's side is what [phiewer.com](https://phiewer.com/) lists (as of November 2026) and what we found using it; "not listed" means the site doesn't mention it.
 
@@ -375,6 +392,27 @@ Animated GIF, PNG and WebP play. RAW files show their built-in preview as a tile
 | Auto enhance and sliders for photos and videos | yes, as a view: files are never changed | edits with filters and undo; crop in PRO |
 | Audio files, Finder tags, export, printing pictures | no | yes |
 | Your own keyboard shortcuts | no (F1 shows every key) | yes (in PRO) |
+
+## A free IINA alternative for looking through videos
+
+[IINA](https://iina.io/) is a good, free and open-source video player for the Mac, and the model for how Schnellbild handles videos: several keys are the same (Space plays and pauses, ← → skip, ↑ ↓ set the volume, ⌘← ⌘→ go to the previous or next file). IINA is a full player for watching; Schnellbild is a viewer for finding and sorting, with videos and photos in one grid. IINA's side is what its [website](https://iina.io/), its [README](https://github.com/iina/iina#features) and its default key bindings list (as of November 2026); "not listed" means they don't mention it.
+
+| | Schnellbild | IINA |
+|---|---|---|
+| Price | free, open source (MIT) | free, open source (GPL 3) |
+| macOS | 15 and later, Apple silicon | 12 and later (11 on Intel) |
+| Engine | AVKit, VLC for what macOS can't play | mpv |
+| Photos and videos in one grid, folders, search | yes | not listed (playlists, playback history) |
+| Videos inside ZIP, RAR and 7z archives | yes, streamed without unpacking | not listed |
+| ← → | a tenth of the video, with ⇧ a hundredth, then on to the next file | 5 seconds |
+| Slideshow through photos and videos | yes | not listed |
+| Two panes side by side to sort into folders | yes | no |
+| Auto enhance and sliders for videos | yes | video and audio filters |
+| Codec, bitrate, wrong file extensions in the file info | yes | not listed |
+| Subtitles, chapters, online subtitle search | no | yes |
+| Picture in Picture, playback speed, frame by frame | no | yes |
+| Audio files (music mode) | no | yes |
+| Your own keyboard shortcuts, plugins | no (F1 shows every key) | yes |
 
 ## Why so fast?
 

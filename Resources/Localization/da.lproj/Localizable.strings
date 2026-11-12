@@ -290,3 +290,11 @@
 "Drag to give one pane more room; double-click to share equally" = "Træk for at give én rude mere plads; dobbeltklik for at dele ligeligt";
 "New Window" = "Nyt vindue";
 "New window (e.g. for another display)" = "Nyt vindue (f.eks. til en anden skærm)";
+"Format" = "Format";
+"Audio" = "Lyd";
+"Duration" = "Varighed";
+"Bitrate" = "Bithastighed";
+"Bit Depth" = "Bitdybde";
+"Profile" = "Profil";
+"Camera" = "Kamera";
+"The file extension doesn't match the content (%@). Recommended: .%@" = "Filtypenavnet passer ikke til indholdet (%@). Anbefalet: .%@";

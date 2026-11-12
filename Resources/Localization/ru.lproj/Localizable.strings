@@ -290,3 +290,11 @@
 "Drag to give one pane more room; double-click to share equally" = "Перетащите, чтобы дать одной панели больше места; двойной щелчок делит поровну";
 "New Window" = "Новое окно";
 "New window (e.g. for another display)" = "Новое окно (например, для другого дисплея)";
+"Format" = "Формат";
+"Audio" = "Звук";
+"Duration" = "Длительность";
+"Bitrate" = "Битрейт";
+"Bit Depth" = "Глубина цвета";
+"Profile" = "Профиль";
+"Camera" = "Камера";
+"The file extension doesn't match the content (%@). Recommended: .%@" = "Расширение файла не соответствует содержимому (%@). Рекомендуется: .%@";

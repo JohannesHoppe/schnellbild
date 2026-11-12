@@ -290,3 +290,11 @@
 "Drag to give one pane more room; double-click to share equally" = "Arrastra para dar más espacio a un panel; haz doble clic para repartirlo por igual";
 "New Window" = "Nueva ventana";
 "New window (e.g. for another display)" = "Nueva ventana (p. ej., para otra pantalla)";
+"Format" = "Formato";
+"Audio" = "Audio";
+"Duration" = "Duración";
+"Bitrate" = "Tasa de bits";
+"Bit Depth" = "Profundidad";
+"Profile" = "Perfil";
+"Camera" = "Cámara";
+"The file extension doesn't match the content (%@). Recommended: .%@" = "La extensión del archivo no coincide con su contenido (%@). Recomendada: .%@";
