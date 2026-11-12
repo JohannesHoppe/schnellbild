@@ -3,6 +3,7 @@ import AppKit
 import AVFoundation
 import ImageIO
 import UniformTypeIdentifiers
+import VLCFrames
 
 /// A grid entry: ".." (parent level), subfolder, image, or video.
 struct GridEntry: Identifiable, Hashable {
@@ -1150,7 +1151,7 @@ final class BrowserModel: ObservableObject {
     nonisolated static let videoExtensions: Set<String> = [
         "mp4", "mov", "qt", "m4v", "avi", "mkv", "webm", "m2ts", "mts",
         "mpg", "mpeg", "m2v", "vob", "3gp", "3g2", "dv", "wmv", "flv", "ogv"
-        // (not "ts": far more often TypeScript than an MPEG transport stream)
+        // (".ts" by its content: `TransportStreams`)
     ]
 
     /// The one rule for which files the app shows: image, video, or nil.
@@ -1161,6 +1162,7 @@ final class BrowserModel: ObservableObject {
         let ext = url.pathExtension.lowercased()
         if imageExtensions.contains(ext) { return .image }
         if videoExtensions.contains(ext) { return .video }
+        if ext == "ts", TransportStreams.shared.isVideo(url) { return .video }
         return nil
     }
 
@@ -4160,5 +4162,33 @@ final class AVPlaybackControl: PlaybackControl {
         player.seek(to: CMTime(seconds: duration * min(max(progress, 0), 1), preferredTimescale: 600),
                     toleranceBefore: .zero, toleranceAfter: .zero)
         if ended { player.play() }
+    }
+}
+
+/// ".ts" names TypeScript code far more often than an MPEG transport stream
+/// (a TV or IPTV recording): such a file is a video only when its first bytes
+/// show a transport stream (a sync byte every 188 or 192 bytes, as VLC opens
+/// it: `VLCSafety.container`). Each file is read once; the answer is kept by
+/// its path, size and date, so a file written anew is read again.
+final class TransportStreams: @unchecked Sendable {
+    static let shared = TransportStreams()
+    private let lock = NSLock()
+    private var known: [String: (stamp: String, video: Bool)] = [:]
+    /// Kept answers at most (a folder of code has many .ts files).
+    private let limit = 20_000
+
+    func isVideo(_ url: URL) -> Bool {
+        // A path through an archive has no first bytes to read without unpacking
+        guard !ArchivePath.isInside(url) else { return false }
+        var info = stat()
+        guard stat(url.path, &info) == 0, (info.st_mode & S_IFMT) == S_IFREG else { return false }
+        let stamp = "\(info.st_size) \(info.st_mtimespec.tv_sec).\(info.st_mtimespec.tv_nsec)"
+        if let answer = lock.withLock({ known[url.path] }), answer.stamp == stamp { return answer.video }
+        let video = VLCSafety.head(of: url).flatMap(VLCSafety.container(in:))?.demux == "ts"
+        lock.withLock {
+            if known.count >= limit { known.removeAll(keepingCapacity: true) }
+            known[url.path] = (stamp, video)
+        }
+        return video
     }
 }

@@ -2581,6 +2581,28 @@ final class ReviewFixTests: XCTestCase {
         XCTAssertNil(BrowserModel.mediaKind(of: URL(fileURLWithPath: "/x/._a.jpg")), "macOS's '._' companion files")
     }
 
+    /// ".ts" by its content: a transport stream is a video, TypeScript is
+    /// not; a file written anew is looked at again.
+    func testATSFileIsAVideoOnlyWhenItIsATransportStream() throws {
+        let tree = try TempTree(self)
+        let clip = try XCTUnwrap(Bundle.module.url(forResource: "clip", withExtension: "ts", subdirectory: "Videos"))
+        let recording = try tree.file("Recording.ts")
+        try FileManager.default.removeItem(at: recording)
+        try FileManager.default.copyItem(at: clip, to: recording)
+        XCTAssertEqual(BrowserModel.mediaKind(of: recording), .video)
+
+        let code = try tree.file("main.ts")
+        try Data("export const answer: number = 42;\n".utf8).write(to: code)
+        XCTAssertNil(BrowserModel.mediaKind(of: code))
+        XCTAssertNil(BrowserModel.mediaKind(of: code), "the kept answer")
+        try FileManager.default.removeItem(at: code)
+        try FileManager.default.copyItem(at: clip, to: code)
+        XCTAssertEqual(BrowserModel.mediaKind(of: code), .video, "written anew: read again")
+
+        XCTAssertNil(BrowserModel.mediaKind(of: tree.root.appendingPathComponent("missing.ts")))
+        XCTAssertNil(BrowserModel.mediaKind(of: URL(fileURLWithPath: tree.root.path + "/Holiday.zip/a.ts")), "inside an archive")
+    }
+
     /// SVG is a picture like any other, drawn sharp at the size asked for.
     func testSVGIsAPictureDrawnAtAnySize() async throws {
         XCTAssertEqual(BrowserModel.mediaKind(of: URL(fileURLWithPath: "/x/logo.SVG")), .image)

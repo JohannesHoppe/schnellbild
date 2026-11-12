@@ -174,8 +174,9 @@ struct VideoDetailView: View {
     /// Formats macOS reads only through a media extension: VLC plays them,
     /// with their sound. AVFoundation would call them playable through
     /// Schnellbild's own (picture only, for thumbnails) or another app's
-    /// extension, once one is turned on.
-    static let vlcFormats: Set<String> = ["mkv", "webm", "wmv", "asf", "flv", "ogv", "vob"]
+    /// extension, once one is turned on. A transport stream (".ts", a TV
+    /// recording) plays through VLC too, which reads every such stream.
+    static let vlcFormats: Set<String> = ["mkv", "webm", "wmv", "asf", "flv", "ogv", "vob", "ts"]
     static func playsInVLC(_ url: URL) -> Bool { vlcFormats.contains(url.pathExtension.lowercased()) }
 
     /// Turned a quarter, the fitted video's now-swapped box is scaled to fit
