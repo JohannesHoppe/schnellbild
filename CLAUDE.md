@@ -187,7 +187,7 @@ Free as the DMG (Developer ID, notarized: release.yml) and for 1 € in the Mac 
 
 ## VLCKit without GPL modules
 
-VLCKit as VideoLAN publishes it (3.6.0) has 243 VLC modules: 235 state the LGPL, 8 the GPL (Dolby Surround decoder, mono downmix, the dummy interface, syslog, the RTSP VoD server, stream output cycle and RTP, the rotate filter); `Scripts/vlckit_licenses.py <binary>` lists them (names from `nm`: the linker folds the identical licence functions into one, so the disassembly alone names one module for many). The App Store's terms don't go with the GPL. `Scripts/build_vlckit_lgpl.sh` (workflow `vlckit-lgpl.yml`, by hand, ~30 min) builds VLCKit 3.7.5 (VLC 3.0.24) with VideoLAN's own `buildMobileVLCKit.sh` (macOS, arm64), the 8 added to its list of modules to delete, a `sha512sum` that reads check lines from standard input (VLC's downloads), with the current Xcode (VLCKit 3.6.0's VLC had zlib 1.2.13 and an old libpng, which break on the macOS 26 SDK; 3.7.5's don't); it fails unless every module states the LGPL, then the unit tests run against it (`SCHNELLBILD_OWN_VLCKIT=1`) and it is published as a pre-release of this repository (`vlckit-3.7.5-lgpl-<run>`, never latest); `Scripts/fetch_vlckit.sh` fetches it by its SHA-256 for every build.
+VLCKit as VideoLAN builds it carries 8 VLC modules that state the GPL (Dolby Surround decoder, mono downmix, the dummy interface, syslog, the RTSP VoD server, stream output cycle and RTP, the rotate filter); `Scripts/vlckit_licenses.py <binary>` lists them (names from `nm`: the linker folds the identical licence functions into one, so the disassembly alone names one module for many). The App Store's terms don't go with the GPL. `Scripts/build_vlckit_lgpl.sh` (workflow `vlckit-lgpl.yml`, by hand, about an hour: VLC's libraries build one at a time, `MAKE_JOBS=1`, since its ninja and macOS's make 3.81 don't share jobs) builds VLCKit 3.7.5 (VLC 3.0.24) with VideoLAN's own `buildMobileVLCKit.sh` (macOS, arm64), the 8 added to its list of modules to delete, a `sha512sum` that reads check lines from standard input (VLC's downloads), with the current Xcode; it fails unless every module states the LGPL (236 modules); then the unit tests run against it (`SCHNELLBILD_OWN_VLCKIT=1`) and it is published as a pre-release of this repository (`vlckit-3.7.5-lgpl-<run>`, never latest); `Scripts/fetch_vlckit.sh` fetches it by its SHA-256 for every build.
 
 ## VLCKit (the heavy dependency — read carefully)
 
@@ -204,10 +204,7 @@ AVI/MKV/WebM and other non-native formats play **in-app via vendored VLCKit
   we audited the community wrapper, then chose: VideoLAN's source and build
   script + our own hash + local vendoring → minimal attack vector, no external
   repo in the trust path.
-- **Mac App Store is ruled out** because of VLCKit: (1) sandbox + LibVLC plugin
-  loading is fragile, (2) **LGPL/GPL conflicts with App Store terms** (the reason
-  VLC itself was once pulled). If monetizing later: **Developer ID + notarization
-  ($99/yr) + direct sale (e.g. Gumroad)**, never MAS.
+- The Mac App Store version is the same app (see "One app, two ways out"): the LGPL allows it with the custom EULA (changing and reverse engineering the library allowed) and the source offer in THIRD-PARTY-NOTICES.
 
 ## Build / test / run — gotchas that will bite you
 
@@ -365,7 +362,7 @@ Open / next-up:
   later, drops `docs/demo.gif`, uncomments the demo line near the top of README.
 - **Launch posts** — `docs/launch.md` has ready Show HN + r/macapps copy; user
   posts when ready. Validation strategy: free + OSS first, gauge interest, then
-  decide on paid (direct sale, not MAS).
+  the Mac App Store version for 1 € (support).
 - **Homebrew tap** — possible free distribution path for techies
   (`JohannesHoppe/homebrew-tap` + a cask pointing at the notarized DMG). Not built yet.
 - **Apple silicon only**, on purpose: no Intel build; `build_app.sh` also cuts VLCKit down to arm64 (VideoLAN's binary carries Intel code too).

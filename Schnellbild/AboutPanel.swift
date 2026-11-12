@@ -34,7 +34,7 @@ enum AboutPanel {
     }
 
     static let components: [Component] = [
-        Component(name: "VLCKit 3.6.0 (libVLC 3.0.21)", use: String(localized: "plays the video formats macOS can't (AVI, MKV, WebM …)"),
+        Component(name: "VLCKit 3.7.5 (libVLC 3.0.24)", use: String(localized: "plays the video formats macOS can't (AVI, MKV, WebM …)"),
                   license: String(localized: "© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later. Built from its source without VLC's modules under the GPL; the build script and its changes are in Schnellbild's repository (github.com/JohannesHoppe/schnellbild)."),
                   link: "https://code.videolan.org/videolan/VLCKit"),   // its source; THIRD-PARTY-NOTICES.md has the exact version
         Component(name: "UnRAR 7.2.7", use: String(localized: "reads RAR archives"),
