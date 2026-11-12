@@ -55,6 +55,12 @@ printf '#!/bin/sh\nexec /usr/bin/shasum -a 512 "$@"\n' > "$WORK/bin/sha512sum"
 chmod +x "$WORK/bin/sha512sum"
 export VLC_PATH="$WORK/bin"
 
+# One make step at a time: VLC's ninja (1.13) joins the jobserver of the make
+# that runs it, which macOS's make (3.81) can't share ("read jobs pipe:
+# Resource temporarily unavailable"); with -j1 make has no jobserver, and
+# ninja still builds each library on every core
+export MAKE_JOBS=1
+
 # macOS (-x), arm64 only: Schnellbild runs on Apple silicon only
 ./buildMobileVLCKit.sh -vx -a aarch64
 
