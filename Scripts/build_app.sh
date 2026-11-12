@@ -1,28 +1,19 @@
 #!/bin/bash
 # Builds Schnellbild.app: renders the icon, assembles the .icns, compiles a
-# release binary, and wraps it in a proper macOS app bundle.
-#
-# SCHNELLBILD_APPSTORE=1 builds the Mac App Store variant (AppStore/): the app
-# in the App Sandbox, its privacy manifest, the VLCKit in Vendor without GPL
-# modules (Scripts/build_vlckit_lgpl.sh; checked), signed with
-# APPSTORE_SIGN_IDENTITY and the App Store profiles (APP_PROFILE,
-# THUMBNAILS_PROFILE, FORMATS_PROFILE), or ad hoc for tests, then without the
-# entitlements only a profile allows.
+# release binary, and wraps it in a proper macOS app bundle, in the App Sandbox
+# (Sandbox/). The same app goes out as the DMG and to the Mac App Store; only
+# its signature differs (Scripts/sign_app.sh).
 set -euo pipefail
 cd "$(dirname "$0")/.."
 ROOT="$(pwd)"
 RES="$ROOT/Resources"
 APP="$ROOT/build/Schnellbild.app"
-APPSTORE="${SCHNELLBILD_APPSTORE:-}"
 
 echo "==> Ensuring VLCKit is vendored"
-if [ -n "$APPSTORE" ]; then export SCHNELLBILD_OWN_VLCKIT=1; fi
 "$ROOT/Scripts/fetch_vlckit.sh"
-if [ -n "$APPSTORE" ]; then
-  echo "==> App Store: the VLCKit in Vendor must have no GPL module"
-  python3 -I "$ROOT/Scripts/vlckit_licenses.py" \
-    "$(find "$ROOT/Vendor/VLCKit.xcframework" -path '*VLCKit.framework/Versions/A/VLCKit' -type f | head -1)" --no-gpl
-fi
+echo "==> No GPL module in VLCKit"
+python3 -I "$ROOT/Scripts/vlckit_licenses.py" \
+  "$(find "$ROOT/Vendor/VLCKit.xcframework" -path '*VLCKit.framework/Versions/A/VLCKit' -type f | head -1)" --no-gpl
 
 echo "==> Rendering icon"
 swift Scripts/make_icon.swift "$RES/icon_1024.png"
@@ -70,13 +61,7 @@ cp "$RES/FormatsCheck.mkv" "$APP/Contents/Resources/FormatsCheck.mkv"
 cp "$RES/Info.plist" "$APP/Contents/Info.plist"
 printf 'APPL????' > "$APP/Contents/PkgInfo"
 # The App Store asks for the reasons behind some system calls (the app's and VLCKit's)
-if [ -n "$APPSTORE" ]; then
-  cp "$ROOT/AppStore/PrivacyInfo.xcprivacy" "$APP/Contents/Resources/PrivacyInfo.xcprivacy"
-  # The About window names the VLCKit built without GPL modules
-  /usr/libexec/PlistBuddy -c "Add :SchnellbildAppStore bool true" "$APP/Contents/Info.plist"
-  # Its texts: no GPL module is in this build
-  rm -f "$APP/Contents/Resources/Licenses/VLCKit-GPL-2.0.txt"
-fi
+cp "$ROOT/Sandbox/PrivacyInfo.xcprivacy" "$APP/Contents/Resources/PrivacyInfo.xcprivacy"
 
 echo "==> Thumbnail extension (QuickLook, for MKV, WebM, AVI …)"
 APPEX="$APP/Contents/PlugIns/SchnellbildThumbnails.appex"
@@ -103,51 +88,5 @@ for key in CFBundleShortVersionString CFBundleVersion; do
   /usr/libexec/PlistBuddy -c "Set :$key $(/usr/libexec/PlistBuddy -c "Print :$key" "$RES/Info.plist")" "$FORMATS/Contents/Info.plist"
 done
 
-if [ -n "$APPSTORE" ]; then
-  "$ROOT/Scripts/sign_appstore.sh" "$APP"
-  echo "==> Done: $APP (App Store)"
-  exit 0
-fi
-
-# Sign from the inside out: every file with machine code (VLCKit and its
-# plugins), then the frameworks, then the app. With MACOS_SIGN_IDENTITY
-# ("Developer ID Application: …") for notarization: Hardened Runtime and a
-# secure timestamp. Without it: ad hoc, for local and CI builds.
-IDENTITY="${MACOS_SIGN_IDENTITY:-}"
-IDENTITY="$(printf '%s' "$IDENTITY" | sed 's/^ *//; s/ *$//')"
-OPTS=(--force --sign "${IDENTITY:--}")
-if [ -n "$IDENTITY" ]; then
-  OPTS+=(--options runtime --timestamp)
-  echo "==> Signing with: $IDENTITY"
-else
-  echo "==> Ad-hoc code signing"
-fi
-is_macho() {
-  case "$(head -c 4 "$1" | xxd -p)" in
-    cffaedfe|cafebabe|cefaedfe|bebafeca) return 0 ;;
-    *) return 1 ;;
-  esac
-}
-MAIN="$APP/Contents/MacOS/Schnellbild"
-# Longest paths first: nested code is signed before what contains it.
-find "$APP/Contents" -type f ! -path "$MAIN" -print0 \
-  | while IFS= read -r -d '' f; do if is_macho "$f"; then printf '%s\n' "$f"; fi; done \
-  | awk '{ print length, $0 }' | sort -rn | cut -d' ' -f2- \
-  | while IFS= read -r f; do codesign "${OPTS[@]}" "$f"; done
-codesign "${OPTS[@]}" "$APP/Contents/Frameworks/VLCKit.framework"
-# The extension in the App Sandbox (its entitlements), before the app around it
-codesign "${OPTS[@]}" --entitlements "$ROOT/ThumbnailExtension/ThumbnailExtension.entitlements" "$APPEX"
-# The media extension: macOS starts it only with its entitlement, which
-# needs the Developer ID and the provisioning profile for its App ID
-# (FORMATS_PROFILE); otherwise it is signed without (and stays unused)
-if [ -n "$IDENTITY" ] && [ -n "${FORMATS_PROFILE:-}" ] && [ -f "$FORMATS_PROFILE" ]; then
-  cp "$FORMATS_PROFILE" "$FORMATS/Contents/embedded.provisionprofile"
-  codesign "${OPTS[@]}" --entitlements "$ROOT/FormatReader/FormatReader.entitlements" "$FORMATS"
-else
-  echo "   (media extension without its entitlement: no Developer ID or no FORMATS_PROFILE)"
-  codesign "${OPTS[@]}" --entitlements "$ROOT/ThumbnailExtension/ThumbnailExtension.entitlements" "$FORMATS"
-fi
-codesign "${OPTS[@]}" "$APP"
-codesign --verify --strict --deep "$APP"
-
+"$ROOT/Scripts/sign_app.sh" "$APP"
 echo "==> Done: $APP"

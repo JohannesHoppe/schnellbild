@@ -235,7 +235,6 @@
 "selected" = "valgt";
 "not selected" = "ikke valgt";
 /* About window: the libraries' licenses */
-"© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later; some of its modules GNU General Public License 2 or later." = "© VideoLAN og VLC-forfatterne. GNU Lesser General Public License 2.1 eller senere; nogle af dets moduler GNU General Public License 2 eller senere.";
 "© Tim Kientzle and the libarchive contributors. BSD 2-clause license." = "© Tim Kientzle og libarchive-bidragyderne. BSD-licens med 2 klausuler.";
 "© Alexander Roshal. The UnRAR license, in its own words:" = "© Alexander Roshal. UnRAR-licensen i sin egen ordlyd:";
 "This file is too large to show from inside an archive." = "Filen er for stor til at blive vist inde fra et arkiv.";
