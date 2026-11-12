@@ -63,11 +63,12 @@ let package = Package(
         ),
         // Archives: the official UnRAR source (Scripts/fetch_unrar.sh vendors
         // it; Native/CArchives/unrar points there) behind a small C face, and
-        // the system's libarchive for ZIP and 7z.
+        // the system's libarchive for ZIP and 7z (looked up at run time,
+        // libarchive_shim.cpp).
         .target(
             name: "CArchives",
             path: "Native/CArchives",
-            sources: ["rar_shim.cpp"] + unrarSources.map { "unrar/\($0).cpp" },
+            sources: ["rar_shim.cpp", "libarchive_shim.cpp"] + unrarSources.map { "unrar/\($0).cpp" },
             publicHeadersPath: "include",
             cxxSettings: [
                 .define("RARDLL"),
@@ -75,8 +76,7 @@ let package = Package(
                 .define("_LARGEFILE_SOURCE"),
                 .define("RAR_SMP"),
                 .unsafeFlags(["-Wno-logical-op-parentheses", "-Wno-switch", "-Wno-dangling-else", "-w"])
-            ],
-            linkerSettings: [.linkedLibrary("archive")]
+            ]
         ),
         // Official VideoLAN VLCKit, vendored locally — fetch it first with
         // Scripts/fetch_vlckit.sh. The xcframework is gitignored (large binary).

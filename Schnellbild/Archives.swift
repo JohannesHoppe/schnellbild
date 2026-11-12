@@ -429,24 +429,24 @@ struct LibArchiveReader: ArchiveReader {
     }
 
     private func walk(seekable: Bool, password: String?, _ visit: (ArchiveItem) -> ArchiveVisit) throws -> Bool {
-        guard let archive = archive_read_new() else { throw ArchiveError.unreadable(String(localized: "out of memory")) }
-        defer { archive_read_free(archive) }
+        guard let archive = sb_archive_read_new() else { throw ArchiveError.unreadable(String(localized: "out of memory")) }
+        defer { sb_archive_read_free(archive) }
         switch format {
-        case .zip where seekable: archive_read_support_format_zip_seekable(archive)
-        case .zip:                archive_read_support_format_zip_streamable(archive)
-        default:                  archive_read_support_format_7zip(archive)
+        case .zip where seekable: sb_archive_read_support_format_zip_seekable(archive)
+        case .zip:                sb_archive_read_support_format_zip_streamable(archive)
+        default:                  sb_archive_read_support_format_7zip(archive)
         }
-        if let password { archive_read_add_passphrase(archive, password) }
+        if let password { sb_archive_read_add_passphrase(archive, password) }
         let paths = volumes.map { strdup($0.path) }
         defer { paths.forEach { free($0) } }
         var names: [UnsafePointer<CChar>?] = paths.map { UnsafePointer($0) } + [nil]
-        let opened = names.withUnsafeMutableBufferPointer { archive_read_open_filenames(archive, $0.baseAddress, 1 << 20) }
+        let opened = names.withUnsafeMutableBufferPointer { sb_archive_read_open_filenames(archive, $0.baseAddress, 1 << 20) }
         guard opened == SB_ARCHIVE_OK else { throw Self.error(archive) }
         var buffer = [UInt8](repeating: 0, count: 256 << 10)
         var seen = 0
         while true {
             var entry: OpaquePointer?
-            let r = archive_read_next_header(archive, &entry)
+            let r = sb_archive_read_next_header(archive, &entry)
             if r == SB_ARCHIVE_EOF { return true }
             guard r == SB_ARCHIVE_OK || r == SB_ARCHIVE_WARN, let entry else {
                 if seen > 0 { return false }   // ends early: a partial download
@@ -454,22 +454,22 @@ struct LibArchiveReader: ArchiveReader {
             }
             seen += 1
             let name = Self.name(of: entry)
-            let isDirectory = (archive_entry_filetype(entry) & mode_t(SB_AE_IFMT)) == mode_t(SB_AE_IFDIR) || name.hasSuffix("/")
+            let isDirectory = (sb_archive_entry_filetype(entry) & mode_t(SB_AE_IFMT)) == mode_t(SB_AE_IFDIR) || name.hasSuffix("/")
             let item = ArchiveItem(path: RarReader.clean(name), isDirectory: isDirectory,
                                    // Not stored in the header (a ZIP written with data descriptors, read as a stream)
-                                   size: archive_entry_size_is_set(entry) != 0 ? archive_entry_size(entry) : -1,
-                                   modified: { let t = archive_entry_mtime(entry); return t > 0 ? Date(timeIntervalSince1970: TimeInterval(t)) : nil }(),
-                                   encrypted: archive_entry_is_encrypted(entry) != 0)
+                                   size: sb_archive_entry_size_is_set(entry) != 0 ? sb_archive_entry_size(entry) : -1,
+                                   modified: { let t = sb_archive_entry_mtime(entry); return t > 0 ? Date(timeIntervalSince1970: TimeInterval(t)) : nil }(),
+                                   encrypted: sb_archive_entry_is_encrypted(entry) != 0)
             switch visit(item) {
             case .stop:
                 return true
             case .skip:
-                if archive_read_data_skip(archive) < SB_ARCHIVE_WARN { return false }
+                if sb_archive_read_data_skip(archive) < SB_ARCHIVE_WARN { return false }
             case .read(let sink, let done):
                 var failure: ArchiveError?
                 var stopped = false
                 while !stopped {
-                    let n = buffer.withUnsafeMutableBytes { archive_read_data(archive, $0.baseAddress, $0.count) }
+                    let n = buffer.withUnsafeMutableBytes { sb_archive_read_data(archive, $0.baseAddress, $0.count) }
                     if n == 0 { break }
                     if n < 0 { failure = Self.error(archive); break }
                     stopped = !buffer.withUnsafeBytes { sink(UnsafeRawBufferPointer(rebasing: $0[..<n])) }
@@ -487,8 +487,8 @@ struct LibArchiveReader: ArchiveReader {
     /// read in the code page of the user's language, else DOS Latin 1, so
     /// distinct names stay distinct.
     static func name(of entry: OpaquePointer) -> String {
-        if let utf8 = archive_entry_pathname_utf8(entry), let name = String(validatingCString: utf8) { return name }
-        guard let raw = archive_entry_pathname(entry) else { return "" }
+        if let utf8 = sb_archive_entry_pathname_utf8(entry), let name = String(validatingCString: utf8) { return name }
+        guard let raw = sb_archive_entry_pathname(entry) else { return "" }
         return legacyName(Data(bytes: raw, count: strlen(raw)))
     }
 
@@ -522,7 +522,7 @@ struct LibArchiveReader: ArchiveReader {
     }()
 
     static func error(_ archive: OpaquePointer) -> ArchiveError {
-        let message = archive_error_string(archive).map { String(cString: $0) } ?? String(localized: "unknown error")
+        let message = sb_archive_error_string(archive).map { String(cString: $0) } ?? String(localized: "unknown error")
         let lower = message.lowercased()
         if lower.contains("passphrase") { return .needsPassword }
         if lower.contains("encrypt") { return .encryptionUnsupported }

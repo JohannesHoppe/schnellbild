@@ -1,5 +1,4 @@
 module CArchives {
     header "CArchives.h"
-    link "archive"
     export *
 }
