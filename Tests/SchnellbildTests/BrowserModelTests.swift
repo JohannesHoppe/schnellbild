@@ -2581,6 +2581,25 @@ final class ReviewFixTests: XCTestCase {
         XCTAssertNil(BrowserModel.mediaKind(of: URL(fileURLWithPath: "/x/._a.jpg")), "macOS's '._' companion files")
     }
 
+    /// App Sandbox: a folder is readable when it is a granted one or lies
+    /// inside one; outside the sandbox every folder is.
+    @MainActor
+    func testFolderAccessCoversWhatIsInsideAGrant() {
+        XCTAssertTrue(FolderAccess.path("/Users/a/Photos", isIn: "/Users/a/Photos"))
+        XCTAssertTrue(FolderAccess.path("/Users/a/Photos/2025/x.jpg", isIn: "/Users/a/Photos"))
+        XCTAssertTrue(FolderAccess.path("/Users/a/Photos/Trip.zip/Day 1", isIn: "/Users/a/Photos"), "inside an archive")
+        XCTAssertFalse(FolderAccess.path("/Users/a/Photos2", isIn: "/Users/a/Photos"), "a name that only starts alike")
+        XCTAssertFalse(FolderAccess.path("/Users/a", isIn: "/Users/a/Photos"), "the folder above")
+        XCTAssertTrue(FolderAccess.path("/Volumes/Share", isIn: "/"))
+
+        XCTAssertTrue(FolderAccess(sandboxed: false).covers(URL(fileURLWithPath: "/anywhere")))
+        let sandboxed = FolderAccess(sandboxed: true)
+        sandboxed.defaults = UserDefaults(suiteName: "access-\(UUID().uuidString)")!
+        sandboxed.restore()
+        XCTAssertFalse(sandboxed.covers(URL(fileURLWithPath: "/anywhere")), "nothing granted yet")
+        XCTAssertEqual(sandboxed.count, 0)
+    }
+
     /// Light or dark: as the system's until chosen, then kept.
     func testTheAppearanceIsKept() throws {
         let defaults = try XCTUnwrap(UserDefaults(suiteName: "appearance-\(UUID().uuidString)"))

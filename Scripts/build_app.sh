@@ -1,14 +1,28 @@
 #!/bin/bash
 # Builds Schnellbild.app: renders the icon, assembles the .icns, compiles a
 # release binary, and wraps it in a proper macOS app bundle.
+#
+# SCHNELLBILD_APPSTORE=1 builds the Mac App Store variant (AppStore/): the app
+# in the App Sandbox, its privacy manifest, the VLCKit in Vendor without GPL
+# modules (Scripts/build_vlckit_lgpl.sh; checked), signed with
+# APPSTORE_SIGN_IDENTITY and the App Store profiles (APP_PROFILE,
+# THUMBNAILS_PROFILE, FORMATS_PROFILE), or ad hoc for tests, then without the
+# entitlements only a profile allows.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 ROOT="$(pwd)"
 RES="$ROOT/Resources"
 APP="$ROOT/build/Schnellbild.app"
+APPSTORE="${SCHNELLBILD_APPSTORE:-}"
 
 echo "==> Ensuring VLCKit is vendored"
+if [ -n "$APPSTORE" ]; then export SCHNELLBILD_OWN_VLCKIT=1; fi
 "$ROOT/Scripts/fetch_vlckit.sh"
+if [ -n "$APPSTORE" ]; then
+  echo "==> App Store: the VLCKit in Vendor must have no GPL module"
+  python3 -I "$ROOT/Scripts/vlckit_licenses.py" \
+    "$(find "$ROOT/Vendor/VLCKit.xcframework" -path '*VLCKit.framework/Versions/A/VLCKit' -type f | head -1)" --no-gpl
+fi
 
 echo "==> Rendering icon"
 swift Scripts/make_icon.swift "$RES/icon_1024.png"
@@ -55,6 +69,14 @@ cp -R "$RES/Licenses" "$APP/Contents/Resources/Licenses"
 cp "$RES/FormatsCheck.mkv" "$APP/Contents/Resources/FormatsCheck.mkv"
 cp "$RES/Info.plist" "$APP/Contents/Info.plist"
 printf 'APPL????' > "$APP/Contents/PkgInfo"
+# The App Store asks for the reasons behind some system calls (the app's and VLCKit's)
+if [ -n "$APPSTORE" ]; then
+  cp "$ROOT/AppStore/PrivacyInfo.xcprivacy" "$APP/Contents/Resources/PrivacyInfo.xcprivacy"
+  # The About window names the VLCKit built without GPL modules
+  /usr/libexec/PlistBuddy -c "Add :SchnellbildAppStore bool true" "$APP/Contents/Info.plist"
+  # Its texts: no GPL module is in this build
+  rm -f "$APP/Contents/Resources/Licenses/VLCKit-GPL-2.0.txt"
+fi
 
 echo "==> Thumbnail extension (QuickLook, for MKV, WebM, AVI …)"
 APPEX="$APP/Contents/PlugIns/SchnellbildThumbnails.appex"
@@ -80,6 +102,12 @@ cp "$ROOT/FormatReader/Info.plist" "$FORMATS/Contents/Info.plist"
 for key in CFBundleShortVersionString CFBundleVersion; do
   /usr/libexec/PlistBuddy -c "Set :$key $(/usr/libexec/PlistBuddy -c "Print :$key" "$RES/Info.plist")" "$FORMATS/Contents/Info.plist"
 done
+
+if [ -n "$APPSTORE" ]; then
+  "$ROOT/Scripts/sign_appstore.sh" "$APP"
+  echo "==> Done: $APP (App Store)"
+  exit 0
+fi
 
 # Sign from the inside out: every file with machine code (VLCKit and its
 # plugins), then the frameworks, then the app. With MACOS_SIGN_IDENTITY

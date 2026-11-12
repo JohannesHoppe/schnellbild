@@ -303,3 +303,15 @@
 "Same as System" = "Som systemet";
 "Light" = "Lys";
 "Dark" = "Mørk";
+"Schnellbild needs your permission for this folder" = "Schnellbild trenger din tillatelse for denne mappen";
+"Allow Access…" = "Tillat tilgang…";
+"Allow Access" = "Tillat tilgang";
+"Choose this folder, or one that holds it, so Schnellbild may show it. Schnellbild remembers your choice." = "Velg denne mappen, eller en som inneholder den, så Schnellbild får vise den. Schnellbild husker valget ditt.";
+"Folder access" = "Mappetilgang";
+"Folders opened to Schnellbild" = "Mapper åpnet for Schnellbild";
+"Forget Folder Access…" = "Glem mappetilgang…";
+"Schnellbild may show only the folders you choose or drop on its window, with everything inside them." = "Schnellbild får bare vise mappene du velger eller slipper på vinduet, med alt innhold.";
+"Forget the access to every folder?" = "Glemme tilgangen til alle mapper?";
+"Forget Folder Access" = "Glem mappetilgang";
+"Each folder asks for your permission again." = "Hver mappe ber om tillatelsen din igjen.";
+"© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later. Built from its source without VLC's modules under the GPL; the build script and its changes are in Schnellbild's repository (github.com/JohannesHoppe/schnellbild)." = "© VideoLAN og VLC-forfatterne. GNU Lesser General Public License 2.1 eller nyere. Bygget fra kildekoden uten VLCs moduler under GPL; byggeskriptet og endringene ligger i Schnellbilds repository (github.com/JohannesHoppe/schnellbild).";

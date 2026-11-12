@@ -303,3 +303,15 @@
 "Same as System" = "Wie das System";
 "Light" = "Hell";
 "Dark" = "Dunkel";
+"Schnellbild needs your permission for this folder" = "Schnellbild braucht deine Erlaubnis für diesen Ordner";
+"Allow Access…" = "Zugriff erlauben …";
+"Allow Access" = "Zugriff erlauben";
+"Choose this folder, or one that holds it, so Schnellbild may show it. Schnellbild remembers your choice." = "Wähle diesen Ordner oder einen, der ihn enthält, damit Schnellbild ihn zeigen darf. Schnellbild merkt sich deine Wahl.";
+"Folder access" = "Ordnerzugriff";
+"Folders opened to Schnellbild" = "Für Schnellbild freigegebene Ordner";
+"Forget Folder Access…" = "Ordnerzugriff vergessen …";
+"Schnellbild may show only the folders you choose or drop on its window, with everything inside them." = "Schnellbild darf nur die Ordner zeigen, die du auswählst oder auf sein Fenster ziehst, mit allem, was darin liegt.";
+"Forget the access to every folder?" = "Den Zugriff auf alle Ordner vergessen?";
+"Forget Folder Access" = "Ordnerzugriff vergessen";
+"Each folder asks for your permission again." = "Jeder Ordner fragt dann wieder nach deiner Erlaubnis.";
+"© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later. Built from its source without VLC's modules under the GPL; the build script and its changes are in Schnellbild's repository (github.com/JohannesHoppe/schnellbild)." = "© VideoLAN und die VLC-Autoren. GNU Lesser General Public License 2.1 oder später. Aus dem Quellcode gebaut, ohne die VLC-Module unter der GPL; das Build-Skript und seine Änderungen liegen im Repository von Schnellbild (github.com/JohannesHoppe/schnellbild).";

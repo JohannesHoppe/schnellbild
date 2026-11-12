@@ -797,6 +797,9 @@ final class BrowserModel: ObservableObject {
     struct LoadError: Equatable {
         let archive: Bool
         let reason: String
+        /// In the App Sandbox: a folder the user hasn't opened to the app
+        /// (`FolderAccess`), which `allowAccess` asks for.
+        var needsAccess = false
     }
     @Published private(set) var loadError: LoadError?
     /// The current folder's files the grid doesn't show (not while searching).
@@ -1213,8 +1216,17 @@ final class BrowserModel: ObservableObject {
         panel.prompt = String(localized: "Open")
         panel.message = String(localized: "Choose a folder")
         if panel.runModal() == .OK, let url = panel.url {
+            FolderAccess.shared.grant(url)
             open(folder: url)
         }
+    }
+
+    /// The folder shown can't be read in the App Sandbox: the user opens it
+    /// to the app (or one that holds it), and it is read again; another
+    /// folder chosen instead opens.
+    func allowAccess() {
+        guard let folder = folderURL, let granted = FolderAccess.shared.ask(for: folder) else { return }
+        if FolderAccess.shared.covers(folder) { refresh() } else { open(folder: granted) }
     }
 
     /// Navigate to a folder. Records the current location in the history.
@@ -1274,7 +1286,8 @@ final class BrowserModel: ObservableObject {
                 self.otherFiles = listing.others
             case .failure(let error as CocoaError):
                 // Not "empty": the folder couldn't be listed (no permission, a share gone)
-                self.loadError = LoadError(archive: false, reason: error.localizedDescription)
+                self.loadError = LoadError(archive: false, reason: error.localizedDescription,
+                                           needsAccess: !FolderAccess.shared.covers(url))
             case .failure(ArchiveError.needsPassword):
                 // Asked once; what is typed is remembered for every archive.
                 // The help makes way (one sheet at a time).
@@ -1282,7 +1295,8 @@ final class BrowserModel: ObservableObject {
                 self.passwordRequest = PasswordRequest(archive: ArchivePath.split(url)?.archive.lastPathComponent ?? url.lastPathComponent,
                                                        location: location, thenDetail: thenDetail, wrong: password != nil)
             case .failure(let error):
-                self.loadError = LoadError(archive: ArchivePath.split(url) != nil, reason: error.localizedDescription)
+                self.loadError = LoadError(archive: ArchivePath.split(url) != nil, reason: error.localizedDescription,
+                                           needsAccess: !FolderAccess.shared.covers(url))
             }
             if let parent = Self.parentFolder(of: url) {
                 full.insert(GridEntry(url: parent, kind: .parent), at: 0)
@@ -2153,6 +2167,8 @@ final class BrowserModel: ObservableObject {
     /// that folder behind it.
     func openDropped(_ urls: [URL], slideshow: Bool = false) {
         guard let first = urls.first else { return }
+        // Opened to the app by the drop (App Sandbox), for now and after a restart
+        for url in urls { FolderAccess.shared.grant(url) }
         // What it is: looked up off the main thread (dropped from a share
         // that answers slowly)
         let look: @Sendable () -> (exists: Bool, isFolder: Bool, isPackage: Bool) = {
