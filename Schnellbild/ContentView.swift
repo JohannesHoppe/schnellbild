@@ -183,14 +183,13 @@ private struct WindowView: View {
             BookmarksButton(model: model)
         }
         // Back to the grid, first in the row of actions: a centred item
-        // would push the others to the window's right edge. Always there
-        // (off in the grid): an item coming and going makes macOS slide the
-        // toolbar's other items, which delays the switch to the grid.
+        // would push the others to the window's right edge
         ToolbarItemGroup(placement: .primaryAction) {
-            Button { model.closeDetail() } label: {
-                ShortcutLabel("Grid", systemImage: "square.grid.2x2", keys: "esc", showsTitle: true)
+            if model.mode == .detail {
+                Button { model.closeDetail() } label: {
+                    ShortcutLabel("Grid", systemImage: "square.grid.2x2", keys: "esc", showsTitle: true)
+                }
             }
-            .disabled(model.mode != .detail)
         }
         ToolbarItem(placement: .primaryAction) {
             // Two panes side by side, as in the file commanders (D, ⌃O)
