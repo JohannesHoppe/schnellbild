@@ -2,12 +2,17 @@
 # Scripts/make_sample_media.swift draws a sample library (photos and videos), the
 # ReadmeScreenshots UI test opens the app on it and walks through its views,
 # in light and dark mode; Scripts/shoot_window.swift photographs the window
-# with its shadow. The PNGs land in the artifact "screenshots"; copy them to
+# with its shadow. With the input language=de it takes them once, light, with
+# the German interface (names ending in -de, for haushoppe-its.de). The PNGs land in the artifact "screenshots"; copy them to
 # docs/screenshots.
 name: Screenshots
 
 on:
   workflow_dispatch:
+    inputs:
+      language:
+        description: "The app's language: en (the README, light and dark) or de (the German website, light only, names ending in -de)"
+        default: en
 
 permissions:
   contents: read
@@ -69,6 +74,8 @@ jobs:
           sleep 2
 
       - name: Take the screenshots
+        env:
+          LANGUAGE_INPUT: ${{ inputs.language }}
         run: |
           mkdir -p shots
           # The test asks for each picture on the pasteboard ("shoot:<name>")
@@ -102,11 +109,15 @@ jobs:
             osascript -e "tell application \"System Events\" to tell appearance preferences to set dark mode to $1"
           }
           status=0
-          for mode in light dark; do
+          language="${LANGUAGE_INPUT:-en}"
+          case "$language" in en|de) ;; *) echo "unknown language $language"; exit 1;; esac
+          modes="light dark"; tag=""
+          [ "$language" = en ] || { modes=light; tag="-$language"; }
+          for mode in $modes; do
             set_dark "$([ "$mode" = dark ] && echo true || echo false)"
             # Same window size and place in both runs: forget the saved frame
             defaults delete art.haushoppe.schnellbild 2>/dev/null || true
-            TEST_RUNNER_SCREENSHOTS=1 TEST_RUNNER_SCREENSHOT_SUFFIX="-$mode" TEST_RUNNER_PHOTOS_DIR=/Users/Shared/Photos \
+            TEST_RUNNER_SCREENSHOTS=1 TEST_RUNNER_SCREENSHOT_SUFFIX="-$mode$tag" TEST_RUNNER_LANGUAGE="$language" TEST_RUNNER_PHOTOS_DIR=/Users/Shared/Photos \
               xcodebuild test-without-building -project Schnellbild.xcodeproj -scheme Schnellbild \
                 -destination 'platform=macOS' -derivedDataPath build/DerivedData \
                 -only-testing:SchnellbildUITests/ReadmeScreenshots || status=1
