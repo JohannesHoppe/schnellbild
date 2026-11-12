@@ -235,7 +235,6 @@
 "selected" = "선택됨";
 "not selected" = "선택 안 됨";
 /* About window: the libraries' licenses */
-"© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later; some of its modules GNU General Public License 2 or later." = "© VideoLAN 및 VLC 개발자. GNU Lesser General Public License 2.1 이상, 일부 모듈은 GNU General Public License 2 이상.";
 "© Tim Kientzle and the libarchive contributors. BSD 2-clause license." = "© Tim Kientzle 및 libarchive 기여자. 2조항 BSD 라이선스.";
 "© Alexander Roshal. The UnRAR license, in its own words:" = "© Alexander Roshal. UnRAR 라이선스 원문:";
 "This file is too large to show from inside an archive." = "이 파일은 압축 파일 안에서 보여 주기에 너무 큽니다.";

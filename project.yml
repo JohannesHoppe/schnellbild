@@ -19,9 +19,9 @@ settings:
     CODE_SIGN_IDENTITY: "-"
     CODE_SIGNING_REQUIRED: "NO"
     GENERATE_INFOPLIST_FILE: "YES"
-    # The app's entitlements: none for the DMG's tests; the App Store
-    # variant's UI tests set AppStore/Sandbox-UITests.entitlements (appstore.yml)
-    SCHNELLBILD_APP_ENTITLEMENTS: ""
+    # The app runs in the App Sandbox: the UI tests too, with every file open
+    # to it (a UI test can't answer an open panel for each of its folders)
+    SCHNELLBILD_APP_ENTITLEMENTS: Sandbox/UITests.entitlements
 
 targets:
   # Archives: the vendored UnRAR source (Scripts/fetch_unrar.sh) behind a small

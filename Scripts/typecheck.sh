@@ -7,7 +7,7 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 ./Scripts/fetch_vlckit.sh >/dev/null
 SDK=$(xcrun --show-sdk-path)
-VLC=Vendor/VLCKit.xcframework/macos-arm64_x86_64
+VLC="$(ls -d Vendor/VLCKit.xcframework/macos-* | head -1)"   # the macOS slice (arm64, or arm64_x86_64)
 WORK=$(mktemp -d)
 # bash 3.2 reports an aborted expansion (an unset variable) as success once an
 # EXIT trap runs: the trap fails unless the script got to its end.

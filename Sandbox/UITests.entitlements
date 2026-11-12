@@ -2,11 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <!-- UI tests of the App Store variant (appstore.yml), never shipped:
-         the App Sandbox of AppStore/Schnellbild.entitlements, without what
-         only a profile allows, and with every file open to the app, since a
-         UI test can't answer an open panel for each of its folders. What it
-         shows: VLC, Quick Look, archives and the rest work in the sandbox. -->
+    <!-- The app as the UI tests and the screenshots build it (project.yml),
+         never shipped: the App Sandbox of Schnellbild.entitlements, without
+         what only a profile allows, and with every file open to the app,
+         since a UI test can't answer an open panel for each of its folders.
+         What it shows: VLC, Quick Look, archives and the rest work in the
+         sandbox. -->
     <key>com.apple.security.app-sandbox</key>
     <true/>
     <key>com.apple.security.files.user-selected.read-write</key>

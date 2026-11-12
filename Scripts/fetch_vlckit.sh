@@ -1,16 +1,17 @@
 #!/bin/bash
-# Fetches the OFFICIAL VideoLAN VLCKit (macOS) xcframework and vendors it into
-# Vendor/VLCKit.xcframework. The download is verified against VideoLAN's
-# published SHA-256 (from the CocoaPods spec) — it aborts on any mismatch.
-# No third-party repo is involved; this is the minimal-trust path.
+# Fetches VLCKit (macOS) and vendors it into Vendor/VLCKit.xcframework: our
+# build of VideoLAN's VLCKit without VLC's GPL modules (Scripts/build_vlckit_lgpl.sh,
+# workflow vlckit-lgpl.yml), published as a pre-release of this repository. The
+# download is verified against the SHA-256 pinned here (the one the workflow
+# printed) — it aborts on any mismatch.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 ROOT="$(pwd)"
 source "$ROOT/Scripts/fetch_verified.sh"
 
-VERSION="3.6.0"
-URL="https://download.videolan.org/pub/cocoapods/prod/VLCKit-3.6.0-c73b779f-dd8bfdba.tar.xz"
-SHA256="23f8f7bb0f8e0321393f51ad5da65ea37ecbc1e148ac2d97fd9f05073ec01075"
+VERSION="3.6.0-lgpl-6"
+URL="https://github.com/JohannesHoppe/schnellbild/releases/download/vlckit-$VERSION/VLCKit-lgpl.xcframework.zip"
+SHA256="cce5e9381d8bd93d5948f3ef05ea4de014c7399b7b9d1598e296576c19873be9"
 
 # The UnRAR source is vendored alongside (every build that needs VLCKit
 # needs it too).
@@ -42,10 +43,10 @@ TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"; [ -n "${finished:-}" ] || exit 1' EXIT
 
 # Checked against VideoLAN's published checksum
-fetch_verified "official VLCKit $VERSION (macOS) from videolan.org" "$URL" "$SHA256" "$TMP/VLCKit.tar.xz"
+fetch_verified "VLCKit $VERSION (without GPL modules)" "$URL" "$SHA256" "$TMP/VLCKit.zip"
 
 echo "==> Extracting…"
-tar -xf "$TMP/VLCKit.tar.xz" -C "$TMP"
+ditto -x -k "$TMP/VLCKit.zip" "$TMP"
 SRC="$(find "$TMP" -maxdepth 3 -name 'VLCKit.xcframework' -type d | head -1)"
 [ -d "$SRC" ] || { echo "!! VLCKit.xcframework not found in the archive."; exit 1; }
 

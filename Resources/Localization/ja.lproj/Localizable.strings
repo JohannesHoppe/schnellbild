@@ -235,7 +235,6 @@
 "selected" = "選択済み";
 "not selected" = "未選択";
 /* About window: the libraries' licenses */
-"© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later; some of its modules GNU General Public License 2 or later." = "© VideoLAN および VLC の作者。GNU Lesser General Public License 2.1 以降。一部のモジュールは GNU General Public License 2 以降。";
 "© Tim Kientzle and the libarchive contributors. BSD 2-clause license." = "© Tim Kientzle および libarchive の貢献者。2 条項 BSD ライセンス。";
 "© Alexander Roshal. The UnRAR license, in its own words:" = "© Alexander Roshal。UnRAR ライセンスの原文:";
 "This file is too large to show from inside an archive." = "このファイルはアーカイブ内から表示するには大きすぎます。";

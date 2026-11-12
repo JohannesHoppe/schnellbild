@@ -2,7 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <!-- The Mac App Store build (Scripts/build_app.sh with SCHNELLBILD_APPSTORE=1).
+    <!-- The app, in the DMG and in the Mac App Store (Scripts/sign_app.sh;
+         the App ID and team only with an App Store profile).
          App Sandbox: no network; folders the user chooses or drops
          (read and write: rename, trash, move), kept across launches as
          security-scoped bookmarks (FolderAccess); the Pictures, Movies and

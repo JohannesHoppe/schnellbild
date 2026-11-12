@@ -1,14 +1,10 @@
-# The Mac App Store variant (AppStore/, started by hand):
-#   1. VLCKit without GPL modules (Scripts/build_vlckit_lgpl.sh), kept in the
-#      cache until its scripts or patches change
-#   2. the UI tests of the app in the App Sandbox, with that VLCKit
-#      (AppStore/Sandbox-UITests.entitlements), on macOS 15 and 26
-#   3. the App Store build (Scripts/build_app.sh with SCHNELLBILD_APPSTORE=1)
-#      and its installer package: signed when the App Store secrets are there
-#      (APPSTORE_APP_P12, APPSTORE_INSTALLER_P12, APPSTORE_CERT_PASSWORD,
-#      APPSTORE_PROFILE_APP, APPSTORE_PROFILE_THUMBNAILS,
-#      APPSTORE_PROFILE_FORMATREADER), else ad hoc and unsigned, as a dry run.
-#      Nothing is uploaded: the package is an artifact (AppStore/CHECKLIST.md).
+# The Mac App Store package (started by hand): the same app as the DMG
+# (Scripts/build_app.sh), signed for the App Store and wrapped in its installer
+# package. Signed when the App Store secrets are there (APPSTORE_APP_P12,
+# APPSTORE_INSTALLER_P12, APPSTORE_CERT_PASSWORD, APPSTORE_PROFILE_APP,
+# APPSTORE_PROFILE_THUMBNAILS, APPSTORE_PROFILE_FORMATREADER), else ad hoc and
+# unsigned, as a dry run. Nothing is uploaded: the package is an artifact
+# (AppStore/CHECKLIST.md).
 name: App Store
 
 on:
@@ -18,109 +14,8 @@ permissions:
   contents: read
 
 jobs:
-  vlckit:
-    name: VLCKit without GPL modules
-    # VLC 3.0's third-party libraries in VLCKit 3.6.0 (zlib 1.2.13, libpng …)
-    # break with the macOS 26 SDK; they build with the macOS 15.0 SDK (Xcode 16.0)
-    runs-on: macos-15
-    timeout-minutes: 360
-    steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
-
-      - name: Cache the framework
-        id: cache
-        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
-        with:
-          path: vlckit-lgpl
-          key: vlckit-lgpl-${{ hashFiles('Scripts/build_vlckit_lgpl.sh', 'Scripts/vlckit-patches/*', 'Scripts/vlckit_licenses.py') }}
-
-      - name: Select Xcode 16.0
-        if: steps.cache.outputs.cache-hit != 'true'
-        uses: maxim-lobanov/setup-xcode@ed7a3b1fda3918c0306d1b724322adc0b8cc0a90 # v1.7.0
-        with:
-          xcode-version: "16.0"
-
-      - name: Build
-        if: steps.cache.outputs.cache-hit != 'true'
-        run: |
-          ./Scripts/build_vlckit_lgpl.sh "$RUNNER_TEMP/vlckit-lgpl"
-          mkdir -p vlckit-lgpl
-          ditto "$RUNNER_TEMP/vlckit-lgpl/vlckit/build/VLCKit.xcframework" vlckit-lgpl/VLCKit.xcframework
-
-      - name: No GPL module in it
-        run: python3 -I Scripts/vlckit_licenses.py "$(find vlckit-lgpl/VLCKit.xcframework -path '*VLCKit.framework/Versions/A/VLCKit' -type f | head -1)" --no-gpl
-
-      - name: Pack it
-        run: ditto -c -k --keepParent vlckit-lgpl/VLCKit.xcframework VLCKit-lgpl.xcframework.zip
-
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-        with:
-          name: vlckit-lgpl
-          path: VLCKit-lgpl.xcframework.zip
-          if-no-files-found: error
-
-  sandbox-ui-tests:
-    name: UI tests in the App Sandbox (${{ matrix.os }})
-    needs: vlckit
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [macos-15, macos-26]
-    runs-on: ${{ matrix.os }}
-    steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
-
-      - name: Select latest stable Xcode
-        uses: maxim-lobanov/setup-xcode@ed7a3b1fda3918c0306d1b724322adc0b8cc0a90 # v1.7.0
-        with:
-          xcode-version: latest-stable
-
-      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
-        with:
-          name: vlckit-lgpl
-
-      - name: VLCKit without GPL modules in place
-        run: |
-          mkdir -p Vendor
-          ditto -x -k VLCKit-lgpl.xcframework.zip Vendor
-          SCHNELLBILD_OWN_VLCKIT=1 ./Scripts/fetch_vlckit.sh
-
-      - name: Install xcodegen
-        run: ./Scripts/fetch_xcodegen.sh >> "$GITHUB_PATH"
-
-      - name: Build for testing, in the App Sandbox
-        run: |
-          xcodegen generate
-          xcodebuild build-for-testing -project Schnellbild.xcodeproj -scheme Schnellbild \
-            -destination 'platform=macOS' -derivedDataPath build/DerivedData \
-            SCHNELLBILD_APP_ENTITLEMENTS="$PWD/AppStore/Sandbox-UITests.entitlements"
-          APP="$(find build/DerivedData/Build/Products -maxdepth 2 -name Schnellbild.app | head -1)"
-          codesign -d --entitlements - --xml "$APP" | grep -q com.apple.security.app-sandbox \
-            || { echo "!! the app under test is not in the App Sandbox"; exit 1; }
-          echo "In the App Sandbox: $APP"
-
-      - name: Run the UI tests
-        run: |
-          xcodebuild test-without-building -project Schnellbild.xcodeproj -scheme Schnellbild \
-            -destination 'platform=macOS' -derivedDataPath build/DerivedData \
-            -only-testing:SchnellbildUITests/VideoUITests \
-            -only-testing:SchnellbildUITests/FullViewUITests \
-            -only-testing:SchnellbildUITests/ArchiveUITests \
-            -only-testing:SchnellbildUITests/NavigationUITests
-
-      - name: Show VLC's log
-        if: failure()
-        run: |
-          [ -f /tmp/schnellbild-vlc.log ] || { echo "no VLC log"; exit 0; }
-          grep -i -E "vout|video output|vmem|error|failed|cannot|denied|sandbox" /tmp/schnellbild-vlc.log | sort | uniq -c | sort -rn | head -80
-
-      - name: What the sandbox refused
-        if: failure()
-        run: /usr/bin/log show --last 40m --style compact --predicate 'eventMessage CONTAINS "deny" AND eventMessage CONTAINS "Schnellbild"' 2>/dev/null | tail -80
-
   package:
     name: App Store build and package
-    needs: vlckit
     runs-on: macos-15
     env:
       SIGN: ${{ secrets.APPSTORE_APP_P12 != '' && secrets.APPSTORE_INSTALLER_P12 != '' }}
@@ -132,15 +27,6 @@ jobs:
         with:
           xcode-version: latest-stable
 
-      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
-        with:
-          name: vlckit-lgpl
-
-      - name: VLCKit without GPL modules in place
-        run: |
-          mkdir -p Vendor
-          ditto -x -k VLCKit-lgpl.xcframework.zip Vendor
-
       - name: Set up the App Store certificates
         if: env.SIGN == 'true'
         env:
@@ -149,7 +35,7 @@ jobs:
           P12_PASSWORD: ${{ secrets.APPSTORE_CERT_PASSWORD }}
         run: ./Scripts/macos-signing.sh appstore
 
-      - name: Build the App Store variant
+      - name: Build, signed for the App Store
         env:
           PROFILE_APP: ${{ secrets.APPSTORE_PROFILE_APP }}
           PROFILE_THUMBNAILS: ${{ secrets.APPSTORE_PROFILE_THUMBNAILS }}
@@ -163,7 +49,7 @@ jobs:
             export THUMBNAILS_PROFILE="$RUNNER_TEMP/thumbnails.provisionprofile"
             export FORMATS_PROFILE="$RUNNER_TEMP/formats.provisionprofile"
           fi
-          SCHNELLBILD_APPSTORE=1 ./Scripts/build_app.sh
+          ./Scripts/build_app.sh
 
       - name: Installer package
         run: ./Scripts/package_appstore.sh build/Schnellbild.app build/Schnellbild.pkg

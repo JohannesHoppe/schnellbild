@@ -1,23 +1,15 @@
 # Mac App Store: what is ready, what is left
 
-Schnellbild's App Store variant is the same app as the DMG, built differently (`SCHNELLBILD_APPSTORE=1 Scripts/build_app.sh`, workflow `appstore.yml`):
-
-| | DMG (GitHub Releases) | Mac App Store |
-|---|---|---|
-| VLCKit | VideoLAN's binary (LGPL, 8 modules GPL) | built by us without the GPL modules (`Scripts/build_vlckit_lgpl.sh`) |
-| App Sandbox | no (Hardened Runtime) | yes: app and both extensions |
-| Folders | every folder | folders the user chooses or drops, kept across launches (`FolderAccess`); Pictures, Movies, Downloads without asking |
-| Signing | Developer ID, notarized | Apple Distribution, installer package |
-| License agreement | MIT, LICENSE | custom EULA (`AppStore/EULA.md`) |
+One app, two ways out: free as the DMG on GitHub Releases, and for 1 € in the Mac App Store for those who want to support the project. Both are the same build (`Scripts/build_app.sh`): in the App Sandbox, with VLCKit built without VLC's GPL modules. Only the signature differs (`Scripts/sign_app.sh`): Developer ID and notarization for the DMG, Apple Distribution and an installer package for the App Store (workflow `appstore.yml`).
 
 ## Ready (in this repository)
 
-- [x] VLCKit 3.6.0 without GPL modules: 235 modules, all LGPL; all unit tests pass with it (every video format gives a frame).
-- [x] Folder access in the sandbox: grants as security-scoped bookmarks, "Allow Access…" for a folder outside them, Settings → Folder access to forget them. Outside the sandbox nothing changes.
-- [x] Entitlements: `AppStore/Schnellbild.entitlements`, `AppStore/SchnellbildThumbnails.entitlements`, `FormatReader/FormatReader.entitlements`.
-- [x] Privacy manifest `AppStore/PrivacyInfo.xcprivacy`: no tracking, no data collected; reasons for settings, file dates, time since boot.
-- [x] Build, signing, installer package: `Scripts/build_app.sh`, `Scripts/sign_appstore.sh`, `Scripts/package_appstore.sh`; CI `appstore.yml` (UI tests in the sandbox on macOS 15 and 26, then the package).
-- [x] About window: in the App Store build it names the VLCKit built without GPL modules and where its build is; THIRD-PARTY-NOTICES.md describes that build and offers its source.
+- [x] VLCKit 3.6.0 without GPL modules (`Scripts/build_vlckit_lgpl.sh`, workflow `vlckit-lgpl.yml`, published as a pre-release, fetched by `Scripts/fetch_vlckit.sh`): 235 modules, all LGPL; all unit tests pass with it.
+- [x] App Sandbox for the app and both extensions (`Sandbox/`); all UI tests run the app in it.
+- [x] Folder access: grants as security-scoped bookmarks, "Allow Access…" for a folder outside them, Settings → Folder access to forget them.
+- [x] Privacy manifest `Sandbox/PrivacyInfo.xcprivacy`: no tracking, no data collected.
+- [x] App Store signing and installer package: `Scripts/sign_app.sh`, `Scripts/package_appstore.sh`, workflow `appstore.yml`.
+- [x] About window and THIRD-PARTY-NOTICES.md describe the VLCKit build and offer its source.
 - [x] EULA draft: `AppStore/EULA.md`.
 
 ## For Johannes (Apple Developer account, App Store Connect)
@@ -37,4 +29,5 @@ Schnellbild's App Store variant is the same app as the DMG, built differently (`
 - **VLCKit built with Xcode 16.0** (macOS 15.0 SDK): VLC 3.0's libraries in VLCKit 3.6.0 break with the macOS 26 SDK. Whether App Store Connect accepts an embedded framework built with an older SDK is unknown. The lasting fix is a newer VLCKit (3.7.x: zlib 1.3.x, libpng 1.6.5x), for the DMG too.
 - **LGPL and the App Store:** VideoLAN ships LGPL VLC in the App Store; some (the Software Freedom Conservancy) hold the App Store's terms still conflict with copyleft. The custom EULA and the source offer address what the LGPL asks.
 - **Disk space API:** VLCKit calls `fstatfs` (whether a file is on a network share). None of Apple's reasons fits; VLC for iOS declares none for it either. If App Store Connect warns (ITMS-91053), the manifest needs an entry.
-- **Not yet tried in the sandbox:** network shares chosen in the open panel, F5/F6 between two granted folders, "Open with Default App", the media extension's opt-in. The sandbox UI tests open everything (`Sandbox-UITests.entitlements`); the folder grants themselves need a person at the open panel.
+- **Not yet tried in the sandbox:** network shares chosen in the open panel, F5/F6 between two granted folders, "Open with Default App", the media extension's opt-in. The UI tests open every file to the app (`Sandbox/UITests.entitlements`); the folder grants themselves need a person at the open panel.
+- **The same bundle ID in both:** the DMG (Developer ID) and the App Store version (Apple's signature) share `art.haushoppe.schnellbild` and so the container. Whether macOS asks before one opens the container the other made is untried.

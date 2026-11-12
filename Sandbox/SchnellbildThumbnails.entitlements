@@ -2,8 +2,9 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <!-- The thumbnail extension in the Mac App Store build: as in the DMG
-         (ThumbnailExtension.entitlements), with its App ID for the profile -->
+    <!-- The thumbnail extension (Scripts/sign_app.sh; the App ID and
+         team only with an App Store profile): reads only the video macOS
+         hands it; no network, no other files -->
     <key>com.apple.application-identifier</key>
     <string>87884AP46G.art.haushoppe.schnellbild.thumbnails</string>
     <key>com.apple.developer.team-identifier</key>

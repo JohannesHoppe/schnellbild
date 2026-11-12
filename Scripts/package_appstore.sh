@@ -1,6 +1,6 @@
 #!/bin/bash
-# Wraps the signed App Store variant (Scripts/build_app.sh with
-# SCHNELLBILD_APPSTORE=1 and APPSTORE_SIGN_IDENTITY) in the installer package
+# Wraps the app signed for the Mac App Store (Scripts/build_app.sh with
+# APPSTORE_SIGN_IDENTITY and the App Store profiles) in the installer package
 # App Store Connect takes, signed with APPSTORE_INSTALLER_IDENTITY ("3rd Party
 # Mac Developer Installer: …" / "Mac Installer Distribution: …"); without it
 # the package is unsigned (a dry run: App Store Connect refuses it).

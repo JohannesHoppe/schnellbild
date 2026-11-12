@@ -28,12 +28,12 @@ Open a folder, see thumbnails, look at one picture large, page through with the 
 - **No upselling.** No pro version, no subscription, no "unlock" button. Every feature is in.
 - **No bloat.** No library to import into, no editor, no cloud. Just looking at photos and videos, done well.
 - **Fast.** Thumbnails appear while you scroll, big folders and network shares included (see [Why so fast?](#why-so-fast)).
-- **Safe by default.** Looking at pictures, videos and archives from others runs nothing and goes online nowhere, with nothing to switch on first: archives are only read, never unpacked to disk; a "video" can't make it fetch anything from the internet; a double click never starts an app hiding behind a picture's name; and the parts macOS runs for the Finder stay in Apple's sandbox. What it does, and where its limit is: [Safe with files from others](#safe-with-files-from-others).
+- **Safe by default.** Looking at pictures, videos and archives from others runs nothing and goes online nowhere, with nothing to switch on first: archives are only read, never unpacked to disk; a "video" can't make it fetch anything from the internet; a double click never starts an app hiding behind a picture's name; and the whole app runs in Apple's App Sandbox, so it reaches only the folders you open to it. What it does, and where its limit is: [Safe with files from others](#safe-with-files-from-others).
 - **Doesn't fall over.** Broken files, odd formats and slow disks show a placeholder instead of taking the app down. Your files are only changed when you say so: rename, trash, a new folder, or moving and copying them (dragging tiles onto a folder, F5 / F6 in the dual pane).
 
 ## Download
 
-**[Schnellbild.dmg](https://github.com/JohannesHoppe/schnellbild/releases/latest/download/Schnellbild.dmg)** (macOS 15+, Apple silicon only: Macs with an Intel processor aren't supported): open it and drag Schnellbild into Applications. Signed with a Developer ID and notarized by Apple.
+**[Schnellbild.dmg](https://github.com/JohannesHoppe/schnellbild/releases/latest/download/Schnellbild.dmg)** (macOS 15+, Apple silicon only: Macs with an Intel processor aren't supported): open it and drag Schnellbild into Applications. Signed with a Developer ID, notarized by Apple, and running in Apple's App Sandbox ([why that matters](#safe-with-files-from-others)).
 
 Schnellbild follows your Mac's language: English, Deutsch, Français, Español, Italiano, Português (Brasil), Nederlands, Polski, Svenska, Dansk, Norsk, Suomi, Čeština, Türkçe, Русский, Українська, 日本語, 한국어, 简体中文 and 繁體中文.
 
@@ -333,7 +333,7 @@ F1 (or ⌘?) shows a cheat sheet of the keys; Print… (⌘P) in it prints it on
   <img src="docs/screenshots/settings-light.png" width="460" alt="Settings: how long a picture stays in the slideshow, and the saved archive passwords">
 </picture></p>
 
-Schnellbild → Settings (⌘,) has four things: light or dark (as the system, or always light or always dark, whatever the system's setting), how long a picture stays in the slideshow (1 to 60 seconds), whether macOS reads MKV and AVCHD itself (the media extension, with a button to System Settings), and the archive passwords Schnellbild has saved, which you can forget all at once. Everything else it simply remembers: the folder, the sort order, grid or list, the search mode, the dual pane, the mini keyboard, the volume, the bookmarks. Quitting while files are still being copied or moved asks first and can wait until they are done.
+Schnellbild → Settings (⌘,) has five things: light or dark (as the system, or always light or always dark, whatever the system's setting), the folders you opened to Schnellbild (to forget them), how long a picture stays in the slideshow (1 to 60 seconds), whether macOS reads MKV and AVCHD itself (the media extension, with a button to System Settings), and the archive passwords Schnellbild has saved, which you can forget all at once. Everything else it simply remembers: the folder, the sort order, grid or list, the search mode, the dual pane, the mini keyboard, the volume, the bookmarks. Quitting while files are still being copied or moved asks first and can wait until they are done.
 
 ### Supported file formats
 
@@ -365,14 +365,14 @@ A `.ts` file counts as a video when its content is an MPEG transport stream (a T
 
 Pictures, videos and archives from strangers are exactly what a viewer is for, so Schnellbild is built to treat every file as hostile, out of the box:
 
+- **In Apple's App Sandbox.** The app and its extensions run in the App Sandbox, the same cage Apple puts every Mac App Store app in. So even a file made to attack a flaw in a decoder gets no further than Schnellbild itself may go: no network at all, no other programs started, and only the folders you open to it (by choosing them or dropping them on the window, plus your Pictures, Movies and Downloads folders). Schnellbild remembers those folders; a folder outside them asks first ("Allow Access…"), and Settings → Folder access forgets them all. The Quick Look extension and the media extension run in processes of their own and read only the one file macOS hands them; media extensions are used only when you turned them on in System Settings.
 - **Only reading.** Looking at something never changes it and never unpacks it to disk. Archives are read in memory; names inside them that try to climb out of the archive (`../`) are cleaned, and no read takes more than 256 MB.
 - **Videos can't go online.** VLC gets exactly one reader per file, the video format its first bytes show (else the one its extension names), never a playlist or stream reader. So a "video" that is really a playlist pointing to the internet plays nothing, and no subtitle files are picked up from next to it. Options another program could plant in Schnellbild's preferences for VLC are removed at every start, and the VLC inside has no script engine.
 - **Double click opens documents, not programs.** "Open with Default App" opens only pictures, videos, PDFs, archives and folders. Other files open only from an allow list of document types (text, PDF, office, audio …); apps, scripts, installers, disk images and Terminal settings never, and links and aliases are followed first, so a picture's name can't hide one of them. A `.webloc` opens only an `http(s)` address.
-- **Finder previews in Apple's sandbox.** The Quick Look extension and the media extension run in Apple's App Sandbox, each in its own process: no network, and read access only to the one file macOS hands it. Media extensions are used only when you turned them on in System Settings.
-- **A signed, closed app.** Signed with a Developer ID and notarized by Apple, with the Hardened Runtime: only Apple's code and Schnellbild's own libraries can load into it. It asks for no exceptions (no entitlements) and registers no URL schemes or document types that a web page or another app could use to make it open something.
+- **A signed, closed app.** Signed with a Developer ID and notarized by Apple, with the Hardened Runtime: only Apple's code and Schnellbild's own libraries can load into it. It registers no URL schemes or document types that a web page or another app could use to make it open something.
 - **No crash loops.** If a file ever made Schnellbild quit, it doesn't reopen that folder at the next start.
 
-The limit, honestly: the app itself doesn't run in the App Sandbox, so the decoders run in its process: VLC with FFmpeg for videos, UnRAR and macOS' libarchive for archives, macOS' ImageIO for pictures. A flaw in one of them could in principle run code with your rights, as in any player built on them. That's why VLCKit and UnRAR are kept at their latest security releases.
+The limit, honestly: the decoders run in the app's process: VLC with FFmpeg for videos, UnRAR and macOS' libarchive for archives, macOS' ImageIO for pictures. A flaw in one of them could in principle run code inside Schnellbild; the sandbox then keeps that code to what Schnellbild may do itself: the folders you opened to it, without network. That's why VLCKit and UnRAR are kept at their latest security releases.
 
 ## A free Phiewer alternative
 
@@ -429,4 +429,4 @@ Building from source, tests and releases: [BUILDING.md](BUILDING.md).
 
 [MIT](LICENSE) © 2026 HAUS HOPPE - ITS (Johannes Hoppe)
 
-The MIT License covers Schnellbild's own code. The app also contains VLCKit (GNU LGPL 2.1 or later, some modules GNU GPL 2 or later), UnRAR (UnRAR license) and uses the libarchive built into macOS (BSD); each keeps its own license. Details, the source of VLCKit and the license texts: [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) and the app's About window.
+The MIT License covers Schnellbild's own code. The app also contains VLCKit (GNU LGPL 2.1 or later; built by us without VLC's GPL modules), UnRAR (UnRAR license) and uses the libarchive built into macOS (BSD); each keeps its own license. Details, the source of VLCKit and the license texts: [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) and the app's About window.
