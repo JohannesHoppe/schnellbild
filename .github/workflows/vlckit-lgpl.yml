@@ -13,15 +13,18 @@ permissions:
 jobs:
   build:
     name: Build VLCKit (LGPL modules only)
+    # VLC 3.0's third-party libraries (zlib, libpng …) test TARGET_OS_MAC in
+    # their headers for the classic Mac OS; the newer SDKs define it early, so
+    # they break: the oldest SDK the runner has (macOS 15.0, Xcode 16.0)
     runs-on: macos-15
     timeout-minutes: 360
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
-      - name: Select latest stable Xcode
+      - name: Select Xcode 16.0
         uses: maxim-lobanov/setup-xcode@ed7a3b1fda3918c0306d1b724322adc0b8cc0a90 # v1.7.0
         with:
-          xcode-version: latest-stable
+          xcode-version: "16.0"
 
       - name: Build
         run: ./Scripts/build_vlckit_lgpl.sh "$RUNNER_TEMP/vlckit-lgpl"
