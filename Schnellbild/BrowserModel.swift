@@ -2482,22 +2482,14 @@ final class BrowserModel: ObservableObject {
             // mouse while the search field had focus.
             searchFocused = false
             resetTransforms()
-            Self.withoutAnimation { mode = .detail }
+            mode = .detail
         }
     }
 
     func closeDetail() {
         stopSlideshow()
         resetTransforms()
-        Self.withoutAnimation { mode = .grid }
-    }
-
-    /// Between the grid and the full view at once: nothing to watch on the
-    /// way (the toolbar's Grid button comes and goes with it).
-    static func withoutAnimation(_ change: () -> Void) {
-        var transaction = Transaction()
-        transaction.disablesAnimations = true
-        withTransaction(transaction, change)
+        mode = .grid
     }
 
     /// Backspace, like a browser's Back: out of the full view, else where
