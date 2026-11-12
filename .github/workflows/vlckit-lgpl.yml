@@ -1,0 +1,63 @@
+# Builds VLCKit without VLC's GPL modules (Scripts/build_vlckit_lgpl.sh), the
+# engine a Mac App Store build of Schnellbild would need, and runs the unit
+# tests against it: every video format must still give a picture
+# (VideoFormatTests). Started by hand; the build takes hours.
+name: VLCKit without GPL
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build VLCKit (LGPL modules only)
+    runs-on: macos-15
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: Select latest stable Xcode
+        uses: maxim-lobanov/setup-xcode@ed7a3b1fda3918c0306d1b724322adc0b8cc0a90 # v1.7.0
+        with:
+          xcode-version: latest-stable
+
+      - name: Build
+        run: ./Scripts/build_vlckit_lgpl.sh "$RUNNER_TEMP/vlckit-lgpl"
+
+      - name: Pack the framework
+        run: ditto -c -k --keepParent "$RUNNER_TEMP/vlckit-lgpl/vlckit/build/VLCKit.xcframework" VLCKit-lgpl.xcframework.zip
+
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: vlckit-lgpl
+          path: VLCKit-lgpl.xcframework.zip
+          if-no-files-found: error
+
+  test:
+    name: Unit tests with it
+    needs: build
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: Select latest stable Xcode
+        uses: maxim-lobanov/setup-xcode@ed7a3b1fda3918c0306d1b724322adc0b8cc0a90 # v1.7.0
+        with:
+          xcode-version: latest-stable
+
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: vlckit-lgpl
+
+      - name: Put it in place
+        run: |
+          mkdir -p Vendor
+          ditto -x -k VLCKit-lgpl.xcframework.zip Vendor
+          python3 -I Scripts/vlckit_licenses.py "$(find Vendor/VLCKit.xcframework -path '*VLCKit.framework/Versions/A/VLCKit' -type f | head -1)" --no-gpl
+
+      - name: Test
+        env:
+          SCHNELLBILD_OWN_VLCKIT: "1"
+        run: mkdir -p build && ./Scripts/test.sh
