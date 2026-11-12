@@ -290,3 +290,11 @@
 "Drag to give one pane more room; double-click to share equally" = "拖移可让一侧面板更宽；连按两次可平分";
 "New Window" = "新建窗口";
 "New window (e.g. for another display)" = "新建窗口（例如用于另一台显示器）";
+"Format" = "格式";
+"Audio" = "音频";
+"Duration" = "时长";
+"Bitrate" = "比特率";
+"Bit Depth" = "位深度";
+"Profile" = "颜色描述文件";
+"Camera" = "相机";
+"The file extension doesn't match the content (%@). Recommended: .%@" = "文件扩展名与内容（%@）不符。建议：.%@";

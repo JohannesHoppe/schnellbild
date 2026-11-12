@@ -290,3 +290,11 @@
 "Drag to give one pane more room; double-click to share equally" = "ドラッグすると一方のパネルが広くなります。ダブルクリックで均等に戻ります";
 "New Window" = "新規ウインドウ";
 "New window (e.g. for another display)" = "新規ウインドウ（別のディスプレイ用など）";
+"Format" = "フォーマット";
+"Audio" = "オーディオ";
+"Duration" = "長さ";
+"Bitrate" = "ビットレート";
+"Bit Depth" = "ビット深度";
+"Profile" = "プロファイル";
+"Camera" = "カメラ";
+"The file extension doesn't match the content (%@). Recommended: .%@" = "ファイルの拡張子が内容（%@）と一致しません。推奨：.%@";

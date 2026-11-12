@@ -220,6 +220,11 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
     /// and its position then is that of the last picture, short of 1.
     private var reachedEnd = false
 
+    func streamFacts() async -> StreamFacts? {
+        guard let media = player.media, player.state != .opening else { return nil }
+        return StreamFacts.of(media)
+    }
+
     var lengthSeconds: Double? {
         let ms = player.media?.length.intValue ?? 0
         return ms > 0 ? Double(ms) / 1000 : nil

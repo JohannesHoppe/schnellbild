@@ -71,12 +71,15 @@ protocol PlaybackControl: AnyObject {
     func setVolume(_ volume: Double)
     /// The video's length in seconds, once known (the time left).
     var lengthSeconds: Double? { get }
+    /// The codecs, once the player has opened the video (the Inspector).
+    func streamFacts() async -> StreamFacts?
 }
 
 extension PlaybackControl {
     var playsWithoutLength: Bool { false }
     var videoSize: CGSize? { nil }
     var lengthSeconds: Double? { nil }
+    func streamFacts() async -> StreamFacts? { nil }
 }
 
 /// Side effects on the file system and the workspace. Injectable, so tests
@@ -4003,6 +4006,11 @@ final class AVPlaybackControl: PlaybackControl {
     var videoSize: CGSize? {
         let size = player.currentItem?.presentationSize ?? .zero
         return size.width > 0 && size.height > 0 ? size : nil
+    }
+
+    func streamFacts() async -> StreamFacts? {
+        guard let asset = player.currentItem?.asset else { return nil }
+        return await StreamFacts.of(asset)
     }
 
     /// At the end, playing starts over.

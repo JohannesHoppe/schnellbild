@@ -290,3 +290,11 @@
 "Drag to give one pane more room; double-click to share equally" = "Tažením dáte jednomu panelu více místa; dvojitým kliknutím se rozdělí rovnoměrně";
 "New Window" = "Nové okno";
 "New window (e.g. for another display)" = "Nové okno (např. pro další displej)";
+"Format" = "Formát";
+"Audio" = "Zvuk";
+"Duration" = "Délka";
+"Bitrate" = "Datový tok";
+"Bit Depth" = "Bitová hloubka";
+"Profile" = "Profil";
+"Camera" = "Fotoaparát";
+"The file extension doesn't match the content (%@). Recommended: .%@" = "Přípona souboru neodpovídá obsahu (%@). Doporučeno: .%@";

@@ -290,3 +290,11 @@
 "Drag to give one pane more room; double-click to share equally" = "Sleep om één paneel meer ruimte te geven; dubbelklik om gelijk te verdelen";
 "New Window" = "Nieuw venster";
 "New window (e.g. for another display)" = "Nieuw venster (bijv. voor een ander beeldscherm)";
+"Format" = "Formaat";
+"Audio" = "Audio";
+"Duration" = "Duur";
+"Bitrate" = "Bitsnelheid";
+"Bit Depth" = "Bitdiepte";
+"Profile" = "Profiel";
+"Camera" = "Camera";
+"The file extension doesn't match the content (%@). Recommended: .%@" = "De bestandsextensie past niet bij de inhoud (%@). Aanbevolen: .%@";
