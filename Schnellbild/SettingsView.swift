@@ -21,9 +21,6 @@ struct SettingsView: View {
                 }
                 .accessibilityIdentifier("settings.appearance")
                 .onChange(of: appearance) { _, chosen in AppAppearance.choose(chosen) }
-                Text("Pictures and videos in the full view are always shown on black.")
-                    .font(.callout)
-                    .foregroundStyle(.secondary)
             }
             Section("Slideshow") {
                 Stepper(value: Binding(get: { window.slideshowSeconds }, set: { window.slideshowSeconds = $0 }),
