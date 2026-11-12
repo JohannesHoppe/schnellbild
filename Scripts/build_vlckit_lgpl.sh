@@ -47,6 +47,11 @@ open(path, "w").write(text.replace(end, "    output_livehttp\n" + names + "    \
 EOF
 grep -q librotate_plugin buildMobileVLCKit.sh
 
+# Fixes of our own for VLC 3.0's third-party libraries with today's SDK
+# (Scripts/vlckit-patches): the build script applies every patch in
+# libvlc/patches to VLC, in name order, after VideoLAN's own
+cp "$ROOT"/Scripts/vlckit-patches/*.patch libvlc/patches/
+
 # VLC checks every download with GNU's `sha512sum -c`, the check lines on
 # standard input; macOS's sha512sum doesn't read them from there, its shasum
 # does. VLC's build puts VLC_PATH on its PATH ahead of the system's.
