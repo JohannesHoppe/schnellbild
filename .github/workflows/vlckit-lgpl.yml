@@ -14,18 +14,15 @@ permissions:
 jobs:
   build:
     name: Build VLCKit (LGPL modules only)
-    # VLC 3.0's third-party libraries (zlib 1.2.13, libpng …) test
-    # TARGET_OS_MAC for the classic Mac OS and break with the macOS 26 SDK;
-    # they build with the macOS 15.0 SDK (Xcode 16.0, the oldest the runner has)
     runs-on: macos-15
     timeout-minutes: 360
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
-      - name: Select Xcode 16.0
+      - name: Select latest stable Xcode
         uses: maxim-lobanov/setup-xcode@ed7a3b1fda3918c0306d1b724322adc0b8cc0a90 # v1.7.0
         with:
-          xcode-version: "16.0"
+          xcode-version: latest-stable
 
       - name: Build
         run: ./Scripts/build_vlckit_lgpl.sh "$RUNNER_TEMP/vlckit-lgpl"
@@ -82,14 +79,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           SHA=$(shasum -a 256 VLCKit-lgpl.xcframework.zip | cut -d' ' -f1)
-          TAG="vlckit-3.6.0-lgpl-$GITHUB_RUN_NUMBER"
+          TAG="vlckit-3.7.5-lgpl-$GITHUB_RUN_NUMBER"
           cat > notes.md <<NOTES
-          VLCKit 3.6.0 (VideoLAN, tag 3.6.0, commit c73b779f; libVLC dd8bfdba) for macOS on Apple silicon, built without VLC's modules under the GPL, for Schnellbild. Not a Schnellbild release.
+          VLCKit 3.7.5 (VideoLAN, tag 3.7.5, commit a213fd11; VLC 3.0.24, commit 6de05adc) for macOS on Apple silicon, built without VLC's modules under the GPL, for Schnellbild. Not a Schnellbild release.
 
-          Built by [Scripts/build_vlckit_lgpl.sh](https://github.com/$GITHUB_REPOSITORY/blob/$GITHUB_SHA/Scripts/build_vlckit_lgpl.sh) with its patches ([Scripts/vlckit-patches](https://github.com/$GITHUB_REPOSITORY/tree/$GITHUB_SHA/Scripts/vlckit-patches)) at commit $GITHUB_SHA, in [run $GITHUB_RUN_ID](https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID). Every module is under the GNU LGPL 2.1 or later. Source: https://code.videolan.org/videolan/VLCKit (tag 3.6.0) and https://code.videolan.org/videolan/vlc (dd8bfdba); see THIRD-PARTY-NOTICES.md.
+          Built by [Scripts/build_vlckit_lgpl.sh](https://github.com/$GITHUB_REPOSITORY/blob/$GITHUB_SHA/Scripts/build_vlckit_lgpl.sh) at commit $GITHUB_SHA, in [run $GITHUB_RUN_ID](https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID). Every module is under the GNU LGPL 2.1 or later. Source: https://code.videolan.org/videolan/VLCKit (tag 3.7.5) and https://code.videolan.org/videolan/vlc (6de05adc); see THIRD-PARTY-NOTICES.md.
 
           SHA-256 of VLCKit-lgpl.xcframework.zip: \`$SHA\`
           NOTES
           gh release create "$TAG" VLCKit-lgpl.xcframework.zip --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
-            --prerelease --latest=false --title "VLCKit 3.6.0 without GPL modules (build $GITHUB_RUN_NUMBER)" --notes-file notes.md
+            --prerelease --latest=false --title "VLCKit 3.7.5 without GPL modules (build $GITHUB_RUN_NUMBER)" --notes-file notes.md
           echo "Published $TAG, SHA-256 $SHA"

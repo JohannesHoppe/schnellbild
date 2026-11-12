@@ -1,7 +1,7 @@
 #!/bin/bash
-# Builds VLCKit for macOS from VideoLAN's source, the same version Schnellbild
-# vendors (Scripts/fetch_vlckit.sh), without VLC's modules under the GPL: the
-# Mac App Store's terms don't go with the GPL. Everything else is VideoLAN's own
+# Builds VLCKit for macOS from VideoLAN's source without VLC's modules under the
+# GPL, the VLCKit every Schnellbild build contains (Scripts/fetch_vlckit.sh
+# fetches it once published): the Mac App Store's terms don't go with the GPL. Everything else is VideoLAN's own
 # build (buildMobileVLCKit.sh, its patches, its third-party libraries built with
 # --disable-gpl); only its list of modules to leave out gets the GPL ones too.
 #
@@ -15,9 +15,9 @@ cd "$(dirname "$0")/.."
 ROOT="$(pwd)"
 WORK="${1:?usage: build_vlckit_lgpl.sh <work dir>}"
 
-TAG="3.6.0"
-COMMIT="c73b779f2d1e3d3c1598a27811679ce2c1a005db"   # the tag; libVLC dd8bfdba, as in fetch_vlckit.sh's package
-# VLC's GPL modules in VLCKit 3.6.0 (their build names, VLC's modules/*/Makefile.am):
+TAG="3.7.5"
+COMMIT="a213fd113c5c014556b40765966e77d439f0ddf9"   # the tag; it builds VLC 3.0.24 (6de05adc)
+# VLC's GPL modules (their build names, VLC's modules/*/Makefile.am):
 # Dolby Surround decoder, mono downmix, the dummy interface, syslog logging, the
 # RTSP video-on-demand server, stream output's cycle and RTP, and the rotate
 # filter (any angle, by hand). Schnellbild only plays local files and needs none
@@ -46,11 +46,6 @@ names = "".join(f"    {m}\n" for m in sys.argv[1].split())
 open(path, "w").write(text.replace(end, "    output_livehttp\n" + names + "    \"\n"))
 EOF
 grep -q librotate_plugin buildMobileVLCKit.sh
-
-# Fixes of our own for VLC 3.0's third-party libraries with today's SDK
-# (Scripts/vlckit-patches): the build script applies every patch in
-# libvlc/patches to VLC, in name order, after VideoLAN's own
-cp "$ROOT"/Scripts/vlckit-patches/*.patch libvlc/patches/
 
 # VLC checks every download with GNU's `sha512sum -c`, the check lines on
 # standard input; macOS's sha512sum doesn't read them from there, its shasum
