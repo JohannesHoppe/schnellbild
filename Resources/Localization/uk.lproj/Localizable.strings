@@ -298,3 +298,9 @@
 "Profile" = "Профіль";
 "Camera" = "Камера";
 "The file extension doesn't match the content (%@). Recommended: .%@" = "Розширення файлу не відповідає вмісту (%@). Рекомендовано: .%@";
+"Appearance" = "Вигляд";
+"Mode" = "Режим";
+"Same as System" = "Як у системі";
+"Light" = "Світлий";
+"Dark" = "Темний";
+"Pictures and videos in the full view are always shown on black." = "Повний перегляд завжди показує зображення й відео на чорному тлі.";

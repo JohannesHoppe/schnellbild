@@ -2581,6 +2581,19 @@ final class ReviewFixTests: XCTestCase {
         XCTAssertNil(BrowserModel.mediaKind(of: URL(fileURLWithPath: "/x/._a.jpg")), "macOS's '._' companion files")
     }
 
+    /// Light or dark: as the system's until chosen, then kept.
+    func testTheAppearanceIsKept() throws {
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: "appearance-\(UUID().uuidString)"))
+        XCTAssertEqual(AppAppearance.stored(in: defaults), .system)
+        XCTAssertNil(AppAppearance.system.appearanceName)
+        defaults.set(AppAppearance.dark.rawValue, forKey: AppAppearance.key)
+        XCTAssertEqual(AppAppearance.stored(in: defaults), .dark)
+        XCTAssertEqual(AppAppearance.dark.appearanceName, .darkAqua)
+        XCTAssertEqual(AppAppearance.light.appearanceName, .aqua)
+        defaults.set("purple", forKey: AppAppearance.key)
+        XCTAssertEqual(AppAppearance.stored(in: defaults), .system, "an unknown value")
+    }
+
     /// ".ts" by its content: a transport stream is a video, TypeScript is
     /// not; a file written anew is looked at again.
     func testATSFileIsAVideoOnlyWhenItIsATransportStream() throws {

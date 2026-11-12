@@ -298,3 +298,9 @@
 "Profile" = "Farbprofil";
 "Camera" = "Kamera";
 "The file extension doesn't match the content (%@). Recommended: .%@" = "Die Dateiendung passt nicht zum Inhalt (%@). Empfohlen: .%@";
+"Appearance" = "Erscheinungsbild";
+"Mode" = "Modus";
+"Same as System" = "Wie das System";
+"Light" = "Hell";
+"Dark" = "Dunkel";
+"Pictures and videos in the full view are always shown on black." = "Bilder und Videos zeigt die Vollansicht immer auf Schwarz.";
