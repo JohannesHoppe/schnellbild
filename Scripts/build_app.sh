@@ -88,5 +88,19 @@ for key in CFBundleShortVersionString CFBundleVersion; do
   /usr/libexec/PlistBuddy -c "Set :$key $(/usr/libexec/PlistBuddy -c "Print :$key" "$RES/Info.plist")" "$FORMATS/Contents/Info.plist"
 done
 
+# VLCKit exports the libraries VLC carries (libarchive, zlib, FFmpeg …) along
+# with its own API, and the linker binds a name to the first library that has
+# it. Only VLC's own names may come from VLCKit; anything else would run in
+# VLC's copy of a library instead of the system's.
+echo "==> Only VLC's own functions taken from VLCKit"
+foreign="$(find "$APP/Contents" -path '*/Contents/MacOS/*' -type f -exec nm -m {} \; \
+  | grep '(from VLCKit)' | awk '{print $3}' \
+  | grep -vE '^_(libvlc_|VLC|kVLC|OBJC_(CLASS|METACLASS)_\$_VLC)' | sort -u || true)"
+if [ -n "$foreign" ]; then
+  echo "error: taken from VLCKit, not from the library meant:" >&2
+  echo "$foreign" >&2
+  exit 1
+fi
+
 "$ROOT/Scripts/sign_app.sh" "$APP"
 echo "==> Done: $APP"

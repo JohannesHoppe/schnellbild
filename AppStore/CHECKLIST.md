@@ -4,13 +4,16 @@ One app, two ways out: free as the DMG on GitHub Releases, and for 1 € in the 
 
 ## Ready (in this repository)
 
-- [x] VLCKit 3.6.0 without GPL modules (`Scripts/build_vlckit_lgpl.sh`, workflow `vlckit-lgpl.yml`, published as a pre-release, fetched by `Scripts/fetch_vlckit.sh`): 235 modules, all LGPL; all unit tests pass with it.
+- [x] VLCKit 3.7.5 without GPL modules (`Scripts/build_vlckit_lgpl.sh`, workflow `vlckit-lgpl.yml`, published as a pre-release, fetched by `Scripts/fetch_vlckit.sh`): 235 modules, all LGPL; all unit tests pass with it.
 - [x] App Sandbox for the app and both extensions (`Sandbox/`); all UI tests run the app in it.
 - [x] Folder access: grants as security-scoped bookmarks, "Allow Access…" for a folder outside them, Settings → Folder access to forget them.
 - [x] Privacy manifest `Sandbox/PrivacyInfo.xcprivacy`: no tracking, no data collected.
 - [x] App Store signing and installer package: `Scripts/sign_app.sh`, `Scripts/package_appstore.sh`, workflow `appstore.yml`.
 - [x] About window and THIRD-PARTY-NOTICES.md describe the VLCKit build and offer its source.
 - [x] EULA draft: `AppStore/EULA.md`.
+- [x] Store texts in German and English (name, subtitle, promotional text, description, keywords, review notes): `AppStore/METADATA.md`.
+- [x] Privacy policy: `PRIVACY.md` (URL: https://github.com/JohannesHoppe/schnellbild/blob/main/PRIVACY.md).
+- [x] Screenshots, 2880 × 1800: `AppStore/screenshots/de` and `en` (made by `Scripts/make_store_screenshots.swift` from `docs/screenshots`).
 
 ## For Johannes (Apple Developer account, App Store Connect)
 
@@ -20,13 +23,12 @@ One app, two ways out: free as the DMG on GitHub Releases, and for 1 € in the 
 4. **Provisioning profiles**, type "Mac App Store Connect" (distribution), one per App ID: app, thumbnails, format reader.
 5. **GitHub secrets** (base64 for files): `APPSTORE_APP_P12`, `APPSTORE_INSTALLER_P12`, `APPSTORE_CERT_PASSWORD`, `APPSTORE_PROFILE_APP`, `APPSTORE_PROFILE_THUMBNAILS`, `APPSTORE_PROFILE_FORMATREADER`. Then `appstore.yml` builds a signed package (artifact `appstore-package`).
 6. **App record** in App Store Connect: name (Schnellbild, if free), primary language, bundle ID `art.haushoppe.schnellbild`, SKU, category Photography, price (e.g. tier for 0.99 €/1 €).
-7. **Metadata:** description, keywords, screenshots (1280×800 up to 2880×1800; the README's are a start), support URL, **privacy policy URL** (required, even with no data collected), age rating, App Privacy: "Data Not Collected".
+7. **Metadata:** paste from `AppStore/METADATA.md` (German and English), upload `AppStore/screenshots`, privacy policy URL as above, App Privacy: "Data Not Collected", age rating 4+.
 8. **License agreement:** fill in the address in `AppStore/EULA.md`, have it checked, paste it as custom EULA.
 9. **Upload** the package with Transporter, then pick the build in App Store Connect; first TestFlight, then submit for review. Review notes: the app reads only folders the user chooses; no account, no network.
 
 ## Open risks
 
-- **VLCKit built with Xcode 16.0** (macOS 15.0 SDK): VLC 3.0's libraries in VLCKit 3.6.0 break with the macOS 26 SDK. Whether App Store Connect accepts an embedded framework built with an older SDK is unknown. The lasting fix is a newer VLCKit (3.7.x: zlib 1.3.x, libpng 1.6.5x), for the DMG too.
 - **LGPL and the App Store:** VideoLAN ships LGPL VLC in the App Store; some (the Software Freedom Conservancy) hold the App Store's terms still conflict with copyleft. The custom EULA and the source offer address what the LGPL asks.
 - **Disk space API:** VLCKit calls `fstatfs` (whether a file is on a network share). None of Apple's reasons fits; VLC for iOS declares none for it either. If App Store Connect warns (ITMS-91053), the manifest needs an entry.
 - **Not yet tried in the sandbox:** network shares chosen in the open panel, F5/F6 between two granted folders, "Open with Default App", the media extension's opt-in. The UI tests open every file to the app (`Sandbox/UITests.entitlements`); the folder grants themselves need a person at the open panel.
