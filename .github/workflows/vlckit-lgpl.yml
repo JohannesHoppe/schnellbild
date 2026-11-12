@@ -13,15 +13,17 @@ permissions:
 jobs:
   build:
     name: Build VLCKit (LGPL modules only)
-    runs-on: macos-15
+    # VLC 3.0's zlib doesn't build against the macOS 26 SDK (its zutil.h
+    # defines fdopen, which the SDK's _stdio.h declares): an older Xcode
+    runs-on: macos-14
     timeout-minutes: 360
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
-      - name: Select latest stable Xcode
+      - name: Select Xcode 15.4
         uses: maxim-lobanov/setup-xcode@ed7a3b1fda3918c0306d1b724322adc0b8cc0a90 # v1.7.0
         with:
-          xcode-version: latest-stable
+          xcode-version: "15.4"
 
       - name: Build
         run: ./Scripts/build_vlckit_lgpl.sh "$RUNNER_TEMP/vlckit-lgpl"
