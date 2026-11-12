@@ -25,6 +25,7 @@ GPL_MODULES="libdolby_surround_decoder_plugin libmono_plugin libdummy_plugin lib
 libvod_rtsp_plugin libstream_out_cycle_plugin libstream_out_rtp_plugin librotate_plugin"
 
 mkdir -p "$WORK"
+WORK="$(cd "$WORK" && pwd)"
 cd "$WORK"
 if [ ! -d vlckit ]; then
     git clone --branch "$TAG" --depth 1 https://code.videolan.org/videolan/VLCKit.git vlckit
@@ -44,6 +45,14 @@ names = "".join(f"    {m}\n" for m in sys.argv[1].split())
 open(path, "w").write(text.replace(end, "    output_livehttp\n" + names + "    \"\n"))
 EOF
 grep -q librotate_plugin buildMobileVLCKit.sh
+
+# VLC checks every download with GNU's `sha512sum -c`, the check lines on
+# standard input; macOS's sha512sum doesn't read them from there, its shasum
+# does. VLC's build puts VLC_PATH on its PATH ahead of the system's.
+mkdir -p "$WORK/bin"
+printf '#!/bin/sh\nexec /usr/bin/shasum -a 512 "$@"\n' > "$WORK/bin/sha512sum"
+chmod +x "$WORK/bin/sha512sum"
+export VLC_PATH="$WORK/bin"
 
 # macOS (-x), arm64 only: Schnellbild runs on Apple silicon only
 ./buildMobileVLCKit.sh -vx -a aarch64
