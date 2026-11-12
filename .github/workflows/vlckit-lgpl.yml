@@ -13,9 +13,9 @@ permissions:
 jobs:
   build:
     name: Build VLCKit (LGPL modules only)
-    # VLC 3.0's third-party libraries (zlib, libpng …) test TARGET_OS_MAC in
-    # their headers for the classic Mac OS; the newer SDKs define it early, so
-    # they break: the oldest SDK the runner has (macOS 15.0, Xcode 16.0)
+    # VLC 3.0's third-party libraries (zlib 1.2.13, libpng …) test
+    # TARGET_OS_MAC for the classic Mac OS and break with the macOS 26 SDK;
+    # they build with the macOS 15.0 SDK (Xcode 16.0, the oldest the runner has)
     runs-on: macos-15
     timeout-minutes: 360
     steps:
