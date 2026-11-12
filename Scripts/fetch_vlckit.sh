@@ -9,9 +9,9 @@ cd "$(dirname "$0")/.."
 ROOT="$(pwd)"
 source "$ROOT/Scripts/fetch_verified.sh"
 
-VERSION="3.6.0-lgpl-6"
+VERSION="3.7.5-lgpl-9"
 URL="https://github.com/JohannesHoppe/schnellbild/releases/download/vlckit-$VERSION/VLCKit-lgpl.xcframework.zip"
-SHA256="cce5e9381d8bd93d5948f3ef05ea4de014c7399b7b9d1598e296576c19873be9"
+SHA256="aa02d38c2b6e8defb3f8fdf021f407e42aa20f3875f8eee09832db2df5ece3c1"
 
 # The UnRAR source is vendored alongside (every build that needs VLCKit
 # needs it too).
