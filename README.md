@@ -333,7 +333,7 @@ F1 (or ⌘?) shows a cheat sheet of the keys; Print… (⌘P) in it prints it on
   <img src="docs/screenshots/settings-light.png" width="460" alt="Settings: how long a picture stays in the slideshow, and the saved archive passwords">
 </picture></p>
 
-Schnellbild → Settings (⌘,) has three things: how long a picture stays in the slideshow (1 to 60 seconds), whether macOS reads MKV and AVCHD itself (the media extension, with a button to System Settings), and the archive passwords Schnellbild has saved, which you can forget all at once. Everything else it simply remembers: the folder, the sort order, grid or list, the search mode, the dual pane, the mini keyboard, the volume, the bookmarks. Quitting while files are still being copied or moved asks first and can wait until they are done.
+Schnellbild → Settings (⌘,) has four things: light or dark (as the system, or always light or always dark, whatever the system's setting; the full view stays black), how long a picture stays in the slideshow (1 to 60 seconds), whether macOS reads MKV and AVCHD itself (the media extension, with a button to System Settings), and the archive passwords Schnellbild has saved, which you can forget all at once. Everything else it simply remembers: the folder, the sort order, grid or list, the search mode, the dual pane, the mini keyboard, the volume, the bookmarks. Quitting while files are still being copied or moved asks first and can wait until they are done.
 
 ### Supported file formats
 

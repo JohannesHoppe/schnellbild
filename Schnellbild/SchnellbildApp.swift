@@ -31,6 +31,7 @@ struct SchnellbildApp: App {
         VTRegisterProfessionalVideoWorkflowVideoDecoders()
         let defaults = BrowserModel.makeDefaults()
         self.defaults = defaults
+        AppAppearance.defaults = defaults
         // Archive passwords: the login keychain; UI tests keep theirs in
         // their own preferences (`--reset-state` clears them)
         ArchiveStore.shared.passwords = ProcessInfo.processInfo.arguments.contains("--ui-testing")
@@ -163,6 +164,11 @@ struct NewWindowButton: View {
 /// background process with no window focus. This turns it into a normal
 /// foreground app.
 final class AppDelegate: NSObject, NSApplicationDelegate {
+    /// Light or dark as chosen in Settings, before the first window shows.
+    func applicationWillFinishLaunching(_ notification: Notification) {
+        AppAppearance.apply()
+    }
+
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.regular)
         NSApp.activate(ignoringOtherApps: true)

@@ -19,8 +19,9 @@ TAG="3.6.0"
 COMMIT="c73b779f2d1e3d3c1598a27811679ce2c1a005db"   # the tag; libVLC dd8bfdba, as in fetch_vlckit.sh's package
 # VLC's GPL modules in VLCKit 3.6.0 (their build names, VLC's modules/*/Makefile.am):
 # Dolby Surround decoder, mono downmix, the dummy interface, syslog logging, the
-# RTSP video-on-demand server, and stream output's cycle and RTP. Schnellbild
-# only plays local files and needs none of them.
+# RTSP video-on-demand server, stream output's cycle and RTP, and the rotate
+# filter (any angle, by hand). Schnellbild only plays local files and needs none
+# of them.
 GPL_MODULES="libdolby_surround_decoder_plugin libmono_plugin libdummy_plugin libsyslog_plugin
 libvod_rtsp_plugin libstream_out_cycle_plugin libstream_out_rtp_plugin librotate_plugin"
 

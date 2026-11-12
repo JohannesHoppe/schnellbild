@@ -298,3 +298,9 @@
 "Profile" = "Profil";
 "Camera" = "Fotoaparát";
 "The file extension doesn't match the content (%@). Recommended: .%@" = "Přípona souboru neodpovídá obsahu (%@). Doporučeno: .%@";
+"Appearance" = "Vzhled";
+"Mode" = "Režim";
+"Same as System" = "Podle systému";
+"Light" = "Světlý";
+"Dark" = "Tmavý";
+"Pictures and videos in the full view are always shown on black." = "Celé zobrazení ukazuje obrázky a videa vždy na černém pozadí.";

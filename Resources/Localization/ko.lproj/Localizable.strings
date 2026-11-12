@@ -298,3 +298,9 @@
 "Profile" = "프로파일";
 "Camera" = "카메라";
 "The file extension doesn't match the content (%@). Recommended: .%@" = "파일 확장자가 내용(%@)과 맞지 않습니다. 권장: .%@";
+"Appearance" = "화면 모드";
+"Mode" = "모드";
+"Same as System" = "시스템과 동일";
+"Light" = "라이트";
+"Dark" = "다크";
+"Pictures and videos in the full view are always shown on black." = "전체 보기는 사진과 비디오를 항상 검은 배경에 표시합니다.";

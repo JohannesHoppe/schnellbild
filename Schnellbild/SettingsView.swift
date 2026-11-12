@@ -1,7 +1,7 @@
 import SwiftUI
 import AVFoundation
 
-/// Settings (⌘,): how long a picture stays in the slideshow, the archive
+/// Settings (⌘,): light or dark, how long a picture stays in the slideshow, the archive
 /// passwords Schnellbild has saved, and whether macOS reads MKV and AVCHD itself
 /// (Schnellbild's media extension, turned on in System Settings).
 struct SettingsView: View {
@@ -9,9 +9,22 @@ struct SettingsView: View {
     @State private var savedPasswords = ArchiveStore.shared.passwords.count
     @State private var confirming = false
     @State private var formatsOn: Bool?
+    @State private var appearance = AppAppearance.chosen
 
     var body: some View {
         Form {
+            Section("Appearance") {
+                Picker("Mode", selection: $appearance) {
+                    Text("Same as System").tag(AppAppearance.system)
+                    Text("Light").tag(AppAppearance.light)
+                    Text("Dark").tag(AppAppearance.dark)
+                }
+                .accessibilityIdentifier("settings.appearance")
+                .onChange(of: appearance) { _, chosen in AppAppearance.choose(chosen) }
+                Text("Pictures and videos in the full view are always shown on black.")
+                    .font(.callout)
+                    .foregroundStyle(.secondary)
+            }
             Section("Slideshow") {
                 Stepper(value: Binding(get: { window.slideshowSeconds }, set: { window.slideshowSeconds = $0 }),
                         in: BrowserModel.slideshowSecondsRange) {
@@ -79,3 +92,38 @@ enum MediaFormats {
     }
 }
 
+
+/// The app's look: as the system's, or light or dark whatever the system's
+/// (Settings). Set on the whole app, so every window, menu, sheet and the
+/// Settings follow it.
+enum AppAppearance: String, CaseIterable {
+    case system, light, dark
+
+    static let key = "appearance"
+    /// Where the choice is kept (the app's preferences; set at launch).
+    nonisolated(unsafe) static var defaults = UserDefaults.standard
+
+    static func stored(in defaults: UserDefaults) -> AppAppearance {
+        defaults.string(forKey: key).flatMap(AppAppearance.init(rawValue:)) ?? .system
+    }
+
+    static var chosen: AppAppearance { stored(in: defaults) }
+
+    /// The appearance AppKit is given (nil: the system's).
+    var appearanceName: NSAppearance.Name? {
+        switch self {
+        case .system: nil
+        case .light:  .aqua
+        case .dark:   .darkAqua
+        }
+    }
+
+    @MainActor static func choose(_ appearance: AppAppearance) {
+        defaults.set(appearance.rawValue, forKey: key)
+        apply()
+    }
+
+    @MainActor static func apply() {
+        NSApp.appearance = chosen.appearanceName.flatMap(NSAppearance.init(named:))
+    }
+}

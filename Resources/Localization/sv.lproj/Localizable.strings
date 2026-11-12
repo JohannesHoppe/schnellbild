@@ -298,3 +298,9 @@
 "Profile" = "Profil";
 "Camera" = "Kamera";
 "The file extension doesn't match the content (%@). Recommended: .%@" = "Filändelsen stämmer inte med innehållet (%@). Rekommenderas: .%@";
+"Appearance" = "Utseende";
+"Mode" = "Läge";
+"Same as System" = "Som systemet";
+"Light" = "Ljust";
+"Dark" = "Mörkt";
+"Pictures and videos in the full view are always shown on black." = "Helvyn visar alltid bilder och videor mot svart.";

@@ -298,3 +298,9 @@
 "Profile" = "Profil";
 "Camera" = "Kamera";
 "The file extension doesn't match the content (%@). Recommended: .%@" = "Filetternavnet passer ikke til innholdet (%@). Anbefalt: .%@";
+"Appearance" = "Utseende";
+"Mode" = "Modus";
+"Same as System" = "Som systemet";
+"Light" = "Lys";
+"Dark" = "Mørk";
+"Pictures and videos in the full view are always shown on black." = "Fullvisningen viser alltid bilder og videoer på svart.";
