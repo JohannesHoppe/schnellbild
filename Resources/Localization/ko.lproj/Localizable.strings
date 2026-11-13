@@ -180,7 +180,6 @@
 "Mark" = "표시";
 "Single pane" = "단일 패널";
 "“%@” already exists in “%@”." = "‘%@’이(가) ‘%@’에 이미 있습니다.";
-"Keep both: the new one gets a number. Skip: it stays where it is." = "모두 유지: 새 항목에 번호가 붙습니다. 건너뛰기: 원래 위치에 그대로 있습니다.";
 "Keep Both" = "모두 유지";
 "Skip" = "건너뛰기";
 "The marked items will be moved to the Trash, folders with everything in them." = "표시한 항목이 휴지통으로 이동됩니다. 폴더는 안의 모든 항목과 함께 이동됩니다.";
@@ -315,3 +314,14 @@
 "Each folder asks for your permission again." = "각 폴더에서 다시 권한을 요청합니다.";
 "© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later. Built from its source without VLC's modules under the GPL; the build script and its changes are in Schnellbild's repository (github.com/JohannesHoppe/schnellbild)." = "© VideoLAN 및 VLC 작성자. GNU Lesser General Public License 2.1 이상. GPL로 배포되는 VLC 모듈을 제외하고 소스 코드로 빌드했습니다. 빌드 스크립트와 변경 사항은 Schnellbild 저장소(github.com/JohannesHoppe/schnellbild)에 있습니다.";
 "The link will be moved to the Trash. The folder it points to stays where it is." = "링크가 휴지통으로 이동됩니다. 링크가 가리키는 폴더는 그대로 남습니다.";
+"Keep both: the new one gets a number. Skip: it stays where it is. Cancel: nothing is moved or copied." = "모두 유지: 새 항목에 번호가 붙습니다. 건너뛰기: 원래 위치에 그대로 있습니다. 취소: 아무것도 이동하거나 복사하지 않습니다.";
+"Apply to all" = "모두에 적용";
+"Copied, but the original couldn't be removed: %@" = "복사했지만 원본을 제거할 수 없습니다: %@";
+"Not everything was moved or copied." = "일부 항목이 이동되거나 복사되지 않았습니다.";
+"“%@”: %@" = "‘%@’: %@";
+"“%@” is no longer the item Schnellbild put there, so it stays as it is." = "‘%@’은(는) 더 이상 Schnellbild가 그곳에 둔 항목이 아니므로 그대로 둡니다.";
+"“%@” has changed since it was copied, so it isn't moved to the Trash." = "‘%@’이(가) 복사된 후 변경되었으므로 휴지통으로 이동하지 않습니다.";
+"Schnellbild may not take “%@” out of the Trash. Use “Put Back” in the Finder's Trash." = "Schnellbild는 ‘%@’을(를) 휴지통에서 꺼낼 수 없습니다. Finder 휴지통에서 ‘되돌려 놓기’를 사용하십시오.";
+"Keep: try it again later, before the earlier actions. Forget: go on with the earlier actions." = "유지: 나중에 다시 시도합니다(이전 작업보다 먼저). 지우기: 이전 작업으로 계속합니다.";
+"Keep" = "유지";
+"Forget" = "지우기";

@@ -180,7 +180,6 @@
 "Mark" = "Markieren";
 "Single pane" = "Einzelansicht";
 "“%@” already exists in “%@”." = "„%@“ existiert in „%@“ bereits.";
-"Keep both: the new one gets a number. Skip: it stays where it is." = "Beide behalten: Das neue Objekt bekommt eine Nummer. Überspringen: Es bleibt, wo es ist.";
 "Keep Both" = "Beide behalten";
 "Skip" = "Überspringen";
 "The marked items will be moved to the Trash, folders with everything in them." = "Die markierten Objekte werden in den Papierkorb gelegt, Ordner mit allem darin.";
@@ -315,3 +314,14 @@
 "Each folder asks for your permission again." = "Jeder Ordner fragt dann wieder nach deiner Erlaubnis.";
 "© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later. Built from its source without VLC's modules under the GPL; the build script and its changes are in Schnellbild's repository (github.com/JohannesHoppe/schnellbild)." = "© VideoLAN und die VLC-Autoren. GNU Lesser General Public License 2.1 oder später. Aus dem Quellcode gebaut, ohne die VLC-Module unter der GPL; das Build-Skript und seine Änderungen liegen im Repository von Schnellbild (github.com/JohannesHoppe/schnellbild).";
 "The link will be moved to the Trash. The folder it points to stays where it is." = "Der Link wird in den Papierkorb gelegt. Der Ordner, auf den er zeigt, bleibt, wo er ist.";
+"Keep both: the new one gets a number. Skip: it stays where it is. Cancel: nothing is moved or copied." = "Beide behalten: Das neue Objekt bekommt eine Nummer. Überspringen: Es bleibt, wo es ist. Abbrechen: Nichts wird bewegt oder kopiert.";
+"Apply to all" = "Für alle übernehmen";
+"Copied, but the original couldn't be removed: %@" = "Kopiert, aber das Original konnte nicht entfernt werden: %@";
+"Not everything was moved or copied." = "Nicht alles wurde bewegt oder kopiert.";
+"“%@”: %@" = "„%@“: %@";
+"“%@” is no longer the item Schnellbild put there, so it stays as it is." = "„%@“ ist nicht mehr das Objekt, das Schnellbild dort abgelegt hat, und bleibt daher, wie es ist.";
+"“%@” has changed since it was copied, so it isn't moved to the Trash." = "„%@“ hat sich seit dem Kopieren verändert und wird daher nicht in den Papierkorb gelegt.";
+"Schnellbild may not take “%@” out of the Trash. Use “Put Back” in the Finder's Trash." = "Schnellbild darf „%@“ nicht aus dem Papierkorb nehmen. Nutze „Zurücklegen“ im Papierkorb des Finders.";
+"Keep: try it again later, before the earlier actions. Forget: go on with the earlier actions." = "Behalten: Später noch einmal versuchen, vor den früheren Aktionen. Vergessen: Mit den früheren Aktionen weitermachen.";
+"Keep" = "Behalten";
+"Forget" = "Vergessen";

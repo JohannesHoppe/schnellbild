@@ -180,7 +180,6 @@
 "Mark" = "Marquer";
 "Single pane" = "Panneau unique";
 "“%@” already exists in “%@”." = "« %@ » existe déjà dans « %@ ».";
-"Keep both: the new one gets a number. Skip: it stays where it is." = "Garder les deux : le nouvel élément reçoit un numéro. Ignorer : il reste où il est.";
 "Keep Both" = "Garder les deux";
 "Skip" = "Ignorer";
 "The marked items will be moved to the Trash, folders with everything in them." = "Les éléments marqués seront placés dans la corbeille, les dossiers avec tout leur contenu.";
@@ -315,3 +314,14 @@
 "Each folder asks for your permission again." = "Chaque dossier demandera à nouveau votre autorisation.";
 "© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later. Built from its source without VLC's modules under the GPL; the build script and its changes are in Schnellbild's repository (github.com/JohannesHoppe/schnellbild)." = "© VideoLAN et les auteurs de VLC. GNU Lesser General Public License 2.1 ou ultérieure. Compilé depuis ses sources sans les modules de VLC sous GPL ; le script de compilation et ses modifications se trouvent dans le dépôt de Schnellbild (github.com/JohannesHoppe/schnellbild).";
 "The link will be moved to the Trash. The folder it points to stays where it is." = "Le lien sera placé dans la corbeille. Le dossier vers lequel il pointe reste à sa place.";
+"Keep both: the new one gets a number. Skip: it stays where it is. Cancel: nothing is moved or copied." = "Garder les deux : le nouvel élément reçoit un numéro. Ignorer : il reste où il est. Annuler : rien n’est déplacé ni copié.";
+"Apply to all" = "Appliquer à tous";
+"Copied, but the original couldn't be removed: %@" = "Copié, mais l’original n’a pas pu être supprimé : %@";
+"Not everything was moved or copied." = "Tout n’a pas été déplacé ou copié.";
+"“%@”: %@" = "« %@ » : %@";
+"“%@” is no longer the item Schnellbild put there, so it stays as it is." = "« %@ » n’est plus l’élément que Schnellbild y a placé ; il reste tel quel.";
+"“%@” has changed since it was copied, so it isn't moved to the Trash." = "« %@ » a changé depuis sa copie ; il n’est pas placé dans la corbeille.";
+"Schnellbild may not take “%@” out of the Trash. Use “Put Back” in the Finder's Trash." = "Schnellbild n’a pas le droit de sortir « %@ » de la corbeille. Utilisez « Remettre » dans la corbeille du Finder.";
+"Keep: try it again later, before the earlier actions. Forget: go on with the earlier actions." = "Garder : réessayer plus tard, avant les actions précédentes. Oublier : continuer avec les actions précédentes.";
+"Keep" = "Garder";
+"Forget" = "Oublier";
