@@ -56,9 +56,13 @@ You must comply with applicable third-party terms of agreement when using Schnel
 
 Questions, complaints and claims about Schnellbild go to the developer:
 
-HAUS HOPPE - ITS, Johannes Hoppe, Feilgasse 5F, 69181 Leimen-Gauangelloch, Germany
+HAUS HOPPE - ITS
+Johannes Hoppe
+Feilgasse 5F
+69181 Leimen-Gauangelloch
+Germany
 
-Further contact details: <https://haushoppe-its.de/impressum/>
+Further contact details: see the imprint at <https://haushoppe-its.de/impressum/>
 
 ## 14. Apple as third-party beneficiary
 

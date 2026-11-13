@@ -137,12 +137,12 @@
   "ctaTitle": "Ready when you are.",
   "ctaText": "Free, no account, no strings.",
   "footerPrivacy": "Privacy",
-  "footerImprint": "Legal notice",
+  "footerImprint": "Imprint",
   "footerEula": "License agreement",
   "privacy": {
     "title": "Privacy policy",
     "description": "Schnellbild collects no personal data: no account, no analytics, no tracking, no network access.",
-    "intro": "Schnellbild is an image and video viewer for macOS. Responsible for it (the controller under the GDPR) is HAUS HOPPE - ITS, Johannes Hoppe; the full address is in the <a href=\"https://haushoppe-its.de/impressum/\">legal notice</a>. This policy covers the app, as downloaded from GitHub and as bought in the Mac App Store (both are the same app), and this website.",
+    "intro": "Schnellbild is an image and video viewer for macOS. Responsible for it (the controller under the GDPR) is HAUS HOPPE - ITS, Johannes Hoppe; the full address is in the <a href=\"https://haushoppe-its.de/impressum/\">imprint</a>. This policy covers the app, as downloaded from GitHub and as bought in the Mac App Store (both are the same app), and this website.",
     "appTitle": "The app",
     "appText": "<p><strong>Schnellbild collects no personal data.</strong> It has no account, no analytics, no advertising and no tracking, and it doesn't connect to the internet: the App Sandbox it runs in gives it no network access at all.</p><p>What stays on your Mac, and only there:</p>",
     "stays": [
@@ -157,6 +157,6 @@
     "rightsTitle": "Your rights",
     "rightsText": "Under the GDPR you have the right to access, rectification, erasure, restriction of processing and data portability, and the right to lodge a complaint with a data protection supervisory authority. <strong>You have the right to object</strong>, on grounds relating to your particular situation, to processing based on our legitimate interest (Art. 21 GDPR). Since neither the app nor this website keeps personal data of its own, there is usually nothing on our side to look up or delete.",
     "contactTitle": "Contact",
-    "contactText": "Questions: open an issue at <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a> or use the contact in the <a href=\"https://haushoppe-its.de/impressum/\">legal notice</a>."
+    "contactText": "Questions: open an issue at <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a> or use the contact in the <a href=\"https://haushoppe-its.de/impressum/\">imprint</a>."
   }
 }
