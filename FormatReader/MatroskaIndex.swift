@@ -28,6 +28,12 @@ final class MatroskaIndex: @unchecked Sendable {
         /// Its frames are compressed or encrypted (ContentEncodings: header
         /// stripping, zlib …): not as the decoder takes them.
         var encoded = false
+
+        /// The time from one frame to the next in timestamp units, within
+        /// 1 ... `largestTime`.
+        func frameDuration(timestampScale: UInt64) -> Int64 {
+            max(1, min(Int64(clamping: defaultDuration / max(1, timestampScale)), MatroskaIndex.largestTime))
+        }
     }
     struct Cluster {
         let offset: Int64       // of its contents (after its header)
@@ -51,6 +57,17 @@ final class MatroskaIndex: @unchecked Sendable {
 
     /// The most read in one go: a header element, or one cluster's frame list.
     static let largestRead = 64 << 20
+    /// Times and durations are held within this many timestamp units either
+    /// way, so the sums and differences the reader works out never overflow.
+    static let largestTime: Int64 = 1 << 52
+
+    /// The duration in timestamp units, within 0 ... `largestTime` (0 when
+    /// the file gives none, or not a number).
+    var durationUnits: Int64 { duration.isFinite ? Int64(min(max(duration, 0), Double(Self.largestTime))) : 0 }
+    /// The duration in seconds, always a finite number.
+    var durationSeconds: Double { Double(durationUnits) * Double(timestampScale) / 1e9 }
+    /// Timestamp units per second, as CoreMedia's time scale (at least 1).
+    var timescale: Int32 { max(1, Int32(clamping: 1_000_000_000 / timestampScale)) }
 
     private let source: ByteReading
     private let lock = NSLock()
@@ -165,7 +182,7 @@ final class MatroskaIndex: @unchecked Sendable {
         var reader = DataReader(data: try source.read(at: start, count: 32))
         while let element = reader.element(checkingSize: false) {
             if element.id == 0xE7, let size = element.size, size <= 8, reader.position + Int(size) <= reader.data.count {
-                return Int64(clamping: try reader.uint(element))
+                return min(Int64(clamping: try reader.uint(element)), Self.largestTime)
             }
             guard let size = element.size, reader.position + Int(size) <= reader.data.count else { break }
             reader.position += Int(size)
@@ -320,7 +337,21 @@ struct DataReader {
         guard flags & 0x06 == 0 else { return nil }
         let headerEnd = start + numberLength + 3
         return (track, MatroskaIndex.Frame(offset: base + Int64(headerEnd), length: end - headerEnd,
-                                           time: clusterTime + Int64(relative),
+                                           time: clusterTime.saturatingAdd(Int64(relative)),
                                            keyframe: keyframe ?? (flags & 0x80 != 0)))
+    }
+}
+
+extension Int64 {
+    /// The sum, held at Int64's bounds instead of overflowing.
+    func saturatingAdd(_ other: Int64) -> Int64 {
+        let (sum, overflow) = addingReportingOverflow(other)
+        return overflow ? (other > 0 ? .max : .min) : sum
+    }
+
+    /// The difference, held at Int64's bounds instead of overflowing.
+    func saturatingSubtract(_ other: Int64) -> Int64 {
+        let (difference, overflow) = subtractingReportingOverflow(other)
+        return overflow ? (other < 0 ? .max : .min) : difference
     }
 }
