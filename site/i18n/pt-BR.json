@@ -32,6 +32,7 @@
     ["Não trava", "Arquivos corrompidos, formatos estranhos e discos lentos mostram um espaço reservado em vez de derrubar o app."]
   ],
   "featuresTitle": "O que ele faz",
+  "featuresMore": "E muitos outros recursos: todos os detalhes no GitHub",
   "features": [
     {
       "title": "Veja em tamanho grande, navegue pelas teclas",

@@ -32,6 +32,7 @@
     ["Ne plante pas", "Fichiers endommagés, formats exotiques, disques lents : un espace réservé s’affiche, et l’app tient bon."]
   ],
   "featuresTitle": "Ce qu’elle fait",
+  "featuresMore": "Et bien d’autres fonctions : tous les détails sur GitHub",
   "features": [
     {
       "title": "En grand, au clavier",

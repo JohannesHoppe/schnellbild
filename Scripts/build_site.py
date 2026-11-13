@@ -300,6 +300,7 @@ def home(code, t):
 <section id="features">
   <div class="wrap">
     <h2 data-reveal>{esc(t['featuresTitle'])}</h2>{features}
+    <p class="more-features" data-reveal><a href="{REPO}#features">{esc(t['featuresMore'])} →</a></p>
   </div>
 </section>
 

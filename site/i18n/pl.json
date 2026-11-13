@@ -32,6 +32,7 @@
     ["Nie wysypuje się", "Uszkodzone pliki, nietypowe formaty i wolne dyski pokazują symbol zastępczy, zamiast kłaść całą aplikację."]
   ],
   "featuresTitle": "Co potrafi",
+  "featuresMore": "I wiele innych funkcji: wszystkie szczegóły na GitHubie",
   "features": [
     {
       "title": "Duży podgląd, przewijanie klawiszami",

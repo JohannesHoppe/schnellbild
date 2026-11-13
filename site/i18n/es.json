@@ -32,6 +32,7 @@
     ["No se cae", "Ante archivos dañados, formatos raros o discos lentos, muestra un marcador de posición en lugar de venirse abajo."]
   ],
   "featuresTitle": "Qué hace",
+  "featuresMore": "Y muchas más funciones: todos los detalles en GitHub",
   "features": [
     {
       "title": "Míralo en grande, pasa con las teclas",
