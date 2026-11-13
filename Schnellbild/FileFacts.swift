@@ -120,25 +120,36 @@ struct StreamFacts: Equatable, Sendable {
 
     var isEmpty: Bool { video == nil && audio == nil }
 
+    /// Units in the user's language: "25 fps", "25 B/s", "25 i/s" …
     static func describeVideo(codec: String, frameRate: Double?) -> String {
         guard let frameRate, frameRate.isFinite, frameRate > 0 else { return codec }
         let rate = frameRate.formatted(.number.precision(.fractionLength(0...2)))
-        return "\(codec), \(rate) fps"
+        return "\(codec), " + String(localized: "\(rate) fps")
     }
 
+    /// "AAC, 2 channels, 48 kHz" (the kilohertz as the user's locale writes them).
     static func describeAudio(codec: String, channels: Int?, sampleRate: Double?) -> String {
         var parts = [codec]
-        if let channels, channels > 0 { parts.append("\(channels) ch") }
-        if let sampleRate, sampleRate > 0 { parts.append("\((sampleRate / 1000).formatted(.number.precision(.fractionLength(0...1)))) kHz") }
+        if let channels, channels > 0 { parts.append(String(localized: "\(channels) channels")) }
+        if let sampleRate, sampleRate > 0 {
+            parts.append(Measurement(value: sampleRate / 1000, unit: UnitFrequency.kilohertz)
+                .formatted(.measurement(width: .abbreviated, numberFormatStyle: .number.precision(.fractionLength(0...1)))))
+        }
         return parts.joined(separator: ", ")
     }
 
-    /// "4.2 Mbit/s", "320 kbit/s".
+    /// "4.2 Mbit/s", "320 kbit/s" (in the user's language: "Мбит/с" …).
     static func describeBitrate(_ bitsPerSecond: Double) -> String {
         if bitsPerSecond >= 1_000_000 {
-            return "\((bitsPerSecond / 1_000_000).formatted(.number.precision(.fractionLength(1)))) Mbit/s"
+            let megabits = (bitsPerSecond / 1_000_000).formatted(.number.precision(.fractionLength(1)))
+            return String(localized: "\(megabits) Mbit/s")
         }
-        return "\(Int((bitsPerSecond / 1000).rounded())) kbit/s"
+        return String(localized: "\(Int((bitsPerSecond / 1000).rounded())) kbit/s")
+    }
+
+    /// "8 bits", "16 Bit" …
+    static func describeDepth(_ bits: Int) -> String {
+        String(localized: "\(bits) bits")
     }
 
     /// Bits per second of a file `bytes` long, playing `seconds`.

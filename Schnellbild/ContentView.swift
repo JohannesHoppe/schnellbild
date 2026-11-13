@@ -502,10 +502,12 @@ struct PaneView: View {
             SearchField(
                 text: $model.searchText,
                 isFocused: $model.searchFocused,
-                placeholder: String(localized: "Search names of folders, archives, pictures and videos (incl. subfolders)"),
+                // Short enough for half a window (the dual pane) in every language; the whole in the tooltip
+                placeholder: String(localized: "Search names, also in subfolders"),
                 isEnabled: model.folderURL != nil,
                 onKey: { model.handleSearchFieldKey($0) }
             )
+            .help("Search names of folders, archives, pictures and videos (incl. subfolders)")
             SearchModePicker(model: model)
             if model.isSearching {
                 ProgressView().controlSize(.small)
@@ -525,17 +527,22 @@ struct PaneView: View {
 
     // MARK: - Status bar
 
+    /// One line, also in half a window: the texts truncate, the summary last.
     private var statusBar: some View {
         HStack(spacing: 8) {
             Text(statusText)
                 .foregroundStyle(.secondary)
+                .lineLimit(1)
+                .truncationMode(.tail)
+                .layoutPriority(1)
+                .help(statusText)
                 .accessibilityIdentifier("statusText")
             if model.isSearching {
-                Text("Searching subfolders…").foregroundStyle(.secondary)
+                Text("Searching subfolders…").foregroundStyle(.secondary).lineLimit(1)
             }
             if model.transfersRunning > 0 {
                 ProgressView().controlSize(.small)
-                Text("Copying or moving…").foregroundStyle(.secondary)
+                Text("Copying or moving…").foregroundStyle(.secondary).lineLimit(1)
             }
             Spacer()
             Text(model.folderURL?.path ?? "")

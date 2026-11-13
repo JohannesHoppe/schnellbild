@@ -325,3 +325,7 @@
 "Its data can't be decoded." = "Sen tietoja ei voi purkaa.";
 "Space" = "Välilyönti";
 "Rename (F6 too in a single pane)" = "Nimeä uudelleen (yhdessä paneelissa myös F6)";
+"%@ fps" = "%@ kuvaa/s";
+"%@ Mbit/s" = "%@ Mbit/s";
+"%lld kbit/s" = "%lld kbit/s";
+"Search names, also in subfolders" = "Etsi nimiä, myös alikansioista";

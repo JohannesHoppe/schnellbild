@@ -325,3 +325,7 @@
 "Its data can't be decoded." = "Its data can't be decoded.";
 "Space" = "Space";
 "Rename (F6 too in a single pane)" = "Rename (F6 too in a single pane)";
+"%@ fps" = "%@ fps";
+"%@ Mbit/s" = "%@ Mbit/s";
+"%lld kbit/s" = "%lld kbit/s";
+"Search names, also in subfolders" = "Search names, also in subfolders";

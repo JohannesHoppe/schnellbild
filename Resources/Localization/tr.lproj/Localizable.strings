@@ -325,3 +325,7 @@
 "Its data can't be decoded." = "Verileri çözülemiyor.";
 "Space" = "Boşluk";
 "Rename (F6 too in a single pane)" = "Yeniden adlandır (tek bölmede F6 da)";
+"%@ fps" = "%@ fps";
+"%@ Mbit/s" = "%@ Mbit/sn";
+"%lld kbit/s" = "%lld kbit/sn";
+"Search names, also in subfolders" = "Ad ara, alt klasörlerde de";
