@@ -72,6 +72,9 @@ kbd, code {
 .top nav { display: flex; align-items: center; gap: 20px; font-size: 14px; }
 .top nav > a { color: var(--muted); }
 .top nav > a:hover { color: var(--text); text-decoration: none; }
+/* GitHub's mark before the GitHub links, in the link's colour */
+a.github { display: inline-flex; align-items: center; gap: 6px; }
+.mark { width: 14px; height: 14px; fill: currentColor; flex: none; }
 
 /* Language menu */
 .lang { position: relative; }
@@ -178,8 +181,7 @@ footer { border-top: 1px solid var(--line); padding: 28px 0 44px; color: var(--m
 footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 22px; justify-content: space-between; }
 footer nav { display: flex; flex-wrap: wrap; gap: 8px 18px; }
 footer a { color: var(--muted); }
-footer a.github { display: inline-flex; align-items: center; gap: 6px; }
-footer .mark { width: 14px; height: 14px; fill: currentColor; }
+
 
 /* Rising in: only with JavaScript (else everything simply shows) */
 .js [data-reveal] {

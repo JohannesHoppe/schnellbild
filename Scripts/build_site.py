@@ -223,7 +223,7 @@ def topbar(code, t, path_of, sections=True):
   <div class="wrap top">
     <a class="brand" href="{home_path(code)}"><img src="/icon.png" alt="" width="32" height="32">Schnellbild</a>
     <nav>
-      {nav}<a href="{REPO}">GitHub</a>
+      {nav}<a class="github" href="{REPO}">{OCTOCAT}GitHub</a>
       <details class="lang">
         <summary aria-label="{esc(t['language'])}: {esc(t['name'])}">{GLOBE}<span>{esc(t['name'])}</span></summary>
         <div class="lang-list">{links}</div>
