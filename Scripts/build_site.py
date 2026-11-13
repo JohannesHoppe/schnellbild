@@ -250,6 +250,14 @@ def footer(code, t):
 """
 
 
+def fineprint(text):
+    """The line under the buttons, broken after its first clause (the semicolon, or the first sentence)."""
+    match = re.search(r"[;；]|。|\. ", text)
+    if not match:
+        return esc(text)
+    return esc(text[:match.end()].rstrip()) + "<br>" + esc(text[match.end():].lstrip())
+
+
 def home(code, t):
     path_of = home_path
     stats = "".join(
@@ -283,7 +291,7 @@ def home(code, t):
     <p class="tagline">{esc(t['tagline'])}</p>
     <p class="lead">{esc(t['lead'])}</p>
     {buttons}
-    <p class="fineprint">{esc(t['fineprint'])}</p>
+    <p class="fineprint">{fineprint(t['fineprint'])}</p>
   </div>
   <div class="wrap wide"><div class="shot">{shot(HERO_SHOT, code, t['shotAlt'])}</div></div>
 </div>
