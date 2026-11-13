@@ -366,6 +366,16 @@ enum RenameError: LocalizedError, Equatable {
     }
 }
 
+/// A block observer of the default `NotificationCenter` on the main queue,
+/// removed when this goes.
+final class NotificationToken {
+    private let token: NSObjectProtocol
+    init(_ name: Notification.Name, object: AnyObject? = nil, _ block: @escaping @Sendable (Notification) -> Void) {
+        token = NotificationCenter.default.addObserver(forName: name, object: object, queue: .main, using: block)
+    }
+    deinit { NotificationCenter.default.removeObserver(token) }
+}
+
 /// A change the app made on disk (rename, trash). One value is applied to
 /// every list the model holds — the folder, the search results, results
 /// still streaming in, the history — so they all agree.
@@ -1010,11 +1020,13 @@ final class BrowserModel: ObservableObject {
     /// window can be the Adjustments popover's: then the main one).
     static var appWindow: NSWindow? { WindowModel.current?.nsWindow ?? NSApp.mainWindow ?? NSApp.keyWindow }
 
-    /// The window showing this pane closed: nothing goes on playing in it.
+    /// The window showing this pane closed: nothing goes on playing in it,
+    /// and it stops listening (a model kept for the next window).
     func leaveWindow() {
         if slideshow != nil { stopSlideshow() }
         if mode == .detail { closeDetail() }
         if isSearching { stopSearch() }
+        bossKeyObserver = nil
     }
 
     /// The file `activePlayer` plays (the Inspector asks only that one).
@@ -1036,7 +1048,7 @@ final class BrowserModel: ObservableObject {
     @Published private(set) var volume: Double = 1
     /// What the player plays at: silent while the boss key hides the app.
     var audibleVolume: Double { BossKey.engaged ? 0 : volume }
-    private var bossKeyObserver: NSObjectProtocol?
+    private var bossKeyObserver: NotificationToken?
 
     /// Changes with every volume step: the volume display shows a while.
     @Published private(set) var volumeChange: UUID?
@@ -1190,8 +1202,13 @@ final class BrowserModel: ObservableObject {
             sortKey = key
             sortAscending = defaults.object(forKey: sortAscendingKey) as? Bool ?? key.startsAscending
         }
+        enterWindow()
+    }
+
+    /// The pane shows in a window (again): it listens to the app's events.
+    func enterWindow() {
         // The boss key mutes the video playing at once, and gives it its sound back
-        bossKeyObserver = NotificationCenter.default.addObserver(forName: BossKey.changed, object: nil, queue: .main) { [weak self] _ in
+        bossKeyObserver = NotificationToken(BossKey.changed) { [weak self] _ in
             MainActor.assumeIsolated { guard let self else { return }; self.activePlayer?.setVolume(self.audibleVolume) }
         }
     }

@@ -89,7 +89,11 @@ final class WindowModel: ObservableObject {
     /// The model for a window opening: the first one while no window shows
     /// it, else a new one with the lowest number no open window has.
     static func claim(_ first: WindowModel, defaults: UserDefaults) -> WindowModel {
-        if !first.claimed { first.claimed = true; return first }
+        if !first.claimed {
+            first.claimed = true
+            if first.closed { first.reopen() }
+            return first
+        }
         let opener = current?.active.folderURL
         let taken = Set(all.filter(\.claimed).map(\.number))
         let number = (2...).first { !taken.contains($0) }!
@@ -108,11 +112,26 @@ final class WindowModel: ObservableObject {
     private(set) var startFolder: URL?
 
     /// Its window closed: free for the next one (the first window's model)
-    /// and quiet (a video or slideshow in it ends).
+    /// and quiet (a video or slideshow in it ends; it no longer follows the
+    /// other windows' changes nor reads its folders again).
     func windowClosed() {
         claimed = false
+        closed = true
         nsWindow = nil
         for pane in allPanes { pane.leaveWindow() }
+    }
+
+    /// Its window is closed: none of the app's changes reach it.
+    private(set) var closed = false
+
+    /// A new window takes the model kept from a closed one: its panes listen
+    /// again and read their folders afresh (they missed what changed meanwhile).
+    private func reopen() {
+        closed = false
+        for pane in allPanes {
+            pane.enterWindow()
+            pane.refresh()
+        }
     }
 
     /// Moves the divider; `remember` when the drag ends.
@@ -140,8 +159,8 @@ final class WindowModel: ObservableObject {
     var anySheetOpen: Bool { panes.contains { $0.anySheetOpen } }
     /// Both panes, the right one also while hidden.
     private var allPanes: [BrowserModel] { [left, right].compactMap { $0 } }
-    /// Every pane of every window.
-    private static var everyPane: [BrowserModel] { all.flatMap(\.allPanes) }
+    /// Every pane of every open window.
+    private static var everyPane: [BrowserModel] { all.filter { !$0.closed }.flatMap(\.allPanes) }
 
     /// Menus and the toolbar read the active pane: its changes are the
     /// window's (each pane's own view watches that pane itself).

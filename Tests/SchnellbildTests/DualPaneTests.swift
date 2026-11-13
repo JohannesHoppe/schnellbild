@@ -102,6 +102,29 @@ final class DualPaneTests: XCTestCase {
                        "⇧F6 is the pane's rename")
     }
 
+    /// The first window's model outlives its window (the next window takes
+    /// it): closed, it follows no changes; taken again, it reads its folder afresh.
+    func testAClosedWindowFollowsNothingUntilAWindowTakesItAgain() async throws {
+        let tree = try TempTree(self)
+        for n in ["a.jpg", "b.jpg"] { try tree.file(n) }
+        let spy = FileActionsSpy()
+        let first = window(spy)
+        XCTAssertTrue(WindowModel.claim(first, defaults: makeTestDefaults()) === first)
+        await openAndWait(first.left, tree.root)
+        first.windowClosed()
+
+        let other = window(spy)
+        await openAndWait(other.left, tree.root)
+        other.left.selectEntry(named: "a.jpg")
+        other.left.moveSelectionToTrash()
+        await waitUntil { !other.left.names.contains("a.jpg") }
+        XCTAssertTrue(first.left.names.contains("a.jpg"), "closed: left alone")
+
+        XCTAssertTrue(WindowModel.claim(first, defaults: makeTestDefaults()) === first, "free for the next window")
+        await waitUntil { first.left.isAt(tree.root) && !first.left.names.contains("a.jpg") }
+        XCTAssertEqual(first.left.names, ["..", "b.jpg"])
+    }
+
     /// A slideshow whose items the other pane trashed, all of them, ends.
     func testASlideshowLeftWithNothingEnds() async throws {
         let tree = try TempTree(self)
