@@ -32,6 +32,7 @@
     ["Nespadne", "Poškozené soubory, neobvyklé formáty a pomalé disky zobrazí zástupný symbol, místo aby aplikaci shodily."]
   ],
   "featuresTitle": "Co umí",
+  "featuresMore": "A mnoho dalších funkcí: všechny podrobnosti na GitHubu",
   "features": [
     {
       "title": "Prohlížet ve velkém, listovat klávesami",
