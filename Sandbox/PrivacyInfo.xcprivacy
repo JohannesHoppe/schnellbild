@@ -2,7 +2,11 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <!-- No tracking, no data collected: Schnellbild talks to nobody. -->
+    <!-- The app's manifest (Contents/Resources). No tracking, no data
+         collected: Schnellbild talks to nobody. Each bundle has its own
+         manifest for its own code: the thumbnail extension
+         (Thumbnails.xcprivacy), the media extension (Formats.xcprivacy) and
+         VLCKit.framework (VLCKit.xcprivacy); Scripts/build_app.sh puts them in. -->
     <key>NSPrivacyTracking</key>
     <false/>
     <key>NSPrivacyTrackingDomains</key>
@@ -18,20 +22,34 @@
             <key>NSPrivacyAccessedAPITypeReasons</key>
             <array><string>CA92.1</string></array>
         </dict>
-        <!-- Files' dates: shown (file info, list, sort by date) and read for
-             files the user opened to the app -->
+        <!-- Files' dates (contentModificationDate, creationDate, stat): shown
+             (file info, list, sort by date) and read for the files the user
+             opened to the app, and for its own container -->
         <dict>
             <key>NSPrivacyAccessedAPIType</key>
             <string>NSPrivacyAccessedAPICategoryFileTimestamp</string>
             <key>NSPrivacyAccessedAPITypeReasons</key>
             <array><string>DDA9.1</string><string>3B52.1</string><string>C617.1</string></array>
         </dict>
-        <!-- Time since boot: how long things take (VLC's clock) -->
+        <!-- Time since boot (systemUptime): how long a key took to be handled,
+             logged only in UI tests; measured within the app -->
         <dict>
             <key>NSPrivacyAccessedAPIType</key>
             <string>NSPrivacyAccessedAPICategorySystemBootTime</string>
             <key>NSPrivacyAccessedAPITypeReasons</key>
             <array><string>35F9.1</string></array>
+        </dict>
+        <!-- fstatfs, in VLCKit running in the app's process (its own manifest
+             says the same): VLC asks whether a video lies on a network share
+             and then buffers more, so it plays differently there; no disk
+             space is shown. None of Apple's reasons names this use. E174.1
+             (the app behaves differently, in a way users notice, by what the
+             call reports) comes closest; 85F4.1 means showing disk space. -->
+        <dict>
+            <key>NSPrivacyAccessedAPIType</key>
+            <string>NSPrivacyAccessedAPICategoryDiskSpace</string>
+            <key>NSPrivacyAccessedAPITypeReasons</key>
+            <array><string>E174.1</string></array>
         </dict>
     </array>
 </dict>

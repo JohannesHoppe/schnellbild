@@ -206,6 +206,8 @@
 "Click to rename this folder" = "Haz clic para renombrar esta carpeta";
 "Built with" = "Creado con";
 "The full license texts are in the app (Contents/Resources/Licenses)." = "Los textos completos de las licencias están en la app (Contents/Resources/Licenses).";
+"Privacy Policy" = "Política de privacidad";
+"VLCKit includes FFmpeg and other libraries, each under its own license." = "VLCKit incluye FFmpeg y otras bibliotecas, cada una con su propia licencia.";
 "plays the video formats macOS can't (AVI, MKV, WebM …)" = "reproduce los formatos de vídeo que macOS no puede (AVI, MKV, WebM …)";
 "reads RAR archives" = "lee archivos RAR";
 "reads ZIP and 7z archives (the copy built into macOS)" = "lee archivos ZIP y 7z (la versión integrada en macOS)";

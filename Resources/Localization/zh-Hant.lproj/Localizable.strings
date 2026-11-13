@@ -206,6 +206,8 @@
 "Click to rename this folder" = "按一下以重新命名此檔案夾";
 "Built with" = "使用的元件";
 "The full license texts are in the app (Contents/Resources/Licenses)." = "完整的授權條款文字位於 App 內(Contents/Resources/Licenses)。";
+"Privacy Policy" = "隱私權政策";
+"VLCKit includes FFmpeg and other libraries, each under its own license." = "VLCKit 包含 FFmpeg 及其他程式庫，各自依其授權條款提供。";
 "plays the video formats macOS can't (AVI, MKV, WebM …)" = "播放 macOS 無法播放的影片格式(AVI、MKV、WebM …)";
 "reads RAR archives" = "讀取 RAR 封存檔";
 "reads ZIP and 7z archives (the copy built into macOS)" = "讀取 ZIP 和 7z 封存檔(macOS 內建的版本)";

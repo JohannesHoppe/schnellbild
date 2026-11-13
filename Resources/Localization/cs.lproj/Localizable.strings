@@ -206,6 +206,8 @@
 "Click to rename this folder" = "Kliknutím složku přejmenujete";
 "Built with" = "Vytvořeno s";
 "The full license texts are in the app (Contents/Resources/Licenses)." = "Úplné texty licencí jsou v aplikaci (Contents/Resources/Licenses).";
+"Privacy Policy" = "Zásady ochrany osobních údajů";
+"VLCKit includes FFmpeg and other libraries, each under its own license." = "VLCKit obsahuje FFmpeg a další knihovny, každou pod vlastní licencí.";
 "plays the video formats macOS can't (AVI, MKV, WebM …)" = "přehrává formáty videa, které macOS neumí (AVI, MKV, WebM …)";
 "reads RAR archives" = "čte archivy RAR";
 "reads ZIP and 7z archives (the copy built into macOS)" = "čte archivy ZIP a 7z (verze vestavěná v macOS)";

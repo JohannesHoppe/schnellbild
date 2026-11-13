@@ -1,1 +1,21 @@
-Schnellbild is an image and video viewer. It runs in the App Sandbox and reads only the folders the user chooses ("Open Folder…", ⌘O) or drops on its window, plus Pictures, Movies and Downloads. No account, no network access, no in-app purchases. The same app is free as a download on GitHub (open source, MIT); this App Store version lets users support the project. It embeds VLCKit (LGPL 2.1, built without VLC's GPL modules) to play formats AVFoundation can't; the license agreement allows what the LGPL asks (changing and debugging that library). To try it: open the Pictures folder, press Space on a picture, the arrow keys to page, F1 for all keys.
+Schnellbild is an image and video viewer. No account, no network access, no in-app purchases, no data collected.
+
+SANDBOX AND FILE ACCESS
+The app and both extensions run in the App Sandbox without network entitlements. The app reads the folders the user chooses ("Open Folder…", ⌘O) or drops on its window (com.apple.security.files.user-selected.read-write, kept across launches as app-scope security-scoped bookmarks: com.apple.security.files.bookmarks.app-scope), plus Pictures, Movies and Downloads (com.apple.security.assets.pictures.read-write, assets.movies.read-write, files.downloads.read-write). Write access is used only for what the user asks for: rename, new folder, move, copy, move to Trash, and undo of these. Settings → Folder access forgets the granted folders.
+- SchnellbildThumbnails.appex: a Quick Look thumbnail extension for MKV, WebM, WMV, FLV, Ogg and VOB videos; it reads only the file Quick Look hands it.
+- SchnellbildFormats.appex: a Media Extension (com.apple.developer.mediaextension.formatreader) that lets macOS read MKV and AVCHD videos for Quick Look thumbnails. It is off until the user turns it on in System Settings → General → Login Items & Extensions → Media Extensions; Schnellbild's Settings show whether it is on and open that page.
+
+TO TRY IT
+1. Open the Pictures folder (or any folder with photos): thumbnails appear. Space or a double click shows a picture large, ← → page, Backspace goes back, F1 lists every key.
+2. Videos: MP4 and MOV play through AVFoundation; MKV, AVI, WebM, WMV and FLV play through the embedded VLCKit. ← → jump through a video, ↑ ↓ change the volume.
+3. Archives: a ZIP, RAR or 7z file is shown as a folder; open it like one. Nothing is unpacked to disk. Password-protected archives ask for the password.
+4. D shows two panes side by side; F5 copies, F6 moves the marked items to the other pane.
+Sample files (photos, videos in every supported format, RAR archives; the password of photos-psw.rar and photos-hpsw.rar is "secret"):
+https://github.com/JohannesHoppe/schnellbild/tree/main/UITests/Fixtures
+https://github.com/JohannesHoppe/schnellbild/tree/main/Tests/SchnellbildTests/Videos
+
+BOSS KEY
+X is a boss key: it hides all windows at once; press X three times (or click the Dock icon) to bring them back. If the app seems to have no window after pressing X, this is why.
+
+LICENSES
+Schnellbild's own code is open source (MIT). It embeds VLCKit (LGPL 2.1, built from VideoLAN's source without VLC's GPL modules) and UnRAR. The custom license agreement allows what the LGPL asks (modifying VLCKit and reverse engineering to debug such modifications); the About window lists every component, and the license texts are in Contents/Resources/Licenses.
