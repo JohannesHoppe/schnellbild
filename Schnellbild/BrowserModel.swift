@@ -784,7 +784,7 @@ final class BrowserModel: ObservableObject {
     /// `canonicalPath(folderURL)`, kept so grid cells don't recompute it.
     private var folderPath: String?
     @Published private(set) var entries: [GridEntry] = [] {
-        didSet { recomputeDerived(); readCaptureDatesIfNeeded() }
+        didSet { listRevision += 1; recomputeDerived(); readCaptureDatesIfNeeded() }
     }
     @Published var selection: Int? {
         didSet { if !keepingChoice { selectionChosen = !settingDefaultSelection } }
@@ -846,12 +846,12 @@ final class BrowserModel: ObservableObject {
     @Published var rotation: Double = 0
     private let maxZoom: CGFloat = 8
 
-    @Published private(set) var sortKey: SortKey = .name
-    @Published private(set) var sortAscending = true
+    @Published private(set) var sortKey: SortKey = .name { didSet { orderRevision += 1 } }
+    @Published private(set) var sortAscending = true { didSet { orderRevision += 1 } }
     /// When each photo or video was taken (EXIF / QuickTime metadata), read
     /// only while sorting by `.captured`. Files without it sort by their
     /// modification date.
-    private var captureDates: [URL: Date] = [:]
+    private var captureDates: [URL: Date] = [:] { didSet { orderRevision += 1 } }
     /// Files whose capture date was already read (found or not).
     private var captureDatesRead: Set<URL> = []
     private var captureDateTask: Task<Void, Never>?
@@ -891,7 +891,7 @@ final class BrowserModel: ObservableObject {
     var searchDebounce: Duration = .milliseconds(120)
     /// The full, unfiltered set of the current folder. `entries` is the
     /// currently visible (possibly search-filtered) view of it.
-    private var allEntries: [GridEntry] = []
+    private var allEntries: [GridEntry] = [] { didSet { listRevision += 1 } }
     /// The search shown; the history can hold more (`Location.search`).
     private var search: SearchRun?
     /// Unfinished searches kept running in the history; older ones stop.
@@ -1303,6 +1303,12 @@ final class BrowserModel: ObservableObject {
         Task {
             let scanned = await Self.listing(url, password: password)
             guard self.loadGeneration == generation else { return }   // a newer navigation won
+            var full = (try? scanned.get().entries) ?? []
+            if let parent = Self.parentFolder(of: url) {
+                full.insert(GridEntry(url: parent, kind: .parent), at: 0)
+            }
+            let ordered = await self.ordered(full)
+            guard self.loadGeneration == generation else { return }
             // A folder read again (`refresh`): its marks and whether the user
             // chose the selection stay, once the listing (and a search) is there
             defer {
@@ -1312,10 +1318,8 @@ final class BrowserModel: ObservableObject {
                     self.selectionChosen = kept.chosen
                 }
             }
-            var full: [GridEntry] = []
             switch scanned {
             case .success(let listing):
-                full = listing.entries
                 self.otherFiles = listing.others
             case .failure(let error as CocoaError):
                 // Not "empty": the folder couldn't be listed (no permission, a share gone)
@@ -1331,10 +1335,7 @@ final class BrowserModel: ObservableObject {
                 self.loadError = LoadError(archive: ArchivePath.split(url) != nil, reason: error.localizedDescription,
                                            needsAccess: !FolderAccess.shared.covers(url))
             }
-            if let parent = Self.parentFolder(of: url) {
-                full.insert(GridEntry(url: parent, kind: .parent), at: 0)
-            }
-            self.allEntries = self.sorted(full)
+            self.allEntries = ordered
             self.isLoading = false
             self.loadingLocation = nil
             if self.isFiltering {
@@ -1681,23 +1682,43 @@ final class BrowserModel: ObservableObject {
 
     /// The grid's order as a comparison, so streamed search results can be
     /// merged into a sorted list instead of sorting it all again.
-    struct EntryOrder {
+    struct EntryOrder: Sendable {
         let key: SortKey
         let ascending: Bool
         let captured: [URL: Date]
 
-        /// An entry with what the comparison reads, worked out once.
+        /// An entry with what the comparison reads, worked out once (a
+        /// capture date looked up per comparison would hash its URL each time).
         struct Keyed {
             let entry: GridEntry
             let group: Int
             let name: String
             let ext: String
+            /// The kind's rank (`.kind`), the date (`.modified`, `.captured`)
+            /// or the size (`.size`) the key compares.
+            let rank: Int
+            let date: Date
+            let size: Int
         }
 
         func keyed(_ entry: GridEntry) -> Keyed {
             let group = entry.kind == .parent ? 0 : (entry.kind == .folder ? 1 : 2)
+            // As the list's Kind column says: folders, archives, pictures, videos
+            let rank: Int
+            switch entry.kind {
+            case .parent, .folder: rank = entry.isArchive ? 1 : 0
+            case .image:           rank = 2
+            case .video:           rank = 3
+            }
+            let date: Date
+            switch key {
+            case .modified: date = entry.modDate ?? .distantPast
+            case .captured: date = captured[entry.url] ?? entry.modDate ?? .distantPast
+            default:        date = .distantPast
+            }
             return Keyed(entry: entry, group: group, name: entry.name,
-                         ext: entry.isMedia ? entry.url.pathExtension.lowercased() : "")
+                         ext: entry.isMedia ? entry.url.pathExtension.lowercased() : "",
+                         rank: rank, date: date, size: entry.byteSize ?? 0)
         }
 
         private func compare(_ a: Keyed, _ b: Keyed) -> ComparisonResult {
@@ -1708,26 +1729,15 @@ final class BrowserModel: ObservableObject {
             case .name:
                 return a.name.localizedStandardCompare(b.name)   // the key itself, reversed with the direction
             case .kind:
-                // As the list's Kind column says: folders, archives, pictures,
-                // videos; within pictures and videos by extension (a dot in a
-                // folder name isn't one)
-                func rank(_ e: GridEntry) -> Int {
-                    switch e.kind {
-                    case .parent, .folder: return e.isArchive ? 1 : 0
-                    case .image:           return 2
-                    case .video:           return 3
-                    }
-                }
-                let byKind = order(rank(a.entry), rank(b.entry))
+                // Within pictures and videos by extension (a dot in a folder
+                // name isn't one)
+                let byKind = order(a.rank, b.rank)
                 guard byKind == .orderedSame, a.entry.isMedia, b.entry.isMedia else { return byKind }
                 return a.ext.localizedStandardCompare(b.ext)
-            case .modified:
-                return order(a.entry.modDate ?? .distantPast, b.entry.modDate ?? .distantPast)
-            case .captured:
-                return order(captured[a.entry.url] ?? a.entry.modDate ?? .distantPast,
-                             captured[b.entry.url] ?? b.entry.modDate ?? .distantPast)
+            case .modified, .captured:
+                return order(a.date, b.date)
             case .size:
-                return order(a.entry.byteSize ?? 0, b.entry.byteSize ?? 0)
+                return order(a.size, b.size)
             }
         }
 
@@ -1764,7 +1774,50 @@ final class BrowserModel: ObservableObject {
             result.append(contentsOf: list[i...])
             return result
         }
+
+        /// `list` after `changes`: what is gone leaves it, what stays in place
+        /// keeps its position, and what moved or was renamed goes where it now
+        /// sorts (`list` is in this order already: nothing is sorted anew).
+        func following(_ list: [GridEntry], _ lookup: FileChanges) -> [GridEntry] {
+            var kept: [GridEntry] = []
+            kept.reserveCapacity(list.count)
+            var moved: [GridEntry] = []
+            for entry in list {
+                guard entry.kind != .parent else { kept.append(entry); continue }
+                guard let url = lookup.url(entry.url) else { continue }
+                if url == entry.url { kept.append(entry); continue }
+                moved.append(GridEntry(url: url, kind: entry.kind, modDate: entry.modDate, byteSize: entry.byteSize))
+            }
+            return moved.isEmpty ? kept : merged(kept, moved)
+        }
     }
+
+    /// The order the lists are in (sort key, direction, the capture dates known).
+    private var entryOrder: EntryOrder { EntryOrder(key: sortKey, ascending: sortAscending, captured: captureDates) }
+    /// Counts the changes to `entryOrder` (a new key or direction, capture
+    /// dates read), so a sort off the main thread knows it is still current.
+    private var orderRevision = 0
+    /// Counts the changes to the lists, so a re-sort off the main thread
+    /// knows they are still the ones it sorted.
+    private var listRevision = 0
+
+    /// Lists longer than this are sorted off the main thread: comparing
+    /// names as the Finder does (`localizedStandardCompare`) takes its time
+    /// over a hundred thousand of them.
+    static let mainThreadSortLimit = 5_000
+
+    /// `list` in the current order; a long list is sorted off the main
+    /// thread (again, should the order change meanwhile).
+    private func ordered(_ list: [GridEntry]) async -> [GridEntry] {
+        guard list.count > Self.mainThreadSortLimit else { return sorted(list) }
+        while true {
+            let order = entryOrder, revision = orderRevision
+            let result = await Blocking.run(.userInitiated) { order.sorted(list) }
+            if revision == orderRevision { return result }
+        }
+    }
+
+    private var resortTask: Task<Void, Never>?
 
     /// Choose the sort order. The same key again reverses the direction; a
     /// new key starts in its natural direction. Remembered across launches.
@@ -1777,11 +1830,32 @@ final class BrowserModel: ObservableObject {
     }
 
     /// Sort the lists again, keeping the selection.
+    /// Long lists are sorted off the main thread and shown once sorted
+    /// (sorted again when they or the order changed meanwhile).
     private func resort() {
-        let keep = selectedEntry?.url
-        allEntries = sorted(allEntries)
-        entries = sorted(entries)
-        keepSelection(index(of: keep) ?? selection)
+        resortTask?.cancel()
+        resortTask = nil
+        guard allEntries.count + entries.count > Self.mainThreadSortLimit else {
+            let keep = selectedEntry?.url
+            allEntries = sorted(allEntries)
+            entries = sorted(entries)
+            keepSelection(index(of: keep) ?? selection)
+            return
+        }
+        let all = allEntries, shown = entries, filtering = isFiltering
+        let order = entryOrder, orderSeen = orderRevision, listSeen = listRevision
+        resortTask = Task { [weak self] in
+            // (not searching: the grid shows the folder's listing itself)
+            let (sortedAll, sortedShown) = await Blocking.run(.userInitiated) {
+                (order.sorted(all), filtering ? order.sorted(shown) : [])
+            }
+            guard let self, !Task.isCancelled else { return }
+            guard orderSeen == self.orderRevision, listSeen == self.listRevision else { self.resort(); return }
+            let keep = self.selectedEntry?.url
+            self.allEntries = sortedAll
+            self.entries = filtering ? sortedShown : sortedAll
+            self.keepSelection(self.index(of: keep) ?? self.selection)
+        }
     }
 
     /// While sorting by capture date, read the dates of the media listed
@@ -3156,7 +3230,7 @@ final class BrowserModel: ObservableObject {
         // (the pane may have moved on meanwhile)
         guard self.folderURL.map(Self.canonicalPath) == Self.canonicalPath(folderURL) else { return url }
         let entry = GridEntry(url: url, kind: .folder, modDate: Date())
-        allEntries = sorted(allEntries + [entry])
+        allEntries = entryOrder.merged(allEntries, [entry])
         noteFolder(url, empty: true)
         if !isFiltering {
             entries = allEntries
@@ -3537,20 +3611,17 @@ final class BrowserModel: ObservableObject {
         FolderPreviewCache.shared.forget(affected)
         folderChanges += 1
         let lookup = FileChanges(changes)
-        func entry(_ e: GridEntry) -> GridEntry? {
-            guard e.kind != .parent else { return e }
-            guard let url = lookup.url(e.url) else { return nil }
-            return url == e.url ? e : GridEntry(url: url, kind: e.kind, modDate: e.modDate, byteSize: e.byteSize)
-        }
+        // What stays keeps its place; only what moved is put where it sorts now
+        let order = entryOrder
         let keep = selectedEntry.flatMap { lookup.url($0.url) }
         let previous = selection
         if !marked.isEmpty { marked = Set(marked.compactMap { lookup.path($0) }) }
-        allEntries = sorted(allEntries.compactMap(entry))
+        allEntries = order.following(allEntries, lookup)
         for run in allSearches { run.apply(changes) }
         pendingResultSelection = pendingResultSelection.flatMap { lookup.url($0) }
         backStack = backStack.map { location in changes.reduce(location) { $1.apply(to: $0) } }
         forwardStack = forwardStack.map { location in changes.reduce(location) { $1.apply(to: $0) } }
-        entries = sorted(entries.compactMap(entry))
+        entries = order.following(entries, lookup)
         // The other files too: renamed in place, gone when trashed or moved
         // out of the folder shown
         if !otherFiles.isEmpty, let shown = folderPath {
