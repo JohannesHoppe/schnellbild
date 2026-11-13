@@ -641,6 +641,17 @@ final class OpenFolderTests: XCTestCase {
         await waitUntil { again.isAt(tree.root) }
     }
 
+    /// A normal quit confirms the folders of every window's panes, not only the first window's.
+    func testANormalQuitConfirmsTheFoldersOfEveryWindow() {
+        let defaults = makeTestDefaults()
+        let prefixes = ["", "rightPane.", "window2.", "window2.rightPane.", "window7."]
+        for prefix in prefixes { defaults.set("/somewhere", forKey: prefix + BrowserModel.restoreUnconfirmedKey) }
+        defaults.set("/kept", forKey: "window2." + BrowserModel.lastFolderKey)
+        BrowserModel.confirmRestore(in: defaults)
+        for prefix in prefixes { XCTAssertNil(defaults.string(forKey: prefix + BrowserModel.restoreUnconfirmedKey), prefix) }
+        XCTAssertEqual(defaults.string(forKey: "window2." + BrowserModel.lastFolderKey), "/kept")
+    }
+
     func testRestoreIgnoresMissingFolder() async throws {
         let defaults = makeTestDefaults()
         defaults.set("/does/not/exist", forKey: BrowserModel.lastFolderKey)

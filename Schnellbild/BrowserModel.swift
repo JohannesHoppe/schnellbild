@@ -1363,9 +1363,12 @@ final class BrowserModel: ObservableObject {
     private var restoreUnconfirmedKey: String { settingsPrefix + Self.restoreUnconfirmedKey }
     static let restoreUnconfirmedKey = "restoreUnconfirmed"
 
-    /// The app quits normally: the folders reopened at launch did no harm.
-    static func confirmRestore(in defaults: UserDefaults, prefixes: [String] = ["", "rightPane."]) {
-        for prefix in prefixes { defaults.removeObject(forKey: prefix + restoreUnconfirmedKey) }
+    /// The app quits normally: the folders reopened at launch did no harm,
+    /// in every pane of every window ("", "rightPane.", "window<n>." …).
+    static func confirmRestore(in defaults: UserDefaults) {
+        for key in defaults.dictionaryRepresentation().keys where key.hasSuffix(restoreUnconfirmedKey) {
+            defaults.removeObject(forKey: key)
+        }
     }
 
     func restoreLastFolder(orElse fallback: @escaping @MainActor () -> URL? = { nil }) {
@@ -3893,22 +3896,38 @@ final class BrowserModel: ObservableObject {
 /// Full screen on request, also while the window is still on its way in or
 /// out: AppKit ignores a toggle during that animation (an empty slideshow
 /// ends at once), so the last request is carried out once it has ended.
+/// Each window has its own animation and requests: one window going into
+/// full screen never holds back or carries out another's.
 @MainActor
 final class FullScreenSwitch {
     static let shared = FullScreenSwitch()
-    /// Where the window is going while it animates, since when.
-    private var moving: (to: Bool, since: Date)?
-    /// An animation that never reported its end (it failed) stops counting
-    /// after this long.
-    private var movingTo: Bool? {
-        guard let moving, Date().timeIntervalSince(moving.since) < 6 else { return nil }
+
+    /// One window's animation and the request waiting for its end.
+    private struct State {
+        /// Where the window is going while it animates, since when.
+        var moving: (to: Bool, since: Date)?
+        var wanted: Bool?
+        /// Where a retry after an animation is still taking the window; a
+        /// new request cancels it.
+        var retrying: Bool?
+        var isEmpty: Bool { moving == nil && wanted == nil && retrying == nil }
+    }
+    private var states: [ObjectIdentifier: State] = [:]
+    private var observers: [NSObjectProtocol] = []
+
+    private func state(_ window: NSWindow) -> State { states[ObjectIdentifier(window)] ?? State() }
+    private func update(_ window: NSWindow, _ change: (inout State) -> Void) {
+        var state = state(window)
+        change(&state)
+        states[ObjectIdentifier(window)] = state.isEmpty ? nil : state
+    }
+
+    /// Where the window is going while it animates. An animation that never
+    /// reported its end (it failed) stops counting after a while.
+    private func movingTo(_ window: NSWindow) -> Bool? {
+        guard let moving = state(window).moving, Date().timeIntervalSince(moving.since) < 6 else { return nil }
         return moving.to
     }
-    private var wanted: Bool?
-    /// Where a retry after an animation is still taking the window; a new
-    /// request cancels it.
-    private var retrying: Bool?
-    private var observers: [NSObjectProtocol] = []
 
     private init() {
         let center = NotificationCenter.default
@@ -3916,10 +3935,12 @@ final class FullScreenSwitch {
             (NSWindow.willEnterFullScreenNotification, true), (NSWindow.willExitFullScreenNotification, false)
         ]
         for (name, target) in starts {
-            observers.append(center.addObserver(forName: name, object: nil, queue: .main) { _ in
+            observers.append(center.addObserver(forName: name, object: nil, queue: .main) { note in
+                let window = note.object as? NSWindow
                 MainActor.assumeIsolated {
                     BrowserModel.testLog("full screen: will \(target ? "enter" : "exit")")
-                    FullScreenSwitch.shared.moving = (target, Date())
+                    guard let window else { return }
+                    FullScreenSwitch.shared.update(window) { $0.moving = (target, Date()) }
                 }
             })
         }
@@ -3932,61 +3953,72 @@ final class FullScreenSwitch {
                 MainActor.assumeIsolated { FullScreenSwitch.shared.ended(window) }
             })
         }
+        // A closed window's requests go with it (its identifier may be reused)
+        observers.append(center.addObserver(forName: NSWindow.willCloseNotification, object: nil, queue: .main) { note in
+            let window = note.object as? NSWindow
+            MainActor.assumeIsolated {
+                guard let window else { return }
+                FullScreenSwitch.shared.states[ObjectIdentifier(window)] = nil
+            }
+        })
     }
 
     func isOrBecomesFullScreen(_ window: NSWindow) -> Bool {
-        wanted ?? movingTo ?? window.styleMask.contains(.fullScreen)
+        state(window).wanted ?? movingTo(window) ?? window.styleMask.contains(.fullScreen)
     }
 
     /// Returns whether the window ends up changed by this request.
     func set(_ on: Bool, window: NSWindow?) -> Bool {
-        BrowserModel.testLog("full screen: set \(on), window \(window != nil), moving \(String(describing: movingTo)), is \(window?.styleMask.contains(.fullScreen) ?? false)")
+        BrowserModel.testLog("full screen: set \(on), window \(window != nil), moving \(String(describing: window.flatMap(movingTo))), is \(window?.styleMask.contains(.fullScreen) ?? false)")
         guard let window else { return false }
-        if let movingTo {
-            wanted = on
+        if let movingTo = movingTo(window) {
+            update(window) { $0.wanted = on }
             return movingTo != on
         }
         // A retry still on its way elsewhere: cancelled, the window stays as asked
-        if let retrying {
-            self.retrying = nil
+        if let retrying = state(window).retrying {
+            update(window) { $0.retrying = nil }
             if retrying != on, window.styleMask.contains(.fullScreen) == on { return true }
         }
         guard window.styleMask.contains(.fullScreen) != on else { return false }
         // Moving from now on: AppKit announces the animation only later.
-        moving = (on, Date())
+        update(window) { $0.moving = (on, Date()) }
         window.toggleFullScreen(nil)
         return true
     }
 
     private func ended(_ window: NSWindow?) {
-        BrowserModel.testLog("full screen: ended, wanted \(String(describing: wanted)), is \(window?.styleMask.contains(.fullScreen) ?? false)")
-        moving = nil
-        guard let wanted, let window else { return }
-        self.wanted = nil
+        guard let window else { return }
+        let wanted = state(window).wanted
+        BrowserModel.testLog("full screen: ended, wanted \(String(describing: wanted)), is \(window.styleMask.contains(.fullScreen))")
+        update(window) { $0.moving = nil; $0.wanted = nil }
+        guard let wanted else { return }
         apply(wanted, to: window, tries: 4)
     }
 
     /// Right as the animation ends AppKit still ignores a toggle: asked a
     /// moment later, and again until the window is where it was asked to be.
     private func apply(_ on: Bool, to window: NSWindow, tries: Int) {
-        retrying = on
+        update(window) { $0.retrying = on }
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
             MainActor.assumeIsolated {
                 // A newer request takes over
-                guard self.retrying == on, self.movingTo == nil, self.wanted == nil else { return }
-                guard window.styleMask.contains(.fullScreen) != on else { self.retrying = nil; return }
+                let state = self.state(window)
+                guard state.retrying == on, self.movingTo(window) == nil, state.wanted == nil else { return }
+                guard window.styleMask.contains(.fullScreen) != on else { self.update(window) { $0.retrying = nil }; return }
                 BrowserModel.testLog("full screen: toggling to \(on), \(tries) tries left")
                 window.toggleFullScreen(nil)
                 if tries > 1 {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                         MainActor.assumeIsolated {
-                            guard self.retrying == on, self.movingTo == nil, self.wanted == nil,
-                                  window.styleMask.contains(.fullScreen) != on else { self.retrying = nil; return }
+                            let state = self.state(window)
+                            guard state.retrying == on, self.movingTo(window) == nil, state.wanted == nil,
+                                  window.styleMask.contains(.fullScreen) != on else { self.update(window) { $0.retrying = nil }; return }
                             self.apply(on, to: window, tries: tries - 1)
                         }
                     }
                 } else {
-                    self.retrying = nil
+                    self.update(window) { $0.retrying = nil }
                 }
             }
         }
