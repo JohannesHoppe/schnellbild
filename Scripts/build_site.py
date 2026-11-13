@@ -159,10 +159,10 @@ def breadcrumbs(code, t):
 
 
 def head(code, t, title, description, path_of=None, share_title=None, keywords=None, data="",
-         robots="index, follow, max-image-preview:large"):
+         robots="index, follow, max-image-preview:large", canonical=None):
     """The head of a page; path_of gives a language's version of it (canonical, hreflang)."""
-    url = SITE + path_of(code) if path_of else None
-    links = ""
+    url = SITE + path_of(code) if path_of else (SITE + canonical if canonical else None)
+    links = f'<link rel="canonical" href="{url}">\n' if url else ""
     if path_of:
         links = f'<link rel="canonical" href="{url}">\n' + "".join(
             f'<link rel="alternate" hreflang="{lang}" href="{SITE}{path_of(c)}">\n'
@@ -237,6 +237,7 @@ def footer(code, t):
     <span>© 2026 HAUS HOPPE - ITS (Johannes Hoppe)</span>
     <nav aria-label="{esc(t['footerPrivacy'])}, {esc(t['footerImprint'])}">
       <a href="{privacy_path(code, t)}">{esc(t['footerPrivacy'])}</a>
+      <a href="/eula/">{esc(t['footerEula'])}</a>
       <a href="{IMPRINT}">{esc(t['footerImprint'])}</a>
       <a href="{REPO}">GitHub</a>
     </nav>
@@ -375,6 +376,33 @@ def not_found(t):
 """ + footer("en", t)
 
 
+def markdown(text):
+    """The little Markdown AppStore/EULA.md uses: # and ## headings, paragraphs, <https://…> links."""
+    blocks = []
+    for block in re.split(r"\n\s*\n", text.strip()):
+        line = esc(" ".join(block.splitlines()))
+        line = re.sub(r"&lt;(https://[^&\s]+)&gt;", r'<a href="\1">\1</a>', line)
+        if line.startswith("## "):
+            blocks.append(f"<h2>{line[3:]}</h2>")
+        elif line.startswith("# "):
+            blocks.append(f"<h1>{line[2:]}</h1>")
+        else:
+            blocks.append(f"<p>{line}</p>")
+    return "\n  ".join(blocks)
+
+
+def eula(t):
+    """/eula/: the license agreement of the Mac App Store version (AppStore/EULA.md), in English as Apple gets it."""
+    text = (ROOT / "AppStore" / "EULA.md").read_text(encoding="utf-8")
+    return head("en", t, "License Agreement – Schnellbild",
+                "The license agreement (EULA) of Schnellbild in the Mac App Store.", canonical="/eula/") + \
+        topbar("en", t, home_path, sections=False) + f"""
+<main class="wrap narrow page">
+  {markdown(text)}
+</main>
+""" + footer("en", t)
+
+
 def sitemap(pages):
     """Every page with its other languages. A page's lastmod stays until its HTML changes."""
     path = DOCS / "sitemap.xml"
@@ -415,6 +443,7 @@ for code in LANGUAGES:
     if not (DOCS / "og" / f"{code}.jpg").exists():
         missing.append(f"{code}: docs/og/{code}.jpg (python3 Scripts/make_site_images.py og)")
 
+pages[DOCS / "eula" / "index.html"] = eula(tr["en"])
 pages[DOCS / "404.html"] = not_found(tr["en"])
 pages[DOCS / "site.webmanifest"] = manifest(tr["en"])
 pages[DOCS / "robots.txt"] = f"User-agent: *\nAllow: /\n\nSitemap: {SITE}/sitemap.xml\n"
