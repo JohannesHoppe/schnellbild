@@ -1,17 +1,16 @@
 "Open Folder…" = "Otevřít složku…";
 "Go" = "Přejít";
-"Start Slideshow (S)" = "Spustit prezentaci (S)";
+"Start Slideshow" = "Spustit prezentaci";
 "Back" = "Zpět";
 "Forward" = "Vpřed";
 "Enclosing Folder" = "Nadřazená složka";
 "Search" = "Hledat";
 "Actions" = "Akce";
-"Rename… (F2)" = "Přejmenovat… (F2)";
 "Reveal in Finder" = "Zobrazit ve Finderu";
 "Open with Default App" = "Otevřít ve výchozí aplikaci";
 "Move to Trash…" = "Přesunout do koše…";
-"Larger Thumbnails (⌘+)" = "Větší náhledy (⌘+)";
-"Smaller Thumbnails (⌘−)" = "Menší náhledy (⌘−)";
+"Larger Thumbnails" = "Větší náhledy";
+"Smaller Thumbnails" = "Menší náhledy";
 "Schnellbild Help" = "Nápověda Schnellbild";
 "Rename…" = "Přejmenovat…";
 "Open Folder" = "Otevřít složku";
@@ -166,13 +165,12 @@
 "New Folder" = "Nová složka";
 "Create" = "Vytvořit";
 "New folder: type its name, ↩ creates it, Esc creates none" = "Nová složka: zadejte název, ↩ ji vytvoří, Esc žádnou nevytvoří";
-"Mini Keyboard (K)" = "Miniklávesnice (K)";
+"Mini Keyboard" = "Miniklávesnice";
 /* Dual pane */
 "Dual Pane" = "Dva panely";
-"Dual Pane (D)" = "Dva panely (D)";
 "Dual pane: two folders side by side; Tab switches, F5 copies, F6 moves to the other (D, ⌃O)" = "Dva panely: dvě složky vedle sebe; Tab přepíná, F5 kopíruje, F6 přesouvá do druhého (D, ⌃O)";
-"Copy to Other Pane (F5)" = "Kopírovat do druhého panelu (F5)";
-"Move to Other Pane (F6)" = "Přesunout do druhého panelu (F6)";
+"Copy to Other Pane" = "Kopírovat do druhého panelu";
+"Move to Other Pane" = "Přesunout do druhého panelu";
 "Other pane" = "Druhý panel";
 "Copy there" = "Kopírovat tam";
 "Move there" = "Přesunout tam";
@@ -188,7 +186,7 @@
 "Dual pane on / off: two folders side by side" = "Dva panely zapnout / vypnout: dvě složky vedle sebe";
 "Switch to the other pane" = "Přepnout do druhého panelu";
 "Copy / move the marked items into the other pane's folder" = "Kopírovat / přesunout označené položky do složky druhého panelu";
-"Mark / unmark an item" = "Označit / odznačit položku";
+"Mark / unmark an item (M, Insert: then on to the next)" = "Označit / odznačit položku (M a Insert: a přejít na další)";
 "Mark a range" = "Označit rozsah";
 "Mark all / unmark all" = "Označit vše / odznačit vše";
 "Marked items onto a folder or into the other pane: moved (copied to another volume)" = "Označené položky na složku nebo do druhého panelu: přesunou se (na jiný svazek se zkopírují)";
@@ -224,7 +222,7 @@
 "Quit When Done" = "Ukončit po dokončení";
 "The name must end in “.%@”, as the archive does." = "Název musí končit na „.%@“ jako archiv.";
 "unknown error" = "neznámá chyba";
-"⌘-click / Insert" = "⌘-kliknutí / Insert";
+"⌘-click / M / Insert" = "⌘-kliknutí / M / Insert";
 "⇧-click / ⇧ arrows" = "⇧-kliknutí / ⇧ šipky";
 "drag" = "přetažení";
 "Schnellbild's own code is free software under the MIT License. The components below keep their own licenses." = "Vlastní kód aplikace Schnellbild je svobodný software pod licencí MIT. Níže uvedené komponenty si ponechávají své vlastní licence.";
@@ -325,3 +323,5 @@
 "Its format isn't known." = "Jeho formát není znám.";
 "The file ends too early." = "Soubor končí předčasně.";
 "Its data can't be decoded." = "Jeho data nelze dekódovat.";
+"Space" = "Mezerník";
+"Rename (F6 too in a single pane)" = "Přejmenovat (v jednom panelu i F6)";

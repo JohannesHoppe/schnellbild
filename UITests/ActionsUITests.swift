@@ -54,7 +54,7 @@ final class ActionsUITests: SchnellbildUITestCase {
         enterName("Via Context")
         XCTAssertTrue(app.staticTexts["Via Context"].waitForExistence(timeout: 5))
 
-        clickMenu("Actions", "Rename… (F2)")
+        clickMenu("Actions", "Rename…")
         enterName("Via Menu")
         XCTAssertTrue(app.staticTexts["Via Menu"].waitForExistence(timeout: 5))
     }

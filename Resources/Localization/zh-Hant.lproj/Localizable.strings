@@ -1,17 +1,16 @@
 "Open Folder…" = "打開檔案夾…";
 "Go" = "前往";
-"Start Slideshow (S)" = "開始幻燈片秀 (S)";
+"Start Slideshow" = "開始幻燈片秀";
 "Back" = "返回";
 "Forward" = "前進";
 "Enclosing Folder" = "上層檔案夾";
 "Search" = "搜尋";
 "Actions" = "動作";
-"Rename… (F2)" = "重新命名… (F2)";
 "Reveal in Finder" = "在 Finder 中顯示";
 "Open with Default App" = "使用預設 App 打開";
 "Move to Trash…" = "丟到垃圾桶…";
-"Larger Thumbnails (⌘+)" = "較大的縮圖 (⌘+)";
-"Smaller Thumbnails (⌘−)" = "較小的縮圖 (⌘−)";
+"Larger Thumbnails" = "較大的縮圖";
+"Smaller Thumbnails" = "較小的縮圖";
 "Schnellbild Help" = "Schnellbild 輔助說明";
 "Rename…" = "重新命名…";
 "Open Folder" = "打開檔案夾";
@@ -166,13 +165,12 @@
 "New Folder" = "新增檔案夾";
 "Create" = "建立";
 "New folder: type its name, ↩ creates it, Esc creates none" = "新增檔案夾：輸入名稱，↩ 建立，Esc 不建立";
-"Mini Keyboard (K)" = "迷你鍵盤 (K)";
+"Mini Keyboard" = "迷你鍵盤";
 /* Dual pane */
 "Dual Pane" = "雙窗格";
-"Dual Pane (D)" = "雙窗格 (D)";
 "Dual pane: two folders side by side; Tab switches, F5 copies, F6 moves to the other (D, ⌃O)" = "雙窗格：兩個檔案夾並排顯示；Tab 切換，F5 拷貝、F6 搬移到另一個窗格（D、⌃O）";
-"Copy to Other Pane (F5)" = "拷貝到另一個窗格 (F5)";
-"Move to Other Pane (F6)" = "搬移到另一個窗格 (F6)";
+"Copy to Other Pane" = "拷貝到另一個窗格";
+"Move to Other Pane" = "搬移到另一個窗格";
 "Other pane" = "另一窗格";
 "Copy there" = "拷貝過去";
 "Move there" = "搬過去";
@@ -188,7 +186,7 @@
 "Dual pane on / off: two folders side by side" = "開啟 / 關閉雙窗格：兩個檔案夾並排顯示";
 "Switch to the other pane" = "切換到另一個窗格";
 "Copy / move the marked items into the other pane's folder" = "將標記的項目拷貝 / 搬移到另一個窗格的檔案夾";
-"Mark / unmark an item" = "標記 / 取消標記項目";
+"Mark / unmark an item (M, Insert: then on to the next)" = "標記 / 取消標記項目（M 和 Insert：並移到下一個）";
 "Mark a range" = "標記一個範圍";
 "Mark all / unmark all" = "全部標記 / 全部取消標記";
 "Marked items onto a folder or into the other pane: moved (copied to another volume)" = "標記的項目放到檔案夾上或另一個窗格中：搬移（到其他卷宗則拷貝）";
@@ -224,7 +222,7 @@
 "Quit When Done" = "完成後結束";
 "The name must end in “.%@”, as the archive does." = "名稱必須像封存檔一樣以「.%@」結尾。";
 "unknown error" = "未知錯誤";
-"⌘-click / Insert" = "⌘-按一下 / Insert";
+"⌘-click / M / Insert" = "⌘-按一下 / M / Insert";
 "⇧-click / ⇧ arrows" = "⇧-按一下 / ⇧ 方向鍵";
 "drag" = "拖移";
 "Schnellbild's own code is free software under the MIT License. The components below keep their own licenses." = "Schnellbild 本身的程式碼是採用 MIT 授權條款的自由軟體。以下元件保留各自的授權條款。";
@@ -325,3 +323,5 @@
 "Its format isn't known." = "格式不明。";
 "The file ends too early." = "檔案提早結束。";
 "Its data can't be decoded." = "無法解碼其資料。";
+"Space" = "空白鍵";
+"Rename (F6 too in a single pane)" = "重新命名（單窗格中也可用 F6）";

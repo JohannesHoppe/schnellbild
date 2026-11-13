@@ -1,17 +1,16 @@
 "Open Folder…" = "Åpne mappe…";
 "Go" = "Gå";
-"Start Slideshow (S)" = "Start lysbildefremvisning (S)";
+"Start Slideshow" = "Start lysbildefremvisning";
 "Back" = "Tilbake";
 "Forward" = "Fremover";
 "Enclosing Folder" = "Overordnet mappe";
 "Search" = "Søk";
 "Actions" = "Handlinger";
-"Rename… (F2)" = "Gi nytt navn… (F2)";
 "Reveal in Finder" = "Vis i Finder";
 "Open with Default App" = "Åpne med standardappen";
 "Move to Trash…" = "Flytt til papirkurven…";
-"Larger Thumbnails (⌘+)" = "Større miniatyrbilder (⌘+)";
-"Smaller Thumbnails (⌘−)" = "Mindre miniatyrbilder (⌘−)";
+"Larger Thumbnails" = "Større miniatyrbilder";
+"Smaller Thumbnails" = "Mindre miniatyrbilder";
 "Schnellbild Help" = "Schnellbild-hjelp";
 "Rename…" = "Gi nytt navn…";
 "Open Folder" = "Åpne mappe";
@@ -166,13 +165,12 @@
 "New Folder" = "Ny mappe";
 "Create" = "Opprett";
 "New folder: type its name, ↩ creates it, Esc creates none" = "Ny mappe: skriv navnet, ↩ oppretter den, Esc oppretter ingen";
-"Mini Keyboard (K)" = "Minitastatur (K)";
+"Mini Keyboard" = "Minitastatur";
 /* Dual pane */
 "Dual Pane" = "To paneler";
-"Dual Pane (D)" = "To paneler (D)";
 "Dual pane: two folders side by side; Tab switches, F5 copies, F6 moves to the other (D, ⌃O)" = "To paneler: to mapper side om side; Tab bytter, F5 kopierer, F6 flytter til det andre (D, ⌃O)";
-"Copy to Other Pane (F5)" = "Kopier til det andre panelet (F5)";
-"Move to Other Pane (F6)" = "Flytt til det andre panelet (F6)";
+"Copy to Other Pane" = "Kopier til det andre panelet";
+"Move to Other Pane" = "Flytt til det andre panelet";
 "Other pane" = "Andre panel";
 "Copy there" = "Kopier dit";
 "Move there" = "Flytt dit";
@@ -188,7 +186,7 @@
 "Dual pane on / off: two folders side by side" = "To paneler på / av: to mapper side om side";
 "Switch to the other pane" = "Bytt til det andre panelet";
 "Copy / move the marked items into the other pane's folder" = "Kopier / flytt de merkede objektene til mappen i det andre panelet";
-"Mark / unmark an item" = "Merk et objekt / fjern merking";
+"Mark / unmark an item (M, Insert: then on to the next)" = "Merk et objekt / fjern merking (M og Insert: og videre til det neste)";
 "Mark a range" = "Merk et område";
 "Mark all / unmark all" = "Merk alle / fjern all merking";
 "Marked items onto a folder or into the other pane: moved (copied to another volume)" = "Merkede objekter på en mappe eller i det andre panelet: flyttes (kopieres til et annet volum)";
@@ -224,7 +222,7 @@
 "Quit When Done" = "Avslutt når ferdig";
 "The name must end in “.%@”, as the archive does." = "Navnet må slutte på «.%@», som arkivet.";
 "unknown error" = "ukjent feil";
-"⌘-click / Insert" = "⌘-klikk / Insert";
+"⌘-click / M / Insert" = "⌘-klikk / M / Insert";
 "⇧-click / ⇧ arrows" = "⇧-klikk / ⇧ piler";
 "drag" = "dra";
 "Schnellbild's own code is free software under the MIT License. The components below keep their own licenses." = "Schnellbilds egen kode er fri programvare under MIT-lisensen. Komponentene nedenfor beholder sine egne lisenser.";
@@ -325,3 +323,5 @@
 "Its format isn't known." = "Formatet er ukjent.";
 "The file ends too early." = "Filen slutter for tidlig.";
 "Its data can't be decoded." = "Dataene kan ikke dekodes.";
+"Space" = "Mellomrom";
+"Rename (F6 too in a single pane)" = "Gi nytt navn (i ett panel også F6)";

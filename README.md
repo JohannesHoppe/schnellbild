@@ -56,7 +56,7 @@ Open a folder with ⌘O or drag it onto the window; drag a single file to open i
 | + / − (or ⌘+ / ⌘−) | larger / smaller thumbnails |
 | ⌘[ / ⌘] | back / forward, restoring the folder, the search and the selection |
 | f / ⌃⌘F | full screen |
-| Return / F2 | rename the selected folder or file, as in the Finder (Return on `..`: up a level) |
+| Return / F2 / ⇧F6 | rename the selected folder or file, as in the Finder (Return on `..`: up a level; F6 too in a single pane) |
 | L | grid or list (a click on a column header sorts by it) |
 | D / ⌃O | dual pane on / off |
 | K | mini keyboard on / off |
@@ -65,6 +65,7 @@ Open a folder with ⌘O or drag it onto the window; drag a single file to open i
 | ⌃1 … ⌃9 | open bookmark 1 … 9 |
 | X | boss key: every window turns invisible and every video silent at once; X X X typed with Schnellbild in front (⌘-Tab, which shows no window meanwhile) or a click on its Dock icon brings them back (in full screen again, if it was); ⌘Q still quits |
 | ⌘A / Esc | mark all / unmark; Esc with nothing marked clears the search |
+| M / Insert | mark or unmark the selected item and move on to the next |
 
 ### List view
 
@@ -119,6 +120,7 @@ One picture, as large as the window allows, with its position in the folder. The
 | ⌘← ⌘→ | previous / next item, also from a video |
 | ↑ ↓ | pictures zoomed in: look further up / down; videos: volume up / down |
 | Space | next picture |
+| F2 | rename the picture or video shown |
 | Esc / Backspace / Return | back to the grid, at the same place |
 
 ### Slideshow
@@ -267,7 +269,7 @@ Rename a folder or file in place: Return (as in the Finder) or F2 in the grid, F
   <img src="docs/screenshots/dualpane-light.png" width="760" alt="Two panes side by side: the library on the left with two photos marked, a trip's folder on the right">
 </picture></p>
 
-**Dual Pane** in the toolbar (or `D`) splits the window in two, like the classic two-panel file managers. Each half is a browser of its own: its own folder, search, history and sort order; the one outlined in color is the one the keys work on, `Tab` switches. Drag the line between them to give one half more room (double-click it to share equally again); Schnellbild remembers where it was. A picture or video opens large in its own half. A folder's right-click menu opens it in the other half ("Open in Other Pane"). Mark several items with ⌘-click, ⇧-click or ⇧-arrows (⌘A all, Esc none), then press `F5` to copy or `F6` to move them into the other half's folder, or drag them over onto the other half or a folder tile in it: anywhere that isn't a folder tile (a picture, free space, the search or status bar) takes them into the folder that half shows, which it outlines and names while you hold them over it. A name that is taken there asks first: keep both (the new one is numbered) or skip. Both halves always show what is on disk. `D` again (or the button) goes back to one pane.
+**Dual Pane** in the toolbar (or `D`) splits the window in two, like the classic two-panel file managers. Each half is a browser of its own: its own folder, search, history and sort order; the one outlined in color is the one the keys work on, `Tab` switches. Drag the line between them to give one half more room (double-click it to share equally again); Schnellbild remembers where it was. A picture or video opens large in its own half. A folder's right-click menu opens it in the other half ("Open in Other Pane"). Mark several items with ⌘-click, ⇧-click or ⇧-arrows (⌘A all, Esc none), then press ⇧⌘C (or `F5`) to copy or ⇧⌘M (or `F6`) to move them into the other half's folder, or drag them over onto the other half or a folder tile in it: anywhere that isn't a folder tile (a picture, free space, the search or status bar) takes them into the folder that half shows, which it outlines and names while you hold them over it. A name that is taken there asks first: keep both (the new one is numbered) or skip. Both halves always show what is on disk. `D` again (or the button) goes back to one pane.
 
 **Use your old Norton Commander muscle memory:** the function keys work as they did there, as a second way next to the Mac shortcuts.
 
@@ -276,15 +278,15 @@ Rename a folder or file in place: Return (as in the Finder) or F2 in the grid, F
 | F1 | Help | help |
 | F3 | View | open the picture, video or folder (also Space) |
 | F4 | Edit | open with the default app (also ⌘↩) |
-| F5 | Copy | copy the marked items into the other pane |
-| F6 | RenMov | move them into the other pane; rename in a single pane (⇧F6 always renames, also F2) |
+| F5 | Copy | copy the marked items into the other pane (also ⇧⌘C) |
+| F6 | RenMov | move them into the other pane (also ⇧⌘M); rename in a single pane (⇧F6 always renames, also F2) |
 | F7 | Mkdir | new folder (also ⇧⌘N) |
 | F8 | Delete | move the marked items to the Trash, after asking (in the grid; ⌘⌫ also in the full view) |
 | F9 | PullDn | the menus, in the window |
 | F10 | Quit | quit, after asking (also ⌘Q) |
-| Tab / Insert / ⌃O | | switch pane / mark and move on / dual pane on and off |
+| Tab / Insert / ⌃O | | switch pane / mark and move on (also M) / dual pane on and off |
 
-Norton's F2 opened its user menu; here F2 renames, as in Windows (Return renames too, as in the Finder). On a MacBook the F-keys need fn, unless "Use F1, F2, etc. keys as standard function keys" is on in System Settings → Keyboard.
+Norton's F2 opened its user menu; here F2 renames, as in Windows (Return renames too, as in the Finder). On a MacBook the F-keys need fn, unless "Use F1, F2, etc. keys as standard function keys" is on in System Settings → Keyboard; every one of them also has a Mac key (⇧⌘C, ⇧⌘M, M, ⇧⌘N, ⌘↩, ⌘⌫, F2's Return).
 
 ### Archives as folders
 

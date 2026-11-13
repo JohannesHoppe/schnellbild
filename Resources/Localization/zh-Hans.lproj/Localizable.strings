@@ -1,17 +1,16 @@
 "Open Folder…" = "打开文件夹…";
 "Go" = "前往";
-"Start Slideshow (S)" = "开始幻灯片放映 (S)";
+"Start Slideshow" = "开始幻灯片放映";
 "Back" = "返回";
 "Forward" = "前进";
 "Enclosing Folder" = "上层文件夹";
 "Search" = "搜索";
 "Actions" = "操作";
-"Rename… (F2)" = "重新命名… (F2)";
 "Reveal in Finder" = "在访达中显示";
 "Open with Default App" = "使用默认 App 打开";
 "Move to Trash…" = "移到废纸篓…";
-"Larger Thumbnails (⌘+)" = "更大的缩略图 (⌘+)";
-"Smaller Thumbnails (⌘−)" = "更小的缩略图 (⌘−)";
+"Larger Thumbnails" = "更大的缩略图";
+"Smaller Thumbnails" = "更小的缩略图";
 "Schnellbild Help" = "Schnellbild 帮助";
 "Rename…" = "重新命名…";
 "Open Folder" = "打开文件夹";
@@ -166,13 +165,12 @@
 "New Folder" = "新建文件夹";
 "Create" = "创建";
 "New folder: type its name, ↩ creates it, Esc creates none" = "新建文件夹：输入名称，↩ 创建，Esc 不创建";
-"Mini Keyboard (K)" = "迷你键盘 (K)";
+"Mini Keyboard" = "迷你键盘";
 /* Dual pane */
 "Dual Pane" = "双窗格";
-"Dual Pane (D)" = "双窗格 (D)";
 "Dual pane: two folders side by side; Tab switches, F5 copies, F6 moves to the other (D, ⌃O)" = "双窗格：两个文件夹并排显示；Tab 切换，F5 拷贝、F6 移动到另一窗格（D、⌃O）";
-"Copy to Other Pane (F5)" = "拷贝到另一窗格 (F5)";
-"Move to Other Pane (F6)" = "移到另一窗格 (F6)";
+"Copy to Other Pane" = "拷贝到另一窗格";
+"Move to Other Pane" = "移到另一窗格";
 "Other pane" = "另一窗格";
 "Copy there" = "拷贝过去";
 "Move there" = "移过去";
@@ -188,7 +186,7 @@
 "Dual pane on / off: two folders side by side" = "打开 / 关闭双窗格：两个文件夹并排显示";
 "Switch to the other pane" = "切换到另一窗格";
 "Copy / move the marked items into the other pane's folder" = "将标记的项目拷贝 / 移到另一窗格的文件夹";
-"Mark / unmark an item" = "标记 / 取消标记项目";
+"Mark / unmark an item (M, Insert: then on to the next)" = "标记 / 取消标记项目（M 和 Insert：并移到下一个）";
 "Mark a range" = "标记一个范围";
 "Mark all / unmark all" = "全部标记 / 全部取消标记";
 "Marked items onto a folder or into the other pane: moved (copied to another volume)" = "标记的项目放到文件夹上或另一窗格中：移动（到其他宗卷则拷贝）";
@@ -224,7 +222,7 @@
 "Quit When Done" = "完成后退出";
 "The name must end in “.%@”, as the archive does." = "名称必须像归档一样以“.%@”结尾。";
 "unknown error" = "未知错误";
-"⌘-click / Insert" = "⌘-点按 / Insert";
+"⌘-click / M / Insert" = "⌘-点按 / M / Insert";
 "⇧-click / ⇧ arrows" = "⇧-点按 / ⇧ 箭头";
 "drag" = "拖移";
 "Schnellbild's own code is free software under the MIT License. The components below keep their own licenses." = "Schnellbild 自身的代码是采用 MIT 许可证的自由软件。以下组件保留各自的许可证。";
@@ -325,3 +323,5 @@
 "Its format isn't known." = "格式未知。";
 "The file ends too early." = "文件提前结束。";
 "Its data can't be decoded." = "无法解码其数据。";
+"Space" = "空格";
+"Rename (F6 too in a single pane)" = "重新命名（单窗格中也可用 F6）";

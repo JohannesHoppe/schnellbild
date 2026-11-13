@@ -2358,8 +2358,8 @@ final class BrowserModel: ObservableObject {
         selection = index
     }
 
-    /// Insert (as in the commanders): marks or unmarks the selected item and
-    /// moves on to the next.
+    /// Insert (as in the commanders) or M: marks or unmarks the selected item
+    /// and moves on to the next.
     func toggleMarkAndAdvance() {
         guard let entry = selectedEntry, let index = selection else { return }
         if entry.kind != .parent {
@@ -2570,9 +2570,9 @@ final class BrowserModel: ObservableObject {
     }
     @Published private(set) var lastKeyPress: KeyPress?
 
-    /// A key the window handled (D, Tab, F5, F6), for the mini keyboard.
-    func noteKeyPress(_ key: KeyInput, command: Bool) {
-        lastKeyPress = KeyPress(key: key, command: command, shift: false)
+    /// A key the window handled (D, Tab, F5, F6, ⇧⌘C, ⇧⌘M), for the mini keyboard.
+    func noteKeyPress(_ key: KeyInput, command: Bool, shift: Bool = false) {
+        lastKeyPress = KeyPress(key: key, command: command, shift: shift)
     }
 
     /// Tiles or a list (L): per pane, remembered.
@@ -2713,6 +2713,10 @@ final class BrowserModel: ObservableObject {
         case "a" where !command: showAdjustments.toggle(); return true
         case "k" where !command: showMiniKeyboard.toggle(); return true
         case "l" where !command: viewMode = viewMode == .grid ? .list : .grid; return true
+        // M: Insert on a Mac keyboard (which has none)
+        case "m" where !command:
+            guard mode == .grid else { return false }
+            toggleMarkAndAdvance(); return true
         default:
             break
         }

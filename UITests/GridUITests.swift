@@ -90,9 +90,9 @@ final class GridUITests: SchnellbildUITestCase {
     func testThumbnailSizeMenuItems() {
         launchOnTempDir()
         let before = tile("a.jpg").frame.width
-        clickMenu("View", "Larger Thumbnails (⌘+)")
+        clickMenu("View", "Larger Thumbnails")
         eventually("tiles grow") { tile("a.jpg").frame.width > before }
-        clickMenu("View", "Smaller Thumbnails (⌘−)")
+        clickMenu("View", "Smaller Thumbnails")
         eventually("tiles back") { abs(tile("a.jpg").frame.width - before) < 1 }
     }
 

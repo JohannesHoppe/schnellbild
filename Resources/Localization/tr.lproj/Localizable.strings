@@ -1,17 +1,16 @@
 "Open Folder…" = "Klasör Aç…";
 "Go" = "Git";
-"Start Slideshow (S)" = "Slayt Gösterisini Başlat (S)";
+"Start Slideshow" = "Slayt Gösterisini Başlat";
 "Back" = "Geri";
 "Forward" = "İleri";
 "Enclosing Folder" = "Üst Klasör";
 "Search" = "Ara";
 "Actions" = "Eylemler";
-"Rename… (F2)" = "Yeniden Adlandır… (F2)";
 "Reveal in Finder" = "Finder’da Göster";
 "Open with Default App" = "Varsayılan Uygulamayla Aç";
 "Move to Trash…" = "Çöp Sepetine Taşı…";
-"Larger Thumbnails (⌘+)" = "Daha Büyük Küçük Resimler (⌘+)";
-"Smaller Thumbnails (⌘−)" = "Daha Küçük Küçük Resimler (⌘−)";
+"Larger Thumbnails" = "Daha Büyük Küçük Resimler";
+"Smaller Thumbnails" = "Daha Küçük Küçük Resimler";
 "Schnellbild Help" = "Schnellbild Yardımı";
 "Rename…" = "Yeniden Adlandır…";
 "Open Folder" = "Klasör Aç";
@@ -166,13 +165,12 @@
 "New Folder" = "Yeni Klasör";
 "Create" = "Oluştur";
 "New folder: type its name, ↩ creates it, Esc creates none" = "Yeni klasör: adını yazın, ↩ oluşturur, Esc hiçbir şey oluşturmaz";
-"Mini Keyboard (K)" = "Mini Klavye (K)";
+"Mini Keyboard" = "Mini Klavye";
 /* Dual pane */
 "Dual Pane" = "Çift Bölme";
-"Dual Pane (D)" = "Çift Bölme (D)";
 "Dual pane: two folders side by side; Tab switches, F5 copies, F6 moves to the other (D, ⌃O)" = "Çift bölme: iki klasör yan yana; Tab geçiş yapar, F5 kopyalar, F6 diğerine taşır (D, ⌃O)";
-"Copy to Other Pane (F5)" = "Diğer Bölmeye Kopyala (F5)";
-"Move to Other Pane (F6)" = "Diğer Bölmeye Taşı (F6)";
+"Copy to Other Pane" = "Diğer Bölmeye Kopyala";
+"Move to Other Pane" = "Diğer Bölmeye Taşı";
 "Other pane" = "Diğer bölme";
 "Copy there" = "Oraya kopyala";
 "Move there" = "Oraya taşı";
@@ -188,7 +186,7 @@
 "Dual pane on / off: two folders side by side" = "Çift bölme aç / kapat: iki klasör yan yana";
 "Switch to the other pane" = "Diğer bölmeye geç";
 "Copy / move the marked items into the other pane's folder" = "İşaretli öğeleri diğer bölmenin klasörüne kopyala / taşı";
-"Mark / unmark an item" = "Öğeyi işaretle / işareti kaldır";
+"Mark / unmark an item (M, Insert: then on to the next)" = "Öğeyi işaretle / işareti kaldır (M ve Insert: ve sonrakine geç)";
 "Mark a range" = "Bir aralığı işaretle";
 "Mark all / unmark all" = "Tümünü işaretle / tüm işaretleri kaldır";
 "Marked items onto a folder or into the other pane: moved (copied to another volume)" = "İşaretli öğeler bir klasörün üstüne veya diğer bölmeye: taşınır (başka bir birime kopyalanır)";
@@ -224,7 +222,7 @@
 "Quit When Done" = "Bitince Çık";
 "The name must end in “.%@”, as the archive does." = "Ad, arşivdeki gibi “.%@” ile bitmelidir.";
 "unknown error" = "bilinmeyen hata";
-"⌘-click / Insert" = "⌘-tıklama / Insert";
+"⌘-click / M / Insert" = "⌘-tıklama / M / Insert";
 "⇧-click / ⇧ arrows" = "⇧-tıklama / ⇧ oklar";
 "drag" = "sürükle";
 "Schnellbild's own code is free software under the MIT License. The components below keep their own licenses." = "Schnellbild'in kendi kodu MIT Lisansı altında özgür yazılımdır. Aşağıdaki bileşenler kendi lisanslarını korur.";
@@ -325,3 +323,5 @@
 "Its format isn't known." = "Biçimi bilinmiyor.";
 "The file ends too early." = "Dosya erken bitiyor.";
 "Its data can't be decoded." = "Verileri çözülemiyor.";
+"Space" = "Boşluk";
+"Rename (F6 too in a single pane)" = "Yeniden adlandır (tek bölmede F6 da)";
