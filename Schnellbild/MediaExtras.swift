@@ -63,12 +63,22 @@ struct InspectorView: View {
             }
             if let recommended = facts?.recommendedExtension {
                 let content = facts?.format ?? ""
-                Label(String(localized: "The file extension doesn't match the content (\(content)). Recommended: .\(recommended)"),
-                      systemImage: "exclamationmark.triangle.fill")
-                    .font(.callout)
-                    .foregroundStyle(.orange)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .accessibilityIdentifier("wrongExtension")
+                // The text in the primary colour (readable on the material in
+                // light and dark), the warning carried by the yellow sign and
+                // the tinted box around it.
+                let note = String(localized: "The file extension doesn't match the content (\(content)). Recommended: .\(recommended)")
+                Label {
+                    Text(note).foregroundStyle(.primary)
+                } icon: {
+                    Image(systemName: "exclamationmark.triangle.fill").symbolRenderingMode(.multicolor)
+                }
+                .font(.callout)
+                .fixedSize(horizontal: false, vertical: true)
+                .padding(8)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(Color.orange.opacity(0.18), in: RoundedRectangle(cornerRadius: 8))
+                .accessibilityElement(children: .combine)
+                .accessibilityIdentifier("wrongExtension")
             }
         }
         .padding(14)
