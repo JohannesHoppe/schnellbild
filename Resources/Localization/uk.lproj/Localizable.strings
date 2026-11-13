@@ -118,7 +118,7 @@
 "A file listed in this archive is missing." = "Бракує файлу, зазначеного в цьому архіві.";
 "Drag a folder here, press ⌘O, or click Open Folder…" = "Перетягніть сюди папку, натисніть ⌘O або клацніть Відкрити папку…";
 "Stop search (keeps the results found so far)" = "Зупинити пошук (знайдене залишиться)";
-"Sort by (⌘1 … ⌘5; press again to reverse)" = "Сортувати за (⌘1 … ⌘5; повторне натискання — навпаки)";
+"Sort by (⌘1 … ⌘5; press again to reverse)" = "Сортувати за (⌘1 … ⌘5; повторне натискання змінює порядок)";
 "Reset to original" = "Скинути до оригіналу";
 "Files are not changed." = "Файли не змінюються.";
 "Auto enhance on / off (exposure, contrast, saturation, sharpness; files are not changed)" = "Автопокращення увімк. / вимк. (експозиція, контраст, насиченість, різкість; файли не змінюються)";
@@ -174,14 +174,14 @@
 "“%@” already exists in “%@”." = "«%@» уже є в «%@».";
 "Keep Both" = "Залишити обидва";
 "Skip" = "Пропустити";
-"The marked items will be moved to the Trash, folders with everything in them." = "Позначені об’єкти буде переміщено в Смітник, папки — з усім вмістом.";
+"The marked items will be moved to the Trash, folders with everything in them." = "Позначені об’єкти буде переміщено в Смітник, папки разом з усім вмістом.";
 "Dual pane and marking" = "Дві панелі та позначення";
 "Dual pane on / off: two folders side by side" = "Дві панелі увімк. / вимк.: дві папки поруч";
 "Switch to the other pane" = "Перейти до іншої панелі";
 "Copy / move the marked items into the other pane's folder" = "Скопіювати / перемістити позначені об’єкти в папку іншої панелі";
 "Mark a range" = "Позначити діапазон";
 "Mark all / unmark all" = "Позначити все / зняти всі позначки";
-"Marked items onto a folder or into the other pane: moved (copied to another volume)" = "Позначені об’єкти на папку або в іншу панель: переміщуються (на інший том — копіюються)";
+"Marked items onto a folder or into the other pane: moved (copied to another volume)" = "Позначені об’єкти на папку або в іншу панель: переміщуються (на інший том копіюються)";
 "Quit (F10 asks first)" = "Вийти (F10 спершу питає)";
 "The app's menus in the window" = "Меню програми у вікні";
 "Do you want to quit Schnellbild?" = "Вийти зі Schnellbild?";
@@ -191,8 +191,8 @@
 "as List" = "списком";
 "Grid or list (L)" = "Сітка або список (L)";
 "Grid or list (a click on a column sorts by it)" = "Сітка або список (клік по стовпцю сортує за ним)";
-"Back (where you were, also a search); without history the enclosing folder" = "Назад (де ви були, і до пошуку); без історії — у папку вище";
-"⌘↑ goes up one folder level." = "⌘↑ — на одну папку вище.";
+"Back (where you were, also a search); without history the enclosing folder" = "Назад (де ви були, і до пошуку); без історії у папку вище";
+"⌘↑ goes up one folder level." = "⌘↑ переходить на одну папку вище.";
 "Click to rename this folder" = "Клацніть, щоб перейменувати папку";
 "Built with" = "Використовує";
 "The full license texts are in the app (Contents/Resources/Licenses)." = "Повні тексти ліцензій містяться в програмі (Contents/Resources/Licenses).";
@@ -218,7 +218,7 @@
 "unknown error" = "невідома помилка";
 "⇧-click / ⇧ arrows" = "⇧-клацання / ⇧ стрілки";
 "drag" = "перетягування";
-"Schnellbild's own code is free software under the MIT License. The components below keep their own licenses." = "Власний код Schnellbild — вільне ПЗ за ліцензією MIT. Компоненти нижче зберігають власні ліцензії.";
+"Schnellbild's own code is free software under the MIT License. The components below keep their own licenses." = "Власний код Schnellbild поширюється як вільне ПЗ за ліцензією MIT. Компоненти нижче зберігають власні ліцензії.";
 
 /* VoiceOver: the sorted column of the list */
 "ascending" = "за зростанням";
@@ -245,7 +245,7 @@
 "Regular expression" = "Регулярний вираз";
 "Search mode" = "Режим пошуку";
 "No folder, archive, picture or video whose name matches “%@”, in this folder or its subfolders." = "Немає папки, архіву, зображення чи відео, назва яких відповідає «%@», у цій папці та її підпапках.";
-"“%@” is not a valid regular expression." = "«%@» — недійсний регулярний вираз.";
+"“%@” is not a valid regular expression." = "«%@» не є дійсним регулярним виразом.";
 "Into “%@”" = "До «%@»";
 "Bookmarks" = "Закладки";
 "Bookmark This Folder" = "Додати закладку на цю папку";
@@ -308,7 +308,7 @@
 "Copied, but the original couldn't be removed: %@" = "Скопійовано, але оригінал не вдалося вилучити: %@";
 "Not everything was moved or copied." = "Не все було переміщено чи скопійовано.";
 "“%@”: %@" = "«%@»: %@";
-"“%@” is no longer the item Schnellbild put there, so it stays as it is." = "«%@» — уже не той об’єкт, який туди поклав Schnellbild, тому він залишається як є.";
+"“%@” is no longer the item Schnellbild put there, so it stays as it is." = "«%@» уже не той об’єкт, який туди поклав Schnellbild, тому він залишається як є.";
 "“%@” has changed since it was copied, so it isn't moved to the Trash." = "«%@» змінився після копіювання, тому його не переміщено в Смітник.";
 "Schnellbild may not take “%@” out of the Trash. Use “Put Back” in the Finder's Trash." = "Schnellbild не може вийняти «%@» зі Смітника. Скористайтеся командою «Повернути» у Смітнику Finder.";
 "Keep: try it again later, before the earlier actions. Forget: go on with the earlier actions." = "Залишити: спробувати пізніше, перед попередніми діями. Забути: перейти до попередніх дій.";
