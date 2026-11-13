@@ -4,7 +4,7 @@ One app, two ways out: free as the DMG on GitHub Releases, and for 1 € in the 
 
 ## Ready (in this repository)
 
-- [x] VLCKit 3.7.5 without GPL modules (`Scripts/build_vlckit_lgpl.sh`, workflow `vlckit-lgpl.yml`, published as a pre-release, fetched by `Scripts/fetch_vlckit.sh`): 235 modules, all LGPL; all unit tests pass with it.
+- [x] VLCKit 3.7.5 without GPL modules (`Scripts/build_vlckit_lgpl.sh`, workflow `vlckit-lgpl.yml`, published as a pre-release, fetched by `Scripts/fetch_vlckit.sh`): 236 modules, all LGPL; all unit tests pass with it.
 - [x] App Sandbox for the app and both extensions (`Sandbox/`); all UI tests run the app in it.
 - [x] Folder access: grants as security-scoped bookmarks, "Allow Access…" for a folder outside them, Settings → Folder access to forget them.
 - [x] Privacy manifest `Sandbox/PrivacyInfo.xcprivacy`: no tracking, no data collected.
@@ -17,11 +17,13 @@ One app, two ways out: free as the DMG on GitHub Releases, and for 1 € in the 
 
 ## For Johannes (Apple Developer account, App Store Connect)
 
-1. **Agreements:** App Store Connect → Business: accept the Paid Apps Agreement, enter tax forms and bank account (needed for a paid app).
-2. **Certificates** (developer.apple.com → Certificates): "Apple Distribution" (or "Mac App Distribution") and "Mac Installer Distribution". Export each with its private key as .p12, same password.
-3. **App IDs:** `art.haushoppe.schnellbild` and `art.haushoppe.schnellbild.thumbnails` (the format reader's `art.haushoppe.schnellbild.formatreader` exists, with its Media Extension capability).
-4. **Provisioning profiles**, type "Mac App Store Connect" (distribution), one per App ID: app, thumbnails, format reader.
-5. **GitHub secrets** in the environment `release` (base64 for files): `APPSTORE_APP_P12`, `APPSTORE_INSTALLER_P12`, `APPSTORE_CERT_PASSWORD`, `APPSTORE_PROFILE_APP`, `APPSTORE_PROFILE_THUMBNAILS`, `APPSTORE_PROFILE_FORMATREADER`. Then `appstore.yml` builds a signed package (artifact `appstore-package`).
+Steps 1–5 are done (2026-11-13; the signed package builds). How to make the certificates, profiles and secrets again when they run out: `docs/SIGNING.md`.
+
+1. [x] **Agreements:** App Store Connect → Business: Paid Apps Agreement, tax form, bank account.
+2. [x] **Certificates:** "Apple Distribution" and "Mac Installer Distribution", each exported with its private key as .p12, same password.
+3. [x] **App IDs:** `art.haushoppe.schnellbild`, `.thumbnails`, `.formatreader`.
+4. [x] **Provisioning profiles**, type "Mac App Store Connect", one per App ID.
+5. [x] **GitHub secrets** in the environment `release` (`Scripts/set_signing_secrets.sh appstore …`); `appstore.yml` builds the signed package (artifact `appstore-package`).
 6. **App record** in App Store Connect: name (Schnellbild, if free), primary language, bundle ID `art.haushoppe.schnellbild`, SKU, category Photography, price (e.g. tier for 0.99 €/1 €).
 7. **Metadata:** paste from `AppStore/METADATA.md` (German and English), upload `AppStore/screenshots`, privacy policy URL as above, App Privacy: "Data Not Collected", age rating 4+.
 8. **License agreement:** fill in the address in `AppStore/EULA.md`, have it checked, paste it as custom EULA.
