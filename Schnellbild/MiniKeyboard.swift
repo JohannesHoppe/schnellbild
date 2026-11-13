@@ -10,6 +10,8 @@ struct MiniKeyboard: View {
 
     /// One key: its cap, its word, and the input it sends.
     struct Key: Identifiable {
+        /// The key as written in the code and the UI tests' identifiers
+        /// ("space", "esc", "Tab"); shown as `shownCap`.
         let cap: String
         let word: LocalizedStringKey
         let input: BrowserModel.KeyInput
@@ -18,6 +20,17 @@ struct MiniKeyboard: View {
         var option = false
         /// The cap is unique within a row ("F" and "⌘F" are two keys).
         var id: String { cap }
+    }
+
+    /// A cap as Apple's keyboards and menus show it: ⎋ and ⇥ as glyphs,
+    /// the space bar by its name in the user's language.
+    static func shownCap(_ cap: String) -> String {
+        switch cap {
+        case "space": return String(localized: "Space")
+        case "esc":   return "⎋"
+        case "Tab":   return "⇥"
+        default:      return cap
+        }
     }
 
     /// What's on screen decides the keys.
@@ -45,10 +58,10 @@ struct MiniKeyboard: View {
         case .dualGrid:
             return [
                 Key(cap: "Tab", word: "Other pane", input: .tab),
-                Key(cap: "F5", word: "Copy there", input: .f5),
-                Key(cap: "F6", word: "Move there", input: .f6),
+                Key(cap: "⇧⌘C", word: "Copy there", input: .char("c"), command: true, shift: true),
+                Key(cap: "⇧⌘M", word: "Move there", input: .char("m"), command: true, shift: true),
                 Key(cap: "F7", word: "New folder", input: .f7),
-                Key(cap: "ins", word: "Mark", input: .insert),
+                Key(cap: "M", word: "Mark", input: .char("m")),
                 Key(cap: "⌫", word: "Back", input: .backspace),
                 Key(cap: "←", word: "Previous", input: .left),
                 Key(cap: "→", word: "Next", input: .right),
@@ -145,12 +158,12 @@ private struct MiniKeyButton: View {
     var body: some View {
         Button {
             // As typed: the window's keys first (D, Tab, F5, F6), then the pane's
-            if !window.handleWindowKey(key.input, command: key.command, control: false, textEditing: false) {
+            if !window.handleWindowKey(key.input, command: key.command, control: false, shift: key.shift, textEditing: false) {
                 model.handleKey(key.input, command: key.command, shift: key.shift, option: key.option)
             }
         } label: {
             VStack(spacing: 3) {
-                Text(verbatim: key.cap)
+                Text(verbatim: MiniKeyboard.shownCap(key.cap))
                     .font(.system(size: 12, weight: .semibold))
                     .frame(minWidth: 26, minHeight: 22)
                     .padding(.horizontal, 5)

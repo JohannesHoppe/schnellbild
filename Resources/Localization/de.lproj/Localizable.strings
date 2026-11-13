@@ -1,17 +1,16 @@
 "Open Folder…" = "Ordner öffnen …";
 "Go" = "Gehe zu";
-"Start Slideshow (S)" = "Diashow starten (S)";
+"Start Slideshow" = "Diashow starten";
 "Back" = "Zurück";
 "Forward" = "Vorwärts";
 "Enclosing Folder" = "Übergeordneter Ordner";
 "Search" = "Suchen";
 "Actions" = "Aktionen";
-"Rename… (F2)" = "Umbenennen … (F2)";
 "Reveal in Finder" = "Im Finder zeigen";
 "Open with Default App" = "Mit Standard-App öffnen";
 "Move to Trash…" = "In den Papierkorb legen …";
-"Larger Thumbnails (⌘+)" = "Größere Miniaturen (⌘+)";
-"Smaller Thumbnails (⌘−)" = "Kleinere Miniaturen (⌘−)";
+"Larger Thumbnails" = "Größere Miniaturen";
+"Smaller Thumbnails" = "Kleinere Miniaturen";
 "Schnellbild Help" = "Schnellbild-Hilfe";
 "Rename…" = "Umbenennen …";
 "Open Folder" = "Ordner öffnen";
@@ -166,13 +165,12 @@
 "New Folder" = "Neuer Ordner";
 "Create" = "Erstellen";
 "New folder: type its name, ↩ creates it, Esc creates none" = "Neuer Ordner: Namen eingeben, ↩ erstellt ihn, Esc erstellt keinen";
-"Mini Keyboard (K)" = "Mini-Tastatur (K)";
+"Mini Keyboard" = "Mini-Tastatur";
 /* Dual pane */
 "Dual Pane" = "Zwei Bereiche";
-"Dual Pane (D)" = "Zwei Bereiche (D)";
 "Dual pane: two folders side by side; Tab switches, F5 copies, F6 moves to the other (D, ⌃O)" = "Zwei Bereiche: zwei Ordner nebeneinander; Tab wechselt, F5 kopiert, F6 verschiebt in den anderen (D, ⌃O)";
-"Copy to Other Pane (F5)" = "In anderen Bereich kopieren (F5)";
-"Move to Other Pane (F6)" = "In anderen Bereich verschieben (F6)";
+"Copy to Other Pane" = "In anderen Bereich kopieren";
+"Move to Other Pane" = "In anderen Bereich verschieben";
 "Other pane" = "Anderer Bereich";
 "Copy there" = "Dorthin kopieren";
 "Move there" = "Dorthin verschieben";
@@ -188,7 +186,7 @@
 "Dual pane on / off: two folders side by side" = "Zwei Bereiche ein / aus: zwei Ordner nebeneinander";
 "Switch to the other pane" = "Zum anderen Bereich wechseln";
 "Copy / move the marked items into the other pane's folder" = "Markierte Objekte in den Ordner des anderen Bereichs kopieren / verschieben";
-"Mark / unmark an item" = "Objekt markieren / Markierung aufheben";
+"Mark / unmark an item (M, Insert: then on to the next)" = "Objekt markieren / Markierung aufheben (M und Insert: und weiter zum nächsten)";
 "Mark a range" = "Mehrere am Stück markieren";
 "Mark all / unmark all" = "Alle markieren / alle Markierungen aufheben";
 "Marked items onto a folder or into the other pane: moved (copied to another volume)" = "Markierte Objekte auf einen Ordner oder in den anderen Bereich: verschoben (auf ein anderes Volume kopiert)";
@@ -224,7 +222,7 @@
 "Quit When Done" = "Beenden, wenn fertig";
 "The name must end in “.%@”, as the archive does." = "Der Name muss auf „.%@“ enden, wie das Archiv.";
 "unknown error" = "unbekannter Fehler";
-"⌘-click / Insert" = "⌘-Klick / Insert";
+"⌘-click / M / Insert" = "⌘-Klick / M / Insert";
 "⇧-click / ⇧ arrows" = "⇧-Klick / ⇧ Pfeile";
 "drag" = "Ziehen";
 "Schnellbild's own code is free software under the MIT License. The components below keep their own licenses." = "Der eigene Code von Schnellbild ist freie Software unter der MIT-Lizenz. Die Komponenten unten behalten ihre eigenen Lizenzen.";
@@ -325,3 +323,5 @@
 "Its format isn't known." = "Das Format ist unbekannt.";
 "The file ends too early." = "Die Datei endet zu früh.";
 "Its data can't be decoded." = "Die Daten lassen sich nicht decodieren.";
+"Space" = "Leertaste";
+"Rename (F6 too in a single pane)" = "Umbenennen (in einem Bereich auch F6)";

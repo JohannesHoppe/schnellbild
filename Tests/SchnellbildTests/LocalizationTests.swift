@@ -311,6 +311,42 @@ final class LocalizationTests: XCTestCase {
         }
     }
 
+    /// Keys are shown as on Apple's keyboards and menus: glyphs (⌫ ↩ ⎋ ⇥
+    /// ↖ ↘) where Apple has them, and the space bar by its name in each
+    /// language ("Space" in the help's keys, translated where it is shown).
+    /// The keys columns of the F1 help and the mini keyboard's caps hold no
+    /// English key names; only "Insert", a key Apple's keyboards don't have,
+    /// keeps its name (in a translated row).
+    func testKeyNamesAreGlyphsOrTranslated() throws {
+        let sources = root.deletingLastPathComponent().deletingLastPathComponent().appendingPathComponent("Schnellbild")
+        let help = try String(contentsOf: sources.appendingPathComponent("ShortcutsHelpView.swift"), encoding: .utf8)
+        let keys = try NSRegularExpression(pattern: "Shortcut\\(keys: \"([^\"]+)\"")
+        let names = try NSRegularExpression(pattern: "\\b(Backspace|Delete|Return|Enter|Esc|Escape|Tab|Home|End|Page ?Up|Page ?Down|space)\\b")
+        var found = 0
+        for match in keys.matches(in: help, range: NSRange(help.startIndex..., in: help)) {
+            let text = (help as NSString).substring(with: match.range(at: 1))
+            found += 1
+            XCTAssertEqual(names.numberOfMatches(in: text, range: NSRange(text.startIndex..., in: text)), 0,
+                           "F1 help: “\(text)” names a key in English; Apple's glyph instead")
+        }
+        XCTAssertGreaterThan(found, 40, "the scanner finds the help's keys")
+        // The mini keyboard's caps: glyphs, letters, F-keys; its word caps go through `shownCap`
+        let keyboard = try String(contentsOf: sources.appendingPathComponent("MiniKeyboard.swift"), encoding: .utf8)
+        let caps = try NSRegularExpression(pattern: "Key\\(cap: \"([^\"]+)\"")
+        let mapped = ["space", "esc", "Tab"]
+        for match in caps.matches(in: keyboard, range: NSRange(keyboard.startIndex..., in: keyboard)) {
+            let cap = (keyboard as NSString).substring(with: match.range(at: 1))
+            let words = cap.filter(\.isLetter).count
+            XCTAssertTrue(words <= 1 || mapped.contains(cap), "mini keyboard: the cap “\(cap)” is a word")
+        }
+        for cap in mapped {
+            XCTAssertTrue(keyboard.contains("case \"\(cap)\":"), "mini keyboard: `shownCap` shows “\(cap)” as Apple does")
+        }
+        for language in languages {
+            XCTAssertNotNil(try table(language, "Localizable.strings")["Space"], "\(language): the space bar's name")
+        }
+    }
+
     /// Info.plist names exactly the languages there are.
     func testInfoPlistListsTheLanguages() throws {
         let plist = root.deletingLastPathComponent().appendingPathComponent("Info.plist")

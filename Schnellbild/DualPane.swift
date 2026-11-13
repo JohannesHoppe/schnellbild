@@ -245,13 +245,18 @@ final class WindowModel: ObservableObject {
         guard !textEditing, !panes.contains(where: { $0.slideshow != nil || $0.anySheetOpen }) else { return false }
         // ⇧F6 renames (the pane's), as in Total Commander
         if key == .f6, shift { return false }
-        let handled = dispatchWindowKey(key, command: command, control: control)
-        if handled { active.noteKeyPress(key, command: command) }   // the mini keyboard lights it up
+        let handled = dispatchWindowKey(key, command: command, control: control, shift: shift)
+        if handled { active.noteKeyPress(key, command: command, shift: shift) }   // the mini keyboard lights it up
         return handled
     }
 
-    private func dispatchWindowKey(_ key: BrowserModel.KeyInput, command: Bool, control: Bool) -> Bool {
+    private func dispatchWindowKey(_ key: BrowserModel.KeyInput, command: Bool, control: Bool, shift: Bool) -> Bool {
         switch key {
+        // ⇧⌘C / ⇧⌘M: F5 / F6 without fn on a Mac keyboard
+        case .char(let c) where command && shift && !control && c.lowercased() == "c" && dual:
+            return sendToOtherPane(how: .copy)
+        case .char(let c) where command && shift && !control && c.lowercased() == "m" && dual:
+            return sendToOtherPane(how: .move)
         case .char(let c) where !command && !control && c.lowercased() == "d":
             toggleDual(); return true
         case .char(let c) where control && !command && c.lowercased() == "o":

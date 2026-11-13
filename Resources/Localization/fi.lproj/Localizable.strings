@@ -1,17 +1,16 @@
 "Open Folder…" = "Avaa kansio…";
 "Go" = "Siirry";
-"Start Slideshow (S)" = "Aloita diaesitys (S)";
+"Start Slideshow" = "Aloita diaesitys";
 "Back" = "Takaisin";
 "Forward" = "Eteenpäin";
 "Enclosing Folder" = "Yläkansio";
 "Search" = "Etsi";
 "Actions" = "Toiminnot";
-"Rename… (F2)" = "Nimeä uudelleen… (F2)";
 "Reveal in Finder" = "Näytä Finderissa";
 "Open with Default App" = "Avaa oletusapilla";
 "Move to Trash…" = "Siirrä roskakoriin…";
-"Larger Thumbnails (⌘+)" = "Isommat miniatyyrit (⌘+)";
-"Smaller Thumbnails (⌘−)" = "Pienemmät miniatyyrit (⌘−)";
+"Larger Thumbnails" = "Isommat miniatyyrit";
+"Smaller Thumbnails" = "Pienemmät miniatyyrit";
 "Schnellbild Help" = "Schnellbild-ohje";
 "Rename…" = "Nimeä uudelleen…";
 "Open Folder" = "Avaa kansio";
@@ -166,13 +165,12 @@
 "New Folder" = "Uusi kansio";
 "Create" = "Luo";
 "New folder: type its name, ↩ creates it, Esc creates none" = "Uusi kansio: kirjoita nimi, ↩ luo sen, Esc ei luo mitään";
-"Mini Keyboard (K)" = "Mininäppäimistö (K)";
+"Mini Keyboard" = "Mininäppäimistö";
 /* Dual pane */
 "Dual Pane" = "Kaksi paneelia";
-"Dual Pane (D)" = "Kaksi paneelia (D)";
 "Dual pane: two folders side by side; Tab switches, F5 copies, F6 moves to the other (D, ⌃O)" = "Kaksi paneelia: kaksi kansiota rinnakkain; Tab vaihtaa, F5 kopioi, F6 siirtää toiseen (D, ⌃O)";
-"Copy to Other Pane (F5)" = "Kopioi toiseen paneeliin (F5)";
-"Move to Other Pane (F6)" = "Siirrä toiseen paneeliin (F6)";
+"Copy to Other Pane" = "Kopioi toiseen paneeliin";
+"Move to Other Pane" = "Siirrä toiseen paneeliin";
 "Other pane" = "Toinen paneeli";
 "Copy there" = "Kopioi sinne";
 "Move there" = "Siirrä sinne";
@@ -188,7 +186,7 @@
 "Dual pane on / off: two folders side by side" = "Kaksi paneelia päälle / pois: kaksi kansiota rinnakkain";
 "Switch to the other pane" = "Vaihda toiseen paneeliin";
 "Copy / move the marked items into the other pane's folder" = "Kopioi / siirrä merkityt kohteet toisen paneelin kansioon";
-"Mark / unmark an item" = "Merkitse kohde / poista merkintä";
+"Mark / unmark an item (M, Insert: then on to the next)" = "Merkitse kohde / poista merkintä (M ja Insert: ja siirry seuraavaan)";
 "Mark a range" = "Merkitse alue";
 "Mark all / unmark all" = "Merkitse kaikki / poista kaikki merkinnät";
 "Marked items onto a folder or into the other pane: moved (copied to another volume)" = "Merkityt kohteet kansion päälle tai toiseen paneeliin: siirretään (kopioidaan toiselle taltiolle)";
@@ -224,7 +222,7 @@
 "Quit When Done" = "Lopeta, kun valmis";
 "The name must end in “.%@”, as the archive does." = "Nimen on päätyttävä ”.%@”, kuten arkistolla.";
 "unknown error" = "tuntematon virhe";
-"⌘-click / Insert" = "⌘-osoitus / Insert";
+"⌘-click / M / Insert" = "⌘-osoitus / M / Insert";
 "⇧-click / ⇧ arrows" = "⇧-osoitus / ⇧ nuolet";
 "drag" = "vedä";
 "Schnellbild's own code is free software under the MIT License. The components below keep their own licenses." = "Schnellbildin oma koodi on vapaa ohjelmisto MIT-lisenssillä. Alla olevilla komponenteilla on omat lisenssinsä.";
@@ -325,3 +323,5 @@
 "Its format isn't known." = "Sen muoto on tuntematon.";
 "The file ends too early." = "Tiedosto päättyy liian aikaisin.";
 "Its data can't be decoded." = "Sen tietoja ei voi purkaa.";
+"Space" = "Välilyönti";
+"Rename (F6 too in a single pane)" = "Nimeä uudelleen (yhdessä paneelissa myös F6)";

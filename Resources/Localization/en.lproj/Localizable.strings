@@ -1,17 +1,16 @@
 "Open Folder…" = "Open Folder…";
 "Go" = "Go";
-"Start Slideshow (S)" = "Start Slideshow (S)";
+"Start Slideshow" = "Start Slideshow";
 "Back" = "Back";
 "Forward" = "Forward";
 "Enclosing Folder" = "Enclosing Folder";
 "Search" = "Search";
 "Actions" = "Actions";
-"Rename… (F2)" = "Rename… (F2)";
 "Reveal in Finder" = "Reveal in Finder";
 "Open with Default App" = "Open with Default App";
 "Move to Trash…" = "Move to Trash…";
-"Larger Thumbnails (⌘+)" = "Larger Thumbnails (⌘+)";
-"Smaller Thumbnails (⌘−)" = "Smaller Thumbnails (⌘−)";
+"Larger Thumbnails" = "Larger Thumbnails";
+"Smaller Thumbnails" = "Smaller Thumbnails";
 "Schnellbild Help" = "Schnellbild Help";
 "Rename…" = "Rename…";
 "Open Folder" = "Open Folder";
@@ -166,13 +165,12 @@
 "New Folder" = "New Folder";
 "Create" = "Create";
 "New folder: type its name, ↩ creates it, Esc creates none" = "New folder: type its name, ↩ creates it, Esc creates none";
-"Mini Keyboard (K)" = "Mini Keyboard (K)";
+"Mini Keyboard" = "Mini Keyboard";
 /* Dual pane */
 "Dual Pane" = "Dual Pane";
-"Dual Pane (D)" = "Dual Pane (D)";
 "Dual pane: two folders side by side; Tab switches, F5 copies, F6 moves to the other (D, ⌃O)" = "Dual pane: two folders side by side; Tab switches, F5 copies, F6 moves to the other (D, ⌃O)";
-"Copy to Other Pane (F5)" = "Copy to Other Pane (F5)";
-"Move to Other Pane (F6)" = "Move to Other Pane (F6)";
+"Copy to Other Pane" = "Copy to Other Pane";
+"Move to Other Pane" = "Move to Other Pane";
 "Other pane" = "Other pane";
 "Copy there" = "Copy there";
 "Move there" = "Move there";
@@ -188,7 +186,7 @@
 "Dual pane on / off: two folders side by side" = "Dual pane on / off: two folders side by side";
 "Switch to the other pane" = "Switch to the other pane";
 "Copy / move the marked items into the other pane's folder" = "Copy / move the marked items into the other pane's folder";
-"Mark / unmark an item" = "Mark / unmark an item";
+"Mark / unmark an item (M, Insert: then on to the next)" = "Mark / unmark an item (M, Insert: then on to the next)";
 "Mark a range" = "Mark a range";
 "Mark all / unmark all" = "Mark all / unmark all";
 "Marked items onto a folder or into the other pane: moved (copied to another volume)" = "Marked items onto a folder or into the other pane: moved (copied to another volume)";
@@ -224,7 +222,7 @@
 "Quit When Done" = "Quit When Done";
 "The name must end in “.%@”, as the archive does." = "The name must end in “.%@”, as the archive does.";
 "unknown error" = "unknown error";
-"⌘-click / Insert" = "⌘-click / Insert";
+"⌘-click / M / Insert" = "⌘-click / M / Insert";
 "⇧-click / ⇧ arrows" = "⇧-click / ⇧ arrows";
 "drag" = "drag";
 "Schnellbild's own code is free software under the MIT License. The components below keep their own licenses." = "Schnellbild's own code is free software under the MIT License. The components below keep their own licenses.";
@@ -325,3 +323,5 @@
 "Its format isn't known." = "Its format isn't known.";
 "The file ends too early." = "The file ends too early.";
 "Its data can't be decoded." = "Its data can't be decoded.";
+"Space" = "Space";
+"Rename (F6 too in a single pane)" = "Rename (F6 too in a single pane)";

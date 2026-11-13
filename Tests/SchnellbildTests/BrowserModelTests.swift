@@ -2269,6 +2269,10 @@ final class KeyBindingTests: XCTestCase {
             XCTAssertEqual(ContentView.keyInput(code: code, characters: ""), key, "keyCode \(code)")
         }
         XCTAssertEqual(ContentView.keyInput(code: 0, characters: "a"), .char("a"))
+        XCTAssertEqual(ContentView.keyInput(code: 46, characters: "m"), .char("m"), "M marks")
+        XCTAssertEqual(ContentView.keyInput(code: 8, characters: "C"), .char("C"), "⇧⌘C: the shifted letter, as ⌘ reads it")
+        XCTAssertEqual(ContentView.keyInput(code: 46, characters: "Ь", latin: { "M" }), .char("M"),
+                       "⇧⌘M on a Cyrillic layout")
         XCTAssertNil(ContentView.keyInput(code: 0, characters: ""))
         XCTAssertEqual(ContentView.keyInput(code: 1, characters: "ы", latin: { "s" }), .char("s"),
                        "a Cyrillic layout: the key read as on the Latin one")
