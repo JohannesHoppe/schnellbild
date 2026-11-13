@@ -6,10 +6,14 @@ its licence text; this finds them in the symbol table (nm) and reads the text
 each one loads from the disassembly (otool) of the arm64 slice. Prints the
 count per licence and every module that isn't LGPL.
 
-    vlckit_licenses.py <VLCKit binary> [--no-gpl]
+    vlckit_licenses.py <VLCKit binary> [--no-gpl] [--local-only]
 
 With --no-gpl it exits with 1 when any module states the GPL, or a licence
 can't be read (the build for the Mac App Store must have no GPL module).
+With --local-only it exits with 1 when any module Schnellbild leaves out
+(Scripts/build_vlckit_lgpl.sh: network access, stream output, discovery,
+playlists, stream filters that start programs or fetch, keystores …) is in
+the binary.
 """
 import collections
 import re
@@ -50,6 +54,29 @@ def licences(binary):
     return {module: texts.get(at, "unknown") for module, at in entries.items()}
 
 
+# Modules by their names in the binary (vlc_entry__<name>: the source's path
+# in VLC's modules/, "/" as "_"). Access modules: only these local ones.
+LOCAL_ACCESS = {
+    "access_attachment",     # attachment:// (fonts and pictures inside a Matroska file)
+    "access_idummy",         # vlc:// (nop, pause, quit)
+    "access_imem_access",    # imem://, VLCMedia(stream:) (libvlc_media_new_callbacks)
+    "access_libfilesystem",  # file://
+    "access_timecode",       # timecode:// (a generated clock)
+}
+UNNEEDED_PREFIXES = ("access_output_", "services_discovery_", "stream_out_chromecast_", "demux_adaptive_",
+                     "demux_playlist_", "keystore_", "stream_extractor_", "lua")
+UNNEEDED = {
+    "stream_out_libstream_out_standard", "demux_directory", "demux_nsc", "demux_demuxdump",
+    "stream_filter_decomp", "stream_filter_hds_libhds", "stream_filter_record", "misc_libsecuretransport",
+    "misc_gnutls", "meta_engine_folder", "video_output_flaschen", "audio_output_libafile",
+}
+
+
+def unneeded(module):
+    return ((module.startswith("access_") and module not in LOCAL_ACCESS)
+            or module.startswith(UNNEEDED_PREFIXES) or module in UNNEEDED or "chromecast" in module)
+
+
 def kind(text):
     if "Lesser General Public" in text:
         return "LGPL"
@@ -69,8 +96,13 @@ def main():
     for module, text in sorted(found.items()):
         if kind(text) != "LGPL":
             print(f"  {module}: {text}")
+    left_in = sorted(m for m in found if unneeded(m))
+    if left_in:
+        print(f"{len(left_in)} modules Schnellbild leaves out: " + ", ".join(left_in))
     if "--no-gpl" in sys.argv and (counts.get("GPL") or counts.get("unknown")):
         sys.exit(f"{counts.get('GPL', 0)} modules under the GPL, {counts.get('unknown', 0)} unknown")
+    if "--local-only" in sys.argv and left_in:
+        sys.exit(f"{len(left_in)} modules in it that Schnellbild leaves out")
 
 
 main()
