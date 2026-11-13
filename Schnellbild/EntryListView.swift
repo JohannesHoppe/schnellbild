@@ -7,6 +7,7 @@ import UniformTypeIdentifiers
 /// tiles (`EntryInteractions`); the files the app doesn't show follow, grey.
 struct EntryListView: View {
     @EnvironmentObject var model: BrowserModel
+    @Environment(\.colorSchemeContrast) private var contrast
 
     static let kindWidth: CGFloat = 90
     static let dateWidth: CGFloat = 150
@@ -83,10 +84,17 @@ struct EntryListView: View {
     // MARK: Rows
 
     private func row(_ entry: GridEntry, index: Int, filtering: Bool) -> some View {
-        let selected = model.selection == index || model.isMarked(entry)
+        // The cursor's row is filled; a marked one tinted, with a checkmark
+        let cursor = model.selection == index
+        let marked = model.isMarked(entry)
         let location = filtering ? model.relativeLocation(of: entry) : nil
         return HStack(spacing: 8) {
             HStack(spacing: 8) {
+                Image(systemName: "checkmark.circle.fill")
+                    .symbolRenderingMode(.palette)
+                    .foregroundStyle(cursor ? Color.accentColor : .white, cursor ? Color.white : Color.accentColor)
+                    .opacity(marked ? 1 : 0)
+                    .frame(width: 14)
                 preview(entry).frame(width: Self.previewSide, height: Self.previewSide)
                 VStack(alignment: .leading, spacing: 1) {
                     Text(entry.name).lineLimit(1).truncationMode(.middle)
@@ -102,10 +110,12 @@ struct EntryListView: View {
             Text(size(of: entry)).monospacedDigit().frame(width: Self.sizeWidth, alignment: .trailing)
         }
         .font(.callout)
-        .foregroundStyle(selected ? Color.white : (model.isEmptyFolder(entry) ? Color.secondary : Color.primary))
+        .foregroundStyle(cursor ? Color.white : (model.isEmptyFolder(entry) && !marked ? Color.secondary : Color.primary))
         .padding(.horizontal, 12)
         .padding(.vertical, 3)
-        .background(selected ? Color.accentColor : (index % 2 == 1 ? Color.primary.opacity(0.04) : Color.clear))
+        .background(cursor ? Color.accentColor
+                    : marked ? Color.accentColor.opacity(contrast == .increased ? 0.45 : 0.25)
+                    : (index % 2 == 1 ? Color.primary.opacity(contrast == .increased ? 0.1 : 0.04) : Color.clear))
         .contentShape(Rectangle())
         .modifier(EntryInteractions(entry: entry))
         .onAppear { if entry.isMedia { model.wantCaptureDate(of: entry.url) } }
@@ -118,9 +128,9 @@ struct EntryListView: View {
         }
         .id(entry.id)
         .accessibilityElement(children: .ignore)
+        .modifier(EntryAccessibility(entry: entry, selected: cursor || marked, location: location))
+        .accessibilityValue(TileChrome.spokenState(marked: marked))
         .accessibilityIdentifier("row.\(entry.name)")
-        // (spoken, so translated; the UI tests find rows by their identifier)
-        .accessibilityLabel((selected ? String(localized: "selected") : String(localized: "not selected")) + ", " + entry.name)
     }
 
     private func otherRow(_ file: OtherFile) -> some View {

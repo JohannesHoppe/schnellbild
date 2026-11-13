@@ -5,6 +5,7 @@ import UniformTypeIdentifiers
 /// folders first, then images/videos.
 struct ThumbnailGridView: View {
     @EnvironmentObject var model: BrowserModel
+    @Environment(\.colorSchemeContrast) private var contrast
 
     private let spacing: CGFloat = 12
     private let padding: CGFloat = 16
@@ -65,19 +66,23 @@ struct ThumbnailGridView: View {
     }
 
     private func cell(entry: GridEntry, index: Int, side: CGFloat, filtering: Bool) -> some View {
-        // The selection, and every marked item (⌘ / ⇧ / Insert), carry the ring
-        let selected = model.selection == index || model.isMarked(entry)
+        // The cursor has the ring; marked items (⌘ / ⇧ / Insert) a tint and a checkmark
+        let cursor = model.selection == index
+        let marked = model.isMarked(entry)
         let location = filtering ? model.relativeLocation(of: entry) : nil
         return VStack(spacing: 2) {
-            tile(for: entry, side: side, selected: selected)
+            tile(for: entry, side: side, cursor: cursor, marked: marked)
+                .modifier(EntryAccessibility(entry: entry, selected: cursor || marked, location: location))
                 .accessibilityIdentifier("tile.\(entry.name)")
+            // VoiceOver reads the tile (name and kind); the UI tests find the names
             Text(entry.name)
                 .font(.caption2)
                 .lineLimit(1)
                 .truncationMode(.middle)
                 .frame(width: side)
-                .foregroundStyle(selected ? .primary : .secondary)
-                .opacity(model.isEmptyFolder(entry) ? 0.5 : 1)
+                .foregroundStyle(cursor || marked ? .primary : .secondary)
+                .opacity(model.isEmptyFolder(entry) ? (contrast == .increased ? 0.8 : 0.5) : 1)
+                .accessibilityHidden(!VideoDetailView.uiTesting)
             if let location {
                 // Search results from subfolders: where they live.
                 Text(location)
@@ -86,6 +91,7 @@ struct ThumbnailGridView: View {
                     .truncationMode(.head)
                     .frame(width: side)
                     .foregroundStyle(.tertiary)
+                    .accessibilityHidden(!VideoDetailView.uiTesting)
             }
         }
         .contentShape(Rectangle())
@@ -94,24 +100,65 @@ struct ThumbnailGridView: View {
     }
 
     @ViewBuilder
-    func tile(for entry: GridEntry, side: CGFloat, selected: Bool) -> some View {
+    func tile(for entry: GridEntry, side: CGFloat, cursor: Bool, marked: Bool) -> some View {
         switch entry.kind {
         case .parent:
-            FolderTile(folder: nil, side: side, isSelected: selected, systemImage: "arrow.up.circle.fill")
+            FolderTile(folder: nil, side: side, isSelected: cursor, isMarked: marked, systemImage: "arrow.up.circle.fill")
         case .folder:
             let archive = entry.isArchive
             if let drive = FolderTile.driveImage(entry.url) {
-                FolderTile(folder: entry.url, side: side, isSelected: selected, systemImage: drive,
+                FolderTile(folder: entry.url, side: side, isSelected: cursor, isMarked: marked, systemImage: drive,
                            kindLabel: "drive", previews: false)
             } else {
-                FolderTile(folder: entry.url, side: side, isSelected: selected,
+                FolderTile(folder: entry.url, side: side, isSelected: cursor, isMarked: marked,
                            systemImage: archive ? "archivebox.fill" : "folder.fill",
                            isEmpty: model.isEmptyFolder(entry), kindLabel: archive ? "archive" : "folder")
             }
         case .image, .video:
-            ThumbnailView(url: entry.url, side: side, isSelected: selected, isVideo: entry.kind == .video,
+            ThumbnailView(url: entry.url, side: side, isSelected: cursor, isMarked: marked, isVideo: entry.kind == .video,
                           modified: entry.modDate)
         }
+    }
+}
+
+/// A tile or a list row as one element for VoiceOver: "name, kind" (and
+/// where a search found it), selected or marked as the trait, Open as an
+/// action.
+struct EntryAccessibility: ViewModifier {
+    let entry: GridEntry
+    let selected: Bool
+    var location: String? = nil
+    @EnvironmentObject var model: BrowserModel
+
+    /// "a.jpg, Picture", "album, Folder without pictures or videos".
+    static func label(_ entry: GridEntry, emptyFolder: Bool, location: String?) -> String {
+        let kind: String
+        switch entry.kind {
+        case .parent: return String(localized: "Enclosing Folder")
+        case .folder:
+            if FolderTile.driveImage(entry.url) != nil {
+                kind = String(localized: "Drive")
+            } else if entry.isArchive {
+                kind = emptyFolder ? String(localized: "Archive without pictures or videos") : String(localized: "Archive")
+            } else {
+                kind = emptyFolder ? String(localized: "Folder without pictures or videos") : String(localized: "Folder")
+            }
+        case .image: kind = String(localized: "Picture")
+        case .video: kind = String(localized: "Video")
+        }
+        return [entry.name, kind, location.map { String(localized: "in \($0)") }].compactMap { $0 }.joined(separator: ", ")
+    }
+
+    func body(content: Content) -> some View {
+        content
+            .accessibilityLabel(Self.label(entry, emptyFolder: model.isEmptyFolder(entry), location: location))
+            .accessibilityAddTraits(selected ? .isSelected : [])
+            .accessibilityAction { model.click(entry, command: false, shift: false) }
+            .accessibilityAction(named: Text("Open")) {
+                model.searchFocused = false
+                guard model.select(entry) else { return }
+                model.activateSelection()
+            }
     }
 }
 
@@ -122,11 +169,14 @@ struct FolderTile: View {
     /// nil for the ".." tile (no previews).
     let folder: URL?
     let side: CGFloat
+    /// The cursor is on it (the ring).
     let isSelected: Bool
+    /// Marked: tinted, with a checkmark.
+    var isMarked = false
     var systemImage: String = "folder.fill"
     /// Nothing below it is a photo or video: drawn greyed out.
     var isEmpty = false
-    /// What the accessibility label calls it ("folder", "archive", "drive").
+    /// What the UI tests' state calls it ("folder", "archive", "drive").
     var kindLabel = "folder"
     /// A drive on the drives' level: its icon, nothing read from it (a
     /// network share would be walked for a preview).
@@ -146,13 +196,15 @@ struct FolderTile: View {
         (try? URL(fileURLWithPath: "/").resourceValues(forKeys: [.volumeNameKey]))?.volumeName
 
     @EnvironmentObject var model: BrowserModel
+    @Environment(\.colorSchemeContrast) private var contrast
     @State private var previewImages: [NSImage]
 
-    init(folder: URL?, side: CGFloat, isSelected: Bool, systemImage: String = "folder.fill",
+    init(folder: URL?, side: CGFloat, isSelected: Bool, isMarked: Bool = false, systemImage: String = "folder.fill",
          isEmpty: Bool = false, kindLabel: String = "folder", previews: Bool = true) {
         self.folder = folder
         self.side = side
         self.isSelected = isSelected
+        self.isMarked = isMarked
         self.systemImage = systemImage
         self.isEmpty = isEmpty
         self.kindLabel = kindLabel
@@ -172,10 +224,14 @@ struct FolderTile: View {
             if !previewImages.isEmpty { fan }
         }
         .saturation(isEmpty ? 0 : 1)
-        .opacity(isEmpty ? 0.4 : 1)
-        .tileChrome(side: side, isSelected: isSelected)
+        .opacity(isEmpty ? (contrast == .increased ? 0.7 : 0.4) : 1)
+        .tileChrome(side: side, isSelected: isSelected, isMarked: isMarked)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("\(TileChrome.selectionLabel(isSelected)), \(folder == nil ? "parent folder" : isEmpty ? "empty \(kindLabel)" : kindLabel), \(previewImages.count) previews")
+        // The label ("name, kind") comes from the grid's cell; the UI tests
+        // read the tile's state here
+        .accessibilityValue(VideoDetailView.uiTesting
+            ? "\(TileChrome.selectionLabel(isSelected || isMarked)), \(folder == nil ? "parent folder" : isEmpty ? "empty \(kindLabel)" : kindLabel), \(previewImages.count) previews"
+            : TileChrome.spokenState(marked: isMarked))
         // Again after a change made inside the folder (trash, rename): what
         // it previews may have gone.
         .task(id: FolderKey(folder: folder, changes: model.folderChanges)) { await loadPreviews() }
