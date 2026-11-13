@@ -1,0 +1,22 @@
+{
+  "name": "Schnellbild",
+  "short_name": "Schnellbild",
+  "description": "Fast, free photo and video viewer for Mac: thumbnails, paging by keyboard, MKV, AVI and WebM, ZIP and RAR as folders. A Phiewer and IINA alternative.",
+  "lang": "en",
+  "start_url": "/",
+  "display": "browser",
+  "theme_color": "#fbfbfd",
+  "background_color": "#fbfbfd",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
