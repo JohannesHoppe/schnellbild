@@ -10,6 +10,8 @@
 
 <p align="center"><b>An image &amp; video viewer for macOS that just doesn't suck.</b></p>
 
+<p align="center"><a href="https://schnellbild.haushoppe-its.de/">schnellbild.haushoppe-its.de</a></p>
+
 <!-- Demo: record per docs/launch-storyboard.md, save as docs/demo.gif, then
      uncomment the next line:
 <p align="center"><img src="docs/demo.gif" width="680" alt="Schnellbild in action"></p>

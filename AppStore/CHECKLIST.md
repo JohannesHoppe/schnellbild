@@ -12,7 +12,7 @@ One app, two ways out: free as the DMG on GitHub Releases, and for 1 € in the 
 - [x] About window and THIRD-PARTY-NOTICES.md describe the VLCKit build and offer its source.
 - [x] EULA draft: `AppStore/EULA.md`.
 - [x] Store texts in German and English (name, subtitle, promotional text, description, keywords, review notes): `AppStore/metadata/`, put into App Store Connect by `Scripts/appstore_connect.swift` (`appstore.yml -f metadata=true`).
-- [x] Privacy policy: `PRIVACY.md` (URL: https://github.com/JohannesHoppe/schnellbild/blob/main/PRIVACY.md).
+- [x] Privacy policy: on the website, per language (https://schnellbild.haushoppe-its.de/privacy/, https://schnellbild.haushoppe-its.de/de/datenschutz/).
 - [x] Screenshots, 2880 × 1800: `AppStore/screenshots/de` and `en` (made by `Scripts/make_store_screenshots.swift` from `docs/screenshots`).
 
 ## For Johannes (Apple Developer account, App Store Connect)
