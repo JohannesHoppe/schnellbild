@@ -1,0 +1,28 @@
+Schnellbild zeigt Bilder und Videos, ohne dass du etwas importieren musst: Ordner öffnen, Vorschaubilder sehen, ein Bild groß ansehen, mit der Tastatur weiterblättern. Es bleibt schnell, auch bei großen Ordnern und auf Netzlaufwerken.
+
+DIESE VERSION UNTERSTÜTZT DAS PROJEKT
+Schnellbild ist Open Source und als Download auf GitHub kostenlos. Diese Version ist dieselbe App. Wer sie hier kauft, unterstützt die Weiterentwicklung. Danke!
+
+BILDER
+• JPEG, HEIC, AVIF, JPEG XL, PNG, GIF, WebP, TIFF, PSD, OpenEXR, SVG, PDF und RAW-Fotos der Kameras, die macOS kennt
+• Raster, Liste und Vollansicht, Diashow durch alle Unterordner
+• Zoomen, drehen, automatisch verbessern (Belichtung, Kontrast, Sättigung, Schärfe), nur für die Ansicht: deine Dateien bleiben, wie sie sind
+• Datei-Info mit Format, Codecs und Bitrate; ein Hinweis, wenn die Dateiendung nicht zum Inhalt passt
+
+VIDEOS
+• MP4 und MOV, dazu die Formate, die macOS nicht abspielt: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-Video, AVCHD
+• Mit den Pfeiltasten durch Videos springen, so wie durch Fotos blättern
+
+ARCHIVE WIE ORDNER
+• ZIP, RAR und 7z öffnen sich wie Ordner, Comics (CBZ, CBR) eingeschlossen, auch mit Passwort und in mehreren Teilen
+• Nichts wird auf die Festplatte entpackt; Videos spielen direkt aus dem Archiv
+
+SORTIEREN WIE IM NORTON COMMANDER
+• Zwei Bereiche nebeneinander: markieren, mit F5 kopieren, mit F6 verschieben
+• Umbenennen, neuer Ordner, Papierkorb, Lesezeichen, Rückgängig
+• Suche über Ordner- und Dateinamen in allen Unterordnern
+
+SICHER BEI FREMDEN DATEIEN
+Schnellbild läuft in Apples App Sandbox: kein Netzwerk, keine anderen Programme, nur die Ordner, die du freigibst. Archive werden nur gelesen, und ein „Video“ kann die App nicht ins Internet schicken.
+
+Alle Tasten auf einen Blick mit F1, eine klickbare Mini-Tastatur mit K. In 20 Sprachen.

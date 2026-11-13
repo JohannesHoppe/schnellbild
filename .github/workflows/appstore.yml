@@ -3,10 +3,12 @@
 # package. Signed when the App Store secrets are there (APPSTORE_APP_P12,
 # APPSTORE_INSTALLER_P12, APPSTORE_CERT_PASSWORD, APPSTORE_PROFILE_APP,
 # APPSTORE_PROFILE_THUMBNAILS, APPSTORE_PROFILE_FORMATREADER in the environment
-# "release"), else ad hoc and
-# unsigned, as a dry run. The package is an artifact; with "upload" it also
-# goes to App Store Connect with the API key the DMG is notarized with
-# (NOTARY_KEY_*), where it shows as a build of its version (docs/SIGNING.md).
+# "release"), else ad hoc and unsigned, as a dry run. The package is an
+# artifact; with "upload" it also goes to App Store Connect with the API key the
+# DMG is notarized with (NOTARY_KEY_*), where it shows as a build of its version.
+# With "metadata" Scripts/appstore_connect.swift puts AppStore/metadata and the
+# screenshots into the version (and with "upload" picks the build); it uses an
+# App Manager key (APPSTORE_API_KEY_P8 / _ID) if there is one (docs/SIGNING.md).
 name: App Store
 
 on:
@@ -16,6 +18,10 @@ on:
         description: "Upload the signed package to App Store Connect (TestFlight / review)"
         type: boolean
         default: false
+      metadata:
+        description: "Put texts and screenshots (AppStore/metadata) into App Store Connect; with upload also pick the build"
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -23,6 +29,7 @@ permissions:
 jobs:
   package:
     name: App Store build and package
+    if: inputs.upload || !inputs.metadata
     runs-on: macos-15
     # The certificates and profiles are secrets of the environment "release"
     # (only main and tags v*), like the Developer ID's.
@@ -87,3 +94,30 @@ jobs:
           name: appstore-package
           path: build/Schnellbild.pkg
           if-no-files-found: error
+
+  metadata:
+    name: Texts and screenshots to App Store Connect
+    needs: package
+    if: always() && inputs.metadata && (needs.package.result == 'success' || needs.package.result == 'skipped')
+    runs-on: macos-15
+    environment: release
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: Texts, screenshots, URLs, categories, review notes${{ inputs.upload && ', build' || '' }}
+        env:
+          # An App Manager key if there is one, else the notarization key.
+          P8: ${{ secrets.APPSTORE_API_KEY_P8 || secrets.NOTARY_KEY_P8 }}
+          ASC_KEY_ID: ${{ secrets.APPSTORE_API_KEY_ID || secrets.NOTARY_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.NOTARY_ISSUER_ID }}
+          ASC_REVIEW_CONTACT: ${{ secrets.APPSTORE_REVIEW_CONTACT }}
+          PICK_BUILD: ${{ inputs.upload }}
+        run: |
+          export ASC_KEY_PATH="$RUNNER_TEMP/asc.p8"
+          (umask 077; printf '%s\n' "$P8" > "$ASC_KEY_PATH")
+          if [ "$PICK_BUILD" = true ]; then
+            swift Scripts/appstore_connect.swift metadata --build
+          else
+            swift Scripts/appstore_connect.swift metadata
+          fi
+          rm -f "$ASC_KEY_PATH"

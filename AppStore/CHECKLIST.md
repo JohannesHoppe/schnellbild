@@ -11,7 +11,7 @@ One app, two ways out: free as the DMG on GitHub Releases, and for 1 € in the 
 - [x] App Store signing and installer package: `Scripts/sign_app.sh`, `Scripts/package_appstore.sh`, workflow `appstore.yml`.
 - [x] About window and THIRD-PARTY-NOTICES.md describe the VLCKit build and offer its source.
 - [x] EULA draft: `AppStore/EULA.md`.
-- [x] Store texts in German and English (name, subtitle, promotional text, description, keywords, review notes): `AppStore/METADATA.md`.
+- [x] Store texts in German and English (name, subtitle, promotional text, description, keywords, review notes): `AppStore/metadata/`, put into App Store Connect by `Scripts/appstore_connect.swift` (`appstore.yml -f metadata=true`).
 - [x] Privacy policy: `PRIVACY.md` (URL: https://github.com/JohannesHoppe/schnellbild/blob/main/PRIVACY.md).
 - [x] Screenshots, 2880 × 1800: `AppStore/screenshots/de` and `en` (made by `Scripts/make_store_screenshots.swift` from `docs/screenshots`).
 
@@ -25,7 +25,7 @@ Steps 1–5 are done (2026-11-13; the signed package builds). How to make the ce
 4. [x] **Provisioning profiles**, type "Mac App Store Connect", one per App ID.
 5. [x] **GitHub secrets** in the environment `release` (`Scripts/set_signing_secrets.sh appstore …`); `appstore.yml` builds the signed package (artifact `appstore-package`).
 6. **App record** in App Store Connect: name (Schnellbild, if free), primary language, bundle ID `art.haushoppe.schnellbild`, SKU, category Photography, price (e.g. tier for 0.99 €/1 €).
-7. **Metadata:** paste from `AppStore/METADATA.md` (German and English), upload `AppStore/screenshots`, privacy policy URL as above, App Privacy: "Data Not Collected", age rating 4+.
+7. **Metadata:** `gh workflow run appstore.yml -f metadata=true` (texts in both languages, screenshots, URLs, categories, copyright, review notes). By hand, once: App Privacy "Data Not Collected", age rating 4+, price, review contact.
 8. **License agreement:** fill in the address in `AppStore/EULA.md`, have it checked, paste it as custom EULA.
 9. **Upload:** `gh workflow run appstore.yml -f upload=true` (the version in App Store Connect must equal the app's, e.g. 0.9.0; every upload needs a higher build number, `CURRENT_PROJECT_VERSION` / `CFBundleVersion`), then pick the build in App Store Connect; first TestFlight, then submit for review. Review notes: the app reads only folders the user chooses; no account, no network.
 
