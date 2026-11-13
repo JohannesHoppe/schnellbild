@@ -630,15 +630,31 @@ struct NameMatcher: Equatable, @unchecked Sendable {
     /// A regular expression that compiles (the other modes always are).
     nonisolated var isValid: Bool { mode != .regex || expression != nil }
 
-    nonisolated func matches(_ name: String) -> Bool {
+    /// How long an expression may try one name: one that backtracks without
+    /// end ("(a|a)*b") counts as no match after this, and so does every
+    /// name once `stop` says the search is over.
+    nonisolated static let regexTimeLimit: TimeInterval = 0.05
+
+    nonisolated func matches(_ name: String, stop: WalkStop? = nil) -> Bool {
         switch mode {
         case .ignoringCase: return name.range(of: query, options: .caseInsensitive, locale: nil) != nil
         case .matchingCase: return name.range(of: query, options: .literal) != nil
         case .regex:
-            guard let expression else { return false }
-            return expression.firstMatch(in: name, range: NSRange(name.startIndex..., in: name)) != nil
+            guard let expression, stop?.isSet != true else { return false }
+            // ICU calls back now and then during a long match (`reportProgress`)
+            var found = false
+            let deadline = Date(timeIntervalSinceNow: Self.regexTimeLimit)
+            expression.enumerateMatches(in: name, options: .reportProgress, range: NSRange(name.startIndex..., in: name)) { match, _, halt in
+                if match != nil { found = true; halt.pointee = true }
+                else if stop?.isSet == true || Date() > deadline { halt.pointee = true }
+            }
+            return found
         }
     }
+
+    /// Whether matching may take a while (a regular expression): then the
+    /// folder's own items are matched off the main thread too.
+    nonisolated var isCostly: Bool { mode == .regex }
 
     nonisolated static func == (a: NameMatcher, b: NameMatcher) -> Bool { a.query == b.query && a.mode == b.mode }
 }
@@ -1963,9 +1979,11 @@ final class BrowserModel: ObservableObject {
             return
         }
         mode = .grid
-        let local = allEntries.filter {
-            $0.kind != .parent && matcher.matches($0.name)
-        }
+        // The folder's own items at once; with a regular expression (which
+        // can take long on a name) off the main thread, first thing in the task
+        let candidates = allEntries.filter { $0.kind != .parent }
+        let costly = matcher.isCostly && matcher.isValid
+        let local = costly ? [] : candidates.filter { matcher.matches($0.name) }
         let run = SearchRun(matcher: matcher, root: folderURL, results: local)
         search = run
         showResults()
@@ -1976,6 +1994,11 @@ final class BrowserModel: ObservableObject {
         let debounce = searchDebounce
         let clock = run.clock
         run.task = Task { [weak self, weak run] in
+            if costly, !candidates.isEmpty {
+                let found = await Self.matching(candidates, matcher)
+                guard let self, let run, !Task.isCancelled else { return }
+                self.add(SearchBatch(stamp: 0, entries: found), to: run)
+            }
             if debounce > .zero { try? await Task.sleep(for: debounce) }
             guard !Task.isCancelled else { return }
             for await batch in Self.recursiveMatches(under: root, matching: matcher, clock: clock) {
@@ -1986,6 +2009,16 @@ final class BrowserModel: ObservableObject {
             run.finished = true
             if run === self.search { self.isSearching = false }
         }
+    }
+
+    /// The entries whose names `matcher` matches, worked out on a dispatch
+    /// thread (an expression may take its time on each name); cancelling
+    /// the caller stops it.
+    nonisolated static func matching(_ entries: [GridEntry], _ matcher: NameMatcher) async -> [GridEntry] {
+        let stop = WalkStop()
+        return await withTaskCancellationHandler {
+            await Blocking.run { entries.filter { matcher.matches($0.name, stop: stop) } }
+        } onCancel: { stop.set() }
     }
 
     /// The search on screen goes: it keeps running if the history holds
@@ -2109,7 +2142,7 @@ final class BrowserModel: ObservableObject {
                            (try? url.resourceValues(forKeys: [.isDirectoryKey]))?.isDirectory == true {
                             ArchivePath.noteFolder(url)
                         }
-                        if matcher.matches(url.lastPathComponent),
+                        if matcher.matches(url.lastPathComponent, stop: stop),
                            let match = entry(for: url, keys: keys) {
                             batch.entries.append(match)
                             if match.kind == .folder, !match.isArchive { facts.found(folder: match.url) }
@@ -2999,7 +3032,7 @@ final class BrowserModel: ObservableObject {
             Task { [weak self, weak run] in
                 if shallow {
                     let stamp = clock.now
-                    let found = await Self.scan(folder).filter { $0.kind != .parent && matcher.matches($0.name) }
+                    let found = await Self.matching(Self.scan(folder).filter { $0.kind != .parent }, matcher)
                     guard let self, let run else { return }
                     self.add(SearchBatch(stamp: stamp, entries: found), to: run)
                 } else {
