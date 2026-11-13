@@ -1830,32 +1830,13 @@ final class BrowserModel: ObservableObject {
     }
 
     /// When a photo or video was taken: EXIF DateTimeOriginal for images
-    /// (only the header is read), the QuickTime creation date for videos.
+    /// (only the header is read, on a dispatch thread: it waits on the
+    /// disk), the QuickTime creation date for videos.
     nonisolated static func captureDate(of url: URL) async -> Date? {
         guard !ArchivePath.isInside(url) else { return nil }   // not unpacked for sorting
         switch mediaKind(of: url) {
         case .image:
-            guard let source = CGImageSourceCreateWithURL(url as CFURL, nil),
-                  let props = CGImageSourceCopyPropertiesAtIndex(
-                      source, 0, [kCGImageSourceShouldCache: false] as CFDictionary) as? [CFString: Any]
-            else { return nil }
-            let exif = props[kCGImagePropertyExifDictionary] as? [CFString: Any]
-            let tiff = props[kCGImagePropertyTIFFDictionary] as? [CFString: Any]
-            // The first date that is one: a camera whose clock was never set
-            // writes "0000:00:00 00:00:00" (or blanks), which the lenient
-            // parser would turn into the year 2
-            let candidates: [(text: String?, offset: String?)] = [
-                (exif?[kCGImagePropertyExifDateTimeOriginal] as? String, exif?[kCGImagePropertyExifOffsetTimeOriginal] as? String),
-                (exif?[kCGImagePropertyExifDateTimeDigitized] as? String, exif?[kCGImagePropertyExifOffsetTimeDigitized] as? String),
-                (tiff?[kCGImagePropertyTIFFDateTime] as? String, nil)
-            ]
-            for case let (text?, offset) in candidates {
-                // With the camera's offset from UTC when it wrote one (as video
-                // dates are), else in the Mac's time zone
-                let date = offset.flatMap { exifOffsetDateFormatter.date(from: text + $0) } ?? exifDateFormatter.date(from: text)
-                if let date, Calendar(identifier: .gregorian).component(.year, from: date) >= 1900 { return date }
-            }
-            return nil
+            return await Blocking.run(.utility) { pictureDate(of: url) }
         case .video:
             let asset = AVURLAsset(url: url)
             guard let item = try? await asset.load(.creationDate) else { return nil }
@@ -1863,6 +1844,31 @@ final class BrowserModel: ObservableObject {
         default:
             return nil
         }
+    }
+
+    /// A picture's capture date, from its header.
+    nonisolated private static func pictureDate(of url: URL) -> Date? {
+        guard let source = CGImageSourceCreateWithURL(url as CFURL, nil),
+              let props = CGImageSourceCopyPropertiesAtIndex(
+                  source, 0, [kCGImageSourceShouldCache: false] as CFDictionary) as? [CFString: Any]
+        else { return nil }
+        let exif = props[kCGImagePropertyExifDictionary] as? [CFString: Any]
+        let tiff = props[kCGImagePropertyTIFFDictionary] as? [CFString: Any]
+        // The first date that is one: a camera whose clock was never set
+        // writes "0000:00:00 00:00:00" (or blanks), which the lenient
+        // parser would turn into the year 2
+        let candidates: [(text: String?, offset: String?)] = [
+            (exif?[kCGImagePropertyExifDateTimeOriginal] as? String, exif?[kCGImagePropertyExifOffsetTimeOriginal] as? String),
+            (exif?[kCGImagePropertyExifDateTimeDigitized] as? String, exif?[kCGImagePropertyExifOffsetTimeDigitized] as? String),
+            (tiff?[kCGImagePropertyTIFFDateTime] as? String, nil)
+        ]
+        for case let (text?, offset) in candidates {
+            // With the camera's offset from UTC when it wrote one (as video
+            // dates are), else in the Mac's time zone
+            let date = offset.flatMap { exifOffsetDateFormatter.date(from: text + $0) } ?? exifDateFormatter.date(from: text)
+            if let date, Calendar(identifier: .gregorian).component(.year, from: date) >= 1900 { return date }
+        }
+        return nil
     }
 
     /// EXIF dates: "2024:07:14 18:32:05", in the camera's local time.
@@ -2067,7 +2073,7 @@ final class BrowserModel: ObservableObject {
             return AsyncStream { continuation in
                 let task = Task.detached(priority: .userInitiated) {
                     let stamp = clock?.now ?? 0
-                    if ArchivePath.splitChecked(root) != nil,
+                    if await Blocking.run(.userInitiated, { ArchivePath.splitChecked(root) != nil }),
                        let found = try? await ArchiveStore.shared.matches(below: root, matching: matcher), !found.isEmpty {
                         continuation.yield(SearchBatch(stamp: stamp, entries: found))
                     }

@@ -215,10 +215,12 @@ struct FolderTile: View {
         let loaded = await withTaskGroup(of: (Int, NSImage?).self) { group in
             for (i, file) in files.enumerated() {
                 group.addTask {
-                    // The date the listing read along (no extra trip): a
-                    // picture replaced under the same name gets a new preview
-                    let modified = ArchivePath.isInside(file) ? nil
-                        : (try? file.resourceValues(forKeys: [.contentModificationDateKey]))?.contentModificationDate
+                    // The date the listing read along (usually no extra trip;
+                    // else one, on a dispatch thread): a picture replaced
+                    // under the same name gets a new preview
+                    let modified = ArchivePath.isInside(file) ? nil : await Blocking.run(.utility) {
+                        (try? file.resourceValues(forKeys: [.contentModificationDateKey]))?.contentModificationDate
+                    }
                     return (i, await ThumbnailCache.previews.thumbnail(for: file, side: thumbSide, modified: modified))
                 }
             }
