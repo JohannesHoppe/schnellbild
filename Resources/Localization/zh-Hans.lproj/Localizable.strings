@@ -314,3 +314,4 @@
 "Forget Folder Access" = "忘记文件夹访问";
 "Each folder asks for your permission again." = "每个文件夹都会再次请求你的允许。";
 "© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later. Built from its source without VLC's modules under the GPL; the build script and its changes are in Schnellbild's repository (github.com/JohannesHoppe/schnellbild)." = "© VideoLAN 和 VLC 作者。GNU Lesser General Public License 2.1 或更高版本。从源代码构建，不含 GPL 授权的 VLC 模块；构建脚本及其更改位于 Schnellbild 的代码仓库（github.com/JohannesHoppe/schnellbild）。";
+"The other pane shows search results. Clear its search to copy or move into its folder." = "另一个窗格显示的是搜索结果。要拷贝或移动到其文件夹，请先清除其搜索。";
