@@ -174,10 +174,10 @@ private struct MiniKeyButton: View {
             guard let press, Date().timeIntervalSince(press.at) < 0.5,
                   press.matches(key.input, command: key.command, shift: key.shift, option: key.option) else { return }
             presses += 1
-            withAnimation(.easeOut(duration: 0.08)) { lit = true }
+            withAnimation(Motion.animation(.easeOut(duration: 0.08))) { lit = true }
             Task { @MainActor in
                 try? await Task.sleep(for: .milliseconds(350))
-                withAnimation(.easeIn(duration: 0.2)) { lit = false }
+                withAnimation(Motion.animation(.easeIn(duration: 0.2))) { lit = false }
             }
         }
     }

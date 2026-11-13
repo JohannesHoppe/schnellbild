@@ -3,6 +3,16 @@ import AppKit
 import ImageIO
 import VLCFrames
 
+/// The app's movements (scrolling to the selection, the mini keyboard
+/// sliding in, a key lighting up, panning a zoomed picture): none while the
+/// user asks for less motion (System Settings → Accessibility → Display →
+/// Reduce motion); then things simply are where they go.
+enum Motion {
+    static var reduced: Bool { NSWorkspace.shared.accessibilityDisplayShouldReduceMotion }
+
+    static func animation(_ animation: Animation) -> Animation? { reduced ? nil : animation }
+}
+
 /// Runs `work` off the main actor; cancelling the caller cancels it too, so
 /// what it awaits (an archive read) stops, and it can skip what is left.
 func detachedCancellable<T: Sendable>(priority: TaskPriority, _ work: @escaping @Sendable () async -> T) async -> T {

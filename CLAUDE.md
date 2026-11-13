@@ -157,7 +157,7 @@ There is **no Xcode project for the app build**; `xcodegen` generates
   `stop()` stops the player off the main thread (VLC waits for its reading
   thread, long on a stalled share). A video VLC plays without a known
   length (`playsWithoutLength`) is not skipped by the slideshow.
-- **`MediaExtras.swift`** — `detachedCancellable`, `InspectorView`,
+- **`MediaExtras.swift`** — `detachedCancellable`, `Motion` (every animated movement goes through it: none with Reduce motion), `InspectorView`,
   `MediaInfo`, `LoadingSpinner`.
 - **`.ts` files:** `BrowserModel.mediaKind` takes the extension, except `.ts` (TypeScript far more often than video): `TransportStreams.isVideo` reads its first 512 bytes once (`VLCSafety.container` says transport stream) and keeps the answer by path, size and date. Inside archives `.ts` is never a video (no first bytes without unpacking).
 - **`FileFacts.swift`** — what the Inspector shows beyond name and size. `FileFacts.picture` (ImageIO's type of the content, bit depth, colour profile, camera) and `FileFacts.video` (the container its first 512 bytes show, through `VLCSafety.container`, so the note and VLC's choice of reader agree); `recommendedExtension` is set when the extension names another format than the content (pictures: the UTType's extensions, conformance either way, RAW to RAW, and a few aliases; videos: the container's extensions, the first one recommended). No verdict where the content shows nothing known (m2v, DV, inside an archive). `StreamFacts`: codecs, frames per second, channels and length from the player once it has opened the video (`PlaybackControl.streamFacts`: AVFoundation's format descriptions, VLC's `tracksInformation`); the bitrate is the file size over the length. `FileFactsTests`.
