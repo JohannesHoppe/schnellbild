@@ -325,7 +325,7 @@ enum LiveFiles {
            target.pathExtension.lowercased() != url.pathExtension.lowercased() { return nil }
         if refusedTypes.contains(where: type.conforms(to:)) || refusedExtensions.contains(target.pathExtension.lowercased()) { return nil }
         if type.conforms(to: .archive) || ArchiveName.format(of: target.lastPathComponent) != nil {
-            return type.conforms(to: .archive) && ArchiveName.format(of: target.lastPathComponent) != nil ? target : nil
+            return ArchiveName.format(of: target.lastPathComponent) != nil ? target : nil
         }
         let allowed: [UTType] = [.image, .movie, .audiovisualContent, .pdf]
         return allowed.contains(where: type.conforms(to:)) && !type.conforms(to: .executable) ? target : nil
@@ -989,6 +989,10 @@ final class BrowserModel: ObservableObject {
         var needsAccess = false
     }
     @Published private(set) var loadError: LoadError?
+    /// In the App Sandbox: the folder can't be listed, but the file opened
+    /// (dropped) can be read, so it alone is shown; "Allow Access…" opens
+    /// the folder (`allowAccess`).
+    @Published private(set) var accessLimited = false
     /// The current folder's files the grid doesn't show (not while searching).
     @Published private(set) var otherFiles: [OtherFile] = []
     /// The place `load` is reading, for the history while it loads.
@@ -1443,6 +1447,7 @@ final class BrowserModel: ObservableObject {
         captureDatesRead = Set(captureDates.keys)
         leaveSearch()
         pendingResultSelection = nil
+        accessLimited = false
         folderURL = location.folder
         entries = []
         allEntries = []
@@ -1475,9 +1480,25 @@ final class BrowserModel: ObservableObject {
                 full = listing.entries
                 self.otherFiles = listing.others
             case .failure(let error as CocoaError):
+                // A grant kept for a volume that wasn't there opens now: read again
+                if FolderAccess.shared.retry(covering: url) {
+                    self.load(location, thenDetail: thenDetail, password: password, keeping: kept)
+                    return
+                }
+                let needsAccess = !FolderAccess.shared.covers(url)
+                // A file dropped from a folder outside every grant: the
+                // sandbox opened only the file, so it alone is shown (at once,
+                // in the full view when it was dropped there)
+                if needsAccess, let target, ArchivePath.split(url) == nil,
+                   let lone = await Blocking.run(.userInitiated, { Self.readableEntry(target) }) {
+                    guard self.loadGeneration == generation else { return }
+                    full = [lone]
+                    self.accessLimited = true
+                    break
+                }
                 // Not "empty": the folder couldn't be listed (no permission, a share gone)
                 self.loadError = LoadError(archive: false, reason: error.localizedDescription,
-                                           needsAccess: !FolderAccess.shared.covers(url))
+                                           needsAccess: needsAccess)
             case .failure(ArchiveError.needsPassword):
                 // Asked once; what is typed is remembered for every archive.
                 // The help makes way (one sheet at a time).
@@ -1549,6 +1570,11 @@ final class BrowserModel: ObservableObject {
     /// time soon after opening it (a file there may crash it; reopening it
     /// at every launch would crash every launch).
     @Published private(set) var skippedRestore: String?
+    /// The last folder wasn't there at launch (a share or disk not
+    /// connected): said instead of a bare "No folder open"; it opens when
+    /// a volume mounts and it is there then.
+    @Published private(set) var unavailableRestore: String?
+    private var mountObserver: NSObjectProtocol?
     /// The folder being reopened at launch, until the app has run a while.
     private var restoreUnconfirmedKey: String { settingsPrefix + Self.restoreUnconfirmedKey }
     static let restoreUnconfirmedKey = "restoreUnconfirmed"
@@ -1590,7 +1616,23 @@ final class BrowserModel: ObservableObject {
             }
             // Unless the user opened something meanwhile
             guard folderURL == nil else { return }
-            if exists { open(folder: URL(fileURLWithPath: path)) } else if let other = fallback() { open(folder: other) }
+            if exists {
+                unavailableRestore = nil
+                open(folder: URL(fileURLWithPath: path))
+                return
+            }
+            // Nothing was opened: nothing to guard against at the next launch
+            defaults.removeObject(forKey: key)
+            if let other = fallback() { open(folder: other); return }
+            unavailableRestore = path
+            guard mountObserver == nil else { return }
+            mountObserver = NSWorkspace.shared.notificationCenter.addObserver(
+                forName: NSWorkspace.didMountNotification, object: nil, queue: .main) { [weak self] _ in
+                MainActor.assumeIsolated {
+                    guard let self, self.folderURL == nil, self.unavailableRestore != nil else { return }
+                    self.restoreLastFolder()
+                }
+            }
         }
     }
 
@@ -1659,6 +1701,14 @@ final class BrowserModel: ObservableObject {
             listing.others.sort { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
             return listing
         }
+    }
+
+    /// A picture, video or archive the app may read although its folder
+    /// can't be listed (a file the sandbox opened alone).
+    nonisolated private static func readableEntry(_ url: URL) -> GridEntry? {
+        guard FileManager.default.isReadableFile(atPath: url.path), let entry = entry(for: url, keys: entryKeys),
+              entry.kind != .folder || entry.isArchive else { return nil }
+        return entry
     }
 
     /// What `entry(for:keys:)` reads, prefetched by the listings.

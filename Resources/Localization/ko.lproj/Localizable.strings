@@ -325,3 +325,5 @@
 "Keep: try it again later, before the earlier actions. Forget: go on with the earlier actions." = "유지: 나중에 다시 시도합니다(이전 작업보다 먼저). 지우기: 이전 작업으로 계속합니다.";
 "Keep" = "유지";
 "Forget" = "지우기";
+"Only the file you opened is shown here." = "여기에는 연 파일만 표시됩니다.";
+"“%@” isn't available: its disk or server isn't connected. It opens once it is." = "‘%@’을(를) 사용할 수 없습니다. 디스크나 서버가 연결되어 있지 않습니다. 연결되면 열립니다.";

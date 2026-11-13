@@ -325,3 +325,5 @@
 "Keep: try it again later, before the earlier actions. Forget: go on with the earlier actions." = "Koru: daha sonra, önceki işlemlerden önce yeniden dene. Unut: önceki işlemlerle devam et.";
 "Keep" = "Koru";
 "Forget" = "Unut";
+"Only the file you opened is shown here." = "Burada yalnızca açtığınız dosya gösteriliyor.";
+"“%@” isn't available: its disk or server isn't connected. It opens once it is." = "“%@” kullanılamıyor: diski veya sunucusu bağlı değil. Bağlandığında açılır.";

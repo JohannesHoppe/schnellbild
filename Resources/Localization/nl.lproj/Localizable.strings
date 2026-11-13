@@ -325,3 +325,5 @@
 "Keep: try it again later, before the earlier actions. Forget: go on with the earlier actions." = "Bewaar: probeer het later opnieuw, vóór de eerdere acties. Vergeet: ga verder met de eerdere acties.";
 "Keep" = "Bewaar";
 "Forget" = "Vergeet";
+"Only the file you opened is shown here." = "Hier wordt alleen het bestand getoond dat je hebt geopend.";
+"“%@” isn't available: its disk or server isn't connected. It opens once it is." = "‘%@’ is niet beschikbaar: de schijf of server is niet verbonden. Hij wordt geopend zodra dat wel zo is.";

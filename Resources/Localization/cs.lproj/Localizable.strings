@@ -325,3 +325,5 @@
 "Keep: try it again later, before the earlier actions. Forget: go on with the earlier actions." = "Ponechat: zkusit znovu později, před dřívějšími akcemi. Zapomenout: pokračovat dřívějšími akcemi.";
 "Keep" = "Ponechat";
 "Forget" = "Zapomenout";
+"Only the file you opened is shown here." = "Zobrazen je jen soubor, který jste otevřeli.";
+"“%@” isn't available: its disk or server isn't connected. It opens once it is." = "„%@“ není k dispozici: jeho disk nebo server není připojen. Otevře se, jakmile bude.";

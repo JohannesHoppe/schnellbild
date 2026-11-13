@@ -325,3 +325,5 @@
 "Keep: try it again later, before the earlier actions. Forget: go on with the earlier actions." = "Säilytä: yritä myöhemmin uudelleen ennen aiempia toimintoja. Unohda: jatka aiemmilla toiminnoilla.";
 "Keep" = "Säilytä";
 "Forget" = "Unohda";
+"Only the file you opened is shown here." = "Tässä näytetään vain avaamasi tiedosto.";
+"“%@” isn't available: its disk or server isn't connected. It opens once it is." = "”%@” ei ole käytettävissä: sen levy tai palvelin ei ole yhdistettynä. Se avautuu, kun se on.";

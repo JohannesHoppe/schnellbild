@@ -325,3 +325,5 @@
 "Keep: try it again later, before the earlier actions. Forget: go on with the earlier actions." = "Оставить: повторить позже, перед более ранними действиями. Забыть: перейти к более ранним действиям.";
 "Keep" = "Оставить";
 "Forget" = "Забыть";
+"Only the file you opened is shown here." = "Здесь показан только открытый вами файл.";
+"“%@” isn't available: its disk or server isn't connected. It opens once it is." = "«%@» недоступна: ее диск или сервер не подключен. Она откроется, как только он будет подключен.";

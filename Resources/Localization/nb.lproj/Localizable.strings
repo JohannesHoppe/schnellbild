@@ -325,3 +325,5 @@
 "Keep: try it again later, before the earlier actions. Forget: go on with the earlier actions." = "Behold: prøv igjen senere, før de tidligere handlingene. Glem: fortsett med de tidligere handlingene.";
 "Keep" = "Behold";
 "Forget" = "Glem";
+"Only the file you opened is shown here." = "Bare filen du åpnet, vises her.";
+"“%@” isn't available: its disk or server isn't connected. It opens once it is." = "«%@» er ikke tilgjengelig: disken eller serveren er ikke tilkoblet. Den åpnes så snart den er det.";
