@@ -2,7 +2,8 @@
 # (Scripts/build_app.sh), signed for the App Store and wrapped in its installer
 # package. Signed when the App Store secrets are there (APPSTORE_APP_P12,
 # APPSTORE_INSTALLER_P12, APPSTORE_CERT_PASSWORD, APPSTORE_PROFILE_APP,
-# APPSTORE_PROFILE_THUMBNAILS, APPSTORE_PROFILE_FORMATREADER), else ad hoc and
+# APPSTORE_PROFILE_THUMBNAILS, APPSTORE_PROFILE_FORMATREADER in the environment
+# "release"), else ad hoc and
 # unsigned, as a dry run. Nothing is uploaded: the package is an artifact
 # (AppStore/CHECKLIST.md).
 name: App Store
@@ -17,6 +18,9 @@ jobs:
   package:
     name: App Store build and package
     runs-on: macos-15
+    # The certificates and profiles are secrets of the environment "release"
+    # (only main and tags v*), like the Developer ID's.
+    environment: release
     env:
       SIGN: ${{ secrets.APPSTORE_APP_P12 != '' && secrets.APPSTORE_INSTALLER_P12 != '' }}
     steps:

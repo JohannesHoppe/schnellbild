@@ -21,7 +21,7 @@ One app, two ways out: free as the DMG on GitHub Releases, and for 1 € in the 
 2. **Certificates** (developer.apple.com → Certificates): "Apple Distribution" (or "Mac App Distribution") and "Mac Installer Distribution". Export each with its private key as .p12, same password.
 3. **App IDs:** `art.haushoppe.schnellbild` and `art.haushoppe.schnellbild.thumbnails` (the format reader's `art.haushoppe.schnellbild.formatreader` exists, with its Media Extension capability).
 4. **Provisioning profiles**, type "Mac App Store Connect" (distribution), one per App ID: app, thumbnails, format reader.
-5. **GitHub secrets** (base64 for files): `APPSTORE_APP_P12`, `APPSTORE_INSTALLER_P12`, `APPSTORE_CERT_PASSWORD`, `APPSTORE_PROFILE_APP`, `APPSTORE_PROFILE_THUMBNAILS`, `APPSTORE_PROFILE_FORMATREADER`. Then `appstore.yml` builds a signed package (artifact `appstore-package`).
+5. **GitHub secrets** in the environment `release` (base64 for files): `APPSTORE_APP_P12`, `APPSTORE_INSTALLER_P12`, `APPSTORE_CERT_PASSWORD`, `APPSTORE_PROFILE_APP`, `APPSTORE_PROFILE_THUMBNAILS`, `APPSTORE_PROFILE_FORMATREADER`. Then `appstore.yml` builds a signed package (artifact `appstore-package`).
 6. **App record** in App Store Connect: name (Schnellbild, if free), primary language, bundle ID `art.haushoppe.schnellbild`, SKU, category Photography, price (e.g. tier for 0.99 €/1 €).
 7. **Metadata:** paste from `AppStore/METADATA.md` (German and English), upload `AppStore/screenshots`, privacy policy URL as above, App Privacy: "Data Not Collected", age rating 4+.
 8. **License agreement:** fill in the address in `AppStore/EULA.md`, have it checked, paste it as custom EULA.
