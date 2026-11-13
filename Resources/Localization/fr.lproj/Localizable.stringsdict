@@ -12,6 +12,8 @@
 			<string>NSStringPluralRuleType</string>
 			<key>NSStringFormatValueTypeKey</key>
 			<string>lld</string>
+			<key>many</key>
+			<string>%lld archives</string>
 			<key>one</key>
 			<string>%lld archive</string>
 			<key>other</key>

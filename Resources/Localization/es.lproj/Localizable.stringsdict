@@ -12,6 +12,8 @@
 			<string>NSStringPluralRuleType</string>
 			<key>NSStringFormatValueTypeKey</key>
 			<string>lld</string>
+			<key>many</key>
+			<string>%lld archivos comprimidos</string>
 			<key>one</key>
 			<string>%lld archivo comprimido</string>
 			<key>other</key>

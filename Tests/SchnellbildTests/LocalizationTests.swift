@@ -91,15 +91,19 @@ final class LocalizationTests: XCTestCase {
 
     /// The UI texts written in the code: the string literals a call that
     /// shows text gets as its first argument (`Text("…")`, `Button("…"`,
-    /// `.help("…")`, `String(localized: "…")`, `.accessibilityLabel("…")`,
-    /// both sides of `Text(a ? "…" : "…")` …), the help's `action: "…"`, and
-    /// its keys where they hold words (`wordsInKeys: true`), with each
-    /// interpolation `\(…)` kept as a marker. A small scanner, not a regular
-    /// expression: interpolations can hold quotes of their own.
+    /// `Menu("…")`, `Section("…")`, `Picker("…"`, `LabeledContent("…"`,
+    /// `.confirmationDialog("…"`, `.navigationTitle("…")`, `.help("…")`,
+    /// `String(localized: "…")`, `.accessibilityLabel("…")`, both sides of
+    /// `Text(a ? "…" : "…")` …), what a helper returning a
+    /// `LocalizedStringKey` returns, the help's `action: "…"`, and its keys
+    /// where they hold words (`wordsInKeys: true`), with each interpolation
+    /// `\(…)` kept as a marker. A small scanner, not a regular expression:
+    /// interpolations can hold quotes of their own.
     static func uiTexts(in source: String) -> [String] {
         let calls = ["Text(", "Button(", "Label(", "Toggle(", "TextField(", "SecureField(", "ShortcutLabel(", "CommandMenu(",
-                     "headerButton(", "slider(", "infoRow(", ".help(", ".accessibilityLabel(", ".accessibilityValue(",
-                     "String(localized: ", "action: ", "word: ", "Group(title: ", "title: "]
+                     "Menu(", "Section(", "Picker(", "LabeledContent(", "Stepper(", ".confirmationDialog(", ".alert(",
+                     ".navigationTitle(", "headerButton(", "slider(", "infoRow(", ".help(", ".accessibilityLabel(",
+                     ".accessibilityValue(", "String(localized: ", "action: ", "word: ", "Group(title: ", "title: "]
         let chars = Array(source)
         var texts: [String] = []
         var i = 0
@@ -108,8 +112,27 @@ final class LocalizationTests: XCTestCase {
             // Right after a letter or digit it's another call ("myText(")
             if i > 0, chars[i - 1].isLetter || chars[i - 1].isNumber || chars[i - 1] == "_", !start.hasPrefix(".") { i += 1; continue }
             let (literals, end) = argument(chars, from: i + start.count)
-            texts += literals.filter { $0.contains(where: \.isLetter) }
+            texts += literals.filter { $0.contains(where: \.isLetter) && !names.contains($0) }
             i = max(end, i + 1)
+        }
+        // What helpers returning a `LocalizedStringKey` return ("Undo Rename")
+        i = 0
+        let helper = "-> LocalizedStringKey {"
+        while i < chars.count {
+            guard matches(helper, chars, at: i) else { i += 1; continue }
+            var j = i + helper.count, depth = 1
+            while j < chars.count, depth > 0 {
+                if chars[j] == "{" { depth += 1 } else if chars[j] == "}" { depth -= 1 }
+                if matches("return ", chars, at: j) {
+                    // To the end of its line: the next case's literal is another return's
+                    var end = j
+                    while end < chars.count, chars[end] != "\n" { end += 1 }
+                    let (literals, _) = argument(Array(chars[j..<end]), from: "return ".count)
+                    texts += literals.filter { $0.contains(where: \.isLetter) }
+                }
+                j += 1
+            }
+            i = j
         }
         // The help's keys column, where it holds words ("drag")
         i = 0
@@ -129,6 +152,9 @@ final class LocalizationTests: XCTestCase {
         }
         return texts
     }
+
+    /// Names shown as they are, in every language.
+    static let names: Set<String> = ["Schnellbild"]
 
     private static func matches(_ text: String, _ chars: [Character], at i: Int) -> Bool {
         let s = Array(text)
@@ -256,9 +282,41 @@ final class LocalizationTests: XCTestCase {
         .accessibilityValue(up ? "ascending" : "descending") .accessibilityLabel("Stop search")
         Text(format("No"))
         Shortcut(keys: "⌘F", action: "Search") Shortcut(keys: "drag", action: "Move", wordsInKeys: true)
+        Menu("Remove Bookmark") { } Section("Appearance") { Picker("Mode", selection: $x) { } }
+        LabeledContent("Saved passwords", value: "\(n)") Stepper(value: $v, in: 1...9) { }
+        .confirmationDialog("Forget all?", isPresented: $y) .navigationTitle(name ?? "Schnellbild")
+        static func title(_ k: Kind) -> LocalizedStringKey { switch k {
+            case .a: return "Undo Rename"
+            default: return big ? "Undo All" : "Undo" } }
         """#
         XCTAssertEqual(Self.uiTexts(in: source), ["Search stopped", "No \u{1} matches", "Date Modified", "ascending", "descending",
-                                                  "Stop search", "Search", "Move", "drag"])
+                                                  "Stop search", "Search", "Move", "Remove Bookmark", "Appearance", "Mode",
+                                                  "Saved passwords", "Forget all?", "Undo Rename", "Undo All", "Undo", "drag"])
+    }
+
+    /// Each language's plurals have the categories its numbers need, as
+    /// CLDR counts whole numbers (Russian "1 / 2–4 / 5 и более", Japanese
+    /// one form), and none it never uses (a "one" in Japanese would never
+    /// show; Czech "many" is for fractions).
+    func testEveryLanguageHasThePluralCategoriesItNeeds() throws {
+        let needed: [String: Set<String>] = [
+            "cs": ["one", "few", "other"], "pl": ["one", "few", "many", "other"],
+            "ru": ["one", "few", "many", "other"], "uk": ["one", "few", "many", "other"],
+            "es": ["one", "many", "other"], "fr": ["one", "many", "other"], "it": ["one", "many", "other"],
+            "pt-BR": ["one", "many", "other"],
+            "ja": ["other"], "ko": ["other"], "zh-Hans": ["other"], "zh-Hant": ["other"],
+        ]
+        let allowed: [String: Set<String>] = ["cs": ["one", "few", "many", "other"]]
+        for language in languages {
+            let want = needed[language] ?? ["one", "other"]
+            let may = allowed[language] ?? want
+            for (key, entry) in try table(language, "Localizable.stringsdict") {
+                let rule = try XCTUnwrap((entry as? [String: Any])?["count"] as? [String: Any], "\(language): \(key)")
+                let categories = Set(rule.keys.filter { !$0.hasPrefix("NS") })
+                XCTAssertTrue(want.isSubset(of: categories), "\(language): \(key) lacks \(want.subtracting(categories).sorted())")
+                XCTAssertTrue(categories.isSubset(of: may), "\(language): \(key) has \(categories.subtracting(may).sorted()), never used")
+            }
+        }
     }
 
     func testPlaceholdersKeepTheirPositions() {
