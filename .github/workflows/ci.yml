@@ -3,9 +3,9 @@ name: CI
 on:
   push:
     branches: [ main ]
-    paths-ignore: [ '**.md', 'LICENSE', 'Spike/**', 'docs/**', '.github/workflows/spike-*.yml' ]
+    paths-ignore: [ '**.md', 'LICENSE', 'Spike/**', 'docs/**', 'site/**', 'Scripts/build_site.py', 'Scripts/make_site_images.py', 'AppStore/**', '.github/workflows/spike-*.yml', '.github/workflows/appstore*.yml' ]
   pull_request:
-    paths-ignore: [ '**.md', 'LICENSE', 'Spike/**', 'docs/**', '.github/workflows/spike-*.yml' ]
+    paths-ignore: [ '**.md', 'LICENSE', 'Spike/**', 'docs/**', 'site/**', 'Scripts/build_site.py', 'Scripts/make_site_images.py', 'AppStore/**', '.github/workflows/spike-*.yml', '.github/workflows/appstore*.yml' ]
   workflow_dispatch:
     inputs:
       only:
