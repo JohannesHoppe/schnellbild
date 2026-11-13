@@ -358,7 +358,7 @@ def privacy(code, t):
   <h2>{esc(p['siteTitle'])}</h2>
   <p>{p['siteText']}</p>
   <h2>{esc(p['rightsTitle'])}</h2>
-  <p>{esc(p['rightsText'])}</p>
+  <p>{p['rightsText']}</p>
   <h2>{esc(p['contactTitle'])}</h2>
   <p>{p['contactText']}</p>
 </main>
