@@ -178,6 +178,8 @@ footer { border-top: 1px solid var(--line); padding: 28px 0 44px; color: var(--m
 footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 22px; justify-content: space-between; }
 footer nav { display: flex; flex-wrap: wrap; gap: 8px 18px; }
 footer a { color: var(--muted); }
+footer a.github { display: inline-flex; align-items: center; gap: 6px; }
+footer .mark { width: 14px; height: 14px; fill: currentColor; }
 
 /* Rising in: only with JavaScript (else everything simply shows) */
 .js [data-reveal] {
