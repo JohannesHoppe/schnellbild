@@ -170,7 +170,7 @@
 /* Dual pane */
 "Dual Pane" = "이중 패널";
 "Dual Pane (D)" = "이중 패널 (D)";
-"Dual pane: two folders side by side; Tab switches, F5 copies, F6 moves to the other (D, ⌃O)" = "이중 패널: 두 폴더를 나란히 표시, Tab으로 전환, F5로 다른 쪽에 복사, F6으로 이동 (D, ⌃O)";
+"Dual pane: two folders side by side; Tab switches, F5 copies, F6 moves to the other (D, ⌃O)" = "이중 패널: 두 폴더를 나란히 표시, Tab으로 전환, F5로 다른 패널에 복사, F6으로 이동 (D, ⌃O)";
 "Copy to Other Pane (F5)" = "다른 패널로 복사 (F5)";
 "Move to Other Pane (F6)" = "다른 패널로 이동 (F6)";
 "Other pane" = "다른 패널";

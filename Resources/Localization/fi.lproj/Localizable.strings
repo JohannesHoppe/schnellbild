@@ -285,8 +285,8 @@
 "Checking…" = "Tarkistetaan…";
 "Open System Settings…" = "Avaa Järjestelmäasetukset…";
 "Turned on (“Schnellbild Video Formats” under Media Extensions), macOS makes the thumbnails of MKV videos and AVCHD camcorder clips itself: Finder and Schnellbild show them at once and macOS keeps them (macOS 26). Off, Schnellbild makes them itself." = "Päällä ollessaan (”Schnellbild Video Formats” kohdassa Medialaajennukset) macOS tekee MKV-videoiden ja AVCHD-videokameraleikkeiden esikatselukuvat itse: Finder ja Schnellbild näyttävät ne heti ja macOS säilyttää ne (macOS 26). Pois päältä Schnellbild tekee ne itse.";
-"Divider between the panes" = "Jakaja ruutujen välissä";
-"Drag to give one pane more room; double-click to share equally" = "Vedä antaaksesi yhdelle ruudulle enemmän tilaa; kaksoisosoita jakaaksesi tasan";
+"Divider between the panes" = "Jakaja paneelien välissä";
+"Drag to give one pane more room; double-click to share equally" = "Vedä antaaksesi yhdelle paneelille enemmän tilaa; kaksoisosoita jakaaksesi tasan";
 "New Window" = "Uusi ikkuna";
 "New window (e.g. for another display)" = "Uusi ikkuna (esim. toiselle näytölle)";
 "Format" = "Muoto";

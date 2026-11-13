@@ -276,7 +276,7 @@
 "Redo Move to Trash" = "Gjør om flytt til papirkurven";
 "Redo Move" = "Gjør om flytting";
 "Redo Copy" = "Gjør om kopiering";
-"Open in Other Pane" = "Åpne i den andre ruten";
+"Open in Other Pane" = "Åpne i det andre panelet";
 "Version %@ (%@)" = "Versjon %@ (%@)";
 "Video formats for macOS" = "Videoformater for macOS";
 "MKV and AVCHD through macOS" = "MKV og AVCHD gjennom macOS";
@@ -285,8 +285,8 @@
 "Checking…" = "Kontrollerer …";
 "Open System Settings…" = "Åpne Systeminnstillinger …";
 "Turned on (“Schnellbild Video Formats” under Media Extensions), macOS makes the thumbnails of MKV videos and AVCHD camcorder clips itself: Finder and Schnellbild show them at once and macOS keeps them (macOS 26). Off, Schnellbild makes them itself." = "Slått på («Schnellbild Video Formats» under Medieutvidelser) lager macOS selv miniatyrbildene av MKV-videoer og AVCHD-klipp fra videokameraer: Finder og Schnellbild viser dem med en gang, og macOS tar vare på dem (macOS 26). Slått av lager Schnellbild dem selv.";
-"Divider between the panes" = "Skillelinje mellom rutene";
-"Drag to give one pane more room; double-click to share equally" = "Dra for å gi én rute mer plass; dobbeltklikk for å dele likt";
+"Divider between the panes" = "Skillelinje mellom panelene";
+"Drag to give one pane more room; double-click to share equally" = "Dra for å gi ett panel mer plass; dobbeltklikk for å dele likt";
 "New Window" = "Nytt vindu";
 "New window (e.g. for another display)" = "Nytt vindu (f.eks. for en annen skjerm)";
 "Format" = "Format";
