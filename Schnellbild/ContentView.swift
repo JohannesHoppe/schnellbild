@@ -969,9 +969,10 @@ struct VideoProgressBar: View {
                 .frame(width: 200, height: 3)   // not the badge's whole width
                 .accessibilityElement(children: .ignore)
                 .accessibilityIdentifier("videoProgress")
-                .accessibilityLabel("Played")
-                // The UI tests read the number as "42 %" in every language
-                .accessibilityValue(VideoDetailView.uiTesting ? "\(Int((progress * 100).rounded())) %"
+                // The UI tests read the number as "42 %" in every language, as the
+                // label: XCUITest gets no value from a group like this one
+                .accessibilityLabel(VideoDetailView.uiTesting ? "\(Int((progress * 100).rounded())) %" : String(localized: "Played"))
+                .accessibilityValue(VideoDetailView.uiTesting ? ""
                                     : min(max(progress, 0), 1).formatted(.percent.precision(.fractionLength(0))))
                 // The time left, once the length is known
                 if let length = model.activePlayer?.lengthSeconds, model.activePlayer?.progress != nil {
@@ -1071,9 +1072,9 @@ struct VolumeDisplay: View {
                 .transition(.opacity)
                 .accessibilityElement(children: .ignore)
                 .accessibilityIdentifier("volumeDisplay")
-                .accessibilityLabel("Volume")
-                // The UI tests read "volume 80 %" in every language
-                .accessibilityValue(VideoDetailView.uiTesting ? "volume \(Int((model.volume * 100).rounded())) %"
+                // The UI tests read "volume 80 %" in every language, as the label
+                .accessibilityLabel(VideoDetailView.uiTesting ? "volume \(Int((model.volume * 100).rounded())) %" : String(localized: "Volume"))
+                .accessibilityValue(VideoDetailView.uiTesting ? ""
                                     : model.volume.formatted(.percent.precision(.fractionLength(0))))
             }
         }

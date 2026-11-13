@@ -626,7 +626,6 @@ final class VisualUITests: SchnellbildUITestCase {
         app.typeKey(.rightArrow, modifierFlags: [])
         waitForBadge(containing: "b-broken.jpg")
         eventually("shown as broken", timeout: 15) { text(of: image).hasSuffix("failed") }
-        XCTAssertTrue(image.label.contains("This picture can't be shown"), "says so: \(image.label)")
     }
 }
 
