@@ -8,7 +8,7 @@ Everything Apple needs to sign Schnellbild, where it lives, when it runs out, an
 |---|---|---|---|---|
 | DMG: app | Developer ID Application | `release.yml` | `MACOS_CERT_P12`, `MACOS_CERT_PASSWORD` | 2027-02-01 |
 | DMG: format reader | Provisioning profile "Developer ID" for `art.haushoppe.schnellbild.formatreader` | `release.yml` | `MACOS_PROFILE_FORMATREADER` | with its certificate |
-| DMG: notarization | App Store Connect API key (.p8) | `release.yml`, `mac-release.yml` | `NOTARY_KEY_P8`, `NOTARY_KEY_ID`, `NOTARY_ISSUER_ID` | never (until revoked) |
+| Notarization and Store upload | App Store Connect API key (.p8) | `release.yml`, `mac-release.yml`, `appstore.yml` (upload) | `NOTARY_KEY_P8`, `NOTARY_KEY_ID`, `NOTARY_ISSUER_ID` | never (until revoked) |
 | Store: app and extensions | Apple Distribution | `appstore.yml` | `APPSTORE_APP_P12`, `APPSTORE_CERT_PASSWORD` | 2027-11-12 |
 | Store: installer package | Mac Installer Distribution (shows as "3rd Party Mac Developer Installer") | `appstore.yml` | `APPSTORE_INSTALLER_P12` (same password) | 2027-11-12 |
 | Store: profiles | 3 × "Mac App Store Connect" for `art.haushoppe.schnellbild`, `.thumbnails`, `.formatreader` | `appstore.yml` | `APPSTORE_PROFILE_APP`, `APPSTORE_PROFILE_THUMBNAILS`, `APPSTORE_PROFILE_FORMATREADER` | 2027-11-12 |
