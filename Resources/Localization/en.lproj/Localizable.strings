@@ -1,6 +1,5 @@
 "Open Folder…" = "Open Folder…";
 "Go" = "Go";
-"Start Slideshow" = "Start Slideshow";
 "Back" = "Back";
 "Forward" = "Forward";
 "Enclosing Folder" = "Enclosing Folder";
@@ -9,8 +8,6 @@
 "Reveal in Finder" = "Reveal in Finder";
 "Open with Default App" = "Open with Default App";
 "Move to Trash…" = "Move to Trash…";
-"Larger Thumbnails" = "Larger Thumbnails";
-"Smaller Thumbnails" = "Smaller Thumbnails";
 "Schnellbild Help" = "Schnellbild Help";
 "Rename…" = "Rename…";
 "Open Folder" = "Open Folder";
@@ -165,12 +162,9 @@
 "New Folder" = "New Folder";
 "Create" = "Create";
 "New folder: type its name, ↩ creates it, Esc creates none" = "New folder: type its name, ↩ creates it, Esc creates none";
-"Mini Keyboard" = "Mini Keyboard";
 /* Dual pane */
 "Dual Pane" = "Dual Pane";
 "Dual pane: two folders side by side; Tab switches, F5 copies, F6 moves to the other (D, ⌃O)" = "Dual pane: two folders side by side; Tab switches, F5 copies, F6 moves to the other (D, ⌃O)";
-"Copy to Other Pane" = "Copy to Other Pane";
-"Move to Other Pane" = "Move to Other Pane";
 "Other pane" = "Other pane";
 "Copy there" = "Copy there";
 "Move there" = "Move there";
@@ -178,7 +172,6 @@
 "Mark" = "Mark";
 "Single pane" = "Single pane";
 "“%@” already exists in “%@”." = "“%@” already exists in “%@”.";
-"Keep both: the new one gets a number. Skip: it stays where it is." = "Keep both: the new one gets a number. Skip: it stays where it is.";
 "Keep Both" = "Keep Both";
 "Skip" = "Skip";
 "The marked items will be moved to the Trash, folders with everything in them." = "The marked items will be moved to the Trash, folders with everything in them.";
@@ -186,7 +179,6 @@
 "Dual pane on / off: two folders side by side" = "Dual pane on / off: two folders side by side";
 "Switch to the other pane" = "Switch to the other pane";
 "Copy / move the marked items into the other pane's folder" = "Copy / move the marked items into the other pane's folder";
-"Mark / unmark an item (M, Insert: then on to the next)" = "Mark / unmark an item (M, Insert: then on to the next)";
 "Mark a range" = "Mark a range";
 "Mark all / unmark all" = "Mark all / unmark all";
 "Marked items onto a folder or into the other pane: moved (copied to another volume)" = "Marked items onto a folder or into the other pane: moved (copied to another volume)";
@@ -204,6 +196,8 @@
 "Click to rename this folder" = "Click to rename this folder";
 "Built with" = "Built with";
 "The full license texts are in the app (Contents/Resources/Licenses)." = "The full license texts are in the app (Contents/Resources/Licenses).";
+"Privacy Policy" = "Privacy Policy";
+"VLCKit includes FFmpeg and other libraries, each under its own license." = "VLCKit includes FFmpeg and other libraries, each under its own license.";
 "plays the video formats macOS can't (AVI, MKV, WebM …)" = "plays the video formats macOS can't (AVI, MKV, WebM …)";
 "reads RAR archives" = "reads RAR archives";
 "reads ZIP and 7z archives (the copy built into macOS)" = "reads ZIP and 7z archives (the copy built into macOS)";
@@ -222,7 +216,6 @@
 "Quit When Done" = "Quit When Done";
 "The name must end in “.%@”, as the archive does." = "The name must end in “.%@”, as the archive does.";
 "unknown error" = "unknown error";
-"⌘-click / M / Insert" = "⌘-click / M / Insert";
 "⇧-click / ⇧ arrows" = "⇧-click / ⇧ arrows";
 "drag" = "drag";
 "Schnellbild's own code is free software under the MIT License. The components below keep their own licenses." = "Schnellbild's own code is free software under the MIT License. The components below keep their own licenses.";
@@ -253,7 +246,6 @@
 "Search mode" = "Search mode";
 "No folder, archive, picture or video whose name matches “%@”, in this folder or its subfolders." = "No folder, archive, picture or video whose name matches “%@”, in this folder or its subfolders.";
 "“%@” is not a valid regular expression." = "“%@” is not a valid regular expression.";
-"Boss key: hidden and silent at once; X X X or the Dock icon brings it back" = "Boss key: hidden and silent at once; X X X or the Dock icon brings it back";
 "Into “%@”" = "Into “%@”";
 "Bookmarks" = "Bookmarks";
 "Bookmark This Folder" = "Bookmark This Folder";
@@ -310,6 +302,29 @@
 "Forget Folder Access" = "Forget Folder Access";
 "Each folder asks for your permission again." = "Each folder asks for your permission again.";
 "© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later. Built from its source without VLC's modules under the GPL; the build script and its changes are in Schnellbild's repository (github.com/JohannesHoppe/schnellbild)." = "© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later. Built from its source without VLC's modules under the GPL; the build script and its changes are in Schnellbild's repository (github.com/JohannesHoppe/schnellbild).";
+"The link will be moved to the Trash. The folder it points to stays where it is." = "The link will be moved to the Trash. The folder it points to stays where it is.";
+"Keep both: the new one gets a number. Skip: it stays where it is. Cancel: nothing is moved or copied." = "Keep both: the new one gets a number. Skip: it stays where it is. Cancel: nothing is moved or copied.";
+"Apply to all" = "Apply to all";
+"Copied, but the original couldn't be removed: %@" = "Copied, but the original couldn't be removed: %@";
+"Not everything was moved or copied." = "Not everything was moved or copied.";
+"“%@”: %@" = "“%@”: %@";
+"“%@” is no longer the item Schnellbild put there, so it stays as it is." = "“%@” is no longer the item Schnellbild put there, so it stays as it is.";
+"“%@” has changed since it was copied, so it isn't moved to the Trash." = "“%@” has changed since it was copied, so it isn't moved to the Trash.";
+"Schnellbild may not take “%@” out of the Trash. Use “Put Back” in the Finder's Trash." = "Schnellbild may not take “%@” out of the Trash. Use “Put Back” in the Finder's Trash.";
+"Keep: try it again later, before the earlier actions. Forget: go on with the earlier actions." = "Keep: try it again later, before the earlier actions. Forget: go on with the earlier actions.";
+"Keep" = "Keep";
+"Forget" = "Forget";
+"Only the file you opened is shown here." = "Only the file you opened is shown here.";
+"“%@” isn't available: its disk or server isn't connected. It opens once it is." = "“%@” isn't available: its disk or server isn't connected. It opens once it is.";
+"Start Slideshow" = "Start Slideshow";
+"Larger Thumbnails" = "Larger Thumbnails";
+"Smaller Thumbnails" = "Smaller Thumbnails";
+"Mini Keyboard" = "Mini Keyboard";
+"Copy to Other Pane" = "Copy to Other Pane";
+"Move to Other Pane" = "Move to Other Pane";
+"Mark / unmark an item (M, Insert: then on to the next)" = "Mark / unmark an item (M, Insert: then on to the next)";
+"⌘-click / M / Insert" = "⌘-click / M / Insert";
+"Boss key: hidden and silent at once; X X X or the Dock icon brings it back" = "Boss key: hidden and silent at once; X X X or the Dock icon brings it back";
 "marked" = "marked";
 "Drive" = "Drive";
 "Folder without pictures or videos" = "Folder without pictures or videos";

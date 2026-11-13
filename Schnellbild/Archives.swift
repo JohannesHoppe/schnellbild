@@ -684,12 +684,15 @@ final class ArchiveStore: @unchecked Sendable {
         let byPath: [String: ArchiveItem]
 
         init(items: [ArchiveItem], complete: Bool, password: String?, bytesKey: String) {
-            self.complete = complete
             self.password = password
             self.bytesKey = bytesKey
             var byPath: [String: ArchiveItem] = [:]
+            var whole = complete
             // Not the AppleDouble files the Finder adds to ZIPs ("__MACOSX/")
             for item in items where !item.path.isEmpty && item.path != "__MACOSX" && !item.path.hasPrefix("__MACOSX/") {
+                // Deep paths imply a folder for every level: held to the
+                // same limit as the entries, the rest is left out
+                if byPath.count >= ArchiveStore.indexLimit { whole = false; break }
                 if byPath[item.path] == nil || item.isDirectory { byPath[item.path] = item }
                 // The folders above it, which archives often don't list
                 var parent = (item.path as NSString).deletingLastPathComponent
@@ -698,6 +701,7 @@ final class ArchiveStore: @unchecked Sendable {
                     parent = (parent as NSString).deletingLastPathComponent
                 }
             }
+            self.complete = whole
             self.byPath = byPath
             var children: [String: [ArchiveItem]] = [:]
             for item in byPath.values {
@@ -832,9 +836,16 @@ final class ArchiveStore: @unchecked Sendable {
         let candidates: [String?] = typed.map { [$0] } ?? ([nil] + remembered.map(Optional.some))
         for candidate in candidates {
             var items: [ArchiveItem] = []
+            var capped = false
             let complete: Bool
             do {
-                complete = try reader.walk(password: candidate, listOnly: true) { items.append($0); return .skip }
+                // Never more than `indexLimit` entries: a header flood would
+                // fill memory; the archive then counts as read in part
+                complete = try reader.walk(password: candidate, listOnly: true) { item in
+                    guard items.count < Self.indexLimit else { capped = true; return .stop }
+                    items.append(item)
+                    return .skip
+                } && !capped
             } catch ArchiveError.needsPassword {
                 continue   // the names are encrypted: the next password
             }
@@ -1052,6 +1063,10 @@ final class ArchiveStore: @unchecked Sendable {
     /// (a 100-megapixel RAW is about 200 MB); more is a decompression bomb
     /// or not a picture.
     static let largestRead: Int64 = 256 << 20
+    /// The most entries an archive's index holds (with the folders their
+    /// paths imply); the rest of a larger one is left out, as of an archive
+    /// read in part. Lowered by tests.
+    nonisolated(unsafe) static var indexLimit = 1_000_000
 
     private static func bytesKey(_ index: Index, _ path: String) -> NSString {
         "\(index.bytesKey)/\(path)" as NSString

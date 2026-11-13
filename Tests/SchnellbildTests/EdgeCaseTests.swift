@@ -197,6 +197,65 @@ final class UnreadableFolderTests: XCTestCase {
         await waitUntil { m.isAt(tree.root) }
         XCTAssertEqual(m.names, ["..", "next"], "up from it to what is still there")
     }
+
+    /// In the App Sandbox a file dropped from a folder outside every grant
+    /// is all the app may read: it alone is shown, at once in the full
+    /// view, and the folder offers "Allow Access…" (not "needs permission"
+    /// instead of the picture).
+    @MainActor
+    func testADroppedFileOutsideEveryGrantShowsAlone() async throws {
+        let tree = try TempTree(self)
+        let photo = try tree.file("outside/photo.jpg")
+        try tree.file("outside/other.jpg")
+        let folder = photo.deletingLastPathComponent()
+        try FileManager.default.setAttributes([.posixPermissions: 0o300], ofItemAtPath: folder.path)   // not listable, files readable
+        addTeardownBlock { try? FileManager.default.setAttributes([.posixPermissions: 0o755], ofItemAtPath: folder.path) }
+        if (try? FileManager.default.contentsOfDirectory(atPath: folder.path)) != nil {
+            throw XCTSkip("running with rights to read any folder")
+        }
+        let saved = FolderAccess.shared
+        let sandbox = FolderAccess(sandboxed: true)
+        sandbox.defaults = makeTestDefaults()
+        FolderAccess.shared = sandbox
+        defer { FolderAccess.shared = saved }
+        let m = makeModel(FileActionsSpy())
+        m.openDropped([photo])
+        await waitUntil { m.folderURL != nil && !m.isLoading }
+        XCTAssertEqual(m.names, ["..", "photo.jpg"])
+        XCTAssertTrue(m.accessLimited)
+        XCTAssertNil(m.loadError)
+        XCTAssertEqual(m.mode, .detail, "the picture at once")
+    }
+
+    /// A grant whose volume isn't there at launch (a NAS asleep) is kept,
+    /// not dropped from the preferences.
+    @MainActor
+    func testAGrantThatDoesntOpenIsKept() {
+        let defaults = makeTestDefaults()
+        defaults.set([Data("a bookmark of a volume not there".utf8)], forKey: FolderAccess.key)
+        let access = FolderAccess(sandboxed: true)
+        access.defaults = defaults
+        access.restore()
+        XCTAssertEqual(access.count, 1)
+        XCTAssertEqual((defaults.array(forKey: FolderAccess.key) as? [Data])?.count, 1, "still in the preferences")
+        XCTAssertFalse(access.retry(covering: URL(fileURLWithPath: "/Volumes/NAS/Photos")))
+    }
+
+    /// The last folder isn't there at launch: said, not a bare "No folder
+    /// open"; the next launch isn't told it crashed there.
+    @MainActor
+    func testAnUnavailableLastFolderIsSaid() async throws {
+        let tree = try TempTree(self)
+        let defaults = makeTestDefaults()
+        let gone = tree.root.appendingPathComponent("NAS/Photos").path
+        defaults.set(gone, forKey: BrowserModel.lastFolderKey)
+        let m = BrowserModel(defaults: defaults, fileActions: FileActionsSpy().actions)
+        m.restoreLastFolder()
+        await waitUntil { m.unavailableRestore != nil }
+        XCTAssertEqual(m.unavailableRestore, gone)
+        XCTAssertNil(m.folderURL)
+        XCTAssertNil(defaults.string(forKey: BrowserModel.restoreUnconfirmedKey))
+    }
 }
 
 // MARK: - Drop zones

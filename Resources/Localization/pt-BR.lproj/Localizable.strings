@@ -1,6 +1,5 @@
 "Open Folder…" = "Abrir Pasta…";
 "Go" = "Ir";
-"Start Slideshow" = "Iniciar Apresentação";
 "Back" = "Voltar";
 "Forward" = "Avançar";
 "Enclosing Folder" = "Pasta Superior";
@@ -9,8 +8,6 @@
 "Reveal in Finder" = "Mostrar no Finder";
 "Open with Default App" = "Abrir com o App Padrão";
 "Move to Trash…" = "Mover para o Lixo…";
-"Larger Thumbnails" = "Miniaturas Maiores";
-"Smaller Thumbnails" = "Miniaturas Menores";
 "Schnellbild Help" = "Ajuda do Schnellbild";
 "Rename…" = "Renomear…";
 "Open Folder" = "Abrir Pasta";
@@ -165,12 +162,9 @@
 "New Folder" = "Nova Pasta";
 "Create" = "Criar";
 "New folder: type its name, ↩ creates it, Esc creates none" = "Nova pasta: digite o nome, ↩ a cria, Esc não cria nenhuma";
-"Mini Keyboard" = "Miniteclado";
 /* Dual pane */
 "Dual Pane" = "Painel Duplo";
 "Dual pane: two folders side by side; Tab switches, F5 copies, F6 moves to the other (D, ⌃O)" = "Painel duplo: duas pastas lado a lado; Tab alterna, F5 copia, F6 move para o outro (D, ⌃O)";
-"Copy to Other Pane" = "Copiar para o Outro Painel";
-"Move to Other Pane" = "Mover para o Outro Painel";
 "Other pane" = "Outro painel";
 "Copy there" = "Copiar para lá";
 "Move there" = "Mover para lá";
@@ -178,7 +172,6 @@
 "Mark" = "Marcar";
 "Single pane" = "Painel único";
 "“%@” already exists in “%@”." = "“%@” já existe em “%@”.";
-"Keep both: the new one gets a number. Skip: it stays where it is." = "Manter ambos: o novo recebe um número. Ignorar: fica onde está.";
 "Keep Both" = "Manter Ambos";
 "Skip" = "Ignorar";
 "The marked items will be moved to the Trash, folders with everything in them." = "Os itens marcados serão movidos para o Lixo, as pastas com tudo o que contêm.";
@@ -186,7 +179,6 @@
 "Dual pane on / off: two folders side by side" = "Ativar / desativar painel duplo: duas pastas lado a lado";
 "Switch to the other pane" = "Alternar para o outro painel";
 "Copy / move the marked items into the other pane's folder" = "Copiar / mover os itens marcados para a pasta do outro painel";
-"Mark / unmark an item (M, Insert: then on to the next)" = "Marcar / desmarcar um item (M e Insert: e passar ao próximo)";
 "Mark a range" = "Marcar um intervalo";
 "Mark all / unmark all" = "Marcar tudo / desmarcar tudo";
 "Marked items onto a folder or into the other pane: moved (copied to another volume)" = "Itens marcados sobre uma pasta ou no outro painel: movidos (copiados para outro volume)";
@@ -204,6 +196,8 @@
 "Click to rename this folder" = "Clique para renomear esta pasta";
 "Built with" = "Feito com";
 "The full license texts are in the app (Contents/Resources/Licenses)." = "Os textos completos das licenças estão no app (Contents/Resources/Licenses).";
+"Privacy Policy" = "Política de Privacidade";
+"VLCKit includes FFmpeg and other libraries, each under its own license." = "O VLCKit inclui o FFmpeg e outras bibliotecas, cada uma sob sua própria licença.";
 "plays the video formats macOS can't (AVI, MKV, WebM …)" = "reproduz os formatos de vídeo que o macOS não reproduz (AVI, MKV, WebM …)";
 "reads RAR archives" = "lê arquivos RAR";
 "reads ZIP and 7z archives (the copy built into macOS)" = "lê arquivos ZIP e 7z (a versão incluída no macOS)";
@@ -222,7 +216,6 @@
 "Quit When Done" = "Encerrar ao Terminar";
 "The name must end in “.%@”, as the archive does." = "O nome deve terminar em “.%@”, como o arquivo compactado.";
 "unknown error" = "erro desconhecido";
-"⌘-click / M / Insert" = "⌘-clique / M / Insert";
 "⇧-click / ⇧ arrows" = "⇧-clique / ⇧ setas";
 "drag" = "arrastar";
 "Schnellbild's own code is free software under the MIT License. The components below keep their own licenses." = "O código próprio do Schnellbild é software livre sob a licença MIT. Os componentes abaixo mantêm suas próprias licenças.";
@@ -253,7 +246,6 @@
 "Search mode" = "Modo de busca";
 "No folder, archive, picture or video whose name matches “%@”, in this folder or its subfolders." = "Nenhuma pasta, arquivo compactado, imagem ou vídeo cujo nome corresponda a “%@”, nesta pasta ou em suas subpastas.";
 "“%@” is not a valid regular expression." = "“%@” não é uma expressão regular válida.";
-"Boss key: hidden and silent at once; X X X or the Dock icon brings it back" = "Tecla do chefe: oculto e mudo na hora; X X X ou o ícone no Dock traz de volta";
 "Into “%@”" = "Para “%@”";
 "Bookmarks" = "Favoritos";
 "Bookmark This Folder" = "Adicionar esta pasta aos favoritos";
@@ -310,6 +302,29 @@
 "Forget Folder Access" = "Esquecer acesso às pastas";
 "Each folder asks for your permission again." = "Cada pasta pedirá sua permissão novamente.";
 "© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later. Built from its source without VLC's modules under the GPL; the build script and its changes are in Schnellbild's repository (github.com/JohannesHoppe/schnellbild)." = "© VideoLAN e os autores do VLC. GNU Lesser General Public License 2.1 ou posterior. Compilado a partir do código-fonte sem os módulos do VLC sob a GPL; o script de compilação e suas alterações estão no repositório do Schnellbild (github.com/JohannesHoppe/schnellbild).";
+"The link will be moved to the Trash. The folder it points to stays where it is." = "O link será movido para o Lixo. A pasta para a qual ele aponta fica onde está.";
+"Keep both: the new one gets a number. Skip: it stays where it is. Cancel: nothing is moved or copied." = "Manter ambos: o novo recebe um número. Ignorar: fica onde está. Cancelar: nada é movido nem copiado.";
+"Apply to all" = "Aplicar a todos";
+"Copied, but the original couldn't be removed: %@" = "Copiado, mas não foi possível remover o original: %@";
+"Not everything was moved or copied." = "Nem tudo foi movido ou copiado.";
+"“%@”: %@" = "“%@”: %@";
+"“%@” is no longer the item Schnellbild put there, so it stays as it is." = "“%@” não é mais o item que o Schnellbild colocou ali, então fica como está.";
+"“%@” has changed since it was copied, so it isn't moved to the Trash." = "“%@” mudou desde que foi copiado, então não é movido para o Lixo.";
+"Schnellbild may not take “%@” out of the Trash. Use “Put Back” in the Finder's Trash." = "O Schnellbild não pode tirar “%@” do Lixo. Use “Colocar de Volta” no Lixo do Finder.";
+"Keep: try it again later, before the earlier actions. Forget: go on with the earlier actions." = "Manter: tentar de novo depois, antes das ações anteriores. Esquecer: seguir com as ações anteriores.";
+"Keep" = "Manter";
+"Forget" = "Esquecer";
+"Only the file you opened is shown here." = "Aqui só aparece o arquivo que você abriu.";
+"“%@” isn't available: its disk or server isn't connected. It opens once it is." = "“%@” não está disponível: o disco ou servidor não está conectado. Ele será aberto assim que estiver.";
+"Start Slideshow" = "Iniciar Apresentação";
+"Larger Thumbnails" = "Miniaturas Maiores";
+"Smaller Thumbnails" = "Miniaturas Menores";
+"Mini Keyboard" = "Miniteclado";
+"Copy to Other Pane" = "Copiar para o Outro Painel";
+"Move to Other Pane" = "Mover para o Outro Painel";
+"Mark / unmark an item (M, Insert: then on to the next)" = "Marcar / desmarcar um item (M e Insert: e passar ao próximo)";
+"⌘-click / M / Insert" = "⌘-clique / M / Insert";
+"Boss key: hidden and silent at once; X X X or the Dock icon brings it back" = "Tecla do chefe: oculto e mudo na hora; X X X ou o ícone no Dock traz de volta";
 "marked" = "marcado";
 "Drive" = "Disco";
 "Folder without pictures or videos" = "Pasta sem imagens nem vídeos";

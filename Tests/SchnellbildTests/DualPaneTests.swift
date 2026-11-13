@@ -190,6 +190,20 @@ final class DualPaneTests: XCTestCase {
         XCTAssertNotNil(m.selectedEntry)
     }
 
+    /// Several marked: one prompt, counted, with every name (not a title
+    /// that strings the first names together).
+    func testTheTrashPromptForSeveralNamesThemAll() async throws {
+        let tree = try TempTree(self)
+        for n in ["a.jpg", "b.jpg", "c.jpg", "d.jpg", "e.jpg", "f.jpg"] { try tree.file(n) }
+        let spy = FileActionsSpy()
+        let m = BrowserModel(defaults: makeTestDefaults(), fileActions: spy.actions)
+        await openAndWait(m, tree.root)
+        XCTAssertTrue(m.handleKey(.char("a"), command: true))
+        m.moveSelectionToTrash()
+        XCTAssertEqual(spy.confirmNames, [["a.jpg", "b.jpg", "c.jpg", "d.jpg", "e.jpg", "f.jpg"]])
+        XCTAssertEqual(spy.trashed.count, 6)
+    }
+
     /// Nothing moves the folder shown or one around it ("..").
     func testTheFolderShownNeverMoves() async throws {
         let tree = try TempTree(self)

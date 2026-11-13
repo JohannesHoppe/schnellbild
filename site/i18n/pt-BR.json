@@ -2,7 +2,9 @@
   "name": "Português (Brasil)",
   "privacySlug": "privacy",
   "title": "Schnellbild – um visualizador de imagens e vídeos para macOS que não dá dor de cabeça",
-  "description": "Schnellbild: um visualizador de imagens e vídeos rápido e gratuito para macOS. Pastas, miniaturas, teclado; MKV, WebM e AVI; ZIP, RAR e 7z como pastas; um painel duplo para organizar fotos. Sem anúncios, sem rastreamento, sem conta.",
+  "seoTitle": "Schnellbild – visualizador de fotos e vídeos grátis para Mac",
+  "seoDescription": "Visualizador de imagens e player de vídeo grátis para Mac: miniaturas, teclado, MKV, AVI e WebM, ZIP e RAR como pastas. Alternativa ao Phiewer e IINA.",
+  "keywords": "visualizador de imagens Mac, visualizador de fotos macOS, visualizador de fotos grátis, player MKV Mac, reproduzir AVI WebM, alternativa ao Phiewer, alternativa ao IINA, abrir imagens RAR, quadrinhos CBZ CBR, apresentação de slides, Schnellbild",
   "navFeatures": "Recursos",
   "navSafety": "Segurança",
   "language": "Idioma",
@@ -91,6 +93,7 @@
   "ctaText": "Grátis, sem conta, sem pegadinhas.",
   "footerPrivacy": "Privacidade",
   "footerImprint": "Aviso legal",
+  "footerEula": "Contrato de licença",
   "privacy": {
     "title": "Política de privacidade",
     "description": "O Schnellbild não coleta dados pessoais: sem conta, sem análises, sem rastreamento, sem acesso à rede.",

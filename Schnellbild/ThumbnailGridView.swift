@@ -110,7 +110,7 @@ struct ThumbnailGridView: View {
                 FolderTile(folder: entry.url, side: side, isSelected: cursor, isMarked: marked, systemImage: drive,
                            kindLabel: "drive", previews: false)
             } else {
-                FolderTile(folder: entry.url, side: side, isSelected: cursor, isMarked: marked,
+                FolderTile(folder: entry.browseURL, side: side, isSelected: cursor, isMarked: marked,
                            systemImage: archive ? "archivebox.fill" : "folder.fill",
                            isEmpty: model.isEmptyFolder(entry), kindLabel: archive ? "archive" : "folder")
             }
@@ -636,14 +636,14 @@ struct EntryInteractions: ViewModifier {
                     if entry.kind == .folder {
                         Button("Start Slideshow of This Folder") {
                             model.select(entry)
-                            model.startSlideshow(over: entry.url)
+                            model.startSlideshow(over: entry.browseURL)
                         }
-                        Button(Bookmarks.shared.contains(entry.url) ? "Remove Bookmark" : "Add Bookmark") {
-                            Bookmarks.shared.toggle(entry.url)
+                        Button(Bookmarks.shared.contains(entry.browseURL) ? "Remove Bookmark" : "Add Bookmark") {
+                            Bookmarks.shared.toggle(entry.browseURL)
                         }
                         // The dual pane: this folder (or archive) in the other half
                         if window.dual, let other = window.panes.first(where: { $0 !== model }) {
-                            Button("Open in Other Pane") { other.open(folder: entry.url) }
+                            Button("Open in Other Pane") { other.open(folder: entry.browseURL) }
                         }
                     }
                     // Inside an archive nothing is changed
@@ -657,7 +657,7 @@ struct EntryInteractions: ViewModifier {
                         guard model.select(entry) else { return }
                         model.revealInFinder()
                     }
-                    if !ArchivePath.isInside(entry.url) {
+                    if model.canChange(entry) {
                         Button("Move to Trash…") {
                             // The marked items when this is one of them, else this one
                             if !model.isMarked(entry) { model.clearMarks() }
@@ -748,7 +748,7 @@ private struct TileDropDelegate: DropDelegate {
         if FinderDrop.isFromFinder(info) { return FinderDrop.perform(info, window) }
         over(false)
         model.dropIntoFolderTargeted = false
-        let target = accepts ? entry.url : model.paneDropFolder
+        let target = accepts ? entry.browseURL : model.paneDropFolder
         guard let folder = target, ArchivePath.split(folder) == nil else { return false }
         TileDrag.loadURLs(info.itemProviders(for: [TileDrag.type])) { urls in model.move(urls, into: folder) }
         return true

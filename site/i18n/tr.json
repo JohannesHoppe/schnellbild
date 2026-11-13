@@ -2,7 +2,9 @@
   "name": "Türkçe",
   "privacySlug": "privacy",
   "title": "Schnellbild – macOS için sinir bozmayan bir görüntü ve video görüntüleyici",
-  "description": "Schnellbild: macOS için hızlı ve ücretsiz bir görüntü ve video görüntüleyici. Klasörler, küçük resimler, klavye; MKV, WebM ve AVI; klasör olarak ZIP, RAR ve 7z; fotoğrafları ayıklamak için çift bölme. Reklam yok, izleme yok, hesap yok.",
+  "seoTitle": "Schnellbild – Mac için ücretsiz resim ve video görüntüleyici",
+  "seoDescription": "Mac için hızlı, ücretsiz fotoğraf görüntüleyici ve video oynatıcı: küçük resimler, klavye, MKV, AVI, WebM, klasör gibi ZIP ve RAR. Phiewer alternatifi.",
+  "keywords": "resim görüntüleyici Mac, fotoğraf görüntüleyici macOS, ücretsiz fotoğraf görüntüleyici, MKV oynatıcı Mac, AVI WebM oynatma, Phiewer alternatifi, IINA alternatifi, RAR içindeki resimleri açma, CBZ CBR çizgi roman, slayt gösterisi, Schnellbild",
   "navFeatures": "Özellikler",
   "navSafety": "Güvenlik",
   "language": "Dil",
@@ -91,6 +93,7 @@
   "ctaText": "Ücretsiz, hesapsız, koşulsuz.",
   "footerPrivacy": "Gizlilik",
   "footerImprint": "Künye",
+  "footerEula": "Lisans sözleşmesi",
   "privacy": {
     "title": "Gizlilik politikası",
     "description": "Schnellbild hiçbir kişisel veri toplamaz: hesap yok, analiz yok, izleme yok, ağ erişimi yok.",
