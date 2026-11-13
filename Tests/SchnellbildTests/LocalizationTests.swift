@@ -267,6 +267,50 @@ final class LocalizationTests: XCTestCase {
         XCTAssertNotEqual(Self.placeholders("%@ of %lld"), Self.placeholders("%lld von %@"))
     }
 
+    /// The mini keyboard's rows as `MiniKeyboard.keys(for:)` defines them:
+    /// each context's words, read from the source.
+    static func miniKeyboardRows(in source: String) -> [String: [String]] {
+        guard let start = source.range(of: "static func keys(for context: Context)"),
+              let end = source.range(of: "@EnvironmentObject var window", range: start.upperBound..<source.endIndex)
+        else { return [:] }
+        let body = String(source[start.upperBound..<end.lowerBound])
+        let caseName = try! NSRegularExpression(pattern: "case \\.([A-Za-z]+):")
+        let word = try! NSRegularExpression(pattern: "word: \"([^\"]+)\"")
+        var rows: [String: [String]] = [:]
+        let cases = caseName.matches(in: body, range: NSRange(body.startIndex..., in: body))
+        for (i, match) in cases.enumerated() {
+            let name = String(body[Range(match.range(at: 1), in: body)!])
+            let from = match.range.upperBound
+            let to = i + 1 < cases.count ? cases[i + 1].range.location : (body as NSString).length
+            let part = (body as NSString).substring(with: NSRange(location: from, length: to - from))
+            rows[name] = word.matches(in: part, range: NSRange(part.startIndex..., in: part))
+                .map { (part as NSString).substring(with: $0.range(at: 1)) }
+        }
+        return rows
+    }
+
+    /// A row of the mini keyboard never shows one word for two keys ("Fit"
+    /// and "Adjust" both "Anpassen" would leave the user guessing).
+    func testNoDuplicateWordsWithinAMiniKeyboardRow() throws {
+        let file = root.deletingLastPathComponent().deletingLastPathComponent()
+            .appendingPathComponent("Schnellbild/MiniKeyboard.swift")
+        let rows = Self.miniKeyboardRows(in: try String(contentsOf: file, encoding: .utf8))
+        XCTAssertGreaterThanOrEqual(rows.count, 5, "the scanner finds the rows")
+        for language in languages {
+            let strings = try table(language, "Localizable.strings")
+            for (row, words) in rows {
+                var seen: [String: String] = [:]
+                for word in words {
+                    let shown = ((strings[word] as? String) ?? word).lowercased()
+                    if let other = seen[shown] {
+                        XCTFail("\(language), \(row): “\(shown)” for both \(other) and \(word)")
+                    }
+                    seen[shown] = word
+                }
+            }
+        }
+    }
+
     /// Info.plist names exactly the languages there are.
     func testInfoPlistListsTheLanguages() throws {
         let plist = root.deletingLastPathComponent().appendingPathComponent("Info.plist")
