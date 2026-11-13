@@ -170,15 +170,15 @@
 /* Dual pane */
 "Dual Pane" = "デュアルペイン";
 "Dual Pane (D)" = "デュアルペイン (D)";
-"Dual pane: two folders side by side; Tab switches, F5 copies, F6 moves to the other (D, ⌃O)" = "デュアルペイン: 2 つのフォルダを並べて表示。Tab で切り替え、F5 で反対側にコピー、F6 で移動 (D, ⌃O)";
-"Copy to Other Pane (F5)" = "反対側のペインにコピー (F5)";
-"Move to Other Pane (F6)" = "反対側のペインに移動 (F6)";
-"Other pane" = "反対側";
+"Dual pane: two folders side by side; Tab switches, F5 copies, F6 moves to the other (D, ⌃O)" = "デュアルペイン：2 つのフォルダを並べて表示。Tab で切り替え、F5 でもう一方のペインにコピー、F6 で移動（D、⌃O）";
+"Copy to Other Pane (F5)" = "もう一方のペインにコピー (F5)";
+"Move to Other Pane (F6)" = "もう一方のペインに移動 (F6)";
+"Other pane" = "もう一方のペイン";
 "Copy there" = "そこにコピー";
 "Move there" = "そこに移動";
 "New folder" = "新規フォルダ";
 "Mark" = "マーク";
-"Single pane" = "シングル";
+"Single pane" = "シングルペイン";
 "“%@” already exists in “%@”." = "“%@” はすでに “%@” にあります。";
 "Keep both: the new one gets a number. Skip: it stays where it is." = "両方を残す: 新しい項目に番号が付きます。スキップ: 元の場所に残ります。";
 "Keep Both" = "両方を残す";
@@ -186,12 +186,12 @@
 "The marked items will be moved to the Trash, folders with everything in them." = "マークした項目はゴミ箱に入れられます。フォルダは中身ごと入れられます。";
 "Dual pane and marking" = "デュアルペインとマーク";
 "Dual pane on / off: two folders side by side" = "デュアルペインのオン / オフ: 2 つのフォルダを並べて表示";
-"Switch to the other pane" = "反対側のペインに切り替え";
-"Copy / move the marked items into the other pane's folder" = "マークした項目を反対側のペインのフォルダにコピー / 移動";
+"Switch to the other pane" = "もう一方のペインに切り替え";
+"Copy / move the marked items into the other pane's folder" = "マークした項目をもう一方のペインのフォルダにコピー / 移動";
 "Mark / unmark an item" = "項目をマーク / マークを解除";
 "Mark a range" = "範囲をマーク";
 "Mark all / unmark all" = "すべてマーク / すべてのマークを解除";
-"Marked items onto a folder or into the other pane: moved (copied to another volume)" = "マークした項目をフォルダの上または反対側のペインへ: 移動 (別のボリュームへはコピー)";
+"Marked items onto a folder or into the other pane: moved (copied to another volume)" = "マークした項目をフォルダの上またはもう一方のペインへ：移動（別のボリュームへはコピー）";
 "Quit (F10 asks first)" = "終了（F10 は確認あり）";
 "The app's menus in the window" = "ウインドウ内のアプリのメニュー";
 "Do you want to quit Schnellbild?" = "Schnellbild を終了しますか？";
@@ -276,7 +276,7 @@
 "Redo Move to Trash" = "ゴミ箱に入れるをやり直す";
 "Redo Move" = "移動をやり直す";
 "Redo Copy" = "コピーをやり直す";
-"Open in Other Pane" = "もう一方のパネルで開く";
+"Open in Other Pane" = "もう一方のペインで開く";
 "Version %@ (%@)" = "バージョン %@ (%@)";
 "Video formats for macOS" = "macOS用のビデオフォーマット";
 "MKV and AVCHD through macOS" = "macOSによるMKVとAVCHD";
@@ -285,8 +285,8 @@
 "Checking…" = "確認中…";
 "Open System Settings…" = "システム設定を開く…";
 "Turned on (“Schnellbild Video Formats” under Media Extensions), macOS makes the thumbnails of MKV videos and AVCHD camcorder clips itself: Finder and Schnellbild show them at once and macOS keeps them (macOS 26). Off, Schnellbild makes them itself." = "オンにすると（メディア拡張機能の“Schnellbild Video Formats”）、MKVビデオとAVCHDビデオカメラのクリップのサムネールをmacOSが自分で作成します。FinderとSchnellbildがすぐに表示し、macOSが保持します（macOS 26）。オフの場合はSchnellbildが自分で作成します。";
-"Divider between the panes" = "パネル間の仕切り";
-"Drag to give one pane more room; double-click to share equally" = "ドラッグすると一方のパネルが広くなります。ダブルクリックで均等に戻ります";
+"Divider between the panes" = "ペイン間の仕切り";
+"Drag to give one pane more room; double-click to share equally" = "ドラッグすると一方のペインが広くなります。ダブルクリックで均等に戻ります";
 "New Window" = "新規ウインドウ";
 "New window (e.g. for another display)" = "新規ウインドウ（別のディスプレイ用など）";
 "Format" = "フォーマット";
