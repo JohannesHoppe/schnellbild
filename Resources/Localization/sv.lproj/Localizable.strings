@@ -315,3 +315,5 @@
 "Each folder asks for your permission again." = "Varje mapp ber om ditt tillstånd igen.";
 "© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later. Built from its source without VLC's modules under the GPL; the build script and its changes are in Schnellbild's repository (github.com/JohannesHoppe/schnellbild)." = "© VideoLAN och VLC:s upphovspersoner. GNU Lesser General Public License 2.1 eller senare. Byggd från källkoden utan VLC:s moduler under GPL; byggskriptet och dess ändringar finns i Schnellbilds arkiv (github.com/JohannesHoppe/schnellbild).";
 "The other pane shows search results. Clear its search to copy or move into its folder." = "Den andra panelen visar sökresultat. Rensa sökningen där för att kopiera eller flytta till dess mapp.";
+"Reload" = "Läs in igen";
+"Read the folder again" = "Läs in mappen igen";

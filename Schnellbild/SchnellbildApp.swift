@@ -39,6 +39,10 @@ struct SchnellbildApp: App {
         // their own preferences (`--reset-state` clears them)
         ArchiveStore.shared.passwords = ProcessInfo.processInfo.arguments.contains("--ui-testing")
             ? .defaults(defaults) : .keychain()
+        // Each pane watches the folder it shows for changes outside the app;
+        // volumes coming and going and the app turning active reach them too
+        BrowserModel.watchFoldersByDefault = true
+        DiskEvents.start()
         let left = BrowserModel(defaults: defaults)
         _first = StateObject(wrappedValue: WindowModel(left: left, defaults: defaults) {
             BrowserModel(defaults: defaults, settingsPrefix: "rightPane.")
@@ -109,6 +113,12 @@ struct SchnellbildApp: App {
                     .disabled(!model.canTrash || window.anySheetOpen)
             }
             CommandGroup(after: .toolbar) {
+                // The folder read again: changes outside the app show by
+                // themselves where the system reports them (not on every share)
+                Button("Reload") { model.reload() }
+                    .keyboardShortcut("r")
+                    .disabled(model.folderURL == nil || model.isLoading || model.slideshow != nil || window.anySheetOpen)
+                Divider()
                 Toggle("as Grid", isOn: Binding(get: { model.viewMode == .grid }, set: { if $0 { model.viewMode = .grid } }))
                 Toggle("as List", isOn: Binding(get: { model.viewMode == .list }, set: { if $0 { model.viewMode = .list } }))
                 Divider()

@@ -779,7 +779,7 @@ final class BrowserModel: ObservableObject {
     }
 
     @Published private(set) var folderURL: URL? {
-        didSet { folderPath = folderURL.map(Self.canonicalPath) }
+        didSet { folderPath = folderURL.map(Self.canonicalPath); updateWatch() }
     }
     /// `canonicalPath(folderURL)`, kept so grid cells don't recompute it.
     private var folderPath: String?
@@ -1043,6 +1043,8 @@ final class BrowserModel: ObservableObject {
         if mode == .detail { closeDetail() }
         if isSearching { stopSearch() }
         bossKeyObserver = nil
+        inWindow = false
+        updateWatch()
     }
 
     /// The file `activePlayer` plays (the Inspector asks only that one).
@@ -1223,6 +1225,8 @@ final class BrowserModel: ObservableObject {
 
     /// The pane shows in a window (again): it listens to the app's events.
     func enterWindow() {
+        inWindow = true
+        updateWatch()
         // The boss key mutes the video playing at once, and gives it its sound back
         bossKeyObserver = NotificationToken(BossKey.changed) { [weak self] _ in
             MainActor.assumeIsolated { guard let self else { return }; self.activePlayer?.setVolume(self.audibleVolume) }
@@ -1301,8 +1305,11 @@ final class BrowserModel: ObservableObject {
         let url = location.folder
         let target = location.selected
         Task {
+            // The folder's date first: a change during the listing shows as one later (`relist`)
+            let stamp = await FolderPreviewCache.stamp(of: url)
             let scanned = await Self.listing(url, password: password)
             guard self.loadGeneration == generation else { return }   // a newer navigation won
+            self.listedStamp = stamp
             var full = (try? scanned.get().entries) ?? []
             if let parent = Self.parentFolder(of: url) {
                 full.insert(GridEntry(url: parent, kind: .parent), at: 0)
@@ -3133,6 +3140,206 @@ final class BrowserModel: ObservableObject {
             let path = Self.canonicalPath(folder)
             return path == folderPath || (isFiltering && Self.isSameOrInside(path, folderPath))
         }
+    }
+
+    // MARK: Changes outside the app
+
+    /// Whether panes watch the folder they show (FSEvents, `FolderWatch`):
+    /// the app turns it on at launch; a test turns it on for its own model.
+    static var watchFoldersByDefault = false
+    var watchesFolder = BrowserModel.watchFoldersByDefault {
+        didSet { updateWatch() }
+    }
+    private var watch: FolderWatch?
+    /// In a window (not one that closed, `leaveWindow`).
+    private var inWindow = true
+
+    /// The watch follows the folder shown (none inside an archive: nothing
+    /// changes there).
+    private func updateWatch() {
+        guard watchesFolder, inWindow, let folderURL, ArchivePath.split(folderURL) == nil else { watch = nil; return }
+        guard watch?.path != folderURL.path else { return }
+        watch = nil
+        watch = FolderWatch(path: folderURL.path) { [weak self] changed, rootChanged in
+            self?.changedOutside(changed, rootChanged: rootChanged)
+        }
+    }
+
+    /// FSEvents: something changed in or below the folder shown (`changed`:
+    /// the folders whose contents changed, nil for too many to name).
+    func changedOutside(_ changed: [String]?, rootChanged: Bool) {
+        guard let folderURL, let folderPath else { return }
+        if rootChanged { followFolderGone(); return }
+        guard let changed else {
+            forgetBelow(nil)
+            relist(force: true, searchAgain: isFiltering)
+            return
+        }
+        let below = changed.filter { $0 != folderPath && Self.isSameOrInside($0, folderPath) }
+        if !below.isEmpty {
+            forgetBelow(below)
+            // A search shown finds what arrived there, and drops what went
+            if isFiltering, let run = search {
+                let folders = below.map { URL(fileURLWithPath: $0, isDirectory: true) }
+                searchArrivals(in: folders, below: folderURL, for: run)
+                dropVanishedResults(in: Set(below))
+            }
+        }
+        if changed.contains(folderPath) { relist(force: true) }
+    }
+
+    /// Folder tiles read their previews and emptiness again: the folders
+    /// around `paths` (canonical), or every one (nil).
+    private func forgetBelow(_ paths: [String]?) {
+        if let paths {
+            let affected = paths.flatMap { FileChange.removed(URL(fileURLWithPath: $0, isDirectory: true)).affectedFolders }
+            FolderPreviewCache.shared.forget(affected)
+            emptyFolders.subtract(affected)
+        } else {
+            FolderPreviewCache.shared.forgetAll()
+            emptyFolders = []
+        }
+        folderChanges += 1
+    }
+
+    /// Search results directly in `folders` that are no longer on disk leave
+    /// the results (checked off the main thread).
+    private func dropVanishedResults(in folders: Set<String>) {
+        let candidates = entries.filter { folders.contains(Self.canonicalPath($0.url.deletingLastPathComponent())) }.map(\.url)
+        guard !candidates.isEmpty else { return }
+        Task {
+            let gone = await Blocking.run(.utility) { candidates.filter { !FileManager.default.fileExists(atPath: $0.path) } }
+            if !gone.isEmpty { applyHere(gone.map(FileChange.removed)) }
+        }
+    }
+
+    /// The folder's own date when it was listed: `relist` reads it again
+    /// only when that changed.
+    private var listedStamp: Date?
+    private var relisting = false
+    /// Asked again while reading: read once more when done.
+    private var relistQueued: (force: Bool, searchAgain: Bool)?
+
+    /// The folder shown, read again in place (changes outside the app: the
+    /// Finder, a camera import, another Mac on a share): what came, went or
+    /// changed shows, the selection, marks, search and scroll position stay.
+    /// Unless `force`, only when the folder's date changed since it was
+    /// listed (one look at the disk, off the main thread). `searchAgain`: a
+    /// search shown searches again once the listing is in (Reload).
+    func relist(force: Bool = false, searchAgain: Bool = false) {
+        guard let folderURL, !isLoading else { return }
+        guard ArchivePath.split(folderURL) == nil else {
+            if force { load(Location(folder: folderURL, query: searchText, selected: selectedEntry?.url), keeping: (marked, selectionChosen)) }
+            return
+        }
+        guard !relisting else {
+            relistQueued = (force || relistQueued?.force == true, searchAgain || relistQueued?.searchAgain == true)
+            return
+        }
+        relisting = true
+        let generation = loadGeneration, known = listedStamp
+        Task {
+            defer {
+                relisting = false
+                if let again = relistQueued {
+                    relistQueued = nil
+                    relist(force: again.force, searchAgain: again.searchAgain)
+                }
+            }
+            let stamp = await FolderPreviewCache.stamp(of: folderURL)
+            guard loadGeneration == generation else { return }
+            // (no date: unreadable for now, a share slow to answer: left as
+            // it is; a folder deleted or a volume gone is told otherwise,
+            // FSEvents' `rootChanged`, `volumesChanged`)
+            guard force || (stamp != nil && stamp != known) else { return }
+            guard case .success(let listing) = await Self.listing(folderURL) else { return }
+            guard loadGeneration == generation, !isLoading else { return }
+            listedStamp = stamp
+            merge(listing)
+            if searchAgain, isFiltering {
+                pendingResultSelection = selectedEntry?.url
+                applyFilter()
+            }
+        }
+    }
+
+    /// A listing read again, merged into the one shown: what went leaves
+    /// every list (as if trashed here), what came or changed goes where it
+    /// sorts; nothing else moves.
+    private func merge(_ listing: FolderListing) {
+        if listing.others != otherFiles { otherFiles = listing.others }
+        var fresh: [String: GridEntry] = [:]
+        for entry in listing.entries { fresh[Self.canonicalPath(entry.url)] = entry }
+        var gone: [FileChange] = []
+        var renewed: [GridEntry] = []
+        var listed = Set<String>()
+        for entry in allEntries where entry.kind != .parent {
+            let path = Self.canonicalPath(entry.url)
+            listed.insert(path)
+            guard let now = fresh[path] else { gone.append(.removed(entry.url)); continue }
+            if now != entry { renewed.append(now) }
+        }
+        let changedPaths = Set(renewed.map { Self.canonicalPath($0.url) })
+        renewed += listing.entries.filter { !listed.contains(Self.canonicalPath($0.url)) }
+        if !gone.isEmpty {
+            applyHere(gone)
+            // The picture shown full size went: back to the grid
+            if mode == .detail, selectedMediaEntry == nil { mode = .grid }
+        }
+        guard !renewed.isEmpty else { return }
+        forgetBelow(renewed.filter { $0.kind == .folder }.map { Self.canonicalPath($0.url) })
+        let keep = selectedEntry?.url
+        let previous = selection
+        let unchanged = changedPaths.isEmpty ? allEntries : allEntries.filter { !changedPaths.contains(Self.canonicalPath($0.url)) }
+        allEntries = entryOrder.merged(unchanged, renewed)
+        if isFiltering {
+            // What arrived and matches: the search finds it
+            if let run = search, let folderURL { searchArrivals(in: [folderURL], below: folderURL, for: run) }
+            return
+        }
+        entries = allEntries
+        keepSelection(index(of: keep) ?? previous.map { min($0, entries.count - 1) })
+    }
+
+    /// The folder shown went (deleted, moved away, its volume gone): the
+    /// nearest folder around it still there opens, at last the drives' level.
+    private func followFolderGone() {
+        guard let folderURL else { return }
+        let generation = loadGeneration
+        Task {
+            let place = await Blocking.run(.utility) { () -> URL? in
+                var candidate: URL? = folderURL
+                while let folder = candidate {
+                    var isFolder: ObjCBool = false
+                    if FileManager.default.fileExists(atPath: folder.path, isDirectory: &isFolder), isFolder.boolValue { return folder }
+                    candidate = BrowserModel.parentFolder(of: folder)
+                }
+                return nil
+            }
+            guard loadGeneration == generation, let place, !Self.samePath(place, folderURL) else { return }
+            // Not into the history: the folder left is gone
+            load(Location(folder: place, query: "", selected: nil))
+        }
+    }
+
+    /// A volume was mounted or unmounted (`unmounted`): a pane showing a
+    /// folder on it goes to the drives' level; one showing the drives' level
+    /// lists them again.
+    func volumesChanged(unmounted volume: URL?) {
+        guard let folderURL else { return }
+        if let volume, Self.isSameOrInside(Self.canonicalPath(folderURL), Self.canonicalPath(volume)), !Self.isDrivesLevel(volume) {
+            load(Location(folder: URL(fileURLWithPath: Self.volumesPath, isDirectory: true), query: "", selected: nil))
+            return
+        }
+        if Self.isDrivesLevel(folderURL) { relist(force: true) }
+    }
+
+    /// View → Reload (⌘R): the folder shown read again, its tiles too; a
+    /// search searches again.
+    func reload() {
+        guard folderURL != nil, !isLoading, slideshow == nil else { return }
+        forgetBelow(nil)
+        relist(force: true, searchAgain: isFiltering)
     }
 
     /// F1 / "Schnellbild Help". Not over the rename sheet: a second sheet

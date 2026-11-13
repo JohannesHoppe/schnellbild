@@ -92,6 +92,7 @@ struct ShortcutsHelpView: View {
         Group(title: "Grid and full view", shortcuts: [
             Shortcut(keys: "⌘[ / ⌘]", action: "Back / forward (history)"),
             Shortcut(keys: "⌘↑", action: "Enclosing folder"),
+            Shortcut(keys: "⌘R", action: "Read the folder again"),
             Shortcut(keys: "⌘1 … ⌘5", action: "Sort by name, kind, date modified, date taken, size (again: reverse)"),
             Shortcut(keys: "f / ⌃⌘F", action: "Toggle full screen"),
             Shortcut(keys: "⌘O", action: "Open folder"),
