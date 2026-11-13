@@ -329,3 +329,4 @@
 "%@ Mbit/s" = "%@ Mbit/sn";
 "%lld kbit/s" = "%lld kbit/sn";
 "Search names, also in subfolders" = "Ad ara, alt klasörlerde de";
+"Drag a folder here, press ⌘O, or click Open Another Folder…" = "Buraya bir klasör sürükleyin, ⌘O’ya basın ya da Başka Bir Klasör Aç…’ı tıklayın";

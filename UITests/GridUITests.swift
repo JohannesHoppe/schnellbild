@@ -203,6 +203,19 @@ final class GridUITests: SchnellbildUITestCase {
         XCTAssertFalse(searchField.isEnabled, "but disabled without a folder")
     }
 
+    /// The first launch (no last folder) opens the Pictures folder (here a
+    /// stand-in, `--pictures-folder`); an empty one still says how to open
+    /// another.
+    func testTheFirstLaunchOpensThePicturesFolder() throws {
+        let app = launch(extra: ["--pictures-folder=\(tempDir.path)"])
+        XCTAssertTrue(app.staticTexts["a.jpg"].waitForExistence(timeout: 15), "the pictures, not an empty window")
+        app.terminate()
+        let empty = try folder("empty")
+        let second = launch(extra: ["--pictures-folder=\(empty.path)"])
+        XCTAssertTrue(second.staticTexts["This folder is empty"].waitForExistence(timeout: 15))
+        XCTAssertTrue(element("dropHint.empty").exists, "the way to another folder")
+    }
+
     func testLastFolderIsRestoredOnRelaunch() {
         launchOnTempDir()
         app.terminate()

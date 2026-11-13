@@ -260,7 +260,7 @@ AVI/MKV/WebM and other non-native formats play **in-app via vendored VLCKit
   video through VLC), `--test-log=<path>` (the app logs what the screen
   doesn't show, e.g. each rename), `--search-delay=<ms>` (a search that stays
   running),
-  `--hold-volume-display` (the volume display stays, for a test to read it). Not covered
+  `--hold-volume-display` (the volume display stays, for a test to read it), `--pictures-folder=<path>` (the folder a first launch opens, `BrowserModel.defaultFolder`: the user's real ~/Pictures outside the UI tests, none in them otherwise, so `--reset-state` still starts with "No folder open"). Not covered
   end-to-end: drag & drop from Finder, Reveal in Finder, Open with default app
   (unit-tested through `FileActions`).
   UI run: `xcodegen generate` → `xcodebuild test -project Schnellbild.xcodeproj

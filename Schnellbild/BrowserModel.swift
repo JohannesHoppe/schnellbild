@@ -1368,6 +1368,25 @@ final class BrowserModel: ObservableObject {
         for prefix in prefixes { defaults.removeObject(forKey: prefix + restoreUnconfirmedKey) }
     }
 
+    /// Where the first launch starts, with no last folder: the user's
+    /// Pictures (the real one, not the sandbox container's; the
+    /// entitlements grant it), if it is there. UI tests name their own
+    /// (`--pictures-folder=<path>`) and have none otherwise.
+    static var defaultFolder: URL? {
+        let arguments = ProcessInfo.processInfo.arguments
+        let folder: URL
+        if arguments.contains("--ui-testing") {
+            let prefix = "--pictures-folder="
+            guard let path = arguments.first(where: { $0.hasPrefix(prefix) })?.dropFirst(prefix.count) else { return nil }
+            folder = URL(fileURLWithPath: String(path), isDirectory: true)
+        } else {
+            guard let home = getpwuid(getuid())?.pointee.pw_dir else { return nil }
+            folder = URL(fileURLWithPath: String(cString: home), isDirectory: true).appendingPathComponent("Pictures", isDirectory: true)
+        }
+        var isDirectory: ObjCBool = false
+        return FileManager.default.fileExists(atPath: folder.path, isDirectory: &isDirectory) && isDirectory.boolValue ? folder : nil
+    }
+
     func restoreLastFolder(orElse fallback: @escaping @MainActor () -> URL? = { nil }) {
         guard folderURL == nil else { return }
         guard let path = defaults.string(forKey: lastFolderKey) else {

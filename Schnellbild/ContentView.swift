@@ -80,7 +80,8 @@ private struct WindowView: View {
                 launched = true
                 if window.left.folderURL == nil {
                     if window.number == 1 {
-                        if !window.left.openFromLaunchArguments() { window.left.restoreLastFolder() }
+                        // The first launch: the Pictures folder, not an empty window
+                        if !window.left.openFromLaunchArguments() { window.left.restoreLastFolder { BrowserModel.defaultFolder } }
                     } else {
                         // A new window: its own last folder, else the one it was opened from
                         let start = window.startFolder
@@ -717,6 +718,13 @@ struct EmptyStateView: View {
                     .foregroundStyle(.secondary)
                 Text("This folder is empty")
                     .font(.title2)
+                // The Pictures folder opened at the first launch, empty: how to get to the pictures
+                if model.folderURL.map(BrowserModel.canonicalPath) == BrowserModel.defaultFolder.map(BrowserModel.canonicalPath) {
+                    Text("Drag a folder here, press ⌘O, or click Open Another Folder…")
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                        .accessibilityIdentifier("dropHint.empty")
+                }
                 if model.canGoUp {
                     Text("⌘↑ goes up one folder level.")
                         .foregroundStyle(.secondary)

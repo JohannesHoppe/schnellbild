@@ -329,3 +329,4 @@
 "%@ Mbit/s" = "%@ Mbit/s";
 "%lld kbit/s" = "%lld kbit/s";
 "Search names, also in subfolders" = "搜索名称，包括子文件夹";
+"Drag a folder here, press ⌘O, or click Open Another Folder…" = "将文件夹拖到这里，按下 ⌘O，或点按“打开其他文件夹…”";
