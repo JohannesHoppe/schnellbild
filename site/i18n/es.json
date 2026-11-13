@@ -45,7 +45,7 @@
     },
     {
       "title": "Los archivos comprimidos se abren como carpetas",
-      "text": "<p>ZIP, RAR y 7z, cómics (CBZ, CBR) incluidos, también en varias partes; ZIP y RAR, también con contraseña. No se descomprime nada en el disco, y los vídeos se reproducen directamente desde el archivo. (7z necesita un macOS reciente: macOS 15 no puede leer la mayoría.)</p>",
+      "text": "<p>ZIP, RAR y 7z, cómics (CBZ, CBR) incluidos, también en varias partes; ZIP y RAR, también con contraseña. No se descomprime nada en el disco, y los vídeos se reproducen directamente desde el archivo.</p>",
       "alt": "Archivos comprimidos mostrados como carpetas con previsualizaciones"
     },
     {

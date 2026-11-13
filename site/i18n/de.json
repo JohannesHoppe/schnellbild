@@ -75,7 +75,7 @@
     },
     {
       "title": "Archive öffnen sich wie Ordner",
-      "text": "<p>ZIP, RAR und 7z, Comics (CBZ, CBR) eingeschlossen, auch in mehreren Teilen; ZIP und RAR auch mit Passwort. Nichts wird auf die Festplatte entpackt, und Videos spielen direkt aus dem Archiv. (7z braucht ein aktuelles macOS: macOS 15 liest die meisten nicht.)</p>",
+      "text": "<p>ZIP, RAR und 7z, Comics (CBZ, CBR) eingeschlossen, auch in mehreren Teilen; ZIP und RAR auch mit Passwort. Nichts wird auf die Festplatte entpackt, und Videos spielen direkt aus dem Archiv.</p>",
       "alt": "Archive als Ordner mit Vorschau"
     },
     {

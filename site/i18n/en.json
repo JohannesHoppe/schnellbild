@@ -75,7 +75,7 @@
     },
     {
       "title": "Archives open like folders",
-      "text": "<p>ZIP, RAR and 7z, comics (CBZ, CBR) included, also in several parts; ZIP and RAR also with a password. Nothing is unpacked to disk, and videos play straight from the archive. (7z needs a recent macOS: macOS 15 can't read most of them.)</p>",
+      "text": "<p>ZIP, RAR and 7z, comics (CBZ, CBR) included, also in several parts; ZIP and RAR also with a password. Nothing is unpacked to disk, and videos play straight from the archive.</p>",
       "alt": "Archives shown as folders with previews"
     },
     {

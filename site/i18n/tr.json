@@ -45,7 +45,7 @@
     },
     {
       "title": "Arşivler klasör gibi açılır",
-      "text": "<p>ZIP, RAR ve 7z, çizgi romanlar (CBZ, CBR) dahil, çok parçalı olanlar da; ZIP ve RAR parolalı olsa bile. Diske hiçbir şey açılmaz, videolar doğrudan arşivden oynar. (7z için güncel bir macOS gerekir: macOS 15 bunların çoğunu okuyamaz.)</p>",
+      "text": "<p>ZIP, RAR ve 7z, çizgi romanlar (CBZ, CBR) dahil, çok parçalı olanlar da; ZIP ve RAR parolalı olsa bile. Diske hiçbir şey açılmaz, videolar doğrudan arşivden oynar.</p>",
       "alt": "Önizlemeli klasörler olarak gösterilen arşivler"
     },
     {
