@@ -325,3 +325,7 @@
 "Its data can't be decoded." = "データをデコードできません。";
 "Space" = "スペース";
 "Rename (F6 too in a single pane)" = "名前を変更（シングルペインでは F6 も）";
+"%@ fps" = "%@ fps";
+"%@ Mbit/s" = "%@ Mbps";
+"%lld kbit/s" = "%lld kbps";
+"Search names, also in subfolders" = "名前を検索（サブフォルダも）";

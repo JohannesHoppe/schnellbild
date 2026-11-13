@@ -325,3 +325,7 @@
 "Its data can't be decoded." = "Jeho data nelze dekódovat.";
 "Space" = "Mezerník";
 "Rename (F6 too in a single pane)" = "Přejmenovat (v jednom panelu i F6)";
+"%@ fps" = "%@ sn./s";
+"%@ Mbit/s" = "%@ Mb/s";
+"%lld kbit/s" = "%lld kb/s";
+"Search names, also in subfolders" = "Hledat názvy i v podsložkách";

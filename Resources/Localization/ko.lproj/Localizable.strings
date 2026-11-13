@@ -325,3 +325,7 @@
 "Its data can't be decoded." = "데이터를 디코딩할 수 없습니다.";
 "Space" = "스페이스";
 "Rename (F6 too in a single pane)" = "이름 변경 (단일 패널에서는 F6도)";
+"%@ fps" = "%@fps";
+"%@ Mbit/s" = "%@Mbps";
+"%lld kbit/s" = "%lldkbps";
+"Search names, also in subfolders" = "이름 검색(하위 폴더 포함)";

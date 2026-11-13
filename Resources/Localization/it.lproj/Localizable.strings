@@ -289,7 +289,7 @@
 "Audio" = "Audio";
 "Duration" = "Durata";
 "Bitrate" = "Bitrate";
-"Bit Depth" = "Profondità";
+"Bit Depth" = "Profondità colore";
 "Profile" = "Profilo";
 "Camera" = "Fotocamera";
 "The file extension doesn't match the content (%@). Recommended: .%@" = "L’estensione del file non corrisponde al contenuto (%@). Consigliata: .%@";
@@ -325,3 +325,7 @@
 "Its data can't be decoded." = "I dati non possono essere decodificati.";
 "Space" = "Spazio";
 "Rename (F6 too in a single pane)" = "Rinomina (con un solo pannello anche F6)";
+"%@ fps" = "%@ fps";
+"%@ Mbit/s" = "%@ Mbit/s";
+"%lld kbit/s" = "%lld kbit/s";
+"Search names, also in subfolders" = "Cerca nomi, anche nelle sottocartelle";

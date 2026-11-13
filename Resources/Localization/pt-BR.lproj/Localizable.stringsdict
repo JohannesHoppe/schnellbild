@@ -18,6 +18,42 @@
 			<string>%lld arquivos compactados</string>
 		</dict>
 	</dict>
+	<key>%lld bits</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@count@</string>
+		<key>count</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>many</key>
+			<string>%lld bits</string>
+			<key>one</key>
+			<string>%lld bit</string>
+			<key>other</key>
+			<string>%lld bits</string>
+		</dict>
+	</dict>
+	<key>%lld channels</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@count@</string>
+		<key>count</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>many</key>
+			<string>%lld canais</string>
+			<key>one</key>
+			<string>%lld canal</string>
+			<key>other</key>
+			<string>%lld canais</string>
+		</dict>
+	</dict>
 	<key>%lld folders</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>

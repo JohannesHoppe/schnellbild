@@ -325,3 +325,7 @@
 "Its data can't be decoded." = "Данные не удаётся декодировать.";
 "Space" = "Пробел";
 "Rename (F6 too in a single pane)" = "Переименовать (в одной панели также F6)";
+"%@ fps" = "%@ кадр/с";
+"%@ Mbit/s" = "%@ Мбит/с";
+"%lld kbit/s" = "%lld кбит/с";
+"Search names, also in subfolders" = "Искать имена, также в подпапках";

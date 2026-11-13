@@ -22,6 +22,46 @@
 			<string>%lld archivů</string>
 		</dict>
 	</dict>
+	<key>%lld bits</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@count@</string>
+		<key>count</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld bity</string>
+			<key>many</key>
+			<string>%lld bitu</string>
+			<key>one</key>
+			<string>%lld bit</string>
+			<key>other</key>
+			<string>%lld bitů</string>
+		</dict>
+	</dict>
+	<key>%lld channels</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@count@</string>
+		<key>count</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld kanály</string>
+			<key>many</key>
+			<string>%lld kanálu</string>
+			<key>one</key>
+			<string>%lld kanál</string>
+			<key>other</key>
+			<string>%lld kanálů</string>
+		</dict>
+	</dict>
 	<key>%lld folders</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>

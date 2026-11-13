@@ -325,3 +325,7 @@
 "Its data can't be decoded." = "无法解码其数据。";
 "Space" = "空格";
 "Rename (F6 too in a single pane)" = "重新命名（单窗格中也可用 F6）";
+"%@ fps" = "%@ 帧/秒";
+"%@ Mbit/s" = "%@ Mbit/s";
+"%lld kbit/s" = "%lld kbit/s";
+"Search names, also in subfolders" = "搜索名称，包括子文件夹";
