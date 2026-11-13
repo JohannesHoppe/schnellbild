@@ -91,7 +91,7 @@ mkdir -p "$FORMATS/Contents/MacOS"
 # Its entry is ExtensionKit's; it has no main of its own
 xcrun swiftc -O -target arm64-apple-macos15.0 -module-name SchnellbildFormats -parse-as-library \
   "$ROOT/FormatReader/MatroskaIndex.swift" "$ROOT/FormatReader/TransportIndex.swift" "$ROOT/FormatReader/FormatReader.swift" \
-  -framework MediaExtension -framework ExtensionFoundation -Xlinker -e -Xlinker _EXExtensionMain \
+  -framework MediaExtension -framework ExtensionFoundation -Xlinker -e -Xlinker _NSExtensionMain \
   -o "$FORMATS/Contents/MacOS/SchnellbildFormats"
 cp "$ROOT/FormatReader/Info.plist" "$FORMATS/Contents/Info.plist"
 for key in CFBundleShortVersionString CFBundleVersion; do
