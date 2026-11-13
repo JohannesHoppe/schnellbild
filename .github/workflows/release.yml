@@ -4,8 +4,9 @@
 # is signed with the Developer ID, packed into a DMG and submitted to Apple for
 # notarization without waiting; the DMG is kept as artifact "macos-signed".
 # mac-release.yml attaches it to the release as soon as Apple accepts it —
-# after minutes or days. Without the secrets the DMG is ad-hoc signed and
-# attached right away.
+# after minutes or days. A tag build fails without the secrets: a release is
+# always signed and notarized. Started by hand on a branch without them, the
+# DMG is ad-hoc signed and kept as artifact "macos" (no release).
 name: Release
 
 on:
@@ -26,6 +27,12 @@ jobs:
     env:
       SIGN: ${{ secrets.MACOS_CERT_P12 != '' }}
     steps:
+      - name: A release needs the signing secrets
+        if: startsWith(github.ref, 'refs/tags/v') && env.SIGN != 'true'
+        run: |
+          echo "::error::The signing secrets are missing (environment release): a tag is never published ad-hoc signed"
+          exit 1
+
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
       - name: Select latest stable Xcode
@@ -116,29 +123,16 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
-        if: needs.build.outputs.signed != 'true'
-        with:
-          name: macos
       - name: Create the release
         env:
           GH_TOKEN: ${{ github.token }}
           SIGNED: ${{ needs.build.outputs.signed }}
         run: |
-          files=()
-          if [ "$SIGNED" = true ]; then
-            notes="The notarized DMG is attached as soon as Apple has checked it (usually minutes)."
-            # Not "Latest" until the DMG is attached (Finish Mac release marks
-            # it), so releases/latest/download/Schnellbild.dmg keeps working
-            latest=--latest=false
-          else
-            notes="Not notarized: on first launch right-click → Open, or run xattr -dr com.apple.quarantine /Applications/Schnellbild.app"
-            files=(Schnellbild.dmg)
-            latest=--latest
-          fi
-          if gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            if [ ${#files[@]} -gt 0 ]; then gh release upload "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --clobber "${files[@]}"; fi
-          else
+          [ "$SIGNED" = true ] || { echo "::error::not signed: no release"; exit 1; }
+          notes="The notarized DMG is attached as soon as Apple has checked it (usually minutes)."
+          # Not "Latest" until the DMG is attached (Finish Mac release marks
+          # it), so releases/latest/download/Schnellbild.dmg keeps working
+          if ! gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
             gh release create "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --title "$GITHUB_REF_NAME" \
-              --generate-notes --notes "$notes" "$latest" "${files[@]}"
+              --generate-notes --notes "$notes" --latest=false
           fi

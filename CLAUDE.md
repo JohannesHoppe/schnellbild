@@ -285,7 +285,7 @@ AVI/MKV/WebM and other non-native formats play **in-app via vendored VLCKit
   inside VLCKit and its plugins first, inside out), the DMG signed and
   **submitted to Apple without waiting** (`Scripts/package_dmg.sh submit`),
   kept as artifact `macos-signed` (90 days). The job `release` creates the
-  GitHub Release, signed: not marked "Latest" until its DMG is attached, so the README's `releases/latest/download` link never 404s. Without secrets: ad-hoc signed DMG attached right away, marked Latest.
+  GitHub Release, signed: not marked "Latest" until its DMG is attached, so the README's `releases/latest/download` link never 404s. A tag build without the secrets fails at its first step (a release is never ad-hoc signed); started by hand on a branch without them, the ad-hoc DMG is only kept as artifact `macos`.
 - `.github/workflows/mac-release.yml`: after every Release run, every 30 min
   and by hand. Finds the newest release without `Schnellbild.dmg`, fetches
   `macos-signed`, runs `package_dmg.sh finish` (scripts from the same commit):
