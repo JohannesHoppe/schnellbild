@@ -257,7 +257,7 @@
 "Search mode" = "Režim hledání";
 "No folder, archive, picture or video whose name matches “%@”, in this folder or its subfolders." = "V této složce ani v jejích podsložkách není složka, archiv, obrázek ani video, jehož název odpovídá „%@“.";
 "“%@” is not a valid regular expression." = "„%@“ není platný regulární výraz.";
-"Boss key: hidden and silent at once; X X X brings it back" = "Šéfovo tlačítko: hned skryté a ztlumené; X X X vše vrátí";
+"Boss key: hidden and silent at once; X X X or the Dock icon brings it back" = "Šéfovo tlačítko: hned skryté a ztlumené; X X X nebo ikona v Docku vše vrátí";
 "Into “%@”" = "Do „%@“";
 "Bookmarks" = "Záložky";
 "Bookmark This Folder" = "Přidat záložku pro tuto složku";

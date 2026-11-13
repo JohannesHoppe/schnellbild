@@ -257,7 +257,7 @@
 "Search mode" = "Tryb wyszukiwania";
 "No folder, archive, picture or video whose name matches “%@”, in this folder or its subfolders." = "Brak folderu, archiwum, obrazu lub wideo, którego nazwa pasuje do „%@”, w tym folderze ani w jego podfolderach.";
 "“%@” is not a valid regular expression." = "„%@” nie jest prawidłowym wyrażeniem regularnym.";
-"Boss key: hidden and silent at once; X X X brings it back" = "Klawisz szefa: od razu ukryte i wyciszone; X X X przywraca";
+"Boss key: hidden and silent at once; X X X or the Dock icon brings it back" = "Klawisz szefa: od razu ukryte i wyciszone; X X X lub ikona w Docku przywraca";
 "Into “%@”" = "Do „%@”";
 "Bookmarks" = "Zakładki";
 "Bookmark This Folder" = "Dodaj zakładkę do tego folderu";

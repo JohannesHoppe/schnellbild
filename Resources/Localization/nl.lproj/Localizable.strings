@@ -257,7 +257,7 @@
 "Search mode" = "Zoekmodus";
 "No folder, archive, picture or video whose name matches “%@”, in this folder or its subfolders." = "Geen map, archief, afbeelding of video waarvan de naam overeenkomt met ‘%@’, in deze map of de submappen.";
 "“%@” is not a valid regular expression." = "‘%@’ is geen geldige reguliere expressie.";
-"Boss key: hidden and silent at once; X X X brings it back" = "Baastoets: meteen verborgen en stil; X X X haalt het terug";
+"Boss key: hidden and silent at once; X X X or the Dock icon brings it back" = "Baastoets: meteen verborgen en stil; X X X of het Dock-symbool haalt het terug";
 "Into “%@”" = "Naar ‘%@’";
 "Bookmarks" = "Bladwijzers";
 "Bookmark This Folder" = "Bladwijzer voor deze map";

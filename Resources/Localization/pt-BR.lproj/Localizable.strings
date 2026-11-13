@@ -257,7 +257,7 @@
 "Search mode" = "Modo de busca";
 "No folder, archive, picture or video whose name matches “%@”, in this folder or its subfolders." = "Nenhuma pasta, arquivo compactado, imagem ou vídeo cujo nome corresponda a “%@”, nesta pasta ou em suas subpastas.";
 "“%@” is not a valid regular expression." = "“%@” não é uma expressão regular válida.";
-"Boss key: hidden and silent at once; X X X brings it back" = "Tecla do chefe: oculto e mudo na hora; X X X traz de volta";
+"Boss key: hidden and silent at once; X X X or the Dock icon brings it back" = "Tecla do chefe: oculto e mudo na hora; X X X ou o ícone no Dock traz de volta";
 "Into “%@”" = "Para “%@”";
 "Bookmarks" = "Favoritos";
 "Bookmark This Folder" = "Adicionar esta pasta aos favoritos";

@@ -257,7 +257,7 @@
 "Search mode" = "검색 모드";
 "No folder, archive, picture or video whose name matches “%@”, in this folder or its subfolders." = "이 폴더와 하위 폴더에 이름이 ‘%@’과(와) 일치하는 폴더, 아카이브, 이미지 또는 비디오가 없습니다.";
 "“%@” is not a valid regular expression." = "‘%@’은(는) 올바른 정규 표현식이 아닙니다.";
-"Boss key: hidden and silent at once; X X X brings it back" = "보스 키: 즉시 숨기고 음소거; X X X로 다시 표시";
+"Boss key: hidden and silent at once; X X X or the Dock icon brings it back" = "보스 키: 즉시 숨기고 음소거; X X X 또는 Dock 아이콘으로 다시 표시";
 "Into “%@”" = "‘%@’(으)로";
 "Bookmarks" = "책갈피";
 "Bookmark This Folder" = "이 폴더를 책갈피에 추가";

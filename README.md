@@ -63,7 +63,7 @@ Open a folder with ⌘O or drag it onto the window; drag a single file to open i
 | ⌘N | a new window, e.g. for another display: it has its own folders, dual pane and slideshow, and remembers its own last folder |
 | ⌘D | bookmark the folder shown, or remove its bookmark (also the star in the toolbar, the Bookmarks menu and a folder's right-click menu) |
 | ⌃1 … ⌃9 | open bookmark 1 … 9 |
-| X | boss key: every window turns invisible and every video silent at once; only X X X, typed with Schnellbild in front (Dock or ⌘-Tab, which show no window meanwhile), brings them back (in full screen again, if it was) |
+| X | boss key: every window turns invisible and every video silent at once; X X X typed with Schnellbild in front (⌘-Tab, which shows no window meanwhile) or a click on its Dock icon brings them back (in full screen again, if it was); ⌘Q still quits |
 | ⌘A / Esc | mark all / unmark; Esc with nothing marked clears the search |
 
 ### List view
