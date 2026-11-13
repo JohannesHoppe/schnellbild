@@ -377,10 +377,11 @@ def not_found(t):
 
 
 def markdown(text):
-    """The little Markdown AppStore/EULA.md uses: # and ## headings, paragraphs, <https://…> links."""
+    """The little Markdown AppStore/EULA.md uses: # and ## headings, paragraphs (their line breaks kept), <https://…> links."""
     blocks = []
     for block in re.split(r"\n\s*\n", text.strip()):
-        line = esc(" ".join(block.splitlines()))
+        # A line break inside a paragraph stays one (the address)
+        line = "<br>".join(esc(part) for part in block.splitlines())
         line = re.sub(r"&lt;(https://[^&\s]+)&gt;", r'<a href="\1">\1</a>', line)
         if line.startswith("## "):
             blocks.append(f"<h2>{line[3:]}</h2>")
