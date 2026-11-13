@@ -314,3 +314,4 @@
 "Forget Folder Access" = "폴더 접근 지우기";
 "Each folder asks for your permission again." = "각 폴더에서 다시 권한을 요청합니다.";
 "© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later. Built from its source without VLC's modules under the GPL; the build script and its changes are in Schnellbild's repository (github.com/JohannesHoppe/schnellbild)." = "© VideoLAN 및 VLC 작성자. GNU Lesser General Public License 2.1 이상. GPL로 배포되는 VLC 모듈을 제외하고 소스 코드로 빌드했습니다. 빌드 스크립트와 변경 사항은 Schnellbild 저장소(github.com/JohannesHoppe/schnellbild)에 있습니다.";
+"The link will be moved to the Trash. The folder it points to stays where it is." = "링크가 휴지통으로 이동됩니다. 링크가 가리키는 폴더는 그대로 남습니다.";

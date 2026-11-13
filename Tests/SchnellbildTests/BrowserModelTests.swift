@@ -3098,6 +3098,10 @@ final class OpenOtherFileTests: XCTestCase {
         for name in ["run.command", "run.sh", "tool.scpt", "setup.pkg", "disk.dmg", "x.terminal"] {
             XCTAssertFalse(LiveFiles.canOpenOtherFile(try text(name, "#!/bin/sh\necho hi\n")), name)
         }
+        // Web content would open in a browser: its scripts run, it loads from the network
+        for name in ["page.html", "page.htm", "page.xhtml", "saved.webarchive", "drawing.svg", "archive.mhtml"] {
+            XCTAssertFalse(LiveFiles.canOpenOtherFile(try text(name, "<html><script>alert(1)</script></html>")), name)
+        }
         let app = try tree.folder("Fake.app/Contents/MacOS")
         XCTAssertFalse(LiveFiles.canOpenOtherFile(app.deletingLastPathComponent().deletingLastPathComponent()))
         // A link named like a document, pointing to a script
@@ -3133,5 +3137,96 @@ final class FolderFactsTests: XCTestCase {
         XCTAssertTrue(Set(previews("trip-top")).isSubset(of: ["a.jpg", "b.jpg", "c.jpg", "d.jpg"]))
         XCTAssertEqual(previews("trip-deep"), ["x.jpg"], "none at the top: from further down")
         XCTAssertEqual(name(learnt.withoutMedia), ["trip-none"])
+    }
+}
+
+/// Symbolic links from others: a link to a folder is the link (trash,
+/// rename, move act on it, as in the Finder) and opens the folder it points
+/// to; a link named like an archive or a picture must lead to one.
+@MainActor
+final class LinkTests: XCTestCase {
+    func testALinkedFolderIsTrashedAsTheLinkAndOpensItsFolder() async throws {
+        let tree = try TempTree(self)
+        let real = try tree.folder("Pictures/2024")
+        try tree.file("Pictures/2024/a.jpg")
+        let shown = try tree.folder("Shared")
+        let link = shown.appendingPathComponent("Vacation")
+        try FileManager.default.createSymbolicLink(at: link, withDestinationURL: real)
+        // A link next to the folder it points to: two tiles, two ids
+        try FileManager.default.createSymbolicLink(at: tree.root.appendingPathComponent("Near"), withDestinationURL: shown)
+        let spy = FileActionsSpy()
+        let m = makeModel(spy)
+        await openAndWait(m, shown)
+        let tile = try XCTUnwrap(m.entries.first { $0.name == "Vacation" })
+        XCTAssertEqual(tile.url.lastPathComponent, "Vacation", "listed as the link")
+        XCTAssertTrue(BrowserModel.samePath(try XCTUnwrap(tile.linkTarget), real.resolvingSymlinksInPath()))
+        m.selectEntry(named: "Vacation")
+        m.moveSelectionToTrash()
+        XCTAssertEqual(spy.trashed.map(\.lastPathComponent), ["Vacation"])
+        XCTAssertTrue(FileManager.default.fileExists(atPath: real.appendingPathComponent("a.jpg").path), "the folder it pointed to stays")
+
+        await openAndWait(m, tree.root)
+        XCTAssertEqual(m.names, ["..", "Near", "Pictures", "Shared"])
+        XCTAssertEqual(Set(m.entries.map(\.id)).count, m.entries.count)
+        m.selectEntry(named: "Near")
+        m.activateSelection()
+        await waitUntil { m.isAt(shown.resolvingSymlinksInPath()) }
+    }
+
+    /// The other pane's change leaves a linked folder in this pane's listing.
+    func testALinkedFolderStaysWhenTheOtherPaneChangesSomething() async throws {
+        let tree = try TempTree(self)
+        let real = try tree.folder("elsewhere/real")
+        try tree.file("here/a.jpg")
+        let here = tree.root.appendingPathComponent("here")
+        try FileManager.default.createSymbolicLink(at: here.appendingPathComponent("Linked"), withDestinationURL: real)
+        let m = makeModel(FileActionsSpy())
+        await openAndWait(m, here)
+        XCTAssertEqual(m.names, ["..", "Linked", "a.jpg"])
+        m.adopt([.removed(here.appendingPathComponent("a.jpg"))])
+        XCTAssertEqual(m.names, ["..", "Linked"])
+    }
+
+    func testALinkNamedLikeAnArchiveMustLeadToOne() async throws {
+        let tree = try TempTree(self)
+        let pkg = try tree.file("setup.pkg", bytes: 10)
+        try FileManager.default.createSymbolicLink(at: tree.root.appendingPathComponent("Photos.zip"), withDestinationURL: pkg)
+        let zip = try tree.file("real.zip", bytes: 10)
+        try FileManager.default.createSymbolicLink(at: tree.root.appendingPathComponent("Comics.zip"), withDestinationURL: zip)
+        let entries = await BrowserModel.scan(tree.root)
+        XCTAssertFalse(entries.contains { $0.name == "Photos.zip" }, "no archive tile for an installer")
+        XCTAssertTrue(entries.contains { $0.name == "Comics.zip" && $0.isArchive })
+    }
+
+    /// ⌘↩ opens only what the item really is: archives of the grid's
+    /// formats, never installers, disk images or a link to another kind.
+    func testOpenWithTheDefaultAppRefusesWhatInstallsOrMounts() throws {
+        let tree = try TempTree(self)
+        func link(_ name: String, to target: URL) throws -> URL {
+            let url = tree.root.appendingPathComponent(name)
+            try FileManager.default.createSymbolicLink(at: url, withDestinationURL: target)
+            return url
+        }
+        let zip = try tree.file("real.zip", bytes: 10)
+        XCTAssertNotNil(LiveFiles.openableTarget(zip))
+        XCTAssertNotNil(LiveFiles.openableTarget(try tree.file("photo.jpg", bytes: 10)))
+        for name in ["setup.pkg", "disk.dmg", "Xcode.xip", "backup.aar", "page.html", "drawing.svg"] {
+            XCTAssertNil(LiveFiles.openableTarget(try tree.file(name, bytes: 10)), name)
+        }
+        XCTAssertNil(LiveFiles.openableTarget(try link("Photos.zip", to: tree.root.appendingPathComponent("setup.pkg"))))
+        XCTAssertNil(LiveFiles.openableTarget(try link("Photos2.zip", to: tree.root.appendingPathComponent("disk.dmg"))))
+        XCTAssertNil(LiveFiles.openableTarget(try link("holiday.jpg", to: zip)), "a link must lead to its own kind")
+        XCTAssertNotNil(LiveFiles.openableTarget(try link("comics.zip", to: zip)))
+    }
+
+    /// Drives on the drives' level are mounted and ejected by the system:
+    /// never renamed or trashed here.
+    func testDrivesAreNeitherRenamedNorTrashed() {
+        let m = makeModel(FileActionsSpy())
+        let drive = GridEntry(url: URL(fileURLWithPath: "/Volumes/USB", isDirectory: true), kind: .folder)
+        XCTAssertTrue(BrowserModel.isDrive(drive.url))
+        XCTAssertFalse(m.canRename(drive))
+        XCTAssertFalse(m.canChange(drive))
+        XCTAssertTrue(m.canChange(GridEntry(url: URL(fileURLWithPath: "/Volumes/USB/Photos", isDirectory: true), kind: .folder)))
     }
 }

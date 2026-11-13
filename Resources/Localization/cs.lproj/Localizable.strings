@@ -314,3 +314,4 @@
 "Forget Folder Access" = "Zapomenout přístup ke složkám";
 "Each folder asks for your permission again." = "Každá složka znovu požádá o tvé svolení.";
 "© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later. Built from its source without VLC's modules under the GPL; the build script and its changes are in Schnellbild's repository (github.com/JohannesHoppe/schnellbild)." = "© VideoLAN a autoři VLC. GNU Lesser General Public License 2.1 nebo novější. Sestaveno ze zdrojového kódu bez modulů VLC pod GPL; sestavovací skript a jeho změny jsou v repozitáři Schnellbild (github.com/JohannesHoppe/schnellbild).";
+"The link will be moved to the Trash. The folder it points to stays where it is." = "Odkaz bude přesunut do koše. Složka, na kterou odkazuje, zůstane, kde je.";
