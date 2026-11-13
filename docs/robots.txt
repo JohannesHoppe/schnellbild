@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://schnellbild.haushoppe-its.de/sitemap.xml
