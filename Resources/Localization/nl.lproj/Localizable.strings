@@ -329,3 +329,4 @@
 "%@ Mbit/s" = "%@ Mbit/s";
 "%lld kbit/s" = "%lld kbit/s";
 "Search names, also in subfolders" = "Zoek namen, ook in submappen";
+"Drag a folder here, press ⌘O, or click Open Another Folder…" = "Sleep een map hierheen, druk op ⌘O of klik op Open andere map…";

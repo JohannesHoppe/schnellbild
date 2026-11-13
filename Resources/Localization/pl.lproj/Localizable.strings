@@ -329,3 +329,4 @@
 "%@ Mbit/s" = "%@ Mb/s";
 "%lld kbit/s" = "%lld kb/s";
 "Search names, also in subfolders" = "Szukaj nazw, także w podfolderach";
+"Drag a folder here, press ⌘O, or click Open Another Folder…" = "Przeciągnij tu folder, naciśnij ⌘O lub kliknij Otwórz inny folder…";
