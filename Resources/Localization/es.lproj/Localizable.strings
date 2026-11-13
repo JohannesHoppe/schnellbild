@@ -325,3 +325,5 @@
 "Keep: try it again later, before the earlier actions. Forget: go on with the earlier actions." = "Conservar: volver a intentarlo más tarde, antes de las acciones anteriores. Olvidar: seguir con las acciones anteriores.";
 "Keep" = "Conservar";
 "Forget" = "Olvidar";
+"Only the file you opened is shown here." = "Aquí solo se muestra el archivo que has abierto.";
+"“%@” isn't available: its disk or server isn't connected. It opens once it is." = "«%@» no está disponible: su disco o servidor no está conectado. Se abrirá en cuanto lo esté.";

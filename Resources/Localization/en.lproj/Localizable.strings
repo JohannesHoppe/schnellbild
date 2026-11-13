@@ -325,3 +325,5 @@
 "Keep: try it again later, before the earlier actions. Forget: go on with the earlier actions." = "Keep: try it again later, before the earlier actions. Forget: go on with the earlier actions.";
 "Keep" = "Keep";
 "Forget" = "Forget";
+"Only the file you opened is shown here." = "Only the file you opened is shown here.";
+"“%@” isn't available: its disk or server isn't connected. It opens once it is." = "“%@” isn't available: its disk or server isn't connected. It opens once it is.";

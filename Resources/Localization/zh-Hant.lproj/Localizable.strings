@@ -325,3 +325,5 @@
 "Keep: try it again later, before the earlier actions. Forget: go on with the earlier actions." = "保留：稍後再試，先於更早的動作。忘記：繼續處理更早的動作。";
 "Keep" = "保留";
 "Forget" = "忘記";
+"Only the file you opened is shown here." = "這裡只顯示你打開的檔案。";
+"“%@” isn't available: its disk or server isn't connected. It opens once it is." = "「%@」無法使用：它所在的磁碟或伺服器未連接。連接後會自動打開。";

@@ -325,3 +325,5 @@
 "Keep: try it again later, before the earlier actions. Forget: go on with the earlier actions." = "残す: 後でもう一度試します（それ以前の操作より先に）。消去: それ以前の操作に進みます。";
 "Keep" = "残す";
 "Forget" = "消去";
+"Only the file you opened is shown here." = "ここには開いたファイルだけが表示されています。";
+"“%@” isn't available: its disk or server isn't connected. It opens once it is." = "“%@” は利用できません。ディスクまたはサーバが接続されていません。接続されると開きます。";
