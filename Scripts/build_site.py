@@ -29,8 +29,6 @@ LANGUAGES = ["en", "de", "fr", "es", "it", "pt-BR", "nl", "pl", "sv", "da", "nb"
              "cs", "tr", "ru", "uk", "ja", "ko", "zh-Hans", "zh-Hant"]
 HERO_SHOT = "grid"
 FEATURE_SHOTS = ["full", "video", "archives", "dualpane", "search", "adjust", "inspector", "help"]
-HTML_FIELDS = {"text", "safeMore", "modelsText", "ossText", "intro", "appText", "stays",
-               "siteText", "rightsText", "contactText"}
 
 WHY_ICONS = [
     '<path d="M3 3l18 18"/><path d="M10.6 5.1A10.4 10.4 0 0 1 12 5c5 0 9 4.5 10 7a13 13 0 0 1-3.1 4.2M6.6 6.6A13 13 0 0 0 2 12c1 2.5 5 7 10 7a9.9 9.9 0 0 0 5.4-1.6"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/>',
@@ -58,6 +56,8 @@ def load(code, english):
 
     def merge(own, master, path):
         if isinstance(master, dict):
+            for extra in set(own or {}) - set(master):
+                missing.append(f"{code}: {'.'.join(path + [extra])} is not in English")
             return {k: merge(own.get(k) if isinstance(own, dict) else None, v, path + [k]) for k, v in master.items()}
         if own is None:
             missing.append(f"{code}: {'.'.join(path)}")
@@ -93,11 +93,16 @@ def privacy_path(code, t):
 def shot(name, code, alt, extra=""):
     """A screenshot: the language's own (light) where there is one, else English, light or dark."""
     own = DOCS / "screenshots" / f"{name}-light-{code}.png"
-    size = ' width="1072" height="752"' if name == HERO_SHOT else ' loading="lazy" decoding="async"'
+    size = ' width="1072" height="752"' + (' fetchpriority="high"' if name == HERO_SHOT else ' loading="lazy" decoding="async"')
     if code != "en" and own.exists():
         return f'<img src="/screenshots/{own.name}"{size} alt="{esc(alt)}"{extra}>'
     return (f'<picture><source media="(prefers-color-scheme: dark)" srcset="/screenshots/{name}-dark.png">'
             f'<img src="/screenshots/{name}-light.png"{size} alt="{esc(alt)}"{extra}></picture>')
+
+
+def og_image(code):
+    own = DOCS / "screenshots" / f"{HERO_SHOT}-light-{code}.png"
+    return f"{SITE}/screenshots/{own.name if code != 'en' and own.exists() else HERO_SHOT + '-light.png'}"
 
 
 def head(code, t, title, description, path_of):
@@ -115,9 +120,12 @@ def head(code, t, title, description, path_of):
 <link rel="alternate" hreflang="x-default" href="{SITE}{path_of('en')}">
 <link rel="icon" href="/icon.png">
 <link rel="apple-touch-icon" href="/icon.png">
-<meta property="og:title" content="Schnellbild">
-<meta property="og:description" content="{esc(t['tagline'])}">
-<meta property="og:image" content="{SITE}/screenshots/{HERO_SHOT}-light.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Schnellbild">
+<meta property="og:title" content="{esc(title)}">
+<meta property="og:description" content="{esc(description)}">
+<meta property="og:locale" content="{code.replace('-', '_')}">
+<meta property="og:image" content="{og_image(code)}">
 <meta property="og:url" content="{SITE}{path_of(code)}">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="color-scheme" content="light dark">
@@ -128,7 +136,7 @@ def head(code, t, title, description, path_of):
 
 
 def topbar(code, t, path_of, sections=True):
-    current = ' aria-current="true"'
+    current = ' aria-current="page"'
     links = "".join(
         f'<a href="{path_of(c)}" hreflang="{c}" lang="{c}"{current if c == code else ""}>{esc(tr[c]["name"])}</a>'
         for c in LANGUAGES)
@@ -140,7 +148,7 @@ def topbar(code, t, path_of, sections=True):
     <nav>
       {nav}<a href="{REPO}">GitHub</a>
       <details class="lang">
-        <summary aria-label="{esc(t['language'])}">{GLOBE}<span>{esc(t['name'])}</span></summary>
+        <summary aria-label="{esc(t['language'])}: {esc(t['name'])}">{GLOBE}<span>{esc(t['name'])}</span></summary>
         <div class="lang-list">{links}</div>
       </details>
     </nav>
@@ -152,7 +160,7 @@ def footer(code, t):
     return f"""<footer>
   <div class="wrap">
     <span>© 2026 HAUS HOPPE - ITS (Johannes Hoppe)</span>
-    <nav>
+    <nav aria-label="{esc(t['footerPrivacy'])}, {esc(t['footerImprint'])}">
       <a href="{privacy_path(code, t)}">{esc(t['footerPrivacy'])}</a>
       <a href="{IMPRINT}">{esc(t['footerImprint'])}</a>
       <a href="{REPO}">GitHub</a>
@@ -250,9 +258,14 @@ def home(code, t):
 
 def privacy(code, t):
     p = t["privacy"]
-    names = {"folderAccess": esc(app_string(code, "Folder access")),
-             "forgetPasswords": esc(app_string(code, "Forget Saved Passwords…"))}
-    stays = "".join(f"<li>{item.format(**names)}</li>" for item in p["stays"])
+    names = {"{folderAccess}": esc(app_string(code, "Forget Folder Access…")),
+             "{forgetPasswords}": esc(app_string(code, "Forget Saved Passwords…"))}
+
+    def fill(item):
+        for placeholder, name in names.items():
+            item = item.replace(placeholder, name)
+        return item
+    stays = "".join(f"<li>{fill(item)}</li>" for item in p["stays"])
     path_of = lambda c: privacy_path(c, tr[c])
     return head(code, t, f"{p['title']} – Schnellbild", p["description"], path_of) + topbar(code, t, path_of, sections=False) + f"""
 <main class="wrap narrow page">
@@ -283,16 +296,23 @@ for code in LANGUAGES:
 for line in missing:
     print("missing, English used:", line, file=sys.stderr)
 
+# Pages the build doesn't make (a language's old privacy slug) would stay online.
+orphans = sorted(str(p.relative_to(ROOT)) for p in DOCS.rglob("index.html") if p not in pages)
+
 if "--check" in sys.argv:
     stale = [str(p.relative_to(ROOT)) for p, text in pages.items()
              if not p.exists() or p.read_text(encoding="utf-8") != text]
     if stale:
         sys.exit("docs/ is out of date, run python3 Scripts/build_site.py: " + ", ".join(stale))
+    if orphans or missing:
+        sys.exit("docs/ has pages the build doesn't make: " + ", ".join(orphans) if orphans else "translations are missing")
     print(f"docs/ is up to date ({len(pages)} pages)")
 else:
     for path, text in pages.items():
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(text, encoding="utf-8")
     print(f"{len(pages)} pages written")
-    if missing:
+    for orphan in orphans:
+        print("not made by the build, delete it:", orphan, file=sys.stderr)
+    if missing or orphans:
         sys.exit(1)

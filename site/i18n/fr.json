@@ -2,7 +2,7 @@
   "name": "Français",
   "privacySlug": "privacy",
   "title": "Schnellbild – une visionneuse d’images et de vidéos pour macOS qui ne prend pas la tête",
-  "description": "Schnellbild : une visionneuse d’images et de vidéos rapide et gratuite pour macOS. Dossiers, vignettes, clavier ; MKV, WebM et AVI ; ZIP, RAR et 7z comme des dossiers ; un double panneau pour trier vos photos. Sans publicité, sans pistage, sans compte.",
+  "description": "Schnellbild : une visionneuse d’images et de vidéos rapide et gratuite pour macOS. Dossiers, vignettes, clavier ; MKV, WebM et AVI ; ZIP, RAR et 7z comme des dossiers ; un double panneau pour trier vos photos. Sans publicité, sans pistage, sans compte.",
   "navFeatures": "Fonctionnalités",
   "navSafety": "Sécurité",
   "language": "Langue",
@@ -12,22 +12,22 @@
   "download": "Télécharger gratuitement",
   "store": "Mac App Store",
   "storeSoon": "bientôt, 0,99 € pour soutenir le projet",
-  "fineprint": "macOS 15 ou version ultérieure, Mac avec puce Apple. Signée avec un Developer ID, notariée par Apple, exécutée dans l’App Sandbox d’Apple. Les deux versions sont la même app, avec toutes les fonctionnalités ; l’acheter sur l’App Store, c’est soutenir son développement.",
-  "shotAlt": "Schnellbild : dossiers avec aperçus et vignettes de photos",
+  "fineprint": "macOS 15 ou version ultérieure, Mac avec puce Apple. Signée avec un Developer ID, notarisée par Apple, exécutée dans l’App Sandbox d’Apple. Les deux versions sont la même app, avec toutes les fonctionnalités ; l’acheter sur l’App Store, c’est soutenir son développement.",
+  "shotAlt": "Schnellbild : dossiers avec aperçus et vignettes de photos",
   "stats": [
     ["0", "publicité, traceur ou compte"],
     ["0 €", "pour toutes les fonctionnalités"],
     ["20", "langues"],
-    ["100 %", "open source"]
+    ["MIT", "licence, open source"]
   ],
   "whyTitle": "Pourquoi elle ne prend pas la tête",
   "why": [
     ["Sans publicité, sans pistage, sans compte", "Elle affiche vos images et ne parle à personne."],
-    ["Rien à vous vendre en plus", "Pas de version Pro, pas d’abonnement, pas de bouton « Débloquer ». Tout est inclus."],
+    ["Rien à vous vendre en plus", "Pas de version Pro, pas d’abonnement, pas de bouton « Débloquer ». Tout est inclus."],
     ["Rien de superflu", "Pas de bibliothèque où importer, pas d’éditeur, pas de cloud. Juste regarder des photos et des vidéos, et bien le faire."],
     ["Rapide", "Les vignettes apparaissent pendant que vous faites défiler, même dans les gros dossiers et sur les partages réseau."],
     ["Sûre par défaut", "Les images, vidéos et archives d’autrui n’exécutent rien et ne vont nulle part en ligne, sans rien à activer au préalable."],
-    ["Ne plante pas", "Fichiers endommagés, formats exotiques, disques lents : un espace réservé s’affiche, et l’app tient bon."]
+    ["Ne plante pas", "Fichiers endommagés, formats exotiques, disques lents : un espace réservé s’affiche, et l’app tient bon."]
   ],
   "featuresTitle": "Ce qu’elle fait",
   "features": [
@@ -38,17 +38,17 @@
     },
     {
       "title": "Des vidéos, même celles que macOS ne lit pas",
-      "text": "<p>MP4 et MOV passent par macOS lui-même, MKV, WebM, AVI, WMV, FLV, MPEG, DVD vidéo et AVCHD par le moteur VLC intégré.</p><ul><li>← → avancent ou reculent d’un dixième de la vidéo, ⇧← ⇧→ d’un centième</li><li>↑ ↓ règlent le volume, pour toutes les vidéos</li><li>Le Finder et Coup d’œil obtiennent aussi des vignettes pour MKV, WebM, WMV, FLV et VOB</li></ul>",
+      "text": "<p>Ce que macOS lit lui-même (MP4, MOV, AVCHD…) passe par macOS, tout le reste par le moteur VLC intégré : MKV, WebM, AVI, WMV, FLV, MPEG, DVD vidéo.</p><ul><li>← → avancent ou reculent d’un dixième de la vidéo, ⇧← ⇧→ d’un centième</li><li>↑ ↓ règlent le volume, pour toutes les vidéos</li><li>Le Finder et Coup d’œil obtiennent aussi des vignettes pour MKV, WebM, WMV, FLV et VOB</li></ul>",
       "alt": "Une vidéo en lecture dans Schnellbild"
     },
     {
       "title": "Les archives s’ouvrent comme des dossiers",
-      "text": "<p>ZIP, RAR et 7z, bandes dessinées (CBZ, CBR) comprises, même protégées par mot de passe ou en plusieurs parties. Rien n’est décompressé sur le disque, et les vidéos se lisent directement depuis l’archive.</p>",
+      "text": "<p>ZIP, RAR et 7z, bandes dessinées (CBZ, CBR) comprises, même en plusieurs parties ; ZIP et RAR aussi protégés par mot de passe. Rien n’est décompressé sur le disque, et les vidéos se lisent directement depuis l’archive. (7z demande un macOS récent : macOS 15 ne sait pas lire la plupart de ces archives.)</p>",
       "alt": "Des archives affichées comme des dossiers, avec aperçus"
     },
     {
       "title": "Triez vos photos de vacances comme dans Norton Commander",
-      "text": "<p><kbd>D</kbd> affiche deux dossiers côte à côte. Marquez des images, puis <kbd>F5</kbd> les copie et <kbd>F6</kbd> les déplace de l’autre côté. Ou faites-les simplement glisser.</p><p>Renommer, nouveau dossier, corbeille, signets, et tout peut s’annuler.</p>",
+      "text": "<p><kbd>D</kbd> affiche deux dossiers côte à côte. Marquez des images, puis <kbd>F5</kbd> les copie et <kbd>F6</kbd> les déplace de l’autre côté. Ou faites-les simplement glisser.</p><p>Renommer, nouveau dossier, corbeille, signets, et on peut annuler un renommage, une mise à la corbeille, une copie ou un déplacement.</p>",
       "alt": "Deux dossiers côte à côte dans le double panneau"
     },
     {
@@ -58,7 +58,7 @@
     },
     {
       "title": "De plus belles images, fichiers intacts",
-      "text": "<p><kbd>E</kbd> améliore automatiquement l’exposition, le contraste, la saturation et la netteté, pour les photos comme pour les vidéos. <kbd>A</kbd> ouvre les curseurs. Seul l’affichage change : vos fichiers restent tels quels.</p>",
+      "text": "<p><kbd>E</kbd> améliore automatiquement l’exposition, le contraste, la saturation et la netteté, pour les photos comme pour les vidéos. <kbd>A</kbd> ouvre les curseurs. Seul l’affichage change : vos fichiers restent tels quels.</p>",
       "alt": "Les curseurs de réglage sur une photo"
     },
     {
@@ -68,47 +68,47 @@
     },
     {
       "title": "Toutes les touches sous la main",
-      "text": "<p><kbd>F1</kbd> liste toutes les touches, à imprimer aussi ; <kbd>K</kbd> affiche un petit clavier où cliquer. Grille ou liste (<kbd>L</kbd>), tri par nom, type, date ou taille, plusieurs fenêtres, et une touche patron (<kbd>X</kbd>).</p>",
+      "text": "<p><kbd>F1</kbd> liste toutes les touches, à imprimer aussi ; <kbd>K</kbd> affiche un petit clavier où cliquer. Grille ou liste (<kbd>L</kbd>), tri par nom, type, date ou taille, plusieurs fenêtres, et une touche patron (<kbd>X</kbd>).</p>",
       "alt": "La liste des touches (F1)"
     }
   ],
   "safeTitle": "Sûre avec les fichiers d’autrui",
   "safeIntro": "Des images, vidéos et archives venues d’inconnus, c’est justement ce qu’on ouvre dans une visionneuse. Schnellbild traite donc chaque fichier comme hostile, d’emblée.",
   "safe": [
-    ["Dans l’App Sandbox d’Apple.", "Aucun accès réseau, aucun autre programme lancé, seulement les dossiers que vous lui ouvrez."],
+    ["Dans l’App Sandbox d’Apple.", "Aucun accès réseau, aucun programme lancé de sa propre initiative, accès aux seuls dossiers que vous lui ouvrez, plus Images, Vidéos et Téléchargements."],
     ["En lecture seule.", "Regarder un fichier ne le modifie jamais et ne le décompresse jamais sur le disque."],
-    ["Les vidéos ne vont pas en ligne.", "Une « vidéo » qui n’est en réalité qu’une playlist pointant vers Internet ne lit rien."],
+    ["Les vidéos ne vont pas en ligne.", "Une « vidéo » qui n’est en réalité qu’une playlist pointant vers Internet ne lit rien."],
     ["Le double-clic ouvre des documents, pas des programmes.", "Jamais d’apps, de scripts ni d’installeurs, même cachés derrière un nom d’image."],
-    ["Signée et notariée,", "avec le Hardened Runtime d’Apple."]
+    ["Signée et notarisée,", "avec le Hardened Runtime d’Apple."]
   ],
-  "safeMore": "Ce qu’elle fait en détail, et où s’arrête sa protection (en anglais) : <a href=\"https://github.com/JohannesHoppe/schnellbild#safe-with-files-from-others\">Sûre avec les fichiers d’autrui</a>.",
-  "modelsTitle": "Vous venez de Phiewer, d’IINA ou de Norton Commander ?",
-  "modelsText": "Ils ont servi de modèles : Phiewer pour parcourir les images au clavier, IINA pour manier les vidéos rapidement, Norton Commander pour le double panneau. La comparaison avec Schnellbild (en anglais) : <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-phiewer-alternative\">une alternative gratuite à Phiewer</a>, <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-iina-alternative-for-looking-through-videos\">une alternative gratuite à IINA pour parcourir des vidéos</a>.",
+  "safeMore": "Ce qu’elle fait en détail, et où s’arrête sa protection (en anglais) : <a href=\"https://github.com/JohannesHoppe/schnellbild#safe-with-files-from-others\">Sûre avec les fichiers d’autrui</a>.",
+  "modelsTitle": "Vous venez de Phiewer, d’IINA ou de Norton Commander ?",
+  "modelsText": "Ils ont servi de modèles : Phiewer pour parcourir les images au clavier, IINA pour manier les vidéos rapidement, Norton Commander pour le double panneau. La comparaison avec Schnellbild (en anglais) : <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-phiewer-alternative\">une alternative gratuite à Phiewer</a>, <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-iina-alternative-for-looking-through-videos\">une alternative gratuite à IINA pour parcourir des vidéos</a>.",
   "ossTitle": "Open source",
-  "ossText": "Schnellbild est un logiciel libre sous licence MIT, son code source est <a href=\"https://github.com/JohannesHoppe/schnellbild\">sur GitHub</a>. Un bug, une fonction qui manque ? <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">Ouvrez un ticket</a>.",
-  "languagesText": "Dans la langue de votre Mac :",
+  "ossText": "Schnellbild est un logiciel libre sous licence MIT, son code source est <a href=\"https://github.com/JohannesHoppe/schnellbild\">sur GitHub</a>. Un bug, une fonction qui manque ? <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">Ouvrez un ticket</a>.",
+  "languagesText": "Dans la langue de votre Mac :",
   "ctaTitle": "À vous de jouer.",
   "ctaText": "Gratuite, sans compte, sans engagement.",
   "footerPrivacy": "Confidentialité",
   "footerImprint": "Mentions légales",
   "privacy": {
     "title": "Politique de confidentialité",
-    "description": "Schnellbild ne collecte aucune donnée personnelle : ni compte, ni mesure d’audience, ni pistage, ni accès réseau.",
-    "intro": "Schnellbild est une visionneuse d’images et de vidéos pour macOS éditée par HAUS HOPPE - ITS (Johannes Hoppe) ; l’adresse complète figure dans les <a href=\"https://haushoppe-its.de/impressum/\">mentions légales</a>. La présente politique couvre l’app, qu’elle soit téléchargée depuis GitHub ou achetée sur le Mac App Store (il s’agit de la même app), ainsi que ce site web.",
+    "description": "Schnellbild ne collecte aucune donnée personnelle : ni compte, ni mesure d’audience, ni pistage, ni accès réseau.",
+    "intro": "Schnellbild est une visionneuse d’images et de vidéos pour macOS. Le responsable du traitement au sens du RGPD est HAUS HOPPE - ITS, Johannes Hoppe ; l’adresse complète figure dans les <a href=\"https://haushoppe-its.de/impressum/\">mentions légales</a>. La présente politique couvre l’app, qu’elle soit téléchargée depuis GitHub ou achetée sur le Mac App Store (il s’agit de la même app), ainsi que ce site web.",
     "appTitle": "L’app",
-    "appText": "<p><strong>Schnellbild ne collecte aucune donnée personnelle.</strong> Elle n’a ni compte, ni mesure d’audience, ni publicité, ni pistage, et ne se connecte pas à Internet : l’App Sandbox dans laquelle elle s’exécute ne lui donne aucun accès réseau.</p><p>Ce qui reste sur votre Mac, et uniquement là :</p>",
+    "appText": "<p><strong>Schnellbild ne collecte aucune donnée personnelle.</strong> Elle n’a ni compte, ni mesure d’audience, ni publicité, ni pistage, et ne se connecte pas à Internet : l’App Sandbox dans laquelle elle s’exécute ne lui donne aucun accès réseau.</p><p>Ce qui reste sur votre Mac, et uniquement là :</p>",
     "stays": [
       "<strong>Réglages</strong> (dernier dossier, ordre de tri, signets, volume…) dans les préférences propres à l’app.",
-      "<strong>Accès aux dossiers :</strong> les dossiers que vous avez ouverts à Schnellbild, sous forme de signets macOS, pour qu’elle puisse les afficher à nouveau après un redémarrage. Réglages → {folderAccess} les oublie.",
-      "<strong>Mots de passe des archives</strong> que vous avez saisis, dans votre trousseau de session (élément « Schnellbild archive passwords ») ; Réglages → {forgetPasswords} les supprime.",
+      "<strong>Accès aux dossiers :</strong> les dossiers que vous avez ouverts à Schnellbild, sous forme de signets macOS, pour qu’elle puisse les afficher à nouveau après un redémarrage. Réglages → {folderAccess} les oublie.",
+      "<strong>Mots de passe des archives</strong> que vous avez saisis, dans votre trousseau de session (élément « Schnellbild archive passwords ») ; Réglages → {forgetPasswords} les supprime.",
       "<strong>Vignettes</strong>, dans le cache de vignettes de macOS."
     ],
-    "appOutro": "Schnellbild lit vos images, vidéos et archives uniquement pour vous les montrer. Elle ne les envoie jamais nulle part, pas plus que leurs noms ou quoi que ce soit les concernant. Apple peut collecter des données sur le téléchargement ou l’achat conformément à sa propre politique de confidentialité ; Schnellbild n’en reçoit aucune.",
+    "appOutro": "Schnellbild lit vos images, vidéos et archives uniquement pour vous les montrer. Elle ne les envoie jamais nulle part, pas plus que leurs noms ou quoi que ce soit les concernant. Apple gère le téléchargement et l’achat conformément à sa propre politique de confidentialité et ne nous transmet que des chiffres qui ne vous identifient pas : les ventes et, si vous avez autorisé dans macOS le partage avec les développeurs d’apps, des rapports de plantage et des statistiques d’utilisation.",
     "siteTitle": "Ce site web",
-    "siteText": "Ce site web n’utilise ni cookies, ni outil de mesure d’audience, ni contenu provenant d’autres serveurs (pas de polices web, pas de vidéos intégrées). Il est hébergé sur GitHub Pages, un service de GitHub, Inc. (États-Unis). Lorsque vous le consultez, GitHub enregistre votre adresse IP à des fins de sécurité ; voir <a href=\"https://docs.github.com/fr/pages/getting-started-with-github-pages/what-is-github-pages#data-collection\">GitHub Pages : collecte de données</a> et la <a href=\"https://docs.github.com/fr/site-policy/privacy-policies/github-general-privacy-statement\">déclaration de confidentialité de GitHub</a>. La base juridique est notre intérêt légitime à fournir le site web de manière sécurisée (art. 6, par. 1, point f) du RGPD). Le téléchargement de l’app provient lui aussi de GitHub.",
+    "siteText": "Ce site web n’utilise ni cookies, ni outil de mesure d’audience, ni contenu provenant d’autres serveurs (pas de polices web, pas de vidéos intégrées). Il est hébergé sur GitHub Pages, un service de GitHub, Inc. (États-Unis). Lorsque vous le consultez, GitHub enregistre et conserve votre adresse IP à des fins de sécurité ; voir <a href=\"https://docs.github.com/fr/pages/getting-started-with-github-pages/what-is-github-pages#data-collection\">GitHub Pages : collecte de données</a> et la <a href=\"https://docs.github.com/fr/site-policy/privacy-policies/github-general-privacy-statement\">déclaration de confidentialité de GitHub</a>. La durée de conservation de ces journaux est fixée par GitHub ; nous n’y avons pas accès. GitHub adhère au cadre de protection des données UE-États-Unis (EU-U.S. Data Privacy Framework), pour lequel la Commission européenne a constaté que les États-Unis assurent un niveau de protection adéquat (art. 45 du RGPD). La base juridique est notre intérêt légitime à fournir le site web de manière sécurisée (art. 6, par. 1, point f) du RGPD). Le téléchargement de l’app provient lui aussi de GitHub.",
     "rightsTitle": "Vos droits",
-    "rightsText": "En vertu du RGPD, vous disposez d’un droit d’accès, de rectification, d’effacement, de limitation du traitement, de portabilité des données et d’opposition, ainsi que du droit d’introduire une réclamation auprès d’une autorité de contrôle chargée de la protection des données. Comme ni l’app ni ce site web ne conservent eux-mêmes de données personnelles, il n’y a en général rien à consulter ni à supprimer de notre côté.",
+    "rightsText": "En vertu du RGPD, vous disposez d’un droit d’accès, de rectification, d’effacement, de limitation du traitement et de portabilité des données, ainsi que du droit d’introduire une réclamation auprès d’une autorité de contrôle chargée de la protection des données. <strong>Vous avez le droit de vous opposer</strong>, pour des raisons tenant à votre situation particulière, au traitement fondé sur notre intérêt légitime (art. 21 du RGPD). Comme ni l’app ni ce site web ne conservent eux-mêmes de données personnelles, il n’y a en général rien à consulter ni à supprimer de notre côté.",
     "contactTitle": "Contact",
-    "contactText": "Des questions ? Ouvrez un ticket sur <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a> ou utilisez les coordonnées indiquées dans les <a href=\"https://haushoppe-its.de/impressum/\">mentions légales</a>."
+    "contactText": "Des questions ? Ouvrez un ticket sur <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a> ou utilisez les coordonnées indiquées dans les <a href=\"https://haushoppe-its.de/impressum/\">mentions légales</a>."
   }
 }
