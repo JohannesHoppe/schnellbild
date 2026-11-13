@@ -102,5 +102,25 @@
 			<string>%lld відео</string>
 		</dict>
 	</dict>
+	<key>Move %lld items to the Trash?</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@count@</string>
+		<key>count</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Перемістити %lld об’єкти у Смітник?</string>
+			<key>many</key>
+			<string>Перемістити %lld об’єктів у Смітник?</string>
+			<key>one</key>
+			<string>Перемістити %lld об’єкт у Смітник?</string>
+			<key>other</key>
+			<string>Перемістити %lld об’єкта у Смітник?</string>
+		</dict>
+	</dict>
 </dict>
 </plist>
