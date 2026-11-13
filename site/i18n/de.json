@@ -1,0 +1,114 @@
+{
+  "name": "Deutsch",
+  "privacySlug": "datenschutz",
+  "title": "Schnellbild – ein Bild- und Videobetrachter für den Mac, der einfach nicht nervt",
+  "description": "Schnellbild: ein schneller, kostenloser Bild- und Videobetrachter für macOS. Ordner, Vorschaubilder, Tastatur; MKV, WebM und AVI; ZIP, RAR und 7z wie Ordner; zwei Bereiche zum Sortieren. Keine Werbung, kein Tracking, kein Konto.",
+  "navFeatures": "Funktionen",
+  "navSafety": "Sicherheit",
+  "language": "Sprache",
+  "iconAlt": "Das App-Symbol von Schnellbild",
+  "tagline": "Ein Bild- und Videobetrachter für den Mac, der einfach nicht nervt.",
+  "lead": "Ordner öffnen, Vorschaubilder sehen, ein Bild groß ansehen, mit der Tastatur weiterblättern. Videos spielen gleich mit, auch MKV, AVI und WebM. Kein Import, kein Warten, kein Ballast.",
+  "download": "Kostenlos laden",
+  "store": "Mac App Store",
+  "storeSoon": "bald, 0,99 € zur Unterstützung",
+  "fineprint": "macOS 15 oder neuer, Apple Silicon. Mit Developer ID signiert, von Apple beglaubigt, in Apples App Sandbox. Beide Versionen sind dieselbe App mit allen Funktionen; wer sie im Store kauft, unterstützt die Weiterentwicklung.",
+  "shotAlt": "Schnellbild: Ordner mit Vorschau und Vorschaubilder von Fotos",
+  "stats": [
+    ["0", "Werbung, Tracker oder Konten"],
+    ["0 €", "für alle Funktionen"],
+    ["20", "Sprachen"],
+    ["100 %", "Open Source"]
+  ],
+  "whyTitle": "Warum es nicht nervt",
+  "why": [
+    ["Keine Werbung, kein Tracking, kein Konto", "Es zeigt deine Bilder und spricht mit niemandem."],
+    ["Kein Upselling", "Keine Pro-Version, kein Abo, kein „Freischalten“. Alle Funktionen sind drin."],
+    ["Kein Ballast", "Keine Mediathek, kein Bildbearbeiter, keine Cloud. Nur Fotos und Videos ansehen, und das gut."],
+    ["Schnell", "Vorschaubilder erscheinen beim Scrollen, auch in großen Ordnern und auf Netzlaufwerken."],
+    ["Von Haus aus sicher", "Bilder, Videos und Archive von anderen starten nichts und gehen nirgends online, ohne dass du etwas einschalten musst."],
+    ["Stürzt nicht um", "Kaputte Dateien, seltsame Formate und langsame Laufwerke zeigen einen Platzhalter, statt die App mitzureißen."]
+  ],
+  "featuresTitle": "Was es kann",
+  "features": [
+    {
+      "title": "Groß ansehen, mit den Tasten blättern",
+      "text": "<p>Die Leertaste öffnet ein Bild so groß, wie das Fenster erlaubt, ← → blättern durch den Ordner. Zoomen mit dem Trackpad oder + −, drehen mit ⌥← ⌥→, Vollbild mit <kbd>f</kbd>. Animierte GIFs, SVG und PDF inklusive.</p><p>Eine Diashow (<kbd>s</kbd>) läuft durch den Ordner und alle Unterordner, Fotos und Videos gemischt.</p>",
+      "alt": "Ein Foto in der Vollansicht"
+    },
+    {
+      "title": "Videos, auch die, die macOS nicht abspielt",
+      "text": "<p>MP4 und MOV spielt macOS selbst ab, MKV, WebM, AVI, WMV, FLV, MPEG, DVD-Video und AVCHD die eingebaute VLC-Engine.</p><ul><li>← → springen ein Zehntel des Videos, ⇧← ⇧→ ein Hundertstel</li><li>↑ ↓ stellen die Lautstärke ein, für alle Videos</li><li>Finder und Übersicht bekommen Vorschaubilder auch für MKV, WebM, WMV, FLV und VOB</li></ul>",
+      "alt": "Ein Video in Schnellbild"
+    },
+    {
+      "title": "Archive öffnen sich wie Ordner",
+      "text": "<p>ZIP, RAR und 7z, Comics (CBZ, CBR) eingeschlossen, auch mit Passwort und in mehreren Teilen. Nichts wird auf die Festplatte entpackt, und Videos spielen direkt aus dem Archiv.</p>",
+      "alt": "Archive als Ordner mit Vorschau"
+    },
+    {
+      "title": "Urlaubsfotos sortieren wie im Norton Commander",
+      "text": "<p><kbd>D</kbd> zeigt zwei Ordner nebeneinander. Bilder markieren, dann kopiert <kbd>F5</kbd> und verschiebt <kbd>F6</kbd> sie auf die andere Seite, oder einfach hinüberziehen.</p><p>Umbenennen, neuer Ordner, Papierkorb, Lesezeichen, und für alles davon Rückgängig.</p>",
+      "alt": "Zwei Ordner nebeneinander"
+    },
+    {
+      "title": "Suche durch alle Unterordner",
+      "text": "<p>Das Suchfeld findet Namen von Ordnern, Archiven, Bildern und Videos im gezeigten Ordner und allem darunter. Die Treffer kommen, während gesucht wird, auch auf einem langsamen Netzlaufwerk. Mit oder ohne Groß- und Kleinschreibung, oder als regulärer Ausdruck.</p>",
+      "alt": "Suchtreffer aus dem Ordner und seinen Unterordnern"
+    },
+    {
+      "title": "Schönere Bilder, Dateien unberührt",
+      "text": "<p><kbd>E</kbd> verbessert Belichtung, Kontrast, Sättigung und Schärfe automatisch, bei Fotos wie bei Videos. <kbd>A</kbd> öffnet die Regler. Das ist nur eine Ansicht: Deine Dateien bleiben, wie sie sind.</p>",
+      "alt": "Die Regler über einem Foto"
+    },
+    {
+      "title": "Was die Datei wirklich ist",
+      "text": "<p><kbd>I</kbd> zeigt Format, Auflösung, Codecs, Bitrate, Farbtiefe, Farbprofil und Kamera, und einen Hinweis, wenn die Dateiendung nicht zum Inhalt passt.</p>",
+      "alt": "Die Datei-Info neben einem Foto"
+    },
+    {
+      "title": "Alle Tasten griffbereit",
+      "text": "<p><kbd>F1</kbd> zeigt alle Tasten, auch zum Ausdrucken; <kbd>K</kbd> blendet eine kleine Tastatur zum Anklicken ein. Raster oder Liste (<kbd>L</kbd>), sortieren nach Name, Art, Datum oder Größe, mehrere Fenster und ein Boss-Key (<kbd>X</kbd>).</p>",
+      "alt": "Die Liste der Tasten (F1)"
+    }
+  ],
+  "safeTitle": "Sicher bei fremden Dateien",
+  "safeIntro": "Bilder, Videos und Archive von Fremden sind genau das, wofür ein Betrachter da ist. Deshalb behandelt Schnellbild jede Datei als feindlich, von Anfang an.",
+  "safe": [
+    ["In Apples App Sandbox.", "Kein Netzwerk, keine anderen Programme, nur die Ordner, die du freigibst."],
+    ["Nur lesen.", "Ansehen ändert nichts und entpackt nichts auf die Festplatte."],
+    ["Videos gehen nicht online.", "Ein „Video“, das in Wahrheit eine Playlist ins Internet ist, spielt nichts ab."],
+    ["Doppelklick öffnet Dokumente, keine Programme.", "Apps, Skripte und Installer nie, auch nicht hinter dem Namen eines Bildes versteckt."],
+    ["Signiert und beglaubigt,", "mit Apples Hardened Runtime."]
+  ],
+  "safeMore": "Was genau dahintersteckt und wo die Grenze liegt (auf Englisch): <a href=\"https://github.com/JohannesHoppe/schnellbild#safe-with-files-from-others\">Safe with files from others</a>.",
+  "modelsTitle": "Du kommst von Phiewer, IINA oder dem Norton Commander?",
+  "modelsText": "Sie waren die Vorbilder: Phiewer fürs Blättern mit der Tastatur, IINA für den schnellen Umgang mit Videos, der Norton Commander für die zwei Bereiche. Der Vergleich (auf Englisch): <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-phiewer-alternative\">eine kostenlose Alternative zu Phiewer</a>, <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-iina-alternative-for-looking-through-videos\">eine kostenlose Alternative zu IINA zum Durchsehen von Videos</a>.",
+  "ossTitle": "Open Source",
+  "ossText": "Schnellbild ist freie Software unter der MIT-Lizenz, der Quellcode liegt <a href=\"https://github.com/JohannesHoppe/schnellbild\">auf GitHub</a>. Fehler gefunden oder fehlt dir etwas? <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">Schreib ein Issue</a>.",
+  "languagesText": "In der Sprache deines Macs:",
+  "ctaTitle": "Bereit, wenn du es bist.",
+  "ctaText": "Kostenlos, ohne Konto, ohne Haken.",
+  "footerPrivacy": "Datenschutz",
+  "footerImprint": "Impressum",
+  "privacy": {
+    "title": "Datenschutzerklärung",
+    "description": "Schnellbild erhebt keine personenbezogenen Daten: kein Konto, keine Analyse, kein Tracking, kein Netzwerkzugriff.",
+    "intro": "Schnellbild ist ein Bild- und Videobetrachter für macOS von HAUS HOPPE - ITS (Johannes Hoppe); die vollständige Anschrift steht im <a href=\"https://haushoppe-its.de/impressum/\">Impressum</a>. Diese Erklärung gilt für die App, aus GitHub und aus dem Mac App Store (beides ist dieselbe App), und für diese Website.",
+    "appTitle": "Die App",
+    "appText": "<p><strong>Schnellbild erhebt keine personenbezogenen Daten.</strong> Es gibt kein Konto, keine Analyse, keine Werbung und kein Tracking, und die App verbindet sich nicht mit dem Internet: Die App Sandbox, in der sie läuft, gibt ihr keinerlei Netzwerkzugriff.</p><p>Was auf deinem Mac bleibt, und nur dort:</p>",
+    "stays": [
+      "<strong>Einstellungen</strong> (letzter Ordner, Sortierung, Lesezeichen, Lautstärke …) in den Einstellungen der App.",
+      "<strong>Ordnerzugriff:</strong> die Ordner, die du für Schnellbild freigegeben hast, als Lesezeichen von macOS, damit die App sie nach einem Neustart wieder zeigen kann. Einstellungen → {folderAccess} vergisst sie.",
+      "<strong>Archiv-Passwörter</strong>, die du eingegeben hast, in deinem Anmelde-Schlüsselbund (Eintrag „Schnellbild archive passwords“); Einstellungen → {forgetPasswords} löscht sie.",
+      "<strong>Vorschaubilder</strong> im Vorschau-Cache von macOS."
+    ],
+    "appOutro": "Schnellbild liest deine Bilder, Videos und Archive nur, um sie dir zu zeigen. Die App sendet sie, ihre Namen oder Angaben über sie nirgendwohin. Apple kann beim Download oder Kauf nach seiner eigenen Datenschutzerklärung Daten erheben; Schnellbild erhält davon nichts.",
+    "siteTitle": "Diese Website",
+    "siteText": "Diese Website verwendet keine Cookies, keine Analyse und keine Inhalte von anderen Servern (keine Webfonts, keine eingebetteten Videos). Sie liegt bei GitHub Pages, einem Dienst der GitHub, Inc. (USA). Beim Aufruf speichert GitHub deine IP-Adresse zu Sicherheitszwecken; siehe <a href=\"https://docs.github.com/de/pages/getting-started-with-github-pages/what-is-github-pages#data-collection\">GitHub Pages: Datenerfassung</a> und die <a href=\"https://docs.github.com/de/site-policy/privacy-policies/github-general-privacy-statement\">Datenschutzerklärung von GitHub</a>. Rechtsgrundlage ist unser berechtigtes Interesse an einer sicheren Auslieferung der Website (Art. 6 Abs. 1 lit. f DSGVO). Auch der Download der App kommt von GitHub.",
+    "rightsTitle": "Deine Rechte",
+    "rightsText": "Nach der DSGVO hast du das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit und Widerspruch sowie das Recht, dich bei einer Datenschutz-Aufsichtsbehörde zu beschweren. Da weder die App noch diese Website selbst personenbezogene Daten speichert, gibt es bei uns in der Regel nichts nachzusehen oder zu löschen.",
+    "contactTitle": "Kontakt",
+    "contactText": "Fragen: ein Issue unter <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a> oder über die Kontaktangaben im <a href=\"https://haushoppe-its.de/impressum/\">Impressum</a>."
+  }
+}

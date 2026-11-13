@@ -1,0 +1,114 @@
+{
+  "name": "Español",
+  "privacySlug": "privacy",
+  "title": "Schnellbild – un visor de imágenes y vídeos para macOS que no da la lata",
+  "description": "Schnellbild: un visor de imágenes y vídeos rápido y gratuito para macOS. Carpetas, miniaturas, el teclado; MKV, WebM y AVI; ZIP, RAR y 7z como carpetas; un doble panel para ordenar fotos. Sin anuncios, sin rastreo, sin cuenta.",
+  "navFeatures": "Funciones",
+  "navSafety": "Seguridad",
+  "language": "Idioma",
+  "iconAlt": "Icono de la app Schnellbild",
+  "tagline": "Un visor de imágenes y vídeos para macOS que no da la lata.",
+  "lead": "Abre una carpeta, mira las miniaturas, ve una imagen en grande y pasa a la siguiente con el teclado. Los vídeos se reproducen ahí mismo, incluso en MKV, AVI y WebM. Sin biblioteca a la que importar, sin esperas, sin estorbos.",
+  "download": "Descargar gratis",
+  "store": "Mac App Store",
+  "storeSoon": "pronto, por 0,99 € para apoyarlo",
+  "fineprint": "macOS 15 o posterior, Mac con chip de Apple. Firmado con un Developer ID, notarizado por Apple y ejecutado en la App Sandbox de Apple. Las dos versiones son la misma app con todas las funciones; quien la compra en la tienda apoya su desarrollo.",
+  "shotAlt": "Schnellbild: carpetas con previsualizaciones y miniaturas de fotos",
+  "stats": [
+    ["0", "anuncios, rastreadores o cuentas"],
+    ["0 €", "por todas las funciones"],
+    ["20", "idiomas"],
+    ["100 %", "código abierto"]
+  ],
+  "whyTitle": "Por qué no da la lata",
+  "why": [
+    ["Sin anuncios, sin rastreo, sin cuenta", "Muestra tus imágenes y no habla con nadie."],
+    ["Sin ventas añadidas", "Sin versión Pro, sin suscripción, sin botón de «desbloquear». Todas las funciones están incluidas."],
+    ["Sin relleno", "Sin biblioteca a la que importar, sin editor, sin nube. Solo ver fotos y vídeos, y hacerlo bien."],
+    ["Rápido", "Las miniaturas aparecen mientras te desplazas, también en carpetas grandes y en recursos compartidos de red."],
+    ["Seguro de serie", "Las imágenes, vídeos y archivos comprimidos de otros no ejecutan nada ni se conectan a ningún sitio, sin que tengas que activar nada antes."],
+    ["No se cae", "Ante archivos dañados, formatos raros o discos lentos, muestra un marcador de posición en lugar de venirse abajo."]
+  ],
+  "featuresTitle": "Qué hace",
+  "features": [
+    {
+      "title": "Míralo en grande, pasa con las teclas",
+      "text": "<p>La barra espaciadora abre una imagen tan grande como permite la ventana; ← → recorren la carpeta. Amplía con el trackpad o con + −, gira con ⌥← ⌥→ y pasa a pantalla completa con <kbd>f</kbd>. GIF animados, SVG y PDF incluidos.</p><p>Las diapositivas (<kbd>s</kbd>) recorren la carpeta y todas sus subcarpetas, fotos y vídeos por igual.</p>",
+      "alt": "Una foto en la vista completa"
+    },
+    {
+      "title": "Vídeos, también los que macOS no reproduce",
+      "text": "<p>MP4 y MOV se reproducen con el propio macOS; MKV, WebM, AVI, WMV, FLV, MPEG, DVD-Vídeo y AVCHD, con el motor de VLC integrado.</p><ul><li>← → saltan una décima parte del vídeo, ⇧← ⇧→ una centésima</li><li>↑ ↓ ajustan el volumen, para todos los vídeos</li><li>El Finder y Vista Rápida también obtienen miniaturas de MKV, WebM, WMV, FLV y VOB</li></ul>",
+      "alt": "Un vídeo reproduciéndose en Schnellbild"
+    },
+    {
+      "title": "Los archivos comprimidos se abren como carpetas",
+      "text": "<p>ZIP, RAR y 7z, cómics (CBZ, CBR) incluidos, también con contraseña y en varias partes. No se descomprime nada en el disco, y los vídeos se reproducen directamente desde el archivo.</p>",
+      "alt": "Archivos comprimidos mostrados como carpetas con previsualizaciones"
+    },
+    {
+      "title": "Ordena las fotos de tus vacaciones como en Norton Commander",
+      "text": "<p><kbd>D</kbd> muestra dos carpetas una junto a otra. Marca imágenes y luego <kbd>F5</kbd> las copia y <kbd>F6</kbd> las mueve al otro lado. O simplemente arrástralas.</p><p>Renombrar, nueva carpeta, papelera, marcadores, y todo se puede deshacer.</p>",
+      "alt": "Dos carpetas una junto a otra en el doble panel"
+    },
+    {
+      "title": "Busca en todas las subcarpetas",
+      "text": "<p>El campo de búsqueda encuentra nombres de carpetas, archivos comprimidos, imágenes y vídeos en la carpeta mostrada y en todo lo que contiene. Los resultados llegan mientras busca, incluso en un recurso de red lento. Sin distinguir mayúsculas y minúsculas, distinguiéndolas o con una expresión regular.</p>",
+      "alt": "Resultados de búsqueda de la carpeta y sus subcarpetas"
+    },
+    {
+      "title": "Mejores imágenes, archivos intactos",
+      "text": "<p><kbd>E</kbd> mejora automáticamente la exposición, el contraste, la saturación y la nitidez, en fotos y vídeos por igual. <kbd>A</kbd> abre los reguladores. Solo cambia la vista: tus archivos se quedan como están.</p>",
+      "alt": "Los reguladores de ajuste sobre una foto"
+    },
+    {
+      "title": "Qué es de verdad el archivo",
+      "text": "<p><kbd>I</kbd> muestra el formato, la resolución, los códecs, la tasa de bits, la profundidad de bits, el perfil de color y la cámara, y avisa cuando la extensión del archivo no coincide con su contenido.</p>",
+      "alt": "La información del archivo junto a una foto"
+    },
+    {
+      "title": "Todas las teclas a mano",
+      "text": "<p><kbd>F1</kbd> muestra todas las teclas, también para imprimir; <kbd>K</kbd> abre un pequeño teclado en el que hacer clic. Cuadrícula o lista (<kbd>L</kbd>), orden por nombre, tipo, fecha o tamaño, varias ventanas y una tecla del jefe (<kbd>X</kbd>).</p>",
+      "alt": "La lista de teclas (F1)"
+    }
+  ],
+  "safeTitle": "Seguro con archivos de otros",
+  "safeIntro": "Imágenes, vídeos y archivos comprimidos de desconocidos: justo para eso sirve un visor. Por eso Schnellbild trata cada archivo como hostil desde el primer momento.",
+  "safe": [
+    ["En la App Sandbox de Apple.", "Sin ninguna conexión de red, sin abrir otros programas, solo con las carpetas que tú le abres."],
+    ["Solo lectura.", "Mirar algo nunca lo modifica ni lo descomprime en el disco."],
+    ["Los vídeos no se conectan a internet.", "Un «vídeo» que en realidad es una lista de reproducción que apunta a internet no reproduce nada."],
+    ["El doble clic abre documentos, no programas.", "Nunca apps, scripts ni instaladores, aunque se escondan tras el nombre de una imagen."],
+    ["Firmado y notarizado,", "con el Hardened Runtime de Apple."]
+  ],
+  "safeMore": "Qué hace en detalle y dónde está su límite (en inglés): <a href=\"https://github.com/JohannesHoppe/schnellbild#safe-with-files-from-others\">Seguro con archivos de otros</a>.",
+  "modelsTitle": "¿Vienes de Phiewer, IINA o Norton Commander?",
+  "modelsText": "Fueron los modelos: Phiewer para recorrer imágenes con el teclado, IINA para manejar vídeos con rapidez, Norton Commander para el doble panel. Cómo se compara Schnellbild (en inglés): <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-phiewer-alternative\">una alternativa gratuita a Phiewer</a>, <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-iina-alternative-for-looking-through-videos\">una alternativa gratuita a IINA para ver vídeos</a>.",
+  "ossTitle": "Código abierto",
+  "ossText": "Schnellbild es software libre con licencia MIT; el código fuente está <a href=\"https://github.com/JohannesHoppe/schnellbild\">en GitHub</a>. ¿Has encontrado un error o echas algo en falta? <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">Abre una incidencia</a>.",
+  "languagesText": "En el idioma de tu Mac:",
+  "ctaTitle": "Cuando quieras.",
+  "ctaText": "Gratis, sin cuenta, sin compromiso.",
+  "footerPrivacy": "Privacidad",
+  "footerImprint": "Aviso legal",
+  "privacy": {
+    "title": "Política de privacidad",
+    "description": "Schnellbild no recopila datos personales: sin cuenta, sin analítica, sin rastreo, sin acceso a la red.",
+    "intro": "Schnellbild es un visor de imágenes y vídeos para macOS de HAUS HOPPE - ITS (Johannes Hoppe); la dirección completa figura en el <a href=\"https://haushoppe-its.de/impressum/\">aviso legal</a>. Esta política se aplica a la app, tanto descargada de GitHub como comprada en la Mac App Store (ambas son la misma app), y a este sitio web.",
+    "appTitle": "La app",
+    "appText": "<p><strong>Schnellbild no recopila datos personales.</strong> No tiene cuenta, ni analítica, ni publicidad, ni rastreo, y no se conecta a internet: la App Sandbox en la que se ejecuta no le da ningún acceso a la red.</p><p>Lo que se queda en tu Mac, y solo ahí:</p>",
+    "stays": [
+      "<strong>Ajustes</strong> (la última carpeta, el orden, los marcadores, el volumen…) en las preferencias propias de la app.",
+      "<strong>Acceso a carpetas:</strong> las carpetas que has abierto a Schnellbild, como marcadores de macOS, para que pueda mostrarlas de nuevo tras reiniciar. Ajustes → {folderAccess} las olvida.",
+      "<strong>Contraseñas de archivos</strong> que hayas escrito, en tu llavero de inicio de sesión (elemento «Schnellbild archive passwords»); Ajustes → {forgetPasswords} las elimina.",
+      "<strong>Miniaturas</strong>, en la caché de miniaturas del propio macOS."
+    ],
+    "appOutro": "Schnellbild lee tus imágenes, vídeos y archivos comprimidos solo para mostrártelos. Nunca los envía a ninguna parte, ni a ellos ni sus nombres ni nada sobre ellos. Apple puede recopilar datos sobre la descarga o la compra conforme a su propia política de privacidad; Schnellbild no recibe ninguno de ellos.",
+    "siteTitle": "Este sitio web",
+    "siteText": "Este sitio web no usa cookies, ni analítica, ni contenidos de otros servidores (ni fuentes web ni vídeos incrustados). Está alojado en GitHub Pages, un servicio de GitHub, Inc. (EE. UU.). Cuando lo visitas, GitHub registra tu dirección IP por motivos de seguridad; consulta <a href=\"https://docs.github.com/es/pages/getting-started-with-github-pages/what-is-github-pages#data-collection\">GitHub Pages: recopilación de datos</a> y la <a href=\"https://docs.github.com/es/site-policy/privacy-policies/github-general-privacy-statement\">declaración de privacidad de GitHub</a>. La base jurídica es nuestro interés legítimo en ofrecer el sitio web de forma segura (art. 6, apdo. 1, letra f) del RGPD). La descarga de la app también procede de GitHub.",
+    "rightsTitle": "Tus derechos",
+    "rightsText": "Conforme al RGPD, tienes derecho de acceso, rectificación, supresión, limitación del tratamiento, portabilidad de los datos y oposición, así como derecho a presentar una reclamación ante una autoridad de control de protección de datos. Como ni la app ni este sitio web guardan datos personales propios, normalmente no hay nada que consultar ni borrar por nuestra parte.",
+    "contactTitle": "Contacto",
+    "contactText": "¿Preguntas? Abre una incidencia en <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a> o usa el contacto que figura en el <a href=\"https://haushoppe-its.de/impressum/\">aviso legal</a>."
+  }
+}

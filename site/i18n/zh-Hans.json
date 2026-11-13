@@ -1,0 +1,114 @@
+{
+  "name": "简体中文",
+  "privacySlug": "privacy",
+  "title": "Schnellbild – 一款用着不闹心的 macOS 图像和视频查看器",
+  "description": "Schnellbild：一款快速、免费的 macOS 图像和视频查看器。文件夹、缩略图、键盘操作；支持 MKV、WebM 和 AVI；ZIP、RAR 和 7z 像文件夹一样打开；双窗格整理照片。无广告、无跟踪、无需账户。",
+  "navFeatures": "功能",
+  "navSafety": "安全",
+  "language": "语言",
+  "iconAlt": "Schnellbild App 图标",
+  "tagline": "一款用着不闹心的 macOS 图像和视频查看器。",
+  "lead": "打开文件夹，缩略图一览无余；单张大图查看，用键盘轻松翻页。视频也能直接播放，MKV、AVI 和 WebM 也不例外。无需导入图库，无需等待，没有多余的东西。",
+  "download": "免费下载",
+  "store": "Mac App Store",
+  "storeSoon": "即将推出，用于支持本项目",
+  "fineprint": "需要 macOS 15 或更高版本，搭载 Apple 芯片的 Mac。使用 Developer ID 签名，经 Apple 公证，在 Apple 的 App Sandbox 中运行。两个版本是同一个 App，功能完全相同；在 App Store 购买即可支持它的开发。",
+  "shotAlt": "Schnellbild：带预览的文件夹和照片缩略图",
+  "stats": [
+    ["0", "广告、跟踪器或账户"],
+    ["0 €", "享有全部功能"],
+    ["20", "种语言"],
+    ["100%", "开源"]
+  ],
+  "whyTitle": "为什么不闹心",
+  "why": [
+    ["无广告、无跟踪、无需账户", "它只显示你的图片，不和任何人通信。"],
+    ["不推销", "没有专业版，没有订阅，也没有“解锁”按钮。所有功能一应俱全。"],
+    ["不臃肿", "无需导入图库，没有编辑器，没有云。只做好一件事：看照片和视频。"],
+    ["快", "滚动时缩略图随即出现，大文件夹和网络共享也一样。"],
+    ["默认安全", "别人发来的图片、视频和归档不会运行任何东西，也不会联网，无需事先打开任何设置。"],
+    ["不崩溃", "遇到损坏的文件、奇怪的格式或缓慢的磁盘，只会显示占位图，App 不会因此崩溃。"]
+  ],
+  "featuresTitle": "功能一览",
+  "features": [
+    {
+      "title": "大图查看，按键翻页",
+      "text": "<p>按空格键，图像会以窗口允许的最大尺寸打开；用 ← → 在文件夹中翻页。用触控板或 + − 缩放，用 ⌥← ⌥→ 旋转，按 <kbd>f</kbd> 全屏。动态 GIF、SVG 和 PDF 同样支持。</p><p>幻灯片（<kbd>s</kbd>）会播放文件夹及其所有子文件夹中的内容，照片和视频都包括在内。</p>",
+      "alt": "以完整视图显示的照片"
+    },
+    {
+      "title": "视频，包括 macOS 播放不了的",
+      "text": "<p>MP4 和 MOV 由 macOS 自身播放；MKV、WebM、AVI、WMV、FLV、MPEG、DVD 视频和 AVCHD 则由内置的 VLC 引擎播放。</p><ul><li>← → 跳过视频的十分之一，⇧← ⇧→ 跳过百分之一</li><li>↑ ↓ 调节音量，对所有视频生效</li><li>访达和快速查看也能显示 MKV、WebM、WMV、FLV 和 VOB 的缩略图</li></ul>",
+      "alt": "在 Schnellbild 中播放的视频"
+    },
+    {
+      "title": "归档像文件夹一样打开",
+      "text": "<p>ZIP、RAR 和 7z，包括漫画（CBZ、CBR），带密码或分卷的也可以。不会向磁盘解压任何内容，视频直接从归档中播放。</p>",
+      "alt": "显示为带预览文件夹的归档"
+    },
+    {
+      "title": "像在 Norton Commander 里一样整理旅行照片",
+      "text": "<p>按 <kbd>D</kbd> 并排显示两个文件夹。标记图像后，按 <kbd>F5</kbd> 拷贝到另一侧，按 <kbd>F6</kbd> 移过去，或者直接拖过去。</p><p>重新命名、新建文件夹、废纸篓、书签，而且全部可以撤销。</p>",
+      "alt": "在双窗格中并排显示的两个文件夹"
+    },
+    {
+      "title": "搜索所有子文件夹",
+      "text": "<p>搜索栏会在当前文件夹及其下所有位置中查找文件夹、归档、图像和视频的名称。搜索过程中结果陆续出现，即使在缓慢的网络共享上也是如此。可以忽略大小写、区分大小写，或使用正则表达式。</p>",
+      "alt": "来自文件夹及其子文件夹的搜索结果"
+    },
+    {
+      "title": "画面更好看，文件不改动",
+      "text": "<p>按 <kbd>E</kbd> 自动增强曝光、对比度、饱和度和锐度，照片和视频都适用。按 <kbd>A</kbd> 打开滑块。这只影响显示：你的文件保持原样。</p>",
+      "alt": "照片上方的调整滑块"
+    },
+    {
+      "title": "看清文件的真面目",
+      "text": "<p>按 <kbd>I</kbd> 显示格式、分辨率、编解码器、码率、位深度、颜色描述文件和相机；如果文件扩展名与内容不符，也会提示。</p>",
+      "alt": "照片旁边的文件信息"
+    },
+    {
+      "title": "所有按键尽在掌握",
+      "text": "<p>按 <kbd>F1</kbd> 列出所有按键，还可以打印；按 <kbd>K</kbd> 显示可点按的迷你键盘。网格或列表（<kbd>L</kbd>），按名称、种类、日期或大小排序，多个窗口，还有老板键（<kbd>X</kbd>）。</p>",
+      "alt": "按键列表（F1）"
+    }
+  ],
+  "safeTitle": "别人发来的文件，也能放心看",
+  "safeIntro": "查看陌生人发来的图片、视频和归档，正是查看器的本职工作。所以 Schnellbild 开箱即把每个文件都视为不可信。",
+  "safe": [
+    ["运行在 Apple 的 App Sandbox 中。", "完全不联网，不启动其他程序，只能访问你为它打开的文件夹。"],
+    ["只读不写。", "查看从不改动任何东西，也从不解压到磁盘。"],
+    ["视频无法联网。", "实际上是指向互联网的播放列表的“视频”，什么都不会播放。"],
+    ["连按两次只打开文稿，不打开程序。", "App、脚本和安装器一律不打开，即使它们伪装成图片的名称。"],
+    ["经过签名和公证，", "并启用 Apple 的 Hardened Runtime。"]
+  ],
+  "safeMore": "它具体做了什么，界限又在哪里：<a href=\"https://github.com/JohannesHoppe/schnellbild#safe-with-files-from-others\">别人发来的文件，也能放心看</a>。",
+  "modelsTitle": "从 Phiewer、IINA 或 Norton Commander 转过来？",
+  "modelsText": "它们都是 Schnellbild 的榜样：Phiewer 用键盘浏览图片，IINA 快速处理视频，Norton Commander 的双窗格。Schnellbild 与它们相比如何：<a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-phiewer-alternative\">免费的 Phiewer 替代品</a>、<a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-iina-alternative-for-looking-through-videos\">用来浏览视频的免费 IINA 替代品</a>。",
+  "ossTitle": "开源",
+  "ossText": "Schnellbild 是采用 MIT 许可证的自由软件，源代码在 <a href=\"https://github.com/JohannesHoppe/schnellbild\">GitHub 上</a>。发现了 bug 或缺少什么功能？<a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">提交 issue</a>。",
+  "languagesText": "以你 Mac 的语言显示：",
+  "ctaTitle": "随时可以开始。",
+  "ctaText": "免费，无需账户，没有附加条件。",
+  "footerPrivacy": "隐私",
+  "footerImprint": "法律声明",
+  "privacy": {
+    "title": "隐私政策",
+    "description": "Schnellbild 不收集任何个人数据：无账户、无分析、无跟踪、无网络访问。",
+    "intro": "Schnellbild 是 HAUS HOPPE - ITS（Johannes Hoppe）推出的 macOS 图像和视频查看器；完整地址见<a href=\"https://haushoppe-its.de/impressum/\">法律声明</a>。本政策适用于该 App（无论是从 GitHub 下载还是在 Mac App Store 购买，两者是同一个 App）以及本网站。",
+    "appTitle": "App",
+    "appText": "<p><strong>Schnellbild 不收集任何个人数据。</strong>它没有账户、分析、广告和跟踪，也不连接互联网：它所运行的 App Sandbox 完全不允许它访问网络。</p><p>以下内容保存在你的 Mac 上，且仅保存在那里：</p>",
+    "stays": [
+      "<strong>设置</strong>（上次打开的文件夹、排序方式、书签、音量……），保存在 App 自己的偏好设置中。",
+      "<strong>文件夹访问权限：</strong>你为 Schnellbild 打开的文件夹，以 macOS 书签的形式保存，以便重新启动后能再次显示。“设置”→ {folderAccess} 可清除它们。",
+      "你输入的<strong>归档密码</strong>，保存在你的登录钥匙串中（条目“Schnellbild archive passwords”）；“设置”→ {forgetPasswords} 可将其移除。",
+      "<strong>缩略图</strong>，保存在 macOS 自身的缩略图缓存中。"
+    ],
+    "appOutro": "Schnellbild 读取你的图像、视频和归档，仅仅是为了向你显示它们。它从不将这些文件、文件名或任何相关信息发送到任何地方。Apple 可能会根据其自身的隐私政策收集有关下载或购买的数据；Schnellbild 不会获得其中任何数据。",
+    "siteTitle": "本网站",
+    "siteText": "本网站不使用 Cookie、分析工具，也不加载来自其他服务器的内容（没有网络字体，没有嵌入视频）。本网站托管于 GitHub Pages，这是 GitHub, Inc.（美国）提供的服务。你访问本网站时，GitHub 出于安全目的会记录你的 IP 地址；参见<a href=\"https://docs.github.com/zh/pages/getting-started-with-github-pages/what-is-github-pages#data-collection\">GitHub Pages：数据收集</a>和<a href=\"https://docs.github.com/zh/site-policy/privacy-policies/github-general-privacy-statement\">GitHub 隐私声明</a>。法律依据是我们安全提供本网站的合法利益（欧盟《通用数据保护条例》（GDPR）第 6 条第 1 款第 (f) 项）。App 的下载同样来自 GitHub。",
+    "rightsTitle": "你的权利",
+    "rightsText": "根据 GDPR，你享有访问、更正、删除、限制处理、数据可携带和反对的权利，并有权向数据保护监管机构提出投诉。由于 App 和本网站都不保存自己的个人数据，我们这边通常没有可查询或删除的内容。",
+    "contactTitle": "联系",
+    "contactText": "如有疑问：请在 <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a> 提交 issue，或使用<a href=\"https://haushoppe-its.de/impressum/\">法律声明</a>中的联系方式。"
+  }
+}

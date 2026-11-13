@@ -1,0 +1,114 @@
+{
+  "name": "Türkçe",
+  "privacySlug": "privacy",
+  "title": "Schnellbild – macOS için sinir bozmayan bir görüntü ve video görüntüleyici",
+  "description": "Schnellbild: macOS için hızlı ve ücretsiz bir görüntü ve video görüntüleyici. Klasörler, küçük resimler, klavye; MKV, WebM ve AVI; klasör olarak ZIP, RAR ve 7z; fotoğrafları ayıklamak için çift bölme. Reklam yok, izleme yok, hesap yok.",
+  "navFeatures": "Özellikler",
+  "navSafety": "Güvenlik",
+  "language": "Dil",
+  "iconAlt": "Schnellbild uygulama simgesi",
+  "tagline": "macOS için sinir bozmayan bir görüntü ve video görüntüleyici.",
+  "lead": "Bir klasör açın, küçük resimleri görün, bir resme büyük bakın, klavyeyle sayfa sayfa gezinin. Videolar da hemen orada oynar, MKV, AVI ve WebM bile. İçe aktarılacak bir kitaplık yok, bekleme yok, karmaşa yok.",
+  "download": "Ücretsiz indirin",
+  "store": "Mac App Store",
+  "storeSoon": "yakında, projeye destek olmak için",
+  "fineprint": "macOS 15 veya üstü, Apple silicon. Developer ID ile imzalı, Apple tarafından onaylanmış (notarized) ve Apple’ın App Sandbox’ında çalışır. İki sürüm de tüm özellikleriyle aynı uygulamadır; App Store’dan satın alan, geliştirmesine destek olur.",
+  "shotAlt": "Schnellbild: önizlemeli klasörler ve fotoğraf küçük resimleri",
+  "stats": [
+    ["0", "reklam, izleyici veya hesap"],
+    ["0 ₺", "tüm özellikler için"],
+    ["20", "dil"],
+    ["%100", "açık kaynak"]
+  ],
+  "whyTitle": "Neden sinir bozmuyor",
+  "why": [
+    ["Reklam yok, izleme yok, hesap yok", "Resimlerinizi gösterir ve kimseyle konuşmaz."],
+    ["Satış baskısı yok", "Pro sürüm yok, abonelik yok, “Kilidi aç” düğmesi yok. Tüm özellikler içinde."],
+    ["Gereksiz yük yok", "İçe aktarılacak kitaplık yok, düzenleyici yok, bulut yok. Sadece fotoğraf ve videolara bakmak, hem de iyi bir şekilde."],
+    ["Hızlı", "Küçük resimler siz kaydırırken belirir, büyük klasörlerde ve ağ paylaşımlarında da."],
+    ["Varsayılan olarak güvenli", "Başkalarından gelen resimler, videolar ve arşivler hiçbir şey çalıştırmaz ve hiçbir yere bağlanmaz; önce bir şeyi açmanız da gerekmez."],
+    ["Çökmez", "Bozuk dosyalar, alışılmadık biçimler ve yavaş diskler uygulamayı çökertmek yerine bir yer tutucu gösterir."]
+  ],
+  "featuresTitle": "Neler yapıyor",
+  "features": [
+    {
+      "title": "Büyük bakın, tuşlarla gezinin",
+      "text": "<p>Boşluk tuşu bir resmi pencerenin izin verdiği kadar büyük açar, ← → klasörde gezinir. İzleme dörtgeniyle veya + − ile yakınlaştırın, ⌥← ⌥→ ile döndürün, <kbd>f</kbd> ile tam ekran. Hareketli GIF’ler, SVG ve PDF de dahil.</p><p>Slayt gösterisi (<kbd>s</kbd>) klasörü ve tüm alt klasörlerini, fotoğraf ve videoları birlikte dolaşır.</p>",
+      "alt": "Büyük görünümde bir fotoğraf"
+    },
+    {
+      "title": "Videolar, macOS’in oynatamadıkları da",
+      "text": "<p>MP4 ve MOV doğrudan macOS ile, MKV, WebM, AVI, WMV, FLV, MPEG, DVD video ve AVCHD yerleşik VLC motoruyla oynar.</p><ul><li>← → videonun onda biri kadar, ⇧← ⇧→ yüzde biri kadar atlar</li><li>↑ ↓ ses düzeyini ayarlar, tüm videolar için</li><li>Finder ve Hızlı Bakış, MKV, WebM, WMV, FLV ve VOB için de küçük resim alır</li></ul>",
+      "alt": "Schnellbild’de oynayan bir video"
+    },
+    {
+      "title": "Arşivler klasör gibi açılır",
+      "text": "<p>ZIP, RAR ve 7z, çizgi romanlar (CBZ, CBR) dahil, parolalı ve çok parçalı olanlar da. Diske hiçbir şey açılmaz, videolar doğrudan arşivden oynar.</p>",
+      "alt": "Önizlemeli klasörler olarak gösterilen arşivler"
+    },
+    {
+      "title": "Tatil fotoğraflarınızı Norton Commander’daki gibi ayıklayın",
+      "text": "<p><kbd>D</kbd> iki klasörü yan yana gösterir. Resimleri işaretleyin, ardından <kbd>F5</kbd> kopyalar, <kbd>F6</kbd> diğer tarafa taşır; ya da onları oraya sürükleyin.</p><p>Yeniden adlandırma, yeni klasör, Çöp Sepeti, yer işaretleri ve hepsi için geri alma.</p>",
+      "alt": "Çift bölmede yan yana iki klasör"
+    },
+    {
+      "title": "Tüm alt klasörlerde arayın",
+      "text": "<p>Arama alanı klasör, arşiv, resim ve video adlarını, gösterilen klasörde ve altındaki her şeyde bulur. Sonuçlar arama sürerken gelir, yavaş bir ağ paylaşımında da. Büyük/küçük harfi yok sayarak, büyük/küçük harfe duyarlı ya da normal ifadeyle.</p>",
+      "alt": "Klasör ve alt klasörlerinden arama sonuçları"
+    },
+    {
+      "title": "Daha iyi görüntü, dosyalara dokunulmaz",
+      "text": "<p><kbd>E</kbd> pozlamayı, kontrastı, doygunluğu ve keskinliği otomatik olarak iyileştirir, fotoğraflar ve videolar için. <kbd>A</kbd> sürgüleri açar. Bu yalnızca bir görünümdür: Dosyalarınız olduğu gibi kalır.</p>",
+      "alt": "Bir fotoğrafın üzerinde ayar sürgüleri"
+    },
+    {
+      "title": "Dosya gerçekte ne",
+      "text": "<p><kbd>I</kbd> biçimi, çözünürlüğü, kodekleri, bit hızını, bit derinliğini, renk profilini ve fotoğraf makinesini gösterir; dosya uzantısı içerikle uyuşmadığında da bir not düşer.</p>",
+      "alt": "Bir fotoğrafın yanında dosya bilgileri"
+    },
+    {
+      "title": "Her tuş elinizin altında",
+      "text": "<p><kbd>F1</kbd> tüm tuşları listeler, yazdırmak için de; <kbd>K</kbd> tıklanabilir küçük bir klavye gösterir. Izgara veya liste (<kbd>L</kbd>), ada, türe, tarihe veya boyuta göre sıralama, birden çok pencere ve bir patron tuşu (<kbd>X</kbd>).</p>",
+      "alt": "Tuş listesi (F1)"
+    }
+  ],
+  "safeTitle": "Başkalarının dosyalarıyla güvenli",
+  "safeIntro": "Yabancılardan gelen resimler, videolar ve arşivler tam da bir görüntüleyicinin varlık nedenidir. Bu yüzden Schnellbild her dosyayı, kutudan çıktığı andan itibaren düşmanca kabul eder.",
+  "safe": [
+    ["Apple’ın App Sandbox’ında.", "Hiçbir ağ erişimi yok, başka program başlatılmaz, yalnızca ona açtığınız klasörler."],
+    ["Yalnızca okuma.", "Bir şeye bakmak onu asla değiştirmez ve asla diske açmaz."],
+    ["Videolar internete çıkamaz.", "Aslında internete işaret eden bir oynatma listesi olan bir “video” hiçbir şey oynatmaz."],
+    ["Çift tıklama belgeleri açar, programları değil.", "Uygulamalar, betikler ve yükleyiciler asla; bir resim adının arkasına saklansalar bile."],
+    ["İmzalı ve onaylı (notarized),", "Apple’ın Hardened Runtime’ı ile."]
+  ],
+  "safeMore": "Ayrıntılı olarak ne yaptığı ve sınırının nerede olduğu: <a href=\"https://github.com/JohannesHoppe/schnellbild#safe-with-files-from-others\">Başkalarının dosyalarıyla güvenli</a> (İngilizce).",
+  "modelsTitle": "Phiewer, IINA veya Norton Commander’dan mı geliyorsunuz?",
+  "modelsText": "Örnek alınanlar onlardı: klavyeyle resimlere göz atmak için Phiewer, videoları hızlıca ele almak için IINA, çift bölme için Norton Commander. Schnellbild karşılaştırmada nasıl (İngilizce): <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-phiewer-alternative\">ücretsiz bir Phiewer alternatifi</a>, <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-iina-alternative-for-looking-through-videos\">videolara göz atmak için ücretsiz bir IINA alternatifi</a>.",
+  "ossTitle": "Açık kaynak",
+  "ossText": "Schnellbild, MIT Lisansı altında özgür bir yazılımdır, kaynak kodu <a href=\"https://github.com/JohannesHoppe/schnellbild\">GitHub’da</a>. Bir hata mı buldunuz ya da bir şey mi eksik? <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">Bir issue açın</a>.",
+  "languagesText": "Mac’inizin dilinde:",
+  "ctaTitle": "Siz hazır olduğunuzda hazır.",
+  "ctaText": "Ücretsiz, hesapsız, koşulsuz.",
+  "footerPrivacy": "Gizlilik",
+  "footerImprint": "Künye",
+  "privacy": {
+    "title": "Gizlilik politikası",
+    "description": "Schnellbild hiçbir kişisel veri toplamaz: hesap yok, analiz yok, izleme yok, ağ erişimi yok.",
+    "intro": "Schnellbild, HAUS HOPPE - ITS (Johannes Hoppe) tarafından geliştirilen, macOS için bir görüntü ve video görüntüleyicidir; tam adres <a href=\"https://haushoppe-its.de/impressum/\">künyede</a> yer alır. Bu politika, GitHub’dan indirilen ve Mac App Store’dan satın alınan uygulamayı (ikisi de aynı uygulamadır) ve bu web sitesini kapsar.",
+    "appTitle": "Uygulama",
+    "appText": "<p><strong>Schnellbild hiçbir kişisel veri toplamaz.</strong> Hesap, analiz, reklam veya izleme içermez ve internete bağlanmaz: İçinde çalıştığı App Sandbox ona hiçbir ağ erişimi vermez.</p><p>Mac’inizde, yalnızca orada kalanlar:</p>",
+    "stays": [
+      "<strong>Ayarlar</strong> (son klasör, sıralama düzeni, yer işaretleri, ses düzeyi …) uygulamanın kendi tercihlerinde.",
+      "<strong>Klasör erişimi:</strong> Schnellbild’e açtığınız klasörler, yeniden başlatmadan sonra onları tekrar gösterebilmesi için macOS yer işaretleri olarak. Ayarlar → {folderAccess} bunları unutur.",
+      "Girdiğiniz <strong>arşiv parolaları</strong>, giriş anahtar zincirinizde (“Schnellbild archive passwords” kaydı); Ayarlar → {forgetPasswords} bunları siler.",
+      "<strong>Küçük resimler</strong>, macOS’in kendi küçük resim önbelleğinde."
+    ],
+    "appOutro": "Schnellbild resimlerinizi, videolarınızı ve arşivlerinizi yalnızca size göstermek için okur. Onları, adlarını veya onlarla ilgili herhangi bir şeyi asla hiçbir yere göndermez. Apple, indirme veya satın alma hakkında kendi gizlilik politikası kapsamında veri toplayabilir; Schnellbild bunların hiçbirini almaz.",
+    "siteTitle": "Bu web sitesi",
+    "siteText": "Bu web sitesi çerez, analiz veya başka sunuculardan içerik (web yazı tipleri, gömülü videolar) kullanmaz. GitHub, Inc. (ABD) hizmeti olan GitHub Pages üzerinde barındırılır. Siteyi ziyaret ettiğinizde GitHub, güvenlik amacıyla IP adresinizi kaydeder; bkz. <a href=\"https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages#data-collection\">GitHub Pages: data collection</a> ve <a href=\"https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement\">GitHub gizlilik bildirimi</a>. Hukuki dayanak, web sitesini güvenli bir şekilde sunmaya yönelik meşru menfaatimizdir (GDPR md. 6/1-f). Uygulamanın indirilmesi de GitHub üzerinden gerçekleşir.",
+    "rightsTitle": "Haklarınız",
+    "rightsText": "AB Genel Veri Koruma Tüzüğü (GDPR) kapsamında erişim, düzeltme, silme, işlemenin kısıtlanması, veri taşınabilirliği ve itiraz haklarına ve bir veri koruma denetim makamına şikâyette bulunma hakkına sahipsiniz. Ne uygulama ne de bu web sitesi kendine ait kişisel veri tutmadığından, genellikle bizim tarafımızda bakılacak veya silinecek bir şey yoktur.",
+    "contactTitle": "İletişim",
+    "contactText": "Sorularınız için <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a> adresinde bir issue açın veya <a href=\"https://haushoppe-its.de/impressum/\">künyedeki</a> iletişim bilgilerini kullanın."
+  }
+}
