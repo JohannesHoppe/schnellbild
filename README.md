@@ -45,7 +45,12 @@ Schnellbild follows your Mac's language: English, Deutsch, Français, Español, 
 
 ### Browse folders
 
-Open a folder with ⌘O or drag it onto the window; drag a single file to open it straight in the full view. Subfolders come first, each previewing its first pictures or videos like Finder (from its subfolders when it holds none itself), with a `..` tile to go up. Folders without a single photo or video anywhere inside are greyed out, so you don't bother opening them (a `Thumbs.db` or `desktop.ini` doesn't count). `L` shows it as a [list](#list-view) instead. Files that aren't pictures, videos or archives are listed by name and size under the grid (in the list as grey rows), so a folder that holds only such files never looks empty; "This folder is empty" means it holds nothing at all; a folder Schnellbild can't read (no permission, a share that went away) says "This folder can't be read" with the reason, never "empty". Thumbnails come from QuickLook: JPEG, HEIC, AVIF, JPEG XL, PNG, GIF, WebP, TIFF, SVG, PDF, PSD, OpenEXR, the camera RAW formats macOS reads, and a poster frame for videos. A symbolic link counts by what it points to: a link to a folder opens that folder, while renaming, moving or trashing it acts on the link itself, as in the Finder; walks through subfolders don't follow links. Folders stay current: what the Finder, a camera import or another app adds, renames or removes shows by itself, without the selection or the scroll position jumping (on network shares macOS reports only what this Mac changes there, so a share is read again whenever you come back to Schnellbild; ⌘R reads the folder again at any time). A drive that is ejected takes its windows to the level of all drives. Schnellbild reopens the last folder on launch; the very first launch opens your Pictures folder. ⌘N opens another window (one per display, say), each with its own folders and its own last folder; what one window renames, moves or trashes, the others show at once.
+- **Open** a folder with ⌘O or by dragging it onto the window; a single file dropped opens straight in the full view. Schnellbild reopens the last folder on launch (the very first launch opens Pictures), and ⌘N opens another window.
+- **Folders first**, each previewing its first pictures or videos like the Finder, with a `..` tile to go up. Folders without a single photo or video anywhere inside are greyed out, so you don't bother opening them. `L` switches to a [list](#list-view).
+- **Thumbnails** come from Quick Look: JPEG, HEIC, AVIF, JPEG XL, PNG, GIF, WebP, TIFF, SVG, PDF, PSD, OpenEXR, the camera RAW formats macOS reads, and a frame for videos.
+- **Always current:** what the Finder, a camera import or another app adds, renames or removes shows by itself, without the selection jumping; ⌘R reads the folder again. An ejected drive takes its windows back to the list of drives.
+- **Other files** (not pictures, videos or archives) are listed by name under the grid, so a folder never looks empty when it isn't. A folder that can't be read says so, with the reason.
+- **Links** count by what they point to: a link to a folder opens that folder, while renaming or trashing it acts on the link, as in the Finder.
 
 | Key | Action |
 |---|---|
@@ -99,7 +104,9 @@ By name, kind, date modified, date taken or size, from the toolbar or with one k
   <img src="docs/screenshots/search-light.png" width="760" alt="Search results from the folder and its subfolders">
 </picture></p>
 
-The search field is always there. It matches the names of folders, archives, pictures and videos in the current folder and everything below it (inside an archive when you search there; a search doesn't open the archives it passes); results stream in while the tree is walked and show where they live. The stop button next to the spinner ends a long search over a slow network share and keeps what it has found. Back from an opened result returns to the same results without searching again; a search that was still running when you opened a result goes on in the background meanwhile. The switch beside the field sets how names match: `abc` ignores case, `Aa` matches the case as typed, `.*` takes a regular expression (found anywhere in the name; `^`, `$` and `(?i)` work as usual; an expression that would take ages on a name counts it as no match, and typing never waits for it). Each half of the dual pane remembers its choice.
+- **Always there:** the search field matches the names of folders, archives, pictures and videos in the current folder and everything below it. Results stream in while it searches, even on a slow network share, and show where they live; the stop button keeps what was found.
+- **Three ways to match**, by the switch beside the field: `abc` ignores case, `Aa` matches it, `.*` takes a regular expression (`^`, `$`, `(?i)` work as usual). Each half of the dual pane remembers its choice.
+- **Back** from an opened result returns to the same results without searching again; a search still running goes on in the background.
 
 | Key | Action |
 |---|---|
@@ -176,7 +183,10 @@ Zoom with the keyboard or a trackpad pinch, drag to pan, rotate in steps of 90°
   <img src="docs/screenshots/video-light.png" width="760" alt="A video in the full view, paused">
 </picture></p>
 
-Videos play right away, MP4 and MOV through AVKit, formats macOS can't play (AVI, MKV, WebM, DVD's VOB …) through the built-in VLC engine. Media Extensions turned on in System Settings → General → Login Items & Extensions (Apple's own, or another app's for more formats) are used too: such videos play in AVKit, and on macOS 26 their thumbnails come from them. The arrow keys skim: each press jumps a tenth of the video ahead or back, past the end on to the next item, with ⇧ a hundredth. So one key pages through photos and skims through videos; ⌘← ⌘→ skip a video at once. A thin bar under the name at the top shows how far the video has played, the time left beside it. While a video is turned, the player's own control bar is hidden (it would turn with the picture); the keys work as always. ↑ ↓ set the volume of every video, shown a moment while it changes, and kept for the next launch.
+- **Everything plays:** MP4 and MOV through macOS itself, what macOS can't play (AVI, MKV, WebM, DVD's VOB …) through the VLC engine built in. Media Extensions you turned on in System Settings are used too.
+- **The arrow keys skim:** each press jumps a tenth of the video, ⇧ a hundredth, past the end on to the next item. So one key pages through photos and skims through videos; ⌘← ⌘→ skip a video at once.
+- **A thin bar** at the top shows how far the video has played and the time left.
+- **↑ ↓ set the volume** of every video, kept for the next launch.
 
 | Key | Action |
 |---|---|
@@ -277,7 +287,12 @@ A file whose extension names another format than its content (a recording named 
   <img src="docs/screenshots/dualpane-light.png" width="760" alt="Two panes side by side: the library on the left with two photos marked, a trip's folder on the right">
 </picture></p>
 
-**Dual Pane** in the toolbar (or `D`) splits the window in two, like the classic two-panel file managers. Each half is a browser of its own: its own folder, search, history and sort order; the one outlined in color is the one the keys work on, `Tab` switches. Drag the line between them to give one half more room (double-click it to share equally again); Schnellbild remembers where it was. A picture or video opens large in its own half. A folder's right-click menu opens it in the other half ("Open in Other Pane"). Mark several items with ⌘-click, ⇧-click or ⇧-arrows (⌘A all, Esc none), then press ⇧⌘C (or `F5`) to copy or ⇧⌘M (or `F6`) to move them into the other half's folder, or drag them over onto the other half or a folder tile in it: anywhere that isn't a folder tile (a picture, free space, the search or status bar) takes them into the folder that half shows, which it outlines and names while you hold them over it. While the other half shows search results, neither F5 / F6 nor a drop goes into it (the results aren't one folder): clear its search first. A name that is taken there asks first: keep both (the new one is numbered) or skip. Both halves always show what is on disk. `D` again (or the button) goes back to one pane.
+**Dual Pane** in the toolbar (or `D`) splits the window in two, like the classic two-panel file managers:
+
+- **Two browsers side by side,** each with its own folder, search, history and sort order. The outlined one gets the keys, `Tab` switches. Drag the line between them to share the room differently (double-click: half and half).
+- **Mark** with ⌘-click, ⇧-click or ⇧-arrows (⌘A all, `M` marks and moves on, Esc none).
+- **Copy or move across:** ⇧⌘C (or `F5`) copies, ⇧⌘M (or `F6`) moves the marked items into the other half's folder. Or drag them over: onto a folder tile, or anywhere else in that half for the folder it shows.
+- **A folder's right-click menu** opens it in the other half. `D` again goes back to one pane.
 
 **Use your old Norton Commander muscle memory:** the function keys work as they did there, as a second way next to the Mac shortcuts.
 
