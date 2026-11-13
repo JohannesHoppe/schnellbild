@@ -81,7 +81,11 @@
     ["Solo lettura.", "Guardare qualcosa non lo modifica mai e non lo estrae mai sul disco."],
     ["I video non vanno online.", "Un «video» che in realtà è una playlist che punta a internet non riproduce nulla."],
     ["Il doppio clic apre documenti, non programmi.", "Mai app, script o programmi di installazione, nemmeno se si nascondono dietro il nome di un’immagine."],
-    ["Firmato e notarizzato,", "con l’Hardened Runtime di Apple."]
+    ["Firmato e notarizzato,", "con l’Hardened Runtime di Apple."],
+    [
+      "Compilato in modo verificabile dal codice sorgente pubblico.",
+      "GitHub attesta con una firma da quale commit e da quale build proviene ogni download. Chiunque può verificarlo."
+    ]
   ],
   "safeMore": "Cosa fa nel dettaglio, e dove si ferma (in inglese): <a href=\"https://github.com/JohannesHoppe/schnellbild#safe-with-files-from-others\">Sicuro con i file degli altri</a>.",
   "modelsTitle": "Arrivi da Phiewer, IINA o Norton Commander?",

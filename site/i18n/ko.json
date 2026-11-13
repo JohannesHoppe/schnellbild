@@ -126,6 +126,10 @@
     [
       "서명과 공증 완료,",
       "Apple의 Hardened Runtime 적용."
+    ],
+    [
+      "공개된 소스 코드로 빌드되었음을 증명할 수 있습니다.",
+      "각 다운로드가 어떤 커밋과 어떤 빌드에서 나왔는지 GitHub가 서명으로 증명합니다. 누구나 확인할 수 있습니다."
     ]
   ],
   "safeMore": "구체적으로 무엇을 하는지, 그리고 한계는 어디인지: <a href=\"https://github.com/JohannesHoppe/schnellbild#safe-with-files-from-others\">다른 사람이 보낸 파일도 안전하게</a>.",

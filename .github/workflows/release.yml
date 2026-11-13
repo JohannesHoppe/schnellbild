@@ -22,6 +22,12 @@ jobs:
     name: Build, sign & submit
     runs-on: macos-15
     environment: release
+    # Build provenance (GitHub artifact attestations): signed by GitHub, so anyone
+    # can check that a DMG or app came from this workflow at this commit
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
     outputs:
       signed: ${{ steps.sign.outputs.signed }}
     env:
@@ -99,6 +105,17 @@ jobs:
       - name: Remove signing data
         if: always() && env.SIGN == 'true'
         run: ./Scripts/macos-signing.sh cleanup
+
+      # The app's executable keeps its hash in the DMG and after installing
+      # (stapling changes only the DMG), so the installed app can be checked too;
+      # the DMG as submitted to Apple here, the stapled one in mac-release.yml
+      - name: Attest where the app and the DMG come from
+        if: env.SIGN == 'true'
+        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-path: |
+            build/Schnellbild.app/Contents/MacOS/Schnellbild
+            dist/signed/Schnellbild.dmg
 
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: env.SIGN != 'true'

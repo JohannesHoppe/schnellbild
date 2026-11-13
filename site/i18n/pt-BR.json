@@ -81,7 +81,11 @@
     ["Somente leitura.", "Olhar um arquivo nunca o altera nem o extrai para o disco."],
     ["Vídeos não acessam a internet.", "Um “vídeo” que na verdade é uma playlist apontando para a internet não reproduz nada."],
     ["O clique duplo abre documentos, não programas.", "Nunca apps, scripts ou instaladores, mesmo que se escondam atrás do nome de uma imagem."],
-    ["Assinado e notarizado,", "com o Hardened Runtime da Apple."]
+    ["Assinado e notarizado,", "com o Hardened Runtime da Apple."],
+    [
+      "Compilado de forma comprovável a partir do código-fonte público.",
+      "O GitHub atesta com assinatura de qual commit e de qual build vem cada download. Qualquer pessoa pode conferir."
+    ]
   ],
   "safeMore": "O que ele faz em detalhes, e onde está o limite (em inglês): <a href=\"https://github.com/JohannesHoppe/schnellbild#safe-with-files-from-others\">Seguro com arquivos de outras pessoas</a>.",
   "modelsTitle": "Vem do Phiewer, do IINA ou do Norton Commander?",

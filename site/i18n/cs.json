@@ -81,7 +81,11 @@
     ["Pouze čtení.", "Prohlížení nic nemění a nic nerozbaluje na disk."],
     ["Videa se nepřipojí k internetu.", "„Video“, které je ve skutečnosti playlist odkazující na internet, nepřehraje nic."],
     ["Dvojklik otevírá dokumenty, ne programy.", "Aplikace, skripty a instalátory nikdy, ani když se skrývají za názvem obrázku."],
-    ["Podepsáno a notarizováno,", "s Hardened Runtime od Applu."]
+    ["Podepsáno a notarizováno,", "s Hardened Runtime od Applu."],
+    [
+      "Prokazatelně sestaveno z veřejného zdrojového kódu.",
+      "GitHub podpisem potvrzuje, ze kterého commitu a kterého sestavení pochází každé stažení. Ověřit si to může každý."
+    ]
   ],
   "safeMore": "Co přesně dělá a kde má své hranice: <a href=\"https://github.com/JohannesHoppe/schnellbild#safe-with-files-from-others\">Bezpečně se soubory od jiných</a> (anglicky).",
   "modelsTitle": "Přecházíte z Phieweru, IINA nebo Norton Commanderu?",

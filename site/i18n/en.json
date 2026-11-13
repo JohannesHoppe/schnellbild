@@ -126,6 +126,10 @@
     [
       "Signed and notarized,",
       "with Apple's Hardened Runtime."
+    ],
+    [
+      "Provably built from the public source.",
+      "GitHub signs where every download comes from: the commit and the build. Anyone can check it."
     ]
   ],
   "safeMore": "What it does in detail, and where its limit is: <a href=\"https://github.com/JohannesHoppe/schnellbild#safe-with-files-from-others\">Safe with files from others</a>.",

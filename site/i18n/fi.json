@@ -81,7 +81,11 @@
     ["Vain lukeminen.", "Katsominen ei koskaan muuta mitään eikä pura mitään levylle."],
     ["Videot eivät pääse verkkoon.", "”Video”, joka onkin internetiin osoittava soittolista, ei toista mitään."],
     ["Kaksoisosoitus avaa dokumentteja, ei ohjelmia.", "Ohjelmia, skriptejä ja asennusohjelmia ei koskaan, vaikka ne piiloutuisivat kuvan nimen taakse."],
-    ["Allekirjoitettu ja notarisoitu,", "Applen Hardened Runtimella."]
+    ["Allekirjoitettu ja notarisoitu,", "Applen Hardened Runtimella."],
+    [
+      "Todistettavasti rakennettu julkisesta lähdekoodista.",
+      "GitHub vahvistaa allekirjoituksella, mistä commitista ja mistä käännöksestä jokainen lataus on peräisin. Kuka tahansa voi tarkistaa sen."
+    ]
   ],
   "safeMore": "Mitä se tekee yksityiskohtaisesti ja missä sen raja kulkee: <a href=\"https://github.com/JohannesHoppe/schnellbild#safe-with-files-from-others\">Turvallinen muiden tiedostojen kanssa</a> (englanniksi).",
   "modelsTitle": "Tuletko Phiewerista, IINAsta tai Norton Commanderista?",

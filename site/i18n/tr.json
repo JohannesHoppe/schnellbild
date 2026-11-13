@@ -81,7 +81,11 @@
     ["Yalnızca okuma.", "Bir şeye bakmak onu asla değiştirmez ve asla diske açmaz."],
     ["Videolar internete çıkamaz.", "Aslında internete işaret eden bir oynatma listesi olan bir “video” hiçbir şey oynatmaz."],
     ["Çift tıklama belgeleri açar, programları değil.", "Uygulamalar, betikler ve yükleyiciler asla; bir resim adının arkasına saklansalar bile."],
-    ["İmzalı ve onaylı (notarized),", "Apple’ın Hardened Runtime’ı ile."]
+    ["İmzalı ve onaylı (notarized),", "Apple’ın Hardened Runtime’ı ile."],
+    [
+      "Herkese açık kaynak koddan derlendiği kanıtlanabilir.",
+      "GitHub her indirmenin hangi commit'ten ve hangi derlemeden geldiğini imzayla onaylar. Bunu herkes doğrulayabilir."
+    ]
   ],
   "safeMore": "Ayrıntılı olarak ne yaptığı ve sınırının nerede olduğu: <a href=\"https://github.com/JohannesHoppe/schnellbild#safe-with-files-from-others\">Başkalarının dosyalarıyla güvenli</a> (İngilizce).",
   "modelsTitle": "Phiewer, IINA veya Norton Commander’dan mı geliyorsunuz?",
