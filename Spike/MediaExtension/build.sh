@@ -25,7 +25,7 @@ if [ "$VARIANT" = signed ]; then
   rm -rf "$EX"; EX="$APP/Contents/Extensions/SchnellbildFormats.appex"; mkdir -p "$EX/Contents/MacOS"
   swiftc -O -target $TARGET -module-name SchnellbildFormats -parse-as-library \
     ../../FormatReader/MatroskaIndex.swift ../../FormatReader/TransportIndex.swift ../../FormatReader/FormatReader.swift \
-    -framework MediaExtension -framework ExtensionFoundation -Xlinker -e -Xlinker _EXExtensionMain \
+    -framework MediaExtension -framework ExtensionFoundation -Xlinker -e -Xlinker _NSExtensionMain \
     -o "$EX/Contents/MacOS/SchnellbildFormats"
   cp ../../FormatReader/Info.plist "$EX/Contents/Info.plist"
   /usr/libexec/PlistBuddy -c "Set :CFBundleIdentifier art.haushoppe.schnellbild" "$APP/Contents/Info.plist"
