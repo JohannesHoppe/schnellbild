@@ -52,7 +52,7 @@ struct ThumbnailGridView: View {
                     if oldValue == newValue {
                         proxy.scrollTo(id, anchor: .center)
                     } else {
-                        withAnimation(.easeOut(duration: 0.15)) {
+                        withAnimation(Motion.animation(.easeOut(duration: 0.15))) {
                             proxy.scrollTo(id, anchor: .center)
                         }
                     }

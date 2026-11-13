@@ -84,7 +84,7 @@ struct FullImageView: View {
             // ↑ / ↓ zoomed in: a fifth of the view further up / down
             .onChange(of: model.panRequest) { _, request in
                 guard let request, model.zoom > 1.01 else { return }
-                withAnimation(.easeOut(duration: 0.15)) {
+                withAnimation(Motion.animation(.easeOut(duration: 0.15))) {
                     panOffset.height += (request.up ? 1 : -1) * geo.size.height / 5
                 }
             }

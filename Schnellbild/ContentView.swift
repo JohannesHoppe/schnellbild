@@ -51,7 +51,7 @@ private struct WindowView: View {
                     MiniKeyboard().transition(.move(edge: .bottom))
                 }
             }
-            .animation(.easeOut(duration: 0.2), value: model.showMiniKeyboard)
+            .animation(Motion.animation(.easeOut(duration: 0.2)), value: model.showMiniKeyboard)
         }
         .overlay(alignment: .bottom) {
             // In a slideshow: while the mouse moves, then it slides away
@@ -59,7 +59,7 @@ private struct WindowView: View {
                 MiniKeyboard().transition(.move(edge: .bottom).combined(with: .opacity))
             }
         }
-        .animation(.easeOut(duration: 0.25), value: slideshowKeysShown)
+        .animation(Motion.animation(.easeOut(duration: 0.25)), value: slideshowKeysShown)
         .onContinuousHover { phase in
             guard model.slideshow != nil, case .active = phase else { return }
             slideshowKeysShown = true
