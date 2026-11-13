@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- The thumbnail extension's manifest (SchnellbildThumbnails.appex,
+         Contents/Resources, put in by Scripts/build_app.sh). Its own code
+         (ThumbnailExtension, VLCFrames) uses only UserDefaults; VLCKit, which
+         it loads from the app, has its own manifest. -->
+    <key>NSPrivacyTracking</key>
+    <false/>
+    <key>NSPrivacyTrackingDomains</key>
+    <array/>
+    <key>NSPrivacyCollectedDataTypes</key>
+    <array/>
+    <key>NSPrivacyAccessedAPITypes</key>
+    <array>
+        <!-- VLCSafety.forgetInjectedOptions: removes VLCKit's preference from
+             the extension's own defaults -->
+        <dict>
+            <key>NSPrivacyAccessedAPIType</key>
+            <string>NSPrivacyAccessedAPICategoryUserDefaults</string>
+            <key>NSPrivacyAccessedAPITypeReasons</key>
+            <array><string>CA92.1</string></array>
+        </dict>
+    </array>
+</dict>
+</plist>
