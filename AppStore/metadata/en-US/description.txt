@@ -1,0 +1,28 @@
+Schnellbild shows pictures and videos without importing anything: open a folder, see thumbnails, look at one picture large, page through with the keyboard. It stays quick on big folders and network shares alike.
+
+THIS VERSION SUPPORTS THE PROJECT
+Schnellbild is open source and free to download on GitHub. This is the same app. Buying it here supports its development. Thank you!
+
+PICTURES
+• JPEG, HEIC, AVIF, JPEG XL, PNG, GIF, WebP, TIFF, PSD, OpenEXR, SVG, PDF and RAW photos of the cameras macOS knows
+• Grid, list and full view, slideshow through all subfolders
+• Zoom, rotate, auto enhance (exposure, contrast, saturation, sharpness), for viewing only: your files stay as they are
+• File info with format, codecs and bitrate; a note when a file's extension doesn't match its content
+
+VIDEOS
+• MP4 and MOV, plus the formats macOS can't play: MKV, WebM, AVI, WMV, FLV, MPEG, DVD video, AVCHD
+• Skim through videos with the arrow keys, the way you page through photos
+
+ARCHIVES AS FOLDERS
+• ZIP, RAR and 7z open like folders, comic books (CBZ, CBR) included, also with passwords and in parts
+• Nothing is unpacked to disk; videos play straight from the archive
+
+SORT LIKE IN NORTON COMMANDER
+• Two panes side by side: mark, copy with F5, move with F6
+• Rename, new folder, trash, bookmarks, undo
+• Search folder and file names through all subfolders
+
+SAFE WITH FILES FROM OTHERS
+Schnellbild runs in Apple's App Sandbox: no network, no other programs, only the folders you open to it. Archives are only read, and a "video" can't send the app onto the internet.
+
+Every key at a glance with F1, a clickable mini keyboard with K. In 20 languages.

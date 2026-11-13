@@ -1,0 +1,13 @@
+{
+  "bundleId": "art.haushoppe.schnellbild",
+  "primaryCategory": "PHOTO_AND_VIDEO",
+  "secondaryCategory": "UTILITIES",
+  "copyright": "2026 HAUS HOPPE - ITS (Johannes Hoppe)",
+  "supportUrl": "https://github.com/JohannesHoppe/schnellbild/issues",
+  "marketingUrl": "https://github.com/JohannesHoppe/schnellbild",
+  "privacyPolicyUrl": "https://github.com/JohannesHoppe/schnellbild/blob/main/PRIVACY.md",
+  "screenshots": {
+    "en-US": "AppStore/screenshots/en",
+    "de-DE": "AppStore/screenshots/de"
+  }
+}

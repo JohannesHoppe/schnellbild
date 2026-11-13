@@ -1,0 +1,1 @@
+image viewer,photo,video,mkv,avi,raw,heic,slideshow,rar,zip,comic,cbz,folder,keyboard,browser

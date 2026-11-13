@@ -1,0 +1,9 @@
+# App Store texts
+
+What the App Store shows, one file per field and language (`en-US` is the primary language, `de-DE` the second). `Scripts/appstore_connect.swift` puts them into App Store Connect: `gh workflow run appstore.yml -f metadata=true` (also with `-f upload=true`, then it waits for the build and picks it for the version).
+
+- `<locale>/name.txt` (30 characters), `subtitle.txt` (30), `promotional_text.txt` (170, can change without a new version), `description.txt` (4000), `keywords.txt` (100, commas count, no other apps or brands), `release_notes.txt` ("What's New", for every version but the first in the Store).
+- `review_notes.txt`: the notes for Apple's review (English).
+- `app.json`: bundle ID, categories, copyright, the URLs, where the screenshots are (`AppStore/screenshots/<lang>`, 2880 × 1800, made by `Scripts/make_store_screenshots.swift`).
+
+The version is the app's own (`Resources/Info.plist`). Set by hand once in App Store Connect, not by the script: App Privacy ("Data Not Collected"), age rating (4+, every question "None"/"No"), price (0,99 €, all countries), the license agreement (`AppStore/EULA.md`), and the review contact. The app is the same as the free DMG; the price is there for those who want to support the project.
