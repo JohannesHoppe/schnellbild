@@ -161,6 +161,9 @@ final class WindowModel: ObservableObject {
     private var allPanes: [BrowserModel] { [left, right].compactMap { $0 } }
     /// Every pane of every open window.
     private static var everyPane: [BrowserModel] { all.filter { !$0.closed }.flatMap(\.allPanes) }
+    /// Every pane of every open window (also a hidden right one: shown
+    /// again, it is current).
+    static var openPanes: [BrowserModel] { everyPane }
 
     /// Menus and the toolbar read the active pane: its changes are the
     /// window's (each pane's own view watches that pane itself).

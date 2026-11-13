@@ -315,3 +315,5 @@
 "Each folder asks for your permission again." = "Jeder Ordner fragt dann wieder nach deiner Erlaubnis.";
 "© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later. Built from its source without VLC's modules under the GPL; the build script and its changes are in Schnellbild's repository (github.com/JohannesHoppe/schnellbild)." = "© VideoLAN und die VLC-Autoren. GNU Lesser General Public License 2.1 oder später. Aus dem Quellcode gebaut, ohne die VLC-Module unter der GPL; das Build-Skript und seine Änderungen liegen im Repository von Schnellbild (github.com/JohannesHoppe/schnellbild).";
 "The other pane shows search results. Clear its search to copy or move into its folder." = "Die andere Seite zeigt Suchergebnisse. Lösche dort die Suche, um in ihren Ordner zu kopieren oder zu verschieben.";
+"Reload" = "Neu laden";
+"Read the folder again" = "Ordner neu einlesen";

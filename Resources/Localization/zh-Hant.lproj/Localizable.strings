@@ -315,3 +315,5 @@
 "Each folder asks for your permission again." = "每個檔案夾都會再次請求你的允許。";
 "© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later. Built from its source without VLC's modules under the GPL; the build script and its changes are in Schnellbild's repository (github.com/JohannesHoppe/schnellbild)." = "© VideoLAN 與 VLC 作者。GNU Lesser General Public License 2.1 或更新版本。從原始碼建置，不含 GPL 授權的 VLC 模組；建置腳本及其變更位於 Schnellbild 的儲存庫（github.com/JohannesHoppe/schnellbild）。";
 "The other pane shows search results. Clear its search to copy or move into its folder." = "另一個窗格顯示的是搜尋結果。若要拷貝或搬移到其檔案夾，請先清除其搜尋。";
+"Reload" = "重新載入";
+"Read the folder again" = "重新讀取檔案夾";

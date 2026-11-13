@@ -315,3 +315,5 @@
 "Each folder asks for your permission again." = "Her klasör yeniden izninizi isteyecek.";
 "© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later. Built from its source without VLC's modules under the GPL; the build script and its changes are in Schnellbild's repository (github.com/JohannesHoppe/schnellbild)." = "© VideoLAN ve VLC yazarları. GNU Lesser General Public License 2.1 veya üstü. VLC'nin GPL altındaki modülleri olmadan kaynak kodundan derlendi; derleme betiği ve değişiklikleri Schnellbild deposunda (github.com/JohannesHoppe/schnellbild).";
 "The other pane shows search results. Clear its search to copy or move into its folder." = "Diğer bölme arama sonuçlarını gösteriyor. Klasörüne kopyalamak veya taşımak için oradaki aramayı temizleyin.";
+"Reload" = "Yeniden Yükle";
+"Read the folder again" = "Klasörü yeniden oku";
