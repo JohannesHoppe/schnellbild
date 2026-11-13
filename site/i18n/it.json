@@ -45,7 +45,7 @@
     },
     {
       "title": "Gli archivi si aprono come cartelle",
-      "text": "<p>ZIP, RAR e 7z, fumetti (CBZ, CBR) compresi, anche divisi in più parti; ZIP e RAR anche protetti da password. Nulla viene estratto sul disco, e i video si riproducono direttamente dall’archivio. (Per 7z serve un macOS recente: macOS 15 non riesce a leggere la maggior parte di questi archivi.)</p>",
+      "text": "<p>ZIP, RAR e 7z, fumetti (CBZ, CBR) compresi, anche divisi in più parti; ZIP e RAR anche protetti da password. Nulla viene estratto sul disco, e i video si riproducono direttamente dall’archivio.</p>",
       "alt": "Archivi mostrati come cartelle con anteprime"
     },
     {

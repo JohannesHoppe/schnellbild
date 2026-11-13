@@ -45,7 +45,7 @@
     },
     {
       "title": "Les archives s’ouvrent comme des dossiers",
-      "text": "<p>ZIP, RAR et 7z, bandes dessinées (CBZ, CBR) comprises, même en plusieurs parties ; ZIP et RAR aussi protégés par mot de passe. Rien n’est décompressé sur le disque, et les vidéos se lisent directement depuis l’archive. (7z demande un macOS récent : macOS 15 ne sait pas lire la plupart de ces archives.)</p>",
+      "text": "<p>ZIP, RAR et 7z, bandes dessinées (CBZ, CBR) comprises, même en plusieurs parties ; ZIP et RAR aussi protégés par mot de passe. Rien n’est décompressé sur le disque, et les vidéos se lisent directement depuis l’archive.</p>",
       "alt": "Des archives affichées comme des dossiers, avec aperçus"
     },
     {

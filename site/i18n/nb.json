@@ -45,7 +45,7 @@
     },
     {
       "title": "Arkiver åpnes som mapper",
-      "text": "<p>ZIP, RAR og 7z, tegneserier (CBZ, CBR) inkludert, også i flere deler; ZIP og RAR også med passord. Ingenting pakkes ut på disken, og videoer spilles av rett fra arkivet. (7z krever en nyere macOS: macOS 15 kan ikke lese de fleste.)</p>",
+      "text": "<p>ZIP, RAR og 7z, tegneserier (CBZ, CBR) inkludert, også i flere deler; ZIP og RAR også med passord. Ingenting pakkes ut på disken, og videoer spilles av rett fra arkivet.</p>",
       "alt": "Arkiver vist som mapper med forhåndsvisninger"
     },
     {

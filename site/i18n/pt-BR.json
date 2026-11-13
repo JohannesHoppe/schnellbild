@@ -45,7 +45,7 @@
     },
     {
       "title": "Arquivos compactados abrem como pastas",
-      "text": "<p>ZIP, RAR e 7z, incluindo quadrinhos (CBZ, CBR), também divididos em várias partes; ZIP e RAR também com senha. Nada é extraído para o disco, e os vídeos tocam direto do arquivo compactado. (O 7z exige um macOS recente: o macOS 15 não consegue ler a maioria deles.)</p>",
+      "text": "<p>ZIP, RAR e 7z, incluindo quadrinhos (CBZ, CBR), também divididos em várias partes; ZIP e RAR também com senha. Nada é extraído para o disco, e os vídeos tocam direto do arquivo compactado.</p>",
       "alt": "Arquivos compactados exibidos como pastas com pré-visualizações"
     },
     {

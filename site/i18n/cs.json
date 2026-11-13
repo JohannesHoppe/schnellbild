@@ -45,7 +45,7 @@
     },
     {
       "title": "Archivy se otevírají jako složky",
-      "text": "<p>ZIP, RAR a 7z, včetně komiksů (CBZ, CBR), i rozdělené na více částí; ZIP a RAR i s heslem. Nic se nerozbaluje na disk a videa se přehrávají přímo z archivu. (7z vyžaduje aktuální macOS: macOS 15 většinu z nich nepřečte.)</p>",
+      "text": "<p>ZIP, RAR a 7z, včetně komiksů (CBZ, CBR), i rozdělené na více částí; ZIP a RAR i s heslem. Nic se nerozbaluje na disk a videa se přehrávají přímo z archivu.</p>",
       "alt": "Archivy zobrazené jako složky s náhledy"
     },
     {

@@ -45,7 +45,7 @@
     },
     {
       "title": "Arkiv öppnas som mappar",
-      "text": "<p>ZIP, RAR och 7z, serietidningar (CBZ, CBR) inräknade, även i flera delar; ZIP och RAR även med lösenord. Inget packas upp på disken, och videor spelas direkt från arkivet. (7z kräver ett nyare macOS: macOS 15 kan inte läsa de flesta.)</p>",
+      "text": "<p>ZIP, RAR och 7z, serietidningar (CBZ, CBR) inräknade, även i flera delar; ZIP och RAR även med lösenord. Inget packas upp på disken, och videor spelas direkt från arkivet.</p>",
       "alt": "Arkiv som visas som mappar med förhandsvisningar"
     },
     {
