@@ -12,11 +12,11 @@ cd "$(dirname "$0")/.."
 ROOT="$(pwd)"
 source "$ROOT/Scripts/fetch_verified.sh"
 
-VERSION="3.7.5-lgpl-9"
+VERSION="3.7.5-lgpl-11"
 URL="https://github.com/JohannesHoppe/schnellbild/releases/download/vlckit-$VERSION/VLCKit-lgpl.xcframework.zip"
-SHA256="aa02d38c2b6e8defb3f8fdf021f407e42aa20f3875f8eee09832db2df5ece3c1"
+SHA256="0c73bc1a20d8e93db8edeb0410193aa56e628ead81d1c8269092d6ba603e159f"
 # tree_sha256 (fetch_verified.sh) of the unpacked VLCKit.xcframework
-TREE_SHA256="a0e5b2f789e4513e00d152cfd1f586c008726acdc6cce3cfd026f783552a6597"
+TREE_SHA256="fdfb3a2f725f57c7dee0359414149d3479aacbccfd8642380dd73eb9c4a1f327"
 
 # The UnRAR source is vendored alongside (every build that needs VLCKit
 # needs it too).

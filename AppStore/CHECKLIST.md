@@ -4,7 +4,7 @@ One app, two ways out: free as the DMG on GitHub Releases, and for 0,99 € in t
 
 ## Ready (in this repository)
 
-- [x] VLCKit 3.7.5 without GPL modules (`Scripts/build_vlckit_lgpl.sh`, workflow `vlckit-lgpl.yml`, published as a pre-release, fetched by `Scripts/fetch_vlckit.sh`): 236 modules, all LGPL; all unit tests pass with it.
+- [x] VLCKit 3.7.5 without GPL modules (`Scripts/build_vlckit_lgpl.sh`, workflow `vlckit-lgpl.yml`, published as a pre-release, fetched by `Scripts/fetch_vlckit.sh`): 192 modules, all LGPL, none for network, playlists or stream output; all unit tests pass with it.
 - [x] App Sandbox for the app and both extensions (`Sandbox/`); all UI tests run the app in it.
 - [x] Folder access: grants as security-scoped bookmarks, "Allow Access…" for a folder outside them, Settings → Folder access to forget them.
 - [x] Privacy manifests, one per bundle (`build_app.sh` puts them in): the app (`Sandbox/PrivacyInfo.xcprivacy`), the thumbnail extension (`Sandbox/Thumbnails.xcprivacy`), the media extension (`Sandbox/Formats.xcprivacy`), VLCKit.framework (`Sandbox/VLCKit.xcprivacy`). No tracking, no data collected; the reasons for UserDefaults, file timestamps, system boot time and disk space (VLCKit's `fstatfs`).

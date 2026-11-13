@@ -13,7 +13,7 @@ echo "==> Ensuring VLCKit is vendored"
 "$ROOT/Scripts/fetch_vlckit.sh"
 echo "==> No GPL module in VLCKit"
 python3 -I "$ROOT/Scripts/vlckit_licenses.py" \
-  "$(find "$ROOT/Vendor/VLCKit.xcframework" -path '*VLCKit.framework/Versions/A/VLCKit' -type f | head -1)" --no-gpl
+  "$(find "$ROOT/Vendor/VLCKit.xcframework" -path '*VLCKit.framework/Versions/A/VLCKit' -type f | head -1)" --no-gpl --local-only
 
 echo "==> Rendering icon"
 swift Scripts/make_icon.swift "$RES/icon_1024.png"
@@ -60,20 +60,10 @@ install_name_tool -add_rpath "@executable_path/../Frameworks" "$APP/Contents/Mac
 cp "$RES/AppIcon.icns" "$APP/Contents/Resources/AppIcon.icns"
 # The UI's translations (en.lproj, de.lproj, …), found through Bundle.main
 cp -R "$RES/Localization/"*.lproj "$APP/Contents/Resources/"
-# The libraries' license texts (the About window points here)
+# The libraries' license texts (the About window points here), among them
+# VLCKit-third-party-licenses.txt: FFmpeg and the other libraries inside VLCKit,
+# as published with the VLCKit build (keep it in step with fetch_vlckit.sh)
 cp -R "$RES/Licenses" "$APP/Contents/Resources/Licenses"
-# The licenses of the libraries built into VLCKit (FFmpeg and VLC's other
-# contribs), published next to the framework by Scripts/build_vlckit_lgpl.sh
-# and vendored as Vendor/VLCKit-licenses (a folder of texts or one file). A
-# VLCKit without it (an older build, SCHNELLBILD_OWN_VLCKIT) adds nothing here.
-VLC_LICENSES="$ROOT/Vendor/VLCKit-licenses"
-if [ -d "$VLC_LICENSES" ]; then
-  ditto "$VLC_LICENSES" "$APP/Contents/Resources/Licenses/VLCKit-libraries"
-elif [ -f "$VLC_LICENSES" ]; then
-  cp "$VLC_LICENSES" "$APP/Contents/Resources/Licenses/VLCKit-libraries.txt"
-else
-  echo "   (no Vendor/VLCKit-licenses: the libraries inside VLCKit get no license texts of their own)"
-fi
 # A short MKV: Settings plays it through macOS to tell whether the media extension is on
 cp "$RES/FormatsCheck.mkv" "$APP/Contents/Resources/FormatsCheck.mkv"
 cp "$RES/Info.plist" "$APP/Contents/Info.plist"
