@@ -1,25 +1,65 @@
-# Schnellbild – License Agreement (Mac App Store)
+# Schnellbild License Agreement
 
-Draft, not legal advice: have it checked before submitting. Apple's "Minimum Terms of Developer's End-User License Agreement" (in the App Store Review Guidelines' licensed application terms) list what it must cover. This is the text for App Store Connect → App Information → License Agreement ("Custom"). It replaces Apple's standard EULA for Schnellbild, because the LGPL asks that users may change the LGPL library inside the app and reverse engineer it to debug such changes, which the standard EULA forbids.
+This agreement covers Schnellbild as obtained from the Mac App Store. Schnellbild is made by HAUS HOPPE - ITS (Johannes Hoppe), "the developer". By installing or using it you agree to these terms.
 
----
+## 1. Agreement between you and the developer
 
-**Schnellbild License Agreement**
+This agreement is between you and the developer only, not Apple Inc. ("Apple"). The developer, not Apple, is solely responsible for Schnellbild and its content. Where this agreement differs from the Usage Rules of the Apple Media Services Terms and Conditions, those Usage Rules apply.
 
-Schnellbild is made by HAUS HOPPE - ITS (Johannes Hoppe). By installing or using it you agree to these terms.
+## 2. Scope of license
 
-1. **The app.** Schnellbild's own source code is free software under the MIT License: <https://github.com/JohannesHoppe/schnellbild/blob/main/LICENSE>. You may use the app on any Apple computer you own or control, as the Usage Rules of the Apple Media Services Terms and Conditions allow.
+You receive a non-transferable license to use Schnellbild on any Apple-branded products that you own or control, as permitted by the Usage Rules of the Apple Media Services Terms and Conditions, except that it may also be accessed and used by other accounts associated with you through Family Sharing or volume purchasing.
 
-2. **Components under their own licenses.** The app contains VLCKit (libVLC) by VideoLAN, under the GNU Lesser General Public License 2.1 or later, and UnRAR by Alexander Roshal, under the UnRAR license. Their terms apply to those components and take precedence over this agreement where they grant you more rights. The full texts are inside the app (Contents/Resources/Licenses) and listed at <https://github.com/JohannesHoppe/schnellbild/blob/main/THIRD-PARTY-NOTICES.md>.
+Schnellbild's own source code is also free software under the MIT License: <https://github.com/JohannesHoppe/schnellbild/blob/main/LICENSE>. Nothing in this agreement limits the rights the MIT License gives you for that source code.
 
-3. **Changing VLCKit.** You may modify VLCKit inside your copy of the app for your own use, and reverse engineer the app to debug such modifications. The source code of VLCKit as used in the app, and how it is built, are available as described in THIRD-PARTY-NOTICES.md.
+## 3. Components under their own licenses
 
-4. **No warranty.** The app is provided "as is", without warranty of any kind, to the extent permitted by law. HAUS HOPPE - ITS is not liable for damages arising from its use, except where the law does not allow such a limitation (in particular for intent, gross negligence and injury to life, body or health).
+Schnellbild contains VLCKit (libVLC) by VideoLAN and the VLC authors, under the GNU Lesser General Public License 2.1 or later, which includes FFmpeg and other libraries, each under its own license, and UnRAR by Alexander Roshal, under the UnRAR license. Their terms apply to those components and take precedence over this agreement where they give you more rights. The full license texts are inside the app (Contents/Resources/Licenses) and listed at <https://github.com/JohannesHoppe/schnellbild/blob/main/THIRD-PARTY-NOTICES.md>.
 
-5. **Apple.** This agreement is between you and HAUS HOPPE - ITS, not Apple. Apple has no obligation to provide maintenance or support for the app. Apple and its subsidiaries are third-party beneficiaries of this agreement and may enforce it against you.
+## 4. Modifying VLCKit
 
-6. **Privacy.** Schnellbild collects no data and does not connect to the internet.
+You may modify VLCKit inside your copy of Schnellbild for your own use, and reverse engineer Schnellbild to debug such modifications. The source code of VLCKit as used in Schnellbild, and how it is built, are available as described in THIRD-PARTY-NOTICES.md.
 
-7. **Support and claims.** HAUS HOPPE - ITS answers questions, complaints and claims about the app (including product liability, legal compliance and intellectual property claims): [ADDRESS AND CONTACT — to be filled in before submitting].
+## 5. Maintenance and support
 
-8. **Export.** You confirm that you are not located in a country subject to a U.S. Government embargo, and not listed on any U.S. Government list of prohibited or restricted parties.
+The developer is solely responsible for providing any maintenance and support for Schnellbild, as described in this agreement or as required under applicable law. Apple has no obligation whatsoever to furnish any maintenance and support services with respect to Schnellbild.
+
+## 6. Warranty
+
+Schnellbild is provided "as is", without any warranty beyond what applicable law requires. The developer is solely responsible for any product warranties, whether express or implied by law, to the extent not effectively disclaimed. If Schnellbild fails to conform to any applicable warranty, you may notify Apple, and Apple will refund the purchase price for Schnellbild to you. To the maximum extent permitted by applicable law, Apple has no other warranty obligation whatsoever with respect to Schnellbild, and any other claims, losses, liabilities, damages, costs or expenses attributable to any failure to conform to any warranty are the developer's sole responsibility.
+
+## 7. Liability
+
+The developer is not liable for damages arising from the use of Schnellbild, except where the law does not allow such a limitation, in particular for intent and gross negligence, for injury to life, body or health, and under product liability law.
+
+## 8. Product claims
+
+The developer, not Apple, is responsible for addressing any claims by you or any third party relating to Schnellbild or your possession and use of it, including, but not limited to: (i) product liability claims; (ii) any claim that Schnellbild fails to conform to any applicable legal or regulatory requirement; and (iii) claims arising under consumer protection, privacy or similar legislation.
+
+## 9. Intellectual property
+
+In the event of any third-party claim that Schnellbild or your possession and use of it infringes that third party's intellectual property rights, the developer, not Apple, is solely responsible for the investigation, defense, settlement and discharge of any such claim.
+
+## 10. Legal compliance
+
+You represent and warrant that (i) you are not located in a country that is subject to a U.S. Government embargo, or that has been designated by the U.S. Government as a "terrorist supporting" country; and (ii) you are not listed on any U.S. Government list of prohibited or restricted parties.
+
+## 11. Privacy
+
+Schnellbild collects no data and does not connect to the internet. The privacy policy: <https://schnellbild.haushoppe-its.de/privacy/>.
+
+## 12. Third-party terms
+
+You must comply with applicable third-party terms of agreement when using Schnellbild.
+
+## 13. Contact
+
+Questions, complaints and claims about Schnellbild go to the developer:
+
+HAUS HOPPE - ITS, Johannes Hoppe, Feilgasse 5F, 69181 Leimen-Gauangelloch, Germany
+
+Further contact details: <https://haushoppe-its.de/impressum/>
+
+## 14. Apple as third-party beneficiary
+
+Apple and Apple's subsidiaries are third-party beneficiaries of this agreement. Upon your acceptance of this agreement, Apple will have the right (and will be deemed to have accepted the right) to enforce it against you as a third-party beneficiary.
