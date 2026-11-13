@@ -50,7 +50,10 @@ final class ActionsUITests: SchnellbildUITestCase {
     func testRenameFromContextMenuAndActionsMenu() {
         launchOnTempDir(waitFor: "album")
         tile("album").rightClick()
-        app.menuItems["Rename…"].click()
+        // The context menu's, not the Actions menu's of the same name
+        let item = app.menuItems.allElementsBoundByIndex.first { $0.title == "Rename…" && $0.isHittable }
+        XCTAssertNotNil(item, "the context menu has Rename…")
+        item?.click()
         enterName("Via Context")
         XCTAssertTrue(app.staticTexts["Via Context"].waitForExistence(timeout: 5))
 

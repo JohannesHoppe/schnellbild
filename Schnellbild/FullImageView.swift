@@ -71,9 +71,9 @@ struct FullImageView: View {
             .contentShape(Rectangle())
             .accessibilityElement(children: .ignore)
             .accessibilityIdentifier("fullImage")
-            .accessibilityLabel(spokenLabel)
-            // The UI tests read the view's state, in English
-            .accessibilityValue(VideoDetailView.uiTesting ? accessibilityState : "")
+            // The UI tests read the view's state, in English, as the label:
+            // XCUITest gets no value from a group like this one
+            .accessibilityLabel(VideoDetailView.uiTesting ? accessibilityState : spokenLabel)
             .task(id: url) {
                 // Never the previous file's picture: the cached tile, or nothing yet
                 image = ThumbnailCache.shared.image(for: url)
