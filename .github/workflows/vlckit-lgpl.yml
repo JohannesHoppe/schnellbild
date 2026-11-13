@@ -1,8 +1,11 @@
-# Builds VLCKit without VLC's GPL modules (Scripts/build_vlckit_lgpl.sh), the
-# engine in every Schnellbild build, runs the unit tests against it (every
-# video format must still give a picture: VideoFormatTests), and publishes it
-# as a pre-release of this repository (never "latest"): Scripts/fetch_vlckit.sh
-# fetches it from there by its SHA-256. Started by hand; about half an hour.
+# Builds VLCKit without VLC's GPL modules and without the modules a viewer of
+# local files never needs (Scripts/build_vlckit_lgpl.sh), the engine in every
+# Schnellbild build, runs the unit tests against it (every video format must
+# still give a picture: VideoFormatTests), and publishes it as a pre-release
+# of this repository (never "latest") with the third-party libraries' licence
+# texts and the complete source it was built from: Scripts/fetch_vlckit.sh
+# fetches it from there by its SHA-256 and checks the unpacked framework's
+# tree SHA-256. Started by hand; about an hour.
 name: VLCKit without GPL
 
 on:
@@ -28,7 +31,9 @@ jobs:
         run: ./Scripts/build_vlckit_lgpl.sh "$RUNNER_TEMP/vlckit-lgpl"
 
       - name: Pack the framework
-        run: ditto -c -k --keepParent "$RUNNER_TEMP/vlckit-lgpl/vlckit/build/VLCKit.xcframework" VLCKit-lgpl.xcframework.zip
+        run: |
+          ditto -c -k --keepParent "$RUNNER_TEMP/vlckit-lgpl/vlckit/build/VLCKit.xcframework" VLCKit-lgpl.xcframework.zip
+          mv "$RUNNER_TEMP/vlckit-lgpl/dist" dist
 
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
@@ -36,10 +41,18 @@ jobs:
           path: VLCKit-lgpl.xcframework.zip
           if-no-files-found: error
 
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: vlckit-lgpl-licenses-and-source
+          path: dist/
+          if-no-files-found: error
+
   test:
     name: Unit tests with it
     needs: build
     runs-on: macos-15
+    outputs:
+      tree: ${{ steps.place.outputs.tree }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
@@ -53,10 +66,14 @@ jobs:
           name: vlckit-lgpl
 
       - name: Put it in place
+        id: place
         run: |
           mkdir -p Vendor
           ditto -x -k VLCKit-lgpl.xcframework.zip Vendor
-          python3 -I Scripts/vlckit_licenses.py "$(find Vendor/VLCKit.xcframework -path '*VLCKit.framework/Versions/A/VLCKit' -type f | head -1)" --no-gpl
+          python3 -I Scripts/vlckit_licenses.py "$(find Vendor/VLCKit.xcframework -path '*VLCKit.framework/Versions/A/VLCKit' -type f | head -1)" --no-gpl --local-only
+          # The tree SHA-256 fetch_vlckit.sh pins (TREE_SHA256), of the framework as unpacked from the zip
+          source Scripts/fetch_verified.sh
+          echo "tree=$(tree_sha256 Vendor/VLCKit.xcframework)" >> "$GITHUB_OUTPUT"
 
       - name: Test
         env:
@@ -74,19 +91,31 @@ jobs:
         with:
           name: vlckit-lgpl
 
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: vlckit-lgpl-licenses-and-source
+          path: dist
+
       - name: Create the pre-release
         env:
           GH_TOKEN: ${{ github.token }}
+          TREE: ${{ needs.test.outputs.tree }}
         run: |
           SHA=$(shasum -a 256 VLCKit-lgpl.xcframework.zip | cut -d' ' -f1)
           TAG="vlckit-3.7.5-lgpl-$GITHUB_RUN_NUMBER"
+          SUMS=$(cd dist && shasum -a 256 * | sed 's/^/    /')
           cat > notes.md <<NOTES
-          VLCKit 3.7.5 (VideoLAN, tag 3.7.5, commit a213fd11; VLC 3.0.24, commit 6de05adc) for macOS on Apple silicon, built without VLC's modules under the GPL, for Schnellbild. Not a Schnellbild release.
+          VLCKit 3.7.5 (VideoLAN, tag 3.7.5, commit a213fd11; VLC 3.0.24, commit 6de05adc) for macOS on Apple silicon, built without VLC's modules under the GPL and without the modules a viewer of local files never needs (network access, stream output, service discovery, playlists and adaptive streaming, stream filters that start programs or fetch, keystores; the list is in the build script), for Schnellbild. Not a Schnellbild release.
 
-          Built by [Scripts/build_vlckit_lgpl.sh](https://github.com/$GITHUB_REPOSITORY/blob/$GITHUB_SHA/Scripts/build_vlckit_lgpl.sh) at commit $GITHUB_SHA, in [run $GITHUB_RUN_ID](https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID). Every module is under the GNU LGPL 2.1 or later. Source: https://code.videolan.org/videolan/VLCKit (tag 3.7.5) and https://code.videolan.org/videolan/vlc (6de05adc); see THIRD-PARTY-NOTICES.md.
+          Built by [Scripts/build_vlckit_lgpl.sh](https://github.com/$GITHUB_REPOSITORY/blob/$GITHUB_SHA/Scripts/build_vlckit_lgpl.sh) at commit $GITHUB_SHA, in [run $GITHUB_RUN_ID](https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID). Every VLC module is under the GNU LGPL 2.1 or later; the third-party libraries compiled into it (FFmpeg and others) keep their own licences, whose texts are in VLCKit-third-party-licenses.txt. The complete source it was built from is attached: VLCKit at the tag (with the build script change as a patch), VLC with VLCKit's patches applied, and the third-party libraries' downloads (VLCKit-contrib-sources.tar). See THIRD-PARTY-NOTICES.md.
 
-          SHA-256 of VLCKit-lgpl.xcframework.zip: \`$SHA\`
+          SHA-256 of VLCKit-lgpl.xcframework.zip (fetch_vlckit.sh SHA256): \`$SHA\`
+          Tree SHA-256 of the unpacked VLCKit.xcframework (fetch_vlckit.sh TREE_SHA256): \`$TREE\`
+
+          SHA-256 of the other files:
+
+          $SUMS
           NOTES
-          gh release create "$TAG" VLCKit-lgpl.xcframework.zip --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
+          gh release create "$TAG" VLCKit-lgpl.xcframework.zip dist/* --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
             --prerelease --latest=false --title "VLCKit 3.7.5 without GPL modules (build $GITHUB_RUN_NUMBER)" --notes-file notes.md
-          echo "Published $TAG, SHA-256 $SHA"
+          echo "Published $TAG, SHA-256 $SHA, tree SHA-256 $TREE"
