@@ -77,13 +77,24 @@ jobs:
           P8: ${{ secrets.NOTARY_KEY_P8 }}
           KEY_ID: ${{ secrets.NOTARY_KEY_ID }}
           ISSUER: ${{ secrets.NOTARY_ISSUER_ID }}
+        # --upload-package names the app (its Apple ID from app.json) and the
+        # build; the versions are the app's own (Resources/Info.plist).
         run: |
           [[ "$KEY_ID" =~ ^[A-Z0-9]{10}$ ]] || { echo "Unexpected key ID" >&2; exit 1; }
           export API_PRIVATE_KEYS_DIR="$RUNNER_TEMP/private_keys"
           (umask 077; mkdir -p "$API_PRIVATE_KEYS_DIR"; printf '%s\n' "$P8" > "$API_PRIVATE_KEYS_DIR/AuthKey_$KEY_ID.p8")
-          xcrun altool --upload-app --type macos --file build/Schnellbild.pkg \
+          apple_id="$(plutil -extract appleId raw -o - AppStore/metadata/app.json)"
+          bundle_id="$(plutil -extract bundleId raw -o - AppStore/metadata/app.json)"
+          version="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' build/Schnellbild.app/Contents/Info.plist)"
+          build="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' build/Schnellbild.app/Contents/Info.plist)"
+          xcrun altool --upload-package build/Schnellbild.pkg --type macos \
+            --apple-id "$apple_id" --bundle-id "$bundle_id" \
+            --bundle-short-version-string "$version" --bundle-version "$build" \
             --apiKey "$KEY_ID" --apiIssuer "$ISSUER" --output-format normal
-          rm -rf "$API_PRIVATE_KEYS_DIR"
+
+      - name: Remove the API key
+        if: always()
+        run: rm -rf "$RUNNER_TEMP/private_keys"
 
       - name: Remove signing data
         if: always() && env.SIGN == 'true'
@@ -120,4 +131,7 @@ jobs:
           else
             swift Scripts/appstore_connect.swift metadata
           fi
-          rm -f "$ASC_KEY_PATH"
+
+      - name: Remove the API key
+        if: always()
+        run: rm -f "$RUNNER_TEMP/asc.p8"
