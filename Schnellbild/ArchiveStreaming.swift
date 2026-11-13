@@ -33,6 +33,15 @@ final class ArchiveEntryStream: @unchecked Sendable {
     private var wanted = 0
     /// The chunks readers are waiting for.
     private var waiters: [Int] = []
+    /// Where the readers are (the chunk each read last, a few readers): the
+    /// chunks just after each are kept while the unpacking serves another
+    /// reader further on, so two readers taking turns (AVFoundation asks
+    /// for several ranges at once) don't unpack from the start each turn.
+    private var places: [Int] = []
+    private static let placesKept = 4
+    /// How many passes unpacked the entry from its start.
+    private var passes = 0
+    var passCount: Int { condition.lock(); defer { condition.unlock() }; return passes }
     private var run = 0
     private var running = false
     private var failure: ArchiveError?
@@ -137,15 +146,26 @@ final class ArchiveEntryStream: @unchecked Sendable {
     private func markRead(_ index: Int) {
         // The reader's place: the read-ahead follows it
         if wanted != index { wanted = index; condition.broadcast() }
+        // A reader reading on moves its own place
+        places.removeAll { $0 <= index && index - $0 <= 2 }
+        places.append(index)
+        if places.count > Self.placesKept { places.removeFirst() }
         if let i = unreadOrder.firstIndex(of: index) { unreadOrder.remove(at: i) }
         if let i = readOrder.firstIndex(of: index) { readOrder.remove(at: i) }
         readOrder.append(index)
         while readOrder.count > readLimit { chunks[readOrder.removeFirst()] = nil }
     }
 
+    /// Just after where a reader is: its next reads.
+    private func awaited(_ index: Int) -> Bool {
+        let ahead = max(unreadLimit / 2, 1)
+        return places.contains { index > $0 && index <= $0 + ahead }
+    }
+
     /// A new pass from the entry's start. Called with the lock held.
     private func start() {
         run += 1
+        passes += 1
         let myRun = run
         running = true
         failure = nil
@@ -172,10 +192,11 @@ final class ArchiveEntryStream: @unchecked Sendable {
             if chunks[i] == nil {
                 chunks[i] = data
                 unreadOrder.append(i)
-                // The oldest passed-on chunks go first; the one asked for stays
-                while unreadOrder.count > unreadLimit {
-                    let old = unreadOrder.removeFirst()
-                    if old != wanted { chunks[old] = nil }
+                // The oldest passed-on chunks go first; the one asked for
+                // and those the readers are about to read stay
+                while unreadOrder.count > unreadLimit,
+                      let at = unreadOrder.firstIndex(where: { $0 != wanted && !awaited($0) }) {
+                    chunks[unreadOrder.remove(at: at)] = nil
                 }
             }
             producing = i + 1
@@ -268,9 +289,18 @@ final class ArchiveResourceLoader: NSObject, AVAssetResourceLoaderDelegate, @unc
     private let contentType: String
     /// Where the asset's requests arrive.
     let queue = DispatchQueue(label: "archive resource loader")
-    /// Where they are served (several at once: AVFoundation asks for the
-    /// start and the end of an MP4 together).
-    private let work = DispatchQueue(label: "archive resource loader work", qos: .userInitiated, attributes: .concurrent)
+    /// Where they are served: several at once (AVFoundation asks for the
+    /// start and the end of an MP4 together), but a few only. Each waits
+    /// until the stream has unpacked its bytes; one system thread per
+    /// request would leave the app without threads when AVFoundation asks
+    /// for many ranges (a cancelled request stops waiting and makes room).
+    private let work: OperationQueue = {
+        let queue = OperationQueue()
+        queue.name = "archive resource loader work"
+        queue.maxConcurrentOperationCount = 6
+        queue.qualityOfService = .userInitiated
+        return queue
+    }()
 
     init(stream: ArchiveEntryStream, fileName: String) {
         self.stream = stream
@@ -288,7 +318,7 @@ final class ArchiveResourceLoader: NSObject, AVAssetResourceLoaderDelegate, @unc
     func resourceLoader(_ resourceLoader: AVAssetResourceLoader,
                         shouldWaitForLoadingOfRequestedResource loadingRequest: AVAssetResourceLoadingRequest) -> Bool {
         nonisolated(unsafe) let request = loadingRequest
-        work.async { self.serve(request) }
+        work.addOperation { self.serve(request) }
         return true
     }
 

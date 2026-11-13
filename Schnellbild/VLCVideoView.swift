@@ -4,15 +4,51 @@ import VLCKit
 import VLCFrames
 import CoreImage
 
+/// Where players stop and are let go: a few at a time on a queue of their
+/// own. Each may wait long on a share that stalls; on the system's threads,
+/// paging through many videos would hold one thread per video and starve
+/// the rest of the app (`Blocking`).
+enum VLCStops {
+    private static let queue: OperationQueue = {
+        let queue = OperationQueue()
+        queue.name = "Schnellbild VLC stops"
+        queue.maxConcurrentOperationCount = 4
+        queue.qualityOfService = .userInitiated
+        return queue
+    }()
+
+    /// A player handed to the queue (only that one thread uses it from then on).
+    final class Held: @unchecked Sendable {
+        let player: VLCMediaPlayer
+        init(_ player: VLCMediaPlayer) { self.player = player }
+    }
+
+    static func run(_ work: @escaping @Sendable () -> Void) { queue.addOperation(work) }
+
+    /// The player's last reference given up on the queue (VLC's wait for
+    /// its threads happens there): once its control has let go of it too.
+    static func release(_ held: Held) {
+        let handed = Unmanaged.passRetained(held)
+        queue.addOperation {
+            var held = handed.takeRetainedValue()
+            // (the control's own reference goes right after its deinit)
+            for _ in 0..<200 where !isKnownUniquelyReferenced(&held) { usleep(10_000) }
+            withExtendedLifetime(held) {}
+        }
+    }
+}
+
 /// VLCKit (LibVLC) playback for formats AVFoundation can't handle (AVI, MKV,
 /// WebM …). Used only as a fallback; native formats stay on AVKit. Reports
 /// state changes from any source (keys, the end of the video) to the model.
 @MainActor
 final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegate {
-    let player: VLCMediaPlayer = {
+    /// The player, in the box the control hands to `VLCStops` as it goes.
+    private let held: VLCStops.Held = {
         _ = VLCPlaybackControl.testLog
-        return VLCMediaPlayer()
+        return VLCStops.Held(VLCMediaPlayer())
     }()
+    var player: VLCMediaPlayer { held.player }
 
     /// UI tests: VLC logs everything to /tmp/schnellbild-vlc.log, which the
     /// CI workflow shows when a test fails.
@@ -171,6 +207,7 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         BrowserModel.testLog("vlc play, state \(player.state.rawValue), position \(player.position)")
         if atEnd {
             player.media = makeMedia()
+            if let media = player.media { output.use(media) }
         }
         player.play()
         isPlaying = true
@@ -190,19 +227,18 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         player.delegate = nil
         // Nothing else touches it once stopping: the control is going away.
         // (The picture output lives as long as the player: `VLCFrameOutput.attach`.)
-        // VLCKit reports "stopped" at once and waits for its reading thread
-        // only when the player goes (the last release). This block holds the
-        // player until the control has gone too, so that last release, and
-        // its wait on a read stalled on a network share, happen here and
-        // never on the main thread.
-        nonisolated(unsafe) let player = self.player
-        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-            player.stop()
-            for _ in 0..<100 where player.state != .stopped { usleep(50_000) }
-            for _ in 0..<1200 where self != nil { usleep(50_000) }
+        let player = held
+        VLCStops.run {
+            player.player.stop()
+            for _ in 0..<100 where player.player.state != .stopped { usleep(50_000) }
             BrowserModel.testLog("vlc stopped")
         }
     }
+
+    /// VLCKit waits for its reading thread only when the player goes (the
+    /// last release): handed to `VLCStops`, so that wait, on a read stalled
+    /// on a network share, happens there and never on the main thread.
+    deinit { VLCStops.release(held) }
 
     /// The last seek target: VLC reports the new position only once it has
     /// got there, so quick key presses would otherwise start from the old one.

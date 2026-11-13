@@ -51,18 +51,30 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
     private var pendingRedraw: Look?
     /// Renders a new look onto a paused picture off the main thread.
     private let redraw = DispatchQueue(label: "schnellbild.vlc-look")
-    /// Locked for VLC to draw into, by the address VLC knows them by. A few
-    /// are kept, since VLC may drop a picture without showing it.
-    private var drawing: [UnsafeMutableRawPointer: CVPixelBuffer] = [:]
-    private var drawingOrder: [UnsafeMutableRawPointer] = []
+    /// Handed to VLC to draw into, by the address VLC knows them by: from
+    /// `lock` until it is both unlocked (VLC no longer writes into it) and
+    /// shown (`display`; VLC calls the two in either order). One still
+    /// locked is never let go: its memory would go back to the pool and to
+    /// the next picture while VLC still writes into it. Of those unlocked
+    /// but not shown, a few are kept, since VLC may drop a picture without
+    /// showing it.
+    private struct Drawn {
+        let buffer: CVPixelBuffer
+        var unlocked = false
+        var displayed = false
+    }
+    private var drawing: [UnsafeMutableRawPointer: Drawn] = [:]
+    /// Unlocked, not shown yet, oldest first.
+    private var drawnOrder: [UnsafeMutableRawPointer] = []
     /// On screen, and the last few before (the compositor may still read them).
     private var shown: [CVPixelBuffer] = []
 
     nonisolated(unsafe) private static var heldByPlayer: UInt8 = 0
 
-    /// The player, for its video track's size and pixel shape when VLC
-    /// opens its output.
-    private weak var player: VLCMediaPlayer?
+    /// The media the player plays, for its video track's size and pixel
+    /// shape when VLC opens its output (on VLC's thread: the player's own
+    /// `media` is replaced on the main thread, `use`).
+    private var media: VLCMedia?
     /// The pictures' size as shown (the track's visible size, its pixels
     /// made square); nil until VLC has opened its output.
     private var shownSize: CGSize?
@@ -83,7 +95,7 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
         // asynchronously and keeps it until then, and its decoder may still
         // open the video output (and call back here) after the app let go
         objc_setAssociatedObject(player, &Self.heldByPlayer, self, .OBJC_ASSOCIATION_RETAIN)
-        self.player = player
+        if let media = player.media { use(media) }
         // Each time VLC opens its video output (`setUp`, again for every
         // media played and every format change) it holds the output, until
         // that output closes (the cleanup callback), so a frame arriving
@@ -118,7 +130,10 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
         // converts them to NV12 without changing the values
         let fullRange = chroma[0] == CChar(bitPattern: UInt8(ascii: "J"))
         for (i, c) in "NV12".utf8.enumerated() { chroma[i] = CChar(bitPattern: c) }
-        let shown = Self.shownSize(track: player.flatMap(Self.videoTrack(of:)),
+        lock.lock()
+        let media = self.media
+        lock.unlock()
+        let shown = Self.shownSize(track: media.flatMap(Self.videoTrack(of:)),
                                    decoded: (Int(width.pointee), Int(height.pointee)))
         let w = shown.width, h = shown.height
         width.pointee = UInt32(w)
@@ -144,7 +159,7 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
         lookPool = forLook
         latest = nil
         drawing = [:]
-        drawingOrder = []
+        drawnOrder = []
         shownSize = CGSize(width: w, height: h)
         // VLC's earlier output has closed: nothing draws into the old scratch
         let oldScratch = scratch
@@ -166,8 +181,15 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
         var sampleAspect: Double
     }
 
-    static func videoTrack(of player: VLCMediaPlayer) -> Track? {
-        guard let tracks = player.media?.tracksInformation as? [[String: Any]] else { return nil }
+    /// The media the player plays from now on (set with `player.media`).
+    func use(_ media: VLCMedia) {
+        lock.lock()
+        self.media = media
+        lock.unlock()
+    }
+
+    static func videoTrack(of media: VLCMedia) -> Track? {
+        guard let tracks = media.tracksInformation as? [[String: Any]] else { return nil }
         for track in tracks where track[VLCMediaTracksInformationType] as? String == VLCMediaTracksInformationTypeVideo {
             let number = { (key: String) in (track[key] as? NSNumber)?.intValue ?? 0 }
             let width = number(VLCMediaTracksInformationVideoWidth), height = number(VLCMediaTracksInformationVideoHeight)
@@ -253,23 +275,36 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
         CVBufferSetAttachment(buffer, kCVImageBufferTransferFunctionKey, kCVImageBufferTransferFunction_ITU_R_709_2, .shouldPropagate)
         planes?.pointee = base
         planes?.advanced(by: 1).pointee = colour
-        drawing[base] = buffer
-        drawingOrder.append(base)
-        if drawingOrder.count > 8 { drawing[drawingOrder.removeFirst()] = nil }
+        drawing[base] = Drawn(buffer: buffer)
         return base
     }
 
     private func unlockPicture(_ picture: UnsafeMutableRawPointer?) {
         lock.lock()
         defer { lock.unlock() }
-        guard let picture, let buffer = drawing[picture] else { return }
-        CVPixelBufferUnlockBaseAddress(buffer, [])
+        guard let picture, var drawn = drawing[picture], !drawn.unlocked else { return }
+        CVPixelBufferUnlockBaseAddress(drawn.buffer, [])
+        // VLC is done writing into it: shown already, it goes; else it waits
+        // to be shown, among a few (VLC drops some pictures unshown)
+        guard !drawn.displayed else { drawing[picture] = nil; return }
+        drawn.unlocked = true
+        drawing[picture] = drawn
+        drawnOrder.append(picture)
+        while drawnOrder.count > 8 { drawing[drawnOrder.removeFirst()] = nil }
     }
 
     private func display(_ picture: UnsafeMutableRawPointer?) {
         let start = Date()
         lock.lock()
-        guard let picture, let buffer = drawing[picture] else { lock.unlock(); return }
+        guard let picture, var drawn = drawing[picture] else { lock.unlock(); return }
+        let buffer = drawn.buffer
+        if drawn.unlocked {
+            drawing[picture] = nil
+            if let i = drawnOrder.firstIndex(of: picture) { drawnOrder.remove(at: i) }
+        } else {
+            drawn.displayed = true
+            drawing[picture] = drawn
+        }
         latest = buffer
         lastDisplay = start
         sequence += 1
