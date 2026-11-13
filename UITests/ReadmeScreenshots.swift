@@ -188,6 +188,8 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         XCTAssertTrue(tile("Lofoten").waitForExistence(timeout: 10))
         app.typeKey("l", modifierFlags: [])
         XCTAssertTrue(element("list").waitForExistence(timeout: 5))
+        // From the top (".." in view), in light and dark alike
+        app.typeKey(.home, modifierFlags: [])
         // A photo selected, in full view (not the video below the edge)
         let row = element("row.Fjord at Sunset.jpg").firstMatch
         XCTAssertTrue(row.waitForExistence(timeout: 5))
@@ -201,8 +203,14 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         XCTAssertTrue(right.waitForExistence(timeout: 10))
         let rightTrip = right.descendants(matching: .any).matching(identifier: "tile.Lofoten").firstMatch
         XCTAssertTrue(rightTrip.waitForExistence(timeout: 15))
+        // Inside the trip ("tile..." is in the library too). The first click
+        // may only make the right pane active: then double-click again.
+        let inTrip = right.descendants(matching: .any).matching(identifier: "tile.Northern Lights.jpg").firstMatch
         rightTrip.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).doubleClick()
-        XCTAssertTrue(right.descendants(matching: .any).matching(identifier: "tile...").firstMatch.waitForExistence(timeout: 10))
+        if !inTrip.waitForExistence(timeout: 5), rightTrip.exists {
+            rightTrip.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).doubleClick()
+        }
+        XCTAssertTrue(inTrip.waitForExistence(timeout: 10))
         let leftPhoto = left.descendants(matching: .any).matching(identifier: "tile.Fjord at Sunset.jpg").firstMatch
         XCTAssertTrue(leftPhoto.waitForExistence(timeout: 10))
         leftPhoto.click()
