@@ -386,6 +386,32 @@ final class ArchiveTests: XCTestCase {
         protected.close()
     }
 
+    /// Two readers far apart taking turns (AVFoundation asks for several
+    /// ranges at once): the chunks just after the one behind are kept, so
+    /// the entry isn't unpacked from its start at every turn.
+    func testTwoReadersTakingTurnsDontRestartTheUnpackingEachTurn() async throws {
+        let tree = try TempTree(self)
+        var original = Data(count: 3_000_000)
+        original.withUnsafeMutableBytes { bytes in
+            for i in 0..<bytes.count { bytes[i] = UInt8(truncatingIfNeeded: (i &* 2654435761) >> 13) }
+        }
+        try tree.folder("src")
+        try original.write(to: tree.root.appendingPathComponent("src/movie.mp4"))
+        try zip(["../stored.zip", "movie.mp4"], in: tree.root.appendingPathComponent("src"))
+        let url = tree.root.appendingPathComponent("stored.zip/movie.mp4")
+        let chunk = 64 << 10
+        let stream = try await ArchiveStore.shared.stream(of: url, chunkSize: chunk, unreadLimit: 8, readLimit: 8)
+        let turns = 12
+        for turn in 0..<turns {
+            for start in [30, 2] {
+                let offset = (start + turn) * chunk
+                XCTAssertEqual(try stream.read(at: Int64(offset), count: chunk), original[offset..<offset + chunk], "chunk \(start + turn)")
+            }
+        }
+        XCTAssertLessThanOrEqual(stream.passCount, 2 + turns / 4, "a pass per few turns, not per turn")
+        stream.close()
+    }
+
     // MARK: The model
 
     private func makeZip(_ tree: TempTree, name: String = "Holiday.zip", password: String? = nil) throws -> URL {
