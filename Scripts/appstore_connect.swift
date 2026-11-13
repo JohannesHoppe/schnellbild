@@ -51,6 +51,8 @@ func text(_ locale: String, _ field: String) -> String? {
     let trimmed = value.trimmingCharacters(in: .whitespacesAndNewlines)
     return trimmed.isEmpty ? nil : trimmed
 }
+/// A URL of one language (`<locale>/<field>.txt`), else the one in app.json.
+func link(_ locale: String, _ field: String, _ key: String) -> String { text(locale, field) ?? setting(key) }
 let locales = ((try? FileManager.default.contentsOfDirectory(atPath: metadata.path)) ?? [])
     .filter { $0.contains("-") && !$0.hasPrefix(".") }.sorted()
 
@@ -162,7 +164,7 @@ try await api("PATCH", "/v1/appInfos/\(id(appInfo))", ["data": ["type": "appInfo
 ]]])
 let infoLocalizations = items(try await api("GET", "/v1/appInfos/\(id(appInfo))/appInfoLocalizations"))
 for locale in locales {
-    var values: JSON = ["privacyPolicyUrl": setting("privacyPolicyUrl")]
+    var values: JSON = ["privacyPolicyUrl": link(locale, "privacy_url", "privacyPolicyUrl")]
     if let name = text(locale, "name") { values["name"] = name }
     if let subtitle = text(locale, "subtitle") { values["subtitle"] = subtitle }
     try await upsert("appInfoLocalizations",
@@ -177,7 +179,7 @@ let versionLocalizations = items(try await api("GET", "/v1/appStoreVersions/\(ve
 let screenshotDirectories = app["screenshots"] as? [String: String] ?? [:]
 for locale in locales {
     let existing = versionLocalizations.first { attributes($0)["locale"] as? String == locale }
-    var values: JSON = ["supportUrl": setting("supportUrl"), "marketingUrl": setting("marketingUrl")]
+    var values: JSON = ["supportUrl": link(locale, "support_url", "supportUrl"), "marketingUrl": link(locale, "marketing_url", "marketingUrl")]
     for (field, key) in [("description", "description"), ("keywords", "keywords"), ("promotional_text", "promotionalText")] {
         if let value = text(locale, field) { values[key] = value }
     }
