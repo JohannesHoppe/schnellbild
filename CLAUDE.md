@@ -13,7 +13,7 @@ never block the main thread.
 
 - Repo: <https://github.com/JohannesHoppe/schnellbild> — **public, MIT**,
   © 2026 HAUS HOPPE - ITS (Johannes Hoppe).
-- Bundle id: `art.haushoppe.schnellbild`. Current version: **0.10.0**.
+- Bundle id: `art.haushoppe.schnellbild`. Current version: **0.11.0**.
 - Everything (code, comments, UI source strings, docs, commits) is in **English**;
   the UI is translated (see Localization). The user converses in **German**.
 

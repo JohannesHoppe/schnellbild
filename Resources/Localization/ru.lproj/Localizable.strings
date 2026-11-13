@@ -118,7 +118,7 @@
 "A file listed in this archive is missing." = "Отсутствует файл, указанный в этом архиве.";
 "Drag a folder here, press ⌘O, or click Open Folder…" = "Перетащите сюда папку, нажмите ⌘O или щелкните Открыть папку…";
 "Stop search (keeps the results found so far)" = "Остановить поиск (найденное останется)";
-"Sort by (⌘1 … ⌘5; press again to reverse)" = "Сортировать по (⌘1 … ⌘5; повторное нажатие — в обратном порядке)";
+"Sort by (⌘1 … ⌘5; press again to reverse)" = "Сортировать по (⌘1 … ⌘5; повторное нажатие меняет порядок)";
 "Reset to original" = "Сбросить до оригинала";
 "Files are not changed." = "Файлы не изменяются.";
 "Auto enhance on / off (exposure, contrast, saturation, sharpness; files are not changed)" = "Автоулучшение вкл. / выкл. (экспозиция, контраст, насыщенность, резкость; файлы не изменяются)";
@@ -174,14 +174,14 @@
 "“%@” already exists in “%@”." = "«%@» уже есть в «%@».";
 "Keep Both" = "Оставить оба";
 "Skip" = "Пропустить";
-"The marked items will be moved to the Trash, folders with everything in them." = "Отмеченные объекты будут перемещены в Корзину, папки — со всем содержимым.";
+"The marked items will be moved to the Trash, folders with everything in them." = "Отмеченные объекты будут перемещены в Корзину, папки вместе со всем содержимым.";
 "Dual pane and marking" = "Две панели и отметка";
 "Dual pane on / off: two folders side by side" = "Две панели вкл. / выкл.: две папки рядом";
 "Switch to the other pane" = "Перейти в другую панель";
 "Copy / move the marked items into the other pane's folder" = "Скопировать / переместить отмеченные объекты в папку другой панели";
 "Mark a range" = "Отметить диапазон";
 "Mark all / unmark all" = "Отметить все / снять все отметки";
-"Marked items onto a folder or into the other pane: moved (copied to another volume)" = "Отмеченные объекты на папку или в другую панель: перемещаются (на другой том — копируются)";
+"Marked items onto a folder or into the other pane: moved (copied to another volume)" = "Отмеченные объекты на папку или в другую панель: перемещаются (на другой том копируются)";
 "Quit (F10 asks first)" = "Завершить (F10 сначала спрашивает)";
 "The app's menus in the window" = "Меню приложения в окне";
 "Do you want to quit Schnellbild?" = "Завершить Schnellbild?";
@@ -191,8 +191,8 @@
 "as List" = "списком";
 "Grid or list (L)" = "Сетка или список (L)";
 "Grid or list (a click on a column sorts by it)" = "Сетка или список (щелчок по столбцу сортирует по нему)";
-"Back (where you were, also a search); without history the enclosing folder" = "Назад (где вы были, и к поиску); без истории — в папку выше";
-"⌘↑ goes up one folder level." = "⌘↑ — на одну папку выше.";
+"Back (where you were, also a search); without history the enclosing folder" = "Назад (где вы были, и к поиску); без истории в папку выше";
+"⌘↑ goes up one folder level." = "⌘↑ переходит на одну папку выше.";
 "Click to rename this folder" = "Щёлкните, чтобы переименовать папку";
 "Built with" = "Использует";
 "The full license texts are in the app (Contents/Resources/Licenses)." = "Полные тексты лицензий находятся в приложении (Contents/Resources/Licenses).";
@@ -218,7 +218,7 @@
 "unknown error" = "неизвестная ошибка";
 "⇧-click / ⇧ arrows" = "⇧-щелчок / ⇧ стрелки";
 "drag" = "перетаскивание";
-"Schnellbild's own code is free software under the MIT License. The components below keep their own licenses." = "Собственный код Schnellbild — свободное ПО под лицензией MIT. Компоненты ниже сохраняют свои лицензии.";
+"Schnellbild's own code is free software under the MIT License. The components below keep their own licenses." = "Собственный код Schnellbild распространяется как свободное ПО под лицензией MIT. Компоненты ниже сохраняют свои лицензии.";
 
 /* VoiceOver: the sorted column of the list */
 "ascending" = "по возрастанию";
@@ -245,7 +245,7 @@
 "Regular expression" = "Регулярное выражение";
 "Search mode" = "Режим поиска";
 "No folder, archive, picture or video whose name matches “%@”, in this folder or its subfolders." = "Нет папки, архива, изображения или видео, имя которого соответствует «%@», в этой папке или ее подпапках.";
-"“%@” is not a valid regular expression." = "«%@» — недопустимое регулярное выражение.";
+"“%@” is not a valid regular expression." = "«%@» не является допустимым регулярным выражением.";
 "Into “%@”" = "В «%@»";
 "Bookmarks" = "Закладки";
 "Bookmark This Folder" = "Добавить закладку на эту папку";
@@ -308,7 +308,7 @@
 "Copied, but the original couldn't be removed: %@" = "Скопировано, но оригинал не удалось удалить: %@";
 "Not everything was moved or copied." = "Не все объекты были перемещены или скопированы.";
 "“%@”: %@" = "«%@»: %@";
-"“%@” is no longer the item Schnellbild put there, so it stays as it is." = "«%@» — уже не тот объект, который туда поместил Schnellbild, поэтому он остается как есть.";
+"“%@” is no longer the item Schnellbild put there, so it stays as it is." = "«%@» уже не тот объект, который туда поместил Schnellbild, поэтому он остается как есть.";
 "“%@” has changed since it was copied, so it isn't moved to the Trash." = "«%@» изменился после копирования, поэтому он не перемещается в Корзину.";
 "Schnellbild may not take “%@” out of the Trash. Use “Put Back” in the Finder's Trash." = "Schnellbild не может извлечь «%@» из Корзины. Воспользуйтесь командой «Вернуть» в Корзине Finder.";
 "Keep: try it again later, before the earlier actions. Forget: go on with the earlier actions." = "Оставить: повторить позже, перед более ранними действиями. Забыть: перейти к более ранним действиям.";
