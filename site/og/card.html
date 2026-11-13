@@ -1,0 +1,52 @@
+<!doctype html>
+<!-- The link preview image (Open Graph, 1200 × 630) of one language:
+     card.html?lang=<code>&shot=<screenshot file>. Served from the repository root,
+     screenshotted at 1200 × 630; steps: python3 Scripts/make_site_images.py og -->
+<html>
+<head>
+<meta charset="utf-8">
+<title>card</title>
+<style>
+  html, body { margin: 0; width: 1200px; height: 630px; overflow: hidden; }
+  body {
+    background: #1d1d1f;
+    color: #f5f5f7;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", "Hiragino Sans", "PingFang SC", "Apple SD Gothic Neo", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    position: relative;
+  }
+  .text { position: absolute; left: 64px; top: 0; bottom: 0; width: 470px; display: flex; flex-direction: column; justify-content: center; }
+  .icon { width: 132px; height: 132px; margin: 0 0 26px -6px; }
+  h1 { font-size: 76px; line-height: 1; letter-spacing: -0.035em; font-weight: 700; margin: 0 0 22px; }
+  .tagline { font-size: 38px; line-height: 1.18; font-weight: 600; letter-spacing: -0.012em; margin: 0; max-height: 270px; text-wrap: balance; word-break: auto-phrase; }
+  .note { font-size: 24px; color: #a1a1a6; margin: 22px 0 0; }
+  .shot { position: absolute; left: 560px; top: 76px; width: 900px; }
+</style>
+</head>
+<body>
+<div class="text">
+  <img class="icon" src="/Resources/icon_1024.png" alt="">
+  <h1>Schnellbild</h1>
+  <p class="tagline" id="tagline"></p>
+  <p class="note" id="note"></p>
+</div>
+<img class="shot" id="shot" alt="">
+<script>
+  const query = new URLSearchParams(location.search);
+  const lang = query.get("lang") || "en";
+  document.documentElement.lang = lang;
+  document.getElementById("shot").src = "/docs/screenshots/" + (query.get("shot") || "grid-light.png");
+  fetch("/site/i18n/" + lang + ".json").then(r => r.json()).then(async t => {
+    const tagline = document.getElementById("tagline");
+    tagline.textContent = t.tagline;
+    document.getElementById("note").textContent = t.ctaText;
+    await document.fonts.ready;
+    // Long taglines get smaller until they fit their four lines.
+    for (let size = 38; tagline.scrollHeight > tagline.clientHeight && size > 26; size--)
+      tagline.style.fontSize = size + "px";
+    await Promise.all([...document.images].map(img => img.decode()));
+    document.title = "ready";
+  });
+</script>
+</body>
+</html>

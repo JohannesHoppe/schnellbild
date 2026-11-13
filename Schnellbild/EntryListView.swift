@@ -123,8 +123,8 @@ struct EntryListView: View {
         // too (the grid's folder tiles find it out the same way)
         .task(id: entry.kind == .folder && !entry.isArchive ? entry.url : nil) {
             guard entry.kind == .folder, !entry.isArchive, FolderTile.driveImage(entry.url) == nil,
-                  let found = await FolderPreviewCache.shared.containsMedia(entry.url), !Task.isCancelled else { return }
-            model.noteFolder(entry.url, empty: !found)
+                  let found = await FolderPreviewCache.shared.containsMedia(entry.browseURL), !Task.isCancelled else { return }
+            model.noteFolder(entry.browseURL, empty: !found)
         }
         .id(entry.id)
         .accessibilityElement(children: .ignore)
@@ -168,7 +168,7 @@ struct EntryListView: View {
                 FolderTile(folder: entry.url, side: Self.previewSide, isSelected: false, systemImage: drive,
                            kindLabel: "drive", previews: false)
             } else {
-                FolderTile(folder: entry.url, side: Self.previewSide, isSelected: false,
+                FolderTile(folder: entry.browseURL, side: Self.previewSide, isSelected: false,
                            systemImage: archive ? "archivebox.fill" : "folder.fill",
                            isEmpty: model.isEmptyFolder(entry), kindLabel: archive ? "archive" : "folder")
             }

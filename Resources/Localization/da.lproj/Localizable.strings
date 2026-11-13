@@ -1,6 +1,5 @@
 "Open Folder…" = "Åbn mappe…";
 "Go" = "Gå";
-"Start Slideshow" = "Start lysbilledshow";
 "Back" = "Tilbage";
 "Forward" = "Frem";
 "Enclosing Folder" = "Overordnet mappe";
@@ -9,8 +8,6 @@
 "Reveal in Finder" = "Vis i Finder";
 "Open with Default App" = "Åbn med standardappen";
 "Move to Trash…" = "Flyt til papirkurven…";
-"Larger Thumbnails" = "Større miniaturer";
-"Smaller Thumbnails" = "Mindre miniaturer";
 "Schnellbild Help" = "Schnellbild Hjælp";
 "Rename…" = "Omdøb…";
 "Open Folder" = "Åbn mappe";
@@ -165,12 +162,9 @@
 "New Folder" = "Ny mappe";
 "Create" = "Opret";
 "New folder: type its name, ↩ creates it, Esc creates none" = "Ny mappe: skriv navnet, ↩ opretter den, Esc opretter ingen";
-"Mini Keyboard" = "Minitastatur";
 /* Dual pane */
 "Dual Pane" = "To paneler";
 "Dual pane: two folders side by side; Tab switches, F5 copies, F6 moves to the other (D, ⌃O)" = "To paneler: to mapper side om side; Tab skifter, F5 kopierer, F6 flytter til det andet (D, ⌃O)";
-"Copy to Other Pane" = "Kopiér til andet panel";
-"Move to Other Pane" = "Flyt til andet panel";
 "Other pane" = "Andet panel";
 "Copy there" = "Kopiér dertil";
 "Move there" = "Flyt dertil";
@@ -178,7 +172,6 @@
 "Mark" = "Markér";
 "Single pane" = "Ét panel";
 "“%@” already exists in “%@”." = "“%@” findes allerede i “%@”.";
-"Keep both: the new one gets a number. Skip: it stays where it is." = "Behold begge: det nye får et nummer. Spring over: det bliver, hvor det er.";
 "Keep Both" = "Behold begge";
 "Skip" = "Spring over";
 "The marked items will be moved to the Trash, folders with everything in them." = "De markerede emner flyttes til papirkurven, mapper med alt indhold.";
@@ -186,7 +179,6 @@
 "Dual pane on / off: two folders side by side" = "To paneler til / fra: to mapper side om side";
 "Switch to the other pane" = "Skift til det andet panel";
 "Copy / move the marked items into the other pane's folder" = "Kopiér / flyt de markerede emner til det andet panels mappe";
-"Mark / unmark an item (M, Insert: then on to the next)" = "Markér et emne / fjern markering (M og Insert: og videre til det næste)";
 "Mark a range" = "Markér et område";
 "Mark all / unmark all" = "Markér alle / fjern alle markeringer";
 "Marked items onto a folder or into the other pane: moved (copied to another volume)" = "Markerede emner på en mappe eller i det andet panel: flyttes (kopieres til en anden diskenhed)";
@@ -204,6 +196,8 @@
 "Click to rename this folder" = "Klik for at omdøbe mappen";
 "Built with" = "Lavet med";
 "The full license texts are in the app (Contents/Resources/Licenses)." = "De fulde licenstekster ligger i appen (Contents/Resources/Licenses).";
+"Privacy Policy" = "Privatlivspolitik";
+"VLCKit includes FFmpeg and other libraries, each under its own license." = "VLCKit indeholder FFmpeg og andre biblioteker, hver under sin egen licens.";
 "plays the video formats macOS can't (AVI, MKV, WebM …)" = "afspiller de videoformater, macOS ikke kan (AVI, MKV, WebM …)";
 "reads RAR archives" = "læser RAR-arkiver";
 "reads ZIP and 7z archives (the copy built into macOS)" = "læser ZIP- og 7z-arkiver (den udgave, der er indbygget i macOS)";
@@ -222,7 +216,6 @@
 "Quit When Done" = "Afslut, når færdig";
 "The name must end in “.%@”, as the archive does." = "Navnet skal ende på “.%@” ligesom arkivet.";
 "unknown error" = "ukendt fejl";
-"⌘-click / M / Insert" = "⌘-klik / M / Insert";
 "⇧-click / ⇧ arrows" = "⇧-klik / ⇧ pile";
 "drag" = "træk";
 "Schnellbild's own code is free software under the MIT License. The components below keep their own licenses." = "Schnellbilds egen kode er fri software under MIT-licensen. Komponenterne nedenfor beholder deres egne licenser.";
@@ -253,7 +246,6 @@
 "Search mode" = "Søgetilstand";
 "No folder, archive, picture or video whose name matches “%@”, in this folder or its subfolders." = "Ingen mappe, intet arkiv, billede eller video, hvis navn matcher “%@”, i denne mappe eller dens undermapper.";
 "“%@” is not a valid regular expression." = "“%@” er ikke et gyldigt regulært udtryk.";
-"Boss key: hidden and silent at once; X X X or the Dock icon brings it back" = "Chefknap: skjult og lydløs med det samme; X X X eller symbolet i Dock henter det tilbage";
 "Into “%@”" = "Til “%@”";
 "Bookmarks" = "Bogmærker";
 "Bookmark This Folder" = "Bogmærk denne mappe";
@@ -310,6 +302,29 @@
 "Forget Folder Access" = "Glem mappeadgang";
 "Each folder asks for your permission again." = "Hver mappe beder om din tilladelse igen.";
 "© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later. Built from its source without VLC's modules under the GPL; the build script and its changes are in Schnellbild's repository (github.com/JohannesHoppe/schnellbild)." = "© VideoLAN og VLC’s forfattere. GNU Lesser General Public License 2.1 eller nyere. Bygget fra kildekoden uden VLC’s moduler under GPL; byggescriptet og dets ændringer ligger i Schnellbilds repository (github.com/JohannesHoppe/schnellbild).";
+"The link will be moved to the Trash. The folder it points to stays where it is." = "Linket flyttes til papirkurven. Mappen, det peger på, bliver, hvor den er.";
+"Keep both: the new one gets a number. Skip: it stays where it is. Cancel: nothing is moved or copied." = "Behold begge: det nye får et nummer. Spring over: det bliver, hvor det er. Annuller: intet flyttes eller kopieres.";
+"Apply to all" = "Anvend på alle";
+"Copied, but the original couldn't be removed: %@" = "Kopieret, men originalen kunne ikke fjernes: %@";
+"Not everything was moved or copied." = "Ikke alt blev flyttet eller kopieret.";
+"“%@”: %@" = "“%@”: %@";
+"“%@” is no longer the item Schnellbild put there, so it stays as it is." = "“%@” er ikke længere det emne, Schnellbild lagde der, så det bliver, som det er.";
+"“%@” has changed since it was copied, so it isn't moved to the Trash." = "“%@” er ændret, siden det blev kopieret, så det flyttes ikke til papirkurven.";
+"Schnellbild may not take “%@” out of the Trash. Use “Put Back” in the Finder's Trash." = "Schnellbild må ikke tage “%@” ud af papirkurven. Brug “Læg tilbage” i Finders papirkurv.";
+"Keep: try it again later, before the earlier actions. Forget: go on with the earlier actions." = "Behold: prøv igen senere, før de tidligere handlinger. Glem: fortsæt med de tidligere handlinger.";
+"Keep" = "Behold";
+"Forget" = "Glem";
+"Only the file you opened is shown here." = "Kun den fil, du åbnede, vises her.";
+"“%@” isn't available: its disk or server isn't connected. It opens once it is." = "“%@” er ikke tilgængelig: dens disk eller server er ikke tilsluttet. Den åbnes, så snart den er.";
+"Start Slideshow" = "Start lysbilledshow";
+"Larger Thumbnails" = "Større miniaturer";
+"Smaller Thumbnails" = "Mindre miniaturer";
+"Mini Keyboard" = "Minitastatur";
+"Copy to Other Pane" = "Kopiér til andet panel";
+"Move to Other Pane" = "Flyt til andet panel";
+"Mark / unmark an item (M, Insert: then on to the next)" = "Markér et emne / fjern markering (M og Insert: og videre til det næste)";
+"⌘-click / M / Insert" = "⌘-klik / M / Insert";
+"Boss key: hidden and silent at once; X X X or the Dock icon brings it back" = "Chefknap: skjult og lydløs med det samme; X X X eller symbolet i Dock henter det tilbage";
 "marked" = "markeret";
 "Drive" = "Drev";
 "Folder without pictures or videos" = "Mappe uden billeder eller videoer";

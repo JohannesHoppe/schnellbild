@@ -92,6 +92,19 @@ final class CraftedArchiveTests: XCTestCase {
         XCTAssertEqual(last, Data("LAST".utf8))
     }
 
+    /// A flood of entries stops at the index's limit: the archive counts as
+    /// read in part, its memory stays bounded (the limit lowered here).
+    func testAnIndexStopsAtItsLimit() async throws {
+        let tree = try TempTree(self)
+        let url = try write(Self.rar((0..<10).map { Self.file("f\($0).jpg", Data("X".utf8)) }), "many.rar", in: tree)
+        let limit = ArchiveStore.indexLimit
+        ArchiveStore.indexLimit = 4
+        defer { ArchiveStore.indexLimit = limit }
+        let index = try await ArchiveStore.shared.index(of: url)
+        XCTAssertEqual(index.byPath.count, 4)
+        XCTAssertFalse(index.complete)
+    }
+
     /// A header that fails its checksum ends the listing there.
     func testADamagedHeaderEndsTheListing() async throws {
         let tree = try TempTree(self)

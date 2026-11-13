@@ -3,8 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Schnellbild – 一款用着不闹心的 macOS 图像和视频查看器</title>
-<meta name="description" content="Schnellbild：一款快速、免费的 macOS 图像和视频查看器。文件夹、缩略图、键盘操作；支持 MKV、WebM 和 AVI；ZIP、RAR 和 7z 像文件夹一样打开；双窗格整理照片。无广告、无跟踪、无需账户。">
+<title>Schnellbild – 免费的 Mac 看图和视频播放软件（支持 MKV、RAR）</title>
+<meta name="description" content="快速、免费的 macOS 看图软件和视频播放器：缩略图、键盘翻页、播放 MKV、AVI 和 WebM，像文件夹一样打开 ZIP 和 RAR。Phiewer 和 IINA 的替代品。">
+<meta name="keywords" content="Mac 看图软件, macOS 图片查看器, 免费看图软件, Mac MKV 播放器, AVI WebM 播放, Phiewer 替代, IINA 替代, 打开 RAR 图片, CBZ CBR 漫画, 幻灯片, Schnellbild">
+<meta name="robots" content="index, follow, max-image-preview:large">
 <link rel="canonical" href="https://schnellbild.haushoppe-its.de/zh-hans/">
 <link rel="alternate" hreflang="en" href="https://schnellbild.haushoppe-its.de/">
 <link rel="alternate" hreflang="de" href="https://schnellbild.haushoppe-its.de/de/">
@@ -27,17 +29,135 @@
 <link rel="alternate" hreflang="zh-Hans" href="https://schnellbild.haushoppe-its.de/zh-hans/">
 <link rel="alternate" hreflang="zh-Hant" href="https://schnellbild.haushoppe-its.de/zh-hant/">
 <link rel="alternate" hreflang="x-default" href="https://schnellbild.haushoppe-its.de/">
-<link rel="icon" href="/icon.png">
-<link rel="apple-touch-icon" href="/icon.png">
+<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#fbfbfd">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000000">
+<meta name="color-scheme" content="light dark">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Schnellbild">
 <meta property="og:title" content="Schnellbild – 一款用着不闹心的 macOS 图像和视频查看器">
-<meta property="og:description" content="Schnellbild：一款快速、免费的 macOS 图像和视频查看器。文件夹、缩略图、键盘操作；支持 MKV、WebM 和 AVI；ZIP、RAR 和 7z 像文件夹一样打开；双窗格整理照片。无广告、无跟踪、无需账户。">
-<meta property="og:locale" content="zh_Hans">
-<meta property="og:image" content="https://schnellbild.haushoppe-its.de/screenshots/grid-light.png">
+<meta property="og:description" content="快速、免费的 macOS 看图软件和视频播放器：缩略图、键盘翻页、播放 MKV、AVI 和 WebM，像文件夹一样打开 ZIP 和 RAR。Phiewer 和 IINA 的替代品。">
 <meta property="og:url" content="https://schnellbild.haushoppe-its.de/zh-hans/">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:locale:alternate" content="de_DE">
+<meta property="og:locale:alternate" content="fr_FR">
+<meta property="og:locale:alternate" content="es_ES">
+<meta property="og:locale:alternate" content="it_IT">
+<meta property="og:locale:alternate" content="pt_BR">
+<meta property="og:locale:alternate" content="nl_NL">
+<meta property="og:locale:alternate" content="pl_PL">
+<meta property="og:locale:alternate" content="sv_SE">
+<meta property="og:locale:alternate" content="da_DK">
+<meta property="og:locale:alternate" content="nb_NO">
+<meta property="og:locale:alternate" content="fi_FI">
+<meta property="og:locale:alternate" content="cs_CZ">
+<meta property="og:locale:alternate" content="tr_TR">
+<meta property="og:locale:alternate" content="ru_RU">
+<meta property="og:locale:alternate" content="uk_UA">
+<meta property="og:locale:alternate" content="ja_JP">
+<meta property="og:locale:alternate" content="ko_KR">
+<meta property="og:locale:alternate" content="zh_TW">
+<meta property="og:image" content="https://schnellbild.haushoppe-its.de/og/zh-Hans.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Schnellbild: 一款用着不闹心的 macOS 图像和视频查看器。">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="color-scheme" content="light dark">
+<meta name="twitter:title" content="Schnellbild – 一款用着不闹心的 macOS 图像和视频查看器">
+<meta name="twitter:description" content="快速、免费的 macOS 看图软件和视频播放器：缩略图、键盘翻页、播放 MKV、AVI 和 WebM，像文件夹一样打开 ZIP 和 RAR。Phiewer 和 IINA 的替代品。">
+<meta name="twitter:image" content="https://schnellbild.haushoppe-its.de/og/zh-Hans.jpg">
+<meta name="twitter:image:alt" content="Schnellbild: 一款用着不闹心的 macOS 图像和视频查看器。">
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": "SoftwareApplication",
+   "@id": "https://schnellbild.haushoppe-its.de/zh-hans/#app",
+   "name": "Schnellbild",
+   "description": "快速、免费的 macOS 看图软件和视频播放器：缩略图、键盘翻页、播放 MKV、AVI 和 WebM，像文件夹一样打开 ZIP 和 RAR。Phiewer 和 IINA 的替代品。",
+   "inLanguage": "zh-Hans",
+   "url": "https://schnellbild.haushoppe-its.de/zh-hans/",
+   "operatingSystem": "macOS 15 or later",
+   "processorRequirements": "Apple silicon (arm64)",
+   "applicationCategory": "MultimediaApplication",
+   "applicationSubCategory": "Photography",
+   "softwareVersion": "0.10.0",
+   "downloadUrl": "https://github.com/JohannesHoppe/schnellbild/releases/latest/download/Schnellbild.dmg",
+   "image": "https://schnellbild.haushoppe-its.de/icon-512.png",
+   "screenshot": "https://schnellbild.haushoppe-its.de/screenshots/grid-light.png",
+   "featureList": [
+    "大图查看，按键翻页",
+    "视频，包括 macOS 播放不了的",
+    "归档像文件夹一样打开",
+    "像在 Norton Commander 里一样整理旅行照片",
+    "搜索所有子文件夹",
+    "画面更好看，文件不改动",
+    "看清文件的真面目",
+    "所有按键尽在掌握"
+   ],
+   "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "EUR",
+    "url": "https://github.com/JohannesHoppe/schnellbild/releases/latest/download/Schnellbild.dmg"
+   },
+   "isAccessibleForFree": true,
+   "license": "https://opensource.org/license/mit",
+   "author": {
+    "@id": "https://schnellbild.haushoppe-its.de/#organization"
+   },
+   "publisher": {
+    "@id": "https://schnellbild.haushoppe-its.de/#organization"
+   },
+   "sameAs": "https://github.com/JohannesHoppe/schnellbild"
+  },
+  {
+   "@type": "WebSite",
+   "@id": "https://schnellbild.haushoppe-its.de/#website",
+   "name": "Schnellbild",
+   "url": "https://schnellbild.haushoppe-its.de/",
+   "inLanguage": [
+    "en",
+    "de",
+    "fr",
+    "es",
+    "it",
+    "pt-BR",
+    "nl",
+    "pl",
+    "sv",
+    "da",
+    "nb",
+    "fi",
+    "cs",
+    "tr",
+    "ru",
+    "uk",
+    "ja",
+    "ko",
+    "zh-Hans",
+    "zh-Hant"
+   ],
+   "publisher": {
+    "@id": "https://schnellbild.haushoppe-its.de/#organization"
+   }
+  },
+  {
+   "@type": "Organization",
+   "@id": "https://schnellbild.haushoppe-its.de/#organization",
+   "name": "HAUS HOPPE - ITS",
+   "url": "https://haushoppe-its.de"
+  }
+ ]
+}
+</script>
 <link rel="stylesheet" href="/site.css">
 <script src="/site.js" defer></script>
 </head>
@@ -153,6 +273,7 @@
     <span>© 2026 HAUS HOPPE - ITS (Johannes Hoppe)</span>
     <nav aria-label="隐私, 法律声明">
       <a href="/zh-hans/privacy/">隐私</a>
+      <a href="/eula/">许可协议</a>
       <a href="https://haushoppe-its.de/impressum/">法律声明</a>
       <a href="https://github.com/JohannesHoppe/schnellbild">GitHub</a>
     </nav>

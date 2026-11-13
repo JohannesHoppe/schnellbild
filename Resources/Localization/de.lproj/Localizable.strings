@@ -1,6 +1,5 @@
 "Open Folder…" = "Ordner öffnen …";
 "Go" = "Gehe zu";
-"Start Slideshow" = "Diashow starten";
 "Back" = "Zurück";
 "Forward" = "Vorwärts";
 "Enclosing Folder" = "Übergeordneter Ordner";
@@ -9,8 +8,6 @@
 "Reveal in Finder" = "Im Finder zeigen";
 "Open with Default App" = "Mit Standard-App öffnen";
 "Move to Trash…" = "In den Papierkorb legen …";
-"Larger Thumbnails" = "Größere Miniaturen";
-"Smaller Thumbnails" = "Kleinere Miniaturen";
 "Schnellbild Help" = "Schnellbild-Hilfe";
 "Rename…" = "Umbenennen …";
 "Open Folder" = "Ordner öffnen";
@@ -165,12 +162,9 @@
 "New Folder" = "Neuer Ordner";
 "Create" = "Erstellen";
 "New folder: type its name, ↩ creates it, Esc creates none" = "Neuer Ordner: Namen eingeben, ↩ erstellt ihn, Esc erstellt keinen";
-"Mini Keyboard" = "Mini-Tastatur";
 /* Dual pane */
 "Dual Pane" = "Zwei Bereiche";
 "Dual pane: two folders side by side; Tab switches, F5 copies, F6 moves to the other (D, ⌃O)" = "Zwei Bereiche: zwei Ordner nebeneinander; Tab wechselt, F5 kopiert, F6 verschiebt in den anderen (D, ⌃O)";
-"Copy to Other Pane" = "In anderen Bereich kopieren";
-"Move to Other Pane" = "In anderen Bereich verschieben";
 "Other pane" = "Anderer Bereich";
 "Copy there" = "Dorthin kopieren";
 "Move there" = "Dorthin verschieben";
@@ -178,7 +172,6 @@
 "Mark" = "Markieren";
 "Single pane" = "Ein Bereich";
 "“%@” already exists in “%@”." = "„%@“ existiert in „%@“ bereits.";
-"Keep both: the new one gets a number. Skip: it stays where it is." = "Beide behalten: Das neue Objekt bekommt eine Nummer. Überspringen: Es bleibt, wo es ist.";
 "Keep Both" = "Beide behalten";
 "Skip" = "Überspringen";
 "The marked items will be moved to the Trash, folders with everything in them." = "Die markierten Objekte werden in den Papierkorb gelegt, Ordner mit allem darin.";
@@ -186,7 +179,6 @@
 "Dual pane on / off: two folders side by side" = "Zwei Bereiche ein / aus: zwei Ordner nebeneinander";
 "Switch to the other pane" = "Zum anderen Bereich wechseln";
 "Copy / move the marked items into the other pane's folder" = "Markierte Objekte in den Ordner des anderen Bereichs kopieren / verschieben";
-"Mark / unmark an item (M, Insert: then on to the next)" = "Objekt markieren / Markierung aufheben (M und Insert: und weiter zum nächsten)";
 "Mark a range" = "Mehrere am Stück markieren";
 "Mark all / unmark all" = "Alle markieren / alle Markierungen aufheben";
 "Marked items onto a folder or into the other pane: moved (copied to another volume)" = "Markierte Objekte auf einen Ordner oder in den anderen Bereich: verschoben (auf ein anderes Volume kopiert)";
@@ -204,6 +196,8 @@
 "Click to rename this folder" = "Klicken, um diesen Ordner umzubenennen";
 "Built with" = "Erstellt mit";
 "The full license texts are in the app (Contents/Resources/Licenses)." = "Die vollständigen Lizenztexte liegen in der App (Contents/Resources/Licenses).";
+"Privacy Policy" = "Datenschutzerklärung";
+"VLCKit includes FFmpeg and other libraries, each under its own license." = "VLCKit enthält FFmpeg und weitere Bibliotheken, jede unter ihrer eigenen Lizenz.";
 "plays the video formats macOS can't (AVI, MKV, WebM …)" = "spielt die Videoformate, die macOS nicht kann (AVI, MKV, WebM …)";
 "reads RAR archives" = "liest RAR-Archive";
 "reads ZIP and 7z archives (the copy built into macOS)" = "liest ZIP- und 7z-Archive (die in macOS eingebaute Fassung)";
@@ -222,7 +216,6 @@
 "Quit When Done" = "Beenden, wenn fertig";
 "The name must end in “.%@”, as the archive does." = "Der Name muss auf „.%@“ enden, wie das Archiv.";
 "unknown error" = "unbekannter Fehler";
-"⌘-click / M / Insert" = "⌘-Klick / M / Insert";
 "⇧-click / ⇧ arrows" = "⇧-Klick / ⇧ Pfeile";
 "drag" = "Ziehen";
 "Schnellbild's own code is free software under the MIT License. The components below keep their own licenses." = "Der eigene Code von Schnellbild ist freie Software unter der MIT-Lizenz. Die Komponenten unten behalten ihre eigenen Lizenzen.";
@@ -253,7 +246,6 @@
 "Search mode" = "Suchmodus";
 "No folder, archive, picture or video whose name matches “%@”, in this folder or its subfolders." = "Kein Ordner, Archiv, Bild oder Video, dessen Name zu „%@“ passt, in diesem Ordner oder seinen Unterordnern.";
 "“%@” is not a valid regular expression." = "„%@“ ist kein gültiger regulärer Ausdruck.";
-"Boss key: hidden and silent at once; X X X or the Dock icon brings it back" = "Boss-Key: sofort unsichtbar und stumm; X X X oder das Dock-Symbol holt es zurück";
 "Into “%@”" = "In „%@“";
 "Bookmarks" = "Lesezeichen";
 "Bookmark This Folder" = "Lesezeichen für diesen Ordner";
@@ -310,6 +302,29 @@
 "Forget Folder Access" = "Ordnerzugriff vergessen";
 "Each folder asks for your permission again." = "Jeder Ordner fragt dann wieder nach deiner Erlaubnis.";
 "© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later. Built from its source without VLC's modules under the GPL; the build script and its changes are in Schnellbild's repository (github.com/JohannesHoppe/schnellbild)." = "© VideoLAN und die VLC-Autoren. GNU Lesser General Public License 2.1 oder später. Aus dem Quellcode gebaut, ohne die VLC-Module unter der GPL; das Build-Skript und seine Änderungen liegen im Repository von Schnellbild (github.com/JohannesHoppe/schnellbild).";
+"The link will be moved to the Trash. The folder it points to stays where it is." = "Der Link wird in den Papierkorb gelegt. Der Ordner, auf den er zeigt, bleibt, wo er ist.";
+"Keep both: the new one gets a number. Skip: it stays where it is. Cancel: nothing is moved or copied." = "Beide behalten: Das neue Objekt bekommt eine Nummer. Überspringen: Es bleibt, wo es ist. Abbrechen: Nichts wird bewegt oder kopiert.";
+"Apply to all" = "Für alle übernehmen";
+"Copied, but the original couldn't be removed: %@" = "Kopiert, aber das Original konnte nicht entfernt werden: %@";
+"Not everything was moved or copied." = "Nicht alles wurde bewegt oder kopiert.";
+"“%@”: %@" = "„%@“: %@";
+"“%@” is no longer the item Schnellbild put there, so it stays as it is." = "„%@“ ist nicht mehr das Objekt, das Schnellbild dort abgelegt hat, und bleibt daher, wie es ist.";
+"“%@” has changed since it was copied, so it isn't moved to the Trash." = "„%@“ hat sich seit dem Kopieren verändert und wird daher nicht in den Papierkorb gelegt.";
+"Schnellbild may not take “%@” out of the Trash. Use “Put Back” in the Finder's Trash." = "Schnellbild darf „%@“ nicht aus dem Papierkorb nehmen. Nutze „Zurücklegen“ im Papierkorb des Finders.";
+"Keep: try it again later, before the earlier actions. Forget: go on with the earlier actions." = "Behalten: Später noch einmal versuchen, vor den früheren Aktionen. Vergessen: Mit den früheren Aktionen weitermachen.";
+"Keep" = "Behalten";
+"Forget" = "Vergessen";
+"Only the file you opened is shown here." = "Hier wird nur die Datei gezeigt, die du geöffnet hast.";
+"“%@” isn't available: its disk or server isn't connected. It opens once it is." = "„%@“ ist nicht verfügbar: Sein Laufwerk oder Server ist nicht verbunden. Der Ordner öffnet sich, sobald er es ist.";
+"Start Slideshow" = "Diashow starten";
+"Larger Thumbnails" = "Größere Miniaturen";
+"Smaller Thumbnails" = "Kleinere Miniaturen";
+"Mini Keyboard" = "Mini-Tastatur";
+"Copy to Other Pane" = "In anderen Bereich kopieren";
+"Move to Other Pane" = "In anderen Bereich verschieben";
+"Mark / unmark an item (M, Insert: then on to the next)" = "Objekt markieren / Markierung aufheben (M und Insert: und weiter zum nächsten)";
+"⌘-click / M / Insert" = "⌘-Klick / M / Insert";
+"Boss key: hidden and silent at once; X X X or the Dock icon brings it back" = "Boss-Key: sofort unsichtbar und stumm; X X X oder das Dock-Symbol holt es zurück";
 "marked" = "markiert";
 "Drive" = "Laufwerk";
 "Folder without pictures or videos" = "Ordner ohne Bilder oder Videos";

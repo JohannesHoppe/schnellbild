@@ -1,0 +1,49 @@
+# The Mac App Store prices (started by hand), through Scripts/appstore_prices.swift:
+# "list" uploads what Apple offers per country (artifact price-points) for
+# Scripts/price_proposal.py; "apply" sets AppStore/metadata/prices.json.
+name: App Store prices
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "list (price points per country) or apply (set prices.json)"
+        type: choice
+        options: [list, apply]
+        default: list
+
+permissions:
+  contents: read
+
+jobs:
+  prices:
+    runs-on: macos-15
+    environment: release
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: Prices (${{ inputs.mode }})
+        env:
+          P8: ${{ secrets.APPSTORE_API_KEY_P8 }}
+          ASC_KEY_ID: ${{ secrets.APPSTORE_API_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.NOTARY_ISSUER_ID }}
+          MODE: ${{ inputs.mode }}
+        run: |
+          export ASC_KEY_PATH="$RUNNER_TEMP/asc.p8"
+          (umask 077; printf '%s\n' "$P8" > "$ASC_KEY_PATH")
+          if [ "$MODE" = list ]; then
+            swift Scripts/appstore_prices.swift list price-points.json
+          else
+            swift Scripts/appstore_prices.swift apply
+          fi
+
+      - name: Remove the key
+        if: always()
+        run: rm -f "$RUNNER_TEMP/asc.p8"
+
+      - if: inputs.mode == 'list'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: price-points
+          path: price-points.json
+          if-no-files-found: error

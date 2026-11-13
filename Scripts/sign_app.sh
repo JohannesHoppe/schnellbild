@@ -15,7 +15,8 @@
 #                           entitlement needs
 #   neither                 ad hoc, for local and CI builds
 # The entitlements only a profile allows (App ID, team, the media extension's)
-# are left out where there is no profile for them.
+# are left out where there is no profile for them; where there is one, it is
+# checked against them before anything is signed (check_profile).
 #
 #   Scripts/sign_app.sh <Schnellbild.app>
 set -euo pipefail
@@ -43,11 +44,42 @@ without_profile() {
   done
 }
 
+# check_profile <profile> <entitlements> <bundle>: the profile allows what the
+# bundle is signed with (its App ID is the bundle's, its team and every
+# entitlement only a profile grants match), and hasn't run out. macOS would
+# refuse to start a part whose profile doesn't, and App Store Connect the upload.
+check_profile() {
+  local profile="$1" ent="$2" bundle="$3" decoded name bundle_id key want got app_id team expires
+  name="$(basename "$bundle")"
+  decoded="$TMP/$name.profile.plist"
+  security cms -D -i "$profile" > "$decoded" 2>/dev/null \
+    || { echo "!! $profile (for $name) is not a provisioning profile" >&2; exit 1; }
+  bundle_id="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$bundle/Contents/Info.plist")"
+  app_id="$(/usr/libexec/PlistBuddy -c 'Print :Entitlements:com.apple.application-identifier' "$decoded" 2>/dev/null || true)"
+  team="$(/usr/libexec/PlistBuddy -c 'Print :TeamIdentifier:0' "$decoded" 2>/dev/null || true)"
+  [ -n "$team" ] && [ "$app_id" = "$team.$bundle_id" ] \
+    || { echo "!! the profile for $name is for the App ID '$app_id', the bundle is $bundle_id (team '$team')" >&2; exit 1; }
+  for key in com.apple.application-identifier com.apple.developer.team-identifier \
+             com.apple.developer.mediaextension.formatreader; do
+    want="$(/usr/libexec/PlistBuddy -c "Print :$key" "$ent" 2>/dev/null)" || continue
+    got="$(/usr/libexec/PlistBuddy -c "Print :Entitlements:$key" "$decoded" 2>/dev/null || echo '(not in the profile)')"
+    [ "$want" = "$got" ] \
+      || { echo "!! $name is signed with $key = $want, its profile allows $got" >&2; exit 1; }
+  done
+  expires="$(plutil -extract ExpirationDate raw -o - "$decoded")"
+  [[ "$expires" > "$(date -u +%Y-%m-%dT%H:%M:%SZ)" ]] \
+    || { echo "!! the profile for $name ran out on $expires (docs/SIGNING.md)" >&2; exit 1; }
+  echo "   profile for $name: $app_id, until $expires"
+}
+
 if [ -n "$STORE_ID" ]; then
   echo "==> Signing for the Mac App Store with: $STORE_ID"
   for name in APP_PROFILE THUMBNAILS_PROFILE FORMATS_PROFILE; do
     [ -f "${!name:-}" ] || { echo "!! $name (an App Store provisioning profile) is missing" >&2; exit 1; }
   done
+  check_profile "$APP_PROFILE" "$APP_ENT" "$APP"
+  check_profile "$THUMBNAILS_PROFILE" "$THUMB_ENT" "$APPEX"
+  check_profile "$FORMATS_PROFILE" "$FORMATS_ENT" "$FORMATS"
   cp "$APP_PROFILE" "$APP/Contents/embedded.provisionprofile"
   cp "$THUMBNAILS_PROFILE" "$APPEX/Contents/embedded.provisionprofile"
   cp "$FORMATS_PROFILE" "$FORMATS/Contents/embedded.provisionprofile"
@@ -59,6 +91,7 @@ else
     echo "==> Signing with: $DEVID"
     OPTS=(--force --sign "$DEVID" --options runtime --timestamp)
     if [ -n "${FORMATS_PROFILE:-}" ] && [ -f "$FORMATS_PROFILE" ]; then
+      check_profile "$FORMATS_PROFILE" "$FORMATS_ENT" "$FORMATS"
       cp "$FORMATS_PROFILE" "$FORMATS/Contents/embedded.provisionprofile"
     else
       echo "   (media extension without its entitlement: no FORMATS_PROFILE)"

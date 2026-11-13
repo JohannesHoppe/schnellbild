@@ -1,6 +1,5 @@
 "Open Folder…" = "打开文件夹…";
 "Go" = "前往";
-"Start Slideshow" = "开始幻灯片放映";
 "Back" = "返回";
 "Forward" = "前进";
 "Enclosing Folder" = "上层文件夹";
@@ -9,8 +8,6 @@
 "Reveal in Finder" = "在访达中显示";
 "Open with Default App" = "使用默认 App 打开";
 "Move to Trash…" = "移到废纸篓…";
-"Larger Thumbnails" = "更大的缩略图";
-"Smaller Thumbnails" = "更小的缩略图";
 "Schnellbild Help" = "Schnellbild 帮助";
 "Rename…" = "重新命名…";
 "Open Folder" = "打开文件夹";
@@ -165,12 +162,9 @@
 "New Folder" = "新建文件夹";
 "Create" = "创建";
 "New folder: type its name, ↩ creates it, Esc creates none" = "新建文件夹：输入名称，↩ 创建，Esc 不创建";
-"Mini Keyboard" = "迷你键盘";
 /* Dual pane */
 "Dual Pane" = "双窗格";
 "Dual pane: two folders side by side; Tab switches, F5 copies, F6 moves to the other (D, ⌃O)" = "双窗格：两个文件夹并排显示；Tab 切换，F5 拷贝、F6 移动到另一窗格（D、⌃O）";
-"Copy to Other Pane" = "拷贝到另一窗格";
-"Move to Other Pane" = "移到另一窗格";
 "Other pane" = "另一窗格";
 "Copy there" = "拷贝过去";
 "Move there" = "移过去";
@@ -178,7 +172,6 @@
 "Mark" = "标记";
 "Single pane" = "单窗格";
 "“%@” already exists in “%@”." = "“%@”已存在于“%@”中。";
-"Keep both: the new one gets a number. Skip: it stays where it is." = "保留两者：新项目会加上编号。跳过：它留在原处。";
 "Keep Both" = "保留两者";
 "Skip" = "跳过";
 "The marked items will be moved to the Trash, folders with everything in them." = "标记的项目将被移到废纸篓，文件夹连同其中的所有内容。";
@@ -186,7 +179,6 @@
 "Dual pane on / off: two folders side by side" = "打开 / 关闭双窗格：两个文件夹并排显示";
 "Switch to the other pane" = "切换到另一窗格";
 "Copy / move the marked items into the other pane's folder" = "将标记的项目拷贝 / 移到另一窗格的文件夹";
-"Mark / unmark an item (M, Insert: then on to the next)" = "标记 / 取消标记项目（M 和 Insert：并移到下一个）";
 "Mark a range" = "标记一个范围";
 "Mark all / unmark all" = "全部标记 / 全部取消标记";
 "Marked items onto a folder or into the other pane: moved (copied to another volume)" = "标记的项目放到文件夹上或另一窗格中：移动（到其他宗卷则拷贝）";
@@ -204,6 +196,8 @@
 "Click to rename this folder" = "点按以重新命名此文件夹";
 "Built with" = "使用的组件";
 "The full license texts are in the app (Contents/Resources/Licenses)." = "完整的许可证文本位于 App 内（Contents/Resources/Licenses）。";
+"Privacy Policy" = "隐私政策";
+"VLCKit includes FFmpeg and other libraries, each under its own license." = "VLCKit 包含 FFmpeg 及其他库，各自遵循其许可证。";
 "plays the video formats macOS can't (AVI, MKV, WebM …)" = "播放 macOS 无法播放的视频格式（AVI、MKV、WebM …）";
 "reads RAR archives" = "读取 RAR 归档";
 "reads ZIP and 7z archives (the copy built into macOS)" = "读取 ZIP 和 7z 归档（macOS 内置的版本）";
@@ -222,7 +216,6 @@
 "Quit When Done" = "完成后退出";
 "The name must end in “.%@”, as the archive does." = "名称必须像归档一样以“.%@”结尾。";
 "unknown error" = "未知错误";
-"⌘-click / M / Insert" = "⌘-点按 / M / Insert";
 "⇧-click / ⇧ arrows" = "⇧-点按 / ⇧ 箭头";
 "drag" = "拖移";
 "Schnellbild's own code is free software under the MIT License. The components below keep their own licenses." = "Schnellbild 自身的代码是采用 MIT 许可证的自由软件。以下组件保留各自的许可证。";
@@ -253,7 +246,6 @@
 "Search mode" = "搜索模式";
 "No folder, archive, picture or video whose name matches “%@”, in this folder or its subfolders." = "此文件夹及其子文件夹中没有名称匹配“%@”的文件夹、归档、图像或视频。";
 "“%@” is not a valid regular expression." = "“%@”不是有效的正则表达式。";
-"Boss key: hidden and silent at once; X X X or the Dock icon brings it back" = "老板键：立即隐藏并静音；X X X 或点按程序坞图标恢复";
 "Into “%@”" = "到“%@”";
 "Bookmarks" = "书签";
 "Bookmark This Folder" = "为此文件夹添加书签";
@@ -310,6 +302,29 @@
 "Forget Folder Access" = "忘记文件夹访问";
 "Each folder asks for your permission again." = "每个文件夹都会再次请求你的允许。";
 "© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later. Built from its source without VLC's modules under the GPL; the build script and its changes are in Schnellbild's repository (github.com/JohannesHoppe/schnellbild)." = "© VideoLAN 和 VLC 作者。GNU Lesser General Public License 2.1 或更高版本。从源代码构建，不含 GPL 授权的 VLC 模块；构建脚本及其更改位于 Schnellbild 的代码仓库（github.com/JohannesHoppe/schnellbild）。";
+"The link will be moved to the Trash. The folder it points to stays where it is." = "该链接将被移到废纸篓。它指向的文件夹保持原位。";
+"Keep both: the new one gets a number. Skip: it stays where it is. Cancel: nothing is moved or copied." = "保留两者：新项目会加上编号。跳过：它留在原处。取消：不移动也不拷贝任何内容。";
+"Apply to all" = "全部应用";
+"Copied, but the original couldn't be removed: %@" = "已拷贝，但无法移除原件：%@";
+"Not everything was moved or copied." = "并非所有项目都已移动或拷贝。";
+"“%@”: %@" = "“%@”：%@";
+"“%@” is no longer the item Schnellbild put there, so it stays as it is." = "“%@”已不是 Schnellbild 放在那里的项目，因此保持不变。";
+"“%@” has changed since it was copied, so it isn't moved to the Trash." = "“%@”在拷贝后已更改，因此不会移到废纸篓。";
+"Schnellbild may not take “%@” out of the Trash. Use “Put Back” in the Finder's Trash." = "Schnellbild 不能将“%@”从废纸篓中取出。请在访达的废纸篓中使用“放回原处”。";
+"Keep: try it again later, before the earlier actions. Forget: go on with the earlier actions." = "保留：稍后再试，先于更早的操作。忘记：继续处理更早的操作。";
+"Keep" = "保留";
+"Forget" = "忘记";
+"Only the file you opened is shown here." = "这里只显示你打开的文件。";
+"“%@” isn't available: its disk or server isn't connected. It opens once it is." = "“%@”不可用：它所在的磁盘或服务器未连接。连接后会自动打开。";
+"Start Slideshow" = "开始幻灯片放映";
+"Larger Thumbnails" = "更大的缩略图";
+"Smaller Thumbnails" = "更小的缩略图";
+"Mini Keyboard" = "迷你键盘";
+"Copy to Other Pane" = "拷贝到另一窗格";
+"Move to Other Pane" = "移到另一窗格";
+"Mark / unmark an item (M, Insert: then on to the next)" = "标记 / 取消标记项目（M 和 Insert：并移到下一个）";
+"⌘-click / M / Insert" = "⌘-点按 / M / Insert";
+"Boss key: hidden and silent at once; X X X or the Dock icon brings it back" = "老板键：立即隐藏并静音；X X X 或点按程序坞图标恢复";
 "marked" = "已标记";
 "Drive" = "磁盘";
 "Folder without pictures or videos" = "不含图像或视频的文件夹";

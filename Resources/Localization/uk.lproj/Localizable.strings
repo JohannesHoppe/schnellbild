@@ -1,6 +1,5 @@
 "Open Folder…" = "Відкрити папку…";
 "Go" = "Перейти";
-"Start Slideshow" = "Почати слайд-шоу";
 "Back" = "Назад";
 "Forward" = "Вперед";
 "Enclosing Folder" = "Батьківська папка";
@@ -9,8 +8,6 @@
 "Reveal in Finder" = "Показати у Finder";
 "Open with Default App" = "Відкрити в типовій програмі";
 "Move to Trash…" = "Перемістити в Смітник…";
-"Larger Thumbnails" = "Більші мініатюри";
-"Smaller Thumbnails" = "Менші мініатюри";
 "Schnellbild Help" = "Довідка Schnellbild";
 "Rename…" = "Перейменувати…";
 "Open Folder" = "Відкрити папку";
@@ -165,12 +162,9 @@
 "New Folder" = "Нова папка";
 "Create" = "Створити";
 "New folder: type its name, ↩ creates it, Esc creates none" = "Нова папка: введіть назву, ↩ створює її, Esc не створює нічого";
-"Mini Keyboard" = "Міні-клавіатура";
 /* Dual pane */
 "Dual Pane" = "Дві панелі";
 "Dual pane: two folders side by side; Tab switches, F5 copies, F6 moves to the other (D, ⌃O)" = "Дві панелі: дві папки поруч; Tab перемикає, F5 копіює, F6 переміщує в іншу (D, ⌃O)";
-"Copy to Other Pane" = "Скопіювати в іншу панель";
-"Move to Other Pane" = "Перемістити в іншу панель";
 "Other pane" = "Інша панель";
 "Copy there" = "Копіювати туди";
 "Move there" = "Перемістити туди";
@@ -178,7 +172,6 @@
 "Mark" = "Позначити";
 "Single pane" = "Одна панель";
 "“%@” already exists in “%@”." = "«%@» уже є в «%@».";
-"Keep both: the new one gets a number. Skip: it stays where it is." = "Залишити обидва: новий об’єкт отримає номер. Пропустити: він залишиться на місці.";
 "Keep Both" = "Залишити обидва";
 "Skip" = "Пропустити";
 "The marked items will be moved to the Trash, folders with everything in them." = "Позначені об’єкти буде переміщено в Смітник, папки — з усім вмістом.";
@@ -186,7 +179,6 @@
 "Dual pane on / off: two folders side by side" = "Дві панелі увімк. / вимк.: дві папки поруч";
 "Switch to the other pane" = "Перейти до іншої панелі";
 "Copy / move the marked items into the other pane's folder" = "Скопіювати / перемістити позначені об’єкти в папку іншої панелі";
-"Mark / unmark an item (M, Insert: then on to the next)" = "Позначити об’єкт / зняти позначку (M та Insert: і перейти до наступного)";
 "Mark a range" = "Позначити діапазон";
 "Mark all / unmark all" = "Позначити все / зняти всі позначки";
 "Marked items onto a folder or into the other pane: moved (copied to another volume)" = "Позначені об’єкти на папку або в іншу панель: переміщуються (на інший том — копіюються)";
@@ -204,6 +196,8 @@
 "Click to rename this folder" = "Клацніть, щоб перейменувати папку";
 "Built with" = "Використовує";
 "The full license texts are in the app (Contents/Resources/Licenses)." = "Повні тексти ліцензій містяться в програмі (Contents/Resources/Licenses).";
+"Privacy Policy" = "Політика конфіденційності";
+"VLCKit includes FFmpeg and other libraries, each under its own license." = "VLCKit містить FFmpeg та інші бібліотеки, кожна під власною ліцензією.";
 "plays the video formats macOS can't (AVI, MKV, WebM …)" = "відтворює відеоформати, які не підтримує macOS (AVI, MKV, WebM …)";
 "reads RAR archives" = "читає архіви RAR";
 "reads ZIP and 7z archives (the copy built into macOS)" = "читає архіви ZIP і 7z (вбудована в macOS версія)";
@@ -222,7 +216,6 @@
 "Quit When Done" = "Завершити після закінчення";
 "The name must end in “.%@”, as the archive does." = "Назва має закінчуватися на «.%@», як в архіву.";
 "unknown error" = "невідома помилка";
-"⌘-click / M / Insert" = "⌘-клацання / M / Insert";
 "⇧-click / ⇧ arrows" = "⇧-клацання / ⇧ стрілки";
 "drag" = "перетягування";
 "Schnellbild's own code is free software under the MIT License. The components below keep their own licenses." = "Власний код Schnellbild — вільне ПЗ за ліцензією MIT. Компоненти нижче зберігають власні ліцензії.";
@@ -253,7 +246,6 @@
 "Search mode" = "Режим пошуку";
 "No folder, archive, picture or video whose name matches “%@”, in this folder or its subfolders." = "Немає папки, архіву, зображення чи відео, назва яких відповідає «%@», у цій папці та її підпапках.";
 "“%@” is not a valid regular expression." = "«%@» — недійсний регулярний вираз.";
-"Boss key: hidden and silent at once; X X X or the Dock icon brings it back" = "Клавіша «бос»: одразу приховано й без звуку; X X X або значок у Dock повертає";
 "Into “%@”" = "До «%@»";
 "Bookmarks" = "Закладки";
 "Bookmark This Folder" = "Додати закладку на цю папку";
@@ -310,6 +302,29 @@
 "Forget Folder Access" = "Забути доступ до папок";
 "Each folder asks for your permission again." = "Кожна папка знову попросить дозвіл.";
 "© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later. Built from its source without VLC's modules under the GPL; the build script and its changes are in Schnellbild's repository (github.com/JohannesHoppe/schnellbild)." = "© VideoLAN і автори VLC. GNU Lesser General Public License 2.1 або новіша. Зібрано з вихідного коду без модулів VLC під GPL; скрипт збирання та зміни є в репозиторії Schnellbild (github.com/JohannesHoppe/schnellbild).";
+"The link will be moved to the Trash. The folder it points to stays where it is." = "Посилання буде переміщено в Смітник. Папка, на яку воно вказує, залишиться на місці.";
+"Keep both: the new one gets a number. Skip: it stays where it is. Cancel: nothing is moved or copied." = "Залишити обидва: новий об’єкт отримає номер. Пропустити: він залишиться на місці. Скасувати: нічого не буде переміщено чи скопійовано.";
+"Apply to all" = "Застосувати до всіх";
+"Copied, but the original couldn't be removed: %@" = "Скопійовано, але оригінал не вдалося вилучити: %@";
+"Not everything was moved or copied." = "Не все було переміщено чи скопійовано.";
+"“%@”: %@" = "«%@»: %@";
+"“%@” is no longer the item Schnellbild put there, so it stays as it is." = "«%@» — уже не той об’єкт, який туди поклав Schnellbild, тому він залишається як є.";
+"“%@” has changed since it was copied, so it isn't moved to the Trash." = "«%@» змінився після копіювання, тому його не переміщено в Смітник.";
+"Schnellbild may not take “%@” out of the Trash. Use “Put Back” in the Finder's Trash." = "Schnellbild не може вийняти «%@» зі Смітника. Скористайтеся командою «Повернути» у Смітнику Finder.";
+"Keep: try it again later, before the earlier actions. Forget: go on with the earlier actions." = "Залишити: спробувати пізніше, перед попередніми діями. Забути: перейти до попередніх дій.";
+"Keep" = "Залишити";
+"Forget" = "Забути";
+"Only the file you opened is shown here." = "Тут показано лише відкритий вами файл.";
+"“%@” isn't available: its disk or server isn't connected. It opens once it is." = "«%@» недоступна: її диск або сервер не під’єднано. Вона відкриється, щойно його буде під’єднано.";
+"Start Slideshow" = "Почати слайд-шоу";
+"Larger Thumbnails" = "Більші мініатюри";
+"Smaller Thumbnails" = "Менші мініатюри";
+"Mini Keyboard" = "Міні-клавіатура";
+"Copy to Other Pane" = "Скопіювати в іншу панель";
+"Move to Other Pane" = "Перемістити в іншу панель";
+"Mark / unmark an item (M, Insert: then on to the next)" = "Позначити об’єкт / зняти позначку (M та Insert: і перейти до наступного)";
+"⌘-click / M / Insert" = "⌘-клацання / M / Insert";
+"Boss key: hidden and silent at once; X X X or the Dock icon brings it back" = "Клавіша «бос»: одразу приховано й без звуку; X X X або значок у Dock повертає";
 "marked" = "позначено";
 "Drive" = "Диск";
 "Folder without pictures or videos" = "Папка без зображень і відео";
