@@ -4,12 +4,18 @@
 # APPSTORE_INSTALLER_P12, APPSTORE_CERT_PASSWORD, APPSTORE_PROFILE_APP,
 # APPSTORE_PROFILE_THUMBNAILS, APPSTORE_PROFILE_FORMATREADER in the environment
 # "release"), else ad hoc and
-# unsigned, as a dry run. Nothing is uploaded: the package is an artifact
-# (AppStore/CHECKLIST.md).
+# unsigned, as a dry run. The package is an artifact; with "upload" it also
+# goes to App Store Connect with the API key the DMG is notarized with
+# (NOTARY_KEY_*), where it shows as a build of its version (docs/SIGNING.md).
 name: App Store
 
 on:
   workflow_dispatch:
+    inputs:
+      upload:
+        description: "Upload the signed package to App Store Connect (TestFlight / review)"
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -57,6 +63,20 @@ jobs:
 
       - name: Installer package
         run: ./Scripts/package_appstore.sh build/Schnellbild.app build/Schnellbild.pkg
+
+      - name: Upload to App Store Connect
+        if: inputs.upload && env.SIGN == 'true'
+        env:
+          P8: ${{ secrets.NOTARY_KEY_P8 }}
+          KEY_ID: ${{ secrets.NOTARY_KEY_ID }}
+          ISSUER: ${{ secrets.NOTARY_ISSUER_ID }}
+        run: |
+          [[ "$KEY_ID" =~ ^[A-Z0-9]{10}$ ]] || { echo "Unexpected key ID" >&2; exit 1; }
+          export API_PRIVATE_KEYS_DIR="$RUNNER_TEMP/private_keys"
+          (umask 077; mkdir -p "$API_PRIVATE_KEYS_DIR"; printf '%s\n' "$P8" > "$API_PRIVATE_KEYS_DIR/AuthKey_$KEY_ID.p8")
+          xcrun altool --upload-app --type macos --file build/Schnellbild.pkg \
+            --apiKey "$KEY_ID" --apiIssuer "$ISSUER" --output-format normal
+          rm -rf "$API_PRIVATE_KEYS_DIR"
 
       - name: Remove signing data
         if: always() && env.SIGN == 'true'

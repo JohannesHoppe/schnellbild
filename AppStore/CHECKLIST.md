@@ -27,7 +27,7 @@ Steps 1–5 are done (2026-11-13; the signed package builds). How to make the ce
 6. **App record** in App Store Connect: name (Schnellbild, if free), primary language, bundle ID `art.haushoppe.schnellbild`, SKU, category Photography, price (e.g. tier for 0.99 €/1 €).
 7. **Metadata:** paste from `AppStore/METADATA.md` (German and English), upload `AppStore/screenshots`, privacy policy URL as above, App Privacy: "Data Not Collected", age rating 4+.
 8. **License agreement:** fill in the address in `AppStore/EULA.md`, have it checked, paste it as custom EULA.
-9. **Upload** the package with Transporter, then pick the build in App Store Connect; first TestFlight, then submit for review. Review notes: the app reads only folders the user chooses; no account, no network.
+9. **Upload:** `gh workflow run appstore.yml -f upload=true` (the version in App Store Connect must equal the app's, e.g. 0.9.0; every upload needs a higher build number, `CURRENT_PROJECT_VERSION` / `CFBundleVersion`), then pick the build in App Store Connect; first TestFlight, then submit for review. Review notes: the app reads only folders the user chooses; no account, no network.
 
 ## Open risks
 
