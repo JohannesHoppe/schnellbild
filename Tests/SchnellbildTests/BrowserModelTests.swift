@@ -45,9 +45,17 @@ final class FileActionsSpy {
     var created: [URL] = []
     var copied: [(URL, URL)] = []
     var keepBoth = true
+    /// Answers every taken name at once ("Apply to all"); `keepBoth` otherwise.
+    var conflictAnswer: ConflictAnswer?
+    var keepBothAsked = 0
+    /// A failed Undo: kept to try again (true) or forgotten.
+    var keepFailedUndo = true
     var confirm = true
     var confirmDetails: [String] = []
+    var confirmNames: [[String]] = []
     var moveError: Error?
+    /// Moves, transfers and copies of files with these names fail.
+    var failOn: Set<String> = []
     var trashError: Error?
     var reported: [Error] = []
     /// Forces the "target exists" answer, e.g. to act as a case-sensitive volume.
@@ -57,7 +65,11 @@ final class FileActionsSpy {
         FileActions(
             reveal: { self.revealed.append($0) },
             openInDefaultApp: { self.opened.append($0) },
-            confirmTrash: { _, detail in self.confirmDetails.append(detail); return self.confirm },
+            confirmTrash: { names, detail in
+                self.confirmNames.append(names)
+                self.confirmDetails.append(detail)
+                return self.confirm
+            },
             trash: { url in
                 if let error = self.trashError { throw error }
                 self.trashed.append(url)
@@ -70,11 +82,13 @@ final class FileActionsSpy {
             },
             move: { from, to in
                 if let error = self.moveError { throw error }
+                if self.failOn.contains(from.lastPathComponent) { throw CocoaError(.fileWriteNoPermission) }
                 self.moved.append((from, to))
                 try FileActions.live.move(from, to)
             },
             transfer: { from, to in
                 if let error = self.moveError { throw error }
+                if self.failOn.contains(from.lastPathComponent) { throw CocoaError(.fileWriteNoPermission) }
                 self.moved.append((from, to))
                 return try FileActions.live.transfer(from, to)
             },
@@ -83,14 +97,22 @@ final class FileActionsSpy {
                 try FileActions.live.createFolder(url)
             },
             copy: { from, to in
+                if self.failOn.contains(from.lastPathComponent) { throw CocoaError(.fileWriteNoPermission) }
                 self.copied.append((from, to))
                 try FileActions.live.copy(from, to)
             },
-            askKeepBoth: { _, _ in self.keepBoth },
+            askKeepBoth: { _, _, _ in
+                self.keepBothAsked += 1
+                return self.conflictAnswer ?? ConflictAnswer(choice: self.keepBoth ? .keepBoth : .skip)
+            },
             conflicts: { target, source in
                 self.conflictOverride ?? FileActions.live.conflicts(target, source)
             },
-            report: { self.reported.append($0) }
+            report: { self.reported.append($0) },
+            keepFailedUndo: { error, _ in
+                self.reported.append(error)
+                return self.keepFailedUndo
+            }
         )
     }
 }
@@ -1072,6 +1094,27 @@ final class RenameTests: XCTestCase {
         XCTAssertEqual(m.names, ["..", "Zebra"])
         XCTAssertEqual(m.selectedEntry?.name, "Zebra")
         XCTAssertNil(m.renameTarget, "sheet closes")
+    }
+
+    /// The other pane renames or trashes the item while its rename sheet is
+    /// open here: the sheet follows the new name, or closes.
+    func testTheRenameSheetFollowsChangesFromElsewhere() async throws {
+        let tree = try TempTree(self)
+        let a = try tree.file("a.jpg")
+        try tree.file("b.jpg")
+        let notes = try tree.file("notes.txt")
+        let m = makeModel(FileActionsSpy())
+        await openAndWait(m, tree.root)
+        m.selectEntry(named: "a.jpg")
+        XCTAssertTrue(m.beginRename())
+        m.adopt([.moved(a, to: tree.root.appendingPathComponent("c.jpg"))])
+        XCTAssertEqual(m.renameTarget?.name, "c.jpg", "follows the new name")
+        m.adopt([.removed(tree.root.appendingPathComponent("c.jpg"))])
+        XCTAssertNil(m.renameTarget, "closes: the item is gone")
+        m.beginRename(try XCTUnwrap(m.otherFiles.first))
+        XCTAssertEqual(m.renameFileTarget?.url.lastPathComponent, "notes.txt")
+        m.adopt([.removed(notes)])
+        XCTAssertNil(m.renameFileTarget)
     }
 
     /// The files listed under the grid (not pictures or videos) are renamed,
@@ -3068,6 +3111,164 @@ final class UndoTests: XCTestCase {
         XCTAssertTrue(FileManager.default.fileExists(atPath: tree.root.appendingPathComponent("b.jpg").path))
         XCTAssertEqual(m.undoHistory.undoSteps.count, 1, "still there to try again")
     }
+
+    /// A step that fails can be forgotten: the next Undo reaches the one before.
+    func testAFailedStepForgottenLetsUndoReachTheOlderOnes() async throws {
+        let tree = try TempTree(self)
+        try tree.file("a.jpg")
+        try tree.file("c.jpg")
+        let spy = FileActionsSpy()
+        let m = makeModel(spy)
+        await openAndWait(m, tree.root)
+        m.selectEntry(named: "a.jpg")
+        XCTAssertTrue(m.beginRename())
+        try await m.rename(try XCTUnwrap(m.renameTarget), to: "b.jpg")
+        m.selectEntry(named: "c.jpg")
+        XCTAssertTrue(m.beginRename())
+        try await m.rename(try XCTUnwrap(m.renameTarget), to: "d.jpg")
+        try tree.file("c.jpg")   // someone else took the old name
+        spy.keepFailedUndo = false
+        m.undo()
+        await waitUntil { !spy.reported.isEmpty }
+        XCTAssertEqual(m.undoHistory.undoSteps.count, 1, "forgotten")
+        m.undo()
+        await waitUntil { FileManager.default.fileExists(atPath: tree.root.appendingPathComponent("a.jpg").path) }
+        XCTAssertFalse(m.undoHistory.running)
+    }
+
+    /// Undo Copy trashes only the copy it made: not another file that took
+    /// its name, not a copied folder something was put into since.
+    func testUndoCopyTrashesOnlyTheCopyItMade() async throws {
+        let tree = try TempTree(self)
+        try tree.file("src/a.jpg")
+        try tree.file("src/trip/x.jpg")
+        let sorted = try tree.folder("Sorted")
+        let spy = FileActionsSpy()
+        let m = makeModel(spy)
+        await openAndWait(m, tree.root.appendingPathComponent("src"))
+        m.move([tree.root.appendingPathComponent("src/a.jpg")], into: sorted, how: .copy)
+        await waitUntil { m.transfersRunning == 0 }
+        let copy = sorted.appendingPathComponent("a.jpg")
+        XCTAssertTrue(FileManager.default.fileExists(atPath: copy.path))
+        try FileManager.default.removeItem(at: copy)
+        try tree.file("Sorted/a.jpg", bytes: 3)   // another file under the copy's name
+        m.undo()
+        await waitUntil { !spy.reported.isEmpty }
+        XCTAssertTrue(spy.trashed.isEmpty)
+        XCTAssertTrue(FileManager.default.fileExists(atPath: copy.path))
+
+        spy.reported = []
+        spy.keepFailedUndo = false
+        m.undo()   // the failed step is kept on top: forget it
+        await waitUntil { !spy.reported.isEmpty }
+        m.move([tree.root.appendingPathComponent("src/trip")], into: sorted, how: .copy)
+        await waitUntil { m.transfersRunning == 0 }
+        try tree.file("Sorted/trip/added later.jpg")
+        spy.reported = []
+        m.undo()
+        await waitUntil { !spy.reported.isEmpty }
+        XCTAssertTrue(spy.trashed.isEmpty, "the folder holds something it didn't when copied")
+        XCTAssertTrue(FileManager.default.fileExists(atPath: sorted.appendingPathComponent("trip/added later.jpg").path))
+    }
+
+    /// The folder shown renamed from the title bar: undone like any rename;
+    /// its other files stay listed through the rename.
+    func testRenamingTheFolderShownKeepsItsOtherFilesAndIsUndone() async throws {
+        let tree = try TempTree(self)
+        try tree.file("Trip/a.jpg")
+        try tree.file("Trip/notes.txt")
+        let spy = FileActionsSpy()
+        let m = makeModel(spy)
+        await openAndWait(m, tree.root.appendingPathComponent("Trip"))
+        XCTAssertEqual(m.otherFiles.map(\.name), ["notes.txt"])
+        await m.renameCurrentFolder(to: "Travel")
+        XCTAssertEqual(m.folderURL?.lastPathComponent, "Travel")
+        XCTAssertEqual(m.otherFiles.map(\.name), ["notes.txt"])
+        XCTAssertEqual(m.undoHistory.undoSteps.map(\.kind), [.rename])
+        m.undo()
+        await waitUntil { m.folderURL?.lastPathComponent == "Trip" && !m.isLoading }
+        XCTAssertTrue(FileManager.default.fileExists(atPath: tree.root.appendingPathComponent("Trip/notes.txt").path))
+        XCTAssertEqual(m.names, ["..", "a.jpg"])
+    }
+}
+
+/// Copies and moves never leave a cut-off file under the real name, and a
+/// move that fails half way keeps what it did.
+@MainActor
+final class SafeTransferTests: XCTestCase {
+    func testACopyIsWrittenUnderATemporaryNameAndLeftoversAreSwept() async throws {
+        let tree = try TempTree(self)
+        let source = try tree.file("a.jpg", bytes: 100)
+        let target = try tree.folder("Sorted")
+        try LiveFiles.copy(source, target.appendingPathComponent("a.jpg"))
+        XCTAssertEqual(try FileManager.default.contentsOfDirectory(atPath: target.path), ["a.jpg"], "nothing left under a temporary name")
+        XCTAssertThrowsError(try LiveFiles.copy(source, target.appendingPathComponent("a.jpg")), "never over a name taken")
+        XCTAssertEqual(try FileManager.default.contentsOfDirectory(atPath: target.path), ["a.jpg"])
+
+        let old = target.appendingPathComponent(LiveFiles.partialCopyPrefix + UUID().uuidString)
+        let fresh = target.appendingPathComponent(LiveFiles.partialCopyPrefix + UUID().uuidString)
+        let alike = target.appendingPathComponent(LiveFiles.partialCopyPrefix + "mine")
+        for url in [old, fresh, alike] { try Data(count: 5).write(to: url) }
+        try FileManager.default.setAttributes([.modificationDate: Date(timeIntervalSinceNow: -2 * 86400)], ofItemAtPath: old.path)
+        try FileManager.default.setAttributes([.modificationDate: Date(timeIntervalSinceNow: -2 * 86400)], ofItemAtPath: alike.path)
+        let m = makeModel()
+        await openAndWait(m, target)
+        XCTAssertEqual(m.names, ["..", "a.jpg"])
+        XCTAssertFalse(FileManager.default.fileExists(atPath: old.path), "a leftover is removed")
+        XCTAssertTrue(FileManager.default.fileExists(atPath: fresh.path), "one written lately may be another Mac's copy")
+        XCTAssertTrue(FileManager.default.fileExists(atPath: alike.path), "only the exact pattern")
+    }
+
+    /// A split archive whose second part can't go: the first part's move
+    /// counts (its tile leaves, Undo brings it back), the failure is named.
+    func testAMoveThatFailsHalfWayKeepsWhatItDid() async throws {
+        let tree = try TempTree(self)
+        try tree.file("src/x.part1.rar", bytes: 10)
+        try tree.file("src/x.part2.rar", bytes: 10)
+        try tree.file("src/b.jpg")
+        let target = try tree.folder("Sorted")
+        let spy = FileActionsSpy()
+        spy.failOn = ["x.part2.rar"]
+        let m = makeModel(spy)
+        let src = tree.root.appendingPathComponent("src")
+        await openAndWait(m, src)
+        m.move([src.appendingPathComponent("x.part1.rar"), src.appendingPathComponent("b.jpg")], into: target, how: .move)
+        await waitUntil { m.transfersRunning == 0 }
+        XCTAssertTrue(FileManager.default.fileExists(atPath: target.appendingPathComponent("x.part1.rar").path))
+        XCTAssertTrue(FileManager.default.fileExists(atPath: target.appendingPathComponent("b.jpg").path))
+        XCTAssertEqual(m.names, [".."], "what moved left the listing")
+        let failure = try XCTUnwrap(spy.reported.first as? TransferFailure)
+        XCTAssertEqual(failure.failures.map(\.name), ["x.part2.rar"])
+        XCTAssertEqual(m.undoHistory.undoSteps.last?.parts.count, 2, "the first part and b.jpg")
+    }
+
+    /// "Apply to all" answers every taken name at once; Cancel stops the whole move.
+    func testKeepBothForAllAndCancel() async throws {
+        let tree = try TempTree(self)
+        for name in ["a.jpg", "b.jpg", "c.jpg"] { try tree.file("src/\(name)") }
+        try tree.file("Sorted/a.jpg")
+        try tree.file("Sorted/b.jpg")
+        let target = tree.root.appendingPathComponent("Sorted")
+        let src = tree.root.appendingPathComponent("src")
+        let spy = FileActionsSpy()
+        let m = makeModel(spy)
+        await openAndWait(m, src)
+        let all = ["a.jpg", "b.jpg", "c.jpg"].map { src.appendingPathComponent($0) }
+        spy.conflictAnswer = ConflictAnswer(choice: .cancel)
+        m.move(all, into: target, how: .copy)
+        await waitUntil { m.transfersRunning == 0 }
+        XCTAssertEqual(spy.keepBothAsked, 1)
+        XCTAssertTrue(spy.copied.isEmpty, "nothing, not even the name that was free")
+
+        spy.keepBothAsked = 0
+        spy.conflictAnswer = ConflictAnswer(choice: .keepBoth, forAll: true)
+        m.move(all, into: target, how: .copy)
+        await waitUntil { m.transfersRunning == 0 }
+        XCTAssertEqual(spy.keepBothAsked, 1, "asked once")
+        for name in ["a 2.jpg", "b 2.jpg", "c.jpg"] {
+            XCTAssertTrue(FileManager.default.fileExists(atPath: target.appendingPathComponent(name).path), name)
+        }
+    }
 }
 
 /// Other files open only when they hold no program; a web location only
@@ -3097,6 +3298,10 @@ final class OpenOtherFileTests: XCTestCase {
         XCTAssertTrue(LiveFiles.canOpenOtherFile(try text("data.csv", "a,b")))
         for name in ["run.command", "run.sh", "tool.scpt", "setup.pkg", "disk.dmg", "x.terminal"] {
             XCTAssertFalse(LiveFiles.canOpenOtherFile(try text(name, "#!/bin/sh\necho hi\n")), name)
+        }
+        // Web content would open in a browser: its scripts run, it loads from the network
+        for name in ["page.html", "page.htm", "page.xhtml", "saved.webarchive", "drawing.svg", "archive.mhtml"] {
+            XCTAssertFalse(LiveFiles.canOpenOtherFile(try text(name, "<html><script>alert(1)</script></html>")), name)
         }
         let app = try tree.folder("Fake.app/Contents/MacOS")
         XCTAssertFalse(LiveFiles.canOpenOtherFile(app.deletingLastPathComponent().deletingLastPathComponent()))
@@ -3133,5 +3338,96 @@ final class FolderFactsTests: XCTestCase {
         XCTAssertTrue(Set(previews("trip-top")).isSubset(of: ["a.jpg", "b.jpg", "c.jpg", "d.jpg"]))
         XCTAssertEqual(previews("trip-deep"), ["x.jpg"], "none at the top: from further down")
         XCTAssertEqual(name(learnt.withoutMedia), ["trip-none"])
+    }
+}
+
+/// Symbolic links from others: a link to a folder is the link (trash,
+/// rename, move act on it, as in the Finder) and opens the folder it points
+/// to; a link named like an archive or a picture must lead to one.
+@MainActor
+final class LinkTests: XCTestCase {
+    func testALinkedFolderIsTrashedAsTheLinkAndOpensItsFolder() async throws {
+        let tree = try TempTree(self)
+        let real = try tree.folder("Pictures/2024")
+        try tree.file("Pictures/2024/a.jpg")
+        let shown = try tree.folder("Shared")
+        let link = shown.appendingPathComponent("Vacation")
+        try FileManager.default.createSymbolicLink(at: link, withDestinationURL: real)
+        // A link next to the folder it points to: two tiles, two ids
+        try FileManager.default.createSymbolicLink(at: tree.root.appendingPathComponent("Near"), withDestinationURL: shown)
+        let spy = FileActionsSpy()
+        let m = makeModel(spy)
+        await openAndWait(m, shown)
+        let tile = try XCTUnwrap(m.entries.first { $0.name == "Vacation" })
+        XCTAssertEqual(tile.url.lastPathComponent, "Vacation", "listed as the link")
+        XCTAssertTrue(BrowserModel.samePath(try XCTUnwrap(tile.linkTarget), real.resolvingSymlinksInPath()))
+        m.selectEntry(named: "Vacation")
+        m.moveSelectionToTrash()
+        XCTAssertEqual(spy.trashed.map(\.lastPathComponent), ["Vacation"])
+        XCTAssertTrue(FileManager.default.fileExists(atPath: real.appendingPathComponent("a.jpg").path), "the folder it pointed to stays")
+
+        await openAndWait(m, tree.root)
+        XCTAssertEqual(m.names, ["..", "Near", "Pictures", "Shared"])
+        XCTAssertEqual(Set(m.entries.map(\.id)).count, m.entries.count)
+        m.selectEntry(named: "Near")
+        m.activateSelection()
+        await waitUntil { m.isAt(shown.resolvingSymlinksInPath()) }
+    }
+
+    /// The other pane's change leaves a linked folder in this pane's listing.
+    func testALinkedFolderStaysWhenTheOtherPaneChangesSomething() async throws {
+        let tree = try TempTree(self)
+        let real = try tree.folder("elsewhere/real")
+        try tree.file("here/a.jpg")
+        let here = tree.root.appendingPathComponent("here")
+        try FileManager.default.createSymbolicLink(at: here.appendingPathComponent("Linked"), withDestinationURL: real)
+        let m = makeModel(FileActionsSpy())
+        await openAndWait(m, here)
+        XCTAssertEqual(m.names, ["..", "Linked", "a.jpg"])
+        m.adopt([.removed(here.appendingPathComponent("a.jpg"))])
+        XCTAssertEqual(m.names, ["..", "Linked"])
+    }
+
+    func testALinkNamedLikeAnArchiveMustLeadToOne() async throws {
+        let tree = try TempTree(self)
+        let pkg = try tree.file("setup.pkg", bytes: 10)
+        try FileManager.default.createSymbolicLink(at: tree.root.appendingPathComponent("Photos.zip"), withDestinationURL: pkg)
+        let zip = try tree.file("real.zip", bytes: 10)
+        try FileManager.default.createSymbolicLink(at: tree.root.appendingPathComponent("Comics.zip"), withDestinationURL: zip)
+        let entries = await BrowserModel.scan(tree.root)
+        XCTAssertFalse(entries.contains { $0.name == "Photos.zip" }, "no archive tile for an installer")
+        XCTAssertTrue(entries.contains { $0.name == "Comics.zip" && $0.isArchive })
+    }
+
+    /// ⌘↩ opens only what the item really is: archives of the grid's
+    /// formats, never installers, disk images or a link to another kind.
+    func testOpenWithTheDefaultAppRefusesWhatInstallsOrMounts() throws {
+        let tree = try TempTree(self)
+        func link(_ name: String, to target: URL) throws -> URL {
+            let url = tree.root.appendingPathComponent(name)
+            try FileManager.default.createSymbolicLink(at: url, withDestinationURL: target)
+            return url
+        }
+        let zip = try tree.file("real.zip", bytes: 10)
+        XCTAssertNotNil(LiveFiles.openableTarget(zip))
+        XCTAssertNotNil(LiveFiles.openableTarget(try tree.file("photo.jpg", bytes: 10)))
+        for name in ["setup.pkg", "disk.dmg", "Xcode.xip", "backup.aar", "page.html", "drawing.svg"] {
+            XCTAssertNil(LiveFiles.openableTarget(try tree.file(name, bytes: 10)), name)
+        }
+        XCTAssertNil(LiveFiles.openableTarget(try link("Photos.zip", to: tree.root.appendingPathComponent("setup.pkg"))))
+        XCTAssertNil(LiveFiles.openableTarget(try link("Photos2.zip", to: tree.root.appendingPathComponent("disk.dmg"))))
+        XCTAssertNil(LiveFiles.openableTarget(try link("holiday.jpg", to: zip)), "a link must lead to its own kind")
+        XCTAssertNotNil(LiveFiles.openableTarget(try link("comics.zip", to: zip)))
+    }
+
+    /// Drives on the drives' level are mounted and ejected by the system:
+    /// never renamed or trashed here.
+    func testDrivesAreNeitherRenamedNorTrashed() {
+        let m = makeModel(FileActionsSpy())
+        let drive = GridEntry(url: URL(fileURLWithPath: "/Volumes/USB", isDirectory: true), kind: .folder)
+        XCTAssertTrue(BrowserModel.isDrive(drive.url))
+        XCTAssertFalse(m.canRename(drive))
+        XCTAssertFalse(m.canChange(drive))
+        XCTAssertTrue(m.canChange(GridEntry(url: URL(fileURLWithPath: "/Volumes/USB/Photos", isDirectory: true), kind: .folder)))
     }
 }

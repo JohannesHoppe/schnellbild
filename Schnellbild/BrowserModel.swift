@@ -15,18 +15,32 @@ struct GridEntry: Identifiable, Hashable {
     /// Worked out once (`GridEntry.isArchive(_:kind:)`): the grid asks on
     /// every redraw, the counts for every entry of every search batch.
     let isArchive: Bool
+    /// A folder listed through a symbolic link: the folder it points to.
+    /// `url` is the link itself, so trash, rename, move and marks act on the
+    /// link (as in the Finder), and opening it goes to this folder.
+    var linkTarget: URL?
 
-    init(url: URL, kind: Kind, modDate: Date? = nil, byteSize: Int? = nil) {
+    init(url: URL, kind: Kind, modDate: Date? = nil, byteSize: Int? = nil, linkTarget: URL? = nil) {
         self.url = url
         self.kind = kind
         self.modDate = modDate
         self.byteSize = byteSize
-        isArchive = Self.isArchive(url, kind: kind)
+        self.linkTarget = linkTarget
+        isArchive = linkTarget == nil && Self.isArchive(url, kind: kind)
     }
 
     var id: URL { url }
     var name: String { kind == .parent ? ".." : url.lastPathComponent }
     var isMedia: Bool { kind == .image || kind == .video }
+    /// Where opening a folder goes: the folder a link points to, else the
+    /// folder itself.
+    var browseURL: URL { linkTarget ?? url }
+
+    /// The same entry at another place (a rename or move); a link keeps
+    /// pointing where it points, or follows its folder moved by the app.
+    func moved(to new: URL, target: URL? = nil) -> GridEntry {
+        GridEntry(url: new, kind: kind, modDate: modDate, byteSize: byteSize, linkTarget: target ?? linkTarget)
+    }
 }
 
 /// A file in a folder that the grid doesn't show (not a picture, video or
@@ -91,8 +105,9 @@ struct FileActions {
     /// An other file (not a picture, video or archive): only documents
     /// that hold no program, web locations only to web addresses.
     var openOtherFile: @MainActor (URL) -> Void = { if !LiveFiles.openOtherFile($0) { NSSound.beep() } }
-    /// `detail` says what goes with it (a folder's contents, an archive's parts).
-    var confirmTrash: @MainActor (_ name: String, _ detail: String) -> Bool
+    /// The names of what goes; `detail` says what goes with it (a folder's
+    /// contents, an archive's parts).
+    var confirmTrash: @MainActor (_ names: [String], _ detail: String) -> Bool
     /// Returns where the item now lies in the Trash (for Undo), if known.
     var trash: @MainActor (URL) throws -> URL?
     var move: @MainActor (_ from: URL, _ to: URL) throws -> Void
@@ -101,9 +116,10 @@ struct FileActions {
     var transfer: @MainActor (_ from: URL, _ to: URL) throws -> Bool
     var createFolder: @MainActor (URL) throws -> Void
     var copy: @MainActor (_ from: URL, _ to: URL) throws -> Void
-    /// A name already taken in the target folder: true to keep both (the
-    /// new one gets a number), false to skip it.
-    var askKeepBoth: @MainActor (_ name: String, _ folder: String) -> Bool
+    /// A name already taken in the target folder: keep both (the new one
+    /// gets a number), skip it, or stop the whole move; `more` says whether
+    /// other names may be taken too (the answer can then apply to all).
+    var askKeepBoth: @MainActor (_ name: String, _ folder: String, _ more: Bool) -> ConflictAnswer
     /// Whether `target` exists as an item other than `source`. On a
     /// case-insensitive volume "Photos" is the same item as "photos"; on a
     /// case-sensitive one (many NAS shares) it may be a different folder.
@@ -111,45 +127,78 @@ struct FileActions {
     /// Tells why an action failed (a share without a Trash, no permission),
     /// in the system's words and language.
     var report: @MainActor (Error) -> Void
+    /// An Undo or Redo failed: tells why and, when part of the step is left
+    /// (`canKeep`), whether to keep it to try again (true) or forget it so
+    /// the steps before it can be reached.
+    var keepFailedUndo: @MainActor (_ error: Error, _ canKeep: Bool) -> Bool = { error, canKeep in
+        guard canKeep else { NSAlert(error: error).runModal(); return false }
+        let alert = NSAlert()
+        alert.messageText = error.localizedDescription
+        alert.informativeText = String(localized: "Keep: try it again later, before the earlier actions. Forget: go on with the earlier actions.")
+        alert.addButton(withTitle: String(localized: "Keep"))
+        alert.addButton(withTitle: String(localized: "Forget"))
+        return alert.runModal() == .alertFirstButtonReturn
+    }
     /// Where moves and copies into folders run: the live actions off the
     /// main thread (a copy to a share takes long) through `LiveFiles`, which
     /// is what their closures call too; others (a test's spy) through their
     /// own closures.
     var runsOffMain = false
 
-    /// Carries out the steps of a move; per step whether it was moved
-    /// (false: copied) or why it failed.
+    /// Carries out the steps of a move; per step the files it moved or
+    /// copied (also when a later part of a split archive failed) and why it
+    /// stopped.
     @MainActor
-    func run(_ steps: [BrowserModel.TransferStep], _ how: BrowserModel.Transfer) async -> [Result<Bool, Error>] {
+    func run(_ steps: [BrowserModel.TransferStep], _ how: BrowserModel.Transfer) async -> [TransferOutcome] {
         if runsOffMain {
             return await Blocking.run {
-                steps.map { step in Result { try Self.perform(step, how, move: LiveFiles.move, transfer: LiveFiles.transfer, copy: LiveFiles.copy) } }
+                steps.map { Self.perform($0, how, move: LiveFiles.move, transfer: LiveFiles.transfer, copy: LiveFiles.copy) }
             }
         }
-        return steps.map { step in Result { try Self.perform(step, how, move: move, transfer: transfer, copy: copy) } }
+        return steps.map { Self.perform($0, how, move: move, transfer: transfer, copy: copy) }
     }
 
     private static func perform(_ step: BrowserModel.TransferStep, _ how: BrowserModel.Transfer,
                                 move: (URL, URL) throws -> Void, transfer: (URL, URL) throws -> Bool,
-                                copy: (URL, URL) throws -> Void) throws -> Bool {
-        var moved = false
-        for (file, to) in step.files {
-            switch how {
-            case .asFinder: moved = try transfer(file, to)
-            case .copy:     try copy(file, to); moved = false
-            case .move:     try move(file, to); moved = true
+                                copy: (URL, URL) throws -> Void) -> TransferOutcome {
+        var outcome = TransferOutcome()
+        files: for (file, to) in step.files {
+            do {
+                let moved: Bool
+                switch how {
+                case .asFinder: moved = try transfer(file, to)
+                case .copy:     try copy(file, to); moved = false
+                case .move:     try move(file, to); moved = true
+                }
+                outcome.done.append(TransferredFile(from: file, to: to, moved: moved,
+                                                    identity: ItemIdentity.of(to, withContents: !moved)))
+            } catch TransferError.originalKept(let reason) {
+                // Copied to another volume, the original still there: a copy
+                outcome.done.append(TransferredFile(from: file, to: to, moved: false, identity: ItemIdentity.of(to, withContents: true)))
+                outcome.failed = (file.lastPathComponent, TransferError.originalKept(reason))
+                break files
+            } catch {
+                outcome.failed = (file.lastPathComponent, error)
+                break files
             }
         }
-        return moved
+        return outcome
     }
 
     static let live = FileActions(
         reveal: { NSWorkspace.shared.activateFileViewerSelecting([$0]) },
         openInDefaultApp: { LiveFiles.openWithDefaultApp($0) },
-        confirmTrash: { name, detail in
+        confirmTrash: { names, detail in
             let alert = NSAlert()
-            alert.messageText = String(localized: "Move “\(name)” to the Trash?")
-            alert.informativeText = detail
+            if names.count == 1 {
+                alert.messageText = String(localized: "Move “\(names[0])” to the Trash?")
+                alert.informativeText = detail
+            } else {
+                // Counted; the names (the first ten) under it
+                alert.messageText = String(localized: "Move \(names.count) items to the Trash?")
+                let listed = names.prefix(10).joined(separator: ", ") + (names.count > 10 ? ", …" : "")
+                alert.informativeText = listed + "\n\n" + detail
+            }
             alert.alertStyle = .warning
             alert.addButton(withTitle: String(localized: "Move to Trash"))
             alert.addButton(withTitle: String(localized: "Cancel"))
@@ -160,18 +209,85 @@ struct FileActions {
         transfer: { try LiveFiles.transfer($0, $1) },
         createFolder: { try FileManager.default.createDirectory(at: $0, withIntermediateDirectories: false) },
         copy: { try LiveFiles.copy($0, $1) },
-        askKeepBoth: { name, folder in
+        askKeepBoth: { name, folder, more in
             let alert = NSAlert()
             alert.messageText = String(localized: "“\(name)” already exists in “\(folder)”.")
-            alert.informativeText = String(localized: "Keep both: the new one gets a number. Skip: it stays where it is.")
+            alert.informativeText = String(localized: "Keep both: the new one gets a number. Skip: it stays where it is. Cancel: nothing is moved or copied.")
             alert.addButton(withTitle: String(localized: "Keep Both"))
             alert.addButton(withTitle: String(localized: "Skip"))
-            return alert.runModal() == .alertFirstButtonReturn
+            alert.addButton(withTitle: String(localized: "Cancel")).keyEquivalent = "\u{1b}"
+            if more {
+                alert.showsSuppressionButton = true
+                alert.suppressionButton?.title = String(localized: "Apply to all")
+            }
+            let choice: ConflictAnswer.Choice = switch alert.runModal() {
+            case .alertFirstButtonReturn: .keepBoth
+            case .alertSecondButtonReturn: .skip
+            default: .cancel
+            }
+            return ConflictAnswer(choice: choice, forAll: alert.suppressionButton?.state == .on)
         },
         conflicts: { LiveFiles.conflicts($0, $1) },
         report: { NSAlert(error: $0).runModal() },
         runsOffMain: true
     )
+}
+
+/// The answer to a name taken in the target folder.
+struct ConflictAnswer {
+    enum Choice { case keepBoth, skip, cancel }
+    var choice: Choice
+    /// For every other name taken in this move too.
+    var forAll = false
+}
+
+/// A file a move or copy carried out, and the item it made (for Undo).
+struct TransferredFile: Sendable {
+    let from: URL
+    let to: URL
+    let moved: Bool
+    let identity: ItemIdentity?
+}
+
+/// What one item of a move did: its files carried out (a split archive's
+/// parts in order, up to one that failed), and the one that failed.
+struct TransferOutcome: Sendable {
+    var done: [TransferredFile] = []
+    var failed: (name: String, error: Error)?
+}
+
+enum TransferError: LocalizedError {
+    /// Copied to another volume for a move; the original couldn't be removed.
+    case originalKept(String)
+
+    var errorDescription: String? {
+        switch self {
+        case .originalKept(let reason): return String(localized: "Copied, but the original couldn't be removed: \(reason)")
+        }
+    }
+}
+
+/// What a move or copy couldn't do, item by item (what could be done was
+/// done and can be undone).
+struct TransferFailure: LocalizedError {
+    let failures: [(name: String, reason: String)]
+
+    var errorDescription: String? { String(localized: "Not everything was moved or copied.") }
+    var recoverySuggestion: String? {
+        failures.map { String(localized: "“\($0.name)”: \($0.reason)") }.joined(separator: "\n")
+    }
+}
+
+/// Copies being written under their temporary names in this process: a
+/// listing that meets one leaves it alone.
+final class PartialCopies: @unchecked Sendable {
+    static let shared = PartialCopies()
+    private let lock = NSLock()
+    private var paths: Set<String> = []
+
+    func begin(_ url: URL) { lock.withLock { _ = paths.insert(url.standardizedFileURL.path) } }
+    func end(_ url: URL) { lock.withLock { _ = paths.remove(url.standardizedFileURL.path) } }
+    func isRunning(_ url: URL) -> Bool { lock.withLock { paths.contains(url.standardizedFileURL.path) } }
 }
 
 /// The file system work of the live actions, on any thread.
@@ -189,7 +305,12 @@ enum LiveFiles {
         NSWorkspace.shared.open([target], withApplicationAt: app, configuration: NSWorkspace.OpenConfiguration())
     }
 
-    /// The item behind links and aliases, if it may be opened at all.
+    /// The item behind links and aliases, if it may be opened at all. A
+    /// link or alias must lead to a file of its own extension ("Photos.zip"
+    /// pointing to "setup.pkg" is refused). Archives are only the formats the
+    /// grid opens (zip, rar, 7z and their comic forms): installer packages,
+    /// disk images, xip and Apple archives count as archives to the system
+    /// too, and opening them installs or mounts something.
     static func openableTarget(_ url: URL) -> URL? {
         var target = url.resolvingSymlinksInPath()
         if (try? target.resourceValues(forKeys: [.isAliasFileKey, .isSymbolicLinkKey]))?.isAliasFile == true {
@@ -200,9 +321,27 @@ enum LiveFiles {
               values.isPackage != true, values.isAliasFile != true || values.isDirectory == true,
               let type = values.contentType else { return nil }
         if values.isDirectory == true { return type.conforms(to: .folder) ? target : nil }
-        let allowed: [UTType] = [.image, .movie, .audiovisualContent, .pdf, .archive]
+        if target.lastPathComponent != url.lastPathComponent,
+           target.pathExtension.lowercased() != url.pathExtension.lowercased() { return nil }
+        if refusedTypes.contains(where: type.conforms(to:)) || refusedExtensions.contains(target.pathExtension.lowercased()) { return nil }
+        if type.conforms(to: .archive) || ArchiveName.format(of: target.lastPathComponent) != nil {
+            return ArchiveName.format(of: target.lastPathComponent) != nil ? target : nil
+        }
+        let allowed: [UTType] = [.image, .movie, .audiovisualContent, .pdf]
         return allowed.contains(where: type.conforms(to:)) && !type.conforms(to: .executable) ? target : nil
     }
+
+    /// Kinds that run, install or mount something, or show active web
+    /// content (scripts, network), when opened.
+    private static let refusedTypes: [UTType] = [
+        .executable, .application, .applicationBundle, .script, .shellScript,
+        .package, .bundle, .diskImage, .systemPreferencesPane, .html, .xml, .webArchive, .svg,
+        UTType("com.apple.installer-package-archive"), UTType("com.apple.installer-meta-package"),
+        UTType("com.apple.xip-archive"), UTType("com.apple.archive"), UTType("public.xhtml"),
+        UTType("com.apple.terminal.shell-script"),
+        UTType("com.apple.automator-workflow"), UTType("com.apple.applescript.script"),
+        UTType("com.apple.applescript.text"), UTType("com.apple.configprofile"),
+        UTType("com.apple.internet-location"), UTType("com.apple.web-internet-location")].compactMap { $0 }
 
     /// One of the other files (not a picture, video or archive), with the
     /// app the Mac uses for it. Only kinds that hold no program: text,
@@ -233,7 +372,9 @@ enum LiveFiles {
         "scpt", "scptd", "applescript", "workflow", "action", "shortcut", "pkg", "mpkg", "dmg", "iso",
         "jar", "class", "fileloc", "inetloc", "afploc", "ftploc", "mailloc", "newsloc", "configprofile",
         "mobileconfig", "prefpane", "kext", "plugin", "osax", "bundle", "framework", "dylib", "so",
-        "exe", "msi", "bat", "cmd", "com", "ps1", "vbs", "js", "jse", "wsf", "lnk", "url", "webloc"]
+        "exe", "msi", "bat", "cmd", "com", "ps1", "vbs", "js", "jse", "wsf", "lnk", "url", "webloc",
+        "xip", "aar", "sparseimage", "sparsebundle", "img", "cdr", "toast",
+        "html", "htm", "shtml", "xhtml", "xht", "mht", "mhtml", "webarchive", "svg", "svgz", "hta", "xsl", "xslt"]
 
     private static func isWebLocation(_ url: URL) -> Bool {
         ["webloc", "url"].contains(url.pathExtension.lowercased())
@@ -271,13 +412,9 @@ enum LiveFiles {
         guard let values = try? target.resourceValues(forKeys: [.contentTypeKey, .isPackageKey, .isDirectoryKey, .isRegularFileKey]),
               values.isRegularFile == true, values.isPackage != true, values.isDirectory != true,
               let type = values.contentType else { return nil }
-        let refused: [UTType] = [.executable, .application, .applicationBundle, .script, .shellScript,
-                                 .package, .bundle, .diskImage, .systemPreferencesPane,
-                                 UTType("com.apple.installer-package-archive"), UTType("com.apple.terminal.shell-script"),
-                                 UTType("com.apple.automator-workflow"), UTType("com.apple.applescript.script"),
-                                 UTType("com.apple.applescript.text"), UTType("com.apple.configprofile"),
-                                 UTType("com.apple.internet-location"), UTType("com.apple.web-internet-location")].compactMap { $0 }
-        if refused.contains(where: type.conforms(to:)) { return nil }
+        // Web pages, web archives and SVG would open in a browser, which
+        // runs their scripts and loads from the network
+        if refusedTypes.contains(where: type.conforms(to:)) { return nil }
         // By name too: kinds that run or open something when opened, also
         // where the Mac files them under a harmless type (Terminal settings
         // are XML and can hold a command)
@@ -290,6 +427,16 @@ enum LiveFiles {
 
     static func move(_ from: URL, _ to: URL) throws {
         let fm = FileManager.default
+        // To another volume: copied (under a temporary name, so a crash never
+        // leaves a cut-off file under the real one), then the original removed
+        // (a rename in its folder stays on its volume; a volume that doesn't
+        // say which it is gets FileManager's own move)
+        if from.deletingLastPathComponent().path != to.deletingLastPathComponent().path,
+           sameVolume(from, to.deletingLastPathComponent()) == false {
+            try copy(from, to)
+            do { try fm.removeItem(at: from) } catch { throw TransferError.originalKept(error.localizedDescription) }
+            return
+        }
         // FileManager refuses a case-only rename ("photos" → "Photos") on
         // case-insensitive volumes, because the target "exists"; go via a
         // temporary name.
@@ -309,19 +456,59 @@ enum LiveFiles {
 
     /// Moved on the same volume, copied to another (as the Finder does).
     static func transfer(_ from: URL, _ to: URL) throws -> Bool {
-        let key: Set<URLResourceKey> = [.volumeIdentifierKey]
-        let a = try? from.resourceValues(forKeys: key).volumeIdentifier
-        let b = try? to.deletingLastPathComponent().resourceValues(forKeys: key).volumeIdentifier
-        if let a, let b, a.isEqual(b) {
+        if sameVolume(from, to.deletingLastPathComponent()) == true {
             try FileManager.default.moveItem(at: from, to: to)
             return true
         }
-        try FileManager.default.copyItem(at: from, to: to)
+        try copy(from, to)
         return false
     }
 
+    /// Whether both lie on one volume (a move there is a rename); nil when
+    /// a volume doesn't say.
+    private static func sameVolume(_ a: URL, _ b: URL) -> Bool? {
+        let key: Set<URLResourceKey> = [.volumeIdentifierKey]
+        guard let x = try? a.resourceValues(forKeys: key).volumeIdentifier,
+              let y = try? b.resourceValues(forKeys: key).volumeIdentifier else { return nil }
+        return x.isEqual(y)
+    }
+
+    /// What a copy under way is named in its target folder: hidden, and
+    /// told apart from anything else by the exact pattern (`isPartialCopy`).
+    static let partialCopyPrefix = ".schnellbild-copy-"
+
+    static func isPartialCopy(_ name: String) -> Bool {
+        name.hasPrefix(partialCopyPrefix) && name.count == partialCopyPrefix.count + 36
+            && UUID(uuidString: String(name.dropFirst(partialCopyPrefix.count))) != nil
+    }
+
+    /// Copied under a temporary name in the target folder and renamed once
+    /// complete: a crash or a full disk never leaves a cut-off file under
+    /// the real name. What failed is removed; a name taken meanwhile is
+    /// never overwritten (the rename fails).
     static func copy(_ from: URL, _ to: URL) throws {
-        try FileManager.default.copyItem(at: from, to: to)
+        let fm = FileManager.default
+        let temp = to.deletingLastPathComponent().appendingPathComponent(partialCopyPrefix + UUID().uuidString)
+        PartialCopies.shared.begin(temp)
+        defer { PartialCopies.shared.end(temp) }
+        do {
+            try fm.copyItem(at: from, to: temp)
+            try fm.moveItem(at: temp, to: to)
+        } catch {
+            try? fm.removeItem(at: temp)
+            throw error
+        }
+    }
+
+    /// A copy's temporary item left behind (the app ended during the
+    /// copy): removed when its folder is listed, unless this process is
+    /// writing it or it changed in the last 12 hours (another Mac may be
+    /// copying into a shared folder).
+    static func removeIfLeftOver(_ url: URL) {
+        guard isPartialCopy(url.lastPathComponent), !PartialCopies.shared.isRunning(url),
+              let changed = (try? url.resourceValues(forKeys: [.contentModificationDateKey]))?.contentModificationDate,
+              Date().timeIntervalSince(changed) > 12 * 3600 else { return }
+        try? FileManager.default.removeItem(at: url)
     }
 
     /// Whether `target` exists as an item other than `source`.
@@ -426,7 +613,7 @@ struct FileChange {
         guard entry.kind != .parent else { return entry }
         guard let url = apply(to: entry.url) else { return nil }
         guard url != entry.url else { return entry }
-        return GridEntry(url: url, kind: entry.kind, modDate: entry.modDate, byteSize: entry.byteSize)
+        return entry.moved(to: url)
     }
 
     /// A removed folder stays in the history (it then shows as empty).
@@ -693,7 +880,7 @@ final class SearchRun {
             if url == entry.url { return entry }
             // Moved out of the searched folder: no longer a result here
             guard stays(url) else { return nil }
-            return GridEntry(url: url, kind: entry.kind, modDate: entry.modDate, byteSize: entry.byteSize)
+            return entry.moved(to: url)
         }
         seen = Set(results.map { BrowserModel.canonicalPath($0.url) })
         if !finished {
@@ -802,6 +989,10 @@ final class BrowserModel: ObservableObject {
         var needsAccess = false
     }
     @Published private(set) var loadError: LoadError?
+    /// In the App Sandbox: the folder can't be listed, but the file opened
+    /// (dropped) can be read, so it alone is shown; "Allow Access…" opens
+    /// the folder (`allowAccess`).
+    @Published private(set) var accessLimited = false
     /// The current folder's files the grid doesn't show (not while searching).
     @Published private(set) var otherFiles: [OtherFile] = []
     /// The place `load` is reading, for the history while it loads.
@@ -901,6 +1092,9 @@ final class BrowserModel: ObservableObject {
 
     /// The level of all drives (`/Volumes`): no parent of its own.
     nonisolated static func isDrivesLevel(_ url: URL) -> Bool { url.standardizedFileURL.path == volumesPath }
+    /// A volume on the drives' level ("/Volumes/USB", "Macintosh HD"): the
+    /// system mounts and ejects it, so it is never renamed, moved or trashed.
+    nonisolated static func isDrive(_ url: URL) -> Bool { isDrivesLevel(url.deletingLastPathComponent()) }
 
     // MARK: Rename
 
@@ -1253,6 +1447,7 @@ final class BrowserModel: ObservableObject {
         captureDatesRead = Set(captureDates.keys)
         leaveSearch()
         pendingResultSelection = nil
+        accessLimited = false
         folderURL = location.folder
         entries = []
         allEntries = []
@@ -1285,9 +1480,25 @@ final class BrowserModel: ObservableObject {
                 full = listing.entries
                 self.otherFiles = listing.others
             case .failure(let error as CocoaError):
+                // A grant kept for a volume that wasn't there opens now: read again
+                if FolderAccess.shared.retry(covering: url) {
+                    self.load(location, thenDetail: thenDetail, password: password, keeping: kept)
+                    return
+                }
+                let needsAccess = !FolderAccess.shared.covers(url)
+                // A file dropped from a folder outside every grant: the
+                // sandbox opened only the file, so it alone is shown (at once,
+                // in the full view when it was dropped there)
+                if needsAccess, let target, ArchivePath.split(url) == nil,
+                   let lone = await Blocking.run(.userInitiated, { Self.readableEntry(target) }) {
+                    guard self.loadGeneration == generation else { return }
+                    full = [lone]
+                    self.accessLimited = true
+                    break
+                }
                 // Not "empty": the folder couldn't be listed (no permission, a share gone)
                 self.loadError = LoadError(archive: false, reason: error.localizedDescription,
-                                           needsAccess: !FolderAccess.shared.covers(url))
+                                           needsAccess: needsAccess)
             case .failure(ArchiveError.needsPassword):
                 // Asked once; what is typed is remembered for every archive.
                 // The help makes way (one sheet at a time).
@@ -1359,6 +1570,11 @@ final class BrowserModel: ObservableObject {
     /// time soon after opening it (a file there may crash it; reopening it
     /// at every launch would crash every launch).
     @Published private(set) var skippedRestore: String?
+    /// The last folder wasn't there at launch (a share or disk not
+    /// connected): said instead of a bare "No folder open"; it opens when
+    /// a volume mounts and it is there then.
+    @Published private(set) var unavailableRestore: String?
+    private var mountObserver: NSObjectProtocol?
     /// The folder being reopened at launch, until the app has run a while.
     private var restoreUnconfirmedKey: String { settingsPrefix + Self.restoreUnconfirmedKey }
     static let restoreUnconfirmedKey = "restoreUnconfirmed"
@@ -1400,7 +1616,23 @@ final class BrowserModel: ObservableObject {
             }
             // Unless the user opened something meanwhile
             guard folderURL == nil else { return }
-            if exists { open(folder: URL(fileURLWithPath: path)) } else if let other = fallback() { open(folder: other) }
+            if exists {
+                unavailableRestore = nil
+                open(folder: URL(fileURLWithPath: path))
+                return
+            }
+            // Nothing was opened: nothing to guard against at the next launch
+            defaults.removeObject(forKey: key)
+            if let other = fallback() { open(folder: other); return }
+            unavailableRestore = path
+            guard mountObserver == nil else { return }
+            mountObserver = NSWorkspace.shared.notificationCenter.addObserver(
+                forName: NSWorkspace.didMountNotification, object: nil, queue: .main) { [weak self] _ in
+                MainActor.assumeIsolated {
+                    guard let self, self.folderURL == nil, self.unavailableRestore != nil else { return }
+                    self.restoreLastFolder()
+                }
+            }
         }
     }
 
@@ -1451,6 +1683,7 @@ final class BrowserModel: ObservableObject {
                 // The drives' level: the system's own mounts (Time Machine's
                 // snapshots) aren't drives one browses
                 if drives, item.lastPathComponent.hasPrefix("com.apple.") { continue }
+                if LiveFiles.isPartialCopy(item.lastPathComponent) { LiveFiles.removeIfLeftOver(item); continue }
                 if let entry = entry(for: item, keys: keys) { listing.entries.append(entry); continue }
                 var vals = try? item.resourceValues(forKeys: keys)
                 if vals?.isSymbolicLink == true { vals = try? item.resolvingSymlinksInPath().resourceValues(forKeys: keys) }
@@ -1470,6 +1703,14 @@ final class BrowserModel: ObservableObject {
         }
     }
 
+    /// A picture, video or archive the app may read although its folder
+    /// can't be listed (a file the sandbox opened alone).
+    nonisolated private static func readableEntry(_ url: URL) -> GridEntry? {
+        guard FileManager.default.isReadableFile(atPath: url.path), let entry = entry(for: url, keys: entryKeys),
+              entry.kind != .folder || entry.isArchive else { return nil }
+        return entry
+    }
+
     /// What `entry(for:keys:)` reads, prefetched by the listings.
     nonisolated static let entryKeys: Set<URLResourceKey> = [
         .isDirectoryKey, .isPackageKey, .contentModificationDateKey, .fileSizeKey, .isSymbolicLinkKey, .isAliasFileKey
@@ -1483,12 +1724,14 @@ final class BrowserModel: ObservableObject {
         // A Finder alias is a file that LaunchServices follows anywhere (an
         // app): listed among the other files, never shown or opened as media
         if vals?.isAliasFile == true, vals?.isSymbolicLink != true { return nil }
-        // A symbolic link is what it points to: a link to a folder is that
-        // folder, at its real place (what is done in it is done there, so it
-        // says where); a link to a file counts by the file it points to (a
-        // "photo.jpg" pointing to a script is no photo)
+        // A symbolic link counts by what it points to: a link to a folder is
+        // listed as the link (trashed, renamed, moved as the link, as in the
+        // Finder) and opens the folder it points to; a link to a file counts
+        // by the file it points to (a "photo.jpg" pointing to a script is no
+        // photo, a "Photos.zip" pointing to an installer no archive)
         var target = item
-        if vals?.isSymbolicLink == true {
+        let isLink = vals?.isSymbolicLink == true
+        if isLink {
             target = item.resolvingSymlinksInPath()
             vals = try? target.resourceValues(forKeys: keys)
         }
@@ -1496,9 +1739,13 @@ final class BrowserModel: ObservableObject {
         if vals?.isPackage == true { return nil }
         if vals?.isDirectory == true {
             if ArchiveName.format(of: target.lastPathComponent) != nil { ArchivePath.noteFolder(target) }
-            return GridEntry(url: target, kind: .folder, modDate: date)
+            if ArchiveName.format(of: item.lastPathComponent) != nil { ArchivePath.noteFolder(item) }
+            return GridEntry(url: item, kind: .folder, modDate: date, linkTarget: isLink ? target : nil)
         }
         if target != item, mediaKind(of: target) != mediaKind(of: item) { return nil }
+        if isLink, ArchiveName.format(of: item.lastPathComponent) != nil,
+           ArchiveName.format(of: target.lastPathComponent) != ArchiveName.format(of: item.lastPathComponent)
+            || target.pathExtension.lowercased() != item.pathExtension.lowercased() { return nil }
         // An archive opens like a folder
         if ArchiveName.format(of: item.lastPathComponent) != nil {
             ArchivePath.noteArchive(item)
@@ -1575,7 +1822,7 @@ final class BrowserModel: ObservableObject {
     @Published private(set) var emptyFolders: Set<String> = []
 
     func isEmptyFolder(_ entry: GridEntry) -> Bool {
-        entry.kind == .folder && emptyFolders.contains(Self.canonicalPath(entry.url))
+        entry.kind == .folder && emptyFolders.contains(Self.canonicalPath(entry.browseURL))
     }
 
     func noteFolder(_ url: URL, empty: Bool) {
@@ -2086,7 +2333,8 @@ final class BrowserModel: ObservableObject {
                         if matcher.matches(url.lastPathComponent),
                            let match = entry(for: url, keys: keys) {
                             batch.entries.append(match)
-                            if match.kind == .folder, !match.isArchive { facts.found(folder: match.url) }
+                            // (the walk doesn't follow links: what it saw says nothing about theirs)
+                            if match.kind == .folder, !match.isArchive, match.linkTarget == nil { facts.found(folder: match.url) }
                         }
                         // (read along with the listing: no extra trip) A file,
                         // not a folder named like one, not a Finder alias
@@ -2492,7 +2740,7 @@ final class BrowserModel: ObservableObject {
         case .parent:
             goToParentFolder()
         case .folder:
-            open(folder: entry.url)
+            open(folder: entry.browseURL)
         case .image, .video:
             // The full view takes the keys, also when it was opened with the
             // mouse while the search field had focus.
@@ -2778,19 +3026,19 @@ final class BrowserModel: ObservableObject {
         let old = file.url
         guard name != old.lastPathComponent else { renameFileTarget = nil; return old }
         let new = old.deletingLastPathComponent().appendingPathComponent(name)
-        try await renameOnDisk(old, new, name: name)
-        undoHistory.record(UndoStep(kind: .rename, parts: [.moved(old, to: new)]))
+        let identity = try await renameOnDisk(old, new, name: name)
+        undoHistory.record(UndoStep(kind: .rename, parts: [.moved(old, to: new, identity: identity)]))
+        renameFileTarget = nil
         apply(.moved(old, to: new))
         // A new extension can make it a picture, video or archive: the grid
         // shows it then
         if Self.mediaKind(of: new) != nil || ArchiveName.format(of: name) != nil { refresh(changed: [old.deletingLastPathComponent()]) }
-        renameFileTarget = nil
         return new
     }
 
     func moveToTrash(_ file: OtherFile) {
         guard canChange(file) else { return }
-        guard fileActions.confirmTrash(file.name, String(localized: "The file will be moved to the Trash.")) else { return }
+        guard fileActions.confirmTrash([file.name], String(localized: "The file will be moved to the Trash.")) else { return }
         trashFiles([(file.url, false)]) { [self] trashed in apply(trashed.map { FileChange.removed($0) }) }
     }
 
@@ -2805,13 +3053,19 @@ final class BrowserModel: ObservableObject {
     /// something inside an archive: archives are only read).
     var selectionIsChangeable: Bool {
         guard let entry = selectedEntry, entry.kind != .parent else { return false }
-        return !ArchivePath.isInside(entry.url)
+        return canChange(entry)
+    }
+
+    /// Whether an item may be moved or trashed: one on disk, not inside an
+    /// archive (archives are only read), not a drive.
+    func canChange(_ entry: GridEntry) -> Bool {
+        entry.kind != .parent && !ArchivePath.isInside(entry.url) && !Self.isDrive(entry.url)
     }
 
     /// What the Trash takes: the marked items (grid), else the selected one.
     private var trashEntries: [GridEntry] {
-        guard mode == .grid else { return selectedMediaEntry.map { [$0] }?.filter { !ArchivePath.isInside($0.url) } ?? [] }
-        return actionEntries.filter { !ArchivePath.isInside($0.url) }
+        guard mode == .grid else { return selectedMediaEntry.map { [$0] }?.filter(canChange) ?? [] }
+        return actionEntries.filter(canChange)
     }
 
     /// The Trash has something to take (the menu item and ⌘⌫).
@@ -2827,7 +3081,7 @@ final class BrowserModel: ObservableObject {
         // Several (marked): all of them, after one confirmation
         if items.count > 1 { trashMarked(items); return }
         guard let entry = items.first ?? selectedEntry, entry.kind != .parent else { return }
-        guard !ArchivePath.isInside(entry.url) else { NSSound.beep(); return }   // archives are only read
+        guard canChange(entry) else { NSSound.beep(); return }   // archives are only read, drives ejected
         // What goes with it, said exactly: a folder's whole contents (also
         // what the grid doesn't show), all parts of a split archive (found
         // by listing its folder: off the main thread)
@@ -2836,11 +3090,13 @@ final class BrowserModel: ObservableObject {
         trashLookupPending = true
         onFiles({ isArchive ? ArchiveName.allFiles(of: url) : [url] }) { [self] files in
             trashLookupPending = false
-            let detail = entry.kind == .folder && !isArchive
+            let detail = entry.linkTarget != nil
+                ? String(localized: "The link will be moved to the Trash. The folder it points to stays where it is.")
+                : entry.kind == .folder && !isArchive
                 ? String(localized: "The folder and everything in it, including files Schnellbild doesn't show, will be moved to the Trash.")
                 : files.count > 1 ? String(localized: "All parts of this archive will be moved to the Trash.")
                 : String(localized: "The file will be moved to the Trash.")
-            guard fileActions.confirmTrash(entry.name, detail) else { return }
+            guard fileActions.confirmTrash([entry.name], detail) else { return }
             trashItems([entry]) { [self] trashed in
                 guard !trashed.isEmpty else { return }
                 // (the other pane follows through `onFileChange`)
@@ -2858,9 +3114,8 @@ final class BrowserModel: ObservableObject {
     /// Every item confirmed goes, also after one that fails (it is reported;
     /// an item inside a folder trashed before it is gone with it).
     private func trashMarked(_ items: [GridEntry]) {
-        let names = items.prefix(4).map(\.name).joined(separator: ", ") + (items.count > 4 ? ", …" : "")
         let detail = String(localized: "The marked items will be moved to the Trash, folders with everything in them.")
-        guard fileActions.confirmTrash(names, detail) else { return }
+        guard fileActions.confirmTrash(items.map(\.name), detail) else { return }
         clearMarks()
         trashItems(items) { [self] trashed in apply(trashed.map { FileChange.removed($0) }) }
     }
@@ -2910,7 +3165,7 @@ final class BrowserModel: ObservableObject {
                 for file in files {
                     do {
                         let inTrash = if let spy { try MainActor.assumeIsolated { try spy(file) } } else { try LiveFiles.trash(file) }
-                        if let inTrash { parts.append(.trashed(file, inTrash: inTrash)) }
+                        if let inTrash { parts.append(.trashed(file, inTrash: inTrash, identity: ItemIdentity.of(inTrash))) }
                         gone = true
                     } catch {
                         if firstError == nil { firstError = error }
@@ -3122,7 +3377,7 @@ final class BrowserModel: ObservableObject {
         let sourcePaths = sources.map(Self.canonicalPath)
         let candidates = sources.filter { source in
             let path = Self.canonicalPath(source)
-            return !ArchivePath.isInside(source) && path != target && !target.hasPrefix(path + "/")
+            return !ArchivePath.isInside(source) && !Self.isDrive(source) && path != target && !target.hasPrefix(path + "/")
                 // Not inside another item that goes along
                 && !sourcePaths.contains(where: { path.hasPrefix($0 + "/") })
                 // Never the folder shown or one around it
@@ -3196,7 +3451,9 @@ final class BrowserModel: ObservableObject {
     private func planMove(_ probes: [TransferProbe], into folder: URL) -> [TransferStep] {
         var steps: [TransferStep] = []
         var planned: Set<String> = []
-        for probe in probes {
+        // "Apply to all": the answer for every other name taken
+        var standing: ConflictAnswer.Choice?
+        for (number, probe) in probes.enumerated() {
             let source = probe.source
             let isPlanned: (URL) -> Bool = { planned.contains(Self.canonicalPath($0)) }
             // A later part taken there: the set would be mixed
@@ -3205,7 +3462,17 @@ final class BrowserModel: ObservableObject {
             }
             var destination = folder.appendingPathComponent(source.lastPathComponent, isDirectory: probe.isFolder)
             if probe.destinationTaken || isPlanned(destination) {
-                guard fileActions.askKeepBoth(source.lastPathComponent, folder.lastPathComponent) else { continue }
+                let choice: ConflictAnswer.Choice
+                if let standing {
+                    choice = standing
+                } else {
+                    let more = probes[(number + 1)...].contains { $0.destinationTaken }
+                    let answer = fileActions.askKeepBoth(source.lastPathComponent, folder.lastPathComponent, more)
+                    if answer.forAll { standing = answer.choice }
+                    choice = answer.choice
+                }
+                if choice == .cancel { return [] }
+                guard choice == .keepBoth else { continue }
                 // Renamed, the parts of a split archive no longer belong together
                 guard probe.files.count == 1 else { NSSound.beep(); continue }
                 destination = probe.freeNames.first { !isPlanned($0) }
@@ -3237,28 +3504,31 @@ final class BrowserModel: ObservableObject {
     }
     static var onTransfersDone: (() -> Void)?
 
-    private func finishMove(_ steps: [TransferStep], _ outcomes: [Result<Bool, Error>], into folder: URL) {
+    /// Applies what was carried out, also the parts of an item that failed
+    /// half way (a split archive's first volumes moved): their changes and
+    /// their Undo; what failed is reported item by item.
+    private func finishMove(_ steps: [TransferStep], _ outcomes: [TransferOutcome], into folder: URL) {
         let target = Self.canonicalPath(folder)
         var moves: [FileChange] = []
-        var reported = false
+        var failures: [(name: String, reason: String)] = []
         var undoParts: [UndoStep.Part] = []
-        for (step, outcome) in zip(steps, outcomes) {
-            if case .success(let moved) = outcome {
-                undoParts += step.files.map { moved ? UndoStep.Part.moved($0.0, to: $0.1) : .copied($0.0, to: $0.1) }
+        var copied = false
+        for outcome in outcomes {
+            for file in outcome.done {
+                undoParts.append(file.moved ? .moved(file.from, to: file.to, identity: file.identity)
+                                            : .copied(file.from, to: file.to, identity: file.identity))
+                if file.moved { moves.append(.moved(file.from, to: file.to)) } else { copied = true }
             }
-            switch outcome {
-            case .success(true):
-                moves.append(.moved(step.source, to: step.destination))
-            case .success(false):
-                // A copy: the target and every folder around it hold more now
-                let around = FileChange.removed(folder).affectedFolders
-                FolderPreviewCache.shared.forget(around)
-                emptyFolders.subtract(around)
-                folderChanges += 1
-            case .failure(let error):
-                if !reported { fileActions.report(error); reported = true }
-            }
+            if let failed = outcome.failed { failures.append((failed.name, failed.error.localizedDescription)) }
         }
+        if copied {
+            // A copy: the target and every folder around it hold more now
+            let around = FileChange.removed(folder).affectedFolders
+            FolderPreviewCache.shared.forget(around)
+            emptyFolders.subtract(around)
+            folderChanges += 1
+        }
+        if !failures.isEmpty { fileActions.report(TransferFailure(failures: failures)) }
         undoHistory.record(UndoStep(kind: undoParts.contains { if case .copied = $0 { return true }; return false } ? .copy : .move,
                                     parts: undoParts))
         // The selection as it was, before the moves rewrite its path
@@ -3317,18 +3587,22 @@ final class BrowserModel: ObservableObject {
             guard name != old.lastPathComponent else { return }
             let new = old.deletingLastPathComponent().appendingPathComponent(name, isDirectory: true)
             Self.testLog("rename the folder shown \(old.lastPathComponent) → \(name)")
-            try await renameOnDisk(old, new, name: name)
+            let identity = try await renameOnDisk(old, new, name: name)
+            undoHistory.record(UndoStep(kind: .rename, parts: [.moved(old, to: new, identity: identity)]))
             // A folder named like an archive stays a folder
             if ArchiveName.format(of: name) != nil { ArchivePath.noteFolder(new) }
-            apply(.moved(old, to: new))
-            // (the pane may have moved on meanwhile; the change reached it)
-            guard folderURL.map(Self.canonicalPath) == Self.canonicalPath(old) else { return }
-            folderURL = new
-            defaults.set(new.path, forKey: lastFolderKey)
-            if let parent = Self.parentFolder(of: new), let i = allEntries.firstIndex(where: { $0.kind == .parent }) {
-                allEntries[i] = GridEntry(url: parent, kind: .parent)
-                if let j = entries.firstIndex(where: { $0.kind == .parent }) { entries[j] = allEntries[i] }
+            // The folder shown takes the new path first: the change then
+            // keeps what is listed in it (its other files too) in the folder
+            // (the pane may have moved on meanwhile; the change reaches it)
+            if folderURL.map(Self.canonicalPath) == Self.canonicalPath(old) {
+                folderURL = new
+                defaults.set(new.path, forKey: lastFolderKey)
+                if let parent = Self.parentFolder(of: new), let i = allEntries.firstIndex(where: { $0.kind == .parent }) {
+                    allEntries[i] = GridEntry(url: parent, kind: .parent)
+                    if let j = entries.firstIndex(where: { $0.kind == .parent }) { entries[j] = allEntries[i] }
+                }
             }
+            apply(.moved(old, to: new))
         } catch {
             fileActions.report(error)
         }
@@ -3340,7 +3614,7 @@ final class BrowserModel: ObservableObject {
     /// archive (archives are only read), not an archive split into parts
     /// by its name ("x.part1.rar", "x.7z.001").
     func canRename(_ entry: GridEntry) -> Bool {
-        guard entry.kind != .parent, !ArchivePath.isInside(entry.url) else { return false }
+        guard canChange(entry) else { return false }
         // (by the name the download will have: "x.7z.001.part" is a volume too)
         let name = ArchiveName.finalName(of: entry.name).lowercased()
         return !(entry.isArchive && (ArchiveName.rarPart(of: name) != nil || name.hasSuffix(".001")))
@@ -3386,8 +3660,8 @@ final class BrowserModel: ObservableObject {
         if entry.kind != .folder, Self.mediaKind(of: new) != entry.kind {
             throw RenameError.changesKind(old.pathExtension, video: entry.kind == .video)
         }
-        try await renameOnDisk(old, new, name: name)
-        undoHistory.record(UndoStep(kind: .rename, parts: [.moved(old, to: new)]))
+        let identity = try await renameOnDisk(old, new, name: name)
+        undoHistory.record(UndoStep(kind: .rename, parts: [.moved(old, to: new, identity: identity)]))
 
         // Stay where we are: same folder, same query, same results (and the
         // full view stays open) — only the renamed item and, for a folder,
@@ -3395,24 +3669,27 @@ final class BrowserModel: ObservableObject {
         // A folder named like an archive stays a folder
         if isFolder, ArchiveName.format(of: name) != nil { ArchivePath.noteFolder(new) }
         // (the other pane follows through `onFileChange`)
-        apply(.moved(old, to: new))
         renameTarget = nil
+        apply(.moved(old, to: new))
         return new
     }
 
     /// Renames on disk: off the main thread for the live actions (a share
     /// answers slowly), inline for a test's spy. Refuses a name taken by
     /// another item.
-    private func renameOnDisk(_ old: URL, _ new: URL, name: String) async throws {
+    /// Returns the renamed item's identity (for Undo).
+    @discardableResult
+    private func renameOnDisk(_ old: URL, _ new: URL, name: String) async throws -> ItemIdentity? {
         let check: @Sendable (Bool) throws -> Void = { taken in if taken { throw RenameError.alreadyExists(name) } }
         guard fileActions.runsOffMain else {
             try check(fileActions.conflicts(new, old))
             do { try fileActions.move(old, new) } catch { throw RenameError.failed(error.localizedDescription) }
-            return
+            return ItemIdentity.of(new)
         }
-        try await Blocking.run {
+        return try await Blocking.run {
             try check(LiveFiles.conflicts(new, old))
             do { try LiveFiles.move(old, new) } catch { throw RenameError.failed(error.localizedDescription) }
+            return ItemIdentity.of(new)
         }
     }
 
@@ -3448,7 +3725,7 @@ final class BrowserModel: ObservableObject {
     /// was moved or renamed, else the nearest folder around it still there
     /// when it was trashed. Returns whether it changed.
     @discardableResult
-    private func followFolder(through changes: [FileChange]) -> Bool {
+    func followFolder(through changes: [FileChange]) -> Bool {
         guard let folderURL, !changes.isEmpty else { return false }
         if let moved = Self.through(changes, folderURL) {
             guard Self.canonicalPath(moved) != Self.canonicalPath(folderURL) else { return false }
@@ -3481,7 +3758,9 @@ final class BrowserModel: ObservableObject {
         func entry(_ e: GridEntry) -> GridEntry? {
             guard e.kind != .parent else { return e }
             guard let url = lookup.url(e.url) else { return nil }
-            return url == e.url ? e : GridEntry(url: url, kind: e.kind, modDate: e.modDate, byteSize: e.byteSize)
+            // A link's folder moved or renamed by the app: the link leads there
+            let target = e.linkTarget.flatMap { lookup.url($0) }
+            return url == e.url && target == e.linkTarget ? e : e.moved(to: url, target: target)
         }
         let keep = selectedEntry.flatMap { lookup.url($0.url) }
         let previous = selection
@@ -3506,6 +3785,22 @@ final class BrowserModel: ObservableObject {
         keepSelection(index(of: keep)
             ?? (entries.isEmpty ? nil : previous.map { min($0, entries.count - 1) }))
         if slideshow != nil { applyToSlideshow(lookup) }
+        // An open rename sheet follows its item (renamed or moved by the
+        // other pane, by Undo) and closes when the item is gone
+        if let target = renameTarget {
+            if let url = lookup.url(target.url) {
+                if url != target.url { renameTarget = target.moved(to: url) }
+            } else {
+                renameTarget = nil
+            }
+        }
+        if let file = renameFileTarget {
+            if let url = lookup.url(file.url) {
+                if url != file.url { renameFileTarget = OtherFile(url: url, byteSize: file.byteSize) }
+            } else {
+                renameFileTarget = nil
+            }
+        }
     }
 
     /// The slideshow's items follow the changes too: what was moved or
@@ -3652,7 +3947,7 @@ final class BrowserModel: ObservableObject {
         if start == nil, folder == nil, mode == .grid, selectionChosen,
            let chosen = selectedEntry, chosen.kind != .parent {
             if chosen.isMedia { show.startAt = chosen.url }
-            else if chosen.kind == .folder { show.startInside = Self.canonicalPath(chosen.url) + "/" }
+            else if chosen.kind == .folder { show.startInside = Self.canonicalPath(chosen.browseURL) + "/" }
         }
         if show.waitingForStart { show.index = -1 }   // shown once the start has arrived
         let id = show.id
@@ -3672,9 +3967,9 @@ final class BrowserModel: ObservableObject {
                 if key == .captured { captured = await Self.captureDates(of: contents.filter(\.isMedia).map(\.url)) }
                 let sorted = Self.sortEntries(contents, key: key, ascending: ascending, captured: captured)
                 parts = [.media(sorted.filter(\.isMedia))]
-                    + sorted.filter { $0.kind == .folder && !$0.name.hasPrefix(".") }.map { .folder($0.url) }
+                    + sorted.filter { $0.kind == .folder && !$0.name.hasPrefix(".") }.map { .folder($0.browseURL) }
             } else {
-                parts = roots.map { $0.isMedia ? .media([$0]) : .folder($0.url) }
+                parts = roots.map { $0.isMedia ? .media([$0]) : .folder($0.browseURL) }
             }
             guard !Task.isCancelled else { return }
             // The part holding the start first: no waiting for the parts before it

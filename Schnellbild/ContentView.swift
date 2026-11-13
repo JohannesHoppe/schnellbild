@@ -537,6 +537,12 @@ struct PaneView: View {
                 ProgressView().controlSize(.small)
                 Text("Copying or moving…").foregroundStyle(.secondary)
             }
+            if model.accessLimited {
+                Text("Only the file you opened is shown here.").foregroundStyle(.secondary)
+                Button("Allow Access…") { model.allowAccess() }
+                    .buttonStyle(.link)
+                    .accessibilityIdentifier("allowAccess")
+            }
             Spacer()
             Text(model.folderURL?.path ?? "")
                 .foregroundStyle(.tertiary)
@@ -725,6 +731,13 @@ struct EmptyStateView: View {
                 Text("Drag a folder here, press ⌘O, or click Open Folder…")
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
+                if let missing = model.unavailableRestore {
+                    let name = (missing as NSString).lastPathComponent
+                    Text("“\(name)” isn't available: its disk or server isn't connected. It opens once it is.")
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                        .accessibilityIdentifier("unavailableRestore")
+                }
                 if let skipped = model.skippedRestore {
                     let name = (skipped as NSString).lastPathComponent
                     Text("Schnellbild quit unexpectedly last time while showing “\(name)”, so it wasn't opened again.")

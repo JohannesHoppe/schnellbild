@@ -180,7 +180,6 @@
 "Mark" = "Markeer";
 "Single pane" = "Eén paneel";
 "“%@” already exists in “%@”." = "‘%@’ bestaat al in ‘%@’.";
-"Keep both: the new one gets a number. Skip: it stays where it is." = "Bewaar beide: het nieuwe krijgt een nummer. Sla over: het blijft waar het is.";
 "Keep Both" = "Bewaar beide";
 "Skip" = "Sla over";
 "The marked items will be moved to the Trash, folders with everything in them." = "De gemarkeerde onderdelen worden naar de prullenmand verplaatst, mappen met alles erin.";
@@ -316,3 +315,17 @@
 "Forget Folder Access" = "Maptoegang vergeten";
 "Each folder asks for your permission again." = "Elke map vraagt dan opnieuw om je toestemming.";
 "© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later. Built from its source without VLC's modules under the GPL; the build script and its changes are in Schnellbild's repository (github.com/JohannesHoppe/schnellbild)." = "© VideoLAN en de VLC-auteurs. GNU Lesser General Public License 2.1 of later. Gebouwd vanuit de broncode zonder de VLC-modules onder de GPL; het buildscript en de wijzigingen staan in de repository van Schnellbild (github.com/JohannesHoppe/schnellbild).";
+"The link will be moved to the Trash. The folder it points to stays where it is." = "De link wordt naar de prullenmand verplaatst. De map waarnaar hij verwijst, blijft waar hij is.";
+"Keep both: the new one gets a number. Skip: it stays where it is. Cancel: nothing is moved or copied." = "Bewaar beide: het nieuwe krijgt een nummer. Sla over: het blijft waar het is. Annuleer: er wordt niets verplaatst of gekopieerd.";
+"Apply to all" = "Pas toe op alle";
+"Copied, but the original couldn't be removed: %@" = "Gekopieerd, maar het origineel kon niet worden verwijderd: %@";
+"Not everything was moved or copied." = "Niet alles is verplaatst of gekopieerd.";
+"“%@”: %@" = "‘%@’: %@";
+"“%@” is no longer the item Schnellbild put there, so it stays as it is." = "‘%@’ is niet meer het onderdeel dat Schnellbild daar heeft neergezet en blijft daarom zoals het is.";
+"“%@” has changed since it was copied, so it isn't moved to the Trash." = "‘%@’ is gewijzigd sinds het is gekopieerd en wordt daarom niet naar de prullenmand verplaatst.";
+"Schnellbild may not take “%@” out of the Trash. Use “Put Back” in the Finder's Trash." = "Schnellbild mag ‘%@’ niet uit de prullenmand halen. Gebruik ‘Zet terug’ in de prullenmand van de Finder.";
+"Keep: try it again later, before the earlier actions. Forget: go on with the earlier actions." = "Bewaar: probeer het later opnieuw, vóór de eerdere acties. Vergeet: ga verder met de eerdere acties.";
+"Keep" = "Bewaar";
+"Forget" = "Vergeet";
+"Only the file you opened is shown here." = "Hier wordt alleen het bestand getoond dat je hebt geopend.";
+"“%@” isn't available: its disk or server isn't connected. It opens once it is." = "‘%@’ is niet beschikbaar: de schijf of server is niet verbonden. Hij wordt geopend zodra dat wel zo is.";
