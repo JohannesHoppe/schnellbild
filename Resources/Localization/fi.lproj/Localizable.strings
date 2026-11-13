@@ -314,3 +314,4 @@
 "Forget Folder Access" = "Unohda kansioiden käyttö";
 "Each folder asks for your permission again." = "Jokainen kansio kysyy lupaasi uudelleen.";
 "© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later. Built from its source without VLC's modules under the GPL; the build script and its changes are in Schnellbild's repository (github.com/JohannesHoppe/schnellbild)." = "© VideoLAN ja VLC:n tekijät. GNU Lesser General Public License 2.1 tai uudempi. Koottu lähdekoodista ilman VLC:n GPL-moduuleja; koontiskripti ja sen muutokset ovat Schnellbildin repositoriossa (github.com/JohannesHoppe/schnellbild).";
+"The other pane shows search results. Clear its search to copy or move into its folder." = "Toinen ruutu näyttää hakutuloksia. Tyhjennä sen haku, jotta voit kopioida tai siirtää sen kansioon.";

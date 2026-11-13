@@ -102,6 +102,30 @@ final class DualPaneTests: XCTestCase {
                        "⇧F6 is the pane's rename")
     }
 
+    /// F5 / F6 into a pane showing search results are refused, as a drop there is.
+    func testF5IntoSearchResultsIsRefused() async throws {
+        let tree = try TempTree(self)
+        try tree.file("left/a.jpg")
+        try tree.file("right/sub/beach.jpg")
+        let leftFolder = tree.root.appendingPathComponent("left"), rightFolder = tree.root.appendingPathComponent("right")
+        let spy = FileActionsSpy()
+        let w = window(spy)
+        await openAndWait(w.left, leftFolder)
+        w.setDual(true)
+        let right = try XCTUnwrap(w.right)
+        await waitUntil { !right.isLoading }
+        await openAndWait(right, rightFolder)
+        await searchAndWait(right, "beach")
+        XCTAssertNil(right.paneDropFolder, "drops are refused there")
+
+        w.left.selectEntry(named: "a.jpg")
+        XCTAssertTrue(w.handleWindowKey(.f5, command: false, control: false, textEditing: false))
+        await waitUntil { w.left.transfersRunning == 0 }
+        XCTAssertEqual(spy.reported as? [SendRefusal], [.otherPaneSearching], "said why")
+        XCTAssertTrue(spy.copied.isEmpty)
+        XCTAssertFalse(FileManager.default.fileExists(atPath: rightFolder.appendingPathComponent("a.jpg").path))
+    }
+
     /// A change in one pane shows in the other one when it shows that folder.
     func testTheOtherPaneFollowsChanges() async throws {
         let tree = try TempTree(self)
@@ -230,5 +254,18 @@ final class DualPaneTests: XCTestCase {
         XCTAssertEqual(BrowserModel(defaults: defaults, settingsPrefix: "rightPane.").viewMode, .grid, "per pane")
         m.handleKey(.char("L"), command: false)
         XCTAssertEqual(m.viewMode, .grid)
+    }
+
+    /// A pinch on a video goes to the pane under the fingers, as wide as the divider makes it.
+    func testThePaneUnderAPointFollowsTheDivider() {
+        let w = window(FileActionsSpy())
+        XCTAssertTrue(w.pane(atX: 900, width: 1000) === w.left, "a single pane takes everything")
+        w.setDual(true)
+        w.setSplit(0.7)
+        XCTAssertTrue(w.pane(atX: 600, width: 1000) === w.left, "left of the divider, right of the middle")
+        XCTAssertTrue(w.pane(atX: 720, width: 1000) === w.right)
+        w.setSplit(0.3)
+        XCTAssertTrue(w.pane(atX: 400, width: 1000) === w.right)
+        XCTAssertTrue(w.pane(atX: 250, width: 1000) === w.left)
     }
 }

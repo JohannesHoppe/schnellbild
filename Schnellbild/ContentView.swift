@@ -107,9 +107,7 @@ private struct WindowView: View {
         let both = showsLeft && showsRight && window.right != nil
         return GeometryReader { geometry in
             let total = geometry.size.width
-            // Each pane keeps room for its toolbar-less grid
-            let minimum = min(220, total / 3)
-            let leftWidth = min(max(total * window.split, minimum), max(minimum, total - minimum - PaneDivider.width))
+            let leftWidth = PaneDivider.leftWidth(total: total, split: window.split)
             HStack(spacing: 0) {
                 if showsLeft { pane(window.left).frame(width: both ? leftWidth : nil) }
                 if showsRight, let right = window.right {
@@ -370,12 +368,10 @@ private struct WindowView: View {
         _ = NSEvent.addLocalMonitorForEvents(matching: .magnify) { event in
             let magnification = event.magnification
             let used = MainActor.assumeIsolated { () -> Bool in
-                // The pane under the fingers (the two halves are equally wide),
-                // in the main window only (not over a sheet)
+                // The pane under the fingers, in the main window only (not over a sheet)
                 guard let window = WindowModel.of(event.window), let main = window.nsWindow,
                       let width = main.contentView?.bounds.width else { return false }
-                let model = window.active.slideshow != nil || !window.dual ? window.active
-                    : event.locationInWindow.x >= width / 2 ? (window.right ?? window.left) : window.left
+                let model = window.pane(atX: event.locationInWindow.x, width: width)
                 guard model.shownMediaEntry?.kind == .video, !model.anySheetOpen else { return false }
                 model.applyPinch(1 + magnification)
                 return true
@@ -1255,6 +1251,16 @@ enum FinderDrop {
     }
 }
 
+extension WindowModel {
+    /// The pane at `x` in a window `width` wide, as the panes are laid out
+    /// (the divider where `split` puts it); the active one when it is alone
+    /// (a single pane, a slideshow over the window).
+    func pane(atX x: CGFloat, width: CGFloat) -> BrowserModel {
+        guard dual, active.slideshow == nil, let right else { return active }
+        return x >= PaneDivider.leftWidth(total: width, split: split) + PaneDivider.width / 2 ? right : left
+    }
+}
+
 /// The line between the two panes: dragged, it gives one pane more of the
 /// window; a double click shares it equally again.
 struct PaneDivider: View {
@@ -1262,6 +1268,13 @@ struct PaneDivider: View {
     let total: CGFloat
     static let width: CGFloat = 7
     static let space = "panes"
+
+    /// The left pane's width in a window `total` wide: its share (`split`),
+    /// each pane keeping room for its toolbar-less grid.
+    static func leftWidth(total: CGFloat, split: Double) -> CGFloat {
+        let minimum = min(220, total / 3)
+        return min(max(total * split, minimum), max(minimum, total - minimum - width))
+    }
     @State private var hovering = false
 
     var body: some View {

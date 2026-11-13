@@ -227,9 +227,14 @@ final class WindowModel: ObservableObject {
     }
 
     /// F5 / F6: the active pane's marked (or selected) items into the other
-    /// pane's folder.
+    /// pane's folder. Not while it shows search results (as a drop there:
+    /// they aren't one folder): that is said, and nothing is copied.
     func sendToOtherPane(how: BrowserModel.Transfer) -> Bool {
         guard let other, let folder = other.folderURL else { return false }
+        if other.isFiltering {
+            active.fileActions.report(SendRefusal.otherPaneSearching)
+            return true
+        }
         // In the full view: what it shows (the marks belong to the grid)
         let sources = active.mode == .detail ? (active.selectedMediaEntry.map { [$0.url] } ?? []) : active.actionEntries.map(\.url)
         guard !sources.isEmpty else { NSSound.beep(); return true }
@@ -264,6 +269,18 @@ final class WindowModel: ObservableObject {
             return sendToOtherPane(how: .move)
         default:
             return false
+        }
+    }
+}
+
+/// Why F5 / F6 copy or move nothing.
+enum SendRefusal: LocalizedError, Equatable {
+    case otherPaneSearching
+
+    var errorDescription: String? {
+        switch self {
+        case .otherPaneSearching:
+            return String(localized: "The other pane shows search results. Clear its search to copy or move into its folder.")
         }
     }
 }
