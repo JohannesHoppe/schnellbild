@@ -11,6 +11,8 @@ final class AboutPanelTests: XCTestCase {
     }
 
     func testPrivacyPolicyOfEveryLanguageIsOnTheWebsite() throws {
+        XCTAssertEqual(AboutPanel.website(for: "en"), "https://schnellbild.haushoppe-its.de/")
+        XCTAssertEqual(AboutPanel.website(for: "zh-Hans"), "https://schnellbild.haushoppe-its.de/zh-hans/")
         XCTAssertEqual(AboutPanel.privacyPolicy(for: "en"), "https://schnellbild.haushoppe-its.de/privacy/")
         XCTAssertEqual(AboutPanel.privacyPolicy(for: "de"), "https://schnellbild.haushoppe-its.de/de/datenschutz/")
         XCTAssertEqual(AboutPanel.privacyPolicy(for: "pt-BR"), "https://schnellbild.haushoppe-its.de/pt-br/privacy/")

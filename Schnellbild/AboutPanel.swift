@@ -35,6 +35,17 @@ enum AboutPanel {
         var includes: String? = nil
     }
 
+    /// The website's home page, in the language the UI shows (English at the
+    /// root, every other language in its folder).
+    static var website: String {
+        website(for: Bundle.main.preferredLocalizations.first ?? "en")
+    }
+
+    static func website(for language: String) -> String {
+        let site = "https://schnellbild.haushoppe-its.de/"
+        return language == "en" ? site : site + language.lowercased() + "/"
+    }
+
     /// The privacy policy on the website, in the language the UI shows
     /// (Scripts/build_site.py: English at the root, every other language in
     /// its folder, German's page named "datenschutz").
@@ -87,6 +98,7 @@ private struct AboutView: View {
                 VStack(spacing: 14) {
                     Text("Schnellbild's own code is free software under the MIT License. The components below keep their own licenses.")
                     HStack(spacing: 16) {
+                        Link(destination: URL(string: AboutPanel.website)!) { Text(verbatim: "schnellbild.haushoppe-its.de") }
                         link("https://github.com/JohannesHoppe/schnellbild")
                         Link("Privacy Policy", destination: URL(string: AboutPanel.privacyPolicy)!)
                     }
