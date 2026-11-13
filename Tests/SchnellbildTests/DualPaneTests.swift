@@ -102,6 +102,30 @@ final class DualPaneTests: XCTestCase {
                        "⇧F6 is the pane's rename")
     }
 
+    /// A slideshow whose items the other pane trashed, all of them, ends.
+    func testASlideshowLeftWithNothingEnds() async throws {
+        let tree = try TempTree(self)
+        for n in ["a.jpg", "b.jpg"] { try tree.file(n) }
+        let spy = FileActionsSpy()
+        let w = window(spy)
+        w.left.slideshowInterval = .seconds(60)
+        w.left.setFullScreen = { _ in false }
+        await openAndWait(w.left, tree.root)
+        w.setDual(true)
+        let right = try XCTUnwrap(w.right)
+        await waitUntil { !right.isLoading }
+        await openAndWait(right, tree.root)
+        w.left.startSlideshow()
+        await waitUntil { w.left.slideshow?.loading == false && w.left.shownMediaEntry?.name == "a.jpg" }
+
+        right.selectEntry(named: "a.jpg")
+        right.moveSelectionToTrash()
+        await waitUntil { w.left.shownMediaEntry?.name == "b.jpg" }
+        right.selectEntry(named: "b.jpg")
+        right.moveSelectionToTrash()
+        await waitUntil { w.left.slideshow == nil }
+    }
+
     /// F5 / F6 into a pane showing search results are refused, as a drop there is.
     func testF5IntoSearchResultsIsRefused() async throws {
         let tree = try TempTree(self)
