@@ -104,7 +104,7 @@ struct ShortcutsHelpView: View {
             Shortcut(keys: "K", action: "Show / hide the mini keyboard"),
             Shortcut(keys: "⌘D", action: "Bookmark the folder shown, or remove its bookmark"),
             Shortcut(keys: "⌃1 … ⌃9", action: "Open bookmark 1 … 9"),
-            Shortcut(keys: "X", action: "Boss key: hidden and silent at once; X X X brings it back"),
+            Shortcut(keys: "X", action: "Boss key: hidden and silent at once; X X X or the Dock icon brings it back"),
             Shortcut(keys: "F1 / ⌘?", action: "Show this list"),
         ]),
     ]

@@ -187,9 +187,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         true
     }
 
-    /// Hidden by the boss key: a click on the Dock icon shows nothing.
+    /// Hidden by the boss key: a click on the Dock icon brings every window back.
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
-        !BossKey.engaged
+        guard BossKey.engaged else { return true }
+        MainActor.assumeIsolated { BossKey.release() }
+        return false
     }
 
     /// Not in the middle of a copy or move: the app quits once it is done.

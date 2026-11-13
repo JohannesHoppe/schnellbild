@@ -257,7 +257,7 @@
 "Search mode" = "Arama modu";
 "No folder, archive, picture or video whose name matches “%@”, in this folder or its subfolders." = "Bu klasörde veya alt klasörlerinde adı “%@” ile eşleşen klasör, arşiv, resim ya da video yok.";
 "“%@” is not a valid regular expression." = "“%@” geçerli bir normal ifade değil.";
-"Boss key: hidden and silent at once; X X X brings it back" = "Patron tuşu: anında gizli ve sessiz; X X X geri getirir";
+"Boss key: hidden and silent at once; X X X or the Dock icon brings it back" = "Patron tuşu: anında gizli ve sessiz; X X X veya Dock’taki simge geri getirir";
 "Into “%@”" = "“%@” içine";
 "Bookmarks" = "Yer İşaretleri";
 "Bookmark This Folder" = "Bu klasöre yer işareti koy";

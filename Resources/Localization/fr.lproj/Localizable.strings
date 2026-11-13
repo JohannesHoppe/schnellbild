@@ -257,7 +257,7 @@
 "Search mode" = "Mode de recherche";
 "No folder, archive, picture or video whose name matches “%@”, in this folder or its subfolders." = "Aucun dossier, archive, image ou vidéo dont le nom correspond à « %@ », dans ce dossier ou ses sous-dossiers.";
 "“%@” is not a valid regular expression." = "« %@ » n’est pas une expression régulière valide.";
-"Boss key: hidden and silent at once; X X X brings it back" = "Touche patron : masqué et muet aussitôt ; X X X le fait revenir";
+"Boss key: hidden and silent at once; X X X or the Dock icon brings it back" = "Touche patron : masqué et muet aussitôt ; X X X ou l’icône du Dock le fait revenir";
 "Into “%@”" = "Dans « %@ »";
 "Bookmarks" = "Signets";
 "Bookmark This Folder" = "Ajouter un signet pour ce dossier";
