@@ -100,10 +100,14 @@ case "compose" where args.count > 3:
     guard let shadow = load(dir.appendingPathComponent("shadow.png")),
           let flat = load(dir.appendingPathComponent("flat.png")),
           let screen = load(dir.appendingPathComponent("screen.png")) else { fail("Pictures missing in \(dir.path)") }
-    // The screen area cut to the window's shape (rounded corners)
+    // The screen area cut to the window's shape (rounded corners). A window
+    // taller than the screen (Settings) reaches below it: the screen picture
+    // then covers only its top, at its own proportions, and the rest comes
+    // from the window's own picture underneath.
     let fw = flat.width, fh = flat.height
     let cut = context(fw, fh)
-    cut.draw(screen, in: CGRect(x: 0, y: 0, width: fw, height: fh))
+    let sh = screen.height * fw / screen.width
+    cut.draw(screen, in: CGRect(x: 0, y: fh - sh, width: fw, height: sh))
     cut.setBlendMode(.destinationIn)
     cut.draw(flat, in: CGRect(x: 0, y: 0, width: fw, height: fh))
     // … laid over the window in the shadowed picture
