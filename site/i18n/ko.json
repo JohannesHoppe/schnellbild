@@ -157,6 +157,6 @@
     "rightsTitle": "사용자의 권리",
     "rightsText": "GDPR에 따라 사용자는 열람, 정정, 삭제, 처리 제한, 데이터 이동의 권리와 개인정보 보호 감독 기관에 민원을 제기할 권리를 가집니다. <strong>또한 자신의 특수한 상황과 관련된 사유로 당사의 정당한 이익에 근거한 처리에 반대할 권리가 있습니다</strong>(GDPR 제21조). 앱과 이 웹사이트 모두 자체적으로 개인 데이터를 보관하지 않으므로, 당사 측에서 조회하거나 삭제할 데이터는 전혀 없습니다. 따라서 열람 요청에 대한 답변은 아주 짧을 것입니다. 당사는 귀하에 대해 아무것도 알지 못합니다.",
     "contactTitle": "문의",
-    "contactText": "질문이 있으면 <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a>에 이슈를 등록하거나 <a href=\"https://haushoppe-its.de/impressum/\">법적 고지</a>의 연락처를 이용하세요."
+    "contactText": "Schnellbild에 관한 모든 문의(질문, 아이디어, 버그, 그리고 개인 데이터 관련 요청까지)는 GitHub로 연락해 주세요. <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a>에 이슈를 등록하시면 됩니다. 그곳에서 가장 빨리 답변하며, 답변은 다른 분들께도 도움이 됩니다. 이슈는 공개됩니다. 공개적으로 다루고 싶지 않은 내용은 <a href=\"https://haushoppe-its.de/impressum/\">법적 고지</a>에 있는 다른 연락 방법을 이용하세요."
   }
 }

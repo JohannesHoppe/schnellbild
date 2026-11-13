@@ -112,6 +112,6 @@
     "rightsTitle": "Vaše práva",
     "rightsText": "Podle obecného nařízení o ochraně osobních údajů (GDPR) máte právo na přístup, opravu, výmaz, omezení zpracování a přenositelnost údajů a dále právo podat stížnost u dozorového úřadu pro ochranu osobních údajů. <strong>Máte právo vznést námitku</strong> z důvodů týkajících se vaší konkrétní situace proti zpracování založenému na našem oprávněném zájmu (čl. 21 GDPR). Protože ani aplikace, ani tento web žádné vlastní osobní údaje neuchovávají, není u nás vůbec nic, co by se dalo vyhledat nebo smazat. Odpověď na žádost o přístup proto bude velmi krátká: nevíme o vás vůbec nic.",
     "contactTitle": "Kontakt",
-    "contactText": "Dotazy: založte issue na <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a> nebo použijte kontakt uvedený v <a href=\"https://haushoppe-its.de/impressum/\">právních informacích</a>."
+    "contactText": "Ve všech záležitostech týkajících se Schnellbild – dotazy, nápady, chyby i žádosti o vaše údaje – nás prosím kontaktujte přes GitHub: založte issue na <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a>. Tam odpovídáme nejrychleji a odpověď pomůže i ostatním. Issue je veřejné; pro věci, které nechcete řešit veřejně, najdete další kontakty v <a href=\"https://haushoppe-its.de/impressum/\">právních informacích</a>."
   }
 }

@@ -112,6 +112,6 @@
     "rightsTitle": "Oikeutesi",
     "rightsText": "EU:n yleisen tietosuoja-asetuksen (GDPR) mukaan sinulla on oikeus saada pääsy tietoihin, oikaista ja poistaa ne, rajoittaa niiden käsittelyä ja siirtää ne järjestelmästä toiseen sekä oikeus tehdä valitus tietosuojavalvontaviranomaiselle. <strong>Sinulla on oikeus vastustaa</strong> oikeutettuun etuumme perustuvaa käsittelyä erityiseen tilanteeseesi liittyvällä perusteella (tietosuoja-asetuksen 21 artikla). Koska ohjelma ja tämä verkkosivusto eivät säilytä omia henkilötietoja, meillä ei ole yhtään mitään tarkistettavaa tai poistettavaa. Vastaus tietopyyntöön on siksi hyvin lyhyt: emme tiedä sinusta yhtään mitään.",
     "contactTitle": "Yhteystiedot",
-    "contactText": "Kysymykset: avaa issue osoitteessa <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a> tai käytä <a href=\"https://haushoppe-its.de/impressum/\">oikeudellisissa tiedoissa</a> mainittua yhteystietoa."
+    "contactText": "Kaikissa Schnellbildiin liittyvissä asioissa – kysymykset, ideat, virheet ja myös tietojasi koskevat pyynnöt – ota meihin yhteyttä GitHubin kautta: avaa issue osoitteessa <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a>. Siellä vastaamme nopeimmin, ja vastauksesta on hyötyä muillekin. Issue on julkinen; asioissa, joita et halua käsitellä julkisesti, muut yhteystavat löytyvät <a href=\"https://haushoppe-its.de/impressum/\">oikeudellisista tiedoista</a>."
   }
 }
