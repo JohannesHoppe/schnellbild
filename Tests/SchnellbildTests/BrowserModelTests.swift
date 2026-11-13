@@ -47,6 +47,7 @@ final class FileActionsSpy {
     var keepBoth = true
     var confirm = true
     var confirmDetails: [String] = []
+    var confirmNames: [[String]] = []
     var moveError: Error?
     var trashError: Error?
     var reported: [Error] = []
@@ -57,7 +58,11 @@ final class FileActionsSpy {
         FileActions(
             reveal: { self.revealed.append($0) },
             openInDefaultApp: { self.opened.append($0) },
-            confirmTrash: { _, detail in self.confirmDetails.append(detail); return self.confirm },
+            confirmTrash: { names, detail in
+                self.confirmNames.append(names)
+                self.confirmDetails.append(detail)
+                return self.confirm
+            },
             trash: { url in
                 if let error = self.trashError { throw error }
                 self.trashed.append(url)
@@ -1072,6 +1077,27 @@ final class RenameTests: XCTestCase {
         XCTAssertEqual(m.names, ["..", "Zebra"])
         XCTAssertEqual(m.selectedEntry?.name, "Zebra")
         XCTAssertNil(m.renameTarget, "sheet closes")
+    }
+
+    /// The other pane renames or trashes the item while its rename sheet is
+    /// open here: the sheet follows the new name, or closes.
+    func testTheRenameSheetFollowsChangesFromElsewhere() async throws {
+        let tree = try TempTree(self)
+        let a = try tree.file("a.jpg")
+        try tree.file("b.jpg")
+        let notes = try tree.file("notes.txt")
+        let m = makeModel(FileActionsSpy())
+        await openAndWait(m, tree.root)
+        m.selectEntry(named: "a.jpg")
+        XCTAssertTrue(m.beginRename())
+        m.adopt([.moved(a, to: tree.root.appendingPathComponent("c.jpg"))])
+        XCTAssertEqual(m.renameTarget?.name, "c.jpg", "follows the new name")
+        m.adopt([.removed(tree.root.appendingPathComponent("c.jpg"))])
+        XCTAssertNil(m.renameTarget, "closes: the item is gone")
+        m.beginRename(try XCTUnwrap(m.otherFiles.first))
+        XCTAssertEqual(m.renameFileTarget?.url.lastPathComponent, "notes.txt")
+        m.adopt([.removed(notes)])
+        XCTAssertNil(m.renameFileTarget)
     }
 
     /// The files listed under the grid (not pictures or videos) are renamed,

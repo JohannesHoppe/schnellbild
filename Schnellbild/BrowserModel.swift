@@ -105,8 +105,9 @@ struct FileActions {
     /// An other file (not a picture, video or archive): only documents
     /// that hold no program, web locations only to web addresses.
     var openOtherFile: @MainActor (URL) -> Void = { if !LiveFiles.openOtherFile($0) { NSSound.beep() } }
-    /// `detail` says what goes with it (a folder's contents, an archive's parts).
-    var confirmTrash: @MainActor (_ name: String, _ detail: String) -> Bool
+    /// The names of what goes; `detail` says what goes with it (a folder's
+    /// contents, an archive's parts).
+    var confirmTrash: @MainActor (_ names: [String], _ detail: String) -> Bool
     /// Returns where the item now lies in the Trash (for Undo), if known.
     var trash: @MainActor (URL) throws -> URL?
     var move: @MainActor (_ from: URL, _ to: URL) throws -> Void
@@ -160,10 +161,17 @@ struct FileActions {
     static let live = FileActions(
         reveal: { NSWorkspace.shared.activateFileViewerSelecting([$0]) },
         openInDefaultApp: { LiveFiles.openWithDefaultApp($0) },
-        confirmTrash: { name, detail in
+        confirmTrash: { names, detail in
             let alert = NSAlert()
-            alert.messageText = String(localized: "Move “\(name)” to the Trash?")
-            alert.informativeText = detail
+            if names.count == 1 {
+                alert.messageText = String(localized: "Move “\(names[0])” to the Trash?")
+                alert.informativeText = detail
+            } else {
+                // Counted; the names (the first ten) under it
+                alert.messageText = String(localized: "Move \(names.count) items to the Trash?")
+                let listed = names.prefix(10).joined(separator: ", ") + (names.count > 10 ? ", …" : "")
+                alert.informativeText = listed + "\n\n" + detail
+            }
             alert.alertStyle = .warning
             alert.addButton(withTitle: String(localized: "Move to Trash"))
             alert.addButton(withTitle: String(localized: "Cancel"))
@@ -2825,17 +2833,17 @@ final class BrowserModel: ObservableObject {
         let new = old.deletingLastPathComponent().appendingPathComponent(name)
         try await renameOnDisk(old, new, name: name)
         undoHistory.record(UndoStep(kind: .rename, parts: [.moved(old, to: new)]))
+        renameFileTarget = nil
         apply(.moved(old, to: new))
         // A new extension can make it a picture, video or archive: the grid
         // shows it then
         if Self.mediaKind(of: new) != nil || ArchiveName.format(of: name) != nil { refresh(changed: [old.deletingLastPathComponent()]) }
-        renameFileTarget = nil
         return new
     }
 
     func moveToTrash(_ file: OtherFile) {
         guard canChange(file) else { return }
-        guard fileActions.confirmTrash(file.name, String(localized: "The file will be moved to the Trash.")) else { return }
+        guard fileActions.confirmTrash([file.name], String(localized: "The file will be moved to the Trash.")) else { return }
         trashFiles([(file.url, false)]) { [self] trashed in apply(trashed.map { FileChange.removed($0) }) }
     }
 
@@ -2893,7 +2901,7 @@ final class BrowserModel: ObservableObject {
                 ? String(localized: "The folder and everything in it, including files Schnellbild doesn't show, will be moved to the Trash.")
                 : files.count > 1 ? String(localized: "All parts of this archive will be moved to the Trash.")
                 : String(localized: "The file will be moved to the Trash.")
-            guard fileActions.confirmTrash(entry.name, detail) else { return }
+            guard fileActions.confirmTrash([entry.name], detail) else { return }
             trashItems([entry]) { [self] trashed in
                 guard !trashed.isEmpty else { return }
                 // (the other pane follows through `onFileChange`)
@@ -2911,9 +2919,8 @@ final class BrowserModel: ObservableObject {
     /// Every item confirmed goes, also after one that fails (it is reported;
     /// an item inside a folder trashed before it is gone with it).
     private func trashMarked(_ items: [GridEntry]) {
-        let names = items.prefix(4).map(\.name).joined(separator: ", ") + (items.count > 4 ? ", …" : "")
         let detail = String(localized: "The marked items will be moved to the Trash, folders with everything in them.")
-        guard fileActions.confirmTrash(names, detail) else { return }
+        guard fileActions.confirmTrash(items.map(\.name), detail) else { return }
         clearMarks()
         trashItems(items) { [self] trashed in apply(trashed.map { FileChange.removed($0) }) }
     }
@@ -3448,8 +3455,8 @@ final class BrowserModel: ObservableObject {
         // A folder named like an archive stays a folder
         if isFolder, ArchiveName.format(of: name) != nil { ArchivePath.noteFolder(new) }
         // (the other pane follows through `onFileChange`)
-        apply(.moved(old, to: new))
         renameTarget = nil
+        apply(.moved(old, to: new))
         return new
     }
 
@@ -3561,6 +3568,22 @@ final class BrowserModel: ObservableObject {
         keepSelection(index(of: keep)
             ?? (entries.isEmpty ? nil : previous.map { min($0, entries.count - 1) }))
         if slideshow != nil { applyToSlideshow(lookup) }
+        // An open rename sheet follows its item (renamed or moved by the
+        // other pane, by Undo) and closes when the item is gone
+        if let target = renameTarget {
+            if let url = lookup.url(target.url) {
+                if url != target.url { renameTarget = target.moved(to: url) }
+            } else {
+                renameTarget = nil
+            }
+        }
+        if let file = renameFileTarget {
+            if let url = lookup.url(file.url) {
+                if url != file.url { renameFileTarget = OtherFile(url: url, byteSize: file.byteSize) }
+            } else {
+                renameFileTarget = nil
+            }
+        }
     }
 
     /// The slideshow's items follow the changes too: what was moved or
