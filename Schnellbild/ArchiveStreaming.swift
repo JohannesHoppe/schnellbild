@@ -228,11 +228,15 @@ extension ArchiveStore {
               let item = listed.source.map({ index.byPath[$0] }) ?? listed, !item.isDirectory,
               let reader = index.reader ?? Self.reader(for: archiveURL) else { throw ArchiveError.notFound }
         // A size the archive doesn't state: counted by unpacking it once
-        // (stopped when the video is left)
+        // (stopped when the video is left), on a dispatch thread: it waits
+        // on the disk the whole entry long
         var size = item.size
         if size < 0 {
-            let counting = Task.detached { try Self.unpackedSize(reader, path: item.path, password: index.password) }
-            size = try await withTaskCancellationHandler { try await counting.value } onCancel: { counting.cancel() }
+            let stop = WalkStop()
+            let password = index.password, path = item.path
+            size = try await withTaskCancellationHandler {
+                try await Blocking.run { try Self.unpackedSize(reader, path: path, password: password, stop: { stop.isSet }) }
+            } onCancel: { stop.set() }
             try Task.checkCancellation()
         }
         return ArchiveEntryStream(size: size, reader: reader, path: item.path, password: index.password,
@@ -241,14 +245,16 @@ extension ArchiveStore {
 }
 
 extension ArchiveStore {
-    /// How many bytes an entry unpacks to.
-    nonisolated static func unpackedSize(_ reader: ArchiveReader, path: String, password: String?) throws -> Int64 {
+    /// How many bytes an entry unpacks to; `stop` ends the count early
+    /// (`CancellationError`).
+    nonisolated static func unpackedSize(_ reader: ArchiveReader, path: String, password: String?,
+                                         stop: @escaping () -> Bool = { false }) throws -> Int64 {
         var count: Int64 = 0
-        let outcome = try reader.readEntry(path, password: password, stop: { Task.isCancelled }) { bytes in
+        let outcome = try reader.readEntry(path, password: password, stop: stop) { bytes in
             count += Int64(bytes.count)
-            return !Task.isCancelled
+            return !stop()
         }
-        try Task.checkCancellation()
+        if stop() { throw CancellationError() }
         if let outcome { throw outcome }
         return count
     }
