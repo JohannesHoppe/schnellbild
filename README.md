@@ -24,7 +24,7 @@
 
 Open a folder, see thumbnails, look at one picture large, page through with the keyboard. Videos play right there, too, even AVI, MKV and WebM. No library to import into, no waiting, no clutter: it opens what you point it at, stays quick on big folders and network shares alike, and gets out of your way.
 
-## Why it doesn't suck
+## Why Schnellbild doesn't suck
 
 - **No ads, no tracking, no account.** It shows your pictures and talks to nobody.
 - **No upselling.** No pro version, no subscription, no "unlock" button. Every feature is in.
