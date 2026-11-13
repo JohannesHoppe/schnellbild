@@ -206,6 +206,8 @@
 "Click to rename this folder" = "クリックしてこのフォルダの名前を変更";
 "Built with" = "使用しているもの";
 "The full license texts are in the app (Contents/Resources/Licenses)." = "ライセンスの全文はApp内にあります(Contents/Resources/Licenses)。";
+"Privacy Policy" = "プライバシーポリシー";
+"VLCKit includes FFmpeg and other libraries, each under its own license." = "VLCKitにはFFmpegなどのライブラリが含まれており、それぞれ独自のライセンスに従います。";
 "plays the video formats macOS can't (AVI, MKV, WebM …)" = "macOSで再生できないビデオ形式を再生(AVI、MKV、WebM …)";
 "reads RAR archives" = "RARアーカイブを読み込み";
 "reads ZIP and 7z archives (the copy built into macOS)" = "ZIPと7zアーカイブを読み込み(macOS内蔵のもの)";

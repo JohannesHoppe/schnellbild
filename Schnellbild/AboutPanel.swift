@@ -31,12 +31,31 @@ enum AboutPanel {
         let use: String
         let license: String
         let link: String
+        /// What else it carries, under licenses of their own
+        var includes: String? = nil
+    }
+
+    /// The privacy policy on the website, in the language the UI shows
+    /// (Scripts/build_site.py: English at the root, every other language in
+    /// its folder, German's page named "datenschutz").
+    static var privacyPolicy: String {
+        privacyPolicy(for: Bundle.main.preferredLocalizations.first ?? "en")
+    }
+
+    static func privacyPolicy(for language: String) -> String {
+        let site = "https://schnellbild.haushoppe-its.de/"
+        switch language {
+        case "en": return site + "privacy/"
+        case "de": return site + "de/datenschutz/"
+        default: return site + language.lowercased() + "/privacy/"
+        }
     }
 
     static let components: [Component] = [
         Component(name: "VLCKit 3.7.5 (libVLC 3.0.24)", use: String(localized: "plays the video formats macOS can't (AVI, MKV, WebM …)"),
                   license: String(localized: "© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later. Built from its source without VLC's modules under the GPL; the build script and its changes are in Schnellbild's repository (github.com/JohannesHoppe/schnellbild)."),
-                  link: "https://code.videolan.org/videolan/VLCKit"),   // its source; THIRD-PARTY-NOTICES.md has the exact version
+                  link: "https://code.videolan.org/videolan/VLCKit",   // its source; THIRD-PARTY-NOTICES.md has the exact version
+                  includes: String(localized: "VLCKit includes FFmpeg and other libraries, each under its own license.")),
         Component(name: "UnRAR 7.2.7", use: String(localized: "reads RAR archives"),
                   // The license's own sentence stays as written (English)
                   license: String(localized: "© Alexander Roshal. The UnRAR license, in its own words:") + " "
@@ -67,13 +86,19 @@ private struct AboutView: View {
             ScrollView {
                 VStack(spacing: 14) {
                     Text("Schnellbild's own code is free software under the MIT License. The components below keep their own licenses.")
-                    link("https://github.com/JohannesHoppe/schnellbild")
+                    HStack(spacing: 16) {
+                        link("https://github.com/JohannesHoppe/schnellbild")
+                        Link("Privacy Policy", destination: URL(string: AboutPanel.privacyPolicy)!)
+                    }
                     Text("Built with").font(.headline).padding(.top, 4)
                     ForEach(AboutPanel.components, id: \.name) { component in
                         VStack(spacing: 3) {
                             Text(verbatim: component.name).fontWeight(.semibold)
                             Text(verbatim: component.use)
                             Text(verbatim: component.license).foregroundStyle(.secondary)
+                            if let includes = component.includes {
+                                Text(verbatim: includes).foregroundStyle(.secondary)
+                            }
                             link(component.link)
                         }
                     }

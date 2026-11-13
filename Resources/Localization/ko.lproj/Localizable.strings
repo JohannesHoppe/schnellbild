@@ -206,6 +206,8 @@
 "Click to rename this folder" = "클릭하여 이 폴더의 이름 변경";
 "Built with" = "사용한 구성 요소";
 "The full license texts are in the app (Contents/Resources/Licenses)." = "라이선스 전문은 앱 안에 있습니다(Contents/Resources/Licenses).";
+"Privacy Policy" = "개인정보 처리방침";
+"VLCKit includes FFmpeg and other libraries, each under its own license." = "VLCKit에는 FFmpeg와 기타 라이브러리가 포함되어 있으며, 각각 고유한 라이선스를 따릅니다.";
 "plays the video formats macOS can't (AVI, MKV, WebM …)" = "macOS가 재생하지 못하는 비디오 형식 재생(AVI, MKV, WebM …)";
 "reads RAR archives" = "RAR 아카이브 읽기";
 "reads ZIP and 7z archives (the copy built into macOS)" = "ZIP 및 7z 아카이브 읽기(macOS 내장 버전)";
