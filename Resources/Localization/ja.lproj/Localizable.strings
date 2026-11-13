@@ -314,3 +314,4 @@
 "Forget Folder Access" = "フォルダへのアクセスを消去";
 "Each folder asks for your permission again." = "各フォルダで再び許可を求めます。";
 "© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later. Built from its source without VLC's modules under the GPL; the build script and its changes are in Schnellbild's repository (github.com/JohannesHoppe/schnellbild)." = "© VideoLANおよびVLCの作者。GNU Lesser General Public License 2.1以降。GPLのVLCモジュールを含めずにソースコードからビルド。ビルドスクリプトと変更点はSchnellbildのリポジトリにあります（github.com/JohannesHoppe/schnellbild）。";
+"The link will be moved to the Trash. The folder it points to stays where it is." = "リンクはゴミ箱に入れられます。リンク先のフォルダはそのまま残ります。";

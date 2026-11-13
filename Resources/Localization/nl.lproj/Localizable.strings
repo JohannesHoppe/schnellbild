@@ -314,3 +314,4 @@
 "Forget Folder Access" = "Maptoegang vergeten";
 "Each folder asks for your permission again." = "Elke map vraagt dan opnieuw om je toestemming.";
 "© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later. Built from its source without VLC's modules under the GPL; the build script and its changes are in Schnellbild's repository (github.com/JohannesHoppe/schnellbild)." = "© VideoLAN en de VLC-auteurs. GNU Lesser General Public License 2.1 of later. Gebouwd vanuit de broncode zonder de VLC-modules onder de GPL; het buildscript en de wijzigingen staan in de repository van Schnellbild (github.com/JohannesHoppe/schnellbild).";
+"The link will be moved to the Trash. The folder it points to stays where it is." = "De link wordt naar de prullenmand verplaatst. De map waarnaar hij verwijst, blijft waar hij is.";

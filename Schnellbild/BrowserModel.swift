@@ -15,18 +15,32 @@ struct GridEntry: Identifiable, Hashable {
     /// Worked out once (`GridEntry.isArchive(_:kind:)`): the grid asks on
     /// every redraw, the counts for every entry of every search batch.
     let isArchive: Bool
+    /// A folder listed through a symbolic link: the folder it points to.
+    /// `url` is the link itself, so trash, rename, move and marks act on the
+    /// link (as in the Finder), and opening it goes to this folder.
+    var linkTarget: URL?
 
-    init(url: URL, kind: Kind, modDate: Date? = nil, byteSize: Int? = nil) {
+    init(url: URL, kind: Kind, modDate: Date? = nil, byteSize: Int? = nil, linkTarget: URL? = nil) {
         self.url = url
         self.kind = kind
         self.modDate = modDate
         self.byteSize = byteSize
-        isArchive = Self.isArchive(url, kind: kind)
+        self.linkTarget = linkTarget
+        isArchive = linkTarget == nil && Self.isArchive(url, kind: kind)
     }
 
     var id: URL { url }
     var name: String { kind == .parent ? ".." : url.lastPathComponent }
     var isMedia: Bool { kind == .image || kind == .video }
+    /// Where opening a folder goes: the folder a link points to, else the
+    /// folder itself.
+    var browseURL: URL { linkTarget ?? url }
+
+    /// The same entry at another place (a rename or move); a link keeps
+    /// pointing where it points, or follows its folder moved by the app.
+    func moved(to new: URL, target: URL? = nil) -> GridEntry {
+        GridEntry(url: new, kind: kind, modDate: modDate, byteSize: byteSize, linkTarget: target ?? linkTarget)
+    }
 }
 
 /// A file in a folder that the grid doesn't show (not a picture, video or
@@ -189,7 +203,12 @@ enum LiveFiles {
         NSWorkspace.shared.open([target], withApplicationAt: app, configuration: NSWorkspace.OpenConfiguration())
     }
 
-    /// The item behind links and aliases, if it may be opened at all.
+    /// The item behind links and aliases, if it may be opened at all. A
+    /// link or alias must lead to a file of its own extension ("Photos.zip"
+    /// pointing to "setup.pkg" is refused). Archives are only the formats the
+    /// grid opens (zip, rar, 7z and their comic forms): installer packages,
+    /// disk images, xip and Apple archives count as archives to the system
+    /// too, and opening them installs or mounts something.
     static func openableTarget(_ url: URL) -> URL? {
         var target = url.resolvingSymlinksInPath()
         if (try? target.resourceValues(forKeys: [.isAliasFileKey, .isSymbolicLinkKey]))?.isAliasFile == true {
@@ -200,9 +219,27 @@ enum LiveFiles {
               values.isPackage != true, values.isAliasFile != true || values.isDirectory == true,
               let type = values.contentType else { return nil }
         if values.isDirectory == true { return type.conforms(to: .folder) ? target : nil }
-        let allowed: [UTType] = [.image, .movie, .audiovisualContent, .pdf, .archive]
+        if target.lastPathComponent != url.lastPathComponent,
+           target.pathExtension.lowercased() != url.pathExtension.lowercased() { return nil }
+        if refusedTypes.contains(where: type.conforms(to:)) || refusedExtensions.contains(target.pathExtension.lowercased()) { return nil }
+        if type.conforms(to: .archive) || ArchiveName.format(of: target.lastPathComponent) != nil {
+            return type.conforms(to: .archive) && ArchiveName.format(of: target.lastPathComponent) != nil ? target : nil
+        }
+        let allowed: [UTType] = [.image, .movie, .audiovisualContent, .pdf]
         return allowed.contains(where: type.conforms(to:)) && !type.conforms(to: .executable) ? target : nil
     }
+
+    /// Kinds that run, install or mount something, or show active web
+    /// content (scripts, network), when opened.
+    private static let refusedTypes: [UTType] = [
+        .executable, .application, .applicationBundle, .script, .shellScript,
+        .package, .bundle, .diskImage, .systemPreferencesPane, .html, .xml, .webArchive, .svg,
+        UTType("com.apple.installer-package-archive"), UTType("com.apple.installer-meta-package"),
+        UTType("com.apple.xip-archive"), UTType("com.apple.archive"), UTType("public.xhtml"),
+        UTType("com.apple.terminal.shell-script"),
+        UTType("com.apple.automator-workflow"), UTType("com.apple.applescript.script"),
+        UTType("com.apple.applescript.text"), UTType("com.apple.configprofile"),
+        UTType("com.apple.internet-location"), UTType("com.apple.web-internet-location")].compactMap { $0 }
 
     /// One of the other files (not a picture, video or archive), with the
     /// app the Mac uses for it. Only kinds that hold no program: text,
@@ -233,7 +270,9 @@ enum LiveFiles {
         "scpt", "scptd", "applescript", "workflow", "action", "shortcut", "pkg", "mpkg", "dmg", "iso",
         "jar", "class", "fileloc", "inetloc", "afploc", "ftploc", "mailloc", "newsloc", "configprofile",
         "mobileconfig", "prefpane", "kext", "plugin", "osax", "bundle", "framework", "dylib", "so",
-        "exe", "msi", "bat", "cmd", "com", "ps1", "vbs", "js", "jse", "wsf", "lnk", "url", "webloc"]
+        "exe", "msi", "bat", "cmd", "com", "ps1", "vbs", "js", "jse", "wsf", "lnk", "url", "webloc",
+        "xip", "aar", "sparseimage", "sparsebundle", "img", "cdr", "toast",
+        "html", "htm", "shtml", "xhtml", "xht", "mht", "mhtml", "webarchive", "svg", "svgz", "hta", "xsl", "xslt"]
 
     private static func isWebLocation(_ url: URL) -> Bool {
         ["webloc", "url"].contains(url.pathExtension.lowercased())
@@ -271,13 +310,9 @@ enum LiveFiles {
         guard let values = try? target.resourceValues(forKeys: [.contentTypeKey, .isPackageKey, .isDirectoryKey, .isRegularFileKey]),
               values.isRegularFile == true, values.isPackage != true, values.isDirectory != true,
               let type = values.contentType else { return nil }
-        let refused: [UTType] = [.executable, .application, .applicationBundle, .script, .shellScript,
-                                 .package, .bundle, .diskImage, .systemPreferencesPane,
-                                 UTType("com.apple.installer-package-archive"), UTType("com.apple.terminal.shell-script"),
-                                 UTType("com.apple.automator-workflow"), UTType("com.apple.applescript.script"),
-                                 UTType("com.apple.applescript.text"), UTType("com.apple.configprofile"),
-                                 UTType("com.apple.internet-location"), UTType("com.apple.web-internet-location")].compactMap { $0 }
-        if refused.contains(where: type.conforms(to:)) { return nil }
+        // Web pages, web archives and SVG would open in a browser, which
+        // runs their scripts and loads from the network
+        if refusedTypes.contains(where: type.conforms(to:)) { return nil }
         // By name too: kinds that run or open something when opened, also
         // where the Mac files them under a harmless type (Terminal settings
         // are XML and can hold a command)
@@ -426,7 +461,7 @@ struct FileChange {
         guard entry.kind != .parent else { return entry }
         guard let url = apply(to: entry.url) else { return nil }
         guard url != entry.url else { return entry }
-        return GridEntry(url: url, kind: entry.kind, modDate: entry.modDate, byteSize: entry.byteSize)
+        return entry.moved(to: url)
     }
 
     /// A removed folder stays in the history (it then shows as empty).
@@ -693,7 +728,7 @@ final class SearchRun {
             if url == entry.url { return entry }
             // Moved out of the searched folder: no longer a result here
             guard stays(url) else { return nil }
-            return GridEntry(url: url, kind: entry.kind, modDate: entry.modDate, byteSize: entry.byteSize)
+            return entry.moved(to: url)
         }
         seen = Set(results.map { BrowserModel.canonicalPath($0.url) })
         if !finished {
@@ -901,6 +936,9 @@ final class BrowserModel: ObservableObject {
 
     /// The level of all drives (`/Volumes`): no parent of its own.
     nonisolated static func isDrivesLevel(_ url: URL) -> Bool { url.standardizedFileURL.path == volumesPath }
+    /// A volume on the drives' level ("/Volumes/USB", "Macintosh HD"): the
+    /// system mounts and ejects it, so it is never renamed, moved or trashed.
+    nonisolated static func isDrive(_ url: URL) -> Bool { isDrivesLevel(url.deletingLastPathComponent()) }
 
     // MARK: Rename
 
@@ -1483,12 +1521,14 @@ final class BrowserModel: ObservableObject {
         // A Finder alias is a file that LaunchServices follows anywhere (an
         // app): listed among the other files, never shown or opened as media
         if vals?.isAliasFile == true, vals?.isSymbolicLink != true { return nil }
-        // A symbolic link is what it points to: a link to a folder is that
-        // folder, at its real place (what is done in it is done there, so it
-        // says where); a link to a file counts by the file it points to (a
-        // "photo.jpg" pointing to a script is no photo)
+        // A symbolic link counts by what it points to: a link to a folder is
+        // listed as the link (trashed, renamed, moved as the link, as in the
+        // Finder) and opens the folder it points to; a link to a file counts
+        // by the file it points to (a "photo.jpg" pointing to a script is no
+        // photo, a "Photos.zip" pointing to an installer no archive)
         var target = item
-        if vals?.isSymbolicLink == true {
+        let isLink = vals?.isSymbolicLink == true
+        if isLink {
             target = item.resolvingSymlinksInPath()
             vals = try? target.resourceValues(forKeys: keys)
         }
@@ -1496,9 +1536,13 @@ final class BrowserModel: ObservableObject {
         if vals?.isPackage == true { return nil }
         if vals?.isDirectory == true {
             if ArchiveName.format(of: target.lastPathComponent) != nil { ArchivePath.noteFolder(target) }
-            return GridEntry(url: target, kind: .folder, modDate: date)
+            if ArchiveName.format(of: item.lastPathComponent) != nil { ArchivePath.noteFolder(item) }
+            return GridEntry(url: item, kind: .folder, modDate: date, linkTarget: isLink ? target : nil)
         }
         if target != item, mediaKind(of: target) != mediaKind(of: item) { return nil }
+        if isLink, ArchiveName.format(of: item.lastPathComponent) != nil,
+           ArchiveName.format(of: target.lastPathComponent) != ArchiveName.format(of: item.lastPathComponent)
+            || target.pathExtension.lowercased() != item.pathExtension.lowercased() { return nil }
         // An archive opens like a folder
         if ArchiveName.format(of: item.lastPathComponent) != nil {
             ArchivePath.noteArchive(item)
@@ -1575,7 +1619,7 @@ final class BrowserModel: ObservableObject {
     @Published private(set) var emptyFolders: Set<String> = []
 
     func isEmptyFolder(_ entry: GridEntry) -> Bool {
-        entry.kind == .folder && emptyFolders.contains(Self.canonicalPath(entry.url))
+        entry.kind == .folder && emptyFolders.contains(Self.canonicalPath(entry.browseURL))
     }
 
     func noteFolder(_ url: URL, empty: Bool) {
@@ -2086,7 +2130,8 @@ final class BrowserModel: ObservableObject {
                         if matcher.matches(url.lastPathComponent),
                            let match = entry(for: url, keys: keys) {
                             batch.entries.append(match)
-                            if match.kind == .folder, !match.isArchive { facts.found(folder: match.url) }
+                            // (the walk doesn't follow links: what it saw says nothing about theirs)
+                            if match.kind == .folder, !match.isArchive, match.linkTarget == nil { facts.found(folder: match.url) }
                         }
                         // (read along with the listing: no extra trip) A file,
                         // not a folder named like one, not a Finder alias
@@ -2492,7 +2537,7 @@ final class BrowserModel: ObservableObject {
         case .parent:
             goToParentFolder()
         case .folder:
-            open(folder: entry.url)
+            open(folder: entry.browseURL)
         case .image, .video:
             // The full view takes the keys, also when it was opened with the
             // mouse while the search field had focus.
@@ -2805,13 +2850,19 @@ final class BrowserModel: ObservableObject {
     /// something inside an archive: archives are only read).
     var selectionIsChangeable: Bool {
         guard let entry = selectedEntry, entry.kind != .parent else { return false }
-        return !ArchivePath.isInside(entry.url)
+        return canChange(entry)
+    }
+
+    /// Whether an item may be moved or trashed: one on disk, not inside an
+    /// archive (archives are only read), not a drive.
+    func canChange(_ entry: GridEntry) -> Bool {
+        entry.kind != .parent && !ArchivePath.isInside(entry.url) && !Self.isDrive(entry.url)
     }
 
     /// What the Trash takes: the marked items (grid), else the selected one.
     private var trashEntries: [GridEntry] {
-        guard mode == .grid else { return selectedMediaEntry.map { [$0] }?.filter { !ArchivePath.isInside($0.url) } ?? [] }
-        return actionEntries.filter { !ArchivePath.isInside($0.url) }
+        guard mode == .grid else { return selectedMediaEntry.map { [$0] }?.filter(canChange) ?? [] }
+        return actionEntries.filter(canChange)
     }
 
     /// The Trash has something to take (the menu item and ⌘⌫).
@@ -2827,7 +2878,7 @@ final class BrowserModel: ObservableObject {
         // Several (marked): all of them, after one confirmation
         if items.count > 1 { trashMarked(items); return }
         guard let entry = items.first ?? selectedEntry, entry.kind != .parent else { return }
-        guard !ArchivePath.isInside(entry.url) else { NSSound.beep(); return }   // archives are only read
+        guard canChange(entry) else { NSSound.beep(); return }   // archives are only read, drives ejected
         // What goes with it, said exactly: a folder's whole contents (also
         // what the grid doesn't show), all parts of a split archive (found
         // by listing its folder: off the main thread)
@@ -2836,7 +2887,9 @@ final class BrowserModel: ObservableObject {
         trashLookupPending = true
         onFiles({ isArchive ? ArchiveName.allFiles(of: url) : [url] }) { [self] files in
             trashLookupPending = false
-            let detail = entry.kind == .folder && !isArchive
+            let detail = entry.linkTarget != nil
+                ? String(localized: "The link will be moved to the Trash. The folder it points to stays where it is.")
+                : entry.kind == .folder && !isArchive
                 ? String(localized: "The folder and everything in it, including files Schnellbild doesn't show, will be moved to the Trash.")
                 : files.count > 1 ? String(localized: "All parts of this archive will be moved to the Trash.")
                 : String(localized: "The file will be moved to the Trash.")
@@ -3122,7 +3175,7 @@ final class BrowserModel: ObservableObject {
         let sourcePaths = sources.map(Self.canonicalPath)
         let candidates = sources.filter { source in
             let path = Self.canonicalPath(source)
-            return !ArchivePath.isInside(source) && path != target && !target.hasPrefix(path + "/")
+            return !ArchivePath.isInside(source) && !Self.isDrive(source) && path != target && !target.hasPrefix(path + "/")
                 // Not inside another item that goes along
                 && !sourcePaths.contains(where: { path.hasPrefix($0 + "/") })
                 // Never the folder shown or one around it
@@ -3340,7 +3393,7 @@ final class BrowserModel: ObservableObject {
     /// archive (archives are only read), not an archive split into parts
     /// by its name ("x.part1.rar", "x.7z.001").
     func canRename(_ entry: GridEntry) -> Bool {
-        guard entry.kind != .parent, !ArchivePath.isInside(entry.url) else { return false }
+        guard canChange(entry) else { return false }
         // (by the name the download will have: "x.7z.001.part" is a volume too)
         let name = ArchiveName.finalName(of: entry.name).lowercased()
         return !(entry.isArchive && (ArchiveName.rarPart(of: name) != nil || name.hasSuffix(".001")))
@@ -3481,7 +3534,9 @@ final class BrowserModel: ObservableObject {
         func entry(_ e: GridEntry) -> GridEntry? {
             guard e.kind != .parent else { return e }
             guard let url = lookup.url(e.url) else { return nil }
-            return url == e.url ? e : GridEntry(url: url, kind: e.kind, modDate: e.modDate, byteSize: e.byteSize)
+            // A link's folder moved or renamed by the app: the link leads there
+            let target = e.linkTarget.flatMap { lookup.url($0) }
+            return url == e.url && target == e.linkTarget ? e : e.moved(to: url, target: target)
         }
         let keep = selectedEntry.flatMap { lookup.url($0.url) }
         let previous = selection
@@ -3652,7 +3707,7 @@ final class BrowserModel: ObservableObject {
         if start == nil, folder == nil, mode == .grid, selectionChosen,
            let chosen = selectedEntry, chosen.kind != .parent {
             if chosen.isMedia { show.startAt = chosen.url }
-            else if chosen.kind == .folder { show.startInside = Self.canonicalPath(chosen.url) + "/" }
+            else if chosen.kind == .folder { show.startInside = Self.canonicalPath(chosen.browseURL) + "/" }
         }
         if show.waitingForStart { show.index = -1 }   // shown once the start has arrived
         let id = show.id
@@ -3672,9 +3727,9 @@ final class BrowserModel: ObservableObject {
                 if key == .captured { captured = await Self.captureDates(of: contents.filter(\.isMedia).map(\.url)) }
                 let sorted = Self.sortEntries(contents, key: key, ascending: ascending, captured: captured)
                 parts = [.media(sorted.filter(\.isMedia))]
-                    + sorted.filter { $0.kind == .folder && !$0.name.hasPrefix(".") }.map { .folder($0.url) }
+                    + sorted.filter { $0.kind == .folder && !$0.name.hasPrefix(".") }.map { .folder($0.browseURL) }
             } else {
-                parts = roots.map { $0.isMedia ? .media([$0]) : .folder($0.url) }
+                parts = roots.map { $0.isMedia ? .media([$0]) : .folder($0.browseURL) }
             }
             guard !Task.isCancelled else { return }
             // The part holding the start first: no waiting for the parts before it
