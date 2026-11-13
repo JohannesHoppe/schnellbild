@@ -302,6 +302,51 @@ final class SortTests: XCTestCase {
                         .map(\.name), ["other.jpg", "photo.jpg"])
     }
 
+    /// A folder too long to sort on the main thread: sorted off it to the
+    /// same order, re-sorted keeping the selection, and a rename put in
+    /// place without sorting it all again.
+    func testALongFolderSortsAsAShortOne() async throws {
+        let tree = try TempTree(self)
+        let count = BrowserModel.mainThreadSortLimit + 1_000
+        for i in 0..<count {
+            XCTAssertTrue(FileManager.default.createFile(atPath: tree.root.appendingPathComponent("img\(i).jpg").path, contents: nil))
+        }
+        let numbered = (0..<count).map { "img\($0).jpg" }
+        let m = makeModel()
+        await openAndWait(m, tree.root)
+        XCTAssertEqual(m.names, [".."] + numbered, "by name, numbers as numbers")
+        m.selectEntry(named: "img5.jpg")
+
+        m.setSort(.name)   // reversed, off the main thread
+        await waitUntil { m.names.dropFirst().first == numbered.last }
+        XCTAssertEqual(m.names, [".."] + numbered.reversed())
+        XCTAssertEqual(m.selectedEntry?.name, "img5.jpg", "the selection follows its item")
+
+        let old = tree.root.appendingPathComponent("img5.jpg")
+        let new = tree.root.appendingPathComponent("zzz.jpg")
+        try FileManager.default.moveItem(at: old, to: new)
+        m.apply(FileChange.moved(old, to: new))
+        XCTAssertEqual(m.names[1], "zzz.jpg", "the renamed one where it sorts now")
+        XCTAssertEqual(m.names, BrowserModel.sortEntries(m.entries, key: .name, ascending: false).map(\.name))
+        XCTAssertEqual(m.selectedEntry?.name, "zzz.jpg")
+    }
+
+    /// Changes followed in place give the order a full sort gives.
+    func testFollowingChangesKeepsTheOrder() {
+        let order = BrowserModel.EntryOrder(key: .name, ascending: true, captured: [:])
+        let list = order.sorted((0..<500).map { entry("p\($0).jpg", .image) } + [entry("dotdot", .parent), entry("f", .folder)])
+        let changes = FileChanges([
+            .moved(URL(fileURLWithPath: "/root/p7.jpg"), to: URL(fileURLWithPath: "/root/a.jpg")),
+            .moved(URL(fileURLWithPath: "/root/p300.jpg"), to: URL(fileURLWithPath: "/root/zz.jpg")),
+            .removed(URL(fileURLWithPath: "/root/p42.jpg"))
+        ])
+        let followed = order.following(list, changes)
+        XCTAssertEqual(followed.map(\.name), order.sorted(followed).map(\.name))
+        XCTAssertEqual(followed.count, list.count - 1)
+        XCTAssertEqual(Array(followed.map(\.name).prefix(4)), ["..", "f", "a.jpg", "p0.jpg"])
+        XCTAssertEqual(followed.last?.name, "zz.jpg")
+    }
+
     func testSortIsRemembered() {
         let defaults = makeTestDefaults()
         let first = BrowserModel(defaults: defaults)
