@@ -206,6 +206,8 @@
 "Click to rename this folder" = "Nimeä kansio uudelleen osoittamalla";
 "Built with" = "Tehty käyttäen";
 "The full license texts are in the app (Contents/Resources/Licenses)." = "Lisenssien koko tekstit ovat apissa (Contents/Resources/Licenses).";
+"Privacy Policy" = "Tietosuojakäytäntö";
+"VLCKit includes FFmpeg and other libraries, each under its own license." = "VLCKit sisältää FFmpegin ja muita kirjastoja, kukin omalla lisenssillään.";
 "plays the video formats macOS can't (AVI, MKV, WebM …)" = "toistaa videomuodot, joita macOS ei osaa (AVI, MKV, WebM …)";
 "reads RAR archives" = "lukee RAR-arkistoja";
 "reads ZIP and 7z archives (the copy built into macOS)" = "lukee ZIP- ja 7z-arkistoja (macOSiin sisäänrakennettu versio)";

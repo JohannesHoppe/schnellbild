@@ -206,6 +206,8 @@
 "Click to rename this folder" = "Bu klasörü yeniden adlandırmak için tıklayın";
 "Built with" = "Kullanılanlar";
 "The full license texts are in the app (Contents/Resources/Licenses)." = "Lisansların tam metinleri uygulamanın içinde (Contents/Resources/Licenses).";
+"Privacy Policy" = "Gizlilik Politikası";
+"VLCKit includes FFmpeg and other libraries, each under its own license." = "VLCKit, her biri kendi lisansına tabi olan FFmpeg ve diğer kütüphaneleri içerir.";
 "plays the video formats macOS can't (AVI, MKV, WebM …)" = "macOS’in oynatamadığı video biçimlerini oynatır (AVI, MKV, WebM …)";
 "reads RAR archives" = "RAR arşivlerini okur";
 "reads ZIP and 7z archives (the copy built into macOS)" = "ZIP ve 7z arşivlerini okur (macOS’te yerleşik sürüm)";

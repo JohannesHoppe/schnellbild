@@ -206,6 +206,8 @@
 "Click to rename this folder" = "Klicka för att byta namn på mappen";
 "Built with" = "Byggd med";
 "The full license texts are in the app (Contents/Resources/Licenses)." = "De fullständiga licenstexterna finns i appen (Contents/Resources/Licenses).";
+"Privacy Policy" = "Integritetspolicy";
+"VLCKit includes FFmpeg and other libraries, each under its own license." = "VLCKit innehåller FFmpeg och andra bibliotek, vart och ett under sin egen licens.";
 "plays the video formats macOS can't (AVI, MKV, WebM …)" = "spelar upp de videoformat som macOS inte kan (AVI, MKV, WebM …)";
 "reads RAR archives" = "läser RAR-arkiv";
 "reads ZIP and 7z archives (the copy built into macOS)" = "läser ZIP- och 7z-arkiv (versionen som är inbyggd i macOS)";
