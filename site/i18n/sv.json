@@ -1,0 +1,114 @@
+{
+  "name": "Svenska",
+  "privacySlug": "privacy",
+  "title": "Schnellbild – en bild- och videovisare för macOS som helt enkelt inte suger",
+  "description": "Schnellbild: en snabb, gratis bild- och videovisare för macOS. Mappar, miniatyrer, tangentbordet; MKV, WebM och AVI; ZIP, RAR och 7z som mappar; två paneler för att sortera bilder. Ingen reklam, ingen spårning, inget konto.",
+  "navFeatures": "Funktioner",
+  "navSafety": "Säkerhet",
+  "language": "Språk",
+  "iconAlt": "Schnellbilds appsymbol",
+  "tagline": "En bild- och videovisare för macOS som helt enkelt inte suger.",
+  "lead": "Öppna en mapp, se miniatyrerna, titta på en bild i stort format och bläddra med tangentbordet. Videor spelas direkt där, även MKV, AVI och WebM. Inget bibliotek att importera till, ingen väntan, inget krafs.",
+  "download": "Ladda ner gratis",
+  "store": "Mac App Store",
+  "storeSoon": "snart, för att stödja projektet",
+  "fineprint": "macOS 15 eller senare, Apple Silicon. Signerad med ett Developer ID, notariserad av Apple och körs i Apples App Sandbox. Båda versionerna är samma app med alla funktioner; den som köper den i App Store stöder utvecklingen.",
+  "shotAlt": "Schnellbild: mappar med förhandsvisningar och miniatyrer av bilder",
+  "stats": [
+    ["0", "reklam, spårare eller konton"],
+    ["0 kr", "för alla funktioner"],
+    ["20", "språk"],
+    ["100 %", "öppen källkod"]
+  ],
+  "whyTitle": "Därför suger den inte",
+  "why": [
+    ["Ingen reklam, ingen spårning, inget konto", "Den visar dina bilder och pratar inte med någon."],
+    ["Ingen merförsäljning", "Ingen pro-version, ingen prenumeration, ingen ”Lås upp”-knapp. Alla funktioner finns med."],
+    ["Inget onödigt", "Inget bibliotek att importera till, ingen redigerare, inget moln. Bara att titta på bilder och videor, och det riktigt bra."],
+    ["Snabb", "Miniatyrerna dyker upp medan du scrollar, även i stora mappar och på nätverksenheter."],
+    ["Säker från start", "Bilder, videor och arkiv från andra kör ingenting och går inte ut på nätet, utan att du behöver slå på något först."],
+    ["Kraschar inte", "Trasiga filer, udda format och långsamma diskar visar en platshållare i stället för att fälla appen."]
+  ],
+  "featuresTitle": "Vad den gör",
+  "features": [
+    {
+      "title": "Se bilden stort, bläddra med tangenterna",
+      "text": "<p>Mellanslag öppnar en bild så stor som fönstret tillåter, ← → bläddrar genom mappen. Zooma med styrplattan eller + −, rotera med ⌥← ⌥→, helskärm med <kbd>f</kbd>. Animerade GIF:ar, SVG och PDF ingår.</p><p>Ett bildspel (<kbd>s</kbd>) går igenom mappen och alla dess undermappar, bilder och videor lika.</p>",
+      "alt": "Ett foto i helvyn"
+    },
+    {
+      "title": "Videor, även de som macOS inte kan spela",
+      "text": "<p>MP4 och MOV spelas via macOS självt, MKV, WebM, AVI, WMV, FLV, MPEG, DVD-video och AVCHD via den inbyggda VLC-motorn.</p><ul><li>← → hoppar en tiondel av videon, ⇧← ⇧→ en hundradel</li><li>↑ ↓ ställer in volymen, för alla videor</li><li>Finder och Snabbtitt får miniatyrer även för MKV, WebM, WMV, FLV och VOB</li></ul>",
+      "alt": "En video som spelas i Schnellbild"
+    },
+    {
+      "title": "Arkiv öppnas som mappar",
+      "text": "<p>ZIP, RAR och 7z, serier (CBZ, CBR) inräknade, även med lösenord och i flera delar. Inget packas upp på disken, och videor spelas direkt från arkivet.</p>",
+      "alt": "Arkiv som visas som mappar med förhandsvisningar"
+    },
+    {
+      "title": "Sortera semesterbilderna som i Norton Commander",
+      "text": "<p><kbd>D</kbd> visar två mappar sida vid sida. Markera bilder, sedan kopierar <kbd>F5</kbd> och flyttar <kbd>F6</kbd> dem till andra sidan, eller dra dem dit.</p><p>Byt namn, ny mapp, papperskorgen, bokmärken – och ångra för allt.</p>",
+      "alt": "Två mappar sida vid sida i läget Två paneler"
+    },
+    {
+      "title": "Sök igenom alla undermappar",
+      "text": "<p>Sökfältet hittar namn på mappar, arkiv, bilder och videor, i den visade mappen och allt under den. Träffarna kommer medan sökningen pågår, även på en långsam nätverksenhet. Ignorera skiftläge, matcha skiftläge eller ett reguljärt uttryck.</p>",
+      "alt": "Sökträffar från mappen och dess undermappar"
+    },
+    {
+      "title": "Bättre bilder, orörda filer",
+      "text": "<p><kbd>E</kbd> förbättrar exponering, kontrast, mättnad och skärpa automatiskt, för både bilder och videor. <kbd>A</kbd> öppnar reglagen. Det är bara en vy: dina filer förblir som de är.</p>",
+      "alt": "Justeringsreglagen över ett foto"
+    },
+    {
+      "title": "Vad filen egentligen är",
+      "text": "<p><kbd>I</kbd> visar format, upplösning, kodekar, bithastighet, bitdjup, färgprofil och kamera, och en notis när filens filändelse inte stämmer med innehållet.</p>",
+      "alt": "Filinfo bredvid ett foto"
+    },
+    {
+      "title": "Alla tangenter nära till hands",
+      "text": "<p><kbd>F1</kbd> listar alla tangenter, även för utskrift; <kbd>K</kbd> visar ett litet tangentbord att klicka på. Rutnät eller lista (<kbd>L</kbd>), sortera efter namn, typ, datum eller storlek, flera fönster och en chefsknapp (<kbd>X</kbd>).</p>",
+      "alt": "Listan över tangenter (F1)"
+    }
+  ],
+  "safeTitle": "Säker med filer från andra",
+  "safeIntro": "Bilder, videor och arkiv från främlingar är just vad en visare är till för, så Schnellbild behandlar varje fil som fientlig, redan från start.",
+  "safe": [
+    ["I Apples App Sandbox.", "Ingen nätverksåtkomst alls, inga andra program startas, bara de mappar du öppnar för den."],
+    ["Bara läsning.", "Att titta på något ändrar det aldrig och packar aldrig upp det på disken."],
+    ["Videor kan inte gå ut på nätet.", "En ”video” som egentligen är en spellista som pekar mot internet spelar ingenting."],
+    ["Dubbelklick öppnar dokument, inte program.", "Appar, skript och installerare aldrig, inte ens när de gömmer sig bakom ett bildnamn."],
+    ["Signerad och notariserad,", "med Apples Hardened Runtime."]
+  ],
+  "safeMore": "Vad den gör i detalj och var gränsen går: <a href=\"https://github.com/JohannesHoppe/schnellbild#safe-with-files-from-others\">Säker med filer från andra</a> (på engelska).",
+  "modelsTitle": "Kommer du från Phiewer, IINA eller Norton Commander?",
+  "modelsText": "De var förebilderna: Phiewer för att bläddra bland bilder med tangentbordet, IINA för att snabbt hantera videor, Norton Commander för de två panelerna. Så står sig Schnellbild (på engelska): <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-phiewer-alternative\">ett gratis alternativ till Phiewer</a>, <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-iina-alternative-for-looking-through-videos\">ett gratis alternativ till IINA för att titta igenom videor</a>.",
+  "ossTitle": "Öppen källkod",
+  "ossText": "Schnellbild är fri programvara under MIT-licensen, källkoden finns <a href=\"https://github.com/JohannesHoppe/schnellbild\">på GitHub</a>. Hittat en bugg eller saknar du något? <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">Skapa ett ärende</a>.",
+  "languagesText": "På din Macs språk:",
+  "ctaTitle": "Redo när du är det.",
+  "ctaText": "Gratis, inget konto, inga villkor.",
+  "footerPrivacy": "Integritet",
+  "footerImprint": "Juridisk information",
+  "privacy": {
+    "title": "Integritetspolicy",
+    "description": "Schnellbild samlar inte in några personuppgifter: inget konto, ingen analys, ingen spårning, ingen nätverksåtkomst.",
+    "intro": "Schnellbild är en bild- och videovisare för macOS från HAUS HOPPE - ITS (Johannes Hoppe); den fullständiga adressen finns i den <a href=\"https://haushoppe-its.de/impressum/\">juridiska informationen</a>. Denna policy gäller appen, både när den laddas ner från GitHub och när den köps i Mac App Store (båda är samma app), samt denna webbplats.",
+    "appTitle": "Appen",
+    "appText": "<p><strong>Schnellbild samlar inte in några personuppgifter.</strong> Den har inget konto, ingen analys, ingen reklam och ingen spårning, och den ansluter inte till internet: den App Sandbox den körs i ger den ingen nätverksåtkomst alls.</p><p>Det här stannar på din Mac, och bara där:</p>",
+    "stays": [
+      "<strong>Inställningar</strong> (den senaste mappen, sorteringsordning, bokmärken, volym …) i appens egna inställningar.",
+      "<strong>Mappåtkomst:</strong> de mappar du har öppnat för Schnellbild, som macOS-bokmärken, så att den kan visa dem igen efter en omstart. Inställningar → {folderAccess} glömmer dem.",
+      "<strong>Arkivlösenord</strong> du har skrivit in, i din inloggningsnyckelring (posten ”Schnellbild archive passwords”); Inställningar → {forgetPasswords} tar bort dem.",
+      "<strong>Miniatyrer</strong>, i macOS egen miniatyrcache."
+    ],
+    "appOutro": "Schnellbild läser dina bilder, videor och arkiv bara för att visa dem för dig. Den skickar aldrig dem, deras namn eller något om dem någonstans. Apple kan samla in uppgifter om nedladdningen eller köpet enligt sin egen integritetspolicy; Schnellbild får ingenting av det.",
+    "siteTitle": "Denna webbplats",
+    "siteText": "Denna webbplats använder inga cookies, ingen analys och inget innehåll från andra servrar (inga webbtypsnitt, inga inbäddade videor). Den ligger på GitHub Pages, en tjänst från GitHub, Inc. (USA). När du besöker den loggar GitHub din IP-adress av säkerhetsskäl; se <a href=\"https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages#data-collection\">GitHub Pages: data collection</a> och <a href=\"https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement\">GitHubs integritetspolicy</a>. Den rättsliga grunden är vårt berättigade intresse av att leverera webbplatsen på ett säkert sätt (artikel 6.1 f i dataskyddsförordningen, GDPR). Även nedladdningen av appen kommer från GitHub.",
+    "rightsTitle": "Dina rättigheter",
+    "rightsText": "Enligt dataskyddsförordningen (GDPR) har du rätt till tillgång, rättelse, radering, begränsning av behandling, dataportabilitet och att göra invändningar, samt rätt att lämna in klagomål till en tillsynsmyndighet för dataskydd. Eftersom varken appen eller denna webbplats sparar några egna personuppgifter finns det i regel ingenting hos oss att slå upp eller radera.",
+    "contactTitle": "Kontakt",
+    "contactText": "Frågor: skapa ett ärende på <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a> eller använd kontaktuppgifterna i den <a href=\"https://haushoppe-its.de/impressum/\">juridiska informationen</a>."
+  }
+}

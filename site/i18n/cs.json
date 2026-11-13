@@ -1,0 +1,114 @@
+{
+  "name": "Čeština",
+  "privacySlug": "privacy",
+  "title": "Schnellbild – prohlížeč obrázků a videí pro macOS, který prostě není na houby",
+  "description": "Schnellbild: rychlý a bezplatný prohlížeč obrázků a videí pro macOS. Složky, miniatury, klávesnice; MKV, WebM a AVI; ZIP, RAR a 7z jako složky; dva panely pro třídění fotek. Žádné reklamy, žádné sledování, žádný účet.",
+  "navFeatures": "Funkce",
+  "navSafety": "Bezpečnost",
+  "language": "Jazyk",
+  "iconAlt": "Ikona aplikace Schnellbild",
+  "tagline": "Prohlížeč obrázků a videí pro macOS, který prostě není na houby.",
+  "lead": "Otevřete složku, prohlédněte si miniatury, podívejte se na obrázek ve velkém a listujte klávesnicí. Videa se přehrávají přímo na místě, i MKV, AVI a WebM. Žádná knihovna, do které je třeba importovat, žádné čekání, žádný nepořádek.",
+  "download": "Stáhnout zdarma",
+  "store": "Mac App Store",
+  "storeSoon": "brzy, na podporu projektu",
+  "fineprint": "macOS 15 nebo novější, Apple Silicon. Podepsáno pomocí Developer ID, notarizováno společností Apple, běží v App Sandboxu od Applu. Obě verze jsou stejná aplikace se všemi funkcemi; kdo si ji koupí v App Storu, podpoří její vývoj.",
+  "shotAlt": "Schnellbild: složky s náhledy a miniatury fotek",
+  "stats": [
+    ["0", "reklam, sledovačů či účtů"],
+    ["0 Kč", "za všechny funkce"],
+    ["20", "jazyků"],
+    ["100 %", "open source"]
+  ],
+  "whyTitle": "Proč není na houby",
+  "why": [
+    ["Žádné reklamy, žádné sledování, žádný účet", "Ukazuje vaše obrázky a s nikým se nebaví."],
+    ["Žádné přemlouvání k nákupu", "Žádná verze Pro, žádné předplatné, žádné tlačítko „Odemknout“. Všechny funkce jsou v ní."],
+    ["Žádná vata", "Žádná knihovna k importu, žádný editor, žádný cloud. Jen prohlížení fotek a videí, a pořádně."],
+    ["Rychlý", "Miniatury se objevují už během posouvání, i ve velkých složkách a na síťových discích."],
+    ["Bezpečný od začátku", "Obrázky, videa a archivy od jiných nic nespouštějí a nikam se nepřipojují, aniž byste museli cokoli zapínat."],
+    ["Nespadne", "Poškozené soubory, neobvyklé formáty a pomalé disky zobrazí zástupný symbol, místo aby aplikaci shodily."]
+  ],
+  "featuresTitle": "Co umí",
+  "features": [
+    {
+      "title": "Prohlížet ve velkém, listovat klávesami",
+      "text": "<p>Mezerník otevře obrázek tak velký, jak okno dovolí, ← → listují složkou. Zvětšujte trackpadem nebo + −, otáčejte ⌥← ⌥→, celá obrazovka klávesou <kbd>f</kbd>. Animované GIFy, SVG a PDF také.</p><p>Prezentace (<kbd>s</kbd>) projde složku i všechny její podsložky, fotky i videa.</p>",
+      "alt": "Fotka v plném zobrazení"
+    },
+    {
+      "title": "Videa, i ta, která macOS neumí přehrát",
+      "text": "<p>MP4 a MOV přehrává samotný macOS, MKV, WebM, AVI, WMV, FLV, MPEG, DVD video a AVCHD vestavěný engine VLC.</p><ul><li>← → skočí o desetinu videa, ⇧← ⇧→ o setinu</li><li>↑ ↓ nastavují hlasitost, pro všechna videa</li><li>Finder a Rychlý náhled dostanou miniatury i pro MKV, WebM, WMV, FLV a VOB</li></ul>",
+      "alt": "Video přehrávané ve Schnellbildu"
+    },
+    {
+      "title": "Archivy se otevírají jako složky",
+      "text": "<p>ZIP, RAR a 7z, včetně komiksů (CBZ, CBR), i s heslem a rozdělené na více částí. Nic se nerozbaluje na disk a videa se přehrávají přímo z archivu.</p>",
+      "alt": "Archivy zobrazené jako složky s náhledy"
+    },
+    {
+      "title": "Třiďte fotky z dovolené jako v Norton Commanderu",
+      "text": "<p><kbd>D</kbd> zobrazí dvě složky vedle sebe. Označte obrázky, pak je <kbd>F5</kbd> zkopíruje a <kbd>F6</kbd> přesune na druhou stranu – nebo je tam přetáhněte.</p><p>Přejmenování, nová složka, koš, záložky a u všeho možnost odvolat.</p>",
+      "alt": "Dvě složky vedle sebe ve dvou panelech"
+    },
+    {
+      "title": "Hledání ve všech podsložkách",
+      "text": "<p>Vyhledávací pole najde názvy složek, archivů, obrázků a videí v zobrazené složce i ve všem pod ní. Výsledky přibývají už během hledání, i na pomalém síťovém disku. Bez ohledu na velikost písmen, s ohledem na ni, nebo regulárním výrazem.</p>",
+      "alt": "Výsledky hledání ze složky a jejích podsložek"
+    },
+    {
+      "title": "Lepší obraz, soubory nedotčené",
+      "text": "<p><kbd>E</kbd> automaticky vylepší expozici, kontrast, sytost a ostrost, u fotek i videí. <kbd>A</kbd> otevře posuvníky. Jde jen o zobrazení: vaše soubory zůstanou, jak jsou.</p>",
+      "alt": "Posuvníky úprav nad fotkou"
+    },
+    {
+      "title": "Co soubor doopravdy je",
+      "text": "<p><kbd>I</kbd> ukáže formát, rozlišení, kodeky, datový tok, bitovou hloubku, barevný profil a fotoaparát – a upozorní, když přípona souboru neodpovídá jeho obsahu.</p>",
+      "alt": "Informace o souboru vedle fotky"
+    },
+    {
+      "title": "Všechny klávesy po ruce",
+      "text": "<p><kbd>F1</kbd> vypíše všechny klávesy, i k tisku; <kbd>K</kbd> ukáže malou klávesnici na klikání. Mřížka nebo seznam (<kbd>L</kbd>), řazení podle názvu, druhu, data nebo velikosti, více oken a šéfovo tlačítko (<kbd>X</kbd>).</p>",
+      "alt": "Seznam kláves (F1)"
+    }
+  ],
+  "safeTitle": "Bezpečně se soubory od jiných",
+  "safeIntro": "Obrázky, videa a archivy od cizích lidí jsou přesně to, k čemu prohlížeč slouží. Proto Schnellbild bere každý soubor jako nepřátelský, hned po instalaci.",
+  "safe": [
+    ["V App Sandboxu od Applu.", "Vůbec žádná síť, žádné spouštění jiných programů, jen složky, které mu otevřete."],
+    ["Pouze čtení.", "Prohlížení nic nemění a nic nerozbaluje na disk."],
+    ["Videa se nepřipojí k internetu.", "„Video“, které je ve skutečnosti playlist odkazující na internet, nepřehraje nic."],
+    ["Dvojklik otevírá dokumenty, ne programy.", "Aplikace, skripty a instalátory nikdy, ani když se skrývají za názvem obrázku."],
+    ["Podepsáno a notarizováno,", "s Hardened Runtime od Applu."]
+  ],
+  "safeMore": "Co přesně dělá a kde má své hranice: <a href=\"https://github.com/JohannesHoppe/schnellbild#safe-with-files-from-others\">Bezpečně se soubory od jiných</a> (anglicky).",
+  "modelsTitle": "Přecházíte z Phieweru, IINA nebo Norton Commanderu?",
+  "modelsText": "Ty byly vzorem: Phiewer pro procházení obrázků klávesnicí, IINA pro rychlou práci s videi, Norton Commander pro dva panely. Jak si Schnellbild vede ve srovnání (anglicky): <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-phiewer-alternative\">bezplatná alternativa k Phieweru</a>, <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-iina-alternative-for-looking-through-videos\">bezplatná alternativa k IINA pro procházení videí</a>.",
+  "ossTitle": "Open source",
+  "ossText": "Schnellbild je svobodný software pod licencí MIT, zdrojový kód je <a href=\"https://github.com/JohannesHoppe/schnellbild\">na GitHubu</a>. Našli jste chybu nebo vám něco chybí? <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">Založte issue</a>.",
+  "languagesText": "V jazyce vašeho Macu:",
+  "ctaTitle": "Připraveno, až budete vy.",
+  "ctaText": "Zdarma, bez účtu, bez háčků.",
+  "footerPrivacy": "Soukromí",
+  "footerImprint": "Právní informace",
+  "privacy": {
+    "title": "Zásady ochrany osobních údajů",
+    "description": "Schnellbild neshromažďuje žádné osobní údaje: žádný účet, žádná analytika, žádné sledování, žádný přístup k síti.",
+    "intro": "Schnellbild je prohlížeč obrázků a videí pro macOS od HAUS HOPPE - ITS (Johannes Hoppe); úplnou adresu najdete v <a href=\"https://haushoppe-its.de/impressum/\">právních informacích</a>. Tyto zásady se vztahují na aplikaci, staženou z GitHubu i zakoupenou v Mac App Storu (obojí je stejná aplikace), a na tento web.",
+    "appTitle": "Aplikace",
+    "appText": "<p><strong>Schnellbild neshromažďuje žádné osobní údaje.</strong> Nemá účet, analytiku, reklamu ani sledování a nepřipojuje se k internetu: App Sandbox, ve kterém běží, mu vůbec neumožňuje přístup k síti.</p><p>Na vašem Macu, a pouze tam, zůstává:</p>",
+    "stays": [
+      "<strong>Nastavení</strong> (poslední složka, řazení, záložky, hlasitost …) ve vlastních předvolbách aplikace.",
+      "<strong>Přístup ke složkám:</strong> složky, které jste Schnellbildu otevřeli, jako záložky macOS, aby je mohl po restartu znovu zobrazit. Nastavení → {folderAccess} je zapomene.",
+      "<strong>Hesla k archivům</strong>, která jste zadali, ve vaší přihlašovací klíčence (položka „Schnellbild archive passwords“); Nastavení → {forgetPasswords} je odstraní.",
+      "<strong>Miniatury</strong> ve vlastní mezipaměti miniatur systému macOS."
+    ],
+    "appOutro": "Schnellbild čte vaše obrázky, videa a archivy jen proto, aby vám je zobrazil. Nikdy je, jejich názvy ani nic o nich nikam neposílá. Apple může shromažďovat údaje o stažení nebo nákupu podle svých vlastních zásad ochrany osobních údajů; Schnellbild z nich nic nedostává.",
+    "siteTitle": "Tento web",
+    "siteText": "Tento web nepoužívá cookies, analytiku ani obsah z jiných serverů (žádná webová písma, žádná vložená videa). Je hostován na GitHub Pages, službě společnosti GitHub, Inc. (USA). Při návštěvě GitHub z bezpečnostních důvodů zaznamenává vaši IP adresu; viz <a href=\"https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages#data-collection\">GitHub Pages: data collection</a> a <a href=\"https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement\">prohlášení GitHubu o ochraně osobních údajů</a>. Právním základem je náš oprávněný zájem na bezpečném poskytování webu (čl. 6 odst. 1 písm. f) GDPR). Také aplikace se stahuje z GitHubu.",
+    "rightsTitle": "Vaše práva",
+    "rightsText": "Podle obecného nařízení o ochraně osobních údajů (GDPR) máte právo na přístup, opravu, výmaz, omezení zpracování, přenositelnost údajů a právo vznést námitku a dále právo podat stížnost u dozorového úřadu pro ochranu osobních údajů. Protože ani aplikace, ani tento web žádné vlastní osobní údaje neuchovávají, obvykle u nás není co vyhledat ani smazat.",
+    "contactTitle": "Kontakt",
+    "contactText": "Dotazy: založte issue na <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a> nebo použijte kontakt uvedený v <a href=\"https://haushoppe-its.de/impressum/\">právních informacích</a>."
+  }
+}
