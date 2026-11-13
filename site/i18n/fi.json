@@ -1,20 +1,20 @@
 {
   "name": "Suomi",
   "privacySlug": "privacy",
-  "title": "Schnellbild – kuvien ja videoiden katseluohjelma macOS:lle – eikä yhtään syvältä",
-  "seoTitle": "Schnellbild – ilmainen kuva- ja videokatselin Macille",
+  "title": "Schnellbild: kuvien ja videoiden katseluohjelma macOS:lle, eikä yhtään syvältä",
+  "seoTitle": "Schnellbild · ilmainen kuva- ja videokatselin Macille",
   "seoDescription": "Nopea, ilmainen kuvankatselin ja videosoitin Macille: pienoiskuvat, selaus näppäimistöllä, MKV, AVI ja WebM, ZIP ja RAR kansioina. Vaihtoehto Phiewerille.",
   "keywords": "kuvankatselin Mac, kuvien katselu macOS, ilmainen kuvankatselin, MKV-soitin Mac, AVI WebM toisto, Phiewer-vaihtoehto, IINA-vaihtoehto, RAR-kuvien avaaminen, sarjakuvat CBZ CBR, diaesitys, Schnellbild",
   "navFeatures": "Ominaisuudet",
   "navSafety": "Turvallisuus",
   "language": "Kieli",
   "iconAlt": "Schnellbildin ohjelmasymboli",
-  "tagline": "Kuvien ja videoiden katseluohjelma macOS:lle – eikä yhtään syvältä.",
+  "tagline": "Kuvien ja videoiden katseluohjelma macOS:lle, eikä yhtään syvältä.",
   "lead": "Avaa kansio, katso miniatyyrit, tarkastele yhtä kuvaa isona ja selaa näppäimistöllä. Myös videot toistuvat suoraan siinä, jopa MKV, AVI ja WebM. Ei kirjastoa, johon kuvat pitäisi tuoda, ei odottelua, ei sotkua.",
   "download": "Lataa ilmaiseksi",
   "store": "Mac App Store",
   "storeSoon": "pian, 0,99 € kehityksen tukemiseksi",
-  "fineprint": "macOS 15 tai uudempi, Apple Silicon. Allekirjoitettu Developer ID:llä, Applen notarisoima ja toimii Applen App Sandboxissa. Molemmat versiot ovat sama ohjelma kaikkine ominaisuuksineen; App Storesta ostava tukee sen kehitystä.",
+  "fineprint": "Molemmat versiot ovat sama ohjelma kaikkine ominaisuuksineen; App Storesta ostava tukee sen kehitystä. Kiitos! 🖤",
   "shotAlt": "Schnellbild: kansiot esikatseluineen ja kuvien miniatyyrit",
   "stats": [
     ["0", "mainosta, seurainta tai tiliä"],
@@ -22,7 +22,7 @@
     ["20", "kieltä"],
     ["MIT", "lisenssi, avointa lähdekoodia"]
   ],
-  "whyTitle": "Miksi se ei ole syvältä",
+  "whyTitle": "Miksi Schnellbild ei ole syvältä",
   "why": [
     ["Ei mainoksia, ei seurantaa, ei tiliä", "Se näyttää kuvasi eikä juttele kenellekään."],
     ["Ei lisämyyntiä", "Ei pro-versiota, ei tilausta, ei ”Avaa lukitus” -painiketta. Kaikki ominaisuudet ovat mukana."],
@@ -50,7 +50,7 @@
     },
     {
       "title": "Lajittele lomakuvat kuin Norton Commanderissa",
-      "text": "<p><kbd>D</kbd> näyttää kaksi kansiota rinnakkain. Merkitse kuvat, sitten <kbd>F5</kbd> kopioi ja <kbd>F6</kbd> siirtää ne toiselle puolelle – tai vedä ne sinne.</p><p>Uudelleennimeäminen, uusi kansio, roskakori, kirjanmerkit – ja uudelleennimeämisen, roskakoriin siirron, kopioinnin ja siirron voi kumota.</p>",
+      "text": "<p><kbd>D</kbd> näyttää kaksi kansiota rinnakkain. Merkitse kuvat, sitten <kbd>F5</kbd> kopioi ja <kbd>F6</kbd> siirtää ne toiselle puolelle, tai vedä ne sinne.</p><p>Uudelleennimeäminen, uusi kansio, roskakori ja kirjanmerkit. Uudelleennimeämisen, roskakoriin siirron, kopioinnin ja siirron voi myös kumota.</p>",
       "alt": "Kaksi kansiota rinnakkain kahden paneelin näkymässä"
     },
     {
@@ -112,6 +112,6 @@
     "rightsTitle": "Oikeutesi",
     "rightsText": "EU:n yleisen tietosuoja-asetuksen (GDPR) mukaan sinulla on oikeus saada pääsy tietoihin, oikaista ja poistaa ne, rajoittaa niiden käsittelyä ja siirtää ne järjestelmästä toiseen sekä oikeus tehdä valitus tietosuojavalvontaviranomaiselle. <strong>Sinulla on oikeus vastustaa</strong> oikeutettuun etuumme perustuvaa käsittelyä erityiseen tilanteeseesi liittyvällä perusteella (tietosuoja-asetuksen 21 artikla). Koska ohjelma ja tämä verkkosivusto eivät säilytä omia henkilötietoja, meillä ei ole yhtään mitään tarkistettavaa tai poistettavaa. Vastaus tietopyyntöön on siksi hyvin lyhyt: emme tiedä sinusta yhtään mitään.",
     "contactTitle": "Yhteystiedot",
-    "contactText": "Kaikissa Schnellbildiin liittyvissä asioissa – kysymykset, ideat, virheet ja myös tietojasi koskevat pyynnöt – ota meihin yhteyttä GitHubin kautta: avaa issue osoitteessa <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a>. Siellä vastaamme nopeimmin, ja vastauksesta on hyötyä muillekin. Issue on julkinen; asioissa, joita et halua käsitellä julkisesti, muut yhteystavat löytyvät <a href=\"https://haushoppe-its.de/impressum/\">oikeudellisista tiedoista</a>."
+    "contactText": "Kaikissa Schnellbildiin liittyvissä asioissa (kysymykset, ideat, virheet ja myös tietojasi koskevat pyynnöt) ota meihin yhteyttä GitHubin kautta: avaa issue osoitteessa <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a>. Siellä vastaamme nopeimmin, ja vastauksesta on hyötyä muillekin. Issue on julkinen; asioissa, joita et halua käsitellä julkisesti, muut yhteystavat löytyvät <a href=\"https://haushoppe-its.de/impressum/\">oikeudellisista tiedoista</a>."
   }
 }

@@ -1,8 +1,8 @@
 {
   "name": "한국어",
   "privacySlug": "privacy",
-  "title": "Schnellbild – 짜증 날 일 없는 macOS용 이미지·비디오 뷰어",
-  "seoTitle": "Schnellbild – Mac용 무료 이미지·비디오 뷰어 (MKV, RAR 지원)",
+  "title": "Schnellbild: 짜증 날 일 없는 macOS용 이미지·비디오 뷰어",
+  "seoTitle": "Schnellbild · Mac용 무료 이미지·비디오 뷰어 (MKV, RAR 지원)",
   "seoDescription": "macOS용 빠르고 무료인 사진 뷰어이자 비디오 플레이어. 썸네일, 키보드 탐색, MKV·AVI·WebM 재생, ZIP·RAR를 폴더처럼 열기. Phiewer와 IINA의 대안.",
   "keywords": "이미지 뷰어 Mac, 사진 뷰어 macOS, 무료 이미지 뷰어, MKV 플레이어 Mac, AVI WebM 재생, Phiewer 대안, IINA 대안, RAR 이미지 열기, 만화 CBZ CBR, 슬라이드쇼, Schnellbild",
   "navFeatures": "기능",
@@ -14,7 +14,7 @@
   "download": "무료 다운로드",
   "store": "Mac App Store",
   "storeSoon": "곧 출시, 개발 후원용",
-  "fineprint": "macOS 15 이상, Apple 실리콘. Developer ID로 서명되고 Apple의 공증을 받았으며 Apple의 App Sandbox에서 실행됩니다. 두 버전 모두 모든 기능을 갖춘 같은 앱입니다. App Store에서 구입하면 개발을 후원하게 됩니다.",
+  "fineprint": "두 버전 모두 모든 기능을 갖춘 같은 앱입니다. App Store에서 구입하면 개발을 후원하게 됩니다. 감사합니다! 🖤",
   "shotAlt": "Schnellbild: 미리보기가 있는 폴더와 사진 썸네일",
   "stats": [
     [
@@ -34,7 +34,7 @@
       "라이선스, 오픈 소스"
     ]
   ],
-  "whyTitle": "짜증 날 일 없는 이유",
+  "whyTitle": "Schnellbild로 짜증 날 일 없는 이유",
   "why": [
     [
       "광고도, 추적도, 계정도 없음",

@@ -1,8 +1,8 @@
 {
   "name": "Türkçe",
   "privacySlug": "privacy",
-  "title": "Schnellbild – macOS için sinir bozmayan bir görüntü ve video görüntüleyici",
-  "seoTitle": "Schnellbild – Mac için ücretsiz resim ve video görüntüleyici",
+  "title": "Schnellbild: macOS için sinir bozmayan bir görüntü ve video görüntüleyici",
+  "seoTitle": "Schnellbild · Mac için ücretsiz resim ve video görüntüleyici",
   "seoDescription": "Mac için hızlı, ücretsiz fotoğraf görüntüleyici ve video oynatıcı: küçük resimler, klavye, MKV, AVI, WebM, klasör gibi ZIP ve RAR. Phiewer alternatifi.",
   "keywords": "resim görüntüleyici Mac, fotoğraf görüntüleyici macOS, ücretsiz fotoğraf görüntüleyici, MKV oynatıcı Mac, AVI WebM oynatma, Phiewer alternatifi, IINA alternatifi, RAR içindeki resimleri açma, CBZ CBR çizgi roman, slayt gösterisi, Schnellbild",
   "navFeatures": "Özellikler",
@@ -14,7 +14,7 @@
   "download": "Ücretsiz indirin",
   "store": "Mac App Store",
   "storeSoon": "yakında, projeye destek için",
-  "fineprint": "macOS 15 veya üstü, Apple silicon. Developer ID ile imzalı, Apple tarafından onaylanmış (notarized) ve Apple’ın App Sandbox’ında çalışır. İki sürüm de tüm özellikleriyle aynı uygulamadır; App Store’dan satın alan, geliştirmesine destek olur.",
+  "fineprint": "İki sürüm de tüm özellikleriyle aynı uygulamadır; App Store’dan satın alan, geliştirmesine destek olur. Çok teşekkürler! 🖤",
   "shotAlt": "Schnellbild: önizlemeli klasörler ve fotoğraf küçük resimleri",
   "stats": [
     ["0", "reklam, izleyici veya hesap"],
@@ -22,7 +22,7 @@
     ["20", "dil"],
     ["MIT", "lisanslı, açık kaynak"]
   ],
-  "whyTitle": "Neden sinir bozmuyor",
+  "whyTitle": "Schnellbild neden sinir bozmuyor",
   "why": [
     ["Reklam yok, izleme yok, hesap yok", "Resimlerinizi gösterir ve kimseyle konuşmaz."],
     ["Satış baskısı yok", "Pro sürüm yok, abonelik yok, “Kilidi aç” düğmesi yok. Tüm özellikler dahil."],
@@ -112,6 +112,6 @@
     "rightsTitle": "Haklarınız",
     "rightsText": "AB Genel Veri Koruma Tüzüğü (GDPR) kapsamında erişim, düzeltme, silme, işlemenin kısıtlanması ve veri taşınabilirliği haklarına ve bir veri koruma denetim makamına şikâyette bulunma hakkına sahipsiniz. <strong>Özel durumunuzdan kaynaklanan nedenlerle, meşru menfaatimize dayanan işlemeye itiraz etme hakkına sahipsiniz</strong> (GDPR md. 21). Ne uygulama ne de bu web sitesi kendine ait kişisel veri tutmadığından, bizim tarafımızda bakılacak veya silinecek hiçbir şey yoktur. Bu yüzden erişim talebine vereceğimiz yanıt çok kısa olacaktır: Hakkınızda hiçbir şey bilmiyoruz.",
     "contactTitle": "İletişim",
-    "contactText": "Schnellbild ile ilgili her konuda – sorular, fikirler, hatalar ve verilerinizle ilgili talepler dahil – lütfen bize GitHub üzerinden ulaşın: <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a> adresinde bir issue açın. En hızlı orada yanıt veriyoruz ve yanıt başkalarının da işine yarıyor. Issue herkese açıktır; herkesin önünde konuşmak istemediğiniz konular için <a href=\"https://haushoppe-its.de/impressum/\">künyede</a> başka iletişim yolları bulabilirsiniz."
+    "contactText": "Schnellbild ile ilgili her konuda (sorular, fikirler, hatalar ve verilerinizle ilgili talepler dahil) lütfen bize GitHub üzerinden ulaşın: <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a> adresinde bir issue açın. En hızlı orada yanıt veriyoruz ve yanıt başkalarının da işine yarıyor. Issue herkese açıktır; herkesin önünde konuşmak istemediğiniz konular için <a href=\"https://haushoppe-its.de/impressum/\">künyede</a> başka iletişim yolları bulabilirsiniz."
   }
 }

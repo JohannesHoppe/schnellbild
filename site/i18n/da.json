@@ -1,8 +1,8 @@
 {
   "name": "Dansk",
   "privacySlug": "privacy",
-  "title": "Schnellbild – en billed- og videoviser til macOS, der bare ikke er noget bras",
-  "seoTitle": "Schnellbild – gratis billed- og videoviser til Mac",
+  "title": "Schnellbild: en billed- og videoviser til macOS, der bare ikke er noget bras",
+  "seoTitle": "Schnellbild · gratis billed- og videoviser til Mac",
   "seoDescription": "Hurtig, gratis billedviser og videoafspiller til Mac: miniaturer, tastatur, MKV, AVI og WebM, ZIP og RAR som mapper. Alternativ til Phiewer og IINA.",
   "keywords": "billedviser Mac, fotoviser macOS, gratis billedviser, MKV-afspiller Mac, afspil AVI WebM, Phiewer-alternativ, IINA-alternativ, åbn billeder i RAR, tegneserier CBZ CBR, diasshow, Schnellbild",
   "navFeatures": "Funktioner",
@@ -14,7 +14,7 @@
   "download": "Hent gratis",
   "store": "Mac App Store",
   "storeSoon": "snart, for at støtte udviklingen",
-  "fineprint": "macOS 15 eller nyere, Apple silicon. Signeret med et Developer ID, notariseret af Apple og kører i Apples App Sandbox. Begge versioner er den samme app med alle funktioner; den, der køber den i App Store, støtter udviklingen.",
+  "fineprint": "Begge versioner er den samme app med alle funktioner; den, der køber den i App Store, støtter udviklingen. Mange tak! 🖤",
   "shotAlt": "Schnellbild: mapper med eksempelbilleder og miniaturer af fotos",
   "stats": [
     ["0", "reklamer, sporingsværktøjer eller konti"],
@@ -22,13 +22,13 @@
     ["20", "sprog"],
     ["MIT", "licens, open source"]
   ],
-  "whyTitle": "Derfor er den ikke noget bras",
+  "whyTitle": "Derfor er Schnellbild ikke noget bras",
   "why": [
     ["Ingen reklamer, ingen sporing, ingen konto", "Den viser dine billeder og taler ikke med nogen."],
     ["Intet mersalg", "Ingen pro-version, intet abonnement, ingen »Lås op«-knap. Alle funktioner er med."],
-    ["Intet fyld", "Intet bibliotek at importere til, ingen editor, ingen sky. Kun det at se fotos og videoer – og det gør den godt."],
+    ["Intet fyld", "Intet bibliotek at importere til, ingen editor, ingen sky. Kun det at se fotos og videoer, og det gør den godt."],
     ["Hurtig", "Miniaturerne dukker op, mens du scroller, også i store mapper og på netværksdrev."],
-    ["Sikker fra start", "Billeder, videoer og arkiver fra andre kører intet og går ingen steder på nettet – uden at du først skal slå noget til."],
+    ["Sikker fra start", "Billeder, videoer og arkiver fra andre kører intet og går ingen steder på nettet, uden at du først skal slå noget til."],
     ["Går ikke ned", "Ødelagte filer, mærkelige formater og langsomme diske viser en pladsholder i stedet for at vælte appen."]
   ],
   "featuresTitle": "Hvad den kan",
@@ -50,7 +50,7 @@
     },
     {
       "title": "Sortér feriebillederne som i Norton Commander",
-      "text": "<p><kbd>D</kbd> viser to mapper side om side. Markér billeder, så kopierer <kbd>F5</kbd> og flytter <kbd>F6</kbd> dem til den anden side – eller træk dem derover.</p><p>Omdøb, ny mappe, papirkurv, bogmærker og fortryd for omdøbning, flytning til papirkurven, kopiering og flytning.</p>",
+      "text": "<p><kbd>D</kbd> viser to mapper side om side. Markér billeder, så kopierer <kbd>F5</kbd> og flytter <kbd>F6</kbd> dem til den anden side, eller træk dem derover.</p><p>Omdøb, ny mappe, papirkurv, bogmærker og fortryd for omdøbning, flytning til papirkurven, kopiering og flytning.</p>",
       "alt": "To mapper side om side med To paneler"
     },
     {
@@ -65,7 +65,7 @@
     },
     {
       "title": "Hvad filen i virkeligheden er",
-      "text": "<p><kbd>I</kbd> viser format, opløsning, codecs, bitrate, bitdybde, farveprofil og kamera – og en bemærkning, når filens filtype ikke passer til indholdet.</p>",
+      "text": "<p><kbd>I</kbd> viser format, opløsning, codecs, bitrate, bitdybde, farveprofil og kamera. Passer filens filtype ikke til indholdet, får du en bemærkning.</p>",
       "alt": "Filinfo ved siden af et foto"
     },
     {
@@ -75,12 +75,12 @@
     }
   ],
   "safeTitle": "Sikker med filer fra andre",
-  "safeIntro": "Billeder, videoer og arkiver fra fremmede er netop det, en viser er til for. Derfor behandler Schnellbild hver fil som fjendtlig – helt fra start.",
+  "safeIntro": "Billeder, videoer og arkiver fra fremmede er netop det, en viser er til for. Derfor behandler Schnellbild hver fil som fjendtlig, helt fra start.",
   "safe": [
     ["I Apples App Sandbox.", "Ingen netværksadgang overhovedet, starter ingen programmer af sig selv, ser kun de mapper, du åbner for den, plus Billeder, Film og Overførsler."],
     ["Kun læsning.", "At se på noget ændrer det aldrig og pakker det aldrig ud på disken."],
     ["Videoer kan ikke gå på nettet.", "En »video«, der i virkeligheden er en playliste, som peger ud på internettet, afspiller intet."],
-    ["Dobbeltklik åbner dokumenter, ikke programmer.", "Aldrig apps, scripts eller installationsprogrammer – heller ikke når de gemmer sig bag et billednavn."],
+    ["Dobbeltklik åbner dokumenter, ikke programmer.", "Aldrig apps, scripts eller installationsprogrammer, heller ikke når de gemmer sig bag et billednavn."],
     ["Signeret og notariseret,", "med Apples Hardened Runtime."]
   ],
   "safeMore": "Hvad den gør i detaljer, og hvor grænsen går: <a href=\"https://github.com/JohannesHoppe/schnellbild#safe-with-files-from-others\">Sikker med filer fra andre</a> (på engelsk).",
@@ -112,6 +112,6 @@
     "rightsTitle": "Dine rettigheder",
     "rightsText": "Efter databeskyttelsesforordningen (GDPR) har du ret til indsigt, berigtigelse, sletning, begrænsning af behandling og dataportabilitet samt ret til at klage til en tilsynsmyndighed for databeskyttelse. <strong>Du har ret til at gøre indsigelse</strong> mod behandling på grundlag af vores legitime interesse af grunde, der vedrører din særlige situation (databeskyttelsesforordningens artikel 21). Da hverken appen eller dette websted opbevarer egne personoplysninger, er der overhovedet intet hos os at slå op eller slette. Et svar på en anmodning om indsigt bliver derfor meget kort: Vi ved slet intet om dig.",
     "contactTitle": "Kontakt",
-    "contactText": "For alt om Schnellbild – spørgsmål, idéer, fejl og også henvendelser om dine data – kontakt os helst via GitHub: opret et issue på <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a>. Der svarer vi hurtigst, og andre kan også få gavn af svaret. Et issue er offentligt; til det, du hellere ikke vil drøfte offentligt, finder du andre kontaktmuligheder i de <a href=\"https://haushoppe-its.de/impressum/\">juridiske oplysninger</a>."
+    "contactText": "For alt om Schnellbild (spørgsmål, idéer, fejl og også henvendelser om dine data) kontakt os helst via GitHub: opret et issue på <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a>. Der svarer vi hurtigst, og andre kan også få gavn af svaret. Et issue er offentligt; til det, du hellere ikke vil drøfte offentligt, finder du andre kontaktmuligheder i de <a href=\"https://haushoppe-its.de/impressum/\">juridiske oplysninger</a>."
   }
 }

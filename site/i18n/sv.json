@@ -1,8 +1,8 @@
 {
   "name": "Svenska",
   "privacySlug": "privacy",
-  "title": "Schnellbild – en bild- och videovisare för macOS som helt enkelt inte suger",
-  "seoTitle": "Schnellbild – gratis bild- och videovisare för Mac",
+  "title": "Schnellbild: en bild- och videovisare för macOS som helt enkelt inte suger",
+  "seoTitle": "Schnellbild · gratis bild- och videovisare för Mac",
   "seoDescription": "Snabb, gratis bildvisare och videospelare för Mac: miniatyrer, tangentbord, MKV, AVI och WebM, ZIP och RAR som mappar. Alternativ till Phiewer och IINA.",
   "keywords": "bildvisare Mac, fotovisare macOS, gratis bildvisare, MKV-spelare Mac, spela AVI WebM, Phiewer-alternativ, IINA-alternativ, öppna bilder i RAR, serier CBZ CBR, bildspel, Schnellbild",
   "navFeatures": "Funktioner",
@@ -14,7 +14,7 @@
   "download": "Ladda ner gratis",
   "store": "Mac App Store",
   "storeSoon": "snart, för att stödja utvecklingen",
-  "fineprint": "macOS 15 eller senare, Apple Silicon. Signerad med ett Developer ID, notariserad av Apple och körs i Apples App Sandbox. Båda versionerna är samma app med alla funktioner; den som köper den i App Store stöder utvecklingen.",
+  "fineprint": "Båda versionerna är samma app med alla funktioner; den som köper den i App Store stöder utvecklingen. Tack så mycket! 🖤",
   "shotAlt": "Schnellbild: mappar med förhandsvisningar och miniatyrer av bilder",
   "stats": [
     ["0", "reklam, spårare eller konton"],
@@ -22,7 +22,7 @@
     ["20", "språk"],
     ["MIT", "licens, öppen källkod"]
   ],
-  "whyTitle": "Därför suger den inte",
+  "whyTitle": "Därför suger inte Schnellbild",
   "why": [
     ["Ingen reklam, ingen spårning, inget konto", "Den visar dina bilder och pratar inte med någon."],
     ["Ingen merförsäljning", "Ingen pro-version, ingen prenumeration, ingen ”Lås upp”-knapp. Alla funktioner finns med."],
@@ -50,7 +50,7 @@
     },
     {
       "title": "Sortera semesterbilderna som i Norton Commander",
-      "text": "<p><kbd>D</kbd> visar två mappar sida vid sida. Markera bilder, sedan kopierar <kbd>F5</kbd> och flyttar <kbd>F6</kbd> dem till andra sidan, eller dra dem dit.</p><p>Byt namn, ny mapp, papperskorgen, bokmärken – och ångra för namnbyte, papperskorg, kopiering och flytt.</p>",
+      "text": "<p><kbd>D</kbd> visar två mappar sida vid sida. Markera bilder, sedan kopierar <kbd>F5</kbd> och flyttar <kbd>F6</kbd> dem till andra sidan, eller dra dem dit.</p><p>Byt namn, ny mapp, papperskorgen och bokmärken. Namnbyte, papperskorg, kopiering och flytt går att ångra.</p>",
       "alt": "Två mappar sida vid sida i läget Två paneler"
     },
     {
@@ -112,6 +112,6 @@
     "rightsTitle": "Dina rättigheter",
     "rightsText": "Enligt dataskyddsförordningen (GDPR) har du rätt till tillgång, rättelse, radering, begränsning av behandling och dataportabilitet, samt rätt att lämna in klagomål till en tillsynsmyndighet för dataskydd. <strong>Du har rätt att invända</strong> mot behandling som grundar sig på vårt berättigade intresse, av skäl som hänför sig till din specifika situation (artikel 21 i dataskyddsförordningen). Eftersom varken appen eller denna webbplats sparar några egna personuppgifter finns det absolut ingenting hos oss att slå upp eller radera. Ett svar på en begäran om registerutdrag blir därför mycket kort: Vi vet absolut ingenting om dig.",
     "contactTitle": "Kontakt",
-    "contactText": "För allt som rör Schnellbild – frågor, idéer, fel och även förfrågningar om dina uppgifter – kontakta oss helst via GitHub: skapa ett ärende på <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a>. Där svarar vi snabbast, och andra har också nytta av svaret. Ett ärende är offentligt; för sådant du hellre inte tar upp offentligt finns andra kontaktvägar i den <a href=\"https://haushoppe-its.de/impressum/\">juridiska informationen</a>."
+    "contactText": "För allt som rör Schnellbild (frågor, idéer, fel och även förfrågningar om dina uppgifter) kontakta oss helst via GitHub: skapa ett ärende på <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a>. Där svarar vi snabbast, och andra har också nytta av svaret. Ett ärende är offentligt; för sådant du hellre inte tar upp offentligt finns andra kontaktvägar i den <a href=\"https://haushoppe-its.de/impressum/\">juridiska informationen</a>."
   }
 }
