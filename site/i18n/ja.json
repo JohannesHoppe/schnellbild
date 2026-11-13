@@ -155,7 +155,7 @@
     "siteTitle": "本ウェブサイト",
     "siteText": "本ウェブサイトは、Cookie、解析、ほかのサーバからのコンテンツ（Webフォントや埋め込みビデオなど）を一切使用していません。ホスティングには、GitHub, Inc.（米国）のサービスであるGitHub Pagesを利用しています。アクセス時には、GitHubがセキュリティ上の目的でIPアドレスを記録・保存します。詳しくは<a href=\"https://docs.github.com/ja/pages/getting-started-with-github-pages/what-is-github-pages#data-collection\">GitHub Pages：データ収集</a>および<a href=\"https://docs.github.com/ja/site-policy/privacy-policies/github-general-privacy-statement\">GitHubのプライバシーに関する声明</a>をご覧ください。このログの保存期間はGitHubが決めており、当方はログにアクセスできません。GitHubはEU-U.S. Data Privacy Frameworkに参加しています。欧州委員会は、この枠組みのもとで米国が十分な保護水準を確保していると決定しています（GDPR第45条）。法的根拠は、本ウェブサイトを安全に配信するという当方の正当な利益です（EU一般データ保護規則（GDPR）第6条第1項(f)）。Appのダウンロードも、GitHubから提供されます。",
     "rightsTitle": "お客様の権利",
-    "rightsText": "GDPRに基づき、お客様には、アクセス、訂正、消去、処理の制限、データポータビリティの各権利、およびデータ保護監督機関に苦情を申し立てる権利があります。<strong>また、ご自身の特別な状況に関する理由により、当方の正当な利益に基づく処理に異議を申し立てる権利があります</strong>（GDPR第21条）。Appも本ウェブサイトも独自に個人データを保持していないため、通常、当方で照会や削除を行うべきものはありません。",
+    "rightsText": "GDPRに基づき、お客様には、アクセス、訂正、消去、処理の制限、データポータビリティの各権利、およびデータ保護監督機関に苦情を申し立てる権利があります。<strong>また、ご自身の特別な状況に関する理由により、当方の正当な利益に基づく処理に異議を申し立てる権利があります</strong>（GDPR第21条）。Appも本ウェブサイトも独自に個人データを保持していないため、当方で照会や削除を行うべきものは一切ありません。そのため、開示請求への回答はごく短いものになります。当方はあなたについて何ひとつ知りません。",
     "contactTitle": "お問い合わせ",
     "contactText": "ご質問は、<a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a>でIssueを作成するか、<a href=\"https://haushoppe-its.de/impressum/\">法的情報</a>に記載の連絡先までお寄せください。"
   }
