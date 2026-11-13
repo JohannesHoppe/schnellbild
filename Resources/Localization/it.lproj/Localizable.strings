@@ -158,8 +158,8 @@
 "Video: 1 % of the length back / ahead" = "Video: 1 % della durata indietro / avanti";
 "−1 %" = "−1 %";
 "+1 %" = "+1 %";
-"Louder" = "Più alto";
-"Quieter" = "Più basso";
+"Louder" = "Più forte";
+"Quieter" = "Più piano";
 "Pictures zoomed in: look further up / down · Videos: volume up / down (remembered)" = "Immagini ingrandite: guarda più in alto / in basso · Video: volume su / giù (memorizzato)";
 "%lld so far" = "%lld finora";
 "New Folder" = "Nuova cartella";
