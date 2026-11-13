@@ -2,7 +2,9 @@
   "name": "Čeština",
   "privacySlug": "privacy",
   "title": "Schnellbild – prohlížeč obrázků a videí pro macOS, který prostě není na houby",
-  "description": "Schnellbild: rychlý a bezplatný prohlížeč obrázků a videí pro macOS. Složky, miniatury, klávesnice; MKV, WebM a AVI; ZIP, RAR a 7z jako složky; dva panely pro třídění fotek. Žádné reklamy, žádné sledování, žádný účet.",
+  "seoTitle": "Schnellbild – prohlížeč obrázků a videí pro Mac zdarma",
+  "seoDescription": "Rychlý prohlížeč fotek a přehrávač videa pro Mac zdarma: náhledy, klávesnice, MKV, AVI a WebM, ZIP a RAR jako složky. Alternativa k Phiewer a IINA.",
+  "keywords": "prohlížeč obrázků Mac, prohlížeč fotek macOS, prohlížeč fotek zdarma, přehrávač MKV Mac, přehrát AVI WebM, alternativa k Phiewer, alternativa k IINA, otevřít obrázky v RAR, komiksy CBZ CBR, prezentace, Schnellbild",
   "navFeatures": "Funkce",
   "navSafety": "Bezpečnost",
   "language": "Jazyk",
@@ -91,6 +93,7 @@
   "ctaText": "Zdarma, bez účtu, bez závazků.",
   "footerPrivacy": "Soukromí",
   "footerImprint": "Právní informace",
+  "footerEula": "Licenční smlouva",
   "privacy": {
     "title": "Zásady ochrany osobních údajů",
     "description": "Schnellbild neshromažďuje žádné osobní údaje: žádný účet, žádná analytika, žádné sledování, žádný přístup k síti.",

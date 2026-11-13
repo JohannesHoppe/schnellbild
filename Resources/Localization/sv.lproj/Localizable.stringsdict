@@ -18,6 +18,38 @@
 			<string>%lld arkiv</string>
 		</dict>
 	</dict>
+	<key>%lld bits</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@count@</string>
+		<key>count</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld bit</string>
+			<key>other</key>
+			<string>%lld bitar</string>
+		</dict>
+	</dict>
+	<key>%lld channels</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@count@</string>
+		<key>count</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>%lld kanal</string>
+			<key>other</key>
+			<string>%lld kanaler</string>
+		</dict>
+	</dict>
 	<key>%lld folders</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -80,6 +112,22 @@
 			<string>%lld video</string>
 			<key>other</key>
 			<string>%lld videor</string>
+		</dict>
+	</dict>
+	<key>Move %lld items to the Trash?</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@count@</string>
+		<key>count</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>one</key>
+			<string>Vill du flytta %lld objekt till papperskorgen?</string>
+			<key>other</key>
+			<string>Vill du flytta %lld objekt till papperskorgen?</string>
 		</dict>
 	</dict>
 </dict>

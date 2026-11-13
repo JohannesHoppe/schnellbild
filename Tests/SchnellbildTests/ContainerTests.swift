@@ -193,5 +193,75 @@ final class ContainerTests: XCTestCase {
         let plain = try MatroskaIndex(MemoryBytes(try clip("clip.mkv")))
         XCTAssertEqual(plain.tracks.first?.encoded, false)
     }
+
+    // MARK: Times out of range
+
+    private func element(_ id: [UInt8], _ body: [UInt8]) -> [UInt8] {
+        precondition(body.count < 0x7F)
+        return id + [0x80 | UInt8(body.count)] + body
+    }
+
+    /// A Matroska file with one H.264 track and one cluster of one frame,
+    /// with the given Info children, frame duration, cluster time and the
+    /// frame's time relative to it.
+    private func matroska(info: [UInt8], defaultDuration: [UInt8], clusterTime: [UInt8], relative: Int16) -> Data {
+        let video = element([0xE0], element([0xB0], [64]) + element([0xBA], [48]))
+        let entry = element([0xAE], element([0xD7], [1]) + element([0x83], [1]) + element([0x86], Array("V_MPEG4/ISO/AVC".utf8))
+                            + element([0x63, 0xA2], [1, 2, 3]) + element([0x23, 0xE3, 0x83], defaultDuration) + video)
+        let r = UInt16(bitPattern: relative)
+        let block = element([0xA3], [0x81, UInt8(r >> 8), UInt8(r & 0xFF), 0x80, 1, 2])
+        let cluster = element([0x1F, 0x43, 0xB6, 0x75], element([0xE7], clusterTime) + block)
+        let header = element([0x1A, 0x45, 0xDF, 0xA3], element([0x42, 0x82], Array("matroska".utf8)))
+        let segment: [UInt8] = [0x18, 0x53, 0x80, 0x67, 0x01, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]
+            + element([0x15, 0x49, 0xA9, 0x66], info) + element([0x16, 0x54, 0xAE, 0x6B], entry) + cluster
+        return Data(header + segment)
+    }
+
+    private func float(_ value: Double) -> [UInt8] {
+        withUnsafeBytes(of: value.bitPattern.bigEndian, Array.init)
+    }
+
+    /// Durations that aren't numbers or don't fit, the largest time scale,
+    /// frame duration and cluster time: every time the reader works with
+    /// stays in range (the format reader turns them into Int64 and adds
+    /// them up).
+    func testTimesOutOfRangeAreHeldInRange() throws {
+        let largest = MatroskaIndex.largestTime
+        let all: [UInt8] = Array(repeating: 0xFF, count: 8)
+        for duration in [Double.nan, .infinity, -.infinity, 1e300, -1e300, Double(Int64.max)] {
+            let data = matroska(info: element([0x2A, 0xD7, 0xB1], all) + element([0x44, 0x89], float(duration)),
+                                defaultDuration: all, clusterTime: all, relative: .max)
+            let index = try MatroskaIndex(MemoryBytes(data))
+            XCTAssertEqual(index.timestampScale, UInt64.max)
+            XCTAssertTrue((0...largest).contains(index.durationUnits), "\(duration)")
+            XCTAssertTrue(index.durationSeconds.isFinite, "\(duration)")
+            XCTAssertGreaterThanOrEqual(index.timescale, 1)
+            let track = try XCTUnwrap(index.tracks.first)
+            XCTAssertEqual(track.frameDuration(timestampScale: index.timestampScale), 1)
+            XCTAssertEqual(index.clusters.first?.time, largest)
+            let frame = try XCTUnwrap(index.frames(inCluster: 0, track: 1).first)
+            XCTAssertEqual(frame.time, largest + Int64(Int16.max))
+            XCTAssertEqual(index.cluster(at: .max), 0)
+        }
+        // Nanoseconds, a frame duration of 2^64 - 1 ns: held at the largest time
+        let data = matroska(info: element([0x2A, 0xD7, 0xB1], [1]) + element([0x44, 0x89], float(2e9)),
+                            defaultDuration: all, clusterTime: [0], relative: .min)
+        let index = try MatroskaIndex(MemoryBytes(data))
+        XCTAssertEqual(index.durationUnits, 2_000_000_000)
+        XCTAssertEqual(index.durationSeconds, 2, accuracy: 1e-9)
+        XCTAssertEqual(index.timescale, 1_000_000_000)
+        XCTAssertEqual(index.tracks.first?.frameDuration(timestampScale: index.timestampScale), largest)
+        XCTAssertEqual(try index.frames(inCluster: 0, track: 1).first?.time, Int64(Int16.min))
+    }
+
+    func testSaturatingArithmetic() {
+        XCTAssertEqual(Int64.max.saturatingAdd(1), .max)
+        XCTAssertEqual(Int64.min.saturatingAdd(-1), .min)
+        XCTAssertEqual(Int64(5).saturatingAdd(-7), -2)
+        XCTAssertEqual(Int64.max.saturatingSubtract(-1), .max)
+        XCTAssertEqual(Int64.min.saturatingSubtract(1), .min)
+        XCTAssertEqual(Int64(0).saturatingSubtract(.min), .max)
+        XCTAssertEqual(Int64(5).saturatingSubtract(7), -2)
+    }
 }
 

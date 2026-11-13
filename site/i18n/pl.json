@@ -2,7 +2,9 @@
   "name": "Polski",
   "privacySlug": "privacy",
   "title": "Schnellbild – przeglądarka zdjęć i wideo dla macOS, która nie działa na nerwy",
-  "description": "Schnellbild: szybka, darmowa przeglądarka zdjęć i wideo dla macOS. Foldery, miniatury, klawiatura; MKV, WebM i AVI; ZIP, RAR i 7z jak foldery; dwa panele do porządkowania zdjęć. Bez reklam, bez śledzenia, bez konta.",
+  "seoTitle": "Schnellbild – darmowa przeglądarka zdjęć i wideo na Maca",
+  "seoDescription": "Szybka, darmowa przeglądarka zdjęć i odtwarzacz wideo na Maca: miniatury, klawiatura, MKV, AVI, WebM, ZIP i RAR jak foldery. Alternatywa dla Phiewer.",
+  "keywords": "przeglądarka zdjęć Mac, przeglądarka obrazów macOS, darmowa przeglądarka zdjęć, odtwarzacz MKV Mac, odtwarzanie AVI WebM, alternatywa dla Phiewer, alternatywa dla IINA, otwieranie obrazów RAR, komiksy CBZ CBR, pokaz slajdów, Schnellbild",
   "navFeatures": "Funkcje",
   "navSafety": "Bezpieczeństwo",
   "language": "Język",
@@ -91,6 +93,7 @@
   "ctaText": "Za darmo, bez konta, bez haczyków.",
   "footerPrivacy": "Prywatność",
   "footerImprint": "Nota prawna",
+  "footerEula": "Umowa licencyjna",
   "privacy": {
     "title": "Polityka prywatności",
     "description": "Schnellbild nie zbiera żadnych danych osobowych: bez konta, bez analityki, bez śledzenia, bez dostępu do sieci.",

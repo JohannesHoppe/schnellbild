@@ -307,10 +307,12 @@ final class ArchiveResourceLoader: NSObject, AVAssetResourceLoaderDelegate, @unc
         contentType = UTType(filenameExtension: (fileName as NSString).pathExtension)?.identifier ?? UTType.mpeg4Movie.identifier
     }
 
-    /// An asset reading through this loader.
+    /// An asset reading through this loader; a reference movie in the
+    /// archive (one that names other files or addresses) plays nothing.
     func makeAsset(fileName: String) -> AVURLAsset {
         let name = fileName.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? "video"
-        let asset = AVURLAsset(url: URL(string: "\(Self.scheme)://stream/\(UUID().uuidString)/\(name)")!)
+        let asset = AVURLAsset(url: URL(string: "\(Self.scheme)://stream/\(UUID().uuidString)/\(name)")!,
+                               options: [AVURLAssetReferenceRestrictionsKey: AVAssetReferenceRestrictions.forbidAll.rawValue])
         asset.resourceLoader.setDelegate(self, queue: queue)
         return asset
     }

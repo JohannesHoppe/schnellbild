@@ -98,7 +98,7 @@ final class VideoFormatReader: NSObject, MEFormatReader, @unchecked Sendable {
                     guard !tracks.isEmpty else { throw MEError(.unsupportedFeature) }
                     return (duration, tracks)
                 }
-                if case .failure(let error) = loaded! { log.info("\(self.source.fileName, privacy: .public): \(String(describing: error), privacy: .public)") }
+                if case .failure(let error) = loaded! { log.info("\(self.source.fileName, privacy: .private): \(String(describing: error), privacy: .public)") }
             }
             done(loaded!)
         }
@@ -134,7 +134,7 @@ final class VideoFormatReader: NSObject, MEFormatReader, @unchecked Sendable {
     /// Matroska: each H.264 / HEVC video track, its frames cluster by cluster.
     static func matroska(_ reader: ByteReading) throws -> (CMTime, [VideoTrackSource]) {
         let index = try MatroskaIndex(reader)
-        let timescale = CMTimeScale(clamping: 1_000_000_000 / index.timestampScale)
+        let timescale = CMTimeScale(index.timescale)
         let sources = index.tracks.compactMap { track -> VideoTrackSource? in
             // (frames compressed in the file, e.g. header stripping, would decode to nothing)
             guard track.type == 1, track.width > 0, track.height > 0, !track.codecPrivate.isEmpty, !track.encoded else { return nil }
@@ -152,8 +152,8 @@ final class VideoFormatReader: NSObject, MEFormatReader, @unchecked Sendable {
             let number = track.number
             let source = VideoTrackSource(
                 id: CMPersistentTrackID(clamping: number), format: format, timescale: timescale,
-                frameDuration: max(1, Int64(track.defaultDuration / index.timestampScale)),
-                duration: Int64(index.duration), partCount: index.clusters.count,
+                frameDuration: track.frameDuration(timestampScale: index.timestampScale),
+                duration: index.durationUnits, partCount: index.clusters.count,
                 frames: { cluster in
                     (try? index.frames(inCluster: cluster, track: number))?.map {
                         IndexedFrame(offset: $0.offset, length: $0.length, time: $0.time, decodeTime: nil, keyframe: $0.keyframe)
@@ -164,8 +164,7 @@ final class VideoFormatReader: NSObject, MEFormatReader, @unchecked Sendable {
             // A track without a single frame isn't offered
             return (0..<index.clusters.count).contains { !(source.frames($0) ?? []).isEmpty } ? source : nil
         }
-        let seconds = index.duration * Double(index.timestampScale) / 1e9
-        return (CMTime(seconds: seconds, preferredTimescale: 1000), sources)
+        return (CMTime(seconds: index.durationSeconds, preferredTimescale: 1000), sources)
     }
 
     /// A transport stream: its video stream, chunk by chunk; each frame
@@ -264,8 +263,8 @@ final class VideoTrackReader: NSObject, METrackReader, @unchecked Sendable {
         } else {
             let sorted = order.map { frames[$0].time }
             var delay: Int64 = 0
-            for (i, frame) in frames.enumerated() { delay = max(delay, sorted[i] - frame.time) }
-            decodeTimes = sorted.map { $0 - delay }
+            for (i, frame) in frames.enumerated() { delay = max(delay, sorted[i].saturatingSubtract(frame.time)) }
+            decodeTimes = sorted.map { $0.saturatingSubtract(delay) }
         }
         let result = PartFrames(frames: frames, presentation: order, positionInPresentation: position, decodeTimes: decodeTimes)
         lock.withLock {
@@ -477,7 +476,7 @@ final class VideoCursor: NSObject, MESampleCursor, @unchecked Sendable {
         index = byDecodeTime ? position : frames.presentation[position]
         let pinnedLow = target < (times.first ?? target)
         let lastPart = track.part(from: track.source.partCount - 1, step: -1)
-        let pinnedHigh = part == lastPart && target > (times.max() ?? target) + track.source.frameDuration
+        let pinnedHigh = part == lastPart && target > (times.max() ?? target).saturatingAdd(track.source.frameDuration)
         return pinnedLow || pinnedHigh
     }
 

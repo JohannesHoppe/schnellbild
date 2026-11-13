@@ -3,7 +3,9 @@ import PDFKit
 
 private struct Shortcut: Identifiable {
     let id = UUID()
-    /// Key glyphs and key names, shown as they are.
+    /// Key glyphs as on Apple's keyboards and menus (⌫ ↩ ⎋ ⇥ ↖ ↘), shown
+    /// as they are; "Space", the one key Apple names in words, in the
+    /// user's language.
     let keys: String
     let action: LocalizedStringKey
     /// The action's English text (its localization key), for sizing.
@@ -18,7 +20,10 @@ private struct Shortcut: Identifiable {
         self.wordsInKeys = wordsInKeys
     }
 
-    var keysText: Text { wordsInKeys ? Text(LocalizedStringKey(keys)) : Text(verbatim: keys) }
+    var keysText: Text {
+        wordsInKeys ? Text(LocalizedStringKey(keys))
+            : Text(verbatim: keys.replacingOccurrences(of: "Space", with: String(localized: "Space")))
+    }
 }
 
 private struct Group: Identifiable {
@@ -37,14 +42,14 @@ struct ShortcutsHelpView: View {
             Shortcut(keys: "← →", action: "Previous / next item"),
             Shortcut(keys: "↑ ↓", action: "One row up / down"),
             Shortcut(keys: "Space / F3", action: "Open picture or video · open folder or archive"),
-            Shortcut(keys: "Backspace", action: "Back (where you were, also a search); without history the enclosing folder"),
-            Shortcut(keys: "Home / End", action: "First / last item"),
+            Shortcut(keys: "⌫", action: "Back (where you were, also a search); without history the enclosing folder"),
+            Shortcut(keys: "↖ / ↘", action: "First / last item"),
             Shortcut(keys: "L", action: "Grid or list (a click on a column sorts by it)"),
             Shortcut(keys: "+ / − · ⌘+ / ⌘−", action: "Larger / smaller thumbnails"),
-            Shortcut(keys: "Return", action: "Rename"),
+            Shortcut(keys: "↩ / F2 / ⇧F6", action: "Rename (F6 too in a single pane)"),
             Shortcut(keys: "⇧⌘N / F7", action: "New folder: type its name, ↩ creates it, Esc creates none"),
             Shortcut(keys: "F8", action: "Move to Trash"),
-            Shortcut(keys: "Esc", action: "Clear search"),
+            Shortcut(keys: "⎋", action: "Clear search"),
         ]),
         Group(title: "Full view", shortcuts: [
             Shortcut(keys: "← →", action: "Pictures: previous / next · Videos: 10 % of the length back / ahead; at the start / end: previous / next item"),
@@ -56,9 +61,8 @@ struct ShortcutsHelpView: View {
             Shortcut(keys: "0 / 1", action: "Fit to window / 100 %"),
             Shortcut(keys: "⌥← / ⌥→", action: "Rotate left / right"),
             Shortcut(keys: "i", action: "File info"),
-            Shortcut(keys: "e", action: "Auto enhance on / off (exposure, contrast, saturation, sharpness; files are not changed)"),
-            Shortcut(keys: "a", action: "Sliders: adjust by hand (switches auto enhance off)"),
-            Shortcut(keys: "Esc / Backspace / Return", action: "Back to grid"),
+            Shortcut(keys: "F2", action: "Rename"),
+            Shortcut(keys: "⎋ / ⌫ / ↩", action: "Back to grid"),
         ]),
         Group(title: "Slideshow", shortcuts: [
             Shortcut(keys: "s", action: "Start: all pictures and videos in this folder and its subfolders (while searching: the results)"),
@@ -71,23 +75,22 @@ struct ShortcutsHelpView: View {
             Shortcut(keys: "i", action: "File info"),
             Shortcut(keys: "e", action: "Auto enhance on / off (exposure, contrast, saturation, sharpness; files are not changed)"),
             Shortcut(keys: "a", action: "Sliders: adjust by hand (switches auto enhance off)"),
-            Shortcut(keys: "Esc / s / Return / Backspace", action: "End the slideshow"),
+            Shortcut(keys: "⎋ / s / ↩ / ⌫", action: "End the slideshow"),
         ]),
         Group(title: "Dual pane and marking", shortcuts: [
             Shortcut(keys: "D / ⌃O", action: "Dual pane on / off: two folders side by side"),
-            Shortcut(keys: "Tab", action: "Switch to the other pane"),
-            Shortcut(keys: "F5 / F6", action: "Copy / move the marked items into the other pane's folder"),
-
-            Shortcut(keys: "⌘-click / Insert", action: "Mark / unmark an item", wordsInKeys: true),
+            Shortcut(keys: "⇥", action: "Switch to the other pane"),
+            Shortcut(keys: "⇧⌘C / ⇧⌘M · F5 / F6", action: "Copy / move the marked items into the other pane's folder"),
+            Shortcut(keys: "⌘-click / M / Insert", action: "Mark / unmark an item (M, Insert: then on to the next)", wordsInKeys: true),
             Shortcut(keys: "⇧-click / ⇧ arrows", action: "Mark a range", wordsInKeys: true),
-            Shortcut(keys: "⌘A / Esc", action: "Mark all / unmark all"),
+            Shortcut(keys: "⌘A / ⎋", action: "Mark all / unmark all"),
             Shortcut(keys: "drag", action: "Marked items onto a folder or into the other pane: moved (copied to another volume)", wordsInKeys: true),
         ]),
         Group(title: "Search field", shortcuts: [
             Shortcut(keys: "⌘F", action: "Search names of folders, archives, pictures and videos (incl. subfolders)"),
             Shortcut(keys: "↓", action: "Move into the results"),
-            Shortcut(keys: "Return", action: "Open the selected result"),
-            Shortcut(keys: "Esc", action: "Clear the search; again: leave the field"),
+            Shortcut(keys: "↩", action: "Open the selected result"),
+            Shortcut(keys: "⎋", action: "Clear the search; again: leave the field"),
         ]),
         Group(title: "Grid and full view", shortcuts: [
             Shortcut(keys: "⌘[ / ⌘]", action: "Back / forward (history)"),
@@ -95,6 +98,8 @@ struct ShortcutsHelpView: View {
             Shortcut(keys: "⌘R", action: "Read the folder again"),
             Shortcut(keys: "⌘1 … ⌘5", action: "Sort by name, kind, date modified, date taken, size (again: reverse)"),
             Shortcut(keys: "f / ⌃⌘F", action: "Toggle full screen"),
+            Shortcut(keys: "e", action: "Auto enhance on / off (exposure, contrast, saturation, sharpness; files are not changed)"),
+            Shortcut(keys: "a", action: "Sliders: adjust by hand (switches auto enhance off)"),
             Shortcut(keys: "⌘O", action: "Open folder"),
             Shortcut(keys: "⌘N", action: "New window (e.g. for another display)"),
             Shortcut(keys: "⇧⌘R", action: "Reveal in Finder"),
@@ -105,7 +110,7 @@ struct ShortcutsHelpView: View {
             Shortcut(keys: "K", action: "Show / hide the mini keyboard"),
             Shortcut(keys: "⌘D", action: "Bookmark the folder shown, or remove its bookmark"),
             Shortcut(keys: "⌃1 … ⌃9", action: "Open bookmark 1 … 9"),
-            Shortcut(keys: "X", action: "Boss key: hidden and silent at once; X X X brings it back"),
+            Shortcut(keys: "X", action: "Boss key: hidden and silent at once; X X X or the Dock icon brings it back"),
             Shortcut(keys: "F1 / ⌘?", action: "Show this list"),
         ]),
     ]

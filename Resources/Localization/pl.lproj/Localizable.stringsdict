@@ -22,6 +22,46 @@
 			<string>%lld archiwum</string>
 		</dict>
 	</dict>
+	<key>%lld bits</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@count@</string>
+		<key>count</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld bity</string>
+			<key>many</key>
+			<string>%lld bitów</string>
+			<key>one</key>
+			<string>%lld bit</string>
+			<key>other</key>
+			<string>%lld bitu</string>
+		</dict>
+	</dict>
+	<key>%lld channels</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@count@</string>
+		<key>count</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld kanały</string>
+			<key>many</key>
+			<string>%lld kanałów</string>
+			<key>one</key>
+			<string>%lld kanał</string>
+			<key>other</key>
+			<string>%lld kanału</string>
+		</dict>
+	</dict>
 	<key>%lld folders</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -100,6 +140,26 @@
 			<string>%lld wideo</string>
 			<key>other</key>
 			<string>%lld wideo</string>
+		</dict>
+	</dict>
+	<key>Move %lld items to the Trash?</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@count@</string>
+		<key>count</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Przenieść %lld rzeczy do kosza?</string>
+			<key>many</key>
+			<string>Przenieść %lld rzeczy do kosza?</string>
+			<key>one</key>
+			<string>Przenieść %lld rzecz do kosza?</string>
+			<key>other</key>
+			<string>Przenieść %lld rzeczy do kosza?</string>
 		</dict>
 	</dict>
 </dict>

@@ -100,8 +100,13 @@ enum DiskEvents {
             let volume = note.userInfo?[NSWorkspace.volumeURLUserInfoKey] as? URL
             MainActor.assumeIsolated { for pane in WindowModel.openPanes { pane.volumesChanged(unmounted: volume) } }
         })
+        // The folder grants waiting for their volume first, then the panes
+        // (one reading the new volume needs its grant)
         observers.append(workspace.addObserver(forName: NSWorkspace.didMountNotification, object: nil, queue: .main) { _ in
-            MainActor.assumeIsolated { for pane in WindowModel.openPanes { pane.volumesChanged(unmounted: nil) } }
+            MainActor.assumeIsolated {
+                FolderAccess.shared.volumeMounted()
+                for pane in WindowModel.openPanes { pane.volumesChanged(unmounted: nil) }
+            }
         })
         observers.append(NotificationCenter.default.addObserver(forName: NSApplication.didBecomeActiveNotification, object: nil, queue: .main) { _ in
             MainActor.assumeIsolated { for pane in WindowModel.openPanes { pane.relist() } }

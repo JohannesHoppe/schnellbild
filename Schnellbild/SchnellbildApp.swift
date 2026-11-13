@@ -65,7 +65,7 @@ struct SchnellbildApp: App {
                     .disabled(window.anySheetOpen)
             }
             CommandMenu("Go") {
-                Button("Start Slideshow (S)") { model.startSlideshow() }
+                Button("Start Slideshow") { model.startSlideshow() }
                     .disabled(model.folderURL == nil || window.anySheetOpen)
                 Divider()
                 Button("Back") { model.navigateBack() }
@@ -93,7 +93,7 @@ struct SchnellbildApp: App {
                 Button("New Folder") { model.beginNewFolder() }
                     .keyboardShortcut("n", modifiers: [.command, .shift])
                     .disabled(!model.canCreateFolder)
-                Button("Rename… (F2)") { model.beginRename() }
+                Button("Rename…") { model.beginRename() }
                     .disabled(model.slideshow != nil || window.anySheetOpen || !(model.selectedEntry.map(model.canRename) ?? false))
                 Button("Reveal in Finder") { model.revealInFinder() }
                     .keyboardShortcut("r", modifiers: [.command, .shift])
@@ -103,9 +103,12 @@ struct SchnellbildApp: App {
                     .disabled(model.slideshow != nil || window.anySheetOpen || !model.selectionIsChangeable)
                 Divider()
                 // The dual pane (D): the marked items into the other pane's folder
-                Button("Copy to Other Pane (F5)") { _ = window.sendToOtherPane(how: .copy) }
+                // (also F5 / F6, as in Norton Commander)
+                Button("Copy to Other Pane") { _ = window.sendToOtherPane(how: .copy) }
+                    .keyboardShortcut("c", modifiers: [.command, .shift])
                     .disabled(!window.dual || model.slideshow != nil || window.anySheetOpen)
-                Button("Move to Other Pane (F6)") { _ = window.sendToOtherPane(how: .move) }
+                Button("Move to Other Pane") { _ = window.sendToOtherPane(how: .move) }
+                    .keyboardShortcut("m", modifiers: [.command, .shift])
                     .disabled(!window.dual || model.slideshow != nil || window.anySheetOpen)
                 Divider()
                 Button("Move to Trash…") { model.moveSelectionToTrash() }
@@ -122,13 +125,16 @@ struct SchnellbildApp: App {
                 Toggle("as Grid", isOn: Binding(get: { model.viewMode == .grid }, set: { if $0 { model.viewMode = .grid } }))
                 Toggle("as List", isOn: Binding(get: { model.viewMode == .list }, set: { if $0 { model.viewMode = .list } }))
                 Divider()
-                Toggle("Dual Pane (D)", isOn: Binding(get: { window.dual }, set: { window.setDual($0) }))
+                Toggle("Dual Pane", isOn: Binding(get: { window.dual }, set: { window.setDual($0) }))
                     // As the key: not during a slideshow, not over a sheet (of either pane)
                     .disabled(window.panes.contains { $0.slideshow != nil || $0.anySheetOpen })
-                Toggle("Mini Keyboard (K)", isOn: Binding(get: { model.showMiniKeyboard }, set: { model.showMiniKeyboard = $0 }))
+                Toggle("Mini Keyboard", isOn: Binding(get: { model.showMiniKeyboard }, set: { model.showMiniKeyboard = $0 }))
                 Divider()
-                Button("Larger Thumbnails (⌘+)") { model.growThumbnails() }
-                Button("Smaller Thumbnails (⌘−)") { model.shrinkThumbnails() }
+                // (the key monitor takes ⌘+ / ⌘− first: in the full view they zoom)
+                Button("Larger Thumbnails") { model.growThumbnails() }
+                    .keyboardShortcut("+", modifiers: .command)
+                Button("Smaller Thumbnails") { model.shrinkThumbnails() }
+                    .keyboardShortcut("-", modifiers: .command)
                 Divider()
                 SortChoices(model: model, shortcuts: true)
             }
@@ -197,9 +203,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         true
     }
 
-    /// Hidden by the boss key: a click on the Dock icon shows nothing.
+    /// Hidden by the boss key: a click on the Dock icon brings every window back.
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
-        !BossKey.engaged
+        guard BossKey.engaged else { return true }
+        MainActor.assumeIsolated { BossKey.release() }
+        return false
     }
 
     /// Not in the middle of a copy or move: the app quits once it is done.

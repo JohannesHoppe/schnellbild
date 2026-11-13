@@ -80,7 +80,8 @@ private struct WindowView: View {
                 launched = true
                 if window.left.folderURL == nil {
                     if window.number == 1 {
-                        if !window.left.openFromLaunchArguments() { window.left.restoreLastFolder() }
+                        // The first launch: the Pictures folder, not an empty window
+                        if !window.left.openFromLaunchArguments() { window.left.restoreLastFolder { BrowserModel.defaultFolder } }
                     } else {
                         // A new window: its own last folder, else the one it was opened from
                         let start = window.startFolder
@@ -498,10 +499,12 @@ struct PaneView: View {
             SearchField(
                 text: $model.searchText,
                 isFocused: $model.searchFocused,
-                placeholder: String(localized: "Search names of folders, archives, pictures and videos (incl. subfolders)"),
+                // Short enough for half a window (the dual pane) in every language; the whole in the tooltip
+                placeholder: String(localized: "Search names, also in subfolders"),
                 isEnabled: model.folderURL != nil,
                 onKey: { model.handleSearchFieldKey($0) }
             )
+            .help("Search names of folders, archives, pictures and videos (incl. subfolders)")
             SearchModePicker(model: model)
             if model.isSearching {
                 ProgressView().controlSize(.small)
@@ -521,17 +524,28 @@ struct PaneView: View {
 
     // MARK: - Status bar
 
+    /// One line, also in half a window: the texts truncate, the summary last.
     private var statusBar: some View {
         HStack(spacing: 8) {
             Text(statusText)
                 .foregroundStyle(.secondary)
+                .lineLimit(1)
+                .truncationMode(.tail)
+                .layoutPriority(1)
+                .help(statusText)
                 .accessibilityIdentifier("statusText")
             if model.isSearching {
-                Text("Searching subfolders…").foregroundStyle(.secondary)
+                Text("Searching subfolders…").foregroundStyle(.secondary).lineLimit(1)
             }
             if model.transfersRunning > 0 {
                 ProgressView().controlSize(.small)
-                Text("Copying or moving…").foregroundStyle(.secondary)
+                Text("Copying or moving…").foregroundStyle(.secondary).lineLimit(1)
+            }
+            if model.accessLimited {
+                Text("Only the file you opened is shown here.").foregroundStyle(.secondary)
+                Button("Allow Access…") { model.allowAccess() }
+                    .buttonStyle(.link)
+                    .accessibilityIdentifier("allowAccess")
             }
             Spacer()
             Text(model.folderURL?.path ?? "")
@@ -706,6 +720,13 @@ struct EmptyStateView: View {
                     .foregroundStyle(.secondary)
                 Text("This folder is empty")
                     .font(.title2)
+                // The Pictures folder opened at the first launch, empty: how to get to the pictures
+                if model.folderURL.map(BrowserModel.canonicalPath) == BrowserModel.defaultFolder.map(BrowserModel.canonicalPath) {
+                    Text("Drag a folder here, press ⌘O, or click Open Another Folder…")
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                        .accessibilityIdentifier("dropHint.empty")
+                }
                 if model.canGoUp {
                     Text("⌘↑ goes up one folder level.")
                         .foregroundStyle(.secondary)
@@ -721,6 +742,13 @@ struct EmptyStateView: View {
                 Text("Drag a folder here, press ⌘O, or click Open Folder…")
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
+                if let missing = model.unavailableRestore {
+                    let name = (missing as NSString).lastPathComponent
+                    Text("“\(name)” isn't available: its disk or server isn't connected. It opens once it is.")
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                        .accessibilityIdentifier("unavailableRestore")
+                }
                 if let skipped = model.skippedRestore {
                     let name = (skipped as NSString).lastPathComponent
                     Text("Schnellbild quit unexpectedly last time while showing “\(name)”, so it wasn't opened again.")
@@ -887,6 +915,7 @@ struct AdjustmentsView: View {
                     look[keyPath: key] = value
                     model.adjust(look)
                 }), in: range)
+            .accessibilityLabel(Text(title))
             .accessibilityIdentifier("slider.\(id)")
             .accessibilityValue(Self.format(model.look[keyPath: key]))
         }
@@ -940,8 +969,10 @@ struct VideoProgressBar: View {
                 .frame(width: 200, height: 3)   // not the badge's whole width
                 .accessibilityElement(children: .ignore)
                 .accessibilityIdentifier("videoProgress")
-                .accessibilityLabel("\(Int((progress * 100).rounded())) %")
-                .accessibilityValue("\(Int((progress * 100).rounded())) %")
+                .accessibilityLabel("Played")
+                // The UI tests read the number as "42 %" in every language
+                .accessibilityValue(VideoDetailView.uiTesting ? "\(Int((progress * 100).rounded())) %"
+                                    : min(max(progress, 0), 1).formatted(.percent.precision(.fractionLength(0))))
                 // The time left, once the length is known
                 if let length = model.activePlayer?.lengthSeconds, model.activePlayer?.progress != nil {
                     Text(verbatim: "−" + Self.clock(length * (1 - min(max(progress, 0), 1))))
@@ -1040,7 +1071,10 @@ struct VolumeDisplay: View {
                 .transition(.opacity)
                 .accessibilityElement(children: .ignore)
                 .accessibilityIdentifier("volumeDisplay")
-                .accessibilityLabel("volume \(Int((model.volume * 100).rounded())) %")
+                .accessibilityLabel("Volume")
+                // The UI tests read "volume 80 %" in every language
+                .accessibilityValue(VideoDetailView.uiTesting ? "volume \(Int((model.volume * 100).rounded())) %"
+                                    : model.volume.formatted(.percent.precision(.fractionLength(0))))
             }
         }
         .animation(.easeOut(duration: 0.15), value: shown)
@@ -1170,7 +1204,10 @@ private struct SearchModePicker: View {
         .help(model.searchMode == .ignoringCase ? "Ignore case"
               : model.searchMode == .matchingCase ? "Match case" : "Regular expression")
         .accessibilityLabel("Search mode")
-        .accessibilityValue(model.searchMode.rawValue)
+        // The UI tests read the mode's name
+        .accessibilityValue(VideoDetailView.uiTesting ? model.searchMode.rawValue
+                            : model.searchMode == .ignoringCase ? String(localized: "Ignore case")
+                            : model.searchMode == .matchingCase ? String(localized: "Match case") : String(localized: "Regular expression"))
         .accessibilityIdentifier("searchMode")
     }
 }

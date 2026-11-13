@@ -158,17 +158,21 @@ extension ThumbnailCache {
 struct ThumbnailView: View {
     let url: URL
     let side: CGFloat
+    /// The cursor is on it (the ring).
     let isSelected: Bool
+    /// Marked (⌘ / ⇧ / Insert): tinted, with a checkmark.
+    var isMarked: Bool = false
     var isVideo: Bool = false
     var modified: Date? = nil
 
     @State private var image: NSImage?
     @State private var failed = false
 
-    init(url: URL, side: CGFloat, isSelected: Bool, isVideo: Bool = false, modified: Date? = nil) {
+    init(url: URL, side: CGFloat, isSelected: Bool, isMarked: Bool = false, isVideo: Bool = false, modified: Date? = nil) {
         self.url = url
         self.side = side
         self.isSelected = isSelected
+        self.isMarked = isMarked
         self.isVideo = isVideo
         self.modified = modified
         // Scrolled back into view: the picture at once, not a spinner first
@@ -177,7 +181,7 @@ struct ThumbnailView: View {
 
     var body: some View {
         content
-            .tileChrome(side: side, isSelected: isSelected)
+            .tileChrome(side: side, isSelected: isSelected, isMarked: isMarked)
             .overlay(alignment: .bottomTrailing) {
                 if isVideo {
                     Image(systemName: "play.circle.fill")
@@ -188,9 +192,13 @@ struct ThumbnailView: View {
                 }
             }
             .accessibilityElement(children: .ignore)
-            .accessibilityLabel("\(TileChrome.selectionLabel(isSelected)), \(isVideo ? "video" : "image")"
-                                + (image.map { $0.accessibilityDescription == ThumbnailCache.fileIcon ? ", file icon" : ", preview" }
-                                   ?? (failed ? ", no preview" : "")))
+            // The label ("name, kind") comes from the grid's cell; the UI
+            // tests read the tile's state here
+            .accessibilityValue(VideoDetailView.uiTesting
+                ? "\(TileChrome.selectionLabel(isSelected || isMarked)), \(isVideo ? "video" : "image")"
+                    + (image.map { $0.accessibilityDescription == ThumbnailCache.fileIcon ? ", file icon" : ", preview" }
+                       ?? (failed ? ", no preview" : ""))
+                : TileChrome.spokenState(marked: isMarked, failed: failed))
             .task(id: TileKey(url: url, side: side, modified: modified)) { await load() }
     }
 
@@ -204,6 +212,7 @@ struct ThumbnailView: View {
         } else if failed {
             Image(systemName: "exclamationmark.triangle")
                 .foregroundStyle(.secondary)
+                .help("This picture can't be shown")
         } else {
             ProgressView()
                 .controlSize(.small)
@@ -226,20 +235,33 @@ private struct TileKey: Hashable {
     let modified: Date?
 }
 
-/// Shared tile chrome: rounded background, fixed square frame, selection ring.
+/// Shared tile chrome: rounded background, fixed square frame; the ring for
+/// the cursor, a tint and a checkmark for a marked item (both on a marked
+/// item under the cursor).
 struct TileChrome: ViewModifier {
     let side: CGFloat
     let isSelected: Bool
+    var isMarked = false
+    @Environment(\.colorSchemeContrast) private var contrast
 
-    /// Start of every tile's accessibility label; the UI tests read it.
+    /// Start of every tile's state under `--ui-testing`; the UI tests read it.
     static func selectionLabel(_ isSelected: Bool) -> String {
         isSelected ? "selected" : "not selected"
     }
 
+    /// What VoiceOver says after a tile's name and kind (selected or marked
+    /// is the element's trait).
+    static func spokenState(marked: Bool, failed: Bool = false) -> String {
+        [marked ? String(localized: "marked") : nil, failed ? String(localized: "This picture can't be shown") : nil]
+            .compactMap { $0 }.joined(separator: ", ")
+    }
+
     func body(content: Content) -> some View {
+        let increased = contrast == .increased
         ZStack {
             RoundedRectangle(cornerRadius: 6)
-                .fill(Color(nsColor: .quaternaryLabelColor).opacity(0.4))
+                .fill(isMarked ? Color.accentColor.opacity(increased ? 0.45 : 0.28)
+                      : Color(nsColor: .quaternaryLabelColor).opacity(increased ? 0.8 : 0.4))
             content
         }
         .frame(width: side, height: side)
@@ -247,11 +269,20 @@ struct TileChrome: ViewModifier {
             RoundedRectangle(cornerRadius: 6)
                 .strokeBorder(isSelected ? Color.accentColor : .clear, lineWidth: 3)
         )
+        .overlay(alignment: .topTrailing) {
+            if isMarked {
+                Image(systemName: "checkmark.circle.fill")
+                    .symbolRenderingMode(.palette)
+                    .foregroundStyle(.white, Color.accentColor)
+                    .font(.system(size: min(18, side * 0.4)))
+                    .padding(side < 60 ? 1 : 5)
+            }
+        }
     }
 }
 
 extension View {
-    func tileChrome(side: CGFloat, isSelected: Bool) -> some View {
-        modifier(TileChrome(side: side, isSelected: isSelected))
+    func tileChrome(side: CGFloat, isSelected: Bool, isMarked: Bool = false) -> some View {
+        modifier(TileChrome(side: side, isSelected: isSelected, isMarked: isMarked))
     }
 }

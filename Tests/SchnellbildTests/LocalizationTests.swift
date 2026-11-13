@@ -91,15 +91,19 @@ final class LocalizationTests: XCTestCase {
 
     /// The UI texts written in the code: the string literals a call that
     /// shows text gets as its first argument (`Text("…")`, `Button("…"`,
-    /// `.help("…")`, `String(localized: "…")`, `.accessibilityLabel("…")`,
-    /// both sides of `Text(a ? "…" : "…")` …), the help's `action: "…"`, and
-    /// its keys where they hold words (`wordsInKeys: true`), with each
-    /// interpolation `\(…)` kept as a marker. A small scanner, not a regular
-    /// expression: interpolations can hold quotes of their own.
+    /// `Menu("…")`, `Section("…")`, `Picker("…"`, `LabeledContent("…"`,
+    /// `.confirmationDialog("…"`, `.navigationTitle("…")`, `.help("…")`,
+    /// `String(localized: "…")`, `.accessibilityLabel("…")`, both sides of
+    /// `Text(a ? "…" : "…")` …), what a helper returning a
+    /// `LocalizedStringKey` returns, the help's `action: "…"`, and its keys
+    /// where they hold words (`wordsInKeys: true`), with each interpolation
+    /// `\(…)` kept as a marker. A small scanner, not a regular expression:
+    /// interpolations can hold quotes of their own.
     static func uiTexts(in source: String) -> [String] {
         let calls = ["Text(", "Button(", "Label(", "Toggle(", "TextField(", "SecureField(", "ShortcutLabel(", "CommandMenu(",
-                     "headerButton(", "slider(", "infoRow(", ".help(", ".accessibilityLabel(", ".accessibilityValue(",
-                     "String(localized: ", "action: ", "word: ", "Group(title: ", "title: "]
+                     "Menu(", "Section(", "Picker(", "LabeledContent(", "Stepper(", ".confirmationDialog(", ".alert(",
+                     ".navigationTitle(", "headerButton(", "slider(", "infoRow(", ".help(", ".accessibilityLabel(",
+                     ".accessibilityValue(", "String(localized: ", "action: ", "word: ", "Group(title: ", "title: "]
         let chars = Array(source)
         var texts: [String] = []
         var i = 0
@@ -108,8 +112,27 @@ final class LocalizationTests: XCTestCase {
             // Right after a letter or digit it's another call ("myText(")
             if i > 0, chars[i - 1].isLetter || chars[i - 1].isNumber || chars[i - 1] == "_", !start.hasPrefix(".") { i += 1; continue }
             let (literals, end) = argument(chars, from: i + start.count)
-            texts += literals.filter { $0.contains(where: \.isLetter) }
+            texts += literals.filter { $0.contains(where: \.isLetter) && !names.contains($0) }
             i = max(end, i + 1)
+        }
+        // What helpers returning a `LocalizedStringKey` return ("Undo Rename")
+        i = 0
+        let helper = "-> LocalizedStringKey {"
+        while i < chars.count {
+            guard matches(helper, chars, at: i) else { i += 1; continue }
+            var j = i + helper.count, depth = 1
+            while j < chars.count, depth > 0 {
+                if chars[j] == "{" { depth += 1 } else if chars[j] == "}" { depth -= 1 }
+                if matches("return ", chars, at: j) {
+                    // To the end of its line: the next case's literal is another return's
+                    var end = j
+                    while end < chars.count, chars[end] != "\n" { end += 1 }
+                    let (literals, _) = argument(Array(chars[j..<end]), from: "return ".count)
+                    texts += literals.filter { $0.contains(where: \.isLetter) }
+                }
+                j += 1
+            }
+            i = j
         }
         // The help's keys column, where it holds words ("drag")
         i = 0
@@ -129,6 +152,9 @@ final class LocalizationTests: XCTestCase {
         }
         return texts
     }
+
+    /// Names shown as they are, in every language.
+    static let names: Set<String> = ["Schnellbild"]
 
     private static func matches(_ text: String, _ chars: [Character], at i: Int) -> Bool {
         let s = Array(text)
@@ -256,15 +282,127 @@ final class LocalizationTests: XCTestCase {
         .accessibilityValue(up ? "ascending" : "descending") .accessibilityLabel("Stop search")
         Text(format("No"))
         Shortcut(keys: "⌘F", action: "Search") Shortcut(keys: "drag", action: "Move", wordsInKeys: true)
+        Menu("Remove Bookmark") { } Section("Appearance") { Picker("Mode", selection: $x) { } }
+        LabeledContent("Saved passwords", value: "\(n)") Stepper(value: $v, in: 1...9) { }
+        .confirmationDialog("Forget all?", isPresented: $y) .navigationTitle(name ?? "Schnellbild")
+        static func title(_ k: Kind) -> LocalizedStringKey { switch k {
+            case .a: return "Undo Rename"
+            default: return big ? "Undo All" : "Undo" } }
         """#
         XCTAssertEqual(Self.uiTexts(in: source), ["Search stopped", "No \u{1} matches", "Date Modified", "ascending", "descending",
-                                                  "Stop search", "Search", "Move", "drag"])
+                                                  "Stop search", "Search", "Move", "Remove Bookmark", "Appearance", "Mode",
+                                                  "Saved passwords", "Forget all?", "Undo Rename", "Undo All", "Undo", "drag"])
+    }
+
+    /// Each language's plurals have the categories its numbers need, as
+    /// CLDR counts whole numbers (Russian "1 / 2–4 / 5 и более", Japanese
+    /// one form), and none it never uses (a "one" in Japanese would never
+    /// show; Czech "many" is for fractions).
+    func testEveryLanguageHasThePluralCategoriesItNeeds() throws {
+        let needed: [String: Set<String>] = [
+            "cs": ["one", "few", "other"], "pl": ["one", "few", "many", "other"],
+            "ru": ["one", "few", "many", "other"], "uk": ["one", "few", "many", "other"],
+            "es": ["one", "many", "other"], "fr": ["one", "many", "other"], "it": ["one", "many", "other"],
+            "pt-BR": ["one", "many", "other"],
+            "ja": ["other"], "ko": ["other"], "zh-Hans": ["other"], "zh-Hant": ["other"],
+        ]
+        let allowed: [String: Set<String>] = ["cs": ["one", "few", "many", "other"]]
+        for language in languages {
+            let want = needed[language] ?? ["one", "other"]
+            let may = allowed[language] ?? want
+            for (key, entry) in try table(language, "Localizable.stringsdict") {
+                let rule = try XCTUnwrap((entry as? [String: Any])?["count"] as? [String: Any], "\(language): \(key)")
+                let categories = Set(rule.keys.filter { !$0.hasPrefix("NS") })
+                XCTAssertTrue(want.isSubset(of: categories), "\(language): \(key) lacks \(want.subtracting(categories).sorted())")
+                XCTAssertTrue(categories.isSubset(of: may), "\(language): \(key) has \(categories.subtracting(may).sorted()), never used")
+            }
+        }
     }
 
     func testPlaceholdersKeepTheirPositions() {
         XCTAssertEqual(Self.placeholders("%@ of %lld"), Self.placeholders("%2$lld von %1$@"))
         XCTAssertNotEqual(Self.placeholders("%@ and %@"), Self.placeholders("%1$@ und %1$@"))
         XCTAssertNotEqual(Self.placeholders("%@ of %lld"), Self.placeholders("%lld von %@"))
+    }
+
+    /// The mini keyboard's rows as `MiniKeyboard.keys(for:)` defines them:
+    /// each context's words, read from the source.
+    static func miniKeyboardRows(in source: String) -> [String: [String]] {
+        guard let start = source.range(of: "static func keys(for context: Context)"),
+              let end = source.range(of: "@EnvironmentObject var window", range: start.upperBound..<source.endIndex)
+        else { return [:] }
+        let body = String(source[start.upperBound..<end.lowerBound])
+        let caseName = try! NSRegularExpression(pattern: "case \\.([A-Za-z]+):")
+        let word = try! NSRegularExpression(pattern: "word: \"([^\"]+)\"")
+        var rows: [String: [String]] = [:]
+        let cases = caseName.matches(in: body, range: NSRange(body.startIndex..., in: body))
+        for (i, match) in cases.enumerated() {
+            let name = String(body[Range(match.range(at: 1), in: body)!])
+            let from = match.range.upperBound
+            let to = i + 1 < cases.count ? cases[i + 1].range.location : (body as NSString).length
+            let part = (body as NSString).substring(with: NSRange(location: from, length: to - from))
+            rows[name] = word.matches(in: part, range: NSRange(part.startIndex..., in: part))
+                .map { (part as NSString).substring(with: $0.range(at: 1)) }
+        }
+        return rows
+    }
+
+    /// A row of the mini keyboard never shows one word for two keys ("Fit"
+    /// and "Adjust" both "Anpassen" would leave the user guessing).
+    func testNoDuplicateWordsWithinAMiniKeyboardRow() throws {
+        let file = root.deletingLastPathComponent().deletingLastPathComponent()
+            .appendingPathComponent("Schnellbild/MiniKeyboard.swift")
+        let rows = Self.miniKeyboardRows(in: try String(contentsOf: file, encoding: .utf8))
+        XCTAssertGreaterThanOrEqual(rows.count, 5, "the scanner finds the rows")
+        for language in languages {
+            let strings = try table(language, "Localizable.strings")
+            for (row, words) in rows {
+                var seen: [String: String] = [:]
+                for word in words {
+                    let shown = ((strings[word] as? String) ?? word).lowercased()
+                    if let other = seen[shown] {
+                        XCTFail("\(language), \(row): “\(shown)” for both \(other) and \(word)")
+                    }
+                    seen[shown] = word
+                }
+            }
+        }
+    }
+
+    /// Keys are shown as on Apple's keyboards and menus: glyphs (⌫ ↩ ⎋ ⇥
+    /// ↖ ↘) where Apple has them, and the space bar by its name in each
+    /// language ("Space" in the help's keys, translated where it is shown).
+    /// The keys columns of the F1 help and the mini keyboard's caps hold no
+    /// English key names; only "Insert", a key Apple's keyboards don't have,
+    /// keeps its name (in a translated row).
+    func testKeyNamesAreGlyphsOrTranslated() throws {
+        let sources = root.deletingLastPathComponent().deletingLastPathComponent().appendingPathComponent("Schnellbild")
+        let help = try String(contentsOf: sources.appendingPathComponent("ShortcutsHelpView.swift"), encoding: .utf8)
+        let keys = try NSRegularExpression(pattern: "Shortcut\\(keys: \"([^\"]+)\"")
+        let names = try NSRegularExpression(pattern: "\\b(Backspace|Delete|Return|Enter|Esc|Escape|Tab|Home|End|Page ?Up|Page ?Down|space)\\b")
+        var found = 0
+        for match in keys.matches(in: help, range: NSRange(help.startIndex..., in: help)) {
+            let text = (help as NSString).substring(with: match.range(at: 1))
+            found += 1
+            XCTAssertEqual(names.numberOfMatches(in: text, range: NSRange(text.startIndex..., in: text)), 0,
+                           "F1 help: “\(text)” names a key in English; Apple's glyph instead")
+        }
+        XCTAssertGreaterThan(found, 40, "the scanner finds the help's keys")
+        // The mini keyboard's caps: glyphs, letters, F-keys; its word caps go through `shownCap`
+        let keyboard = try String(contentsOf: sources.appendingPathComponent("MiniKeyboard.swift"), encoding: .utf8)
+        let caps = try NSRegularExpression(pattern: "Key\\(cap: \"([^\"]+)\"")
+        let mapped = ["space", "esc", "Tab"]
+        for match in caps.matches(in: keyboard, range: NSRange(keyboard.startIndex..., in: keyboard)) {
+            let cap = (keyboard as NSString).substring(with: match.range(at: 1))
+            let words = cap.filter(\.isLetter).count
+            XCTAssertTrue(words <= 1 || mapped.contains(cap), "mini keyboard: the cap “\(cap)” is a word")
+        }
+        for cap in mapped {
+            XCTAssertTrue(keyboard.contains("case \"\(cap)\":"), "mini keyboard: `shownCap` shows “\(cap)” as Apple does")
+        }
+        for language in languages {
+            XCTAssertNotNil(try table(language, "Localizable.strings")["Space"], "\(language): the space bar's name")
+        }
     }
 
     /// Info.plist names exactly the languages there are.

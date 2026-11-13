@@ -8,7 +8,9 @@
 #   Scripts/package_appstore.sh [<Schnellbild.app>] [<Schnellbild.pkg>]
 #
 # Upload: Transporter (Mac App Store), or
-#   xcrun altool --upload-app -t macos -f build/Schnellbild.pkg --apiKey … --apiIssuer …
+#   xcrun altool --upload-package build/Schnellbild.pkg --type macos --apple-id <app.json appleId> \
+#     --bundle-id art.haushoppe.schnellbild --bundle-short-version-string <version> --bundle-version <build> \
+#     --apiKey … --apiIssuer …   (what .github/workflows/appstore.yml runs)
 set -euo pipefail
 cd "$(dirname "$0")/.."
 APP="${1:-build/Schnellbild.app}"
