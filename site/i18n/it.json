@@ -8,7 +8,7 @@
   "language": "Lingua",
   "iconAlt": "Icona dell’app Schnellbild",
   "tagline": "Un visualizzatore di immagini e video per macOS che non ti complica la vita.",
-  "lead": "Apri una cartella, guarda le miniature, visualizza un’immagine in grande, sfoglia con la tastiera. Anche i video partono lì, persino MKV, AVI e WebM. Nessuna libreria in cui importare, nessuna attesa, nessun ingombro.",
+  "lead": "Apri una cartella, guarda le miniature, visualizza un’immagine in grande, sfoglia con la tastiera. Anche i video si riproducono lì, persino MKV, AVI e WebM. Nessuna libreria in cui importare, nessuna attesa, nessun ingombro.",
   "download": "Scarica gratis",
   "store": "Mac App Store",
   "storeSoon": "presto, a 0,99 € per sostenerlo",
@@ -18,7 +18,7 @@
     ["0", "pubblicità, tracker o account"],
     ["0 €", "per tutte le funzioni"],
     ["20", "lingue"],
-    ["100%", "open source"]
+    ["MIT", "licenza open source"]
   ],
   "whyTitle": "Perché non ti complica la vita",
   "why": [
@@ -38,17 +38,17 @@
     },
     {
       "title": "Video, anche quelli che macOS non riproduce",
-      "text": "<p>MP4 e MOV passano da macOS stesso, MKV, WebM, AVI, WMV, FLV, MPEG, DVD Video e AVCHD dal motore VLC integrato.</p><ul><li>← → saltano di un decimo del video, ⇧← ⇧→ di un centesimo</li><li>↑ ↓ regolano il volume, per tutti i video</li><li>Anche il Finder e Quick Look ottengono le miniature di MKV, WebM, WMV, FLV e VOB</li></ul>",
+      "text": "<p>Quello che macOS riproduce da sé (MP4, MOV, AVCHD…) passa da macOS, tutto il resto dal motore VLC integrato: MKV, WebM, AVI, WMV, FLV, MPEG, DVD Video.</p><ul><li>← → saltano di un decimo del video, ⇧← ⇧→ di un centesimo</li><li>↑ ↓ regolano il volume, per tutti i video</li><li>Anche il Finder e Quick Look ottengono le miniature di MKV, WebM, WMV, FLV e VOB</li></ul>",
       "alt": "Un video in riproduzione in Schnellbild"
     },
     {
       "title": "Gli archivi si aprono come cartelle",
-      "text": "<p>ZIP, RAR e 7z, fumetti (CBZ, CBR) compresi, anche protetti da password e divisi in più parti. Nulla viene estratto sul disco, e i video si riproducono direttamente dall’archivio.</p>",
+      "text": "<p>ZIP, RAR e 7z, fumetti (CBZ, CBR) compresi, anche divisi in più parti; ZIP e RAR anche protetti da password. Nulla viene estratto sul disco, e i video si riproducono direttamente dall’archivio. (Per 7z serve un macOS recente: macOS 15 non riesce a leggere la maggior parte di questi archivi.)</p>",
       "alt": "Archivi mostrati come cartelle con anteprime"
     },
     {
       "title": "Riordina le foto delle vacanze come in Norton Commander",
-      "text": "<p><kbd>D</kbd> mostra due cartelle affiancate. Contrassegna le immagini, poi <kbd>F5</kbd> le copia e <kbd>F6</kbd> le sposta dall’altra parte. Oppure trascinale.</p><p>Rinomina, nuova cartella, Cestino, segnalibri, e ogni operazione si può annullare.</p>",
+      "text": "<p><kbd>D</kbd> mostra due cartelle affiancate. Contrassegna le immagini, poi <kbd>F5</kbd> le copia e <kbd>F6</kbd> le sposta dall’altra parte. Oppure trascinale.</p><p>Rinomina, nuova cartella, Cestino, segnalibri, e puoi annullare rinomina, spostamento nel Cestino, copia e spostamento.</p>",
       "alt": "Due cartelle affiancate nel doppio pannello"
     },
     {
@@ -75,7 +75,7 @@
   "safeTitle": "Sicuro con i file degli altri",
   "safeIntro": "Immagini, video e archivi di sconosciuti: un visualizzatore serve proprio a questo. Per questo Schnellbild tratta ogni file come ostile, fin dal primo avvio.",
   "safe": [
-    ["Nell’App Sandbox di Apple.", "Nessun accesso alla rete, nessun altro programma avviato, solo le cartelle che gli apri tu."],
+    ["Nell’App Sandbox di Apple.", "Nessun accesso alla rete, nessun programma avviato di sua iniziativa, solo le cartelle che gli apri tu, più Immagini, Filmati e Download."],
     ["Solo lettura.", "Guardare qualcosa non lo modifica mai e non lo estrae mai sul disco."],
     ["I video non vanno online.", "Un «video» che in realtà è una playlist che punta a internet non riproduce nulla."],
     ["Il doppio clic apre documenti, non programmi.", "Mai app, script o programmi di installazione, nemmeno se si nascondono dietro il nome di un’immagine."],
@@ -94,20 +94,20 @@
   "privacy": {
     "title": "Informativa sulla privacy",
     "description": "Schnellbild non raccoglie dati personali: nessun account, nessuna analisi, nessun tracciamento, nessun accesso alla rete.",
-    "intro": "Schnellbild è un visualizzatore di immagini e video per macOS di HAUS HOPPE - ITS (Johannes Hoppe); l’indirizzo completo si trova nelle <a href=\"https://haushoppe-its.de/impressum/\">note legali</a>. La presente informativa riguarda l’app, sia scaricata da GitHub sia acquistata sul Mac App Store (si tratta della stessa app), e questo sito web.",
+    "intro": "Schnellbild è un visualizzatore di immagini e video per macOS. Titolare del trattamento ai sensi del GDPR è HAUS HOPPE - ITS, Johannes Hoppe; l’indirizzo completo si trova nelle <a href=\"https://haushoppe-its.de/impressum/\">note legali</a>. La presente informativa riguarda l’app, sia scaricata da GitHub sia acquistata sul Mac App Store (si tratta della stessa app), e questo sito web.",
     "appTitle": "L’app",
     "appText": "<p><strong>Schnellbild non raccoglie dati personali.</strong> Non ha account, analisi, pubblicità né tracciamento, e non si connette a internet: l’App Sandbox in cui viene eseguita non le concede alcun accesso alla rete.</p><p>Cosa resta sul tuo Mac, e solo lì:</p>",
     "stays": [
       "<strong>Impostazioni</strong> (l’ultima cartella, l’ordinamento, i segnalibri, il volume…) nelle preferenze dell’app.",
       "<strong>Accesso alle cartelle:</strong> le cartelle che hai aperto a Schnellbild, come segnalibri di macOS, così può mostrarle di nuovo dopo un riavvio. Impostazioni → {folderAccess} le dimentica.",
-      "<strong>Password degli archivi</strong> che hai digitato, nel tuo portachiavi di login (voce «Schnellbild archive passwords»); Impostazioni → {forgetPasswords} le rimuove.",
+      "<strong>Password degli archivi</strong> che hai digitato, nel tuo portachiavi login (voce «Schnellbild archive passwords»); Impostazioni → {forgetPasswords} le rimuove.",
       "<strong>Miniature</strong>, nella cache delle miniature di macOS."
     ],
-    "appOutro": "Schnellbild legge le tue immagini, i tuoi video e i tuoi archivi solo per mostrarteli. Non invia mai da nessuna parte né i file, né i loro nomi, né alcuna informazione che li riguardi. Apple può raccogliere dati sul download o sull’acquisto secondo la propria informativa sulla privacy; Schnellbild non ne riceve alcuno.",
+    "appOutro": "Schnellbild legge le tue immagini, i tuoi video e i tuoi archivi solo per mostrarteli. Non invia mai da nessuna parte né i file, né i loro nomi, né alcuna informazione che li riguardi. Apple gestisce il download e l’acquisto secondo la propria informativa sulla privacy e ci trasmette solo dati numerici che non ti identificano: le vendite e, se in macOS hai consentito di condividerli con gli sviluppatori di app, i rapporti sui crash e le statistiche di utilizzo.",
     "siteTitle": "Questo sito web",
-    "siteText": "Questo sito web non usa cookie, strumenti di analisi né contenuti di altri server (niente web font, niente video incorporati). È ospitato su GitHub Pages, un servizio di GitHub, Inc. (USA). Quando lo visiti, GitHub registra il tuo indirizzo IP per motivi di sicurezza; vedi <a href=\"https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages#data-collection\">GitHub Pages: raccolta dei dati</a> e l’<a href=\"https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement\">informativa sulla privacy di GitHub</a> (in inglese). La base giuridica è il nostro legittimo interesse a fornire il sito web in modo sicuro (art. 6, par. 1, lett. f) GDPR). Anche il download dell’app avviene da GitHub.",
+    "siteText": "Questo sito web non usa cookie, strumenti di analisi né contenuti di altri server (niente web font, niente video incorporati). È ospitato su GitHub Pages, un servizio di GitHub, Inc. (USA). Quando lo visiti, GitHub registra e conserva il tuo indirizzo IP per motivi di sicurezza; vedi <a href=\"https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages#data-collection\">GitHub Pages: raccolta dei dati</a> e l’<a href=\"https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement\">informativa sulla privacy di GitHub</a> (in inglese). Per quanto tempo GitHub conserva questi registri lo stabilisce GitHub; noi non vi abbiamo accesso. GitHub aderisce all’EU-U.S. Data Privacy Framework, per il quale la Commissione europea ha stabilito che gli Stati Uniti garantiscono un livello di protezione adeguato (art. 45 del GDPR). La base giuridica è il nostro legittimo interesse a fornire il sito web in modo sicuro (art. 6, par. 1, lett. f) del GDPR). Anche il download dell’app avviene da GitHub.",
     "rightsTitle": "I tuoi diritti",
-    "rightsText": "Ai sensi del GDPR hai diritto di accesso, rettifica, cancellazione, limitazione del trattamento, portabilità dei dati e opposizione, nonché il diritto di proporre reclamo a un’autorità di controllo per la protezione dei dati. Poiché né l’app né questo sito web conservano dati personali propri, di solito da parte nostra non c’è nulla da consultare o cancellare.",
+    "rightsText": "Ai sensi del GDPR hai diritto di accesso, rettifica, cancellazione, limitazione del trattamento e portabilità dei dati, nonché il diritto di proporre reclamo a un’autorità di controllo per la protezione dei dati. <strong>Hai il diritto di opporti</strong>, per motivi connessi alla tua situazione particolare, al trattamento basato sul nostro legittimo interesse (art. 21 del GDPR). Poiché né l’app né questo sito web conservano dati personali propri, di solito da parte nostra non c’è nulla da consultare o cancellare.",
     "contactTitle": "Contatti",
     "contactText": "Domande? Apri una segnalazione su <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a> oppure usa i contatti indicati nelle <a href=\"https://haushoppe-its.de/impressum/\">note legali</a>."
   }

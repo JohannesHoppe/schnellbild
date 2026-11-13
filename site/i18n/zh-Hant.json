@@ -11,23 +11,53 @@
   "lead": "打開檔案夾，縮圖一目了然；放大檢視單張照片，用鍵盤輕鬆翻頁。影片也能直接播放，MKV、AVI 和 WebM 也不例外。不必匯入圖庫，不必等待，沒有多餘的東西。",
   "download": "免費下載",
   "store": "Mac App Store",
-  "storeSoon": "即將推出，用來支持這個專案",
+  "storeSoon": "即將上架，用來支持開發",
   "fineprint": "需要 macOS 15 或以上版本，搭載 Apple 晶片的 Mac。以 Developer ID 簽署，經 Apple 公證，在 Apple 的 App Sandbox 中執行。兩個版本是同一個 App，功能完全相同；在 App Store 購買就能支持它的開發。",
   "shotAlt": "Schnellbild：附預覽的檔案夾和照片縮圖",
   "stats": [
-    ["0", "廣告、追蹤器或帳號"],
-    ["0 €", "享有所有功能"],
-    ["20", "種語言"],
-    ["100%", "開放原始碼"]
+    [
+      "0",
+      "廣告、追蹤器或帳號"
+    ],
+    [
+      "0 €",
+      "享有所有功能"
+    ],
+    [
+      "20",
+      "種語言"
+    ],
+    [
+      "MIT",
+      "授權，開放原始碼"
+    ]
   ],
   "whyTitle": "為什麼不惱人",
   "why": [
-    ["沒有廣告、沒有追蹤、不需帳號", "它只顯示你的照片，不跟任何人通訊。"],
-    ["不推銷", "沒有專業版，沒有訂閱，也沒有「解鎖」按鈕。所有功能一應俱全。"],
-    ["不臃腫", "不必匯入圖庫，沒有編輯器，沒有雲端。只把一件事做好：看照片和影片。"],
-    ["快速", "捲動時縮圖隨即出現，大型檔案夾和網路共享也一樣。"],
-    ["預設就安全", "別人傳來的影像、影片和封存檔不會執行任何東西，也不會連上網路，不需要事先開啟任何設定。"],
-    ["不當機", "遇到損壞的檔案、奇怪的格式或緩慢的磁碟，只會顯示預留圖，App 不會因此當掉。"]
+    [
+      "沒有廣告、沒有追蹤、不需帳號",
+      "它只顯示你的照片，不跟任何人通訊。"
+    ],
+    [
+      "不推銷",
+      "沒有專業版，沒有訂閱，也沒有「解鎖」按鈕。所有功能一應俱全。"
+    ],
+    [
+      "不臃腫",
+      "不必匯入圖庫，沒有編輯器，沒有雲端。只把一件事做好：看照片和影片。"
+    ],
+    [
+      "快速",
+      "捲動時縮圖隨即出現，大型檔案夾和網路共享也一樣。"
+    ],
+    [
+      "預設就安全",
+      "別人傳來的影像、影片和封存檔不會執行任何東西，也不會連上網路，不需要事先開啟任何設定。"
+    ],
+    [
+      "不當機",
+      "遇到損壞的檔案、奇怪的格式或緩慢的磁碟，只會顯示預留圖，App 不會因此當掉。"
+    ]
   ],
   "featuresTitle": "功能一覽",
   "features": [
@@ -38,17 +68,17 @@
     },
     {
       "title": "影片，連 macOS 播不了的也行",
-      "text": "<p>MP4 和 MOV 由 macOS 本身播放；MKV、WebM、AVI、WMV、FLV、MPEG、DVD 影片和 AVCHD 則由內建的 VLC 引擎播放。</p><ul><li>← → 跳過影片的十分之一，⇧← ⇧→ 跳過百分之一</li><li>↑ ↓ 調整音量，對所有影片生效</li><li>Finder 和快速查看也能顯示 MKV、WebM、WMV、FLV 和 VOB 的縮圖</li></ul>",
+      "text": "<p>macOS 本身能播放的格式（MP4、MOV、AVCHD 等）由 macOS 播放，其餘格式（MKV、WebM、AVI、WMV、FLV、MPEG、DVD 影片）則由內建的 VLC 引擎播放。</p><ul><li>← → 跳轉影片的十分之一，⇧← ⇧→ 跳轉百分之一</li><li>↑ ↓ 調整音量，對所有影片生效</li><li>Finder 和快速查看也能顯示 MKV、WebM、WMV、FLV 和 VOB 的縮圖</li></ul>",
       "alt": "在 Schnellbild 中播放的影片"
     },
     {
       "title": "封存檔像檔案夾一樣打開",
-      "text": "<p>ZIP、RAR 和 7z，包括漫畫（CBZ、CBR），有密碼或分割成多個部分的也可以。不會在磁碟上解壓縮任何內容，影片直接從封存檔中播放。</p>",
+      "text": "<p>ZIP、RAR 和 7z，包括漫畫（CBZ、CBR），分割成多個部分的也可以；ZIP 和 RAR 還支援密碼。不會在磁碟上解壓縮任何內容，影片直接從封存檔中播放。（7z 需要較新的 macOS：macOS 15 無法讀取大多數 7z 封存檔。）</p>",
       "alt": "顯示為附預覽檔案夾的封存檔"
     },
     {
       "title": "像在 Norton Commander 裡一樣整理旅遊照片",
-      "text": "<p>按 <kbd>D</kbd> 並排顯示兩個檔案夾。標記影像後，按 <kbd>F5</kbd> 拷貝到另一側，按 <kbd>F6</kbd> 搬過去，或者直接拖過去。</p><p>重新命名、新增檔案夾、垃圾桶、書籤，而且全都可以還原。</p>",
+      "text": "<p>按 <kbd>D</kbd> 並排顯示兩個檔案夾。標記影像後，按 <kbd>F5</kbd> 拷貝到另一側，按 <kbd>F6</kbd> 搬過去，或者直接拖過去。</p><p>重新命名、新增檔案夾、垃圾桶、書籤，而且重新命名、丟到垃圾桶、拷貝和搬移都可以還原。</p>",
       "alt": "在雙窗格中並排顯示的兩個檔案夾"
     },
     {
@@ -75,11 +105,26 @@
   "safeTitle": "別人傳來的檔案，也能放心看",
   "safeIntro": "檢視陌生人傳來的影像、影片和封存檔，正是檢視器的本分。所以 Schnellbild 一開始就把每個檔案都當作不可信任的。",
   "safe": [
-    ["在 Apple 的 App Sandbox 中執行。", "完全不連網，不啟動其他程式，只能取用你為它打開的檔案夾。"],
-    ["只讀不寫。", "檢視從不更動任何東西，也從不解壓縮到磁碟。"],
-    ["影片無法連上網路。", "實際上是指向網際網路的播放列表的「影片」，什麼都不會播放。"],
-    ["按兩下只打開文件，不打開程式。", "App、腳本和安裝程式一律不打開，即使它們偽裝成影像的名稱。"],
-    ["經過簽署和公證，", "並啟用 Apple 的 Hardened Runtime。"]
+    [
+      "在 Apple 的 App Sandbox 中執行。",
+      "完全不連網，不會自行啟動其他程式，只能取用你為它打開的檔案夾，以及「圖片」「影片」和「下載項目」。"
+    ],
+    [
+      "只讀不寫。",
+      "檢視從不更動任何東西，也從不解壓縮到磁碟。"
+    ],
+    [
+      "影片無法連上網路。",
+      "實際上是指向網際網路的播放列表的「影片」，什麼都不會播放。"
+    ],
+    [
+      "按兩下只打開文件，不打開程式。",
+      "App、腳本和安裝程式一律不打開，即使它們偽裝成影像的名稱。"
+    ],
+    [
+      "經過簽署和公證，",
+      "並啟用 Apple 的 Hardened Runtime。"
+    ]
   ],
   "safeMore": "它具體做了什麼，界限又在哪裡：<a href=\"https://github.com/JohannesHoppe/schnellbild#safe-with-files-from-others\">別人傳來的檔案，也能放心看</a>。",
   "modelsTitle": "從 Phiewer、IINA 或 Norton Commander 轉過來？",
@@ -94,20 +139,20 @@
   "privacy": {
     "title": "隱私權政策",
     "description": "Schnellbild 不蒐集任何個人資料：沒有帳號、沒有分析、沒有追蹤、沒有網路存取。",
-    "intro": "Schnellbild 是 HAUS HOPPE - ITS（Johannes Hoppe）推出的 macOS 影像與影片檢視器；完整地址請見<a href=\"https://haushoppe-its.de/impressum/\">法律聲明</a>。本政策適用於這個 App（無論是從 GitHub 下載或在 Mac App Store 購買，兩者是同一個 App）以及本網站。",
+    "intro": "Schnellbild 是一款 macOS 影像與影片檢視器。GDPR 所稱的控管者為 HAUS HOPPE - ITS（Johannes Hoppe）；完整地址請見<a href=\"https://haushoppe-its.de/impressum/\">法律聲明</a>。本政策適用於這個 App（無論是從 GitHub 下載或在 Mac App Store 購買，兩者是同一個 App）以及本網站。",
     "appTitle": "App",
     "appText": "<p><strong>Schnellbild 不蒐集任何個人資料。</strong>它沒有帳號、分析、廣告和追蹤，也不會連上網際網路：它執行所在的 App Sandbox 完全不允許它存取網路。</p><p>以下內容儲存在你的 Mac 上，而且只儲存在那裡：</p>",
     "stays": [
       "<strong>設定</strong>（上次打開的檔案夾、排序方式、書籤、音量⋯⋯），儲存在 App 本身的偏好設定中。",
-      "<strong>檔案夾存取權：</strong>你為 Schnellbild 打開的檔案夾，以 macOS 書籤的形式儲存，讓它在重新啟動後能再次顯示。「設定」→ {folderAccess} 可清除它們。",
-      "你輸入的<strong>封存檔密碼</strong>，儲存在你的登入鑰匙圈中（項目「Schnellbild archive passwords」）；「設定」→ {forgetPasswords} 可將其移除。",
+      "<strong>檔案夾存取權：</strong>你為 Schnellbild 打開的檔案夾，以 macOS 書籤的形式儲存，讓它在重新啟動後能再次顯示。可在「設定」→「{folderAccess}」中清除它們。",
+      "你輸入的<strong>封存檔密碼</strong>，儲存在你的登入鑰匙圈中（項目「Schnellbild archive passwords」）；在「設定」中按一下「{forgetPasswords}」即可將其移除。",
       "<strong>縮圖</strong>，儲存在 macOS 本身的縮圖快取中。"
     ],
-    "appOutro": "Schnellbild 讀取你的影像、影片和封存檔，只是為了顯示給你看。它從不將這些檔案、檔案名稱或任何相關資訊傳送到任何地方。Apple 可能會依據其本身的隱私權政策蒐集有關下載或購買的資料；Schnellbild 不會取得其中任何資料。",
+    "appOutro": "Schnellbild 讀取你的影像、影片和封存檔，只是為了顯示給你看。它從不將這些檔案、檔案名稱或任何相關資訊傳送到任何地方。下載與購買由 Apple 依據其本身的隱私權政策處理，Apple 只會提供我們不含你身分的數據：銷售量，以及當你在 macOS 中允許與 App 開發者分享時的當機報告和使用統計資料。",
     "siteTitle": "本網站",
-    "siteText": "本網站不使用 Cookie、分析工具，也不載入來自其他伺服器的內容（沒有網路字型，沒有嵌入影片）。本網站託管於 GitHub Pages，這是 GitHub, Inc.（美國）提供的服務。你造訪本網站時，GitHub 基於安全目的會記錄你的 IP 位址；請參閱<a href=\"https://docs.github.com/zh/pages/getting-started-with-github-pages/what-is-github-pages#data-collection\">GitHub Pages：資料蒐集</a>和<a href=\"https://docs.github.com/zh/site-policy/privacy-policies/github-general-privacy-statement\">GitHub 隱私權聲明</a>。法律依據是我們安全提供本網站的正當利益（歐盟《一般資料保護規則》（GDPR）第 6 條第 1 項第 (f) 款）。App 的下載同樣來自 GitHub。",
+    "siteText": "本網站不使用 Cookie、分析工具，也不載入來自其他伺服器的內容（沒有網路字型，沒有嵌入影片）。本網站託管於 GitHub Pages，這是 GitHub, Inc.（美國）提供的服務。你造訪本網站時，GitHub 基於安全目的會記錄並儲存你的 IP 位址；請參閱<a href=\"https://docs.github.com/zh/pages/getting-started-with-github-pages/what-is-github-pages#data-collection\">GitHub Pages：資料蒐集</a>和<a href=\"https://docs.github.com/zh/site-policy/privacy-policies/github-general-privacy-statement\">GitHub 隱私權聲明</a>。GitHub 保存這些記錄多久由 GitHub 決定；我們無法存取這些記錄。GitHub 參與歐盟—美國資料隱私框架（EU-U.S. Data Privacy Framework），歐盟執委會已認定美國在此框架下提供適足的保護水準（GDPR 第 45 條）。法律依據是我們安全提供本網站的正當利益（歐盟《一般資料保護規則》（GDPR）第 6 條第 1 項第 (f) 款）。App 的下載同樣來自 GitHub。",
     "rightsTitle": "你的權利",
-    "rightsText": "依據 GDPR，你享有查閱、更正、刪除、限制處理、資料可攜及反對的權利，並有權向資料保護監管機關提出申訴。由於 App 和本網站都不保存自己的個人資料，我們這邊通常沒有可查詢或刪除的內容。",
+    "rightsText": "依據 GDPR，你享有查閱、更正、刪除、限制處理及資料可攜的權利，並有權向資料保護監管機關提出申訴。<strong>你有權基於與你特殊情況有關的理由，反對基於我們正當利益所進行的處理</strong>（GDPR 第 21 條）。由於 App 和本網站都不保存自己的個人資料，我們這邊通常沒有可查詢或刪除的內容。",
     "contactTitle": "聯絡",
     "contactText": "如有疑問：請在 <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a> 提交 issue，或使用<a href=\"https://haushoppe-its.de/impressum/\">法律聲明</a>中的聯絡方式。"
   }

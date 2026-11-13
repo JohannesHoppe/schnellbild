@@ -18,7 +18,7 @@
     ["0", "anúncios, rastreadores ou contas"],
     ["R$ 0", "por todos os recursos"],
     ["20", "idiomas"],
-    ["100%", "código aberto"]
+    ["MIT", "licença de código aberto"]
   ],
   "whyTitle": "Por que não dá dor de cabeça",
   "why": [
@@ -38,17 +38,17 @@
     },
     {
       "title": "Vídeos, até os que o macOS não reproduz",
-      "text": "<p>MP4 e MOV tocam pelo próprio macOS; MKV, WebM, AVI, WMV, FLV, MPEG, DVD-Video e AVCHD, pelo mecanismo do VLC integrado.</p><ul><li>← → pulam um décimo do vídeo, ⇧← ⇧→ um centésimo</li><li>↑ ↓ ajustam o volume, para todos os vídeos</li><li>O Finder e a Visualização Rápida também ganham miniaturas de MKV, WebM, WMV, FLV e VOB</li></ul>",
+      "text": "<p>O que o macOS reproduz sozinho (MP4, MOV, AVCHD…) toca pelo próprio macOS; todo o resto, pelo mecanismo do VLC integrado: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-Video.</p><ul><li>← → pulam um décimo do vídeo, ⇧← ⇧→ um centésimo</li><li>↑ ↓ ajustam o volume, para todos os vídeos</li><li>O Finder e a Visualização Rápida também ganham miniaturas de MKV, WebM, WMV, FLV e VOB</li></ul>",
       "alt": "Um vídeo sendo reproduzido no Schnellbild"
     },
     {
       "title": "Arquivos compactados abrem como pastas",
-      "text": "<p>ZIP, RAR e 7z, incluindo quadrinhos (CBZ, CBR), também com senha e divididos em várias partes. Nada é extraído para o disco, e os vídeos tocam direto do arquivo compactado.</p>",
+      "text": "<p>ZIP, RAR e 7z, incluindo quadrinhos (CBZ, CBR), também divididos em várias partes; ZIP e RAR também com senha. Nada é extraído para o disco, e os vídeos tocam direto do arquivo compactado. (O 7z exige um macOS recente: o macOS 15 não consegue ler a maioria deles.)</p>",
       "alt": "Arquivos compactados exibidos como pastas com pré-visualizações"
     },
     {
       "title": "Organize as fotos das férias como no Norton Commander",
-      "text": "<p><kbd>D</kbd> mostra duas pastas lado a lado. Marque as imagens: <kbd>F5</kbd> as copia e <kbd>F6</kbd> as move para o outro lado. Ou simplesmente arraste-as até lá.</p><p>Renomear, nova pasta, Lixo, favoritos, e tudo isso pode ser desfeito.</p>",
+      "text": "<p><kbd>D</kbd> mostra duas pastas lado a lado. Marque as imagens: <kbd>F5</kbd> as copia e <kbd>F6</kbd> as move para o outro lado. Ou simplesmente arraste-as até lá.</p><p>Renomear, nova pasta, Lixo, favoritos, e dá para desfazer renomear, mover para o Lixo, copiar e mover.</p>",
       "alt": "Duas pastas lado a lado no painel duplo"
     },
     {
@@ -75,7 +75,7 @@
   "safeTitle": "Seguro com arquivos de outras pessoas",
   "safeIntro": "Imagens, vídeos e arquivos compactados de desconhecidos: é exatamente para isso que serve um visualizador. Por isso o Schnellbild trata todo arquivo como hostil, desde o início.",
   "safe": [
-    ["Na App Sandbox da Apple.", "Nenhum acesso à rede, nenhum outro programa iniciado, só as pastas que você abrir para ele."],
+    ["Na App Sandbox da Apple.", "Nenhum acesso à rede, não inicia programas por conta própria, só vê as pastas que você abrir para ele, além de Imagens, Filmes e Downloads."],
     ["Somente leitura.", "Olhar um arquivo nunca o altera nem o extrai para o disco."],
     ["Vídeos não acessam a internet.", "Um “vídeo” que na verdade é uma playlist apontando para a internet não reproduz nada."],
     ["O clique duplo abre documentos, não programas.", "Nunca apps, scripts ou instaladores, mesmo que se escondam atrás do nome de uma imagem."],
@@ -94,20 +94,20 @@
   "privacy": {
     "title": "Política de privacidade",
     "description": "O Schnellbild não coleta dados pessoais: sem conta, sem análises, sem rastreamento, sem acesso à rede.",
-    "intro": "O Schnellbild é um visualizador de imagens e vídeos para macOS da HAUS HOPPE - ITS (Johannes Hoppe); o endereço completo está no <a href=\"https://haushoppe-its.de/impressum/\">aviso legal</a>. Esta política abrange o app, tanto baixado do GitHub quanto comprado na Mac App Store (os dois são o mesmo app), e este site.",
+    "intro": "O Schnellbild é um visualizador de imagens e vídeos para macOS. O responsável pelo tratamento dos dados, nos termos do GDPR, é a HAUS HOPPE - ITS, Johannes Hoppe; o endereço completo está no <a href=\"https://haushoppe-its.de/impressum/\">aviso legal</a>. Esta política abrange o app, tanto baixado do GitHub quanto comprado na Mac App Store (os dois são o mesmo app), e este site.",
     "appTitle": "O app",
     "appText": "<p><strong>O Schnellbild não coleta dados pessoais.</strong> Ele não tem conta, análises, publicidade nem rastreamento, e não se conecta à internet: a App Sandbox em que ele é executado não lhe dá nenhum acesso à rede.</p><p>O que fica no seu Mac, e somente nele:</p>",
     "stays": [
       "<strong>Ajustes</strong> (a última pasta, a ordenação, os favoritos, o volume…) nas preferências do próprio app.",
       "<strong>Acesso a pastas:</strong> as pastas que você abriu para o Schnellbild, como marcadores do macOS, para que ele possa mostrá-las de novo depois de reiniciar. Ajustes → {folderAccess} as esquece.",
-      "<strong>Senhas de arquivos compactados</strong> que você digitou, no seu Porta-Chaves de início de sessão (item “Schnellbild archive passwords”); Ajustes → {forgetPasswords} as remove.",
+      "<strong>Senhas de arquivos compactados</strong> que você digitou, no seu chaveiro de início de sessão (item “Schnellbild archive passwords”); Ajustes → {forgetPasswords} as remove.",
       "<strong>Miniaturas</strong>, no cache de miniaturas do próprio macOS."
     ],
-    "appOutro": "O Schnellbild lê suas imagens, vídeos e arquivos compactados apenas para mostrá-los a você. Ele nunca os envia a lugar nenhum, nem seus nomes, nem qualquer informação sobre eles. A Apple pode coletar dados sobre o download ou a compra de acordo com a própria política de privacidade; o Schnellbild não recebe nenhum deles.",
+    "appOutro": "O Schnellbild lê suas imagens, vídeos e arquivos compactados apenas para mostrá-los a você. Ele nunca os envia a lugar nenhum, nem seus nomes, nem qualquer informação sobre eles. A Apple cuida do download e da compra de acordo com a própria política de privacidade e só nos repassa números que não identificam você: as vendas e, se você permitiu no macOS o compartilhamento com desenvolvedores de apps, relatórios de falhas e estatísticas de uso.",
     "siteTitle": "Este site",
-    "siteText": "Este site não usa cookies, análises nem conteúdo de outros servidores (nada de fontes web, nada de vídeos incorporados). Ele é hospedado no GitHub Pages, um serviço da GitHub, Inc. (EUA). Quando você o visita, o GitHub registra seu endereço IP para fins de segurança; veja <a href=\"https://docs.github.com/pt/pages/getting-started-with-github-pages/what-is-github-pages#data-collection\">GitHub Pages: coleta de dados</a> e a <a href=\"https://docs.github.com/pt/site-policy/privacy-policies/github-general-privacy-statement\">Declaração de Privacidade do GitHub</a>. A base legal é o nosso legítimo interesse em disponibilizar o site com segurança (art. 6º, n.º 1, alínea f, do Regulamento Geral sobre a Proteção de Dados da UE, RGPD). O download do app também vem do GitHub.",
+    "siteText": "Este site não usa cookies, análises nem conteúdo de outros servidores (nada de fontes web, nada de vídeos incorporados). Ele é hospedado no GitHub Pages, um serviço da GitHub, Inc. (EUA). Quando você o visita, o GitHub registra e armazena seu endereço IP para fins de segurança; veja <a href=\"https://docs.github.com/pt/pages/getting-started-with-github-pages/what-is-github-pages#data-collection\">GitHub Pages: coleta de dados</a> e a <a href=\"https://docs.github.com/pt/site-policy/privacy-policies/github-general-privacy-statement\">Declaração de Privacidade do GitHub</a>. Por quanto tempo o GitHub guarda esses registros é decisão do GitHub; nós não temos acesso a eles. O GitHub participa do EU-U.S. Data Privacy Framework, para o qual a Comissão Europeia decidiu que os EUA garantem um nível adequado de proteção (art. 45 do GDPR). A base legal é o nosso legítimo interesse em disponibilizar o site com segurança (art. 6º, n.º 1, alínea f, do Regulamento Geral sobre a Proteção de Dados da UE, o GDPR). O download do app também vem do GitHub.",
     "rightsTitle": "Seus direitos",
-    "rightsText": "Pelo RGPD, você tem direito de acesso, retificação, apagamento, limitação do tratamento, portabilidade dos dados e oposição, além do direito de apresentar reclamação a uma autoridade de controle de proteção de dados. Como nem o app nem este site guardam dados pessoais próprios, normalmente não há nada do nosso lado para consultar ou apagar.",
+    "rightsText": "Pelo GDPR, você tem direito de acesso, retificação, apagamento, limitação do tratamento e portabilidade dos dados, além do direito de apresentar reclamação a uma autoridade de controle de proteção de dados. <strong>Você tem o direito de se opor</strong>, por motivos relacionados à sua situação particular, ao tratamento baseado no nosso legítimo interesse (art. 21 do GDPR). Como nem o app nem este site guardam dados pessoais próprios, normalmente não há nada do nosso lado para consultar ou apagar.",
     "contactTitle": "Contato",
     "contactText": "Dúvidas? Abra uma issue em <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a> ou use o contato do <a href=\"https://haushoppe-its.de/impressum/\">aviso legal</a>."
   }

@@ -214,4 +214,11 @@ footer a { color: var(--muted); }
 @media (prefers-reduced-motion: reduce) {
   @view-transition { navigation: none; }
 }
+/* Printed, everything shows as it stands */
+@media print {
+  .js [data-reveal], .js .hero * { opacity: 1 !important; transform: none !important; animation: none !important; }
+  .shot img, .media [data-parallax] { transform: none !important; }
+  .bar { position: static; }
+  .lang { display: none; }
+}
 h1, h2, h3, .tagline, .lead, .intro { text-wrap: balance; }
