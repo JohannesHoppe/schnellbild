@@ -1,8 +1,5 @@
 Schnellbild zeigt Bilder und Videos, ohne dass du etwas importieren musst: Ordner öffnen, Vorschaubilder sehen, ein Bild groß ansehen, mit der Tastatur weiterblättern. Es bleibt schnell, auch bei großen Ordnern und auf Netzlaufwerken.
 
-DIESE VERSION UNTERSTÜTZT DAS PROJEKT
-Schnellbild ist Open Source und als Download auf GitHub kostenlos. Diese Version ist dieselbe App. Wer sie hier kauft, unterstützt die Weiterentwicklung. Danke!
-
 BILDER
 • JPEG, HEIC, AVIF, JPEG XL, PNG, GIF, WebP, TIFF, PSD, OpenEXR, SVG, PDF und RAW-Fotos der Kameras, die macOS kennt
 • Raster, Liste und Vollansicht, Diashow durch alle Unterordner
@@ -17,8 +14,8 @@ ARCHIVE WIE ORDNER
 • ZIP, RAR und 7z öffnen sich wie Ordner, Comics (CBZ, CBR) eingeschlossen, auch mit Passwort und in mehreren Teilen
 • Nichts wird auf die Festplatte entpackt; Videos spielen direkt aus dem Archiv
 
-SORTIEREN WIE IM NORTON COMMANDER
-• Zwei Bereiche nebeneinander: markieren, mit F5 kopieren, mit F6 verschieben
+SORTIEREN MIT ZWEI BEREICHEN
+• Zwei Bereiche nebeneinander mit den F-Tasten eines klassischen Dateimanagers: markieren, mit F5 kopieren, mit F6 verschieben
 • Umbenennen, neuer Ordner, Papierkorb, Lesezeichen, Rückgängig
 • Suche über Ordner- und Dateinamen in allen Unterordnern
 
