@@ -81,7 +81,11 @@
     ["Tylko odczyt.", "Oglądanie niczego nie zmienia i niczego nie rozpakowuje na dysk."],
     ["Filmy nie łączą się z internetem.", "„Film”, który w rzeczywistości jest playlistą wskazującą na internet, niczego nie odtworzy."],
     ["Dwuklik otwiera dokumenty, nie programy.", "Nigdy aplikacje, skrypty ani instalatory, nawet gdy kryją się pod nazwą obrazu."],
-    ["Podpisany i notaryzowany,", "z Hardened Runtime Apple."]
+    ["Podpisany i notaryzowany,", "z Hardened Runtime Apple."],
+    [
+      "Zbudowany z publicznego kodu źródłowego, co da się udowodnić.",
+      "GitHub potwierdza podpisem, z którego commita i której kompilacji pochodzi każde pobranie. Każdy może to sprawdzić."
+    ]
   ],
   "safeMore": "Co dokładnie robi i gdzie są jego granice (po angielsku): <a href=\"https://github.com/JohannesHoppe/schnellbild#safe-with-files-from-others\">Bezpieczny z plikami od innych</a>.",
   "modelsTitle": "Przesiadasz się z Phiewer, IINA albo Norton Commandera?",

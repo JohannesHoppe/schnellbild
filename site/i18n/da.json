@@ -81,7 +81,11 @@
     ["Kun læsning.", "At se på noget ændrer det aldrig og pakker det aldrig ud på disken."],
     ["Videoer kan ikke gå på nettet.", "En »video«, der i virkeligheden er en playliste, som peger ud på internettet, afspiller intet."],
     ["Dobbeltklik åbner dokumenter, ikke programmer.", "Aldrig apps, scripts eller installationsprogrammer, heller ikke når de gemmer sig bag et billednavn."],
-    ["Signeret og notariseret,", "med Apples Hardened Runtime."]
+    ["Signeret og notariseret,", "med Apples Hardened Runtime."],
+    [
+      "Beviseligt bygget ud fra den offentlige kildekode.",
+      "GitHub bekræfter med en signatur, hvilket commit og hvilket build hver download stammer fra. Alle kan efterprøve det."
+    ]
   ],
   "safeMore": "Hvad den gør i detaljer, og hvor grænsen går: <a href=\"https://github.com/JohannesHoppe/schnellbild#safe-with-files-from-others\">Sikker med filer fra andre</a> (på engelsk).",
   "modelsTitle": "Kommer du fra Phiewer, IINA eller Norton Commander?",

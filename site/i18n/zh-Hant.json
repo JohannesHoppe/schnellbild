@@ -126,6 +126,10 @@
     [
       "經過簽署和公證，",
       "並啟用 Apple 的 Hardened Runtime。"
+    ],
+    [
+      "可證明由公開原始碼建置。",
+      "GitHub 以簽章證明每個下載來自哪個提交、哪次建置。任何人都可以驗證。"
     ]
   ],
   "safeMore": "它具體做了什麼，界限又在哪裡：<a href=\"https://github.com/JohannesHoppe/schnellbild#safe-with-files-from-others\">別人傳來的檔案，也能放心看</a>。",

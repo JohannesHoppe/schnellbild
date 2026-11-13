@@ -6,6 +6,7 @@
 
 <p align="center">
   <a href="https://github.com/johanneshoppe/schnellbild/actions/workflows/ci.yml"><img src="https://github.com/johanneshoppe/schnellbild/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="#provably-built-from-this-source"><img src="https://slsa.dev/images/gh-badge-level2.svg" alt="SLSA Build Level 2"></a>
 </p>
 
 <p align="center"><b>An image &amp; video viewer for macOS that just doesn't suck.</b></p>
@@ -31,6 +32,7 @@ Open a folder, see thumbnails, look at one picture large, page through with the 
 - **No bloat.** No library to import into, no editor, no cloud. Just looking at photos and videos, done well.
 - **Fast.** Thumbnails appear while you scroll, big folders and network shares included (see [Why so fast?](#why-so-fast)).
 - **Safe by default.** Looking at pictures, videos and archives from others runs nothing and goes online nowhere, with nothing to switch on first: archives are only read, never unpacked to disk; a "video" can't make it fetch anything from the internet; a double click never starts an app hiding behind a picture's name; and the whole app runs in Apple's App Sandbox, so it reaches only the folders you open to it. What it does, and where its limit is: [Safe with files from others](#safe-with-files-from-others).
+- **Provably built from this source.** Every DMG comes with a build attestation signed by GitHub: anyone can check that it was built by this repository's workflow, from a public commit. [How to check it](#provably-built-from-this-source).
 - **Doesn't fall over.** Broken files, odd formats and slow disks show a placeholder instead of taking the app down. Your files are only changed when you say so: rename, trash, a new folder, or moving and copying them (dragging tiles onto a folder, F5 / F6 in the dual pane).
 
 ## Download
@@ -378,6 +380,28 @@ Pictures, videos and archives from strangers are exactly what a viewer is for, s
 - **No crash loops.** If a file ever made Schnellbild quit, it doesn't reopen that folder at the next start.
 
 The limit, honestly: the decoders run in the app's process: VLC with FFmpeg for videos, UnRAR and macOS' libarchive for archives, macOS' ImageIO for pictures. A flaw in one of them could in principle run code inside Schnellbild; the sandbox then keeps that code to what Schnellbild may do itself: the folders you opened to it, without network. That's why VLCKit and UnRAR are kept at their latest security releases.
+
+## Provably built from this source
+
+Every DMG is built on GitHub's own Macs by this repository's [release workflow](.github/workflows/release.yml), from a tagged commit you can read, and GitHub signs a build attestation for it (SLSA Build Level 2, signed with [Sigstore](https://www.sigstore.dev) and recorded in a public transparency log). It ties the file's SHA-256 to the repository, the commit and the workflow run that made it. Nobody, the author included, can make one for a file that this workflow didn't build. So what you download is what the source here says, and nothing was slipped in on someone's own computer.
+
+Check the DMG you downloaded, with the [GitHub CLI](https://cli.github.com) (`brew install gh`, then `gh auth login`):
+
+```sh
+gh attestation verify ~/Downloads/Schnellbild.dmg --repo JohannesHoppe/schnellbild
+```
+
+Or the app you installed (its program file keeps its fingerprint from the DMG into Applications):
+
+```sh
+gh attestation verify /Applications/Schnellbild.app/Contents/MacOS/Schnellbild --repo JohannesHoppe/schnellbild
+```
+
+"Verification succeeded!" means the file is exactly what GitHub's build produced; the output names the commit (`sourceRepositoryDigest`) and the workflow run (`runInvocationURI`) it came from, which you can open on GitHub. Anything else, and the file isn't from here. Without the CLI: all attestations are listed at [github.com/JohannesHoppe/schnellbild/attestations](https://github.com/JohannesHoppe/schnellbild/attestations), each with the SHA-256 it covers; compare it with `shasum -a 256 ~/Downloads/Schnellbild.dmg`.
+
+The DMG is attested twice: as built (the release workflow) and after Apple's notarization ticket is stapled to it ([Finish Mac release](.github/workflows/mac-release.yml), which takes exactly that build and only adds the ticket); the app inside is the same in both. From version 0.11.0 on.
+
+The Mac App Store version can't be checked this way: Apple signs every Store app anew before it delivers it, which changes the file. It is built by the same scripts from the same commit ([App Store workflow](.github/workflows/appstore.yml)), with the same version and build number as the DMG of that release.
 
 ## A free Phiewer alternative
 

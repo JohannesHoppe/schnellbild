@@ -236,7 +236,7 @@ def topbar(code, t, path_of, sections=True):
 def footer(code, t):
     return f"""<footer>
   <div class="wrap">
-    <span>© 2026 HAUS HOPPE - ITS (Johannes Hoppe)</span>
+    <span>© 2026 <a href="https://haushoppe-its.de/">HAUS HOPPE - ITS</a> (Johannes Hoppe)</span>
     <nav aria-label="{esc(t['footerPrivacy'])}, {esc(t['footerImprint'])}">
       <a href="{privacy_path(code, t)}">{esc(t['footerPrivacy'])}</a>
       <a href="/eula/">{esc(t['footerEula'])}</a>
