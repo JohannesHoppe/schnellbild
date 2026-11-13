@@ -80,8 +80,8 @@
     },
     {
       "title": "Urlaubsfotos sortieren wie im Norton Commander",
-      "text": "<p><kbd>D</kbd> zeigt zwei Ordner nebeneinander. Bilder markieren, dann kopiert <kbd>F5</kbd> und verschiebt <kbd>F6</kbd> sie auf die andere Seite, oder einfach hinüberziehen.</p><p>Umbenennen, neuer Ordner, Papierkorb, Lesezeichen, und Rückgängig für Umbenennen, Papierkorb, Kopieren und Verschieben.</p>",
-      "alt": "Zwei Ordner nebeneinander in der Doppelansicht"
+      "text": "<p><kbd>D</kbd> zeigt zwei Ordner nebeneinander. Bilder markieren, dann kopiert <kbd>F5</kbd> und verschiebt <kbd>F6</kbd> sie in den anderen Bereich, oder einfach hinüberziehen.</p><p>Umbenennen, neuer Ordner, Papierkorb, Lesezeichen, und Rückgängig für Umbenennen, Papierkorb, Kopieren und Verschieben.</p>",
+      "alt": "Zwei Ordner nebeneinander in zwei Bereichen"
     },
     {
       "title": "Suche durch alle Unterordner",
@@ -130,7 +130,7 @@
   ],
   "safeMore": "Was genau dahintersteckt und wo die Grenze liegt (auf Englisch): <a href=\"https://github.com/JohannesHoppe/schnellbild#safe-with-files-from-others\">Safe with files from others</a>.",
   "modelsTitle": "Du kommst von Phiewer, IINA oder dem Norton Commander?",
-  "modelsText": "Sie waren die Vorbilder: Phiewer fürs Blättern mit der Tastatur, IINA für den schnellen Umgang mit Videos, der Norton Commander für die Doppelansicht. Der Vergleich (auf Englisch): <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-phiewer-alternative\">eine kostenlose Alternative zu Phiewer</a>, <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-iina-alternative-for-looking-through-videos\">eine kostenlose Alternative zu IINA zum Durchsehen von Videos</a>.",
+  "modelsText": "Sie waren die Vorbilder: Phiewer fürs Blättern mit der Tastatur, IINA für den schnellen Umgang mit Videos, der Norton Commander für die zwei Bereiche. Der Vergleich (auf Englisch): <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-phiewer-alternative\">eine kostenlose Alternative zu Phiewer</a>, <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-iina-alternative-for-looking-through-videos\">eine kostenlose Alternative zu IINA zum Durchsehen von Videos</a>.",
   "ossTitle": "Open Source",
   "ossText": "Schnellbild ist freie Software unter der MIT-Lizenz, der Quellcode liegt <a href=\"https://github.com/JohannesHoppe/schnellbild\">auf GitHub</a>. Fehler gefunden oder fehlt dir etwas? <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">Schreib ein Issue</a>.",
   "languagesText": "In der Sprache deines Macs:",
