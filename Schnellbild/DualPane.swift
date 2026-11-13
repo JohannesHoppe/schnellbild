@@ -112,8 +112,8 @@ final class WindowModel: ObservableObject {
     private(set) var startFolder: URL?
 
     /// Its window closed: free for the next one (the first window's model)
-    /// and quiet (a video or slideshow in it ends; it no longer follows the
-    /// other windows' changes nor reads its folders again).
+    /// and quiet (a video or slideshow in it ends; it follows neither the
+    /// other windows' changes nor reads its folders).
     func windowClosed() {
         claimed = false
         closed = true
