@@ -180,7 +180,6 @@
 "Mark" = "Merk";
 "Single pane" = "Ett panel";
 "“%@” already exists in “%@”." = "«%@» finnes allerede i «%@».";
-"Keep both: the new one gets a number. Skip: it stays where it is." = "Behold begge: det nye får et nummer. Hopp over: det blir der det er.";
 "Keep Both" = "Behold begge";
 "Skip" = "Hopp over";
 "The marked items will be moved to the Trash, folders with everything in them." = "De merkede objektene flyttes til papirkurven, mapper med alt innhold.";
@@ -316,3 +315,17 @@
 "Forget Folder Access" = "Glem mappetilgang";
 "Each folder asks for your permission again." = "Hver mappe ber om tillatelsen din igjen.";
 "© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later. Built from its source without VLC's modules under the GPL; the build script and its changes are in Schnellbild's repository (github.com/JohannesHoppe/schnellbild)." = "© VideoLAN og VLC-forfatterne. GNU Lesser General Public License 2.1 eller nyere. Bygget fra kildekoden uten VLCs moduler under GPL; byggeskriptet og endringene ligger i Schnellbilds repository (github.com/JohannesHoppe/schnellbild).";
+"The link will be moved to the Trash. The folder it points to stays where it is." = "Lenken flyttes til papirkurven. Mappen den peker til, blir der den er.";
+"Keep both: the new one gets a number. Skip: it stays where it is. Cancel: nothing is moved or copied." = "Behold begge: det nye får et nummer. Hopp over: det blir der det er. Avbryt: ingenting flyttes eller kopieres.";
+"Apply to all" = "Bruk for alle";
+"Copied, but the original couldn't be removed: %@" = "Kopiert, men originalen kunne ikke fjernes: %@";
+"Not everything was moved or copied." = "Ikke alt ble flyttet eller kopiert.";
+"“%@”: %@" = "«%@»: %@";
+"“%@” is no longer the item Schnellbild put there, so it stays as it is." = "«%@» er ikke lenger objektet Schnellbild la der, så det blir som det er.";
+"“%@” has changed since it was copied, so it isn't moved to the Trash." = "«%@» er endret siden det ble kopiert, så det flyttes ikke til papirkurven.";
+"Schnellbild may not take “%@” out of the Trash. Use “Put Back” in the Finder's Trash." = "Schnellbild kan ikke ta «%@» ut av papirkurven. Bruk «Legg tilbake» i Finders papirkurv.";
+"Keep: try it again later, before the earlier actions. Forget: go on with the earlier actions." = "Behold: prøv igjen senere, før de tidligere handlingene. Glem: fortsett med de tidligere handlingene.";
+"Keep" = "Behold";
+"Forget" = "Glem";
+"Only the file you opened is shown here." = "Bare filen du åpnet, vises her.";
+"“%@” isn't available: its disk or server isn't connected. It opens once it is." = "«%@» er ikke tilgjengelig: disken eller serveren er ikke tilkoblet. Den åpnes så snart den er det.";

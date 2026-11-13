@@ -180,7 +180,6 @@
 "Mark" = "标记";
 "Single pane" = "单窗格";
 "“%@” already exists in “%@”." = "“%@”已存在于“%@”中。";
-"Keep both: the new one gets a number. Skip: it stays where it is." = "保留两者：新项目会加上编号。跳过：它留在原处。";
 "Keep Both" = "保留两者";
 "Skip" = "跳过";
 "The marked items will be moved to the Trash, folders with everything in them." = "标记的项目将被移到废纸篓，文件夹连同其中的所有内容。";
@@ -316,3 +315,17 @@
 "Forget Folder Access" = "忘记文件夹访问";
 "Each folder asks for your permission again." = "每个文件夹都会再次请求你的允许。";
 "© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later. Built from its source without VLC's modules under the GPL; the build script and its changes are in Schnellbild's repository (github.com/JohannesHoppe/schnellbild)." = "© VideoLAN 和 VLC 作者。GNU Lesser General Public License 2.1 或更高版本。从源代码构建，不含 GPL 授权的 VLC 模块；构建脚本及其更改位于 Schnellbild 的代码仓库（github.com/JohannesHoppe/schnellbild）。";
+"The link will be moved to the Trash. The folder it points to stays where it is." = "该链接将被移到废纸篓。它指向的文件夹保持原位。";
+"Keep both: the new one gets a number. Skip: it stays where it is. Cancel: nothing is moved or copied." = "保留两者：新项目会加上编号。跳过：它留在原处。取消：不移动也不拷贝任何内容。";
+"Apply to all" = "全部应用";
+"Copied, but the original couldn't be removed: %@" = "已拷贝，但无法移除原件：%@";
+"Not everything was moved or copied." = "并非所有项目都已移动或拷贝。";
+"“%@”: %@" = "“%@”：%@";
+"“%@” is no longer the item Schnellbild put there, so it stays as it is." = "“%@”已不是 Schnellbild 放在那里的项目，因此保持不变。";
+"“%@” has changed since it was copied, so it isn't moved to the Trash." = "“%@”在拷贝后已更改，因此不会移到废纸篓。";
+"Schnellbild may not take “%@” out of the Trash. Use “Put Back” in the Finder's Trash." = "Schnellbild 不能将“%@”从废纸篓中取出。请在访达的废纸篓中使用“放回原处”。";
+"Keep: try it again later, before the earlier actions. Forget: go on with the earlier actions." = "保留：稍后再试，先于更早的操作。忘记：继续处理更早的操作。";
+"Keep" = "保留";
+"Forget" = "忘记";
+"Only the file you opened is shown here." = "这里只显示你打开的文件。";
+"“%@” isn't available: its disk or server isn't connected. It opens once it is." = "“%@”不可用：它所在的磁盘或服务器未连接。连接后会自动打开。";

@@ -180,7 +180,6 @@
 "Mark" = "Zaznacz";
 "Single pane" = "Jeden panel";
 "“%@” already exists in “%@”." = "„%@” już istnieje w „%@”.";
-"Keep both: the new one gets a number. Skip: it stays where it is." = "Zachowaj oba: nowy element otrzyma numer. Pomiń: zostanie tam, gdzie jest.";
 "Keep Both" = "Zachowaj oba";
 "Skip" = "Pomiń";
 "The marked items will be moved to the Trash, folders with everything in them." = "Zaznaczone elementy zostaną przeniesione do kosza, foldery z całą zawartością.";
@@ -316,3 +315,17 @@
 "Forget Folder Access" = "Zapomnij dostęp do folderów";
 "Each folder asks for your permission again." = "Każdy folder ponownie poprosi o zgodę.";
 "© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later. Built from its source without VLC's modules under the GPL; the build script and its changes are in Schnellbild's repository (github.com/JohannesHoppe/schnellbild)." = "© VideoLAN i autorzy VLC. GNU Lesser General Public License 2.1 lub nowsza. Zbudowane z kodu źródłowego bez modułów VLC na licencji GPL; skrypt budowania i jego zmiany są w repozytorium Schnellbild (github.com/JohannesHoppe/schnellbild).";
+"The link will be moved to the Trash. The folder it points to stays where it is." = "Dowiązanie zostanie przeniesione do kosza. Folder, na który wskazuje, pozostanie na miejscu.";
+"Keep both: the new one gets a number. Skip: it stays where it is. Cancel: nothing is moved or copied." = "Zachowaj oba: nowy element otrzyma numer. Pomiń: zostanie tam, gdzie jest. Anuluj: nic nie zostanie przeniesione ani skopiowane.";
+"Apply to all" = "Zastosuj do wszystkich";
+"Copied, but the original couldn't be removed: %@" = "Skopiowano, ale nie można usunąć oryginału: %@";
+"Not everything was moved or copied." = "Nie wszystko zostało przeniesione lub skopiowane.";
+"“%@”: %@" = "„%@”: %@";
+"“%@” is no longer the item Schnellbild put there, so it stays as it is." = "„%@” nie jest już elementem, który Schnellbild tam umieścił, więc pozostaje bez zmian.";
+"“%@” has changed since it was copied, so it isn't moved to the Trash." = "„%@” zmienił się od skopiowania, więc nie zostanie przeniesiony do kosza.";
+"Schnellbild may not take “%@” out of the Trash. Use “Put Back” in the Finder's Trash." = "Schnellbild nie może wyjąć „%@” z kosza. Użyj polecenia „Odłóż” w koszu Findera.";
+"Keep: try it again later, before the earlier actions. Forget: go on with the earlier actions." = "Zachowaj: spróbuj ponownie później, przed wcześniejszymi czynnościami. Zapomnij: przejdź do wcześniejszych czynności.";
+"Keep" = "Zachowaj";
+"Forget" = "Zapomnij";
+"Only the file you opened is shown here." = "Wyświetlany jest tu tylko otwarty plik.";
+"“%@” isn't available: its disk or server isn't connected. It opens once it is." = "„%@” jest niedostępny: jego dysk lub serwer nie jest podłączony. Otworzy się, gdy tylko zostanie podłączony.";

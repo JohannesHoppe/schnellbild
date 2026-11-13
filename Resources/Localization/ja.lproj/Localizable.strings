@@ -180,7 +180,6 @@
 "Mark" = "マーク";
 "Single pane" = "シングル";
 "“%@” already exists in “%@”." = "“%@” はすでに “%@” にあります。";
-"Keep both: the new one gets a number. Skip: it stays where it is." = "両方を残す: 新しい項目に番号が付きます。スキップ: 元の場所に残ります。";
 "Keep Both" = "両方を残す";
 "Skip" = "スキップ";
 "The marked items will be moved to the Trash, folders with everything in them." = "マークした項目はゴミ箱に入れられます。フォルダは中身ごと入れられます。";
@@ -316,3 +315,17 @@
 "Forget Folder Access" = "フォルダへのアクセスを消去";
 "Each folder asks for your permission again." = "各フォルダで再び許可を求めます。";
 "© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later. Built from its source without VLC's modules under the GPL; the build script and its changes are in Schnellbild's repository (github.com/JohannesHoppe/schnellbild)." = "© VideoLANおよびVLCの作者。GNU Lesser General Public License 2.1以降。GPLのVLCモジュールを含めずにソースコードからビルド。ビルドスクリプトと変更点はSchnellbildのリポジトリにあります（github.com/JohannesHoppe/schnellbild）。";
+"The link will be moved to the Trash. The folder it points to stays where it is." = "リンクはゴミ箱に入れられます。リンク先のフォルダはそのまま残ります。";
+"Keep both: the new one gets a number. Skip: it stays where it is. Cancel: nothing is moved or copied." = "両方を残す: 新しい項目に番号が付きます。スキップ: 元の場所に残ります。キャンセル: 何も移動もコピーもされません。";
+"Apply to all" = "すべてに適用";
+"Copied, but the original couldn't be removed: %@" = "コピーしましたが、元の項目を削除できませんでした: %@";
+"Not everything was moved or copied." = "一部の項目は移動またはコピーされませんでした。";
+"“%@”: %@" = "“%@”: %@";
+"“%@” is no longer the item Schnellbild put there, so it stays as it is." = "“%@” は Schnellbild がそこに置いた項目ではなくなっているため、そのままにします。";
+"“%@” has changed since it was copied, so it isn't moved to the Trash." = "“%@” はコピー後に変更されているため、ゴミ箱に入れません。";
+"Schnellbild may not take “%@” out of the Trash. Use “Put Back” in the Finder's Trash." = "Schnellbild は “%@” をゴミ箱から取り出せません。Finder のゴミ箱で「戻す」を使ってください。";
+"Keep: try it again later, before the earlier actions. Forget: go on with the earlier actions." = "残す: 後でもう一度試します（それ以前の操作より先に）。消去: それ以前の操作に進みます。";
+"Keep" = "残す";
+"Forget" = "消去";
+"Only the file you opened is shown here." = "ここには開いたファイルだけが表示されています。";
+"“%@” isn't available: its disk or server isn't connected. It opens once it is." = "“%@” は利用できません。ディスクまたはサーバが接続されていません。接続されると開きます。";

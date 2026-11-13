@@ -180,7 +180,6 @@
 "Mark" = "İşaretle";
 "Single pane" = "Tek bölme";
 "“%@” already exists in “%@”." = "“%@”, “%@” içinde zaten var.";
-"Keep both: the new one gets a number. Skip: it stays where it is." = "İkisini de koru: yenisi bir numara alır. Atla: olduğu yerde kalır.";
 "Keep Both" = "İkisini de Koru";
 "Skip" = "Atla";
 "The marked items will be moved to the Trash, folders with everything in them." = "İşaretli öğeler, klasörler içindeki her şeyle birlikte Çöp Sepetine taşınacak.";
@@ -316,3 +315,17 @@
 "Forget Folder Access" = "Klasör Erişimini Unut";
 "Each folder asks for your permission again." = "Her klasör yeniden izninizi isteyecek.";
 "© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later. Built from its source without VLC's modules under the GPL; the build script and its changes are in Schnellbild's repository (github.com/JohannesHoppe/schnellbild)." = "© VideoLAN ve VLC yazarları. GNU Lesser General Public License 2.1 veya üstü. VLC'nin GPL altındaki modülleri olmadan kaynak kodundan derlendi; derleme betiği ve değişiklikleri Schnellbild deposunda (github.com/JohannesHoppe/schnellbild).";
+"The link will be moved to the Trash. The folder it points to stays where it is." = "Bağlantı Çöp Sepetine taşınacak. Gösterdiği klasör olduğu yerde kalır.";
+"Keep both: the new one gets a number. Skip: it stays where it is. Cancel: nothing is moved or copied." = "İkisini de koru: yenisi bir numara alır. Atla: olduğu yerde kalır. Vazgeç: hiçbir şey taşınmaz veya kopyalanmaz.";
+"Apply to all" = "Tümüne uygula";
+"Copied, but the original couldn't be removed: %@" = "Kopyalandı, ancak özgün öğe kaldırılamadı: %@";
+"Not everything was moved or copied." = "Her şey taşınmadı veya kopyalanmadı.";
+"“%@”: %@" = "“%@”: %@";
+"“%@” is no longer the item Schnellbild put there, so it stays as it is." = "“%@” artık Schnellbild’in oraya koyduğu öğe değil, bu yüzden olduğu gibi kalır.";
+"“%@” has changed since it was copied, so it isn't moved to the Trash." = "“%@” kopyalandığından beri değişti, bu yüzden Çöp Sepetine taşınmaz.";
+"Schnellbild may not take “%@” out of the Trash. Use “Put Back” in the Finder's Trash." = "Schnellbild, “%@” öğesini Çöp Sepetinden çıkaramaz. Finder’ın Çöp Sepetinde “Geri Koy”u kullanın.";
+"Keep: try it again later, before the earlier actions. Forget: go on with the earlier actions." = "Koru: daha sonra, önceki işlemlerden önce yeniden dene. Unut: önceki işlemlerle devam et.";
+"Keep" = "Koru";
+"Forget" = "Unut";
+"Only the file you opened is shown here." = "Burada yalnızca açtığınız dosya gösteriliyor.";
+"“%@” isn't available: its disk or server isn't connected. It opens once it is." = "“%@” kullanılamıyor: diski veya sunucusu bağlı değil. Bağlandığında açılır.";

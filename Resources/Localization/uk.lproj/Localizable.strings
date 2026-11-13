@@ -180,7 +180,6 @@
 "Mark" = "Позначити";
 "Single pane" = "Одна панель";
 "“%@” already exists in “%@”." = "«%@» уже є в «%@».";
-"Keep both: the new one gets a number. Skip: it stays where it is." = "Залишити обидва: новий об’єкт отримає номер. Пропустити: він залишиться на місці.";
 "Keep Both" = "Залишити обидва";
 "Skip" = "Пропустити";
 "The marked items will be moved to the Trash, folders with everything in them." = "Позначені об’єкти буде переміщено в Смітник, папки — з усім вмістом.";
@@ -316,3 +315,17 @@
 "Forget Folder Access" = "Забути доступ до папок";
 "Each folder asks for your permission again." = "Кожна папка знову попросить дозвіл.";
 "© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later. Built from its source without VLC's modules under the GPL; the build script and its changes are in Schnellbild's repository (github.com/JohannesHoppe/schnellbild)." = "© VideoLAN і автори VLC. GNU Lesser General Public License 2.1 або новіша. Зібрано з вихідного коду без модулів VLC під GPL; скрипт збирання та зміни є в репозиторії Schnellbild (github.com/JohannesHoppe/schnellbild).";
+"The link will be moved to the Trash. The folder it points to stays where it is." = "Посилання буде переміщено в Смітник. Папка, на яку воно вказує, залишиться на місці.";
+"Keep both: the new one gets a number. Skip: it stays where it is. Cancel: nothing is moved or copied." = "Залишити обидва: новий об’єкт отримає номер. Пропустити: він залишиться на місці. Скасувати: нічого не буде переміщено чи скопійовано.";
+"Apply to all" = "Застосувати до всіх";
+"Copied, but the original couldn't be removed: %@" = "Скопійовано, але оригінал не вдалося вилучити: %@";
+"Not everything was moved or copied." = "Не все було переміщено чи скопійовано.";
+"“%@”: %@" = "«%@»: %@";
+"“%@” is no longer the item Schnellbild put there, so it stays as it is." = "«%@» — уже не той об’єкт, який туди поклав Schnellbild, тому він залишається як є.";
+"“%@” has changed since it was copied, so it isn't moved to the Trash." = "«%@» змінився після копіювання, тому його не переміщено в Смітник.";
+"Schnellbild may not take “%@” out of the Trash. Use “Put Back” in the Finder's Trash." = "Schnellbild не може вийняти «%@» зі Смітника. Скористайтеся командою «Повернути» у Смітнику Finder.";
+"Keep: try it again later, before the earlier actions. Forget: go on with the earlier actions." = "Залишити: спробувати пізніше, перед попередніми діями. Забути: перейти до попередніх дій.";
+"Keep" = "Залишити";
+"Forget" = "Забути";
+"Only the file you opened is shown here." = "Тут показано лише відкритий вами файл.";
+"“%@” isn't available: its disk or server isn't connected. It opens once it is." = "«%@» недоступна: її диск або сервер не під’єднано. Вона відкриється, щойно його буде під’єднано.";

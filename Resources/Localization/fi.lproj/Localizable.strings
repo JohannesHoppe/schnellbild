@@ -180,7 +180,6 @@
 "Mark" = "Merkitse";
 "Single pane" = "Yksi paneeli";
 "“%@” already exists in “%@”." = "”%@” on jo olemassa kansiossa ”%@”.";
-"Keep both: the new one gets a number. Skip: it stays where it is." = "Säilytä molemmat: uusi saa numeron. Ohita: se jää paikalleen.";
 "Keep Both" = "Säilytä molemmat";
 "Skip" = "Ohita";
 "The marked items will be moved to the Trash, folders with everything in them." = "Merkityt kohteet siirretään roskakoriin, kansiot kaikkine sisältöineen.";
@@ -316,3 +315,17 @@
 "Forget Folder Access" = "Unohda kansioiden käyttö";
 "Each folder asks for your permission again." = "Jokainen kansio kysyy lupaasi uudelleen.";
 "© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later. Built from its source without VLC's modules under the GPL; the build script and its changes are in Schnellbild's repository (github.com/JohannesHoppe/schnellbild)." = "© VideoLAN ja VLC:n tekijät. GNU Lesser General Public License 2.1 tai uudempi. Koottu lähdekoodista ilman VLC:n GPL-moduuleja; koontiskripti ja sen muutokset ovat Schnellbildin repositoriossa (github.com/JohannesHoppe/schnellbild).";
+"The link will be moved to the Trash. The folder it points to stays where it is." = "Linkki siirretään roskakoriin. Kansio, johon se osoittaa, pysyy paikallaan.";
+"Keep both: the new one gets a number. Skip: it stays where it is. Cancel: nothing is moved or copied." = "Säilytä molemmat: uusi saa numeron. Ohita: se jää paikalleen. Kumoa: mitään ei siirretä eikä kopioida.";
+"Apply to all" = "Käytä kaikkiin";
+"Copied, but the original couldn't be removed: %@" = "Kopioitu, mutta alkuperäistä ei voitu poistaa: %@";
+"Not everything was moved or copied." = "Kaikkea ei siirretty tai kopioitu.";
+"“%@”: %@" = "”%@”: %@";
+"“%@” is no longer the item Schnellbild put there, so it stays as it is." = "”%@” ei ole enää kohde, jonka Schnellbild sijoitti sinne, joten se jää ennalleen.";
+"“%@” has changed since it was copied, so it isn't moved to the Trash." = "”%@” on muuttunut kopioinnin jälkeen, joten sitä ei siirretä roskakoriin.";
+"Schnellbild may not take “%@” out of the Trash. Use “Put Back” in the Finder's Trash." = "Schnellbild ei saa ottaa kohdetta ”%@” pois roskakorista. Käytä Finderin roskakorissa komentoa ”Palauta”.";
+"Keep: try it again later, before the earlier actions. Forget: go on with the earlier actions." = "Säilytä: yritä myöhemmin uudelleen ennen aiempia toimintoja. Unohda: jatka aiemmilla toiminnoilla.";
+"Keep" = "Säilytä";
+"Forget" = "Unohda";
+"Only the file you opened is shown here." = "Tässä näytetään vain avaamasi tiedosto.";
+"“%@” isn't available: its disk or server isn't connected. It opens once it is." = "”%@” ei ole käytettävissä: sen levy tai palvelin ei ole yhdistettynä. Se avautuu, kun se on.";
