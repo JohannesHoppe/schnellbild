@@ -112,6 +112,6 @@
     "rightsTitle": "Dine rettigheder",
     "rightsText": "Efter databeskyttelsesforordningen (GDPR) har du ret til indsigt, berigtigelse, sletning, begrænsning af behandling og dataportabilitet samt ret til at klage til en tilsynsmyndighed for databeskyttelse. <strong>Du har ret til at gøre indsigelse</strong> mod behandling på grundlag af vores legitime interesse af grunde, der vedrører din særlige situation (databeskyttelsesforordningens artikel 21). Da hverken appen eller dette websted opbevarer egne personoplysninger, er der overhovedet intet hos os at slå op eller slette. Et svar på en anmodning om indsigt bliver derfor meget kort: Vi ved slet intet om dig.",
     "contactTitle": "Kontakt",
-    "contactText": "Spørgsmål: opret et issue på <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a>, eller brug kontaktoplysningerne i de <a href=\"https://haushoppe-its.de/impressum/\">juridiske oplysninger</a>."
+    "contactText": "For alt om Schnellbild – spørgsmål, idéer, fejl og også henvendelser om dine data – kontakt os helst via GitHub: opret et issue på <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a>. Der svarer vi hurtigst, og andre kan også få gavn af svaret. Et issue er offentligt; til det, du hellere ikke vil drøfte offentligt, finder du andre kontaktmuligheder i de <a href=\"https://haushoppe-its.de/impressum/\">juridiske oplysninger</a>."
   }
 }

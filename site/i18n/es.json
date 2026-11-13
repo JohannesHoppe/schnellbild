@@ -112,6 +112,6 @@
     "rightsTitle": "Tus derechos",
     "rightsText": "Conforme al RGPD, tienes derecho de acceso, rectificación, supresión, limitación del tratamiento y portabilidad de los datos, así como derecho a presentar una reclamación ante una autoridad de control de protección de datos. <strong>Tienes derecho a oponerte</strong>, por motivos relacionados con tu situación particular, al tratamiento basado en nuestro interés legítimo (art. 21 del RGPD). Como ni la app ni este sitio web guardan datos personales propios, por nuestra parte no hay absolutamente nada que consultar ni borrar. Por eso, la respuesta a una solicitud de acceso será muy breve: no sabemos absolutamente nada de ti.",
     "contactTitle": "Contacto",
-    "contactText": "¿Preguntas? Abre una incidencia en <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a> o usa el contacto que figura en el <a href=\"https://haushoppe-its.de/impressum/\">aviso legal</a>."
+    "contactText": "Para todo lo relacionado con Schnellbild (preguntas, ideas, errores y también solicitudes sobre tus datos), contáctanos por GitHub: abre una incidencia en <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a>. Allí respondemos más rápido y la respuesta también sirve a otros. Una incidencia es pública; para lo que prefieras no tratar en público, el <a href=\"https://haushoppe-its.de/impressum/\">aviso legal</a> indica otras formas de contacto."
   }
 }

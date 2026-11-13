@@ -157,6 +157,6 @@
     "rightsTitle": "你的权利",
     "rightsText": "根据 GDPR，你享有访问、更正、删除、限制处理和数据可携带的权利，并有权向数据保护监管机构提出投诉。<strong>你有权基于与你的特殊情况相关的理由，反对基于我们合法利益进行的处理</strong>（GDPR 第 21 条）。由于 App 和本网站都不保存自己的个人数据，我们这边根本没有任何可查询或删除的内容。因此，对访问请求的答复会非常简短：我们对你一无所知。",
     "contactTitle": "联系",
-    "contactText": "如有疑问：请在 <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a> 提交 issue，或使用<a href=\"https://haushoppe-its.de/impressum/\">法律声明</a>中的联系方式。"
+    "contactText": "关于 Schnellbild 的一切事宜，包括问题、想法、错误报告以及与你的数据有关的请求，请通过 GitHub 联系我们：在 <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a> 提交 issue。我们在那里回复最快，答复也能帮到其他人。issue 是公开的；不便公开讨论的事项，可通过<a href=\"https://haushoppe-its.de/impressum/\">法律声明</a>中的其他联系方式找到我们。"
   }
 }

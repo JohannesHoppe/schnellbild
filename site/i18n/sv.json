@@ -112,6 +112,6 @@
     "rightsTitle": "Dina rättigheter",
     "rightsText": "Enligt dataskyddsförordningen (GDPR) har du rätt till tillgång, rättelse, radering, begränsning av behandling och dataportabilitet, samt rätt att lämna in klagomål till en tillsynsmyndighet för dataskydd. <strong>Du har rätt att invända</strong> mot behandling som grundar sig på vårt berättigade intresse, av skäl som hänför sig till din specifika situation (artikel 21 i dataskyddsförordningen). Eftersom varken appen eller denna webbplats sparar några egna personuppgifter finns det absolut ingenting hos oss att slå upp eller radera. Ett svar på en begäran om registerutdrag blir därför mycket kort: Vi vet absolut ingenting om dig.",
     "contactTitle": "Kontakt",
-    "contactText": "Frågor: skapa ett ärende på <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a> eller använd kontaktuppgifterna i den <a href=\"https://haushoppe-its.de/impressum/\">juridiska informationen</a>."
+    "contactText": "För allt som rör Schnellbild – frågor, idéer, fel och även förfrågningar om dina uppgifter – kontakta oss helst via GitHub: skapa ett ärende på <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a>. Där svarar vi snabbast, och andra har också nytta av svaret. Ett ärende är offentligt; för sådant du hellre inte tar upp offentligt finns andra kontaktvägar i den <a href=\"https://haushoppe-its.de/impressum/\">juridiska informationen</a>."
   }
 }
