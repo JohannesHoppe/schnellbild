@@ -3533,11 +3533,17 @@ final class BrowserModel: ObservableObject {
             start += count
         }
         guard items.count != show.items.count || zip(items, show.items).contains(where: { $0.url != $1.url }) else { return }
+        let shown = show.current.flatMap { lookup.url($0.url) }
         show.items = items
         show.partCounts = counts
         show.seen = Set(items.map { Self.canonicalPath($0.url) })
         show.index = items.isEmpty ? 0 : min(max(index, show.index < 0 ? -1 : 0), items.count - 1)
         slideshow = show
+        // Nothing left and nothing more to come (another pane trashed it
+        // all): the show ends instead of staying black
+        if items.isEmpty, !show.loading { stopSlideshow(); return }
+        // The item on screen went: the one now in its place gets its time
+        if let current = show.current, current.url != shown { showSlideshowItem() }
     }
 
     // MARK: - Video control
