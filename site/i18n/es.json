@@ -1,8 +1,8 @@
 {
   "name": "Español",
   "privacySlug": "privacy",
-  "title": "Schnellbild – un visor de imágenes y vídeos para macOS que no da la lata",
-  "seoTitle": "Schnellbild – visor de fotos y vídeos gratis para Mac",
+  "title": "Schnellbild: un visor de imágenes y vídeos para macOS que no da la lata",
+  "seoTitle": "Schnellbild · visor de fotos y vídeos gratis para Mac",
   "seoDescription": "Visor de imágenes y reproductor de vídeo gratis para Mac: miniaturas, teclado, MKV, AVI y WebM, ZIP y RAR como carpetas. Alternativa a Phiewer e IINA.",
   "keywords": "visor de imágenes Mac, visor de fotos macOS, visor de fotos gratis, reproductor MKV Mac, reproducir AVI WebM, alternativa a Phiewer, alternativa a IINA, abrir imágenes RAR, cómics CBZ CBR, presentación, Schnellbild",
   "navFeatures": "Funciones",
@@ -14,7 +14,7 @@
   "download": "Descargar gratis",
   "store": "Mac App Store",
   "storeSoon": "pronto, por 0,99 € para apoyarlo",
-  "fineprint": "macOS 15 o posterior, Mac con chip de Apple. Firmado con un Developer ID, notarizado por Apple y ejecutado en la App Sandbox de Apple. Las dos versiones son la misma app con todas las funciones; quien la compra en la tienda apoya su desarrollo.",
+  "fineprint": "Las dos versiones son la misma app con todas las funciones; quien la compra en la tienda apoya su desarrollo. ¡Muchas gracias! 🖤",
   "shotAlt": "Schnellbild: carpetas con previsualizaciones y miniaturas de fotos",
   "stats": [
     ["0", "anuncios, rastreadores o cuentas"],
@@ -22,7 +22,7 @@
     ["20", "idiomas"],
     ["MIT", "licencia de código abierto"]
   ],
-  "whyTitle": "Por qué no da la lata",
+  "whyTitle": "Por qué Schnellbild no da la lata",
   "why": [
     ["Sin anuncios, sin rastreo, sin cuenta", "Muestra tus imágenes y no habla con nadie."],
     ["Sin ventas añadidas", "Sin versión Pro, sin suscripción, sin botón de «desbloquear». Todas las funciones están incluidas."],

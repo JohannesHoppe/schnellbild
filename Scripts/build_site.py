@@ -346,7 +346,7 @@ def privacy(code, t):
         return item
     stays = "".join(f"<li>{fill(item)}</li>" for item in p["stays"])
     path_of = lambda c: privacy_path(c, tr[c])
-    return head(code, t, f"{p['title']} – Schnellbild", p["description"], path_of,
+    return head(code, t, f"{p['title']} · Schnellbild", p["description"], path_of,
                 data=breadcrumbs(code, t)) + topbar(code, t, path_of, sections=False) + f"""
 <main class="wrap narrow page">
   <h1>{esc(p['title'])}</h1>
@@ -368,7 +368,7 @@ def privacy(code, t):
 def not_found(t):
     """docs/404.html, which GitHub Pages serves for every address it doesn't have: English, not indexed."""
     homes = "".join(f'<li><a href="{home_path(c)}" hreflang="{c}" lang="{c}">{esc(tr[c]["name"])}</a></li>' for c in LANGUAGES)
-    return head("en", t, "Page not found – Schnellbild", "This page doesn't exist. Schnellbild, the image and video viewer for macOS, is on its home page.",
+    return head("en", t, "Page not found · Schnellbild", "This page doesn't exist. Schnellbild, the image and video viewer for macOS, is on its home page.",
                 robots="noindex") + topbar("en", t, home_path, sections=False) + f"""
 <main class="wrap narrow page">
   <h1>Page not found</h1>
@@ -397,7 +397,7 @@ def markdown(text):
 def eula(t):
     """/eula/: the license agreement of the Mac App Store version (AppStore/EULA.md), in English as Apple gets it."""
     text = (ROOT / "AppStore" / "EULA.md").read_text(encoding="utf-8")
-    return head("en", t, "License Agreement – Schnellbild",
+    return head("en", t, "License Agreement · Schnellbild",
                 "The license agreement (EULA) of Schnellbild in the Mac App Store.", canonical="/eula/") + \
         topbar("en", t, home_path, sections=False) + f"""
 <main class="wrap narrow page">

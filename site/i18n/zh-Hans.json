@@ -1,8 +1,8 @@
 {
   "name": "简体中文",
   "privacySlug": "privacy",
-  "title": "Schnellbild – 一款用着不闹心的 macOS 图像和视频查看器",
-  "seoTitle": "Schnellbild – 免费的 Mac 看图和视频播放软件（支持 MKV、RAR）",
+  "title": "Schnellbild：一款用着不闹心的 macOS 图像和视频查看器",
+  "seoTitle": "Schnellbild · 免费的 Mac 看图和视频播放软件（支持 MKV、RAR）",
   "seoDescription": "快速、免费的 macOS 看图软件和视频播放器：缩略图、键盘翻页、播放 MKV、AVI 和 WebM，像文件夹一样打开 ZIP 和 RAR。Phiewer 和 IINA 的替代品。",
   "keywords": "Mac 看图软件, macOS 图片查看器, 免费看图软件, Mac MKV 播放器, AVI WebM 播放, Phiewer 替代, IINA 替代, 打开 RAR 图片, CBZ CBR 漫画, 幻灯片, Schnellbild",
   "navFeatures": "功能",
@@ -14,7 +14,7 @@
   "download": "免费下载",
   "store": "Mac App Store",
   "storeSoon": "即将上架，用来支持开发",
-  "fineprint": "需要 macOS 15 或更高版本，搭载 Apple 芯片的 Mac。使用 Developer ID 签名，经 Apple 公证，在 Apple 的 App Sandbox 中运行。两个版本是同一个 App，功能完全相同；在 App Store 购买即可支持它的开发。",
+  "fineprint": "两个版本是同一个 App，功能完全相同；在 App Store 购买即可支持它的开发。谢谢！🖤",
   "shotAlt": "Schnellbild：带预览的文件夹和照片缩略图",
   "stats": [
     [
@@ -34,7 +34,7 @@
       "许可证，开源"
     ]
   ],
-  "whyTitle": "为什么不闹心",
+  "whyTitle": "为什么 Schnellbild 不闹心",
   "why": [
     [
       "无广告、无跟踪、无需账户",
@@ -153,7 +153,7 @@
     ],
     "appOutro": "Schnellbild 读取你的图像、视频和归档，仅仅是为了向你显示它们。它从不将这些文件、文件名或任何相关信息发送到任何地方。下载和购买由 Apple 根据其自身的隐私政策处理，Apple 只向我们提供不含你身份信息的数据：销量，以及在你于 macOS 中允许与 App 开发者共享时的崩溃报告和使用统计。",
     "siteTitle": "本网站",
-    "siteText": "本网站不使用 Cookie、分析工具，也不加载来自其他服务器的内容（没有网络字体，没有嵌入视频）。本网站托管于 GitHub Pages，这是 GitHub, Inc.（美国）提供的服务。你访问本网站时，GitHub 出于安全目的会记录并存储你的 IP 地址；参见<a href=\"https://docs.github.com/zh/pages/getting-started-with-github-pages/what-is-github-pages#data-collection\">GitHub Pages：数据收集</a>和<a href=\"https://docs.github.com/zh/site-policy/privacy-policies/github-general-privacy-statement\">GitHub 隐私声明</a>。GitHub 将这些日志保留多久由 GitHub 决定；我们无法访问这些日志。GitHub 参与了欧盟—美国数据隐私框架（EU-U.S. Data Privacy Framework），欧盟委员会已认定美国在该框架下提供充分的保护水平（GDPR 第 45 条）。法律依据是我们安全提供本网站的合法利益（欧盟《通用数据保护条例》（GDPR）第 6 条第 1 款第 (f) 项）。App 的下载同样来自 GitHub。",
+    "siteText": "本网站不使用 Cookie、分析工具，也不加载来自其他服务器的内容（没有网络字体，没有嵌入视频）。本网站托管于 GitHub Pages，这是 GitHub, Inc.（美国）提供的服务。你访问本网站时，GitHub 出于安全目的会记录并存储你的 IP 地址；参见<a href=\"https://docs.github.com/zh/pages/getting-started-with-github-pages/what-is-github-pages#data-collection\">GitHub Pages：数据收集</a>和<a href=\"https://docs.github.com/zh/site-policy/privacy-policies/github-general-privacy-statement\">GitHub 隐私声明</a>。GitHub 将这些日志保留多久由 GitHub 决定；我们无法访问这些日志。GitHub 参与了欧盟-美国数据隐私框架（EU-U.S. Data Privacy Framework），欧盟委员会已认定美国在该框架下提供充分的保护水平（GDPR 第 45 条）。法律依据是我们安全提供本网站的合法利益（欧盟《通用数据保护条例》（GDPR）第 6 条第 1 款第 (f) 项）。App 的下载同样来自 GitHub。",
     "rightsTitle": "你的权利",
     "rightsText": "根据 GDPR，你享有访问、更正、删除、限制处理和数据可携带的权利，并有权向数据保护监管机构提出投诉。<strong>你有权基于与你的特殊情况相关的理由，反对基于我们合法利益进行的处理</strong>（GDPR 第 21 条）。由于 App 和本网站都不保存自己的个人数据，我们这边根本没有任何可查询或删除的内容。因此，对访问请求的答复会非常简短：我们对你一无所知。",
     "contactTitle": "联系",

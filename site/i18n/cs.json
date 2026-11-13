@@ -1,8 +1,8 @@
 {
   "name": "Čeština",
   "privacySlug": "privacy",
-  "title": "Schnellbild – prohlížeč obrázků a videí pro macOS, který prostě není na houby",
-  "seoTitle": "Schnellbild – prohlížeč obrázků a videí pro Mac zdarma",
+  "title": "Schnellbild: prohlížeč obrázků a videí pro macOS, který prostě není na houby",
+  "seoTitle": "Schnellbild · prohlížeč obrázků a videí pro Mac zdarma",
   "seoDescription": "Rychlý prohlížeč fotek a přehrávač videa pro Mac zdarma: náhledy, klávesnice, MKV, AVI a WebM, ZIP a RAR jako složky. Alternativa k Phiewer a IINA.",
   "keywords": "prohlížeč obrázků Mac, prohlížeč fotek macOS, prohlížeč fotek zdarma, přehrávač MKV Mac, přehrát AVI WebM, alternativa k Phiewer, alternativa k IINA, otevřít obrázky v RAR, komiksy CBZ CBR, prezentace, Schnellbild",
   "navFeatures": "Funkce",
@@ -14,7 +14,7 @@
   "download": "Stáhnout zdarma",
   "store": "Mac App Store",
   "storeSoon": "brzy, na podporu projektu",
-  "fineprint": "macOS 15 nebo novější, Mac s čipem Apple. Podepsáno pomocí Developer ID, notarizováno společností Apple, běží v App Sandboxu od Applu. Obě verze jsou stejná aplikace se všemi funkcemi; kdo si ji koupí v App Storu, podpoří její vývoj.",
+  "fineprint": "Obě verze jsou stejná aplikace se všemi funkcemi; kdo si ji koupí v App Storu, podpoří její vývoj. Děkujeme! 🖤",
   "shotAlt": "Schnellbild: složky s náhledy a miniatury fotek",
   "stats": [
     ["0", "reklam, sledovačů či účtů"],
@@ -22,11 +22,11 @@
     ["20", "jazyků"],
     ["MIT", "licence, open source"]
   ],
-  "whyTitle": "Proč není na houby",
+  "whyTitle": "Proč Schnellbild není na houby",
   "why": [
     ["Žádné reklamy, žádné sledování, žádný účet", "Ukazuje vaše obrázky a s nikým se nebaví."],
     ["Žádné přemlouvání k nákupu", "Žádná verze Pro, žádné předplatné, žádné tlačítko „Odemknout“. Všechny funkce jsou k dispozici."],
-    ["Žádná vata", "Žádná knihovna k importu, žádný editor, žádný cloud. Jen prohlížení fotek a videí – zato pořádně."],
+    ["Žádná vata", "Žádná knihovna k importu, žádný editor, žádný cloud. Jen prohlížení fotek a videí, zato pořádně."],
     ["Rychlý", "Miniatury se objevují už během posouvání, i ve velkých složkách a na síťových discích."],
     ["Bezpečný od začátku", "Obrázky, videa a archivy od jiných nic nespouštějí a nikam se nepřipojují, aniž byste museli cokoli zapínat."],
     ["Nespadne", "Poškozené soubory, neobvyklé formáty a pomalé disky zobrazí zástupný symbol, místo aby aplikaci shodily."]
@@ -50,7 +50,7 @@
     },
     {
       "title": "Třiďte fotky z dovolené jako v Norton Commanderu",
-      "text": "<p><kbd>D</kbd> zobrazí dvě složky vedle sebe. Označte obrázky, pak je <kbd>F5</kbd> zkopíruje a <kbd>F6</kbd> přesune na druhou stranu – nebo je tam přetáhněte.</p><p>Přejmenování, nová složka, koš, záložky a možnost odvolat přejmenování, přesun do koše, kopírování i přesun.</p>",
+      "text": "<p><kbd>D</kbd> zobrazí dvě složky vedle sebe. Označte obrázky, pak je <kbd>F5</kbd> zkopíruje a <kbd>F6</kbd> přesune na druhou stranu. Můžete je tam také přetáhnout.</p><p>Přejmenování, nová složka, koš, záložky a možnost odvolat přejmenování, přesun do koše, kopírování i přesun.</p>",
       "alt": "Dvě složky vedle sebe ve dvou panelech"
     },
     {
@@ -65,7 +65,7 @@
     },
     {
       "title": "Co soubor doopravdy je",
-      "text": "<p><kbd>I</kbd> ukáže formát, rozlišení, kodeky, datový tok, bitovou hloubku, barevný profil a fotoaparát – a upozorní, když přípona souboru neodpovídá jeho obsahu.</p>",
+      "text": "<p><kbd>I</kbd> ukáže formát, rozlišení, kodeky, datový tok, bitovou hloubku, barevný profil i fotoaparát a upozorní, když přípona souboru neodpovídá jeho obsahu.</p>",
       "alt": "Informace o souboru vedle fotky"
     },
     {
@@ -112,6 +112,6 @@
     "rightsTitle": "Vaše práva",
     "rightsText": "Podle obecného nařízení o ochraně osobních údajů (GDPR) máte právo na přístup, opravu, výmaz, omezení zpracování a přenositelnost údajů a dále právo podat stížnost u dozorového úřadu pro ochranu osobních údajů. <strong>Máte právo vznést námitku</strong> z důvodů týkajících se vaší konkrétní situace proti zpracování založenému na našem oprávněném zájmu (čl. 21 GDPR). Protože ani aplikace, ani tento web žádné vlastní osobní údaje neuchovávají, není u nás vůbec nic, co by se dalo vyhledat nebo smazat. Odpověď na žádost o přístup proto bude velmi krátká: nevíme o vás vůbec nic.",
     "contactTitle": "Kontakt",
-    "contactText": "Ve všech záležitostech týkajících se Schnellbild – dotazy, nápady, chyby i žádosti o vaše údaje – nás prosím kontaktujte přes GitHub: založte issue na <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a>. Tam odpovídáme nejrychleji a odpověď pomůže i ostatním. Issue je veřejné; pro věci, které nechcete řešit veřejně, najdete další kontakty v <a href=\"https://haushoppe-its.de/impressum/\">právních informacích</a>."
+    "contactText": "Ve všech záležitostech týkajících se Schnellbild (dotazy, nápady, chyby i žádosti o vaše údaje) nás prosím kontaktujte přes GitHub: založte issue na <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a>. Tam odpovídáme nejrychleji a odpověď pomůže i ostatním. Issue je veřejné; pro věci, které nechcete řešit veřejně, najdete další kontakty v <a href=\"https://haushoppe-its.de/impressum/\">právních informacích</a>."
   }
 }

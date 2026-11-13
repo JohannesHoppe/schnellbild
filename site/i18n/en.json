@@ -1,8 +1,8 @@
 {
   "name": "English",
   "privacySlug": "privacy",
-  "title": "Schnellbild – an image & video viewer for macOS that just doesn't suck",
-  "seoTitle": "Schnellbild – Free Image & Video Viewer for Mac (MKV, RAR)",
+  "title": "Schnellbild: an image & video viewer for macOS that just doesn't suck",
+  "seoTitle": "Schnellbild · Free Image & Video Viewer for Mac (MKV, RAR)",
   "seoDescription": "Fast, free photo and video viewer for Mac: thumbnails, paging by keyboard, MKV, AVI and WebM, ZIP and RAR as folders. A Phiewer and IINA alternative.",
   "keywords": "image viewer Mac, photo viewer macOS, free image viewer, video player MKV Mac, AVI WebM player, Phiewer alternative, IINA alternative, open RAR images, ZIP comic viewer, CBZ CBR reader, slideshow, dual pane, Schnellbild",
   "navFeatures": "Features",
@@ -14,7 +14,7 @@
   "download": "Download for free",
   "store": "Mac App Store",
   "storeSoon": "soon, €0.99 to support it",
-  "fineprint": "macOS 15 or later, Apple silicon. Signed with a Developer ID, notarized by Apple, running in Apple's App Sandbox. Both versions are the same app with every feature; whoever buys it in the Store supports its development.",
+  "fineprint": "Both versions are the same app with every feature; whoever buys it in the Store supports its development. Thank you! 🖤",
   "shotAlt": "Schnellbild: folders with previews and photo thumbnails",
   "stats": [
     [
@@ -34,7 +34,7 @@
       "licensed, open source"
     ]
   ],
-  "whyTitle": "Why it doesn't suck",
+  "whyTitle": "Why Schnellbild doesn't suck",
   "why": [
     [
       "No ads, no tracking, no account",
@@ -157,6 +157,6 @@
     "rightsTitle": "Your rights",
     "rightsText": "Under the GDPR you have the right to access, rectification, erasure, restriction of processing and data portability, and the right to lodge a complaint with a data protection supervisory authority. <strong>You have the right to object</strong>, on grounds relating to your particular situation, to processing based on our legitimate interest (Art. 21 GDPR). Since neither the app nor this website keeps personal data of its own, there is nothing at all on our side to look up or delete. A request for access will therefore get a very short answer: we know nothing at all about you.",
     "contactTitle": "Contact",
-    "contactText": "For everything about Schnellbild – questions, ideas, bugs, and requests about your data too – please contact us through GitHub: open an issue at <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a>. That's where we answer fastest, and others can read the answer too. An issue is public; for anything you'd rather not discuss in public, the <a href=\"https://haushoppe-its.de/impressum/\">imprint</a> lists other ways to reach us."
+    "contactText": "For everything about Schnellbild (questions, ideas, bugs, and requests about your data too), please contact us through GitHub: open an issue at <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a>. That's where we answer fastest, and others can read the answer too. An issue is public; for anything you'd rather not discuss in public, the <a href=\"https://haushoppe-its.de/impressum/\">imprint</a> lists other ways to reach us."
   }
 }

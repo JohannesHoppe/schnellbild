@@ -1,8 +1,8 @@
 {
   "name": "日本語",
   "privacySlug": "privacy",
-  "title": "Schnellbild – イライラしない、macOSのための画像・ビデオビューア",
-  "seoTitle": "Schnellbild – Mac用の無料画像・ビデオビューア（MKV・RAR対応）",
+  "title": "Schnellbild：イライラしない、macOSのための画像・ビデオビューア",
+  "seoTitle": "Schnellbild · Mac用の無料画像・ビデオビューア（MKV・RAR対応）",
   "seoDescription": "macOS用の高速で無料の画像ビューア・ビデオプレーヤー。サムネール表示、キーボード操作、MKV・AVI・WebMの再生、ZIPやRARをフォルダのように表示。PhiewerやIINAの代わりに。",
   "keywords": "画像ビューア Mac, 写真ビューア macOS, 無料 画像ビューア, MKV 再生 Mac, AVI WebM 再生, Phiewer 代替, IINA 代替, RAR 画像 表示, ZIP 漫画 ビューア, CBZ CBR, スライドショー, Schnellbild",
   "navFeatures": "機能",
@@ -14,7 +14,7 @@
   "download": "無料でダウンロード",
   "store": "Mac App Store",
   "storeSoon": "近日公開。開発を応援できます",
-  "fineprint": "macOS 15以降、Appleシリコン搭載Mac。Developer IDで署名され、Appleによる公証済みで、AppleのApp Sandbox内で動作します。どちらのバージョンもすべての機能を備えた同じAppです。App Storeで購入すると、開発の支援になります。",
+  "fineprint": "どちらのバージョンもすべての機能を備えた同じAppです。App Storeで購入すると、開発の支援になります。ありがとうございます！🖤",
   "shotAlt": "Schnellbild：プレビュー付きのフォルダと写真のサムネール",
   "stats": [
     [
@@ -34,7 +34,7 @@
       "ライセンスのオープンソース"
     ]
   ],
-  "whyTitle": "イライラしない理由",
+  "whyTitle": "Schnellbildでイライラしない理由",
   "why": [
     [
       "広告なし、トラッキングなし、アカウント不要",

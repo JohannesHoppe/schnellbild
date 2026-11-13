@@ -1,8 +1,8 @@
 {
   "name": "Deutsch",
   "privacySlug": "datenschutz",
-  "title": "Schnellbild – ein Bild- und Videobetrachter für den Mac, der einfach nicht nervt",
-  "seoTitle": "Schnellbild – kostenloser Bild- und Videobetrachter für Mac",
+  "title": "Schnellbild: ein Bild- und Videobetrachter für den Mac, der einfach nicht nervt",
+  "seoTitle": "Schnellbild · kostenloser Bild- und Videobetrachter für Mac",
   "seoDescription": "Schneller, kostenloser Bildbetrachter und Videoplayer für den Mac: Vorschaubilder, Tastatur, MKV, AVI, WebM, ZIP und RAR als Ordner. Phiewer-Alternative.",
   "keywords": "Bildbetrachter Mac, Fotobetrachter macOS, Bildbetrachter kostenlos, Videoplayer MKV Mac, AVI WebM abspielen, Phiewer Alternative, IINA Alternative, RAR Bilder öffnen, ZIP Comics, CBZ CBR, Diashow, Zwei-Fenster-Ansicht, Schnellbild",
   "navFeatures": "Funktionen",
@@ -14,7 +14,7 @@
   "download": "Kostenlos laden",
   "store": "Mac App Store",
   "storeSoon": "bald, 0,99 € zur Unterstützung",
-  "fineprint": "macOS 15 oder neuer, Apple Silicon. Mit Developer ID signiert, von Apple notarisiert, in Apples App Sandbox. Beide Versionen sind dieselbe App mit allen Funktionen; wer sie im Store kauft, unterstützt die Weiterentwicklung.",
+  "fineprint": "Beide Versionen sind dieselbe App mit allen Funktionen; wer sie im Store kauft, unterstützt die Weiterentwicklung. Vielen Dank! 🖤",
   "shotAlt": "Schnellbild: Ordner mit Vorschau und Vorschaubilder von Fotos",
   "stats": [
     [
@@ -34,7 +34,7 @@
       "lizenziert, Open Source"
     ]
   ],
-  "whyTitle": "Warum es nicht nervt",
+  "whyTitle": "Warum Schnellbild nicht nervt",
   "why": [
     [
       "Keine Werbung, kein Tracking, kein Konto",
@@ -157,6 +157,6 @@
     "rightsTitle": "Deine Rechte",
     "rightsText": "Nach der DSGVO hast du das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung und Datenübertragbarkeit sowie das Recht, dich bei einer Datenschutz-Aufsichtsbehörde zu beschweren. <strong>Du hast das Recht, aus Gründen, die sich aus deiner besonderen Situation ergeben, der Verarbeitung auf Grundlage unseres berechtigten Interesses zu widersprechen</strong> (Art. 21 DSGVO). Da weder die App noch diese Website selbst personenbezogene Daten speichert, gibt es bei uns rein gar nichts nachzusehen oder zu löschen. Eine Auskunft wird daher sehr kurz sein: Wir wissen rein gar nichts über dich.",
     "contactTitle": "Kontakt",
-    "contactText": "Für alle Anliegen rund um Schnellbild – Fragen, Ideen, Fehler und auch Anfragen zu deinen Daten – kontaktiere uns bitte über GitHub: Eröffne ein Issue unter <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a>. Dort antworten wir am schnellsten, und andere haben auch etwas von der Antwort. Ein Issue ist öffentlich; was du lieber nicht öffentlich besprechen möchtest, erreicht uns über die Kontaktangaben im <a href=\"https://haushoppe-its.de/impressum/\">Impressum</a>."
+    "contactText": "Für alle Anliegen rund um Schnellbild (Fragen, Ideen, Fehler und auch Anfragen zu deinen Daten) kontaktiere uns bitte über GitHub: Eröffne ein Issue unter <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a>. Dort antworten wir am schnellsten, und andere haben auch etwas von der Antwort. Ein Issue ist öffentlich; was du lieber nicht öffentlich besprechen möchtest, erreicht uns über die Kontaktangaben im <a href=\"https://haushoppe-its.de/impressum/\">Impressum</a>."
   }
 }

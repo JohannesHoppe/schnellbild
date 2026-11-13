@@ -1,8 +1,8 @@
 {
   "name": "Nederlands",
   "privacySlug": "privacy",
-  "title": "Schnellbild – een foto- en videoviewer voor macOS waar je niet gek van wordt",
-  "seoTitle": "Schnellbild – gratis foto- en videoviewer voor de Mac",
+  "title": "Schnellbild: een foto- en videoviewer voor macOS waar je niet gek van wordt",
+  "seoTitle": "Schnellbild · gratis foto- en videoviewer voor de Mac",
   "seoDescription": "Snelle, gratis fotoviewer en videospeler voor de Mac: miniaturen, toetsenbord, MKV, AVI, WebM, ZIP en RAR als mappen. Alternatief voor Phiewer en IINA.",
   "keywords": "fotoviewer Mac, afbeeldingsviewer macOS, gratis fotoviewer, MKV speler Mac, AVI WebM afspelen, Phiewer alternatief, IINA alternatief, RAR afbeeldingen openen, strips CBZ CBR, diavoorstelling, Schnellbild",
   "navFeatures": "Functies",
@@ -14,7 +14,7 @@
   "download": "Gratis downloaden",
   "store": "Mac App Store",
   "storeSoon": "binnenkort, € 0,99 om het te steunen",
-  "fineprint": "macOS 15 of nieuwer, Mac met Apple silicon. Ondertekend met een Developer ID, genotariseerd door Apple en draait in de App Sandbox van Apple. Beide versies zijn dezelfde app met alle functies; wie hem in de App Store koopt, steunt de ontwikkeling.",
+  "fineprint": "Beide versies zijn dezelfde app met alle functies; wie hem in de App Store koopt, steunt de ontwikkeling. Hartelijk dank! 🖤",
   "shotAlt": "Schnellbild: mappen met voorvertoningen en fotominiaturen",
   "stats": [
     ["0", "advertenties, trackers of accounts"],
@@ -22,7 +22,7 @@
     ["20", "talen"],
     ["MIT", "licentie, open source"]
   ],
-  "whyTitle": "Waarom je er niet gek van wordt",
+  "whyTitle": "Waarom je niet gek wordt van Schnellbild",
   "why": [
     ["Geen advertenties, geen tracking, geen account", "Hij toont je foto’s en praat met niemand."],
     ["Geen upselling", "Geen pro-versie, geen abonnement, geen ‘ontgrendel’-knop. Alle functies zitten erin."],
@@ -112,6 +112,6 @@
     "rightsTitle": "Je rechten",
     "rightsText": "Op grond van de AVG heb je recht op inzage, rectificatie, wissing, beperking van de verwerking en overdraagbaarheid van gegevens, en het recht om een klacht in te dienen bij een toezichthoudende autoriteit voor gegevensbescherming. <strong>Je hebt het recht om bezwaar te maken</strong> tegen verwerking op grond van ons gerechtvaardigd belang, om redenen die verband houden met je specifieke situatie (art. 21 AVG). Omdat de app noch deze website zelf persoonsgegevens bewaart, is er aan onze kant helemaal niets in te zien of te wissen. Een antwoord op een inzageverzoek zal daarom heel kort zijn: we weten helemaal niets over je.",
     "contactTitle": "Contact",
-    "contactText": "Voor alles rond Schnellbild – vragen, ideeën, fouten en ook verzoeken over je gegevens – neem je het best contact met ons op via GitHub: open een issue op <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a>. Daar antwoorden we het snelst, en anderen hebben ook iets aan het antwoord. Een issue is openbaar; voor wat je liever niet openbaar bespreekt, vind je andere contactmogelijkheden in de <a href=\"https://haushoppe-its.de/impressum/\">juridische informatie</a>."
+    "contactText": "Voor alles rond Schnellbild (vragen, ideeën, fouten en ook verzoeken over je gegevens) neem je het best contact met ons op via GitHub: open een issue op <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a>. Daar antwoorden we het snelst, en anderen hebben ook iets aan het antwoord. Een issue is openbaar; voor wat je liever niet openbaar bespreekt, vind je andere contactmogelijkheden in de <a href=\"https://haushoppe-its.de/impressum/\">juridische informatie</a>."
   }
 }

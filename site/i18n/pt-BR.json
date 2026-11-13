@@ -1,8 +1,8 @@
 {
   "name": "Português (Brasil)",
   "privacySlug": "privacy",
-  "title": "Schnellbild – um visualizador de imagens e vídeos para macOS que não dá dor de cabeça",
-  "seoTitle": "Schnellbild – visualizador de fotos e vídeos grátis para Mac",
+  "title": "Schnellbild: um visualizador de imagens e vídeos para macOS que não dá dor de cabeça",
+  "seoTitle": "Schnellbild · visualizador de fotos e vídeos grátis para Mac",
   "seoDescription": "Visualizador de imagens e player de vídeo grátis para Mac: miniaturas, teclado, MKV, AVI e WebM, ZIP e RAR como pastas. Alternativa ao Phiewer e IINA.",
   "keywords": "visualizador de imagens Mac, visualizador de fotos macOS, visualizador de fotos grátis, player MKV Mac, reproduzir AVI WebM, alternativa ao Phiewer, alternativa ao IINA, abrir imagens RAR, quadrinhos CBZ CBR, apresentação de slides, Schnellbild",
   "navFeatures": "Recursos",
@@ -14,7 +14,7 @@
   "download": "Baixar grátis",
   "store": "Mac App Store",
   "storeSoon": "em breve, para apoiar o projeto",
-  "fineprint": "macOS 15 ou posterior, Mac com chip da Apple. Assinado com um Developer ID, notarizado pela Apple e executado na App Sandbox da Apple. As duas versões são o mesmo app, com todos os recursos; quem compra na App Store apoia o desenvolvimento.",
+  "fineprint": "As duas versões são o mesmo app, com todos os recursos; quem compra na App Store apoia o desenvolvimento. Muito obrigado! 🖤",
   "shotAlt": "Schnellbild: pastas com pré-visualizações e miniaturas de fotos",
   "stats": [
     ["0", "anúncios, rastreadores ou contas"],
@@ -22,7 +22,7 @@
     ["20", "idiomas"],
     ["MIT", "licença de código aberto"]
   ],
-  "whyTitle": "Por que não dá dor de cabeça",
+  "whyTitle": "Por que o Schnellbild não dá dor de cabeça",
   "why": [
     ["Sem anúncios, sem rastreamento, sem conta", "Ele mostra suas imagens e não conversa com ninguém."],
     ["Sem empurrar nada", "Sem versão Pro, sem assinatura, sem botão de “desbloquear”. Todos os recursos já estão incluídos."],
@@ -112,6 +112,6 @@
     "rightsTitle": "Seus direitos",
     "rightsText": "Pelo GDPR, você tem direito de acesso, retificação, apagamento, limitação do tratamento e portabilidade dos dados, além do direito de apresentar reclamação a uma autoridade de controle de proteção de dados. <strong>Você tem o direito de se opor</strong>, por motivos relacionados à sua situação particular, ao tratamento baseado no nosso legítimo interesse (art. 21 do GDPR). Como nem o app nem este site guardam dados pessoais próprios, não há absolutamente nada do nosso lado para consultar ou apagar. Por isso, a resposta a um pedido de acesso será bem curta: não sabemos absolutamente nada sobre você.",
     "contactTitle": "Contato",
-    "contactText": "Para tudo sobre o Schnellbild – dúvidas, ideias, erros e também pedidos sobre seus dados –, fale com a gente pelo GitHub: abra uma issue em <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a>. É lá que respondemos mais rápido, e a resposta também ajuda outras pessoas. Uma issue é pública; para o que você preferir não tratar em público, o <a href=\"https://haushoppe-its.de/impressum/\">aviso legal</a> traz outras formas de contato."
+    "contactText": "Para tudo sobre o Schnellbild (dúvidas, ideias, erros e também pedidos sobre seus dados), fale com a gente pelo GitHub: abra uma issue em <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a>. É lá que respondemos mais rápido, e a resposta também ajuda outras pessoas. Uma issue é pública; para o que você preferir não tratar em público, o <a href=\"https://haushoppe-its.de/impressum/\">aviso legal</a> traz outras formas de contato."
   }
 }

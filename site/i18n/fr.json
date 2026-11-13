@@ -1,8 +1,8 @@
 {
   "name": "Français",
   "privacySlug": "privacy",
-  "title": "Schnellbild – une visionneuse d’images et de vidéos pour macOS qui ne prend pas la tête",
-  "seoTitle": "Schnellbild – visionneuse photo et vidéo gratuite pour Mac",
+  "title": "Schnellbild : une visionneuse d’images et de vidéos pour macOS qui ne prend pas la tête",
+  "seoTitle": "Schnellbild · visionneuse photo et vidéo gratuite pour Mac",
   "seoDescription": "Visionneuse photo et lecteur vidéo gratuits pour Mac : vignettes, clavier, MKV, AVI, WebM, ZIP et RAR comme dossiers. Alternative à Phiewer et IINA.",
   "keywords": "visionneuse d’images Mac, visionneuse photo macOS, visionneuse gratuite, lecteur vidéo MKV Mac, lire AVI WebM, alternative à Phiewer, alternative à IINA, ouvrir images RAR, BD CBZ CBR, diaporama, Schnellbild",
   "navFeatures": "Fonctionnalités",
@@ -14,7 +14,7 @@
   "download": "Télécharger gratuitement",
   "store": "Mac App Store",
   "storeSoon": "bientôt, 0,99 € pour soutenir le projet",
-  "fineprint": "macOS 15 ou version ultérieure, Mac avec puce Apple. Signée avec un Developer ID, notarisée par Apple, exécutée dans l’App Sandbox d’Apple. Les deux versions sont la même app, avec toutes les fonctionnalités ; l’acheter sur l’App Store, c’est soutenir son développement.",
+  "fineprint": "Les deux versions sont la même app, avec toutes les fonctionnalités ; l’acheter sur l’App Store, c’est soutenir son développement. Merci beaucoup ! 🖤",
   "shotAlt": "Schnellbild : dossiers avec aperçus et vignettes de photos",
   "stats": [
     ["0", "publicité, traceur ou compte"],
@@ -22,7 +22,7 @@
     ["20", "langues"],
     ["MIT", "licence, open source"]
   ],
-  "whyTitle": "Pourquoi elle ne prend pas la tête",
+  "whyTitle": "Pourquoi Schnellbild ne prend pas la tête",
   "why": [
     ["Sans publicité, sans pistage, sans compte", "Elle affiche vos images et ne parle à personne."],
     ["Rien à vous vendre en plus", "Pas de version Pro, pas d’abonnement, pas de bouton « Débloquer ». Tout est inclus."],
@@ -112,6 +112,6 @@
     "rightsTitle": "Vos droits",
     "rightsText": "En vertu du RGPD, vous disposez d’un droit d’accès, de rectification, d’effacement, de limitation du traitement et de portabilité des données, ainsi que du droit d’introduire une réclamation auprès d’une autorité de contrôle chargée de la protection des données. <strong>Vous avez le droit de vous opposer</strong>, pour des raisons tenant à votre situation particulière, au traitement fondé sur notre intérêt légitime (art. 21 du RGPD). Comme ni l’app ni ce site web ne conservent eux-mêmes de données personnelles, il n’y a absolument rien à consulter ni à supprimer de notre côté. Une demande d’accès recevra donc une réponse très courte : nous ne savons absolument rien de vous.",
     "contactTitle": "Contact",
-    "contactText": "Pour tout ce qui concerne Schnellbild – questions, idées, bugs, et aussi demandes sur vos données –, contactez-nous de préférence via GitHub : ouvrez un ticket sur <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a>. C’est là que nous répondons le plus vite, et la réponse profite aussi aux autres. Un ticket est public ; pour ce que vous préférez ne pas aborder publiquement, les <a href=\"https://haushoppe-its.de/impressum/\">mentions légales</a> indiquent d’autres moyens de nous joindre."
+    "contactText": "Pour tout ce qui concerne Schnellbild (questions, idées, bugs, et aussi demandes sur vos données), contactez-nous de préférence via GitHub : ouvrez un ticket sur <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a>. C’est là que nous répondons le plus vite, et la réponse profite aussi aux autres. Un ticket est public ; pour ce que vous préférez ne pas aborder publiquement, les <a href=\"https://haushoppe-its.de/impressum/\">mentions légales</a> indiquent d’autres moyens de nous joindre."
   }
 }
