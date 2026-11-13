@@ -1,6 +1,8 @@
 // Makes the Mac App Store screenshots (2880 × 1800, 16:10) from the README's
-// window shots (docs/screenshots): each shot, with its shadow, centred on a
-// calm background.
+// window shots (docs/screenshots): each shot, with its shadow as captured,
+// centred on one flat colour: #f5f5f7 (the website's light page), or
+// #2c2c2e for shots whose name has "-dark" (a little lighter than the
+// website's #1d1d1f, so the window's shadow shows).
 //
 //   swift Scripts/make_store_screenshots.swift <out dir> <shot.png> …
 import AppKit
@@ -19,11 +21,11 @@ for path in args.dropFirst() {
     let space = CGColorSpace(name: CGColorSpace.sRGB)!
     guard let context = CGContext(data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: 0, space: space,
                                   bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else { exit(1) }
-    // A soft vertical gradient, light grey to a little darker
-    let gradient = CGGradient(colorsSpace: space, colors: [CGColor(srgbRed: 0.93, green: 0.94, blue: 0.96, alpha: 1),
-                                                           CGColor(srgbRed: 0.80, green: 0.83, blue: 0.88, alpha: 1)] as CFArray,
-                              locations: [0, 1])!
-    context.drawLinearGradient(gradient, start: CGPoint(x: 0, y: height), end: .zero, options: [])
+    let name = (path as NSString).lastPathComponent
+    let dark = name.contains("-dark")
+    context.setFillColor(dark ? CGColor(srgbRed: 0x2c / 255, green: 0x2c / 255, blue: 0x2e / 255, alpha: 1)
+                              : CGColor(srgbRed: 0xf5 / 255, green: 0xf5 / 255, blue: 0xf7 / 255, alpha: 1))
+    context.fill(CGRect(x: 0, y: 0, width: width, height: height))
     // The shot as large as fits with a margin, never enlarged past twice its size
     let margin = 0.06
     let scale = min(Double(width) * (1 - 2 * margin) / Double(shot.width),
@@ -31,7 +33,6 @@ for path in args.dropFirst() {
     let w = Double(shot.width) * scale, h = Double(shot.height) * scale
     context.interpolationQuality = .high
     context.draw(shot, in: CGRect(x: (Double(width) - w) / 2, y: (Double(height) - h) / 2, width: w, height: h))
-    let name = (path as NSString).lastPathComponent
     let out = URL(fileURLWithPath: outDir).appendingPathComponent(name)
     guard let image = context.makeImage(),
           let destination = CGImageDestinationCreateWithURL(out as CFURL, "public.png" as CFString, 1, nil) else { exit(1) }
