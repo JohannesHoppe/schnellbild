@@ -180,7 +180,6 @@
 "Mark" = "Markera";
 "Single pane" = "En panel";
 "“%@” already exists in “%@”." = "”%@” finns redan i ”%@”.";
-"Keep both: the new one gets a number. Skip: it stays where it is." = "Behåll båda: den nya får ett nummer. Hoppa över: den stannar där den är.";
 "Keep Both" = "Behåll båda";
 "Skip" = "Hoppa över";
 "The marked items will be moved to the Trash, folders with everything in them." = "De markerade objekten flyttas till papperskorgen, mappar med allt innehåll.";
@@ -315,3 +314,14 @@
 "Each folder asks for your permission again." = "Varje mapp ber om ditt tillstånd igen.";
 "© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later. Built from its source without VLC's modules under the GPL; the build script and its changes are in Schnellbild's repository (github.com/JohannesHoppe/schnellbild)." = "© VideoLAN och VLC:s upphovspersoner. GNU Lesser General Public License 2.1 eller senare. Byggd från källkoden utan VLC:s moduler under GPL; byggskriptet och dess ändringar finns i Schnellbilds arkiv (github.com/JohannesHoppe/schnellbild).";
 "The link will be moved to the Trash. The folder it points to stays where it is." = "Länken flyttas till papperskorgen. Mappen den pekar på blir kvar där den är.";
+"Keep both: the new one gets a number. Skip: it stays where it is. Cancel: nothing is moved or copied." = "Behåll båda: den nya får ett nummer. Hoppa över: den stannar där den är. Avbryt: ingenting flyttas eller kopieras.";
+"Apply to all" = "Använd för alla";
+"Copied, but the original couldn't be removed: %@" = "Kopierad, men originalet kunde inte tas bort: %@";
+"Not everything was moved or copied." = "Allt flyttades eller kopierades inte.";
+"“%@”: %@" = "”%@”: %@";
+"“%@” is no longer the item Schnellbild put there, so it stays as it is." = "”%@” är inte längre objektet som Schnellbild lade där, så det lämnas som det är.";
+"“%@” has changed since it was copied, so it isn't moved to the Trash." = "”%@” har ändrats sedan det kopierades, så det flyttas inte till papperskorgen.";
+"Schnellbild may not take “%@” out of the Trash. Use “Put Back” in the Finder's Trash." = "Schnellbild får inte ta ut ”%@” ur papperskorgen. Använd ”Lägg tillbaka” i Finders papperskorg.";
+"Keep: try it again later, before the earlier actions. Forget: go on with the earlier actions." = "Behåll: försök igen senare, före de tidigare åtgärderna. Glöm: fortsätt med de tidigare åtgärderna.";
+"Keep" = "Behåll";
+"Forget" = "Glöm";

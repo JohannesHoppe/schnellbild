@@ -116,9 +116,10 @@ struct FileActions {
     var transfer: @MainActor (_ from: URL, _ to: URL) throws -> Bool
     var createFolder: @MainActor (URL) throws -> Void
     var copy: @MainActor (_ from: URL, _ to: URL) throws -> Void
-    /// A name already taken in the target folder: true to keep both (the
-    /// new one gets a number), false to skip it.
-    var askKeepBoth: @MainActor (_ name: String, _ folder: String) -> Bool
+    /// A name already taken in the target folder: keep both (the new one
+    /// gets a number), skip it, or stop the whole move; `more` says whether
+    /// other names may be taken too (the answer can then apply to all).
+    var askKeepBoth: @MainActor (_ name: String, _ folder: String, _ more: Bool) -> ConflictAnswer
     /// Whether `target` exists as an item other than `source`. On a
     /// case-insensitive volume "Photos" is the same item as "photos"; on a
     /// case-sensitive one (many NAS shares) it may be a different folder.
@@ -126,36 +127,62 @@ struct FileActions {
     /// Tells why an action failed (a share without a Trash, no permission),
     /// in the system's words and language.
     var report: @MainActor (Error) -> Void
+    /// An Undo or Redo failed: tells why and, when part of the step is left
+    /// (`canKeep`), whether to keep it to try again (true) or forget it so
+    /// the steps before it can be reached.
+    var keepFailedUndo: @MainActor (_ error: Error, _ canKeep: Bool) -> Bool = { error, canKeep in
+        guard canKeep else { NSAlert(error: error).runModal(); return false }
+        let alert = NSAlert()
+        alert.messageText = error.localizedDescription
+        alert.informativeText = String(localized: "Keep: try it again later, before the earlier actions. Forget: go on with the earlier actions.")
+        alert.addButton(withTitle: String(localized: "Keep"))
+        alert.addButton(withTitle: String(localized: "Forget"))
+        return alert.runModal() == .alertFirstButtonReturn
+    }
     /// Where moves and copies into folders run: the live actions off the
     /// main thread (a copy to a share takes long) through `LiveFiles`, which
     /// is what their closures call too; others (a test's spy) through their
     /// own closures.
     var runsOffMain = false
 
-    /// Carries out the steps of a move; per step whether it was moved
-    /// (false: copied) or why it failed.
+    /// Carries out the steps of a move; per step the files it moved or
+    /// copied (also when a later part of a split archive failed) and why it
+    /// stopped.
     @MainActor
-    func run(_ steps: [BrowserModel.TransferStep], _ how: BrowserModel.Transfer) async -> [Result<Bool, Error>] {
+    func run(_ steps: [BrowserModel.TransferStep], _ how: BrowserModel.Transfer) async -> [TransferOutcome] {
         if runsOffMain {
             return await Blocking.run {
-                steps.map { step in Result { try Self.perform(step, how, move: LiveFiles.move, transfer: LiveFiles.transfer, copy: LiveFiles.copy) } }
+                steps.map { Self.perform($0, how, move: LiveFiles.move, transfer: LiveFiles.transfer, copy: LiveFiles.copy) }
             }
         }
-        return steps.map { step in Result { try Self.perform(step, how, move: move, transfer: transfer, copy: copy) } }
+        return steps.map { Self.perform($0, how, move: move, transfer: transfer, copy: copy) }
     }
 
     private static func perform(_ step: BrowserModel.TransferStep, _ how: BrowserModel.Transfer,
                                 move: (URL, URL) throws -> Void, transfer: (URL, URL) throws -> Bool,
-                                copy: (URL, URL) throws -> Void) throws -> Bool {
-        var moved = false
-        for (file, to) in step.files {
-            switch how {
-            case .asFinder: moved = try transfer(file, to)
-            case .copy:     try copy(file, to); moved = false
-            case .move:     try move(file, to); moved = true
+                                copy: (URL, URL) throws -> Void) -> TransferOutcome {
+        var outcome = TransferOutcome()
+        files: for (file, to) in step.files {
+            do {
+                let moved: Bool
+                switch how {
+                case .asFinder: moved = try transfer(file, to)
+                case .copy:     try copy(file, to); moved = false
+                case .move:     try move(file, to); moved = true
+                }
+                outcome.done.append(TransferredFile(from: file, to: to, moved: moved,
+                                                    identity: ItemIdentity.of(to, withContents: !moved)))
+            } catch TransferError.originalKept(let reason) {
+                // Copied to another volume, the original still there: a copy
+                outcome.done.append(TransferredFile(from: file, to: to, moved: false, identity: ItemIdentity.of(to, withContents: true)))
+                outcome.failed = (file.lastPathComponent, TransferError.originalKept(reason))
+                break files
+            } catch {
+                outcome.failed = (file.lastPathComponent, error)
+                break files
             }
         }
-        return moved
+        return outcome
     }
 
     static let live = FileActions(
@@ -182,18 +209,85 @@ struct FileActions {
         transfer: { try LiveFiles.transfer($0, $1) },
         createFolder: { try FileManager.default.createDirectory(at: $0, withIntermediateDirectories: false) },
         copy: { try LiveFiles.copy($0, $1) },
-        askKeepBoth: { name, folder in
+        askKeepBoth: { name, folder, more in
             let alert = NSAlert()
             alert.messageText = String(localized: "“\(name)” already exists in “\(folder)”.")
-            alert.informativeText = String(localized: "Keep both: the new one gets a number. Skip: it stays where it is.")
+            alert.informativeText = String(localized: "Keep both: the new one gets a number. Skip: it stays where it is. Cancel: nothing is moved or copied.")
             alert.addButton(withTitle: String(localized: "Keep Both"))
             alert.addButton(withTitle: String(localized: "Skip"))
-            return alert.runModal() == .alertFirstButtonReturn
+            alert.addButton(withTitle: String(localized: "Cancel")).keyEquivalent = "\u{1b}"
+            if more {
+                alert.showsSuppressionButton = true
+                alert.suppressionButton?.title = String(localized: "Apply to all")
+            }
+            let choice: ConflictAnswer.Choice = switch alert.runModal() {
+            case .alertFirstButtonReturn: .keepBoth
+            case .alertSecondButtonReturn: .skip
+            default: .cancel
+            }
+            return ConflictAnswer(choice: choice, forAll: alert.suppressionButton?.state == .on)
         },
         conflicts: { LiveFiles.conflicts($0, $1) },
         report: { NSAlert(error: $0).runModal() },
         runsOffMain: true
     )
+}
+
+/// The answer to a name taken in the target folder.
+struct ConflictAnswer {
+    enum Choice { case keepBoth, skip, cancel }
+    var choice: Choice
+    /// For every other name taken in this move too.
+    var forAll = false
+}
+
+/// A file a move or copy carried out, and the item it made (for Undo).
+struct TransferredFile: Sendable {
+    let from: URL
+    let to: URL
+    let moved: Bool
+    let identity: ItemIdentity?
+}
+
+/// What one item of a move did: its files carried out (a split archive's
+/// parts in order, up to one that failed), and the one that failed.
+struct TransferOutcome: Sendable {
+    var done: [TransferredFile] = []
+    var failed: (name: String, error: Error)?
+}
+
+enum TransferError: LocalizedError {
+    /// Copied to another volume for a move; the original couldn't be removed.
+    case originalKept(String)
+
+    var errorDescription: String? {
+        switch self {
+        case .originalKept(let reason): return String(localized: "Copied, but the original couldn't be removed: \(reason)")
+        }
+    }
+}
+
+/// What a move or copy couldn't do, item by item (what could be done was
+/// done and can be undone).
+struct TransferFailure: LocalizedError {
+    let failures: [(name: String, reason: String)]
+
+    var errorDescription: String? { String(localized: "Not everything was moved or copied.") }
+    var recoverySuggestion: String? {
+        failures.map { String(localized: "“\($0.name)”: \($0.reason)") }.joined(separator: "\n")
+    }
+}
+
+/// Copies being written under their temporary names in this process: a
+/// listing that meets one leaves it alone.
+final class PartialCopies: @unchecked Sendable {
+    static let shared = PartialCopies()
+    private let lock = NSLock()
+    private var paths: Set<String> = []
+
+    func begin(_ url: URL) { lock.withLock { _ = paths.insert(url.standardizedFileURL.path) } }
+    func end(_ url: URL) { lock.withLock { _ = paths.remove(url.standardizedFileURL.path) } }
+    func isRunning(_ url: URL) -> Bool { lock.withLock { paths.contains(url.standardizedFileURL.path) } }
 }
 
 /// The file system work of the live actions, on any thread.
@@ -333,6 +427,16 @@ enum LiveFiles {
 
     static func move(_ from: URL, _ to: URL) throws {
         let fm = FileManager.default
+        // To another volume: copied (under a temporary name, so a crash never
+        // leaves a cut-off file under the real one), then the original removed
+        // (a rename in its folder stays on its volume; a volume that doesn't
+        // say which it is gets FileManager's own move)
+        if from.deletingLastPathComponent().path != to.deletingLastPathComponent().path,
+           sameVolume(from, to.deletingLastPathComponent()) == false {
+            try copy(from, to)
+            do { try fm.removeItem(at: from) } catch { throw TransferError.originalKept(error.localizedDescription) }
+            return
+        }
         // FileManager refuses a case-only rename ("photos" → "Photos") on
         // case-insensitive volumes, because the target "exists"; go via a
         // temporary name.
@@ -352,19 +456,59 @@ enum LiveFiles {
 
     /// Moved on the same volume, copied to another (as the Finder does).
     static func transfer(_ from: URL, _ to: URL) throws -> Bool {
-        let key: Set<URLResourceKey> = [.volumeIdentifierKey]
-        let a = try? from.resourceValues(forKeys: key).volumeIdentifier
-        let b = try? to.deletingLastPathComponent().resourceValues(forKeys: key).volumeIdentifier
-        if let a, let b, a.isEqual(b) {
+        if sameVolume(from, to.deletingLastPathComponent()) == true {
             try FileManager.default.moveItem(at: from, to: to)
             return true
         }
-        try FileManager.default.copyItem(at: from, to: to)
+        try copy(from, to)
         return false
     }
 
+    /// Whether both lie on one volume (a move there is a rename); nil when
+    /// a volume doesn't say.
+    private static func sameVolume(_ a: URL, _ b: URL) -> Bool? {
+        let key: Set<URLResourceKey> = [.volumeIdentifierKey]
+        guard let x = try? a.resourceValues(forKeys: key).volumeIdentifier,
+              let y = try? b.resourceValues(forKeys: key).volumeIdentifier else { return nil }
+        return x.isEqual(y)
+    }
+
+    /// What a copy under way is named in its target folder: hidden, and
+    /// told apart from anything else by the exact pattern (`isPartialCopy`).
+    static let partialCopyPrefix = ".schnellbild-copy-"
+
+    static func isPartialCopy(_ name: String) -> Bool {
+        name.hasPrefix(partialCopyPrefix) && name.count == partialCopyPrefix.count + 36
+            && UUID(uuidString: String(name.dropFirst(partialCopyPrefix.count))) != nil
+    }
+
+    /// Copied under a temporary name in the target folder and renamed once
+    /// complete: a crash or a full disk never leaves a cut-off file under
+    /// the real name. What failed is removed; a name taken meanwhile is
+    /// never overwritten (the rename fails).
     static func copy(_ from: URL, _ to: URL) throws {
-        try FileManager.default.copyItem(at: from, to: to)
+        let fm = FileManager.default
+        let temp = to.deletingLastPathComponent().appendingPathComponent(partialCopyPrefix + UUID().uuidString)
+        PartialCopies.shared.begin(temp)
+        defer { PartialCopies.shared.end(temp) }
+        do {
+            try fm.copyItem(at: from, to: temp)
+            try fm.moveItem(at: temp, to: to)
+        } catch {
+            try? fm.removeItem(at: temp)
+            throw error
+        }
+    }
+
+    /// A copy's temporary item left behind (the app ended during the
+    /// copy): removed when its folder is listed, unless this process is
+    /// writing it or it changed in the last 12 hours (another Mac may be
+    /// copying into a shared folder).
+    static func removeIfLeftOver(_ url: URL) {
+        guard isPartialCopy(url.lastPathComponent), !PartialCopies.shared.isRunning(url),
+              let changed = (try? url.resourceValues(forKeys: [.contentModificationDateKey]))?.contentModificationDate,
+              Date().timeIntervalSince(changed) > 12 * 3600 else { return }
+        try? FileManager.default.removeItem(at: url)
     }
 
     /// Whether `target` exists as an item other than `source`.
@@ -1497,6 +1641,7 @@ final class BrowserModel: ObservableObject {
                 // The drives' level: the system's own mounts (Time Machine's
                 // snapshots) aren't drives one browses
                 if drives, item.lastPathComponent.hasPrefix("com.apple.") { continue }
+                if LiveFiles.isPartialCopy(item.lastPathComponent) { LiveFiles.removeIfLeftOver(item); continue }
                 if let entry = entry(for: item, keys: keys) { listing.entries.append(entry); continue }
                 var vals = try? item.resourceValues(forKeys: keys)
                 if vals?.isSymbolicLink == true { vals = try? item.resolvingSymlinksInPath().resourceValues(forKeys: keys) }
@@ -2831,8 +2976,8 @@ final class BrowserModel: ObservableObject {
         let old = file.url
         guard name != old.lastPathComponent else { renameFileTarget = nil; return old }
         let new = old.deletingLastPathComponent().appendingPathComponent(name)
-        try await renameOnDisk(old, new, name: name)
-        undoHistory.record(UndoStep(kind: .rename, parts: [.moved(old, to: new)]))
+        let identity = try await renameOnDisk(old, new, name: name)
+        undoHistory.record(UndoStep(kind: .rename, parts: [.moved(old, to: new, identity: identity)]))
         renameFileTarget = nil
         apply(.moved(old, to: new))
         // A new extension can make it a picture, video or archive: the grid
@@ -2970,7 +3115,7 @@ final class BrowserModel: ObservableObject {
                 for file in files {
                     do {
                         let inTrash = if let spy { try MainActor.assumeIsolated { try spy(file) } } else { try LiveFiles.trash(file) }
-                        if let inTrash { parts.append(.trashed(file, inTrash: inTrash)) }
+                        if let inTrash { parts.append(.trashed(file, inTrash: inTrash, identity: ItemIdentity.of(inTrash))) }
                         gone = true
                     } catch {
                         if firstError == nil { firstError = error }
@@ -3256,7 +3401,9 @@ final class BrowserModel: ObservableObject {
     private func planMove(_ probes: [TransferProbe], into folder: URL) -> [TransferStep] {
         var steps: [TransferStep] = []
         var planned: Set<String> = []
-        for probe in probes {
+        // "Apply to all": the answer for every other name taken
+        var standing: ConflictAnswer.Choice?
+        for (number, probe) in probes.enumerated() {
             let source = probe.source
             let isPlanned: (URL) -> Bool = { planned.contains(Self.canonicalPath($0)) }
             // A later part taken there: the set would be mixed
@@ -3265,7 +3412,17 @@ final class BrowserModel: ObservableObject {
             }
             var destination = folder.appendingPathComponent(source.lastPathComponent, isDirectory: probe.isFolder)
             if probe.destinationTaken || isPlanned(destination) {
-                guard fileActions.askKeepBoth(source.lastPathComponent, folder.lastPathComponent) else { continue }
+                let choice: ConflictAnswer.Choice
+                if let standing {
+                    choice = standing
+                } else {
+                    let more = probes[(number + 1)...].contains { $0.destinationTaken }
+                    let answer = fileActions.askKeepBoth(source.lastPathComponent, folder.lastPathComponent, more)
+                    if answer.forAll { standing = answer.choice }
+                    choice = answer.choice
+                }
+                if choice == .cancel { return [] }
+                guard choice == .keepBoth else { continue }
                 // Renamed, the parts of a split archive no longer belong together
                 guard probe.files.count == 1 else { NSSound.beep(); continue }
                 destination = probe.freeNames.first { !isPlanned($0) }
@@ -3297,28 +3454,31 @@ final class BrowserModel: ObservableObject {
     }
     static var onTransfersDone: (() -> Void)?
 
-    private func finishMove(_ steps: [TransferStep], _ outcomes: [Result<Bool, Error>], into folder: URL) {
+    /// Applies what was carried out, also the parts of an item that failed
+    /// half way (a split archive's first volumes moved): their changes and
+    /// their Undo; what failed is reported item by item.
+    private func finishMove(_ steps: [TransferStep], _ outcomes: [TransferOutcome], into folder: URL) {
         let target = Self.canonicalPath(folder)
         var moves: [FileChange] = []
-        var reported = false
+        var failures: [(name: String, reason: String)] = []
         var undoParts: [UndoStep.Part] = []
-        for (step, outcome) in zip(steps, outcomes) {
-            if case .success(let moved) = outcome {
-                undoParts += step.files.map { moved ? UndoStep.Part.moved($0.0, to: $0.1) : .copied($0.0, to: $0.1) }
+        var copied = false
+        for outcome in outcomes {
+            for file in outcome.done {
+                undoParts.append(file.moved ? .moved(file.from, to: file.to, identity: file.identity)
+                                            : .copied(file.from, to: file.to, identity: file.identity))
+                if file.moved { moves.append(.moved(file.from, to: file.to)) } else { copied = true }
             }
-            switch outcome {
-            case .success(true):
-                moves.append(.moved(step.source, to: step.destination))
-            case .success(false):
-                // A copy: the target and every folder around it hold more now
-                let around = FileChange.removed(folder).affectedFolders
-                FolderPreviewCache.shared.forget(around)
-                emptyFolders.subtract(around)
-                folderChanges += 1
-            case .failure(let error):
-                if !reported { fileActions.report(error); reported = true }
-            }
+            if let failed = outcome.failed { failures.append((failed.name, failed.error.localizedDescription)) }
         }
+        if copied {
+            // A copy: the target and every folder around it hold more now
+            let around = FileChange.removed(folder).affectedFolders
+            FolderPreviewCache.shared.forget(around)
+            emptyFolders.subtract(around)
+            folderChanges += 1
+        }
+        if !failures.isEmpty { fileActions.report(TransferFailure(failures: failures)) }
         undoHistory.record(UndoStep(kind: undoParts.contains { if case .copied = $0 { return true }; return false } ? .copy : .move,
                                     parts: undoParts))
         // The selection as it was, before the moves rewrite its path
@@ -3377,18 +3537,22 @@ final class BrowserModel: ObservableObject {
             guard name != old.lastPathComponent else { return }
             let new = old.deletingLastPathComponent().appendingPathComponent(name, isDirectory: true)
             Self.testLog("rename the folder shown \(old.lastPathComponent) → \(name)")
-            try await renameOnDisk(old, new, name: name)
+            let identity = try await renameOnDisk(old, new, name: name)
+            undoHistory.record(UndoStep(kind: .rename, parts: [.moved(old, to: new, identity: identity)]))
             // A folder named like an archive stays a folder
             if ArchiveName.format(of: name) != nil { ArchivePath.noteFolder(new) }
-            apply(.moved(old, to: new))
-            // (the pane may have moved on meanwhile; the change reached it)
-            guard folderURL.map(Self.canonicalPath) == Self.canonicalPath(old) else { return }
-            folderURL = new
-            defaults.set(new.path, forKey: lastFolderKey)
-            if let parent = Self.parentFolder(of: new), let i = allEntries.firstIndex(where: { $0.kind == .parent }) {
-                allEntries[i] = GridEntry(url: parent, kind: .parent)
-                if let j = entries.firstIndex(where: { $0.kind == .parent }) { entries[j] = allEntries[i] }
+            // The folder shown takes the new path first: the change then
+            // keeps what is listed in it (its other files too) in the folder
+            // (the pane may have moved on meanwhile; the change reaches it)
+            if folderURL.map(Self.canonicalPath) == Self.canonicalPath(old) {
+                folderURL = new
+                defaults.set(new.path, forKey: lastFolderKey)
+                if let parent = Self.parentFolder(of: new), let i = allEntries.firstIndex(where: { $0.kind == .parent }) {
+                    allEntries[i] = GridEntry(url: parent, kind: .parent)
+                    if let j = entries.firstIndex(where: { $0.kind == .parent }) { entries[j] = allEntries[i] }
+                }
             }
+            apply(.moved(old, to: new))
         } catch {
             fileActions.report(error)
         }
@@ -3446,8 +3610,8 @@ final class BrowserModel: ObservableObject {
         if entry.kind != .folder, Self.mediaKind(of: new) != entry.kind {
             throw RenameError.changesKind(old.pathExtension, video: entry.kind == .video)
         }
-        try await renameOnDisk(old, new, name: name)
-        undoHistory.record(UndoStep(kind: .rename, parts: [.moved(old, to: new)]))
+        let identity = try await renameOnDisk(old, new, name: name)
+        undoHistory.record(UndoStep(kind: .rename, parts: [.moved(old, to: new, identity: identity)]))
 
         // Stay where we are: same folder, same query, same results (and the
         // full view stays open) — only the renamed item and, for a folder,
@@ -3463,16 +3627,19 @@ final class BrowserModel: ObservableObject {
     /// Renames on disk: off the main thread for the live actions (a share
     /// answers slowly), inline for a test's spy. Refuses a name taken by
     /// another item.
-    private func renameOnDisk(_ old: URL, _ new: URL, name: String) async throws {
+    /// Returns the renamed item's identity (for Undo).
+    @discardableResult
+    private func renameOnDisk(_ old: URL, _ new: URL, name: String) async throws -> ItemIdentity? {
         let check: @Sendable (Bool) throws -> Void = { taken in if taken { throw RenameError.alreadyExists(name) } }
         guard fileActions.runsOffMain else {
             try check(fileActions.conflicts(new, old))
             do { try fileActions.move(old, new) } catch { throw RenameError.failed(error.localizedDescription) }
-            return
+            return ItemIdentity.of(new)
         }
-        try await Blocking.run {
+        return try await Blocking.run {
             try check(LiveFiles.conflicts(new, old))
             do { try LiveFiles.move(old, new) } catch { throw RenameError.failed(error.localizedDescription) }
+            return ItemIdentity.of(new)
         }
     }
 
@@ -3508,7 +3675,7 @@ final class BrowserModel: ObservableObject {
     /// was moved or renamed, else the nearest folder around it still there
     /// when it was trashed. Returns whether it changed.
     @discardableResult
-    private func followFolder(through changes: [FileChange]) -> Bool {
+    func followFolder(through changes: [FileChange]) -> Bool {
         guard let folderURL, !changes.isEmpty else { return false }
         if let moved = Self.through(changes, folderURL) {
             guard Self.canonicalPath(moved) != Self.canonicalPath(folderURL) else { return false }

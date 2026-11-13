@@ -180,7 +180,6 @@
 "Mark" = "Contrassegna";
 "Single pane" = "Pannello singolo";
 "“%@” already exists in “%@”." = "«%@» esiste già in «%@».";
-"Keep both: the new one gets a number. Skip: it stays where it is." = "Mantieni entrambi: il nuovo riceve un numero. Salta: rimane dov’è.";
 "Keep Both" = "Mantieni entrambi";
 "Skip" = "Salta";
 "The marked items will be moved to the Trash, folders with everything in them." = "Gli elementi contrassegnati verranno spostati nel Cestino, le cartelle con tutto il loro contenuto.";
@@ -315,3 +314,14 @@
 "Each folder asks for your permission again." = "Ogni cartella chiederà di nuovo il tuo permesso.";
 "© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later. Built from its source without VLC's modules under the GPL; the build script and its changes are in Schnellbild's repository (github.com/JohannesHoppe/schnellbild)." = "© VideoLAN e gli autori di VLC. GNU Lesser General Public License 2.1 o successiva. Compilato dal codice sorgente senza i moduli di VLC sotto GPL; lo script di compilazione e le sue modifiche sono nel repository di Schnellbild (github.com/JohannesHoppe/schnellbild).";
 "The link will be moved to the Trash. The folder it points to stays where it is." = "Il collegamento verrà spostato nel Cestino. La cartella a cui punta resta dov’è.";
+"Keep both: the new one gets a number. Skip: it stays where it is. Cancel: nothing is moved or copied." = "Mantieni entrambi: il nuovo riceve un numero. Salta: rimane dov’è. Annulla: non viene spostato né copiato nulla.";
+"Apply to all" = "Applica a tutti";
+"Copied, but the original couldn't be removed: %@" = "Copiato, ma non è stato possibile rimuovere l’originale: %@";
+"Not everything was moved or copied." = "Non tutto è stato spostato o copiato.";
+"“%@”: %@" = "«%@»: %@";
+"“%@” is no longer the item Schnellbild put there, so it stays as it is." = "«%@» non è più l’elemento che Schnellbild ha messo lì, quindi resta com’è.";
+"“%@” has changed since it was copied, so it isn't moved to the Trash." = "«%@» è cambiato da quando è stato copiato, quindi non viene spostato nel Cestino.";
+"Schnellbild may not take “%@” out of the Trash. Use “Put Back” in the Finder's Trash." = "Schnellbild non può togliere «%@» dal Cestino. Usa «Ripristina» nel Cestino del Finder.";
+"Keep: try it again later, before the earlier actions. Forget: go on with the earlier actions." = "Mantieni: riprova più tardi, prima delle azioni precedenti. Dimentica: prosegui con le azioni precedenti.";
+"Keep" = "Mantieni";
+"Forget" = "Dimentica";
