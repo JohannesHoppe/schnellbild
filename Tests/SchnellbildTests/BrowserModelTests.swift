@@ -703,6 +703,35 @@ final class SearchTests: XCTestCase {
         XCTAssertTrue(NameMatcher("[").matches("[a].jpg"))
     }
 
+    /// An expression that backtracks without end gives up on a name instead of hanging.
+    func testARunawayExpressionGivesUpOnAName() {
+        let name = String(repeating: "a", count: 40) + ".jpg"
+        let start = Date()
+        XCTAssertFalse(NameMatcher("(a|a)*b", mode: .regex).matches(name))
+        XCTAssertLessThan(Date().timeIntervalSince(start), 1, "bounded")
+        XCTAssertTrue(NameMatcher("(a|a)*\\.jpg", mode: .regex).matches(name), "a match it finds in time stays one")
+        let stop = WalkStop()
+        stop.set()
+        XCTAssertFalse(NameMatcher("a", mode: .regex).matches(name, stop: stop), "nothing once the search is over")
+    }
+
+    /// A regular expression is matched off the main thread: typing stays
+    /// quick, and a new query takes over from the old one.
+    func testARegularExpressionDoesNotHoldTheMainThread() async throws {
+        let tree = try TempTree(self)
+        for i in 0..<40 { try tree.file(String(repeating: "a", count: 30 + i) + ".jpg") }
+        try tree.file("b.jpg")
+        let m = makeModel()
+        m.searchMode = .regex
+        await openAndWait(m, tree.root)
+        let start = Date()
+        m.searchText = "(a|a)*b"
+        XCTAssertLessThan(Date().timeIntervalSince(start), 0.5, "the main thread goes on at once")
+        XCTAssertTrue(m.isSearching)
+        await searchAndWait(m, "^b")
+        XCTAssertEqual(m.names, ["b.jpg"])
+    }
+
     /// Switching the mode searches again, in subfolders too, and is remembered.
     func testTheSearchModeSearchesAgainAndIsRemembered() async throws {
         let tree = try TempTree(self)

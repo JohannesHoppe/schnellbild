@@ -1106,7 +1106,7 @@ final class ArchiveStore: @unchecked Sendable {
         let index = try await index(of: archiveURL)
         let prefix = inner.isEmpty ? "" : inner + "/"
         return index.byPath.values.compactMap { item in
-            guard item.path.hasPrefix(prefix),
+            guard !Task.isCancelled, item.path.hasPrefix(prefix),
                   matcher.matches((item.path as NSString).lastPathComponent) else { return nil }
             let itemURL = archiveURL.appendingPathComponent(item.path, isDirectory: item.isDirectory)
             if item.isDirectory { return GridEntry(url: itemURL, kind: .folder, modDate: item.modified) }
