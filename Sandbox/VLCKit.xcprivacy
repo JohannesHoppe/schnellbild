@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- VLCKit.framework's manifest (Versions/A/Resources/PrivacyInfo.xcprivacy,
+         put in by Scripts/build_app.sh): the required-reason APIs its binary
+         imports (nm -u: NSUserDefaults, stat / fstat / lstat, mach_absolute_time,
+         fstatfs). VLC collects nothing and, in Schnellbild, reads only local
+         files (Schnellbild's VLCSafety). -->
+    <key>NSPrivacyTracking</key>
+    <false/>
+    <key>NSPrivacyTrackingDomains</key>
+    <array/>
+    <key>NSPrivacyCollectedDataTypes</key>
+    <array/>
+    <key>NSPrivacyAccessedAPITypes</key>
+    <array>
+        <!-- NSUserDefaults: VLCKit's own preferences in the app's defaults -->
+        <dict>
+            <key>NSPrivacyAccessedAPIType</key>
+            <string>NSPrivacyAccessedAPICategoryUserDefaults</string>
+            <key>NSPrivacyAccessedAPITypeReasons</key>
+            <array><string>CA92.1</string></array>
+        </dict>
+        <!-- stat, fstat, lstat: the size and kind of the media files the user
+             opened to the app -->
+        <dict>
+            <key>NSPrivacyAccessedAPIType</key>
+            <string>NSPrivacyAccessedAPICategoryFileTimestamp</string>
+            <key>NSPrivacyAccessedAPITypeReasons</key>
+            <array><string>3B52.1</string><string>C617.1</string></array>
+        </dict>
+        <!-- mach_absolute_time: VLC's clock (timing playback within the app) -->
+        <dict>
+            <key>NSPrivacyAccessedAPIType</key>
+            <string>NSPrivacyAccessedAPICategorySystemBootTime</string>
+            <key>NSPrivacyAccessedAPITypeReasons</key>
+            <array><string>35F9.1</string></array>
+        </dict>
+        <!-- fstatfs: whether a video lies on a network share, where VLC buffers
+             more (it plays differently there); no disk space is shown. None
+             of Apple's reasons names this use; E174.1 (behaving differently,
+             in a way users notice, by what the call reports) comes closest. -->
+        <dict>
+            <key>NSPrivacyAccessedAPIType</key>
+            <string>NSPrivacyAccessedAPICategoryDiskSpace</string>
+            <key>NSPrivacyAccessedAPITypeReasons</key>
+            <array><string>E174.1</string></array>
+        </dict>
+    </array>
+</dict>
+</plist>
