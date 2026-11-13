@@ -257,14 +257,41 @@ public enum VLCSafety {
         } else {
             media.addOption(":demux=none")
         }
-        // No subtitles or other files picked up from next to the video
+        // No subtitles or other files picked up from next to the video, and
+        // no other Matroska files of its folder opened in search of linked
+        // segments
         media.addOption(":no-sub-autodetect-file")
+        media.addOption(":no-mkv-preload-local-dir")
+        // Matroska's chapter codecs are DVD-style menu programs inside the
+        // file, which VLC would run
+        media.addOption(":no-mkv-use-chapter-codec")
     }
 
-    /// VLCKit reads extra libVLC options from the app's preferences
-    /// ("VLCParams"); another program could put some there. Removed before
-    /// VLC starts.
+    /// The libVLC options VLCKit starts its shared `VLCLibrary` with on macOS
+    /// (`-[VLCLibrary _defaultOptions]`, VLCKit 3.7.5) when its preference
+    /// "VLCParams" holds none. A second `VLCLibrary` would lack them and play
+    /// nothing, so the shared one gets exactly these.
+    public static let libraryOptions = [
+        "--play-and-pause", "--no-color", "--no-video-title-show", "--verbose=4", "--no-sout-keep",
+        "--vout=macosx", "--text-renderer=freetype", "--extraintf=macosx_dialog_provider",
+        "--audio-resampler=soxr",
+    ]
+
+    /// VLCKit takes its libVLC options from the preference "VLCParams",
+    /// read through `UserDefaults.standard`: the command line's arguments,
+    /// then the app's own preferences, then the global domain, which any
+    /// local program can write to. Before VLC starts, the app's own domain
+    /// gets `libraryOptions` (it is read before the global domain) and a
+    /// value from the command line is dropped, so no other value takes effect.
     public static func forgetInjectedOptions(in defaults: UserDefaults = .standard) {
-        defaults.removeObject(forKey: "VLCParams")
+        let key = "VLCParams"
+        defaults.set(libraryOptions, forKey: key)
+        let arguments = UserDefaults.argumentDomain
+        var domain = defaults.volatileDomain(forName: arguments)
+        if domain[key] != nil {
+            domain[key] = nil
+            defaults.removeVolatileDomain(forName: arguments)
+            defaults.setVolatileDomain(domain, forName: arguments)
+        }
     }
 }

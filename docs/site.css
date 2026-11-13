@@ -222,3 +222,7 @@ footer a { color: var(--muted); }
   .lang { display: none; }
 }
 h1, h2, h3, .tagline, .lead, .intro { text-wrap: balance; }
+
+/* The 404 page's list of home pages */
+.homes { columns: 2 180px; padding-left: 20px; }
+.page .homes li { margin: 0; padding: 4px 0; break-inside: avoid; }

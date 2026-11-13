@@ -1,10 +1,10 @@
 import AppKit
 
 /// The boss key: X hides every window of the app and mutes it at once;
-/// only X typed three times brings it back (or quitting and starting again).
-/// The windows stay open, invisible and letting clicks through, so the Dock
-/// icon or ⌘-Tab bring the app forward with nothing to see, and its keys
-/// still arrive here. A window in full screen has a space of its own, black
+/// X typed three times or a click on the Dock icon brings it back, and ⌘Q
+/// still quits. The windows stay open, invisible and letting clicks through,
+/// so ⌘-Tab brings the app forward with nothing to see, and its keys still
+/// arrive here. A window in full screen has a space of its own, black
 /// behind an invisible window: it leaves full screen first (the app hides
 /// once it has) and goes back into it on return.
 @MainActor
@@ -50,14 +50,24 @@ enum BossKey {
         if engaged, !NSApp.isHidden { NSApp.hide(nil) }
     }
 
-    /// Every key while engaged goes here and nowhere else.
+    /// Every key while engaged goes here and nowhere else; ⌘Q quits.
     static func typed(_ event: NSEvent) {
-        let plain = event.modifierFlags.intersection([.command, .control, .option]).isEmpty
-        let x = plain && !event.isARepeat && event.charactersIgnoringModifiers?.lowercased() == "x"
+        let modifiers = event.modifierFlags.intersection([.command, .control, .option])
+        // By the letter on the key, as the menus read it, on any layout
+        let plain = event.charactersIgnoringModifiers?.lowercased() ?? ""
+        let letter = plain.unicodeScalars.allSatisfy(\.isASCII) ? plain
+            : (LatinKeys.character(for: event.keyCode, shift: false) ?? plain)
+        if modifiers == .command, letter == "q" {
+            NSApp.terminate(nil)
+            return
+        }
+        let x = modifiers.isEmpty && !event.isARepeat && letter == "x"
         if counter.typed(x: x, at: Date()) { release() }
     }
 
-    private static func release() {
+    /// Shows every window again (X X X, the Dock icon).
+    static func release() {
+        guard engaged else { return }
         engaged = false
         if let reopenGuard { NotificationCenter.default.removeObserver(reopenGuard) }
         reopenGuard = nil

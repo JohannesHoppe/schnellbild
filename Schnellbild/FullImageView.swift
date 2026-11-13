@@ -23,6 +23,8 @@ struct FullImageView: View {
     @State private var panOffset: CGSize = .zero
     /// The file couldn't be read as a picture.
     @State private var failed = false
+    /// Why, as far as ImageIO tells (nil: it doesn't say).
+    @State private var failure: LoadFailure?
     /// The longest side the picture was decoded at: screen size first, the
     /// full size once the user zooms in (a sharp picture where it matters).
     @State private var decodedSide = 0
@@ -47,9 +49,20 @@ struct FullImageView: View {
                         .gesture(magnifyGesture)
                         .simultaneousGesture(panGesture)
                 } else if failed {
-                    Image(systemName: "exclamationmark.triangle")
-                        .font(.system(size: 48))
-                        .foregroundStyle(.secondary)
+                    VStack(spacing: 10) {
+                        Image(systemName: "exclamationmark.triangle")
+                            .font(.system(size: 48))
+                        Text("This picture can't be shown")
+                            .font(.title3.weight(.semibold))
+                        if let failure {
+                            Text(failure.reason)
+                                .font(.callout)
+                                .foregroundStyle(.white.opacity(0.65))
+                        }
+                    }
+                    .multilineTextAlignment(.center)
+                    .foregroundStyle(.white.opacity(0.85))
+                    .padding(24)
                 } else {
                     LoadingSpinner()
                 }
@@ -58,11 +71,14 @@ struct FullImageView: View {
             .contentShape(Rectangle())
             .accessibilityElement(children: .ignore)
             .accessibilityIdentifier("fullImage")
-            .accessibilityLabel(accessibilityState)
+            .accessibilityLabel(spokenLabel)
+            // The UI tests read the view's state, in English
+            .accessibilityValue(VideoDetailView.uiTesting ? accessibilityState : "")
             .task(id: url) {
                 // Never the previous file's picture: the cached tile, or nothing yet
                 image = ThumbnailCache.shared.image(for: url)
                 failed = false
+                failure = nil
                 decodedSide = 0
                 let scale = NSScreen.windowBackingScale
                 let maxPixel = max(Int(max(geo.size.width, geo.size.height) * scale), 1)
@@ -126,7 +142,18 @@ struct FullImageView: View {
         }
     }
 
-    /// Exposes the view transform, e.g. "zoom 125 %, rotation 90°, loaded".
+    /// What VoiceOver says: the picture's name and zoom, or why it can't be
+    /// shown.
+    private var spokenLabel: String {
+        let name = url.lastPathComponent
+        if failed {
+            return [name, String(localized: "This picture can't be shown"), failure?.reason].compactMap { $0 }.joined(separator: ", ")
+        }
+        let zoom = Double(model.zoom).formatted(.percent.precision(.fractionLength(0)))
+        return String(localized: "\(name), zoom \(zoom)")
+    }
+
+    /// For the UI tests (`--ui-testing`): the view transform, e.g. "zoom 125 %, rotation 90°, loaded".
     private var accessibilityState: String {
         "zoom \(Int((model.zoom * 100).rounded())) %, rotation \(Int(model.rotation))°, "
             + (decodedSide > 0 ? "decoded \(decodedSide) px, " : "")
@@ -187,13 +214,15 @@ struct FullImageView: View {
     /// again larger; if that fails, the one shown stays.
     private func load(maxPixel: Int, sharper: Bool) async {
         let url = self.url
-        let result = await detachedCancellable(priority: .userInitiated) { () -> (NSImage, CGSize, CGImage)? in
+        let attempt = await detachedCancellable(priority: .userInitiated) { () -> Result<(NSImage, CGSize, CGImage), LoadFailure>? in
             if VectorPicture.isVector(url) {
-                guard let rendered = await VectorPicture.render(url, longestSide: maxPixel) else { return nil }
+                guard let rendered = await VectorPicture.render(url, longestSide: maxPixel) else { return .failure(.undecodable) }
                 let cg = rendered.0
-                return (NSImage(cgImage: cg, size: NSSize(width: cg.width, height: cg.height)), rendered.1, cg)
+                return .success((NSImage(cgImage: cg, size: NSSize(width: cg.width, height: cg.height)), rendered.1, cg))
             }
-            guard let src = await MediaData.imageSource(url), !Task.isCancelled else { return nil }
+            guard let src = await MediaData.imageSource(url) else { return .failure(.unreadable) }
+            guard !Task.isCancelled else { return nil }
+            if let failure = LoadFailure(status: CGImageSourceGetStatus(src)) { return .failure(failure) }
             let native = MediaInfo.pixelSize(from: src) ?? .zero
 
             let options: [CFString: Any] = [
@@ -203,17 +232,22 @@ struct FullImageView: View {
                 kCGImageSourceThumbnailMaxPixelSize: maxPixel
             ]
             guard let cg = CGImageSourceCreateThumbnailAtIndex(src, 0, options as CFDictionary) else {
-                return nil
+                return .failure(.undecodable)
             }
             let img = NSImage(cgImage: cg, size: NSSize(width: cg.width, height: cg.height))
-            return (img, native, cg)
+            return .success((img, native, cg))
         }
 
-        guard !Task.isCancelled else { return }
-        guard let result else {
+        guard !Task.isCancelled, let outcome = attempt else { return }
+        let result: (NSImage, CGSize, CGImage)
+        switch outcome {
+        case .success(let loaded):
+            result = loaded
+        case .failure(let reason):
             if sharper { return }
             image = nil   // not the tile's file icon: the file can't be shown
             failed = true
+            failure = reason
             return
         }
         image = result.0
@@ -226,6 +260,37 @@ struct FullImageView: View {
             autoLook = nil
         }
         picture = result.2
+    }
+
+    /// Why a picture can't be shown, as far as ImageIO tells.
+    enum LoadFailure: Error {
+        /// No image source: the file (or its entry in an archive) can't be read.
+        case unreadable
+        /// ImageIO knows no format for the data.
+        case unknownFormat
+        /// The data ends before the picture does.
+        case truncated
+        /// The data doesn't hold a picture ImageIO can decode.
+        case undecodable
+
+        init?(status: CGImageSourceStatus) {
+            switch status {
+            case .statusComplete, .statusIncomplete, .statusReadingHeader: return nil
+            case .statusUnknownType: self = .unknownFormat
+            case .statusUnexpectedEOF: self = .truncated
+            case .statusInvalidData: self = .undecodable
+            @unknown default: self = .undecodable
+            }
+        }
+
+        var reason: String {
+            switch self {
+            case .unreadable: String(localized: "The file can't be read.")
+            case .unknownFormat: String(localized: "Its format isn't known.")
+            case .truncated: String(localized: "The file ends too early.")
+            case .undecodable: String(localized: "Its data can't be decoded.")
+            }
+        }
     }
 
     private struct SharpnessJob: Equatable {

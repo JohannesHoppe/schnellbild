@@ -22,6 +22,46 @@
 			<string>%lld архива</string>
 		</dict>
 	</dict>
+	<key>%lld bits</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@count@</string>
+		<key>count</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld бита</string>
+			<key>many</key>
+			<string>%lld бит</string>
+			<key>one</key>
+			<string>%lld бит</string>
+			<key>other</key>
+			<string>%lld бита</string>
+		</dict>
+	</dict>
+	<key>%lld channels</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@count@</string>
+		<key>count</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>%lld канала</string>
+			<key>many</key>
+			<string>%lld каналов</string>
+			<key>one</key>
+			<string>%lld канал</string>
+			<key>other</key>
+			<string>%lld канала</string>
+		</dict>
+	</dict>
 	<key>%lld folders</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -100,6 +140,26 @@
 			<string>%lld видео</string>
 			<key>other</key>
 			<string>%lld видео</string>
+		</dict>
+	</dict>
+	<key>Move %lld items to the Trash?</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@count@</string>
+		<key>count</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>few</key>
+			<string>Переместить %lld объекта в Корзину?</string>
+			<key>many</key>
+			<string>Переместить %lld объектов в Корзину?</string>
+			<key>one</key>
+			<string>Переместить %lld объект в Корзину?</string>
+			<key>other</key>
+			<string>Переместить %lld объекта в Корзину?</string>
 		</dict>
 	</dict>
 </dict>

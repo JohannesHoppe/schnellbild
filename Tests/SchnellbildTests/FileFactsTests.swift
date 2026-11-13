@@ -88,6 +88,12 @@ final class FileFactsTests: XCTestCase {
         XCTAssertEqual(StreamFacts.codecName(0x6161_6320), "AAC")     // "aac "
         XCTAssertEqual(StreamFacts.describeBitrate(4_240_000), "4.2 Mbit/s".replacingOccurrences(of: ".", with: Locale.current.decimalSeparator ?? "."))
         XCTAssertEqual(StreamFacts.describeBitrate(320_000), "320 kbit/s")
+        // Units through the tables and the locale's measurement format
+        XCTAssertEqual(StreamFacts.describeVideo(codec: "H.264", frameRate: 25), "H.264, 25 fps")
+        let audio = StreamFacts.describeAudio(codec: "AAC", channels: 2, sampleRate: 48_000)
+        XCTAssertTrue(audio.hasPrefix("AAC, 2 channels, 48"), audio)
+        XCTAssertTrue(audio.contains("Hz"), audio)
+        XCTAssertEqual(StreamFacts.describeDepth(16), "16 bits")
         XCTAssertEqual(StreamFacts.bitrate(bytes: 1_000_000, seconds: 8), 1_000_000)
         XCTAssertNil(StreamFacts.bitrate(bytes: 1_000_000, seconds: nil))
         XCTAssertEqual(InspectorView.duration(185), "3:05")

@@ -90,9 +90,9 @@ final class GridUITests: SchnellbildUITestCase {
     func testThumbnailSizeMenuItems() {
         launchOnTempDir()
         let before = tile("a.jpg").frame.width
-        clickMenu("View", "Larger Thumbnails (⌘+)")
+        clickMenu("View", "Larger Thumbnails")
         eventually("tiles grow") { tile("a.jpg").frame.width > before }
-        clickMenu("View", "Smaller Thumbnails (⌘−)")
+        clickMenu("View", "Smaller Thumbnails")
         eventually("tiles back") { abs(tile("a.jpg").frame.width - before) < 1 }
     }
 
@@ -201,6 +201,19 @@ final class GridUITests: SchnellbildUITestCase {
         XCTAssertTrue(app.staticTexts["No folder open"].waitForExistence(timeout: 15))
         XCTAssertTrue(searchField.exists, "search is always visible")
         XCTAssertFalse(searchField.isEnabled, "but disabled without a folder")
+    }
+
+    /// The first launch (no last folder) opens the Pictures folder (here a
+    /// stand-in, `--pictures-folder`); an empty one still says how to open
+    /// another.
+    func testTheFirstLaunchOpensThePicturesFolder() throws {
+        let app = launch(extra: ["--pictures-folder=\(tempDir.path)"])
+        XCTAssertTrue(app.staticTexts["a.jpg"].waitForExistence(timeout: 15), "the pictures, not an empty window")
+        app.terminate()
+        let empty = try folder("empty")
+        let second = launch(extra: ["--pictures-folder=\(empty.path)"])
+        XCTAssertTrue(second.staticTexts["This folder is empty"].waitForExistence(timeout: 15))
+        XCTAssertTrue(element("dropHint.empty").exists, "the way to another folder")
     }
 
     func testLastFolderIsRestoredOnRelaunch() {

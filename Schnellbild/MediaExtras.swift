@@ -34,43 +34,11 @@ struct InspectorView: View {
             Text(entry.name)
                 .font(.headline)
                 .lineLimit(3)
-            infoRow("Kind", kindText)
-            if let format = facts?.format {
-                infoRow("Format", format)
+            // The labels' column as wide as its longest label ("Änderungsdatum", "Profondeur de couleur")
+            Grid(alignment: .topLeading, horizontalSpacing: 10, verticalSpacing: 8) {
+                rows
             }
-            if let dimensions {
-                infoRow("Resolution", dimensions)
-            }
-            if let video = streams?.video {
-                infoRow("Video", video)
-            }
-            if let audio = streams?.audio {
-                infoRow("Audio", audio)
-            }
-            if let seconds = streams?.seconds, seconds.isFinite, seconds > 0 {
-                infoRow("Duration", Self.duration(seconds))
-            }
-            if let bitrate = StreamFacts.bitrate(bytes: entry.byteSize, seconds: streams?.seconds) {
-                infoRow("Bitrate", StreamFacts.describeBitrate(bitrate))
-            }
-            if let depth = facts?.depth, depth > 0 {
-                infoRow("Bit Depth", "\(depth) bit")
-            }
-            if let profile = facts?.profile {
-                infoRow("Profile", profile)
-            }
-            if let camera = facts?.camera {
-                infoRow("Camera", camera)
-            }
-            if let size = entry.byteSize {
-                infoRow("Size", ByteCountFormatter.string(fromByteCount: Int64(size), countStyle: .file))
-            }
-            if let taken {
-                infoRow("Date Taken", taken.formatted(date: .abbreviated, time: .shortened))
-            }
-            if let date = entry.modDate {
-                infoRow("Date Modified", date.formatted(date: .abbreviated, time: .shortened))
-            }
+            .font(.callout)
             if let recommended = facts?.recommendedExtension {
                 let content = facts?.format ?? ""
                 // The text in the primary colour (readable on the material in
@@ -92,12 +60,53 @@ struct InspectorView: View {
             }
         }
         .padding(14)
-        .frame(width: 290, alignment: .leading)
+        .frame(width: 300, alignment: .leading)
         .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12))
         .task(id: entry.url) { await loadDimensions() }
         .task(id: entry.url) { await loadCaptureDate() }
         .task(id: entry.url) { await loadFacts() }
         .task(id: entry.url) { await loadStreams() }
+    }
+
+    @ViewBuilder
+    private var rows: some View {
+        infoRow("Kind", kindText)
+        if let format = facts?.format {
+            infoRow("Format", format)
+        }
+        if let dimensions {
+            infoRow("Resolution", dimensions)
+        }
+        if let video = streams?.video {
+            infoRow("Video", video)
+        }
+        if let audio = streams?.audio {
+            infoRow("Audio", audio)
+        }
+        if let seconds = streams?.seconds, seconds.isFinite, seconds > 0 {
+            infoRow("Duration", Self.duration(seconds))
+        }
+        if let bitrate = StreamFacts.bitrate(bytes: entry.byteSize, seconds: streams?.seconds) {
+            infoRow("Bitrate", StreamFacts.describeBitrate(bitrate))
+        }
+        if let depth = facts?.depth, depth > 0 {
+            infoRow("Bit Depth", StreamFacts.describeDepth(depth))
+        }
+        if let profile = facts?.profile {
+            infoRow("Profile", profile)
+        }
+        if let camera = facts?.camera {
+            infoRow("Camera", camera)
+        }
+        if let size = entry.byteSize {
+            infoRow("Size", ByteCountFormatter.string(fromByteCount: Int64(size), countStyle: .file))
+        }
+        if let taken {
+            infoRow("Date Taken", taken.formatted(date: .abbreviated, time: .shortened))
+        }
+        if let date = entry.modDate {
+            infoRow("Date Modified", date.formatted(date: .abbreviated, time: .shortened))
+        }
     }
 
     /// "3:05", "1:02:07".
@@ -150,15 +159,14 @@ struct InspectorView: View {
     }
 
     private func infoRow(_ label: LocalizedStringKey, _ value: String) -> some View {
-        HStack(alignment: .top) {
+        GridRow {
             Text(label)
                 .foregroundStyle(.secondary)
-                .frame(width: 96, alignment: .leading)
+                .fixedSize()
             Text(value)
                 .textSelection(.enabled)
-            Spacer(minLength: 0)
+                .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .font(.callout)
     }
 
     /// EXIF's capture date (pictures), the creation date (videos).

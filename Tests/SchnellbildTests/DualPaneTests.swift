@@ -36,6 +36,12 @@ final class DualPaneTests: XCTestCase {
         m.selectEntry(named: "a.jpg")
         XCTAssertTrue(m.handleKey(.insert, command: false))
         XCTAssertEqual(m.selectedEntry?.name, "b.jpg", "Insert marks and moves on")
+        XCTAssertTrue(m.handleKey(.char("m"), command: false))
+        XCTAssertEqual(m.actionEntries.map(\.name), ["a.jpg", "b.jpg"], "M marks and moves on, as Insert (Mac keyboards have none)")
+        XCTAssertEqual(m.selectedEntry?.name, "c.jpg")
+        XCTAssertFalse(m.handleKey(.char("m"), command: true), "⌘M is the window's (Minimize)")
+        XCTAssertTrue(m.handleKey(.escape, command: false))
+        m.selectEntry(named: "b.jpg")
         m.handleKey(.right, command: false, shift: true)
         XCTAssertEqual(m.actionEntries.map(\.name), ["b.jpg", "c.jpg"], "⇧→ marks the range")
         m.click(m.entries.first { $0.name == "d.jpg" }!, command: false, shift: false)
@@ -173,6 +179,37 @@ final class DualPaneTests: XCTestCase {
         XCTAssertFalse(FileManager.default.fileExists(atPath: rightFolder.appendingPathComponent("a.jpg").path))
     }
 
+    /// ⇧⌘C copies and ⇧⌘M moves, as F5 / F6 (which need fn on a Mac
+    /// keyboard); only in the dual pane, not while typing, and plain ⌘C / ⌘M
+    /// stay the system's (Copy, Minimize).
+    func testShiftCommandCAndMCopyAndMoveToTheOtherPane() async throws {
+        let tree = try TempTree(self)
+        for n in ["left/a.jpg", "left/b.jpg"] { try tree.file(n) }
+        let leftFolder = tree.root.appendingPathComponent("left"), rightFolder = try tree.folder("right")
+        let w = window(FileActionsSpy())
+        await openAndWait(w.left, leftFolder)
+        XCTAssertFalse(w.handleWindowKey(.char("C"), command: true, control: false, shift: true, textEditing: false),
+                       "a single pane: nothing to copy to")
+        w.setDual(true)
+        let right = try XCTUnwrap(w.right)
+        await waitUntil { !right.isLoading }
+        await openAndWait(right, rightFolder)
+        w.left.selectEntry(named: "a.jpg")
+        XCTAssertFalse(w.handleWindowKey(.char("c"), command: true, control: false, shift: false, textEditing: false), "⌘C")
+        XCTAssertFalse(w.handleWindowKey(.char("m"), command: true, control: false, shift: false, textEditing: false), "⌘M")
+        XCTAssertFalse(w.handleWindowKey(.char("C"), command: true, control: false, shift: true, textEditing: true), "not while typing")
+        XCTAssertTrue(w.handleWindowKey(.char("C"), command: true, control: false, shift: true, textEditing: false))
+        await waitUntil { right.isAt(rightFolder) && right.names.contains("a.jpg") }
+        XCTAssertEqual(w.left.names, ["..", "a.jpg", "b.jpg"], "copied: still here")
+        w.left.selectEntry(named: "b.jpg")
+        XCTAssertTrue(w.handleWindowKey(.char("M"), command: true, control: false, shift: true, textEditing: false))
+        await waitUntil { w.left.transfersRunning == 0 }
+        XCTAssertEqual(w.left.names, ["..", "a.jpg"], "moved: gone here")
+        await waitUntil { right.names.contains("b.jpg") }
+        XCTAssertEqual(w.active.lastKeyPress.map { $0.matches(.char("m"), command: true, shift: true) }, true,
+                       "the mini keyboard lights up ⇧⌘M")
+    }
+
     /// A change in one pane shows in the other one when it shows that folder.
     func testTheOtherPaneFollowsChanges() async throws {
         let tree = try TempTree(self)
@@ -222,6 +259,20 @@ final class DualPaneTests: XCTestCase {
         XCTAssertEqual(m.names, ["..", "b.jpg"])
         m.handleKey(.left, command: false, shift: true)   // must not trap
         XCTAssertNotNil(m.selectedEntry)
+    }
+
+    /// Several marked: one prompt, counted, with every name (not a title
+    /// that strings the first names together).
+    func testTheTrashPromptForSeveralNamesThemAll() async throws {
+        let tree = try TempTree(self)
+        for n in ["a.jpg", "b.jpg", "c.jpg", "d.jpg", "e.jpg", "f.jpg"] { try tree.file(n) }
+        let spy = FileActionsSpy()
+        let m = BrowserModel(defaults: makeTestDefaults(), fileActions: spy.actions)
+        await openAndWait(m, tree.root)
+        XCTAssertTrue(m.handleKey(.char("a"), command: true))
+        m.moveSelectionToTrash()
+        XCTAssertEqual(spy.confirmNames, [["a.jpg", "b.jpg", "c.jpg", "d.jpg", "e.jpg", "f.jpg"]])
+        XCTAssertEqual(spy.trashed.count, 6)
     }
 
     /// Nothing moves the folder shown or one around it ("..").

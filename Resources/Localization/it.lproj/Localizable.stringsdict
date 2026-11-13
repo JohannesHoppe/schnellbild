@@ -12,10 +12,48 @@
 			<string>NSStringPluralRuleType</string>
 			<key>NSStringFormatValueTypeKey</key>
 			<string>lld</string>
+			<key>many</key>
+			<string>%lld archivi</string>
 			<key>one</key>
 			<string>%lld archivio</string>
 			<key>other</key>
 			<string>%lld archivi</string>
+		</dict>
+	</dict>
+	<key>%lld bits</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@count@</string>
+		<key>count</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>many</key>
+			<string>%lld bit</string>
+			<key>one</key>
+			<string>%lld bit</string>
+			<key>other</key>
+			<string>%lld bit</string>
+		</dict>
+	</dict>
+	<key>%lld channels</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@count@</string>
+		<key>count</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>many</key>
+			<string>%lld canali</string>
+			<key>one</key>
+			<string>%lld canale</string>
+			<key>other</key>
+			<string>%lld canali</string>
 		</dict>
 	</dict>
 	<key>%lld folders</key>
@@ -88,6 +126,24 @@
 			<string>%lld video</string>
 			<key>other</key>
 			<string>%lld video</string>
+		</dict>
+	</dict>
+	<key>Move %lld items to the Trash?</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@count@</string>
+		<key>count</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>lld</string>
+			<key>many</key>
+			<string>Spostare %lld elementi nel Cestino?</string>
+			<key>one</key>
+			<string>Spostare %lld elemento nel Cestino?</string>
+			<key>other</key>
+			<string>Spostare %lld elementi nel Cestino?</string>
 		</dict>
 	</dict>
 </dict>

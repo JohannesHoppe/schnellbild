@@ -2,7 +2,9 @@
   "name": "Nederlands",
   "privacySlug": "privacy",
   "title": "Schnellbild – een foto- en videoviewer voor macOS waar je niet gek van wordt",
-  "description": "Schnellbild: een snelle, gratis viewer voor foto’s en video’s op macOS. Mappen, miniaturen, het toetsenbord; MKV, WebM en AVI; ZIP, RAR en 7z als mappen; twee panelen om foto’s te sorteren. Geen advertenties, geen tracking, geen account.",
+  "seoTitle": "Schnellbild – gratis foto- en videoviewer voor de Mac",
+  "seoDescription": "Snelle, gratis fotoviewer en videospeler voor de Mac: miniaturen, toetsenbord, MKV, AVI, WebM, ZIP en RAR als mappen. Alternatief voor Phiewer en IINA.",
+  "keywords": "fotoviewer Mac, afbeeldingsviewer macOS, gratis fotoviewer, MKV speler Mac, AVI WebM afspelen, Phiewer alternatief, IINA alternatief, RAR afbeeldingen openen, strips CBZ CBR, diavoorstelling, Schnellbild",
   "navFeatures": "Functies",
   "navSafety": "Veiligheid",
   "language": "Taal",
@@ -91,6 +93,7 @@
   "ctaText": "Gratis, geen account, geen addertjes onder het gras.",
   "footerPrivacy": "Privacy",
   "footerImprint": "Juridische informatie",
+  "footerEula": "Licentieovereenkomst",
   "privacy": {
     "title": "Privacyverklaring",
     "description": "Schnellbild verzamelt geen persoonsgegevens: geen account, geen analytics, geen tracking, geen netwerktoegang.",

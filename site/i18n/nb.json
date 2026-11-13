@@ -2,7 +2,9 @@
   "name": "Norsk",
   "privacySlug": "privacy",
   "title": "Schnellbild – en bilde- og videoviser for macOS som rett og slett ikke suger",
-  "description": "Schnellbild: en rask, gratis bilde- og videoviser for macOS. Mapper, miniatyrer, tastaturet; MKV, WebM og AVI; ZIP, RAR og 7z som mapper; to paneler for å sortere bilder. Ingen reklame, ingen sporing, ingen konto.",
+  "seoTitle": "Schnellbild – gratis bilde- og videoviser for Mac",
+  "seoDescription": "Rask, gratis bildeviser og videospiller for Mac: miniatyrer, bla med tastaturet, MKV, AVI og WebM, ZIP og RAR som mapper. Alternativ til Phiewer og IINA.",
+  "keywords": "bildeviser Mac, fotoviser macOS, gratis bildeviser, MKV-spiller Mac, spill av AVI WebM, Phiewer-alternativ, IINA-alternativ, åpne bilder i RAR, tegneserier CBZ CBR, lysbildefremvisning, Schnellbild",
   "navFeatures": "Funksjoner",
   "navSafety": "Sikkerhet",
   "language": "Språk",
@@ -91,6 +93,7 @@
   "ctaText": "Gratis, ingen konto, ingen forpliktelser.",
   "footerPrivacy": "Personvern",
   "footerImprint": "Juridisk informasjon",
+  "footerEula": "Lisensavtale",
   "privacy": {
     "title": "Personvernerklæring",
     "description": "Schnellbild samler ikke inn personopplysninger: ingen konto, ingen analyse, ingen sporing, ingen nettverkstilgang.",
