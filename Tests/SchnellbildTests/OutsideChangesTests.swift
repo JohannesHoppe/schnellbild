@@ -15,13 +15,15 @@ final class OutsideChangesTests: XCTestCase {
         m.selectEntry(named: "b.jpg")
         m.click(try XCTUnwrap(m.entries.first { $0.name == "c.jpg" }), command: true, shift: false)
         let marked = m.marked
+        let selected = m.selectedEntry?.name   // the ⌘-click moves the cursor along
 
         try tree.file("d.jpg")
         try FileManager.default.removeItem(at: tree.root.appendingPathComponent("a.jpg"))
         try tree.file("notes.txt")
         m.relist()   // the folder's date changed: read again
         await waitUntil { m.names == ["..", "b.jpg", "c.jpg", "d.jpg"] }
-        XCTAssertEqual(m.selectedEntry?.name, "b.jpg")
+        XCTAssertNotNil(selected)
+        XCTAssertEqual(m.selectedEntry?.name, selected)
         XCTAssertEqual(m.marked, marked)
         XCTAssertEqual(m.otherFiles.map(\.name), ["notes.txt"])
         XCTAssertFalse(m.isLoading, "in place, not loaded anew")
