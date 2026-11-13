@@ -232,8 +232,6 @@
 /* VoiceOver: the sorted column of the list */
 "ascending" = "artan";
 "descending" = "azalan";
-"selected" = "seçili";
-"not selected" = "seçili değil";
 /* About window: the libraries' licenses */
 "© Tim Kientzle and the libarchive contributors. BSD 2-clause license." = "© Tim Kientzle ve libarchive katkıda bulunanları. 2 maddeli BSD lisansı.";
 "© Alexander Roshal. The UnRAR license, in its own words:" = "© Alexander Roshal. UnRAR lisansı, orijinal metniyle:";
@@ -314,3 +312,16 @@
 "Forget Folder Access" = "Klasör Erişimini Unut";
 "Each folder asks for your permission again." = "Her klasör yeniden izninizi isteyecek.";
 "© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later. Built from its source without VLC's modules under the GPL; the build script and its changes are in Schnellbild's repository (github.com/JohannesHoppe/schnellbild)." = "© VideoLAN ve VLC yazarları. GNU Lesser General Public License 2.1 veya üstü. VLC'nin GPL altındaki modülleri olmadan kaynak kodundan derlendi; derleme betiği ve değişiklikleri Schnellbild deposunda (github.com/JohannesHoppe/schnellbild).";
+"marked" = "işaretli";
+"Drive" = "Disk";
+"Folder without pictures or videos" = "Resim veya video içermeyen klasör";
+"Archive without pictures or videos" = "Resim veya video içermeyen arşiv";
+"in %@" = "konum: %@";
+"Played" = "Oynatılan";
+"Volume" = "Ses düzeyi";
+"%@, zoom %@" = "%@, yakınlaştırma %@";
+"This picture can't be shown" = "Bu resim gösterilemiyor";
+"The file can't be read." = "Dosya okunamıyor.";
+"Its format isn't known." = "Biçimi bilinmiyor.";
+"The file ends too early." = "Dosya erken bitiyor.";
+"Its data can't be decoded." = "Verileri çözülemiyor.";

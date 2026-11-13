@@ -232,8 +232,6 @@
 /* VoiceOver: the sorted column of the list */
 "ascending" = "stigende";
 "descending" = "faldende";
-"selected" = "valgt";
-"not selected" = "ikke valgt";
 /* About window: the libraries' licenses */
 "© Tim Kientzle and the libarchive contributors. BSD 2-clause license." = "© Tim Kientzle og libarchive-bidragyderne. BSD-licens med 2 klausuler.";
 "© Alexander Roshal. The UnRAR license, in its own words:" = "© Alexander Roshal. UnRAR-licensen i sin egen ordlyd:";
@@ -314,3 +312,16 @@
 "Forget Folder Access" = "Glem mappeadgang";
 "Each folder asks for your permission again." = "Hver mappe beder om din tilladelse igen.";
 "© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later. Built from its source without VLC's modules under the GPL; the build script and its changes are in Schnellbild's repository (github.com/JohannesHoppe/schnellbild)." = "© VideoLAN og VLC’s forfattere. GNU Lesser General Public License 2.1 eller nyere. Bygget fra kildekoden uden VLC’s moduler under GPL; byggescriptet og dets ændringer ligger i Schnellbilds repository (github.com/JohannesHoppe/schnellbild).";
+"marked" = "markeret";
+"Drive" = "Drev";
+"Folder without pictures or videos" = "Mappe uden billeder eller videoer";
+"Archive without pictures or videos" = "Arkiv uden billeder eller videoer";
+"in %@" = "i %@";
+"Played" = "Afspillet";
+"Volume" = "Lydstyrke";
+"%@, zoom %@" = "%@, zoom %@";
+"This picture can't be shown" = "Billedet kan ikke vises";
+"The file can't be read." = "Filen kan ikke læses.";
+"Its format isn't known." = "Formatet er ukendt.";
+"The file ends too early." = "Filen slutter for tidligt.";
+"Its data can't be decoded." = "Dataene kan ikke afkodes.";

@@ -232,8 +232,6 @@
 /* VoiceOver: the sorted column of the list */
 "ascending" = "croissant";
 "descending" = "décroissant";
-"selected" = "sélectionné";
-"not selected" = "non sélectionné";
 /* About window: the libraries' licenses */
 "© Tim Kientzle and the libarchive contributors. BSD 2-clause license." = "© Tim Kientzle et les contributeurs de libarchive. Licence BSD à 2 clauses.";
 "© Alexander Roshal. The UnRAR license, in its own words:" = "© Alexander Roshal. La licence UnRAR, dans son texte original :";
@@ -314,3 +312,16 @@
 "Forget Folder Access" = "Oublier l’accès aux dossiers";
 "Each folder asks for your permission again." = "Chaque dossier demandera à nouveau votre autorisation.";
 "© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later. Built from its source without VLC's modules under the GPL; the build script and its changes are in Schnellbild's repository (github.com/JohannesHoppe/schnellbild)." = "© VideoLAN et les auteurs de VLC. GNU Lesser General Public License 2.1 ou ultérieure. Compilé depuis ses sources sans les modules de VLC sous GPL ; le script de compilation et ses modifications se trouvent dans le dépôt de Schnellbild (github.com/JohannesHoppe/schnellbild).";
+"marked" = "marqué";
+"Drive" = "Disque";
+"Folder without pictures or videos" = "Dossier sans images ni vidéos";
+"Archive without pictures or videos" = "Archive sans images ni vidéos";
+"in %@" = "dans %@";
+"Played" = "Lu";
+"Volume" = "Volume";
+"%@, zoom %@" = "%@, zoom %@";
+"This picture can't be shown" = "Impossible d’afficher cette image";
+"The file can't be read." = "Impossible de lire le fichier.";
+"Its format isn't known." = "Son format est inconnu.";
+"The file ends too early." = "Le fichier se termine trop tôt.";
+"Its data can't be decoded." = "Ses données ne peuvent pas être décodées.";

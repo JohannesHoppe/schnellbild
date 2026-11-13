@@ -138,7 +138,8 @@ private struct MiniKeyButton: View {
     @EnvironmentObject var model: BrowserModel
     @EnvironmentObject var window: WindowModel
     @State private var lit = false
-    /// How often it acted (UI tests read it: lighting up is too short to catch).
+    /// How often it acted (UI tests read it under `--ui-testing`: lighting
+    /// up is too short to catch).
     @State private var presses = 0
 
     var body: some View {
@@ -168,7 +169,7 @@ private struct MiniKeyButton: View {
         }
         .buttonStyle(.plain)
         .accessibilityIdentifier("key.\(key.id)")
-        .accessibilityValue(presses > 0 ? "pressed \(presses)" : "")
+        .accessibilityValue(VideoDetailView.uiTesting && presses > 0 ? "pressed \(presses)" : "")
         .onChange(of: model.lastKeyPress) { _, press in
             // Just now: a press stored in the other pane (now active) is old
             guard let press, Date().timeIntervalSince(press.at) < 0.5,

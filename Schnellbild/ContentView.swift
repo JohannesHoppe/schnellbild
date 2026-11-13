@@ -891,6 +891,7 @@ struct AdjustmentsView: View {
                     look[keyPath: key] = value
                     model.adjust(look)
                 }), in: range)
+            .accessibilityLabel(Text(title))
             .accessibilityIdentifier("slider.\(id)")
             .accessibilityValue(Self.format(model.look[keyPath: key]))
         }
@@ -944,8 +945,10 @@ struct VideoProgressBar: View {
                 .frame(width: 200, height: 3)   // not the badge's whole width
                 .accessibilityElement(children: .ignore)
                 .accessibilityIdentifier("videoProgress")
-                .accessibilityLabel("\(Int((progress * 100).rounded())) %")
-                .accessibilityValue("\(Int((progress * 100).rounded())) %")
+                .accessibilityLabel("Played")
+                // The UI tests read the number as "42 %" in every language
+                .accessibilityValue(VideoDetailView.uiTesting ? "\(Int((progress * 100).rounded())) %"
+                                    : min(max(progress, 0), 1).formatted(.percent.precision(.fractionLength(0))))
                 // The time left, once the length is known
                 if let length = model.activePlayer?.lengthSeconds, model.activePlayer?.progress != nil {
                     Text(verbatim: "−" + Self.clock(length * (1 - min(max(progress, 0), 1))))
@@ -1044,7 +1047,10 @@ struct VolumeDisplay: View {
                 .transition(.opacity)
                 .accessibilityElement(children: .ignore)
                 .accessibilityIdentifier("volumeDisplay")
-                .accessibilityLabel("volume \(Int((model.volume * 100).rounded())) %")
+                .accessibilityLabel("Volume")
+                // The UI tests read "volume 80 %" in every language
+                .accessibilityValue(VideoDetailView.uiTesting ? "volume \(Int((model.volume * 100).rounded())) %"
+                                    : model.volume.formatted(.percent.precision(.fractionLength(0))))
             }
         }
         .animation(.easeOut(duration: 0.15), value: shown)
@@ -1174,7 +1180,10 @@ private struct SearchModePicker: View {
         .help(model.searchMode == .ignoringCase ? "Ignore case"
               : model.searchMode == .matchingCase ? "Match case" : "Regular expression")
         .accessibilityLabel("Search mode")
-        .accessibilityValue(model.searchMode.rawValue)
+        // The UI tests read the mode's name
+        .accessibilityValue(VideoDetailView.uiTesting ? model.searchMode.rawValue
+                            : model.searchMode == .ignoringCase ? String(localized: "Ignore case")
+                            : model.searchMode == .matchingCase ? String(localized: "Match case") : String(localized: "Regular expression"))
         .accessibilityIdentifier("searchMode")
     }
 }

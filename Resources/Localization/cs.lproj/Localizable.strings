@@ -232,8 +232,6 @@
 /* VoiceOver: the sorted column of the list */
 "ascending" = "vzestupně";
 "descending" = "sestupně";
-"selected" = "vybráno";
-"not selected" = "nevybráno";
 /* About window: the libraries' licenses */
 "© Tim Kientzle and the libarchive contributors. BSD 2-clause license." = "© Tim Kientzle a přispěvatelé libarchive. Licence BSD se 2 klauzulemi.";
 "© Alexander Roshal. The UnRAR license, in its own words:" = "© Alexander Roshal. Licence UnRAR v původním znění:";
@@ -314,3 +312,16 @@
 "Forget Folder Access" = "Zapomenout přístup ke složkám";
 "Each folder asks for your permission again." = "Každá složka znovu požádá o tvé svolení.";
 "© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later. Built from its source without VLC's modules under the GPL; the build script and its changes are in Schnellbild's repository (github.com/JohannesHoppe/schnellbild)." = "© VideoLAN a autoři VLC. GNU Lesser General Public License 2.1 nebo novější. Sestaveno ze zdrojového kódu bez modulů VLC pod GPL; sestavovací skript a jeho změny jsou v repozitáři Schnellbild (github.com/JohannesHoppe/schnellbild).";
+"marked" = "označeno";
+"Drive" = "Disk";
+"Folder without pictures or videos" = "Složka bez obrázků a videí";
+"Archive without pictures or videos" = "Archiv bez obrázků a videí";
+"in %@" = "v %@";
+"Played" = "Přehráno";
+"Volume" = "Hlasitost";
+"%@, zoom %@" = "%@, zvětšení %@";
+"This picture can't be shown" = "Tento obrázek nelze zobrazit";
+"The file can't be read." = "Soubor nelze přečíst.";
+"Its format isn't known." = "Jeho formát není znám.";
+"The file ends too early." = "Soubor končí předčasně.";
+"Its data can't be decoded." = "Jeho data nelze dekódovat.";

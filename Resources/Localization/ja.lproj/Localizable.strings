@@ -232,8 +232,6 @@
 /* VoiceOver: the sorted column of the list */
 "ascending" = "昇順";
 "descending" = "降順";
-"selected" = "選択済み";
-"not selected" = "未選択";
 /* About window: the libraries' licenses */
 "© Tim Kientzle and the libarchive contributors. BSD 2-clause license." = "© Tim Kientzle および libarchive の貢献者。2 条項 BSD ライセンス。";
 "© Alexander Roshal. The UnRAR license, in its own words:" = "© Alexander Roshal。UnRAR ライセンスの原文:";
@@ -314,3 +312,16 @@
 "Forget Folder Access" = "フォルダへのアクセスを消去";
 "Each folder asks for your permission again." = "各フォルダで再び許可を求めます。";
 "© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later. Built from its source without VLC's modules under the GPL; the build script and its changes are in Schnellbild's repository (github.com/JohannesHoppe/schnellbild)." = "© VideoLANおよびVLCの作者。GNU Lesser General Public License 2.1以降。GPLのVLCモジュールを含めずにソースコードからビルド。ビルドスクリプトと変更点はSchnellbildのリポジトリにあります（github.com/JohannesHoppe/schnellbild）。";
+"marked" = "マーク済み";
+"Drive" = "ドライブ";
+"Folder without pictures or videos" = "画像やビデオのないフォルダ";
+"Archive without pictures or videos" = "画像やビデオのないアーカイブ";
+"in %@" = "場所：%@";
+"Played" = "再生済み";
+"Volume" = "音量";
+"%@, zoom %@" = "%@、拡大率 %@";
+"This picture can't be shown" = "この画像は表示できません";
+"The file can't be read." = "ファイルを読み込めません。";
+"Its format isn't known." = "形式が不明です。";
+"The file ends too early." = "ファイルが途中で終わっています。";
+"Its data can't be decoded." = "データをデコードできません。";

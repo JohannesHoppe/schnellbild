@@ -232,8 +232,6 @@
 /* VoiceOver: the sorted column of the list */
 "ascending" = "nouseva";
 "descending" = "laskeva";
-"selected" = "valittu";
-"not selected" = "ei valittu";
 /* About window: the libraries' licenses */
 "© Tim Kientzle and the libarchive contributors. BSD 2-clause license." = "© Tim Kientzle ja libarchiven tekijät. Kahden lausekkeen BSD-lisenssi.";
 "© Alexander Roshal. The UnRAR license, in its own words:" = "© Alexander Roshal. UnRAR-lisenssi alkuperäisessä muodossaan:";
@@ -314,3 +312,16 @@
 "Forget Folder Access" = "Unohda kansioiden käyttö";
 "Each folder asks for your permission again." = "Jokainen kansio kysyy lupaasi uudelleen.";
 "© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later. Built from its source without VLC's modules under the GPL; the build script and its changes are in Schnellbild's repository (github.com/JohannesHoppe/schnellbild)." = "© VideoLAN ja VLC:n tekijät. GNU Lesser General Public License 2.1 tai uudempi. Koottu lähdekoodista ilman VLC:n GPL-moduuleja; koontiskripti ja sen muutokset ovat Schnellbildin repositoriossa (github.com/JohannesHoppe/schnellbild).";
+"marked" = "merkitty";
+"Drive" = "Levy";
+"Folder without pictures or videos" = "Kansio ilman kuvia tai videoita";
+"Archive without pictures or videos" = "Arkisto ilman kuvia tai videoita";
+"in %@" = "kohteessa %@";
+"Played" = "Toistettu";
+"Volume" = "Äänenvoimakkuus";
+"%@, zoom %@" = "%@, zoomaus %@";
+"This picture can't be shown" = "Tätä kuvaa ei voi näyttää";
+"The file can't be read." = "Tiedostoa ei voi lukea.";
+"Its format isn't known." = "Sen muoto on tuntematon.";
+"The file ends too early." = "Tiedosto päättyy liian aikaisin.";
+"Its data can't be decoded." = "Sen tietoja ei voi purkaa.";

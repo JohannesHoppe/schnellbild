@@ -232,8 +232,6 @@
 /* VoiceOver: the sorted column of the list */
 "ascending" = "오름차순";
 "descending" = "내림차순";
-"selected" = "선택됨";
-"not selected" = "선택 안 됨";
 /* About window: the libraries' licenses */
 "© Tim Kientzle and the libarchive contributors. BSD 2-clause license." = "© Tim Kientzle 및 libarchive 기여자. 2조항 BSD 라이선스.";
 "© Alexander Roshal. The UnRAR license, in its own words:" = "© Alexander Roshal. UnRAR 라이선스 원문:";
@@ -314,3 +312,16 @@
 "Forget Folder Access" = "폴더 접근 지우기";
 "Each folder asks for your permission again." = "각 폴더에서 다시 권한을 요청합니다.";
 "© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later. Built from its source without VLC's modules under the GPL; the build script and its changes are in Schnellbild's repository (github.com/JohannesHoppe/schnellbild)." = "© VideoLAN 및 VLC 작성자. GNU Lesser General Public License 2.1 이상. GPL로 배포되는 VLC 모듈을 제외하고 소스 코드로 빌드했습니다. 빌드 스크립트와 변경 사항은 Schnellbild 저장소(github.com/JohannesHoppe/schnellbild)에 있습니다.";
+"marked" = "표시됨";
+"Drive" = "드라이브";
+"Folder without pictures or videos" = "이미지나 비디오가 없는 폴더";
+"Archive without pictures or videos" = "이미지나 비디오가 없는 아카이브";
+"in %@" = "위치: %@";
+"Played" = "재생됨";
+"Volume" = "음량";
+"%@, zoom %@" = "%@, 확대/축소 %@";
+"This picture can't be shown" = "이 이미지를 표시할 수 없습니다";
+"The file can't be read." = "파일을 읽을 수 없습니다.";
+"Its format isn't known." = "형식을 알 수 없습니다.";
+"The file ends too early." = "파일이 너무 일찍 끝납니다.";
+"Its data can't be decoded." = "데이터를 디코딩할 수 없습니다.";

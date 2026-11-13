@@ -232,8 +232,6 @@
 /* VoiceOver: the sorted column of the list */
 "ascending" = "升序";
 "descending" = "降序";
-"selected" = "已选择";
-"not selected" = "未选择";
 /* About window: the libraries' licenses */
 "© Tim Kientzle and the libarchive contributors. BSD 2-clause license." = "© Tim Kientzle 及 libarchive 贡献者。2 条款 BSD 许可证。";
 "© Alexander Roshal. The UnRAR license, in its own words:" = "© Alexander Roshal。UnRAR 许可证原文：";
@@ -314,3 +312,16 @@
 "Forget Folder Access" = "忘记文件夹访问";
 "Each folder asks for your permission again." = "每个文件夹都会再次请求你的允许。";
 "© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later. Built from its source without VLC's modules under the GPL; the build script and its changes are in Schnellbild's repository (github.com/JohannesHoppe/schnellbild)." = "© VideoLAN 和 VLC 作者。GNU Lesser General Public License 2.1 或更高版本。从源代码构建，不含 GPL 授权的 VLC 模块；构建脚本及其更改位于 Schnellbild 的代码仓库（github.com/JohannesHoppe/schnellbild）。";
+"marked" = "已标记";
+"Drive" = "磁盘";
+"Folder without pictures or videos" = "不含图像或视频的文件夹";
+"Archive without pictures or videos" = "不含图像或视频的归档";
+"in %@" = "位于 %@";
+"Played" = "已播放";
+"Volume" = "音量";
+"%@, zoom %@" = "%@，缩放 %@";
+"This picture can't be shown" = "无法显示此图像";
+"The file can't be read." = "无法读取文件。";
+"Its format isn't known." = "格式未知。";
+"The file ends too early." = "文件提前结束。";
+"Its data can't be decoded." = "无法解码其数据。";

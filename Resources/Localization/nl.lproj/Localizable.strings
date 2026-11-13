@@ -232,8 +232,6 @@
 /* VoiceOver: the sorted column of the list */
 "ascending" = "oplopend";
 "descending" = "aflopend";
-"selected" = "geselecteerd";
-"not selected" = "niet geselecteerd";
 /* About window: the libraries' licenses */
 "© Tim Kientzle and the libarchive contributors. BSD 2-clause license." = "© Tim Kientzle en de bijdragers aan libarchive. BSD-licentie met 2 clausules.";
 "© Alexander Roshal. The UnRAR license, in its own words:" = "© Alexander Roshal. De UnRAR-licentie, letterlijk:";
@@ -314,3 +312,16 @@
 "Forget Folder Access" = "Maptoegang vergeten";
 "Each folder asks for your permission again." = "Elke map vraagt dan opnieuw om je toestemming.";
 "© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later. Built from its source without VLC's modules under the GPL; the build script and its changes are in Schnellbild's repository (github.com/JohannesHoppe/schnellbild)." = "© VideoLAN en de VLC-auteurs. GNU Lesser General Public License 2.1 of later. Gebouwd vanuit de broncode zonder de VLC-modules onder de GPL; het buildscript en de wijzigingen staan in de repository van Schnellbild (github.com/JohannesHoppe/schnellbild).";
+"marked" = "gemarkeerd";
+"Drive" = "Schijf";
+"Folder without pictures or videos" = "Map zonder afbeeldingen of video’s";
+"Archive without pictures or videos" = "Archief zonder afbeeldingen of video’s";
+"in %@" = "in %@";
+"Played" = "Afgespeeld";
+"Volume" = "Volume";
+"%@, zoom %@" = "%@, zoom %@";
+"This picture can't be shown" = "Deze afbeelding kan niet worden getoond";
+"The file can't be read." = "Het bestand kan niet worden gelezen.";
+"Its format isn't known." = "De indeling is onbekend.";
+"The file ends too early." = "Het bestand houdt te vroeg op.";
+"Its data can't be decoded." = "De gegevens kunnen niet worden gedecodeerd.";
