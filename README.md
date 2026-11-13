@@ -431,4 +431,4 @@ Building from source, tests and releases: [BUILDING.md](BUILDING.md).
 
 [MIT](LICENSE) © 2026 HAUS HOPPE - ITS (Johannes Hoppe)
 
-The MIT License covers Schnellbild's own code. The app also contains VLCKit (GNU LGPL 2.1 or later; built by us without VLC's GPL modules), UnRAR (UnRAR license) and uses the libarchive built into macOS (BSD); each keeps its own license. Details, the source of VLCKit and the license texts: [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) and the app's About window.
+The MIT License covers Schnellbild's own code. The app also contains VLCKit (GNU LGPL 2.1 or later; built by us without VLC's GPL modules, with FFmpeg and other libraries inside under their own licenses), UnRAR (UnRAR license) and uses the libarchive built into macOS (BSD); each keeps its own license. Details, the source of VLCKit and the license texts: [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) and the app's About window.
