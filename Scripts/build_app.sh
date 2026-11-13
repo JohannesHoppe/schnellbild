@@ -50,12 +50,30 @@ ditto "$BINDIR/VLCKit.framework" "$APP/Contents/Frameworks/VLCKit.framework"
 # Apple silicon only, like the app: VideoLAN's build also carries Intel code (45 MB)
 VLCBIN="$APP/Contents/Frameworks/VLCKit.framework/Versions/A/VLCKit"
 if lipo -archs "$VLCBIN" | grep -q x86_64; then lipo "$VLCBIN" -thin arm64 -output "$VLCBIN.arm64" && mv "$VLCBIN.arm64" "$VLCBIN"; fi
+# Headers and module map are for compiling against it, not for running it
+VLCFW="$APP/Contents/Frameworks/VLCKit.framework"
+rm -rf "$VLCFW/Headers" "$VLCFW/PrivateHeaders" "$VLCFW/Modules" \
+  "$VLCFW/Versions/A/Headers" "$VLCFW/Versions/A/PrivateHeaders" "$VLCFW/Versions/A/Modules"
+# VLCKit's own privacy manifest: the reasons behind the system calls in its binary
+cp "$ROOT/Sandbox/VLCKit.xcprivacy" "$VLCFW/Versions/A/Resources/PrivacyInfo.xcprivacy"
 install_name_tool -add_rpath "@executable_path/../Frameworks" "$APP/Contents/MacOS/Schnellbild" 2>/dev/null || true
 cp "$RES/AppIcon.icns" "$APP/Contents/Resources/AppIcon.icns"
 # The UI's translations (en.lproj, de.lproj, …), found through Bundle.main
 cp -R "$RES/Localization/"*.lproj "$APP/Contents/Resources/"
 # The libraries' license texts (the About window points here)
 cp -R "$RES/Licenses" "$APP/Contents/Resources/Licenses"
+# The licenses of the libraries built into VLCKit (FFmpeg and VLC's other
+# contribs), published next to the framework by Scripts/build_vlckit_lgpl.sh
+# and vendored as Vendor/VLCKit-licenses (a folder of texts or one file). A
+# VLCKit without it (an older build, SCHNELLBILD_OWN_VLCKIT) adds nothing here.
+VLC_LICENSES="$ROOT/Vendor/VLCKit-licenses"
+if [ -d "$VLC_LICENSES" ]; then
+  ditto "$VLC_LICENSES" "$APP/Contents/Resources/Licenses/VLCKit-libraries"
+elif [ -f "$VLC_LICENSES" ]; then
+  cp "$VLC_LICENSES" "$APP/Contents/Resources/Licenses/VLCKit-libraries.txt"
+else
+  echo "   (no Vendor/VLCKit-licenses: the libraries inside VLCKit get no license texts of their own)"
+fi
 # A short MKV: Settings plays it through macOS to tell whether the media extension is on
 cp "$RES/FormatsCheck.mkv" "$APP/Contents/Resources/FormatsCheck.mkv"
 cp "$RES/Info.plist" "$APP/Contents/Info.plist"
@@ -74,6 +92,8 @@ cp "$ROOT/ThumbnailExtension/Info.plist" "$APPEX/Contents/Info.plist"
 for key in CFBundleShortVersionString CFBundleVersion; do
   /usr/libexec/PlistBuddy -c "Set :$key $(/usr/libexec/PlistBuddy -c "Print :$key" "$RES/Info.plist")" "$APPEX/Contents/Info.plist"
 done
+mkdir -p "$APPEX/Contents/Resources"
+cp "$ROOT/Sandbox/Thumbnails.xcprivacy" "$APPEX/Contents/Resources/PrivacyInfo.xcprivacy"
 
 echo "==> Media extension (Matroska format reader for macOS's own pipeline)"
 FORMATS="$APP/Contents/Extensions/SchnellbildFormats.appex"
@@ -87,6 +107,47 @@ cp "$ROOT/FormatReader/Info.plist" "$FORMATS/Contents/Info.plist"
 for key in CFBundleShortVersionString CFBundleVersion; do
   /usr/libexec/PlistBuddy -c "Set :$key $(/usr/libexec/PlistBuddy -c "Print :$key" "$RES/Info.plist")" "$FORMATS/Contents/Info.plist"
 done
+mkdir -p "$FORMATS/Contents/Resources"
+cp "$ROOT/Sandbox/Formats.xcprivacy" "$FORMATS/Contents/Resources/PrivacyInfo.xcprivacy"
+
+# What Xcode writes into every bundle it builds: App Store Connect reads the
+# SDK and Xcode the app was built with from these keys (DTXcode "1620" is
+# Xcode 16.2, "2601" Xcode 26.0.1). They need a full Xcode; with only the
+# Command Line Tools they are left out, which only the App Store refuses.
+echo "==> Toolchain keys (Xcode, SDK, build machine)"
+if xcode_version="$(xcodebuild -version 2>/dev/null)"; then
+  xcode="$(printf '%s\n' "$xcode_version" | awk '/^Xcode /{print $2}')"
+  IFS=. read -r major minor patch <<<"$xcode"
+  sdk="$(xcrun --sdk macosx --show-sdk-version)"
+  sdk_build="$(xcrun --sdk macosx --show-sdk-build-version)"
+  TOOLCHAIN=(
+    "DTXcode $(printf '%02d%d%d' "$major" "${minor:-0}" "${patch:-0}")"
+    "DTXcodeBuild $(printf '%s\n' "$xcode_version" | awk '/^Build version /{print $3}')"
+    "DTSDKName macosx$sdk"
+    "DTSDKBuild $sdk_build"
+    "DTPlatformName macosx"
+    "DTPlatformVersion $(xcrun --sdk macosx --show-sdk-platform-version)"
+    "DTPlatformBuild $sdk_build"
+    "DTCompiler com.apple.compilers.llvm.clang.1_0"
+    "BuildMachineOSBuild $(sw_vers -buildVersion)"
+  )
+  for plist in "$APP/Contents/Info.plist" "$APPEX/Contents/Info.plist" "$FORMATS/Contents/Info.plist"; do
+    for entry in "${TOOLCHAIN[@]}"; do
+      read -r key value <<<"$entry"
+      [ -n "$value" ] || { echo "!! no value for $key" >&2; exit 1; }
+      /usr/libexec/PlistBuddy -c "Delete :$key" "$plist" 2>/dev/null || true
+      /usr/libexec/PlistBuddy -c "Add :$key string $value" "$plist"
+    done
+    /usr/libexec/PlistBuddy -c "Delete :CFBundleSupportedPlatforms" "$plist" 2>/dev/null || true
+    /usr/libexec/PlistBuddy -c "Add :CFBundleSupportedPlatforms array" -c "Add :CFBundleSupportedPlatforms:0 string MacOSX" "$plist"
+  done
+  echo "   Xcode $xcode, macOS SDK $sdk ($sdk_build), on macOS $(sw_vers -buildVersion)"
+elif [ -n "${APPSTORE_SIGN_IDENTITY:-}" ]; then
+  echo "!! The App Store build needs a full Xcode (xcodebuild -version fails): App Store Connect checks the Xcode and SDK keys" >&2
+  exit 1
+else
+  echo "   (no full Xcode: the Info.plists go without the Xcode and SDK keys, which only the App Store needs)"
+fi
 
 # VLCKit exports the libraries VLC carries (libarchive, zlib, FFmpeg …) along
 # with its own API, and the linker binds a name to the first library that has

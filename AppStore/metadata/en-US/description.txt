@@ -1,8 +1,5 @@
 Schnellbild shows pictures and videos without importing anything: open a folder, see thumbnails, look at one picture large, page through with the keyboard. It stays quick on big folders and network shares alike.
 
-THIS VERSION SUPPORTS THE PROJECT
-Schnellbild is open source and free to download on GitHub. This is the same app. Buying it here supports its development. Thank you!
-
 PICTURES
 • JPEG, HEIC, AVIF, JPEG XL, PNG, GIF, WebP, TIFF, PSD, OpenEXR, SVG, PDF and RAW photos of the cameras macOS knows
 • Grid, list and full view, slideshow through all subfolders
@@ -17,8 +14,8 @@ ARCHIVES AS FOLDERS
 • ZIP, RAR and 7z open like folders, comic books (CBZ, CBR) included, also with passwords and in parts
 • Nothing is unpacked to disk; videos play straight from the archive
 
-SORT LIKE IN NORTON COMMANDER
-• Two panes side by side: mark, copy with F5, move with F6
+SORT WITH TWO PANES
+• Two panes side by side with the F-keys of a classic file manager: mark, copy with F5, move with F6
 • Rename, new folder, trash, bookmarks, undo
 • Search folder and file names through all subfolders
 

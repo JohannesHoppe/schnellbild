@@ -27,6 +27,7 @@ A profile contains the certificate it was made for. **A new certificate always n
 - The installer certificate is called "3rd Party Mac Developer Installer: …" in the keychain, not "Mac Installer Distribution".
 - Don't double-click profiles; they are only uploaded.
 - The script checks every file by its content (certificate name and team, App ID, profile made for that certificate) and uploads nothing if one is wrong.
+- `Scripts/sign_app.sh` checks each profile again before it signs: its App ID is the bundle's, its team and the entitlements only a profile grants (App ID, team, `com.apple.developer.mediaextension.formatreader`) match what the part is signed with, and it hasn't run out. A format reader profile whose App ID lacks the Media Extension capability fails there ("its profile allows (not in the profile)"): turn the capability on for `art.haushoppe.schnellbild.formatreader` under Identifiers, then make the profile again.
 
 ## Making the Mac App Store files again (before 2027-11-12)
 
