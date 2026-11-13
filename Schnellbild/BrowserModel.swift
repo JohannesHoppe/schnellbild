@@ -2084,7 +2084,7 @@ final class BrowserModel: ObservableObject {
             }
             return nil
         case .video:
-            let asset = AVURLAsset(url: url)
+            let asset = AVURLAsset(url: url, options: [AVURLAssetReferenceRestrictionsKey: AVAssetReferenceRestrictions.forbidAll.rawValue])
             guard let item = try? await asset.load(.creationDate) else { return nil }
             return try? await item.load(.dateValue)
         default:
