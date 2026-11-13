@@ -13,7 +13,7 @@ never block the main thread.
 
 - Repo: <https://github.com/JohannesHoppe/schnellbild> — **public, MIT**,
   © 2026 HAUS HOPPE - ITS (Johannes Hoppe).
-- Bundle id: `art.haushoppe.schnellbild`. Current version: **0.9.0**.
+- Bundle id: `art.haushoppe.schnellbild`. Current version: **0.10.0**.
 - Everything (code, comments, UI source strings, docs, commits) is in **English**;
   the UI is translated (see Localization). The user converses in **German**.
 
@@ -349,7 +349,7 @@ Where the leads came from (QuickLook Video by Marginal, which moved to Media Ext
 
 ## Current state & open threads (handover)
 
-Version 0.9.0: folders + drag&drop, subfolder nav (Norton `..`),
+Version 0.10.0: folders + drag&drop, subfolder nav (Norton `..`),
 keyboard-first (NSEvent monitor, F1 help), zoom/pan/pinch/rotate (view-only), video (AVKit + VLCKit fallback),
 animated GIFs, slideshow, inspector, sort, reveal/open/trash, light/dark,
 last-folder restore, always-visible recursive search over folder + file
