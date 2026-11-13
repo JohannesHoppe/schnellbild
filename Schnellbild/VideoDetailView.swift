@@ -110,7 +110,9 @@ struct VideoDetailView: View {
                 archiveStream = stream
             }
             let loader = stream.map { ArchiveResourceLoader(stream: $0, fileName: url.lastPathComponent) }
-            let asset = loader?.makeAsset(fileName: url.lastPathComponent) ?? AVURLAsset(url: url)
+            // A reference movie names other files or addresses to play; it plays nothing here
+            let asset = loader?.makeAsset(fileName: url.lastPathComponent)
+                ?? AVURLAsset(url: url, options: [AVURLAssetReferenceRestrictionsKey: AVAssetReferenceRestrictions.forbidAll.rawValue])
             let playable = (try? await asset.load(.isPlayable)) ?? false
             guard !Task.isCancelled else { stream?.close(); return }   // the user moved on to another file
             checking = false

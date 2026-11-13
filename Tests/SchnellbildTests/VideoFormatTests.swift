@@ -92,4 +92,15 @@ final class VideoFormatTests: XCTestCase {
             XCTAssertNil(frame, "a playlist named .\(ext) was followed")
         }
     }
+
+    /// Options planted in the preferences VLCKit reads ("VLCParams") give
+    /// way to VLCKit's own.
+    func testPlantedLibraryOptionsGiveWayToVLCKitsOwn() throws {
+        let name = "schnellbild.tests.\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: name))
+        defer { defaults.removePersistentDomain(forName: name) }
+        defaults.set(["--sout=#http{dst=:8080/x}"], forKey: "VLCParams")
+        VLCSafety.forgetInjectedOptions(in: defaults)
+        XCTAssertEqual(defaults.stringArray(forKey: "VLCParams"), VLCSafety.libraryOptions)
+    }
 }
