@@ -216,20 +216,9 @@ final class VideoUITests: SchnellbildUITestCase {
         eventually("the tracks are known, the defaults on", timeout: 20) {
             text(of: video).contains("audio 1/2 en, subtitles 1/2 en")
         }
-        app.typeKey("s", modifierFlags: [.control, .command])
-        eventually("⌃⌘S: the German subtitles") { text(of: video).contains("subtitles 2/2 de") }
-        app.typeKey("v", modifierFlags: [])
-        eventually("V: none") { text(of: video).contains("subtitles off/2") }
-        app.typeKey("v", modifierFlags: [])
-        eventually("V again: the German ones, the language chosen") { text(of: video).contains("subtitles 2/2 de") }
-        app.typeKey("a", modifierFlags: [.control, .command])
-        eventually("⌃⌘A: the German sound") { text(of: video).contains("audio 2/2 de") }
-        // The control bar lists them
-        video.hover()
-        XCTAssertTrue(element("videoBar").waitForExistence(timeout: 5), "the control bar shows on the mouse moving")
-        XCTAssertTrue(element("videoBar.subtitles").exists)
-        XCTAssertTrue(element("videoBar.audio").exists)
-        // Twice as fast: the position moves on about twice as fast
+        // Twice as fast: the position moves on about twice as fast (early,
+        // so the 20 s video doesn't end meanwhile)
+        RunLoop.current.run(until: Date().addingTimeInterval(1.5))   // VLC opens it again to draw subtitles
         for _ in 0..<4 { app.typeKey(">", modifierFlags: []) }
         eventually("2×") { text(of: video).contains("speed 2.0") }
         waitForBadge(containing: "2×")
@@ -244,6 +233,19 @@ final class VideoUITests: SchnellbildUITestCase {
         app.typeKey("\\", modifierFlags: .command)
         eventually("⌘\\: normal speed") { text(of: video).contains("speed 1.0") }
         XCTAssertFalse(text(of: badge).contains("×"), "at 1× the badge shows no speed: \(text(of: badge))")
+        app.typeKey("s", modifierFlags: [.control, .command])
+        eventually("⌃⌘S: the German subtitles") { text(of: video).contains("subtitles 2/2 de") }
+        app.typeKey("v", modifierFlags: [])
+        eventually("V: none") { text(of: video).contains("subtitles off/2") }
+        app.typeKey("v", modifierFlags: [])
+        eventually("V again: the German ones, the language chosen") { text(of: video).contains("subtitles 2/2 de") }
+        app.typeKey("a", modifierFlags: [.control, .command])
+        eventually("⌃⌘A: the German sound") { text(of: video).contains("audio 2/2 de") }
+        // The control bar lists them
+        video.hover()
+        XCTAssertTrue(element("videoBar").waitForExistence(timeout: 5), "the control bar shows on the mouse moving")
+        XCTAssertTrue(element("videoBar.subtitles").exists)
+        XCTAssertTrue(element("videoBar.audio").exists)
         // The next launch starts with the choices: German subtitles and sound
         app.terminate()
         launch(open: tempDir.appendingPathComponent(fixture).path, resetState: false, extra: vlc ? ["--force-vlc"] : [])

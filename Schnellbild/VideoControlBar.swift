@@ -224,17 +224,15 @@ struct VideoControlBar: View {
             .rotationEffect(.degrees(90))
             .foregroundStyle(.secondary)
             .frame(width: 14, height: 24)
-            .contentShape(Rectangle())
-            .gesture(DragGesture(minimumDistance: 2, coordinateSpace: .named("videoChrome"))
-                .onChanged { value in
-                    dragging = true
-                    onDrag(value.translation)
-                }
-                .onEnded { _ in
-                    dragging = false
-                    onDragEnd()
-                })
-            .onTapGesture(count: 2) { model.resetVideoBarPosition() }
+            // The mouse on it goes through AppKit: a SwiftUI drag and double
+            // tap on one view moved nothing on CI
+            .overlay(GripHandle(onDrag: { translation in
+                dragging = true
+                onDrag(translation)
+            }, onEnd: {
+                dragging = false
+                onDragEnd()
+            }, onDoubleClick: { model.resetVideoBarPosition() }))
             .help("Drag to move the control bar; double-click: back to the bottom")
             .accessibilityElement()
             .accessibilityLabel("Move control bar")
@@ -415,6 +413,59 @@ enum VideoMenus {
         required init(coder: NSCoder) { fatalError("not from a nib") }
 
         @objc private func fire() { run?() }
+    }
+}
+
+/// The control bar's grip: a drag moves the bar (by how far the mouse went
+/// since it was pressed, in the view's points, y down), a double click puts
+/// it back.
+struct GripHandle: NSViewRepresentable {
+    let onDrag: (CGSize) -> Void
+    let onEnd: () -> Void
+    let onDoubleClick: () -> Void
+
+    func makeNSView(context: Context) -> GripView { update(GripView()) }
+    func updateNSView(_ view: GripView, context: Context) { _ = update(view) }
+
+    private func update(_ view: GripView) -> GripView {
+        view.onDrag = onDrag
+        view.onEnd = onEnd
+        view.onDoubleClick = onDoubleClick
+        return view
+    }
+
+    final class GripView: NSView {
+        var onDrag: (CGSize) -> Void = { _ in }
+        var onEnd: () -> Void = {}
+        var onDoubleClick: () -> Void = {}
+        private var start: NSPoint?
+        private var moved = false
+
+        override var mouseDownCanMoveWindow: Bool { false }
+        override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
+        override func isAccessibilityElement() -> Bool { false }
+
+        override func resetCursorRects() { addCursorRect(bounds, cursor: .openHand) }
+
+        override func mouseDown(with event: NSEvent) {
+            if event.clickCount == 2 { start = nil; onDoubleClick(); return }
+            start = event.locationInWindow
+            moved = false
+        }
+
+        override func mouseDragged(with event: NSEvent) {
+            guard let start else { return }
+            let now = event.locationInWindow
+            moved = true
+            NSCursor.closedHand.set()
+            onDrag(CGSize(width: now.x - start.x, height: start.y - now.y))
+        }
+
+        override func mouseUp(with event: NSEvent) {
+            if start != nil, moved { onEnd() }
+            start = nil
+            moved = false
+        }
     }
 }
 

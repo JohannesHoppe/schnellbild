@@ -4979,7 +4979,27 @@ final class AVPlaybackControl: PlaybackControl {
     func selectSubtitleTrack(_ id: Int?) {
         guard let item = player.currentItem, let legible else { return }
         let option = id.flatMap { subtitleOptions.indices.contains($0) ? subtitleOptions[$0] : nil }
+        guard item.currentMediaSelection.selectedMediaOption(in: legible) != option else { return }
         item.select(option, in: legible)
+        refreshSubtitles()
+    }
+
+    /// AVKit draws a newly chosen subtitle track only from its next line on,
+    /// and keeps a line of the one left on screen until that line ends (seen
+    /// on CI, macOS 15 and 26): a seek to where the video stands draws the
+    /// choice at once.
+    private func refreshSubtitles() {
+        Task { @MainActor [weak self] in
+            // (once the item can seek)
+            for _ in 0..<50 {
+                guard let self, let item = self.player.currentItem else { return }
+                if item.status == .readyToPlay {
+                    self.player.seek(to: self.player.currentTime(), toleranceBefore: .zero, toleranceAfter: .zero) { _ in }
+                    return
+                }
+                try? await Task.sleep(for: .milliseconds(100))
+            }
+        }
     }
 
     func selectAudioTrack(_ id: Int) {

@@ -107,6 +107,13 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         // read the file to its end, before the last pictures are shown, and
         // never report the end (the slideshow waits for it)
         media.addOption(":no-play-and-pause")
+        // Subtitles to show: decoded by FFmpeg, not VideoToolbox. VLC draws
+        // subtitles into the decoded picture before it converts it for the
+        // video callbacks, and can't draw into VideoToolbox's pictures
+        // ("blending YUVA to CVPN failed", seen on CI): nothing would show.
+        // (FFmpeg takes only the subtitle formats it is trusted with; text
+        // ones fall through to VLC's own decoders.)
+        if softwareDecoding { media.addOption(":codec=avcodec,all") }
         return media
     }
 
@@ -262,6 +269,39 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
     private var wantedAudio: Int?
     private var speed = 1.0
 
+    /// Decoding in software, so subtitles can be drawn (`makeMedia`).
+    private var softwareDecoding = false
+    /// Paused before the media was opened anew for software decoding.
+    private var pauseOnceOpen = false
+
+    /// Opens the media again, decoded in software, where it stood (once per
+    /// video, when subtitles are to be shown: hardware decoding is faster).
+    private func decodeInSoftware() {
+        guard !softwareDecoding else { return }
+        softwareDecoding = true
+        BrowserModel.testLog("vlc: software decoding for subtitles")
+        let position = player.position
+        let wasPlaying = isPlaying
+        // Stopping waits for VLC's reading thread: off the main thread
+        let held = self.held
+        Task { @MainActor [weak self] in
+            await withCheckedContinuation { (done: CheckedContinuation<Void, Never>) in
+                VLCStops.run {
+                    held.player.stop()
+                    for _ in 0..<100 where held.player.state != .stopped { usleep(20_000) }
+                    done.resume()
+                }
+            }
+            guard let self, self.player.delegate != nil else { return }   // stopped for good meanwhile
+            self.player.media = self.makeMedia()
+            if let media = self.player.media { self.output.use(media) }
+            if position > 0.001, position < 0.999 { self.positionOnceOpen = position }
+            self.pauseOnceOpen = !wasPlaying
+            self.player.play()
+            self.isPlaying = wasPlaying
+        }
+    }
+
     var tracks: VideoTracks {
         let info = player.media?.tracksInformation as? [[String: Any]] ?? []
         func list(_ ids: [Any]?, _ type: String) -> [MediaTrack] {
@@ -279,9 +319,9 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         tracks.audio = list(player.audioTrackIndexes, VLCMediaTracksInformationTypeAudio)
         tracks.subtitles = list(player.videoSubTitlesIndexes, VLCMediaTracksInformationTypeText)
         let audio = Int(player.currentAudioTrackIndex)
-        tracks.audioID = wantedAudio ?? (audio >= 0 ? audio : nil)
+        tracks.audioID = audio >= 0 ? audio : nil
         let subtitle = Int(player.currentVideoSubTitleIndex)
-        tracks.subtitleID = wantedSubtitle ?? (subtitle >= 0 ? subtitle : nil)
+        tracks.subtitleID = subtitle >= 0 ? subtitle : nil
         return tracks
     }
 
@@ -310,6 +350,10 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
             if Int(player.currentVideoSubTitleIndex) != target, target == -1 || ids.contains(target) {
                 player.currentVideoSubTitleIndex = Int32(target)
             }
+        }
+        if Int(player.currentVideoSubTitleIndex) >= 0, !softwareDecoding {
+            decodeInSoftware()
+            return
         }
         if let wanted = wantedAudio, Int(player.currentAudioTrackIndex) != wanted,
            ((player.audioTrackIndexes as? [NSNumber])?.map(\.intValue) ?? []).contains(wanted) {
@@ -382,16 +426,22 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
                 positionOnceOpen = nil
                 player.position = position
             }
-            applyChoices()
+            if pauseOnceOpen {
+                pauseOnceOpen = false
+                player.pause()
+            }
             onTracksChanged(self)
+            applyChoices()
         case .ended:
             reachedEnd = true
             isPlaying = false
         case .paused, .error:   isPlaying = false
         case .esAdded:
-            // A track found: the choices apply to it, the menus list it
-            applyChoices()
+            // A track found: the menus list it, the choices apply to it
+            // (the model's first: subtitles it turns off never make VLC
+            // decode in software)
             onTracksChanged(self)
+            applyChoices()
             return
         default:                        return
         }

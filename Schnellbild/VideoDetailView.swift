@@ -67,7 +67,7 @@ struct VideoDetailView: View {
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier(vlcControl != nil ? "video.vlc" : "video.avkit")
         .accessibilityLabel("zoom \(Int((model.zoom * 100).rounded())) %, rotation \(Int(model.rotation))°"
-                            + (Self.uiTesting ? ", " + Self.describe(model.videoTracks, speed: model.playbackSpeed) : "")
+                            + (Self.uiTesting ? ", " + Self.describe(model.activePlayer?.tracks ?? model.videoTracks, speed: model.playbackSpeed) : "")
                             + (vlcDiagnostics.isEmpty ? "" : ", \(vlcDiagnostics)"))
         .task(id: vlcControl.map(ObjectIdentifier.init)) {
             vlcDiagnostics = ""
@@ -176,8 +176,8 @@ struct VideoDetailView: View {
     static let forceVLC = ProcessInfo.processInfo.arguments.contains("--ui-testing")
         && ProcessInfo.processInfo.arguments.contains("--force-vlc")
 
-    /// For UI tests: the tracks and which are on, the speed
-    /// ("audio 2/2 de, subtitles 1/2 en, speed 1.25").
+    /// For UI tests: the tracks and which are on as the player has them,
+    /// the speed ("audio 2/2 de, subtitles 1/2 en, speed 1.25").
     static func describe(_ tracks: VideoTracks, speed: Double) -> String {
         func place(_ id: Int?, _ list: [MediaTrack]) -> String {
             guard let id, let index = list.firstIndex(where: { $0.id == id }) else { return "off/\(list.count)" }
