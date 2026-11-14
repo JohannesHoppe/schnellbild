@@ -106,7 +106,7 @@
     },
     {
       "title": "Lyst eller mørkt, du velger",
-      "text": "<p>Noen sverger til mørk modus, andre tåler den ikke. Schnellbild følger macOS, eller blir lyst eller mørkt uansett hva systemet gjør: Innstillinger (<kbd>⌘</kbd><kbd>,</kbd>) → Utseende.</p><p>Denne nettsiden gjør det samme: den følger systemet ditt, og bryteren øverst velger for deg.</p>",
+      "text": "<p>Noen sverger til mørk modus, andre tåler den ikke. Så du velger: Som systemet, Lys eller Mørk, i Innstillinger (<kbd>⌘</kbd><kbd>,</kbd>).</p>",
       "alt": "Innstillinger: utseende som systemet, lyst eller mørkt"
     }
   ],

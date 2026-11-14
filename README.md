@@ -33,7 +33,7 @@ Open a folder, see thumbnails, look at one picture large, page through with the 
 - **Fast.** Thumbnails appear while you scroll, big folders and network shares included (see [Why so fast?](#why-so-fast)).
 - **Safe by default.** Looking at pictures, videos and archives from others runs nothing and goes online nowhere, with nothing to switch on first: archives are only read, never unpacked to disk; a "video" can't make it fetch anything from the internet; a double click never starts an app hiding behind a picture's name; and the whole app runs in Apple's App Sandbox, so it reaches only the folders you open to it. What it does, and where its limit is: [Safe with files from others](#safe-with-files-from-others).
 - **Provably built from this source.** Every DMG comes with a build attestation signed by GitHub: anyone can check that it was built by this repository's workflow, from a public commit. [How to check it](#provably-built-from-this-source).
-- **Light or dark, your choice.** Some swear by dark mode, others can't stand it. Schnellbild follows macOS, or stays light or dark whatever the system does (Settings, ⌘,). [The website](https://schnellbild.haushoppe-its.de/) does the same: it follows your system, and a switch at the top picks for you.
+- **Light or dark, your choice.** Some swear by dark mode, others can't stand it. So you decide: same as the system, light or dark (Settings, ⌘,).
 - **Doesn't fall over.** Broken files, odd formats and slow disks show a placeholder instead of taking the app down. Your files are only changed when you say so: rename, trash, a new folder, or moving and copying them (dragging tiles onto a folder, F5 / F6 in the dual pane).
 
 ## Download

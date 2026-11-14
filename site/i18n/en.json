@@ -106,7 +106,7 @@
     },
     {
       "title": "Light or dark, your choice",
-      "text": "<p>Some swear by dark mode, others can't stand it. Schnellbild follows macOS, or stays light or dark whatever the system does: Settings (<kbd>⌘</kbd><kbd>,</kbd>) → Appearance.</p><p>This website does the same: it follows your system, and the switch at the top picks for you.</p>",
+      "text": "<p>Some swear by dark mode, others can't stand it. So you decide: Same as System, Light or Dark, in Settings (<kbd>⌘</kbd><kbd>,</kbd>).</p>",
       "alt": "Settings: appearance as the system, light or dark"
     }
   ],

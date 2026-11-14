@@ -106,7 +106,7 @@
     },
     {
       "title": "Světlý, nebo tmavý, jak chcete",
-      "text": "<p>Někdo nedá dopustit na tmavý režim, jiný ho nesnáší. Schnellbild se řídí macOS, nebo zůstane světlý či tmavý, ať systém dělá cokoli: Nastavení (<kbd>⌘</kbd><kbd>,</kbd>) → Vzhled.</p><p>Tento web to dělá stejně: řídí se vaším systémem a přepínač nahoře volí za vás.</p>",
+      "text": "<p>Někdo nedá dopustit na tmavý režim, jiný ho nesnáší. Takže volíte vy: Podle systému, Světlý nebo Tmavý, v Nastavení (<kbd>⌘</kbd><kbd>,</kbd>).</p>",
       "alt": "Nastavení: vzhled podle systému, světlý nebo tmavý"
     }
   ],

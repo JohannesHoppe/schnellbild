@@ -106,7 +106,7 @@
     },
     {
       "title": "Ljust eller mörkt, du väljer",
-      "text": "<p>Vissa svär vid mörkt läge, andra står inte ut med det. Schnellbild följer macOS, eller förblir ljust eller mörkt vad systemet än gör: Inställningar (<kbd>⌘</kbd><kbd>,</kbd>) → Utseende.</p><p>Den här webbplatsen gör likadant: den följer ditt system, och knappen högst upp väljer åt dig.</p>",
+      "text": "<p>Vissa svär vid mörkt läge, andra står inte ut med det. Så du väljer: Som systemet, Ljust eller Mörkt, i Inställningar (<kbd>⌘</kbd><kbd>,</kbd>).</p>",
       "alt": "Inställningar: utseende som systemet, ljust eller mörkt"
     }
   ],

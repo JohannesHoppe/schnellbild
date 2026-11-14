@@ -106,7 +106,7 @@
     },
     {
       "title": "Açık ya da koyu, sen seç",
-      "text": "<p>Kimi koyu moda bayılır, kimi ona katlanamaz. Schnellbild macOS'i izler ya da sistem ne yaparsa yapsın açık veya koyu kalır: Ayarlar (<kbd>⌘</kbd><kbd>,</kbd>) → Görünüm.</p><p>Bu web sitesi de aynısını yapar: sisteminizi izler, üstteki düğme sizin yerinize seçer.</p>",
+      "text": "<p>Kimi koyu moda bayılır, kimi ona katlanamaz. Seçim senin: Sistemle aynı, Açık ya da Koyu, Ayarlar'da (<kbd>⌘</kbd><kbd>,</kbd>).</p>",
       "alt": "Ayarlar: görünüm sistemle aynı, açık veya koyu"
     }
   ],
