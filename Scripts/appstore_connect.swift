@@ -53,8 +53,9 @@ func text(_ locale: String, _ field: String) -> String? {
 }
 /// A URL of one language (`<locale>/<field>.txt`), else the one in app.json.
 func link(_ locale: String, _ field: String, _ key: String) -> String { text(locale, field) ?? setting(key) }
+// Every folder with a name.txt is a locale (de-DE, ja, zh-Hans …)
 let locales = ((try? FileManager.default.contentsOfDirectory(atPath: metadata.path)) ?? [])
-    .filter { $0.contains("-") && !$0.hasPrefix(".") }.sorted()
+    .filter { FileManager.default.fileExists(atPath: metadata.appendingPathComponent("\($0)/name.txt").path) }.sorted()
 
 // MARK: - API
 
