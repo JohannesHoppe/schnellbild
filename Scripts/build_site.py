@@ -160,13 +160,46 @@ def shot(name, code, alt, extra=""):
         sources.append(f'<source type="image/{fmt}" srcset="{light_sets[fmt]}" sizes="{sizes}">')
     if dark_sets:
         sources.append(f'<source{media} srcset="/screenshots/{dark.name}">')
-    return "<picture>" + "".join(sources) + img + "</picture>"
+    picture = "<picture>" + "".join(sources) + img + "</picture>"
+    moving = motion(name)
+    return f'<span class="playing">{picture}{moving}</span>' if moving else picture
 
 
 def icon(name, size, alt="", attributes=""):
     """The app icon as WebP, the PNG for browsers without it (make_site_images.py icons)."""
     return (f'<picture><source type="image/webp" srcset="/{name}.webp">'
             f'<img src="/{name}.png" alt="{esc(alt)}" width="{size}" height="{size}"{attributes}></picture>')
+
+
+MOTION = ROOT / "site" / "video-motion.json"
+
+
+def motion(name):
+    """The moving video laid over the video's still, the same for every
+    language and theme (Scripts/make_video_animation.py: the WebPs, where
+    the video lies in the still and the holes the badge and the control bar
+    keep, so they stay in front)."""
+    if name != "video" or not MOTION.exists():
+        return ""
+    m = json.loads(MOTION.read_text())
+    (shot_w, shot_h), (x, y, w, h) = m["shot"], m["area"]
+    def pct(value, of):
+        return f"{100 * value / of:.3f}".rstrip("0").rstrip(".") + "%"
+    # The video's rectangle, each hole as a ring of its own (even-odd)
+    ring = ["0 0", "100% 0", "100% 100%", "0 100%", "0 0"]
+    for x0, y0, x1, y1 in m["holes"]:
+        a, b, c, d = pct(x0, w), pct(y0, h), pct(x1, w), pct(y1, h)
+        ring += [f"{a} {b}", f"{c} {b}", f"{c} {d}", f"{a} {d}", f"{a} {b}", "0 0"]
+    files = sorted(((int(width), file) for width, file in m["files"].items()))
+    for _, file in files:
+        if not (DOCS / "screenshots" / file).exists():
+            problems.append(f"docs/screenshots/{file} (Scripts/make_video_animation.py)")
+    srcset = ", ".join(f"/screenshots/{file} {width}w" for width, file in files)
+    style = (f"left:{pct(x, shot_w)};top:{pct(y, shot_h)};width:{pct(w, shot_w)};height:{pct(h, shot_h)};"
+             f"clip-path:polygon(evenodd,{','.join(ring)})")
+    return (f'<img class="motion" src="/screenshots/{files[-1][1]}" srcset="{srcset}" '
+            f'sizes="{FEATURE_SIZES}" width="{w}" height="{h}" alt="" '
+            f'loading="lazy" decoding="async" style="{style}">')
 
 
 # Open Graph wants a territory: the one each language is most at home in.

@@ -117,8 +117,9 @@ if ("IntersectionObserver" in window) {
 })();
 
 // Screenshots open large in a dialog: ← → step through all of them, a click or Esc closes.
+// The video's still opens with the video moving over it, as on the page.
 (() => {
-  const shots = [...document.querySelectorAll(".shot img, .media img")];
+  const shots = [...document.querySelectorAll(".shot img, .media img:not(.motion)")];
   if (!shots.length || !("HTMLDialogElement" in window)) return;
   const labels = document.body.dataset;
   const dialog = document.createElement("dialog");
@@ -129,7 +130,13 @@ if ("IntersectionObserver" in window) {
   close.className = "close";
   close.textContent = "×";
   close.setAttribute("aria-label", labels.close || "Close");
-  dialog.append(large, close);
+  const frame = document.createElement("span");
+  frame.className = "playing";
+  const moving = document.createElement("img");
+  moving.className = "motion";
+  moving.alt = "";
+  frame.append(large, moving);
+  dialog.append(frame, close);
   document.body.append(dialog);
   let index = 0;
   // The page shows each screenshot as wide as its place needs; the dialog loads the
@@ -154,6 +161,17 @@ if ("IntersectionObserver" in window) {
     const shot = shots[index];
     large.src = widest(shot);
     large.alt = shot.alt;
+    const motion = shot.closest(".playing")?.querySelector("img.motion");
+    moving.hidden = !motion;
+    if (motion) {
+      moving.style.cssText = motion.style.cssText;
+      moving.sizes = "96vw";
+      moving.srcset = motion.srcset;
+      moving.src = motion.src;
+    } else {
+      moving.removeAttribute("srcset");
+      moving.removeAttribute("src");
+    }
   }
   shots.forEach((shot, at) => {
     shot.classList.add("zoomable");
