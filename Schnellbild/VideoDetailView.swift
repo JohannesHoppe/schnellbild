@@ -37,10 +37,8 @@ struct VideoDetailView: View {
                 if let vlcControl {
                     VLCVideoView(control: vlcControl)
                 } else if let avControl {
-                    // Turned, its control bar would turn with the picture
-                    // (upside down): hidden then, the keys still work
-                    AVPlayerViewHost(player: avControl.player,
-                                     showsControls: Int(model.rotation.rounded()) % 360 == 0)
+                    // The app's own control bar (`VideoControlBar`) serves both players
+                    AVPlayerViewHost(player: avControl.player)
                 } else if checking {
                     LoadingSpinner()
                 }
@@ -69,6 +67,7 @@ struct VideoDetailView: View {
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier(vlcControl != nil ? "video.vlc" : "video.avkit")
         .accessibilityLabel("zoom \(Int((model.zoom * 100).rounded())) %, rotation \(Int(model.rotation))°"
+                            + (Self.uiTesting ? ", " + Self.describe(model.videoTracks, speed: model.playbackSpeed) : "")
                             + (vlcDiagnostics.isEmpty ? "" : ", \(vlcDiagnostics)"))
         .task(id: vlcControl.map(ObjectIdentifier.init)) {
             vlcDiagnostics = ""
@@ -125,14 +124,17 @@ struct VideoDetailView: View {
             let reportLook: @MainActor (PlaybackControl, Look) -> Void = { control, look in
                 model.autoLookMeasured(look, from: control)
             }
+            let reportTracks: @MainActor (PlaybackControl) -> Void = { control in model.tracksChanged(from: control) }
             if playable && !Self.forceVLC && !Self.playsInVLC(url) {
                 let control = AVPlaybackControl(player: AVPlayer(playerItem: AVPlayerItem(asset: asset)), onStateChange: report)
                 control.resourceLoader = loader   // the asset holds its delegate weakly
                 control.onAutoLook = reportLook
+                control.onTracksChanged = reportTracks
                 avControl = control
                 model.activePlayer = control
                 model.activePlayerURL = url
                 control.play()
+                control.loadTracks()
                 await noteFile(url)
                 if let track = try? await asset.loadTracks(withMediaType: .video).first,
                    let (size, transform) = try? await track.load(.naturalSize, .preferredTransform),
@@ -149,6 +151,7 @@ struct VideoDetailView: View {
                 let source: VLCPlaybackControl.Source = stream.map { stream in .stream(url, { ArchiveInputStream(stream) }) } ?? .file(url, head: head)
                 let control = VLCPlaybackControl(source: source, onStateChange: report)
                 control.onAutoLook = reportLook
+                control.onTracksChanged = reportTracks
                 vlcControl = control
                 model.activePlayer = control
                 model.activePlayerURL = url
@@ -172,6 +175,16 @@ struct VideoDetailView: View {
     static let uiTesting = ProcessInfo.processInfo.arguments.contains("--ui-testing")
     static let forceVLC = ProcessInfo.processInfo.arguments.contains("--ui-testing")
         && ProcessInfo.processInfo.arguments.contains("--force-vlc")
+
+    /// For UI tests: the tracks and which are on, the speed
+    /// ("audio 2/2 de, subtitles 1/2 en, speed 1.25").
+    static func describe(_ tracks: VideoTracks, speed: Double) -> String {
+        func place(_ id: Int?, _ list: [MediaTrack]) -> String {
+            guard let id, let index = list.firstIndex(where: { $0.id == id }) else { return "off/\(list.count)" }
+            return "\(index + 1)/\(list.count) \(list[index].language ?? "-")"
+        }
+        return "audio \(place(tracks.audioID, tracks.audio)), subtitles \(place(tracks.subtitleID, tracks.subtitles)), speed \(speed)"
+    }
 
     /// Formats macOS reads only through a media extension: VLC plays them,
     /// with their sound. AVFoundation would call them playable through
@@ -212,16 +225,17 @@ struct VideoDetailView: View {
     }
 }
 
-/// AVKit's player view with floating controls: SwiftUI's `VideoPlayer` has
-/// only the inline ones, which (like the minimal ones) dim the whole picture
-/// while they show (macOS 26 and later).
+/// AVKit's player view without controls of its own: the app's control bar
+/// (`VideoControlBar`) is the same for AVKit and VLC, stays where the user
+/// put it from video to video and stays upright on a turned video. (AVKit's
+/// inline and minimal controls dim the whole picture while they show, from
+/// macOS 26 on.) It draws the subtitles chosen.
 struct AVPlayerViewHost: NSViewRepresentable {
     let player: AVPlayer
-    var showsControls = true
 
     func makeNSView(context: Context) -> AVPlayerView {
         let view = AVPlayerView()
-        view.controlsStyle = showsControls ? .floating : .none
+        view.controlsStyle = .none
         view.showsFullScreenToggleButton = false
         view.player = player
         return view
@@ -229,8 +243,6 @@ struct AVPlayerViewHost: NSViewRepresentable {
 
     func updateNSView(_ view: AVPlayerView, context: Context) {
         if view.player !== player { view.player = player }
-        let style: AVPlayerViewControlsStyle = showsControls ? .floating : .none
-        if view.controlsStyle != style { view.controlsStyle = style }
     }
 }
 

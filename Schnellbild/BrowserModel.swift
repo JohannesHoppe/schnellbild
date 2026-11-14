@@ -88,6 +88,16 @@ protocol PlaybackControl: AnyObject {
     var lengthSeconds: Double? { get }
     /// The codecs, once the player has opened the video (the Inspector).
     func streamFacts() async -> StreamFacts?
+    /// The video's sound and subtitle tracks and which are on, once the
+    /// player knows them; it reports changes through
+    /// `BrowserModel.tracksChanged`.
+    var tracks: VideoTracks { get }
+    func selectAudioTrack(_ id: Int)
+    /// nil: no subtitles.
+    func selectSubtitleTrack(_ id: Int?)
+    /// The speed, 1 normal (`PlaybackSpeed.steps`); kept for every playing
+    /// after it, also from the start again.
+    func setSpeed(_ speed: Double)
 }
 
 extension PlaybackControl {
@@ -95,6 +105,10 @@ extension PlaybackControl {
     var videoSize: CGSize? { nil }
     var lengthSeconds: Double? { nil }
     func streamFacts() async -> StreamFacts? { nil }
+    var tracks: VideoTracks { VideoTracks() }
+    func selectAudioTrack(_ id: Int) {}
+    func selectSubtitleTrack(_ id: Int?) {}
+    func setSpeed(_ speed: Double) {}
 }
 
 /// Side effects on the file system and the workspace. Injectable, so tests
@@ -1251,6 +1265,9 @@ final class BrowserModel: ObservableObject {
             videoPaused = false
             if enhancement != .off { activePlayer?.setEnhancement(enhancement) }
             activePlayer?.setVolume(audibleVolume)
+            if playbackSpeed != 1 { activePlayer?.setSpeed(playbackSpeed) }
+            videoTracks = VideoTracks()
+            tracksDecided = nil
         }
     }
 
@@ -1295,6 +1312,170 @@ final class BrowserModel: ObservableObject {
         activePlayer?.setVolume(audibleVolume)
         volumeChange = UUID()
     }
+
+    /// The volume as set on the control bar's slider (remembered, as the keys').
+    func setVolume(_ value: Double) {
+        volume = min(max(value, 0), 1)
+        defaults.set(volume, forKey: Self.volumeKey)
+        activePlayer?.setVolume(audibleVolume)
+    }
+
+    // MARK: Subtitles, sound tracks, speed
+
+    static let subtitlesKey = "videoSubtitles"
+    static let subtitleLanguageKey = "videoSubtitleLanguage"
+    static let audioLanguageKey = "videoAudioLanguage"
+    /// The tracks of the video on screen and which are on (the control bar,
+    /// the Video menu, the context menu).
+    @Published private(set) var videoTracks = VideoTracks()
+    /// Subtitles shown (V): for every video, remembered; on at first.
+    @Published private(set) var showSubtitles = true
+    /// The language of the subtitles and of the sound track chosen last
+    /// (remembered, read each time: the other panes and windows choose too):
+    /// the next video with such a track starts with it.
+    var subtitleLanguage: String? { defaults.string(forKey: Self.subtitleLanguageKey) }
+    var audioLanguage: String? { defaults.string(forKey: Self.audioLanguageKey) }
+    /// The speed of every video in the window until the app quits (< / >,
+    /// the menus); not remembered: a video started another day plays at 1×.
+    @Published private(set) var playbackSpeed: Double = 1
+    /// A short note on the video (the speed, the subtitles or sound track
+    /// chosen), shown a moment as the volume is.
+    @Published private(set) var playbackNotice: PlaybackNotice?
+    /// The track lists the choice from the preferences was made for, per
+    /// player: a list that grows (VLC finds a track later) is decided again.
+    private var tracksDecided: (player: ObjectIdentifier, audio: [MediaTrack], subtitles: [MediaTrack])?
+
+    struct PlaybackNotice: Equatable {
+        let symbol: String
+        let text: String
+        let id = UUID()
+    }
+
+    private func note(_ symbol: String, _ text: String) {
+        playbackNotice = PlaybackNotice(symbol: symbol, text: text)
+    }
+
+    private var videoOnScreen: Bool { shownMediaEntry?.kind == .video }
+
+    /// The player found or changed its tracks: the subtitles and sound track
+    /// the user prefers are chosen once per list of tracks.
+    func tracksChanged(from player: PlaybackControl) {
+        guard player === activePlayer else { return }
+        var tracks = player.tracks
+        let id = ObjectIdentifier(player)
+        let decided = tracksDecided?.player == id ? tracksDecided : nil
+        if decided?.subtitles != tracks.subtitles, !tracks.subtitles.isEmpty {
+            let wanted = VideoTracks.subtitleChoice(in: tracks, show: showSubtitles, language: subtitleLanguage)
+            if wanted != tracks.subtitleID { player.selectSubtitleTrack(wanted); tracks.subtitleID = wanted }
+        }
+        if decided?.audio != tracks.audio, tracks.audio.count > 1,
+           let wanted = VideoTracks.audioChoice(in: tracks, language: audioLanguage), wanted != tracks.audioID {
+            player.selectAudioTrack(wanted)
+            tracks.audioID = wanted
+        }
+        tracksDecided = (id, tracks.audio, tracks.subtitles)
+        videoTracks = tracks
+    }
+
+    /// V: subtitles on or off, for this video and the next ones.
+    func toggleSubtitles() {
+        guard videoOnScreen else { return }
+        if showSubtitles, videoTracks.subtitleID != nil || videoTracks.subtitles.isEmpty {
+            setShowSubtitles(false)
+            showSubtitleTrack(nil)
+            note("captions.bubble", String(localized: "Subtitles off"))
+            return
+        }
+        setShowSubtitles(true)
+        guard let wanted = VideoTracks.subtitleChoice(in: videoTracks, show: true, language: subtitleLanguage) else {
+            note("captions.bubble", String(localized: "This video has no subtitles"))
+            return
+        }
+        showSubtitleTrack(wanted)
+    }
+
+    /// A subtitle track chosen (nil: none): its language is remembered.
+    func selectSubtitle(_ id: Int?) {
+        guard videoOnScreen else { return }
+        setShowSubtitles(id != nil)
+        if let id, let language = videoTracks.subtitles.first(where: { $0.id == id })?.language {
+            defaults.set(language, forKey: Self.subtitleLanguageKey)
+        }
+        showSubtitleTrack(id)
+        if id == nil { note("captions.bubble", String(localized: "Subtitles off")) }
+    }
+
+    /// ⌃⌘S: the next subtitle track, then none, then the first again.
+    func nextSubtitleTrack() {
+        guard videoOnScreen else { return }
+        guard !videoTracks.subtitles.isEmpty else {
+            note("captions.bubble", String(localized: "This video has no subtitles"))
+            return
+        }
+        selectSubtitle(VideoTracks.nextSubtitle(after: videoTracks.subtitleID, in: videoTracks.subtitles))
+    }
+
+    private func setShowSubtitles(_ show: Bool) {
+        showSubtitles = show
+        defaults.set(show, forKey: Self.subtitlesKey)
+    }
+
+    private func showSubtitleTrack(_ id: Int?) {
+        activePlayer?.selectSubtitleTrack(id)
+        videoTracks.subtitleID = id
+        if let track = videoTracks.currentSubtitle {
+            note("captions.bubble", String(localized: "Subtitles: \(track.name)"))
+        }
+    }
+
+    /// A sound track chosen: its language is remembered.
+    func selectAudio(_ id: Int) {
+        guard videoOnScreen, let track = videoTracks.audio.first(where: { $0.id == id }) else { return }
+        if let language = track.language {
+            defaults.set(language, forKey: Self.audioLanguageKey)
+        }
+        activePlayer?.selectAudioTrack(id)
+        videoTracks.audioID = id
+        note("waveform", String(localized: "Audio: \(track.name)"))
+    }
+
+    /// ⌃⌘A: the next sound track, round.
+    func nextAudioTrack() {
+        guard videoOnScreen else { return }
+        let audio = videoTracks.audio
+        guard audio.count > 1 else {
+            note("waveform", String(localized: "This video has only one audio track"))
+            return
+        }
+        let index = audio.firstIndex { $0.id == videoTracks.audioID } ?? -1
+        selectAudio(audio[(index + 1) % audio.count].id)
+    }
+
+    /// < / >: a step slower or faster (`PlaybackSpeed.steps`).
+    func changeSpeed(by direction: Int) {
+        setSpeed(PlaybackSpeed.step(from: playbackSpeed, by: direction))
+    }
+
+    func setSpeed(_ speed: Double) {
+        guard videoOnScreen else { return }
+        playbackSpeed = speed
+        activePlayer?.setSpeed(speed)
+        note(speed < 1 ? "tortoise.fill" : speed > 1 ? "hare.fill" : "play.fill",
+             String(localized: "Speed \(PlaybackSpeed.text(speed))"))
+    }
+
+    /// Subtitles switched on or off in another pane: its next video follows.
+    func adoptShowSubtitles(_ shown: Bool) { showSubtitles = shown }
+
+    /// The speed another pane set (one speed for the window).
+    func adoptSpeed(_ speed: Double) {
+        guard speed != playbackSpeed else { return }
+        playbackSpeed = speed
+        activePlayer?.setSpeed(speed)
+    }
+
+    /// Where the control bar sits goes back to the bottom middle.
+    func resetVideoBarPosition() { VideoBarPlacement.shared.reset() }
     /// Auto enhance (E, the wand): works out exposure, contrast, saturation
     /// and sharpness for each photo and, now and then, for the video
     /// playing; the sliders (`look`) follow it. Stays on while paging until
@@ -1410,6 +1591,7 @@ final class BrowserModel: ObservableObject {
         if let raw = defaults.string(forKey: settingsPrefix + "viewMode"), let mode = ViewMode(rawValue: raw) { viewMode = mode }
         if let raw = defaults.string(forKey: settingsPrefix + "searchMode"), let mode = NameMatcher.Mode(rawValue: raw) { searchMode = mode }
         if let stored = defaults.object(forKey: Self.volumeKey) as? Double { volume = min(max(stored, 0), 1) }
+        showSubtitles = defaults.object(forKey: Self.subtitlesKey) as? Bool ?? true
         if let raw = defaults.string(forKey: sortKeyKey), let key = SortKey(rawValue: raw) {
             sortKey = key
             sortAscending = defaults.object(forKey: sortAscendingKey) as? Bool ?? key.startsAscending
@@ -3128,6 +3310,11 @@ final class BrowserModel: ObservableObject {
         case "0": zoomReset();            return true
         case "1": zoomActualSize();       return true
         case "i": showInspector.toggle(); return true
+        // Videos: V subtitles on / off (as in IINA and mpv), < / > slower /
+        // faster (as on YouTube; IINA's ⌘[ ⌘] are Back / Forward here)
+        case "v" where videoOnScreen: toggleSubtitles(); return true
+        case "<" where videoOnScreen: changeSpeed(by: -1); return true
+        case ">" where videoOnScreen: changeSpeed(by: +1); return true
         default:  return false
         }
     }
@@ -4694,6 +4881,10 @@ final class AVPlaybackControl: PlaybackControl {
 
     init(player: AVPlayer, onStateChange: @escaping @MainActor (PlaybackControl, Bool) -> Void = { _, _ in }) {
         self.player = player
+        // The subtitles and sound track the app chooses, not the system's
+        // accessibility preferences; another speed keeps the pitch
+        player.appliesMediaSelectionCriteriaAutomatically = false
+        player.currentItem?.audioTimePitchAlgorithm = .spectral
         observation = player.observe(\.timeControlStatus) { [weak self] player, _ in
             let playing = player.timeControlStatus != .paused
             Task { @MainActor in
@@ -4709,6 +4900,101 @@ final class AVPlaybackControl: PlaybackControl {
     var isPlaying: Bool { player.timeControlStatus != .paused }
 
     func setVolume(_ volume: Double) { player.volume = Float(volume) }
+
+    // MARK: Tracks and speed
+
+    /// Where the tracks go once they are known (the model).
+    var onTracksChanged: @MainActor (PlaybackControl) -> Void = { _ in }
+    private var legible: AVMediaSelectionGroup?
+    /// The subtitles to choose from: the "forced" ones AVFoundation adds for
+    /// each language left out (they show only forced lines).
+    private var subtitleOptions: [AVMediaSelectionOption] = []
+    private var audible: AVMediaSelectionGroup?
+    /// A file whose sound tracks are in no alternate group (AVFoundation
+    /// would play them all at once): one is chosen by enabling it alone.
+    private var audioItemTracks: [(track: AVPlayerItemTrack, language: String?)] = []
+    private var tracksTask: Task<Void, Never>?
+
+    /// Reads the video's subtitle and sound tracks (once).
+    func loadTracks() {
+        guard tracksTask == nil, let item = player.currentItem else { return }
+        let asset = item.asset
+        tracksTask = Task { [weak self] in
+            let legible = try? await asset.loadMediaSelectionGroup(for: .legible)
+            let audible = try? await asset.loadMediaSelectionGroup(for: .audible)
+            guard let self, !Task.isCancelled else { return }
+            self.legible = legible
+            self.subtitleOptions = legible?.options.filter { !$0.hasMediaCharacteristic(.containsOnlyForcedSubtitles) } ?? []
+            self.audible = (audible?.options.count ?? 0) > 1 ? audible : nil
+            if self.audible == nil, let sound = try? await asset.loadTracks(withMediaType: .audio), sound.count > 1 {
+                var languages: [CMPersistentTrackID: String] = [:]
+                for track in sound {
+                    let tag = try? await track.load(.extendedLanguageTag)
+                    let code = try? await track.load(.languageCode)
+                    languages[track.trackID] = (tag ?? nil) ?? (code ?? nil)
+                }
+                // The item's tracks come once it is ready to play
+                for _ in 0..<50 where !Task.isCancelled {
+                    let tracks = item.tracks.filter { $0.assetTrack?.mediaType == .audio }
+                    if tracks.count > 1 {
+                        self.audioItemTracks = tracks.map { ($0, $0.assetTrack.flatMap { languages[$0.trackID] }) }
+                        let playing = tracks.firstIndex { $0.isEnabled } ?? 0
+                        for (index, track) in tracks.enumerated() { track.isEnabled = index == playing }
+                        break
+                    }
+                    try? await Task.sleep(for: .milliseconds(100))
+                }
+            }
+            guard !Task.isCancelled else { return }
+            self.onTracksChanged(self)
+        }
+    }
+
+    var tracks: VideoTracks {
+        var tracks = VideoTracks()
+        guard let item = player.currentItem else { return tracks }
+        func track(_ option: AVMediaSelectionOption, _ index: Int) -> MediaTrack {
+            let name = option.displayName.isEmpty ? String(localized: "Track \(index + 1)") : option.displayName
+            return MediaTrack(id: index, name: name, language: option.extendedLanguageTag ?? option.locale?.identifier)
+        }
+        tracks.subtitles = subtitleOptions.enumerated().map { track($0.element, $0.offset) }
+        if let legible, let selected = item.currentMediaSelection.selectedMediaOption(in: legible) {
+            tracks.subtitleID = subtitleOptions.firstIndex(of: selected)
+        }
+        if let audible {
+            tracks.audio = audible.options.enumerated().map { track($0.element, $0.offset) }
+            if let selected = item.currentMediaSelection.selectedMediaOption(in: audible) {
+                tracks.audioID = audible.options.firstIndex(of: selected)
+            }
+        } else if !audioItemTracks.isEmpty {
+            tracks.audio = audioItemTracks.enumerated().map {
+                MediaTrack(id: $0.offset, name: MediaTrack.name(title: nil, language: $0.element.language, number: $0.offset + 1),
+                           language: $0.element.language)
+            }
+            tracks.audioID = audioItemTracks.firstIndex { $0.track.isEnabled }
+        }
+        return tracks
+    }
+
+    func selectSubtitleTrack(_ id: Int?) {
+        guard let item = player.currentItem, let legible else { return }
+        let option = id.flatMap { subtitleOptions.indices.contains($0) ? subtitleOptions[$0] : nil }
+        item.select(option, in: legible)
+    }
+
+    func selectAudioTrack(_ id: Int) {
+        if let audible, let item = player.currentItem, audible.options.indices.contains(id) {
+            item.select(audible.options[id], in: audible)
+        } else if audioItemTracks.indices.contains(id) {
+            for (index, entry) in audioItemTracks.enumerated() { entry.track.isEnabled = index == id }
+        }
+    }
+
+    /// `play()` starts at `defaultRate`; playing, the rate changes at once.
+    func setSpeed(_ speed: Double) {
+        player.defaultRate = Float(speed)
+        if player.rate != 0 { player.rate = Float(speed) }
+    }
 
     var videoSize: CGSize? {
         let size = player.currentItem?.presentationSize ?? .zero

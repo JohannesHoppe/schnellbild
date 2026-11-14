@@ -252,6 +252,72 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         player.audio?.volume = Int32((volume * 100).rounded())
     }
 
+    // MARK: Tracks and speed
+
+    /// Where the tracks go once VLC knows them (the model).
+    var onTracksChanged: @MainActor (PlaybackControl) -> Void = { _ in }
+    /// The tracks chosen, set again whenever VLC opens the media anew (from
+    /// the end) or finds its tracks; `.some(nil)`: no subtitles.
+    private var wantedSubtitle: Int??
+    private var wantedAudio: Int?
+    private var speed = 1.0
+
+    var tracks: VideoTracks {
+        let info = player.media?.tracksInformation as? [[String: Any]] ?? []
+        func list(_ ids: [Any]?, _ type: String) -> [MediaTrack] {
+            let ids = (ids as? [NSNumber])?.map(\.intValue).filter { $0 >= 0 } ?? []
+            return ids.enumerated().map { number, id in
+                let facts = info.first {
+                    ($0[VLCMediaTracksInformationId] as? NSNumber)?.intValue == id && $0[VLCMediaTracksInformationType] as? String == type
+                }
+                let language = facts?[VLCMediaTracksInformationLanguage] as? String
+                let title = facts?[VLCMediaTracksInformationDescription] as? String
+                return MediaTrack(id: id, name: MediaTrack.name(title: title, language: language, number: number + 1), language: language)
+            }
+        }
+        var tracks = VideoTracks()
+        tracks.audio = list(player.audioTrackIndexes, VLCMediaTracksInformationTypeAudio)
+        tracks.subtitles = list(player.videoSubTitlesIndexes, VLCMediaTracksInformationTypeText)
+        let audio = Int(player.currentAudioTrackIndex)
+        tracks.audioID = wantedAudio ?? (audio >= 0 ? audio : nil)
+        let subtitle = Int(player.currentVideoSubTitleIndex)
+        tracks.subtitleID = wantedSubtitle ?? (subtitle >= 0 ? subtitle : nil)
+        return tracks
+    }
+
+    func selectSubtitleTrack(_ id: Int?) {
+        wantedSubtitle = .some(id)
+        applyChoices()
+    }
+
+    func selectAudioTrack(_ id: Int) {
+        wantedAudio = id
+        applyChoices()
+    }
+
+    /// VLC keeps the pitch at other speeds itself.
+    func setSpeed(_ speed: Double) {
+        self.speed = speed
+        player.rate = Float(speed)
+    }
+
+    /// The choices made, applied to the tracks VLC has (it opens a media
+    /// with the file's default ones).
+    private func applyChoices() {
+        if let wanted = wantedSubtitle {
+            let ids = (player.videoSubTitlesIndexes as? [NSNumber])?.map(\.intValue) ?? []
+            let target = wanted ?? -1
+            if Int(player.currentVideoSubTitleIndex) != target, target == -1 || ids.contains(target) {
+                player.currentVideoSubTitleIndex = Int32(target)
+            }
+        }
+        if let wanted = wantedAudio, Int(player.currentAudioTrackIndex) != wanted,
+           ((player.audioTrackIndexes as? [NSNumber])?.map(\.intValue) ?? []).contains(wanted) {
+            player.currentAudioTrackIndex = Int32(wanted)
+        }
+        if speed != 1, abs(player.rate - Float(speed)) > 0.001 { player.rate = Float(speed) }
+    }
+
     /// Played to its end: VLC goes on from "ended" to "stopped" quickly,
     /// and its position then is that of the last picture, short of 1.
     private var reachedEnd = false
@@ -316,10 +382,17 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
                 positionOnceOpen = nil
                 player.position = position
             }
+            applyChoices()
+            onTracksChanged(self)
         case .ended:
             reachedEnd = true
             isPlaying = false
         case .paused, .error:   isPlaying = false
+        case .esAdded:
+            // A track found: the choices apply to it, the menus list it
+            applyChoices()
+            onTracksChanged(self)
+            return
         default:                        return
         }
         onStateChange(self, isPlaying)

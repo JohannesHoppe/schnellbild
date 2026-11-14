@@ -194,11 +194,17 @@ final class WindowModel: ObservableObject {
             guard let pane else { return }
             for other in Self.everyPane where other !== pane && other.shows(any: folders) { other.refresh(changed: folders) }
         }
-        // One volume and one mini keyboard for the window. @Published sends
+        // One volume, speed, subtitles switch and mini keyboard for the window. @Published sends
         // before the value is stored, so the other pane's own sink would see
         // this one's old value and send it back: `syncing` stops that echo.
         forwarding.append(pane.$volume.dropFirst().sink { [weak self, weak pane] volume in
             self?.sync { for other in $0 where other !== pane { other.adoptVolume(volume) } }
+        })
+        forwarding.append(pane.$playbackSpeed.dropFirst().sink { [weak self, weak pane] speed in
+            self?.sync { for other in $0 where other !== pane { other.adoptSpeed(speed) } }
+        })
+        forwarding.append(pane.$showSubtitles.dropFirst().sink { [weak self, weak pane] shown in
+            self?.sync { for other in $0 where other !== pane { other.adoptShowSubtitles(shown) } }
         })
         forwarding.append(pane.$showMiniKeyboard.dropFirst().sink { [weak self, weak pane] shown in
             self?.sync { for other in $0 where other !== pane && other.showMiniKeyboard != shown { other.showMiniKeyboard = shown } }

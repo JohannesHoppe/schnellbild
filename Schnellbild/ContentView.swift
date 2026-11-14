@@ -620,6 +620,8 @@ struct PaneView: View {
             if model.showInspector { InspectorView(entry: entry).padding(12) }
         }
         .overlay { if entry.kind == .video { VolumeDisplay() } }
+        // The control bar (over the badge and the inspector, which it can be dragged onto)
+        .overlay { if entry.kind == .video { VideoChrome() } }
     }
 
     private func positionBadge(entry: GridEntry, atTop: Bool) -> some View {
@@ -649,6 +651,7 @@ struct PaneView: View {
             text = "\(model.currentMediaNumber ?? 0) / \(model.mediaCount)  ·  \(entry.name)"
         }
         if entry.kind == .video && model.videoPaused { text += "  ·  " + String(localized: "Paused") }
+        if entry.kind == .video && model.playbackSpeed != 1 { text += "  ·  " + PlaybackSpeed.text(model.playbackSpeed) }
         switch model.enhancement {
         case .auto:   text += "  ·  " + String(localized: "Enhanced")
         case .manual: text += "  ·  " + String(localized: "Adjusted")

@@ -134,6 +134,22 @@ final class PlayerSpy: PlaybackControl {
     func setEnhancement(_ enhancement: Enhancement) { self.enhancement = enhancement }
     var volume: Double?
     func setVolume(_ volume: Double) { self.volume = volume }
+    var tracks = VideoTracks()
+    var speed = 1.0
+    func selectAudioTrack(_ id: Int) { calls.append("audio \(id)"); tracks.audioID = id }
+    func selectSubtitleTrack(_ id: Int?) { calls.append("subtitles \(id.map(String.init) ?? "off")"); tracks.subtitleID = id }
+    func setSpeed(_ speed: Double) { self.speed = speed }
+
+    /// A video with English and German sound and subtitles, the file's
+    /// defaults on (as players open it).
+    static func withTracks() -> PlayerSpy {
+        let player = PlayerSpy()
+        player.tracks = VideoTracks(
+            audio: [MediaTrack(id: 1, name: "English", language: "eng"), MediaTrack(id: 2, name: "German", language: "deu")],
+            subtitles: [MediaTrack(id: 3, name: "English", language: "en"), MediaTrack(id: 4, name: "German", language: "ger")],
+            audioID: 1, subtitleID: 3)
+        return player
+    }
 }
 
 /// A fresh preferences suite per model; every suite made is removed when the
@@ -2142,6 +2158,160 @@ final class PlaybackTests: XCTestCase {
         m.zoomReset()
         for _ in 0..<12 { m.selectEntry(named: "clip.mp4"); m.handleKey(.down, command: false) }
         XCTAssertEqual(m.volume, 0, "no quieter than silent")
+    }
+
+    // MARK: Subtitles, audio tracks, speed
+
+    /// Subtitles are on at first, with the file's default track; V turns
+    /// them off for this video and the next ones (remembered).
+    func testVTurnsSubtitlesOffAndTheChoiceIsRemembered() async throws {
+        let (m, _) = try await openOnVideo()
+        let player = PlayerSpy.withTracks()
+        m.activePlayer = player
+        m.tracksChanged(from: player)
+        XCTAssertEqual(player.calls, [], "the file's default subtitles stay")
+        XCTAssertEqual(m.videoTracks.subtitleID, 3)
+        XCTAssertTrue(m.handleKey(.char("v"), command: false))
+        XCTAssertEqual(player.calls, ["subtitles off"])
+        XCTAssertNil(m.videoTracks.subtitleID)
+        XCTAssertEqual(m.playbackNotice?.text, "Subtitles off")
+        let next = PlayerSpy.withTracks()
+        m.activePlayer = next
+        m.tracksChanged(from: next)
+        XCTAssertEqual(next.calls, ["subtitles off"], "the next video starts without")
+        XCTAssertFalse(BrowserModel(defaults: m.defaults).showSubtitles, "remembered")
+        m.handleKey(.char("V"), command: false)
+        XCTAssertEqual(next.calls, ["subtitles off", "subtitles 3"], "on again: the default track")
+        XCTAssertTrue(m.showSubtitles)
+    }
+
+    /// ⌃⌘S goes through the subtitle tracks, then none; the language chosen
+    /// is the next video's.
+    func testNextSubtitleTrackCyclesAndRemembersTheLanguage() async throws {
+        let (m, _) = try await openOnVideo()
+        let player = PlayerSpy.withTracks()
+        m.activePlayer = player
+        m.tracksChanged(from: player)
+        m.nextSubtitleTrack()
+        m.nextSubtitleTrack()
+        m.nextSubtitleTrack()
+        XCTAssertEqual(player.calls, ["subtitles 4", "subtitles off", "subtitles 3"])
+        m.selectSubtitle(4)
+        XCTAssertEqual(m.videoTracks.currentSubtitle?.language, "de")
+        let next = PlayerSpy.withTracks()
+        m.activePlayer = next
+        m.tracksChanged(from: next)
+        XCTAssertEqual(next.calls, ["subtitles 4"], "German again ('ger' and 'deu' are 'de')")
+        XCTAssertEqual(m.videoTracks.subtitleID, 4)
+    }
+
+    /// Tracks VLC finds later (a list that grows) are decided again; the same
+    /// list reported again changes nothing the user chose.
+    func testSubtitlesFoundLaterAreChosenToo() async throws {
+        let (m, _) = try await openOnVideo()
+        let player = PlayerSpy()
+        player.tracks.audio = [MediaTrack(id: 1, name: "English", language: "en")]
+        player.tracks.audioID = 1
+        m.activePlayer = player
+        m.tracksChanged(from: player)
+        XCTAssertEqual(player.calls, [])
+        player.tracks.subtitles = [MediaTrack(id: 5, name: "English", language: "en")]
+        m.tracksChanged(from: player)
+        XCTAssertEqual(player.calls, ["subtitles 5"], "on, though the file marks none as default")
+        m.selectSubtitle(nil)
+        m.tracksChanged(from: player)
+        XCTAssertEqual(player.calls, ["subtitles 5", "subtitles off"], "the user's choice stays")
+    }
+
+    /// ⌃⌘A: the next audio track, round; its language is the next video's.
+    func testNextAudioTrackIsRemembered() async throws {
+        let (m, _) = try await openOnVideo()
+        let player = PlayerSpy.withTracks()
+        m.activePlayer = player
+        m.tracksChanged(from: player)
+        m.nextAudioTrack()
+        XCTAssertEqual(player.calls, ["audio 2"])
+        XCTAssertEqual(m.playbackNotice?.text, "Audio: German")
+        m.nextAudioTrack()
+        m.nextAudioTrack()
+        XCTAssertEqual(player.calls, ["audio 2", "audio 1", "audio 2"])
+        let next = PlayerSpy.withTracks()
+        m.activePlayer = next
+        m.tracksChanged(from: next)
+        XCTAssertEqual(next.calls, ["audio 2"], "German sound again")
+        let single = PlayerSpy()
+        single.tracks.audio = [MediaTrack(id: 1, name: "English", language: "en")]
+        m.activePlayer = single
+        m.tracksChanged(from: single)
+        m.nextAudioTrack()
+        XCTAssertEqual(single.calls, [], "one track: nothing to switch")
+        XCTAssertEqual(m.playbackNotice?.text, "This video has only one audio track")
+    }
+
+    /// < / > step the speed (0.5× … 2×), shown in the badge's model and kept
+    /// for the next video until the app quits; nothing on a picture.
+    func testLessAndGreaterChangeTheSpeed() async throws {
+        let (m, player) = try await openOnVideo()
+        XCTAssertTrue(m.handleKey(.char(">"), command: false, shift: true))
+        XCTAssertEqual(player.speed, 1.25)
+        XCTAssertEqual(m.playbackNotice?.text, "Speed " + PlaybackSpeed.text(1.25))
+        for _ in 0..<6 { m.handleKey(.char(">"), command: false, shift: true) }
+        XCTAssertEqual(m.playbackSpeed, 2, "no faster than 2×")
+        for _ in 0..<9 { m.handleKey(.char("<"), command: false, shift: true) }
+        XCTAssertEqual(m.playbackSpeed, 0.5, "no slower than 0.5×")
+        m.handleKey(.char(">"), command: false, shift: true)
+        let next = PlayerSpy()
+        m.activePlayer = next
+        XCTAssertEqual(next.speed, 0.75, "the next video plays at it too")
+        XCTAssertEqual(BrowserModel(defaults: m.defaults).playbackSpeed, 1, "not remembered across launches")
+        m.setSpeed(1)
+        XCTAssertEqual(next.speed, 1)
+        m.selectEntry(named: "z.jpg")
+        XCTAssertFalse(m.handleKey(.char(">"), command: false, shift: true), "a picture has no speed")
+        XCTAssertFalse(m.handleKey(.char("v"), command: false))
+        m.closeDetail()
+        XCTAssertFalse(m.handleKey(.char("v"), command: false), "nor the grid")
+    }
+
+    func testSpeedSteps() {
+        XCTAssertEqual(PlaybackSpeed.step(from: 1, by: 1), 1.25)
+        XCTAssertEqual(PlaybackSpeed.step(from: 1, by: -1), 0.75)
+        XCTAssertEqual(PlaybackSpeed.step(from: 2, by: 1), 2)
+        XCTAssertEqual(PlaybackSpeed.step(from: 0.5, by: -1), 0.5)
+        XCTAssertEqual(PlaybackSpeed.step(from: 1.1, by: -1), 1, "from between two steps to the nearer one that way")
+    }
+
+    func testTrackLanguagesAndNames() {
+        XCTAssertEqual(MediaTrack.languageCode("eng"), "en")
+        XCTAssertEqual(MediaTrack.languageCode("ger"), "de")
+        XCTAssertEqual(MediaTrack.languageCode("deu"), "de")
+        XCTAssertEqual(MediaTrack.languageCode("en-US"), "en")
+        XCTAssertNil(MediaTrack.languageCode("und"))
+        let english = Locale.current.localizedString(forLanguageCode: "en") ?? "?"
+        XCTAssertEqual(MediaTrack.name(title: nil, language: "eng", number: 1), english)
+        XCTAssertEqual(MediaTrack.name(title: "English", language: "eng", number: 1), english, "a title that only names the language")
+        XCTAssertEqual(MediaTrack.name(title: "Commentary", language: "eng", number: 2), "Commentary (\(english))")
+        XCTAssertEqual(MediaTrack.name(title: nil, language: nil, number: 3), "Track 3")
+    }
+
+    /// The control bar's place: its share of the video area, held inside it.
+    func testTheControlBarStaysInsideTheVideoArea() {
+        let bar = CGSize(width: 400, height: 40)
+        let area = CGSize(width: 1000, height: 600)
+        let bottom = VideoBarPlacement.place(nil, bar: bar, in: area)
+        XCTAssertEqual(bottom.x, 500)
+        XCTAssertEqual(bottom.y, 600 - VideoBarPlacement.bottomMargin - 20)
+        let corner = VideoBarPlacement.place(CGPoint(x: 0, y: 0), bar: bar, in: area)
+        XCTAssertEqual(corner.x, 200 + VideoBarPlacement.margin)
+        XCTAssertEqual(corner.y, 20 + VideoBarPlacement.margin)
+        let kept = VideoBarPlacement.place(CGPoint(x: 0.7, y: 0.3), bar: bar, in: area)
+        XCTAssertEqual(kept, CGPoint(x: 700, y: 180))
+        // A narrower window: still all of it on screen
+        let narrow = VideoBarPlacement.place(CGPoint(x: 0.95, y: 0.5), bar: bar, in: CGSize(width: 500, height: 300))
+        XCTAssertEqual(narrow.x, 500 - 200 - VideoBarPlacement.margin)
+        let tiny = VideoBarPlacement.place(CGPoint(x: 0.9, y: 0.9), bar: bar, in: CGSize(width: 300, height: 30))
+        XCTAssertEqual(tiny, CGPoint(x: 150, y: 15), "larger than the area: in its middle")
+        XCTAssertEqual(VideoBarPlacement.fraction(of: CGPoint(x: 250, y: 150), in: CGSize(width: 1000, height: 600)), CGPoint(x: 0.25, y: 0.25))
     }
 
     /// A video that never gets a length (not playable) is left with →,

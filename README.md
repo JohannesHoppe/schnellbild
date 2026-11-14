@@ -160,6 +160,7 @@ It starts where you are: from the full view at the picture you're looking at; in
 | ⌘← ⌘→ | previous / next item |
 | ↑ ↓ | pictures zoomed in: look further up / down; videos: volume up / down |
 | f / i / e / a | full screen, file info, auto enhance, sliders, as in the full view |
+| V / ⌃⌘S / ⌃⌘A / < > | subtitles, audio track and speed of a video, as in the full view |
 | Esc / Return / Backspace | end the slideshow |
 
 ### Zoom and rotate
@@ -187,7 +188,12 @@ Zoom with the keyboard or a trackpad pinch, drag to pan, rotate in steps of 90°
 - **Everything plays:** MP4 and MOV through macOS itself, what macOS can't play (AVI, MKV, WebM, DVD's VOB …) through the VLC engine built in. Media Extensions you turned on in System Settings are used too.
 - **The arrow keys skim:** each press jumps a tenth of the video, ⇧ a hundredth, past the end on to the next item. So one key pages through photos and skims through videos; ⌘← ⌘→ skip a video at once.
 - **A thin bar** at the top shows how far the video has played and the time left.
+- **One control bar for every video**, whichever engine plays it: play and pause, the position to drag, the time played and left, volume, speed, subtitles and the audio track (where the video has more than one), full screen. It shows while the mouse moves over the video and goes after a few seconds of rest, never dimming the picture. Drag it by its grip wherever it suits you: it stays there for every video, also after a restart, and a double click on the grip puts it back at the bottom. On a zoomed or turned video it stays upright.
 - **↑ ↓ set the volume** of every video, kept for the next launch.
+- **Subtitles inside the video** (MKV with SubRip, ASS or PGS, MP4 and MOV with text tracks): on or off with `V`, the next track with ⌃⌘S. On and off and the language you chose last are kept for every video. Subtitle files lying next to a video are never loaded, nothing is fetched from the internet.
+- **Audio tracks:** a video with several (languages, a commentary) switches with ⌃⌘A or from the control bar, which names each track's language; the language is kept for the next video.
+- **Speed:** `<` and `>` play slower or faster in steps from 0.5× to 2×, the voices keeping their pitch; ⌘\\ is normal speed again. The badge shows the speed while it isn't 1×; it holds for every video until Schnellbild quits.
+- **Right-click the video** for subtitles, audio track and speed; the Video menu has them too.
 
 | Key | Action |
 |---|---|
@@ -196,6 +202,11 @@ Zoom with the keyboard or a trackpad pinch, drag to pan, rotate in steps of 90°
 | ⌘← ⌘→ | previous / next item straight away |
 | ↑ ↓ | volume up / down in tenths, for every video, remembered (shown while it changes) |
 | ⇧← ⇧→ | 1 % of the length back / ahead, to find a place exactly |
+| V | subtitles on / off (remembered) |
+| ⌃⌘S | next subtitle track, then none |
+| ⌃⌘A | next audio track |
+| < / > | slower / faster (0.5×, 0.75×, 1×, 1.25×, 1.5×, 2×) |
+| ⌘\\ | normal speed |
 
 <p align="center"><picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/volume-dark.png">

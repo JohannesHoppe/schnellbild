@@ -43,6 +43,7 @@ struct SchnellbildApp: App {
         // volumes coming and going and the app turning active reach them too
         BrowserModel.watchFoldersByDefault = true
         DiskEvents.start()
+        VideoBarPlacement.shared.use(defaults)
         let left = BrowserModel(defaults: defaults)
         _first = StateObject(wrappedValue: WindowModel(left: left, defaults: defaults) {
             BrowserModel(defaults: defaults, settingsPrefix: "rightPane.")
@@ -82,6 +83,9 @@ struct SchnellbildApp: App {
                 Button("Search") { model.focusSearch() }
                     .keyboardShortcut("f", modifiers: .command)
                     .disabled(window.anySheetOpen || model.slideshow != nil)
+            }
+            CommandMenu("Video") {
+                VideoCommands(model: model, window: window)
             }
             CommandMenu("Bookmarks") {
                 BookmarkItems(model: model, shortcuts: true)
@@ -223,5 +227,37 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         guard BrowserModel.transfersUnderWay > 0 else { return .terminateNow }
         BrowserModel.onTransfersDone = { NSApp.reply(toApplicationShouldTerminate: true) }
         return .terminateLater
+    }
+}
+
+/// The Video menu: subtitles, audio track and speed of the video on screen
+/// (V, < and > are taught by F1 and the mini keyboard; ⌃⌘S, ⌃⌘A as in IINA).
+struct VideoCommands: View {
+    @ObservedObject var model: BrowserModel
+    @ObservedObject var window: WindowModel
+
+    var body: some View {
+        let off = model.shownMediaEntry?.kind != .video || window.anySheetOpen
+        Group {
+            Toggle("Show Subtitles", isOn: Binding(get: { model.showSubtitles }, set: { _ in model.toggleSubtitles() }))
+            Button("Next Subtitle Track") { model.nextSubtitleTrack() }
+                .keyboardShortcut("s", modifiers: [.control, .command])
+            Menu("Subtitles") { VideoMenus.subtitlePicker(model) }
+                .disabled(model.videoTracks.subtitles.isEmpty)
+            Divider()
+            Button("Next Audio Track") { model.nextAudioTrack() }
+                .keyboardShortcut("a", modifiers: [.control, .command])
+            Menu("Audio Track") { VideoMenus.audioPicker(model) }
+                .disabled(model.videoTracks.audio.count < 2)
+            Divider()
+            Button("Faster") { model.changeSpeed(by: +1) }
+            Button("Slower") { model.changeSpeed(by: -1) }
+            Button("Normal Speed") { model.setSpeed(1) }
+                .keyboardShortcut("\\", modifiers: .command)
+            Menu("Speed") { VideoMenus.speedPicker(model) }
+            Divider()
+            Button("Reset Control Bar Position") { model.resetVideoBarPosition() }
+        }
+        .disabled(off)
     }
 }

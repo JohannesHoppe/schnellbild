@@ -202,6 +202,129 @@ final class VideoUITests: SchnellbildUITestCase {
                           "on videos the badge sits at the top, away from the control bar")
     }
 
+    // MARK: Subtitles, audio tracks, speed
+
+    /// The tracks of a video with two of each (`tracks.mp4`: mov_text in
+    /// AVKit; `tracks.mkv`: SubRip and ASS in VLC): the defaults on, ⌃⌘S and
+    /// V switch the subtitles, ⌃⌘A the sound, > the speed, which the badge
+    /// shows and the video plays at.
+    private func checkTracksAndSpeed(_ fixture: String, vlc: Bool) throws {
+        try put(fixture, at: fixture)
+        launch(open: tempDir.appendingPathComponent(fixture).path, extra: (vlc ? ["--force-vlc"] : []) + ["--hold-video-bar"])
+        let video = element(vlc ? "video.vlc" : "video.avkit")
+        XCTAssertTrue(video.waitForExistence(timeout: 20))
+        eventually("the tracks are known, the defaults on", timeout: 20) {
+            text(of: video).contains("audio 1/2 en, subtitles 1/2 en")
+        }
+        app.typeKey("s", modifierFlags: [.control, .command])
+        eventually("⌃⌘S: the German subtitles") { text(of: video).contains("subtitles 2/2 de") }
+        app.typeKey("v", modifierFlags: [])
+        eventually("V: none") { text(of: video).contains("subtitles off/2") }
+        app.typeKey("v", modifierFlags: [])
+        eventually("V again: the German ones, the language chosen") { text(of: video).contains("subtitles 2/2 de") }
+        app.typeKey("a", modifierFlags: [.control, .command])
+        eventually("⌃⌘A: the German sound") { text(of: video).contains("audio 2/2 de") }
+        // The control bar lists them
+        video.hover()
+        XCTAssertTrue(element("videoBar").waitForExistence(timeout: 5), "the control bar shows on the mouse moving")
+        XCTAssertTrue(element("videoBar.subtitles").exists)
+        XCTAssertTrue(element("videoBar.audio").exists)
+        // Twice as fast: the position moves on about twice as fast
+        for _ in 0..<4 { app.typeKey(">", modifierFlags: []) }
+        eventually("2×") { text(of: video).contains("speed 2.0") }
+        waitForBadge(containing: "2×")
+        let progress = element("videoProgress")
+        func percent() -> Int { Int(text(of: progress).filter(\.isNumber)) ?? -1 }
+        let before = percent(), start = Date()
+        RunLoop.current.run(until: start.addingTimeInterval(3))
+        let played = Double(percent() - before) / 100 * 20   // seconds of the 20 s video
+        let took = Date().timeIntervalSince(start)
+        print("\(vlc ? "VLC" : "AVKit") at 2×: \(played) s of video in \(took) s")
+        XCTAssertGreaterThan(played, took * 1.5, "plays faster than 1×")
+        app.typeKey("\\", modifierFlags: .command)
+        eventually("⌘\\: normal speed") { text(of: video).contains("speed 1.0") }
+        XCTAssertFalse(text(of: badge).contains("×"), "at 1× the badge shows no speed: \(text(of: badge))")
+        // The next launch starts with the choices: German subtitles and sound
+        app.terminate()
+        launch(open: tempDir.appendingPathComponent(fixture).path, resetState: false, extra: vlc ? ["--force-vlc"] : [])
+        let again = element(vlc ? "video.vlc" : "video.avkit")
+        XCTAssertTrue(again.waitForExistence(timeout: 20))
+        eventually("remembered", timeout: 20) { text(of: again).contains("audio 2/2 de, subtitles 2/2 de, speed 1.0") }
+    }
+
+    func testTracksAndSpeedInAVKit() throws { try checkTracksAndSpeed("tracks.mp4", vlc: false) }
+    func testTracksAndSpeedInVLC() throws { try checkTracksAndSpeed("tracks.mkv", vlc: true) }
+    func testMovTextTracksInVLC() throws { try checkTracksAndSpeed("tracks.mp4", vlc: true) }
+
+    // MARK: The control bar
+
+    /// The control bar (both players) is dragged by its grip; the next
+    /// video and the next launch have it there; a double click on the grip
+    /// puts it back at the bottom middle.
+    private func checkControlBarStays(vlc: Bool) throws {
+        try put("clip.mp4", at: "a-clip.mp4")
+        try put("grey.mp4", at: "b-grey.mp4")
+        let extra = (vlc ? ["--force-vlc"] : []) + ["--hold-video-bar"]
+        launch(open: tempDir.appendingPathComponent("a-clip.mp4").path, extra: extra)
+        let id = vlc ? "video.vlc" : "video.avkit"
+        var video = element(id)
+        XCTAssertTrue(video.waitForExistence(timeout: 20))
+        waitForBadge(containing: "a-clip.mp4")
+        video.hover()
+        let bar = element("videoBar")
+        XCTAssertTrue(bar.waitForExistence(timeout: 5), "shows on the mouse moving over the video")
+        XCTAssertGreaterThan(bar.frame.midY, video.frame.midY, "at first at the bottom")
+        XCTAssertEqual(bar.frame.midX, video.frame.midX, accuracy: 4, "in the middle")
+        XCTAssertTrue(element("videoBar.playPause").exists)
+        XCTAssertTrue(element("videoBar.position").exists)
+        XCTAssertTrue(element("videoBar.speed").exists)
+        XCTAssertFalse(element("videoBar.audio").exists, "one sound track: no menu for it")
+        // Dragged to the upper left
+        let grip = element("videoBar.grip")
+        let target = video.coordinate(withNormalizedOffset: CGVector(dx: 0.2, dy: 0.15))
+        grip.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).press(forDuration: 0.2, thenDragTo: target)
+        eventually("moved up") { bar.frame.midY < video.frame.midY && bar.frame.midX < video.frame.midX }
+        let moved = bar.frame
+        // The next video: the same place
+        app.typeKey(.rightArrow, modifierFlags: .command)
+        waitForBadge(containing: "b-grey.mp4")
+        video = element(id)
+        video.hover()
+        XCTAssertTrue(bar.waitForExistence(timeout: 5))
+        eventually("the same place for the next video") {
+            abs(bar.frame.midX - moved.midX) < 3 && abs(bar.frame.midY - moved.midY) < 3
+        }
+        // The next launch too
+        app.terminate()
+        launch(open: tempDir.appendingPathComponent("a-clip.mp4").path, resetState: false, extra: extra)
+        video = element(id)
+        XCTAssertTrue(video.waitForExistence(timeout: 20))
+        video.hover()
+        XCTAssertTrue(element("videoBar").waitForExistence(timeout: 5))
+        eventually("the same place after a new launch") {
+            abs(element("videoBar").frame.midX - moved.midX) < 3 && abs(element("videoBar").frame.midY - moved.midY) < 3
+        }
+        // Double click on the grip: back to the bottom
+        element("videoBar.grip").doubleClick()
+        eventually("back at the bottom") { element("videoBar").frame.midY > element(id).frame.midY }
+    }
+
+    func testTheControlBarStaysWhereItIsPutInAVKit() throws { try checkControlBarStays(vlc: false) }
+    func testTheControlBarStaysWhereItIsPutInVLC() throws { try checkControlBarStays(vlc: true) }
+
+    /// Without the mouse moving the bar goes after a few seconds, as AVKit's did.
+    func testTheControlBarHidesWhenTheMouseRests() throws {
+        try put("clip.mp4", at: "clip.mp4")
+        launch(open: tempDir.appendingPathComponent("clip.mp4").path)
+        let video = element("video.avkit")
+        XCTAssertTrue(video.waitForExistence(timeout: 20))
+        video.hover()
+        XCTAssertTrue(element("videoBar").waitForExistence(timeout: 5))
+        eventually("gone once the mouse rests", timeout: 10) { !element("videoBar").exists }
+        video.coordinate(withNormalizedOffset: CGVector(dx: 0.3, dy: 0.4)).hover()
+        XCTAssertTrue(element("videoBar").waitForExistence(timeout: 5), "back on moving")
+    }
+
     func testImageBadgeStaysAtTheBottom() {
         launch(open: tempDir.appendingPathComponent("a.jpg").path)
         waitForBadge(containing: "a.jpg")

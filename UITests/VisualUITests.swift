@@ -293,6 +293,52 @@ final class VisualUITests: SchnellbildUITestCase {
         }
     }
 
+    // MARK: Subtitles
+
+    /// The subtitles inside the video are drawn over the picture, by AVKit
+    /// and by VLC (into the pictures it hands over through its video
+    /// callbacks): on the even grey clip the lower part of the picture,
+    /// where they go, shows the text; with V it is even again.
+    private func checkSubtitlesAreDrawn(_ fixture: String, vlc: Bool) throws {
+        let video = try openVideo(fixture, vlc: vlc)
+        eventually("the subtitles are on", timeout: 20) { text(of: video).contains("subtitles 1/2 en") }
+        // The mouse off the video: the control bar goes and covers nothing
+        app.windows.firstMatch.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.02)).hover()
+        settle(4)
+        let picture = picture(in: video)
+        let lower = CGRect(x: picture.minX + picture.width * 0.15, y: picture.minY + picture.height * 0.7,
+                           width: picture.width * 0.7, height: picture.height * 0.28)
+        let shown = try screenStats(of: lower)
+        app.typeKey("v", modifierFlags: [])
+        eventually("off") { text(of: video).contains("subtitles off/2") }
+        settle(2)
+        let hidden = try screenStats(of: lower)
+        print("\(vlc ? "VLC" : "AVKit") \(fixture) subtitles: on ± \(shown.spread) (mean \(shown.mean)), off ± \(hidden.spread) (mean \(hidden.mean))")
+        XCTAssertGreaterThan(hidden.mean, 0.3, "the picture is there")
+        XCTAssertLessThan(hidden.spread, 0.04, "off: the lower part is even grey")
+        XCTAssertGreaterThan(shown.spread, hidden.spread + 0.04, "on: text over the lower part of the picture")
+    }
+
+    func testAVKitDrawsMovTextSubtitles() throws { try checkSubtitlesAreDrawn("tracks.mp4", vlc: false) }
+    func testVLCDrawsSubRipSubtitles() throws { try checkSubtitlesAreDrawn("tracks.mkv", vlc: true) }
+    func testVLCDrawsMovTextSubtitles() throws { try checkSubtitlesAreDrawn("tracks.mp4", vlc: true) }
+
+    /// The ASS subtitles (libass) of the MKV, chosen with ⌃⌘S.
+    func testVLCDrawsASSSubtitles() throws {
+        let video = try openVideo("tracks.mkv", vlc: true)
+        eventually("the subtitles are on", timeout: 20) { text(of: video).contains("subtitles 1/2 en") }
+        app.typeKey("s", modifierFlags: [.control, .command])
+        eventually("the ASS track") { text(of: video).contains("subtitles 2/2 de") }
+        app.windows.firstMatch.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.02)).hover()
+        settle(4)
+        let picture = picture(in: video)
+        let lower = CGRect(x: picture.minX + picture.width * 0.15, y: picture.minY + picture.height * 0.7,
+                           width: picture.width * 0.7, height: picture.height * 0.28)
+        let shown = try screenStats(of: lower)
+        print("VLC ASS subtitles: ± \(shown.spread) (mean \(shown.mean))")
+        XCTAssertGreaterThan(shown.spread, 0.05, "text over the lower part of the picture")
+    }
+
     /// 4K at 60 frames per second through VLC: the picture reaches the
     /// screen, and handing each picture over to the app costs little (a
     /// picture has 16 ms at 60 fps). How many pictures VLC loses is only

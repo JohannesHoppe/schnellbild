@@ -112,7 +112,9 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         app.typeKey(.rightArrow, modifierFlags: [])
         app.typeKey(.space, modifierFlags: [])
         waitForBadge(containing: ui("Paused"))
-        shoot("video")
+        element("video.avkit").hover()   // the control bar shows
+        XCTAssertTrue(element("videoBar").waitForExistence(timeout: 5))
+        shoot("video", settle: 0.5)
 
         app.typeKey(.escape, modifierFlags: [])
         app.typeKey("s", modifierFlags: [])   // the whole library, full screen
@@ -137,7 +139,7 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         let photos = try FileManager.default.subpathsOfDirectory(atPath: tempDir.path)
             .filter { $0.hasSuffix(".jpg") && !$0.hasPrefix(".") }.sorted()
 
-        launch(open: tempDir.path, extra: ["--hold-volume-display"])
+        launch(open: tempDir.path, extra: ["--hold-volume-display", "--hold-video-bar"])
         XCTAssertTrue(tile("Iceland 2025.zip").waitForExistence(timeout: 15))
         XCTAssertTrue(element("otherFiles").waitForExistence(timeout: 10))
         tile("Iceland 2025.zip").click()

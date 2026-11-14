@@ -64,6 +64,15 @@ struct ShortcutsHelpView: View {
             Shortcut(keys: "F2", action: "Rename"),
             Shortcut(keys: "⎋ / ⌫ / ↩", action: "Back to grid"),
         ]),
+        Group(title: "Videos", shortcuts: [
+            Shortcut(keys: "V", action: "Subtitles on / off (remembered, with the language chosen)"),
+            Shortcut(keys: "⌃⌘S", action: "Next subtitle track, then none"),
+            Shortcut(keys: "⌃⌘A", action: "Next audio track (the language is remembered)"),
+            Shortcut(keys: "< / >", action: "Slower / faster (0.5× … 2×, until the app quits)"),
+            Shortcut(keys: "⌘\\", action: "Normal speed"),
+            Shortcut(keys: "drag", action: "The control bar by its grip: it stays there for every video; double-click the grip: back to the bottom", wordsInKeys: true),
+            Shortcut(keys: "right-click", action: "Subtitles, audio track, speed", wordsInKeys: true),
+        ]),
         Group(title: "Slideshow", shortcuts: [
             Shortcut(keys: "s", action: "Start: all pictures and videos in this folder and its subfolders (while searching: the results)"),
             Shortcut(keys: "Space", action: "Pause / resume"),
