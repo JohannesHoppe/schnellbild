@@ -198,6 +198,7 @@ VLC's third-party libraries (`contrib`) are linked into VLCKit whether or not a 
 
 AVI/MKV/WebM and other non-native formats play **in-app via vendored VLCKit
 (LibVLC), as a fallback only**; native formats stay on AVKit.
+AVKit stays for the native formats: it decodes with less effort than our VLC path and shows HDR (HDR10, HLG, Dolby Vision) through its `AVPlayerLayer`, while `VLCFrameOutput` hands 8-bit NV12 tagged as SDR.
 
 - It's **built by us from VideoLAN's source** without the GPL modules (see
   "VLCKit without GPL modules"), published as a pre-release of this repository
@@ -366,6 +367,7 @@ Releases ship as a signed, notarized DMG (and, signed for it, to the Mac App Sto
 
 Open / next-up:
 - **Own keyboard shortcuts** — let users assign their own keys to the actions (Phiewer offers this in its PRO version; its defaults are in `docs/phiewer-shortcuts.md`). Idea: a preset "as in Phiewer" to switch to, for people coming from it; where the defaults differ: ⌘← ⌘→ (Phiewer: seek in a video; here: previous / next item), ⌘+ ⌘− (zoom; here: tile size), ⌫ (delete; here: Back), ⌘D (duplicate; here: bookmark), ⌘R (rename), ⌘Z / ⇧⌘Z (undo / redo; here deliberately no keys), ⌘1–⌘3 (gallery modes; here: sort), ⌥⌘L (folder / thumbnail view; here: L), ⌘P (print pictures). Today the keys are fixed; F1 lists them all and prints them.
+- **HDR in VLC** — `VLCFrameOutput` asks VLC for 8-bit NV12 tagged BT.709/601, so an HDR video that plays in VLC (an HDR10 MKV) shows as SDR. Would need 10-bit buffers (P010), PQ/HLG and BT.2020 attachments, EDR on the layer and a `Look` that works in HDR. After the App Store launch.
 - **Demo GIF** — storyboard ready in `docs/launch-storyboard.md`. User records it
   later, drops `docs/demo.gif`, uncomments the demo line near the top of README.
 - **Launch posts** — `docs/launch.md` has ready Show HN + r/macapps copy; user
