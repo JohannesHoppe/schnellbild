@@ -105,6 +105,9 @@ body {
 }
 a { color: var(--accent); text-decoration: none; }
 a:hover { text-decoration: underline; text-underline-offset: 2px; }
+/* A link inside running text is underlined: its colour alone doesn't set it apart
+   enough from the text around it (3:1) */
+main :is(p, li) a { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px; }
 img { max-width: 100%; height: auto; display: block; }
 kbd, code {
   font: 0.86em ui-monospace, "SF Mono", Menlo, monospace;
