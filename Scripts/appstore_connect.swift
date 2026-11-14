@@ -143,6 +143,8 @@ guard let appID = items(try await api("GET", query("/v1/apps", ["filter[bundleId
     fail("no app with the bundle ID \(bundleID) in App Store Connect")
 }
 say("App \(bundleID) (\(appID)), version \(versionString) (\(buildNumber))")
+let primaryLocale = attributes(try await api("GET", "/v1/apps/\(appID)")["data"] as? JSON ?? [:])["primaryLocale"] as? String ?? ""
+say("Primary language: \(primaryLocale)")
 
 // The version: the one being prepared gets this version string, or a new one is made.
 let versions = items(try await api("GET", query("/v1/apps/\(appID)/appStoreVersions", ["filter[platform]": "MAC_OS", "limit": "50"])))
