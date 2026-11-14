@@ -126,7 +126,11 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         element("video.avkit").hover()   // the control bar shows
         _ = element("videoBar").waitForExistence(timeout: 5)
         shoot("slideshow", settle: 0.5)   // before the bar goes (3 s without the mouse moving)
-        app.typeKey(.escape, modifierFlags: [])
+        app.typeKey("p", modifierFlags: [])   // the playlist slides in
+        XCTAssertTrue(element("playlist").firstMatch.waitForExistence(timeout: 5))
+        shoot("playlist")
+        app.typeKey(.escape, modifierFlags: [])   // the playlist goes
+        app.typeKey(.escape, modifierFlags: [])   // then the show
         XCTAssertTrue(searchField.waitForExistence(timeout: 10))
         RunLoop.current.run(until: Date().addingTimeInterval(2))   // out of full screen
 

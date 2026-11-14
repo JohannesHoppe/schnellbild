@@ -153,6 +153,11 @@ It starts where you are: from the full view at the picture you're looking at; in
 
 **A playlist on the fly.** There are no playlists to build: whatever the slideshow plays (the folder and its subfolders, the search results, an archive) is the playlist. Press `p` during the show and its list slides in from the right, every photo and video in the order it plays, each with its preview and name, the one on screen marked. Drag an item to where it should play, click one to jump to it, or take one out with `⌫` (after a click in the list; the file stays where it is). While the subfolders are still being read, what they bring keeps coming in, and what you moved or took out stays that way. The list lies over the picture; the pin at its top right gives it a place of its own beside the picture, and its left edge drags it wider or narrower (a double-click: the standard width). Schnellbild remembers the pin and the width; the list itself ends with the show. `Esc` closes the playlist first, then the show.
 
+<p align="center"><picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/playlist-dark.webp">
+  <img src="docs/screenshots/playlist-light.webp" width="760" alt="The slideshow with its playlist open">
+</picture></p>
+
 | Key | Action |
 |---|---|
 | s | start the slideshow (again: end it) |
