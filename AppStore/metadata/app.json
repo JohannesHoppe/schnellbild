@@ -10,5 +10,41 @@
   "screenshots": {
     "en-US": "AppStore/screenshots/en",
     "de-DE": "AppStore/screenshots/de"
+  },
+  "contentRights": "DOES_NOT_USE_THIRD_PARTY_CONTENT",
+  "eula": "AppStore/EULA.md",
+  "unavailableTerritories": [
+    "CHN"
+  ],
+  "ageRating": {
+    "alcoholTobaccoOrDrugUseOrReferences": "NONE",
+    "contests": "NONE",
+    "gamblingSimulated": "NONE",
+    "gunsOrOtherWeapons": "NONE",
+    "horrorOrFearThemes": "NONE",
+    "matureOrSuggestiveThemes": "NONE",
+    "medicalOrTreatmentInformation": "NONE",
+    "profanityOrCrudeHumor": "NONE",
+    "sexualContentGraphicAndNudity": "NONE",
+    "sexualContentOrNudity": "NONE",
+    "violenceCartoonOrFantasy": "NONE",
+    "violenceRealistic": "NONE",
+    "violenceRealisticProlongedGraphicOrSadistic": "NONE",
+    "gambling": false,
+    "unrestrictedWebAccess": false,
+    "advertising": false,
+    "ageAssurance": false,
+    "healthOrWellnessTopics": false,
+    "lootBox": false,
+    "messagingAndChat": false,
+    "parentalControls": false,
+    "userGeneratedContent": false,
+    "kidsAgeBand": null,
+    "ageRatingOverride": null,
+    "ageRatingOverrideV2": null,
+    "koreaAgeRatingOverride": null,
+    "developerAgeRatingInfoUrl": null,
+    "seventeenPlus": null,
+    "gamblingAndContests": null
   }
 }

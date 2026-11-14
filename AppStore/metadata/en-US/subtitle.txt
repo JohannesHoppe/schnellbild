@@ -1,1 +1,1 @@
-Photo & video viewer, fast
+Image viewer that doesn't suck

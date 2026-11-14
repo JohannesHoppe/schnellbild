@@ -86,7 +86,7 @@ func bearer() throws -> String {
 typealias JSON = [String: Any]
 
 @discardableResult
-func api(_ method: String, _ path: String, _ body: JSON? = nil) async throws -> JSON {
+func api(_ method: String, _ path: String, _ body: JSON? = nil, missingOK: Bool = false) async throws -> JSON {
     let url = path.hasPrefix("https://") ? URL(string: path)! : URL(string: "https://api.appstoreconnect.apple.com" + path)!
     var request = URLRequest(url: url)
     request.httpMethod = method
@@ -98,6 +98,7 @@ func api(_ method: String, _ path: String, _ body: JSON? = nil) async throws -> 
     let (data, response) = try await URLSession.shared.data(for: request)
     let status = (response as? HTTPURLResponse)?.statusCode ?? 0
     let object = (try? JSONSerialization.jsonObject(with: data) as? JSON) ?? [:]
+    if missingOK && status == 404 { return [:] }
     guard (200..<300).contains(status) else {
         let errors = (object["errors"] as? [JSON] ?? []).map { "\($0["title"] ?? ""): \($0["detail"] ?? "")" }
         let hint = status == 403 ? " (the API key's role may be too low: App Manager or Admin is needed)" : ""
@@ -172,6 +173,85 @@ for locale in locales {
         attributes: values, creating: ["locale": locale],
         create: ["appInfo": relation("appInfos", id(appInfo))])
     say("  \(locale): name, subtitle, privacy policy")
+}
+
+// What App Store Connect shows now for name and subtitle, read back.
+for localization in items(try await api("GET", "/v1/appInfos/\(id(appInfo))/appInfoLocalizations")) {
+    let values = attributes(localization)
+    say("    \(values["locale"] ?? ""): \(values["name"] ?? "–") / \(values["subtitle"] ?? "–")")
+}
+
+// The age rating: every question App Store Connect asks is answered in app.json
+// (ageRating); a question it has that app.json doesn't answer stops the run.
+var unanswered: [String] = []
+if let answers = app["ageRating"] as? JSON {
+    let declaration = try await api("GET", "/v1/appInfos/\(id(appInfo))/ageRatingDeclaration")
+    guard let item = declaration["data"] as? JSON else { fail("the app information has no age rating declaration") }
+    let current = attributes(item)
+    unanswered = current.keys.filter { answers[$0] == nil && current[$0] is NSNull }.sorted()
+    let values = answers.filter { key, value in current.keys.contains(key) && !(value is NSNull) }
+    for key in answers.keys.sorted() where !current.keys.contains(key) { say("  age rating: App Store Connect has no question \(key)") }
+    try await upsert("ageRatingDeclarations", existing: item, attributes: values, create: [:])
+    say("Age rating answered (\(values.count) questions)")
+}
+
+// Content rights: whether the app shows, plays or contains content of others.
+if let rights = app["contentRights"] as? String {
+    let current = attributes(try await api("GET", "/v1/apps/\(appID)")["data"] as? JSON ?? [:])
+    if current["contentRightsDeclaration"] as? String != rights {
+        try await api("PATCH", "/v1/apps/\(appID)", ["data": ["type": "apps", "id": appID, "attributes": ["contentRightsDeclaration": rights]]])
+    }
+    say("Content rights: \(rights)")
+}
+
+let territories: [String] = items(try await api("GET", query("/v1/territories", ["limit": "200"]))).map(id)
+
+// The license agreement (app.json eula, a Markdown file), for every territory.
+if let eulaPath = app["eula"] as? String {
+    guard let markdown = try? String(contentsOf: root.appendingPathComponent(eulaPath), encoding: .utf8) else { fail("can't read \(eulaPath)") }
+    let agreement = markdown
+        .replacingOccurrences(of: #"(?m)^#+ +"#, with: "", options: .regularExpression)
+        .replacingOccurrences(of: #"<(https?://[^>]+)>"#, with: "$1", options: .regularExpression)
+        .trimmingCharacters(in: .whitespacesAndNewlines)
+    let all: JSON = ["data": territories.map { ["type": "territories", "id": $0] }]
+    let existing = try await api("GET", "/v1/apps/\(appID)/endUserLicenseAgreement", missingOK: true)["data"] as? JSON
+    if let existing {
+        try await api("PATCH", "/v1/endUserLicenseAgreements/\(id(existing))", ["data": ["type": "endUserLicenseAgreements", "id": id(existing),
+            "attributes": ["agreementText": agreement], "relationships": ["territories": all]]])
+    } else {
+        try await api("POST", "/v1/endUserLicenseAgreements", ["data": ["type": "endUserLicenseAgreements",
+            "attributes": ["agreementText": agreement], "relationships": ["app": relation("apps", appID), "territories": all]]])
+    }
+    say("License agreement from \(eulaPath), for \(territories.count) territories")
+}
+
+// Where the app is sold: everywhere but app.json's unavailableTerritories, new territories included.
+if let excluded = app["unavailableTerritories"] as? [String] {
+    let availability = try await api("GET", "/v1/apps/\(appID)/appAvailabilityV2", missingOK: true)["data"] as? JSON
+    if let availability {
+        let list = try await api("GET", query("/v2/appAvailabilities/\(id(availability))/territoryAvailabilities", ["include": "territory", "limit": "200"]))
+        var changed = 0
+        for entry in items(list) {
+            let territory = ((entry["relationships"] as? JSON)?["territory"] as? JSON)?["data"] as? JSON
+            let wanted = !excluded.contains(territory.map(id) ?? "")
+            if attributes(entry)["available"] as? Bool != wanted {
+                try await api("PATCH", "/v1/territoryAvailabilities/\(id(entry))", ["data": ["type": "territoryAvailabilities", "id": id(entry), "attributes": ["available": wanted]]])
+                changed += 1
+            }
+        }
+        say("Availability: all but \(excluded.joined(separator: ", ")) (\(changed) changed)")
+    } else {
+        let local = territories.enumerated().map { index, territory in (id: "${t\(index)}", territory: territory) }
+        try await api("POST", "/v2/appAvailabilities", [
+            "data": ["type": "appAvailabilities", "attributes": ["availableInNewTerritories": true], "relationships": [
+                "app": relation("apps", appID),
+                "territoryAvailabilities": ["data": local.map { ["type": "territoryAvailabilities", "id": $0.id] }],
+            ]],
+            "included": local.map { ["type": "territoryAvailabilities", "id": $0.id, "attributes": ["available": !excluded.contains($0.territory)],
+                                     "relationships": ["territory": relation("territories", $0.territory)]] },
+        ])
+        say("Availability: all but \(excluded.joined(separator: ", ")), made")
+    }
 }
 
 // Description, keywords, promotional text, URLs, What's New; then the screenshots.
@@ -268,4 +348,7 @@ if pickBuild {
         say("Note: the build's export compliance (encryption) is still to be answered in App Store Connect")
     }
 }
-say("Done. Submit for review in App Store Connect.")
+if !unanswered.isEmpty {
+    fail("age rating questions app.json doesn't answer (add them to ageRating): " + unanswered.joined(separator: ", "))
+}
+say("Done. In App Store Connect: App Privacy (\"Data Not Collected\") once, then Submit for Review.")
