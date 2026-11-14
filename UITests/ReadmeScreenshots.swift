@@ -119,6 +119,8 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         app.typeKey(.escape, modifierFlags: [])
         app.typeKey("s", modifierFlags: [])   // the whole library, full screen
         waitForBadge(containing: ui("Slideshow"))
+        element("video.avkit").hover()   // the control bar shows
+        _ = element("videoBar").waitForExistence(timeout: 5)
         shoot("slideshow")
         app.typeKey(.escape, modifierFlags: [])
         XCTAssertTrue(searchField.waitForExistence(timeout: 10))
