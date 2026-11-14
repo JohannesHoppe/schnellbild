@@ -38,7 +38,7 @@ struct VideoDetailView: View {
                     VLCVideoView(control: vlcControl)
                 } else if let avControl {
                     // The app's own control bar (`VideoControlBar`) serves both players
-                    AVPlayerViewHost(control: avControl)
+                    AVPlayerViewHost(player: avControl.player)
                 } else if checking {
                     LoadingSpinner()
                 }
@@ -231,20 +231,18 @@ struct VideoDetailView: View {
 /// inline and minimal controls dim the whole picture while they show, from
 /// macOS 26 on.) It draws the subtitles chosen.
 struct AVPlayerViewHost: NSViewRepresentable {
-    let control: AVPlaybackControl
+    let player: AVPlayer
 
     func makeNSView(context: Context) -> AVPlayerView {
         let view = AVPlayerView()
         view.controlsStyle = .none
         view.showsFullScreenToggleButton = false
-        view.player = control.player
-        control.playerView = view
+        view.player = player
         return view
     }
 
     func updateNSView(_ view: AVPlayerView, context: Context) {
-        if view.player !== control.player { view.player = control.player }
-        control.playerView = view
+        if view.player !== player { view.player = player }
     }
 }
 

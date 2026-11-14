@@ -1,7 +1,6 @@
 import SwiftUI
 import AppKit
 import AVFoundation
-import AVKit
 import ImageIO
 import UniformTypeIdentifiers
 import VLCFrames
@@ -4982,9 +4981,18 @@ final class AVPlaybackControl: PlaybackControl {
         let option = id.flatMap { subtitleOptions.indices.contains($0) ? subtitleOptions[$0] : nil }
         let shown = item.currentMediaSelection.selectedMediaOption(in: legible)
         guard shown != option else { return }
+        if option != nil { enableSubtitleTracks(true, in: item) }
         item.select(option, in: legible)
         refreshSubtitles()
-        if option == nil, shown != nil { clearSubtitleLine() }
+        if option == nil, shown != nil { clearSubtitleLine(in: item) }
+    }
+
+    /// The item's subtitle tracks on or off as a whole.
+    private func enableSubtitleTracks(_ on: Bool, in item: AVPlayerItem) {
+        for track in item.tracks {
+            guard let type = track.assetTrack?.mediaType, [.text, .subtitle, .closedCaption].contains(type) else { continue }
+            if track.isEnabled != on { track.isEnabled = on }
+        }
     }
 
     /// AVKit draws a newly chosen subtitle track only from its next line on,
@@ -5005,18 +5013,14 @@ final class AVPlaybackControl: PlaybackControl {
         }
     }
 
-    /// The view that shows the player (`AVPlayerViewHost`).
-    weak var playerView: AVPlayerView?
-
-    /// Subtitles switched off: macOS 15's player view keeps the line on
-    /// screen until it ends, seek or not (seen on CI; macOS 26 takes it away
-    /// with the seek). Handed to the view anew, it draws without it.
-    private func clearSubtitleLine() {
+    /// Subtitles switched off: macOS 15's player keeps the line on screen
+    /// until it ends, also after a seek, a legible output that suppresses
+    /// drawing or the player handed to its view anew (seen on CI; macOS 26
+    /// takes it away with the seek). With the subtitle tracks off it goes.
+    private func clearSubtitleLine(in item: AVPlayerItem) {
         if #available(macOS 26, *) { return }
-        guard let view = playerView, view.player === player else { return }
-        BrowserModel.testLog("avkit subtitles off: the player handed to its view anew")
-        view.player = nil
-        view.player = player
+        BrowserModel.testLog("avkit subtitles off: the subtitle tracks off")
+        enableSubtitleTracks(false, in: item)
     }
 
     func selectAudioTrack(_ id: Int) {
