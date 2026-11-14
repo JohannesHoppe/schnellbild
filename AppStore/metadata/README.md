@@ -1,6 +1,6 @@
 # App Store texts
 
-What the App Store shows, one file per field and language (`en-US` is the primary language, `de-DE` the second). `Scripts/appstore_connect.swift` puts them into App Store Connect: `gh workflow run appstore.yml -f metadata=true` (also with `-f upload=true`, then it waits for the build and picks it for the version).
+What the App Store shows, one file per field and language (`en-GB` is the primary language, the one shown where the App Store has no language of ours; `en-GB` is a link to `en-US`, the same English; `de-DE` the second). `Scripts/appstore_connect.swift` puts them into App Store Connect: `gh workflow run appstore.yml -f metadata=true` (also with `-f upload=true`, then it waits for the build and picks it for the version).
 
 - `<locale>/name.txt` (30 characters), `subtitle.txt` (30), `promotional_text.txt` (170, can change without a new version), `description.txt` (4000), `keywords.txt` (100, commas count, no other apps or brands), `release_notes.txt` ("What's New", 4000, for every version but the first in the Store: write it anew for each version), `marketing_url.txt`, `privacy_url.txt`, `support_url.txt` (the page in that language; without the file the URL in `app.json`).
 - The texts name no other apps, trademarks, prices or other places to get the app (Apple's App Review Guidelines on metadata).
