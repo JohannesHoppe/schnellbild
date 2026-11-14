@@ -215,12 +215,14 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         XCTAssertTrue(right.waitForExistence(timeout: 10))
         let rightTrip = right.descendants(matching: .any).matching(identifier: "tile.Lofoten").firstMatch
         XCTAssertTrue(rightTrip.waitForExistence(timeout: 15))
-        // Inside the trip ("tile..." is in the library too). The first click
-        // may only make the right pane active: then double-click again.
+        // Inside the trip ("tile..." is in the library too). A double click
+        // may only make the right pane active (seen on CI): then the trip,
+        // selected by a click, is opened with Space, as often as it takes.
         let inTrip = right.descendants(matching: .any).matching(identifier: "tile.Northern Lights.jpg").firstMatch
         rightTrip.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).doubleClick()
-        if !inTrip.waitForExistence(timeout: 5), rightTrip.exists {
-            rightTrip.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).doubleClick()
+        for _ in 0..<3 where !inTrip.waitForExistence(timeout: 5) && rightTrip.exists {
+            rightTrip.click()
+            app.typeKey(.space, modifierFlags: [])
         }
         XCTAssertTrue(inTrip.waitForExistence(timeout: 10))
         let leftPhoto = left.descendants(matching: .any).matching(identifier: "tile.Fjord at Sunset.jpg").firstMatch
