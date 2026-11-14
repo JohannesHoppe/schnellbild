@@ -225,11 +225,11 @@ enum ColumnWidth {
     static let kind: CGFloat = fitting(
         cells: [String(localized: "Folder"), String(localized: "Archive"),
                 String(localized: "Picture"), String(localized: "Video")],
-        header: String(localized: "Kind"), within: 70...180)
+        header: String(localized: "Kind"), within: 90...180)
 
     static let date: CGFloat = fitting(
         cells: sampleDates.map(EntryListView.format),
-        headers: [String(localized: "Date Modified"), String(localized: "Date Taken")], within: 130...260)
+        headers: [String(localized: "Date Modified"), String(localized: "Date Taken")], within: 150...260)
 
     /// One date per month and hour: the longest month name and day period
     /// ("清晨", "下午", "a.m.") are among them, with two-digit days and minutes.
