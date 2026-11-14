@@ -115,8 +115,8 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         RunLoop.current.run(until: Date().addingTimeInterval(1))
         app.typeKey(.rightArrow, modifierFlags: [])   // skim ahead, as in the README
         app.typeKey(.rightArrow, modifierFlags: [])
-        app.typeKey(.space, modifierFlags: [])
-        waitForBadge(containing: ui("Paused"))
+        // Playing: the website lays the moving video over this picture
+        // (Scripts/make_video_animation.py)
         element("video.avkit").hover()   // the control bar shows
         XCTAssertTrue(element("videoBar").waitForExistence(timeout: 5))
         shoot("video", settle: 0.5)
