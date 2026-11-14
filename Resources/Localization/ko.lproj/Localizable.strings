@@ -69,7 +69,7 @@
 "Previous / next item, also from a video" = "이전 / 다음 항목(비디오에서도)";
 "Next picture · play/pause video" = "다음 이미지 · 비디오 재생 / 일시 정지";
 "Zoom in / out" = "확대 / 축소";
-"Fit to window / 100 %" = "윈도우에 맞추기 / 100 %";
+"Fit to window / 100 %" = "윈도우에 맞추기 / 100 %";
 "Rotate left / right" = "왼쪽 / 오른쪽으로 회전";
 "File info" = "파일 정보";
 "Sliders: adjust by hand (switches auto enhance off)" = "슬라이더: 직접 조절(자동 향상이 꺼짐)";
@@ -86,7 +86,7 @@
 "Show this list" = "이 목록 보기";
 
 /* Archives */
-"Password for “%@”" = "“%@”의 암호";
+"Password for “%@”" = "‘%@’의 암호";
 "Password" = "암호";
 "The archive can't be read: %@" = "아카이브를 읽을 수 없습니다: %@";
 "About Schnellbild" = "Schnellbild에 관하여";
@@ -110,8 +110,8 @@
 "The name must end in a picture extension, such as “.%@”." = "이름은 ‘.%@’ 같은 이미지 확장자로 끝나야 합니다.";
 "The name must end in a video extension, such as “.%@”." = "이름은 ‘.%@’ 같은 비디오 확장자로 끝나야 합니다.";
 "Grid and full view" = "격자 및 전체 보기";
-"Pictures: previous / next · Videos: 10 % of the length back / ahead; at the start / end: previous / next item" = "이미지: 이전 / 다음 · 비디오: 길이의 10 % 뒤로 / 앞으로, 처음 / 끝에서는 이전 / 다음 항목";
-"Previous / next · Videos: 10 % of the length back / ahead" = "이전 / 다음 · 비디오: 길이의 10 % 뒤로 / 앞으로";
+"Pictures: previous / next · Videos: 10 % of the length back / ahead; at the start / end: previous / next item" = "이미지: 이전 / 다음 · 비디오: 길이의 10 % 뒤로 / 앞으로, 처음 / 끝에서는 이전 / 다음 항목";
+"Previous / next · Videos: 10 % of the length back / ahead" = "이전 / 다음 · 비디오: 길이의 10 % 뒤로 / 앞으로";
 "Wrong password for this archive." = "이 아카이브의 암호가 올바르지 않습니다.";
 "The archive is incomplete: still downloading, a part missing, or damaged." = "아카이브가 불완전합니다. 아직 다운로드 중이거나, 일부가 없거나, 손상되었습니다.";
 "A file listed in this archive is missing." = "이 아카이브에 나열된 파일이 없습니다.";
@@ -137,13 +137,13 @@
 "Zoom in" = "확대";
 "Zoom out" = "축소";
 "Fit" = "맞추기";
-"100 %" = "100 %";
+"100 %" = "100 %";
 "Rotate left" = "왼쪽으로 회전";
 "Rotate right" = "오른쪽으로 회전";
 "Info" = "정보";
 "Play / Pause" = "재생 / 일시 정지";
-"−10 %" = "−10 %";
-"+10 %" = "+10 %";
+"−10 %" = "−10 %";
+"+10 %" = "+10 %";
 "Previous item" = "이전 항목";
 "Next item" = "다음 항목";
 "Pause" = "일시 정지";
@@ -151,9 +151,9 @@
 "Keyboard" = "키보드";
 "Mini keyboard: the keys of what's on screen, clickable (K)" = "미니 키보드: 화면에 있는 항목의 키, 클릭 가능 (K)";
 "Show / hide the mini keyboard" = "미니 키보드 보기 / 가리기";
-"Video: 1 % of the length back / ahead" = "비디오: 길이의 1 % 뒤로 / 앞으로";
-"−1 %" = "−1 %";
-"+1 %" = "+1 %";
+"Video: 1 % of the length back / ahead" = "비디오: 길이의 1 % 뒤로 / 앞으로";
+"−1 %" = "−1 %";
+"+1 %" = "+1 %";
 "Louder" = "크게";
 "Quieter" = "작게";
 "Pictures zoomed in: look further up / down · Videos: volume up / down (remembered)" = "확대한 이미지: 위 / 아래 보기 · 비디오: 음량 높이기 / 낮추기(기억됨)";
@@ -213,7 +213,7 @@
 "Copying or moving is still under way." = "아직 복사 또는 이동 중입니다.";
 "Schnellbild quits once it is done. Quitting now would leave files half copied." = "완료되면 Schnellbild가 종료됩니다. 지금 종료하면 파일이 절반만 복사된 채로 남습니다.";
 "Quit When Done" = "완료되면 종료";
-"The name must end in “.%@”, as the archive does." = "이름은 아카이브처럼 “.%@”(으)로 끝나야 합니다.";
+"The name must end in “.%@”, as the archive does." = "이름은 아카이브처럼 ‘.%@’(으)로 끝나야 합니다.";
 "unknown error" = "알 수 없는 오류";
 "⇧-click / ⇧ arrows" = "⇧-클릭 / ⇧ 화살표";
 "drag" = "드래그";

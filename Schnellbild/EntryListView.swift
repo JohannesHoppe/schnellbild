@@ -1,3 +1,4 @@
+import AppKit
 import SwiftUI
 import UniformTypeIdentifiers
 
@@ -9,24 +10,32 @@ struct EntryListView: View {
     @EnvironmentObject var model: BrowserModel
     @Environment(\.colorSchemeContrast) private var contrast
 
-    static let kindWidth: CGFloat = 90
-    static let dateWidth: CGFloat = 150
+    static let kindWidth = ColumnWidth.kind
+    static let dateWidth = ColumnWidth.date
     static let sizeWidth: CGFloat = 80
     private static let previewSide: CGFloat = 30
 
     var body: some View {
         VStack(spacing: 0) {
-            header
-            Divider()
             ScrollViewReader { proxy in
                 ScrollView {
-                    LazyVStack(spacing: 0) {
-                        let filtering = model.isFiltering
-                        ForEach(Array(model.entries.enumerated()), id: \.element.id) { index, entry in
-                            row(entry, index: index, filtering: filtering)
-                        }
-                        if !filtering {
-                            ForEach(model.otherFiles) { file in otherRow(file) }
+                    // The header pinned inside the scroll view: as wide as the
+                    // rows, so its columns stand over theirs also beside a
+                    // scroll bar that is always shown
+                    LazyVStack(spacing: 0, pinnedViews: [.sectionHeaders]) {
+                        Section {
+                            let filtering = model.isFiltering
+                            ForEach(Array(model.entries.enumerated()), id: \.element.id) { index, entry in
+                                row(entry, index: index, filtering: filtering)
+                            }
+                            if !filtering {
+                                ForEach(model.otherFiles) { file in otherRow(file) }
+                            }
+                        } header: {
+                            VStack(spacing: 0) {
+                                header
+                                Divider()
+                            }
                         }
                     }
                 }
@@ -104,9 +113,9 @@ struct EntryListView: View {
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            Text(kind(of: entry)).frame(width: Self.kindWidth, alignment: .leading)
-            Text(entry.modDate.map(Self.format) ?? "").frame(width: Self.dateWidth, alignment: .leading)
-            Text(model.knownCaptureDate(of: entry.url).map(Self.format) ?? "").frame(width: Self.dateWidth, alignment: .leading)
+            cell(kind(of: entry), width: Self.kindWidth)
+            cell(entry.modDate.map(Self.format) ?? "", width: Self.dateWidth)
+            cell(model.knownCaptureDate(of: entry.url).map(Self.format) ?? "", width: Self.dateWidth)
             Text(size(of: entry)).monospacedDigit().frame(width: Self.sizeWidth, alignment: .trailing)
         }
         .font(.callout)
@@ -157,6 +166,16 @@ struct EntryListView: View {
         .accessibilityIdentifier("other.\(file.name)")
     }
 
+    /// A kind or date: one line, its whole text as the tooltip should the
+    /// column still be too narrow for it.
+    private func cell(_ text: String, width: CGFloat) -> some View {
+        Text(text)
+            .lineLimit(1)
+            .truncationMode(.tail)
+            .help(text)
+            .frame(width: width, alignment: .leading)
+    }
+
     @ViewBuilder
     private func preview(_ entry: GridEntry) -> some View {
         switch entry.kind {
@@ -194,4 +213,50 @@ struct EntryListView: View {
     }
 
     static func format(_ date: Date) -> String { date.formatted(date: .abbreviated, time: .shortened) }
+}
+
+/// The kind and date columns as wide as their longest text in the user's
+/// language, so every row stays on one line: "Archivo comprimido",
+/// "2025年8月16日 上午 10:05" need more than "Archive", "Aug 16, 2025, 10:05 AM".
+/// Worked out once from the row font (`.callout`) and the header font, within
+/// bounds; a value still wider (another calendar's month) is cut off with
+/// its whole text as the tooltip.
+enum ColumnWidth {
+    static let kind: CGFloat = fitting(
+        cells: [String(localized: "Folder"), String(localized: "Archive"),
+                String(localized: "Picture"), String(localized: "Video")],
+        header: String(localized: "Kind"), within: 70...180)
+
+    static let date: CGFloat = fitting(
+        cells: sampleDates.map(EntryListView.format),
+        headers: [String(localized: "Date Modified"), String(localized: "Date Taken")], within: 130...260)
+
+    /// One date per month and hour: the longest month name and day period
+    /// ("清晨", "下午", "a.m.") are among them, with two-digit days and minutes.
+    private static var sampleDates: [Date] {
+        var calendar = Calendar.current
+        calendar.timeZone = .current
+        return (1...12).flatMap { month in
+            (0..<24).compactMap { hour in
+                calendar.date(from: DateComponents(year: 2026, month: month, day: 28, hour: hour, minute: 48))
+            }
+        }
+    }
+
+    private static func fitting(cells: [String], header: String, within bounds: ClosedRange<CGFloat>) -> CGFloat {
+        fitting(cells: cells, headers: [header], within: bounds)
+    }
+
+    private static func fitting(cells: [String], headers: [String], within bounds: ClosedRange<CGFloat>) -> CGFloat {
+        let cellFont = NSFont.preferredFont(forTextStyle: .callout)
+        let headerFont = NSFont.systemFont(ofSize: NSFont.preferredFont(forTextStyle: .caption1).pointSize, weight: .semibold)
+        let cell = cells.map { width(of: $0, in: cellFont) }.max() ?? 0
+        // The header's sort chevron and the gap before it
+        let header = headers.map { width(of: $0, in: headerFont) + 14 }.max() ?? 0
+        return min(max(max(cell, header) + 4, bounds.lowerBound), bounds.upperBound)
+    }
+
+    private static func width(of text: String, in font: NSFont) -> CGFloat {
+        ceil((text as NSString).size(withAttributes: [.font: font]).width)
+    }
 }

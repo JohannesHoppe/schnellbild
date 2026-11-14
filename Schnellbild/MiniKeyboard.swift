@@ -81,7 +81,7 @@ struct MiniKeyboard: View {
                 Key(cap: "+", word: "Zoom in", input: .char("+")),
                 Key(cap: "−", word: "Zoom out", input: .char("-")),
                 Key(cap: "0", word: "Fit", input: .char("0")),
-                Key(cap: "1", word: "100 %", input: .char("1")),
+                Key(cap: "1", word: "100 %", input: .char("1")),
                 Key(cap: "⌥←", word: "Rotate left", input: .left, option: true),
                 Key(cap: "⌥→", word: "Rotate right", input: .right, option: true),
                 Key(cap: "I", word: "Info", input: .char("i")),
@@ -94,8 +94,8 @@ struct MiniKeyboard: View {
         case .video:
             return [
                 Key(cap: "space", word: "Play / Pause", input: .space),
-                Key(cap: "←", word: "−10 %", input: .left),
-                Key(cap: "→", word: "+10 %", input: .right),
+                Key(cap: "←", word: "−10 %", input: .left),
+                Key(cap: "→", word: "+10 %", input: .right),
                 Key(cap: "↑", word: "Louder", input: .up),
                 Key(cap: "↓", word: "Quieter", input: .down),
                 Key(cap: "<", word: "Slower", input: .char("<")),

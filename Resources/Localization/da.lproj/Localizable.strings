@@ -69,7 +69,7 @@
 "Previous / next item, also from a video" = "Forrige / næste emne, også fra en video";
 "Next picture · play/pause video" = "Næste billede · afspil / sæt video på pause";
 "Zoom in / out" = "Zoom ind / ud";
-"Fit to window / 100 %" = "Tilpas til vindue / 100 %";
+"Fit to window / 100 %" = "Tilpas til vindue / 100 %";
 "Rotate left / right" = "Rotér til venstre / højre";
 "File info" = "Filinfo";
 "Sliders: adjust by hand (switches auto enhance off)" = "Skydere: juster i hånden (slår autoforbedring fra)";
@@ -110,8 +110,8 @@
 "The name must end in a picture extension, such as “.%@”." = "Navnet skal slutte med en billedendelse, f.eks. “.%@”.";
 "The name must end in a video extension, such as “.%@”." = "Navnet skal slutte med en videoendelse, f.eks. “.%@”.";
 "Grid and full view" = "Gitter og fuld visning";
-"Pictures: previous / next · Videos: 10 % of the length back / ahead; at the start / end: previous / next item" = "Billeder: forrige / næste · Videoer: 10 % af længden tilbage / frem; i starten / slutningen: forrige / næste emne";
-"Previous / next · Videos: 10 % of the length back / ahead" = "Forrige / næste · Videoer: 10 % af længden tilbage / frem";
+"Pictures: previous / next · Videos: 10 % of the length back / ahead; at the start / end: previous / next item" = "Billeder: forrige / næste · Videoer: 10 % af længden tilbage / frem; i starten / slutningen: forrige / næste emne";
+"Previous / next · Videos: 10 % of the length back / ahead" = "Forrige / næste · Videoer: 10 % af længden tilbage / frem";
 "Wrong password for this archive." = "Forkert adgangskode til dette arkiv.";
 "The archive is incomplete: still downloading, a part missing, or damaged." = "Arkivet er ufuldstændigt: det hentes stadig, en del mangler, eller det er beskadiget.";
 "A file listed in this archive is missing." = "En fil, der er angivet i dette arkiv, mangler.";
@@ -137,13 +137,13 @@
 "Zoom in" = "Zoom ind";
 "Zoom out" = "Zoom ud";
 "Fit" = "Tilpas";
-"100 %" = "100 %";
+"100 %" = "100 %";
 "Rotate left" = "Rotér til venstre";
 "Rotate right" = "Rotér til højre";
 "Info" = "Info";
 "Play / Pause" = "Afspil / pause";
-"−10 %" = "−10 %";
-"+10 %" = "+10 %";
+"−10 %" = "−10 %";
+"+10 %" = "+10 %";
 "Previous item" = "Forrige emne";
 "Next item" = "Næste emne";
 "Pause" = "Pause";
@@ -151,9 +151,9 @@
 "Keyboard" = "Tastatur";
 "Mini keyboard: the keys of what's on screen, clickable (K)" = "Minitastatur: tasterne til det, der er på skærmen, klikbare (K)";
 "Show / hide the mini keyboard" = "Vis / skjul minitastaturet";
-"Video: 1 % of the length back / ahead" = "Video: 1 % af længden tilbage / frem";
-"−1 %" = "−1 %";
-"+1 %" = "+1 %";
+"Video: 1 % of the length back / ahead" = "Video: 1 % af længden tilbage / frem";
+"−1 %" = "−1 %";
+"+1 %" = "+1 %";
 "Louder" = "Højere";
 "Quieter" = "Lavere";
 "Pictures zoomed in: look further up / down · Videos: volume up / down (remembered)" = "Billeder zoomet ind: se længere op / ned · Videoer: højere / lavere lyd (huskes)";
@@ -207,7 +207,7 @@
 "can't open the file" = "filen kan ikke åbnes";
 "read error" = "læsefejl";
 "UnRAR error %lld" = "UnRAR-fejl %lld";
-"Copying or moving…" = "Kopierer eller flytter …";
+"Copying or moving…" = "Kopierer eller flytter…";
 "This archive needs a password" = "Dette arkiv kræver en adgangskode";
 "Password required" = "Adgangskode kræves";
 "Copying or moving is still under way." = "Der kopieres eller flyttes stadig.";
@@ -237,7 +237,7 @@
 "Forget all saved archive passwords?" = "Glem alle gemte arkivadgangskoder?";
 "Forget Passwords" = "Glem adgangskoder";
 "Archives that need a password ask for it again." = "Arkiver, der kræver en adgangskode, spørger igen.";
-"Schnellbild quit unexpectedly last time while showing “%@”, so it wasn't opened again." = "Schnellbild lukkede uventet sidste gang, mens „%@“ blev vist, så det blev ikke åbnet igen.";
+"Schnellbild quit unexpectedly last time while showing “%@”, so it wasn't opened again." = "Schnellbild lukkede uventet sidste gang, mens “%@” blev vist, så det blev ikke åbnet igen.";
 "Print…" = "Udskriv…";
 "Ignore case" = "Ignorer store/små bogstaver";
 "Match case" = "Skeln mellem store/små bogstaver";

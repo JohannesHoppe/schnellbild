@@ -69,7 +69,7 @@
 "Previous / next item, also from a video" = "Elemento anterior / siguiente, también desde un vídeo";
 "Next picture · play/pause video" = "Imagen siguiente · reproducir / pausar vídeo";
 "Zoom in / out" = "Acercar / alejar";
-"Fit to window / 100 %" = "Ajustar a la ventana / 100 %";
+"Fit to window / 100 %" = "Ajustar a la ventana / 100 %";
 "Rotate left / right" = "Girar a la izquierda / derecha";
 "File info" = "Información del archivo";
 "Sliders: adjust by hand (switches auto enhance off)" = "Reguladores: ajustar a mano (desactiva la mejora automática)";
@@ -86,7 +86,7 @@
 "Show this list" = "Mostrar esta lista";
 
 /* Archives */
-"Password for “%@”" = "Contraseña de “%@”";
+"Password for “%@”" = "Contraseña de «%@»";
 "Password" = "Contraseña";
 "The archive can't be read: %@" = "No se puede leer el archivo: %@";
 "About Schnellbild" = "Acerca de Schnellbild";
@@ -110,8 +110,8 @@
 "The name must end in a picture extension, such as “.%@”." = "El nombre debe terminar en una extensión de imagen, como «.%@».";
 "The name must end in a video extension, such as “.%@”." = "El nombre debe terminar en una extensión de vídeo, como «.%@».";
 "Grid and full view" = "Cuadrícula y vista completa";
-"Pictures: previous / next · Videos: 10 % of the length back / ahead; at the start / end: previous / next item" = "Imágenes: anterior / siguiente · Vídeos: 10 % de la duración atrás / adelante; al principio / final: elemento anterior / siguiente";
-"Previous / next · Videos: 10 % of the length back / ahead" = "Anterior / siguiente · Vídeos: 10 % de la duración atrás / adelante";
+"Pictures: previous / next · Videos: 10 % of the length back / ahead; at the start / end: previous / next item" = "Imágenes: anterior / siguiente · Vídeos: 10 % de la duración atrás / adelante; al principio / final: elemento anterior / siguiente";
+"Previous / next · Videos: 10 % of the length back / ahead" = "Anterior / siguiente · Vídeos: 10 % de la duración atrás / adelante";
 "Wrong password for this archive." = "Contraseña incorrecta para este archivo.";
 "The archive is incomplete: still downloading, a part missing, or damaged." = "El archivo está incompleto: aún se está descargando, falta una parte o está dañado.";
 "A file listed in this archive is missing." = "Falta un archivo que figura en este archivo.";
@@ -137,13 +137,13 @@
 "Zoom in" = "Acercar";
 "Zoom out" = "Alejar";
 "Fit" = "Encajar";
-"100 %" = "100 %";
+"100 %" = "100 %";
 "Rotate left" = "Girar a la izquierda";
 "Rotate right" = "Girar a la derecha";
 "Info" = "Info";
 "Play / Pause" = "Reproducir / pausar";
-"−10 %" = "−10 %";
-"+10 %" = "+10 %";
+"−10 %" = "−10 %";
+"+10 %" = "+10 %";
 "Previous item" = "Elemento anterior";
 "Next item" = "Elemento siguiente";
 "Pause" = "Pausar";
@@ -151,9 +151,9 @@
 "Keyboard" = "Teclado";
 "Mini keyboard: the keys of what's on screen, clickable (K)" = "Miniteclado: las teclas de lo que hay en pantalla, clicables (K)";
 "Show / hide the mini keyboard" = "Mostrar / ocultar el miniteclado";
-"Video: 1 % of the length back / ahead" = "Vídeo: 1 % de la duración atrás / adelante";
-"−1 %" = "−1 %";
-"+1 %" = "+1 %";
+"Video: 1 % of the length back / ahead" = "Vídeo: 1 % de la duración atrás / adelante";
+"−1 %" = "−1 %";
+"+1 %" = "+1 %";
 "Louder" = "Más alto";
 "Quieter" = "Más bajo";
 "Pictures zoomed in: look further up / down · Videos: volume up / down (remembered)" = "Imágenes ampliadas: ver más arriba / abajo · Vídeos: más / menos volumen (se recuerda)";
@@ -213,7 +213,7 @@
 "Copying or moving is still under way." = "Todavía se está copiando o moviendo.";
 "Schnellbild quits once it is done. Quitting now would leave files half copied." = "Schnellbild se cerrará cuando termine. Cerrar ahora dejaría archivos copiados a medias.";
 "Quit When Done" = "Salir al terminar";
-"The name must end in “.%@”, as the archive does." = "El nombre debe terminar en “.%@”, como el archivo comprimido.";
+"The name must end in “.%@”, as the archive does." = "El nombre debe terminar en «.%@», como el archivo comprimido.";
 "unknown error" = "error desconocido";
 "⇧-click / ⇧ arrows" = "⇧-clic / ⇧ flechas";
 "drag" = "arrastrar";

@@ -528,16 +528,43 @@ struct PaneView: View {
 
     // MARK: - Status bar
 
-    /// One line, also in half a window: the texts truncate, the summary last.
+    /// The counts come first and are never cut off. The first of these rows
+    /// that fits is shown: the counts with the folder's path (cut at its
+    /// start, at least 60 pt), the counts alone, the counts over two lines,
+    /// broken between their parts (half a window in Portuguese, Spanish,
+    /// French or Japanese).
     private var statusBar: some View {
+        ViewThatFits(in: .horizontal) {
+            statusRow(path: true, wrap: false)
+            statusRow(path: false, wrap: false)
+            statusRow(path: false, wrap: true)
+        }
+        .font(.caption)
+        .padding(.horizontal, 12)
+        .padding(.vertical, 6)
+        .background(.bar)
+    }
+
+    private func statusRow(path: Bool, wrap: Bool) -> some View {
         HStack(spacing: 8) {
-            Text(statusText)
-                .foregroundStyle(.secondary)
-                .lineLimit(1)
-                .truncationMode(.tail)
-                .layoutPriority(1)
-                .help(statusText)
-                .accessibilityIdentifier("statusText")
+            Group {
+                if wrap {
+                    let parts = statusParts
+                    StatusFlow {
+                        ForEach(Array(parts.enumerated()), id: \.offset) { index, part in
+                            Text(verbatim: index < parts.count - 1 ? part + " ·" : part).fixedSize()
+                        }
+                    }
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel(statusText)
+                } else {
+                    Text(statusText).lineLimit(1).fixedSize()
+                }
+            }
+            .foregroundStyle(.secondary)
+            .layoutPriority(1)
+            .help(statusText)
+            .accessibilityIdentifier("statusText")
             if model.isSearching {
                 Text("Searching subfolders…").foregroundStyle(.secondary).lineLimit(1)
             }
@@ -551,11 +578,15 @@ struct PaneView: View {
                     .buttonStyle(.link)
                     .accessibilityIdentifier("allowAccess")
             }
-            Spacer()
-            Text(model.folderURL?.path ?? "")
-                .foregroundStyle(.tertiary)
-                .lineLimit(1)
-                .truncationMode(.head)
+            if path {
+                Text(model.folderURL?.path ?? "")
+                    .foregroundStyle(.tertiary)
+                    .lineLimit(1)
+                    .truncationMode(.head)
+                    .frame(minWidth: 60, idealWidth: 60, maxWidth: .infinity, alignment: .trailing)
+            } else {
+                Spacer(minLength: 0)
+            }
             // Tiles or a list (L)
             Picker("", selection: $model.viewMode) {
                 Image(systemName: "square.grid.2x2").tag(BrowserModel.ViewMode.grid)
@@ -577,18 +608,18 @@ struct PaneView: View {
             .help("Mini keyboard: the keys of what's on screen, clickable (K)")
             .accessibilityIdentifier("keyboardButton")
         }
-        .font(.caption)
-        .padding(.horizontal, 12)
-        .padding(.vertical, 6)
-        .background(.bar)
     }
 
-    private var statusText: String {
-        if model.passwordRequest != nil { return String(localized: "Password required") }
+    private var statusText: String { statusParts.joined(separator: " · ") }
+
+    /// The status bar's text in parts, which it keeps whole when it breaks
+    /// the text over two lines.
+    private var statusParts: [String] {
+        if model.passwordRequest != nil { return [String(localized: "Password required")] }
         // Not "Empty" before the listing is there, nor for one that failed
-        if model.isLoading { return String(localized: "Loading folder…") }
+        if model.isLoading { return [String(localized: "Loading folder…")] }
         if let error = model.loadError {
-            return error.archive ? String(localized: "This archive can't be read") : String(localized: "This folder can't be read")
+            return [error.archive ? String(localized: "This archive can't be read") : String(localized: "This folder can't be read")]
         }
         var parts: [String] = []
         if model.folderCount > 0 { parts.append(String(localized: "\(model.folderCount) folders")) }
@@ -597,12 +628,12 @@ struct PaneView: View {
         if model.videoCount  > 0 { parts.append(String(localized: "\(model.videoCount) videos")) }
         // (the folder's other files: not searched, not shown during a search)
         if !model.otherFiles.isEmpty, !model.isFiltering { parts.append(String(localized: "Other files: \(model.otherFiles.count)")) }
-        let summary = parts.isEmpty ? String(localized: "Empty") : parts.joined(separator: " · ")
+        let summary = parts.isEmpty ? [String(localized: "Empty")] : parts
         guard model.isFiltering else { return summary }
         let query = model.query
         let count = model.entries.count
         let results = String(localized: "\(count) results")
-        return String(localized: "\(results) for “\(query)”") + (count > 0 ? " · \(summary)" : "")
+        return [String(localized: "\(results) for “\(query)”")] + (count > 0 ? summary : [])
     }
 
     // MARK: - Full-size view (image / GIF / video)
@@ -891,18 +922,35 @@ struct AdjustmentsView: View {
             slider("Contrast", \.contrast, -1...1, id: "contrast")
             slider("Saturation", \.saturation, -1...1, id: "saturation")
             slider("Sharpness", \.sharpness, 0...1, id: "sharpness")
-            HStack {
-                Text("Files are not changed.")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                Spacer()
-                Button("Reset to original") { model.resetLook() }
-                    .disabled(model.enhancement == .off)
-                    .accessibilityIdentifier("resetLook")
+            // Note and button side by side where both fit whole; in languages
+            // with a longer button (de, es, ru …) the note goes above it
+            ViewThatFits(in: .horizontal) {
+                HStack {
+                    filesNote
+                    Spacer()
+                    resetButton
+                }
+                VStack(alignment: .trailing, spacing: 8) {
+                    filesNote.frame(maxWidth: .infinity, alignment: .leading)
+                    resetButton
+                }
             }
         }
         .padding(16)
         .frame(width: 300)
+    }
+
+    private var filesNote: some View {
+        Text("Files are not changed.")
+            .font(.caption)
+            .foregroundStyle(.secondary)
+            .fixedSize(horizontal: false, vertical: true)
+    }
+
+    private var resetButton: some View {
+        Button("Reset to original") { model.resetLook() }
+            .disabled(model.enhancement == .off)
+            .accessibilityIdentifier("resetLook")
     }
 
     private func slider(_ title: LocalizedStringKey, _ key: WritableKeyPath<Look, Double>,
@@ -1351,3 +1399,49 @@ struct PaneDivider: View {
     }
 }
 
+/// Lays its views out in lines, left to right, starting a new line where the
+/// next one doesn't fit (the status bar's counts in a narrow pane).
+struct StatusFlow: Layout {
+    var spacing: CGFloat = 3
+    var lineSpacing: CGFloat = 1
+
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        let lines = arrange(subviews, width: proposal.width ?? .infinity)
+        let width = lines.map(\.width).max() ?? 0
+        let height = lines.map(\.height).reduce(0, +) + lineSpacing * CGFloat(max(lines.count - 1, 0))
+        return CGSize(width: width, height: height)
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        var y = bounds.minY
+        for line in arrange(subviews, width: bounds.width) {
+            var x = bounds.minX
+            for index in line.indices {
+                let size = subviews[index].sizeThatFits(.unspecified)
+                subviews[index].place(at: CGPoint(x: x, y: y + (line.height - size.height) / 2), proposal: .unspecified)
+                x += size.width + spacing
+            }
+            y += line.height + lineSpacing
+        }
+    }
+
+    private struct Line { var indices: [Int] = []; var width: CGFloat = 0; var height: CGFloat = 0 }
+
+    private func arrange(_ subviews: Subviews, width: CGFloat) -> [Line] {
+        var lines: [Line] = []
+        var line = Line()
+        for index in subviews.indices {
+            let size = subviews[index].sizeThatFits(.unspecified)
+            let needed = line.indices.isEmpty ? size.width : line.width + spacing + size.width
+            if !line.indices.isEmpty, needed > width {
+                lines.append(line)
+                line = Line()
+            }
+            line.width = line.indices.isEmpty ? size.width : line.width + spacing + size.width
+            line.height = max(line.height, size.height)
+            line.indices.append(index)
+        }
+        if !line.indices.isEmpty { lines.append(line) }
+        return lines
+    }
+}

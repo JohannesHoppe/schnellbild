@@ -163,8 +163,11 @@ struct InspectorView: View {
             Text(label)
                 .foregroundStyle(.secondary)
                 .fixedSize()
+            // A value longer than its column wraps ("14 de nov. de 2026, 16:31"
+            // beside "Data de Modificação"), never cut off
             Text(value)
                 .textSelection(.enabled)
+                .fixedSize(horizontal: false, vertical: true)
                 .frame(maxWidth: .infinity, alignment: .leading)
         }
     }
