@@ -198,7 +198,7 @@ VLC's third-party libraries (`contrib`) are linked into VLCKit whether or not a 
 
 AVI/MKV/WebM and other non-native formats play **in-app via vendored VLCKit
 (LibVLC), as a fallback only**; native formats stay on AVKit.
-AVKit stays for the native formats: it decodes with less effort than our VLC path and shows HDR (HDR10, HLG, Dolby Vision) through its `AVPlayerLayer`, while `VLCFrameOutput` hands 8-bit NV12 tagged as SDR.
+AVKit stays for the native formats: both decode through VideoToolbox, but AVKit hands its pictures to the display without the copy our VLC path makes per picture (`VLCFrameOutput`), and it shows HDR (HDR10, HLG, Dolby Vision) through its `AVPlayerLayer`, while `VLCFrameOutput` hands 8-bit NV12 tagged as SDR.
 
 - It's **built by us from VideoLAN's source** without the GPL modules (see
   "VLCKit without GPL modules"), published as a pre-release of this repository
