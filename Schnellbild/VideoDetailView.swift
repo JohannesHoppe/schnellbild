@@ -29,6 +29,15 @@ struct VideoDetailView: View {
     /// same volume (F2, the other pane), it plays on where it is.
     @State private var playing: (url: URL, file: FileIdentity?)?
 
+    /// The zoom and turn (and, for the UI tests, the tracks, speed and what
+    /// VLC reports).
+    private var accessibilityText: String {
+        var text = "zoom \(Int((model.zoom * 100).rounded())) %, rotation \(Int(model.rotation))°"
+        if Self.uiTesting { text += ", " + Self.describe(model.activePlayer?.tracks ?? model.videoTracks, speed: model.playbackSpeed) }
+        if !vlcDiagnostics.isEmpty { text += ", \(vlcDiagnostics)" }
+        return text
+    }
+
     var body: some View {
         GeometryReader { geo in
         ZStack {
@@ -38,7 +47,7 @@ struct VideoDetailView: View {
                     VLCVideoView(control: vlcControl)
                 } else if let avControl {
                     // The app's own control bar (`VideoControlBar`) serves both players
-                    AVPlayerLayerHost(player: avControl.player)
+                    AVPlayerLayerHost(control: avControl)
                 } else if checking {
                     LoadingSpinner()
                 }
@@ -66,9 +75,7 @@ struct VideoDetailView: View {
         .onChange(of: model.zoom) { _, zoom in if zoom <= 1.01 { panOffset = .zero } }
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier(vlcControl != nil ? "video.vlc" : "video.avkit")
-        .accessibilityLabel("zoom \(Int((model.zoom * 100).rounded())) %, rotation \(Int(model.rotation))°"
-                            + (Self.uiTesting ? ", " + Self.describe(model.activePlayer?.tracks ?? model.videoTracks, speed: model.playbackSpeed) : "")
-                            + (vlcDiagnostics.isEmpty ? "" : ", \(vlcDiagnostics)"))
+        .accessibilityLabel(accessibilityText)
         .task(id: vlcControl.map(ObjectIdentifier.init)) {
             vlcDiagnostics = ""
             guard Self.uiTesting, let control = vlcControl else { return }
@@ -233,30 +240,48 @@ struct VideoDetailView: View {
 /// subtitles switched off on macOS 15, seen on CI; its inline and minimal
 /// controls dim the whole picture while they show, from macOS 26 on.)
 struct AVPlayerLayerHost: NSViewRepresentable {
-    let player: AVPlayer
+    let control: AVPlaybackControl
 
     func makeNSView(context: Context) -> PlayerLayerView {
         let view = PlayerLayerView()
-        view.playerLayer.player = player
+        view.playerLayer.player = control.player
+        control.layerView = view
         return view
     }
 
     func updateNSView(_ view: PlayerLayerView, context: Context) {
-        if view.playerLayer.player !== player { view.playerLayer.player = player }
+        if view.playerLayer.player !== control.player { view.playerLayer.player = control.player }
+        control.layerView = view
     }
 
     final class PlayerLayerView: NSView {
-        let playerLayer = AVPlayerLayer()
+        private(set) var playerLayer = PlayerLayerView.makeLayer()
 
         override init(frame: NSRect) {
             super.init(frame: frame)
-            playerLayer.videoGravity = .resizeAspect
-            playerLayer.backgroundColor = NSColor.black.cgColor
             layer = playerLayer
             wantsLayer = true
         }
 
         required init?(coder: NSCoder) { fatalError("not from a coder") }
+
+        private static func makeLayer() -> AVPlayerLayer {
+            let layer = AVPlayerLayer()
+            layer.videoGravity = .resizeAspect
+            layer.backgroundColor = NSColor.black.cgColor
+            return layer
+        }
+
+        /// The player in a layer of its own anew: one drawn without the
+        /// subtitles a layer may keep on screen (`AVPlaybackControl.clearSubtitleLine`).
+        func renewLayer() {
+            let player = playerLayer.player
+            let fresh = Self.makeLayer()
+            fresh.player = player
+            playerLayer.player = nil
+            playerLayer = fresh
+            layer = fresh
+        }
     }
 }
 

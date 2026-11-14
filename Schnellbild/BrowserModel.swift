@@ -5167,27 +5167,44 @@ final class AVPlaybackControl: PlaybackControl {
     func selectSubtitleTrack(_ id: Int?) {
         guard let item = player.currentItem, let legible else { return }
         let option = id.flatMap { subtitleOptions.indices.contains($0) ? subtitleOptions[$0] : nil }
-        guard item.currentMediaSelection.selectedMediaOption(in: legible) != option else { return }
+        let shown = item.currentMediaSelection.selectedMediaOption(in: legible)
+        guard shown != option else { return }
         item.select(option, in: legible)
-        refreshSubtitles()
+        refreshSubtitles(clearing: option == nil && shown != nil)
     }
+
+    /// The view that shows the picture (`AVPlayerLayerHost`).
+    weak var layerView: AVPlayerLayerHost.PlayerLayerView?
 
     /// AVKit draws a newly chosen subtitle track only from its next line on,
     /// and keeps a line of the one left on screen until that line ends (seen
     /// on CI, macOS 15 and 26): a seek to where the video stands draws the
     /// choice at once.
-    private func refreshSubtitles() {
+    /// Subtitles switched off (`clearing`): on macOS 15 the player layer
+    /// sometimes goes on drawing the line it showed, also the next ones,
+    /// seek or not (seen on CI); a layer of its own anew, once the seek is
+    /// done, shows the picture without it.
+    private func refreshSubtitles(clearing: Bool = false) {
         Task { @MainActor [weak self] in
             // (once the item can seek)
             for _ in 0..<50 {
                 guard let self, let item = self.player.currentItem else { return }
                 if item.status == .readyToPlay {
-                    self.player.seek(to: self.player.currentTime(), toleranceBefore: .zero, toleranceAfter: .zero) { _ in }
+                    self.player.seek(to: self.player.currentTime(), toleranceBefore: .zero, toleranceAfter: .zero) { _ in
+                        guard clearing else { return }
+                        Task { @MainActor [weak self] in self?.clearSubtitleLine() }
+                    }
                     return
                 }
                 try? await Task.sleep(for: .milliseconds(100))
             }
         }
+    }
+
+    private func clearSubtitleLine() {
+        if #available(macOS 26, *) { return }
+        BrowserModel.testLog("avkit subtitles off: a new player layer")
+        layerView?.renewLayer()
     }
 
     func selectAudioTrack(_ id: Int) {
