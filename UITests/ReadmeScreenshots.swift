@@ -113,10 +113,9 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         app.typeKey(.space, modifierFlags: [])
         XCTAssertTrue(element("video.avkit").waitForExistence(timeout: 15))
         RunLoop.current.run(until: Date().addingTimeInterval(1))
-        app.typeKey(.rightArrow, modifierFlags: [])   // skim ahead, as in the README
-        app.typeKey(.rightArrow, modifierFlags: [])
-        // Playing: the website lays the moving video over this picture
-        // (Scripts/make_video_animation.py)
+        // Playing (the sample video lasts 6 s, so no skimming ahead: it
+        // would reach its end before the picture is taken): the website
+        // lays the moving video over this picture (Scripts/make_video_animation.py)
         element("video.avkit").hover()   // the control bar shows
         XCTAssertTrue(element("videoBar").waitForExistence(timeout: 5))
         shoot("video", settle: 0.5)
