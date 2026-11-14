@@ -10,7 +10,7 @@
   "language": "Sprog",
   "iconAlt": "Schnellbilds appsymbol",
   "tagline": "En billedfremviser og videoafspiller til macOS, der bare ikke er noget bras.",
-  "lead": "Åbn en mappe, se miniaturerne, se ét billede i stort format, og bladr med tastaturet. Videoer afspilles lige der, også MKV, AVI og WebM. Intet bibliotek at importere til, ingen ventetid, intet rod.",
+  "lead": "Åbn en mappe, se miniaturerne, se ét billede i stort format, og bladr med tastaturet. Videoer afspilles lige der, også MKV, AVI og WebM. Intet bibliotek at importere til, ingen ventetid.",
   "download": "Hent gratis",
   "store": "Mac App Store",
   "storeSoon": "snart, for at støtte udviklingen",
@@ -46,7 +46,7 @@
     ],
     [
       "Intet fyld",
-      "Intet bibliotek at importere til, ingen editor, ingen sky. Kun det at se fotos og videoer, og det gør den godt."
+      "Intet bibliotek at importere til, ingen editor, ingen sky."
     ],
     [
       "Hurtig",
@@ -58,7 +58,7 @@
     ],
     [
       "Går ikke ned",
-      "Ødelagte filer, mærkelige formater og langsomme diske viser en pladsholder i stedet for at vælte appen."
+      "Ødelagte filer, mærkelige formater og langsomme diske viser en pladsholder, og appen kører videre."
     ]
   ],
   "featuresTitle": "Hvad den kan",
@@ -144,8 +144,8 @@
   "ossTitle": "Open source",
   "ossText": "Schnellbild er fri software under MIT-licensen, kildekoden ligger <a href=\"https://github.com/JohannesHoppe/schnellbild\">på GitHub</a>. Fundet en fejl eller savner du noget? <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">Opret et issue</a>.",
   "languagesText": "På din Macs sprog:",
-  "ctaTitle": "Klar, når du er.",
-  "ctaText": "Gratis, ingen konto, ingen bindinger.",
+  "ctaTitle": "Prøv den.",
+  "ctaText": "Gratis, ingen konto.",
   "footerPrivacy": "Privatliv",
   "footerImprint": "Juridiske oplysninger (Impressum)",
   "footerEula": "Licensaftale",
@@ -165,7 +165,7 @@
     "siteTitle": "Dette websted",
     "siteText": "Dette websted bruger ingen cookies, ingen analyse og intet indhold fra andre servere (ingen webfonte, ingen indlejrede videoer). Det hostes på GitHub Pages, en tjeneste fra GitHub, Inc. (USA). Når du besøger det, logger og gemmer GitHub din IP-adresse af sikkerhedshensyn; se <a href=\"https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages#data-collection\">GitHub Pages: data collection</a> og <a href=\"https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement\">GitHubs privatlivserklæring</a>. Hvor længe GitHub opbevarer disse logs, bestemmer GitHub; vi har ikke adgang til dem. GitHub deltager i EU-U.S. Data Privacy Framework, for hvilken Europa-Kommissionen har fastslået, at USA sikrer et tilstrækkeligt beskyttelsesniveau (databeskyttelsesforordningens artikel 45). Retsgrundlaget er vores legitime interesse i at levere webstedet sikkert (databeskyttelsesforordningens artikel 6, stk. 1, litra f). Download af appen sker også fra GitHub. Vælger du lyst eller mørkt med knappen øverst, husker din browser valget (localStorage); det bliver på din enhed og når ingen.",
     "rightsTitle": "Dine rettigheder",
-    "rightsText": "Efter databeskyttelsesforordningen (GDPR) har du ret til indsigt, berigtigelse, sletning, begrænsning af behandling og dataportabilitet samt ret til at klage til en tilsynsmyndighed for databeskyttelse. <strong>Du har ret til at gøre indsigelse</strong> mod behandling på grundlag af vores legitime interesse af grunde, der vedrører din særlige situation (databeskyttelsesforordningens artikel 21). Da hverken appen eller dette websted opbevarer egne personoplysninger, er der overhovedet intet hos os at slå op eller slette. Et svar på en anmodning om indsigt bliver derfor meget kort: Vi ved slet intet om dig.",
+    "rightsText": "Efter databeskyttelsesforordningen (GDPR) har du ret til indsigt, berigtigelse, sletning, begrænsning af behandling og dataportabilitet samt ret til at klage til en tilsynsmyndighed for databeskyttelse. <strong>Du har ret til at gøre indsigelse</strong> mod behandling på grundlag af vores legitime interesse af grunde, der vedrører din særlige situation (databeskyttelsesforordningens artikel 21). Da hverken appen eller dette websted opbevarer egne personoplysninger, er der intet hos os at slå op eller slette. Et svar på en anmodning om indsigt bliver derfor kort: Vi ved intet om dig.",
     "contactTitle": "Kontakt",
     "contactText": "For alt om Schnellbild (spørgsmål, idéer, fejl og også henvendelser om dine data) kontakt os helst via GitHub: opret et issue på <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a>. Der svarer vi hurtigst, og andre kan også få gavn af svaret. Et issue er offentligt; til det, du hellere ikke vil drøfte offentligt, finder du andre kontaktmuligheder i de <a href=\"https://haushoppe-its.de/impressum/\">juridiske oplysninger</a>."
   },

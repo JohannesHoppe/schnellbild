@@ -10,7 +10,7 @@
   "language": "Dil",
   "iconAlt": "Schnellbild uygulama simgesi",
   "tagline": "Mac için sinir bozmayan bir fotoğraf ve video görüntüleyici.",
-  "lead": "Bir klasör açın, küçük resimleri görün, bir resmi büyük görün, klavyeyle sayfa sayfa gezinin. Videolar da hemen orada oynar, MKV, AVI ve WebM bile. İçe aktarılacak bir kitaplık yok, bekleme yok, karmaşa yok.",
+  "lead": "Bir klasör açın, küçük resimleri görün, bir resmi büyük görün, klavyeyle sayfa sayfa gezinin. Videolar da hemen orada oynar, MKV, AVI ve WebM bile. İçe aktarılacak bir kitaplık yok, bekleme yok.",
   "download": "Ücretsiz indirin",
   "store": "Mac App Store",
   "storeSoon": "yakında, projeye destek için",
@@ -46,7 +46,7 @@
     ],
     [
       "Gereksiz yük yok",
-      "İçe aktarılacak kitaplık yok, düzenleyici yok, bulut yok. Sadece fotoğraf ve videolara bakmak, ama hakkıyla."
+      "İçe aktarılacak kitaplık yok, düzenleyici yok, bulut yok."
     ],
     [
       "Hızlı",
@@ -58,7 +58,7 @@
     ],
     [
       "Çökmez",
-      "Bozuk dosyalar, alışılmadık biçimler ve yavaş diskler uygulamayı çökertmek yerine bir yer tutucu gösterir."
+      "Bozuk dosyalar, alışılmadık biçimler ve yavaş diskler bir yer tutucu gösterir, uygulama çalışmaya devam eder."
     ]
   ],
   "featuresTitle": "Neler yapabiliyor",
@@ -144,8 +144,8 @@
   "ossTitle": "Açık kaynak",
   "ossText": "Schnellbild, MIT Lisansı altında özgür bir yazılımdır, kaynak kodu <a href=\"https://github.com/JohannesHoppe/schnellbild\">GitHub’da</a>. Bir hata mı buldunuz ya da bir şey mi eksik? <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">Bir issue açın</a>.",
   "languagesText": "Mac’inizin dilinde:",
-  "ctaTitle": "Hazırsanız başlayalım.",
-  "ctaText": "Ücretsiz, hesapsız, koşulsuz.",
+  "ctaTitle": "Deneyin.",
+  "ctaText": "Ücretsiz ve hesapsız.",
   "footerPrivacy": "Gizlilik",
   "footerImprint": "Künye (Impressum)",
   "footerEula": "Lisans sözleşmesi",
@@ -165,7 +165,7 @@
     "siteTitle": "Bu web sitesi",
     "siteText": "Bu web sitesi çerez, analiz veya başka sunuculardan içerik (web yazı tipleri, gömülü videolar) kullanmaz. GitHub, Inc. (ABD) hizmeti olan GitHub Pages üzerinde barındırılır. Siteyi ziyaret ettiğinizde GitHub, güvenlik amacıyla IP adresinizi kaydeder ve saklar; bkz. <a href=\"https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages#data-collection\">GitHub Pages: data collection</a> ve <a href=\"https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement\">GitHub gizlilik bildirimi</a>. Bu kayıtların ne kadar süre saklanacağına GitHub karar verir; bunlara erişimimiz yoktur. GitHub, Avrupa Komisyonu’nun ABD’nin yeterli düzeyde koruma sağladığına karar verdiği EU-U.S. Data Privacy Framework’e katılmaktadır (GDPR md. 45). Hukuki dayanak, web sitesini güvenli bir şekilde sunmaya yönelik meşru menfaatimizdir (GDPR md. 6/1-f). Uygulamanın indirilmesi de GitHub üzerinden gerçekleşir. Üstteki düğmeyle açık ya da koyu seçerseniz tarayıcınız bu seçimi saklar (localStorage); seçim cihazınızda kalır, kimseye ulaşmaz.",
     "rightsTitle": "Haklarınız",
-    "rightsText": "AB Genel Veri Koruma Tüzüğü (GDPR) kapsamında erişim, düzeltme, silme, işlemenin kısıtlanması ve veri taşınabilirliği haklarına ve bir veri koruma denetim makamına şikâyette bulunma hakkına sahipsiniz. <strong>Özel durumunuzdan kaynaklanan nedenlerle, meşru menfaatimize dayanan işlemeye itiraz etme hakkına sahipsiniz</strong> (GDPR md. 21). Ne uygulama ne de bu web sitesi kendine ait kişisel veri tutmadığından, bizim tarafımızda bakılacak veya silinecek hiçbir şey yoktur. Bu yüzden erişim talebine vereceğimiz yanıt çok kısa olacaktır: Hakkınızda hiçbir şey bilmiyoruz.",
+    "rightsText": "AB Genel Veri Koruma Tüzüğü (GDPR) kapsamında erişim, düzeltme, silme, işlemenin kısıtlanması ve veri taşınabilirliği haklarına ve bir veri koruma denetim makamına şikâyette bulunma hakkına sahipsiniz. <strong>Özel durumunuzdan kaynaklanan nedenlerle, meşru menfaatimize dayanan işlemeye itiraz etme hakkına sahipsiniz</strong> (GDPR md. 21). Ne uygulama ne de bu web sitesi kendine ait kişisel veri tutmadığından, bizim tarafımızda bakılacak veya silinecek hiçbir şey yoktur. Bu yüzden erişim talebine vereceğimiz yanıt kısa olacaktır: Hakkınızda hiçbir şey bilmiyoruz.",
     "contactTitle": "İletişim",
     "contactText": "Schnellbild ile ilgili her konuda (sorular, fikirler, hatalar ve verilerinizle ilgili talepler dahil) lütfen bize GitHub üzerinden ulaşın: <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a> adresinde bir issue açın. En hızlı orada yanıt veriyoruz ve yanıt başkalarının da işine yarıyor. Issue herkese açıktır; herkesin önünde konuşmak istemediğiniz konular için <a href=\"https://haushoppe-its.de/impressum/\">künyede</a> başka iletişim yolları bulabilirsiniz."
   },

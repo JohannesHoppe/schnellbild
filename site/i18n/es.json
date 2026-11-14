@@ -10,7 +10,7 @@
   "language": "Idioma",
   "iconAlt": "Icono de la app Schnellbild",
   "tagline": "Un visor de fotos y vídeos para Mac que no da la lata.",
-  "lead": "Abre una carpeta, mira las miniaturas, ve una imagen en grande y pasa a la siguiente con el teclado. Los vídeos se reproducen ahí mismo, incluso en MKV, AVI y WebM. Sin biblioteca a la que importar, sin esperas, sin estorbos.",
+  "lead": "Abre una carpeta, mira las miniaturas, ve una imagen en grande y pasa a la siguiente con el teclado. Los vídeos se reproducen ahí mismo, incluso en MKV, AVI y WebM. Sin biblioteca a la que importar, sin esperas.",
   "download": "Descargar gratis",
   "store": "Mac App Store",
   "storeSoon": "pronto, por 0,99 € para apoyarlo",
@@ -46,7 +46,7 @@
     ],
     [
       "Sin relleno",
-      "Sin biblioteca a la que importar, sin editor, sin nube. Solo ver fotos y vídeos, y hacerlo bien."
+      "Sin biblioteca a la que importar, sin editor, sin nube."
     ],
     [
       "Rápido",
@@ -58,7 +58,7 @@
     ],
     [
       "No se cae",
-      "Ante archivos dañados, formatos raros o discos lentos, muestra un marcador de posición en lugar de venirse abajo."
+      "Ante archivos dañados, formatos raros o discos lentos, muestra un marcador de posición y la app sigue funcionando."
     ]
   ],
   "featuresTitle": "Qué hace",
@@ -81,7 +81,7 @@
     },
     {
       "title": "Ordena las fotos de tus vacaciones como en Norton Commander",
-      "text": "<p><kbd>D</kbd> muestra dos carpetas una junto a otra. Marca imágenes y luego <kbd>F5</kbd> las copia y <kbd>F6</kbd> las mueve al otro lado. O simplemente arrástralas.</p><p>Renombrar, nueva carpeta, papelera, marcadores, y se puede deshacer el cambio de nombre, el envío a la papelera, la copia y el traslado.</p>",
+      "text": "<p><kbd>D</kbd> muestra dos carpetas una junto a otra. Marca imágenes y luego <kbd>F5</kbd> las copia y <kbd>F6</kbd> las mueve al otro lado. O arrástralas.</p><p>Renombrar, nueva carpeta, papelera, marcadores, y se puede deshacer el cambio de nombre, el envío a la papelera, la copia y el traslado.</p>",
       "alt": "Dos carpetas una junto a otra en el doble panel"
     },
     {
@@ -144,8 +144,8 @@
   "ossTitle": "Código abierto",
   "ossText": "Schnellbild es software libre con licencia MIT; el código fuente está <a href=\"https://github.com/JohannesHoppe/schnellbild\">en GitHub</a>. ¿Has encontrado un error o echas algo en falta? <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">Abre una incidencia</a>.",
   "languagesText": "En el idioma de tu Mac:",
-  "ctaTitle": "Cuando quieras.",
-  "ctaText": "Gratis, sin cuenta, sin compromiso.",
+  "ctaTitle": "Pruébalo.",
+  "ctaText": "Gratis, sin cuenta.",
   "footerPrivacy": "Privacidad",
   "footerImprint": "Aviso legal (Impressum)",
   "footerEula": "Contrato de licencia",
@@ -165,7 +165,7 @@
     "siteTitle": "Este sitio web",
     "siteText": "Este sitio web no usa cookies, ni analítica, ni contenidos de otros servidores (ni fuentes web ni vídeos incrustados). Está alojado en GitHub Pages, un servicio de GitHub, Inc. (EE. UU.). Cuando lo visitas, GitHub registra y almacena tu dirección IP por motivos de seguridad; consulta <a href=\"https://docs.github.com/es/pages/getting-started-with-github-pages/what-is-github-pages#data-collection\">GitHub Pages: recopilación de datos</a> y la <a href=\"https://docs.github.com/es/site-policy/privacy-policies/github-general-privacy-statement\">declaración de privacidad de GitHub</a>. Cuánto tiempo conserva GitHub estos registros lo decide GitHub; nosotros no tenemos acceso a ellos. GitHub participa en el Marco de Privacidad de Datos UE-EE. UU. (EU-U.S. Data Privacy Framework), para el que la Comisión Europea ha decidido que Estados Unidos garantiza un nivel de protección adecuado (art. 45 del RGPD). La base jurídica es nuestro interés legítimo en ofrecer el sitio web de forma segura (art. 6, apdo. 1, letra f) del RGPD). La descarga de la app también procede de GitHub. Si eliges claro u oscuro con el interruptor de arriba, tu navegador guarda esa elección (localStorage); se queda en tu dispositivo y no llega a nadie.",
     "rightsTitle": "Tus derechos",
-    "rightsText": "Conforme al RGPD, tienes derecho de acceso, rectificación, supresión, limitación del tratamiento y portabilidad de los datos, así como derecho a presentar una reclamación ante una autoridad de control de protección de datos. <strong>Tienes derecho a oponerte</strong>, por motivos relacionados con tu situación particular, al tratamiento basado en nuestro interés legítimo (art. 21 del RGPD). Como ni la app ni este sitio web guardan datos personales propios, por nuestra parte no hay absolutamente nada que consultar ni borrar. Por eso, la respuesta a una solicitud de acceso será muy breve: no sabemos absolutamente nada de ti.",
+    "rightsText": "Conforme al RGPD, tienes derecho de acceso, rectificación, supresión, limitación del tratamiento y portabilidad de los datos, así como derecho a presentar una reclamación ante una autoridad de control de protección de datos. <strong>Tienes derecho a oponerte</strong>, por motivos relacionados con tu situación particular, al tratamiento basado en nuestro interés legítimo (art. 21 del RGPD). Como ni la app ni este sitio web guardan datos personales propios, por nuestra parte no hay nada que consultar ni borrar. Por eso, la respuesta a una solicitud de acceso será breve: no sabemos nada de ti.",
     "contactTitle": "Contacto",
     "contactText": "Para todo lo relacionado con Schnellbild (preguntas, ideas, errores y también solicitudes sobre tus datos), contáctanos por GitHub: abre una incidencia en <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a>. Allí respondemos más rápido y la respuesta también sirve a otros. Una incidencia es pública; para lo que prefieras no tratar en público, el <a href=\"https://haushoppe-its.de/impressum/\">aviso legal</a> indica otras formas de contacto."
   },

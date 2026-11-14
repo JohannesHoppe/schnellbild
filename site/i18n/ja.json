@@ -10,7 +10,7 @@
   "language": "言語",
   "iconAlt": "Schnellbildのアプリアイコン",
   "tagline": "イライラしない、Mac用の画像・動画ビューア。",
-  "lead": "フォルダを開けば、サムネールが並びます。1枚を大きく表示して、キーボードで次々にめくれます。動画もその場で再生。MKV、AVI、WebMも。読み込むライブラリも、待ち時間も、余計なものもありません。",
+  "lead": "フォルダを開けば、サムネールが並びます。1枚を大きく表示して、キーボードで次々にめくれます。動画もその場で再生。MKV、AVI、WebMも。読み込むライブラリも、待ち時間もありません。",
   "download": "無料でダウンロード",
   "store": "Mac App Store",
   "storeSoon": "近日公開。開発を応援できます",
@@ -46,7 +46,7 @@
     ],
     [
       "余計なものなし",
-      "読み込むライブラリも、編集機能も、クラウドもなし。写真と動画を見ること。それをきちんとやります。"
+      "読み込むライブラリも、編集機能も、クラウドもなし。"
     ],
     [
       "高速",
@@ -58,7 +58,7 @@
     ],
     [
       "落ちない",
-      "壊れたファイル、変わったフォーマット、遅いディスクでも、Appが落ちる代わりにプレースホルダが表示されます。"
+      "壊れたファイル、変わったフォーマット、遅いディスクでも、プレースホルダが表示され、Appは動き続けます。"
     ]
   ],
   "featuresTitle": "できること",
@@ -144,8 +144,8 @@
   "ossTitle": "オープンソース",
   "ossText": "SchnellbildはMITライセンスのフリーソフトウェアで、ソースコードは<a href=\"https://github.com/JohannesHoppe/schnellbild\">GitHub</a>で公開しています。バグを見つけたり、欲しい機能があったりしたら、<a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">Issueを作成</a>してください。",
   "languagesText": "お使いのMacの言語で：",
-  "ctaTitle": "さっそく始めましょう。",
-  "ctaText": "無料。アカウント不要。条件なし。",
+  "ctaTitle": "試してみてください。",
+  "ctaText": "無料。アカウント不要。",
   "footerPrivacy": "プライバシー",
   "footerImprint": "法的情報 (Impressum)",
   "footerEula": "使用許諾契約",
@@ -165,7 +165,7 @@
     "siteTitle": "本ウェブサイト",
     "siteText": "本ウェブサイトは、Cookie、解析、ほかのサーバからのコンテンツ（Webフォントや埋め込み動画など）を一切使用していません。ホスティングには、GitHub, Inc.（米国）のサービスであるGitHub Pagesを利用しています。アクセス時には、GitHubがセキュリティ上の目的でIPアドレスを記録・保存します。詳しくは<a href=\"https://docs.github.com/ja/pages/getting-started-with-github-pages/what-is-github-pages#data-collection\">GitHub Pages：データ収集</a>および<a href=\"https://docs.github.com/ja/site-policy/privacy-policies/github-general-privacy-statement\">GitHubのプライバシーに関する声明</a>をご覧ください。このログの保存期間はGitHubが決めており、当方はログにアクセスできません。GitHubはEU-U.S. Data Privacy Frameworkに参加しています。欧州委員会は、この枠組みのもとで米国が十分な保護水準を確保していると決定しています（GDPR第45条）。法的根拠は、本ウェブサイトを安全に配信するという当方の正当な利益です（EU一般データ保護規則（GDPR）第6条第1項(f)）。Appのダウンロードも、GitHubから提供されます。 上部のスイッチでライトかダークを選ぶと、ブラウザがその選択を保存します（localStorage）。保存先はお使いの端末だけで、どこにも送信されません。",
     "rightsTitle": "お客様の権利",
-    "rightsText": "GDPRに基づき、お客様には、アクセス、訂正、消去、処理の制限、データポータビリティの各権利、およびデータ保護監督機関に苦情を申し立てる権利があります。<strong>また、ご自身の特別な状況に関する理由により、当方の正当な利益に基づく処理に異議を申し立てる権利があります</strong>（GDPR第21条）。Appも本ウェブサイトも独自に個人データを保持していないため、当方で照会や削除を行うべきものは一切ありません。そのため、開示請求への回答はごく短いものになります。当方はあなたについて何ひとつ知りません。",
+    "rightsText": "GDPRに基づき、お客様には、アクセス、訂正、消去、処理の制限、データポータビリティの各権利、およびデータ保護監督機関に苦情を申し立てる権利があります。<strong>また、ご自身の特別な状況に関する理由により、当方の正当な利益に基づく処理に異議を申し立てる権利があります</strong>（GDPR第21条）。Appも本ウェブサイトも独自に個人データを保持していないため、当方で照会や削除を行うべきものは一切ありません。そのため、開示請求への回答は短いものになります。当方はあなたについて何も知りません。",
     "contactTitle": "お問い合わせ",
     "contactText": "Schnellbildに関することは、ご質問、アイデア、不具合、データに関するご請求も含め、すべてGitHubからご連絡ください。<a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a>でIssueを作成してください。そこがいちばん早く回答でき、回答はほかの方の役にも立ちます。Issueは公開されます。公開したくないご用件は、<a href=\"https://haushoppe-its.de/impressum/\">法的情報</a>に記載のその他の連絡先をご利用ください。"
   },

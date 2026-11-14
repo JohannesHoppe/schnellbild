@@ -10,7 +10,7 @@
   "language": "Język",
   "iconAlt": "Ikona aplikacji Schnellbild",
   "tagline": "Przeglądarka zdjęć i wideo dla macOS, która nie działa na nerwy.",
-  "lead": "Otwórz folder, zobacz miniatury, obejrzyj jedno zdjęcie w dużym rozmiarze, przewijaj klawiaturą. Filmy odtwarzają się od razu na miejscu, nawet MKV, AVI i WebM. Bez biblioteki, do której trzeba importować, bez czekania, bez bałaganu.",
+  "lead": "Otwórz folder, zobacz miniatury, obejrzyj jedno zdjęcie w dużym rozmiarze, przewijaj klawiaturą. Filmy odtwarzają się od razu na miejscu, nawet MKV, AVI i WebM. Bez biblioteki, do której trzeba importować, bez czekania.",
   "download": "Pobierz za darmo",
   "store": "Mac App Store",
   "storeSoon": "wkrótce, na wsparcie projektu",
@@ -46,7 +46,7 @@
     ],
     [
       "Bez zbędnego balastu",
-      "Bez biblioteki do importowania, bez edytora, bez chmury. Tylko oglądanie zdjęć i filmów, za to porządnie."
+      "Bez biblioteki do importowania, bez edytora, bez chmury."
     ],
     [
       "Szybki",
@@ -58,7 +58,7 @@
     ],
     [
       "Nie wysypuje się",
-      "Uszkodzone pliki, nietypowe formaty i wolne dyski pokazują symbol zastępczy, zamiast kłaść całą aplikację."
+      "Uszkodzone pliki, nietypowe formaty i wolne dyski pokazują symbol zastępczy, a aplikacja działa dalej."
     ]
   ],
   "featuresTitle": "Co potrafi",
@@ -81,7 +81,7 @@
     },
     {
       "title": "Porządkuj zdjęcia z wakacji jak w Norton Commanderze",
-      "text": "<p><kbd>D</kbd> pokazuje dwa foldery obok siebie. Zaznacz obrazy: <kbd>F5</kbd> je kopiuje, a <kbd>F6</kbd> przenosi na drugą stronę. Możesz je też po prostu przeciągnąć.</p><p>Zmiana nazwy, nowy folder, kosz i zakładki. Zmianę nazwy, przeniesienie do kosza, kopiowanie i przenoszenie da się też cofnąć.</p>",
+      "text": "<p><kbd>D</kbd> pokazuje dwa foldery obok siebie. Zaznacz obrazy: <kbd>F5</kbd> je kopiuje, a <kbd>F6</kbd> przenosi na drugą stronę. Możesz je też przeciągnąć.</p><p>Zmiana nazwy, nowy folder, kosz i zakładki. Zmianę nazwy, przeniesienie do kosza, kopiowanie i przenoszenie da się też cofnąć.</p>",
       "alt": "Dwa foldery obok siebie w dwóch panelach"
     },
     {
@@ -144,8 +144,8 @@
   "ossTitle": "Open source",
   "ossText": "Schnellbild to wolne oprogramowanie na licencji MIT, a kod źródłowy jest <a href=\"https://github.com/JohannesHoppe/schnellbild\">na GitHubie</a>. Coś nie działa albo czegoś brakuje? <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">Otwórz zgłoszenie</a>.",
   "languagesText": "W języku Twojego Maca:",
-  "ctaTitle": "Kiedy tylko zechcesz.",
-  "ctaText": "Za darmo, bez konta, bez haczyków.",
+  "ctaTitle": "Wypróbuj.",
+  "ctaText": "Za darmo, bez konta.",
   "footerPrivacy": "Prywatność",
   "footerImprint": "Nota prawna (Impressum)",
   "footerEula": "Umowa licencyjna",
@@ -165,7 +165,7 @@
     "siteTitle": "Ta strona internetowa",
     "siteText": "Ta strona nie używa plików cookie, analityki ani treści z innych serwerów (bez fontów internetowych, bez osadzonych filmów). Jest hostowana w GitHub Pages, usłudze firmy GitHub, Inc. (USA). Gdy ją odwiedzasz, GitHub rejestruje i przechowuje Twój adres IP ze względów bezpieczeństwa; zob. <a href=\"https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages#data-collection\">GitHub Pages: zbieranie danych</a> oraz <a href=\"https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement\">oświadczenie GitHuba o ochronie prywatności</a> (po angielsku). Jak długo GitHub przechowuje te logi, decyduje GitHub; nie mamy do nich dostępu. GitHub uczestniczy w programie EU-U.S. Data Privacy Framework, w odniesieniu do którego Komisja Europejska stwierdziła, że USA zapewniają odpowiedni stopień ochrony (art. 45 RODO). Podstawą prawną jest nasz prawnie uzasadniony interes w bezpiecznym udostępnianiu strony (art. 6 ust. 1 lit. f RODO). Aplikacja również jest pobierana z GitHuba. Jeśli wybierzesz przełącznikiem u góry tryb jasny lub ciemny, przeglądarka zapamięta ten wybór (localStorage); zostaje on na twoim urządzeniu i do nikogo nie trafia.",
     "rightsTitle": "Twoje prawa",
-    "rightsText": "Na mocy RODO przysługuje Ci prawo dostępu do danych, ich sprostowania, usunięcia, ograniczenia przetwarzania i przenoszenia danych, a także prawo wniesienia skargi do organu nadzorczego ds. ochrony danych. Z przyczyn związanych z Twoją szczególną sytuacją <strong>masz prawo wnieść sprzeciw</strong> wobec przetwarzania opartego na naszym prawnie uzasadnionym interesie (art. 21 RODO). Ponieważ ani aplikacja, ani ta strona nie przechowują własnych danych osobowych, po naszej stronie nie ma absolutnie nic do sprawdzenia ani usunięcia. Odpowiedź na żądanie dostępu będzie więc bardzo krótka: nie wiemy o Tobie absolutnie nic.",
+    "rightsText": "Na mocy RODO przysługuje Ci prawo dostępu do danych, ich sprostowania, usunięcia, ograniczenia przetwarzania i przenoszenia danych, a także prawo wniesienia skargi do organu nadzorczego ds. ochrony danych. Z przyczyn związanych z Twoją szczególną sytuacją <strong>masz prawo wnieść sprzeciw</strong> wobec przetwarzania opartego na naszym prawnie uzasadnionym interesie (art. 21 RODO). Ponieważ ani aplikacja, ani ta strona nie przechowują własnych danych osobowych, po naszej stronie nie ma nic do sprawdzenia ani usunięcia. Odpowiedź na żądanie dostępu będzie więc krótka: nie wiemy o Tobie nic.",
     "contactTitle": "Kontakt",
     "contactText": "We wszystkich sprawach dotyczących Schnellbild (pytaniach, pomysłach, błędach, a także wnioskach dotyczących Twoich danych) skontaktuj się z nami przez GitHub: otwórz zgłoszenie na <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a>. Tam odpowiadamy najszybciej, a odpowiedź przyda się też innym. Zgłoszenie jest publiczne; w sprawach, których nie chcesz omawiać publicznie, inne dane kontaktowe znajdziesz w <a href=\"https://haushoppe-its.de/impressum/\">nocie prawnej</a>."
   },

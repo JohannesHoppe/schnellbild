@@ -10,7 +10,7 @@
   "language": "Språk",
   "iconAlt": "Schnellbilds appsymbol",
   "tagline": "En bildvisare och videospelare för macOS som helt enkelt inte suger.",
-  "lead": "Öppna en mapp, se miniatyrerna, titta på en bild i stort format och bläddra med tangentbordet eller visa ett bildspel. Videor spelas direkt där, även MKV, AVI och WebM. Inget bibliotek att importera till, ingen väntan, inget krafs.",
+  "lead": "Öppna en mapp, se miniatyrerna, titta på en bild i stort format och bläddra med tangentbordet eller visa ett bildspel. Videor spelas direkt där, även MKV, AVI och WebM. Inget bibliotek att importera till, ingen väntan.",
   "download": "Ladda ner gratis",
   "store": "Mac App Store",
   "storeSoon": "snart, för att stödja utvecklingen",
@@ -46,7 +46,7 @@
     ],
     [
       "Inget onödigt",
-      "Inget bibliotek att importera till, ingen redigerare, inget moln. Bara att titta på bilder och videor, och det riktigt bra."
+      "Inget bibliotek att importera till, ingen redigerare, inget moln."
     ],
     [
       "Snabb",
@@ -58,7 +58,7 @@
     ],
     [
       "Kraschar inte",
-      "Trasiga filer, udda format och långsamma diskar visar en platshållare i stället för att få appen att krascha."
+      "Trasiga filer, udda format och långsamma diskar visar en platshållare, och appen fortsätter att fungera."
     ]
   ],
   "featuresTitle": "Vad den gör",
@@ -144,8 +144,8 @@
   "ossTitle": "Öppen källkod",
   "ossText": "Schnellbild är fri programvara under MIT-licensen, källkoden finns <a href=\"https://github.com/JohannesHoppe/schnellbild\">på GitHub</a>. Hittat en bugg eller saknar du något? <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">Skapa ett ärende</a>.",
   "languagesText": "På din Macs språk:",
-  "ctaTitle": "Redo när du är det.",
-  "ctaText": "Gratis, inget konto, inga konstigheter.",
+  "ctaTitle": "Prova den.",
+  "ctaText": "Gratis, inget konto.",
   "footerPrivacy": "Integritet",
   "footerImprint": "Juridisk information (Impressum)",
   "footerEula": "Licensavtal",
@@ -165,7 +165,7 @@
     "siteTitle": "Denna webbplats",
     "siteText": "Denna webbplats använder inga cookies, ingen analys och inget innehåll från andra servrar (inga webbtypsnitt, inga inbäddade videor). Den ligger på GitHub Pages, en tjänst från GitHub, Inc. (USA). När du besöker den loggar och sparar GitHub din IP-adress av säkerhetsskäl; se <a href=\"https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages#data-collection\">GitHub Pages: datainsamling</a> (på engelska) och <a href=\"https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement\">GitHubs integritetspolicy</a>. Hur länge GitHub sparar dessa loggar bestämmer GitHub; vi har ingen åtkomst till dem. GitHub deltar i EU-U.S. Data Privacy Framework, för vilket EU-kommissionen har beslutat att USA säkerställer en adekvat skyddsnivå (artikel 45 i dataskyddsförordningen). Den rättsliga grunden är vårt berättigade intresse av att leverera webbplatsen på ett säkert sätt (artikel 6.1 f i dataskyddsförordningen, GDPR). Även nedladdningen av appen kommer från GitHub. Väljer du ljust eller mörkt med knappen högst upp sparar din webbläsare valet (localStorage); det stannar på din enhet och når ingen.",
     "rightsTitle": "Dina rättigheter",
-    "rightsText": "Enligt dataskyddsförordningen (GDPR) har du rätt till tillgång, rättelse, radering, begränsning av behandling och dataportabilitet, samt rätt att lämna in klagomål till en tillsynsmyndighet för dataskydd. <strong>Du har rätt att invända</strong> mot behandling som grundar sig på vårt berättigade intresse, av skäl som hänför sig till din specifika situation (artikel 21 i dataskyddsförordningen). Eftersom varken appen eller denna webbplats sparar några egna personuppgifter finns det absolut ingenting hos oss att slå upp eller radera. Ett svar på en begäran om registerutdrag blir därför mycket kort: Vi vet absolut ingenting om dig.",
+    "rightsText": "Enligt dataskyddsförordningen (GDPR) har du rätt till tillgång, rättelse, radering, begränsning av behandling och dataportabilitet, samt rätt att lämna in klagomål till en tillsynsmyndighet för dataskydd. <strong>Du har rätt att invända</strong> mot behandling som grundar sig på vårt berättigade intresse, av skäl som hänför sig till din specifika situation (artikel 21 i dataskyddsförordningen). Eftersom varken appen eller denna webbplats sparar några egna personuppgifter finns det ingenting hos oss att slå upp eller radera. Ett svar på en begäran om registerutdrag blir därför kort: Vi vet ingenting om dig.",
     "contactTitle": "Kontakt",
     "contactText": "För allt som rör Schnellbild (frågor, idéer, fel och även förfrågningar om dina uppgifter) kontakta oss helst via GitHub: skapa ett ärende på <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a>. Där svarar vi snabbast, och andra har också nytta av svaret. Ett ärende är offentligt; för sådant du hellre inte tar upp offentligt finns andra kontaktvägar i den <a href=\"https://haushoppe-its.de/impressum/\">juridiska informationen</a>."
   },

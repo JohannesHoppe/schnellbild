@@ -10,7 +10,7 @@
   "language": "Taal",
   "iconAlt": "Appsymbool van Schnellbild",
   "tagline": "Een fotoviewer en videospeler voor macOS waar je niet gek van wordt.",
-  "lead": "Open een map, bekijk de miniaturen, zie één afbeelding groot en blader met het toetsenbord. Ook video’s spelen er gewoon af, zelfs MKV, AVI en WebM. Geen bibliotheek om in te importeren, geen wachten, geen rommel.",
+  "lead": "Open een map, bekijk de miniaturen, zie één afbeelding groot en blader met het toetsenbord. Ook video’s spelen daar af, zelfs MKV, AVI en WebM. Geen bibliotheek om in te importeren, geen wachten.",
   "download": "Gratis downloaden",
   "store": "Mac App Store",
   "storeSoon": "binnenkort, € 0,99 om het te steunen",
@@ -46,7 +46,7 @@
     ],
     [
       "Geen toeters en bellen",
-      "Geen bibliotheek om in te importeren, geen editor, geen cloud. Gewoon foto’s en video’s bekijken, en dat goed."
+      "Geen bibliotheek om in te importeren, geen editor, geen cloud."
     ],
     [
       "Snel",
@@ -58,7 +58,7 @@
     ],
     [
       "Valt niet om",
-      "Kapotte bestanden, vreemde formaten en trage schijven tonen een plaatshouder in plaats van de app onderuit te halen."
+      "Kapotte bestanden, vreemde formaten en trage schijven tonen een plaatshouder, en de app blijft draaien."
     ]
   ],
   "featuresTitle": "Wat hij doet",
@@ -81,7 +81,7 @@
     },
     {
       "title": "Sorteer je vakantiefoto’s zoals in Norton Commander",
-      "text": "<p><kbd>D</kbd> toont twee mappen naast elkaar. Markeer afbeeldingen: <kbd>F5</kbd> kopieert ze en <kbd>F6</kbd> verplaatst ze naar de andere kant. Of sleep ze er gewoon heen.</p><p>Naam wijzigen, nieuwe map, prullenmand, bladwijzers, en ongedaan maken voor naam wijzigen, weggooien, kopiëren en verplaatsen.</p>",
+      "text": "<p><kbd>D</kbd> toont twee mappen naast elkaar. Markeer afbeeldingen: <kbd>F5</kbd> kopieert ze en <kbd>F6</kbd> verplaatst ze naar de andere kant. Of sleep ze erheen.</p><p>Naam wijzigen, nieuwe map, prullenmand, bladwijzers, en ongedaan maken voor naam wijzigen, weggooien, kopiëren en verplaatsen.</p>",
       "alt": "Twee mappen naast elkaar in twee panelen"
     },
     {
@@ -144,8 +144,8 @@
   "ossTitle": "Open source",
   "ossText": "Schnellbild is vrije software onder de MIT-licentie, de broncode staat <a href=\"https://github.com/JohannesHoppe/schnellbild\">op GitHub</a>. Een bug gevonden of mis je iets? <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">Open een issue</a>.",
   "languagesText": "In de taal van je Mac:",
-  "ctaTitle": "Klaar wanneer jij het bent.",
-  "ctaText": "Gratis, geen account, geen addertjes onder het gras.",
+  "ctaTitle": "Probeer het uit.",
+  "ctaText": "Gratis, geen account.",
   "footerPrivacy": "Privacy",
   "footerImprint": "Juridische informatie (Impressum)",
   "footerEula": "Licentieovereenkomst",
@@ -165,7 +165,7 @@
     "siteTitle": "Deze website",
     "siteText": "Deze website gebruikt geen cookies, geen analytics en geen inhoud van andere servers (geen webfonts, geen ingesloten video’s). Hij wordt gehost op GitHub Pages, een dienst van GitHub, Inc. (VS). Als je de website bezoekt, registreert en bewaart GitHub je IP-adres voor beveiligingsdoeleinden; zie <a href=\"https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages#data-collection\">GitHub Pages: gegevensverzameling</a> en de <a href=\"https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement\">privacyverklaring van GitHub</a> (in het Engels). Hoe lang GitHub deze logs bewaart, bepaalt GitHub; wij hebben er geen toegang toe. GitHub neemt deel aan het EU-U.S. Data Privacy Framework, waarvoor de Europese Commissie heeft vastgesteld dat de VS een passend beschermingsniveau bieden (art. 45 AVG). De rechtsgrondslag is ons gerechtvaardigd belang bij het veilig aanbieden van de website (art. 6 lid 1 onder f AVG). Ook de download van de app komt van GitHub. Kies je met de schakelaar bovenaan licht of donker, dan onthoudt je browser die keuze (localStorage); die blijft op je apparaat en bereikt niemand.",
     "rightsTitle": "Je rechten",
-    "rightsText": "Op grond van de AVG heb je recht op inzage, rectificatie, wissing, beperking van de verwerking en overdraagbaarheid van gegevens, en het recht om een klacht in te dienen bij een toezichthoudende autoriteit voor gegevensbescherming. <strong>Je hebt het recht om bezwaar te maken</strong> tegen verwerking op grond van ons gerechtvaardigd belang, om redenen die verband houden met je specifieke situatie (art. 21 AVG). Omdat de app noch deze website zelf persoonsgegevens bewaart, is er aan onze kant helemaal niets in te zien of te wissen. Een antwoord op een inzageverzoek zal daarom heel kort zijn: we weten helemaal niets over je.",
+    "rightsText": "Op grond van de AVG heb je recht op inzage, rectificatie, wissing, beperking van de verwerking en overdraagbaarheid van gegevens, en het recht om een klacht in te dienen bij een toezichthoudende autoriteit voor gegevensbescherming. <strong>Je hebt het recht om bezwaar te maken</strong> tegen verwerking op grond van ons gerechtvaardigd belang, om redenen die verband houden met je specifieke situatie (art. 21 AVG). Omdat de app noch deze website zelf persoonsgegevens bewaart, is er aan onze kant niets in te zien of te wissen. Een antwoord op een inzageverzoek zal daarom kort zijn: we weten niets over je.",
     "contactTitle": "Contact",
     "contactText": "Voor alles rond Schnellbild (vragen, ideeën, fouten en ook verzoeken over je gegevens) neem je het best contact met ons op via GitHub: open een issue op <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a>. Daar antwoorden we het snelst, en anderen hebben ook iets aan het antwoord. Een issue is openbaar; voor wat je liever niet openbaar bespreekt, vind je andere contactmogelijkheden in de <a href=\"https://haushoppe-its.de/impressum/\">juridische informatie</a>."
   },

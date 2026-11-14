@@ -23,18 +23,18 @@
   <img src="docs/screenshots/grid-light.png" width="820" alt="Schnellbild: folders with previews and photo thumbnails">
 </picture></p>
 
-Open a folder, see thumbnails, look at one picture large, page through with the keyboard. Videos play right there, too, even AVI, MKV and WebM. No library to import into, no waiting, no clutter: it opens what you point it at, stays quick on big folders and network shares alike, and gets out of your way.
+Open a folder, see thumbnails, look at one picture large, page through with the keyboard. Videos play right there, too, even AVI, MKV and WebM. No library to import into, no waiting: it opens what you point it at and stays quick on big folders and network shares.
 
 ## Why Schnellbild doesn't suck
 
 - **No ads, no tracking, no account.** It shows your pictures and talks to nobody.
 - **No upselling.** No pro version, no subscription, no "unlock" button. Every feature is in.
-- **No bloat.** No library to import into, no editor, no cloud. Just looking at photos and videos, done well.
+- **No bloat.** No library to import into, no editor, no cloud.
 - **Fast.** Thumbnails appear while you scroll, big folders and network shares included (see [Why so fast?](#why-so-fast)).
 - **Safe by default.** Looking at pictures, videos and archives from others runs nothing and goes online nowhere, with nothing to switch on first: archives are only read, never unpacked to disk; a "video" can't make it fetch anything from the internet; a double click never starts an app hiding behind a picture's name; and the whole app runs in Apple's App Sandbox, so it reaches only the folders you open to it. What it does, and where its limit is: [Safe with files from others](#safe-with-files-from-others).
 - **Provably built from this source.** Every DMG comes with a build attestation signed by GitHub: anyone can check that it was built by this repository's workflow, from a public commit. [How to check it](#provably-built-from-this-source).
 - **Light or dark, your choice.** Some swear by dark mode, others can't stand it. So you decide: same as the system, light or dark (Settings, ⌘,).
-- **Doesn't fall over.** Broken files, odd formats and slow disks show a placeholder instead of taking the app down. Your files are only changed when you say so: rename, trash, a new folder, or moving and copying them (dragging tiles onto a folder, F5 / F6 in the dual pane).
+- **Doesn't fall over.** Broken files, odd formats and slow disks show a placeholder, and the app keeps running. Your files are only changed when you say so: rename, trash, a new folder, or moving and copying them (dragging tiles onto a folder, F5 / F6 in the dual pane).
 
 ## Download
 
@@ -146,7 +146,7 @@ Schnellbild has two ways of looking at a folder: **browse** it in the grid, or s
 Three ways to start it:
 
 - **▶︎ Slideshow** in the toolbar, or the `s` key: plays the folder you're in, with everything below it. While you search, it plays the search results instead.
-- **Right-click a folder tile → Start Slideshow of This Folder:** plays just that folder (and its subfolders), without opening it first.
+- **Right-click a folder tile → Start Slideshow of This Folder:** plays only that folder (and its subfolders), without opening it first.
 - **Drag a folder onto the window:** the window splits into two halves. Drop it on **Browse** to look around in the grid, or on **Slideshow** to start the show straight away. A single dropped picture starts the slideshow of its folder at that picture.
 
 It starts where you are: from the full view at the picture you're looking at; in the grid at the file you selected, or at the first picture inside the folder you selected (also deep in the subfolders), and goes on from there, round to the start at the end. `Esc` ends it and brings you back to where you were.
@@ -243,7 +243,7 @@ Press `a` (or the sliders button next to the wand) to see these values. With aut
 
 When auto gets a picture wrong, move a slider. Auto enhance switches off and you carry on from its values. Your settings stay while you page on, until you reset them or switch auto enhance on again. Switching it off shows the files as they are.
 
-It's a filter on the screen only: your files stay exactly as they are. Photos and videos of every format go through the same filter, so the sliders work the same everywhere, at once.
+It's a filter on the screen only: your files stay as they are. Photos and videos of every format go through the same filter, so the sliders work the same everywhere, at once.
 
 | Key | Action |
 |---|---|
@@ -372,7 +372,7 @@ F1 (or ⌘?) shows a cheat sheet of the keys; Print… (⌘P) in it prints it on
   <img src="docs/screenshots/settings-light.png" width="460" alt="Settings: how long a picture stays in the slideshow, and the saved archive passwords">
 </picture></p>
 
-Schnellbild → Settings (⌘,) has five things: light or dark (as the system, or always light or always dark, whatever the system's setting), the folders you opened to Schnellbild (to forget them), how long a picture stays in the slideshow (1 to 60 seconds), whether macOS reads MKV and AVCHD itself (the media extension, with a button to System Settings), and the archive passwords Schnellbild has saved, which you can forget all at once. Everything else it simply remembers: the folder, the sort order, grid or list, the search mode, the dual pane, the mini keyboard, the volume, the bookmarks. Quitting while files are still being copied or moved asks first and can wait until they are done.
+Schnellbild → Settings (⌘,) has five things: light or dark (as the system, or always light or always dark, whatever the system's setting), the folders you opened to Schnellbild (to forget them), how long a picture stays in the slideshow (1 to 60 seconds), whether macOS reads MKV and AVCHD itself (the media extension, with a button to System Settings), and the archive passwords Schnellbild has saved, which you can forget all at once. Everything else it remembers: the folder, the sort order, grid or list, the search mode, the dual pane, the mini keyboard, the volume, the bookmarks. Quitting while files are still being copied or moved asks first and can wait until they are done.
 
 ### Supported file formats
 
@@ -411,7 +411,7 @@ Pictures, videos and archives from strangers are exactly what a viewer is for, s
 - **A signed, closed app.** Signed with a Developer ID and notarized by Apple, with the Hardened Runtime: only Apple's code and Schnellbild's own libraries can load into it. It registers no URL schemes or document types that a web page or another app could use to make it open something.
 - **No crash loops.** If a file ever made Schnellbild quit, it doesn't reopen that folder at the next start.
 
-The limit, honestly: the decoders run in the app's process: VLC with FFmpeg for videos, UnRAR and macOS' libarchive for archives, macOS' ImageIO for pictures. A flaw in one of them could in principle run code inside Schnellbild; the sandbox then keeps that code to what Schnellbild may do itself: the folders you opened to it, without network. That's why VLCKit and UnRAR are kept at their latest security releases.
+The limit: the decoders run in the app's process (VLC with FFmpeg for videos, UnRAR and macOS' libarchive for archives, macOS' ImageIO for pictures). A flaw in one of them could in principle run code inside Schnellbild; the sandbox then keeps that code to what Schnellbild may do itself: the folders you opened to it, without network. That's why VLCKit and UnRAR are kept at their latest security releases.
 
 ## Provably built from this source
 

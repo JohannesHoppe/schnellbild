@@ -10,7 +10,7 @@
   "language": "Langue",
   "iconAlt": "Icône de l’app Schnellbild",
   "tagline": "Une visionneuse photo et vidéo pour Mac qui ne prend pas la tête.",
-  "lead": "Ouvrez un dossier, parcourez les vignettes, affichez une image en grand, feuilletez au clavier ou en diaporama. Les vidéos se lisent sur place, même en MKV, AVI et WebM. Pas de bibliothèque où tout importer, pas d’attente, pas de fouillis.",
+  "lead": "Ouvrez un dossier, parcourez les vignettes, affichez une image en grand, feuilletez au clavier ou en diaporama. Les vidéos se lisent sur place, même en MKV, AVI et WebM. Pas de bibliothèque où tout importer, pas d’attente.",
   "download": "Télécharger gratuitement",
   "store": "Mac App Store",
   "storeSoon": "bientôt, 0,99 € pour soutenir le projet",
@@ -46,7 +46,7 @@
     ],
     [
       "Rien de superflu",
-      "Pas de bibliothèque où importer, pas d’éditeur, pas de cloud. Juste regarder des photos et des vidéos, et bien le faire."
+      "Pas de bibliothèque où importer, pas d’éditeur, pas de cloud."
     ],
     [
       "Rapide",
@@ -81,7 +81,7 @@
     },
     {
       "title": "Triez vos photos de vacances comme dans Norton Commander",
-      "text": "<p><kbd>D</kbd> affiche deux dossiers côte à côte. Marquez des images, puis <kbd>F5</kbd> les copie et <kbd>F6</kbd> les déplace de l’autre côté. Ou faites-les simplement glisser.</p><p>Renommer, nouveau dossier, corbeille, signets, et on peut annuler un renommage, une mise à la corbeille, une copie ou un déplacement.</p>",
+      "text": "<p><kbd>D</kbd> affiche deux dossiers côte à côte. Marquez des images, puis <kbd>F5</kbd> les copie et <kbd>F6</kbd> les déplace de l’autre côté. Ou faites-les glisser.</p><p>Renommer, nouveau dossier, corbeille, signets, et on peut annuler un renommage, une mise à la corbeille, une copie ou un déplacement.</p>",
       "alt": "Deux dossiers côte à côte dans le double panneau"
     },
     {
@@ -144,8 +144,8 @@
   "ossTitle": "Open source",
   "ossText": "Schnellbild est un logiciel libre sous licence MIT, son code source est <a href=\"https://github.com/JohannesHoppe/schnellbild\">sur GitHub</a>. Un bug, une fonction qui manque ? <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">Ouvrez un ticket</a>.",
   "languagesText": "Dans la langue de votre Mac :",
-  "ctaTitle": "À vous de jouer.",
-  "ctaText": "Gratuite, sans compte, sans engagement.",
+  "ctaTitle": "Essayez-la.",
+  "ctaText": "Gratuite, sans compte.",
   "footerPrivacy": "Confidentialité",
   "footerImprint": "Mentions légales (Impressum)",
   "footerEula": "Contrat de licence",
@@ -165,7 +165,7 @@
     "siteTitle": "Ce site web",
     "siteText": "Ce site web n’utilise ni cookies, ni outil de mesure d’audience, ni contenu provenant d’autres serveurs (pas de polices web, pas de vidéos intégrées). Il est hébergé sur GitHub Pages, un service de GitHub, Inc. (États-Unis). Lorsque vous le consultez, GitHub enregistre et conserve votre adresse IP à des fins de sécurité ; voir <a href=\"https://docs.github.com/fr/pages/getting-started-with-github-pages/what-is-github-pages#data-collection\">GitHub Pages : collecte de données</a> et la <a href=\"https://docs.github.com/fr/site-policy/privacy-policies/github-general-privacy-statement\">déclaration de confidentialité de GitHub</a>. La durée de conservation de ces journaux est fixée par GitHub ; nous n’y avons pas accès. GitHub adhère au cadre de protection des données UE-États-Unis (EU-U.S. Data Privacy Framework), pour lequel la Commission européenne a constaté que les États-Unis assurent un niveau de protection adéquat (art. 45 du RGPD). La base juridique est notre intérêt légitime à fournir le site web de manière sécurisée (art. 6, par. 1, point f) du RGPD). Le téléchargement de l’app provient lui aussi de GitHub. Si vous choisissez clair ou sombre avec le bouton en haut, votre navigateur garde ce choix (localStorage) ; il reste sur votre appareil et n'est transmis à personne.",
     "rightsTitle": "Vos droits",
-    "rightsText": "En vertu du RGPD, vous disposez d’un droit d’accès, de rectification, d’effacement, de limitation du traitement et de portabilité des données, ainsi que du droit d’introduire une réclamation auprès d’une autorité de contrôle chargée de la protection des données. <strong>Vous avez le droit de vous opposer</strong>, pour des raisons tenant à votre situation particulière, au traitement fondé sur notre intérêt légitime (art. 21 du RGPD). Comme ni l’app ni ce site web ne conservent eux-mêmes de données personnelles, il n’y a absolument rien à consulter ni à supprimer de notre côté. Une demande d’accès recevra donc une réponse très courte : nous ne savons absolument rien de vous.",
+    "rightsText": "En vertu du RGPD, vous disposez d’un droit d’accès, de rectification, d’effacement, de limitation du traitement et de portabilité des données, ainsi que du droit d’introduire une réclamation auprès d’une autorité de contrôle chargée de la protection des données. <strong>Vous avez le droit de vous opposer</strong>, pour des raisons tenant à votre situation particulière, au traitement fondé sur notre intérêt légitime (art. 21 du RGPD). Comme ni l’app ni ce site web ne conservent eux-mêmes de données personnelles, il n’y a rien à consulter ni à supprimer de notre côté. Une demande d’accès recevra donc une réponse courte : nous ne savons rien de vous.",
     "contactTitle": "Contact",
     "contactText": "Pour tout ce qui concerne Schnellbild (questions, idées, bugs, et aussi demandes sur vos données), contactez-nous de préférence via GitHub : ouvrez un ticket sur <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a>. C’est là que nous répondons le plus vite, et la réponse profite aussi aux autres. Un ticket est public ; pour ce que vous préférez ne pas aborder publiquement, les <a href=\"https://haushoppe-its.de/impressum/\">mentions légales</a> indiquent d’autres moyens de nous joindre."
   },

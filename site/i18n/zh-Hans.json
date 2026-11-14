@@ -10,7 +10,7 @@
   "language": "语言",
   "iconAlt": "Schnellbild App 图标",
   "tagline": "一款用着不闹心的 Mac 图片和视频查看器。",
-  "lead": "打开文件夹，缩略图一览无余；单张大图查看，用键盘轻松翻页。视频也能直接播放，MKV、AVI 和 WebM 也不例外。无需导入图库，无需等待，没有多余的东西。",
+  "lead": "打开文件夹，缩略图一览无余；单张大图查看，用键盘翻页。视频也能直接播放，MKV、AVI 和 WebM 也不例外。无需导入图库，无需等待。",
   "download": "免费下载",
   "store": "Mac App Store",
   "storeSoon": "即将上架，用来支持开发",
@@ -46,7 +46,7 @@
     ],
     [
       "不臃肿",
-      "无需导入图库，没有编辑器，没有云。只做好一件事：看照片和视频。"
+      "无需导入图库，没有编辑器，没有云。"
     ],
     [
       "快",
@@ -144,8 +144,8 @@
   "ossTitle": "开源",
   "ossText": "Schnellbild 是采用 MIT 许可证的自由软件，源代码在 <a href=\"https://github.com/JohannesHoppe/schnellbild\">GitHub 上</a>。发现了 bug 或缺少什么功能？<a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">提交 issue</a>。",
   "languagesText": "以你 Mac 的语言显示：",
-  "ctaTitle": "随时可以开始。",
-  "ctaText": "免费，无需账户，没有附加条件。",
+  "ctaTitle": "试试看。",
+  "ctaText": "免费，无需账户。",
   "footerPrivacy": "隐私",
   "footerImprint": "法律声明 (Impressum)",
   "footerEula": "许可协议",
@@ -165,7 +165,7 @@
     "siteTitle": "本网站",
     "siteText": "本网站不使用 Cookie、分析工具，也不加载来自其他服务器的内容（没有网络字体，没有嵌入视频）。本网站托管于 GitHub Pages，这是 GitHub, Inc.（美国）提供的服务。你访问本网站时，GitHub 出于安全目的会记录并存储你的 IP 地址；参见<a href=\"https://docs.github.com/zh/pages/getting-started-with-github-pages/what-is-github-pages#data-collection\">GitHub Pages：数据收集</a>和<a href=\"https://docs.github.com/zh/site-policy/privacy-policies/github-general-privacy-statement\">GitHub 隐私声明</a>。GitHub 将这些日志保留多久由 GitHub 决定；我们无法访问这些日志。GitHub 参与了欧盟-美国数据隐私框架（EU-U.S. Data Privacy Framework），欧盟委员会已认定美国在该框架下提供充分的保护水平（GDPR 第 45 条）。法律依据是我们安全提供本网站的合法利益（欧盟《通用数据保护条例》（GDPR）第 6 条第 1 款第 (f) 项）。App 的下载同样来自 GitHub。 如果你用顶部的开关选择浅色或深色，浏览器会记住这个选择（localStorage）；它只保存在你的设备上，不会发送给任何人。",
     "rightsTitle": "你的权利",
-    "rightsText": "根据 GDPR，你享有访问、更正、删除、限制处理和数据可携带的权利，并有权向数据保护监管机构提出投诉。<strong>你有权基于与你的特殊情况相关的理由，反对基于我们合法利益进行的处理</strong>（GDPR 第 21 条）。由于 App 和本网站都不保存自己的个人数据，我们这边根本没有任何可查询或删除的内容。因此，对访问请求的答复会非常简短：我们对你一无所知。",
+    "rightsText": "根据 GDPR，你享有访问、更正、删除、限制处理和数据可携带的权利，并有权向数据保护监管机构提出投诉。<strong>你有权基于与你的特殊情况相关的理由，反对基于我们合法利益进行的处理</strong>（GDPR 第 21 条）。由于 App 和本网站都不保存自己的个人数据，我们这边没有任何可查询或删除的内容。因此，对访问请求的答复会很简短：我们对你一无所知。",
     "contactTitle": "联系",
     "contactText": "关于 Schnellbild 的一切事宜，包括问题、想法、错误报告以及与你的数据有关的请求，请通过 GitHub 联系我们：在 <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a> 提交 issue。我们在那里回复最快，答复也能帮到其他人。issue 是公开的；不便公开讨论的事项，可通过<a href=\"https://haushoppe-its.de/impressum/\">法律声明</a>中的其他联系方式找到我们。"
   },

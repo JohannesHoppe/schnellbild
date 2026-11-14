@@ -10,7 +10,7 @@
   "language": "Jazyk",
   "iconAlt": "Ikona aplikace Schnellbild",
   "tagline": "Prohlížeč obrázků a videí pro macOS, který prostě není na houby.",
-  "lead": "Otevřete složku, prohlédněte si miniatury, podívejte se na obrázek ve velkém a listujte klávesnicí. Videa se přehrávají přímo na místě, i MKV, AVI a WebM. Žádná knihovna, do které je třeba importovat, žádné čekání, žádný nepořádek.",
+  "lead": "Otevřete složku, prohlédněte si miniatury, podívejte se na obrázek ve velkém a listujte klávesnicí. Videa se přehrávají přímo na místě, i MKV, AVI a WebM. Žádná knihovna, do které je třeba importovat, žádné čekání.",
   "download": "Stáhnout zdarma",
   "store": "Mac App Store",
   "storeSoon": "brzy, na podporu projektu",
@@ -46,7 +46,7 @@
     ],
     [
       "Žádná vata",
-      "Žádná knihovna k importu, žádný editor, žádný cloud. Jen prohlížení fotek a videí, zato pořádně."
+      "Žádná knihovna k importu, žádný editor, žádný cloud."
     ],
     [
       "Rychlý",
@@ -58,7 +58,7 @@
     ],
     [
       "Nespadne",
-      "Poškozené soubory, neobvyklé formáty a pomalé disky zobrazí zástupný symbol, místo aby aplikaci shodily."
+      "Poškozené soubory, neobvyklé formáty a pomalé disky zobrazí zástupný symbol a aplikace běží dál."
     ]
   ],
   "featuresTitle": "Co umí",
@@ -144,8 +144,8 @@
   "ossTitle": "Open source",
   "ossText": "Schnellbild je svobodný software pod licencí MIT, zdrojový kód je <a href=\"https://github.com/JohannesHoppe/schnellbild\">na GitHubu</a>. Našli jste chybu nebo vám něco chybí? <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">Založte issue</a>.",
   "languagesText": "V jazyce vašeho Macu:",
-  "ctaTitle": "Připraveno, až budete chtít.",
-  "ctaText": "Zdarma, bez účtu, bez závazků.",
+  "ctaTitle": "Vyzkoušejte ho.",
+  "ctaText": "Zdarma, bez účtu.",
   "footerPrivacy": "Soukromí",
   "footerImprint": "Právní informace (Impressum)",
   "footerEula": "Licenční smlouva",
@@ -165,7 +165,7 @@
     "siteTitle": "Tento web",
     "siteText": "Tento web nepoužívá cookies, analytiku ani obsah z jiných serverů (žádná webová písma, žádná vložená videa). Je hostován na GitHub Pages, službě společnosti GitHub, Inc. (USA). Při návštěvě GitHub z bezpečnostních důvodů zaznamenává a ukládá vaši IP adresu; viz <a href=\"https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages#data-collection\">GitHub Pages: data collection</a> a <a href=\"https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement\">prohlášení GitHubu o ochraně osobních údajů</a>. Jak dlouho GitHub tyto záznamy uchovává, určuje GitHub; my k nim přístup nemáme. GitHub se účastní rámce EU-U.S. Data Privacy Framework, u něhož Evropská komise rozhodla, že USA zajišťují odpovídající úroveň ochrany (čl. 45 GDPR). Právním základem je náš oprávněný zájem na bezpečném poskytování webu (čl. 6 odst. 1 písm. f) GDPR). Také aplikace se stahuje z GitHubu. Když přepínačem nahoře zvolíte světlý nebo tmavý vzhled, prohlížeč si volbu zapamatuje (localStorage); zůstane ve vašem zařízení a nikam se neposílá.",
     "rightsTitle": "Vaše práva",
-    "rightsText": "Podle obecného nařízení o ochraně osobních údajů (GDPR) máte právo na přístup, opravu, výmaz, omezení zpracování a přenositelnost údajů a dále právo podat stížnost u dozorového úřadu pro ochranu osobních údajů. <strong>Máte právo vznést námitku</strong> z důvodů týkajících se vaší konkrétní situace proti zpracování založenému na našem oprávněném zájmu (čl. 21 GDPR). Protože ani aplikace, ani tento web žádné vlastní osobní údaje neuchovávají, není u nás vůbec nic, co by se dalo vyhledat nebo smazat. Odpověď na žádost o přístup proto bude velmi krátká: nevíme o vás vůbec nic.",
+    "rightsText": "Podle obecného nařízení o ochraně osobních údajů (GDPR) máte právo na přístup, opravu, výmaz, omezení zpracování a přenositelnost údajů a dále právo podat stížnost u dozorového úřadu pro ochranu osobních údajů. <strong>Máte právo vznést námitku</strong> z důvodů týkajících se vaší konkrétní situace proti zpracování založenému na našem oprávněném zájmu (čl. 21 GDPR). Protože ani aplikace, ani tento web žádné vlastní osobní údaje neuchovávají, není u nás nic, co by se dalo vyhledat nebo smazat. Odpověď na žádost o přístup proto bude krátká: nevíme o vás nic.",
     "contactTitle": "Kontakt",
     "contactText": "Ve všech záležitostech týkajících se Schnellbild (dotazy, nápady, chyby i žádosti o vaše údaje) nás prosím kontaktujte přes GitHub: založte issue na <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a>. Tam odpovídáme nejrychleji a odpověď pomůže i ostatním. Issue je veřejné; pro věci, které nechcete řešit veřejně, najdete další kontakty v <a href=\"https://haushoppe-its.de/impressum/\">právních informacích</a>."
   },

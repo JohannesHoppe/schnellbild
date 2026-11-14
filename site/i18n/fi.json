@@ -10,7 +10,7 @@
   "language": "Kieli",
   "iconAlt": "Schnellbildin ohjelmasymboli",
   "tagline": "Kuvankatselin ja videosoitin macOS:lle, eikä yhtään syvältä.",
-  "lead": "Avaa kansio, katso miniatyyrit, tarkastele yhtä kuvaa isona ja selaa näppäimistöllä. Myös videot toistuvat suoraan siinä, jopa MKV, AVI ja WebM. Ei kirjastoa, johon kuvat pitäisi tuoda, ei odottelua, ei sotkua.",
+  "lead": "Avaa kansio, katso miniatyyrit, tarkastele yhtä kuvaa isona ja selaa näppäimistöllä. Myös videot toistuvat suoraan siinä, jopa MKV, AVI ja WebM. Ei kirjastoa, johon kuvat pitäisi tuoda, ei odottelua.",
   "download": "Lataa ilmaiseksi",
   "store": "Mac App Store",
   "storeSoon": "pian, 0,99 € kehityksen tukemiseksi",
@@ -46,7 +46,7 @@
     ],
     [
       "Ei turhaa painolastia",
-      "Ei kirjastoa, johon kuvat pitäisi tuoda, ei editoria, ei pilveä. Vain kuvien ja videoiden katselu, hyvin tehtynä."
+      "Ei kirjastoa, johon kuvat pitäisi tuoda, ei editoria, ei pilveä."
     ],
     [
       "Nopea",
@@ -58,7 +58,7 @@
     ],
     [
       "Ei kaadu",
-      "Rikkinäiset tiedostot, oudot formaatit ja hitaat levyt näyttävät paikkamerkin sen sijaan, että kaataisivat ohjelman."
+      "Rikkinäiset tiedostot, oudot formaatit ja hitaat levyt näyttävät paikkamerkin, ja ohjelma toimii edelleen."
     ]
   ],
   "featuresTitle": "Mitä se tekee",
@@ -144,8 +144,8 @@
   "ossTitle": "Avoin lähdekoodi",
   "ossText": "Schnellbild on vapaata ohjelmistoa MIT-lisenssillä, lähdekoodi on <a href=\"https://github.com/JohannesHoppe/schnellbild\">GitHubissa</a>. Löysitkö bugin tai puuttuuko jotain? <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">Avaa issue</a>.",
   "languagesText": "Macisi kielellä:",
-  "ctaTitle": "Valmiina, kun sinä olet.",
-  "ctaText": "Ilmainen, ei tiliä, ei sitoumuksia.",
+  "ctaTitle": "Kokeile.",
+  "ctaText": "Ilmainen, ei tiliä.",
   "footerPrivacy": "Tietosuoja",
   "footerImprint": "Oikeudelliset tiedot (Impressum)",
   "footerEula": "Käyttöoikeussopimus",
@@ -165,7 +165,7 @@
     "siteTitle": "Tämä verkkosivusto",
     "siteText": "Tämä verkkosivusto ei käytä evästeitä, analytiikkaa eikä muilta palvelimilta ladattavaa sisältöä (ei verkkofontteja, ei upotettuja videoita). Sitä ylläpidetään GitHub Pagesissa, joka on GitHub, Inc:n (Yhdysvallat) palvelu. Kun vierailet sivustolla, GitHub kirjaa ja tallentaa IP-osoitteesi turvallisuussyistä; katso <a href=\"https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages#data-collection\">GitHub Pages: data collection</a> ja <a href=\"https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement\">GitHubin tietosuojaseloste</a>. Sen, kuinka kauan GitHub säilyttää näitä lokeja, päättää GitHub; meillä ei ole pääsyä niihin. GitHub osallistuu EU:n ja Yhdysvaltojen väliseen tietosuojakehykseen (EU-U.S. Data Privacy Framework), jonka osalta Euroopan komissio on todennut Yhdysvaltojen tarjoavan riittävän tietosuojan tason (tietosuoja-asetuksen 45 artikla). Käsittelyn oikeusperuste on oikeutettu etumme toimittaa verkkosivusto turvallisesti (tietosuoja-asetuksen 6 artiklan 1 kohdan f alakohta). Myös ohjelman lataus tulee GitHubista. Jos valitset ylhäällä olevalla kytkimellä vaalean tai tumman, selaimesi muistaa valinnan (localStorage); se pysyy laitteellasi eikä päädy kenellekään.",
     "rightsTitle": "Oikeutesi",
-    "rightsText": "EU:n yleisen tietosuoja-asetuksen (GDPR) mukaan sinulla on oikeus saada pääsy tietoihin, oikaista ja poistaa ne, rajoittaa niiden käsittelyä ja siirtää ne järjestelmästä toiseen sekä oikeus tehdä valitus tietosuojavalvontaviranomaiselle. <strong>Sinulla on oikeus vastustaa</strong> oikeutettuun etuumme perustuvaa käsittelyä erityiseen tilanteeseesi liittyvällä perusteella (tietosuoja-asetuksen 21 artikla). Koska ohjelma ja tämä verkkosivusto eivät säilytä omia henkilötietoja, meillä ei ole yhtään mitään tarkistettavaa tai poistettavaa. Vastaus tietopyyntöön on siksi hyvin lyhyt: emme tiedä sinusta yhtään mitään.",
+    "rightsText": "EU:n yleisen tietosuoja-asetuksen (GDPR) mukaan sinulla on oikeus saada pääsy tietoihin, oikaista ja poistaa ne, rajoittaa niiden käsittelyä ja siirtää ne järjestelmästä toiseen sekä oikeus tehdä valitus tietosuojavalvontaviranomaiselle. <strong>Sinulla on oikeus vastustaa</strong> oikeutettuun etuumme perustuvaa käsittelyä erityiseen tilanteeseesi liittyvällä perusteella (tietosuoja-asetuksen 21 artikla). Koska ohjelma ja tämä verkkosivusto eivät säilytä omia henkilötietoja, meillä ei ole mitään tarkistettavaa tai poistettavaa. Vastaus tietopyyntöön on siksi lyhyt: emme tiedä sinusta mitään.",
     "contactTitle": "Yhteystiedot",
     "contactText": "Kaikissa Schnellbildiin liittyvissä asioissa (kysymykset, ideat, virheet ja myös tietojasi koskevat pyynnöt) ota meihin yhteyttä GitHubin kautta: avaa issue osoitteessa <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a>. Siellä vastaamme nopeimmin, ja vastauksesta on hyötyä muillekin. Issue on julkinen; asioissa, joita et halua käsitellä julkisesti, muut yhteystavat löytyvät <a href=\"https://haushoppe-its.de/impressum/\">oikeudellisista tiedoista</a>."
   },
