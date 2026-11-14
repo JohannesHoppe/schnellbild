@@ -1,0 +1,25 @@
+O Schnellbild é um visualizador de fotografias e leitor de vídeo para Mac que não obriga a importar nada: abra uma pasta, veja as miniaturas, veja uma imagem em grande e avance com o teclado. Continua rápido em pastas grandes e em partilhas de rede.
+
+IMAGENS
+• JPEG, HEIC, AVIF, JPEG XL, PNG, GIF, WebP, TIFF, PSD, OpenEXR, SVG, PDF e fotografias RAW das câmaras que o macOS conhece
+• Grelha, lista e vista ampliada, apresentação de diapositivos por todas as subpastas
+• Zoom, rodar, melhoria automática (exposição, contraste, saturação, nitidez), só na visualização: os seus ficheiros ficam como estão
+• Informações do ficheiro com formato, codecs e taxa de bits; um aviso quando a extensão não corresponde ao conteúdo
+
+VÍDEOS
+• MP4 e MOV, e ainda os formatos que o macOS não reproduz: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-Vídeo, AVCHD
+• Percorra os vídeos com as setas, tal como passa as fotografias
+
+ARQUIVOS COMO PASTAS
+• ZIP, RAR e 7z abrem como pastas, banda desenhada (CBZ, CBR) incluída, também com palavra-passe e em várias partes
+• Nada é extraído para o disco; os vídeos são reproduzidos diretamente a partir do arquivo
+
+ORGANIZAR COM DOIS PAINÉIS
+• Dois painéis lado a lado com as teclas F de um gestor de ficheiros clássico: marcar, copiar com F5, mover com F6
+• Mudar o nome, nova pasta, Lixo, marcadores, desfazer
+• Pesquisa por nomes de pastas e ficheiros em todas as subpastas
+
+SEGURO COM FICHEIROS DE OUTRAS PESSOAS
+O Schnellbild corre na App Sandbox da Apple: sem rede, sem outros programas, só as pastas que lhe abrir. Os arquivos são apenas lidos, e um “vídeo” não consegue levar a app para a internet.
+
+Todas as teclas num relance com F1, um mini teclado clicável com K. Em 20 idiomas.

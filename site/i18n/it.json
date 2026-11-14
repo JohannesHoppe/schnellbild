@@ -1,15 +1,15 @@
 {
   "name": "Italiano",
   "privacySlug": "privacy",
-  "title": "Schnellbild: un visualizzatore di immagini e video per macOS che non ti complica la vita",
-  "seoTitle": "Schnellbild · visualizzatore foto e video gratis per Mac",
-  "seoDescription": "Visualizzatore di immagini e lettore video gratuito per Mac: miniature, tastiera, MKV, AVI e WebM, ZIP e RAR come cartelle. Alternativa a Phiewer e IINA.",
-  "keywords": "visualizzatore immagini Mac, visualizzatore foto macOS, visualizzatore foto gratis, lettore MKV Mac, riprodurre AVI WebM, alternativa a Phiewer, alternativa a IINA, aprire immagini RAR, fumetti CBZ CBR, presentazione, Schnellbild",
+  "title": "Schnellbild: un visualizzatore di foto e video per Mac che non ti complica la vita",
+  "seoTitle": "Schnellbild · visualizzatore foto e lettore MKV per Mac",
+  "seoDescription": "Visualizzatore foto e lettore video gratis per Mac: MKV e AVI col motore VLC integrato, ZIP, RAR e fumetti CBZ come cartelle. Alternativa a XnView.",
+  "keywords": "visualizzatore foto Mac, visualizzatore immagini Mac, visualizzatore di immagini per Mac, lettore video Mac, lettore MKV Mac, MKV player Mac, lettore AVI Mac, riprodurre WebM, motore VLC integrato, presentazione foto Mac, alternativa a XnView, alternativa a IrfanView, alternativa ad ACDSee, alternativa a Phiewer, alternativa a IINA per guardare video, aprire immagini RAR, lettore fumetti CBZ CBR, doppio pannello, Schnellbild",
   "navFeatures": "Funzioni",
   "navSafety": "Sicurezza",
   "language": "Lingua",
   "iconAlt": "Icona dell’app Schnellbild",
-  "tagline": "Un visualizzatore di immagini e video per macOS che non ti complica la vita.",
+  "tagline": "Un visualizzatore di foto e video per Mac che non ti complica la vita.",
   "lead": "Apri una cartella, guarda le miniature, visualizza un’immagine in grande, sfoglia con la tastiera. Anche i video si riproducono lì, persino MKV, AVI e WebM. Nessuna libreria in cui importare, nessuna attesa, nessun ingombro.",
   "download": "Scarica gratis",
   "store": "Mac App Store",
@@ -35,17 +35,17 @@
   "featuresMore": "E molte altre funzioni: tutti i dettagli su GitHub",
   "features": [
     {
-      "title": "Guarda in grande, sfoglia con i tasti",
+      "title": "Guarda in grande, sfoglia con i tasti o in presentazione",
       "text": "<p>La barra spaziatrice apre un’immagine grande quanto la finestra permette, ← → sfogliano la cartella. Ingrandisci con il trackpad o con + −, ruota con ⌥← ⌥→, schermo intero con <kbd>f</kbd>. GIF animate, SVG e PDF compresi.</p><p>Una presentazione (<kbd>s</kbd>) scorre la cartella e tutte le sue sottocartelle, foto e video insieme.</p>",
       "alt": "Una foto nella vista completa"
     },
     {
-      "title": "Video, anche quelli che macOS non riproduce",
+      "title": "Video, anche MKV e AVI che macOS non riproduce",
       "text": "<p>Quello che macOS riproduce da sé (MP4, MOV, AVCHD…) passa da macOS, tutto il resto dal motore VLC integrato: MKV, WebM, AVI, WMV, FLV, MPEG, DVD Video.</p><ul><li>← → saltano di un decimo del video, ⇧← ⇧→ di un centesimo</li><li>↑ ↓ regolano il volume, per tutti i video</li><li>Anche il Finder e Quick Look ottengono le miniature di MKV, WebM, WMV, FLV e VOB</li></ul>",
       "alt": "Un video in riproduzione in Schnellbild"
     },
     {
-      "title": "Gli archivi si aprono come cartelle",
+      "title": "Archivi e fumetti si aprono come cartelle",
       "text": "<p>ZIP, RAR e 7z, fumetti (CBZ, CBR) compresi, anche divisi in più parti; ZIP e RAR anche protetti da password. Nulla viene estratto sul disco, e i video si riproducono direttamente dall’archivio.</p>",
       "alt": "Archivi mostrati come cartelle con anteprime"
     },

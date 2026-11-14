@@ -1,16 +1,16 @@
 {
   "name": "Svenska",
   "privacySlug": "privacy",
-  "title": "Schnellbild: en bild- och videovisare för macOS som helt enkelt inte suger",
-  "seoTitle": "Schnellbild · gratis bild- och videovisare för Mac",
-  "seoDescription": "Snabb, gratis bildvisare och videospelare för Mac: miniatyrer, tangentbord, MKV, AVI och WebM, ZIP och RAR som mappar. Alternativ till Phiewer och IINA.",
-  "keywords": "bildvisare Mac, fotovisare macOS, gratis bildvisare, MKV-spelare Mac, spela AVI WebM, Phiewer-alternativ, IINA-alternativ, öppna bilder i RAR, serier CBZ CBR, bildspel, Schnellbild",
+  "title": "Schnellbild: en bildvisare och videospelare för macOS som helt enkelt inte suger",
+  "seoTitle": "Schnellbild · gratis bildvisare och MKV-spelare för Mac",
+  "seoDescription": "Snabb, gratis bildvisare för Mac som även spelar MKV, AVI och WebM: miniatyrer, bildspel, ZIP och RAR som mappar. Alternativ till IrfanView och XnView.",
+  "keywords": "bildvisare Mac, bildspel Mac, bildspel på Mac, fotovisare macOS, gratis bildvisare, MKV player Mac, MKV-spelare Mac, videospelare Mac, spela AVI WebM, IrfanView-alternativ, XnView-alternativ, Phiewer-alternativ, IINA-alternativ, öppna bilder i RAR, serier CBZ CBR, Schnellbild",
   "navFeatures": "Funktioner",
   "navSafety": "Säkerhet",
   "language": "Språk",
   "iconAlt": "Schnellbilds appsymbol",
-  "tagline": "En bild- och videovisare för macOS som helt enkelt inte suger.",
-  "lead": "Öppna en mapp, se miniatyrerna, titta på en bild i stort format och bläddra med tangentbordet. Videor spelas direkt där, även MKV, AVI och WebM. Inget bibliotek att importera till, ingen väntan, inget krafs.",
+  "tagline": "En bildvisare och videospelare för macOS som helt enkelt inte suger.",
+  "lead": "Öppna en mapp, se miniatyrerna, titta på en bild i stort format och bläddra med tangentbordet eller visa ett bildspel. Videor spelas direkt där, även MKV, AVI och WebM. Inget bibliotek att importera till, ingen väntan, inget krafs.",
   "download": "Ladda ner gratis",
   "store": "Mac App Store",
   "storeSoon": "snart, för att stödja utvecklingen",
@@ -40,7 +40,7 @@
       "alt": "Ett foto i helvyn"
     },
     {
-      "title": "Videor, även de som macOS inte kan spela",
+      "title": "Videor, även MKV och andra som macOS inte kan spela",
       "text": "<p>Det macOS spelar självt (MP4, MOV, AVCHD …) spelas via macOS, allt annat via den inbyggda VLC-motorn: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-video.</p><ul><li>← → hoppar en tiondel av videon, ⇧← ⇧→ en hundradel</li><li>↑ ↓ ställer in volymen, för alla videor</li><li>Finder och Snabbtitt får miniatyrer även för MKV, WebM, WMV, FLV och VOB</li></ul>",
       "alt": "En video som spelas i Schnellbild"
     },
@@ -102,7 +102,7 @@
   "privacy": {
     "title": "Integritetspolicy",
     "description": "Schnellbild samlar inte in några personuppgifter: inget konto, ingen analys, ingen spårning, ingen nätverksåtkomst.",
-    "intro": "Schnellbild är en bild- och videovisare för macOS. Personuppgiftsansvarig enligt dataskyddsförordningen (GDPR) är HAUS HOPPE - ITS, Johannes Hoppe; den fullständiga adressen finns i den <a href=\"https://haushoppe-its.de/impressum/\">juridiska informationen</a>. Denna policy gäller appen, både när den laddas ner från GitHub och när den köps i Mac App Store (båda är samma app), samt denna webbplats.",
+    "intro": "Schnellbild är en bildvisare och videospelare för macOS. Personuppgiftsansvarig enligt dataskyddsförordningen (GDPR) är HAUS HOPPE - ITS, Johannes Hoppe; den fullständiga adressen finns i den <a href=\"https://haushoppe-its.de/impressum/\">juridiska informationen</a>. Denna policy gäller appen, både när den laddas ner från GitHub och när den köps i Mac App Store (båda är samma app), samt denna webbplats.",
     "appTitle": "Appen",
     "appText": "<p><strong>Schnellbild samlar inte in några personuppgifter.</strong> Den har inget konto, ingen analys, ingen reklam och ingen spårning, och den ansluter inte till internet: den App Sandbox den körs i ger den ingen nätverksåtkomst alls.</p><p>Det här stannar på din Mac, och bara där:</p>",
     "stays": [

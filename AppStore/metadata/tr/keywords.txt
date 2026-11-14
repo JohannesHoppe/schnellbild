@@ -1,0 +1,1 @@
+fotoğraf,resim,video,oynatıcı,mkv,avi,webm,slayt,gösterisi,çizgi,roman,cbz,cbr,rar,zip,klasör,raw

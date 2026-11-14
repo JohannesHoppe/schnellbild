@@ -1,15 +1,15 @@
 {
   "name": "简体中文",
   "privacySlug": "privacy",
-  "title": "Schnellbild：一款用着不闹心的 macOS 图像和视频查看器",
-  "seoTitle": "Schnellbild · 免费的 Mac 看图和视频播放软件（支持 MKV、RAR）",
-  "seoDescription": "快速、免费的 macOS 看图软件和视频播放器：缩略图、键盘翻页、播放 MKV、AVI 和 WebM，像文件夹一样打开 ZIP 和 RAR。Phiewer 和 IINA 的替代品。",
-  "keywords": "Mac 看图软件, macOS 图片查看器, 免费看图软件, Mac MKV 播放器, AVI WebM 播放, Phiewer 替代, IINA 替代, 打开 RAR 图片, CBZ CBR 漫画, 幻灯片, Schnellbild",
+  "title": "Schnellbild：一款用着不闹心的 Mac 图片和视频查看器",
+  "seoTitle": "Schnellbild · 免费的 Mac 看图软件和视频播放器（支持 MKV）",
+  "seoDescription": "快速、免费的 Mac 看图软件和视频播放器：缩略图、键盘翻页、幻灯片，播放 MKV、AVI、WebM，ZIP、RAR 压缩包和漫画像文件夹一样打开。Phiewer 的替代品。",
+  "keywords": "Mac 看图软件, Mac 图片查看器, 照片查看器, 免费看图软件, Mac 播放器, Mac 视频播放器, MKV 播放器 Mac, AVI WebM 播放, Phiewer 替代, 浏览视频的 IINA 替代, 打开 RAR 图片, 漫画阅读器, CBZ CBR, 幻灯片, 双窗格, Schnellbild",
   "navFeatures": "功能",
   "navSafety": "安全",
   "language": "语言",
   "iconAlt": "Schnellbild App 图标",
-  "tagline": "一款用着不闹心的 macOS 图像和视频查看器。",
+  "tagline": "一款用着不闹心的 Mac 图片和视频查看器。",
   "lead": "打开文件夹，缩略图一览无余；单张大图查看，用键盘轻松翻页。视频也能直接播放，MKV、AVI 和 WebM 也不例外。无需导入图库，无需等待，没有多余的东西。",
   "download": "免费下载",
   "store": "Mac App Store",
@@ -70,13 +70,13 @@
       "alt": "以完整视图显示的照片"
     },
     {
-      "title": "视频，包括 macOS 播放不了的",
+      "title": "视频播放器，连 macOS 播放不了的格式也能播",
       "text": "<p>macOS 自身能播放的格式（MP4、MOV、AVCHD 等）由 macOS 播放，其余格式（MKV、WebM、AVI、WMV、FLV、MPEG、DVD 视频）则由内置的 VLC 引擎播放。</p><ul><li>← → 跳转视频的十分之一，⇧← ⇧→ 跳转百分之一</li><li>↑ ↓ 调节音量，对所有视频生效</li><li>访达和快速查看也能显示 MKV、WebM、WMV、FLV 和 VOB 的缩略图</li></ul>",
       "alt": "在 Schnellbild 中播放的视频"
     },
     {
-      "title": "归档像文件夹一样打开",
-      "text": "<p>ZIP、RAR 和 7z，包括漫画（CBZ、CBR），分卷的也可以；ZIP 和 RAR 还支持密码。不会向磁盘解压任何内容，视频直接从归档中播放。</p>",
+      "title": "压缩包像文件夹一样打开",
+      "text": "<p>ZIP、RAR 和 7z 压缩包，包括漫画（CBZ、CBR），分卷的也可以；ZIP 和 RAR 还支持密码。不会向磁盘解压任何内容，视频直接从压缩包中播放。</p>",
       "alt": "显示为带预览文件夹的归档"
     },
     {

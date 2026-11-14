@@ -1,15 +1,15 @@
 {
   "name": "Suomi",
   "privacySlug": "privacy",
-  "title": "Schnellbild: kuvien ja videoiden katseluohjelma macOS:lle, eikä yhtään syvältä",
-  "seoTitle": "Schnellbild · ilmainen kuva- ja videokatselin Macille",
-  "seoDescription": "Nopea, ilmainen kuvankatselin ja videosoitin Macille: pienoiskuvat, selaus näppäimistöllä, MKV, AVI ja WebM, ZIP ja RAR kansioina. Vaihtoehto Phiewerille.",
-  "keywords": "kuvankatselin Mac, kuvien katselu macOS, ilmainen kuvankatselin, MKV-soitin Mac, AVI WebM toisto, Phiewer-vaihtoehto, IINA-vaihtoehto, RAR-kuvien avaaminen, sarjakuvat CBZ CBR, diaesitys, Schnellbild",
+  "title": "Schnellbild: kuvankatselin ja videosoitin macOS:lle, eikä yhtään syvältä",
+  "seoTitle": "Schnellbild · ilmainen kuvankatselin ja MKV-soitin Macille",
+  "seoDescription": "Nopea, ilmainen kuvankatselin Macille, joka toistaa myös MKV-, AVI- ja WebM-videot: pienoiskuvat, diaesitys, ZIP ja RAR kansioina. Vaihtoehto IrfanViewille.",
+  "keywords": "kuvankatselin Mac, kuvankatseluohjelma Mac, valokuvien katselu Mac, image viewer Mac, ilmainen kuvankatselin, MKV-soitin Mac, MKV player Mac, videosoitin Mac, AVI WebM toisto, diaesitys, IrfanView-vaihtoehto, XnView-vaihtoehto, Phiewer-vaihtoehto, IINA-vaihtoehto, RAR-kuvien avaaminen, sarjakuvalukija CBZ CBR, Schnellbild",
   "navFeatures": "Ominaisuudet",
   "navSafety": "Turvallisuus",
   "language": "Kieli",
   "iconAlt": "Schnellbildin ohjelmasymboli",
-  "tagline": "Kuvien ja videoiden katseluohjelma macOS:lle, eikä yhtään syvältä.",
+  "tagline": "Kuvankatselin ja videosoitin macOS:lle, eikä yhtään syvältä.",
   "lead": "Avaa kansio, katso miniatyyrit, tarkastele yhtä kuvaa isona ja selaa näppäimistöllä. Myös videot toistuvat suoraan siinä, jopa MKV, AVI ja WebM. Ei kirjastoa, johon kuvat pitäisi tuoda, ei odottelua, ei sotkua.",
   "download": "Lataa ilmaiseksi",
   "store": "Mac App Store",
@@ -40,7 +40,7 @@
       "alt": "Kuva koko näkymässä"
     },
     {
-      "title": "Videot, myös ne, joita macOS ei osaa toistaa",
+      "title": "Videot, myös MKV ja muut, joita macOS ei osaa toistaa",
       "text": "<p>Minkä macOS toistaa itse (MP4, MOV, AVCHD …), sen toistaa macOS, kaiken muun sisäänrakennettu VLC-moottori: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-video.</p><ul><li>← → hyppäävät kymmenesosan videosta, ⇧← ⇧→ sadasosan</li><li>↑ ↓ säätävät äänenvoimakkuutta, kaikille videoille</li><li>Finder ja Pikakatselu saavat miniatyyrit myös MKV-, WebM-, WMV-, FLV- ja VOB-tiedostoille</li></ul>",
       "alt": "Video toistumassa Schnellbildissä"
     },
@@ -102,7 +102,7 @@
   "privacy": {
     "title": "Tietosuojaseloste",
     "description": "Schnellbild ei kerää henkilötietoja: ei tiliä, ei analytiikkaa, ei seurantaa, ei verkkoyhteyttä.",
-    "intro": "Schnellbild on kuvien ja videoiden katseluohjelma macOS:lle. Tietosuoja-asetuksen (GDPR) mukainen rekisterinpitäjä on HAUS HOPPE - ITS, Johannes Hoppe; täydellinen osoite löytyy <a href=\"https://haushoppe-its.de/impressum/\">oikeudellisista tiedoista</a>. Tämä seloste koskee ohjelmaa, sekä GitHubista ladattuna että Mac App Storesta ostettuna (molemmat ovat sama ohjelma), sekä tätä verkkosivustoa.",
+    "intro": "Schnellbild on kuvankatselin ja videosoitin macOS:lle. Tietosuoja-asetuksen (GDPR) mukainen rekisterinpitäjä on HAUS HOPPE - ITS, Johannes Hoppe; täydellinen osoite löytyy <a href=\"https://haushoppe-its.de/impressum/\">oikeudellisista tiedoista</a>. Tämä seloste koskee ohjelmaa, sekä GitHubista ladattuna että Mac App Storesta ostettuna (molemmat ovat sama ohjelma), sekä tätä verkkosivustoa.",
     "appTitle": "Ohjelma",
     "appText": "<p><strong>Schnellbild ei kerää henkilötietoja.</strong> Siinä ei ole tiliä, analytiikkaa, mainontaa eikä seurantaa, eikä se ota yhteyttä internetiin: App Sandbox, jossa se toimii, ei anna sille lainkaan verkkoyhteyttä.</p><p>Nämä pysyvät Macillasi, eivätkä missään muualla:</p>",
     "stays": [

@@ -1,0 +1,1 @@
+fotos,imagens,player,mkv,vídeo,reprodutor,avi,slides,webm,quadrinhos,mangá,cbz,cbr,rar,zip,raw,heic

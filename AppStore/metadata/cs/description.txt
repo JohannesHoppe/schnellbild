@@ -1,0 +1,25 @@
+Schnellbild zobrazuje obrázky a videa, aniž byste cokoli importovali: otevřete složku, prohlédněte si náhledy, podívejte se na obrázek ve velkém a listujte klávesnicí. Tento prohlížeč fotek zůstává rychlý i u velkých složek a na síťových discích.
+
+OBRÁZKY A FOTKY
+• JPEG, HEIC, AVIF, JPEG XL, PNG, GIF, WebP, TIFF, PSD, OpenEXR, SVG, PDF a RAW fotky z fotoaparátů, které macOS zná
+• Mřížka, seznam a plné zobrazení, prezentace přes všechny podsložky
+• Zvětšení, otočení, automatické vylepšení (expozice, kontrast, sytost, ostrost), jen pro prohlížení: soubory zůstanou, jak jsou
+• Informace o souboru s formátem, kodeky a datovým tokem; upozornění, když přípona souboru neodpovídá jeho obsahu
+
+VIDEA
+• MP4 a MOV a k tomu formáty, které macOS neumí přehrát: MKV, WebM, AVI, WMV, FLV, MPEG, DVD video, AVCHD
+• Procházení videí šipkami, stejně jako listujete fotkami
+
+ARCHIVY JAKO SLOŽKY
+• ZIP, RAR a 7z se otevírají jako složky, včetně komiksů (CBZ, CBR), i s heslem a rozdělené na části
+• Nic se nerozbaluje na disk; videa se přehrávají přímo z archivu
+
+TŘÍDĚNÍ VE DVOU PANELECH
+• Dva panely vedle sebe s klávesami F klasického správce souborů: označit, kopírovat klávesou F5, přesunout klávesou F6
+• Přejmenování, nová složka, koš, záložky, zpět
+• Hledání v názvech složek a souborů ve všech podsložkách
+
+BEZPEČNĚ SE SOUBORY OD JINÝCH
+Schnellbild běží v App Sandboxu od Applu: žádná síť, žádné jiné programy, jen složky, které mu otevřete. Archivy se jen čtou a „video“ nemůže aplikaci poslat na internet.
+
+Všechny klávesy přehledně pod F1, klikací mini klávesnice pod K. Ve 20 jazycích.

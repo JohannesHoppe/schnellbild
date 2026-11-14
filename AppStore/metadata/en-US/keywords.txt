@@ -1,1 +1,1 @@
-mkv,player,photo,picture,video,avi,webm,raw,heic,slideshow,rar,zip,cbz,cbr,comic,folder,keyboard
+mkv,player,photo,picture,video,avi,webm,raw,heic,slideshow,rar,zip,cbz,cbr,comic,folder,reader,fast

@@ -1,0 +1,1 @@
+lecteur,vidéo,mkv,player,viewer,image,diaporama,lire,avi,bd,webm,manga,cbz,cbr,rar,zip,raw,heic

@@ -1,0 +1,25 @@
+Schnellbild est une visionneuse photo et un lecteur vidéo pour Mac, sans rien à importer : ouvrez un dossier, parcourez les vignettes, affichez une image en grand, feuilletez au clavier. Elle reste rapide, même avec de gros dossiers et sur les partages réseau.
+
+IMAGES
+• JPEG, HEIC, AVIF, JPEG XL, PNG, GIF, WebP, TIFF, PSD, OpenEXR, SVG, PDF et photos RAW des appareils que macOS connaît
+• Grille, liste et affichage en grand, diaporama à travers tous les sous-dossiers
+• Zoom, rotation, amélioration automatique (exposition, contraste, saturation, netteté), pour l’affichage seulement : vos fichiers restent tels quels
+• Infos du fichier avec format, codecs et débit ; un avertissement quand l’extension ne correspond pas au contenu
+
+VIDÉOS
+• MP4 et MOV, plus les formats que macOS ne lit pas : MKV, WebM, AVI, WMV, FLV, MPEG, DVD vidéo, AVCHD
+• Parcourez les vidéos avec les flèches, comme vous feuilletez les photos
+
+LES ARCHIVES COMME DES DOSSIERS
+• ZIP, RAR et 7z s’ouvrent comme des dossiers, bandes dessinées (CBZ, CBR) comprises, même protégés par mot de passe et en plusieurs parties
+• Rien n’est décompressé sur le disque ; les vidéos se lisent directement depuis l’archive
+
+TRIER AVEC DEUX PANNEAUX
+• Deux panneaux côte à côte avec les touches F d’un gestionnaire de fichiers classique : marquer, copier avec F5, déplacer avec F6
+• Renommer, nouveau dossier, corbeille, signets, annuler
+• Recherche dans les noms de dossiers et de fichiers, à travers tous les sous-dossiers
+
+SÛRE AVEC LES FICHIERS D’AUTRUI
+Schnellbild tourne dans l’App Sandbox d’Apple : pas de réseau, aucun autre programme, seulement les dossiers que vous lui ouvrez. Les archives sont seulement lues, et une « vidéo » ne peut pas envoyer l’app sur Internet.
+
+Toutes les touches d’un coup d’œil avec F1, un mini clavier cliquable avec K. En 20 langues.

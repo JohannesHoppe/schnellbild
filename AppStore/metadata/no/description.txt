@@ -1,0 +1,25 @@
+Schnellbild er en bildefremviser som viser bilder og videoer uten at du må importere noe: åpne en mappe, se miniatyrene, se ett bilde i stort format og bla med tastaturet. Den er like rask i store mapper og på nettverksstasjoner.
+
+BILDER
+• JPEG, HEIC, AVIF, JPEG XL, PNG, GIF, WebP, TIFF, PSD, OpenEXR, SVG, PDF og RAW-bilder fra kameraene macOS kjenner
+• Rutenett, liste og full visning, lysbildefremvisning gjennom alle undermapper
+• Zoom, roter, automatisk forbedring (eksponering, kontrast, metning, skarphet), bare for visning: filene dine forblir som de er
+• Filinfo med format, kodeker og bithastighet; en merknad når filtypen ikke passer til innholdet
+
+VIDEOER
+• MP4 og MOV, pluss formatene macOS ikke kan spille av: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-video, AVCHD
+• Spol gjennom videoer med piltastene, slik du blar gjennom bilder
+
+ARKIVER SOM MAPPER
+• ZIP, RAR og 7z åpnes som mapper, tegneserier (CBZ, CBR) inkludert, også med passord og i flere deler
+• Ingenting pakkes ut på disken; videoer spilles rett fra arkivet
+
+SORTER MED TO RUTER
+• To ruter side om side med F-tastene fra en klassisk filbehandler: merk, kopier med F5, flytt med F6
+• Gi nytt navn, ny mappe, papirkurv, bokmerker, angre
+• Søk i mappe- og filnavn gjennom alle undermapper
+
+TRYGG MED FILER FRA ANDRE
+Schnellbild kjører i Apples App Sandbox: ikke noe nettverk, ingen andre programmer, bare mappene du åpner for den. Arkiver blir bare lest, og en «video» kan ikke sende appen ut på internett.
+
+Oversikt over alle tastene med F1, et klikkbart minitastatur med K. På 20 språk.

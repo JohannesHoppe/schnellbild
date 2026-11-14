@@ -2,9 +2,9 @@
   "name": "Polski",
   "privacySlug": "privacy",
   "title": "Schnellbild: przeglądarka zdjęć i wideo dla macOS, która nie działa na nerwy",
-  "seoTitle": "Schnellbild · darmowa przeglądarka zdjęć i wideo na Maca",
-  "seoDescription": "Szybka, darmowa przeglądarka zdjęć i odtwarzacz wideo na Maca: miniatury, klawiatura, MKV, AVI, WebM, ZIP i RAR jak foldery. Alternatywa dla Phiewer.",
-  "keywords": "przeglądarka zdjęć Mac, przeglądarka obrazów macOS, darmowa przeglądarka zdjęć, odtwarzacz MKV Mac, odtwarzanie AVI WebM, alternatywa dla Phiewer, alternatywa dla IINA, otwieranie obrazów RAR, komiksy CBZ CBR, pokaz slajdów, Schnellbild",
+  "seoTitle": "Schnellbild · przeglądarka zdjęć i odtwarzacz MKV na Maca",
+  "seoDescription": "Szybka, darmowa przeglądarka zdjęć na Maca, odtwarza też MKV, AVI i WebM: miniatury, pokaz slajdów, ZIP i RAR jak foldery. Alternatywa dla IrfanView i XnView.",
+  "keywords": "przeglądarka zdjęć Mac, przegladarka zdjec mac, przeglądarka obrazów macOS, darmowa przeglądarka zdjęć, program do przeglądania zdjęć Mac, odtwarzacz MKV Mac, MKV player Mac, MKV Mac OS, odtwarzacz wideo Mac, odtwarzanie AVI na Macu, pokaz slajdów Mac, alternatywa dla IrfanView, alternatywa dla XnView, alternatywa dla FastStone, alternatywa dla Phiewer, alternatywa dla IINA, otwieranie obrazów RAR, czytnik komiksów CBZ CBR, Schnellbild",
   "navFeatures": "Funkcje",
   "navSafety": "Bezpieczeństwo",
   "language": "Język",
@@ -40,7 +40,7 @@
       "alt": "Zdjęcie w pełnym widoku"
     },
     {
-      "title": "Filmy, także te, których macOS nie odtworzy",
+      "title": "Filmy, także MKV i inne, których macOS nie odtworzy",
       "text": "<p>To, co macOS potrafi odtworzyć sam (MP4, MOV, AVCHD itp.), odtwarza macOS, a całą resztę odtwarza wbudowany silnik VLC: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-Video.</p><ul><li>← → przeskakują o jedną dziesiątą filmu, ⇧← ⇧→ o jedną setną</li><li>↑ ↓ ustawiają głośność, dla każdego filmu</li><li>Finder i Szybki przegląd dostają miniatury także dla MKV, WebM, WMV, FLV i VOB</li></ul>",
       "alt": "Film odtwarzany w Schnellbild"
     },

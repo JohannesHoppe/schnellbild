@@ -1,0 +1,25 @@
+Schnellbild on kuvankatselin, joka näyttää kuvat ja videot ilman, että mitään tarvitsee tuoda: avaa kansio, katso pienoiskuvat, tarkastele yhtä kuvaa isona ja selaa näppäimistöllä. Se pysyy nopeana myös suurissa kansioissa ja verkkolevyillä.
+
+KUVAT
+• JPEG, HEIC, AVIF, JPEG XL, PNG, GIF, WebP, TIFF, PSD, OpenEXR, SVG, PDF ja RAW-kuvat kameroista, jotka macOS tuntee
+• Ruudukko, luettelo ja koko näkymä, diaesitys kaikkien alikansioiden läpi
+• Zoomaus, kierto, automaattinen parannus (valotus, kontrasti, värikylläisyys, terävyys) vain katselua varten: tiedostot pysyvät ennallaan
+• Tiedoston tiedot: muoto, koodekit ja bittinopeus; huomautus, kun tiedostopääte ei vastaa sisältöä
+
+VIDEOT
+• MP4 ja MOV sekä muodot, joita macOS ei osaa toistaa: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-video, AVCHD
+• Selaa videoita nuolinäppäimillä samalla tavalla kuin kuvia
+
+ARKISTOT KANSIOINA
+• ZIP, RAR ja 7z aukeavat kuin kansiot, sarjakuvat (CBZ, CBR) mukaan lukien, myös salasanalla suojatut ja osiin jaetut
+• Mitään ei pureta levylle; videot toistuvat suoraan arkistosta
+
+LAJITTELU KAHDELLA PANEELILLA
+• Kaksi paneelia vierekkäin ja klassisen tiedostonhallinnan F-näppäimet: merkitse, kopioi F5:llä, siirrä F6:lla
+• Nimeä uudelleen, uusi kansio, roskakori, kirjanmerkit, kumoa
+• Hae kansioiden ja tiedostojen nimistä kaikista alikansioista
+
+TURVALLINEN MUIDEN TIEDOSTOJEN KANSSA
+Schnellbild toimii Applen App Sandboxissa: ei verkkoa, ei muita ohjelmia, vain kansiot, jotka avaat sille. Arkistoja vain luetaan, eikä ”video” voi lähettää appia internetiin.
+
+Kaikki näppäimet yhdellä silmäyksellä F1:llä, klikattava pieni näppäimistö K:lla. 20 kielellä.

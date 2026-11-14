@@ -1,0 +1,1 @@
+reproductor,video,mkv,visualizador,imágenes,avi,reproducir,diapositivas,webm,cómic,cbz,cbr,rar,zip

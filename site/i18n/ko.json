@@ -1,16 +1,16 @@
 {
   "name": "한국어",
   "privacySlug": "privacy",
-  "title": "Schnellbild: 짜증 날 일 없는 macOS용 이미지·비디오 뷰어",
-  "seoTitle": "Schnellbild · Mac용 무료 이미지·비디오 뷰어 (MKV, RAR 지원)",
-  "seoDescription": "macOS용 빠르고 무료인 사진 뷰어이자 비디오 플레이어. 썸네일, 키보드 탐색, MKV·AVI·WebM 재생, ZIP·RAR를 폴더처럼 열기. Phiewer와 IINA의 대안.",
-  "keywords": "이미지 뷰어 Mac, 사진 뷰어 macOS, 무료 이미지 뷰어, MKV 플레이어 Mac, AVI WebM 재생, Phiewer 대안, IINA 대안, RAR 이미지 열기, 만화 CBZ CBR, 슬라이드쇼, Schnellbild",
+  "title": "Schnellbild: 짜증 날 일 없는 Mac용 이미지·동영상 뷰어",
+  "seoTitle": "Schnellbild · 맥용 이미지 뷰어·동영상 플레이어, 꿀뷰 대안",
+  "seoDescription": "맥에서 쓰는 빠르고 무료인 이미지 뷰어이자 동영상 플레이어. MKV·AVI·WebM 재생, ZIP·RAR 만화책(CBZ·CBR)을 폴더처럼, 슬라이드쇼, 키보드로 넘기기. 맥용 꿀뷰(Honeyview) 대안.",
+  "keywords": "맥 이미지 뷰어, 맥용 이미지 뷰어, Mac 사진 뷰어, 맥 동영상 플레이어, 맥북 동영상 플레이어, 맥용 동영상 플레이어, 맥 영상 플레이어, 맥북 비디오 플레이어, 맥 MKV 플레이어, AVI WebM 재생, 맥용 만화책 뷰어, CBZ CBR, RAR 이미지 열기, 슬라이드쇼, 맥용 꿀뷰, 꿀뷰 대안, Honeyview Mac, 반디뷰 대안, XnView 대안, Phiewer 대안, Schnellbild",
   "navFeatures": "기능",
   "navSafety": "안전",
   "language": "언어",
   "iconAlt": "Schnellbild 앱 아이콘",
-  "tagline": "짜증 날 일 없는 macOS용 이미지·비디오 뷰어.",
-  "lead": "폴더를 열면 썸네일이 보입니다. 사진 한 장을 크게 띄우고 키보드로 넘겨 보세요. 비디오도 그 자리에서 재생됩니다. MKV, AVI, WebM까지. 가져올 보관함도, 기다림도, 군더더기도 없습니다.",
+  "tagline": "짜증 날 일 없는 Mac용 이미지·동영상 뷰어.",
+  "lead": "폴더를 열면 썸네일이 보입니다. 사진 한 장을 크게 띄우고 키보드로 넘겨 보세요. 동영상도 그 자리에서 재생됩니다. MKV, AVI, WebM까지. 가져올 보관함도, 기다림도, 군더더기도 없습니다.",
   "download": "무료 다운로드",
   "store": "Mac App Store",
   "storeSoon": "곧 출시, 개발 후원용",
@@ -46,7 +46,7 @@
     ],
     [
       "군더더기 없음",
-      "가져올 보관함도, 편집기도, 클라우드도 없습니다. 사진과 비디오 보기, 그것 하나를 제대로 합니다."
+      "가져올 보관함도, 편집기도, 클라우드도 없습니다. 사진과 동영상 보기, 그것 하나를 제대로 합니다."
     ],
     [
       "빠름",
@@ -54,7 +54,7 @@
     ],
     [
       "처음부터 안전",
-      "다른 사람이 보낸 사진, 비디오, 아카이브는 아무것도 실행하지 않고 어디에도 접속하지 않습니다. 먼저 켜야 할 설정도 없습니다."
+      "다른 사람이 보낸 사진, 동영상, 아카이브는 아무것도 실행하지 않고 어디에도 접속하지 않습니다. 먼저 켜야 할 설정도 없습니다."
     ],
     [
       "멈추지 않음",
@@ -66,17 +66,17 @@
   "features": [
     {
       "title": "크게 보고, 키로 넘기기",
-      "text": "<p>스페이스 바를 누르면 이미지가 윈도우에 맞게 최대한 크게 열리고, ← →로 폴더를 넘겨 봅니다. 트랙패드나 + −로 확대, ⌥← ⌥→로 회전, <kbd>f</kbd>로 전체 화면. 애니메이션 GIF, SVG, PDF도 지원합니다.</p><p>슬라이드 쇼(<kbd>s</kbd>)는 폴더와 모든 하위 폴더를 사진과 비디오 구분 없이 보여 줍니다.</p>",
+      "text": "<p>스페이스 바를 누르면 이미지가 윈도우에 맞게 최대한 크게 열리고, ← →로 폴더를 넘겨 봅니다. 트랙패드나 + −로 확대, ⌥← ⌥→로 회전, <kbd>f</kbd>로 전체 화면. 애니메이션 GIF, SVG, PDF도 지원합니다.</p><p>슬라이드 쇼(<kbd>s</kbd>)는 폴더와 모든 하위 폴더를 사진과 동영상 구분 없이 보여 줍니다.</p>",
       "alt": "전체 보기로 표시한 사진"
     },
     {
-      "title": "macOS가 재생하지 못하는 비디오까지",
-      "text": "<p>macOS가 자체적으로 재생하는 형식(MP4, MOV, AVCHD 등)은 macOS로, 그 밖의 모든 형식(MKV, WebM, AVI, WMV, FLV, MPEG, DVD 비디오)은 내장된 VLC 엔진으로 재생합니다.</p><ul><li>← →로 비디오의 10분의 1, ⇧← ⇧→로 100분의 1씩 이동</li><li>↑ ↓로 음량 조절, 모든 비디오에 적용</li><li>Finder와 훑어보기에서도 MKV, WebM, WMV, FLV, VOB 썸네일 표시</li></ul>",
-      "alt": "Schnellbild에서 재생 중인 비디오"
+      "title": "MKV, AVI까지, macOS가 재생하지 못하는 동영상도",
+      "text": "<p>macOS가 자체적으로 재생하는 형식(MP4, MOV, AVCHD 등)은 macOS로, 그 밖의 모든 형식(MKV, WebM, AVI, WMV, FLV, MPEG, DVD 비디오)은 내장된 VLC 엔진으로 재생합니다.</p><ul><li>← →로 동영상의 10분의 1, ⇧← ⇧→로 100분의 1씩 이동</li><li>↑ ↓로 음량 조절, 모든 동영상에 적용</li><li>Finder와 훑어보기에서도 MKV, WebM, WMV, FLV, VOB 썸네일 표시</li></ul>",
+      "alt": "Schnellbild에서 재생 중인 동영상"
     },
     {
-      "title": "아카이브를 폴더처럼 열기",
-      "text": "<p>ZIP, RAR, 7z는 물론 만화(CBZ, CBR)까지, 여러 개로 분할된 파일도 열리며, ZIP과 RAR은 암호가 걸려 있어도 열립니다. 디스크에는 아무것도 풀지 않으며, 비디오도 아카이브에서 바로 재생됩니다.</p>",
+      "title": "ZIP·RAR 만화책도 폴더처럼 열기",
+      "text": "<p>ZIP, RAR, 7z는 물론 만화(CBZ, CBR)까지, 여러 개로 분할된 파일도 열리며, ZIP과 RAR은 암호가 걸려 있어도 열립니다. 디스크에는 아무것도 풀지 않으며, 동영상도 아카이브에서 바로 재생됩니다.</p>",
       "alt": "미리보기가 있는 폴더로 표시된 아카이브"
     },
     {
@@ -86,12 +86,12 @@
     },
     {
       "title": "모든 하위 폴더 검색",
-      "text": "<p>검색 필드는 보고 있는 폴더와 그 아래 모든 곳에서 폴더, 아카이브, 이미지, 비디오의 이름을 찾습니다. 검색하는 동안 결과가 바로바로 나타나며, 느린 네트워크 공유에서도 마찬가지입니다. 대소문자 무시, 대소문자 구분, 정규 표현식 중에서 고를 수 있습니다.</p>",
+      "text": "<p>검색 필드는 보고 있는 폴더와 그 아래 모든 곳에서 폴더, 아카이브, 이미지, 동영상의 이름을 찾습니다. 검색하는 동안 결과가 바로바로 나타나며, 느린 네트워크 공유에서도 마찬가지입니다. 대소문자 무시, 대소문자 구분, 정규 표현식 중에서 고를 수 있습니다.</p>",
       "alt": "폴더와 하위 폴더의 검색 결과"
     },
     {
       "title": "더 나은 화면, 그대로인 파일",
-      "text": "<p><kbd>E</kbd>를 누르면 노출, 대비, 채도, 선명도가 자동으로 향상됩니다. 사진과 비디오 모두에 적용됩니다. <kbd>A</kbd>를 누르면 슬라이더가 열립니다. 바뀌는 것은 화면뿐, 파일은 그대로입니다.</p>",
+      "text": "<p><kbd>E</kbd>를 누르면 노출, 대비, 채도, 선명도가 자동으로 향상됩니다. 사진과 동영상 모두에 적용됩니다. <kbd>A</kbd>를 누르면 슬라이더가 열립니다. 바뀌는 것은 화면뿐, 파일은 그대로입니다.</p>",
       "alt": "사진 위에 표시된 조절 슬라이더"
     },
     {
@@ -106,7 +106,7 @@
     }
   ],
   "safeTitle": "다른 사람이 보낸 파일도 안전하게",
-  "safeIntro": "모르는 사람이 보낸 사진, 비디오, 아카이브를 보는 것이 바로 뷰어가 하는 일입니다. 그래서 Schnellbild는 처음부터 모든 파일을 위험한 것으로 취급합니다.",
+  "safeIntro": "모르는 사람이 보낸 사진, 동영상, 아카이브를 보는 것이 바로 뷰어가 하는 일입니다. 그래서 Schnellbild는 처음부터 모든 파일을 위험한 것으로 취급합니다.",
   "safe": [
     [
       "Apple의 App Sandbox에서 실행.",
@@ -117,8 +117,8 @@
       "보는 것만으로 파일이 바뀌거나 디스크에 풀리는 일은 없습니다."
     ],
     [
-      "비디오가 인터넷에 접속하지 않습니다.",
-      "알고 보니 인터넷을 가리키는 재생 목록인 '비디오'는 아무것도 재생하지 않습니다."
+      "동영상이 인터넷에 접속하지 않습니다.",
+      "알고 보니 인터넷을 가리키는 재생 목록인 '동영상'은 아무것도 재생하지 않습니다."
     ],
     [
       "이중 클릭으로는 문서만 열립니다. 프로그램은 열리지 않습니다.",
@@ -135,7 +135,7 @@
   ],
   "safeMore": "구체적으로 무엇을 하는지, 그리고 한계는 어디인지: <a href=\"https://github.com/JohannesHoppe/schnellbild#safe-with-files-from-others\">다른 사람이 보낸 파일도 안전하게</a>.",
   "modelsTitle": "Phiewer, IINA, Norton Commander를 쓰다가 오셨나요?",
-  "modelsText": "모두 본보기가 된 앱입니다. 키보드로 사진을 넘겨 보는 Phiewer, 비디오를 빠르게 다루는 IINA, 이중 패널의 Norton Commander. Schnellbild와 비교해 보세요: <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-phiewer-alternative\">무료 Phiewer 대안</a>, <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-iina-alternative-for-looking-through-videos\">비디오를 훑어보기 위한 무료 IINA 대안</a>.",
+  "modelsText": "모두 본보기가 된 앱입니다. 키보드로 사진을 넘겨 보는 Phiewer, 동영상을 빠르게 다루는 IINA, 이중 패널의 Norton Commander. Schnellbild와 비교해 보세요: <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-phiewer-alternative\">무료 Phiewer 대안</a>, <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-iina-alternative-for-looking-through-videos\">동영상을 훑어보기 위한 무료 IINA 대안</a>. Windows에서 꿀뷰(Honeyview)나 반디뷰(BandiView)를 쓰던 분도 Mac에서 똑같이 폴더와 ZIP·RAR 속 이미지를 키보드로 넘겨 볼 수 있습니다.",
   "ossTitle": "오픈 소스",
   "ossText": "Schnellbild는 MIT 라이선스의 자유 소프트웨어이며, 소스 코드는 <a href=\"https://github.com/JohannesHoppe/schnellbild\">GitHub에</a> 있습니다. 버그를 발견했거나 아쉬운 점이 있나요? <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">이슈를 등록해 주세요</a>.",
   "languagesText": "사용 중인 Mac의 언어로:",
@@ -147,7 +147,7 @@
   "privacy": {
     "title": "개인정보 처리방침",
     "description": "Schnellbild는 개인 데이터를 수집하지 않습니다. 계정, 분석, 추적, 네트워크 접근이 모두 없습니다.",
-    "intro": "Schnellbild는 macOS용 이미지·비디오 뷰어입니다. GDPR상 컨트롤러(개인정보 처리 책임자)는 HAUS HOPPE - ITS(Johannes Hoppe)입니다. 전체 주소는 <a href=\"https://haushoppe-its.de/impressum/\">법적 고지</a>에 있습니다. 이 방침은 GitHub에서 다운로드한 앱과 Mac App Store에서 구입한 앱(둘은 같은 앱입니다), 그리고 이 웹사이트에 적용됩니다.",
+    "intro": "Schnellbild는 macOS용 이미지·동영상 뷰어입니다. GDPR상 컨트롤러(개인정보 처리 책임자)는 HAUS HOPPE - ITS(Johannes Hoppe)입니다. 전체 주소는 <a href=\"https://haushoppe-its.de/impressum/\">법적 고지</a>에 있습니다. 이 방침은 GitHub에서 다운로드한 앱과 Mac App Store에서 구입한 앱(둘은 같은 앱입니다), 그리고 이 웹사이트에 적용됩니다.",
     "appTitle": "앱",
     "appText": "<p><strong>Schnellbild는 개인 데이터를 수집하지 않습니다.</strong> 계정, 분석, 광고, 추적이 없으며 인터넷에 연결하지 않습니다. 앱이 실행되는 App Sandbox는 네트워크 접근을 전혀 허용하지 않습니다.</p><p>사용자의 Mac에만 저장되는 항목:</p>",
     "stays": [
@@ -156,9 +156,9 @@
       "입력한 <strong>아카이브 암호</strong>: 로그인 키체인에 저장됩니다(항목 이름 'Schnellbild archive passwords'). 설정 → ‘{forgetPasswords}’ 버튼으로 삭제할 수 있습니다.",
       "<strong>썸네일</strong>: macOS 자체의 썸네일 캐시에 저장됩니다."
     ],
-    "appOutro": "Schnellbild는 사용자에게 보여 주기 위해서만 이미지, 비디오, 아카이브를 읽습니다. 파일 자체나 그 이름, 그에 관한 어떤 정보도 어디로도 보내지 않습니다. 다운로드와 구입은 Apple이 자체 개인정보 처리방침에 따라 처리하며, 당사에는 사용자의 신원이 포함되지 않은 수치만 제공합니다. 판매량, 그리고 macOS에서 앱 개발자와의 공유를 허용한 경우 충돌 리포트와 사용 통계입니다.",
+    "appOutro": "Schnellbild는 사용자에게 보여 주기 위해서만 이미지, 동영상, 아카이브를 읽습니다. 파일 자체나 그 이름, 그에 관한 어떤 정보도 어디로도 보내지 않습니다. 다운로드와 구입은 Apple이 자체 개인정보 처리방침에 따라 처리하며, 당사에는 사용자의 신원이 포함되지 않은 수치만 제공합니다. 판매량, 그리고 macOS에서 앱 개발자와의 공유를 허용한 경우 충돌 리포트와 사용 통계입니다.",
     "siteTitle": "이 웹사이트",
-    "siteText": "이 웹사이트는 쿠키, 분석, 다른 서버의 콘텐츠(웹 폰트, 임베드된 비디오 등)를 사용하지 않습니다. 호스팅은 GitHub, Inc.(미국)의 서비스인 GitHub Pages를 이용합니다. 방문 시 GitHub는 보안 목적으로 IP 주소를 기록하고 저장합니다. 자세한 내용은 <a href=\"https://docs.github.com/ko/pages/getting-started-with-github-pages/what-is-github-pages#data-collection\">GitHub Pages: 데이터 수집</a> 및 <a href=\"https://docs.github.com/ko/site-policy/privacy-policies/github-general-privacy-statement\">GitHub 개인정보처리방침</a>을 참조하세요. GitHub가 이 로그를 얼마나 오래 보관하는지는 GitHub가 정하며, 당사는 로그에 접근할 수 없습니다. GitHub는 EU-U.S. Data Privacy Framework에 참여하고 있으며, 유럽연합 집행위원회는 이 프레임워크에 따라 미국이 적정한 보호 수준을 보장한다고 결정했습니다(GDPR 제45조). 법적 근거는 웹사이트를 안전하게 제공하려는 당사의 정당한 이익입니다(EU 일반 개인정보 보호법(GDPR) 제6조 제1항 (f)). 앱 다운로드도 GitHub에서 제공됩니다.",
+    "siteText": "이 웹사이트는 쿠키, 분석, 다른 서버의 콘텐츠(웹 폰트, 임베드된 동영상 등)를 사용하지 않습니다. 호스팅은 GitHub, Inc.(미국)의 서비스인 GitHub Pages를 이용합니다. 방문 시 GitHub는 보안 목적으로 IP 주소를 기록하고 저장합니다. 자세한 내용은 <a href=\"https://docs.github.com/ko/pages/getting-started-with-github-pages/what-is-github-pages#data-collection\">GitHub Pages: 데이터 수집</a> 및 <a href=\"https://docs.github.com/ko/site-policy/privacy-policies/github-general-privacy-statement\">GitHub 개인정보처리방침</a>을 참조하세요. GitHub가 이 로그를 얼마나 오래 보관하는지는 GitHub가 정하며, 당사는 로그에 접근할 수 없습니다. GitHub는 EU-U.S. Data Privacy Framework에 참여하고 있으며, 유럽연합 집행위원회는 이 프레임워크에 따라 미국이 적정한 보호 수준을 보장한다고 결정했습니다(GDPR 제45조). 법적 근거는 웹사이트를 안전하게 제공하려는 당사의 정당한 이익입니다(EU 일반 개인정보 보호법(GDPR) 제6조 제1항 (f)). 앱 다운로드도 GitHub에서 제공됩니다.",
     "rightsTitle": "사용자의 권리",
     "rightsText": "GDPR에 따라 사용자는 열람, 정정, 삭제, 처리 제한, 데이터 이동의 권리와 개인정보 보호 감독 기관에 민원을 제기할 권리를 가집니다. <strong>또한 자신의 특수한 상황과 관련된 사유로 당사의 정당한 이익에 근거한 처리에 반대할 권리가 있습니다</strong>(GDPR 제21조). 앱과 이 웹사이트 모두 자체적으로 개인 데이터를 보관하지 않으므로, 당사 측에서 조회하거나 삭제할 데이터는 전혀 없습니다. 따라서 열람 요청에 대한 답변은 아주 짧을 것입니다. 당사는 귀하에 대해 아무것도 알지 못합니다.",
     "contactTitle": "문의",

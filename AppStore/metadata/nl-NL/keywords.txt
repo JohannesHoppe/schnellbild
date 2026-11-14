@@ -1,0 +1,1 @@
+mkv,player,image,photo,viewer,diavoorstelling,afspelen,videospeler,video,avi,webm,strip,cbz,cbr,rar

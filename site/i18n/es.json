@@ -1,15 +1,15 @@
 {
   "name": "Español",
   "privacySlug": "privacy",
-  "title": "Schnellbild: un visor de imágenes y vídeos para macOS que no da la lata",
-  "seoTitle": "Schnellbild · visor de fotos y vídeos gratis para Mac",
-  "seoDescription": "Visor de imágenes y reproductor de vídeo gratis para Mac: miniaturas, teclado, MKV, AVI y WebM, ZIP y RAR como carpetas. Alternativa a Phiewer e IINA.",
-  "keywords": "visor de imágenes Mac, visor de fotos macOS, visor de fotos gratis, reproductor MKV Mac, reproducir AVI WebM, alternativa a Phiewer, alternativa a IINA, abrir imágenes RAR, cómics CBZ CBR, presentación, Schnellbild",
+  "title": "Schnellbild: un visor de fotos y vídeos para Mac que no da la lata",
+  "seoTitle": "Schnellbild · visor de fotos y reproductor MKV para Mac",
+  "seoDescription": "Visor de fotos y reproductor de vídeo gratis para Mac: MKV y AVI con el motor de VLC integrado, ZIP, RAR y cómics CBZ como carpetas. Alternativa a XnView.",
+  "keywords": "visor de fotos Mac, visualizador de fotos Mac, visor de imágenes Mac, reproductor de video Mac, reproductor de vídeo para Mac, reproducir MKV en Mac, abrir MKV en Mac, reproducir AVI en Mac, reproductor WebM, motor de VLC integrado, pase de diapositivas, alternativa a XnView, alternativa a IrfanView, alternativa a Phiewer, alternativa a IINA para ver vídeos, abrir imágenes RAR, lector de cómics CBZ CBR, doble panel, Schnellbild",
   "navFeatures": "Funciones",
   "navSafety": "Seguridad",
   "language": "Idioma",
   "iconAlt": "Icono de la app Schnellbild",
-  "tagline": "Un visor de imágenes y vídeos para macOS que no da la lata.",
+  "tagline": "Un visor de fotos y vídeos para Mac que no da la lata.",
   "lead": "Abre una carpeta, mira las miniaturas, ve una imagen en grande y pasa a la siguiente con el teclado. Los vídeos se reproducen ahí mismo, incluso en MKV, AVI y WebM. Sin biblioteca a la que importar, sin esperas, sin estorbos.",
   "download": "Descargar gratis",
   "store": "Mac App Store",
@@ -40,12 +40,12 @@
       "alt": "Una foto en la vista completa"
     },
     {
-      "title": "Vídeos, también los que macOS no reproduce",
+      "title": "Vídeos, también los MKV y AVI que macOS no reproduce",
       "text": "<p>Lo que macOS reproduce por sí mismo (MP4, MOV, AVCHD…) se reproduce con macOS; todo lo demás, con el motor de VLC integrado: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-Vídeo.</p><ul><li>← → saltan una décima parte del vídeo, ⇧← ⇧→ una centésima</li><li>↑ ↓ ajustan el volumen, para todos los vídeos</li><li>El Finder y Vista Rápida también obtienen miniaturas de MKV, WebM, WMV, FLV y VOB</li></ul>",
       "alt": "Un vídeo reproduciéndose en Schnellbild"
     },
     {
-      "title": "Los archivos comprimidos se abren como carpetas",
+      "title": "Archivos comprimidos y cómics se abren como carpetas",
       "text": "<p>ZIP, RAR y 7z, cómics (CBZ, CBR) incluidos, también en varias partes; ZIP y RAR, también con contraseña. No se descomprime nada en el disco, y los vídeos se reproducen directamente desde el archivo.</p>",
       "alt": "Archivos comprimidos mostrados como carpetas con previsualizaciones"
     },

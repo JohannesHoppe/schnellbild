@@ -1,15 +1,15 @@
 {
   "name": "繁體中文",
   "privacySlug": "privacy",
-  "title": "Schnellbild：一款用起來不惱人的 macOS 影像與影片檢視器",
-  "seoTitle": "Schnellbild · 免費的 Mac 看圖與影片播放軟體（支援 MKV、RAR）",
-  "seoDescription": "快速、免費的 macOS 看圖軟體與影片播放器：縮圖、鍵盤翻頁、播放 MKV、AVI 和 WebM，像檔案夾一樣開啟 ZIP 和 RAR。Phiewer 與 IINA 的替代選擇。",
-  "keywords": "Mac 看圖軟體, macOS 圖片檢視器, 免費看圖軟體, Mac MKV 播放器, AVI WebM 播放, Phiewer 替代, IINA 替代, 開啟 RAR 圖片, CBZ CBR 漫畫, 幻燈片, Schnellbild",
+  "title": "Schnellbild：一款用起來不惱人的 Mac 圖片與影片檢視器",
+  "seoTitle": "Schnellbild · 免費的 Mac 看圖軟體與影片播放器（支援 MKV）",
+  "seoDescription": "快速、免費的 Mac 看圖軟體與影片播放器：縮圖、鍵盤翻頁、幻燈片秀，播放 MKV、AVI、WebM，ZIP、RAR 壓縮檔和漫畫像檔案夾一樣開啟。Phiewer 的替代選擇。",
+  "keywords": "Mac 看圖軟體, Mac 圖片檢視器, 照片檢視器, 免費看圖軟體, Mac 影片播放器, Mac 影音播放器, MKV 播放器 Mac, AVI WebM 播放, Phiewer 替代, 瀏覽影片的 IINA 替代, 開啟 RAR 圖片, 漫畫閱讀器, CBZ CBR, 幻燈片秀, 雙窗格, Schnellbild",
   "navFeatures": "功能",
   "navSafety": "安全性",
   "language": "語言",
   "iconAlt": "Schnellbild App 圖示",
-  "tagline": "一款用起來不惱人的 macOS 影像與影片檢視器。",
+  "tagline": "一款用起來不惱人的 Mac 圖片與影片檢視器。",
   "lead": "打開檔案夾，縮圖一目了然；放大檢視單張照片，用鍵盤輕鬆翻頁。影片也能直接播放，MKV、AVI 和 WebM 也不例外。不必匯入圖庫，不必等待，沒有多餘的東西。",
   "download": "免費下載",
   "store": "Mac App Store",
@@ -70,13 +70,13 @@
       "alt": "以完整顯示呈現的照片"
     },
     {
-      "title": "影片，連 macOS 播不了的也行",
+      "title": "影片播放器，連 macOS 播不了的也行",
       "text": "<p>macOS 本身能播放的格式（MP4、MOV、AVCHD 等）由 macOS 播放，其餘格式（MKV、WebM、AVI、WMV、FLV、MPEG、DVD 影片）則由內建的 VLC 引擎播放。</p><ul><li>← → 跳轉影片的十分之一，⇧← ⇧→ 跳轉百分之一</li><li>↑ ↓ 調整音量，對所有影片生效</li><li>Finder 和快速查看也能顯示 MKV、WebM、WMV、FLV 和 VOB 的縮圖</li></ul>",
       "alt": "在 Schnellbild 中播放的影片"
     },
     {
-      "title": "封存檔像檔案夾一樣打開",
-      "text": "<p>ZIP、RAR 和 7z，包括漫畫（CBZ、CBR），分割成多個部分的也可以；ZIP 和 RAR 還支援密碼。不會在磁碟上解壓縮任何內容，影片直接從封存檔中播放。</p>",
+      "title": "壓縮檔像檔案夾一樣打開",
+      "text": "<p>ZIP、RAR 和 7z 壓縮檔，包括漫畫（CBZ、CBR），分割成多個部分的也可以；ZIP 和 RAR 還支援密碼。不會在磁碟上解壓縮任何內容，影片直接從壓縮檔中播放。</p>",
       "alt": "顯示為附預覽檔案夾的封存檔"
     },
     {
