@@ -1,6 +1,7 @@
 {
   "name": "한국어",
   "privacySlug": "privacy",
+  "alternativesSlug": "alternatives",
   "title": "Schnellbild: 짜증 날 일 없는 Mac용 이미지·동영상 뷰어",
   "seoTitle": "Schnellbild · 맥용 이미지 뷰어·동영상 플레이어, 꿀뷰 대안",
   "seoDescription": "맥에서 쓰는 빠르고 무료인 이미지 뷰어이자 동영상 플레이어. MKV·AVI·WebM 재생, ZIP·RAR 만화책(CBZ·CBR)을 폴더처럼, 슬라이드쇼, 키보드로 넘기기. 맥용 꿀뷰(Honeyview) 대안.",
@@ -140,7 +141,10 @@
   ],
   "safeMore": "구체적으로 무엇을 하는지, 그리고 한계는 어디인지: <a href=\"https://github.com/JohannesHoppe/schnellbild#safe-with-files-from-others\">다른 사람이 보낸 파일도 안전하게</a>.",
   "modelsTitle": "Phiewer, IINA, Norton Commander를 쓰다가 오셨나요?",
-  "modelsText": "모두 본보기가 된 앱입니다. 키보드로 사진을 넘겨 보는 Phiewer, 동영상을 빠르게 다루는 IINA, 이중 패널의 Norton Commander. Schnellbild와 비교해 보세요: <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-phiewer-alternative\">무료 Phiewer 대안</a>, <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-iina-alternative-for-looking-through-videos\">동영상을 훑어보기 위한 무료 IINA 대안</a>. Windows에서 꿀뷰(Honeyview)나 반디뷰(BandiView)를 쓰던 분도 Mac에서 똑같이 폴더와 ZIP·RAR 속 이미지를 키보드로 넘겨 볼 수 있습니다.",
+  "modelsText": "모두 본보기가 된 앱입니다. 키보드로 사진을 넘겨 보는 Phiewer, 동영상을 빠르게 다루는 IINA, 이중 패널의 Norton Commander. Schnellbild와 비교해 보세요: <a href=\"{alt:phiewer}\">무료 Phiewer 대안</a>, <a href=\"{alt:iina}\">동영상을 훑어보기 위한 무료 IINA 대안</a>, <a href=\"{alt:norton-commander}\">Norton Commander에서 Mac으로</a>. Windows에서 <a href=\"{alt:honeyview}\">꿀뷰(Honeyview)</a>나 <a href=\"{alt:bandiview}\">반디뷰(BandiView)</a>를 쓰던 분도 Mac에서 똑같이 폴더와 ZIP·RAR 속 이미지를 키보드로 넘겨 볼 수 있습니다.",
+  "altTitle": "대안을 찾고 계신가요?",
+  "altText": "Mac에서 사람들이 찾는 프로그램들과 Schnellbild를 기능별로, 모든 내용에 출처를 달아 비교했습니다:",
+  "altAll": "모든 대안",
   "ossTitle": "오픈 소스",
   "ossText": "Schnellbild는 MIT 라이선스의 자유 소프트웨어이며, 소스 코드는 <a href=\"https://github.com/JohannesHoppe/schnellbild\">GitHub에</a> 있습니다. 버그를 발견했거나 아쉬운 점이 있나요? <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">이슈를 등록해 주세요</a>.",
   "languagesText": "사용 중인 Mac의 언어로:",
@@ -149,6 +153,7 @@
   "footerPrivacy": "개인정보 보호",
   "footerImprint": "법적 고지 (Impressum)",
   "footerEula": "사용권 계약",
+  "footerAlternatives": "대안",
   "privacy": {
     "title": "개인정보 처리방침",
     "description": "Schnellbild는 개인 데이터를 수집하지 않습니다. 계정, 분석, 추적, 네트워크 접근이 모두 없습니다.",

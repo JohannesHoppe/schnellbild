@@ -1,0 +1,604 @@
+{
+ "name": "ForkLift",
+ "short": "ForkLift",
+ "vendor": "BinaryNights LLC",
+ "website": "https://binarynights.com/",
+ "platforms": [
+  "macOS"
+ ],
+ "mac_available": "yes",
+ "page": "matrix",
+ "section": "files",
+ "price": "Paid lifetime license with 1 or 2 years of updates: $19.95 / $34.95 single user, $29.95 / $49.95 family, $69.95 / $119.95 small business (5 Macs); free trial; also on Setapp",
+ "license": "proprietary",
+ "current_version": "4.7.7",
+ "last_update": "2026-10-20",
+ "engine": "macOS Quick Look / AVFoundation (preview pane only)",
+ "category": "file-manager",
+ "summary": "Dual-pane file manager and file transfer client for macOS. Strong at remote connections (SFTP, S3, cloud drives), folder sync, multi-rename and keyboard-driven file work, with a preview pane for images, audio, video and PDFs.",
+ "where_it_wins": [
+  "Remote and cloud connections (SFTP, FTP, WebDAV, S3, Google Drive, OneDrive, Dropbox)",
+  "Folder sync and file compare",
+  "Multi-Rename with regex and metadata",
+  "Git status, tags, workspaces, app deleter",
+  "Full file manager: undo, conflict handling, transfer queue"
+ ],
+ "where_schnellbild_wins": [
+  "Free and open source",
+  "Real image and video viewer: full-size view, slideshow, MKV/AVI/WebM via built-in VLC",
+  "Photo and video thumbnails with folder previews tuned for big folders",
+  "App Sandbox, no network access",
+  "Comics CBZ/CBR and videos straight from archives"
+ ],
+ "search_terms": [
+  "forklift mac",
+  "forklift alternative",
+  "forklift file manager free",
+  "forklift image viewer",
+  "forklift alternative kostenlos",
+  "forklift alternative mac gratis"
+ ],
+ "matrix": {
+  "free": {
+   "value": "no",
+   "note": "Paid: $19.95 single user (1 year of updates), $29.95 family, $69.95 small business; 2-year update tiers $34.95/$49.95/$119.95; free trial",
+   "evidence": [
+    "https://binarynights.com/store",
+    "https://binarynights.com/manual"
+   ],
+   "how": "docs"
+  },
+  "open_source": {
+   "value": "no",
+   "note": "Proprietary",
+   "evidence": [
+    "https://binarynights.com/"
+   ],
+   "how": "docs"
+  },
+  "native_apple_silicon": {
+   "value": "yes",
+   "note": "Native on Apple silicon since 3.5 (isAppleSiliconReady); version history fixes Apple Silicon specific issues",
+   "evidence": [
+    "https://isapplesiliconready.com/app/ForkLift",
+    "https://binarynights.com/versionhistory"
+   ],
+   "how": "review"
+  },
+  "no_account_no_tracking": {
+   "value": "yes",
+   "note": "No usage analytics; license key check and daily update check contact Binarynights; crash reports opt-in",
+   "evidence": [
+    "https://binarynights.com/privacy"
+   ],
+   "how": "docs"
+  },
+  "dark_light_setting": {
+   "value": "yes",
+   "note": "Light, Dark or Default (follows macOS) theme, plus custom themes",
+   "evidence": [
+    "https://binarynights.com/manual"
+   ],
+   "how": "docs"
+  },
+  "languages_20": {
+   "value": "partial",
+   "note": "14 languages: EN, DE, HU, FR, ES, PT, PL, UK, IT, CS, JA, ZH plus Brazilian Portuguese and Traditional Chinese (4.7.x)",
+   "evidence": [
+    "https://binarynights.com/",
+    "https://binarynights.com/versionhistory"
+   ],
+   "how": "docs"
+  },
+  "folder_browsing": {
+   "value": "yes",
+   "note": "File manager, browses folders directly",
+   "evidence": [
+    "https://binarynights.com/manual"
+   ],
+   "how": "docs"
+  },
+  "thumbnail_grid": {
+   "value": "partial",
+   "note": "Icon View with icon previews; no folder preview thumbnails",
+   "evidence": [
+    "https://binarynights.com/manual",
+    "https://binarynights.com/versionhistory"
+   ],
+   "how": "docs"
+  },
+  "list_view": {
+   "value": "yes",
+   "note": "List, column and icon views",
+   "evidence": [
+    "https://binarynights.com/manual"
+   ],
+   "how": "docs"
+  },
+  "recursive_search": {
+   "value": "yes",
+   "note": "Own brute-force search with 'Search in Subfolders', or Spotlight",
+   "evidence": [
+    "https://binarynights.com/manual"
+   ],
+   "how": "docs"
+  },
+  "regex_search": {
+   "value": "no",
+   "note": "Search by name, extension, kind, tags or content; regex only in Multi-Rename",
+   "evidence": [
+    "https://binarynights.com/",
+    "https://binarynights.com/manual"
+   ],
+   "how": "docs"
+  },
+  "network_shares_fast": {
+   "value": "partial",
+   "note": "SMB, AFP, NFS, SFTP, cloud volumes supported; no specific claim about speed on big folders",
+   "evidence": [
+    "https://binarynights.com/"
+   ],
+   "how": "docs"
+  },
+  "multiple_windows": {
+   "value": "yes",
+   "note": "Tabs, workspaces and 'Open in New Window'",
+   "evidence": [
+    "https://binarynights.com/",
+    "https://binarynights.com/versionhistory"
+   ],
+   "how": "docs"
+  },
+  "bookmarks": {
+   "value": "yes",
+   "note": "Favorites in the sidebar, synced via iCloud",
+   "evidence": [
+    "https://binarynights.com/",
+    "https://binarynights.com/manual"
+   ],
+   "how": "docs"
+  },
+  "img_modern_formats": {
+   "value": "partial",
+   "note": "Preview pane shows images via macOS (HEIC, AVIF, WebP, JPEG XL as the system supports); no dedicated viewer",
+   "evidence": [
+    "https://binarynights.com/"
+   ],
+   "how": "docs"
+  },
+  "img_raw": {
+   "value": "partial",
+   "note": "Preview pane / Quick Look only, using macOS system RAW support; no own RAW decoder",
+   "evidence": [
+    "https://binarynights.com/",
+    "https://support.apple.com/en-us/105094"
+   ],
+   "how": "docs"
+  },
+  "img_psd_exr": {
+   "value": "partial",
+   "note": "No source names PSD/OpenEXR for ForkLift's preview; searched site, manual, version history",
+   "evidence": [
+    "https://binarynights.com/",
+    "https://binarynights.com/versionhistory"
+   ],
+   "how": "unverified"
+  },
+  "img_svg_pdf": {
+   "value": "partial",
+   "note": "PDF preview in the Preview Pane; SVG only as macOS renders it",
+   "evidence": [
+    "https://binarynights.com/",
+    "https://binarynights.com/versionhistory"
+   ],
+   "how": "docs"
+  },
+  "img_animated": {
+   "value": "partial",
+   "note": "Animated images in the preview pane not documented; searched site, manual, version history",
+   "evidence": [
+    "https://binarynights.com/",
+    "https://binarynights.com/versionhistory"
+   ],
+   "how": "unverified"
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "note": "Preview pane and Quick Look follow the selection while arrowing through files",
+   "evidence": [
+    "https://binarynights.com/",
+    "https://binarynights.com/versionhistory"
+   ],
+   "how": "docs"
+  },
+  "zoom_rotate": {
+   "value": "partial",
+   "note": "Zoom only in the macOS Quick Look window (Space/F3, Command-Plus/Minus); no own viewer",
+   "evidence": [
+    "https://inputzen.com/shortcuts/forklift/",
+    "https://support.apple.com/guide/mac-help/preview-a-file-mh14119/mac"
+   ],
+   "how": "docs"
+  },
+  "slideshow": {
+   "value": "no",
+   "note": "No slideshow in ForkLift's manual; whether its Quick Look window offers the macOS full-screen slideshow is not documented",
+   "evidence": [
+    "https://binarynights.com/manual",
+    "https://support.apple.com/guide/mac-help/preview-a-file-mh14119/mac"
+   ],
+   "how": "unverified"
+  },
+  "slideshow_recursive": {
+   "value": "no",
+   "note": "No slideshow feature in the manual; Quick Look only browses the selected items",
+   "evidence": [
+    "https://binarynights.com/manual",
+    "https://support.apple.com/guide/mac-help/preview-a-file-mh14119/mac"
+   ],
+   "how": "docs"
+  },
+  "auto_enhance_view": {
+   "value": "no",
+   "note": "Manual lists no image adjustments; preview only",
+   "evidence": [
+    "https://binarynights.com/manual",
+    "https://binarynights.com/"
+   ],
+   "how": "docs"
+  },
+  "file_info_exif": {
+   "value": "yes",
+   "note": "Info Window/Preview Pane show metadata, video dimensions, audio info",
+   "evidence": [
+    "https://binarynights.com/versionhistory"
+   ],
+   "how": "changelog"
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "note": "Not in the manual or the feature list",
+   "evidence": [
+    "https://binarynights.com/manual",
+    "https://binarynights.com/"
+   ],
+   "how": "docs"
+  },
+  "video_native": {
+   "value": "yes",
+   "note": "Preview pane plays audio and video",
+   "evidence": [
+    "https://binarynights.com/"
+   ],
+   "how": "docs"
+  },
+  "video_mkv_avi_webm": {
+   "value": "partial",
+   "note": "Only when the third-party 'QuickLook Video' plugin is installed (4.7.1)",
+   "evidence": [
+    "https://binarynights.com/versionhistory"
+   ],
+   "how": "changelog"
+  },
+  "photos_videos_one_grid": {
+   "value": "yes",
+   "note": "Icon View shows all file types side by side",
+   "evidence": [
+    "https://binarynights.com/versionhistory"
+   ],
+   "how": "docs"
+  },
+  "video_skim_arrows": {
+   "value": "no",
+   "note": "Arrow keys move the selection to the next item; Quick Look arrows browse items",
+   "evidence": [
+    "https://inputzen.com/shortcuts/forklift/",
+    "https://support.apple.com/guide/mac-help/preview-a-file-mh14119/mac"
+   ],
+   "how": "docs"
+  },
+  "subtitles_embedded": {
+   "value": "no",
+   "note": "Preview pane and Quick Look play video with the macOS player; which player controls appear is not documented. Searched ForkLift manual, version history, blog, web.",
+   "evidence": [
+    "https://binarynights.com/",
+    "https://binarynights.com/versionhistory"
+   ],
+   "how": "unverified"
+  },
+  "subtitles_external_files": {
+   "value": "no",
+   "note": "Preview pane and Quick Look play video with the macOS player; which player controls appear is not documented. Searched ForkLift manual, version history, blog, web.",
+   "evidence": [
+    "https://binarynights.com/",
+    "https://binarynights.com/versionhistory"
+   ],
+   "how": "unverified"
+  },
+  "audio_track_choice": {
+   "value": "no",
+   "note": "Preview pane and Quick Look play video with the macOS player; which player controls appear is not documented. Searched ForkLift manual, version history, blog, web.",
+   "evidence": [
+    "https://binarynights.com/",
+    "https://binarynights.com/versionhistory"
+   ],
+   "how": "unverified"
+  },
+  "playback_speed": {
+   "value": "no",
+   "note": "Preview pane and Quick Look play video with the macOS player; which player controls appear is not documented. Searched ForkLift manual, version history, blog, web.",
+   "evidence": [
+    "https://binarynights.com/",
+    "https://binarynights.com/versionhistory"
+   ],
+   "how": "unverified"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "note": "Preview pane and Quick Look play video with the macOS player; which player controls appear is not documented. Searched ForkLift manual, version history, blog, web.",
+   "evidence": [
+    "https://binarynights.com/",
+    "https://binarynights.com/versionhistory"
+   ],
+   "how": "unverified"
+  },
+  "playlist": {
+   "value": "no",
+   "note": "No media playlist; preview pane plays one file at a time",
+   "evidence": [
+    "https://binarynights.com/",
+    "https://binarynights.com/manual"
+   ],
+   "how": "docs"
+  },
+  "saved_playlists": {
+   "value": "no",
+   "note": "No media playlist in manual or feature list",
+   "evidence": [
+    "https://binarynights.com/",
+    "https://binarynights.com/manual"
+   ],
+   "how": "docs"
+  },
+  "pip": {
+   "value": "no",
+   "note": "Preview pane and Quick Look play video with the macOS player; which player controls appear is not documented. Searched ForkLift manual, version history, blog, web.",
+   "evidence": [
+    "https://binarynights.com/",
+    "https://binarynights.com/versionhistory"
+   ],
+   "how": "unverified"
+  },
+  "music_mode": {
+   "value": "partial",
+   "note": "Plays audio files in the preview pane, no music mode",
+   "evidence": [
+    "https://binarynights.com/"
+   ],
+   "how": "docs"
+  },
+  "streaming_urls": {
+   "value": "no",
+   "note": "Connects to servers as a file manager; no streaming player in manual or feature list",
+   "evidence": [
+    "https://binarynights.com/",
+    "https://binarynights.com/manual"
+   ],
+   "how": "docs"
+  },
+  "online_subtitles": {
+   "value": "no",
+   "note": "No subtitle download in manual or feature list",
+   "evidence": [
+    "https://binarynights.com/",
+    "https://binarynights.com/manual"
+   ],
+   "how": "docs"
+  },
+  "video_filters_enhance": {
+   "value": "no",
+   "note": "No video adjustments in manual or feature list",
+   "evidence": [
+    "https://binarynights.com/",
+    "https://binarynights.com/manual"
+   ],
+   "how": "docs"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "note": "Uses third-party plugins instead",
+   "evidence": [
+    "https://binarynights.com/versionhistory"
+   ],
+   "how": "changelog"
+  },
+  "archives_as_folders": {
+   "value": "yes",
+   "note": "Browse local and remote archives as folders, with Quick Look, search and filter; supported formats not listed",
+   "evidence": [
+    "https://binarynights.com/"
+   ],
+   "how": "docs"
+  },
+  "comics_cbz_cbr": {
+   "value": "no",
+   "note": "No comic reader; feature list and manual name no CBZ/CBR",
+   "evidence": [
+    "https://binarynights.com/",
+    "https://binarynights.com/manual"
+   ],
+   "how": "docs"
+  },
+  "archive_passwords": {
+   "value": "partial",
+   "note": "Can create password-protected ZIPs (Compress with Options > Zip with Password); opening encrypted archives not documented",
+   "evidence": [
+    "https://blog.binarynights.com/2023/08/22/forklift-4-beta-9-is-available/"
+   ],
+   "how": "changelog"
+  },
+  "split_archives": {
+   "value": "no",
+   "note": "Archive formats are not listed anywhere; searched site, manual, version history, blog",
+   "evidence": [
+    "https://binarynights.com/",
+    "https://binarynights.com/manual",
+    "https://binarynights.com/versionhistory"
+   ],
+   "how": "unverified"
+  },
+  "videos_in_archives": {
+   "value": "partial",
+   "note": "Quick Look inside archives is possible; no player",
+   "evidence": [
+    "https://binarynights.com/"
+   ],
+   "how": "docs"
+  },
+  "manga_two_page": {
+   "value": "no",
+   "note": "No comic reader",
+   "evidence": [
+    "https://binarynights.com/",
+    "https://binarynights.com/manual"
+   ],
+   "how": "docs"
+  },
+  "rename_trash": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://binarynights.com/manual"
+   ],
+   "how": "docs"
+  },
+  "move_copy": {
+   "value": "yes",
+   "note": "Copy to/Move to the other pane, drag and drop",
+   "evidence": [
+    "https://binarynights.com/manual"
+   ],
+   "how": "docs"
+  },
+  "dual_pane": {
+   "value": "yes",
+   "note": "Dual pane; F5 Copy to, F6 Move to in both shortcut sets (third-party shortcut reference)",
+   "evidence": [
+    "https://binarynights.com/manual",
+    "https://inputzen.pages.dev/shortcuts/forklift"
+   ],
+   "how": "review"
+  },
+  "undo_file_actions": {
+   "value": "yes",
+   "note": "Undo/Redo for file operations incl. Move to Trash and Multi-Rename",
+   "evidence": [
+    "https://binarynights.com/versionhistory"
+   ],
+   "how": "changelog"
+  },
+  "image_editing": {
+   "value": "no",
+   "note": "Manual lists no image editing; only quick text editing in place",
+   "evidence": [
+    "https://binarynights.com/manual",
+    "https://binarynights.com/"
+   ],
+   "how": "docs"
+  },
+  "batch_convert": {
+   "value": "partial",
+   "note": "Multi-Rename (batch rename with regex and metadata); no batch image conversion",
+   "evidence": [
+    "https://binarynights.com/manual",
+    "https://binarynights.com/versionhistory"
+   ],
+   "how": "docs"
+  },
+  "library_catalog": {
+   "value": "partial",
+   "note": "Finder tags only (add, edit, search, filter); no ratings or catalog database",
+   "evidence": [
+    "https://binarynights.com/"
+   ],
+   "how": "docs"
+  },
+  "cloud_sync": {
+   "value": "yes",
+   "note": "Google Drive, OneDrive, Dropbox, S3, Backblaze B2 etc.; folder sync",
+   "evidence": [
+    "https://binarynights.com/"
+   ],
+   "how": "docs"
+  },
+  "keyboard_first": {
+   "value": "yes",
+   "note": "'Control every operation straight from the keyboard'",
+   "evidence": [
+    "https://binarynights.com/"
+   ],
+   "how": "docs"
+  },
+  "custom_shortcuts": {
+   "value": "yes",
+   "note": "Customizable keyboard shortcuts in Settings",
+   "evidence": [
+    "https://binarynights.com/",
+    "https://binarynights.com/versionhistory"
+   ],
+   "how": "docs"
+  },
+  "shortcut_cheatsheet": {
+   "value": "no",
+   "note": "Quick Open shows commands with their shortcuts; no printable sheet from the vendor",
+   "evidence": [
+    "https://binarynights.com/versionhistory"
+   ],
+   "how": "changelog"
+  },
+  "boss_key": {
+   "value": "no",
+   "note": "Not in manual or version history",
+   "evidence": [
+    "https://binarynights.com/manual",
+    "https://binarynights.com/versionhistory"
+   ],
+   "how": "docs"
+  },
+  "app_sandbox": {
+   "value": "no",
+   "note": "Sold outside the Mac App Store, needs Full Disk Access and a privileged helper tool for sync with elevated privileges (not possible in the App Sandbox)",
+   "evidence": [
+    "https://binarynights.com/manual",
+    "https://binarynights.com/versionhistory"
+   ],
+   "how": "docs"
+  },
+  "no_network": {
+   "value": "no",
+   "note": "Network client by design (SFTP, cloud), update and license checks",
+   "evidence": [
+    "https://binarynights.com/",
+    "https://binarynights.com/privacy"
+   ],
+   "how": "docs"
+  },
+  "notarized_attested": {
+   "value": "no",
+   "note": "Closed source, so no build attestation from public source; notarization mentioned in old release notes",
+   "evidence": [
+    "https://binarynights.com/"
+   ],
+   "how": "docs"
+  },
+  "mac_app_store": {
+   "value": "no",
+   "note": "Not found in the Mac App Store (also sold via Setapp)",
+   "evidence": [
+    "https://itunes.apple.com/search?term=forklift&entity=macSoftware&limit=8",
+    "https://binarynights.com/manual"
+   ],
+   "how": "store"
+  }
+ }
+}

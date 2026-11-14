@@ -1,6 +1,7 @@
 {
   "name": "English",
   "privacySlug": "privacy",
+  "alternativesSlug": "alternatives",
   "title": "Schnellbild: an image & video viewer for macOS that just doesn't suck",
   "seoTitle": "Schnellbild · Free Image Viewer & MKV Player for Mac",
   "seoDescription": "Fast, free image viewer and video player for Mac: thumbnails, slideshow, MKV, AVI, WebM, ZIP and RAR as folders. A Phiewer, XnView and IrfanView alternative.",
@@ -140,7 +141,10 @@
   ],
   "safeMore": "What it does in detail, and where its limit is: <a href=\"https://github.com/JohannesHoppe/schnellbild#safe-with-files-from-others\">Safe with files from others</a>.",
   "modelsTitle": "Coming from Phiewer, IINA or Norton Commander?",
-  "modelsText": "They were the models: Phiewer for browsing pictures by keyboard, IINA for handling videos quickly, Norton Commander for the dual pane. How Schnellbild compares: <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-phiewer-alternative\">a free Phiewer alternative</a>, <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-iina-alternative-for-looking-through-videos\">a free IINA alternative for looking through videos</a>.",
+  "modelsText": "They were the models: Phiewer for browsing pictures by keyboard, IINA for handling videos quickly, Norton Commander for the dual pane. How Schnellbild compares: <a href=\"{alt:phiewer}\">a free Phiewer alternative</a>, <a href=\"{alt:iina}\">a free IINA alternative for looking through videos</a>, <a href=\"{alt:norton-commander}\">from Norton Commander to the Mac</a>.",
+  "altTitle": "Looking for an alternative?",
+  "altText": "How Schnellbild compares with the programs people look for on the Mac, feature by feature and with a source for every claim:",
+  "altAll": "All alternatives",
   "ossTitle": "Open source",
   "ossText": "Schnellbild is free software under the MIT License, the source is <a href=\"https://github.com/JohannesHoppe/schnellbild\">on GitHub</a>. Found a bug or missing something? <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">Open an issue</a>.",
   "languagesText": "In your Mac's language:",
@@ -149,6 +153,7 @@
   "footerPrivacy": "Privacy",
   "footerImprint": "Imprint (Impressum)",
   "footerEula": "License agreement",
+  "footerAlternatives": "Alternatives",
   "privacy": {
     "title": "Privacy policy",
     "description": "Schnellbild collects no personal data: no account, no analytics, no tracking, no network access.",

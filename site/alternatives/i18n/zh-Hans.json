@@ -1,0 +1,2375 @@
+{
+ "ui": {
+  "overviewTitle": "Schnellbild 作为替代软件",
+  "overviewSeoTitle": "{names} 的免费 Mac 替代软件 · Schnellbild",
+  "overviewDescription": "Schnellbild 与 {count} 款看图软件、视频播放器、漫画阅读器和文件管理器逐项对比，每项都注明来源。免费、开源，适用于 Mac。",
+  "overviewIntro": "<p>Schnellbild 是一款有明确主张的替代软件。用文件夹代替播放列表和图库：打开文件夹，列表就在眼前，幻灯片自己生成播放列表。原则上不碰互联网：无需账户，没有跟踪，完全不联网。而且免费，自定义快捷键也包括在内，别家却要为此收费。</p><p>下面是它与人们在 Mac 上寻找的那些程序的对比，实事求是，每一格都有来源。别的程序做得更好的地方，这里也照实写出。</p>",
+  "overviewNoMac": "这些程序只能在 Windows 上运行（或已无法在如今的 Mac 上运行）。这里逐一列出它们的用户喜欢什么，以及 Schnellbild 是怎么做的。",
+  "matrixH1": "免费的 Mac 版 {name} 替代软件",
+  "matrixSeoTitle": "{name} Mac 替代软件，免费 · Schnellbild",
+  "matrixDescription": "{name} 还是 Schnellbild？逐项对比并注明来源：哪些方面 {name} 更强，哪些方面 Schnellbild 更强。免费、开源，能播放 MKV，ZIP 和 RAR 像文件夹一样打开。",
+  "matrixLead": "Schnellbild 与 {name} 公平对比：先看各自强在哪里，再逐项列出所有功能及来源。",
+  "switcherH1": "想找 {name} Mac 版？这里有替代软件",
+  "switcherSeoTitle": "{name} Mac 版？免费替代软件 · Schnellbild",
+  "switcherDescription": "在 Mac 上找 {name}？{name} 的用户喜欢什么，Schnellbild 又是怎么免费做到的：文件夹、快捷键、MKV，ZIP 和 RAR 像文件夹一样打开。",
+  "facts": "{name} 概览",
+  "factPrice": "价格",
+  "factPlatforms": "平台",
+  "factVersion": "版本",
+  "factUpdated": "最近更新",
+  "aboutTitle": "{name} 擅长什么",
+  "theyWin": "{name} 更强的地方",
+  "weWin": "Schnellbild 更强的地方",
+  "matrixTitle": "逐项对比",
+  "colFeature": "功能",
+  "legendTitle": "符号说明",
+  "yes": "是",
+  "no": "否",
+  "partial": "部分",
+  "intentional": "有意不做",
+  "na": "不适用",
+  "source": "来源 {n}",
+  "sources": "来源",
+  "asOf": "截至 2026 年 11 月：{name} {version}，Schnellbild {ours}。{name} 一栏依据下方来源，Schnellbild 一栏依据其 README 和源代码。",
+  "leftOut": "因缺少关于 {name} 的可靠来源而未列出：{total} 项功能中的 {count} 项。",
+  "fileManager": "Schnellbild 不是完整的文件管理器：没有 FTP、SFTP 或云连接，没有文件夹同步，也不能打包归档。但要浏览和整理照片与视频，它是更好的选择：所有文件都有缩略图，双窗格并排显示，F5 拷贝、F6 移动，归档像文件夹一样打开。",
+  "likedTitle": "{name} 的用户喜欢什么，Schnellbild 又是怎么做的",
+  "aheadTitle": "{name} 依然领先的地方",
+  "purposeTitle": "有意不做的功能",
+  "similarTitle": "类似的替代软件",
+  "allAlternatives": "所有替代软件",
+  "breadcrumb": "替代软件",
+  "trademark": "{name} 是 {vendor} 的产品。所有名称和商标归其所有者所有；Schnellbild 与它们没有任何关联。",
+  "trademarkAll": "所有产品名称和商标归其所有者所有；Schnellbild 与它们没有任何关联。",
+  "ctaTitle": "用你自己的文件夹试试看。",
+  "ctaText": "免费，无需账户，所有功能一应俱全。",
+  "keywords": "{name} mac, {name} mac版, {name} 替代, {name} mac 替代软件, 免费 {name} 替代, 类似 {name} 的软件, {name} 和 Schnellbild 对比, Schnellbild",
+  "listSep": "、"
+ },
+ "sections": {
+  "image": "看图软件",
+  "video": "视频播放器",
+  "comic": "漫画阅读器",
+  "files": "文件管理器",
+  "photos": "Apple 与照片管理",
+  "windows": "从 Windows 转过来"
+ },
+ "jokes": {
+  "image": "电脑换成了 Mac，照片一张没少，手指也还记得那些快捷键，偏偏 {name} 留在了旧电脑上。别着急，在 Mac 上看图照样顺手。",
+  "video": "新 Mac 到手，视频全都拷过来了，就差 {name} 没跟着上车。那些 MKV 文件还在等你打开呢。",
+  "comic": "漫画一本不落地搬上了 Mac，{name} 却没赶上这趟车。",
+  "files": "双窗格、功能键，这套手感你练了多少年？换到 Mac 以后，偏偏 {name} 没能跟过来。",
+  "photos": "照片都搬到 Mac 上了，{name} 却留在了老家。"
+ },
+ "groups": {
+  "basics": "基本",
+  "browse": "浏览",
+  "images": "图片",
+  "video": "视频",
+  "archives": "归档与漫画",
+  "files": "文件",
+  "keys": "键盘",
+  "safety": "安全"
+ },
+ "rows": {
+  "free": {
+   "label": "免费，全部功能",
+   "how": "免费下载即含全部功能，没有专业版。"
+  },
+  "open_source": {
+   "label": "开源",
+   "how": "MIT 许可证，源代码在 GitHub 上。"
+  },
+  "native_apple_silicon": {
+   "label": "原生支持 Apple 芯片",
+   "how": "为 Apple 芯片构建。",
+   "note": "仅限 Apple 芯片"
+  },
+  "no_account_no_tracking": {
+   "label": "无需账户，无广告，无跟踪",
+   "how": "无需账户，没有广告，没有分析。"
+  },
+  "dark_light_setting": {
+   "label": "浅色或深色，可与系统不同",
+   "how": "设置（⌘,）：与系统相同、浅色或深色。"
+  },
+  "languages_20": {
+   "label": "多语言界面",
+   "how": "20 种语言，跟随你 Mac 的语言。",
+   "note": "20 种语言"
+  },
+  "folder_browsing": {
+   "label": "直接浏览文件夹，无需导入",
+   "how": "用 ⌘O 打开文件夹，或把它拖到窗口上。"
+  },
+  "thumbnail_grid": {
+   "label": "带文件夹预览的缩略图网格",
+   "how": "文件夹显示其中的头几张图片；没有图片的文件夹显示为灰色。"
+  },
+  "list_view": {
+   "label": "带栏位的列表视图",
+   "how": "按 L 在网格和列表之间切换。"
+  },
+  "recursive_search": {
+   "label": "在所有子文件夹中搜索名称",
+   "how": "搜索栏（⌘F）会查找当前文件夹及所有子文件夹。"
+  },
+  "regex_search": {
+   "label": "用正则表达式搜索",
+   "how": "搜索栏旁的 .* 可输入正则表达式。"
+  },
+  "network_shares_fast": {
+   "label": "网络共享和大文件夹也很快",
+   "how": "滚动时缩略图随即出现，网络共享上也一样。"
+  },
+  "multiple_windows": {
+   "label": "多个窗口",
+   "how": "⌘N 打开新窗口。"
+  },
+  "bookmarks": {
+   "label": "文件夹书签",
+   "how": "⌘D 为文件夹添加书签，⌃1 … ⌃9 打开书签。"
+  },
+  "img_modern_formats": {
+   "label": "HEIC、AVIF、JPEG XL、WebP",
+   "how": "通过 macOS 自带的 ImageIO。"
+  },
+  "img_raw": {
+   "label": "相机 RAW",
+   "how": "macOS 认识的 RAW 格式，由 macOS 冲印。",
+   "note": "macOS 支持的机型"
+  },
+  "img_psd_exr": {
+   "label": "PSD、OpenEXR",
+   "how": "和其他图片一样显示。"
+  },
+  "img_svg_pdf": {
+   "label": "SVG 和 PDF",
+   "how": "以矢量图显示，PDF 的每一页都能看。"
+  },
+  "img_animated": {
+   "label": "动态 GIF、PNG、WebP",
+   "how": "可以播放，也能像普通图片一样缩放和旋转。"
+  },
+  "keyboard_paging": {
+   "label": "用键盘翻页",
+   "how": "空格键打开图片，← → 在文件夹中翻页。"
+  },
+  "zoom_rotate": {
+   "label": "缩放、平移、旋转（仅限显示）",
+   "how": "+ − 或双指捏合缩放，⌥← ⌥→ 旋转；文件保持原样。"
+  },
+  "slideshow": {
+   "label": "幻灯片",
+   "how": "按 S 开始，空格键暂停。"
+  },
+  "slideshow_recursive": {
+   "label": "幻灯片涵盖所有子文件夹，照片和视频混合播放",
+   "how": "包括所有子文件夹，照片和视频混合，按你的排序方式播放。"
+  },
+  "auto_enhance_view": {
+   "label": "自动增强和滑块，不改动文件",
+   "how": "E 自动增强，A 显示滑块；只改变显示效果。"
+  },
+  "file_info_exif": {
+   "label": "文件信息：EXIF、编解码器、码率",
+   "how": "按 I 显示格式、相机、编解码器和码率。"
+  },
+  "wrong_extension_note": {
+   "label": "提示扩展名与内容不符的文件",
+   "how": "文件信息会给出正确的扩展名。"
+  },
+  "video_native": {
+   "label": "播放 MP4、MOV",
+   "how": "由 macOS 自身播放。"
+  },
+  "video_mkv_avi_webm": {
+   "label": "播放 MKV、WebM、AVI、WMV、FLV",
+   "how": "由内置的 VLC 引擎播放。",
+   "note": "内置 VLC 引擎"
+  },
+  "photos_videos_one_grid": {
+   "label": "照片和视频在同一网格中",
+   "how": "每个文件夹里，照片和视频都在同一个网格中。"
+  },
+  "video_skim_arrows": {
+   "label": "用方向键快速浏览视频",
+   "how": "← → 跳转视频的十分之一，加 ⇧ 跳转百分之一。"
+  },
+  "subtitles_embedded": {
+   "label": "视频内嵌字幕",
+   "how": "V 打开或关闭字幕，⌃⌘S 选择字幕轨道。"
+  },
+  "subtitles_external_files": {
+   "label": "加载视频旁边的字幕文件",
+   "why": "只读取视频本身，不碰旁边的任何文件。"
+  },
+  "audio_track_choice": {
+   "label": "选择音轨",
+   "how": "⌃⌘A 或控制条。"
+  },
+  "playback_speed": {
+   "label": "播放速度",
+   "how": "< 和 > 在 0.5× 到 2× 之间调节，人声音调保持不变。"
+  },
+  "control_bar_movable": {
+   "label": "控制条放在哪里就留在哪里",
+   "how": "拖动控制条的把手：之后每个视频都会停在那里。"
+  },
+  "playlist": {
+   "label": "播放列表",
+   "how": "幻灯片的列表以边栏显示：可以重新排序，也可以移除项目。",
+   "note": "由幻灯片即时生成，不保存"
+  },
+  "saved_playlists": {
+   "label": "保存的播放列表",
+   "why": "用文件夹代替播放列表：幻灯片会自己生成列表。"
+  },
+  "pip": {
+   "label": "画中画",
+   "why": "这是用来翻看的查看器，不是边干别的边看的播放器。"
+  },
+  "music_mode": {
+   "label": "音频文件，音乐模式",
+   "why": "只管图片和视频；音频文件用专门的 App 打开。"
+  },
+  "streaming_urls": {
+   "label": "播放互联网上的流媒体和网址",
+   "why": "原则上从不联网。"
+  },
+  "online_subtitles": {
+   "label": "从互联网下载字幕",
+   "why": "原则上从不联网。"
+  },
+  "video_filters_enhance": {
+   "label": "视频调整（亮度、对比度……）",
+   "how": "与照片相同的滑块。"
+  },
+  "quicklook_mkv_thumbnails": {
+   "label": "访达和快速查看中显示 MKV 等格式的缩略图",
+   "how": "MKV、WebM、WMV、FLV 和 VOB 在访达中都有缩略图。",
+   "note": "MKV、WebM、WMV、FLV、Ogg、VOB"
+  },
+  "archives_as_folders": {
+   "label": "ZIP、RAR、7z 像文件夹一样打开",
+   "how": "像文件夹一样打开，不向磁盘解压任何内容。"
+  },
+  "comics_cbz_cbr": {
+   "label": "漫画 CBZ、CBR",
+   "how": "CBZ 和 CBR 像文件夹一样打开；用 ← → 翻页。"
+  },
+  "archive_passwords": {
+   "label": "带密码的归档",
+   "how": "只问一次，之后记住密码。",
+   "note": "ZIP 和 RAR；加密的 7z 无法打开"
+  },
+  "split_archives": {
+   "label": "分卷归档",
+   "how": "只显示一次，以第一卷为准。"
+  },
+  "videos_in_archives": {
+   "label": "直接播放归档中的视频",
+   "how": "直接从归档中读取播放。"
+  },
+  "manga_two_page": {
+   "label": "双页显示，从右到左的日漫模式",
+   "why": "一次一张图，以窗口允许的最大尺寸显示。"
+  },
+  "rename_trash": {
+   "label": "重新命名、移到废纸篓、新建文件夹",
+   "how": "Return 或 F2 重新命名，⌘⌫ 移到废纸篓，⇧⌘N 新建文件夹。"
+  },
+  "move_copy": {
+   "label": "拖到文件夹中移动和拷贝",
+   "how": "把缩略图拖到文件夹上。"
+  },
+  "dual_pane": {
+   "label": "双窗格并排显示（F5 拷贝，F6 移动）",
+   "how": "D 显示双窗格，F5 拷贝，F6 移动。"
+  },
+  "undo_file_actions": {
+   "label": "撤销重新命名、移动、移到废纸篓",
+   "how": "在右键菜单的最上方。"
+  },
+  "image_editing": {
+   "label": "编辑图像（裁剪、调整大小、保存）",
+   "why": "这是查看器，不是图像编辑器：你的文件保持原样。"
+  },
+  "batch_convert": {
+   "label": "批量转换或重新命名",
+   "why": "这是查看器，不是转换工具。"
+  },
+  "library_catalog": {
+   "label": "图库、目录、标签、评分",
+   "why": "用文件夹代替图库：没有什么需要导入。"
+  },
+  "cloud_sync": {
+   "label": "云同步、在线分享",
+   "why": "原则上从不联网。"
+  },
+  "keyboard_first": {
+   "label": "一切都能用键盘完成",
+   "how": "每个操作都有对应的按键。"
+  },
+  "custom_shortcuts": {
+   "label": "自定义快捷键",
+   "how": "免费设置自己的按键，还有与 Phiewer 相同的预设。",
+   "note": "免费，有与 Phiewer 相同的预设"
+  },
+  "shortcut_cheatsheet": {
+   "label": "可打印的全部按键速查表",
+   "how": "按 F1 列出所有按键，也可以打印。"
+  },
+  "boss_key": {
+   "label": "老板键（一键隐藏一切）",
+   "how": "按 X 隐藏所有窗口并让所有视频静音。"
+  },
+  "app_sandbox": {
+   "label": "运行在 Apple 的 App Sandbox 中",
+   "how": "App 及其扩展都在其中运行。"
+  },
+  "no_network": {
+   "label": "从不联网",
+   "how": "完全没有网络访问。"
+  },
+  "notarized_attested": {
+   "label": "经过公证，可证明由公开源代码构建",
+   "how": "每个下载都附有 GitHub 的构建证明。"
+  },
+  "mac_app_store": {
+   "label": "在 Mac App Store 上架",
+   "how": "即将上架，0.99 € 用来支持开发。",
+   "note": "即将上架，0.99 € 支持开发"
+  }
+ },
+ "products": {
+  "2345-kantuwang": {
+   "name": "2345看图王",
+   "vendor": "2345.com",
+   "summary": "中国装机量最大的 Windows 看图软件之一：能快速打开约 98 种图像格式，包括 PSD、RAW、SVG 和 AVIF，还支持 PDF/OFD 和 CAD。内置简单编辑、批量工具、OCR、证件照和 AI 抠图，其中部分功能需要 VIP 会员。",
+   "wins": [
+    "图像格式支持非常广（PSD/PSB、AI、RAW、CAD、OFD）",
+    "内置编辑、批量转换/重命名、OCR、证件照和打印工具",
+    "中国 Windows 用户熟悉，快捷键与 ACDSee 兼容"
+   ],
+   "price": "看图免费；编辑、AI、PDF 等附加功能需 VIP 会员（按月、按年或终身）",
+   "version": "13.2",
+   "updated": "2025-09-30（腾讯软件中心 v13.2 条目；官网文章更新至 2026-10）",
+   "platforms": "Windows"
+  },
+  "5kplayer": {
+   "name": "5KPlayer",
+   "vendor": "Digiarty Software",
+   "summary": "免费的 Mac 和 Windows 全能媒体播放器：播放视频、音乐、DVD 和电台，可接收 AirPlay 镜像，通过 DLNA 串流，还能下载在线视频。它的长处是播放之外的丰富附加功能。",
+   "wins": [
+    "AirPlay 接收和屏幕镜像录制",
+    "DLNA 服务器/渲染器",
+    "在线视频下载（YouTube 等）",
+    "播放 DVD 和 ISO",
+    "音乐库、电台、IPTV",
+    "播放速度、视频剪切、提取 MP3"
+   ],
+   "price": "免费（含广告，可选邮箱注册）",
+   "version": "6.11",
+   "updated": "2026-01-30",
+   "platforms": "macOS、Windows",
+   "notes": {
+    "list_view": "媒体库列表（收藏、YouTube、DLNA、播放列表、AirRecord），没有文件栏位",
+    "bookmarks": "视频内书签和收藏，不是文件夹书签",
+    "zoom_rotate": "视频可旋转/翻转 90 度；不能看图",
+    "auto_enhance_view": "视频调节和视频特效模式，仅限视频，不含照片",
+    "file_info_exif": "媒体信息：来源、轨道、格式；没有 EXIF（不支持图片）",
+    "pip": "没有画中画；只有“置顶”",
+    "online_subtitles": "下载 YouTube 视频时附带字幕；不能为本地文件搜索字幕",
+    "batch_convert": "一次转换一个视频为 MP3/AAC/MP4；完整转换器另行收费",
+    "library_catalog": "有收藏和播放列表的媒体库；没有标签/评分",
+    "cloud_sync": "没有云同步；可分享到 DLNA/AirPlay 设备",
+    "keyboard_first": "有播放快捷键；媒体库主要靠鼠标",
+    "shortcut_cheatsheet": "快捷键列表在在线用户指南中",
+    "notarized_attested": "经公证的 Developer ID（Digiarty Software, Inc.）；闭源"
+   }
+  },
+  "acdsee": {
+   "name": "ACDSee",
+   "vendor": "ACD Systems",
+   "summary": "老牌照片资产管理和 RAW 编辑软件，直接处理现有文件夹，无需导入：目录数据库、评分、关键字、AI 人脸和关键字识别、非破坏性的冲印模式和批量工具。Windows 版还能播放常见视频、浏览 ZIP/RAR 归档；Mac 版在这方面功能较少。收费，面向既要管理又要编辑的摄影师。",
+   "wins": [
+    "完整的资产管理：评分、关键字、类别、人脸、AI 关键字和相似图像",
+    "带 AI 蒙版的非破坏性 RAW 编辑",
+    "批量重命名、调整大小、转换、元数据",
+    "查找重复文件",
+    "生成式 AI 编辑",
+    "Windows 版：浏览 ZIP/RAR，视频元数据"
+   ],
+   "price": "Mac 27：一次性 119.99 美元（2026-11-18 前预售价 99.95 美元）；Mac App Store：按年订阅；Windows Home/Professional/Ultimate 2027 一次性购买或订阅 ACDSee 365",
+   "version": "Mac 26.0.3（Mac 27 于 2026 年 11 月下旬推出）；Windows 2027",
+   "updated": "2026-05-27（Mac App Store 26.0.3）；Windows 2027 于 2026-09 发布",
+   "platforms": "macOS、Windows、iOS（配套 App）",
+   "notes": {
+    "no_account_no_tracking": "激活和订阅需要 acdID 邮箱及联网；AI 在本机运行",
+    "languages_20": "Mac App Store：英、法、德、日；Windows 官网 10 种语言",
+    "network_shares_fast": "无需导入即可显示网络卷宗；空闲时建立索引",
+    "multiple_windows": "单窗口多标签页，会话之间保留",
+    "bookmarks": "标签页、存储的搜索；Windows：最多五个图像篮",
+    "img_psd_exr": "支持 PSD；未列出 OpenEXR",
+    "img_svg_pdf": "Windows 支持 SVG；PDF 仅限 Windows Professional/Ultimate；Mac 用快速查看打开 PDF",
+    "img_animated": "动态 GIF 和 WebP；不支持动态 AVIF",
+    "video_native": "Windows 可在查看模式播放 MP4/MOV/M4V/AVI/WMV；Mac 用快速查看显示视频",
+    "video_mkv_avi_webm": "Windows：AVI、WMV、ASF；不支持 MKV、WebM、FLV",
+    "music_mode": "Windows 可读取 MP3、WAV、WMA、M4A",
+    "archives_as_folders": "Windows：ZIP、RAR（不含 RAR5）、TAR、GZ 等；不支持 7z；Mac 版没有",
+    "cloud_sync": "iCloud 云盘（Mac）、OneDrive（Windows）、SendPix 分享、移动同步",
+    "keyboard_first": "输入元数据和筛片可用键盘；其他地方多靠鼠标",
+    "app_sandbox": "Mac App Store 版（商店要求）；直接下载版未说明"
+   }
+  },
+  "adobe-bridge": {
+   "name": "Adobe Bridge",
+   "vendor": "Adobe",
+   "summary": "Adobe Bridge 是一款免费的创意资产管理器，可浏览装满照片、设计文件和视频的文件夹，预览丰富。它能添加元数据、关键字、评分、收藏集，批量重命名和导出，是 Photoshop、Camera Raw 和其他 Creative Cloud 应用的中枢。",
+   "wins": [
+    "可预览 Adobe 格式（PSD、AI、INDD、After Effects、Substance 3D）和 PDF",
+    "完整的元数据编辑、关键字、标签、评分、收藏集和智能收藏集",
+    "批量重命名、导出面板和批量转换工作流程",
+    "与 Camera Raw、Photoshop、Premiere 和 Creative Cloud 库紧密集成",
+    "PDF 联系表，发布到 Adobe Stock 和 Portfolio",
+    "有 Windows 版"
+   ],
+   "price": "使用 Adobe 账户免费下载（通过 Creative Cloud 应用）；Camera Raw 编辑和转交 Photoshop 需要付费的 Creative Cloud 计划",
+   "version": "17.0（2026 年 11 月）",
+   "updated": "2026-11-10",
+   "platforms": "macOS、Windows",
+   "notes": {
+    "free": "有 Adobe 账户即可免费使用；在 Camera Raw 中编辑 RAW 需付费计划",
+    "network_shares_fast": "可优先使用嵌入的图像以快速浏览；否则需生成预览和缓存",
+    "video_mkv_avi_webm": "播放 FLV、F4V、SWF 及已安装的 QuickTime 支持的格式；未提及 MKV/WebM/AVI",
+    "music_mode": "音频文件可在预览面板中自动播放/循环试听",
+    "dual_pane": "多个内容面板/窗口可并排；没有 F5/F6 拷贝/移动",
+    "image_editing": "快速操作可裁剪/调整大小/移除背景；像素编辑需 Camera Raw/Photoshop（付费）",
+    "keyboard_first": "快捷键很多，但工作流程以面板和鼠标为主",
+    "shortcut_cheatsheet": "帮助页面列出快捷键和可视化快捷键面板；没有可打印的速查表"
+   }
+  },
+  "alsee": {
+   "name": "ALSee",
+   "vendor": "ESTsoft",
+   "summary": "ESTsoft 旗下 ALTools 系列（ALZip、ALYac）中老牌的韩国看图软件：缩略图/列表浏览、大图和全屏查看、查看归档中的图片、批量转换/调整大小/旋转、打印，以及订阅制的 AI 编辑（放大、移除背景、人脸马赛克）。",
+   "wins": [
+    "打印排版和批量旋转/调整大小/转换",
+    "AI 放大、移除背景、人脸马赛克（订阅）",
+    "集成到 Windows 资源管理器右键菜单"
+   ],
+   "price": "免费，含广告；AD-ZERO 去广告每月 5,900 韩元（适用于所有 ALTools）；AI 功能需订阅 ALTools AI",
+   "version": "10.02",
+   "updated": "2026-10-07",
+   "platforms": "Windows"
+  },
+  "apolloone": {
+   "name": "ApolloOne",
+   "vendor": "Anogeissus",
+   "summary": "面向摄影师的快速照片查看和筛片工具，直接处理文件夹，无需导入。RAW、HDR、元数据、评分、对焦点和批量处理都很强；很多功能分散在三个付费版本中。",
+   "wins": [
+    "筛片：挑选、评分、对焦评分、AI 评分、堆叠",
+    "HDR RAW 显示和 HDR 导出",
+    "深入的 EXIF/IPTC/XMP 编辑、关键字、GPS 地图",
+    "从存储卡导入",
+    "外挂 SRT 字幕",
+    "AppleScript 自动化"
+   ],
+   "price": "免费版；Standard 35.99 美元、Pro 59.99 美元、Max 99.99 美元一次性购买；或按年订阅 Standard 14.99 美元 / Pro 23.99 美元",
+   "version": "5.1.0",
+   "updated": "2026-10-22",
+   "platforms": "macOS",
+   "notes": {
+    "free": "免费版；Standard 35.99、Pro 59.99、Max 99.99 美元一次性，或按年 14.99 美元起",
+    "no_account_no_tracking": "无需账户；App Store 标注：收集用于分析的使用数据，不与你关联",
+    "languages_20": "11 种：英、荷、法、德、意、日、韩、波兰、简中、西、繁中",
+    "list_view": "Standard 版：可排序的表格，含 EXIF 栏位（5.0）",
+    "regex_search": "元数据标签支持正则搜索（Pro）；文件名只支持通配符",
+    "network_shares_fast": "可通过 SMB 使用 NAS；有评测称经 AFP 打开文件夹需 5 到 10 秒",
+    "multiple_windows": "Standard 版：标签页和多窗口（5.0）",
+    "img_psd_exr": "可查看/导出 OpenEXR；未提及 PSD",
+    "img_svg_pdf": "SVG 预先栅格化（4.3）；未提及 PDF",
+    "img_animated": "列出 GIF；未说明动态 WebP/PNG",
+    "auto_enhance_view": "Pro：非破坏性的快速编辑滑块，含自动色调曲线，以参数保存",
+    "video_skim_arrows": "← → 逐帧步进；J/K/L 快进快退",
+    "playback_speed": "J/L 循环切换快退/快进速度；没有固定速度设置",
+    "music_mode": "Apple Music 播放列表仅用作幻灯片背景音乐",
+    "undo_file_actions": "App 运行期间可撤销移到废纸篓；放回原处需可选的用户脚本",
+    "image_editing": "裁剪（Standard），快速编辑和调整大小（Pro）",
+    "batch_convert": "批量重命名（Standard）；调整大小/转换/导出（Pro）",
+    "cloud_sync": "通过 InstaBake 隔空投送/分享；没有同步",
+    "custom_shortcuts": "Pro 版"
+   }
+  },
+  "apple-photos": {
+   "name": "Apple 照片",
+   "vendor": "Apple",
+   "summary": "Apple 的照片图库，通过 iCloud 在各设备间同步。适合整理和编辑个人照片收藏，有人物识别、回忆和非破坏性编辑。",
+   "wins": [
+    "与 iPhone 和 iPad 通过 iCloud 同步",
+    "照片和视频的非破坏性编辑",
+    "按人物、地点和内容搜索",
+    "回忆、配乐幻灯片、共享相簿"
+   ],
+   "price": "免费（macOS 自带）；iCloud 照片所需的 iCloud+ 存储空间收费",
+   "version": "macOS Golden Gate 27.2.1 上的照片 12.0",
+   "updated": "2026-11-09（macOS 27.2.1）",
+   "platforms": "macOS、iOS、iPadOS、visionOS",
+   "notes": {
+    "no_account_no_tracking": "不登录 Apple 账户也能用；iCloud 功能需要账户，增强视觉搜索会与 Apple 比对照片",
+    "thumbnail_grid": "图库网格，按年/月/所有照片；是相簿，不是文件系统中的文件夹",
+    "recursive_search": "按内容、标题、说明、关键词、日期搜索整个图库；不搜文件夹中的文件名",
+    "img_psd_exr": "PSD 导入时合并图层（图层丢失）；OpenEXR 未说明",
+    "slideshow_recursive": "所选内容或相簿的幻灯片，照片视频混合；没有文件夹层级",
+    "playback_speed": "慢动作速度（1/2、1/4、1/5）仅限高帧率视频",
+    "saved_playlists": "存储的幻灯片项目保留照片和视频的顺序列表",
+    "rename_trash": "删除（最近删除）和标题；不能重命名文件，没有磁盘上的文件夹",
+    "undo_file_actions": "Command-Z 撤销和“最近删除”相簿",
+    "batch_convert": "可按所选格式导出多个项目；不能批量重命名",
+    "keyboard_first": "快捷键很多，但并非全部都能用",
+    "custom_shortcuts": "可用 macOS App 快捷键为菜单命令设键",
+    "boss_key": "Command-H 隐藏 App；没有专门的老板键"
+   }
+  },
+  "apple-preview": {
+   "name": "Apple 预览",
+   "vendor": "Apple",
+   "summary": "每台 Mac 都内置的 Apple PDF 和图像查看器。擅长 PDF、标注、签名，以及裁剪、调整大小和格式转换等快速图像修改。",
+   "wins": [
+    "每台 Mac 都已安装",
+    "完整的 PDF 工具：标注、签署表单、合并、加密码",
+    "图像编辑：裁剪、调整大小、移除背景、批量转换",
+    "能打开 3D 文件"
+   ],
+   "price": "免费（macOS 自带）",
+   "version": "macOS Golden Gate 27.2.1 上的预览 11.0",
+   "updated": "2026-11-09（macOS 27.2.1）",
+   "platforms": "macOS",
+   "notes": {
+    "thumbnail_grid": "在一个窗口中显示所打开文件或页面的缩略图/联系表；没有文件夹预览",
+    "img_svg_pdf": "PDF 是预览的核心格式；使用手册未提及 SVG",
+    "img_animated": "把动态 GIF 的各帧显示为静态图；Apple 建议用快速查看播放",
+    "slideshow": "使用手册只说明了 PDF 页面的幻灯片",
+    "manga_two_page": "PDF 有双页视图；没有从右到左模式",
+    "rename_trash": "可在窗口标题处重命名或移动所打开的文件；不能移到废纸篓或新建文件夹",
+    "move_copy": "复制或导出所打开的文件，可通过标题移动；不能管理文件夹中的文件",
+    "cloud_sync": "可在 iCloud 云盘中打开和存储文稿",
+    "keyboard_first": "快捷键很多，但不能用键盘浏览文件夹",
+    "custom_shortcuts": "macOS App 快捷键可为任何 App 的菜单命令重设按键",
+    "boss_key": "只有系统级的 Command-H（隐藏 App）；没有专门的老板键"
+   }
+  },
+  "bandiview": {
+   "name": "BandiView",
+   "vendor": "Bandisoft",
+   "summary": "Bandizip 开发商推出的 Honeyview 后继者：一款快速的 Windows 10/11 单图查看器，可阅读归档和漫画，有智能双页和条漫模式、HDR 输出，以及快速的批量转换器。在韩国很受欢迎，常用来看漫画和条漫。",
+   "wins": [
+    "HDR 图像的 HDR 输出（PRO）",
+    "条漫纵向长条模式和智能双页漫画模式",
+    "支持 Clip Studio Paint、HEIC（PRO）及多种归档格式（ALZ、EGG、ISO、ZPAQ……）",
+    "快速的多线程批量转换器",
+    "可自定义键盘和鼠标快捷键，免费版也可以"
+   ],
+   "price": "免费试用版（非商业家用，含广告，部分功能锁定）；Professional 一次性 39 美元（1 台电脑）、58.50 美元（2 台电脑），批量有折扣",
+   "version": "8.05",
+   "updated": "2026-11-03",
+   "platforms": "Windows"
+  },
+  "cdisplayex": {
+   "name": "CDisplayEx",
+   "vendor": "Progdigy Software",
+   "summary": "CDisplayEx 是一款老牌轻量的 Windows 漫画阅读器，CDisplay 的后继者，以加载快、Lanczos 缩放和按键完全可配置著称。桌面版已不再开发，开发重心转向 Android App。",
+   "wins": [
+    "每项功能都能设为自己的按键",
+    "为老扫描件自动校色和调整伽马",
+    "双页和日式（从右到左）模式",
+    "Windows 资源管理器中显示漫画文件缩略图"
+   ],
+   "price": "桌面版免费；Android Lite（含广告）和 Premium（付费）",
+   "version": "1.10.33（桌面版）",
+   "updated": "2015-06-20（桌面版；开发者称桌面版已不再开发）",
+   "platforms": "Windows、Android"
+  },
+  "cisdem-video-player": {
+   "name": "Cisdem Video Player",
+   "vendor": "Cisdem",
+   "summary": "免费轻量的 Mac 视频播放器，可播放 MKV、AVI、WMV、WebM 和 4K/8K 文件，有播放列表，可切换字幕和音轨，还有独立窗口模式。转换为其他格式需额外付费。",
+   "wins": [
+    "按设备预设转换视频（付费）",
+    "视频、控制器和播放列表各自独立成窗",
+    "记住播放列表和播放位置",
+    "章节、迷你屏幕、隐身模式",
+    "有 Windows 版"
+   ],
+   "price": "播放免费；转换功能一次性 19.99 美元或每年 9.99 美元",
+   "version": "6.0.0",
+   "updated": "2025-07-22",
+   "platforms": "macOS、Windows",
+   "notes": {
+    "free": "播放免费；转换需 App 内购买，19.99 美元或每年 9.99 美元",
+    "no_account_no_tracking": "隐私标签为“未收集数据”；有评测提到升级弹窗",
+    "folder_browsing": "可把文件夹导入播放列表（5.5.0）",
+    "zoom_rotate": "可旋转和翻转视频",
+    "saved_playlists": "记住上次的播放列表和位置；不能命名播放列表",
+    "pip": "“迷你屏幕”模式，不是系统画中画",
+    "batch_convert": "视频转换（MP4、HEVC、MKV、MP3……，设备预设）需 App 内购买",
+    "keyboard_first": "播放、音量、步进都有快捷键",
+    "shortcut_cheatsheet": "快捷键表在在线用户指南中",
+    "notarized_attested": "App Store 签名；闭源"
+   }
+  },
+  "commander-one": {
+   "name": "Commander One",
+   "vendor": "Electronic Team",
+   "summary": "Total Commander 风格的 macOS 双窗格文件管理器，以功能键操作为主，支持正则搜索，内置 F3 查看器（文本、十六进制、图像、媒体），能处理归档。PRO 套件增加 RAR/7z、FTP/SFTP、云盘、终端和主题。",
+   "wins": [
+    "经典的功能键 Commander 工作方式和操作队列",
+    "正则和内容搜索，归档内和 FTP 上也可以",
+    "PRO：FTP/SFTP 和众多云服务，MTP/iOS/Android 设备",
+    "内置十六进制/文本/二进制查看器",
+    "进程查看器、终端（PRO）"
+   ],
+   "price": "免费版；PRO 套件个人版 29.99 美元（1 台 Mac）或团队版 99.99 美元（5 台 Mac），一次性购买；Mac App Store：免费加 App 内购买，或“Commander One PRO”29.99 美元",
+   "version": "3.18 (4006)",
+   "updated": "2026-09-25",
+   "platforms": "macOS",
+   "notes": {
+    "free": "免费版（双窗格，仅 ZIP）；PRO 套件一次性 29.99 美元",
+    "languages_20": "14 种语言（含中文），可选择界面语言",
+    "thumbnail_grid": "“缩略图”视图模式；文件夹没有预览缩略图",
+    "network_shares_fast": "支持 SMB/NetBIOS、FTP、云；未说明速度",
+    "img_modern_formats": "通过快速查看/内置查看器的图像模式，用 macOS 解码；没有专门的看图功能",
+    "img_raw": "借助查看器和快速查看，即 macOS 系统的 RAW 支持；没有自己的解码器",
+    "keyboard_paging": "通过快速查看（F3），方向键在所选项目间切换",
+    "zoom_rotate": "只能在快速查看中缩放（Command 加号/减号）；F3 图像模式未说明缩放",
+    "file_info_exif": "显示简介可看大小、日期、权限；未说明 EXIF/编解码器信息",
+    "wrong_extension_note": "查看器按内容识别格式，能显示扩展名不对的图片，但不提示",
+    "photos_videos_one_grid": "缩略图视图为任何文件显示预览；文件夹没有预览",
+    "music_mode": "查看器的媒体模式通过快速查看播放音频",
+    "archives_as_folders": "免费版仅 ZIP；PRO（29.99 美元）：7z、TAR 可读写，RAR/ISO/XAR 只读",
+    "videos_in_archives": "可用快速查看预览归档内的文件，无需解压；没有播放器",
+    "library_catalog": "只支持访达标签",
+    "cloud_sync": "仅限 PRO：Dropbox、Google Drive、OneDrive、S3、WebDAV、FTP/SFTP 等",
+    "shortcut_cheatsheet": "可在偏好设置中查看快捷键列表；没有可打印的速查表",
+    "app_sandbox": "Mac App Store 版在沙盒中运行（有限制）；官网 PRO 版不在沙盒中"
+   }
+  },
+  "cooviewer": {
+   "name": "cooViewer",
+   "vendor": "coo 及 ysmx 分支",
+   "summary": "老牌的日本 Mac 漫画阅读器，如今以积极更新的开源分支延续下来，提供通用二进制版本。可把文件夹、PDF 和几乎所有归档（ZIP、RAR、7z、LHA、分卷归档、带密码的归档）当作书打开，支持从右到左的跨页、页面书签、可自由分配的按键和鼠标操作，还能在访达中显示漫画归档的缩略图。",
+   "wins": [
+    "专门的漫画阅读器：从右到左双页跨页，自动识别单页，按书保存",
+    "命名的页面书签，每本书记住上次读到的页",
+    "每个按键和鼠标操作都可分配，默认适合单手操作",
+    "支持大量归档格式，包括分卷 RAR/ZIP 和带密码的归档",
+    "Core Image 显示滤镜、放大镜",
+    "访达缩略图和快速查看支持 CBZ/CBR/ZIP/RAR/7z"
+   ],
+   "price": "免费",
+   "version": "1.7.1（ysmx 分支）；coo-ona 原版停在 1.2b25（2020 年）",
+   "updated": "2026-10-30",
+   "platforms": "macOS",
+   "notes": {
+    "dark_light_setting": "可自设背景和页面栏颜色；没有浅色/深色切换",
+    "thumbnail_grid": "所打开书本的页面网格；没有文件夹预览",
+    "network_shares_fast": "1.4.2 起对含大量子文件夹/归档的文件夹延迟加载；未提及网络共享",
+    "bookmarks": "每本书的命名页面书签和最近的书；没有文件夹收藏",
+    "img_modern_formats": "声明支持 HEIC/HEIF、WebP、AVIF；未列出 JPEG XL",
+    "img_psd_exr": "支持 PSD；未列出 OpenEXR",
+    "img_svg_pdf": "支持 PDF（页面作为书）；未列出 SVG",
+    "slideshow_recursive": "开启“读取嵌套文件夹”后书中包含子文件夹；仅限图片，没有视频",
+    "auto_enhance_view": "可手动设置显示的颜色和锐度滤镜；没有自动增强",
+    "archives_as_folders": "把归档当作漫画书打开，而不是当作文件夹",
+    "rename_trash": "可把左/右页图片移到废纸篓；不能重命名或新建文件夹",
+    "shortcut_cheatsheet": "在线手册（日文）中有默认按键表；App 内没有速查表",
+    "boss_key": "Esc 立即合上书（主页也这样宣传）；没有隐藏一切的按键"
+   }
+  },
+  "digikam": {
+   "name": "digiKam",
+   "vendor": "KDE digiKam 团队",
+   "summary": "digiKam 是 KDE 推出的完整开源照片管理套件，面向大型收藏。它把文件夹索引到数据库中，提供标签、人脸识别、地理定位、相似图片搜索、功能强大的图像编辑器、批量处理和众多导出目标。",
+   "wins": [
+    "数据库：标签、标记、人脸识别、相似和重复图片搜索、地图和时间线搜索",
+    "跨所有收藏的自然语言搜索和高级搜索",
+    "完整的图像编辑器和带版本管理的批量队列管理器",
+    "通过 LibRaw 处理 RAW，16 位和色彩管理",
+    "视频播放速度控制和逐帧步进",
+    "众多导出目标（Dropbox、OneDrive、Flickr、Piwigo、HTML 相册）和 DLNA",
+    "免费、开源，也能在 Linux 和 Windows 上运行"
+   ],
+   "price": "免费",
+   "version": "9.1.0",
+   "updated": "2026-06-07",
+   "platforms": "macOS、Windows、Linux",
+   "notes": {
+    "folder_browsing": "相册就是真实的文件夹，但每个都要先添加并扫描进数据库",
+    "thumbnail_grid": "项目有缩略图；文件夹只出现在相册树中",
+    "network_shares_fast": "可以用网络共享，但扫描可能很慢",
+    "multiple_windows": "一个主窗口，另有灯箱、图像编辑器和概览窗口",
+    "img_animated": "GIF 和 WebP 显示为静态图；MNG 按视频播放",
+    "zoom_rotate": "预览中可缩放和平移；旋转会改动文件或其 EXIF 标记",
+    "music_mode": "默认筛选包含音频文件（MP3、FLAC、OGG……），有音频播放器组件",
+    "undo_file_actions": "删除会移到 digiKam 废纸篓（可恢复）；未说明能否撤销重命名/移动",
+    "keyboard_first": "快捷键丰富，但很多操作依赖边栏/鼠标",
+    "notarized_attested": "源代码公开；所有下载都有 GnuPG 签名；未说明 macOS 公证和可重现构建"
+   }
+  },
+  "directory-opus": {
+   "name": "Directory Opus",
+   "vendor": "GP Software",
+   "summary": "高度可配置的 Windows 资源管理器替代品，有单窗格或双窗格、标签页、标记、评分、标签、查看器窗格，以及带幻灯片的独立看图程序。搜索、同步、查找重复文件、批量重命名和图像转换都很强，并支持完整的脚本。",
+   "wins": [
+    "极高的可配置性和脚本能力",
+    "文件操作的撤销日志",
+    "标记、评分、标签、元数据编辑",
+    "图像转换器和批量重命名",
+    "查找重复文件、同步、集成 Everything",
+    "带淡入淡出过渡的幻灯片"
+   ],
+   "price": "单机版 89 澳元、双机版 129 澳元、五台电脑 249 澳元；含一年更新，之后每年 25/40/75 澳元；30 天试用（注册后 60 天）",
+   "version": "13.25",
+   "updated": "2026-08-21",
+   "platforms": "Windows"
+  },
+  "double-commander": {
+   "name": "Double Commander",
+   "vendor": "Alexander Koblov 及贡献者",
+   "summary": "免费开源的双面板文件管理器，受 Total Commander 启发，连插件接口也兼容。原生支持 Apple 芯片，有标签页、支持正则的查找文件、批量重命名、像文件夹一样打开归档，以及内置的文本和图像查看器。",
+   "wins": [
+    "Mac 上完整的 Total Commander 式文件管理器：目录同步、批量重命名、校验和、FTP/SFTP",
+    "可运行 Total Commander 插件（WCX/WDX/WFX/WLX）",
+    "跨平台（macOS、Windows、Linux）",
+    "查看器可裁剪、调整大小和保存图像",
+    "Lua 脚本和工具栏自定义"
+   ],
+   "price": "免费",
+   "version": "1.2.11",
+   "updated": "2026-11-08",
+   "platforms": "macOS、Windows、Linux、FreeBSD",
+   "notes": {
+    "thumbnail_grid": "缩略图视图（macOS 上用快速查看）；文件夹只显示图标，没有预览",
+    "network_shares_fast": "支持 SMB/网络访问；未说明速度",
+    "multiple_windows": "两个窗格中的标签页；查看器/编辑器在单独的窗口中打开",
+    "img_modern_formats": "在 macOS 上通过附带的快速查看插件",
+    "img_raw": "Windows 通过 WIC RAW 编解码器；macOS 通过快速查看插件",
+    "img_psd_exr": "内置 PSD；未列出 OpenEXR",
+    "img_svg_pdf": "内置 SVG；PDF 在 macOS 上需快速查看插件或其他 WLX 插件",
+    "img_animated": "动态 GIF，可逐帧控制；未列出 APNG/动态 WebP",
+    "slideshow": "仅在全屏查看器中，限当前文件夹，每张 1 到 25 秒",
+    "file_info_exif": "内置 Exif 内容插件（JPEG：日期、尺寸、方向、相机）",
+    "video_native": "没有自己的播放器：macOS 用快速查看插件，Windows 用 WMP 插件，Linux 用 MPlayer 插件",
+    "video_mkv_avi_webm": "在 macOS 上只能播放快速查看能播的格式",
+    "photos_videos_one_grid": "缩略图视图使用系统缩略图（macOS 上为快速查看）",
+    "music_mode": "查看器中一次播放一个音频文件（macOS 上用快速查看）",
+    "archives_as_folders": "内置 ZIP、TAR、GZ，RAR 需附带的 UnRAR 插件；macOS 上 7z 需外部 7zz",
+    "comics_cbz_cbr": "没有漫画阅读器；把 CBZ 和 CBR 关联到打包插件后可像文件夹一样打开",
+    "archive_passwords": "打包插件/外部压缩程序支持密码；视格式而定",
+    "split_archives": "分卷 RAR 需 UnRAR 插件",
+    "videos_in_archives": "F3 把文件解压到临时文件夹再打开",
+    "batch_convert": "有批量重命名工具；不能批量转换图像",
+    "library_catalog": "descript.ion 文件备注；macOS 上支持访达标签；没有评分数据库",
+    "cloud_sync": "可访问 iCloud 云盘，有 MacCloud 插件（OAuth/S3）、FTP/SFTP；没有同步",
+    "shortcut_cheatsheet": "文档中有键盘布局页；不是可打印的速查表"
+   }
+  },
+  "elmedia-player": {
+   "name": "Elmedia Player",
+   "vendor": "Electronic Team",
+   "summary": "通用的视频和音乐播放器，支持多种格式，可搜索 OpenSubtitles 字幕，有均衡器，投屏到 AirPlay、Chromecast、DLNA 和 Roku 设备很强。画中画、画面调整等高级功能属于 PRO。",
+   "wins": [
+    "串流到智能电视、Chromecast、Roku、DLNA；AirPlay 接收",
+    "带均衡器和可视化效果的音乐播放",
+    "在线视频和 OpenSubtitles 搜索",
+    "可移动的独立控制窗口、颜色主题、自定义快捷键"
+   ],
+   "price": "免费；PRO 功能需购买 Mac App Store 版（19.99 美元）或直接购买 PRO 许可证（不运行脚本时不显示价格）",
+   "version": "8.24 (3472)",
+   "updated": "2025-12-05",
+   "platforms": "macOS",
+   "notes": {
+    "free": "播放免费；PRO（画面调整、画中画、投屏到电视）19.99 美元",
+    "languages_20": "12 种语言；可在 App 中设置界面语言",
+    "folder_browsing": "可把文件夹添加到播放列表；没有浏览器",
+    "zoom_rotate": "仅限视频：旋转、翻转、镜像、宽高比",
+    "auto_enhance_view": "仅限视频，需 PRO",
+    "file_info_exif": "窗口 > 媒体信息（Cmd+I）；没有 EXIF",
+    "pip": "仅限 PRO",
+    "video_filters_enhance": "亮度、对比度、饱和度；需 PRO",
+    "keyboard_first": "播放快捷键可自定义",
+    "app_sandbox": "Mac App Store 版在沙盒中运行；官网版未说明"
+   }
+  },
+  "fastrawviewer": {
+   "name": "FastRawViewer",
+   "vendor": "LibRaw",
+   "summary": "FastRawViewer 是面向摄影师的快速 RAW 查看和筛片工具。它显示真实的 RAW 数据，带 RAW 直方图、曝光警告，以及保存到 XMP 的快速白平衡/曝光校正；无需目录即可评分、标记、筛选、重命名、拷贝和移动照片。",
+   "wins": [
+    "准确的 RAW 渲染，带 RAW 直方图、过曝/欠曝显示和峰值对焦",
+    "评分/标记/XMP 与 Lightroom 及其他 RAW 转换器兼容",
+    "文件名筛选支持 PCRE 正则",
+    "2 图/4 图对比，缩放同步",
+    "快捷键完全可自定义，有模仿其他软件的按键方案",
+    "针对 NAS 和慢速介质的优化",
+    "也有 Windows 版"
+   ],
+   "price": "一次性 23.99 美元（2026 年 11 月优惠价，七五折；每个许可证可用于 2 台电脑），30 天试用",
+   "version": "2.0.11 (build 2088)",
+   "updated": "2026 年（2026 年 11 月的当前版本为 2.0.11；厂商未公布发布日期）",
+   "platforms": "macOS、Windows",
+   "notes": {
+    "no_account_no_tracking": "无需账户，无广告；激活时联系厂商一次",
+    "dark_light_setting": "深色界面；颜色可调，没有浅色/深色切换",
+    "thumbnail_grid": "文件网格视图；文件夹显示在文件夹树面板中，没有预览图块",
+    "recursive_search": "列表上的文件名筛选（也支持 PCRE）；子文件夹需“连同子文件夹打开”",
+    "multiple_windows": "Mac 上只有一个窗口；“多窗口”指 2 图或 4 图对比视图",
+    "img_modern_formats": "支持 HEIC/HEIF；不支持 AVIF、JPEG XL、WebP",
+    "slideshow": "基础幻灯片：定时前后翻页，可设间隔和文件数上限，没有过渡效果",
+    "slideshow_recursive": "在子文件夹浏览模式下可放幻灯片；仅限照片，没有视频",
+    "wrong_extension_note": "可选“按内容判断文件类型”按文件头打开；不会明确提示",
+    "image_editing": "只有曝光、白平衡、对比度、方向，保存在 XMP 中；不能裁剪或调整大小",
+    "batch_convert": "可批量重命名；不能转换格式",
+    "library_catalog": "评分、标记、标题存于 XMP 附属文件，可据此筛选；没有数据库或目录",
+    "shortcut_cheatsheet": "厂商提供 Windows 默认快捷键的 PDF；没有 Mac 版速查表"
+   }
+  },
+  "faststone-image-viewer": {
+   "name": "FastStone Image Viewer",
+   "vendor": "FastStone Soft",
+   "summary": "FastStone Image Viewer 是一款历史悠久的 Windows 看图软件，有类似资源管理器的文件夹树、精致的全屏模式和弹出式面板，以及许多编辑和批量工具。它还能借助 Windows 的编解码器播放视频，并在自己的数据库中保存标签和评分。",
+   "wins": [
+    "编辑工具：曲线、色阶、仿制图章、修复画笔、去红眼",
+    "最多四张图像并排对比",
+    "批量转换和重命名、联系表、打印排版",
+    "标签和 1 到 5 星评分",
+    "支持扫描仪和屏幕截图",
+    "带音乐的幻灯片，150 多种过渡效果"
+   ],
+   "price": "个人和教育用途免费；商业版一次性 34.95 美元，家庭版 69.95 美元（5 台电脑）",
+   "version": "8.5",
+   "updated": "2026-06-24",
+   "platforms": "Windows"
+  },
+  "finder-quick-look": {
+   "name": "访达和快速查看",
+   "vendor": "Apple",
+   "summary": "Mac 的文件管理器，带快速查看：按空格键即可预览几乎任何文件。快速看一眼图片或 MP4、处理日常文件都没问题。",
+   "wins": [
+    "macOS 内置，几乎支持所有文件类型",
+    "标签、智能文件夹、聚焦搜索",
+    "批量重新命名和快速操作",
+    "iCloud 云盘和隔空投送"
+   ],
+   "price": "免费（macOS 的一部分）",
+   "version": "macOS Golden Gate 27.2.1 上的访达 27.2",
+   "updated": "2026-11-09（macOS 27.2.1）",
+   "platforms": "macOS",
+   "notes": {
+    "thumbnail_grid": "图标视图显示文件缩略图；文件夹只显示文件夹图标，不预览其内容",
+    "network_shares_fast": "可连接 SMB/服务器；未说明在大型共享上的速度",
+    "img_animated": "快速查看可播放动态 GIF；未说明 APNG/动态 WebP",
+    "music_mode": "快速查看可播放和修剪音频文件",
+    "image_editing": "快速查看可旋转和标记；快速操作",
+    "library_catalog": "标签和智能文件夹，没有评分数据库",
+    "custom_shortcuts": "可用 App 快捷键为菜单命令设键",
+    "boss_key": "Command-H / Option-Command-H 隐藏 App；没有专门的老板键",
+    "app_sandbox": "快速查看的预览在沙盒中运行，访达本身不在"
+   }
+  },
+  "flowvision": {
+   "name": "FlowVision",
+   "vendor": "netdcy",
+   "summary": "FlowVision 是一款原生开源的 macOS 看图软件，核心是瀑布流/两端对齐的缩略图布局和类似访达的文件管理。它针对超大文件夹做了优化，能播放 Mac 原生视频格式，还有递归模式、访达标签、评分，以及在文件夹间跳转的鼠标手势。",
+   "wins": [
+    "瀑布流和两端对齐的缩略图布局",
+    "右键鼠标手势在文件夹间跳转",
+    "访达标签和 XMP 评分，可筛选",
+    "HDR 显示",
+    "布局预设配置",
+    "支持 macOS 11 及以上"
+   ],
+   "price": "免费（接受捐赠）",
+   "version": "1.7.6",
+   "updated": "2026-09-08",
+   "platforms": "macOS",
+   "notes": {
+    "languages_20": "17 种语言",
+    "img_svg_pdf": "支持 SVG；PDF 在源代码中被禁用",
+    "slideshow_recursive": "列表自动播放，也可递归；不等视频播完",
+    "video_mkv_avi_webm": "MKV、WebM、AVI 有缩略图和信息；需用外部播放器播放",
+    "image_editing": "旋转和标注编辑模式（钢笔、荧光笔、箭头）",
+    "batch_convert": "按序号批量重命名；不能转换格式",
+    "library_catalog": "访达标签和 XMP 评分，可筛选；没有自己的数据库",
+    "cloud_sync": "只有 macOS 共享菜单",
+    "keyboard_first": "有导航按键，但以鼠标和右键手势为主",
+    "custom_shortcuts": "只能设置 Enter/Esc 的行为",
+    "notarized_attested": "Developer ID 签名；在本地构建发布，因此没有构建证明"
+   }
+  },
+  "forklift": {
+   "name": "ForkLift",
+   "vendor": "BinaryNights",
+   "summary": "macOS 上的双窗格文件管理器和文件传输客户端。擅长远程连接（SFTP、S3、云盘）、文件夹同步、批量重命名和键盘驱动的文件操作，并有预览窗格，可预览图像、音频、视频和 PDF。",
+   "wins": [
+    "远程和云连接（SFTP、FTP、WebDAV、S3、Google Drive、OneDrive、Dropbox）",
+    "文件夹同步和文件比较",
+    "支持正则和元数据的批量重命名",
+    "Git 状态、标签、工作区、App 卸载器",
+    "完整的文件管理器：撤销、冲突处理、传输队列"
+   ],
+   "price": "付费终身许可证，含 1 年或 2 年更新：个人版 19.95 / 34.95 美元，家庭版 29.95 / 49.95 美元，小型企业版 69.95 / 119.95 美元（5 台 Mac）；可免费试用；Setapp 中也有",
+   "version": "4.7.7",
+   "updated": "2026-10-20",
+   "platforms": "macOS",
+   "notes": {
+    "languages_20": "14 种语言",
+    "thumbnail_grid": "图标视图带图标预览；文件夹没有预览缩略图",
+    "network_shares_fast": "支持 SMB、AFP、NFS、SFTP、云卷宗；未说明大文件夹的速度",
+    "img_modern_formats": "预览窗格借助 macOS（系统能读的 HEIC、AVIF、WebP、JPEG XL）",
+    "img_raw": "仅预览窗格/快速查看，用 macOS 系统的 RAW 支持；没有自己的 RAW 解码器",
+    "img_svg_pdf": "预览窗格可预览 PDF；SVG 取决于 macOS 的渲染",
+    "zoom_rotate": "只能在 macOS 快速查看窗口中缩放（空格/F3，Command 加号/减号）；没有自己的查看器",
+    "video_mkv_avi_webm": "需安装第三方“QuickLook Video”插件（4.7.1）",
+    "music_mode": "可在预览窗格中播放音频文件，没有音乐模式",
+    "archive_passwords": "可创建带密码的 ZIP；未说明能否打开加密归档",
+    "videos_in_archives": "可在归档内使用快速查看；没有播放器",
+    "batch_convert": "批量重命名（支持正则和元数据）；不能批量转换图像",
+    "library_catalog": "只支持访达标签（添加、编辑、搜索、筛选）；没有评分或目录数据库"
+   }
+  },
+  "gom-player": {
+   "name": "GOM Player",
+   "vendor": "GOM & Company",
+   "summary": "GOM Player 是一款流行的韩国免费 Windows 媒体播放器，有庞大的在线字幕库、AI 语音转字幕、360° VR、A-B 重复和皮肤；免费版有广告，GOM Player+ 去掉广告。基于 mpv 的 Mac 版虽然存在，但自 2020 年起没有更新，且只支持 Intel。",
+   "wins": [
+    "庞大的在线字幕库和 AI 字幕生成",
+    "360° VR 播放、A-B 及多段重复",
+    "串流网址和 YouTube",
+    "带均衡器的音乐播放",
+    "GOM Player+：同时播放四个视频、AI 放大"
+   ],
+   "price": "免费，含广告；无广告的 GOM Player+：终身许可证（韩国 11,000 韩元）或 GOM Easy Pass 订阅（每月 4.90 美元起）；AI 功能消耗点数",
+   "version": "Windows 2.3.123（2026 年 10 月 13 日）；Mac 1.0.0（2020 年）",
+   "updated": "2026-10-13（Windows）；2020-11-11（Mac）",
+   "platforms": "Windows、macOS（Intel 版）、Android、iOS",
+   "macNote": "GOM Player 的 Mac 版自 2020 年起一直停留在 1.0.0，为 Intel Mac 构建。"
+  },
+  "google-photos": {
+   "name": "Google Photos",
+   "vendor": "Google",
+   "summary": "Google 的云端照片图库，可从手机自动备份。适合在每台设备上都能看到所有照片、按内容搜索和共享相册。",
+   "wins": [
+    "从 Android 和 iPhone 自动备份",
+    "按人物、事物和地点搜索",
+    "共享相册和伴侣共享",
+    "可在任何浏览器中访问"
+   ],
+   "price": "免费 15 GB（与 Gmail/云端硬盘共用）；Google One 每月 1.99 欧元起 100 GB，每月 9.99 欧元 2 TB，每月 21.99 欧元 5 TB",
+   "version": "网页版（持续更新）；iOS App 8.1.0",
+   "updated": "2026-11-13（iOS App 8.1.0）",
+   "platforms": "网页、Android、iOS",
+   "notes": {
+    "free": "免费 15 GB，与 Gmail/云端硬盘共用；Google One 每月 1.99 欧元起（100 GB）",
+    "thumbnail_grid": "照片网格和相册封面；没有文件系统中的文件夹",
+    "recursive_search": "按内容、带引号的文件名文字、相机型号搜索整个图库",
+    "multiple_windows": "网页版 photos.google.com；可开多个浏览器标签页或窗口",
+    "img_modern_formats": "HEIC、AVIF、WebP；未列出 JPEG XL",
+    "img_animated": "列出 GIF 和 WebP；未说明动态 PNG",
+    "slideshow_recursive": "相册的幻灯片；没有文件夹层级",
+    "file_info_exif": "信息面板：日期、位置、相机参数、IPTC；未说明编解码器/码率",
+    "video_mkv_avi_webm": "MKV、AVI、WMV 上传处理后可播放；未列出 WebM 和 FLV",
+    "playback_speed": "Android App 有说明（更多 > 播放速度）；网页版未说明",
+    "rename_trash": "可删除到回收站；不能重命名文件",
+    "undo_file_actions": "可从回收站恢复",
+    "keyboard_first": "网页版有快捷键（Shift+? 列表）；App 没有",
+    "shortcut_cheatsheet": "按 Shift+? 打开 App 内面板"
+   }
+  },
+  "graphicconverter": {
+   "name": "GraphicConverter",
+   "vendor": "Lemke Software",
+   "summary": "GraphicConverter 是 Mac 上的老牌“图片瑞士军刀”：集文件和图片浏览器、幻灯片、编辑器和批量转换器于一身，能打开约 200 种格式。它的浏览器还能播放 QuickTime 兼容的影片和音频，元数据处理很全面，并有查找重复、平铺视图和聚焦搜索。",
+   "wins": [
+    "能打开约 200 种图像格式，导出约 80 种，包括老旧和科学格式",
+    "完整的图像编辑器和带动作的强大批量转换",
+    "深入的元数据编辑（EXIF/IPTC/XMP、人脸、GPS 地图）",
+    "丰富的幻灯片选项（过渡、随机、元数据、放映中排序）",
+    "列表、Cover Flow 和缩略图视图，所有子文件夹的平铺视图",
+    "查找重复、联系表、网页相册",
+    "自定义快捷键、14 种语言、浅色/深色设置"
+   ],
+   "price": "一次性 39.95 美元 / 34.95 欧元（升级 25.95 美元，家庭版 59.95 美元）；Mac App Store 34.99 美元；共享软件试用",
+   "version": "12.5.4（12.6 测试版）",
+   "updated": "2026-08-27（Mac App Store 12.5.4；12.6 测试版 build 7423 于 2026-11-12）",
+   "platforms": "macOS",
+   "notes": {
+    "languages_20": "14 种语言",
+    "recursive_search": "浏览器通过聚焦在所有子文件夹中搜索（聚焦关闭处不行，例如很多网络共享）",
+    "regex_search": "“查找幻灯片”和重命名对话框支持正则，浏览器搜索栏不支持",
+    "slideshow_recursive": "幻灯片可包含子文件夹；未说明影片能否在幻灯片中播放",
+    "auto_enhance_view": "自动色阶和自动增强会改动图片本身，而不只是显示",
+    "wrong_extension_note": "有命令可检查并修正所选文件的扩展名；查看时不提示",
+    "playlist": "幻灯片列表面板；不是视频播放列表",
+    "saved_playlists": "幻灯片预设和存储的搜索，不是播放列表",
+    "music_mode": "MP3 和 M4A 可在浏览器右侧窗格中播放",
+    "archives_as_folders": "能打开 RAR 归档中的图像；未说明能否像文件夹一样浏览 ZIP/7z",
+    "library_catalog": "评分、标记、标签、人脸存于文件元数据；查找重复；没有中央数据库",
+    "cloud_sync": "FTP 上传和网页相册；云文件夹需借助各自的 App",
+    "shortcut_cheatsheet": "PDF 手册中有快捷键表",
+    "app_sandbox": "Mac App Store 版在沙盒中运行（有限制）；直接下载版不在"
+   }
+  },
+  "hamana": {
+   "name": "Hamana",
+   "vendor": "miyano",
+   "summary": "一款 DirectX 加速的日本看图软件，可阅读归档（zip/cbz、7z、rar/cbr、cab、lzh），有双图模式、幻灯片特效和强大的按键自定义，还能当屏幕保护程序运行。自 2006 年起没有变化，作者网站上仍可下载。",
+   "wins": [
+    "GPU 显示滤镜（色调曲线、锐化）和 3D 旋转",
+    "幻灯片过渡效果",
+    "屏幕保护程序模式",
+    "通过 Ghostscript 支持 PDF"
+   ],
+   "price": "免费",
+   "version": "1.48",
+   "updated": "2006-06-19",
+   "platforms": "Windows"
+  },
+  "honeyview": {
+   "name": "Honeyview",
+   "vendor": "Bandisoft",
+   "summary": "轻量快速的免费看图软件，多年来一直是韩国看漫画的首选（꿀뷰）。无需解压即可显示 ZIP/RAR/7Z 中的图片，有双页模式，EXIF 含 GPS。已停止开发：不再更新，Bandisoft 建议用户改用 BandiView。",
+   "wins": [
+    "在老旧 Windows 上也非常轻快（XP 到 11，32 位）",
+    "智能双页、从右到左的漫画模式",
+    "更多归档格式（LZH、TAR）和 BPG"
+   ],
+   "price": "免费（免费软件）",
+   "version": "5.53",
+   "updated": "2024-06-21",
+   "platforms": "Windows"
+  },
+  "iina": {
+   "name": "IINA",
+   "vendor": "IINA 项目",
+   "summary": "IINA 是一款基于 mpv 的免费开源 macOS 视频播放器，界面是现代的 Mac 风格。它擅长观影：字幕（包括在线搜索）、画中画、音乐模式、播放列表、进度条缩略图和插件。",
+   "wins": [
+    "完整的播放功能：章节、逐帧、A-B 循环、画中画、音乐模式",
+    "在线字幕搜索和本地字幕智能匹配",
+    "插件、mpv 配置和脚本、浏览器扩展",
+    "支持 macOS 12 和 Intel Mac",
+    "进度条缩略图、播放历史和续播"
+   ],
+   "price": "免费",
+   "version": "1.5.1",
+   "updated": "2026-11-06",
+   "platforms": "macOS",
+   "notes": {
+    "folder_browsing": "拖入/打开文件夹会把所有可播放文件（递归）加入播放列表；没有文件浏览器",
+    "recursive_search": "只能搜索播放历史，不能搜索文件",
+    "img_animated": "GIF 按视频播放；不支持 APNG/动态 WebP",
+    "auto_enhance_view": "有视频均衡器和滤镜，没有自动增强",
+    "file_info_exif": "检查器窗口：编解码器、码率、轨道；没有 EXIF",
+    "split_archives": "mpv 能读分卷 RAR，但 IINA 没有提供也没有说明",
+    "videos_in_archives": "“文件 > 打开”可通过 mpv 播放 ZIP 或 RAR 中的媒体；未见说明",
+    "rename_trash": "“删除当前文件”把正在播放的文件移到废纸篓；不能重命名/新建文件夹",
+    "shortcut_cheatsheet": "按键绑定列在“设置 > 按键绑定”中；不能打印",
+    "notarized_attested": "自 1.0.5 起经过公证；没有构建证明"
+   }
+  },
+  "imageglass": {
+   "name": "ImageGlass",
+   "vendor": "Duong Dieu Phap",
+   "summary": "快速的开源看图软件，v10 基于 .NET/Avalonia 重写，支持 Windows、macOS（Apple 芯片）和 Linux。格式支持广泛（90 多种，包括 RAW、JXL、HEIC、AVIF、HDR，原生 SVG），有智能缓存、主题、自定义快捷键和编解码器插件。它是带图库条的单图查看器，不是文件夹浏览器，也不能播放视频。",
+   "wins": [
+    "一套代码运行于 Windows、macOS 和 Linux",
+    "AVIF、JPEG XL、HDR 和 EXR 的 HDR 色调映射",
+    "原生渲染动态 SVG",
+    "可扩展格式的编解码器插件 SDK",
+    "内置裁剪、调整大小和取色器",
+    "主题和自定义布局",
+    "免费版即可自定义快捷键"
+   ],
+   "price": "Classic 免费；Pro 个人版一次性 14.90 美元，Pro 团队版一次性 69 美元（3 位用户），Pro 企业版按数量计价（25 位用户每年 290 美元起）",
+   "version": "10.0.6.906",
+   "updated": "2026-09-05",
+   "platforms": "Windows、macOS、Linux",
+   "notes": {
+    "free": "Classic 免费（GPLv3）；Pro 一次性 14.90 美元，增加 HDR 色调映射等",
+    "dark_light_setting": "跟随系统；可分别为深色和浅色设置主题",
+    "folder_browsing": "在所打开文件的文件夹中翻页；没有文件夹树，不含子文件夹",
+    "thumbnail_grid": "当前文件夹的图片图库（条状或多栏）；没有文件夹图块",
+    "network_shares_fast": "后台解码和预读缓存；未说明网络共享方面的优化",
+    "img_svg_pdf": "原生 SVG/SVGZ 渲染，含动态 SVG；不支持 PDF",
+    "slideshow_recursive": "可从子文件夹加载图片；仅限图片，没有视频",
+    "file_info_exif": "EXIF 需单独的 ExifGlass 工具；没有视频信息",
+    "rename_trash": "可删除/移到废纸篓（需确认）；不能新建文件夹",
+    "move_copy": "可把文件拷贝或剪切到剪贴板（macOS 上不能剪切）",
+    "keyboard_first": "菜单命令有快捷键，但界面以工具栏/鼠标为主",
+    "notarized_attested": "DMG 以 Developer ID 签名并经过公证；没有构建证明"
+   }
+  },
+  "imagine": {
+   "name": "Imagine",
+   "vendor": "Sejin Chun",
+   "summary": "韩国开发的免费 Windows 看图和动画查看器，小巧而极快，有缩略图浏览器、超长的格式列表（含 JXL、AVIF、HEIF、CLIP、KRA、多种 RAW）、归档浏览、批量转换/重命名、简单绘图和动画编辑器。也可作为 Total Commander 插件使用。",
+   "wins": [
+    "格式列表极长，包括 KRA、ORA、CLIP、DICOM、HDR 格式",
+    "内置编辑、动画制作和批量重命名",
+    "Total Commander 的 Lister/Packer/Content 插件",
+    "从 Windows 95 到 Windows 11 ARM64 都能运行"
+   ],
+   "price": "免费（捐赠软件；捐赠 20 美元以上可获个人许可证代码）",
+   "version": "2.8.1",
+   "updated": "2026-11-14",
+   "platforms": "Windows"
+  },
+  "infuse": {
+   "name": "Infuse",
+   "vendor": "Firecore",
+   "summary": "媒体中心式的播放器，把视频文件夹、NAS 共享、Plex/Emby/Jellyfin 和云盘变成带海报和元数据的媒体库。在各台 Apple 设备上看电影和剧集、同步进度，体验非常好。",
+   "wins": [
+    "带 TMDB 海报和元数据的电影/剧集媒体库",
+    "从 NAS、媒体服务器和云服务串流",
+    "在 iPhone、iPad、Apple TV、Mac 和 Vision Pro 间同步进度",
+    "OpenSubtitles 下载、Trakt 同步、AirPlay 和 Google Cast",
+    "光盘映像（ISO、VIDEO_TS、BDMV）"
+   ],
+   "price": "免费；Infuse Pro 每月 1.99 美元、每年 16.99 美元或终身 99.99 美元",
+   "version": "8.5.10",
+   "updated": "2026-11-09",
+   "platforms": "macOS、iOS、iPadOS、tvOS、visionOS",
+   "notes": {
+    "free": "核心功能免费；Infuse Pro 每月 1.99、每年 16.99 或终身 99.99 美元",
+    "no_account_no_tracking": "无需账户（Trakt 可选），无广告；隐私标签：诊断数据，不与你关联",
+    "thumbnail_grid": "文件夹和媒体库中的视频以海报图块显示；没有照片",
+    "list_view": "文件夹视图有排序按钮；未说明栏位",
+    "recursive_search": "搜索扫描过的媒体库（标题），不搜原始文件名",
+    "zoom_rotate": "8 种视频缩放选项；不能旋转",
+    "file_info_exif": "视频信息（编解码器、分辨率、音频格式）；没有 EXIF",
+    "streaming_urls": "M3U/M3U8 播放列表和媒体服务器；Pro 可串流预告片",
+    "rename_trash": "“文件管理”设置允许删除远程视频；不能重命名",
+    "move_copy": "可把网络设备上的视频下载到 Mac",
+    "keyboard_first": "有播放快捷键；媒体库的键盘导航有限",
+    "shortcut_cheatsheet": "快捷键列表在支持文章中",
+    "notarized_attested": "App Store 版本，闭源"
+   }
+  },
+  "irfanview": {
+   "name": "IrfanView",
+   "vendor": "Irfan Skiljan",
+   "summary": "IrfanView 是一款小巧而极快的 Windows 看图软件，自 1996 年起就有，借助插件能读取极多的格式。除了看图，它还能批量转换、简单编辑、扫描、打印和放幻灯片，大量快捷键让一切都很顺手。",
+   "wins": [
+    "格式列表极长，包括罕见和复古格式",
+    "批量转换和批量重命名",
+    "图像编辑、绘图插件、特效、Photoshop 8BF 滤镜",
+    "扫描、打印、OCR 插件",
+    "可按 EXIF/IPTC 和文字搜索，不只是文件名",
+    "幻灯片可保存为 EXE、屏幕保护程序或 MP4",
+    "能在非常老的 Windows 上运行，也能从 U 盘运行"
+   ],
+   "price": "个人、非商业和教育用途免费；商业许可证 18 美元 / 15 欧元（永久）",
+   "version": "4.76",
+   "updated": "2026-09-18",
+   "platforms": "Windows"
+  },
+  "isee-pro": {
+   "name": "iSee Pro",
+   "vendor": "Dummy Apps",
+   "summary": "iSee Pro 是 Mac App Store 上的一款小型看图浏览器，可载入一个文件夹及其子文件夹中的所有图像，并预读以便快速翻页。有列表、缩略图和原尺寸视图，可按名称/大小/日期搜索，有 EXIF 叠加显示和放大镜，能打开 ZIP/RAR 归档并记住其密码。需要 macOS 12。",
+   "wins": [
+    "非常便宜（Pro 0.99 美元），体积很小（4.4 MB）",
+    "记住归档密码",
+    "可按图像尺寸和 Draw Things 参数搜索",
+    "动态墙纸/桌面功能"
+   ],
+   "price": "免费，含 App 内购买：Pro 0.99 美元",
+   "version": "11.5",
+   "updated": "2025-05-30",
+   "platforms": "macOS",
+   "notes": {
+    "free": "免费；“Pro 版”App 内购买 0.99 美元（有评测称可解除 50 张图片的限制）",
+    "thumbnail_grid": "有缩略图视图；未提及文件夹预览",
+    "network_shares_fast": "可用于 NAS/远程服务器；未说明在共享上的速度",
+    "img_modern_formats": "11.0 起支持 WebP；号称支持“所有常见格式”并可自定义扩展名；未提及 HEIC/AVIF/JXL",
+    "img_raw": "未提及；可在偏好设置中添加自定义图像扩展名，由 macOS 解码",
+    "img_psd_exr": "未提及；可添加自定义图像扩展名，由 macOS 解码",
+    "slideshow_recursive": "可递归载入所有子文件夹，仅限图像（没有视频）",
+    "file_info_exif": "EXIF 叠加显示（Cmd+I）；仅限图像",
+    "archives_as_folders": "可打开（“解包”）ZIP 和 RAR；未提及 7z",
+    "rename_trash": "可重命名（在列表中按 Enter）、删除；未提及新建文件夹",
+    "move_copy": "把图像拖到文件夹即可保存；没有移动/拷贝命令",
+    "library_catalog": "只能标记图像，没有数据库",
+    "keyboard_first": "快捷键丰富，但设计上只用鼠标也能操作",
+    "notarized_attested": "经 Apple 审核的 Mac App Store 版本；源代码不公开"
+   }
+  },
+  "jpegview": {
+   "name": "JPEGView",
+   "vendor": "sylikc 和 David Kleiner",
+   "summary": "精简极速的 Windows 看图软件，全屏界面极简，可实时校正图像（自动对比度、局部密度、锐化），通过可编辑的 KeyMap 用键盘操控。支持现代格式和 RAW。没有缩略图、视频和文件浏览器；这个分支自 2023 年起没有新版本。",
+   "wins": [
+    "查看时实时自动校正颜色、对比度和局部密度",
+    "极小且便携（无需安装）",
+    "通过 KeyMap.txt 可完全重新映射按键",
+    "无损 JPEG 裁剪/旋转",
+    "图像序列可按设定帧率像影片一样播放"
+   ],
+   "price": "免费",
+   "version": "1.3.46",
+   "updated": "2023-10-07（最后一个版本；最后一次提交为 2024-07-06）",
+   "platforms": "Windows"
+  },
+  "kmplayer": {
+   "name": "KMPlayer",
+   "vendor": "PandoraTV",
+   "summary": "KMPlayer 是一款老牌免费 Windows 媒体播放器，内置编解码器，支持 4K/8K 播放、3D 和 360° VR，可播放和下载网址/YouTube 视频，键盘布局中几乎每个键都有功能。64X 版没有广告，32 位版有广告。厂商表示目前没有 macOS 桌面版。",
+   "wins": [
+    "编解码器和格式支持非常广，包括 3D 和 360° VR",
+    "播放和下载网址及 YouTube 视频",
+    "细致的键盘控制、全局快捷键、老板键（Esc）",
+    "均衡器预设、视频/音频捕捉、GIF 捕捉",
+    "皮肤和配色方案，42 种语言"
+   ],
+   "price": "免费；KMPlayer 64X 无广告，KMPlayer 32 位版有广告；Android App 可升级 Premium",
+   "version": "KMPlayer 64X 2026.10.27.9；KMPlayer（32 位）4.2.3.38",
+   "updated": "2026-10-28",
+   "platforms": "Windows、Android、iOS、iPadOS"
+  },
+  "kodi": {
+   "name": "Kodi",
+   "vendor": "Kodi 基金会",
+   "summary": "免费开源的媒体中心，界面为电视和遥控器设计。它管理大型视频和音乐媒体库，可浏览本地和网络文件夹，也能以幻灯片显示照片。",
+   "wins": [
+    "电视上的媒体中心，可用遥控器，带海报和元数据的媒体库",
+    "音乐库和播放器",
+    "串流和字幕插件，PVR/直播电视",
+    "通过插件支持 RAR 密码和分卷 RAR",
+    "可在电视盒子、Android、Linux、树莓派上运行"
+   ],
+   "price": "免费",
+   "version": "21.3 Omega（22.0 Piers RC2 于 2026-11-10 发布）",
+   "updated": "2025-10-31",
+   "platforms": "macOS、Windows、Linux、Android、iOS/tvOS、LibreELEC",
+   "notes": {
+    "network_shares_fast": "网络源与本地源一样；首次查看时缓存缩略图，之后加载更快",
+    "img_modern_formats": "内置 WebP 和 AVIF；HEIC 需“imagedecoder.heif”插件；未列出 JPEG XL",
+    "img_raw": "需“imagedecoder.raw”插件",
+    "auto_enhance_view": "视频 OSD 设置中有亮度/对比度；照片没有",
+    "online_subtitles": "通过在设置中选择的字幕服务插件",
+    "comics_cbz_cbr": "CBZ/CBR 按图片文件夹浏览；没有阅读模式",
+    "archive_passwords": "仅限 RAR（vfs.rar 会询问或尝试已存的密码）",
+    "split_archives": "分卷 RAR（.partN.rar）需 vfs.rar",
+    "rename_trash": "文件管理器可重命名、删除（无废纸篓）、新建文件夹",
+    "dual_pane": "文件管理器有两个并排窗格；没有 F5/F6 键",
+    "cloud_sync": "没有自己的云；媒体库和观看状态可通过 MySQL/MariaDB 服务器共享",
+    "shortcut_cheatsheet": "Wiki 页面列出所有默认键盘操作",
+    "notarized_attested": "macOS 打包有公证脚本；没有构建证明"
+   }
+  },
+  "leeyes": {
+   "name": "Leeyes",
+   "vendor": "Kenji（けんじ）",
+   "summary": "日本的三窗格查看器（文件夹树、文件列表、图像），为双页跨页阅读扫描版漫画而设计，有收藏常用文件夹的书架。除 BMP 外的所有格式都靠 Susie 插件支持。最后一个版本发布于 2011 年；作者网站已无法访问，只剩存档副本。",
+   "wins": [
+    "书架列表可导出、导入为文本",
+    "针对扫描书籍优化的双页跨页"
+   ],
+   "price": "非商业用途免费",
+   "version": "2.6.1",
+   "updated": "2011-10-26",
+   "platforms": "Windows"
+  },
+  "lyn": {
+   "name": "Lyn",
+   "vendor": "Mirko Viviani",
+   "summary": "面向摄影师和设计师的老牌轻量看图浏览器，有文件夹边栏、地理标记地图、非破坏性编辑，可分享到 Flickr、Dropbox 和 SmugMug。直接销售，最低支持 macOS 10.13。",
+   "wins": [
+    "在地图上添加地理标记",
+    "非破坏性的颜色编辑",
+    "能打开照片/Aperture/Lightroom 图库",
+    "分享到 Flickr、Dropbox、SmugMug",
+    "能在旧版 macOS（10.13 及以上）上运行"
+   ],
+   "price": "一次性 26 欧元 / 29.99 美元，含 15 个月更新；15 天试用",
+   "version": "2.4.10",
+   "updated": "2026-07-09",
+   "platforms": "macOS",
+   "notes": {
+    "languages_20": "英文，更新说明中提到法文和中文本地化；未公布完整列表",
+    "recursive_search": "带搜索范围的智能文件夹；未说明简单的递归名称搜索",
+    "bookmarks": "边栏项目和智能文件夹",
+    "img_psd_exr": "支持 OpenEXR；PSD 仅通过 macOS ImageIO",
+    "img_animated": "动态 WebP（2.3.5）和浏览器中的动态图像；未说明 APNG",
+    "video_skim_arrows": "空格、J/K/L（2.1.3）",
+    "playback_speed": "J/L 快退和快进",
+    "library_catalog": "关键词、IPTC、颜色标签、智能文件夹；没有自己的目录"
+   }
+  },
+  "mangameeya": {
+   "name": "MangaMeeya",
+   "vendor": "",
+   "summary": "长期是 Windows 上最有名的漫画阅读器：可打开 ZIP/RAR 漫画，嵌套归档也行，支持跨页、缩略图、标签页和自定义按键。已停止开发，没有官方下载；副本和精简版 MangaMeeyaCE 在镜像站上流传。",
+   "wins": [
+    "老用户熟悉的漫画阅读方式",
+    "标签页和跨两台显示器的分割窗口"
+   ],
+   "price": "免费",
+   "version": "AlternativeTo 上标为 2.4（已停止开发）",
+   "updated": "2006-06（据 AlternativeTo）",
+   "platforms": "Windows"
+  },
+  "marta": {
+   "name": "Marta",
+   "vendor": "Yan Zhulanow",
+   "summary": "用 Swift 编写的原生双窗格文件管理器，以键盘为中心，通过文本 DSL 配置，可用 Lua 插件扩展。许多归档格式能像文件夹一样打开；文件通过快速查看预览。",
+   "wins": [
+    "Lua 插件 API 和基于文本的配置",
+    "Commander 式功能键工作方式和操作面板",
+    "支持归档，包括嵌套归档，ZIP 可读写",
+    "内嵌终端并同步目录、磁盘占用分析",
+    "Look Up 支持丰富的聚焦谓词"
+   ],
+   "price": "测试期间免费；测试结束后计划推出付费许可证（Patreon 上赞助 15 美元以上可获永久许可证）",
+   "version": "0.8.2",
+   "updated": "2024-08-03",
+   "platforms": "macOS",
+   "notes": {
+    "free": "测试期间免费；已宣布将推出付费许可证",
+    "regex_search": "快速选择/快速搜索可在当前列表中用正则；Look Up 用谓词",
+    "img_modern_formats": "只有快速查看预览（空格）；没有自己的查看器或播放器",
+    "img_raw": "预览为 macOS 快速查看窗口（空格），没有自己的查看器",
+    "img_psd_exr": "预览为 macOS 快速查看窗口（空格），没有自己的查看器",
+    "img_svg_pdf": "预览为 macOS 快速查看窗口（空格），没有自己的查看器",
+    "img_animated": "预览为 macOS 快速查看窗口（空格），没有自己的查看器",
+    "zoom_rotate": "只能用快速查看缩放；全屏图像预览尚在请求中",
+    "video_native": "快速查看可播放 MP4/MOV",
+    "video_mkv_avi_webm": "只能播放 macOS 快速查看能播的格式；文档未说明具体有哪些",
+    "music_mode": "快速查看可播放单个音频文件；不能连续播放整个文件夹",
+    "archives_as_folders": "ZIP 可读写；TAR、7Z、ISO 等只读；RAR 有限，不支持 RAR5",
+    "comics_cbz_cbr": "没有漫画阅读器；可在配置中注册额外的 ZIP 扩展名（如 cbz）",
+    "shortcut_cheatsheet": "文档列出默认快捷键；没有可打印的速查表"
+   }
+  },
+  "massigra": {
+   "name": "MassiGra",
+   "vendor": "Toshi Fuku",
+   "summary": "来自日本的小巧快速的单窗口看图软件，可在文件夹中翻页，有漫画模式和简单编辑。内置支持 BMP、GIF、JPEG 和 PNG；其他格式（包括归档）都靠 Susie 插件。曾连续五年位居 Vector 看图软件下载榜首，但自 2013 年起再无变化。",
+   "wins": [
+    "小巧，在旧硬件上也非常轻快",
+    "基本的图像编辑和保存（色阶、颜色、裁剪、调整大小）",
+    "一键移动/拷贝到预设文件夹",
+    "日本 Windows 老用户熟悉"
+   ],
+   "price": "免费",
+   "version": "0.45",
+   "updated": "2013-04-23",
+   "platforms": "Windows"
+  },
+  "mcomix": {
+   "name": "MComix",
+   "vendor": "MComix 开发者",
+   "summary": "MComix 是一款可自定义的 GTK 漫画和图片查看器，适用于 Linux 和 Windows，是 Comix 的分支。它能读取 CBR/CBZ/CB7/CBT/LHA 和 PDF，有双页和日漫模式、图像增强、幻灯片和可选的书库。",
+   "wins": [
+    "双页和日漫模式",
+    "图像增强（亮度、对比度、锐度、自动对比度）",
+    "可编辑的键盘快捷键",
+    "归档编辑器和带收藏集的可选书库",
+    "25 种界面语言",
+    "有 Linux 和 Windows 版"
+   ],
+   "price": "免费",
+   "version": "3.2.0",
+   "updated": "2026-08-20",
+   "platforms": "Linux、Windows"
+  },
+  "mediaone": {
+   "name": "MediaOne",
+   "vendor": "MediaArt Studio",
+   "summary": "MediaOne（原名 ImageOne）是 Mac App Store 上的照片、视频和音频媒体浏览器，直接处理文件夹和收藏，无需导入。它提供多种缩略图布局、全盘搜索、星级评分和标签、对比视图、视频修剪、GIF 导出和批量转换。需要 macOS 12.4。",
+   "wins": [
+    "悬停即播放预览，悬停拖动浏览视频",
+    "星级评分、标签、智能筛选和照片地图",
+    "视频修剪、截取画面、视频转 GIF、批量转换图像/视频",
+    "可播放音频文件",
+    "全盘搜索，可存储智能查询"
+   ],
+   "price": "免费，含 App 内购买：ImageOne 6.99 美元",
+   "version": "5.4.1",
+   "updated": "2026-08-23",
+   "platforms": "macOS",
+   "notes": {
+    "free": "免费下载，一项 App 内购买“ImageOne”6.99 美元；商店页面未说明解锁什么",
+    "list_view": "列有列表视图；未说明栏位选项",
+    "img_modern_formats": "列出 WebP；未列出 HEIC/AVIF/JXL",
+    "slideshow_recursive": "“显示所有子文件夹”可汇集照片和视频；未说明能否放幻灯片",
+    "file_info_exif": "图像有 EXIF；未提及编解码器/码率信息",
+    "video_skim_arrows": "Option+方向键逐帧，悬停拖动浏览",
+    "dual_pane": "对比视图用双栏对比媒体；没有 F5/F6 式的文件窗格",
+    "image_editing": "旋转/翻转、修剪视频、保存视频画面、视频转 GIF",
+    "batch_convert": "可批量转换图像和视频；未提及批量重命名",
+    "library_catalog": "文件的星级评分和标签、智能筛选、地图；没有导入数据库",
+    "keyboard_first": "有方向键/空格/Option 键操作；以鼠标为主（悬停播放）",
+    "notarized_attested": "经 Apple 审核的 Mac App Store 版本；源代码不公开"
+   }
+  },
+  "meitu-kankan": {
+   "name": "美图看看",
+   "vendor": "美图",
+   "summary": "美图推出的小巧快速的免费看图软件，2010 年代初在中国 Windows 电脑上非常流行，有文件夹收藏、穿透文件夹查看所有子文件夹中的图片，以及一键分享到国内社交网络。已不再开发（最后版本 2.7.8），但仍提供下载。",
+   "wins": [
+    "小巧，在旧电脑上也很轻快",
+    "一次显示所有子文件夹中的全部图片（穿透文件夹）",
+    "CMYK 的 PSD 显示效果与 Photoshop 一致"
+   ],
+   "price": "免费",
+   "version": "2.7.8",
+   "updated": "2014-11-25（官网）；腾讯软件中心标注的文件日期为 2019-05-08",
+   "platforms": "Windows、Android"
+  },
+  "microsoft-photos": {
+   "name": "Microsoft 照片",
+   "vendor": "Microsoft",
+   "summary": "Windows 内置的照片和视频应用：图库时间线汇集电脑文件夹、OneDrive 和 iCloud 中的照片，查看器可在文件夹中快速翻页，编辑器带 AI 工具。适合随手浏览和快速编辑；“照片旧版”保留了旧的视频编辑器和幻灯片制作。没有归档支持，也没有文件管理功能。",
+   "wins": [
+    "每台 Windows 电脑预装",
+    "OneDrive 和 iCloud 照片汇集在同一个图库中",
+    "AI 编辑：移除对象、重新打光，Copilot+ PC 上的超分辨率",
+    "人物、相册、时刻和自然语言搜索",
+    "带配乐的幻灯片",
+    "多图对比视图"
+   ],
+   "price": "随 Windows 免费（HEVC 视频扩展 0.99 美元）",
+   "version": "2026.11090.22001（新版图库/编辑器/查看器自 2026 年 10 月起陆续推出）",
+   "updated": "2026-10-06",
+   "platforms": "Windows"
+  },
+  "movist-pro": {
+   "name": "Movist Pro",
+   "vendor": "Movist",
+   "summary": "一款精致的付费视频播放器，用来看电影和剧集，字幕处理很强（可同时显示多条字幕轨道、按语言设置样式），有 HDR/杜比视界色调映射，任何格式都能 AirPlay。Pro 版增加网络服务器、YouTube 和网页媒体以及画中画。",
+   "wins": [
+    "高级字幕样式和双字幕",
+    "HDR 和杜比视界色调映射",
+    "可 AirPlay Apple TV 原生不支持的格式",
+    "网络服务器（SMB、SFTP、FTP、WebDAV）、YouTube、画中画（Pro）",
+    "保存的播放列表、音频均衡器"
+   ],
+   "price": "Movist Pro 一次性 17.99 美元（直接购买）；Movist 9.99 美元（Mac App Store）；Setapp 订阅中含 Movist Pro",
+   "version": "2.21.1（直接下载版）；Mac App Store 中为 Movist 2.20.0",
+   "updated": "2026-10-17（App Store 2.20.0）；2.21.1 更晚，未标日期",
+   "platforms": "macOS",
+   "notes": {
+    "languages_20": "6 种：英、日、韩、俄、简体中文、繁体中文",
+    "folder_browsing": "用文件夹填充播放列表；Pro 可浏览网络共享（SMB、SFTP、FTP、WebDAV）",
+    "network_shares_fast": "Pro 可直接从 SMB、SFTP、FTP、WebDAV 服务器播放",
+    "zoom_rotate": "仅限视频：缩放、旋转、翻转",
+    "auto_enhance_view": "仅限视频：Core Image 滤镜",
+    "file_info_exif": "检查器窗口显示轨道/编解码器信息；没有 EXIF",
+    "pip": "仅限 Movist Pro",
+    "music_mode": "可播放音乐文件，有均衡器；没有音乐库",
+    "streaming_urls": "仅限 Pro：打开网址、YouTube/Twitch 和网页媒体、浏览器扩展",
+    "rename_trash": "可在“文件”菜单中删除当前文件（2.14）；不能重命名/新建文件夹",
+    "keyboard_first": "播放快捷键可自定义；不能浏览文件",
+    "app_sandbox": "App Store 版 Movist 在沙盒中运行；Pro 宣传“无需文件夹访问权限”",
+    "mac_app_store": "只有功能较少的“Movist”（9.99 美元）；Pro 直接销售或通过 Setapp"
+   }
+  },
+  "mpc-be": {
+   "name": "MPC-BE",
+   "vendor": "Aleksoid1978 及贡献者",
+   "summary": "从 Media Player Classic 分支出来的 Windows 视频播放器，有自己的解码器和深色主题，更新频繁。适合播放本地视频文件，也能通过 yt-dlp 看 YouTube。",
+   "wins": [
+    "轻巧的 Windows 播放器，更新频繁",
+    "深色主题，渲染器和解码器选项众多",
+    "字幕下载、yt-dlp 串流",
+    "老板键、可配置按键"
+   ],
+   "price": "免费",
+   "version": "1.9.3",
+   "updated": "2026-11-05",
+   "platforms": "Windows"
+  },
+  "mpc-hc": {
+   "name": "MPC-HC",
+   "vendor": "clsid2 及贡献者",
+   "summary": "轻巧经典的 Windows 视频播放器，内置 LAV Filters，渲染器众多，按键高度可配置。因界面简洁、占用资源少而广受欢迎；看图不是它的本职。",
+   "wins": [
+    "非常轻巧，启动很快",
+    "面向发烧友的渲染器和着色器（madVR、MPC VR）",
+    "字幕搜索和下载、yt-dlp 串流",
+    "老板键、逐帧步进、大量可配置按键"
+   ],
+   "price": "免费",
+   "version": "2.8.5",
+   "updated": "2026-11-06",
+   "platforms": "Windows"
+  },
+  "mpv": {
+   "name": "mpv",
+   "vendor": "mpv 项目",
+   "summary": "mpv 是一款极简、可脚本化的命令行媒体播放器，渲染质量一流，格式支持极广。通过文本文件和 Lua/JS 脚本配置，只有一个小巧的屏幕控制器。",
+   "wins": [
+    "同类最佳的视频渲染（gpu-next、HDR、杜比视界）",
+    "可通过 mpv.conf、input.conf 和脚本进行极其细致的配置",
+    "直接播放 ZIP/RAR/7z 和分卷 RAR 中的媒体",
+    "跨平台（macOS、Windows、Linux）",
+    "通过 yt-dlp 播放流媒体和 YouTube，支持 DVD/蓝光菜单"
+   ],
+   "price": "免费",
+   "version": "0.42.0",
+   "updated": "2026-11-05",
+   "platforms": "macOS、Windows、Linux、BSD、Android（通过 mpv-android）",
+   "notes": {
+    "dark_light_setting": "只能通过 --macos-title-bar-appearance 设置标题栏；没有界面主题",
+    "folder_browsing": "打开文件夹会生成播放列表，也可递归；没有文件浏览器",
+    "img_psd_exr": "能打开 EXR 和 PSD，但不会从文件夹中自动选取",
+    "img_svg_pdf": "image-exts 列有 SVG（需带 librsvg 的 FFmpeg）；不支持 PDF",
+    "auto_enhance_view": "按键 1 到 8 调对比度、亮度、伽马、饱和度；没有自动增强",
+    "file_info_exif": "统计叠加层（i/I）：编解码器、码率；没有 EXIF",
+    "saved_playlists": "可载入 m3u/pls/cue/edl；没有内置的保存命令",
+    "archives_as_folders": "ZIP、RAR、7z（也包括 CBZ/CBR）作为其中媒体的播放列表打开，不能当文件夹浏览",
+    "comics_cbz_cbr": "CBZ/CBR 作为图片播放列表打开；没有阅读模式",
+    "batch_convert": "命令行上的编码模式（--o）；不能批量重命名",
+    "shortcut_cheatsheet": "按 ? 在统计叠加层中显示按键绑定页；input.conf 说明默认设置",
+    "no_network": "代码中没有更新检查或遥测；打开网址时会联网（网页需 yt-dlp 钩子）"
+   }
+  },
+  "neeview": {
+   "name": "NeeView",
+   "vendor": "neelabo",
+   "summary": "Windows 上的书本式查看器，把文件夹和归档当作书，图片当作页。高度可配置：每个操作都是一条命令，可设按键、鼠标手势和脚本，还有书架、书签、播放列表和双页漫画跨页。视频通过 Windows 或已安装的 VLC 播放。",
+   "wins": [
+    "极其深入的自定义：命令、手势、JavaScript 脚本",
+    "双页跨页，支持从右到左阅读和页面分割",
+    "嵌套归档和归档密码（通过 7z.dll）",
+    "保存的播放列表、历史记录，搜索支持日期/大小/正则运算符",
+    "图像效果面板、打印、导出为 ZIP/文件夹",
+    "有 Microsoft Store 版和便携 ZIP 版"
+   ],
+   "price": "免费",
+   "version": "46.3",
+   "updated": "2026-08-09",
+   "platforms": "Windows"
+  },
+  "nomacs": {
+   "name": "nomacs",
+   "vendor": "nomacs 团队",
+   "summary": "nomacs（“Image Lounge”）是一款免费开源的看图软件，支持 RAW 和 PSD，有元数据面板、图像调整和批量处理。一大特色是可同步多个实例，并排对比图像。当前有适用于 Apple 芯片和 Intel 的 macOS 版本，但未经公证。",
+   "wins": [
+    "批量处理和基本图像编辑",
+    "同步多个窗口对比图像",
+    "元数据面板、直方图和星级评分",
+    "插件（绘图、合成、变换）",
+    "可在 Windows、Linux、FreeBSD 和 Haiku 上运行"
+   ],
+   "price": "免费",
+   "version": "3.22.5（测试版 3.23.4）",
+   "updated": "2026-11-05",
+   "platforms": "macOS、Windows、Linux、FreeBSD、Haiku",
+   "notes": {
+    "thumbnail_grid": "当前文件夹的缩略图条和缩略图网格；没有文件夹预览",
+    "list_view": "文件浏览器停靠栏显示带栏位的树/列表；不是主视图",
+    "recursive_search": "“查找和筛选”搜索已载入的文件列表；开启“递归扫描文件夹”后包含子文件夹",
+    "img_svg_pdf": "支持 SVG；不支持 PDF",
+    "slideshow_recursive": "“遍历文件夹和子文件夹”仅限图像；没有视频",
+    "auto_enhance_view": "图像调整面板（OpenCV）；作为可保存的编辑生效，不是仅限显示的滤镜",
+    "archives_as_folders": "仅 ZIP（和 CBZ），需完整的 macOS 版本；不支持 RAR/7z",
+    "comics_cbz_cbr": "支持 CBZ，不支持 CBR",
+    "dual_pane": "多个同步实例并排对比图像；没有双窗格文件管理器",
+    "library_catalog": "星级评分写入元数据；没有目录数据库",
+    "notarized_attested": "在公开的 GitHub Actions 中由源代码构建，但只有临时签名，未经公证"
+   }
+  },
+  "norton-commander": {
+   "name": "Norton Commander",
+   "vendor": "Symantec",
+   "summary": "MS-DOS 上最早的经典双面板文件管理器（1986 到 1998 年），确立了 F3 查看、F5 拷贝、F6 移动的布局，Total Commander、Midnight Commander 等众多软件都沿用了它。出于怀旧，至今仍有很多人搜索；如今只能在 DOS 或模拟器中运行。",
+   "wins": [
+    "开创了双面板、功能键的工作方式",
+    "文本模式下小巧快速",
+    "目录同步，文件查找结果可在面板中显示"
+   ],
+   "price": "已停止销售；曾是商业软件（NC 3.0 建议零售价 149 美元，NC 4.0 为 99 美元）",
+   "version": "5.51（DOS）",
+   "updated": "1998-07-01",
+   "platforms": "MS-DOS、Windows（NC for Windows 2.01）、OS/2"
+  },
+  "nplayer": {
+   "name": "nPlayer",
+   "vendor": "Newin",
+   "summary": "热门 iOS 播放器 nPlayer 的付费 Mac 移植版：几乎能播放所有视频、音频和字幕格式，可从 SMB、NFS、WebDAV、FTP、UPnP 和云服务串流，字幕样式丰富，有 A-B 重复和画中画。Mac 版很少更新。",
+   "wins": [
+    "网络协议（SMB、NFS、SFTP、WebDAV、UPnP）",
+    "高级字幕（样式、同步、SMI、SUP）",
+    "A-B 重复，语言学习用的“听力练习”",
+    "画中画、播放速度",
+    "音频均衡器和音画同步"
+   ],
+   "price": "一次性 9.99 美元（Mac）",
+   "version": "1.5.0",
+   "updated": "2025-02-14",
+   "platforms": "macOS、iOS、iPadOS、Android、tvOS",
+   "notes": {
+    "dark_light_setting": "1.4.0 起有“播放器主题”；能否独立于系统设置浅色/深色不详",
+    "languages_20": "App Store 上为 9 种",
+    "folder_browsing": "可浏览网络源（SMB、FTP、WebDAV、UPnP、云）；本地文件从访达打开",
+    "thumbnail_grid": "可生成视频缩略图；未说明布局",
+    "network_shares_fast": "WebDAV、FTP、SFTP、HTTP、SMB/CIFS、NFS、UPnP/DLNA；速度不详",
+    "zoom_rotate": "视频可旋转 90/180/270 度、翻转",
+    "auto_enhance_view": "视频的亮度和饱和度",
+    "saved_playlists": "可打开播放列表文件；未说明能否保存自己的播放列表",
+    "library_catalog": "TMDb 元数据（1.1.1）",
+    "cloud_sync": "可从 Box、Dropbox、OneDrive 串流；没有同步",
+    "notarized_attested": "App Store 签名；闭源"
+   }
+  },
+  "omniplayer": {
+   "name": "OmniPlayer",
+   "vendor": "Oka Apps",
+   "summary": "Mac App Store 上的媒体播放器，可播放 MKV、AVI、WMV 及大多数其他格式，有字幕搜索、播放速度、音频均衡器，可投屏到 DLNA、Chromecast 和 Roku。是一款简单直接、带播放列表的单文件播放器。",
+   "wins": [
+    "在线字幕搜索",
+    "播放速度低至 0.1 倍，可逐帧",
+    "投屏到电视（DLNA、Chromecast、Roku）",
+    "YouTube/Vimeo 网址、SMB/FTP 源",
+    "音频均衡器、音乐播放",
+    "画面调整和 GIF 导出"
+   ],
+   "price": "免费，VIP：终身 9.99 美元、每年 6.99 美元、每月 3.99 美元；OmniPlayer Pro 一次性 8.99 美元",
+   "version": "2.1.22",
+   "updated": "2026-06-18",
+   "platforms": "macOS",
+   "notes": {
+    "free": "免费；VIP 每月 3.99 美元起或终身 9.99 美元；未列出哪些功能需要 VIP",
+    "languages_20": "App Store 上 7 种（含简中、繁中）；厂商页面列出 11 种",
+    "folder_browsing": "拖入的文件夹成为播放列表的“文件夹模式”；没有文件夹浏览器",
+    "recursive_search": "可在播放列表中搜索；可拖入多级文件夹",
+    "network_shares_fast": "可从 SMB/FTP 服务器和 Alist 播放；大文件夹的速度不详",
+    "zoom_rotate": "视频旋转、宽高比、窗口大小；不能看图",
+    "auto_enhance_view": "亮度/对比度/饱和度，仅限视频",
+    "file_info_exif": "App Store 评论提到“媒体信息框”（编解码器详情）；没有 EXIF",
+    "saved_playlists": "自动保留播放列表，可选择退出时清空；不能命名播放列表",
+    "keyboard_first": "播放、速度（Cmd+[ / Cmd+]）、字幕都有快捷键",
+    "notarized_attested": "App Store 签名；闭源"
+   }
+  },
+  "opencomic": {
+   "name": "OpenComic",
+   "vendor": "ollm",
+   "summary": "OpenComic 是一款跨平台的开源漫画、日漫和电子书阅读器，有标签页、多窗口、OPDS 和服务器连接。它提供日漫和条漫模式、图像调整和 AI 放大工具。",
+   "wins": [
+    "格式众多，包括 EPUB、MOBI、SVG、JPEG XL、ACE/LZH 归档",
+    "日漫、条漫、双页和导读视图",
+    "直连 SMB/FTP/SFTP/WebDAV/S3 和 OPDS",
+    "AI 放大、去网纹和去伪影",
+    "标签页和多窗口；自定义快捷键和游戏手柄"
+   ],
+   "price": "免费（GitHub）；Mac App Store 4.99 美元",
+   "version": "2.0.0（GitHub）；Mac App Store 上为 1.6.11",
+   "updated": "2026-11-14",
+   "platforms": "macOS、Windows、Linux",
+   "notes": {
+    "network_shares_fast": "直连 SMB、FTP、SFTP、WebDAV、S3；缓存文件夹的文件列表（2.0）",
+    "bookmarks": "页面书签、收藏和自定义标签",
+    "img_modern_formats": "WebP、AVIF、JPEG XL；HEIC 又被移除了",
+    "zoom_rotate": "缩放和放大镜；未说明能否旋转",
+    "music_mode": "阅读时可播放背景音乐和音效；没有音乐播放器",
+    "rename_trash": "可移到废纸篓和永久删除；文件右键菜单中不能重命名",
+    "cloud_sync": "服务器连接和 OPDS；没有自己的云同步",
+    "app_sandbox": "Mac App Store 版在沙盒中运行；GitHub 上的 DMG 不在",
+    "notarized_attested": "Mac DMG/PKG 在本地构建并经过公证；没有 CI 构建证明"
+   }
+  },
+  "panels": {
+   "name": "Panels",
+   "vendor": "Produkt Studio",
+   "summary": "Panels 是一款精致的 iPhone、iPad 和 Mac 漫画阅读器，有封面书库、阅读预设、逐格视图，并支持 Komga/Kavita 的 OPDS。云书库、页面滤镜和文字识别等高级功能需要 Premium。",
+   "wins": [
+    "书库和阅读进度在 Mac、iPhone 和 iPad 间同步",
+    "OPDS 串流（Komga、Kavita、Calibre）",
+    "逐格导读视图、阅读预设",
+    "实况文本和主体识别",
+    "App 内无 DRM 的漫画商店"
+   ],
+   "price": "免费下载；Premium 需订阅 Panels+（按月/按年）或一次性购买 Panels 3（一次性 22.99 欧元 / 每年 11.99 欧元，2025 年 5 月）",
+   "version": "3.13.11",
+   "updated": "2026-11-11",
+   "platforms": "macOS、iOS、iPadOS",
+   "notes": {
+    "free": "基础阅读免费；Premium 需订阅或一次性购买（22.99 欧元）",
+    "no_account_no_tracking": "本地文件无需账户；App Store 标注：使用数据、诊断、标识符",
+    "languages_20": "12 种语言（其中 8 种为机器翻译）；通过 macOS 的 App 语言设置",
+    "folder_browsing": "书库就是你添加的普通文件夹；增加文件夹免费，外置磁盘和 iCloud 需 Premium",
+    "list_view": "书库可显示为网格或列表（Cmd-1 / Cmd-2）；未说明栏位",
+    "network_shares_fast": "SMB 导入和 OPDS 串流（Premium）；可处理数千本漫画",
+    "bookmarks": "常用书库位置（Premium）、收藏、继续阅读",
+    "img_svg_pdf": "支持 PDF，不支持 SVG",
+    "zoom_rotate": "缩放、适合/填充；未说明能否旋转",
+    "auto_enhance_view": "页面滤镜（降噪、锐度、摩尔纹、边框）需 Premium",
+    "file_info_exif": "可显示漫画信息（Cmd+I），没有 EXIF",
+    "archives_as_folders": "把归档当作漫画书打开，而不是当作文件夹",
+    "rename_trash": "可在书库内重命名和删除",
+    "move_copy": "可在书库内拷贝、移动、粘贴",
+    "keyboard_first": "阅读器和书库都有很多快捷键",
+    "notarized_attested": "通过 Mac App Store 签名；闭源"
+   }
+  },
+  "path-finder": {
+   "name": "Path Finder",
+   "vendor": "Cocoatech",
+   "summary": "老牌的访达替代品，有双窗格、模块（预览、信息、终端、Drop Stack）、大小浏览器、批量重命名和文件夹同步。适合想在类似访达的浏览器周围集齐各种工具的高级用户。",
+   "wins": [
+    "模块：预览、信息、终端、Drop Stack、Git、十六进制/文本编辑器",
+    "大小浏览器和文件夹同步/合并",
+    "批量重命名、安全删除、管理员访问",
+    "20 种界面语言",
+    "书签栏、标签页预设"
+   ],
+   "price": "订阅每年 29.95 美元或每月 2.95 美元，或购买许可证密钥：32.95 美元起（1 年更新）、55.95 美元（2 年）、122.95 美元（5 年）；30 天试用",
+   "version": "26.1.10",
+   "updated": "2026-10-22",
+   "platforms": "macOS",
+   "notes": {
+    "no_account_no_tracking": "不收集使用数据；订阅需要登录和联网检查",
+    "thumbnail_grid": "图像的图标视图；文件夹没有预览缩略图",
+    "regex_search": "名称“匹配模式”（通配符）；未说明正则表达式",
+    "network_shares_fast": "改进了网络卷宗上的预览性能；没有一般的速度说明",
+    "img_modern_formats": "预览模块/快速查看，用 macOS 解码；没有专门的查看器",
+    "img_raw": "通过 macOS；26.1.8 加入 ARW 预览",
+    "img_animated": "动态 GIF 可在快速查看窗口中播放；未说明 APNG 和 WebP",
+    "zoom_rotate": "只能用快速查看缩放",
+    "slideshow": "没有自己的幻灯片；macOS 快速查看可把所选项目作为幻灯片显示",
+    "file_info_exif": "信息面板显示尺寸、时长和 macOS 元数据；未说明编解码器/码率",
+    "video_mkv_avi_webm": "加入了 WebM 预览；未提及 MKV/AVI",
+    "music_mode": "只能在预览/快速查看中播放音频",
+    "archive_passwords": "可创建和解压带密码的 ZIP（AES-128/256）",
+    "dual_pane": "有双窗格，但拷贝/移动靠 ⌘C/⌘V/⌘X 或拖动；默认没有 F5/F6（快捷键可分配）",
+    "batch_convert": "批量重命名；不能转换图像",
+    "library_catalog": "只有访达标签和颜色标记",
+    "cloud_sync": "集成 Dropbox、云上传器、iCloud 云盘",
+    "keyboard_first": "快捷键很多，但界面是以鼠标为主的访达风格",
+    "shortcut_cheatsheet": "支持文章列出常用默认快捷键；没有可打印的速查表"
+   }
+  },
+  "phiewer": {
+   "name": "Phiewer",
+   "vendor": "Thomas Zinnbauer",
+   "summary": "快速、适合键盘操作的媒体查看器，用来浏览装满照片、RAW、视频和音频的文件夹。PRO 版以低廉的一次性价格增加展柜（虚拟相册）、查找重复、对比视图、非破坏性编辑、访达标签和自定义快捷键。",
+   "wins": [
+    "查找重复，最多 9 张图像的对比视图",
+    "展柜：跨文件夹保存的虚拟相册",
+    "访达标签和备注，可按标签/EXIF/日期搜索",
+    "音频文件和打印",
+    "PRO 版的图像编辑（裁剪、滤镜、调整大小）",
+    "影院模式"
+   ],
+   "price": "Phiewer（lite）免费；Phiewer PRO 一次性 7.99 美元（Mac App Store）",
+   "version": "8",
+   "updated": "2026-11-07",
+   "platforms": "macOS",
+   "notes": {
+    "free": "lite 免费（浏览、所有格式、简单幻灯片、EXIF）；其余均需 PRO，一次性 7.99 美元",
+    "no_account_no_tracking": "无需账户，无广告；App Store 标注：分析数据，不与你关联",
+    "languages_20": "8 种：英、德、法、西、葡、意、荷、波兰",
+    "recursive_search": "名称、标签、备注、日期、EXIF（PRO）；视图中可包含子文件夹",
+    "img_modern_formats": "支持 HEIC、AVIF、WebP；未列出 JPEG XL",
+    "img_animated": "GIF 和动态 WebP；未列出 APNG",
+    "slideshow_recursive": "仅限 PRO；子文件夹和全局随机播放；视频可在其中播放（可选自动静音）",
+    "auto_enhance_view": "PRO：滤镜和调整可撤销，属于编辑；没有仅限显示的自动增强",
+    "file_info_exif": "EXIF 和文件信息；未列出编解码器/码率",
+    "wrong_extension_note": "能识别扩展名错误的图像并打开（6.5）；未说明是否提示用户",
+    "video_mkv_avi_webm": "列出 AVI、MPG、3GP、MTS、M2TS、TS；当前格式列表中没有 MKV、WebM、WMV、FLV",
+    "video_skim_arrows": "可设置跳转间隔（PRO 视频控制）；未说明方向键浏览",
+    "playback_speed": "PRO 视频控制",
+    "playlist": "PRO 展柜：跨文件夹、“类似播放列表”的虚拟收藏",
+    "saved_playlists": "PRO 展柜可保存",
+    "undo_file_actions": "⌘Z 可撤销拖放移动（8）；未说明能否撤销重命名/移到废纸篓",
+    "image_editing": "PRO：快速编辑可裁剪、旋转、翻转、调整大小、压缩、滤镜",
+    "batch_convert": "PRO：批量导出和批量压缩；未说明批量重命名",
+    "library_catalog": "访达标签和备注、收藏、展柜；没有目录数据库",
+    "cloud_sync": "PRO：通过 macOS 共享菜单分享；没有同步",
+    "custom_shortcuts": "仅限 PRO",
+    "shortcut_cheatsheet": "所有快捷键列在“设置 > 键盘快捷键”中；没有可打印的速查表"
+   }
+  },
+  "photo-mechanic": {
+   "name": "Photo Mechanic",
+   "vendor": "Camera Bits",
+   "summary": "Photo Mechanic 是一款面向职业摄影师的快速导入、筛片和元数据工具，尤其适合新闻、体育和婚礼摄影师。它直接打开文件夹和存储卡，借助嵌入的预览瞬间显示 RAW 文件，在截稿时写图片说明、IPTC 元数据、关键字、批量重命名和上传方面表现出色。",
+   "wins": [
+    "可同时从多张存储卡导入，拷贝时即可重命名和添加元数据",
+    "IPTC/XMP 元数据、代码替换、变量和结构化关键字，赶稿时快速写说明",
+    "星级评分、颜色分类和标签，快速筛选数千个 RAW 文件",
+    "批量重命名、存储为/调整大小/水印，直接上传到 FTP、Dropbox、S3、PhotoShelter 等",
+    "在文件名和元数据中用正则表达式查找替换",
+    "快捷键完全可自定义，有预设，还有可打印的快捷键 PDF",
+    "Windows 版功能相同"
+   ],
+   "price": "Photo Mechanic：每月 14.99 美元、每年 149 美元，或永久许可证 299 美元（含 1 年更新）；30 天免费试用。Photo Mechanic Plus（目录版，每月 24.99 美元、每年 249 美元、永久 399 美元）自 2026 年 2 月 27 日起不再向新用户销售，但商店页面仍有列出。",
+   "version": "2026.6（build 9175），Camera Bits 博客公布的最新版本",
+   "updated": "2026-06-18",
+   "platforms": "macOS、Windows",
+   "notes": {
+    "no_account_no_tracking": "无广告；许可证需在线激活，并不时联网检查",
+    "dark_light_setting": "提示和对话框可选浅色或深色主题；预览背景可设置",
+    "thumbnail_grid": "联系表缩略图网格；文件夹显示在导航树中，没有预览图块",
+    "recursive_search": "“打开文件夹和子文件夹”汇集到一个联系表，再按名称或 IPTC 查找",
+    "img_psd_exr": "支持 PSD（以最大兼容性存储）；支持格式中没有 OpenEXR",
+    "zoom_rotate": "预览中可缩放和平移；旋转会写入 EXIF 方向标记（不只是显示）",
+    "slideshow_recursive": "可对“文件夹和子文件夹”放幻灯片；未说明能否包含视频",
+    "video_mkv_avi_webm": "列出 AVI；支持格式中没有 MKV、WebM、WMV、FLV",
+    "undo_file_actions": "macOS 上“编辑 > 撤销/重做”在“可用时”有效；未说明哪些文件操作可撤销",
+    "image_editing": "存储为/导出时可裁剪、旋转、调整大小和加水印；不能编辑像素（交给外部编辑器）",
+    "library_catalog": "标签、星级、颜色分类、IPTC 关键字存于文件中；目录版已停售"
+   }
+  },
+  "picasa": {
+   "name": "Picasa",
+   "vendor": "Google",
+   "summary": "Google 的免费照片整理和查看软件，2016 年 3 月停止支持，2018 年起下线。它把文件夹扫描进图库，有标签、人脸和相册，提供简单的非破坏性修正和幻灯片。至今仍有很多人搜索，他们想要一款简单、免费的本地看图软件。",
+   "wins": [
+    "人脸识别、标签和相册",
+    "一键非破坏性修正",
+    "拼贴、打印排版和导出",
+    "许多老用户都很熟悉"
+   ],
+   "price": "免费（已停止开发，没有官方下载）",
+   "version": "3.9.141.259（Windows）/ 3.9.141.306",
+   "updated": "2015-10-09（2016-03-15 停止支持）",
+   "platforms": "Windows、macOS（Intel，测试版）、Linux（Wine，旧版）"
+  },
+  "picview": {
+   "name": "PicView",
+   "vendor": "Ruben Hyldgaard Negendahl",
+   "summary": "PicView 是一款基于 Avalonia 构建的快速、免费、开源看图软件，适用于 Windows 和 macOS。它通过 Magick.NET 几乎能读取所有图像格式，能打开漫画和归档，还有图库、标签页、裁剪、批量调整大小和图像信息窗口。高度可自定义，按键绑定也可以。",
+   "wins": [
+    "图像格式支持非常广（Magick.NET）",
+    "内置裁剪、调整大小、转换和批量调整大小",
+    "标签页，每个标签页有自己的历史记录",
+    "两张图并排显示",
+    "可编辑 EXIF 评分和关键字",
+    "也有 Windows 版"
+   ],
+   "price": "免费",
+   "version": "5.2.2",
+   "updated": "2026-11-10",
+   "platforms": "macOS、Windows",
+   "notes": {
+    "folder_browsing": "打开一个文件后可在其文件夹中翻页，带图库；没有文件夹树/浏览器",
+    "thumbnail_grid": "当前文件夹的底部图库或全屏图库；没有文件夹预览",
+    "recursive_search": "Ctrl+F 搜索当前文件夹，可选包含子文件夹",
+    "network_shares_fast": "超大文件夹可选择隐藏图库；没有针对网络的特别处理",
+    "bookmarks": "文件收藏，带按键槽位，还有文件历史；未确认有文件夹书签",
+    "img_svg_pdf": "支持 SVG；未列出 PDF",
+    "slideshow_recursive": "“包含子目录”设置；仅限图像",
+    "auto_enhance_view": "显示效果（亮度、对比度、滤镜），可保存；没有自动增强",
+    "manga_two_page": "两张图并排显示；没有从右到左的顺序",
+    "move_copy": "通过修改路径来移动；可拷贝文件；不能拖到文件夹中",
+    "library_catalog": "可编辑 EXIF 评分和关键字；没有目录数据库",
+    "shortcut_cheatsheet": "快捷键列表在 picview.org 上；不是可打印的速查表"
+   }
+  },
+  "pixea": {
+   "name": "Pixea",
+   "vendor": "ImageTasks",
+   "summary": "一款极简的图像和视频查看器，后来发展成带蒙版、移除对象和放大功能的照片编辑器。可浏览文件夹、照片图库和 ZIP/CBZ 归档，能播放 MKV 并选择字幕和音轨；搜索、排序和自定义快捷键需要 Pixea Plus。",
+   "wins": [
+    "强大的图像编辑器（蒙版、移除对象、放大、LUT）",
+    "批量编辑和转换",
+    "内嵌字幕、音轨、播放速度",
+    "能打开照片图库",
+    "标签和评分，使用 XMP 附属文件",
+    "查找重复"
+   ],
+   "price": "免费；Pixea Plus 终身 19.99 美元、每年 14.99 美元或每月 1.99 美元",
+   "version": "8.4.1",
+   "updated": "2026-10-27",
+   "platforms": "macOS",
+   "notes": {
+    "free": "核心功能免费；Pixea Plus 终身 19.99、每年 14.99 或每月 1.99 美元",
+    "dark_light_setting": "Liquid Glass 或经典主题及背景颜色；没有浅色/深色切换",
+    "languages_20": "12 种：英、保、法、德、意、日、韩、葡、俄、简中、西、乌",
+    "recursive_search": "搜索仅限 Plus；子文件夹自动扫描深度 1 到 5 层",
+    "network_shares_fast": "可选择在网络卷宗上跳过元数据；大文件夹更快（6.3）",
+    "img_psd_exr": "支持 PSD；列出 Radiance HDR，未列出 OpenEXR",
+    "slideshow_recursive": "对扫描的文件夹放幻灯片，含最多 5 层子文件夹，可随机；照片视频混合",
+    "auto_enhance_view": "非破坏性调整可存为 Pixea Image 格式；没有仅限显示的自动增强",
+    "file_info_exif": "EXIF 信息面板；视频的屏幕信息显示（Plus）；未说明编解码器/码率",
+    "video_mkv_avi_webm": "支持 MKV、AVI、WMV、FLV、VOB、RM；未列出 WebM",
+    "video_skim_arrows": "步进 10 秒/30 秒；方向键切换到下一个媒体",
+    "archives_as_folders": "仅 ZIP；未列出 RAR/7z",
+    "comics_cbz_cbr": "仅 CBZ（8.0）",
+    "videos_in_archives": "搜索包括 ZIP 中的视频；未说明能否从 ZIP 播放",
+    "undo_file_actions": "可撤销/重做操作（8.3），范围未说明",
+    "batch_convert": "免费版 3 张，Plus 不限",
+    "cloud_sync": "有分享按钮；没有同步",
+    "keyboard_first": "浏览、缩放、评分都有快捷键",
+    "custom_shortcuts": "仅限 Plus",
+    "shortcut_cheatsheet": "官网有简短的按键列表",
+    "no_network": "未收集数据；按需下载机器学习模型（8.1）"
+   }
+  },
+  "potplayer": {
+   "name": "PotPlayer",
+   "vendor": "Kakao",
+   "summary": "PotPlayer 是 Kakao 推出的高度可配置的 Windows 媒体播放器，内置编解码器，支持硬件解码、3D/360° 输出、字幕工具（包括 Whisper 语音转字幕）和串流。它也能打开静态图片，并直接播放 ZIP/RAR 归档中的媒体。",
+   "wins": [
+    "设置、渲染器和滤镜极多（madVR、HDR 色调映射、倍帧）",
+    "在线下载字幕、字幕翻译和语音转字幕（Whisper）",
+    "串流（YouTube、HLS/DASH）、电视/DVD/蓝光、3D 和 360° VR",
+    "快捷键和皮肤完全可自定义",
+    "音乐播放，带专辑封面、歌词、ReplayGain"
+   ],
+   "price": "免费（免费软件）",
+   "version": "261021（1.7.x 版本，2026 年 10 月 21 日）",
+   "updated": "2026-10-21",
+   "platforms": "Windows"
+  },
+  "qspace": {
+   "name": "QSpace",
+   "vendor": "Tian Wenda",
+   "summary": "类似访达的多窗格文件管理器，有 12 种布局、工作区，可深度自定义（快捷键、右键菜单、颜色），支持正则搜索。付费扩展增加归档浏览、服务器/云连接和高级批量重命名。",
+   "wins": [
+    "最多 12 种窗格布局，可保存工作区",
+    "快捷键、右键菜单、工具栏、颜色都可深度自定义",
+    "文件夹同步、文件哈希、文件模板",
+    "快速图像操作（旋转、转换、移除背景）",
+    "视频元数据栏位（帧率、数据速率）"
+   ],
+   "price": "一次性购买：QSpace（Mac App Store）12.99 美元，QSpace Pro（直接购买）优惠价 13.99 美元（原价 27.99/29.99 美元）；付费扩展：Stash Shelf、高级批量重命名、服务器连接（0.99 到 9.99 美元）、增强归档器（促销免费，原价 4.99 美元）",
+   "version": "Pro 7.0.4（Mac App Store 7.0.3；测试版 7.0.4.018）",
+   "updated": "2026-10-09",
+   "platforms": "macOS",
+   "notes": {
+    "no_account_no_tracking": "Pro 许可证绑定账户（2 台设备）；App Store 标注：与你关联的标识符",
+    "dark_light_setting": "配色方案有浅色和深色模式（测试版）；未说明有单独的 App 切换",
+    "languages_20": "约 14 种语言（含简中、繁中）",
+    "img_modern_formats": "通过 macOS 预览；只提到 HEIC",
+    "zoom_rotate": "快速查看缩放；旋转操作会改动文件",
+    "slideshow": "右键菜单“即时幻灯片”（macOS 快速查看全屏）",
+    "video_mkv_avi_webm": "MKV 等格式需借助 macOS 媒体扩展",
+    "music_mode": "只有音频封面缩略图和快速查看播放",
+    "archives_as_folders": "增强归档器扩展（原价 4.99 美元）：RAR、ZIP、7z 像文件夹一样打开",
+    "comics_cbz_cbr": "没有漫画阅读器；归档扩展名列表可自定义，因此 CBZ/CBR 可当归档浏览",
+    "videos_in_archives": "归档有“在 QSpace 中预览”选项；没有播放器",
+    "dual_pane": "最多 12 个窗格；用自定义快捷键拷贝或移动到某个窗格，默认没有 F5/F6",
+    "image_editing": "快速操作：旋转、转换图像、移除背景、创建 PDF",
+    "batch_convert": "可转换图像；高级批量重命名是付费扩展",
+    "library_catalog": "只有访达标签和备注",
+    "cloud_sync": "服务器连接扩展：FTP、SFTP、Dropbox、OneDrive、Google Drive、S3……",
+    "app_sandbox": "Mac App Store 版在沙盒中运行（需手动添加文件夹）；Pro 版使用完全磁盘访问权限"
+   }
+  },
+  "quicktime-player": {
+   "name": "QuickTime Player",
+   "vendor": "Apple",
+   "summary": "Apple 内置的媒体播放器。能打开 AVFoundation 可播放的格式（MP4、MOV、M4V、HEVC、ProRes），有画中画、速度控制和修剪、分割等简单编辑，还能录制屏幕和音频。",
+   "wins": [
+    "已经安装好，无需下载",
+    "录制屏幕、影片和音频",
+    "简单的视频编辑：修剪、分割、旋转、移除音频、导出",
+    "画中画和空间视频"
+   ],
+   "price": "免费（macOS 自带）",
+   "version": "10.5（macOS 27）",
+   "updated": "随 macOS 27 提供（2026 年）",
+   "platforms": "macOS",
+   "notes": {
+    "zoom_rotate": "仅限视频；旋转和翻转属于编辑",
+    "file_info_exif": "影片检查器：格式、压缩、尺寸、帧率、数据速率；没有 EXIF",
+    "video_skim_arrows": "左/右方向键逐帧；Option 加方向键跳到开头/结尾；不能按时间跳转",
+    "music_mode": "一次播放一个音频文件；没有资料库或队列",
+    "rename_trash": "可重命名所打开的影片；不能移到废纸篓或新建文件夹",
+    "undo_file_actions": "可撤销影片编辑（修剪、分割），不能撤销文件操作",
+    "cloud_sync": "可打开 iCloud 云盘中的文件；共享菜单",
+    "keyboard_first": "可用键盘控制播放；不能浏览文件",
+    "shortcut_cheatsheet": "Apple 帮助页面有快捷键列表",
+    "no_network": "可能联网（打开位置、共享）；没有自己的更新检查或遥测",
+    "notarized_attested": "Apple 签名的系统 App；闭源"
+   }
+  },
+  "quickviewer": {
+   "name": "QuickViewer",
+   "vendor": "KATO Kanryu",
+   "summary": "基于 OpenGL 的快速图片和漫画查看器，无需解压即可读取归档，支持双页跨页。有目录数据库，便于管理大量漫画收藏。开发者因病于 2025 年 11 月结束了这个项目；1.2.8 是修复 UnRAR 安全问题的版本。",
+   "wins": [
+    "可管理数千本漫画的目录数据库",
+    "借助 OpenGL 翻页非常快",
+    "归档支持广泛，包括 tar.gz/bz2/xz 和 cab",
+    "正确显示 CMYK JPEG"
+   ],
+   "price": "免费",
+   "version": "1.2.8",
+   "updated": "2025-12-12",
+   "platforms": "Windows、macOS（Intel，最高 1.1.1）、Linux（最高 1.1.1）"
+  },
+  "qview": {
+   "name": "qView",
+   "vendor": "jurplel (Interverse)",
+   "summary": "qView 是一款没有工具栏的极简跨平台看图软件：打开一个文件，就能在文件夹中翻看其余图片。它启动快，会预载相邻图片，通过 Qt 插件支持动态图像和多种格式。只想要一个干净的查看器的人，选它不错。",
+   "wins": [
+    "极其简洁，窗口没有多余界面",
+    "也能在 Windows、Linux 和旧版 macOS 上运行（10.13 及以上的旧版构建）",
+    "动态图像可逐帧步进和调速",
+    "可直接从网址打开图片"
+   ],
+   "price": "免费",
+   "version": "7.1",
+   "updated": "2025-07-26（正式版；每夜构建仍在继续，最近一次为 2026-11-04）",
+   "platforms": "macOS、Windows、Linux",
+   "notes": {
+    "dark_light_setting": "可设背景颜色和深色标题栏；没有完整的浅色/深色主题",
+    "folder_browsing": "打开一个文件后在其文件夹中翻页；没有文件夹浏览器",
+    "img_svg_pdf": "支持 SVG，不支持 PDF",
+    "file_info_exif": "信息对话框显示文件大小和尺寸；没有 EXIF",
+    "wrong_extension_note": "可选的 MIME 内容识别按内容打开文件，但不提示不符",
+    "rename_trash": "可重命名和移到废纸篓；不能新建文件夹",
+    "undo_file_actions": "只能撤销删除（从废纸篓恢复）"
+   }
+  },
+  "raw-power": {
+   "name": "RAW Power",
+   "vendor": "Gentlemen Coders",
+   "summary": "RAW Power 是一位前 Aperture 负责人开发的非破坏性 RAW 和 JPEG 编辑器，可独立用于访达文件夹，也可作为 Apple 照片图库管理器或照片编辑扩展使用。它提供 Aperture 风格的调整、通过 iCloud 照片同步的评分/旗标和批量导出。厂商现在建议 macOS 13 及以上的用户改用后继产品 Nitro Photo。",
+   "wins": [
+    "强大的非破坏性 RAW/JPEG 编辑（曲线、LUT、景深效果、Boost）",
+    "直接处理 Apple 照片图库，通过 iCloud 照片同步",
+    "批量预设和导出",
+    "有 iPhone/iPad 版",
+    "多个文件夹的标签页"
+   ],
+   "price": "Mac App Store 一次性 39.99 美元（厂商网站：Mac 49.99 美元，iOS 9.99 美元；分开购买）",
+   "version": "3.5.6",
+   "updated": "2026-07-27",
+   "platforms": "macOS、iOS、iPadOS",
+   "notes": {
+    "no_account_no_tracking": "无需账户，无广告；App 隐私列出使用数据（分析，不与你关联）",
+    "languages_20": "6 种：英、法、德、西、简体中文、繁体中文",
+    "thumbnail_grid": "带标记的缩略图网格；未说明文件夹预览图块",
+    "rename_trash": "可删除图像、创建相簿/文件夹；未说明能否重命名",
+    "move_copy": "整理照片相簿；未说明能否在磁盘上移动或拷贝文件",
+    "keyboard_first": "评分/旗标和导航有快捷键；编辑靠滑块/鼠标"
+   }
+  },
+  "sequential": {
+   "name": "Sequential",
+   "vendor": "chuchusoft 和 The Sequential Project",
+   "summary": "Sequential 是一款经典的开源 Mac 图片和漫画查看器，能打开文件夹、PDF 和归档（ZIP/CBZ、RAR/CBR、7z），在一个窗口中翻页。chuchusoft 分支把它更新为通用 App，支持 macOS 11.4 及以上和 Apple 芯片；维护者表示不太可能继续开发。原版 btrask/Sequential 最后一次更新是在 2013 年。",
+   "wins": [
+    "逐页阅读 PDF，有“前往页面”和反转颜色模式",
+    "从右到左的日漫阅读方向",
+    "暂停/继续可在归档中标记阅读位置",
+    "通过 XADMaster 支持多种归档格式，包括分卷 7z",
+    "能在旧版 macOS 上运行（Intel 10.14 / Apple 芯片 11.4）"
+   ],
+   "price": "免费",
+   "version": "2.6.0",
+   "updated": "2024-09-07",
+   "platforms": "macOS",
+   "notes": {
+    "languages_20": "12 种界面语言（含繁体中文，不含简体中文）",
+    "thumbnail_grid": "缩略图在边栏中，不是网格",
+    "recursive_search": "“查找”搜索所打开文件夹或归档中的页面名称",
+    "network_shares_fast": "可在已装载的服务器上使用；没有专门缓存",
+    "bookmarks": "暂停/继续可标记文稿中的位置；没有文件夹收藏",
+    "img_modern_formats": "声明支持 HEIC/HEIF 和 WebP（2.3.0）；文稿类型中没有 AVIF 和 JPEG XL",
+    "img_svg_pdf": "完整支持 PDF（页面、前往页面）；声明支持 SVG，渲染取决于 macOS",
+    "img_animated": "动态 GIF（打开动画，空格暂停）；未说明 APNG/动态 WebP",
+    "slideshow_recursive": "定时器遍历整个文稿树，包括子文件夹和归档，但仅限图像（没有视频）",
+    "file_info_exif": "检查器显示 EXIF/图像属性；没有视频",
+    "streaming_urls": "没有流媒体，但“文件 > 打开网址”可从互联网载入图片",
+    "split_archives": "2.4.0 起支持分卷 7-Zip（.7z.001）；未说明分卷 RAR/ZIP",
+    "manga_two_page": "有从右到左的阅读方向；没有双页跨页",
+    "rename_trash": "本地图像可移到废纸篓；不能重命名或新建文件夹",
+    "move_copy": "“将图像存储到…”可把图像拷贝/解压出来；编辑 > 拷贝；不能移动",
+    "shortcut_cheatsheet": "帮助 > 键盘快捷键打开列出按键的帮助页；没有可打印的速查表"
+   }
+  },
+  "simple-comic": {
+   "name": "Simple Comic",
+   "vendor": "Dancing Tortoise Software 及 Simple Comic 社区",
+   "summary": "Simple Comic 是一款精简的原生 macOS 漫画查看器，专注于用尽可能少的操作来阅读。它把 CBZ/CBR/CB7、PDF 和图片文件夹当作书打开，支持双页跨页、从右到左的日漫顺序，以及漫画页面上的实况文本。",
+   "wins": [
+    "双页跨页和从右到左的日漫模式",
+    "实况文本：选择、拷贝和朗读漫画页面中的文字",
+    "分卷 RAR 和嵌套归档作为一本漫画打开",
+    "阅读 PDF",
+    "访达中漫画归档的快速查看缩略图"
+   ],
+   "price": "免费（Mac App Store 和 GitHub）",
+   "version": "1.12.0（GitHub，已提交 App Store）；App Store 显示 1.11.0",
+   "updated": "2026-11-11",
+   "platforms": "macOS",
+   "notes": {
+    "languages_20": "9 种语言（含简中、繁中）",
+    "folder_browsing": "把文件夹或归档当作一本书打开，没有文件夹导航",
+    "thumbnail_grid": "缩略图总览只显示所打开书本的页面",
+    "network_shares_fast": "网络卷宗上的归档在后台缓存到本地；载入时页面陆续显示（1.11）",
+    "img_raw": "接受所有 NSImage/ImageIO 类型（macOS 上包括相机 RAW）；未宣传",
+    "img_psd_exr": "接受所有 NSImage/ImageIO 类型（包括 PSD、OpenEXR）；未宣传",
+    "img_svg_pdf": "支持 PDF（作为书打开）；SVG 仅在 NSImage 支持时",
+    "archives_as_folders": "把归档当作漫画书打开，而不是当作文件夹",
+    "keyboard_first": "翻页、缩放和菜单可用键盘；不能用键盘浏览文件",
+    "shortcut_cheatsheet": "帮助手册列出导航按键",
+    "no_network": "Mac App Store 版不发出网络请求；直接下载版为 Sparkle 更新而联网",
+    "notarized_attested": "直接下载版经过公证；没有公开的构建证明"
+   }
+  },
+  "smplayer": {
+   "name": "SMPlayer",
+   "vendor": "Ricardo Villalba",
+   "summary": "SMPlayer 是一款免费开源的 Qt 前端，用于 mpv 和 MPlayer，会为每个文件记住设置。它提供经典的播放器界面，有皮肤、YouTube 播放、opensubtitles.org 字幕下载、滤镜和可配置的快捷键编辑器。",
+   "wins": [
+    "每个文件都按自己的设置续播（音频、字幕、位置）",
+    "YouTube 播放和在线字幕下载",
+    "保存的播放列表、收藏、电视/电台列表",
+    "皮肤和图标主题，30 多种语言",
+    "也能在 Windows 和 Linux 上运行"
+   ],
+   "price": "免费",
+   "version": "26.8.29（macOS build 10461，2026-10-06）",
+   "updated": "2026-10-06",
+   "platforms": "Windows、Linux、macOS",
+   "notes": {
+    "dark_light_setting": "皮肤、图标主题和 Qt 样式，没有简单的浅色/深色切换",
+    "folder_browsing": "“打开目录”把文件夹加入播放列表（可选递归）；没有文件浏览器",
+    "list_view": "带栏位的播放列表表格（名称、时长……），不是文件夹视图",
+    "recursive_search": "只有播放列表中的筛选栏",
+    "multiple_windows": "默认只允许单个实例；可以关闭",
+    "bookmarks": "文件/网址收藏列表和视频内书签；没有文件夹书签",
+    "auto_enhance_view": "视频均衡器（Ctrl+E），没有自动增强",
+    "file_info_exif": "文件属性：编解码器、码率、轨道；没有 EXIF",
+    "music_mode": "可播放音频文件；紧凑模式（Ctrl+C）、电台列表",
+    "shortcut_cheatsheet": "偏好设置中的快捷键表可存为 .keys 文件；没有可打印的速查表"
+   }
+  },
+  "tencent-kantu": {
+   "name": "看图 Kantu",
+   "vendor": "腾讯",
+   "summary": "腾讯推出的免费 Mac 看图和整理软件：无需导入即可浏览“下载”等文件夹，可从手机和相机导入，按人脸、地点和日期分组，查找重复照片，制作精选相册。自 2019 年起没有更新。",
+   "wins": [
+    "人脸识别、地点地图、查找重复、精选相册",
+    "直接从手机、相机和 PTP 设备导入",
+    "评分和大文件筛选"
+   ],
+   "price": "免费",
+   "version": "2.5.2",
+   "updated": "2019-11-08",
+   "platforms": "macOS",
+   "notes": {
+    "no_account_no_tracking": "无需账户；可选的微信或 QQ 登录会把相册上传到腾讯云",
+    "dark_light_setting": "2.0 起支持深色模式（Mojave）；未说明能否独立于系统设置",
+    "thumbnail_grid": "照片式网格，边栏显示每个文件夹的图片数；没有文件夹预览图块",
+    "recursive_search": "2.5：可在其各个位置中按文件名、日期、地点、场景查找图片",
+    "bookmarks": "在边栏手动添加位置；图片收藏",
+    "img_modern_formats": "1.9.4 起支持 WebP；未提及 HEIC、AVIF、JPEG XL",
+    "img_psd_exr": "PSD 预览（1.9.3）；未提及 EXR",
+    "img_animated": "GIF 预览（1.9.3）；未提及 APNG/动态 WebP",
+    "zoom_rotate": "可用滚轮/触控板缩放；有评测称缩放后模糊；未说明能否旋转",
+    "slideshow_recursive": "精选相册可连续播放照片和视频（2.5）；不能遍历子文件夹",
+    "file_info_exif": "EXIF 查看（1.9）；没有视频编解码器信息",
+    "video_native": "可列出和筛选视频，但有用户评论说每个视频都会打开单独的播放器",
+    "rename_trash": "可重命名、删除，有“最近删除”；未说明能否新建文件夹",
+    "undo_file_actions": "删除的图片可从“最近删除”恢复（1.9.1）",
+    "image_editing": "不能编辑；右键菜单可进入标注（1.9）",
+    "cloud_sync": "2.3/2.5：微信/QQ 登录，可把精选相册上传到腾讯云，通过微信小程序分享",
+    "notarized_attested": "通过 Mac App Store 签名；源代码不公开"
+   }
+  },
+  "total-commander": {
+   "name": "Total Commander",
+   "vendor": "Ghisler Software",
+   "summary": "Windows 上最有名的经典双面板文件管理器，自 1993 年起持续开发。文件操作、归档、FTP、批量重命名和目录同步都很强，有 Lister 查看器以及图像和媒体插件。",
+   "wins": [
+    "成熟的双窗格文件管理：目录同步、比较、批量重命名、校验和",
+    "内置 FTP/FTPS 客户端",
+    "庞大的插件生态（Lister、打包、文件系统插件）",
+    "Lister 播放器可切换字幕/音轨和速度",
+    "可在 Windows 95 到 11 上运行，另有免费的 Android App"
+   ],
+   "price": "共享软件：每个许可证 42 欧元另加增值税（学生 31.50 欧元），免费更新；Android 版免费",
+   "version": "11.58.1",
+   "updated": "2026-10-29",
+   "platforms": "Windows、Android"
+  },
+  "vidhub": {
+   "name": "VidHub",
+   "vendor": "Oka Apps",
+   "summary": "Infuse 式的 Apple 设备视频库和播放器：扫描本地文件夹、NAS、云盘和 Emby/Jellyfin/Plex 服务器，根据 TMDB 生成海报墙，并通过 iCloud 同步进度。是 Mac App Store 上评分数最多的媒体播放器之一（美区 2.8K 个评分）。",
+   "wins": [
+    "带海报和元数据的电影/剧集媒体库",
+    "在 iPhone、iPad、Apple TV、Mac 间通过 iCloud 同步",
+    "云盘、NAS、Emby/Jellyfin/Plex",
+    "在线字幕搜索",
+    "通过 DLNA、Chromecast、Roku、AirPlay 投屏"
+   ],
+   "price": "免费，VIP：仅 Mac 终身 14.99 美元；全设备终身 25.99 到 39.99 美元；每年 9.99 美元；每月 1.49 美元",
+   "version": "3.0.3（Mac）",
+   "updated": "2026-11-04",
+   "platforms": "macOS、iOS、iPadOS、tvOS、visionOS、Android TV",
+   "notes": {
+    "free": "免费，VIP：仅 Mac 终身 14.99 美元，全设备终身 25.99 到 39.99 美元，每年 9.99、每月 1.49 美元",
+    "languages_20": "App Store 上为 18 种",
+    "folder_browsing": "添加本地、SMB/WebDAV 和云“文件源”，刮削后生成媒体库",
+    "thumbnail_grid": "基于 TMDB 元数据的海报墙，不是文件缩略图",
+    "recursive_search": "在媒体库中按文件名和影视标题全局搜索",
+    "network_shares_fast": "SMB/CIFS、WebDAV、NAS 和众多云盘；速度不详",
+    "bookmarks": "收藏（通过 iCloud 同步）",
+    "auto_enhance_view": "视频调色，仅限视频",
+    "streaming_urls": "云盘、Emby/Jellyfin/Plex 服务器、WebDAV；未说明能否打开任意网址",
+    "rename_trash": "可重命名云文件（添加/替换字符、正则）；未说明能否删除",
+    "batch_convert": "可批量重命名云文件；不能转换",
+    "notarized_attested": "App Store 签名；闭源"
+   }
+  },
+  "vlc": {
+   "name": "VLC",
+   "vendor": "VideoLAN",
+   "summary": "最有名的免费开源媒体播放器：无需安装编解码器包，在所有平台上几乎能播放任何文件、光盘或流媒体。它首先是播放器；图片按定时静帧显示，没有文件浏览器，也没有缩略图网格。",
+   "wins": [
+    "几乎能播放所有格式、光盘（DVD/蓝光）、网络流和采集设备",
+    "可在所有桌面和移动系统上运行",
+    "文件字幕和在线字幕（VLSub）、音轨、速度、滤镜、转换/向外串流",
+    "保存的播放列表、音乐、可视化效果",
+    "快捷键完全可重新映射"
+   ],
+   "price": "免费",
+   "version": "3.0.24",
+   "updated": "2026-09-22",
+   "platforms": "macOS、Windows、Linux、iOS、Android 等",
+   "notes": {
+    "dark_light_setting": "macOS：可选“以深色界面风格运行 VLC”；Windows/Linux Qt：深色调色板选项",
+    "folder_browsing": "把文件夹作为播放列表打开；没有真正的文件浏览器",
+    "list_view": "播放列表有可排序的栏位（标题、艺人……），不是文件列表",
+    "recursive_search": "“在播放列表中搜索”只筛选播放列表项目",
+    "network_shares_fast": "可直接从 SMB、NFS、SFTP、FTP、UPnP 播放；没有缩略图浏览，无从判断速度",
+    "multiple_windows": "Windows/Linux：关闭“单实例”后可开多个实例；macOS：只有一个播放窗口",
+    "img_modern_formats": "能打开 WebP（显示为静帧 10 秒）；图像解复用器不支持 HEIC、AVIF、JPEG XL",
+    "img_svg_pdf": "通过 svg 解码器（librsvg）支持 SVG；不支持 PDF",
+    "img_animated": "动态 GIF 交给 FFmpeg 解复用器；未确认 APNG/动态 WebP",
+    "zoom_rotate": "视频缩放、裁剪和旋转/变换滤镜；图片不能平移",
+    "slideshow": "播放列表中的图片每张显示 10 秒（“image-duration”）",
+    "slideshow_recursive": "打开的文件夹连同子文件夹展开，照片（每张 10 秒）和视频混在一个播放列表中",
+    "auto_enhance_view": "手动“调整和效果”（亮度、对比度、色调……），没有自动增强",
+    "file_info_exif": "媒体信息显示编解码器、码率、统计；没有 EXIF",
+    "video_skim_arrows": "跳转绑定在修饰键加方向键上（macOS ⌘⌃←/→ 3 秒，⌘⌥ 10 秒，⌘⇧ 1 分钟；Windows ⇧/Alt/Ctrl+←/→）",
+    "control_bar_movable": "全屏时控制器可拖动并停在原处；窗口模式下不行",
+    "archives_as_folders": "libarchive 把归档中的文件列入播放列表；不能当文件夹浏览",
+    "split_archives": "代码会把多个分卷交给 libarchive；未见说明",
+    "batch_convert": "“转换/保存”可转码多个媒体文件；不能批量重命名",
+    "library_catalog": "播放列表边栏中有简单的媒体库，没有标签/评分",
+    "keyboard_first": "播放完全可用快捷键，浏览以鼠标为主",
+    "boss_key": "有“老板键”操作（隐藏界面并暂停），但没有默认按键",
+    "no_network": "会检查更新；在线获取元数据默认关闭"
+   }
+  },
+  "windows-media-player": {
+   "name": "Windows Media Player",
+   "vendor": "Microsoft",
+   "summary": "Windows 内置的播放器：以音乐为主的媒体库应用，也能播放本地视频，支持字幕、音轨、播放速度、画面调整、迷你播放器和投屏。HEVC 和 AV1 需要付费或从应用商店获取的扩展；评测认为它比经典的“Windows Media Player 旧版”更慢更重，后者 Microsoft 仍作为可选功能保留。",
+   "wins": [
+    "Windows 预装，无需设置",
+    "带专辑封面、播放列表和 CD 抓轨的音乐库",
+    "迷你播放器，投屏到设备",
+    "跟随 Windows 的字幕和主题设置"
+   ],
+   "price": "Windows 自带；HEVC 视频扩展 0.99 美元，其他编解码器为应用商店扩展",
+   "version": "媒体播放器 11.2610.5.0（Insider，2026 年 11 月）；Windows Media Player 旧版 12",
+   "updated": "2026-11（Insider 发布说明）",
+   "platforms": "Windows"
+  },
+  "xee": {
+   "name": "Xee³",
+   "vendor": "MacPaw",
+   "summary": "经典轻巧的 Mac 看图软件，无需解压即可翻看文件夹和归档（ZIP、RAR、7z、CBZ/CBR），支持许多老旧和冷门格式。theunarchiver.com 上仍有它的页面，但没有下载或购买链接；最后版本 3.5.4（2021 年 12 月）只支持 Intel。",
+   "wins": [
+    "冷门老格式（PCX、IFF、MAG、PVR、XBM）",
+    "通过量化表识别 JPEG 的生成程序",
+    "查看 PSD 图层",
+    "无损 JPEG 裁剪"
+   ],
+   "price": "已停止销售（曾是带试用的付费许可证；App Store 已下架）",
+   "version": "3.5.4",
+   "updated": "2021-12-21",
+   "platforms": "macOS",
+   "notes": {
+    "open_source": "Xee 2.x 的源代码公开；Xee 3 闭源",
+    "bookmarks": "最近的移动/拷贝目标列表",
+    "img_modern_formats": "支持 WebP；不支持 HEIC/AVIF/JPEG XL（最后更新于 2021 年 12 月）",
+    "img_psd_exr": "PSD 含图层；未列出 OpenEXR",
+    "img_svg_pdf": "只能显示 PDF 中的位图；不支持 SVG",
+    "slideshow_recursive": "可选扫描子文件夹，幻灯片会遍历它们；仅限图像，没有视频",
+    "archive_passwords": "Xee 2.1 加入了带密码的归档；Xee 3 未再说明",
+    "split_archives": "能读 The Unarchiver 能读的格式；未提及分卷",
+    "image_editing": "裁剪（无损 JPEG，对齐 MCU）、导出",
+    "cloud_sync": "共享菜单（3.3）",
+    "keyboard_first": "可用键盘浏览；设计上大量依赖手势",
+    "app_sandbox": "App Store 版在沙盒中运行；直接下载版不在（作者推荐直接下载版）"
+   }
+  },
+  "xnview-mp": {
+   "name": "XnView MP",
+   "vendor": "XnSoft",
+   "summary": "XnView MP 是一款老牌的跨平台看图浏览和整理软件，能读取 500 多种格式。它集文件浏览器、查看器、带类别和评分的目录、批量转换器和基本编辑器于一身。在 Mac 上是 Qt 应用，个人使用免费。",
+   "wins": [
+    "500 多种图像格式，可导出约 70 种",
+    "批量转换和支持正则的批量重命名",
+    "带类别、评分和颜色标记的目录",
+    "元数据编辑（EXIF、IPTC、XMP）",
+    "图像编辑、最多 4 张图对比、查找重复",
+    "也能在 Windows 和 Linux 上运行"
+   ],
+   "price": "个人/教育/非营利用途免费；商业许可证 29 欧元（批量最低 3.90 欧元）",
+   "version": "1.12.3",
+   "updated": "2026-11-09",
+   "platforms": "macOS、Windows、Linux",
+   "notes": {
+    "free": "个人、教育和非营利用途免费；企业需购买许可证（单用户 29 欧元）",
+    "regex_search": "只有批量重命名支持正则；文件搜索用通配符/包含",
+    "network_shares_fast": "可用于网络共享，但更新日志提到那里较慢",
+    "multiple_windows": "标签页；可开多个实例",
+    "slideshow_recursive": "“显示子文件夹中的文件”可用于幻灯片，并会等视频播完",
+    "auto_enhance_view": "自动色阶和调整属于编辑（保存后文件会改变）",
+    "saved_playlists": "幻灯片可存为 .sld 文件（图像，含音频）",
+    "music_mode": "列有“多媒体播放器”；伴随音频文件；没有音乐库",
+    "dual_pane": "最多对比 4 张图；F6 在浏览器面板间切换；没有双文件夹的文件管理模式",
+    "cloud_sync": "有网页上传功能；没有云同步"
+   }
+  },
+  "yacreader": {
+   "name": "YACReader",
+   "vendor": "Luis Ángel San Martín",
+   "summary": "YACReader 是一款漫画阅读器，另配面向大型收藏的书库管理器（YACReaderLibrary），支持 Comic Vine 元数据、阅读列表，还有供其移动 App 使用的家庭服务器。阅读器提供双页、日漫和连续滚动模式，并可调整画面。",
+   "wins": [
+    "完整的漫画书库：Comic Vine 元数据、阅读列表、智能列表、评分",
+    "服务器和 iOS/Android App，同步阅读进度",
+    "日漫模式、双页、适合条漫的连续滚动",
+    "为老扫描件调整亮度/对比度/伽马",
+    "12 种主题和主题编辑器；快捷键可重新分配",
+    "有 Windows 和 Linux 版"
+   ],
+   "price": "桌面版和服务器免费（接受捐赠）；iOS/Android App 另行提供",
+   "version": "10.5.1",
+   "updated": "2026-11-13",
+   "platforms": "macOS、Windows、Linux、iOS、Android、Docker/服务器",
+   "notes": {
+    "languages_20": "14 种语言（含简中、繁中、港中），可在 App 中选择",
+    "folder_browsing": "阅读器可打开文件和文件夹；浏览需通过书库数据库",
+    "network_shares_fast": "10.5 改进了通过网络共享打开书库；书库需先建立索引",
+    "bookmarks": "页面书签、收藏、阅读列表、标签",
+    "img_modern_formats": "JPEG、PNG、GIF、TIFF、BMP、WebP；其他格式需自行安装 Qt 图像插件",
+    "img_svg_pdf": "支持 PDF（pdfium）；不支持 SVG",
+    "archives_as_folders": "把归档当作漫画书打开，而不是当作文件夹",
+    "rename_trash": "可在书库内重命名文件夹，根据元数据重命名文件；没有废纸篓",
+    "move_copy": "可根据元数据把文件整理到文件夹结构中（实验性）",
+    "undo_file_actions": "“整理文件”有日志记录，可撤销；没有通用的撤销",
+    "batch_convert": "只能根据元数据批量重命名；不能转换格式",
+    "cloud_sync": "自己的服务器和 iOS/Android App 在你的网络中同步进度；没有云服务",
+    "shortcut_cheatsheet": "快捷键对话框列出所有按键；没有可打印的速查表",
+    "notarized_attested": "macOS 版本经过公证；没有构建证明"
+   }
+  }
+ }
+}

@@ -1,0 +1,516 @@
+{
+ "name": "Leeyes",
+ "short": "Leeyes",
+ "vendor": "けんじ (Kenji)",
+ "website": "http://www3.tokai.or.jp/boxes/leeyes/",
+ "platforms": [
+  "Windows"
+ ],
+ "mac_available": "no",
+ "page": "switcher",
+ "section": "windows",
+ "price": "free for non-commercial use",
+ "license": "proprietary freeware",
+ "current_version": "2.6.1",
+ "last_update": "2011-10-26",
+ "engine": "Susie plug-ins (only BMP built in)",
+ "category": "comic",
+ "summary": "Three-pane Japanese viewer (folder tree, file list, image) built for reading scanned manga in two-page spreads, with a bookshelf for favourite folders. All formats except BMP come from Susie plug-ins. Last release 2011; the author's site is no longer reachable and only archived copies remain.",
+ "where_it_wins": [
+  "Bookshelf lists exportable and importable as text",
+  "Two-page spread tuned for scanned books"
+ ],
+ "where_schnellbild_wins": [
+  "Available and maintained, native on Mac",
+  "Formats, archives and video built in, no plug-ins",
+  "Unicode file names (Leeyes lacked them)",
+  "Recursive regex search, dual pane, undo"
+ ],
+ "search_terms": [
+  "leeyes mac",
+  "Leeyes Mac",
+  "Leeyes Mac版",
+  "Leeyes 代わり",
+  "Leeyes 後継",
+  "Mac 画像ビューア",
+  "Mac 漫画ビューア zip",
+  "Mac 見開き ビューア",
+  "Mac 自炊 ビューア",
+  "Mac zip 画像 そのまま 見る",
+  "Mac rar 漫画 見る",
+  "Susie プラグイン Mac"
+ ],
+ "matrix": {
+  "free": {
+   "value": "partial",
+   "note": "free for non-commercial use",
+   "evidence": [
+    "https://forest.watch.impress.co.jp/docs/news/20111027_486672.html"
+   ],
+   "how": "review"
+  },
+  "open_source": {
+   "value": "no",
+   "evidence": [
+    "https://forest.watch.impress.co.jp/docs/news/20111027_486672.html"
+   ],
+   "how": "review"
+  },
+  "native_apple_silicon": {
+   "value": "no",
+   "note": "Windows 2000 to 7",
+   "evidence": [
+    "https://web.archive.org/web/20260815090958/http://www3.tokai.or.jp/boxes/leeyes/"
+   ],
+   "how": "docs"
+  },
+  "no_account_no_tracking": {
+   "value": "yes",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched archived website, history and Madonomori review: no account or online features mentioned, nothing stated about tracking"
+  },
+  "dark_light_setting": {
+   "value": "partial",
+   "evidence": [
+    "https://web.archive.org/web/20260815091010/http://www3.tokai.or.jp/boxes/leeyes/history.html"
+   ],
+   "how": "changelog",
+   "note": "Colour settings for the file list and slideshow background; no light/dark theme"
+  },
+  "languages_20": {
+   "value": "no",
+   "note": "Japanese only; Unicode support was still planned",
+   "evidence": [
+    "https://web.archive.org/web/20260815090958/http://www3.tokai.or.jp/boxes/leeyes/"
+   ],
+   "how": "docs"
+  },
+  "folder_browsing": {
+   "value": "yes",
+   "note": "three panes: folder tree, file list, image",
+   "evidence": [
+    "https://forest.watch.impress.co.jp/docs/news/20111027_486672.html"
+   ],
+   "how": "review"
+  },
+  "thumbnail_grid": {
+   "value": "yes",
+   "note": "thumbnails, also of subfolders in one go",
+   "evidence": [
+    "https://web.archive.org/web/20260815091010/http://www3.tokai.or.jp/boxes/leeyes/history.html"
+   ],
+   "how": "changelog"
+  },
+  "list_view": {
+   "value": "partial",
+   "note": "file list pane",
+   "evidence": [
+    "https://forest.watch.impress.co.jp/docs/news/20111027_486672.html"
+   ],
+   "how": "review"
+  },
+  "recursive_search": {
+   "value": "partial",
+   "note": "has a search with results; scope not documented",
+   "evidence": [
+    "https://web.archive.org/web/20260815091010/http://www3.tokai.or.jp/boxes/leeyes/history.html"
+   ],
+   "how": "changelog"
+  },
+  "regex_search": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "History documents search with and/or/not operators and file masks; regular expressions not mentioned (help only in the download ZIP)"
+  },
+  "network_shares_fast": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "History has bug fixes for network places and a search cache; nothing on speed"
+  },
+  "multiple_windows": {
+   "value": "partial",
+   "evidence": [
+    "https://web.archive.org/web/20260815091010/http://www3.tokai.or.jp/boxes/leeyes/history.html"
+   ],
+   "how": "changelog",
+   "note": "The image view can be detached into its own window next to the filer"
+  },
+  "bookmarks": {
+   "value": "yes",
+   "note": "\"本棚\" (bookshelf) and \"しおり\" (bookmarks)",
+   "evidence": [
+    "https://forest.watch.impress.co.jp/docs/news/20111027_486672.html",
+    "https://web.archive.org/web/20260815091010/http://www3.tokai.or.jp/boxes/leeyes/history.html"
+   ],
+   "how": "review"
+  },
+  "img_modern_formats": {
+   "value": "partial",
+   "note": "BMP only built in; everything else via Susie plug-ins",
+   "evidence": [
+    "https://web.archive.org/web/20260815090958/http://www3.tokai.or.jp/boxes/leeyes/"
+   ],
+   "how": "docs"
+  },
+  "img_raw": {
+   "value": "partial",
+   "note": "via Susie plug-ins",
+   "evidence": [
+    "https://web.archive.org/web/20260815090958/http://www3.tokai.or.jp/boxes/leeyes/"
+   ],
+   "how": "docs"
+  },
+  "img_psd_exr": {
+   "value": "partial",
+   "note": "via Susie plug-ins",
+   "evidence": [
+    "https://web.archive.org/web/20260815090958/http://www3.tokai.or.jp/boxes/leeyes/"
+   ],
+   "how": "docs"
+  },
+  "img_svg_pdf": {
+   "value": "partial",
+   "note": "via Susie plug-ins",
+   "evidence": [
+    "https://web.archive.org/web/20260815090958/http://www3.tokai.or.jp/boxes/leeyes/"
+   ],
+   "how": "docs"
+  },
+  "img_animated": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "History mentions an animated GIF Susie plug-in only in an extension bug fix; animation playback not documented"
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "evidence": [
+    "https://web.archive.org/web/20260815091010/http://www3.tokai.or.jp/boxes/leeyes/history.html"
+   ],
+   "how": "changelog"
+  },
+  "zoom_rotate": {
+   "value": "yes",
+   "evidence": [
+    "https://web.archive.org/web/20260815091010/http://www3.tokai.or.jp/boxes/leeyes/history.html"
+   ],
+   "how": "changelog"
+  },
+  "slideshow": {
+   "value": "yes",
+   "evidence": [
+    "https://web.archive.org/web/20260815091010/http://www3.tokai.or.jp/boxes/leeyes/history.html"
+   ],
+   "how": "changelog"
+  },
+  "slideshow_recursive": {
+   "value": "partial",
+   "note": "option to include images from archive subfolders; no video",
+   "evidence": [
+    "https://web.archive.org/web/20260815091010/http://www3.tokai.or.jp/boxes/leeyes/history.html"
+   ],
+   "how": "changelog"
+  },
+  "auto_enhance_view": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Not mentioned in archived website, history or review"
+  },
+  "file_info_exif": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "History mentions file info in tooltips and thumbnails; EXIF not mentioned"
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Not mentioned in archived website, history or review"
+  },
+  "video_native": {
+   "value": "no",
+   "note": "image viewer",
+   "evidence": [
+    "https://web.archive.org/web/20260815090958/http://www3.tokai.or.jp/boxes/leeyes/"
+   ],
+   "how": "docs"
+  },
+  "video_mkv_avi_webm": {
+   "value": "no",
+   "evidence": [
+    "https://web.archive.org/web/20260815090958/http://www3.tokai.or.jp/boxes/leeyes/"
+   ],
+   "how": "docs"
+  },
+  "photos_videos_one_grid": {
+   "value": "no",
+   "evidence": [
+    "https://web.archive.org/web/20260815090958/http://www3.tokai.or.jp/boxes/leeyes/"
+   ],
+   "how": "docs"
+  },
+  "video_skim_arrows": {
+   "value": "no",
+   "evidence": [
+    "https://web.archive.org/web/20260815090958/http://www3.tokai.or.jp/boxes/leeyes/"
+   ],
+   "how": "docs"
+  },
+  "subtitles_embedded": {
+   "value": "no",
+   "evidence": [
+    "https://web.archive.org/web/20260815090958/http://www3.tokai.or.jp/boxes/leeyes/"
+   ],
+   "how": "docs"
+  },
+  "subtitles_external_files": {
+   "value": "no",
+   "evidence": [
+    "https://web.archive.org/web/20260815090958/http://www3.tokai.or.jp/boxes/leeyes/"
+   ],
+   "how": "docs"
+  },
+  "audio_track_choice": {
+   "value": "no",
+   "evidence": [
+    "https://web.archive.org/web/20260815090958/http://www3.tokai.or.jp/boxes/leeyes/"
+   ],
+   "how": "docs"
+  },
+  "playback_speed": {
+   "value": "no",
+   "evidence": [
+    "https://web.archive.org/web/20260815090958/http://www3.tokai.or.jp/boxes/leeyes/"
+   ],
+   "how": "docs"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "evidence": [
+    "https://web.archive.org/web/20260815090958/http://www3.tokai.or.jp/boxes/leeyes/"
+   ],
+   "how": "docs"
+  },
+  "playlist": {
+   "value": "no",
+   "evidence": [
+    "https://web.archive.org/web/20260815090958/http://www3.tokai.or.jp/boxes/leeyes/"
+   ],
+   "how": "docs"
+  },
+  "saved_playlists": {
+   "value": "no",
+   "evidence": [
+    "https://web.archive.org/web/20260815090958/http://www3.tokai.or.jp/boxes/leeyes/"
+   ],
+   "how": "docs"
+  },
+  "pip": {
+   "value": "no",
+   "evidence": [
+    "https://web.archive.org/web/20260815090958/http://www3.tokai.or.jp/boxes/leeyes/"
+   ],
+   "how": "docs"
+  },
+  "music_mode": {
+   "value": "no",
+   "evidence": [
+    "https://web.archive.org/web/20260815090958/http://www3.tokai.or.jp/boxes/leeyes/"
+   ],
+   "how": "docs"
+  },
+  "streaming_urls": {
+   "value": "no",
+   "evidence": [
+    "https://web.archive.org/web/20260815090958/http://www3.tokai.or.jp/boxes/leeyes/"
+   ],
+   "how": "docs"
+  },
+  "online_subtitles": {
+   "value": "no",
+   "evidence": [
+    "https://web.archive.org/web/20260815090958/http://www3.tokai.or.jp/boxes/leeyes/"
+   ],
+   "how": "docs"
+  },
+  "video_filters_enhance": {
+   "value": "no",
+   "evidence": [
+    "https://web.archive.org/web/20260815090958/http://www3.tokai.or.jp/boxes/leeyes/"
+   ],
+   "how": "docs"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "note": "Windows only",
+   "evidence": [
+    "https://web.archive.org/web/20260815090958/http://www3.tokai.or.jp/boxes/leeyes/"
+   ],
+   "how": "docs"
+  },
+  "archives_as_folders": {
+   "value": "partial",
+   "note": "via Susie archive plug-ins, shown in the tree",
+   "evidence": [
+    "https://forest.watch.impress.co.jp/docs/news/20111027_486672.html",
+    "https://web.archive.org/web/20260815091010/http://www3.tokai.or.jp/boxes/leeyes/history.html"
+   ],
+   "how": "review"
+  },
+  "comics_cbz_cbr": {
+   "value": "partial",
+   "note": "via Susie plug-ins",
+   "evidence": [
+    "https://forest.watch.impress.co.jp/docs/news/20111027_486672.html"
+   ],
+   "how": "review"
+  },
+  "archive_passwords": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "History (2.5.9) stops preloading on read errors as a countermeasure for password-protected archives; whether a Susie plug-in can prompt is not documented"
+  },
+  "split_archives": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Not mentioned in archived website, history or review; archives depend on Susie plug-ins"
+  },
+  "videos_in_archives": {
+   "value": "no",
+   "evidence": [
+    "https://web.archive.org/web/20260815090958/http://www3.tokai.or.jp/boxes/leeyes/"
+   ],
+   "how": "docs"
+  },
+  "manga_two_page": {
+   "value": "yes",
+   "note": "two-page spread is its main feature",
+   "evidence": [
+    "https://forest.watch.impress.co.jp/docs/news/20111027_486672.html"
+   ],
+   "how": "review"
+  },
+  "rename_trash": {
+   "value": "yes",
+   "note": "rename in filer and image view; delete",
+   "evidence": [
+    "https://web.archive.org/web/20260815091010/http://www3.tokai.or.jp/boxes/leeyes/history.html"
+   ],
+   "how": "changelog"
+  },
+  "move_copy": {
+   "value": "partial",
+   "note": "copy image to clipboard, copy paths; moving files not documented",
+   "evidence": [
+    "https://web.archive.org/web/20260815091010/http://www3.tokai.or.jp/boxes/leeyes/history.html"
+   ],
+   "how": "changelog"
+  },
+  "dual_pane": {
+   "value": "no",
+   "evidence": [
+    "https://forest.watch.impress.co.jp/docs/news/20111027_486672.html"
+   ],
+   "how": "review"
+  },
+  "undo_file_actions": {
+   "value": "partial",
+   "evidence": [
+    "https://web.archive.org/web/20260815091010/http://www3.tokai.or.jp/boxes/leeyes/history.html"
+   ],
+   "how": "changelog",
+   "note": "History 2.5 adds an undo function, fixed in 2.5.2 next to delete/move fixes; what exactly it undoes is not stated"
+  },
+  "image_editing": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Not mentioned in archived website, history or review"
+  },
+  "batch_convert": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Not mentioned in archived website, history or review"
+  },
+  "library_catalog": {
+   "value": "partial",
+   "note": "bookshelf lists, exportable as text",
+   "evidence": [
+    "https://forest.watch.impress.co.jp/docs/news/20111027_486672.html"
+   ],
+   "how": "review"
+  },
+  "cloud_sync": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Not mentioned in archived website, history or review"
+  },
+  "keyboard_first": {
+   "value": "yes",
+   "evidence": [
+    "https://web.archive.org/web/20260815091010/http://www3.tokai.or.jp/boxes/leeyes/history.html"
+   ],
+   "how": "changelog"
+  },
+  "custom_shortcuts": {
+   "value": "yes",
+   "note": "key and mouse customisation",
+   "evidence": [
+    "https://web.archive.org/web/20260815091010/http://www3.tokai.or.jp/boxes/leeyes/history.html"
+   ],
+   "how": "changelog"
+  },
+  "shortcut_cheatsheet": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "History documents key and mouse customisation; a printable list is not mentioned"
+  },
+  "boss_key": {
+   "value": "partial",
+   "note": "minimise to tray exists; no single hide key documented",
+   "evidence": [
+    "https://web.archive.org/web/20260815091010/http://www3.tokai.or.jp/boxes/leeyes/history.html"
+   ],
+   "how": "changelog"
+  },
+  "app_sandbox": {
+   "value": "no",
+   "note": "Windows only",
+   "evidence": [
+    "https://web.archive.org/web/20260815090958/http://www3.tokai.or.jp/boxes/leeyes/"
+   ],
+   "how": "docs"
+  },
+  "no_network": {
+   "value": "yes",
+   "evidence": [],
+   "how": "unverified",
+   "note": "No update check or online feature in history or review; not stated"
+  },
+  "notarized_attested": {
+   "value": "no",
+   "note": "Windows only",
+   "evidence": [
+    "https://web.archive.org/web/20260815090958/http://www3.tokai.or.jp/boxes/leeyes/"
+   ],
+   "how": "docs"
+  },
+  "mac_app_store": {
+   "value": "no",
+   "evidence": [
+    "https://web.archive.org/web/20260815090958/http://www3.tokai.or.jp/boxes/leeyes/"
+   ],
+   "how": "docs"
+  }
+ }
+}

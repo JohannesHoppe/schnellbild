@@ -1,0 +1,568 @@
+{
+ "name": "MPC-BE (Media Player Classic - Black Edition)",
+ "short": "MPC-BE",
+ "vendor": "Aleksoid1978 and contributors (community)",
+ "website": "https://github.com/Aleksoid1978/MPC-BE",
+ "platforms": [
+  "Windows"
+ ],
+ "mac_available": "no",
+ "page": "switcher",
+ "section": "windows",
+ "price": "free",
+ "license": "open source, GPL 3.0",
+ "current_version": "1.9.3",
+ "last_update": "2026-11-05",
+ "engine": "DirectShow with own filters (FFmpeg-based MPCVideoDec)",
+ "category": "video",
+ "summary": "A Windows video player forked from Media Player Classic, with its own decoders, a dark theme and frequent releases. Good for local video files and YouTube via yt-dlp.",
+ "where_it_wins": [
+  "light Windows player with frequent updates",
+  "dark theme, many renderer and decoder options",
+  "subtitle download, yt-dlp streaming",
+  "boss key, configurable keys"
+ ],
+ "where_schnellbild_wins": [
+  "runs on the Mac",
+  "photos and videos in one thumbnail grid",
+  "folders, recursive search, slideshows",
+  "archives and comics as folders, videos inside archives",
+  "file sorting with two panes and undo"
+ ],
+ "search_terms": [
+  "mpc-be mac",
+  "media player classic mac",
+  "mpc-be alternative mac",
+  "mpc-be für mac"
+ ],
+ "matrix": {
+  "free": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://sourceforge.net/projects/mpcbe/"
+   ],
+   "how": "docs"
+  },
+  "open_source": {
+   "value": "yes",
+   "note": "GPL 3.0",
+   "evidence": [
+    "https://github.com/Aleksoid1978/MPC-BE"
+   ],
+   "how": "source"
+  },
+  "native_apple_silicon": {
+   "value": "no",
+   "note": "Windows only",
+   "evidence": [
+    "https://sourceforge.net/projects/mpcbe/"
+   ],
+   "how": "docs"
+  },
+  "no_account_no_tracking": {
+   "value": "yes",
+   "how": "source",
+   "evidence": [
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/src/apps/mplayerc/AppSettings.cpp"
+   ],
+   "note": "No account or ads; automatic update check is off by default"
+  },
+  "dark_light_setting": {
+   "value": "yes",
+   "note": "dark theme on by default, follows or overrides system theme",
+   "evidence": [
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/src/apps/mplayerc/AppSettings.cpp",
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/docs/Changelog.txt"
+   ],
+   "how": "source"
+  },
+  "languages_20": {
+   "value": "yes",
+   "note": "31 (30 translations + English)",
+   "evidence": [
+    "https://github.com/Aleksoid1978/MPC-BE/tree/1.9.3/src/apps/mpcresources"
+   ],
+   "how": "source"
+  },
+  "folder_browsing": {
+   "value": "partial",
+   "note": "'Open Directory' loads a folder into the playlist",
+   "evidence": [
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/src/apps/mplayerc/AppSettings.cpp"
+   ],
+   "how": "source"
+  },
+  "thumbnail_grid": {
+   "value": "no",
+   "note": "no such command in the command list (resource.h)",
+   "evidence": [
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/src/apps/mplayerc/resource.h"
+   ],
+   "how": "source"
+  },
+  "list_view": {
+   "value": "partial",
+   "how": "source",
+   "evidence": [
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/src/apps/mplayerc/PlayerPlaylistBar.cpp"
+   ],
+   "note": "Playlist list with Name and Time columns only"
+  },
+  "recursive_search": {
+   "value": "partial",
+   "note": "filter field in the playlist only",
+   "evidence": [
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/docs/Changelog.txt"
+   ],
+   "how": "docs"
+  },
+  "regex_search": {
+   "value": "no",
+   "how": "source",
+   "evidence": [
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/src/apps/mplayerc/PlayerPlaylistBar.cpp"
+   ],
+   "note": "No search in the playlist code"
+  },
+  "network_shares_fast": {
+   "value": "partial",
+   "how": "unverified",
+   "evidence": [
+    "https://github.com/Aleksoid1978/MPC-BE/tree/1.9.3"
+   ],
+   "note": "Plays files from SMB paths like any Windows path; no browser, speed not documented"
+  },
+  "multiple_windows": {
+   "value": "partial",
+   "note": "multiple-instance setting (0–2)",
+   "evidence": [
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/src/apps/mplayerc/AppSettings.cpp"
+   ],
+   "how": "source"
+  },
+  "bookmarks": {
+   "value": "partial",
+   "note": "Favorites/bookmarks for files and positions",
+   "evidence": [
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/docs/Changelog.txt"
+   ],
+   "how": "docs"
+  },
+  "img_modern_formats": {
+   "value": "partial",
+   "note": "optional 'MPC Image Source' filter in the installer opens images; supported formats not documented",
+   "evidence": [
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/distrib/mpc-be_setup.iss",
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/docs/Changelog.txt"
+   ],
+   "how": "source"
+  },
+  "img_raw": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/distrib/mpc-be_setup.iss",
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/docs/Changelog.txt"
+   ],
+   "note": "Optional 'MPC Image Source' filter (installer component, WIC-based) opens images; its formats are not documented"
+  },
+  "img_psd_exr": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/distrib/mpc-be_setup.iss",
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/docs/Changelog.txt"
+   ],
+   "note": "Optional 'MPC Image Source' filter (installer component, WIC-based) opens images; its formats are not documented"
+  },
+  "img_svg_pdf": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/distrib/mpc-be_setup.iss",
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/docs/Changelog.txt"
+   ],
+   "note": "Optional 'MPC Image Source' filter (installer component, WIC-based) opens images; its formats are not documented"
+  },
+  "img_animated": {
+   "value": "partial",
+   "how": "unverified",
+   "evidence": [
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/distrib/mpc-be_setup.iss"
+   ],
+   "note": "Optional 'MPC Image Source' filter (installer component, WIC-based) opens images; its formats are not documented"
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "note": "PgDn/PgUp next/previous",
+   "evidence": [
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/src/apps/mplayerc/AppSettings.cpp"
+   ],
+   "how": "source"
+  },
+  "zoom_rotate": {
+   "value": "partial",
+   "note": "video zoom, pan&scan and rotate commands; no images",
+   "evidence": [
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/src/apps/mplayerc/resource.h"
+   ],
+   "how": "source"
+  },
+  "slideshow": {
+   "value": "no",
+   "note": "no such command in the command list (resource.h)",
+   "evidence": [
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/src/apps/mplayerc/resource.h"
+   ],
+   "how": "source"
+  },
+  "slideshow_recursive": {
+   "value": "no",
+   "note": "no such command in the command list (resource.h)",
+   "evidence": [
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/src/apps/mplayerc/resource.h"
+   ],
+   "how": "source"
+  },
+  "auto_enhance_view": {
+   "value": "partial",
+   "note": "colour controls and pixel shaders for video; no auto enhance",
+   "evidence": [
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/src/apps/mplayerc/resource.h"
+   ],
+   "how": "source"
+  },
+  "file_info_exif": {
+   "value": "partial",
+   "note": "MediaInfo tab in Properties: codecs, bitrate; no EXIF",
+   "evidence": [
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/docs/Changelog.txt",
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/src/apps/mplayerc/resource.h"
+   ],
+   "how": "source"
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://github.com/Aleksoid1978/MPC-BE/tree/1.9.3"
+   ],
+   "note": "Not documented"
+  },
+  "video_native": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/src/apps/mplayerc/MediaFormats.cpp"
+   ],
+   "how": "source"
+  },
+  "video_mkv_avi_webm": {
+   "value": "yes",
+   "note": "internal filters",
+   "evidence": [
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/src/apps/mplayerc/MediaFormats.cpp"
+   ],
+   "how": "source"
+  },
+  "photos_videos_one_grid": {
+   "value": "no",
+   "note": "no such command in the command list (resource.h)",
+   "evidence": [
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/src/apps/mplayerc/resource.h"
+   ],
+   "how": "source"
+  },
+  "video_skim_arrows": {
+   "value": "yes",
+   "note": "←/→ medium jump (configurable)",
+   "evidence": [
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/src/apps/mplayerc/AppSettings.cpp"
+   ],
+   "how": "source"
+  },
+  "subtitles_embedded": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/docs/Changelog.txt"
+   ],
+   "how": "docs"
+  },
+  "subtitles_external_files": {
+   "value": "yes",
+   "note": "loads matching subtitle files next to the video (subtitle search paths)",
+   "evidence": [
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/docs/Changelog.txt",
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/src/apps/mplayerc/AppSettings.cpp"
+   ],
+   "how": "source"
+  },
+  "audio_track_choice": {
+   "value": "yes",
+   "note": "preferred audio language",
+   "evidence": [
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/docs/Changelog.txt",
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/src/apps/mplayerc/resource.h"
+   ],
+   "how": "source"
+  },
+  "playback_speed": {
+   "value": "yes",
+   "note": "Ctrl+↑/↓",
+   "evidence": [
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/src/apps/mplayerc/AppSettings.cpp"
+   ],
+   "how": "source"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "how": "source",
+   "evidence": [
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/src/apps/mplayerc/MainFrm.cpp"
+   ],
+   "note": "Only side panels (playlist, subresync, capture, navigation, shader editor) are dockable; controls are fixed"
+  },
+  "playlist": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/docs/Changelog.txt"
+   ],
+   "how": "docs"
+  },
+  "saved_playlists": {
+   "value": "yes",
+   "note": "Playlist Save / Save As",
+   "evidence": [
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/src/apps/mplayerc/resource.h"
+   ],
+   "how": "source"
+  },
+  "pip": {
+   "value": "no",
+   "note": "no such command in the command list (resource.h)",
+   "evidence": [
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/src/apps/mplayerc/resource.h"
+   ],
+   "how": "source"
+  },
+  "music_mode": {
+   "value": "yes",
+   "note": "audio files incl. embedded cover images",
+   "evidence": [
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/docs/Changelog.txt"
+   ],
+   "how": "docs"
+  },
+  "streaming_urls": {
+   "value": "yes",
+   "note": "URLs, YouTube via yt-dlp",
+   "evidence": [
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/docs/Changelog.txt"
+   ],
+   "how": "docs"
+  },
+  "online_subtitles": {
+   "value": "yes",
+   "note": "subtitle download dialog",
+   "evidence": [
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/docs/Changelog.txt"
+   ],
+   "how": "docs"
+  },
+  "video_filters_enhance": {
+   "value": "yes",
+   "note": "brightness/contrast/hue/saturation, pixel shaders",
+   "evidence": [
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/src/apps/mplayerc/resource.h"
+   ],
+   "how": "source"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "how": "source",
+   "evidence": [
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/src/apps/MPCBEShellExt/MPCBEShellExt.cpp"
+   ],
+   "note": "Shell extension adds context-menu entries only, no thumbnail handler"
+  },
+  "archives_as_folders": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/src/apps/mplayerc/MediaFormats.cpp"
+   ],
+   "how": "source"
+  },
+  "comics_cbz_cbr": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/src/apps/mplayerc/MediaFormats.cpp"
+   ],
+   "how": "source"
+  },
+  "archive_passwords": {
+   "value": "no",
+   "how": "source",
+   "evidence": [
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/src/apps/mplayerc/MediaFormats.cpp"
+   ],
+   "note": "No archive formats"
+  },
+  "split_archives": {
+   "value": "no",
+   "how": "source",
+   "evidence": [
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/src/apps/mplayerc/MediaFormats.cpp"
+   ],
+   "note": "No archive formats"
+  },
+  "videos_in_archives": {
+   "value": "no",
+   "note": "no archive formats in the media format list",
+   "evidence": [
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/src/apps/mplayerc/MediaFormats.cpp"
+   ],
+   "how": "source"
+  },
+  "manga_two_page": {
+   "value": "no",
+   "how": "source",
+   "evidence": [
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/src/apps/mplayerc/MediaFormats.cpp"
+   ],
+   "note": "No comic formats"
+  },
+  "rename_trash": {
+   "value": "partial",
+   "note": "'Delete to Recycle bin' command and playlist rename; no new folder",
+   "evidence": [
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/docs/Changelog.txt"
+   ],
+   "how": "docs"
+  },
+  "move_copy": {
+   "value": "no",
+   "note": "no such command in the command list (resource.h)",
+   "evidence": [
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/src/apps/mplayerc/resource.h"
+   ],
+   "how": "source"
+  },
+  "dual_pane": {
+   "value": "no",
+   "note": "no such command in the command list (resource.h)",
+   "evidence": [
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/src/apps/mplayerc/resource.h"
+   ],
+   "how": "source"
+  },
+  "undo_file_actions": {
+   "value": "no",
+   "note": "no such command in the command list (resource.h)",
+   "evidence": [
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/src/apps/mplayerc/resource.h"
+   ],
+   "how": "source"
+  },
+  "image_editing": {
+   "value": "no",
+   "note": "no such command in the command list (resource.h)",
+   "evidence": [
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/src/apps/mplayerc/resource.h"
+   ],
+   "how": "source"
+  },
+  "batch_convert": {
+   "value": "no",
+   "note": "no such command in the command list (resource.h)",
+   "evidence": [
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/src/apps/mplayerc/resource.h"
+   ],
+   "how": "source"
+  },
+  "library_catalog": {
+   "value": "no",
+   "note": "no such command in the command list (resource.h)",
+   "evidence": [
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/src/apps/mplayerc/resource.h"
+   ],
+   "how": "source"
+  },
+  "cloud_sync": {
+   "value": "no",
+   "how": "source",
+   "evidence": [
+    "https://github.com/Aleksoid1978/MPC-BE/tree/1.9.3"
+   ],
+   "note": "No cloud or sync code in the source tree"
+  },
+  "keyboard_first": {
+   "value": "yes",
+   "note": "every command has a configurable key",
+   "evidence": [
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/src/apps/mplayerc/AppSettings.cpp"
+   ],
+   "how": "source"
+  },
+  "custom_shortcuts": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/src/apps/mplayerc/AppSettings.cpp"
+   ],
+   "how": "source"
+  },
+  "shortcut_cheatsheet": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://github.com/Aleksoid1978/MPC-BE/tree/1.9.3"
+   ],
+   "note": "Key table in Options; export not checked"
+  },
+  "boss_key": {
+   "value": "yes",
+   "note": "'B'",
+   "evidence": [
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/src/apps/mplayerc/AppSettings.cpp"
+   ],
+   "how": "source"
+  },
+  "app_sandbox": {
+   "value": "na",
+   "note": "Windows only",
+   "evidence": [
+    "https://sourceforge.net/projects/mpcbe/"
+   ],
+   "how": "docs"
+  },
+  "no_network": {
+   "value": "yes",
+   "note": "automatic update check off by default; online only when you open URLs or search subtitles",
+   "evidence": [
+    "https://github.com/Aleksoid1978/MPC-BE/blob/1.9.3/src/apps/mplayerc/AppSettings.cpp"
+   ],
+   "how": "source"
+  },
+  "notarized_attested": {
+   "value": "na",
+   "note": "Windows only",
+   "evidence": [
+    "https://sourceforge.net/projects/mpcbe/"
+   ],
+   "how": "docs"
+  },
+  "mac_app_store": {
+   "value": "no",
+   "note": "Windows only",
+   "evidence": [
+    "https://sourceforge.net/projects/mpcbe/"
+   ],
+   "how": "docs"
+  }
+ }
+}

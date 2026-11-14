@@ -1,0 +1,568 @@
+{
+ "name": "Imagine",
+ "short": "Imagine",
+ "vendor": "Sejin Chun (nyam.pe.kr)",
+ "website": "http://www.nyam.pe.kr/dev/imagine/",
+ "platforms": [
+  "Windows"
+ ],
+ "mac_available": "no",
+ "page": "switcher",
+ "section": "windows",
+ "price": "Free (donationware; $20+ donation for a personal license code)",
+ "license": "Proprietary freeware",
+ "current_version": "2.8.1",
+ "last_update": "2026-11-14",
+ "engine": "n/a (image viewer, no video)",
+ "category": "image",
+ "summary": "Tiny, very fast Korean-made freeware image and animation viewer for Windows with a thumbnail browser, a huge format list (incl. JXL, AVIF, HEIF, CLIP, KRA, many RAW), archive browsing, batch conversion/rename, basic paint and an animation editor. Also works as Total Commander plugins.",
+ "where_it_wins": [
+  "Enormous format list incl. KRA, ORA, CLIP, DICOM, HDR formats",
+  "Editing, animation creation and batch rename built in",
+  "Total Commander Lister/Packer/Content plugins",
+  "Runs on anything from Windows 95 to Windows 11 ARM64"
+ ],
+ "where_schnellbild_wins": [
+  "Runs natively on the Mac (Apple silicon), Honeyview/BandiView-style viewing without Windows or Wine",
+  "Plays videos (MP4, MOV, MKV, WebM, AVI …) in the same grid and slideshow",
+  "Recursive name search with regular expressions",
+  "Mac-native keyboard-first design, dual pane, undo for file actions",
+  "App Sandbox, never goes online"
+ ],
+ "search_terms": [
+  "imagine viewer mac",
+  "imagine image viewer alternative",
+  "이매진 뷰어 맥",
+  "이매진 맥",
+  "맥 이미지 뷰어"
+ ],
+ "matrix": {
+  "free": {
+   "value": "yes",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/"
+   ],
+   "how": "docs",
+   "note": "Freeware/donationware, no restrictions; a $20+ donation gets a personal license code"
+  },
+  "open_source": {
+   "value": "no",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/"
+   ],
+   "how": "docs",
+   "note": "Proprietary"
+  },
+  "native_apple_silicon": {
+   "value": "no",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/"
+   ],
+   "how": "docs",
+   "note": "Windows only (native Windows ARM64 build exists)"
+  },
+  "no_account_no_tracking": {
+   "value": "yes",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/"
+   ],
+   "how": "docs",
+   "note": "Freeware with no restrictions; no ads mentioned"
+  },
+  "dark_light_setting": {
+   "value": "partial",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/whatsnew",
+    "http://www.nyam.pe.kr/dev/imagine/"
+   ],
+   "how": "changelog",
+   "note": "Dark mode via plugin"
+  },
+  "languages_20": {
+   "value": "partial",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/",
+    "http://www.nyam.pe.kr/dev/imagine/whatsnew"
+   ],
+   "how": "docs",
+   "note": "Multilingual with community translations; count not listed"
+  },
+  "folder_browsing": {
+   "value": "yes",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/",
+    "http://www.nyam.pe.kr/dev/imagine/whatsnew"
+   ],
+   "how": "docs",
+   "note": "Browser window with directory tree"
+  },
+  "thumbnail_grid": {
+   "value": "yes",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/"
+   ],
+   "how": "docs",
+   "note": "Thumbnail browser; folder previews not documented"
+  },
+  "list_view": {
+   "value": "yes",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/whatsnew"
+   ],
+   "how": "changelog",
+   "note": "Browser has configurable columns (incl. IPTC)"
+  },
+  "recursive_search": {
+   "value": "no",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/"
+   ],
+   "how": "docs",
+   "note": "No file name search inside the viewer"
+  },
+  "regex_search": {
+   "value": "no",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/"
+   ],
+   "how": "docs",
+   "note": "No file name search inside the viewer"
+  },
+  "network_shares_fast": {
+   "value": "partial",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/whatsnew"
+   ],
+   "how": "changelog",
+   "note": "Recent fixes for freezing on UNC network folders"
+  },
+  "multiple_windows": {
+   "value": "yes",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/",
+    "http://www.nyam.pe.kr/dev/imagine/whatsnew"
+   ],
+   "how": "docs",
+   "note": "Separate browser and viewer windows; 'only one instance' is optional"
+  },
+  "bookmarks": {
+   "value": "no",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/",
+    "http://www.nyam.pe.kr/dev/imagine/whatsnew"
+   ],
+   "how": "changelog",
+   "note": "Not in the feature list or the full version history since v0.3 (2003)"
+  },
+  "img_modern_formats": {
+   "value": "yes",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/"
+   ],
+   "how": "docs",
+   "note": "AVIF, HEIF, JXL, WebP (plugins included in the full download)"
+  },
+  "img_raw": {
+   "value": "yes",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/"
+   ],
+   "how": "docs",
+   "note": "Many RAW formats via DCRaw plugin"
+  },
+  "img_psd_exr": {
+   "value": "yes",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/"
+   ],
+   "how": "docs"
+  },
+  "img_svg_pdf": {
+   "value": "partial",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/"
+   ],
+   "how": "docs",
+   "note": "SVG yes, PDF no"
+  },
+  "img_animated": {
+   "value": "yes",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/",
+    "http://www.nyam.pe.kr/dev/imagine/whatsnew"
+   ],
+   "how": "docs",
+   "note": "GIF, APNG, animated WebP, FLI/FLC, MNG; also creates animations"
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/"
+   ],
+   "how": "docs",
+   "note": "Customizable keyboard shortcuts"
+  },
+  "zoom_rotate": {
+   "value": "yes",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/"
+   ],
+   "how": "docs"
+  },
+  "slideshow": {
+   "value": "yes",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/"
+   ],
+   "how": "docs"
+  },
+  "slideshow_recursive": {
+   "value": "no",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/"
+   ],
+   "how": "docs",
+   "note": "Images only"
+  },
+  "auto_enhance_view": {
+   "value": "partial",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/",
+    "http://www.nyam.pe.kr/dev/imagine/whatsnew"
+   ],
+   "how": "docs",
+   "note": "Color corrections and histogram, applied as edits; no auto view filter"
+  },
+  "file_info_exif": {
+   "value": "yes",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/"
+   ],
+   "how": "docs",
+   "note": "EXIF/XMP/IPTC/DICOM, histogram"
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/",
+    "http://www.nyam.pe.kr/dev/imagine/whatsnew"
+   ],
+   "how": "changelog",
+   "note": "Not in the feature list or the full version history"
+  },
+  "video_native": {
+   "value": "no",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/"
+   ],
+   "how": "docs",
+   "note": "Image and animation viewer; no video formats in the format list"
+  },
+  "video_mkv_avi_webm": {
+   "value": "no",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/"
+   ],
+   "how": "docs",
+   "note": "Image and animation viewer; no video formats in the format list"
+  },
+  "photos_videos_one_grid": {
+   "value": "no",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/"
+   ],
+   "how": "docs",
+   "note": "Image and animation viewer; no video formats in the format list"
+  },
+  "video_skim_arrows": {
+   "value": "no",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/"
+   ],
+   "how": "docs",
+   "note": "Image and animation viewer; no video formats in the format list"
+  },
+  "subtitles_embedded": {
+   "value": "no",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/"
+   ],
+   "how": "docs",
+   "note": "Image and animation viewer; no video formats in the format list"
+  },
+  "subtitles_external_files": {
+   "value": "no",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/"
+   ],
+   "how": "docs",
+   "note": "Image and animation viewer; no video formats in the format list"
+  },
+  "audio_track_choice": {
+   "value": "no",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/"
+   ],
+   "how": "docs",
+   "note": "Image and animation viewer; no video formats in the format list"
+  },
+  "playback_speed": {
+   "value": "no",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/"
+   ],
+   "how": "docs",
+   "note": "Image and animation viewer; no video formats in the format list"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/"
+   ],
+   "how": "docs",
+   "note": "Image and animation viewer; no video formats in the format list"
+  },
+  "playlist": {
+   "value": "no",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/"
+   ],
+   "how": "docs",
+   "note": "Image and animation viewer; no video formats in the format list"
+  },
+  "saved_playlists": {
+   "value": "no",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/"
+   ],
+   "how": "docs",
+   "note": "Image and animation viewer; no video formats in the format list"
+  },
+  "pip": {
+   "value": "no",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/"
+   ],
+   "how": "docs",
+   "note": "Image and animation viewer; no video formats in the format list"
+  },
+  "music_mode": {
+   "value": "no",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/"
+   ],
+   "how": "docs",
+   "note": "Image and animation viewer; no video formats in the format list"
+  },
+  "streaming_urls": {
+   "value": "no",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/"
+   ],
+   "how": "docs",
+   "note": "Image and animation viewer; no video formats in the format list"
+  },
+  "online_subtitles": {
+   "value": "no",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/"
+   ],
+   "how": "docs",
+   "note": "Image and animation viewer; no video formats in the format list"
+  },
+  "video_filters_enhance": {
+   "value": "no",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/"
+   ],
+   "how": "docs",
+   "note": "Image and animation viewer; no video formats in the format list"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/"
+   ],
+   "how": "docs",
+   "note": "Image and animation viewer; no video formats in the format list"
+  },
+  "archives_as_folders": {
+   "value": "yes",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/",
+    "http://www.nyam.pe.kr/dev/imagine/whatsnew"
+   ],
+   "how": "changelog",
+   "note": "ZIP, RAR, 7Z, ALZ; archives appear like directories in the browser"
+  },
+  "comics_cbz_cbr": {
+   "value": "yes",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/"
+   ],
+   "how": "docs",
+   "note": "CBZ, CBR, CB7"
+  },
+  "archive_passwords": {
+   "value": "no",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/",
+    "http://www.nyam.pe.kr/dev/imagine/whatsnew"
+   ],
+   "how": "changelog",
+   "note": "Archive support (ZIP, RAR, 7Z, ALZ, CBZ/CBR/CB7) without any password mention in feature list or full history"
+  },
+  "split_archives": {
+   "value": "no",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/",
+    "http://www.nyam.pe.kr/dev/imagine/whatsnew"
+   ],
+   "how": "changelog",
+   "note": "Not in the feature list or the full version history"
+  },
+  "videos_in_archives": {
+   "value": "no",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/"
+   ],
+   "how": "docs",
+   "note": "Image and animation viewer; no video formats in the format list"
+  },
+  "manga_two_page": {
+   "value": "no",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/",
+    "http://www.nyam.pe.kr/dev/imagine/whatsnew"
+   ],
+   "how": "changelog",
+   "note": "Tiled view only; no two-page or right-to-left mode in feature list or full history"
+  },
+  "rename_trash": {
+   "value": "yes",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/",
+    "http://www.nyam.pe.kr/dev/imagine/whatsnew"
+   ],
+   "how": "changelog",
+   "note": "Rename and batch rename, delete to Recycle Bin, new folder"
+  },
+  "move_copy": {
+   "value": "partial",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/whatsnew"
+   ],
+   "how": "changelog",
+   "note": "Copy/paste files between folders in the browser"
+  },
+  "dual_pane": {
+   "value": "no",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/"
+   ],
+   "how": "docs"
+  },
+  "undo_file_actions": {
+   "value": "no",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/whatsnew"
+   ],
+   "how": "changelog",
+   "note": "Undo is documented only for image edits (undo buffer, crop, transparency masks)"
+  },
+  "image_editing": {
+   "value": "yes",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/",
+    "http://www.nyam.pe.kr/dev/imagine/whatsnew"
+   ],
+   "how": "docs",
+   "note": "Paint, crop, resize, text, color corrections, animations, panoramas"
+  },
+  "batch_convert": {
+   "value": "yes",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/"
+   ],
+   "how": "docs",
+   "note": "Batch conversion and batch rename"
+  },
+  "library_catalog": {
+   "value": "no",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/"
+   ],
+   "how": "docs"
+  },
+  "cloud_sync": {
+   "value": "no",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/"
+   ],
+   "how": "docs"
+  },
+  "keyboard_first": {
+   "value": "partial",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/"
+   ],
+   "how": "docs",
+   "note": "Customizable keys, but a classic menu/mouse-driven Windows UI"
+  },
+  "custom_shortcuts": {
+   "value": "yes",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/"
+   ],
+   "how": "docs",
+   "note": "Keyboard and mouse"
+  },
+  "shortcut_cheatsheet": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "History adds a \"Keyboard shortcuts\" menu (configurable shortcuts); whether it gives a printable list is not stated"
+  },
+  "boss_key": {
+   "value": "no",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/",
+    "http://www.nyam.pe.kr/dev/imagine/whatsnew"
+   ],
+   "how": "changelog",
+   "note": "Not in the feature list or the full version history"
+  },
+  "app_sandbox": {
+   "value": "no",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/"
+   ],
+   "how": "docs",
+   "note": "Windows desktop app; no macOS App Sandbox"
+  },
+  "no_network": {
+   "value": "partial",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/whatsnew"
+   ],
+   "how": "changelog",
+   "note": "Has a \"Check for update\" menu command; no other online features"
+  },
+  "notarized_attested": {
+   "value": "no",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/"
+   ],
+   "how": "docs",
+   "note": "Closed source Windows app; no macOS build, no build attestation"
+  },
+  "mac_app_store": {
+   "value": "no",
+   "evidence": [
+    "http://www.nyam.pe.kr/dev/imagine/"
+   ],
+   "how": "docs",
+   "note": "Windows only"
+  }
+ }
+}

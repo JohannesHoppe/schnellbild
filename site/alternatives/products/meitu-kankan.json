@@ -1,0 +1,525 @@
+{
+ "name": "美图看看 (Meitu Kankan)",
+ "short": "美图看看",
+ "vendor": "Meitu, Inc.",
+ "website": "https://kankan.meitu.com/",
+ "platforms": [
+  "Windows",
+  "Android"
+ ],
+ "mac_available": "no",
+ "page": "switcher",
+ "section": "windows",
+ "price": "Free",
+ "license": "proprietary",
+ "current_version": "2.7.8",
+ "last_update": "2014-11-25 (site); Tencent store lists file date 2019-05-08",
+ "engine": "PEV-3 image engine (no video)",
+ "category": "image",
+ "summary": "A small, fast free picture viewer from Meitu that was very popular on Chinese Windows PCs in the early 2010s, with folder favourites, a view of all pictures in subfolders and one-click sharing to Chinese social networks. It is no longer developed (last release 2.7.8) but still offered for download.",
+ "where_it_wins": [
+  "Tiny and light on old PCs",
+  "Shows all pictures of all subfolders at once (穿透文件夹)",
+  "CMYK PSD shown as in Photoshop"
+ ],
+ "where_schnellbild_wins": [
+  "Maintained, runs natively on Apple silicon Macs",
+  "No bundled 360 Safe Guard or partner installers",
+  "HEIC, AVIF, JPEG XL, WebP and videos",
+  "Rotation never changes the file",
+  "Archives, comics, dual pane, search"
+ ],
+ "search_terms": [
+  "美图看看 mac",
+  "美图看看 mac版",
+  "美图看看 苹果电脑",
+  "mac 看图软件",
+  "美图看看 替代",
+  "美图看看 停止更新",
+  "meitu kankan mac"
+ ],
+ "matrix": {
+  "free": {
+   "value": "yes",
+   "evidence": [
+    "https://kankan.meitu.com/"
+   ],
+   "how": "docs",
+   "note": "Free download, no paid tier"
+  },
+  "open_source": {
+   "value": "no",
+   "evidence": [
+    "https://kankan.meitu.com/"
+   ],
+   "how": "docs",
+   "note": "Proprietary (Meitu)"
+  },
+  "native_apple_silicon": {
+   "value": "no",
+   "evidence": [
+    "https://kankan.meitu.com/"
+   ],
+   "how": "docs",
+   "note": "Windows (plus an Android app); no Mac version"
+  },
+  "no_account_no_tracking": {
+   "value": "no",
+   "evidence": [
+    "https://kankan.meitu.com/"
+   ],
+   "how": "docs",
+   "note": "Default installer bundles 360 Safe Guard (内置360安全卫士); partner builds for 2345/hao123; sharing to Weibo/QQ Zone built in"
+  },
+  "dark_light_setting": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched kankan.meitu.com home and help (12 FAQ entries); not documented either way"
+  },
+  "languages_20": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched kankan.meitu.com home and help (12 FAQ entries); not documented either way"
+  },
+  "folder_browsing": {
+   "value": "yes",
+   "evidence": [
+    "https://kankan.meitu.com/help.html",
+    "https://kankan.meitu.com/"
+   ],
+   "how": "docs",
+   "note": "Manager window browses folders directly"
+  },
+  "thumbnail_grid": {
+   "value": "partial",
+   "evidence": [
+    "https://kankan.meitu.com/help.html"
+   ],
+   "how": "docs",
+   "note": "Manager window with thumbnails and sort options; folder preview tiles not documented"
+  },
+  "list_view": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched kankan.meitu.com home and help (12 FAQ entries); not documented either way"
+  },
+  "recursive_search": {
+   "value": "partial",
+   "evidence": [
+    "https://kankan.meitu.com/help.html"
+   ],
+   "how": "docs",
+   "note": "\"Folder penetration\" (穿透文件夹) shows all pictures of all subfolders; no name search"
+  },
+  "regex_search": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched kankan.meitu.com home and help (12 FAQ entries); not documented either way"
+  },
+  "network_shares_fast": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched kankan.meitu.com home and help (12 FAQ entries); not documented either way"
+  },
+  "multiple_windows": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched kankan.meitu.com home and help (12 FAQ entries); not documented either way"
+  },
+  "bookmarks": {
+   "value": "yes",
+   "evidence": [
+    "https://kankan.meitu.com/"
+   ],
+   "how": "docs",
+   "note": "Folder favourites (文件夹收藏)"
+  },
+  "img_modern_formats": {
+   "value": "no",
+   "note": "Last release 2.7.8 dated 2014-11-25; site lists BMP/PNG/JPG, PSD/RAW and PDF, no WebP; HEIC/AVIF/JPEG XL came later",
+   "evidence": [
+    "https://kankan.meitu.com/"
+   ],
+   "how": "docs"
+  },
+  "img_raw": {
+   "value": "yes",
+   "evidence": [
+    "https://kankan.meitu.com/"
+   ],
+   "how": "docs",
+   "note": "RAW listed"
+  },
+  "img_psd_exr": {
+   "value": "partial",
+   "evidence": [
+    "https://kankan.meitu.com/"
+   ],
+   "how": "docs",
+   "note": "PSD yes, incl. CMYK; EXR not listed"
+  },
+  "img_svg_pdf": {
+   "value": "partial",
+   "evidence": [
+    "https://kankan.meitu.com/"
+   ],
+   "how": "docs",
+   "note": "PDF viewing yes; SVG not listed"
+  },
+  "img_animated": {
+   "value": "partial",
+   "evidence": [
+    "https://kankan.meitu.com/"
+   ],
+   "how": "review",
+   "note": "User review on the site praises GIF animation; APNG/animated WebP not listed"
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "evidence": [
+    "https://kankan.meitu.com/help.html"
+   ],
+   "how": "docs",
+   "note": "Space, ←/→, PgUp/PgDn"
+  },
+  "zoom_rotate": {
+   "value": "partial",
+   "evidence": [
+    "https://kankan.meitu.com/help.html"
+   ],
+   "how": "docs",
+   "note": "Zoom yes; rotating saves the file (option: auto rename-save)"
+  },
+  "slideshow": {
+   "value": "yes",
+   "evidence": [
+    "https://kankan.meitu.com/"
+   ],
+   "how": "docs",
+   "note": "Slideshow with transition effects"
+  },
+  "slideshow_recursive": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched kankan.meitu.com home and help (12 FAQ entries); not documented either way"
+  },
+  "auto_enhance_view": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched kankan.meitu.com home and help (12 FAQ entries); not documented either way"
+  },
+  "file_info_exif": {
+   "value": "partial",
+   "evidence": [
+    "https://kankan.meitu.com/help.html"
+   ],
+   "how": "docs",
+   "note": "Reads EXIF orientation; an info panel isn't documented"
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched kankan.meitu.com home and help (12 FAQ entries); not documented either way"
+  },
+  "video_native": {
+   "value": "no",
+   "evidence": [
+    "https://kankan.meitu.com/"
+   ],
+   "how": "docs",
+   "note": "Image viewer: formats named are images (BMP/PNG/JPG, PSD, RAW, CMYK) and PDF; no video"
+  },
+  "video_mkv_avi_webm": {
+   "value": "no",
+   "evidence": [
+    "https://kankan.meitu.com/"
+   ],
+   "how": "docs",
+   "note": "Image viewer: formats named are images (BMP/PNG/JPG, PSD, RAW, CMYK) and PDF; no video"
+  },
+  "photos_videos_one_grid": {
+   "value": "no",
+   "evidence": [
+    "https://kankan.meitu.com/"
+   ],
+   "how": "docs",
+   "note": "Image viewer: formats named are images (BMP/PNG/JPG, PSD, RAW, CMYK) and PDF; no video"
+  },
+  "video_skim_arrows": {
+   "value": "no",
+   "evidence": [
+    "https://kankan.meitu.com/"
+   ],
+   "how": "docs",
+   "note": "Image viewer: formats named are images (BMP/PNG/JPG, PSD, RAW, CMYK) and PDF; no video"
+  },
+  "subtitles_embedded": {
+   "value": "no",
+   "evidence": [
+    "https://kankan.meitu.com/"
+   ],
+   "how": "docs",
+   "note": "Image viewer: formats named are images (BMP/PNG/JPG, PSD, RAW, CMYK) and PDF; no video"
+  },
+  "subtitles_external_files": {
+   "value": "no",
+   "evidence": [
+    "https://kankan.meitu.com/"
+   ],
+   "how": "docs",
+   "note": "Image viewer: formats named are images (BMP/PNG/JPG, PSD, RAW, CMYK) and PDF; no video"
+  },
+  "audio_track_choice": {
+   "value": "no",
+   "evidence": [
+    "https://kankan.meitu.com/"
+   ],
+   "how": "docs",
+   "note": "Image viewer: formats named are images (BMP/PNG/JPG, PSD, RAW, CMYK) and PDF; no video"
+  },
+  "playback_speed": {
+   "value": "no",
+   "evidence": [
+    "https://kankan.meitu.com/"
+   ],
+   "how": "docs",
+   "note": "Image viewer: formats named are images (BMP/PNG/JPG, PSD, RAW, CMYK) and PDF; no video"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "evidence": [
+    "https://kankan.meitu.com/"
+   ],
+   "how": "docs",
+   "note": "Image viewer: formats named are images (BMP/PNG/JPG, PSD, RAW, CMYK) and PDF; no video"
+  },
+  "playlist": {
+   "value": "no",
+   "evidence": [
+    "https://kankan.meitu.com/"
+   ],
+   "how": "docs",
+   "note": "Image viewer: formats named are images (BMP/PNG/JPG, PSD, RAW, CMYK) and PDF; no video"
+  },
+  "saved_playlists": {
+   "value": "no",
+   "evidence": [
+    "https://kankan.meitu.com/"
+   ],
+   "how": "docs",
+   "note": "Image viewer: formats named are images (BMP/PNG/JPG, PSD, RAW, CMYK) and PDF; no video"
+  },
+  "pip": {
+   "value": "no",
+   "evidence": [
+    "https://kankan.meitu.com/"
+   ],
+   "how": "docs",
+   "note": "Image viewer: formats named are images (BMP/PNG/JPG, PSD, RAW, CMYK) and PDF; no video"
+  },
+  "music_mode": {
+   "value": "no",
+   "evidence": [
+    "https://kankan.meitu.com/"
+   ],
+   "how": "docs",
+   "note": "Image viewer: formats named are images (BMP/PNG/JPG, PSD, RAW, CMYK) and PDF; no video"
+  },
+  "streaming_urls": {
+   "value": "no",
+   "evidence": [
+    "https://kankan.meitu.com/"
+   ],
+   "how": "docs",
+   "note": "Image viewer: formats named are images (BMP/PNG/JPG, PSD, RAW, CMYK) and PDF; no video"
+  },
+  "online_subtitles": {
+   "value": "no",
+   "evidence": [
+    "https://kankan.meitu.com/"
+   ],
+   "how": "docs",
+   "note": "Image viewer: formats named are images (BMP/PNG/JPG, PSD, RAW, CMYK) and PDF; no video"
+  },
+  "video_filters_enhance": {
+   "value": "no",
+   "evidence": [
+    "https://kankan.meitu.com/"
+   ],
+   "how": "docs",
+   "note": "Image viewer: formats named are images (BMP/PNG/JPG, PSD, RAW, CMYK) and PDF; no video"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "evidence": [
+    "https://kankan.meitu.com/"
+   ],
+   "how": "docs",
+   "note": "Image viewer: formats named are images (BMP/PNG/JPG, PSD, RAW, CMYK) and PDF; no video"
+  },
+  "archives_as_folders": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched kankan.meitu.com home and help (12 FAQ entries); not documented either way"
+  },
+  "comics_cbz_cbr": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched kankan.meitu.com home and help (12 FAQ entries); not documented either way"
+  },
+  "archive_passwords": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched kankan.meitu.com home and help (12 FAQ entries); not documented either way"
+  },
+  "split_archives": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched kankan.meitu.com home and help (12 FAQ entries); not documented either way"
+  },
+  "videos_in_archives": {
+   "value": "no",
+   "evidence": [
+    "https://kankan.meitu.com/"
+   ],
+   "how": "docs",
+   "note": "Image viewer: formats named are images (BMP/PNG/JPG, PSD, RAW, CMYK) and PDF; no video"
+  },
+  "manga_two_page": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched kankan.meitu.com home and help (12 FAQ entries); not documented either way"
+  },
+  "rename_trash": {
+   "value": "partial",
+   "evidence": [
+    "https://kankan.meitu.com/"
+   ],
+   "how": "docs",
+   "note": "Batch rename documented; trash/new folder not documented"
+  },
+  "move_copy": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched kankan.meitu.com home and help (12 FAQ entries); not documented either way"
+  },
+  "dual_pane": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched kankan.meitu.com home and help (12 FAQ entries); not documented either way"
+  },
+  "undo_file_actions": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched kankan.meitu.com home and help (12 FAQ entries); not documented either way"
+  },
+  "image_editing": {
+   "value": "partial",
+   "evidence": [
+    "https://kankan.meitu.com/"
+   ],
+   "how": "docs",
+   "note": "Batch rotate and resize; real editing via 美图秀秀"
+  },
+  "batch_convert": {
+   "value": "yes",
+   "evidence": [
+    "https://kankan.meitu.com/"
+   ],
+   "how": "docs",
+   "note": "Batch rotate, resize, rename"
+  },
+  "library_catalog": {
+   "value": "no",
+   "evidence": [
+    "https://kankan.meitu.com/"
+   ],
+   "how": "docs",
+   "note": "Folder based, no catalog"
+  },
+  "cloud_sync": {
+   "value": "yes",
+   "evidence": [
+    "https://kankan.meitu.com/",
+    "https://kankan.meitu.com/help.html"
+   ],
+   "how": "docs",
+   "note": "One-click sharing to Sina/Tencent Weibo, QQ Zone, Renren albums"
+  },
+  "keyboard_first": {
+   "value": "partial",
+   "evidence": [
+    "https://kankan.meitu.com/help.html"
+   ],
+   "how": "docs",
+   "note": "Paging, zoom and sharing keys; rest mouse-driven"
+  },
+  "custom_shortcuts": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched kankan.meitu.com home and help (12 FAQ entries); not documented either way"
+  },
+  "shortcut_cheatsheet": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched kankan.meitu.com home and help (12 FAQ entries); not documented either way"
+  },
+  "boss_key": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched kankan.meitu.com home and help (12 FAQ entries); not documented either way"
+  },
+  "app_sandbox": {
+   "value": "no",
+   "evidence": [
+    "https://kankan.meitu.com/"
+   ],
+   "how": "docs",
+   "note": "Windows program"
+  },
+  "no_network": {
+   "value": "no",
+   "evidence": [
+    "https://kankan.meitu.com/"
+   ],
+   "how": "docs",
+   "note": "Social sharing and upload features"
+  },
+  "notarized_attested": {
+   "value": "no",
+   "evidence": [
+    "https://kankan.meitu.com/"
+   ],
+   "how": "docs",
+   "note": "Closed source Windows program"
+  },
+  "mac_app_store": {
+   "value": "no",
+   "evidence": [
+    "https://kankan.meitu.com/"
+   ],
+   "how": "docs",
+   "note": "Windows only"
+  }
+ }
+}

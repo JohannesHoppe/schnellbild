@@ -1,0 +1,605 @@
+{
+ "name": "BandiView",
+ "short": "BandiView",
+ "vendor": "Bandisoft International Inc. (Seoul)",
+ "website": "https://www.bandisoft.com/bandiview/",
+ "platforms": [
+  "Windows"
+ ],
+ "mac_available": "no",
+ "page": "switcher",
+ "section": "windows",
+ "price": "Free trial (non-commercial home use, ads, some features locked); Professional $39 one-time (1 PC), $58.50 (2 PC), volume discounts",
+ "license": "Proprietary shareware",
+ "current_version": "8.05",
+ "last_update": "2026-11-03",
+ "engine": "n/a (image viewer, no video)",
+ "category": "comic",
+ "summary": "Honeyview's successor from the makers of Bandizip: a fast single-image viewer for Windows 10/11 with archive and comic reading, smart double-page and webtoon modes, HDR output and a fast batch converter. Very popular in Korea for manga and webtoon reading.",
+ "where_it_wins": [
+  "HDR output for HDR images (PRO)",
+  "Webtoon vertical strip mode and smart double-page manga mode",
+  "Clip Studio Paint, HEIC (PRO), many archive formats (ALZ, EGG, ISO, ZPAQ …)",
+  "Fast multithreaded batch converter",
+  "Customizable keyboard and mouse shortcuts, also in the free version"
+ ],
+ "where_schnellbild_wins": [
+  "Runs natively on the Mac (Apple silicon), Honeyview/BandiView-style viewing without Windows or Wine",
+  "Plays videos (MP4, MOV, MKV, WebM, AVI …) in the same grid and slideshow",
+  "Thumbnail grid with folder previews and list view, recursive name search with regular expressions",
+  "Free with every feature, no ads, open source, App Sandbox, never goes online",
+  "Dual pane with F5/F6 copy/move, undo for file actions",
+  "No ads and no non-commercial restriction"
+ ],
+ "search_terms": [
+  "bandiview mac",
+  "bandiview for mac",
+  "bandiview alternative",
+  "bandiview macos",
+  "반디뷰 맥",
+  "반디뷰 맥북",
+  "반디뷰 대체",
+  "맥 이미지 뷰어",
+  "맥 만화 뷰어",
+  "맥 웹툰 뷰어",
+  "バンディビュー mac"
+ ],
+ "matrix": {
+  "free": {
+   "value": "partial",
+   "evidence": [
+    "https://www.bandisoft.com/bandiview/help/license-policy/",
+    "https://www.bandisoft.com/bandiview/buy/",
+    "https://www.bandisoft.com/bandiview/help/edition-comparison/"
+   ],
+   "how": "docs",
+   "note": "Free trial edition for non-commercial home use only, with ads and some features locked; Professional edition $39 (1 PC), $58.50 (2 PC)"
+  },
+  "open_source": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/bandiview/",
+    "https://www.bandisoft.com/bandiview/help/edition-comparison/"
+   ],
+   "how": "docs",
+   "note": "Proprietary"
+  },
+  "native_apple_silicon": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/bandiview/",
+    "https://www.bandisoft.com/bandiview/help/edition-comparison/"
+   ],
+   "how": "docs",
+   "note": "Windows only (no macOS version)"
+  },
+  "no_account_no_tracking": {
+   "value": "partial",
+   "evidence": [
+    "https://www.bandisoft.com/bandiview/help/license-policy/",
+    "https://www.bandisoft.com/bandiview/help/edition-comparison/"
+   ],
+   "how": "docs",
+   "note": "No account needed, but the free trial edition shows ads; PRO has no ads"
+  },
+  "dark_light_setting": {
+   "value": "partial",
+   "evidence": [
+    "https://www.bandisoft.com/bandiview/history/"
+   ],
+   "how": "changelog",
+   "note": "Dark themed UI since v8.0 (Sep 2026); docs don't say whether it can be set apart from the Windows setting"
+  },
+  "languages_20": {
+   "value": "yes",
+   "evidence": [
+    "https://www.bandisoft.com/bandiview/",
+    "https://translate.bandisoft.com/"
+   ],
+   "how": "docs",
+   "note": "Community translations; Bandisoft sites and apps in 13+ languages incl. Korean, Japanese, Chinese, Russian; exact app count not listed"
+  },
+  "folder_browsing": {
+   "value": "yes",
+   "evidence": [
+    "https://www.bandisoft.com/bandiview/help/shortcut/"
+   ],
+   "how": "docs",
+   "note": "Opens a file or folder (F) and pages through that folder; no import"
+  },
+  "thumbnail_grid": {
+   "value": "partial",
+   "evidence": [
+    "https://www.bandisoft.com/bandiview/screenshots/"
+   ],
+   "how": "screenshot",
+   "note": "No thumbnail browser window; a 'Select Image' dialog shows a filmstrip of the folder's thumbnails above a file list"
+  },
+  "list_view": {
+   "value": "partial",
+   "evidence": [
+    "https://www.bandisoft.com/bandiview/screenshots/"
+   ],
+   "how": "screenshot",
+   "note": "'Select Image' dialog lists files with name, date modified and size columns"
+  },
+  "recursive_search": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/bandiview/",
+    "https://www.bandisoft.com/bandiview/help/edition-comparison/"
+   ],
+   "how": "docs",
+   "note": "No file name search inside the viewer"
+  },
+  "regex_search": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/bandiview/",
+    "https://www.bandisoft.com/bandiview/help/edition-comparison/"
+   ],
+   "how": "docs",
+   "note": "No file name search inside the viewer"
+  },
+  "network_shares_fast": {
+   "value": "partial",
+   "evidence": [
+    "https://www.bandisoft.com/bandiview/history/"
+   ],
+   "how": "changelog",
+   "note": "Works on NAS (changelog fixes a NAS bug); no speed claims for network folders"
+  },
+  "multiple_windows": {
+   "value": "yes",
+   "evidence": [
+    "https://www.bandisoft.com/bandiview/help/shortcut/",
+    "https://www.bandisoft.com/bandiview/screenshots/"
+   ],
+   "how": "docs",
+   "note": "New window: Ctrl+N; option to forbid multiple instances"
+  },
+  "bookmarks": {
+   "value": "partial",
+   "evidence": [
+    "https://www.bandisoft.com/bandiview/help/shortcut/",
+    "https://www.bandisoft.com/bandiview/history/",
+    "https://www.bandisoft.com/bandiview/help/photo-folder/"
+   ],
+   "how": "docs",
+   "note": "Bookmarks are per image file (B, Bookmark Manager since v8.0), not folder favourites; plus up to 20 copy/move target 'Photo Folders'"
+  },
+  "img_modern_formats": {
+   "value": "partial",
+   "evidence": [
+    "https://www.bandisoft.com/bandiview/help/edition-comparison/"
+   ],
+   "how": "docs",
+   "note": "AVIF, JXL, WebP free; HEIC/HEIF only in the Professional edition"
+  },
+  "img_raw": {
+   "value": "yes",
+   "evidence": [
+    "https://www.bandisoft.com/bandiview/help/edition-comparison/"
+   ],
+   "how": "docs",
+   "note": "DNG, CR2, CRW, NEF, NRW, ORF, RW2, PEF, SR2, RAF plus recent RAW formats; RAW+JPG grouping"
+  },
+  "img_psd_exr": {
+   "value": "yes",
+   "evidence": [
+    "https://www.bandisoft.com/bandiview/help/edition-comparison/"
+   ],
+   "how": "docs",
+   "note": "PSD and EXR (also Clip Studio CLIP in PRO)"
+  },
+  "img_svg_pdf": {
+   "value": "partial",
+   "evidence": [
+    "https://www.bandisoft.com/bandiview/help/edition-comparison/"
+   ],
+   "how": "docs",
+   "note": "SVG yes; PDF not supported"
+  },
+  "img_animated": {
+   "value": "yes",
+   "evidence": [
+    "https://www.bandisoft.com/bandiview/help/edition-comparison/"
+   ],
+   "how": "docs",
+   "note": "Animated GIF, WebP, PNG, BPG, AVIF"
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "evidence": [
+    "https://www.bandisoft.com/bandiview/help/shortcut/"
+   ],
+   "how": "docs",
+   "note": "Arrow keys, PgUp/PgDn, Home/End, [ ] for next/previous folder or archive"
+  },
+  "zoom_rotate": {
+   "value": "yes",
+   "evidence": [
+    "https://www.bandisoft.com/bandiview/help/shortcut/"
+   ],
+   "how": "docs",
+   "note": "Zoom, pan (Alt+drag), rotate/flip as view"
+  },
+  "slideshow": {
+   "value": "yes",
+   "evidence": [
+    "https://www.bandisoft.com/bandiview/help/shortcut/"
+   ],
+   "how": "docs",
+   "note": "Ctrl+1…9 starts a slideshow with 1–9 s per image"
+  },
+  "slideshow_recursive": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/bandiview/help/shortcut/",
+    "https://www.bandisoft.com/bandiview/help/edition-comparison/"
+   ],
+   "how": "docs",
+   "note": "Images only, folder by folder; no videos"
+  },
+  "auto_enhance_view": {
+   "value": "partial",
+   "evidence": [
+    "https://www.bandisoft.com/bandiview/help/shortcut/",
+    "https://www.bandisoft.com/bandiview/history/"
+   ],
+   "how": "docs",
+   "note": "Manual view filters: soften/sharpen, gamma, brightness, contrast, grayscale, sepia; no auto enhance"
+  },
+  "file_info_exif": {
+   "value": "yes",
+   "evidence": [
+    "https://www.bandisoft.com/bandiview/help/shortcut/",
+    "https://www.bandisoft.com/bandiview/help/edition-comparison/",
+    "https://www.bandisoft.com/bandiview/history/"
+   ],
+   "how": "docs",
+   "note": "EXIF, XMP, GPS on map, Stable Diffusion prompts (no video codecs: no video)"
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched BandiView help pages, shortcut list and version history: only lists of extensions to treat as images"
+  },
+  "video_native": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/bandiview/help/edition-comparison/",
+    "https://www.bandisoft.com/bandiview/"
+   ],
+   "how": "docs",
+   "note": "Image viewer only; no video formats in the supported list"
+  },
+  "video_mkv_avi_webm": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/bandiview/help/edition-comparison/",
+    "https://www.bandisoft.com/bandiview/"
+   ],
+   "how": "docs",
+   "note": "Image viewer only; no video formats in the supported list"
+  },
+  "photos_videos_one_grid": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/bandiview/help/edition-comparison/",
+    "https://www.bandisoft.com/bandiview/"
+   ],
+   "how": "docs",
+   "note": "Image viewer only; no video formats in the supported list"
+  },
+  "video_skim_arrows": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/bandiview/help/edition-comparison/",
+    "https://www.bandisoft.com/bandiview/"
+   ],
+   "how": "docs",
+   "note": "Image viewer only; no video formats in the supported list"
+  },
+  "subtitles_embedded": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/bandiview/help/edition-comparison/",
+    "https://www.bandisoft.com/bandiview/"
+   ],
+   "how": "docs",
+   "note": "Image viewer only; no video formats in the supported list"
+  },
+  "subtitles_external_files": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/bandiview/help/edition-comparison/",
+    "https://www.bandisoft.com/bandiview/"
+   ],
+   "how": "docs",
+   "note": "Image viewer only; no video formats in the supported list"
+  },
+  "audio_track_choice": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/bandiview/help/edition-comparison/",
+    "https://www.bandisoft.com/bandiview/"
+   ],
+   "how": "docs",
+   "note": "Image viewer only; no video formats in the supported list"
+  },
+  "playback_speed": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/bandiview/help/edition-comparison/",
+    "https://www.bandisoft.com/bandiview/"
+   ],
+   "how": "docs",
+   "note": "Image viewer only; no video formats in the supported list"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/bandiview/help/edition-comparison/",
+    "https://www.bandisoft.com/bandiview/"
+   ],
+   "how": "docs",
+   "note": "Image viewer only; no video formats in the supported list"
+  },
+  "playlist": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/bandiview/help/edition-comparison/",
+    "https://www.bandisoft.com/bandiview/"
+   ],
+   "how": "docs",
+   "note": "Image viewer only; no video formats in the supported list"
+  },
+  "saved_playlists": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/bandiview/help/edition-comparison/",
+    "https://www.bandisoft.com/bandiview/"
+   ],
+   "how": "docs",
+   "note": "Image viewer only; no video formats in the supported list"
+  },
+  "pip": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/bandiview/help/edition-comparison/",
+    "https://www.bandisoft.com/bandiview/"
+   ],
+   "how": "docs",
+   "note": "Image viewer only; no video formats in the supported list"
+  },
+  "music_mode": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/bandiview/help/edition-comparison/",
+    "https://www.bandisoft.com/bandiview/"
+   ],
+   "how": "docs",
+   "note": "Image viewer only; no video formats in the supported list"
+  },
+  "streaming_urls": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/bandiview/help/edition-comparison/",
+    "https://www.bandisoft.com/bandiview/"
+   ],
+   "how": "docs",
+   "note": "Image viewer only; no video formats in the supported list"
+  },
+  "online_subtitles": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/bandiview/help/edition-comparison/",
+    "https://www.bandisoft.com/bandiview/"
+   ],
+   "how": "docs",
+   "note": "Image viewer only; no video formats in the supported list"
+  },
+  "video_filters_enhance": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/bandiview/help/edition-comparison/",
+    "https://www.bandisoft.com/bandiview/"
+   ],
+   "how": "docs",
+   "note": "Image viewer only; no video formats in the supported list"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/bandiview/history/"
+   ],
+   "how": "changelog",
+   "note": "Adds Windows Explorer thumbnails for PSD, CLIP, SVG, CBZ/CBR, HEIC, EXR, DDS etc., but not for videos"
+  },
+  "archives_as_folders": {
+   "value": "yes",
+   "evidence": [
+    "https://www.bandisoft.com/bandiview/help/edition-comparison/",
+    "https://www.bandisoft.com/bandiview/history/"
+   ],
+   "how": "docs",
+   "note": "Views images inside ZIP, RAR, 7Z, ALZ, EGG, ISO, ZIPX, ZSTD and more without extracting; nested archives too"
+  },
+  "comics_cbz_cbr": {
+   "value": "yes",
+   "evidence": [
+    "https://www.bandisoft.com/bandiview/help/edition-comparison/",
+    "https://www.bandisoft.com/bandiview/history/"
+   ],
+   "how": "docs",
+   "note": "CBZ, CBR; Explorer thumbnails for them"
+  },
+  "archive_passwords": {
+   "value": "partial",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched BandiView help, version history and web: password-protected archives not documented for BandiView"
+  },
+  "split_archives": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched BandiView help, version history and web: split archives not documented for BandiView"
+  },
+  "videos_in_archives": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/bandiview/help/edition-comparison/",
+    "https://www.bandisoft.com/bandiview/"
+   ],
+   "how": "docs",
+   "note": "Image viewer only; no video formats in the supported list"
+  },
+  "manga_two_page": {
+   "value": "yes",
+   "evidence": [
+    "https://www.bandisoft.com/bandiview/help/shortcut/",
+    "https://www.bandisoft.com/bandiview/help/edition-comparison/"
+   ],
+   "how": "docs",
+   "note": "Smart double page L→R and R→L, separate cover page option; webtoon vertical strip (PRO)"
+  },
+  "rename_trash": {
+   "value": "partial",
+   "evidence": [
+    "https://www.bandisoft.com/bandiview/help/shortcut/"
+   ],
+   "how": "docs",
+   "note": "Rename (F2), delete to Recycle Bin (Del); no new folder"
+  },
+  "move_copy": {
+   "value": "partial",
+   "evidence": [
+    "https://www.bandisoft.com/bandiview/help/photo-folder/",
+    "https://www.bandisoft.com/bandiview/help/shortcut/"
+   ],
+   "how": "docs",
+   "note": "Copy/move the current image to preset 'Photo Folders' (Insert / Ctrl+Insert); no drag into folders"
+  },
+  "dual_pane": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/bandiview/",
+    "https://www.bandisoft.com/bandiview/help/edition-comparison/"
+   ],
+   "how": "docs"
+  },
+  "undo_file_actions": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/bandiview/help/shortcut/"
+   ],
+   "how": "docs",
+   "note": "Full command list (CMD_*) has rename, delete and copy but no undo"
+  },
+  "image_editing": {
+   "value": "partial",
+   "evidence": [
+    "https://www.bandisoft.com/bandiview/",
+    "https://www.bandisoft.com/bandiview/help/shortcut/"
+   ],
+   "how": "docs",
+   "note": "No crop/edit; resize and format conversion through the image converter; external editor launch"
+  },
+  "batch_convert": {
+   "value": "yes",
+   "evidence": [
+    "https://www.bandisoft.com/bandiview/",
+    "https://www.bandisoft.com/bandiview/help/edition-comparison/"
+   ],
+   "how": "docs",
+   "note": "Batch convert and resize; 10x faster in PRO"
+  },
+  "library_catalog": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/bandiview/",
+    "https://www.bandisoft.com/bandiview/help/edition-comparison/"
+   ],
+   "how": "docs",
+   "note": "Folder-based viewer, no catalog database"
+  },
+  "cloud_sync": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/bandiview/",
+    "https://www.bandisoft.com/bandiview/help/edition-comparison/"
+   ],
+   "how": "docs"
+  },
+  "keyboard_first": {
+   "value": "yes",
+   "evidence": [
+    "https://www.bandisoft.com/bandiview/help/shortcut/"
+   ],
+   "how": "docs",
+   "note": "Nearly every command has a key, also by CLI command names"
+  },
+  "custom_shortcuts": {
+   "value": "yes",
+   "evidence": [
+    "https://www.bandisoft.com/bandiview/help/how-to-customize-shortcuts/"
+   ],
+   "how": "docs",
+   "note": "Keyboard and mouse shortcuts fully customizable, free"
+  },
+  "shortcut_cheatsheet": {
+   "value": "partial",
+   "evidence": [
+    "https://www.bandisoft.com/bandiview/help/shortcut/"
+   ],
+   "how": "docs",
+   "note": "Full list on the help website; no printable sheet in the app"
+  },
+  "boss_key": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/bandiview/help/shortcut/"
+   ],
+   "how": "docs",
+   "note": "Only Esc/X to exit and minimize; no hide-all key"
+  },
+  "app_sandbox": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/bandiview/",
+    "https://www.bandisoft.com/bandiview/help/edition-comparison/"
+   ],
+   "how": "docs",
+   "note": "Windows desktop app; no macOS App Sandbox"
+  },
+  "no_network": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/bandiview/screenshots/",
+    "https://www.bandisoft.com/bandiview/help/license-policy/"
+   ],
+   "how": "screenshot",
+   "note": "Auto-update check; ads in the free edition"
+  },
+  "notarized_attested": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/bandiview/",
+    "https://www.bandisoft.com/bandiview/help/edition-comparison/"
+   ],
+   "how": "docs",
+   "note": "Closed source Windows app; no macOS build, no build attestation"
+  },
+  "mac_app_store": {
+   "value": "no",
+   "evidence": [
+    "https://itunes.apple.com/search?term=bandisoft&entity=macSoftware"
+   ],
+   "how": "store",
+   "note": "Not in the Mac App Store"
+  }
+ }
+}

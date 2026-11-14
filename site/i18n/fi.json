@@ -1,6 +1,7 @@
 {
   "name": "Suomi",
   "privacySlug": "privacy",
+  "alternativesSlug": "vaihtoehdot",
   "title": "Schnellbild: kuvankatselin ja videosoitin macOS:lle, eikä yhtään syvältä",
   "seoTitle": "Schnellbild · ilmainen kuvankatselin ja MKV-soitin Macille",
   "seoDescription": "Nopea, ilmainen kuvankatselin Macille, joka toistaa myös MKV-, AVI- ja WebM-videot: pienoiskuvat, diaesitys, ZIP ja RAR kansioina. Vaihtoehto IrfanViewille.",
@@ -140,7 +141,10 @@
   ],
   "safeMore": "Mitä se tekee yksityiskohtaisesti ja missä sen raja kulkee: <a href=\"https://github.com/JohannesHoppe/schnellbild#safe-with-files-from-others\">Turvallinen muiden tiedostojen kanssa</a> (englanniksi).",
   "modelsTitle": "Tuletko Phiewerista, IINAsta tai Norton Commanderista?",
-  "modelsText": "Ne olivat esikuvia: Phiewer kuvien selaamiseen näppäimistöllä, IINA videoiden nopeaan käsittelyyn, Norton Commander kahteen paneeliin. Näin Schnellbild vertautuu (englanniksi): <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-phiewer-alternative\">ilmainen vaihtoehto Phiewerille</a>, <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-iina-alternative-for-looking-through-videos\">ilmainen vaihtoehto IINAlle videoiden läpikäyntiin</a>.",
+  "modelsText": "Ne olivat esikuvia: Phiewer kuvien selaamiseen näppäimistöllä, IINA videoiden nopeaan käsittelyyn, Norton Commander kahteen paneeliin. Näin Schnellbild vertautuu: <a href=\"{alt:phiewer}\">ilmainen vaihtoehto Phiewerille</a>, <a href=\"{alt:iina}\">ilmainen vaihtoehto IINAlle videoiden läpikäyntiin</a>, <a href=\"{alt:norton-commander}\">Norton Commanderista Maciin</a>.",
+  "altTitle": "Etsitkö vaihtoehtoa?",
+  "altText": "Näin Schnellbild vertautuu ohjelmiin, joita Macille etsitään, ominaisuus kerrallaan ja jokaiselle väitteelle lähde:",
+  "altAll": "Kaikki vaihtoehdot",
   "ossTitle": "Avoin lähdekoodi",
   "ossText": "Schnellbild on vapaata ohjelmistoa MIT-lisenssillä, lähdekoodi on <a href=\"https://github.com/JohannesHoppe/schnellbild\">GitHubissa</a>. Löysitkö bugin tai puuttuuko jotain? <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">Avaa issue</a>.",
   "languagesText": "Macisi kielellä:",
@@ -149,6 +153,7 @@
   "footerPrivacy": "Tietosuoja",
   "footerImprint": "Oikeudelliset tiedot (Impressum)",
   "footerEula": "Käyttöoikeussopimus",
+  "footerAlternatives": "Vaihtoehdot",
   "privacy": {
     "title": "Tietosuojaseloste",
     "description": "Schnellbild ei kerää henkilötietoja: ei tiliä, ei analytiikkaa, ei seurantaa, ei verkkoyhteyttä.",

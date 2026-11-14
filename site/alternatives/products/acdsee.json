@@ -1,0 +1,540 @@
+{
+ "name": "ACDSee Photo Studio",
+ "short": "ACDSee",
+ "vendor": "ACD Systems",
+ "website": "https://www.acdsee.com",
+ "platforms": [
+  "macOS",
+  "Windows",
+  "iOS (companion apps)"
+ ],
+ "mac_available": "yes",
+ "page": "matrix",
+ "section": "photos",
+ "price": "Mac 27: $119.99 one-time (presale $99.95 to 2026-11-18); Mac App Store: annual subscription; Windows Home/Professional/Ultimate 2027 one-time or ACDSee 365 subscription",
+ "license": "Proprietary",
+ "current_version": "Mac 26.0.3 (Mac 27 late Nov 2026); Windows 2027",
+ "last_update": "2026-05-27 (Mac App Store 26.0.3); Windows 2027 released 2026-09",
+ "engine": "Own decoders; Windows video via system codecs, Mac video via Quick Look",
+ "category": "photo-manager",
+ "summary": "Long-standing photo DAM and RAW editor that works on existing folders without import: catalog database, ratings, keywords, AI faces and keywords, non-destructive Develop mode and batch tools. The Windows editions also play common videos and browse ZIP/RAR archives; the Mac edition is more limited there. Paid, aimed at photographers who manage and edit.",
+ "where_it_wins": [
+  "Full DAM: ratings, keywords, categories, faces, AI keywords and image similarity",
+  "Non-destructive RAW editing with AI masking",
+  "Batch rename, resize, convert, metadata",
+  "Duplicate finder",
+  "Generative AI editing",
+  "Windows: ZIP/RAR browsing and video metadata"
+ ],
+ "where_schnellbild_wins": [
+  "Free, open source, no account or activation",
+  "Plays MKV, WebM, AVI, FLV with subtitles and audio tracks on the Mac",
+  "7z, RAR5, CBZ/CBR and passworded archives as folders",
+  "Dual pane with F5/F6 and undo",
+  "Regex search through subfolders",
+  "Lean viewer, no database to maintain",
+  "Sandboxed, never online, build attestation"
+ ],
+ "search_terms": [
+  "acdsee mac",
+  "acdsee for mac",
+  "acdsee alternative",
+  "acdsee alternative mac",
+  "acdsee free mac",
+  "acdsee mac free alternative",
+  "acdsee 맥",
+  "acdsee mac 无料",
+  "acdsee mac版",
+  "acdsee 替代",
+  "acdsee ersatz mac",
+  "acdsee alternative kostenlos",
+  "ACDSee 图影工坊",
+  "ACDSee mac 中文版",
+  "ACDSee 官方免费版"
+ ],
+ "matrix": {
+  "free": {
+   "value": "no",
+   "note": "Mac 27: $119.99 one-time (presale $99.95); Mac App Store needs an annual subscription; Windows Home/Professional/Ultimate 2027 paid or ACDSee 365; ACDSee Free is a separate basic Windows viewer",
+   "evidence": [
+    "https://www.acdsee.com/en/products/photo-studio-mac/",
+    "https://apps.apple.com/us/app/acdsee-photo-studio/id6446125333"
+   ],
+   "how": "store"
+  },
+  "open_source": {
+   "value": "no",
+   "evidence": [
+    "https://www.acdsee.com/en/products/photo-studio-mac/"
+   ],
+   "how": "docs"
+  },
+  "native_apple_silicon": {
+   "value": "yes",
+   "note": "Universal app (Mac 26/27)",
+   "evidence": [
+    "https://www.acdsee.com/en/products/photo-studio-mac/features",
+    "https://www.acdsee.com/en/products/photo-studio-mac/"
+   ],
+   "how": "docs"
+  },
+  "no_account_no_tracking": {
+   "value": "partial",
+   "note": "Activation and subscriptions need an acdID e-mail and internet; AI runs on the device",
+   "evidence": [
+    "https://www.acdsee.com/en/products/photo-studio-mac/",
+    "https://apps.apple.com/us/app/acdsee-photo-studio/id6446125333"
+   ],
+   "how": "docs"
+  },
+  "dark_light_setting": {
+   "value": "partial",
+   "note": "Checked ACDSee Mac and Windows feature pages and file-format page; release notes and help sit behind an acdID login",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "languages_20": {
+   "value": "partial",
+   "note": "Mac App Store: English, French, German, Japanese; Windows website in 10 languages",
+   "evidence": [
+    "https://apps.apple.com/us/app/acdsee-photo-studio/id6446125333",
+    "https://www.acdsee.com/en/products/photo-studio-home/"
+   ],
+   "how": "store"
+  },
+  "folder_browsing": {
+   "value": "yes",
+   "note": "Works on existing folders, no import",
+   "evidence": [
+    "https://www.acdsee.com/en/products/photo-studio-mac/",
+    "https://apps.apple.com/us/app/acdsee-photo-studio/id6446125333"
+   ],
+   "how": "docs"
+  },
+  "thumbnail_grid": {
+   "value": "yes",
+   "note": "Manage mode with thumbnails and folder tree",
+   "evidence": [
+    "https://www.acdsee.com/en/products/photo-studio-mac/features"
+   ],
+   "how": "docs"
+  },
+  "list_view": {
+   "value": "yes",
+   "note": "Checked ACDSee Mac and Windows feature pages and file-format page; release notes and help sit behind an acdID login",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "recursive_search": {
+   "value": "yes",
+   "note": "Quick Search, Advanced AND/OR search, saved searches over the catalog database",
+   "evidence": [
+    "https://www.acdsee.com/en/products/photo-studio-home/features",
+    "https://www.acdsee.com/en/products/photo-studio-mac/features"
+   ],
+   "how": "docs"
+  },
+  "regex_search": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Checked ACDSee Mac and Windows feature pages and file-format page; release notes and help sit behind an acdID login"
+  },
+  "network_shares_fast": {
+   "value": "partial",
+   "note": "Shows network volumes without importing; Indexer catalogs while idle",
+   "evidence": [
+    "https://www.acdsee.com/en/products/photo-studio-mac/features"
+   ],
+   "how": "docs"
+  },
+  "multiple_windows": {
+   "value": "partial",
+   "note": "Tabs in one window, kept between sessions",
+   "evidence": [
+    "https://www.acdsee.com/en/products/photo-studio-mac/features",
+    "https://www.acdsee.com/en/products/photo-studio-home/features"
+   ],
+   "how": "docs"
+  },
+  "bookmarks": {
+   "value": "partial",
+   "note": "Tabs, saved searches; Windows: up to five image baskets",
+   "evidence": [
+    "https://www.acdsee.com/en/products/photo-studio-home/features",
+    "https://www.acdsee.com/en/products/photo-studio-mac/features"
+   ],
+   "how": "docs"
+  },
+  "img_modern_formats": {
+   "value": "yes",
+   "note": "HEIC/HEIF, AVIF (not animated), JXL, WebP (Windows list); Mac reads and writes HEIC",
+   "evidence": [
+    "https://www.acdsee.com/en/support/file-formats",
+    "https://www.acdsee.com/en/products/photo-studio-mac/features"
+   ],
+   "how": "docs"
+  },
+  "img_raw": {
+   "value": "yes",
+   "note": "750+ camera models",
+   "evidence": [
+    "https://www.acdsee.com/en/products/photo-studio-home/",
+    "https://apps.apple.com/us/app/acdsee-photo-studio/id6446125333"
+   ],
+   "how": "docs"
+  },
+  "img_psd_exr": {
+   "value": "partial",
+   "note": "PSD yes; OpenEXR not listed",
+   "evidence": [
+    "https://www.acdsee.com/en/support/file-formats"
+   ],
+   "how": "docs"
+  },
+  "img_svg_pdf": {
+   "value": "partial",
+   "note": "SVG on Windows; PDF viewing only in Windows Professional/Ultimate; Mac opens PDFs in Quick Look",
+   "evidence": [
+    "https://www.acdsee.com/en/support/file-formats",
+    "https://www.acdsee.com/en/products/photo-studio-mac/features"
+   ],
+   "how": "docs"
+  },
+  "img_animated": {
+   "value": "partial",
+   "note": "Animated GIF and WebP; animated AVIF not supported",
+   "evidence": [
+    "https://www.acdsee.com/en/support/file-formats"
+   ],
+   "how": "docs"
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "note": "View mode",
+   "evidence": [
+    "https://www.acdsee.com/en/products/photo-studio-mac/features"
+   ],
+   "how": "docs"
+  },
+  "zoom_rotate": {
+   "value": "yes",
+   "note": "View mode zoom lock, Navigator, rotate",
+   "evidence": [
+    "https://www.acdsee.com/en/products/photo-studio-mac/features"
+   ],
+   "how": "docs"
+  },
+  "slideshow": {
+   "value": "yes",
+   "note": "Checked ACDSee Mac and Windows feature pages and file-format page; release notes and help sit behind an acdID login",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "slideshow_recursive": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Checked ACDSee Mac and Windows feature pages and file-format page; release notes and help sit behind an acdID login"
+  },
+  "auto_enhance_view": {
+   "value": "yes",
+   "note": "Non-destructive Develop adjustments, AI presets; original never modified",
+   "evidence": [
+    "https://www.acdsee.com/en/products/photo-studio-mac/features",
+    "https://apps.apple.com/us/app/acdsee-photo-studio/id6446125333"
+   ],
+   "how": "docs"
+  },
+  "file_info_exif": {
+   "value": "yes",
+   "note": "EXIF/IPTC; Windows: All Video Metadata view with video and audio streams",
+   "evidence": [
+    "https://www.acdsee.com/en/products/photo-studio-home/features",
+    "https://www.acdsee.com/en/products/photo-studio-mac/features"
+   ],
+   "how": "docs"
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Checked ACDSee Mac and Windows feature pages and file-format page; release notes and help sit behind an acdID login"
+  },
+  "video_native": {
+   "value": "partial",
+   "note": "Windows plays MP4/MOV/M4V/AVI/WMV in View mode; Mac shows videos in Quick Look",
+   "evidence": [
+    "https://www.acdsee.com/en/support/file-formats",
+    "https://www.acdsee.com/en/products/photo-studio-mac/features"
+   ],
+   "how": "docs"
+  },
+  "video_mkv_avi_webm": {
+   "value": "partial",
+   "note": "Windows: AVI, WMV, ASF; no MKV, WebM, FLV",
+   "evidence": [
+    "https://www.acdsee.com/en/support/file-formats"
+   ],
+   "how": "docs"
+  },
+  "photos_videos_one_grid": {
+   "value": "yes",
+   "note": "Videos listed with photos; Special Items finds videos",
+   "evidence": [
+    "https://www.acdsee.com/en/products/photo-studio-mac/features",
+    "https://www.acdsee.com/en/products/photo-studio-home/features"
+   ],
+   "how": "docs"
+  },
+  "video_skim_arrows": {
+   "value": "no",
+   "note": "Checked ACDSee Mac and Windows feature pages and file-format page; release notes and help sit behind an acdID login",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "subtitles_embedded": {
+   "value": "no",
+   "note": "Checked ACDSee Mac and Windows feature pages and file-format page; release notes and help sit behind an acdID login",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "subtitles_external_files": {
+   "value": "no",
+   "note": "Checked ACDSee Mac and Windows feature pages and file-format page; release notes and help sit behind an acdID login",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "audio_track_choice": {
+   "value": "no",
+   "note": "Checked ACDSee Mac and Windows feature pages and file-format page; release notes and help sit behind an acdID login",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "playback_speed": {
+   "value": "no",
+   "note": "Checked ACDSee Mac and Windows feature pages and file-format page; release notes and help sit behind an acdID login",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "note": "Checked ACDSee Mac and Windows feature pages and file-format page; release notes and help sit behind an acdID login",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "playlist": {
+   "value": "no",
+   "note": "Checked ACDSee Mac and Windows feature pages and file-format page; release notes and help sit behind an acdID login",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "saved_playlists": {
+   "value": "no",
+   "note": "Checked ACDSee Mac and Windows feature pages and file-format page; release notes and help sit behind an acdID login",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "pip": {
+   "value": "no",
+   "note": "Checked ACDSee Mac and Windows feature pages and file-format page; release notes and help sit behind an acdID login",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "music_mode": {
+   "value": "partial",
+   "note": "Windows reads MP3, WAV, WMA, M4A",
+   "evidence": [
+    "https://www.acdsee.com/en/support/file-formats"
+   ],
+   "how": "docs"
+  },
+  "streaming_urls": {
+   "value": "no",
+   "note": "Checked ACDSee Mac and Windows feature pages and file-format page; release notes and help sit behind an acdID login",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "online_subtitles": {
+   "value": "no",
+   "note": "Checked ACDSee Mac and Windows feature pages and file-format page; release notes and help sit behind an acdID login",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "video_filters_enhance": {
+   "value": "no",
+   "note": "Checked ACDSee Mac and Windows feature pages and file-format page; release notes and help sit behind an acdID login",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "note": "Checked ACDSee Mac and Windows feature pages and file-format page; release notes and help sit behind an acdID login",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "archives_as_folders": {
+   "value": "partial",
+   "note": "Windows: ZIP, RAR (not RAR5), TAR, GZ, TGZ, CAB, ARJ; no 7z; not on Mac",
+   "evidence": [
+    "https://www.acdsee.com/en/support/file-formats"
+   ],
+   "how": "docs"
+  },
+  "comics_cbz_cbr": {
+   "value": "no",
+   "note": "CBZ/CBR not in the format list",
+   "evidence": [
+    "https://www.acdsee.com/en/support/file-formats"
+   ],
+   "how": "docs"
+  },
+  "archive_passwords": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Checked ACDSee Mac and Windows feature pages and file-format page; release notes and help sit behind an acdID login"
+  },
+  "split_archives": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Checked ACDSee Mac and Windows feature pages and file-format page; release notes and help sit behind an acdID login"
+  },
+  "videos_in_archives": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Checked ACDSee Mac and Windows feature pages and file-format page; release notes and help sit behind an acdID login"
+  },
+  "manga_two_page": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Checked ACDSee Mac and Windows feature pages and file-format page; release notes and help sit behind an acdID login"
+  },
+  "rename_trash": {
+   "value": "yes",
+   "note": "Rename (also batch), delete, duplicate finder",
+   "evidence": [
+    "https://www.acdsee.com/en/products/photo-studio-mac/features",
+    "https://apps.apple.com/us/app/acdsee-photo-studio/id6446125333"
+   ],
+   "how": "docs"
+  },
+  "move_copy": {
+   "value": "yes",
+   "note": "Checked ACDSee Mac and Windows feature pages and file-format page; release notes and help sit behind an acdID login",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "dual_pane": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Checked ACDSee Mac and Windows feature pages and file-format page; release notes and help sit behind an acdID login"
+  },
+  "undo_file_actions": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Checked ACDSee Mac and Windows feature pages and file-format page; release notes and help sit behind an acdID login"
+  },
+  "image_editing": {
+   "value": "yes",
+   "note": "RAW development, layered editing (Windows), AI masking, generative AI",
+   "evidence": [
+    "https://www.acdsee.com/en/products/photo-studio-mac/features",
+    "https://www.acdsee.com/en/products/photo-studio-home/features"
+   ],
+   "how": "docs"
+  },
+  "batch_convert": {
+   "value": "yes",
+   "note": "Batch resize, rename, convert, export",
+   "evidence": [
+    "https://apps.apple.com/us/app/acdsee-photo-studio/id6446125333",
+    "https://www.acdsee.com/en/products/photo-studio-home/features"
+   ],
+   "how": "docs"
+  },
+  "library_catalog": {
+   "value": "yes",
+   "note": "Database with ratings, tags, categories, keywords, faces, AI keywords",
+   "evidence": [
+    "https://www.acdsee.com/en/products/photo-studio-mac/features",
+    "https://www.acdsee.com/en/products/photo-studio-home/features"
+   ],
+   "how": "docs"
+  },
+  "cloud_sync": {
+   "value": "partial",
+   "note": "iCloud Drive (Mac), OneDrive (Windows), SendPix sharing, Mobile Sync",
+   "evidence": [
+    "https://www.acdsee.com/en/products/photo-studio-mac/features",
+    "https://www.acdsee.com/en/products/photo-studio-home/features"
+   ],
+   "how": "docs"
+  },
+  "keyboard_first": {
+   "value": "partial",
+   "note": "Metadata entry and culling by keyboard; mouse-heavy elsewhere",
+   "evidence": [
+    "https://www.acdsee.com/en/products/photo-studio-mac/features"
+   ],
+   "how": "docs"
+  },
+  "custom_shortcuts": {
+   "value": "yes",
+   "evidence": [
+    "https://www.acdsee.com/en/products/photo-studio-mac/features",
+    "https://www.acdsee.com/en/products/photo-studio-home/features"
+   ],
+   "how": "docs"
+  },
+  "shortcut_cheatsheet": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Checked ACDSee Mac and Windows feature pages and file-format page; release notes and help sit behind an acdID login"
+  },
+  "boss_key": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Checked ACDSee Mac and Windows feature pages and file-format page; release notes and help sit behind an acdID login"
+  },
+  "app_sandbox": {
+   "value": "partial",
+   "note": "Mac App Store edition (a Store requirement); direct download not documented",
+   "evidence": [
+    "https://apps.apple.com/us/app/acdsee-photo-studio/id6446125333"
+   ],
+   "how": "store"
+  },
+  "no_network": {
+   "value": "no",
+   "note": "Activation, subscription checks, online services",
+   "evidence": [
+    "https://www.acdsee.com/en/products/photo-studio-mac/"
+   ],
+   "how": "docs"
+  },
+  "notarized_attested": {
+   "value": "no",
+   "note": "Closed source; no build attestation",
+   "evidence": [
+    "https://www.acdsee.com/en/products/photo-studio-mac/"
+   ],
+   "how": "docs"
+  },
+  "mac_app_store": {
+   "value": "yes",
+   "note": "ACDSee Photo Studio 26.0.3, free download, annual subscription required",
+   "evidence": [
+    "https://apps.apple.com/us/app/acdsee-photo-studio/id6446125333"
+   ],
+   "how": "store"
+  }
+ }
+}

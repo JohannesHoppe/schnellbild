@@ -1,0 +1,554 @@
+{
+ "name": "MassiGra",
+ "short": "MassiGra",
+ "vendor": "Toshi Fuku",
+ "website": "http://www.massigra.net/",
+ "platforms": [
+  "Windows"
+ ],
+ "mac_available": "no",
+ "page": "switcher",
+ "section": "windows",
+ "price": "free",
+ "license": "proprietary freeware",
+ "current_version": "0.45",
+ "last_update": "2013-04-23",
+ "engine": "own scaling engine (アファールエンジン), Susie plug-ins for extra formats and archives",
+ "category": "image",
+ "summary": "Small, fast single-window image viewer from Japan that pages through a folder, with manga mode and simple edits. Built-in formats are BMP, GIF, JPEG and PNG; everything else, archives included, comes through Susie plug-ins. Topped Vector's graphics-viewer download ranking five years running but has not changed since 2013.",
+ "where_it_wins": [
+  "Tiny and very light on old hardware",
+  "Basic image edits and save (levels, colour, crop, resize)",
+  "Move/copy to preset folders with one key",
+  "Familiar to long-time Japanese Windows users"
+ ],
+ "where_schnellbild_wins": [
+  "Native on Mac, maintained",
+  "Thumbnail grid, list view and recursive search",
+  "Modern formats (HEIC, AVIF, JPEG XL, RAW) without plug-ins",
+  "Videos and archives built in",
+  "Interface in 20 languages (MassiGra: Japanese only)"
+ ],
+ "search_terms": [
+  "massigra mac",
+  "MassiGra Mac",
+  "マッシグラ Mac",
+  "MassiGra Mac版",
+  "MassiGra 代わり Mac",
+  "MassiGra 代替",
+  "Mac 画像ビューア",
+  "Mac 漫画ビューア zip",
+  "Mac 見開き ビューア",
+  "Mac 自炊 ビューア",
+  "Mac zip 画像 そのまま 見る",
+  "Mac rar 漫画 見る",
+  "Susie プラグイン Mac"
+ ],
+ "matrix": {
+  "free": {
+   "value": "yes",
+   "note": "freeware",
+   "evidence": [
+    "http://www.massigra.net/"
+   ],
+   "how": "docs"
+  },
+  "open_source": {
+   "value": "no",
+   "note": "proprietary freeware",
+   "evidence": [
+    "http://www.massigra.net/"
+   ],
+   "how": "docs"
+  },
+  "native_apple_silicon": {
+   "value": "no",
+   "note": "32-bit Windows (98 to 8) only",
+   "evidence": [
+    "http://www.massigra.net/massigrahelp/currentver/about.htm"
+   ],
+   "how": "docs"
+  },
+  "no_account_no_tracking": {
+   "value": "yes",
+   "evidence": [
+    "http://www.massigra.net/massigrahelp/currentver/menulist.htm"
+   ],
+   "how": "docs",
+   "note": "Complete menu list has no account or online features; ads only on the website"
+  },
+  "dark_light_setting": {
+   "value": "no",
+   "evidence": [
+    "http://www.massigra.net/massigrahelp/currentver/menulist.htm",
+    "http://www.massigra.net/massigrahelp/currentver/m_option.htm"
+   ],
+   "how": "docs",
+   "note": "No theme setting in the complete menu list; only a background colour for images"
+  },
+  "languages_20": {
+   "value": "no",
+   "note": "Japanese only (\"日本語版\")",
+   "evidence": [
+    "http://www.massigra.net/massigrahelp/currentver/about.htm"
+   ],
+   "how": "docs"
+  },
+  "folder_browsing": {
+   "value": "yes",
+   "note": "opens a file and pages through its folder; next/previous folder commands",
+   "evidence": [
+    "http://www.massigra.net/massigrahelp/currentver/m_list.htm"
+   ],
+   "how": "docs"
+  },
+  "thumbnail_grid": {
+   "value": "no",
+   "note": "single-window viewer without thumbnails",
+   "evidence": [
+    "http://www.massigra.net/massigrahelp/currentver/about.htm"
+   ],
+   "how": "docs"
+  },
+  "list_view": {
+   "value": "no",
+   "evidence": [
+    "http://www.massigra.net/massigrahelp/currentver/about.htm"
+   ],
+   "how": "docs"
+  },
+  "recursive_search": {
+   "value": "no",
+   "evidence": [
+    "http://www.massigra.net/massigrahelp/currentver/menulist.htm",
+    "http://www.massigra.net/massigrahelp/currentver/m_list.htm"
+   ],
+   "how": "docs",
+   "note": "No search command at all in the complete menu list"
+  },
+  "regex_search": {
+   "value": "no",
+   "evidence": [
+    "http://www.massigra.net/massigrahelp/currentver/menulist.htm",
+    "http://www.massigra.net/massigrahelp/currentver/m_list.htm"
+   ],
+   "how": "docs",
+   "note": "No search command at all"
+  },
+  "network_shares_fast": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched the help (specifi.htm, faq.htm, menulist.htm): paths over 260 characters unsupported, nothing on network shares"
+  },
+  "multiple_windows": {
+   "value": "yes",
+   "note": "\"もう１つ起動\" starts another instance",
+   "evidence": [
+    "http://www.massigra.net/massigrahelp/currentver/m_file.htm"
+   ],
+   "how": "docs"
+  },
+  "bookmarks": {
+   "value": "partial",
+   "note": "recent folders (20) and registered move/copy folders",
+   "evidence": [
+    "http://www.massigra.net/massigrahelp/currentver/history.htm",
+    "http://www.massigra.net/massigrahelp/currentver/custom.htm"
+   ],
+   "how": "docs"
+  },
+  "img_modern_formats": {
+   "value": "partial",
+   "note": "BMP, GIF, JPEG, PNG built in; anything else only via Susie plug-ins",
+   "evidence": [
+    "http://www.massigra.net/"
+   ],
+   "how": "docs"
+  },
+  "img_raw": {
+   "value": "partial",
+   "note": "only via Susie plug-ins",
+   "evidence": [
+    "http://www.massigra.net/"
+   ],
+   "how": "docs"
+  },
+  "img_psd_exr": {
+   "value": "partial",
+   "note": "only via Susie plug-ins",
+   "evidence": [
+    "http://www.massigra.net/"
+   ],
+   "how": "docs"
+  },
+  "img_svg_pdf": {
+   "value": "partial",
+   "note": "only via Susie plug-ins",
+   "evidence": [
+    "http://www.massigra.net/"
+   ],
+   "how": "docs"
+  },
+  "img_animated": {
+   "value": "partial",
+   "note": "animated GIF only",
+   "evidence": [
+    "http://www.massigra.net/"
+   ],
+   "how": "docs"
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "evidence": [
+    "http://www.massigra.net/massigrahelp/currentver/keyboard.htm"
+   ],
+   "how": "docs"
+  },
+  "zoom_rotate": {
+   "value": "yes",
+   "evidence": [
+    "http://www.massigra.net/massigrahelp/currentver/m_view.htm"
+   ],
+   "how": "docs"
+  },
+  "slideshow": {
+   "value": "yes",
+   "note": "auto slide, also random order",
+   "evidence": [
+    "http://www.massigra.net/massigrahelp/currentver/m_list.htm",
+    "http://www.massigra.net/massigrahelp/currentver/history.htm"
+   ],
+   "how": "docs"
+  },
+  "slideshow_recursive": {
+   "value": "no",
+   "evidence": [
+    "http://www.massigra.net/massigrahelp/currentver/m_list.htm"
+   ],
+   "how": "docs",
+   "note": "Auto slide pages through the current folder; at the end a \"next\" dialog appears; images only"
+  },
+  "auto_enhance_view": {
+   "value": "partial",
+   "note": "auto contrast / auto levels edit the loaded image; file changes only when saved",
+   "evidence": [
+    "http://www.massigra.net/massigrahelp/currentver/m_image.htm"
+   ],
+   "how": "docs"
+  },
+  "file_info_exif": {
+   "value": "partial",
+   "note": "image info dialog; EXIF not kept on save",
+   "evidence": [
+    "http://www.massigra.net/massigrahelp/currentver/m_image.htm",
+    "http://www.massigra.net/massigrahelp/currentver/specifi.htm"
+   ],
+   "how": "docs"
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "evidence": [
+    "http://www.massigra.net/massigrahelp/currentver/specifi.htm",
+    "http://www.massigra.net/massigrahelp/currentver/m_list.htm"
+   ],
+   "how": "docs",
+   "note": "Decides file type by extension and skips unsupported extensions; no mismatch notice"
+  },
+  "video_native": {
+   "value": "no",
+   "note": "image viewer",
+   "evidence": [
+    "http://www.massigra.net/"
+   ],
+   "how": "docs"
+  },
+  "video_mkv_avi_webm": {
+   "value": "no",
+   "evidence": [
+    "http://www.massigra.net/"
+   ],
+   "how": "docs"
+  },
+  "photos_videos_one_grid": {
+   "value": "no",
+   "evidence": [
+    "http://www.massigra.net/"
+   ],
+   "how": "docs"
+  },
+  "video_skim_arrows": {
+   "value": "no",
+   "evidence": [
+    "http://www.massigra.net/"
+   ],
+   "how": "docs"
+  },
+  "subtitles_embedded": {
+   "value": "no",
+   "evidence": [
+    "http://www.massigra.net/"
+   ],
+   "how": "docs"
+  },
+  "subtitles_external_files": {
+   "value": "no",
+   "evidence": [
+    "http://www.massigra.net/"
+   ],
+   "how": "docs"
+  },
+  "audio_track_choice": {
+   "value": "no",
+   "evidence": [
+    "http://www.massigra.net/"
+   ],
+   "how": "docs"
+  },
+  "playback_speed": {
+   "value": "no",
+   "evidence": [
+    "http://www.massigra.net/"
+   ],
+   "how": "docs"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "evidence": [
+    "http://www.massigra.net/"
+   ],
+   "how": "docs"
+  },
+  "playlist": {
+   "value": "no",
+   "evidence": [
+    "http://www.massigra.net/"
+   ],
+   "how": "docs"
+  },
+  "saved_playlists": {
+   "value": "no",
+   "evidence": [
+    "http://www.massigra.net/"
+   ],
+   "how": "docs"
+  },
+  "pip": {
+   "value": "no",
+   "evidence": [
+    "http://www.massigra.net/"
+   ],
+   "how": "docs"
+  },
+  "music_mode": {
+   "value": "no",
+   "evidence": [
+    "http://www.massigra.net/"
+   ],
+   "how": "docs"
+  },
+  "streaming_urls": {
+   "value": "no",
+   "evidence": [
+    "http://www.massigra.net/"
+   ],
+   "how": "docs"
+  },
+  "online_subtitles": {
+   "value": "no",
+   "evidence": [
+    "http://www.massigra.net/"
+   ],
+   "how": "docs"
+  },
+  "video_filters_enhance": {
+   "value": "no",
+   "evidence": [
+    "http://www.massigra.net/"
+   ],
+   "how": "docs"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "note": "Windows only",
+   "evidence": [
+    "http://www.massigra.net/"
+   ],
+   "how": "docs"
+  },
+  "archives_as_folders": {
+   "value": "partial",
+   "note": "only with Susie archive plug-ins; no nested archives",
+   "evidence": [
+    "http://www.massigra.net/",
+    "http://www.massigra.net/massigrahelp/currentver/specifi.htm"
+   ],
+   "how": "docs"
+  },
+  "comics_cbz_cbr": {
+   "value": "partial",
+   "note": "only with Susie plug-ins",
+   "evidence": [
+    "http://www.massigra.net/massigrahelp/currentver/faq.htm"
+   ],
+   "how": "docs"
+  },
+  "archive_passwords": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Help (faq.htm, specifi.htm) says archive reading is left entirely to Susie plug-ins; password handling not documented"
+  },
+  "split_archives": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Help (faq.htm, specifi.htm) says archive reading is left entirely to Susie plug-ins; split archives not documented"
+  },
+  "videos_in_archives": {
+   "value": "no",
+   "evidence": [
+    "http://www.massigra.net/"
+   ],
+   "how": "docs"
+  },
+  "manga_two_page": {
+   "value": "yes",
+   "note": "manga mode joins two pages, right-to-left option",
+   "evidence": [
+    "http://www.massigra.net/massigrahelp/currentver/m_view.htm",
+    "http://www.massigra.net/massigrahelp/currentver/custom.htm"
+   ],
+   "how": "docs"
+  },
+  "rename_trash": {
+   "value": "yes",
+   "note": "rename, delete to Recycle Bin or directly",
+   "evidence": [
+    "http://www.massigra.net/massigrahelp/currentver/m_file.htm",
+    "http://www.massigra.net/massigrahelp/currentver/custom.htm"
+   ],
+   "how": "docs"
+  },
+  "move_copy": {
+   "value": "yes",
+   "note": "move/copy dialog and registered target folders",
+   "evidence": [
+    "http://www.massigra.net/massigrahelp/currentver/m_file.htm",
+    "http://www.massigra.net/massigrahelp/currentver/custom.htm"
+   ],
+   "how": "docs"
+  },
+  "dual_pane": {
+   "value": "no",
+   "evidence": [
+    "http://www.massigra.net/massigrahelp/currentver/about.htm"
+   ],
+   "how": "docs"
+  },
+  "undo_file_actions": {
+   "value": "no",
+   "note": "undo covers image edits only",
+   "evidence": [
+    "http://www.massigra.net/massigrahelp/currentver/m_edit.htm"
+   ],
+   "how": "docs"
+  },
+  "image_editing": {
+   "value": "yes",
+   "note": "resize, rotate, levels, colour, sharpen, crop, save",
+   "evidence": [
+    "http://www.massigra.net/massigrahelp/currentver/m_image.htm",
+    "http://www.massigra.net/massigrahelp/currentver/m_edit.htm"
+   ],
+   "how": "docs"
+  },
+  "batch_convert": {
+   "value": "no",
+   "evidence": [
+    "http://www.massigra.net/massigrahelp/currentver/menulist.htm"
+   ],
+   "how": "docs",
+   "note": "No batch conversion or batch rename in the complete menu list"
+  },
+  "library_catalog": {
+   "value": "no",
+   "evidence": [
+    "http://www.massigra.net/massigrahelp/currentver/about.htm"
+   ],
+   "how": "docs"
+  },
+  "cloud_sync": {
+   "value": "no",
+   "evidence": [
+    "http://www.massigra.net/massigrahelp/currentver/about.htm"
+   ],
+   "how": "docs"
+  },
+  "keyboard_first": {
+   "value": "yes",
+   "evidence": [
+    "http://www.massigra.net/massigrahelp/currentver/keyboard.htm"
+   ],
+   "how": "docs"
+  },
+  "custom_shortcuts": {
+   "value": "yes",
+   "note": "key and mouse settings",
+   "evidence": [
+    "http://www.massigra.net/massigrahelp/currentver/m_option.htm",
+    "http://www.massigra.net/massigrahelp/currentver/custom.htm"
+   ],
+   "how": "docs"
+  },
+  "shortcut_cheatsheet": {
+   "value": "partial",
+   "note": "keyboard page in the online help",
+   "evidence": [
+    "http://www.massigra.net/massigrahelp/currentver/keyboard.htm"
+   ],
+   "how": "docs"
+  },
+  "boss_key": {
+   "value": "no",
+   "evidence": [
+    "http://www.massigra.net/massigrahelp/currentver/menulist.htm",
+    "http://www.massigra.net/massigrahelp/currentver/keyboard.htm"
+   ],
+   "how": "docs",
+   "note": "Only a window minimize command; no hide-all key"
+  },
+  "app_sandbox": {
+   "value": "no",
+   "note": "Windows only",
+   "evidence": [
+    "http://www.massigra.net/"
+   ],
+   "how": "docs"
+  },
+  "no_network": {
+   "value": "partial",
+   "evidence": [
+    "http://www.massigra.net/massigrahelp/currentver/m_option.htm",
+    "http://www.massigra.net/massigrahelp/currentver/menulist.htm"
+   ],
+   "how": "docs",
+   "note": "Help opens the online help in the browser; no other online feature in the menu list"
+  },
+  "notarized_attested": {
+   "value": "no",
+   "note": "Windows only",
+   "evidence": [
+    "http://www.massigra.net/"
+   ],
+   "how": "docs"
+  },
+  "mac_app_store": {
+   "value": "no",
+   "evidence": [
+    "http://www.massigra.net/"
+   ],
+   "how": "docs"
+  }
+ }
+}

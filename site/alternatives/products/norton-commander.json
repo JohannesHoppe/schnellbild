@@ -1,0 +1,533 @@
+{
+ "name": "Norton Commander",
+ "short": "Norton Commander",
+ "vendor": "Peter Norton Computing / Symantec",
+ "website": "https://en.wikipedia.org/wiki/Norton_Commander",
+ "platforms": [
+  "MS-DOS",
+  "Windows (NC for Windows 2.01)",
+  "OS/2"
+ ],
+ "mac_available": "no",
+ "page": "switcher",
+ "section": "windows",
+ "price": "Discontinued; was commercial (NC 3.0 $149, NC 4.0 $99 SRP)",
+ "license": "proprietary",
+ "current_version": "5.51 (DOS)",
+ "last_update": "1998-07-01",
+ "engine": "Text-mode viewers (F3), separate per-format viewer programs",
+ "category": "file-manager",
+ "summary": "The original orthodox two-panel file manager for MS-DOS (1986-1998), which set the F3 view, F5 copy, F6 move layout copied by Total Commander, Midnight Commander and many others. Still widely searched out of nostalgia; it only runs in DOS or emulators today.",
+ "where_it_wins": [
+  "Defined the two-panel, F-key workflow",
+  "Tiny and fast in text mode",
+  "Directory synchronisation and File Finder with panelized results"
+ ],
+ "where_schnellbild_wins": [
+  "Runs natively on current Macs",
+  "Shows images and plays videos (NC is text mode)",
+  "Thumbnails, slideshow, modern formats, RAW, archives incl. RAR/7z",
+  "Maintained, free and open source",
+  "Keeps the Norton Commander-style dual pane with F5/F6"
+ ],
+ "search_terms": [
+  "norton commander mac",
+  "norton commander for mac",
+  "norton commander alternative",
+  "norton commander macos",
+  "norton commander clone mac",
+  "norton commander für mac",
+  "norton commander download",
+  "norton commander альтернатива"
+ ],
+ "matrix": {
+  "free": {
+   "value": "no",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Norton_Commander",
+    "https://softpanorama.org/OFM/Paradigm/Ch03/norton_commander.shtml"
+   ],
+   "how": "docs",
+   "note": "Discontinued commercial software (NC 4.0 was $99 SRP); not sold any more."
+  },
+  "open_source": {
+   "value": "no",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Norton_Commander"
+   ],
+   "how": "docs",
+   "note": "Proprietary."
+  },
+  "native_apple_silicon": {
+   "value": "no",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Norton_Commander"
+   ],
+   "how": "docs",
+   "note": "MS-DOS (5.51, 1998); Windows edition 2.01; no Mac version."
+  },
+  "no_account_no_tracking": {
+   "value": "yes",
+   "note": "DOS program from 1986-1998 sold as boxed software; no accounts",
+   "evidence": [
+    "https://softpanorama.org/OFM/Paradigm/Ch03/norton_commander.shtml"
+   ],
+   "how": "docs"
+  },
+  "dark_light_setting": {
+   "value": "partial",
+   "evidence": [
+    "https://softpanorama.org/OFM/Paradigm/Ch03/norton_commander.shtml"
+   ],
+   "how": "docs",
+   "note": "Configurable colour schemes (NCOLOUR); classic blue text-mode look."
+  },
+  "languages_20": {
+   "value": "partial",
+   "note": "English original plus separately sold localized editions (almost 30 releases counting them); no switchable UI language, count unknown",
+   "evidence": [
+    "https://softpanorama.org/OFM/Paradigm/Ch03/norton_commander.shtml"
+   ],
+   "how": "docs"
+  },
+  "folder_browsing": {
+   "value": "yes",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Norton_Commander"
+   ],
+   "how": "docs"
+  },
+  "thumbnail_grid": {
+   "value": "no",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Norton_Commander"
+   ],
+   "how": "docs",
+   "note": "Text-mode panels."
+  },
+  "list_view": {
+   "value": "yes",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Norton_Commander"
+   ],
+   "how": "docs",
+   "note": "Brief/full file panels."
+  },
+  "recursive_search": {
+   "value": "yes",
+   "evidence": [
+    "https://softpanorama.org/OFM/Paradigm/Ch03/norton_commander.shtml"
+   ],
+   "how": "docs",
+   "note": "File Finder searches subdirectories, results in a panel."
+  },
+  "regex_search": {
+   "value": "yes",
+   "note": "NC 5.5 File Finder: regular expressions (whats.new quoted)",
+   "evidence": [
+    "https://softpanorama.org/OFM/Paradigm/Ch03/norton_commander.shtml"
+   ],
+   "how": "docs"
+  },
+  "network_shares_fast": {
+   "value": "partial",
+   "evidence": [
+    "https://softpanorama.org/OFM/Paradigm/Ch03/norton_commander.shtml"
+   ],
+   "how": "docs",
+   "note": "Network drives as DOS drives; Commander Link over serial/parallel cable."
+  },
+  "multiple_windows": {
+   "value": "no",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Norton_Commander"
+   ],
+   "how": "docs",
+   "note": "Single full-screen text UI."
+  },
+  "bookmarks": {
+   "value": "no",
+   "note": "Feature lists for NC 3.0-5.5 on softpanorama do not mention a directory hotlist; not conclusive",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "img_modern_formats": {
+   "value": "no",
+   "evidence": [
+    "https://softpanorama.org/OFM/Paradigm/Ch03/norton_commander.shtml"
+   ],
+   "how": "docs",
+   "note": "Graphics viewers of the era (PCX and similar) only."
+  },
+  "img_raw": {
+   "value": "no",
+   "evidence": [
+    "https://softpanorama.org/OFM/Paradigm/Ch03/norton_commander.shtml"
+   ],
+   "how": "docs"
+  },
+  "img_psd_exr": {
+   "value": "no",
+   "note": "Graphics viewers: PCX, GIF, BMP, TIFF, ICO (NC 4.0 press release)",
+   "evidence": [
+    "https://softpanorama.org/OFM/Paradigm/Ch03/norton_commander.shtml"
+   ],
+   "how": "docs"
+  },
+  "img_svg_pdf": {
+   "value": "no",
+   "note": "Graphics viewers: PCX, GIF, BMP, TIFF, ICO only",
+   "evidence": [
+    "https://softpanorama.org/OFM/Paradigm/Ch03/norton_commander.shtml"
+   ],
+   "how": "docs"
+  },
+  "img_animated": {
+   "value": "no",
+   "note": "GIF viewer exists; whether it animates is not documented",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "keyboard_paging": {
+   "value": "partial",
+   "evidence": [
+    "https://softpanorama.org/OFM/Paradigm/Ch03/norton_commander.shtml"
+   ],
+   "how": "docs",
+   "note": "Quick view follows the cursor through the panel."
+  },
+  "zoom_rotate": {
+   "value": "no",
+   "note": "Only \"Zoom\" from half-screen Quick View to full screen is documented; image zoom/rotate unknown",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "slideshow": {
+   "value": "no",
+   "note": "Not in the NC feature lists on softpanorama; not conclusive",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "slideshow_recursive": {
+   "value": "no",
+   "note": "Not in the NC feature lists on softpanorama; not conclusive",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "auto_enhance_view": {
+   "value": "no",
+   "note": "Not documented",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "file_info_exif": {
+   "value": "no",
+   "note": "Not documented (viewer files dated 1995, EXIF readers not mentioned)",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "note": "Not documented",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "video_native": {
+   "value": "no",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Norton_Commander"
+   ],
+   "how": "docs",
+   "note": "DOS text-mode file manager, no media playback."
+  },
+  "video_mkv_avi_webm": {
+   "value": "no",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Norton_Commander"
+   ],
+   "how": "docs",
+   "note": "DOS text-mode file manager, no media playback."
+  },
+  "photos_videos_one_grid": {
+   "value": "no",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Norton_Commander"
+   ],
+   "how": "docs",
+   "note": "DOS text-mode file manager, no media playback."
+  },
+  "video_skim_arrows": {
+   "value": "no",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Norton_Commander"
+   ],
+   "how": "docs",
+   "note": "DOS text-mode file manager, no media playback."
+  },
+  "subtitles_embedded": {
+   "value": "no",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Norton_Commander"
+   ],
+   "how": "docs",
+   "note": "DOS text-mode file manager, no media playback."
+  },
+  "subtitles_external_files": {
+   "value": "no",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Norton_Commander"
+   ],
+   "how": "docs",
+   "note": "DOS text-mode file manager, no media playback."
+  },
+  "audio_track_choice": {
+   "value": "no",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Norton_Commander"
+   ],
+   "how": "docs",
+   "note": "DOS text-mode file manager, no media playback."
+  },
+  "playback_speed": {
+   "value": "no",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Norton_Commander"
+   ],
+   "how": "docs",
+   "note": "DOS text-mode file manager, no media playback."
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Norton_Commander"
+   ],
+   "how": "docs",
+   "note": "DOS text-mode file manager, no media playback."
+  },
+  "playlist": {
+   "value": "no",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Norton_Commander"
+   ],
+   "how": "docs",
+   "note": "DOS text-mode file manager, no media playback."
+  },
+  "saved_playlists": {
+   "value": "no",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Norton_Commander"
+   ],
+   "how": "docs",
+   "note": "DOS text-mode file manager, no media playback."
+  },
+  "pip": {
+   "value": "no",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Norton_Commander"
+   ],
+   "how": "docs",
+   "note": "DOS text-mode file manager, no media playback."
+  },
+  "music_mode": {
+   "value": "no",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Norton_Commander"
+   ],
+   "how": "docs",
+   "note": "DOS text-mode file manager, no media playback."
+  },
+  "streaming_urls": {
+   "value": "no",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Norton_Commander"
+   ],
+   "how": "docs",
+   "note": "DOS text-mode file manager, no media playback."
+  },
+  "online_subtitles": {
+   "value": "no",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Norton_Commander"
+   ],
+   "how": "docs",
+   "note": "DOS text-mode file manager, no media playback."
+  },
+  "video_filters_enhance": {
+   "value": "no",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Norton_Commander"
+   ],
+   "how": "docs",
+   "note": "DOS text-mode file manager, no media playback."
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Norton_Commander"
+   ],
+   "how": "docs",
+   "note": "DOS text-mode file manager, no media playback."
+  },
+  "archives_as_folders": {
+   "value": "yes",
+   "evidence": [
+    "https://softpanorama.org/OFM/Paradigm/Ch03/norton_commander.shtml"
+   ],
+   "how": "docs",
+   "note": "NC 5.0 archive VFS (ZIP); ARJ/LZH etc. via external packers."
+  },
+  "comics_cbz_cbr": {
+   "value": "no",
+   "note": "No comic reader; archive support ZIP, ARC, ARJ, PAK, LHA, ZOO (no RAR)",
+   "evidence": [
+    "https://softpanorama.org/OFM/Paradigm/Ch03/norton_commander.shtml"
+   ],
+   "how": "docs"
+  },
+  "archive_passwords": {
+   "value": "no",
+   "note": "Not documented",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "split_archives": {
+   "value": "partial",
+   "note": "NC 5.5 File Split and Merge utility for big files; multi-volume archives not documented",
+   "evidence": [
+    "https://softpanorama.org/OFM/Paradigm/Ch03/norton_commander.shtml"
+   ],
+   "how": "docs"
+  },
+  "videos_in_archives": {
+   "value": "no",
+   "evidence": [
+    "https://softpanorama.org/OFM/Paradigm/Ch03/norton_commander.shtml"
+   ],
+   "how": "docs"
+  },
+  "manga_two_page": {
+   "value": "no",
+   "note": "Not documented",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "rename_trash": {
+   "value": "partial",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Norton_Commander"
+   ],
+   "how": "docs",
+   "note": "Rename, delete, make dir; no trash in DOS."
+  },
+  "move_copy": {
+   "value": "yes",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Norton_Commander"
+   ],
+   "how": "docs"
+  },
+  "dual_pane": {
+   "value": "yes",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Norton_Commander",
+    "https://softpanorama.org/OFM/Paradigm/Ch03/norton_commander.shtml"
+   ],
+   "how": "docs",
+   "note": "Origin of the two-panel layout and F5/F6 keys."
+  },
+  "undo_file_actions": {
+   "value": "no",
+   "note": "Not documented",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "image_editing": {
+   "value": "no",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Norton_Commander"
+   ],
+   "how": "docs"
+  },
+  "batch_convert": {
+   "value": "no",
+   "note": "Not documented",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "library_catalog": {
+   "value": "no",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Norton_Commander"
+   ],
+   "how": "docs"
+  },
+  "cloud_sync": {
+   "value": "no",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Norton_Commander"
+   ],
+   "how": "docs",
+   "note": "DOS version has no internet features."
+  },
+  "keyboard_first": {
+   "value": "yes",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Norton_Commander"
+   ],
+   "how": "docs",
+   "note": "F1-F10 key bar, mouse optional."
+  },
+  "custom_shortcuts": {
+   "value": "partial",
+   "evidence": [
+    "https://softpanorama.org/OFM/Paradigm/Ch03/norton_commander.shtml"
+   ],
+   "how": "docs",
+   "note": "User menu (nc.mnu) with one-letter hotkeys."
+  },
+  "shortcut_cheatsheet": {
+   "value": "yes",
+   "evidence": [
+    "https://softpanorama.org/OFM/Paradigm/Ch03/norton_commander.shtml"
+   ],
+   "how": "docs",
+   "note": "Shipped with a printed keyboard reference card."
+  },
+  "boss_key": {
+   "value": "no",
+   "note": "Not documented",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "app_sandbox": {
+   "value": "no",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Norton_Commander"
+   ],
+   "how": "docs",
+   "note": "DOS program."
+  },
+  "no_network": {
+   "value": "partial",
+   "note": "No internet features, but ships Novell LAN utilities, Commander Link, Commander Mail (MCI Mail) and the Term95 modem terminal (CompuServe)",
+   "evidence": [
+    "https://softpanorama.org/OFM/Paradigm/Ch03/norton_commander.shtml"
+   ],
+   "how": "docs"
+  },
+  "notarized_attested": {
+   "value": "no",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Norton_Commander"
+   ],
+   "how": "docs"
+  },
+  "mac_app_store": {
+   "value": "no",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Norton_Commander"
+   ],
+   "how": "docs"
+  }
+ }
+}

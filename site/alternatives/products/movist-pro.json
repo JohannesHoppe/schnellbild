@@ -1,0 +1,554 @@
+{
+ "name": "Movist Pro",
+ "short": "Movist Pro",
+ "vendor": "Movist",
+ "website": "https://movistprime.com/",
+ "platforms": [
+  "macOS"
+ ],
+ "mac_available": "yes",
+ "page": "matrix",
+ "section": "video",
+ "price": "Movist Pro $17.99 one-time (direct); Movist $9.99 (Mac App Store); Movist Pro in Setapp subscription",
+ "license": "proprietary",
+ "current_version": "2.21.1 (direct); Movist 2.20.0 in the Mac App Store",
+ "last_update": "2026-10-17 (App Store 2.20.0); 2.21.1 later, date not shown",
+ "engine": "FFmpeg or AVFoundation (selectable per codec), VideoToolbox",
+ "category": "video",
+ "summary": "A polished paid video player for watching movies and series, with strong subtitle handling (several subtitle tracks at once, per-language styles), HDR/Dolby Vision tone mapping and AirPlay of any format. Pro adds network servers, YouTube and web media and Picture in Picture.",
+ "where_it_wins": [
+  "Advanced subtitle styling and dual subtitles",
+  "HDR and Dolby Vision tone mapping",
+  "AirPlay of formats Apple TV can't play natively",
+  "Network servers (SMB, SFTP, FTP, WebDAV), YouTube, PiP (Pro)",
+  "Saved playlists, audio equalizer"
+ ],
+ "where_schnellbild_wins": [
+  "Free, open source, no Pro tier",
+  "Photos and videos together in one grid with folder browsing",
+  "Slideshow through subfolders",
+  "Archives (ZIP/RAR/7z) as folders, videos inside them",
+  "Dual pane file sorting",
+  "Never goes online"
+ ],
+ "search_terms": [
+  "movist pro alternative",
+  "movist mac",
+  "movist pro free alternative",
+  "movist vs iina",
+  "movist alternative kostenlos"
+ ],
+ "matrix": {
+  "free": {
+   "value": "no",
+   "evidence": [
+    "https://movistprime.com/en/pricing.html"
+   ],
+   "how": "docs",
+   "note": "Movist Pro $17.99 one-time (direct, since 2026-08-15); Movist $9.99 Mac App Store; also in Setapp subscription"
+  },
+  "open_source": {
+   "value": "no",
+   "evidence": [
+    "https://movistprime.com/"
+   ],
+   "how": "docs"
+  },
+  "native_apple_silicon": {
+   "value": "yes",
+   "evidence": [
+    "https://apps.apple.com/us/app/movist/id461788075?mt=12"
+   ],
+   "how": "store",
+   "note": "'Ready for Apple Silicon'"
+  },
+  "no_account_no_tracking": {
+   "value": "yes",
+   "evidence": [
+    "https://apps.apple.com/us/app/movist/id461788075?mt=12"
+   ],
+   "how": "store",
+   "note": "App Store privacy label 'Data Not Collected'; no ads"
+  },
+  "dark_light_setting": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://movistprime.com/"
+   ],
+   "note": "Site: supports macOS light and dark themes; an in-app setting apart from the system is not documented"
+  },
+  "languages_20": {
+   "value": "partial",
+   "evidence": [
+    "https://apps.apple.com/us/app/movist/id461788075?mt=12",
+    "https://setapp.com/apps/movist-pro"
+   ],
+   "how": "store",
+   "note": "6: English, Japanese, Korean, Russian, Simplified and Traditional Chinese"
+  },
+  "folder_browsing": {
+   "value": "partial",
+   "evidence": [
+    "https://movistprime.com/en/faqs.html",
+    "https://movistprime.com/en/changelog.html"
+   ],
+   "how": "docs",
+   "note": "Auto-fills playlist with series/subtitle files from the folder; Pro has a network file browser (SMB/SFTP/FTP/WebDAV)"
+  },
+  "thumbnail_grid": {
+   "value": "no",
+   "evidence": [
+    "https://movistprime.com/"
+   ],
+   "how": "docs"
+  },
+  "list_view": {
+   "value": "no",
+   "evidence": [
+    "https://movistprime.com/"
+   ],
+   "how": "docs",
+   "note": "Playlist list only"
+  },
+  "recursive_search": {
+   "value": "no",
+   "evidence": [
+    "https://movistprime.com/"
+   ],
+   "how": "docs"
+  },
+  "regex_search": {
+   "value": "no",
+   "evidence": [
+    "https://movistprime.com/"
+   ],
+   "how": "docs"
+  },
+  "network_shares_fast": {
+   "value": "partial",
+   "evidence": [
+    "https://movistprime.com/",
+    "https://movistprime.com/en/pricing.html"
+   ],
+   "how": "docs",
+   "note": "Pro plays directly from SMB, SFTP, FTP, WebDAV servers"
+  },
+  "multiple_windows": {
+   "value": "yes",
+   "evidence": [
+    "https://apps.apple.com/us/app/movist/id461788075?mt=12"
+   ],
+   "how": "store",
+   "note": "Single Window Mode or Multiple Document Mode"
+  },
+  "bookmarks": {
+   "value": "no",
+   "evidence": [
+    "https://movistprime.com/en/faqs.html"
+   ],
+   "how": "docs",
+   "note": "'Accessible Folders' are sandbox permissions, not favourites"
+  },
+  "img_modern_formats": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/movist/id461788075?mt=12"
+   ],
+   "note": "Store feature list covers video, audio and subtitles only"
+  },
+  "img_raw": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/movist/id461788075?mt=12"
+   ],
+   "note": "No image formats in the store feature list"
+  },
+  "img_psd_exr": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/movist/id461788075?mt=12"
+   ],
+   "note": "No image formats in the store feature list"
+  },
+  "img_svg_pdf": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/movist/id461788075?mt=12"
+   ],
+   "note": "No image formats in the store feature list"
+  },
+  "img_animated": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/movist/id461788075?mt=12"
+   ],
+   "note": "No image formats in the store feature list"
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "evidence": [
+    "https://movistprime.com/en/changelog.html"
+   ],
+   "how": "changelog",
+   "note": "Next/previous file in the playlist by shortcut"
+  },
+  "zoom_rotate": {
+   "value": "partial",
+   "evidence": [
+    "https://movistprime.com/"
+   ],
+   "how": "docs",
+   "note": "Video only: zoom, rotate, flip"
+  },
+  "slideshow": {
+   "value": "no",
+   "evidence": [
+    "https://movistprime.com/"
+   ],
+   "how": "docs"
+  },
+  "slideshow_recursive": {
+   "value": "no",
+   "evidence": [
+    "https://movistprime.com/"
+   ],
+   "how": "docs"
+  },
+  "auto_enhance_view": {
+   "value": "partial",
+   "evidence": [
+    "https://movistprime.com/"
+   ],
+   "how": "docs",
+   "note": "Video only: Core Image filters"
+  },
+  "file_info_exif": {
+   "value": "partial",
+   "evidence": [
+    "https://movistprime.com/en/changelog.html"
+   ],
+   "how": "changelog",
+   "note": "Inspector window with track/codec info; no EXIF"
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://movistprime.com/en/changelog.html"
+   ],
+   "note": "Not mentioned"
+  },
+  "video_native": {
+   "value": "yes",
+   "evidence": [
+    "https://apps.apple.com/us/app/movist/id461788075?mt=12"
+   ],
+   "how": "store"
+  },
+  "video_mkv_avi_webm": {
+   "value": "yes",
+   "evidence": [
+    "https://apps.apple.com/us/app/movist/id461788075?mt=12"
+   ],
+   "how": "store",
+   "note": "FFmpeg decoder for 'various file formats'"
+  },
+  "photos_videos_one_grid": {
+   "value": "no",
+   "evidence": [
+    "https://movistprime.com/"
+   ],
+   "how": "docs"
+  },
+  "video_skim_arrows": {
+   "value": "yes",
+   "evidence": [
+    "https://movistprime.com/en/changelog.html"
+   ],
+   "how": "changelog",
+   "note": "Left/Right arrow keys seek (media keys can be mapped to them)"
+  },
+  "subtitles_embedded": {
+   "value": "yes",
+   "evidence": [
+    "https://apps.apple.com/us/app/movist/id461788075?mt=12"
+   ],
+   "how": "store"
+  },
+  "subtitles_external_files": {
+   "value": "yes",
+   "evidence": [
+    "https://movistprime.com/en/faqs.html"
+   ],
+   "how": "docs",
+   "note": "Finds subtitle files in the same folder automatically"
+  },
+  "audio_track_choice": {
+   "value": "yes",
+   "evidence": [
+    "https://movistprime.com/"
+   ],
+   "how": "docs",
+   "note": "Even several tracks at once"
+  },
+  "playback_speed": {
+   "value": "yes",
+   "evidence": [
+    "https://movistprime.com/en/pricing.html"
+   ],
+   "how": "docs"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://movistprime.com/",
+    "https://movistprime.com/en/changelog.html"
+   ],
+   "note": "Auto-hiding controllers and optional centered controls; free placement not documented"
+  },
+  "playlist": {
+   "value": "yes",
+   "evidence": [
+    "https://apps.apple.com/us/app/movist/id461788075?mt=12"
+   ],
+   "how": "store",
+   "note": "Auto-filling playlist, shuffle and repeat"
+  },
+  "saved_playlists": {
+   "value": "yes",
+   "evidence": [
+    "https://movistprime.com/"
+   ],
+   "how": "docs",
+   "note": "'You can save the playlist and recall it later'"
+  },
+  "pip": {
+   "value": "partial",
+   "evidence": [
+    "https://movistprime.com/en/pricing.html"
+   ],
+   "how": "docs",
+   "note": "Movist Pro only"
+  },
+  "music_mode": {
+   "value": "partial",
+   "evidence": [
+    "https://movistprime.com/"
+   ],
+   "how": "docs",
+   "note": "Plays music files with equalizer; no library"
+  },
+  "streaming_urls": {
+   "value": "partial",
+   "evidence": [
+    "https://movistprime.com/en/pricing.html",
+    "https://movistprime.com/en/changelog.html"
+   ],
+   "how": "docs",
+   "note": "Pro only: Open URL, YouTube/Twitch and web media, browser extensions"
+  },
+  "online_subtitles": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/movist/id461788075?mt=12",
+    "https://movistprime.com/en/changelog.html"
+   ],
+   "note": "Detailed subtitle feature list has no online search; only YouTube subtitles"
+  },
+  "video_filters_enhance": {
+   "value": "yes",
+   "evidence": [
+    "https://movistprime.com/"
+   ],
+   "how": "docs",
+   "note": "Core Image filters, HDR tone mapping"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://movistprime.com/en/changelog.html"
+   ],
+   "note": "No Quick Look extension mentioned"
+  },
+  "archives_as_folders": {
+   "value": "no",
+   "evidence": [
+    "https://apps.apple.com/us/app/movist/id461788075?mt=12"
+   ],
+   "how": "store",
+   "note": "Only reads subtitle files compressed in .zip/.rar"
+  },
+  "comics_cbz_cbr": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/movist/id461788075?mt=12"
+   ],
+   "note": "Video player; archives only for subtitles"
+  },
+  "archive_passwords": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/movist/id461788075?mt=12"
+   ],
+   "note": "Only subtitles inside .zip/.rar are supported"
+  },
+  "split_archives": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/movist/id461788075?mt=12"
+   ],
+   "note": "Only subtitles inside .zip/.rar are supported"
+  },
+  "videos_in_archives": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/movist/id461788075?mt=12"
+   ],
+   "note": "Only subtitles inside .zip/.rar are supported"
+  },
+  "manga_two_page": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/movist/id461788075?mt=12"
+   ],
+   "note": "No image support"
+  },
+  "rename_trash": {
+   "value": "partial",
+   "evidence": [
+    "https://apps.apple.com/us/app/movist/id461788075?mt=12"
+   ],
+   "how": "store",
+   "note": "Delete the current file from the File menu (2.14); no rename/new folder"
+  },
+  "move_copy": {
+   "value": "no",
+   "evidence": [
+    "https://movistprime.com/"
+   ],
+   "how": "docs"
+  },
+  "dual_pane": {
+   "value": "no",
+   "evidence": [
+    "https://movistprime.com/"
+   ],
+   "how": "docs"
+  },
+  "undo_file_actions": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://movistprime.com/en/changelog.html"
+   ],
+   "note": "Move to Trash exists; undo not documented"
+  },
+  "image_editing": {
+   "value": "no",
+   "evidence": [
+    "https://movistprime.com/"
+   ],
+   "how": "docs"
+  },
+  "batch_convert": {
+   "value": "no",
+   "evidence": [
+    "https://movistprime.com/"
+   ],
+   "how": "docs"
+  },
+  "library_catalog": {
+   "value": "no",
+   "evidence": [
+    "https://movistprime.com/"
+   ],
+   "how": "docs"
+  },
+  "cloud_sync": {
+   "value": "no",
+   "evidence": [
+    "https://movistprime.com/"
+   ],
+   "how": "docs"
+  },
+  "keyboard_first": {
+   "value": "partial",
+   "evidence": [
+    "https://movistprime.com/"
+   ],
+   "how": "docs",
+   "note": "Customizable shortcuts for playback; no file browsing"
+  },
+  "custom_shortcuts": {
+   "value": "yes",
+   "evidence": [
+    "https://movistprime.com/"
+   ],
+   "how": "docs",
+   "note": "'You can customize shortcut keys'"
+  },
+  "shortcut_cheatsheet": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://movistprime.com/"
+   ],
+   "note": "Shortcuts are customizable in Preferences; no printable list found"
+  },
+  "boss_key": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://movistprime.com/en/changelog.html"
+   ],
+   "note": "Esc can close media (option); no hide-and-pause key documented"
+  },
+  "app_sandbox": {
+   "value": "partial",
+   "evidence": [
+    "https://movistprime.com/en/faqs.html",
+    "https://movistprime.com/en/pricing.html"
+   ],
+   "how": "docs",
+   "note": "App Store Movist is sandboxed; Pro advertises 'No Access Folder Permissions Required'"
+  },
+  "no_network": {
+   "value": "no",
+   "evidence": [
+    "https://movistprime.com/en/pricing.html"
+   ],
+   "how": "docs",
+   "note": "YouTube/web media, network servers, AirPlay; Pro license"
+  },
+  "notarized_attested": {
+   "value": "partial",
+   "how": "unverified",
+   "evidence": [
+    "https://movistprime.com/en/pricing.html"
+   ],
+   "note": "Closed source; notarization of the direct download not documented"
+  },
+  "mac_app_store": {
+   "value": "partial",
+   "evidence": [
+    "https://apps.apple.com/us/app/movist/id461788075?mt=12"
+   ],
+   "how": "store",
+   "note": "Only the smaller 'Movist' ($9.99); Pro is sold direct and via Setapp"
+  }
+ }
+}

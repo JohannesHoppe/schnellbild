@@ -1,0 +1,562 @@
+{
+ "name": "Honeyview (꿀뷰)",
+ "short": "Honeyview",
+ "vendor": "Bandisoft International Inc. (Seoul)",
+ "website": "https://www.bandisoft.com/honeyview/",
+ "platforms": [
+  "Windows"
+ ],
+ "mac_available": "no",
+ "page": "switcher",
+ "section": "windows",
+ "price": "Free (freeware)",
+ "license": "Proprietary freeware",
+ "current_version": "5.53",
+ "last_update": "2024-06-21",
+ "engine": "n/a (image viewer, no video)",
+ "category": "comic",
+ "summary": "Lightweight, fast freeware image viewer that for years was Korea's default comic/manga viewer (꿀뷰). Shows images inside ZIP/RAR/7Z without extracting, double-page mode, EXIF with GPS. Discontinued: no more updates; Bandisoft points users to BandiView.",
+ "where_it_wins": [
+  "Very light and fast on old Windows (XP to 11, 32-bit)",
+  "Smart double-page R→L manga mode",
+  "More archive formats (LZH, TAR) and BPG"
+ ],
+ "where_schnellbild_wins": [
+  "Runs natively on the Mac (Apple silicon), Honeyview/BandiView-style viewing without Windows or Wine",
+  "Plays videos (MP4, MOV, MKV, WebM, AVI …) in the same grid and slideshow",
+  "Thumbnail grid with folder previews and list view, recursive name search with regular expressions",
+  "Free with every feature, no ads, open source, App Sandbox, never goes online",
+  "Dual pane with F5/F6 copy/move, undo for file actions",
+  "Actively maintained with security updates; HEIC, AVIF, JPEG XL support"
+ ],
+ "search_terms": [
+  "honeyview mac",
+  "honeyview for mac",
+  "honeyview alternative",
+  "honeyview macos",
+  "꿀뷰 맥",
+  "꿀뷰 맥북",
+  "꿀뷰 맥 버전",
+  "꿀뷰 대체",
+  "맥 꿀뷰",
+  "맥북 만화 뷰어",
+  "맥 이미지 뷰어 추천",
+  "ハニービュー mac"
+ ],
+ "matrix": {
+  "free": {
+   "value": "yes",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/"
+   ],
+   "how": "docs",
+   "note": "Freeware, but discontinued (last version 5.53, June 2024)"
+  },
+  "open_source": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/"
+   ],
+   "how": "docs",
+   "note": "Freeware, proprietary"
+  },
+  "native_apple_silicon": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/"
+   ],
+   "how": "docs",
+   "note": "Windows only (no macOS version)"
+  },
+  "no_account_no_tracking": {
+   "value": "yes",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/"
+   ],
+   "how": "docs",
+   "note": "Freeware, 'No Adware/Spyware'"
+  },
+  "dark_light_setting": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Help, shortcut list and history mention skins (Reopen Skin) but no light/dark choice"
+  },
+  "languages_20": {
+   "value": "yes",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/history/"
+   ],
+   "how": "changelog",
+   "note": "30+ community languages (changelog adds e.g. Belarusian, Thai, Finnish, Kurdish …)"
+  },
+  "folder_browsing": {
+   "value": "yes",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/help/shortcut/"
+   ],
+   "how": "docs",
+   "note": "Opens a folder (F) and pages through it"
+  },
+  "thumbnail_grid": {
+   "value": "partial",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/help/shortcut/",
+    "https://www.bandisoft.com/honeyview/history/"
+   ],
+   "how": "changelog",
+   "note": "No browser grid; an image selection dialog with thumbnails (Enter)"
+  },
+  "list_view": {
+   "value": "partial",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/help/shortcut/"
+   ],
+   "how": "docs",
+   "note": "Image selection dialog lists the folder's files"
+  },
+  "recursive_search": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/"
+   ],
+   "how": "docs",
+   "note": "No file name search inside the viewer"
+  },
+  "regex_search": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/"
+   ],
+   "how": "docs",
+   "note": "No file name search inside the viewer"
+  },
+  "network_shares_fast": {
+   "value": "partial",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/history/"
+   ],
+   "how": "changelog",
+   "note": "Changelog fixes detecting changes in network folders; no speed claims"
+  },
+  "multiple_windows": {
+   "value": "yes",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/help/shortcut/"
+   ],
+   "how": "docs",
+   "note": "New window: Ctrl+N"
+  },
+  "bookmarks": {
+   "value": "partial",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/help/shortcut/"
+   ],
+   "how": "docs",
+   "note": "Image bookmarks (B, F3), not folder favourites; two 'Photo Folders' as copy targets"
+  },
+  "img_modern_formats": {
+   "value": "partial",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/"
+   ],
+   "how": "docs",
+   "note": "WebP only; no HEIC, AVIF or JPEG XL"
+  },
+  "img_raw": {
+   "value": "yes",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/"
+   ],
+   "how": "docs",
+   "note": "DNG, CR2, CRW, NEF, NRW, ORF, RW2, PEF, SR2, RAF (no newer RAW formats)"
+  },
+  "img_psd_exr": {
+   "value": "partial",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/"
+   ],
+   "how": "docs",
+   "note": "PSD yes, EXR no"
+  },
+  "img_svg_pdf": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/"
+   ],
+   "how": "docs"
+  },
+  "img_animated": {
+   "value": "yes",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/"
+   ],
+   "how": "docs",
+   "note": "Animated GIF, WebP, PNG, BPG"
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/help/shortcut/"
+   ],
+   "how": "docs"
+  },
+  "zoom_rotate": {
+   "value": "yes",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/help/shortcut/"
+   ],
+   "how": "docs"
+  },
+  "slideshow": {
+   "value": "yes",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/help/shortcut/"
+   ],
+   "how": "docs",
+   "note": "Ctrl+1…9"
+  },
+  "slideshow_recursive": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/",
+    "https://www.bandisoft.com/honeyview/help/shortcut/"
+   ],
+   "how": "docs",
+   "note": "Images only"
+  },
+  "auto_enhance_view": {
+   "value": "partial",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/help/shortcut/"
+   ],
+   "how": "docs",
+   "note": "Manual view filters (soften/sharpen, gamma, invert); no auto enhance"
+  },
+  "file_info_exif": {
+   "value": "yes",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/",
+    "https://www.bandisoft.com/honeyview/help/shortcut/"
+   ],
+   "how": "docs",
+   "note": "EXIF incl. GPS"
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Not in Honeyview help, shortcut list or history"
+  },
+  "video_native": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/"
+   ],
+   "how": "docs",
+   "note": "Image viewer only; no video formats in the supported list"
+  },
+  "video_mkv_avi_webm": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/"
+   ],
+   "how": "docs",
+   "note": "Image viewer only; no video formats in the supported list"
+  },
+  "photos_videos_one_grid": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/"
+   ],
+   "how": "docs",
+   "note": "Image viewer only; no video formats in the supported list"
+  },
+  "video_skim_arrows": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/"
+   ],
+   "how": "docs",
+   "note": "Image viewer only; no video formats in the supported list"
+  },
+  "subtitles_embedded": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/"
+   ],
+   "how": "docs",
+   "note": "Image viewer only; no video formats in the supported list"
+  },
+  "subtitles_external_files": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/"
+   ],
+   "how": "docs",
+   "note": "Image viewer only; no video formats in the supported list"
+  },
+  "audio_track_choice": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/"
+   ],
+   "how": "docs",
+   "note": "Image viewer only; no video formats in the supported list"
+  },
+  "playback_speed": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/"
+   ],
+   "how": "docs",
+   "note": "Image viewer only; no video formats in the supported list"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/"
+   ],
+   "how": "docs",
+   "note": "Image viewer only; no video formats in the supported list"
+  },
+  "playlist": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/"
+   ],
+   "how": "docs",
+   "note": "Image viewer only; no video formats in the supported list"
+  },
+  "saved_playlists": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/"
+   ],
+   "how": "docs",
+   "note": "Image viewer only; no video formats in the supported list"
+  },
+  "pip": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/"
+   ],
+   "how": "docs",
+   "note": "Image viewer only; no video formats in the supported list"
+  },
+  "music_mode": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/"
+   ],
+   "how": "docs",
+   "note": "Image viewer only; no video formats in the supported list"
+  },
+  "streaming_urls": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/"
+   ],
+   "how": "docs",
+   "note": "Image viewer only; no video formats in the supported list"
+  },
+  "online_subtitles": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/"
+   ],
+   "how": "docs",
+   "note": "Image viewer only; no video formats in the supported list"
+  },
+  "video_filters_enhance": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/"
+   ],
+   "how": "docs",
+   "note": "Image viewer only; no video formats in the supported list"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/"
+   ],
+   "how": "docs",
+   "note": "Image viewer only; no video formats in the supported list"
+  },
+  "archives_as_folders": {
+   "value": "yes",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/"
+   ],
+   "how": "docs",
+   "note": "Images in ZIP, RAR, 7Z, LZH, TAR without extracting"
+  },
+  "comics_cbz_cbr": {
+   "value": "yes",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/"
+   ],
+   "how": "docs"
+  },
+  "archive_passwords": {
+   "value": "yes",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/history/"
+   ],
+   "how": "changelog",
+   "note": "v5.03 fix: \"A password was requested twice when password protected image files were opened\""
+  },
+  "split_archives": {
+   "value": "yes",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/history/"
+   ],
+   "how": "changelog",
+   "note": "v5.03: deleting an image in a split archive deletes the whole split archive set, so split archives open"
+  },
+  "videos_in_archives": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/"
+   ],
+   "how": "docs",
+   "note": "Image viewer only; no video formats in the supported list"
+  },
+  "manga_two_page": {
+   "value": "yes",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/help/shortcut/"
+   ],
+   "how": "docs",
+   "note": "Smart double page L→R and R→L"
+  },
+  "rename_trash": {
+   "value": "partial",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/help/shortcut/"
+   ],
+   "how": "docs",
+   "note": "Delete to Recycle Bin; no rename or new folder shortcut"
+  },
+  "move_copy": {
+   "value": "partial",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/help/shortcut/"
+   ],
+   "how": "docs",
+   "note": "Copy/move to two preset 'Photo Folders'"
+  },
+  "dual_pane": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/"
+   ],
+   "how": "docs"
+  },
+  "undo_file_actions": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/help/shortcut/"
+   ],
+   "how": "docs",
+   "note": "Shortcut list has delete, copy/move to photo folder, no undo"
+  },
+  "image_editing": {
+   "value": "partial",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/",
+    "https://www.bandisoft.com/honeyview/help/shortcut/"
+   ],
+   "how": "docs",
+   "note": "Resize/convert dialog only (Ctrl+T)"
+  },
+  "batch_convert": {
+   "value": "yes",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/"
+   ],
+   "how": "docs",
+   "note": "Batch format conversion with resizing"
+  },
+  "library_catalog": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/"
+   ],
+   "how": "docs",
+   "note": "Folder-based viewer, no catalog database"
+  },
+  "cloud_sync": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/"
+   ],
+   "how": "docs"
+  },
+  "keyboard_first": {
+   "value": "yes",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/help/shortcut/"
+   ],
+   "how": "docs"
+  },
+  "custom_shortcuts": {
+   "value": "yes",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/history/"
+   ],
+   "how": "changelog",
+   "note": "Keyboard/mouse action menu is configurable"
+  },
+  "shortcut_cheatsheet": {
+   "value": "partial",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/help/shortcut/"
+   ],
+   "how": "docs",
+   "note": "Shortcut list on the help website only"
+  },
+  "boss_key": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/help/shortcut/"
+   ],
+   "how": "docs",
+   "note": "Q minimizes one window only"
+  },
+  "app_sandbox": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/"
+   ],
+   "how": "docs",
+   "note": "Windows desktop app; no macOS App Sandbox"
+  },
+  "no_network": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/history/",
+    "https://www.bandisoft.com/honeyview/help/shortcut/"
+   ],
+   "how": "changelog",
+   "note": "Has the Honeyview Updater; \"Show GPS coordinates on map\" opens a web map"
+  },
+  "notarized_attested": {
+   "value": "no",
+   "evidence": [
+    "https://www.bandisoft.com/honeyview/"
+   ],
+   "how": "docs",
+   "note": "Closed source Windows app; no macOS build, no build attestation"
+  },
+  "mac_app_store": {
+   "value": "no",
+   "evidence": [
+    "https://itunes.apple.com/search?term=bandisoft&entity=macSoftware"
+   ],
+   "how": "store",
+   "note": "Not in the Mac App Store"
+  }
+ }
+}

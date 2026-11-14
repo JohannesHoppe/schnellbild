@@ -1,6 +1,7 @@
 {
   "name": "Türkçe",
   "privacySlug": "privacy",
+  "alternativesSlug": "alternatifler",
   "title": "Schnellbild: Mac için sinir bozmayan bir fotoğraf ve video görüntüleyici",
   "seoTitle": "Schnellbild · Mac için fotoğraf görüntüleyici ve MKV oynatıcı",
   "seoDescription": "Mac için hızlı, ücretsiz fotoğraf görüntüleyici ve video oynatıcı: MKV, AVI, WebM, klasör gibi ZIP ve RAR, slayt gösterisi. XnView ve Phiewer alternatifi.",
@@ -140,7 +141,10 @@
   ],
   "safeMore": "Ayrıntılı olarak ne yaptığı ve sınırının nerede olduğu: <a href=\"https://github.com/JohannesHoppe/schnellbild#safe-with-files-from-others\">Başkalarının dosyalarıyla güvenli</a> (İngilizce).",
   "modelsTitle": "Phiewer, IINA veya Norton Commander’dan mı geliyorsunuz?",
-  "modelsText": "Örnek alınanlar onlardı: klavyeyle resimlere göz atmak için Phiewer, videoları hızlıca ele almak için IINA, çift bölme için Norton Commander. Schnellbild karşılaştırmada nasıl (İngilizce): <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-phiewer-alternative\">ücretsiz bir Phiewer alternatifi</a>, <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-iina-alternative-for-looking-through-videos\">videolara göz atmak için ücretsiz bir IINA alternatifi</a>.",
+  "modelsText": "Örnek alınanlar onlardı: klavyeyle resimlere göz atmak için Phiewer, videoları hızlıca ele almak için IINA, çift bölme için Norton Commander. Schnellbild karşılaştırmada nasıl: <a href=\"{alt:phiewer}\">ücretsiz bir Phiewer alternatifi</a>, <a href=\"{alt:iina}\">videolara göz atmak için ücretsiz bir IINA alternatifi</a>, <a href=\"{alt:norton-commander}\">Norton Commander’dan Mac’e</a>.",
+  "altTitle": "Bir alternatif mi arıyorsunuz?",
+  "altText": "Schnellbild, Mac’te aranan programlarla karşılaştırmalı olarak: özellik özellik ve her iddia için bir kaynakla:",
+  "altAll": "Tüm alternatifler",
   "ossTitle": "Açık kaynak",
   "ossText": "Schnellbild, MIT Lisansı altında özgür bir yazılımdır, kaynak kodu <a href=\"https://github.com/JohannesHoppe/schnellbild\">GitHub’da</a>. Bir hata mı buldunuz ya da bir şey mi eksik? <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">Bir issue açın</a>.",
   "languagesText": "Mac’inizin dilinde:",
@@ -149,6 +153,7 @@
   "footerPrivacy": "Gizlilik",
   "footerImprint": "Künye (Impressum)",
   "footerEula": "Lisans sözleşmesi",
+  "footerAlternatives": "Alternatifler",
   "privacy": {
     "title": "Gizlilik politikası",
     "description": "Schnellbild hiçbir kişisel veri toplamaz: hesap yok, analiz yok, izleme yok, ağ erişimi yok.",

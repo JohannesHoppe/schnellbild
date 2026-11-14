@@ -1,6 +1,7 @@
 {
   "name": "Português (Brasil)",
   "privacySlug": "privacy",
+  "alternativesSlug": "alternativas",
   "title": "Schnellbild: um visualizador de fotos e vídeos para Mac que não dá dor de cabeça",
   "seoTitle": "Schnellbild · visualizador de fotos e player MKV para Mac",
   "seoDescription": "Visualizador de fotos e player de vídeo grátis para Mac: MKV e AVI pelo VLC integrado, ZIP, RAR e quadrinhos CBZ como pastas. Alternativa ao XnView.",
@@ -140,7 +141,10 @@
   ],
   "safeMore": "O que ele faz em detalhes, e onde está o limite (em inglês): <a href=\"https://github.com/JohannesHoppe/schnellbild#safe-with-files-from-others\">Seguro com arquivos de outras pessoas</a>.",
   "modelsTitle": "Vem do Phiewer, do IINA ou do Norton Commander?",
-  "modelsText": "Eles foram os modelos: o Phiewer para navegar por imagens pelo teclado, o IINA para lidar com vídeos rapidamente, o Norton Commander para o painel duplo. Como o Schnellbild se compara (em inglês): <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-phiewer-alternative\">uma alternativa gratuita ao Phiewer</a>, <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-iina-alternative-for-looking-through-videos\">uma alternativa gratuita ao IINA para assistir a vídeos</a>.",
+  "modelsText": "Eles foram os modelos: o Phiewer para navegar por imagens pelo teclado, o IINA para lidar com vídeos rapidamente, o Norton Commander para o painel duplo. Como o Schnellbild se compara: <a href=\"{alt:phiewer}\">uma alternativa gratuita ao Phiewer</a>, <a href=\"{alt:iina}\">uma alternativa gratuita ao IINA para assistir a vídeos</a>, <a href=\"{alt:norton-commander}\">do Norton Commander para o Mac</a>.",
+  "altTitle": "Procurando uma alternativa?",
+  "altText": "Como o Schnellbild se compara com os programas que as pessoas procuram no Mac, recurso por recurso e com uma fonte para cada afirmação:",
+  "altAll": "Todas as alternativas",
   "ossTitle": "Código aberto",
   "ossText": "O Schnellbild é software livre sob a Licença MIT, e o código-fonte está <a href=\"https://github.com/JohannesHoppe/schnellbild\">no GitHub</a>. Encontrou um bug ou sentiu falta de algo? <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">Abra uma issue</a>.",
   "languagesText": "No idioma do seu Mac:",
@@ -149,6 +153,7 @@
   "footerPrivacy": "Privacidade",
   "footerImprint": "Aviso legal (Impressum)",
   "footerEula": "Contrato de licença",
+  "footerAlternatives": "Alternativas",
   "privacy": {
     "title": "Política de privacidade",
     "description": "O Schnellbild não coleta dados pessoais: sem conta, sem análises, sem rastreamento, sem acesso à rede.",

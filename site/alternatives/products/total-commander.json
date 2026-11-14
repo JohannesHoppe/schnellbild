@@ -1,0 +1,582 @@
+{
+ "name": "Total Commander",
+ "short": "Total Commander",
+ "vendor": "Ghisler Software GmbH (Christian Ghisler)",
+ "website": "https://www.ghisler.com/",
+ "platforms": [
+  "Windows",
+  "Android"
+ ],
+ "mac_available": "no",
+ "page": "switcher",
+ "section": "windows",
+ "price": "Shareware: EUR 42 + VAT per licence (students EUR 31.50), free updates; Android version free",
+ "license": "proprietary",
+ "current_version": "11.58.1",
+ "last_update": "2026-10-29",
+ "engine": "Lister: own image viewer, DirectShow media player; plugins (WLX) e.g. Imagine",
+ "category": "file-manager",
+ "summary": "The best-known orthodox (two-panel) file manager for Windows, developed since 1993. It is strong on file operations, archives, FTP, multi-rename and directory sync, with the Lister viewer and plugins for images and media.",
+ "where_it_wins": [
+  "Mature dual-pane file management: sync dirs, compare, multi-rename, checksums",
+  "Built-in FTP/FTPS client",
+  "Huge plugin ecosystem (Lister, packer, file system plugins)",
+  "Lister player switches subtitle/audio streams and speed",
+  "Runs on Windows from 95 to 11, plus a free Android app"
+ ],
+ "where_schnellbild_wins": [
+  "Native on macOS (Total Commander has no Mac version)",
+  "Free and open source, no shareware nag",
+  "Modern image formats (HEIC, AVIF, JPEG XL, WebP) and MKV/WebM without plugins or codec packs",
+  "Photos and videos in one thumbnail grid with folder previews",
+  "Recursive slideshow with photos and videos mixed",
+  "App Sandbox, never goes online, provably built from public source"
+ ],
+ "search_terms": [
+  "total commander mac",
+  "total commander for mac",
+  "total commander alternative mac",
+  "total commander macos",
+  "total commander mac os alternative",
+  "total commander für mac",
+  "total commander mac alternative deutsch",
+  "total commander pour mac",
+  "total commander para mac",
+  "total commander для mac"
+ ],
+ "matrix": {
+  "free": {
+   "value": "no",
+   "evidence": [
+    "https://www.ghisler.com/order.htm"
+   ],
+   "how": "docs",
+   "note": "Shareware, 30-day trial; licence EUR 42 + VAT (students EUR 31.50). Android version is free."
+  },
+  "open_source": {
+   "value": "no",
+   "evidence": [
+    "https://www.ghisler.com/"
+   ],
+   "how": "docs",
+   "note": "Proprietary."
+  },
+  "native_apple_silicon": {
+   "value": "no",
+   "evidence": [
+    "https://www.ghisler.com/download.htm"
+   ],
+   "how": "docs",
+   "note": "Windows only; vendor points Mac users to emulators or other commanders."
+  },
+  "no_account_no_tracking": {
+   "value": "yes",
+   "evidence": [
+    "https://www.ghisler.com/download.htm",
+    "https://www.ghisler.com/order.htm"
+   ],
+   "how": "docs",
+   "note": "No account; vendor states no adware/spyware. Unregistered copies show a shareware reminder."
+  },
+  "dark_light_setting": {
+   "value": "yes",
+   "evidence": [
+    "https://winaero.com/total-commander-9-50-now-supports-native-dark-theme/",
+    "https://www.ghisler.com/mailing.htm"
+   ],
+   "how": "review",
+   "note": "Dark mode since 9.50: always on, always off, or follow Windows."
+  },
+  "languages_20": {
+   "value": "yes",
+   "evidence": [
+    "https://www.ghisler.com/languages.htm"
+   ],
+   "how": "docs",
+   "note": "19 languages in the installer, about 20 more as downloadable language files."
+  },
+  "folder_browsing": {
+   "value": "yes",
+   "evidence": [
+    "https://www.ghisler.com/featurel.htm"
+   ],
+   "how": "docs"
+  },
+  "thumbnail_grid": {
+   "value": "partial",
+   "evidence": [
+    "https://www.ghisler.com/",
+    "https://www.ghisler.com/mailing.htm",
+    "https://tutorialtactic.com/blog/total-commander-shortcuts/"
+   ],
+   "how": "docs",
+   "note": "Thumbnails view (Ctrl+Shift+F1) for files; folder preview images not documented."
+  },
+  "list_view": {
+   "value": "yes",
+   "evidence": [
+    "https://www.ghisler.com/"
+   ],
+   "how": "docs",
+   "note": "Detailed view with custom columns."
+  },
+  "recursive_search": {
+   "value": "yes",
+   "evidence": [
+    "https://www.ghisler.com/featurel.htm"
+   ],
+   "how": "docs",
+   "note": "Find Files across drives and subfolders, even inside archives."
+  },
+  "regex_search": {
+   "value": "yes",
+   "evidence": [
+    "https://www.ghisler.com/",
+    "https://www.ghisler.com/mailing.htm"
+   ],
+   "how": "docs"
+  },
+  "network_shares_fast": {
+   "value": "yes",
+   "evidence": [
+    "https://www.ghisler.com/featurel.htm",
+    "https://www.ghisler.com/mailing.htm"
+   ],
+   "how": "docs",
+   "note": "Direct network neighbourhood access, thumbnail caching; no specific speed claims for shares."
+  },
+  "multiple_windows": {
+   "value": "partial",
+   "evidence": [
+    "https://www.ghisler.com/mailing.htm"
+   ],
+   "how": "changelog",
+   "note": "One main window with tabs; Lister can open in separate windows."
+  },
+  "bookmarks": {
+   "value": "yes",
+   "evidence": [
+    "https://www.ghisler.com/",
+    "https://tutorialtactic.com/blog/total-commander-shortcuts/"
+   ],
+   "how": "docs",
+   "note": "Directory hotlist (Ctrl+D) and favourites."
+  },
+  "img_modern_formats": {
+   "value": "partial",
+   "evidence": [
+    "https://www.ghisler.ch/board/viewtopic.php?p=484658",
+    "https://totalcmd.net/plugins/imagine"
+   ],
+   "how": "forum",
+   "note": "HEIC/WebP/AVIF not shown by the built-in Lister; via plugin (Imagine) or IrfanView/Explorer preview handler."
+  },
+  "img_raw": {
+   "value": "partial",
+   "evidence": [
+    "https://www.ghisler.com/mailing.htm",
+    "https://totalcmd.net/plugins/imagine"
+   ],
+   "how": "changelog",
+   "note": "Built-in: RAW thumbnails from embedded EXIF previews. Full view via plugin."
+  },
+  "img_psd_exr": {
+   "value": "partial",
+   "evidence": [
+    "https://totalcmd.net/plugins/imagine"
+   ],
+   "how": "docs",
+   "note": "via plugin (e.g. Imagine: PSD, EXR)."
+  },
+  "img_svg_pdf": {
+   "value": "partial",
+   "evidence": [
+    "https://totalcmd.net/plugins/imagine"
+   ],
+   "how": "docs",
+   "note": "via plugin (Imagine: SVG; PDF needs another Lister plugin)."
+  },
+  "img_animated": {
+   "value": "partial",
+   "evidence": [
+    "https://totalcmd.net/plugins/imagine"
+   ],
+   "how": "docs",
+   "note": "via plugin (Imagine plays animations)."
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "evidence": [
+    "https://www.ghisler.ch/board/viewtopic.php?p=253387"
+   ],
+   "how": "forum",
+   "note": "N / P in Lister step through the selected files."
+  },
+  "zoom_rotate": {
+   "value": "partial",
+   "evidence": [
+    "https://www.ghisler.com/mailing.htm",
+    "https://totalcmd.net/plugins/imagine"
+   ],
+   "how": "changelog",
+   "note": "Built-in image viewer zooms (Ctrl+wheel, +/-); rotation via plugin."
+  },
+  "slideshow": {
+   "value": "partial",
+   "evidence": [
+    "https://totalcmd.net/plugins/imagine"
+   ],
+   "how": "docs",
+   "note": "via plugin (Imagine slide show)."
+  },
+  "slideshow_recursive": {
+   "value": "no",
+   "note": "No slideshow at all: not in the complete version history (history.txt, all versions up to 11.58.1)",
+   "evidence": [
+    "https://www.ghisler.com/history.txt"
+   ],
+   "how": "changelog"
+  },
+  "auto_enhance_view": {
+   "value": "no",
+   "note": "No view-only image adjustments (brightness/gamma) in Lister: not in the complete version history (history.txt, all versions up to 11.58.1)",
+   "evidence": [
+    "https://www.ghisler.com/history.txt"
+   ],
+   "how": "changelog"
+  },
+  "file_info_exif": {
+   "value": "partial",
+   "evidence": [
+    "https://www.ghisler.com/mailing.htm",
+    "https://totalcmd.net/plugins/imagine"
+   ],
+   "how": "changelog",
+   "note": "EXIF date via custom columns/multi-rename; full EXIF via plugin (Imagine)."
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "note": "No content-vs-extension check: not in the complete version history (history.txt, all versions up to 11.58.1)",
+   "evidence": [
+    "https://www.ghisler.com/history.txt"
+   ],
+   "how": "changelog"
+  },
+  "video_native": {
+   "value": "yes",
+   "evidence": [
+    "https://www.ghisler.com/mailing.htm"
+   ],
+   "how": "changelog",
+   "note": "Lister DirectShow media player; formats depend on installed codecs."
+  },
+  "video_mkv_avi_webm": {
+   "value": "partial",
+   "evidence": [
+    "https://www.ghisler.com/mailing.htm"
+   ],
+   "how": "changelog",
+   "note": "Needs DirectShow filters (LAV/ffdshow can be dropped into filter64 folder)."
+  },
+  "photos_videos_one_grid": {
+   "value": "partial",
+   "note": "Thumbnails view shows all files; non-image thumbnails come from Windows (\"Explorer method\"), so video thumbnails depend on installed handlers",
+   "evidence": [
+    "https://www.ghisler.com/history.txt"
+   ],
+   "how": "changelog"
+  },
+  "video_skim_arrows": {
+   "value": "yes",
+   "evidence": [
+    "https://www.ghisler.com/mailing.htm"
+   ],
+   "how": "changelog",
+   "note": "Ctrl/Shift+arrow keys fast forward/rewind; jump buttons 10 s / 60 s."
+  },
+  "subtitles_embedded": {
+   "value": "yes",
+   "evidence": [
+    "https://www.ghisler.com/mailing.htm"
+   ],
+   "how": "changelog",
+   "note": "Switch subtitle streams via context menu."
+  },
+  "subtitles_external_files": {
+   "value": "partial",
+   "evidence": [
+    "https://www.ghisler.com/mailing.htm"
+   ],
+   "how": "changelog",
+   "note": "Via DirectVobSub filter (preloaded when present)."
+  },
+  "audio_track_choice": {
+   "value": "yes",
+   "evidence": [
+    "https://www.ghisler.com/mailing.htm"
+   ],
+   "how": "changelog",
+   "note": "Switch audio streams via context menu."
+  },
+  "playback_speed": {
+   "value": "yes",
+   "evidence": [
+    "https://www.ghisler.com/mailing.htm"
+   ],
+   "how": "changelog",
+   "note": "Pitch kept constant (SoundTouch filter)."
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "note": "Lister media player controls appear at the bottom (shown when the mouse moves to the bottom in full screen)",
+   "evidence": [
+    "https://www.ghisler.com/history.txt"
+   ],
+   "how": "changelog"
+  },
+  "playlist": {
+   "value": "partial",
+   "evidence": [
+    "https://www.ghisler.com/mailing.htm",
+    "https://www.ghisler.ch/board/viewtopic.php?p=253387"
+   ],
+   "how": "changelog",
+   "note": "N / P steps through selected media files; .cue track lists; no playlist panel."
+  },
+  "saved_playlists": {
+   "value": "no",
+   "note": "No playlists: not in the complete version history (history.txt, all versions up to 11.58.1)",
+   "evidence": [
+    "https://www.ghisler.com/history.txt"
+   ],
+   "how": "changelog"
+  },
+  "pip": {
+   "value": "no",
+   "note": "No picture-in-picture: not in the complete version history (history.txt, all versions up to 11.58.1)",
+   "evidence": [
+    "https://www.ghisler.com/history.txt"
+   ],
+   "how": "changelog"
+  },
+  "music_mode": {
+   "value": "yes",
+   "evidence": [
+    "https://www.ghisler.com/mailing.htm"
+   ],
+   "how": "changelog",
+   "note": "Audio playback with tags and cover art in Lister."
+  },
+  "streaming_urls": {
+   "value": "no",
+   "note": "Lister media player plays local files; no stream/URL playback in the history",
+   "evidence": [
+    "https://www.ghisler.com/history.txt"
+   ],
+   "how": "changelog"
+  },
+  "online_subtitles": {
+   "value": "no",
+   "note": "No subtitle download: not in the complete version history (history.txt, all versions up to 11.58.1)",
+   "evidence": [
+    "https://www.ghisler.com/history.txt"
+   ],
+   "how": "changelog"
+  },
+  "video_filters_enhance": {
+   "value": "no",
+   "note": "Media player has speed, audio/subtitle stream choice, single step; no picture adjustments in the history",
+   "evidence": [
+    "https://www.ghisler.com/history.txt"
+   ],
+   "how": "changelog"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "evidence": [
+    "https://www.ghisler.com/download.htm"
+   ],
+   "how": "docs",
+   "note": "Windows program; no Finder/Quick Look integration."
+  },
+  "archives_as_folders": {
+   "value": "yes",
+   "evidence": [
+    "https://www.ghisler.com/",
+    "https://www.ghisler.com/featurel.htm"
+   ],
+   "how": "docs",
+   "note": "ZIP, 7z, RAR, TAR, GZ, CAB, ARJ, LZH, ACE and more, plus packer plugins."
+  },
+  "comics_cbz_cbr": {
+   "value": "partial",
+   "evidence": [
+    "https://totalcmd.net/plugins/imagine"
+   ],
+   "how": "docs",
+   "note": "CBZ/CBR as archives; comic viewing via plugin (Imagine reads CBZ/CBR/CB7)."
+  },
+  "archive_passwords": {
+   "value": "yes",
+   "evidence": [
+    "https://www.ghisler.com/mailing.htm"
+   ],
+   "how": "changelog",
+   "note": "Handles encrypted archives, including header-encrypted names."
+  },
+  "split_archives": {
+   "value": "yes",
+   "note": "Opens/unpacks multi-volume RAR (via tc7z dll), ZIP and 7z archives; also Split/Combine tool for big files",
+   "evidence": [
+    "https://www.ghisler.com/history.txt",
+    "https://www.ghisler.com/featurel.htm"
+   ],
+   "how": "changelog"
+  },
+  "videos_in_archives": {
+   "value": "partial",
+   "evidence": [
+    "https://www.ghisler.com/featurel.htm"
+   ],
+   "how": "docs",
+   "note": "Lister can view files inside archives (temporary extraction)."
+  },
+  "manga_two_page": {
+   "value": "no",
+   "note": "No comic/manga or two-page mode: not in the complete version history (history.txt, all versions up to 11.58.1)",
+   "evidence": [
+    "https://www.ghisler.com/history.txt"
+   ],
+   "how": "changelog"
+  },
+  "rename_trash": {
+   "value": "yes",
+   "evidence": [
+    "https://www.ghisler.com/featurel.htm"
+   ],
+   "how": "docs"
+  },
+  "move_copy": {
+   "value": "yes",
+   "evidence": [
+    "https://www.ghisler.com/featurel.htm"
+   ],
+   "how": "docs"
+  },
+  "dual_pane": {
+   "value": "yes",
+   "evidence": [
+    "https://www.ghisler.com/",
+    "https://tutorialtactic.com/blog/total-commander-shortcuts/"
+   ],
+   "how": "docs",
+   "note": "The reference implementation of F5 copy / F6 move."
+  },
+  "undo_file_actions": {
+   "value": "partial",
+   "evidence": [
+    "https://www.ghisler.com/mailing.htm"
+   ],
+   "how": "changelog",
+   "note": "Undo only in the multi-rename tool (multiple steps)."
+  },
+  "image_editing": {
+   "value": "no",
+   "evidence": [
+    "https://totalcmd.net/plugins/imagine"
+   ],
+   "how": "docs",
+   "note": "Not built in; image plugins (Imagine) can rotate, resize, save."
+  },
+  "batch_convert": {
+   "value": "partial",
+   "evidence": [
+    "https://www.ghisler.com/featurel.htm",
+    "https://totalcmd.net/plugins/imagine"
+   ],
+   "how": "docs",
+   "note": "Multi-rename tool yes; image conversion only via plugin."
+  },
+  "library_catalog": {
+   "value": "partial",
+   "evidence": [
+    "https://tutorialtactic.com/blog/total-commander-shortcuts/"
+   ],
+   "how": "docs",
+   "note": "File comments (descript.ion, comments view); no tags/ratings database."
+  },
+  "cloud_sync": {
+   "value": "partial",
+   "evidence": [
+    "https://www.ghisler.com/",
+    "https://www.ghisler.com/featurel.htm"
+   ],
+   "how": "docs",
+   "note": "Built-in FTP/FTPS client; no cloud sync."
+  },
+  "keyboard_first": {
+   "value": "yes",
+   "evidence": [
+    "https://tutorialtactic.com/blog/total-commander-shortcuts/",
+    "https://www.ghisler.com/featurel.htm"
+   ],
+   "how": "docs"
+  },
+  "custom_shortcuts": {
+   "value": "yes",
+   "evidence": [
+    "https://www.ghisler.com/mailing.htm"
+   ],
+   "how": "changelog",
+   "note": "Hotkeys via Configuration - Options - Misc, commands with parameters."
+  },
+  "shortcut_cheatsheet": {
+   "value": "partial",
+   "note": "Ships keyboard.txt (plain-text list of all keys) alongside the help; no designed printable sheet",
+   "evidence": [
+    "https://www.ghisler.com/history.txt"
+   ],
+   "how": "changelog"
+  },
+  "boss_key": {
+   "value": "no",
+   "note": "No boss key: not in the complete version history (history.txt, all versions up to 11.58.1)",
+   "evidence": [
+    "https://www.ghisler.com/history.txt"
+   ],
+   "how": "changelog"
+  },
+  "app_sandbox": {
+   "value": "no",
+   "evidence": [
+    "https://www.ghisler.com/download.htm"
+   ],
+   "how": "docs",
+   "note": "Windows program, no macOS App Sandbox."
+  },
+  "no_network": {
+   "value": "no",
+   "evidence": [
+    "https://www.ghisler.com/featurel.htm"
+   ],
+   "how": "docs",
+   "note": "Built-in FTP client, HTTP proxy support."
+  },
+  "notarized_attested": {
+   "value": "no",
+   "evidence": [
+    "https://www.ghisler.com/download.htm"
+   ],
+   "how": "docs",
+   "note": "Installer is code-signed (Ghisler Software GmbH); closed source, not reproducible."
+  },
+  "mac_app_store": {
+   "value": "no",
+   "evidence": [
+    "https://www.ghisler.com/download.htm"
+   ],
+   "how": "docs",
+   "note": "No Mac version."
+  }
+ }
+}

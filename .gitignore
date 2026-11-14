@@ -15,3 +15,6 @@ build/
 # Intermediate icon master — the committed AppIcon.icns is derived from it.
 Resources/icon_1024.png
 .claude/worktrees/
+
+# Python byte code (build_site.py imports site_alternatives.py)
+__pycache__/

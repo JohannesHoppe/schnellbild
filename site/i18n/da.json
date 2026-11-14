@@ -1,6 +1,7 @@
 {
   "name": "Dansk",
   "privacySlug": "privacy",
+  "alternativesSlug": "alternativer",
   "title": "Schnellbild: en billedfremviser og videoafspiller til macOS, der bare ikke er noget bras",
   "seoTitle": "Schnellbild · gratis billedfremviser og MKV-afspiller til Mac",
   "seoDescription": "Hurtig, gratis billedfremviser til Mac, der også afspiller MKV, AVI og WebM: miniaturer, diasshow, ZIP og RAR som mapper. Alternativ til IrfanView og XnView.",
@@ -140,7 +141,10 @@
   ],
   "safeMore": "Hvad den gør i detaljer, og hvor grænsen går: <a href=\"https://github.com/JohannesHoppe/schnellbild#safe-with-files-from-others\">Sikker med filer fra andre</a> (på engelsk).",
   "modelsTitle": "Kommer du fra Phiewer, IINA eller Norton Commander?",
-  "modelsText": "De var forbillederne: Phiewer til at gennemse billeder med tastaturet, IINA til hurtigt at håndtere videoer, Norton Commander til de to paneler. Sådan klarer Schnellbild sig i sammenligning (på engelsk): <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-phiewer-alternative\">et gratis alternativ til Phiewer</a>, <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-iina-alternative-for-looking-through-videos\">et gratis alternativ til IINA til at se videoer igennem</a>.",
+  "modelsText": "De var forbillederne: Phiewer til at gennemse billeder med tastaturet, IINA til hurtigt at håndtere videoer, Norton Commander til de to paneler. Sådan klarer Schnellbild sig i sammenligning: <a href=\"{alt:phiewer}\">et gratis alternativ til Phiewer</a>, <a href=\"{alt:iina}\">et gratis alternativ til IINA til at se videoer igennem</a>, <a href=\"{alt:norton-commander}\">fra Norton Commander til Mac</a>.",
+  "altTitle": "Leder du efter et alternativ?",
+  "altText": "Sådan klarer Schnellbild sig mod de programmer, folk leder efter på Mac, funktion for funktion og med en kilde til hver påstand:",
+  "altAll": "Alle alternativer",
   "ossTitle": "Open source",
   "ossText": "Schnellbild er fri software under MIT-licensen, kildekoden ligger <a href=\"https://github.com/JohannesHoppe/schnellbild\">på GitHub</a>. Fundet en fejl eller savner du noget? <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">Opret et issue</a>.",
   "languagesText": "På din Macs sprog:",
@@ -149,6 +153,7 @@
   "footerPrivacy": "Privatliv",
   "footerImprint": "Juridiske oplysninger (Impressum)",
   "footerEula": "Licensaftale",
+  "footerAlternatives": "Alternativer",
   "privacy": {
     "title": "Privatlivspolitik",
     "description": "Schnellbild indsamler ingen personoplysninger: ingen konto, ingen analyse, ingen sporing, ingen netværksadgang.",

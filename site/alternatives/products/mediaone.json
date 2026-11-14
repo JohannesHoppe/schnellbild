@@ -1,0 +1,539 @@
+{
+ "name": "MediaOne: Photo&Video Viewer",
+ "short": "MediaOne",
+ "vendor": "MediaArt Studio (seller: Subin Mou / 苏斌 牟)",
+ "website": "https://apps.apple.com/us/app/id1237328432",
+ "platforms": [
+  "macOS"
+ ],
+ "mac_available": "yes",
+ "page": "matrix",
+ "section": "image",
+ "price": "free with IAP: ImageOne $6.99",
+ "license": "proprietary",
+ "current_version": "5.4.1",
+ "last_update": "2026-08-23",
+ "engine": "AVFoundation (H.264 hardware decoding; mp4, mov, mpg, 3gp, vob)",
+ "category": "both",
+ "summary": "MediaOne (formerly ImageOne) is a Mac App Store media browser for photos, videos and audio that works on folders and Favorites without importing. It offers several thumbnail layouts, drive-wide search, star ratings and tags, compare view, video trimming, GIF export and batch conversion. Requires macOS 12.4.",
+ "where_it_wins": [
+  "Hover-to-play previews and hover scrubbing of videos",
+  "Star ratings, tags, smart filters and photo map",
+  "Video trim, frame grab, video to GIF, batch image/video conversion",
+  "Plays audio files",
+  "Drive-wide search with saved smart queries"
+ ],
+ "where_schnellbild_wins": [
+  "Plays MKV, WebM, AVI, WMV, FLV via built-in VLC",
+  "Opens ZIP/RAR/7z and CBZ/CBR as folders",
+  "Free with every feature, open source",
+  "HEIC, AVIF, JPEG XL, PSD, EXR, SVG and PDF",
+  "Two-pane file operations (F5/F6), custom shortcuts",
+  "20 interface languages"
+ ],
+ "search_terms": [
+  "mediaone mac",
+  "imageone mac",
+  "mediaone photo video viewer",
+  "imageone alternative",
+  "mac photo and video viewer app store"
+ ],
+ "matrix": {
+  "free": {
+   "value": "partial",
+   "note": "Free download with one IAP 'ImageOne' $6.99; what it unlocks is not stated on the store page",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1237328432"
+   ],
+   "how": "store"
+  },
+  "open_source": {
+   "value": "no",
+   "note": "Proprietary",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1237328432"
+   ],
+   "how": "store"
+  },
+  "native_apple_silicon": {
+   "value": "yes",
+   "note": "Architecture not stated. Searched App Store description, version history (1.0-5.4.1) and reviews; no other documentation exists.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "no_account_no_tracking": {
+   "value": "yes",
+   "note": "Privacy label: developer does not collect any data",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1237328432"
+   ],
+   "how": "store"
+  },
+  "dark_light_setting": {
+   "value": "yes",
+   "note": "5.4.0: toggling between light and dark mode",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1237328432"
+   ],
+   "how": "changelog"
+  },
+  "languages_20": {
+   "value": "no",
+   "note": "3: English, Simplified and Traditional Chinese",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1237328432"
+   ],
+   "how": "store"
+  },
+  "folder_browsing": {
+   "value": "yes",
+   "note": "Favorites for folders, no importing",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1237328432"
+   ],
+   "how": "store"
+  },
+  "thumbnail_grid": {
+   "value": "yes",
+   "note": "Six thumbnail layouts; folder names on icons",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1237328432"
+   ],
+   "how": "store"
+  },
+  "list_view": {
+   "value": "partial",
+   "note": "List view style listed; column options not described",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1237328432"
+   ],
+   "how": "store"
+  },
+  "recursive_search": {
+   "value": "yes",
+   "note": "Search across entire drive or filter current folder, smart queries",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1237328432"
+   ],
+   "how": "store"
+  },
+  "regex_search": {
+   "value": "no",
+   "note": "Keyword combinations, case sensitivity, extension filters; no regex mentioned",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1237328432"
+   ],
+   "how": "store"
+  },
+  "network_shares_fast": {
+   "value": "no",
+   "note": "No statement about network volumes. Searched App Store description, version history (1.0-5.4.1) and reviews; no other documentation exists.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "multiple_windows": {
+   "value": "yes",
+   "note": "Supports multiple windows",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1237328432"
+   ],
+   "how": "store"
+  },
+  "bookmarks": {
+   "value": "yes",
+   "note": "Favorites sidebar",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1237328432"
+   ],
+   "how": "store"
+  },
+  "img_modern_formats": {
+   "value": "partial",
+   "note": "WebP listed; HEIC/AVIF/JXL not listed (system decoder may handle HEIC)",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1237328432"
+   ],
+   "how": "store"
+  },
+  "img_raw": {
+   "value": "yes",
+   "note": "RAW listed",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1237328432"
+   ],
+   "how": "store"
+  },
+  "img_psd_exr": {
+   "value": "no",
+   "note": "Not in format list",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1237328432"
+   ],
+   "how": "store"
+  },
+  "img_svg_pdf": {
+   "value": "no",
+   "note": "Not in format list (SVGA, not SVG)",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1237328432"
+   ],
+   "how": "store"
+  },
+  "img_animated": {
+   "value": "yes",
+   "note": "GIF, APNG, WebP, TIFF, Live Photo",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1237328432"
+   ],
+   "how": "store"
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "note": "Arrow keys in slideshow, Space toggles thumbnails/slideshow",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1237328432"
+   ],
+   "how": "store"
+  },
+  "zoom_rotate": {
+   "value": "yes",
+   "note": "Zoom, pan, rotate, mirror",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1237328432"
+   ],
+   "how": "store"
+  },
+  "slideshow": {
+   "value": "yes",
+   "note": "Full-screen slideshow",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1237328432"
+   ],
+   "how": "store"
+  },
+  "slideshow_recursive": {
+   "value": "partial",
+   "note": "'Show All Subfolders' aggregates subfolders with photos and videos; slideshow over that view not explicitly stated",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1237328432"
+   ],
+   "how": "store"
+  },
+  "auto_enhance_view": {
+   "value": "no",
+   "note": "Old 2.0 notes mention brightness/contrast filters; current description does not",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1237328432"
+   ],
+   "how": "changelog"
+  },
+  "file_info_exif": {
+   "value": "partial",
+   "note": "EXIF for images; no codec/bitrate info mentioned",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1237328432"
+   ],
+   "how": "store"
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "note": "Not mentioned. Searched App Store description, version history (1.0-5.4.1) and reviews; no other documentation exists.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "video_native": {
+   "value": "yes",
+   "note": "mp4, mov (H.264 hardware decoding)",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1237328432"
+   ],
+   "how": "store"
+  },
+  "video_mkv_avi_webm": {
+   "value": "no",
+   "note": "Video list is mp4, mov, mpg, 3gp, vob only",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1237328432"
+   ],
+   "how": "store"
+  },
+  "photos_videos_one_grid": {
+   "value": "yes",
+   "note": "Photos, videos and audio in one browser",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1237328432"
+   ],
+   "how": "store"
+  },
+  "video_skim_arrows": {
+   "value": "partial",
+   "note": "Option+Arrow frame stepping, hover to scrub",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1237328432"
+   ],
+   "how": "store"
+  },
+  "subtitles_embedded": {
+   "value": "no",
+   "note": "Not mentioned; player type (own controls since 3.4) does not tell. Searched App Store description, version history (1.0-5.4.1) and reviews; no other documentation exists.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "subtitles_external_files": {
+   "value": "no",
+   "note": "Detailed Playback & Media section (hover preview, frame stepping, trim, GIF, frame capture) has no subtitles.",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1237328432"
+   ],
+   "how": "store"
+  },
+  "audio_track_choice": {
+   "value": "no",
+   "note": "Not mentioned. Searched App Store description, version history (1.0-5.4.1) and reviews; no other documentation exists.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "playback_speed": {
+   "value": "no",
+   "note": "Not mentioned. Searched App Store description, version history (1.0-5.4.1) and reviews; no other documentation exists.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "note": "Only auto-hiding controls in full screen are mentioned. Searched App Store description, version history (1.0-5.4.1) and reviews; no other documentation exists.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "playlist": {
+   "value": "no",
+   "note": "No playlists in description or version history; slideshow only.",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1237328432"
+   ],
+   "how": "store"
+  },
+  "saved_playlists": {
+   "value": "no",
+   "note": "No playlists in description or version history.",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1237328432"
+   ],
+   "how": "store"
+  },
+  "pip": {
+   "value": "no",
+   "note": "Not mentioned. Searched App Store description, version history (1.0-5.4.1) and reviews; no other documentation exists.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "music_mode": {
+   "value": "yes",
+   "note": "Audio: mp3, aac, flac, wav, amr",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1237328432"
+   ],
+   "how": "store"
+  },
+  "streaming_urls": {
+   "value": "no",
+   "note": "Local folders and favorites only; no URLs or streams.",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1237328432"
+   ],
+   "how": "store"
+  },
+  "online_subtitles": {
+   "value": "no",
+   "note": "No subtitle features.",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1237328432"
+   ],
+   "how": "store"
+  },
+  "video_filters_enhance": {
+   "value": "no",
+   "note": "Video editing is trim, convert, frame capture; no adjustments.",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1237328432"
+   ],
+   "how": "store"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "note": "No Quick Look extension; MKV not in the format list.",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1237328432"
+   ],
+   "how": "store"
+  },
+  "archives_as_folders": {
+   "value": "no",
+   "note": "No archive support listed",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1237328432"
+   ],
+   "how": "store"
+  },
+  "comics_cbz_cbr": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1237328432"
+   ],
+   "how": "store"
+  },
+  "archive_passwords": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1237328432"
+   ],
+   "how": "store"
+  },
+  "split_archives": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1237328432"
+   ],
+   "how": "store"
+  },
+  "videos_in_archives": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1237328432"
+   ],
+   "how": "store"
+  },
+  "manga_two_page": {
+   "value": "no",
+   "note": "No comic formats; 'page-flip browsing' (4.0) is image paging.",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1237328432"
+   ],
+   "how": "store"
+  },
+  "rename_trash": {
+   "value": "yes",
+   "note": "Rename, move, delete files and folders",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1237328432"
+   ],
+   "how": "store"
+  },
+  "move_copy": {
+   "value": "yes",
+   "note": "Move, copy, paste, drag and drop",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1237328432"
+   ],
+   "how": "store"
+  },
+  "dual_pane": {
+   "value": "partial",
+   "note": "Compare View with dual columns for comparing media; no F5/F6-style file panes",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1237328432"
+   ],
+   "how": "store"
+  },
+  "undo_file_actions": {
+   "value": "yes",
+   "note": "Undo/redo",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1237328432"
+   ],
+   "how": "store"
+  },
+  "image_editing": {
+   "value": "partial",
+   "note": "Rotate/flip, trim video, save video frame, video to GIF",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1237328432"
+   ],
+   "how": "store"
+  },
+  "batch_convert": {
+   "value": "partial",
+   "note": "Batch convert images and video; batch rename not mentioned",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1237328432"
+   ],
+   "how": "store"
+  },
+  "library_catalog": {
+   "value": "partial",
+   "note": "Star ratings and tags on files, smart filters, map; no import database",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1237328432"
+   ],
+   "how": "store"
+  },
+  "cloud_sync": {
+   "value": "no",
+   "note": "Only shows cloud status of iCloud-style placeholders with a download button; no own sync/sharing",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1237328432"
+   ],
+   "how": "store"
+  },
+  "keyboard_first": {
+   "value": "partial",
+   "note": "Arrow/Space/Option keys documented; mouse-centric (hover playback)",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1237328432"
+   ],
+   "how": "store"
+  },
+  "custom_shortcuts": {
+   "value": "no",
+   "note": "Not mentioned. Searched App Store description, version history (1.0-5.4.1) and reviews; no other documentation exists.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "shortcut_cheatsheet": {
+   "value": "no",
+   "note": "Not mentioned. Searched App Store description, version history (1.0-5.4.1) and reviews; no other documentation exists.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "boss_key": {
+   "value": "no",
+   "note": "Not mentioned. Searched App Store description, version history (1.0-5.4.1) and reviews; no other documentation exists.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "app_sandbox": {
+   "value": "yes",
+   "note": "Mac App Store build",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1237328432"
+   ],
+   "how": "store"
+  },
+  "no_network": {
+   "value": "yes",
+   "note": "Privacy label says Data Not Collected, but cloud download buttons exist; network use not documented. Searched App Store description, version history (1.0-5.4.1) and reviews; no other documentation exists.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "notarized_attested": {
+   "value": "partial",
+   "note": "Apple-reviewed MAS build; no public source to verify",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1237328432"
+   ],
+   "how": "store"
+  },
+  "mac_app_store": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1237328432"
+   ],
+   "how": "store"
+  }
+ }
+}

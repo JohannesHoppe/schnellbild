@@ -1,0 +1,530 @@
+{
+ "name": "iSee Pro - Image Browser",
+ "short": "iSee Pro",
+ "vendor": "Dummy Apps (seller: 刚刚 孔)",
+ "website": "https://apps.apple.com/us/app/id687061437",
+ "platforms": [
+  "macOS"
+ ],
+ "mac_available": "yes",
+ "page": "matrix",
+ "section": "image",
+ "price": "free with IAP: Pro $0.99",
+ "license": "proprietary",
+ "current_version": "11.5",
+ "last_update": "2025-05-30",
+ "engine": "macOS image decoders; no video",
+ "category": "image",
+ "summary": "iSee Pro is a small Mac App Store image browser that loads all images of a folder and its subfolders with prefetching for fast paging. It has list, thumbnail and full-size views, name/size/date search, EXIF overlay, a magnifier and opens ZIP/RAR archives, remembering their passwords. Requires macOS 12.",
+ "where_it_wins": [
+  "Very cheap ($0.99 Pro) and tiny (4.4 MB)",
+  "Remembers archive passwords",
+  "Search by image dimensions and Draw Things parameters",
+  "Live wallpaper/desktop features"
+ ],
+ "where_schnellbild_wins": [
+  "Plays videos (iSee Pro needs a separate app)",
+  "7z, CBZ/CBR and videos inside archives",
+  "Free and open source, notarized and attested",
+  "Two panes, move/copy, undo",
+  "20 interface languages, light/dark setting, custom shortcuts"
+ ],
+ "search_terms": [
+  "isee pro mac",
+  "isee image browser",
+  "isee pro alternative",
+  "recursive image viewer mac"
+ ],
+ "matrix": {
+  "free": {
+   "value": "partial",
+   "note": "Free; 'Pro version' IAP $0.99 (a review says it lifts a 50-image limit)",
+   "evidence": [
+    "https://apps.apple.com/us/app/id687061437"
+   ],
+   "how": "store"
+  },
+  "open_source": {
+   "value": "no",
+   "note": "Proprietary",
+   "evidence": [
+    "https://apps.apple.com/us/app/id687061437"
+   ],
+   "how": "store"
+  },
+  "native_apple_silicon": {
+   "value": "yes",
+   "note": "Architecture not stated. Searched App Store description and version history (9.56-11.5); no other documentation.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "no_account_no_tracking": {
+   "value": "yes",
+   "note": "Privacy label: Data Not Collected",
+   "evidence": [
+    "https://apps.apple.com/us/app/id687061437"
+   ],
+   "how": "store"
+  },
+  "dark_light_setting": {
+   "value": "no",
+   "note": "Not mentioned. Searched App Store description and version history (9.56-11.5); no other documentation.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "languages_20": {
+   "value": "no",
+   "note": "2: English, Simplified Chinese",
+   "evidence": [
+    "https://apps.apple.com/us/app/id687061437"
+   ],
+   "how": "store"
+  },
+  "folder_browsing": {
+   "value": "yes",
+   "note": "Reads folders and subfolders without import",
+   "evidence": [
+    "https://apps.apple.com/us/app/id687061437"
+   ],
+   "how": "store"
+  },
+  "thumbnail_grid": {
+   "value": "partial",
+   "note": "Thumbnail view; folder previews not mentioned",
+   "evidence": [
+    "https://apps.apple.com/us/app/id687061437"
+   ],
+   "how": "store"
+  },
+  "list_view": {
+   "value": "yes",
+   "note": "File list table view",
+   "evidence": [
+    "https://apps.apple.com/us/app/id687061437"
+   ],
+   "how": "store"
+  },
+  "recursive_search": {
+   "value": "yes",
+   "note": "Image search by name, path, extension, size, dimensions, date over recursively loaded folders",
+   "evidence": [
+    "https://apps.apple.com/us/app/id687061437"
+   ],
+   "how": "changelog"
+  },
+  "regex_search": {
+   "value": "no",
+   "note": "Search by name, path, extension, size, dimensions, date (10.1); regex not mentioned. Searched App Store description and version history (9.56-11.5); no other documentation.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "network_shares_fast": {
+   "value": "partial",
+   "note": "Used on NAS/remote servers (10.18 fixes deleting there); speed on shares not documented",
+   "evidence": [
+    "https://apps.apple.com/us/app/id687061437"
+   ],
+   "how": "changelog"
+  },
+  "multiple_windows": {
+   "value": "no",
+   "note": "Not mentioned. Searched App Store description and version history (9.56-11.5); no other documentation.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "bookmarks": {
+   "value": "no",
+   "note": "Only marking of images (10.6). Searched App Store description and version history (9.56-11.5); no other documentation.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "img_modern_formats": {
+   "value": "partial",
+   "note": "WebP since 11.0; 'all popular formats' and custom extensions; HEIC/AVIF/JXL not named",
+   "evidence": [
+    "https://apps.apple.com/us/app/id687061437"
+   ],
+   "how": "changelog"
+  },
+  "img_raw": {
+   "value": "partial",
+   "note": "Not named; custom image extensions can be added in Preferences (10.9), decoded by macOS.",
+   "evidence": [
+    "https://apps.apple.com/us/app/id687061437"
+   ],
+   "how": "changelog"
+  },
+  "img_psd_exr": {
+   "value": "partial",
+   "note": "Not named; custom image extensions can be added (10.9), decoded by macOS.",
+   "evidence": [
+    "https://apps.apple.com/us/app/id687061437"
+   ],
+   "how": "changelog"
+  },
+  "img_svg_pdf": {
+   "value": "no",
+   "note": "Not mentioned. Searched App Store description and version history (9.56-11.5); no other documentation.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "img_animated": {
+   "value": "no",
+   "note": "Not mentioned. Searched App Store description and version history (9.56-11.5); no other documentation.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "note": "Keyboard, mouse and trackpad shortcuts",
+   "evidence": [
+    "https://apps.apple.com/us/app/id687061437"
+   ],
+   "how": "store"
+  },
+  "zoom_rotate": {
+   "value": "yes",
+   "note": "Zoom, rotate, magnifier (hold Control)",
+   "evidence": [
+    "https://apps.apple.com/us/app/id687061437"
+   ],
+   "how": "store"
+  },
+  "slideshow": {
+   "value": "yes",
+   "note": "Slideshow, interval configurable down to 0",
+   "evidence": [
+    "https://apps.apple.com/us/app/id687061437"
+   ],
+   "how": "changelog"
+  },
+  "slideshow_recursive": {
+   "value": "partial",
+   "note": "Recursive loading of all subfolders, images only (no video)",
+   "evidence": [
+    "https://apps.apple.com/us/app/id687061437"
+   ],
+   "how": "store"
+  },
+  "auto_enhance_view": {
+   "value": "no",
+   "note": "Viewing features listed are zoom, magnifier, rotation, marking, EXIF; no adjustments.",
+   "evidence": [
+    "https://apps.apple.com/us/app/id687061437"
+   ],
+   "how": "store"
+  },
+  "file_info_exif": {
+   "value": "partial",
+   "note": "EXIF overlay (Cmd+I); images only",
+   "evidence": [
+    "https://apps.apple.com/us/app/id687061437"
+   ],
+   "how": "store"
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "note": "Not mentioned. Searched App Store description and version history (9.56-11.5); no other documentation.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "video_native": {
+   "value": "no",
+   "note": "Developer reply: videos are handled by a separate app ('fast video browser')",
+   "evidence": [
+    "https://apps.apple.com/us/app/id687061437"
+   ],
+   "how": "store"
+  },
+  "video_mkv_avi_webm": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://apps.apple.com/us/app/id687061437"
+   ],
+   "how": "store"
+  },
+  "photos_videos_one_grid": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://apps.apple.com/us/app/id687061437"
+   ],
+   "how": "store"
+  },
+  "video_skim_arrows": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://apps.apple.com/us/app/id687061437"
+   ],
+   "how": "store"
+  },
+  "subtitles_embedded": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://apps.apple.com/us/app/id687061437"
+   ],
+   "how": "store"
+  },
+  "subtitles_external_files": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://apps.apple.com/us/app/id687061437"
+   ],
+   "how": "store"
+  },
+  "audio_track_choice": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://apps.apple.com/us/app/id687061437"
+   ],
+   "how": "store"
+  },
+  "playback_speed": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://apps.apple.com/us/app/id687061437"
+   ],
+   "how": "store"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://apps.apple.com/us/app/id687061437"
+   ],
+   "how": "store"
+  },
+  "playlist": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://apps.apple.com/us/app/id687061437"
+   ],
+   "how": "store"
+  },
+  "saved_playlists": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://apps.apple.com/us/app/id687061437"
+   ],
+   "how": "store"
+  },
+  "pip": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://apps.apple.com/us/app/id687061437"
+   ],
+   "how": "store"
+  },
+  "music_mode": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://apps.apple.com/us/app/id687061437"
+   ],
+   "how": "store"
+  },
+  "streaming_urls": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://apps.apple.com/us/app/id687061437"
+   ],
+   "how": "store"
+  },
+  "online_subtitles": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://apps.apple.com/us/app/id687061437"
+   ],
+   "how": "store"
+  },
+  "video_filters_enhance": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://apps.apple.com/us/app/id687061437"
+   ],
+   "how": "store"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://apps.apple.com/us/app/id687061437"
+   ],
+   "how": "store"
+  },
+  "archives_as_folders": {
+   "value": "partial",
+   "note": "ZIP and RAR opened ('unpack'); 7z not mentioned",
+   "evidence": [
+    "https://apps.apple.com/us/app/id687061437"
+   ],
+   "how": "store"
+  },
+  "comics_cbz_cbr": {
+   "value": "no",
+   "note": "ZIP/RAR unpacking listed; CBZ/CBR not named. Searched App Store description and version history (9.56-11.5); no other documentation.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "archive_passwords": {
+   "value": "yes",
+   "note": "Remembers archive passwords automatically",
+   "evidence": [
+    "https://apps.apple.com/us/app/id687061437"
+   ],
+   "how": "store"
+  },
+  "split_archives": {
+   "value": "no",
+   "note": "Not mentioned. Searched App Store description and version history (9.56-11.5); no other documentation.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "videos_in_archives": {
+   "value": "no",
+   "note": "No video playback",
+   "evidence": [
+    "https://apps.apple.com/us/app/id687061437"
+   ],
+   "how": "store"
+  },
+  "manga_two_page": {
+   "value": "no",
+   "note": "Not mentioned. Searched App Store description and version history (9.56-11.5); no other documentation.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "rename_trash": {
+   "value": "partial",
+   "note": "Rename (Enter in list), delete; new folder not mentioned",
+   "evidence": [
+    "https://apps.apple.com/us/app/id687061437"
+   ],
+   "how": "store"
+  },
+  "move_copy": {
+   "value": "partial",
+   "note": "Drag images to a folder to save them; move/copy commands not named",
+   "evidence": [
+    "https://apps.apple.com/us/app/id687061437"
+   ],
+   "how": "store"
+  },
+  "dual_pane": {
+   "value": "no",
+   "note": "File list plus image view in one window (Split View divider, 10.13); no two file panes.",
+   "evidence": [
+    "https://apps.apple.com/us/app/id687061437"
+   ],
+   "how": "store"
+  },
+  "undo_file_actions": {
+   "value": "no",
+   "note": "Not mentioned. Searched App Store description and version history (9.56-11.5); no other documentation.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "image_editing": {
+   "value": "no",
+   "note": "View rotation only",
+   "evidence": [
+    "https://apps.apple.com/us/app/id687061437"
+   ],
+   "how": "store"
+  },
+  "batch_convert": {
+   "value": "no",
+   "note": "No conversion or batch rename in description or version history.",
+   "evidence": [
+    "https://apps.apple.com/us/app/id687061437"
+   ],
+   "how": "store"
+  },
+  "library_catalog": {
+   "value": "partial",
+   "note": "Image marking only, no database",
+   "evidence": [
+    "https://apps.apple.com/us/app/id687061437"
+   ],
+   "how": "store"
+  },
+  "cloud_sync": {
+   "value": "no",
+   "note": "Share sheet only",
+   "evidence": [
+    "https://apps.apple.com/us/app/id687061437"
+   ],
+   "how": "changelog"
+  },
+  "keyboard_first": {
+   "value": "partial",
+   "note": "Rich keyboard shortcuts, but designed to work with the mouse alone",
+   "evidence": [
+    "https://apps.apple.com/us/app/id687061437"
+   ],
+   "how": "store"
+  },
+  "custom_shortcuts": {
+   "value": "no",
+   "note": "Only an option to turn off whitespace shortcuts (10.15). Searched App Store description and version history (9.56-11.5); no other documentation.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "shortcut_cheatsheet": {
+   "value": "no",
+   "note": "'Please refer to menu for other shortcuts'",
+   "evidence": [
+    "https://apps.apple.com/us/app/id687061437"
+   ],
+   "how": "store"
+  },
+  "boss_key": {
+   "value": "no",
+   "note": "Toolbar and status bar can be hidden; no hide-all key mentioned. Searched App Store description and version history (9.56-11.5); no other documentation.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "app_sandbox": {
+   "value": "yes",
+   "note": "Mac App Store build",
+   "evidence": [
+    "https://apps.apple.com/us/app/id687061437"
+   ],
+   "how": "store"
+  },
+  "no_network": {
+   "value": "yes",
+   "note": "Data Not Collected; sharing exists; network use not documented. Searched App Store description and version history (9.56-11.5); no other documentation.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "notarized_attested": {
+   "value": "partial",
+   "note": "Apple-reviewed MAS build; no public source to verify",
+   "evidence": [
+    "https://apps.apple.com/us/app/id687061437"
+   ],
+   "how": "store"
+  },
+  "mac_app_store": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://apps.apple.com/us/app/id687061437"
+   ],
+   "how": "store"
+  }
+ }
+}

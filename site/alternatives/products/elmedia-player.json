@@ -1,0 +1,550 @@
+{
+ "name": "Elmedia Player",
+ "short": "Elmedia Player",
+ "vendor": "Electronic Team, Inc. (formerly Eltima)",
+ "website": "https://www.elmedia-video-player.com/",
+ "platforms": [
+  "macOS"
+ ],
+ "mac_available": "yes",
+ "page": "matrix",
+ "section": "video",
+ "price": "free; PRO features via the $19.99 Mac App Store version or a direct PRO license (price not shown without script)",
+ "license": "proprietary (freeware + PRO)",
+ "current_version": "8.24 (3472)",
+ "last_update": "2025-12-05",
+ "engine": "own FFmpeg-based player",
+ "category": "video",
+ "summary": "A general-purpose media player for video and music with many formats, OpenSubtitles search, an equalizer and strong casting to AirPlay, Chromecast, DLNA and Roku devices. Advanced features such as PiP and picture adjustments are PRO.",
+ "where_it_wins": [
+  "Streaming to Smart TVs, Chromecast, Roku, DLNA; AirPlay receiver",
+  "Music playback with equalizer and visualizer",
+  "Online video and OpenSubtitles search",
+  "Movable separate controls window, color themes, custom hotkeys"
+ ],
+ "where_schnellbild_wins": [
+  "Free and open source, nothing behind a PRO wall",
+  "Browses folders with thumbnails of photos and videos",
+  "Photo viewing and slideshows through subfolders",
+  "Archives as folders, videos inside them",
+  "File sorting with dual pane",
+  "Never goes online"
+ ],
+ "search_terms": [
+  "elmedia player alternative",
+  "elmedia player pro free",
+  "elmedia vs iina",
+  "elmedia alternative kostenlos"
+ ],
+ "matrix": {
+  "free": {
+   "value": "partial",
+   "evidence": [
+    "https://www.elmedia-video-player.com/",
+    "https://apps.apple.com/us/app/elmedia-video-player/id937759555?mt=12"
+   ],
+   "how": "docs",
+   "note": "Free playback; PRO (picture adjustments, PiP, streaming to TVs, screenshot series) in the $19.99 Mac App Store version or as direct license"
+  },
+  "open_source": {
+   "value": "no",
+   "evidence": [
+    "https://www.elmedia-video-player.com/"
+   ],
+   "how": "docs"
+  },
+  "native_apple_silicon": {
+   "value": "yes",
+   "evidence": [
+    "https://apps.apple.com/us/app/elmedia-video-player/id937759555?mt=12"
+   ],
+   "how": "store",
+   "note": "'Native Apple Silicon support'"
+  },
+  "no_account_no_tracking": {
+   "value": "yes",
+   "evidence": [
+    "https://apps.apple.com/us/app/elmedia-video-player/id937759555?mt=12"
+   ],
+   "how": "store",
+   "note": "Privacy label 'Data Not Collected'; no ads"
+  },
+  "dark_light_setting": {
+   "value": "yes",
+   "evidence": [
+    "https://help.electronic.us/support/solutions/articles/44002280353-elmedia-player-from-the-electronic-team-website"
+   ],
+   "how": "changelog",
+   "note": "Interface color themes (8.0)"
+  },
+  "languages_20": {
+   "value": "partial",
+   "evidence": [
+    "https://apps.apple.com/us/app/elmedia-video-player/id937759555?mt=12"
+   ],
+   "how": "store",
+   "note": "12 languages; interface language settable in app"
+  },
+  "folder_browsing": {
+   "value": "partial",
+   "evidence": [
+    "https://help.electronic.us/support/solutions/articles/44002280353-elmedia-player-from-the-electronic-team-website"
+   ],
+   "how": "changelog",
+   "note": "Folders can be added to the playlist; no browser"
+  },
+  "thumbnail_grid": {
+   "value": "no",
+   "evidence": [
+    "https://www.elmedia-video-player.com/"
+   ],
+   "how": "docs"
+  },
+  "list_view": {
+   "value": "no",
+   "evidence": [
+    "https://www.elmedia-video-player.com/"
+   ],
+   "how": "docs",
+   "note": "Playlist only"
+  },
+  "recursive_search": {
+   "value": "no",
+   "evidence": [
+    "https://www.elmedia-video-player.com/"
+   ],
+   "how": "docs"
+  },
+  "regex_search": {
+   "value": "no",
+   "evidence": [
+    "https://www.elmedia-video-player.com/"
+   ],
+   "how": "docs"
+  },
+  "network_shares_fast": {
+   "value": "no",
+   "evidence": [
+    "https://www.elmedia-video-player.com/"
+   ],
+   "how": "docs",
+   "note": "No file browser"
+  },
+  "multiple_windows": {
+   "value": "no",
+   "how": "docs",
+   "evidence": [
+    "https://help.electronic.us/support/solutions/articles/44002276587-elmedia-keyboard-shortcuts"
+   ],
+   "note": "Full menu list has no new player window; playlist and controls can be separate windows"
+  },
+  "bookmarks": {
+   "value": "no",
+   "evidence": [
+    "https://help.electronic.us/support/solutions/articles/44002280353-elmedia-player-from-the-electronic-team-website"
+   ],
+   "how": "changelog",
+   "note": "Bookmarks are positions inside a video, not folders"
+  },
+  "img_modern_formats": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/elmedia-video-player/id937759555?mt=12"
+   ],
+   "note": "Supported formats list audio, video and subtitles only"
+  },
+  "img_raw": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/elmedia-video-player/id937759555?mt=12"
+   ],
+   "note": "No image formats in the format list"
+  },
+  "img_psd_exr": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/elmedia-video-player/id937759555?mt=12"
+   ],
+   "note": "No image formats in the format list"
+  },
+  "img_svg_pdf": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/elmedia-video-player/id937759555?mt=12"
+   ],
+   "note": "No image formats in the format list"
+  },
+  "img_animated": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/elmedia-video-player/id937759555?mt=12"
+   ],
+   "note": "No image formats in the format list"
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "how": "docs",
+   "evidence": [
+    "https://help.electronic.us/support/solutions/articles/44002276587-elmedia-keyboard-shortcuts"
+   ],
+   "note": "Cmd+Right / Cmd+Left = next / previous in playlist"
+  },
+  "zoom_rotate": {
+   "value": "partial",
+   "evidence": [
+    "https://apps.apple.com/us/app/elmedia-video-player/id937759555?mt=12"
+   ],
+   "how": "store",
+   "note": "Video only: rotate, flip, mirror, aspect ratio"
+  },
+  "slideshow": {
+   "value": "no",
+   "evidence": [
+    "https://www.elmedia-video-player.com/"
+   ],
+   "how": "docs"
+  },
+  "slideshow_recursive": {
+   "value": "no",
+   "evidence": [
+    "https://www.elmedia-video-player.com/"
+   ],
+   "how": "docs"
+  },
+  "auto_enhance_view": {
+   "value": "partial",
+   "evidence": [
+    "https://www.elmedia-video-player.com/"
+   ],
+   "how": "docs",
+   "note": "Video only, PRO"
+  },
+  "file_info_exif": {
+   "value": "partial",
+   "how": "docs",
+   "evidence": [
+    "https://help.electronic.us/support/solutions/articles/44002276587-elmedia-keyboard-shortcuts"
+   ],
+   "note": "Window > Media Info (Cmd+I); no EXIF"
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://help.electronic.us/support/solutions/articles/44002276587-elmedia-keyboard-shortcuts"
+   ],
+   "note": "Not documented"
+  },
+  "video_native": {
+   "value": "yes",
+   "evidence": [
+    "https://apps.apple.com/us/app/elmedia-video-player/id937759555?mt=12"
+   ],
+   "how": "store"
+  },
+  "video_mkv_avi_webm": {
+   "value": "yes",
+   "evidence": [
+    "https://apps.apple.com/us/app/elmedia-video-player/id937759555?mt=12"
+   ],
+   "how": "store",
+   "note": "MKV, WebM, AVI, WMV, FLV and many more"
+  },
+  "photos_videos_one_grid": {
+   "value": "no",
+   "evidence": [
+    "https://www.elmedia-video-player.com/"
+   ],
+   "how": "docs"
+  },
+  "video_skim_arrows": {
+   "value": "yes",
+   "how": "docs",
+   "evidence": [
+    "https://help.electronic.us/support/solutions/articles/44002276587-elmedia-keyboard-shortcuts"
+   ],
+   "note": "Left/Right seek 5 s (adjustable in Preferences > Control), frame by frame when paused"
+  },
+  "subtitles_embedded": {
+   "value": "yes",
+   "evidence": [
+    "https://apps.apple.com/us/app/elmedia-video-player/id937759555?mt=12"
+   ],
+   "how": "store"
+  },
+  "subtitles_external_files": {
+   "value": "yes",
+   "evidence": [
+    "https://www.elmedia-video-player.com/"
+   ],
+   "how": "docs",
+   "note": "Loaded manually or automatically"
+  },
+  "audio_track_choice": {
+   "value": "yes",
+   "evidence": [
+    "https://apps.apple.com/us/app/elmedia-video-player/id937759555?mt=12"
+   ],
+   "how": "store",
+   "note": "Also external audio files"
+  },
+  "playback_speed": {
+   "value": "yes",
+   "evidence": [
+    "https://apps.apple.com/us/app/elmedia-video-player/id937759555?mt=12"
+   ],
+   "how": "store"
+  },
+  "control_bar_movable": {
+   "value": "yes",
+   "evidence": [
+    "https://help.electronic.us/support/solutions/articles/44002280353-elmedia-player-from-the-electronic-team-website"
+   ],
+   "how": "changelog",
+   "note": "'Show controls in a separate window' mode, resizable"
+  },
+  "playlist": {
+   "value": "yes",
+   "evidence": [
+    "https://apps.apple.com/us/app/elmedia-video-player/id937759555?mt=12"
+   ],
+   "how": "store"
+  },
+  "saved_playlists": {
+   "value": "yes",
+   "evidence": [
+    "https://help.electronic.us/support/solutions/articles/44002280353-elmedia-player-from-the-electronic-team-website"
+   ],
+   "how": "changelog",
+   "note": "Playlists exported as .m3u"
+  },
+  "pip": {
+   "value": "partial",
+   "evidence": [
+    "https://help.electronic.us/support/solutions/articles/44002280353-elmedia-player-from-the-electronic-team-website",
+    "https://www.elmedia-video-player.com/features"
+   ],
+   "how": "changelog",
+   "note": "PRO only"
+  },
+  "music_mode": {
+   "value": "yes",
+   "evidence": [
+    "https://www.elmedia-video-player.com/"
+   ],
+   "how": "docs",
+   "note": "Audio player with equalizer and visualizer"
+  },
+  "streaming_urls": {
+   "value": "yes",
+   "evidence": [
+    "https://help.electronic.us/support/solutions/articles/44002280353-elmedia-player-from-the-electronic-team-website"
+   ],
+   "how": "changelog",
+   "note": "Open Online Video, Open URL"
+  },
+  "online_subtitles": {
+   "value": "yes",
+   "evidence": [
+    "https://apps.apple.com/us/app/elmedia-video-player/id937759555?mt=12",
+    "https://help.electronic.us/support/solutions/articles/44002280353-elmedia-player-from-the-electronic-team-website"
+   ],
+   "how": "store",
+   "note": "OpenSubtitles search; saving subtitles is PRO"
+  },
+  "video_filters_enhance": {
+   "value": "partial",
+   "evidence": [
+    "https://www.elmedia-video-player.com/"
+   ],
+   "how": "docs",
+   "note": "Brightness, contrast, saturation; PRO"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://www.elmedia-video-player.com/"
+   ],
+   "note": "Not mentioned"
+  },
+  "archives_as_folders": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/elmedia-video-player/id937759555?mt=12"
+   ],
+   "note": "No archive formats in the format list"
+  },
+  "comics_cbz_cbr": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/elmedia-video-player/id937759555?mt=12"
+   ],
+   "note": "No comic formats in the format list"
+  },
+  "archive_passwords": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/elmedia-video-player/id937759555?mt=12"
+   ],
+   "note": "No archive support"
+  },
+  "split_archives": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/elmedia-video-player/id937759555?mt=12"
+   ],
+   "note": "No archive support"
+  },
+  "videos_in_archives": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/elmedia-video-player/id937759555?mt=12"
+   ],
+   "note": "No archive formats in the format list"
+  },
+  "manga_two_page": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/elmedia-video-player/id937759555?mt=12"
+   ],
+   "note": "No image support"
+  },
+  "rename_trash": {
+   "value": "no",
+   "how": "docs",
+   "evidence": [
+    "https://help.electronic.us/support/solutions/articles/44002276587-elmedia-keyboard-shortcuts"
+   ],
+   "note": "Menus offer Remove from Playlist and Show in Finder only"
+  },
+  "move_copy": {
+   "value": "no",
+   "how": "docs",
+   "evidence": [
+    "https://help.electronic.us/support/solutions/articles/44002276587-elmedia-keyboard-shortcuts"
+   ],
+   "note": "No file operations in the menu list"
+  },
+  "dual_pane": {
+   "value": "no",
+   "evidence": [
+    "https://www.elmedia-video-player.com/"
+   ],
+   "how": "docs"
+  },
+  "undo_file_actions": {
+   "value": "no",
+   "how": "docs",
+   "evidence": [
+    "https://help.electronic.us/support/solutions/articles/44002276587-elmedia-keyboard-shortcuts"
+   ],
+   "note": "No file operations in the menu list"
+  },
+  "image_editing": {
+   "value": "no",
+   "evidence": [
+    "https://www.elmedia-video-player.com/"
+   ],
+   "how": "docs",
+   "note": "Exports video frames as image series (PRO), no editing"
+  },
+  "batch_convert": {
+   "value": "no",
+   "evidence": [
+    "https://www.elmedia-video-player.com/"
+   ],
+   "how": "docs"
+  },
+  "library_catalog": {
+   "value": "no",
+   "evidence": [
+    "https://www.elmedia-video-player.com/"
+   ],
+   "how": "docs"
+  },
+  "cloud_sync": {
+   "value": "no",
+   "evidence": [
+    "https://www.elmedia-video-player.com/"
+   ],
+   "how": "docs",
+   "note": "Streams to TVs (AirPlay, Chromecast, DLNA, Roku), no cloud"
+  },
+  "keyboard_first": {
+   "value": "partial",
+   "evidence": [
+    "https://help.electronic.us/support/solutions/articles/44002280353-elmedia-player-from-the-electronic-team-website"
+   ],
+   "how": "changelog",
+   "note": "Customizable hotkeys for playback"
+  },
+  "custom_shortcuts": {
+   "value": "yes",
+   "evidence": [
+    "https://help.electronic.us/support/solutions/articles/44002280353-elmedia-player-from-the-electronic-team-website"
+   ],
+   "how": "changelog",
+   "note": "Hotkeys customization"
+  },
+  "shortcut_cheatsheet": {
+   "value": "yes",
+   "how": "docs",
+   "evidence": [
+    "https://help.electronic.us/support/solutions/articles/44002276587-elmedia-keyboard-shortcuts"
+   ],
+   "note": "Official printable list of all default shortcuts"
+  },
+  "boss_key": {
+   "value": "no",
+   "how": "docs",
+   "evidence": [
+    "https://help.electronic.us/support/solutions/articles/44002276587-elmedia-keyboard-shortcuts"
+   ],
+   "note": "Only the standard macOS Hide (Cmd+H)"
+  },
+  "app_sandbox": {
+   "value": "partial",
+   "evidence": [
+    "https://apps.apple.com/us/app/elmedia-video-player/id937759555?mt=12",
+    "https://help.electronic.us/support/solutions/articles/44002278728"
+   ],
+   "how": "store",
+   "note": "Mac App Store version sandboxed; website version not documented"
+  },
+  "no_network": {
+   "value": "no",
+   "evidence": [
+    "https://apps.apple.com/us/app/elmedia-video-player/id937759555?mt=12"
+   ],
+   "how": "store",
+   "note": "Online subtitles, online video, streaming to devices"
+  },
+  "notarized_attested": {
+   "value": "partial",
+   "how": "unverified",
+   "evidence": [
+    "https://www.elmedia-video-player.com/"
+   ],
+   "note": "Closed source; notarization of the website build not checked"
+  },
+  "mac_app_store": {
+   "value": "yes",
+   "evidence": [
+    "https://apps.apple.com/us/app/elmedia-video-player/id937759555?mt=12"
+   ],
+   "how": "store"
+  }
+ }
+}

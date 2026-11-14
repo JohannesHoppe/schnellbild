@@ -1,0 +1,589 @@
+{
+ "name": "VLC media player",
+ "short": "VLC",
+ "vendor": "VideoLAN (non-profit)",
+ "website": "https://www.videolan.org/vlc/",
+ "platforms": [
+  "macOS",
+  "Windows",
+  "Linux",
+  "iOS",
+  "Android",
+  "others"
+ ],
+ "mac_available": "yes",
+ "page": "matrix",
+ "section": "video",
+ "price": "free",
+ "license": "open source, GPL 2.0 or later",
+ "current_version": "3.0.24",
+ "last_update": "2026-09-22",
+ "engine": "VLC (own demuxers, FFmpeg/libavcodec, VideoToolbox on macOS)",
+ "category": "video",
+ "summary": "The best-known free, open-source media player: plays almost any file, disc or stream on every platform without codec packs. It is a player first; images show as timed stills and there is no file browser or thumbnail grid.",
+ "where_it_wins": [
+  "plays nearly every format, discs (DVD/Blu-ray), network streams and capture devices",
+  "runs on every desktop and mobile OS",
+  "subtitles from files and online (VLSub), audio tracks, speed, filters, converting/streaming out",
+  "saved playlists, music, visualizations",
+  "fully remappable hotkeys"
+ ],
+ "where_schnellbild_wins": [
+  "thumbnail grid of photos and videos together, folders with previews",
+  "real image viewer (HEIC, AVIF, JPEG XL, RAW, PSD, EXR, PDF)",
+  "archives and comics open as folders, password archives",
+  "rename, trash, move, two panes with F5/F6 and undo",
+  "arrow keys skim the video without modifiers",
+  "App Sandbox, never goes online, attested build"
+ ],
+ "search_terms": [
+  "vlc mac",
+  "vlc alternative mac",
+  "vlc alternative",
+  "vlc image viewer",
+  "vlc für mac",
+  "vlc alternative mac deutsch",
+  "vlc mac apple silicon"
+ ],
+ "matrix": {
+  "free": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://www.videolan.org/vlc/"
+   ],
+   "how": "docs"
+  },
+  "open_source": {
+   "value": "yes",
+   "note": "GPL 2.0 or later (libVLC LGPL)",
+   "evidence": [
+    "https://www.videolan.org/vlc/",
+    "https://github.com/videolan/vlc"
+   ],
+   "how": "docs"
+  },
+  "native_apple_silicon": {
+   "value": "yes",
+   "note": "Universal and arm64 builds",
+   "evidence": [
+    "https://www.videolan.org/vlc/download-macosx.html"
+   ],
+   "how": "docs"
+  },
+  "no_account_no_tracking": {
+   "value": "yes",
+   "note": "'no spyware, no ads and no user tracking'",
+   "evidence": [
+    "https://www.videolan.org/vlc/"
+   ],
+   "how": "docs"
+  },
+  "dark_light_setting": {
+   "value": "partial",
+   "note": "macOS: option 'Run VLC with dark interface style'; Windows/Linux Qt: dark palette option",
+   "evidence": [
+    "https://github.com/videolan/vlc/blob/3.0.x/modules/gui/macosx/macosx.m",
+    "https://github.com/videolan/vlc/blob/3.0.x/modules/gui/qt/qt.cpp"
+   ],
+   "how": "source"
+  },
+  "languages_20": {
+   "value": "yes",
+   "note": "about 105 translation files in po/",
+   "evidence": [
+    "https://github.com/videolan/vlc/tree/3.0.x/po"
+   ],
+   "how": "source"
+  },
+  "folder_browsing": {
+   "value": "partial",
+   "note": "opens a folder as a playlist (expanded recursively); sidebar 'My Videos/Pictures' and network browsing, no real file browser",
+   "evidence": [
+    "https://github.com/videolan/vlc/blob/3.0.x/src/libvlc-module.c",
+    "https://github.com/videolan/vlc/blob/3.0.x/modules/access/directory.c"
+   ],
+   "how": "source"
+  },
+  "thumbnail_grid": {
+   "value": "no",
+   "how": "source",
+   "evidence": [
+    "https://github.com/videolan/vlc/tree/3.0.x/modules/gui/macosx"
+   ],
+   "note": "VLC 3 macOS interface has a playlist outline view and sidebar, no grid"
+  },
+  "list_view": {
+   "value": "partial",
+   "how": "source",
+   "evidence": [
+    "https://github.com/videolan/vlc/blob/3.0.x/modules/gui/macosx/VLCPLModel.m"
+   ],
+   "note": "Playlist with sortable columns (title, artist …), not a file list"
+  },
+  "recursive_search": {
+   "value": "partial",
+   "how": "source",
+   "evidence": [
+    "https://github.com/videolan/vlc/blob/3.0.x/modules/gui/macosx/VLCMainWindow.m",
+    "https://github.com/videolan/vlc/blob/3.0.x/src/playlist/search.c"
+   ],
+   "note": "'Search in Playlist' filters playlist items only"
+  },
+  "regex_search": {
+   "value": "no",
+   "how": "source",
+   "evidence": [
+    "https://github.com/videolan/vlc/blob/3.0.x/src/playlist/search.c"
+   ],
+   "note": "Playlist search is a case-insensitive substring match (vlc_strcasestr)"
+  },
+  "network_shares_fast": {
+   "value": "partial",
+   "note": "plays straight from SMB, NFS, SFTP, FTP, UPnP; no thumbnail browsing to judge speed",
+   "evidence": [
+    "https://github.com/videolan/vlc/tree/3.0.x/modules/access"
+   ],
+   "how": "source"
+  },
+  "multiple_windows": {
+   "value": "partial",
+   "note": "Windows/Linux: several instances if 'one instance' is off; macOS: one player window",
+   "evidence": [
+    "https://github.com/videolan/vlc/blob/3.0.x/src/libvlc-module.c"
+   ],
+   "how": "source"
+  },
+  "bookmarks": {
+   "value": "no",
+   "how": "source",
+   "evidence": [
+    "https://github.com/videolan/vlc/blob/3.0.x/modules/gui/macosx/VLCBookmarksWindowController.m"
+   ],
+   "note": "Bookmarks are time positions inside a media file, not folders"
+  },
+  "img_modern_formats": {
+   "value": "partial",
+   "note": "WebP opens (shown as a still for 10 s); HEIC, AVIF, JPEG XL not in the image demuxer",
+   "evidence": [
+    "https://github.com/videolan/vlc/blob/3.0.x/modules/demux/image.c"
+   ],
+   "how": "source"
+  },
+  "img_raw": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/videolan/vlc/blob/3.0.x/modules/demux/image.c"
+   ],
+   "how": "source"
+  },
+  "img_psd_exr": {
+   "value": "no",
+   "note": "image demuxer knows XCF, PNG, GIF, TIFF, BMP, PCX, JPEG, WebP, BPG, SVG, TGA, not PSD/EXR",
+   "evidence": [
+    "https://github.com/videolan/vlc/blob/3.0.x/modules/demux/image.c"
+   ],
+   "how": "source"
+  },
+  "img_svg_pdf": {
+   "value": "partial",
+   "note": "SVG via the svg decoder (librsvg); no PDF",
+   "evidence": [
+    "https://github.com/videolan/vlc/blob/3.0.x/modules/demux/image.c",
+    "https://github.com/videolan/vlc/tree/3.0.x/modules/codec"
+   ],
+   "how": "source"
+  },
+  "img_animated": {
+   "value": "partial",
+   "how": "source",
+   "evidence": [
+    "https://github.com/videolan/vlc/blob/3.0.x/modules/demux/image.c"
+   ],
+   "note": "Animated GIFs are handed to the FFmpeg demuxer; APNG/animated WebP not confirmed"
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "note": "Next/Previous playlist item hotkeys",
+   "evidence": [
+    "https://github.com/videolan/vlc/blob/3.0.x/src/libvlc-module.c"
+   ],
+   "how": "source"
+  },
+  "zoom_rotate": {
+   "value": "partial",
+   "note": "video zoom, crop and rotate/transform filters; no image pan",
+   "evidence": [
+    "https://github.com/videolan/vlc/blob/3.0.x/src/libvlc-module.c",
+    "https://github.com/videolan/vlc/blob/3.0.x/modules/video_filter/rotate.c",
+    "https://github.com/videolan/vlc/blob/3.0.x/modules/video_filter/transform.c"
+   ],
+   "how": "source"
+  },
+  "slideshow": {
+   "value": "partial",
+   "note": "images in a playlist show for 10 s each ('image-duration')",
+   "evidence": [
+    "https://github.com/videolan/vlc/blob/3.0.x/modules/demux/image.c"
+   ],
+   "how": "source"
+  },
+  "slideshow_recursive": {
+   "value": "partial",
+   "note": "an opened folder is expanded with subfolders, photos (10 s each) and videos mixed in one playlist",
+   "evidence": [
+    "https://github.com/videolan/vlc/blob/3.0.x/modules/demux/image.c",
+    "https://github.com/videolan/vlc/blob/3.0.x/src/libvlc-module.c"
+   ],
+   "how": "source"
+  },
+  "auto_enhance_view": {
+   "value": "partial",
+   "note": "manual 'Adjustments and Effects' (brightness, contrast, hue …), no auto enhance",
+   "evidence": [
+    "https://www.videolan.org/vlc/",
+    "https://github.com/videolan/vlc/blob/3.0.x/modules/video_filter/adjust.c"
+   ],
+   "how": "source"
+  },
+  "file_info_exif": {
+   "value": "partial",
+   "note": "Media Information shows codecs, bitrate, statistics; no EXIF",
+   "evidence": [
+    "https://github.com/videolan/vlc/blob/3.0.x/modules/gui/qt/dialogs/mediainfo.cpp"
+   ],
+   "how": "source"
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://github.com/videolan/vlc/blob/3.0.x/modules/demux/image.c"
+   ],
+   "note": "Probes content; no warning found"
+  },
+  "video_native": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://www.videolan.org/vlc/"
+   ],
+   "how": "docs"
+  },
+  "video_mkv_avi_webm": {
+   "value": "yes",
+   "note": "'MPEG-2, MPEG-4, H.264, MKV, WebM, WMV …' without codec packs",
+   "evidence": [
+    "https://www.videolan.org/vlc/"
+   ],
+   "how": "docs"
+  },
+  "photos_videos_one_grid": {
+   "value": "no",
+   "how": "source",
+   "evidence": [
+    "https://github.com/videolan/vlc/tree/3.0.x/modules/gui/macosx"
+   ],
+   "note": "No grid view in the 3.0 macOS interface"
+  },
+  "video_skim_arrows": {
+   "value": "partial",
+   "note": "jumps bound to modifier+arrow (macOS ⌘⌃←/→ 3 s, ⌘⌥ 10 s, ⌘⇧ 1 min; Windows ⇧/Alt/Ctrl+←/→)",
+   "evidence": [
+    "https://github.com/videolan/vlc/blob/3.0.x/src/libvlc-module.c"
+   ],
+   "how": "source"
+  },
+  "subtitles_embedded": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://www.videolan.org/vlc/",
+    "https://github.com/videolan/vlc/tree/3.0.x/modules/codec"
+   ],
+   "how": "source"
+  },
+  "subtitles_external_files": {
+   "value": "yes",
+   "note": "'sub-autodetect-file' on by default",
+   "evidence": [
+    "https://github.com/videolan/vlc/blob/3.0.x/src/libvlc-module.c"
+   ],
+   "how": "source"
+  },
+  "audio_track_choice": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://github.com/videolan/vlc/blob/3.0.x/src/libvlc-module.c"
+   ],
+   "how": "source"
+  },
+  "playback_speed": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://github.com/videolan/vlc/blob/3.0.x/src/libvlc-module.c"
+   ],
+   "how": "source"
+  },
+  "control_bar_movable": {
+   "value": "partial",
+   "note": "macOS fullscreen controller is draggable and its position is saved (frame autosave); windowed bar is fixed",
+   "evidence": [
+    "https://github.com/videolan/vlc/blob/3.0.x/modules/gui/macosx/VLCFSPanelController.m"
+   ],
+   "how": "source"
+  },
+  "playlist": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://github.com/videolan/vlc/blob/3.0.x/src/libvlc-module.c"
+   ],
+   "how": "source"
+  },
+  "saved_playlists": {
+   "value": "yes",
+   "note": "XSPF, M3U, PLS",
+   "evidence": [
+    "https://github.com/videolan/vlc/blob/3.0.x/modules/demux/playlist"
+   ],
+   "how": "source"
+  },
+  "pip": {
+   "value": "no",
+   "note": "no Picture-in-Picture code in the 3.0 macOS or Qt interface",
+   "evidence": [
+    "https://github.com/videolan/vlc/tree/3.0.x/modules/gui/macosx"
+   ],
+   "how": "source"
+  },
+  "music_mode": {
+   "value": "yes",
+   "note": "plays audio files, visualizations",
+   "evidence": [
+    "https://www.videolan.org/vlc/"
+   ],
+   "how": "docs"
+  },
+  "streaming_urls": {
+   "value": "yes",
+   "note": "network streams, HTTP, HLS, YouTube via Lua",
+   "evidence": [
+    "https://www.videolan.org/vlc/",
+    "https://github.com/videolan/vlc/tree/3.0.x/modules/access"
+   ],
+   "how": "docs"
+  },
+  "online_subtitles": {
+   "value": "yes",
+   "note": "bundled VLSub extension (OpenSubtitles)",
+   "evidence": [
+    "https://github.com/videolan/vlc/blob/3.0.x/share/lua/extensions/VLSub.lua"
+   ],
+   "how": "source"
+  },
+  "video_filters_enhance": {
+   "value": "yes",
+   "note": "adjust filter: brightness, contrast, hue, saturation, gamma",
+   "evidence": [
+    "https://github.com/videolan/vlc/blob/3.0.x/modules/video_filter/adjust.c"
+   ],
+   "how": "source"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "note": "no Quick Look extension in the macOS package",
+   "evidence": [
+    "https://github.com/videolan/vlc/blob/3.0.x/extras/package/macosx"
+   ],
+   "how": "source"
+  },
+  "archives_as_folders": {
+   "value": "partial",
+   "note": "libarchive 'stream directory' lists an archive's files into the playlist; not a browsable folder",
+   "evidence": [
+    "https://github.com/videolan/vlc/blob/3.0.x/modules/stream_extractor/archive.c"
+   ],
+   "how": "source"
+  },
+  "comics_cbz_cbr": {
+   "value": "no",
+   "how": "source",
+   "evidence": [
+    "https://github.com/videolan/vlc/blob/3.0.x/modules/stream_extractor/archive.c",
+    "https://github.com/videolan/vlc/tree/3.0.x/modules/gui/macosx"
+   ],
+   "note": "Archive extractor plays images inside as timed stills; no reader view"
+  },
+  "archive_passwords": {
+   "value": "no",
+   "note": "archive.c sets no passphrase",
+   "evidence": [
+    "https://github.com/videolan/vlc/blob/3.0.x/modules/stream_extractor/archive.c"
+   ],
+   "how": "source"
+  },
+  "split_archives": {
+   "value": "partial",
+   "note": "archive.c appends several volume streams to libarchive; not documented",
+   "evidence": [
+    "https://github.com/videolan/vlc/blob/3.0.x/modules/stream_extractor/archive.c"
+   ],
+   "how": "source"
+  },
+  "videos_in_archives": {
+   "value": "yes",
+   "note": "libarchive 'stream extractor' plays files inside ZIP, RAR, 7z",
+   "evidence": [
+    "https://github.com/videolan/vlc/blob/3.0.x/modules/stream_extractor/archive.c",
+    "https://github.com/videolan/vlc/blob/3.0.x/contrib/src/libarchive/rules.mak"
+   ],
+   "how": "source"
+  },
+  "manga_two_page": {
+   "value": "no",
+   "how": "source",
+   "evidence": [
+    "https://github.com/videolan/vlc/tree/3.0.x/modules/gui/macosx"
+   ],
+   "note": "No reader or two-page view"
+  },
+  "rename_trash": {
+   "value": "no",
+   "how": "source",
+   "evidence": [
+    "https://github.com/videolan/vlc/tree/3.0.x/modules/gui/macosx"
+   ],
+   "note": "No file operations in the macOS interface code"
+  },
+  "move_copy": {
+   "value": "no",
+   "how": "source",
+   "evidence": [
+    "https://github.com/videolan/vlc/tree/3.0.x/modules/gui/macosx"
+   ],
+   "note": "No file operations in the macOS interface code"
+  },
+  "dual_pane": {
+   "value": "no",
+   "how": "source",
+   "evidence": [
+    "https://github.com/videolan/vlc/tree/3.0.x/modules/gui/macosx"
+   ],
+   "note": "No file manager view"
+  },
+  "undo_file_actions": {
+   "value": "no",
+   "how": "source",
+   "evidence": [
+    "https://github.com/videolan/vlc/tree/3.0.x/modules/gui/macosx"
+   ],
+   "note": "No file operations"
+  },
+  "image_editing": {
+   "value": "no",
+   "how": "source",
+   "evidence": [
+    "https://github.com/videolan/vlc/tree/3.0.x/modules/gui/macosx"
+   ],
+   "note": "Snapshots of video frames only"
+  },
+  "batch_convert": {
+   "value": "partial",
+   "note": "Convert/Save transcodes several media files; no batch rename",
+   "evidence": [
+    "https://www.videolan.org/vlc/",
+    "https://github.com/videolan/vlc/blob/3.0.x/modules/gui/qt/dialogs/convert.cpp",
+    "https://github.com/videolan/vlc/blob/3.0.x/modules/gui/macosx/VLCConvertAndSaveWindowController.m"
+   ],
+   "how": "source"
+  },
+  "library_catalog": {
+   "value": "partial",
+   "note": "basic media library in the playlist sidebar, no tags/ratings",
+   "evidence": [
+    "https://github.com/videolan/vlc/blob/3.0.x/lib/media_library.c"
+   ],
+   "how": "source"
+  },
+  "cloud_sync": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://github.com/videolan/vlc/tree/3.0.x/modules/gui/macosx"
+   ],
+   "note": "No sync found; network sources only"
+  },
+  "keyboard_first": {
+   "value": "partial",
+   "note": "playback fully by hotkeys, browsing is mouse-oriented",
+   "evidence": [
+    "https://github.com/videolan/vlc/blob/3.0.x/src/libvlc-module.c"
+   ],
+   "how": "source"
+  },
+  "custom_shortcuts": {
+   "value": "yes",
+   "note": "every hotkey configurable in Preferences",
+   "evidence": [
+    "https://github.com/videolan/vlc/blob/3.0.x/src/libvlc-module.c"
+   ],
+   "how": "source"
+  },
+  "shortcut_cheatsheet": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://github.com/videolan/vlc/tree/3.0.x/modules/gui/macosx"
+   ],
+   "note": "Hotkey list only inside Preferences"
+  },
+  "boss_key": {
+   "value": "partial",
+   "note": "'Boss key' action (hide interface and pause) exists but has no default key",
+   "evidence": [
+    "https://github.com/videolan/vlc/blob/3.0.x/src/libvlc-module.c"
+   ],
+   "how": "source"
+  },
+  "app_sandbox": {
+   "value": "no",
+   "note": "codesign.sh signs with vlc-hardening.entitlements (hardened runtime, no app-sandbox key); the sandbox file VLC.entitlements is not used there",
+   "evidence": [
+    "https://github.com/videolan/vlc/blob/3.0.x/extras/package/macosx/codesign.sh",
+    "https://github.com/videolan/vlc/blob/3.0.x/extras/package/macosx/vlc-hardening.entitlements",
+    "https://github.com/videolan/vlc/blob/3.0.x/extras/package/macosx/VLC.entitlements"
+   ],
+   "how": "source"
+  },
+  "no_network": {
+   "value": "partial",
+   "note": "update check (Sparkle on macOS, 'qt-updates-notif'); metadata fetching off by default ('metadata-network-access' false), first-run privacy dialog",
+   "evidence": [
+    "https://github.com/videolan/vlc/blob/3.0.x/src/libvlc-module.c",
+    "https://github.com/videolan/vlc/blob/3.0.x/modules/gui/qt/qt.cpp",
+    "https://github.com/videolan/vlc/tree/3.0.x/contrib/src/sparkle"
+   ],
+   "how": "source"
+  },
+  "notarized_attested": {
+   "value": "partial",
+   "how": "unverified",
+   "evidence": [
+    "https://www.videolan.org/vlc/download-macosx.html"
+   ],
+   "note": "Signed for Gatekeeper; notarization and reproducible builds not confirmed on the page"
+  },
+  "mac_app_store": {
+   "value": "no",
+   "note": "VideoLAN's VLC does not appear in a Mac App Store search",
+   "evidence": [
+    "https://itunes.apple.com/search?term=vlc&entity=macSoftware&limit=10"
+   ],
+   "how": "store"
+  }
+ }
+}

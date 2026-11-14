@@ -1,0 +1,583 @@
+{
+ "name": "NeeView",
+ "short": "NeeView",
+ "vendor": "neelabo",
+ "website": "https://neelabo.github.io/NeeView/",
+ "platforms": [
+  "Windows"
+ ],
+ "mac_available": "no",
+ "page": "switcher",
+ "section": "windows",
+ "price": "free",
+ "license": "open source (MIT)",
+ "current_version": "46.3",
+ "last_update": "2026-08-09",
+ "engine": "images: WPF/WIC + Susie plug-ins; video: .NET MediaPlayer or optional libVLC 3.x",
+ "category": "comic",
+ "summary": "Book-style viewer for Windows that treats folders and archives as books and images as pages. Very configurable: every action is a command with its own keys, mouse gestures and scripts, plus bookshelf, bookmarks, playlists and two-page manga spreads. Videos play through Windows or an installed VLC.",
+ "where_it_wins": [
+  "Extremely deep customisation: commands, gestures, JavaScript scripting",
+  "Two-page spread with right-to-left reading and page splitting",
+  "Nested archives and archive passwords (via 7z.dll)",
+  "Saved playlists, history and search with date/size/regex operators",
+  "Image effects panel, printing, export as ZIP/folder",
+  "Microsoft Store and portable ZIP builds"
+ ],
+ "where_schnellbild_wins": [
+  "Runs natively on the Mac (NeeView is Windows only)",
+  "Videos (MKV, WebM, AVI) play out of the box without installing VLC",
+  "Photos and videos together in one thumbnail grid with folder previews",
+  "Dual pane with F5/F6, undo of renames, moves and trash",
+  "App Sandbox, no network, notarized and attested builds",
+  "20 interface languages"
+ ],
+ "search_terms": [
+  "neeview mac",
+  "neeview for mac",
+  "neeview alternative mac",
+  "neeview macos",
+  "NeeView Mac版",
+  "NeeView Mac 代わり",
+  "NeeView 代替 Mac",
+  "Mac 画像ビューア",
+  "Mac 漫画ビューア zip",
+  "Mac 見開き ビューア",
+  "Mac 自炊 ビューア",
+  "Mac zip 画像 そのまま 見る",
+  "Mac rar 漫画 見る",
+  "Susie プラグイン Mac"
+ ],
+ "matrix": {
+  "free": {
+   "value": "yes",
+   "evidence": [
+    "https://github.com/neelabo/NeeView"
+   ],
+   "how": "source"
+  },
+  "open_source": {
+   "value": "yes",
+   "note": "MIT",
+   "evidence": [
+    "https://github.com/neelabo/NeeView"
+   ],
+   "how": "source"
+  },
+  "native_apple_silicon": {
+   "value": "no",
+   "note": "Windows 10/11 64-bit only, no Mac build",
+   "evidence": [
+    "https://github.com/neelabo/NeeView"
+   ],
+   "how": "docs"
+  },
+  "no_account_no_tracking": {
+   "value": "yes",
+   "note": "privacy policy: collects nothing",
+   "evidence": [
+    "https://github.com/neelabo/NeeView/blob/master/docs/en-us/privacy-policy.md"
+   ],
+   "how": "docs"
+  },
+  "dark_light_setting": {
+   "value": "yes",
+   "note": "themes Light, Dark, monochrome, high contrast, follow Windows, custom",
+   "evidence": [
+    "https://github.com/neelabo/NeeView/blob/master/NeeView/Languages/en.restext"
+   ],
+   "how": "source"
+  },
+  "languages_20": {
+   "value": "partial",
+   "note": "9: en, ja, ko, zh-Hans, zh-Hant, es, it, pt-BR, ru",
+   "evidence": [
+    "https://github.com/neelabo/NeeView/tree/master/NeeView/Languages"
+   ],
+   "how": "source"
+  },
+  "folder_browsing": {
+   "value": "yes",
+   "note": "Bookshelf panel is a built-in filer; folders and archives open as \"books\"",
+   "evidence": [
+    "https://github.com/neelabo/NeeView/blob/master/docs/en-us/userguide.md"
+   ],
+   "how": "docs"
+  },
+  "thumbnail_grid": {
+   "value": "yes",
+   "note": "bookshelf thumbnails with a book thumbnail per folder/archive",
+   "evidence": [
+    "https://github.com/neelabo/NeeView/blob/master/docs/en-us/changelog.md"
+   ],
+   "how": "changelog"
+  },
+  "list_view": {
+   "value": "partial",
+   "note": "panels show text or content lists; no sortable column header view documented",
+   "evidence": [
+    "https://github.com/neelabo/NeeView/blob/master/NeeView/Languages/en.restext"
+   ],
+   "how": "source"
+  },
+  "recursive_search": {
+   "value": "yes",
+   "note": "bookshelf search option \"Include subdirectories\"",
+   "evidence": [
+    "https://github.com/neelabo/NeeView/blob/master/NeeView/Languages/en.restext"
+   ],
+   "how": "source"
+  },
+  "regex_search": {
+   "value": "yes",
+   "note": "/re and /ire search options (.NET regex)",
+   "evidence": [
+    "https://github.com/neelabo/NeeView/blob/master/docs/en-us/search-options.html"
+   ],
+   "how": "docs"
+  },
+  "network_shares_fast": {
+   "value": "partial",
+   "note": "UNC network paths work (history, search); no special speed handling documented",
+   "evidence": [
+    "https://github.com/neelabo/NeeView/blob/master/NeeView/Languages/en.restext",
+    "https://github.com/neelabo/NeeView/blob/master/docs/en-us/changelog.md"
+   ],
+   "how": "changelog"
+  },
+  "multiple_windows": {
+   "value": "yes",
+   "note": "multiple instances optional; MainView can be a separate window",
+   "evidence": [
+    "https://github.com/neelabo/NeeView/blob/master/docs/en-us/question-and-answer.md",
+    "https://github.com/neelabo/NeeView/blob/master/docs/en-us/userguide.md"
+   ],
+   "how": "docs"
+  },
+  "bookmarks": {
+   "value": "yes",
+   "note": "Bookmark panel and quick access",
+   "evidence": [
+    "https://github.com/neelabo/NeeView/blob/master/docs/en-us/userguide.md"
+   ],
+   "how": "docs"
+  },
+  "img_modern_formats": {
+   "value": "partial",
+   "note": "WebP built in; HEIC/AVIF only with Microsoft Store WIC codecs; JPEG XL not documented",
+   "evidence": [
+    "https://github.com/neelabo/NeeView/blob/master/docs/en-us/userguide.md",
+    "https://github.com/neelabo/NeeView/blob/master/docs/en-us/question-and-answer.md"
+   ],
+   "how": "docs"
+  },
+  "img_raw": {
+   "value": "partial",
+   "note": "through Windows WIC codecs",
+   "evidence": [
+    "https://github.com/neelabo/NeeView/blob/master/docs/en-us/userguide.md"
+   ],
+   "how": "docs"
+  },
+  "img_psd_exr": {
+   "value": "partial",
+   "evidence": [
+    "https://github.com/neelabo/NeeView/blob/master/NeeView/Picture/PictureProfile.cs",
+    "https://github.com/neelabo/NeeView/blob/master/NeeView/Languages/en.restext"
+   ],
+   "how": "source",
+   "note": "Image types come from installed Windows WIC codecs and Susie plug-ins; PSD/EXR only with such a codec or plug-in"
+  },
+  "img_svg_pdf": {
+   "value": "yes",
+   "note": "SVG and PDF",
+   "evidence": [
+    "https://github.com/neelabo/NeeView/blob/master/docs/en-us/userguide.md",
+    "https://github.com/neelabo/NeeView"
+   ],
+   "how": "docs"
+  },
+  "img_animated": {
+   "value": "yes",
+   "note": "GIF and animated WebP; APNG not documented",
+   "evidence": [
+    "https://github.com/neelabo/NeeView/blob/master/docs/en-us/changelog.md"
+   ],
+   "how": "changelog"
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "evidence": [
+    "https://github.com/neelabo/NeeView/blob/master/docs/en-us/userguide.md"
+   ],
+   "how": "docs"
+  },
+  "zoom_rotate": {
+   "value": "yes",
+   "note": "drag to move, rotate, scale; loupe",
+   "evidence": [
+    "https://github.com/neelabo/NeeView"
+   ],
+   "how": "docs"
+  },
+  "slideshow": {
+   "value": "yes",
+   "evidence": [
+    "https://github.com/neelabo/NeeView/blob/master/docs/en-us/userguide.md"
+   ],
+   "how": "docs"
+  },
+  "slideshow_recursive": {
+   "value": "partial",
+   "note": "\"Load subfolders\" merges subfolders into one book; videos can be set to open as pages",
+   "evidence": [
+    "https://github.com/neelabo/NeeView/blob/master/docs/en-us/question-and-answer.md",
+    "https://github.com/neelabo/NeeView/blob/master/NeeView/Languages/en.restext"
+   ],
+   "how": "docs"
+  },
+  "auto_enhance_view": {
+   "value": "partial",
+   "note": "Effect panel adjusts the display (no auto mode); file unchanged unless saved",
+   "evidence": [
+    "https://github.com/neelabo/NeeView/blob/master/docs/en-us/userguide.md",
+    "https://github.com/neelabo/NeeView/blob/master/docs/en-us/changelog.md"
+   ],
+   "how": "docs"
+  },
+  "file_info_exif": {
+   "value": "partial",
+   "note": "Information panel with EXIF; codecs/bitrate not shown",
+   "evidence": [
+    "https://github.com/neelabo/NeeView/blob/master/docs/en-us/userguide.md",
+    "https://github.com/neelabo/NeeView/blob/master/NeeView/Languages/en.restext"
+   ],
+   "how": "source"
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/neelabo/NeeView/blob/master/NeeView/Languages/en.restext"
+   ],
+   "how": "source",
+   "note": "Only an option to treat files with unknown extensions as images; no mismatch notice"
+  },
+  "video_native": {
+   "value": "yes",
+   "note": "via .NET/Windows Media playback",
+   "evidence": [
+    "https://github.com/neelabo/NeeView/blob/master/docs/en-us/question-and-answer.md"
+   ],
+   "how": "docs"
+  },
+  "video_mkv_avi_webm": {
+   "value": "partial",
+   "note": "needs installed Windows codecs or VLC 3.x (libVLC path setting)",
+   "evidence": [
+    "https://github.com/neelabo/NeeView/blob/master/docs/en-us/question-and-answer.md",
+    "https://github.com/neelabo/NeeView/blob/master/NeeView/Languages/en.restext"
+   ],
+   "how": "docs"
+  },
+  "photos_videos_one_grid": {
+   "value": "partial",
+   "note": "videos appear in the bookshelf next to images; video opens as a book by default",
+   "evidence": [
+    "https://github.com/neelabo/NeeView/blob/master/docs/en-us/userguide.md"
+   ],
+   "how": "docs"
+  },
+  "video_skim_arrows": {
+   "value": "yes",
+   "note": "page movement seeks by a set number of seconds in a video",
+   "evidence": [
+    "https://github.com/neelabo/NeeView/blob/master/NeeView/Languages/en.restext"
+   ],
+   "how": "source"
+  },
+  "subtitles_embedded": {
+   "value": "partial",
+   "note": "with libVLC only",
+   "evidence": [
+    "https://github.com/neelabo/NeeView/blob/master/NeeView/Languages/en.restext",
+    "https://github.com/neelabo/NeeView/blob/master/docs/en-us/changelog.md"
+   ],
+   "how": "source"
+  },
+  "subtitles_external_files": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Checked NeeView source (VlcMediaPlayer.cs, en.restext): subtitle track choice from the video with optional libVLC; NeeView neither documents nor disables loading .srt files next to the video, so libVLC behaviour is unknown"
+  },
+  "audio_track_choice": {
+   "value": "partial",
+   "note": "with libVLC only",
+   "evidence": [
+    "https://github.com/neelabo/NeeView/blob/master/NeeView/Languages/en.restext"
+   ],
+   "how": "source"
+  },
+  "playback_speed": {
+   "value": "yes",
+   "evidence": [
+    "https://github.com/neelabo/NeeView/blob/master/docs/en-us/changelog.md",
+    "https://github.com/neelabo/NeeView/blob/master/NeeView/Languages/en.restext"
+   ],
+   "how": "changelog"
+  },
+  "control_bar_movable": {
+   "value": "partial",
+   "note": "control bar lives in the Navigator panel, which can float or dock",
+   "evidence": [
+    "https://github.com/neelabo/NeeView/blob/master/docs/en-us/userguide.md"
+   ],
+   "how": "docs"
+  },
+  "playlist": {
+   "value": "yes",
+   "note": "Playlist panel",
+   "evidence": [
+    "https://github.com/neelabo/NeeView/blob/master/docs/en-us/userguide.md"
+   ],
+   "how": "docs"
+  },
+  "saved_playlists": {
+   "value": "yes",
+   "note": ".nvpls files",
+   "evidence": [
+    "https://github.com/neelabo/NeeView/blob/master/docs/en-us/userguide.md"
+   ],
+   "how": "docs"
+  },
+  "pip": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/neelabo/NeeView/blob/master/NeeView/Languages/en.restext"
+   ],
+   "how": "source",
+   "note": "No picture-in-picture command or setting among all UI strings"
+  },
+  "music_mode": {
+   "value": "partial",
+   "note": "audio-only media handled through libVLC; no music UI",
+   "evidence": [
+    "https://github.com/neelabo/NeeView/blob/master/docs/en-us/changelog.md"
+   ],
+   "how": "changelog"
+  },
+  "streaming_urls": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/neelabo/NeeView/blob/master/NeeView/Languages/en.restext"
+   ],
+   "how": "source",
+   "note": "Images dragged from a browser are downloaded to a folder first; no stream or URL playback"
+  },
+  "online_subtitles": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/neelabo/NeeView/blob/master/NeeView/Languages/en.restext",
+    "https://github.com/neelabo/NeeView/blob/master/NeeView/PageSelect/MediaControl/VlcMediaPlayer.cs"
+   ],
+   "how": "source",
+   "note": "Subtitles only from tracks inside the video"
+  },
+  "video_filters_enhance": {
+   "value": "yes",
+   "evidence": [
+    "https://github.com/neelabo/NeeView/blob/master/NeeView/PageFrames/PageFrameBox.cs",
+    "https://github.com/neelabo/NeeView/blob/master/NeeView/PageFrames/EffectPanel.cs",
+    "https://github.com/neelabo/NeeView/blob/master/NeeView/ViewContents/VlcMediaPlayerCanvas.cs"
+   ],
+   "how": "source",
+   "note": "The image effect layers (HSV/brightness, levels, colour tone ...) wrap the whole page view, video pages included; VLC video is drawn as a WPF image"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "note": "Windows only",
+   "evidence": [
+    "https://github.com/neelabo/NeeView"
+   ],
+   "how": "docs"
+  },
+  "archives_as_folders": {
+   "value": "yes",
+   "note": "zip, rar, 7z, lzh, cab …, also archives inside archives",
+   "evidence": [
+    "https://github.com/neelabo/NeeView"
+   ],
+   "how": "docs"
+  },
+  "comics_cbz_cbr": {
+   "value": "yes",
+   "note": "cbz, cbr, cb7",
+   "evidence": [
+    "https://github.com/neelabo/NeeView"
+   ],
+   "how": "docs"
+  },
+  "archive_passwords": {
+   "value": "partial",
+   "note": "only when 7z.dll is used for extraction",
+   "evidence": [
+    "https://github.com/neelabo/NeeView/blob/master/docs/en-us/changelog.md"
+   ],
+   "how": "changelog"
+  },
+  "split_archives": {
+   "value": "partial",
+   "note": "RAR .partN.rar sets shown as one file",
+   "evidence": [
+    "https://github.com/neelabo/NeeView/blob/master/NeeView/Languages/en.restext"
+   ],
+   "how": "source"
+  },
+  "videos_in_archives": {
+   "value": "yes",
+   "note": "Changelog: fixed 'videos are not included when decompressed in units of compressed files', i.e. videos inside archives are opened",
+   "evidence": [
+    "https://github.com/neelabo/NeeView/blob/master/docs/en-us/changelog.md"
+   ],
+   "how": "changelog"
+  },
+  "manga_two_page": {
+   "value": "yes",
+   "note": "facing mode, right-to-left",
+   "evidence": [
+    "https://github.com/neelabo/NeeView"
+   ],
+   "how": "docs"
+  },
+  "rename_trash": {
+   "value": "yes",
+   "note": "after enabling Options > File management",
+   "evidence": [
+    "https://github.com/neelabo/NeeView/blob/master/docs/en-us/question-and-answer.md"
+   ],
+   "how": "docs"
+  },
+  "move_copy": {
+   "value": "yes",
+   "note": "Move/Copy to folder commands, right-drag",
+   "evidence": [
+    "https://github.com/neelabo/NeeView/blob/master/docs/en-us/changelog.md",
+    "https://github.com/neelabo/NeeView/blob/master/docs/en-us/userguide.md"
+   ],
+   "how": "changelog"
+  },
+  "dual_pane": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/neelabo/NeeView/blob/master/docs/en-us/userguide.md"
+   ],
+   "how": "docs"
+  },
+  "undo_file_actions": {
+   "value": "no",
+   "note": "no undo strings in the UI resources",
+   "evidence": [
+    "https://github.com/neelabo/NeeView/blob/master/NeeView/Languages/en.restext"
+   ],
+   "how": "source"
+  },
+  "image_editing": {
+   "value": "partial",
+   "note": "save/print with effects, page trimming; no editor",
+   "evidence": [
+    "https://github.com/neelabo/NeeView/blob/master/docs/en-us/changelog.md"
+   ],
+   "how": "changelog"
+  },
+  "batch_convert": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/neelabo/NeeView/blob/master/NeeView/Languages/en.restext"
+   ],
+   "how": "source",
+   "note": "Export book copies all pages to a ZIP or folder and Save as exports one image; no batch format conversion or batch rename"
+  },
+  "library_catalog": {
+   "value": "partial",
+   "note": "history, bookmarks, playlists, ratings/tags read from metadata; no own database",
+   "evidence": [
+    "https://github.com/neelabo/NeeView/blob/master/docs/en-us/userguide.md",
+    "https://github.com/neelabo/NeeView/blob/master/docs/en-us/search-options.html"
+   ],
+   "how": "docs"
+  },
+  "cloud_sync": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/neelabo/NeeView/blob/master/NeeView/Languages/en.restext"
+   ],
+   "how": "source",
+   "note": "No cloud or sharing features among all UI strings; network use is limited to the version check"
+  },
+  "keyboard_first": {
+   "value": "yes",
+   "note": "almost every function is a command with a shortcut",
+   "evidence": [
+    "https://github.com/neelabo/NeeView/blob/master/docs/en-us/userguide.md"
+   ],
+   "how": "docs"
+  },
+  "custom_shortcuts": {
+   "value": "yes",
+   "note": "keys, mouse gestures, touch, scripts",
+   "evidence": [
+    "https://github.com/neelabo/NeeView/blob/master/docs/en-us/userguide.md"
+   ],
+   "how": "docs"
+  },
+  "shortcut_cheatsheet": {
+   "value": "partial",
+   "note": "command list page in the online docs",
+   "evidence": [
+    "https://github.com/neelabo/NeeView/tree/master/docs"
+   ],
+   "how": "docs"
+  },
+  "boss_key": {
+   "value": "partial",
+   "note": "ESC minimizes the main window (and the close button can be set to minimize); no hide-all key",
+   "evidence": [
+    "https://github.com/neelabo/NeeView/blob/master/docs/en-us/changelog.md"
+   ],
+   "how": "changelog"
+  },
+  "app_sandbox": {
+   "value": "no",
+   "note": "Windows only",
+   "evidence": [
+    "https://github.com/neelabo/NeeView"
+   ],
+   "how": "docs"
+  },
+  "no_network": {
+   "value": "partial",
+   "note": "no telemetry; takes image drops from web browsers",
+   "evidence": [
+    "https://github.com/neelabo/NeeView/blob/master/docs/en-us/privacy-policy.md",
+    "https://github.com/neelabo/NeeView"
+   ],
+   "how": "docs"
+  },
+  "notarized_attested": {
+   "value": "no",
+   "note": "Windows only",
+   "evidence": [
+    "https://github.com/neelabo/NeeView"
+   ],
+   "how": "docs"
+  },
+  "mac_app_store": {
+   "value": "no",
+   "note": "Microsoft Store only",
+   "evidence": [
+    "https://github.com/neelabo/NeeView"
+   ],
+   "how": "docs"
+  }
+ }
+}

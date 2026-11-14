@@ -1,0 +1,573 @@
+{
+ "name": "Pixea",
+ "short": "Pixea",
+ "vendor": "ImageTasks Inc",
+ "website": "https://www.imagetasks.com/pixea/",
+ "platforms": [
+  "macOS"
+ ],
+ "mac_available": "yes",
+ "page": "matrix",
+ "section": "image",
+ "price": "free; Pixea Plus $19.99 lifetime, $14.99/year or $1.99/month",
+ "license": "proprietary",
+ "current_version": "8.4.1",
+ "last_update": "2026-10-27",
+ "engine": "ImageIO + own RAW engine; QuickTime engine or a built-in player (ImageTasks maintains a VLCKit fork)",
+ "category": "both",
+ "summary": "Minimal image and video viewer that grew into a photo editor with masks, object removal and upscaling. Browses folders, photo libraries and ZIP/CBZ archives and plays MKV with subtitles and audio track choice; search, sorting and custom shortcuts need Pixea Plus.",
+ "where_it_wins": [
+  "Strong image editor (masks, object removal, upscaling, LUTs)",
+  "Batch editing and conversion",
+  "Embedded subtitles, audio track, playback speed",
+  "Opens Photos libraries",
+  "Tags and ratings with XMP sidecars",
+  "Duplicate search"
+ ],
+ "where_schnellbild_wins": [
+  "Everything free, no Plus tier",
+  "RAR and 7z, CBR",
+  "Dual pane with F5/F6",
+  "Recursive search free",
+  "SVG and PDF",
+  "Never goes online"
+ ],
+ "search_terms": [
+  "pixea mac",
+  "pixea alternative",
+  "pixea plus free",
+  "pixea vs",
+  "pixea alternative kostenlos"
+ ],
+ "matrix": {
+  "free": {
+   "value": "partial",
+   "note": "free core; Pixea Plus $19.99 lifetime, $14.99/year or $1.99/month",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1507782672",
+    "https://www.imagetasks.com/pixea/"
+   ],
+   "how": "store"
+  },
+  "open_source": {
+   "value": "no",
+   "note": "proprietary (only localizations are public)",
+   "evidence": [
+    "https://github.com/imagetasks/Pixea-Localizations"
+   ],
+   "how": "source"
+  },
+  "native_apple_silicon": {
+   "value": "yes",
+   "note": "'Native Apple Silicon and Intel'",
+   "evidence": [
+    "https://www.imagetasks.com/pixea/"
+   ],
+   "how": "docs"
+  },
+  "no_account_no_tracking": {
+   "value": "yes",
+   "note": "App Store label: Data Not Collected",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1507782672"
+   ],
+   "how": "store"
+  },
+  "dark_light_setting": {
+   "value": "partial",
+   "note": "Liquid Glass or Classic theme, window/full-screen background colour; separate light/dark switch not found",
+   "evidence": [
+    "https://github.com/imagetasks/Pixea-Localizations"
+   ],
+   "how": "source"
+  },
+  "languages_20": {
+   "value": "partial",
+   "note": "12: EN, BG, FR, DE, IT, JA, KO, PT, RU, zh-Hans, ES, UK",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1507782672"
+   ],
+   "how": "store"
+  },
+  "folder_browsing": {
+   "value": "yes",
+   "note": "Media Browser for folders, photo libraries, archives",
+   "evidence": [
+    "https://www.imagetasks.com/pixea/"
+   ],
+   "how": "docs"
+  },
+  "thumbnail_grid": {
+   "value": "yes",
+   "note": "folders and archives shown on top of the grid",
+   "evidence": [
+    "https://github.com/imagetasks/Pixea-Localizations",
+    "https://www.imagetasks.com/pixea/"
+   ],
+   "how": "source"
+  },
+  "list_view": {
+   "value": "no",
+   "note": "only square/full thumbnail styles found",
+   "evidence": [
+    "https://github.com/imagetasks/Pixea-Localizations"
+   ],
+   "how": "source"
+  },
+  "recursive_search": {
+   "value": "partial",
+   "note": "search is Plus only; subfolder autoscan depth 1-5",
+   "evidence": [
+    "https://www.imagetasks.com/pixea/",
+    "https://apps.apple.com/us/app/id1507782672"
+   ],
+   "how": "docs"
+  },
+  "regex_search": {
+   "value": "no",
+   "note": "Search (Plus) by name, type and metadata; no regular expressions in the feature table or version history.",
+   "evidence": [
+    "https://www.imagetasks.com/pixea/",
+    "https://apps.apple.com/us/app/id1507782672"
+   ],
+   "how": "docs"
+  },
+  "network_shares_fast": {
+   "value": "partial",
+   "note": "option to skip metadata on network volumes; faster large folders (6.3)",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1507782672"
+   ],
+   "how": "changelog"
+  },
+  "multiple_windows": {
+   "value": "yes",
+   "note": "New Pixea Window; per-folder windows",
+   "evidence": [
+    "https://github.com/imagetasks/Pixea-Localizations"
+   ],
+   "how": "source"
+  },
+  "bookmarks": {
+   "value": "yes",
+   "note": "favorites",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1507782672"
+   ],
+   "how": "changelog"
+  },
+  "img_modern_formats": {
+   "value": "yes",
+   "note": "HEIC, JPEG XL, AVIF, WebP",
+   "evidence": [
+    "https://www.imagetasks.com/pixea/"
+   ],
+   "how": "docs"
+  },
+  "img_raw": {
+   "value": "yes",
+   "note": "built-in RAW engine or macOS",
+   "evidence": [
+    "https://www.imagetasks.com/pixea/",
+    "https://apps.apple.com/us/app/id1507782672"
+   ],
+   "how": "docs"
+  },
+  "img_psd_exr": {
+   "value": "partial",
+   "note": "PSD yes; Radiance HDR listed, OpenEXR not",
+   "evidence": [
+    "https://www.imagetasks.com/pixea/"
+   ],
+   "how": "docs"
+  },
+  "img_svg_pdf": {
+   "value": "no",
+   "note": "neither in the format list",
+   "evidence": [
+    "https://www.imagetasks.com/pixea/"
+   ],
+   "how": "docs"
+  },
+  "img_animated": {
+   "value": "yes",
+   "note": "GIF, WebP, animated AVIF/HEIC (8.0); autoplay option",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1507782672"
+   ],
+   "how": "changelog"
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "note": "← →",
+   "evidence": [
+    "https://www.imagetasks.com/pixea/"
+   ],
+   "how": "docs"
+  },
+  "zoom_rotate": {
+   "value": "yes",
+   "note": "zoom keys, [ ] rotate",
+   "evidence": [
+    "https://www.imagetasks.com/pixea/"
+   ],
+   "how": "docs"
+  },
+  "slideshow": {
+   "value": "yes",
+   "note": "Enter; free",
+   "evidence": [
+    "https://www.imagetasks.com/pixea/"
+   ],
+   "how": "docs"
+  },
+  "slideshow_recursive": {
+   "value": "partial",
+   "note": "slideshow over scanned folder incl. subfolders up to depth 5, shuffle; mixed photos and videos",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1507782672",
+    "https://github.com/imagetasks/Pixea-Localizations"
+   ],
+   "how": "changelog"
+  },
+  "auto_enhance_view": {
+   "value": "partial",
+   "note": "non-destructive adjustments can be saved in Pixea Image format; no view-only auto enhance",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1507782672"
+   ],
+   "how": "changelog"
+  },
+  "file_info_exif": {
+   "value": "partial",
+   "note": "EXIF info panel; on-screen display for videos (Plus); codec/bitrate not stated",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1507782672",
+    "https://www.imagetasks.com/pixea/"
+   ],
+   "how": "docs"
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "note": "Only an option to treat unknown media files as image or video (6.3); no note about mismatched extensions.",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1507782672"
+   ],
+   "how": "store"
+  },
+  "video_native": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://www.imagetasks.com/pixea/"
+   ],
+   "how": "docs"
+  },
+  "video_mkv_avi_webm": {
+   "value": "partial",
+   "note": "MKV, AVI, WMV, FLV, VOB, RM yes; WebM not listed",
+   "evidence": [
+    "https://www.imagetasks.com/pixea/",
+    "https://apps.apple.com/us/app/id1507782672"
+   ],
+   "how": "docs"
+  },
+  "photos_videos_one_grid": {
+   "value": "yes",
+   "note": "Media Browser shows both",
+   "evidence": [
+    "https://www.imagetasks.com/pixea/"
+   ],
+   "how": "docs"
+  },
+  "video_skim_arrows": {
+   "value": "partial",
+   "note": "step 10 s/30 s; arrows move to next media",
+   "evidence": [
+    "https://github.com/imagetasks/Pixea-Localizations",
+    "https://apps.apple.com/us/app/id1507782672"
+   ],
+   "how": "source"
+  },
+  "subtitles_embedded": {
+   "value": "yes",
+   "note": "select or hide subtitles",
+   "evidence": [
+    "https://www.imagetasks.com/pixea/"
+   ],
+   "how": "docs"
+  },
+  "subtitles_external_files": {
+   "value": "no",
+   "note": "Site lists 'Select, hide subtitles while playing'; whether subtitle files next to the video are loaded is not stated. Searched site, App Store description and version history.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "audio_track_choice": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://www.imagetasks.com/pixea/"
+   ],
+   "how": "docs"
+  },
+  "playback_speed": {
+   "value": "yes",
+   "note": "0.5x to 2x",
+   "evidence": [
+    "https://www.imagetasks.com/pixea/"
+   ],
+   "how": "docs"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "note": "Only an on-screen display while playing is mentioned (6.3); placement not described.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "playlist": {
+   "value": "no",
+   "note": "Player modes are Play Next, Play and Stop, Repeat, and resume; no playlist in the detailed player feature list.",
+   "evidence": [
+    "https://www.imagetasks.com/pixea/"
+   ],
+   "how": "docs"
+  },
+  "saved_playlists": {
+   "value": "no",
+   "note": "No playlists in the player feature list.",
+   "evidence": [
+    "https://www.imagetasks.com/pixea/"
+   ],
+   "how": "docs"
+  },
+  "pip": {
+   "value": "no",
+   "note": "Detailed player list (subtitles, audio track, speeds, play modes, resume) has no Picture in Picture; not in version history either.",
+   "evidence": [
+    "https://www.imagetasks.com/pixea/",
+    "https://apps.apple.com/us/app/id1507782672"
+   ],
+   "how": "docs"
+  },
+  "music_mode": {
+   "value": "no",
+   "note": "no audio formats listed",
+   "evidence": [
+    "https://www.imagetasks.com/pixea/"
+   ],
+   "how": "docs"
+  },
+  "streaming_urls": {
+   "value": "no",
+   "note": "Opens folders, photo libraries and ZIP archives; no URLs or streams in site or version history.",
+   "evidence": [
+    "https://www.imagetasks.com/pixea/",
+    "https://apps.apple.com/us/app/id1507782672"
+   ],
+   "how": "docs"
+  },
+  "online_subtitles": {
+   "value": "no",
+   "note": "Only subtitles inside the video are selectable; no online search.",
+   "evidence": [
+    "https://www.imagetasks.com/pixea/"
+   ],
+   "how": "docs"
+  },
+  "video_filters_enhance": {
+   "value": "no",
+   "note": "Adjustments (exposure, colour, HSL, curves, LUTs) are described for images; video entries are playback only.",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1507782672"
+   ],
+   "how": "store"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "note": "Quick Look only for its own Pixea Image format",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1507782672"
+   ],
+   "how": "changelog"
+  },
+  "archives_as_folders": {
+   "value": "partial",
+   "note": "ZIP only; RAR/7z not listed",
+   "evidence": [
+    "https://www.imagetasks.com/pixea/"
+   ],
+   "how": "docs"
+  },
+  "comics_cbz_cbr": {
+   "value": "partial",
+   "note": "CBZ only (8.0)",
+   "evidence": [
+    "https://www.imagetasks.com/pixea/",
+    "https://apps.apple.com/us/app/id1507782672"
+   ],
+   "how": "docs"
+  },
+  "archive_passwords": {
+   "value": "yes",
+   "note": "password-protected ZIP (6.0)",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1507782672",
+    "https://github.com/imagetasks/Pixea-Localizations"
+   ],
+   "how": "changelog"
+  },
+  "split_archives": {
+   "value": "no",
+   "note": "Archives: ZIP and CBZ only (no RAR/7z); split sets not mentioned.",
+   "evidence": [
+    "https://www.imagetasks.com/pixea/",
+    "https://apps.apple.com/us/app/id1507782672"
+   ],
+   "how": "docs"
+  },
+  "videos_in_archives": {
+   "value": "partial",
+   "note": "search covers videos in ZIP archives; playback from ZIP not stated",
+   "evidence": [
+    "https://www.imagetasks.com/pixea/"
+   ],
+   "how": "docs"
+  },
+  "manga_two_page": {
+   "value": "no",
+   "note": "CBZ supported; a two-page or RTL mode is not mentioned. Searched site, App Store description and version history.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "rename_trash": {
+   "value": "yes",
+   "note": "rename, move to trash",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1507782672",
+    "https://github.com/imagetasks/Pixea-Localizations"
+   ],
+   "how": "changelog"
+  },
+  "move_copy": {
+   "value": "yes",
+   "note": "group actions Move, Copy",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1507782672"
+   ],
+   "how": "changelog"
+  },
+  "dual_pane": {
+   "value": "no",
+   "note": "Media Browser plus a single image view; no two file panes. Split view in the version history refers to images.",
+   "evidence": [
+    "https://www.imagetasks.com/pixea/",
+    "https://apps.apple.com/us/app/id1507782672"
+   ],
+   "how": "docs"
+  },
+  "undo_file_actions": {
+   "value": "partial",
+   "note": "undo/redo actions (8.3), scope not stated",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1507782672"
+   ],
+   "how": "changelog"
+  },
+  "image_editing": {
+   "value": "yes",
+   "note": "full editor; many tools Plus",
+   "evidence": [
+    "https://www.imagetasks.com/pixea/"
+   ],
+   "how": "docs"
+  },
+  "batch_convert": {
+   "value": "partial",
+   "note": "free 3 images, Plus unlimited",
+   "evidence": [
+    "https://www.imagetasks.com/pixea/"
+   ],
+   "how": "docs"
+  },
+  "library_catalog": {
+   "value": "yes",
+   "note": "tags and ratings in own metadata database or XMP sidecars",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1507782672",
+    "https://github.com/imagetasks/Pixea-Localizations"
+   ],
+   "how": "source"
+  },
+  "cloud_sync": {
+   "value": "partial",
+   "note": "share button; no sync",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1507782672"
+   ],
+   "how": "changelog"
+  },
+  "keyboard_first": {
+   "value": "partial",
+   "note": "shortcuts for browsing, zoom, rating",
+   "evidence": [
+    "https://www.imagetasks.com/pixea/"
+   ],
+   "how": "docs"
+  },
+  "custom_shortcuts": {
+   "value": "partial",
+   "note": "Plus only",
+   "evidence": [
+    "https://www.imagetasks.com/pixea/"
+   ],
+   "how": "docs"
+  },
+  "shortcut_cheatsheet": {
+   "value": "partial",
+   "note": "short key list on the website",
+   "evidence": [
+    "https://www.imagetasks.com/pixea/"
+   ],
+   "how": "docs"
+  },
+  "boss_key": {
+   "value": "no",
+   "note": "Theater Mode dims other apps; a hide-all key is not mentioned. Searched site and App Store page.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "app_sandbox": {
+   "value": "yes",
+   "note": "Mac App Store only",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1507782672"
+   ],
+   "how": "store"
+  },
+  "no_network": {
+   "value": "partial",
+   "note": "Data Not Collected; downloads an ML model on request (8.1)",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1507782672"
+   ],
+   "how": "changelog"
+  },
+  "notarized_attested": {
+   "value": "no",
+   "note": "closed source",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1507782672"
+   ],
+   "how": "store"
+  },
+  "mac_app_store": {
+   "value": "yes",
+   "note": "id1507782672",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1507782672"
+   ],
+   "how": "store"
+  }
+ }
+}

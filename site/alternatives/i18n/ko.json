@@ -1,0 +1,2375 @@
+{
+ "ui": {
+  "overviewTitle": "Schnellbild를 대안으로",
+  "overviewSeoTitle": "{names}의 맥용 무료 대안 · Schnellbild",
+  "overviewDescription": "Schnellbild를 이미지 뷰어, 동영상 플레이어, 만화책 뷰어, 파일 관리자 {count}개와 기능별로, 출처와 함께 비교했습니다. 무료, 오픈 소스, 맥용.",
+  "overviewIntro": "<p>Schnellbild는 분명한 생각을 가진 대안입니다. 재생 목록이나 보관함 대신 폴더: 폴더를 열면 목록이 바로 있고, 재생 목록은 슬라이드 쇼가 알아서 만듭니다. 인터넷과는 원칙적으로 무관: 계정도, 추적도, 네트워크 접속도 전혀 없습니다. 그리고 무료이며, 다른 앱에서는 돈을 받는 나만의 키보드 단축키도 들어 있습니다.</p><p>Mac에서 사람들이 찾는 프로그램들과 어떻게 다른지, 정직하게, 모든 칸에 출처를 달아 비교했습니다. 다른 프로그램이 더 나은 부분은 그렇다고 적었습니다.</p>",
+  "overviewNoMac": "이 프로그램들은 Windows에서만 실행됩니다(또는 지금의 Mac에서는 더 이상 실행되지 않습니다). 각각 팬들이 좋아한 점과 Schnellbild에서는 어떻게 하는지 정리했습니다.",
+  "matrixH1": "맥용 무료 {name} 대안",
+  "matrixSeoTitle": "맥용 {name} 대안, 무료 · Schnellbild",
+  "matrixDescription": "{name}, 아니면 Schnellbild? 기능별로 출처와 함께 비교: {name}이(가) 강한 부분, Schnellbild가 강한 부분. 무료, 오픈 소스, MKV 재생, ZIP·RAR을 폴더처럼 열기.",
+  "matrixLead": "Schnellbild와 {name}을(를) 공정하게 나란히: 각자 더 잘하는 점, 그리고 모든 기능을 출처와 함께.",
+  "switcherH1": "맥용 {name}? 무료 대안은 여기 있습니다",
+  "switcherSeoTitle": "맥용 {name}? 무료 대안 · Schnellbild",
+  "switcherDescription": "맥에서 {name}을(를) 찾고 계신가요? {name} 팬들이 좋아하는 점과 Schnellbild에서는 어떻게 하는지, 무료로: 폴더, 키보드, MKV, ZIP·RAR을 폴더처럼.",
+  "facts": "{name} 한눈에 보기",
+  "factPrice": "가격",
+  "factPlatforms": "플랫폼",
+  "factVersion": "버전",
+  "factUpdated": "최근 업데이트",
+  "aboutTitle": "{name}의 장점",
+  "theyWin": "{name}이(가) 더 나은 점",
+  "weWin": "Schnellbild가 더 나은 점",
+  "matrixTitle": "기능별 비교",
+  "colFeature": "기능",
+  "legendTitle": "기호의 뜻",
+  "yes": "예",
+  "no": "아니요",
+  "partial": "부분적",
+  "intentional": "일부러 뺌",
+  "na": "해당 없음",
+  "source": "출처 {n}",
+  "sources": "출처",
+  "asOf": "2026년 11월 기준: {name} {version}, Schnellbild {ours}. {name} 열은 아래 출처를, Schnellbild 열은 README와 소스 코드를 바탕으로 합니다.",
+  "leftOut": "{name}에 관해 믿을 만한 출처가 없어 뺀 기능: 전체 {total}개 중 {count}개.",
+  "fileManager": "Schnellbild는 완전한 파일 관리자가 아닙니다. FTP, SFTP, 클라우드 연결도, 폴더 동기화도, 압축 파일 만들기도 없습니다. 대신 사진과 동영상을 훑어보고 정리하는 데는 더 나은 선택입니다. 모든 파일의 썸네일, 나란히 놓인 두 패널(F5로 복사, F6으로 이동), 폴더처럼 열리는 아카이브.",
+  "likedTitle": "{name} 팬들이 좋아하는 점, 그리고 Schnellbild에서는",
+  "aheadTitle": "{name}이(가) 여전히 앞서는 점",
+  "purposeTitle": "일부러 뺀 기능",
+  "similarTitle": "비슷한 대안",
+  "allAlternatives": "모든 대안",
+  "breadcrumb": "대안",
+  "trademark": "{name}은(는) {vendor}의 제품입니다. 모든 이름과 상표는 해당 소유자의 것이며, Schnellbild는 이들과 관련이 없습니다.",
+  "trademarkAll": "모든 제품 이름과 상표는 해당 소유자의 것이며, Schnellbild는 이들과 관련이 없습니다.",
+  "ctaTitle": "내 폴더로 직접 써 보세요.",
+  "ctaText": "무료, 계정 없이, 모든 기능 포함.",
+  "keywords": "맥용 {name}, {name} 맥, 맥 {name}, {name} Mac, {name} 대안, 맥 {name} 대안, 무료 {name} 대안, Schnellbild",
+  "listSep": ", "
+ },
+ "sections": {
+  "image": "이미지 뷰어",
+  "video": "동영상 플레이어",
+  "comic": "만화책 뷰어",
+  "files": "파일 관리자",
+  "photos": "Apple 앱과 사진 관리",
+  "windows": "Windows에서 오셨다면"
+ },
+ "jokes": {
+  "image": "드디어 Mac으로 이사 오셨군요. 사진도, 손에 익은 단축키도 다 따라왔는데 {name}만 옛 PC에 남았습니다. 누구에게나 있는 일이고, 계속 그럴 필요도 없습니다.",
+  "video": "Mac은 새것, 동영상은 그대로. 그런데 이삿짐에서 {name}만 빠졌네요. MKV 파일들이 아직 재생을 기다리고 있습니다.",
+  "comic": "만화책은 군말 없이 Mac으로 건너왔습니다. {name}만 이삿짐 트럭을 놓쳤을 뿐.",
+  "files": "두 개의 패널, 기능 키, 손가락이 먼저 기억하는 F5와 F6. 그렇게 Mac으로 넘어왔더니 {name}만 입구에서 막혔습니다.",
+  "photos": "사진은 Mac으로 이사를 마쳤는데, {name}만 옛집을 지키고 있습니다."
+ },
+ "groups": {
+  "basics": "기본",
+  "browse": "탐색",
+  "images": "이미지",
+  "video": "동영상",
+  "archives": "아카이브와 만화책",
+  "files": "파일",
+  "keys": "키보드",
+  "safety": "안전"
+ },
+ "rows": {
+  "free": {
+   "label": "무료, 모든 기능",
+   "how": "무료 다운로드에 모든 기능 포함, Pro 버전 없음."
+  },
+  "open_source": {
+   "label": "오픈 소스",
+   "how": "MIT 라이선스, 소스 코드는 GitHub에."
+  },
+  "native_apple_silicon": {
+   "label": "Apple 실리콘 네이티브",
+   "how": "Apple 실리콘용으로 빌드.",
+   "note": "Apple 실리콘 전용"
+  },
+  "no_account_no_tracking": {
+   "label": "계정, 광고, 추적 없음",
+   "how": "계정도, 광고도, 분석도 없음."
+  },
+  "dark_light_setting": {
+   "label": "시스템과 별개로 라이트 또는 다크",
+   "how": "설정(⌘,): 시스템과 동일, 라이트, 다크."
+  },
+  "languages_20": {
+   "label": "다국어 인터페이스",
+   "how": "20개 언어, Mac의 언어를 따름.",
+   "note": "20개 언어"
+  },
+  "folder_browsing": {
+   "label": "가져오기 없이 폴더를 바로 탐색",
+   "how": "⌘O로 폴더를 열거나 윈도우에 끌어다 놓기."
+  },
+  "thumbnail_grid": {
+   "label": "폴더 미리보기가 있는 썸네일 격자",
+   "how": "폴더에 첫 이미지들이 표시되고, 이미지가 없는 폴더는 흐리게 표시."
+  },
+  "list_view": {
+   "label": "열이 있는 목록 보기",
+   "how": "L로 격자와 목록 전환."
+  },
+  "recursive_search": {
+   "label": "모든 하위 폴더에서 이름 검색",
+   "how": "검색 필드(⌘F)가 폴더와 모든 하위 폴더를 검색."
+  },
+  "regex_search": {
+   "label": "정규 표현식 검색",
+   "how": "검색 필드 옆의 .*로 정규 표현식 사용."
+  },
+  "network_shares_fast": {
+   "label": "네트워크 공유와 큰 폴더에서도 빠름",
+   "how": "스크롤하는 동안 썸네일이 나타남, 네트워크 공유에서도."
+  },
+  "multiple_windows": {
+   "label": "여러 윈도우",
+   "how": "⌘N으로 새 윈도우."
+  },
+  "bookmarks": {
+   "label": "폴더 책갈피",
+   "how": "⌘D로 폴더를 책갈피에 추가, ⌃1 … ⌃9로 열기."
+  },
+  "img_modern_formats": {
+   "label": "HEIC, AVIF, JPEG XL, WebP",
+   "how": "macOS 자체의 ImageIO로."
+  },
+  "img_raw": {
+   "label": "카메라 RAW",
+   "how": "macOS가 아는 RAW 포맷을 macOS가 현상.",
+   "note": "macOS가 아는 기종"
+  },
+  "img_psd_exr": {
+   "label": "PSD, OpenEXR",
+   "how": "다른 이미지와 똑같이 표시."
+  },
+  "img_svg_pdf": {
+   "label": "SVG와 PDF",
+   "how": "벡터 이미지로, PDF는 모든 페이지."
+  },
+  "img_animated": {
+   "label": "애니메이션 GIF, PNG, WebP",
+   "how": "재생되며, 다른 이미지처럼 확대와 회전도 가능."
+  },
+  "keyboard_paging": {
+   "label": "키보드로 넘겨 보기",
+   "how": "스페이스 바로 이미지를 열고 ← →로 폴더를 넘겨 봄."
+  },
+  "zoom_rotate": {
+   "label": "확대, 이동, 회전(보기 전용)",
+   "how": "+ − 또는 핀치로 확대, ⌥← ⌥→로 회전, 파일은 그대로."
+  },
+  "slideshow": {
+   "label": "슬라이드 쇼",
+   "how": "S로 시작, 스페이스 바로 일시 정지."
+  },
+  "slideshow_recursive": {
+   "label": "모든 하위 폴더의 사진과 동영상을 섞어서 슬라이드 쇼",
+   "how": "모든 하위 폴더, 사진과 동영상을 섞어서, 정렬 순서대로."
+  },
+  "auto_enhance_view": {
+   "label": "파일을 바꾸지 않는 자동 향상과 슬라이더",
+   "how": "E로 자동 향상, A로 슬라이더, 바뀌는 것은 화면뿐."
+  },
+  "file_info_exif": {
+   "label": "파일 정보: EXIF, 코덱, 비트레이트",
+   "how": "I로 포맷, 카메라, 코덱, 비트레이트 표시."
+  },
+  "wrong_extension_note": {
+   "label": "확장자가 내용과 맞지 않는 파일 알림",
+   "how": "파일 정보에 맞는 확장자를 표시."
+  },
+  "video_native": {
+   "label": "MP4, MOV 재생",
+   "how": "macOS 자체로."
+  },
+  "video_mkv_avi_webm": {
+   "label": "MKV, WebM, AVI, WMV, FLV 재생",
+   "how": "내장된 VLC 엔진으로.",
+   "note": "내장 VLC 엔진"
+  },
+  "photos_videos_one_grid": {
+   "label": "사진과 동영상을 한 격자에",
+   "how": "모든 폴더에서 둘을 한 격자에."
+  },
+  "video_skim_arrows": {
+   "label": "화살표 키로 동영상 훑어보기",
+   "how": "← →로 동영상의 10분의 1, ⇧와 함께 100분의 1씩 이동."
+  },
+  "subtitles_embedded": {
+   "label": "동영상에 들어 있는 자막",
+   "how": "V로 켜고 끄기, ⌃⌘S로 트랙 선택."
+  },
+  "subtitles_external_files": {
+   "label": "동영상 옆의 자막 파일 불러오기",
+   "why": "동영상 파일만 읽고, 옆에 있는 파일은 읽지 않음."
+  },
+  "audio_track_choice": {
+   "label": "오디오 트랙 선택",
+   "how": "⌃⌘A 또는 컨트롤 막대."
+  },
+  "playback_speed": {
+   "label": "재생 속도",
+   "how": "< >로 0.5배에서 2배까지, 목소리 음높이는 그대로."
+  },
+  "control_bar_movable": {
+   "label": "놓은 자리에 머무는 컨트롤 막대",
+   "how": "손잡이를 끌어 옮기면 모든 동영상에서 그 자리에."
+  },
+  "playlist": {
+   "label": "재생 목록",
+   "how": "슬라이드 쇼의 목록을 사이드바로: 순서 바꾸기, 빼기.",
+   "note": "슬라이드 쇼에서 즉석으로 만들며 저장하지 않음"
+  },
+  "saved_playlists": {
+   "label": "재생 목록 저장",
+   "why": "재생 목록 대신 폴더: 목록은 슬라이드 쇼가 만듦."
+  },
+  "pip": {
+   "label": "PIP(화면 속 화면)",
+   "why": "훑어보는 뷰어이지, 옆에 띄워 놓고 보는 플레이어가 아님."
+  },
+  "music_mode": {
+   "label": "오디오 파일, 음악 모드",
+   "why": "이미지와 동영상만, 오디오 파일은 전용 앱에서."
+  },
+  "streaming_urls": {
+   "label": "인터넷 스트림과 주소 재생",
+   "why": "원칙적으로 인터넷에 접속하지 않음."
+  },
+  "online_subtitles": {
+   "label": "인터넷에서 자막 내려받기",
+   "why": "원칙적으로 인터넷에 접속하지 않음."
+  },
+  "video_filters_enhance": {
+   "label": "동영상 조정(밝기, 대비 등)",
+   "how": "사진과 같은 슬라이더."
+  },
+  "quicklook_mkv_thumbnails": {
+   "label": "Finder와 훑어보기에서 MKV 등의 썸네일",
+   "how": "Finder에서 MKV, WebM, WMV, FLV, VOB에 썸네일 표시.",
+   "note": "MKV, WebM, WMV, FLV, Ogg, VOB"
+  },
+  "archives_as_folders": {
+   "label": "ZIP, RAR, 7z를 폴더처럼 열기",
+   "how": "폴더처럼 열리며, 디스크에 아무것도 풀지 않음."
+  },
+  "comics_cbz_cbr": {
+   "label": "만화책 CBZ, CBR",
+   "how": "CBZ와 CBR이 폴더처럼 열리고, ← →로 넘김."
+  },
+  "archive_passwords": {
+   "label": "암호가 걸린 아카이브",
+   "how": "한 번 묻고 기억함.",
+   "note": "ZIP과 RAR, 암호화된 7z는 열 수 없음"
+  },
+  "split_archives": {
+   "label": "여러 개로 분할된 아카이브",
+   "how": "첫 번째 파일 하나로 표시."
+  },
+  "videos_in_archives": {
+   "label": "아카이브 속 동영상 바로 재생",
+   "how": "아카이브에서 바로 스트리밍."
+  },
+  "manga_two_page": {
+   "label": "두 쪽 보기, 오른쪽에서 왼쪽 만화 모드",
+   "why": "한 번에 이미지 한 장, 윈도우에 맞게 최대한 크게."
+  },
+  "rename_trash": {
+   "label": "이름 변경, 휴지통, 새로운 폴더",
+   "how": "Return 또는 F2로 이름 변경, ⌘⌫로 휴지통, ⇧⌘N으로 새로운 폴더."
+  },
+  "move_copy": {
+   "label": "폴더로 끌어서 이동과 복사",
+   "how": "타일을 폴더 위로 끌어다 놓기."
+  },
+  "dual_pane": {
+   "label": "나란히 놓인 두 패널(F5 복사, F6 이동)",
+   "how": "D로 이중 패널, F5로 복사, F6으로 이동."
+  },
+  "undo_file_actions": {
+   "label": "이름 변경, 이동, 휴지통 실행 취소",
+   "how": "오른쪽 클릭 메뉴 맨 위에."
+  },
+  "image_editing": {
+   "label": "이미지 편집(자르기, 크기 조절, 저장)",
+   "why": "편집기가 아니라 뷰어: 파일은 그대로."
+  },
+  "batch_convert": {
+   "label": "일괄 변환, 일괄 이름 변경",
+   "why": "변환기가 아니라 뷰어."
+  },
+  "library_catalog": {
+   "label": "보관함, 카탈로그, 태그, 별점",
+   "why": "보관함 대신 폴더: 가져올 것이 없음."
+  },
+  "cloud_sync": {
+   "label": "클라우드 동기화, 온라인 공유",
+   "why": "원칙적으로 인터넷에 접속하지 않음."
+  },
+  "keyboard_first": {
+   "label": "모든 것을 키보드로",
+   "how": "모든 동작에 키가 있음."
+  },
+  "custom_shortcuts": {
+   "label": "나만의 키보드 단축키",
+   "how": "원하는 키를 무료로 지정, Phiewer식 프리셋 포함.",
+   "note": "무료, Phiewer식 프리셋 포함"
+  },
+  "shortcut_cheatsheet": {
+   "label": "인쇄할 수 있는 전체 키 목록",
+   "how": "F1로 모든 키 목록, 인쇄도 가능."
+  },
+  "boss_key": {
+   "label": "보스 키(한 번에 모두 숨기기)",
+   "how": "X로 모든 윈도우를 숨기고 모든 동영상을 음소거."
+  },
+  "app_sandbox": {
+   "label": "Apple의 App Sandbox에서 실행",
+   "how": "앱과 확장 프로그램 모두 그 안에서 실행."
+  },
+  "no_network": {
+   "label": "인터넷에 접속하지 않음",
+   "how": "네트워크 접근이 전혀 없음."
+  },
+  "notarized_attested": {
+   "label": "공증 완료, 공개 소스로 빌드되었음을 증명 가능",
+   "how": "모든 다운로드에 GitHub의 빌드 증명이 있음."
+  },
+  "mac_app_store": {
+   "label": "Mac App Store에 있음",
+   "how": "곧 출시, 후원용 €0.99.",
+   "note": "곧 출시, 후원용 €0.99"
+  }
+ },
+ "products": {
+  "2345-kantuwang": {
+   "name": "2345看图王",
+   "vendor": "2345.com",
+   "summary": "중국에서 가장 많이 설치된 Windows 이미지 뷰어 중 하나입니다. PSD, RAW, SVG, AVIF를 포함해 약 98가지 이미지 포맷과 PDF/OFD, CAD를 빠르게 엽니다. 간단한 편집, 일괄 처리 도구, OCR, 증명사진, AI 누끼 따기가 들어 있으며 일부는 VIP 회원 전용입니다.",
+   "wins": [
+    "매우 폭넓은 이미지 포맷(PSD/PSB, AI, RAW, CAD, OFD)",
+    "편집, 일괄 변환/이름 변경, OCR, 증명사진, 인쇄 도구 내장",
+    "중국 Windows 사용자에게 익숙함, ACDSee 호환 단축키"
+   ],
+   "price": "뷰어는 무료, 편집/AI/PDF 부가 기능은 VIP 회원(월간, 연간, 평생)",
+   "version": "13.2",
+   "updated": "2025-09-30 (Tencent 스토어의 v13.2 항목, 사이트 글은 2026-10까지)",
+   "platforms": "Windows"
+  },
+  "5kplayer": {
+   "name": "5KPlayer",
+   "vendor": "Digiarty Software",
+   "summary": "Mac과 Windows용 무료 올인원 미디어 플레이어입니다. 동영상, 음악, DVD, 라디오를 재생하고 AirPlay 미러링을 받으며, DLNA로 스트리밍하고 온라인 동영상을 내려받습니다. 강점은 재생 주변의 다양한 부가 기능입니다.",
+   "wins": [
+    "AirPlay 수신과 화면 미러링 녹화",
+    "DLNA 서버/렌더러",
+    "온라인 동영상 다운로더(YouTube 등)",
+    "DVD와 ISO 재생",
+    "음악 보관함, 라디오, IPTV",
+    "재생 속도, 동영상 자르기, MP3 추출"
+   ],
+   "price": "무료(광고 포함, 이메일 등록 선택)",
+   "version": "6.11",
+   "updated": "2026-01-30",
+   "platforms": "macOS, Windows",
+   "notes": {
+    "list_view": "보관함 목록(즐겨찾기, YouTube, DLNA, 재생 목록 등), 파일 열 없음",
+    "bookmarks": "동영상 안의 책갈피와 즐겨찾기, 폴더 책갈피 아님",
+    "zoom_rotate": "동영상 90도 회전/뒤집기, 이미지 보기 없음",
+    "auto_enhance_view": "동영상용 Video Tuner와 효과 모드, 사진은 없음",
+    "file_info_exif": "미디어 정보: 소스, 트랙, 포맷, EXIF 없음(이미지 없음)",
+    "pip": "PIP 없음, '항상 위' 기능만",
+    "online_subtitles": "YouTube 동영상과 함께 자막을 받음, 로컬 파일용 자막 검색 없음",
+    "batch_convert": "MP3/AAC/MP4로 한 번에 하나씩 변환, 전체 변환기는 별도 유료 제품",
+    "library_catalog": "즐겨찾기와 재생 목록이 있는 보관함, 태그/별점 없음",
+    "cloud_sync": "클라우드 동기화 없음, DLNA/AirPlay 기기로 공유",
+    "keyboard_first": "재생 단축키는 있으나 보관함은 주로 마우스로",
+    "shortcut_cheatsheet": "온라인 사용 설명서에 단축키 목록",
+    "notarized_attested": "공증된 Developer ID, 비공개 소스"
+   }
+  },
+  "acdsee": {
+   "name": "ACDSee",
+   "vendor": "ACD Systems",
+   "summary": "가져오기 없이 기존 폴더에서 작동하는 오래된 사진 DAM이자 RAW 편집기입니다. 카탈로그 데이터베이스, 별점, 키워드, AI 얼굴 인식과 키워드, 비파괴 현상 모드, 일괄 처리 도구를 갖췄습니다. Windows판은 일반 동영상도 재생하고 ZIP/RAR 아카이브도 탐색하지만, Mac판은 이 부분이 더 제한적입니다. 유료이며, 사진을 관리하고 편집하는 사진가를 위한 제품입니다.",
+   "wins": [
+    "완전한 DAM: 별점, 키워드, 카테고리, 얼굴, AI 키워드와 유사 이미지",
+    "AI 마스킹이 있는 비파괴 RAW 편집",
+    "일괄 이름 변경, 크기 조절, 변환, 메타데이터",
+    "중복 파일 찾기",
+    "생성형 AI 편집",
+    "Windows: ZIP/RAR 탐색과 동영상 메타데이터"
+   ],
+   "price": "Mac 27: $119.99 일회성 구매(사전 판매가 $99.95, 2026-11-18까지), Mac App Store: 연간 구독, Windows Home/Professional/Ultimate 2027 일회성 구매 또는 ACDSee 365 구독",
+   "version": "Mac 26.0.3 (Mac 27은 2026년 11월 말), Windows 2027",
+   "updated": "2026-05-27 (Mac App Store 26.0.3), Windows 2027은 2026-09 출시",
+   "platforms": "macOS, Windows, iOS(보조 앱)",
+   "notes": {
+    "no_account_no_tracking": "활성화와 구독에 acdID 이메일과 인터넷 필요, AI는 기기에서 실행",
+    "languages_20": "Mac App Store: 영어, 프랑스어, 독일어, 일본어, Windows 웹사이트는 10개 언어",
+    "network_shares_fast": "네트워크 볼륨을 가져오기 없이 표시, 유휴 시 인덱서가 카탈로그 작성",
+    "multiple_windows": "한 윈도우 안의 탭, 세션 간 유지",
+    "bookmarks": "탭, 저장된 검색, Windows: 이미지 바구니 최대 5개",
+    "img_psd_exr": "PSD는 지원, OpenEXR은 목록에 없음",
+    "img_svg_pdf": "SVG는 Windows에서, PDF는 Windows Professional/Ultimate만, Mac은 훑어보기로",
+    "img_animated": "애니메이션 GIF와 WebP, 애니메이션 AVIF는 미지원",
+    "video_native": "Windows는 MP4/MOV/M4V/AVI/WMV 재생, Mac은 훑어보기로 표시",
+    "video_mkv_avi_webm": "Windows: AVI, WMV, ASF, MKV·WebM·FLV는 없음",
+    "music_mode": "Windows는 MP3, WAV, WMA, M4A 읽기",
+    "archives_as_folders": "Windows: ZIP, RAR(RAR5 제외), TAR, GZ 등, 7z 없음, Mac은 미지원",
+    "cloud_sync": "iCloud Drive(Mac), OneDrive(Windows), SendPix 공유, Mobile Sync",
+    "keyboard_first": "메타데이터 입력과 선별은 키보드로, 나머지는 마우스 위주",
+    "app_sandbox": "Mac App Store판(스토어 필수 조건), 직접 다운로드판은 알려지지 않음"
+   }
+  },
+  "adobe-bridge": {
+   "name": "Adobe Bridge",
+   "vendor": "Adobe",
+   "summary": "Adobe Bridge는 사진, 디자인 파일, 동영상 폴더를 풍부한 미리보기로 탐색하는 무료 크리에이티브 에셋 관리자입니다. 메타데이터, 키워드, 별점, 컬렉션, 일괄 이름 변경과 내보내기를 제공하며, Photoshop, Camera Raw 등 Creative Cloud 앱의 허브 역할을 합니다.",
+   "wins": [
+    "Adobe 포맷(PSD, AI, INDD, After Effects, Substance 3D)과 PDF 미리보기",
+    "메타데이터 편집, 키워드, 레이블, 별점, 컬렉션과 스마트 컬렉션",
+    "일괄 이름 변경, 내보내기 패널, 대량 변환 워크플로",
+    "Camera Raw, Photoshop, Premiere, Creative Cloud 라이브러리와 긴밀한 연동",
+    "PDF 밀착 인화, Adobe Stock과 Portfolio에 게시",
+    "Windows판"
+   ],
+   "price": "Adobe 계정으로 무료 다운로드(Creative Cloud 앱), Camera Raw 편집과 Photoshop 연동은 유료 Creative Cloud 플랜 필요",
+   "version": "17.0 (2026년 11월)",
+   "updated": "2026-11-10",
+   "platforms": "macOS, Windows",
+   "notes": {
+    "free": "Adobe 계정으로 무료, Camera Raw에서 RAW 편집은 유료 플랜",
+    "network_shares_fast": "내장 이미지 우선 옵션으로 빠르게, 그 밖에는 미리보기를 만들어 캐시",
+    "video_mkv_avi_webm": "FLV, F4V, SWF와 QuickTime이 지원하는 것, MKV/WebM/AVI는 언급 없음",
+    "music_mode": "미리보기 패널에서 오디오 자동 재생/반복",
+    "dual_pane": "여러 콘텐츠 패널/윈도우를 나란히, F5/F6 복사/이동 없음",
+    "image_editing": "빠른 작업으로 자르기/크기 조절/배경 제거, 픽셀 편집은 Camera Raw/Photoshop(유료)",
+    "keyboard_first": "단축키는 많지만 작업 흐름은 패널과 마우스 중심",
+    "shortcut_cheatsheet": "도움말 페이지에 단축키 목록, 인쇄용 목록은 없음"
+   }
+  },
+  "alsee": {
+   "name": "알씨",
+   "vendor": "ESTsoft",
+   "summary": "알툴즈(알집, 알약) 제품군에 속한 이스트소프트의 오래된 한국산 이미지 뷰어입니다. 썸네일/목록 탐색, 크게 보기와 전체 화면, 압축 파일 속 이미지 보기, 일괄 변환/크기 조절/회전, 인쇄, 그리고 구독형 AI 편집(업스케일링, 배경 제거, 얼굴 모자이크)을 제공합니다.",
+   "wins": [
+    "인쇄 레이아웃과 일괄 회전/크기 조절/변환",
+    "AI 업스케일링, 배경 제거, 얼굴 모자이크(구독)",
+    "Windows 탐색기 오른쪽 클릭 메뉴와 연동"
+   ],
+   "price": "광고 포함 무료, 광고 제거 AD-ZERO 월 5,900원(알툴즈 전체), AI 기능은 알툴즈 AI 구독",
+   "version": "10.02",
+   "updated": "2026-10-07",
+   "platforms": "Windows"
+  },
+  "apolloone": {
+   "name": "ApolloOne",
+   "vendor": "Anogeissus",
+   "summary": "가져오기 없이 폴더에서 작동하는 사진가용 빠른 사진 뷰어이자 선별 도구입니다. RAW, HDR, 메타데이터, 별점, AF 포인트, 일괄 작업에 강하며, 많은 기능이 세 가지 유료 에디션에 나뉘어 있습니다.",
+   "wins": [
+    "선별: 픽, 별점, Focus Score, AI 평가, 스택",
+    "HDR RAW 표시와 HDR 내보내기",
+    "EXIF/IPTC/XMP 상세 편집, 키워드, GPS 지도",
+    "메모리 카드 가져오기",
+    "외부 SRT 자막",
+    "AppleScript 자동화"
+   ],
+   "price": "Free Edition, Standard $35.99, Pro $59.99, Max $99.99 일회성 구매, 또는 연간 Standard $14.99 / Pro $23.99",
+   "version": "5.1.0",
+   "updated": "2026-10-22",
+   "platforms": "macOS",
+   "notes": {
+    "free": "Free Edition, Standard $35.99, Pro $59.99, Max $99.99 일회성, 또는 연간 $14.99부터",
+    "no_account_no_tracking": "계정 없음, App Store 표시: 분석용 사용 데이터(사용자와 연결되지 않음)",
+    "languages_20": "11개 언어(한국어 포함)",
+    "list_view": "Standard Edition: EXIF 열이 있는 정렬 가능한 표",
+    "regex_search": "메타데이터 태그 정규식 검색(Pro), 파일 이름은 와일드카드만",
+    "network_shares_fast": "SMB로 NAS 사용 가능, AFP에서 폴더 로딩 5~10초라는 리뷰",
+    "multiple_windows": "Standard Edition: 탭과 윈도우",
+    "img_psd_exr": "OpenEXR 보기/내보내기, PSD는 언급 없음",
+    "img_svg_pdf": "SVG는 미리 래스터화, PDF는 언급 없음",
+    "img_animated": "GIF는 지원, 애니메이션 WebP/PNG는 언급 없음",
+    "auto_enhance_view": "Pro: 자동 톤 커브를 포함한 비파괴 빠른 편집 슬라이더",
+    "video_skim_arrows": "← →로 프레임 단위 이동, J/K/L 셔틀",
+    "playback_speed": "J/L로 되감기/빨리 감기 속도 전환, 고정 속도 설정 없음",
+    "music_mode": "Apple Music 재생 목록을 슬라이드 쇼 배경 음악으로만",
+    "undo_file_actions": "앱 실행 중 휴지통 이동 취소, 되돌리기는 선택형 스크립트로",
+    "image_editing": "자르기(Standard), 빠른 편집과 크기 조절(Pro)",
+    "batch_convert": "일괄 이름 변경(Standard), 크기 조절/변환/내보내기(Pro)",
+    "cloud_sync": "InstaBake로 AirDrop/공유, 동기화 없음",
+    "custom_shortcuts": "Pro Edition"
+   }
+  },
+  "apple-photos": {
+   "name": "Apple 사진",
+   "vendor": "Apple",
+   "summary": "기기 간 iCloud 동기화가 되는 Apple의 사진 보관함입니다. 인물 인식, 추억, 비파괴 편집으로 개인 사진 모음을 정리하고 편집하기에 좋습니다.",
+   "wins": [
+    "iPhone, iPad와 iCloud 동기화",
+    "사진과 동영상의 비파괴 편집",
+    "인물, 장소, 콘텐츠 검색",
+    "추억, 음악이 있는 슬라이드 쇼, 공유 앨범"
+   ],
+   "price": "무료(macOS에 포함), iCloud 사진용 iCloud+ 저장 공간은 유료",
+   "version": "macOS Golden Gate 27.2.1의 사진 12.0",
+   "updated": "2026-11-09 (macOS 27.2.1)",
+   "platforms": "macOS, iOS, iPadOS, visionOS",
+   "notes": {
+    "no_account_no_tracking": "Apple 계정 없이 작동, iCloud 기능은 계정 필요, 향상된 시각 검색은 Apple과 사진을 비교",
+    "thumbnail_grid": "연/월/모든 사진 보관함 격자, 파일 시스템 폴더가 아닌 앨범",
+    "recursive_search": "보관함 전체를 내용, 제목, 캡션, 키워드, 날짜로 검색, 폴더 속 파일 이름은 아님",
+    "img_psd_exr": "PSD는 병합되어 가져옴(레이어 손실), OpenEXR은 언급 없음",
+    "slideshow_recursive": "선택 항목이나 앨범으로 사진과 동영상을 섞은 슬라이드 쇼, 폴더 트리는 없음",
+    "playback_speed": "고프레임 동영상만 슬로 모션 속도(1/2, 1/4, 1/5)",
+    "saved_playlists": "저장된 슬라이드 쇼 프로젝트가 사진과 동영상 순서를 유지",
+    "rename_trash": "삭제(최근 삭제된 항목)와 제목, 디스크의 파일 이름 변경이나 폴더는 없음",
+    "undo_file_actions": "Command-Z 실행 취소와 최근 삭제된 항목 앨범",
+    "batch_convert": "여러 항목을 선택한 포맷으로 내보내기, 일괄 이름 변경 없음",
+    "keyboard_first": "단축키는 많지만 전부는 아님",
+    "custom_shortcuts": "메뉴 명령용 macOS 앱 단축키",
+    "boss_key": "Command-H로 앱 가리기, 전용 보스 키 없음"
+   }
+  },
+  "apple-preview": {
+   "name": "Apple 미리보기",
+   "vendor": "Apple",
+   "summary": "모든 Mac에 기본으로 들어 있는 Apple의 PDF·이미지 뷰어입니다. PDF, 주석, 서명, 그리고 자르기, 크기 조절, 포맷 변환 같은 간단한 이미지 수정에 강합니다.",
+   "wins": [
+    "모든 Mac에 이미 설치되어 있음",
+    "완전한 PDF 도구: 주석, 양식 서명, 합치기, 암호 설정",
+    "이미지 편집: 자르기, 크기 조절, 배경 제거, 일괄 변환",
+    "3D 파일 열기"
+   ],
+   "price": "무료(macOS에 포함)",
+   "version": "macOS Golden Gate 27.2.1의 미리보기 11.0",
+   "updated": "2026-11-09 (macOS 27.2.1)",
+   "platforms": "macOS",
+   "notes": {
+    "thumbnail_grid": "한 윈도우에서 연 파일이나 페이지의 썸네일/밀착 인화, 폴더 미리보기 없음",
+    "img_svg_pdf": "PDF가 핵심 포맷, SVG 지원은 문서에 없음",
+    "img_animated": "애니메이션 GIF는 정지 프레임으로 표시, 재생은 훑어보기로",
+    "slideshow": "PDF 페이지의 슬라이드 쇼",
+    "manga_two_page": "PDF용 두 페이지 보기, 오른쪽에서 왼쪽 모드 없음",
+    "rename_trash": "윈도우 제목에서 열린 파일 이름 변경/이동, 휴지통이나 새로운 폴더 없음",
+    "move_copy": "열린 파일 복제나 내보내기, 제목에서 이동, 폴더 파일 관리 없음",
+    "cloud_sync": "iCloud Drive에서 문서 열기와 저장",
+    "keyboard_first": "단축키는 많지만 키보드로 폴더 탐색은 안 됨",
+    "custom_shortcuts": "macOS 앱 단축키로 메뉴 명령 재지정",
+    "boss_key": "시스템 공통 Command-H(앱 가리기)만, 전용 보스 키 없음"
+   }
+  },
+  "bandiview": {
+   "name": "반디뷰",
+   "vendor": "Bandisoft",
+   "summary": "반디집 제작사가 만든 꿀뷰의 후속작으로, Windows 10/11용 빠른 이미지 뷰어입니다. 압축 파일과 만화책 보기, 스마트 두 쪽 보기와 웹툰 모드, HDR 출력, 빠른 일괄 변환기를 갖췄습니다. 한국에서 만화와 웹툰 보기에 아주 인기가 많습니다.",
+   "wins": [
+    "HDR 이미지의 HDR 출력(PRO)",
+    "웹툰 세로 스크롤 모드와 스마트 두 쪽 만화 모드",
+    "클립 스튜디오, HEIC(PRO), 다양한 압축 포맷(ALZ, EGG, ISO, ZPAQ …)",
+    "빠른 멀티스레드 일괄 변환기",
+    "무료판에서도 키보드와 마우스 단축키 사용자 지정"
+   ],
+   "price": "무료 체험판(비상업적 가정용, 광고, 일부 기능 제한), Professional $39 일회성 구매(PC 1대), $58.50(PC 2대), 볼륨 할인",
+   "version": "8.05",
+   "updated": "2026-11-03",
+   "platforms": "Windows"
+  },
+  "cdisplayex": {
+   "name": "CDisplayEx",
+   "vendor": "Progdigy Software",
+   "summary": "CDisplayEx는 CDisplay의 후속작인 오래된 경량 Windows 만화책 뷰어로, 빠른 로딩, Lanczos 크기 조절, 모든 키를 바꿀 수 있는 것으로 유명합니다. 데스크톱판은 더 이상 개발되지 않으며, 개발은 Android 앱에서 이어지고 있습니다.",
+   "wins": [
+    "모든 기능을 원하는 키에 지정",
+    "오래된 스캔용 자동 색 보정과 감마",
+    "두 쪽 보기와 일본식(오른쪽에서 왼쪽) 모드",
+    "Windows 탐색기에서 만화책 파일 썸네일"
+   ],
+   "price": "데스크톱은 프리웨어, Android Lite(광고)와 Premium(유료)",
+   "version": "1.10.33 (데스크톱)",
+   "updated": "2015-06-20 (데스크톱, 개발자에 따르면 데스크톱판 개발 중단)",
+   "platforms": "Windows, Android"
+  },
+  "cisdem-video-player": {
+   "name": "Cisdem Video Player",
+   "vendor": "Cisdem",
+   "summary": "MKV, AVI, WMV, WebM, 4K/8K 파일을 재생하는 무료 경량 Mac 동영상 플레이어로, 재생 목록, 자막·오디오 트랙 전환, 분리 윈도우 모드가 있습니다. 다른 포맷으로 변환하는 기능은 유료 추가 기능입니다.",
+   "wins": [
+    "기기별 프리셋으로 동영상 변환(유료)",
+    "동영상, 컨트롤러, 재생 목록용 분리 윈도우",
+    "재생 목록과 위치 기억",
+    "챕터, 미니 화면, 시크릿 모드",
+    "Windows판"
+   ],
+   "price": "재생은 무료, 변환은 $19.99 일회성 또는 연 $9.99",
+   "version": "6.0.0",
+   "updated": "2025-07-22",
+   "platforms": "macOS, Windows",
+   "notes": {
+    "free": "재생은 무료, 변환은 앱 내 구입 $19.99 또는 연 $9.99",
+    "no_account_no_tracking": "개인정보 표시 '데이터 수집 안 함', 업그레이드 팝업이 뜬다는 리뷰",
+    "folder_browsing": "폴더를 재생 목록으로 가져오기",
+    "zoom_rotate": "동영상 회전과 뒤집기",
+    "saved_playlists": "마지막 재생 목록과 위치 기억, 이름 붙인 재생 목록은 없음",
+    "pip": "'미니 화면' 모드, 시스템 PIP 아님",
+    "batch_convert": "동영상 변환(MP4, HEVC, MKV, MP3 …)은 유료 앱 내 구입",
+    "keyboard_first": "재생, 음량, 프레임 이동 단축키",
+    "shortcut_cheatsheet": "온라인 사용 설명서에 단축키 표",
+    "notarized_attested": "App Store 서명, 비공개 소스"
+   }
+  },
+  "commander-one": {
+   "name": "Commander One",
+   "vendor": "Electronic Team",
+   "summary": "Total Commander 스타일의 macOS용 이중 패널 파일 관리자로, 기능 키 중심 작업, 정규식 검색, 내장 F3 뷰어(텍스트, 16진수, 이미지, 미디어), 아카이브 처리를 갖췄습니다. PRO Pack에는 RAR/7z, FTP/SFTP, 클라우드 드라이브, 터미널, 테마가 추가됩니다.",
+   "wins": [
+    "전통적인 F 키 커맨더 작업 방식과 작업 대기열",
+    "정규식과 내용 검색, 아카이브 안과 FTP에서도",
+    "PRO: FTP/SFTP와 여러 클라우드 서비스, MTP/iOS/Android 기기",
+    "내장 16진수/텍스트/바이너리 뷰어",
+    "프로세스 뷰어, 터미널(PRO)"
+   ],
+   "price": "무료판, PRO Pack 개인용 $29.99(Mac 1대) 또는 팀용 $99.99(Mac 5대) 일회성 구매, MAS: 앱 내 구입이 있는 무료판 또는 'Commander One PRO' $29.99",
+   "version": "3.18 (4006)",
+   "updated": "2026-09-25",
+   "platforms": "macOS",
+   "notes": {
+    "free": "무료판(이중 패널, ZIP만), PRO Pack $29.99 일회성",
+    "languages_20": "14개 언어(한국어 포함), UI 언어 선택 가능",
+    "thumbnail_grid": "'Thumbs' 보기 모드, 폴더 미리보기 없음",
+    "network_shares_fast": "SMB/NetBIOS, FTP, 클라우드 지원, 속도에 관한 언급 없음",
+    "img_modern_formats": "훑어보기/내장 뷰어로 macOS 코덱 사용, 전용 이미지 뷰어 없음",
+    "img_raw": "뷰어와 훑어보기로 macOS의 RAW 지원 사용, 자체 디코더 없음",
+    "keyboard_paging": "훑어보기(F3)에서 화살표 키로 선택 항목 이동",
+    "zoom_rotate": "확대는 훑어보기에서만, F3 이미지 모드에는 확대 없음",
+    "file_info_exif": "정보 가져오기는 크기, 날짜, 권한, EXIF/코덱은 언급 없음",
+    "wrong_extension_note": "내용으로 포맷을 인식해 표시하지만 알려 주지는 않음",
+    "photos_videos_one_grid": "Thumbs 보기에서 모든 파일 썸네일, 폴더 미리보기 없음",
+    "music_mode": "뷰어 미디어 모드에서 훑어보기로 오디오 재생",
+    "archives_as_folders": "무료: ZIP만, PRO($29.99): 7z, TAR 읽기/쓰기, RAR/ISO/XAR 읽기 전용",
+    "videos_in_archives": "아카이브 속 파일을 풀지 않고 훑어보기로 미리보기, 플레이어는 없음",
+    "library_catalog": "Finder 태그만",
+    "cloud_sync": "PRO 전용: Dropbox, Google Drive, OneDrive, S3, WebDAV, FTP/SFTP 등",
+    "shortcut_cheatsheet": "환경설정에서 단축키 목록, 인쇄용은 없음",
+    "app_sandbox": "Mac App Store판은 샌드박스(제한 있음), 웹사이트 PRO판은 아님"
+   }
+  },
+  "cooviewer": {
+   "name": "cooViewer",
+   "vendor": "coo와 ysmx 포크",
+   "summary": "오래된 일본산 Mac용 만화 뷰어로, 지금은 유니버설 바이너리를 갖춘 활발히 업데이트되는 오픈 소스 포크로 이어지고 있습니다. 폴더, PDF, 거의 모든 아카이브(ZIP, RAR, 7z, LHA, 분할 아카이브, 암호 걸린 아카이브)를 책으로 열며, 오른쪽에서 왼쪽 두 쪽 보기, 페이지 책갈피, 자유롭게 지정하는 키와 마우스 동작, 만화책 아카이브의 Finder 썸네일을 제공합니다.",
+   "wins": [
+    "만화 전용 뷰어: 단일 페이지를 자동으로 감지하는 오른쪽에서 왼쪽 두 쪽 보기, 책마다 저장",
+    "이름 붙인 페이지 책갈피, 책마다 마지막 페이지 기억",
+    "모든 키와 마우스 동작 지정 가능, 한 손 기본 배치",
+    "분할 RAR/ZIP과 암호 걸린 아카이브를 포함한 매우 다양한 아카이브 포맷",
+    "Core Image 보기 필터, 돋보기",
+    "CBZ/CBR/ZIP/RAR/7z의 Finder 썸네일과 훑어보기"
+   ],
+   "price": "무료",
+   "version": "1.7.1 (ysmx 포크), 원래의 coo-ona 빌드는 1.2b25(2020)에서 멈춤",
+   "updated": "2026-10-30",
+   "platforms": "macOS",
+   "notes": {
+    "dark_light_setting": "배경과 페이지 막대의 색 지정, 라이트/다크 전환 없음",
+    "thumbnail_grid": "열린 책의 페이지 격자, 폴더 미리보기 없음",
+    "network_shares_fast": "하위 폴더가 많은 폴더는 지연 로딩, 네트워크 공유는 언급 없음",
+    "bookmarks": "책마다 이름 붙인 페이지 책갈피와 최근 책, 폴더 즐겨찾기 없음",
+    "img_modern_formats": "HEIC/HEIF, WebP, AVIF 지원, JPEG XL은 목록에 없음",
+    "img_psd_exr": "PSD는 지원, OpenEXR은 목록에 없음",
+    "img_svg_pdf": "PDF는 지원(페이지를 책으로), SVG는 목록에 없음",
+    "slideshow_recursive": "'하위 폴더 읽기'로 하위 폴더 포함, 이미지만, 동영상 없음",
+    "auto_enhance_view": "수동 색상·선명도 필터, 자동 향상 없음",
+    "archives_as_folders": "아카이브를 폴더가 아니라 만화책으로 열기",
+    "rename_trash": "왼쪽/오른쪽 페이지 이미지를 휴지통으로, 이름 변경이나 새로운 폴더 없음",
+    "shortcut_cheatsheet": "온라인 설명서(일본어)에 기본 키 표, 앱 안에는 없음",
+    "boss_key": "Esc로 책을 바로 닫기, 모두 숨기는 키는 없음"
+   }
+  },
+  "digikam": {
+   "name": "digiKam",
+   "vendor": "KDE digiKam 팀",
+   "summary": "digiKam은 대규모 사진 모음을 위한 KDE의 오픈 소스 사진 관리 도구입니다. 폴더를 데이터베이스에 색인하고 태그, 얼굴 인식, 위치 정보, 유사 이미지 검색, 유능한 이미지 편집기, 일괄 처리, 다양한 내보내기 대상을 제공합니다.",
+   "wins": [
+    "태그, 레이블, 얼굴 인식, 유사·중복 검색, 지도와 타임라인 검색이 있는 데이터베이스",
+    "모든 컬렉션을 대상으로 한 자연어 검색과 고급 검색",
+    "버전 관리가 되는 이미지 편집기와 일괄 대기열 관리자",
+    "LibRaw를 통한 RAW 처리, 16비트와 색상 관리",
+    "동영상 재생 속도 조절과 프레임 단위 이동",
+    "다양한 내보내기 대상(Dropbox, OneDrive, Flickr, Piwigo, HTML 갤러리)과 DLNA",
+    "무료, 오픈 소스, Linux와 Windows에서도 실행"
+   ],
+   "price": "무료",
+   "version": "9.1.0",
+   "updated": "2026-06-07",
+   "platforms": "macOS, Windows, Linux",
+   "notes": {
+    "folder_browsing": "앨범은 실제 폴더지만, 먼저 추가해서 데이터베이스로 스캔해야 함",
+    "thumbnail_grid": "항목 썸네일, 폴더는 앨범 트리에만",
+    "network_shares_fast": "네트워크 공유는 되지만 스캔이 느릴 수 있음",
+    "multiple_windows": "메인 윈도우 하나와 별도의 라이트 테이블, 편집기, 비교 윈도우",
+    "img_animated": "GIF와 WebP는 정지 이미지로, MNG는 동영상으로 재생",
+    "zoom_rotate": "미리보기에서 확대와 이동, 회전하면 파일이나 EXIF 태그가 바뀜",
+    "music_mode": "오디오 파일(MP3, FLAC, OGG …)을 오디오 플레이어로",
+    "undo_file_actions": "삭제는 digiKam 휴지통으로(복구 가능), 이름 변경/이동 취소는 언급 없음",
+    "keyboard_first": "단축키는 많지만 많은 작업이 사이드바와 마우스 중심",
+    "notarized_attested": "공개 소스, 모든 다운로드에 GnuPG 서명, macOS 공증과 재현 가능한 빌드는 언급 없음"
+   }
+  },
+  "directory-opus": {
+   "name": "Directory Opus",
+   "vendor": "GP Software",
+   "summary": "Windows 탐색기를 대신하는, 설정 폭이 매우 넓은 파일 관리자입니다. 단일 또는 이중 패널, 탭, 레이블, 별점, 태그, 뷰어 패널, 슬라이드 쇼가 있는 독립 이미지 뷰어를 갖췄습니다. 검색, 동기화, 중복 찾기, 일괄 이름 변경, 이미지 변환에 강하고 스크립트를 완전히 지원합니다.",
+   "wins": [
+    "엄청난 설정 폭과 스크립트",
+    "파일 작업 실행 취소 기록",
+    "레이블, 별점, 태그, 메타데이터 편집",
+    "이미지 변환기와 일괄 이름 변경",
+    "중복 찾기, 동기화, Everything 연동",
+    "크로스페이드 슬라이드 쇼"
+   ],
+   "price": "PC 1대 AUD 89, 2대 AUD 129, 5대 AUD 249, 1년간 업데이트 후 연 AUD 25/40/75, 30일 체험판(등록 시 60일)",
+   "version": "13.25",
+   "updated": "2026-08-21",
+   "platforms": "Windows"
+  },
+  "double-commander": {
+   "name": "Double Commander",
+   "vendor": "Alexander Koblov와 기여자들",
+   "summary": "Total Commander에서 영감을 받은 무료 오픈 소스 이중 패널 파일 관리자로, 플러그인 인터페이스도 호환됩니다. Apple 실리콘에서 네이티브로 실행되며, 탭, 정규식 파일 찾기, 일괄 이름 변경, 폴더처럼 열리는 아카이브, 텍스트와 이미지용 내장 뷰어를 갖췄습니다.",
+   "wins": [
+    "Mac에서 Total Commander식 파일 관리: 폴더 동기화, 일괄 이름 변경, 체크섬, FTP/SFTP",
+    "Total Commander 플러그인(WCX/WDX/WFX/WLX) 실행",
+    "크로스 플랫폼(macOS, Windows, Linux)",
+    "뷰어에서 이미지 자르기, 크기 조절, 저장",
+    "Lua 스크립트와 도구 막대 사용자 지정"
+   ],
+   "price": "무료",
+   "version": "1.2.11",
+   "updated": "2026-11-08",
+   "platforms": "macOS, Windows, Linux, FreeBSD",
+   "notes": {
+    "thumbnail_grid": "썸네일 보기(macOS는 훑어보기), 폴더는 아이콘, 폴더 미리보기 없음",
+    "network_shares_fast": "SMB/네트워크 접근 가능, 속도는 언급 없음",
+    "multiple_windows": "두 패널에 탭, 뷰어/편집기는 별도 윈도우",
+    "img_modern_formats": "macOS에서는 번들된 훑어보기 플러그인으로",
+    "img_raw": "Windows는 WIC RAW 코덱, macOS는 훑어보기 플러그인",
+    "img_psd_exr": "PSD 내장, OpenEXR은 목록에 없음",
+    "img_svg_pdf": "SVG 내장, PDF는 macOS 훑어보기 플러그인이나 다른 WLX 플러그인",
+    "img_animated": "애니메이션 GIF와 프레임 조작, APNG/애니메이션 WebP는 목록에 없음",
+    "slideshow": "전체 화면 뷰어에서만, 현재 폴더, 이미지당 1~25초",
+    "file_info_exif": "내장 Exif 플러그인(JPEG: 날짜, 크기, 방향, 카메라)",
+    "video_native": "자체 플레이어 없음: macOS는 훑어보기 플러그인, Windows는 WMP 플러그인",
+    "video_mkv_avi_webm": "macOS에서는 훑어보기가 재생하는 것만",
+    "photos_videos_one_grid": "시스템 썸네일로 썸네일 보기(macOS는 훑어보기)",
+    "music_mode": "뷰어에서 오디오 파일 하나씩 재생(macOS는 훑어보기)",
+    "archives_as_folders": "ZIP, TAR, GZ 내장, RAR은 UnRAR 플러그인, 7z는 macOS에서 외부 7zz 필요",
+    "comics_cbz_cbr": "만화책 뷰어 없음, 플러그인에 연결하면 CBZ와 CBR이 폴더로 열림",
+    "archive_passwords": "압축 플러그인/외부 압축 프로그램에서 암호 지원, 포맷별로 다름",
+    "split_archives": "UnRAR 플러그인으로 분할 RAR",
+    "videos_in_archives": "F3이 파일을 임시 폴더에 풀어서 열기",
+    "batch_convert": "일괄 이름 변경 도구는 있음, 이미지 일괄 변환 없음",
+    "library_catalog": "descript.ion 파일 설명, macOS의 Finder 태그, 별점 데이터베이스 없음",
+    "cloud_sync": "iCloud Drive 접근과 MacCloud 플러그인, FTP/SFTP, 동기화 없음",
+    "shortcut_cheatsheet": "문서에 키 배치 페이지, 인쇄용 목록 아님"
+   }
+  },
+  "elmedia-player": {
+   "name": "Elmedia Player",
+   "vendor": "Electronic Team",
+   "summary": "여러 포맷의 동영상과 음악을 재생하는 범용 미디어 플레이어로, OpenSubtitles 검색, 이퀄라이저, 그리고 AirPlay, Chromecast, DLNA, Roku 기기로의 강력한 캐스팅을 갖췄습니다. PIP나 화면 조정 같은 고급 기능은 PRO입니다.",
+   "wins": [
+    "스마트 TV, Chromecast, Roku, DLNA로 스트리밍, AirPlay 수신",
+    "이퀄라이저와 시각화가 있는 음악 재생",
+    "온라인 동영상과 OpenSubtitles 검색",
+    "옮길 수 있는 별도 컨트롤 윈도우, 색상 테마, 사용자 지정 단축키"
+   ],
+   "price": "무료, PRO 기능은 $19.99 Mac App Store판 또는 직접 구입하는 PRO 라이선스",
+   "version": "8.24 (3472)",
+   "updated": "2025-12-05",
+   "platforms": "macOS",
+   "notes": {
+    "free": "재생은 무료, PRO(조정, PIP, TV 스트리밍)는 $19.99",
+    "languages_20": "12개 언어, 앱에서 언어 설정 가능",
+    "folder_browsing": "폴더를 재생 목록에 추가 가능, 탐색기 없음",
+    "zoom_rotate": "동영상만: 회전, 뒤집기, 미러링, 화면비",
+    "auto_enhance_view": "동영상만, PRO",
+    "file_info_exif": "미디어 정보(Cmd+I), EXIF 없음",
+    "pip": "PRO 전용",
+    "video_filters_enhance": "밝기, 대비, 채도, PRO",
+    "keyboard_first": "재생 단축키 사용자 지정 가능",
+    "app_sandbox": "Mac App Store판은 샌드박스, 웹사이트판은 알려지지 않음"
+   }
+  },
+  "fastrawviewer": {
+   "name": "FastRawViewer",
+   "vendor": "LibRaw",
+   "summary": "FastRawViewer는 사진가를 위한 빠른 RAW 뷰어이자 선별 도구입니다. RAW 히스토그램, 노출 경고, XMP에 저장되는 빠른 화이트 밸런스/노출 보정과 함께 실제 RAW 데이터를 보여 주며, 카탈로그 없이 사진에 별점, 레이블, 필터, 이름 변경, 복사, 이동을 할 수 있습니다.",
+   "wins": [
+    "RAW 히스토그램, 노출 과다/부족 표시, 포커스 피킹이 있는 정확한 RAW 렌더링",
+    "Lightroom 등과 호환되는 별점/레이블/XMP",
+    "PCRE 정규식 파일 이름 필터",
+    "동기화 확대가 되는 2/4분할 비교",
+    "완전히 사용자 지정 가능한 단축키, 다른 앱을 흉내 내는 키 배치",
+    "NAS와 느린 매체용 튜닝",
+    "Windows에서도"
+   ],
+   "price": "$23.99 일회성 구매(2026년 11월 할인가, 25% 할인, 라이선스당 컴퓨터 2대), 30일 체험판",
+   "version": "2.0.11 (build 2088)",
+   "updated": "2026 (2026년 11월 현재 2.0.11, 출시일은 공개되지 않음)",
+   "platforms": "macOS, Windows",
+   "notes": {
+    "no_account_no_tracking": "계정과 광고 없음, 활성화 때 한 번 제작사에 접속",
+    "dark_light_setting": "다크 인터페이스, 색 조정 가능, 라이트/다크 전환 없음",
+    "thumbnail_grid": "파일 격자 보기, 폴더는 트리 패널에만, 미리보기 타일 없음",
+    "recursive_search": "목록의 파일 이름 필터(PCRE도), 하위 폴더는 '하위 폴더와 함께 열기'로",
+    "multiple_windows": "Mac에서는 윈도우 하나, '멀티 윈도우'는 2/4분할 비교",
+    "img_modern_formats": "HEIC/HEIF는 지원, AVIF, JPEG XL, WebP는 미지원",
+    "slideshow": "기본 슬라이드 쇼: 시간 간격, 파일 수 제한, 전환 효과 없음",
+    "slideshow_recursive": "하위 폴더 탐색 모드에서 작동, 사진만, 동영상 없음",
+    "wrong_extension_note": "옵션으로 내용에 따라 파일 형식 판단, 경고는 없음",
+    "image_editing": "노출, 화이트 밸런스, 대비, 방향만 XMP에 저장, 자르기나 크기 조절 없음",
+    "batch_convert": "일괄 이름 변경은 있음, 포맷 변환 없음",
+    "library_catalog": "XMP 사이드카에 별점, 레이블, 제목 저장 후 필터, 데이터베이스 없음",
+    "shortcut_cheatsheet": "Windows용 기본 단축키 PDF는 있음, Mac용은 없음"
+   }
+  },
+  "faststone-image-viewer": {
+   "name": "FastStone Image Viewer",
+   "vendor": "FastStone Soft",
+   "summary": "FastStone Image Viewer는 탐색기 같은 폴더 트리, 패널이 튀어나오는 세련된 전체 화면 모드, 다양한 편집·일괄 처리 도구를 갖춘 오래된 Windows 이미지 브라우저입니다. Windows 코덱으로 동영상도 재생하며, 태그와 별점은 자체 데이터베이스에 보관합니다.",
+   "wins": [
+    "편집 도구: 곡선, 레벨, 복제 도장, 복구 브러시, 적목 현상 제거",
+    "이미지 최대 4장을 나란히 비교",
+    "일괄 변환과 이름 변경, 밀착 인화, 인쇄 레이아웃",
+    "태그와 별 1~5개 별점",
+    "스캐너 지원과 화면 캡처",
+    "150가지 이상의 전환 효과가 있는 음악 슬라이드 쇼"
+   ],
+   "price": "개인·교육용 무료, 상업용 US$34.95 일회성, 가족용 US$69.95(PC 5대)",
+   "version": "8.5",
+   "updated": "2026-06-24",
+   "platforms": "Windows"
+  },
+  "finder-quick-look": {
+   "name": "Finder와 훑어보기",
+   "vendor": "Apple",
+   "summary": "Mac의 파일 관리자와, 거의 모든 파일을 스페이스 바로 미리 보는 훑어보기입니다. 사진이나 MP4를 잠깐 보거나 일상적인 파일 관리에는 충분합니다.",
+   "wins": [
+    "macOS에 내장, 거의 모든 파일 형식에서 작동",
+    "태그, 스마트 폴더, Spotlight 검색",
+    "일괄 이름 변경과 빠른 동작",
+    "iCloud Drive와 AirDrop"
+   ],
+   "price": "무료(macOS의 일부)",
+   "version": "macOS Golden Gate 27.2.1의 Finder 27.2",
+   "updated": "2026-11-09 (macOS 27.2.1)",
+   "platforms": "macOS",
+   "notes": {
+    "thumbnail_grid": "아이콘 보기에서 파일 썸네일, 폴더는 폴더 아이콘이고 내용 미리보기 없음",
+    "network_shares_fast": "SMB/서버 연결, 큰 공유에서의 속도는 언급 없음",
+    "img_animated": "훑어보기가 애니메이션 GIF 재생, APNG/애니메이션 WebP는 언급 없음",
+    "music_mode": "훑어보기에서 오디오 재생과 다듬기",
+    "image_editing": "훑어보기의 회전과 마크업, 빠른 동작",
+    "library_catalog": "태그와 스마트 폴더, 별점 데이터베이스 없음",
+    "custom_shortcuts": "메뉴 명령용 앱 단축키",
+    "boss_key": "Command-H / Option-Command-H로 앱 가리기, 전용 보스 키 없음",
+    "app_sandbox": "훑어보기 뷰어는 샌드박스, Finder 자체는 아님"
+   }
+  },
+  "flowvision": {
+   "name": "FlowVision",
+   "vendor": "netdcy",
+   "summary": "FlowVision은 폭포형/정렬형 썸네일 레이아웃과 Finder 같은 파일 관리를 중심으로 한 네이티브 오픈 소스 macOS 이미지 뷰어입니다. 아주 큰 폴더에 맞게 조정되어 있고, Mac 기본 동영상 포맷을 재생하며, 하위 폴더 포함 모드, Finder 태그, 별점, 폴더 사이를 오가는 마우스 제스처를 제공합니다.",
+   "wins": [
+    "폭포형과 정렬형 썸네일 레이아웃",
+    "오른쪽 클릭 마우스 제스처로 폴더 이동",
+    "필터가 있는 Finder 태그와 XMP 별점",
+    "HDR 표시",
+    "레이아웃 프리셋 프로필",
+    "macOS 11 이상에서 실행"
+   ],
+   "price": "무료(기부)",
+   "version": "1.7.6",
+   "updated": "2026-09-08",
+   "platforms": "macOS",
+   "notes": {
+    "languages_20": "17개 언어",
+    "img_svg_pdf": "SVG는 지원, PDF는 소스에서 비활성화",
+    "slideshow_recursive": "목록 자동 재생, 하위 폴더 포함도 가능, 동영상이 끝날 때까지 기다리지 않음",
+    "video_mkv_avi_webm": "MKV, WebM, AVI의 썸네일과 정보, 재생은 외부 플레이어로",
+    "image_editing": "회전과 주석 모드(펜, 형광펜, 화살표)",
+    "batch_convert": "일련번호로 일괄 이름 변경, 포맷 변환 없음",
+    "library_catalog": "필터가 있는 Finder 태그와 XMP 별점, 자체 데이터베이스 없음",
+    "cloud_sync": "macOS 공유 시트만",
+    "keyboard_first": "탐색용 키는 있지만 마우스와 오른쪽 클릭 제스처 중심",
+    "custom_shortcuts": "Enter/Esc 동작만 설정 가능",
+    "notarized_attested": "Developer ID 서명, 로컬에서 빌드해 빌드 증명 없음"
+   }
+  },
+  "forklift": {
+   "name": "ForkLift",
+   "vendor": "BinaryNights",
+   "summary": "macOS용 이중 패널 파일 관리자이자 파일 전송 클라이언트입니다. 원격 연결(SFTP, S3, 클라우드 드라이브), 폴더 동기화, 일괄 이름 변경, 키보드 중심 파일 작업에 강하고, 이미지, 오디오, 동영상, PDF용 미리보기 패널이 있습니다.",
+   "wins": [
+    "원격·클라우드 연결(SFTP, FTP, WebDAV, S3, Google Drive, OneDrive, Dropbox)",
+    "폴더 동기화와 파일 비교",
+    "정규식과 메타데이터를 쓰는 일괄 이름 변경",
+    "Git 상태, 태그, 작업 공간, 앱 삭제 도구",
+    "완전한 파일 관리자: 실행 취소, 충돌 처리, 전송 대기열"
+   ],
+   "price": "1년 또는 2년 업데이트가 포함된 유료 평생 라이선스: 개인 $19.95 / $34.95, 가족 $29.95 / $49.95, 소규모 기업 $69.95 / $119.95(Mac 5대), 무료 체험판, Setapp에도 있음",
+   "version": "4.7.7",
+   "updated": "2026-10-20",
+   "platforms": "macOS",
+   "notes": {
+    "languages_20": "14개 언어",
+    "thumbnail_grid": "아이콘 미리보기가 있는 아이콘 보기, 폴더 미리보기 없음",
+    "network_shares_fast": "SMB, AFP, NFS, SFTP, 클라우드 지원, 큰 폴더 속도는 언급 없음",
+    "img_modern_formats": "macOS를 통한 미리보기 패널(시스템이 읽는 만큼)",
+    "img_raw": "미리보기 패널/훑어보기에서 macOS의 RAW 지원만, 자체 디코더 없음",
+    "img_svg_pdf": "미리보기 패널에서 PDF, SVG는 macOS가 렌더링하는 만큼",
+    "zoom_rotate": "확대는 macOS 훑어보기 윈도우에서만, 자체 뷰어 없음",
+    "video_mkv_avi_webm": "타사 'QuickLook Video' 플러그인을 설치한 경우만",
+    "music_mode": "미리보기 패널에서 오디오 재생, 음악 모드 없음",
+    "archive_passwords": "암호 걸린 ZIP 만들기, 암호화된 아카이브 열기는 언급 없음",
+    "videos_in_archives": "아카이브 안에서 훑어보기 가능, 플레이어 없음",
+    "batch_convert": "일괄 이름 변경(정규식, 메타데이터), 이미지 일괄 변환 없음",
+    "library_catalog": "Finder 태그만, 별점이나 카탈로그 없음"
+   }
+  },
+  "gom-player": {
+   "name": "곰플레이어",
+   "vendor": "GOM & Company",
+   "summary": "곰플레이어는 대규모 온라인 자막 자료실, AI 음성 자막 생성, 360° VR, 구간 반복, 스킨을 갖춘 인기 있는 한국산 무료 Windows 미디어 플레이어입니다. 무료판에는 광고가 있고 곰플레이어 플러스에서는 광고가 없습니다. mpv 기반 Mac판이 있지만 2020년 이후 업데이트가 없고 Intel 전용입니다.",
+   "wins": [
+    "대규모 온라인 자막 자료실과 AI 자막 생성",
+    "360° VR 재생, A-B 구간과 여러 구간 반복",
+    "URL과 YouTube 스트리밍",
+    "이퀄라이저가 있는 음악 재생",
+    "곰플레이어 플러스: 동영상 4개 동시 재생, AI 업스케일링"
+   ],
+   "price": "광고 포함 무료, 광고 없는 곰플레이어 플러스: 평생 라이선스(국내 ₩11,000) 또는 GOM Easy Pass 구독(월 $4.90부터), AI 기능은 크레딧 사용",
+   "version": "Windows 2.3.123 (2026년 10월 13일), Mac 1.0.0 (2020)",
+   "updated": "2026-10-13 (Windows), 2020-11-11 (Mac)",
+   "platforms": "Windows, macOS(Intel 빌드), Android, iOS",
+   "macNote": "곰플레이어의 Mac판은 2020년 이후 1.0.0에 머물러 있으며 Intel Mac용으로 빌드되었습니다."
+  },
+  "google-photos": {
+   "name": "Google 포토",
+   "vendor": "Google",
+   "summary": "휴대폰에서 자동으로 백업되는 Google의 클라우드 사진 보관함입니다. 모든 기기에서 모든 사진을 보고, 내용으로 검색하고, 앨범을 공유하기에 좋습니다.",
+   "wins": [
+    "Android와 iPhone에서 자동 백업",
+    "인물, 사물, 장소로 검색",
+    "앨범 공유와 파트너 공유",
+    "어느 브라우저에서나 접근"
+   ],
+   "price": "15GB까지 무료(Gmail/Drive와 공유), Google One은 월 €1.99(100GB)부터, 월 €9.99(2TB), 월 €21.99(5TB)",
+   "version": "웹(지속 업데이트), iOS 앱 8.1.0",
+   "updated": "2026-11-13 (iOS 앱 8.1.0)",
+   "platforms": "웹, Android, iOS",
+   "notes": {
+    "free": "15GB 무료(Gmail/Drive와 공유), Google One 월 €1.99(100GB)부터",
+    "thumbnail_grid": "사진 격자와 앨범 표지, 파일 시스템 폴더 없음",
+    "recursive_search": "보관함 전체를 내용, 따옴표 속 파일 이름, 카메라 모델로 검색",
+    "multiple_windows": "웹 앱, 브라우저 탭이나 윈도우 여러 개",
+    "img_modern_formats": "HEIC, AVIF, WebP, JPEG XL은 목록에 없음",
+    "img_animated": "GIF와 WebP, 애니메이션 PNG는 언급 없음",
+    "slideshow_recursive": "앨범 슬라이드 쇼, 폴더 트리 없음",
+    "file_info_exif": "날짜, 위치, 카메라, IPTC 정보 패널, 코덱/비트레이트는 언급 없음",
+    "video_mkv_avi_webm": "MKV, AVI, WMV는 업로드 후 처리되면 재생, WebM과 FLV는 목록에 없음",
+    "playback_speed": "Android 앱에만 있음, 웹은 언급 없음",
+    "rename_trash": "휴지통으로 삭제, 파일 이름 변경 없음",
+    "undo_file_actions": "휴지통에서 복원",
+    "keyboard_first": "웹에 단축키(Shift+?로 목록), 앱에는 없음",
+    "shortcut_cheatsheet": "앱 안에서 Shift+?로 패널 표시"
+   }
+  },
+  "graphicconverter": {
+   "name": "GraphicConverter",
+   "vendor": "Lemke Software",
+   "summary": "GraphicConverter는 오래된 Mac용 '이미지 맥가이버 칼'입니다. 약 200가지 포맷을 여는 파일·이미지 브라우저, 슬라이드 쇼, 편집기, 일괄 변환기입니다. 브라우저에서 QuickTime 호환 동영상과 오디오도 재생하고, 폭넓은 메타데이터를 다루며, 중복 찾기, 평면 보기, Spotlight 검색을 제공합니다.",
+   "wins": [
+    "오래된 포맷과 과학용 포맷을 포함해 약 200가지 포맷 열기, 약 80가지로 내보내기",
+    "완전한 이미지 편집기와 액션을 쓰는 강력한 일괄 변환",
+    "깊이 있는 메타데이터 편집(EXIF/IPTC/XMP, 얼굴, GPS 지도)",
+    "풍부한 슬라이드 쇼 옵션(전환 효과, 무작위, 메타데이터, 재생 중 정렬)",
+    "목록, Cover Flow, 썸네일 보기, 모든 하위 폴더 평면 보기",
+    "중복 찾기, 밀착 인화, 웹 갤러리",
+    "사용자 지정 단축키, 14개 언어, 라이트/다크 설정"
+   ],
+   "price": "$39.95 / €34.95 일회성 구매(업그레이드 $25.95, 가족용 $59.95), Mac App Store $34.99, 셰어웨어 체험판",
+   "version": "12.5.4 (12.6 베타 중)",
+   "updated": "2026-08-27 (Mac App Store 12.5.4, 12.6 베타 빌드 7423은 2026-11-12)",
+   "platforms": "macOS",
+   "notes": {
+    "languages_20": "14개 언어",
+    "recursive_search": "Spotlight로 모든 하위 폴더 검색(Spotlight가 꺼진 많은 네트워크 공유에서는 안 됨)",
+    "regex_search": "'찾기로 슬라이드 쇼'와 이름 변경 대화상자에서만 정규식",
+    "slideshow_recursive": "하위 폴더 포함 가능, 동영상 재생 여부는 언급 없음",
+    "auto_enhance_view": "자동 레벨과 자동 향상은 화면이 아니라 이미지를 바꿈",
+    "wrong_extension_note": "선택한 파일의 확장자를 확인하고 고치는 명령, 볼 때 알림은 없음",
+    "playlist": "슬라이드 쇼 목록 팔레트, 동영상 재생 목록 아님",
+    "saved_playlists": "슬라이드 쇼 프리셋과 저장된 검색, 재생 목록 아님",
+    "music_mode": "브라우저 오른쪽 패널에서 MP3와 M4A 재생",
+    "archives_as_folders": "RAR 속 이미지 열기 가능, ZIP/7z를 폴더처럼 탐색은 언급 없음",
+    "library_catalog": "파일 메타데이터에 별점, 레이블, 태그, 얼굴, 중복 찾기, 중앙 데이터베이스 없음",
+    "cloud_sync": "FTP 업로드와 웹 갤러리, 클라우드 폴더는 해당 앱으로",
+    "shortcut_cheatsheet": "PDF 설명서에 단축키 표",
+    "app_sandbox": "Mac App Store판은 샌드박스(제한 있음), 직접 다운로드판은 아님"
+   }
+  },
+  "hamana": {
+   "name": "Hamana",
+   "vendor": "miyano",
+   "summary": "DirectX 가속 일본산 이미지 뷰어로, 압축 파일 보기(zip/cbz, 7z, rar/cbr, cab, lzh), 두 장 보기, 슬라이드 쇼 효과, 강력한 키 사용자 지정을 갖췄습니다. 화면 보호기로도 실행됩니다. 2006년 이후 변경이 없으며, 다운로드는 아직 제작자 사이트에 있습니다.",
+   "wins": [
+    "GPU 화면 필터(톤 커브, 선명하게)와 3D 회전",
+    "슬라이드 쇼 전환 효과",
+    "화면 보호기 모드",
+    "Ghostscript를 통한 PDF"
+   ],
+   "price": "무료",
+   "version": "1.48",
+   "updated": "2006-06-19",
+   "platforms": "Windows"
+  },
+  "honeyview": {
+   "name": "꿀뷰",
+   "vendor": "Bandisoft",
+   "summary": "가볍고 빠른 프리웨어 이미지 뷰어로, 오랫동안 한국에서 만화 보기의 기본 프로그램이었습니다(Honeyview). ZIP/RAR/7Z 속 이미지를 풀지 않고 보여 주며, 두 쪽 보기, GPS가 포함된 EXIF를 지원합니다. 개발 종료: 더 이상 업데이트가 없으며, 반디소프트는 반디뷰를 권합니다.",
+   "wins": [
+    "오래된 Windows(XP부터 11, 32비트)에서도 아주 가볍고 빠름",
+    "스마트 두 쪽 보기, 오른쪽에서 왼쪽 만화 모드",
+    "더 많은 압축 포맷(LZH, TAR)과 BPG"
+   ],
+   "price": "무료(프리웨어)",
+   "version": "5.53",
+   "updated": "2024-06-21",
+   "platforms": "Windows"
+  },
+  "iina": {
+   "name": "IINA",
+   "vendor": "IINA 프로젝트",
+   "summary": "IINA는 mpv 기반의 무료 오픈 소스 macOS 동영상 플레이어로, 현대적인 Mac 인터페이스를 갖췄습니다. 감상에 강합니다: 자막(온라인 검색 포함), PIP, 음악 모드, 재생 목록, 탐색 썸네일, 플러그인.",
+   "wins": [
+    "완전한 재생 기능: 챕터, 프레임 단위 이동, A-B 반복, PIP, 음악 모드",
+    "온라인 자막 검색과 똑똑한 로컬 자막 매칭",
+    "플러그인, mpv 설정과 스크립트, 브라우저 확장 프로그램",
+    "macOS 12와 Intel Mac 지원",
+    "탐색 막대 썸네일, 재생 기록과 이어 보기"
+   ],
+   "price": "무료",
+   "version": "1.5.1",
+   "updated": "2026-11-06",
+   "platforms": "macOS",
+   "notes": {
+    "folder_browsing": "폴더를 열거나 끌어다 놓으면 재생 가능한 파일을 모두(하위 폴더 포함) 재생 목록에 추가, 파일 브라우저 없음",
+    "recursive_search": "재생 기록 검색만, 파일 검색 없음",
+    "img_animated": "GIF는 동영상으로 재생, APNG/애니메이션 WebP 없음",
+    "auto_enhance_view": "동영상 이퀄라이저와 필터, 자동 향상 없음",
+    "file_info_exif": "속성 윈도우: 코덱, 비트레이트, 트랙, EXIF 없음",
+    "split_archives": "mpv는 분할 RAR을 읽지만 IINA에서 제공하지 않음",
+    "videos_in_archives": "파일 > 열기로 ZIP/RAR 속 미디어를 mpv로 재생 가능, 문서화되지 않음",
+    "rename_trash": "'현재 파일 삭제'로 재생 중인 파일을 휴지통으로, 이름 변경/새로운 폴더 없음",
+    "shortcut_cheatsheet": "설정 > 키 바인딩에 목록, 인쇄 불가",
+    "notarized_attested": "1.0.5부터 공증, 빌드 증명 없음"
+   }
+  },
+  "imageglass": {
+   "name": "ImageGlass",
+   "vendor": "Duong Dieu Phap",
+   "summary": "빠른 오픈 소스 이미지 뷰어로, v10에서 .NET/Avalonia 기반으로 새로 만들어져 Windows, macOS(Apple 실리콘), Linux에서 실행됩니다. 폭넓은 포맷(RAW, JXL, HEIC, AVIF, HDR, 네이티브 SVG 포함 90가지 이상), 똑똑한 캐싱, 테마, 사용자 지정 단축키, 코덱 플러그인을 갖췄습니다. 갤러리 띠가 있는 단일 이미지 뷰어로, 폴더 브라우저가 아니며 동영상은 재생하지 않습니다.",
+   "wins": [
+    "하나의 코드로 Windows, macOS, Linux에서 실행",
+    "AVIF, JPEG XL, HDR, EXR의 HDR 톤 매핑",
+    "애니메이션 SVG 네이티브 렌더링",
+    "추가 포맷용 코덱 플러그인 SDK",
+    "자르기, 크기 조절, 색상 추출 도구 내장",
+    "테마와 사용자 지정 레이아웃",
+    "무료판에서도 사용자 지정 단축키"
+   ],
+   "price": "Classic 무료, Pro Individual $14.90 일회성, Pro Team $69 일회성(사용자 3명), Pro Business는 수량별(25명 연 $290부터)",
+   "version": "10.0.6.906",
+   "updated": "2026-09-05",
+   "platforms": "Windows, macOS, Linux",
+   "notes": {
+    "free": "Classic은 무료(GPLv3), Pro $14.90 일회성에 HDR 톤 매핑 등 추가",
+    "dark_light_setting": "시스템을 따르며, 다크와 라이트 테마를 각각 지정 가능",
+    "folder_browsing": "연 파일의 폴더를 넘겨 봄, 폴더 트리와 하위 폴더 없음",
+    "thumbnail_grid": "현재 폴더 이미지의 갤러리(띠 또는 열), 폴더 타일 없음",
+    "network_shares_fast": "별도 스레드 디코딩과 미리 읽기 캐시, 네트워크 공유 관련 언급 없음",
+    "img_svg_pdf": "애니메이션 SVG를 포함한 네이티브 SVG/SVGZ, PDF 없음",
+    "slideshow_recursive": "하위 폴더 이미지 불러오기 가능, 이미지만, 동영상 없음",
+    "file_info_exif": "EXIF는 별도 도구 ExifGlass로, 동영상 정보 없음",
+    "rename_trash": "표시된 이미지 삭제/휴지통(확인 후), 새로운 폴더 없음",
+    "move_copy": "파일을 클립보드로 복사나 잘라내기(macOS는 잘라내기 없음)",
+    "keyboard_first": "메뉴 명령에 단축키, 그러나 도구 막대/마우스 중심 UI",
+    "notarized_attested": "DMG는 Developer ID 서명과 공증, 빌드 증명 없음"
+   }
+  },
+  "imagine": {
+   "name": "Imagine",
+   "vendor": "Sejin Chun",
+   "summary": "아주 작고 빠른 한국산 프리웨어 Windows 이미지·애니메이션 뷰어로, 썸네일 브라우저, 엄청난 포맷 목록(JXL, AVIF, HEIF, CLIP, KRA, 다양한 RAW 포함), 압축 파일 탐색, 일괄 변환/이름 변경, 간단한 그리기, 애니메이션 편집기를 갖췄습니다. Total Commander 플러그인으로도 작동합니다.",
+   "wins": [
+    "KRA, ORA, CLIP, DICOM, HDR 포맷을 포함한 엄청난 포맷 목록",
+    "편집, 애니메이션 제작, 일괄 이름 변경 내장",
+    "Total Commander Lister/Packer/Content 플러그인",
+    "Windows 95부터 Windows 11 ARM64까지 어디서나 실행"
+   ],
+   "price": "무료(기부웨어, $20 이상 기부하면 개인 라이선스 코드)",
+   "version": "2.8.1",
+   "updated": "2026-11-14",
+   "platforms": "Windows"
+  },
+  "infuse": {
+   "name": "Infuse",
+   "vendor": "Firecore",
+   "summary": "동영상 폴더, NAS 공유, Plex/Emby/Jellyfin, 클라우드 드라이브를 포스터와 메타데이터가 있는 보관함으로 바꿔 주는 미디어 센터형 플레이어입니다. Apple 기기 전반에서 진행 상황을 동기화하며 영화와 시리즈를 보는 데 아주 좋습니다.",
+   "wins": [
+    "TMDB 아트워크와 메타데이터가 있는 영화/시리즈 보관함",
+    "NAS, 미디어 서버, 클라우드 서비스에서 스트리밍",
+    "iPhone, iPad, Apple TV, Mac, Vision Pro 간 진행 상황 동기화",
+    "OpenSubtitles 다운로드, Trakt 동기화, AirPlay와 Google Cast",
+    "디스크 이미지(ISO, VIDEO_TS, BDMV)"
+   ],
+   "price": "무료, Infuse Pro 월 $1.99, 연 $16.99 또는 평생 $99.99",
+   "version": "8.5.10",
+   "updated": "2026-11-09",
+   "platforms": "macOS, iOS, iPadOS, tvOS, visionOS",
+   "notes": {
+    "free": "기본 기능 무료, Infuse Pro 월 $1.99, 연 $16.99 또는 평생 $99.99",
+    "no_account_no_tracking": "계정 불필요(Trakt는 선택), 광고 없음, 개인정보 표시: 사용자와 연결되지 않은 진단 정보",
+    "thumbnail_grid": "폴더와 보관함 속 동영상의 포스터 타일, 사진 없음",
+    "list_view": "폴더 보기에 정렬 버튼, 열은 언급 없음",
+    "recursive_search": "스캔한 보관함의 제목 검색, 파일 이름 검색 아님",
+    "zoom_rotate": "동영상 확대 옵션 8가지, 회전 없음",
+    "file_info_exif": "동영상 정보(코덱, 해상도, 오디오 포맷), EXIF 없음",
+    "streaming_urls": "M3U/M3U8 재생 목록과 미디어 서버, Pro는 예고편 스트리밍",
+    "rename_trash": "'파일 관리' 설정으로 원격 동영상 삭제 가능, 이름 변경 없음",
+    "move_copy": "네트워크 기기의 동영상을 Mac으로 다운로드",
+    "keyboard_first": "재생 단축키, 키보드로 보관함 탐색은 제한적",
+    "shortcut_cheatsheet": "지원 문서에 단축키 목록",
+    "notarized_attested": "App Store 빌드, 비공개 소스"
+   }
+  },
+  "irfanview": {
+   "name": "IrfanView",
+   "vendor": "Irfan Skiljan",
+   "summary": "IrfanView는 1996년부터 이어져 온 아주 작고 빠른 Windows 이미지 뷰어로, 플러그인으로 엄청나게 많은 포맷을 읽습니다. 보기 외에도 일괄 변환, 간단한 편집, 스캔, 인쇄, 슬라이드 쇼를 하며, 모두 수많은 단축키로 조작합니다.",
+   "wins": [
+    "희귀하고 오래된 포맷을 포함한 방대한 포맷 목록",
+    "일괄 변환과 일괄 이름 변경",
+    "이미지 편집, 페인트 플러그인, 효과, Photoshop 8BF 필터",
+    "스캔, 인쇄, OCR 플러그인",
+    "이름뿐 아니라 EXIF/IPTC와 텍스트로 검색",
+    "슬라이드 쇼를 EXE, 화면 보호기, MP4로 저장",
+    "아주 오래된 Windows와 USB 메모리에서도 실행"
+   ],
+   "price": "개인·비상업·교육용 무료, 상업용 라이선스 US$18 / EUR 15(영구)",
+   "version": "4.76",
+   "updated": "2026-09-18",
+   "platforms": "Windows"
+  },
+  "isee-pro": {
+   "name": "iSee Pro",
+   "vendor": "Dummy Apps",
+   "summary": "iSee Pro는 폴더와 하위 폴더의 모든 이미지를 미리 불러와 빠르게 넘겨 보게 해 주는 작은 Mac App Store 이미지 브라우저입니다. 목록, 썸네일, 원본 크기 보기, 이름/크기/날짜 검색, EXIF 오버레이, 돋보기가 있으며, ZIP/RAR 아카이브를 열고 암호를 기억합니다. macOS 12 이상 필요.",
+   "wins": [
+    "아주 저렴하고($0.99 Pro) 작음(4.4MB)",
+    "아카이브 암호 기억",
+    "이미지 크기와 Draw Things 매개변수로 검색",
+    "라이브 배경화면/데스크톱 기능"
+   ],
+   "price": "무료, 앱 내 구입: Pro $0.99",
+   "version": "11.5",
+   "updated": "2025-05-30",
+   "platforms": "macOS",
+   "notes": {
+    "free": "무료, 'Pro 버전' 앱 내 구입 $0.99(이미지 50장 제한을 푼다는 리뷰)",
+    "thumbnail_grid": "썸네일 보기, 폴더 미리보기는 언급 없음",
+    "network_shares_fast": "NAS/원격 서버에서 사용 가능, 속도는 언급 없음",
+    "img_modern_formats": "11.0부터 WebP, 사용자 지정 확장자 가능, HEIC/AVIF/JXL은 언급 없음",
+    "img_raw": "언급 없음, 확장자를 추가하면 macOS가 디코딩",
+    "img_psd_exr": "언급 없음, 확장자를 추가하면 macOS가 디코딩",
+    "slideshow_recursive": "모든 하위 폴더를 불러옴, 이미지만(동영상 없음)",
+    "file_info_exif": "EXIF 오버레이(Cmd+I), 이미지만",
+    "archives_as_folders": "ZIP과 RAR 열기(풀어서), 7z는 언급 없음",
+    "rename_trash": "이름 변경(목록에서 Enter), 삭제, 새로운 폴더는 언급 없음",
+    "move_copy": "이미지를 폴더로 끌어 저장, 이동/복사 명령은 없음",
+    "library_catalog": "이미지 표시만, 데이터베이스 없음",
+    "keyboard_first": "단축키가 풍부하지만 마우스만으로 쓰도록 설계",
+    "notarized_attested": "Apple 심사를 거친 MAS 빌드, 공개 소스 없음"
+   }
+  },
+  "jpegview": {
+   "name": "JPEGView",
+   "vendor": "sylikc와 David Kleiner",
+   "summary": "최소한의 전체 화면 GUI, 실시간 이미지 보정(자동 대비, 국소 밀도, 선명하게), 편집 가능한 KeyMap으로 키보드 조작을 하는 가볍고 아주 빠른 Windows 이미지 뷰어입니다. 최신 포맷과 RAW를 지원합니다. 썸네일, 동영상, 파일 브라우저는 없으며, 포크는 2023년 이후 새 릴리스가 없습니다.",
+   "wins": [
+    "보는 동안 실시간 자동 색상, 대비, 국소 밀도 보정",
+    "아주 작고 설치 없이 실행",
+    "KeyMap.txt로 모든 키 재지정",
+    "JPEG 무손실 자르기/회전",
+    "이미지 시리즈를 지정한 프레임 속도로 동영상처럼 재생"
+   ],
+   "price": "무료",
+   "version": "1.3.46",
+   "updated": "2023-10-07 (마지막 릴리스, 마지막 커밋 2024-07-06)",
+   "platforms": "Windows"
+  },
+  "kmplayer": {
+   "name": "KMPlayer",
+   "vendor": "PandoraTV",
+   "summary": "KMPlayer는 코덱 내장, 4K/8K 재생, 3D와 360° VR, URL/YouTube 재생과 다운로드, 그리고 거의 모든 키에 기능이 있는 키보드 배치를 갖춘 오래된 무료 Windows 미디어 플레이어입니다. 64X판은 광고가 없고 32비트판은 광고가 있습니다. 제작사에 따르면 현재 macOS 데스크톱 앱은 없습니다.",
+   "wins": [
+    "3D와 360° VR을 포함한 매우 폭넓은 코덱과 포맷 지원",
+    "URL과 YouTube 재생과 다운로드",
+    "세밀한 키보드 조작, 전역 단축키, 보스 키(Esc)",
+    "이퀄라이저 프리셋, 동영상/오디오 캡처, GIF 캡처",
+    "스킨과 색상 테마, 42개 언어"
+   ],
+   "price": "무료, KMPlayer 64X는 광고 없음, KMPlayer 32비트는 광고 포함, Android 앱에는 Premium 업그레이드",
+   "version": "KMPlayer 64X 2026.10.27.9, KMPlayer (32비트) 4.2.3.38",
+   "updated": "2026-10-28",
+   "platforms": "Windows, Android, iOS, iPadOS"
+  },
+  "kodi": {
+   "name": "Kodi",
+   "vendor": "Kodi 재단",
+   "summary": "TV와 리모컨을 위한 10피트 인터페이스의 무료 오픈 소스 미디어 센터입니다. 대규모 동영상·음악 보관함을 관리하고, 로컬과 네트워크 폴더를 탐색하며, 슬라이드 쇼로 사진도 보여 줍니다.",
+   "wins": [
+    "리모컨으로 조작하는 TV용 미디어 센터, 포스터와 메타데이터가 있는 보관함",
+    "음악 보관함과 플레이어",
+    "스트리밍·자막 애드온, PVR/실시간 TV",
+    "애드온으로 RAR 암호와 분할 RAR",
+    "TV 박스, Android, Linux, Raspberry Pi에서 실행"
+   ],
+   "price": "무료",
+   "version": "21.3 Omega (22.0 Piers RC2는 2026-11-10)",
+   "updated": "2025-10-31",
+   "platforms": "macOS, Windows, Linux, Android, iOS/tvOS, LibreELEC",
+   "notes": {
+    "network_shares_fast": "네트워크 소스도 로컬처럼, 처음 볼 때 썸네일을 캐시해 다음부터 빠름",
+    "img_modern_formats": "WebP와 AVIF 내장, HEIC는 애드온, JPEG XL은 목록에 없음",
+    "img_raw": "'imagedecoder.raw' 애드온으로",
+    "auto_enhance_view": "동영상 OSD에서 밝기/대비, 사진용은 없음",
+    "online_subtitles": "설정에서 고른 자막 서비스 애드온으로",
+    "comics_cbz_cbr": "CBZ/CBR을 사진 폴더로 탐색, 읽기 모드 없음",
+    "archive_passwords": "RAR만(암호를 묻거나 저장된 암호 시도)",
+    "split_archives": "vfs.rar로 분할 RAR(.partN.rar)",
+    "rename_trash": "파일 관리자에서 이름 변경, 삭제(휴지통 없음), 폴더 만들기",
+    "dual_pane": "파일 관리자에 두 패널이 나란히, F5/F6 키 없음",
+    "cloud_sync": "자체 클라우드 없음, MySQL/MariaDB 서버로 보관함과 시청 상태 공유",
+    "shortcut_cheatsheet": "위키 페이지에 기본 키 전체 목록",
+    "notarized_attested": "macOS 패키지에 공증 스크립트, 빌드 증명 없음"
+   }
+  },
+  "leeyes": {
+   "name": "Leeyes",
+   "vendor": "Kenji (けんじ)",
+   "summary": "스캔한 만화를 두 쪽으로 읽기 위해 만든 3분할(폴더 트리, 파일 목록, 이미지) 일본산 뷰어로, 즐겨 찾는 폴더용 책장이 있습니다. BMP를 제외한 모든 포맷은 Susie 플러그인으로 읽습니다. 마지막 릴리스는 2011년이며, 제작자 사이트는 접속되지 않고 보관된 사본만 남아 있습니다.",
+   "wins": [
+    "책장 목록을 텍스트로 내보내고 가져오기",
+    "스캔한 책에 맞춘 두 쪽 보기"
+   ],
+   "price": "비상업적 사용은 무료",
+   "version": "2.6.1",
+   "updated": "2011-10-26",
+   "platforms": "Windows"
+  },
+  "lyn": {
+   "name": "Lyn",
+   "vendor": "Mirko Viviani",
+   "summary": "폴더 사이드바, 지오태그 지도, 비파괴 편집, Flickr, Dropbox, SmugMug 공유를 갖춘, 사진가와 디자이너를 위한 오래된 경량 이미지 브라우저입니다. 직접 판매하며 macOS 10.13까지 지원합니다.",
+   "wins": [
+    "지도에서 지오태그",
+    "비파괴 색상 편집",
+    "사진/Aperture/Lightroom 보관함 열기",
+    "Flickr, Dropbox, SmugMug로 공유",
+    "오래된 macOS(10.13 이상)에서 실행"
+   ],
+   "price": "26 € / $29.99 일회성 구매, 15개월 업데이트 포함, 15일 체험판",
+   "version": "2.4.10",
+   "updated": "2026-07-09",
+   "platforms": "macOS",
+   "notes": {
+    "languages_20": "영어와 프랑스어, 중국어, 전체 목록은 공개되지 않음",
+    "recursive_search": "검색 범위가 있는 스마트 폴더, 단순한 하위 폴더 이름 검색은 없음",
+    "bookmarks": "사이드바 항목과 스마트 폴더",
+    "img_psd_exr": "OpenEXR은 지원, PSD는 macOS ImageIO를 통해서만",
+    "img_animated": "애니메이션 WebP와 브라우저 속 애니메이션 이미지, APNG는 언급 없음",
+    "video_skim_arrows": "스페이스 바, J/K/L",
+    "playback_speed": "J/L로 되감기와 빨리 감기",
+    "library_catalog": "키워드, IPTC, 색상 태그, 스마트 폴더, 자체 카탈로그 없음"
+   }
+  },
+  "mangameeya": {
+   "name": "MangaMeeya",
+   "vendor": "",
+   "summary": "오랫동안 Windows에서 가장 유명했던 만화 뷰어입니다. ZIP/RAR 만화책을 중첩된 아카이브까지 열며, 두 쪽 보기, 썸네일, 탭, 사용자 지정 키를 갖췄습니다. 개발이 끝나 공식 다운로드는 없고, 사본과 경량판 MangaMeeyaCE가 미러 사이트에 돌아다닙니다.",
+   "wins": [
+    "오랜 사용자에게 익숙한 만화 보기 방식",
+    "탭, 그리고 모니터 두 대에 걸친 분할 윈도우"
+   ],
+   "price": "무료",
+   "version": "AlternativeTo 기준 2.4 (개발 종료)",
+   "updated": "2006-06 (AlternativeTo 기준)",
+   "platforms": "Windows"
+  },
+  "marta": {
+   "name": "Marta",
+   "vendor": "Yan Zhulanow",
+   "summary": "Swift로 작성된 네이티브 키보드 중심 이중 패널 파일 관리자로, 텍스트 DSL로 설정하고 Lua 플러그인으로 확장합니다. 많은 압축 포맷을 폴더처럼 열고, 파일은 훑어보기로 미리 봅니다.",
+   "wins": [
+    "Lua 플러그인 API와 텍스트 기반 설정",
+    "커맨더식 F 키 작업 방식과 동작 패널",
+    "중첩 아카이브 포함 아카이브 지원, ZIP 읽기/쓰기",
+    "폴더가 동기화되는 내장 터미널, 디스크 사용량 분석",
+    "풍부한 Spotlight 조건을 쓰는 Look Up"
+   ],
+   "price": "베타 기간 무료, 베타 후 유료 라이선스 예정($15 이상 Patreon 후원자는 영구 라이선스)",
+   "version": "0.8.2",
+   "updated": "2024-08-03",
+   "platforms": "macOS",
+   "notes": {
+    "free": "베타 기간 무료, 유료 라이선스 예고",
+    "regex_search": "현재 목록에서 정규식으로 빠른 선택/검색, Look Up은 조건식",
+    "img_modern_formats": "훑어보기 미리보기(스페이스 바)만, 자체 뷰어나 플레이어 없음",
+    "img_raw": "미리보기는 macOS 훑어보기(스페이스 바), 자체 뷰어 없음",
+    "img_psd_exr": "미리보기는 macOS 훑어보기(스페이스 바), 자체 뷰어 없음",
+    "img_svg_pdf": "미리보기는 macOS 훑어보기(스페이스 바), 자체 뷰어 없음",
+    "img_animated": "미리보기는 macOS 훑어보기(스페이스 바), 자체 뷰어 없음",
+    "zoom_rotate": "훑어보기 확대만, 전체 화면 미리보기는 요청 중",
+    "video_native": "훑어보기가 MP4/MOV 재생",
+    "video_mkv_avi_webm": "macOS 훑어보기가 재생하는 것만",
+    "music_mode": "훑어보기로 오디오 파일 하나 재생, 폴더 단위 플레이어 없음",
+    "archives_as_folders": "ZIP 읽기/쓰기, TAR, 7Z, ISO 등은 읽기 전용, RAR은 제한적(RAR5 없음)",
+    "comics_cbz_cbr": "만화책 뷰어 없음, 설정에서 ZIP 확장자(예: cbz) 추가 가능",
+    "shortcut_cheatsheet": "문서에 기본 단축키 목록, 인쇄용 없음"
+   }
+  },
+  "massigra": {
+   "name": "MassiGra",
+   "vendor": "Toshi Fuku",
+   "summary": "폴더를 넘겨 보는 작고 빠른 일본산 단일 윈도우 이미지 뷰어로, 만화 모드와 간단한 편집을 갖췄습니다. 내장 포맷은 BMP, GIF, JPEG, PNG이고, 압축 파일을 포함한 나머지는 Susie 플러그인으로 읽습니다. Vector의 그래픽 뷰어 다운로드 순위에서 5년 연속 1위를 했지만 2013년 이후 변경이 없습니다.",
+   "wins": [
+    "아주 작고 오래된 하드웨어에서도 가벼움",
+    "간단한 이미지 편집과 저장(레벨, 색상, 자르기, 크기 조절)",
+    "키 하나로 미리 정한 폴더에 이동/복사",
+    "오랜 일본 Windows 사용자에게 익숙함"
+   ],
+   "price": "무료",
+   "version": "0.45",
+   "updated": "2013-04-23",
+   "platforms": "Windows"
+  },
+  "mcomix": {
+   "name": "MComix",
+   "vendor": "MComix 개발자들",
+   "summary": "MComix는 Comix에서 갈라져 나온 Linux와 Windows용 GTK 만화·이미지 뷰어로, 사용자 지정 폭이 넓습니다. CBR/CBZ/CB7/CBT/LHA와 PDF를 읽고, 두 쪽 보기와 만화 모드, 이미지 향상, 슬라이드 쇼, 선택형 보관함을 갖췄습니다.",
+   "wins": [
+    "두 쪽 보기와 만화 모드",
+    "이미지 향상(밝기, 대비, 선명도, 자동 대비)",
+    "편집 가능한 키보드 단축키",
+    "아카이브 편집기와 컬렉션이 있는 선택형 보관함",
+    "25개 인터페이스 언어",
+    "Linux와 Windows판"
+   ],
+   "price": "무료",
+   "version": "3.2.0",
+   "updated": "2026-08-20",
+   "platforms": "Linux, Windows"
+  },
+  "mediaone": {
+   "name": "MediaOne",
+   "vendor": "MediaArt Studio",
+   "summary": "MediaOne(옛 이름 ImageOne)은 가져오기 없이 폴더와 즐겨찾기에서 사진, 동영상, 오디오를 다루는 Mac App Store 미디어 브라우저입니다. 여러 썸네일 레이아웃, 드라이브 전체 검색, 별점과 태그, 비교 보기, 동영상 다듬기, GIF 내보내기, 일괄 변환을 제공합니다. macOS 12.4 이상 필요.",
+   "wins": [
+    "마우스를 올리면 재생되는 미리보기와 동영상 훑기",
+    "별점, 태그, 스마트 필터, 사진 지도",
+    "동영상 다듬기, 프레임 저장, 동영상을 GIF로, 이미지/동영상 일괄 변환",
+    "오디오 파일 재생",
+    "스마트 검색을 저장하는 드라이브 전체 검색"
+   ],
+   "price": "무료, 앱 내 구입: ImageOne $6.99",
+   "version": "5.4.1",
+   "updated": "2026-08-23",
+   "platforms": "macOS",
+   "notes": {
+    "free": "무료 다운로드와 앱 내 구입 'ImageOne' $6.99, 무엇이 풀리는지는 스토어에 없음",
+    "list_view": "목록 보기 있음, 열 옵션은 언급 없음",
+    "img_modern_formats": "WebP 지원, HEIC/AVIF/JXL은 목록에 없음",
+    "slideshow_recursive": "'모든 하위 폴더 보기'로 사진과 동영상을 모음, 슬라이드 쇼는 언급 없음",
+    "file_info_exif": "이미지 EXIF, 코덱/비트레이트는 언급 없음",
+    "video_skim_arrows": "Option+화살표로 프레임 이동, 마우스를 올려 훑기",
+    "dual_pane": "미디어 비교용 2열 비교 보기, F5/F6식 파일 패널 없음",
+    "image_editing": "회전/뒤집기, 동영상 다듬기, 프레임 저장, 동영상을 GIF로",
+    "batch_convert": "이미지와 동영상 일괄 변환, 일괄 이름 변경은 언급 없음",
+    "library_catalog": "파일에 별점과 태그, 스마트 필터, 지도, 가져오기 데이터베이스 없음",
+    "keyboard_first": "화살표/스페이스/Option 키 지원, 마우스 중심(올려서 재생)",
+    "notarized_attested": "Apple 심사를 거친 MAS 빌드, 공개 소스 없음"
+   }
+  },
+  "meitu-kankan": {
+   "name": "美图看看",
+   "vendor": "Meitu",
+   "summary": "Meitu가 만든 작고 빠른 무료 이미지 뷰어로, 2010년대 초 중국 Windows PC에서 아주 인기가 많았습니다. 폴더 즐겨찾기, 하위 폴더의 모든 이미지 보기, 중국 SNS로 한 번에 공유하는 기능이 있습니다. 더 이상 개발되지 않지만(마지막 릴리스 2.7.8) 다운로드는 여전히 제공됩니다.",
+   "wins": [
+    "아주 작고 오래된 PC에서도 가벼움",
+    "모든 하위 폴더의 이미지를 한 번에 보기(穿透文件夹)",
+    "CMYK PSD를 Photoshop과 똑같이 표시"
+   ],
+   "price": "무료",
+   "version": "2.7.8",
+   "updated": "2014-11-25 (사이트), Tencent 스토어의 파일 날짜는 2019-05-08",
+   "platforms": "Windows, Android"
+  },
+  "microsoft-photos": {
+   "name": "Microsoft 사진",
+   "vendor": "Microsoft",
+   "summary": "Windows에 기본으로 들어 있는 사진·동영상 앱입니다. PC 폴더, OneDrive, iCloud를 아우르는 갤러리 타임라인, 폴더를 넘겨 보는 빠른 뷰어, AI 도구가 있는 편집기를 갖췄습니다. 가볍게 둘러보고 빠르게 편집하기에 좋으며, 사진 레거시에는 예전 동영상 편집기와 슬라이드 쇼 제작 기능이 남아 있습니다. 아카이브와 파일 관리 기능은 없습니다.",
+   "wins": [
+    "모든 Windows PC에 기본 설치",
+    "OneDrive와 iCloud 사진을 한 갤러리에",
+    "AI 편집: 개체 지우기, 조명 다시 설정, Copilot+ PC의 초고해상도",
+    "인물, 앨범, 순간, 자연어 검색",
+    "배경 음악이 있는 슬라이드 쇼",
+    "여러 장 비교 보기"
+   ],
+   "price": "Windows에 포함, 무료(HEVC 비디오 확장 $0.99)",
+   "version": "2026.11090.22001 (2026년 10월부터 새 갤러리/편집기/뷰어 배포 중)",
+   "updated": "2026-10-06",
+   "platforms": "Windows"
+  },
+  "movist-pro": {
+   "name": "Movist Pro",
+   "vendor": "Movist",
+   "summary": "영화와 시리즈 감상을 위한 세련된 유료 동영상 플레이어로, 강력한 자막 기능(여러 자막 트랙 동시 표시, 언어별 스타일), HDR/Dolby Vision 톤 매핑, 모든 포맷의 AirPlay를 갖췄습니다. Pro에는 네트워크 서버, YouTube와 웹 미디어, PIP가 추가됩니다.",
+   "wins": [
+    "고급 자막 스타일과 이중 자막",
+    "HDR과 Dolby Vision 톤 매핑",
+    "Apple TV가 기본으로 재생하지 못하는 포맷도 AirPlay",
+    "네트워크 서버(SMB, SFTP, FTP, WebDAV), YouTube, PIP(Pro)",
+    "재생 목록 저장, 오디오 이퀄라이저"
+   ],
+   "price": "Movist Pro $17.99 일회성 구매(직접 판매), Movist $9.99(Mac App Store), Setapp 구독에 Movist Pro 포함",
+   "version": "2.21.1 (직접 판매), Mac App Store의 Movist 2.20.0",
+   "updated": "2026-10-17 (App Store 2.20.0), 2.21.1은 그 이후, 날짜 표시 없음",
+   "platforms": "macOS",
+   "notes": {
+    "languages_20": "6개: 영어, 일본어, 한국어, 러시아어, 중국어 간체와 번체",
+    "folder_browsing": "폴더로 재생 목록 채우기, Pro는 네트워크 공유(SMB, SFTP, FTP, WebDAV) 탐색",
+    "network_shares_fast": "Pro는 SMB, SFTP, FTP, WebDAV 서버에서 바로 재생",
+    "zoom_rotate": "동영상만: 확대, 회전, 뒤집기",
+    "auto_enhance_view": "동영상만: Core Image 필터",
+    "file_info_exif": "트랙/코덱 정보 속성 윈도우, EXIF 없음",
+    "pip": "Movist Pro 전용",
+    "music_mode": "이퀄라이저로 음악 파일 재생, 보관함 없음",
+    "streaming_urls": "Pro 전용: URL 열기, YouTube/Twitch와 웹 미디어, 브라우저 확장",
+    "rename_trash": "파일 메뉴에서 현재 파일 삭제, 이름 변경/새로운 폴더 없음",
+    "keyboard_first": "재생 단축키 사용자 지정 가능, 파일 탐색 없음",
+    "app_sandbox": "App Store의 Movist는 샌드박스, Pro는 폴더 접근 권한이 필요 없다고 홍보",
+    "mac_app_store": "더 작은 'Movist'($9.99)만, Pro는 직접 판매와 Setapp"
+   }
+  },
+  "mpc-be": {
+   "name": "MPC-BE",
+   "vendor": "Aleksoid1978와 기여자들",
+   "summary": "Media Player Classic에서 갈라져 나온 Windows 동영상 플레이어로, 자체 디코더, 다크 테마, 잦은 릴리스가 특징입니다. 로컬 동영상 파일과 yt-dlp를 통한 YouTube 재생에 좋습니다.",
+   "wins": [
+    "자주 업데이트되는 가벼운 Windows 플레이어",
+    "다크 테마, 다양한 렌더러와 디코더 옵션",
+    "자막 다운로드, yt-dlp 스트리밍",
+    "보스 키, 키 설정 가능"
+   ],
+   "price": "무료",
+   "version": "1.9.3",
+   "updated": "2026-11-05",
+   "platforms": "Windows"
+  },
+  "mpc-hc": {
+   "name": "MPC-HC",
+   "vendor": "clsid2와 기여자들",
+   "summary": "LAV Filters 내장, 다양한 렌더러, 폭넓게 설정할 수 있는 키를 갖춘 가볍고 고전적인 Windows 동영상 플레이어입니다. 단순한 인터페이스와 적은 부담으로 인기가 많으며, 이미지는 이 프로그램의 일이 아닙니다.",
+   "wins": [
+    "아주 가볍고 빨리 시작됨",
+    "고급 사용자를 위한 렌더러와 셰이더(madVR, MPC VR)",
+    "자막 검색과 다운로드, yt-dlp 스트리밍",
+    "보스 키, 프레임 단위 이동, 다양한 키 설정"
+   ],
+   "price": "무료",
+   "version": "2.8.5",
+   "updated": "2026-11-06",
+   "platforms": "Windows"
+  },
+  "mpv": {
+   "name": "mpv",
+   "vendor": "mpv 프로젝트",
+   "summary": "mpv는 최고 품질의 렌더링과 매우 폭넓은 포맷 지원을 갖춘 미니멀한 스크립트형 명령줄 미디어 플레이어입니다. 텍스트 파일과 Lua/JS 스크립트로 설정하며, 화면에는 작은 컨트롤러만 있습니다.",
+   "wins": [
+    "최고 수준의 동영상 렌더링(gpu-next, HDR, Dolby Vision)",
+    "mpv.conf, input.conf, 스크립트로 극도로 세밀한 설정",
+    "ZIP/RAR/7z와 분할 RAR에서 미디어를 바로 재생",
+    "크로스 플랫폼(macOS, Windows, Linux)",
+    "yt-dlp로 스트림과 YouTube, DVD/Blu-ray 메뉴"
+   ],
+   "price": "무료",
+   "version": "0.42.0",
+   "updated": "2026-11-05",
+   "platforms": "macOS, Windows, Linux, BSD, Android(mpv-android)",
+   "notes": {
+    "dark_light_setting": "제목 막대만 옵션으로 바꿀 수 있음, UI 테마 없음",
+    "folder_browsing": "폴더를 열면 재생 목록이 됨(하위 폴더도), 파일 브라우저 없음",
+    "img_psd_exr": "EXR과 PSD를 열지만 폴더에서 자동으로 고르지는 않음",
+    "img_svg_pdf": "SVG는 librsvg가 있는 FFmpeg 필요, PDF 없음",
+    "auto_enhance_view": "1~8 키로 대비, 밝기, 감마, 채도 변경, 자동 향상 없음",
+    "file_info_exif": "통계 오버레이(i/I): 코덱, 비트레이트, EXIF 없음",
+    "saved_playlists": "m3u/pls/cue/edl 불러오기, 저장 명령은 없음",
+    "archives_as_folders": "ZIP, RAR, 7z(CBZ/CBR도)를 미디어 재생 목록으로 열기, 탐색 가능한 폴더는 아님",
+    "comics_cbz_cbr": "CBZ/CBR을 이미지 재생 목록으로, 읽기 모드 없음",
+    "batch_convert": "명령줄 인코딩 모드(--o), 일괄 이름 변경 없음",
+    "shortcut_cheatsheet": "?로 통계 오버레이에 키 목록, 기본값은 input.conf 문서에",
+    "no_network": "업데이트 확인과 원격 측정 없음, 직접 연 URL에는 접속(웹 페이지는 yt-dlp)"
+   }
+  },
+  "neeview": {
+   "name": "NeeView",
+   "vendor": "neelabo",
+   "summary": "폴더와 아카이브를 책으로, 이미지를 페이지로 다루는 책 스타일의 Windows 뷰어입니다. 설정 폭이 매우 넓어, 모든 동작이 자체 키, 마우스 제스처, 스크립트를 가진 명령이며, 책장, 책갈피, 재생 목록, 두 쪽 만화 보기도 있습니다. 동영상은 Windows나 설치된 VLC로 재생합니다.",
+   "wins": [
+    "극도로 깊은 사용자 지정: 명령, 제스처, JavaScript 스크립트",
+    "오른쪽에서 왼쪽 읽기와 페이지 분할이 되는 두 쪽 보기",
+    "중첩 아카이브와 아카이브 암호(7z.dll)",
+    "재생 목록 저장, 날짜/크기/정규식 조건이 있는 기록과 검색",
+    "이미지 효과 패널, 인쇄, ZIP/폴더로 내보내기",
+    "Microsoft Store판과 포터블 ZIP"
+   ],
+   "price": "무료",
+   "version": "46.3",
+   "updated": "2026-08-09",
+   "platforms": "Windows"
+  },
+  "nomacs": {
+   "name": "nomacs",
+   "vendor": "nomacs 팀",
+   "summary": "nomacs('Image Lounge')는 RAW와 PSD 지원, 메타데이터 패널, 이미지 조정, 일괄 처리를 갖춘 무료 오픈 소스 이미지 뷰어입니다. 여러 인스턴스를 동기화해 이미지를 나란히 비교하는 기능이 특징입니다. Apple 실리콘과 Intel용 최신 macOS 빌드가 있지만 공증되지 않았습니다.",
+   "wins": [
+    "일괄 처리와 간단한 이미지 편집",
+    "여러 윈도우를 동기화해 이미지 비교",
+    "메타데이터 패널, 히스토그램, 별점",
+    "플러그인(그리기, 합성, 변형)",
+    "Windows, Linux, FreeBSD, Haiku에서 실행"
+   ],
+   "price": "무료",
+   "version": "3.22.5 (베타 3.23.4)",
+   "updated": "2026-11-05",
+   "platforms": "macOS, Windows, Linux, FreeBSD, Haiku",
+   "notes": {
+    "thumbnail_grid": "현재 폴더의 썸네일 띠와 격자, 폴더 미리보기 없음",
+    "list_view": "파일 탐색기 패널에 열이 있는 트리/목록, 메인 보기는 아님",
+    "recursive_search": "불러온 파일 목록 검색, '하위 폴더 스캔'을 켜면 하위 폴더 포함",
+    "img_svg_pdf": "SVG는 지원, PDF 없음",
+    "slideshow_recursive": "폴더와 하위 폴더의 이미지를 차례로, 동영상 없음",
+    "auto_enhance_view": "이미지 조정 패널, 보기 전용이 아니라 저장 가능한 편집",
+    "archives_as_folders": "ZIP(과 CBZ)만, macOS 전체 빌드에서, RAR/7z 없음",
+    "comics_cbz_cbr": "CBZ는 지원, CBR은 미지원",
+    "dual_pane": "이미지 비교용으로 동기화된 여러 인스턴스, 이중 패널 파일 관리자 없음",
+    "library_catalog": "별점을 메타데이터에 기록, 카탈로그 데이터베이스 없음",
+    "notarized_attested": "공개 GitHub Actions에서 빌드하지만 임시 서명만, 공증 없음"
+   }
+  },
+  "norton-commander": {
+   "name": "Norton Commander",
+   "vendor": "Symantec",
+   "summary": "MS-DOS용 원조 이중 패널 파일 관리자(1986년부터 1998년)로, Total Commander, Midnight Commander 등 수많은 프로그램이 따라 한 F3 보기, F5 복사, F6 이동 배치를 확립했습니다. 향수 때문에 지금도 많이 검색되지만, 오늘날에는 DOS나 에뮬레이터에서만 실행됩니다.",
+   "wins": [
+    "이중 패널, F 키 작업 방식을 정의함",
+    "텍스트 모드에서 아주 작고 빠름",
+    "폴더 동기화, 결과를 패널에 보여 주는 파일 찾기"
+   ],
+   "price": "판매 종료, 당시 상용(NC 3.0 $149, NC 4.0 권장 소비자가 $99)",
+   "version": "5.51 (DOS)",
+   "updated": "1998-07-01",
+   "platforms": "MS-DOS, Windows(NC for Windows 2.01), OS/2"
+  },
+  "nplayer": {
+   "name": "nPlayer",
+   "vendor": "Newin",
+   "summary": "인기 iOS 플레이어 nPlayer의 유료 Mac판입니다. 거의 모든 동영상, 오디오, 자막 포맷을 재생하고 SMB, NFS, WebDAV, FTP, UPnP, 클라우드 서비스에서 스트리밍하며, 강력한 자막 스타일, 구간 반복, PIP를 갖췄습니다. Mac판 업데이트는 드뭅니다.",
+   "wins": [
+    "네트워크 프로토콜(SMB, NFS, SFTP, WebDAV, UPnP)",
+    "고급 자막(스타일, 싱크, SMI, SUP)",
+    "A-B 구간 반복, 어학용 '듣기 연습'",
+    "PIP, 재생 속도",
+    "오디오 이퀄라이저와 싱크"
+   ],
+   "price": "$9.99 일회성 구매(Mac)",
+   "version": "1.5.0",
+   "updated": "2025-02-14",
+   "platforms": "macOS, iOS, iPadOS, Android, tvOS",
+   "notes": {
+    "dark_light_setting": "1.4.0부터 '플레이어 테마', 시스템과 별개 설정 여부는 알 수 없음",
+    "languages_20": "App Store 기준 9개",
+    "folder_browsing": "네트워크 소스(SMB, FTP, WebDAV, UPnP, 클라우드) 탐색, 로컬 파일은 Finder에서 열기",
+    "thumbnail_grid": "동영상 썸네일 생성, 레이아웃은 언급 없음",
+    "network_shares_fast": "WebDAV, FTP, SFTP, HTTP, SMB/CIFS, NFS, UPnP/DLNA, 속도는 알 수 없음",
+    "zoom_rotate": "동영상 90/180/270도 회전, 뒤집기",
+    "auto_enhance_view": "동영상 밝기와 채도",
+    "saved_playlists": "재생 목록 파일 열기, 직접 저장은 언급 없음",
+    "library_catalog": "TMDb 메타데이터",
+    "cloud_sync": "Box, Dropbox, OneDrive에서 스트리밍, 동기화 없음",
+    "notarized_attested": "App Store 서명, 비공개 소스"
+   }
+  },
+  "omniplayer": {
+   "name": "OmniPlayer",
+   "vendor": "Oka Apps",
+   "summary": "MKV, AVI, WMV 등 대부분의 포맷을 재생하는 Mac App Store 미디어 플레이어로, 자막 검색, 재생 속도, 오디오 이퀄라이저, DLNA·Chromecast·Roku 캐스팅을 갖췄습니다. 재생 목록이 있는, 파일 하나를 보는 단순한 플레이어입니다.",
+   "wins": [
+    "온라인 자막 검색",
+    "0.1배까지 느린 재생, 프레임 단위 이동",
+    "TV로 캐스팅(DLNA, Chromecast, Roku)",
+    "YouTube/Vimeo URL, SMB/FTP 소스",
+    "오디오 이퀄라이저, 음악 재생",
+    "화면 조정과 GIF 내보내기"
+   ],
+   "price": "무료, VIP: 평생 $9.99, 연 $6.99, 월 $3.99, OmniPlayer Pro $8.99 일회성",
+   "version": "2.1.22",
+   "updated": "2026-06-18",
+   "platforms": "macOS",
+   "notes": {
+    "free": "무료, VIP는 월 $3.99 또는 평생 $9.99, VIP 전용 기능은 공개되지 않음",
+    "languages_20": "App Store 기준 7개, 제작사 페이지는 11개",
+    "folder_browsing": "끌어다 놓은 폴더가 재생 목록이 됨(폴더 모드), 폴더 브라우저 없음",
+    "recursive_search": "재생 목록 안에서 검색, 여러 단계 폴더를 끌어다 놓기 가능",
+    "network_shares_fast": "SMB/FTP 서버와 Alist에서 재생, 큰 폴더 속도는 알 수 없음",
+    "zoom_rotate": "동영상 회전, 화면비, 윈도우 크기, 이미지 없음",
+    "auto_enhance_view": "동영상만 밝기/대비/채도",
+    "file_info_exif": "미디어 정보 상자(코덱), EXIF 없음",
+    "saved_playlists": "재생 목록 자동 유지, 종료 시 지우기 옵션, 이름 붙인 재생 목록 없음",
+    "keyboard_first": "재생, 속도(Cmd+[ / Cmd+]), 자막 단축키",
+    "notarized_attested": "App Store 서명, 비공개 소스"
+   }
+  },
+  "opencomic": {
+   "name": "OpenComic",
+   "vendor": "ollm",
+   "summary": "OpenComic은 탭, 여러 윈도우, OPDS와 서버 연결을 갖춘 크로스 플랫폼 오픈 소스 만화·전자책 뷰어입니다. 만화와 웹툰 모드, 이미지 조정, AI 업스케일링 도구를 제공합니다.",
+   "wins": [
+    "EPUB, MOBI, SVG, JPEG XL, ACE/LZH 아카이브를 포함한 다양한 포맷",
+    "만화, 웹툰, 두 쪽 보기, 가이드 보기",
+    "SMB/FTP/SFTP/WebDAV/S3 직접 연결과 OPDS",
+    "AI 업스케일링, 망점 제거, 노이즈 제거",
+    "탭과 여러 윈도우, 사용자 지정 단축키와 게임패드"
+   ],
+   "price": "무료(GitHub), Mac App Store $4.99",
+   "version": "2.0.0 (GitHub), Mac App Store 1.6.11",
+   "updated": "2026-11-14",
+   "platforms": "macOS, Windows, Linux",
+   "notes": {
+    "network_shares_fast": "SMB, FTP, SFTP, WebDAV, S3 직접 연결, 폴더 파일 목록 캐시",
+    "bookmarks": "페이지 책갈피, 즐겨찾기와 사용자 레이블",
+    "img_modern_formats": "WebP, AVIF, JPEG XL, HEIC는 다시 빠짐",
+    "zoom_rotate": "확대와 돋보기, 회전은 언급 없음",
+    "music_mode": "읽는 동안 배경 음악과 효과음, 음악 플레이어 없음",
+    "rename_trash": "휴지통으로 이동과 영구 삭제, 이름 변경 없음",
+    "cloud_sync": "서버 연결과 OPDS, 자체 클라우드 동기화 없음",
+    "app_sandbox": "Mac App Store판은 샌드박스, GitHub DMG는 아님",
+    "notarized_attested": "Mac DMG/PKG는 로컬 빌드 후 공증, CI 빌드 증명 없음"
+   }
+  },
+  "panels": {
+   "name": "Panels",
+   "vendor": "Produkt Studio",
+   "summary": "Panels는 iPhone, iPad, Mac용 세련된 만화책 뷰어로, 표지 보관함, 읽기 프리셋, 칸 단위 보기, Komga/Kavita용 OPDS 지원을 갖췄습니다. 클라우드 보관함, 페이지 필터, 텍스트 인식 같은 고급 기능은 Premium이 필요합니다.",
+   "wins": [
+    "Mac, iPhone, iPad 간 보관함과 진행 상황 동기화",
+    "OPDS 스트리밍(Komga, Kavita, Calibre)",
+    "칸 단위 가이드 보기, 읽기 프리셋",
+    "라이브 텍스트와 피사체 인식",
+    "앱 안의 DRM 없는 만화 스토어"
+   ],
+   "price": "무료 다운로드, Premium은 Panels+ 구독(월간/연간) 또는 Panels 3 일회성 구매(EUR 22.99 일회성 / 연 EUR 11.99, 2025년 5월 기준)",
+   "version": "3.13.11",
+   "updated": "2026-11-11",
+   "platforms": "macOS, iOS, iPadOS",
+   "notes": {
+    "free": "기본 뷰어는 무료, Premium은 구독 또는 일회성 구매(EUR 22.99)",
+    "no_account_no_tracking": "로컬 파일은 계정 불필요, App Store 표시: 사용 데이터, 진단, 식별자",
+    "languages_20": "12개 언어(그중 8개는 기계 번역), macOS 앱별 언어로 설정",
+    "folder_browsing": "보관함은 추가한 일반 폴더, 외장 디스크와 iCloud는 Premium",
+    "list_view": "보관함을 격자나 목록으로(Cmd-1 / Cmd-2), 열은 언급 없음",
+    "network_shares_fast": "SMB 가져오기와 OPDS 스트리밍(Premium), 만화 수천 권 처리",
+    "bookmarks": "즐겨 찾는 보관함 위치(Premium), 즐겨찾기, 이어 읽기",
+    "img_svg_pdf": "PDF는 지원, SVG 미지원",
+    "zoom_rotate": "확대, 맞추기/채우기, 회전은 언급 없음",
+    "auto_enhance_view": "페이지 필터(노이즈, 선명도, 무아레, 테두리)는 Premium",
+    "file_info_exif": "만화책 정보 보기(Cmd+I), EXIF 없음",
+    "archives_as_folders": "아카이브를 폴더가 아니라 만화책으로 열기",
+    "rename_trash": "보관함 안에서 이름 변경과 삭제",
+    "move_copy": "보관함 안에서 복사, 이동, 붙여넣기",
+    "keyboard_first": "뷰어와 보관함에 단축키 많음",
+    "notarized_attested": "Mac App Store 서명, 비공개 소스"
+   }
+  },
+  "path-finder": {
+   "name": "Path Finder",
+   "vendor": "Cocoatech",
+   "summary": "이중 패널, 모듈(미리보기, 정보, 터미널, Drop Stack), 용량 브라우저, 일괄 이름 변경, 폴더 동기화를 갖춘 오래된 Finder 대체 앱입니다. Finder 같은 브라우저 주변에 많은 도구를 원하는 고급 사용자에게 좋습니다.",
+   "wins": [
+    "모듈: 미리보기, 정보, 터미널, Drop Stack, Git, 16진수/텍스트 편집기",
+    "용량 브라우저와 폴더 동기화/병합",
+    "일괄 이름 변경, 안전한 삭제, 관리자 권한 접근",
+    "20개 인터페이스 언어",
+    "책갈피 막대, 탭 프리셋"
+   ],
+   "price": "구독 연 $29.95 또는 월 $2.95, 또는 라이선스 키 $32.95(1년 업데이트), $55.95(2년), $122.95(5년)부터, 30일 체험판",
+   "version": "26.1.10",
+   "updated": "2026-10-22",
+   "platforms": "macOS",
+   "notes": {
+    "no_account_no_tracking": "사용 데이터 없음, 구독은 로그인과 온라인 확인 필요",
+    "thumbnail_grid": "이미지용 아이콘 보기, 폴더 미리보기 없음",
+    "regex_search": "이름 '패턴 일치'(와일드카드), 정규식은 언급 없음",
+    "network_shares_fast": "네트워크 볼륨의 미리보기 성능 개선, 전반적 속도 언급 없음",
+    "img_modern_formats": "미리보기 모듈/훑어보기로 macOS 코덱 사용, 전용 뷰어 없음",
+    "img_raw": "macOS를 통해, 26.1.8에서 ARW 미리보기 추가",
+    "img_animated": "훑어보기 윈도우에서 애니메이션 GIF 재생, APNG와 WebP는 언급 없음",
+    "zoom_rotate": "훑어보기 확대만",
+    "slideshow": "자체 슬라이드 쇼 없음, macOS 훑어보기로 선택 항목을 슬라이드 쇼",
+    "file_info_exif": "정보 패널에 크기, 재생 시간, macOS 메타데이터, 코덱/비트레이트는 언급 없음",
+    "video_mkv_avi_webm": "WebM 미리보기 추가, MKV/AVI는 언급 없음",
+    "music_mode": "미리보기/훑어보기에서만 오디오 재생",
+    "archive_passwords": "암호 걸린 ZIP(AES-128/256) 만들기와 풀기",
+    "dual_pane": "이중 패널, 복사/이동은 ⌘C/⌘V/⌘X나 드래그, 기본 F5/F6 없음(지정 가능)",
+    "batch_convert": "일괄 이름 변경, 이미지 변환 없음",
+    "library_catalog": "Finder 태그와 색상 레이블만",
+    "cloud_sync": "Dropbox 연동, Cloud Uploader, iCloud Drive",
+    "keyboard_first": "단축키는 많지만 마우스 중심의 Finder식 UI",
+    "shortcut_cheatsheet": "지원 문서에 주요 기본값, 인쇄용 없음"
+   }
+  },
+  "phiewer": {
+   "name": "Phiewer",
+   "vendor": "Thomas Zinnbauer",
+   "summary": "사진, RAW, 동영상, 오디오 폴더를 위한 빠르고 키보드 친화적인 미디어 뷰어입니다. PRO에는 Showcases(가상 앨범), 중복 찾기, 비교 보기, 비파괴 편집, Finder 태그, 사용자 지정 단축키가 저렴한 일회성 가격으로 추가됩니다.",
+   "wins": [
+    "중복 찾기와 최대 9장 비교 보기",
+    "Showcases: 여러 폴더에 걸친 가상 앨범 저장",
+    "Finder 태그와 설명, 태그/EXIF/날짜로 검색",
+    "오디오 파일과 인쇄",
+    "PRO의 이미지 편집(자르기, 필터, 크기 조절)",
+    "극장 모드"
+   ],
+   "price": "Phiewer(lite) 무료, Phiewer PRO $7.99 일회성 구매(Mac App Store)",
+   "version": "8",
+   "updated": "2026-11-07",
+   "platforms": "macOS",
+   "notes": {
+    "free": "lite는 무료(탐색, 모든 포맷, 간단한 슬라이드 쇼, EXIF), 나머지는 PRO $7.99 일회성",
+    "no_account_no_tracking": "계정과 광고 없음, App Store 표시: 분석(사용자와 연결되지 않음)",
+    "languages_20": "8개: 영어, 독일어, 프랑스어, 스페인어, 포르투갈어, 이탈리아어, 네덜란드어, 폴란드어",
+    "recursive_search": "이름, 태그, 설명, 날짜, EXIF(PRO), 보기에 하위 폴더 포함 가능",
+    "img_modern_formats": "HEIC, AVIF, WebP는 지원, JPEG XL은 목록에 없음",
+    "img_animated": "GIF와 애니메이션 WebP, APNG는 목록에 없음",
+    "slideshow_recursive": "PRO 전용, 하위 폴더와 전체 무작위, 동영상도 재생(자동 음소거 옵션)",
+    "auto_enhance_view": "PRO: 실행 취소가 되는 필터와 조정(편집), 보기 전용 자동 향상 없음",
+    "file_info_exif": "EXIF와 파일 정보, 코덱/비트레이트는 목록에 없음",
+    "wrong_extension_note": "확장자가 틀린 이미지를 인식해 열지만 알려 주지는 않음",
+    "video_mkv_avi_webm": "AVI, MPG, 3GP, MTS, M2TS, TS, MKV·WebM·WMV·FLV는 현재 목록에 없음",
+    "video_skim_arrows": "건너뛰기 간격 설정(PRO), 화살표 키로 훑기는 언급 없음",
+    "playback_speed": "PRO 동영상 컨트롤",
+    "playlist": "PRO Showcases: 여러 폴더에 걸친 '재생 목록 같은' 가상 모음",
+    "saved_playlists": "PRO Showcases는 저장됨",
+    "undo_file_actions": "드래그 이동은 ⌘Z로 취소, 이름 변경/휴지통은 언급 없음",
+    "image_editing": "PRO: QuickEdit 자르기, 회전, 뒤집기, 크기 조절, 압축, 필터",
+    "batch_convert": "PRO: 여러 개 내보내기와 일괄 압축, 일괄 이름 변경은 언급 없음",
+    "library_catalog": "Finder 태그와 설명, 즐겨찾기, Showcases, 카탈로그 없음",
+    "cloud_sync": "PRO: macOS 공유 시트로 공유, 동기화 없음",
+    "custom_shortcuts": "PRO 전용",
+    "shortcut_cheatsheet": "설정 > 키보드 단축키에 전체 목록, 인쇄용 없음"
+   }
+  },
+  "photo-mechanic": {
+   "name": "Photo Mechanic",
+   "vendor": "Camera Bits",
+   "summary": "Photo Mechanic은 현업 사진가, 특히 보도, 스포츠, 웨딩 사진가를 위한 빠른 가져오기·선별·메타데이터 도구입니다. 폴더와 메모리 카드를 바로 열고, RAW 파일을 내장 미리보기로 즉시 보여 주며, 마감에 쫓기는 캡션, IPTC 메타데이터, 키워드, 일괄 이름 변경, 업로드에 탁월합니다.",
+   "wins": [
+    "여러 메모리 카드에서 동시에 가져오며, 복사하면서 이름 변경과 메타데이터 입력",
+    "마감용 캡션을 위한 IPTC/XMP 메타데이터, 코드 치환, 변수, 구조화된 키워드",
+    "별점, 색상 등급, 태그로 수천 장의 RAW를 빠르게 선별",
+    "일괄 이름 변경, 다른 이름으로 저장/크기 조절/워터마크, FTP, Dropbox, S3, PhotoShelter 등으로 바로 업로드",
+    "파일 이름과 메타데이터 전체에서 정규식 찾기와 바꾸기",
+    "프리셋이 있는 완전한 단축키 사용자 지정, 인쇄용 단축키 PDF",
+    "같은 기능의 Windows판"
+   ],
+   "price": "Photo Mechanic: 월 $14.99, 연 $149, 또는 영구 $299(1년 업데이트), 30일 무료 체험. Photo Mechanic Plus(카탈로그 등급, 월 $24.99, 연 $249, 영구 $399)는 2026년 2월 27일부터 신규 판매 중단, 스토어 페이지에는 아직 표시됨.",
+   "version": "2026.6 (build 9175), Camera Bits 블로그에 발표된 최신판",
+   "updated": "2026-06-18",
+   "platforms": "macOS, Windows",
+   "notes": {
+    "no_account_no_tracking": "광고 없음, 라이선스는 온라인 활성화 후 가끔 확인",
+    "dark_light_setting": "메시지와 대화상자에 라이트/다크 테마, 미리보기 배경 설정 가능",
+    "thumbnail_grid": "밀착 인화 썸네일 격자, 폴더는 탐색 트리에만",
+    "recursive_search": "'폴더와 하위 폴더 열기'로 한 밀착 인화에, 이후 이름이나 IPTC로 찾기",
+    "img_psd_exr": "PSD(최대 호환성으로 저장한 것)는 지원, OpenEXR은 목록에 없음",
+    "zoom_rotate": "미리보기에서 확대와 이동, 회전은 EXIF 방향 값을 기록(보기 전용 아님)",
+    "slideshow_recursive": "'폴더와 하위 폴더'로 가능, 슬라이드 쇼 속 동영상은 언급 없음",
+    "video_mkv_avi_webm": "AVI는 지원, MKV, WebM, WMV, FLV는 목록에 없음",
+    "undo_file_actions": "macOS에서 실행 취소/복귀 '가능한 경우', 대상은 명시되지 않음",
+    "image_editing": "저장/내보내기 시 자르기, 회전, 크기 조절, 워터마크, 픽셀 편집 없음",
+    "library_catalog": "파일에 태그, 별점, 색상 등급, IPTC 키워드, 카탈로그는 판매 중단"
+   }
+  },
+  "picasa": {
+   "name": "Picasa",
+   "vendor": "Google",
+   "summary": "Google의 무료 사진 정리·보기 프로그램으로, 2016년 3월에 서비스가 끝났고 2018년부터 다운로드도 사라졌습니다. 폴더를 스캔해 태그, 얼굴, 앨범이 있는 보관함을 만들고, 간단한 비파괴 보정과 슬라이드 쇼를 제공했습니다. 단순하고 무료인 로컬 사진 뷰어를 원하는 사람들이 아직도 많이 검색합니다.",
+   "wins": [
+    "얼굴 인식, 태그, 앨범",
+    "클릭 한 번의 비파괴 보정",
+    "콜라주, 인쇄 레이아웃, 내보내기",
+    "오랜 사용자에게 익숙함"
+   ],
+   "price": "무료(개발 종료, 공식 다운로드 없음)",
+   "version": "3.9.141.259 (Windows) / 3.9.141.306",
+   "updated": "2015-10-09 (지원 종료 2016-03-15)",
+   "platforms": "Windows, macOS(Intel, 베타), Linux(Wine, 구버전)"
+  },
+  "picview": {
+   "name": "PicView",
+   "vendor": "Ruben Hyldgaard Negendahl",
+   "summary": "PicView는 Avalonia로 만든 빠른 무료 오픈 소스 Windows·macOS 이미지 뷰어입니다. Magick.NET으로 거의 모든 이미지 포맷을 읽고, 만화책과 아카이브를 열며, 갤러리, 탭, 자르기, 일괄 크기 조절, 이미지 정보 윈도우를 제공합니다. 키 배치를 포함해 사용자 지정 폭이 넓습니다.",
+   "wins": [
+    "매우 폭넓은 이미지 포맷 지원(Magick.NET)",
+    "자르기, 크기 조절, 변환, 일괄 크기 조절 내장",
+    "탭마다 기록이 있는 탭",
+    "이미지 두 장 나란히 보기",
+    "EXIF 별점과 키워드 편집",
+    "Windows에서도"
+   ],
+   "price": "무료",
+   "version": "5.2.2",
+   "updated": "2026-11-10",
+   "platforms": "macOS, Windows",
+   "notes": {
+    "folder_browsing": "파일을 열면 갤러리로 그 폴더를 넘겨 봄, 폴더 트리/브라우저 없음",
+    "thumbnail_grid": "현재 폴더의 하단 또는 전체 갤러리, 폴더 미리보기 없음",
+    "recursive_search": "Ctrl+F로 현재 폴더 검색, 하위 폴더 옵션 있음",
+    "network_shares_fast": "아주 큰 폴더에서 갤러리 숨기기 옵션, 네트워크 전용 처리 없음",
+    "bookmarks": "단축키 슬롯이 있는 파일 즐겨찾기와 파일 기록, 폴더 책갈피는 확인되지 않음",
+    "img_svg_pdf": "SVG는 지원, PDF는 목록에 없음",
+    "slideshow_recursive": "'하위 폴더 포함' 설정, 이미지만",
+    "auto_enhance_view": "화면에 효과(밝기, 대비, 필터), 저장 가능, 자동 향상 없음",
+    "manga_two_page": "이미지 두 장 나란히 보기, 오른쪽에서 왼쪽 순서 없음",
+    "move_copy": "경로 이름을 바꿔 이동, 파일 복사, 폴더로 끌어서 이동 없음",
+    "library_catalog": "EXIF 별점과 키워드 편집, 카탈로그 없음",
+    "shortcut_cheatsheet": "picview.org에 단축키 목록, 인쇄용 아님"
+   }
+  },
+  "pixea": {
+   "name": "Pixea",
+   "vendor": "ImageTasks",
+   "summary": "미니멀한 이미지·동영상 뷰어에서 마스크, 개체 지우기, 업스케일링을 갖춘 사진 편집기로 자랐습니다. 폴더, 사진 보관함, ZIP/CBZ 아카이브를 탐색하고, 자막과 오디오 트랙 선택이 되는 MKV를 재생합니다. 검색, 정렬, 사용자 지정 단축키는 Pixea Plus가 필요합니다.",
+   "wins": [
+    "강력한 이미지 편집기(마스크, 개체 지우기, 업스케일링, LUT)",
+    "일괄 편집과 변환",
+    "내장 자막, 오디오 트랙, 재생 속도",
+    "사진 보관함 열기",
+    "XMP 사이드카를 쓰는 태그와 별점",
+    "중복 검색"
+   ],
+   "price": "무료, Pixea Plus 평생 $19.99, 연 $14.99 또는 월 $1.99",
+   "version": "8.4.1",
+   "updated": "2026-10-27",
+   "platforms": "macOS",
+   "notes": {
+    "free": "기본 기능 무료, Pixea Plus 평생 $19.99, 연 $14.99 또는 월 $1.99",
+    "dark_light_setting": "Liquid Glass 또는 Classic 테마와 배경색, 라이트/다크 전환 없음",
+    "languages_20": "12개 언어(한국어 포함)",
+    "recursive_search": "검색은 Plus 전용, 하위 폴더 자동 스캔 깊이 1~5",
+    "network_shares_fast": "네트워크 볼륨에서 메타데이터 건너뛰기 옵션, 큰 폴더 속도 개선",
+    "img_psd_exr": "PSD는 지원, Radiance HDR은 있지만 OpenEXR은 없음",
+    "slideshow_recursive": "깊이 5까지 하위 폴더 포함 슬라이드 쇼, 무작위, 사진과 동영상 섞어서",
+    "auto_enhance_view": "비파괴 조정을 Pixea Image 포맷으로 저장, 보기 전용 자동 향상 없음",
+    "file_info_exif": "EXIF 정보 패널, 동영상 화면 표시(Plus), 코덱/비트레이트는 언급 없음",
+    "video_mkv_avi_webm": "MKV, AVI, WMV, FLV, VOB, RM 지원, WebM은 목록에 없음",
+    "video_skim_arrows": "10초/30초 건너뛰기, 화살표는 다음 미디어로",
+    "archives_as_folders": "ZIP만, RAR/7z는 목록에 없음",
+    "comics_cbz_cbr": "CBZ만",
+    "videos_in_archives": "검색이 ZIP 속 동영상도 찾음, ZIP에서 재생은 언급 없음",
+    "undo_file_actions": "실행 취소/복귀, 범위는 명시되지 않음",
+    "batch_convert": "무료는 이미지 3장, Plus는 무제한",
+    "cloud_sync": "공유 버튼, 동기화 없음",
+    "keyboard_first": "탐색, 확대, 별점 단축키",
+    "custom_shortcuts": "Plus 전용",
+    "shortcut_cheatsheet": "웹사이트에 짧은 키 목록",
+    "no_network": "데이터 수집 안 함, 요청 시 ML 모델 다운로드"
+   }
+  },
+  "potplayer": {
+   "name": "팟플레이어",
+   "vendor": "Kakao",
+   "summary": "팟플레이어는 카카오의 설정 폭이 매우 넓은 Windows 미디어 플레이어로, 코덱 내장, 하드웨어 디코딩, 3D/360° 출력, Whisper 음성 자막 생성을 포함한 자막 도구, 스트리밍을 갖췄습니다. 정지 이미지도 열고, ZIP/RAR 아카이브에서 미디어를 바로 재생합니다.",
+   "wins": [
+    "엄청나게 많은 설정, 렌더러, 필터(madVR, HDR 톤 매핑, 프레임 보간)",
+    "온라인 자막 다운로드, 자막 번역, 음성 자막 생성(Whisper)",
+    "스트리밍(YouTube, HLS/DASH), TV/DVD/Blu-ray, 3D와 360° VR",
+    "단축키와 스킨 완전 사용자 지정",
+    "앨범 아트, 가사, ReplayGain이 있는 음악 재생"
+   ],
+   "price": "무료(프리웨어)",
+   "version": "261021 (1.7.x 빌드, 2026년 10월 21일)",
+   "updated": "2026-10-21",
+   "platforms": "Windows"
+  },
+  "qspace": {
+   "name": "QSpace",
+   "vendor": "Tian Wenda",
+   "summary": "12가지 레이아웃, 작업 공간, 폭넓은 사용자 지정(단축키, 오른쪽 클릭 메뉴, 색상), 정규식 검색을 갖춘 Finder 스타일의 다중 패널 파일 관리자입니다. 유료 확장 기능으로 아카이브 탐색, 서버/클라우드 연결, 고급 일괄 이름 변경이 추가됩니다.",
+   "wins": [
+    "최대 12가지 패널 레이아웃과 작업 공간 저장",
+    "단축키, 오른쪽 클릭 메뉴, 도구 막대, 색상의 깊은 사용자 지정",
+    "폴더 동기화, 파일 해시, 파일 템플릿",
+    "빠른 이미지 동작(회전, 변환, 배경 제거)",
+    "동영상 메타데이터 열(프레임 속도, 데이터 속도)"
+   ],
+   "price": "일회성 구매: QSpace(MAS) $12.99, QSpace Pro(직접 판매) 할인가 $13.99(정가 $27.99/$29.99), 유료 확장: Stash Shelf, Advanced Batch Rename, Server Connections($0.99에서 $9.99), Enhanced Archiver(무료 프로모션, 정가 $4.99)",
+   "version": "Pro 7.0.4 (MAS 7.0.3, 베타 7.0.4.018)",
+   "updated": "2026-10-09",
+   "platforms": "macOS",
+   "notes": {
+    "no_account_no_tracking": "Pro 라이선스는 계정에 연결(기기 2대), App Store 표시: 사용자와 연결된 식별자",
+    "dark_light_setting": "라이트/다크 모드가 있는 색 구성(베타), 앱 별도 전환은 언급 없음",
+    "languages_20": "약 14개 언어(한국어 포함)",
+    "img_modern_formats": "macOS를 통한 미리보기, HEIC만 명시",
+    "zoom_rotate": "훑어보기 확대, 회전 동작은 파일을 바꿈",
+    "slideshow": "오른쪽 클릭 메뉴 'Instant SlideShow'(macOS 훑어보기 전체 화면)",
+    "video_mkv_avi_webm": "macOS 미디어 확장으로 MKV 등",
+    "music_mode": "오디오 표지 썸네일과 훑어보기 재생만",
+    "archives_as_folders": "Enhanced Archiver 확장(보통 $4.99): RAR, ZIP, 7z를 폴더처럼",
+    "comics_cbz_cbr": "만화책 뷰어 없음, 확장자 목록을 바꾸면 CBZ/CBR을 아카이브로 탐색 가능",
+    "videos_in_archives": "아카이브용 'QSpace에서 미리보기' 옵션, 플레이어 없음",
+    "dual_pane": "최대 12개 패널, 직접 지정한 단축키로 복사/이동, 기본 F5/F6 없음",
+    "image_editing": "빠른 동작: 회전, 이미지 변환, 배경 제거, PDF 만들기",
+    "batch_convert": "이미지 변환, Advanced Batch Rename은 유료 확장",
+    "library_catalog": "Finder 태그와 설명만",
+    "cloud_sync": "Server Connections 확장: FTP, SFTP, Dropbox, OneDrive, Google Drive, S3 …",
+    "app_sandbox": "MAS판은 샌드박스(폴더를 직접 추가), Pro판은 전체 디스크 접근 사용"
+   }
+  },
+  "quicktime-player": {
+   "name": "QuickTime Player",
+   "vendor": "Apple",
+   "summary": "Apple의 기본 미디어 플레이어입니다. AVFoundation이 재생할 수 있는 것(MP4, MOV, M4V, HEVC, ProRes)을 열며, PIP, 속도 조절, 다듬기와 분할 같은 간단한 편집, 화면과 오디오 녹화를 제공합니다.",
+   "wins": [
+    "이미 설치되어 있어 내려받을 것이 없음",
+    "화면, 동영상, 오디오 녹화",
+    "간단한 동영상 편집: 다듬기, 분할, 회전, 오디오 제거, 내보내기",
+    "PIP와 공간 동영상"
+   ],
+   "price": "무료(macOS에 포함)",
+   "version": "10.5 (macOS 27)",
+   "updated": "macOS 27과 함께 제공(2026)",
+   "platforms": "macOS",
+   "notes": {
+    "zoom_rotate": "동영상만, 회전과 뒤집기는 편집",
+    "file_info_exif": "동영상 속성: 포맷, 압축, 크기, fps, 데이터 속도, EXIF 없음",
+    "video_skim_arrows": "왼쪽/오른쪽으로 한 프레임씩, Option-화살표로 처음/끝, 시간 건너뛰기 없음",
+    "music_mode": "오디오 파일을 하나씩 재생, 보관함이나 대기열 없음",
+    "rename_trash": "열린 동영상 이름 변경, 휴지통이나 새로운 폴더 없음",
+    "undo_file_actions": "동영상 편집(다듬기, 분할) 실행 취소, 파일 작업은 아님",
+    "cloud_sync": "iCloud Drive의 파일 열기, 공유 메뉴",
+    "keyboard_first": "키보드로 재생, 파일 탐색 없음",
+    "shortcut_cheatsheet": "Apple 도움말 페이지에 단축키 목록",
+    "no_network": "인터넷에 접속할 수 있음(위치 열기, 공유), 자체 업데이트 확인이나 원격 측정 없음",
+    "notarized_attested": "Apple 서명 시스템 앱, 비공개 소스"
+   }
+  },
+  "quickviewer": {
+   "name": "QuickViewer",
+   "vendor": "KATO Kanryu",
+   "summary": "아카이브를 풀지 않고 읽고 두 쪽 보기를 지원하는 빠른 OpenGL 이미지·만화 뷰어입니다. 대규모 만화 모음을 위한 카탈로그 데이터베이스가 있습니다. 개발자가 병으로 2025년 11월에 프로젝트를 끝냈으며, 1.2.8은 UnRAR 보안 수정판이었습니다.",
+   "wins": [
+    "만화책 수천 권을 위한 카탈로그 데이터베이스",
+    "OpenGL로 아주 빠른 페이지 전환",
+    "tar.gz/bz2/xz와 cab을 포함한 폭넓은 아카이브 지원",
+    "CMYK JPEG을 올바르게 표시"
+   ],
+   "price": "무료",
+   "version": "1.2.8",
+   "updated": "2025-12-12",
+   "platforms": "Windows, macOS(Intel, 1.1.1까지), Linux(1.1.1까지)"
+  },
+  "qview": {
+   "name": "qView",
+   "vendor": "jurplel (Interverse)",
+   "summary": "qView는 도구 막대가 없는 미니멀한 크로스 플랫폼 이미지 뷰어입니다. 파일 하나를 열고 나머지 폴더를 넘겨 보게 해 줍니다. 빨리 시작되고, 이웃 이미지를 미리 불러오며, Qt 플러그인으로 애니메이션 이미지와 다양한 포맷을 지원합니다. 깔끔한 뷰어만 원하는 사람에게 좋은 선택입니다.",
+   "wins": [
+    "군더더기 없는 아주 미니멀한 윈도우",
+    "Windows와 Linux, 오래된 macOS(10.13 이상 레거시 빌드)에서도 실행",
+    "애니메이션 이미지 프레임 단위 이동과 속도 조절",
+    "URL에서 이미지를 바로 열기"
+   ],
+   "price": "무료",
+   "version": "7.1",
+   "updated": "2025-07-26 (릴리스, 나이틀리 빌드는 계속, 마지막 2026-11-04)",
+   "platforms": "macOS, Windows, Linux",
+   "notes": {
+    "dark_light_setting": "배경색과 어두운 제목 막대 설정 가능, 완전한 라이트/다크 테마 없음",
+    "folder_browsing": "파일을 열고 그 폴더를 넘겨 봄, 폴더 브라우저 없음",
+    "img_svg_pdf": "SVG는 지원, PDF 없음",
+    "file_info_exif": "정보 대화상자에 파일 크기와 해상도, EXIF 없음",
+    "wrong_extension_note": "옵션으로 내용에 따라 열지만 불일치를 알려 주지 않음",
+    "rename_trash": "이름 변경과 휴지통으로 삭제, 새로운 폴더 없음",
+    "undo_file_actions": "삭제 취소(휴지통에서 복원)만"
+   }
+  },
+  "raw-power": {
+   "name": "RAW Power",
+   "vendor": "Gentlemen Coders",
+   "summary": "RAW Power는 전 Aperture 책임 개발자가 만든 비파괴 RAW·JPEG 편집기로, Finder 폴더에서 단독으로, Apple 사진 보관함 관리자로, 또는 사진 편집 확장 프로그램으로 쓸 수 있습니다. Aperture 스타일 조정, iCloud 사진으로 동기화되는 별점/플래그, 일괄 내보내기를 제공합니다. 제작사는 macOS 13 이상 사용자에게 후속작 Nitro Photo를 권합니다.",
+   "wins": [
+    "강력한 비파괴 RAW/JPEG 편집(곡선, LUT, 심도 효과, Boost)",
+    "Apple 사진 보관함에서 바로 작업하고 iCloud 사진으로 동기화",
+    "일괄 프리셋과 내보내기",
+    "iPhone/iPad판",
+    "여러 폴더용 탭"
+   ],
+   "price": "Mac App Store $39.99 일회성 구매(제작사 사이트: Mac $49.99, iOS $9.99, 별도 구매)",
+   "version": "3.5.6",
+   "updated": "2026-07-27",
+   "platforms": "macOS, iOS, iPadOS",
+   "notes": {
+    "no_account_no_tracking": "계정과 광고 없음, 앱 개인정보 보호: 사용 데이터(분석, 사용자와 연결되지 않음)",
+    "languages_20": "6개: 영어, 프랑스어, 독일어, 스페인어, 중국어 간체와 번체",
+    "thumbnail_grid": "배지가 있는 썸네일 격자, 폴더 미리보기 타일은 언급 없음",
+    "rename_trash": "이미지 삭제와 앨범/폴더 만들기, 이름 변경은 언급 없음",
+    "move_copy": "사진 앨범 정리, 디스크의 파일 이동/복사는 없음",
+    "keyboard_first": "별점/플래그와 탐색 단축키, 편집은 슬라이더와 마우스로"
+   }
+  },
+  "sequential": {
+   "name": "Sequential",
+   "vendor": "chuchusoft와 The Sequential Project",
+   "summary": "Sequential은 폴더, PDF, 아카이브(ZIP/CBZ, RAR/CBR, 7z)를 열어 한 윈도우에서 넘겨 보는 고전적인 오픈 소스 Mac 이미지·만화 뷰어입니다. chuchusoft 포크가 Apple 실리콘의 macOS 11.4 이상용 유니버설 앱으로 현대화했으며, 관리자는 추가 개발 가능성이 낮다고 말합니다. 원래의 btrask/Sequential은 2013년에 마지막으로 업데이트되었습니다.",
+   "wins": [
+    "페이지 이동과 색상 반전 모드로 PDF를 페이지별로 읽기",
+    "만화용 오른쪽에서 왼쪽 읽기 방향",
+    "일시 정지/이어 보기로 아카이브 속 읽던 위치 저장",
+    "분할 7z를 포함해 XADMaster로 다양한 아카이브 포맷",
+    "오래된 macOS(Intel은 10.14, Apple 실리콘은 11.4)에서 실행"
+   ],
+   "price": "무료",
+   "version": "2.6.0",
+   "updated": "2024-09-07",
+   "platforms": "macOS",
+   "notes": {
+    "languages_20": "12개 UI 언어(한국어 없음)",
+    "thumbnail_grid": "사이드바의 썸네일, 격자 아님",
+    "recursive_search": "찾기로 열린 폴더나 아카이브 속 페이지 이름 검색",
+    "network_shares_fast": "마운트된 서버에서 작동, 전용 캐시 없음",
+    "bookmarks": "일시 정지/이어 보기로 문서 속 위치 저장, 폴더 즐겨찾기 없음",
+    "img_modern_formats": "HEIC/HEIF와 WebP 지원, AVIF와 JPEG XL 없음",
+    "img_svg_pdf": "PDF는 완전 지원, SVG는 macOS 렌더링에 따름",
+    "img_animated": "애니메이션 GIF(스페이스 바로 일시 정지), APNG/애니메이션 WebP는 언급 없음",
+    "slideshow_recursive": "타이머가 하위 폴더와 아카이브까지 전부 돌지만 이미지만(동영상 없음)",
+    "file_info_exif": "속성 윈도우에 EXIF/이미지 정보, 동영상 없음",
+    "streaming_urls": "스트림은 없지만 URL 열기로 인터넷 이미지 불러오기",
+    "split_archives": "2.4.0부터 분할 7-Zip(.7z.001), 분할 RAR/ZIP은 언급 없음",
+    "manga_two_page": "오른쪽에서 왼쪽 읽기 방향, 두 쪽 보기 없음",
+    "rename_trash": "로컬 이미지를 휴지통으로, 이름 변경이나 새로운 폴더 없음",
+    "move_copy": "이미지를 다른 곳에 저장(복사/추출), 편집 > 복사, 이동 없음",
+    "shortcut_cheatsheet": "도움말 > 키보드 단축키에 목록, 인쇄용 없음"
+   }
+  },
+  "simple-comic": {
+   "name": "Simple Comic",
+   "vendor": "Dancing Tortoise Software와 Simple Comic 커뮤니티",
+   "summary": "Simple Comic은 최소한의 조작으로 읽는 데 집중한 가볍고 네이티브한 macOS 만화책 뷰어입니다. CBZ/CBR/CB7, PDF, 이미지 폴더를 책으로 열며, 두 쪽 보기, 오른쪽에서 왼쪽 만화 순서, 만화 페이지의 라이브 텍스트를 지원합니다.",
+   "wins": [
+    "두 쪽 보기와 오른쪽에서 왼쪽 만화 모드",
+    "라이브 텍스트: 만화 페이지의 글자를 선택, 복사, 읽어 주기",
+    "분할 RAR과 중첩 아카이브를 만화책 하나로 열기",
+    "PDF 읽기",
+    "Finder에서 만화책 아카이브의 훑어보기 썸네일"
+   ],
+   "price": "무료(Mac App Store와 GitHub)",
+   "version": "1.12.0 (GitHub, App Store 제출됨), App Store는 1.11.0 표시",
+   "updated": "2026-11-11",
+   "platforms": "macOS",
+   "notes": {
+    "languages_20": "9개 언어(한국어 포함)",
+    "folder_browsing": "폴더나 아카이브를 책 한 권으로 열기, 폴더 탐색기 없음",
+    "thumbnail_grid": "열린 책 페이지의 썸네일만",
+    "network_shares_fast": "네트워크 볼륨의 아카이브를 백그라운드에서 로컬 캐시, 불러오는 동안 페이지 표시",
+    "img_raw": "모든 NSImage/ImageIO 형식(macOS의 카메라 RAW 포함), 홍보하지는 않음",
+    "img_psd_exr": "모든 NSImage/ImageIO 형식(PSD, OpenEXR 포함), 홍보하지는 않음",
+    "img_svg_pdf": "PDF는 지원(책으로 열기), SVG는 NSImage가 지원하는 경우만",
+    "archives_as_folders": "아카이브를 폴더가 아니라 만화책으로 열기",
+    "keyboard_first": "페이지 넘기기, 확대, 메뉴를 키보드로, 키보드로 파일 탐색은 없음",
+    "shortcut_cheatsheet": "도움말에 탐색 키 목록",
+    "no_network": "Mac App Store판은 네트워크 요청 없음, 직접 다운로드판은 Sparkle 업데이트용 접속",
+    "notarized_attested": "직접 다운로드판은 공증, 공개 빌드 증명 없음"
+   }
+  },
+  "smplayer": {
+   "name": "SMPlayer",
+   "vendor": "Ricardo Villalba",
+   "summary": "SMPlayer는 파일마다 설정을 기억하는 mpv와 MPlayer용 무료 오픈 소스 Qt 프런트엔드입니다. 스킨이 있는 고전적인 플레이어 UI, YouTube 재생, opensubtitles.org 다운로드, 필터, 단축키 편집기를 제공합니다.",
+   "wins": [
+    "모든 파일을 각자의 설정(오디오, 자막, 위치)으로 이어 보기",
+    "YouTube 재생과 온라인 자막 다운로드",
+    "재생 목록 저장, 즐겨찾기, TV/라디오 목록",
+    "스킨과 아이콘 테마, 30개 이상의 언어",
+    "Windows와 Linux에서도 실행"
+   ],
+   "price": "무료",
+   "version": "26.8.29 (macOS 빌드 10461, 2026-10-06)",
+   "updated": "2026-10-06",
+   "platforms": "Windows, Linux, macOS",
+   "notes": {
+    "dark_light_setting": "스킨, 아이콘 테마, Qt 스타일, 간단한 라이트/다크 전환 없음",
+    "folder_browsing": "폴더 열기로 재생 목록에 추가(하위 폴더 선택 가능), 파일 브라우저 없음",
+    "list_view": "열이 있는 재생 목록 표(이름, 재생 시간 …), 폴더 보기 아님",
+    "recursive_search": "재생 목록의 필터 필드만",
+    "multiple_windows": "기본은 단일 인스턴스, 끌 수 있음",
+    "bookmarks": "파일/URL 즐겨찾기와 동영상 속 책갈피, 폴더 책갈피 없음",
+    "auto_enhance_view": "동영상 이퀄라이저(Ctrl+E), 자동 향상 없음",
+    "file_info_exif": "파일 속성: 코덱, 비트레이트, 트랙, EXIF 없음",
+    "music_mode": "오디오 파일 재생, 축소 모드(Ctrl+C), 라디오 목록",
+    "shortcut_cheatsheet": "환경설정의 단축키 표를 .keys 파일로 저장, 인쇄용 없음"
+   }
+  },
+  "tencent-kantu": {
+   "name": "看图 Kantu",
+   "vendor": "Tencent",
+   "summary": "Tencent의 무료 Mac 이미지 브라우저 겸 정리 도구입니다. 다운로드 같은 폴더를 가져오기 없이 탐색하고, 휴대폰과 카메라에서 가져오며, 얼굴, 장소, 날짜로 묶고, 중복을 찾고, 선별 앨범을 만듭니다. 2019년 이후 업데이트가 없습니다.",
+   "wins": [
+    "얼굴 인식, 장소 지도, 중복 찾기, 선별 앨범",
+    "휴대폰, 카메라, PTP 기기에서 바로 가져오기",
+    "큰 파일을 위한 별점과 필터"
+   ],
+   "price": "무료",
+   "version": "2.5.2",
+   "updated": "2019-11-08",
+   "platforms": "macOS",
+   "notes": {
+    "no_account_no_tracking": "계정 불필요, 선택형 WeChat/QQ 로그인 시 앨범을 Tencent 클라우드에 업로드",
+    "dark_light_setting": "2.0부터 다크 모드, 시스템과 별개 설정은 언급 없음",
+    "thumbnail_grid": "사진 앱 같은 격자, 사이드바에 폴더별 이미지 수, 폴더 미리보기 없음",
+    "recursive_search": "파일 이름, 날짜, 장소, 장면으로 이미지 찾기",
+    "bookmarks": "사이드바에 직접 추가한 위치, 이미지 즐겨찾기",
+    "img_modern_formats": "1.9.4부터 WebP, HEIC, AVIF, JPEG XL은 언급 없음",
+    "img_psd_exr": "PSD 미리보기, EXR은 언급 없음",
+    "img_animated": "GIF 미리보기, APNG/애니메이션 WebP는 언급 없음",
+    "zoom_rotate": "휠/트랙패드로 확대(흐릿하다는 리뷰), 회전은 언급 없음",
+    "slideshow_recursive": "선별 앨범이 사진과 동영상을 이어서 재생, 하위 폴더 순회는 아님",
+    "file_info_exif": "EXIF 보기, 동영상 코덱 정보 없음",
+    "video_native": "동영상을 나열하고 필터하지만, 동영상마다 별도 플레이어가 열린다는 리뷰",
+    "rename_trash": "이름 변경, 최근 삭제된 항목이 있는 삭제, 새로운 폴더는 언급 없음",
+    "undo_file_actions": "삭제한 이미지는 최근 삭제된 항목에서 복원",
+    "image_editing": "편집 없음, 오른쪽 클릭으로 주석 달기",
+    "cloud_sync": "WeChat/QQ 로그인, 선별 앨범을 Tencent 클라우드에 업로드, WeChat 미니 프로그램으로 공유",
+    "notarized_attested": "Mac App Store 서명, 공개 소스 없음"
+   }
+  },
+  "total-commander": {
+   "name": "Total Commander",
+   "vendor": "Ghisler Software",
+   "summary": "1993년부터 개발된, Windows에서 가장 유명한 정통(이중 패널) 파일 관리자입니다. 파일 작업, 아카이브, FTP, 일괄 이름 변경, 폴더 동기화에 강하며, Lister 뷰어와 이미지·미디어용 플러그인이 있습니다.",
+   "wins": [
+    "성숙한 이중 패널 파일 관리: 폴더 동기화, 비교, 일괄 이름 변경, 체크섬",
+    "FTP/FTPS 클라이언트 내장",
+    "방대한 플러그인 생태계(Lister, 압축, 파일 시스템 플러그인)",
+    "Lister 플레이어로 자막/오디오 스트림과 속도 전환",
+    "Windows 95부터 11까지 실행, 무료 Android 앱"
+   ],
+   "price": "셰어웨어: 라이선스당 EUR 42 + 부가세(학생 EUR 31.50), 무료 업데이트, Android판 무료",
+   "version": "11.58.1",
+   "updated": "2026-10-29",
+   "platforms": "Windows, Android"
+  },
+  "vidhub": {
+   "name": "VidHub",
+   "vendor": "Oka Apps",
+   "summary": "Apple 기기용 Infuse 스타일의 동영상 보관함 겸 플레이어입니다. 로컬 폴더, NAS, 클라우드 드라이브, Emby/Jellyfin/Plex 서버를 스캔해 TMDB로 포스터 보관함을 만들고, iCloud로 진행 상황을 동기화합니다. Mac App Store에서 평가 수가 가장 많은 미디어 플레이어 중 하나입니다(미국 2.8K).",
+   "wins": [
+    "포스터와 메타데이터가 있는 영화/TV 보관함",
+    "iPhone, iPad, Apple TV, Mac 간 iCloud 동기화",
+    "클라우드 드라이브, NAS, Emby/Jellyfin/Plex",
+    "온라인 자막 검색",
+    "DLNA, Chromecast, Roku, AirPlay로 캐스팅"
+   ],
+   "price": "무료, VIP(Mac 전용 평생 $14.99, 모든 기기 평생 $25.99에서 $39.99, 연 $9.99, 월 $1.49)",
+   "version": "3.0.3 (Mac)",
+   "updated": "2026-11-04",
+   "platforms": "macOS, iOS, iPadOS, tvOS, visionOS, Android TV",
+   "notes": {
+    "free": "무료, VIP: Mac 전용 평생 $14.99, 모든 기기 평생 $25.99에서 $39.99, 연 $9.99, 월 $1.49",
+    "languages_20": "App Store 기준 18개",
+    "folder_browsing": "로컬, SMB/WebDAV, 클라우드 '파일 소스'를 추가해 보관함으로 수집",
+    "thumbnail_grid": "TMDB 메타데이터의 포스터 월, 파일 썸네일 아님",
+    "recursive_search": "보관함에서 파일 이름과 영화/프로그램 제목으로 전체 검색",
+    "network_shares_fast": "SMB/CIFS, WebDAV, NAS, 다양한 클라우드 드라이브, 속도는 알 수 없음",
+    "bookmarks": "즐겨찾기(iCloud 동기화)",
+    "auto_enhance_view": "동영상 색 보정, 동영상만",
+    "streaming_urls": "클라우드 드라이브, Emby/Jellyfin/Plex 서버, WebDAV, 임의 URL은 언급 없음",
+    "rename_trash": "클라우드 파일 이름 변경(문자 추가/바꾸기, 정규식), 삭제는 언급 없음",
+    "batch_convert": "클라우드 파일 일괄 이름 변경, 변환 없음",
+    "notarized_attested": "App Store 서명, 비공개 소스"
+   }
+  },
+  "vlc": {
+   "name": "VLC",
+   "vendor": "VideoLAN",
+   "summary": "가장 유명한 무료 오픈 소스 미디어 플레이어입니다. 코덱 팩 없이 모든 플랫폼에서 거의 모든 파일, 디스크, 스트림을 재생합니다. 무엇보다 플레이어이며, 이미지는 일정 시간 표시되는 정지 화면이고 파일 브라우저나 썸네일 격자는 없습니다.",
+   "wins": [
+    "거의 모든 포맷, 디스크(DVD/Blu-ray), 네트워크 스트림, 캡처 장치 재생",
+    "모든 데스크톱과 모바일 OS에서 실행",
+    "파일과 온라인(VLSub) 자막, 오디오 트랙, 속도, 필터, 변환/스트리밍 출력",
+    "재생 목록 저장, 음악, 시각화",
+    "모든 단축키 재지정 가능"
+   ],
+   "price": "무료",
+   "version": "3.0.24",
+   "updated": "2026-09-22",
+   "platforms": "macOS, Windows, Linux, iOS, Android 등",
+   "notes": {
+    "dark_light_setting": "macOS: 어두운 인터페이스 옵션, Windows/Linux Qt: 어두운 팔레트 옵션",
+    "folder_browsing": "폴더를 재생 목록으로 열기, 실제 파일 브라우저 없음",
+    "list_view": "정렬 가능한 열이 있는 재생 목록(제목, 아티스트 …), 파일 목록 아님",
+    "recursive_search": "'재생 목록에서 검색'은 재생 목록 항목만 필터",
+    "network_shares_fast": "SMB, NFS, SFTP, FTP, UPnP에서 바로 재생, 썸네일 탐색이 없어 속도는 판단 불가",
+    "multiple_windows": "Windows/Linux: '인스턴스 하나'를 끄면 여러 개, macOS: 플레이어 윈도우 하나",
+    "img_modern_formats": "WebP는 열림(10초간 정지 화면), HEIC, AVIF, JPEG XL은 없음",
+    "img_svg_pdf": "SVG는 svg 디코더(librsvg)로, PDF 없음",
+    "img_animated": "애니메이션 GIF는 FFmpeg로 넘김, APNG/애니메이션 WebP는 확인되지 않음",
+    "zoom_rotate": "동영상 확대, 자르기, 회전/변형 필터, 이미지 이동 없음",
+    "slideshow": "재생 목록의 이미지가 각각 10초씩 표시",
+    "slideshow_recursive": "연 폴더가 하위 폴더까지 펼쳐져 사진(각 10초)과 동영상이 한 재생 목록에",
+    "auto_enhance_view": "수동 '조정 및 효과'(밝기, 대비, 색조 …), 자동 향상 없음",
+    "file_info_exif": "미디어 정보에 코덱, 비트레이트, 통계, EXIF 없음",
+    "video_skim_arrows": "보조 키+화살표로 이동(macOS ⌘⌃←/→ 3초, ⌘⌥ 10초, ⌘⇧ 1분)",
+    "control_bar_movable": "전체 화면에서는 컨트롤러를 끌어 둔 자리에 유지, 윈도우에서는 안 됨",
+    "archives_as_folders": "아카이브 속 파일을 재생 목록에 나열, 탐색 가능한 폴더 아님",
+    "split_archives": "여러 볼륨을 이어 읽는 코드가 있으나 문서화되지 않음",
+    "batch_convert": "변환/저장으로 여러 미디어 파일 트랜스코딩, 일괄 이름 변경 없음",
+    "library_catalog": "재생 목록 사이드바의 기본 미디어 보관함, 태그/별점 없음",
+    "keyboard_first": "재생은 전부 단축키로, 탐색은 마우스 중심",
+    "boss_key": "'보스 키' 동작(인터페이스 숨기고 일시 정지)은 있지만 기본 키 없음",
+    "no_network": "업데이트 확인, 온라인 메타데이터 가져오기는 기본으로 꺼짐"
+   }
+  },
+  "windows-media-player": {
+   "name": "Windows Media Player",
+   "vendor": "Microsoft",
+   "summary": "Windows에 기본으로 들어 있는 플레이어로, 음악 위주의 보관함 앱이지만 로컬 동영상도 재생하며 자막, 오디오 트랙, 재생 속도, 화면 조정, 미니 플레이어, 캐스팅을 갖췄습니다. HEVC와 AV1에는 유료 또는 Store 추가 기능이 필요하며, 리뷰어들은 Microsoft가 선택 기능으로 남겨 둔 고전적인 Windows Media Player 레거시보다 느리고 무겁다고 평가합니다.",
+   "wins": [
+    "Windows에 기본 설치, 설정할 것이 없음",
+    "앨범 아트, 재생 목록, CD 추출이 있는 음악 보관함",
+    "미니 플레이어, 기기로 캐스팅",
+    "Windows 자막과 테마 설정을 따름"
+   ],
+   "price": "Windows에 포함, HEVC 비디오 확장 $0.99, 기타 코덱은 Store 추가 기능",
+   "version": "미디어 플레이어 11.2610.5.0 (Insider, 2026년 11월), Windows Media Player 레거시 12",
+   "updated": "2026-11 (Insider 릴리스 노트)",
+   "platforms": "Windows"
+  },
+  "xee": {
+   "name": "Xee³",
+   "vendor": "MacPaw",
+   "summary": "폴더와 아카이브(ZIP, RAR, 7z, CBZ/CBR)를 풀지 않고 넘겨 보는 고전적인 경량 Mac 이미지 뷰어로, 오래되고 특이한 포맷을 많이 지원합니다. theunarchiver.com에 아직 소개되어 있지만 다운로드나 구매 링크는 없으며, 마지막 빌드 3.5.4(2021년 12월)는 Intel 전용입니다.",
+   "wins": [
+    "특이한 옛 포맷(PCX, IFF, MAG, PVR, XBM)",
+    "양자화 테이블로 JPEG 생성 프로그램 식별",
+    "PSD 레이어 보기",
+    "JPEG 무손실 자르기"
+   ],
+   "price": "판매 종료(예전에는 체험판이 있는 유료 라이선스, App Store에서 내려감)",
+   "version": "3.5.4",
+   "updated": "2021-12-21",
+   "platforms": "macOS",
+   "notes": {
+    "open_source": "Xee 2.x 소스는 공개, Xee 3은 비공개",
+    "bookmarks": "최근 이동/복사 대상 목록",
+    "img_modern_formats": "WebP는 지원, HEIC/AVIF/JPEG XL 미지원(마지막 업데이트 2021년 12월)",
+    "img_psd_exr": "레이어가 있는 PSD, OpenEXR은 목록에 없음",
+    "img_svg_pdf": "PDF 속 비트맵 이미지만, SVG 없음",
+    "slideshow_recursive": "선택형 하위 폴더 스캔을 슬라이드 쇼가 순회, 이미지만, 동영상 없음",
+    "archive_passwords": "Xee 2.1에서 암호 걸린 아카이브 추가, Xee 3에서는 언급 없음",
+    "split_archives": "The Unarchiver가 읽는 것을 읽음, 분할 세트는 언급 없음",
+    "image_editing": "자르기(JPEG 무손실), 내보내기",
+    "cloud_sync": "공유 메뉴",
+    "keyboard_first": "키보드 탐색, 제스처 위주 설계",
+    "app_sandbox": "App Store판은 샌드박스, 직접 다운로드판은 아님"
+   }
+  },
+  "xnview-mp": {
+   "name": "XnView MP",
+   "vendor": "XnSoft",
+   "summary": "XnView MP는 500가지가 넘는 포맷을 읽는 오래된 크로스 플랫폼 이미지 브라우저 겸 정리 도구입니다. 파일 브라우저, 뷰어, 카테고리와 별점이 있는 카탈로그, 일괄 변환기, 간단한 편집기를 한 앱에 담았습니다. Mac에서는 Qt 앱이며, 개인 용도는 무료입니다.",
+   "wins": [
+    "500가지가 넘는 이미지 포맷, 약 70가지로 내보내기",
+    "일괄 변환과 정규식 일괄 이름 변경",
+    "카테고리, 별점, 색상 레이블이 있는 카탈로그",
+    "메타데이터 편집(EXIF, IPTC, XMP)",
+    "이미지 편집, 최대 4장 비교, 중복 찾기",
+    "Windows와 Linux에서도 실행"
+   ],
+   "price": "개인·교육·비영리 용도는 무료, 상업용 라이선스 29 EUR(수량별로 3.90 EUR까지)",
+   "version": "1.12.3",
+   "updated": "2026-11-09",
+   "platforms": "macOS, Windows, Linux",
+   "notes": {
+    "free": "개인·교육·비영리 무료, 기업은 라이선스 필요(1인 29 EUR)",
+    "regex_search": "정규식은 일괄 이름 변경에서만, 파일 검색은 와일드카드/포함",
+    "network_shares_fast": "네트워크 공유에서 작동하지만 변경 기록에 느림 문제가 나옴",
+    "multiple_windows": "탭, 여러 인스턴스 가능",
+    "slideshow_recursive": "'하위 폴더 파일 보기'로 슬라이드 쇼, 동영상이 끝날 때까지 기다림",
+    "auto_enhance_view": "자동 레벨과 조정은 편집(저장하면 파일이 바뀜)",
+    "saved_playlists": "슬라이드 쇼를 .sld 파일로 저장(이미지, 오디오 포함)",
+    "music_mode": "'멀티미디어 플레이어' 있음, 음악 보관함 없음",
+    "dual_pane": "최대 4장 비교, F6으로 브라우저 패널 순환, 두 폴더 파일 관리 모드 없음",
+    "cloud_sync": "웹 업로드 기능, 클라우드 동기화 없음"
+   }
+  },
+  "yacreader": {
+   "name": "YACReader",
+   "vendor": "Luis Ángel San Martín",
+   "summary": "YACReader는 대규모 모음을 위한 만화책 뷰어와 보관함 관리자(YACReaderLibrary)로, Comic Vine 메타데이터, 읽기 목록, 모바일 앱용 홈 서버를 갖췄습니다. 뷰어는 두 쪽 보기, 만화 모드, 연속 스크롤 모드와 이미지 조정을 제공합니다.",
+   "wins": [
+    "완전한 만화책 보관함: Comic Vine 메타데이터, 읽기 목록, 스마트 목록, 별점",
+    "읽기 진행 상황이 동기화되는 서버와 iOS/Android 앱",
+    "만화 모드, 두 쪽 보기, 웹툰용 연속 스크롤",
+    "오래된 스캔용 밝기/대비/감마",
+    "테마 12가지와 테마 편집기, 단축키 재지정 가능",
+    "Windows와 Linux판"
+   ],
+   "price": "데스크톱과 서버는 무료(기부), iOS/Android 앱은 별도",
+   "version": "10.5.1",
+   "updated": "2026-11-13",
+   "platforms": "macOS, Windows, Linux, iOS, Android, Docker/서버",
+   "notes": {
+    "languages_20": "14개 언어(한국어 포함), 앱에서 선택 가능",
+    "folder_browsing": "뷰어는 파일과 폴더를 열고, 탐색은 보관함 데이터베이스로",
+    "network_shares_fast": "네트워크 공유에서 보관함 열기 개선, 보관함은 색인 필요",
+    "bookmarks": "페이지 책갈피, 즐겨찾기, 읽기 목록, 레이블",
+    "img_modern_formats": "JPEG, PNG, GIF, TIFF, BMP, WebP, 그 밖에는 직접 설치한 Qt 플러그인으로만",
+    "img_svg_pdf": "PDF는 지원(pdfium), SVG 없음",
+    "archives_as_folders": "아카이브를 폴더가 아니라 만화책으로 열기",
+    "rename_trash": "보관함 안의 폴더 이름 변경, 메타데이터로 파일 이름 변경, 휴지통 없음",
+    "move_copy": "메타데이터로 파일을 폴더 구조로 정리(실험적)",
+    "undo_file_actions": "파일 정리 작업은 기록이 남아 취소 가능, 일반 실행 취소 없음",
+    "batch_convert": "메타데이터로 일괄 이름 변경만, 포맷 변환 없음",
+    "cloud_sync": "자체 서버와 iOS/Android 앱이 네트워크로 진행 상황 동기화, 클라우드 서비스 없음",
+    "shortcut_cheatsheet": "단축키 대화상자에 전체 키 목록, 인쇄용 없음",
+    "notarized_attested": "macOS 빌드는 공증, 빌드 증명 없음"
+   }
+  }
+ }
+}

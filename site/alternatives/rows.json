@@ -1,0 +1,318 @@
+{
+ "note": "intentional = Schnellbild leaves it out on purpose (yellow). Schnellbild's own values are filled in by the site build from the README, not by the research.",
+ "groups": [
+  {
+   "group": "basics",
+   "rows": [
+    {
+     "key": "free",
+     "label": "Free (all features)"
+    },
+    {
+     "key": "open_source",
+     "label": "Open source"
+    },
+    {
+     "key": "native_apple_silicon",
+     "label": "Native on Apple silicon Macs"
+    },
+    {
+     "key": "no_account_no_tracking",
+     "label": "No account, no ads, no tracking"
+    },
+    {
+     "key": "dark_light_setting",
+     "label": "Light or dark, settable apart from the system"
+    },
+    {
+     "key": "languages_20",
+     "label": "Interface in many languages (count in note)"
+    }
+   ]
+  },
+  {
+   "group": "browse",
+   "rows": [
+    {
+     "key": "folder_browsing",
+     "label": "Browses folders directly (no import or library)"
+    },
+    {
+     "key": "thumbnail_grid",
+     "label": "Thumbnail grid with folder previews"
+    },
+    {
+     "key": "list_view",
+     "label": "List view with columns"
+    },
+    {
+     "key": "recursive_search",
+     "label": "Search names through all subfolders"
+    },
+    {
+     "key": "regex_search",
+     "label": "Search with regular expressions"
+    },
+    {
+     "key": "network_shares_fast",
+     "label": "Quick on network shares and big folders"
+    },
+    {
+     "key": "multiple_windows",
+     "label": "Several windows"
+    },
+    {
+     "key": "bookmarks",
+     "label": "Folder bookmarks / favourites"
+    }
+   ]
+  },
+  {
+   "group": "images",
+   "rows": [
+    {
+     "key": "img_modern_formats",
+     "label": "HEIC, AVIF, JPEG XL, WebP"
+    },
+    {
+     "key": "img_raw",
+     "label": "Camera RAW"
+    },
+    {
+     "key": "img_psd_exr",
+     "label": "PSD, OpenEXR"
+    },
+    {
+     "key": "img_svg_pdf",
+     "label": "SVG and PDF"
+    },
+    {
+     "key": "img_animated",
+     "label": "Animated GIF, PNG, WebP"
+    },
+    {
+     "key": "keyboard_paging",
+     "label": "Page through with the keyboard"
+    },
+    {
+     "key": "zoom_rotate",
+     "label": "Zoom, pan, rotate (view only)"
+    },
+    {
+     "key": "slideshow",
+     "label": "Slideshow"
+    },
+    {
+     "key": "slideshow_recursive",
+     "label": "Slideshow through all subfolders, photos and videos mixed"
+    },
+    {
+     "key": "auto_enhance_view",
+     "label": "Auto enhance / adjustments without changing the file"
+    },
+    {
+     "key": "file_info_exif",
+     "label": "File info: EXIF, codecs, bitrate"
+    },
+    {
+     "key": "wrong_extension_note",
+     "label": "Notes a file whose extension doesn't match its content"
+    }
+   ]
+  },
+  {
+   "group": "video",
+   "rows": [
+    {
+     "key": "video_native",
+     "label": "Plays MP4, MOV"
+    },
+    {
+     "key": "video_mkv_avi_webm",
+     "label": "Plays MKV, WebM, AVI, WMV, FLV"
+    },
+    {
+     "key": "photos_videos_one_grid",
+     "label": "Photos and videos together in one grid"
+    },
+    {
+     "key": "video_skim_arrows",
+     "label": "Skim videos with the arrow keys"
+    },
+    {
+     "key": "subtitles_embedded",
+     "label": "Subtitles from inside the video"
+    },
+    {
+     "key": "subtitles_external_files",
+     "label": "Loads subtitle files from next to the video"
+    },
+    {
+     "key": "audio_track_choice",
+     "label": "Choose the audio track"
+    },
+    {
+     "key": "playback_speed",
+     "label": "Playback speed"
+    },
+    {
+     "key": "control_bar_movable",
+     "label": "Control bar that stays where you put it"
+    },
+    {
+     "key": "playlist",
+     "label": "Playlist (Schnellbild: made on the fly from the slideshow, not saved)"
+    },
+    {
+     "key": "saved_playlists",
+     "label": "Saved playlists"
+    },
+    {
+     "key": "pip",
+     "label": "Picture in Picture"
+    },
+    {
+     "key": "music_mode",
+     "label": "Audio files / music mode"
+    },
+    {
+     "key": "streaming_urls",
+     "label": "Plays streams and URLs from the internet"
+    },
+    {
+     "key": "online_subtitles",
+     "label": "Downloads subtitles from the internet"
+    },
+    {
+     "key": "video_filters_enhance",
+     "label": "Video adjustments (brightness, contrast …)"
+    },
+    {
+     "key": "quicklook_mkv_thumbnails",
+     "label": "Adds Finder / Quick Look thumbnails for MKV etc."
+    }
+   ]
+  },
+  {
+   "group": "archives",
+   "rows": [
+    {
+     "key": "archives_as_folders",
+     "label": "ZIP, RAR, 7z open like folders"
+    },
+    {
+     "key": "comics_cbz_cbr",
+     "label": "Comic books CBZ, CBR"
+    },
+    {
+     "key": "archive_passwords",
+     "label": "Password-protected archives"
+    },
+    {
+     "key": "split_archives",
+     "label": "Split / multi-part archives"
+    },
+    {
+     "key": "videos_in_archives",
+     "label": "Plays videos straight from archives"
+    },
+    {
+     "key": "manga_two_page",
+     "label": "Two-page spread / right-to-left manga mode"
+    }
+   ]
+  },
+  {
+   "group": "files",
+   "rows": [
+    {
+     "key": "rename_trash",
+     "label": "Rename, trash, new folder"
+    },
+    {
+     "key": "move_copy",
+     "label": "Move and copy (drag into folders)"
+    },
+    {
+     "key": "dual_pane",
+     "label": "Two panes side by side (F5 copy, F6 move)"
+    },
+    {
+     "key": "undo_file_actions",
+     "label": "Undo renames, moves, trash"
+    },
+    {
+     "key": "image_editing",
+     "label": "Edits images (crop, resize, save)"
+    },
+    {
+     "key": "batch_convert",
+     "label": "Batch convert / rename"
+    },
+    {
+     "key": "library_catalog",
+     "label": "Library, catalog, tags, ratings database"
+    },
+    {
+     "key": "cloud_sync",
+     "label": "Cloud sync / online sharing"
+    }
+   ]
+  },
+  {
+   "group": "keys",
+   "rows": [
+    {
+     "key": "keyboard_first",
+     "label": "Everything by keyboard"
+    },
+    {
+     "key": "custom_shortcuts",
+     "label": "Your own keyboard shortcuts"
+    },
+    {
+     "key": "shortcut_cheatsheet",
+     "label": "Printable cheat sheet of all keys"
+    },
+    {
+     "key": "boss_key",
+     "label": "Boss key (hide everything at once)"
+    }
+   ]
+  },
+  {
+   "group": "safety",
+   "rows": [
+    {
+     "key": "app_sandbox",
+     "label": "Runs in Apple's App Sandbox"
+    },
+    {
+     "key": "no_network",
+     "label": "Never goes online"
+    },
+    {
+     "key": "notarized_attested",
+     "label": "Notarized, build provably from public source"
+    },
+    {
+     "key": "mac_app_store",
+     "label": "In the Mac App Store"
+    }
+   ]
+  }
+ ],
+ "schnellbild_intentional": [
+  "subtitles_external_files",
+  "saved_playlists",
+  "pip",
+  "music_mode",
+  "streaming_urls",
+  "online_subtitles",
+  "image_editing",
+  "batch_convert",
+  "library_catalog",
+  "cloud_sync",
+  "manga_two_page"
+ ]
+}

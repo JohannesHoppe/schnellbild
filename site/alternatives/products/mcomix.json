@@ -1,0 +1,573 @@
+{
+ "name": "MComix",
+ "short": "MComix",
+ "vendor": "MComix developers (SourceForge project)",
+ "website": "https://sourceforge.net/projects/mcomix/",
+ "platforms": [
+  "Linux",
+  "Windows"
+ ],
+ "mac_available": "no",
+ "page": "switcher",
+ "section": "windows",
+ "price": "Free",
+ "license": "Open source, GPL-2.0",
+ "current_version": "3.2.0",
+ "last_update": "2026-08-20",
+ "engine": "Python, GTK 3 (PyGObject), Pillow; unrar/7z/PyMuPDF for containers",
+ "category": "comic",
+ "summary": "MComix is a customizable GTK comic and image viewer for Linux and Windows, a fork of Comix. It reads CBR/CBZ/CB7/CBT/LHA and PDF, has double-page and manga modes, image enhancement, a slideshow and an optional library.",
+ "where_it_wins": [
+  "Double page and manga mode",
+  "Image enhancement (brightness, contrast, sharpness, autocontrast)",
+  "Editable keyboard shortcuts",
+  "Archive editor and optional library with collections",
+  "25 interface languages",
+  "Linux and Windows versions"
+ ],
+ "where_schnellbild_wins": [
+  "Native on the Mac (MComix has no Mac build)",
+  "Plays videos",
+  "No extra unrar/7z tools needed",
+  "Modern formats via macOS (HEIC, AVIF, JPEG XL), RAW",
+  "Thumbnail grid and list for whole folders, file actions with undo",
+  "App Sandbox"
+ ],
+ "search_terms": [
+  "mcomix mac",
+  "mcomix alternative",
+  "mcomix macos",
+  "comic viewer mac like mcomix"
+ ],
+ "matrix": {
+  "free": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://sourceforge.net/p/mcomix/wiki/Home/"
+   ],
+   "how": "docs"
+  },
+  "open_source": {
+   "value": "yes",
+   "note": "GPL-2.0",
+   "evidence": [
+    "https://github.com/benoit-pierre/mcomix/blob/master/COPYING",
+    "https://sourceforge.net/p/mcomix/git/ci/master/tree/"
+   ],
+   "how": "source"
+  },
+  "native_apple_silicon": {
+   "value": "no",
+   "note": "Linux and Windows only; no Mac build",
+   "evidence": [
+    "https://sourceforge.net/p/mcomix/wiki/Home/"
+   ],
+   "how": "docs"
+  },
+  "no_account_no_tracking": {
+   "value": "yes",
+   "evidence": [
+    "https://sourceforge.net/p/mcomix/git/ci/master/tree/mcomix/ui.py",
+    "https://sourceforge.net/p/mcomix/git/ci/master/tree/pyproject.toml"
+   ],
+   "how": "source",
+   "note": "No account, ads or network code in the source"
+  },
+  "dark_light_setting": {
+   "value": "partial",
+   "note": "Follows GTK theme; switches to dark automatically on Windows dark mode (3.0)",
+   "evidence": [
+    "https://sourceforge.net/p/mcomix/git/ci/master/tree/ChangeLog.md"
+   ],
+   "how": "changelog"
+  },
+  "languages_20": {
+   "value": "yes",
+   "note": "25 languages (24 translations plus English)",
+   "evidence": [
+    "https://sourceforge.net/p/mcomix/git/ci/master/tree/mcomix/messages/"
+   ],
+   "how": "source"
+  },
+  "folder_browsing": {
+   "value": "yes",
+   "note": "Opens image folders and archives directly; next/previous directory and archive",
+   "evidence": [
+    "https://github.com/benoit-pierre/mcomix/blob/master/mcomix/ui.py",
+    "https://sourceforge.net/p/mcomix/wiki/Home/"
+   ],
+   "how": "source"
+  },
+  "thumbnail_grid": {
+   "value": "partial",
+   "note": "Page thumbnail sidebar; cover grid only in the optional library",
+   "evidence": [
+    "https://github.com/benoit-pierre/mcomix/blob/master/mcomix/ui.py",
+    "https://sourceforge.net/p/mcomix/git/ci/master/tree/ChangeLog.md"
+   ],
+   "how": "source"
+  },
+  "list_view": {
+   "value": "no",
+   "evidence": [
+    "https://sourceforge.net/p/mcomix/git/ci/master/tree/mcomix/library/book_area.py"
+   ],
+   "how": "source",
+   "note": "Library shows books only as a cover icon view; no list"
+  },
+  "recursive_search": {
+   "value": "partial",
+   "note": "Library search by name and full path; library can scan watched folders recursively",
+   "evidence": [
+    "https://sourceforge.net/p/mcomix/git/ci/master/tree/ChangeLog.md"
+   ],
+   "how": "changelog"
+  },
+  "regex_search": {
+   "value": "no",
+   "evidence": [
+    "https://sourceforge.net/p/mcomix/git/ci/master/tree/mcomix/library/control_area.py"
+   ],
+   "how": "source",
+   "note": "Library search matches a plain text string in the full path, not case sensitive"
+  },
+  "network_shares_fast": {
+   "value": "no",
+   "note": "Searched source, docs and changelog; no statement on network share performance",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "multiple_windows": {
+   "value": "no",
+   "evidence": [
+    "https://sourceforge.net/p/mcomix/git/ci/master/tree/mcomix/ui.py"
+   ],
+   "how": "source",
+   "note": "Single main window; no new-window command in the full menu list"
+  },
+  "bookmarks": {
+   "value": "partial",
+   "note": "Page bookmarks, library collections",
+   "evidence": [
+    "https://github.com/benoit-pierre/mcomix/blob/master/mcomix/ui.py",
+    "https://sourceforge.net/p/mcomix/git/ci/master/tree/ChangeLog.md"
+   ],
+   "how": "source"
+  },
+  "img_modern_formats": {
+   "value": "partial",
+   "evidence": [
+    "https://sourceforge.net/p/mcomix/git/ci/master/tree/mcomix/image_tools.py",
+    "https://sourceforge.net/p/mcomix/git/ci/master/tree/pyproject.toml"
+   ],
+   "how": "source",
+   "note": "Formats come from Pillow and GdkPixbuf: WebP yes; HEIC, AVIF, JPEG XL only if the installed libraries provide them"
+  },
+  "img_raw": {
+   "value": "no",
+   "evidence": [
+    "https://sourceforge.net/p/mcomix/git/ci/master/tree/mcomix/image_tools.py"
+   ],
+   "how": "source",
+   "note": "Formats come from Pillow and GdkPixbuf; no RAW decoder"
+  },
+  "img_psd_exr": {
+   "value": "partial",
+   "evidence": [
+    "https://sourceforge.net/p/mcomix/git/ci/master/tree/mcomix/image_tools.py"
+   ],
+   "how": "source",
+   "note": "Pillow reads PSD (flattened); no OpenEXR"
+  },
+  "img_svg_pdf": {
+   "value": "partial",
+   "note": "PDF yes (PyMuPDF or mutool); SVG no",
+   "evidence": [
+    "https://sourceforge.net/p/mcomix/wiki/Home/"
+   ],
+   "how": "docs"
+  },
+  "img_animated": {
+   "value": "yes",
+   "note": "Animated image formats supported (2.0)",
+   "evidence": [
+    "https://sourceforge.net/p/mcomix/git/ci/master/tree/ChangeLog.md"
+   ],
+   "how": "changelog"
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://github.com/benoit-pierre/mcomix/blob/master/mcomix/ui.py"
+   ],
+   "how": "source"
+  },
+  "zoom_rotate": {
+   "value": "yes",
+   "note": "Fit modes, manual zoom, magnifying lens, rotate, flip",
+   "evidence": [
+    "https://github.com/benoit-pierre/mcomix/blob/master/mcomix/ui.py"
+   ],
+   "how": "source"
+  },
+  "slideshow": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://github.com/benoit-pierre/mcomix/blob/master/mcomix/ui.py"
+   ],
+   "how": "source"
+  },
+  "slideshow_recursive": {
+   "value": "no",
+   "note": "No video support, so no mixed photo/video slideshow",
+   "evidence": [
+    "https://sourceforge.net/p/mcomix/wiki/Home/"
+   ],
+   "how": "docs"
+  },
+  "auto_enhance_view": {
+   "value": "yes",
+   "note": "Image enhancement dialog: brightness, contrast, saturation, sharpness, autocontrast, negate",
+   "evidence": [
+    "https://sourceforge.net/p/mcomix/git/ci/master/tree/ChangeLog.md",
+    "https://github.com/benoit-pierre/mcomix/blob/master/mcomix/ui.py"
+   ],
+   "how": "changelog"
+  },
+  "file_info_exif": {
+   "value": "partial",
+   "note": "Properties dialog with file and image info",
+   "evidence": [
+    "https://github.com/benoit-pierre/mcomix/blob/master/mcomix/ui.py",
+    "https://sourceforge.net/p/mcomix/git/ci/master/tree/ChangeLog.md"
+   ],
+   "how": "source"
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "evidence": [
+    "https://sourceforge.net/p/mcomix/git/ci/master/tree/mcomix/archive_tools.py"
+   ],
+   "how": "source",
+   "note": "Archive type detected silently by magic bytes; no notice"
+  },
+  "video_native": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://sourceforge.net/p/mcomix/wiki/Home/"
+   ],
+   "how": "docs"
+  },
+  "video_mkv_avi_webm": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://sourceforge.net/p/mcomix/wiki/Home/"
+   ],
+   "how": "docs"
+  },
+  "photos_videos_one_grid": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://sourceforge.net/p/mcomix/wiki/Home/"
+   ],
+   "how": "docs"
+  },
+  "video_skim_arrows": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://sourceforge.net/p/mcomix/wiki/Home/"
+   ],
+   "how": "docs"
+  },
+  "subtitles_embedded": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://sourceforge.net/p/mcomix/wiki/Home/"
+   ],
+   "how": "docs"
+  },
+  "subtitles_external_files": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://sourceforge.net/p/mcomix/wiki/Home/"
+   ],
+   "how": "docs"
+  },
+  "audio_track_choice": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://sourceforge.net/p/mcomix/wiki/Home/"
+   ],
+   "how": "docs"
+  },
+  "playback_speed": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://sourceforge.net/p/mcomix/wiki/Home/"
+   ],
+   "how": "docs"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://sourceforge.net/p/mcomix/wiki/Home/"
+   ],
+   "how": "docs"
+  },
+  "playlist": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://sourceforge.net/p/mcomix/wiki/Home/"
+   ],
+   "how": "docs"
+  },
+  "saved_playlists": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://sourceforge.net/p/mcomix/wiki/Home/"
+   ],
+   "how": "docs"
+  },
+  "pip": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://sourceforge.net/p/mcomix/wiki/Home/"
+   ],
+   "how": "docs"
+  },
+  "music_mode": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://sourceforge.net/p/mcomix/wiki/Home/"
+   ],
+   "how": "docs"
+  },
+  "streaming_urls": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://sourceforge.net/p/mcomix/wiki/Home/"
+   ],
+   "how": "docs"
+  },
+  "online_subtitles": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://sourceforge.net/p/mcomix/wiki/Home/"
+   ],
+   "how": "docs"
+  },
+  "video_filters_enhance": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://sourceforge.net/p/mcomix/wiki/Home/"
+   ],
+   "how": "docs"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://sourceforge.net/p/mcomix/wiki/Home/"
+   ],
+   "how": "docs"
+  },
+  "archives_as_folders": {
+   "value": "partial",
+   "evidence": [
+    "https://sourceforge.net/p/mcomix/wiki/Home/"
+   ],
+   "how": "docs",
+   "note": "opens an archive as a comic book, not as a folder"
+  },
+  "comics_cbz_cbr": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://sourceforge.net/p/mcomix/wiki/Home/"
+   ],
+   "how": "docs"
+  },
+  "archive_passwords": {
+   "value": "yes",
+   "note": "Password dialog for encrypted archives",
+   "evidence": [
+    "https://sourceforge.net/p/mcomix/git/ci/master/tree/ChangeLog.md"
+   ],
+   "how": "changelog"
+  },
+  "split_archives": {
+   "value": "no",
+   "note": "Source and docs searched; multi-volume handling not found or documented",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "videos_in_archives": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://sourceforge.net/p/mcomix/wiki/Home/"
+   ],
+   "how": "docs"
+  },
+  "manga_two_page": {
+   "value": "yes",
+   "note": "Double page mode and manga mode",
+   "evidence": [
+    "https://github.com/benoit-pierre/mcomix/blob/master/mcomix/ui.py",
+    "https://sourceforge.net/p/mcomix/wiki/Home/"
+   ],
+   "how": "source"
+  },
+  "rename_trash": {
+   "value": "partial",
+   "note": "Delete current file from disk; no rename",
+   "evidence": [
+    "https://github.com/benoit-pierre/mcomix/blob/master/mcomix/ui.py"
+   ],
+   "how": "source"
+  },
+  "move_copy": {
+   "value": "no",
+   "note": "Copy page to clipboard only",
+   "evidence": [
+    "https://github.com/benoit-pierre/mcomix/blob/master/mcomix/ui.py"
+   ],
+   "how": "source"
+  },
+  "dual_pane": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/benoit-pierre/mcomix/blob/master/mcomix/ui.py"
+   ],
+   "how": "source"
+  },
+  "undo_file_actions": {
+   "value": "no",
+   "evidence": [
+    "https://sourceforge.net/p/mcomix/git/ci/master/tree/mcomix/ui.py"
+   ],
+   "how": "source",
+   "note": "No undo command in the full menu list"
+  },
+  "image_editing": {
+   "value": "no",
+   "note": "Archive editor reorders/repacks pages, Save As; no crop or resize",
+   "evidence": [
+    "https://github.com/benoit-pierre/mcomix/blob/master/mcomix/ui.py"
+   ],
+   "how": "source"
+  },
+  "batch_convert": {
+   "value": "no",
+   "evidence": [
+    "https://sourceforge.net/p/mcomix/git/ci/master/tree/mcomix/ui.py"
+   ],
+   "how": "source",
+   "note": "No conversion command in the full menu list"
+  },
+  "library_catalog": {
+   "value": "yes",
+   "note": "Optional library with collections and watch list",
+   "evidence": [
+    "https://sourceforge.net/p/mcomix/git/ci/master/tree/ChangeLog.md",
+    "https://github.com/benoit-pierre/mcomix/blob/master/mcomix/ui.py"
+   ],
+   "how": "changelog"
+  },
+  "cloud_sync": {
+   "value": "no",
+   "evidence": [
+    "https://sourceforge.net/p/mcomix/git/ci/master/tree/mcomix/ui.py",
+    "https://sourceforge.net/p/mcomix/git/ci/master/tree/pyproject.toml"
+   ],
+   "how": "source",
+   "note": "No network or sync code in the source"
+  },
+  "keyboard_first": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://sourceforge.net/p/mcomix/git/ci/master/tree/ChangeLog.md",
+    "https://github.com/benoit-pierre/mcomix/blob/master/mcomix/ui.py"
+   ],
+   "how": "changelog"
+  },
+  "custom_shortcuts": {
+   "value": "yes",
+   "note": "Shortcuts tab in Preferences",
+   "evidence": [
+    "https://sourceforge.net/p/mcomix/git/ci/master/tree/ChangeLog.md"
+   ],
+   "how": "changelog"
+  },
+  "shortcut_cheatsheet": {
+   "value": "partial",
+   "note": "Shortcuts tab lists all keys; no printable sheet",
+   "evidence": [
+    "https://sourceforge.net/p/mcomix/git/ci/master/tree/ChangeLog.md"
+   ],
+   "how": "changelog"
+  },
+  "boss_key": {
+   "value": "no",
+   "note": "Has a Minimize action, no dedicated boss key",
+   "evidence": [
+    "https://github.com/benoit-pierre/mcomix/blob/master/mcomix/ui.py"
+   ],
+   "how": "source"
+  },
+  "app_sandbox": {
+   "value": "no",
+   "note": "No Mac version",
+   "evidence": [
+    "https://sourceforge.net/p/mcomix/wiki/Home/"
+   ],
+   "how": "docs"
+  },
+  "no_network": {
+   "value": "yes",
+   "evidence": [
+    "https://sourceforge.net/p/mcomix/git/ci/master/tree/mcomix/ui.py",
+    "https://sourceforge.net/p/mcomix/git/ci/master/tree/pyproject.toml"
+   ],
+   "how": "source",
+   "note": "No network code in the source (urllib only converts file paths)"
+  },
+  "notarized_attested": {
+   "value": "no",
+   "note": "No Mac build",
+   "evidence": [
+    "https://sourceforge.net/p/mcomix/wiki/Home/"
+   ],
+   "how": "docs"
+  },
+  "mac_app_store": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://sourceforge.net/p/mcomix/wiki/Home/"
+   ],
+   "how": "docs"
+  }
+ }
+}

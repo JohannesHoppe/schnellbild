@@ -1,0 +1,598 @@
+{
+ "name": "Simple Comic",
+ "short": "Simple Comic",
+ "vendor": "Community fork MaddTheSane/Simple-Comic (App Store seller: Nicholas Vance); original by Dancing Tortoise Software",
+ "website": "https://github.com/MaddTheSane/Simple-Comic",
+ "platforms": [
+  "macOS"
+ ],
+ "mac_available": "yes",
+ "page": "matrix",
+ "section": "comic",
+ "price": "Free (Mac App Store and GitHub)",
+ "license": "Open source, MIT",
+ "current_version": "1.12.0 (GitHub, submitted to App Store); App Store shows 1.11.0",
+ "last_update": "2026-11-11",
+ "engine": "AppKit, NSImage/ImageIO, XADMaster for archives, PDFKit",
+ "category": "comic",
+ "summary": "Simple Comic is a lean, native macOS comic viewer focused on reading with as few interactions as possible. It opens CBZ/CBR/CB7, PDF and folders of images as a book, with two-page spreads, right-to-left manga order and Live Text on comic pages.",
+ "where_it_wins": [
+  "Two-page spreads and right-to-left manga mode",
+  "Live Text: select, copy and speak text in comic pages",
+  "Multi-volume RAR and nested archives open as one comic",
+  "PDF reading",
+  "Quick Look thumbnails for comic archives in Finder"
+ ],
+ "where_schnellbild_wins": [
+  "Plays videos (MP4, MKV, WebM, AVI) next to images",
+  "Browses whole folder trees with a thumbnail grid and list view",
+  "File actions: rename, move, copy, trash with undo, two panes",
+  "Slideshow through subfolders",
+  "Your own keyboard shortcuts and light/dark setting",
+  "Search names through all subfolders"
+ ],
+ "search_terms": [
+  "simple comic mac",
+  "simple comic alternative",
+  "cbz reader mac",
+  "cbr viewer mac",
+  "comic reader macos",
+  "Comic Reader Mac kostenlos",
+  "CBR Viewer Mac"
+ ],
+ "matrix": {
+  "free": {
+   "value": "yes",
+   "note": "Free on the Mac App Store and GitHub",
+   "evidence": [
+    "https://apps.apple.com/us/app/simple-comic/id1497435571?mt=12",
+    "https://github.com/MaddTheSane/Simple-Comic"
+   ],
+   "how": "store"
+  },
+  "open_source": {
+   "value": "yes",
+   "note": "MIT",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic"
+   ],
+   "how": "source"
+  },
+  "native_apple_silicon": {
+   "value": "yes",
+   "note": "Native macOS app, requires macOS 15; Live Text OCR uses Apple silicon",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic",
+    "https://apps.apple.com/us/app/simple-comic/id1497435571?mt=12"
+   ],
+   "how": "source"
+  },
+  "no_account_no_tracking": {
+   "value": "yes",
+   "note": "README: no user data collected; direct-download build checks GitHub for updates via Sparkle",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic"
+   ],
+   "how": "docs"
+  },
+  "dark_light_setting": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic/blob/arc/Resources/mul.lproj/Preferences.xcstrings",
+    "https://github.com/MaddTheSane/Simple-Comic/blob/arc/Resources/SimpleComic%20Help.help/Contents/Resources/en.lproj/preferences.html"
+   ],
+   "how": "source",
+   "note": "Settings offer page background colour/style only; app appearance follows macOS"
+  },
+  "languages_20": {
+   "value": "partial",
+   "note": "9 languages (de, en, fr, it, ja, ko, pt, zh-Hans, zh-Hant)",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic/blob/arc/Resources/mul.lproj/MainMenu.xcstrings",
+    "https://apps.apple.com/us/app/simple-comic/id1497435571?mt=12"
+   ],
+   "how": "source"
+  },
+  "folder_browsing": {
+   "value": "partial",
+   "note": "Opens a folder or archive as one book, no folder navigator",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic/releases/tag/App-Store-1.11.0"
+   ],
+   "how": "changelog"
+  },
+  "thumbnail_grid": {
+   "value": "partial",
+   "note": "Thumbnail Expose of the pages of the open book only",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic/blob/arc/Resources/SimpleComic%20Help.help/Contents/Resources/en.lproj/navigation.html"
+   ],
+   "how": "docs"
+  },
+  "list_view": {
+   "value": "no",
+   "note": "No file list; one book per window",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic/blob/arc/Resources/mul.lproj/MainMenu.xcstrings"
+   ],
+   "how": "source"
+  },
+  "recursive_search": {
+   "value": "no",
+   "note": "Find searches recognised text (OCR) on pages, not file names",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic/blob/arc/Resources/mul.lproj/MainMenu.xcstrings",
+    "https://github.com/MaddTheSane/Simple-Comic"
+   ],
+   "how": "source"
+  },
+  "regex_search": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic/blob/arc/Resources/mul.lproj/MainMenu.xcstrings"
+   ],
+   "how": "source"
+  },
+  "network_shares_fast": {
+   "value": "partial",
+   "note": "Archives on network volumes are cached locally in the background; pages stream while loading (1.11)",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic/releases/tag/App-Store-1.11.0"
+   ],
+   "how": "changelog"
+  },
+  "multiple_windows": {
+   "value": "yes",
+   "note": "Each comic opens in its own window/session",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic/blob/arc/Resources/mul.lproj/MainMenu.xcstrings"
+   ],
+   "how": "source"
+  },
+  "bookmarks": {
+   "value": "no",
+   "note": "Only Open Recent and restoring open sessions",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic/blob/arc/Resources/mul.lproj/MainMenu.xcstrings"
+   ],
+   "how": "source"
+  },
+  "img_modern_formats": {
+   "value": "yes",
+   "note": "All ImageIO formats via NSImage imageTypes (HEIC, AVIF, JPEG XL as macOS supports); WebP incl. animated via SDWebImage",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic/blob/arc/Classes/Managed%20Objects/TSSTPage.m",
+    "https://github.com/MaddTheSane/Simple-Comic/releases/tag/App-Store-1.12.0"
+   ],
+   "how": "source"
+  },
+  "img_raw": {
+   "value": "partial",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic/blob/arc/Classes/Managed%20Objects/TSSTPage.m"
+   ],
+   "how": "source",
+   "note": "Accepts every NSImage/ImageIO type (camera RAW included on macOS); not advertised"
+  },
+  "img_psd_exr": {
+   "value": "partial",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic/blob/arc/Classes/Managed%20Objects/TSSTPage.m"
+   ],
+   "how": "source",
+   "note": "Accepts every NSImage/ImageIO type (PSD, OpenEXR included); not advertised"
+  },
+  "img_svg_pdf": {
+   "value": "partial",
+   "note": "PDF yes (opened as book); SVG only if NSImage lists it",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic/blob/arc/Classes/Managed%20Objects/TSSTManagedGroup.m",
+    "https://github.com/MaddTheSane/Simple-Comic/blob/arc/Classes/Managed%20Objects/TSSTPage.m"
+   ],
+   "how": "source"
+  },
+  "img_animated": {
+   "value": "yes",
+   "note": "Animated GIF (fixed speed in 1.11), animated WebP (1.12)",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic/releases/tag/App-Store-1.12.0",
+    "https://github.com/MaddTheSane/Simple-Comic/releases/tag/App-Store-1.11.0"
+   ],
+   "how": "changelog"
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "note": "Arrow keys, space, page up/down",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic/blob/arc/Resources/SimpleComic%20Help.help/Contents/Resources/en.lproj/navigation.html"
+   ],
+   "how": "docs"
+  },
+  "zoom_rotate": {
+   "value": "yes",
+   "note": "Zoom, loupe, rotate left/right",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic/blob/arc/Resources/mul.lproj/MainMenu.xcstrings"
+   ],
+   "how": "source"
+  },
+  "slideshow": {
+   "value": "no",
+   "note": "No slideshow command in the menus",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic/blob/arc/Resources/mul.lproj/MainMenu.xcstrings"
+   ],
+   "how": "source"
+  },
+  "slideshow_recursive": {
+   "value": "no",
+   "note": "No video support, so no mixed photo/video slideshow",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic",
+    "https://apps.apple.com/us/app/simple-comic/id1497435571?mt=12"
+   ],
+   "how": "docs"
+  },
+  "auto_enhance_view": {
+   "value": "no",
+   "note": "Only a blurred page-edge background style",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic/releases/tag/App-Store-1.11.0"
+   ],
+   "how": "changelog"
+  },
+  "file_info_exif": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic/blob/arc/Resources/mul.lproj/MainMenu.xcstrings"
+   ],
+   "how": "source",
+   "note": "No info/EXIF command in the full menu list"
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "note": "Classifies files by extension",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic/blob/arc/Classes/Managed%20Objects/TSSTManagedGroup.m"
+   ],
+   "how": "source"
+  },
+  "video_native": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic",
+    "https://apps.apple.com/us/app/simple-comic/id1497435571?mt=12"
+   ],
+   "how": "docs"
+  },
+  "video_mkv_avi_webm": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic",
+    "https://apps.apple.com/us/app/simple-comic/id1497435571?mt=12"
+   ],
+   "how": "docs"
+  },
+  "photos_videos_one_grid": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic",
+    "https://apps.apple.com/us/app/simple-comic/id1497435571?mt=12"
+   ],
+   "how": "docs"
+  },
+  "video_skim_arrows": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic",
+    "https://apps.apple.com/us/app/simple-comic/id1497435571?mt=12"
+   ],
+   "how": "docs"
+  },
+  "subtitles_embedded": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic",
+    "https://apps.apple.com/us/app/simple-comic/id1497435571?mt=12"
+   ],
+   "how": "docs"
+  },
+  "subtitles_external_files": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic",
+    "https://apps.apple.com/us/app/simple-comic/id1497435571?mt=12"
+   ],
+   "how": "docs"
+  },
+  "audio_track_choice": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic",
+    "https://apps.apple.com/us/app/simple-comic/id1497435571?mt=12"
+   ],
+   "how": "docs"
+  },
+  "playback_speed": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic",
+    "https://apps.apple.com/us/app/simple-comic/id1497435571?mt=12"
+   ],
+   "how": "docs"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic",
+    "https://apps.apple.com/us/app/simple-comic/id1497435571?mt=12"
+   ],
+   "how": "docs"
+  },
+  "playlist": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic",
+    "https://apps.apple.com/us/app/simple-comic/id1497435571?mt=12"
+   ],
+   "how": "docs"
+  },
+  "saved_playlists": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic",
+    "https://apps.apple.com/us/app/simple-comic/id1497435571?mt=12"
+   ],
+   "how": "docs"
+  },
+  "pip": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic",
+    "https://apps.apple.com/us/app/simple-comic/id1497435571?mt=12"
+   ],
+   "how": "docs"
+  },
+  "music_mode": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic",
+    "https://apps.apple.com/us/app/simple-comic/id1497435571?mt=12"
+   ],
+   "how": "docs"
+  },
+  "streaming_urls": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic",
+    "https://apps.apple.com/us/app/simple-comic/id1497435571?mt=12"
+   ],
+   "how": "docs"
+  },
+  "online_subtitles": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic",
+    "https://apps.apple.com/us/app/simple-comic/id1497435571?mt=12"
+   ],
+   "how": "docs"
+  },
+  "video_filters_enhance": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic",
+    "https://apps.apple.com/us/app/simple-comic/id1497435571?mt=12"
+   ],
+   "how": "docs"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic",
+    "https://apps.apple.com/us/app/simple-comic/id1497435571?mt=12"
+   ],
+   "how": "docs"
+  },
+  "archives_as_folders": {
+   "value": "partial",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic/blob/arc/Info.plist",
+    "https://github.com/MaddTheSane/Simple-Comic/releases/tag/App-Store-1.11.0"
+   ],
+   "how": "source",
+   "note": "opens an archive as a comic book, not as a folder"
+  },
+  "comics_cbz_cbr": {
+   "value": "yes",
+   "note": "CBZ, CBR, CB7, CBT",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic/blob/arc/Info.plist"
+   ],
+   "how": "source"
+  },
+  "archive_passwords": {
+   "value": "yes",
+   "note": "Prompts for the password of encrypted archives",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic/blob/arc/Classes/Managed%20Objects/TSSTManagedGroup.m",
+    "https://github.com/MaddTheSane/Simple-Comic/blob/arc/Resources/mul.lproj/MainMenu.xcstrings"
+   ],
+   "how": "source"
+  },
+  "split_archives": {
+   "value": "yes",
+   "note": "Multi-volume RAR sets open as one comic (1.11)",
+   "evidence": [
+    "https://apps.apple.com/us/app/simple-comic/id1497435571?mt=12",
+    "https://github.com/MaddTheSane/Simple-Comic/releases/tag/App-Store-1.11.0"
+   ],
+   "how": "changelog"
+  },
+  "videos_in_archives": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic",
+    "https://apps.apple.com/us/app/simple-comic/id1497435571?mt=12"
+   ],
+   "how": "docs"
+  },
+  "manga_two_page": {
+   "value": "yes",
+   "note": "Two-page spread, right-to-left page order",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic/blob/arc/Resources/SimpleComic%20Help.help/Contents/Resources/en.lproj/navigation.html",
+    "https://apps.apple.com/us/app/simple-comic/id1497435571?mt=12"
+   ],
+   "how": "docs"
+  },
+  "rename_trash": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic/blob/arc/Resources/mul.lproj/MainMenu.xcstrings"
+   ],
+   "how": "source"
+  },
+  "move_copy": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic/blob/arc/Resources/mul.lproj/MainMenu.xcstrings"
+   ],
+   "how": "source"
+  },
+  "dual_pane": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic/blob/arc/Resources/mul.lproj/MainMenu.xcstrings"
+   ],
+   "how": "source"
+  },
+  "undo_file_actions": {
+   "value": "no",
+   "note": "No file actions to undo",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic/blob/arc/Resources/mul.lproj/MainMenu.xcstrings"
+   ],
+   "how": "source"
+  },
+  "image_editing": {
+   "value": "no",
+   "note": "Can capture a page to a file and set a page as the file icon",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic/blob/arc/Resources/mul.lproj/MainMenu.xcstrings"
+   ],
+   "how": "source"
+  },
+  "batch_convert": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic/blob/arc/Resources/mul.lproj/MainMenu.xcstrings"
+   ],
+   "how": "source"
+  },
+  "library_catalog": {
+   "value": "no",
+   "note": "No library",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic"
+   ],
+   "how": "docs"
+  },
+  "cloud_sync": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic"
+   ],
+   "how": "docs"
+  },
+  "keyboard_first": {
+   "value": "partial",
+   "note": "Page turning, zoom and menus by keyboard; no keyboard file browsing",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic/blob/arc/Resources/SimpleComic%20Help.help/Contents/Resources/en.lproj/navigation.html"
+   ],
+   "how": "docs"
+  },
+  "custom_shortcuts": {
+   "value": "no",
+   "note": "Only macOS system-wide App Shortcuts",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic/blob/arc/Resources/mul.lproj/MainMenu.xcstrings"
+   ],
+   "how": "source"
+  },
+  "shortcut_cheatsheet": {
+   "value": "partial",
+   "note": "Help book lists navigation keys",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic/blob/arc/Resources/SimpleComic%20Help.help/Contents/Resources/en.lproj/navigation.html"
+   ],
+   "how": "docs"
+  },
+  "boss_key": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic/blob/arc/Resources/mul.lproj/MainMenu.xcstrings"
+   ],
+   "how": "source"
+  },
+  "app_sandbox": {
+   "value": "yes",
+   "note": "Both builds sandboxed",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic/blob/arc/Simple%20Comic.entitlements",
+    "https://github.com/MaddTheSane/Simple-Comic/blob/arc/Simple%20Comic%20Direct.entitlements"
+   ],
+   "how": "source"
+  },
+  "no_network": {
+   "value": "partial",
+   "note": "Mac App Store build makes no network requests; direct build has network.client for Sparkle updates",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic/blob/arc/Simple%20Comic%20Direct.entitlements",
+    "https://github.com/MaddTheSane/Simple-Comic"
+   ],
+   "how": "source"
+  },
+  "notarized_attested": {
+   "value": "partial",
+   "note": "Direct build notarized (release pipeline); no public build attestation",
+   "evidence": [
+    "https://github.com/MaddTheSane/Simple-Comic/releases/tag/App-Store-1.11.0"
+   ],
+   "how": "changelog"
+  },
+  "mac_app_store": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://apps.apple.com/us/app/simple-comic/id1497435571?mt=12"
+   ],
+   "how": "store"
+  }
+ }
+}

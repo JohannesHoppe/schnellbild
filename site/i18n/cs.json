@@ -1,6 +1,7 @@
 {
   "name": "Čeština",
   "privacySlug": "privacy",
+  "alternativesSlug": "alternativy",
   "title": "Schnellbild: prohlížeč obrázků a videí pro macOS, který prostě není na houby",
   "seoTitle": "Schnellbild · prohlížeč obrázků a přehrávač MKV pro Mac",
   "seoDescription": "Rychlý prohlížeč fotek pro Mac zdarma, který přehraje i MKV, AVI a WebM: náhledy, prezentace, ZIP a RAR jako složky. Alternativa k IrfanView a XnView.",
@@ -140,7 +141,10 @@
   ],
   "safeMore": "Co přesně dělá a kde má své hranice: <a href=\"https://github.com/JohannesHoppe/schnellbild#safe-with-files-from-others\">Bezpečně se soubory od jiných</a> (anglicky).",
   "modelsTitle": "Přecházíte z Phieweru, IINA nebo Norton Commanderu?",
-  "modelsText": "Ty byly vzorem: Phiewer pro procházení obrázků klávesnicí, IINA pro rychlou práci s videi, Norton Commander pro dva panely. Jak si Schnellbild vede ve srovnání (anglicky): <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-phiewer-alternative\">bezplatná alternativa k Phieweru</a>, <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-iina-alternative-for-looking-through-videos\">bezplatná alternativa k IINA pro procházení videí</a>.",
+  "modelsText": "Ty byly vzorem: Phiewer pro procházení obrázků klávesnicí, IINA pro rychlou práci s videi, Norton Commander pro dva panely. Jak si Schnellbild vede ve srovnání: <a href=\"{alt:phiewer}\">bezplatná alternativa k Phieweru</a>, <a href=\"{alt:iina}\">bezplatná alternativa k IINA pro procházení videí</a>, <a href=\"{alt:norton-commander}\">od Norton Commanderu k Macu</a>.",
+  "altTitle": "Hledáte alternativu?",
+  "altText": "Jak si Schnellbild vede ve srovnání s programy, které lidé na Macu hledají, funkci po funkci a se zdrojem u každého tvrzení:",
+  "altAll": "Všechny alternativy",
   "ossTitle": "Open source",
   "ossText": "Schnellbild je svobodný software pod licencí MIT, zdrojový kód je <a href=\"https://github.com/JohannesHoppe/schnellbild\">na GitHubu</a>. Našli jste chybu nebo vám něco chybí? <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">Založte issue</a>.",
   "languagesText": "V jazyce vašeho Macu:",
@@ -149,6 +153,7 @@
   "footerPrivacy": "Soukromí",
   "footerImprint": "Právní informace (Impressum)",
   "footerEula": "Licenční smlouva",
+  "footerAlternatives": "Alternativy",
   "privacy": {
     "title": "Zásady ochrany osobních údajů",
     "description": "Schnellbild neshromažďuje žádné osobní údaje: žádný účet, žádná analytika, žádné sledování, žádný přístup k síti.",

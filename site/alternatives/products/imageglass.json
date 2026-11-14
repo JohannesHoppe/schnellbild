@@ -1,0 +1,600 @@
+{
+ "name": "ImageGlass",
+ "short": "ImageGlass",
+ "vendor": "Duong Dieu Phap",
+ "website": "https://imageglass.org",
+ "platforms": [
+  "Windows",
+  "macOS",
+  "Linux"
+ ],
+ "mac_available": "yes",
+ "page": "matrix",
+ "section": "image",
+ "price": "Classic free; Pro Individual $14.90 one-time, Pro Team $69 one-time (3 users), Pro Business by volume (from $290/year for 25 users)",
+ "license": "GPL-3.0 (Classic); Pro under a commercial licence",
+ "current_version": "10.0.6.906",
+ "last_update": "2026-09-05",
+ "engine": "Magick.NET, SkiaSharp, Svg.Skia (images only)",
+ "category": "image",
+ "summary": "Fast open-source image viewer, rebuilt in v10 on .NET/Avalonia for Windows, macOS (Apple silicon) and Linux. Strong format coverage (90+ incl. RAW, JXL, HEIC, AVIF, HDR, native SVG), smart caching, themes, custom hotkeys and codec plugins. It is a single-image viewer with a gallery strip, not a folder browser, and plays no videos.",
+ "where_it_wins": [
+  "Runs on Windows, macOS and Linux with one codebase",
+  "HDR tone mapping for AVIF, JPEG XL, HDR and EXR",
+  "Native animated SVG rendering",
+  "Codec plugin SDK for extra formats",
+  "Built-in crop, resize and colour picker",
+  "Themes and custom layouts",
+  "Custom hotkeys in the free edition"
+ ],
+ "where_schnellbild_wins": [
+  "Plays videos (MKV, AVI, WebM via VLC) in the same grid as photos",
+  "Archives and comics (ZIP, RAR, 7z, CBZ/CBR) open like folders",
+  "Folder grid with folder previews, list view, recursive and regex search",
+  "Dual pane with move/copy and undo",
+  "Slideshow through subfolders mixing photos and videos",
+  "App Sandbox, never goes online, build attestation",
+  "No paid tier: every feature free"
+ ],
+ "search_terms": [
+  "imageglass mac",
+  "imageglass macos",
+  "imageglass alternative",
+  "imageglass alternative mac",
+  "imageglass for mac apple silicon",
+  "imageglass vs",
+  "imageglass 代替 mac",
+  "imageglass alternative macos deutsch"
+ ],
+ "matrix": {
+  "free": {
+   "value": "partial",
+   "note": "Classic is free (GPLv3); Pro $14.90 one-time adds HDR Tone Mapper, free panning, File Watcher, mouse click actions, managed deployment",
+   "evidence": [
+    "https://imageglass.org/pricing"
+   ],
+   "how": "docs"
+  },
+  "open_source": {
+   "value": "yes",
+   "note": "ImageGlass Classic under GPLv3; Pro is the same codebase with a paid licence",
+   "evidence": [
+    "https://imageglass.org/pricing",
+    "https://github.com/d2phap/ImageGlass"
+   ],
+   "how": "source"
+  },
+  "native_apple_silicon": {
+   "value": "yes",
+   "note": "v10: macOS 14+, Apple silicon arm64 DMG, AOT-compiled .NET/Avalonia",
+   "evidence": [
+    "https://imageglass.org/news/introducing-imageglass-10-rebuilt-for-speed-and-cross-platform-support-107",
+    "https://github.com/d2phap/ImageGlass/releases/tag/10.0.6.906"
+   ],
+   "how": "docs"
+  },
+  "no_account_no_tracking": {
+   "value": "yes",
+   "note": "No account (Pro licensing is account-free); the app checks for updates online (AutoUpdate setting)",
+   "evidence": [
+    "https://imageglass.org/pricing",
+    "https://github.com/d2phap/ImageGlass/blob/HEAD/source/ImageGlass.Lib/Settings/Config.cs"
+   ],
+   "how": "source"
+  },
+  "dark_light_setting": {
+   "value": "partial",
+   "note": "Follows the system; a theme pack is chosen for dark and one for light mode, so the same pack can be set for both",
+   "evidence": [
+    "https://github.com/d2phap/ImageGlass/blob/HEAD/source/ImageGlass.Lib/Settings/Config.cs",
+    "https://github.com/d2phap/ImageGlass/blob/HEAD/source/ImageGlass.Lib/Windows/Settings/Pages/AppearanceSettingsView.axaml"
+   ],
+   "how": "source"
+  },
+  "languages_20": {
+   "value": "yes",
+   "note": "39 language files in the repository (Crowdin)",
+   "evidence": [
+    "https://github.com/d2phap/ImageGlass/tree/HEAD/source/__assets/__app/_lang"
+   ],
+   "how": "source"
+  },
+  "folder_browsing": {
+   "value": "partial",
+   "note": "Opens a file or folder and pages through that folder's images; no folder tree, no navigating into subfolders",
+   "evidence": [
+    "https://imageglass.org/docs/features"
+   ],
+   "how": "docs"
+  },
+  "thumbnail_grid": {
+   "value": "partial",
+   "note": "Gallery of the current folder's images (strip or columns); no folder tiles",
+   "evidence": [
+    "https://imageglass.org/docs/features",
+    "https://github.com/d2phap/ImageGlass/blob/HEAD/source/ImageGlass.Lib/Settings/Config.cs"
+   ],
+   "how": "docs"
+  },
+  "list_view": {
+   "value": "no",
+   "note": "No list/details view among the settings",
+   "evidence": [
+    "https://github.com/d2phap/ImageGlass/blob/HEAD/source/ImageGlass.Lib/Settings/Config.cs"
+   ],
+   "how": "source"
+  },
+  "recursive_search": {
+   "value": "no",
+   "note": "No file name search",
+   "evidence": [
+    "https://imageglass.org/docs/features",
+    "https://github.com/d2phap/ImageGlass/blob/HEAD/source/ImageGlass.Lib/Settings/Config.cs"
+   ],
+   "how": "source"
+  },
+  "regex_search": {
+   "value": "no",
+   "note": "No search",
+   "evidence": [
+    "https://github.com/d2phap/ImageGlass/blob/HEAD/source/ImageGlass.Lib/Settings/Config.cs"
+   ],
+   "how": "source"
+  },
+  "network_shares_fast": {
+   "value": "partial",
+   "note": "Off-thread decoding and look-ahead caching; nothing specific to network shares documented",
+   "evidence": [
+    "https://imageglass.org/news/introducing-imageglass-10-rebuilt-for-speed-and-cross-platform-support-107"
+   ],
+   "how": "docs"
+  },
+  "multiple_windows": {
+   "value": "yes",
+   "note": "Optional multiple instances (EnableMultiInstances)",
+   "evidence": [
+    "https://imageglass.org/docs/features",
+    "https://github.com/d2phap/ImageGlass/blob/HEAD/source/ImageGlass.Lib/Settings/Config.cs"
+   ],
+   "how": "source"
+  },
+  "bookmarks": {
+   "value": "no",
+   "note": "No favourite folders",
+   "evidence": [
+    "https://github.com/d2phap/ImageGlass/blob/HEAD/source/ImageGlass.Lib/Settings/Config.cs"
+   ],
+   "how": "source"
+  },
+  "img_modern_formats": {
+   "value": "yes",
+   "note": "HEIC/HEIF (still), AVIF (animated via AVIF plugin), JXL (still), WebP",
+   "evidence": [
+    "https://imageglass.org/docs/supported-formats"
+   ],
+   "how": "docs"
+  },
+  "img_raw": {
+   "value": "yes",
+   "note": "40 camera RAW extensions, read only",
+   "evidence": [
+    "https://imageglass.org/docs/supported-formats"
+   ],
+   "how": "docs"
+  },
+  "img_psd_exr": {
+   "value": "yes",
+   "note": "PSD, PSB, EXR (EXR with HDR tone mapping)",
+   "evidence": [
+    "https://imageglass.org/docs/supported-formats",
+    "https://imageglass.org/news/introducing-imageglass-10-rebuilt-for-speed-and-cross-platform-support-107"
+   ],
+   "how": "docs"
+  },
+  "img_svg_pdf": {
+   "value": "partial",
+   "note": "Native SVG/SVGZ renderer incl. animated SVG; no PDF",
+   "evidence": [
+    "https://imageglass.org/docs/supported-formats",
+    "https://imageglass.org/news/introducing-imageglass-10-rebuilt-for-speed-and-cross-platform-support-107"
+   ],
+   "how": "docs"
+  },
+  "img_animated": {
+   "value": "yes",
+   "note": "GIF, WebP, SVG; APNG via the APNG plugin",
+   "evidence": [
+    "https://imageglass.org/docs/features",
+    "https://imageglass.org/docs/supported-formats"
+   ],
+   "how": "docs"
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "evidence": [
+    "https://imageglass.org/docs/features"
+   ],
+   "how": "docs"
+  },
+  "zoom_rotate": {
+   "value": "yes",
+   "note": "Six zoom modes, cursor-precise zoom, rotate/flip",
+   "evidence": [
+    "https://imageglass.org/docs/features"
+   ],
+   "how": "docs"
+  },
+  "slideshow": {
+   "value": "yes",
+   "note": "Countdown timer, random interval, transitions",
+   "evidence": [
+    "https://imageglass.org/docs/features",
+    "https://github.com/d2phap/ImageGlass/blob/HEAD/source/ImageGlass.Lib/Settings/Config.cs"
+   ],
+   "how": "docs"
+  },
+  "slideshow_recursive": {
+   "value": "partial",
+   "note": "Can load images from subfolders (EnableSubfoldersLoading); images only, no videos",
+   "evidence": [
+    "https://github.com/d2phap/ImageGlass/blob/HEAD/source/ImageGlass.Lib/Settings/Config.cs"
+   ],
+   "how": "source"
+  },
+  "auto_enhance_view": {
+   "value": "no",
+   "note": "Colour channel view and invert only; no auto enhance",
+   "evidence": [
+    "https://imageglass.org/docs/features"
+   ],
+   "how": "docs"
+  },
+  "file_info_exif": {
+   "value": "partial",
+   "note": "EXIF through the separate ExifGlass tool; no video information",
+   "evidence": [
+    "https://imageglass.org/docs/features"
+   ],
+   "how": "docs"
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/d2phap/ImageGlass/blob/develop/source/ImageGlass.Lib/Common/Localization/Lang.cs"
+   ],
+   "how": "source",
+   "note": "Lang.cs holds all UI strings; none for a notice about mismatched extension and content (same on Windows, macOS, Linux)"
+  },
+  "video_native": {
+   "value": "no",
+   "note": "Image viewer; only the clip embedded in a Motion Photo JPEG plays (Frame Navigation tool)",
+   "evidence": [
+    "https://imageglass.org/docs/features",
+    "https://imageglass.org/news/introducing-imageglass-10-rebuilt-for-speed-and-cross-platform-support-107"
+   ],
+   "how": "docs"
+  },
+  "video_mkv_avi_webm": {
+   "value": "no",
+   "note": "Image viewer; only the clip embedded in a Motion Photo JPEG plays (Frame Navigation tool)",
+   "evidence": [
+    "https://imageglass.org/docs/features",
+    "https://imageglass.org/news/introducing-imageglass-10-rebuilt-for-speed-and-cross-platform-support-107"
+   ],
+   "how": "docs"
+  },
+  "photos_videos_one_grid": {
+   "value": "no",
+   "note": "Image viewer; only the clip embedded in a Motion Photo JPEG plays (Frame Navigation tool)",
+   "evidence": [
+    "https://imageglass.org/docs/features",
+    "https://imageglass.org/news/introducing-imageglass-10-rebuilt-for-speed-and-cross-platform-support-107"
+   ],
+   "how": "docs"
+  },
+  "video_skim_arrows": {
+   "value": "no",
+   "note": "Image viewer; only the clip embedded in a Motion Photo JPEG plays (Frame Navigation tool)",
+   "evidence": [
+    "https://imageglass.org/docs/features",
+    "https://imageglass.org/news/introducing-imageglass-10-rebuilt-for-speed-and-cross-platform-support-107"
+   ],
+   "how": "docs"
+  },
+  "subtitles_embedded": {
+   "value": "no",
+   "note": "Image viewer; only the clip embedded in a Motion Photo JPEG plays (Frame Navigation tool)",
+   "evidence": [
+    "https://imageglass.org/docs/features",
+    "https://imageglass.org/news/introducing-imageglass-10-rebuilt-for-speed-and-cross-platform-support-107"
+   ],
+   "how": "docs"
+  },
+  "subtitles_external_files": {
+   "value": "no",
+   "note": "Image viewer; only the clip embedded in a Motion Photo JPEG plays (Frame Navigation tool)",
+   "evidence": [
+    "https://imageglass.org/docs/features",
+    "https://imageglass.org/news/introducing-imageglass-10-rebuilt-for-speed-and-cross-platform-support-107"
+   ],
+   "how": "docs"
+  },
+  "audio_track_choice": {
+   "value": "no",
+   "note": "Image viewer; only the clip embedded in a Motion Photo JPEG plays (Frame Navigation tool)",
+   "evidence": [
+    "https://imageglass.org/docs/features",
+    "https://imageglass.org/news/introducing-imageglass-10-rebuilt-for-speed-and-cross-platform-support-107"
+   ],
+   "how": "docs"
+  },
+  "playback_speed": {
+   "value": "no",
+   "note": "Image viewer; only the clip embedded in a Motion Photo JPEG plays (Frame Navigation tool)",
+   "evidence": [
+    "https://imageglass.org/docs/features",
+    "https://imageglass.org/news/introducing-imageglass-10-rebuilt-for-speed-and-cross-platform-support-107"
+   ],
+   "how": "docs"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "note": "Image viewer; only the clip embedded in a Motion Photo JPEG plays (Frame Navigation tool)",
+   "evidence": [
+    "https://imageglass.org/docs/features",
+    "https://imageglass.org/news/introducing-imageglass-10-rebuilt-for-speed-and-cross-platform-support-107"
+   ],
+   "how": "docs"
+  },
+  "playlist": {
+   "value": "no",
+   "note": "Image viewer; only the clip embedded in a Motion Photo JPEG plays (Frame Navigation tool)",
+   "evidence": [
+    "https://imageglass.org/docs/features",
+    "https://imageglass.org/news/introducing-imageglass-10-rebuilt-for-speed-and-cross-platform-support-107"
+   ],
+   "how": "docs"
+  },
+  "saved_playlists": {
+   "value": "no",
+   "note": "Image viewer; only the clip embedded in a Motion Photo JPEG plays (Frame Navigation tool)",
+   "evidence": [
+    "https://imageglass.org/docs/features",
+    "https://imageglass.org/news/introducing-imageglass-10-rebuilt-for-speed-and-cross-platform-support-107"
+   ],
+   "how": "docs"
+  },
+  "pip": {
+   "value": "no",
+   "note": "Image viewer; only the clip embedded in a Motion Photo JPEG plays (Frame Navigation tool)",
+   "evidence": [
+    "https://imageglass.org/docs/features",
+    "https://imageglass.org/news/introducing-imageglass-10-rebuilt-for-speed-and-cross-platform-support-107"
+   ],
+   "how": "docs"
+  },
+  "music_mode": {
+   "value": "no",
+   "note": "Image viewer; only the clip embedded in a Motion Photo JPEG plays (Frame Navigation tool)",
+   "evidence": [
+    "https://imageglass.org/docs/features",
+    "https://imageglass.org/news/introducing-imageglass-10-rebuilt-for-speed-and-cross-platform-support-107"
+   ],
+   "how": "docs"
+  },
+  "streaming_urls": {
+   "value": "no",
+   "note": "Image viewer; only the clip embedded in a Motion Photo JPEG plays (Frame Navigation tool)",
+   "evidence": [
+    "https://imageglass.org/docs/features",
+    "https://imageglass.org/news/introducing-imageglass-10-rebuilt-for-speed-and-cross-platform-support-107"
+   ],
+   "how": "docs"
+  },
+  "online_subtitles": {
+   "value": "no",
+   "note": "Image viewer; only the clip embedded in a Motion Photo JPEG plays (Frame Navigation tool)",
+   "evidence": [
+    "https://imageglass.org/docs/features",
+    "https://imageglass.org/news/introducing-imageglass-10-rebuilt-for-speed-and-cross-platform-support-107"
+   ],
+   "how": "docs"
+  },
+  "video_filters_enhance": {
+   "value": "no",
+   "note": "Image viewer; only the clip embedded in a Motion Photo JPEG plays (Frame Navigation tool)",
+   "evidence": [
+    "https://imageglass.org/docs/features",
+    "https://imageglass.org/news/introducing-imageglass-10-rebuilt-for-speed-and-cross-platform-support-107"
+   ],
+   "how": "docs"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "note": "No video support",
+   "evidence": [
+    "https://imageglass.org/docs/features"
+   ],
+   "how": "docs"
+  },
+  "archives_as_folders": {
+   "value": "no",
+   "note": "No archive formats in the supported list",
+   "evidence": [
+    "https://imageglass.org/docs/supported-formats"
+   ],
+   "how": "docs"
+  },
+  "comics_cbz_cbr": {
+   "value": "no",
+   "note": "No archive formats in the supported list",
+   "evidence": [
+    "https://imageglass.org/docs/supported-formats"
+   ],
+   "how": "docs"
+  },
+  "archive_passwords": {
+   "value": "no",
+   "note": "No archive formats in the supported list",
+   "evidence": [
+    "https://imageglass.org/docs/supported-formats"
+   ],
+   "how": "docs"
+  },
+  "split_archives": {
+   "value": "no",
+   "note": "No archive formats in the supported list",
+   "evidence": [
+    "https://imageglass.org/docs/supported-formats"
+   ],
+   "how": "docs"
+  },
+  "videos_in_archives": {
+   "value": "no",
+   "note": "No archive formats in the supported list",
+   "evidence": [
+    "https://imageglass.org/docs/supported-formats"
+   ],
+   "how": "docs"
+  },
+  "manga_two_page": {
+   "value": "no",
+   "note": "No archive formats in the supported list",
+   "evidence": [
+    "https://imageglass.org/docs/supported-formats"
+   ],
+   "how": "docs"
+  },
+  "rename_trash": {
+   "value": "partial",
+   "note": "Delete/trash the shown image (with confirmation); no new folder",
+   "evidence": [
+    "https://github.com/d2phap/ImageGlass/blob/HEAD/source/ImageGlass.Lib/Settings/Config.cs",
+    "https://github.com/d2phap/ImageGlass/blob/HEAD/source/ImageGlass.Linux/Common/FreeDesktopTrash.cs"
+   ],
+   "how": "source"
+  },
+  "move_copy": {
+   "value": "partial",
+   "note": "Copy or cut files to the clipboard (cut not on macOS)",
+   "evidence": [
+    "https://imageglass.org/docs/features",
+    "https://imageglass.org/news/introducing-imageglass-10-rebuilt-for-speed-and-cross-platform-support-107"
+   ],
+   "how": "docs"
+  },
+  "dual_pane": {
+   "value": "no",
+   "note": "Single viewer",
+   "evidence": [
+    "https://imageglass.org/docs/features"
+   ],
+   "how": "docs"
+  },
+  "undo_file_actions": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/d2phap/ImageGlass/blob/develop/source/ImageGlass.Lib/Common/Localization/Lang.cs"
+   ],
+   "how": "source",
+   "note": "Full menu (rename, move to Recycle Bin/Trash, delete permanently, cut/copy file) has no undo"
+  },
+  "image_editing": {
+   "value": "yes",
+   "note": "Rotate, flip, crop, resize, lossless compression, save as",
+   "evidence": [
+    "https://imageglass.org/docs/features"
+   ],
+   "how": "docs"
+  },
+  "batch_convert": {
+   "value": "no",
+   "note": "Converts the shown image only",
+   "evidence": [
+    "https://imageglass.org/docs/features"
+   ],
+   "how": "docs"
+  },
+  "library_catalog": {
+   "value": "no",
+   "note": "No catalog",
+   "evidence": [
+    "https://imageglass.org/docs/features"
+   ],
+   "how": "docs"
+  },
+  "cloud_sync": {
+   "value": "no",
+   "evidence": [
+    "https://imageglass.org/docs/features"
+   ],
+   "how": "docs"
+  },
+  "keyboard_first": {
+   "value": "partial",
+   "note": "Hotkeys for menu commands, but toolbar/mouse-oriented UI",
+   "evidence": [
+    "https://imageglass.org/docs/features"
+   ],
+   "how": "docs"
+  },
+  "custom_shortcuts": {
+   "value": "yes",
+   "note": "Free in Classic; custom mouse click actions are Pro",
+   "evidence": [
+    "https://imageglass.org/pricing",
+    "https://imageglass.org/docs/features"
+   ],
+   "how": "docs"
+  },
+  "shortcut_cheatsheet": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/d2phap/ImageGlass/blob/develop/source/ImageGlass.Lib/Common/Localization/Lang.cs"
+   ],
+   "how": "source",
+   "note": "Settings > Keyboard lists and edits menu hotkeys with search; no printable sheet; Help menu only has About"
+  },
+  "boss_key": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/d2phap/ImageGlass/blob/develop/source/ImageGlass.Lib/Common/Localization/Lang.cs"
+   ],
+   "how": "source",
+   "note": "No hide or minimize command in the menu list; on macOS only the system Cmd+H that every app has"
+  },
+  "app_sandbox": {
+   "value": "no",
+   "note": "macOS entitlements have no app-sandbox key (JIT, unsigned memory, library validation off)",
+   "evidence": [
+    "https://github.com/d2phap/ImageGlass/blob/HEAD/source/__assets/mac/ImageGlass.entitlements"
+   ],
+   "how": "source"
+  },
+  "no_network": {
+   "value": "no",
+   "note": "Online update check (AutoUpdate)",
+   "evidence": [
+    "https://github.com/d2phap/ImageGlass/blob/HEAD/source/ImageGlass.Lib/Settings/Config.cs"
+   ],
+   "how": "source"
+  },
+  "notarized_attested": {
+   "value": "partial",
+   "note": "DMG signed with Developer ID and notarized; no build attestation",
+   "evidence": [
+    "https://github.com/d2phap/ImageGlass/blob/HEAD/source/__assets/mac/script-pack-mac-arm64-dmg.sh"
+   ],
+   "how": "source"
+  },
+  "mac_app_store": {
+   "value": "no",
+   "note": "Microsoft Store on Windows; not in the Mac App Store",
+   "evidence": [
+    "https://itunes.apple.com/search?term=imageglass&entity=macSoftware&country=us",
+    "https://github.com/d2phap/ImageGlass/releases/tag/10.0.6.906"
+   ],
+   "how": "store"
+  }
+ }
+}
