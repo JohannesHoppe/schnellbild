@@ -130,6 +130,7 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         XCTAssertTrue(element("playlist").firstMatch.waitForExistence(timeout: 5))
         shoot("playlist")
         app.typeKey(.escape, modifierFlags: [])   // the playlist goes
+        eventually("the playlist closes") { !self.element("playlist").firstMatch.exists }
         app.typeKey(.escape, modifierFlags: [])   // then the show
         XCTAssertTrue(searchField.waitForExistence(timeout: 10))
         RunLoop.current.run(until: Date().addingTimeInterval(2))   // out of full screen

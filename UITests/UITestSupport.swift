@@ -62,7 +62,10 @@ class SchnellbildUITestCase: XCTestCase {
         // pairs, so these pairs come first and every argument after them
         // starts with "-": a value left without its name would be taken
         // for a file to open, and the app would show no window.
+        // No restored windows: a window that was in full screen when an
+        // earlier launch ended (a slideshow) would open in full screen again.
         var args = ["-AppleLanguages", "(\(language))", "-AppleLocale", Self.locale(of: language),
+                    "-ApplePersistenceIgnoreState", "YES",
                     "--ui-testing"] + extra
         if resetState { args.append("--reset-state") }
         if let path { args.append("--open=\(path)") }
