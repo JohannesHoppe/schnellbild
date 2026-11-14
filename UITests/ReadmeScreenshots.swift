@@ -121,7 +121,7 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         waitForBadge(containing: ui("Slideshow"))
         element("video.avkit").hover()   // the control bar shows
         _ = element("videoBar").waitForExistence(timeout: 5)
-        shoot("slideshow")
+        shoot("slideshow", settle: 0.5)   // before the bar goes (3 s without the mouse moving)
         app.typeKey(.escape, modifierFlags: [])
         XCTAssertTrue(searchField.waitForExistence(timeout: 10))
         RunLoop.current.run(until: Date().addingTimeInterval(2))   // out of full screen
