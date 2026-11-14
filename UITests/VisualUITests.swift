@@ -300,7 +300,9 @@ final class VisualUITests: SchnellbildUITestCase {
     /// callbacks): on the even grey clip the lower part of the picture,
     /// where they go, shows the text; with V it is even again.
     private func checkSubtitlesAreDrawn(_ fixture: String, vlc: Bool) throws {
-        let video = try openVideo(fixture, vlc: vlc)
+        let log = tempDir.appendingPathComponent("app.log")
+        defer { print("app log:\n" + ((try? String(contentsOf: log, encoding: .utf8)) ?? "(none)")) }
+        let video = try openVideo(fixture, vlc: vlc, extra: ["--test-log=\(log.path)"])
         eventually("the subtitles are on", timeout: 20) { text(of: video).contains("subtitles 1/2 en") }
         // The mouse off the video: the control bar goes and covers nothing
         app.windows.firstMatch.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.02)).hover()
@@ -325,7 +327,9 @@ final class VisualUITests: SchnellbildUITestCase {
 
     /// The ASS subtitles (libass) of the MKV, chosen with ⌃⌘S.
     func testVLCDrawsASSSubtitles() throws {
-        let video = try openVideo("tracks.mkv", vlc: true)
+        let log = tempDir.appendingPathComponent("app.log")
+        defer { print("app log:\n" + ((try? String(contentsOf: log, encoding: .utf8)) ?? "(none)")) }
+        let video = try openVideo("tracks.mkv", vlc: true, extra: ["--test-log=\(log.path)"])
         eventually("the subtitles are on", timeout: 20) { text(of: video).contains("subtitles 1/2 en") }
         app.typeKey("s", modifierFlags: [.control, .command])
         eventually("the ASS track") { text(of: video).contains("subtitles 2/2 de") }

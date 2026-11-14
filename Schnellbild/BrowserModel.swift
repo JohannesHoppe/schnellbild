@@ -4987,19 +4987,39 @@ final class AVPlaybackControl: PlaybackControl {
     /// AVKit draws a newly chosen subtitle track only from its next line on,
     /// and keeps a line of the one left on screen until that line ends (seen
     /// on CI, macOS 15 and 26): a seek to where the video stands draws the
-    /// choice at once.
+    /// choice at once. Once more when the item reports the choice made, for
+    /// a system that applies it after the first seek.
     private func refreshSubtitles() {
+        if let selectionObserver { NotificationCenter.default.removeObserver(selectionObserver) }
+        selectionObserver = NotificationCenter.default.addObserver(
+            forName: AVPlayerItem.mediaSelectionDidChangeNotification, object: player.currentItem, queue: .main) { [weak self] _ in
+            MainActor.assumeIsolated {
+                guard let self else { return }
+                if let selectionObserver = self.selectionObserver { NotificationCenter.default.removeObserver(selectionObserver) }
+                self.selectionObserver = nil
+                self.seekToItself("the selection changed")
+            }
+        }
         Task { @MainActor [weak self] in
             // (once the item can seek)
             for _ in 0..<50 {
                 guard let self, let item = self.player.currentItem else { return }
                 if item.status == .readyToPlay {
-                    self.player.seek(to: self.player.currentTime(), toleranceBefore: .zero, toleranceAfter: .zero) { _ in }
+                    self.seekToItself("subtitles chosen")
                     return
                 }
                 try? await Task.sleep(for: .milliseconds(100))
             }
         }
+    }
+
+    private var selectionObserver: NSObjectProtocol?
+
+    private func seekToItself(_ reason: String) {
+        guard let item = player.currentItem, item.status == .readyToPlay else { return }
+        let selected = legible.flatMap { item.currentMediaSelection.selectedMediaOption(in: $0)?.displayName } ?? "none"
+        BrowserModel.testLog("avkit subtitles: \(reason), shown \(selected), seek to \(player.currentTime().seconds)")
+        player.seek(to: player.currentTime(), toleranceBefore: .zero, toleranceAfter: .zero) { _ in }
     }
 
     func selectAudioTrack(_ id: Int) {

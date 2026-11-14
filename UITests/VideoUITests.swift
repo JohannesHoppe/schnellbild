@@ -226,7 +226,7 @@ final class VideoUITests: SchnellbildUITestCase {
         func percent() -> Int { Int(text(of: progress).filter(\.isNumber)) ?? -1 }
         let before = percent(), start = Date()
         RunLoop.current.run(until: start.addingTimeInterval(3))
-        let played = Double(percent() - before) / 100 * 20   // seconds of the 20 s video
+        let played = Double(percent() - before) / 100 * 20   // seconds of the 20 s video (its subtitles end with it)
         let took = Date().timeIntervalSince(start)
         print("\(vlc ? "VLC" : "AVKit") at 2×: \(played) s of video in \(took) s")
         XCTAssertGreaterThan(played, took * 1.5, "plays faster than 1×")
@@ -266,7 +266,9 @@ final class VideoUITests: SchnellbildUITestCase {
     private func checkControlBarStays(vlc: Bool) throws {
         try put("clip.mp4", at: "a-clip.mp4")
         try put("grey.mp4", at: "b-grey.mp4")
-        let extra = (vlc ? ["--force-vlc"] : []) + ["--hold-video-bar"]
+        let log = tempDir.appendingPathComponent("app.log")
+        let extra = (vlc ? ["--force-vlc"] : []) + ["--hold-video-bar", "--test-log=\(log.path)"]
+        defer { print("app log:\n" + ((try? String(contentsOf: log, encoding: .utf8)) ?? "(none)")) }
         launch(open: tempDir.appendingPathComponent("a-clip.mp4").path, extra: extra)
         let id = vlc ? "video.vlc" : "video.avkit"
         var video = element(id)

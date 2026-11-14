@@ -40,8 +40,8 @@ make clip.ogv  -c:v libvpx -crf 30 -b:v 200k -f ogg
 # MP4: mov_text (3GPP timed text) for both; MKV: SubRip and ASS.
 SUBS=$(mktemp -d)
 trap 'rm -rf "$SUBS"; [ -n "${finished:-}" ] || exit 1' EXIT
-printf '1\n00:00:00,000 --> 00:00:30,000\nSUBTITLE ONE\n\n' > "$SUBS/en.srt"
-printf '1\n00:00:00,000 --> 00:00:30,000\nUNTERTITEL ZWEI\n\n' > "$SUBS/de.srt"
+printf '1\n00:00:00,000 --> 00:00:20,000\nSUBTITLE ONE\n\n' > "$SUBS/en.srt"
+printf '1\n00:00:00,000 --> 00:00:20,000\nUNTERTITEL ZWEI\n\n' > "$SUBS/de.srt"
 "$FFMPEG" -loglevel error -y -i "$SUBS/de.srt" "$SUBS/de.ass"
 tracks() {
   local out=$1 second=$2; shift 2
