@@ -133,7 +133,7 @@ OG_LOCALES = {"en": "en_US", "de": "de_DE", "fr": "fr_FR", "es": "es_ES", "it": 
               "nl": "nl_NL", "pl": "pl_PL", "sv": "sv_SE", "da": "da_DK", "nb": "nb_NO", "fi": "fi_FI",
               "cs": "cs_CZ", "tr": "tr_TR", "ru": "ru_RU", "uk": "uk_UA", "ja": "ja_JP", "ko": "ko_KR",
               "zh-Hans": "zh_CN", "zh-Hant": "zh_TW"}
-THEME = {"light": "#fbfbfd", "dark": "#000000"}  # the page background of site.css
+THEME = {"light": "#fbfbfd", "dark": "#121212"}  # the page background of site.css
 ORGANIZATION = {"@type": "Organization", "@id": SITE + "/#organization", "name": "HAUS HOPPE - ITS",
                 "url": "https://haushoppe-its.de"}
 
