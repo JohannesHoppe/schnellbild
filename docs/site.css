@@ -12,7 +12,7 @@
    Every text colour reaches 4.5:1 on every surface it sits on. */
 :root {
   --bg: #fbfbfd;          /* 0dp: the page */
-  --surface: #ffffff;     /* 1dp: cards, tiles, feature panels, the safety band, footer, text pages */
+  --surface: #ffffff;     /* 1dp: cards, tiles, the safety band, footer */
   --surface-2: #ffffff;   /* 4dp: tiles inside a band */
   --control: #ffffff;     /* 6dp: buttons, the switch, the language button */
   --control-hover: #f5f5f7; /* 12dp: the same under the pointer */
@@ -216,13 +216,9 @@ h3 { font-size: 21px; line-height: 1.25; margin: 0 0 8px; letter-spacing: -0.01e
 .card .i { color: var(--accent); margin-bottom: 14px; }
 .card p { margin: 0; color: var(--muted); }
 
-/* Each feature is a panel one step above the page; the screenshot's own
-   shadow shows on it in the dark too */
-.feature {
-  display: grid; grid-template-columns: 1fr 1.4fr; gap: 48px; align-items: center;
-  margin: 16px 0; padding: 40px 48px;
-  background: var(--surface); border: 1px solid var(--line); border-radius: 28px; box-shadow: var(--raise);
-}
+/* Features read like an article: text and screenshot on the page itself,
+   no panels (tiles are for the short facts above) */
+.feature { display: grid; grid-template-columns: 1fr 1.4fr; gap: 56px; align-items: center; padding: 48px 0; }
 .feature:nth-of-type(even) { grid-template-columns: 1.4fr 1fr; }
 .feature:nth-of-type(even) .text { order: 2; }
 .feature h3 { font-size: clamp(24px, 2.6vw, 30px); letter-spacing: -0.02em; }
@@ -232,7 +228,7 @@ h3 { font-size: 21px; line-height: 1.25; margin: 0 0 8px; letter-spacing: -0.01e
 .more-features { text-align: center; font-size: 19px; font-weight: 600; margin: 40px 0 0; }
 .media [data-parallax] { transform: translateY(calc(var(--d, 0) * 16px)); will-change: transform; }
 @media (max-width: 820px) {
-  .feature, .feature:nth-of-type(even) { grid-template-columns: 1fr; gap: 20px; padding: 26px 22px; margin: 12px 0; border-radius: 22px; }
+  .feature, .feature:nth-of-type(even) { grid-template-columns: 1fr; gap: 20px; padding: 32px 0; }
   .feature:nth-of-type(even) .text { order: 0; }
   .media [data-parallax] { transform: none; }
 }
@@ -256,12 +252,8 @@ h3 { font-size: 21px; line-height: 1.25; margin: 0 0 8px; letter-spacing: -0.01e
 .cta .icon { width: 96px; height: 96px; margin: 0 auto 22px; }
 .cta .intro { margin: 0 auto 30px; }
 
-/* Text pages (privacy, EULA, 404): a sheet one step above the page */
-.page {
-  width: calc(100% - 32px); margin: 16px auto 80px; padding: 16px 56px 52px;
-  background: var(--surface); border: 1px solid var(--line); border-radius: 28px; box-shadow: var(--raise);
-  overflow-wrap: break-word;
-}
+/* Text pages (privacy, EULA, 404): plain text on the page, like an article */
+.page { padding: 32px 20px 88px; overflow-wrap: break-word; }
 .page h1 { font-size: clamp(36px, 6vw, 56px); line-height: 1.05; letter-spacing: -0.03em; margin: 24px 0 24px; }
 .page h2 { font-size: 26px; margin: 44px 0 10px; }
 .page li { margin: 6px 0; }
@@ -297,8 +289,7 @@ footer a { color: var(--muted); }
   .lang-list { position: fixed; left: 12px; right: 12px; top: 64px; }
   .button { min-width: 0; width: 100%; max-width: 340px; }
   section { padding: 64px 0; }
-  .page { width: calc(100% - 24px); padding: 4px 22px 36px; border-radius: 22px; }
-  .feature, .feature:nth-of-type(even) { padding: 22px 16px; }
+  .page { padding: 24px 16px 64px; }
   .checks li { padding: 12px 14px 12px 40px; font-size: 17px; }
   .checks li::before { left: 15px; top: 12px; }
 }
