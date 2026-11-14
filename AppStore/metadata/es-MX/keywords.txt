@@ -1,0 +1,1 @@
+reproductor,video,mkv,visualizador,imágenes,avi,reproducir,player,diapositivas,webm,cómic,cbz,cbr

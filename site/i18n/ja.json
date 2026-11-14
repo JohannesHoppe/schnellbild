@@ -1,16 +1,16 @@
 {
   "name": "日本語",
   "privacySlug": "privacy",
-  "title": "Schnellbild：イライラしない、macOSのための画像・ビデオビューア",
-  "seoTitle": "Schnellbild · Mac用の無料画像・ビデオビューア（MKV・RAR対応）",
-  "seoDescription": "macOS用の高速で無料の画像ビューア・ビデオプレーヤー。サムネール表示、キーボード操作、MKV・AVI・WebMの再生、ZIPやRARをフォルダのように表示。PhiewerやIINAの代わりに。",
-  "keywords": "画像ビューア Mac, 写真ビューア macOS, 無料 画像ビューア, MKV 再生 Mac, AVI WebM 再生, Phiewer 代替, IINA 代替, RAR 画像 表示, ZIP 漫画 ビューア, CBZ CBR, スライドショー, Schnellbild",
+  "title": "Schnellbild：イライラしない、Mac用の画像・動画ビューア",
+  "seoTitle": "Schnellbild · Mac用の画像ビューア。動画再生、漫画、スライドショーも",
+  "seoDescription": "Mac用の高速で無料の画像ビューア。AVI・MKVの動画再生、ZIP・RARの漫画（CBZ・CBR）、スライドショーに対応し、キーボードでめくれます。Honeyview、MassiGra、Leeyesの代わりにMacで。",
+  "keywords": "画像ビューア Mac, Mac 画像ビュアー, 写真ビューア Mac, フォトビューアー Mac, 動画再生 Mac, Mac 動画プレイヤー, AVI 再生 Mac, MKV 再生 Mac, FLV 再生 Mac, 漫画ビューア Mac, ZIP RAR 漫画, CBZ CBR, スライドショー Mac, 写真 スライドショー Mac, Honeyview Mac 代わり, MassiGra Mac 代わり, Leeyes Mac 代わり, BandiView 代わり, XnView 代替, Phiewer 代替, Schnellbild",
   "navFeatures": "機能",
   "navSafety": "安全性",
   "language": "言語",
   "iconAlt": "Schnellbildのアプリアイコン",
-  "tagline": "イライラしない、macOSのための画像・ビデオビューア。",
-  "lead": "フォルダを開けば、サムネールが並びます。1枚を大きく表示して、キーボードで次々にめくれます。ビデオもその場で再生。MKV、AVI、WebMも。読み込むライブラリも、待ち時間も、余計なものもありません。",
+  "tagline": "イライラしない、Mac用の画像・動画ビューア。",
+  "lead": "フォルダを開けば、サムネールが並びます。1枚を大きく表示して、キーボードで次々にめくれます。動画もその場で再生。MKV、AVI、WebMも。読み込むライブラリも、待ち時間も、余計なものもありません。",
   "download": "無料でダウンロード",
   "store": "Mac App Store",
   "storeSoon": "近日公開。開発を応援できます",
@@ -46,7 +46,7 @@
     ],
     [
       "余計なものなし",
-      "読み込むライブラリも、編集機能も、クラウドもなし。写真とビデオを見ること。それをきちんとやります。"
+      "読み込むライブラリも、編集機能も、クラウドもなし。写真と動画を見ること。それをきちんとやります。"
     ],
     [
       "高速",
@@ -54,7 +54,7 @@
     ],
     [
       "最初から安全",
-      "他人から届いた画像、ビデオ、アーカイブが何かを実行したり、ネットに接続したりすることはありません。事前の設定も不要です。"
+      "他人から届いた画像、動画、アーカイブが何かを実行したり、ネットに接続したりすることはありません。事前の設定も不要です。"
     ],
     [
       "落ちない",
@@ -65,18 +65,18 @@
   "featuresMore": "ほかにも多くの機能があります。詳しくはGitHubで",
   "features": [
     {
-      "title": "大きく表示して、キーでめくる",
-      "text": "<p>スペースキーで画像をウインドウいっぱいに表示し、← →でフォルダ内をめくります。トラックパッドか+ −で拡大、⌥← ⌥→で回転、<kbd>f</kbd>でフルスクリーン。アニメーションGIF、SVG、PDFにも対応しています。</p><p>スライドショー（<kbd>s</kbd>）は、フォルダとそのすべてのサブフォルダを写真もビデオもまとめて再生します。</p>",
+      "title": "大きく表示してキーでめくる、スライドショーも",
+      "text": "<p>スペースキーで画像をウインドウいっぱいに表示し、← →でフォルダ内をめくります。トラックパッドか+ −で拡大、⌥← ⌥→で回転、<kbd>f</kbd>でフルスクリーン。アニメーションGIF、SVG、PDFにも対応しています。</p><p>スライドショー（<kbd>s</kbd>）は、フォルダとそのすべてのサブフォルダを写真も動画もまとめて再生します。</p>",
       "alt": "全体表示した写真"
     },
     {
-      "title": "macOSで再生できないビデオも",
-      "text": "<p>macOS自体で再生できる形式（MP4、MOV、AVCHDなど）はmacOSで、それ以外（MKV、WebM、AVI、WMV、FLV、MPEG、DVDビデオ）は内蔵のVLCエンジンで再生します。</p><ul><li>← →でビデオの10分の1、⇧← ⇧→で100分の1ジャンプ</li><li>↑ ↓で音量を調整。すべてのビデオに共通です</li><li>MKV、WebM、WMV、FLV、VOBのサムネールもFinderとクイックルックで表示されます</li></ul>",
-      "alt": "Schnellbildで再生中のビデオ"
+      "title": "macOSで再生できないAVIやMKVも再生",
+      "text": "<p>macOS自体で再生できる形式（MP4、MOV、AVCHDなど）はmacOSで、それ以外（MKV、WebM、AVI、WMV、FLV、MPEG、DVDビデオ）は内蔵のVLCエンジンで再生します。</p><ul><li>← →で動画の10分の1、⇧← ⇧→で100分の1ジャンプ</li><li>↑ ↓で音量を調整。すべての動画に共通です</li><li>MKV、WebM、WMV、FLV、VOBのサムネールもFinderとクイックルックで表示されます</li></ul>",
+      "alt": "Schnellbildで再生中の動画"
     },
     {
-      "title": "アーカイブをフォルダのように開く",
-      "text": "<p>ZIP、RAR、7z、コミック（CBZ、CBR）にも対応。分割されたものも開け、ZIPとRARはパスワード付きにも対応します。ディスクには何も展開せず、ビデオもアーカイブから直接再生します。</p>",
+      "title": "ZIPやRARの漫画も、フォルダのように開く",
+      "text": "<p>ZIP、RAR、7z、コミック（CBZ、CBR）にも対応。分割されたものも開け、ZIPとRARはパスワード付きにも対応します。ディスクには何も展開せず、動画もアーカイブから直接再生します。</p>",
       "alt": "プレビュー付きのフォルダとして表示されたアーカイブ"
     },
     {
@@ -86,12 +86,12 @@
     },
     {
       "title": "すべてのサブフォルダを検索",
-      "text": "<p>検索フィールドは、表示中のフォルダとその下にあるすべての場所から、フォルダ、アーカイブ、画像、ビデオの名前を探します。結果は検索しながら次々に表示されます。遅いネットワーク共有でも同じです。大文字と小文字を区別しない検索、区別する検索、正規表現から選べます。</p>",
+      "text": "<p>検索フィールドは、表示中のフォルダとその下にあるすべての場所から、フォルダ、アーカイブ、画像、動画の名前を探します。結果は検索しながら次々に表示されます。遅いネットワーク共有でも同じです。大文字と小文字を区別しない検索、区別する検索、正規表現から選べます。</p>",
       "alt": "フォルダとサブフォルダからの検索結果"
     },
     {
       "title": "見た目はきれいに、ファイルはそのまま",
-      "text": "<p><kbd>E</kbd>で露出、コントラスト、彩度、シャープネスを自動補正。写真にもビデオにも使えます。<kbd>A</kbd>でスライダを表示。変わるのは表示だけで、ファイルはそのままです。</p>",
+      "text": "<p><kbd>E</kbd>で露出、コントラスト、彩度、シャープネスを自動補正。写真にも動画にも使えます。<kbd>A</kbd>でスライダを表示。変わるのは表示だけで、ファイルはそのままです。</p>",
       "alt": "写真に重ねて表示した調整スライダ"
     },
     {
@@ -106,7 +106,7 @@
     }
   ],
   "safeTitle": "他人から届いたファイルも安全に",
-  "safeIntro": "知らない人から届いた画像、ビデオ、アーカイブを見るのは、ビューアの本来の仕事です。だからSchnellbildは、最初からすべてのファイルを危険なものとして扱います。",
+  "safeIntro": "知らない人から届いた画像、動画、アーカイブを見るのは、ビューアの本来の仕事です。だからSchnellbildは、最初からすべてのファイルを危険なものとして扱います。",
   "safe": [
     [
       "AppleのApp Sandbox内で動作。",
@@ -117,8 +117,8 @@
       "見るだけでファイルが変わることも、ディスクに展開されることもありません。"
     ],
     [
-      "ビデオがネットにつながらない。",
-      "実はインターネットを指すプレイリストだった「ビデオ」は、何も再生しません。"
+      "動画がネットにつながらない。",
+      "実はインターネットを指すプレイリストだった「動画」は、何も再生しません。"
     ],
     [
       "ダブルクリックで開くのは書類だけ。プログラムは開きません。",
@@ -135,7 +135,7 @@
   ],
   "safeMore": "具体的に何をしているのか、そしてどこに限界があるのか：<a href=\"https://github.com/JohannesHoppe/schnellbild#safe-with-files-from-others\">他人から届いたファイルも安全に</a>。",
   "modelsTitle": "Phiewer、IINA、Norton Commanderから乗り換えますか？",
-  "modelsText": "どれもお手本になりました。キーボードで画像を見ていくPhiewer、ビデオをすばやく扱えるIINA、そしてデュアルペインのNorton Commander。Schnellbildとの比較はこちら：<a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-phiewer-alternative\">Phiewerの無料の代替</a>、<a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-iina-alternative-for-looking-through-videos\">ビデオを見るためのIINAの無料の代替</a>。",
+  "modelsText": "どれもお手本になりました。キーボードで画像を見ていくPhiewer、動画をすばやく扱えるIINA、そしてデュアルペインのNorton Commander。Schnellbildとの比較はこちら：<a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-phiewer-alternative\">Phiewerの無料の代替</a>、<a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-iina-alternative-for-looking-through-videos\">動画を見るためのIINAの無料の代替</a>。 WindowsでHoneyview、MassiGra、Leeyesを使っていた方も、Macで同じようにフォルダやZIP・RARの画像をキーボードでめくれます。",
   "ossTitle": "オープンソース",
   "ossText": "SchnellbildはMITライセンスのフリーソフトウェアで、ソースコードは<a href=\"https://github.com/JohannesHoppe/schnellbild\">GitHub</a>で公開しています。バグを見つけたり、欲しい機能があったりしたら、<a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">Issueを作成</a>してください。",
   "languagesText": "お使いのMacの言語で：",
@@ -147,7 +147,7 @@
   "privacy": {
     "title": "プライバシーポリシー",
     "description": "Schnellbildは個人データを一切収集しません。アカウントなし、解析なし、トラッキングなし、ネットワークアクセスなし。",
-    "intro": "Schnellbildは、macOS用の画像・ビデオビューアです。GDPR上の管理者は、HAUS HOPPE - ITS（Johannes Hoppe）です。住所の詳細は<a href=\"https://haushoppe-its.de/impressum/\">法的情報</a>に記載しています。本ポリシーは、GitHubからダウンロードしたAppとMac App Storeで購入したApp（どちらも同じAppです）、および本ウェブサイトに適用されます。",
+    "intro": "Schnellbildは、macOS用の画像・動画ビューアです。GDPR上の管理者は、HAUS HOPPE - ITS（Johannes Hoppe）です。住所の詳細は<a href=\"https://haushoppe-its.de/impressum/\">法的情報</a>に記載しています。本ポリシーは、GitHubからダウンロードしたAppとMac App Storeで購入したApp（どちらも同じAppです）、および本ウェブサイトに適用されます。",
     "appTitle": "App",
     "appText": "<p><strong>Schnellbildは個人データを一切収集しません。</strong>アカウント、解析、広告、トラッキングはなく、インターネットにも接続しません。Appが動作するApp Sandboxは、ネットワークへのアクセスを一切許可していません。</p><p>お使いのMacに、そしてそこにだけ保存されるもの：</p>",
     "stays": [
@@ -156,9 +156,9 @@
       "入力した<strong>アーカイブのパスワード</strong>。ログインキーチェーンに保存されます（項目名「Schnellbild archive passwords」）。設定 →「{forgetPasswords}」で削除できます。",
       "<strong>サムネール</strong>。macOS自体のサムネールキャッシュに保存されます。"
     ],
-    "appOutro": "Schnellbildが画像、ビデオ、アーカイブを読み込むのは、それらを表示するためだけです。ファイルそのもの、その名前、それに関するいかなる情報も、どこにも送信しません。ダウンロードと購入はApple自身のプライバシーポリシーに基づいてAppleが処理し、当方に提供されるのは、お客様の身元を含まない数値だけです。販売数のほか、macOSでAppデベロッパとの共有を許可している場合は、クラッシュレポートと使用状況の統計です。",
+    "appOutro": "Schnellbildが画像、動画、アーカイブを読み込むのは、それらを表示するためだけです。ファイルそのもの、その名前、それに関するいかなる情報も、どこにも送信しません。ダウンロードと購入はApple自身のプライバシーポリシーに基づいてAppleが処理し、当方に提供されるのは、お客様の身元を含まない数値だけです。販売数のほか、macOSでAppデベロッパとの共有を許可している場合は、クラッシュレポートと使用状況の統計です。",
     "siteTitle": "本ウェブサイト",
-    "siteText": "本ウェブサイトは、Cookie、解析、ほかのサーバからのコンテンツ（Webフォントや埋め込みビデオなど）を一切使用していません。ホスティングには、GitHub, Inc.（米国）のサービスであるGitHub Pagesを利用しています。アクセス時には、GitHubがセキュリティ上の目的でIPアドレスを記録・保存します。詳しくは<a href=\"https://docs.github.com/ja/pages/getting-started-with-github-pages/what-is-github-pages#data-collection\">GitHub Pages：データ収集</a>および<a href=\"https://docs.github.com/ja/site-policy/privacy-policies/github-general-privacy-statement\">GitHubのプライバシーに関する声明</a>をご覧ください。このログの保存期間はGitHubが決めており、当方はログにアクセスできません。GitHubはEU-U.S. Data Privacy Frameworkに参加しています。欧州委員会は、この枠組みのもとで米国が十分な保護水準を確保していると決定しています（GDPR第45条）。法的根拠は、本ウェブサイトを安全に配信するという当方の正当な利益です（EU一般データ保護規則（GDPR）第6条第1項(f)）。Appのダウンロードも、GitHubから提供されます。",
+    "siteText": "本ウェブサイトは、Cookie、解析、ほかのサーバからのコンテンツ（Webフォントや埋め込み動画など）を一切使用していません。ホスティングには、GitHub, Inc.（米国）のサービスであるGitHub Pagesを利用しています。アクセス時には、GitHubがセキュリティ上の目的でIPアドレスを記録・保存します。詳しくは<a href=\"https://docs.github.com/ja/pages/getting-started-with-github-pages/what-is-github-pages#data-collection\">GitHub Pages：データ収集</a>および<a href=\"https://docs.github.com/ja/site-policy/privacy-policies/github-general-privacy-statement\">GitHubのプライバシーに関する声明</a>をご覧ください。このログの保存期間はGitHubが決めており、当方はログにアクセスできません。GitHubはEU-U.S. Data Privacy Frameworkに参加しています。欧州委員会は、この枠組みのもとで米国が十分な保護水準を確保していると決定しています（GDPR第45条）。法的根拠は、本ウェブサイトを安全に配信するという当方の正当な利益です（EU一般データ保護規則（GDPR）第6条第1項(f)）。Appのダウンロードも、GitHubから提供されます。",
     "rightsTitle": "お客様の権利",
     "rightsText": "GDPRに基づき、お客様には、アクセス、訂正、消去、処理の制限、データポータビリティの各権利、およびデータ保護監督機関に苦情を申し立てる権利があります。<strong>また、ご自身の特別な状況に関する理由により、当方の正当な利益に基づく処理に異議を申し立てる権利があります</strong>（GDPR第21条）。Appも本ウェブサイトも独自に個人データを保持していないため、当方で照会や削除を行うべきものは一切ありません。そのため、開示請求への回答はごく短いものになります。当方はあなたについて何ひとつ知りません。",
     "contactTitle": "お問い合わせ",

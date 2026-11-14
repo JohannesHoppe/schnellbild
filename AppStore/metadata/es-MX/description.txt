@@ -1,0 +1,25 @@
+Schnellbild es un visor de fotos y reproductor de video para Mac que no te hace importar nada: abre una carpeta, mira las miniaturas, ve una imagen en grande y pasa a la siguiente con el teclado. Sigue siendo rápido con carpetas grandes y en recursos compartidos de red.
+
+IMÁGENES
+• JPEG, HEIC, AVIF, JPEG XL, PNG, GIF, WebP, TIFF, PSD, OpenEXR, SVG, PDF y fotos RAW de las cámaras que macOS conoce
+• Cuadrícula, lista y vista completa, presentación de diapositivas por todas las subcarpetas
+• Zoom, giro y mejora automática (exposición, contraste, saturación, nitidez), solo para la vista: tus archivos se quedan como están
+• Información del archivo con formato, códecs y tasa de bits; un aviso cuando la extensión no coincide con el contenido
+
+VIDEOS
+• MP4 y MOV, y además los formatos que macOS no reproduce: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-Video, AVCHD
+• Recorre los videos con las flechas, igual que pasas las fotos
+
+ARCHIVOS COMPRIMIDOS COMO CARPETAS
+• ZIP, RAR y 7z se abren como carpetas, cómics (CBZ, CBR) incluidos, también con contraseña y en varias partes
+• No se descomprime nada en el disco; los videos se reproducen directamente desde el archivo
+
+ORDENAR CON DOS PANELES
+• Dos paneles uno junto a otro con las teclas F de un gestor de archivos clásico: marcar, copiar con F5, mover con F6
+• Renombrar, nueva carpeta, papelera, marcadores, deshacer
+• Búsqueda por nombres de carpetas y archivos en todas las subcarpetas
+
+SEGURO CON ARCHIVOS DE OTROS
+Schnellbild se ejecuta en la App Sandbox de Apple: sin red, sin otros programas, solo las carpetas que tú le abres. Los archivos comprimidos solo se leen, y un “video” no puede mandar la app a internet.
+
+Todas las teclas de un vistazo con F1, un miniteclado en el que hacer clic con K. En 20 idiomas.

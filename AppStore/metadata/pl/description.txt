@@ -1,0 +1,25 @@
+Schnellbild pokazuje zdjęcia i filmy bez importowania czegokolwiek: otwórz folder, zobacz miniatury, obejrzyj jedno zdjęcie w dużym rozmiarze, przewijaj klawiaturą. Ta przeglądarka zdjęć działa szybko także przy dużych folderach i na dyskach sieciowych.
+
+ZDJĘCIA
+• JPEG, HEIC, AVIF, JPEG XL, PNG, GIF, WebP, TIFF, PSD, OpenEXR, SVG, PDF i zdjęcia RAW z aparatów, które zna macOS
+• Siatka, lista i pełny widok, pokaz slajdów przez wszystkie podfoldery
+• Powiększanie, obracanie, automatyczna poprawa (ekspozycja, kontrast, nasycenie, ostrość), tylko do oglądania: pliki pozostają nietknięte
+• Informacje o pliku z formatem, kodekami i przepływnością; uwaga, gdy rozszerzenie pliku nie pasuje do jego zawartości
+
+WIDEO
+• MP4 i MOV, a do tego formaty, których macOS nie odtworzy: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-Video, AVCHD
+• Przewijanie filmów strzałkami, tak jak przegląda się zdjęcia
+
+ARCHIWA JAK FOLDERY
+• ZIP, RAR i 7z otwierają się jak foldery, także komiksy (CBZ, CBR), również z hasłem i podzielone na części
+• Nic nie jest rozpakowywane na dysk; filmy odtwarzają się prosto z archiwum
+
+PORZĄDKOWANIE W DWÓCH PANELACH
+• Dwa panele obok siebie z klawiszami F klasycznego menedżera plików: zaznacz, skopiuj klawiszem F5, przenieś klawiszem F6
+• Zmiana nazwy, nowy folder, kosz, zakładki, cofanie
+• Wyszukiwanie nazw folderów i plików we wszystkich podfolderach
+
+BEZPIECZNY Z PLIKAMI OD INNYCH
+Schnellbild działa w App Sandbox firmy Apple: bez sieci, bez innych programów, tylko foldery, które mu otworzysz. Archiwa są tylko odczytywane, a „wideo” nie wyśle aplikacji do internetu.
+
+Wszystkie klawisze w jednym miejscu pod F1, klikalna mini klawiatura pod K. W 20 językach.

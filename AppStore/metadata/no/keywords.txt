@@ -1,0 +1,1 @@
+lysbildefremvisning,bildefremvisning,mkv,player,spiller,videospiller,viewer,image,photo,avi,webm,cbz

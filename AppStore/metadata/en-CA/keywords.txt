@@ -1,0 +1,1 @@
+mkv,player,video,movie,mp4,photo,picture,slideshow,avi,media,raw,heic,rar,zip,cbz,cbr,comic,reader

@@ -1,0 +1,1 @@
+mkv,player,přehrávač,viewer,image,photo,obrázků,videa,avi,webm,prezentace,komiks,cbz,cbr,rar,zip,raw

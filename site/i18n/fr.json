@@ -1,16 +1,16 @@
 {
   "name": "Français",
   "privacySlug": "privacy",
-  "title": "Schnellbild : une visionneuse d’images et de vidéos pour macOS qui ne prend pas la tête",
-  "seoTitle": "Schnellbild · visionneuse photo et vidéo gratuite pour Mac",
-  "seoDescription": "Visionneuse photo et lecteur vidéo gratuits pour Mac : vignettes, clavier, MKV, AVI, WebM, ZIP et RAR comme dossiers. Alternative à Phiewer et IINA.",
-  "keywords": "visionneuse d’images Mac, visionneuse photo macOS, visionneuse gratuite, lecteur vidéo MKV Mac, lire AVI WebM, alternative à Phiewer, alternative à IINA, ouvrir images RAR, BD CBZ CBR, diaporama, Schnellbild",
+  "title": "Schnellbild : une visionneuse photo et vidéo pour Mac qui ne prend pas la tête",
+  "seoTitle": "Schnellbild · visionneuse photo, lecteur vidéo MKV pour Mac",
+  "seoDescription": "Visionneuse photo et lecteur vidéo gratuits pour Mac : diaporama, clavier, lit MKV et AVI, ZIP, RAR et BD CBZ comme dossiers. Alternative à XnView.",
+  "keywords": "visionneuse photo Mac, visionneuse d’images macOS, lecteur vidéo Mac, lecteur vidéo gratuit Mac, lire MKV sur Mac, lecteur MKV Mac, lire fichier AVI sur Mac, lecteur WebM, diaporama Mac, diaporama photo Mac, alternative à XnView, équivalent FastStone pour Mac, alternative à IrfanView, alternative à ACDSee, alternative à Phiewer, alternative à IINA pour parcourir des vidéos, ouvrir images RAR, lecteur BD CBZ CBR, double panneau, Schnellbild",
   "navFeatures": "Fonctionnalités",
   "navSafety": "Sécurité",
   "language": "Langue",
   "iconAlt": "Icône de l’app Schnellbild",
-  "tagline": "Une visionneuse d’images et de vidéos pour macOS qui ne prend pas la tête.",
-  "lead": "Ouvrez un dossier, parcourez les vignettes, affichez une image en grand, feuilletez au clavier. Les vidéos se lisent sur place, même en MKV, AVI et WebM. Pas de bibliothèque où tout importer, pas d’attente, pas de fouillis.",
+  "tagline": "Une visionneuse photo et vidéo pour Mac qui ne prend pas la tête.",
+  "lead": "Ouvrez un dossier, parcourez les vignettes, affichez une image en grand, feuilletez au clavier ou en diaporama. Les vidéos se lisent sur place, même en MKV, AVI et WebM. Pas de bibliothèque où tout importer, pas d’attente, pas de fouillis.",
   "download": "Télécharger gratuitement",
   "store": "Mac App Store",
   "storeSoon": "bientôt, 0,99 € pour soutenir le projet",
@@ -35,17 +35,17 @@
   "featuresMore": "Et bien d’autres fonctions : tous les détails sur GitHub",
   "features": [
     {
-      "title": "En grand, au clavier",
+      "title": "En grand, au clavier, en diaporama",
       "text": "<p>La barre d’espace ouvre une image aussi grande que la fenêtre le permet, ← → feuillettent le dossier. Zoomez au trackpad ou avec + −, faites pivoter avec ⌥← ⌥→, passez en plein écran avec <kbd>f</kbd>. GIF animés, SVG et PDF compris.</p><p>Un diaporama (<kbd>s</kbd>) parcourt le dossier et tous ses sous-dossiers, photos comme vidéos.</p>",
       "alt": "Une photo en affichage complet"
     },
     {
-      "title": "Des vidéos, même celles que macOS ne lit pas",
+      "title": "Les vidéos aussi, même les MKV et AVI que macOS ne lit pas",
       "text": "<p>Ce que macOS lit lui-même (MP4, MOV, AVCHD…) passe par macOS, tout le reste par le moteur VLC intégré : MKV, WebM, AVI, WMV, FLV, MPEG, DVD vidéo.</p><ul><li>← → avancent ou reculent d’un dixième de la vidéo, ⇧← ⇧→ d’un centième</li><li>↑ ↓ règlent le volume, pour toutes les vidéos</li><li>Le Finder et Coup d’œil obtiennent aussi des vignettes pour MKV, WebM, WMV, FLV et VOB</li></ul>",
       "alt": "Une vidéo en lecture dans Schnellbild"
     },
     {
-      "title": "Les archives s’ouvrent comme des dossiers",
+      "title": "Archives et BD s’ouvrent comme des dossiers",
       "text": "<p>ZIP, RAR et 7z, bandes dessinées (CBZ, CBR) comprises, même en plusieurs parties ; ZIP et RAR aussi protégés par mot de passe. Rien n’est décompressé sur le disque, et les vidéos se lisent directement depuis l’archive.</p>",
       "alt": "Des archives affichées comme des dossiers, avec aperçus"
     },

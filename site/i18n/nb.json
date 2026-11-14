@@ -1,15 +1,15 @@
 {
   "name": "Norsk",
   "privacySlug": "privacy",
-  "title": "Schnellbild: en bilde- og videoviser for macOS som rett og slett ikke suger",
-  "seoTitle": "Schnellbild · gratis bilde- og videoviser for Mac",
-  "seoDescription": "Rask, gratis bildeviser og videospiller for Mac: miniatyrer, bla med tastaturet, MKV, AVI og WebM, ZIP og RAR som mapper. Alternativ til Phiewer og IINA.",
-  "keywords": "bildeviser Mac, fotoviser macOS, gratis bildeviser, MKV-spiller Mac, spill av AVI WebM, Phiewer-alternativ, IINA-alternativ, åpne bilder i RAR, tegneserier CBZ CBR, lysbildefremvisning, Schnellbild",
+  "title": "Schnellbild: en bildefremviser og videospiller for macOS som rett og slett ikke suger",
+  "seoTitle": "Schnellbild · gratis bildefremviser og MKV-spiller for Mac",
+  "seoDescription": "Rask, gratis bildefremviser for Mac som også spiller av MKV, AVI og WebM: miniatyrer, lysbildefremvisning, ZIP og RAR som mapper. Alternativ til IrfanView.",
+  "keywords": "bildefremvisning Mac, bildefremviser Mac, bildeviser Mac, fotoviser macOS, lysbildefremvisning Mac, gratis bildeviser, MKV player Mac, MKV-spiller Mac, videospiller Mac, spill av AVI WebM, IrfanView-alternativ, XnView-alternativ, Phiewer-alternativ, IINA-alternativ, åpne bilder i RAR, tegneserier CBZ CBR, Schnellbild",
   "navFeatures": "Funksjoner",
   "navSafety": "Sikkerhet",
   "language": "Språk",
   "iconAlt": "Schnellbild-appsymbol",
-  "tagline": "En bilde- og videoviser for macOS som rett og slett ikke suger.",
+  "tagline": "En bildefremviser og videospiller for macOS som rett og slett ikke suger.",
   "lead": "Åpne en mappe, se miniatyrene, se ett bilde i stort format og bla med tastaturet. Videoer spilles av rett der, også MKV, AVI og WebM. Ikke noe bibliotek å importere til, ingen venting, ikke noe rot.",
   "download": "Last ned gratis",
   "store": "Mac App Store",
@@ -40,7 +40,7 @@
       "alt": "Et bilde i full visning"
     },
     {
-      "title": "Videoer, også de macOS ikke kan spille av",
+      "title": "Videoer, også MKV og andre som macOS ikke kan spille av",
       "text": "<p>Det macOS spiller av selv (MP4, MOV, AVCHD …), spilles av gjennom macOS, alt annet gjennom den innebygde VLC-motoren: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-video.</p><ul><li>← → hopper en tidel av videoen, ⇧← ⇧→ en hundredel</li><li>↑ ↓ stiller volumet, for alle videoer</li><li>Finder og Hurtigvisning får miniatyrer også for MKV, WebM, WMV, FLV og VOB</li></ul>",
       "alt": "En video som spilles av i Schnellbild"
     },
@@ -102,7 +102,7 @@
   "privacy": {
     "title": "Personvernerklæring",
     "description": "Schnellbild samler ikke inn personopplysninger: ingen konto, ingen analyse, ingen sporing, ingen nettverkstilgang.",
-    "intro": "Schnellbild er en bilde- og videoviser for macOS. Behandlingsansvarlig etter personvernforordningen (GDPR) er HAUS HOPPE - ITS, Johannes Hoppe; den fullstendige adressen står i den <a href=\"https://haushoppe-its.de/impressum/\">juridiske informasjonen</a>. Denne erklæringen gjelder appen, både når den lastes ned fra GitHub og når den kjøpes i Mac App Store (begge er den samme appen), og dette nettstedet.",
+    "intro": "Schnellbild er en bildefremviser og videospiller for macOS. Behandlingsansvarlig etter personvernforordningen (GDPR) er HAUS HOPPE - ITS, Johannes Hoppe; den fullstendige adressen står i den <a href=\"https://haushoppe-its.de/impressum/\">juridiske informasjonen</a>. Denne erklæringen gjelder appen, både når den lastes ned fra GitHub og når den kjøpes i Mac App Store (begge er den samme appen), og dette nettstedet.",
     "appTitle": "Appen",
     "appText": "<p><strong>Schnellbild samler ikke inn personopplysninger.</strong> Den har ingen konto, ingen analyse, ingen reklame og ingen sporing, og den kobler seg ikke til internett: App Sandbox, som den kjører i, gir den ingen nettverkstilgang i det hele tatt.</p><p>Dette blir på Macen din, og bare der:</p>",
     "stays": [

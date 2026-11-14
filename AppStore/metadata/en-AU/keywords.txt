@@ -1,0 +1,1 @@
+movie,mp4,media,wmv,playback,pics,gallery,thumbnail,archive,7z,manga,flv,mpeg,dvd,avchd,jpeg,png,gif

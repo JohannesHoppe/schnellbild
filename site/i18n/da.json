@@ -1,15 +1,15 @@
 {
   "name": "Dansk",
   "privacySlug": "privacy",
-  "title": "Schnellbild: en billed- og videoviser til macOS, der bare ikke er noget bras",
-  "seoTitle": "Schnellbild · gratis billed- og videoviser til Mac",
-  "seoDescription": "Hurtig, gratis billedviser og videoafspiller til Mac: miniaturer, tastatur, MKV, AVI og WebM, ZIP og RAR som mapper. Alternativ til Phiewer og IINA.",
-  "keywords": "billedviser Mac, fotoviser macOS, gratis billedviser, MKV-afspiller Mac, afspil AVI WebM, Phiewer-alternativ, IINA-alternativ, åbn billeder i RAR, tegneserier CBZ CBR, diasshow, Schnellbild",
+  "title": "Schnellbild: en billedfremviser og videoafspiller til macOS, der bare ikke er noget bras",
+  "seoTitle": "Schnellbild · gratis billedfremviser og MKV-afspiller til Mac",
+  "seoDescription": "Hurtig, gratis billedfremviser til Mac, der også afspiller MKV, AVI og WebM: miniaturer, diasshow, ZIP og RAR som mapper. Alternativ til IrfanView og XnView.",
+  "keywords": "billedfremviser Mac, billedviser Mac, fotofremviser macOS, gratis billedfremviser, MKV player Mac, MKV-afspiller Mac, videoafspiller Mac, afspil AVI WebM, diasshow Mac, IrfanView-alternativ, XnView-alternativ, Phiewer-alternativ, IINA-alternativ, åbn billeder i RAR, tegneserier CBZ CBR, Schnellbild",
   "navFeatures": "Funktioner",
   "navSafety": "Sikkerhed",
   "language": "Sprog",
   "iconAlt": "Schnellbilds appsymbol",
-  "tagline": "En billed- og videoviser til macOS, der bare ikke er noget bras.",
+  "tagline": "En billedfremviser og videoafspiller til macOS, der bare ikke er noget bras.",
   "lead": "Åbn en mappe, se miniaturerne, se ét billede i stort format, og bladr med tastaturet. Videoer afspilles lige der, også MKV, AVI og WebM. Intet bibliotek at importere til, ingen ventetid, intet rod.",
   "download": "Hent gratis",
   "store": "Mac App Store",
@@ -36,11 +36,11 @@
   "features": [
     {
       "title": "Se billedet stort, bladr med tasterne",
-      "text": "<p>Mellemrum åbner et billede så stort, som vinduet tillader, ← → blader gennem mappen. Zoom med pegefeltet eller + −, drej med ⌥← ⌥→, fuld skærm med <kbd>f</kbd>. Animerede GIF'er, SVG og PDF er med.</p><p>Et lysbilledshow (<kbd>s</kbd>) kører gennem mappen og alle dens undermapper, fotos og videoer på lige fod.</p>",
+      "text": "<p>Mellemrum åbner et billede så stort, som vinduet tillader, ← → blader gennem mappen. Zoom med pegefeltet eller + −, drej med ⌥← ⌥→, fuld skærm med <kbd>f</kbd>. Animerede GIF'er, SVG og PDF er med.</p><p>Et diasshow (<kbd>s</kbd>) kører gennem mappen og alle dens undermapper, fotos og videoer på lige fod.</p>",
       "alt": "Et foto i fuld visning"
     },
     {
-      "title": "Videoer, også dem macOS ikke kan afspille",
+      "title": "Videoer, også MKV og andre, som macOS ikke kan afspille",
       "text": "<p>Det, macOS selv kan afspille (MP4, MOV, AVCHD …), afspilles af macOS, alt andet af den indbyggede VLC-motor: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-video.</p><ul><li>← → springer en tiendedel af videoen, ⇧← ⇧→ en hundrededel</li><li>↑ ↓ indstiller lydstyrken, for alle videoer</li><li>Finder og Lynoversigt får også miniaturer af MKV, WebM, WMV, FLV og VOB</li></ul>",
       "alt": "En video, der afspilles i Schnellbild"
     },
@@ -102,7 +102,7 @@
   "privacy": {
     "title": "Privatlivspolitik",
     "description": "Schnellbild indsamler ingen personoplysninger: ingen konto, ingen analyse, ingen sporing, ingen netværksadgang.",
-    "intro": "Schnellbild er en billed- og videoviser til macOS. Dataansvarlig efter databeskyttelsesforordningen (GDPR) er HAUS HOPPE - ITS, Johannes Hoppe; den fulde adresse står i de <a href=\"https://haushoppe-its.de/impressum/\">juridiske oplysninger</a>. Denne politik gælder appen, både når den hentes fra GitHub, og når den købes i Mac App Store (begge er den samme app), samt dette websted.",
+    "intro": "Schnellbild er en billedfremviser og videoafspiller til macOS. Dataansvarlig efter databeskyttelsesforordningen (GDPR) er HAUS HOPPE - ITS, Johannes Hoppe; den fulde adresse står i de <a href=\"https://haushoppe-its.de/impressum/\">juridiske oplysninger</a>. Denne politik gælder appen, både når den hentes fra GitHub, og når den købes i Mac App Store (begge er den samme app), samt dette websted.",
     "appTitle": "Appen",
     "appText": "<p><strong>Schnellbild indsamler ingen personoplysninger.</strong> Den har ingen konto, ingen analyse, ingen reklamer og ingen sporing, og den opretter ikke forbindelse til internettet: Den App Sandbox, den kører i, giver den slet ingen netværksadgang.</p><p>Det her bliver på din Mac, og kun der:</p>",
     "stays": [

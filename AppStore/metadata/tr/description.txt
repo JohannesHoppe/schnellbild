@@ -1,0 +1,25 @@
+Schnellbild, hiçbir şeyi içe aktarmadan çalışan bir fotoğraf görüntüleyici ve video oynatıcıdır: bir klasör açın, küçük resimleri görün, bir resmi büyük görün, klavyeyle gezinin. Büyük klasörlerde ve ağ paylaşımlarında da hızlı kalır.
+
+FOTOĞRAFLAR
+• JPEG, HEIC, AVIF, JPEG XL, PNG, GIF, WebP, TIFF, PSD, OpenEXR, SVG, PDF ve macOS’in tanıdığı kameraların RAW fotoğrafları
+• Izgara, liste ve tam görünüm, tüm alt klasörlerde slayt gösterisi
+• Yakınlaştırma, döndürme, otomatik iyileştirme (pozlama, kontrast, doygunluk, keskinlik), yalnızca görüntüleme için: dosyalarınız olduğu gibi kalır
+• Biçim, kodekler ve bit hızıyla dosya bilgisi; dosya uzantısı içeriğe uymadığında bir uyarı
+
+VİDEOLAR
+• MP4 ve MOV, ayrıca macOS’in oynatamadığı biçimler: MKV, WebM, AVI, WMV, FLV, MPEG, DVD video, AVCHD
+• Fotoğraflarda gezinir gibi ok tuşlarıyla videolarda ileri geri atlayın
+
+KLASÖR GİBİ ARŞİVLER
+• ZIP, RAR ve 7z klasör gibi açılır, çizgi romanlar (CBZ, CBR) dahil, parolalı ve parçalı olanlar da
+• Diske hiçbir şey açılmaz; videolar doğrudan arşivden oynar
+
+İKİ BÖLMEYLE AYIKLAYIN
+• Klasik bir dosya yöneticisinin F tuşlarıyla yan yana iki bölme: işaretleyin, F5 ile kopyalayın, F6 ile taşıyın
+• Yeniden adlandırma, yeni klasör, çöp sepeti, yer imleri, geri alma
+• Tüm alt klasörlerde klasör ve dosya adlarında arama
+
+BAŞKALARININ DOSYALARIYLA GÜVENLİ
+Schnellbild, Apple’ın App Sandbox’ında çalışır: ağ yok, başka programlar yok, yalnızca sizin açtığınız klasörler. Arşivler yalnızca okunur ve bir “video” uygulamayı internete gönderemez.
+
+F1 ile tüm tuşlar bir bakışta, K ile tıklanabilir mini klavye. 20 dilde.

@@ -1,0 +1,25 @@
+Schnellbild is een fotoviewer en videospeler die foto’s en video’s laat zien zonder dat je iets hoeft te importeren: open een map, bekijk de miniaturen, zie één afbeelding groot en blader met het toetsenbord. Hij blijft snel, ook bij grote mappen en netwerkschijven.
+
+FOTO’S EN AFBEELDINGEN
+• JPEG, HEIC, AVIF, JPEG XL, PNG, GIF, WebP, TIFF, PSD, OpenEXR, SVG, PDF en RAW-foto’s van de camera’s die macOS kent
+• Raster, lijst en volledige weergave, diavoorstelling door alle submappen
+• Zoomen, draaien, automatisch verbeteren (belichting, contrast, verzadiging, scherpte), alleen voor het bekijken: je bestanden blijven zoals ze zijn
+• Bestandsinfo met formaat, codecs en bitrate; een melding als de extensie van een bestand niet bij de inhoud past
+
+VIDEO’S
+• MP4 en MOV, plus de formaten die macOS niet afspeelt: MKV, WebM, AVI, WMV, FLV, MPEG, dvd-video, AVCHD
+• Snel door video’s gaan met de pijltjestoetsen, zoals je door foto’s bladert
+
+ARCHIEVEN ALS MAPPEN
+• ZIP, RAR en 7z openen als mappen, strips (CBZ, CBR) inbegrepen, ook met wachtwoord en in delen
+• Er wordt niets naar de schijf uitgepakt; video’s spelen direct uit het archief
+
+SORTEREN MET TWEE PANELEN
+• Twee panelen naast elkaar met de F-toetsen van een klassiek bestandsbeheerprogramma: markeren, kopiëren met F5, verplaatsen met F6
+• Hernoemen, nieuwe map, prullenmand, bladwijzers, ongedaan maken
+• Map- en bestandsnamen doorzoeken in alle submappen
+
+VEILIG MET BESTANDEN VAN ANDEREN
+Schnellbild draait in de App Sandbox van Apple: geen netwerk, geen andere programma’s, alleen de mappen die je ervoor opent. Archieven worden alleen gelezen, en een “video” kan de app niet het internet op sturen.
+
+Elke toets in één oogopslag met F1, een klikbaar minitoetsenbord met K. In 20 talen.

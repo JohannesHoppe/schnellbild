@@ -1,15 +1,15 @@
 {
   "name": "Nederlands",
   "privacySlug": "privacy",
-  "title": "Schnellbild: een foto- en videoviewer voor macOS waar je niet gek van wordt",
-  "seoTitle": "Schnellbild · gratis foto- en videoviewer voor de Mac",
-  "seoDescription": "Snelle, gratis fotoviewer en videospeler voor de Mac: miniaturen, toetsenbord, MKV, AVI, WebM, ZIP en RAR als mappen. Alternatief voor Phiewer en IINA.",
-  "keywords": "fotoviewer Mac, afbeeldingsviewer macOS, gratis fotoviewer, MKV speler Mac, AVI WebM afspelen, Phiewer alternatief, IINA alternatief, RAR afbeeldingen openen, strips CBZ CBR, diavoorstelling, Schnellbild",
+  "title": "Schnellbild: een fotoviewer en videospeler voor macOS waar je niet gek van wordt",
+  "seoTitle": "Schnellbild · gratis fotoviewer en MKV-player voor de Mac",
+  "seoDescription": "Snelle, gratis fotoviewer voor de Mac, speelt ook MKV, AVI en WebM: miniaturen, diavoorstelling, ZIP en RAR als mappen. Alternatief voor IrfanView en XnView.",
+  "keywords": "fotoviewer Mac, image viewer Mac, photo viewer Mac, afbeeldingsviewer macOS, gratis fotoviewer, MKV player Mac, MKV afspelen Mac, videospeler Mac, AVI WebM afspelen, diavoorstelling Mac, IrfanView Mac alternatief, XnView alternatief, Phiewer alternatief, IINA alternatief, RAR afbeeldingen openen, CBZ reader, strips CBZ CBR, Schnellbild",
   "navFeatures": "Functies",
   "navSafety": "Veiligheid",
   "language": "Taal",
   "iconAlt": "Appsymbool van Schnellbild",
-  "tagline": "Een foto- en videoviewer voor macOS waar je niet gek van wordt.",
+  "tagline": "Een fotoviewer en videospeler voor macOS waar je niet gek van wordt.",
   "lead": "Open een map, bekijk de miniaturen, zie één afbeelding groot en blader met het toetsenbord. Ook video’s spelen er gewoon af, zelfs MKV, AVI en WebM. Geen bibliotheek om in te importeren, geen wachten, geen rommel.",
   "download": "Gratis downloaden",
   "store": "Mac App Store",
@@ -40,7 +40,7 @@
       "alt": "Een foto in de volledige weergave"
     },
     {
-      "title": "Video’s, ook die macOS niet afspeelt",
+      "title": "Video’s, ook MKV en alles wat macOS niet afspeelt",
       "text": "<p>Wat macOS zelf afspeelt (MP4, MOV, AVCHD …) speelt af via macOS, al het andere via de ingebouwde VLC-engine: MKV, WebM, AVI, WMV, FLV, MPEG, dvd-video.</p><ul><li>← → springen een tiende van de video, ⇧← ⇧→ een honderdste</li><li>↑ ↓ regelen het volume, voor elke video</li><li>Finder en Snelle weergave krijgen ook miniaturen voor MKV, WebM, WMV, FLV en VOB</li></ul>",
       "alt": "Een video die afspeelt in Schnellbild"
     },
@@ -102,7 +102,7 @@
   "privacy": {
     "title": "Privacyverklaring",
     "description": "Schnellbild verzamelt geen persoonsgegevens: geen account, geen analytics, geen tracking, geen netwerktoegang.",
-    "intro": "Schnellbild is een foto- en videoviewer voor macOS. Verwerkingsverantwoordelijke in de zin van de AVG is HAUS HOPPE - ITS, Johannes Hoppe; het volledige adres staat in de <a href=\"https://haushoppe-its.de/impressum/\">juridische informatie</a>. Deze verklaring geldt voor de app, zowel gedownload via GitHub als gekocht in de Mac App Store (het is dezelfde app), en voor deze website.",
+    "intro": "Schnellbild is een fotoviewer en videospeler voor macOS. Verwerkingsverantwoordelijke in de zin van de AVG is HAUS HOPPE - ITS, Johannes Hoppe; het volledige adres staat in de <a href=\"https://haushoppe-its.de/impressum/\">juridische informatie</a>. Deze verklaring geldt voor de app, zowel gedownload via GitHub als gekocht in de Mac App Store (het is dezelfde app), en voor deze website.",
     "appTitle": "De app",
     "appText": "<p><strong>Schnellbild verzamelt geen persoonsgegevens.</strong> Er is geen account, geen analytics, geen reclame en geen tracking, en de app maakt geen verbinding met internet: de App Sandbox waarin hij draait, geeft hem helemaal geen netwerktoegang.</p><p>Wat op je Mac blijft, en alleen daar:</p>",
     "stays": [

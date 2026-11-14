@@ -2,9 +2,9 @@
   "name": "Čeština",
   "privacySlug": "privacy",
   "title": "Schnellbild: prohlížeč obrázků a videí pro macOS, který prostě není na houby",
-  "seoTitle": "Schnellbild · prohlížeč obrázků a videí pro Mac zdarma",
-  "seoDescription": "Rychlý prohlížeč fotek a přehrávač videa pro Mac zdarma: náhledy, klávesnice, MKV, AVI a WebM, ZIP a RAR jako složky. Alternativa k Phiewer a IINA.",
-  "keywords": "prohlížeč obrázků Mac, prohlížeč fotek macOS, prohlížeč fotek zdarma, přehrávač MKV Mac, přehrát AVI WebM, alternativa k Phiewer, alternativa k IINA, otevřít obrázky v RAR, komiksy CBZ CBR, prezentace, Schnellbild",
+  "seoTitle": "Schnellbild · prohlížeč obrázků a přehrávač MKV pro Mac",
+  "seoDescription": "Rychlý prohlížeč fotek pro Mac zdarma, který přehraje i MKV, AVI a WebM: náhledy, prezentace, ZIP a RAR jako složky. Alternativa k IrfanView a XnView.",
+  "keywords": "prohlížeč obrázků Mac, prohlížeč fotek Mac, prohlížeč fotek zdarma, přehrávač MKV Mac, MKV player Mac, přehrávač videa Mac, přehrávač AVI pro Mac, přehrát AVI WebM, alternativa k IrfanView, alternativa k XnView, alternativa k Phiewer, alternativa k IINA, otevřít obrázky v RAR, čtečka komiksů CBZ CBR, prezentace, Schnellbild",
   "navFeatures": "Funkce",
   "navSafety": "Bezpečnost",
   "language": "Jazyk",
@@ -40,7 +40,7 @@
       "alt": "Fotka v plném zobrazení"
     },
     {
-      "title": "Videa, i ta, která macOS neumí přehrát",
+      "title": "Videa, i MKV a další, která macOS neumí přehrát",
       "text": "<p>Co umí přehrát samotný macOS (MP4, MOV, AVCHD aj.), přehraje macOS, vše ostatní vestavěné jádro VLC: MKV, WebM, AVI, WMV, FLV, MPEG, DVD video.</p><ul><li>← → přeskakují o desetinu videa, ⇧← ⇧→ o setinu</li><li>↑ ↓ nastavují hlasitost, pro všechna videa</li><li>Finder a Rychlý náhled dostanou miniatury i pro MKV, WebM, WMV, FLV a VOB</li></ul>",
       "alt": "Video přehrávané ve Schnellbildu"
     },
