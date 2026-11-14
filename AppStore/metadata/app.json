@@ -44,7 +44,6 @@
     "ageRatingOverrideV2": null,
     "koreaAgeRatingOverride": null,
     "developerAgeRatingInfoUrl": null,
-    "seventeenPlus": null,
-    "gamblingAndContests": null
+    "socialMedia": false
   }
 }
