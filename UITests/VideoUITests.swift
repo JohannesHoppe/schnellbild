@@ -284,17 +284,16 @@ final class VideoUITests: SchnellbildUITestCase {
         XCTAssertTrue(element("videoBar.position").exists)
         XCTAssertTrue(element("videoBar.speed").exists)
         XCTAssertFalse(element("videoBar.audio").exists, "one sound track: no menu for it")
-        // Dragged to the upper left
-        let grip = element("videoBar.grip")
-        let target = video.coordinate(withNormalizedOffset: CGVector(dx: 0.2, dy: 0.15))
-        grip.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).press(forDuration: 0.2, thenDragTo: target)
-        RunLoop.current.run(until: Date().addingTimeInterval(1))
-        print("after the drag: bar \(bar.frame), video \(video.frame); app log:\n" + ((try? String(contentsOf: log, encoding: .utf8)) ?? "(none)"))
-        eventually("moved up") { bar.frame.midY < video.frame.midY && bar.frame.midX < video.frame.midX }
+        // Dragged up and to the left (by the grip at the bar's left end: the
+        // bar moves as far as the mouse)
+        let grip = element("videoBar.grip").coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+        grip.press(forDuration: 0.2, thenDragTo: grip.withOffset(CGVector(dx: -100, dy: -video.frame.height * 0.6)))
+        eventually("moved up and to the left") { bar.frame.midY < video.frame.midY && bar.frame.midX < video.frame.midX - 50 }
         let moved = bar.frame
         // The next video: the same place
         app.typeKey(.rightArrow, modifierFlags: .command)
         waitForBadge(containing: "b-grey.mp4")
+        print("after paging: app log:\n" + ((try? String(contentsOf: log, encoding: .utf8)) ?? "(none)"))
         video = element(id)
         video.hover()
         XCTAssertTrue(bar.waitForExistence(timeout: 5))
