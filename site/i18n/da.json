@@ -66,7 +66,7 @@
   "features": [
     {
       "title": "Se billedet stort, bladr med tasterne",
-      "text": "<p>Mellemrum åbner et billede så stort, som vinduet tillader, ← → blader gennem mappen. Zoom med pegefeltet eller + −, drej med ⌥← ⌥→, fuld skærm med <kbd>f</kbd>. Animerede GIF'er, SVG og PDF er med.</p><p>Et diasshow (<kbd>s</kbd>) kører gennem mappen og alle dens undermapper, fotos og videoer på lige fod. Mappen er afspilningslisten: <kbd>p</kbd> åbner den til højre, hvor du trækker elementer i ny rækkefølge, tager et ud med <kbd>⌫</kbd> (filen bliver) eller klikker på et for at springe dertil.</p>",
+      "text": "<p>Mellemrum åbner et billede så stort, som vinduet tillader, ← → blader gennem mappen. Zoom med pegefeltet eller + −, drej med ⌥← ⌥→, fuld skærm med <kbd>f</kbd>. Animerede GIF'er, SVG og PDF er med.</p><p>Et diasshow (<kbd>s</kbd>) kører gennem mappen og alle dens undermapper, fotos og videoer på lige fod. Det, diasshowet afspiller, er afspilningslisten: <kbd>p</kbd> åbner den, så du kan ændre rækkefølgen og sortere fra.</p>",
       "alt": "Et foto i fuld visning"
     },
     {

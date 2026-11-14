@@ -66,7 +66,7 @@
   "features": [
     {
       "title": "Prohlížet ve velkém, listovat klávesami",
-      "text": "<p>Mezerník otevře obrázek tak velký, jak okno dovolí, ← → listují složkou. Zvětšujte trackpadem nebo + −, otáčejte ⌥← ⌥→, celá obrazovka klávesou <kbd>f</kbd>. Animované GIFy, SVG a PDF také.</p><p>Prezentace (<kbd>s</kbd>) projde složku i všechny její podsložky, fotky i videa. Složka je playlist: <kbd>p</kbd> ho otevře vpravo, kde položky přetažením seřadíte jinak, klávesou <kbd>⌫</kbd> některou vyjmete (soubor zůstane) nebo na ni kliknutím přeskočíte.</p>",
+      "text": "<p>Mezerník otevře obrázek tak velký, jak okno dovolí, ← → listují složkou. Zvětšujte trackpadem nebo + −, otáčejte ⌥← ⌥→, celá obrazovka klávesou <kbd>f</kbd>. Animované GIFy, SVG a PDF také.</p><p>Prezentace (<kbd>s</kbd>) projde složku i všechny její podsložky, fotky i videa. Co prezentace přehrává, to je playlist: <kbd>p</kbd> ho otevře, abyste změnili pořadí a vyřadili, co tam být nemá.</p>",
       "alt": "Fotka v plném zobrazení"
     },
     {

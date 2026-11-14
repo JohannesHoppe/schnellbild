@@ -3,7 +3,7 @@ Schnellbild zeigt Bilder und Videos, ohne dass du etwas importieren musst: Ordne
 BILDER
 • JPEG, HEIC, AVIF, JPEG XL, PNG, GIF, WebP, TIFF, PSD, OpenEXR, SVG, PDF und RAW-Fotos der Kameras, die macOS kennt
 • Raster, Liste und Vollansicht, Diashow durch alle Unterordner
-• Der Ordner ist die Playlist: P öffnet sie in der Diashow, zum Umsortieren per Ziehen, Herausnehmen (die Dateien bleiben) oder Hinspringen per Klick
+• Was die Diashow spielt, ist die Playlist: P öffnet sie zum Umsortieren und Aussortieren
 • Zoomen, drehen, automatisch verbessern (Belichtung, Kontrast, Sättigung, Schärfe), nur für die Ansicht: deine Dateien bleiben, wie sie sind
 • Datei-Info mit Format, Codecs und Bitrate; ein Hinweis, wenn die Dateiendung nicht zum Inhalt passt
 

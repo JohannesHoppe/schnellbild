@@ -66,7 +66,7 @@
   "features": [
     {
       "title": "Se bilden stort, bläddra med tangenterna",
-      "text": "<p>Mellanslag öppnar en bild så stor som fönstret tillåter, ← → bläddrar genom mappen. Zooma med styrplattan eller + −, rotera med ⌥← ⌥→, helskärm med <kbd>f</kbd>. Animerade GIF:ar, SVG och PDF ingår.</p><p>Ett bildspel (<kbd>s</kbd>) går igenom mappen och alla dess undermappar, både bilder och videor. Mappen är spellistan: <kbd>p</kbd> öppnar den till höger, där du drar objekt i ny ordning, plockar ut ett med <kbd>⌫</kbd> (filen ligger kvar) eller klickar på ett för att hoppa dit.</p>",
+      "text": "<p>Mellanslag öppnar en bild så stor som fönstret tillåter, ← → bläddrar genom mappen. Zooma med styrplattan eller + −, rotera med ⌥← ⌥→, helskärm med <kbd>f</kbd>. Animerade GIF:ar, SVG och PDF ingår.</p><p>Ett bildspel (<kbd>s</kbd>) går igenom mappen och alla dess undermappar, både bilder och videor. Det bildspelet spelar är spellistan: <kbd>p</kbd> öppnar den, så att du kan ändra ordningen och gallra.</p>",
       "alt": "Ett foto i helvyn"
     },
     {

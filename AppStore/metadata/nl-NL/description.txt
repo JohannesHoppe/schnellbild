@@ -3,7 +3,7 @@ Schnellbild is een fotoviewer en videospeler die foto’s en video’s laat zien
 FOTO’S EN AFBEELDINGEN
 • JPEG, HEIC, AVIF, JPEG XL, PNG, GIF, WebP, TIFF, PSD, OpenEXR, SVG, PDF en RAW-foto’s van de camera’s die macOS kent
 • Raster, lijst en volledige weergave, diavoorstelling door alle submappen
-• De map is de afspeellijst: P opent hem in de diavoorstelling, om items te verslepen, eruit te halen (de bestanden blijven staan) of er met een klik naartoe te springen
+• Wat de diavoorstelling afspeelt, is de afspeellijst: P opent hem om de volgorde te veranderen en uit te dunnen
 • Zoomen, draaien, automatisch verbeteren (belichting, contrast, verzadiging, scherpte), alleen voor het bekijken: je bestanden blijven zoals ze zijn
 • Bestandsinfo met formaat, codecs en bitrate; een melding als de extensie van een bestand niet bij de inhoud past
 
