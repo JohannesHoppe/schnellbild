@@ -222,6 +222,8 @@ jobs:
           [ -f /tmp/schnellbild-vlc.log ] || { echo "no VLC log"; exit 0; }
           wc -l /tmp/schnellbild-vlc.log
           grep -i -E "vout|video output|vmem|error|failed|cannot|blend|spu|subpicture|freetype|libass|subtitle" /tmp/schnellbild-vlc.log | sort | uniq -c | sort -rn | head -80
+          echo "--- around libass"
+          grep -n -i -B3 -A30 'module "libass"' /tmp/schnellbild-vlc.log | grep -v -i -E "avcodec|vmem|vout window" | head -250 || true
 
       - name: Show what macOS did with the thumbnail extension
         if: failure()

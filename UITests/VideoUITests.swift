@@ -268,6 +268,7 @@ final class VideoUITests: SchnellbildUITestCase {
         try put("grey.mp4", at: "b-grey.mp4")
         let log = tempDir.appendingPathComponent("app.log")
         let extra = (vlc ? ["--force-vlc"] : []) + ["--hold-video-bar", "--test-log=\(log.path)"]
+        continueAfterFailure = true   // the log below shows on a failure too
         defer { print("app log:\n" + ((try? String(contentsOf: log, encoding: .utf8)) ?? "(none)")) }
         launch(open: tempDir.appendingPathComponent("a-clip.mp4").path, extra: extra)
         let id = vlc ? "video.vlc" : "video.avkit"

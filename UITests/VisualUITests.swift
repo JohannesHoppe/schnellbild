@@ -301,6 +301,7 @@ final class VisualUITests: SchnellbildUITestCase {
     /// where they go, shows the text; with V it is even again.
     private func checkSubtitlesAreDrawn(_ fixture: String, vlc: Bool) throws {
         let log = tempDir.appendingPathComponent("app.log")
+        continueAfterFailure = true   // the log below shows on a failure too
         defer { print("app log:\n" + ((try? String(contentsOf: log, encoding: .utf8)) ?? "(none)")) }
         let video = try openVideo(fixture, vlc: vlc, extra: ["--test-log=\(log.path)"])
         eventually("the subtitles are on", timeout: 20) { text(of: video).contains("subtitles 1/2 en") }
@@ -328,6 +329,7 @@ final class VisualUITests: SchnellbildUITestCase {
     /// The ASS subtitles (libass) of the MKV, chosen with ⌃⌘S.
     func testVLCDrawsASSSubtitles() throws {
         let log = tempDir.appendingPathComponent("app.log")
+        continueAfterFailure = true   // the log below shows on a failure too
         defer { print("app log:\n" + ((try? String(contentsOf: log, encoding: .utf8)) ?? "(none)")) }
         let video = try openVideo("tracks.mkv", vlc: true, extra: ["--test-log=\(log.path)"])
         eventually("the subtitles are on", timeout: 20) { text(of: video).contains("subtitles 1/2 en") }
