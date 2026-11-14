@@ -225,24 +225,37 @@ struct VideoDetailView: View {
     }
 }
 
-/// AVKit's player view without controls of its own: the app's control bar
-/// (`VideoControlBar`) is the same for AVKit and VLC, stays where the user
-/// put it from video to video and stays upright on a turned video. (AVKit's
-/// inline and minimal controls dim the whole picture while they show, from
-/// macOS 26 on.) It draws the subtitles chosen.
+/// AVKit's picture: an `AVPlayerLayer` in a plain view, which draws the
+/// video and the subtitles chosen. The app's control bar (`VideoControlBar`)
+/// is the same for AVKit and VLC, stays where the user put it from video to
+/// video and stays upright on a turned video. (`AVPlayerView` keeps a line of
+/// subtitles switched off on screen on macOS 15, seen on CI; its inline and
+/// minimal controls dim the whole picture while they show, from macOS 26 on.)
 struct AVPlayerViewHost: NSViewRepresentable {
     let player: AVPlayer
 
-    func makeNSView(context: Context) -> AVPlayerView {
-        let view = AVPlayerView()
-        view.controlsStyle = .none
-        view.showsFullScreenToggleButton = false
-        view.player = player
+    func makeNSView(context: Context) -> PlayerLayerView {
+        let view = PlayerLayerView()
+        view.playerLayer.player = player
         return view
     }
 
-    func updateNSView(_ view: AVPlayerView, context: Context) {
-        if view.player !== player { view.player = player }
+    func updateNSView(_ view: PlayerLayerView, context: Context) {
+        if view.playerLayer.player !== player { view.playerLayer.player = player }
+    }
+
+    final class PlayerLayerView: NSView {
+        let playerLayer = AVPlayerLayer()
+
+        override init(frame: NSRect) {
+            super.init(frame: frame)
+            playerLayer.videoGravity = .resizeAspect
+            playerLayer.backgroundColor = NSColor.black.cgColor
+            layer = playerLayer
+            wantsLayer = true
+        }
+
+        required init?(coder: NSCoder) { fatalError("not from a coder") }
     }
 }
 
