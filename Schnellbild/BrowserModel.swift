@@ -1210,9 +1210,29 @@ final class BrowserModel: ObservableObject {
         /// far: the part to start in is walked first, the others' items go
         /// in before or after it.
         var partCounts: [Int] = [1]
+        /// Taken out of the playlist (canonical paths): the walk doesn't bring them back.
+        var dismissed: Set<String> = []
         /// Tells this slideshow's walk from an earlier, cancelled one.
         let id = UUID()
         var current: GridEntry? { items.indices.contains(index) ? items[index] : nil }
+
+        /// The part (`partCounts`) each item belongs to, in item order.
+        func partOfEachItem() -> [Int] {
+            var parts: [Int] = []
+            parts.reserveCapacity(items.count)
+            for (part, count) in partCounts.enumerated() { parts += Array(repeating: part, count: count) }
+            let last = max(partCounts.count - 1, 0)
+            if parts.count < items.count { parts += Array(repeating: last, count: items.count - parts.count) }
+            return Array(parts.prefix(items.count))
+        }
+
+        /// `partCounts` again from each item's part (kept in order, so each
+        /// part stays one run of items).
+        mutating func recount(_ parts: [Int]) {
+            var counts = Array(repeating: 0, count: max(partCounts.count, 1))
+            for part in parts { counts[min(part, counts.count - 1)] += 1 }
+            partCounts = counts
+        }
     }
     @Published private(set) var slideshow: Slideshow? {
         didSet { if slideshow == nil { refreshIfDeferred() } }
@@ -1225,6 +1245,9 @@ final class BrowserModel: ObservableObject {
     /// How often the slideshow checks that a video plays at all; four checks
     /// without a length skip it (a file nothing can play).
     var slideshowVideoCheck: Duration = .seconds(2)
+    /// A wait before each part of the walk after the first: tests change the
+    /// playlist while the walk still brings items.
+    var slideshowPartPause: Duration?
     private var slideshowTimer: Task<Void, Never>?
     private var slideshowWalk: Task<Void, Never>?
     /// Whether starting the slideshow put the window into full screen.
@@ -4374,7 +4397,7 @@ final class BrowserModel: ObservableObject {
         let shown = show.current.flatMap { lookup.url($0.url) }
         show.items = items
         show.partCounts = counts
-        show.seen = Set(items.map { Self.canonicalPath($0.url) })
+        show.seen = Set(items.map { Self.canonicalPath($0.url) }).union(show.dismissed)
         show.index = items.isEmpty ? 0 : min(max(index, show.index < 0 ? -1 : 0), items.count - 1)
         slideshow = show
         // Nothing left and nothing more to come (another pane trashed it
@@ -4508,6 +4531,7 @@ final class BrowserModel: ObservableObject {
         slideshowEnteredFullScreen = setFullScreen(true)
         let key = sortKey, ascending = sortAscending
         let startAt = show.startAt.map(Self.canonicalPath), startInside = show.startInside
+        let partPause = slideshowPartPause
         slideshowWalk = Task { [weak self] in
             // The show's parts: each search result; over one folder its own
             // media, then each subfolder
@@ -4535,7 +4559,8 @@ final class BrowserModel: ObservableObject {
             }
             let first = parts.firstIndex(where: holdsStart) ?? 0
             self?.setSlideshowParts(parts.count, id: id)
-            for number in [first] + parts.indices.filter({ $0 != first }) {
+            for (step, number) in ([first] + parts.indices.filter({ $0 != first })).enumerated() {
+                if step > 0, let pause = partPause { try? await Task.sleep(for: pause) }
                 switch parts[number] {
                 case .media(let items):
                     if !items.isEmpty { self?.addToSlideshow(items, id: id, part: number) }
@@ -4697,16 +4722,178 @@ final class BrowserModel: ObservableObject {
         slideshowTimer = nil
         slideshowWalk = nil
         guard slideshow != nil else { return }
+        closePlaylist()
         slideshow = nil
         if slideshowEnteredFullScreen { _ = setFullScreen(false) }
         slideshowEnteredFullScreen = false
     }
 
+    // MARK: - Playlist
+
+    /// The slideshow's playlist (P): its items in the order they play, to
+    /// reorder, take out and jump to. It lives as long as the show; nothing
+    /// of it is saved.
+    @Published private(set) var showPlaylist = false
+    /// ↑ ↓ ⌫ ↩ act on the playlist: after a click in it, until a click on
+    /// the picture or the playlist closes.
+    @Published var playlistFocused = false
+    /// The playlist's chosen row (a canonical path, so it stays on its item
+    /// while the walk adds more): what ↑ ↓ move and ⌫ takes out.
+    @Published private(set) var playlistCursor: String?
+    static let playlistPinnedKey = "playlistPinned"
+    static let playlistWidthKey = "playlistWidth"
+    static let playlistDefaultWidth: Double = 300
+    static let playlistWidthRange: ClosedRange<Double> = 200...640
+    /// Pinned: the picture makes room beside it; else it lies over the
+    /// picture. App-wide, remembered.
+    @Published var playlistPinned = false {
+        didSet { if playlistPinned != oldValue { defaults.set(playlistPinned, forKey: Self.playlistPinnedKey) } }
+    }
+    /// Its width in points (the grip on its left edge). App-wide, remembered.
+    @Published private(set) var playlistWidth = BrowserModel.playlistDefaultWidth
+
+    /// P: the playlist on or off (only during a slideshow).
+    func togglePlaylist() {
+        guard slideshow != nil else { return }
+        if showPlaylist { closePlaylist(); return }
+        // Every pane and window shares pin and width: read them afresh
+        playlistPinned = defaults.bool(forKey: Self.playlistPinnedKey)
+        if let width = defaults.object(forKey: Self.playlistWidthKey) as? Double { setPlaylistWidth(width) }
+        showPlaylist = true
+    }
+
+    func closePlaylist() {
+        showPlaylist = false
+        playlistFocused = false
+        playlistCursor = nil
+    }
+
+    /// The width dragged to (`remember`: the drag ended); nil is the standard width.
+    func setPlaylistWidth(_ width: Double?, remember: Bool = false) {
+        let width = width ?? Self.playlistDefaultWidth
+        playlistWidth = min(max(width, Self.playlistWidthRange.lowerBound), Self.playlistWidthRange.upperBound)
+        if remember { defaults.set(playlistWidth, forKey: Self.playlistWidthKey) }
+    }
+
+    /// The row the cursor is on.
+    var playlistCursorIndex: Int? {
+        guard let cursor = playlistCursor, let items = slideshow?.items else { return nil }
+        return items.firstIndex { Self.canonicalPath($0.url) == cursor }
+    }
+
+    /// A click on a row: the show goes there, and the list takes the keys.
+    func clickPlaylistItem(at index: Int) {
+        guard let items = slideshow?.items, items.indices.contains(index) else { return }
+        playlistFocused = true
+        playlistCursor = Self.canonicalPath(items[index].url)
+        playSlideshowItem(at: index)
+    }
+
+    /// Jump to an item of the show; a picture gets its full time from now.
+    func playSlideshowItem(at index: Int) {
+        guard var show = slideshow, show.items.indices.contains(index) else { return }
+        show.startAt = nil   // the user has chosen
+        show.startInside = nil
+        show.waitingForMore = false
+        show.index = index
+        slideshow = show
+        showSlideshowItem()
+    }
+
+    /// ↑ ↓ (Home, End) in the playlist: the cursor that many rows on; with
+    /// no cursor yet, the first ↑ or ↓ puts it on the item shown.
+    func movePlaylistCursor(_ delta: Int) {
+        guard let show = slideshow, !show.items.isEmpty else { return }
+        let from = playlistCursorIndex ?? min(max(show.index, 0), show.items.count - 1)
+        let to = playlistCursorIndex == nil && delta.magnitude == 1
+            ? from : min(max(from + max(min(delta, show.items.count), -show.items.count), 0), show.items.count - 1)
+        playlistCursor = Self.canonicalPath(show.items[to].url)
+    }
+
+    /// Drag & drop in the playlist (`onMove`'s offsets): the items play in
+    /// the new order, the one on screen stays on screen. Items the walk
+    /// still brings go where their part lies now (moved items join the
+    /// part of the item before them).
+    func moveSlideshowItems(from source: IndexSet, to destination: Int) {
+        guard var show = slideshow else { return }
+        let source = IndexSet(source.filter(show.items.indices.contains))
+        guard !source.isEmpty, (0...show.items.count).contains(destination) else { return }
+        let shown = show.current?.url
+        var parts = show.partOfEachItem()
+        let moving = source.map { show.items[$0] }
+        let ownPart = parts[source.first!]
+        for offset in source.reversed() {
+            show.items.remove(at: offset)
+            parts.remove(at: offset)
+        }
+        let at = destination - source.count(in: 0..<destination)
+        show.items.insert(contentsOf: moving, at: at)
+        let joined = at > 0 ? parts[at - 1] : (parts.first ?? ownPart)
+        parts.insert(contentsOf: Array(repeating: joined, count: moving.count), at: at)
+        show.recount(parts)
+        if let shown, let index = show.items.firstIndex(where: { $0.url == shown }) { show.index = index }
+        slideshow = show
+    }
+
+    /// ⌫ in the playlist: out of the show, the file stays where it is, and
+    /// the walk doesn't bring it back. The item on screen taken out: the
+    /// next one plays; nothing left and nothing more to come: the show ends.
+    func removeFromSlideshow(at offsets: IndexSet) {
+        guard var show = slideshow else { return }
+        let offsets = IndexSet(offsets.filter(show.items.indices.contains))
+        guard let first = offsets.first else { return }
+        let shownRemoved = offsets.contains(show.index)
+        let before = offsets.count(in: 0..<max(show.index, 0))
+        let cursorRemoved = playlistCursorIndex.map(offsets.contains) ?? false
+        var parts = show.partOfEachItem()
+        for offset in offsets.reversed() {
+            show.dismissed.insert(Self.canonicalPath(show.items[offset].url))
+            show.items.remove(at: offset)
+            parts.remove(at: offset)
+        }
+        show.recount(parts)
+        if show.index >= 0 { show.index -= before }
+        if show.items.isEmpty {
+            show.index = 0
+            show.waitingForMore = false
+        } else if show.index >= show.items.count {
+            // The last one went: round to the first, or on to what the walk brings
+            if show.loading { show.index = show.items.count - 1; show.waitingForMore = true } else { show.index = 0 }
+        }
+        if cursorRemoved {
+            playlistCursor = show.items.isEmpty ? nil : Self.canonicalPath(show.items[min(first, show.items.count - 1)].url)
+        }
+        slideshow = show
+        if show.items.isEmpty, !show.loading { stopSlideshow(); return }
+        if shownRemoved { showSlideshowItem() }
+    }
+
+    /// The keys the playlist takes after a click in it; false: not its key.
+    private func playlistKey(_ key: KeyInput) -> Bool {
+        guard showPlaylist, playlistFocused else { return false }
+        switch key {
+        case .up:   movePlaylistCursor(-1)
+        case .down: movePlaylistCursor(+1)
+        case .home: movePlaylistCursor(-Int.max)
+        case .end:  movePlaylistCursor(Int.max)
+        case .backspace:
+            if let index = playlistCursorIndex { removeFromSlideshow(at: [index]) }
+        case .enter:
+            if let index = playlistCursorIndex { playSlideshowItem(at: index) }
+        default:
+            return false
+        }
+        return true
+    }
+
     /// Keys while the slideshow runs.
     private func handleSlideshowKey(_ key: KeyInput, command: Bool, shift: Bool) -> Bool {
+        if !command, !shift, playlistKey(key) { return true }
         switch key {
         case .escape, .backspace, .enter:
-            stopSlideshow(); return true
+            // The playlist closes first, then the show ends
+            if showPlaylist { closePlaylist() } else { stopSlideshow() }
+            return true
         case .space:
             toggleSlideshowPause(); return true
         case .left, .right:
@@ -4719,6 +4906,7 @@ final class BrowserModel: ObservableObject {
             let c = Character(raw.lowercased())   // also with Shift or Caps Lock
             switch c {
             case "s" where !command: stopSlideshow(); return true
+            case "p" where !command: togglePlaylist(); return true
             // No search, history or file actions while the hidden grid's
             // selection isn't what's on screen
             case "f" where command, "[" where command, "]" where command, "a" where command: return true

@@ -34,7 +34,9 @@ struct MiniKeyboard: View {
     }
 
     /// What's on screen decides the keys.
-    enum Context { case grid, dualGrid, picture, video, slideshow }
+    /// `playlist`: the slideshow's playlist open; `playlistKeys`: it has the
+    /// keys (after a click in it).
+    enum Context { case grid, dualGrid, picture, video, slideshow, playlist, playlistKeys }
 
     static func keys(for context: Context) -> [Key] {
         switch context {
@@ -111,11 +113,34 @@ struct MiniKeyboard: View {
                 Key(cap: "space", word: "Pause", input: .space),
                 Key(cap: "←", word: "Previous", input: .left),
                 Key(cap: "→", word: "Next", input: .right),
+                Key(cap: "P", word: "Playlist", input: .char("p")),
                 Key(cap: "I", word: "Info", input: .char("i")),
                 Key(cap: "E", word: "Auto Enhance", input: .char("e")),
                 Key(cap: "A", word: "Adjust", input: .char("a")),
                 Key(cap: "F", word: "Full Screen", input: .char("f")),
                 Key(cap: "esc", word: "End", input: .escape),
+            ]
+        case .playlist:
+            return [
+                Key(cap: "space", word: "Pause", input: .space),
+                Key(cap: "←", word: "Previous", input: .left),
+                Key(cap: "→", word: "Next", input: .right),
+                Key(cap: "I", word: "Info", input: .char("i")),
+                Key(cap: "E", word: "Auto Enhance", input: .char("e")),
+                Key(cap: "A", word: "Adjust", input: .char("a")),
+                Key(cap: "F", word: "Full Screen", input: .char("f")),
+                Key(cap: "esc", word: "Close playlist", input: .escape),
+            ]
+        case .playlistKeys:
+            return [
+                Key(cap: "space", word: "Pause", input: .space),
+                Key(cap: "←", word: "Previous", input: .left),
+                Key(cap: "→", word: "Next", input: .right),
+                Key(cap: "↑", word: "Row up", input: .up),
+                Key(cap: "↓", word: "Row down", input: .down),
+                Key(cap: "↩", word: "Show", input: .enter),
+                Key(cap: "⌫", word: "Take out", input: .backspace),
+                Key(cap: "esc", word: "Close playlist", input: .escape),
             ]
         }
     }
@@ -123,7 +148,10 @@ struct MiniKeyboard: View {
     @EnvironmentObject var window: WindowModel
 
     private var context: Context {
-        if model.slideshow != nil { return .slideshow }
+        if model.slideshow != nil {
+            guard model.showPlaylist else { return .slideshow }
+            return model.playlistFocused ? .playlistKeys : .playlist
+        }
         guard model.mode == .detail else { return window.dual ? .dualGrid : .grid }
         return model.shownMediaEntry?.kind == .video ? .video : .picture
     }
