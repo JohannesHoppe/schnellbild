@@ -1,10 +1,13 @@
-// Makes the Mac App Store screenshots (2880 × 1800, 16:10) from the README's
-// window shots (docs/screenshots): each shot, with its shadow as captured,
+// Makes the Mac App Store screenshots (2880 × 1800, 16:10, PNG) from the window
+// shots (docs/screenshots/<name>.webp): each shot, with its shadow as captured,
 // centred on one flat colour: #f5f5f7 (the website's light page), or
 // #2c2c2e for shots whose name has "-dark" (a little lighter than the
 // website's #1d1d1f, so the window's shadow shows).
 //
-//   swift Scripts/make_store_screenshots.swift <out dir> <shot.png> …
+//   swift Scripts/make_store_screenshots.swift <out dir> <shot.webp> …
+//
+// Scripts/appstore_connect.swift runs it at upload into a temporary folder: the
+// PNGs never go into the repository.
 import AppKit
 import CoreGraphics
 
@@ -33,7 +36,7 @@ for path in args.dropFirst() {
     let w = Double(shot.width) * scale, h = Double(shot.height) * scale
     context.interpolationQuality = .high
     context.draw(shot, in: CGRect(x: (Double(width) - w) / 2, y: (Double(height) - h) / 2, width: w, height: h))
-    let out = URL(fileURLWithPath: outDir).appendingPathComponent(name)
+    let out = URL(fileURLWithPath: outDir).appendingPathComponent((name as NSString).deletingPathExtension + ".png")
     guard let image = context.makeImage(),
           let destination = CGImageDestinationCreateWithURL(out as CFURL, "public.png" as CFString, 1, nil) else { exit(1) }
     // Opaque: App Store Connect takes no transparency

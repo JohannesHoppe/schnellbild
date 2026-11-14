@@ -35,7 +35,7 @@
   const query = new URLSearchParams(location.search);
   const lang = query.get("lang") || "en";
   document.documentElement.lang = lang;
-  document.getElementById("shot").src = "/docs/screenshots/" + (query.get("shot") || "grid-light.png");
+  document.getElementById("shot").src = "/docs/screenshots/" + (query.get("shot") || "grid-light.webp");
   fetch("/site/i18n/" + lang + ".json").then(r => r.json()).then(async t => {
     const tagline = document.getElementById("tagline");
     tagline.textContent = t.tagline;

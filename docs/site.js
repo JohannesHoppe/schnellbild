@@ -140,20 +140,12 @@ if ("IntersectionObserver" in window) {
   document.body.append(dialog);
   let index = 0;
   // The page shows each screenshot as wide as its place needs; the dialog loads the
-  // widest (the last of a srcset) of the source the browser would take: the format it
-  // took for a screenshot already there (AVIF, WebP or the PNG), the theme shown. So
-  // ← → also reach screenshots that haven't loaded yet.
-  function format() {
-    const loaded = shots.map((shot) => shot.currentSrc).find(Boolean) || "";
-    const match = loaded.match(/\.(avif|webp)$/);
-    return match ? `image/${match[1]}` : "";
-  }
+  // widest (the last of a srcset) of the source the browser would take for the theme
+  // shown. So ← → also reach screenshots that haven't loaded yet.
   function widest(shot) {
-    const type = format();
     const picture = shot.parentElement;
     const sources = picture && picture.tagName === "PICTURE" ? [...picture.querySelectorAll("source")] : [];
-    const source = sources.find((source) =>
-      (source.type || "") === type && (!source.media || matchMedia(source.media).matches));
+    const source = sources.find((source) => !source.media || matchMedia(source.media).matches);
     return source ? source.srcset.split(",").pop().trim().split(/\s+/)[0] : shot.currentSrc || shot.src;
   }
   function show(at) {

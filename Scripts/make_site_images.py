@@ -14,22 +14,33 @@ Icons, from Resources/icon_1024.png with macOS's `sips` (no other tools):
     docs/icon-64.png, .webp     the bar's icon (32 px at 2x)
     docs/icon.webp              256 px for the home page (docs/icon.png the fallback)
 
-Screenshot variants, from every PNG in docs/screenshots (1072 × 752, 1x with the
-window shadow on transparent ground), so a phone loads a small file and a large
-screen the full width:
+Screenshots live in the repository only as WebP, never as PNG. The masters,
+docs/screenshots/<name>.webp (1072 × 752, 1x with the window shadow on
+transparent ground), are lossless WebP made from the PNGs screenshots.yml
+uploads (one artifact per language, unpacked into a folder each):
+
+    python3 Scripts/make_site_images.py import <folder> …
+
+    docs/screenshots/<name>.webp   cwebp -lossless -z 9: English all of them (README),
+                                   every other language only those the website shows
+                                   (HERO_SHOT, FEATURE_SHOTS) and the light ones the
+                                   App Store shows (STORE_SHOTS)
+
+Their variants, so a phone loads a small file and a large screen the full width:
 
     python3 Scripts/make_site_images.py shots
 
-    docs/screenshots/sized/<name>-<width>.<hash>.avif   sips, quality 80
-    docs/screenshots/sized/<name>-<width>.<hash>.webp   cwebp (Homebrew's webp), quality 90,
-                                                        lossless alpha, sharp RGB→YUV
+    docs/screenshots/sized/<name>-<width>.<hash>.webp   cwebp, quality 90, lossless alpha,
+                                                        sharp RGB→YUV
 
-for the widths in SHOT_WIDTHS below the PNG's own and the PNG's own width. <hash>
-is the start of the PNG's SHA-256, so a changed PNG needs new variants (the
-build's --check says so) and a browser never keeps an old one. Variants that
-exist are kept; those of PNGs that are gone or changed are deleted. The page
-offers AVIF, then WebP, then the PNG (picture, srcset and sizes in
-Scripts/build_site.py); the lightbox loads the largest.
+for the widths in SHOT_WIDTHS below the master's own and the master's own width.
+<hash> is the start of the master's SHA-256, so a changed master needs new
+variants (the build's --check says so) and a browser never keeps an old one.
+Variants that exist are kept; those of masters that are gone or changed are
+deleted. The page offers the variants through picture, srcset and sizes
+(Scripts/build_site.py), the master as the img's src; the lightbox loads the
+widest variant. docs/screenshots/video-motion-*.webp (the moving video,
+Scripts/make_video_animation.py) are no masters.
 
 Link preview images (Open Graph, 1200 × 630, one per language: docs/og/<lang>.jpg).
 A browser draws them from site/og/card.html; the script prints the steps:
@@ -41,11 +52,13 @@ The card shows the app icon, the name, the language's tagline (site/i18n) and th
 hero screenshot, the language's own light one where it exists.
 """
 import hashlib
+import re
 import shutil
 import struct
 import subprocess
 import sys
 import tempfile
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -54,13 +67,16 @@ ICON = ROOT / "Resources" / "icon_1024.png"
 LANGUAGES = ["en", "de", "fr", "es", "it", "pt-BR", "nl", "pl", "sv", "da", "nb", "fi",
              "cs", "tr", "ru", "uk", "ja", "ko", "zh-Hans", "zh-Hant"]
 HERO_SHOT = "grid"
+# The website's feature pictures, in the order of the features (site/i18n)
+FEATURE_SHOTS = ["full", "video", "archives", "dualpane", "search", "adjust", "inspector", "help", "settings"]
+# The App Store's pictures (light), in their order there (by name)
+STORE_SHOTS = ["archive-inside", "dualpane", "full", "grid", "inspector", "video"]
 OG_SIZE = (1200, 630)
 OG_LIMIT = 300_000
 PORT = 8917
 SHOTS = DOCS / "screenshots"
 SIZED = SHOTS / "sized"
 SHOT_WIDTHS = (400, 640, 860)
-SHOT_FORMATS = ("avif", "webp")
 
 
 def sips(*args):
@@ -75,10 +91,26 @@ def webp(source, out, *args):
 
 
 def png_size(path):
-    data = path.read_bytes()[:24]
+    """Width and height of a PNG, JPEG or WebP."""
+    data = path.read_bytes()[:30]
     if data[:8] == b"\x89PNG\r\n\x1a\n":
         return struct.unpack(">II", data[16:24])
+    if data[:4] == b"RIFF" and data[8:12] == b"WEBP":
+        return webp_size(data)
     return jpeg_size(path)
+
+
+def webp_size(data):
+    """From the first chunk: VP8X (extended), VP8L (lossless) or VP8 (lossy)."""
+    chunk = data[12:16]
+    if chunk == b"VP8X":
+        return (int.from_bytes(data[24:27], "little") + 1, int.from_bytes(data[27:30], "little") + 1)
+    if chunk == b"VP8L":
+        bits = int.from_bytes(data[21:25], "little")
+        return (bits & 0x3FFF) + 1, ((bits >> 14) & 0x3FFF) + 1
+    if chunk == b"VP8 ":
+        return int.from_bytes(data[26:28], "little") & 0x3FFF, int.from_bytes(data[28:30], "little") & 0x3FFF
+    raise ValueError("not a WebP this script reads")
 
 
 def jpeg_size(path):
@@ -93,45 +125,68 @@ def jpeg_size(path):
     raise ValueError(f"{path}: no JPEG frame header")
 
 
-def shot_hash(png):
-    return hashlib.sha256(png.read_bytes()).hexdigest()[:10]
+def masters():
+    """The screenshot masters: every WebP in docs/screenshots but the moving video's."""
+    return sorted(p for p in SHOTS.glob("*.webp") if not p.name.startswith("video-motion-"))
 
 
-def shot_variants(png):
-    """{format: [(width, path), …]} of a screenshot PNG, narrowest first; the last is the PNG's own width."""
-    width, _ = png_size(png)
-    digest = shot_hash(png)
+def shot_hash(master):
+    return hashlib.sha256(master.read_bytes()).hexdigest()[:10]
+
+
+def shot_variants(master):
+    """[(width, path), …] of a screenshot master, narrowest first; the last is the master's own width."""
+    width, _ = png_size(master)
+    digest = shot_hash(master)
     widths = [w for w in SHOT_WIDTHS if w < width] + [width]
-    return {fmt: [(w, SIZED / f"{png.stem}-{w}.{digest}.{fmt}") for w in widths] for fmt in SHOT_FORMATS}
+    return [(w, SIZED / f"{master.stem}-{w}.{digest}.webp") for w in widths]
 
 
 def shot_problems():
-    """What is missing in docs/screenshots/sized, and what lies there without a PNG."""
-    wanted = {path for png in SHOTS.glob("*.png") for variants in shot_variants(png).values() for _, path in variants}
+    """What is missing in docs/screenshots/sized, and what lies there without a master."""
+    wanted = {path for master in masters() for _, path in shot_variants(master)}
     problems = [f"{path.relative_to(ROOT)} is missing" for path in sorted(wanted) if not path.exists()]
-    problems += [f"{path.relative_to(ROOT)} belongs to no PNG" for path in sorted(SIZED.glob("*")) if path not in wanted]
+    problems += [f"{path.relative_to(ROOT)} belongs to no master" for path in sorted(SIZED.glob("*")) if path not in wanted]
+    problems += [f"{path.relative_to(ROOT)}: screenshots only as WebP" for path in sorted(SHOTS.glob("*.png"))]
     return problems
 
 
 def shots():
     SIZED.mkdir(exist_ok=True)
-    wanted, made = set(), 0
-    for png in sorted(SHOTS.glob("*.png")):
-        for fmt, variants in shot_variants(png).items():
-            for width, path in variants:
-                wanted.add(path)
-                if path.exists():
-                    continue
-                if fmt == "webp":
-                    webp(png, path, "-resize", width, 0)
-                else:
-                    sips("--resampleWidth", width, "-s", "format", "avif", "-s", "formatOptions", 80, png, "--out", path)
-                made += 1
+    wanted, todo = set(), []
+    for master in masters():
+        for width, path in shot_variants(master):
+            wanted.add(path)
+            if not path.exists():
+                todo.append((master, path, width))
+    with ThreadPoolExecutor() as pool:
+        list(pool.map(lambda job: webp(job[0], job[1], "-resize", job[2], 0), todo))
     for path in SIZED.glob("*"):
         if path not in wanted:
             path.unlink()
             print("deleted", path.relative_to(ROOT))
-    print(f"{made} screenshot variants written, {len(wanted)} in docs/screenshots/sized")
+    print(f"{len(todo)} screenshot variants written, {len(wanted)} in docs/screenshots/sized")
+
+
+def kept(name):
+    """Whether a screenshot, <motif>-<light|dark>[-<lang>], goes into docs/screenshots."""
+    motif, mode, language = re.fullmatch(r"(.+?)-(light|dark)(?:-(.+))?", name).groups()
+    return not language or motif in [HERO_SHOT, *FEATURE_SHOTS] or (motif in STORE_SHOTS and mode == "light")
+
+
+def import_shots(folders):
+    """Lossless WebP masters from the PNGs of screenshots.yml's artifacts."""
+    cwebp = shutil.which("cwebp") or sys.exit("cwebp is missing (Homebrew's webp)")
+    pngs = [p for folder in folders for p in sorted(Path(folder).glob("*.png")) if kept(p.stem)]
+    if not pngs:
+        sys.exit("no screenshots in " + ", ".join(folders))
+
+    def convert(png):
+        subprocess.run([cwebp, "-quiet", "-lossless", "-z", "9", "-metadata", "none", png, "-o", SHOTS / f"{png.stem}.webp"],
+                       check=True)
+    with ThreadPoolExecutor() as pool:
+        list(pool.map(convert, pngs))
+    print(f"{len(pngs)} masters written to docs/screenshots; next: shots, then build_site.py")
 
 
 def icons():
@@ -163,8 +218,8 @@ def icons():
 
 
 def card_shot(code):
-    own = DOCS / "screenshots" / f"{HERO_SHOT}-light-{code}.png"
-    return own.name if code != "en" and own.exists() else f"{HERO_SHOT}-light.png"
+    own = DOCS / "screenshots" / f"{HERO_SHOT}-light-{code}.webp"
+    return own.name if code != "en" and own.exists() else f"{HERO_SHOT}-light.webp"
 
 
 def og():
@@ -206,4 +261,7 @@ def check():
 
 
 if __name__ == "__main__":
-    {"icons": icons, "shots": shots, "og": og, "check": check}.get(sys.argv[1] if len(sys.argv) > 1 else "", lambda: sys.exit(__doc__))()
+    if sys.argv[1:2] == ["import"] and len(sys.argv) > 2:
+        import_shots(sys.argv[2:])
+    else:
+        {"icons": icons, "shots": shots, "og": og, "check": check}.get(sys.argv[1] if len(sys.argv) > 1 else "", lambda: sys.exit(__doc__))()

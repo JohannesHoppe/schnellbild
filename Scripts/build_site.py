@@ -19,9 +19,9 @@ search engines and link previews read: title and description (seoTitle,
 seoDescription), canonical and hreflang, Open Graph and Twitter tags with the
 language's preview image docs/og/<lang>.jpg, and schema.org data (the app on
 the home page, breadcrumbs on the privacy policy). The icons, preview images
-and the screenshots' AVIF / WebP variants come from Scripts/make_site_images.py;
---check fails when a screenshot the pages show has no variants for its PNG as
-it is now.
+and the screenshots' WebP variants come from Scripts/make_site_images.py;
+--check fails when a screenshot the pages show has no variants for its master
+as it is now.
 """
 import html
 import datetime
@@ -32,7 +32,7 @@ import sys
 from pathlib import Path
 
 sys.dont_write_bytecode = True  # no __pycache__ in Scripts/ from the import below
-from make_site_images import shot_variants  # noqa: E402
+from make_site_images import FEATURE_SHOTS, HERO_SHOT, png_size, shot_variants  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 I18N = ROOT / "site" / "i18n"
@@ -46,8 +46,6 @@ VERSION = plistlib.loads((ROOT / "Resources" / "Info.plist").read_bytes())["CFBu
 # The app's languages, in the order the README lists them.
 LANGUAGES = ["en", "de", "fr", "es", "it", "pt-BR", "nl", "pl", "sv", "da", "nb", "fi",
              "cs", "tr", "ru", "uk", "ja", "ko", "zh-Hans", "zh-Hant"]
-HERO_SHOT = "grid"
-FEATURE_SHOTS = ["full", "video", "archives", "dualpane", "search", "adjust", "inspector", "help", "settings"]
 # How wide a screenshot is drawn (site.css), so the browser picks the variant it needs:
 # the hero fills .wrap.wide up to its own width; a feature's picture is the wider
 # column of .feature (one column up to 820 px, there at most 540 px high).
@@ -121,45 +119,31 @@ def privacy_path(code, t):
     return "/" + folder(code) + t["privacySlug"] + "/"
 
 
-def png_size(path):
-    """Width and height from a PNG's header."""
-    with open(path, "rb") as file:
-        header = file.read(24)
-    return int.from_bytes(header[16:20], "big"), int.from_bytes(header[20:24], "big")
-
-
-def srcset(png):
-    """The AVIF and WebP variants of a screenshot as srcset values (make_site_images.py shots)."""
-    sets = {}
-    for fmt, variants in shot_variants(png).items():
-        for _, path in variants:
-            if not path.exists():
-                problems.append(f"{path.relative_to(ROOT)} (python3 Scripts/make_site_images.py shots)")
-        sets[fmt] = ", ".join(f"/{path.relative_to(DOCS)} {width}w" for width, path in variants)
-    return sets
+def srcset(master):
+    """The WebP variants of a screenshot as a srcset value (make_site_images.py shots)."""
+    variants = shot_variants(master)
+    for _, path in variants:
+        if not path.exists():
+            problems.append(f"{path.relative_to(ROOT)} (python3 Scripts/make_site_images.py shots)")
+    return ", ".join(f"/{path.relative_to(DOCS)} {width}w" for width, path in variants)
 
 
 def shot(name, code, alt, extra=""):
     """A screenshot, light or dark as the page is (the media query of its dark
-    sources; site.js sets them when the visitor picked one): the language's own
-    where there is one, else English. AVIF, then WebP, each as wide as the place
-    needs (sizes); the PNG for browsers that read neither. The hero loads first,
-    the others when they come near."""
-    tag = f"-{code}" if code != "en" and (DOCS / "screenshots" / f"{name}-light-{code}.png").exists() else ""
-    light, dark = DOCS / "screenshots" / f"{name}-light{tag}.png", DOCS / "screenshots" / f"{name}-dark{tag}.png"
+    source; site.js sets it when the visitor picked one): the language's own
+    where there is one, else English. WebP variants as wide as the place needs
+    (sizes), the lossless master as the img's src. The hero loads first, the
+    others when they come near."""
+    tag = f"-{code}" if code != "en" and (DOCS / "screenshots" / f"{name}-light-{code}.webp").exists() else ""
+    light, dark = DOCS / "screenshots" / f"{name}-light{tag}.webp", DOCS / "screenshots" / f"{name}-dark{tag}.webp"
     width, height = png_size(light)
     sizes = HERO_SIZES if name == HERO_SHOT else FEATURE_SIZES
     size = f' width="{width}" height="{height}"' + (' fetchpriority="high"' if name == HERO_SHOT else ' loading="lazy" decoding="async"')
     img = f'<img src="/screenshots/{light.name}"{size} alt="{esc(alt)}"{extra}>'
-    media = ' media="(prefers-color-scheme: dark)"'
     sources = []
-    light_sets, dark_sets = srcset(light), srcset(dark) if dark.exists() else None
-    for fmt in light_sets:
-        if dark_sets:
-            sources.append(f'<source type="image/{fmt}"{media} srcset="{dark_sets[fmt]}" sizes="{sizes}">')
-        sources.append(f'<source type="image/{fmt}" srcset="{light_sets[fmt]}" sizes="{sizes}">')
-    if dark_sets:
-        sources.append(f'<source{media} srcset="/screenshots/{dark.name}">')
+    if dark.exists():
+        sources.append(f'<source type="image/webp" media="(prefers-color-scheme: dark)" srcset="{srcset(dark)}" sizes="{sizes}">')
+    sources.append(f'<source type="image/webp" srcset="{srcset(light)}" sizes="{sizes}">')
     picture = "<picture>" + "".join(sources) + img + "</picture>"
     moving = motion(name)
     return f'<span class="playing">{picture}{moving}</span>' if moving else picture
@@ -213,8 +197,8 @@ ORGANIZATION = {"@type": "Organization", "@id": SITE + "/#organization", "name":
 
 
 def hero_shot_url(code):
-    own = DOCS / "screenshots" / f"{HERO_SHOT}-light-{code}.png"
-    return f"{SITE}/screenshots/{own.name if code != 'en' and own.exists() else HERO_SHOT + '-light.png'}"
+    own = DOCS / "screenshots" / f"{HERO_SHOT}-light-{code}.webp"
+    return f"{SITE}/screenshots/{own.name if code != 'en' and own.exists() else HERO_SHOT + '-light.webp'}"
 
 
 def json_ld(data):

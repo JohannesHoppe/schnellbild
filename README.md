@@ -19,8 +19,8 @@
 -->
 
 <p align="center"><picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/grid-dark.png">
-  <img src="docs/screenshots/grid-light.png" width="820" alt="Schnellbild: folders with previews and photo thumbnails">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/grid-dark.webp">
+  <img src="docs/screenshots/grid-light.webp" width="820" alt="Schnellbild: folders with previews and photo thumbnails">
 </picture></p>
 
 Open a folder, see thumbnails, look at one picture large, page through with the keyboard. Videos play right there, too, even AVI, MKV and WebM. No library to import into, no waiting: it opens what you point it at and stays quick on big folders and network shares.
@@ -79,8 +79,8 @@ Schnellbild follows your Mac's language: English, Deutsch, Français, Español, 
 ### List view
 
 <p align="center"><picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/list-dark.png">
-  <img src="docs/screenshots/list-light.png" width="760" alt="A folder as a list: preview, name, kind, dates and size in columns">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/list-dark.webp">
+  <img src="docs/screenshots/list-light.webp" width="760" alt="A folder as a list: preview, name, kind, dates and size in columns">
 </picture></p>
 
 `L` (or the switch in the status bar) shows the folder as a list: a small preview (for a folder, its first pictures fanned out as on its tile), the whole name, kind, date modified, date taken and size in columns. A click on a column's header sorts by it, another reverses it, the same sort as the sort menu. Everything else works as in the grid: clicking, marking, dragging, opening. Each half of the dual pane keeps its own choice, and Schnellbild remembers it.
@@ -88,8 +88,8 @@ Schnellbild follows your Mac's language: English, Deutsch, Français, Español, 
 ### Sort
 
 <p align="center"><picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/sort-dark.png">
-  <img src="docs/screenshots/sort-light.png" width="760" alt="The sort menu in the toolbar">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/sort-dark.webp">
+  <img src="docs/screenshots/sort-light.webp" width="760" alt="The sort menu in the toolbar">
 </picture></p>
 
 By name, kind, date modified, date taken or size, from the toolbar or with one key. The same key again reverses the order. Date taken reads the camera's capture date (EXIF, or the video's creation date), so copied photos still line up in the order they were shot. Dates and sizes start newest and largest first, like Finder. Schnellbild remembers the order.
@@ -101,8 +101,8 @@ By name, kind, date modified, date taken or size, from the toolbar or with one k
 ### Search, including subfolders
 
 <p align="center"><picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/search-dark.png">
-  <img src="docs/screenshots/search-light.png" width="760" alt="Search results from the folder and its subfolders">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/search-dark.webp">
+  <img src="docs/screenshots/search-light.webp" width="760" alt="Search results from the folder and its subfolders">
 </picture></p>
 
 - **Always there:** the search field matches the names of folders, archives, pictures and videos in the current folder and everything below it. Results stream in while it searches, even on a slow network share, and show where they live; the stop button keeps what was found.
@@ -119,8 +119,8 @@ By name, kind, date modified, date taken or size, from the toolbar or with one k
 ### Full view
 
 <p align="center"><picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/full-dark.png">
-  <img src="docs/screenshots/full-light.png" width="760" alt="A photo in the full view">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/full-dark.webp">
+  <img src="docs/screenshots/full-light.webp" width="760" alt="A photo in the full view">
 </picture></p>
 
 One picture, as large as the window allows, with its position in the folder. The full image is sampled to screen size, the thumbnail shows instantly until it's there. Animated GIFs play, and zoom, turn and take the enhance filter like any photo.
@@ -137,8 +137,8 @@ One picture, as large as the window allows, with its position in the folder. The
 ### Slideshow
 
 <p align="center"><picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/slideshow-dark.png">
-  <img src="docs/screenshots/slideshow-light.png" width="760" alt="The slideshow">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/slideshow-dark.webp">
+  <img src="docs/screenshots/slideshow-light.webp" width="760" alt="The slideshow">
 </picture></p>
 
 Schnellbild has two ways of looking at a folder: **browse** it in the grid, or sit back and watch a **slideshow** of everything in it. The slideshow plays every photo and video in the folder **and all its subfolders**, in full screen, folder by folder in the sort order you chose. The sort order applies within each folder and to the order of the subfolders: sorted by name, folders like `Day 1`, `Day 2` … play one after the other; sorted by date taken, the pictures in each folder play in the order they were shot. Pictures stay three seconds (Settings, ⌘, sets 1 to 60), videos play to their end, then it moves on. It starts at once, while the subfolders are still being read; until then the count at the top says "so far" ("3 / 57 so far").
@@ -170,8 +170,8 @@ It starts where you are: from the full view at the picture you're looking at; in
 ### Zoom and rotate
 
 <p align="center"><picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/zoom-dark.png">
-  <img src="docs/screenshots/zoom-light.png" width="760" alt="A photo zoomed in">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/zoom-dark.webp">
+  <img src="docs/screenshots/zoom-light.webp" width="760" alt="A photo zoomed in">
 </picture></p>
 
 Zoom with the keyboard or a trackpad pinch, drag to pan, rotate in steps of 90°, for photos and videos alike, also in the slideshow. Only the view changes; Schnellbild never modifies your files.
@@ -185,8 +185,8 @@ Zoom with the keyboard or a trackpad pinch, drag to pan, rotate in steps of 90°
 ### Videos
 
 <p align="center"><picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/video-dark.png">
-  <img src="docs/screenshots/video-light.png" width="760" alt="A video in the full view, paused">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/video-dark.webp">
+  <img src="docs/screenshots/video-light.webp" width="760" alt="A video in the full view, paused">
 </picture></p>
 
 - **Everything plays:** MP4 and MOV through macOS itself, what macOS can't play (AVI, MKV, WebM, DVD's VOB …) through the VLC engine built in. Media Extensions you turned on in System Settings are used too.
@@ -213,8 +213,8 @@ Zoom with the keyboard or a trackpad pinch, drag to pan, rotate in steps of 90°
 | ⌘\\ | normal speed |
 
 <p align="center"><picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/volume-dark.png">
-  <img src="docs/screenshots/volume-light.png" width="760" alt="The volume shown while it changes, over a paused video">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/volume-dark.webp">
+  <img src="docs/screenshots/volume-light.webp" width="760" alt="The volume shown while it changes, over a paused video">
 </picture></p>
 
 ### Finder previews for more videos
@@ -239,8 +239,8 @@ Night shots and dark videos, or washed-out, overexposed ones: press `e` (or the 
 - **Sharpness:** crisper edges, like an unsharp mask.
 
 <p align="center"><picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/adjust-dark.png">
-  <img src="docs/screenshots/adjust-light.png" width="760" alt="The sliders for exposure, contrast, saturation and sharpness over a photo">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/adjust-dark.webp">
+  <img src="docs/screenshots/adjust-light.webp" width="760" alt="The sliders for exposure, contrast, saturation and sharpness over a photo">
 </picture></p>
 
 Press `a` (or the sliders button next to the wand) to see these values. With auto enhance on, the sliders show what it sets for each photo, and for videos they move with the scenes. Videos are measured once a second, and the values glide instead of jumping, so a dark intro or a cut doesn't throw them and nothing flickers. After you skip, they're measured again at once.
@@ -257,8 +257,8 @@ It's a filter on the screen only: your files stay as they are. Photos and videos
 ### File info
 
 <p align="center"><picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/inspector-dark.png">
-  <img src="docs/screenshots/inspector-light.png" width="760" alt="The file inspector over a photo">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/inspector-dark.webp">
+  <img src="docs/screenshots/inspector-light.webp" width="760" alt="The file inspector over a photo">
 </picture></p>
 
 For the item on screen: name, type, the format its content shows, resolution, size, when it was taken (from the photo's EXIF or the video's creation date) and when it was last changed. For a video also its codecs (video with frames per second, audio with channels and sample rate), length and bitrate; for a photo its bit depth, colour profile and camera.
@@ -272,8 +272,8 @@ A file whose extension names another format than its content (a recording named 
 ### Rename, reveal, trash, sort into folders
 
 <p align="center"><picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/rename-dark.png">
-  <img src="docs/screenshots/rename-light.png" width="760" alt="Renaming a folder">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/rename-dark.webp">
+  <img src="docs/screenshots/rename-light.webp" width="760" alt="Renaming a folder">
 </picture></p>
 
 - **Rename** with Return or F2 (as in the Finder), also from the full view, the Actions menu or a right-click. The folder you're in is renamed by clicking its name in the title bar.
@@ -292,15 +292,15 @@ A file whose extension names another format than its content (a recording named 
 | ⌘⌫ | move to Trash |
 
 <p align="center"><picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/newfolder-dark.png">
-  <img src="docs/screenshots/newfolder-light.png" width="760" alt="Making a new folder">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/newfolder-dark.webp">
+  <img src="docs/screenshots/newfolder-light.webp" width="760" alt="Making a new folder">
 </picture></p>
 
 ### Dual pane: sort your holiday photos
 
 <p align="center"><picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/dualpane-dark.png">
-  <img src="docs/screenshots/dualpane-light.png" width="760" alt="Two panes side by side: the library on the left with two photos marked, a trip's folder on the right">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/dualpane-dark.webp">
+  <img src="docs/screenshots/dualpane-light.webp" width="760" alt="Two panes side by side: the library on the left with two photos marked, a trip's folder on the right">
 </picture></p>
 
 **Dual Pane** in the toolbar (or `D`) splits the window in two, like the classic two-panel file managers:
@@ -341,39 +341,39 @@ ZIP, RAR and 7z archives (comic books as .cbz and .cbr too) open like folders: b
 > **Schnellbild remembers every archive password you type, permanently, and tries all of them on every protected archive**, without tying a password to a file. That's on purpose: type a password once, and every archive with it opens by itself from then on. They are kept in your login keychain (entry "Schnellbild archive passwords"); delete that entry in Keychain Access to forget them.
 
 <p align="center"><picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/archives-dark.png">
-  <img src="docs/screenshots/archives-light.png" width="760" alt="Archives next to folders, and the files the app doesn't show listed below">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/archives-dark.webp">
+  <img src="docs/screenshots/archives-light.webp" width="760" alt="Archives next to folders, and the files the app doesn't show listed below">
 </picture></p>
 
 <p align="center"><picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/archive-inside-dark.png">
-  <img src="docs/screenshots/archive-inside-light.png" width="760" alt="Inside a ZIP archive: its pictures like a folder's">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/archive-inside-dark.webp">
+  <img src="docs/screenshots/archive-inside-light.webp" width="760" alt="Inside a ZIP archive: its pictures like a folder's">
 </picture></p>
 
 <p align="center"><picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/password-dark.png">
-  <img src="docs/screenshots/password-light.png" width="760" alt="The password asked for a protected archive">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/password-dark.webp">
+  <img src="docs/screenshots/password-light.webp" width="760" alt="The password asked for a protected archive">
 </picture></p>
 
 ### All keys at hand
 
 <p align="center"><picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/help-dark.png">
-  <img src="docs/screenshots/help-light.png" width="760" alt="The keyboard cheat sheet">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/help-dark.webp">
+  <img src="docs/screenshots/help-light.webp" width="760" alt="The keyboard cheat sheet">
 </picture></p>
 
 F1 (or ⌘?) shows a cheat sheet of the keys; Print… (⌘P) in it prints it on one page, or saves it as a PDF. `K` (or View → Mini Keyboard, or the keyboard switch in the status bar) slides up the **mini keyboard** under the window: the keys that work on what's on screen right now (the grid, a picture, a video, the slideshow and its playlist), each with what it does. It is a cheat sheet you can click, handy with only a trackpad; a key you press on the real keyboard lights up on it, so you see what just happened. In a slideshow it shows while you move the mouse. The action buttons (Dual Pane, Auto Enhance, Adjust, Slideshow, Grid) show their key on the button; the others name it in their tooltip.
 
 <p align="center"><picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/keyboard-dark.png">
-  <img src="docs/screenshots/keyboard-light.png" width="760" alt="The mini keyboard under the grid">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/keyboard-dark.webp">
+  <img src="docs/screenshots/keyboard-light.webp" width="760" alt="The mini keyboard under the grid">
 </picture></p>
 
 ### Settings
 
 <p align="center"><picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/settings-dark.png">
-  <img src="docs/screenshots/settings-light.png" width="460" alt="Settings: how long a picture stays in the slideshow, and the saved archive passwords">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/settings-dark.webp">
+  <img src="docs/screenshots/settings-light.webp" width="460" alt="Settings: how long a picture stays in the slideshow, and the saved archive passwords">
 </picture></p>
 
 Schnellbild → Settings (⌘,) has five things: light or dark (as the system, or always light or always dark, whatever the system's setting), the folders you opened to Schnellbild (to forget them), how long a picture stays in the slideshow (1 to 60 seconds), whether macOS reads MKV and AVCHD itself (the media extension, with a button to System Settings), and the archive passwords Schnellbild has saved, which you can forget all at once. Everything else it remembers: the folder, the sort order, grid or list, the search mode, the dual pane, the mini keyboard, the volume, the bookmarks, the slideshow playlist's pin and width. Quitting while files are still being copied or moved asks first and can wait until they are done.

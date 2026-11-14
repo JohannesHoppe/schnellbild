@@ -1,5 +1,4 @@
-// Puts the App Store texts and screenshots (AppStore/metadata, AppStore/screenshots)
-// into App Store Connect through its API, for the version in Resources/Info.plist,
+// Puts the App Store texts (AppStore/metadata) and screenshots into App Store Connect through its API, for the version in Resources/Info.plist,
 // and with --build picks the uploaded build for that version. Nothing is submitted
 // for review: that stays a click in App Store Connect.
 //
@@ -259,7 +258,33 @@ if let excluded = app["unavailableTerritories"] as? [String] {
 
 // Description, keywords, promotional text, URLs, What's New; then the screenshots.
 let versionLocalizations = items(try await api("GET", "/v1/appStoreVersions/\(versionID)/appStoreVersionLocalizations"))
-let screenshotDirectories = app["screenshots"] as? [String: String] ?? [:]
+// Screenshots: app.json names the motifs and, per Store locale, the language of the
+// light masters docs/screenshots/<motif>-light[-<lang>].webp; the PNGs App Store
+// Connect takes are made from them here (Scripts/make_store_screenshots.swift),
+// once per language, in a temporary folder.
+let screenshotPlan = app["screenshots"] as? [String: Any] ?? [:]
+let storeShots = screenshotPlan["shots"] as? [String] ?? []
+let shotLanguages = screenshotPlan["languages"] as? [String: String] ?? [:]
+let storeShotsFolder = FileManager.default.temporaryDirectory.appendingPathComponent("schnellbild-store-\(ProcessInfo.processInfo.processIdentifier)")
+var madeStoreShots: [String: URL] = [:]
+
+func storeScreenshots(_ language: String) throws -> URL {
+    if let folder = madeStoreShots[language] { return folder }
+    let folder = storeShotsFolder.appendingPathComponent(language)
+    try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+    let masters = storeShots.map { root.appendingPathComponent("docs/screenshots/\($0)-light\(language == "en" ? "" : "-\(language)").webp").path }
+    for master in masters where !FileManager.default.fileExists(atPath: master) { fail("\(master) is missing") }
+    let make = Process()
+    make.executableURL = URL(fileURLWithPath: "/usr/bin/env")
+    make.arguments = ["swift", root.appendingPathComponent("Scripts/make_store_screenshots.swift").path, folder.path] + masters
+    make.standardOutput = FileHandle.nullDevice
+    try make.run()
+    make.waitUntilExit()
+    guard make.terminationStatus == 0 else { fail("make_store_screenshots.swift failed for \(language)") }
+    madeStoreShots[language] = folder
+    return folder
+}
+
 for locale in locales {
     let existing = versionLocalizations.first { attributes($0)["locale"] as? String == locale }
     var values: JSON = ["supportUrl": link(locale, "support_url", "supportUrl"), "marketingUrl": link(locale, "marketing_url", "marketingUrl")]
@@ -270,8 +295,8 @@ for locale in locales {
     let localization = try await upsert("appStoreVersionLocalizations", existing: existing, attributes: values,
                                         creating: ["locale": locale], create: ["appStoreVersion": relation("appStoreVersions", versionID)])
     say("  \(locale): description, keywords, promotional text, URLs\(values["whatsNew"] == nil ? "" : ", What's New")")
-    if let directory = screenshotDirectories[locale] {
-        try await screenshots(for: id(localization), from: root.appendingPathComponent(directory), locale: locale)
+    if let language = shotLanguages[locale] {
+        try await screenshots(for: id(localization), from: try storeScreenshots(language), locale: locale)
     }
 }
 

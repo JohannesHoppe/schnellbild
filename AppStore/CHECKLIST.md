@@ -15,7 +15,7 @@ One app, two ways out: free as the DMG on GitHub Releases, and for 0,99 € in t
 - [x] License agreement: `AppStore/EULA.md`, with Apple's minimum terms, the LGPL's rights for VLCKit and the address of the legal notice.
 - [x] Store texts in German and English (name, subtitle, promotional text, description, keywords, What's New, review notes): `AppStore/metadata/`, put into App Store Connect by `Scripts/appstore_connect.swift` (`appstore.yml -f metadata=true`). No trademarks of others, no prices, no other places to get the app.
 - [x] Privacy policy: on the website, per language (https://schnellbild.haushoppe-its.de/privacy/, https://schnellbild.haushoppe-its.de/de/datenschutz/).
-- [x] Screenshots, 2880 × 1800: `AppStore/screenshots/de` and `en` (made by `Scripts/make_store_screenshots.swift` from `docs/screenshots`).
+- [x] Screenshots, 2880 × 1800, in every language: made at upload by `Scripts/appstore_connect.swift` from the light masters in `docs/screenshots` (`Scripts/make_store_screenshots.swift`; motifs and languages in `app.json`).
 
 ## For Johannes (Apple Developer account, App Store Connect)
 

@@ -7,7 +7,9 @@
 # zh-Hans …) or "all", one job per language side by side. English pictures
 # are named <name>-light / -dark (README), the others <name>-light-<lang> /
 # -dark-<lang> (website); each language's PNGs land in the artifact
-# "screenshots-<lang>". Copy them to docs/screenshots.
+# "screenshots-<lang>". `python3 Scripts/make_site_images.py import <folders>`
+# puts them into docs/screenshots as lossless WebP (the repository holds no
+# screenshot PNGs).
 name: Screenshots
 
 on:

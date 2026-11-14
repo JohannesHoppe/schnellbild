@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """The website's moving video: the sample video (Scripts/make_sample_media.swift)
 as an animated WebP that docs/site.css lays over the video in the still
-screenshots video-light[-<lang>].png / video-dark[-<lang>].png. One animation
+screenshots video-light[-<lang>].webp / video-dark[-<lang>].webp. One animation
 serves every language and theme: the video has no words, and the window's
 layout is the same in all of them.
 
@@ -52,7 +52,7 @@ def sample_video(tmp):
 
 
 def stills():
-    found = sorted(p for p in SHOTS.glob("video-*.png") if p.name.startswith(("video-light", "video-dark")))
+    found = sorted(p for p in SHOTS.glob("video-*.webp") if p.name.startswith(("video-light", "video-dark")))
     if not found:
         sys.exit("no video stills in docs/screenshots")
     return found
