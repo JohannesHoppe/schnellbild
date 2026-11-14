@@ -92,14 +92,16 @@
  ]
 }
 </script>
+<script>try{var theme=localStorage.getItem("theme");if(theme==="light"||theme==="dark")document.documentElement.dataset.theme=theme}catch(e){}</script>
 <link rel="stylesheet" href="/site.css">
 <script src="/site.js" defer></script>
 </head>
-<body><header class="bar">
+<body data-close="關閉" data-enlarge="放大"><header class="bar">
   <div class="wrap top">
     <a class="brand" href="/zh-hant/"><img src="/icon.png" alt="" width="32" height="32">Schnellbild</a>
     <nav>
       <a class="github" href="https://github.com/JohannesHoppe/schnellbild"><svg class="mark" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"/></svg>GitHub</a>
+      <button class="theme" type="button" data-dark="深色顯示" data-light="淺色顯示" aria-label="深色顯示" title="深色顯示"><svg class="i moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/></svg><svg class="i sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
       <details class="lang">
         <summary aria-label="語言: 繁體中文"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg><span>繁體中文</span></summary>
         <div class="lang-list"><a href="/privacy/" hreflang="en" lang="en">English</a><a href="/de/datenschutz/" hreflang="de" lang="de">Deutsch</a><a href="/fr/privacy/" hreflang="fr" lang="fr">Français</a><a href="/es/privacy/" hreflang="es" lang="es">Español</a><a href="/it/privacy/" hreflang="it" lang="it">Italiano</a><a href="/pt-br/privacy/" hreflang="pt-BR" lang="pt-BR">Português (Brasil)</a><a href="/nl/privacy/" hreflang="nl" lang="nl">Nederlands</a><a href="/pl/privacy/" hreflang="pl" lang="pl">Polski</a><a href="/sv/privacy/" hreflang="sv" lang="sv">Svenska</a><a href="/da/privacy/" hreflang="da" lang="da">Dansk</a><a href="/nb/privacy/" hreflang="nb" lang="nb">Norsk</a><a href="/fi/privacy/" hreflang="fi" lang="fi">Suomi</a><a href="/cs/privacy/" hreflang="cs" lang="cs">Čeština</a><a href="/tr/privacy/" hreflang="tr" lang="tr">Türkçe</a><a href="/ru/privacy/" hreflang="ru" lang="ru">Русский</a><a href="/uk/privacy/" hreflang="uk" lang="uk">Українська</a><a href="/ja/privacy/" hreflang="ja" lang="ja">日本語</a><a href="/ko/privacy/" hreflang="ko" lang="ko">한국어</a><a href="/zh-hans/privacy/" hreflang="zh-Hans" lang="zh-Hans">简体中文</a><a href="/zh-hant/privacy/" hreflang="zh-Hant" lang="zh-Hant" aria-current="page">繁體中文</a></div>
@@ -115,7 +117,7 @@
   <ul><li><strong>設定</strong>（上次打開的檔案夾、排序方式、書籤、音量⋯⋯），儲存在 App 本身的偏好設定中。</li><li><strong>檔案夾存取權：</strong>你為 Schnellbild 打開的檔案夾，以 macOS 書籤的形式儲存，讓它在重新啟動後能再次顯示。可在「設定」→「忘記檔案夾取用⋯」中清除它們。</li><li>你輸入的<strong>封存檔密碼</strong>，儲存在你的登入鑰匙圈中（項目「Schnellbild archive passwords」）；在「設定」中按一下「忘記已儲存的密碼」即可將其移除。</li><li><strong>縮圖</strong>，儲存在 macOS 本身的縮圖快取中。</li></ul>
   <p>Schnellbild 讀取你的影像、影片和封存檔，只是為了顯示給你看。它從不將這些檔案、檔案名稱或任何相關資訊傳送到任何地方。下載與購買由 Apple 依據其本身的隱私權政策處理，Apple 只會提供我們不含你身分的數據：銷售量，以及當你在 macOS 中允許與 App 開發者分享時的當機報告和使用統計資料。</p>
   <h2>本網站</h2>
-  <p>本網站不使用 Cookie、分析工具，也不載入來自其他伺服器的內容（沒有網路字型，沒有嵌入影片）。本網站託管於 GitHub Pages，這是 GitHub, Inc.（美國）提供的服務。你造訪本網站時，GitHub 基於安全目的會記錄並儲存你的 IP 位址；請參閱<a href="https://docs.github.com/zh/pages/getting-started-with-github-pages/what-is-github-pages#data-collection">GitHub Pages：資料蒐集</a>和<a href="https://docs.github.com/zh/site-policy/privacy-policies/github-general-privacy-statement">GitHub 隱私權聲明</a>。GitHub 保存這些記錄多久由 GitHub 決定；我們無法存取這些記錄。GitHub 參與歐盟-美國資料隱私框架（EU-U.S. Data Privacy Framework），歐盟執委會已認定美國在此框架下提供適足的保護水準（GDPR 第 45 條）。法律依據是我們安全提供本網站的正當利益（歐盟《一般資料保護規則》（GDPR）第 6 條第 1 項第 (f) 款）。App 的下載同樣來自 GitHub。</p>
+  <p>本網站不使用 Cookie、分析工具，也不載入來自其他伺服器的內容（沒有網路字型，沒有嵌入影片）。本網站託管於 GitHub Pages，這是 GitHub, Inc.（美國）提供的服務。你造訪本網站時，GitHub 基於安全目的會記錄並儲存你的 IP 位址；請參閱<a href="https://docs.github.com/zh/pages/getting-started-with-github-pages/what-is-github-pages#data-collection">GitHub Pages：資料蒐集</a>和<a href="https://docs.github.com/zh/site-policy/privacy-policies/github-general-privacy-statement">GitHub 隱私權聲明</a>。GitHub 保存這些記錄多久由 GitHub 決定；我們無法存取這些記錄。GitHub 參與歐盟-美國資料隱私框架（EU-U.S. Data Privacy Framework），歐盟執委會已認定美國在此框架下提供適足的保護水準（GDPR 第 45 條）。法律依據是我們安全提供本網站的正當利益（歐盟《一般資料保護規則》（GDPR）第 6 條第 1 項第 (f) 款）。App 的下載同樣來自 GitHub。 如果你用頂部的開關選擇淺色或深色，瀏覽器會記住這個選擇（localStorage）；它只儲存在你的裝置上，不會傳送給任何人。</p>
   <h2>你的權利</h2>
   <p>依據 GDPR，你享有查閱、更正、刪除、限制處理及資料可攜的權利，並有權向資料保護監管機關提出申訴。<strong>你有權基於與你特殊情況有關的理由，反對基於我們正當利益所進行的處理</strong>（GDPR 第 21 條）。由於 App 和本網站都不保存自己的個人資料，我們這邊根本沒有任何可查詢或刪除的內容。因此，對查閱請求的答覆會非常簡短：我們對你一無所知。</p>
   <h2>聯絡</h2>

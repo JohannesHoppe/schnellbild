@@ -22,4 +22,6 @@ SORT WITH TWO PANES
 SAFE WITH FILES FROM OTHERS
 Schnellbild runs in Apple's App Sandbox: no network, no other programs, only the folders you open to it. Archives are only read, and a "video" can't send the app onto the internet.
 
+Light or dark, your choice: Schnellbild follows macOS, or stays light or dark in its Settings.
+
 Every key at a glance with F1, a clickable mini keyboard with K. In 20 languages.

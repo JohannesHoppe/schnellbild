@@ -17,19 +17,49 @@
   "fineprint": "Molemmat versiot ovat sama ohjelma kaikkine ominaisuuksineen; App Storesta ostava tukee sen kehitystä. Kiitos! 🖤",
   "shotAlt": "Schnellbild: kansiot esikatseluineen ja kuvien miniatyyrit",
   "stats": [
-    ["0", "mainosta, seurainta tai tiliä"],
-    ["0 €", "kaikista ominaisuuksista"],
-    ["20", "kieltä"],
-    ["MIT", "lisenssi, avointa lähdekoodia"]
+    [
+      "0",
+      "mainosta, seurainta tai tiliä"
+    ],
+    [
+      "0 €",
+      "kaikista ominaisuuksista"
+    ],
+    [
+      "20",
+      "kieltä"
+    ],
+    [
+      "MIT",
+      "lisenssi, avointa lähdekoodia"
+    ]
   ],
   "whyTitle": "Miksi Schnellbild ei ole syvältä",
   "why": [
-    ["Ei mainoksia, ei seurantaa, ei tiliä", "Se näyttää kuvasi eikä juttele kenellekään."],
-    ["Ei lisämyyntiä", "Ei pro-versiota, ei tilausta, ei ”Avaa lukitus” -painiketta. Kaikki ominaisuudet ovat mukana."],
-    ["Ei turhaa painolastia", "Ei kirjastoa, johon kuvat pitäisi tuoda, ei editoria, ei pilveä. Vain kuvien ja videoiden katselu, hyvin tehtynä."],
-    ["Nopea", "Miniatyyrit ilmestyvät vierittäessä, myös suurissa kansioissa ja verkkolevyillä."],
-    ["Turvallinen heti alusta", "Muiden kuvat, videot ja arkistot eivät suorita mitään eivätkä ota yhteyttä verkkoon, eikä sinun tarvitse ensin kytkeä mitään päälle."],
-    ["Ei kaadu", "Rikkinäiset tiedostot, oudot formaatit ja hitaat levyt näyttävät paikkamerkin sen sijaan, että kaataisivat ohjelman."]
+    [
+      "Ei mainoksia, ei seurantaa, ei tiliä",
+      "Se näyttää kuvasi eikä juttele kenellekään."
+    ],
+    [
+      "Ei lisämyyntiä",
+      "Ei pro-versiota, ei tilausta, ei ”Avaa lukitus” -painiketta. Kaikki ominaisuudet ovat mukana."
+    ],
+    [
+      "Ei turhaa painolastia",
+      "Ei kirjastoa, johon kuvat pitäisi tuoda, ei editoria, ei pilveä. Vain kuvien ja videoiden katselu, hyvin tehtynä."
+    ],
+    [
+      "Nopea",
+      "Miniatyyrit ilmestyvät vierittäessä, myös suurissa kansioissa ja verkkolevyillä."
+    ],
+    [
+      "Turvallinen heti alusta",
+      "Muiden kuvat, videot ja arkistot eivät suorita mitään eivätkä ota yhteyttä verkkoon, eikä sinun tarvitse ensin kytkeä mitään päälle."
+    ],
+    [
+      "Ei kaadu",
+      "Rikkinäiset tiedostot, oudot formaatit ja hitaat levyt näyttävät paikkamerkin sen sijaan, että kaataisivat ohjelman."
+    ]
   ],
   "featuresTitle": "Mitä se tekee",
   "featuresMore": "Ja paljon muita ominaisuuksia: kaikki yksityiskohdat GitHubissa",
@@ -73,16 +103,36 @@
       "title": "Kaikki näppäimet käden ulottuvilla",
       "text": "<p><kbd>F1</kbd> luettelee kaikki näppäimet, myös tulostettavaksi; <kbd>K</kbd> näyttää pienen klikattavan näppäimistön. Ruudukko tai luettelo (<kbd>L</kbd>), lajittelu nimen, lajin, päivämäärän tai koon mukaan, useita ikkunoita ja pomonäppäin (<kbd>X</kbd>).</p>",
       "alt": "Näppäinten luettelo (F1)"
+    },
+    {
+      "title": "Vaalea tai tumma, sinä valitset",
+      "text": "<p>Jotkut vannovat tumman tilan nimeen, toiset eivät siedä sitä. Schnellbild seuraa macOS:ää tai pysyy vaaleana tai tummana järjestelmästä riippumatta: Asetukset (<kbd>⌘</kbd><kbd>,</kbd>) → Ulkoasu.</p><p>Tämä sivusto toimii samoin: se seuraa järjestelmääsi, ja ylhäällä oleva kytkin valitsee puolestasi.</p>",
+      "alt": "Asetukset: ulkoasu kuten järjestelmä, vaalea tai tumma"
     }
   ],
   "safeTitle": "Turvallinen muiden tiedostojen kanssa",
   "safeIntro": "Tuntemattomien kuvat, videot ja arkistot ovat juuri sitä, mitä varten katseluohjelma on olemassa. Siksi Schnellbild kohtelee jokaista tiedostoa vihamielisenä, suoraan paketista.",
   "safe": [
-    ["Applen App Sandboxissa.", "Ei lainkaan verkkoyhteyttä, ei käynnistä itse ohjelmia, näkee vain kansiot, jotka avaat sille, sekä Kuvat, Elokuvat ja Lataukset."],
-    ["Vain lukeminen.", "Katsominen ei koskaan muuta mitään eikä pura mitään levylle."],
-    ["Videot eivät pääse verkkoon.", "”Video”, joka onkin internetiin osoittava soittolista, ei toista mitään."],
-    ["Kaksoisosoitus avaa dokumentteja, ei ohjelmia.", "Ohjelmia, skriptejä ja asennusohjelmia ei koskaan, vaikka ne piiloutuisivat kuvan nimen taakse."],
-    ["Allekirjoitettu ja notarisoitu,", "Applen Hardened Runtimella."],
+    [
+      "Applen App Sandboxissa.",
+      "Ei lainkaan verkkoyhteyttä, ei käynnistä itse ohjelmia, näkee vain kansiot, jotka avaat sille, sekä Kuvat, Elokuvat ja Lataukset."
+    ],
+    [
+      "Vain lukeminen.",
+      "Katsominen ei koskaan muuta mitään eikä pura mitään levylle."
+    ],
+    [
+      "Videot eivät pääse verkkoon.",
+      "”Video”, joka onkin internetiin osoittava soittolista, ei toista mitään."
+    ],
+    [
+      "Kaksoisosoitus avaa dokumentteja, ei ohjelmia.",
+      "Ohjelmia, skriptejä ja asennusohjelmia ei koskaan, vaikka ne piiloutuisivat kuvan nimen taakse."
+    ],
+    [
+      "Allekirjoitettu ja notarisoitu,",
+      "Applen Hardened Runtimella."
+    ],
     [
       "Todistettavasti rakennettu julkisesta lähdekoodista.",
       "GitHub vahvistaa allekirjoituksella, mistä commitista ja mistä käännöksestä jokainen lataus on peräisin. Kuka tahansa voi tarkistaa sen."
@@ -113,10 +163,14 @@
     ],
     "appOutro": "Schnellbild lukee kuviasi, videoitasi ja arkistojasi vain näyttääkseen ne sinulle. Se ei koskaan lähetä niitä, niiden nimiä tai mitään niistä minnekään. Apple hoitaa latauksen ja oston oman tietosuojakäytäntönsä mukaisesti ja antaa meille vain lukuja ilman henkilöllisyyttäsi: myynnit sekä kaatumisraportit ja käyttötilastot, jos olet sallinut macOS:ssä niiden jakamisen appien kehittäjien kanssa.",
     "siteTitle": "Tämä verkkosivusto",
-    "siteText": "Tämä verkkosivusto ei käytä evästeitä, analytiikkaa eikä muilta palvelimilta ladattavaa sisältöä (ei verkkofontteja, ei upotettuja videoita). Sitä ylläpidetään GitHub Pagesissa, joka on GitHub, Inc:n (Yhdysvallat) palvelu. Kun vierailet sivustolla, GitHub kirjaa ja tallentaa IP-osoitteesi turvallisuussyistä; katso <a href=\"https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages#data-collection\">GitHub Pages: data collection</a> ja <a href=\"https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement\">GitHubin tietosuojaseloste</a>. Sen, kuinka kauan GitHub säilyttää näitä lokeja, päättää GitHub; meillä ei ole pääsyä niihin. GitHub osallistuu EU:n ja Yhdysvaltojen väliseen tietosuojakehykseen (EU-U.S. Data Privacy Framework), jonka osalta Euroopan komissio on todennut Yhdysvaltojen tarjoavan riittävän tietosuojan tason (tietosuoja-asetuksen 45 artikla). Käsittelyn oikeusperuste on oikeutettu etumme toimittaa verkkosivusto turvallisesti (tietosuoja-asetuksen 6 artiklan 1 kohdan f alakohta). Myös ohjelman lataus tulee GitHubista.",
+    "siteText": "Tämä verkkosivusto ei käytä evästeitä, analytiikkaa eikä muilta palvelimilta ladattavaa sisältöä (ei verkkofontteja, ei upotettuja videoita). Sitä ylläpidetään GitHub Pagesissa, joka on GitHub, Inc:n (Yhdysvallat) palvelu. Kun vierailet sivustolla, GitHub kirjaa ja tallentaa IP-osoitteesi turvallisuussyistä; katso <a href=\"https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages#data-collection\">GitHub Pages: data collection</a> ja <a href=\"https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement\">GitHubin tietosuojaseloste</a>. Sen, kuinka kauan GitHub säilyttää näitä lokeja, päättää GitHub; meillä ei ole pääsyä niihin. GitHub osallistuu EU:n ja Yhdysvaltojen väliseen tietosuojakehykseen (EU-U.S. Data Privacy Framework), jonka osalta Euroopan komissio on todennut Yhdysvaltojen tarjoavan riittävän tietosuojan tason (tietosuoja-asetuksen 45 artikla). Käsittelyn oikeusperuste on oikeutettu etumme toimittaa verkkosivusto turvallisesti (tietosuoja-asetuksen 6 artiklan 1 kohdan f alakohta). Myös ohjelman lataus tulee GitHubista. Jos valitset ylhäällä olevalla kytkimellä vaalean tai tumman, selaimesi muistaa valinnan (localStorage); se pysyy laitteellasi eikä päädy kenellekään.",
     "rightsTitle": "Oikeutesi",
     "rightsText": "EU:n yleisen tietosuoja-asetuksen (GDPR) mukaan sinulla on oikeus saada pääsy tietoihin, oikaista ja poistaa ne, rajoittaa niiden käsittelyä ja siirtää ne järjestelmästä toiseen sekä oikeus tehdä valitus tietosuojavalvontaviranomaiselle. <strong>Sinulla on oikeus vastustaa</strong> oikeutettuun etuumme perustuvaa käsittelyä erityiseen tilanteeseesi liittyvällä perusteella (tietosuoja-asetuksen 21 artikla). Koska ohjelma ja tämä verkkosivusto eivät säilytä omia henkilötietoja, meillä ei ole yhtään mitään tarkistettavaa tai poistettavaa. Vastaus tietopyyntöön on siksi hyvin lyhyt: emme tiedä sinusta yhtään mitään.",
     "contactTitle": "Yhteystiedot",
     "contactText": "Kaikissa Schnellbildiin liittyvissä asioissa (kysymykset, ideat, virheet ja myös tietojasi koskevat pyynnöt) ota meihin yhteyttä GitHubin kautta: avaa issue osoitteessa <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a>. Siellä vastaamme nopeimmin, ja vastauksesta on hyötyä muillekin. Issue on julkinen; asioissa, joita et halua käsitellä julkisesti, muut yhteystavat löytyvät <a href=\"https://haushoppe-its.de/impressum/\">oikeudellisista tiedoista</a>."
-  }
+  },
+  "themeToDark": "Näytä tumma",
+  "themeToLight": "Näytä vaalea",
+  "close": "Sulje",
+  "enlarge": "Suurenna"
 }

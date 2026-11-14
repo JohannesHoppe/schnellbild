@@ -17,19 +17,49 @@
   "fineprint": "Obě verze jsou stejná aplikace se všemi funkcemi; kdo si ji koupí v App Storu, podpoří její vývoj. Děkujeme! 🖤",
   "shotAlt": "Schnellbild: složky s náhledy a miniatury fotek",
   "stats": [
-    ["0", "reklam, sledovačů či účtů"],
-    ["0 Kč", "za všechny funkce"],
-    ["20", "jazyků"],
-    ["MIT", "licence, open source"]
+    [
+      "0",
+      "reklam, sledovačů či účtů"
+    ],
+    [
+      "0 Kč",
+      "za všechny funkce"
+    ],
+    [
+      "20",
+      "jazyků"
+    ],
+    [
+      "MIT",
+      "licence, open source"
+    ]
   ],
   "whyTitle": "Proč Schnellbild není na houby",
   "why": [
-    ["Žádné reklamy, žádné sledování, žádný účet", "Ukazuje vaše obrázky a s nikým se nebaví."],
-    ["Žádné přemlouvání k nákupu", "Žádná verze Pro, žádné předplatné, žádné tlačítko „Odemknout“. Všechny funkce jsou k dispozici."],
-    ["Žádná vata", "Žádná knihovna k importu, žádný editor, žádný cloud. Jen prohlížení fotek a videí, zato pořádně."],
-    ["Rychlý", "Miniatury se objevují už během posouvání, i ve velkých složkách a na síťových discích."],
-    ["Bezpečný od začátku", "Obrázky, videa a archivy od jiných nic nespouštějí a nikam se nepřipojují, aniž byste museli cokoli zapínat."],
-    ["Nespadne", "Poškozené soubory, neobvyklé formáty a pomalé disky zobrazí zástupný symbol, místo aby aplikaci shodily."]
+    [
+      "Žádné reklamy, žádné sledování, žádný účet",
+      "Ukazuje vaše obrázky a s nikým se nebaví."
+    ],
+    [
+      "Žádné přemlouvání k nákupu",
+      "Žádná verze Pro, žádné předplatné, žádné tlačítko „Odemknout“. Všechny funkce jsou k dispozici."
+    ],
+    [
+      "Žádná vata",
+      "Žádná knihovna k importu, žádný editor, žádný cloud. Jen prohlížení fotek a videí, zato pořádně."
+    ],
+    [
+      "Rychlý",
+      "Miniatury se objevují už během posouvání, i ve velkých složkách a na síťových discích."
+    ],
+    [
+      "Bezpečný od začátku",
+      "Obrázky, videa a archivy od jiných nic nespouštějí a nikam se nepřipojují, aniž byste museli cokoli zapínat."
+    ],
+    [
+      "Nespadne",
+      "Poškozené soubory, neobvyklé formáty a pomalé disky zobrazí zástupný symbol, místo aby aplikaci shodily."
+    ]
   ],
   "featuresTitle": "Co umí",
   "featuresMore": "A mnoho dalších funkcí: všechny podrobnosti na GitHubu",
@@ -73,16 +103,36 @@
       "title": "Všechny klávesy po ruce",
       "text": "<p><kbd>F1</kbd> vypíše všechny klávesy, i k tisku; <kbd>K</kbd> ukáže malou klávesnici na klikání. Mřížka nebo seznam (<kbd>L</kbd>), řazení podle názvu, druhu, data nebo velikosti, více oken a šéfovo tlačítko (<kbd>X</kbd>).</p>",
       "alt": "Seznam kláves (F1)"
+    },
+    {
+      "title": "Světlý, nebo tmavý, jak chcete",
+      "text": "<p>Někdo nedá dopustit na tmavý režim, jiný ho nesnáší. Schnellbild se řídí macOS, nebo zůstane světlý či tmavý, ať systém dělá cokoli: Nastavení (<kbd>⌘</kbd><kbd>,</kbd>) → Vzhled.</p><p>Tento web to dělá stejně: řídí se vaším systémem a přepínač nahoře volí za vás.</p>",
+      "alt": "Nastavení: vzhled podle systému, světlý nebo tmavý"
     }
   ],
   "safeTitle": "Bezpečně se soubory od jiných",
   "safeIntro": "Obrázky, videa a archivy od cizích lidí jsou přesně to, k čemu prohlížeč slouží. Proto Schnellbild bere každý soubor jako nepřátelský, hned po instalaci.",
   "safe": [
-    ["V App Sandboxu od Applu.", "Vůbec žádná síť, sám od sebe nespouští žádné programy, vidí jen složky, které mu otevřete, a k tomu Obrázky, Filmy a Stažené soubory."],
-    ["Pouze čtení.", "Prohlížení nic nemění a nic nerozbaluje na disk."],
-    ["Videa se nepřipojí k internetu.", "„Video“, které je ve skutečnosti playlist odkazující na internet, nepřehraje nic."],
-    ["Dvojklik otevírá dokumenty, ne programy.", "Aplikace, skripty a instalátory nikdy, ani když se skrývají za názvem obrázku."],
-    ["Podepsáno a notarizováno,", "s Hardened Runtime od Applu."],
+    [
+      "V App Sandboxu od Applu.",
+      "Vůbec žádná síť, sám od sebe nespouští žádné programy, vidí jen složky, které mu otevřete, a k tomu Obrázky, Filmy a Stažené soubory."
+    ],
+    [
+      "Pouze čtení.",
+      "Prohlížení nic nemění a nic nerozbaluje na disk."
+    ],
+    [
+      "Videa se nepřipojí k internetu.",
+      "„Video“, které je ve skutečnosti playlist odkazující na internet, nepřehraje nic."
+    ],
+    [
+      "Dvojklik otevírá dokumenty, ne programy.",
+      "Aplikace, skripty a instalátory nikdy, ani když se skrývají za názvem obrázku."
+    ],
+    [
+      "Podepsáno a notarizováno,",
+      "s Hardened Runtime od Applu."
+    ],
     [
       "Prokazatelně sestaveno z veřejného zdrojového kódu.",
       "GitHub podpisem potvrzuje, ze kterého commitu a kterého sestavení pochází každé stažení. Ověřit si to může každý."
@@ -113,10 +163,14 @@
     ],
     "appOutro": "Schnellbild čte vaše obrázky, videa a archivy jen proto, aby vám je zobrazil. Nikdy je, jejich názvy ani nic o nich nikam neposílá. Stažení a nákup zajišťuje Apple podle svých vlastních zásad ochrany osobních údajů a předává nám jen čísla bez vaší identity: prodeje a také hlášení o pádech a statistiky používání, pokud jste v macOS povolili jejich sdílení s vývojáři aplikací.",
     "siteTitle": "Tento web",
-    "siteText": "Tento web nepoužívá cookies, analytiku ani obsah z jiných serverů (žádná webová písma, žádná vložená videa). Je hostován na GitHub Pages, službě společnosti GitHub, Inc. (USA). Při návštěvě GitHub z bezpečnostních důvodů zaznamenává a ukládá vaši IP adresu; viz <a href=\"https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages#data-collection\">GitHub Pages: data collection</a> a <a href=\"https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement\">prohlášení GitHubu o ochraně osobních údajů</a>. Jak dlouho GitHub tyto záznamy uchovává, určuje GitHub; my k nim přístup nemáme. GitHub se účastní rámce EU-U.S. Data Privacy Framework, u něhož Evropská komise rozhodla, že USA zajišťují odpovídající úroveň ochrany (čl. 45 GDPR). Právním základem je náš oprávněný zájem na bezpečném poskytování webu (čl. 6 odst. 1 písm. f) GDPR). Také aplikace se stahuje z GitHubu.",
+    "siteText": "Tento web nepoužívá cookies, analytiku ani obsah z jiných serverů (žádná webová písma, žádná vložená videa). Je hostován na GitHub Pages, službě společnosti GitHub, Inc. (USA). Při návštěvě GitHub z bezpečnostních důvodů zaznamenává a ukládá vaši IP adresu; viz <a href=\"https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages#data-collection\">GitHub Pages: data collection</a> a <a href=\"https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement\">prohlášení GitHubu o ochraně osobních údajů</a>. Jak dlouho GitHub tyto záznamy uchovává, určuje GitHub; my k nim přístup nemáme. GitHub se účastní rámce EU-U.S. Data Privacy Framework, u něhož Evropská komise rozhodla, že USA zajišťují odpovídající úroveň ochrany (čl. 45 GDPR). Právním základem je náš oprávněný zájem na bezpečném poskytování webu (čl. 6 odst. 1 písm. f) GDPR). Také aplikace se stahuje z GitHubu. Když přepínačem nahoře zvolíte světlý nebo tmavý vzhled, prohlížeč si volbu zapamatuje (localStorage); zůstane ve vašem zařízení a nikam se neposílá.",
     "rightsTitle": "Vaše práva",
     "rightsText": "Podle obecného nařízení o ochraně osobních údajů (GDPR) máte právo na přístup, opravu, výmaz, omezení zpracování a přenositelnost údajů a dále právo podat stížnost u dozorového úřadu pro ochranu osobních údajů. <strong>Máte právo vznést námitku</strong> z důvodů týkajících se vaší konkrétní situace proti zpracování založenému na našem oprávněném zájmu (čl. 21 GDPR). Protože ani aplikace, ani tento web žádné vlastní osobní údaje neuchovávají, není u nás vůbec nic, co by se dalo vyhledat nebo smazat. Odpověď na žádost o přístup proto bude velmi krátká: nevíme o vás vůbec nic.",
     "contactTitle": "Kontakt",
     "contactText": "Ve všech záležitostech týkajících se Schnellbild (dotazy, nápady, chyby i žádosti o vaše údaje) nás prosím kontaktujte přes GitHub: založte issue na <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a>. Tam odpovídáme nejrychleji a odpověď pomůže i ostatním. Issue je veřejné; pro věci, které nechcete řešit veřejně, najdete další kontakty v <a href=\"https://haushoppe-its.de/impressum/\">právních informacích</a>."
-  }
+  },
+  "themeToDark": "Zobrazit tmavě",
+  "themeToLight": "Zobrazit světle",
+  "close": "Zavřít",
+  "enlarge": "Zvětšit"
 }

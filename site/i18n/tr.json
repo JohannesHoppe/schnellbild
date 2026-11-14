@@ -17,19 +17,49 @@
   "fineprint": "İki sürüm de tüm özellikleriyle aynı uygulamadır; App Store’dan satın alan, geliştirmesine destek olur. Çok teşekkürler! 🖤",
   "shotAlt": "Schnellbild: önizlemeli klasörler ve fotoğraf küçük resimleri",
   "stats": [
-    ["0", "reklam, izleyici veya hesap"],
-    ["0 ₺", "tüm özellikler için"],
-    ["20", "dil"],
-    ["MIT", "lisanslı, açık kaynak"]
+    [
+      "0",
+      "reklam, izleyici veya hesap"
+    ],
+    [
+      "0 ₺",
+      "tüm özellikler için"
+    ],
+    [
+      "20",
+      "dil"
+    ],
+    [
+      "MIT",
+      "lisanslı, açık kaynak"
+    ]
   ],
   "whyTitle": "Schnellbild neden sinir bozmuyor",
   "why": [
-    ["Reklam yok, izleme yok, hesap yok", "Resimlerinizi gösterir ve kimseyle konuşmaz."],
-    ["Satış baskısı yok", "Pro sürüm yok, abonelik yok, “Kilidi aç” düğmesi yok. Tüm özellikler dahil."],
-    ["Gereksiz yük yok", "İçe aktarılacak kitaplık yok, düzenleyici yok, bulut yok. Sadece fotoğraf ve videolara bakmak, ama hakkıyla."],
-    ["Hızlı", "Küçük resimler siz kaydırırken belirir, büyük klasörlerde ve ağ paylaşımlarında da."],
-    ["Varsayılan olarak güvenli", "Başkalarından gelen resimler, videolar ve arşivler hiçbir şey çalıştırmaz ve hiçbir yere bağlanmaz; önce bir şeyi açmanız da gerekmez."],
-    ["Çökmez", "Bozuk dosyalar, alışılmadık biçimler ve yavaş diskler uygulamayı çökertmek yerine bir yer tutucu gösterir."]
+    [
+      "Reklam yok, izleme yok, hesap yok",
+      "Resimlerinizi gösterir ve kimseyle konuşmaz."
+    ],
+    [
+      "Satış baskısı yok",
+      "Pro sürüm yok, abonelik yok, “Kilidi aç” düğmesi yok. Tüm özellikler dahil."
+    ],
+    [
+      "Gereksiz yük yok",
+      "İçe aktarılacak kitaplık yok, düzenleyici yok, bulut yok. Sadece fotoğraf ve videolara bakmak, ama hakkıyla."
+    ],
+    [
+      "Hızlı",
+      "Küçük resimler siz kaydırırken belirir, büyük klasörlerde ve ağ paylaşımlarında da."
+    ],
+    [
+      "Varsayılan olarak güvenli",
+      "Başkalarından gelen resimler, videolar ve arşivler hiçbir şey çalıştırmaz ve hiçbir yere bağlanmaz; önce bir şeyi açmanız da gerekmez."
+    ],
+    [
+      "Çökmez",
+      "Bozuk dosyalar, alışılmadık biçimler ve yavaş diskler uygulamayı çökertmek yerine bir yer tutucu gösterir."
+    ]
   ],
   "featuresTitle": "Neler yapabiliyor",
   "featuresMore": "Ve çok daha fazla özellik: tüm ayrıntılar GitHub'da",
@@ -73,16 +103,36 @@
       "title": "Her tuş elinizin altında",
       "text": "<p><kbd>F1</kbd> tüm tuşları listeler, yazdırmak için de; <kbd>K</kbd> tıklanabilir küçük bir klavye gösterir. Izgara veya liste (<kbd>L</kbd>), ada, türe, tarihe veya boyuta göre sıralama, birden çok pencere ve bir patron tuşu (<kbd>X</kbd>).</p>",
       "alt": "Tuş listesi (F1)"
+    },
+    {
+      "title": "Açık ya da koyu, sen seç",
+      "text": "<p>Kimi koyu moda bayılır, kimi ona katlanamaz. Schnellbild macOS'i izler ya da sistem ne yaparsa yapsın açık veya koyu kalır: Ayarlar (<kbd>⌘</kbd><kbd>,</kbd>) → Görünüm.</p><p>Bu web sitesi de aynısını yapar: sisteminizi izler, üstteki düğme sizin yerinize seçer.</p>",
+      "alt": "Ayarlar: görünüm sistemle aynı, açık veya koyu"
     }
   ],
   "safeTitle": "Başkalarının dosyalarıyla güvenli",
   "safeIntro": "Yabancılardan gelen resimler, videolar ve arşivler tam da bir görüntüleyicinin varlık nedenidir. Bu yüzden Schnellbild her dosyayı, kutudan çıktığı andan itibaren düşmanca kabul eder.",
   "safe": [
-    ["Apple’ın App Sandbox’ında.", "Hiçbir ağ erişimi yok, kendiliğinden hiçbir program başlatmaz, yalnızca ona açtığınız klasörleri, ayrıca Resimler, Filmler ve İndirilenler klasörlerini görür."],
-    ["Yalnızca okuma.", "Bir şeye bakmak onu asla değiştirmez ve asla diske açmaz."],
-    ["Videolar internete çıkamaz.", "Aslında internete işaret eden bir oynatma listesi olan bir “video” hiçbir şey oynatmaz."],
-    ["Çift tıklama belgeleri açar, programları değil.", "Uygulamalar, betikler ve yükleyiciler asla; bir resim adının arkasına saklansalar bile."],
-    ["İmzalı ve onaylı (notarized),", "Apple’ın Hardened Runtime’ı ile."],
+    [
+      "Apple’ın App Sandbox’ında.",
+      "Hiçbir ağ erişimi yok, kendiliğinden hiçbir program başlatmaz, yalnızca ona açtığınız klasörleri, ayrıca Resimler, Filmler ve İndirilenler klasörlerini görür."
+    ],
+    [
+      "Yalnızca okuma.",
+      "Bir şeye bakmak onu asla değiştirmez ve asla diske açmaz."
+    ],
+    [
+      "Videolar internete çıkamaz.",
+      "Aslında internete işaret eden bir oynatma listesi olan bir “video” hiçbir şey oynatmaz."
+    ],
+    [
+      "Çift tıklama belgeleri açar, programları değil.",
+      "Uygulamalar, betikler ve yükleyiciler asla; bir resim adının arkasına saklansalar bile."
+    ],
+    [
+      "İmzalı ve onaylı (notarized),",
+      "Apple’ın Hardened Runtime’ı ile."
+    ],
     [
       "Herkese açık kaynak koddan derlendiği kanıtlanabilir.",
       "GitHub her indirmenin hangi commit'ten ve hangi derlemeden geldiğini imzayla onaylar. Bunu herkes doğrulayabilir."
@@ -113,10 +163,14 @@
     ],
     "appOutro": "Schnellbild resimlerinizi, videolarınızı ve arşivlerinizi yalnızca size göstermek için okur. Onları, adlarını veya onlarla ilgili herhangi bir şeyi asla hiçbir yere göndermez. İndirme ve satın alma işlemlerini Apple kendi gizlilik politikası kapsamında yürütür ve bize yalnızca kimliğinizi içermeyen rakamlar iletir: satışlar ve macOS’ta uygulama geliştiricileriyle paylaşılmasına izin verdiyseniz çökme raporları ile kullanım istatistikleri.",
     "siteTitle": "Bu web sitesi",
-    "siteText": "Bu web sitesi çerez, analiz veya başka sunuculardan içerik (web yazı tipleri, gömülü videolar) kullanmaz. GitHub, Inc. (ABD) hizmeti olan GitHub Pages üzerinde barındırılır. Siteyi ziyaret ettiğinizde GitHub, güvenlik amacıyla IP adresinizi kaydeder ve saklar; bkz. <a href=\"https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages#data-collection\">GitHub Pages: data collection</a> ve <a href=\"https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement\">GitHub gizlilik bildirimi</a>. Bu kayıtların ne kadar süre saklanacağına GitHub karar verir; bunlara erişimimiz yoktur. GitHub, Avrupa Komisyonu’nun ABD’nin yeterli düzeyde koruma sağladığına karar verdiği EU-U.S. Data Privacy Framework’e katılmaktadır (GDPR md. 45). Hukuki dayanak, web sitesini güvenli bir şekilde sunmaya yönelik meşru menfaatimizdir (GDPR md. 6/1-f). Uygulamanın indirilmesi de GitHub üzerinden gerçekleşir.",
+    "siteText": "Bu web sitesi çerez, analiz veya başka sunuculardan içerik (web yazı tipleri, gömülü videolar) kullanmaz. GitHub, Inc. (ABD) hizmeti olan GitHub Pages üzerinde barındırılır. Siteyi ziyaret ettiğinizde GitHub, güvenlik amacıyla IP adresinizi kaydeder ve saklar; bkz. <a href=\"https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages#data-collection\">GitHub Pages: data collection</a> ve <a href=\"https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement\">GitHub gizlilik bildirimi</a>. Bu kayıtların ne kadar süre saklanacağına GitHub karar verir; bunlara erişimimiz yoktur. GitHub, Avrupa Komisyonu’nun ABD’nin yeterli düzeyde koruma sağladığına karar verdiği EU-U.S. Data Privacy Framework’e katılmaktadır (GDPR md. 45). Hukuki dayanak, web sitesini güvenli bir şekilde sunmaya yönelik meşru menfaatimizdir (GDPR md. 6/1-f). Uygulamanın indirilmesi de GitHub üzerinden gerçekleşir. Üstteki düğmeyle açık ya da koyu seçerseniz tarayıcınız bu seçimi saklar (localStorage); seçim cihazınızda kalır, kimseye ulaşmaz.",
     "rightsTitle": "Haklarınız",
     "rightsText": "AB Genel Veri Koruma Tüzüğü (GDPR) kapsamında erişim, düzeltme, silme, işlemenin kısıtlanması ve veri taşınabilirliği haklarına ve bir veri koruma denetim makamına şikâyette bulunma hakkına sahipsiniz. <strong>Özel durumunuzdan kaynaklanan nedenlerle, meşru menfaatimize dayanan işlemeye itiraz etme hakkına sahipsiniz</strong> (GDPR md. 21). Ne uygulama ne de bu web sitesi kendine ait kişisel veri tutmadığından, bizim tarafımızda bakılacak veya silinecek hiçbir şey yoktur. Bu yüzden erişim talebine vereceğimiz yanıt çok kısa olacaktır: Hakkınızda hiçbir şey bilmiyoruz.",
     "contactTitle": "İletişim",
     "contactText": "Schnellbild ile ilgili her konuda (sorular, fikirler, hatalar ve verilerinizle ilgili talepler dahil) lütfen bize GitHub üzerinden ulaşın: <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a> adresinde bir issue açın. En hızlı orada yanıt veriyoruz ve yanıt başkalarının da işine yarıyor. Issue herkese açıktır; herkesin önünde konuşmak istemediğiniz konular için <a href=\"https://haushoppe-its.de/impressum/\">künyede</a> başka iletişim yolları bulabilirsiniz."
-  }
+  },
+  "themeToDark": "Koyu göster",
+  "themeToLight": "Açık göster",
+  "close": "Kapat",
+  "enlarge": "Büyüt"
 }

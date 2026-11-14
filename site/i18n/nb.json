@@ -17,19 +17,49 @@
   "fineprint": "Begge versjonene er den samme appen med alle funksjoner; den som kjøper den i App Store, støtter utviklingen. Tusen takk! 🖤",
   "shotAlt": "Schnellbild: mapper med forhåndsvisninger og miniatyrer av bilder",
   "stats": [
-    ["0", "reklame, sporere eller kontoer"],
-    ["0 kr", "for alle funksjoner"],
-    ["20", "språk"],
-    ["MIT", "lisens, åpen kildekode"]
+    [
+      "0",
+      "reklame, sporere eller kontoer"
+    ],
+    [
+      "0 kr",
+      "for alle funksjoner"
+    ],
+    [
+      "20",
+      "språk"
+    ],
+    [
+      "MIT",
+      "lisens, åpen kildekode"
+    ]
   ],
   "whyTitle": "Derfor suger ikke Schnellbild",
   "why": [
-    ["Ingen reklame, ingen sporing, ingen konto", "Den viser bildene dine og snakker ikke med noen."],
-    ["Ikke noe mersalg", "Ingen pro-versjon, ikke noe abonnement, ingen «Lås opp»-knapp. Alle funksjoner er med."],
-    ["Ingen dødvekt", "Ikke noe bibliotek å importere til, ingen redigering, ingen sky. Bare det å se på bilder og videoer, gjort skikkelig."],
-    ["Rask", "Miniatyrene dukker opp mens du blar, også i store mapper og på nettverksdisker."],
-    ["Trygg fra start", "Bilder, videoer og arkiver fra andre kjører ingenting og kobler seg ikke til nettet, uten at du må slå på noe først."],
-    ["Krasjer ikke", "Ødelagte filer, rare formater og trege disker viser en plassholder i stedet for å ta ned appen."]
+    [
+      "Ingen reklame, ingen sporing, ingen konto",
+      "Den viser bildene dine og snakker ikke med noen."
+    ],
+    [
+      "Ikke noe mersalg",
+      "Ingen pro-versjon, ikke noe abonnement, ingen «Lås opp»-knapp. Alle funksjoner er med."
+    ],
+    [
+      "Ingen dødvekt",
+      "Ikke noe bibliotek å importere til, ingen redigering, ingen sky. Bare det å se på bilder og videoer, gjort skikkelig."
+    ],
+    [
+      "Rask",
+      "Miniatyrene dukker opp mens du blar, også i store mapper og på nettverksdisker."
+    ],
+    [
+      "Trygg fra start",
+      "Bilder, videoer og arkiver fra andre kjører ingenting og kobler seg ikke til nettet, uten at du må slå på noe først."
+    ],
+    [
+      "Krasjer ikke",
+      "Ødelagte filer, rare formater og trege disker viser en plassholder i stedet for å ta ned appen."
+    ]
   ],
   "featuresTitle": "Hva den gjør",
   "featuresMore": "Og mange flere funksjoner: alle detaljer på GitHub",
@@ -73,16 +103,36 @@
       "title": "Alle tastene for hånden",
       "text": "<p><kbd>F1</kbd> viser alle tastene, også for utskrift; <kbd>K</kbd> viser et lite tastatur å klikke på. Rutenett eller liste (<kbd>L</kbd>), sortering etter navn, type, dato eller størrelse, flere vinduer og en sjefstast (<kbd>X</kbd>).</p>",
       "alt": "Listen over taster (F1)"
+    },
+    {
+      "title": "Lyst eller mørkt, du velger",
+      "text": "<p>Noen sverger til mørk modus, andre tåler den ikke. Schnellbild følger macOS, eller blir lyst eller mørkt uansett hva systemet gjør: Innstillinger (<kbd>⌘</kbd><kbd>,</kbd>) → Utseende.</p><p>Denne nettsiden gjør det samme: den følger systemet ditt, og bryteren øverst velger for deg.</p>",
+      "alt": "Innstillinger: utseende som systemet, lyst eller mørkt"
     }
   ],
   "safeTitle": "Trygg med filer fra andre",
   "safeIntro": "Bilder, videoer og arkiver fra fremmede er nettopp det en viser er til for. Derfor behandler Schnellbild hver fil som fiendtlig, helt fra start.",
   "safe": [
-    ["I Apples App Sandbox.", "Ingen nettverkstilgang i det hele tatt, starter ingen programmer av seg selv, ser bare mappene du åpner for den, pluss Bilder, Filmer og Nedlastinger."],
-    ["Leser bare.", "Å se på noe endrer det aldri og pakker det aldri ut på disken."],
-    ["Videoer kan ikke koble seg til nettet.", "En «video» som egentlig er en spilleliste som peker ut på internett, spiller ingenting."],
-    ["Dobbeltklikk åpner dokumenter, ikke programmer.", "Aldri apper, skript eller installasjonsprogrammer, heller ikke når de gjemmer seg bak et bildenavn."],
-    ["Signert og notarisert,", "med Apples Hardened Runtime."],
+    [
+      "I Apples App Sandbox.",
+      "Ingen nettverkstilgang i det hele tatt, starter ingen programmer av seg selv, ser bare mappene du åpner for den, pluss Bilder, Filmer og Nedlastinger."
+    ],
+    [
+      "Leser bare.",
+      "Å se på noe endrer det aldri og pakker det aldri ut på disken."
+    ],
+    [
+      "Videoer kan ikke koble seg til nettet.",
+      "En «video» som egentlig er en spilleliste som peker ut på internett, spiller ingenting."
+    ],
+    [
+      "Dobbeltklikk åpner dokumenter, ikke programmer.",
+      "Aldri apper, skript eller installasjonsprogrammer, heller ikke når de gjemmer seg bak et bildenavn."
+    ],
+    [
+      "Signert og notarisert,",
+      "med Apples Hardened Runtime."
+    ],
     [
       "Bevislig bygget fra den åpne kildekoden.",
       "GitHub bekrefter med en signatur hvilken commit og hvilket bygg hver nedlasting kommer fra. Alle kan kontrollere det."
@@ -113,10 +163,14 @@
     ],
     "appOutro": "Schnellbild leser bildene, videoene og arkivene dine bare for å vise dem til deg. Den sender aldri dem, navnene deres eller noe om dem noe sted. Apple håndterer nedlastingen og kjøpet etter sin egen personvernerklæring og gir oss bare tall uten identiteten din: salg, og krasjrapporter og bruksstatistikk hvis du i macOS har tillatt at de deles med apputviklere.",
     "siteTitle": "Dette nettstedet",
-    "siteText": "Dette nettstedet bruker ingen informasjonskapsler, ingen analyse og ikke noe innhold fra andre servere (ingen nettfonter, ingen innebygde videoer). Det driftes på GitHub Pages, en tjeneste fra GitHub, Inc. (USA). Når du besøker det, logger og lagrer GitHub IP-adressen din av sikkerhetshensyn; se <a href=\"https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages#data-collection\">GitHub Pages: data collection</a> og <a href=\"https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement\">GitHubs personvernerklæring</a>. Hvor lenge GitHub oppbevarer disse loggene, bestemmer GitHub; vi har ikke tilgang til dem. GitHub deltar i EU-U.S. Data Privacy Framework, der EU-kommisjonen har slått fast at USA sikrer et tilstrekkelig beskyttelsesnivå (personvernforordningen artikkel 45). Det rettslige grunnlaget er vår berettigede interesse i å levere nettstedet på en sikker måte (personvernforordningen artikkel 6 nr. 1 bokstav f). Også nedlastingen av appen kommer fra GitHub.",
+    "siteText": "Dette nettstedet bruker ingen informasjonskapsler, ingen analyse og ikke noe innhold fra andre servere (ingen nettfonter, ingen innebygde videoer). Det driftes på GitHub Pages, en tjeneste fra GitHub, Inc. (USA). Når du besøker det, logger og lagrer GitHub IP-adressen din av sikkerhetshensyn; se <a href=\"https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages#data-collection\">GitHub Pages: data collection</a> og <a href=\"https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement\">GitHubs personvernerklæring</a>. Hvor lenge GitHub oppbevarer disse loggene, bestemmer GitHub; vi har ikke tilgang til dem. GitHub deltar i EU-U.S. Data Privacy Framework, der EU-kommisjonen har slått fast at USA sikrer et tilstrekkelig beskyttelsesnivå (personvernforordningen artikkel 45). Det rettslige grunnlaget er vår berettigede interesse i å levere nettstedet på en sikker måte (personvernforordningen artikkel 6 nr. 1 bokstav f). Også nedlastingen av appen kommer fra GitHub. Velger du lyst eller mørkt med bryteren øverst, husker nettleseren valget (localStorage); det blir på enheten din og når ingen.",
     "rightsTitle": "Dine rettigheter",
     "rightsText": "Etter personvernforordningen (GDPR) har du rett til innsyn, retting, sletting, begrensning av behandlingen og dataportabilitet, og rett til å klage til en tilsynsmyndighet for personvern. <strong>Du har rett til å protestere</strong> mot behandling basert på vår berettigede interesse, av grunner som gjelder din særlige situasjon (personvernforordningen artikkel 21). Siden verken appen eller dette nettstedet lagrer egne personopplysninger, er det absolutt ingenting hos oss å slå opp eller slette. Et svar på en innsynsbegjæring blir derfor svært kort: Vi vet absolutt ingenting om deg.",
     "contactTitle": "Kontakt",
     "contactText": "For alt om Schnellbild (spørsmål, ideer, feil og også henvendelser om dine data) kontakt oss helst via GitHub: opprett en sak på <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a>. Der svarer vi raskest, og andre har også nytte av svaret. En sak er offentlig; for det du heller ikke vil ta opp offentlig, finner du andre kontaktmåter i den <a href=\"https://haushoppe-its.de/impressum/\">juridiske informasjonen</a>."
-  }
+  },
+  "themeToDark": "Vis mørkt",
+  "themeToLight": "Vis lyst",
+  "close": "Lukk",
+  "enlarge": "Forstørr"
 }

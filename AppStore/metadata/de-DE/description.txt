@@ -22,4 +22,6 @@ SORTIEREN MIT ZWEI BEREICHEN
 SICHER BEI FREMDEN DATEIEN
 Schnellbild läuft in Apples App Sandbox: kein Netzwerk, keine anderen Programme, nur die Ordner, die du freigibst. Archive werden nur gelesen, und ein „Video“ kann die App nicht ins Internet schicken.
 
+Hell oder dunkel, wie du willst: Schnellbild folgt macOS oder bleibt in den Einstellungen fest hell oder dunkel.
+
 Alle Tasten auf einen Blick mit F1, eine klickbare Mini-Tastatur mit K. In 20 Sprachen.

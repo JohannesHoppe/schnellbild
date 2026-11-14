@@ -76,3 +76,81 @@ if ("IntersectionObserver" in window) {
   addEventListener("resize", update);
   update();
 }
+
+// Light or dark: the system's choice until the visitor picks with the switch in
+// the bar (kept in localStorage; picking what the system shows forgets it again).
+// The head sets data-theme before the page is drawn; here the screenshots' and
+// the browser bar's media queries follow a choice too.
+(() => {
+  const root = document.documentElement;
+  const systemDark = matchMedia("(prefers-color-scheme: dark)");
+  const button = document.querySelector("button.theme");
+  const shown = () => root.dataset.theme || (systemDark.matches ? "dark" : "light");
+  function apply() {
+    const picked = root.dataset.theme;
+    document.querySelectorAll('source[media*="prefers-color-scheme"], meta[name="theme-color"]').forEach((element) => {
+      if (!element.dataset.media) element.dataset.media = element.getAttribute("media");
+      const forDark = element.dataset.media.includes("dark");
+      element.setAttribute("media", picked ? ((picked === "dark") === forDark ? "all" : "not all") : element.dataset.media);
+    });
+    if (button) {
+      const label = button.dataset[shown() === "dark" ? "light" : "dark"];
+      button.setAttribute("aria-label", label);
+      button.title = label;
+    }
+  }
+  if (button) {
+    root.classList.add("theme-switch");
+    button.addEventListener("click", () => {
+      const next = shown() === "dark" ? "light" : "dark";
+      const system = systemDark.matches ? "dark" : "light";
+      try {
+        if (next === system) localStorage.removeItem("theme"); else localStorage.setItem("theme", next);
+      } catch (error) { /* storage blocked: the choice lasts for this page */ }
+      if (next === system) delete root.dataset.theme; else root.dataset.theme = next;
+      apply();
+    });
+  }
+  systemDark.addEventListener("change", apply);
+  apply();
+})();
+
+// Screenshots open large in a dialog: ← → step through all of them, a click or Esc closes.
+(() => {
+  const shots = [...document.querySelectorAll(".shot img, .media img")];
+  if (!shots.length || !("HTMLDialogElement" in window)) return;
+  const labels = document.body.dataset;
+  const dialog = document.createElement("dialog");
+  dialog.className = "lightbox";
+  const large = document.createElement("img");
+  const close = document.createElement("button");
+  close.type = "button";
+  close.className = "close";
+  close.textContent = "×";
+  close.setAttribute("aria-label", labels.close || "Close");
+  dialog.append(large, close);
+  document.body.append(dialog);
+  let index = 0;
+  function show(at) {
+    index = (at + shots.length) % shots.length;
+    const shot = shots[index];
+    large.src = shot.currentSrc || shot.src;
+    large.alt = shot.alt;
+  }
+  shots.forEach((shot, at) => {
+    shot.classList.add("zoomable");
+    shot.tabIndex = 0;
+    shot.setAttribute("role", "button");
+    shot.setAttribute("aria-label", `${labels.enlarge || "Enlarge"}: ${shot.alt}`);
+    const open = () => { show(at); dialog.showModal(); };
+    shot.addEventListener("click", open);
+    shot.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") { event.preventDefault(); open(); }
+    });
+  });
+  dialog.addEventListener("click", () => dialog.close());
+  dialog.addEventListener("keydown", (event) => {
+    if (event.key === "ArrowRight") { event.preventDefault(); show(index + 1); }
+    if (event.key === "ArrowLeft") { event.preventDefault(); show(index - 1); }
+  });
+})();

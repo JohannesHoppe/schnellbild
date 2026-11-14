@@ -22,4 +22,6 @@ TRIER AVEC DEUX PANNEAUX
 SÛRE AVEC LES FICHIERS D’AUTRUI
 Schnellbild tourne dans l’App Sandbox d’Apple : pas de réseau, aucun autre programme, seulement les dossiers que vous lui ouvrez. Les archives sont seulement lues, et une « vidéo » ne peut pas envoyer l’app sur Internet.
 
+Clair ou sombre, à vous de choisir : Schnellbild suit macOS, ou reste clair ou sombre dans ses Réglages.
+
 Toutes les touches d’un coup d’œil avec F1, un mini clavier cliquable avec K. En 20 langues.

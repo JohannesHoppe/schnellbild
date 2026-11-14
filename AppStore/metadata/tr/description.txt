@@ -22,4 +22,6 @@ KLASÖR GİBİ ARŞİVLER
 BAŞKALARININ DOSYALARIYLA GÜVENLİ
 Schnellbild, Apple’ın App Sandbox’ında çalışır: ağ yok, başka programlar yok, yalnızca sizin açtığınız klasörler. Arşivler yalnızca okunur ve bir “video” uygulamayı internete gönderemez.
 
+Açık ya da koyu, sen seç: Schnellbild macOS'i izler ya da ayarlarda açık veya koyu kalır.
+
 F1 ile tüm tuşlar bir bakışta, K ile tıklanabilir mini klavye. 20 dilde.

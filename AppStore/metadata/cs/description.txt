@@ -22,4 +22,6 @@ TŘÍDĚNÍ VE DVOU PANELECH
 BEZPEČNĚ SE SOUBORY OD JINÝCH
 Schnellbild běží v App Sandboxu od Applu: žádná síť, žádné jiné programy, jen složky, které mu otevřete. Archivy se jen čtou a „video“ nemůže aplikaci poslat na internet.
 
+Světlý, nebo tmavý, jak chcete: Schnellbild se řídí macOS, nebo zůstane v nastavení světlý či tmavý.
+
 Všechny klávesy přehledně pod F1, klikací mini klávesnice pod K. Ve 20 jazycích.

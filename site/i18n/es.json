@@ -17,19 +17,49 @@
   "fineprint": "Las dos versiones son la misma app con todas las funciones; quien la compra en la tienda apoya su desarrollo. ¡Muchas gracias! 🖤",
   "shotAlt": "Schnellbild: carpetas con previsualizaciones y miniaturas de fotos",
   "stats": [
-    ["0", "anuncios, rastreadores o cuentas"],
-    ["0 €", "por todas las funciones"],
-    ["20", "idiomas"],
-    ["MIT", "licencia de código abierto"]
+    [
+      "0",
+      "anuncios, rastreadores o cuentas"
+    ],
+    [
+      "0 €",
+      "por todas las funciones"
+    ],
+    [
+      "20",
+      "idiomas"
+    ],
+    [
+      "MIT",
+      "licencia de código abierto"
+    ]
   ],
   "whyTitle": "Por qué Schnellbild no da la lata",
   "why": [
-    ["Sin anuncios, sin rastreo, sin cuenta", "Muestra tus imágenes y no habla con nadie."],
-    ["Sin ventas añadidas", "Sin versión Pro, sin suscripción, sin botón de «desbloquear». Todas las funciones están incluidas."],
-    ["Sin relleno", "Sin biblioteca a la que importar, sin editor, sin nube. Solo ver fotos y vídeos, y hacerlo bien."],
-    ["Rápido", "Las miniaturas aparecen mientras te desplazas, también en carpetas grandes y en recursos compartidos de red."],
-    ["Seguro de serie", "Las imágenes, vídeos y archivos comprimidos de otros no ejecutan nada ni se conectan a ningún sitio, sin que tengas que activar nada antes."],
-    ["No se cae", "Ante archivos dañados, formatos raros o discos lentos, muestra un marcador de posición en lugar de venirse abajo."]
+    [
+      "Sin anuncios, sin rastreo, sin cuenta",
+      "Muestra tus imágenes y no habla con nadie."
+    ],
+    [
+      "Sin ventas añadidas",
+      "Sin versión Pro, sin suscripción, sin botón de «desbloquear». Todas las funciones están incluidas."
+    ],
+    [
+      "Sin relleno",
+      "Sin biblioteca a la que importar, sin editor, sin nube. Solo ver fotos y vídeos, y hacerlo bien."
+    ],
+    [
+      "Rápido",
+      "Las miniaturas aparecen mientras te desplazas, también en carpetas grandes y en recursos compartidos de red."
+    ],
+    [
+      "Seguro de serie",
+      "Las imágenes, vídeos y archivos comprimidos de otros no ejecutan nada ni se conectan a ningún sitio, sin que tengas que activar nada antes."
+    ],
+    [
+      "No se cae",
+      "Ante archivos dañados, formatos raros o discos lentos, muestra un marcador de posición en lugar de venirse abajo."
+    ]
   ],
   "featuresTitle": "Qué hace",
   "featuresMore": "Y muchas más funciones: todos los detalles en GitHub",
@@ -73,16 +103,36 @@
       "title": "Todas las teclas a mano",
       "text": "<p><kbd>F1</kbd> muestra todas las teclas, también para imprimir; <kbd>K</kbd> abre un pequeño teclado en el que hacer clic. Cuadrícula o lista (<kbd>L</kbd>), orden por nombre, tipo, fecha o tamaño, varias ventanas y una tecla del jefe (<kbd>X</kbd>).</p>",
       "alt": "La lista de teclas (F1)"
+    },
+    {
+      "title": "Claro u oscuro, como prefieras",
+      "text": "<p>Unos no viven sin el modo oscuro, otros no lo soportan. Schnellbild sigue a macOS, o se queda claro u oscuro haga lo que haga el sistema: Ajustes (<kbd>⌘</kbd><kbd>,</kbd>) → Apariencia.</p><p>Esta web hace lo mismo: sigue a tu sistema, y el interruptor de arriba elige por ti.</p>",
+      "alt": "Ajustes: apariencia como el sistema, clara u oscura"
     }
   ],
   "safeTitle": "Seguro con archivos de otros",
   "safeIntro": "Imágenes, vídeos y archivos comprimidos de desconocidos: justo para eso sirve un visor. Por eso Schnellbild trata cada archivo como hostil desde el primer momento.",
   "safe": [
-    ["En la App Sandbox de Apple.", "Sin ninguna conexión de red, no abre programas por su cuenta, solo ve las carpetas que tú le abres, además de Imágenes, Películas y Descargas."],
-    ["Solo lectura.", "Mirar algo nunca lo modifica ni lo descomprime en el disco."],
-    ["Los vídeos no se conectan a internet.", "Un «vídeo» que en realidad es una lista de reproducción que apunta a internet no reproduce nada."],
-    ["El doble clic abre documentos, no programas.", "Nunca apps, scripts ni instaladores, aunque se escondan tras el nombre de una imagen."],
-    ["Firmado y notarizado,", "con el Hardened Runtime de Apple."],
+    [
+      "En la App Sandbox de Apple.",
+      "Sin ninguna conexión de red, no abre programas por su cuenta, solo ve las carpetas que tú le abres, además de Imágenes, Películas y Descargas."
+    ],
+    [
+      "Solo lectura.",
+      "Mirar algo nunca lo modifica ni lo descomprime en el disco."
+    ],
+    [
+      "Los vídeos no se conectan a internet.",
+      "Un «vídeo» que en realidad es una lista de reproducción que apunta a internet no reproduce nada."
+    ],
+    [
+      "El doble clic abre documentos, no programas.",
+      "Nunca apps, scripts ni instaladores, aunque se escondan tras el nombre de una imagen."
+    ],
+    [
+      "Firmado y notarizado,",
+      "con el Hardened Runtime de Apple."
+    ],
     [
       "Compilado de forma demostrable a partir del código público.",
       "GitHub certifica con una firma de qué commit y de qué compilación procede cada descarga. Cualquiera puede comprobarlo."
@@ -113,10 +163,14 @@
     ],
     "appOutro": "Schnellbild lee tus imágenes, vídeos y archivos comprimidos solo para mostrártelos. Nunca envía a ninguna parte ni los archivos, ni sus nombres, ni nada sobre ellos. Apple gestiona la descarga y la compra conforme a su propia política de privacidad y solo nos facilita cifras que no te identifican: las ventas y, si en macOS has permitido compartirlos con los desarrolladores de apps, informes de fallos y estadísticas de uso.",
     "siteTitle": "Este sitio web",
-    "siteText": "Este sitio web no usa cookies, ni analítica, ni contenidos de otros servidores (ni fuentes web ni vídeos incrustados). Está alojado en GitHub Pages, un servicio de GitHub, Inc. (EE. UU.). Cuando lo visitas, GitHub registra y almacena tu dirección IP por motivos de seguridad; consulta <a href=\"https://docs.github.com/es/pages/getting-started-with-github-pages/what-is-github-pages#data-collection\">GitHub Pages: recopilación de datos</a> y la <a href=\"https://docs.github.com/es/site-policy/privacy-policies/github-general-privacy-statement\">declaración de privacidad de GitHub</a>. Cuánto tiempo conserva GitHub estos registros lo decide GitHub; nosotros no tenemos acceso a ellos. GitHub participa en el Marco de Privacidad de Datos UE-EE. UU. (EU-U.S. Data Privacy Framework), para el que la Comisión Europea ha decidido que Estados Unidos garantiza un nivel de protección adecuado (art. 45 del RGPD). La base jurídica es nuestro interés legítimo en ofrecer el sitio web de forma segura (art. 6, apdo. 1, letra f) del RGPD). La descarga de la app también procede de GitHub.",
+    "siteText": "Este sitio web no usa cookies, ni analítica, ni contenidos de otros servidores (ni fuentes web ni vídeos incrustados). Está alojado en GitHub Pages, un servicio de GitHub, Inc. (EE. UU.). Cuando lo visitas, GitHub registra y almacena tu dirección IP por motivos de seguridad; consulta <a href=\"https://docs.github.com/es/pages/getting-started-with-github-pages/what-is-github-pages#data-collection\">GitHub Pages: recopilación de datos</a> y la <a href=\"https://docs.github.com/es/site-policy/privacy-policies/github-general-privacy-statement\">declaración de privacidad de GitHub</a>. Cuánto tiempo conserva GitHub estos registros lo decide GitHub; nosotros no tenemos acceso a ellos. GitHub participa en el Marco de Privacidad de Datos UE-EE. UU. (EU-U.S. Data Privacy Framework), para el que la Comisión Europea ha decidido que Estados Unidos garantiza un nivel de protección adecuado (art. 45 del RGPD). La base jurídica es nuestro interés legítimo en ofrecer el sitio web de forma segura (art. 6, apdo. 1, letra f) del RGPD). La descarga de la app también procede de GitHub. Si eliges claro u oscuro con el interruptor de arriba, tu navegador guarda esa elección (localStorage); se queda en tu dispositivo y no llega a nadie.",
     "rightsTitle": "Tus derechos",
     "rightsText": "Conforme al RGPD, tienes derecho de acceso, rectificación, supresión, limitación del tratamiento y portabilidad de los datos, así como derecho a presentar una reclamación ante una autoridad de control de protección de datos. <strong>Tienes derecho a oponerte</strong>, por motivos relacionados con tu situación particular, al tratamiento basado en nuestro interés legítimo (art. 21 del RGPD). Como ni la app ni este sitio web guardan datos personales propios, por nuestra parte no hay absolutamente nada que consultar ni borrar. Por eso, la respuesta a una solicitud de acceso será muy breve: no sabemos absolutamente nada de ti.",
     "contactTitle": "Contacto",
     "contactText": "Para todo lo relacionado con Schnellbild (preguntas, ideas, errores y también solicitudes sobre tus datos), contáctanos por GitHub: abre una incidencia en <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a>. Allí respondemos más rápido y la respuesta también sirve a otros. Una incidencia es pública; para lo que prefieras no tratar en público, el <a href=\"https://haushoppe-its.de/impressum/\">aviso legal</a> indica otras formas de contacto."
-  }
+  },
+  "themeToDark": "Ver oscuro",
+  "themeToLight": "Ver claro",
+  "close": "Cerrar",
+  "enlarge": "Ampliar"
 }

@@ -22,4 +22,6 @@ ORDENAR CON DOS PANELES
 SEGURO CON ARCHIVOS DE OTROS
 Schnellbild se ejecuta en la App Sandbox de Apple: sin red, sin otros programas, solo las carpetas que tú le abres. Los archivos comprimidos solo se leen, y un “video” no puede mandar la app a internet.
 
+Claro u oscuro, como prefieras: Schnellbild sigue a macOS, o se queda claro u oscuro en sus Ajustes.
+
 Todas las teclas de un vistazo con F1, un miniteclado en el que hacer clic con K. En 20 idiomas.

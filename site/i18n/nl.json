@@ -17,19 +17,49 @@
   "fineprint": "Beide versies zijn dezelfde app met alle functies; wie hem in de App Store koopt, steunt de ontwikkeling. Hartelijk dank! 🖤",
   "shotAlt": "Schnellbild: mappen met voorvertoningen en fotominiaturen",
   "stats": [
-    ["0", "advertenties, trackers of accounts"],
-    ["€ 0", "voor alle functies"],
-    ["20", "talen"],
-    ["MIT", "licentie, open source"]
+    [
+      "0",
+      "advertenties, trackers of accounts"
+    ],
+    [
+      "€ 0",
+      "voor alle functies"
+    ],
+    [
+      "20",
+      "talen"
+    ],
+    [
+      "MIT",
+      "licentie, open source"
+    ]
   ],
   "whyTitle": "Waarom je niet gek wordt van Schnellbild",
   "why": [
-    ["Geen advertenties, geen tracking, geen account", "Hij toont je foto’s en praat met niemand."],
-    ["Geen upselling", "Geen pro-versie, geen abonnement, geen ‘ontgrendel’-knop. Alle functies zitten erin."],
-    ["Geen toeters en bellen", "Geen bibliotheek om in te importeren, geen editor, geen cloud. Gewoon foto’s en video’s bekijken, en dat goed."],
-    ["Snel", "Miniaturen verschijnen terwijl je scrolt, ook in grote mappen en op netwerkshares."],
-    ["Standaard veilig", "Foto’s, video’s en archieven van anderen voeren niets uit en gaan nergens online, zonder dat je eerst iets hoeft aan te zetten."],
-    ["Valt niet om", "Kapotte bestanden, vreemde formaten en trage schijven tonen een plaatshouder in plaats van de app onderuit te halen."]
+    [
+      "Geen advertenties, geen tracking, geen account",
+      "Hij toont je foto’s en praat met niemand."
+    ],
+    [
+      "Geen upselling",
+      "Geen pro-versie, geen abonnement, geen ‘ontgrendel’-knop. Alle functies zitten erin."
+    ],
+    [
+      "Geen toeters en bellen",
+      "Geen bibliotheek om in te importeren, geen editor, geen cloud. Gewoon foto’s en video’s bekijken, en dat goed."
+    ],
+    [
+      "Snel",
+      "Miniaturen verschijnen terwijl je scrolt, ook in grote mappen en op netwerkshares."
+    ],
+    [
+      "Standaard veilig",
+      "Foto’s, video’s en archieven van anderen voeren niets uit en gaan nergens online, zonder dat je eerst iets hoeft aan te zetten."
+    ],
+    [
+      "Valt niet om",
+      "Kapotte bestanden, vreemde formaten en trage schijven tonen een plaatshouder in plaats van de app onderuit te halen."
+    ]
   ],
   "featuresTitle": "Wat hij doet",
   "featuresMore": "En nog veel meer functies: alle details op GitHub",
@@ -73,16 +103,36 @@
       "title": "Elke toets bij de hand",
       "text": "<p><kbd>F1</kbd> toont alle toetsen, ook om af te drukken; <kbd>K</kbd> toont een klein toetsenbord om op te klikken. Raster of lijst (<kbd>L</kbd>), sorteren op naam, soort, datum of grootte, meerdere vensters en een baastoets (<kbd>X</kbd>).</p>",
       "alt": "De lijst met toetsen (F1)"
+    },
+    {
+      "title": "Licht of donker, jij kiest",
+      "text": "<p>De een zweert bij de donkere modus, de ander kan er niet tegen. Schnellbild volgt macOS, of blijft licht of donker wat het systeem ook doet: Instellingen (<kbd>⌘</kbd><kbd>,</kbd>) → Weergave.</p><p>Deze website doet hetzelfde: hij volgt je systeem, en de schakelaar bovenaan kiest voor jou.</p>",
+      "alt": "Instellingen: weergave zoals het systeem, licht of donker"
     }
   ],
   "safeTitle": "Veilig met bestanden van anderen",
   "safeIntro": "Foto’s, video’s en archieven van onbekenden: precies daar is een viewer voor. Daarom behandelt Schnellbild elk bestand als vijandig, vanaf het eerste moment.",
   "safe": [
-    ["In de App Sandbox van Apple.", "Helemaal geen netwerk, start uit zichzelf geen programma’s, ziet alleen de mappen die je zelf voor hem opent, plus Afbeeldingen, Films en Downloads."],
-    ["Alleen lezen.", "Iets bekijken verandert het nooit en pakt het nooit uit naar de schijf."],
-    ["Video’s kunnen niet online.", "Een ‘video’ die eigenlijk een afspeellijst is die naar internet verwijst, speelt niets af."],
-    ["Dubbelklikken opent documenten, geen programma’s.", "Nooit apps, scripts of installers, ook niet als ze zich achter de naam van een afbeelding verstoppen."],
-    ["Ondertekend en genotariseerd,", "met de Hardened Runtime van Apple."],
+    [
+      "In de App Sandbox van Apple.",
+      "Helemaal geen netwerk, start uit zichzelf geen programma’s, ziet alleen de mappen die je zelf voor hem opent, plus Afbeeldingen, Films en Downloads."
+    ],
+    [
+      "Alleen lezen.",
+      "Iets bekijken verandert het nooit en pakt het nooit uit naar de schijf."
+    ],
+    [
+      "Video’s kunnen niet online.",
+      "Een ‘video’ die eigenlijk een afspeellijst is die naar internet verwijst, speelt niets af."
+    ],
+    [
+      "Dubbelklikken opent documenten, geen programma’s.",
+      "Nooit apps, scripts of installers, ook niet als ze zich achter de naam van een afbeelding verstoppen."
+    ],
+    [
+      "Ondertekend en genotariseerd,",
+      "met de Hardened Runtime van Apple."
+    ],
     [
       "Aantoonbaar gebouwd uit de openbare broncode.",
       "GitHub bevestigt met een handtekening uit welke commit en welke build elke download komt. Iedereen kan dat controleren."
@@ -113,10 +163,14 @@
     ],
     "appOutro": "Schnellbild leest je foto’s, video’s en archieven alleen om ze aan jou te tonen. Hij stuurt ze nooit ergens heen, en ook hun namen of andere informatie erover niet. Apple handelt de download en aankoop af volgens zijn eigen privacybeleid en geeft ons alleen cijfers zonder je identiteit: verkopen, en crashrapporten en gebruiksstatistieken als je in macOS hebt toegestaan die met app-ontwikkelaars te delen.",
     "siteTitle": "Deze website",
-    "siteText": "Deze website gebruikt geen cookies, geen analytics en geen inhoud van andere servers (geen webfonts, geen ingesloten video’s). Hij wordt gehost op GitHub Pages, een dienst van GitHub, Inc. (VS). Als je de website bezoekt, registreert en bewaart GitHub je IP-adres voor beveiligingsdoeleinden; zie <a href=\"https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages#data-collection\">GitHub Pages: gegevensverzameling</a> en de <a href=\"https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement\">privacyverklaring van GitHub</a> (in het Engels). Hoe lang GitHub deze logs bewaart, bepaalt GitHub; wij hebben er geen toegang toe. GitHub neemt deel aan het EU-U.S. Data Privacy Framework, waarvoor de Europese Commissie heeft vastgesteld dat de VS een passend beschermingsniveau bieden (art. 45 AVG). De rechtsgrondslag is ons gerechtvaardigd belang bij het veilig aanbieden van de website (art. 6 lid 1 onder f AVG). Ook de download van de app komt van GitHub.",
+    "siteText": "Deze website gebruikt geen cookies, geen analytics en geen inhoud van andere servers (geen webfonts, geen ingesloten video’s). Hij wordt gehost op GitHub Pages, een dienst van GitHub, Inc. (VS). Als je de website bezoekt, registreert en bewaart GitHub je IP-adres voor beveiligingsdoeleinden; zie <a href=\"https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages#data-collection\">GitHub Pages: gegevensverzameling</a> en de <a href=\"https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement\">privacyverklaring van GitHub</a> (in het Engels). Hoe lang GitHub deze logs bewaart, bepaalt GitHub; wij hebben er geen toegang toe. GitHub neemt deel aan het EU-U.S. Data Privacy Framework, waarvoor de Europese Commissie heeft vastgesteld dat de VS een passend beschermingsniveau bieden (art. 45 AVG). De rechtsgrondslag is ons gerechtvaardigd belang bij het veilig aanbieden van de website (art. 6 lid 1 onder f AVG). Ook de download van de app komt van GitHub. Kies je met de schakelaar bovenaan licht of donker, dan onthoudt je browser die keuze (localStorage); die blijft op je apparaat en bereikt niemand.",
     "rightsTitle": "Je rechten",
     "rightsText": "Op grond van de AVG heb je recht op inzage, rectificatie, wissing, beperking van de verwerking en overdraagbaarheid van gegevens, en het recht om een klacht in te dienen bij een toezichthoudende autoriteit voor gegevensbescherming. <strong>Je hebt het recht om bezwaar te maken</strong> tegen verwerking op grond van ons gerechtvaardigd belang, om redenen die verband houden met je specifieke situatie (art. 21 AVG). Omdat de app noch deze website zelf persoonsgegevens bewaart, is er aan onze kant helemaal niets in te zien of te wissen. Een antwoord op een inzageverzoek zal daarom heel kort zijn: we weten helemaal niets over je.",
     "contactTitle": "Contact",
     "contactText": "Voor alles rond Schnellbild (vragen, ideeën, fouten en ook verzoeken over je gegevens) neem je het best contact met ons op via GitHub: open een issue op <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a>. Daar antwoorden we het snelst, en anderen hebben ook iets aan het antwoord. Een issue is openbaar; voor wat je liever niet openbaar bespreekt, vind je andere contactmogelijkheden in de <a href=\"https://haushoppe-its.de/impressum/\">juridische informatie</a>."
-  }
+  },
+  "themeToDark": "Donker tonen",
+  "themeToLight": "Licht tonen",
+  "close": "Sluiten",
+  "enlarge": "Vergroten"
 }

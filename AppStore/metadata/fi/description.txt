@@ -22,4 +22,6 @@ LAJITTELU KAHDELLA PANEELILLA
 TURVALLINEN MUIDEN TIEDOSTOJEN KANSSA
 Schnellbild toimii Applen App Sandboxissa: ei verkkoa, ei muita ohjelmia, vain kansiot, jotka avaat sille. Arkistoja vain luetaan, eikä ”video” voi lähettää appia internetiin.
 
+Vaalea tai tumma, sinä valitset: Schnellbild seuraa macOS:ää tai pysyy asetuksissa vaaleana tai tummana.
+
 Kaikki näppäimet yhdellä silmäyksellä F1:llä, klikattava pieni näppäimistö K:lla. 20 kielellä.

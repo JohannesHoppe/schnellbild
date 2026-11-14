@@ -22,4 +22,6 @@ ORGANIZE COM DOIS PAINÉIS
 SEGURO COM ARQUIVOS DE OUTRAS PESSOAS
 O Schnellbild roda na App Sandbox da Apple: sem rede, sem outros programas, só as pastas que você abrir para ele. Os arquivos compactados são apenas lidos, e um “vídeo” não consegue levar o app para a internet.
 
+Claro ou escuro, você escolhe: o Schnellbild segue o macOS, ou fica claro ou escuro nos Ajustes.
+
 Todas as teclas num relance com F1, um mini teclado clicável com K. Em 20 idiomas.

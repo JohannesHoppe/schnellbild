@@ -22,4 +22,6 @@ SORTER MED TO RUTER
 TRYGG MED FILER FRA ANDRE
 Schnellbild kjører i Apples App Sandbox: ikke noe nettverk, ingen andre programmer, bare mappene du åpner for den. Arkiver blir bare lest, og en «video» kan ikke sende appen ut på internett.
 
+Lyst eller mørkt, du velger: Schnellbild følger macOS, eller blir lyst eller mørkt i innstillingene.
+
 Oversikt over alle tastene med F1, et klikkbart minitastatur med K. På 20 språk.

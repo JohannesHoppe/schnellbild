@@ -103,6 +103,11 @@
       "title": "Alle Tasten griffbereit",
       "text": "<p><kbd>F1</kbd> zeigt alle Tasten, auch zum Ausdrucken; <kbd>K</kbd> blendet eine kleine Tastatur zum Anklicken ein. Raster oder Liste (<kbd>L</kbd>), sortieren nach Name, Art, Datum oder Größe, mehrere Fenster und ein Boss-Key (<kbd>X</kbd>).</p>",
       "alt": "Die Liste der Tasten (F1)"
+    },
+    {
+      "title": "Hell oder dunkel, wie du willst",
+      "text": "<p>Die einen schwören auf den Dark Mode, die anderen können ihn nicht ausstehen. Schnellbild folgt macOS oder bleibt hell oder dunkel, egal was das System macht: Einstellungen (<kbd>⌘</kbd><kbd>,</kbd>) → Erscheinungsbild.</p><p>Diese Website macht es genauso: Sie folgt deinem System, und der Schalter oben entscheidet für dich.</p>",
+      "alt": "Einstellungen: Erscheinungsbild wie das System, hell oder dunkel"
     }
   ],
   "safeTitle": "Sicher bei fremden Dateien",
@@ -158,10 +163,14 @@
     ],
     "appOutro": "Schnellbild liest deine Bilder, Videos und Archive nur, um sie dir zu zeigen. Die App sendet sie, ihre Namen oder Angaben über sie nirgendwohin. Download und Kauf wickelt Apple nach seiner eigenen Datenschutzerklärung ab und gibt uns nur Zahlen ohne deine Identität: Verkäufe, und Absturzberichte und Nutzungsstatistiken, wenn du in macOS erlaubt hast, sie mit App-Entwicklern zu teilen.",
     "siteTitle": "Diese Website",
-    "siteText": "Diese Website verwendet keine Cookies, keine Analyse und keine Inhalte von anderen Servern (keine Webfonts, keine eingebetteten Videos). Sie liegt bei GitHub Pages, einem Dienst der GitHub, Inc. (USA). Beim Aufruf protokolliert und speichert GitHub deine IP-Adresse zu Sicherheitszwecken; siehe <a href=\"https://docs.github.com/de/pages/getting-started-with-github-pages/what-is-github-pages#data-collection\">GitHub Pages: Datenerfassung</a> und die <a href=\"https://docs.github.com/de/site-policy/privacy-policies/github-general-privacy-statement\">Datenschutzerklärung von GitHub</a>. Wie lange GitHub diese Protokolle aufbewahrt, legt GitHub fest; wir haben keinen Zugriff darauf. GitHub nimmt am EU-US Data Privacy Framework teil, für das die EU-Kommission ein angemessenes Schutzniveau in den USA festgestellt hat (Art. 45 DSGVO). Rechtsgrundlage ist unser berechtigtes Interesse an einer sicheren Auslieferung der Website (Art. 6 Abs. 1 lit. f DSGVO). Auch der Download der App kommt von GitHub.",
+    "siteText": "Diese Website verwendet keine Cookies, keine Analyse und keine Inhalte von anderen Servern (keine Webfonts, keine eingebetteten Videos). Sie liegt bei GitHub Pages, einem Dienst der GitHub, Inc. (USA). Beim Aufruf protokolliert und speichert GitHub deine IP-Adresse zu Sicherheitszwecken; siehe <a href=\"https://docs.github.com/de/pages/getting-started-with-github-pages/what-is-github-pages#data-collection\">GitHub Pages: Datenerfassung</a> und die <a href=\"https://docs.github.com/de/site-policy/privacy-policies/github-general-privacy-statement\">Datenschutzerklärung von GitHub</a>. Wie lange GitHub diese Protokolle aufbewahrt, legt GitHub fest; wir haben keinen Zugriff darauf. GitHub nimmt am EU-US Data Privacy Framework teil, für das die EU-Kommission ein angemessenes Schutzniveau in den USA festgestellt hat (Art. 45 DSGVO). Rechtsgrundlage ist unser berechtigtes Interesse an einer sicheren Auslieferung der Website (Art. 6 Abs. 1 lit. f DSGVO). Auch der Download der App kommt von GitHub. Wählst du mit dem Schalter oben hell oder dunkel, merkt sich dein Browser diese Wahl (localStorage); sie bleibt auf deinem Gerät und erreicht niemanden.",
     "rightsTitle": "Deine Rechte",
     "rightsText": "Nach der DSGVO hast du das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung und Datenübertragbarkeit sowie das Recht, dich bei einer Datenschutz-Aufsichtsbehörde zu beschweren. <strong>Du hast das Recht, aus Gründen, die sich aus deiner besonderen Situation ergeben, der Verarbeitung auf Grundlage unseres berechtigten Interesses zu widersprechen</strong> (Art. 21 DSGVO). Da weder die App noch diese Website selbst personenbezogene Daten speichert, gibt es bei uns rein gar nichts nachzusehen oder zu löschen. Eine Auskunft wird daher sehr kurz sein: Wir wissen rein gar nichts über dich.",
     "contactTitle": "Kontakt",
     "contactText": "Für alle Anliegen rund um Schnellbild (Fragen, Ideen, Fehler und auch Anfragen zu deinen Daten) kontaktiere uns bitte über GitHub: Eröffne ein Issue unter <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a>. Dort antworten wir am schnellsten, und andere haben auch etwas von der Antwort. Ein Issue ist öffentlich; was du lieber nicht öffentlich besprechen möchtest, erreicht uns über die Kontaktangaben im <a href=\"https://haushoppe-its.de/impressum/\">Impressum</a>."
-  }
+  },
+  "themeToDark": "Dunkel anzeigen",
+  "themeToLight": "Hell anzeigen",
+  "close": "Schließen",
+  "enlarge": "Vergrößern"
 }

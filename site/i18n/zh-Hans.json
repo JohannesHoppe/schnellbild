@@ -103,6 +103,11 @@
       "title": "所有按键尽在掌握",
       "text": "<p>按 <kbd>F1</kbd> 列出所有按键，还可以打印；按 <kbd>K</kbd> 显示可点按的迷你键盘。网格或列表（<kbd>L</kbd>），按名称、种类、日期或大小排序，多个窗口，还有老板键（<kbd>X</kbd>）。</p>",
       "alt": "按键列表（F1）"
+    },
+    {
+      "title": "浅色还是深色，随你选",
+      "text": "<p>有人离不开深色模式，有人受不了它。Schnellbild 跟随 macOS，也可以不管系统怎么设，固定为浅色或深色：设置（<kbd>⌘</kbd><kbd>,</kbd>）→ 外观。</p><p>本网站也一样：跟随你的系统，顶部的开关可以替你切换。</p>",
+      "alt": "设置：外观与系统相同、浅色或深色"
     }
   ],
   "safeTitle": "别人发来的文件，也能放心看",
@@ -158,10 +163,14 @@
     ],
     "appOutro": "Schnellbild 读取你的图像、视频和归档，仅仅是为了向你显示它们。它从不将这些文件、文件名或任何相关信息发送到任何地方。下载和购买由 Apple 根据其自身的隐私政策处理，Apple 只向我们提供不含你身份信息的数据：销量，以及在你于 macOS 中允许与 App 开发者共享时的崩溃报告和使用统计。",
     "siteTitle": "本网站",
-    "siteText": "本网站不使用 Cookie、分析工具，也不加载来自其他服务器的内容（没有网络字体，没有嵌入视频）。本网站托管于 GitHub Pages，这是 GitHub, Inc.（美国）提供的服务。你访问本网站时，GitHub 出于安全目的会记录并存储你的 IP 地址；参见<a href=\"https://docs.github.com/zh/pages/getting-started-with-github-pages/what-is-github-pages#data-collection\">GitHub Pages：数据收集</a>和<a href=\"https://docs.github.com/zh/site-policy/privacy-policies/github-general-privacy-statement\">GitHub 隐私声明</a>。GitHub 将这些日志保留多久由 GitHub 决定；我们无法访问这些日志。GitHub 参与了欧盟-美国数据隐私框架（EU-U.S. Data Privacy Framework），欧盟委员会已认定美国在该框架下提供充分的保护水平（GDPR 第 45 条）。法律依据是我们安全提供本网站的合法利益（欧盟《通用数据保护条例》（GDPR）第 6 条第 1 款第 (f) 项）。App 的下载同样来自 GitHub。",
+    "siteText": "本网站不使用 Cookie、分析工具，也不加载来自其他服务器的内容（没有网络字体，没有嵌入视频）。本网站托管于 GitHub Pages，这是 GitHub, Inc.（美国）提供的服务。你访问本网站时，GitHub 出于安全目的会记录并存储你的 IP 地址；参见<a href=\"https://docs.github.com/zh/pages/getting-started-with-github-pages/what-is-github-pages#data-collection\">GitHub Pages：数据收集</a>和<a href=\"https://docs.github.com/zh/site-policy/privacy-policies/github-general-privacy-statement\">GitHub 隐私声明</a>。GitHub 将这些日志保留多久由 GitHub 决定；我们无法访问这些日志。GitHub 参与了欧盟-美国数据隐私框架（EU-U.S. Data Privacy Framework），欧盟委员会已认定美国在该框架下提供充分的保护水平（GDPR 第 45 条）。法律依据是我们安全提供本网站的合法利益（欧盟《通用数据保护条例》（GDPR）第 6 条第 1 款第 (f) 项）。App 的下载同样来自 GitHub。 如果你用顶部的开关选择浅色或深色，浏览器会记住这个选择（localStorage）；它只保存在你的设备上，不会发送给任何人。",
     "rightsTitle": "你的权利",
     "rightsText": "根据 GDPR，你享有访问、更正、删除、限制处理和数据可携带的权利，并有权向数据保护监管机构提出投诉。<strong>你有权基于与你的特殊情况相关的理由，反对基于我们合法利益进行的处理</strong>（GDPR 第 21 条）。由于 App 和本网站都不保存自己的个人数据，我们这边根本没有任何可查询或删除的内容。因此，对访问请求的答复会非常简短：我们对你一无所知。",
     "contactTitle": "联系",
     "contactText": "关于 Schnellbild 的一切事宜，包括问题、想法、错误报告以及与你的数据有关的请求，请通过 GitHub 联系我们：在 <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a> 提交 issue。我们在那里回复最快，答复也能帮到其他人。issue 是公开的；不便公开讨论的事项，可通过<a href=\"https://haushoppe-its.de/impressum/\">法律声明</a>中的其他联系方式找到我们。"
-  }
+  },
+  "themeToDark": "深色显示",
+  "themeToLight": "浅色显示",
+  "close": "关闭",
+  "enlarge": "放大"
 }

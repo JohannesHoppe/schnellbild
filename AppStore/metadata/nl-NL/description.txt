@@ -22,4 +22,6 @@ SORTEREN MET TWEE PANELEN
 VEILIG MET BESTANDEN VAN ANDEREN
 Schnellbild draait in de App Sandbox van Apple: geen netwerk, geen andere programma’s, alleen de mappen die je ervoor opent. Archieven worden alleen gelezen, en een “video” kan de app niet het internet op sturen.
 
+Licht of donker, jij kiest: Schnellbild volgt macOS, of blijft licht of donker via de instellingen.
+
 Elke toets in één oogopslag met F1, een klikbaar minitoetsenbord met K. In 20 talen.

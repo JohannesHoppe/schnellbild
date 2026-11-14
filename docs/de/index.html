@@ -100,7 +100,8 @@
     "Suche durch alle Unterordner",
     "Schönere Bilder, Dateien unberührt",
     "Was die Datei wirklich ist",
-    "Alle Tasten griffbereit"
+    "Alle Tasten griffbereit",
+    "Hell oder dunkel, wie du willst"
    ],
    "offers": {
     "@type": "Offer",
@@ -158,14 +159,16 @@
  ]
 }
 </script>
+<script>try{var theme=localStorage.getItem("theme");if(theme==="light"||theme==="dark")document.documentElement.dataset.theme=theme}catch(e){}</script>
 <link rel="stylesheet" href="/site.css">
 <script src="/site.js" defer></script>
 </head>
-<body><header class="bar">
+<body data-close="Schließen" data-enlarge="Vergrößern"><header class="bar">
   <div class="wrap top">
     <a class="brand" href="/de/"><img src="/icon.png" alt="" width="32" height="32">Schnellbild</a>
     <nav>
       <a class="section-link" href="#features">Funktionen</a><a class="section-link" href="#safe">Sicherheit</a><a class="github" href="https://github.com/JohannesHoppe/schnellbild"><svg class="mark" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"/></svg>GitHub</a>
+      <button class="theme" type="button" data-dark="Dunkel anzeigen" data-light="Hell anzeigen" aria-label="Dunkel anzeigen" title="Dunkel anzeigen"><svg class="i moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/></svg><svg class="i sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
       <details class="lang">
         <summary aria-label="Sprache: Deutsch"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg><span>Deutsch</span></summary>
         <div class="lang-list"><a href="/" hreflang="en" lang="en">English</a><a href="/de/" hreflang="de" lang="de" aria-current="page">Deutsch</a><a href="/fr/" hreflang="fr" lang="fr">Français</a><a href="/es/" hreflang="es" lang="es">Español</a><a href="/it/" hreflang="it" lang="it">Italiano</a><a href="/pt-br/" hreflang="pt-BR" lang="pt-BR">Português (Brasil)</a><a href="/nl/" hreflang="nl" lang="nl">Nederlands</a><a href="/pl/" hreflang="pl" lang="pl">Polski</a><a href="/sv/" hreflang="sv" lang="sv">Svenska</a><a href="/da/" hreflang="da" lang="da">Dansk</a><a href="/nb/" hreflang="nb" lang="nb">Norsk</a><a href="/fi/" hreflang="fi" lang="fi">Suomi</a><a href="/cs/" hreflang="cs" lang="cs">Čeština</a><a href="/tr/" hreflang="tr" lang="tr">Türkçe</a><a href="/ru/" hreflang="ru" lang="ru">Русский</a><a href="/uk/" hreflang="uk" lang="uk">Українська</a><a href="/ja/" hreflang="ja" lang="ja">日本語</a><a href="/ko/" hreflang="ko" lang="ko">한국어</a><a href="/zh-hans/" hreflang="zh-Hans" lang="zh-Hans">简体中文</a><a href="/zh-hant/" hreflang="zh-Hant" lang="zh-Hant">繁體中文</a></div>
@@ -186,7 +189,7 @@
   </div>
     <p class="fineprint">Beide Versionen sind dieselbe App mit allen Funktionen;<br>wer sie im Store kauft, unterstützt die Weiterentwicklung. Vielen Dank! 🖤</p>
   </div>
-  <div class="wrap wide"><div class="shot"><img src="/screenshots/grid-light-de.png" width="1072" height="752" fetchpriority="high" alt="Schnellbild: Ordner mit Vorschau und Vorschaubilder von Fotos"></div></div>
+  <div class="wrap wide"><div class="shot"><picture><source media="(prefers-color-scheme: dark)" srcset="/screenshots/grid-dark-de.png"><img src="/screenshots/grid-light-de.png" width="1072" height="752" fetchpriority="high" alt="Schnellbild: Ordner mit Vorschau und Vorschaubilder von Fotos"></picture></div></div>
 </div>
 
 <div class="wrap stats"><div class="stat" data-reveal style="--i:0"><b>0</b><span>Werbung, Tracker oder Konten</span></div><div class="stat" data-reveal style="--i:1"><b>0 €</b><span>für alle Funktionen</span></div><div class="stat" data-reveal style="--i:2"><b>20</b><span>Sprachen</span></div><div class="stat" data-reveal style="--i:3"><b>MIT</b><span>lizenziert, Open Source</span></div></div>
@@ -203,35 +206,39 @@
     <h2 data-reveal>Was es kann</h2>
     <div class="feature">
       <div class="text" data-reveal><h3>Groß ansehen, mit den Tasten blättern</h3><p>Die Leertaste öffnet ein Bild so groß, wie das Fenster erlaubt, ← → blättern durch den Ordner. Zoomen mit dem Trackpad oder + −, drehen mit ⌥← ⌥→, Vollbild mit <kbd>f</kbd>. Animierte GIFs, SVG und PDF inklusive.</p><p>Eine Diashow (<kbd>s</kbd>) läuft durch den Ordner und alle Unterordner, Fotos und Videos gemischt.</p></div>
-      <div class="media" data-reveal><div data-parallax><img src="/screenshots/full-light-de.png" width="1072" height="752" loading="lazy" decoding="async" alt="Ein Foto in der Vollansicht"></div></div>
+      <div class="media" data-reveal><div data-parallax><picture><source media="(prefers-color-scheme: dark)" srcset="/screenshots/full-dark-de.png"><img src="/screenshots/full-light-de.png" width="1072" height="752" loading="lazy" decoding="async" alt="Ein Foto in der Vollansicht"></picture></div></div>
     </div>
     <div class="feature">
       <div class="text" data-reveal><h3>Videos, auch die, die macOS nicht abspielt</h3><p>Was macOS selbst abspielt (MP4, MOV, AVCHD …), spielt macOS ab, alles andere die eingebaute VLC-Engine: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-Video.</p><ul><li>← → springen ein Zehntel des Videos, ⇧← ⇧→ ein Hundertstel</li><li>↑ ↓ stellen die Lautstärke ein, für alle Videos</li><li>Finder und Übersicht bekommen Vorschaubilder auch für MKV, WebM, WMV, FLV und VOB</li></ul></div>
-      <div class="media" data-reveal><div data-parallax><img src="/screenshots/video-light-de.png" width="1072" height="752" loading="lazy" decoding="async" alt="Ein Video in Schnellbild"></div></div>
+      <div class="media" data-reveal><div data-parallax><picture><source media="(prefers-color-scheme: dark)" srcset="/screenshots/video-dark-de.png"><img src="/screenshots/video-light-de.png" width="1072" height="752" loading="lazy" decoding="async" alt="Ein Video in Schnellbild"></picture></div></div>
     </div>
     <div class="feature">
       <div class="text" data-reveal><h3>Archive öffnen sich wie Ordner</h3><p>ZIP, RAR und 7z, Comics (CBZ, CBR) eingeschlossen, auch in mehreren Teilen; ZIP und RAR auch mit Passwort. Nichts wird auf die Festplatte entpackt, und Videos spielen direkt aus dem Archiv.</p></div>
-      <div class="media" data-reveal><div data-parallax><img src="/screenshots/archives-light-de.png" width="1072" height="752" loading="lazy" decoding="async" alt="Archive als Ordner mit Vorschau"></div></div>
+      <div class="media" data-reveal><div data-parallax><picture><source media="(prefers-color-scheme: dark)" srcset="/screenshots/archives-dark-de.png"><img src="/screenshots/archives-light-de.png" width="1072" height="752" loading="lazy" decoding="async" alt="Archive als Ordner mit Vorschau"></picture></div></div>
     </div>
     <div class="feature">
       <div class="text" data-reveal><h3>Urlaubsfotos sortieren wie im Norton Commander</h3><p><kbd>D</kbd> zeigt zwei Ordner nebeneinander. Bilder markieren, dann kopiert <kbd>F5</kbd> und verschiebt <kbd>F6</kbd> sie in den anderen Bereich, oder einfach hinüberziehen.</p><p>Umbenennen, neuer Ordner, Papierkorb, Lesezeichen, und Rückgängig für Umbenennen, Papierkorb, Kopieren und Verschieben.</p></div>
-      <div class="media" data-reveal><div data-parallax><img src="/screenshots/dualpane-light-de.png" width="1072" height="752" loading="lazy" decoding="async" alt="Zwei Ordner nebeneinander in zwei Bereichen"></div></div>
+      <div class="media" data-reveal><div data-parallax><picture><source media="(prefers-color-scheme: dark)" srcset="/screenshots/dualpane-dark-de.png"><img src="/screenshots/dualpane-light-de.png" width="1072" height="752" loading="lazy" decoding="async" alt="Zwei Ordner nebeneinander in zwei Bereichen"></picture></div></div>
     </div>
     <div class="feature">
       <div class="text" data-reveal><h3>Suche durch alle Unterordner</h3><p>Das Suchfeld findet Namen von Ordnern, Archiven, Bildern und Videos im gezeigten Ordner und allem darunter. Die Treffer kommen, während gesucht wird, auch auf einem langsamen Netzlaufwerk. Groß-/Kleinschreibung ignorieren oder beachten, oder ein regulärer Ausdruck.</p></div>
-      <div class="media" data-reveal><div data-parallax><img src="/screenshots/search-light-de.png" width="1072" height="752" loading="lazy" decoding="async" alt="Suchtreffer aus dem Ordner und seinen Unterordnern"></div></div>
+      <div class="media" data-reveal><div data-parallax><picture><source media="(prefers-color-scheme: dark)" srcset="/screenshots/search-dark-de.png"><img src="/screenshots/search-light-de.png" width="1072" height="752" loading="lazy" decoding="async" alt="Suchtreffer aus dem Ordner und seinen Unterordnern"></picture></div></div>
     </div>
     <div class="feature">
       <div class="text" data-reveal><h3>Schönere Bilder, Dateien unberührt</h3><p><kbd>E</kbd> verbessert Belichtung, Kontrast, Sättigung und Schärfe automatisch, bei Fotos wie bei Videos. <kbd>A</kbd> öffnet die Regler. Das ist nur eine Ansicht: Deine Dateien bleiben, wie sie sind.</p></div>
-      <div class="media" data-reveal><div data-parallax><img src="/screenshots/adjust-light-de.png" width="1072" height="752" loading="lazy" decoding="async" alt="Die Regler über einem Foto"></div></div>
+      <div class="media" data-reveal><div data-parallax><picture><source media="(prefers-color-scheme: dark)" srcset="/screenshots/adjust-dark-de.png"><img src="/screenshots/adjust-light-de.png" width="1072" height="752" loading="lazy" decoding="async" alt="Die Regler über einem Foto"></picture></div></div>
     </div>
     <div class="feature">
       <div class="text" data-reveal><h3>Was die Datei wirklich ist</h3><p><kbd>I</kbd> zeigt Format, Auflösung, Codecs, Bitrate, Farbtiefe, Farbprofil und Kamera, und einen Hinweis, wenn die Dateiendung nicht zum Inhalt passt.</p></div>
-      <div class="media" data-reveal><div data-parallax><img src="/screenshots/inspector-light-de.png" width="1072" height="752" loading="lazy" decoding="async" alt="Die Datei-Info neben einem Foto"></div></div>
+      <div class="media" data-reveal><div data-parallax><picture><source media="(prefers-color-scheme: dark)" srcset="/screenshots/inspector-dark-de.png"><img src="/screenshots/inspector-light-de.png" width="1072" height="752" loading="lazy" decoding="async" alt="Die Datei-Info neben einem Foto"></picture></div></div>
     </div>
     <div class="feature">
       <div class="text" data-reveal><h3>Alle Tasten griffbereit</h3><p><kbd>F1</kbd> zeigt alle Tasten, auch zum Ausdrucken; <kbd>K</kbd> blendet eine kleine Tastatur zum Anklicken ein. Raster oder Liste (<kbd>L</kbd>), sortieren nach Name, Art, Datum oder Größe, mehrere Fenster und ein Boss-Key (<kbd>X</kbd>).</p></div>
-      <div class="media" data-reveal><div data-parallax><img src="/screenshots/help-light-de.png" width="1072" height="752" loading="lazy" decoding="async" alt="Die Liste der Tasten (F1)"></div></div>
+      <div class="media" data-reveal><div data-parallax><picture><source media="(prefers-color-scheme: dark)" srcset="/screenshots/help-dark-de.png"><img src="/screenshots/help-light-de.png" width="1072" height="752" loading="lazy" decoding="async" alt="Die Liste der Tasten (F1)"></picture></div></div>
+    </div>
+    <div class="feature">
+      <div class="text" data-reveal><h3>Hell oder dunkel, wie du willst</h3><p>Die einen schwören auf den Dark Mode, die anderen können ihn nicht ausstehen. Schnellbild folgt macOS oder bleibt hell oder dunkel, egal was das System macht: Einstellungen (<kbd>⌘</kbd><kbd>,</kbd>) → Erscheinungsbild.</p><p>Diese Website macht es genauso: Sie folgt deinem System, und der Schalter oben entscheidet für dich.</p></div>
+      <div class="media" data-reveal><div data-parallax><picture><source media="(prefers-color-scheme: dark)" srcset="/screenshots/settings-dark-de.png"><img src="/screenshots/settings-light-de.png" width="532" height="968" loading="lazy" decoding="async" alt="Einstellungen: Erscheinungsbild wie das System, hell oder dunkel"></picture></div></div>
     </div>
     <p class="more-features" data-reveal><a href="https://github.com/JohannesHoppe/schnellbild#features">Und noch viel mehr Funktionen: alle Details auf GitHub →</a></p>
   </div>

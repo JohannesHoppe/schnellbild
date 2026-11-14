@@ -16,8 +16,10 @@
   --bar: rgba(251, 251, 253, 0.78);
   color-scheme: light dark;
 }
+/* Dark where the visitor's system is dark, unless they picked light with the
+   switch in the bar; dark where they picked dark. Light in every other case. */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --bg: #000000;
     --surface: #161618;
     --text: #f5f5f7;
@@ -30,6 +32,20 @@
     --bar: rgba(0, 0, 0, 0.72);
   }
 }
+:root[data-theme="dark"] {
+  --bg: #000000;
+  --surface: #161618;
+  --text: #f5f5f7;
+  --muted: #a1a1a6;
+  --line: #2c2c30;
+  --accent: #4f9bff;
+  --ink: #f5f5f7;
+  --ink-text: #000000;
+  --code: #232326;
+  --bar: rgba(0, 0, 0, 0.72);
+  color-scheme: dark;
+}
+:root[data-theme="light"] { color-scheme: light; }
 
 @view-transition { navigation: auto; }
 ::view-transition-old(root), ::view-transition-new(root) { animation-duration: 0.35s; }
@@ -75,6 +91,20 @@ kbd, code {
 /* GitHub's mark before the GitHub links, in the link's colour */
 a.github { display: inline-flex; align-items: center; gap: 6px; }
 .mark { width: 14px; height: 14px; fill: currentColor; flex: none; }
+
+/* Light / dark switch: shown only where site.js runs it; the moon where the
+   page is light, the sun where it is dark */
+.theme { display: none; align-items: center; justify-content: center; width: 32px; height: 32px; padding: 0; border: 1px solid var(--line); border-radius: 999px; background: none; color: var(--muted); cursor: pointer; }
+.theme-switch .theme { display: inline-flex; }
+.theme:hover { color: var(--text); }
+.theme .i { width: 16px; height: 16px; }
+.theme .sun { display: none; }
+:root[data-theme="dark"] .theme .sun { display: block; }
+:root[data-theme="dark"] .theme .moon { display: none; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .theme .sun { display: block; }
+  :root:not([data-theme="light"]) .theme .moon { display: none; }
+}
 
 /* Language menu */
 .lang { position: relative; }
@@ -224,10 +254,20 @@ footer a { color: var(--muted); }
   .js [data-reveal], .js .hero * { opacity: 1 !important; transform: none !important; animation: none !important; }
   .shot img, .media [data-parallax] { transform: none !important; }
   .bar { position: static; }
-  .lang { display: none; }
+  .lang, .theme { display: none !important; }
+  dialog.lightbox { display: none; }
 }
 h1, h2, h3, .tagline, .lead, .intro { text-wrap: balance; }
 
 /* The 404 page's list of home pages */
 .homes { columns: 2 180px; padding-left: 20px; }
 .page .homes li { margin: 0; padding: 4px 0; break-inside: avoid; }
+
+/* Screenshots open large (site.js): one at a time, ← → step through them, a click or Esc closes */
+.zoomable { cursor: zoom-in; }
+.media img { max-height: 540px; width: auto; margin-inline: auto; }
+dialog.lightbox { padding: 0; border: 0; background: none; max-width: none; max-height: none; overflow: visible; }
+dialog.lightbox::backdrop { background: rgba(0, 0, 0, 0.85); }
+dialog.lightbox img { max-width: 96vw; max-height: 94vh; width: auto; height: auto; cursor: zoom-out; }
+dialog.lightbox .close { position: fixed; top: 14px; right: 14px; width: 40px; height: 40px; border: 0; border-radius: 999px; background: rgba(255, 255, 255, 0.16); color: #fff; font-size: 26px; line-height: 1; cursor: pointer; }
+dialog.lightbox .close:hover { background: rgba(255, 255, 255, 0.28); }

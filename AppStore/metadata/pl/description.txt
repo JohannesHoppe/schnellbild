@@ -22,4 +22,6 @@ PORZĄDKOWANIE W DWÓCH PANELACH
 BEZPIECZNY Z PLIKAMI OD INNYCH
 Schnellbild działa w App Sandbox firmy Apple: bez sieci, bez innych programów, tylko foldery, które mu otworzysz. Archiwa są tylko odczytywane, a „wideo” nie wyśle aplikacji do internetu.
 
+Jasny albo ciemny, jak wolisz: Schnellbild podąża za macOS albo zostaje jasny lub ciemny w ustawieniach.
+
 Wszystkie klawisze w jednym miejscu pod F1, klikalna mini klawiatura pod K. W 20 językach.

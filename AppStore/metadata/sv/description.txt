@@ -22,4 +22,6 @@ SORTERA MED TVÅ PANELER
 SÄKER MED FILER FRÅN ANDRA
 Schnellbild körs i Apples App Sandbox: inget nätverk, inga andra program, bara mapparna du öppnar för den. Arkiv läses bara, och en ”video” kan inte skicka ut appen på internet.
 
+Ljust eller mörkt, du väljer: Schnellbild följer macOS, eller förblir ljust eller mörkt i inställningarna.
+
 Överblick över alla tangenter med F1, ett klickbart minitangentbord med K. På 20 språk.

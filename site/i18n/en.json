@@ -103,6 +103,11 @@
       "title": "Every key at hand",
       "text": "<p><kbd>F1</kbd> lists every key, to print too; <kbd>K</kbd> shows a small keyboard to click. Grid or list (<kbd>L</kbd>), sort by name, kind, date or size, several windows, and a boss key (<kbd>X</kbd>).</p>",
       "alt": "The list of keys (F1)"
+    },
+    {
+      "title": "Light or dark, your choice",
+      "text": "<p>Some swear by dark mode, others can't stand it. Schnellbild follows macOS, or stays light or dark whatever the system does: Settings (<kbd>⌘</kbd><kbd>,</kbd>) → Appearance.</p><p>This website does the same: it follows your system, and the switch at the top picks for you.</p>",
+      "alt": "Settings: appearance as the system, light or dark"
     }
   ],
   "safeTitle": "Safe with files from others",
@@ -158,10 +163,14 @@
     ],
     "appOutro": "Schnellbild reads your pictures, videos and archives only to show them to you. It never sends them, their names or anything about them anywhere. Apple handles the download and purchase under its own privacy policy and gives us only figures without your identity: sales, and crash reports and usage statistics if you allowed sharing them with app developers in macOS.",
     "siteTitle": "This website",
-    "siteText": "This website uses no cookies, no analytics and no content from other servers (no web fonts, no embedded videos). It is hosted on GitHub Pages, a service of GitHub, Inc. (USA). When you visit it, GitHub logs and stores your IP address for security purposes; see <a href=\"https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages#data-collection\">GitHub Pages: data collection</a> and the <a href=\"https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement\">GitHub privacy statement</a>. How long GitHub keeps these logs is up to GitHub; we have no access to them. GitHub takes part in the EU-U.S. Data Privacy Framework, for which the European Commission decided that the USA ensures an adequate level of protection (Art. 45 GDPR). The legal basis is our legitimate interest in delivering the website securely (Art. 6(1)(f) GDPR). The download of the app comes from GitHub as well.",
+    "siteText": "This website uses no cookies, no analytics and no content from other servers (no web fonts, no embedded videos). It is hosted on GitHub Pages, a service of GitHub, Inc. (USA). When you visit it, GitHub logs and stores your IP address for security purposes; see <a href=\"https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages#data-collection\">GitHub Pages: data collection</a> and the <a href=\"https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement\">GitHub privacy statement</a>. How long GitHub keeps these logs is up to GitHub; we have no access to them. GitHub takes part in the EU-U.S. Data Privacy Framework, for which the European Commission decided that the USA ensures an adequate level of protection (Art. 45 GDPR). The legal basis is our legitimate interest in delivering the website securely (Art. 6(1)(f) GDPR). The download of the app comes from GitHub as well. If you pick light or dark with the switch at the top, your browser keeps that choice (localStorage); it stays on your device and reaches no one.",
     "rightsTitle": "Your rights",
     "rightsText": "Under the GDPR you have the right to access, rectification, erasure, restriction of processing and data portability, and the right to lodge a complaint with a data protection supervisory authority. <strong>You have the right to object</strong>, on grounds relating to your particular situation, to processing based on our legitimate interest (Art. 21 GDPR). Since neither the app nor this website keeps personal data of its own, there is nothing at all on our side to look up or delete. A request for access will therefore get a very short answer: we know nothing at all about you.",
     "contactTitle": "Contact",
     "contactText": "For everything about Schnellbild (questions, ideas, bugs, and requests about your data too), please contact us through GitHub: open an issue at <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">github.com/JohannesHoppe/schnellbild/issues</a>. That's where we answer fastest, and others can read the answer too. An issue is public; for anything you'd rather not discuss in public, the <a href=\"https://haushoppe-its.de/impressum/\">imprint</a> lists other ways to reach us."
-  }
+  },
+  "themeToDark": "Show dark",
+  "themeToLight": "Show light",
+  "close": "Close",
+  "enlarge": "Enlarge"
 }
