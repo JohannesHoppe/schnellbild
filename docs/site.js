@@ -88,7 +88,8 @@ if ("IntersectionObserver" in window) {
   const shown = () => root.dataset.theme || (systemDark.matches ? "dark" : "light");
   function apply() {
     const picked = root.dataset.theme;
-    document.querySelectorAll('source[media*="prefers-color-scheme"], meta[name="theme-color"]').forEach((element) => {
+    // data-media keeps a source's own query while a choice has set it to "all" / "not all"
+    document.querySelectorAll('source[media*="prefers-color-scheme"], source[data-media], meta[name="theme-color"]').forEach((element) => {
       if (!element.dataset.media) element.dataset.media = element.getAttribute("media");
       const forDark = element.dataset.media.includes("dark");
       element.setAttribute("media", picked ? ((picked === "dark") === forDark ? "all" : "not all") : element.dataset.media);
@@ -131,10 +132,27 @@ if ("IntersectionObserver" in window) {
   dialog.append(large, close);
   document.body.append(dialog);
   let index = 0;
+  // The page shows each screenshot as wide as its place needs; the dialog loads the
+  // widest (the last of a srcset) of the source the browser would take: the format it
+  // took for a screenshot already there (AVIF, WebP or the PNG), the theme shown. So
+  // ← → also reach screenshots that haven't loaded yet.
+  function format() {
+    const loaded = shots.map((shot) => shot.currentSrc).find(Boolean) || "";
+    const match = loaded.match(/\.(avif|webp)$/);
+    return match ? `image/${match[1]}` : "";
+  }
+  function widest(shot) {
+    const type = format();
+    const picture = shot.parentElement;
+    const sources = picture && picture.tagName === "PICTURE" ? [...picture.querySelectorAll("source")] : [];
+    const source = sources.find((source) =>
+      (source.type || "") === type && (!source.media || matchMedia(source.media).matches));
+    return source ? source.srcset.split(",").pop().trim().split(/\s+/)[0] : shot.currentSrc || shot.src;
+  }
   function show(at) {
     index = (at + shots.length) % shots.length;
     const shot = shots[index];
-    large.src = shot.currentSrc || shot.src;
+    large.src = widest(shot);
     large.alt = shot.alt;
   }
   shots.forEach((shot, at) => {

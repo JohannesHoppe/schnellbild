@@ -10,13 +10,18 @@ app shows them.
     python3 Scripts/build_site.py           # write docs/**/index.html and the files below
     python3 Scripts/build_site.py --check   # fail if docs/ isn't what the build gives
 
-Besides the pages it writes docs/404.html, sitemap.xml (every page with its other
-languages; a page's lastmod changes when its HTML does), robots.txt and
-site.webmanifest. Each page carries what search engines and link previews read:
-title and description (seoTitle, seoDescription), canonical and hreflang, Open
-Graph and Twitter tags with the language's preview image docs/og/<lang>.jpg, and
-schema.org data (the app on the home page, breadcrumbs on the privacy policy).
-The icons and preview images come from Scripts/make_site_images.py.
+Besides the pages it writes docs/404.html, the sitemaps, robots.txt and
+site.webmanifest. sitemap.xml is an index of one sitemap per language,
+sitemap-<lang>.xml: every page the build makes that may be indexed, sorted by
+the language of its <html lang>, with the other languages its hreflang links
+name; a page's lastmod changes when its HTML does. Each page carries what
+search engines and link previews read: title and description (seoTitle,
+seoDescription), canonical and hreflang, Open Graph and Twitter tags with the
+language's preview image docs/og/<lang>.jpg, and schema.org data (the app on
+the home page, breadcrumbs on the privacy policy). The icons, preview images
+and the screenshots' AVIF / WebP variants come from Scripts/make_site_images.py;
+--check fails when a screenshot the pages show has no variants for its PNG as
+it is now.
 """
 import html
 import datetime
@@ -25,6 +30,9 @@ import plistlib
 import re
 import sys
 from pathlib import Path
+
+sys.dont_write_bytecode = True  # no __pycache__ in Scripts/ from the import below
+from make_site_images import shot_variants  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 I18N = ROOT / "site" / "i18n"
@@ -40,6 +48,11 @@ LANGUAGES = ["en", "de", "fr", "es", "it", "pt-BR", "nl", "pl", "sv", "da", "nb"
              "cs", "tr", "ru", "uk", "ja", "ko", "zh-Hans", "zh-Hant"]
 HERO_SHOT = "grid"
 FEATURE_SHOTS = ["full", "video", "archives", "dualpane", "search", "adjust", "inspector", "help", "settings"]
+# How wide a screenshot is drawn (site.css), so the browser picks the variant it needs:
+# the hero fills .wrap.wide up to its own width; a feature's picture is the wider
+# column of .feature (one column up to 820 px, there at most 540 px high).
+HERO_SIZES = "(max-width: 1112px) calc(100vw - 40px), 1072px"
+FEATURE_SIZES = "(max-width: 820px) min(calc(100vw - 40px), 770px), (max-width: 1080px) calc(58.4vw - 56px), 574px"
 
 WHY_ICONS = [
     '<path d="M3 3l18 18"/><path d="M10.6 5.1A10.4 10.4 0 0 1 12 5c5 0 9 4.5 10 7a13 13 0 0 1-3.1 4.2M6.6 6.6A13 13 0 0 0 2 12c1 2.5 5 7 10 7a9.9 9.9 0 0 0 5.4-1.6"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/>',
@@ -58,6 +71,7 @@ THEME_ICONS = ('<svg class="i moon" viewBox="0 0 24 24" aria-hidden="true"><path
 GLOBE = '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>'
 
 missing = []
+problems = []
 
 
 def esc(text):
@@ -114,18 +128,45 @@ def png_size(path):
     return int.from_bytes(header[16:20], "big"), int.from_bytes(header[20:24], "big")
 
 
+def srcset(png):
+    """The AVIF and WebP variants of a screenshot as srcset values (make_site_images.py shots)."""
+    sets = {}
+    for fmt, variants in shot_variants(png).items():
+        for _, path in variants:
+            if not path.exists():
+                problems.append(f"{path.relative_to(ROOT)} (python3 Scripts/make_site_images.py shots)")
+        sets[fmt] = ", ".join(f"/{path.relative_to(DOCS)} {width}w" for width, path in variants)
+    return sets
+
+
 def shot(name, code, alt, extra=""):
     """A screenshot, light or dark as the page is (the media query of its dark
-    source; site.js sets it when the visitor picked one): the language's own
-    where there is one, else English."""
+    sources; site.js sets them when the visitor picked one): the language's own
+    where there is one, else English. AVIF, then WebP, each as wide as the place
+    needs (sizes); the PNG for browsers that read neither. The hero loads first,
+    the others when they come near."""
     tag = f"-{code}" if code != "en" and (DOCS / "screenshots" / f"{name}-light-{code}.png").exists() else ""
-    light, dark = f"{name}-light{tag}.png", f"{name}-dark{tag}.png"
-    width, height = png_size(DOCS / "screenshots" / light)
+    light, dark = DOCS / "screenshots" / f"{name}-light{tag}.png", DOCS / "screenshots" / f"{name}-dark{tag}.png"
+    width, height = png_size(light)
+    sizes = HERO_SIZES if name == HERO_SHOT else FEATURE_SIZES
     size = f' width="{width}" height="{height}"' + (' fetchpriority="high"' if name == HERO_SHOT else ' loading="lazy" decoding="async"')
-    img = f'<img src="/screenshots/{light}"{size} alt="{esc(alt)}"{extra}>'
-    if not (DOCS / "screenshots" / dark).exists():
-        return img
-    return f'<picture><source media="(prefers-color-scheme: dark)" srcset="/screenshots/{dark}">{img}</picture>'
+    img = f'<img src="/screenshots/{light.name}"{size} alt="{esc(alt)}"{extra}>'
+    media = ' media="(prefers-color-scheme: dark)"'
+    sources = []
+    light_sets, dark_sets = srcset(light), srcset(dark) if dark.exists() else None
+    for fmt in light_sets:
+        if dark_sets:
+            sources.append(f'<source type="image/{fmt}"{media} srcset="{dark_sets[fmt]}" sizes="{sizes}">')
+        sources.append(f'<source type="image/{fmt}" srcset="{light_sets[fmt]}" sizes="{sizes}">')
+    if dark_sets:
+        sources.append(f'<source{media} srcset="/screenshots/{dark.name}">')
+    return "<picture>" + "".join(sources) + img + "</picture>"
+
+
+def icon(name, size, alt="", attributes=""):
+    """The app icon as WebP, the PNG for browsers without it (make_site_images.py icons)."""
+    return (f'<picture><source type="image/webp" srcset="/{name}.webp">'
+            f'<img src="/{name}.png" alt="{esc(alt)}" width="{size}" height="{size}"{attributes}></picture>')
 
 
 # Open Graph wants a territory: the one each language is most at home in.
@@ -237,7 +278,7 @@ def topbar(code, t, path_of, sections=True):
            f'<a class="section-link" href="#safe">{esc(t["navSafety"])}</a>') if sections else ""
     return f"""<header class="bar">
   <div class="wrap top">
-    <a class="brand" href="{home_path(code)}"><img src="/icon.png" alt="" width="32" height="32">Schnellbild</a>
+    <a class="brand" href="{home_path(code)}">{icon("icon-64", 32)}Schnellbild</a>
     <nav>
       {nav}<a class="github" href="{REPO}">{OCTOCAT}GitHub</a>
       <button class="theme" type="button" data-dark="{esc(t['themeToDark'])}" data-light="{esc(t['themeToLight'])}" aria-label="{esc(t['themeToDark'])}" title="{esc(t['themeToDark'])}">{THEME_ICONS}</button>
@@ -303,7 +344,7 @@ def home(code, t):
 <main>
 <div class="hero">
   <div class="wrap">
-    <img class="icon" src="/icon.png" alt="{esc(t['iconAlt'])}" width="128" height="128">
+    {icon("icon", 128, t['iconAlt'], ' class="icon" fetchpriority="high"')}
     <h1>Schnellbild</h1>
     <p class="tagline">{esc(t['tagline'])}</p>
     <p class="lead">{esc(t['lead'])}</p>
@@ -351,7 +392,7 @@ def home(code, t):
 
 <section class="cta">
   <div class="wrap" data-reveal>
-    <img class="icon" src="/icon.png" alt="" width="96" height="96">
+    {icon("icon", 96, attributes=' class="icon" loading="lazy"')}
     <h2>{esc(t['ctaTitle'])}</h2>
     <p class="intro">{esc(t['ctaText'])}</p>
     {buttons}
@@ -432,26 +473,42 @@ def eula(t):
 """ + footer("en", t)
 
 
-def sitemap(pages):
-    """Every page with its other languages. A page's lastmod stays until its HTML changes."""
-    path = DOCS / "sitemap.xml"
-    before = dict(re.findall(r"<loc>([^<]+)</loc>\s*<lastmod>([^<]+)</lastmod>", path.read_text(encoding="utf-8"))) if path.exists() else {}
+def sitemaps(pages):
+    """sitemap.xml, an index of one sitemap per language (sitemap-<lang>.xml): every page
+    of the build that may be indexed (a canonical, no noindex), in the language of its
+    <html lang>, with the alternates of its hreflang links. A page's lastmod stays until
+    its HTML changes; a sitemap's is its newest page's."""
+    before = {}
+    for path in DOCS.glob("sitemap*.xml"):
+        before.update(re.findall(r"<loc>([^<]+)</loc>\s*<lastmod>([^<]+)</lastmod>", path.read_text(encoding="utf-8")))
     today = datetime.date.today().isoformat()
-    entries = []
-    for kind in ("home", "privacy"):
-        path_of = home_path if kind == "home" else (lambda c: privacy_path(c, tr[c]))
-        for code in LANGUAGES:
-            loc = SITE + path_of(code)
-            file = DOCS / path_of(code).lstrip("/") / "index.html"
-            unchanged = file.exists() and file.read_text(encoding="utf-8") == pages[file]
-            lastmod = before[loc] if unchanged and loc in before else today
-            alternates = "".join(
-                f'\n    <xhtml:link rel="alternate" hreflang="{lang}" href="{SITE}{path_of(c)}"/>'
-                for lang, c in [(c, c) for c in LANGUAGES] + [("x-default", "en")])
-            entries.append(f"  <url>\n    <loc>{loc}</loc>\n    <lastmod>{lastmod}</lastmod>{alternates}\n  </url>")
-    return ('<?xml version="1.0" encoding="UTF-8"?>\n'
-            '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n'
-            + "\n".join(entries) + "\n</urlset>\n")
+    by_language = {}
+    for file, text in pages.items():
+        if file.suffix != ".html" or 'name="robots" content="noindex' in text:
+            continue
+        canonical = re.search(r'<link rel="canonical" href="([^"]+)">', text)
+        if not canonical:
+            continue
+        loc = canonical.group(1)
+        language = re.search(r'<html lang="([^"]+)">', text).group(1)
+        unchanged = file.exists() and file.read_text(encoding="utf-8") == text
+        lastmod = before[loc] if unchanged and loc in before else today
+        alternates = "".join(f'\n    <xhtml:link rel="alternate" hreflang="{lang}" href="{href}"/>'
+                             for lang, href in re.findall(r'<link rel="alternate" hreflang="([^"]+)" href="([^"]+)">', text))
+        by_language.setdefault(language, []).append(
+            (lastmod, f"  <url>\n    <loc>{loc}</loc>\n    <lastmod>{lastmod}</lastmod>{alternates}\n  </url>"))
+    files, index = {}, []
+    for language, entries in by_language.items():
+        name = f"sitemap-{language.lower()}.xml"
+        files[DOCS / name] = ('<?xml version="1.0" encoding="UTF-8"?>\n'
+                              '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n'
+                              + "\n".join(entry for _, entry in entries) + "\n</urlset>\n")
+        newest = max(lastmod for lastmod, _ in entries)
+        index.append(f"  <sitemap>\n    <loc>{SITE}/{name}</loc>\n    <lastmod>{newest}</lastmod>\n  </sitemap>")
+    files[DOCS / "sitemap.xml"] = ('<?xml version="1.0" encoding="UTF-8"?>\n'
+                                   '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+                                   + "\n".join(index) + "\n</sitemapindex>\n")
+    return files
 
 
 def manifest(t):
@@ -476,21 +533,25 @@ pages[DOCS / "eula" / "index.html"] = eula(tr["en"])
 pages[DOCS / "404.html"] = not_found(tr["en"])
 pages[DOCS / "site.webmanifest"] = manifest(tr["en"])
 pages[DOCS / "robots.txt"] = f"User-agent: *\nAllow: /\n\nSitemap: {SITE}/sitemap.xml\n"
-pages[DOCS / "sitemap.xml"] = sitemap(pages)
+pages.update(sitemaps(pages))
 
 for line in missing:
     print("missing, English used:", line, file=sys.stderr)
+for line in problems:
+    print("missing:", line, file=sys.stderr)
 
-# Pages the build doesn't make (a language's old privacy slug) would stay online.
-orphans = sorted(str(p.relative_to(ROOT)) for p in DOCS.rglob("index.html") if p not in pages)
+# Pages the build doesn't make (a language's old privacy slug, a sitemap of a
+# language that is gone) would stay online.
+orphans = sorted(str(p.relative_to(ROOT)) for p in [*DOCS.rglob("index.html"), *DOCS.glob("sitemap*.xml")] if p not in pages)
 
 if "--check" in sys.argv:
     stale = [str(p.relative_to(ROOT)) for p, text in pages.items()
              if not p.exists() or p.read_text(encoding="utf-8") != text]
     if stale:
         sys.exit("docs/ is out of date, run python3 Scripts/build_site.py: " + ", ".join(stale))
-    if orphans or missing:
-        sys.exit("docs/ has pages the build doesn't make: " + ", ".join(orphans) if orphans else "translations are missing")
+    if orphans or missing or problems:
+        sys.exit("docs/ has pages the build doesn't make: " + ", ".join(orphans) if orphans
+                 else "screenshot variants are missing" if problems else "translations are missing")
     print(f"docs/ is up to date ({len(pages)} pages)")
 else:
     for path, text in pages.items():
@@ -499,5 +560,5 @@ else:
     print(f"{len(pages)} pages written")
     for orphan in orphans:
         print("not made by the build, delete it:", orphan, file=sys.stderr)
-    if missing or orphans:
+    if missing or orphans or problems:
         sys.exit(1)
