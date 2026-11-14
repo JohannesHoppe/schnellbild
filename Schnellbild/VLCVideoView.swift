@@ -292,12 +292,14 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
                     done.resume()
                 }
             }
+            BrowserModel.testLog("vlc: stopped for software decoding, state \(held.player.state.rawValue), control \(self == nil ? "gone" : "here"), delegate \(self?.player.delegate != nil)")
             guard let self, self.player.delegate != nil else { return }   // stopped for good meanwhile
             self.player.media = self.makeMedia()
             if let media = self.player.media { self.output.use(media) }
             if position > 0.001, position < 0.999 { self.positionOnceOpen = position }
             self.pauseOnceOpen = !wasPlaying
             self.player.play()
+            BrowserModel.testLog("vlc: opened again in software at \(position), state \(self.player.state.rawValue)")
             self.isPlaying = wasPlaying
         }
     }

@@ -4981,7 +4981,25 @@ final class AVPlaybackControl: PlaybackControl {
         let option = id.flatMap { subtitleOptions.indices.contains($0) ? subtitleOptions[$0] : nil }
         guard item.currentMediaSelection.selectedMediaOption(in: legible) != option else { return }
         item.select(option, in: legible)
+        suppressSubtitles(option == nil, in: item)
         refreshSubtitles()
+    }
+
+    /// No subtitles: a legible output that keeps the player from drawing
+    /// them. macOS 15's player keeps the line on screen of a track switched
+    /// off until that line ends, seeks or not (seen on CI).
+    private var subtitleSuppressor: AVPlayerItemLegibleOutput?
+
+    private func suppressSubtitles(_ suppress: Bool, in item: AVPlayerItem) {
+        if suppress, subtitleSuppressor == nil {
+            let output = AVPlayerItemLegibleOutput()
+            output.suppressesPlayerRendering = true
+            item.add(output)
+            subtitleSuppressor = output
+        } else if !suppress, let output = subtitleSuppressor {
+            item.remove(output)
+            subtitleSuppressor = nil
+        }
     }
 
     /// AVKit draws a newly chosen subtitle track only from its next line on,

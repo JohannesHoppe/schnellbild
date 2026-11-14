@@ -264,13 +264,11 @@ final class VideoUITests: SchnellbildUITestCase {
     /// video and the next launch have it there; a double click on the grip
     /// puts it back at the bottom middle.
     private func checkControlBarStays(vlc: Bool) throws {
-        try put("clip.mp4", at: "a-clip.mp4")
-        try put("grey.mp4", at: "b-grey.mp4")
-        let log = tempDir.appendingPathComponent("app.log")
-        let extra = (vlc ? ["--force-vlc"] : []) + ["--hold-video-bar", "--test-log=\(log.path)"]
-        continueAfterFailure = true   // the log below shows on a failure too
-        defer { print("app log:\n" + ((try? String(contentsOf: log, encoding: .utf8)) ?? "(none)")) }
-        launch(open: tempDir.appendingPathComponent("a-clip.mp4").path, extra: extra)
+        // In a folder of their own: the next item is the other video, not a picture
+        try put("clip.mp4", at: "videos/a-clip.mp4")
+        try put("grey.mp4", at: "videos/b-grey.mp4")
+        let extra = (vlc ? ["--force-vlc"] : []) + ["--hold-video-bar"]
+        launch(open: tempDir.appendingPathComponent("videos/a-clip.mp4").path, extra: extra)
         let id = vlc ? "video.vlc" : "video.avkit"
         var video = element(id)
         XCTAssertTrue(video.waitForExistence(timeout: 20))
@@ -293,7 +291,6 @@ final class VideoUITests: SchnellbildUITestCase {
         // The next video: the same place
         app.typeKey(.rightArrow, modifierFlags: .command)
         waitForBadge(containing: "b-grey.mp4")
-        print("after paging: app log:\n" + ((try? String(contentsOf: log, encoding: .utf8)) ?? "(none)"))
         video = element(id)
         video.hover()
         XCTAssertTrue(bar.waitForExistence(timeout: 5))
@@ -302,7 +299,7 @@ final class VideoUITests: SchnellbildUITestCase {
         }
         // The next launch too
         app.terminate()
-        launch(open: tempDir.appendingPathComponent("a-clip.mp4").path, resetState: false, extra: extra)
+        launch(open: tempDir.appendingPathComponent("videos/a-clip.mp4").path, resetState: false, extra: extra)
         video = element(id)
         XCTAssertTrue(video.waitForExistence(timeout: 20))
         video.hover()

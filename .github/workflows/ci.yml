@@ -222,10 +222,8 @@ jobs:
           [ -f /tmp/schnellbild-vlc.log ] || { echo "no VLC log"; exit 0; }
           wc -l /tmp/schnellbild-vlc.log
           grep -i -E "vout|video output|vmem|error|failed|cannot|blend|spu|subpicture|freetype|libass|subtitle" /tmp/schnellbild-vlc.log | sort | uniq -c | sort -rn | head -80
-          echo "--- around libass"
-          awk '/using spu decoder module "libass"/{p=1} p && !/Buffering/{print NR": "$0} /removing module "libass"/{p=0}' /tmp/schnellbild-vlc.log | head -300 || true
-          echo "--- fonts"
-          grep -n -i -E "font|ass_|libass" /tmp/schnellbild-vlc.log | sort -t: -k2 | uniq -f1 -c | head -60 || true
+          echo "--- subtitle decoders, in order"
+          grep -n -E 'Creating an input|spu decoder module|killing decoder|SET_TIME|SET_POSITION|seek request|selecting|unselecting|libass|ass_|[Ff]ont|subpicture|vout found' /tmp/schnellbild-vlc.log | grep -v -E 'looking for' | tail -150 || true
 
       - name: Show what macOS did with the thumbnail extension
         if: failure()
