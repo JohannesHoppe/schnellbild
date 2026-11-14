@@ -169,6 +169,10 @@ targets:
     platform: macOS
     sources:
       - path: UITests
+      # The app's translations: ReadmeScreenshots finds the words it clicks
+      # in the language it takes the screenshots in
+      - path: Resources/Localization
+        buildPhase: resources
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: art.haushoppe.schnellbild.uitests

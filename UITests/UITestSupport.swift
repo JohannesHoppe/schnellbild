@@ -62,7 +62,7 @@ class SchnellbildUITestCase: XCTestCase {
         // pairs, so these pairs come first and every argument after them
         // starts with "-": a value left without its name would be taken
         // for a file to open, and the app would show no window.
-        var args = ["-AppleLanguages", "(\(language))", "-AppleLocale", language == "en" ? "en_US" : language,
+        var args = ["-AppleLanguages", "(\(language))", "-AppleLocale", Self.locale(of: language),
                     "--ui-testing"] + extra
         if resetState { args.append("--reset-state") }
         if let path { args.append("--open=\(path)") }
@@ -70,6 +70,16 @@ class SchnellbildUITestCase: XCTestCase {
         app.launch()
         self.app = app
         return app
+    }
+
+    /// The locale that goes with an app language (Resources/Localization),
+    /// so dates and numbers are written as there.
+    static func locale(of language: String) -> String {
+        let locales = ["en": "en_US", "de": "de_DE", "fr": "fr_FR", "es": "es_ES", "it": "it_IT",
+                       "pt-BR": "pt_BR", "nl": "nl_NL", "pl": "pl_PL", "sv": "sv_SE", "da": "da_DK",
+                       "nb": "nb_NO", "fi": "fi_FI", "cs": "cs_CZ", "tr": "tr_TR", "ru": "ru_RU",
+                       "uk": "uk_UA", "ja": "ja_JP", "ko": "ko_KR", "zh-Hans": "zh-Hans_CN", "zh-Hant": "zh-Hant_TW"]
+        return locales[language] ?? language
     }
 
     /// Launch on the temp folder and wait for the grid.

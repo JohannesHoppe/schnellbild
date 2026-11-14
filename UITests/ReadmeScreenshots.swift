@@ -9,8 +9,8 @@ import AppKit
 /// environment (xcodebuild passes TEST_RUNNER_<name> to the test runner as <name>):
 ///   SCREENSHOTS=1      take them
 ///   SCREENSHOT_SUFFIX  appended to each name, e.g. "-dark"
-///   LANGUAGE           the app's language (default "en"; "de" for the
-///                      German website)
+///   LANGUAGE           the app's language, a folder of Resources/Localization
+///                      without ".lproj" (default "en")
 ///   PHOTOS_DIR         the sample library (Scripts/make_sample_media.swift),
 ///                      outside the runner's container so the status bar
 ///                      shows a short path
@@ -34,13 +34,18 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         app?.terminate()   // keep the library: the dark run uses it too
     }
 
-    /// The words the test looks for, in the app's language (the app's own
-    /// translations, Resources/Localization).
-    private func ui(_ english: String) -> String {
-        let german = ["Date Taken": "Aufnahmedatum", "Cancel": "Abbrechen", "Full view": "Vollansicht",
-                      "Done": "Fertig", "Paused": "Angehalten", "Slideshow": "Diashow"]
-        return uiLanguage == "de" ? german[english] ?? english : english
-    }
+    /// The words the test looks for, in the app's language: the app's own
+    /// translations (Resources/Localization, bundled with the tests too).
+    private lazy var words: [String: String] = {
+        guard uiLanguage != "en" else { return [:] }
+        let path = Bundle(for: ReadmeScreenshots.self).path(forResource: "Localizable", ofType: "strings",
+                                                            inDirectory: nil, forLocalization: uiLanguage)
+        let words = path.flatMap { NSDictionary(contentsOfFile: $0) as? [String: String] }
+        XCTAssertNotNil(words, "no translations for \(uiLanguage)")
+        return words ?? [:]
+    }()
+
+    private func ui(_ english: String) -> String { words[english] ?? english }
 
     /// `front`: the frontmost window (Settings), else the main one.
     private func shoot(_ name: String, settle: TimeInterval = 2.5, front: Bool = false) {
