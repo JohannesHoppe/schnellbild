@@ -16,6 +16,17 @@
                 <string>public.data</string>
             </array>
         </dict>
+        <!-- A row dragged within the slideshow's playlist (PlaylistPanel.dragType): only the playlist takes it -->
+        <dict>
+            <key>UTTypeIdentifier</key>
+            <string>art.haushoppe.schnellbild.playlist-item</string>
+            <key>UTTypeDescription</key>
+            <string>Schnellbild playlist items</string>
+            <key>UTTypeConformsTo</key>
+            <array>
+                <string>public.data</string>
+            </array>
+        </dict>
     </array>
     <!-- Matroska and VOB have no system type; declared so QuickLook can hand them to the thumbnail extension (the identifiers VLC uses) -->
     <key>UTImportedTypeDeclarations</key>

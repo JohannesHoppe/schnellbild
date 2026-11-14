@@ -67,6 +67,16 @@
 			<key>UTTypeIdentifier</key>
 			<string>art.haushoppe.schnellbild.tile</string>
 		</dict>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.data</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>Schnellbild playlist items</string>
+			<key>UTTypeIdentifier</key>
+			<string>art.haushoppe.schnellbild.playlist-item</string>
+		</dict>
 	</array>
 	<key>UTImportedTypeDeclarations</key>
 	<array>

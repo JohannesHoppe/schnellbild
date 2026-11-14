@@ -1,5 +1,6 @@
 import SwiftUI
 import AppKit
+import UniformTypeIdentifiers
 
 /// Lays the slideshow's playlist (P) beside the picture: over it (the
 /// default) or pinned, the picture making room. It slides in from the
@@ -46,6 +47,8 @@ struct PlaylistPanel: View {
     @EnvironmentObject var model: BrowserModel
 
     private static let previewSide: CGFloat = 40
+    /// A row's height: the preview and its padding.
+    static let rowHeight: CGFloat = previewSide + 6
 
     /// The width shown: the one chosen, at most most of the pane.
     static func width(_ chosen: Double, total: CGFloat) -> CGFloat {
@@ -115,31 +118,27 @@ struct PlaylistPanel: View {
 
     // MARK: List
 
+    /// A row dragged within the playlist; only the playlist's rows take it
+    /// (not the panes, tiles or the window's drop zones).
+    static let dragType = UTType(exportedAs: "art.haushoppe.schnellbild.playlist-item")
+
     private var list: some View {
         let items = model.slideshow?.items ?? []
         let shownIndex = model.slideshow?.index ?? -1
         let cursor = model.playlistCursorIndex
-        // The list's selection is the cursor; a click on a row shows its item
-        let selection = Binding<URL?>(
-            get: { cursor.map { items[$0].id } },
-            set: { url in
-                guard let url, let index = model.slideshow?.items.firstIndex(where: { $0.id == url }) else { return }
-                model.clickPlaylistItem(at: index)
-            })
         return ScrollViewReader { proxy in
-            List(selection: selection) {
-                ForEach(Array(items.enumerated()), id: \.element.id) { index, item in
-                    row(item, index: index, shown: index == shownIndex, chosen: index == cursor)
-                        .id(item.id)
-                        .tag(item.id)
+            ScrollView {
+                LazyVStack(spacing: 2) {
+                    ForEach(Array(items.enumerated()), id: \.element.id) { index, item in
+                        row(item, index: index, shown: index == shownIndex, chosen: index == cursor)
+                            .id(item.id)
+                    }
                 }
-                .onMove { model.moveSlideshowItems(from: $0, to: $1) }
+                .padding(4)
             }
             // A click on the list's free space gives it the keys too
-            .simultaneousGesture(TapGesture().onEnded { model.playlistFocused = true })
-            .listStyle(.plain)
-            .scrollContentBackground(.hidden)
-            .environment(\.defaultMinListRowHeight, Self.previewSide + 8)
+            .contentShape(Rectangle())
+            .onTapGesture { model.playlistFocused = true }
             // The list has the keys: outlined
             .overlay {
                 if model.playlistFocused {
@@ -161,10 +160,16 @@ struct PlaylistPanel: View {
         proxy.scrollTo(id)
     }
 
+    /// Where a dragged row would land: before (`after` false) or after the row at `index`.
+    @State private var dropMark: (index: Int, after: Bool)?
+    /// The row being dragged.
+    @State private var dragged: URL?
+
     private func row(_ item: GridEntry, index: Int, shown: Bool, chosen: Bool) -> some View {
-        // The chosen row is the list's selection; the item on screen has the
-        // play mark and a bold name
-        HStack(spacing: 8) {
+        // The chosen row is filled (the accent while the list has the keys,
+        // grey otherwise); the item on screen has the play mark and a bold name
+        let filled = chosen && model.playlistFocused
+        return HStack(spacing: 8) {
             ThumbnailView(url: item.url, side: Self.previewSide, isSelected: false, isVideo: false, modified: item.modDate)
                 .frame(width: Self.previewSide, height: Self.previewSide)
             VStack(alignment: .leading, spacing: 1) {
@@ -174,18 +179,43 @@ struct PlaylistPanel: View {
                     .truncationMode(.middle)
                 Text(item.kind == .video ? "Video" : "Picture")
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(filled ? Color.white.opacity(0.85) : Color.secondary)
             }
             Spacer(minLength: 0)
             Image(systemName: "play.fill")
                 .font(.caption)
+                .foregroundStyle(filled ? Color.white : Color.accentColor)
                 .opacity(shown ? 1 : 0)
         }
         .font(.callout)
-        .padding(.vertical, 2)
+        .foregroundStyle(filled ? Color.white : Color.primary)
+        .padding(.horizontal, 6)
+        .padding(.vertical, 3)
+        .background(RoundedRectangle(cornerRadius: 6).fill(
+            filled ? Color.accentColor : chosen ? Color.primary.opacity(0.12) : Color.clear))
+        // Where a dragged row would land
+        .overlay(alignment: dropMark?.after == true ? .bottom : .top) {
+            if dropMark?.index == index {
+                Rectangle().fill(Color.accentColor).frame(height: 2).offset(y: dropMark?.after == true ? 2 : -2)
+            }
+        }
         .contentShape(Rectangle())
-        // Also on the row already chosen (the selection doesn't change then)
-        .simultaneousGesture(TapGesture().onEnded { model.clickPlaylistItem(at: index) })
+        .onTapGesture { model.clickPlaylistItem(at: index) }
+        .onDrag {
+            dragged = item.url
+            let provider = NSItemProvider()
+            provider.registerDataRepresentation(forTypeIdentifier: Self.dragType.identifier, visibility: .ownProcess) { done in
+                done(Data(item.url.path.utf8), nil)
+                return nil
+            }
+            return provider
+        }
+        .onDrop(of: [Self.dragType], delegate: PlaylistRowDrop(index: index, mark: $dropMark) { after in
+            guard let dragged, let from = model.slideshow?.items.firstIndex(where: { $0.url == dragged }) else { return false }
+            model.moveSlideshowItems(from: [from], to: after ? index + 1 : index)
+            self.dragged = nil
+            return true
+        })
         .contextMenu {
             Button("Show") { model.clickPlaylistItem(at: index) }
             Button("Move Up") { model.moveSlideshowItems(from: [index], to: index - 1) }
@@ -195,12 +225,10 @@ struct PlaylistPanel: View {
             Divider()
             Button("Take Out of Playlist (the File Stays)") { model.removeFromSlideshow(at: [index]) }
         }
-        .listRowInsets(EdgeInsets(top: 1, leading: 4, bottom: 1, trailing: 4))
-        .listRowSeparator(.hidden)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(EntryAccessibility.label(item, emptyFolder: false, location: nil))
         .accessibilityValue(shown ? String(localized: "Now showing") : "")
-        .accessibilityAddTraits(chosen ? .isSelected : [])
+        .accessibilityAddTraits(chosen ? [.isSelected, .isButton] : .isButton)
         .accessibilityAction { model.clickPlaylistItem(at: index) }
         .accessibilityAction(named: Text("Move Up")) {
             if index > 0 { model.moveSlideshowItems(from: [index], to: index - 1) }
@@ -237,6 +265,28 @@ struct PlaylistPanel: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.horizontal, 10)
         .padding(.vertical, 8)
+    }
+}
+
+/// A row of the playlist as a drop target: the upper half puts the dragged
+/// row before it, the lower half after it.
+private struct PlaylistRowDrop: DropDelegate {
+    let index: Int
+    @Binding var mark: (index: Int, after: Bool)?
+    let drop: (_ after: Bool) -> Bool
+
+    private func after(_ info: DropInfo) -> Bool { info.location.y > PlaylistPanel.rowHeight / 2 }
+
+    func validateDrop(info: DropInfo) -> Bool { info.hasItemsConforming(to: [PlaylistPanel.dragType]) }
+    func dropEntered(info: DropInfo) { mark = (index, after(info)) }
+    func dropUpdated(info: DropInfo) -> DropProposal? {
+        mark = (index, after(info))
+        return DropProposal(operation: .move)
+    }
+    func dropExited(info: DropInfo) { if mark?.index == index { mark = nil } }
+    func performDrop(info: DropInfo) -> Bool {
+        mark = nil
+        return drop(after(info))
     }
 }
 
