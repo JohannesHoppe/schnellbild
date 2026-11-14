@@ -1708,6 +1708,8 @@ final class PlaybackTests: XCTestCase {
         await waitUntil { m.shownMediaEntry != nil }
         XCTAssertEqual(m.shownMediaEntry?.name, "b.jpg")
         m.slideshowStep(+1)
+        // sub1 may still be walked: past the last item the show waits for it
+        await waitUntil { m.shownMediaEntry?.name == "c.jpg" }
         XCTAssertEqual(m.shownMediaEntry?.name, "c.jpg", "goes on into the subfolders")
         m.stopSlideshow()
 
