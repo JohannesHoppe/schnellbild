@@ -38,7 +38,7 @@ struct VideoDetailView: View {
                     VLCVideoView(control: vlcControl)
                 } else if let avControl {
                     // The app's own control bar (`VideoControlBar`) serves both players
-                    AVPlayerViewHost(player: avControl.player)
+                    AVPlayerLayerHost(player: avControl.player)
                 } else if checking {
                     LoadingSpinner()
                 }
@@ -226,12 +226,13 @@ struct VideoDetailView: View {
 }
 
 /// AVKit's picture: an `AVPlayerLayer` in a plain view, which draws the
-/// video and the subtitles chosen. The app's control bar (`VideoControlBar`)
-/// is the same for AVKit and VLC, stays where the user put it from video to
-/// video and stays upright on a turned video. (`AVPlayerView` keeps a line of
-/// subtitles switched off on screen on macOS 15, seen on CI; its inline and
-/// minimal controls dim the whole picture while they show, from macOS 26 on.)
-struct AVPlayerViewHost: NSViewRepresentable {
+/// video, HDR as EDR on displays that have it (as AVKit's own views do), and
+/// the subtitles chosen. The app's control bar (`VideoControlBar`) is the
+/// same for AVKit and VLC, stays where the user put it from video to video
+/// and stays upright on a turned video. (`AVPlayerView` keeps drawing
+/// subtitles switched off on macOS 15, seen on CI; its inline and minimal
+/// controls dim the whole picture while they show, from macOS 26 on.)
+struct AVPlayerLayerHost: NSViewRepresentable {
     let player: AVPlayer
 
     func makeNSView(context: Context) -> PlayerLayerView {
