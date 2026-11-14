@@ -3,6 +3,7 @@ Schnellbild er en bildefremviser som viser bilder og videoer uten at du må impo
 BILDER
 • JPEG, HEIC, AVIF, JPEG XL, PNG, GIF, WebP, TIFF, PSD, OpenEXR, SVG, PDF og RAW-bilder fra kameraene macOS kjenner
 • Rutenett, liste og full visning, lysbildefremvisning gjennom alle undermapper
+• Mappen er spillelisten: P åpner den i lysbildefremvisningen, for å dra elementer i ny rekkefølge, ta dem ut (filene blir liggende) eller hoppe til ett med et klikk
 • Zoom, roter, automatisk forbedring (eksponering, kontrast, metning, skarphet), bare for visning: filene dine forblir som de er
 • Filinfo med format, kodeker og bithastighet; en merknad når filtypen ikke passer til innholdet
 

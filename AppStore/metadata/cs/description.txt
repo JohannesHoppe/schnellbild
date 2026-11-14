@@ -3,6 +3,7 @@ Schnellbild zobrazuje obrázky a videa, aniž byste cokoli importovali: otevřet
 OBRÁZKY A FOTKY
 • JPEG, HEIC, AVIF, JPEG XL, PNG, GIF, WebP, TIFF, PSD, OpenEXR, SVG, PDF a RAW fotky z fotoaparátů, které macOS zná
 • Mřížka, seznam a plné zobrazení, prezentace přes všechny podsložky
+• Složka je playlist: P ho v prezentaci otevře, položky v něm lze přetažením přeřadit, vyjmout (soubory zůstanou) nebo na ně kliknutím přeskočit
 • Zvětšení, otočení, automatické vylepšení (expozice, kontrast, sytost, ostrost), jen pro prohlížení: soubory zůstanou, jak jsou
 • Informace o souboru s formátem, kodeky a datovým tokem; upozornění, když přípona souboru neodpovídá jeho obsahu
 

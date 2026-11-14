@@ -66,7 +66,7 @@
   "features": [
     {
       "title": "Míralo en grande, pasa con las teclas",
-      "text": "<p>La barra espaciadora abre una imagen tan grande como permite la ventana; ← → recorren la carpeta. Amplía con el trackpad o con + −, gira con ⌥← ⌥→ y pasa a pantalla completa con <kbd>f</kbd>. GIF animados, SVG y PDF incluidos.</p><p>Un pase de diapositivas (<kbd>s</kbd>) recorre la carpeta y todas sus subcarpetas, fotos y vídeos por igual.</p>",
+      "text": "<p>La barra espaciadora abre una imagen tan grande como permite la ventana; ← → recorren la carpeta. Amplía con el trackpad o con + −, gira con ⌥← ⌥→ y pasa a pantalla completa con <kbd>f</kbd>. GIF animados, SVG y PDF incluidos.</p><p>Un pase de diapositivas (<kbd>s</kbd>) recorre la carpeta y todas sus subcarpetas, fotos y vídeos por igual. La carpeta es la lista de reproducción: <kbd>p</kbd> la abre a la derecha, donde arrastras los elementos para cambiar el orden, quitas uno con <kbd>⌫</kbd> (el archivo se queda) o haces clic en uno para saltar a él.</p>",
       "alt": "Una foto en la vista completa"
     },
     {

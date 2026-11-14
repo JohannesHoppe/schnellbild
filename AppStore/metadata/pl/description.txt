@@ -3,6 +3,7 @@ Schnellbild pokazuje zdjęcia i filmy bez importowania czegokolwiek: otwórz fol
 ZDJĘCIA
 • JPEG, HEIC, AVIF, JPEG XL, PNG, GIF, WebP, TIFF, PSD, OpenEXR, SVG, PDF i zdjęcia RAW z aparatów, które zna macOS
 • Siatka, lista i pełny widok, pokaz slajdów przez wszystkie podfoldery
+• Folder jest playlistą: P otwiera ją w pokazie slajdów; pozycje można przeciągać w nowej kolejności, wyjmować (pliki zostają) albo przechodzić do nich kliknięciem
 • Powiększanie, obracanie, automatyczna poprawa (ekspozycja, kontrast, nasycenie, ostrość), tylko do oglądania: pliki pozostają nietknięte
 • Informacje o pliku z formatem, kodekami i przepływnością; uwaga, gdy rozszerzenie pliku nie pasuje do jego zawartości
 

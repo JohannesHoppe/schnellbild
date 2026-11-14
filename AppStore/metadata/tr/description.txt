@@ -3,6 +3,7 @@ Schnellbild, hiçbir şeyi içe aktarmadan çalışan bir fotoğraf görüntüle
 FOTOĞRAFLAR
 • JPEG, HEIC, AVIF, JPEG XL, PNG, GIF, WebP, TIFF, PSD, OpenEXR, SVG, PDF ve macOS’in tanıdığı kameraların RAW fotoğrafları
 • Izgara, liste ve tam görünüm, tüm alt klasörlerde slayt gösterisi
+• Klasörün kendisi oynatma listesidir: slayt gösterisinde P ile açılır; sürükleyerek yeniden sıralama, öğe çıkarma (dosyalar yerinde kalır) ve tıklayarak bir öğeye geçme
 • Yakınlaştırma, döndürme, otomatik iyileştirme (pozlama, kontrast, doygunluk, keskinlik), yalnızca görüntüleme için: dosyalarınız olduğu gibi kalır
 • Biçim, kodekler ve bit hızıyla dosya bilgisi; dosya uzantısı içeriğe uymadığında bir uyarı
 

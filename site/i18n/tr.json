@@ -66,7 +66,7 @@
   "features": [
     {
       "title": "Büyük görüntüleyin, tuşlarla gezinin",
-      "text": "<p>Boşluk tuşu bir resmi pencerenin izin verdiği kadar büyük açar, ← → klasörde gezinir. İzleme dörtgeniyle veya + − ile yakınlaştırın, ⌥← ⌥→ ile döndürün, <kbd>f</kbd> ile tam ekran. Hareketli GIF’ler, SVG ve PDF de dahil.</p><p>Slayt gösterisi (<kbd>s</kbd>) klasörü ve tüm alt klasörlerini, fotoğraf ve videoları birlikte dolaşır.</p>",
+      "text": "<p>Boşluk tuşu bir resmi pencerenin izin verdiği kadar büyük açar, ← → klasörde gezinir. İzleme dörtgeniyle veya + − ile yakınlaştırın, ⌥← ⌥→ ile döndürün, <kbd>f</kbd> ile tam ekran. Hareketli GIF’ler, SVG ve PDF de dahil.</p><p>Slayt gösterisi (<kbd>s</kbd>) klasörü ve tüm alt klasörlerini, fotoğraf ve videoları birlikte dolaşır. Klasörün kendisi oynatma listesidir: <kbd>p</kbd> listeyi sağda açar; öğeleri sürükleyerek yeniden sıralar, <kbd>⌫</kbd> ile birini çıkarır (dosya yerinde kalır) ya da tıklayarak ona geçersiniz.</p>",
       "alt": "Büyük görünümde bir fotoğraf"
     },
     {

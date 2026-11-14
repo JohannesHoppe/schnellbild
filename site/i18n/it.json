@@ -66,7 +66,7 @@
   "features": [
     {
       "title": "Guarda in grande, sfoglia con i tasti o in presentazione",
-      "text": "<p>La barra spaziatrice apre un’immagine grande quanto la finestra permette, ← → sfogliano la cartella. Ingrandisci con il trackpad o con + −, ruota con ⌥← ⌥→, schermo intero con <kbd>f</kbd>. GIF animate, SVG e PDF compresi.</p><p>Una presentazione (<kbd>s</kbd>) scorre la cartella e tutte le sue sottocartelle, foto e video insieme.</p>",
+      "text": "<p>La barra spaziatrice apre un’immagine grande quanto la finestra permette, ← → sfogliano la cartella. Ingrandisci con il trackpad o con + −, ruota con ⌥← ⌥→, schermo intero con <kbd>f</kbd>. GIF animate, SVG e PDF compresi.</p><p>Una presentazione (<kbd>s</kbd>) scorre la cartella e tutte le sue sottocartelle, foto e video insieme. La cartella è la playlist: <kbd>p</kbd> la apre a destra, dove trascini gli elementi per cambiare l’ordine, ne togli uno con <kbd>⌫</kbd> (il file resta) o fai clic su uno per saltarci.</p>",
       "alt": "Una foto nella vista completa"
     },
     {
