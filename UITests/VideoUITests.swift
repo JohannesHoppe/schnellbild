@@ -36,24 +36,29 @@ final class VideoUITests: SchnellbildUITestCase {
     func testTheProgressBarFollowsAnAVKitVideo() throws { try checkProgressBar(vlc: false) }
     func testTheProgressBarFollowsAVLCVideo() throws { try checkProgressBar(vlc: true) }
 
-    /// ↓ / ↑ on a video set the volume, shown a moment; remembered across launches.
-    func testUpAndDownSetTheVolume() throws {
+    /// ↓ / ↑ on a video set the volume, shown a moment; remembered across
+    /// launches (both players).
+    private func checkUpAndDownSetTheVolume(vlc: Bool) throws {
         try put("clip.mp4", at: "clip.mp4")
         let path = tempDir.appendingPathComponent("clip.mp4").path
-        launch(open: path, extra: ["--hold-volume-display"])
-        XCTAssertTrue(element("video.avkit").waitForExistence(timeout: 20))
+        let extra = (vlc ? ["--force-vlc"] : []) + ["--hold-volume-display"]
+        launch(open: path, extra: extra)
+        XCTAssertTrue(element(vlc ? "video.vlc" : "video.avkit").waitForExistence(timeout: 20))
         app.typeKey(.downArrow, modifierFlags: [])
         let display = element("volumeDisplay")
         XCTAssertTrue(display.waitForExistence(timeout: 5))
         XCTAssertTrue(text(of: display).contains("90 %"), text(of: display))
         waitForBadge(containing: "clip.mp4")   // still the video, not the next item
         app.terminate()
-        launch(open: path, resetState: false, extra: ["--hold-volume-display"])
-        XCTAssertTrue(element("video.avkit").waitForExistence(timeout: 20))
+        launch(open: path, resetState: false, extra: extra)
+        XCTAssertTrue(element(vlc ? "video.vlc" : "video.avkit").waitForExistence(timeout: 20))
         app.typeKey(.downArrow, modifierFlags: [])
         XCTAssertTrue(element("volumeDisplay").waitForExistence(timeout: 5))
         XCTAssertTrue(text(of: element("volumeDisplay")).contains("80 %"), "remembered: \(text(of: element("volumeDisplay")))")
     }
+
+    func testUpAndDownSetTheVolumeInAVKit() throws { try checkUpAndDownSetTheVolume(vlc: false) }
+    func testUpAndDownSetTheVolumeInVLC() throws { try checkUpAndDownSetTheVolume(vlc: true) }
 
     func testMKVFallsBackToVLCAndSpaceTogglesPause() throws {
         try put("clip.mkv", at: "clip.mkv")
@@ -180,27 +185,76 @@ final class VideoUITests: SchnellbildUITestCase {
     func testSpaceAtTheEndPlaysAnAVKitVideoAgain() throws { try checkSpaceAtTheEndPlaysAgain(vlc: false) }
     func testSpaceAtTheEndPlaysAVLCVideoAgain() throws { try checkSpaceAtTheEndPlaysAgain(vlc: true) }
 
-    func testVideosZoomLikePictures() throws {
-        try put("clip.mp4", at: "clip.mp4")
-        launch(open: tempDir.appendingPathComponent("clip.mp4").path)
-        let video = element("video.avkit")
-        XCTAssertTrue(video.waitForExistence(timeout: 15))
+    /// Opens clip.mp4 (or another fixture) in the player asked for.
+    @discardableResult
+    private func openVideo(_ fixture: String = "clip.mp4", vlc: Bool, extra: [String] = []) throws -> XCUIElement {
+        try put(fixture, at: fixture)
+        launch(open: tempDir.appendingPathComponent(fixture).path, extra: (vlc ? ["--force-vlc"] : []) + extra)
+        let video = element(vlc ? "video.vlc" : "video.avkit")
+        XCTAssertTrue(video.waitForExistence(timeout: 20))
+        waitForBadge(containing: fixture)
+        return video
+    }
+
+    /// + / 0 zoom a video as a picture; the badge sits at the top, away from
+    /// the control bar; ⌥→ / ⌥← turn it and the bar stays upright at the
+    /// bottom middle; F takes it to full screen and back (both players).
+    private func checkZoomTurnAndFullScreen(vlc: Bool) throws {
+        let video = try openVideo(vlc: vlc, extra: ["--hold-video-bar"])
+        XCTAssertLessThan(badge.frame.midY, video.frame.midY, "the badge at the top")
         app.typeKey("+", modifierFlags: [])
         app.typeKey("+", modifierFlags: [])
         eventually("zoomed") { text(of: video).contains("zoom 156 %") }
         app.typeKey("0", modifierFlags: [])
         eventually("fit again") { text(of: video).contains("zoom 100 %") }
+        app.typeKey(.rightArrow, modifierFlags: .option)
+        eventually("⌥→ turns it") { text(of: video).contains("rotation 90°") }
+        video.hover()
+        let bar = element("videoBar")
+        XCTAssertTrue(bar.waitForExistence(timeout: 5))
+        XCTAssertGreaterThan(bar.frame.midY, video.frame.midY, "turned: the bar still at the bottom")
+        XCTAssertEqual(bar.frame.midX, video.frame.midX, accuracy: 4, "turned: the bar still in the middle")
+        XCTAssertGreaterThan(bar.frame.width, bar.frame.height * 4, "turned: the bar still lies flat")
+        app.typeKey(.leftArrow, modifierFlags: .option)
+        eventually("⌥← turns it back") { text(of: video).contains("rotation 0°") }
+        let window = app.windows.firstMatch
+        let before = window.frame.size
+        app.typeKey("f", modifierFlags: [])
+        eventually("F: full screen", timeout: 10) { window.frame.width > before.width || window.frame.height > before.height }
+        XCTAssertTrue(element(vlc ? "video.vlc" : "video.avkit").exists, "the video stays in full screen")
+        app.typeKey("f", modifierFlags: [])
+        eventually("F again: out of full screen", timeout: 10) { window.frame.size == before }
     }
 
-    func testBadgeDoesNotCoverThePlayerControls() throws {
-        try put("clip.mp4", at: "clip.mp4")
-        launch(open: tempDir.appendingPathComponent("clip.mp4").path)
-        let video = element("video.avkit")
-        XCTAssertTrue(video.waitForExistence(timeout: 15))
-        waitForBadge(containing: "clip.mp4")
-        XCTAssertLessThan(badge.frame.midY, video.frame.midY,
-                          "on videos the badge sits at the top, away from the control bar")
+    func testZoomTurnAndFullScreenInAVKit() throws { try checkZoomTurnAndFullScreen(vlc: false) }
+    func testZoomTurnAndFullScreenInVLC() throws { try checkZoomTurnAndFullScreen(vlc: true) }
+
+    /// The control bar's buttons and slider work the player: play / pause,
+    /// a click on the position slider jumps there, the speed menu (both players).
+    private func checkControlBarButtons(vlc: Bool) throws {
+        let video = try openVideo("tracks.mp4", vlc: vlc, extra: ["--hold-video-bar"])
+        video.hover()
+        XCTAssertTrue(element("videoBar").waitForExistence(timeout: 5))
+        element("videoBar.playPause").click()
+        waitForBadge(containing: "Paused")
+        let progress = element("videoProgress")
+        func percent() -> Int { Int(text(of: progress).filter(\.isNumber)) ?? -1 }
+        let before = percent()
+        element("videoBar.position").coordinate(withNormalizedOffset: CGVector(dx: 0.8, dy: 0.5)).click()
+        eventually("a click on the slider jumps there") { percent() >= 60 }
+        XCTAssertLessThan(before, 50)
+        XCTAssertTrue(text(of: badge).contains("Paused"), "still paused after the jump")
+        element("videoBar.playPause").click()
+        eventually("plays again") { !text(of: badge).contains("Paused") }
+        element("videoBar.speed").click()
+        let faster = element("videoBar.speed").descendants(matching: .menuItem)["1.5×"]
+        XCTAssertTrue(faster.waitForExistence(timeout: 5), "the speed menu lists 1.5×")
+        faster.click()
+        eventually("1.5× from the bar") { text(of: video).contains("speed 1.5") }
     }
+
+    func testControlBarButtonsInAVKit() throws { try checkControlBarButtons(vlc: false) }
+    func testControlBarButtonsInVLC() throws { try checkControlBarButtons(vlc: true) }
 
     // MARK: Subtitles, audio tracks, speed
 
@@ -315,18 +369,18 @@ final class VideoUITests: SchnellbildUITestCase {
     func testTheControlBarStaysWhereItIsPutInAVKit() throws { try checkControlBarStays(vlc: false) }
     func testTheControlBarStaysWhereItIsPutInVLC() throws { try checkControlBarStays(vlc: true) }
 
-    /// Without the mouse moving the bar goes after a few seconds, as AVKit's did.
-    func testTheControlBarHidesWhenTheMouseRests() throws {
-        try put("clip.mp4", at: "clip.mp4")
-        launch(open: tempDir.appendingPathComponent("clip.mp4").path)
-        let video = element("video.avkit")
-        XCTAssertTrue(video.waitForExistence(timeout: 20))
+    /// Without the mouse moving the bar goes after a few seconds (both players).
+    private func checkControlBarHides(vlc: Bool) throws {
+        let video = try openVideo(vlc: vlc)
         video.hover()
         XCTAssertTrue(element("videoBar").waitForExistence(timeout: 5))
         eventually("gone once the mouse rests", timeout: 10) { !element("videoBar").exists }
         video.coordinate(withNormalizedOffset: CGVector(dx: 0.3, dy: 0.4)).hover()
         XCTAssertTrue(element("videoBar").waitForExistence(timeout: 5), "back on moving")
     }
+
+    func testTheControlBarHidesWhenTheMouseRestsInAVKit() throws { try checkControlBarHides(vlc: false) }
+    func testTheControlBarHidesWhenTheMouseRestsInVLC() throws { try checkControlBarHides(vlc: true) }
 
     func testImageBadgeStaysAtTheBottom() {
         launch(open: tempDir.appendingPathComponent("a.jpg").path)
