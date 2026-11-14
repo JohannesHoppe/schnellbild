@@ -3,12 +3,12 @@
   "overviewTitle": "Schnellbild jako alternativa",
   "overviewSeoTitle": "Alternativa k {names} pro Mac zdarma · Schnellbild",
   "overviewDescription": "Schnellbild ve srovnání s {count} prohlížeči obrázků, přehrávači videa, čtečkami komiksů a správci souborů, funkci po funkci a se zdroji. Zdarma, open source, pro Mac.",
-  "overviewIntro": "<p>Schnellbild je alternativa s jasným názorem. Složky místo playlistů a knihovny: otevřete složku a seznam je hotový, prezentace si playlist udělá sama. Z internetu nic, z principu: žádný účet, žádné sledování, vůbec žádná síť. A zdarma, včetně vlastních klávesových zkratek, za které si jinde nechávají platit.</p><p>Tady je, jak si vede v porovnání s programy, které lidé na Macu hledají, poctivě a se zdrojem u každé buňky. Kde je jiný program lepší, je to tam napsané.</p>",
+  "overviewIntro": "<p>Schnellbild je alternativa s jasným názorem. Složky místo playlistů a knihovny: otevřete složku a seznam je hotový, prezentace si playlist udělá sama. Z internetu nic, z principu: žádný účet, žádné sledování, vůbec žádná síť. A zdarma, včetně vlastních klávesových zkratek, za které si některé jiné programy nechávají platit.</p><p>Tady je, jak si vede v porovnání s programy, které lidé na Macu hledají, se zdrojem u každé buňky. Kde je jiný program lepší, stránka to uvádí.</p>",
   "overviewNoMac": "Tyto programy běží jen ve Windows (nebo už ne na dnešním Macu). U každého najdete, co se na něm fanouškům líbilo a jak to řeší Schnellbild.",
   "matrixH1": "Bezplatná alternativa k {name} pro Mac",
   "matrixSeoTitle": "Alternativa k {name} pro Mac zdarma · Schnellbild",
   "matrixDescription": "{name}, nebo Schnellbild? Srovnání funkci po funkci se zdroji: kde je silnější {name} a kde Schnellbild. Zdarma, open source, přehraje MKV, otevře ZIP a RAR jako složky.",
-  "matrixLead": "Schnellbild a {name} vedle sebe, férově: co kdo umí lépe a pak každá funkce se zdrojem.",
+  "matrixLead": "Schnellbild a {name} vedle sebe: co kdo umí lépe a pak každá funkce se zdrojem.",
   "switcherH1": "{name} pro Mac? Tady je alternativa",
   "switcherSeoTitle": "{name} pro Mac? Alternativa zdarma · Schnellbild",
   "switcherDescription": "Hledáte {name} pro Mac? Co se fanouškům na programu {name} líbí a jak to zdarma řeší Schnellbild: složky, klávesy, MKV, ZIP a RAR jako složky.",
@@ -32,7 +32,7 @@
   "sources": "Zdroje",
   "asOf": "Stav k listopadu 2026: {name} {version}, Schnellbild {ours}. Sloupec programu {name} vychází ze zdrojů níže, sloupec Schnellbildu z jeho README a zdrojového kódu.",
   "leftOut": "Vynecháno, protože o programu {name} chybí spolehlivý zdroj: {count} z {total} funkcí.",
-  "fileManager": "Schnellbild není plnohodnotný správce souborů: žádné připojení přes FTP, SFTP ani ke cloudu, žádná synchronizace složek, žádné vytváření archivů. Na procházení a třídění fotek a videí je ale lepší volbou: náhledy všeho, dva panely vedle sebe, F5 kopíruje a F6 přesouvá, archivy se otevírají jako složky.",
+  "fileManager": "Schnellbild není plnohodnotný správce souborů: žádné připojení přes FTP, SFTP ani ke cloudu, žádná synchronizace složek, žádné vytváření archivů. Je udělaný na procházení a třídění fotek a videí: náhledy všeho, dva panely vedle sebe, F5 kopíruje a F6 přesouvá, archivy se otevírají jako složky.",
   "likedTitle": "Co se fanouškům na programu {name} líbí a jak to funguje ve Schnellbildu",
   "aheadTitle": "Kde má {name} navrch",
   "purposeTitle": "Záměrně vynecháno",
@@ -55,7 +55,7 @@
   "windows": "Přecházíte z Windows"
  },
  "jokes": {
-  "image": "Přestěhovali jste se na Mac. Fotky jely s vámi, prsty si pamatují všechny zkratky, jen {name} zůstává na starém počítači. Stává se to i v lepších rodinách, a napravit se to dá.",
+  "image": "Přestěhovali jste se na Mac. Fotky jely s vámi, prsty si pamatují všechny zkratky, jen {name} zůstává na starém počítači. Tak to ale zůstat nemusí.",
   "video": "Nový Mac, stará videa a {name} se stěhovat odmítá. Vaše soubory MKV mezitím trpělivě čekají, až je někdo pustí.",
   "comic": "Komiksy se na Mac přestěhovaly bez jediného oslího ucha. Na {name} se v autě nějak nedostalo místo.",
   "files": "Dva panely, funkční klávesy a prsty, které znají F5 a F6 déle, než jsou na světě někteří kolegové. Pak přišel Mac a {name} nepustil ani přes práh.",
@@ -227,7 +227,7 @@
   },
   "pip": {
    "label": "Obraz v obraze",
-   "why": "Prohlížeč na procházení, ne přehrávač na koukání bokem."
+   "why": "Je udělaný na procházení složek; na sledování bokem se lépe hodí přehrávač videa."
   },
   "music_mode": {
    "label": "Zvukové soubory, hudební režim",
@@ -293,11 +293,11 @@
   },
   "image_editing": {
    "label": "Úpravy obrázků (oříznutí, změna velikosti, uložení)",
-   "why": "Prohlížeč, ne editor obrázků: vaše soubory zůstanou, jak jsou."
+   "why": "Zobrazuje obrázky, aniž by je měnil: vaše soubory zůstanou, jak jsou."
   },
   "batch_convert": {
    "label": "Hromadný převod nebo přejmenování",
-   "why": "Prohlížeč, ne převodník."
+   "why": "Hromadný převod a přejmenování nechává Schnellbild jiným aplikacím."
   },
   "library_catalog": {
    "label": "Knihovna, katalog, štítky, hodnocení",
@@ -360,7 +360,7 @@
   "5kplayer": {
    "name": "5KPlayer",
    "vendor": "Digiarty Software",
-   "summary": "Bezplatný univerzální přehrávač pro Mac a Windows: přehraje video, hudbu, DVD a rádio, přijímá zrcadlení přes AirPlay, streamuje přes DLNA a stahuje videa z internetu. Jeho síla je v šíři doplňků kolem přehrávání.",
+   "summary": "Bezplatný univerzální přehrávač pro Mac a Windows: přehraje video, hudbu, DVD a rádio, přijímá zrcadlení přes AirPlay, streamuje přes DLNA a stahuje videa z internetu.",
    "wins": [
     "Přijímač AirPlay a nahrávání zrcadlené obrazovky",
     "Server a renderer DLNA",
@@ -426,12 +426,12 @@
   "adobe-bridge": {
    "name": "Adobe Bridge",
    "vendor": "Adobe",
-   "summary": "Adobe Bridge je bezplatný správce kreativních podkladů pro procházení složek s fotkami, grafikou a videem s bohatými náhledy. Přidává metadata, klíčová slova, hodnocení, kolekce, hromadné přejmenování a export a slouží jako centrum pro Photoshop, Camera Raw a další aplikace Creative Cloud.",
+   "summary": "Adobe Bridge je bezplatný správce kreativních podkladů pro procházení složek s fotkami, grafikou a videem s náhledy. Přidává metadata, klíčová slova, hodnocení, kolekce, hromadné přejmenování a export a předává soubory do Photoshopu, Camera Raw a dalších aplikací Creative Cloud.",
    "wins": [
     "Náhledy formátů Adobe (PSD, AI, INDD, After Effects, Substance 3D) a PDF",
     "Plné úpravy metadat, klíčová slova, štítky, hodnocení, kolekce a chytré kolekce",
     "Hromadné přejmenování, panel Export a postupy pro hromadný převod",
-    "Těsné propojení s Camera Raw, Photoshopem, Premiere a knihovnami Creative Cloud",
+    "Spolupracuje s Camera Raw, Photoshopem, Premiere a knihovnami Creative Cloud",
     "Kontaktní archy v PDF, publikování do Adobe Stock a Portfolia",
     "Verze pro Windows"
    ],
@@ -471,7 +471,7 @@
    "wins": [
     "Výběr snímků: označení, hodnocení, Focus Score, hodnocení AI, stohy",
     "Zobrazení HDR RAW a export HDR",
-    "Podrobné úpravy EXIF/IPTC/XMP, klíčová slova, mapy GPS",
+    "Úpravy EXIF/IPTC/XMP, klíčová slova, mapy GPS",
     "Import z paměťových karet",
     "Externí titulky SRT",
     "Automatizace přes AppleScript"
@@ -838,7 +838,7 @@
   "faststone-image-viewer": {
    "name": "FastStone Image Viewer",
    "vendor": "FastStone Soft",
-   "summary": "FastStone Image Viewer je dlouholetý prohlížeč obrázků pro Windows se stromem složek jako v Průzkumníku, vyladěným režimem celé obrazovky s vysouvacími panely a mnoha nástroji na úpravy a hromadnou práci. Přehraje i videa přes kodeky Windows a štítky a hodnocení ukládá do vlastní databáze.",
+   "summary": "FastStone Image Viewer je dlouholetý prohlížeč obrázků pro Windows se stromem složek jako v Průzkumníku, režimem celé obrazovky s vysouvacími panely a mnoha nástroji na úpravy a hromadnou práci. Přehraje i videa přes kodeky Windows a štítky a hodnocení ukládá do vlastní databáze.",
    "wins": [
     "Nástroje na úpravy: křivky, úrovně, razítko, retušovací štětec, červené oči",
     "Porovnání až čtyř obrázků vedle sebe",
@@ -957,7 +957,7 @@
    "macNote": "Verze GOM Playeru pro Mac zůstává od roku 2020 na 1.0.0, sestavená pro Macy s procesorem Intel."
   },
   "google-photos": {
-   "name": "Google Photos",
+   "name": "Fotky Google",
    "vendor": "Google",
    "summary": "Cloudová knihovna fotek od Googlu s automatickým zálohováním z telefonů. Dobrá na to, mít všechny fotky na každém zařízení, hledat podle obsahu a sdílet alba.",
    "wins": [
@@ -993,9 +993,9 @@
    "summary": "GraphicConverter je dlouholetý „švýcarský nožík na obrázky“ pro Mac: prohlížeč souborů a obrázků, prezentace, editor a hromadný převodník, který otevře asi 200 formátů. Jeho prohlížeč přehraje i filmy a zvuk kompatibilní s QuickTime, zvládá rozsáhlá metadata a má hledání duplicit, ploché zobrazení a hledání Spotlightem.",
    "wins": [
     "Otevře asi 200 obrazových formátů a do asi 80 exportuje, včetně starých a vědeckých formátů",
-    "Plný editor obrázků a výkonný hromadný převod s akcemi",
-    "Podrobné úpravy metadat (EXIF/IPTC/XMP, tváře, mapa GPS)",
-    "Bohaté možnosti prezentace (přechody, náhodné pořadí, metadata, řazení během prezentace)",
+    "Plný editor obrázků a hromadný převod s akcemi",
+    "Úpravy metadat (EXIF/IPTC/XMP, tváře, mapa GPS)",
+    "Mnoho možností prezentace (přechody, náhodné pořadí, metadata, řazení během prezentace)",
     "Zobrazení seznamu, Cover Flow a náhledů, ploché zobrazení všech podsložek",
     "Hledání duplicit, kontaktní archy, webové galerie",
     "Vlastní zkratky, 14 jazyků, světlý a tmavý režim"
@@ -1329,7 +1329,7 @@
     "Práce s F-klávesami ve stylu commanderu a Action Panel",
     "Podpora archivů včetně vnořených, ZIP pro čtení i zápis",
     "Vestavěný terminál se synchronizací složky, analýza místa na disku",
-    "Look Up s bohatými predikáty Spotlightu"
+    "Look Up s predikáty Spotlightu"
    ],
    "price": "Zdarma během bety; po betě se plánuje placená licence (podporovatelé na Patreonu od 15 $ dostanou trvalou licenci)",
    "version": "0.8.2",
@@ -1429,7 +1429,7 @@
    "platforms": "Windows, Android"
   },
   "microsoft-photos": {
-   "name": "Microsoft Fotky",
+   "name": "Microsoft Fotografie",
    "vendor": "Microsoft",
    "summary": "Aplikace na fotky a videa zabudovaná ve Windows: časová osa Galerie přes složky v PC, OneDrive a iCloud, rychlý prohlížeč, který listuje složkou, a editor s nástroji AI. Dobrá na občasné prohlížení a rychlé úpravy; Fotky (starší verze) zachovávají dřívější editor videa a tvorbu prezentací. Bez archivů, bez funkcí správce souborů.",
    "wins": [
@@ -1448,9 +1448,9 @@
   "movist-pro": {
    "name": "Movist Pro",
    "vendor": "Movist",
-   "summary": "Vyladěný placený přehrávač na sledování filmů a seriálů se silnou prací s titulky (více stop titulků najednou, styly podle jazyka), tone mappingem HDR a Dolby Vision a AirPlay pro jakýkoli formát. Pro přidává síťové servery, YouTube a webová média a obraz v obraze.",
+   "summary": "Placený přehrávač na sledování filmů a seriálů se silnou prací s titulky (více stop titulků najednou, styly podle jazyka), tone mappingem HDR a Dolby Vision a AirPlay pro jakýkoli formát. Pro přidává síťové servery, YouTube a webová média a obraz v obraze.",
    "wins": [
-    "Pokročilé styly titulků a dvojité titulky",
+    "Styly titulků a dvojité titulky",
     "Tone mapping HDR a Dolby Vision",
     "AirPlay i pro formáty, které Apple TV nativně nepřehraje",
     "Síťové servery (SMB, SFTP, FTP, WebDAV), YouTube, obraz v obraze (Pro)",
@@ -1509,9 +1509,9 @@
   "mpv": {
    "name": "mpv",
    "vendor": "projekt mpv",
-   "summary": "mpv je minimalistický, skriptovatelný přehrávač ovládaný z příkazové řádky, se špičkovým vykreslováním a velmi širokou podporou formátů. Konfiguruje se textovými soubory a skripty v Lua/JS a má jen malé ovládání na obrazovce.",
+   "summary": "mpv je minimalistický, skriptovatelný přehrávač ovládaný z příkazové řádky, s vykreslováním přes GPU (HDR, Dolby Vision) a velmi širokou podporou formátů. Konfiguruje se textovými soubory a skripty v Lua/JS a má jen malé ovládání na obrazovce.",
    "wins": [
-    "Nejlepší vykreslování videa ve své třídě (gpu-next, HDR, Dolby Vision)",
+    "Vykreslování videa přes gpu-next, s HDR a Dolby Vision",
     "Extrémně nastavitelný přes mpv.conf, input.conf a skripty",
     "Přehrává média přímo ze ZIP/RAR/7z a vícesvazkových RAR",
     "Multiplatformní (macOS, Windows, Linux)",
@@ -1541,7 +1541,7 @@
    "vendor": "neelabo",
    "summary": "Prohlížeč pro Windows ve stylu knihy, který bere složky a archivy jako knihy a obrázky jako stránky. Velmi nastavitelný: každá akce je příkaz s vlastními klávesami, gesty myši a skripty, k tomu knihovna, záložky, playlisty a dvoustrany pro mangu. Videa přehrává přes Windows nebo nainstalovaný VLC.",
    "wins": [
-    "Extrémně hluboké přizpůsobení: příkazy, gesta, skriptování v JavaScriptu",
+    "Každá akce nastavitelná: příkazy, gesta, skriptování v JavaScriptu",
     "Dvoustrana se čtením zprava doleva a dělením stránek",
     "Vnořené archivy a hesla archivů (přes 7z.dll)",
     "Uložené playlisty, historie a hledání s operátory pro datum, velikost a regulární výrazy",
@@ -1685,7 +1685,7 @@
   "panels": {
    "name": "Panels",
    "vendor": "Produkt Studio",
-   "summary": "Panels je vyladěná čtečka komiksů pro iPhone, iPad a Mac s knihovnou obálek, předvolbami čtení, zobrazením po jednotlivých panelech a podporou OPDS pro Komga/Kavita. Pokročilé funkce jako cloudové knihovny, filtry stránek a rozpoznávání textu vyžadují Premium.",
+   "summary": "Panels je čtečka komiksů pro iPhone, iPad a Mac s knihovnou obálek, předvolbami čtení, zobrazením po jednotlivých panelech a podporou OPDS pro Komga/Kavita. Pokročilé funkce jako cloudové knihovny, filtry stránek a rozpoznávání textu vyžadují Premium.",
    "wins": [
     "Synchronizovaná knihovna a postup čtení mezi Macem, iPhonem a iPadem",
     "Streamování přes OPDS (Komga, Kavita, Calibre)",
@@ -1797,7 +1797,7 @@
   "photo-mechanic": {
    "name": "Photo Mechanic",
    "vendor": "Camera Bits",
-   "summary": "Photo Mechanic je rychlý nástroj na stažení, výběr snímků a metadata pro profesionální fotografy, zvlášť pro zpravodajce, sportovní a svatební fotografy. Otevírá přímo složky a paměťové karty, soubory RAW ukazuje okamžitě z vložených náhledů a vyniká v popiscích, metadatech IPTC, klíčových slovech, hromadném přejmenování a nahrávání v termínu.",
+   "summary": "Photo Mechanic je rychlý nástroj na stažení, výběr snímků a metadata pro profesionální fotografy, zvlášť pro zpravodajce, sportovní a svatební fotografy. Otevírá přímo složky a paměťové karty, soubory RAW ukazuje okamžitě z vložených náhledů a je udělaný na popisky, metadata IPTC, klíčová slova, hromadné přejmenování a nahrávání v termínu.",
    "wins": [
     "Stahování z více paměťových karet najednou, s přejmenováním a metadaty během kopírování",
     "Metadata IPTC/XMP, náhradní kódy, proměnné a strukturovaná klíčová slova pro popisky v termínu",
@@ -1876,7 +1876,7 @@
    "vendor": "ImageTasks",
    "summary": "Minimalistický prohlížeč obrázků a videí, z něhož vyrostl editor fotek s maskami, odstraňováním objektů a zvětšením rozlišení. Prochází složky, knihovny fotek a archivy ZIP/CBZ a přehraje MKV s titulky a výběrem zvukové stopy; hledání, řazení a vlastní zkratky vyžadují Pixea Plus.",
    "wins": [
-    "Silný editor obrázků (masky, odstranění objektů, zvětšení rozlišení, LUT)",
+    "Editor obrázků s maskami, odstraněním objektů, zvětšením rozlišení a LUT",
     "Hromadné úpravy a převod",
     "Vložené titulky, zvuková stopa, rychlost přehrávání",
     "Otevře knihovny Fotek",
@@ -1933,7 +1933,7 @@
    "summary": "Vícepanelový správce souborů ve stylu Finderu s 12 rozvrženími, pracovními prostory, bohatým přizpůsobením (klávesy, kontextová nabídka, barvy) a hledáním regulárními výrazy. Placená rozšíření přidávají procházení archivů, připojení k serverům a cloudu a pokročilé hromadné přejmenování.",
    "wins": [
     "Až 12 rozvržení panelů a uložené pracovní prostory",
-    "Hluboké přizpůsobení kláves, kontextových nabídek, lišty a barev",
+    "Nastavitelné klávesy, kontextové nabídky, lišta a barvy",
     "Synchronizace složek, kontrolní součty, šablony souborů",
     "Rychlé akce s obrázky (otočení, převod, odstranění pozadí)",
     "Sloupce s metadaty videa (snímková frekvence, datový tok)"
@@ -2008,7 +2008,7 @@
   "qview": {
    "name": "qView",
    "vendor": "jurplel (Interverse)",
-   "summary": "qView je minimalistický multiplatformní prohlížeč obrázků bez panelů nástrojů: otevře jeden soubor a nechá vás listovat zbytkem složky. Startuje rychle, přednačítá sousední obrázky a díky pluginům Qt podporuje animované obrázky a mnoho formátů. Dobrá volba pro ty, kdo chtějí jen čistý prohlížeč.",
+   "summary": "qView je minimalistický multiplatformní prohlížeč obrázků bez panelů nástrojů: otevře jeden soubor a nechá vás listovat zbytkem složky. Startuje rychle, přednačítá sousední obrázky a díky pluginům Qt podporuje animované obrázky a mnoho formátů.",
    "wins": [
     "Extrémně minimalistické okno bez ovládacích prvků",
     "Běží i na Windows a Linuxu a na starším macOS (sestavení legacy pro 10.13 a novější)",
@@ -2034,7 +2034,7 @@
    "vendor": "Gentlemen Coders",
    "summary": "RAW Power je nedestruktivní editor RAW a JPEG od bývalého vedoucího vývoje Aperture, použitelný samostatně se složkami ve Finderu, jako správce knihovny Fotek nebo jako rozšíření pro úpravy ve Fotkách. Nabízí úpravy ve stylu Aperture, hodnocení a příznaky synchronizované přes Fotky na iCloudu a hromadný export. Uživatele macOS 13 a novějšího výrobce dnes odkazuje na nástupce Nitro Photo.",
    "wins": [
-    "Výkonné nedestruktivní úpravy RAW/JPEG (křivky, LUT, efekt hloubky, Boost)",
+    "Nedestruktivní úpravy RAW/JPEG (křivky, LUT, efekt hloubky, Boost)",
     "Pracuje přímo s knihovnou Fotek a synchronizuje přes Fotky na iCloudu",
     "Hromadné předvolby a export",
     "Verze pro iPhone a iPad",
@@ -2183,7 +2183,7 @@
    "vendor": "Ghisler Software",
    "summary": "Nejznámější ortodoxní (dvoupanelový) správce souborů pro Windows, vyvíjený od roku 1993. Silný v souborových operacích, archivech, FTP, hromadném přejmenování a synchronizaci adresářů, s prohlížečem Lister a pluginy pro obrázky a média.",
    "wins": [
-    "Vyzrálá dvoupanelová správa souborů: synchronizace adresářů, porovnání, hromadné přejmenování, kontrolní součty",
+    "Dvoupanelová správa souborů: synchronizace adresářů, porovnání, hromadné přejmenování, kontrolní součty",
     "Vestavěný klient FTP/FTPS",
     "Obrovský ekosystém pluginů (Lister, archivátory, souborové systémy)",
     "Přehrávač v Listeru přepíná titulky, zvukové stopy a rychlost",

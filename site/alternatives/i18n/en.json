@@ -3,12 +3,12 @@
   "overviewTitle": "Schnellbild as an alternative",
   "overviewSeoTitle": "Free Mac alternative to {names} · Schnellbild",
   "overviewDescription": "Schnellbild compared with {count} image viewers, video players, comic readers and file managers, feature by feature and with sources. Free, open source, for Mac.",
-  "overviewIntro": "<p>Schnellbild is an alternative with a clear opinion. Folders instead of playlists and a library: open a folder and the list is there, the slideshow makes the playlist by itself. Nothing from the internet, on principle: no account, no tracking, no network at all. And free, with your own keyboard shortcuts included, where others charge for them.</p><p>Here is how it compares with the programs people look for on the Mac, honestly and with a source for every cell. Where another program is better, it says so.</p>",
+  "overviewIntro": "<p>Schnellbild is an alternative with a clear opinion. Folders instead of playlists and a library: open a folder and the list is there, the slideshow makes the playlist by itself. Nothing from the internet, on principle: no account, no tracking, no network at all. And free, with your own keyboard shortcuts included, which some others charge for.</p><p>Here is how it compares with the programs people look for on the Mac, with a source for every cell. Where another program is better, the page says so.</p>",
   "overviewNoMac": "These run only on Windows (or no longer on today's Mac). For each, what its fans liked and how Schnellbild does it.",
   "matrixH1": "A free {name} alternative for Mac",
   "matrixSeoTitle": "{name} Alternative for Mac, Free · Schnellbild",
   "matrixDescription": "{name} or Schnellbild? Compared feature by feature, with sources: where {name} is stronger, where Schnellbild is. Free, open source, plays MKV, opens ZIP and RAR as folders.",
-  "matrixLead": "Schnellbild and {name} side by side, fairly: what each does better, then every feature with a source.",
+  "matrixLead": "Schnellbild and {name} side by side: what each does better, then every feature with a source.",
   "switcherH1": "{name} for Mac? Here is the alternative",
   "switcherSeoTitle": "{name} for Mac? A Free Alternative · Schnellbild",
   "switcherDescription": "Looking for {name} on the Mac? What {name} fans like and how Schnellbild does it, free: folders, keys, MKV, ZIP and RAR as folders.",
@@ -32,7 +32,7 @@
   "sources": "Sources",
   "asOf": "As of November 2026: {name} {version}, Schnellbild {ours}. {name}'s column comes from the sources below, Schnellbild's from its README and source code.",
   "leftOut": "Left out for lack of a reliable source on {name}: {count} of {total} features.",
-  "fileManager": "Schnellbild isn't a complete file manager: no FTP, SFTP or cloud connections, no folder sync, no packing of archives. It is the better choice for looking through photos and videos and sorting them: thumbnails of everything, two panes side by side with F5 to copy and F6 to move, archives open like folders.",
+  "fileManager": "Schnellbild isn't a complete file manager: no FTP, SFTP or cloud connections, no folder sync, no packing of archives. It is made for looking through photos and videos and sorting them: thumbnails of everything, two panes side by side with F5 to copy and F6 to move, archives open like folders.",
   "likedTitle": "What {name} fans like, and how it works in Schnellbild",
   "aheadTitle": "Where {name} stays ahead",
   "purposeTitle": "Left out on purpose",
@@ -55,7 +55,7 @@
   "windows": "Coming from Windows"
  },
  "jokes": {
-  "image": "You made it to the Mac. The photos came along, the muscle memory came along, only {name} stayed behind on the old PC. It happens to the best of us, and it doesn't have to stay that way.",
+  "image": "You made it to the Mac. The photos came along, the muscle memory came along, only {name} stayed behind on the old PC. It doesn't have to stay that way.",
   "video": "New Mac, same videos, and {name} is the one thing that didn't make the move. Your MKV files are still waiting to be played.",
   "comic": "Your comics made the trip to the Mac without a complaint. {name} didn't come along.",
   "files": "Two panes, function keys, a muscle memory older than some of your colleagues. Then came the Mac, and {name} wasn't let in.",
@@ -185,7 +185,7 @@
   },
   "video_mkv_avi_webm": {
    "label": "Plays MKV, WebM, AVI, WMV, FLV",
-   "how": "Through the VLC engine built in.",
+   "how": "Through the built-in VLC engine.",
    "note": "built-in VLC engine"
   },
   "photos_videos_one_grid": {
@@ -227,7 +227,7 @@
   },
   "pip": {
    "label": "Picture in Picture",
-   "why": "A viewer for looking through, not a player to watch on the side."
+   "why": "Made for looking through folders; for watching on the side, a video player fits better."
   },
   "music_mode": {
    "label": "Audio files, music mode",
@@ -293,11 +293,11 @@
   },
   "image_editing": {
    "label": "Edits images (crop, resize, save)",
-   "why": "A viewer, not an image editor: your files stay as they are."
+   "why": "Shows pictures without changing them: your files stay as they are."
   },
   "batch_convert": {
    "label": "Batch convert or rename",
-   "why": "A viewer, not a converter."
+   "why": "Converting and renaming in batches is left to other apps."
   },
   "library_catalog": {
    "label": "Library, catalog, tags, ratings",
@@ -333,7 +333,7 @@
    "how": "No network access at all."
   },
   "notarized_attested": {
-   "label": "Notarized, build provably from public source",
+   "label": "Notarized, provably built from public source",
    "how": "Every download comes with GitHub's build attestation."
   },
   "mac_app_store": {
@@ -360,7 +360,7 @@
   "5kplayer": {
    "name": "5KPlayer",
    "vendor": "Digiarty Software",
-   "summary": "Free all-in-one media player for Mac and Windows that plays video, music, DVDs and radio, receives AirPlay mirroring, streams over DLNA and downloads online videos. Its strength is breadth of extras around playback.",
+   "summary": "Free all-in-one media player for Mac and Windows that plays video, music, DVDs and radio, receives AirPlay mirroring, streams over DLNA and downloads online videos.",
    "wins": [
     "AirPlay receiver and screen-mirror recording",
     "DLNA server/renderer",
@@ -426,12 +426,12 @@
   "adobe-bridge": {
    "name": "Adobe Bridge",
    "vendor": "Adobe",
-   "summary": "Adobe Bridge is a free creative asset manager for browsing folders of photos, design files and video with rich previews. It adds metadata, keywords, ratings, collections, batch renaming and export, and works as the hub for Photoshop, Camera Raw and other Creative Cloud apps.",
+   "summary": "Adobe Bridge is a free creative asset manager for browsing folders of photos, design files and video with previews. It adds metadata, keywords, ratings, collections, batch renaming and export, and hands files on to Photoshop, Camera Raw and other Creative Cloud apps.",
    "wins": [
     "Previews of Adobe formats (PSD, AI, INDD, After Effects, Substance 3D) and PDF",
     "Full metadata editing, keywords, labels, ratings, collections and smart collections",
     "Batch rename, Export panel and workflows for bulk conversion",
-    "Tight integration with Camera Raw, Photoshop, Premiere and Creative Cloud Libraries",
+    "Works with Camera Raw, Photoshop, Premiere and Creative Cloud Libraries",
     "PDF contact sheets, publishing to Adobe Stock and Portfolio",
     "Windows version"
    ],
@@ -471,7 +471,7 @@
    "wins": [
     "Culling: picks, ratings, Focus Score, AI rating, stacks",
     "HDR RAW display and HDR export",
-    "Deep EXIF/IPTC/XMP editing, keywords, GPS maps",
+    "EXIF/IPTC/XMP editing, keywords, GPS maps",
     "Memory card import",
     "External SRT subtitles",
     "AppleScript automation"
@@ -838,7 +838,7 @@
   "faststone-image-viewer": {
    "name": "FastStone Image Viewer",
    "vendor": "FastStone Soft",
-   "summary": "FastStone Image Viewer is a long-running Windows image browser with an Explorer-like folder tree, a polished full-screen mode with fly-out panels, and many editing and batch tools. It also plays videos through Windows' codecs and keeps tags and ratings in its own database.",
+   "summary": "FastStone Image Viewer is a long-running Windows image browser with an Explorer-like folder tree, a full-screen mode with fly-out panels, and many editing and batch tools. It also plays videos through Windows' codecs and keeps tags and ratings in its own database.",
    "wins": [
     "Editing tools: curves, levels, clone stamp, healing brush, red-eye",
     "Compare up to four images side by side",
@@ -993,9 +993,9 @@
    "summary": "GraphicConverter is a long-running Mac 'pocket knife for pictures': a file and picture browser, slideshow, editor and batch converter that opens about 200 formats. Its browser also plays QuickTime-compatible movies and audio, handles extensive metadata and has duplicate finding, flat views and Spotlight search.",
    "wins": [
     "Opens ~200 image formats, exports ~80, including legacy and scientific formats",
-    "Full image editor and powerful batch conversion with actions",
-    "Deep metadata editing (EXIF/IPTC/XMP, faces, GPS map)",
-    "Rich slideshow options (transitions, random, metadata, sorting during the show)",
+    "Full image editor and batch conversion with actions",
+    "Metadata editing (EXIF/IPTC/XMP, faces, GPS map)",
+    "Many slideshow options (transitions, random, metadata, sorting during the show)",
     "List, Cover Flow and thumbnail views, flat view of all subfolders",
     "Duplicate finder, contact sheets, web galleries",
     "Custom shortcuts, 14 languages, light/dark setting"
@@ -1329,7 +1329,7 @@
     "Commander-style F-key workflow and Action Panel",
     "Archive support incl. nested archives, ZIP read-write",
     "Embedded terminal with directory sync, disk usage analysis",
-    "Look Up with rich Spotlight predicates"
+    "Look Up with Spotlight predicates"
    ],
    "price": "Free during beta; paid license planned after beta (Patreon supporters with $15+ get a perpetual license)",
    "version": "0.8.2",
@@ -1448,7 +1448,7 @@
   "movist-pro": {
    "name": "Movist Pro",
    "vendor": "Movist",
-   "summary": "A polished paid video player for watching movies and series, with strong subtitle handling (several subtitle tracks at once, per-language styles), HDR/Dolby Vision tone mapping and AirPlay of any format. Pro adds network servers, YouTube and web media and Picture in Picture.",
+   "summary": "A paid video player for watching movies and series, with strong subtitle handling (several subtitle tracks at once, per-language styles), HDR/Dolby Vision tone mapping and AirPlay of any format. Pro adds network servers, YouTube and web media and Picture in Picture.",
    "wins": [
     "Advanced subtitle styling and dual subtitles",
     "HDR and Dolby Vision tone mapping",
@@ -1509,9 +1509,9 @@
   "mpv": {
    "name": "mpv",
    "vendor": "the mpv project",
-   "summary": "mpv is a minimal, scriptable, command-line media player with top-quality rendering and very wide format support. It is configured through text files and Lua/JS scripts and has only a small on-screen controller.",
+   "summary": "mpv is a minimal, scriptable, command-line media player with GPU rendering (HDR, Dolby Vision) and very wide format support. It is configured through text files and Lua/JS scripts and has only a small on-screen controller.",
    "wins": [
-    "Best-in-class video rendering (gpu-next, HDR, Dolby Vision)",
+    "Video rendering with gpu-next, HDR and Dolby Vision",
     "Extremely configurable via mpv.conf, input.conf and scripts",
     "Plays media straight from ZIP/RAR/7z and multi-volume RAR",
     "Cross-platform (macOS, Windows, Linux)",
@@ -1541,7 +1541,7 @@
    "vendor": "neelabo",
    "summary": "Book-style viewer for Windows that treats folders and archives as books and images as pages. Very configurable: every action is a command with its own keys, mouse gestures and scripts, plus bookshelf, bookmarks, playlists and two-page manga spreads. Videos play through Windows or an installed VLC.",
    "wins": [
-    "Extremely deep customisation: commands, gestures, JavaScript scripting",
+    "Every action configurable: commands, gestures, JavaScript scripting",
     "Two-page spread with right-to-left reading and page splitting",
     "Nested archives and archive passwords (via 7z.dll)",
     "Saved playlists, history and search with date/size/regex operators",
@@ -1685,7 +1685,7 @@
   "panels": {
    "name": "Panels",
    "vendor": "Produkt Studio",
-   "summary": "Panels is a polished comic reader for iPhone, iPad and Mac with a cover library, reading presets, panel-by-panel view and OPDS support for Komga/Kavita. Advanced features such as cloud libraries, page filters and text detection need Premium.",
+   "summary": "Panels is a comic reader for iPhone, iPad and Mac with a cover library, reading presets, panel-by-panel view and OPDS support for Komga/Kavita. Advanced features such as cloud libraries, page filters and text detection need Premium.",
    "wins": [
     "Synced library and progress across Mac, iPhone and iPad",
     "OPDS streaming (Komga, Kavita, Calibre)",
@@ -1797,7 +1797,7 @@
   "photo-mechanic": {
    "name": "Photo Mechanic",
    "vendor": "Camera Bits",
-   "summary": "Photo Mechanic is a fast ingest, culling and metadata tool for working photographers, especially press, sports and wedding shooters. It opens folders and memory cards directly, shows RAW files instantly from their embedded previews, and excels at captions, IPTC metadata, keywording, batch renaming and uploading on deadline.",
+   "summary": "Photo Mechanic is a fast ingest, culling and metadata tool for working photographers, especially press, sports and wedding shooters. It opens folders and memory cards directly, shows RAW files instantly from their embedded previews, and is built for captions, IPTC metadata, keywording, batch renaming and uploading on deadline.",
    "wins": [
     "Ingest from multiple memory cards at once, with renaming and metadata during copy",
     "IPTC/XMP metadata, code replacements, variables and structured keywords for captioning on deadline",
@@ -1876,7 +1876,7 @@
    "vendor": "ImageTasks",
    "summary": "Minimal image and video viewer that grew into a photo editor with masks, object removal and upscaling. Browses folders, photo libraries and ZIP/CBZ archives and plays MKV with subtitles and audio track choice; search, sorting and custom shortcuts need Pixea Plus.",
    "wins": [
-    "Strong image editor (masks, object removal, upscaling, LUTs)",
+    "Image editor with masks, object removal, upscaling, LUTs",
     "Batch editing and conversion",
     "Embedded subtitles, audio track, playback speed",
     "Opens Photos libraries",
@@ -1933,7 +1933,7 @@
    "summary": "Finder-like multi-pane file manager with 12 layouts, workspaces, heavy customization (hotkeys, context menu, colors) and regex search. Paid extensions add archive browsing, server/cloud connections and advanced batch rename.",
    "wins": [
     "Up to 12 pane layouts and saved workspaces",
-    "Deep customization of hotkeys, context menus, toolbar, colors",
+    "Customization of hotkeys, context menus, toolbar, colors",
     "Folder sync, file hashes, file templates",
     "Quick image actions (rotate, convert, remove background)",
     "Video metadata columns (frame rate, data rate)"
@@ -2008,7 +2008,7 @@
   "qview": {
    "name": "qView",
    "vendor": "jurplel (Interverse)",
-   "summary": "qView is a minimal, cross-platform image viewer with no toolbars: it opens a single file and lets you page through the rest of the folder. It starts fast, preloads neighbouring images and supports animated images and many formats via Qt plugins. It is a good pick for people who only want a clean viewer.",
+   "summary": "qView is a minimal, cross-platform image viewer with no toolbars: it opens a single file and lets you page through the rest of the folder. It starts fast, preloads neighbouring images and supports animated images and many formats via Qt plugins.",
    "wins": [
     "Extremely minimal, chrome-less window",
     "Runs on Windows and Linux too, and on older macOS (10.13+ legacy build)",
@@ -2034,7 +2034,7 @@
    "vendor": "Gentlemen Coders",
    "summary": "RAW Power is a non-destructive RAW and JPEG editor by a former Aperture lead, usable standalone on Finder folders, as an Apple Photos library manager, or as a Photos editing extension. It offers Aperture-style adjustments, ratings/flags synced over iCloud Photos and batch export. The vendor now points macOS 13+ users to its successor Nitro Photo.",
    "wins": [
-    "Powerful non-destructive RAW/JPEG editing (curves, LUTs, depth effect, Boost)",
+    "Non-destructive RAW/JPEG editing (curves, LUTs, depth effect, Boost)",
     "Works directly on the Apple Photos library and syncs via iCloud Photos",
     "Batch presets and export",
     "iPhone/iPad version",
@@ -2183,7 +2183,7 @@
    "vendor": "Ghisler Software",
    "summary": "The best-known orthodox (two-panel) file manager for Windows, developed since 1993. It is strong on file operations, archives, FTP, multi-rename and directory sync, with the Lister viewer and plugins for images and media.",
    "wins": [
-    "Mature dual-pane file management: sync dirs, compare, multi-rename, checksums",
+    "Dual-pane file management: sync dirs, compare, multi-rename, checksums",
     "Built-in FTP/FTPS client",
     "Huge plugin ecosystem (Lister, packer, file system plugins)",
     "Lister player switches subtitle/audio streams and speed",

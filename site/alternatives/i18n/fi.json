@@ -3,12 +3,12 @@
   "overviewTitle": "Schnellbild vaihtoehtona",
   "overviewSeoTitle": "Ilmainen Mac-vaihtoehto: {names} · Schnellbild",
   "overviewDescription": "Schnellbild verrattuna {count} kuvankatseluohjelmaan, videosoittimeen, sarjakuvalukijaan ja tiedostonhallintaan, ominaisuus kerrallaan ja lähteineen. Ilmainen, avointa lähdekoodia, Macille.",
-  "overviewIntro": "<p>Schnellbild on vaihtoehto, jolla on selvä mielipide. Kansiot soittolistojen ja kirjaston sijaan: avaa kansio, niin luettelo on valmiina, ja diaesitys tekee soittolistan itse. Ei mitään internetistä, periaatteesta: ei tiliä, ei seurantaa, ei verkkoyhteyttä lainkaan. Ja ilmainen, omat pikanäppäimet mukaan lukien, joista muut ottavat maksun.</p><p>Tässä näet, miten se vertautuu ohjelmiin, joita Macille etsitään, rehellisesti ja jokaiselle solulle lähde. Missä toinen ohjelma on parempi, se sanotaan suoraan.</p>",
+  "overviewIntro": "<p>Schnellbild on vaihtoehto, jolla on selvä mielipide. Kansiot soittolistojen ja kirjaston sijaan: avaa kansio, niin luettelo on valmiina, ja diaesitys tekee soittolistan itse. Ei mitään internetistä, periaatteesta: ei tiliä, ei seurantaa, ei verkkoyhteyttä lainkaan. Ja ilmainen, omat pikanäppäimet mukaan lukien, joista osa muista ottaa maksun.</p><p>Tässä näet, miten se vertautuu ohjelmiin, joita Macille etsitään, ja jokaiselle solulle on lähde. Missä toinen ohjelma on parempi, sivu sanoo sen.</p>",
   "overviewNoMac": "Nämä toimivat vain Windowsissa (tai eivät enää nykyisillä Maceilla). Jokaisesta kerrotaan, mistä sen fanit pitivät ja miten Schnellbild hoitaa saman.",
   "matrixH1": "{name}: ilmainen vaihtoehto Macille",
   "matrixSeoTitle": "{name}: ilmainen vaihtoehto Macille · Schnellbild",
   "matrixDescription": "{name} vai Schnellbild? Vertailu ominaisuus kerrallaan, lähteineen: missä {name} on vahvempi, missä Schnellbild. Ilmainen, avointa lähdekoodia, toistaa MKV:n, avaa ZIPin ja RARin kansioina.",
-  "matrixLead": "Schnellbild ja {name} rinnakkain, reilusti: kumpi tekee mitäkin paremmin, ja sitten jokainen ominaisuus lähteineen.",
+  "matrixLead": "Schnellbild ja {name} rinnakkain: kumpi tekee mitäkin paremmin, ja sitten jokainen ominaisuus lähteineen.",
   "switcherH1": "{name} Macille? Tässä on vaihtoehto",
   "switcherSeoTitle": "{name} Macille? Ilmainen vaihtoehto · Schnellbild",
   "switcherDescription": "Etsitkö ohjelmaa {name} Macille? Mistä sen fanit pitävät ja miten Schnellbild tekee saman ilmaiseksi: kansiot, näppäimet, MKV, ZIP ja RAR kansioina.",
@@ -32,7 +32,7 @@
   "sources": "Lähteet",
   "asOf": "Tilanne marraskuussa 2026: {name} {version}, Schnellbild {ours}. Ohjelman {name} sarake perustuu alla oleviin lähteisiin, Schnellbildin sarake sen README-tiedostoon ja lähdekoodiin.",
   "leftOut": "Pois jätetty, koska ohjelmasta {name} ei ole luotettavaa lähdettä: {count}/{total} ominaisuutta.",
-  "fileManager": "Schnellbild ei ole täydellinen tiedostonhallinta: ei FTP-, SFTP- tai pilviyhteyksiä, ei kansioiden synkronointia, ei arkistojen pakkaamista. Kuvien ja videoiden selaamiseen ja lajitteluun se on parempi valinta: miniatyyrit kaikesta, kaksi paneelia rinnakkain, F5 kopioi ja F6 siirtää, arkistot aukeavat kuin kansiot.",
+  "fileManager": "Schnellbild ei ole täydellinen tiedostonhallinta: ei FTP-, SFTP- tai pilviyhteyksiä, ei kansioiden synkronointia, ei arkistojen pakkaamista. Se on tehty kuvien ja videoiden selaamiseen ja lajitteluun: miniatyyrit kaikesta, kaksi paneelia rinnakkain, F5 kopioi ja F6 siirtää, arkistot aukeavat kuin kansiot.",
   "likedTitle": "Mistä ohjelman {name} fanit pitävät ja miten se toimii Schnellbildissä",
   "aheadTitle": "Missä {name} on yhä edellä",
   "purposeTitle": "Jätetty pois tarkoituksella",
@@ -55,7 +55,7 @@
   "windows": "Windowsista tuleville"
  },
  "jokes": {
-  "image": "Siirryit Maciin. Kuvat tulivat mukaan, sormet muistavat yhä kaiken, vain {name} jäi vanhalle PC:lle. Sattuu parhaillekin, eikä sen tarvitse jäädä siihen.",
+  "image": "Siirryit Maciin. Kuvat tulivat mukaan, sormet muistavat yhä kaiken, vain {name} jäi vanhalle PC:lle. Sen ei tarvitse jäädä siihen.",
   "video": "Uusi Mac, samat videot, mutta {name} jäi muuttokuormasta pois. MKV-tiedostot odottavat yhä katsojaansa.",
   "comic": "Sarjakuvat muuttivat Maciin nurisematta. {name} jäi rappusille.",
   "files": "Kaksi paneelia, funktionäppäimet ja lihasmuisti, joka on vanhempi kuin osa työkavereista. Sitten tuli Mac, eikä {name} päässyt sisään.",
@@ -227,7 +227,7 @@
   },
   "pip": {
    "label": "Kuva kuvassa",
-   "why": "Katselin läpikäyntiin, ei soitin sivusilmällä katsomiseen."
+   "why": "Tehty kansioiden läpikäyntiin; sivusilmällä katsomiseen sopii paremmin videosoitin."
   },
   "music_mode": {
    "label": "Äänitiedostot, musiikkitila",
@@ -293,11 +293,11 @@
   },
   "image_editing": {
    "label": "Muokkaa kuvia (rajaus, koon muutos, tallennus)",
-   "why": "Katselin, ei kuvankäsittelyohjelma: tiedostosi pysyvät ennallaan."
+   "why": "Näyttää kuvat muuttamatta niitä: tiedostosi pysyvät ennallaan."
   },
   "batch_convert": {
    "label": "Eräkäsittely: muunnos tai uudelleennimeäminen",
-   "why": "Katselin, ei muunnin."
+   "why": "Erämuunnokset ja eränimeämisen Schnellbild jättää muille ohjelmille."
   },
   "library_catalog": {
    "label": "Kirjasto, luettelointi, tunnisteet, arviot",
@@ -360,7 +360,7 @@
   "5kplayer": {
    "name": "5KPlayer",
    "vendor": "Digiarty Software",
-   "summary": "Ilmainen kaikki yhdessä -mediasoitin Macille ja Windowsille: toistaa videota, musiikkia, DVD-levyjä ja radiota, vastaanottaa AirPlay-peilauksen, suoratoistaa DLNA:n kautta ja lataa verkkovideoita. Sen vahvuus on toiston ympärille kootut monet lisät.",
+   "summary": "Ilmainen kaikki yhdessä -mediasoitin Macille ja Windowsille: toistaa videota, musiikkia, DVD-levyjä ja radiota, vastaanottaa AirPlay-peilauksen, suoratoistaa DLNA:n kautta ja lataa verkkovideoita.",
    "wins": [
     "AirPlay-vastaanotin ja näytön peilauksen tallennus",
     "DLNA-palvelin ja -toistin",
@@ -426,12 +426,12 @@
   "adobe-bridge": {
    "name": "Adobe Bridge",
    "vendor": "Adobe",
-   "summary": "Adobe Bridge on ilmainen luovan aineiston hallintaohjelma, jolla selataan kuva-, suunnittelu- ja videokansioita monipuolisin esikatseluin. Se lisää metatiedot, avainsanat, arviot, kokoelmat, eränä uudelleennimeämisen ja viennin, ja toimii keskuksena Photoshopille, Camera Raw'lle ja muille Creative Cloud -ohjelmille.",
+   "summary": "Adobe Bridge on ilmainen luovan aineiston hallintaohjelma, jolla selataan kuva-, suunnittelu- ja videokansioita esikatseluin. Se lisää metatiedot, avainsanat, arviot, kokoelmat, eränä uudelleennimeämisen ja viennin, ja välittää tiedostot Photoshopille, Camera Raw'lle ja muille Creative Cloud -ohjelmille.",
    "wins": [
     "Adoben formaattien (PSD, AI, INDD, After Effects, Substance 3D) ja PDF:n esikatselu",
     "Täysi metatietojen muokkaus, avainsanat, merkinnät, arviot, kokoelmat ja älykokoelmat",
     "Eränä uudelleennimeäminen, vientipaneeli ja työnkulut massamuunnoksiin",
-    "Tiivis yhteys Camera Raw'hun, Photoshopiin, Premiereen ja Creative Cloud Librariesiin",
+    "Toimii yhdessä Camera Raw'n, Photoshopin, Premieren ja Creative Cloud Librariesin kanssa",
     "PDF-vedosarkit, julkaisu Adobe Stockiin ja Portfolioon",
     "Windows-versio"
    ],
@@ -471,7 +471,7 @@
    "wins": [
     "Karsinta: valinnat, arviot, Focus Score, tekoälyarvio, pinot",
     "HDR-RAW-näyttö ja HDR-vienti",
-    "Syvällinen EXIF/IPTC/XMP-muokkaus, avainsanat, GPS-kartat",
+    "EXIF/IPTC/XMP-muokkaus, avainsanat, GPS-kartat",
     "Tuonti muistikortilta",
     "Ulkoiset SRT-tekstitykset",
     "AppleScript-automaatio"
@@ -838,7 +838,7 @@
   "faststone-image-viewer": {
    "name": "FastStone Image Viewer",
    "vendor": "FastStone Soft",
-   "summary": "FastStone Image Viewer on pitkäikäinen Windowsin kuvaselain: Resurssienhallinnan kaltainen kansiopuu, viimeistelty koko näytön tila esiin liukuvine paneeleineen sekä monet muokkaus- ja erätyökalut. Se toistaa myös videoita Windowsin koodekeilla ja pitää tunnisteet ja arviot omassa tietokannassaan.",
+   "summary": "FastStone Image Viewer on pitkäikäinen Windowsin kuvaselain: Resurssienhallinnan kaltainen kansiopuu, koko näytön tila esiin liukuvine paneeleineen sekä monet muokkaus- ja erätyökalut. Se toistaa myös videoita Windowsin koodekeilla ja pitää tunnisteet ja arviot omassa tietokannassaan.",
    "wins": [
     "Muokkaustyökalut: käyrät, tasot, kloonaus, korjaussivellin, punasilmäisyys",
     "Jopa neljän kuvan vertailu rinnakkain",
@@ -957,7 +957,7 @@
    "macNote": "GOM Playerin Mac-versio on pysynyt versiossa 1.0.0 vuodesta 2020, tehty Intel-Maceille."
   },
   "google-photos": {
-   "name": "Google Photos",
+   "name": "Google Kuvat",
    "vendor": "Google",
    "summary": "Googlen pilvikuvakirjasto, joka varmuuskopioi kuvat puhelimista automaattisesti. Hyvä, kun haluat kaikki kuvat kaikilla laitteilla, haun sisällön mukaan ja albumien jakamisen.",
    "wins": [
@@ -993,9 +993,9 @@
    "summary": "GraphicConverter on pitkäikäinen Macin ”kuvien linkkuveitsi”: tiedosto- ja kuvaselain, diaesitys, editori ja erämuunnin, joka avaa noin 200 formaattia. Sen selain toistaa myös QuickTime-yhteensopivia elokuvia ja ääntä, käsittelee laajasti metatietoja ja tarjoaa kaksoiskappaleiden etsinnän, litteät näkymät ja Spotlight-haun.",
    "wins": [
     "Avaa noin 200 kuvaformaattia ja vie noin 80, myös vanhoja ja tieteellisiä",
-    "Täysi kuvankäsittely ja tehokas erämuunnos toimintoineen",
-    "Syvällinen metatietojen muokkaus (EXIF/IPTC/XMP, kasvot, GPS-kartta)",
-    "Monipuoliset diaesitysasetukset (siirtymät, satunnainen, metatiedot, lajittelu esityksen aikana)",
+    "Täysi kuvankäsittely ja erämuunnos toimintoineen",
+    "Metatietojen muokkaus (EXIF/IPTC/XMP, kasvot, GPS-kartta)",
+    "Paljon diaesitysasetuksia (siirtymät, satunnainen, metatiedot, lajittelu esityksen aikana)",
     "Luettelo-, Cover Flow- ja miniatyyrinäkymät, litteä näkymä kaikista alikansioista",
     "Kaksoiskappaleiden etsintä, vedosarkit, verkkogalleriat",
     "Omat pikanäppäimet, 14 kieltä, vaalea tai tumma"
@@ -1329,7 +1329,7 @@
     "Commander-tyylinen F-näppäintyöskentely ja toimintopaneeli",
     "Arkistotuki, myös sisäkkäiset arkistot, ZIP luku ja kirjoitus",
     "Upotettu pääte kansioiden synkronoinnilla, levynkäytön analyysi",
-    "Look Up monipuolisin Spotlight-ehdoin"
+    "Look Up Spotlight-ehdoin"
    ],
    "price": "Ilmainen betan aikana; maksullinen lisenssi suunnitteilla betan jälkeen (vähintään 15 $:n Patreon-tukijat saavat pysyvän lisenssin)",
    "version": "0.8.2",
@@ -1429,7 +1429,7 @@
    "platforms": "Windows, Android"
   },
   "microsoft-photos": {
-   "name": "Microsoft Valokuvat",
+   "name": "Microsoftin valokuvat",
    "vendor": "Microsoft",
    "summary": "Windowsiin sisäänrakennettu kuva- ja videosovellus: galleria-aikajana PC:n kansioista, OneDrivesta ja iCloudista, nopea katselin, joka selaa kansiota, ja editori tekoälytyökaluineen. Hyvä satunnaiseen selaamiseen ja nopeisiin muokkauksiin; Photos Legacy säilyttää vanhemman videoeditorin ja diaesitysten tekijän. Ei arkistoja, ei tiedostonhallintaa.",
    "wins": [
@@ -1448,9 +1448,9 @@
   "movist-pro": {
    "name": "Movist Pro",
    "vendor": "Movist",
-   "summary": "Viimeistelty maksullinen videosoitin elokuvien ja sarjojen katseluun: vahva tekstitysten käsittely (useita tekstitysraitoja kerralla, kielikohtaiset tyylit), HDR- ja Dolby Vision -sävykartoitus ja AirPlay mille tahansa formaatille. Pro lisää verkkopalvelimet, YouTuben ja verkkomedian sekä kuva kuvassa -tilan.",
+   "summary": "Maksullinen videosoitin elokuvien ja sarjojen katseluun: vahva tekstitysten käsittely (useita tekstitysraitoja kerralla, kielikohtaiset tyylit), HDR- ja Dolby Vision -sävykartoitus ja AirPlay mille tahansa formaatille. Pro lisää verkkopalvelimet, YouTuben ja verkkomedian sekä kuva kuvassa -tilan.",
    "wins": [
-    "Edistyneet tekstitystyylit ja kaksoistekstitykset",
+    "Tekstitystyylit ja kaksoistekstitykset",
     "HDR- ja Dolby Vision -sävykartoitus",
     "AirPlay formaateille, joita Apple TV ei itse toista",
     "Verkkopalvelimet (SMB, SFTP, FTP, WebDAV), YouTube, kuva kuvassa (Pro)",
@@ -1509,9 +1509,9 @@
   "mpv": {
    "name": "mpv",
    "vendor": "mpv-projekti",
-   "summary": "mpv on minimalistinen, skriptattava komentorivin mediasoitin huippulaatuisella kuvalla ja hyvin laajalla formaattituella. Sitä määritetään tekstitiedostoilla ja Lua- tai JS-skripteillä, ja siinä on vain pieni ruudulla näkyvä ohjain.",
+   "summary": "mpv on minimalistinen, skriptattava komentorivin mediasoitin GPU-piirrolla (HDR, Dolby Vision) ja hyvin laajalla formaattituella. Sitä määritetään tekstitiedostoilla ja Lua- tai JS-skripteillä, ja siinä on vain pieni ruudulla näkyvä ohjain.",
    "wins": [
-    "Luokkansa paras videon piirto (gpu-next, HDR, Dolby Vision)",
+    "Videon piirto gpu-nextillä, HDR ja Dolby Vision",
     "Äärimmäisen muokattava mpv.confin, input.confin ja skriptien avulla",
     "Toistaa median suoraan ZIP-, RAR- ja 7z-arkistoista ja monivolyymisesta RAR:sta",
     "Monialustainen (macOS, Windows, Linux)",
@@ -1541,7 +1541,7 @@
    "vendor": "neelabo",
    "summary": "Kirjamainen katselin Windowsille, joka käsittelee kansiot ja arkistot kirjoina ja kuvat sivuina. Hyvin muokattava: jokainen toiminto on komento omine näppäimineen, hiirieleineen ja skripteineen, lisäksi kirjahylly, kirjanmerkit, soittolistat ja mangan aukeamat. Videot toistuvat Windowsin tai asennetun VLC:n kautta.",
    "wins": [
-    "Äärimmäisen syvä muokattavuus: komennot, eleet, JavaScript-skriptaus",
+    "Jokainen toiminto säädettävissä: komennot, eleet, JavaScript-skriptaus",
     "Aukeamatila oikealta vasemmalle lukien ja sivujen jakaminen",
     "Sisäkkäiset arkistot ja arkistojen salasanat (7z.dll:n kautta)",
     "Tallennetut soittolistat, historia ja haku päivä-, koko- ja regex-ehdoin",
@@ -1685,7 +1685,7 @@
   "panels": {
    "name": "Panels",
    "vendor": "Produkt Studio",
-   "summary": "Panels on viimeistelty sarjakuvalukija iPhonelle, iPadille ja Macille: kansikirjasto, lukuesiasetukset, ruutu kerrallaan -näkymä ja OPDS-tuki Komgalle ja Kavitalle. Edistyneet ominaisuudet, kuten pilvikirjastot, sivusuotimet ja tekstin tunnistus, vaativat Premiumin.",
+   "summary": "Panels on sarjakuvalukija iPhonelle, iPadille ja Macille: kansikirjasto, lukuesiasetukset, ruutu kerrallaan -näkymä ja OPDS-tuki Komgalle ja Kavitalle. Edistyneet ominaisuudet, kuten pilvikirjastot, sivusuotimet ja tekstin tunnistus, vaativat Premiumin.",
    "wins": [
     "Kirjasto ja edistyminen synkronoituvat Macin, iPhonen ja iPadin välillä",
     "OPDS-suoratoisto (Komga, Kavita, Calibre)",
@@ -1797,7 +1797,7 @@
   "photo-mechanic": {
    "name": "Photo Mechanic",
    "vendor": "Camera Bits",
-   "summary": "Photo Mechanic on nopea tuonti-, karsinta- ja metatietotyökalu ammattivalokuvaajille, erityisesti lehti-, urheilu- ja hääkuvaajille. Se avaa kansiot ja muistikortit suoraan, näyttää RAW-tiedostot heti niiden upotetuista esikatselukuvista ja on erinomainen kuvateksteissä, IPTC-metatiedoissa, avainsanoissa, eränimeämisessä ja latauksessa kiireellä.",
+   "summary": "Photo Mechanic on nopea tuonti-, karsinta- ja metatietotyökalu ammattivalokuvaajille, erityisesti lehti-, urheilu- ja hääkuvaajille. Se avaa kansiot ja muistikortit suoraan, näyttää RAW-tiedostot heti niiden upotetuista esikatselukuvista ja on tehty kuvateksteihin, IPTC-metatietoihin, avainsanoihin, eränimeämiseen ja lataamiseen kiireellä.",
    "wins": [
     "Tuonti useilta muistikorteilta kerralla, nimeäminen ja metatiedot kopioinnin aikana",
     "IPTC/XMP-metatiedot, koodikorvaukset, muuttujat ja rakenteiset avainsanat kuvateksteihin kiireellä",
@@ -1876,7 +1876,7 @@
    "vendor": "ImageTasks",
    "summary": "Minimalistinen kuva- ja videokatselin, josta on kasvanut kuvankäsittelyohjelma maskeineen, kohteiden poistoineen ja suurennuksineen. Selaa kansioita, kuvakirjastoja ja ZIP- ja CBZ-arkistoja ja toistaa MKV:n tekstitysten ja ääniraidan valinnan kera; haku, lajittelu ja omat pikanäppäimet vaativat Pixea Plusin.",
    "wins": [
-    "Vahva kuvankäsittely (maskit, kohteiden poisto, suurennus, LUTit)",
+    "Kuvankäsittely maskeilla, kohteiden poistolla, suurennuksella ja LUTeilla",
     "Eräkäsittely ja -muunnos",
     "Upotetut tekstitykset, ääniraita, toistonopeus",
     "Avaa Kuvat-kirjastoja",
@@ -1933,7 +1933,7 @@
    "summary": "Finderin kaltainen monipaneelinen tiedostonhallinta: 12 asettelua, työtilat, laaja muokattavuus (pikanäppäimet, pikavalikko, värit) ja regex-haku. Maksulliset laajennukset lisäävät arkistojen selauksen, palvelin- ja pilviyhteydet ja edistyneen eränimeämisen.",
    "wins": [
     "Jopa 12 paneeliasettelua ja tallennetut työtilat",
-    "Pikanäppäinten, pikavalikoiden, työkalupalkin ja värien syvä muokkaus",
+    "Muokattavat pikanäppäimet, pikavalikot, työkalupalkki ja värit",
     "Kansioiden synkronointi, tiedostojen tiivisteet, tiedostopohjat",
     "Pikatoiminnot kuville (kierto, muunnos, taustan poisto)",
     "Videon metatietosarakkeet (ruutunopeus, datanopeus)"
@@ -2008,7 +2008,7 @@
   "qview": {
    "name": "qView",
    "vendor": "jurplel (Interverse)",
-   "summary": "qView on minimalistinen monialustainen kuvankatselin ilman työkalupalkkeja: se avaa yhden tiedoston ja antaa selata kansion loput. Se käynnistyy nopeasti, lataa viereiset kuvat etukäteen ja tukee animoituja kuvia ja monia formaatteja Qt-laajennusten kautta. Hyvä valinta, kun haluaa vain siistin katselimen.",
+   "summary": "qView on minimalistinen monialustainen kuvankatselin ilman työkalupalkkeja: se avaa yhden tiedoston ja antaa selata kansion loput. Se käynnistyy nopeasti, lataa viereiset kuvat etukäteen ja tukee animoituja kuvia ja monia formaatteja Qt-laajennusten kautta.",
    "wins": [
     "Äärimmäisen minimalistinen, kehyksetön ikkuna",
     "Toimii myös Windowsissa ja Linuxissa sekä vanhemmissa macOS-versioissa (10.13+ legacy-versio)",
@@ -2034,7 +2034,7 @@
    "vendor": "Gentlemen Coders",
    "summary": "RAW Power on rikkomaton RAW- ja JPEG-editori Aperturen entiseltä kehitysjohtajalta. Sitä voi käyttää itsenäisesti Finderin kansioissa, Apple Kuvien kirjaston hallintaan tai Kuvien muokkauslaajennuksena. Siinä on Aperture-tyyliset säädöt, iCloud-kuvien kautta synkronoituvat arviot ja liput sekä erävienti. Valmistaja ohjaa nyt macOS 13+ -käyttäjät seuraajaan Nitro Photoon.",
    "wins": [
-    "Tehokas rikkomaton RAW- ja JPEG-muokkaus (käyrät, LUTit, syvyystehoste, Boost)",
+    "Rikkomaton RAW- ja JPEG-muokkaus (käyrät, LUTit, syvyystehoste, Boost)",
     "Toimii suoraan Apple Kuvien kirjastossa ja synkronoituu iCloud-kuvien kautta",
     "Eräesiasetukset ja vienti",
     "iPhone- ja iPad-versio",
@@ -2183,7 +2183,7 @@
    "vendor": "Ghisler Software",
    "summary": "Tunnetuin ortodoksinen (kahden paneelin) tiedostonhallinta Windowsille, kehitetty vuodesta 1993. Vahva tiedostotoiminnoissa, arkistoissa, FTP:ssä, joukkonimeämisessä ja kansioiden synkronoinnissa; mukana Lister-katselin ja laajennukset kuville ja medialle.",
    "wins": [
-    "Kypsä kahden paneelin tiedostonhallinta: kansioiden synkronointi, vertailu, joukkonimeäminen, tarkistussummat",
+    "Kahden paneelin tiedostonhallinta: kansioiden synkronointi, vertailu, joukkonimeäminen, tarkistussummat",
     "Sisäänrakennettu FTP/FTPS-asiakas",
     "Valtava laajennusekosysteemi (Lister-, pakkaus- ja tiedostojärjestelmälaajennukset)",
     "Listerin soitin vaihtaa tekstitys- ja ääniraitoja ja nopeutta",

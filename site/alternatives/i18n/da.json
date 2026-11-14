@@ -3,12 +3,12 @@
   "overviewTitle": "Schnellbild som alternativ",
   "overviewSeoTitle": "Gratis Mac-alternativ til {names} · Schnellbild",
   "overviewDescription": "Schnellbild sammenlignet med {count} billedfremvisere, videoafspillere, tegneserielæsere og filhåndteringsprogrammer, funktion for funktion og med kilder. Gratis, open source, til Mac.",
-  "overviewIntro": "<p>Schnellbild er et alternativ med en klar holdning. Mapper i stedet for afspilningslister og bibliotek: Åbn en mappe, så er listen der, og lysbilledshowet laver selv afspilningslisten. Intet fra internettet, af princip: ingen konto, ingen sporing, slet ingen netværksadgang. Og gratis, også dine egne tastaturgenveje, som andre tager penge for.</p><p>Her kan du se, hvordan den klarer sig mod de programmer, folk leder efter på Mac, ærligt og med en kilde til hver celle. Hvor et andet program er bedre, står det der.</p>",
+  "overviewIntro": "<p>Schnellbild er et alternativ med en klar holdning. Mapper i stedet for afspilningslister og bibliotek: Åbn en mappe, så er listen der, og lysbilledshowet laver selv afspilningslisten. Intet fra internettet, af princip: ingen konto, ingen sporing, slet ingen netværksadgang. Og gratis, også dine egne tastaturgenveje, som nogle andre tager penge for.</p><p>Her kan du se, hvordan den klarer sig mod de programmer, folk leder efter på Mac, med en kilde til hver celle. Hvor et andet program er bedre, står det der.</p>",
   "overviewNoMac": "Disse kører kun på Windows (eller ikke længere på nutidens Mac). For hvert program: hvad dets fans holdt af, og hvordan Schnellbild gør det.",
   "matrixH1": "Et gratis {name}-alternativ til Mac",
   "matrixSeoTitle": "{name}-alternativ til Mac, gratis · Schnellbild",
   "matrixDescription": "{name} eller Schnellbild? Sammenlignet funktion for funktion, med kilder: hvor {name} er stærkest, og hvor Schnellbild er. Gratis, open source, afspiller MKV, åbner ZIP og RAR som mapper.",
-  "matrixLead": "Schnellbild og {name} side om side, fair og ærligt: hvad hver især gør bedst, og derefter hver funktion med en kilde.",
+  "matrixLead": "Schnellbild og {name} side om side: hvad hver især gør bedst, og derefter hver funktion med en kilde.",
   "switcherH1": "{name} til Mac? Her er alternativet",
   "switcherSeoTitle": "{name} til Mac? Et gratis alternativ · Schnellbild",
   "switcherDescription": "Leder du efter {name} til Mac? Hvad {name}-fans holder af, og hvordan Schnellbild gør det, gratis: mapper, taster, MKV, ZIP og RAR som mapper.",
@@ -32,7 +32,7 @@
   "sources": "Kilder",
   "asOf": "Pr. november 2026: {name} {version}, Schnellbild {ours}. Kolonnen for {name} bygger på kilderne nedenfor, Schnellbilds på dens README og kildekode.",
   "leftOut": "Udeladt, fordi der ikke findes en pålidelig kilde om {name}: {count} af {total} funktioner.",
-  "fileManager": "Schnellbild er ikke et komplet filhåndteringsprogram: ingen FTP-, SFTP- eller skyforbindelser, ingen mappesynkronisering, ingen pakning af arkiver. Til at gennemse og sortere fotos og videoer er den det bedre valg: miniaturer af alt, to paneler side om side med F5 til at kopiere og F6 til at flytte, og arkiver, der åbner som mapper.",
+  "fileManager": "Schnellbild er ikke et komplet filhåndteringsprogram: ingen FTP-, SFTP- eller skyforbindelser, ingen mappesynkronisering, ingen pakning af arkiver. Den er lavet til at gennemse og sortere fotos og videoer: miniaturer af alt, to paneler side om side med F5 til at kopiere og F6 til at flytte, og arkiver, der åbner som mapper.",
   "likedTitle": "Det holder {name}-fans af, og sådan virker det i Schnellbild",
   "aheadTitle": "Her er {name} stadig foran",
   "purposeTitle": "Udeladt med vilje",
@@ -227,7 +227,7 @@
   },
   "pip": {
    "label": "Billede i billede",
-   "why": "En fremviser til at kigge igennem, ikke en afspiller til at se med ved siden af."
+   "why": "Lavet til at kigge mapper igennem; til at se noget ved siden af passer en videoafspiller bedre."
   },
   "music_mode": {
    "label": "Lydfiler, musiktilstand",
@@ -246,7 +246,7 @@
    "how": "De samme skydere som til fotos."
   },
   "quicklook_mkv_thumbnails": {
-   "label": "Miniaturer i Finder og Lynoversigt til MKV og mere",
+   "label": "Miniaturer i Finder og funktionen Vis til MKV og mere",
    "how": "MKV, WebM, WMV, FLV og VOB får miniaturer i Finder.",
    "note": "MKV, WebM, WMV, FLV, Ogg, VOB"
   },
@@ -293,11 +293,11 @@
   },
   "image_editing": {
    "label": "Redigerer billeder (beskær, skalér, gem)",
-   "why": "En fremviser, ikke et billedbehandlingsprogram: Dine filer forbliver, som de er."
+   "why": "Viser billeder uden at ændre dem: Dine filer forbliver, som de er."
   },
   "batch_convert": {
    "label": "Konvertér eller omdøb i bunker",
-   "why": "En fremviser, ikke et konverteringsprogram."
+   "why": "Konvertering og omdøbning i bunker overlader Schnellbild til andre apps."
   },
   "library_catalog": {
    "label": "Bibliotek, katalog, tags, bedømmelser",
@@ -360,7 +360,7 @@
   "5kplayer": {
    "name": "5KPlayer",
    "vendor": "Digiarty Software",
-   "summary": "Gratis alt-i-en-medieafspiller til Mac og Windows, der afspiller video, musik, dvd'er og radio, modtager AirPlay-spejling, streamer via DLNA og henter onlinevideoer. Styrken er de mange ekstrafunktioner omkring afspilningen.",
+   "summary": "Gratis alt-i-en-medieafspiller til Mac og Windows, der afspiller video, musik, dvd'er og radio, modtager AirPlay-spejling, streamer via DLNA og henter onlinevideoer.",
    "wins": [
     "AirPlay-modtager og optagelse af skærmspejling",
     "DLNA-server/-renderer",
@@ -412,9 +412,9 @@
     "multiple_windows": "Faner i ét vindue, huskes mellem sessioner",
     "bookmarks": "Faner, gemte søgninger; Windows: op til fem billedkurve",
     "img_psd_exr": "PSD ja; OpenEXR ikke nævnt",
-    "img_svg_pdf": "SVG på Windows; PDF kun i Windows Professional/Ultimate; Mac via Lynoversigt",
+    "img_svg_pdf": "SVG på Windows; PDF kun i Windows Professional/Ultimate; Mac via funktionen Vis",
     "img_animated": "Animeret GIF og WebP; ikke animeret AVIF",
-    "video_native": "Windows afspiller MP4/MOV/M4V/AVI/WMV; Mac viser videoer i Lynoversigt",
+    "video_native": "Windows afspiller MP4/MOV/M4V/AVI/WMV; Mac viser videoer i funktionen Vis",
     "video_mkv_avi_webm": "Windows: AVI, WMV, ASF; ingen MKV, WebM, FLV",
     "music_mode": "Windows læser MP3, WAV, WMA, M4A",
     "archives_as_folders": "Windows: ZIP, RAR (ikke RAR5), TAR, GZ, CAB, ARJ m.fl.; ingen 7z; ikke på Mac",
@@ -426,12 +426,12 @@
   "adobe-bridge": {
    "name": "Adobe Bridge",
    "vendor": "Adobe",
-   "summary": "Adobe Bridge er en gratis organisering af kreative filer til at gennemse mapper med fotos, designfiler og video med fyldige eksempler. Den tilføjer metadata, nøgleord, bedømmelser, samlinger, omdøbning i bunker og eksport og er knudepunktet for Photoshop, Camera Raw og andre Creative Cloud-apps.",
+   "summary": "Adobe Bridge er en gratis organisering af kreative filer til at gennemse mapper med fotos, designfiler og video med eksempler. Den tilføjer metadata, nøgleord, bedømmelser, samlinger, omdøbning i bunker og eksport og sender filer videre til Photoshop, Camera Raw og andre Creative Cloud-apps.",
    "wins": [
     "Eksempler af Adobe-formater (PSD, AI, INDD, After Effects, Substance 3D) og PDF",
     "Fuld redigering af metadata, nøgleord, etiketter, bedømmelser, samlinger og smarte samlinger",
     "Omdøbning i bunker, Eksport-panel og arbejdsgange til masse-konvertering",
-    "Tæt integration med Camera Raw, Photoshop, Premiere og Creative Cloud Libraries",
+    "Arbejder sammen med Camera Raw, Photoshop, Premiere og Creative Cloud Libraries",
     "PDF-kontaktark, udgivelse til Adobe Stock og Portfolio",
     "Windows-version"
    ],
@@ -471,7 +471,7 @@
    "wins": [
     "Frasortering: valg, bedømmelser, Focus Score, AI-bedømmelse, stakke",
     "HDR-visning af RAW og HDR-eksport",
-    "Grundig redigering af EXIF/IPTC/XMP, nøgleord, GPS-kort",
+    "Redigering af EXIF/IPTC/XMP, nøgleord, GPS-kort",
     "Import fra hukommelseskort",
     "Eksterne SRT-undertekster",
     "Automatisering med AppleScript"
@@ -533,7 +533,7 @@
    }
   },
   "apple-preview": {
-   "name": "Apple Eksempel",
+   "name": "Apple Billedfremviser",
    "vendor": "Apple",
    "summary": "Apples indbyggede fremviser til PDF'er og billeder på alle Mac'er. Stærk til PDF'er, noter, underskrifter og hurtige billedrettelser som beskæring, skalering og formatkonvertering.",
    "wins": [
@@ -543,13 +543,13 @@
     "Åbner 3D-filer"
    ],
    "price": "Gratis (følger med macOS)",
-   "version": "Eksempel 11.0 på macOS Golden Gate 27.2.1",
+   "version": "Billedfremviser 11.0 på macOS Golden Gate 27.2.1",
    "updated": "2026-11-09 (macOS 27.2.1)",
    "platforms": "macOS",
    "notes": {
     "thumbnail_grid": "Miniaturer/kontaktark af de filer eller sider, der er åbne i ét vindue; ingen mappeeksempler",
     "img_svg_pdf": "PDF er kerneformatet; SVG ikke dokumenteret",
-    "img_animated": "Viser billederne i en animeret GIF som stillbilleder; Apple henviser til Lynoversigt",
+    "img_animated": "Viser billederne i en animeret GIF som stillbilleder; Apple henviser til funktionen Vis",
     "slideshow": "Lysbilledshow af siderne i en PDF",
     "manga_two_page": "To sider-visning til PDF'er; ingen højre-mod-venstre-tilstand",
     "rename_trash": "Omdøber/flytter den åbne fil via vinduestitlen; ingen papirkurv eller ny mappe",
@@ -639,16 +639,16 @@
     "languages_20": "14 sprog; sproget kan vælges",
     "thumbnail_grid": "Visningen »Thumbs«; ingen mappeeksempler",
     "network_shares_fast": "SMB, FTP og sky understøttes; intet om hastighed",
-    "img_modern_formats": "Via Lynoversigt/fremviser med macOS' codecs; ingen egentlig billedfremviser",
-    "img_raw": "Via Lynoversigt, dvs. macOS' RAW-understøttelse; ingen egen dekoder",
-    "keyboard_paging": "Via Lynoversigt (F3-medietilstand), piletaster gennem markerede emner",
-    "zoom_rotate": "Zoom kun via Lynoversigt; F3-billedtilstand uden dokumenteret zoom",
+    "img_modern_formats": "Via funktionen Vis/fremviser med macOS' codecs; ingen egentlig billedfremviser",
+    "img_raw": "Via funktionen Vis, dvs. macOS' RAW-understøttelse; ingen egen dekoder",
+    "keyboard_paging": "Via funktionen Vis (F3-medietilstand), piletaster gennem markerede emner",
+    "zoom_rotate": "Zoom kun via funktionen Vis; F3-billedtilstand uden dokumenteret zoom",
     "file_info_exif": "Vis info: størrelse, datoer, tilladelser; EXIF/codecs ikke dokumenteret",
     "wrong_extension_note": "Genkender formatet på indholdet, men gør ikke opmærksom på forkert endelse",
     "photos_videos_one_grid": "»Thumbs« viser eksempler af alle filer; ingen mappeeksempler",
-    "music_mode": "Medietilstand afspiller lyd via Lynoversigt",
+    "music_mode": "Medietilstand afspiller lyd via funktionen Vis",
     "archives_as_folders": "Gratis: kun ZIP; PRO ($29.99): 7z, TAR læs/skriv, RAR/ISO/XAR kun læs",
-    "videos_in_archives": "Eksempel af filer i arkiver via Lynoversigt, ingen afspiller",
+    "videos_in_archives": "Eksempel af filer i arkiver via funktionen Vis, ingen afspiller",
     "library_catalog": "Kun Finder-tags",
     "cloud_sync": "Kun PRO: Dropbox, Google Drive, OneDrive, S3, WebDAV, FTP/SFTP m.fl.",
     "shortcut_cheatsheet": "Genvejsliste i indstillingerne; ingen til udskrift",
@@ -660,12 +660,12 @@
    "vendor": "coo og ysmx-forken",
    "summary": "Veletableret japansk manga- og tegneseriefremviser til Mac, nu holdt i live som en aktivt opdateret open source-fork med universal binary. Åbner mapper, PDF'er og næsten ethvert arkiv (ZIP, RAR, 7z, LHA, delte og adgangskodebeskyttede arkiver) som en bog, med opslag fra højre mod venstre, sidebogmærker, frit valgte taster og musehandlinger og Finder-miniaturer af tegneseriearkiver.",
    "wins": [
-    "Egentlig mangalæser: opslag fra højre mod venstre med automatisk genkendelse af enkeltsider, gemt pr. bog",
+    "Mangalæser: opslag fra højre mod venstre med automatisk genkendelse af enkeltsider, gemt pr. bog",
     "Navngivne sidebogmærker og husket seneste side pr. bog",
     "Alle taster og musehandlinger kan tildeles, standard til én hånd",
     "Åbner et væld af arkivformater, også delte RAR/ZIP og adgangskodebeskyttede arkiver",
     "Core Image-visningsfiltre, lup",
-    "Finder-miniaturer og Lynoversigt til CBZ/CBR/ZIP/RAR/7z"
+    "Finder-miniaturer og funktionen Vis til CBZ/CBR/ZIP/RAR/7z"
    ],
    "price": "Gratis",
    "version": "1.7.1 (ysmx-fork); den oprindelige coo-ona-udgave stoppede ved 1.2b25 (2020)",
@@ -750,19 +750,19 @@
    "updated": "2026-11-08",
    "platforms": "macOS, Windows, Linux, FreeBSD",
    "notes": {
-    "thumbnail_grid": "Miniaturevisning (Lynoversigt på macOS); mapper som ikoner, ingen eksempler",
+    "thumbnail_grid": "Miniaturevisning (funktionen Vis på macOS); mapper som ikoner, ingen eksempler",
     "network_shares_fast": "SMB/netværk via plugins; hastighed ikke dokumenteret",
     "multiple_windows": "Faner i to paneler; fremviser/editor i egne vinduer",
-    "img_modern_formats": "På macOS via det medfølgende Lynoversigt-plugin",
-    "img_raw": "Windows via WIC-codecs; macOS via Lynoversigt-plugin",
+    "img_modern_formats": "På macOS via det medfølgende plugin til funktionen Vis",
+    "img_raw": "Windows via WIC-codecs; macOS via plugin til funktionen Vis",
     "img_psd_exr": "PSD indbygget; OpenEXR ikke nævnt",
     "img_svg_pdf": "SVG indbygget; PDF via plugin",
     "img_animated": "Animeret GIF med billedkontrol; APNG/animeret WebP ikke nævnt",
     "slideshow": "Kun i fuldskærmsfremviseren, aktuel mappe, 1 til 25 s pr. billede",
     "file_info_exif": "Indbygget Exif-plugin (JPEG: dato, størrelse, retning, kamera)",
-    "video_native": "Ingen egen afspiller: via Lynoversigt (macOS), WMP (Windows), MPlayer (Linux)",
-    "video_mkv_avi_webm": "På macOS kun det, Lynoversigt kan afspille",
-    "photos_videos_one_grid": "Miniaturevisning med systemets miniaturer (Lynoversigt på macOS)",
+    "video_native": "Ingen egen afspiller: via funktionen Vis (macOS), WMP (Windows), MPlayer (Linux)",
+    "video_mkv_avi_webm": "På macOS kun det, funktionen Vis kan afspille",
+    "photos_videos_one_grid": "Miniaturevisning med systemets miniaturer (funktionen Vis på macOS)",
     "music_mode": "Afspiller én lydfil ad gangen i fremviseren",
     "archives_as_folders": "ZIP, TAR, GZ indbygget, RAR via UnRAR-plugin; 7z kræver ekstern 7zz på macOS",
     "comics_cbz_cbr": "Ingen tegneserielæser; CBZ/CBR åbner som mapper, når de tildeles pakkeplugins",
@@ -838,7 +838,7 @@
   "faststone-image-viewer": {
    "name": "FastStone Image Viewer",
    "vendor": "FastStone Soft",
-   "summary": "FastStone Image Viewer er en mangeårig billedbrowser til Windows med et mappetræ som i Stifinder, en gennemført fuldskærmstilstand med paneler, der glider frem, og mange redigerings- og bunkeværktøjer. Den afspiller også videoer via Windows' codecs og gemmer tags og bedømmelser i sin egen database.",
+   "summary": "FastStone Image Viewer er en mangeårig billedbrowser til Windows med et mappetræ som i Stifinder, en fuldskærmstilstand med paneler, der glider frem, og mange redigerings- og bunkeværktøjer. Den afspiller også videoer via Windows' codecs og gemmer tags og bedømmelser i sin egen database.",
    "wins": [
     "Redigeringsværktøjer: kurver, niveauer, klonestempel, reparationspensel, røde øjne",
     "Sammenlign op til fire billeder side om side",
@@ -853,9 +853,9 @@
    "platforms": "Windows"
   },
   "finder-quick-look": {
-   "name": "Finder og Lynoversigt",
+   "name": "Finder og Vis",
    "vendor": "Apple",
-   "summary": "Mac'ens filhåndtering med Lynoversigt, et eksempel med mellemrumstasten af næsten enhver fil. Fint til et hurtigt kig på et billede eller en MP4 og til daglig filhåndtering.",
+   "summary": "Mac'ens filhåndtering med funktionen Vis, et eksempel med mellemrumstasten af næsten enhver fil. Fint til et hurtigt kig på et billede eller en MP4 og til daglig filhåndtering.",
    "wins": [
     "Indbygget i macOS, virker til næsten alle filtyper",
     "Tags, smarte mapper, Spotlight-søgning",
@@ -869,13 +869,13 @@
    "notes": {
     "thumbnail_grid": "Symbolvisning med miniaturer af filer; mapper som mappesymboler, ikke eksempler af indholdet",
     "network_shares_fast": "Forbinder til SMB/servere; hastighed på store drev ikke dokumenteret",
-    "img_animated": "Lynoversigt afspiller animerede GIF'er; APNG/animeret WebP ikke dokumenteret",
-    "music_mode": "Lynoversigt afspiller og forkorter lydfiler",
-    "image_editing": "Lynoversigt: drej og Markering; hurtige handlinger",
+    "img_animated": "Funktionen Vis afspiller animerede GIF'er; APNG/animeret WebP ikke dokumenteret",
+    "music_mode": "Funktionen Vis afspiller og forkorter lydfiler",
+    "image_editing": "Funktionen Vis: drej og Markering; hurtige handlinger",
     "library_catalog": "Tags og smarte mapper, ingen bedømmelser",
     "custom_shortcuts": "Appgenveje til menukommandoer",
     "boss_key": "⌘H / ⌥⌘H skjuler apps; ingen egentlig chefknap",
-    "app_sandbox": "Lynoversigts fremviser er i sandbox, Finder selv er ikke"
+    "app_sandbox": "Fremviseren i funktionen Vis er i sandbox, Finder selv er ikke"
    }
   },
   "flowvision": {
@@ -928,13 +928,13 @@
     "thumbnail_grid": "Symbolvisning med eksempler; ingen mappeeksempler",
     "network_shares_fast": "SMB, AFP, NFS, SFTP, sky understøttes; intet om hastighed i store mapper",
     "img_modern_formats": "Eksempelpanel via macOS (som systemet læser dem)",
-    "img_raw": "Kun eksempelpanel/Lynoversigt med macOS' RAW-understøttelse; ingen egen dekoder",
+    "img_raw": "Kun eksempelpanel/funktionen Vis med macOS' RAW-understøttelse; ingen egen dekoder",
     "img_svg_pdf": "PDF i eksempelpanelet; SVG kun som macOS viser det",
-    "zoom_rotate": "Zoom kun i macOS' Lynoversigt; ingen egen fremviser",
+    "zoom_rotate": "Zoom kun i macOS' funktion Vis; ingen egen fremviser",
     "video_mkv_avi_webm": "Kun med tredjepartsplugin »QuickLook Video«",
     "music_mode": "Afspiller lyd i eksempelpanelet, ingen musiktilstand",
     "archive_passwords": "Laver adgangskodebeskyttede ZIP; åbning af krypterede arkiver ikke dokumenteret",
-    "videos_in_archives": "Lynoversigt i arkiver er muligt; ingen afspiller",
+    "videos_in_archives": "Funktionen Vis i arkiver er muligt; ingen afspiller",
     "batch_convert": "Multiomdøbning med regex og metadata; ingen konvertering af billeder",
     "library_catalog": "Kun Finder-tags; ingen bedømmelser eller database"
    }
@@ -993,8 +993,8 @@
    "summary": "GraphicConverter er Mac'ens mangeårige »lommekniv til billeder«: fil- og billedbrowser, lysbilledshow, editor og bunkekonverter, der åbner omkring 200 formater. Browseren afspiller også QuickTime-kompatible film og lyd, håndterer omfattende metadata og har dubletsøgning, flad visning og Spotlight-søgning.",
    "wins": [
     "Åbner ca. 200 billedformater, eksporterer ca. 80, også gamle og videnskabelige formater",
-    "Fuld billededitor og stærk bunkekonvertering med handlinger",
-    "Grundig redigering af metadata (EXIF/IPTC/XMP, ansigter, GPS-kort)",
+    "Fuld billededitor og bunkekonvertering med handlinger",
+    "Redigering af metadata (EXIF/IPTC/XMP, ansigter, GPS-kort)",
     "Mange muligheder i lysbilledshowet (overgange, tilfældig rækkefølge, metadata, sortering undervejs)",
     "Liste-, Cover Flow- og miniaturevisning, flad visning af alle undermapper",
     "Dubletsøgning, kontaktark, webgallerier",
@@ -1323,13 +1323,13 @@
   "marta": {
    "name": "Marta",
    "vendor": "Yan Zhulanow",
-   "summary": "Indbygget, tastaturcentreret filhåndtering med to paneler skrevet i Swift, konfigureret via et tekstbaseret DSL og udvidelig med Lua-plugins. Åbner mange arkivformater som mapper; viser eksempler af filer via Lynoversigt.",
+   "summary": "Indbygget, tastaturcentreret filhåndtering med to paneler skrevet i Swift, konfigureret via et tekstbaseret DSL og udvidelig med Lua-plugins. Åbner mange arkivformater som mapper; viser eksempler af filer via funktionen Vis.",
    "wins": [
     "Lua-plugin-API og tekstbaseret konfiguration",
     "Commander-arbejdsgang med F-taster og Action Panel",
     "Arkivunderstøttelse, også arkiver i arkiver, ZIP læs/skriv",
     "Indbygget terminal med mappesynkronisering, analyse af diskforbrug",
-    "Look Up med rige Spotlight-prædikater"
+    "Look Up med Spotlight-prædikater"
    ],
    "price": "Gratis i betaperioden; betalt licens planlagt efter beta (Patreon-støtter med $15+ får en permanent licens)",
    "version": "0.8.2",
@@ -1338,15 +1338,15 @@
    "notes": {
     "free": "Gratis i betaperioden; en betalt licens er annonceret",
     "regex_search": "Hurtigvalg/hurtigsøgning i den aktuelle liste med regex; Look Up bruger prædikater",
-    "img_modern_formats": "Kun Lynoversigt (mellemrum); ingen egen fremviser",
-    "img_raw": "Kun Lynoversigt (mellemrum); ingen egen fremviser",
-    "img_psd_exr": "Kun Lynoversigt (mellemrum); ingen egen fremviser",
-    "img_svg_pdf": "Kun Lynoversigt (mellemrum); ingen egen fremviser",
-    "img_animated": "Kun Lynoversigt (mellemrum); ingen egen fremviser",
-    "zoom_rotate": "Kun zoom i Lynoversigt; fuldskærmsvisning er et åbent ønske",
-    "video_native": "Lynoversigt afspiller MP4/MOV",
-    "video_mkv_avi_webm": "Kun det, Lynoversigt kan afspille; formater ikke angivet",
-    "music_mode": "Lynoversigt afspiller én lydfil; ingen afspilning gennem en mappe",
+    "img_modern_formats": "Kun funktionen Vis (mellemrum); ingen egen fremviser",
+    "img_raw": "Kun funktionen Vis (mellemrum); ingen egen fremviser",
+    "img_psd_exr": "Kun funktionen Vis (mellemrum); ingen egen fremviser",
+    "img_svg_pdf": "Kun funktionen Vis (mellemrum); ingen egen fremviser",
+    "img_animated": "Kun funktionen Vis (mellemrum); ingen egen fremviser",
+    "zoom_rotate": "Kun zoom i funktionen Vis; fuldskærmsvisning er et åbent ønske",
+    "video_native": "Funktionen Vis afspiller MP4/MOV",
+    "video_mkv_avi_webm": "Kun det, funktionen Vis kan afspille; formater ikke angivet",
+    "music_mode": "Funktionen Vis afspiller én lydfil; ingen afspilning gennem en mappe",
     "archives_as_folders": "ZIP læs/skriv; TAR, 7Z, ISO m.fl. kun læs; RAR begrænset, ingen RAR5",
     "comics_cbz_cbr": "Ingen tegneserielæser; ekstra ZIP-endelser (fx cbz) kan registreres",
     "shortcut_cheatsheet": "Dokumentationen viser standardtaster; ingen til udskrift"
@@ -1429,7 +1429,7 @@
    "platforms": "Windows, Android"
   },
   "microsoft-photos": {
-   "name": "Microsoft Fotos",
+   "name": "Microsoft Billeder",
    "vendor": "Microsoft",
    "summary": "Foto- og videoappen, der følger med Windows: en galleri-tidslinje på tværs af pc-mapper, OneDrive og iCloud, en hurtig fremviser, der blader gennem en mappe, og en editor med AI-værktøjer. God til at kigge og hurtige rettelser; Photos Legacy beholder den ældre videoeditor og lysbilledshowfunktion. Ingen arkiver, ingen filhåndtering.",
    "wins": [
@@ -1448,9 +1448,9 @@
   "movist-pro": {
    "name": "Movist Pro",
    "vendor": "Movist",
-   "summary": "En gennemført betalt videoafspiller til film og serier med stærk håndtering af undertekster (flere spor på én gang, stil pr. sprog), HDR/Dolby Vision-tonemapping og AirPlay af alle formater. Pro tilføjer netværksservere, YouTube og webmedier samt billede i billede.",
+   "summary": "En betalt videoafspiller til film og serier med stærk håndtering af undertekster (flere spor på én gang, stil pr. sprog), HDR/Dolby Vision-tonemapping og AirPlay af alle formater. Pro tilføjer netværksservere, YouTube og webmedier samt billede i billede.",
    "wins": [
-    "Avanceret stil på undertekster og dobbelte undertekster",
+    "Stilarter på undertekster og dobbelte undertekster",
     "HDR- og Dolby Vision-tonemapping",
     "AirPlay af formater, Apple TV ikke selv kan afspille",
     "Netværksservere (SMB, SFTP, FTP, WebDAV), YouTube, PiP (Pro)",
@@ -1509,9 +1509,9 @@
   "mpv": {
    "name": "mpv",
    "vendor": "mpv-projektet",
-   "summary": "mpv er en minimal, scriptbar medieafspiller til kommandolinjen med gengivelse i topkvalitet og meget bred formatunderstøttelse. Den konfigureres via tekstfiler og Lua/JS-scripts og har kun en lille kontrol på skærmen.",
+   "summary": "mpv er en minimal, scriptbar medieafspiller til kommandolinjen med GPU-gengivelse (HDR, Dolby Vision) og meget bred formatunderstøttelse. Den konfigureres via tekstfiler og Lua/JS-scripts og har kun en lille kontrol på skærmen.",
    "wins": [
-    "Videogengivelse i særklasse (gpu-next, HDR, Dolby Vision)",
+    "Videogengivelse med gpu-next, HDR og Dolby Vision",
     "Ekstremt konfigurerbar via mpv.conf, input.conf og scripts",
     "Afspiller medier direkte fra ZIP/RAR/7z og RAR i flere dele",
     "På tværs af platforme (macOS, Windows, Linux)",
@@ -1541,7 +1541,7 @@
    "vendor": "neelabo",
    "summary": "Fremviser i bogstil til Windows, der behandler mapper og arkiver som bøger og billeder som sider. Meget konfigurerbar: hver handling er en kommando med egne taster, musebevægelser og scripts, plus bogreol, bogmærker, afspilningslister og dobbeltsideopslag til manga. Videoer afspilles via Windows eller en installeret VLC.",
    "wins": [
-    "Ekstremt dyb tilpasning: kommandoer, bevægelser, JavaScript-scripting",
+    "Hver handling kan indstilles: kommandoer, bevægelser, JavaScript-scripting",
     "Dobbeltsideopslag med læsning fra højre mod venstre og opdeling af sider",
     "Arkiver i arkiver og arkivadgangskoder (via 7z.dll)",
     "Gemte afspilningslister, historik og søgning med operatorer for dato, størrelse og regex",
@@ -1685,7 +1685,7 @@
   "panels": {
    "name": "Panels",
    "vendor": "Produkt Studio",
-   "summary": "Panels er en gennemført tegneserielæser til iPhone, iPad og Mac med forsidebibliotek, læseforudindstillinger, visning felt for felt og OPDS til Komga/Kavita. Avancerede funktioner som skybiblioteker, sidefiltre og tekstgenkendelse kræver Premium.",
+   "summary": "Panels er en tegneserielæser til iPhone, iPad og Mac med forsidebibliotek, læseforudindstillinger, visning felt for felt og OPDS til Komga/Kavita. Avancerede funktioner som skybiblioteker, sidefiltre og tekstgenkendelse kræver Premium.",
    "wins": [
     "Synkroniseret bibliotek og fremdrift mellem Mac, iPhone og iPad",
     "OPDS-streaming (Komga, Kavita, Calibre)",
@@ -1736,14 +1736,14 @@
     "thumbnail_grid": "Symbolvisning for billeder; ingen mappeeksempler",
     "regex_search": "Navn »matcher mønster« (jokertegn); regex ikke dokumenteret",
     "network_shares_fast": "Hurtigere eksempler på netværksdrev; intet generelt om hastighed",
-    "img_modern_formats": "Eksempelmodul/Lynoversigt med macOS' codecs; ingen egentlig fremviser",
+    "img_modern_formats": "Eksempelmodul/funktionen Vis med macOS' codecs; ingen egentlig fremviser",
     "img_raw": "Via macOS; ARW-eksempel tilføjet i 26.1.8",
-    "img_animated": "Animeret GIF i Lynoversigt; APNG og WebP ikke dokumenteret",
-    "zoom_rotate": "Kun zoom i Lynoversigt",
-    "slideshow": "Intet eget lysbilledshow; Lynoversigt kan vise et udvalg som show",
+    "img_animated": "Animeret GIF i funktionen Vis; APNG og WebP ikke dokumenteret",
+    "zoom_rotate": "Kun zoom i funktionen Vis",
+    "slideshow": "Intet eget lysbilledshow; funktionen Vis kan vise et udvalg som show",
     "file_info_exif": "Infopanel med mål, varighed og macOS-metadata; codecs/bithastighed ikke dokumenteret",
     "video_mkv_avi_webm": "WebM-eksempel; MKV/AVI ikke nævnt",
-    "music_mode": "Lyd kun i eksempel/Lynoversigt",
+    "music_mode": "Lyd kun i eksempel/funktionen Vis",
     "archive_passwords": "Laver og pakker adgangskodebeskyttede ZIP ud (AES-128/256)",
     "dual_pane": "To paneler, men kopiér/flyt med ⌘C/⌘V/⌘X eller træk; F5/F6 kan tildeles",
     "batch_convert": "Omdøbning i bunker; ingen billedkonvertering",
@@ -1797,7 +1797,7 @@
   "photo-mechanic": {
    "name": "Photo Mechanic",
    "vendor": "Camera Bits",
-   "summary": "Photo Mechanic er et hurtigt værktøj til indlæsning, frasortering og metadata for professionelle fotografer, især inden for presse, sport og bryllupper. Det åbner mapper og hukommelseskort direkte, viser RAW-filer med det samme ud fra deres indlejrede eksempler og er fremragende til billedtekster, IPTC-metadata, nøgleord, omdøbning i bunker og upload under tidspres.",
+   "summary": "Photo Mechanic er et hurtigt værktøj til indlæsning, frasortering og metadata for professionelle fotografer, især inden for presse, sport og bryllupper. Det åbner mapper og hukommelseskort direkte, viser RAW-filer med det samme ud fra deres indlejrede eksempler og er lavet til billedtekster, IPTC-metadata, nøgleord, omdøbning i bunker og upload under tidspres.",
    "wins": [
     "Indlæsning fra flere hukommelseskort på én gang, med omdøbning og metadata under kopieringen",
     "IPTC/XMP-metadata, kodeerstatninger, variabler og strukturerede nøgleord til billedtekster under tidspres",
@@ -1876,7 +1876,7 @@
    "vendor": "ImageTasks",
    "summary": "Minimal billed- og videofremviser, der er vokset til en fotoeditor med masker, fjernelse af objekter og opskalering. Gennemser mapper, fotobiblioteker og ZIP/CBZ-arkiver og afspiller MKV med valg af undertekster og lydspor; søgning, sortering og egne genveje kræver Pixea Plus.",
    "wins": [
-    "Stærk billededitor (masker, fjernelse af objekter, opskalering, LUT'er)",
+    "Billededitor med masker, fjernelse af objekter, opskalering, LUT'er",
     "Redigering og konvertering i bunker",
     "Indlejrede undertekster, lydspor, afspilningshastighed",
     "Åbner Fotos-biblioteker",
@@ -1933,7 +1933,7 @@
    "summary": "Filhåndtering med flere paneler som i Finder med 12 layouts, arbejdsområder, omfattende tilpasning (genvejstaster, genvejsmenu, farver) og regex-søgning. Betalte udvidelser tilføjer gennemsyn af arkiver, server- og skyforbindelser og avanceret omdøbning i bunker.",
    "wins": [
     "Op til 12 panellayouts og gemte arbejdsområder",
-    "Dyb tilpasning af genvejstaster, genvejsmenuer, værktøjslinje, farver",
+    "Tilpasning af genvejstaster, genvejsmenuer, værktøjslinje, farver",
     "Mappesynkronisering, filhash, filskabeloner",
     "Hurtige billedhandlinger (drej, konvertér, fjern baggrund)",
     "Kolonner med videometadata (billedhastighed, datahastighed)"
@@ -1947,10 +1947,10 @@
     "dark_light_setting": "Farveskemaer med lys og mørk tilstand (beta); intet separat valg i appen",
     "languages_20": "Omkring 14 sprog",
     "img_modern_formats": "Eksempel via macOS; kun HEIC nævnt",
-    "zoom_rotate": "Zoom i Lynoversigt; Drej ændrer filen",
-    "slideshow": "»Instant SlideShow« i genvejsmenuen (Lynoversigt i fuld skærm)",
+    "zoom_rotate": "Zoom i funktionen Vis; Drej ændrer filen",
+    "slideshow": "»Instant SlideShow« i genvejsmenuen (funktionen Vis i fuld skærm)",
     "video_mkv_avi_webm": "MKV o.l. via macOS' medieudvidelser",
-    "music_mode": "Kun albumcover-miniaturer og afspilning i Lynoversigt",
+    "music_mode": "Kun albumcover-miniaturer og afspilning i funktionen Vis",
     "archives_as_folders": "Udvidelsen Enhanced Archiver (normalt $4.99): RAR, ZIP, 7z som mapper",
     "comics_cbz_cbr": "Ingen tegneserielæser; CBZ/CBR kan gennemses som arkiver",
     "videos_in_archives": "Eksempel af arkiver i QSpace; ingen afspiller",
@@ -2008,7 +2008,7 @@
   "qview": {
    "name": "qView",
    "vendor": "jurplel (Interverse)",
-   "summary": "qView er en minimal billedfremviser på tværs af platforme uden værktøjslinjer: Den åbner én fil og lader dig bladre gennem resten af mappen. Den starter hurtigt, indlæser nabobilleder på forhånd og understøtter animerede billeder og mange formater via Qt-plugins. Et godt valg for dem, der bare vil have en ren fremviser.",
+   "summary": "qView er en minimal billedfremviser på tværs af platforme uden værktøjslinjer: Den åbner én fil og lader dig bladre gennem resten af mappen. Den starter hurtigt, indlæser nabobilleder på forhånd og understøtter animerede billeder og mange formater via Qt-plugins.",
    "wins": [
     "Ekstremt minimalt vindue uden pynt",
     "Kører også på Windows og Linux og på ældre macOS (10.13+ legacy-version)",
@@ -2034,7 +2034,7 @@
    "vendor": "Gentlemen Coders",
    "summary": "RAW Power er en ikke-destruktiv RAW- og JPEG-editor fra en tidligere leder af Aperture, der kan bruges alene på Finder-mapper, som administration af Apple Fotos-biblioteket eller som redigeringsudvidelse til Fotos. Den har justeringer i Aperture-stil, bedømmelser og flag synkroniseret via iCloud-fotos og eksport i bunker. Producenten henviser nu brugere af macOS 13+ til efterfølgeren Nitro Photo.",
    "wins": [
-    "Stærk ikke-destruktiv RAW/JPEG-redigering (kurver, LUT'er, dybdeeffekt, Boost)",
+    "Ikke-destruktiv RAW/JPEG-redigering (kurver, LUT'er, dybdeeffekt, Boost)",
     "Arbejder direkte på Apple Fotos-biblioteket og synkroniserer via iCloud-fotos",
     "Forudindstillinger og eksport i bunker",
     "Version til iPhone/iPad",
@@ -2096,7 +2096,7 @@
     "Live-tekst: markér, kopiér og læs tekst op på tegneseriesider",
     "RAR i flere dele og arkiver i arkiver åbner som én tegneserie",
     "Læsning af PDF",
-    "Lynoversigt-miniaturer af tegneseriearkiver i Finder"
+    "Miniaturer af tegneseriearkiver i Finder og funktionen Vis"
    ],
    "price": "Gratis (Mac App Store og GitHub)",
    "version": "1.12.0 (GitHub, indsendt til App Store); App Store viser 1.11.0",
@@ -2183,7 +2183,7 @@
    "vendor": "Ghisler Software",
    "summary": "Den mest kendte ortodokse filhåndtering (to paneler) til Windows, udviklet siden 1993. Den er stærk i filhandlinger, arkiver, FTP, multiomdøbning og mappesynkronisering, med fremviseren Lister og plugins til billeder og medier.",
    "wins": [
-    "Moden filhåndtering med to paneler: synkronisér mapper, sammenlign, multiomdøbning, checksummer",
+    "Filhåndtering med to paneler: synkronisér mapper, sammenlign, multiomdøbning, checksummer",
     "Indbygget FTP/FTPS-klient",
     "Kæmpe økosystem af plugins (Lister, pakkeprogrammer, filsystemer)",
     "Lister-afspilleren skifter undertekster, lydspor og hastighed",

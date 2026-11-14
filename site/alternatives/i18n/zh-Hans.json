@@ -3,12 +3,12 @@
   "overviewTitle": "Schnellbild 作为替代软件",
   "overviewSeoTitle": "{names} 的免费 Mac 替代软件 · Schnellbild",
   "overviewDescription": "Schnellbild 与 {count} 款看图软件、视频播放器、漫画阅读器和文件管理器逐项对比，每项都注明来源。免费、开源，适用于 Mac。",
-  "overviewIntro": "<p>Schnellbild 是一款有明确主张的替代软件。用文件夹代替播放列表和图库：打开文件夹，列表就在眼前，幻灯片自己生成播放列表。原则上不碰互联网：无需账户，没有跟踪，完全不联网。而且免费，自定义快捷键也包括在内，别家却要为此收费。</p><p>下面是它与人们在 Mac 上寻找的那些程序的对比，实事求是，每一格都有来源。别的程序做得更好的地方，这里也照实写出。</p>",
+  "overviewIntro": "<p>Schnellbild 是一款有明确主张的替代软件。用文件夹代替播放列表和图库：打开文件夹，列表就在眼前，幻灯片自己生成播放列表。原则上不碰互联网：无需账户，没有跟踪，完全不联网。而且免费，自定义快捷键也包括在内，有些软件却要为此收费。</p><p>下面是它与人们在 Mac 上寻找的那些程序的对比，每一格都有来源。别的程序做得更好的地方，页面上也写明了。</p>",
   "overviewNoMac": "这些程序只能在 Windows 上运行（或已无法在如今的 Mac 上运行）。这里逐一列出它们的用户喜欢什么，以及 Schnellbild 是怎么做的。",
   "matrixH1": "免费的 Mac 版 {name} 替代软件",
   "matrixSeoTitle": "{name} Mac 替代软件，免费 · Schnellbild",
   "matrixDescription": "{name} 还是 Schnellbild？逐项对比并注明来源：哪些方面 {name} 更强，哪些方面 Schnellbild 更强。免费、开源，能播放 MKV，ZIP 和 RAR 像文件夹一样打开。",
-  "matrixLead": "Schnellbild 与 {name} 公平对比：先看各自强在哪里，再逐项列出所有功能及来源。",
+  "matrixLead": "Schnellbild 与 {name} 并排对比：先看各自强在哪里，再逐项列出所有功能及来源。",
   "switcherH1": "想找 {name} Mac 版？这里有替代软件",
   "switcherSeoTitle": "{name} Mac 版？免费替代软件 · Schnellbild",
   "switcherDescription": "在 Mac 上找 {name}？{name} 的用户喜欢什么，Schnellbild 又是怎么免费做到的：文件夹、快捷键、MKV，ZIP 和 RAR 像文件夹一样打开。",
@@ -32,7 +32,7 @@
   "sources": "来源",
   "asOf": "截至 2026 年 11 月：{name} {version}，Schnellbild {ours}。{name} 一栏依据下方来源，Schnellbild 一栏依据其 README 和源代码。",
   "leftOut": "因缺少关于 {name} 的可靠来源而未列出：{total} 项功能中的 {count} 项。",
-  "fileManager": "Schnellbild 不是完整的文件管理器：没有 FTP、SFTP 或云连接，没有文件夹同步，也不能打包归档。但要浏览和整理照片与视频，它是更好的选择：所有文件都有缩略图，双窗格并排显示，F5 拷贝、F6 移动，归档像文件夹一样打开。",
+  "fileManager": "Schnellbild 不是完整的文件管理器：没有 FTP、SFTP 或云连接，没有文件夹同步，也不能打包归档。它是为浏览和整理照片与视频而做的：所有文件都有缩略图，双窗格并排显示，F5 拷贝、F6 移动，归档像文件夹一样打开。",
   "likedTitle": "{name} 的用户喜欢什么，Schnellbild 又是怎么做的",
   "aheadTitle": "{name} 依然领先的地方",
   "purposeTitle": "有意不做的功能",
@@ -227,7 +227,7 @@
   },
   "pip": {
    "label": "画中画",
-   "why": "这是用来翻看的查看器，不是边干别的边看的播放器。"
+   "why": "它为翻看文件夹而做；想边干别的边看，视频播放器更合适。"
   },
   "music_mode": {
    "label": "音频文件，音乐模式",
@@ -293,11 +293,11 @@
   },
   "image_editing": {
    "label": "编辑图像（裁剪、调整大小、保存）",
-   "why": "这是查看器，不是图像编辑器：你的文件保持原样。"
+   "why": "只显示图片，不做修改：你的文件保持原样。"
   },
   "batch_convert": {
    "label": "批量转换或重新命名",
-   "why": "这是查看器，不是转换工具。"
+   "why": "批量转换和批量重命名交给其他应用。"
   },
   "library_catalog": {
    "label": "图库、目录、标签、评分",
@@ -360,7 +360,7 @@
   "5kplayer": {
    "name": "5KPlayer",
    "vendor": "Digiarty Software",
-   "summary": "免费的 Mac 和 Windows 全能媒体播放器：播放视频、音乐、DVD 和电台，可接收 AirPlay 镜像，通过 DLNA 串流，还能下载在线视频。它的长处是播放之外的丰富附加功能。",
+   "summary": "免费的 Mac 和 Windows 全能媒体播放器：播放视频、音乐、DVD 和电台，可接收 AirPlay 镜像，通过 DLNA 串流，还能下载在线视频。",
    "wins": [
     "AirPlay 接收和屏幕镜像录制",
     "DLNA 服务器/渲染器",
@@ -426,12 +426,12 @@
   "adobe-bridge": {
    "name": "Adobe Bridge",
    "vendor": "Adobe",
-   "summary": "Adobe Bridge 是一款免费的创意资产管理器，可浏览装满照片、设计文件和视频的文件夹，预览丰富。它能添加元数据、关键字、评分、收藏集，批量重命名和导出，是 Photoshop、Camera Raw 和其他 Creative Cloud 应用的中枢。",
+   "summary": "Adobe Bridge 是一款免费的创意资产管理器，可带预览浏览装满照片、设计文件和视频的文件夹。它能添加元数据、关键字、评分、收藏集，批量重命名和导出，并能把文件交给 Photoshop、Camera Raw 和其他 Creative Cloud 应用。",
    "wins": [
     "可预览 Adobe 格式（PSD、AI、INDD、After Effects、Substance 3D）和 PDF",
     "完整的元数据编辑、关键字、标签、评分、收藏集和智能收藏集",
     "批量重命名、导出面板和批量转换工作流程",
-    "与 Camera Raw、Photoshop、Premiere 和 Creative Cloud 库紧密集成",
+    "与 Camera Raw、Photoshop、Premiere 和 Creative Cloud 库配合使用",
     "PDF 联系表，发布到 Adobe Stock 和 Portfolio",
     "有 Windows 版"
    ],
@@ -471,7 +471,7 @@
    "wins": [
     "筛片：挑选、评分、对焦评分、AI 评分、堆叠",
     "HDR RAW 显示和 HDR 导出",
-    "深入的 EXIF/IPTC/XMP 编辑、关键字、GPS 地图",
+    "EXIF/IPTC/XMP 编辑、关键字、GPS 地图",
     "从存储卡导入",
     "外挂 SRT 字幕",
     "AppleScript 自动化"
@@ -838,7 +838,7 @@
   "faststone-image-viewer": {
    "name": "FastStone Image Viewer",
    "vendor": "FastStone Soft",
-   "summary": "FastStone Image Viewer 是一款历史悠久的 Windows 看图软件，有类似资源管理器的文件夹树、精致的全屏模式和弹出式面板，以及许多编辑和批量工具。它还能借助 Windows 的编解码器播放视频，并在自己的数据库中保存标签和评分。",
+   "summary": "FastStone Image Viewer 是一款历史悠久的 Windows 看图软件，有类似资源管理器的文件夹树、全屏模式和弹出式面板，以及许多编辑和批量工具。它还能借助 Windows 的编解码器播放视频，并在自己的数据库中保存标签和评分。",
    "wins": [
     "编辑工具：曲线、色阶、仿制图章、修复画笔、去红眼",
     "最多四张图像并排对比",
@@ -957,7 +957,7 @@
    "macNote": "GOM Player 的 Mac 版自 2020 年起一直停留在 1.0.0，为 Intel Mac 构建。"
   },
   "google-photos": {
-   "name": "Google Photos",
+   "name": "Google 相册",
    "vendor": "Google",
    "summary": "Google 的云端照片图库，可从手机自动备份。适合在每台设备上都能看到所有照片、按内容搜索和共享相册。",
    "wins": [
@@ -993,9 +993,9 @@
    "summary": "GraphicConverter 是 Mac 上的老牌“图片瑞士军刀”：集文件和图片浏览器、幻灯片、编辑器和批量转换器于一身，能打开约 200 种格式。它的浏览器还能播放 QuickTime 兼容的影片和音频，元数据处理很全面，并有查找重复、平铺视图和聚焦搜索。",
    "wins": [
     "能打开约 200 种图像格式，导出约 80 种，包括老旧和科学格式",
-    "完整的图像编辑器和带动作的强大批量转换",
-    "深入的元数据编辑（EXIF/IPTC/XMP、人脸、GPS 地图）",
-    "丰富的幻灯片选项（过渡、随机、元数据、放映中排序）",
+    "完整的图像编辑器和带动作的批量转换",
+    "元数据编辑（EXIF/IPTC/XMP、人脸、GPS 地图）",
+    "众多幻灯片选项（过渡、随机、元数据、放映中排序）",
     "列表、Cover Flow 和缩略图视图，所有子文件夹的平铺视图",
     "查找重复、联系表、网页相册",
     "自定义快捷键、14 种语言、浅色/深色设置"
@@ -1329,7 +1329,7 @@
     "Commander 式功能键工作方式和操作面板",
     "支持归档，包括嵌套归档，ZIP 可读写",
     "内嵌终端并同步目录、磁盘占用分析",
-    "Look Up 支持丰富的聚焦谓词"
+    "Look Up 支持聚焦谓词"
    ],
    "price": "测试期间免费；测试结束后计划推出付费许可证（Patreon 上赞助 15 美元以上可获永久许可证）",
    "version": "0.8.2",
@@ -1448,9 +1448,9 @@
   "movist-pro": {
    "name": "Movist Pro",
    "vendor": "Movist",
-   "summary": "一款精致的付费视频播放器，用来看电影和剧集，字幕处理很强（可同时显示多条字幕轨道、按语言设置样式），有 HDR/杜比视界色调映射，任何格式都能 AirPlay。Pro 版增加网络服务器、YouTube 和网页媒体以及画中画。",
+   "summary": "一款付费视频播放器，用来看电影和剧集，字幕处理很强（可同时显示多条字幕轨道、按语言设置样式），有 HDR/杜比视界色调映射，任何格式都能 AirPlay。Pro 版增加网络服务器、YouTube 和网页媒体以及画中画。",
    "wins": [
-    "高级字幕样式和双字幕",
+    "字幕样式和双字幕",
     "HDR 和杜比视界色调映射",
     "可 AirPlay Apple TV 原生不支持的格式",
     "网络服务器（SMB、SFTP、FTP、WebDAV）、YouTube、画中画（Pro）",
@@ -1509,9 +1509,9 @@
   "mpv": {
    "name": "mpv",
    "vendor": "mpv 项目",
-   "summary": "mpv 是一款极简、可脚本化的命令行媒体播放器，渲染质量一流，格式支持极广。通过文本文件和 Lua/JS 脚本配置，只有一个小巧的屏幕控制器。",
+   "summary": "mpv 是一款极简、可脚本化的命令行媒体播放器，支持 GPU 渲染（HDR、杜比视界），格式支持极广。通过文本文件和 Lua/JS 脚本配置，只有一个小巧的屏幕控制器。",
    "wins": [
-    "同类最佳的视频渲染（gpu-next、HDR、杜比视界）",
+    "基于 gpu-next、HDR、杜比视界的视频渲染",
     "可通过 mpv.conf、input.conf 和脚本进行极其细致的配置",
     "直接播放 ZIP/RAR/7z 和分卷 RAR 中的媒体",
     "跨平台（macOS、Windows、Linux）",
@@ -1541,7 +1541,7 @@
    "vendor": "neelabo",
    "summary": "Windows 上的书本式查看器，把文件夹和归档当作书，图片当作页。高度可配置：每个操作都是一条命令，可设按键、鼠标手势和脚本，还有书架、书签、播放列表和双页漫画跨页。视频通过 Windows 或已安装的 VLC 播放。",
    "wins": [
-    "极其深入的自定义：命令、手势、JavaScript 脚本",
+    "每个操作都可设置：命令、手势、JavaScript 脚本",
     "双页跨页，支持从右到左阅读和页面分割",
     "嵌套归档和归档密码（通过 7z.dll）",
     "保存的播放列表、历史记录，搜索支持日期/大小/正则运算符",
@@ -1685,7 +1685,7 @@
   "panels": {
    "name": "Panels",
    "vendor": "Produkt Studio",
-   "summary": "Panels 是一款精致的 iPhone、iPad 和 Mac 漫画阅读器，有封面书库、阅读预设、逐格视图，并支持 Komga/Kavita 的 OPDS。云书库、页面滤镜和文字识别等高级功能需要 Premium。",
+   "summary": "Panels 是一款 iPhone、iPad 和 Mac 漫画阅读器，有封面书库、阅读预设、逐格视图，并支持 Komga/Kavita 的 OPDS。云书库、页面滤镜和文字识别等高级功能需要 Premium。",
    "wins": [
     "书库和阅读进度在 Mac、iPhone 和 iPad 间同步",
     "OPDS 串流（Komga、Kavita、Calibre）",
@@ -1797,7 +1797,7 @@
   "photo-mechanic": {
    "name": "Photo Mechanic",
    "vendor": "Camera Bits",
-   "summary": "Photo Mechanic 是一款面向职业摄影师的快速导入、筛片和元数据工具，尤其适合新闻、体育和婚礼摄影师。它直接打开文件夹和存储卡，借助嵌入的预览瞬间显示 RAW 文件，在截稿时写图片说明、IPTC 元数据、关键字、批量重命名和上传方面表现出色。",
+   "summary": "Photo Mechanic 是一款面向职业摄影师的快速导入、筛片和元数据工具，尤其适合新闻、体育和婚礼摄影师。它直接打开文件夹和存储卡，借助嵌入的预览瞬间显示 RAW 文件，为在截稿时写图片说明、IPTC 元数据、关键字、批量重命名和上传而设计。",
    "wins": [
     "可同时从多张存储卡导入，拷贝时即可重命名和添加元数据",
     "IPTC/XMP 元数据、代码替换、变量和结构化关键字，赶稿时快速写说明",
@@ -1876,7 +1876,7 @@
    "vendor": "ImageTasks",
    "summary": "一款极简的图像和视频查看器，后来发展成带蒙版、移除对象和放大功能的照片编辑器。可浏览文件夹、照片图库和 ZIP/CBZ 归档，能播放 MKV 并选择字幕和音轨；搜索、排序和自定义快捷键需要 Pixea Plus。",
    "wins": [
-    "强大的图像编辑器（蒙版、移除对象、放大、LUT）",
+    "图像编辑器（蒙版、移除对象、放大、LUT）",
     "批量编辑和转换",
     "内嵌字幕、音轨、播放速度",
     "能打开照片图库",
@@ -1933,7 +1933,7 @@
    "summary": "类似访达的多窗格文件管理器，有 12 种布局、工作区，可深度自定义（快捷键、右键菜单、颜色），支持正则搜索。付费扩展增加归档浏览、服务器/云连接和高级批量重命名。",
    "wins": [
     "最多 12 种窗格布局，可保存工作区",
-    "快捷键、右键菜单、工具栏、颜色都可深度自定义",
+    "快捷键、右键菜单、工具栏、颜色都可自定义",
     "文件夹同步、文件哈希、文件模板",
     "快速图像操作（旋转、转换、移除背景）",
     "视频元数据栏位（帧率、数据速率）"
@@ -2008,7 +2008,7 @@
   "qview": {
    "name": "qView",
    "vendor": "jurplel (Interverse)",
-   "summary": "qView 是一款没有工具栏的极简跨平台看图软件：打开一个文件，就能在文件夹中翻看其余图片。它启动快，会预载相邻图片，通过 Qt 插件支持动态图像和多种格式。只想要一个干净的查看器的人，选它不错。",
+   "summary": "qView 是一款没有工具栏的极简跨平台看图软件：打开一个文件，就能在文件夹中翻看其余图片。它启动快，会预载相邻图片，通过 Qt 插件支持动态图像和多种格式。",
    "wins": [
     "极其简洁，窗口没有多余界面",
     "也能在 Windows、Linux 和旧版 macOS 上运行（10.13 及以上的旧版构建）",
@@ -2034,7 +2034,7 @@
    "vendor": "Gentlemen Coders",
    "summary": "RAW Power 是一位前 Aperture 负责人开发的非破坏性 RAW 和 JPEG 编辑器，可独立用于访达文件夹，也可作为 Apple 照片图库管理器或照片编辑扩展使用。它提供 Aperture 风格的调整、通过 iCloud 照片同步的评分/旗标和批量导出。厂商现在建议 macOS 13 及以上的用户改用后继产品 Nitro Photo。",
    "wins": [
-    "强大的非破坏性 RAW/JPEG 编辑（曲线、LUT、景深效果、Boost）",
+    "非破坏性 RAW/JPEG 编辑（曲线、LUT、景深效果、Boost）",
     "直接处理 Apple 照片图库，通过 iCloud 照片同步",
     "批量预设和导出",
     "有 iPhone/iPad 版",
@@ -2183,7 +2183,7 @@
    "vendor": "Ghisler Software",
    "summary": "Windows 上最有名的经典双面板文件管理器，自 1993 年起持续开发。文件操作、归档、FTP、批量重命名和目录同步都很强，有 Lister 查看器以及图像和媒体插件。",
    "wins": [
-    "成熟的双窗格文件管理：目录同步、比较、批量重命名、校验和",
+    "双窗格文件管理：目录同步、比较、批量重命名、校验和",
     "内置 FTP/FTPS 客户端",
     "庞大的插件生态（Lister、打包、文件系统插件）",
     "Lister 播放器可切换字幕/音轨和速度",

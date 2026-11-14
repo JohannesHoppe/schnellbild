@@ -72,7 +72,7 @@
     },
     {
       "title": "Videolar, macOS’in oynatamadığı MKV ve AVI de",
-      "text": "<p>macOS’un kendi oynatabildikleri (MP4, MOV, AVCHD vb.) macOS ile, geri kalan her şey yerleşik VLC motoruyla oynar: MKV, WebM, AVI, WMV, FLV, MPEG, DVD video.</p><ul><li>← → videonun onda biri kadar, ⇧← ⇧→ yüzde biri kadar atlar</li><li>↑ ↓ ses düzeyini ayarlar, tüm videolar için</li><li>Finder ve Hızlı Bakış, MKV, WebM, WMV, FLV ve VOB için de küçük resim alır</li></ul>",
+      "text": "<p>macOS’un kendi oynatabildikleri (MP4, MOV, AVCHD vb.) macOS ile, geri kalan her şey yerleşik VLC motoruyla oynar: MKV, WebM, AVI, WMV, FLV, MPEG, DVD video.</p><ul><li>← → videonun onda biri kadar, ⇧← ⇧→ yüzde biri kadar atlar</li><li>↑ ↓ ses düzeyini ayarlar, tüm videolar için</li><li>Finder ve Göz At, MKV, WebM, WMV, FLV ve VOB için de küçük resim alır</li></ul>",
       "alt": "Schnellbild’de oynayan bir video"
     },
     {
@@ -143,7 +143,7 @@
   "modelsTitle": "Phiewer, IINA veya Norton Commander’dan mı geliyorsunuz?",
   "modelsText": "Örnek alınanlar onlardı: klavyeyle resimlere göz atmak için Phiewer, videoları hızlıca ele almak için IINA, çift bölme için Norton Commander. Schnellbild karşılaştırmada nasıl: <a href=\"{alt:phiewer}\">ücretsiz bir Phiewer alternatifi</a>, <a href=\"{alt:iina}\">videolara göz atmak için ücretsiz bir IINA alternatifi</a>, <a href=\"{alt:norton-commander}\">Norton Commander’dan Mac’e</a>.",
   "altTitle": "Bir alternatif mi arıyorsunuz?",
-  "altText": "Schnellbild, Mac’te aranan programlarla karşılaştırmalı olarak: özellik özellik ve her iddia için bir kaynakla:",
+  "altText": "Schnellbild’in Mac’te aranan programlarla özellik özellik karşılaştırması, her iddia için bir kaynakla:",
   "altAll": "Tüm alternatifler",
   "ossTitle": "Açık kaynak",
   "ossText": "Schnellbild, MIT Lisansı altında özgür bir yazılımdır, kaynak kodu <a href=\"https://github.com/JohannesHoppe/schnellbild\">GitHub’da</a>. Bir hata mı buldunuz ya da bir şey mi eksik? <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">Bir issue açın</a>.",

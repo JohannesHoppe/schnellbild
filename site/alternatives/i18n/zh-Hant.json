@@ -3,12 +3,12 @@
   "overviewTitle": "用 Schnellbild 替代",
   "overviewSeoTitle": "{names} 的免費 Mac 替代軟體 · Schnellbild",
   "overviewDescription": "Schnellbild 與 {count} 款看圖軟體、影片播放器、漫畫閱讀器和檔案管理器逐項比較，附資料來源。免費、開放原始碼，Mac 專用。",
-  "overviewIntro": "<p>Schnellbild 是一款有明確主張的替代軟體。用檔案夾，不用播放清單，也不用圖庫：打開檔案夾，清單就在那裡，幻燈片秀會自己排好播放清單。原則上不碰網路：不需帳號，沒有追蹤，完全不連網。而且免費，連自訂快速鍵也包含在內，別的軟體可是要收費的。</p><p>以下是它與大家在 Mac 上常找的程式之間的比較，誠實呈現，每一格都附資料來源。別的程式做得更好的地方，我們也照實寫出來。</p>",
+  "overviewIntro": "<p>Schnellbild 是一款有明確主張的替代軟體。用檔案夾，不用播放清單，也不用圖庫：打開檔案夾，清單就在那裡，幻燈片秀會自己排好播放清單。原則上不碰網路：不需帳號，沒有追蹤，完全不連網。而且免費，連自訂快速鍵也包含在內，有些軟體可是要收費的。</p><p>以下是它與大家在 Mac 上常找的程式之間的比較，每一格都附資料來源。別的程式做得更好的地方，頁面上也會寫出來。</p>",
   "overviewNoMac": "以下程式只能在 Windows 上執行（或已無法在現今的 Mac 上執行）。每一款都列出它的愛用者喜歡什麼，以及 Schnellbild 怎麼做。",
   "matrixH1": "免費的 Mac 版 {name} 替代軟體",
   "matrixSeoTitle": "{name} Mac 替代軟體，免費 · Schnellbild",
   "matrixDescription": "{name} 還是 Schnellbild？逐項比較，附資料來源：哪裡 {name} 比較強，哪裡 Schnellbild 比較強。免費、開放原始碼，能播 MKV，ZIP 和 RAR 像檔案夾一樣打開。",
-  "matrixLead": "Schnellbild 和 {name} 公平地並排比較：先看各自的強項，再逐項列出每個功能和資料來源。",
+  "matrixLead": "Schnellbild 和 {name} 並排比較：先看各自的強項，再逐項列出每個功能和資料來源。",
   "switcherH1": "{name} 有 Mac 版嗎？這裡有替代方案",
   "switcherSeoTitle": "{name} Mac 版？免費的替代軟體 · Schnellbild",
   "switcherDescription": "在 Mac 上找 {name}？{name} 的愛用者喜歡什麼，Schnellbild 又怎麼免費做到：檔案夾、按鍵、MKV，ZIP 和 RAR 像檔案夾一樣打開。",
@@ -32,7 +32,7 @@
   "sources": "資料來源",
   "asOf": "資料截至 2026 年 11 月：{name} {version}，Schnellbild {ours}。{name} 一欄依據下方的資料來源，Schnellbild 一欄依據其 README 和原始碼。",
   "leftOut": "由於缺乏關於 {name} 的可靠來源而省略：{total} 項功能中的 {count} 項。",
-  "fileManager": "Schnellbild 不是完整的檔案管理器：沒有 FTP、SFTP 或雲端連線，沒有檔案夾同步，也不能建立壓縮檔。但要瀏覽和整理照片與影片，它是更好的選擇：所有東西都有縮圖，雙窗格並排，F5 拷貝、F6 搬移，壓縮檔像檔案夾一樣打開。",
+  "fileManager": "Schnellbild 不是完整的檔案管理器：沒有 FTP、SFTP 或雲端連線，沒有檔案夾同步，也不能建立壓縮檔。它是為瀏覽和整理照片與影片而做的：所有東西都有縮圖，雙窗格並排，F5 拷貝、F6 搬移，壓縮檔像檔案夾一樣打開。",
   "likedTitle": "{name} 的愛用者喜歡什麼，Schnellbild 又怎麼做",
   "aheadTitle": "{name} 仍然領先的地方",
   "purposeTitle": "刻意不做的功能",
@@ -55,7 +55,7 @@
   "windows": "從 Windows 轉過來"
  },
  "jokes": {
-  "image": "恭喜搬到 Mac！照片跟來了，手指的習慣也跟來了，偏偏 {name} 留在舊電腦上看家。別擔心，這種事誰都遇過，也不必一直這樣下去。",
+  "image": "恭喜搬到 Mac！照片跟來了，手指的習慣也跟來了，偏偏 {name} 留在舊電腦上看家。不過，不必一直這樣下去。",
   "video": "新 Mac，老片庫，搬家時唯獨 {name} 沒跟上。你的 MKV 檔還在排隊等著播呢。",
   "comic": "你的漫畫二話不說就跟著搬到了 Mac。{name} 卻沒擠上這班車。",
   "files": "兩個窗格、一排功能鍵，手指的記憶比有些同事的年資還久。然後換了 Mac，{name} 被擋在門外。",
@@ -227,7 +227,7 @@
   },
   "pip": {
    "label": "子母畫面",
-   "why": "是用來瀏覽的檢視器，不是放在一旁邊做事邊看的播放器。"
+   "why": "它為瀏覽檔案夾而做；想邊做事邊看，影片播放器更合適。"
   },
   "music_mode": {
    "label": "音訊檔、音樂模式",
@@ -293,11 +293,11 @@
   },
   "image_editing": {
    "label": "編輯影像（裁切、調整大小、儲存）",
-   "why": "是檢視器，不是影像編輯器：你的檔案保持原樣。"
+   "why": "只顯示影像，不做修改：你的檔案保持原樣。"
   },
   "batch_convert": {
    "label": "批次轉檔或重新命名",
-   "why": "是檢視器，不是轉檔工具。"
+   "why": "批次轉檔和批次重新命名交給其他 App。"
   },
   "library_catalog": {
    "label": "圖庫、目錄、標籤、評分",
@@ -360,7 +360,7 @@
   "5kplayer": {
    "name": "5KPlayer",
    "vendor": "Digiarty Software",
-   "summary": "免費的 Mac 和 Windows 全能媒體播放器，播放影片、音樂、DVD 和廣播，可接收 AirPlay 鏡像，透過 DLNA 串流，還能下載線上影片。它的強項是播放之外的各種附加功能。",
+   "summary": "免費的 Mac 和 Windows 全能媒體播放器，播放影片、音樂、DVD 和廣播，可接收 AirPlay 鏡像，透過 DLNA 串流，還能下載線上影片。",
    "wins": [
     "AirPlay 接收器和螢幕鏡像錄製",
     "DLNA 伺服器/播放端",
@@ -426,12 +426,12 @@
   "adobe-bridge": {
    "name": "Adobe Bridge",
    "vendor": "Adobe",
-   "summary": "Adobe Bridge 是免費的創意素材管理器，用豐富的預覽瀏覽照片、設計檔和影片的檔案夾。它能加入詮釋資料、關鍵字、評分、收藏集，支援批次重新命名和轉存，也是 Photoshop、Camera Raw 等 Creative Cloud App 的中樞。",
+   "summary": "Adobe Bridge 是免費的創意素材管理器，用預覽瀏覽照片、設計檔和影片的檔案夾。它能加入詮釋資料、關鍵字、評分、收藏集，支援批次重新命名和轉存，也能把檔案交給 Photoshop、Camera Raw 等 Creative Cloud App。",
    "wins": [
     "預覽 Adobe 格式（PSD、AI、INDD、After Effects、Substance 3D）和 PDF",
     "完整的詮釋資料編輯、關鍵字、標籤、評分、收藏集和智慧型收藏集",
     "批次重新命名、轉存面板和大量轉檔的工作流程",
-    "與 Camera Raw、Photoshop、Premiere 和 Creative Cloud 資料庫緊密整合",
+    "與 Camera Raw、Photoshop、Premiere 和 Creative Cloud 資料庫搭配使用",
     "PDF 縮圖目錄，可發佈到 Adobe Stock 和 Portfolio",
     "有 Windows 版"
    ],
@@ -471,7 +471,7 @@
    "wins": [
     "挑片：選取、評分、Focus Score、AI 評分、堆疊",
     "HDR RAW 顯示和 HDR 轉存",
-    "深入編輯 EXIF/IPTC/XMP、關鍵字、GPS 地圖",
+    "編輯 EXIF/IPTC/XMP、關鍵字、GPS 地圖",
     "從記憶卡匯入",
     "外部 SRT 字幕",
     "AppleScript 自動化"
@@ -838,7 +838,7 @@
   "faststone-image-viewer": {
    "name": "FastStone Image Viewer",
    "vendor": "FastStone Soft",
-   "summary": "FastStone Image Viewer 是歷史悠久的 Windows 看圖軟體，有類似檔案總管的檔案夾樹、精緻的全螢幕模式和滑出面板，以及許多編輯和批次工具。它也透過 Windows 的解碼器播放影片，並將標籤和評分存在自己的資料庫中。",
+   "summary": "FastStone Image Viewer 是歷史悠久的 Windows 看圖軟體，有類似檔案總管的檔案夾樹、全螢幕模式和滑出面板，以及許多編輯和批次工具。它也透過 Windows 的解碼器播放影片，並將標籤和評分存在自己的資料庫中。",
    "wins": [
     "編輯工具：曲線、色階、仿製印章、修復筆刷、紅眼修正",
     "最多四張影像並排比較",
@@ -993,9 +993,9 @@
    "summary": "GraphicConverter 是歷史悠久的 Mac「影像瑞士刀」：檔案和影像瀏覽器、幻燈片秀、編輯器和批次轉檔工具，能打開約 200 種格式。它的瀏覽器也能播放 QuickTime 相容的影片和音訊，處理大量詮釋資料，還有重複檔案搜尋、平面檢視和 Spotlight 搜尋。",
    "wins": [
     "能打開約 200 種影像格式，轉存約 80 種，包括舊式和科學格式",
-    "完整的影像編輯器和強大的批次轉檔（含動作）",
-    "深入的詮釋資料編輯（EXIF/IPTC/XMP、人臉、GPS 地圖）",
-    "豐富的幻燈片秀選項（轉場、隨機、詮釋資料、播放中排序）",
+    "完整的影像編輯器和批次轉檔（含動作）",
+    "詮釋資料編輯（EXIF/IPTC/XMP、人臉、GPS 地圖）",
+    "眾多幻燈片秀選項（轉場、隨機、詮釋資料、播放中排序）",
     "列表、Cover Flow 和縮圖檢視，所有子檔案夾的平面檢視",
     "重複檔案搜尋、縮圖目錄、網頁相簿",
     "自訂快速鍵、14 種語言、淺色/深色設定"
@@ -1329,7 +1329,7 @@
     "Commander 風格的 F 鍵工作流程和動作面板",
     "支援壓縮檔，包括巢狀壓縮檔，ZIP 可讀寫",
     "內嵌終端機並同步目錄、磁碟用量分析",
-    "Look Up 支援豐富的 Spotlight 條件"
+    "Look Up 支援 Spotlight 條件"
    ],
    "price": "測試期間免費；測試結束後預計推出付費授權（贊助 $15 以上的 Patreon 支持者可獲永久授權）",
    "version": "0.8.2",
@@ -1448,9 +1448,9 @@
   "movist-pro": {
    "name": "Movist Pro",
    "vendor": "Movist",
-   "summary": "精緻的付費影片播放器，用來看電影和影集，字幕處理很強（可同時顯示多條字幕軌道，依語言設定樣式），有 HDR/Dolby Vision 色調對應，任何格式都能 AirPlay。Pro 增加網路伺服器、YouTube 和網頁媒體，以及子母畫面。",
+   "summary": "付費影片播放器，用來看電影和影集，字幕處理很強（可同時顯示多條字幕軌道，依語言設定樣式），有 HDR/Dolby Vision 色調對應，任何格式都能 AirPlay。Pro 增加網路伺服器、YouTube 和網頁媒體，以及子母畫面。",
    "wins": [
-    "進階字幕樣式和雙字幕",
+    "字幕樣式和雙字幕",
     "HDR 和 Dolby Vision 色調對應",
     "可 AirPlay Apple TV 原生不支援的格式",
     "網路伺服器（SMB、SFTP、FTP、WebDAV）、YouTube、子母畫面（Pro）",
@@ -1509,9 +1509,9 @@
   "mpv": {
    "name": "mpv",
    "vendor": "mpv 專案",
-   "summary": "mpv 是極簡、可用腳本控制的命令列媒體播放器，呈現品質一流，格式支援極廣。透過文字檔和 Lua/JS 腳本設定，畫面上只有小小的控制器。",
+   "summary": "mpv 是極簡、可用腳本控制的命令列媒體播放器，支援 GPU 呈現（HDR、Dolby Vision），格式支援極廣。透過文字檔和 Lua/JS 腳本設定，畫面上只有小小的控制器。",
    "wins": [
-    "同級最佳的影片呈現（gpu-next、HDR、Dolby Vision）",
+    "以 gpu-next、HDR、Dolby Vision 呈現影片",
     "可透過 mpv.conf、input.conf 和腳本高度自訂",
     "直接播放 ZIP/RAR/7z 和多卷 RAR 中的媒體",
     "跨平台（macOS、Windows、Linux）",
@@ -1541,7 +1541,7 @@
    "vendor": "neelabo",
    "summary": "Windows 上的書本式檢視器，把檔案夾和壓縮檔當成書，影像當成頁面。高度可設定：每個動作都是指令，可設定自己的按鍵、滑鼠手勢和腳本，另有書架、書籤、播放清單和雙頁漫畫跨頁。影片透過 Windows 或已安裝的 VLC 播放。",
    "wins": [
-    "極深入的自訂：指令、手勢、JavaScript 腳本",
+    "每個操作都能設定：指令、手勢、JavaScript 腳本",
     "雙頁跨頁，支援由右至左閱讀和頁面分割",
     "巢狀壓縮檔和壓縮檔密碼（透過 7z.dll）",
     "儲存播放清單、記錄，以及支援日期/大小/正規表示式條件的搜尋",
@@ -1685,7 +1685,7 @@
   "panels": {
    "name": "Panels",
    "vendor": "Produkt Studio",
-   "summary": "Panels 是精緻的 iPhone、iPad 和 Mac 漫畫閱讀器，有封面書庫、閱讀預設、逐格檢視，支援 Komga/Kavita 的 OPDS。雲端書庫、頁面濾鏡和文字偵測等進階功能需要 Premium。",
+   "summary": "Panels 是 iPhone、iPad 和 Mac 漫畫閱讀器，有封面書庫、閱讀預設、逐格檢視，支援 Komga/Kavita 的 OPDS。雲端書庫、頁面濾鏡和文字偵測等進階功能需要 Premium。",
    "wins": [
     "書庫和閱讀進度在 Mac、iPhone 和 iPad 間同步",
     "OPDS 串流（Komga、Kavita、Calibre）",
@@ -1797,7 +1797,7 @@
   "photo-mechanic": {
    "name": "Photo Mechanic",
    "vendor": "Camera Bits",
-   "summary": "Photo Mechanic 是專業攝影師用的快速匯入、挑片和詮釋資料工具，特別適合新聞、體育和婚禮攝影師。它直接打開檔案夾和記憶卡，靠內嵌預覽立即顯示 RAW 檔，在趕截稿時撰寫圖說、編輯 IPTC 詮釋資料、加關鍵字、批次重新命名和上傳方面表現出色。",
+   "summary": "Photo Mechanic 是專業攝影師用的快速匯入、挑片和詮釋資料工具，特別適合新聞、體育和婚禮攝影師。它直接打開檔案夾和記憶卡，靠內嵌預覽立即顯示 RAW 檔，為趕截稿時撰寫圖說、編輯 IPTC 詮釋資料、加關鍵字、批次重新命名和上傳而設計。",
    "wins": [
     "同時從多張記憶卡匯入，拷貝時即可重新命名和加入詮釋資料",
     "IPTC/XMP 詮釋資料、代碼替換、變數和結構化關鍵字，趕稿時寫圖說很快",
@@ -1876,7 +1876,7 @@
    "vendor": "ImageTasks",
    "summary": "極簡的影像和影片檢視器，後來發展成有遮色片、物件移除和放大解析度的照片編輯器。可瀏覽檔案夾、照片圖庫和 ZIP/CBZ 壓縮檔，播放 MKV 並可選擇字幕和音軌；搜尋、排序和自訂快速鍵需要 Pixea Plus。",
    "wins": [
-    "強大的影像編輯器（遮色片、物件移除、放大解析度、LUT）",
+    "影像編輯器（遮色片、物件移除、放大解析度、LUT）",
     "批次編輯和轉檔",
     "內嵌字幕、音軌、播放速度",
     "可打開照片圖庫",
@@ -1933,7 +1933,7 @@
    "summary": "類似 Finder 的多窗格檔案管理器，有 12 種版面、工作區、深度自訂（快速鍵、右鍵選單、顏色）和正規表示式搜尋。付費延伸功能可增加壓縮檔瀏覽、伺服器/雲端連線和進階批次重新命名。",
    "wins": [
     "最多 12 種窗格版面和已儲存的工作區",
-    "快速鍵、右鍵選單、工具列、顏色都能深度自訂",
+    "快速鍵、右鍵選單、工具列、顏色都能自訂",
     "檔案夾同步、檔案雜湊、檔案範本",
     "快速影像動作（旋轉、轉檔、移除背景）",
     "影片詮釋資料欄位（影格率、資料速率）"
@@ -2008,7 +2008,7 @@
   "qview": {
    "name": "qView",
    "vendor": "jurplel (Interverse)",
-   "summary": "qView 是極簡的跨平台看圖軟體，沒有工具列：打開一個檔案，就能在檔案夾的其餘檔案間翻頁。啟動快速，會預先載入相鄰影像，透過 Qt 外掛支援動態影像和多種格式。適合只想要乾淨檢視器的人。",
+   "summary": "qView 是極簡的跨平台看圖軟體，沒有工具列：打開一個檔案，就能在檔案夾的其餘檔案間翻頁。啟動快速，會預先載入相鄰影像，透過 Qt 外掛支援動態影像和多種格式。",
    "wins": [
     "極簡、無邊框的視窗",
     "也能在 Windows、Linux 和舊版 macOS 上執行（10.13 以上的舊版建置）",
@@ -2034,7 +2034,7 @@
    "vendor": "Gentlemen Coders",
    "summary": "RAW Power 是由前 Aperture 負責人打造的非破壞性 RAW 和 JPEG 編輯器，可單獨用於 Finder 檔案夾、當作 Apple 照片圖庫的管理工具，或作為照片的編輯延伸功能。提供 Aperture 風格的調整、透過 iCloud 照片同步的評分/旗標，以及批次轉存。廠商建議 macOS 13 以上的使用者改用後繼產品 Nitro Photo。",
    "wins": [
-    "強大的非破壞性 RAW/JPEG 編輯（曲線、LUT、景深效果、Boost）",
+    "非破壞性 RAW/JPEG 編輯（曲線、LUT、景深效果、Boost）",
     "直接處理 Apple 照片圖庫，透過 iCloud 照片同步",
     "批次預設和轉存",
     "有 iPhone/iPad 版",
@@ -2183,7 +2183,7 @@
    "vendor": "Ghisler Software",
    "summary": "Windows 上最知名的經典雙窗格檔案管理器，自 1993 年開發至今。檔案操作、壓縮檔、FTP、批次重新命名和目錄同步都很強，還有 Lister 檢視器和處理影像與媒體的外掛。",
    "wins": [
-    "成熟的雙窗格檔案管理：同步目錄、比較、批次重新命名、校驗和",
+    "雙窗格檔案管理：同步目錄、比較、批次重新命名、校驗和",
     "內建 FTP/FTPS 用戶端",
     "龐大的外掛生態系（Lister、壓縮、檔案系統外掛）",
     "Lister 播放器可切換字幕/音訊串流和速度",

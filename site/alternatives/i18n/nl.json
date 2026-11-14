@@ -3,12 +3,12 @@
   "overviewTitle": "Schnellbild als alternatief",
   "overviewSeoTitle": "Gratis Mac-alternatief voor {names} · Schnellbild",
   "overviewDescription": "Schnellbild vergeleken met {count} fotoviewers, videospelers, stripreaders en bestandsbeheerders, functie voor functie en met bronnen. Gratis, open source, voor de Mac.",
-  "overviewIntro": "<p>Schnellbild is een alternatief met een duidelijke mening. Mappen in plaats van afspeellijsten en een bibliotheek: open een map en de lijst staat er, de diavoorstelling maakt de afspeellijst zelf. Niets van internet, uit principe: geen account, geen tracking, helemaal geen netwerk. En gratis, inclusief je eigen toetscombinaties, waar anderen daar geld voor vragen.</p><p>Zo verhoudt hij zich tot de programma’s die mensen op de Mac zoeken, eerlijk en met een bron voor elke cel. Waar een ander programma beter is, staat dat er gewoon.</p>",
+  "overviewIntro": "<p>Schnellbild is een alternatief met een duidelijke mening. Mappen in plaats van afspeellijsten en een bibliotheek: open een map en de lijst staat er, de diavoorstelling maakt de afspeellijst zelf. Niets van internet, uit principe: geen account, geen tracking, helemaal geen netwerk. En gratis, inclusief je eigen toetscombinaties, waar sommige andere programma’s geld voor vragen.</p><p>Zo verhoudt hij zich tot de programma’s die mensen op de Mac zoeken, met een bron voor elke cel. Waar een ander programma beter is, staat dat er ook.</p>",
   "overviewNoMac": "Deze draaien alleen op Windows (of niet meer op een Mac van nu). Per programma: wat de fans er goed aan vonden en hoe Schnellbild dat doet.",
   "matrixH1": "Een gratis alternatief voor {name} op de Mac",
   "matrixSeoTitle": "{name} alternatief voor Mac, gratis · Schnellbild",
   "matrixDescription": "{name} of Schnellbild? Functie voor functie vergeleken, met bronnen: waar {name} sterker is en waar Schnellbild. Gratis, open source, speelt MKV af, opent ZIP en RAR als mappen.",
-  "matrixLead": "Schnellbild en {name} naast elkaar, eerlijk: wat elk beter doet, en daarna elke functie met een bron.",
+  "matrixLead": "Schnellbild en {name} naast elkaar: wat elk beter doet, en daarna elke functie met een bron.",
   "switcherH1": "{name} voor Mac? Dit is het alternatief",
   "switcherSeoTitle": "{name} voor Mac? Gratis alternatief · Schnellbild",
   "switcherDescription": "Zoek je {name} voor de Mac? Wat fans van {name} goed vinden en hoe Schnellbild het doet, gratis: mappen, toetsen, MKV, ZIP en RAR als mappen.",
@@ -32,7 +32,7 @@
   "sources": "Bronnen",
   "asOf": "Stand november 2026: {name} {version}, Schnellbild {ours}. De kolom van {name} komt uit de bronnen hieronder, die van Schnellbild uit de README en de broncode.",
   "leftOut": "Weggelaten bij gebrek aan een betrouwbare bron over {name}: {count} van {total} functies.",
-  "fileManager": "Schnellbild is geen volledige bestandsbeheerder: geen FTP-, SFTP- of cloudverbindingen, geen mappen synchroniseren, geen archieven inpakken. Hij is de betere keus om foto’s en video’s door te kijken en te sorteren: miniaturen van alles, twee panelen naast elkaar met F5 om te kopiëren en F6 om te verplaatsen, archieven die opengaan als mappen.",
+  "fileManager": "Schnellbild is geen volledige bestandsbeheerder: geen FTP-, SFTP- of cloudverbindingen, geen mappen synchroniseren, geen archieven inpakken. Hij is gemaakt om foto’s en video’s door te kijken en te sorteren: miniaturen van alles, twee panelen naast elkaar met F5 om te kopiëren en F6 om te verplaatsen, archieven die opengaan als mappen.",
   "likedTitle": "Wat fans van {name} goed vinden, en hoe dat in Schnellbild werkt",
   "aheadTitle": "Waar {name} voor blijft",
   "purposeTitle": "Bewust weggelaten",
@@ -55,7 +55,7 @@
   "windows": "Overstappers van Windows"
  },
  "jokes": {
-  "image": "Je bent overgestapt op de Mac. De foto’s zijn mee verhuisd, je vingers kennen de sneltoetsen nog, alleen {name} is achtergebleven op de oude pc. Kan de beste overkomen, en zo hoeft het niet te blijven.",
+  "image": "Je bent overgestapt op de Mac. De foto’s zijn mee verhuisd, je vingers kennen de sneltoetsen nog, alleen {name} is achtergebleven op de oude pc. Zo hoeft het niet te blijven.",
   "video": "Nieuwe Mac, dezelfde video’s, en uitgerekend {name} is niet mee verhuisd. Die MKV’s spelen zichzelf niet af.",
   "comic": "Je strips zijn zonder morren mee verhuisd naar de Mac. {name} bleef liever thuis.",
   "files": "Twee panelen, functietoetsen, sneltoetsen die je al blind kent sinds de diskette. Toen kwam de Mac, en {name} kwam de deur niet in.",
@@ -227,7 +227,7 @@
   },
   "pip": {
    "label": "Beeld-in-beeld",
-   "why": "Een viewer om door te kijken, geen speler om iets naast je werk te kijken."
+   "why": "Gemaakt om door mappen te kijken; om iets naast je werk te kijken past een videospeler beter."
   },
   "music_mode": {
    "label": "Audiobestanden, muziekmodus",
@@ -293,11 +293,11 @@
   },
   "image_editing": {
    "label": "Bewerkt afbeeldingen (bijsnijden, schalen, bewaren)",
-   "why": "Een viewer, geen fotobewerker: je bestanden blijven zoals ze zijn."
+   "why": "Toont foto’s zonder ze te veranderen: je bestanden blijven zoals ze zijn."
   },
   "batch_convert": {
    "label": "In bulk converteren of hernoemen",
-   "why": "Een viewer, geen converter."
+   "why": "Bulk converteren en hernoemen laat Schnellbild aan andere apps over."
   },
   "library_catalog": {
    "label": "Bibliotheek, catalogus, tags, beoordelingen",
@@ -360,7 +360,7 @@
   "5kplayer": {
    "name": "5KPlayer",
    "vendor": "Digiarty Software",
-   "summary": "Gratis alles-in-één mediaspeler voor Mac en Windows die video, muziek, dvd’s en radio afspeelt, AirPlay-schermdeling ontvangt, via DLNA streamt en online video’s downloadt. Zijn kracht zit in de vele extra’s rond het afspelen.",
+   "summary": "Gratis alles-in-één mediaspeler voor Mac en Windows die video, muziek, dvd’s en radio afspeelt, AirPlay-schermdeling ontvangt, via DLNA streamt en online video’s downloadt.",
    "wins": [
     "AirPlay-ontvanger en opnemen van schermdeling",
     "DLNA-server/renderer",
@@ -426,12 +426,12 @@
   "adobe-bridge": {
    "name": "Adobe Bridge",
    "vendor": "Adobe",
-   "summary": "Adobe Bridge is een gratis beheerder voor creatieve bestanden om door mappen met foto’s, ontwerpbestanden en video te bladeren, met uitgebreide voorvertoningen. Hij voegt metadata, trefwoorden, beoordelingen, verzamelingen, bulk hernoemen en exporteren toe, en is de spil voor Photoshop, Camera Raw en andere Creative Cloud-apps.",
+   "summary": "Adobe Bridge is een gratis beheerder voor creatieve bestanden om door mappen met foto’s, ontwerpbestanden en video te bladeren, met voorvertoningen. Hij voegt metadata, trefwoorden, beoordelingen, verzamelingen, bulk hernoemen en exporteren toe, en geeft bestanden door aan Photoshop, Camera Raw en andere Creative Cloud-apps.",
    "wins": [
     "Voorvertoningen van Adobe-formaten (PSD, AI, INDD, After Effects, Substance 3D) en PDF",
     "Volledige bewerking van metadata, trefwoorden, labels, beoordelingen, verzamelingen en slimme verzamelingen",
     "Bulk hernoemen, exportpaneel en workflows om in bulk te converteren",
-    "Nauwe samenwerking met Camera Raw, Photoshop, Premiere en Creative Cloud-bibliotheken",
+    "Werkt samen met Camera Raw, Photoshop, Premiere en Creative Cloud-bibliotheken",
     "PDF-contactbladen, publiceren naar Adobe Stock en Portfolio",
     "Windows-versie"
    ],
@@ -471,7 +471,7 @@
    "wins": [
     "Selecteren: picks, beoordelingen, Focus Score, AI-beoordeling, stapels",
     "HDR-weergave van RAW en HDR-export",
-    "Uitgebreide EXIF/IPTC/XMP-bewerking, trefwoorden, GPS-kaarten",
+    "EXIF/IPTC/XMP-bewerking, trefwoorden, GPS-kaarten",
     "Importeren van geheugenkaarten",
     "Externe SRT-ondertitels",
     "Automatiseren met AppleScript"
@@ -660,7 +660,7 @@
    "vendor": "coo en de ysmx-fork",
    "summary": "Gevestigde Japanse manga- en stripviewer voor de Mac, nu in leven gehouden als actief bijgewerkte open-sourcefork met een universal binary. Opent mappen, PDF’s en bijna elk archief (ZIP, RAR, 7z, LHA, archieven in delen, met wachtwoord) als boek, met dubbele pagina’s van rechts naar links, paginabladwijzers, vrij in te stellen toetsen en muisacties, en Finder-miniaturen voor striparchieven.",
    "wins": [
-    "Echte mangareader: dubbele pagina’s van rechts naar links met automatische herkenning van enkele pagina’s, per boek bewaard",
+    "Mangareader: dubbele pagina’s van rechts naar links met automatische herkenning van enkele pagina’s, per boek bewaard",
     "Benoemde paginabladwijzers en de laatste pagina per boek onthouden",
     "Elke toets en muisactie in te stellen, standaard met één hand te bedienen",
     "Opent heel veel archiefformaten, ook RAR/ZIP in delen en met wachtwoord",
@@ -838,7 +838,7 @@
   "faststone-image-viewer": {
    "name": "FastStone Image Viewer",
    "vendor": "FastStone Soft",
-   "summary": "FastStone Image Viewer is een al lang bestaande fotobrowser voor Windows met een mappenboom zoals in Verkenner, een verzorgde schermvullende modus met uitschuifpanelen en veel bewerkings- en bulktools. Hij speelt ook video’s af via de codecs van Windows en bewaart tags en beoordelingen in een eigen database.",
+   "summary": "FastStone Image Viewer is een al lang bestaande fotobrowser voor Windows met een mappenboom zoals in Verkenner, een schermvullende modus met uitschuifpanelen en veel bewerkings- en bulktools. Hij speelt ook video’s af via de codecs van Windows en bewaart tags en beoordelingen in een eigen database.",
    "wins": [
     "Bewerken: curven, niveaus, kloonstempel, retoucheerpenseel, rode ogen",
     "Tot vier afbeeldingen naast elkaar vergelijken",
@@ -993,8 +993,8 @@
    "summary": "GraphicConverter is al jaren het ‘zakmes voor afbeeldingen’ op de Mac: bestands- en fotobrowser, diavoorstelling, editor en bulkconverter die zo’n 200 formaten opent. De browser speelt ook QuickTime-compatibele films en audio af, beheert uitgebreide metadata en kan dubbele bestanden vinden, platte weergaven tonen en zoeken met Spotlight.",
    "wins": [
     "Opent ca. 200 afbeeldingsformaten, exporteert ca. 80, ook oude en wetenschappelijke formaten",
-    "Volledige fotobewerker en krachtige bulkconversie met acties",
-    "Uitgebreide bewerking van metadata (EXIF/IPTC/XMP, gezichten, GPS-kaart)",
+    "Volledige fotobewerker en bulkconversie met acties",
+    "Bewerking van metadata (EXIF/IPTC/XMP, gezichten, GPS-kaart)",
     "Veel opties voor diavoorstellingen (overgangen, willekeurig, metadata, sorteren tijdens de voorstelling)",
     "Lijst-, Cover Flow- en miniaturenweergave, platte weergave van alle submappen",
     "Dubbele bestanden vinden, contactbladen, webgalerijen",
@@ -1053,7 +1053,7 @@
   "iina": {
    "name": "IINA",
    "vendor": "het IINA-project",
-   "summary": "IINA is een gratis open-source videospeler voor macOS, gebouwd op mpv, met een moderne Mac-interface. Sterk om echt te kijken: ondertitels (ook online zoeken), beeld-in-beeld, muziekmodus, afspeellijsten, miniaturen bij het spoelen en plug-ins.",
+   "summary": "IINA is een gratis open-source videospeler voor macOS, gebouwd op mpv, met een moderne Mac-interface. Sterk om te kijken: ondertitels (ook online zoeken), beeld-in-beeld, muziekmodus, afspeellijsten, miniaturen bij het spoelen en plug-ins.",
    "wins": [
     "Alles voor het afspelen: hoofdstukken, beeld voor beeld, A-B-herhaling, beeld-in-beeld, muziekmodus",
     "Ondertitels online zoeken en slim lokale ondertitels koppelen",
@@ -1329,7 +1329,7 @@
     "Werken met F-toetsen in commander-stijl en een actiepaneel",
     "Archieven, ook archieven in archieven, ZIP lezen en schrijven",
     "Ingebouwde terminal die met de map meegaat, analyse van schijfgebruik",
-    "Look Up met uitgebreide Spotlight-predicaten"
+    "Look Up met Spotlight-predicaten"
    ],
    "price": "Gratis tijdens de bèta; betaalde licentie gepland na de bèta (supporters op Patreon vanaf $15 krijgen een levenslange licentie)",
    "version": "0.8.2",
@@ -1448,9 +1448,9 @@
   "movist-pro": {
    "name": "Movist Pro",
    "vendor": "Movist",
-   "summary": "Een verzorgde betaalde videospeler om films en series te kijken, sterk in ondertitels (meerdere ondertiteltracks tegelijk, stijlen per taal), HDR/Dolby Vision-tonemapping en AirPlay van elk formaat. Pro voegt netwerkservers, YouTube en webmedia en beeld-in-beeld toe.",
+   "summary": "Een betaalde videospeler om films en series te kijken, sterk in ondertitels (meerdere ondertiteltracks tegelijk, stijlen per taal), HDR/Dolby Vision-tonemapping en AirPlay van elk formaat. Pro voegt netwerkservers, YouTube en webmedia en beeld-in-beeld toe.",
    "wins": [
-    "Geavanceerde opmaak van ondertitels en dubbele ondertitels",
+    "Opmaak van ondertitels en dubbele ondertitels",
     "HDR- en Dolby Vision-tonemapping",
     "AirPlay van formaten die Apple TV zelf niet afspeelt",
     "Netwerkservers (SMB, SFTP, FTP, WebDAV), YouTube, beeld-in-beeld (Pro)",
@@ -1509,9 +1509,9 @@
   "mpv": {
    "name": "mpv",
    "vendor": "het mpv-project",
-   "summary": "mpv is een minimalistische, scriptbare mediaspeler voor de opdrachtregel met weergave van topkwaliteit en ondersteuning voor heel veel formaten. Je stelt hem in met tekstbestanden en Lua/JS-scripts, en hij heeft alleen een kleine bediening op het scherm.",
+   "summary": "mpv is een minimalistische, scriptbare mediaspeler voor de opdrachtregel met GPU-weergave (HDR, Dolby Vision) en ondersteuning voor heel veel formaten. Je stelt hem in met tekstbestanden en Lua/JS-scripts, en hij heeft alleen een kleine bediening op het scherm.",
    "wins": [
-    "Videoweergave van de bovenste plank (gpu-next, HDR, Dolby Vision)",
+    "Videoweergave met gpu-next, HDR en Dolby Vision",
     "Extreem instelbaar via mpv.conf, input.conf en scripts",
     "Speelt media direct uit ZIP/RAR/7z en RAR in delen",
     "Cross-platform (macOS, Windows, Linux)",
@@ -1541,7 +1541,7 @@
    "vendor": "neelabo",
    "summary": "Viewer voor Windows in boekstijl die mappen en archieven als boeken en afbeeldingen als pagina’s behandelt. Heel instelbaar: elke actie is een commando met eigen toetsen, muisgebaren en scripts, plus boekenplank, bladwijzers, afspeellijsten en dubbele mangapagina’s. Video’s spelen af via Windows of een geïnstalleerde VLC.",
    "wins": [
-    "Extreem diep aan te passen: commando’s, gebaren, JavaScript",
+    "Elke actie instelbaar: commando’s, gebaren, JavaScript",
     "Dubbele pagina met lezen van rechts naar links en pagina’s splitsen",
     "Archieven in archieven en wachtwoorden (via 7z.dll)",
     "Bewaarde afspeellijsten, geschiedenis en zoeken met datum/grootte/regex",
@@ -1685,7 +1685,7 @@
   "panels": {
    "name": "Panels",
    "vendor": "Produkt Studio",
-   "summary": "Panels is een verzorgde stripreader voor iPhone, iPad en Mac met een bibliotheek van omslagen, leesvoorinstellingen, weergave per panel en OPDS voor Komga/Kavita. Geavanceerde functies zoals cloudbibliotheken, paginafilters en tekstherkenning vragen Premium.",
+   "summary": "Panels is een stripreader voor iPhone, iPad en Mac met een bibliotheek van omslagen, leesvoorinstellingen, weergave per panel en OPDS voor Komga/Kavita. Geavanceerde functies zoals cloudbibliotheken, paginafilters en tekstherkenning vragen Premium.",
    "wins": [
     "Gesynchroniseerde bibliotheek en voortgang tussen Mac, iPhone en iPad",
     "Streamen via OPDS (Komga, Kavita, Calibre)",
@@ -1797,7 +1797,7 @@
   "photo-mechanic": {
    "name": "Photo Mechanic",
    "vendor": "Camera Bits",
-   "summary": "Photo Mechanic is een snelle tool voor importeren, selecteren en metadata voor beroepsfotografen, vooral in pers, sport en bruiloften. Hij opent mappen en geheugenkaarten direct, toont RAW-bestanden meteen via hun ingesloten voorvertoning en blinkt uit in bijschriften, IPTC-metadata, trefwoorden, bulk hernoemen en uploaden onder tijdsdruk.",
+   "summary": "Photo Mechanic is een snelle tool voor importeren, selecteren en metadata voor beroepsfotografen, vooral in pers, sport en bruiloften. Hij opent mappen en geheugenkaarten direct, toont RAW-bestanden meteen via hun ingesloten voorvertoning en is gemaakt voor bijschriften, IPTC-metadata, trefwoorden, bulk hernoemen en uploaden onder tijdsdruk.",
    "wins": [
     "Importeren van meerdere geheugenkaarten tegelijk, met hernoemen en metadata tijdens het kopiëren",
     "IPTC/XMP-metadata, codevervangingen, variabelen en gestructureerde trefwoorden voor bijschriften onder deadline",
@@ -1876,7 +1876,7 @@
    "vendor": "ImageTasks",
    "summary": "Minimalistische viewer voor afbeeldingen en video die uitgroeide tot fotobewerker met maskers, objecten verwijderen en upscaling. Bladert door mappen, fotobibliotheken en ZIP/CBZ-archieven en speelt MKV af met keuze van ondertitels en audiotrack; zoeken, sorteren en eigen sneltoetsen vragen Pixea Plus.",
    "wins": [
-    "Sterke fotobewerker (maskers, objecten verwijderen, upscaling, LUT’s)",
+    "Fotobewerker met maskers, objecten verwijderen, upscaling, LUT’s",
     "Bulk bewerken en converteren",
     "Ingesloten ondertitels, audiotrack, afspeelsnelheid",
     "Opent bibliotheken van Foto’s",
@@ -1933,7 +1933,7 @@
    "summary": "Finder-achtige bestandsbeheerder met meerdere panelen, 12 indelingen, werkruimtes, veel aanpassingsmogelijkheden (sneltoetsen, contextmenu, kleuren) en zoeken met regex. Betaalde extensies voegen bladeren in archieven, server- en cloudverbindingen en geavanceerd bulk hernoemen toe.",
    "wins": [
     "Tot 12 paneelindelingen en bewaarde werkruimtes",
-    "Sneltoetsen, contextmenu’s, knoppenbalk en kleuren diep aan te passen",
+    "Sneltoetsen, contextmenu’s, knoppenbalk en kleuren aan te passen",
     "Mappen synchroniseren, hashes, bestandssjablonen",
     "Snelle acties voor afbeeldingen (draaien, converteren, achtergrond verwijderen)",
     "Kolommen met videometadata (framerate, datasnelheid)"
@@ -2008,7 +2008,7 @@
   "qview": {
    "name": "qView",
    "vendor": "jurplel (Interverse)",
-   "summary": "qView is een minimalistische cross-platform fotoviewer zonder knoppenbalken: hij opent één bestand en laat je door de rest van de map bladeren. Start snel, laadt naburige afbeeldingen vooruit en ondersteunt geanimeerde afbeeldingen en veel formaten via Qt-plug-ins. Een goede keus voor wie alleen een strakke viewer wil.",
+   "summary": "qView is een minimalistische cross-platform fotoviewer zonder knoppenbalken: hij opent één bestand en laat je door de rest van de map bladeren. Start snel, laadt naburige afbeeldingen vooruit en ondersteunt geanimeerde afbeeldingen en veel formaten via Qt-plug-ins.",
    "wins": [
     "Extreem minimaal venster zonder franje",
     "Draait ook op Windows en Linux, en op oudere macOS (legacy-versie voor 10.13 en nieuwer)",
@@ -2034,7 +2034,7 @@
    "vendor": "Gentlemen Coders",
    "summary": "RAW Power is een niet-destructieve editor voor RAW en JPEG van een voormalig hoofdontwikkelaar van Aperture, los te gebruiken op Finder-mappen, als beheerder van de Apple Foto’s-bibliotheek of als bewerkingsextensie in Foto’s. Biedt aanpassingen in Aperture-stijl, beoordelingen/vlaggen gesynchroniseerd via iCloud-foto’s en bulkexport. De maker verwijst gebruikers van macOS 13 en nieuwer nu naar de opvolger Nitro Photo.",
    "wins": [
-    "Krachtige niet-destructieve RAW/JPEG-bewerking (curven, LUT’s, diepte-effect, Boost)",
+    "Niet-destructieve RAW/JPEG-bewerking (curven, LUT’s, diepte-effect, Boost)",
     "Werkt direct op de Apple Foto’s-bibliotheek en synchroniseert via iCloud-foto’s",
     "Bulkvoorinstellingen en exporteren",
     "Versie voor iPhone/iPad",
@@ -2183,7 +2183,7 @@
    "vendor": "Ghisler Software",
    "summary": "De bekendste orthodoxe bestandsbeheerder (met twee panelen) voor Windows, in ontwikkeling sinds 1993. Sterk in bestandsbewerkingen, archieven, FTP, multi-hernoemen en mappen synchroniseren, met de viewer Lister en plug-ins voor afbeeldingen en media.",
    "wins": [
-    "Volwassen bestandsbeheer met twee panelen: mappen synchroniseren, vergelijken, multi-hernoemen, checksums",
+    "Bestandsbeheer met twee panelen: mappen synchroniseren, vergelijken, multi-hernoemen, checksums",
     "Ingebouwde FTP/FTPS-client",
     "Enorm aanbod aan plug-ins (Lister, packer, bestandssysteem)",
     "Speler in Lister wisselt ondertitel-/audiotracks en snelheid",

@@ -3,12 +3,12 @@
   "overviewTitle": "Schnellbild som alternativ",
   "overviewSeoTitle": "Gratis Mac-alternativ til {names} · Schnellbild",
   "overviewDescription": "Schnellbild sammenlignet med {count} bildefremvisere, videospillere, tegneserielesere og filbehandlere, funksjon for funksjon og med kilder. Gratis, åpen kildekode, for Mac.",
-  "overviewIntro": "<p>Schnellbild er et alternativ med en klar mening. Mapper i stedet for spillelister og bibliotek: Åpne en mappe, så er listen der, og lysbildefremvisningen lager spillelisten selv. Ingenting fra internett, av prinsipp: ingen konto, ingen sporing, ikke noe nettverk i det hele tatt. Og gratis, med egne hurtigtaster inkludert, der andre tar betalt for dem.</p><p>Her ser du hvordan den står seg mot programmene folk leter etter på Mac, ærlig og med en kilde for hver celle. Der et annet program er bedre, står det.</p>",
+  "overviewIntro": "<p>Schnellbild er et alternativ med en klar mening. Mapper i stedet for spillelister og bibliotek: Åpne en mappe, så er listen der, og lysbildefremvisningen lager spillelisten selv. Ingenting fra internett, av prinsipp: ingen konto, ingen sporing, ikke noe nettverk i det hele tatt. Og gratis, med egne hurtigtaster inkludert, som noen andre tar betalt for.</p><p>Her ser du hvordan den står seg mot programmene folk leter etter på Mac, med en kilde for hver celle. Der et annet program er bedre, står det.</p>",
   "overviewNoMac": "Disse kjører bare på Windows (eller ikke lenger på dagens Mac). For hvert av dem: hva brukerne likte, og hvordan Schnellbild gjør det.",
   "matrixH1": "Et gratis alternativ til {name} for Mac",
   "matrixSeoTitle": "{name}-alternativ for Mac, gratis · Schnellbild",
   "matrixDescription": "{name} eller Schnellbild? Sammenlignet funksjon for funksjon, med kilder: hvor {name} er sterkest, og hvor Schnellbild er det. Gratis, åpen kildekode, spiller av MKV, åpner ZIP og RAR som mapper.",
-  "matrixLead": "Schnellbild og {name} side om side, rettferdig: hva hver av dem gjør best, og så hver funksjon med kilde.",
+  "matrixLead": "Schnellbild og {name} side om side: hva hver av dem gjør best, og så hver funksjon med kilde.",
   "switcherH1": "{name} for Mac? Her er alternativet",
   "switcherSeoTitle": "{name} for Mac? Et gratis alternativ · Schnellbild",
   "switcherDescription": "Ser du etter {name} for Mac? Hva {name}-brukere liker, og hvordan Schnellbild gjør det, gratis: mapper, taster, MKV, ZIP og RAR som mapper.",
@@ -32,7 +32,7 @@
   "sources": "Kilder",
   "asOf": "Per november 2026: {name} {version}, Schnellbild {ours}. Kolonnen for {name} bygger på kildene nedenfor, kolonnen for Schnellbild på README og kildekoden.",
   "leftOut": "Utelatt fordi det mangler en pålitelig kilde om {name}: {count} av {total} funksjoner.",
-  "fileManager": "Schnellbild er ingen fullverdig filbehandler: ingen FTP-, SFTP- eller skytilkoblinger, ingen mappesynkronisering, ingen pakking av arkiver. Den er det bedre valget for å se gjennom og sortere bilder og videoer: miniatyrer av alt, to paneler side om side med F5 for å kopiere og F6 for å flytte, og arkiver som åpnes som mapper.",
+  "fileManager": "Schnellbild er ingen fullverdig filbehandler: ingen FTP-, SFTP- eller skytilkoblinger, ingen mappesynkronisering, ingen pakking av arkiver. Den er laget for å se gjennom og sortere bilder og videoer: miniatyrer av alt, to paneler side om side med F5 for å kopiere og F6 for å flytte, og arkiver som åpnes som mapper.",
   "likedTitle": "Hva {name}-brukere liker, og hvordan det fungerer i Schnellbild",
   "aheadTitle": "Der {name} fortsatt ligger foran",
   "purposeTitle": "Utelatt med vilje",
@@ -55,7 +55,7 @@
   "windows": "Fra Windows"
  },
  "jokes": {
-  "image": "Du kom deg over til Mac. Bildene ble med, fingrene husker fortsatt alt, bare {name} ble igjen på den gamle PC-en. Sånt skjer, men det trenger ikke å bli værende sånn.",
+  "image": "Du kom deg over til Mac. Bildene ble med, fingrene husker fortsatt alt, bare {name} ble igjen på den gamle PC-en. Det trenger ikke å bli værende sånn.",
   "video": "Ny Mac, de samme videoene, og {name} var det eneste som ikke ble med på flyttelasset. MKV-filene dine venter fortsatt.",
   "comic": "Tegneseriene flyttet til Mac uten å klage. {name} fikk ikke plass i flyttebilen.",
   "files": "To paneler, funksjonstaster og fingre som har kunnet dette lenger enn noen av kollegene dine har jobbet. Så kom Macen, og {name} kom ikke inn døra.",
@@ -227,7 +227,7 @@
   },
   "pip": {
    "label": "Bilde-i-bilde",
-   "why": "En fremviser for å se gjennom, ikke en spiller å ha på ved siden av."
+   "why": "Laget for å se gjennom mapper; til å se noe ved siden av passer en videospiller bedre."
   },
   "music_mode": {
    "label": "Lydfiler, musikkmodus",
@@ -293,11 +293,11 @@
   },
   "image_editing": {
    "label": "Redigerer bilder (beskjær, endre størrelse, lagre)",
-   "why": "En fremviser, ikke et bilderedigeringsprogram: Filene dine forblir som de er."
+   "why": "Viser bilder uten å endre dem: Filene dine forblir som de er."
   },
   "batch_convert": {
    "label": "Konverter eller gi nytt navn i bunt",
-   "why": "En fremviser, ikke et konverteringsprogram."
+   "why": "Konvertering og nytt navn i bunt overlater Schnellbild til andre apper."
   },
   "library_catalog": {
    "label": "Bibliotek, katalog, stikkord, vurderinger",
@@ -360,7 +360,7 @@
   "5kplayer": {
    "name": "5KPlayer",
    "vendor": "Digiarty Software",
-   "summary": "Gratis alt-i-ett-mediespiller for Mac og Windows som spiller av video, musikk, DVD og radio, tar imot AirPlay-speiling, strømmer over DLNA og laster ned videoer fra nettet. Styrken er bredden av ekstrafunksjoner rundt avspillingen.",
+   "summary": "Gratis alt-i-ett-mediespiller for Mac og Windows som spiller av video, musikk, DVD og radio, tar imot AirPlay-speiling, strømmer over DLNA og laster ned videoer fra nettet.",
    "wins": [
     "AirPlay-mottaker og opptak av skjermspeiling",
     "DLNA-server og -avspiller",
@@ -426,12 +426,12 @@
   "adobe-bridge": {
    "name": "Adobe Bridge",
    "vendor": "Adobe",
-   "summary": "Adobe Bridge er en gratis ressursbehandler for å bla i mapper med bilder, designfiler og video med rike forhåndsvisninger. Den har metadata, nøkkelord, vurderinger, samlinger, nytt navn i bunt og eksport, og er knutepunktet for Photoshop, Camera Raw og andre Creative Cloud-apper.",
+   "summary": "Adobe Bridge er en gratis ressursbehandler for å bla i mapper med bilder, designfiler og video med forhåndsvisninger. Den har metadata, nøkkelord, vurderinger, samlinger, nytt navn i bunt og eksport, og sender filer videre til Photoshop, Camera Raw og andre Creative Cloud-apper.",
    "wins": [
     "Forhåndsvisning av Adobe-formater (PSD, AI, INDD, After Effects, Substance 3D) og PDF",
     "Full metadataredigering, nøkkelord, etiketter, vurderinger, samlinger og smarte samlinger",
     "Nytt navn i bunt, eksportpanel og arbeidsflyter for masseomforming",
-    "Tett integrert med Camera Raw, Photoshop, Premiere og Creative Cloud Libraries",
+    "Samarbeider med Camera Raw, Photoshop, Premiere og Creative Cloud Libraries",
     "Kontaktark som PDF, publisering til Adobe Stock og Portfolio",
     "Windows-versjon"
    ],
@@ -471,7 +471,7 @@
    "wins": [
     "Utsortering: valg, vurderinger, Focus Score, AI-vurdering, stabler",
     "HDR-visning av RAW og HDR-eksport",
-    "Grundig redigering av EXIF/IPTC/XMP, nøkkelord, GPS-kart",
+    "Redigering av EXIF/IPTC/XMP, nøkkelord, GPS-kart",
     "Import fra minnekort",
     "Eksterne SRT-undertekster",
     "Automatisering med AppleScript"
@@ -660,7 +660,7 @@
    "vendor": "coo og ysmx-forken",
    "summary": "Veletablert japansk manga- og tegneserieleser for Mac, nå holdt i live som en aktivt oppdatert fork med åpen kildekode og universell binærfil. Åpner mapper, PDF-er og nesten alle arkiver (ZIP, RAR, 7z, LHA, delte og passordbeskyttede) som en bok, med oppslag fra høyre mot venstre, sidebokmerker, fritt valgbare taster og musehandlinger, og Finder-miniatyrer for tegneseriearkiver.",
    "wins": [
-    "Ekte mangaleser: dobbeltsider fra høyre mot venstre med automatisk enkeltsidegjenkjenning, lagret per bok",
+    "Mangaleser: dobbeltsider fra høyre mot venstre med automatisk enkeltsidegjenkjenning, lagret per bok",
     "Navngitte sidebokmerker og siste side husket per bok",
     "Alle taster og musehandlinger kan velges, standardoppsett for én hånd",
     "Åpner svært mange arkivformater, også delte RAR/ZIP og passordbeskyttede arkiver",
@@ -838,7 +838,7 @@
   "faststone-image-viewer": {
    "name": "FastStone Image Viewer",
    "vendor": "FastStone Soft",
-   "summary": "FastStone Image Viewer er en veletablert bildeblar for Windows med mappetre som i Utforsker, en gjennomarbeidet fullskjermmodus med paneler som glir inn og mange redigerings- og buntverktøy. Den spiller også av videoer gjennom Windows’ kodeker og lagrer stikkord og vurderinger i sin egen database.",
+   "summary": "FastStone Image Viewer er en veletablert bildeblar for Windows med mappetre som i Utforsker, en fullskjermmodus med paneler som glir inn og mange redigerings- og buntverktøy. Den spiller også av videoer gjennom Windows’ kodeker og lagrer stikkord og vurderinger i sin egen database.",
    "wins": [
     "Redigeringsverktøy: kurver, nivåer, klonestempel, reparasjonspensel, røde øyne",
     "Sammenligner opptil fire bilder side om side",
@@ -957,7 +957,7 @@
    "macNote": "Mac-versjonen av GOM Player har stått på 1.0.0 siden 2020 og er bygget for Intel-Mac."
   },
   "google-photos": {
-   "name": "Google Photos",
+   "name": "Google Foto",
    "vendor": "Google",
    "summary": "Googles bildebibliotek i skyen med automatisk sikkerhetskopi fra telefoner. Godt for å ha alle bildene på alle enheter, søke etter innhold og dele album.",
    "wins": [
@@ -993,8 +993,8 @@
    "summary": "GraphicConverter er Macens veletablerte «lommekniv for bilder»: fil- og bildeblar, lysbildefremvisning, redigerer og buntkonvertering som åpner rundt 200 formater. Blaren spiller også av QuickTime-kompatible filmer og lyd, håndterer mye metadata og har duplikatsøk, flat visning og Spotlight-søk.",
    "wins": [
     "Åpner ca. 200 bildeformater, eksporterer ca. 80, også gamle og vitenskapelige formater",
-    "Full bilderedigerer og kraftig buntkonvertering med handlinger",
-    "Grundig metadataredigering (EXIF/IPTC/XMP, ansikter, GPS-kart)",
+    "Full bilderedigerer og buntkonvertering med handlinger",
+    "Metadataredigering (EXIF/IPTC/XMP, ansikter, GPS-kart)",
     "Mange valg i lysbildefremvisningen (overganger, tilfeldig, metadata, sortering underveis)",
     "Liste-, Cover Flow- og miniatyrvisning, flat visning av alle undermapper",
     "Duplikatsøk, kontaktark, nettgallerier",
@@ -1329,7 +1329,7 @@
     "Commander-arbeidsflyt med F-taster og handlingspanel",
     "Arkivstøtte også for arkiver i arkiver, ZIP lese/skrive",
     "Innebygd terminal med mappesynkronisering, analyse av diskbruk",
-    "Oppslag med rike Spotlight-predikater"
+    "Oppslag med Spotlight-predikater"
    ],
    "price": "Gratis i betaen; betalt lisens planlagt etter betaen (Patreon-støttespillere med $15+ får en evigvarende lisens)",
    "version": "0.8.2",
@@ -1448,9 +1448,9 @@
   "movist-pro": {
    "name": "Movist Pro",
    "vendor": "Movist",
-   "summary": "En gjennomarbeidet betalt videospiller for filmer og serier, med god undertekststøtte (flere undertekstspor samtidig, stiler per språk), tonemapping for HDR og Dolby Vision og AirPlay av alle formater. Pro legger til nettverksservere, YouTube og nettmedier og bilde-i-bilde.",
+   "summary": "En betalt videospiller for filmer og serier, med god undertekststøtte (flere undertekstspor samtidig, stiler per språk), tonemapping for HDR og Dolby Vision og AirPlay av alle formater. Pro legger til nettverksservere, YouTube og nettmedier og bilde-i-bilde.",
    "wins": [
-    "Avansert stil på undertekster og doble undertekster",
+    "Stiler for undertekster og doble undertekster",
     "Tonemapping for HDR og Dolby Vision",
     "AirPlay av formater Apple TV ikke spiller selv",
     "Nettverksservere (SMB, SFTP, FTP, WebDAV), YouTube, bilde-i-bilde (Pro)",
@@ -1509,9 +1509,9 @@
   "mpv": {
    "name": "mpv",
    "vendor": "mpv-prosjektet",
-   "summary": "mpv er en minimal, skriptbar mediespiller for kommandolinjen med gjengivelse av toppkvalitet og svært bred formatstøtte. Den konfigureres med tekstfiler og Lua/JS-skript og har bare en liten kontroll på skjermen.",
+   "summary": "mpv er en minimal, skriptbar mediespiller for kommandolinjen med GPU-gjengivelse (HDR, Dolby Vision) og svært bred formatstøtte. Den konfigureres med tekstfiler og Lua/JS-skript og har bare en liten kontroll på skjermen.",
    "wins": [
-    "Ypperlig videogjengivelse (gpu-next, HDR, Dolby Vision)",
+    "Videogjengivelse med gpu-next, HDR og Dolby Vision",
     "Svært konfigurerbar via mpv.conf, input.conf og skript",
     "Spiller medier rett fra ZIP/RAR/7z og RAR i flere deler",
     "For flere plattformer (macOS, Windows, Linux)",
@@ -1541,7 +1541,7 @@
    "vendor": "neelabo",
    "summary": "Bokfremviser for Windows som behandler mapper og arkiver som bøker og bilder som sider. Svært konfigurerbar: hver handling er en kommando med egne taster, musebevegelser og skript, i tillegg til bokhylle, bokmerker, spillelister og dobbeltsider for manga. Videoer spilles via Windows eller en installert VLC.",
    "wins": [
-    "Svært dyp tilpasning: kommandoer, bevegelser, JavaScript-skripting",
+    "Hver handling kan stilles inn: kommandoer, bevegelser, JavaScript-skripting",
     "Dobbeltside med lesing fra høyre mot venstre og sidedeling",
     "Arkiver i arkiver og arkivpassord (via 7z.dll)",
     "Lagrede spillelister, historikk og søk med dato, størrelse og regex",
@@ -1685,7 +1685,7 @@
   "panels": {
    "name": "Panels",
    "vendor": "Produkt Studio",
-   "summary": "Panels er en gjennomarbeidet tegneserieleser for iPhone, iPad og Mac med omslagsbibliotek, leseoppsett, rute-for-rute-visning og OPDS for Komga/Kavita. Avanserte funksjoner som skybiblioteker, sidefiltre og tekstgjenkjenning krever Premium.",
+   "summary": "Panels er en tegneserieleser for iPhone, iPad og Mac med omslagsbibliotek, leseoppsett, rute-for-rute-visning og OPDS for Komga/Kavita. Avanserte funksjoner som skybiblioteker, sidefiltre og tekstgjenkjenning krever Premium.",
    "wins": [
     "Synkronisert bibliotek og fremdrift mellom Mac, iPhone og iPad",
     "OPDS-strømming (Komga, Kavita, Calibre)",
@@ -1797,7 +1797,7 @@
   "photo-mechanic": {
    "name": "Photo Mechanic",
    "vendor": "Camera Bits",
-   "summary": "Photo Mechanic er et raskt verktøy for import, utsortering og metadata for profesjonelle fotografer, særlig innen presse, sport og bryllup. Det åpner mapper og minnekort direkte, viser RAW-filer med en gang fra de innebygde forhåndsvisningene og er svært sterkt på bildetekster, IPTC-metadata, nøkkelord, nytt navn i bunt og opplasting under tidspress.",
+   "summary": "Photo Mechanic er et raskt verktøy for import, utsortering og metadata for profesjonelle fotografer, særlig innen presse, sport og bryllup. Det åpner mapper og minnekort direkte, viser RAW-filer med en gang fra de innebygde forhåndsvisningene og er laget for bildetekster, IPTC-metadata, nøkkelord, nytt navn i bunt og opplasting under tidspress.",
    "wins": [
     "Import fra flere minnekort samtidig, med nytt navn og metadata under kopieringen",
     "IPTC/XMP-metadata, kodeerstatninger, variabler og strukturerte nøkkelord for bildetekster under tidspress",
@@ -1876,7 +1876,7 @@
    "vendor": "ImageTasks",
    "summary": "Minimal bilde- og videofremviser som har vokst til en bilderedigerer med masker, fjerning av objekter og oppskalering. Blar i mapper, bildebiblioteker og ZIP/CBZ-arkiver og spiller MKV med valg av undertekster og lydspor; søk, sortering og egne hurtigtaster krever Pixea Plus.",
    "wins": [
-    "Kraftig bilderedigerer (masker, fjerning av objekter, oppskalering, LUT-er)",
+    "Bilderedigerer med masker, fjerning av objekter, oppskalering, LUT-er",
     "Redigering og konvertering i bunt",
     "Innebygde undertekster, lydspor, avspillingshastighet",
     "Åpner biblioteker fra Bilder",
@@ -1933,7 +1933,7 @@
    "summary": "Finder-lignende filbehandler med flere paneler, 12 oppsett, arbeidsområder, mye tilpasning (hurtigtaster, hurtigmeny, farger) og regex-søk. Betalte tillegg gir blaing i arkiver, server- og skytilkoblinger og avansert nytt navn i bunt.",
    "wins": [
     "Opptil 12 paneloppsett og lagrede arbeidsområder",
-    "Dyp tilpasning av hurtigtaster, hurtigmenyer, verktøylinje, farger",
+    "Tilpasning av hurtigtaster, hurtigmenyer, verktøylinje, farger",
     "Mappesynkronisering, sjekksummer, filmaler",
     "Raske bildehandlinger (roter, konverter, fjern bakgrunn)",
     "Kolonner med videometadata (bildefrekvens, datahastighet)"
@@ -2008,7 +2008,7 @@
   "qview": {
    "name": "qView",
    "vendor": "jurplel (Interverse)",
-   "summary": "qView er en minimal bildefremviser for flere plattformer uten verktøylinjer: den åpner én fil og lar deg bla gjennom resten av mappen. Den starter raskt, forhåndslaster bildene ved siden av og støtter animerte bilder og mange formater via Qt-utvidelser. Et godt valg for dem som bare vil ha en ren fremviser.",
+   "summary": "qView er en minimal bildefremviser for flere plattformer uten verktøylinjer: den åpner én fil og lar deg bla gjennom resten av mappen. Den starter raskt, forhåndslaster bildene ved siden av og støtter animerte bilder og mange formater via Qt-utvidelser.",
    "wins": [
     "Svært minimal, vindu uten rammeverk",
     "Kjører også på Windows og Linux, og på eldre macOS (egen utgave for 10.13+)",
@@ -2034,7 +2034,7 @@
    "vendor": "Gentlemen Coders",
    "summary": "RAW Power er en ikke-destruktiv RAW- og JPEG-redigerer fra en tidligere Aperture-leder, som kan brukes alene på Finder-mapper, til å håndtere biblioteket i Apple Bilder eller som redigeringsutvidelse i Bilder. Den har justeringer i Aperture-stil, vurderinger og flagg synkronisert via iCloud-bilder og eksport i bunt. Leverandøren viser nå brukere av macOS 13+ til etterfølgeren Nitro Photo.",
    "wins": [
-    "Kraftig ikke-destruktiv RAW/JPEG-redigering (kurver, LUT-er, dybdeeffekt, Boost)",
+    "Ikke-destruktiv RAW/JPEG-redigering (kurver, LUT-er, dybdeeffekt, Boost)",
     "Jobber direkte på biblioteket i Apple Bilder og synkroniserer via iCloud-bilder",
     "Forhåndsinnstillinger og eksport i bunt",
     "Versjon for iPhone og iPad",
@@ -2183,7 +2183,7 @@
    "vendor": "Ghisler Software",
    "summary": "Den mest kjente ortodokse filbehandleren (to paneler) for Windows, utviklet siden 1993. Den er sterk på filoperasjoner, arkiver, FTP, nytt navn for mange filer og mappesynkronisering, med fremviseren Lister og utvidelser for bilder og medier.",
    "wins": [
-    "Moden filbehandling med to paneler: synkroniser mapper, sammenlign, nytt navn i bunt, sjekksummer",
+    "Filbehandling med to paneler: synkroniser mapper, sammenlign, nytt navn i bunt, sjekksummer",
     "Innebygd FTP/FTPS-klient",
     "Enormt økosystem av utvidelser (Lister, pakkere, filsystem)",
     "Spilleren i Lister bytter undertekster, lydspor og hastighet",

@@ -3,12 +3,12 @@
   "overviewTitle": "Schnellbild comme alternative",
   "overviewSeoTitle": "Alternative Mac gratuite à {names} · Schnellbild",
   "overviewDescription": "Schnellbild comparée à {count} visionneuses d’images, lecteurs vidéo, lecteurs de BD et gestionnaires de fichiers, fonction par fonction et sources à l’appui. Gratuite, open source, pour Mac.",
-  "overviewIntro": "<p>Schnellbild est une alternative qui a des partis pris. Des dossiers plutôt que des listes de lecture et une bibliothèque : ouvrez un dossier, la liste est là, et le diaporama fait la liste de lecture tout seul. Rien depuis Internet, par principe : pas de compte, pas de pistage, aucun accès réseau. Et gratuite, raccourcis clavier personnalisés compris, là où d’autres les font payer.</p><p>Voici comment elle se compare aux programmes que l’on cherche sur Mac, honnêtement et avec une source pour chaque case. Quand un autre programme fait mieux, c’est écrit.</p>",
+  "overviewIntro": "<p>Schnellbild est une alternative qui a des partis pris. Des dossiers plutôt que des listes de lecture et une bibliothèque : ouvrez un dossier, la liste est là, et le diaporama fait la liste de lecture tout seul. Rien depuis Internet, par principe : pas de compte, pas de pistage, aucun accès réseau. Et gratuite, raccourcis clavier personnalisés compris, que certains autres font payer.</p><p>Voici comment elle se compare aux programmes que l’on cherche sur Mac, avec une source pour chaque case. Quand un autre programme fait mieux, la page le dit.</p>",
   "overviewNoMac": "Ces programmes ne tournent que sous Windows (ou plus sur les Mac actuels). Pour chacun : ce que ses fans appréciaient, et comment Schnellbild s’y prend.",
   "matrixH1": "Une alternative gratuite à {name} pour Mac",
   "matrixSeoTitle": "Alternative à {name} pour Mac, gratuite · Schnellbild",
   "matrixDescription": "{name} ou Schnellbild ? Comparaison fonction par fonction, sources à l’appui : là où {name} est plus fort, là où c’est Schnellbild. Gratuite, open source, lit les MKV, ouvre ZIP et RAR comme des dossiers.",
-  "matrixLead": "Schnellbild et {name} côte à côte, en toute équité : ce que chacun fait mieux, puis chaque fonction avec sa source.",
+  "matrixLead": "Schnellbild et {name} côte à côte : ce que chacun fait mieux, puis chaque fonction avec sa source.",
   "switcherH1": "{name} pour Mac ? Voici l’alternative",
   "switcherSeoTitle": "{name} pour Mac ? Une alternative gratuite · Schnellbild",
   "switcherDescription": "Vous cherchez {name} sur Mac ? Ce que les fans de {name} apprécient et comment Schnellbild le fait, gratuitement : dossiers, clavier, MKV, ZIP et RAR comme des dossiers.",
@@ -32,7 +32,7 @@
   "sources": "Sources",
   "asOf": "État en novembre 2026 : {name} {version}, Schnellbild {ours}. La colonne de {name} s’appuie sur les sources ci-dessous, celle de Schnellbild sur son README et son code source.",
   "leftOut": "Faute de source fiable sur {name}, {count} fonctions sur {total} ne figurent pas ici.",
-  "fileManager": "Schnellbild n’est pas un gestionnaire de fichiers complet : pas de connexions FTP, SFTP ou cloud, pas de synchronisation de dossiers, pas de création d’archives. Pour parcourir et trier photos et vidéos, c’est en revanche le meilleur choix : des vignettes pour tout, deux panneaux côte à côte avec F5 pour copier et F6 pour déplacer, des archives qui s’ouvrent comme des dossiers.",
+  "fileManager": "Schnellbild n’est pas un gestionnaire de fichiers complet : pas de connexions FTP, SFTP ou cloud, pas de synchronisation de dossiers, pas de création d’archives. Elle est faite pour parcourir et trier photos et vidéos : des vignettes pour tout, deux panneaux côte à côte avec F5 pour copier et F6 pour déplacer, des archives qui s’ouvrent comme des dossiers.",
   "likedTitle": "Ce que les fans de {name} apprécient, et comment le faire avec Schnellbild",
   "aheadTitle": "Là où {name} garde l’avantage",
   "purposeTitle": "Absent par choix",
@@ -227,7 +227,7 @@
   },
   "pip": {
    "label": "Image dans l’image",
-   "why": "Une visionneuse pour passer en revue, pas un lecteur à regarder dans un coin."
+   "why": "Faite pour parcourir des dossiers ; pour regarder une vidéo dans un coin de l’écran, un lecteur vidéo convient mieux."
   },
   "music_mode": {
    "label": "Fichiers audio, mode musique",
@@ -293,11 +293,11 @@
   },
   "image_editing": {
    "label": "Retouche les images (recadrer, redimensionner, enregistrer)",
-   "why": "Une visionneuse, pas un éditeur d’images : vos fichiers restent tels quels."
+   "why": "Affiche les images sans les modifier : vos fichiers restent tels quels."
   },
   "batch_convert": {
    "label": "Conversion ou renommage par lots",
-   "why": "Une visionneuse, pas un convertisseur."
+   "why": "La conversion et le renommage par lots sont laissés à d’autres apps."
   },
   "library_catalog": {
    "label": "Bibliothèque, catalogue, mots-clés, notes",
@@ -360,7 +360,7 @@
   "5kplayer": {
    "name": "5KPlayer",
    "vendor": "Digiarty Software",
-   "summary": "Lecteur multimédia gratuit tout-en-un pour Mac et Windows : lit vidéos, musique, DVD et radio, reçoit la recopie AirPlay, diffuse en DLNA et télécharge des vidéos en ligne. Sa force, c’est l’étendue des extras autour de la lecture.",
+   "summary": "Lecteur multimédia gratuit tout-en-un pour Mac et Windows : lit vidéos, musique, DVD et radio, reçoit la recopie AirPlay, diffuse en DLNA et télécharge des vidéos en ligne.",
    "wins": [
     "Récepteur AirPlay et enregistrement de la recopie d’écran",
     "Serveur et lecteur DLNA",
@@ -426,12 +426,12 @@
   "adobe-bridge": {
    "name": "Adobe Bridge",
    "vendor": "Adobe",
-   "summary": "Adobe Bridge est un gestionnaire de ressources créatives gratuit pour parcourir des dossiers de photos, fichiers de design et vidéos avec des aperçus riches. Il ajoute métadonnées, mots-clés, notes, collections, renommage par lots et export, et sert de plaque tournante pour Photoshop, Camera Raw et les autres apps Creative Cloud.",
+   "summary": "Adobe Bridge est un gestionnaire de ressources créatives gratuit pour parcourir des dossiers de photos, fichiers de design et vidéos avec des aperçus. Il ajoute métadonnées, mots-clés, notes, collections, renommage par lots et export, et transmet les fichiers à Photoshop, Camera Raw et aux autres apps Creative Cloud.",
    "wins": [
     "Aperçus des formats Adobe (PSD, AI, INDD, After Effects, Substance 3D) et PDF",
     "Édition complète des métadonnées, mots-clés, libellés, notes, collections et collections dynamiques",
     "Renommage par lots, panneau Exporter et flux de travail pour la conversion en masse",
-    "Intégration étroite avec Camera Raw, Photoshop, Premiere et les bibliothèques Creative Cloud",
+    "Fonctionne avec Camera Raw, Photoshop, Premiere et les bibliothèques Creative Cloud",
     "Planches contact PDF, publication sur Adobe Stock et Portfolio",
     "Version Windows"
    ],
@@ -471,7 +471,7 @@
    "wins": [
     "Tri : sélections, notes, Focus Score, notation IA, piles",
     "Affichage RAW en HDR et export HDR",
-    "Édition poussée EXIF/IPTC/XMP, mots-clés, cartes GPS",
+    "Édition EXIF/IPTC/XMP, mots-clés, cartes GPS",
     "Import depuis carte mémoire",
     "Sous-titres SRT externes",
     "Automatisation AppleScript"
@@ -505,7 +505,7 @@
   "apple-photos": {
    "name": "Photos d’Apple",
    "vendor": "Apple",
-   "summary": "La photothèque d’Apple, synchronisée entre appareils via iCloud. Idéale pour organiser et retoucher une collection personnelle, avec reconnaissance des personnes, souvenirs et retouches non destructives.",
+   "summary": "La photothèque d’Apple, synchronisée entre appareils via iCloud. Bien adaptée pour organiser et retoucher une collection personnelle, avec reconnaissance des personnes, souvenirs et retouches non destructives.",
    "wins": [
     "Synchro iCloud avec iPhone et iPad",
     "Retouche non destructive des photos et vidéos",
@@ -660,7 +660,7 @@
    "vendor": "coo et le fork ysmx",
    "summary": "Visionneuse japonaise de mangas et de BD pour Mac, de longue date, maintenue aujourd’hui par un fork open source activement mis à jour, en binaire universel. Ouvre dossiers, PDF et presque toutes les archives (ZIP, RAR, 7z, LHA, archives en plusieurs parties ou protégées par mot de passe) comme un livre, avec doubles pages de droite à gauche, signets de pages, touches et actions de souris librement assignables, et vignettes Finder pour les archives de BD.",
    "wins": [
-    "Vraie liseuse de mangas : doubles pages de droite à gauche avec détection automatique des pages simples, mémorisées par livre",
+    "Liseuse de mangas : doubles pages de droite à gauche avec détection automatique des pages simples, mémorisées par livre",
     "Signets de pages nommés et dernière page mémorisée par livre",
     "Chaque touche et action de souris assignable, réglages par défaut pour une seule main",
     "Ouvre une foule de formats d’archive, y compris RAR/ZIP en plusieurs parties et archives protégées par mot de passe",
@@ -739,7 +739,7 @@
    "vendor": "Alexander Koblov et ses contributeurs",
    "summary": "Gestionnaire de fichiers à deux panneaux, gratuit et open source, inspiré de Total Commander jusqu’à son interface de plug-ins. Natif sur Apple silicon, avec onglets, recherche de fichiers par regex, renommage multiple, archives comme des dossiers et visionneuse intégrée pour le texte et les images.",
    "wins": [
-    "Un vrai gestionnaire façon Total Commander sur Mac : synchro de dossiers, renommage multiple, sommes de contrôle, FTP/SFTP",
+    "Un gestionnaire complet façon Total Commander sur Mac : synchro de dossiers, renommage multiple, sommes de contrôle, FTP/SFTP",
     "Fait tourner les plug-ins de Total Commander (WCX/WDX/WFX/WLX)",
     "Multiplateforme (macOS, Windows, Linux)",
     "La visionneuse sait recadrer, redimensionner et enregistrer des images",
@@ -838,7 +838,7 @@
   "faststone-image-viewer": {
    "name": "FastStone Image Viewer",
    "vendor": "FastStone Soft",
-   "summary": "FastStone Image Viewer est un navigateur d’images Windows de longue date, avec une arborescence façon Explorateur, un plein écran soigné aux panneaux escamotables et de nombreux outils de retouche et de traitement par lots. Il lit aussi les vidéos grâce aux codecs de Windows et garde mots-clés et notes dans sa propre base.",
+   "summary": "FastStone Image Viewer est un navigateur d’images Windows de longue date, avec une arborescence façon Explorateur, un plein écran aux panneaux escamotables et de nombreux outils de retouche et de traitement par lots. Il lit aussi les vidéos grâce aux codecs de Windows et garde mots-clés et notes dans sa propre base.",
    "wins": [
     "Outils de retouche : courbes, niveaux, tampon, correcteur, yeux rouges",
     "Comparaison de jusqu’à quatre images côte à côte",
@@ -993,9 +993,9 @@
    "summary": "GraphicConverter est le « couteau suisse des images » du Mac depuis des années : navigateur de fichiers et d’images, diaporama, éditeur et convertisseur par lots qui ouvre environ 200 formats. Son navigateur lit aussi les films et l’audio compatibles QuickTime, gère des métadonnées très complètes et propose recherche de doublons, vue à plat et recherche Spotlight.",
    "wins": [
     "Ouvre environ 200 formats d’image et en exporte environ 80, formats anciens et scientifiques compris",
-    "Éditeur d’images complet et conversion par lots puissante avec actions",
-    "Édition poussée des métadonnées (EXIF/IPTC/XMP, visages, carte GPS)",
-    "Diaporama très riche (transitions, aléatoire, métadonnées, tri pendant la projection)",
+    "Éditeur d’images complet et conversion par lots avec actions",
+    "Édition des métadonnées (EXIF/IPTC/XMP, visages, carte GPS)",
+    "Nombreuses options de diaporama (transitions, aléatoire, métadonnées, tri pendant la projection)",
     "Présentations en liste, Cover Flow et vignettes, vue à plat de tous les sous-dossiers",
     "Recherche de doublons, planches contact, galeries web",
     "Raccourcis personnalisés, 14 langues, choix clair/sombre"
@@ -1128,7 +1128,7 @@
   "infuse": {
    "name": "Infuse",
    "vendor": "Firecore",
-   "summary": "Un lecteur façon media center qui transforme dossiers vidéo, partages NAS, Plex/Emby/Jellyfin et stockages cloud en une bibliothèque avec affiches et métadonnées. Excellent pour regarder films et séries sur tous les appareils Apple, avec la progression synchronisée.",
+   "summary": "Un lecteur façon media center qui transforme dossiers vidéo, partages NAS, Plex/Emby/Jellyfin et stockages cloud en une bibliothèque avec affiches et métadonnées. Très bon pour regarder films et séries sur tous les appareils Apple, avec la progression synchronisée.",
    "wins": [
     "Bibliothèque de films et séries avec visuels et métadonnées TMDB",
     "Lecture en continu depuis NAS, serveurs multimédia et services cloud",
@@ -1329,7 +1329,7 @@
     "Travail aux touches F façon Commander et panneau d’actions",
     "Archives, y compris imbriquées, ZIP en lecture et écriture",
     "Terminal intégré synchronisé avec le dossier, analyse de l’espace disque",
-    "Look Up avec prédicats Spotlight riches"
+    "Look Up avec prédicats Spotlight"
    ],
    "price": "Gratuit pendant la bêta ; licence payante prévue après (les soutiens Patreon à partir de 15 $ reçoivent une licence perpétuelle)",
    "version": "0.8.2",
@@ -1429,7 +1429,7 @@
    "platforms": "Windows, Android"
   },
   "microsoft-photos": {
-   "name": "Microsoft Photos",
+   "name": "Photos Microsoft",
    "vendor": "Microsoft",
    "summary": "L’app photo et vidéo intégrée à Windows : une chronologie Galerie qui réunit dossiers du PC, OneDrive et iCloud, une visionneuse rapide qui feuillette un dossier et un éditeur avec outils IA. Bien pour parcourir et retoucher vite ; Photos Legacy garde l’ancien éditeur vidéo et le créateur de diaporamas. Pas d’archives, pas de fonctions de gestion de fichiers.",
    "wins": [
@@ -1448,9 +1448,9 @@
   "movist-pro": {
    "name": "Movist Pro",
    "vendor": "Movist",
-   "summary": "Un lecteur vidéo payant et soigné pour regarder films et séries, très fort sur les sous-titres (plusieurs pistes à la fois, styles par langue), avec tone mapping HDR et Dolby Vision et AirPlay de tous les formats. Pro ajoute serveurs réseau, YouTube et médias web, et l’image dans l’image.",
+   "summary": "Un lecteur vidéo payant pour regarder films et séries, fort sur les sous-titres (plusieurs pistes à la fois, styles par langue), avec tone mapping HDR et Dolby Vision et AirPlay de tous les formats. Pro ajoute serveurs réseau, YouTube et médias web, et l’image dans l’image.",
    "wins": [
-    "Styles de sous-titres avancés et double sous-titrage",
+    "Styles de sous-titres et double sous-titrage",
     "Tone mapping HDR et Dolby Vision",
     "AirPlay de formats que l’Apple TV ne lit pas nativement",
     "Serveurs réseau (SMB, SFTP, FTP, WebDAV), YouTube, image dans l’image (Pro)",
@@ -1509,9 +1509,9 @@
   "mpv": {
    "name": "mpv",
    "vendor": "le projet mpv",
-   "summary": "mpv est un lecteur multimédia minimaliste, scriptable et en ligne de commande, au rendu de premier ordre et à la prise en charge des formats très large. Il se configure par fichiers texte et scripts Lua/JS et n’a qu’un petit contrôleur à l’écran.",
+   "summary": "mpv est un lecteur multimédia minimaliste, scriptable et en ligne de commande, avec un rendu GPU (HDR, Dolby Vision) et une prise en charge des formats très large. Il se configure par fichiers texte et scripts Lua/JS et n’a qu’un petit contrôleur à l’écran.",
    "wins": [
-    "Rendu vidéo parmi les meilleurs (gpu-next, HDR, Dolby Vision)",
+    "Rendu vidéo avec gpu-next, HDR et Dolby Vision",
     "Extrêmement configurable via mpv.conf, input.conf et des scripts",
     "Lit les médias directement dans les ZIP/RAR/7z et les RAR en plusieurs volumes",
     "Multiplateforme (macOS, Windows, Linux)",
@@ -1541,7 +1541,7 @@
    "vendor": "neelabo",
    "summary": "Visionneuse façon livre pour Windows, qui traite dossiers et archives comme des livres et les images comme des pages. Très configurable : chaque action est une commande avec ses touches, gestes de souris et scripts, plus étagère, signets, listes de lecture et doubles pages pour les mangas. Les vidéos passent par Windows ou un VLC installé.",
    "wins": [
-    "Personnalisation extrêmement poussée : commandes, gestes, scripts JavaScript",
+    "Chaque action se configure : commandes, gestes, scripts JavaScript",
     "Double page avec lecture de droite à gauche et découpage des pages",
     "Archives imbriquées et mots de passe d’archive (via 7z.dll)",
     "Listes de lecture enregistrées, historique et recherche avec opérateurs de date, de taille et regex",
@@ -1685,7 +1685,7 @@
   "panels": {
    "name": "Panels",
    "vendor": "Produkt Studio",
-   "summary": "Panels est un lecteur de BD soigné pour iPhone, iPad et Mac, avec bibliothèque de couvertures, préréglages de lecture, lecture case par case et OPDS pour Komga/Kavita. Les fonctions avancées comme les bibliothèques cloud, les filtres de page et la détection de texte demandent Premium.",
+   "summary": "Panels est un lecteur de BD pour iPhone, iPad et Mac, avec bibliothèque de couvertures, préréglages de lecture, lecture case par case et OPDS pour Komga/Kavita. Les fonctions avancées comme les bibliothèques cloud, les filtres de page et la détection de texte demandent Premium.",
    "wins": [
     "Bibliothèque et progression synchronisées entre Mac, iPhone et iPad",
     "Lecture OPDS en continu (Komga, Kavita, Calibre)",
@@ -1797,7 +1797,7 @@
   "photo-mechanic": {
    "name": "Photo Mechanic",
    "vendor": "Camera Bits",
-   "summary": "Photo Mechanic est un outil rapide d’import, de tri et de métadonnées pour photographes professionnels, surtout de presse, de sport et de mariage. Il ouvre dossiers et cartes mémoire directement, affiche les RAW instantanément grâce à leurs aperçus incorporés et excelle pour les légendes, les métadonnées IPTC, les mots-clés, le renommage par lots et l’envoi dans l’urgence.",
+   "summary": "Photo Mechanic est un outil rapide d’import, de tri et de métadonnées pour photographes professionnels, surtout de presse, de sport et de mariage. Il ouvre dossiers et cartes mémoire directement, affiche les RAW instantanément grâce à leurs aperçus incorporés et est conçu pour les légendes, les métadonnées IPTC, les mots-clés, le renommage par lots et l’envoi dans l’urgence.",
    "wins": [
     "Import depuis plusieurs cartes mémoire à la fois, avec renommage et métadonnées pendant la copie",
     "Métadonnées IPTC/XMP, codes de remplacement, variables et mots-clés structurés pour légender dans l’urgence",
@@ -1876,7 +1876,7 @@
    "vendor": "ImageTasks",
    "summary": "Visionneuse d’images et de vidéos minimaliste devenue éditeur photo, avec masques, suppression d’objets et agrandissement. Parcourt dossiers, photothèques et archives ZIP/CBZ et lit les MKV avec choix des sous-titres et de la piste audio ; la recherche, le tri et les raccourcis personnalisés exigent Pixea Plus.",
    "wins": [
-    "Éditeur d’images solide (masques, suppression d’objets, agrandissement, LUT)",
+    "Éditeur d’images avec masques, suppression d’objets, agrandissement, LUT",
     "Retouche et conversion par lots",
     "Sous-titres intégrés, piste audio, vitesse de lecture",
     "Ouvre les photothèques Photos",
@@ -1933,7 +1933,7 @@
    "summary": "Gestionnaire de fichiers multipanneau façon Finder, avec 12 dispositions, espaces de travail, personnalisation poussée (raccourcis, menu contextuel, couleurs) et recherche par regex. Des extensions payantes ajoutent navigation dans les archives, connexions serveur et cloud, et renommage par lots avancé.",
    "wins": [
     "Jusqu’à 12 dispositions de panneaux et espaces de travail enregistrés",
-    "Personnalisation poussée des raccourcis, menus contextuels, barre d’outils, couleurs",
+    "Raccourcis, menus contextuels, barre d’outils et couleurs personnalisables",
     "Synchronisation de dossiers, empreintes de fichiers, modèles de fichiers",
     "Actions rapides sur les images (pivoter, convertir, supprimer l’arrière-plan)",
     "Colonnes de métadonnées vidéo (fréquence d’images, débit)"
@@ -2008,7 +2008,7 @@
   "qview": {
    "name": "qView",
    "vendor": "jurplel (Interverse)",
-   "summary": "qView est une visionneuse d’images minimaliste et multiplateforme, sans barre d’outils : elle ouvre un fichier et laisse feuilleter le reste du dossier. Elle démarre vite, précharge les images voisines et gère les images animées et de nombreux formats via des plug-ins Qt. Un bon choix pour qui veut juste une visionneuse épurée.",
+   "summary": "qView est une visionneuse d’images minimaliste et multiplateforme, sans barre d’outils : elle ouvre un fichier et laisse feuilleter le reste du dossier. Elle démarre vite, précharge les images voisines et gère les images animées et de nombreux formats via des plug-ins Qt.",
    "wins": [
     "Extrêmement minimaliste, fenêtre sans fioritures",
     "Tourne aussi sous Windows et Linux, et sur d’anciens macOS (version legacy dès 10.13)",
@@ -2034,7 +2034,7 @@
    "vendor": "Gentlemen Coders",
    "summary": "RAW Power est un éditeur RAW et JPEG non destructif créé par un ancien responsable d’Aperture, utilisable seul sur des dossiers du Finder, comme gestionnaire de la photothèque Photos d’Apple ou comme extension de retouche de Photos. Il propose des réglages façon Aperture, notes et drapeaux synchronisés via Photos iCloud et l’export par lots. L’éditeur oriente désormais les utilisateurs de macOS 13 et plus vers son successeur Nitro Photo.",
    "wins": [
-    "Retouche RAW/JPEG non destructive puissante (courbes, LUT, effet de profondeur, Boost)",
+    "Retouche RAW/JPEG non destructive (courbes, LUT, effet de profondeur, Boost)",
     "Travaille directement sur la photothèque Photos d’Apple et se synchronise via Photos iCloud",
     "Préréglages et export par lots",
     "Version iPhone et iPad",
@@ -2183,7 +2183,7 @@
    "vendor": "Ghisler Software",
    "summary": "Le gestionnaire de fichiers orthodoxe (à deux panneaux) le plus connu sous Windows, développé depuis 1993. Fort en opérations sur les fichiers, archives, FTP, renommage multiple et synchronisation de dossiers, avec la visionneuse Lister et des plug-ins pour images et médias.",
    "wins": [
-    "Gestion de fichiers à deux panneaux mûre : synchro de dossiers, comparaison, renommage multiple, sommes de contrôle",
+    "Gestion de fichiers à deux panneaux : synchro de dossiers, comparaison, renommage multiple, sommes de contrôle",
     "Client FTP/FTPS intégré",
     "Immense écosystème de plug-ins (Lister, archiveurs, systèmes de fichiers)",
     "Le lecteur de Lister change de piste de sous-titres ou audio et de vitesse",

@@ -3,12 +3,12 @@
   "overviewTitle": "Schnellbild come alternativa",
   "overviewSeoTitle": "{names}: alternativa gratis per Mac · Schnellbild",
   "overviewDescription": "Schnellbild a confronto con {count} visualizzatori di immagini, lettori video, lettori di fumetti e file manager, funzione per funzione e con le fonti. Gratis, open source, per Mac.",
-  "overviewIntro": "<p>Schnellbild è un’alternativa con le idee chiare. Cartelle invece di playlist e librerie: apri una cartella e l’elenco è già lì, la presentazione si crea la playlist da sola. Niente da internet, per principio: nessun account, nessun tracciamento, nessun accesso alla rete. E gratis, scorciatoie da tastiera personalizzate comprese, che altri fanno pagare.</p><p>Ecco come si confronta con i programmi che si cercano su Mac, onestamente e con una fonte per ogni casella. Dove un altro programma è migliore, lo diciamo.</p>",
+  "overviewIntro": "<p>Schnellbild è un’alternativa con le idee chiare. Cartelle invece di playlist e librerie: apri una cartella e l’elenco è già lì, la presentazione si crea la playlist da sola. Niente da internet, per principio: nessun account, nessun tracciamento, nessun accesso alla rete. E gratis, scorciatoie da tastiera personalizzate comprese, che alcuni altri programmi fanno pagare.</p><p>Ecco come si confronta con i programmi che si cercano su Mac, con una fonte per ogni casella. Dove un altro programma è migliore, la pagina lo dice.</p>",
   "overviewNoMac": "Questi funzionano solo su Windows (o non più sui Mac di oggi). Per ciascuno: cosa piaceva ai suoi fan e come lo fa Schnellbild.",
   "matrixH1": "{name} per Mac: un’alternativa gratuita",
   "matrixSeoTitle": "{name} per Mac: alternativa gratis · Schnellbild",
   "matrixDescription": "{name} o Schnellbild? Confronto funzione per funzione, con le fonti: dove è più forte {name}, dove Schnellbild. Gratis, open source, riproduce MKV, apre ZIP e RAR come cartelle.",
-  "matrixLead": "Schnellbild e {name} fianco a fianco, in modo equo: cosa fa meglio ciascuno, poi ogni funzione con la sua fonte.",
+  "matrixLead": "Schnellbild e {name} fianco a fianco: cosa fa meglio ciascuno, poi ogni funzione con la sua fonte.",
   "switcherH1": "{name} per Mac? Ecco l’alternativa",
   "switcherSeoTitle": "{name} per Mac? Un’alternativa gratis · Schnellbild",
   "switcherDescription": "Cerchi {name} per Mac? Cosa piace ai fan di {name} e come lo fa Schnellbild, gratis: cartelle, tasti, MKV, ZIP e RAR come cartelle.",
@@ -32,7 +32,7 @@
   "sources": "Fonti",
   "asOf": "Aggiornato a novembre 2026: {name} {version}, Schnellbild {ours}. La colonna di {name} si basa sulle fonti qui sotto, quella di Schnellbild sul suo README e sul codice sorgente.",
   "leftOut": "Escluse per mancanza di una fonte affidabile su {name}: {count} funzioni su {total}.",
-  "fileManager": "Schnellbild non è un file manager completo: niente connessioni FTP, SFTP o cloud, niente sincronizzazione di cartelle, niente creazione di archivi. È la scelta migliore per guardare e riordinare foto e video: miniature di tutto, due pannelli affiancati con F5 per copiare e F6 per spostare, archivi che si aprono come cartelle.",
+  "fileManager": "Schnellbild non è un file manager completo: niente connessioni FTP, SFTP o cloud, niente sincronizzazione di cartelle, niente creazione di archivi. È fatto per guardare e riordinare foto e video: miniature di tutto, due pannelli affiancati con F5 per copiare e F6 per spostare, archivi che si aprono come cartelle.",
   "likedTitle": "Cosa piace ai fan di {name}, e come funziona in Schnellbild",
   "aheadTitle": "Dove {name} resta avanti",
   "purposeTitle": "Escluso di proposito",
@@ -227,7 +227,7 @@
   },
   "pip": {
    "label": "Picture in Picture",
-   "why": "Un visualizzatore per sfogliare, non un lettore da tenere in un angolo."
+   "why": "Fatto per sfogliare cartelle; per guardare un video in un angolo dello schermo è più adatto un lettore video."
   },
   "music_mode": {
    "label": "File audio, modalità musica",
@@ -246,7 +246,7 @@
    "how": "Gli stessi cursori delle foto."
   },
   "quicklook_mkv_thumbnails": {
-   "label": "Miniature nel Finder e in Quick Look per MKV e altri",
+   "label": "Miniature nel Finder e nella Visualizzazione rapida per MKV e altri",
    "how": "MKV, WebM, WMV, FLV e VOB hanno le miniature nel Finder.",
    "note": "MKV, WebM, WMV, FLV, Ogg, VOB"
   },
@@ -293,11 +293,11 @@
   },
   "image_editing": {
    "label": "Modifica le immagini (ritaglio, ridimensionamento, salvataggio)",
-   "why": "Un visualizzatore, non un editor di immagini: i tuoi file restano come sono."
+   "why": "Mostra le immagini senza modificarle: i tuoi file restano come sono."
   },
   "batch_convert": {
    "label": "Conversione o rinomina in blocco",
-   "why": "Un visualizzatore, non un convertitore."
+   "why": "Conversione e rinomina in blocco sono lasciate ad altre app."
   },
   "library_catalog": {
    "label": "Libreria, catalogo, tag, valutazioni",
@@ -360,7 +360,7 @@
   "5kplayer": {
    "name": "5KPlayer",
    "vendor": "Digiarty Software",
-   "summary": "Lettore multimediale tuttofare e gratuito per Mac e Windows: riproduce video, musica, DVD e radio, riceve il mirroring AirPlay, trasmette via DLNA e scarica video online. Il suo punto forte è la quantità di extra attorno alla riproduzione.",
+   "summary": "Lettore multimediale tuttofare e gratuito per Mac e Windows: riproduce video, musica, DVD e radio, riceve il mirroring AirPlay, trasmette via DLNA e scarica video online.",
    "wins": [
     "Ricevitore AirPlay e registrazione del mirroring",
     "Server e renderer DLNA",
@@ -412,9 +412,9 @@
     "multiple_windows": "Pannelli in una finestra, conservati tra le sessioni",
     "bookmarks": "Pannelli, ricerche salvate; Windows: fino a cinque cestini di immagini",
     "img_psd_exr": "PSD sì; OpenEXR non indicato",
-    "img_svg_pdf": "SVG su Windows; PDF solo in Windows Professional/Ultimate; su Mac via Quick Look",
+    "img_svg_pdf": "SVG su Windows; PDF solo in Windows Professional/Ultimate; su Mac via Visualizzazione rapida",
     "img_animated": "GIF e WebP animati; AVIF animati no",
-    "video_native": "Windows riproduce MP4/MOV/M4V/AVI/WMV; su Mac i video passano da Quick Look",
+    "video_native": "Windows riproduce MP4/MOV/M4V/AVI/WMV; su Mac i video passano dalla Visualizzazione rapida",
     "video_mkv_avi_webm": "Windows: AVI, WMV, ASF; niente MKV, WebM, FLV",
     "music_mode": "Windows legge MP3, WAV, WMA, M4A",
     "archives_as_folders": "Windows: ZIP, RAR (non RAR5), TAR, GZ, CAB, ARJ; niente 7z; non su Mac",
@@ -426,12 +426,12 @@
   "adobe-bridge": {
    "name": "Adobe Bridge",
    "vendor": "Adobe",
-   "summary": "Adobe Bridge è un gestore gratuito di risorse creative per sfogliare cartelle di foto, file di grafica e video con anteprime ricche. Aggiunge metadati, parole chiave, valutazioni, raccolte, rinomina in blocco ed esportazione, e fa da centro di comando per Photoshop, Camera Raw e le altre app Creative Cloud.",
+   "summary": "Adobe Bridge è un gestore gratuito di risorse creative per sfogliare cartelle di foto, file di grafica e video con anteprime. Aggiunge metadati, parole chiave, valutazioni, raccolte, rinomina in blocco ed esportazione, e passa i file a Photoshop, Camera Raw e alle altre app Creative Cloud.",
    "wins": [
     "Anteprime dei formati Adobe (PSD, AI, INDD, After Effects, Substance 3D) e PDF",
     "Modifica completa dei metadati, parole chiave, etichette, valutazioni, raccolte e raccolte smart",
     "Rinomina in blocco, pannello Esporta e flussi di lavoro per conversioni in massa",
-    "Integrazione stretta con Camera Raw, Photoshop, Premiere e le librerie Creative Cloud",
+    "Lavora con Camera Raw, Photoshop, Premiere e le librerie Creative Cloud",
     "Provini PDF, pubblicazione su Adobe Stock e Portfolio",
     "Versione per Windows"
    ],
@@ -471,7 +471,7 @@
    "wins": [
     "Selezione: scelte, valutazioni, Focus Score, valutazione AI, pile",
     "Visualizzazione RAW in HDR ed esportazione HDR",
-    "Modifica approfondita di EXIF/IPTC/XMP, parole chiave, mappe GPS",
+    "Modifica di EXIF/IPTC/XMP, parole chiave, mappe GPS",
     "Importazione da schede di memoria",
     "Sottotitoli SRT esterni",
     "Automazione con AppleScript"
@@ -549,7 +549,7 @@
    "notes": {
     "thumbnail_grid": "Miniature o provino dei file aperti in una finestra; niente anteprime di cartelle",
     "img_svg_pdf": "Il PDF è il formato principale; supporto SVG non documentato",
-    "img_animated": "Mostra i fotogrammi di una GIF animata come immagini fisse; per animarla serve Quick Look",
+    "img_animated": "Mostra i fotogrammi di una GIF animata come immagini fisse; per animarla serve la Visualizzazione rapida",
     "slideshow": "Presentazione documentata per le pagine di un PDF",
     "manga_two_page": "Vista a due pagine per i PDF; niente lettura da destra a sinistra",
     "rename_trash": "Rinomina o sposta il file aperto dal titolo della finestra; niente Cestino né nuova cartella",
@@ -639,16 +639,16 @@
     "languages_20": "14 lingue, italiano compreso; lingua dell’interfaccia selezionabile",
     "thumbnail_grid": "Vista a miniature; niente anteprime delle cartelle",
     "network_shares_fast": "SMB, FTP e cloud supportati; nessuna indicazione sulla velocità",
-    "img_modern_formats": "Tramite Quick Look e il visualizzatore integrato con i codec di macOS",
-    "img_raw": "Tramite Quick Look, cioè il supporto RAW di macOS; nessun decoder proprio",
-    "keyboard_paging": "Con Quick Look (F3), le frecce scorrono la selezione",
-    "zoom_rotate": "Zoom solo in Quick Look (⌘+ / ⌘−); nessuno zoom documentato in F3",
+    "img_modern_formats": "Tramite la Visualizzazione rapida e il visualizzatore integrato con i codec di macOS",
+    "img_raw": "Tramite la Visualizzazione rapida, cioè il supporto RAW di macOS; nessun decoder proprio",
+    "keyboard_paging": "Con la Visualizzazione rapida (F3), le frecce scorrono la selezione",
+    "zoom_rotate": "Zoom solo nella Visualizzazione rapida (⌘+ / ⌘−); nessuno zoom documentato in F3",
     "file_info_exif": "Ottieni informazioni mostra dimensioni, date, permessi; niente EXIF né codec",
     "wrong_extension_note": "Riconosce il formato dal contenuto e mostra le immagini con nome sbagliato, senza segnalarle",
     "photos_videos_one_grid": "Vista a miniature per ogni file; niente anteprime delle cartelle",
-    "music_mode": "Riproduce l’audio tramite Quick Look",
+    "music_mode": "Riproduce l’audio tramite la Visualizzazione rapida",
     "archives_as_folders": "Gratis: solo ZIP; PRO (29,99 $): 7z, TAR in lettura e scrittura, RAR/ISO/XAR in lettura",
-    "videos_in_archives": "Anteprima nei file d’archivio senza estrarre (Quick Look), nessun lettore",
+    "videos_in_archives": "Anteprima nei file d’archivio senza estrarre (Visualizzazione rapida), nessun lettore",
     "library_catalog": "Solo tag del Finder",
     "cloud_sync": "Solo PRO: Dropbox, Google Drive, OneDrive, S3, WebDAV, FTP/SFTP ecc.",
     "shortcut_cheatsheet": "Elenco dei tasti nelle Preferenze; nessun foglio da stampare",
@@ -665,7 +665,7 @@
     "Ogni tasto e azione del mouse assegnabile, impostazioni pensate per una mano sola",
     "Apre moltissimi formati di archivio, anche RAR/ZIP divisi e archivi protetti da password",
     "Filtri di visualizzazione Core Image, lente",
-    "Miniature nel Finder e Quick Look per CBZ/CBR/ZIP/RAR/7z"
+    "Miniature nel Finder e nella Visualizzazione rapida per CBZ/CBR/ZIP/RAR/7z"
    ],
    "price": "Gratis",
    "version": "1.7.1 (fork di ysmx); la build originale di coo-ona si è fermata alla 1.2b25 (2020)",
@@ -750,20 +750,20 @@
    "updated": "2026-11-08",
    "platforms": "macOS, Windows, Linux, FreeBSD",
    "notes": {
-    "thumbnail_grid": "Vista a miniature (Quick Look su macOS); cartelle come icone, senza anteprime",
+    "thumbnail_grid": "Vista a miniature (Visualizzazione rapida su macOS); cartelle come icone, senza anteprime",
     "network_shares_fast": "Accesso SMB e di rete tramite plug-in; velocità non documentata",
     "multiple_windows": "Schede nei due pannelli; visualizzatore ed editor in finestre separate",
-    "img_modern_formats": "Su macOS tramite il plug-in Quick Look incluso",
-    "img_raw": "Windows con i codec RAW WIC; macOS con il plug-in Quick Look",
+    "img_modern_formats": "Su macOS tramite il plug-in per la Visualizzazione rapida incluso",
+    "img_raw": "Windows con i codec RAW WIC; macOS con il plug-in per la Visualizzazione rapida",
     "img_psd_exr": "PSD integrato; OpenEXR non indicato",
-    "img_svg_pdf": "SVG integrato; PDF via plug-in Quick Look su macOS o altri plug-in WLX",
+    "img_svg_pdf": "SVG integrato; PDF via plug-in per la Visualizzazione rapida su macOS o altri plug-in WLX",
     "img_animated": "GIF animate con controllo dei fotogrammi; APNG e WebP animati non indicati",
     "slideshow": "Solo nel visualizzatore a schermo intero, cartella corrente, da 1 a 25 s per immagine",
     "file_info_exif": "Plug-in EXIF integrato (JPEG: data, dimensioni, orientamento, fotocamera)",
-    "video_native": "Nessun lettore proprio: Quick Look su macOS, plug-in WMP su Windows, MPlayer su Linux",
-    "video_mkv_avi_webm": "Su macOS solo ciò che riproduce Quick Look",
-    "photos_videos_one_grid": "Vista a miniature con quelle del sistema (Quick Look su macOS)",
-    "music_mode": "Riproduce un file audio alla volta nel visualizzatore (Quick Look su macOS)",
+    "video_native": "Nessun lettore proprio: Visualizzazione rapida su macOS, plug-in WMP su Windows, MPlayer su Linux",
+    "video_mkv_avi_webm": "Su macOS solo ciò che riproduce la Visualizzazione rapida",
+    "photos_videos_one_grid": "Vista a miniature con quelle del sistema (Visualizzazione rapida su macOS)",
+    "music_mode": "Riproduce un file audio alla volta nel visualizzatore (Visualizzazione rapida su macOS)",
     "archives_as_folders": "ZIP, TAR, GZ integrati, RAR col plug-in UnRAR; per il 7z su macOS serve 7zz esterno",
     "comics_cbz_cbr": "Nessun lettore di fumetti; CBZ e CBR si aprono come cartelle se associati ai plug-in",
     "archive_passwords": "Password supportate dai plug-in e archiviatori esterni, a seconda del formato",
@@ -838,7 +838,7 @@
   "faststone-image-viewer": {
    "name": "FastStone Image Viewer",
    "vendor": "FastStone Soft",
-   "summary": "FastStone Image Viewer è uno storico browser di immagini per Windows con un albero di cartelle simile a Esplora file, una curata modalità a schermo intero con pannelli a scomparsa e molti strumenti di modifica e in blocco. Riproduce anche i video con i codec di Windows e conserva tag e valutazioni in un proprio database.",
+   "summary": "FastStone Image Viewer è uno storico browser di immagini per Windows con un albero di cartelle simile a Esplora file, una modalità a schermo intero con pannelli a scomparsa e molti strumenti di modifica e in blocco. Riproduce anche i video con i codec di Windows e conserva tag e valutazioni in un proprio database.",
    "wins": [
     "Strumenti di modifica: curve, livelli, timbro clone, pennello correttivo, occhi rossi",
     "Confronto fino a quattro immagini affiancate",
@@ -853,9 +853,9 @@
    "platforms": "Windows"
   },
   "finder-quick-look": {
-   "name": "Finder e Quick Look",
+   "name": "Finder e Visualizzazione rapida",
    "vendor": "Apple",
-   "summary": "Il file manager del Mac con Quick Look, l’anteprima con la barra spaziatrice per quasi ogni file. Va bene per dare un’occhiata veloce a un’immagine o a un MP4 e per la gestione quotidiana dei file.",
+   "summary": "Il file manager del Mac con la Visualizzazione rapida, l’anteprima con la barra spaziatrice per quasi ogni file. Va bene per dare un’occhiata veloce a un’immagine o a un MP4 e per la gestione quotidiana dei file.",
    "wins": [
     "Integrato in macOS, funziona con quasi ogni tipo di file",
     "Tag, cartelle smart, ricerca Spotlight",
@@ -869,13 +869,13 @@
    "notes": {
     "thumbnail_grid": "La vista a icone mostra le miniature dei file; le cartelle restano icone senza anteprima",
     "network_shares_fast": "Si collega a SMB e server; velocità su grandi condivisioni non documentata",
-    "img_animated": "Quick Look anima le GIF; APNG e WebP animati non documentati",
-    "music_mode": "Quick Look riproduce e taglia i file audio",
-    "image_editing": "Rotazione e Markup in Quick Look; Azioni rapide",
+    "img_animated": "La Visualizzazione rapida anima le GIF; APNG e WebP animati non documentati",
+    "music_mode": "La Visualizzazione rapida riproduce e taglia i file audio",
+    "image_editing": "Rotazione e Markup nella Visualizzazione rapida; Azioni rapide",
     "library_catalog": "Tag e cartelle smart, nessun database di valutazioni",
     "custom_shortcuts": "Abbreviazioni da tastiera per i comandi dei menu",
     "boss_key": "⌘H / ⌥⌘H nascondono le app; nessun tasto capo dedicato",
-    "app_sandbox": "Il visualizzatore di Quick Look è in sandbox, il Finder no"
+    "app_sandbox": "La Visualizzazione rapida è in sandbox, il Finder no"
    }
   },
   "flowvision": {
@@ -928,13 +928,13 @@
     "thumbnail_grid": "Vista a icone con anteprime; niente anteprime delle cartelle",
     "network_shares_fast": "SMB, AFP, NFS, SFTP e cloud supportati; nulla sulla velocità con cartelle grandi",
     "img_modern_formats": "Pannello di anteprima tramite macOS (HEIC, AVIF, WebP, JPEG XL come li legge il sistema)",
-    "img_raw": "Solo anteprima e Quick Look, col supporto RAW di macOS; nessun decoder proprio",
+    "img_raw": "Solo anteprima e Visualizzazione rapida, col supporto RAW di macOS; nessun decoder proprio",
     "img_svg_pdf": "Anteprima PDF nel pannello; SVG solo come lo mostra macOS",
-    "zoom_rotate": "Zoom solo nella finestra di Quick Look (⌘+ / ⌘−); nessun visualizzatore proprio",
+    "zoom_rotate": "Zoom solo nella finestra della Visualizzazione rapida (⌘+ / ⌘−); nessun visualizzatore proprio",
     "video_mkv_avi_webm": "Solo col plug-in di terze parti «QuickLook Video»",
     "music_mode": "Riproduce l’audio nel pannello di anteprima, nessuna modalità musica",
     "archive_passwords": "Crea ZIP protetti da password; apertura di archivi cifrati non documentata",
-    "videos_in_archives": "Quick Look dentro gli archivi; nessun lettore",
+    "videos_in_archives": "Visualizzazione rapida dentro gli archivi; nessun lettore",
     "batch_convert": "Rinomina multipla con espressioni regolari e metadati; nessuna conversione di immagini",
     "library_catalog": "Solo tag del Finder; niente valutazioni né database"
    }
@@ -993,9 +993,9 @@
    "summary": "GraphicConverter è lo storico «coltellino svizzero per le immagini» del Mac: browser di file e immagini, presentazione, editor e convertitore in blocco che apre circa 200 formati. Il suo browser riproduce anche film e audio compatibili con QuickTime, gestisce molti metadati e offre ricerca dei duplicati, viste piatte e ricerca Spotlight.",
    "wins": [
     "Apre circa 200 formati di immagine e ne esporta circa 80, anche vecchi e scientifici",
-    "Editor di immagini completo e potente conversione in blocco con azioni",
-    "Modifica approfondita dei metadati (EXIF/IPTC/XMP, volti, mappa GPS)",
-    "Presentazioni ricche di opzioni (transizioni, ordine casuale, metadati, ordinamento durante la proiezione)",
+    "Editor di immagini completo e conversione in blocco con azioni",
+    "Modifica dei metadati (EXIF/IPTC/XMP, volti, mappa GPS)",
+    "Presentazioni con molte opzioni (transizioni, ordine casuale, metadati, ordinamento durante la proiezione)",
     "Viste elenco, Cover Flow e miniature, vista piatta di tutte le sottocartelle",
     "Ricerca duplicati, provini, gallerie web",
     "Scorciatoie personalizzate, 14 lingue, impostazione chiaro/scuro"
@@ -1323,13 +1323,13 @@
   "marta": {
    "name": "Marta",
    "vendor": "Yan Zhulanow",
-   "summary": "File manager a due pannelli nativo e centrato sulla tastiera, scritto in Swift, configurato con un linguaggio testuale ed estendibile con plug-in Lua. Apre molti formati di archivio come cartelle; mostra le anteprime con Quick Look.",
+   "summary": "File manager a due pannelli nativo e centrato sulla tastiera, scritto in Swift, configurato con un linguaggio testuale ed estendibile con plug-in Lua. Apre molti formati di archivio come cartelle; mostra le anteprime con la Visualizzazione rapida.",
    "wins": [
     "API per plug-in Lua e configurazione testuale",
     "Flusso da commander con tasti F e Action Panel",
     "Supporto degli archivi, anche annidati, ZIP in lettura e scrittura",
     "Terminale integrato sincronizzato con la cartella, analisi dello spazio su disco",
-    "Look Up con ricche condizioni Spotlight"
+    "Look Up con condizioni Spotlight"
    ],
    "price": "Gratis durante la beta; licenza a pagamento prevista dopo la beta (chi sostiene su Patreon con almeno 15 $ riceve una licenza perpetua)",
    "version": "0.8.2",
@@ -1338,15 +1338,15 @@
    "notes": {
     "free": "Gratis durante la beta; annunciata una licenza a pagamento",
     "regex_search": "Selezione e ricerca rapida con espressioni regolari nell’elenco; Look Up usa condizioni",
-    "img_modern_formats": "Solo anteprima Quick Look (barra spaziatrice); nessun visualizzatore proprio",
-    "img_raw": "Solo anteprima Quick Look (barra spaziatrice); nessun visualizzatore proprio",
-    "img_psd_exr": "Solo anteprima Quick Look (barra spaziatrice); nessun visualizzatore proprio",
-    "img_svg_pdf": "Solo anteprima Quick Look (barra spaziatrice); nessun visualizzatore proprio",
-    "img_animated": "Solo anteprima Quick Look (barra spaziatrice); nessun visualizzatore proprio",
-    "zoom_rotate": "Solo lo zoom di Quick Look; anteprima a schermo intero richiesta ma non presente",
-    "video_native": "Quick Look riproduce MP4/MOV",
-    "video_mkv_avi_webm": "Solo ciò che riproduce Quick Look; formati non indicati",
-    "music_mode": "Quick Look riproduce un singolo file audio; niente riproduzione di una cartella",
+    "img_modern_formats": "Solo anteprima con la Visualizzazione rapida (barra spaziatrice); nessun visualizzatore proprio",
+    "img_raw": "Solo anteprima con la Visualizzazione rapida (barra spaziatrice); nessun visualizzatore proprio",
+    "img_psd_exr": "Solo anteprima con la Visualizzazione rapida (barra spaziatrice); nessun visualizzatore proprio",
+    "img_svg_pdf": "Solo anteprima con la Visualizzazione rapida (barra spaziatrice); nessun visualizzatore proprio",
+    "img_animated": "Solo anteprima con la Visualizzazione rapida (barra spaziatrice); nessun visualizzatore proprio",
+    "zoom_rotate": "Solo lo zoom della Visualizzazione rapida; anteprima a schermo intero richiesta ma non presente",
+    "video_native": "La Visualizzazione rapida riproduce MP4/MOV",
+    "video_mkv_avi_webm": "Solo ciò che riproduce la Visualizzazione rapida; formati non indicati",
+    "music_mode": "La Visualizzazione rapida riproduce un singolo file audio; niente riproduzione di una cartella",
     "archives_as_folders": "ZIP in lettura e scrittura; TAR, 7Z, ISO e altri in lettura; RAR limitato, niente RAR5",
     "comics_cbz_cbr": "Nessun lettore di fumetti; si possono registrare estensioni ZIP come cbz",
     "shortcut_cheatsheet": "La documentazione elenca i tasti predefiniti; nessun foglio da stampare"
@@ -1448,9 +1448,9 @@
   "movist-pro": {
    "name": "Movist Pro",
    "vendor": "Movist",
-   "summary": "Un curato lettore video a pagamento per guardare film e serie, con un’ottima gestione dei sottotitoli (più tracce insieme, stili per lingua), tone mapping HDR e Dolby Vision e AirPlay di qualsiasi formato. Pro aggiunge server di rete, YouTube e media dal web e Picture in Picture.",
+   "summary": "Un lettore video a pagamento per guardare film e serie, forte sui sottotitoli (più tracce insieme, stili per lingua), tone mapping HDR e Dolby Vision e AirPlay di qualsiasi formato. Pro aggiunge server di rete, YouTube e media dal web e Picture in Picture.",
    "wins": [
-    "Stili avanzati dei sottotitoli e doppi sottotitoli",
+    "Stili dei sottotitoli e doppi sottotitoli",
     "Tone mapping HDR e Dolby Vision",
     "AirPlay di formati che Apple TV non riproduce da sé",
     "Server di rete (SMB, SFTP, FTP, WebDAV), YouTube, PiP (Pro)",
@@ -1509,9 +1509,9 @@
   "mpv": {
    "name": "mpv",
    "vendor": "il progetto mpv",
-   "summary": "mpv è un lettore multimediale minimale, programmabile e da riga di comando, con una resa di altissima qualità e un supporto di formati amplissimo. Si configura con file di testo e script Lua/JS e ha solo un piccolo controller a schermo.",
+   "summary": "mpv è un lettore multimediale minimale, programmabile e da riga di comando, con resa via GPU (HDR, Dolby Vision) e un supporto di formati amplissimo. Si configura con file di testo e script Lua/JS e ha solo un piccolo controller a schermo.",
    "wins": [
-    "Resa video ai vertici (gpu-next, HDR, Dolby Vision)",
+    "Resa video con gpu-next, HDR e Dolby Vision",
     "Configurabilissimo con mpv.conf, input.conf e script",
     "Riproduce media direttamente da ZIP/RAR/7z e RAR multivolume",
     "Multipiattaforma (macOS, Windows, Linux)",
@@ -1541,7 +1541,7 @@
    "vendor": "neelabo",
    "summary": "Visualizzatore a forma di libro per Windows che tratta cartelle e archivi come libri e immagini come pagine. Configurabilissimo: ogni azione è un comando con i suoi tasti, gesti del mouse e script, più libreria, segnalibri, playlist e doppie pagine per i manga. I video si riproducono tramite Windows o un VLC installato.",
    "wins": [
-    "Personalizzazione profondissima: comandi, gesti, scripting JavaScript",
+    "Ogni azione configurabile: comandi, gesti, scripting JavaScript",
     "Doppia pagina con lettura da destra a sinistra e divisione delle pagine",
     "Archivi annidati e password degli archivi (tramite 7z.dll)",
     "Playlist salvate, cronologia e ricerca con operatori per data, dimensione ed espressioni regolari",
@@ -1685,7 +1685,7 @@
   "panels": {
    "name": "Panels",
    "vendor": "Produkt Studio",
-   "summary": "Panels è un curato lettore di fumetti per iPhone, iPad e Mac con libreria a copertine, preset di lettura, vista vignetta per vignetta e supporto OPDS per Komga/Kavita. Funzioni avanzate come librerie nel cloud, filtri di pagina e riconoscimento del testo richiedono Premium.",
+   "summary": "Panels è un lettore di fumetti per iPhone, iPad e Mac con libreria a copertine, preset di lettura, vista vignetta per vignetta e supporto OPDS per Komga/Kavita. Funzioni avanzate come librerie nel cloud, filtri di pagina e riconoscimento del testo richiedono Premium.",
    "wins": [
     "Libreria e avanzamento sincronizzati tra Mac, iPhone e iPad",
     "Streaming OPDS (Komga, Kavita, Calibre)",
@@ -1736,14 +1736,14 @@
     "thumbnail_grid": "Vista a icone per le immagini; niente anteprime delle cartelle",
     "regex_search": "Nome «corrisponde al modello» (caratteri jolly); espressioni regolari non documentate",
     "network_shares_fast": "Anteprime più rapide sui volumi di rete; nessuna promessa generale sulla velocità",
-    "img_modern_formats": "Modulo Anteprima e Quick Look con i codec di macOS; nessun visualizzatore dedicato",
+    "img_modern_formats": "Modulo Anteprima e Visualizzazione rapida con i codec di macOS; nessun visualizzatore dedicato",
     "img_raw": "Tramite macOS; anteprima ARW aggiunta",
-    "img_animated": "Le GIF animate si riproducono in Quick Look; APNG e WebP non documentati",
-    "zoom_rotate": "Solo lo zoom di Quick Look",
-    "slideshow": "Nessuna presentazione propria; Quick Look mostra una selezione come presentazione",
+    "img_animated": "Le GIF animate si riproducono nella Visualizzazione rapida; APNG e WebP non documentati",
+    "zoom_rotate": "Solo lo zoom della Visualizzazione rapida",
+    "slideshow": "Nessuna presentazione propria; la Visualizzazione rapida mostra una selezione come presentazione",
     "file_info_exif": "Info mostra dimensioni, durata e metadati di macOS; codec e bitrate non documentati",
     "video_mkv_avi_webm": "Anteprima WebM aggiunta; MKV/AVI non citati",
-    "music_mode": "Audio solo in Anteprima e Quick Look",
+    "music_mode": "Audio solo in Anteprima e nella Visualizzazione rapida",
     "archive_passwords": "Crea ed estrae ZIP protetti da password (AES-128/256)",
     "dual_pane": "Doppio pannello, ma copia e sposta con ⌘C/⌘V/⌘X o trascinando; F5/F6 assegnabili",
     "batch_convert": "Rinomina in blocco; nessuna conversione di immagini",
@@ -1797,7 +1797,7 @@
   "photo-mechanic": {
    "name": "Photo Mechanic",
    "vendor": "Camera Bits",
-   "summary": "Photo Mechanic è uno strumento veloce di importazione, selezione e metadati per fotografi professionisti, soprattutto di cronaca, sport e matrimoni. Apre direttamente cartelle e schede di memoria, mostra subito i file RAW grazie alle anteprime incorporate ed eccelle in didascalie, metadati IPTC, parole chiave, rinomina in blocco e caricamento a ridosso delle scadenze.",
+   "summary": "Photo Mechanic è uno strumento veloce di importazione, selezione e metadati per fotografi professionisti, soprattutto di cronaca, sport e matrimoni. Apre direttamente cartelle e schede di memoria, mostra subito i file RAW grazie alle anteprime incorporate ed è pensato per didascalie, metadati IPTC, parole chiave, rinomina in blocco e caricamento a ridosso delle scadenze.",
    "wins": [
     "Importazione da più schede di memoria insieme, con rinomina e metadati durante la copia",
     "Metadati IPTC/XMP, sostituzioni di codici, variabili e parole chiave strutturate per le didascalie in tempi stretti",
@@ -1876,7 +1876,7 @@
    "vendor": "ImageTasks",
    "summary": "Visualizzatore minimale di immagini e video diventato un editor fotografico con maschere, rimozione di oggetti e upscaling. Sfoglia cartelle, librerie di Foto e archivi ZIP/CBZ e riproduce MKV con scelta di sottotitoli e traccia audio; ricerca, ordinamento e scorciatoie personalizzate richiedono Pixea Plus.",
    "wins": [
-    "Editor di immagini potente (maschere, rimozione oggetti, upscaling, LUT)",
+    "Editor di immagini con maschere, rimozione oggetti, upscaling, LUT",
     "Modifica e conversione in blocco",
     "Sottotitoli incorporati, traccia audio, velocità di riproduzione",
     "Apre le librerie di Foto",
@@ -1933,7 +1933,7 @@
    "summary": "File manager a più pannelli in stile Finder con 12 layout, spazi di lavoro, ampia personalizzazione (tasti, menu contestuale, colori) e ricerca con espressioni regolari. Estensioni a pagamento aggiungono navigazione negli archivi, connessioni a server e cloud e rinomina in blocco avanzata.",
    "wins": [
     "Fino a 12 layout di pannelli e spazi di lavoro salvati",
-    "Personalizzazione profonda di tasti, menu contestuali, barra degli strumenti, colori",
+    "Tasti, menu contestuali, barra degli strumenti e colori personalizzabili",
     "Sincronizzazione di cartelle, hash dei file, modelli di file",
     "Azioni rapide sulle immagini (ruota, converti, rimuovi sfondo)",
     "Colonne con metadati video (frequenza dei fotogrammi, velocità dati)"
@@ -1947,10 +1947,10 @@
     "dark_light_setting": "Schemi di colore con modalità chiara e scura (beta); nessun interruttore separato",
     "languages_20": "Circa 14 lingue, italiano compreso",
     "img_modern_formats": "Anteprima tramite macOS; citato solo HEIC",
-    "zoom_rotate": "Zoom di Quick Look; l’azione Ruota modifica il file",
-    "slideshow": "«Instant SlideShow» dal menu contestuale (Quick Look a schermo intero)",
+    "zoom_rotate": "Zoom della Visualizzazione rapida; l’azione Ruota modifica il file",
+    "slideshow": "«Instant SlideShow» dal menu contestuale (Visualizzazione rapida a schermo intero)",
     "video_mkv_avi_webm": "MKV e simili tramite le estensioni multimediali di macOS",
-    "music_mode": "Solo copertine audio e riproduzione in Quick Look",
+    "music_mode": "Solo copertine audio e riproduzione nella Visualizzazione rapida",
     "archives_as_folders": "Estensione Enhanced Archiver (di norma 4,99 $): RAR, ZIP, 7z come cartelle",
     "comics_cbz_cbr": "Nessun lettore di fumetti; CBZ/CBR sfogliabili come archivi aggiungendo l’estensione",
     "videos_in_archives": "Opzione «Anteprima in QSpace» per gli archivi; nessun lettore",
@@ -2008,7 +2008,7 @@
   "qview": {
    "name": "qView",
    "vendor": "jurplel (Interverse)",
-   "summary": "qView è un visualizzatore di immagini minimale e multipiattaforma, senza barre degli strumenti: apre un singolo file e permette di sfogliare il resto della cartella. Si avvia in fretta, precarica le immagini vicine e supporta immagini animate e molti formati tramite i plug-in Qt. Una buona scelta per chi vuole solo un visualizzatore pulito.",
+   "summary": "qView è un visualizzatore di immagini minimale e multipiattaforma, senza barre degli strumenti: apre un singolo file e permette di sfogliare il resto della cartella. Si avvia in fretta, precarica le immagini vicine e supporta immagini animate e molti formati tramite i plug-in Qt.",
    "wins": [
     "Finestra minimale, senza alcun fronzolo",
     "Gira anche su Windows e Linux, e su macOS più vecchi (build legacy per 10.13 e successivi)",
@@ -2034,7 +2034,7 @@
    "vendor": "Gentlemen Coders",
    "summary": "RAW Power è un editor RAW e JPEG non distruttivo creato da un ex responsabile di Aperture, utilizzabile da solo sulle cartelle del Finder, come gestore della libreria di Foto di Apple o come estensione di modifica di Foto. Offre regolazioni in stile Aperture, valutazioni e contrassegni sincronizzati via Foto di iCloud ed esportazione in blocco. Il produttore indirizza ora chi usa macOS 13 o successivi al successore Nitro Photo.",
    "wins": [
-    "Potente modifica non distruttiva di RAW e JPEG (curve, LUT, effetto profondità, Boost)",
+    "Modifica non distruttiva di RAW e JPEG (curve, LUT, effetto profondità, Boost)",
     "Lavora direttamente sulla libreria di Foto di Apple e sincronizza via Foto di iCloud",
     "Preset ed esportazione in blocco",
     "Versione per iPhone e iPad",
@@ -2096,7 +2096,7 @@
     "Testo attivo: seleziona, copia e fai leggere il testo delle pagine",
     "RAR multivolume e archivi annidati si aprono come un unico fumetto",
     "Lettura di PDF",
-    "Miniature Quick Look per gli archivi di fumetti nel Finder"
+    "Miniature della Visualizzazione rapida per gli archivi di fumetti nel Finder"
    ],
    "price": "Gratis (Mac App Store e GitHub)",
    "version": "1.12.0 (GitHub, inviata all’App Store); l’App Store mostra la 1.11.0",
@@ -2183,7 +2183,7 @@
    "vendor": "Ghisler Software",
    "summary": "Il più noto file manager «ortodosso» a due pannelli per Windows, sviluppato dal 1993. È forte su operazioni sui file, archivi, FTP, rinomina multipla e sincronizzazione delle cartelle, con il visualizzatore Lister e plug-in per immagini e media.",
    "wins": [
-    "Gestione file a due pannelli matura: sincronizzazione, confronto, rinomina multipla, checksum",
+    "Gestione file a due pannelli: sincronizzazione, confronto, rinomina multipla, checksum",
     "Client FTP/FTPS integrato",
     "Enorme ecosistema di plug-in (Lister, archiviatori, file system)",
     "Il lettore di Lister cambia sottotitoli, tracce audio e velocità",

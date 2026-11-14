@@ -3,12 +3,12 @@
   "overviewTitle": "Alternatif olarak Schnellbild",
   "overviewSeoTitle": "{names} yerine ücretsiz Mac alternatifi · Schnellbild",
   "overviewDescription": "Schnellbild, {count} resim görüntüleyici, video oynatıcı, çizgi roman okuyucu ve dosya yöneticisiyle özellik özellik, kaynaklarıyla karşılaştırıldı. Ücretsiz, açık kaynak, Mac için.",
-  "overviewIntro": "<p>Schnellbild net bir görüşü olan bir alternatif. Oynatma listeleri ve kitaplık yerine klasörler: Bir klasör açın, liste hazır; oynatma listesini slayt gösterisi kendisi oluşturur. İnternetten hiçbir şey, ilke olarak: hesap yok, izleme yok, ağ bağlantısı hiç yok. Üstelik ücretsiz, başkalarının para istediği kendi klavye kestirmeleriniz de dahil.</p><p>Mac’te aranan programlarla karşılaştırması burada: dürüstçe ve her hücre için bir kaynakla. Başka bir program daha iyiyse, bu da açıkça yazıyor.</p>",
+  "overviewIntro": "<p>Schnellbild net bir görüşü olan bir alternatif. Oynatma listeleri ve kitaplık yerine klasörler: Bir klasör açın, liste hazır; oynatma listesini slayt gösterisi kendisi oluşturur. İnternetten hiçbir şey, ilke olarak: hesap yok, izleme yok, ağ bağlantısı hiç yok. Üstelik ücretsiz, bazı programların para istediği kendi klavye kestirmeleriniz de dahil.</p><p>Mac’te aranan programlarla karşılaştırması burada, her hücre için bir kaynakla. Başka bir program daha iyiyse, sayfada bu da yazıyor.</p>",
   "overviewNoMac": "Bunlar yalnızca Windows’ta çalışır (ya da bugünün Mac’lerinde artık çalışmaz). Her biri için hayranlarının neyi sevdiği ve Schnellbild’in bunu nasıl yaptığı.",
   "matrixH1": "Mac için ücretsiz bir {name} alternatifi",
   "matrixSeoTitle": "{name} Alternatifi Mac İçin, Ücretsiz · Schnellbild",
   "matrixDescription": "{name} veya Schnellbild? Özellik özellik, kaynaklarıyla karşılaştırma: {name} nerede daha güçlü, Schnellbild nerede. Ücretsiz, açık kaynak, MKV oynatır, ZIP ve RAR’ı klasör gibi açar.",
-  "matrixLead": "Schnellbild ve {name} yan yana, adil biçimde: önce her birinin daha iyi yaptıkları, ardından kaynağıyla birlikte her özellik.",
+  "matrixLead": "Schnellbild ve {name} yan yana: önce her birinin daha iyi yaptıkları, ardından kaynağıyla birlikte her özellik.",
   "switcherH1": "{name} Mac’te yok mu? İşte alternatifi",
   "switcherSeoTitle": "{name} Mac İçin: Ücretsiz Bir Alternatif · Schnellbild",
   "switcherDescription": "Mac’te {name} arıyor musunuz? {name} hayranlarının sevdikleri ve Schnellbild’in bunları ücretsiz nasıl yaptığı: klasörler, tuşlar, MKV, klasör gibi ZIP ve RAR.",
@@ -32,7 +32,7 @@
   "sources": "Kaynaklar",
   "asOf": "Kasım 2026 itibarıyla: {name} {version}, Schnellbild {ours}. {name} sütunu aşağıdaki kaynaklara, Schnellbild sütunu README dosyasına ve kaynak koduna dayanır.",
   "leftOut": "{name} hakkında güvenilir bir kaynak olmadığı için dışarıda bırakılan özellikler: {total} özellikten {count} tanesi.",
-  "fileManager": "Schnellbild tam bir dosya yöneticisi değil: FTP, SFTP ya da bulut bağlantısı yok, klasör eşzamanlama yok, arşiv oluşturma yok. Fotoğraf ve videolara göz atmak ve onları ayıklamak içinse daha iyi seçim: her şeyin küçük resmi, F5 ile kopyalayan ve F6 ile taşıyan yan yana iki bölme, klasör gibi açılan arşivler.",
+  "fileManager": "Schnellbild tam bir dosya yöneticisi değil: FTP, SFTP ya da bulut bağlantısı yok, klasör eşzamanlama yok, arşiv oluşturma yok. Fotoğraf ve videolara göz atmak ve onları ayıklamak için yapıldı: her şeyin küçük resmi, F5 ile kopyalayan ve F6 ile taşıyan yan yana iki bölme, klasör gibi açılan arşivler.",
   "likedTitle": "{name} hayranlarının sevdikleri ve Schnellbild’de nasıl çalıştıkları",
   "aheadTitle": "{name} nerede önde kalıyor",
   "purposeTitle": "Bilerek dışarıda bırakılanlar",
@@ -55,7 +55,7 @@
   "windows": "Windows’tan gelenler için"
  },
  "jokes": {
-  "image": "Mac’e taşındınız, fotoğraflar da bavula girdi, alışkanlıklar da. Bir tek {name} “ben burada kalayım” dedi ve eski bilgisayarın başında kaldı. Olur böyle şeyler, ama böyle kalmak zorunda değil.",
+  "image": "Mac’e taşındınız, fotoğraflar da bavula girdi, alışkanlıklar da. Bir tek {name} “ben burada kalayım” dedi ve eski bilgisayarın başında kaldı. Böyle kalmak zorunda değil.",
   "video": "Yeni Mac, aynı videolar, bir de taşınmaya gelmeyen {name}. MKV dosyalarınız hâlâ kapıda, oynatılmayı bekliyor.",
   "comic": "Çizgi romanlarınız Mac’e tek laf etmeden geldi. {name} ise eski bilgisayarda kalmayı seçti.",
   "files": "İki bölme, fonksiyon tuşları ve bazı iş arkadaşlarınızdan daha yaşlı bir kas hafızası. Sonra Mac geldi ve {name} kapıda kaldı.",
@@ -227,7 +227,7 @@
   },
   "pip": {
    "label": "Resim İçinde Resim",
-   "why": "Göz atmak için bir görüntüleyici, kenarda izlemek için bir oynatıcı değil."
+   "why": "Klasörlere göz atmak için yapıldı; kenarda izlemeye bir video oynatıcı daha uygun."
   },
   "music_mode": {
    "label": "Ses dosyaları, müzik modu",
@@ -246,7 +246,7 @@
    "how": "Fotoğraflardaki sürgülerin aynısı."
   },
   "quicklook_mkv_thumbnails": {
-   "label": "MKV ve diğerleri için Finder ve Hızlı Bakış küçük resimleri",
+   "label": "MKV ve diğerleri için Finder ve Göz At küçük resimleri",
    "how": "MKV, WebM, WMV, FLV ve VOB Finder’da küçük resim alır.",
    "note": "MKV, WebM, WMV, FLV, Ogg, VOB"
   },
@@ -293,11 +293,11 @@
   },
   "image_editing": {
    "label": "Resim düzenler (kırpma, boyutlandırma, kaydetme)",
-   "why": "Bir görüntüleyici, resim düzenleyici değil: dosyalarınız olduğu gibi kalır."
+   "why": "Resimleri değiştirmeden gösterir: dosyalarınız olduğu gibi kalır."
   },
   "batch_convert": {
    "label": "Toplu dönüştürme veya yeniden adlandırma",
-   "why": "Bir görüntüleyici, dönüştürücü değil."
+   "why": "Toplu dönüştürmeyi ve yeniden adlandırmayı Schnellbild başka uygulamalara bırakır."
   },
   "library_catalog": {
    "label": "Kitaplık, katalog, etiketler, puanlar",
@@ -360,7 +360,7 @@
   "5kplayer": {
    "name": "5KPlayer",
    "vendor": "Digiarty Software",
-   "summary": "Mac ve Windows için ücretsiz, hepsi bir arada medya oynatıcı: video, müzik, DVD ve radyo oynatır, AirPlay ekran yansıtmayı alır, DLNA üzerinden yayın yapar ve çevrimiçi videoları indirir. Gücü, oynatmanın çevresindeki eklerin çokluğunda.",
+   "summary": "Mac ve Windows için ücretsiz, hepsi bir arada medya oynatıcı: video, müzik, DVD ve radyo oynatır, AirPlay ekran yansıtmayı alır, DLNA üzerinden yayın yapar ve çevrimiçi videoları indirir.",
    "wins": [
     "AirPlay alıcısı ve ekran yansıtma kaydı",
     "DLNA sunucusu/oynatıcısı",
@@ -412,9 +412,9 @@
     "multiple_windows": "Tek pencerede sekmeler, oturumlar arasında korunur",
     "bookmarks": "Sekmeler, kayıtlı aramalar; Windows: en çok beş resim sepeti",
     "img_psd_exr": "PSD evet; OpenEXR listede yok",
-    "img_svg_pdf": "Windows’ta SVG; PDF yalnızca Windows Professional/Ultimate’ta; Mac PDF’leri Hızlı Bakış’ta açar",
+    "img_svg_pdf": "Windows’ta SVG; PDF yalnızca Windows Professional/Ultimate’ta; Mac PDF’leri Göz At’ta açar",
     "img_animated": "Hareketli GIF ve WebP; hareketli AVIF yok",
-    "video_native": "Windows View modunda MP4/MOV/M4V/AVI/WMV oynatır; Mac videoları Hızlı Bakış’ta gösterir",
+    "video_native": "Windows View modunda MP4/MOV/M4V/AVI/WMV oynatır; Mac videoları Göz At’ta gösterir",
     "video_mkv_avi_webm": "Windows: AVI, WMV, ASF; MKV, WebM, FLV yok",
     "music_mode": "Windows MP3, WAV, WMA, M4A okur",
     "archives_as_folders": "Windows: ZIP, RAR (RAR5 değil), TAR, GZ, TGZ, CAB, ARJ; 7z yok; Mac’te yok",
@@ -426,12 +426,12 @@
   "adobe-bridge": {
    "name": "Adobe Bridge",
    "vendor": "Adobe",
-   "summary": "Adobe Bridge, fotoğraf, tasarım dosyası ve video klasörlerine zengin önizlemelerle göz atmak için ücretsiz bir yaratıcı varlık yöneticisi. Meta veri, anahtar sözcük, puan, koleksiyon, toplu yeniden adlandırma ve dışa aktarma sunar; Photoshop, Camera Raw ve diğer Creative Cloud uygulamalarının merkezi olarak çalışır.",
+   "summary": "Adobe Bridge, fotoğraf, tasarım dosyası ve video klasörlerine önizlemelerle göz atmak için ücretsiz bir yaratıcı varlık yöneticisi. Meta veri, anahtar sözcük, puan, koleksiyon, toplu yeniden adlandırma ve dışa aktarma sunar; dosyaları Photoshop, Camera Raw ve diğer Creative Cloud uygulamalarına aktarır.",
    "wins": [
     "Adobe biçimlerinin (PSD, AI, INDD, After Effects, Substance 3D) ve PDF’in önizlemesi",
     "Tam meta veri düzenleme, anahtar sözcükler, etiketler, puanlar, koleksiyonlar ve akıllı koleksiyonlar",
     "Toplu yeniden adlandırma, Dışa Aktar paneli ve toplu dönüştürme iş akışları",
-    "Camera Raw, Photoshop, Premiere ve Creative Cloud Kitaplıklarıyla sıkı entegrasyon",
+    "Camera Raw, Photoshop, Premiere ve Creative Cloud Kitaplıklarıyla birlikte çalışır",
     "PDF temas baskıları, Adobe Stock ve Portfolio’ya yayınlama",
     "Windows sürümü"
    ],
@@ -471,7 +471,7 @@
    "wins": [
     "Ayıklama: seçimler, puanlar, Focus Score, yapay zekâ puanı, yığınlar",
     "HDR RAW gösterimi ve HDR dışa aktarma",
-    "Derinlemesine EXIF/IPTC/XMP düzenleme, anahtar sözcükler, GPS haritaları",
+    "EXIF/IPTC/XMP düzenleme, anahtar sözcükler, GPS haritaları",
     "Hafıza kartından içe aktarma",
     "Harici SRT altyazılar",
     "AppleScript otomasyonu"
@@ -549,7 +549,7 @@
    "notes": {
     "thumbnail_grid": "Bir pencerede açılan dosya veya sayfaların küçük resimleri; klasör önizlemesi yok",
     "img_svg_pdf": "PDF, Önizleme’nin ana biçimi; SVG desteği belgelenmemiş",
-    "img_animated": "Hareketli GIF’in karelerini durağan gösterir; oynatmak için Hızlı Bakış gerekir",
+    "img_animated": "Hareketli GIF’in karelerini durağan gösterir; oynatmak için Göz At gerekir",
     "slideshow": "Slayt gösterisi PDF sayfaları için",
     "manga_two_page": "PDF’ler için İki Sayfa görünümü; sağdan sola mod yok",
     "rename_trash": "Açık dosyayı pencere başlığından yeniden adlandırır veya taşır; Çöp Sepeti, yeni klasör yok",
@@ -639,16 +639,16 @@
     "languages_20": "14 dil; arayüz dili seçilebilir",
     "thumbnail_grid": "“Thumbs” görünümü; klasör önizlemesi yok",
     "network_shares_fast": "SMB/NetBIOS, FTP, bulut desteklenir; hız konusunda bilgi yok",
-    "img_modern_formats": "Hızlı Bakış ve görüntüleyici macOS kodekleriyle; ayrı resim görüntüleyici yok",
-    "img_raw": "Hızlı Bakış üzerinden macOS’un RAW desteği; kendi çözücüsü yok",
-    "keyboard_paging": "F3 medya modu Hızlı Bakış’tır; seçili öğelerde ok tuşlarıyla gezinilir",
-    "zoom_rotate": "Yakınlaştırma yalnızca Hızlı Bakış’ta (⌘+ / ⌘−)",
+    "img_modern_formats": "Göz At ve görüntüleyici macOS kodekleriyle; ayrı resim görüntüleyici yok",
+    "img_raw": "Göz At üzerinden macOS’un RAW desteği; kendi çözücüsü yok",
+    "keyboard_paging": "F3 medya modu Göz At’tır; seçili öğelerde ok tuşlarıyla gezinilir",
+    "zoom_rotate": "Yakınlaştırma yalnızca Göz At’ta (⌘+ / ⌘−)",
     "file_info_exif": "Bilgi Al boyut, tarih, izinleri gösterir; EXIF/kodek ayrıntısı yok",
     "wrong_extension_note": "Görüntüleyici biçimi içerikten tanır ve gösterir, ama uyarmaz",
     "photos_videos_one_grid": "Thumbs görünümü her dosyaya küçük resim verir; klasör önizlemesi yok",
-    "music_mode": "Medya modu sesi Hızlı Bakış ile çalar",
+    "music_mode": "Medya modu sesi Göz At ile çalar",
     "archives_as_folders": "Ücretsiz: yalnızca ZIP; PRO ($29.99): 7z, TAR okuma/yazma, RAR/ISO/XAR salt okunur",
-    "videos_in_archives": "Arşivdeki dosyalara Hızlı Bakış ile önizleme, oynatıcı yok",
+    "videos_in_archives": "Arşivdeki dosyalara Göz At ile önizleme, oynatıcı yok",
     "library_catalog": "Yalnızca Finder etiketleri",
     "cloud_sync": "Yalnızca PRO: Dropbox, Google Drive, OneDrive, S3, WebDAV, FTP/SFTP vb.",
     "shortcut_cheatsheet": "Kısayol listesi Tercihler’de; yazdırılabilir liste yok",
@@ -665,7 +665,7 @@
     "Her tuş ve fare eylemi atanabilir, tek elle kullanıma uygun varsayılanlar",
     "Bölünmüş RAR/ZIP ve parolalı arşivler dahil çok geniş arşiv desteği",
     "Core Image görünüm filtreleri, büyüteç",
-    "CBZ/CBR/ZIP/RAR/7z için Finder küçük resimleri ve Hızlı Bakış"
+    "CBZ/CBR/ZIP/RAR/7z için Finder küçük resimleri ve Göz At"
    ],
    "price": "Ücretsiz",
    "version": "1.7.1 (ysmx çatalı); asıl coo-ona sürümü 1.2b25’te (2020) durdu",
@@ -750,19 +750,19 @@
    "updated": "2026-11-08",
    "platforms": "macOS, Windows, Linux, FreeBSD",
    "notes": {
-    "thumbnail_grid": "Küçük resim görünümü (macOS’ta Hızlı Bakış); klasörlerde simge, önizleme yok",
+    "thumbnail_grid": "Küçük resim görünümü (macOS’ta Göz At); klasörlerde simge, önizleme yok",
     "network_shares_fast": "SMB/ağ erişimi var; hız konusunda bilgi yok",
     "multiple_windows": "İki bölmede sekmeler; görüntüleyici/düzenleyici ayrı pencerelerde",
-    "img_modern_formats": "HEIC/AVIF/JPEG XL/WebP ek kitaplık ister; macOS’ta Hızlı Bakış eklentisiyle",
-    "img_raw": "Windows’ta WIC RAW kodekleri; macOS’ta Hızlı Bakış eklentisi",
+    "img_modern_formats": "HEIC/AVIF/JPEG XL/WebP ek kitaplık ister; macOS’ta Göz At eklentisiyle",
+    "img_raw": "Windows’ta WIC RAW kodekleri; macOS’ta Göz At eklentisi",
     "img_psd_exr": "PSD yerleşik; OpenEXR listede yok",
-    "img_svg_pdf": "SVG yerleşik; PDF macOS’ta Hızlı Bakış eklentisiyle",
+    "img_svg_pdf": "SVG yerleşik; PDF macOS’ta Göz At eklentisiyle",
     "img_animated": "Kare denetimli hareketli GIF; APNG/hareketli WebP listede yok",
     "slideshow": "Yalnızca tam ekran görüntüleyicide, geçerli klasörde, resim başına 1 ila 25 sn",
     "file_info_exif": "Yerleşik Exif eklentisi (JPEG: tarih, boyut, yön, fotoğraf makinesi)",
-    "video_native": "Kendi oynatıcısı yok: macOS’ta Hızlı Bakış eklentisi, Windows’ta WMP eklentisi",
-    "video_mkv_avi_webm": "Linux’ta MPlayer eklentisiyle; macOS’ta yalnızca Hızlı Bakış’ın oynattıkları",
-    "photos_videos_one_grid": "Küçük resimler sistemden (macOS’ta Hızlı Bakış), videolar da kareyle görünür",
+    "video_native": "Kendi oynatıcısı yok: macOS’ta Göz At eklentisi, Windows’ta WMP eklentisi",
+    "video_mkv_avi_webm": "Linux’ta MPlayer eklentisiyle; macOS’ta yalnızca Göz At’ın oynattıkları",
+    "photos_videos_one_grid": "Küçük resimler sistemden (macOS’ta Göz At), videolar da kareyle görünür",
     "music_mode": "Ses dosyaları görüntüleyici eklentisinde tek tek çalar; etiketler sütun olarak",
     "archives_as_folders": "macOS: ZIP, TAR, GZ, BZ2, LZMA yerleşik, RAR eklentiyle; 7z için harici 7zz kurulmalı",
     "comics_cbz_cbr": "Çizgi roman okuyucu yok; uzantılar paketleyici eklentilere atanınca CBZ/CBR klasör gibi açılır",
@@ -838,7 +838,7 @@
   "faststone-image-viewer": {
    "name": "FastStone Image Viewer",
    "vendor": "FastStone Soft",
-   "summary": "FastStone Image Viewer, Gezgin benzeri klasör ağacı, açılır panelli özenli bir tam ekran modu ve çok sayıda düzenleme ve toplu iş aracı sunan köklü bir Windows resim tarayıcısı. Windows kodekleriyle video da oynatır, etiket ve puanları kendi veritabanında tutar.",
+   "summary": "FastStone Image Viewer, Gezgin benzeri klasör ağacı, açılır panelli bir tam ekran modu ve çok sayıda düzenleme ve toplu iş aracı sunan köklü bir Windows resim tarayıcısı. Windows kodekleriyle video da oynatır, etiket ve puanları kendi veritabanında tutar.",
    "wins": [
     "Düzenleme araçları: eğriler, seviyeler, klonlama damgası, iyileştirme fırçası, kırmızı göz",
     "Dört resme kadar yan yana karşılaştırma",
@@ -853,9 +853,9 @@
    "platforms": "Windows"
   },
   "finder-quick-look": {
-   "name": "Finder ve Hızlı Bakış",
+   "name": "Finder ve Göz At",
    "vendor": "Apple",
-   "summary": "Mac’in dosya yöneticisi ve Hızlı Bakış, yani hemen her dosya için Boşluk tuşuyla önizleme. Bir resme ya da MP4’e hızlıca bakmak ve gündelik dosya işleri için yeterli.",
+   "summary": "Mac’in dosya yöneticisi ve Göz At, yani hemen her dosya için Boşluk tuşuyla önizleme. Bir resme ya da MP4’e hızlıca bakmak ve gündelik dosya işleri için yeterli.",
    "wins": [
     "macOS’ta yerleşik, neredeyse her dosya türünde çalışır",
     "Etiketler, Akıllı Klasörler, Spotlight araması",
@@ -869,9 +869,9 @@
    "notes": {
     "thumbnail_grid": "Simge görünümü dosya küçük resimlerini gösterir; klasörlerde içerik önizlemesi değil, klasör simgesi",
     "network_shares_fast": "SMB/sunuculara bağlanır; büyük paylaşımlarda hız konusunda bilgi yok",
-    "img_animated": "Hızlı Bakış hareketli GIF oynatır; APNG/hareketli WebP belirsiz",
-    "music_mode": "Hızlı Bakış ses dosyalarını çalar ve kırpar",
-    "image_editing": "Hızlı Bakış’ta döndürme ve İşaretleme; Hızlı Eylemler",
+    "img_animated": "Göz At hareketli GIF oynatır; APNG/hareketli WebP belirsiz",
+    "music_mode": "Göz At ses dosyalarını çalar ve kırpar",
+    "image_editing": "Göz At’ta döndürme ve İşaretleme; Hızlı Eylemler",
     "library_catalog": "Etiketler ve Akıllı Klasörler, puan veritabanı yok",
     "custom_shortcuts": "Menü komutları için uygulama kestirmeleri",
     "boss_key": "⌘H / ⌥⌘H uygulamaları gizler; ayrı patron tuşu yok",
@@ -928,13 +928,13 @@
     "thumbnail_grid": "Simge önizlemeli Simge Görünümü; klasör önizlemesi yok",
     "network_shares_fast": "SMB, AFP, NFS, SFTP, bulut desteklenir; büyük klasörlerde hız konusunda bilgi yok",
     "img_modern_formats": "Önizleme bölmesi resimleri macOS üzerinden gösterir; ayrı görüntüleyici yok",
-    "img_raw": "Yalnızca önizleme bölmesi / Hızlı Bakış, macOS’un RAW desteğiyle",
+    "img_raw": "Yalnızca önizleme bölmesi / Göz At, macOS’un RAW desteğiyle",
     "img_svg_pdf": "Önizleme bölmesinde PDF; SVG yalnızca macOS’un gösterdiği kadar",
-    "zoom_rotate": "Yakınlaştırma yalnızca Hızlı Bakış penceresinde; kendi görüntüleyicisi yok",
+    "zoom_rotate": "Yakınlaştırma yalnızca Göz At penceresinde; kendi görüntüleyicisi yok",
     "video_mkv_avi_webm": "Yalnızca üçüncü taraf “QuickLook Video” eklentisi kuruluysa",
     "music_mode": "Önizleme bölmesinde ses çalar, müzik modu yok",
     "archive_passwords": "Parolalı ZIP oluşturabilir; şifreli arşiv açma belirsiz",
-    "videos_in_archives": "Arşivlerde Hızlı Bakış mümkün; oynatıcı yok",
+    "videos_in_archives": "Arşivlerde Göz At mümkün; oynatıcı yok",
     "batch_convert": "Çoklu yeniden adlandırma (normal ifade, meta veri); toplu resim dönüştürme yok",
     "library_catalog": "Yalnızca Finder etiketleri; puan veya katalog veritabanı yok"
    }
@@ -993,9 +993,9 @@
    "summary": "GraphicConverter, Mac’in köklü “resimler için çakı”sı: yaklaşık 200 biçimi açan bir dosya ve resim tarayıcısı, slayt gösterisi, düzenleyici ve toplu dönüştürücü. Tarayıcısı QuickTime uyumlu filmleri ve sesi de oynatır, kapsamlı meta verilerle çalışır; kopya bulma, düz görünüm ve Spotlight araması sunar.",
    "wins": [
     "Eski ve bilimsel biçimler dahil yaklaşık 200 resim biçimini açar, yaklaşık 80’ine aktarır",
-    "Tam resim düzenleyici ve eylemlerle güçlü toplu dönüştürme",
-    "Derinlemesine meta veri düzenleme (EXIF/IPTC/XMP, yüzler, GPS haritası)",
-    "Zengin slayt gösterisi seçenekleri (geçişler, rastgele, meta veri, gösteri sırasında sıralama)",
+    "Tam resim düzenleyici ve eylemlerle toplu dönüştürme",
+    "Meta veri düzenleme (EXIF/IPTC/XMP, yüzler, GPS haritası)",
+    "Çok sayıda slayt gösterisi seçeneği (geçişler, rastgele, meta veri, gösteri sırasında sıralama)",
     "Liste, Cover Flow ve küçük resim görünümleri, tüm alt klasörlerin düz görünümü",
     "Kopya bulucu, temas baskıları, web galerileri",
     "Özel kısayollar, 14 dil, açık/koyu ayarı"
@@ -1323,13 +1323,13 @@
   "marta": {
    "name": "Marta",
    "vendor": "Yan Zhulanow",
-   "summary": "Swift ile yazılmış, klavye odaklı, yerel bir çift bölmeli dosya yöneticisi; metin tabanlı bir DSL ile yapılandırılır ve Lua eklentileriyle genişletilir. Birçok arşiv biçimini klasör gibi açar; dosyaları Hızlı Bakış ile önizler.",
+   "summary": "Swift ile yazılmış, klavye odaklı, yerel bir çift bölmeli dosya yöneticisi; metin tabanlı bir DSL ile yapılandırılır ve Lua eklentileriyle genişletilir. Birçok arşiv biçimini klasör gibi açar; dosyaları Göz At ile önizler.",
    "wins": [
     "Lua eklenti API’si ve metin tabanlı yapılandırma",
     "Commander tarzı F tuşlu iş akışı ve Action Panel",
     "İç içe arşivler dahil arşiv desteği, ZIP okuma/yazma",
     "Klasör eşzamanlı yerleşik terminal, disk kullanımı analizi",
-    "Zengin Spotlight koşullarıyla Look Up"
+    "Spotlight koşullarıyla Look Up"
    ],
    "price": "Beta süresince ücretsiz; betadan sonra ücretli lisans planlanıyor ($15 ve üzeri Patreon destekçileri süresiz lisans alıyor)",
    "version": "0.8.2",
@@ -1338,15 +1338,15 @@
    "notes": {
     "free": "Beta süresince ücretsiz; sonrası için ücretli lisans duyuruldu ($15 ve üzeri Patreon ile süresiz)",
     "regex_search": "Geçerli listede normal ifadeyle hızlı seçim/arama; Look Up koşul kullanır",
-    "img_modern_formats": "Yalnızca Hızlı Bakış önizlemesi (Boşluk); kendi görüntüleyicisi yok",
-    "img_raw": "Önizleme macOS Hızlı Bakış penceresi; kendi görüntüleyicisi yok",
-    "img_psd_exr": "Önizleme macOS Hızlı Bakış penceresi; kendi görüntüleyicisi yok",
-    "img_svg_pdf": "Önizleme macOS Hızlı Bakış penceresi; kendi görüntüleyicisi yok",
-    "img_animated": "Önizleme macOS Hızlı Bakış penceresi; kendi görüntüleyicisi yok",
-    "zoom_rotate": "Yalnızca Hızlı Bakış’ta yakınlaştırma; tam ekran önizleme henüz istek aşamasında",
-    "video_native": "Hızlı Bakış MP4/MOV oynatır",
-    "video_mkv_avi_webm": "Yalnızca macOS Hızlı Bakış’ın oynattıkları",
-    "music_mode": "Hızlı Bakış tek ses dosyası çalar; klasörde devam eden müzik çalar yok",
+    "img_modern_formats": "Yalnızca Göz At önizlemesi (Boşluk); kendi görüntüleyicisi yok",
+    "img_raw": "Önizleme macOS Göz At penceresi; kendi görüntüleyicisi yok",
+    "img_psd_exr": "Önizleme macOS Göz At penceresi; kendi görüntüleyicisi yok",
+    "img_svg_pdf": "Önizleme macOS Göz At penceresi; kendi görüntüleyicisi yok",
+    "img_animated": "Önizleme macOS Göz At penceresi; kendi görüntüleyicisi yok",
+    "zoom_rotate": "Yalnızca Göz At’ta yakınlaştırma; tam ekran önizleme henüz istek aşamasında",
+    "video_native": "Göz At MP4/MOV oynatır",
+    "video_mkv_avi_webm": "Yalnızca macOS Göz At’ın oynattıkları",
+    "music_mode": "Göz At tek ses dosyası çalar; klasörde devam eden müzik çalar yok",
     "archives_as_folders": "ZIP okuma/yazma; TAR, XAR, CAB, LZH, ISO, 7Z salt okunur; RAR sınırlı, RAR5 yok",
     "comics_cbz_cbr": "Çizgi roman okuyucu yok; cbz gibi uzantılar ZIP olarak tanımlanabilir",
     "shortcut_cheatsheet": "Belgeler varsayılan tuşları listeler; yazdırılabilir liste yok"
@@ -1448,9 +1448,9 @@
   "movist-pro": {
    "name": "Movist Pro",
    "vendor": "Movist",
-   "summary": "Film ve dizi izlemek için özenli, ücretli bir video oynatıcı: güçlü altyazı desteği (aynı anda birden çok altyazı parçası, dile göre stiller), HDR/Dolby Vision ton eşleme ve her biçimde AirPlay. Pro; ağ sunucuları, YouTube ve web medyası ile Resim İçinde Resim ekler.",
+   "summary": "Film ve dizi izlemek için ücretli bir video oynatıcı: güçlü altyazı desteği (aynı anda birden çok altyazı parçası, dile göre stiller), HDR/Dolby Vision ton eşleme ve her biçimde AirPlay. Pro; ağ sunucuları, YouTube ve web medyası ile Resim İçinde Resim ekler.",
    "wins": [
-    "Gelişmiş altyazı stilleri ve çift altyazı",
+    "Altyazı stilleri ve çift altyazı",
     "HDR ve Dolby Vision ton eşleme",
     "Apple TV’nin kendi oynatamadığı biçimlerde AirPlay",
     "Ağ sunucuları (SMB, SFTP, FTP, WebDAV), YouTube, PiP (Pro)",
@@ -1509,9 +1509,9 @@
   "mpv": {
    "name": "mpv",
    "vendor": "mpv projesi",
-   "summary": "mpv, birinci sınıf görüntü kalitesi ve çok geniş biçim desteği sunan, yalın, betiklenebilir, komut satırı tabanlı bir medya oynatıcı. Metin dosyaları ve Lua/JS betikleriyle yapılandırılır; ekranda yalnızca küçük bir denetim çubuğu vardır.",
+   "summary": "mpv, GPU ile görüntü işleme (HDR, Dolby Vision) ve çok geniş biçim desteği sunan, yalın, betiklenebilir, komut satırı tabanlı bir medya oynatıcı. Metin dosyaları ve Lua/JS betikleriyle yapılandırılır; ekranda yalnızca küçük bir denetim çubuğu vardır.",
    "wins": [
-    "Sınıfının en iyisi video gösterimi (gpu-next, HDR, Dolby Vision)",
+    "gpu-next ile video gösterimi, HDR ve Dolby Vision",
     "mpv.conf, input.conf ve betiklerle son derece yapılandırılabilir",
     "Medyayı doğrudan ZIP/RAR/7z’den ve çok parçalı RAR’dan oynatır",
     "Çok platformlu (macOS, Windows, Linux)",
@@ -1541,7 +1541,7 @@
    "vendor": "neelabo",
    "summary": "Klasörleri ve arşivleri kitap, resimleri sayfa olarak ele alan, Windows için kitap tarzı bir görüntüleyici. Çok yapılandırılabilir: her eylem kendi tuşu, fare hareketi ve betiği olan bir komut; ayrıca kitaplık, yer işaretleri, oynatma listeleri ve çift sayfa manga görünümü. Videolar Windows ya da kurulu bir VLC ile oynar.",
    "wins": [
-    "Son derece derin özelleştirme: komutlar, hareketler, JavaScript betikleri",
+    "Her eylem ayarlanabilir: komutlar, hareketler, JavaScript betikleri",
     "Sağdan sola okuma ve sayfa bölme ile çift sayfa görünümü",
     "İç içe arşivler ve arşiv parolaları (7z.dll ile)",
     "Kayıtlı oynatma listeleri, geçmiş ve tarih/boyut/normal ifade işleçli arama",
@@ -1685,7 +1685,7 @@
   "panels": {
    "name": "Panels",
    "vendor": "Produkt Studio",
-   "summary": "Panels; iPhone, iPad ve Mac için kapaklı kitaplık, okuma ön ayarları, kare kare görünüm ve Komga/Kavita için OPDS desteği sunan özenli bir çizgi roman okuyucusu. Bulut kitaplıkları, sayfa filtreleri ve metin algılama gibi gelişmiş özellikler Premium ister.",
+   "summary": "Panels; iPhone, iPad ve Mac için kapaklı kitaplık, okuma ön ayarları, kare kare görünüm ve Komga/Kavita için OPDS desteği sunan bir çizgi roman okuyucusu. Bulut kitaplıkları, sayfa filtreleri ve metin algılama gibi gelişmiş özellikler Premium ister.",
    "wins": [
     "Mac, iPhone ve iPad arasında eşzamanlanan kitaplık ve ilerleme",
     "OPDS yayını (Komga, Kavita, Calibre)",
@@ -1736,14 +1736,14 @@
     "thumbnail_grid": "Resimler için Simge Görünümü; klasör önizlemesi yok",
     "regex_search": "Adda joker karakterli desen; normal ifade belirsiz",
     "network_shares_fast": "Ağ birimlerinde önizleme hızlandırıldı; genel hız iddiası yok",
-    "img_modern_formats": "Önizleme modülü/Hızlı Bakış, macOS kodekleriyle; ayrı görüntüleyici yok",
+    "img_modern_formats": "Önizleme modülü/Göz At, macOS kodekleriyle; ayrı görüntüleyici yok",
     "img_raw": "macOS üzerinden; ARW önizlemesi 26.1.8’de eklendi",
-    "img_animated": "Hareketli GIF Hızlı Bakış penceresinde oynar; APNG/WebP belirsiz",
-    "zoom_rotate": "Yalnızca Hızlı Bakış’ta yakınlaştırma",
-    "slideshow": "Kendi slayt gösterisi yok; Hızlı Bakış seçili öğeleri tam ekranda slayt olarak gösterir",
+    "img_animated": "Hareketli GIF Göz At penceresinde oynar; APNG/WebP belirsiz",
+    "zoom_rotate": "Yalnızca Göz At’ta yakınlaştırma",
+    "slideshow": "Kendi slayt gösterisi yok; Göz At seçili öğeleri tam ekranda slayt olarak gösterir",
     "file_info_exif": "Bilgi paneli boyutları, süreyi, macOS meta verilerini gösterir; kodek/bit hızı belirsiz",
     "video_mkv_avi_webm": "WebM önizlemesi eklendi; MKV/AVI anılmıyor",
-    "music_mode": "Ses yalnızca Önizleme/Hızlı Bakış’ta çalar",
+    "music_mode": "Ses yalnızca Önizleme/Göz At’ta çalar",
     "archive_passwords": "Parolalı ZIP (AES-128/256) oluşturma ve açma",
     "dual_pane": "Çift bölme var, ama kopyalama/taşıma ⌘C/⌘V/⌘X veya sürüklemeyle; F5/F6 varsayılan değil (atanabilir)",
     "batch_convert": "Toplu yeniden adlandırma; resim dönüştürme yok",
@@ -1797,7 +1797,7 @@
   "photo-mechanic": {
    "name": "Photo Mechanic",
    "vendor": "Camera Bits",
-   "summary": "Photo Mechanic, profesyonel fotoğrafçılar, özellikle basın, spor ve düğün fotoğrafçıları için hızlı bir aktarma, ayıklama ve meta veri aracı. Klasörleri ve hafıza kartlarını doğrudan açar, RAW dosyaları gömülü önizlemeleriyle anında gösterir; teslim saati yaklaşırken açıklamalarda, IPTC meta verilerinde, anahtar sözcüklerde, toplu yeniden adlandırmada ve yüklemede çok güçlü.",
+   "summary": "Photo Mechanic, profesyonel fotoğrafçılar, özellikle basın, spor ve düğün fotoğrafçıları için hızlı bir aktarma, ayıklama ve meta veri aracı. Klasörleri ve hafıza kartlarını doğrudan açar, RAW dosyaları gömülü önizlemeleriyle anında gösterir; teslim saati yaklaşırken açıklamalar, IPTC meta verileri, anahtar sözcükler, toplu yeniden adlandırma ve yükleme için yapılmış.",
    "wins": [
     "Aynı anda birden çok hafıza kartından, kopyalarken yeniden adlandırma ve meta veriyle aktarma",
     "Teslim saatinde açıklama yazmak için IPTC/XMP meta verileri, kod değiştirmeleri, değişkenler ve yapılandırılmış anahtar sözcükler",
@@ -1876,7 +1876,7 @@
    "vendor": "ImageTasks",
    "summary": "Sade bir resim ve video görüntüleyiciyken maskeler, nesne silme ve büyütme sunan bir fotoğraf düzenleyiciye dönüştü. Klasörlere, fotoğraf kitaplıklarına ve ZIP/CBZ arşivlerine göz atar, MKV’yi altyazı ve ses parçası seçimiyle oynatır; arama, sıralama ve özel kısayollar Pixea Plus ister.",
    "wins": [
-    "Güçlü resim düzenleyici (maskeler, nesne silme, büyütme, LUT’lar)",
+    "Maskeler, nesne silme, büyütme ve LUT’larla resim düzenleyici",
     "Toplu düzenleme ve dönüştürme",
     "Gömülü altyazılar, ses parçası, oynatma hızı",
     "Fotoğraflar kitaplıklarını açar",
@@ -1933,7 +1933,7 @@
    "summary": "12 düzen, çalışma alanları, derin özelleştirme (kısayollar, sağ tık menüsü, renkler) ve normal ifadeyle arama sunan Finder benzeri, çok bölmeli bir dosya yöneticisi. Ücretli uzantılar arşivlere göz atma, sunucu/bulut bağlantıları ve gelişmiş toplu yeniden adlandırma ekler.",
    "wins": [
     "12’ye kadar bölme düzeni ve kayıtlı çalışma alanları",
-    "Kısayolların, sağ tık menülerinin, araç çubuğunun, renklerin derin özelleştirmesi",
+    "Ayarlanabilir kısayollar, sağ tık menüleri, araç çubuğu ve renkler",
     "Klasör eşzamanlama, dosya özetleri, dosya şablonları",
     "Hızlı resim eylemleri (döndürme, dönüştürme, arka plan silme)",
     "Video meta veri sütunları (kare hızı, veri hızı)"
@@ -1946,11 +1946,11 @@
     "no_account_no_tracking": "Pro lisansı bir hesaba bağlı (2 cihaz); App Store etiketi: size bağlanan tanımlayıcılar",
     "dark_light_setting": "Açık/koyu modlu özel renk şemaları (beta 7.0.4); ayrı görünüm seçimi belirsiz",
     "languages_20": "Yaklaşık 14 dil, Türkçe dahil",
-    "img_modern_formats": "Yan önizleme/Hızlı Bakış macOS kodekleriyle; yalnızca HEIC anılıyor",
-    "zoom_rotate": "Hızlı Bakış’ta yakınlaştırma; Döndür eylemi dosyayı değiştirir",
-    "slideshow": "Sağ tık menüsünde “Instant SlideShow” (Hızlı Bakış tam ekran)",
+    "img_modern_formats": "Yan önizleme/Göz At macOS kodekleriyle; yalnızca HEIC anılıyor",
+    "zoom_rotate": "Göz At’ta yakınlaştırma; Döndür eylemi dosyayı değiştirir",
+    "slideshow": "Sağ tık menüsünde “Instant SlideShow” (Göz At tam ekran)",
     "video_mkv_avi_webm": "MKV gibi biçimlerin önizlemesi macOS medya uzantılarına bağlı",
-    "music_mode": "Yalnızca ses kapağı küçük resimleri ve Hızlı Bakış’ta çalma",
+    "music_mode": "Yalnızca ses kapağı küçük resimleri ve Göz At’ta çalma",
     "archives_as_folders": "Enhanced Archiver uzantısıyla (normalde $4.99): RAR, ZIP, 7z, TAR … klasör gibi, iç içe de",
     "comics_cbz_cbr": "Çizgi roman okuyucu yok; CBZ/CBR arşiv uzantısı olarak eklenebilir",
     "videos_in_archives": "Arşivler için “Preview in QSpace”; oynatıcı yok",
@@ -2008,7 +2008,7 @@
   "qview": {
    "name": "qView",
    "vendor": "jurplel (Interverse)",
-   "summary": "qView, araç çubuğu olmayan, yalın, çok platformlu bir resim görüntüleyici: tek bir dosya açar ve klasörün geri kalanında gezinmenizi sağlar. Hızlı açılır, komşu resimleri önceden yükler; hareketli resimleri ve Qt eklentileriyle birçok biçimi destekler. Yalnızca temiz bir görüntüleyici isteyenler için iyi bir seçim.",
+   "summary": "qView, araç çubuğu olmayan, yalın, çok platformlu bir resim görüntüleyici: tek bir dosya açar ve klasörün geri kalanında gezinmenizi sağlar. Hızlı açılır, komşu resimleri önceden yükler; hareketli resimleri ve Qt eklentileriyle birçok biçimi destekler.",
    "wins": [
     "Son derece yalın, çerçevesiz pencere",
     "Windows ve Linux’ta da, eski macOS’ta da çalışır (10.13 ve sonrası için eski sürüm)",
@@ -2034,7 +2034,7 @@
    "vendor": "Gentlemen Coders",
    "summary": "RAW Power, Aperture’ın eski bir ekip liderinden tahribatsız bir RAW ve JPEG düzenleyicisi; Finder klasörlerinde tek başına, Apple Fotoğraflar kitaplığı yöneticisi olarak ya da Fotoğraflar düzenleme uzantısı olarak kullanılabilir. Aperture tarzı ayarlar, iCloud Fotoğrafları ile eşzamanlanan puanlar/bayraklar ve toplu dışa aktarma sunar. Üretici, macOS 13 ve sonrası kullanıcılarını halefi Nitro Photo’ya yönlendiriyor.",
    "wins": [
-    "Güçlü tahribatsız RAW/JPEG düzenleme (eğriler, LUT’lar, derinlik efekti, Boost)",
+    "Tahribatsız RAW/JPEG düzenleme (eğriler, LUT’lar, derinlik efekti, Boost)",
     "Doğrudan Apple Fotoğraflar kitaplığında çalışır ve iCloud Fotoğrafları ile eşzamanlar",
     "Toplu ön ayarlar ve dışa aktarma",
     "iPhone/iPad sürümü",
@@ -2096,7 +2096,7 @@
     "Canlı Metin: çizgi roman sayfalarındaki metni seçme, kopyalama ve seslendirme",
     "Çok parçalı RAR ve iç içe arşivler tek çizgi roman olarak açılır",
     "PDF okuma",
-    "Finder’da çizgi roman arşivleri için Hızlı Bakış küçük resimleri"
+    "Finder’da çizgi roman arşivleri için Göz At küçük resimleri"
    ],
    "price": "Ücretsiz (Mac App Store ve GitHub)",
    "version": "1.12.0 (GitHub, App Store’a gönderildi); App Store’da 1.11.0 görünüyor",
@@ -2183,7 +2183,7 @@
    "vendor": "Ghisler Software",
    "summary": "Windows’un en bilinen “ortodoks” (iki panelli) dosya yöneticisi, 1993’ten beri geliştiriliyor. Dosya işlemlerinde, arşivlerde, FTP’de, çoklu yeniden adlandırmada ve klasör eşzamanlamada güçlü; Lister görüntüleyicisi ve resimler ile medya için eklentileri var.",
    "wins": [
-    "Olgun çift bölmeli dosya yönetimi: klasör eşzamanlama, karşılaştırma, çoklu yeniden adlandırma, sağlama toplamları",
+    "Çift bölmeli dosya yönetimi: klasör eşzamanlama, karşılaştırma, çoklu yeniden adlandırma, sağlama toplamları",
     "Yerleşik FTP/FTPS istemcisi",
     "Dev eklenti ekosistemi (Lister, paketleyici, dosya sistemi eklentileri)",
     "Lister oynatıcısı altyazı/ses parçası ve hız değiştirir",
