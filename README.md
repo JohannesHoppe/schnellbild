@@ -151,9 +151,13 @@ Three ways to start it:
 
 It starts where you are: from the full view at the picture you're looking at; in the grid at the file you selected, or at the first picture inside the folder you selected (also deep in the subfolders), and goes on from there, round to the start at the end. `Esc` ends it and brings you back to where you were.
 
+**A playlist on the fly.** There are no playlists to build: the folder is the playlist. Press `p` during the show and its list slides in from the right, every photo and video in the order it plays, each with its preview and name, the one on screen marked. Drag an item to where it should play, click one to jump to it, or take one out with `⌫` (after a click in the list; the file stays where it is). While the subfolders are still being read, what they bring keeps coming in, and what you moved or took out stays that way. The list lies over the picture; the pin at its top right gives it a place of its own beside the picture, and its left edge drags it wider or narrower (a double-click: the standard width). Schnellbild remembers the pin and the width; the list itself ends with the show. `Esc` closes the playlist first, then the show.
+
 | Key | Action |
 |---|---|
 | s | start the slideshow (again: end it) |
+| p | show / hide the playlist |
+| ↑ ↓ / Return / Backspace | in the playlist, after a click in it: choose an item / show it / take it out of the playlist (the file stays) |
 | Space | pause / resume |
 | ← → | previous / next picture; in a video 10 % of its length back / ahead |
 | ⇧← ⇧→ | in a video 1 % of its length back / ahead |
@@ -161,7 +165,7 @@ It starts where you are: from the full view at the picture you're looking at; in
 | ↑ ↓ | pictures zoomed in: look further up / down; videos: volume up / down |
 | f / i / e / a | full screen, file info, auto enhance, sliders, as in the full view |
 | V / ⌃⌘S / ⌃⌘A / < > | subtitles, audio track and speed of a video, as in the full view |
-| Esc / Return / Backspace | end the slideshow |
+| Esc / Return / Backspace | end the slideshow (with the playlist open: close the playlist first) |
 
 ### Zoom and rotate
 
@@ -358,7 +362,7 @@ ZIP, RAR and 7z archives (comic books as .cbz and .cbr too) open like folders: b
   <img src="docs/screenshots/help-light.png" width="760" alt="The keyboard cheat sheet">
 </picture></p>
 
-F1 (or ⌘?) shows a cheat sheet of the keys; Print… (⌘P) in it prints it on one page, or saves it as a PDF. `K` (or View → Mini Keyboard, or the keyboard switch in the status bar) slides up the **mini keyboard** under the window: the keys that work on what's on screen right now (the grid, a picture, a video, the slideshow), each with what it does. It is a cheat sheet you can click, handy with only a trackpad; a key you press on the real keyboard lights up on it, so you see what just happened. In a slideshow it shows while you move the mouse. The action buttons (Dual Pane, Auto Enhance, Adjust, Slideshow, Grid) show their key on the button; the others name it in their tooltip.
+F1 (or ⌘?) shows a cheat sheet of the keys; Print… (⌘P) in it prints it on one page, or saves it as a PDF. `K` (or View → Mini Keyboard, or the keyboard switch in the status bar) slides up the **mini keyboard** under the window: the keys that work on what's on screen right now (the grid, a picture, a video, the slideshow and its playlist), each with what it does. It is a cheat sheet you can click, handy with only a trackpad; a key you press on the real keyboard lights up on it, so you see what just happened. In a slideshow it shows while you move the mouse. The action buttons (Dual Pane, Auto Enhance, Adjust, Slideshow, Grid) show their key on the button; the others name it in their tooltip.
 
 <p align="center"><picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/keyboard-dark.png">
@@ -372,7 +376,7 @@ F1 (or ⌘?) shows a cheat sheet of the keys; Print… (⌘P) in it prints it on
   <img src="docs/screenshots/settings-light.png" width="460" alt="Settings: how long a picture stays in the slideshow, and the saved archive passwords">
 </picture></p>
 
-Schnellbild → Settings (⌘,) has five things: light or dark (as the system, or always light or always dark, whatever the system's setting), the folders you opened to Schnellbild (to forget them), how long a picture stays in the slideshow (1 to 60 seconds), whether macOS reads MKV and AVCHD itself (the media extension, with a button to System Settings), and the archive passwords Schnellbild has saved, which you can forget all at once. Everything else it remembers: the folder, the sort order, grid or list, the search mode, the dual pane, the mini keyboard, the volume, the bookmarks. Quitting while files are still being copied or moved asks first and can wait until they are done.
+Schnellbild → Settings (⌘,) has five things: light or dark (as the system, or always light or always dark, whatever the system's setting), the folders you opened to Schnellbild (to forget them), how long a picture stays in the slideshow (1 to 60 seconds), whether macOS reads MKV and AVCHD itself (the media extension, with a button to System Settings), and the archive passwords Schnellbild has saved, which you can forget all at once. Everything else it remembers: the folder, the sort order, grid or list, the search mode, the dual pane, the mini keyboard, the volume, the bookmarks, the slideshow playlist's pin and width. Quitting while files are still being copied or moved asks first and can wait until they are done.
 
 ### Supported file formats
 

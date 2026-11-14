@@ -461,6 +461,8 @@ struct PaneView: View {
                             .accessibilityIdentifier("slideshowLoading")
                     }
                 }
+                // The slideshow's playlist (P), over the picture or beside it
+                .modifier(PlaylistLayout())
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -476,6 +478,8 @@ struct PaneView: View {
                 AdjustmentsView()
                     .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 12))
                     .padding(24)
+                    // left of the playlist
+                    .padding(.trailing, model.showPlaylist ? CGFloat(model.playlistWidth) : 0)
             }
         }
         .safeAreaInset(edge: .top, spacing: 0) {

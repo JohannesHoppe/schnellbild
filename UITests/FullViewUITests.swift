@@ -130,6 +130,55 @@ final class FullViewUITests: SchnellbildUITestCase {
         eventually("slideshow ended") { !text(of: badge).contains("Slideshow") }
     }
 
+    /// P shows the slideshow's playlist: an item dragged to the top plays
+    /// first, one taken out (⌫ after a click in the list) leaves the show
+    /// and stays on disk; Esc closes the playlist, then the show.
+    func testPlaylistReordersTakesOutAndTheShowFollows() {
+        openA()
+        app.typeKey("s", modifierFlags: [])
+        waitForBadge(containing: "Slideshow")
+        waitForBadge(containing: "/ 3  ·")
+        app.typeKey(.space, modifierFlags: [])   // paused: nothing moves on by itself
+        waitForBadge(containing: "Paused")
+        app.typeKey("p", modifierFlags: [])
+        let playlist = element("playlist").firstMatch
+        XCTAssertTrue(playlist.waitForExistence(timeout: 5), "P shows the playlist")
+        let rowA = element("playlist.a.jpg").firstMatch
+        let rowB = element("playlist.b.jpg").firstMatch
+        let rowC = element("playlist.c.jpg").firstMatch
+        XCTAssertTrue(rowC.waitForExistence(timeout: 5))
+        XCTAssertTrue(rowA.exists && rowB.exists)
+        eventually("in the folder's order") { rowA.frame.minY < rowB.frame.minY && rowB.frame.minY < rowC.frame.minY }
+
+        // c dragged above a
+        let from = rowC.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+        let to = rowA.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.15))
+        from.press(forDuration: 0.6, thenDragTo: to)
+        eventually("c is first") { rowC.frame.minY < rowA.frame.minY && rowA.frame.minY < rowB.frame.minY }
+
+        // The show follows the new order
+        rowC.click()
+        waitForBadge(containing: "1 / 3  ·  c.jpg")
+        app.typeKey(.rightArrow, modifierFlags: .command)
+        waitForBadge(containing: "2 / 3  ·  a.jpg")
+        app.typeKey(.rightArrow, modifierFlags: .command)
+        waitForBadge(containing: "3 / 3  ·  b.jpg")
+
+        // b taken out of the playlist: the file stays
+        rowB.click()
+        app.typeKey(.delete, modifierFlags: [])
+        eventually("b is out of the playlist") { !rowB.exists }
+        waitForBadge(containing: "/ 2  ·")
+        XCTAssertTrue(FileManager.default.fileExists(atPath: tempDir.appendingPathComponent("b.jpg").path))
+        XCTAssertTrue(playlist.exists, "⌫ in the list takes out, it doesn't close")
+
+        app.typeKey(.escape, modifierFlags: [])
+        eventually("Esc closes the playlist") { !playlist.exists }
+        XCTAssertTrue(text(of: badge).contains("Slideshow"), "the show goes on")
+        app.typeKey(.escape, modifierFlags: [])
+        eventually("then ends the show") { !text(of: badge).contains("Slideshow") }
+    }
+
     /// `a` during a slideshow shows the sliders (the toolbar they hang
     /// from is hidden then); Esc closes them and the show goes on.
     func testAdjustmentsOpenDuringASlideshow() {

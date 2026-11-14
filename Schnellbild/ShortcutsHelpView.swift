@@ -84,7 +84,9 @@ struct ShortcutsHelpView: View {
             Shortcut(keys: "i", action: "File info"),
             Shortcut(keys: "e", action: "Auto enhance on / off (exposure, contrast, saturation, sharpness; files are not changed)"),
             Shortcut(keys: "a", action: "Sliders: adjust by hand (switches auto enhance off)"),
-            Shortcut(keys: "⎋ / s / ↩ / ⌫", action: "End the slideshow"),
+            Shortcut(keys: "p", action: "Playlist: the show's order; drag to reorder, click to show an item"),
+            Shortcut(keys: "↑ ↓ / ↩ / ⌫", action: "In the playlist, after a click in it: choose / show / take out of the playlist (the file stays)"),
+            Shortcut(keys: "⎋ / s / ↩ / ⌫", action: "End the slideshow (⎋ ↩ ⌫ close the playlist first)"),
         ]),
         Group(title: "Dual pane and marking", shortcuts: [
             Shortcut(keys: "D / ⌃O", action: "Dual pane on / off: two folders side by side"),
