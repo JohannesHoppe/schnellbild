@@ -158,7 +158,6 @@ struct VideoChrome: View {
     }
 
     private func endDrag(area: CGSize) {
-        BrowserModel.testLog("control bar: put at \(String(describing: dragCenter)) in \(area)")
         if let dragCenter { placement.set(VideoBarPlacement.fraction(of: dragCenter, in: area)) }
         dragCenter = nil
         dragStart = nil
@@ -448,27 +447,7 @@ struct GripHandle: NSViewRepresentable {
 
         override func resetCursorRects() { addCursorRect(bounds, cursor: .openHand) }
 
-        override func viewDidMoveToWindow() {
-            super.viewDidMoveToWindow()
-            _ = Self.watchMouse
-        }
-
-        /// UI tests (`--test-log`): where each press and release went.
-        private static let watchMouse: Void = {
-            guard ProcessInfo.processInfo.arguments.contains(where: { $0.hasPrefix("--test-log=") }) else { return }
-            _ = NSEvent.addLocalMonitorForEvents(matching: [.leftMouseDown, .leftMouseUp]) { event in
-                if let content = event.window?.contentView {
-                    var chain: [String] = []
-                    var view = content.hitTest(content.convert(event.locationInWindow, from: nil))
-                    while let found = view, chain.count < 6 { chain.append(String(describing: type(of: found))); view = found.superview }
-                    BrowserModel.testLog("mouse \(event.type == .leftMouseDown ? "down" : "up") at \(event.locationInWindow) hits \(chain.joined(separator: " < "))")
-                }
-                return event
-            }
-        }()
-
         override func mouseDown(with event: NSEvent) {
-            BrowserModel.testLog("grip: down at \(event.locationInWindow), clicks \(event.clickCount), frame \(convert(bounds, to: nil))")
             if event.clickCount == 2 { start = nil; onDoubleClick(); return }
             start = event.locationInWindow
             moved = false
@@ -477,14 +456,12 @@ struct GripHandle: NSViewRepresentable {
         override func mouseDragged(with event: NSEvent) {
             guard let start else { return }
             let now = event.locationInWindow
-            if !moved { BrowserModel.testLog("grip: dragged to \(now)") }
             moved = true
             NSCursor.closedHand.set()
             onDrag(CGSize(width: now.x - start.x, height: start.y - now.y))
         }
 
         override func mouseUp(with event: NSEvent) {
-            BrowserModel.testLog("grip: up at \(event.locationInWindow), moved \(moved)")
             if start != nil, moved { onEnd() }
             start = nil
             moved = false

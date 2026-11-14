@@ -4987,10 +4987,10 @@ final class AVPlaybackControl: PlaybackControl {
     /// AVKit draws a newly chosen subtitle track only from its next line on,
     /// and keeps a line of the one left on screen until that line ends (seen
     /// on CI, macOS 15 and 26): a seek to where the video stands draws the
-    /// choice at once. (On macOS 15 a line of a track switched off stays
-    /// until it ends all the same: neither the seek, a legible output that
+    /// choice at once. (On macOS 15 subtitles switched off go on showing,
+    /// also the lines after: neither this seek, a legible output that
     /// suppresses drawing, the player handed to its view anew nor the
-    /// subtitle tracks turned off take it away, seen on CI.)
+    /// subtitle tracks turned off stop it, seen on CI.)
     private func refreshSubtitles() {
         Task { @MainActor [weak self] in
             // (once the item can seek)

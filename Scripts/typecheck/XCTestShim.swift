@@ -29,6 +29,7 @@ public func XCTAssertGreaterThanOrEqual<T: Comparable>(_ a: @autoclosure () thro
 public func XCTAssertLessThanOrEqual<T: Comparable>(_ a: @autoclosure () throws -> T, _ b: @autoclosure () throws -> T, _ message: @autoclosure () -> String = "", file: StaticString = #filePath, line: UInt = #line) {}
 public func XCTAssertThrowsError<T>(_ e: @autoclosure () throws -> T, _ message: @autoclosure () -> String = "", file: StaticString = #filePath, line: UInt = #line, _ handler: (Error) -> Void = { _ in }) {}
 public func XCTFail(_ message: String = "", file: StaticString = #filePath, line: UInt = #line) {}
+public func XCTExpectFailure(_ failureReason: String? = nil, enabled: Bool? = nil, strict: Bool? = nil, file: StaticString = #filePath, line: UInt = #line) {}
 public func XCTUnwrap<T>(_ e: @autoclosure () throws -> T?, _ message: @autoclosure () -> String = "", file: StaticString = #filePath, line: UInt = #line) throws -> T { fatalError() }
 
 // XCUITest
