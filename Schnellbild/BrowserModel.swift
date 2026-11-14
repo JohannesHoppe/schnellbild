@@ -5018,8 +5018,10 @@ final class AVPlaybackControl: PlaybackControl {
     private func seekToItself(_ reason: String) {
         guard let item = player.currentItem, item.status == .readyToPlay else { return }
         let selected = legible.flatMap { item.currentMediaSelection.selectedMediaOption(in: $0)?.displayName } ?? "none"
-        BrowserModel.testLog("avkit subtitles: \(reason), shown \(selected), seek to \(player.currentTime().seconds)")
-        player.seek(to: player.currentTime(), toleranceBefore: .zero, toleranceAfter: .zero) { _ in }
+        // A millisecond on: a seek to the very time leaves macOS 15's line drawn
+        let target = CMTimeAdd(player.currentTime(), CMTime(value: 1, timescale: 1000))
+        BrowserModel.testLog("avkit subtitles: \(reason), shown \(selected), seek to \(target.seconds)")
+        player.seek(to: target, toleranceBefore: .zero, toleranceAfter: .zero) { _ in }
     }
 
     func selectAudioTrack(_ id: Int) {

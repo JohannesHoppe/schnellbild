@@ -349,7 +349,6 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
             let target = wanted ?? -1
             if Int(player.currentVideoSubTitleIndex) != target, target == -1 || ids.contains(target) {
                 player.currentVideoSubTitleIndex = Int32(target)
-                if target >= 0, softwareDecoding { redrawSubtitles() }
             }
         }
         if Int(player.currentVideoSubTitleIndex) >= 0, !softwareDecoding {
@@ -361,19 +360,6 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
             player.currentAudioTrackIndex = Int32(wanted)
         }
         if speed != 1, abs(player.rate - Float(speed)) > 0.001 { player.rate = Float(speed) }
-    }
-
-    /// VLC reads a newly chosen subtitle track only from where its reading
-    /// stands: a line that began before (as the one line over the whole test
-    /// video) would show only from the next one on. A seek to where the
-    /// video stands reads the track again from the line running; VLC
-    /// handles it after the choice, in the order asked.
-    private func redrawSubtitles() {
-        guard player.state == .playing || player.state == .paused || player.state == .buffering,
-              player.time.intValue > 0 else { return }
-        let now = player.time.intValue
-        BrowserModel.testLog("vlc: subtitles read again from \(now) ms")
-        player.time = VLCTime(int: now)
     }
 
     /// Played to its end: VLC goes on from "ended" to "stopped" quickly,

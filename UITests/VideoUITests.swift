@@ -288,6 +288,8 @@ final class VideoUITests: SchnellbildUITestCase {
         let grip = element("videoBar.grip")
         let target = video.coordinate(withNormalizedOffset: CGVector(dx: 0.2, dy: 0.15))
         grip.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).press(forDuration: 0.2, thenDragTo: target)
+        RunLoop.current.run(until: Date().addingTimeInterval(1))
+        print("after the drag: bar \(bar.frame), video \(video.frame); app log:\n" + ((try? String(contentsOf: log, encoding: .utf8)) ?? "(none)"))
         eventually("moved up") { bar.frame.midY < video.frame.midY && bar.frame.midX < video.frame.midX }
         let moved = bar.frame
         // The next video: the same place

@@ -331,10 +331,19 @@ final class VisualUITests: SchnellbildUITestCase {
         let log = tempDir.appendingPathComponent("app.log")
         continueAfterFailure = true   // the log below shows on a failure too
         defer { print("app log:\n" + ((try? String(contentsOf: log, encoding: .utf8)) ?? "(none)")) }
-        let video = try openVideo("tracks.mkv", vlc: true, extra: ["--test-log=\(log.path)"])
+        var video = try openVideo("tracks.mkv", vlc: true, extra: ["--test-log=\(log.path)"])
         eventually("the subtitles are on", timeout: 20) { text(of: video).contains("subtitles 1/2 en") }
         app.typeKey("s", modifierFlags: [.control, .command])
         eventually("the ASS track") { text(of: video).contains("subtitles 2/2 de") }
+        // Chosen from the start (the language is kept): VLC reads a track
+        // chosen later only from its next line on, and the fixture's one
+        // line began at 0
+        app.terminate()
+        launch(open: tempDir.appendingPathComponent("tracks.mkv").path, resetState: false,
+               extra: ["--force-vlc", "--test-log=\(log.path)"])
+        video = element("video.vlc")
+        XCTAssertTrue(video.waitForExistence(timeout: 20))
+        eventually("the ASS track at once", timeout: 20) { text(of: video).contains("subtitles 2/2 de") }
         app.windows.firstMatch.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.02)).hover()
         settle(4)
         let picture = picture(in: video)
