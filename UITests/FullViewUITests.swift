@@ -157,7 +157,7 @@ final class FullViewUITests: SchnellbildUITestCase {
         eventually("c is first") { rowC.frame.minY < rowA.frame.minY && rowA.frame.minY < rowB.frame.minY }
 
         // The show follows the new order
-        rowC.click()
+        rowC.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).click()   // (XCUITest finds no hit point on the row after a drag)
         waitForBadge(containing: "1 / 3  ·  c.jpg")
         app.typeKey(.rightArrow, modifierFlags: .command)
         waitForBadge(containing: "2 / 3  ·  a.jpg")
@@ -165,7 +165,7 @@ final class FullViewUITests: SchnellbildUITestCase {
         waitForBadge(containing: "3 / 3  ·  b.jpg")
 
         // b taken out of the playlist: the file stays
-        rowB.click()
+        rowB.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).click()
         app.typeKey(.delete, modifierFlags: [])
         eventually("b is out of the playlist") { !rowB.exists }
         waitForBadge(containing: "/ 2  ·")
