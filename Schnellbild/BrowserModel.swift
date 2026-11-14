@@ -4979,26 +4979,18 @@ final class AVPlaybackControl: PlaybackControl {
     func selectSubtitleTrack(_ id: Int?) {
         guard let item = player.currentItem, let legible else { return }
         let option = id.flatMap { subtitleOptions.indices.contains($0) ? subtitleOptions[$0] : nil }
-        let shown = item.currentMediaSelection.selectedMediaOption(in: legible)
-        guard shown != option else { return }
-        if option != nil { enableSubtitleTracks(true, in: item) }
+        guard item.currentMediaSelection.selectedMediaOption(in: legible) != option else { return }
         item.select(option, in: legible)
         refreshSubtitles()
-        if option == nil, shown != nil { clearSubtitleLine(in: item) }
-    }
-
-    /// The item's subtitle tracks on or off as a whole.
-    private func enableSubtitleTracks(_ on: Bool, in item: AVPlayerItem) {
-        for track in item.tracks {
-            guard let type = track.assetTrack?.mediaType, [.text, .subtitle, .closedCaption].contains(type) else { continue }
-            if track.isEnabled != on { track.isEnabled = on }
-        }
     }
 
     /// AVKit draws a newly chosen subtitle track only from its next line on,
     /// and keeps a line of the one left on screen until that line ends (seen
     /// on CI, macOS 15 and 26): a seek to where the video stands draws the
-    /// choice at once.
+    /// choice at once. (On macOS 15 a line of a track switched off stays
+    /// until it ends all the same: neither the seek, a legible output that
+    /// suppresses drawing, the player handed to its view anew nor the
+    /// subtitle tracks turned off take it away, seen on CI.)
     private func refreshSubtitles() {
         Task { @MainActor [weak self] in
             // (once the item can seek)
@@ -5011,16 +5003,6 @@ final class AVPlaybackControl: PlaybackControl {
                 try? await Task.sleep(for: .milliseconds(100))
             }
         }
-    }
-
-    /// Subtitles switched off: macOS 15's player keeps the line on screen
-    /// until it ends, also after a seek, a legible output that suppresses
-    /// drawing or the player handed to its view anew (seen on CI; macOS 26
-    /// takes it away with the seek). With the subtitle tracks off it goes.
-    private func clearSubtitleLine(in item: AVPlayerItem) {
-        if #available(macOS 26, *) { return }
-        BrowserModel.testLog("avkit subtitles off: the subtitle tracks off")
-        enableSubtitleTracks(false, in: item)
     }
 
     func selectAudioTrack(_ id: Int) {

@@ -36,12 +36,19 @@ make clip.ogv  -c:v libvpx -crf 30 -b:v 200k -f ogg
 
 # tracks.mp4 / tracks.mkv: 20 s of even grey (the subtitles stand out where
 # they are drawn), English sound (440 Hz) and German (880 Hz), English and
-# German subtitles over the whole length; the English ones are the default.
+# German subtitles over the whole length, a line every 2 s as in a film (a
+# player shows a track chosen or switched off from the next line on at the
+# latest); the English ones are the default.
 # MP4: mov_text (3GPP timed text) for both; MKV: SubRip and ASS.
 SUBS=$(mktemp -d)
 trap 'rm -rf "$SUBS"; [ -n "${finished:-}" ] || exit 1' EXIT
-printf '1\n00:00:00,000 --> 00:00:20,000\nSUBTITLE ONE\n\n' > "$SUBS/en.srt"
-printf '1\n00:00:00,000 --> 00:00:20,000\nUNTERTITEL ZWEI\n\n' > "$SUBS/de.srt"
+lines() {
+  for i in 0 1 2 3 4 5 6 7 8 9; do
+    printf '%d\n00:00:%02d,000 --> 00:00:%02d,000\n%s\n\n' $((i + 1)) $((i * 2)) $((i * 2 + 2)) "$1"
+  done
+}
+lines "SUBTITLE ONE" > "$SUBS/en.srt"
+lines "UNTERTITEL ZWEI" > "$SUBS/de.srt"
 "$FFMPEG" -loglevel error -y -i "$SUBS/de.srt" "$SUBS/de.ass"
 tracks() {
   local out=$1 second=$2; shift 2

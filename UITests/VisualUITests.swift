@@ -314,7 +314,7 @@ final class VisualUITests: SchnellbildUITestCase {
         let shown = try screenStats(of: lower)
         app.typeKey("v", modifierFlags: [])
         eventually("off") { text(of: video).contains("subtitles off/2") }
-        settle(2)
+        settle(3)   // macOS 15's AVKit keeps the line shown until it ends (the fixture's last 2 s)
         let hidden = try screenStats(of: lower)
         print("\(vlc ? "VLC" : "AVKit") \(fixture) subtitles: on ± \(shown.spread) (mean \(shown.mean)), off ± \(hidden.spread) (mean \(hidden.mean))")
         XCTAssertGreaterThan(hidden.mean, 0.3, "the picture is there")
