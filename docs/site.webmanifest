@@ -1,7 +1,7 @@
 {
   "name": "Schnellbild",
   "short_name": "Schnellbild",
-  "description": "Fast, free photo and video viewer for Mac: thumbnails, paging by keyboard, MKV, AVI and WebM, ZIP and RAR as folders. A Phiewer and IINA alternative.",
+  "description": "Fast, free image viewer and MKV player for Mac: thumbnails, keyboard paging, MKV, AVI and WebM, ZIP and RAR as folders. A Phiewer, XnView and IrfanView alternative.",
   "lang": "en",
   "start_url": "/",
   "display": "browser",

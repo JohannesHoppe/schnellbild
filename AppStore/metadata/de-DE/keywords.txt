@@ -1,1 +1,1 @@
-bildbetrachter,fotos,video,mkv,avi,raw,heic,diashow,rar,zip,comic,cbz,ordner,tastatur,viewer
+bildbetrachter,fotobetrachter,bilder,fotos,videoplayer,mkv,abspielen,diashow,ordner,tastatur,comics

@@ -1,1 +1,1 @@
-image viewer,photo,video,mkv,avi,raw,heic,slideshow,rar,zip,comic,cbz,folder,keyboard,browser
+mkv,player,photo,picture,video,avi,webm,raw,heic,slideshow,rar,zip,cbz,cbr,comic,folder,keyboard
