@@ -114,6 +114,10 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         // (FFmpeg takes only the subtitle formats it is trusted with; text
         // ones fall through to VLC's own decoders.)
         if softwareDecoding { media.addOption(":codec=avcodec,all") }
+        // The subtitles chosen, from the start: chosen once VLC has opened
+        // the file, a line that began at its start would be read already
+        // (into the file's default track) and show only from the next one
+        if softwareDecoding, let subtitleOnceOpen { media.addOption(":sub-track-id=\(subtitleOnceOpen)") }
         return media
     }
 
@@ -273,6 +277,8 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
     private var softwareDecoding = false
     /// Paused before the media was opened anew for software decoding.
     private var pauseOnceOpen = false
+    /// The subtitle track VLC opens the media with in software (`makeMedia`).
+    private var subtitleOnceOpen: Int?
 
     /// Opens the media again, decoded in software, where it stood (once per
     /// video, when subtitles are to be shown: hardware decoding is faster).
@@ -282,6 +288,8 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         BrowserModel.testLog("vlc: software decoding for subtitles")
         let position = player.position
         let wasPlaying = isPlaying
+        let current = Int(player.currentVideoSubTitleIndex)
+        if let wanted = wantedSubtitle { subtitleOnceOpen = wanted } else { subtitleOnceOpen = current >= 0 ? current : nil }
         // Stopping waits for VLC's reading thread: off the main thread
         let held = self.held
         Task { @MainActor [weak self] in
@@ -292,14 +300,13 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
                     done.resume()
                 }
             }
-            BrowserModel.testLog("vlc: stopped for software decoding, state \(held.player.state.rawValue), control \(self == nil ? "gone" : "here"), delegate \(self?.player.delegate != nil)")
             guard let self, self.player.delegate != nil else { return }   // stopped for good meanwhile
             self.player.media = self.makeMedia()
             if let media = self.player.media { self.output.use(media) }
             if position > 0.001, position < 0.999 { self.positionOnceOpen = position }
             self.pauseOnceOpen = !wasPlaying
             self.player.play()
-            BrowserModel.testLog("vlc: opened again in software at \(position), state \(self.player.state.rawValue)")
+            BrowserModel.testLog("vlc: opened again in software at \(position), subtitles \(String(describing: self.subtitleOnceOpen))")
             self.isPlaying = wasPlaying
         }
     }

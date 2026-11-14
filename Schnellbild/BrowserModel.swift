@@ -1,6 +1,7 @@
 import SwiftUI
 import AppKit
 import AVFoundation
+import AVKit
 import ImageIO
 import UniformTypeIdentifiers
 import VLCFrames
@@ -4979,51 +4980,24 @@ final class AVPlaybackControl: PlaybackControl {
     func selectSubtitleTrack(_ id: Int?) {
         guard let item = player.currentItem, let legible else { return }
         let option = id.flatMap { subtitleOptions.indices.contains($0) ? subtitleOptions[$0] : nil }
-        guard item.currentMediaSelection.selectedMediaOption(in: legible) != option else { return }
+        let shown = item.currentMediaSelection.selectedMediaOption(in: legible)
+        guard shown != option else { return }
         item.select(option, in: legible)
-        suppressSubtitles(option == nil, in: item)
         refreshSubtitles()
-    }
-
-    /// No subtitles: a legible output that keeps the player from drawing
-    /// them. macOS 15's player keeps the line on screen of a track switched
-    /// off until that line ends, seeks or not (seen on CI).
-    private var subtitleSuppressor: AVPlayerItemLegibleOutput?
-
-    private func suppressSubtitles(_ suppress: Bool, in item: AVPlayerItem) {
-        if suppress, subtitleSuppressor == nil {
-            let output = AVPlayerItemLegibleOutput()
-            output.suppressesPlayerRendering = true
-            item.add(output)
-            subtitleSuppressor = output
-        } else if !suppress, let output = subtitleSuppressor {
-            item.remove(output)
-            subtitleSuppressor = nil
-        }
+        if option == nil, shown != nil { clearSubtitleLine() }
     }
 
     /// AVKit draws a newly chosen subtitle track only from its next line on,
     /// and keeps a line of the one left on screen until that line ends (seen
     /// on CI, macOS 15 and 26): a seek to where the video stands draws the
-    /// choice at once. Once more when the item reports the choice made, for
-    /// a system that applies it after the first seek.
+    /// choice at once.
     private func refreshSubtitles() {
-        if let selectionObserver { NotificationCenter.default.removeObserver(selectionObserver) }
-        selectionObserver = NotificationCenter.default.addObserver(
-            forName: AVPlayerItem.mediaSelectionDidChangeNotification, object: player.currentItem, queue: .main) { [weak self] _ in
-            MainActor.assumeIsolated {
-                guard let self else { return }
-                if let selectionObserver = self.selectionObserver { NotificationCenter.default.removeObserver(selectionObserver) }
-                self.selectionObserver = nil
-                self.seekToItself("the selection changed")
-            }
-        }
         Task { @MainActor [weak self] in
             // (once the item can seek)
             for _ in 0..<50 {
                 guard let self, let item = self.player.currentItem else { return }
                 if item.status == .readyToPlay {
-                    self.seekToItself("subtitles chosen")
+                    self.player.seek(to: self.player.currentTime(), toleranceBefore: .zero, toleranceAfter: .zero) { _ in }
                     return
                 }
                 try? await Task.sleep(for: .milliseconds(100))
@@ -5031,15 +5005,18 @@ final class AVPlaybackControl: PlaybackControl {
         }
     }
 
-    private var selectionObserver: NSObjectProtocol?
+    /// The view that shows the player (`AVPlayerViewHost`).
+    weak var playerView: AVPlayerView?
 
-    private func seekToItself(_ reason: String) {
-        guard let item = player.currentItem, item.status == .readyToPlay else { return }
-        let selected = legible.flatMap { item.currentMediaSelection.selectedMediaOption(in: $0)?.displayName } ?? "none"
-        // A millisecond on: a seek to the very time leaves macOS 15's line drawn
-        let target = CMTimeAdd(player.currentTime(), CMTime(value: 1, timescale: 1000))
-        BrowserModel.testLog("avkit subtitles: \(reason), shown \(selected), seek to \(target.seconds)")
-        player.seek(to: target, toleranceBefore: .zero, toleranceAfter: .zero) { _ in }
+    /// Subtitles switched off: macOS 15's player view keeps the line on
+    /// screen until it ends, seek or not (seen on CI; macOS 26 takes it away
+    /// with the seek). Handed to the view anew, it draws without it.
+    private func clearSubtitleLine() {
+        if #available(macOS 26, *) { return }
+        guard let view = playerView, view.player === player else { return }
+        BrowserModel.testLog("avkit subtitles off: the player handed to its view anew")
+        view.player = nil
+        view.player = player
     }
 
     func selectAudioTrack(_ id: Int) {
