@@ -40,7 +40,7 @@ public struct XCUIKeyboardKey: RawRepresentable, ExpressibleByStringLiteral {
                       end: Self = "E", home: Self = "H", leftArrow: Self = "l", rightArrow: Self = "R",
                       upArrow: Self = "u", downArrow: Self = "D", F1: Self = "1", F2: Self = "2", F5: Self = "5", F6: Self = "6", tab: Self = "t"
 }
-public struct XCUIElementType { public static let any = XCUIElementType() }
+public struct XCUIElementType { public static let any = XCUIElementType(); public static let menuItem = XCUIElementType() }
 public final class XCUIElementQuery {
     public subscript(_ id: String) -> XCUIElement { XCUIElement() }
     public var firstMatch: XCUIElement { XCUIElement() }
