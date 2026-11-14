@@ -14,6 +14,7 @@ struct EntryListView: View {
     static let dateWidth = ColumnWidth.date
     static let sizeWidth: CGFloat = 80
     private static let previewSide: CGFloat = 30
+    private static let top = "listTop"
 
     var body: some View {
         VStack(spacing: 0) {
@@ -23,6 +24,9 @@ struct EntryListView: View {
                     // rows, so its columns stand over theirs also beside a
                     // scroll bar that is always shown
                     LazyVStack(spacing: 0, pinnedViews: [.sectionHeaders]) {
+                        // The list's top, for the first row to be scrolled to
+                        // below the header
+                        Color.clear.frame(height: 0).id(Self.top)
                         Section {
                             let filtering = model.isFiltering
                             ForEach(Array(model.entries.enumerated()), id: \.element.id) { index, entry in
@@ -42,10 +46,19 @@ struct EntryListView: View {
                 // Undo / Redo also below the rows (a row's own menu has them on top)
                 .contentShape(Rectangle())
                 .contextMenu { UndoMenuItems(history: model.undoHistory, model: model) }
-                .onChange(of: model.selection, initial: true) { _, newValue in
+                .onChange(of: model.selection, initial: true) { oldValue, newValue in
                     guard let newValue, model.entries.indices.contains(newValue) else { return }
                     if model.clickedSelection == newValue { model.clickedSelection = nil; return }
-                    proxy.scrollTo(model.entries[newValue].id)
+                    // The pinned header lies over the rows' top: a row scrolled
+                    // into view upwards would stand under it, so going up the
+                    // row before it is scrolled to (for the first, the list's top)
+                    if newValue == 0 {
+                        proxy.scrollTo(Self.top)
+                    } else if let oldValue, newValue < oldValue {
+                        proxy.scrollTo(model.entries[newValue - 1].id)
+                    } else {
+                        proxy.scrollTo(model.entries[newValue].id)
+                    }
                 }
             }
         }
