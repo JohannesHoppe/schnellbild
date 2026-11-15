@@ -386,7 +386,11 @@ final class ActionsUITests: SchnellbildUITestCase {
         XCTAssertTrue(rightA.waitForExistence(timeout: 10), "copied into the other pane")
         XCTAssertTrue(right.descendants(matching: .any).matching(identifier: "tile.b.jpg").firstMatch.exists, "b too")
         XCTAssertTrue(leftA.exists, "a copy: still on the left")
-        XCTAssertTrue(FileManager.default.fileExists(atPath: tempDir.appendingPathComponent("Sorted/b.jpg").path))
+        let sorted = tempDir.appendingPathComponent("Sorted")
+        XCTAssertTrue(FileManager.default.fileExists(atPath: sorted.appendingPathComponent("b.jpg").path),
+                      "b.jpg on disk; in Sorted: \((try? FileManager.default.contentsOfDirectory(atPath: sorted.path)) ?? []); "
+                      + "the right pane: \(right.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH 'tile.'")).allElementsBoundByIndex.map(\.identifier)); "
+                      + "key log:\n\((try? String(contentsOf: log, encoding: .utf8)) ?? "(none)")")
 
         // c.jpg dragged into the right pane: moved
         let leftC = left.descendants(matching: .any).matching(identifier: "tile.c.jpg").firstMatch
