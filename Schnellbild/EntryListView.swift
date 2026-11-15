@@ -4,7 +4,8 @@ import UniformTypeIdentifiers
 
 /// The list view (L): a row per item with a small preview, the whole name
 /// and its attributes. A click on a column's header sorts by it, again
-/// reverses it — the same sort as the sort menu and ⌘1 … ⌘5. Rows act like
+/// reverses it — the same sort as the sort menu and ⌘1 … ⌘6 (the Distance
+/// column only while sorting by distance). Rows act like
 /// tiles (`EntryInteractions`); the files the app doesn't show follow, grey.
 struct EntryListView: View {
     @EnvironmentObject var model: BrowserModel
@@ -13,6 +14,7 @@ struct EntryListView: View {
     static let kindWidth = ColumnWidth.kind
     static let dateWidth = ColumnWidth.date
     static let sizeWidth: CGFloat = 80
+    static let distanceWidth: CGFloat = 80
     private static let previewSide: CGFloat = 30
     private static let top = "listTop"
 
@@ -76,6 +78,10 @@ struct EntryListView: View {
             headerButton("Date Modified", key: .modified, width: Self.dateWidth, alignment: .leading)
             headerButton("Date Taken", key: .captured, width: Self.dateWidth, alignment: .leading)
             headerButton("Size", key: .size, width: Self.sizeWidth, alignment: .trailing)
+            // Only while sorting by distance (it needs a place to measure from)
+            if model.sortKey == .distance {
+                headerButton("Distance", key: .distance, width: Self.distanceWidth, alignment: .trailing)
+            }
         }
         .font(.caption.weight(.semibold))
         .padding(.horizontal, 12)
@@ -130,6 +136,10 @@ struct EntryListView: View {
             cell(entry.modDate.map(Self.format) ?? "", width: Self.dateWidth)
             cell(model.knownCaptureDate(of: entry.url).map(Self.format) ?? "", width: Self.dateWidth)
             Text(size(of: entry)).monospacedDigit().frame(width: Self.sizeWidth, alignment: .trailing)
+            if model.sortKey == .distance {
+                Text(model.knownDistance(of: entry.url).map(GeoPoint.describeDistance) ?? "")
+                    .monospacedDigit().lineLimit(1).frame(width: Self.distanceWidth, alignment: .trailing)
+            }
         }
         .font(.callout)
         .foregroundStyle(cursor ? Color.white : (model.isEmptyFolder(entry) && !marked ? Color.secondary : Color.primary))
@@ -168,6 +178,7 @@ struct EntryListView: View {
             Text("").frame(width: Self.dateWidth)
             Text(file.byteSize.map { ByteCountFormatter.string(fromByteCount: Int64($0), countStyle: .file) } ?? "")
                 .monospacedDigit().frame(width: Self.sizeWidth, alignment: .trailing)
+            if model.sortKey == .distance { Text("").frame(width: Self.distanceWidth) }
         }
         .font(.callout)
         .foregroundStyle(.tertiary)

@@ -1,0 +1,100 @@
+import XCTest
+
+/// The Inspector (I, ⌘I, Get Info) with a photo's capture facts and place,
+/// and sorting by the distance from an item or from coordinates pasted.
+final class InspectorUITests: SchnellbildUITestCase {
+    /// geo.jpg (Munich) and three more landmarks, besides a.jpg … c.jpg without a place.
+    private func putPlaces() throws {
+        for name in ["geo.jpg", "geo-paris.jpg", "geo-sydney.jpg", "geo-newyork.jpg"] { try put(name, at: name) }
+    }
+
+    /// Whether tile `a` comes before tile `b` in the grid (rows, then columns).
+    private func comesBefore(_ a: String, _ b: String) -> Bool {
+        let first = tile(a).frame, second = tile(b).frame
+        if abs(first.minY - second.minY) > 5 { return first.minY < second.minY }
+        return first.minX < second.minX
+    }
+
+    private func sortLabel() -> String {
+        app.descendants(matching: .any).matching(identifier: "sortMenu").allElementsBoundByIndex
+            .map { text(of: $0) }.joined(separator: " ")
+    }
+
+    func testIShowsCaptureAndLocationInTheGrid() throws {
+        try putPlaces()
+        launchOnTempDir(waitFor: "geo.jpg")
+        tile("geo.jpg").click()
+        eventually("selected") { isSelected("geo.jpg") }
+        app.typeKey("i", modifierFlags: [])
+        XCTAssertTrue(element("inspector").waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["Capture"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.staticTexts["Location"].exists)
+        XCTAssertTrue(app.staticTexts["48.1372° N, 11.5761° E"].exists)
+        XCTAssertTrue(app.staticTexts["Example Camera One"].exists)
+        XCTAssertTrue(app.staticTexts["64 × 48 px"].exists)
+        XCTAssertTrue(element("openInMaps").exists)
+        // The next item: the sidebar follows the selection
+        tile("geo-paris.jpg").click()
+        eventually("Paris") { app.staticTexts["48.8584° N, 2.2945° E"].exists }
+        app.typeKey("i", modifierFlags: [])
+        eventually("I hides it") { !element("inspector").exists }
+        // ⌘I, the menu item
+        app.typeKey("i", modifierFlags: .command)
+        XCTAssertTrue(element("inspector").waitForExistence(timeout: 5))
+    }
+
+    func testGetInfoFromATilesMenu() throws {
+        try putPlaces()
+        launchOnTempDir(waitFor: "geo.jpg")
+        tile("geo-sydney.jpg").rightClick()
+        let item = app.menuItems["Get Info"]
+        XCTAssertTrue(item.waitForExistence(timeout: 5))
+        item.click()
+        XCTAssertTrue(app.staticTexts["Location"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.staticTexts["33.8568° S, 151.2153° E"].exists)
+        eventually("the item it was asked for is selected") { isSelected("geo-sydney.jpg") }
+    }
+
+    func testIInTheFullView() throws {
+        try putPlaces()
+        launchOnTempDir(waitFor: "geo.jpg")
+        tile("geo.jpg").click()
+        app.typeKey(.space, modifierFlags: [])
+        waitForBadge(containing: "geo.jpg")
+        app.typeKey("i", modifierFlags: [])
+        XCTAssertTrue(app.staticTexts["Location"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.staticTexts["Capture"].exists)
+    }
+
+    func testSortByDistanceFromAnItem() throws {
+        try putPlaces()
+        launchOnTempDir(waitFor: "geo.jpg")
+        tile("geo-paris.jpg").rightClick()
+        let item = app.menuItems["Sort by Distance from Here"]
+        XCTAssertTrue(item.waitForExistence(timeout: 5))
+        item.click()
+        eventually("Paris, Munich, New York, Sydney, then those without a place") {
+            comesBefore("geo-paris.jpg", "geo.jpg") && comesBefore("geo.jpg", "geo-newyork.jpg")
+                && comesBefore("geo-newyork.jpg", "geo-sydney.jpg") && comesBefore("geo-sydney.jpg", "a.jpg")
+        }
+        XCTAssertTrue(sortLabel().contains("Distance ↑"), sortLabel())
+        // The list shows how far
+        app.typeKey("l", modifierFlags: [])
+        XCTAssertTrue(element("column.distance").waitForExistence(timeout: 5))
+    }
+
+    func testSortByDistanceFromPastedCoordinates() throws {
+        try putPlaces()
+        launchOnTempDir(waitFor: "geo.jpg")
+        clickMenu("View", "Distance")
+        let field = app.textFields["distanceOriginField"]
+        XCTAssertTrue(field.waitForExistence(timeout: 5), "no place yet: the sheet asks for one")
+        field.typeText("33.8568 S, 151.2153 E")
+        eventually("read") { text(of: element("distanceOriginParsed")).contains("33.85") }
+        app.typeKey(.return, modifierFlags: [])
+        eventually("Sydney, New York, Munich, Paris, then those without a place") {
+            comesBefore("geo-sydney.jpg", "geo-newyork.jpg") && comesBefore("geo-newyork.jpg", "geo.jpg")
+                && comesBefore("geo.jpg", "geo-paris.jpg") && comesBefore("geo-paris.jpg", "a.jpg")
+        }
+    }
+}

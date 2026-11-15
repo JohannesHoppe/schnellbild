@@ -234,7 +234,7 @@ private struct WindowView: View {
                 SortChoices(model: model, shortcuts: false)
             } label: {
                 // No key cap here: a toolbar menu with a label of its own
-                // drops out of the accessibility tree (⌘1 … ⌘5: tooltip, help)
+                // drops out of the accessibility tree (⌘1 … ⌘6: tooltip, help)
                 // Bounded: the sort key's name is long in some languages
                 // ("Date de prise de vue"), and the toolbar is full
                 Label {
@@ -245,7 +245,7 @@ private struct WindowView: View {
                 }
                 .labelStyle(.titleAndIcon)
             }
-            .help("Sort by (⌘1 … ⌘5; press again to reverse)")
+            .help("Sort by (⌘1 … ⌘6; press again to reverse)")
             .accessibilityIdentifier("sortMenu")
             .accessibilityLabel("Sort: \(model.sortKey.title) \(model.sortAscending ? "↑" : "↓")")
         }
@@ -436,6 +436,7 @@ struct PaneView: View {
         // One container, not a Group: a Group hands its modifiers to each
         // branch, so the search bar and the sheets would be made anew each
         // time the list turns empty or not (a field rebuilt while typing)
+        HStack(spacing: 0) {
         ZStack {
             if model.entries.isEmpty && model.slideshow == nil {
                 EmptyStateView(isLoading: model.isLoading)
@@ -466,6 +467,23 @@ struct PaneView: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+            // The Inspector (I, ⌘I, Get Info): a sidebar about the item selected or shown
+            if model.showInspector {
+                Divider()
+                if let entry = model.inspectedEntry {
+                    InspectorView(entry: entry)
+                } else {
+                    Text("Select an item to see its info.")
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                        .padding(14)
+                        .frame(width: InspectorView.width)
+                        .frame(maxHeight: .infinity)
+                        .background(.regularMaterial)
+                        .accessibilityIdentifier("inspector")
+                }
+            }
+        }
         .overlay {
             // A folder without media or subfolders still shows its ".." tile.
             if model.mode == .grid, !model.isLoading, !model.isFiltering,
@@ -494,6 +512,13 @@ struct PaneView: View {
         .sheet(item: $model.renameFileTarget) { RenameView(file: $0) }
         .sheet(item: $model.passwordRequest) { PasswordView(request: $0) }
         .sheet(isPresented: $model.newFolderRequested) { NewFolderView() }
+        .sheet(isPresented: $model.distanceOriginRequested) { DistanceOriginView() }
+        .alert(Text(verbatim: model.locationMissing.map { String(localized: "“\($0)” has no location") } ?? ""),
+               isPresented: Binding(get: { model.locationMissing != nil }, set: { if !$0 { model.locationMissing = nil } })) {
+            Button("OK") { model.locationMissing = nil }
+        } message: {
+            Text("Only photos and videos with GPS data in their metadata have one.")
+        }
     }
 
     // MARK: - Search bar (always visible)
@@ -571,6 +596,14 @@ struct PaneView: View {
             if model.transfersRunning > 0 {
                 ProgressView().controlSize(.small)
                 Text("Copying or moving…").foregroundStyle(.secondary).lineLimit(1)
+            }
+            // Sorting by distance: the places of many files being read (another sort stops it)
+            if let progress = model.locationProgress {
+                ProgressView(value: Double(progress.done), total: Double(max(progress.total, 1)))
+                    .frame(width: 60)
+                Text("Reading locations: \(progress.done) of \(progress.total)")
+                    .foregroundStyle(.secondary).lineLimit(1).fixedSize()
+                    .accessibilityIdentifier("locationProgress")
             }
             if model.accessLimited {
                 Text("Only the file you opened is shown here.").foregroundStyle(.secondary)
@@ -651,11 +684,8 @@ struct PaneView: View {
         .overlay(alignment: entry.kind == .video ? .top : .bottom) {
             positionBadge(entry: entry, atTop: entry.kind == .video)
         }
-        .overlay(alignment: .topTrailing) {
-            if model.showInspector { InspectorView(entry: entry).padding(12) }
-        }
         .overlay { if entry.kind == .video { VolumeDisplay() } }
-        // The control bar (over the badge and the inspector, which it can be dragged onto)
+        // The control bar (over the badge)
         .overlay { if entry.kind == .video { VideoChrome() } }
     }
 
@@ -801,8 +831,9 @@ struct EmptyStateView: View {
     }
 }
 
-/// The sort choices, in the View menu (with ⌘1 … ⌘5) and in the toolbar.
-/// Choosing the current key again reverses the direction.
+/// The sort choices, in the View menu (with ⌘1 … ⌘6) and in the toolbar.
+/// Choosing the current key again reverses the direction; Distance without
+/// a place to measure from opens the sheet that asks for one.
 struct SortChoices: View {
     @ObservedObject var model: BrowserModel
     let shortcuts: Bool
@@ -818,6 +849,8 @@ struct SortChoices: View {
                 toggle
             }
         }
+        Button("Distance from Coordinates or Map Link…") { model.requestDistanceOrigin() }
+            .disabled(model.anySheetOpen || model.slideshow != nil)
         Divider()
         Toggle("Ascending", isOn: Binding(
             get: { model.sortAscending },

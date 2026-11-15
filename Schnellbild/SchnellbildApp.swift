@@ -99,6 +99,10 @@ struct SchnellbildApp: App {
                     .disabled(!model.canCreateFolder)
                 Button("Rename…") { model.beginRename() }
                     .disabled(model.slideshow != nil || window.anySheetOpen || !(model.selectedEntry.map(model.canRename) ?? false))
+                // The Inspector, as the Finder's ⌘I (also I without ⌘)
+                Button("Get Info") { model.showInspector.toggle() }
+                    .keyboardShortcut("i")
+                    .disabled(model.folderURL == nil || window.anySheetOpen)
                 Button("Reveal in Finder") { model.revealInFinder() }
                     .keyboardShortcut("r", modifiers: [.command, .shift])
                     .disabled(model.slideshow != nil || window.anySheetOpen)

@@ -941,7 +941,7 @@ final class SearchRun {
 final class BrowserModel: ObservableObject {
     enum Mode { case grid, detail }
     enum SortKey: String, CaseIterable {
-        case name, kind, modified, captured, size
+        case name, kind, modified, captured, size, distance
 
         var title: String {
             switch self {
@@ -950,10 +950,12 @@ final class BrowserModel: ObservableObject {
             case .modified: return String(localized: "Date Modified")
             case .captured: return String(localized: "Date Taken")
             case .size:     return String(localized: "Size")
+            case .distance: return String(localized: "Distance")
             }
         }
-        /// Like Finder: names A→Z, but dates and sizes newest/largest first.
-        var startsAscending: Bool { self == .name || self == .kind }
+        /// Like Finder: names A→Z, but dates and sizes newest/largest first;
+        /// distances nearest first.
+        var startsAscending: Bool { self == .name || self == .kind || self == .distance }
     }
     enum KeyInput: Equatable {
         case left, right, up, down, space, enter, escape, backspace, home, end, f1, f2
@@ -985,7 +987,7 @@ final class BrowserModel: ObservableObject {
     /// `canonicalPath(folderURL)`, kept so grid cells don't recompute it.
     private var folderPath: String?
     @Published private(set) var entries: [GridEntry] = [] {
-        didSet { listRevision += 1; recomputeDerived(); readCaptureDatesIfNeeded() }
+        didSet { listRevision += 1; recomputeDerived(); readCaptureDatesIfNeeded(); readLocationsIfNeeded() }
     }
     @Published var selection: Int? {
         didSet { if !keepingChoice { selectionChosen = !settingDefaultSelection } }
@@ -1060,6 +1062,27 @@ final class BrowserModel: ObservableObject {
     /// Files whose capture date was already read (found or not).
     private var captureDatesRead: Set<URL> = []
     private var captureDateTask: Task<Void, Never>?
+
+    /// Where `.distance` measures from (an item's place, or coordinates or a
+    /// map link pasted: `setDistanceOrigin`); per pane, remembered.
+    @Published private(set) var distanceOrigin: GeoPoint?
+    /// Where each photo or video was taken, read only while sorting by
+    /// `.distance` (through `LocationCache`, by path and modification date).
+    /// Files without a place go to the end.
+    private var locations: [URL: GeoPoint] = [:] { didSet { orderRevision += 1 } }
+    /// Files whose place was read (found or not), and those waiting.
+    private var locationsRead: Set<URL> = []
+    private var locationsQueued: Set<URL> = []
+    private var locationPending: [(url: URL, modified: Date?)] = []
+    private var locationTask: Task<Void, Never>?
+    private var locationsDone = 0, locationsTotal = 0
+    /// While many places are read: how far it has come (the status bar).
+    struct Progress: Equatable { let done: Int; let total: Int }
+    @Published private(set) var locationProgress: Progress?
+    /// The sheet that takes coordinates or a map link to sort by distance from.
+    @Published var distanceOriginRequested = false
+    /// "Sort by Distance from Here" on an item without a place: its name, for the alert.
+    @Published var locationMissing: String?
 
     // MARK: Search state
 
@@ -1615,7 +1638,9 @@ final class BrowserModel: ObservableObject {
         if let raw = defaults.string(forKey: settingsPrefix + "searchMode"), let mode = NameMatcher.Mode(rawValue: raw) { searchMode = mode }
         if let stored = defaults.object(forKey: Self.volumeKey) as? Double { volume = min(max(stored, 0), 1) }
         showSubtitles = defaults.object(forKey: Self.subtitlesKey) as? Bool ?? true
-        if let raw = defaults.string(forKey: sortKeyKey), let key = SortKey(rawValue: raw) {
+        distanceOrigin = defaults.string(forKey: settingsPrefix + "distanceOrigin").flatMap(GeoPoint.parse)
+        if let raw = defaults.string(forKey: sortKeyKey), let key = SortKey(rawValue: raw),
+           key != .distance || distanceOrigin != nil {
             sortKey = key
             sortAscending = defaults.object(forKey: sortAscendingKey) as? Bool ?? key.startsAscending
         }
@@ -1687,6 +1712,7 @@ final class BrowserModel: ObservableObject {
         captureDateTask?.cancel()
         captureDateTask = nil
         captureDatesRead = Set(captureDates.keys)
+        stopReadingLocations()
         leaveSearch()
         pendingResultSelection = nil
         accessLimited = false
@@ -2145,8 +2171,9 @@ final class BrowserModel: ObservableObject {
     /// Ties (same kind, date or size) fall back to the name, always A→Z, so
     /// the order is stable. `captured` holds the capture dates read so far.
     nonisolated static func sortEntries(_ entries: [GridEntry], key: SortKey, ascending: Bool,
-                                        captured: [URL: Date] = [:]) -> [GridEntry] {
-        EntryOrder(key: key, ascending: ascending, captured: captured).sorted(entries)
+                                        captured: [URL: Date] = [:], origin: GeoPoint? = nil,
+                                        located: [URL: GeoPoint] = [:]) -> [GridEntry] {
+        EntryOrder(key: key, ascending: ascending, captured: captured, origin: origin, located: located).sorted(entries)
     }
 
     /// The grid's order as a comparison, so streamed search results can be
@@ -2155,6 +2182,9 @@ final class BrowserModel: ObservableObject {
         let key: SortKey
         let ascending: Bool
         let captured: [URL: Date]
+        /// `.distance`: from where, and the places read so far.
+        var origin: GeoPoint? = nil
+        var located: [URL: GeoPoint] = [:]
 
         /// An entry with what the comparison reads, worked out once (a
         /// capture date looked up per comparison would hash its URL each time).
@@ -2168,6 +2198,8 @@ final class BrowserModel: ObservableObject {
             let rank: Int
             let date: Date
             let size: Int
+            /// Metres from the origin (`.distance`); nil without a place.
+            let distance: Double?
         }
 
         func keyed(_ entry: GridEntry) -> Keyed {
@@ -2185,9 +2217,11 @@ final class BrowserModel: ObservableObject {
             case .captured: date = captured[entry.url] ?? entry.modDate ?? .distantPast
             default:        date = .distantPast
             }
+            var distance: Double?
+            if key == .distance, let origin, let point = located[entry.url] { distance = origin.distance(to: point) }
             return Keyed(entry: entry, group: group, name: entry.name,
                          ext: entry.isMedia ? entry.url.pathExtension.lowercased() : "",
-                         rank: rank, date: date, size: entry.byteSize ?? 0)
+                         rank: rank, date: date, size: entry.byteSize ?? 0, distance: distance)
         }
 
         private func compare(_ a: Keyed, _ b: Keyed) -> ComparisonResult {
@@ -2207,12 +2241,16 @@ final class BrowserModel: ObservableObject {
                 return order(a.date, b.date)
             case .size:
                 return order(a.size, b.size)
+            case .distance:
+                return order(a.distance ?? 0, b.distance ?? 0)
             }
         }
 
         /// ".." on top, then folders, then media, each group by the key.
         func before(_ a: Keyed, _ b: Keyed) -> Bool {
             if a.group != b.group { return a.group < b.group }
+            // Without a place: after every item with one, in either direction
+            if key == .distance, (a.distance == nil) != (b.distance == nil) { return a.distance != nil }
             let result = compare(a, b)
             // Ties go by name A→Z in either direction, like Finder
             if result == .orderedSame { return a.name.localizedStandardCompare(b.name) == .orderedAscending }
@@ -2267,7 +2305,9 @@ final class BrowserModel: ObservableObject {
     }
 
     /// The order the lists are in (sort key, direction, the capture dates known).
-    private var entryOrder: EntryOrder { EntryOrder(key: sortKey, ascending: sortAscending, captured: captureDates) }
+    private var entryOrder: EntryOrder {
+        EntryOrder(key: sortKey, ascending: sortAscending, captured: captureDates, origin: distanceOrigin, located: locations)
+    }
     /// Counts the changes to `entryOrder` (a new key or direction, capture
     /// dates read), so a sort off the main thread knows it is still current.
     private var orderRevision = 0
@@ -2296,11 +2336,140 @@ final class BrowserModel: ObservableObject {
     /// Choose the sort order. The same key again reverses the direction; a
     /// new key starts in its natural direction. Remembered across launches.
     func setSort(_ key: SortKey) {
+        // Distance needs a place to measure from: asked for first
+        if key == .distance, distanceOrigin == nil { requestDistanceOrigin(); return }
         if sortKey == key { sortAscending.toggle() } else { sortKey = key; sortAscending = key.startsAscending }
         defaults.set(key.rawValue, forKey: sortKeyKey)
         defaults.set(sortAscending, forKey: sortAscendingKey)
+        if key != .distance { stopReadingLocations() }
         resort()
         readCaptureDatesIfNeeded()
+        readLocationsIfNeeded()
+    }
+
+    // MARK: Sorting by distance
+
+    /// Sorts by the distance from `point`, nearest first (remembered with the sort).
+    func setDistanceOrigin(_ point: GeoPoint) {
+        distanceOrigin = point
+        defaults.set(point.decimalPair, forKey: settingsPrefix + "distanceOrigin")
+        sortKey = .distance
+        sortAscending = true
+        defaults.set(SortKey.distance.rawValue, forKey: sortKeyKey)
+        defaults.set(true, forKey: sortAscendingKey)
+        orderRevision += 1
+        resort()
+        readLocationsIfNeeded()
+    }
+
+    func sortByDistance(from point: GeoPoint) { setDistanceOrigin(point) }
+
+    /// "Sort by Distance from Here" on an item: its place read (cached), else
+    /// an alert says it has none.
+    func sortByDistance(from entry: GridEntry) {
+        guard entry.isMedia else { return }
+        let url = entry.url, modified = entry.modDate, name = entry.name
+        Task { [weak self] in
+            let point: GeoPoint?
+            if ArchivePath.isInside(url) {
+                point = await detachedCancellable(priority: .userInitiated) { () -> GeoPoint? in
+                    guard let source = await MediaData.imageSource(url),
+                          let props = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [CFString: Any] else { return nil }
+                    return MediaLocation.picture(props)?.point
+                }
+            } else {
+                point = await LocationCache.shared.point(of: url, modified: modified)
+            }
+            guard let self else { return }
+            if let point { self.setDistanceOrigin(point) } else { self.locationMissing = name }
+        }
+    }
+
+    /// Opens the sheet that takes coordinates or a map link.
+    func requestDistanceOrigin() {
+        guard !anySheetOpen, slideshow == nil else { return }
+        searchFocused = false
+        distanceOriginRequested = true
+    }
+
+    /// Metres from the origin to the file's place, once read.
+    func knownDistance(of url: URL) -> Double? {
+        guard sortKey == .distance, let origin = distanceOrigin, let point = locations[url] else { return nil }
+        return origin.distance(to: point)
+    }
+
+    /// While sorting by distance, read the places of the media listed (also
+    /// search results from subfolders) that aren't known yet, a chunk at a
+    /// time off the main thread, sorting again as they come in.
+    func readLocationsIfNeeded() {
+        guard sortKey == .distance, distanceOrigin != nil else { return }
+        let missing = (allEntries + entries).filter {
+            $0.isMedia && !locationsRead.contains($0.url) && !locationsQueued.contains($0.url)
+        }
+        guard !missing.isEmpty else { return }
+        for entry in missing where !locationsQueued.contains(entry.url) {
+            locationsQueued.insert(entry.url)
+            locationPending.append((entry.url, entry.modDate))
+            locationsTotal += 1
+        }
+        if locationTask == nil { startReadingLocations() }
+    }
+
+    /// Files read per step; the list is sorted again after a step at most
+    /// twice a second, and once at the end.
+    private static let locationChunk = 64
+
+    private func startReadingLocations() {
+        locationTask = Task { [weak self] in
+            var lastSort = Date()
+            while true {
+                guard let self, !Task.isCancelled else { return }
+                let chunk = Array(self.locationPending.prefix(Self.locationChunk))
+                if chunk.isEmpty { break }
+                self.locationPending.removeFirst(chunk.count)
+                // Shown only while there's more than one step to go
+                if self.locationsTotal > Self.locationChunk {
+                    self.locationProgress = Progress(done: self.locationsDone, total: self.locationsTotal)
+                }
+                let found = await LocationCache.shared.points(of: chunk)
+                guard !Task.isCancelled else { return }
+                var read: [URL: GeoPoint] = [:]
+                for file in chunk {
+                    self.locationsQueued.remove(file.url)
+                    if let point = found[file.url] {
+                        self.locationsRead.insert(file.url)
+                        if let point { read[file.url] = point }
+                    }
+                }
+                if !read.isEmpty { self.locations.merge(read) { _, new in new } }
+                self.locationsDone += chunk.count
+                if self.locationProgress != nil {
+                    self.locationProgress = Progress(done: self.locationsDone, total: self.locationsTotal)
+                }
+                if self.locationPending.isEmpty || Date().timeIntervalSince(lastSort) > 0.5 {
+                    lastSort = Date()
+                    self.objectWillChange.send()   // the list's Distance column
+                    self.resort()
+                }
+            }
+            guard let self else { return }
+            self.locationTask = nil
+            self.locationProgress = nil
+            self.locationsDone = 0
+            self.locationsTotal = 0
+        }
+    }
+
+    /// Another sort chosen, another folder: what is still to read is left
+    /// (read again when it is wanted).
+    private func stopReadingLocations() {
+        locationTask?.cancel()
+        locationTask = nil
+        locationPending = []
+        locationsQueued = []
+        locationProgress = nil
+        locationsDone = 0
+        locationsTotal = 0
     }
 
     /// Sort the lists again, keeping the selection.
@@ -2372,6 +2541,12 @@ final class BrowserModel: ObservableObject {
             self.captureDates.merge(found) { _, new in new }
             if self.sortKey == .captured { self.resort() }
         }
+    }
+
+    /// The places of the media among `entries` (through `LocationCache`).
+    nonisolated static func locations(of entries: [GridEntry]) async -> [URL: GeoPoint] {
+        let found = await LocationCache.shared.points(of: entries.filter(\.isMedia).map { ($0.url, $0.modDate) })
+        return found.compactMapValues { $0 }
     }
 
     /// Capture dates of the given files, read in parallel (8 at a time).
@@ -2454,7 +2629,7 @@ final class BrowserModel: ObservableObject {
     }()
 
     private func sorted(_ list: [GridEntry]) -> [GridEntry] {
-        Self.sortEntries(list, key: sortKey, ascending: sortAscending, captured: captureDates)
+        entryOrder.sorted(list)
     }
 
     /// Where `url` is in the visible list.
@@ -2623,7 +2798,7 @@ final class BrowserModel: ObservableObject {
     private func showResults(adding fresh: [GridEntry]? = nil) {
         let keep = fresh == nil ? nil : selectedEntry?.url
         if let fresh {
-            entries = EntryOrder(key: sortKey, ascending: sortAscending, captured: captureDates).merged(entries, fresh)
+            entries = entryOrder.merged(entries, fresh)
         } else {
             entries = sorted(search?.results ?? [])
         }
@@ -2894,6 +3069,21 @@ final class BrowserModel: ObservableObject {
     var selectedMediaEntry: GridEntry? {
         guard let entry = selectedEntry, entry.isMedia else { return nil }
         return entry
+    }
+
+    /// What the Inspector is about: the item on screen (full view,
+    /// slideshow), else the one selected in the grid or list (not "..").
+    var inspectedEntry: GridEntry? {
+        if mode == .detail || slideshow != nil { return shownMediaEntry }
+        guard let entry = selectedEntry, entry.kind != .parent else { return nil }
+        return entry
+    }
+
+    /// "Get Info" in a tile's or row's menu: that item selected and the
+    /// Inspector shown.
+    func getInfo(_ entry: GridEntry) {
+        guard entry.kind != .parent, select(entry) else { return }
+        showInspector = true
     }
 
     func select(_ index: Int) {
@@ -3321,6 +3511,10 @@ final class BrowserModel: ObservableObject {
         case "a" where !command: showAdjustments.toggle(); return true
         case "k" where !command: showMiniKeyboard.toggle(); return true
         case "l" where !command: viewMode = viewMode == .grid ? .list : .grid; return true
+        // The Inspector: in the grid and list too, about the item selected
+        case "i" where !command:
+            guard viewingMedia || folderURL != nil else { return false }
+            showInspector.toggle(); return true
         // M: Insert on a Mac keyboard (which has none)
         case "m" where !command:
             guard mode == .grid else { return false }
@@ -3332,7 +3526,6 @@ final class BrowserModel: ObservableObject {
         switch c {
         case "0": zoomReset();            return true
         case "1": zoomActualSize();       return true
-        case "i": showInspector.toggle(); return true
         // Videos: V subtitles on / off (as in IINA and mpv), < / > slower /
         // faster (as on YouTube; IINA's ⌘[ ⌘] are Back / Forward here)
         case "v" where videoOnScreen: toggleSubtitles(); return true
@@ -3839,7 +4032,7 @@ final class BrowserModel: ObservableObject {
     }
 
     /// A sheet other than the help is open (a second sheet can't open on top).
-    var otherSheetOpen: Bool { renameTarget != nil || renameFileTarget != nil || passwordRequest != nil || newFolderRequested }
+    var otherSheetOpen: Bool { renameTarget != nil || renameFileTarget != nil || passwordRequest != nil || newFolderRequested || distanceOriginRequested }
     /// Any of the sheets is open (they keep their keys).
     var anySheetOpen: Bool { showHelp || otherSheetOpen }
 
@@ -4529,7 +4722,7 @@ final class BrowserModel: ObservableObject {
         searchFocused = false
         slideshow = show
         slideshowEnteredFullScreen = setFullScreen(true)
-        let key = sortKey, ascending = sortAscending
+        let key = sortKey, ascending = sortAscending, origin = distanceOrigin
         let startAt = show.startAt.map(Self.canonicalPath), startInside = show.startInside
         let partPause = slideshowPartPause
         slideshowWalk = Task { [weak self] in
@@ -4541,7 +4734,9 @@ final class BrowserModel: ObservableObject {
                 let contents = await Self.scan(roots[0].url)
                 var captured: [URL: Date] = [:]
                 if key == .captured { captured = await Self.captureDates(of: contents.filter(\.isMedia).map(\.url)) }
-                let sorted = Self.sortEntries(contents, key: key, ascending: ascending, captured: captured)
+                let located = key == .distance ? await Self.locations(of: contents) : [:]
+                let sorted = Self.sortEntries(contents, key: key, ascending: ascending, captured: captured,
+                                              origin: origin, located: located)
                 parts = [.media(sorted.filter(\.isMedia))]
                     + sorted.filter { $0.kind == .folder && !$0.name.hasPrefix(".") }.map { .folder($0.browseURL) }
             } else {
@@ -4565,7 +4760,7 @@ final class BrowserModel: ObservableObject {
                 case .media(let items):
                     if !items.isEmpty { self?.addToSlideshow(items, id: id, part: number) }
                 case .folder(let url):
-                    await Self.walkForSlideshow(url, key: key, ascending: ascending) { batch in
+                    await Self.walkForSlideshow(url, key: key, ascending: ascending, origin: origin) { batch in
                         self?.addToSlideshow(batch, id: id, part: number)
                     }
                 }
@@ -4583,20 +4778,21 @@ final class BrowserModel: ObservableObject {
 
     /// Depth first: a folder's own media in the sort order, then each of its
     /// subfolders in the sort order. Hands over one batch per folder.
-    nonisolated static func walkForSlideshow(_ folder: URL, key: SortKey, ascending: Bool,
+    nonisolated static func walkForSlideshow(_ folder: URL, key: SortKey, ascending: Bool, origin: GeoPoint? = nil,
                                              found: @MainActor ([GridEntry]) -> Void) async {
         guard !Task.isCancelled else { return }
         let contents = await scan(folder)
         var captured: [URL: Date] = [:]
         if key == .captured { captured = await captureDates(of: contents.filter(\.isMedia).map(\.url)) }
+        let located = key == .distance ? await locations(of: contents) : [:]
         guard !Task.isCancelled else { return }
-        let sorted = sortEntries(contents, key: key, ascending: ascending, captured: captured)
+        let sorted = sortEntries(contents, key: key, ascending: ascending, captured: captured, origin: origin, located: located)
         let media = sorted.filter(\.isMedia)
         if !media.isEmpty { await found(media) }
         let folders = sorted.filter { $0.kind == .folder && !$0.name.hasPrefix(".") }
         let links = await Blocking.run { Set(folders.filter { isLink($0.url) }.map(\.url)) }
         for sub in folders where !links.contains(sub.url) {
-            await walkForSlideshow(sub.url, key: key, ascending: ascending, found: found)
+            await walkForSlideshow(sub.url, key: key, ascending: ascending, origin: origin, found: found)
         }
     }
 
