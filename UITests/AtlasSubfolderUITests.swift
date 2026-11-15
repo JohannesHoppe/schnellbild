@@ -70,8 +70,8 @@ final class AtlasSubfolderUITests: SchnellbildUITestCase {
         for _ in 0..<4 { app.typeKey(.rightArrow, modifierFlags: []) }
         eventually("Geiranger") { self.text(of: status).hasPrefix("station 5 of 8") }
         let item = element("tourItem")
-        eventually("the ferry's MKV after the photos and the video", timeout: 40) { item.exists && item.label == "norway-ferry.mkv" }
-        XCTAssertEqual(text(of: item), "video vlc", "played through VLC, as in the full view")
+        eventually("the ferry's MKV after the photos and the video", timeout: 40) { item.exists && item.label.hasPrefix("norway-ferry.mkv") }
+        XCTAssertEqual(item.label, "norway-ferry.mkv · video vlc", "played through VLC, as in the full view")
         app.typeKey(.escape, modifierFlags: [])
         eventually("the tour ended", timeout: 10) { !status.exists }
     }

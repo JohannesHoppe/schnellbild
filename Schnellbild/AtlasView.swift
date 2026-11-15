@@ -652,6 +652,11 @@ private struct TourPicture: View {
     let modified: Date?
     @State private var image: NSImage?
 
+    /// What shows it (UI tests).
+    private var player: String {
+        !item.isVideo || ArchivePath.isInside(item.url) ? "picture" : VideoDetailView.playsInVLC(item.url) ? "video vlc" : "video avkit"
+    }
+
     var body: some View {
         ZStack {
             if let image {
@@ -671,10 +676,8 @@ private struct TourPicture: View {
         .aspectRatio(image.map { $0.size.width / max(1, $0.size.height) } ?? 1.5, contentMode: .fit)
         .clipShape(RoundedRectangle(cornerRadius: 8))
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Text(verbatim: item.name))
-        // What plays it, for the UI tests
-        .accessibilityValue(!VideoDetailView.uiTesting ? "" : !item.isVideo ? "picture"
-            : VideoDetailView.playsInVLC(item.url) ? "video vlc" : "video avkit")
+        // Under `--ui-testing` also what shows it (a plain group's value doesn't reach XCUITest)
+        .accessibilityLabel(Text(verbatim: VideoDetailView.uiTesting ? item.name + " · " + player : item.name))
         .accessibilityIdentifier("tourItem")
         .task(id: item.url) {
             image = ThumbnailCache.shared.image(for: item.url)
