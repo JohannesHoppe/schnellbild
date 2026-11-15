@@ -39,6 +39,9 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
     /// The last picture VLC showed, as decoded.
     private var latest: CVPixelBuffer?
     private let context = CIContext(options: [.cacheIntermediates: false])
+    /// Works on sRGB-encoded values (`setOverlay`).
+    private let overlayContext = CIContext(options: [.cacheIntermediates: false,
+                                                     .workingColorSpace: CGColorSpace(name: CGColorSpace.sRGB)!])
     private let sRGB = CGColorSpace(name: CGColorSpace.sRGB)!
     /// For pictures of more than 8 bits with a look: half floats, extended
     /// linear Display P3 (values above 1 are brighter than SDR white).
@@ -621,7 +624,11 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
                 let image = CIImage(cvPixelBuffer: buffer)
                 var picture = look.isNeutral ? image : look.apply(to: image)
                 if let overlay { picture = overlay.composited(over: picture) }
-                (deep ? deepContext : context).render(picture, to: out, bounds: image.extent, colorSpace: space)
+                // A subtitle line is laid over as VLC blends its own: on the
+                // gamma-encoded values (a half-transparent shadow over grey
+                // as dark as VLC's, not lighter as blended in linear light)
+                let renderer = deep ? deepContext : overlay != nil && look.isNeutral ? overlayContext : context
+                renderer.render(picture, to: out, bounds: image.extent, colorSpace: space)
                 surfaceBuffer = out
             }
         }
