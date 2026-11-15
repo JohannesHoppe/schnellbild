@@ -377,20 +377,95 @@ final class VisualUITests: SchnellbildUITestCase {
 
     /// What the app's test log says about the pictures VLC handed over
     /// (`VLCFrameOutput.probe`): "vlc picture <n> of media <m>: luma <l>[, text | , no text]".
-    private struct ProbedPicture { var number: Int; var media: Int; var luma: Int; var text: Bool? }
+    private struct Box { var x0, x1, y0, y1: Int }
+    private struct ProbedPicture { var number: Int; var media: Int; var luma: Int; var text: Bool?; var box: Box? }
+
+    private func probedPicture(_ line: String) -> ProbedPicture? {
+        guard line.hasPrefix("vlc picture ") else { return nil }
+        // "… | <time> ms": when it was shown
+        let line = line.components(separatedBy: " | ")[0]
+        let words = line.replacingOccurrences(of: ":", with: "").replacingOccurrences(of: ",", with: "")
+            .components(separatedBy: " ")
+        // vlc picture <n> of media <m> luma <l> [text | no text] [box <x0> <x1> <y0> <y1>]
+        guard words.count >= 8, let n = Int(words[2]), let m = Int(words[5]), let l = Int(words[7]) else { return nil }
+        let text: Bool? = line.contains(", no text") ? false : line.contains(", text") ? true : nil
+        var box: Box?
+        if let at = words.firstIndex(of: "box"), words.count >= at + 5,
+           let x0 = Int(words[at + 1]), let x1 = Int(words[at + 2]), let y0 = Int(words[at + 3]), let y1 = Int(words[at + 4]) {
+            box = Box(x0: x0, x1: x1, y0: y0, y1: y1)
+        }
+        return ProbedPicture(number: n, media: m, luma: l, text: text, box: box)
+    }
 
     private func probedPictures(in log: String) -> [ProbedPicture] {
-        log.components(separatedBy: "\n").compactMap { line in
-            guard line.hasPrefix("vlc picture ") else { return nil }
-            // "… | <time> ms": when it was shown
-            let line = line.components(separatedBy: " | ")[0]
-            let words = line.replacingOccurrences(of: ":", with: "").replacingOccurrences(of: ",", with: "")
-                .components(separatedBy: " ")
-            // vlc picture <n> of media <m> luma <l> [text | no text]
-            guard words.count >= 8, let n = Int(words[2]), let m = Int(words[5]), let l = Int(words[7]) else { return nil }
-            let text: Bool? = line.hasSuffix(", no text") ? false : line.hasSuffix(", text") ? true : nil
-            return ProbedPicture(number: n, media: m, luma: l, text: text)
+        log.components(separatedBy: "\n").compactMap(probedPicture)
+    }
+
+    /// The pictures shown while the app drew a subtitle line of its own
+    /// (from "the app draws [text]" to "the app draws []") and those after
+    /// it, VLC's.
+    private func handoverPictures(in log: String) -> (app: [ProbedPicture], vlc: [ProbedPicture]) {
+        var app: [ProbedPicture] = [], vlc: [ProbedPicture] = []
+        var state = 0   // 0 before, 1 the app's line, 2 after
+        for line in log.components(separatedBy: "\n") {
+            if line.hasPrefix("vlc: the app draws [") { state = line.hasPrefix("vlc: the app draws []") ? (state == 1 ? 2 : state) : 1 }
+            guard let picture = probedPicture(line) else { continue }
+            if state == 1 { app.append(picture) }
+            if state == 2 { vlc.append(picture) }
         }
+        return (app, vlc)
+    }
+
+    /// The app's subtitle line looks as VLC's: their text boxes on the
+    /// picture (the same text on every line of the fixtures) lie within a
+    /// few pixels of each other.
+    private func checkTheAppsLineLooksAsVLCs(_ log: String, _ what: String) {
+        let (app, vlc) = handoverPictures(in: log)
+        let appBox = app.last(where: { $0.box != nil })?.box
+        let vlcBox = vlc.first(where: { $0.box != nil })?.box
+        print("\(what): the app's line \(String(describing: appBox)), VLC's \(String(describing: vlcBox))")
+        guard let appBox, let vlcBox else { return XCTFail("\(what): a line of the app's and one of VLC's on the pictures") }
+        XCTAssertEqual(Double(appBox.y0), Double(vlcBox.y0), accuracy: 2, "\(what): the top of the line")
+        XCTAssertEqual(Double(appBox.y1), Double(vlcBox.y1), accuracy: 2, "\(what): the bottom of the line")
+        XCTAssertEqual(Double(appBox.x0), Double(vlcBox.x0), accuracy: 3, "\(what): the left of the line")
+        XCTAssertEqual(Double(appBox.x1), Double(vlcBox.x1), accuracy: 3, "\(what): the right of the line")
+    }
+
+    /// Switched to another subtitle track in the middle of a line (in
+    /// software already): the new track's running line shows at once,
+    /// drawn by the app, then VLC's from its next line, looking the same.
+    private func checkRunningLineWhenSwitching(_ fixture: String, to label: String, _ what: String) throws {
+        let log = tempDir.appendingPathComponent("app.log")
+        continueAfterFailure = true   // the log below shows on a failure too
+        defer { print("app log:\n" + ((try? String(contentsOf: log, encoding: .utf8)) ?? "(none)")) }
+        let video = try openVideo(fixture, vlc: true, extra: ["--test-log=\(log.path)"])
+        eventually("the subtitles are on", timeout: 20) { text(of: video).contains("subtitles 1/2 en") }
+        waitForSoftwarePictures(of: video)
+        func time(_ label: String) -> Int {
+            guard let range = label.range(of: "time ") else { return -1 }
+            return Int(label[range.upperBound...].prefix { $0.isNumber }) ?? -1
+        }
+        // In the middle of the line from 2 s to 4 s
+        eventually("2.6 s in", timeout: 20) { time(text(of: video)) >= 2600 }
+        let mark = logLength(log)
+        app.typeKey("s", modifierFlags: [.control, .command])
+        eventually("the other track") { text(of: video).contains(label) }
+        eventually("VLC's lines again", timeout: 20) { logSince(log, mark).contains("vlc: the app's lines are over") }
+        RunLoop.current.run(until: Date().addingTimeInterval(2.5))   // VLC's next line, 2 s on
+        let written = logSince(log, mark)
+        let (app, vlc) = handoverPictures(in: written)
+        print("\(what): the app's pictures \(app.map { $0.text == true ? "text" : "no text" }), VLC's \(vlc.compactMap { $0.text == true ? "text" : nil }.count) with text")
+        XCTAssertEqual(app.first?.text, true, "\(what): the running line on the first picture after switching")
+        XCTAssertTrue(vlc.contains { $0.text == true }, "\(what): VLC's next line")
+        checkTheAppsLineLooksAsVLCs(written, what)
+    }
+
+    func testVLCShowsTheRunningASSLineWhenSwitchedTo() throws {
+        try checkRunningLineWhenSwitching("tracks.mkv", to: "subtitles 2/2 de", "ASS")
+    }
+
+    func testVLCShowsTheRunningMovTextLineWhenSwitchedTo() throws {
+        try checkRunningLineWhenSwitching("tracks.mp4", to: "subtitles 2/2 de", "mov_text")
     }
 
     /// The video started in software, decoding the subtitles from its first
@@ -534,10 +609,14 @@ final class VisualUITests: SchnellbildUITestCase {
         } else {
             XCTFail("the pictures around the switch are logged")
         }
-        // The line running when it was switched on shows on the first pictures after it
+        // The line running when it was switched on shows on the first picture
+        // after it (the app's), then VLC's from its next line, looking the same
         let after = probedPictures(in: written).filter { $0.media == 2 }
         print("after switching: \(after.map { "\($0.number): \($0.text == true ? "text" : "no text")" }.joined(separator: ", "))")
         XCTAssertEqual(after.first?.text, true, "the running line on the first picture after switching on")
+        eventually("VLC's lines again", timeout: 20) { self.logSince(log, mark).contains("vlc: the app's lines are over") }
+        RunLoop.current.run(until: Date().addingTimeInterval(2.5))
+        checkTheAppsLineLooksAsVLCs(logSince(log, mark), "SubRip")
         app.windows.firstMatch.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.02)).hover()
         settle(4)
         let picture = picture(in: video)

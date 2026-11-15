@@ -402,22 +402,32 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
         let number = sequence
         let look = self.look
         lock.unlock()
-        present(buffer, with: look, number: number)
+        let presented = present(buffer, with: look, number: number)
         lock.lock()
         callbackSeconds += Date().timeIntervalSince(start)
         callbacks += 1
         shownOfMedia += 1
         let ofMedia = shownOfMedia, opening = openings
+        let logged = ofMedia <= Self.probedFirst || picturesToLog > 0
+        if picturesToLog > 0 { picturesToLog -= 1 }
         lock.unlock()
         guard Self.probing else { return }
         // Outside the handover's time: what the picture shows, for UI tests
-        let probe = Self.probe(buffer, text: ofMedia <= Self.probedFirst)
+        let probe = Self.probe(buffer, shown: logged ? presented : nil)
         lock.lock()
         lastProbePicture = probe
         lock.unlock()
-        if ofMedia <= Self.probedFirst, let probe {
+        if logged, let probe {
             BrowserModel.testLog("vlc picture \(ofMedia) of media \(opening): \(probe) | \(BrowserModel.testClock) ms")
         }
+    }
+
+    /// UI tests: the next `count` pictures are logged too.
+    private var picturesToLog = 0
+    func logPictures(_ count: Int) {
+        lock.lock()
+        picturesToLog = max(picturesToLog, count)
+        lock.unlock()
     }
 
     /// Pictures VLC shows while held aren't shown here: the one on the layer
@@ -448,7 +458,13 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
         var luma: Int
         /// Text over the lower part: bright and dark pixels side by side.
         var text: Bool?
-        var description: String { "luma \(luma)" + (text.map { $0 ? ", text" : ", no text" } ?? "") }
+        /// Where it lies (pixels of the picture): the pixels that differ
+        /// from the middle's brightness by more than 40.
+        var box: (x0: Int, x1: Int, y0: Int, y1: Int)?
+        var description: String {
+            "luma \(luma)" + (text.map { $0 ? ", text" : ", no text" } ?? "")
+                + (box.map { ", box \($0.x0) \($0.x1) \($0.y0) \($0.y1)" } ?? "")
+        }
     }
 
     /// The last picture shown, as read (UI tests).
@@ -458,14 +474,25 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
         return lastProbePicture.map(String.init(describing:)) ?? "none"
     }
 
-    /// Reads an 8-bit picture (NV12): the luma of its middle, and with
-    /// `text` whether the lower part (where subtitles go: 70 to 98 % of the
-    /// height, the middle 70 % of the width) holds both light and dark
-    /// pixels. Others are not read.
-    static func probe(_ buffer: CVPixelBuffer, text: Bool) -> PictureProbe? {
+    /// Reads a picture: the luma of its middle (8-bit NV12 as VLC handed it
+    /// over), and in the picture as shown (`shown`: NV12, or BGRA with a look
+    /// or a subtitle line of the app's own) whether the lower part (where
+    /// subtitles go: 70 to 98 % of the height, the middle 70 % of the width)
+    /// holds text, and its box. Others are not read.
+    static func probe(_ buffer: CVPixelBuffer, shown: CVPixelBuffer?) -> PictureProbe? {
+        guard let luma = middleLuma(buffer) else { return nil }
+        var probe = PictureProbe(luma: luma)
+        if let shown { (probe.text, probe.box) = textBox(shown) }
+        return probe
+    }
+
+    private static func isNV12(_ buffer: CVPixelBuffer) -> Bool {
         let format = CVPixelBufferGetPixelFormatType(buffer)
-        guard format == kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange || format == kCVPixelFormatType_420YpCbCr8BiPlanarFullRange,
-              CVPixelBufferLockBaseAddress(buffer, .readOnly) == kCVReturnSuccess else { return nil }
+        return format == kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange || format == kCVPixelFormatType_420YpCbCr8BiPlanarFullRange
+    }
+
+    private static func middleLuma(_ buffer: CVPixelBuffer) -> Int? {
+        guard isNV12(buffer), CVPixelBufferLockBaseAddress(buffer, .readOnly) == kCVReturnSuccess else { return nil }
         defer { CVPixelBufferUnlockBaseAddress(buffer, .readOnly) }
         guard let base = CVPixelBufferGetBaseAddressOfPlane(buffer, 0) else { return nil }
         let width = CVPixelBufferGetWidthOfPlane(buffer, 0), height = CVPixelBufferGetHeightOfPlane(buffer, 0)
@@ -476,23 +503,69 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
         for y in height / 2 - 4 ..< height / 2 + 4 {
             for x in width / 2 - 4 ..< width / 2 + 4 { sum += Int(bytes[y * row + x]) }
         }
-        var probe = PictureProbe(luma: sum / 64)
-        if text {
-            var low = 255, high = 0
-            for y in stride(from: height * 70 / 100, to: height * 98 / 100, by: 2) {
-                for x in stride(from: width * 15 / 100, to: width * 85 / 100, by: 2) {
-                    let value = Int(bytes[y * row + x])
-                    low = min(low, value)
-                    high = max(high, value)
-                }
+        return sum / 64
+    }
+
+    /// The brightness of an NV12 picture's luma or a BGRA picture's green.
+    private static func textBox(_ buffer: CVPixelBuffer) -> (Bool?, (x0: Int, x1: Int, y0: Int, y1: Int)?) {
+        let nv12 = isNV12(buffer)
+        let bgra = CVPixelBufferGetPixelFormatType(buffer) == kCVPixelFormatType_32BGRA
+        guard nv12 || bgra, CVPixelBufferLockBaseAddress(buffer, .readOnly) == kCVReturnSuccess else { return (nil, nil) }
+        defer { CVPixelBufferUnlockBaseAddress(buffer, .readOnly) }
+        let base = nv12 ? CVPixelBufferGetBaseAddressOfPlane(buffer, 0) : CVPixelBufferGetBaseAddress(buffer)
+        guard let base else { return (nil, nil) }
+        let width = nv12 ? CVPixelBufferGetWidthOfPlane(buffer, 0) : CVPixelBufferGetWidth(buffer)
+        let height = nv12 ? CVPixelBufferGetHeightOfPlane(buffer, 0) : CVPixelBufferGetHeight(buffer)
+        let row = nv12 ? CVPixelBufferGetBytesPerRowOfPlane(buffer, 0) : CVPixelBufferGetBytesPerRow(buffer)
+        guard width >= 16, height >= 16 else { return (nil, nil) }
+        let bytes = base.assumingMemoryBound(to: UInt8.self)
+        func value(_ x: Int, _ y: Int) -> Int { Int(bytes[y * row + (nv12 ? x : x * 4 + 1)]) }
+        var sum = 0
+        for y in height / 2 - 4 ..< height / 2 + 4 { for x in width / 2 - 4 ..< width / 2 + 4 { sum += value(x, y) } }
+        let reference = sum / 64
+        var x0 = Int.max, x1 = -1, y0 = Int.max, y1 = -1, count = 0
+        for y in height * 70 / 100 ..< height * 98 / 100 {
+            for x in width * 15 / 100 ..< width * 85 / 100 where abs(value(x, y) - reference) > 40 {
+                count += 1
+                x0 = min(x0, x); x1 = max(x1, x); y0 = min(y0, y); y1 = max(y1, y)
             }
-            probe.text = high - low > 48
         }
-        return probe
+        guard count > 20 else { return (false, nil) }
+        return (true, (x0, x1, y0, y1))
     }
 
     /// The settings to show the pictures with; a paused picture is drawn
     /// again with them.
+    /// A subtitle line the app draws over the pictures (`SubtitleOverlay`),
+    /// at the pictures' size; nil none. Drawn into a copy with the look.
+    private var overlay: CIImage?
+
+    /// The pictures' size as handed over (what an overlay is drawn at).
+    var bufferSize: (width: Int, height: Int)? {
+        lock.lock()
+        defer { lock.unlock() }
+        return shownSize.map { (Int($0.width), Int($0.height)) }
+    }
+
+    func setOverlay(_ new: CIImage?) {
+        lock.lock()
+        overlay = new
+        let paused = latest != nil && Date().timeIntervalSince(lastDisplay) > 0.15
+        let queued = pendingRedraw != nil
+        if paused { pendingRedraw = look }
+        lock.unlock()
+        guard paused, !queued else { return }
+        redraw.async { [self] in
+            lock.lock()
+            let look = pendingRedraw
+            pendingRedraw = nil
+            let buffer = latest
+            let number = sequence
+            lock.unlock()
+            if let look, let buffer { present(buffer, with: look, number: number) }
+        }
+    }
+
     func setLook(_ new: Look) {
         lock.lock()
         guard new != look else { lock.unlock(); return }
@@ -519,9 +592,13 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
     /// through the look in half floats in extended linear light, so an HDR
     /// picture keeps what lies beyond SDR white (Core Image reads PQ and HLG
     /// into values above 1).
-    private func present(_ buffer: CVPixelBuffer, with look: Look, number: Int) {
+    @discardableResult
+    private func present(_ buffer: CVPixelBuffer, with look: Look, number: Int) -> CVPixelBuffer {
         var surfaceBuffer = buffer
-        if !look.isNeutral {
+        lock.lock()
+        let overlay = self.overlay
+        lock.unlock()
+        if !look.isNeutral || overlay != nil {
             lock.lock()
             let pool = lookPool
             lock.unlock()
@@ -532,7 +609,9 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
                 let space = deep ? extendedLinear : sRGB
                 CVBufferSetAttachment(out, kCVImageBufferCGColorSpaceKey, space, .shouldPropagate)
                 let image = CIImage(cvPixelBuffer: buffer)
-                (deep ? deepContext : context).render(look.apply(to: image), to: out, bounds: image.extent, colorSpace: space)
+                var picture = look.isNeutral ? image : look.apply(to: image)
+                if let overlay { picture = overlay.composited(over: picture) }
+                (deep ? deepContext : context).render(picture, to: out, bounds: image.extent, colorSpace: space)
                 surfaceBuffer = out
             }
         }
@@ -540,7 +619,7 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
         shown.append(surfaceBuffer)
         if shown.count > 4 { shown.removeFirst() }   // the compositor may still read the last ones
         lock.unlock()
-        guard let surface = CVPixelBufferGetIOSurface(surfaceBuffer)?.takeUnretainedValue() else { return }
+        guard let surface = CVPixelBufferGetIOSurface(surfaceBuffer)?.takeUnretainedValue() else { return surfaceBuffer }
         DispatchQueue.main.async { [self] in
             lock.lock()
             let newer = number >= onLayer
@@ -552,6 +631,7 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
             layer.contents = surface
             CATransaction.commit()
         }
+        return surfaceBuffer
     }
 
     /// What auto enhance measures: the picture as decoded, before the look;

@@ -143,6 +143,46 @@ enum MP4Boxes {
         return current
     }
 
+    /// The `moov` box's payload alone (nil: no boxes, no index, or a
+    /// larger one than `largestIndex`).
+    static func movieIndex(_ source: ByteSource) -> [UInt8]? {
+        var at: UInt64 = 0
+        var count = 0
+        while at < source.size, count < largestBoxCount {
+            count += 1
+            guard let head = source.read(at: at, count: min(16, Int(source.size - at))), head.count >= 8,
+                  let size32 = head.u32(0), let type = head.fourCC(4) else { return nil }
+            var header: UInt64 = 8
+            var size: UInt64
+            switch size32 {
+            case 0: size = source.size - at
+            case 1:
+                guard let size64 = head.u64(8) else { return nil }
+                header = 16
+                size = size64
+            default: size = UInt64(size32)
+            }
+            guard size >= header, size <= source.size - at else { return nil }
+            if type == "moov" {
+                guard size - header <= UInt64(largestIndex) else { return nil }
+                return source.read(at: at + header, count: Int(size - header))
+            }
+            at += size
+        }
+        return nil
+    }
+
+    /// A track's length in seconds (`mdhd`).
+    static func mediaLength(_ bytes: [UInt8], track: Box) -> Double? {
+        guard let media = child("mdia", of: track, in: bytes), let header = child("mdhd", of: media, in: bytes),
+              let version = bytes.u8(header.payload.lowerBound) else { return nil }
+        let at = header.payload.lowerBound
+        let scale = bytes.u32(at + (version == 1 ? 20 : 12))
+        let duration = version == 1 ? bytes.u64(at + 24) : bytes.u32(at + 16).map(UInt64.init)
+        guard let scale, scale > 0, let duration else { return nil }
+        return Double(duration) / Double(scale)
+    }
+
     /// Reads a movie's facts; nil when the file isn't made of boxes.
     static func read(_ source: ByteSource) -> Movie? {
         var at: UInt64 = 0
@@ -259,16 +299,23 @@ enum MP4Boxes {
     }
 
     /// The file ranges of a GPMF track's samples (`hdlr` "meta", sample
-    /// description "gpmd"), from its sample table (`stsz`, `stco` / `co64`,
-    /// `stsc`); nil for any other track or a table that doesn't add up.
+    /// description "gpmd"); nil for any other track.
     static func telemetrySamples(_ bytes: [UInt8], track: Box, fileSize: UInt64) -> [Range<UInt64>]? {
         guard let media = child("mdia", of: track, in: bytes),
               let handler = child("hdlr", of: media, in: bytes),
-              bytes.fourCC(handler.payload.lowerBound + 8) == "meta",
+              bytes.fourCC(handler.payload.lowerBound + 8) == "meta" else { return nil }
+        return sampleRanges(bytes, track: track, format: "gpmd", fileSize: fileSize)
+    }
+
+    /// The file ranges of a track's samples whose sample description is
+    /// `format` (`stsd`), from its sample table (`stsz`, `stco` / `co64`,
+    /// `stsc`); nil for another format or a table that doesn't add up.
+    static func sampleRanges(_ bytes: [UInt8], track: Box, format: String, fileSize: UInt64) -> [Range<UInt64>]? {
+        guard let media = child("mdia", of: track, in: bytes),
               let table = descend(["minf", "stbl"], from: media, in: bytes),
               let description = child("stsd", of: table, in: bytes),
               description.payload.count >= 16,
-              bytes.fourCC(description.payload.lowerBound + 12) == "gpmd" else { return nil }
+              bytes.fourCC(description.payload.lowerBound + 12) == format else { return nil }
         let children = boxes(in: bytes, table.payload)
         // Sizes
         guard let stsz = children.first(where: { $0.type == "stsz" }), stsz.payload.count >= 12,
