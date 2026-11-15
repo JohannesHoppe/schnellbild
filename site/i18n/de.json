@@ -66,7 +66,7 @@
   "features": [
     {
       "title": "Groß ansehen, mit den Tasten blättern",
-      "text": "<p>Die Leertaste öffnet ein Bild so groß, wie das Fenster erlaubt, ← → blättern durch den Ordner. Zoomen mit dem Trackpad oder + −, drehen mit ⌥← ⌥→, Vollbild mit <kbd>f</kbd>. Animierte GIFs, SVG und PDF inklusive.</p><p>Eine Diashow (<kbd>s</kbd>) läuft durch den Ordner und alle Unterordner, Fotos und Videos gemischt. Was die Diashow spielt, ist die Playlist: <kbd>p</kbd> öffnet sie zum Umsortieren und Aussortieren.</p>",
+      "text": "<p>Die Leertaste öffnet ein Bild so groß, wie das Fenster erlaubt, ← → blättern durch den Ordner. Zoomen mit dem Trackpad oder + −, drehen mit ⌥← ⌥→, Vollbild mit <kbd>f</kbd>. Animierte GIFs und SVG inklusive, PDFs Seite für Seite.</p><p>Eine Diashow (<kbd>s</kbd>) läuft durch den Ordner und alle Unterordner, Fotos und Videos gemischt. Was die Diashow spielt, ist die Playlist: <kbd>p</kbd> öffnet sie zum Umsortieren und Aussortieren.</p>",
       "alt": "Ein Foto in der Vollansicht"
     },
     {

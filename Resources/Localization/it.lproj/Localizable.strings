@@ -61,7 +61,7 @@
 "First / last item" = "Primo / ultimo elemento";
 "Larger / smaller thumbnails" = "Miniature più grandi / più piccole";
 "Clear search" = "Cancella la ricerca";
-"Previous / next item, also from a video" = "Elemento precedente / successivo, anche da un video";
+"Previous / next item, also from a video or PDF" = "Elemento precedente / successivo, anche da un video o un PDF";
 "Next picture · play/pause video" = "Immagine successiva · riproduci / metti in pausa il video";
 "Zoom in / out" = "Ingrandisci / riduci";
 "Fit to window / 100 %" = "Adatta alla finestra / 100 %";
@@ -102,7 +102,7 @@
 "The name must end in a picture extension, such as “.%@”." = "Il nome deve terminare con un’estensione di immagine, come «.%@».";
 "The name must end in a video extension, such as “.%@”." = "Il nome deve terminare con un’estensione video, come «.%@».";
 "Grid and full view" = "Griglia e vista completa";
-"Pictures: previous / next · Videos: 10 % of the length back / ahead; at the start / end: previous / next item" = "Immagini: precedente / successiva · Video: 10 % della durata indietro / avanti; all’inizio / alla fine: elemento precedente / successivo";
+"Pictures: previous / next · Videos: 10 % of the length back / ahead · PDFs: previous / next page; at the start / end: previous / next item" = "Immagini: precedente / successiva · Video: 10 % della durata indietro / avanti · PDF: pagina precedente / successiva; all’inizio / alla fine: elemento precedente / successivo";
 "Previous / next · Videos: 10 % of the length back / ahead" = "Precedente / successivo · Video: 10 % della durata indietro / avanti";
 "Wrong password for this archive." = "Password errata per questo archivio.";
 "The archive is incomplete: still downloading, a part missing, or damaged." = "L’archivio è incompleto: è ancora in download, manca una parte oppure è danneggiato.";
@@ -424,8 +424,8 @@
 "Look further down (videos: quieter)" = "Guarda più in basso (video: volume giù)";
 "Mark all" = "Contrassegna tutto";
 "Menus in the window" = "Menu nella finestra";
-"Next (videos: 10 % ahead)" = "Successivo (video: 10 % avanti)";
-"Previous (videos: 10 % back)" = "Precedente (video: 10 % indietro)";
+"Next (videos: 10 % ahead, PDFs: next page)" = "Successivo (video: 10 % avanti, PDF: pagina successiva)";
+"Previous (videos: 10 % back, PDFs: previous page)" = "Precedente (video: 10 % indietro, PDF: pagina precedente)";
 "Open bookmark %lld" = "Apri il segnalibro %lld";
 "Playlist: row up" = "Playlist: riga su";
 "Playlist: row down" = "Playlist: riga giù";
@@ -551,3 +551,6 @@
 "Location is restricted on this Mac." = "La localizzazione è limitata su questo Mac.";
 "Location Services are off. Turn them on in System Settings → Privacy & Security → Location Services." = "I Servizi di localizzazione sono disattivati. Attivali in Impostazioni di Sistema → Privacy e sicurezza → Servizi di localizzazione.";
 "Your location can't be found right now." = "Al momento non è possibile trovare la tua posizione.";
+"Previous page" = "Pagina precedente";
+"Next page" = "Pagina successiva";
+"Page %lld / %lld" = "Pagina %lld / %lld";

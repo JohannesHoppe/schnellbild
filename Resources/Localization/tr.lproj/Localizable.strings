@@ -61,7 +61,7 @@
 "First / last item" = "İlk / son öğe";
 "Larger / smaller thumbnails" = "Daha büyük / küçük küçük resimler";
 "Clear search" = "Aramayı temizle";
-"Previous / next item, also from a video" = "Önceki / sonraki öğe, videodan da";
+"Previous / next item, also from a video or PDF" = "Önceki / sonraki öğe, videodan ya da PDF’ten de";
 "Next picture · play/pause video" = "Sonraki resim · videoyu oynat / duraklat";
 "Zoom in / out" = "Yakınlaştır / uzaklaştır";
 "Fit to window / 100 %" = "Pencereye sığdır / %100";
@@ -102,7 +102,7 @@
 "The name must end in a picture extension, such as “.%@”." = "Ad, “.%@” gibi bir resim uzantısıyla bitmelidir.";
 "The name must end in a video extension, such as “.%@”." = "Ad, “.%@” gibi bir video uzantısıyla bitmelidir.";
 "Grid and full view" = "Izgara ve tam görünüm";
-"Pictures: previous / next · Videos: 10 % of the length back / ahead; at the start / end: previous / next item" = "Resimler: önceki / sonraki · Videolar: uzunluğun %10’u geri / ileri; başta / sonda: önceki / sonraki öğe";
+"Pictures: previous / next · Videos: 10 % of the length back / ahead · PDFs: previous / next page; at the start / end: previous / next item" = "Resimler: önceki / sonraki · Videolar: uzunluğun %10’u geri / ileri · PDF’ler: önceki / sonraki sayfa; başta / sonda: önceki / sonraki öğe";
 "Previous / next · Videos: 10 % of the length back / ahead" = "Önceki / sonraki · Videolar: uzunluğun %10’u geri / ileri";
 "Wrong password for this archive." = "Bu arşiv için yanlış parola.";
 "The archive is incomplete: still downloading, a part missing, or damaged." = "Arşiv eksik: hâlâ indiriliyor, bir parçası eksik ya da hasarlı.";
@@ -424,8 +424,8 @@
 "Look further down (videos: quieter)" = "Daha aşağı bak (videolar: sesi kıs)";
 "Mark all" = "Tümünü işaretle";
 "Menus in the window" = "Penceredeki menüler";
-"Next (videos: 10 % ahead)" = "Sonraki (videolar: %10 ileri)";
-"Previous (videos: 10 % back)" = "Önceki (videolar: %10 geri)";
+"Next (videos: 10 % ahead, PDFs: next page)" = "Sonraki (videolar: %10 ileri, PDF’ler: sonraki sayfa)";
+"Previous (videos: 10 % back, PDFs: previous page)" = "Önceki (videolar: %10 geri, PDF’ler: önceki sayfa)";
 "Open bookmark %lld" = "%lld. yer işaretini aç";
 "Playlist: row up" = "Oynatma listesi: satır yukarı";
 "Playlist: row down" = "Oynatma listesi: satır aşağı";
@@ -551,3 +551,6 @@
 "Location is restricted on this Mac." = "Konum bu Mac'te kısıtlı.";
 "Location Services are off. Turn them on in System Settings → Privacy & Security → Location Services." = "Konum Servisleri kapalı. Sistem Ayarları → Gizlilik ve Güvenlik → Konum Servisleri'nden açın.";
 "Your location can't be found right now." = "Konumunuz şu anda bulunamıyor.";
+"Previous page" = "Önceki sayfa";
+"Next page" = "Sonraki sayfa";
+"Page %lld / %lld" = "Sayfa %lld / %lld";

@@ -108,8 +108,8 @@ struct ShortcutsHelpView: View {
                 Row(.action(.gridClear), action: "Clear search"),
             ]),
             ("Full view", [
-                Row(.pair(.fullPrevious, .fullNext, " "), action: "Pictures: previous / next · Videos: 10 % of the length back / ahead; at the start / end: previous / next item"),
-                Row(.pair(.fullPreviousItem, .fullNextItem, " "), action: "Previous / next item, also from a video"),
+                Row(.pair(.fullPrevious, .fullNext, " "), action: "Pictures: previous / next · Videos: 10 % of the length back / ahead · PDFs: previous / next page; at the start / end: previous / next item"),
+                Row(.pair(.fullPreviousItem, .fullNextItem, " "), action: "Previous / next item, also from a video or PDF"),
                 Row(.pair(.fullUp, .fullDown, " "), action: "Pictures zoomed in: look further up / down · Videos: volume up / down (remembered)"),
                 Row(.pair(.fullFineBack, .fullFineAhead, " "), action: "Video: 1 % of the length back / ahead"),
                 Row(.action(.fullSpace), action: "Next picture · play/pause video"),

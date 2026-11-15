@@ -39,7 +39,7 @@ struct MiniKeyboard: View {
     /// What's on screen decides the keys.
     /// `playlist`: the slideshow's playlist open; `playlistKeys`: it has the
     /// keys (after a click in it).
-    enum Context { case grid, dualGrid, picture, video, slideshow, playlist, playlistKeys }
+    enum Context { case grid, dualGrid, picture, pdf, video, slideshow, playlist, playlistKeys }
 
     static func keys(for context: Context) -> [Key] {
         switch context {
@@ -90,6 +90,23 @@ struct MiniKeyboard: View {
                 Key(.info, "i", word: "Info"),
                 Key(.enhance, "e", word: "Auto Enhance"),
                 Key(.adjust, "a", word: "Adjust"),
+                Key(.fullScreen, "f", word: "Full Screen"),
+                Key(.closeFullView, "escape", word: "Grid"),
+                Key(.help, "f1", word: "Help"),
+            ]
+        case .pdf:
+            return [
+                Key(.fullPrevious, "left", word: "Previous page"),
+                Key(.fullNext, "right", word: "Next page"),
+                Key(.fullPreviousItem, "@left", word: "Previous item"),
+                Key(.fullNextItem, "@right", word: "Next item"),
+                Key(.zoomIn, "+", word: "Zoom in"),
+                Key(.zoomOut, "-", word: "Zoom out"),
+                Key(.zoomFit, "0", word: "Fit"),
+                Key(.zoomActual, "1", word: "100 %"),
+                Key(.rotateLeft, "~left", word: "Rotate left"),
+                Key(.rotateRight, "~right", word: "Rotate right"),
+                Key(.info, "i", word: "Info"),
                 Key(.fullScreen, "f", word: "Full Screen"),
                 Key(.closeFullView, "escape", word: "Grid"),
                 Key(.help, "f1", word: "Help"),
@@ -156,7 +173,9 @@ struct MiniKeyboard: View {
             return model.playlistFocused ? .playlistKeys : .playlist
         }
         guard model.mode == .detail else { return window.dual ? .dualGrid : .grid }
-        return model.shownMediaEntry?.kind == .video ? .video : .picture
+        guard let shown = model.shownMediaEntry else { return .picture }
+        if shown.kind == .video { return .video }
+        return PDFPages.isPDF(shown.url) ? .pdf : .picture
     }
 
     var body: some View {

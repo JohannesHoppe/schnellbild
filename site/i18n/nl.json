@@ -66,7 +66,7 @@
   "features": [
     {
       "title": "Groot bekijken, bladeren met de toetsen",
-      "text": "<p>De spatiebalk opent een afbeelding zo groot als het venster toelaat, met ← → blader je door de map. Zoom in met het trackpad of met + −, draai met ⌥← ⌥→, schermvullend met <kbd>f</kbd>. Geanimeerde GIF’s, SVG en PDF inbegrepen.</p><p>Een diavoorstelling (<kbd>s</kbd>) loopt door de map en alle submappen, foto’s en video’s door elkaar. Wat de diavoorstelling afspeelt, is de afspeellijst: <kbd>p</kbd> opent hem om de volgorde te veranderen en uit te dunnen.</p>",
+      "text": "<p>De spatiebalk opent een afbeelding zo groot als het venster toelaat, met ← → blader je door de map. Zoom in met het trackpad of met + −, draai met ⌥← ⌥→, schermvullend met <kbd>f</kbd>. Geanimeerde GIF’s en SVG inbegrepen, PDF pagina voor pagina.</p><p>Een diavoorstelling (<kbd>s</kbd>) loopt door de map en alle submappen, foto’s en video’s door elkaar. Wat de diavoorstelling afspeelt, is de afspeellijst: <kbd>p</kbd> opent hem om de volgorde te veranderen en uit te dunnen.</p>",
       "alt": "Een foto in de volledige weergave"
     },
     {

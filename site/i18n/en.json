@@ -66,7 +66,7 @@
   "features": [
     {
       "title": "Look at it large, page with the keys",
-      "text": "<p>Space opens a picture as large as the window allows, ← → page through the folder. Zoom in with the trackpad or + −, turn with ⌥← ⌥→, full screen with <kbd>f</kbd>. Animated GIFs, SVG and PDF included.</p><p>A slideshow (<kbd>s</kbd>) runs through the folder and all its subfolders, photos and videos alike. Whatever the slideshow plays is the playlist: <kbd>p</kbd> opens it to reorder and weed out.</p>",
+      "text": "<p>Space opens a picture as large as the window allows, ← → page through the folder. Zoom in with the trackpad or + −, turn with ⌥← ⌥→, full screen with <kbd>f</kbd>. Animated GIFs and SVG included, PDFs page by page.</p><p>A slideshow (<kbd>s</kbd>) runs through the folder and all its subfolders, photos and videos alike. Whatever the slideshow plays is the playlist: <kbd>p</kbd> opens it to reorder and weed out.</p>",
       "alt": "A photo in the full view"
     },
     {

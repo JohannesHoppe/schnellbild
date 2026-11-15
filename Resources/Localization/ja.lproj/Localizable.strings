@@ -61,7 +61,7 @@
 "First / last item" = "最初 / 最後の項目";
 "Larger / smaller thumbnails" = "サムネールを大きく / 小さく";
 "Clear search" = "検索をクリア";
-"Previous / next item, also from a video" = "前 / 次の項目（ビデオからも）";
+"Previous / next item, also from a video or PDF" = "前 / 次の項目（ビデオや PDF からも）";
 "Next picture · play/pause video" = "次の画像 · ビデオを再生 / 一時停止";
 "Zoom in / out" = "拡大 / 縮小";
 "Fit to window / 100 %" = "ウインドウに合わせる / 100 %";
@@ -102,7 +102,7 @@
 "The name must end in a picture extension, such as “.%@”." = "名前は“.%@”などの画像の拡張子で終わる必要があります。";
 "The name must end in a video extension, such as “.%@”." = "名前は“.%@”などのビデオの拡張子で終わる必要があります。";
 "Grid and full view" = "グリッドと全体表示";
-"Pictures: previous / next · Videos: 10 % of the length back / ahead; at the start / end: previous / next item" = "画像：前 / 次 · ビデオ：長さの 10 % 戻る / 進む。先頭 / 末尾では前 / 次の項目へ";
+"Pictures: previous / next · Videos: 10 % of the length back / ahead · PDFs: previous / next page; at the start / end: previous / next item" = "画像：前 / 次 · ビデオ：長さの 10 % 戻る / 進む · PDF：前 / 次のページ。先頭 / 末尾では前 / 次の項目へ";
 "Previous / next · Videos: 10 % of the length back / ahead" = "前 / 次 · ビデオ：長さの 10 % 戻る / 進む";
 "Wrong password for this archive." = "このアーカイブのパスワードが違います。";
 "The archive is incomplete: still downloading, a part missing, or damaged." = "アーカイブが不完全です。ダウンロード中か、一部が欠けているか、破損しています。";
@@ -424,8 +424,8 @@
 "Look further down (videos: quieter)" = "下を表示（ビデオ：音量を下げる）";
 "Mark all" = "すべてマーク";
 "Menus in the window" = "ウインドウ内のメニュー";
-"Next (videos: 10 % ahead)" = "次へ（ビデオ：10 % 進む）";
-"Previous (videos: 10 % back)" = "前へ（ビデオ：10 % 戻る）";
+"Next (videos: 10 % ahead, PDFs: next page)" = "次へ（ビデオ：10 % 進む、PDF：次のページ）";
+"Previous (videos: 10 % back, PDFs: previous page)" = "前へ（ビデオ：10 % 戻る、PDF：前のページ）";
 "Open bookmark %lld" = "ブックマーク %lld を開く";
 "Playlist: row up" = "プレイリスト：1行上";
 "Playlist: row down" = "プレイリスト：1行下";
@@ -551,3 +551,6 @@
 "Location is restricted on this Mac." = "この Mac では位置情報が制限されています。";
 "Location Services are off. Turn them on in System Settings → Privacy & Security → Location Services." = "位置情報サービスがオフです。システム設定 → プライバシーとセキュリティ → 位置情報サービスでオンにしてください。";
 "Your location can't be found right now." = "現在地を特定できません。";
+"Previous page" = "前のページ";
+"Next page" = "次のページ";
+"Page %lld / %lld" = "ページ %lld / %lld";

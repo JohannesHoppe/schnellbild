@@ -639,6 +639,63 @@ final class VisualUITests: SchnellbildUITestCase {
         XCTAssertTrue(app.staticTexts["200 × 100 px"].waitForExistence(timeout: 5))
     }
 
+    /// A PDF pages like a video seeks: → ← turn its pages (each drawn in its
+    /// own colour, at fit, sharper when zoomed in), past the last page → is
+    /// the next item, ⌘← comes back to its first page, before it ← is the
+    /// previous item. `pages.pdf` (`Scripts/make_pdf_fixture.swift`): red, green (landscape), blue.
+    func testAPDFIsShownPageByPage() throws {
+        try put("pages.pdf", at: "bb.pdf")   // a.jpg, b.jpg, bb.pdf, c.jpg
+        launch(open: tempDir.appendingPathComponent("bb.pdf").path)
+        let image = element("fullImage")
+        func colour() throws -> ScreenStats {
+            // Left of the white square in the middle of each page
+            let f = image.frame
+            return try screenStats(of: CGRect(x: f.midX - f.height * 0.25, y: f.midY - 10, width: 20, height: 20))
+        }
+        func decoded() -> Int {
+            let label = text(of: image)
+            guard let range = label.range(of: "decoded ") else { return 0 }
+            return Int(label[range.upperBound...].prefix { $0.isNumber }) ?? 0
+        }
+        waitForBadge(containing: "3 / 4  ·  bb.pdf  ·  Page 1 / 3")
+        eventually("page 1 drawn", timeout: 15) { self.text(of: image).hasSuffix("loaded, page 1 of 3") }
+        settle(1)
+        let red = try colour()
+        XCTAssertTrue(red.red > 0.6 && red.green < 0.3, "page 1 is red: \(red)")
+
+        let atFit = decoded()
+        XCTAssertGreaterThan(atFit, 0, text(of: image))
+        app.typeKey("+", modifierFlags: [])
+        app.typeKey("+", modifierFlags: [])
+        eventually("zoomed in: drawn again, larger", timeout: 15) {
+            self.text(of: image).hasPrefix("zoom 156 %") && self.text(of: image).contains("page 1 of 3") && decoded() > atFit
+        }
+
+        app.typeKey(.rightArrow, modifierFlags: [])
+        waitForBadge(containing: "Page 2 / 3")
+        eventually("page 2 drawn at fit", timeout: 15) { self.text(of: image).hasPrefix("zoom 100 %") && self.text(of: image).hasSuffix("loaded, page 2 of 3") }
+        settle(1)
+        let green = try colour()
+        XCTAssertTrue(green.green > 0.5 && green.red < 0.3, "page 2 is green: \(green)")
+
+        app.typeKey(.rightArrow, modifierFlags: [])
+        eventually("page 3 drawn", timeout: 15) { self.text(of: image).hasSuffix("loaded, page 3 of 3") }
+        settle(1)
+        let blue = try colour()
+        XCTAssertTrue(blue.blue > 0.6 && blue.red < 0.3, "page 3 is blue: \(blue)")
+
+        app.typeKey(.rightArrow, modifierFlags: [])
+        waitForBadge(containing: "c.jpg")
+        XCTAssertFalse(text(of: badge).contains("Page"), text(of: badge))
+
+        app.typeKey(.leftArrow, modifierFlags: .command)
+        waitForBadge(containing: "bb.pdf")
+        waitForBadge(containing: "Page 1 / 3")
+        eventually("its first page again", timeout: 15) { self.text(of: image).hasSuffix("loaded, page 1 of 3") }
+        app.typeKey(.leftArrow, modifierFlags: [])
+        waitForBadge(containing: "b.jpg")
+    }
+
     /// A photo changed in another app gets a new tile once its folder is
     /// opened again, not the old picture from the session's cache.
     func testAChangedPhotoGetsANewTile() throws {

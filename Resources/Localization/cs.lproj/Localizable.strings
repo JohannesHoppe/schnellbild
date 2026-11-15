@@ -61,7 +61,7 @@
 "First / last item" = "První / poslední položka";
 "Larger / smaller thumbnails" = "Větší / menší náhledy";
 "Clear search" = "Vymazat hledání";
-"Previous / next item, also from a video" = "Předchozí / další položka, i z videa";
+"Previous / next item, also from a video or PDF" = "Předchozí / další položka, i z videa nebo PDF";
 "Next picture · play/pause video" = "Další obrázek · přehrát / pozastavit video";
 "Zoom in / out" = "Zvětšit / zmenšit";
 "Fit to window / 100 %" = "Přizpůsobit oknu / 100 %";
@@ -102,7 +102,7 @@
 "The name must end in a picture extension, such as “.%@”." = "Název musí končit příponou obrázku, například „.%@“.";
 "The name must end in a video extension, such as “.%@”." = "Název musí končit příponou videa, například „.%@“.";
 "Grid and full view" = "Mřížka a celé zobrazení";
-"Pictures: previous / next · Videos: 10 % of the length back / ahead; at the start / end: previous / next item" = "Obrázky: předchozí / další · Videa: 10 % délky zpět / vpřed; na začátku / konci: předchozí / další položka";
+"Pictures: previous / next · Videos: 10 % of the length back / ahead · PDFs: previous / next page; at the start / end: previous / next item" = "Obrázky: předchozí / další · Videa: 10 % délky zpět / vpřed · PDF: předchozí / další stránka; na začátku / konci: předchozí / další položka";
 "Previous / next · Videos: 10 % of the length back / ahead" = "Předchozí / další · Videa: 10 % délky zpět / vpřed";
 "Wrong password for this archive." = "Nesprávné heslo pro tento archiv.";
 "The archive is incomplete: still downloading, a part missing, or damaged." = "Archiv je neúplný: stále se stahuje, chybí jeho část, nebo je poškozený.";
@@ -424,8 +424,8 @@
 "Look further down (videos: quieter)" = "Posun dolů (videa: tišeji)";
 "Mark all" = "Označit vše";
 "Menus in the window" = "Nabídky v okně";
-"Next (videos: 10 % ahead)" = "Další (videa: o 10 % vpřed)";
-"Previous (videos: 10 % back)" = "Předchozí (videa: o 10 % zpět)";
+"Next (videos: 10 % ahead, PDFs: next page)" = "Další (videa: o 10 % vpřed, PDF: další stránka)";
+"Previous (videos: 10 % back, PDFs: previous page)" = "Předchozí (videa: o 10 % zpět, PDF: předchozí stránka)";
 "Open bookmark %lld" = "Otevřít záložku %lld";
 "Playlist: row up" = "Playlist: řádek nahoru";
 "Playlist: row down" = "Playlist: řádek dolů";
@@ -551,3 +551,6 @@
 "Location is restricted on this Mac." = "Poloha je na tomto Macu omezená.";
 "Location Services are off. Turn them on in System Settings → Privacy & Security → Location Services." = "Polohové služby jsou vypnuté. Zapněte je v Nastavení systému → Soukromí a zabezpečení → Polohové služby.";
 "Your location can't be found right now." = "Vaši polohu teď nelze zjistit.";
+"Previous page" = "Předchozí stránka";
+"Next page" = "Další stránka";
+"Page %lld / %lld" = "Strana %lld / %lld";

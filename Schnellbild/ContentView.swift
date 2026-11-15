@@ -724,7 +724,7 @@ struct PaneView: View {
         .padding(atTop ? .top : .bottom, 16)
     }
 
-    /// "3 / 12 · name"; in a slideshow "Slideshow · 3 / 57 · name" ("57 so
+    /// "3 / 12 · name" (a PDF: "· Page 2 / 9"); in a slideshow "Slideshow · 3 / 57 · name" ("57 so
     /// far" while subfolders are still being walked).
     private func badgeText(entry: GridEntry) -> String {
         var text: String
@@ -735,6 +735,10 @@ struct PaneView: View {
             if show.paused && entry.kind == .image { text += "  ·  " + String(localized: "Paused") }
         } else {
             text = "\(model.currentMediaNumber ?? 0) / \(model.mediaCount)  ·  \(entry.name)"
+            // A PDF: the page on screen
+            if let pdf = model.pdfPosition, pdf.url == entry.url {
+                text += "  ·  " + String(localized: "Page \(pdf.page + 1) / \(pdf.count)")
+            }
         }
         if entry.kind == .video && model.videoPaused { text += "  ·  " + String(localized: "Paused") }
         if entry.kind == .video && model.playbackSpeed != 1 { text += "  ·  " + PlaybackSpeed.text(model.playbackSpeed) }

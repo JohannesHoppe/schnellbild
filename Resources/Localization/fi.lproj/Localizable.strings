@@ -61,7 +61,7 @@
 "First / last item" = "Ensimmäinen / viimeinen kohde";
 "Larger / smaller thumbnails" = "Isommat / pienemmät miniatyyrit";
 "Clear search" = "Tyhjennä haku";
-"Previous / next item, also from a video" = "Edellinen / seuraava kohde, myös videosta";
+"Previous / next item, also from a video or PDF" = "Edellinen / seuraava kohde, myös videosta tai PDF:stä";
 "Next picture · play/pause video" = "Seuraava kuva · toista / keskeytä video";
 "Zoom in / out" = "Lähennä / loitonna";
 "Fit to window / 100 %" = "Sovita ikkunaan / 100 %";
@@ -102,7 +102,7 @@
 "The name must end in a picture extension, such as “.%@”." = "Nimen on päätyttävä kuvan päätteeseen, kuten ”.%@”.";
 "The name must end in a video extension, such as “.%@”." = "Nimen on päätyttävä videon päätteeseen, kuten ”.%@”.";
 "Grid and full view" = "Ruudukko ja koko näkymä";
-"Pictures: previous / next · Videos: 10 % of the length back / ahead; at the start / end: previous / next item" = "Kuvat: edellinen / seuraava · Videot: 10 % pituudesta taakse / eteen; alussa / lopussa: edellinen / seuraava kohde";
+"Pictures: previous / next · Videos: 10 % of the length back / ahead · PDFs: previous / next page; at the start / end: previous / next item" = "Kuvat: edellinen / seuraava · Videot: 10 % pituudesta taakse / eteen · PDF:t: edellinen / seuraava sivu; alussa / lopussa: edellinen / seuraava kohde";
 "Previous / next · Videos: 10 % of the length back / ahead" = "Edellinen / seuraava · Videot: 10 % pituudesta taakse / eteen";
 "Wrong password for this archive." = "Väärä salasana tähän arkistoon.";
 "The archive is incomplete: still downloading, a part missing, or damaged." = "Arkisto on keskeneräinen: sitä ladataan vielä, osa puuttuu tai se on vahingoittunut.";
@@ -424,8 +424,8 @@
 "Look further down (videos: quieter)" = "Katso alemmas (videot: hiljempaa)";
 "Mark all" = "Merkitse kaikki";
 "Menus in the window" = "Valikot ikkunassa";
-"Next (videos: 10 % ahead)" = "Seuraava (videot: 10 % eteen)";
-"Previous (videos: 10 % back)" = "Edellinen (videot: 10 % taakse)";
+"Next (videos: 10 % ahead, PDFs: next page)" = "Seuraava (videot: 10 % eteen, PDF:t: seuraava sivu)";
+"Previous (videos: 10 % back, PDFs: previous page)" = "Edellinen (videot: 10 % taakse, PDF:t: edellinen sivu)";
 "Open bookmark %lld" = "Avaa kirjanmerkki %lld";
 "Playlist: row up" = "Soittolista: rivi ylös";
 "Playlist: row down" = "Soittolista: rivi alas";
@@ -551,3 +551,6 @@
 "Location is restricted on this Mac." = "Sijainti on rajoitettu tällä Macilla.";
 "Location Services are off. Turn them on in System Settings → Privacy & Security → Location Services." = "Sijaintipalvelut ovat pois päältä. Laita ne päälle kohdassa Järjestelmäasetukset → Yksityisyys ja turvallisuus → Sijaintipalvelut.";
 "Your location can't be found right now." = "Sijaintiasi ei löydy juuri nyt.";
+"Previous page" = "Edellinen sivu";
+"Next page" = "Seuraava sivu";
+"Page %lld / %lld" = "Sivu %lld / %lld";

@@ -3287,7 +3287,51 @@ final class BrowserModel: ObservableObject {
     func rotateRight() { rotation = (rotation + 90).truncatingRemainder(dividingBy: 360) }
 
     /// Reset the view transforms (zoom + rotation) when switching media.
-    private func resetTransforms() { zoom = 1; rotation = 0 }
+    /// (A PDF shown next starts at its first page.)
+    private func resetTransforms() { zoom = 1; rotation = 0; pdfPosition = nil }
+
+    // MARK: - PDF pages (full view)
+
+    /// The PDF the full view shows: the page on screen (from 0) of its
+    /// `count`. Set by `FullImageView` once the PDF is open.
+    struct PDFPosition: Equatable {
+        let url: URL
+        var page: Int
+        let count: Int
+    }
+    @Published private(set) var pdfPosition: PDFPosition?
+
+    /// The page of `url` to show: the one turned to while it is the PDF on
+    /// screen, else its first.
+    func pdfPage(of url: URL) -> Int {
+        guard let position = pdfPosition, position.url == url else { return 0 }
+        return position.page
+    }
+
+    /// The full view opened `url`, a PDF of `count` pages: it starts at its
+    /// first page; the PDF already on screen keeps its page.
+    func pdfOpened(_ url: URL, pages count: Int) {
+        if let position = pdfPosition, position.url == url, position.count == count { return }
+        pdfPosition = PDFPosition(url: url, page: 0, count: max(count, 1))
+    }
+
+    /// The PDF on screen whose pages ← → turn: in the full view only (the
+    /// slideshow shows a PDF as one item, its first page).
+    private var pagedPDF: PDFPosition? {
+        guard slideshow == nil, mode == .detail, let position = pdfPosition,
+              shownMediaEntry?.url == position.url else { return nil }
+        return position
+    }
+
+    /// Turns to `page` (from 0) of the PDF on screen; each page starts at
+    /// fit and upright, as each picture does.
+    func showPDFPage(_ page: Int) {
+        guard var position = pagedPDF, (0..<position.count).contains(page), page != position.page else { return }
+        position.page = page
+        pdfPosition = position
+        zoom = 1
+        rotation = 0
+    }
 
     // MARK: - Grid tile size
 
@@ -4714,8 +4758,19 @@ final class BrowserModel: ObservableObject {
 
     /// ←/→ in the full view. Images: previous/next item. Videos: jump a tenth
     /// of the length; past the end → next item, at the start → previous one.
-    /// So one key pages through images and skims through videos.
+    /// So one key pages through images and skims through videos. A PDF in
+    /// the full view: its previous / next page; before its first and after
+    /// its last page the previous / next item, as at a video's start and end.
     func skim(_ direction: Int) {
+        if slideshow == nil, let entry = shownMediaEntry, PDFPages.isPDF(entry.url) {
+            // Not open yet (or unreadable): on as from a picture, but not
+            // with a key held down
+            guard let pdf = pagedPDF else { if !keyRepeating { page(direction) }; return }
+            let target = pdf.page + direction
+            if (0..<pdf.count).contains(target) { showPDFPage(target) }
+            else if !keyRepeating { page(direction) }   // not with a key held down
+            return
+        }
         guard shownMediaEntry?.kind == .video else { page(direction); return }
         guard let player = activePlayer, let progress = player.progress else {
             // Length not known yet: wait for it (a key held down would race

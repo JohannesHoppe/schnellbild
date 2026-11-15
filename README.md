@@ -130,10 +130,12 @@ By name, kind, date modified, date taken, size or distance, from the toolbar or 
 
 One picture, as large as the window allows, with its position in the folder. The full image is sampled to screen size, the thumbnail shows instantly until it's there. Animated GIFs play, and zoom, turn and take the enhance filter like any photo.
 
+**PDFs, page by page.** A PDF shows one page at a time, drawn sharp at every zoom. ← → turn the pages as they skim a video: past the last page on to the next item, before the first back to the previous one; ⌘← ⌘→ go to the previous / next item at once. The badge shows the page ("Page 3 / 12"). Each page starts at fit and upright and is zoomed, moved and turned on its own. Its tile shows the first page. Links, form fields and scripts in a PDF do nothing: Schnellbild only draws the pages.
+
 | Key | Action |
 |---|---|
-| ← → | previous / next picture (on a video: see below) |
-| ⌘← ⌘→ | previous / next item, also from a video |
+| ← → | previous / next picture; on a PDF its previous / next page (on a video: see below) |
+| ⌘← ⌘→ | previous / next item, also from a video or PDF |
 | ↑ ↓ | pictures zoomed in: look further up / down; videos: volume up / down |
 | Space | next picture |
 | F2 | rename the picture or video shown |
@@ -146,7 +148,7 @@ One picture, as large as the window allows, with its position in the folder. The
   <img src="docs/screenshots/slideshow-light.webp" width="760" alt="The slideshow">
 </picture></p>
 
-Schnellbild has two ways of looking at a folder: **browse** it in the grid, or sit back and watch a **slideshow** of everything in it. The slideshow plays every photo and video in the folder **and all its subfolders**, in full screen, folder by folder in the sort order you chose. The sort order applies within each folder and to the order of the subfolders: sorted by name, folders like `Day 1`, `Day 2` … play one after the other; sorted by date taken, the pictures in each folder play in the order they were shot. Pictures stay three seconds (Settings, ⌘, sets 1 to 60), videos play to their end, then it moves on. It starts at once, while the subfolders are still being read; until then the count at the top says "so far" ("3 / 57 so far").
+Schnellbild has two ways of looking at a folder: **browse** it in the grid, or sit back and watch a **slideshow** of everything in it. The slideshow plays every photo and video in the folder **and all its subfolders**, in full screen, folder by folder in the sort order you chose. The sort order applies within each folder and to the order of the subfolders: sorted by name, folders like `Day 1`, `Day 2` … play one after the other; sorted by date taken, the pictures in each folder play in the order they were shot. Pictures stay three seconds (Settings, ⌘, sets 1 to 60), videos play to their end, then it moves on. A PDF is one item, shown at its first page. It starts at once, while the subfolders are still being read; until then the count at the top says "so far" ("3 / 57 so far").
 
 Three ways to start it:
 
@@ -380,7 +382,7 @@ ZIP, RAR and 7z archives (comic books as .cbz and .cbr too) open like folders: b
   <img src="docs/screenshots/help-light.webp" width="760" alt="The keyboard cheat sheet">
 </picture></p>
 
-F1 (or ⌘?) shows a cheat sheet of the keys; Print… (⌘P) in it prints it on one page, or saves it as a PDF. `K` (or View → Mini Keyboard, or the keyboard switch in the status bar) slides up the **mini keyboard** under the window: the keys that work on what's on screen right now (the grid, a picture, a video, the slideshow and its playlist), each with what it does. It is a cheat sheet you can click, handy with only a trackpad; a key you press on the real keyboard lights up on it, so you see what just happened. In a slideshow it shows while you move the mouse. The action buttons (Dual Pane, Auto Enhance, Adjust, Slideshow, Grid) show their key on the button; the others name it in their tooltip.
+F1 (or ⌘?) shows a cheat sheet of the keys; Print… (⌘P) in it prints it on one page, or saves it as a PDF. `K` (or View → Mini Keyboard, or the keyboard switch in the status bar) slides up the **mini keyboard** under the window: the keys that work on what's on screen right now (the grid, a picture, a PDF, a video, the slideshow and its playlist), each with what it does. It is a cheat sheet you can click, handy with only a trackpad; a key you press on the real keyboard lights up on it, so you see what just happened. In a slideshow it shows while you move the mouse. The action buttons (Dual Pane, Auto Enhance, Adjust, Slideshow, Grid) show their key on the button; the others name it in their tooltip.
 
 <p align="center"><picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/keyboard-dark.webp">
@@ -411,7 +413,7 @@ Schnellbild → Settings (⌘,) has two tabs. Keyboard holds [your own keys](#yo
 | | Formats |
 |---|---|
 | Photos and graphics | JPEG (`.jpg`, `.jpeg`, `.jpe`), HEIC / HEIF (`.heic`, `.heif`, `.hif`, `.heics`), AVIF, JPEG XL (`.jxl`), PNG, GIF, WebP, TIFF (`.tif`, `.tiff`), BMP, JPEG 2000 (`.jp2`, `.j2k`), MPO |
-| Vector and documents | SVG, PDF (the first page, as a vector picture) |
+| Vector and documents | SVG, PDF (page by page, as vector pictures) |
 | HDR and editing | OpenEXR (`.exr`), Radiance (`.hdr`), Photoshop (`.psd`), Targa (`.tga`), DDS, icons (`.ico`, `.icns`) |
 | Camera RAW (the models macOS knows) | Canon `.cr2` `.cr3` `.crw`, Nikon `.nef` `.nrw`, Sony `.arw` `.sr2` `.srf`, Fujifilm `.raf`, Olympus / OM `.orf`, Panasonic / Leica `.rw2` `.rwl` `.raw`, Pentax `.pef`, Samsung `.srw`, Hasselblad `.3fr` `.fff`, Phase One `.iiq`, Adobe `.dng`, Epson `.erf`, Kodak `.dcr`, Leaf `.mos`, Minolta `.mrw` |
 

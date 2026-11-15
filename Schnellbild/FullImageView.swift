@@ -8,7 +8,9 @@ import AppKit
 /// model) and trackpad pinch; dragging pans when zoomed in. An animation
 /// (a GIF of several frames) plays its frames in place of the picture, at
 /// the same size and with the same look, so zoom, rotation and auto
-/// enhance work on it alike.
+/// enhance work on it alike. A PDF shows one page at a time (the model's
+/// `pdfPosition`, ← → as a video's seek), each drawn as a vector picture
+/// and zoomed, panned and turned on its own like a picture.
 struct FullImageView: View {
     let url: URL
 
@@ -30,6 +32,11 @@ struct FullImageView: View {
     @State private var decodedSide = 0
     /// The animation's frame on screen (with the look), and which one.
     @State private var frame: (image: NSImage, index: Int, count: Int)?
+    /// The PDF shown, opened once and kept while its pages are turned.
+    @State private var pdf: PDFPages?
+    /// The file and page whose picture is on screen (a PDF's page stays
+    /// while the next one is drawn).
+    @State private var drawn: Shown?
     @GestureState private var dragTranslation: CGSize = .zero
     @GestureState private var pinch: CGFloat = 1
 
@@ -75,9 +82,11 @@ struct FullImageView: View {
             // The UI tests read the view's state, in English, as the label:
             // XCUITest gets no value from a group like this one
             .accessibilityLabel(VideoDetailView.uiTesting ? accessibilityState : spokenLabel)
-            .task(id: url) {
-                // Never the previous file's picture: the cached tile, or nothing yet
-                image = ThumbnailCache.shared.image(for: url)
+            .task(id: shown) {
+                // Never the previous file's picture: the cached tile, or nothing
+                // yet. Another page of the same PDF: the page shown stays until
+                // the next one is drawn.
+                if pdf?.url != url { image = ThumbnailCache.shared.image(for: url) }
                 failed = false
                 failure = nil
                 decodedSide = 0
@@ -86,7 +95,7 @@ struct FullImageView: View {
                 await load(maxPixel: maxPixel, sharper: false)
                 updateActualSizeFactor(in: geo.size)
             }
-            .task(id: SharpnessJob(url: url, side: wantedSide(in: geo.size), ready: picture != nil)) {
+            .task(id: SharpnessJob(shown: shown, side: wantedSide(in: geo.size), ready: picture != nil)) {
                 // The view grew (full screen) or the user zoomed in: decoded
                 // again, larger. Not while a window resize is still going on.
                 let side = wantedSide(in: geo.size)
@@ -105,7 +114,7 @@ struct FullImageView: View {
                     panOffset.height += (request.up ? 1 : -1) * geo.size.height / 5
                 }
             }
-            .task(id: EnhanceJob(url: url, enhancement: model.enhancement, ready: picture != nil, side: decodedSide)) {
+            .task(id: EnhanceJob(shown: shown, enhancement: model.enhancement, ready: picture != nil, side: decodedSide)) {
                 await enhance()
             }
             .task(id: AnimationJob(url: url, side: decodedSide, look: picture == nil ? nil : shownLook, ready: picture != nil)) {
@@ -115,7 +124,8 @@ struct FullImageView: View {
         .onChange(of: model.zoom) { old, new in
             panOffset = BrowserModel.panOffset(panOffset, zoomedFrom: old, to: new)
         }
-        .onChange(of: url) { _, _ in
+        .onChange(of: shown) { _, new in
+            if pdf?.url != new.url { pdf = nil }
             panOffset = .zero
             nativeSize = nil
             picture = nil
@@ -123,6 +133,16 @@ struct FullImageView: View {
             enhanced = nil
             frame = nil
         }
+    }
+
+    /// The file and, for a PDF, the page on screen (0 for every other file).
+    private var shown: Shown {
+        Shown(url: url, page: PDFPages.isPDF(url) ? model.pdfPage(of: url) : 0)
+    }
+
+    struct Shown: Hashable {
+        let url: URL
+        let page: Int
     }
 
     /// With a look: the picture rendered with it; while a slider moves, the
@@ -161,6 +181,7 @@ struct FullImageView: View {
             + (failed ? "failed" : image == nil ? "loading" : "loaded")
             + (shownLook != nil && enhanced?.look == shownLook ? (model.enhance ? ", enhanced" : ", adjusted") : "")
             + (frame.map { ", frame \($0.index + 1) of \($0.count)" } ?? "")
+            + (pdf.flatMap { pdf in drawn.map { ", page \($0.page + 1) of \(pdf.count)" } } ?? "")
     }
 
     private var panGesture: some Gesture {
@@ -215,7 +236,28 @@ struct FullImageView: View {
     /// again larger; if that fails, the one shown stays.
     private func load(maxPixel: Int, sharper: Bool) async {
         let url = self.url
-        let attempt = await detachedCancellable(priority: .userInitiated) { () -> Result<(NSImage, CGSize, CGImage), LoadFailure>? in
+        var pages: PDFPages?
+        if PDFPages.isPDF(url) {
+            if let open = pdf, open.url == url {
+                pages = open
+            } else {
+                pages = await detachedCancellable(priority: .userInitiated) { await PDFPages.open(url) }
+                guard !Task.isCancelled else { return }
+                guard let pages else {
+                    if !sharper { image = nil; failed = true; failure = .undecodable }
+                    return
+                }
+                pdf = pages
+            }
+            if let pages, !sharper { model.pdfOpened(url, pages: pages.count) }
+        }
+        let page = shown.page
+        let attempt = await detachedCancellable(priority: .userInitiated) { [pages] () -> Result<(NSImage, CGSize, CGImage), LoadFailure>? in
+            if let pages {
+                guard let rendered = pages.render(page: page, longestSide: maxPixel) else { return .failure(.undecodable) }
+                let cg = rendered.0
+                return .success((NSImage(cgImage: cg, size: NSSize(width: cg.width, height: cg.height)), rendered.1, cg))
+            }
             if VectorPicture.isVector(url) {
                 guard let rendered = await VectorPicture.render(url, longestSide: maxPixel) else { return .failure(.undecodable) }
                 let cg = rendered.0
@@ -252,6 +294,7 @@ struct FullImageView: View {
             return
         }
         image = result.0
+        drawn = Shown(url: url, page: page)
         nativeSize = result.1
         decodedSide = max(result.2.width, result.2.height)
         if !sharper {
@@ -295,7 +338,7 @@ struct FullImageView: View {
     }
 
     private struct SharpnessJob: Equatable {
-        let url: URL
+        let shown: Shown
         let side: Int
         let ready: Bool
     }
@@ -324,7 +367,7 @@ struct FullImageView: View {
     private static let largestPixels: CGFloat = 64_000_000
 
     private struct EnhanceJob: Equatable {
-        let url: URL
+        let shown: Shown
         let enhancement: Enhancement
         let ready: Bool
         /// Decoded again at full size: rendered again
@@ -460,9 +503,10 @@ final class AnimationFrames: @unchecked Sendable {
     }
 }
 
-/// SVG and PDF: AppKit's `NSImage` draws them as vector pictures at any
-/// size (ImageIO doesn't read SVG, and gives a PDF page neither a size nor
-/// more than its 72 dpi pixels). A PDF shows its first page.
+/// SVG and PDF, drawn as vector pictures at any size (ImageIO doesn't read
+/// SVG, and gives a PDF page neither a size nor more than its 72 dpi
+/// pixels): SVG by AppKit's `NSImage`, a PDF by PDFKit (`PDFPages`), here
+/// its first page (tiles, the Inspector; the full view pages through it).
 enum VectorPicture {
     /// Drawn no larger than this (at most a 64 MB picture, 4096 × 4096 × 4
     /// bytes, at full zoom; the adjusted copy needs as much again).
@@ -478,6 +522,7 @@ enum VectorPicture {
 
     /// The picture's own size (points from its width/height or viewBox).
     static func size(of url: URL) async -> CGSize? {
+        if PDFPages.isPDF(url) { return await PDFPages.open(url)?.size(of: 0) }
         guard let image = await image(url), image.size.width > 0, image.size.height > 0 else { return nil }
         return image.size
     }
@@ -485,6 +530,7 @@ enum VectorPicture {
     /// Drawn with its longest side `longestSide` pixels, on its own
     /// background (transparent where the SVG draws nothing); with its size.
     static func render(_ url: URL, longestSide: Int) async -> (CGImage, CGSize)? {
+        if PDFPages.isPDF(url) { return await PDFPages.open(url)?.render(page: 0, longestSide: longestSide) }
         guard let image = await image(url) else { return nil }
         return render(image, longestSide: longestSide)
     }

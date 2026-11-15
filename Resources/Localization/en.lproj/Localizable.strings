@@ -61,7 +61,7 @@
 "First / last item" = "First / last item";
 "Larger / smaller thumbnails" = "Larger / smaller thumbnails";
 "Clear search" = "Clear search";
-"Previous / next item, also from a video" = "Previous / next item, also from a video";
+"Previous / next item, also from a video or PDF" = "Previous / next item, also from a video or PDF";
 "Next picture · play/pause video" = "Next picture · play/pause video";
 "Zoom in / out" = "Zoom in / out";
 "Fit to window / 100 %" = "Fit to window / 100 %";
@@ -102,7 +102,7 @@
 "The name must end in a picture extension, such as “.%@”." = "The name must end in a picture extension, such as “.%@”.";
 "The name must end in a video extension, such as “.%@”." = "The name must end in a video extension, such as “.%@”.";
 "Grid and full view" = "Grid and full view";
-"Pictures: previous / next · Videos: 10 % of the length back / ahead; at the start / end: previous / next item" = "Pictures: previous / next · Videos: 10 % of the length back / ahead; at the start / end: previous / next item";
+"Pictures: previous / next · Videos: 10 % of the length back / ahead · PDFs: previous / next page; at the start / end: previous / next item" = "Pictures: previous / next · Videos: 10 % of the length back / ahead · PDFs: previous / next page; at the start / end: previous / next item";
 "Previous / next · Videos: 10 % of the length back / ahead" = "Previous / next · Videos: 10 % of the length back / ahead";
 "Wrong password for this archive." = "Wrong password for this archive.";
 "The archive is incomplete: still downloading, a part missing, or damaged." = "The archive is incomplete: still downloading, a part missing, or damaged.";
@@ -424,8 +424,8 @@
 "Look further down (videos: quieter)" = "Look further down (videos: quieter)";
 "Mark all" = "Mark all";
 "Menus in the window" = "Menus in the window";
-"Next (videos: 10 % ahead)" = "Next (videos: 10 % ahead)";
-"Previous (videos: 10 % back)" = "Previous (videos: 10 % back)";
+"Next (videos: 10 % ahead, PDFs: next page)" = "Next (videos: 10 % ahead, PDFs: next page)";
+"Previous (videos: 10 % back, PDFs: previous page)" = "Previous (videos: 10 % back, PDFs: previous page)";
 "Open bookmark %lld" = "Open bookmark %lld";
 "Playlist: row up" = "Playlist: row up";
 "Playlist: row down" = "Playlist: row down";
@@ -551,3 +551,6 @@
 "Location is restricted on this Mac." = "Location is restricted on this Mac.";
 "Location Services are off. Turn them on in System Settings → Privacy & Security → Location Services." = "Location Services are off. Turn them on in System Settings → Privacy & Security → Location Services.";
 "Your location can't be found right now." = "Your location can't be found right now.";
+"Previous page" = "Previous page";
+"Next page" = "Next page";
+"Page %lld / %lld" = "Page %lld / %lld";

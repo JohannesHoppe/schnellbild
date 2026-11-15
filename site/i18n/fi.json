@@ -66,7 +66,7 @@
   "features": [
     {
       "title": "Katso isona, selaa näppäimillä",
-      "text": "<p>Välilyönti avaa kuvan niin isona kuin ikkuna sallii, ← → selaavat kansiota. Lähennä ohjauslevyllä tai näppäimillä + −, käännä ⌥← ⌥→, koko näyttö näppäimellä <kbd>f</kbd>. Myös animoidut GIFit, SVG ja PDF.</p><p>Diaesitys (<kbd>s</kbd>) käy läpi kansion ja kaikki sen alikansiot, kuvat ja videot yhtä lailla. Mitä diaesitys toistaa, se on soittolista: <kbd>p</kbd> avaa sen, ja voit järjestää kohteita uudelleen ja karsia niitä listalta.</p>",
+      "text": "<p>Välilyönti avaa kuvan niin isona kuin ikkuna sallii, ← → selaavat kansiota. Lähennä ohjauslevyllä tai näppäimillä + −, käännä ⌥← ⌥→, koko näyttö näppäimellä <kbd>f</kbd>. Myös animoidut GIFit ja SVG, PDF sivu kerrallaan.</p><p>Diaesitys (<kbd>s</kbd>) käy läpi kansion ja kaikki sen alikansiot, kuvat ja videot yhtä lailla. Mitä diaesitys toistaa, se on soittolista: <kbd>p</kbd> avaa sen, ja voit järjestää kohteita uudelleen ja karsia niitä listalta.</p>",
       "alt": "Kuva koko näkymässä"
     },
     {

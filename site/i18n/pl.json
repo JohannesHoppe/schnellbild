@@ -66,7 +66,7 @@
   "features": [
     {
       "title": "Duży podgląd, przewijanie klawiszami",
-      "text": "<p>Spacja otwiera obraz tak duży, jak pozwala okno, a ← → przewijają folder. Powiększaj gładzikiem lub klawiszami + −, obracaj ⌥← ⌥→, pełny ekran włączysz klawiszem <kbd>f</kbd>. Animowane GIF-y, SVG i PDF też.</p><p>Pokaz slajdów (<kbd>s</kbd>) przechodzi przez folder i wszystkie jego podfoldery, zdjęcia i filmy razem. To, co odtwarza pokaz slajdów, jest playlistą: <kbd>p</kbd> otwiera ją, by zmienić kolejność i odsiać zbędne pozycje.</p>",
+      "text": "<p>Spacja otwiera obraz tak duży, jak pozwala okno, a ← → przewijają folder. Powiększaj gładzikiem lub klawiszami + −, obracaj ⌥← ⌥→, pełny ekran włączysz klawiszem <kbd>f</kbd>. Animowane GIF-y i SVG też, PDF strona po stronie.</p><p>Pokaz slajdów (<kbd>s</kbd>) przechodzi przez folder i wszystkie jego podfoldery, zdjęcia i filmy razem. To, co odtwarza pokaz slajdów, jest playlistą: <kbd>p</kbd> otwiera ją, by zmienić kolejność i odsiać zbędne pozycje.</p>",
       "alt": "Zdjęcie w pełnym widoku"
     },
     {

@@ -61,7 +61,7 @@
 "First / last item" = "Перший / останній об’єкт";
 "Larger / smaller thumbnails" = "Більші / менші мініатюри";
 "Clear search" = "Очистити пошук";
-"Previous / next item, also from a video" = "Попередній / наступний об’єкт, також із відео";
+"Previous / next item, also from a video or PDF" = "Попередній / наступний об’єкт, також із відео чи PDF";
 "Next picture · play/pause video" = "Наступне зображення · відтворити / пауза";
 "Zoom in / out" = "Збільшити / зменшити";
 "Fit to window / 100 %" = "За розміром вікна / 100 %";
@@ -102,7 +102,7 @@
 "The name must end in a picture extension, such as “.%@”." = "Назва має закінчуватися розширенням зображення, наприклад «.%@».";
 "The name must end in a video extension, such as “.%@”." = "Назва має закінчуватися розширенням відео, наприклад «.%@».";
 "Grid and full view" = "Сітка й повний вигляд";
-"Pictures: previous / next · Videos: 10 % of the length back / ahead; at the start / end: previous / next item" = "Зображення: попереднє / наступне · Відео: 10 % тривалості назад / вперед; на початку / в кінці: попередній / наступний об’єкт";
+"Pictures: previous / next · Videos: 10 % of the length back / ahead · PDFs: previous / next page; at the start / end: previous / next item" = "Зображення: попереднє / наступне · Відео: 10 % тривалості назад / вперед · PDF: попередня / наступна сторінка; на початку / в кінці: попередній / наступний об’єкт";
 "Previous / next · Videos: 10 % of the length back / ahead" = "Попередній / наступний · Відео: 10 % тривалості назад / вперед";
 "Wrong password for this archive." = "Неправильний пароль для цього архіву.";
 "The archive is incomplete: still downloading, a part missing, or damaged." = "Архів неповний: він ще завантажується, бракує частини або його пошкоджено.";
@@ -424,8 +424,8 @@
 "Look further down (videos: quieter)" = "Дивитися нижче (відео: тихіше)";
 "Mark all" = "Позначити все";
 "Menus in the window" = "Меню у вікні";
-"Next (videos: 10 % ahead)" = "Наступний (відео: на 10 % вперед)";
-"Previous (videos: 10 % back)" = "Попередній (відео: на 10 % назад)";
+"Next (videos: 10 % ahead, PDFs: next page)" = "Наступний (відео: на 10 % вперед, PDF: наступна сторінка)";
+"Previous (videos: 10 % back, PDFs: previous page)" = "Попередній (відео: на 10 % назад, PDF: попередня сторінка)";
 "Open bookmark %lld" = "Відкрити закладку %lld";
 "Playlist: row up" = "Плейлист: рядок угору";
 "Playlist: row down" = "Плейлист: рядок униз";
@@ -551,3 +551,6 @@
 "Location is restricted on this Mac." = "Розташування на цьому Mac обмежене.";
 "Location Services are off. Turn them on in System Settings → Privacy & Security → Location Services." = "Служби локації вимкнено. Увімкніть їх у Системних параметрах → Приватність і безпека → Служби локації.";
 "Your location can't be found right now." = "Зараз не вдається визначити ваше розташування.";
+"Previous page" = "Попередня сторінка";
+"Next page" = "Наступна сторінка";
+"Page %lld / %lld" = "Сторінка %lld / %lld";

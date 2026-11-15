@@ -66,7 +66,7 @@
   "features": [
     {
       "title": "Veja em tamanho grande, navegue pelas teclas",
-      "text": "<p>A barra de espaço abre uma imagem tão grande quanto a janela permite, e ← → percorrem a pasta. Amplie com o trackpad ou com + −, gire com ⌥← ⌥→, tela cheia com <kbd>f</kbd>. GIFs animados, SVG e PDF incluídos.</p><p>Uma apresentação (<kbd>s</kbd>) percorre a pasta e todas as subpastas, com fotos e vídeos. O que a apresentação mostra é a playlist: <kbd>p</kbd> abre a lista para mudar a ordem e tirar o que sobra.</p>",
+      "text": "<p>A barra de espaço abre uma imagem tão grande quanto a janela permite, e ← → percorrem a pasta. Amplie com o trackpad ou com + −, gire com ⌥← ⌥→, tela cheia com <kbd>f</kbd>. GIFs animados e SVG incluídos, PDF página por página.</p><p>Uma apresentação (<kbd>s</kbd>) percorre a pasta e todas as subpastas, com fotos e vídeos. O que a apresentação mostra é a playlist: <kbd>p</kbd> abre a lista para mudar a ordem e tirar o que sobra.</p>",
       "alt": "Uma foto na visualização completa"
     },
     {

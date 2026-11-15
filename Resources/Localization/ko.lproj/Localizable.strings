@@ -61,7 +61,7 @@
 "First / last item" = "처음 / 마지막 항목";
 "Larger / smaller thumbnails" = "썸네일 크게 / 작게";
 "Clear search" = "검색 지우기";
-"Previous / next item, also from a video" = "이전 / 다음 항목(비디오에서도)";
+"Previous / next item, also from a video or PDF" = "이전 / 다음 항목(비디오나 PDF에서도)";
 "Next picture · play/pause video" = "다음 이미지 · 비디오 재생 / 일시 정지";
 "Zoom in / out" = "확대 / 축소";
 "Fit to window / 100 %" = "윈도우에 맞추기 / 100 %";
@@ -102,7 +102,7 @@
 "The name must end in a picture extension, such as “.%@”." = "이름은 ‘.%@’ 같은 이미지 확장자로 끝나야 합니다.";
 "The name must end in a video extension, such as “.%@”." = "이름은 ‘.%@’ 같은 비디오 확장자로 끝나야 합니다.";
 "Grid and full view" = "격자 및 전체 보기";
-"Pictures: previous / next · Videos: 10 % of the length back / ahead; at the start / end: previous / next item" = "이미지: 이전 / 다음 · 비디오: 길이의 10 % 뒤로 / 앞으로, 처음 / 끝에서는 이전 / 다음 항목";
+"Pictures: previous / next · Videos: 10 % of the length back / ahead · PDFs: previous / next page; at the start / end: previous / next item" = "이미지: 이전 / 다음 · 비디오: 길이의 10 % 뒤로 / 앞으로 · PDF: 이전 / 다음 페이지, 처음 / 끝에서는 이전 / 다음 항목";
 "Previous / next · Videos: 10 % of the length back / ahead" = "이전 / 다음 · 비디오: 길이의 10 % 뒤로 / 앞으로";
 "Wrong password for this archive." = "이 아카이브의 암호가 올바르지 않습니다.";
 "The archive is incomplete: still downloading, a part missing, or damaged." = "아카이브가 불완전합니다. 아직 다운로드 중이거나, 일부가 없거나, 손상되었습니다.";
@@ -424,8 +424,8 @@
 "Look further down (videos: quieter)" = "아래 보기(비디오: 음량 낮추기)";
 "Mark all" = "모두 표시";
 "Menus in the window" = "윈도우 안의 메뉴";
-"Next (videos: 10 % ahead)" = "다음(비디오: 10 % 앞으로)";
-"Previous (videos: 10 % back)" = "이전(비디오: 10 % 뒤로)";
+"Next (videos: 10 % ahead, PDFs: next page)" = "다음(비디오: 10 % 앞으로, PDF: 다음 페이지)";
+"Previous (videos: 10 % back, PDFs: previous page)" = "이전(비디오: 10 % 뒤로, PDF: 이전 페이지)";
 "Open bookmark %lld" = "책갈피 %lld 열기";
 "Playlist: row up" = "재생 목록: 한 줄 위";
 "Playlist: row down" = "재생 목록: 한 줄 아래";
@@ -551,3 +551,6 @@
 "Location is restricted on this Mac." = "이 Mac에서는 위치가 제한되어 있습니다.";
 "Location Services are off. Turn them on in System Settings → Privacy & Security → Location Services." = "위치 서비스가 꺼져 있습니다. 시스템 설정 → 개인정보 보호 및 보안 → 위치 서비스에서 켜세요.";
 "Your location can't be found right now." = "지금은 위치를 찾을 수 없습니다.";
+"Previous page" = "이전 페이지";
+"Next page" = "다음 페이지";
+"Page %lld / %lld" = "페이지 %lld / %lld";
