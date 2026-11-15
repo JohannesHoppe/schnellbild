@@ -160,6 +160,13 @@ final class MapSurfaceView: NSView {
         scheduleLabels()
     }
 
+    /// Whether every tile on screen is drawn at the zoom shown (the globe
+    /// hands over to the flat map once it is).
+    var allTilesShown: Bool {
+        let shown = tileLayers.values.filter { $0.zPosition == 0 }
+        return !shown.isEmpty && shown.allSatisfy { $0.contents != nil && $0.contentsRect == CGRect(x: 0, y: 0, width: 1, height: 1) }
+    }
+
     // MARK: Layout
 
     /// Puts the tiles of the current camera in place: the nearest whole

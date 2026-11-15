@@ -81,6 +81,16 @@ enum AboutPanel {
         Component(name: "OpenStreetMap", use: String(localized: "map data for the offline map"),
                   license: String(localized: "© OpenStreetMap contributors. Open Database License (ODbL) 1.0. Made from Protomaps' OpenStreetMap build, with thanks to Protomaps; how the files are made is in Schnellbild's repository."),
                   link: "https://www.openstreetmap.org/copyright"),
+        // The globe's data and how it is made: Scripts/build_globe_data.py, Resources/Licenses/Globe-data.txt
+        Component(name: "ETOPO 2022 (NOAA)", use: String(localized: "elevation and ocean depth on the globe"),
+                  license: String(localized: "NOAA National Centers for Environmental Information. Public domain (CC0 1.0). Not to be used for navigation."),
+                  link: "https://doi.org/10.25921/fd45-gt74"),
+        Component(name: "Deep Star Maps 2020 (NASA)", use: String(localized: "the night sky behind the globe"),
+                  license: String(localized: "NASA/Goddard Space Flight Center Scientific Visualization Studio, made from Gaia DR2, Hipparcos and Tycho-2 data. Public domain."),
+                  link: "https://svs.gsfc.nasa.gov/4851"),
+        Component(name: "Black Marble 2016 (NASA)", use: String(localized: "the lights on the globe's night side"),
+                  license: String(localized: "NASA Earth Observatory. Used under NASA's media usage guidelines."),
+                  link: "https://science.nasa.gov/earth/earth-observatory/earth-at-night/maps/"),
     ]
 }
 

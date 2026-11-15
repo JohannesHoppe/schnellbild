@@ -541,6 +541,17 @@
 "near %@" = "vicino a %@";
 "map data for the offline map" = "dati della mappa offline";
 "© OpenStreetMap contributors. Open Database License (ODbL) 1.0. Made from Protomaps' OpenStreetMap build, with thanks to Protomaps; how the files are made is in Schnellbild's repository." = "© contributori di OpenStreetMap. Open Database License (ODbL) 1.0. Ricavati dalla build OpenStreetMap di Protomaps, con un ringraziamento a Protomaps; come vengono creati i file è nel repository di Schnellbild.";
+"Globe" = "Globo";
+"Show day and night" = "Mostra il giorno e la notte";
+"Hide day and night" = "Nascondi il giorno e la notte";
+"Exaggerate the relief" = "Esagera il rilievo";
+"Show the relief at true scale" = "Mostra il rilievo in scala reale";
+"elevation and ocean depth on the globe" = "altitudini e profondità oceaniche sul globo";
+"NOAA National Centers for Environmental Information. Public domain (CC0 1.0). Not to be used for navigation." = "NOAA National Centers for Environmental Information. Pubblico dominio (CC0 1.0). Non adatto alla navigazione.";
+"the night sky behind the globe" = "il cielo notturno dietro il globo";
+"NASA/Goddard Space Flight Center Scientific Visualization Studio, made from Gaia DR2, Hipparcos and Tycho-2 data. Public domain." = "NASA/Goddard Space Flight Center Scientific Visualization Studio, dai dati di Gaia DR2, Hipparcos e Tycho-2. Pubblico dominio.";
+"the lights on the globe's night side" = "le luci sul lato notturno del globo";
+"NASA Earth Observatory. Used under NASA's media usage guidelines." = "NASA Earth Observatory. Usato secondo le linee guida della NASA sull’uso dei media.";
 
 /* Sorting by distance: the map and Use My Location */
 "Use My Location" = "Usa la mia posizione";

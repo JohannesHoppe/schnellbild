@@ -541,6 +541,17 @@
 "near %@" = "%@ yakını";
 "map data for the offline map" = "çevrimdışı haritanın verileri";
 "© OpenStreetMap contributors. Open Database License (ODbL) 1.0. Made from Protomaps' OpenStreetMap build, with thanks to Protomaps; how the files are made is in Schnellbild's repository." = "© OpenStreetMap katkıda bulunanları. Open Database License (ODbL) 1.0. Protomaps’in OpenStreetMap derlemesinden yapıldı, Protomaps’e teşekkürler; dosyaların nasıl yapıldığı Schnellbild deposunda.";
+"Globe" = "Küre";
+"Show day and night" = "Gece ve gündüzü göster";
+"Hide day and night" = "Gece ve gündüzü gizle";
+"Exaggerate the relief" = "Kabartmayı abart";
+"Show the relief at true scale" = "Kabartmayı gerçek ölçekte göster";
+"elevation and ocean depth on the globe" = "kürede yükseklikler ve okyanus derinlikleri";
+"NOAA National Centers for Environmental Information. Public domain (CC0 1.0). Not to be used for navigation." = "NOAA National Centers for Environmental Information. Kamu malı (CC0 1.0). Seyir için kullanılamaz.";
+"the night sky behind the globe" = "kürenin arkasındaki gece gökyüzü";
+"NASA/Goddard Space Flight Center Scientific Visualization Studio, made from Gaia DR2, Hipparcos and Tycho-2 data. Public domain." = "NASA/Goddard Space Flight Center Scientific Visualization Studio, Gaia DR2, Hipparcos ve Tycho-2 verilerinden. Kamu malı.";
+"the lights on the globe's night side" = "kürenin gece tarafındaki ışıklar";
+"NASA Earth Observatory. Used under NASA's media usage guidelines." = "NASA Earth Observatory. NASA’nın medya kullanım yönergelerine göre kullanılmıştır.";
 
 /* Sorting by distance: the map and Use My Location */
 "Use My Location" = "Konumumu Kullan";

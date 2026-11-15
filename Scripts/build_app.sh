@@ -67,6 +67,9 @@ cp -R "$RES/Licenses" "$APP/Contents/Resources/Licenses"
 # The offline map (OpenStreetMap data, Scripts/fetch_map.sh), found by OfflineMap in Resources/Map
 [ -n "$(ls "$ROOT/Vendor/Map/"*.pmtiles 2>/dev/null)" ] || { echo "!! no map in Vendor/Map (Scripts/fetch_map.sh)" >&2; exit 1; }
 ditto "$ROOT/Vendor/Map" "$APP/Contents/Resources/Map"
+# The globe's elevation, night sky and city lights (Scripts/fetch_globe.sh), found by OfflineMap in Resources/Globe
+[ -n "$(ls "$ROOT/Vendor/Globe/"*.sbhm 2>/dev/null)" ] || { echo "!! no globe data in Vendor/Globe (Scripts/fetch_globe.sh)" >&2; exit 1; }
+ditto "$ROOT/Vendor/Globe" "$APP/Contents/Resources/Globe"
 # A short MKV: Settings plays it through macOS to tell whether the media extension is on
 cp "$RES/FormatsCheck.mkv" "$APP/Contents/Resources/FormatsCheck.mkv"
 cp "$RES/Info.plist" "$APP/Contents/Info.plist"
