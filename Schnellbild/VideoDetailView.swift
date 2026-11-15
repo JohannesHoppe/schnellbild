@@ -72,7 +72,7 @@ struct VideoDetailView: View {
         }
         }
         .clipped()
-        .onChange(of: model.zoom) { _, zoom in if zoom <= 1.01 { panOffset = .zero } }
+        .onChange(of: model.zoom) { old, new in panOffset = BrowserModel.panOffset(panOffset, zoomedFrom: old, to: new) }
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier(vlcControl != nil ? "video.vlc" : "video.avkit")
         .accessibilityLabel(accessibilityText)

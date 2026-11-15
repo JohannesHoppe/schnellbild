@@ -3115,6 +3115,16 @@ final class BrowserModel: ObservableObject {
         return true
     }
 
+    /// The pan offset of a zoomed-in picture or video after the zoom
+    /// changed from `old` to `new`: scaled with it, so the middle of the
+    /// view keeps showing the same place (keys, the menu and a pinch zoom
+    /// about the view's middle); at fit, none.
+    static func panOffset(_ offset: CGSize, zoomedFrom old: CGFloat, to new: CGFloat) -> CGSize {
+        guard new > 1.01, old > 0 else { return .zero }
+        let ratio = new / old
+        return CGSize(width: offset.width * ratio, height: offset.height * ratio)
+    }
+
     /// Mode-aware "+"/"−": zoom the image in the full-size view, resize tiles in the grid.
     /// Whether the full view or the slideshow is up (zoom keys zoom it).
     private var viewingMedia: Bool { mode == .detail || slideshow != nil }

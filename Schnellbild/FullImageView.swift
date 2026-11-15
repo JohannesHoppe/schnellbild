@@ -44,8 +44,9 @@ struct FullImageView: View {
                         .aspectRatio(contentMode: .fit)
                         .rotationEffect(.degrees(model.rotation))
                         .scaleEffect(model.zoom * pinch * rotationFitScale(in: geo.size))
-                        .offset(x: panOffset.width + dragTranslation.width,
-                                y: panOffset.height + dragTranslation.height)
+                        // While pinching, the pan scales with the pinch (about the view's middle)
+                        .offset(x: panOffset.width * pinch + dragTranslation.width,
+                                y: panOffset.height * pinch + dragTranslation.height)
                         .gesture(magnifyGesture)
                         .simultaneousGesture(panGesture)
                 } else if failed {
@@ -111,8 +112,8 @@ struct FullImageView: View {
                 await animate()
             }
         }
-        .onChange(of: model.zoom) { _, newValue in
-            if newValue <= 1.01 { panOffset = .zero }
+        .onChange(of: model.zoom) { old, new in
+            panOffset = BrowserModel.panOffset(panOffset, zoomedFrom: old, to: new)
         }
         .onChange(of: url) { _, _ in
             panOffset = .zero
