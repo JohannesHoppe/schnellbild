@@ -76,12 +76,12 @@ libflaschen_plugin libafile_plugin libdemuxdump_plugin"
 # VLC's changeset string (`git describe` of the patched tree, which holds the
 # date `git am` committed at) is written as src/revision.txt, the one our
 # build of SOURCE_RELEASE carries.
-SOURCE_RELEASE="vlckit-3.7.5-lgpl-11"
+SOURCE_RELEASE="vlckit-3.7.5-lgpl-12"
 SOURCE_BASE="https://github.com/JohannesHoppe/schnellbild/releases/download/$SOURCE_RELEASE"
 VLCKIT_SOURCE_SHA256="b4f31dcdbb6c5e9300a81a01abe2dc55f1c67c7cc49f19fa2b7d3c22a9cfcd10"
 VLC_SOURCE_SHA256="59d6086a1b3743c3c2d217bc63f06bec23077530c153c8cb697b4d46b79e0fb3"
-CONTRIB_SOURCES_SHA256="4f3f4258b238be789e18a2a57f137691908d69fe6b0863841ca53711f50a15d9"
-TOOLS_SOURCES_SHA256=""     # VLC-tools-sources.tar, not in SOURCE_RELEASE: from upstream
+CONTRIB_SOURCES_SHA256="d37d40482f176d8c615effe8ab70be280721159e1e7563059d8603bb233bdd45"
+TOOLS_SOURCES_SHA256="b0e8a2bf63055a76f2d54f1923c7a52755f6deae89adeb772c802d15b30fc07f"
 VLC_REVISION="3.0.24-43-g6037734914"
 
 # from_release <file> <sha256>: SOURCE_RELEASE's <file> into $WORK/src; fails
