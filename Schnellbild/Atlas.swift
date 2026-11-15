@@ -88,20 +88,30 @@ enum AtlasClustering {
 
     /// Greedy clustering in screen space at a zoom: in the given order (by
     /// time), each item joins the cluster whose first item lies nearest
-    /// within `spacing`, else starts one. Distances are measured in the
-    /// map's world points at that zoom, so moving the map changes nothing
-    /// and only a zoom asks again. A grid of `spacing` cells finds the
+    /// within `spacing`, else starts one. On the flat map distances are
+    /// measured in the map's world points at that zoom, so moving the map
+    /// changes nothing and only a zoom asks again. A grid of `spacing` cells finds the
     /// neighbours, so thousands of items take milliseconds.
     static func clusters(of points: [(id: URL, coordinate: Coordinate)], zoom: Double,
                          spacing: Double = spacing) -> [AtlasCluster] {
         let world = WebMercator.worldSize(zoom: zoom)
+        return clusters(of: points, spacing: spacing) { coordinate in
+            let unit = WebMercator.unitPoint(coordinate)
+            return CGPoint(x: unit.x * world, y: unit.y * world)
+        }
+    }
+
+    /// The same through a projection to the screen (the globe's): an item
+    /// it gives no point (the far side) is in no cluster.
+    static func clusters(of points: [(id: URL, coordinate: Coordinate)], spacing: Double = spacing,
+                         project: (Coordinate) -> CGPoint?) -> [AtlasCluster] {
         struct Building { var ids: [URL]; var leader: CGPoint; var sum: CGPoint }
         var built: [Building] = []
         var cells: [Int64: [Int]] = [:]
         func key(_ x: Int64, _ y: Int64) -> Int64 { x &* 1_000_003 &+ y }
         for point in points {
+            guard let p = project(point.coordinate) else { continue }
             let unit = WebMercator.unitPoint(point.coordinate)
-            let p = CGPoint(x: unit.x * world, y: unit.y * world)
             let cx = Int64((Double(p.x) / spacing).rounded(.down)), cy = Int64((Double(p.y) / spacing).rounded(.down))
             var best: (index: Int, distance: Double)?
             for dx in -1...1 {

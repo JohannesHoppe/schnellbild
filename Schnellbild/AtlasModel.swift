@@ -190,10 +190,16 @@ final class AtlasModel: ObservableObject {
             guard newValue != cameraState.camera else { return }
             cameraState.camera = newValue
             // Moved by the user (drag, scroll, pinch, buttons), not only held in the view's limits
-            if let set = cameraSet, newValue != set, newValue != MapViewport(camera: set, size: mapSize).clamped(), tour == nil {
-                userMovedMap = true
+            if let set = cameraSet, newValue != set, newValue != held(set), tour == nil {
+                if Date().timeIntervalSince(cameraSetAt) < 0.3, let before = cameraBeforeSet, Self.near(newValue, held(before)) {
+                    // The view's own camera, held in its new size and reported after the
+                    // layout pass that set ours: ours stands
+                    DispatchQueue.main.async { [weak self] in self?.setCamera(set) }
+                } else {
+                    userMovedMap = true
+                }
             }
-            if abs(newValue.zoom - (clusterZoom ?? -1)) > 0.001 { scheduleClusters() }
+            if needsClusters(at: newValue) { scheduleClusters() }
         }
     }
     /// The map's size in points (the view reports it). A new size fits the
@@ -216,11 +222,41 @@ final class AtlasModel: ObservableObject {
                needsFit ? "pending" : "done", userMovedMap ? "yes" : "no")
     }
     private var cameraSet: MapCamera?
+    private var cameraSetAt = Date.distantPast
+    /// The camera before the last one set here: the map view may report it
+    /// once more, held in its new size, after the layout pass.
+    private var cameraBeforeSet: MapCamera?
 
     private func setCamera(_ next: MapCamera) {
+        cameraBeforeSet = camera
         cameraSet = next
+        cameraSetAt = Date()
         camera = next
     }
+
+    private static func near(_ a: MapCamera, _ b: MapCamera) -> Bool {
+        abs(a.zoom - b.zoom) < 1e-6 && abs(a.center.latitude - b.center.latitude) < 1e-6
+            && abs(a.center.longitude - b.center.longitude) < 1e-6
+    }
+
+    /// The camera within the map's limits: zoomed out, the globe's
+    /// (`GlobeProjection.minZoom`); from the flat zoom on, the flat map's.
+    func held(_ c: MapCamera) -> MapCamera {
+        guard mapSize.width > 0, mapSize.height > 0 else { return c }
+        var next = c
+        next.zoom = min(MapViewport.maxZoom, max(GlobeProjection.minZoom(for: mapSize), c.zoom))
+        if GlobeProjection(camera: next, size: mapSize).isFlat { next = MapViewport(camera: next, size: mapSize).panned(by: 0, 0) }
+        return next
+    }
+
+    /// Where a place is in the map view, on the globe or the flat map; nil on the globe's far side.
+    func point(for coordinate: Coordinate) -> CGPoint? {
+        let projection = GlobeProjection(camera: camera, size: mapSize)
+        return projection.isVisible(coordinate) ? projection.point(for: coordinate) : nil
+    }
+
+    /// The map shows the globe (or is flattening into the flat map).
+    var showsGlobe: Bool { mapSize.width > 0 && !GlobeProjection(camera: camera, size: mapSize).isFlat }
 
     private func fitIfNeeded() {
         guard tour == nil, mapSize.width > 40, mapSize.height > 40, !placed.isEmpty, needsFit || (!isComplete && !userMovedMap) else { return }
@@ -231,15 +267,14 @@ final class AtlasModel: ObservableObject {
     /// Shows every item on the map.
     func fitAll() {
         guard let fitted = MapCamera.fitting(placed.compactMap(\.coordinate), in: mapSize, padding: 70, maxZoom: 11) else { return }
-        setCamera(MapViewport(camera: fitted, size: mapSize).clamped())
+        setCamera(held(fitted))
     }
 
     /// Moves the map so the place is in view (at once when it already is).
     func reveal(_ coordinate: Coordinate) {
-        let viewport = MapViewport(camera: camera, size: mapSize)
-        let p = viewport.point(for: coordinate)
-        guard mapSize.width > 0, !CGRect(origin: .zero, size: mapSize).insetBy(dx: 40, dy: 40).contains(p) else { return }
-        setCamera(MapViewport(camera: MapCamera(center: coordinate, zoom: camera.zoom), size: mapSize).clamped())
+        guard mapSize.width > 0 else { return }
+        if let p = point(for: coordinate), CGRect(origin: .zero, size: mapSize).insetBy(dx: 40, dy: 40).contains(p) { return }
+        setCamera(held(MapCamera(center: coordinate, zoom: camera.zoom)))
     }
 
     /// A double click on a cluster: the map zooms until its items part.
@@ -247,8 +282,7 @@ final class AtlasModel: ObservableObject {
         let coordinates = cluster.ids.compactMap { id in placed.first { $0.url == id }?.coordinate }
         let fitted = MapCamera.fitting(coordinates, in: mapSize, padding: 90, maxZoom: MapViewport.maxZoom)
         let zoom = max(camera.zoom + 2, fitted?.zoom ?? 0)
-        let target = MapViewport(camera: MapCamera(center: fitted?.center ?? cluster.coordinate, zoom: min(MapViewport.maxZoom, zoom)),
-                                 size: mapSize).clamped()
+        let target = held(MapCamera(center: fitted?.center ?? cluster.coordinate, zoom: min(MapViewport.maxZoom, zoom)))
         userMovedMap = true
         setCamera(target)
     }
@@ -257,38 +291,58 @@ final class AtlasModel: ObservableObject {
     func zoomStep(_ steps: Double) {
         guard mapSize.width > 0 else { return }
         userMovedMap = true
-        let viewport = MapViewport(camera: camera, size: mapSize)
-        setCamera(viewport.zoomed(to: camera.zoom + steps, keeping: CGPoint(x: mapSize.width / 2, y: mapSize.height / 2)))
+        setCamera(held(MapCamera(center: camera.center, zoom: camera.zoom + steps)))
     }
 
     // MARK: Clusters (off the main thread)
 
     @Published private(set) var clusters: [AtlasCluster] = []
-    /// The zoom the clusters were made for.
+    /// The zoom the clusters were made for (on the flat map moving needs no new ones).
     private(set) var clusterZoom: Double?
+    /// The camera they were made for on the globe (turning it changes what is close on screen).
+    private var clusterCamera: MapCamera?
     private var clustering = false
     private var clusterAgain = false
+
+    /// On the flat map in world points at the zoom, on the globe on screen
+    /// (what lies on the far side left out).
+    private func needsClusters(at c: MapCamera) -> Bool {
+        if mapSize.width > 0, !GlobeProjection(camera: c, size: mapSize).isFlat { return c != clusterCamera }
+        return clusterCamera != nil || abs(c.zoom - (clusterZoom ?? -1)) > 0.001
+    }
+
+    private nonisolated static func make(_ points: [(id: URL, coordinate: Coordinate)], camera: MapCamera,
+                                         size: CGSize) -> [AtlasCluster] {
+        guard size.width > 0 else { return AtlasClustering.clusters(of: points, zoom: camera.zoom) }
+        let projection = GlobeProjection(camera: camera, size: size)
+        if projection.isFlat { return AtlasClustering.clusters(of: points, zoom: camera.zoom) }
+        return AtlasClustering.clusters(of: points) { projection.isVisible($0) ? projection.point(for: $0) : nil }
+    }
 
     private func scheduleClusters() {
         guard !clustering else { clusterAgain = true; return }
         clustering = true
         clusterAgain = false
         let points = placed.map { (id: $0.url, coordinate: $0.coordinate!) }
-        let zoom = camera.zoom
+        let camera = self.camera, size = mapSize
+        let onGlobe = showsGlobe
         Task { [weak self] in
-            let made = await Blocking.run(.userInitiated) { AtlasClustering.clusters(of: points, zoom: zoom) }
+            let made = await Blocking.run(.userInitiated) { AtlasModel.make(points, camera: camera, size: size) }
             guard let self else { return }
             self.clusters = made
-            self.clusterZoom = zoom
+            self.clusterZoom = camera.zoom
+            self.clusterCamera = onGlobe ? camera : nil
             self.clustering = false
-            if self.clusterAgain || abs(self.camera.zoom - zoom) > 0.001 { self.scheduleClusters() }
+            if self.clusterAgain || self.needsClusters(at: self.camera) { self.scheduleClusters() }
         }
     }
 
     /// Made at once (tests).
     func clusterNow() {
-        clusters = AtlasClustering.clusters(of: placed.map { (id: $0.url, coordinate: $0.coordinate!) }, zoom: camera.zoom)
+        let onGlobe = showsGlobe
+        clusters = Self.make(placed.map { (id: $0.url, coordinate: $0.coordinate!) }, camera: camera, size: mapSize)
         clusterZoom = camera.zoom
+        clusterCamera = onGlobe ? camera : nil
     }
 
     // MARK: Selection
@@ -330,11 +384,10 @@ final class AtlasModel: ObservableObject {
 
     /// The clusters on screen with their points.
     func visibleClusters(margin: CGFloat = 0) -> [(cluster: AtlasCluster, point: CGPoint)] {
-        let viewport = MapViewport(camera: camera, size: mapSize)
         let bounds = CGRect(origin: .zero, size: mapSize).insetBy(dx: -margin, dy: -margin)
         return clusters.compactMap { cluster in
-            let p = viewport.point(for: cluster.coordinate)
-            return bounds.contains(p) ? (cluster, p) : nil
+            guard let p = point(for: cluster.coordinate), bounds.contains(p) else { return nil }
+            return (cluster, p)
         }
     }
 
@@ -448,7 +501,7 @@ final class AtlasModel: ObservableObject {
         let centred = MapViewport(camera: MapCamera(center: station.coordinate, zoom: TourFlight.zoom(for: station, size: mapSize)),
                                   size: mapSize)
         let middle = centred.coordinate(at: CGPoint(x: mapSize.width * (1 - TourFlight.placeShare), y: mapSize.height / 2))
-        return MapViewport(camera: MapCamera(center: middle, zoom: centred.camera.zoom), size: mapSize).clamped()
+        return held(MapCamera(center: middle, zoom: centred.camera.zoom))
     }
 
     /// The route up to where the tour is: to the station it flies to or shows.

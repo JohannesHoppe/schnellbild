@@ -159,6 +159,10 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
             + "map: \(text(of: element("atlasMapState"))), strip: \(text(of: element("atlasStripTitle"))), empty: \(text(of: element("atlasEmpty"))), "
             + "tiles: \(tiles.allElementsBoundByIndex.map { $0.identifier + " " + self.text(of: $0) })")
         shoot("atlas", settle: 4)
+        // Zoomed far out: the globe, the trip as one tile
+        for _ in 0..<5 { app.typeKey("-", modifierFlags: []) }
+        shoot("atlas-globe", settle: 4)
+        for _ in 0..<5 { app.typeKey("+", modifierFlags: []) }
 
         app.typeKey("t", modifierFlags: [])
         let status = element("tourStatus")

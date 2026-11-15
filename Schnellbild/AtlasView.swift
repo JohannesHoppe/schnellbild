@@ -7,9 +7,9 @@ import OfflineMap
 /// offline map, as thumbnails, close ones as one tile with their count;
 /// those without a place in a strip under the map; the timeline at the
 /// bottom. During the tour the map takes the whole pane (`TourStage`).
-/// The map is `MapView` (flat, Web Mercator); its overlay places the tiles
-/// through the `MapProxy`, so a view with the same API (a globe) can take
-/// its place.
+/// The map is `GlobeView`: zoomed far out the globe, which flattens into
+/// the flat map; its overlay places the tiles through the `MapProxy` and
+/// leaves out what lies on the globe's far side. The timeline stays under both.
 struct AtlasView: View {
     @ObservedObject var atlas: AtlasModel
     @EnvironmentObject var model: BrowserModel
@@ -104,7 +104,8 @@ private struct AtlasMap: View {
     var body: some View {
         let palette = MapPalette.appearance(dark: colorScheme == .dark)
         GeometryReader { geometry in
-            MapView(camera: Binding(get: { camera.camera }, set: { atlas.camera = $0 }), interactive: atlas.tour == nil) { proxy in
+            // Zoomed far out the globe, flattening into the flat map between `GlobeProjection.morphStart` and `flatZoom`
+            GlobeView(camera: Binding(get: { camera.camera }, set: { atlas.camera = $0 }), interactive: atlas.tour == nil) { proxy in
                 if atlas.tour != nil {
                     TourRoute(atlas: atlas, proxy: proxy, palette: palette)
                 } else {
@@ -152,6 +153,8 @@ private struct AtlasTiles: View {
     private var visible: [(cluster: AtlasCluster, point: CGPoint)] {
         let bounds = CGRect(origin: .zero, size: proxy.size).insetBy(dx: -AtlasTile.side, dy: -AtlasTile.side)
         return atlas.clusters.compactMap { cluster in
+            // On the globe: not what lies on its far side
+            guard proxy.isVisible(cluster.coordinate) else { return nil }
             let p = proxy.point(for: cluster.coordinate)
             return bounds.contains(p) ? (cluster, p) : nil
         }
@@ -491,18 +494,20 @@ private struct TourRoute: View {
         let accent = Color(cgColor: palette.accent.cgColor)
         ZStack(alignment: .topLeading) {
             Path { path in
-                let points = atlas.routeSoFar.map(proxy.point(for:))
-                guard let first = points.first else { return }
-                path.move(to: first)
-                // A jump of more than half the world is the antimeridian: lifted there
-                for (a, b) in zip(points, points.dropFirst()) {
-                    if abs(b.x - a.x) > proxy.size.width * 2 { path.move(to: b) } else { path.addLine(to: b) }
+                // Long legs in steps, so they bend with the globe; the far side lifts the pen
+                var previous: CGPoint?
+                for coordinate in Self.stepped(atlas.routeSoFar) {
+                    guard proxy.isVisible(coordinate) else { previous = nil; continue }
+                    let p = proxy.point(for: coordinate)
+                    // A jump of more than the view's width on the flat map is the antimeridian: lifted there
+                    if let previous, abs(p.x - previous.x) <= proxy.size.width * 2 { path.addLine(to: p) } else { path.move(to: p) }
+                    previous = p
                 }
             }
             .stroke(accent, style: StrokeStyle(lineWidth: 3, lineCap: .round, lineJoin: .round))
             .shadow(color: Color(cgColor: palette.frame.cgColor).opacity(0.8), radius: 1)
             if let tour = atlas.tour {
-                ForEach(Array(tour.stations.enumerated()), id: \.offset) { index, station in
+                ForEach(Array(tour.stations.enumerated()).filter { proxy.isVisible($0.element.coordinate) }, id: \.offset) { index, station in
                     let current = index == tour.station
                     Circle()
                         .fill(index <= tour.station ? accent : accent.opacity(0.35))
@@ -513,6 +518,23 @@ private struct TourRoute: View {
             }
         }
         .allowsHitTesting(false)
+    }
+
+    /// The route with a point every half degree or so on its long legs.
+    static func stepped(_ route: [Coordinate]) -> [Coordinate] {
+        guard let first = route.first else { return [] }
+        var out = [first]
+        for (a, b) in zip(route, route.dropFirst()) {
+            var dLon = b.longitude - a.longitude
+            if dLon > 180 { dLon -= 360 } else if dLon < -180 { dLon += 360 }
+            let steps = max(1, min(64, Int(max(abs(b.latitude - a.latitude), abs(dLon)) / 0.5)))
+            for i in 1...steps {
+                let t = Double(i) / Double(steps)
+                out.append(Coordinate(latitude: a.latitude + (b.latitude - a.latitude) * t,
+                                      longitude: a.longitude + dLon * t).normalized)
+            }
+        }
+        return out
     }
 }
 

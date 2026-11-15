@@ -66,6 +66,33 @@ final class AtlasTests: XCTestCase {
         XCTAssertEqual(Set(town.flatMap(\.ids)).count, 13)
     }
 
+    func testOnTheGlobeTheFarSideIsInNoCluster() {
+        let atlas = AtlasModel(browser: nil) { _ in [:] }
+        var items = trip
+        items.append(item("wellington.jpg", "2026-06-19 10:00:00", (-41.29, 174.78)))
+        atlas.load(items)
+        atlas.mapSize = CGSize(width: 960, height: 600)
+        atlas.camera = MapCamera(center: Coordinate(latitude: 60, longitude: 8), zoom: 2)
+        XCTAssertTrue(atlas.showsGlobe, "zoomed far out: the globe")
+        atlas.clusterNow()
+        let ids = atlas.clusters.flatMap(\.ids).map(\.lastPathComponent)
+        XCTAssertEqual(ids.count, 13, "Norway's places")
+        XCTAssertFalse(ids.contains("wellington.jpg"), "New Zealand lies on the far side")
+        XCTAssertTrue(atlas.visibleClusters().allSatisfy { atlas.point(for: $0.cluster.coordinate) != nil })
+        // Turned to the other side
+        atlas.camera = MapCamera(center: Coordinate(latitude: -40, longitude: 175), zoom: 2)
+        atlas.clusterNow()
+        XCTAssertEqual(atlas.clusters.flatMap(\.ids).map(\.lastPathComponent), ["wellington.jpg"])
+        // Flat from the flat zoom on: everything clustered in world points again
+        atlas.camera = MapCamera(center: Coordinate(latitude: 60, longitude: 8), zoom: 6)
+        XCTAssertFalse(atlas.showsGlobe)
+        atlas.clusterNow()
+        XCTAssertEqual(atlas.clusters.reduce(0) { $0 + $1.count }, 14)
+        // The globe's limits: further out than the flat map allows
+        XCTAssertLessThan(atlas.held(MapCamera(center: Coordinate(latitude: 0, longitude: 0), zoom: 0)).zoom,
+                          MapViewport.minZoom(for: atlas.mapSize))
+    }
+
     func testAClusterStandsInTheMiddleOfItsItems() {
         let a = Coordinate(latitude: 60, longitude: 10), b = Coordinate(latitude: 60, longitude: 10.01)
         let clusters = AtlasClustering.clusters(of: [(URL(fileURLWithPath: "/a"), a), (URL(fileURLWithPath: "/b"), b)], zoom: 5)
