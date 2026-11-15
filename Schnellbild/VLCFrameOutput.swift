@@ -138,7 +138,8 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
         let fullRange = chroma[0] == CChar(bitPattern: UInt8(ascii: "J"))
         let source = String(decoding: (0..<4).map { UInt8(bitPattern: chroma[$0]) }, as: UTF8.self)
         let deep = Self.isDeep(chroma: source)
-        for (i, c) in (deep ? "P010" : "NV12").utf8.enumerated() { chroma[i] = CChar(bitPattern: c) }
+        let wanted: [UInt8] = Array((deep ? "P010" : "NV12").utf8)
+        for i in 0..<4 { chroma[i] = CChar(bitPattern: wanted[i]) }
         lock.lock()
         let media = self.media
         lock.unlock()
