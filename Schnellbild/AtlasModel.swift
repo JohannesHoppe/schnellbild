@@ -139,6 +139,9 @@ final class AtlasModel: ObservableObject {
     /// Whether every item's facts are read.
     var isComplete: Bool { readTask == nil && pending.isEmpty }
 
+    /// The pane's walk of the subfolders is still bringing items.
+    @Published var walking = false { didSet { if !walking { fitIfNeeded() } } }
+
     private func rebuild() {
         let built = media.values.compactMap { entry -> AtlasItem? in
             guard let facts = known[entry.url] else { return nil }
@@ -244,9 +247,10 @@ final class AtlasModel: ObservableObject {
     var showsGlobe: Bool { mapSize.width > 0 && !GlobeProjection(camera: camera, size: mapSize).isFlat }
 
     private func fitIfNeeded() {
-        guard tour == nil, mapSize.width > 40, mapSize.height > 40, !placed.isEmpty, needsFit || (!isComplete && !userMovedMap) else { return }
+        let done = isComplete && !walking
+        guard tour == nil, mapSize.width > 40, mapSize.height > 40, !placed.isEmpty, needsFit || (!done && !userMovedMap) else { return }
         fitAll()
-        if isComplete { needsFit = false }
+        if done { needsFit = false }
     }
 
     /// Shows every item on the map.

@@ -622,3 +622,6 @@
 "double-click" = "ダブルクリック";
 "timeline" = "タイムライン";
 "Tour: previous / next place" = "旅：前 / 次の場所";
+"Include subfolders" = "サブフォルダも含める";
+"The photos and videos of every subfolder too, archives included" = "すべてのサブフォルダの写真とビデオも表示（アーカイブを含む）";
+"Reading subfolders…" = "サブフォルダを読み込み中…";

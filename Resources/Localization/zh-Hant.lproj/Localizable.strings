@@ -622,3 +622,6 @@
 "double-click" = "按兩下";
 "timeline" = "時間軸";
 "Tour: previous / next place" = "旅程：上一個 / 下一個地點";
+"Include subfolders" = "包括子檔案夾";
+"The photos and videos of every subfolder too, archives included" = "也顯示所有子檔案夾中的照片和影片，包括封存檔";
+"Reading subfolders…" = "正在讀取子檔案夾…";
