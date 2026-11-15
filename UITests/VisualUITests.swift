@@ -193,22 +193,18 @@ final class VisualUITests: SchnellbildUITestCase {
 
     // MARK: HDR
 
-    /// An HDR10 video (10-bit HEVC, PQ, BT.2020) through VLC goes to the
-    /// screen as HDR: 10-bit pictures tagged PQ and BT.2020, the layer in
-    /// EDR (what `VLCFrameOutput` reports). CI's virtual display has no EDR
-    /// headroom, so how bright the highlights get on an HDR screen can't be
-    /// seen here; what is compared instead is that VLC's picture looks like
-    /// AVKit's (both turn the PQ picture into what the display can show), in
-    /// brightness and channel by channel. An SDR video beside it stays 8-bit
-    /// BT.709 without EDR.
-    func testAVKitAndVLCShowAnHDRVideoAlike() throws {
+    /// A video in AVKit, then through VLC (`--force-vlc`), measured over its
+    /// picture: VLC must report `pictures` (what `VLCFrameOutput` hands to
+    /// the screen) and whether its layer is in EDR, and show the same brightness and colours, channel by
+    /// channel.
+    private func checkBothPlayersShowAlike(_ fixture: String, pictures: String, edr: Bool) throws {
         var shown: [String: ScreenStats] = [:]
         for vlc in [false, true] {
-            let video = try openVideo("hdr10.mp4", vlc: vlc)
+            let video = try openVideo(fixture, vlc: vlc)
             if vlc {
-                eventually("VLC hands over HDR pictures in EDR: \(text(of: video))", timeout: 15) {
+                eventually("VLC hands over \(pictures), EDR \(edr ? "on" : "off"): \(text(of: video))", timeout: 15) {
                     let label = text(of: video)
-                    return label.contains("pictures P010 PQ 2020 matrix 2020") && label.contains("EDR on")
+                    return label.contains(pictures) && label.contains(edr ? "EDR on" : "EDR off")
                 }
             }
             shown[vlc ? "VLC" : "AVKit"] = try screenStats(of: picture(in: video))
@@ -217,12 +213,28 @@ final class VisualUITests: SchnellbildUITestCase {
         let avkit = try XCTUnwrap(shown["AVKit"]), vlc = try XCTUnwrap(shown["VLC"])
         let report = String(format: "AVKit %.3f (%.3f %.3f %.3f), VLC %.3f (%.3f %.3f %.3f)",
                             avkit.mean, avkit.red, avkit.green, avkit.blue, vlc.mean, vlc.red, vlc.green, vlc.blue)
-        print("hdr10.mp4: " + report)
+        print("\(fixture): " + report)
         XCTAssertGreaterThan(avkit.mean, 0.1, "AVKit shows the picture: \(report)")
         XCTAssertEqual(vlc.mean, avkit.mean, accuracy: 0.05, report)
         XCTAssertEqual(vlc.red, avkit.red, accuracy: 0.06, report)
         XCTAssertEqual(vlc.green, avkit.green, accuracy: 0.06, report)
         XCTAssertEqual(vlc.blue, avkit.blue, accuracy: 0.06, report)
+    }
+
+    /// An HDR10 video (10-bit HEVC, PQ, BT.2020) through VLC goes to the
+    /// screen as HDR: 10-bit pictures tagged PQ and BT.2020, the layer in
+    /// EDR. CI's virtual display has no EDR headroom, so how bright the
+    /// highlights get on an HDR screen can't be seen here; what is compared
+    /// instead is that VLC's picture looks like AVKit's (both turn the PQ
+    /// picture into what the display can show).
+    func testAVKitAndVLCShowAnHDRVideoAlike() throws {
+        try checkBothPlayersShowAlike("hdr10.mp4", pictures: "pictures P010 PQ 2020 matrix 2020", edr: true)
+    }
+
+    /// A 10-bit SDR video (BT.709, HD) through VLC: P010 pictures tagged
+    /// BT.709, no EDR, shown as AVKit shows it.
+    func testAVKitAndVLCShowA10BitSDRVideoAlike() throws {
+        try checkBothPlayersShowAlike("sdr10.mp4", pictures: "pictures P010 709 709 matrix 709", edr: false)
     }
 
     /// The same for HDR10 in Matroska (always VLC), and an SDR video after

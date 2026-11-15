@@ -153,6 +153,19 @@ extension LibVLCVideo {
         return nil
     }
 
+    private typealias GetURI = @convention(c) (UnsafeMutableRawPointer) -> UnsafeMutablePointer<CChar>?
+    private static let getURI: GetURI? = dlsym(dlopen(nil, RTLD_NOW), "input_item_GetURI")
+        .map { unsafeBitCast($0, to: GetURI.self) }
+
+    /// The URI of the input item `colour(of:)` reads from (nil: not found):
+    /// the media's own, while the place it is read from fits this VLCKit
+    /// (`VLCHDRTests` holds it to that).
+    public static func inputItemURI(of media: VLCMedia) -> String? {
+        guard let getURI, let item = inputItem(of: media), let text = getURI(item) else { return nil }
+        defer { free(text) }
+        return String(cString: text)
+    }
+
     private static func inputItem(of media: VLCMedia) -> UnsafeMutableRawPointer? {
         let selector = NSSelectorFromString("libVLCMediaDescriptor")
         let library: UnsafeMutableRawPointer? = VLCLibrary.shared().instance

@@ -19,13 +19,15 @@ mkdir -p "$OUT"
 # learns them from the decoder, after its video output has opened); both
 # carry HDR10's mastering display and content light level. hlg.mkv is HLG,
 # sdr10.mkv 10-bit BT.709 (SDR in a 10-bit stream). hdr10.mp4 and the UI
-# tests' copy of hdr10.mkv show AVKit and VLC side by side. The colours are
+# tests' copy of hdr10.mkv show AVKit and VLC side by side, as does sdr10.mp4
+# (10-bit BT.709 at 1280 × 720, HD: VLC's pictures are tagged BT.709 as the
+# stream is, so the colours compare with AVKit's). The colours are
 # stated on the pictures (setparams), so the encoder writes them into the
 # stream and the muxer into the container; hdr10-vui.mkv's go to the encoder
 # only (x265's own parameters).
 hdr() {
   local out=$1 colours=$2 params=$3; shift 3
-  "$FFMPEG" -loglevel error -y -f lavfi -i "smptebars=s=320x180:r=10:d=2" -an \
+  "$FFMPEG" -loglevel error -y -f lavfi -i "smptebars=s=${SIZE:-320x180}:r=10:d=2" -an \
     -vf "format=yuv420p10le,setparams=range=tv:$colours" -c:v libx265 -preset fast -crf 28 \
     -x265-params "log-level=error:keyint=10$params" \
     "$@" -fflags +bitexact -flags:v +bitexact "$out"
@@ -38,6 +40,8 @@ draw_hdr() {
   hdr "$OUT/hlg.mkv" "color_primaries=bt2020:color_trc=arib-std-b67:colorspace=bt2020nc" ""
   hdr "$OUT/sdr10.mkv" "color_primaries=bt709:color_trc=bt709:colorspace=bt709" ""
   hdr UITests/Fixtures/hdr10.mp4 "$pq" "$hdr10" -tag:v hvc1 -movflags +faststart
+  SIZE=1280x720 hdr UITests/Fixtures/sdr10.mp4 "color_primaries=bt709:color_trc=bt709:colorspace=bt709" "" \
+    -tag:v hvc1 -movflags +faststart
   cp "$OUT/hdr10.mkv" UITests/Fixtures/hdr10.mkv
 }
 if [ "${1:-}" = hdr ]; then draw_hdr; exit 0; fi

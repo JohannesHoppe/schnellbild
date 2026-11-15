@@ -110,6 +110,20 @@ final class VLCHDRTests: XCTestCase {
         XCTAssertFalse(edr)
     }
 
+    /// The colours are read from the media's input item at its place inside
+    /// `libvlc_media_t` (`LibVLCVideo.colour(of:)`). A VLCKit with another
+    /// layout fails here: the item isn't found (the instance check refuses
+    /// it), or it is another one than the media's. Without it every video
+    /// plays as SDR.
+    func testTheInputItemIsTheMedias() throws {
+        let url = try XCTUnwrap(Bundle.module.url(forResource: "hdr10", withExtension: "mkv", subdirectory: "Videos"))
+        let media = VLCMedia(url: url)
+        let uri = try XCTUnwrap(LibVLCVideo.inputItemURI(of: media),
+                                "libvlc_media_t's input item not found: check the offsets in VideoColour.swift against this VLCKit")
+        XCTAssertEqual(uri, media.url?.absoluteString)
+        XCTAssertTrue(uri.hasSuffix("/hdr10.mkv"), uri)
+    }
+
     /// The chromas VLC hands over for sources of more than 8 bits.
     func testDeepChromas() {
         for chroma in ["CVPP", "P010", "I0AL", "I0AB", "I0CL", "I2AL", "I4AL", "I0FL", "GBAL"] {
