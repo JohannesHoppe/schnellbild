@@ -213,6 +213,10 @@ final class AtlasUITests: SchnellbildUITestCase {
         }
         eventually("zoomed by the wheel") { abs(self.mapState().zoom - before.zoom) > 0.2 }
 
+        // (XCUITest's scroll is a mouse wheel's on macOS 15, a quarter step a line, and a trackpad's on 26,
+        // a hundredth a point: the 40 can reach the flat map; back to the globe for what follows)
+        zoomOutToTheGlobe()
+
         // A double click glides one step in
         before = mapState()
         globe.coordinate(withNormalizedOffset: CGVector(dx: 0.45, dy: 0.75)).doubleClick()
@@ -221,12 +225,16 @@ final class AtlasUITests: SchnellbildUITestCase {
 
         // In to the flat map: the globe fades out over it
         before = mapState()
+        XCTAssertLessThan(before.zoom, 4, "still the globe: \(before)")
         let plus = app.buttons["Zoom in"].firstMatch
         for _ in 0..<5 where mapState().zoom < 5.5 {
             plus.click()
             RunLoop.current.run(until: Date().addingTimeInterval(0.6))
         }
-        eventually("the flat map, the globe faded out", timeout: 10) { self.mapState().fades > before.fades }
+        let deadline = Date().addingTimeInterval(10)
+        while mapState().fades <= before.fades, Date() < deadline { RunLoop.current.run(until: Date().addingTimeInterval(0.3)) }
+        let flat = mapState()
+        XCTAssertGreaterThan(flat.fades, before.fades, "the flat map, the globe faded out: \(before) → \(flat)")
     }
 
     func testWithReduceMotionNothingGlidesThrowsOrFades() throws {

@@ -134,10 +134,14 @@ private struct AtlasMap: View {
         .overlay(alignment: .bottomLeading) {
             // What the UI tests read about the map (not shown, not for VoiceOver users)
             if VideoDetailView.uiTesting {
-                Color.clear.frame(width: 1, height: 1)
-                    .accessibilityElement()
-                    .accessibilityLabel(Text(verbatim: atlas.testState))
-                    .accessibilityIdentifier("atlasMapState")
+                // Read again four times a second: the map's own movements (a fade
+                // after its last camera change) change no state SwiftUI watches
+                TimelineView(.periodic(from: .now, by: 0.25)) { _ in
+                    Color.clear.frame(width: 1, height: 1)
+                        .accessibilityElement()
+                        .accessibilityLabel(Text(verbatim: atlas.testState))
+                        .accessibilityIdentifier("atlasMapState")
+                }
             }
         }
     }

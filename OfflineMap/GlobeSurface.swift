@@ -199,7 +199,11 @@ final class GlobeSurfaceView: NSView, MTKViewDelegate {
             handoffPending = false
             if let metal {
                 metal.isHidden = false
-                metal.alphaValue = 1
+                // Through the animator, so a fade still running ends at 1, not at 0
+                NSAnimationContext.runAnimationGroup { context in
+                    context.duration = 0
+                    metal.animator().alphaValue = 1
+                }
                 flat.isHidden = true
             } else {
                 flat.isHidden = true
