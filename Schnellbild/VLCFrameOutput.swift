@@ -394,6 +394,8 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
             drawn.displayed = true
             drawing[picture] = drawn
         }
+        // Held: the picture on the layer stays (`hold`)
+        if held { lock.unlock(); return }
         latest = buffer
         lastDisplay = start
         sequence += 1
@@ -416,6 +418,16 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
         if ofMedia <= Self.probedFirst, let probe {
             BrowserModel.testLog("vlc picture \(ofMedia) of media \(opening): \(probe) | \(BrowserModel.testClock) ms")
         }
+    }
+
+    /// Pictures VLC shows while held aren't shown here: the one on the layer
+    /// stays (VLC catching up, hidden, to where the video stood).
+    private var held = false
+
+    func hold(_ on: Bool) {
+        lock.lock()
+        held = on
+        lock.unlock()
     }
 
     // MARK: What the pictures show (UI tests)

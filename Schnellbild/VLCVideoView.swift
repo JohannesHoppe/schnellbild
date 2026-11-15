@@ -381,7 +381,7 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
     private var volume = 1.0
     func setVolume(_ volume: Double) {
         self.volume = volume
-        player.audio?.volume = Int32((volume * 100).rounded())
+        player.audio?.volume = audibleVolume
     }
     /// VLC's own (without a sound output yet: none).
     var playerVolume: Double? {
@@ -422,8 +422,16 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
     /// hardware: hardware decoding is faster). The time is taken right as
     /// the player stops: VLCKit's `stop` hands the closing of the input to
     /// libVLC's own thread (`libvlc_media_player_stop_async`), so nothing
-    /// waits here and the picture doesn't go on meanwhile. The new media
-    /// starts at that time (`:start-time`, a seek before its first picture).
+    /// waits here and the picture doesn't go on meanwhile.
+    ///
+    /// A line already running there would show only from the next one on:
+    /// VLC's seek (`:start-time`) jumps to the video's keyframe before the
+    /// time, and a line that began before that keyframe is never read (its
+    /// Matroska seek takes only the video's and sound's points). So the
+    /// media opens `lineLookback` earlier and plays there hidden and
+    /// silent (`catchUp`): fast (`catchUpRate`) until a second before the
+    /// time, then at its speed until the time, the picture held on the
+    /// layer meanwhile; from there the line shows, running.
     private func decodeInSoftware() {
         guard !softwareDecoding else { return }
         softwareDecoding = true
@@ -433,7 +441,8 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         let ended = reachedEnd || player.position >= 0.999
         let time = ended ? 0 : max(timeNow, 0)
         player.stop()
-        BrowserModel.testLog("vlc: software decoding for subtitles, stopped at \(time) ms (VLC's last report \(player.time.intValue) ms)")
+        BrowserModel.testLog("vlc: software decoding for subtitles, stopped at \(time) ms (VLC's last report \(player.time.intValue) ms) "
+            + "| \(BrowserModel.testClock) ms")
         Task { @MainActor [weak self] in
             for _ in 0..<100 {
                 guard let self, self.player.delegate != nil else { return }   // stopped for good meanwhile
@@ -443,15 +452,78 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
             guard let self, self.player.delegate != nil else { return }
             BrowserModel.testLog("vlc: last picture before opening again: \(self.output.lastProbe)")
             let media = self.makeMedia()
-            if time > 0 { media.addOption(":start-time=\(String(format: "%.3f", Double(time) / 1000))") }
+            let from = max(time - Self.lineLookback, 0)
+            if from > 0 { media.addOption(":start-time=\(String(format: "%.3f", Double(from) / 1000))") }
             self.player.media = media
             self.output.use(media)
             self.openedInSoftware = true
-            self.pauseOnceOpen = !wasPlaying
+            if time > 0 {
+                self.catchUp = CatchUp(target: time, wasPlaying: wasPlaying, began: Date())
+                self.output.hold(true)
+                self.player.rate = Self.catchUpRate   // the input starts at it
+            } else {
+                self.pauseOnceOpen = !wasPlaying
+            }
             self.player.play()
-            BrowserModel.testLog("vlc: opened again in software at \(time) ms, subtitles \(String(describing: self.subtitleOnceOpen))")
+            BrowserModel.testLog("vlc: opened again in software at \(from) ms for \(time) ms, subtitles \(String(describing: self.subtitleToOpen))")
             self.isPlaying = wasPlaying
+            if self.catchUp != nil { self.followCatchUp() }
         }
+    }
+
+    /// How far before the time it stood at the media opens again (subtitle
+    /// lines last up to about seven seconds).
+    static let lineLookback = 7000
+    /// How fast it plays, hidden, up to a second before that time.
+    static let catchUpRate: Float = 8
+
+    /// Playing hidden and silent up to `target` (ms) after opening again.
+    private struct CatchUp {
+        var target: Int
+        var wasPlaying: Bool
+        var began: Date
+    }
+    private var catchUp: CatchUp?
+
+    /// The volume to give VLC: none while catching up.
+    private var audibleVolume: Int32 { catchUp == nil ? Int32((volume * 100).rounded()) : 0 }
+
+    /// Checks the time every 10 ms: at its speed from a second before the
+    /// target, shown from the target on (or after 20 s at the latest).
+    private func followCatchUp() {
+        Task { @MainActor [weak self] in
+            while let self, let catchUp = self.catchUp {
+                guard self.player.delegate != nil else { return }   // stopped for good
+                let state = self.player.state
+                if state == .playing || state == .buffering {
+                    let now = self.timeNow(playing: true)
+                    if now >= catchUp.target - 1000, abs(self.player.rate - Float(self.speed)) > 0.001 {
+                        self.player.rate = Float(self.speed)
+                    }
+                    if now >= catchUp.target {
+                        self.endCatchUp("at \(now) ms")
+                        return
+                    }
+                }
+                if state == .ended || state == .error || Date().timeIntervalSince(catchUp.began) > 20 {
+                    self.endCatchUp("given up (state \(state.rawValue))")
+                    return
+                }
+                try? await Task.sleep(for: .milliseconds(10))
+            }
+        }
+    }
+
+    /// Shows the pictures again, with the sound and the speed chosen;
+    /// paused before, it pauses there.
+    private func endCatchUp(_ how: String) {
+        guard let catchUp else { return }
+        self.catchUp = nil
+        player.rate = Float(speed)
+        player.audio?.volume = audibleVolume
+        if !catchUp.wasPlaying { player.pause() }
+        output.hold(false)
+        BrowserModel.testLog("vlc: caught up \(how) for \(catchUp.target) ms | \(BrowserModel.testClock) ms")
     }
 
     var tracks: VideoTracks {
@@ -500,7 +572,7 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
     /// VLC keeps the pitch at other speeds itself.
     func setSpeed(_ speed: Double) {
         self.speed = speed
-        player.rate = Float(speed)
+        if catchUp == nil { player.rate = Float(speed) }
     }
 
     /// The choices made, applied to the tracks VLC has (it opens a media
@@ -526,7 +598,7 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
            ((player.audioTrackIndexes as? [NSNumber])?.map(\.intValue) ?? []).contains(wanted) {
             player.currentAudioTrackIndex = Int32(wanted)
         }
-        if speed != 1, abs(player.rate - Float(speed)) > 0.001 { player.rate = Float(speed) }
+        if catchUp == nil, speed != 1, abs(player.rate - Float(speed)) > 0.001 { player.rate = Float(speed) }
     }
 
     /// Played to its end: VLC goes on from "ended" to "stopped" quickly,
@@ -561,6 +633,7 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
     private var positionOnceOpen: Float?
 
     func seek(toProgress progress: Double) {
+        endCatchUp("by a seek")
         let target = min(max(progress, 0), 1)
         reachedEnd = false
         pendingSeek = (target, Date())
@@ -573,10 +646,6 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         measureNow = true   // a new scene: measure again at once
     }
 
-    /// The state is read while the notification is delivered: read later, a
-    /// quick "ended" would already be "stopped" and the end missed. It is
-    /// handled once VLCKit's callback has returned, since handling it can
-    /// move on to the next item and stop this player.
     /// VLC's time as last reported and when it arrived.
     private var timeReported: (ms: Int, at: Date)?
 
@@ -588,14 +657,20 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
     /// The time now: VLC reports it four times a second (its input's
     /// statistics), so while playing the time since its last report is
     /// added (at most a second, at the speed played).
-    private var timeNow: Int {
+    private var timeNow: Int { timeNow(playing: isPlaying) }
+
+    private func timeNow(playing: Bool) -> Int {
         let ms = Int(player.time.intValue)
-        guard player.state == .playing || player.state == .buffering, isPlaying,
+        guard player.state == .playing || player.state == .buffering, playing,
               let reported = timeReported, reported.ms == ms else { return ms }
         let since = min(max(Date().timeIntervalSince(reported.at), 0), 1)
         return ms + Int(since * 1000 * Double(player.rate))
     }
 
+    /// The state is read while the notification is delivered: read later, a
+    /// quick "ended" would already be "stopped" and the end missed. It is
+    /// handled once VLCKit's callback has returned, since handling it can
+    /// move on to the next item and stop this player.
     nonisolated func mediaPlayerStateChanged(_ aNotification: Notification) {
         let state = (aNotification.object as? VLCMediaPlayer)?.state
         Task { @MainActor in self.stateChanged(to: state ?? self.player.state) }
@@ -606,8 +681,9 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         switch state {
         case .playing:
             reachedEnd = false
-            isPlaying = true
-            player.audio?.volume = Int32((volume * 100).rounded())
+            // Catching up hidden: playing or paused as before, for the model too
+            isPlaying = catchUp?.wasPlaying ?? true
+            player.audio?.volume = audibleVolume
             if let position = positionOnceOpen {
                 positionOnceOpen = nil
                 player.position = position
