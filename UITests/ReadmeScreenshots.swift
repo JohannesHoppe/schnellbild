@@ -156,7 +156,7 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         let deadline = Date().addingTimeInterval(20)
         while tiles.count < 3, Date() < deadline { RunLoop.current.run(until: Date().addingTimeInterval(0.5)) }
         XCTAssertGreaterThanOrEqual(tiles.count, 3, "the places on the map; count: \(text(of: element("atlasCount"))), "
-            + "strip: \(text(of: element("atlasStripTitle"))), empty: \(text(of: element("atlasEmpty"))), "
+            + "map: \(text(of: element("atlasMapState"))), strip: \(text(of: element("atlasStripTitle"))), empty: \(text(of: element("atlasEmpty"))), "
             + "tiles: \(tiles.allElementsBoundByIndex.map { $0.identifier + " " + self.text(of: $0) })")
         shoot("atlas", settle: 4)
 

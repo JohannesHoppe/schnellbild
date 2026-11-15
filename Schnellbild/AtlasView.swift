@@ -114,6 +114,15 @@ private struct AtlasMap: View {
             .onAppear { atlas.mapSize = geometry.size }
             .onChange(of: geometry.size) { _, size in atlas.mapSize = size }
         }
+        .overlay(alignment: .bottomLeading) {
+            // What the UI tests read about the map (not shown, not for VoiceOver users)
+            if VideoDetailView.uiTesting {
+                Color.clear.frame(width: 1, height: 1)
+                    .accessibilityElement()
+                    .accessibilityLabel(Text(verbatim: atlas.testState))
+                    .accessibilityIdentifier("atlasMapState")
+            }
+        }
     }
 }
 

@@ -208,6 +208,13 @@ final class AtlasModel: ObservableObject {
     /// The map is fitted to the items once per folder (again while they come in, until the user moves it).
     private var needsFit = true
     private(set) var userMovedMap = false
+
+    /// For the UI tests (`--ui-testing`): the map's zoom and size, the clusters, the fit.
+    var testState: String {
+        String(format: "zoom %.2f, size %.0f×%.0f, clusters %d at %.2f, fit %@, moved %@",
+               camera.zoom, mapSize.width, mapSize.height, clusters.count, clusterZoom ?? -1,
+               needsFit ? "pending" : "done", userMovedMap ? "yes" : "no")
+    }
     private var cameraSet: MapCamera?
 
     private func setCamera(_ next: MapCamera) {
