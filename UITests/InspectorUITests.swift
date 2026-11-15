@@ -15,6 +15,10 @@ final class InspectorUITests: SchnellbildUITestCase {
         return first.minX < second.minX
     }
 
+    private func contextItem(_ title: String) -> XCUIElement? {
+        app.menuItems.allElementsBoundByIndex.first { $0.title == title && $0.isHittable }
+    }
+
     private func sortLabel() -> String {
         app.descendants(matching: .any).matching(identifier: "sortMenu").allElementsBoundByIndex
             .map { text(of: $0) }.joined(separator: " ")
@@ -47,9 +51,9 @@ final class InspectorUITests: SchnellbildUITestCase {
         try putPlaces()
         launchOnTempDir(waitFor: "geo.jpg")
         tile("geo-sydney.jpg").rightClick()
-        let item = app.menuItems["Get Info"]
-        XCTAssertTrue(item.waitForExistence(timeout: 5))
-        item.click()
+        // The context menu's, not the Actions menu's of the same name
+        eventually("the context menu shows Get Info") { contextItem("Get Info") != nil }
+        contextItem("Get Info")?.click()
         XCTAssertTrue(app.staticTexts["Location"].waitForExistence(timeout: 10))
         XCTAssertTrue(app.staticTexts["33.8568° S, 151.2153° E"].exists)
         eventually("the item it was asked for is selected") { isSelected("geo-sydney.jpg") }
@@ -70,9 +74,9 @@ final class InspectorUITests: SchnellbildUITestCase {
         try putPlaces()
         launchOnTempDir(waitFor: "geo.jpg")
         tile("geo-paris.jpg").rightClick()
-        let item = app.menuItems["Sort by Distance from Here"]
-        XCTAssertTrue(item.waitForExistence(timeout: 5))
-        item.click()
+        // The context menu's, not the Actions menu's of the same name
+        eventually("the context menu shows Sort by Distance from Here") { contextItem("Sort by Distance from Here") != nil }
+        contextItem("Sort by Distance from Here")?.click()
         eventually("Paris, Munich, New York, Sydney, then those without a place") {
             comesBefore("geo-paris.jpg", "geo.jpg") && comesBefore("geo.jpg", "geo-newyork.jpg")
                 && comesBefore("geo-newyork.jpg", "geo-sydney.jpg") && comesBefore("geo-sydney.jpg", "a.jpg")

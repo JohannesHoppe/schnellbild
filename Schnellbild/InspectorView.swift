@@ -119,17 +119,19 @@ struct InspectorView: View {
         // The labels' column as wide as its longest label ("Änderungsdatum", "Profondeur de couleur")
         Grid(alignment: .topLeading, horizontalSpacing: 10, verticalSpacing: 5) {
             ForEach(rows) { row in
+                // (the menus on the cells: a modifier on the GridRow would make it one cell)
                 GridRow {
                     Text(row.label)
                         .foregroundStyle(.secondary)
                         .fixedSize()
+                        .contextMenu { Button("Copy") { Self.copy(row.value) } }
                     // A value longer than its column wraps, never cut off
                     Text(row.value)
                         .textSelection(.enabled)
                         .fixedSize(horizontal: false, vertical: true)
                         .frame(maxWidth: .infinity, alignment: .leading)
+                        .contextMenu { Button("Copy") { Self.copy(row.value) } }
                 }
-                .contextMenu { Button("Copy") { Self.copy(row.value) } }
             }
         }
         .font(.callout)
@@ -321,7 +323,15 @@ struct InspectorView: View {
             let created = FileReport.created(url)
             switch kind {
             case .image:
-                guard !VectorPicture.isVector(url), let source = await MediaData.imageSource(url) else { return (nil, nil, created) }
+                // SVG, PDF: their own size (ImageIO reads neither)
+                if VectorPicture.isVector(url) {
+                    guard let size = await MediaInfo.pixelSize(ofAnywhere: url), size.width.isFinite, size.height.isFinite else {
+                        return (nil, nil, created)
+                    }
+                    let shown = "\(Int(max(0, min(size.width, 1e15)))) × \(Int(max(0, min(size.height, 1e15)))) px"
+                    return (MediaReport(media: [InfoRow(label: String(localized: "Resolution"), value: shown)]), nil, created)
+                }
+                guard let source = await MediaData.imageSource(url) else { return (nil, nil, created) }
                 return (PictureMetadata.report(source), FileFacts.picture(source, named: url), created)
             case .video:
                 // Inside an archive there are no first bytes to read without unpacking

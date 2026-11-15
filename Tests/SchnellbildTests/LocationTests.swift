@@ -235,7 +235,7 @@ final class LocationTests: XCTestCase {
         _ = await cache.point(of: none, modified: date)
         XCTAssertEqual(reads.value, 3, "no place is known too")
         XCTAssertEqual(cache.cached(none, modified: date), .some(nil))
-        XCTAssertNil(cache.cached(URL(fileURLWithPath: "/tmp/other.jpg"), modified: date) as GeoPoint??)
+        XCTAssertTrue(cache.cached(URL(fileURLWithPath: "/tmp/other.jpg"), modified: date) == nil, "never read")
         let many = (0..<50).map { (URL(fileURLWithPath: "/tmp/\($0).jpg"), Optional(date)) }
         let found = await cache.points(of: many)
         XCTAssertEqual(found.count, 50)
@@ -282,12 +282,12 @@ final class LocationTests: XCTestCase {
         let (_, folder) = try folderWithPlaces()
         let m = makeModel()
         await openAndWait(m, folder)
-        await waitUntil { !m.isLoading && m.entries.count == 6 }
+        await waitUntil { !m.isLoading && m.entries.filter(\.isMedia).count == 6 }
         let paris = try XCTUnwrap(m.entries.first { $0.name == "geo-paris.jpg" })
         m.sortByDistance(from: paris)
         // Paris; Munich (the photo and the video, a few metres apart); New York; Sydney; no place
-        await waitUntil({ m.names == ["geo-paris.jpg", "geo.jpg", "geo.mov", "geo-newyork.jpg", "geo-sydney.jpg", "nogeo.jpg"]
-                          || m.names == ["geo-paris.jpg", "geo.mov", "geo.jpg", "geo-newyork.jpg", "geo-sydney.jpg", "nogeo.jpg"] },
+        await waitUntil({ m.mediaNames == ["geo-paris.jpg", "geo.jpg", "geo.mov", "geo-newyork.jpg", "geo-sydney.jpg", "nogeo.jpg"]
+                          || m.mediaNames == ["geo-paris.jpg", "geo.mov", "geo.jpg", "geo-newyork.jpg", "geo-sydney.jpg", "nogeo.jpg"] },
                         timeout: 10)
         XCTAssertEqual(m.sortKey, .distance)
         XCTAssertTrue(m.sortAscending)
@@ -295,10 +295,10 @@ final class LocationTests: XCTestCase {
         XCTAssertNil(m.knownDistance(of: folder.appendingPathComponent("nogeo.jpg")))
         // The same toggle as the other sorts reverses it; no place stays last
         m.setSort(.distance)
-        await waitUntil({ m.names.first == "geo-sydney.jpg" && m.names.last == "nogeo.jpg" }, timeout: 5)
+        await waitUntil({ m.mediaNames.first == "geo-sydney.jpg" && m.mediaNames.last == "nogeo.jpg" }, timeout: 5)
         // Another sort: back by name
         m.setSort(.name)
-        await waitUntil { m.sortKey == .name && m.names.last == "nogeo.jpg" && m.names.first != "geo-sydney.jpg" }
+        await waitUntil { m.sortKey == .name && m.mediaNames.last == "nogeo.jpg" && m.mediaNames.first != "geo-sydney.jpg" }
         XCTAssertNil(m.locationProgress)
     }
 
@@ -307,7 +307,7 @@ final class LocationTests: XCTestCase {
         let defaults = makeTestDefaults()
         let m = BrowserModel(defaults: defaults)
         await openAndWait(m, folder)
-        await waitUntil { !m.isLoading && m.entries.count == 6 }
+        await waitUntil { !m.isLoading && m.entries.filter(\.isMedia).count == 6 }
         // Distance without a place to measure from asks for one
         m.setSort(.distance)
         XCTAssertTrue(m.distanceOriginRequested)
@@ -315,7 +315,7 @@ final class LocationTests: XCTestCase {
         m.distanceOriginRequested = false
         // Sydney Opera House, pasted as a link
         m.setDistanceOrigin(try XCTUnwrap(GeoPoint.parse("https://maps.apple.com/?ll=-33.8568,151.2153")))
-        await waitUntil({ m.names.first == "geo-sydney.jpg" && m.names.last == "nogeo.jpg" }, timeout: 10)
+        await waitUntil({ m.mediaNames.first == "geo-sydney.jpg" && m.mediaNames.last == "nogeo.jpg" }, timeout: 10)
         let again = BrowserModel(defaults: defaults)
         XCTAssertEqual(again.sortKey, .distance)
         XCTAssertEqual(try XCTUnwrap(again.distanceOrigin).latitude, -33.8568, accuracy: 1e-4)
@@ -325,7 +325,7 @@ final class LocationTests: XCTestCase {
         let (_, folder) = try folderWithPlaces()
         let m = makeModel()
         await openAndWait(m, folder)
-        await waitUntil { !m.isLoading && m.entries.count == 6 }
+        await waitUntil { !m.isLoading && m.entries.filter(\.isMedia).count == 6 }
         m.sortByDistance(from: try XCTUnwrap(m.entries.first { $0.name == "nogeo.jpg" }))
         await waitUntil { m.locationMissing == "nogeo.jpg" }
         XCTAssertNotEqual(m.sortKey, .distance)
@@ -338,7 +338,7 @@ final class LocationTests: XCTestCase {
         let m = makeModel()
         XCTAssertFalse(m.handleKey(.char("i"), command: false), "no folder: nothing to inspect")
         await openAndWait(m, folder)
-        await waitUntil { !m.isLoading && m.entries.count == 6 }
+        await waitUntil { !m.isLoading && m.entries.filter(\.isMedia).count == 6 }
         XCTAssertTrue(m.handleKey(.char("i"), command: false))
         XCTAssertTrue(m.showInspector)
         XCTAssertNotNil(m.inspectedEntry)
@@ -358,4 +358,9 @@ private final class Counter: @unchecked Sendable {
     private var count = 0
     var value: Int { lock.lock(); defer { lock.unlock() }; return count }
     func add() { lock.lock(); count += 1; lock.unlock() }
+}
+
+private extension BrowserModel {
+    /// The names of the photos and videos shown, in order (no "..").
+    var mediaNames: [String] { entries.filter(\.isMedia).map(\.name) }
 }
