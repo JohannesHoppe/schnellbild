@@ -144,6 +144,21 @@ if [ -d "$VLC" ] && from_release VLC-tools-sources.tar "$TOOLS_SOURCES_SHA256"; 
     )
 fi
 
+# Schnellbild's own changes to VLC (Scripts/vlc-patches/*.patch, each with
+# its reason at the top), applied to the tree as VLCKit's patches left it and
+# published next to its source (VLC-schnellbild-changes.patch). They need
+# VLC's tree before VideoLAN's build starts, so VLC's source must come from
+# SOURCE_RELEASE.
+[ -d "$VLC" ] || { echo "!! Scripts/vlc-patches need VLC's source from $SOURCE_RELEASE" >&2; exit 1; }
+for change in "$ROOT"/Scripts/vlc-patches/*.patch; do
+    if patch -d "$VLC" -p1 -R -N -f -s --dry-run -i "$change" >/dev/null 2>&1; then
+        echo "==> $(basename "$change"): applied already" >&2
+    else
+        patch -d "$VLC" -p1 -N -s -i "$change"
+        echo "==> $(basename "$change")" >&2
+    fi
+done
+
 # Into the build script's list of modules it deletes before linking (the list
 # ends with output_livehttp); the plugin list it links is made from what is left
 cd vlckit
@@ -276,6 +291,7 @@ if [ -d "$VLC/.git" ]; then
 else
     cp "$WORK/src/$VLC_ARCHIVE" "$DIST/"
 fi
+cat "$ROOT"/Scripts/vlc-patches/*.patch > "$DIST/VLC-schnellbild-changes.patch"
 tar -cf "$DIST/VLCKit-contrib-sources.tar" -C "$VLC/contrib" tarballs
 make -C "$VLC/extras/tools" fetch-all
 (cd "$VLC/extras/tools" && tar -cf "$DIST/VLC-tools-sources.tar" $(ls | grep -E '\.(tar\.(gz|bz2|xz)|tgz|zip)$'))

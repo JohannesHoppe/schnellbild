@@ -1,0 +1,31 @@
+decoder: look for the video output every 5 ms for subtitles
+
+A subtitle decoded before the video decoder has made its video output
+(a line that begins at the start of the file) waited 200 ms before it
+looked again, so the first pictures were shown without it. It looks
+every 5 ms, for the same 6 s at most. Applied to VLC 3.0.24 as VLCKit
+3.7.5 patches it, with patch -p1 (Scripts/build_vlckit_lgpl.sh).
+
+diff --git a/src/input/decoder.c b/src/input/decoder.c
+--- a/src/input/decoder.c
++++ b/src/input/decoder.c
+@@ -148,7 +148,9 @@
+ #define DECODER_BOGUS_VIDEO_DELAY                ((vlc_tick_t)(DEFAULT_PTS_DELAY * 30))
+
+ /* */
+-#define DECODER_SPU_VOUT_WAIT_DURATION ((int)(0.200*CLOCK_FREQ))
++/* Polled often: a subtitle decoded before the video output exists (a line
++ * at the very start) reaches the pictures as soon as it does */
++#define DECODER_SPU_VOUT_WAIT_DURATION ((int)(0.005*CLOCK_FREQ))
+ #define BLOCK_FLAG_CORE_PRIVATE_RELOADED (1 << BLOCK_FLAG_CORE_PRIVATE_SHIFT)
+
+ /**
+@@ -576,7 +578,7 @@
+     decoder_owner_sys_t *p_owner = p_dec->p_owner;
+     vout_thread_t *p_vout = NULL;
+     subpicture_t *p_subpic;
+-    int i_attempts = 30;
++    int i_attempts = 1200; /* 6 s, as 30 times 200 ms */
+
+     while( i_attempts-- )
+     {
