@@ -62,7 +62,7 @@ Schnellbild follows your Mac's language: English, Deutsch, Français, Español, 
 | ⌘↑ / `..` | up one folder level; above `/` lie all drives, the Mac's own disks, external ones and network shares (opened, never renamed or trashed) |
 | ⌘R | read the folder again (View → Reload) |
 | Home / End | first / last item |
-| + / − (or ⌘+ / ⌘−) | larger / smaller thumbnails |
+| + / − (or ⌘+ / ⌘−, or a trackpad pinch) | larger / smaller thumbnails |
 | ⌘[ / ⌘] | back / forward, restoring the folder, the search and the selection |
 | f / ⌃⌘F | full screen |
 | Return / F2 / ⇧F6 | rename the selected folder or file, as in the Finder (Return on `..`: up a level; F6 too in a single pane) |

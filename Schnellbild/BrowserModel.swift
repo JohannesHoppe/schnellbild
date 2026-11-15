@@ -3085,6 +3085,36 @@ final class BrowserModel: ObservableObject {
     func growThumbnails()   { thumbnailSide = min(thumbnailSide + 30, 320) }
     func shrinkThumbnails() { thumbnailSide = max(thumbnailSide - 30, 80) }
 
+    // MARK: - Trackpad pinch
+
+    /// How far a pinch on the grid goes for one tile step (⌘+ / ⌘−): the
+    /// sum of the gesture's magnification since the last step.
+    static let tilePinchStep: CGFloat = 0.25
+    /// The grid pinch's magnification not yet turned into a step.
+    private(set) var tilePinch: CGFloat = 0
+
+    /// A trackpad pinch over this pane (`magnification`: the event's change,
+    /// 0 none; `began`: the gesture's first event). A video zooms (AVKit's
+    /// view would take the pinch, so the window's event monitor brings it
+    /// here); the grid's tiles grow or shrink a step each time the pinch
+    /// adds up to `tilePinchStep`, so a pinch goes step by step. A picture
+    /// zooms through its own gesture and the list keeps its rows: false,
+    /// the event goes on.
+    func pinch(_ magnification: CGFloat, began: Bool) -> Bool {
+        guard !anySheetOpen else { return false }
+        if let shown = shownMediaEntry {
+            guard shown.kind == .video else { return false }
+            applyPinch(1 + magnification)
+            return true
+        }
+        guard mode == .grid, viewMode == .grid else { return false }
+        if began { tilePinch = 0 }
+        tilePinch += magnification
+        while tilePinch >= Self.tilePinchStep { tilePinch -= Self.tilePinchStep; growThumbnails() }
+        while tilePinch <= -Self.tilePinchStep { tilePinch += Self.tilePinchStep; shrinkThumbnails() }
+        return true
+    }
+
     /// Mode-aware "+"/"−": zoom the image in the full-size view, resize tiles in the grid.
     /// Whether the full view or the slideshow is up (zoom keys zoom it).
     private var viewingMedia: Bool { mode == .detail || slideshow != nil }

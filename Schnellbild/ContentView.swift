@@ -363,19 +363,16 @@ private struct WindowView: View {
                                  + "firstResponder=\(NSApp.keyWindow?.firstResponder.map { String(describing: type(of: $0)) } ?? "nil")")
             return consume ? nil : event
         }
-        // Trackpad pinch on a video: AVKit's player view would take it for
-        // itself, so it's caught here, like the keys. Pictures use their own
-        // gesture.
+        // Trackpad pinch on a video (AVKit's player view would take it for
+        // itself) and on the grid (the tile size), caught here like the
+        // keys: `WindowModel.pinch`. Pictures use their own gesture.
         _ = NSEvent.addLocalMonitorForEvents(matching: .magnify) { event in
-            let magnification = event.magnification
+            let magnification = event.magnification, began = event.phase.contains(.began)
             let used = MainActor.assumeIsolated { () -> Bool in
-                // The pane under the fingers, in the main window only (not over a sheet)
+                // In a main window only (not over a sheet)
                 guard let window = WindowModel.of(event.window), let main = window.nsWindow,
                       let width = main.contentView?.bounds.width else { return false }
-                let model = window.pane(atX: event.locationInWindow.x, width: width)
-                guard model.shownMediaEntry?.kind == .video, !model.anySheetOpen else { return false }
-                model.applyPinch(1 + magnification)
-                return true
+                return window.pinch(magnification, began: began, atX: event.locationInWindow.x, width: width)
             }
             return used ? nil : event
         }
@@ -1351,6 +1348,12 @@ extension WindowModel {
     func pane(atX x: CGFloat, width: CGFloat) -> BrowserModel {
         guard dual, active.slideshow == nil, let right else { return active }
         return x >= PaneDivider.leftWidth(total: width, split: split) + PaneDivider.width / 2 ? right : left
+    }
+
+    /// A trackpad pinch at `x` in a window `width` wide: the pane under the
+    /// fingers takes it (`BrowserModel.pinch`); false: the event goes on.
+    func pinch(_ magnification: CGFloat, began: Bool, atX x: CGFloat, width: CGFloat) -> Bool {
+        pane(atX: x, width: width).pinch(magnification, began: began)
     }
 }
 
