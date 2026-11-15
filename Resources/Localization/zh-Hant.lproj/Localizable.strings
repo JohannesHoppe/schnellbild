@@ -551,7 +551,7 @@
 "the night sky behind the globe" = "地球儀背後的夜空";
 "NASA/Goddard Space Flight Center Scientific Visualization Studio, made from Gaia DR2, Hipparcos and Tycho-2 data. Public domain." = "NASA/Goddard Space Flight Center Scientific Visualization Studio，根據 Gaia DR2、Hipparcos 與 Tycho-2 的資料製作。公有領域。";
 "the lights on the globe's night side" = "地球儀夜側的燈光";
-"NASA Earth Observatory. Used under NASA's media usage guidelines." = "NASA Earth Observatory。依照 NASA 媒體使用準則使用。";
+"Used under NASA's media usage guidelines." = "依照 NASA 媒體使用準則使用。";
 
 /* Sorting by distance: the map and Use My Location */
 "Use My Location" = "使用我的位置";

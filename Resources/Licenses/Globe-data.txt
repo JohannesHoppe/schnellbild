@@ -1,6 +1,6 @@
-Schnellbild's globe data (globe-20261115)
+Schnellbild's globe data (globe-20261115b)
 
-schnellbild-heightmap-20261115.sbhm: elevation and ocean depth in cells of 1/8 degree, made from
+schnellbild-heightmap-20261115b.sbhm: elevation and ocean depth in cells of 1/8 degree, made from
 NOAA National Centers for Environmental Information. 2022: ETOPO 2022 15 Arc-Second
 Global Relief Model (here its 30 arc-second surface elevation grid).
 https://doi.org/10.25921/fd45-gt74
@@ -8,13 +8,14 @@ NOAA waives any potential copyright and related rights in these data worldwide
 through the Creative Commons Zero 1.0 Universal Public Domain Dedication (CC0-1.0).
 Not to be used for navigation.
 
-schnellbild-sky-20261115.jpg: the night sky, made from "Deep Star Maps 2020", NASA/Goddard Space Flight
+schnellbild-sky-20261115b.png: the night sky, made from "Deep Star Maps 2020", NASA/Goddard Space Flight
 Center Scientific Visualization Studio (https://svs.gsfc.nasa.gov/4851), with
 source data courtesy of Gaia DR2 (ESA/Gaia/DPAC), Hipparcos and Tycho-2. SVS
 content is in the public domain. No endorsement by NASA is implied.
 
-schnellbild-citylights-20261115.jpg: the lights of the night side, made from "Black Marble 2016" (grey),
-NASA Earth Observatory
+schnellbild-citylights-20261115b.png: the lights of the night side, made from "Earth at Night (Black Marble)
+2016 Grayscale Maps": NASA Earth Observatory images by Joshua Stevens, using
+Suomi NPP VIIRS data from Miguel Román, NASA's Goddard Space Flight Center
 (https://science.nasa.gov/earth/earth-observatory/earth-at-night/maps/).
 Used under NASA's media usage guidelines; no endorsement by NASA is implied.
 

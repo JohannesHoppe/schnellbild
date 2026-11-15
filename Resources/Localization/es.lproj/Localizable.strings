@@ -551,7 +551,7 @@
 "the night sky behind the globe" = "el cielo nocturno detrás del globo";
 "NASA/Goddard Space Flight Center Scientific Visualization Studio, made from Gaia DR2, Hipparcos and Tycho-2 data. Public domain." = "NASA/Goddard Space Flight Center Scientific Visualization Studio, a partir de datos de Gaia DR2, Hipparcos y Tycho-2. Dominio público.";
 "the lights on the globe's night side" = "las luces del lado nocturno del globo";
-"NASA Earth Observatory. Used under NASA's media usage guidelines." = "NASA Earth Observatory. Usado según las pautas de uso de medios de la NASA.";
+"Used under NASA's media usage guidelines." = "Usado según las pautas de uso de medios de la NASA.";
 
 /* Sorting by distance: the map and Use My Location */
 "Use My Location" = "Usar mi ubicación";

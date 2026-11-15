@@ -62,6 +62,11 @@ enum AboutPanel {
         }
     }
 
+    /// The credit NASA Earth Observatory gives its Black Marble 2016 maps
+    enum BlackMarble {
+        static let credit = "NASA Earth Observatory images by Joshua Stevens, using Suomi NPP VIIRS data from Miguel Román, NASA's Goddard Space Flight Center"
+    }
+
     static let components: [Component] = [
         Component(name: "VLCKit 3.7.5 (libVLC 3.0.24)", use: String(localized: "plays the video formats macOS can't (AVI, MKV, WebM …)"),
                   license: String(localized: "© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later. Built from its source without VLC's modules under the GPL; the build script and its changes are in Schnellbild's repository (github.com/JohannesHoppe/schnellbild)."),
@@ -89,7 +94,8 @@ enum AboutPanel {
                   license: String(localized: "NASA/Goddard Space Flight Center Scientific Visualization Studio, made from Gaia DR2, Hipparcos and Tycho-2 data. Public domain."),
                   link: "https://svs.gsfc.nasa.gov/4851"),
         Component(name: "Black Marble 2016 (NASA)", use: String(localized: "the lights on the globe's night side"),
-                  license: String(localized: "NASA Earth Observatory. Used under NASA's media usage guidelines."),
+                  // NASA's credit line stays as NASA writes it (English)
+                  license: "\(BlackMarble.credit). " + String(localized: "Used under NASA's media usage guidelines."),
                   link: "https://science.nasa.gov/earth/earth-observatory/earth-at-night/maps/"),
     ]
 }
