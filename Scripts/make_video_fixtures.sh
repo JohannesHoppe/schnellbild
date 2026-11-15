@@ -109,5 +109,14 @@ tracks tracks.mkv de.ass -c:s:0 srt -c:s:1 ass
   -i "$SUBS/en.srt" -map 0:v -map 1:s -c:v libx264 -pix_fmt yuv420p -g 10 -c:s srt \
   -metadata:s:s:0 language=eng -metadata:s:s:0 title=English -disposition:s:0 default \
   -fflags +bitexact -flags:v +bitexact UITests/Fixtures/ramp.mkv
+
+# tracks720.mkv: 10 s of even grey at 1280 × 720, the German ASS lines first
+# (the default) and the English SubRip ones second, no sound: the app's own
+# subtitle lines compared with VLC's at another size than tracks.mkv's.
+"$FFMPEG" -loglevel error -y -f lavfi -i "color=c=0x808080:s=1280x720:r=10:d=10" \
+  -i "$SUBS/de.ass" -i "$SUBS/en.srt" -map 0:v -map 1:s -map 2:s -c:v libx264 -pix_fmt yuv420p -g 10 -c:s:0 ass -c:s:1 srt \
+  -metadata:s:s:0 language=deu -metadata:s:s:0 title=Deutsch -metadata:s:s:1 language=eng -metadata:s:s:1 title=English \
+  -disposition:s:0 default -disposition:s:1 0 -t 10 \
+  -fflags +bitexact -flags:v +bitexact UITests/Fixtures/tracks720.mkv
 draw_hdr
 finished=1

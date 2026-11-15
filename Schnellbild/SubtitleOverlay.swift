@@ -65,9 +65,11 @@ enum SubtitleOverlay {
 
     /// VLC's freetype renderer with its defaults.
     static func vlcLook(width: Int, height: Int) -> Look {
-        // ConvertToLiveSize: STYLE_DEFAULT_REL_FONT_SIZE 6.25 % of the height (the width if portrait)
+        // ConvertToLiveSize with VLCKit's forced relative size (freetype.c's
+        // UpdateDefaultLiveStyles: 10 % with freetype-rel-fontsize 0) of the
+        // height (the width if portrait)
         let area = height > width ? width : height
-        let size = CGFloat(Int(Double(area) * 6.25 / 100))
+        let size = CGFloat(Int(Double(area) * 10 / 100))
         let font = CTFontCreateWithName("HelveticaNeue" as CFString, size, nil)
         // freetype-shadow-distance 0.06 at freetype-shadow-angle -45°
         let shadow = 0.06 * cos(CGFloat.pi / 4) * size

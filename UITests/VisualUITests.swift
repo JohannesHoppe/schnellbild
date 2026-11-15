@@ -434,12 +434,13 @@ final class VisualUITests: SchnellbildUITestCase {
     /// Switched to another subtitle track in the middle of a line (in
     /// software already): the new track's running line shows at once,
     /// drawn by the app, then VLC's from its next line, looking the same.
-    private func checkRunningLineWhenSwitching(_ fixture: String, to label: String, _ what: String) throws {
+    private func checkRunningLineWhenSwitching(_ fixture: String, from start: String = "subtitles 1/2 en", to label: String,
+                                               _ what: String) throws {
         let log = tempDir.appendingPathComponent("app.log")
         continueAfterFailure = true   // the log below shows on a failure too
         defer { print("app log:\n" + ((try? String(contentsOf: log, encoding: .utf8)) ?? "(none)")) }
         let video = try openVideo(fixture, vlc: true, extra: ["--test-log=\(log.path)"])
-        eventually("the subtitles are on", timeout: 20) { text(of: video).contains("subtitles 1/2 en") }
+        eventually("the subtitles are on", timeout: 20) { text(of: video).contains(start) }
         waitForSoftwarePictures(of: video)
         func time(_ label: String) -> Int {
             guard let range = label.range(of: "time ") else { return -1 }
@@ -466,6 +467,11 @@ final class VisualUITests: SchnellbildUITestCase {
 
     func testVLCShowsTheRunningMovTextLineWhenSwitchedTo() throws {
         try checkRunningLineWhenSwitching("tracks.mp4", to: "subtitles 2/2 de", "mov_text")
+    }
+
+    /// At 1280 × 720: the app's SubRip line as VLC's (sizes and margins scale with the picture).
+    func testVLCShowsTheRunningSubRipLineWhenSwitchedToInHD() throws {
+        try checkRunningLineWhenSwitching("tracks720.mkv", from: "subtitles 1/2 de", to: "subtitles 2/2 en", "SubRip HD")
     }
 
     /// Played to its end and started again (Space), the video opens with
