@@ -390,7 +390,7 @@ Schnellbild → Settings (⌘,) has five things: light or dark (as the system, o
 | | Formats |
 |---|---|
 | Photos and graphics | JPEG (`.jpg`, `.jpeg`, `.jpe`), HEIC / HEIF (`.heic`, `.heif`, `.hif`, `.heics`), AVIF, JPEG XL (`.jxl`), PNG, GIF, WebP, TIFF (`.tif`, `.tiff`), BMP, JPEG 2000 (`.jp2`, `.j2k`), MPO |
-| Vector and documents | SVG, PDF (every page as a vector picture) |
+| Vector and documents | SVG, PDF (the first page, as a vector picture) |
 | HDR and editing | OpenEXR (`.exr`), Radiance (`.hdr`), Photoshop (`.psd`), Targa (`.tga`), DDS, icons (`.ico`, `.icns`) |
 | Camera RAW (the models macOS knows) | Canon `.cr2` `.cr3` `.crw`, Nikon `.nef` `.nrw`, Sony `.arw` `.sr2` `.srf`, Fujifilm `.raf`, Olympus / OM `.orf`, Panasonic / Leica `.rw2` `.rwl` `.raw`, Pentax `.pef`, Samsung `.srw`, Hasselblad `.3fr` `.fff`, Phase One `.iiq`, Adobe `.dng`, Epson `.erf`, Kodak `.dcr`, Leaf `.mos`, Minolta `.mrw` |
 
