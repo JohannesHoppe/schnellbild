@@ -69,7 +69,8 @@ final class CoreLocationProvider: NSObject, LocationProvider, CLLocationManagerD
     }
 
     /// What a state of the user's permission means for the request: nil
-    /// to go on (ask, or request the position).
+    /// to go on (ask, or request the position). On macOS a granted request
+    /// reads `.authorizedAlways` (`authorizedWhenInUse` is unavailable there).
     nonisolated static func failure(for status: CLAuthorizationStatus) -> LocationFailure? {
         switch status {
         case .denied: return .denied
