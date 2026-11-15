@@ -46,6 +46,8 @@ struct SchnellbildApp: App {
         BrowserModel.watchFoldersByDefault = true
         DiskEvents.start()
         VideoBarPlacement.shared.use(defaults)
+        // The Inspector's map and place names, from the map data the app carries
+        OfflineGeography.provider = BundledGeography.make()
         let left = BrowserModel(defaults: defaults)
         _first = StateObject(wrappedValue: WindowModel(left: left, defaults: defaults) {
             BrowserModel(defaults: defaults, settingsPrefix: "rightPane.")
@@ -105,7 +107,7 @@ struct SchnellbildApp: App {
                     .disabled(model.slideshow != nil || window.anySheetOpen || !(model.selectedEntry.map(model.canRename) ?? false))
                 // The Inspector, as the Finder's ⌘I (also I without ⌘)
                 Button("Get Info") { model.showInspector.toggle() }
-                    .keyboardShortcut("i")
+                    .keyboardShortcut(shortcuts.menuShortcut(.info))
                     .disabled(model.folderURL == nil || window.anySheetOpen)
                 Button("Reveal in Finder") { model.revealInFinder() }
                     .keyboardShortcut(shortcuts.menuShortcut(.reveal))

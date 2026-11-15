@@ -859,8 +859,9 @@ struct EmptyStateView: View {
     }
 }
 
-/// The sort choices, in the View menu (with ⌘1 … ⌘5 unless changed) and in the toolbar.
-/// Choosing the current key again reverses the direction.
+/// The sort choices, in the View menu (with ⌘1 … ⌘6 unless changed) and in the toolbar.
+/// Choosing the current key again reverses the direction; Distance without
+/// a place to measure from opens the sheet that asks for one.
 struct SortChoices: View {
     @ObservedObject var model: BrowserModel
     @ObservedObject var keys = Shortcuts.shared

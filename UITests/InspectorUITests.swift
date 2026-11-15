@@ -37,6 +37,9 @@ final class InspectorUITests: SchnellbildUITestCase {
         XCTAssertTrue(app.staticTexts["Example Camera One"].exists)
         XCTAssertTrue(app.staticTexts["64 × 48 px"].exists)
         XCTAssertTrue(element("openInMaps").exists)
+        // The offline map and the town near the place, from the map data the app carries
+        XCTAssertTrue(element("inspectorMap").waitForExistence(timeout: 10))
+        eventually("the town near it") { text(of: element("inspectorPlace")) == "near Munich, Germany" }
         // The next item: the sidebar follows the selection
         tile("geo-paris.jpg").click()
         eventually("Paris") { app.staticTexts["48.8584° N, 2.2945° E"].exists }
@@ -87,10 +90,11 @@ final class InspectorUITests: SchnellbildUITestCase {
         XCTAssertTrue(element("column.distance").waitForExistence(timeout: 5))
     }
 
+    /// ⌘6 (Distance) with no place yet asks for one.
     func testSortByDistanceFromPastedCoordinates() throws {
         try putPlaces()
         launchOnTempDir(waitFor: "geo.jpg")
-        clickMenu("View", "Distance")
+        app.typeKey("6", modifierFlags: .command)
         let field = app.textFields["distanceOriginField"]
         XCTAssertTrue(field.waitForExistence(timeout: 5), "no place yet: the sheet asks for one")
         field.typeText("33.8568 S, 151.2153 E")

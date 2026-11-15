@@ -371,9 +371,9 @@ struct InspectorView: View {
     }
 }
 
-/// The place for a small offline map and the nearest town's name in the
-/// Inspector's Location section, filled by an `OfflineGeographyProvider`.
-/// None is set (`OfflineGeography.provider` is nil): the slot shows nothing.
+/// A small offline map and the nearest town's name in the Inspector's
+/// Location section, from `OfflineGeography.provider` (the app sets
+/// `BundledGeography`; without map data it is nil and the slot shows nothing).
 struct OfflineMapSlot: View {
     let point: GeoPoint
     @State private var place: String?
@@ -385,7 +385,7 @@ struct OfflineMapSlot: View {
                     map.frame(height: 160).clipShape(RoundedRectangle(cornerRadius: 8))
                 }
                 if let place {
-                    Text(verbatim: place).font(.callout)
+                    Text(verbatim: place).font(.callout).accessibilityIdentifier("inspectorPlace")
                 }
             }
         }

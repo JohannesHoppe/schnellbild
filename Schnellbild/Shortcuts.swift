@@ -242,7 +242,7 @@ enum ShortcutAction: String, CaseIterable {
     // Search field
     case search
     // Grid and full view
-    case back, forward, enclosingFolder, reload, sortName, sortKind, sortModified, sortTaken, sortSize
+    case back, forward, enclosingFolder, reload, sortName, sortKind, sortModified, sortTaken, sortSize, sortDistance
     case fullScreen, enhance, adjust, openFolder, newWindow, reveal, openDefault, menus, quit
     case miniKeyboard, bookmark, bookmark1, bookmark2, bookmark3, bookmark4, bookmark5
     case bookmark6, bookmark7, bookmark8, bookmark9, bossKey, help
@@ -303,7 +303,8 @@ enum ShortcutAction: String, CaseIterable {
         case .zoomActual:        return Spec(group: .fullView, scope: Self.viewing, standard: ["1"], performer: "1")
         case .rotateLeft:        return Spec(group: .fullView, scope: Self.viewing, standard: ["~left"], performer: "~left")
         case .rotateRight:       return Spec(group: .fullView, scope: Self.viewing, standard: ["~right"], performer: "~right")
-        case .info:              return Spec(group: .fullView, scope: Self.viewing, standard: ["i"], performer: "i")
+        // The Inspector: I everywhere, ⌘I as the Finder's Get Info (the Actions menu)
+        case .info:              return Spec(group: .general, scope: Self.everywhere, standard: ["i", "@i"], performer: "i")
         case .fullRename:        return Spec(group: .fullView, scope: .full, standard: ["f2"], phiewer: ["@r", "f2"], performer: "f2")
         case .closeFullView:     return Spec(group: .fullView, scope: .full, standard: ["escape", "delete", "return"],
                                              phiewer: ["escape", "return"], performer: "escape")
@@ -343,6 +344,7 @@ enum ShortcutAction: String, CaseIterable {
         case .sortModified:      return Spec(group: .general, scope: Self.gridAndFull, standard: ["@3"], performer: nil)
         case .sortTaken:         return Spec(group: .general, scope: Self.gridAndFull, standard: ["@4"], performer: nil)
         case .sortSize:          return Spec(group: .general, scope: Self.gridAndFull, standard: ["@5"], performer: nil)
+        case .sortDistance:      return Spec(group: .general, scope: Self.gridAndFull, standard: ["@6"], performer: nil)
         case .fullScreen:        return Spec(group: .general, scope: Self.everywhere, standard: ["f"], performer: "f")
         case .enhance:           return Spec(group: .general, scope: Self.everywhere, standard: ["e"], performer: "e")
         case .adjust:            return Spec(group: .general, scope: Self.everywhere, standard: ["a"], performer: "a")
@@ -382,7 +384,7 @@ enum ShortcutAction: String, CaseIterable {
     static let bookmarks: [ShortcutAction] = [.bookmark1, .bookmark2, .bookmark3, .bookmark4, .bookmark5,
                                               .bookmark6, .bookmark7, .bookmark8, .bookmark9]
     /// Sorting, in the order of `BrowserModel.SortKey.allCases`.
-    static let sorts: [ShortcutAction] = [.sortName, .sortKind, .sortModified, .sortTaken, .sortSize]
+    static let sorts: [ShortcutAction] = [.sortName, .sortKind, .sortModified, .sortTaken, .sortSize, .sortDistance]
 
     /// The sort the action chooses.
     var sortKey: BrowserModel.SortKey? {
@@ -392,6 +394,7 @@ enum ShortcutAction: String, CaseIterable {
         case .sortModified: return .modified
         case .sortTaken:    return .captured
         case .sortSize:     return .size
+        case .sortDistance: return .distance
         default:            return nil
         }
     }
