@@ -2,10 +2,20 @@
 """Makes the globe's data files from their public sources (Scripts/globe_data.env).
 
   python3 -I Scripts/build_globe_data.py [--check]
+  python3 -I Scripts/build_globe_data.py --upstream --extract DIR
 
 Python's standard library only, plus `swift Scripts/convert_globe_images.swift`
 (ImageIO) for the two pictures. Downloads go to build/globe-cache/, the files to
-build/globe/:
+build/globe/.
+
+The inputs come from the archive: the pre-release SOURCE_RELEASE_TAG of this
+repository holds the eight ETOPO bands as NOAA's OPeNDAP server answers them
+(etopo-band-<n>.dods, pinned by ETOPO_BANDS_SHA256), the star map and the Black
+Marble picture under their own names. Each is checked against its SHA-256; only
+when the archive can't be reached does the script ask NOAA, SVS and NASA.
+`--upstream` reads the sources themselves, `--extract DIR` only gathers the
+inputs into DIR (the archive's files) and prints their SHA-256.
+
 
 - HEIGHTMAP_FILE: NOAA ETOPO 2022 (30 arc-seconds, surface elevation, CC0 1.0),
   every fifth sample read through NOAA's OPeNDAP server in eight bands, each
@@ -31,6 +41,7 @@ import os
 import struct
 import subprocess
 import sys
+import urllib.error
 import urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -66,6 +77,24 @@ def download(url, path):
     return path
 
 
+UPSTREAM = "--upstream" in sys.argv
+
+
+def obtain(cfg, name, want, url):
+    """build/globe-cache/<name>: kept while its SHA-256 is <want>, else from the archive
+    (SOURCE_RELEASE_TAG), else from <url>. Without a pin (<want> empty) only from <url>."""
+    path = os.path.join(CACHE, name)
+    if os.path.exists(path) and want and sha256(path) != want:
+        os.remove(path)
+    if not os.path.exists(path) and want and not UPSTREAM:
+        archived = f"https://github.com/JohannesHoppe/schnellbild/releases/download/{cfg['SOURCE_RELEASE_TAG']}/{name}"
+        try:
+            download(archived, path)
+        except (urllib.error.URLError, OSError) as e:
+            print(f"   archive: {e}")
+    return download(url, path)
+
+
 def sha256(path):
     h = hashlib.sha256()
     with open(path, "rb") as f:
@@ -82,6 +111,11 @@ def pinned(path, want, name):
         print(f"   {name} SHA-256 (pin it in globe_data.env): {got}")
 
 
+def band_pins(cfg):
+    pins = [p for p in cfg.get("ETOPO_BANDS_SHA256", "").split(",") if p]
+    return pins if len(pins) == BANDS else [""] * BANDS
+
+
 def dap_floats(data, start):
     """An OPeNDAP array in XDR: its length twice, then big-endian floats."""
     n, _ = struct.unpack(">ii", data[start:start + 8])
@@ -91,16 +125,28 @@ def dap_floats(data, start):
     return values, start + 8 + 4 * n
 
 
-def heightmap(cfg):
-    sampled_rows, sampled_columns = ROWS // STRIDE, COLUMNS // STRIDE      # 4320 × 8640
+SAMPLED_ROWS, SAMPLED_COLUMNS = ROWS // STRIDE, COLUMNS // STRIDE      # 4320 × 8640
+PER_BAND = SAMPLED_ROWS // BANDS
+
+
+def etopo_band(cfg, band):
+    """The band's every fifth row and column of ETOPO, as NOAA's OPeNDAP server answers."""
+    first = 2 + STRIDE * PER_BAND * band
+    last = first + STRIDE * (PER_BAND - 1)
+    url = f"{cfg['ETOPO_DAP_URL']}.dods?z[{first}:{STRIDE}:{last}][2:{STRIDE}:{COLUMNS - 1}]"
+    name = f"etopo-band-{band}.dods"
+    want = band_pins(cfg)[band]
+    path = obtain(cfg, name, want, url)
+    pinned(path, want, f"{name} (ETOPO_BANDS_SHA256, {band + 1} of {BANDS})")
+    return path
+
+
+def heightmap(bands):
+    sampled_rows, sampled_columns = SAMPLED_ROWS, SAMPLED_COLUMNS
     width, height = sampled_columns // BLOCK, sampled_rows // BLOCK         # 2880 × 1440
-    per_band = sampled_rows // BANDS
+    per_band = PER_BAND
     sums = [array.array("d", bytes(8 * width)) for _ in range(height)]
-    for band in range(BANDS):
-        first = 2 + STRIDE * per_band * band
-        last = first + STRIDE * (per_band - 1)
-        url = f"{cfg['ETOPO_DAP_URL']}.dods?z[{first}:{STRIDE}:{last}][2:{STRIDE}:{COLUMNS - 1}]"
-        path = download(url, os.path.join(CACHE, f"etopo-band-{band}.dods"))
+    for band, path in enumerate(bands):
         data = open(path, "rb").read()
         z, _ = dap_floats(data, data.index(b"\nData:\n") + 7)
         if len(z) != per_band * sampled_columns:
@@ -146,24 +192,35 @@ Made by Scripts/build_globe_data.py of https://github.com/JohannesHoppe/schnellb
 
 def main():
     check = "--check" in sys.argv
+    extract = sys.argv[sys.argv.index("--extract") + 1] if "--extract" in sys.argv else None
     cfg = env()
-    os.makedirs(OUT, exist_ok=True)
 
+    bands = [etopo_band(cfg, band) for band in range(BANDS)]
+    sky = obtain(cfg, os.path.basename(cfg["SKY_URL"]), cfg["SKY_SHA256"], cfg["SKY_URL"])
+    if os.path.getsize(sky) != int(cfg["SKY_SIZE"]):
+        sys.exit(f"!! {sky}: size {os.path.getsize(sky)}, expected {cfg['SKY_SIZE']}")
+    pinned(sky, cfg["SKY_SHA256"], "star map")
+    lights = obtain(cfg, os.path.basename(cfg["LIGHTS_URL"]), cfg["LIGHTS_SHA256"], cfg["LIGHTS_URL"])
+    pinned(lights, cfg["LIGHTS_SHA256"], "Black Marble")
+
+    if extract:
+        os.makedirs(extract, exist_ok=True)
+        for p in bands + [sky, lights]:
+            with open(p, "rb") as src, open(os.path.join(extract, os.path.basename(p)), "wb") as dst:
+                dst.write(src.read())
+            print(f"{os.path.basename(p)} {os.path.getsize(p)} {sha256(p)}")
+        print("ETOPO_BANDS_SHA256=" + ",".join(sha256(p) for p in bands))
+        return
+
+    os.makedirs(OUT, exist_ok=True)
     path = os.path.join(OUT, cfg["HEIGHTMAP_FILE"])
-    data = heightmap(cfg)
+    data = heightmap(bands)
     if check:
         got = hashlib.sha256(data).hexdigest()
         if got != cfg["HEIGHTMAP_SHA256"]:
             sys.exit(f"!! heightmap SHA-256 {got}, pinned {cfg['HEIGHTMAP_SHA256']}")
         print("heightmap matches the pinned SHA-256")
     open(path, "wb").write(data)
-
-    sky = download(cfg["SKY_URL"], os.path.join(CACHE, os.path.basename(cfg["SKY_URL"])))
-    if os.path.getsize(sky) != int(cfg["SKY_SIZE"]):
-        sys.exit(f"!! {sky}: size {os.path.getsize(sky)}, expected {cfg['SKY_SIZE']}")
-    pinned(sky, cfg["SKY_SHA256"], "star map")
-    lights = download(cfg["LIGHTS_URL"], os.path.join(CACHE, os.path.basename(cfg["LIGHTS_URL"])))
-    pinned(lights, cfg["LIGHTS_SHA256"], "Black Marble")
 
     convert = os.path.join(ROOT, "Scripts", "convert_globe_images.swift")
     subprocess.run(["swift", convert, "sky", sky, os.path.join(OUT, cfg["SKYMAP_FILE"])], check=True)

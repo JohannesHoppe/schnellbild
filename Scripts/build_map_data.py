@@ -15,16 +15,27 @@ From the Protomaps daily build pinned in Scripts/map_data.env it makes:
 
 Usage:
   python3 -I Scripts/build_map_data.py [--cache DIR] [--out DIR] [--jobs N] [--check]
+  python3 -I Scripts/build_map_data.py --upstream --extract DIR [--cache DIR]
 
-  --cache  where the source's directories and tile data are kept between runs
-           (default build/map-cache). Tile data is kept as files tiles-<start>-<end>.bin,
-           <start>/<end> being byte offsets into the source's tile data section; any set of
-           such files is used, the gaps are downloaded in pieces of 256 MiB (about 3.8 GB
-           for zoom 0 to 10).
-  --out    where the files are written (default build/map)
-  --check  fail unless the files' SHA-256 are the ones pinned in map_data.env
+  --cache     where the source's directories and tile data are kept between runs
+              (default build/map-cache). Tile data is kept as files tiles-<start>-<end>.bin,
+              <start>/<end> being byte offsets into the source's tile data section; any set
+              of such files is used.
+  --out       where the files are written (default build/map)
+  --check     fail unless the files' SHA-256 are the ones pinned in map_data.env
+  --upstream  take what the cache lacks from Protomaps and naciscdn.org, not from the archive
+  --extract   only gather the inputs, write them to DIR as the archive's files (the tile data
+              in parts under 2 GiB, GitHub's limit per release asset) and print their pins
+
+The inputs come from the archive: the pre-release SOURCE_RELEASE_TAG of this repository
+holds what the build reads of the Protomaps build (its directory up to zoom 10 and the tile
+data up to the end of zoom 10, about 3.8 GB) and the Natural Earth zips, each pinned by
+SHA-256 in map_data.env. Only when the archive can't be reached does the builder read
+Protomaps (by range requests, in pieces of 256 MiB, after checking the build's size and
+first 16 KiB) and naciscdn.org. `--upstream --extract` makes the archive's files anew from
+upstream while Protomaps still serves the build.
 """
-import argparse, gzip, hashlib, io, json, math, multiprocessing as mp, os, re, struct, sys, time, urllib.request, zipfile
+import argparse, gzip, hashlib, io, json, math, multiprocessing as mp, os, re, struct, sys, time, urllib.error, urllib.request, zipfile
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 UA = "Schnellbild-map-pipeline (github.com/JohannesHoppe/schnellbild)"
@@ -95,6 +106,51 @@ def sha256_file(path):
         for chunk in iter(lambda: f.read(1 << 20), b""):
             h.update(chunk)
     return h.hexdigest()
+
+
+def archive_url(env, name):
+    return f"https://github.com/JohannesHoppe/schnellbild/releases/download/{env['SOURCE_RELEASE_TAG']}/{name}"
+
+
+def fetch_archived(env, name, sha, path):
+    """Downloads the archive's file <name> to <path> (resuming a .part left behind), checked
+    against <sha>. False when the archive can't be reached; a file that arrives with another
+    SHA-256 stops the build."""
+    url = archive_url(env, name)
+    part = path + ".part"
+    print(f"==> {url}", file=sys.stderr)
+    for attempt in range(4):
+        have = os.path.getsize(part) if os.path.exists(part) else 0
+        headers = {"User-Agent": UA}
+        if have:
+            headers["Range"] = f"bytes={have}-"
+        try:
+            with urllib.request.urlopen(urllib.request.Request(url, headers=headers), timeout=120) as r:
+                mode = "ab" if have and r.status == 206 else "wb"
+                with open(part, mode) as f:
+                    while True:
+                        chunk = r.read(1 << 20)
+                        if not chunk:
+                            break
+                        f.write(chunk)
+            break
+        except urllib.error.HTTPError as e:
+            if e.code == 416:  # the .part is whole already
+                break
+            print(f"   archive: {e}", file=sys.stderr)
+            if e.code in (403, 404, 410):
+                return False
+        except Exception as e:  # transient network errors: try again a few times
+            print(f"   archive: {e}", file=sys.stderr)
+        time.sleep(3 + attempt * 5)
+    else:
+        return False
+    digest = sha256_file(part)
+    if digest != sha:
+        os.remove(part)
+        sys.exit(f"!! {name} from the archive has SHA-256 {digest}, map_data.env pins {sha}")
+    os.replace(part, path)
+    return True
 
 
 # --- PMTiles v3 -----------------------------------------------------------------------------
@@ -301,15 +357,21 @@ def write_pmtiles(path, tiles, metadata, min_zoom, max_zoom):
 
 class Source:
     """The pinned Protomaps build: header and directories (cached as JSON), and the tile data
-    section as cached chunk files tiles-<start>-<end>.bin (offsets relative to its start)."""
+    section as cached chunk files tiles-<start>-<end>.bin (offsets relative to its start).
+    What the cache lacks comes from the archive (SOURCE_RELEASE_TAG), else from Protomaps."""
 
-    def __init__(self, env, cache):
+    def __init__(self, env, cache, upstream=False):
         self.url = env["PROTOMAPS_URL"]
         self.dir = os.path.join(cache, env["PROTOMAPS_BUILD"])
         os.makedirs(self.dir, exist_ok=True)
         self.env = env
+        self.upstream = upstream
+        self.head = None
 
     def check_head(self):
+        """The build's first 16 KiB, once its size and their SHA-256 are the pinned ones."""
+        if self.head is not None:
+            return self.head
         size = http_size(self.url)
         if size != int(self.env["PROTOMAPS_SIZE"]):
             sys.exit(f"!! {self.url} has {size} bytes, map_data.env pins {self.env['PROTOMAPS_SIZE']}: not the same build")
@@ -317,11 +379,25 @@ class Source:
         digest = hashlib.sha256(head).hexdigest()
         if digest != self.env["PROTOMAPS_HEAD_SHA256"]:
             sys.exit(f"!! the source's first 16 KiB have SHA-256 {digest}, map_data.env pins {self.env['PROTOMAPS_HEAD_SHA256']}")
+        self.head = head
         return head
+
+    def archived_tiles(self):
+        """The archive's tile data parts: (start, end, name, sha256)."""
+        parts = []
+        for item in self.env.get("SOURCE_TILES", "").split(","):
+            if item:
+                name, sha = item.split(":")
+                m = re.fullmatch(r"tiles-(\d+)-(\d+)\.bin", name)
+                parts.append((int(m.group(1)), int(m.group(2)), name, sha))
+        return parts
 
     def entries(self, max_zoom):
         """Every tile entry up to max_zoom: (tile_id, run_length, length, offset)."""
-        path = os.path.join(self.dir, f"directory-z{max_zoom}.json")
+        name = f"directory-z{max_zoom}.json"
+        path = os.path.join(self.dir, name)
+        if not os.path.exists(path) and not self.upstream and self.env.get("SOURCE_DIRECTORY") == name:
+            fetch_archived(self.env, name, self.env["SOURCE_DIRECTORY_SHA256"], path)
         if os.path.exists(path):
             with open(path) as f:
                 cached = json.load(f)
@@ -354,20 +430,58 @@ class Source:
                     found.append((start, end, os.path.join(self.dir, name)))
         return sorted(found)
 
+    def gaps(self, end):
+        """The ranges of the tile data section up to byte <end> that no cached chunk holds."""
+        out, pos = [], 0
+        for start, stop, _ in self.chunks():
+            if pos >= end:
+                break
+            if start > pos:
+                out.append((pos, min(start, end)))
+            pos = max(pos, stop)
+        if pos < end:
+            out.append((pos, end))
+        return out
+
     def ensure_data(self, header, end):
-        """Downloads what the cache lacks of the tile data section up to byte <end>."""
-        pos = 0
+        """Fetches what the cache lacks of the tile data section up to byte <end>: the archive's
+        parts that cover a gap, then, for what is still missing, Protomaps in pieces of 256 MiB."""
+        if not self.upstream:
+            for start, stop, name, sha in self.archived_tiles():
+                if any(a < stop and start < b for a, b in self.gaps(end)):
+                    if not fetch_archived(self.env, name, sha, os.path.join(self.dir, name)):
+                        break
         piece = 256 << 20
-        for start, stop, _ in self.chunks() + [(end, end, None)]:
-            while pos < min(start, end):
-                upto = min(start, end, pos + piece)
+        for gap_start, gap_end in self.gaps(end):
+            self.check_head()
+            pos = gap_start
+            while pos < gap_end:
+                upto = min(gap_end, pos + piece)
                 out = os.path.join(self.dir, f"tiles-{pos}-{upto}.bin")
                 print(f"==> Downloading tile data {pos / 1e6:.0f} to {upto / 1e6:.0f} MB of {end / 1e6:.0f} MB", file=sys.stderr)
                 http_range(self.url, header["data_offset"] + pos, upto - pos, out)
                 pos = upto
-            pos = max(pos, stop)
-            if pos >= end:
-                break
+
+    def write_archive(self, max_zoom, end, out_dir):
+        """Writes the archive's files for this build into <out_dir>: the directory up to max_zoom
+        and the tile data section up to byte <end> in equal parts under 2 GiB. Returns
+        [(name, sha256)]."""
+        names = [f"directory-z{max_zoom}.json"]
+        with open(os.path.join(self.dir, names[0]), "rb") as src, open(os.path.join(out_dir, names[0]), "wb") as dst:
+            dst.write(src.read())
+        count = -(-end // 2_000_000_000)
+        bounds = [end * i // count for i in range(count + 1)]
+        reader = TileReader(self.chunks())
+        for start, stop in zip(bounds, bounds[1:]):
+            name = f"tiles-{start}-{stop}.bin"
+            with open(os.path.join(out_dir, name), "wb") as f:
+                pos = start
+                while pos < stop:
+                    data = reader.raw(pos, min(stop - pos, 64 << 20))
+                    f.write(data)
+                    pos += len(data)
+            names.append(name)
+        return [(n, sha256_file(os.path.join(out_dir, n))) for n in names]
 
 
 class TileReader:
@@ -375,15 +489,31 @@ class TileReader:
         self.chunks = chunks
         self.files = {}
 
+    def _file(self, path):
+        f = self.files.get(path)
+        if f is None:
+            f = self.files[path] = open(path, "rb")
+        return f
+
     def read(self, offset, length):
+        """A tile, decompressed; it may run across chunk files (they end where they end, not
+        between tiles)."""
+        data = b""
+        while len(data) < length:
+            data += self.raw(offset + len(data), length - len(data))
+        return gzip.decompress(data)
+
+    def raw(self, offset, length):
+        """Up to <length> bytes of the tile data section from <offset>, from the chunk holding
+        <offset> (fewer where that chunk ends)."""
         for start, end, path in self.chunks:
-            if start <= offset and offset + length <= end:
-                f = self.files.get(path)
-                if f is None:
-                    f = self.files[path] = open(path, "rb")
+            if start <= offset < end:
+                f = self._file(path)
                 f.seek(offset - start)
-                return gzip.decompress(f.read(length))
-        raise IOError(f"tile data {offset}+{length} not in the cache")
+                data = f.read(min(length, end - offset))
+                if data:
+                    return data
+        raise IOError(f"tile data at {offset} not in the cache")
 
 
 # --- Mapbox Vector Tiles ---------------------------------------------------------------------
@@ -1337,14 +1467,15 @@ def main():
     ap.add_argument("--out", default=os.path.join(ROOT, "build", "map"))
     ap.add_argument("--jobs", type=int, default=max(1, (os.cpu_count() or 2) - 1))
     ap.add_argument("--check", action="store_true")
+    ap.add_argument("--upstream", action="store_true")
+    ap.add_argument("--extract", metavar="DIR")
     args = ap.parse_args()
     env = load_env()
-    os.makedirs(args.out, exist_ok=True)
+    os.makedirs(args.cache, exist_ok=True)
     max_zoom, places_zoom = int(env["MAP_MAX_ZOOM"]), int(env["PLACES_ZOOM"])
 
-    source = Source(env, args.cache)
-    print(f"==> Source: {env['PROTOMAPS_URL']}", file=sys.stderr)
-    source.check_head()
+    source = Source(env, args.cache, upstream=args.upstream)
+    print(f"==> Source: {env['PROTOMAPS_URL']}" + ("" if args.upstream else f" (archived in {env['SOURCE_RELEASE_TAG']})"), file=sys.stderr)
     header, entries = source.entries(max(max_zoom, places_zoom))
     # Each stored tile once (runs and duplicates point at the same bytes)
     stored = {}
@@ -1357,18 +1488,36 @@ def main():
     print("==> Natural Earth countries and disputed areas", file=sys.stderr)
 
     def natural_earth(url_key, sha_key):
-        path = os.path.join(args.cache, os.path.basename(env[url_key]))
-        if not os.path.exists(path) or sha256_file(path) != env[sha_key]:
+        name = os.path.basename(env[url_key])
+        path = os.path.join(args.cache, name)
+        if os.path.exists(path) and sha256_file(path) != env[sha_key]:
+            os.remove(path)
+        if not os.path.exists(path) and (args.upstream or not fetch_archived(env, name, env[sha_key], path)):
             req = urllib.request.Request(env[url_key], headers={"User-Agent": UA})
             with urllib.request.urlopen(req, timeout=120) as r, open(path, "wb") as f:
                 f.write(r.read())
         if sha256_file(path) != env[sha_key]:
-            sys.exit(f"!! {os.path.basename(path)}: SHA-256 mismatch")
-        with open(path, "rb") as f:
-            return f.read()
+            sys.exit(f"!! {name}: SHA-256 mismatch")
+        return path
 
-    countries_zip = natural_earth("NATURAL_EARTH_URL", "NATURAL_EARTH_SHA256")
-    disputed_zip = natural_earth("NATURAL_EARTH_DISPUTED_URL", "NATURAL_EARTH_DISPUTED_SHA256")
+    natural_earth_zips = [natural_earth("NATURAL_EARTH_URL", "NATURAL_EARTH_SHA256"),
+                          natural_earth("NATURAL_EARTH_DISPUTED_URL", "NATURAL_EARTH_DISPUTED_SHA256")]
+
+    if args.extract:
+        os.makedirs(args.extract, exist_ok=True)
+        print(f"==> The archive's files into {args.extract}", file=sys.stderr)
+        files = source.write_archive(max(max_zoom, places_zoom), end, args.extract)
+        for path in natural_earth_zips:
+            with open(path, "rb") as src, open(os.path.join(args.extract, os.path.basename(path)), "wb") as dst:
+                dst.write(src.read())
+        for name, sha in files:
+            print(f"{name} {os.path.getsize(os.path.join(args.extract, name))} {sha}")
+        print(f"SOURCE_DIRECTORY={files[0][0]}\nSOURCE_DIRECTORY_SHA256={files[0][1]}")
+        print("SOURCE_TILES=" + ",".join(f"{n}:{s}" for n, s in files[1:]))
+        return
+
+    os.makedirs(args.out, exist_ok=True)
+    countries_zip, disputed_zip = (open(path, "rb").read() for path in natural_earth_zips)
     load_politics(countries_zip, disputed_zip)
 
     ctx = mp.get_context("fork")
@@ -1415,9 +1564,11 @@ def main():
     limit = first_id(places_zoom + 1)
     unique = sorted({(offset, tile_id, length) for tile_id, run, length, offset in entries if tile_id < limit and run == 1})
     batches = [[(t, o, l) for o, t, l in unique[i:i + 300]] for i in range(0, len(unique), 300)]
+    # In the batches' order: build_places keeps the first of a place's copies from the same
+    # zoom, so the order of the rows decides between them and must be the same on every run
     rows = []
     with ctx.Pool(args.jobs, initializer=_init_worker, initargs=(chunks,)) as pool:
-        for i, part in enumerate(pool.imap_unordered(places_work, batches)):
+        for i, part in enumerate(pool.imap(places_work, batches)):
             rows += part
             if i % 200 == 0:
                 print(f"   {i} of {len(batches)} batches", file=sys.stderr)
