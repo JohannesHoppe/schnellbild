@@ -44,6 +44,8 @@ final class GlobeSurfaceView: NSView, MTKViewDelegate {
     /// The moment the Sun is placed for (nil: now, updated every minute)
     var date: Date? { didSet { redraw() } }
     var onCameraChange: ((MapCamera) -> Void)?
+    /// The camera the owner holds now (the SwiftUI binding's)
+    var ownerCamera: (() -> MapCamera)?
     var onInteraction: (() -> Void)?
     /// Boxes in the view where the flat map's labels must not go
     var keepFree: [CGRect] = [] { didSet { flat.keepFree = keepFree } }
@@ -136,7 +138,17 @@ final class GlobeSurfaceView: NSView, MTKViewDelegate {
         let held = held(camera)
         if held != camera {
             camera = held
-            DispatchQueue.main.async { [weak self] in self?.onCameraChange?(held) }
+            // Reported after SwiftUI's layout pass, which this runs in: the
+            // camera the owner holds then (it may have set another meanwhile),
+            // held in this size
+            DispatchQueue.main.async { [weak self] in
+                guard let self else { return }
+                guard let owner = self.ownerCamera else { self.onCameraChange?(held); return }
+                let wanted = owner()
+                let now = self.held(wanted)
+                if now != self.camera { self.camera = now }
+                if now != wanted { self.onCameraChange?(now) }
+            }
         } else {
             updateMode()
         }
@@ -201,9 +213,10 @@ final class GlobeSurfaceView: NSView, MTKViewDelegate {
         if flat.allTilesShown || Date().timeIntervalSince(start) > 1 {
             handoffPending = false
             guard let metal else { return }
-            if NSWorkspace.shared.accessibilityDisplayShouldReduceMotion {
+            if MapMotion.reduced {
                 metal.isHidden = true
             } else {
+                MapMotion.began("fade")
                 NSAnimationContext.runAnimationGroup({ context in
                     context.duration = 0.15
                     metal.animator().alphaValue = 0
@@ -311,10 +324,11 @@ final class GlobeSurfaceView: NSView, MTKViewDelegate {
     func move(to target: MapCamera, animated: Bool = true) {
         stopMotion()
         let target = held(target)
-        if !animated || NSWorkspace.shared.accessibilityDisplayShouldReduceMotion {
+        if !animated || MapMotion.reduced {
             moved(to: target)
             return
         }
+        MapMotion.began("glide")
         onInteraction?()
         glide = (camera, target, CACurrentMediaTime(), 0.35)
         startLink()
@@ -367,10 +381,11 @@ final class GlobeSurfaceView: NSView, MTKViewDelegate {
         NSCursor.arrow.set()
         // The last tenth of a second's speed carries on (not with Reduce motion)
         let recent = dragSteps.filter { event.timestamp - $0.0 <= 0.1 }
-        guard !NSWorkspace.shared.accessibilityDisplayShouldReduceMotion, let first = recent.first, recent.count >= 2 else { return }
+        guard !MapMotion.reduced, let first = recent.first, recent.count >= 2 else { return }
         let span = max(0.016, event.timestamp - first.0)
         let vx = recent.reduce(0) { $0 + $1.1 } / span, vy = recent.reduce(0) { $0 + $1.2 } / span
         if hypot(vx, vy) > 150 {
+            MapMotion.began("throw")
             velocity = (vx, vy)
             startLink()
         }
@@ -378,19 +393,28 @@ final class GlobeSurfaceView: NSView, MTKViewDelegate {
 
     override func scrollWheel(with event: NSEvent) {
         guard interactive else { return super.scrollWheel(with: event) }
-        if event.modifierFlags.contains(.command) || !event.hasPreciseScrollingDeltas {
-            // ⌘-scroll and a mouse's wheel zoom
-            let delta = Double(event.scrollingDeltaY) * (event.hasPreciseScrollingDeltas ? 0.01 : 0.25)
-            zoomNow(by: delta, at: point(event))
-        } else {
-            stopMotion()
-            moved(to: pan(by: Double(event.scrollingDeltaX), Double(event.scrollingDeltaY)))
-        }
+        scroll(dx: Double(event.scrollingDeltaX), dy: Double(event.scrollingDeltaY), precise: event.hasPreciseScrollingDeltas,
+               command: event.modifierFlags.contains(.command), at: point(event))
     }
 
     override func magnify(with event: NSEvent) {
         guard interactive else { return super.magnify(with: event) }
-        zoomNow(by: log2(max(0.1, 1 + Double(event.magnification))), at: point(event))
+        pinch(by: Double(event.magnification), at: point(event))
+    }
+
+    /// A pinch step (AppKit's magnification: 0.1 is 10 % larger) about a point of the view.
+    func pinch(by magnification: Double, at point: CGPoint) {
+        zoomNow(by: log2(max(0.1, 1 + magnification)), at: point)
+    }
+
+    /// A scroll step: a mouse's wheel or ⌘ zooms, a trackpad's two fingers turn the globe (pan the flat map).
+    func scroll(dx: Double, dy: Double, precise: Bool, command: Bool, at point: CGPoint) {
+        if command || !precise {
+            zoomNow(by: dy * (precise ? 0.01 : 0.25), at: point)
+        } else {
+            stopMotion()
+            moved(to: pan(by: dx, dy))
+        }
     }
 
     override func resetCursorRects() {

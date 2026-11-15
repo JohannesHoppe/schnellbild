@@ -1,4 +1,5 @@
 import SwiftUI
+import OfflineMap
 import AppKit
 import MediaToolbox
 import VideoToolbox
@@ -20,6 +21,8 @@ struct SchnellbildApp: App {
     init() {
         // Before anything starts VLC
         VLCSafety.forgetInjectedOptions()
+        // UI tests: the map and the globe as with Reduce motion on (`--reduce-motion`) or off
+        if VideoDetailView.uiTesting { MapMotion.reduceOverride = ProcessInfo.processInfo.arguments.contains("--reduce-motion") }
         // Media Extensions the user has turned on in System Settings (format
         // readers and video decoders, Apple's own for ProRes RAW too, or
         // another app's for MKV, AVI …) open those videos in AVKit, and

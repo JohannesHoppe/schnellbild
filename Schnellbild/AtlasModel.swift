@@ -191,13 +191,7 @@ final class AtlasModel: ObservableObject {
             cameraState.camera = newValue
             // Moved by the user (drag, scroll, pinch, buttons), not only held in the view's limits
             if let set = cameraSet, newValue != set, newValue != held(set), tour == nil {
-                if Date().timeIntervalSince(cameraSetAt) < 0.3, let before = cameraBeforeSet, Self.near(newValue, held(before)) {
-                    // The view's own camera, held in its new size and reported after the
-                    // layout pass that set ours: ours stands
-                    DispatchQueue.main.async { [weak self] in self?.setCamera(set) }
-                } else {
-                    userMovedMap = true
-                }
+                userMovedMap = true
             }
             if needsClusters(at: newValue) { scheduleClusters() }
         }
@@ -215,28 +209,19 @@ final class AtlasModel: ObservableObject {
     private var needsFit = true
     private(set) var userMovedMap = false
 
-    /// For the UI tests (`--ui-testing`): the map's zoom and size, the clusters, the fit.
+    /// For the UI tests (`--ui-testing`): the map's zoom, centre and size, the clusters, the fit, the map's own movements.
     var testState: String {
-        String(format: "zoom %.2f, size %.0f×%.0f, clusters %d at %.2f, fit %@, moved %@",
-               camera.zoom, mapSize.width, mapSize.height, clusters.count, clusterZoom ?? -1,
-               needsFit ? "pending" : "done", userMovedMap ? "yes" : "no")
+        let motion = MapMotion.counts
+        return String(format: "zoom %.2f, center %.3f %.3f, size %.0f×%.0f, clusters %d at %.2f, fit %@, moved %@, glides %d, throws %d, fades %d",
+                      camera.zoom, camera.center.latitude, camera.center.longitude, mapSize.width, mapSize.height, clusters.count,
+                      clusterZoom ?? -1, needsFit ? "pending" : "done", userMovedMap ? "yes" : "no",
+                      motion["glide"] ?? 0, motion["throw"] ?? 0, motion["fade"] ?? 0)
     }
     private var cameraSet: MapCamera?
-    private var cameraSetAt = Date.distantPast
-    /// The camera before the last one set here: the map view may report it
-    /// once more, held in its new size, after the layout pass.
-    private var cameraBeforeSet: MapCamera?
 
     private func setCamera(_ next: MapCamera) {
-        cameraBeforeSet = camera
         cameraSet = next
-        cameraSetAt = Date()
         camera = next
-    }
-
-    private static func near(_ a: MapCamera, _ b: MapCamera) -> Bool {
-        abs(a.zoom - b.zoom) < 1e-6 && abs(a.center.latitude - b.center.latitude) < 1e-6
-            && abs(a.center.longitude - b.center.longitude) < 1e-6
     }
 
     /// The camera within the map's limits: zoomed out, the globe's

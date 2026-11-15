@@ -286,6 +286,17 @@ final class LocalizationTests: XCTestCase {
                                                   "Saved passwords", "Forget all?", "Undo Rename", "Undo All", "Undo", "drag"].sorted())
     }
 
+    /// The globe's buttons name their help through a helper's `title:`,
+    /// which the scanner reads (both sides of each `?:`).
+    func testTheGlobesButtonsAreSeen() throws {
+        let file = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent()
+            .deletingLastPathComponent().appendingPathComponent("OfflineMap/GlobeView.swift")
+        let texts = Set(Self.uiTexts(in: try String(contentsOf: file, encoding: .utf8)))
+        for text in ["Zoom in", "Zoom out", "Show day and night", "Hide day and night", "Exaggerate the relief", "Show the relief at true scale"] {
+            XCTAssertTrue(texts.contains(text), text)
+        }
+    }
+
     /// Each language's plurals have the categories its numbers need, as
     /// CLDR counts whole numbers (Russian "1 / 2–4 / 5 и более", Japanese
     /// one form), and none it never uses (a "one" in Japanese would never

@@ -53,8 +53,15 @@ public final class XCUIElementQuery {
     public var menuItems: XCUIElementQuery { self }
     public var buttons: XCUIElementQuery { self }
 }
+public struct XCUIGestureVelocity {
+    public init(_ value: CGFloat) {}
+    public static let slow = XCUIGestureVelocity(0), fast = XCUIGestureVelocity(0), `default` = XCUIGestureVelocity(0)
+}
 public final class XCUICoordinate {
     public func withOffset(_ offset: CGVector) -> XCUICoordinate { self }
+    public func press(forDuration duration: TimeInterval, thenDragTo other: XCUICoordinate, withVelocity velocity: XCUIGestureVelocity,
+                      thenHoldForDuration holdDuration: TimeInterval) {}
+    public func scroll(byDeltaX deltaX: CGFloat, deltaY: CGFloat) {}
     public func doubleClick() {}
     public func hover() {}
     public func press(forDuration duration: TimeInterval, thenDragTo other: XCUICoordinate) {}
@@ -107,6 +114,7 @@ public class XCUIElement {
     public var toolbars: XCUIElementQuery { XCUIElementQuery() }
     public var radioButtons: XCUIElementQuery { XCUIElementQuery() }
     public var tabs: XCUIElementQuery { XCUIElementQuery() }
+    public var images: XCUIElementQuery { XCUIElementQuery() }
 }
 public final class XCUIApplication: XCUIElement {
     public override init() {}

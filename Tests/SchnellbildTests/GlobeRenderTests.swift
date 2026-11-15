@@ -228,6 +228,52 @@ final class GlobeSurfaceTests: XCTestCase {
         XCTAssertEqual(surface.camera.zoom, GlobeProjection.minZoom(for: size), accuracy: 1e-9)
     }
 
+    func testPinchAndScrollZoomOrTurn() throws {
+        let surface = GlobeSurfaceView(map: nil)
+        surface.frame = NSRect(x: 0, y: 0, width: 800, height: 500)
+        surface.camera = MapCamera(center: Coordinate(latitude: 40, longitude: 10), zoom: 2.5)
+        let middle = CGPoint(x: 400, y: 250)
+        // A pinch to twice the size: one step in
+        surface.pinch(by: 1, at: middle)
+        XCTAssertEqual(surface.camera.zoom, 3.5, accuracy: 1e-9)
+        // A mouse's wheel (4 lines): one step; ⌘ with a trackpad: a hundredth per point
+        surface.scroll(dx: 0, dy: -4, precise: false, command: false, at: middle)
+        XCTAssertEqual(surface.camera.zoom, 2.5, accuracy: 1e-9)
+        surface.scroll(dx: 0, dy: 50, precise: true, command: true, at: middle)
+        XCTAssertEqual(surface.camera.zoom, 3, accuracy: 1e-9)
+        // Two fingers on a trackpad turn it
+        let before = surface.camera
+        surface.scroll(dx: 40, dy: 0, precise: true, command: false, at: middle)
+        XCTAssertEqual(surface.camera.zoom, before.zoom, accuracy: 1e-9)
+        XCTAssertLessThan(surface.camera.center.longitude, before.center.longitude)
+    }
+
+    func testANewSizeKeepsTheOwnersCamera() {
+        let surface = GlobeSurfaceView(map: nil)
+        surface.frame = NSRect(x: 0, y: 0, width: 400, height: 300)
+        let small = GlobeProjection.minZoom(for: CGSize(width: 400, height: 300))
+        surface.camera = MapCamera(center: Coordinate(latitude: 10, longitude: 20), zoom: small)
+        // The owner sets another camera while the view grows (its smallest zoom rises, the old camera is held)
+        var owner = MapCamera(center: Coordinate(latitude: 50, longitude: 8), zoom: 3)
+        var reported: [MapCamera] = []
+        surface.ownerCamera = { owner }
+        surface.onCameraChange = { reported.append($0); owner = $0 }
+        surface.frame = NSRect(x: 0, y: 0, width: 1200, height: 900)
+        surface.camera = owner
+        wait(1) { false }
+        XCTAssertEqual(surface.camera, owner, "the owner's camera stands")
+        XCTAssertTrue(reported.isEmpty, "no stale camera reported: \(reported)")
+        // Without an owner the held camera is reported, as before
+        let lone = GlobeSurfaceView(map: nil)
+        lone.frame = NSRect(x: 0, y: 0, width: 400, height: 300)
+        lone.camera = MapCamera(center: Coordinate(latitude: 10, longitude: 20), zoom: small)
+        var loneReported: MapCamera?
+        lone.onCameraChange = { loneReported = $0 }
+        lone.frame = NSRect(x: 0, y: 0, width: 1200, height: 900)
+        wait(1) { loneReported != nil }
+        XCTAssertEqual(loneReported?.zoom ?? 0, GlobeProjection.minZoom(for: CGSize(width: 1200, height: 900)), accuracy: 1e-9)
+    }
+
     func testTheProxyHidesTheFarSide() {
         let size = CGSize(width: 800, height: 500)
         let camera = MapCamera(center: Coordinate(latitude: 48, longitude: 11), zoom: 2)
