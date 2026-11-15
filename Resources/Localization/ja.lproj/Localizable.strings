@@ -551,3 +551,17 @@
 "Location is restricted on this Mac." = "この Mac では位置情報が制限されています。";
 "Location Services are off. Turn them on in System Settings → Privacy & Security → Location Services." = "位置情報サービスがオフです。システム設定 → プライバシーとセキュリティ → 位置情報サービスでオンにしてください。";
 "Your location can't be found right now." = "現在地を特定できません。";
+"GPS in the file" = "ファイル内の GPS";
+"GPS from GoPro telemetry" = "GoPro テレメトリの GPS";
+"From DJI flight log %@" = "DJI フライトログ %@ から";
+"From %@" = "%@ から";
+"From the file's XMP data" = "ファイルの XMP データから";
+"From GPX track %@" = "GPX トラック %@ から";
+"From the movie header (UTC)" = "動画ファイルのヘッダから（UTC）";
+"GPS time from GoPro telemetry" = "GoPro テレメトリの GPS 時刻";
+"DOP %@" = "DOP %@";
+"Interpolated, %@ from the nearest track point" = "補間（最寄りのトラックポイントから %@）";
+"Source" = "ソース";
+"Accuracy" = "精度";
+"Route" = "ルート";
+"Date Source" = "日付のソース";

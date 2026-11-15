@@ -551,3 +551,17 @@
 "Location is restricted on this Mac." = "這部 Mac 上的位置受到限制。";
 "Location Services are off. Turn them on in System Settings → Privacy & Security → Location Services." = "定位服務已關閉。請在「系統設定」→「隱私權與安全性」→「定位服務」中開啟。";
 "Your location can't be found right now." = "目前無法找到你的位置。";
+"GPS in the file" = "檔案中的 GPS";
+"GPS from GoPro telemetry" = "來自 GoPro 遙測的 GPS";
+"From DJI flight log %@" = "來自 DJI 飛行記錄 %@";
+"From %@" = "來自 %@";
+"From the file's XMP data" = "來自檔案的 XMP 資料";
+"From GPX track %@" = "來自 GPX 軌跡 %@";
+"From the movie header (UTC)" = "來自影片檔頭（UTC）";
+"GPS time from GoPro telemetry" = "來自 GoPro 遙測的 GPS 時間";
+"DOP %@" = "DOP %@";
+"Interpolated, %@ from the nearest track point" = "內插，距最近的軌跡點 %@";
+"Source" = "來源";
+"Accuracy" = "精確度";
+"Route" = "路線";
+"Date Source" = "日期來源";

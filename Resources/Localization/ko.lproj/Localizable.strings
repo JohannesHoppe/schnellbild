@@ -551,3 +551,17 @@
 "Location is restricted on this Mac." = "이 Mac에서는 위치가 제한되어 있습니다.";
 "Location Services are off. Turn them on in System Settings → Privacy & Security → Location Services." = "위치 서비스가 꺼져 있습니다. 시스템 설정 → 개인정보 보호 및 보안 → 위치 서비스에서 켜세요.";
 "Your location can't be found right now." = "지금은 위치를 찾을 수 없습니다.";
+"GPS in the file" = "파일의 GPS";
+"GPS from GoPro telemetry" = "GoPro 텔레메트리의 GPS";
+"From DJI flight log %@" = "DJI 비행 기록 %@에서";
+"From %@" = "%@에서";
+"From the file's XMP data" = "파일의 XMP 데이터에서";
+"From GPX track %@" = "GPX 트랙 %@에서";
+"From the movie header (UTC)" = "동영상 파일 헤더에서(UTC)";
+"GPS time from GoPro telemetry" = "GoPro 텔레메트리의 GPS 시간";
+"DOP %@" = "DOP %@";
+"Interpolated, %@ from the nearest track point" = "보간됨, 가장 가까운 트랙 포인트에서 %@";
+"Source" = "출처";
+"Accuracy" = "정확도";
+"Route" = "경로";
+"Date Source" = "날짜 출처";

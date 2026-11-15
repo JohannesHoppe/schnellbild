@@ -1,0 +1,12 @@
+﻿1
+00:00:00,000 --> 00:00:00,040
+<font size="36">FrameCnt : 1, DiffTime : 40ms
+2019-09-27 10:28:08,438,904
+[iso : 110] [shutter : 1/1250.0] [fnum : 280] [ev : 0] [ct : 5174] [color_md : default] [focal_len : 280] [latitude : 51.1789] [longtitude : -1.8262] </font>
+
+2
+00:00:00,040 --> 00:00:00,080
+<font size="36">FrameCnt : 2, DiffTime : 40ms
+2019-09-27 10:28:08,478,931
+[iso : 110] [shutter : 1/1250.0] [fnum : 280] [ev : 0] [ct : 5174] [color_md : default] [focal_len : 280] [latitude : 51.1790] [longtitude : -1.8260] </font>
+

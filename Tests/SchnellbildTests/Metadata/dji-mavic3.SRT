@@ -1,0 +1,12 @@
+1
+00:00:00,000 --> 00:00:00,020
+<font size="28">FrameCnt: 1, DiffTime: 20ms
+2021-12-25 12:27:52.373
+[iso: 220] [shutter: 1/8000.0] [fnum: 3.2] [ev: 0] [ct: 5115] [color_md : default] [focal_len: 24.00] [latitude: 27.1751] [longitude: 78.0421] [rel_alt: 2.400 abs_alt: 171.401] </font>
+
+2
+00:00:00,020 --> 00:00:00,040
+<font size="28">FrameCnt: 2, DiffTime: 20ms
+2021-12-25 12:27:52.391
+[iso: 220] [shutter: 1/8000.0] [fnum: 3.2] [ev: 0] [ct: 5115] [color_md : default] [focal_len: 24.00] [latitude: 27.1753] [longitude: 78.0423] [rel_alt: 2.500 abs_alt: 171.501] </font>
+

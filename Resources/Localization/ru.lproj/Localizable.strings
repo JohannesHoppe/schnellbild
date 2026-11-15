@@ -551,3 +551,17 @@
 "Location is restricted on this Mac." = "Геопозиция на этом Mac ограничена.";
 "Location Services are off. Turn them on in System Settings → Privacy & Security → Location Services." = "Службы геолокации выключены. Включите их в Системных настройках → Конфиденциальность и безопасность → Службы геолокации.";
 "Your location can't be found right now." = "Сейчас не удается определить вашу геопозицию.";
+"GPS in the file" = "GPS в файле";
+"GPS from GoPro telemetry" = "GPS из телеметрии GoPro";
+"From DJI flight log %@" = "Из журнала полёта DJI %@";
+"From %@" = "Из файла %@";
+"From the file's XMP data" = "Из данных XMP файла";
+"From GPX track %@" = "Из GPX-трека %@";
+"From the movie header (UTC)" = "Из заголовка видеофайла (UTC)";
+"GPS time from GoPro telemetry" = "Время GPS из телеметрии GoPro";
+"DOP %@" = "DOP %@";
+"Interpolated, %@ from the nearest track point" = "Интерполировано, %@ от ближайшей точки трека";
+"Source" = "Источник";
+"Accuracy" = "Точность";
+"Route" = "Маршрут";
+"Date Source" = "Источник даты";

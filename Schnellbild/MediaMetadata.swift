@@ -29,11 +29,35 @@ struct MetadataGroup: Equatable, Sendable, Identifiable {
 struct MediaReport: Equatable, Sendable {
     var capture: [InfoRow] = []
     var location: MediaLocation?
+    /// Where the place was read, how exact it is, and a video's route.
+    var placeSource: MetadataSource?
+    var placeAccuracy: PlaceAccuracy?
+    var track: GeoTrack?
     /// The picture's or video's own facts (size, colours, codecs, tracks).
     var media: [InfoRow] = []
     var groups: [MetadataGroup] = []
 
     var isEmpty: Bool { capture.isEmpty && location == nil && media.isEmpty && groups.isEmpty }
+
+    /// Takes the time and place from every source (`CaptureReader`): they
+    /// stand in for, or come before, what the header alone said.
+    mutating func adopt(_ facts: CaptureFacts) {
+        let taken = String(localized: "Date Taken"), from = String(localized: "Date Source")
+        capture.removeAll { $0.label == from }
+        if let time = facts.time {
+            let row = InfoRow(label: taken, value: time.text)
+            if let index = capture.firstIndex(where: { $0.label == taken }) { capture[index] = row } else { capture.insert(row, at: 0) }
+            if let note = time.source.timeText, let index = capture.firstIndex(where: { $0.label == taken }) {
+                capture.insert(InfoRow(label: from, value: note), at: index + 1)
+            }
+        }
+        if let place = facts.place {
+            location = place.location
+            placeSource = place.source
+            placeAccuracy = place.accuracy
+        }
+        track = facts.track
+    }
 }
 
 // MARK: - Values as text

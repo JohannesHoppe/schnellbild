@@ -2587,65 +2587,17 @@ final class BrowserModel: ObservableObject {
         }
     }
 
-    /// When a photo or video was taken: EXIF DateTimeOriginal for images
-    /// (only the header is read, on a dispatch thread: it waits on the
-    /// disk), the QuickTime creation date for videos.
+    /// When a photo or video was taken, from its header and the files beside
+    /// it (`CaptureReader` through `LocationCache`: EXIF with its offset, XMP
+    /// sidecars, QuickTime, a camera's clip XML, GoPro's GPS time, a DJI
+    /// flight log, the movie header). Not inside archives (not unpacked for sorting).
     nonisolated static func captureDate(of url: URL) async -> Date? {
-        guard !ArchivePath.isInside(url) else { return nil }   // not unpacked for sorting
-        switch mediaKind(of: url) {
-        case .image:
-            return await Blocking.run(.utility) { pictureDate(of: url) }
-        case .video:
-            let asset = AVURLAsset(url: url, options: [AVURLAssetReferenceRestrictionsKey: AVAssetReferenceRestrictions.forbidAll.rawValue])
-            guard let item = try? await asset.load(.creationDate) else { return nil }
-            return try? await item.load(.dateValue)
-        default:
-            return nil
+        guard !ArchivePath.isInside(url) else { return nil }
+        let modified = await Blocking.run(.utility) {
+            try? url.resourceValues(forKeys: [.contentModificationDateKey]).contentModificationDate
         }
+        return await LocationCache.shared.facts(of: url, modified: modified).time?.date
     }
-
-    /// A picture's capture date, from its header.
-    nonisolated private static func pictureDate(of url: URL) -> Date? {
-        guard let source = CGImageSourceCreateWithURL(url as CFURL, nil),
-              let props = CGImageSourceCopyPropertiesAtIndex(
-                  source, 0, [kCGImageSourceShouldCache: false] as CFDictionary) as? [CFString: Any]
-        else { return nil }
-        let exif = props[kCGImagePropertyExifDictionary] as? [CFString: Any]
-        let tiff = props[kCGImagePropertyTIFFDictionary] as? [CFString: Any]
-        // The first date that is one: a camera whose clock was never set
-        // writes "0000:00:00 00:00:00" (or blanks), which the lenient
-        // parser would turn into the year 2
-        let candidates: [(text: String?, offset: String?)] = [
-            (exif?[kCGImagePropertyExifDateTimeOriginal] as? String, exif?[kCGImagePropertyExifOffsetTimeOriginal] as? String),
-            (exif?[kCGImagePropertyExifDateTimeDigitized] as? String, exif?[kCGImagePropertyExifOffsetTimeDigitized] as? String),
-            (tiff?[kCGImagePropertyTIFFDateTime] as? String, nil)
-        ]
-        for case let (text?, offset) in candidates {
-            // With the camera's offset from UTC when it wrote one (as video
-            // dates are), else in the Mac's time zone
-            let date = offset.flatMap { exifOffsetDateFormatter.date(from: text + $0) } ?? exifDateFormatter.date(from: text)
-            if let date, Calendar(identifier: .gregorian).component(.year, from: date) >= 1900 { return date }
-        }
-        return nil
-    }
-
-    /// EXIF dates: "2024:07:14 18:32:05", in the camera's local time.
-    /// Lenient: a time in the Mac's own daylight-saving gap still parses.
-    nonisolated private static let exifDateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        formatter.dateFormat = "yyyy:MM:dd HH:mm:ss"
-        formatter.isLenient = true
-        return formatter
-    }()
-
-    /// An EXIF date followed by its offset time ("+02:00").
-    nonisolated private static let exifOffsetDateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        formatter.dateFormat = "yyyy:MM:dd HH:mm:ssxxx"
-        return formatter
-    }()
 
     private func sorted(_ list: [GridEntry]) -> [GridEntry] {
         entryOrder.sorted(list)

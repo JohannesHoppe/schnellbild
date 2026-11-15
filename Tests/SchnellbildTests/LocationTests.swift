@@ -217,10 +217,10 @@ final class LocationTests: XCTestCase {
 
     func testTheCacheReadsAFileOnce() async throws {
         let reads = Counter()
-        let paris = GeoPoint(latitude: 48.858370, longitude: 2.294481)
-        let cache = LocationCache { url in
+        let paris = try XCTUnwrap(GeoPoint(latitude: 48.858370, longitude: 2.294481))
+        let cache = LocationCache(companions: { _ in Companions() }) { url, _ in
             reads.add()
-            return url.lastPathComponent == "none.jpg" ? nil : paris
+            return url.lastPathComponent == "none.jpg" ? CaptureFacts() : CaptureFacts(place: CapturePlace(location: MediaLocation(point: paris), source: .file))
         }
         let url = URL(fileURLWithPath: "/tmp/a.jpg"), none = URL(fileURLWithPath: "/tmp/none.jpg")
         let date = Date(timeIntervalSince1970: 1_000)
@@ -228,13 +228,13 @@ final class LocationTests: XCTestCase {
         XCTAssertEqual(first, paris)
         _ = await cache.point(of: url, modified: date)
         XCTAssertEqual(reads.value, 1, "the same version: from the cache")
-        XCTAssertEqual(cache.cached(url, modified: date), .some(paris))
+        XCTAssertEqual(cache.cached(url, modified: date), GeoPoint??.some(paris))
         _ = await cache.point(of: url, modified: date.addingTimeInterval(1))
         XCTAssertEqual(reads.value, 2, "changed since: read again")
         _ = await cache.point(of: none, modified: date)
         _ = await cache.point(of: none, modified: date)
         XCTAssertEqual(reads.value, 3, "no place is known too")
-        XCTAssertEqual(cache.cached(none, modified: date), .some(nil))
+        XCTAssertEqual(cache.cached(none, modified: date), GeoPoint??.some(nil))
         XCTAssertTrue(cache.cached(URL(fileURLWithPath: "/tmp/other.jpg"), modified: date) == nil, "never read")
         let many = (0..<50).map { (URL(fileURLWithPath: "/tmp/\($0).jpg"), Optional(date)) }
         let found = await cache.points(of: many)

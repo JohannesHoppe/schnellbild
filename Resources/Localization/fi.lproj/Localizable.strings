@@ -551,3 +551,17 @@
 "Location is restricted on this Mac." = "Sijainti on rajoitettu tällä Macilla.";
 "Location Services are off. Turn them on in System Settings → Privacy & Security → Location Services." = "Sijaintipalvelut ovat pois päältä. Laita ne päälle kohdassa Järjestelmäasetukset → Yksityisyys ja turvallisuus → Sijaintipalvelut.";
 "Your location can't be found right now." = "Sijaintiasi ei löydy juuri nyt.";
+"GPS in the file" = "GPS tiedostossa";
+"GPS from GoPro telemetry" = "GPS GoPron telemetriasta";
+"From DJI flight log %@" = "DJI-lentolokista %@";
+"From %@" = "Tiedostosta %@";
+"From the file's XMP data" = "Tiedoston XMP-tiedoista";
+"From GPX track %@" = "GPX-reitistä %@";
+"From the movie header (UTC)" = "Videotiedoston otsakkeesta (UTC)";
+"GPS time from GoPro telemetry" = "GPS-aika GoPron telemetriasta";
+"DOP %@" = "DOP %@";
+"Interpolated, %@ from the nearest track point" = "Interpoloitu, %@ lähimmästä reittipisteestä";
+"Source" = "Lähde";
+"Accuracy" = "Tarkkuus";
+"Route" = "Reitti";
+"Date Source" = "Päivämäärän lähde";

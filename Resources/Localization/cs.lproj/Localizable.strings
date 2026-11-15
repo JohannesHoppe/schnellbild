@@ -551,3 +551,17 @@
 "Location is restricted on this Mac." = "Poloha je na tomto Macu omezená.";
 "Location Services are off. Turn them on in System Settings → Privacy & Security → Location Services." = "Polohové služby jsou vypnuté. Zapněte je v Nastavení systému → Soukromí a zabezpečení → Polohové služby.";
 "Your location can't be found right now." = "Vaši polohu teď nelze zjistit.";
+"GPS in the file" = "GPS v souboru";
+"GPS from GoPro telemetry" = "GPS z telemetrie GoPro";
+"From DJI flight log %@" = "Z letového záznamu DJI %@";
+"From %@" = "Ze souboru %@";
+"From the file's XMP data" = "Z dat XMP souboru";
+"From GPX track %@" = "Z trasy GPX %@";
+"From the movie header (UTC)" = "Z hlavičky videosouboru (UTC)";
+"GPS time from GoPro telemetry" = "Čas GPS z telemetrie GoPro";
+"DOP %@" = "DOP %@";
+"Interpolated, %@ from the nearest track point" = "Interpolováno, %@ od nejbližšího bodu trasy";
+"Source" = "Zdroj";
+"Accuracy" = "Přesnost";
+"Route" = "Trasa";
+"Date Source" = "Zdroj data";

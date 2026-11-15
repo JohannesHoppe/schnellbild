@@ -551,3 +551,17 @@
 "Location is restricted on this Mac." = "Konum bu Mac'te kısıtlı.";
 "Location Services are off. Turn them on in System Settings → Privacy & Security → Location Services." = "Konum Servisleri kapalı. Sistem Ayarları → Gizlilik ve Güvenlik → Konum Servisleri'nden açın.";
 "Your location can't be found right now." = "Konumunuz şu anda bulunamıyor.";
+"GPS in the file" = "Dosyadaki GPS";
+"GPS from GoPro telemetry" = "GoPro telemetrisinden GPS";
+"From DJI flight log %@" = "DJI uçuş kaydından: %@";
+"From %@" = "Şu dosyadan: %@";
+"From the file's XMP data" = "Dosyanın XMP verilerinden";
+"From GPX track %@" = "GPX izinden: %@";
+"From the movie header (UTC)" = "Video dosyasının başlığından (UTC)";
+"GPS time from GoPro telemetry" = "GoPro telemetrisinden GPS saati";
+"DOP %@" = "DOP %@";
+"Interpolated, %@ from the nearest track point" = "Enterpolasyonla, en yakın iz noktasına %@";
+"Source" = "Kaynak";
+"Accuracy" = "Doğruluk";
+"Route" = "Rota";
+"Date Source" = "Tarih kaynağı";

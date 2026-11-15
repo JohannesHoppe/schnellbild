@@ -551,3 +551,17 @@
 "Location is restricted on this Mac." = "Locatie is beperkt op deze Mac.";
 "Location Services are off. Turn them on in System Settings → Privacy & Security → Location Services." = "Locatievoorzieningen staan uit. Zet ze aan in Systeeminstellingen → Privacy en beveiliging → Locatievoorzieningen.";
 "Your location can't be found right now." = "Je locatie kan nu niet worden gevonden.";
+"GPS in the file" = "GPS in het bestand";
+"GPS from GoPro telemetry" = "GPS uit de GoPro-telemetrie";
+"From DJI flight log %@" = "Uit DJI-vluchtlog %@";
+"From %@" = "Uit %@";
+"From the file's XMP data" = "Uit de XMP-gegevens van het bestand";
+"From GPX track %@" = "Uit GPX-track %@";
+"From the movie header (UTC)" = "Uit de header van de video (UTC)";
+"GPS time from GoPro telemetry" = "GPS-tijd uit de GoPro-telemetrie";
+"DOP %@" = "DOP %@";
+"Interpolated, %@ from the nearest track point" = "Geïnterpoleerd, %@ van het dichtstbijzijnde trackpunt";
+"Source" = "Bron";
+"Accuracy" = "Nauwkeurigheid";
+"Route" = "Route";
+"Date Source" = "Bron van de datum";

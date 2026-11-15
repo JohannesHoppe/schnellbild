@@ -1,0 +1,12 @@
+1
+00:00:00,000 --> 00:00:00,033
+<font size="36">SrtCnt : 1, DiffTime : 33ms
+2022-08-07 13:40:40,774,808
+[iso : 100] [shutter : 1/80.0] [fnum : 280] [ev : 0] [ct : 5744] [color_md : default] [focal_len : 240] [latitude: 41.403600] [longitude: 2.174400] [altitude: 117.000000] </font>
+
+2
+00:00:00,033 --> 00:00:00,066
+<font size="36">SrtCnt : 2, DiffTime : 33ms
+2022-08-07 13:40:40,808,164
+[iso : 100] [shutter : 1/80.0] [fnum : 280] [ev : 0] [ct : 5744] [color_md : default] [focal_len : 240] [latitude: 41.403700] [longitude: 2.174600] [altitude: 118.500000] </font>
+
