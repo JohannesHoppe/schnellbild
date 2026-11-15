@@ -564,7 +564,7 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
             handover.shown = texts
             if let size = output.bufferSize, !texts.isEmpty {
                 output.setOverlay(SubtitleOverlay.image(texts, kind: handover.lines.kind, style: running.last?.style,
-                                                        width: size.width, height: size.height))
+                                                        width: size.width, height: size.height, decoded: output.proposedSize))
             } else {
                 output.setOverlay(nil)
             }

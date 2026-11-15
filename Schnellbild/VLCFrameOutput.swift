@@ -149,8 +149,8 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
         // What the container states is known already; what the decoder finds
         // in the stream comes once this output has opened (`refreshColour`)
         let colour = deep ? media.flatMap(LibVLCVideo.colour(of:)) : nil
-        let shown = Self.shownSize(track: media.flatMap(Self.videoTrack(of:)),
-                                   decoded: (Int(width.pointee), Int(height.pointee)))
+        let proposed = (width: Int(width.pointee), height: Int(height.pointee))
+        let shown = Self.shownSize(track: media.flatMap(Self.videoTrack(of:)), decoded: proposed)
         let w = shown.width, h = shown.height
         width.pointee = UInt32(w)
         height.pointee = UInt32(h)
@@ -184,6 +184,7 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
         drawing = [:]
         drawnOrder = []
         shownSize = CGSize(width: w, height: h)
+        decodedSize = proposed
         // VLC's earlier output has closed: nothing draws into the old scratch
         let oldScratch = scratch
         scratch = newScratch
@@ -545,6 +546,15 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
         lock.lock()
         defer { lock.unlock() }
         return shownSize.map { (Int($0.width), Int($0.height)) }
+    }
+
+    /// The size VLC proposed for its pictures (its decoder's, with padding),
+    /// which VLC lays subtitles out in (`SubtitleOverlay`).
+    private var decodedSize: (width: Int, height: Int)?
+    var proposedSize: (width: Int, height: Int)? {
+        lock.lock()
+        defer { lock.unlock() }
+        return decodedSize
     }
 
     func setOverlay(_ new: CIImage?) {
