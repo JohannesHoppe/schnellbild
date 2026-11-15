@@ -69,7 +69,8 @@ struct PlaylistPanel: View {
         .frame(width: width)
         .frame(maxHeight: .infinity)
         .background(.regularMaterial)
-        .overlay(alignment: .leading) { Divider() }
+        // Inside an HStack a Divider stands upright: the playlist's left edge
+        .overlay(alignment: .leading) { HStack(spacing: 0) { Divider() } }
         // The pointer stays visible while the playlist is open
         .onAppear { NSCursor.setHiddenUntilMouseMoves(false) }
         .onContinuousHover { _ in NSCursor.setHiddenUntilMouseMoves(false) }
