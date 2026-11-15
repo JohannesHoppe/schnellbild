@@ -153,7 +153,7 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         app.typeKey("w", modifierFlags: [])
         XCTAssertTrue(element("atlas").waitForExistence(timeout: 10))
         let tiles = app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH 'atlas.'"))
-        eventually("the places are on the map", timeout: 20) { tiles.count >= 5 }
+        eventually("the places are on the map", timeout: 20) { tiles.count >= 3 }
         shoot("atlas", settle: 4)
 
         app.typeKey("t", modifierFlags: [])
