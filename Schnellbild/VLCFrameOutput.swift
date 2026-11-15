@@ -414,7 +414,7 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
         lastProbePicture = probe
         lock.unlock()
         if ofMedia <= Self.probedFirst, let probe {
-            BrowserModel.testLog("vlc picture \(ofMedia) of media \(opening): \(probe)")
+            BrowserModel.testLog("vlc picture \(ofMedia) of media \(opening): \(probe) | \(BrowserModel.testClock) ms")
         }
     }
 

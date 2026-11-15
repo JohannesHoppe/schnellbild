@@ -382,6 +382,8 @@ final class VisualUITests: SchnellbildUITestCase {
     private func probedPictures(in log: String) -> [ProbedPicture] {
         log.components(separatedBy: "\n").compactMap { line in
             guard line.hasPrefix("vlc picture ") else { return nil }
+            // "… | <time> ms": when it was shown
+            let line = line.components(separatedBy: " | ")[0]
             let words = line.replacingOccurrences(of: ":", with: "").replacingOccurrences(of: ",", with: "")
                 .components(separatedBy: " ")
             // vlc picture <n> of media <m> luma <l> [text | no text]
@@ -404,17 +406,18 @@ final class VisualUITests: SchnellbildUITestCase {
         let first = probedPictures(in: log).filter { $0.media == 1 }
         let withText = first.first { $0.text == true }
         print("first pictures: \(first.map { "\($0.number): \($0.text == true ? "text" : "no text")" }.joined(separator: ", "))")
-        // VLC shows its first two or three pictures (0.2 to 0.3 s) before the
-        // line that begins at 0 reaches them (seen on CI with SubRip, ASS
-        // and mov_text alike)
-        XCTAssertNotNil(withText, "the line that begins at 0 in the first five pictures")
+        XCTAssertNotNil(withText, "the line that begins at 0 in the first pictures")
+        XCTAssertEqual(first.first?.text, true, "the line that begins at 0 on the first picture")
     }
 
-    /// The log written since the last launch read the tracks before playing.
-    private func logOfThisLaunch(_ log: URL) -> String {
-        let all = (try? String(contentsOf: log, encoding: .utf8)) ?? ""
-        guard let last = all.range(of: "vlc: tracks read before playing", options: .backwards) else { return all }
-        return String(all[last.lowerBound...])
+    /// The log as far as written (before a launch: where its lines begin).
+    private func logLength(_ log: URL) -> Int {
+        ((try? String(contentsOf: log, encoding: .utf8)) ?? "").count
+    }
+
+    /// The log written after `start` characters (`logLength` before the launch).
+    private func logSince(_ log: URL, _ start: Int = 0) -> String {
+        String(((try? String(contentsOf: log, encoding: .utf8)) ?? "").dropFirst(start))
     }
 
     /// The subtitles inside the video are drawn over the picture, by AVKit
@@ -429,7 +432,7 @@ final class VisualUITests: SchnellbildUITestCase {
         eventually("the subtitles are on", timeout: 20) { text(of: video).contains("subtitles 1/2 en") }
         if vlc {
             waitForSoftwarePictures(of: video)
-            checkStartedInSoftware(video, log: logOfThisLaunch(log))
+            checkStartedInSoftware(video, log: logSince(log))
         }
         // The mouse off the video: the control bar goes and covers nothing
         app.windows.firstMatch.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.02)).hover()
@@ -464,6 +467,7 @@ final class VisualUITests: SchnellbildUITestCase {
         // Chosen from the start (the language is kept): VLC reads a track
         // chosen later only from its next line on, and the fixture's one
         // line began at 0
+        let mark = logLength(log)
         app.terminate()
         launch(open: tempDir.appendingPathComponent("tracks.mkv").path, resetState: false,
                extra: ["--force-vlc", "--test-log=\(log.path)"])
@@ -471,7 +475,7 @@ final class VisualUITests: SchnellbildUITestCase {
         XCTAssertTrue(video.waitForExistence(timeout: 20))
         eventually("the ASS track at once", timeout: 20) { text(of: video).contains("subtitles 2/2 de") }
         waitForSoftwarePictures(of: video)
-        checkStartedInSoftware(video, log: logOfThisLaunch(log))
+        checkStartedInSoftware(video, log: logSince(log, mark))
         app.windows.firstMatch.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.02)).hover()
         settle(4)
         let picture = picture(in: video)
@@ -496,6 +500,7 @@ final class VisualUITests: SchnellbildUITestCase {
         app.typeKey("v", modifierFlags: [])
         eventually("off") { text(of: video).contains("subtitles off/1") }
         // Started again with subtitles off (kept): in hardware
+        let mark = logLength(log)
         app.terminate()
         launch(open: tempDir.appendingPathComponent("ramp.mkv").path, resetState: false,
                extra: ["--force-vlc", "--test-log=\(log.path)"])
@@ -513,7 +518,7 @@ final class VisualUITests: SchnellbildUITestCase {
         app.typeKey("v", modifierFlags: [])
         eventually("opened again in software", timeout: 20) { text(of: video).contains("media 2, ") }
         waitForSoftwarePictures(of: video)
-        let written = logOfThisLaunch(log)
+        let written = logSince(log, mark)
         func luma(after marker: String) -> Int? {
             guard let range = written.range(of: marker) else { return nil }
             let rest = written[range.upperBound...]
@@ -529,8 +534,10 @@ final class VisualUITests: SchnellbildUITestCase {
         } else {
             XCTFail("the pictures around the switch are logged")
         }
-        // The next line is drawn (a line every 2 s; the running one comes
-        // from its start only)
+        // The line running when it was switched on shows on the first pictures after it
+        let after = probedPictures(in: written).filter { $0.media == 2 }
+        print("after switching: \(after.map { "\($0.number): \($0.text == true ? "text" : "no text")" }.joined(separator: ", "))")
+        XCTAssertEqual(after.first?.text, true, "the running line on the first picture after switching on")
         app.windows.firstMatch.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.02)).hover()
         settle(4)
         let picture = picture(in: video)

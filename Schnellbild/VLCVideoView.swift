@@ -38,6 +38,31 @@ enum VLCStops {
     }
 }
 
+/// UI tests: VLC's messages with the time since the system started (ms),
+/// into VLC's own log file, and those about pictures, buffering and
+/// subtitles also into the app's test log (`--test-log`), on the clock of
+/// the app's own lines there (`BrowserModel.testClock`).
+final class VLCTestLogger: NSObject, VLCLogging, @unchecked Sendable {
+    var level: VLCLogLevel = .debug
+    private let handle: FileHandle
+    private let lock = NSLock()
+    init(_ handle: FileHandle) { self.handle = handle }
+
+    private static let mirrored = ["first picture", "uffering", "text renderer", "subpicture", "no vout",
+                                   "Decoder wait", "starting at time", "seek", "spu decoder", "vout display", "es out"]
+
+    func handleMessage(_ message: String, logLevel: VLCLogLevel, context: VLCLogContext?) {
+        let module = context?.module ?? "-"
+        let line = "\(BrowserModel.testClock) [\(logLevel.rawValue)] \(module): \(message)\n"
+        lock.lock()
+        handle.write(Data(line.utf8))
+        lock.unlock()
+        if Self.mirrored.contains(where: { message.contains($0) }) {
+            BrowserModel.testLog("vlc log: \(module): \(message) | \(BrowserModel.testClock) ms")
+        }
+    }
+}
+
 /// VLCKit (LibVLC) playback for formats AVFoundation can't handle (AVI, MKV,
 /// WebM …). Used only as a fallback; native formats stay on AVKit. Reports
 /// state changes from any source (keys, the end of the video) to the model.
@@ -58,7 +83,7 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         if !FileManager.default.fileExists(atPath: path) { FileManager.default.createFile(atPath: path, contents: nil) }
         guard let handle = FileHandle(forWritingAtPath: path) else { return }
         handle.seekToEndOfFile()
-        let logger = VLCFileLogger.create(with: handle)
+        let logger = VLCTestLogger(handle)
         logger.level = .debug
         VLCLibrary.shared().loggers = [logger]
     }()
@@ -83,7 +108,9 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
     /// Where auto enhance's look goes (the model, for the sliders).
     var onAutoLook: @MainActor (PlaybackControl, Look) -> Void = { _, _ in }
 
-    init(source: Source, onStateChange: @escaping @MainActor (PlaybackControl, Bool) -> Void) {
+    /// `subtitles`: whether subtitles are on (the model's `showSubtitles`):
+    /// off, the video starts at once, its tracks are not read first.
+    init(source: Source, subtitles: Bool = true, onStateChange: @escaping @MainActor (PlaybackControl, Bool) -> Void) {
         self.source = source
         self.onStateChange = onStateChange
         super.init()
@@ -91,7 +118,7 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         player.media = media
         player.delegate = self
         output.attach(to: player)
-        readTracksFirst(media)
+        if subtitles { readTracksFirst(media) }
     }
 
     // MARK: Tracks before the first picture
@@ -104,21 +131,39 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
     /// `play()` was called on the player: its own track lists hold from then on.
     private var started = false
 
+    /// How long the first picture waits for the tracks: a file that takes
+    /// longer to read (a slow share) starts in hardware, and subtitles
+    /// chosen then open it again in software where it stands
+    /// (`decodeInSoftware`).
+    static let parseWait: Duration = .milliseconds(400)
+    /// When the reading began (test log).
+    private var parseBegan = Date()
+
     /// Reads the file's tracks before it plays (libVLC's preparser: the
     /// same input with the media's options, so the same single demuxer
-    /// (`VLCSafety`), local only, no art fetched, at most 2 s), so subtitles
-    /// that are to show make VLC decode in software from the first picture
-    /// on, with the track chosen (`tracksKnown`).
+    /// (`VLCSafety`), local only, no art fetched), so subtitles that are to
+    /// show make VLC decode in software from the first picture on, with the
+    /// track chosen (`tracksKnown`); at most `parseWait`.
     private func readTracksFirst(_ media: VLCMedia) {
         guard case .file = source else { return }
         media.delegate = self
-        parsing = media.parse(options: VLCMediaParsingOptions(rawValue: 0), timeout: 2000) == 0
+        parseBegan = Date()
+        parsing = media.parse(options: VLCMediaParsingOptions(rawValue: 0), timeout: 5000) == 0
         guard parsing else { return }
-        // Should libVLC not report the end of its parsing, play anyway
         Task { @MainActor [weak self] in
-            try? await Task.sleep(for: .seconds(3))
-            self?.tracksKnown()
+            try? await Task.sleep(for: Self.parseWait)
+            self?.parseTookTooLong()
         }
+    }
+
+    /// The tracks didn't come within `parseWait`: play in hardware (what
+    /// the parse brings later is left alone; VLC reports the tracks once it
+    /// plays).
+    private func parseTookTooLong() {
+        guard parsing else { return }
+        parsing = false
+        BrowserModel.testLog("vlc: tracks not read within \(Self.parseWait), playing")
+        if playWhenParsed { startPlaying() }
     }
 
     nonisolated func mediaDidFinishParsing(_ aMedia: VLCMedia) {
@@ -133,7 +178,8 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         parsing = false
         guard player.delegate != nil else { return }   // stopped meanwhile
         BrowserModel.testLog("vlc: tracks read before playing (parse status \(media.parsedStatus.rawValue)), "
-            + "\(tracks.subtitles.count) subtitle tracks")
+            + "\(tracks.subtitles.count) subtitle tracks, in \(Int(Date().timeIntervalSince(parseBegan) * 1000)) ms "
+            + "| \(BrowserModel.testClock) ms")
         onTracksChanged(self)
         // The model chooses only what differs from the tracks reported, which
         // name none on before playing: no choice is subtitles off (else VLC
@@ -153,6 +199,7 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
     private func startPlaying() {
         playWhenParsed = false
         started = true
+        BrowserModel.testLog("vlc: play | \(BrowserModel.testClock) ms")
         player.play()
     }
 
@@ -181,7 +228,10 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         // The subtitles chosen, from the start: chosen once VLC has opened
         // the file, a line that began at its start would be read already
         // (into the file's default track) and show only from the next one
-        if softwareDecoding, let subtitleOnceOpen { media.addOption(":sub-track-id=\(subtitleOnceOpen)") }
+        if softwareDecoding, let track = subtitleToOpen {
+            media.addOption(":sub-track-id=\(track)")
+            BrowserModel.testLog("vlc: media opened with subtitles \(track)")
+        }
         return media
     }
 
@@ -356,6 +406,14 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
     private var pauseOnceOpen = false
     /// The subtitle track VLC opens the media with in software (`makeMedia`).
     private var subtitleOnceOpen: Int?
+    /// The subtitle track a media opened anew starts with: the one chosen
+    /// last (none when switched off), else the one it was opened with.
+    private var subtitleToOpen: Int? {
+        switch wantedSubtitle {
+        case .some(let chosen): return chosen
+        case .none:             return subtitleOnceOpen
+        }
+    }
     /// The media in the player is one opened for software decoding.
     private var openedInSoftware = false
 

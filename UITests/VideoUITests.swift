@@ -263,8 +263,12 @@ final class VideoUITests: SchnellbildUITestCase {
     /// V switch the subtitles, ⌃⌘A the sound, > the speed, which the badge
     /// shows and the video plays at.
     private func checkTracksAndSpeed(_ fixture: String, vlc: Bool) throws {
+        let log = tempDir.appendingPathComponent("app.log")
+        continueAfterFailure = true   // the log below shows on a failure too
+        defer { print("app log:\n" + ((try? String(contentsOf: log, encoding: .utf8)) ?? "(none)")) }
         try put(fixture, at: fixture)
-        launch(open: tempDir.appendingPathComponent(fixture).path, extra: (vlc ? ["--force-vlc"] : []) + ["--hold-video-bar"])
+        launch(open: tempDir.appendingPathComponent(fixture).path,
+               extra: (vlc ? ["--force-vlc"] : []) + ["--hold-video-bar", "--test-log=\(log.path)"])
         let video = element(vlc ? "video.vlc" : "video.avkit")
         XCTAssertTrue(video.waitForExistence(timeout: 20))
         eventually("the tracks are known, the defaults on", timeout: 20) {
@@ -302,10 +306,12 @@ final class VideoUITests: SchnellbildUITestCase {
         XCTAssertTrue(element("videoBar.audio").exists)
         // The next launch starts with the choices: German subtitles and sound
         app.terminate()
-        launch(open: tempDir.appendingPathComponent(fixture).path, resetState: false, extra: vlc ? ["--force-vlc"] : [])
+        launch(open: tempDir.appendingPathComponent(fixture).path, resetState: false,
+               extra: (vlc ? ["--force-vlc"] : []) + ["--test-log=\(log.path)"])
         let again = element(vlc ? "video.vlc" : "video.avkit")
         XCTAssertTrue(again.waitForExistence(timeout: 20))
         eventually("remembered", timeout: 20) { text(of: again).contains("audio 2/2 de, subtitles 2/2 de, speed 1.0") }
+        print("the next launch: \(text(of: again))")
     }
 
     func testTracksAndSpeedInAVKit() throws { try checkTracksAndSpeed("tracks.mp4", vlc: false) }

@@ -1836,6 +1836,9 @@ final class BrowserModel: ObservableObject {
 
     /// UI tests (`--test-log=<path>`): what happened, a line each, for
     /// what the screen doesn't show (how often a rename ran).
+    /// The clock of timed test log lines: ms since the system started.
+    nonisolated static var testClock: String { String(format: "%.1f", ProcessInfo.processInfo.systemUptime * 1000) }
+
     nonisolated static func testLog(_ line: String, arguments: [String] = ProcessInfo.processInfo.arguments) {
         guard arguments.contains("--ui-testing"),
               let arg = arguments.first(where: { $0.hasPrefix("--test-log=") }) else { return }

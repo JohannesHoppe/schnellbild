@@ -161,7 +161,8 @@ struct VideoDetailView: View {
                 let head = stream == nil ? await Blocking.run { VLCSafety.head(of: url) } : nil
                 guard !Task.isCancelled else { return }
                 let source: VLCPlaybackControl.Source = stream.map { stream in .stream(url, { ArchiveInputStream(stream) }) } ?? .file(url, head: head)
-                let control = VLCPlaybackControl(source: source, onStateChange: report)
+                // Subtitles off: no reading of the tracks before the first picture
+                let control = VLCPlaybackControl(source: source, subtitles: model.showSubtitles, onStateChange: report)
                 control.onAutoLook = reportLook
                 control.onTracksChanged = reportTracks
                 vlcControl = control
