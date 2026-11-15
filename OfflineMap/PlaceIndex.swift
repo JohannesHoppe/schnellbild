@@ -113,6 +113,30 @@ public final class PlaceIndex: @unchecked Sendable {
     private let data: Data
     private let blocks: [Block]
     private let countries: [String?]
+    /// The political positions' regions (Scripts/build_map_data.py, REGION_COUNTRIES), in order
+    private let regions: [Region]
+
+    /// A country's polygon: rings of (latitude, longitude), even-odd inside
+    struct Region {
+        var code: String
+        var rings: [[(Double, Double)]]
+        var south, north, west, east: Double
+
+        func contains(_ c: Coordinate) -> Bool {
+            guard c.latitude >= south, c.latitude <= north, c.longitude >= west, c.longitude <= east else { return false }
+            var inside = false
+            for ring in rings where ring.count > 2 {
+                var j = ring.count - 1
+                for i in ring.indices {
+                    let (yi, xi) = ring[i], (yj, xj) = ring[j]
+                    if (yi > c.latitude) != (yj > c.latitude),
+                       c.longitude < xi + (c.latitude - yi) * (xj - xi) / (yj - yi) { inside.toggle() }
+                    j = i
+                }
+            }
+            return inside
+        }
+    }
     private let cache = NSCache<NSNumber, NSData>()
 
     static let columns = 360, rows = 180
@@ -153,6 +177,56 @@ public final class PlaceIndex: @unchecked Sendable {
         languages = String(decoding: data.subdata(in: data.startIndex + languagesOffset..<data.startIndex + languagesOffset + languagesLength), as: UTF8.self)
             .split(separator: ",").map(String.init)
         cache.totalCostLimit = 64 << 20
+        regions = Self.readRegions(data, at: u32(60))
+    }
+
+    /// The regions section (empty in a file without one, or one that doesn't read whole).
+    static func readRegions(_ data: Data, at offset: Int) -> [Region] {
+        guard offset > 0, offset + 4 <= data.count else { return [] }
+        return data.withUnsafeBytes { raw -> [Region] in
+            var p = offset
+            func u32() -> Int? {
+                guard p + 4 <= raw.count else { return nil }
+                defer { p += 4 }
+                return Int(UInt32(littleEndian: raw.loadUnaligned(fromByteOffset: p, as: UInt32.self)))
+            }
+            func i32() -> Int32? {
+                guard p + 4 <= raw.count else { return nil }
+                defer { p += 4 }
+                return Int32(littleEndian: raw.loadUnaligned(fromByteOffset: p, as: Int32.self))
+            }
+            guard let count = u32(), count < 10_000 else { return [] }
+            var out: [Region] = []
+            for _ in 0..<count {
+                guard p + 4 <= raw.count else { return [] }
+                let code = String(decoding: UnsafeRawBufferPointer(rebasing: raw[p..<p + 2]), as: UTF8.self)
+                let ringCount = Int(raw[p + 2]) | Int(raw[p + 3]) << 8
+                p += 4
+                var rings: [[(Double, Double)]] = []
+                var south = 90.0, north = -90.0, west = 180.0, east = -180.0
+                for _ in 0..<ringCount {
+                    guard let n = u32(), n <= (raw.count - p) / 8 else { return [] }
+                    var ring: [(Double, Double)] = []
+                    ring.reserveCapacity(n)
+                    for _ in 0..<n {
+                        guard let lat = i32(), let lon = i32() else { return [] }
+                        let point = (Double(lat) / 1e6, Double(lon) / 1e6)
+                        ring.append(point)
+                        south = min(south, point.0); north = max(north, point.0)
+                        west = min(west, point.1); east = max(east, point.1)
+                    }
+                    rings.append(ring)
+                }
+                out.append(Region(code: code, rings: rings, south: south, north: north, west: west, east: east))
+            }
+            return out
+        }
+    }
+
+    /// The country a point lies in by the political positions' regions, nil outside them.
+    public func regionCountry(at c: Coordinate) -> String? {
+        let c = c.normalized
+        return regions.first { $0.contains(c) }?.code
     }
 
     static func uint32(_ data: Data, _ at: Int) -> Int {
@@ -304,16 +378,29 @@ public final class PlaceIndex: @unchecked Sendable {
         return out
     }
 
+    /// How much a place across a border from the photo counts less
+    static let borderPenalty = 6.0
+
     /// The place a photo taken here is "near": the most important locality
     /// within `radius` metres, an important one further away preferred over
-    /// a hamlet next door (`NearbyPlace.score`); nil where none is (the open sea).
+    /// a hamlet next door (`NearbyPlace.score`), one in the photo's own
+    /// country over one across a border; nil where none is (the open sea).
+    /// The photo's country is the one of the political positions' region it
+    /// lies in, else the nearest locality's; a place without a country of its
+    /// own (Jerusalem) takes the photo's.
     public func nearby(_ c: Coordinate, radius: Double = 50_000) -> NearbyPlace? {
-        var best: NearbyPlace?
-        for (place, distance) in places(near: c, radius: radius) where place.isLocality {
-            let candidate = NearbyPlace(place: place, distance: distance)
-            if best == nil || candidate.score > best!.score { best = candidate }
+        let found = places(near: c, radius: radius).filter { $0.place.isLocality }
+        let here = regionCountry(at: c)
+            ?? found.filter { $0.place.countryCode != nil }.min { $0.distance < $1.distance }?.place.countryCode
+        var best: (NearbyPlace, Double)?
+        for (place, distance) in found {
+            let candidate = NearbyPlace(place: place, distance: distance, countryCode: place.countryCode ?? here)
+            var score = candidate.score
+            // A place of another country, or of none (Jerusalem), counts less: near it, it still wins
+            if let here, place.countryCode != here { score -= Self.borderPenalty }
+            if best == nil || score > best!.1 { best = (candidate, score) }
         }
-        return best
+        return best?.0
     }
 }
 
@@ -322,6 +409,15 @@ public struct NearbyPlace: Equatable, Sendable {
     public var place: Place
     /// In metres
     public var distance: Double
+    /// ISO 3166-1 alpha-2 of the country the description names: the place's,
+    /// or for a place without one (Jerusalem) the photo's; nil when unknown
+    public var countryCode: String?
+
+    public init(place: Place, distance: Double, countryCode: String? = nil) {
+        self.place = place
+        self.distance = distance
+        self.countryCode = countryCode ?? place.countryCode
+    }
 
     /// The place's importance (population rank, and how early the map
     /// labels it) less a penalty growing with the logarithm of the distance:
@@ -333,7 +429,7 @@ public struct NearbyPlace: Equatable, Sendable {
 
     /// The country's name in the user's language (from the system), nil when unknown.
     public func countryName(locale: Locale = .current) -> String? {
-        guard let code = place.countryCode else { return nil }
+        guard let code = countryCode else { return nil }
         return locale.localizedString(forRegionCode: code)
     }
 

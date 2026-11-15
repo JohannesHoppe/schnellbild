@@ -454,7 +454,143 @@ KEEP_KEYS = {
 }
 
 
-def thin_layer(name, body):
+def string_value(text):
+    return field_bytes(1, text.encode("utf-8"))
+
+
+def decode_lines(geometry):
+    """A line feature's parts as lists of (x, y) in tile coordinates."""
+    arr = packed(geometry)
+    parts, cur, x, y, i = [], [], 0, 0, 0
+    while i < len(arr):
+        cmd, count = arr[i] & 7, arr[i] >> 3
+        i += 1
+        if cmd == 7:
+            continue
+        for _ in range(count):
+            x += (arr[i] >> 1) ^ -(arr[i] & 1)
+            y += (arr[i + 1] >> 1) ^ -(arr[i + 1] & 1)
+            i += 2
+            if cmd == 1 and cur:
+                parts.append(cur)
+                cur = []
+            cur.append((x, y))
+    if cur:
+        parts.append(cur)
+    return parts
+
+
+def encode_lines(parts):
+    def zz(v):
+        return (v << 1) ^ (v >> 63)
+    out, x, y = bytearray(), 0, 0
+    for part in parts:
+        if len(part) < 2:
+            continue
+        write_varint((1 << 3) | 1, out)
+        write_varint(zz(part[0][0] - x), out)
+        write_varint(zz(part[0][1] - y), out)
+        x, y = part[0]
+        write_varint(((len(part) - 1) << 3) | 2, out)
+        for px, py in part[1:]:
+            write_varint(zz(px - x), out)
+            write_varint(zz(py - y), out)
+            x, y = px, py
+    return bytes(out)
+
+
+def tile_to_lat_lon(z, x0, y0, extent, gx, gy):
+    n = 1 << z
+    lon = (x0 + gx / extent) / n * 360 - 180
+    lat = math.degrees(math.atan(math.sinh(math.pi * (1 - 2 * (y0 + gy / extent) / n))))
+    return lat, lon
+
+
+def split_border(parts, kind, tile, extent):
+    """A border feature's parts split by the European reading: (kept parts, promoted parts). A
+    segment near a region of the overrides is judged by the countries on its two sides (2 km
+    away, or two tile units at small zooms): a country line with one country on both sides is
+    dropped (water on one side shows no other country); returns (kept parts, [])."""
+    z, x0, y0 = tile
+    units_per_km = extent * (1 << z) / 40075.0
+    kept, promoted = [], []
+    for part in parts:
+        runs = {"keep": [], "promote": []}
+        current, current_kind = [part[0]], "keep"
+        for a, b in zip(part, part[1:]):
+            verdict = "keep"
+            mx, my = (a[0] + b[0]) / 2, (a[1] + b[1]) / 2
+            lat, lon = tile_to_lat_lon(z, x0, y0, extent, mx, my)
+            if near_region(lat, lon):
+                dx, dy = b[0] - a[0], b[1] - a[1]
+                length = math.hypot(dx, dy)
+                if length > 0:
+                    off = max(2.0 * units_per_km / max(0.05, math.cos(math.radians(lat))), 2.0)
+                    nx, ny = -dy / length * off, dx / length * off
+                    left = political_code(*tile_to_lat_lon(z, x0, y0, extent, mx + nx, my + ny))
+                    right = political_code(*tile_to_lat_lon(z, x0, y0, extent, mx - nx, my - ny))
+                    if kind == "country" and len({left, right} - {""}) == 1:
+                        verdict = "drop"
+            if verdict == current_kind:
+                current.append(b)
+            else:
+                if current_kind in runs and len(current) > 1:
+                    runs[current_kind].append(current)
+                current, current_kind = [a, b], verdict
+        if current_kind in runs and len(current) > 1:
+            runs[current_kind].append(current)
+        kept += runs["keep"]
+        promoted += runs["promote"]
+    return kept, promoted
+
+
+def added_border_parts(tile, extent):
+    """The parts of `_added_borders` that reach the tile (with a margin), in its coordinates."""
+    z, x0, y0 = tile
+    n = 1 << z
+    margin = extent * 0.1
+    out = []
+    for line in _added_borders:
+        pts = []
+        for lat, lon in line:
+            l = math.radians(max(-85.05, min(85.05, lat)))
+            ux = (lon + 180) / 360 * n - x0
+            uy = (1 - math.log(math.tan(l) + 1 / math.cos(l)) / math.pi) / 2 * n - y0
+            pts.append((round(ux * extent), round(uy * extent)))
+        run = []
+        for p in pts:
+            if -margin <= p[0] <= extent + margin and -margin <= p[1] <= extent + margin:
+                run.append(p)
+            else:
+                if len(run) > 1:
+                    out.append(run)
+                run = []
+        if len(run) > 1:
+            out.append(run)
+    # vertices that coincide at this zoom are dropped
+    cleaned = []
+    for run in out:
+        r = [run[0]] + [p for i, p in enumerate(run[1:], 1) if p != run[i - 1]]
+        if len(r) > 1:
+            cleaned.append(r)
+    return cleaned
+
+
+def water_override(attrs):
+    """The water label's names from `WATER_NAMES`, or the attributes as they are."""
+    english = next((value_of(v) for k, v in attrs if k == "name:en"), None)
+    rule = next((r for r in WATER_NAMES if english in r["match"]), None)
+    if rule is None:
+        return attrs
+    names = {NAME_KEYS[LANGUAGES.index(lang)]: text for lang, text in rule["names"].items()}
+    out = [(k, v) for k, v in attrs if k not in names and not (k == "name" and "local" in rule)]
+    out += [(k, string_value(text)) for k, text in names.items()]
+    if "local" in rule:
+        out.append(("name", string_value(rule["local"])))
+    return out
+
+
+def thin_layer(name, body, tile=(0, 0, 0)):
     """The layer re-encoded with only the features and attributes the app uses, or None."""
     if name not in KEEP_KEYS:
         return None
@@ -493,23 +629,57 @@ def thin_layer(name, body):
         keep = KEEP_KEYS[name] | (NAMES if name == "water" and gtype == 1 else set())
         if name == "water" and gtype == 1 and not any(k == "name" for k, _ in attrs):
             continue  # a water point is only a label
-        new_tags = []
-        for k, val in attrs:
-            if k not in keep:
-                continue
-            if k not in key_index:
-                key_index[k] = len(new_keys)
-                new_keys.append(k)
-            if val not in value_index:
-                value_index[val] = len(new_values)
-                new_values.append(val)
-            new_tags += [key_index[k], value_index[val]]
-        feature = bytearray()
-        if new_tags:
-            feature += field_bytes(2, b"".join(varint_bytes(i) for i in new_tags))
-        feature += varint_bytes((3 << 3) | 0) + varint_bytes(gtype)
-        feature += field_bytes(4, geometry)
-        features.append(bytes(feature))
+        if name == "water" and gtype == 1:
+            attrs = water_override(attrs)
+        pieces = [(attrs, geometry)]
+        if name == "boundaries" and gtype == 2 and kind == "country" and _countries is not None:
+            parts = decode_lines(geometry)
+            kept, promoted = split_border(parts, kind, tile, extent)
+            if kept != parts or promoted:
+                _borders_changed[0] = True
+                pieces = []
+                if kept:
+                    pieces.append((attrs, encode_lines(kept)))
+                if promoted:
+                    pieces.append(([("kind", string_value("country")), ("kind_detail", varint_bytes((4 << 3) | 0) + varint_bytes(2)),
+                                    ("disputed", varint_bytes((7 << 3) | 0) + varint_bytes(1))], encode_lines(promoted)))
+        for piece_attrs, piece_geometry in pieces:
+            new_tags = []
+            for k, val in piece_attrs:
+                if k not in keep:
+                    continue
+                if k not in key_index:
+                    key_index[k] = len(new_keys)
+                    new_keys.append(k)
+                if val not in value_index:
+                    value_index[val] = len(new_values)
+                    new_values.append(val)
+                new_tags += [key_index[k], value_index[val]]
+            feature = bytearray()
+            if new_tags:
+                feature += field_bytes(2, b"".join(varint_bytes(i) for i in new_tags))
+            feature += varint_bytes((3 << 3) | 0) + varint_bytes(gtype)
+            feature += field_bytes(4, piece_geometry)
+            features.append(bytes(feature))
+    if name == "boundaries" and _added_borders:
+        added = added_border_parts(tile, extent)
+        if added:
+            _borders_changed[0] = True
+            attrs = [("kind", string_value("country")), ("kind_detail", varint_bytes((4 << 3) | 0) + varint_bytes(2)),
+                     ("disputed", varint_bytes((7 << 3) | 0) + varint_bytes(1))]
+            new_tags = []
+            for k, val in attrs:
+                if k not in key_index:
+                    key_index[k] = len(new_keys)
+                    new_keys.append(k)
+                if val not in value_index:
+                    value_index[val] = len(new_values)
+                    new_values.append(val)
+                new_tags += [key_index[k], value_index[val]]
+            feature = field_bytes(2, b"".join(varint_bytes(i) for i in new_tags))
+            feature += varint_bytes((3 << 3) | 0) + varint_bytes(2)
+            feature += field_bytes(4, encode_lines(added))
+            features.append(bytes(feature))
     if not features:
         return None
     out = bytearray(varint_bytes((15 << 3) | 0) + varint_bytes(2))
@@ -527,13 +697,13 @@ def thin_layer(name, body):
 LAYER_ORDER = ["earth", "water", "landuse", "boundaries", "roads"]
 
 
-def thin_tile(raw):
+def thin_tile(raw, tile=(0, 0, 0)):
     layers = {}
     for f, t, v, _ in fields(raw):
         if f != 3:
             continue
         name = next(bytes(x).decode("utf-8") for ff, tt, x, _ in fields(v) if ff == 1)
-        body = thin_layer(name, v)
+        body = thin_layer(name, v, tile)
         if body is not None:
             layers[name] = body
     return b"".join(field_bytes(3, layers[n]) for n in LAYER_ORDER if n in layers)
@@ -549,8 +719,17 @@ def _init_worker(chunks):
     _reader = TileReader(chunks)
 
 
+_borders_changed = [False]
+
+
 def map_work(batch):
-    return [(tile_id, thin_tile(_reader.read(offset, length))) for tile_id, offset, length in batch]
+    """(offset, thinned tile, whether a border of it was changed) for each (offset, tile id, length)."""
+    out = []
+    for offset, tile_id, length in batch:
+        _borders_changed[0] = False
+        raw = thin_tile(_reader.read(offset, length), id_to_zxy(tile_id))
+        out.append((offset, raw, _borders_changed[0]))
+    return out
 
 
 def places_work(batch):
@@ -637,28 +816,36 @@ def read_shp_polygons(data):
     return shapes
 
 
+def country_code(rec):
+    """The ISO 3166 code of a Natural Earth country record."""
+    code = rec.get("ISO_A2_EH", "-99")
+    if not re.fullmatch(r"[A-Z]{2}", code):
+        code = rec.get("ISO_A2", "-99")
+    if not re.fullmatch(r"[A-Z]{2}", code):
+        code = {"KOS": "XK", "CYN": "CY", "SOL": "SO"}.get(rec.get("ADM0_A3"), "")
+    return code or None
+
+
 class Countries:
-    """Point in polygon over Natural Earth's countries: edges bucketed by quarter degree of
-    latitude, countries by their bounding boxes on a one-degree grid."""
+    """Point in polygon over Natural Earth polygons (countries, or the regions of the political
+    overrides): edges bucketed by quarter degree of latitude, polygons by their bounding boxes
+    on a one-degree grid. `code_of` gives a record's code, or None to leave it out."""
     BAND = 0.25
 
-    def __init__(self, zip_bytes):
+    def __init__(self, zip_bytes, code_of=country_code):
         z = zipfile.ZipFile(io.BytesIO(zip_bytes))
         shp = next(n for n in z.namelist() if n.endswith(".shp"))
         dbf = next(n for n in z.namelist() if n.endswith(".dbf"))
         shapes = read_shp_polygons(z.read(shp))
         records = read_dbf(z.read(dbf))
-        self.codes, self.bands, self.grid = [], [], {}
+        self.codes, self.bands, self.grid, self.rings, self.boxes = [], [], {}, [], []
         for rings, rec in zip(shapes, records):
-            code = rec.get("ISO_A2_EH", "-99")
-            if not re.fullmatch(r"[A-Z]{2}", code):
-                code = rec.get("ISO_A2", "-99")
-            if not re.fullmatch(r"[A-Z]{2}", code):
-                code = {"KOS": "XK", "CYN": "CY", "SOL": "SO"}.get(rec.get("ADM0_A3"), "")
+            code = code_of(rec)
             if not code or not rings:
                 continue
             index = len(self.codes)
             self.codes.append(code)
+            self.rings.append(rings)
             bands = {}
             min_x = min_y = 1e9
             max_x = max_y = -1e9
@@ -672,6 +859,7 @@ class Countries:
                     min_x, max_x = min(min_x, x1, x2), max(max_x, x1, x2)
                     min_y, max_y = min(min_y, lo), max(max_y, hi)
             self.bands.append(bands)
+            self.boxes.append((min_x, min_y, max_x, max_y))
             for gx in range(int(math.floor(min_x)), int(math.floor(max_x)) + 1):
                 for gy in range(int(math.floor(min_y)), int(math.floor(max_y)) + 1):
                     self.grid.setdefault((gx, gy), []).append(index)
@@ -687,11 +875,178 @@ class Countries:
         return ""
 
 
+# --- political positions ----------------------------------------------------------------
+#
+# The map shows the world as the EU and Germany read it (CLAUDE.md, "Political positions"). Natural
+# Earth's countries as Germany sees them give most of it; these tables put right what they don't.
+
+# Regions of Natural Earth's disputed areas (ne_10m_admin_0_disputed_areas, by BRK_NAME) and the
+# country each belongs to. A place or a point in one of them takes this country first; a country
+# border with this country on both sides is not drawn (it is the line of an occupation or of a
+# de facto authority). Sources for the positions: the EU's non-recognition of the annexation of
+# Crimea and of the four oblasts (European Council conclusions, 2014 and 2022); Germany's
+# recognition of Kosovo (2008); the EU on Northern Cyprus, Abkhazia, South Ossetia, Transnistria and
+# Karabakh as parts of Cyprus, Georgia, Moldova and Azerbaijan; the EU on the Golan Heights (Syrian
+# territory occupied by Israel) and on the West Bank, East Jerusalem and Gaza (occupied Palestinian
+# territory, UN Security Council resolution 2334); the EU on Western Sahara (a non-self-governing
+# territory, judgments of the Court of Justice of the EU, C-104/16 P and C-779/21 P).
+REGION_COUNTRIES = {
+    "Crimea": "UA",
+    "Donetsk People's Republic": "UA",
+    "Luhansk People's Republic": "UA",
+    "Kosovo": "XK",
+    "N. Cyprus": "CY",
+    "Cyprus U.N. Buffer Zone": "CY",
+    "Abkhazia": "GE",
+    "South Ossetia": "GE",
+    "Transnistria": "MD",
+    "Artsakh": "AZ",
+    "Golan Heights": "SY",
+    "West Bank": "PS",
+    "Gaza": "PS",
+    "East Jerusalem": "PS",
+    "W. Sahara": "EH",        # both of Natural Earth's parts: the one Morocco and the one the Polisario hold
+    "Taiwan": "TW",
+}
+
+# Natural Earth countries the app also gets as regions (`write_places`), after the ones above:
+# Jerusalem's place has no country of its own (below), so a photo in West Jerusalem needs Israel's
+# outline to be "near Jerusalem, Israel" and one in East Jerusalem the override's to be Palestinian.
+APP_BASE_COUNTRIES = ["IL"]
+
+# Places whose data a position changes. Matched by kind, local name and a point within `within`
+# kilometres; every entry must match exactly one place (the build stops otherwise).
+#  - Jerusalem: one point for a city whose eastern part the EU counts as occupied Palestinian
+#    territory; its country is the one of the photo's place (the app's regions).
+#  - Western Sahara's country label: OpenStreetMap names it the Sahrawi Arab Democratic Republic,
+#    which the EU doesn't recognise either; it is labelled Western Sahara (the names: Unicode CLDR's
+#    region name EH in each language, as macOS shows it).
+#  - Fort Polk, Louisiana: named Fort Johnson in 2023 and renamed Fort Polk by the US Army in 2025
+#    under the Trump administration (Army announcement of June 2025, reported e.g. by Texas Public
+#    Radio, https://www.tpr.org/military-veterans-issues/2025-06-12/the-army-is-moving-quickly-to-bring-back-the-original-names-of-bases-named-for-confederates);
+#    renamings by that administration are not followed, so it keeps its name from before.
+WESTERN_SAHARA = {
+    "en": "Western Sahara", "de": "Westsahara", "fr": "Sahara occidental", "es": "Sáhara Occidental",
+    "it": "Sahara Occidentale", "pt-BR": "Saara Ocidental", "nl": "Westelijke Sahara", "pl": "Sahara Zachodnia",
+    "sv": "Västsahara", "da": "Vestsahara", "nb": "Vest-Sahara", "fi": "Länsi-Sahara", "cs": "Západní Sahara",
+    "tr": "Batı Sahra", "ru": "Западная Сахара", "uk": "Західна Сахара", "ja": "西サハラ", "ko": "서사하라",
+    "zh-Hans": "西撒哈拉", "zh-Hant": "西撒哈拉",
+}
+PLACE_OVERRIDES = [
+    {"kind": "city", "name": "ירושלים", "at": (31.78, 35.22), "within": 5, "country": ""},
+    {"kind": "country", "name": "República Árabe Saharaui Democrática", "at": (23.36, -13.15), "within": 50,
+     "local": "Western Sahara", "names": WESTERN_SAHARA, "country": "EH"},
+    {"kind": "village", "name": "Fort Polk", "at": (31.05, -93.21), "within": 5, "local": "Fort Johnson",
+     "names": {}},
+]
+
+# Water labels: the names a feature keeps in every language, matched by its English name (also
+# the name of a renaming that isn't followed). Executive Order 14172 (January 20, 2025,
+# https://www.federalregister.gov/documents/2025/01/31/2025-02096/restoring-names-that-honor-american-greatness)
+# renamed the Gulf of Mexico for US federal use; Executive Order 14422 (August 27, 2026,
+# https://www.federalregister.gov/documents/2026/09/02/2026-18020/honoring-the-american-history-of-the-great-lakes-and-renaming-lake-ontario-as-lake-america)
+# Lake Ontario; "Arabian Gulf" for the Persian Gulf was floated in May 2025 and not decreed. The
+# names below are the build's own (OpenStreetMap's) where it has them, so a later build can't bring
+# a renaming in; added: Swedish for the Persian Gulf, Italian, Norwegian and Turkish for the Sea of
+# Japan, and the Sea of Japan's internationally used name in Korean (OpenStreetMap's Korean name is
+# "East Sea", 동해).
+WATER_NAMES = [
+    {"match": {"Gulf of Mexico", "Gulf of America"}, "local": "Golfo de México", "names": {
+        "en": "Gulf of Mexico", "de": "Golf von Mexiko", "fr": "Golfe du Mexique", "es": "Golfo de México",
+        "it": "Golfo del Messico", "pt-BR": "Golfo do México", "nl": "Golf van Mexico", "pl": "Zatoka Meksykańska",
+        "sv": "Mexikanska golfen", "da": "Mexicanske Golf", "nb": "Mexicogolfen", "fi": "Meksikonlahti",
+        "cs": "Mexický záliv", "tr": "Meksika Körfezi", "ru": "Мексиканский залив", "uk": "Мексиканська затока",
+        "ja": "メキシコ湾", "ko": "멕시코만", "zh-Hans": "墨西哥湾", "zh-Hant": "墨西哥灣"}},
+    {"match": {"Lake Ontario", "Lake America"}, "local": "Lake Ontario", "names": {
+        "en": "Lake Ontario", "de": "Ontariosee", "fr": "Lac Ontario", "es": "Lago Ontario", "it": "Lago Ontario",
+        "pt-BR": "Lago Ontário", "nl": "Ontariomeer", "pl": "Jezioro Ontario", "sv": "Ontariosjön", "da": "Ontariosøen",
+        "fi": "Ontariojärvi", "cs": "Ontarijské jezero", "tr": "Ontario Gölü", "ru": "озеро Онтарио", "uk": "Онтаріо",
+        "ja": "オンタリオ湖", "ko": "온타리오호", "zh-Hans": "安大略湖", "zh-Hant": "安大略湖"}},
+    {"match": {"Persian Gulf", "Arabian Gulf"}, "names": {
+        "en": "Persian Gulf", "de": "Persischer Golf", "fr": "Golfe Persique", "es": "Golfo Pérsico",
+        "it": "Golfo Persico", "pt-BR": "Golfo Pérsico", "nl": "Perzische Golf", "pl": "Zatoka Perska",
+        "sv": "Persiska viken", "da": "Den Persiske Golf", "nb": "Persiabukten", "fi": "Persianlahti",
+        "cs": "Perský záliv", "tr": "Basra Körfezi", "ru": "Персидский залив", "uk": "Перська затока",
+        "ja": "ペルシア湾", "ko": "페르시아 만", "zh-Hans": "波斯湾", "zh-Hant": "波斯灣"}},
+    {"match": {"Sea of Japan", "East Sea"}, "names": {
+        "en": "Sea of Japan", "de": "Japanisches Meer", "fr": "Mer du Japon", "es": "Mar de Japón",
+        "it": "Mar del Giappone", "pt-BR": "Mar do Japão", "nl": "Japanse Zee", "pl": "Morze Japońskie",
+        "sv": "Japanska havet", "da": "Japanske Hav", "nb": "Japanhavet", "fi": "Japaninmeri", "cs": "Japonské moře",
+        "tr": "Japon Denizi", "ru": "Японское море", "uk": "Японське море", "ja": "日本海", "ko": "일본해",
+        "zh-Hans": "日本海", "zh-Hant": "日本海"}},
+]
+
+# Borders the European reading draws that the build lacks: Western Sahara's border with Morocco
+# (27°40' N; OpenStreetMap has no country line there). Drawn as a disputed country border along
+# the edge Natural Earth's countries (as Germany sees them) share between the two.
+ADDED_BORDERS = [("EH", "MA")]
+
 _countries = None
+_regions = None
+_region_boxes = []
+_added_borders = []   # lines of (latitude, longitude)
+
+
+def political_code(lat, lon):
+    """The country of a point in the European reading: a region of the overrides first, then
+    Natural Earth's countries as Germany sees them ('' at sea or where neither knows)."""
+    return (_regions.code_at(lat, lon) if _regions else "") or _countries.code_at(lat, lon)
+
+
+def near_region(lat, lon, margin=0.3):
+    return any(x0 - margin <= lon <= x1 + margin and y0 - margin <= lat <= y1 + margin for x0, y0, x1, y1 in _region_boxes)
+
+
+def load_politics(countries_zip, disputed_zip):
+    global _countries, _regions, _region_boxes
+    _countries = Countries(countries_zip)
+    _regions = Countries(disputed_zip, lambda rec: REGION_COUNTRIES.get(rec.get("BRK_NAME")))
+    missing = set(REGION_COUNTRIES) - _region_names(disputed_zip)
+    if missing:
+        sys.exit(f"!! regions of the overrides not in Natural Earth's disputed areas: {sorted(missing)}")
+    _region_boxes = list(_regions.boxes)
+    _added_borders.clear()
+    for a, b in ADDED_BORDERS:
+        lines = shared_edges(_countries, a, b)
+        if not lines:
+            sys.exit(f"!! Natural Earth's countries {a} and {b} share no edge")
+        _added_borders.extend(lines)
+
+
+def shared_edges(countries, a, b):
+    """The edges the polygons of countries a and b share, joined into lines of (lat, lon)."""
+    def edges(code):
+        out = set()
+        for c, rings in zip(countries.codes, countries.rings):
+            if c == code:
+                for ring in rings:
+                    for p, q in zip(ring, ring[1:] + ring[:1]):
+                        out.add((p, q))
+        return out
+    ea, eb = edges(a), edges(b)
+    common = [(p, q) for p, q in ea if (q, p) in eb or (p, q) in eb]
+    # join into runs
+    lines = []
+    for p, q in sorted(common):
+        for line in lines:
+            if line[-1] == p:
+                line.append(q)
+                break
+            if line[0] == q:
+                line.insert(0, p)
+                break
+        else:
+            lines.append([p, q])
+    return [[(y, x) for x, y in line] for line in lines]
+
+
+def _region_names(disputed_zip):
+    z = zipfile.ZipFile(io.BytesIO(disputed_zip))
+    return {rec.get("BRK_NAME") for rec in read_dbf(z.read(next(n for n in z.namelist() if n.endswith(".dbf"))))}
 
 
 def countries_work(points):
-    return [_countries.code_at(lat, lon) for lat, lon in points]
+    return [political_code(lat, lon) for lat, lon in points]
 
 
 # --- place file ------------------------------------------------------------------------------
@@ -721,7 +1076,7 @@ def write_places(path, places, build):
         of the country codes (two ASCII letters each; a record's country is an index into them, 0
         unknown), u32 offset and u32 length of the languages (comma-separated, a name's language is
         an index into them), u32 the tiers' split (min_zoom * 10), 8 bytes the source build date,
-        4 bytes zero
+        u32 offset of the regions (0: none)
       block table (24 bytes per block, sorted by cell, then tier): u32 cell (row * columns + column,
         column from longitude -180, row from latitude -90), u8 tier (0 places below the split, 1
         the others), u8 storage (0 as is, 1 raw deflate), 2 bytes zero, u32 place count, u32 offset,
@@ -733,6 +1088,9 @@ def write_places(path, places, build):
         min_zoom * 10, u8 population rank, u8 country index.
         Names: varint length + UTF-8 of the name, u8 count, then per language whose name differs:
         u8 language index, varint length + UTF-8
+      regions (the political positions' polygons, in order, the first holding a point wins): u32
+        count, then each: 2 bytes ISO 3166 code, u16 ring count, per ring u32 point count and the
+        points as i32 latitude, i32 longitude in microdegrees
     """
     import zlib
     columns, rows, cell = 360, 180, 1_000_000
@@ -796,7 +1154,20 @@ def write_places(path, places, build):
         struct.pack_into("<I", fixed, i + 12, struct.unpack_from("<I", fixed, i + 12)[0] + payload_offset)
     header = b"SBPLACE1" + struct.pack("<11I", len(groups), len(places), columns, rows, cell, table_offset,
                                        countries_offset, len(country_bytes), languages_offset, len(languages), MAJOR_BELOW)
-    header += build.encode("ascii")[:8].ljust(8, b"\0") + b"\0" * 4
+    # The regions the app takes a photo's country from (`PlaceIndex.region(at:)`): the overrides'
+    # regions, then `APP_BASE_COUNTRIES`; the first that holds a point wins
+    regions = bytearray()
+    entries = [(code, rings) for code, rings in zip(_regions.codes, _regions.rings)]
+    entries += [(code, rings) for code, rings in zip(_countries.codes, _countries.rings) if code in APP_BASE_COUNTRIES]
+    regions += struct.pack("<I", len(entries))
+    for code, rings in entries:
+        regions += code.encode("ascii") + struct.pack("<H", len(rings))
+        for ring in rings:
+            regions += struct.pack("<I", len(ring))
+            for x, y in ring:
+                regions += struct.pack("<ii", round(y * 1e6), round(x * 1e6))
+    regions_offset = payload_offset + len(payload)
+    header += build.encode("ascii")[:8].ljust(8, b"\0") + struct.pack("<I", regions_offset)
     assert len(header) == 64, len(header)
     with open(path, "wb") as f:
         f.write(header)
@@ -804,6 +1175,7 @@ def write_places(path, places, build):
         f.write(country_bytes)
         f.write(languages)
         f.write(payload)
+        f.write(regions)
     return len(places)
 
 
@@ -811,7 +1183,7 @@ def number(v, default=0.0):
     return float(v) if isinstance(v, (int, float)) and not isinstance(v, bool) else default
 
 
-def build_places(source_rows, countries_zip, jobs):
+def build_places(source_rows, jobs):
     # The same place comes from several tiles and zooms: keep it once (by its Wikidata id, else
     # by kind, name and position), with the lowest zoom it came from
     unique = {}
@@ -825,8 +1197,6 @@ def build_places(source_rows, countries_zip, jobs):
             unique[key] = row
     rows = sorted(unique.values(), key=lambda r: (round(r[0], 6), round(r[1], 6), r[8]))
     print(f"   {len(rows)} places (countries, regions, localities up to min_zoom 11)", file=sys.stderr)
-    global _countries
-    _countries = Countries(countries_zip)
     points = [(r[0], r[1]) for r in rows]
     batches = [points[i:i + 5000] for i in range(0, len(points), 5000)]
     with mp.get_context("fork").Pool(jobs) as pool:
@@ -865,6 +1235,22 @@ def build_places(source_rows, countries_zip, jobs):
         else:
             missing += 1
     print(f"   {missing} places without a country", file=sys.stderr)
+    # The political positions' changes to single places, each matching exactly one
+    kinds = {k: i for i, k in enumerate(PLACE_KINDS)}
+    for rule in PLACE_OVERRIDES:
+        lat0, lon0 = rule["at"]
+        hits = [p for p in places if p["kind"] == kinds[rule["kind"]] and p["name"] == rule["name"]
+                and math.hypot(p["lat"] - lat0, (p["lon"] - lon0) * math.cos(math.radians(lat0))) * 111.2 <= rule["within"]]
+        if len(hits) != 1:
+            sys.exit(f"!! the override for {rule['name']} matches {len(hits)} places")
+        p = hits[0]
+        if "country" in rule:
+            p["country"] = rule["country"]
+        if "local" in rule:
+            p["name"] = rule["local"]
+        if "names" in rule:
+            p["names"] = [rule["names"].get(lang) for lang in LANGUAGES]
+        print(f"   override: {rule['name']} → {p['name']} ({p['country'] or 'its photo’s country'})", file=sys.stderr)
     return places
 
 
@@ -906,6 +1292,18 @@ What was filtered (the rest of the build is left out):
   them (public domain, https://www.naturalearthdata.com), by the country its point
   lies in, else the country of the nearest place within two degrees.
 
+Political positions (the map shows the world as the EU and Germany read it): places in
+the regions of Natural Earth's disputed areas listed in build_map_data.py
+(REGION_COUNTRIES: Crimea and the occupied oblasts as Ukraine, the Golan Heights as
+Syria, the West Bank, East Jerusalem and Gaza as Palestinian, Northern Cyprus as Cyprus,
+Abkhazia and South Ossetia as Georgia, Transnistria as Moldova, Kosovo, Western Sahara,
+Taiwan ...) take that country; country borders with the same country on both sides in
+that reading are left out (lines of occupation or of de facto authorities), and the
+border of Western Sahara with Morocco is drawn as a disputed country border. A few
+place and water names are set (Western Sahara's label, names from before the US
+renamings of 2025 and 2026, the internationally used names of seas); each with its
+source in build_map_data.py.
+
 How the files are made: Scripts/build_map_data.py in
 https://github.com/JohannesHoppe/schnellbild (the source build and the checksums are
 pinned in Scripts/map_data.env). The files are published as assets of the release
@@ -938,27 +1336,42 @@ def main():
     source.ensure_data(header, end)
     chunks = source.chunks()
 
-    print("==> Natural Earth countries", file=sys.stderr)
-    ne_path = os.path.join(args.cache, os.path.basename(env["NATURAL_EARTH_URL"]))
-    if not os.path.exists(ne_path) or sha256_file(ne_path) != env["NATURAL_EARTH_SHA256"]:
-        req = urllib.request.Request(env["NATURAL_EARTH_URL"], headers={"User-Agent": UA})
-        with urllib.request.urlopen(req, timeout=120) as r, open(ne_path, "wb") as f:
-            f.write(r.read())
-    if sha256_file(ne_path) != env["NATURAL_EARTH_SHA256"]:
-        sys.exit("!! Natural Earth: SHA-256 mismatch")
-    with open(ne_path, "rb") as f:
-        countries_zip = f.read()
+    print("==> Natural Earth countries and disputed areas", file=sys.stderr)
+
+    def natural_earth(url_key, sha_key):
+        path = os.path.join(args.cache, os.path.basename(env[url_key]))
+        if not os.path.exists(path) or sha256_file(path) != env[sha_key]:
+            req = urllib.request.Request(env[url_key], headers={"User-Agent": UA})
+            with urllib.request.urlopen(req, timeout=120) as r, open(path, "wb") as f:
+                f.write(r.read())
+        if sha256_file(path) != env[sha_key]:
+            sys.exit(f"!! {os.path.basename(path)}: SHA-256 mismatch")
+        with open(path, "rb") as f:
+            return f.read()
+
+    countries_zip = natural_earth("NATURAL_EARTH_URL", "NATURAL_EARTH_SHA256")
+    disputed_zip = natural_earth("NATURAL_EARTH_DISPUTED_URL", "NATURAL_EARTH_DISPUTED_SHA256")
+    load_politics(countries_zip, disputed_zip)
 
     ctx = mp.get_context("fork")
     # Map tiles: every addressed tile up to max_zoom, thinned (the same source bytes thinned once)
     print(f"==> Map tiles, zoom 0 to {max_zoom}", file=sys.stderr)
     limit = first_id(max_zoom + 1)
-    unique = sorted({(offset, length) for tile_id, run, length, offset in entries if tile_id < limit})
+    # Each stored tile once, thinned at the first tile that shows it; a border is changed by where
+    # the tile lies, so a tile whose border was changed may show in that one place only
+    first_tile, uses = {}, {}
+    for tile_id, run, length, offset in entries:
+        if tile_id < limit:
+            first_tile.setdefault(offset, (tile_id, length))
+            uses[offset] = uses.get(offset, 0) + min(run, limit - tile_id)
+    unique = sorted((offset, tile_id, length) for offset, (tile_id, length) in first_tile.items())
     batches = [unique[i:i + 200] for i in range(0, len(unique), 200)]
     thinned = {}  # by the source offset
     with ctx.Pool(args.jobs, initializer=_init_worker, initargs=(chunks,)) as pool:
-        for part in pool.imap_unordered(map_work, [[(o, o, l) for o, l in b] for b in batches]):
-            for offset, raw in part:
+        for part in pool.imap_unordered(map_work, batches):
+            for offset, raw, changed in part:
+                if changed and uses[offset] > 1:
+                    sys.exit(f"!! a tile shown in {uses[offset]} places had a border changed by its place")
                 thinned[offset] = raw
     tiles = []
     for tile_id, run, length, offset in entries:
@@ -990,7 +1403,7 @@ def main():
             rows += part
             if i % 200 == 0:
                 print(f"   {i} of {len(batches)} batches", file=sys.stderr)
-    places = build_places(rows, countries_zip, args.jobs)
+    places = build_places(rows, args.jobs)
     places_path = os.path.join(args.out, env["PLACES_FILE"])
     count = write_places(places_path, places, build)
 
