@@ -64,7 +64,7 @@ enum AboutPanel {
 
     /// The credit NASA Earth Observatory gives its Black Marble 2016 maps
     enum BlackMarble {
-        static let credit = "NASA Earth Observatory images by Joshua Stevens, using Suomi NPP VIIRS data from Miguel Román, NASA's Goddard Space Flight Center"
+        static let credit = "NASA Earth Observatory images by Joshua Stevens, using Suomi NPP VIIRS data from Miguel Román, NASA GSFC"
     }
 
     static let components: [Component] = [

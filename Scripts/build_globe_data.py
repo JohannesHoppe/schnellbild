@@ -393,7 +393,7 @@ content is in the public domain. No endorsement by NASA is implied.
 
 {lights}: the lights of the night side, made from "Earth at Night (Black Marble)
 2016 Grayscale Maps": NASA Earth Observatory images by Joshua Stevens, using
-Suomi NPP VIIRS data from Miguel Román, NASA's Goddard Space Flight Center
+Suomi NPP VIIRS data from Miguel Román, NASA GSFC
 (https://science.nasa.gov/earth/earth-observatory/earth-at-night/maps/).
 Used under NASA's media usage guidelines; no endorsement by NASA is implied.
 
