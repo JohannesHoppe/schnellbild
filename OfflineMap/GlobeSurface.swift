@@ -204,6 +204,7 @@ final class GlobeSurfaceView: NSView, MTKViewDelegate {
                     context.duration = 0
                     metal.animator().alphaValue = 1
                 }
+                metal.alphaValue = 1
                 flat.isHidden = true
             } else {
                 flat.isHidden = true
