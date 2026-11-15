@@ -266,7 +266,12 @@ public final class PlaceIndex: @unchecked Sendable {
     }
 
     /// The places of a cell's tier, the most important first, while `body` returns true.
-    private func forEach(cell: Int, tier: Int, _ body: (Place) -> Bool) {
+    /// The places of a cell's tier, the most important first, while `body`
+    /// returns true; it stops at the first place labelled after `maxMinZoom`
+    /// and skips those `inside` refuses, both read from the record before the
+    /// place is decoded (a view of the world asks every cell).
+    private func forEach(cell: Int, tier: Int, maxMinZoom: Double = .infinity,
+                         inside: ((Double, Double) -> Bool)? = nil, _ body: (Place) -> Bool) {
         guard let index = blockIndex(cell: cell, tier: tier), let bytes = bytes(of: index) else { return }
         let block = blocks[index]
         let row = cell / Self.columns, column = cell % Self.columns
@@ -274,6 +279,12 @@ public final class PlaceIndex: @unchecked Sendable {
         bytes.withUnsafeBytes { raw in
             for i in 0..<block.count {
                 let at = 16 * i
+                if Double(raw[at + 13]) / 10 > maxMinZoom { return }   // the rest of the cell is less important
+                if let inside {
+                    let lat = south + Double(UInt32(littleEndian: raw.loadUnaligned(fromByteOffset: at, as: UInt32.self))) / 1e6
+                    let lon = west + Double(UInt32(littleEndian: raw.loadUnaligned(fromByteOffset: at + 4, as: UInt32.self))) / 1e6
+                    if !inside(lat, lon) { continue }
+                }
                 guard let place = place(raw, at: at, south: south, west: west) else { return }
                 if !body(place) { return }
             }
@@ -334,12 +345,9 @@ public final class PlaceIndex: @unchecked Sendable {
         let tiers = maxMinZoom >= tierSplit ? [0, 1] : [0]
         for cell in cells(south: south, north: north, west: west, east: east) {
             for tier in tiers {
-                forEach(cell: cell, tier: tier) { place in
-                    guard place.minZoom <= maxMinZoom else { return false }   // the rest of the cell is less important
-                    let lat = place.coordinate.latitude
-                    if lat >= south, lat <= north, Self.longitude(place.coordinate.longitude, west: west, east: east) {
-                        found.append(place)
-                    }
+                forEach(cell: cell, tier: tier, maxMinZoom: maxMinZoom,
+                        inside: { lat, lon in lat >= south && lat <= north && Self.longitude(lon, west: west, east: east) }) { place in
+                    found.append(place)
                     return true
                 }
             }
