@@ -156,6 +156,15 @@ final class AtlasUITests: SchnellbildUITestCase {
                         glides: Int(number(after: "glides")), thrown: Int(number(after: "throws")), fades: Int(number(after: "fades")))
     }
 
+    /// An angle in -180 ..< 180.
+    private static func wrap(_ degrees: Double) -> Double {
+        let r = (degrees + 180).truncatingRemainder(dividingBy: 360)
+        return (r < 0 ? r + 360 : r) - 180
+    }
+
+    /// How far the centre moved west (the globe turned east under a drag to the right), across the antimeridian too.
+    private func westward(_ from: MapState, _ to: MapState) -> Double { Self.wrap(from.longitude - to.longitude) }
+
     /// The globe's view (its accessibility element; tiles lie over it only around the trip).
     private var globe: XCUIElement { app.images["Globe"].firstMatch }
 
@@ -178,24 +187,24 @@ final class AtlasUITests: SchnellbildUITestCase {
 
         // A slow drag to the right, held at its end: the globe turns west under the pointer, nothing thrown
         var before = mapState()
-        globe.coordinate(withNormalizedOffset: CGVector(dx: 0.35, dy: 0.75))
-            .press(forDuration: 0.2, thenDragTo: globe.coordinate(withNormalizedOffset: CGVector(dx: 0.55, dy: 0.75)),
+        globe.coordinate(withNormalizedOffset: CGVector(dx: 0.42, dy: 0.75))
+            .press(forDuration: 0.2, thenDragTo: globe.coordinate(withNormalizedOffset: CGVector(dx: 0.50, dy: 0.75)),
                    withVelocity: .slow, thenHoldForDuration: 0.5)
         var after = mapState()
-        let dragged = before.longitude - after.longitude
+        let dragged = westward(before, after)
         XCTAssertGreaterThan(dragged, 5, "turned: \(before) → \(after)")
         XCTAssertEqual(after.thrown, before.thrown, "held still: no throw")
 
         // Let go while moving: it keeps turning a moment
         before = after
-        globe.coordinate(withNormalizedOffset: CGVector(dx: 0.35, dy: 0.75))
-            .press(forDuration: 0.1, thenDragTo: globe.coordinate(withNormalizedOffset: CGVector(dx: 0.55, dy: 0.75)),
+        globe.coordinate(withNormalizedOffset: CGVector(dx: 0.42, dy: 0.75))
+            .press(forDuration: 0.1, thenDragTo: globe.coordinate(withNormalizedOffset: CGVector(dx: 0.50, dy: 0.75)),
                    withVelocity: .fast, thenHoldForDuration: 0)
         eventually("thrown") { self.mapState().thrown > before.thrown }
         RunLoop.current.run(until: Date().addingTimeInterval(2))
         after = mapState()
         // The same drag, and then the throw's turn on top of it
-        XCTAssertGreaterThan(before.longitude - after.longitude, dragged + 3, "the throw went on after the mouse came up: \(after)")
+        XCTAssertGreaterThan(abs(Self.wrap(westward(before, after) - dragged)), 3, "the throw went on after the mouse came up: \(after)")
 
         // A mouse's wheel zooms about the pointer
         before = after
@@ -225,11 +234,11 @@ final class AtlasUITests: SchnellbildUITestCase {
 
         // Let go while moving: it turned with the drag and stops where the drag ended
         let start = mapState()
-        globe.coordinate(withNormalizedOffset: CGVector(dx: 0.35, dy: 0.75))
-            .press(forDuration: 0.1, thenDragTo: globe.coordinate(withNormalizedOffset: CGVector(dx: 0.55, dy: 0.75)),
+        globe.coordinate(withNormalizedOffset: CGVector(dx: 0.42, dy: 0.75))
+            .press(forDuration: 0.1, thenDragTo: globe.coordinate(withNormalizedOffset: CGVector(dx: 0.50, dy: 0.75)),
                    withVelocity: .fast, thenHoldForDuration: 0)
         let dropped = mapState()
-        XCTAssertGreaterThan(start.longitude - dropped.longitude, 5, "turned: \(start) → \(dropped)")
+        XCTAssertGreaterThan(westward(start, dropped), 5, "turned: \(start) → \(dropped)")
         RunLoop.current.run(until: Date().addingTimeInterval(1))
         XCTAssertEqual(mapState().longitude, dropped.longitude, accuracy: 1e-9, "no throw")
 
