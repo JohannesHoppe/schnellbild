@@ -362,12 +362,16 @@ struct TourPlayer: Equatable, Sendable {
 /// map's square, the zoom dips out on the way when the places lie further
 /// apart than a view shows, then in again.
 enum TourFlight {
-    /// The zoom a station is shown at: its items, at most a town's view.
+    /// The zoom a station is shown at: its items, at most a valley's view (towns named around it).
     static func zoom(for station: TourStation, size: CGSize) -> Double {
         let coordinates = station.items.compactMap(\.coordinate)
-        let fitted = MapCamera.fitting(coordinates, in: size, padding: 120, maxZoom: 11)?.zoom ?? 11
-        return min(11, max(3, fitted))
+        let fitted = MapCamera.fitting(coordinates, in: CGSize(width: size.width * 0.4, height: size.height),
+                                       padding: 60, maxZoom: 10)?.zoom ?? 10
+        return min(10, max(3, fitted))
     }
+
+    /// Where across the view the place shown stands (the card takes the right).
+    static let placeShare = 0.28
 
     static func camera(from start: MapCamera, to end: MapCamera, at t: Double, size: CGSize) -> MapCamera {
         let s = t * t * (3 - 2 * t)

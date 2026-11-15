@@ -442,9 +442,13 @@ final class AtlasModel: ObservableObject {
     }
 
     /// The camera that shows a station.
+    /// The place stands left of the middle (at `TourFlight.placeShare` of
+    /// the width), where the card with its photo leaves the map free.
     func camera(for station: TourStation) -> MapCamera {
-        MapViewport(camera: MapCamera(center: station.coordinate, zoom: TourFlight.zoom(for: station, size: mapSize)),
-                    size: mapSize).clamped()
+        let centred = MapViewport(camera: MapCamera(center: station.coordinate, zoom: TourFlight.zoom(for: station, size: mapSize)),
+                                  size: mapSize)
+        let middle = centred.coordinate(at: CGPoint(x: mapSize.width * (1 - TourFlight.placeShare), y: mapSize.height / 2))
+        return MapViewport(camera: MapCamera(center: middle, zoom: centred.camera.zoom), size: mapSize).clamped()
     }
 
     /// The route up to where the tour is: to the station it flies to or shows.

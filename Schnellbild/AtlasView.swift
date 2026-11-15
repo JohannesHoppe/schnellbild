@@ -528,7 +528,7 @@ private struct TourStage: View {
         GeometryReader { geometry in
             ZStack {
                 if let tour = atlas.tour, let item = tour.currentItem {
-                    let side = min(geometry.size.width * 0.62, geometry.size.height * 0.62)
+                    let side = min(geometry.size.width * 0.5, geometry.size.height * 0.66)
                     VStack(spacing: 10) {
                         TourPicture(item: item, side: side, paused: tour.paused, modified: atlas.modified(item.url))
                             .id(item.url)
@@ -540,7 +540,9 @@ private struct TourStage: View {
                     .shadow(color: .black.opacity(0.35), radius: 18, y: 6)
                 }
             }
-            .frame(width: geometry.size.width, height: geometry.size.height)
+            // Right of the place, which stands left of the middle (`TourFlight.placeShare`)
+            .frame(width: geometry.size.width * (1 - TourFlight.placeShare * 1.6), height: geometry.size.height)
+            .frame(width: geometry.size.width, height: geometry.size.height, alignment: .trailing)
             .animation(Motion.animation(.easeInOut(duration: 0.35)), value: atlas.tour?.currentItem?.url)
             .overlay(alignment: .bottom) { controls.padding(.bottom, 24) }
             .overlay(alignment: .topLeading) {
