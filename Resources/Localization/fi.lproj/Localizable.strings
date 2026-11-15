@@ -622,3 +622,6 @@
 "double-click" = "kaksoisosoitus";
 "timeline" = "aikajana";
 "Tour: previous / next place" = "Matka: edellinen / seuraava paikka";
+"Include subfolders" = "Myös alikansiot";
+"The photos and videos of every subfolder too, archives included" = "Myös kaikkien alikansioiden kuvat ja videot, arkistot mukaan lukien";
+"Reading subfolders…" = "Luetaan alikansioita…";
