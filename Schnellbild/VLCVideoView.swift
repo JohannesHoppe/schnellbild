@@ -262,6 +262,12 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         self.volume = volume
         player.audio?.volume = Int32((volume * 100).rounded())
     }
+    /// VLC's own (without a sound output yet: none).
+    var playerVolume: Double? {
+        guard let audio = player.audio, audio.volume >= 0 else { return nil }
+        return Double(audio.volume) / 100
+    }
+    var playerSpeed: Double? { Double(player.rate) }
 
     // MARK: Tracks and speed
 

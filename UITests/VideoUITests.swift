@@ -382,6 +382,107 @@ final class VideoUITests: SchnellbildUITestCase {
     func testTheControlBarHidesWhenTheMouseRestsInAVKit() throws { try checkControlBarHides(vlc: false) }
     func testTheControlBarHidesWhenTheMouseRestsInVLC() throws { try checkControlBarHides(vlc: true) }
 
+    // MARK: Two videos side by side
+
+    /// The dual pane with a video playing in each pane (both players): the
+    /// right pane's control bar works the right video, keys work the active
+    /// pane's (Tab switches), and the volume, the speed and the subtitles
+    /// switch set in one pane reach the other pane's player at once.
+    private func checkVideosInBothPanes(vlc: Bool) throws {
+        let ext = vlc ? "mkv" : "mp4"   // tracks.mkv: SubRip in VLC; tracks.mp4: mov_text in AVKit
+        try put("tracks.\(ext)", at: "videos/left.\(ext)")
+        try put("tracks.\(ext)", at: "videos/right.\(ext)")
+        let extra = (vlc ? ["--force-vlc"] : []) + ["--hold-video-bar"]
+        launch(open: tempDir.appendingPathComponent("videos/left.\(ext)").path, extra: extra)
+        let id = vlc ? "video.vlc" : "video.avkit"
+        XCTAssertTrue(element(id).waitForExistence(timeout: 20))
+        let leftPane = element("pane.left"), rightPane = element("pane.right")
+        func inPane(_ pane: XCUIElement, _ identifier: String) -> XCUIElement {
+            pane.descendants(matching: .any).matching(identifier: identifier).firstMatch
+        }
+        // D: the right pane shows the same folder; a double click there opens
+        // the other video (and makes the right pane the active one)
+        app.typeKey("d", modifierFlags: [])
+        XCTAssertTrue(rightPane.waitForExistence(timeout: 10), "two panes")
+        let tile = inPane(rightPane, "tile.right.\(ext)")
+        XCTAssertTrue(tile.waitForExistence(timeout: 15))
+        tile.doubleClick()
+        let leftVideo = inPane(leftPane, id), rightVideo = inPane(rightPane, id)
+        XCTAssertTrue(rightVideo.waitForExistence(timeout: 20))
+        let leftBadge = inPane(leftPane, "positionBadge"), rightBadge = inPane(rightPane, "positionBadge")
+        func paused(_ badge: XCUIElement) -> Bool { text(of: badge).contains("Paused") }
+        func state() -> String { "left: \(text(of: leftVideo)) [\(text(of: leftBadge))]; right: \(text(of: rightVideo)) [\(text(of: rightBadge))]" }
+        eventually("each pane plays its own video, the English subtitles on", timeout: 20) {
+            text(of: leftBadge).contains("left.\(ext)") && text(of: rightBadge).contains("right.\(ext)")
+                && !paused(leftBadge) && !paused(rightBadge)
+                && text(of: leftVideo).contains("subtitles 1/2 en") && text(of: rightVideo).contains("subtitles 1/2 en")
+        }
+
+        // The right pane's control bar works the right video only
+        rightVideo.hover()
+        XCTAssertTrue(inPane(rightPane, "videoBar").waitForExistence(timeout: 5), "the right pane's bar")
+        inPane(rightPane, "videoBar.playPause").click()
+        eventually("the right bar paused the right video") { paused(rightBadge) }
+        XCTAssertFalse(paused(leftBadge), "the left video plays on: \(state())")
+
+        // Keys work the active pane: Tab to the left one, Space pauses it
+        // and plays it again; the right video stays as it is
+        app.typeKey(.tab, modifierFlags: [])
+        app.typeKey(.space, modifierFlags: [])
+        eventually("Space paused the left video") { paused(leftBadge) }
+        app.typeKey(.space, modifierFlags: [])
+        eventually("Space plays the left video again") { !paused(leftBadge) }
+        XCTAssertTrue(paused(rightBadge), "the right video stays paused: \(state())")
+        app.typeKey(.space, modifierFlags: [])
+        eventually("the left video paused again") { paused(leftBadge) }
+        app.typeKey(.tab, modifierFlags: [])
+        app.typeKey(.space, modifierFlags: [])
+        eventually("back in the right pane, Space plays the right video") { !paused(rightBadge) }
+        XCTAssertTrue(paused(leftBadge), state())
+        app.typeKey(.space, modifierFlags: [])
+        eventually("the right video paused again") { paused(rightBadge) }
+
+        // Both paused from here on (the 20 s videos don't end meanwhile);
+        // what follows reaches paused players as well.
+        // Volume (↓ in the right pane): both players at 90 %
+        app.typeKey(.downArrow, modifierFlags: [])
+        eventually("both players at 90 %: \(state())", timeout: 10) {
+            text(of: leftVideo).contains("player volume 90 %") && text(of: rightVideo).contains("player volume 90 %")
+        }
+        // Speed (> twice in the right pane): both players at 1.5×
+        app.typeKey(">", modifierFlags: [])
+        app.typeKey(">", modifierFlags: [])
+        eventually("both players at 1.5×: \(state())", timeout: 10) {
+            text(of: leftVideo).contains("player speed 1.5") && text(of: rightVideo).contains("player speed 1.5")
+        }
+        // Subtitles off (V in the right pane): the left video's go too
+        app.typeKey("v", modifierFlags: [])
+        eventually("no subtitles in either pane: \(state())", timeout: 10) {
+            text(of: leftVideo).contains("subtitles off/2") && text(of: rightVideo).contains("subtitles off/2")
+        }
+        // On again from the left pane: both
+        app.typeKey(.tab, modifierFlags: [])
+        app.typeKey("v", modifierFlags: [])
+        eventually("the subtitles back in both panes: \(state())", timeout: 10) {
+            text(of: leftVideo).contains("subtitles 1/2 en") && text(of: rightVideo).contains("subtitles 1/2 en")
+        }
+        // The left pane's own bar: the speed menu, for both
+        leftVideo.hover()
+        let speed = inPane(leftPane, "videoBar.speed")
+        XCTAssertTrue(speed.waitForExistence(timeout: 5), "the left pane's bar")
+        speed.click()
+        let normal = speed.descendants(matching: .menuItem)["1×"]
+        XCTAssertTrue(normal.waitForExistence(timeout: 5), "the speed menu lists 1×")
+        normal.click()
+        eventually("both players at 1× again: \(state())", timeout: 10) {
+            text(of: leftVideo).contains("player speed 1.0") && text(of: rightVideo).contains("player speed 1.0")
+        }
+        XCTAssertTrue(paused(leftBadge) && paused(rightBadge), "both still paused: \(state())")
+    }
+
+    func testVideosInBothPanesInAVKit() throws { try checkVideosInBothPanes(vlc: false) }
+    func testVideosInBothPanesInVLC() throws { try checkVideosInBothPanes(vlc: true) }
+
     func testImageBadgeStaysAtTheBottom() {
         launch(open: tempDir.appendingPathComponent("a.jpg").path)
         waitForBadge(containing: "a.jpg")

@@ -33,7 +33,12 @@ struct VideoDetailView: View {
     /// VLC reports).
     private var accessibilityText: String {
         var text = "zoom \(Int((model.zoom * 100).rounded())) %, rotation \(Int(model.rotation))°"
-        if Self.uiTesting { text += ", " + Self.describe(model.activePlayer?.tracks ?? model.videoTracks, speed: model.playbackSpeed) }
+        if Self.uiTesting {
+            text += ", " + Self.describe(model.activePlayer?.tracks ?? model.videoTracks, speed: model.playbackSpeed)
+            // What the player itself has (the dual pane's tests: the other pane's player follows)
+            if let volume = model.activePlayer?.playerVolume { text += ", player volume \(Int((volume * 100).rounded())) %" }
+            if let speed = model.activePlayer?.playerSpeed { text += ", player speed \(speed)" }
+        }
         if !vlcDiagnostics.isEmpty { text += ", \(vlcDiagnostics)" }
         return text
     }

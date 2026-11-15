@@ -98,9 +98,15 @@ protocol PlaybackControl: AnyObject {
     /// The speed, 1 normal (`PlaybackSpeed.steps`); kept for every playing
     /// after it, also from the start again.
     func setSpeed(_ speed: Double)
+    /// The volume (0 … 1) and speed the player itself reports, nil while it
+    /// can't say (the UI tests read them).
+    var playerVolume: Double? { get }
+    var playerSpeed: Double? { get }
 }
 
 extension PlaybackControl {
+    var playerVolume: Double? { nil }
+    var playerSpeed: Double? { nil }
     var playsWithoutLength: Bool { false }
     var videoSize: CGSize? { nil }
     var lengthSeconds: Double? { nil }
@@ -5138,6 +5144,8 @@ final class AVPlaybackControl: PlaybackControl {
     var isPlaying: Bool { player.timeControlStatus != .paused }
 
     func setVolume(_ volume: Double) { player.volume = Float(volume) }
+    var playerVolume: Double? { Double(player.volume) }
+    var playerSpeed: Double? { Double(player.defaultRate) }
 
     // MARK: Tracks and speed
 
