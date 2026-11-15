@@ -179,8 +179,8 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
     func diagnostics() -> String {
         let stats = player.media?.statistics
         let size = videoSize ?? .zero
-        return "vlc state \(player.state.rawValue), size \(Int(size.width))x\(Int(size.height)), "
-            + "shown \(stats?.displayedPictures ?? 0), lost \(stats?.lostPictures ?? 0), \(output.diagnostics)"
+        return "vlc state \(player.state.rawValue), decoding \(openedInSoftware ? "software" : "hardware"), "
+            + "size \(Int(size.width))x\(Int(size.height)), shown \(stats?.displayedPictures ?? 0), lost \(stats?.lostPictures ?? 0), \(output.diagnostics)"
     }
 
     /// Show the picture in `view`; the first view starts playback.
@@ -285,6 +285,8 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
     private var pauseOnceOpen = false
     /// The subtitle track VLC opens the media with in software (`makeMedia`).
     private var subtitleOnceOpen: Int?
+    /// The media in the player is the one opened for software decoding.
+    private var openedInSoftware = false
 
     /// Opens the media again, decoded in software, where it stood (once per
     /// video, when subtitles are to be shown: hardware decoding is faster).
@@ -298,21 +300,30 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         if let wanted = wantedSubtitle { subtitleOnceOpen = wanted } else { subtitleOnceOpen = current >= 0 ? current : nil }
         // Stopping waits for VLC's reading thread: off the main thread
         let held = self.held
+        let asked = Date()
         Task { @MainActor [weak self] in
             await withCheckedContinuation { (done: CheckedContinuation<Void, Never>) in
                 VLCStops.run {
+                    let began = Date()
                     held.player.stop()
+                    let stopped = Date()
                     for _ in 0..<100 where held.player.state != .stopped { usleep(20_000) }
+                    BrowserModel.testLog("vlc: stopping for software decoding began "
+                        + "\(String(format: "%.2f", began.timeIntervalSince(asked))) s after it was asked for, stop() took "
+                        + "\(String(format: "%.2f", stopped.timeIntervalSince(began))) s, the state stopped after "
+                        + "\(String(format: "%.2f", Date().timeIntervalSince(stopped))) s more (state \(held.player.state.rawValue))")
                     done.resume()
                 }
             }
             guard let self, self.player.delegate != nil else { return }   // stopped for good meanwhile
             self.player.media = self.makeMedia()
             if let media = self.player.media { self.output.use(media) }
+            self.openedInSoftware = true
             if position > 0.001, position < 0.999 { self.positionOnceOpen = position }
             self.pauseOnceOpen = !wasPlaying
             self.player.play()
-            BrowserModel.testLog("vlc: opened again in software at \(position), subtitles \(String(describing: self.subtitleOnceOpen))")
+            BrowserModel.testLog("vlc: opened again in software at \(position), subtitles \(String(describing: self.subtitleOnceOpen)), "
+                + "\(String(format: "%.2f", Date().timeIntervalSince(asked))) s after it was asked for")
             self.isPlaying = wasPlaying
         }
     }

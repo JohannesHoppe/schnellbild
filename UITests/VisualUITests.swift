@@ -358,6 +358,23 @@ final class VisualUITests: SchnellbildUITestCase {
 
     // MARK: Subtitles
 
+    /// VLC draws subtitles only into pictures it decoded in software, and
+    /// opens the media again for that once it has found the subtitle track
+    /// (`decodeInSoftware`): until then the pictures on screen are the
+    /// hardware-decoded ones, without text. Waits until pictures of the
+    /// media opened in software have reached the screen.
+    private func waitForSoftwarePictures(of video: XCUIElement) {
+        func picturesOfMedia(_ label: String) -> Int {
+            let suffix = " of this media"
+            let part = label.components(separatedBy: ", ").first { $0.hasSuffix(suffix) }
+            return part.flatMap { Int($0.dropLast(suffix.count)) } ?? 0
+        }
+        eventually("pictures decoded in software on screen", timeout: 20) {
+            let label = text(of: video)
+            return label.contains("decoding software") && picturesOfMedia(label) >= 5
+        }
+    }
+
     /// The subtitles inside the video are drawn over the picture, by AVKit
     /// and by VLC (into the pictures it hands over through its video
     /// callbacks): on the even grey clip the lower part of the picture,
@@ -368,6 +385,7 @@ final class VisualUITests: SchnellbildUITestCase {
         defer { print("app log:\n" + ((try? String(contentsOf: log, encoding: .utf8)) ?? "(none)")) }
         let video = try openVideo(fixture, vlc: vlc, extra: ["--test-log=\(log.path)"])
         eventually("the subtitles are on", timeout: 20) { text(of: video).contains("subtitles 1/2 en") }
+        if vlc { waitForSoftwarePictures(of: video) }
         // The mouse off the video: the control bar goes and covers nothing
         app.windows.firstMatch.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.02)).hover()
         settle(4)
@@ -407,13 +425,14 @@ final class VisualUITests: SchnellbildUITestCase {
         video = element("video.vlc")
         XCTAssertTrue(video.waitForExistence(timeout: 20))
         eventually("the ASS track at once", timeout: 20) { text(of: video).contains("subtitles 2/2 de") }
+        waitForSoftwarePictures(of: video)
         app.windows.firstMatch.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.02)).hover()
         settle(4)
         let picture = picture(in: video)
         let lower = CGRect(x: picture.minX + picture.width * 0.15, y: picture.minY + picture.height * 0.7,
                            width: picture.width * 0.7, height: picture.height * 0.28)
         let shown = try screenStats(of: lower)
-        print("VLC ASS subtitles: ± \(shown.spread) (mean \(shown.mean))")
+        print("VLC ASS subtitles: ± \(shown.spread) (mean \(shown.mean)); \(text(of: video))")
         XCTAssertGreaterThan(shown.spread, 0.05, "text over the lower part of the picture")
     }
 
