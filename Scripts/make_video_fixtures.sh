@@ -100,5 +100,14 @@ tracks() {
 }
 tracks tracks.mp4 de.srt -c:s mov_text
 tracks tracks.mkv de.ass -c:s:0 srt -c:s:1 ass
+
+# ramp.mkv: 20 s whose grey rises with time (luma 32 + 9 per second, the
+# same over the whole picture), the English SubRip lines of tracks.mkv, no
+# sound: a picture's brightness tells its time, so a UI test sees where
+# VLC goes on after opening the video again for subtitles.
+"$FFMPEG" -loglevel error -y -f lavfi -i "nullsrc=s=640x360:r=10:d=20,geq=lum='32+9*T':cb=128:cr=128,format=yuv420p" \
+  -i "$SUBS/en.srt" -map 0:v -map 1:s -c:v libx264 -pix_fmt yuv420p -g 10 -c:s srt \
+  -metadata:s:s:0 language=eng -metadata:s:s:0 title=English -disposition:s:0 default \
+  -fflags +bitexact -flags:v +bitexact UITests/Fixtures/ramp.mkv
 draw_hdr
 finished=1
