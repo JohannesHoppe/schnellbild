@@ -34,9 +34,15 @@ final class ShortcutsUITests: SchnellbildUITestCase {
         element("shortcut.toggleList.add").firstMatch.click()
         XCTAssertTrue(element("shortcuts.recording").firstMatch.waitForExistence(timeout: 5))
         app.typeKey("e", modifierFlags: [])
-        let reassign = app.buttons["Reassign"].firstMatch
-        XCTAssertTrue(reassign.waitForExistence(timeout: 5), "asks: E is Auto Enhance's")
-        reassign.click()
+        XCTAssertTrue(app.buttons["Reassign"].firstMatch.waitForExistence(timeout: 5), "asks: E is Auto Enhance's")
+        // The alert's button, not its copy in the Touch Bar
+        var reassign: XCUIElement?
+        eventually("the alert's Reassign button") {
+            reassign = self.app.buttons.matching(identifier: "Reassign").allElementsBoundByIndex.first { $0.isHittable }
+                ?? self.app.buttons.allElementsBoundByIndex.first { $0.label == "Reassign" && $0.isHittable }
+            return reassign != nil
+        }
+        reassign?.click()
         eventually("E is the list's second key") { self.element("shortcut.toggleList.1").firstMatch.label == "E" }
         XCTAssertFalse(element("shortcut.enhance.0").exists, "Auto Enhance lost it")
         app.typeKey("w", modifierFlags: .command)
