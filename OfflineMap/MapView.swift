@@ -207,6 +207,7 @@ struct MapSurface: NSViewRepresentable {
         view.interactive = interactive
         view.keepFree = keepFree
         view.onCameraChange = { next in if camera != next { camera = next } }
+        view.ownerCamera = { camera }
         view.onInteraction = onInteraction
         if view.camera != camera { view.camera = camera }
         link.surface = view

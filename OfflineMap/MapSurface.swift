@@ -78,6 +78,8 @@ final class MapSurfaceView: NSView {
     var onCameraChange: ((MapCamera) -> Void)?
     /// The first move by the user
     var onInteraction: (() -> Void)?
+    /// The camera the owner holds now (the SwiftUI binding's)
+    var ownerCamera: (() -> MapCamera)?
     /// Boxes in the view where labels must not go (the attribution, buttons)
     var keepFree: [CGRect] = [] { didSet { if keepFree != oldValue { scheduleLabels() } } }
 
@@ -142,8 +144,16 @@ final class MapSurfaceView: NSView {
         let held = viewport.clamped()
         if held != camera {
             camera = held
-            // Reported after SwiftUI's layout pass, which this runs in
-            DispatchQueue.main.async { [weak self] in self?.onCameraChange?(held) }
+            // Reported after SwiftUI's layout pass, which this runs in: the
+            // camera the owner holds then (it may have set another meanwhile),
+            // held in this size
+            DispatchQueue.main.async { [weak self] in
+                guard let self else { return }
+                let wanted = self.ownerCamera?() ?? held
+                let now = MapViewport(camera: wanted, size: self.bounds.size).clamped()
+                if now != self.camera { self.camera = now }
+                if self.ownerCamera == nil || now != wanted { self.onCameraChange?(now) }
+            }
         } else {
             layoutMap()
         }
