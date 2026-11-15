@@ -161,7 +161,8 @@ enum GPMF {
         while i < text.count, result.count <= 255 {
             let c = text[i]
             if c == 0 { break }
-            if c == UInt8(ascii: "["), let last = result.last {
+            if c == UInt8(ascii: "[") {
+                guard let last = result.last else { return nil }
                 var j = i + 1, count = 0
                 while j < text.count, (UInt8(ascii: "0")...UInt8(ascii: "9")).contains(text[j]), count < 256 {
                     count = count * 10 + Int(text[j] - UInt8(ascii: "0"))

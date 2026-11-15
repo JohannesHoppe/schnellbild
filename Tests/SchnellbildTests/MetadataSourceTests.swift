@@ -103,7 +103,7 @@ final class MetadataSourceTests: XCTestCase {
     func testGPMFTypeAndScale() throws {
         XCTAssertEqual(GPMF.expandType(Array("l[3]S".utf8)), Array("lllS".utf8))
         XCTAssertNil(GPMF.expandType(Array("l[".utf8)))
-        XCTAssertEqual(GPMF.expandType(Array("[3]".utf8)), [], "a repeat with nothing before it repeats nothing")
+        XCTAssertNil(GPMF.expandType(Array("[3]".utf8)), "a repeat with nothing before it")
         XCTAssertEqual(try XCTUnwrap(GPMF.gpsTime(Array("240601100002.002".utf8))).timeIntervalSince1970, 1_717_236_002.002, accuracy: 1e-6)
         XCTAssertNil(GPMF.gpsTime(Array("241301100002.002".utf8)), "month 13")
         XCTAssertNil(GPMF.gpsTime(Array("garbage".utf8)))
@@ -303,7 +303,7 @@ final class MetadataSourceTests: XCTestCase {
         XCTAssertNil(walk.place(at: try utc("2024-05-17T08:05:00Z")), "after the first segment, before the second")
         XCTAssertNil(walk.place(at: try utc("2024-05-17T09:45:00Z")), "after the track")
 
-        let sparse = try track([(10, 10, "2024-01-01T10:00:00Z"), (10, 11, "2024-01-01T10:10:00Z"), (10, 12, "2024-01-01T10:20:01Z")])
+        let sparse = try track([(10, 10, "2024-01-01T10:00:00Z"), (10, 11, "2024-01-01T10:10:00Z"), (10, 12, "2024-01-01T10:20:02Z")])
         let atLimit = try XCTUnwrap(sparse.place(at: try utc("2024-01-01T10:05:00Z")), "300 s from both points")
         assertPlace(atLimit.point, 10, 10.5)
         XCTAssertNil(sparse.place(at: try utc("2024-01-01T10:15:01Z")), "301 s from the nearer point")
