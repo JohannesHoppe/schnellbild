@@ -366,4 +366,138 @@ final class DualPaneTests: XCTestCase {
         XCTAssertTrue(w.pane(atX: 400, width: 1000) === w.right)
         XCTAssertTrue(w.pane(atX: 250, width: 1000) === w.left)
     }
+
+    // MARK: Videos in both panes
+
+    /// Both panes in the full view, each on a video with English and German
+    /// sound and subtitles, the right one active.
+    private func videosInBothPanes() async throws -> (WindowModel, left: PlayerSpy, right: PlayerSpy) {
+        let tree = try TempTree(self)
+        for n in ["a.mp4", "b.mp4"] { try tree.file(n) }
+        let w = window(FileActionsSpy())
+        await openAndWait(w.left, tree.root)
+        w.setDual(true)
+        let right = try XCTUnwrap(w.right)
+        await openAndWait(right, tree.root)
+        let players = (left: PlayerSpy.withTracks(), right: PlayerSpy.withTracks())
+        for (pane, name, player) in [(w.left, "a.mp4", players.left), (right, "b.mp4", players.right)] {
+            pane.selectEntry(named: name)
+            pane.activateSelection()
+            pane.activePlayer = player
+            pane.tracksChanged(from: player)
+        }
+        w.activate(right)
+        return (w, players.left, players.right)
+    }
+
+    /// What the key monitor does with a key: the window's first, then the active pane's.
+    @discardableResult
+    private func type(_ key: BrowserModel.KeyInput, shift: Bool = false, in w: WindowModel) -> Bool {
+        w.handleWindowKey(key, command: false, control: false, shift: shift, textEditing: false)
+            || w.active.handleKey(key, command: false, shift: shift)
+    }
+
+    /// Keys go to the active pane's video only: Space pauses it, → skims
+    /// it; Tab hands them to the other one.
+    func testVideoKeysGoToTheActivePane() async throws {
+        let (w, left, right) = try await videosInBothPanes()
+        XCTAssertTrue(type(.space, in: w))
+        XCTAssertFalse(right.isPlaying, "the right (active) video paused")
+        XCTAssertTrue(left.isPlaying, "the left one plays on")
+        XCTAssertEqual(w.right?.videoPaused, true)
+        XCTAssertFalse(w.left.videoPaused)
+        type(.right, in: w)
+        XCTAssertEqual(right.calls.last, "seek 10 %")
+        XCTAssertFalse(left.calls.contains { $0.hasPrefix("seek") })
+        XCTAssertTrue(type(.tab, in: w))
+        XCTAssertTrue(w.active === w.left)
+        type(.space, in: w)
+        XCTAssertFalse(left.isPlaying, "now the left one")
+        XCTAssertFalse(right.isPlaying, "the right one stays paused")
+        type(.space, in: w)
+        XCTAssertTrue(left.isPlaying)
+        XCTAssertFalse(right.isPlaying)
+    }
+
+    /// The control bar works the pane it lies over (its environment's
+    /// model): the right pane's play button and position slider act on the
+    /// right video, also while the left pane is active.
+    func testTheControlBarActsOnItsOwnPane() async throws {
+        let (w, left, right) = try await videosInBothPanes()
+        w.activate(w.left)
+        let rightPane = try XCTUnwrap(w.right)
+        rightPane.togglePlayPause()
+        XCTAssertFalse(right.isPlaying)
+        XCTAssertTrue(left.isPlaying)
+        XCTAssertTrue(rightPane.videoPaused)
+        XCTAssertFalse(w.left.videoPaused)
+        rightPane.activePlayer?.seek(toProgress: 0.8)
+        XCTAssertEqual(right.calls.last, "seek 80 %")
+        XCTAssertFalse(left.calls.contains { $0.hasPrefix("seek") })
+        XCTAssertTrue(w.active === w.left, "the left pane stays the active one")
+    }
+
+    /// The volume, the speed and the subtitles switch are the window's: set
+    /// in one pane (keys or its control bar), the other pane's video on
+    /// screen follows at once.
+    func testVolumeSpeedAndSubtitlesFollowInTheOtherPane() async throws {
+        let (w, left, right) = try await videosInBothPanes()
+        let rightPane = try XCTUnwrap(w.right)
+        // Volume: ↓ in the active (right) pane, then the left pane's slider
+        type(.down, in: w)
+        XCTAssertEqual(right.volume ?? -1, 0.9, accuracy: 0.001)
+        XCTAssertEqual(left.volume ?? -1, 0.9, accuracy: 0.001, "the other pane's video too")
+        w.left.setVolume(0.5)
+        XCTAssertEqual(right.volume ?? -1, 0.5, accuracy: 0.001)
+        // Speed: > in the right pane, the left pane's speed menu
+        type(.char(">"), shift: true, in: w)
+        XCTAssertEqual(right.speed, 1.25)
+        XCTAssertEqual(left.speed, 1.25, "the other pane's video too")
+        w.left.setSpeed(2)
+        XCTAssertEqual(right.speed, 2)
+        XCTAssertEqual(rightPane.playbackSpeed, 2)
+        // Subtitles off (V in the right pane): the left video's go too
+        type(.char("v"), in: w)
+        XCTAssertNil(right.tracks.subtitleID)
+        XCTAssertNil(left.tracks.subtitleID, "the other pane's video too")
+        XCTAssertNil(w.left.videoTracks.subtitleID)
+        XCTAssertFalse(w.left.showSubtitles)
+        // V in the left pane then: on again in both (the panes aren't out of step)
+        type(.tab, in: w)
+        type(.char("v"), in: w)
+        XCTAssertEqual(left.tracks.subtitleID, 3)
+        XCTAssertEqual(right.tracks.subtitleID, 3, "the other pane's video on again")
+        XCTAssertEqual(left.calls.filter { $0.hasPrefix("subtitles") }, ["subtitles off", "subtitles 3"],
+                       "one change each, no echo between the panes")
+        XCTAssertEqual(right.calls.filter { $0.hasPrefix("subtitles") }, ["subtitles off", "subtitles 3"])
+        // Off, then German chosen in the left pane's menu: the right one
+        // comes on in German too
+        type(.char("v"), in: w)
+        w.left.selectSubtitle(4)
+        XCTAssertEqual(left.tracks.subtitleID, 4)
+        XCTAssertEqual(right.tracks.subtitleID, 4, "on in the language just chosen")
+        // A track chosen while on stays that pane's (the switch didn't change)
+        w.left.selectSubtitle(3)
+        XCTAssertEqual(right.tracks.subtitleID, 4)
+    }
+
+    /// A pane back on its grid takes the window's speed and subtitles
+    /// switch for its next video.
+    func testAPaneWithoutAVideoKeepsTheSettingsForItsNext() async throws {
+        let (w, _, right) = try await videosInBothPanes()
+        w.left.handleKey(.escape, command: false)   // the left pane back to its grid
+        XCTAssertNil(w.left.shownMediaEntry)
+        type(.char("v"), in: w)
+        type(.char(">"), shift: true, in: w)
+        XCTAssertNil(right.tracks.subtitleID)
+        XCTAssertFalse(w.left.showSubtitles)
+        XCTAssertEqual(w.left.playbackSpeed, 1.25)
+        w.left.selectEntry(named: "a.mp4")
+        w.left.activateSelection()
+        let next = PlayerSpy.withTracks()
+        w.left.activePlayer = next
+        w.left.tracksChanged(from: next)
+        XCTAssertEqual(next.speed, 1.25, "its next video plays at the window's speed")
+        XCTAssertNil(next.tracks.subtitleID, "and without subtitles")
+    }
 }
