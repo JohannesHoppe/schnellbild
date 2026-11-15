@@ -165,6 +165,32 @@ final class PDFPagesTests: XCTestCase {
         XCTAssertEqual(m.pdfPage(of: URL(fileURLWithPath: "/elsewhere/other.pdf")), 0, "another PDF: its first page")
     }
 
+    /// The last item: → on its last page stays there (no item to go to),
+    /// as ← on the first page of the first item does.
+    func testAtTheEndsOfTheFolderAPDFKeepsItsPage() async throws {
+        let m = makeModel()
+        let tree = try TempTree(self)
+        for n in ["a.pdf", "b.jpg", "z.pdf"] { try tree.file(n) }
+        await openAndWait(m, tree.root)
+        m.selectEntry(named: "z.pdf")
+        m.activateSelection()
+        let last = try XCTUnwrap(m.selectedEntry?.url)
+        m.pdfOpened(last, pages: 2)
+        m.handleKey(.right, command: false)
+        m.handleKey(.right, command: false)
+        XCTAssertEqual(m.selectedEntry?.name, "z.pdf")
+        XCTAssertEqual(m.pdfPage(of: last), 1, "stays on its last page")
+        m.handleKey(.right, command: true)
+        XCTAssertEqual(m.pdfPage(of: last), 1)
+
+        m.selectEntry(named: "a.pdf")
+        let first = try XCTUnwrap(m.selectedEntry?.url)
+        m.pdfOpened(first, pages: 2)
+        m.handleKey(.left, command: false)
+        XCTAssertEqual(m.selectedEntry?.name, "a.pdf")
+        XCTAssertEqual(m.pdfPage(of: first), 0)
+    }
+
     /// Not open yet (still read, or not readable): ← → go on as from a
     /// picture, but a key held down doesn't race past it.
     func testAPDFNotOpenYetIsLeftLikeAPicture() async throws {

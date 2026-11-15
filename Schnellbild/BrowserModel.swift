@@ -3262,8 +3262,11 @@ final class BrowserModel: ObservableObject {
     func stepMedia(_ delta: Int) {
         guard let first = firstMediaIndex else { return }
         let current = selection ?? first
-        selection = min(max(current + delta, first), entries.count - 1)
-        resetTransforms()
+        let target = min(max(current + delta, first), entries.count - 1)
+        let moved = target != selection
+        selection = target
+        // At the first / last item a PDF stays on its page
+        if moved { resetTransforms() } else { zoom = 1; rotation = 0 }
     }
 
     // MARK: - Zoom (full-size view)

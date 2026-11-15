@@ -181,7 +181,7 @@ struct FullImageView: View {
             + (failed ? "failed" : image == nil ? "loading" : "loaded")
             + (shownLook != nil && enhanced?.look == shownLook ? (model.enhance ? ", enhanced" : ", adjusted") : "")
             + (frame.map { ", frame \($0.index + 1) of \($0.count)" } ?? "")
-            + (pdf.flatMap { pdf in drawn.map { ", page \($0.page + 1) of \(pdf.count)" } } ?? "")
+            + (pdf.flatMap { pdf in drawn.flatMap { $0.url == url ? ", page \($0.page + 1) of \(pdf.count)" : nil } } ?? "")
     }
 
     private var panGesture: some Gesture {
