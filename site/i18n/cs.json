@@ -10,7 +10,7 @@
   "language": "Jazyk",
   "iconAlt": "Ikona aplikace Schnellbild",
   "tagline": "Prohlížeč obrázků a videí pro macOS, který prostě není na houby.",
-  "lead": "Otevřete složku, prohlédněte si miniatury, podívejte se na obrázek ve velkém a listujte klávesnicí. Videa se přehrávají přímo na místě, i MKV, AVI a WebM. Žádná knihovna, do které je třeba importovat, žádné čekání.",
+  "lead": "Jedna bezplatná aplikace pro obrázky a videa ve vašich složkách. Otevřete složku, prohlédněte si miniatury, podívejte se na obrázek ve velkém a listujte klávesnicí. Videa se přehrávají přímo na místě, i MKV, AVI a WebM. Žádná knihovna, do které je třeba importovat, žádné čekání.",
   "download": "Stáhnout zdarma",
   "store": "Mac App Store",
   "storeSoon": "brzy, na podporu projektu",
@@ -71,7 +71,7 @@
     },
     {
       "title": "Videa, i MKV a další, která macOS neumí přehrát",
-      "text": "<p>Co umí přehrát samotný macOS (MP4, MOV, AVCHD aj.), přehraje macOS, vše ostatní vestavěné jádro VLC: MKV, WebM, AVI, WMV, FLV, MPEG, DVD video.</p><ul><li>← → přeskakují o desetinu videa, ⇧← ⇧→ o setinu</li><li>↑ ↓ nastavují hlasitost, pro všechna videa</li><li>Finder a Rychlý náhled dostanou miniatury i pro MKV, WebM, WMV, FLV a VOB</li></ul>",
+      "text": "<p>Co umí přehrát samotný macOS (MP4, MOV, AVCHD aj.), přehraje macOS, i v HDR; vše ostatní vestavěné jádro VLC: MKV, WebM, AVI, WMV, FLV, MPEG, DVD video.</p><ul><li>← → přeskakují o desetinu videa, ⇧← ⇧→ o setinu</li><li>↑ ↓ nastavují hlasitost, pro všechna videa</li><li>Finder a Rychlý náhled dostanou miniatury i pro MKV, WebM, WMV, FLV a VOB</li></ul>",
       "alt": "Video přehrávané ve Schnellbildu"
     },
     {
@@ -101,7 +101,7 @@
     },
     {
       "title": "Všechny klávesy po ruce",
-      "text": "<p><kbd>F1</kbd> vypíše všechny klávesy, i k tisku; <kbd>K</kbd> ukáže malou klávesnici na klikání. Mřížka nebo seznam (<kbd>L</kbd>), řazení podle názvu, druhu, data nebo velikosti, více oken a šéfovo tlačítko (<kbd>X</kbd>).</p>",
+      "text": "<p><kbd>F1</kbd> vypíše všechny klávesy, i k tisku; <kbd>K</kbd> ukáže malou klávesnici na klikání. Klávesy si můžete nastavit podle sebe, nebo zvolit klávesy jako v Phieweru. Mřížka nebo seznam (<kbd>L</kbd>), řazení podle názvu, druhu, data nebo velikosti, více oken a šéfovo tlačítko (<kbd>X</kbd>).</p>",
       "alt": "Seznam kláves (F1)"
     },
     {
@@ -140,7 +140,7 @@
   ],
   "safeMore": "Co přesně dělá a kde má své hranice: <a href=\"https://github.com/JohannesHoppe/schnellbild#safe-with-files-from-others\">Bezpečně se soubory od jiných</a> (anglicky).",
   "modelsTitle": "Přecházíte z Phieweru, IINA nebo Norton Commanderu?",
-  "modelsText": "Ty byly vzorem: Phiewer pro procházení obrázků klávesnicí, IINA pro rychlou práci s videi, Norton Commander pro dva panely. Jak si Schnellbild vede ve srovnání (anglicky): <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-phiewer-alternative\">bezplatná alternativa k Phieweru</a>, <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-iina-alternative-for-looking-through-videos\">bezplatná alternativa k IINA pro procházení videí</a>.",
+  "modelsText": "Phiewer je rychlý prohlížeč fotek s placenou verzí PRO, IINA plnohodnotný přehrávač na sledování videí; oba byly vzorem pro Schnellbild, stejně jako Norton Commander pro dva panely. Schnellbild spojí obrázky a videa z vašich složek v jedné bezplatné aplikaci, a když chcete, i s klávesami jako v Phieweru. Jak si Schnellbild vede ve srovnání (anglicky): <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-phiewer-alternative\">bezplatná alternativa k Phieweru</a>, <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-iina-alternative-for-looking-through-videos\">bezplatná alternativa k IINA pro procházení videí</a>.",
   "ossTitle": "Open source",
   "ossText": "Schnellbild je svobodný software pod licencí MIT, zdrojový kód je <a href=\"https://github.com/JohannesHoppe/schnellbild\">na GitHubu</a>. Našli jste chybu nebo vám něco chybí? <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">Založte issue</a>.",
   "languagesText": "V jazyce vašeho Macu:",

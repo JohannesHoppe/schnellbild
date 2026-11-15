@@ -10,7 +10,7 @@
   "language": "Язык",
   "iconAlt": "Значок приложения Schnellbild",
   "tagline": "Просмотрщик изображений и видео для Mac, который просто не бесит.",
-  "lead": "Откройте папку, посмотрите миниатюры, откройте одно фото крупно, листайте клавишами. Видео тоже воспроизводятся прямо здесь, даже MKV, AVI и WebM. Никакой медиатеки для импорта, никакого ожидания.",
+  "lead": "Одно бесплатное приложение для фото и видео в ваших папках. Откройте папку, посмотрите миниатюры, откройте одно фото крупно, листайте клавишами. Видео тоже воспроизводятся прямо здесь, даже MKV, AVI и WebM. Никакой медиатеки для импорта, никакого ожидания.",
   "download": "Скачать бесплатно",
   "store": "Mac App Store",
   "storeSoon": "скоро, в поддержку проекта",
@@ -71,7 +71,7 @@
     },
     {
       "title": "Видео, даже MKV и AVI, которые macOS не воспроизводит",
-      "text": "<p>То, что macOS умеет воспроизводить сама (MP4, MOV, AVCHD и т. д.), воспроизводит macOS, а всё остальное берёт на себя встроенный движок VLC: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-видео.</p><ul><li>← → перематывают видео на десятую часть, а ⇧← ⇧→ на сотую</li><li>↑ ↓ регулируют громкость, одну для всех видео</li><li>Finder и Быстрый просмотр получают миниатюры и для MKV, WebM, WMV, FLV и VOB</li></ul>",
+      "text": "<p>То, что macOS умеет воспроизводить сама (MP4, MOV, AVCHD и т. д.), воспроизводит macOS, в том числе в HDR, а всё остальное берёт на себя встроенный движок VLC: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-видео.</p><ul><li>← → перематывают видео на десятую часть, а ⇧← ⇧→ на сотую</li><li>↑ ↓ регулируют громкость, одну для всех видео</li><li>Finder и Быстрый просмотр получают миниатюры и для MKV, WebM, WMV, FLV и VOB</li></ul>",
       "alt": "Видео воспроизводится в Schnellbild"
     },
     {
@@ -101,7 +101,7 @@
     },
     {
       "title": "Все клавиши под рукой",
-      "text": "<p><kbd>F1</kbd> показывает все клавиши, список можно распечатать; <kbd>K</kbd> открывает маленькую клавиатуру, по которой можно щёлкать. Сетка или список (<kbd>L</kbd>), сортировка по имени, типу, дате или размеру, несколько окон и клавиша «босс» (<kbd>X</kbd>).</p>",
+      "text": "<p><kbd>F1</kbd> показывает все клавиши, список можно распечатать; <kbd>K</kbd> открывает маленькую клавиатуру, по которой можно щёлкать. Назначьте свои клавиши или выберите набор клавиш как в Phiewer. Сетка или список (<kbd>L</kbd>), сортировка по имени, типу, дате или размеру, несколько окон и клавиша «босс» (<kbd>X</kbd>).</p>",
       "alt": "Список клавиш (F1)"
     },
     {
@@ -140,7 +140,7 @@
   ],
   "safeMore": "Что именно он делает и где его предел: <a href=\"https://github.com/JohannesHoppe/schnellbild#safe-with-files-from-others\">Безопасно с чужими файлами</a>.",
   "modelsTitle": "Переходите с Phiewer, IINA или Norton Commander?",
-  "modelsText": "Образцами послужили Phiewer (просмотр изображений с клавиатуры), IINA (быстрая работа с видео) и Norton Commander (две панели). Как Schnellbild выглядит рядом с ними: <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-phiewer-alternative\">бесплатная альтернатива Phiewer</a>, <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-iina-alternative-for-looking-through-videos\">бесплатная альтернатива IINA для просмотра видео</a>.",
+  "modelsText": "Phiewer, быстрый просмотрщик фото с платной версией PRO, и IINA, полноценный плеер для просмотра видео, послужили образцами для Schnellbild, как и Norton Commander для двух панелей. Schnellbild собирает фото и видео из ваших папок в одном бесплатном приложении, а клавиши при желании можно сделать как в Phiewer. Как Schnellbild выглядит рядом с ними: <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-phiewer-alternative\">бесплатная альтернатива Phiewer</a>, <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-iina-alternative-for-looking-through-videos\">бесплатная альтернатива IINA для просмотра видео</a>.",
   "ossTitle": "Открытый исходный код",
   "ossText": "Schnellbild распространяется как свободное ПО под лицензией MIT, исходный код лежит <a href=\"https://github.com/JohannesHoppe/schnellbild\">на GitHub</a>. Нашли ошибку или чего-то не хватает? <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">Создайте issue</a>.",
   "languagesText": "На языке вашего Mac:",

@@ -23,7 +23,7 @@
   <img src="docs/screenshots/grid-light.webp" width="820" alt="Schnellbild: folders with previews and photo thumbnails">
 </picture></p>
 
-Open a folder, see thumbnails, look at one picture large, page through with the keyboard. Videos play right there, too, even AVI, MKV and WebM. No library to import into, no waiting: it opens what you point it at and stays quick on big folders and network shares.
+One free app for the pictures and videos in your folders. Open a folder, see thumbnails, look at one picture large, page through with the keyboard. Videos play right there, too, even AVI, MKV and WebM. No library to import into, no waiting: it opens what you point it at and stays quick on big folders and network shares.
 
 ## Why Schnellbild doesn't suck
 
@@ -194,7 +194,7 @@ Zoom with the keyboard or a trackpad pinch, drag to pan, rotate in steps of 90°
   <img src="docs/screenshots/video-light.webp" width="760" alt="A video in the full view, paused">
 </picture></p>
 
-- **Everything plays:** MP4 and MOV through macOS itself, what macOS can't play (AVI, MKV, WebM, DVD's VOB …) through the VLC engine built in. Media Extensions you turned on in System Settings are used too.
+- **Everything plays:** MP4 and MOV through macOS itself (HDR included), what macOS can't play (AVI, MKV, WebM, DVD's VOB …) through the VLC engine built in. Media Extensions you turned on in System Settings are used too.
 - **The arrow keys skim:** each press jumps a tenth of the video, ⇧ a hundredth, past the end on to the next item. So one key pages through photos and skims through videos; ⌘← ⌘→ skip a video at once.
 - **A thin bar** at the top shows how far the video has played and the time left.
 - **One control bar for every video**, whichever engine plays it: play and pause, the position to drag, the time played and left, volume, speed, subtitles and the audio track (where the video has more than one), full screen. It shows while the mouse moves over the video and goes after a few seconds of rest, never dimming the picture. Drag it by its grip wherever it suits you: it stays there for every video, also after a restart, and a double click on the grip puts it back at the bottom. On a zoomed or turned video it stays upright.
@@ -448,24 +448,25 @@ The Mac App Store version can't be checked this way: Apple signs every Store app
 
 Three programs were the models for Schnellbild: Phiewer for browsing pictures by keyboard, IINA for handling videos quickly, and Norton Commander for the [dual pane](#dual-pane-sort-your-holiday-photos) with its F-keys.
 
-[Phiewer](https://phiewer.com/) is a good image viewer for the Mac and was the model for Schnellbild's keyboard-first browsing. If you are looking for a free, open-source alternative to Phiewer, this is how the two compare. Phiewer's side is what [phiewer.com](https://phiewer.com/) lists (as of November 2026) and what we found using it; "not listed" means the site doesn't mention it.
+[Phiewer](https://phiewer.com/) is a fast photo viewer for the Mac, free as Phiewer (lite) and bought once as Phiewer PRO, and the model for Schnellbild's keyboard-first browsing. Phiewer edits photos, finds duplicates, gathers albums across folders and searches by tags and EXIF, all of which Schnellbild leaves out. Schnellbild is for people who want the pictures and videos in their folders in one free app with every feature in, archives and MKV included; its keys can be set as in Phiewer. Phiewer's side is what [phiewer.com](https://phiewer.com/) and its App Store pages ([PRO](https://apps.apple.com/app/id1270923434), [lite](https://apps.apple.com/app/id1226444549)) list (as of November 2026) and what we found using it; "not listed" means they don't mention it.
 
 | | Schnellbild | Phiewer |
 |---|---|---|
 | Price | free, open source (MIT), no pro version | lite free; PRO a one-time purchase |
 | macOS | 15 and later | 15 and later |
-| Grid, full view, slideshow through subfolders | yes | yes |
-| Search | names of folders and files, all subfolders | name, tags, comments, date, EXIF |
+| Grid, full view, slideshow through subfolders | yes | yes (subfolders in PRO) |
+| Search | names of folders and files, all subfolders | in PRO: name, tags, comments, date, EXIF |
 | ZIP, RAR and 7z archives as folders (also with passwords) | yes | no |
 | MKV, WebM and other formats macOS can't play | yes (built-in VLC engine) | not listed (MP4, MOV, AVI, MPG, 3GP, MTS, TS …) |
 | Two panes side by side, Norton Commander keys | yes | no |
-| Auto enhance and sliders for photos and videos | yes, as a view: files are never changed | edits with filters and undo; crop in PRO |
-| Audio files, Finder tags, export, printing pictures | no | yes |
-| Your own keyboard shortcuts | no (F1 shows every key) | yes (in PRO) |
+| Auto enhance and sliders for photos and videos | yes, as a view: files are never changed | in PRO: edits with filters, effects and undo; crop, rotate, flip |
+| Duplicates, albums across folders (Showcases) | no | in PRO |
+| Audio files, Finder tags, export, printing pictures | no | yes (tags, export and printing in PRO) |
+| Your own keyboard shortcuts | yes, also as in Phiewer (F1 shows every key) | in PRO |
 
 ## A free IINA alternative for looking through videos
 
-[IINA](https://iina.io/) is a good, free and open-source video player for the Mac, and the model for how Schnellbild handles videos: several keys are the same (Space plays and pauses, ← → skip, ↑ ↓ set the volume, ⌘← ⌘→ go to the previous or next file). IINA is a full player for watching; Schnellbild is a viewer for finding and sorting, with videos and photos in one grid. IINA's side is what its [website](https://iina.io/), its [README](https://github.com/iina/iina#features) and its default key bindings list (as of November 2026); "not listed" means they don't mention it.
+[IINA](https://iina.io/) is a free and open-source media player for the Mac, and the model for how Schnellbild handles videos: several keys are the same (Space plays and pauses, ← → skip, ↑ ↓ set the volume, ⌘← ⌘→ go to the previous or next file). IINA is made for watching, with subtitle files, chapters, Picture in Picture, a music mode and plugins. Schnellbild is for people who keep photos and videos together in folders and want to browse, sort and play them in one app. IINA's side is what its [website](https://iina.io/), its [README](https://github.com/iina/iina#features) and its default key bindings list (as of November 2026); "not listed" means they don't mention it.
 
 | | Schnellbild | IINA |
 |---|---|---|
@@ -479,10 +480,12 @@ Three programs were the models for Schnellbild: Phiewer for browsing pictures by
 | Two panes side by side to sort into folders | yes | no |
 | Auto enhance and sliders for videos | yes | video and audio filters |
 | Codec, bitrate, wrong file extensions in the file info | yes | not listed |
-| Subtitles, chapters, online subtitle search | no | yes |
-| Picture in Picture, playback speed, frame by frame | no | yes |
+| Subtitles inside the video, audio tracks, speed | yes | yes |
+| Subtitle files, chapters, online subtitle search | no | yes |
+| Picture in Picture, frame by frame | no | yes |
 | Audio files (music mode) | no | yes |
-| Your own keyboard shortcuts, plugins | no (F1 shows every key) | yes |
+| Your own keyboard shortcuts | yes (F1 shows every key) | yes |
+| Plugins | no | yes |
 
 ## Why so fast?
 

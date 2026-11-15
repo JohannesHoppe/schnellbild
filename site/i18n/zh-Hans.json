@@ -10,7 +10,7 @@
   "language": "语言",
   "iconAlt": "Schnellbild App 图标",
   "tagline": "一款用着不闹心的 Mac 图片和视频查看器。",
-  "lead": "打开文件夹，缩略图一览无余；单张大图查看，用键盘翻页。视频也能直接播放，MKV、AVI 和 WebM 也不例外。无需导入图库，无需等待。",
+  "lead": "一款免费应用，看遍文件夹里的照片和视频。打开文件夹，缩略图一览无余；单张大图查看，用键盘翻页。视频也能直接播放，MKV、AVI 和 WebM 也不例外。无需导入图库，无需等待。",
   "download": "免费下载",
   "store": "Mac App Store",
   "storeSoon": "即将上架，用来支持开发",
@@ -71,7 +71,7 @@
     },
     {
       "title": "视频播放器，连 macOS 播放不了的格式也能播",
-      "text": "<p>macOS 自身能播放的格式（MP4、MOV、AVCHD 等）由 macOS 播放，其余格式（MKV、WebM、AVI、WMV、FLV、MPEG、DVD 视频）则由内置的 VLC 引擎播放。</p><ul><li>← → 跳转视频的十分之一，⇧← ⇧→ 跳转百分之一</li><li>↑ ↓ 调节音量，对所有视频生效</li><li>访达和快速查看也能显示 MKV、WebM、WMV、FLV 和 VOB 的缩略图</li></ul>",
+      "text": "<p>macOS 自身能播放的格式（MP4、MOV、AVCHD 等）由 macOS 播放（支持 HDR），其余格式（MKV、WebM、AVI、WMV、FLV、MPEG、DVD 视频）则由内置的 VLC 引擎播放。</p><ul><li>← → 跳转视频的十分之一，⇧← ⇧→ 跳转百分之一</li><li>↑ ↓ 调节音量，对所有视频生效</li><li>访达和快速查看也能显示 MKV、WebM、WMV、FLV 和 VOB 的缩略图</li></ul>",
       "alt": "在 Schnellbild 中播放的视频"
     },
     {
@@ -101,7 +101,7 @@
     },
     {
       "title": "所有按键尽在掌握",
-      "text": "<p>按 <kbd>F1</kbd> 列出所有按键，还可以打印；按 <kbd>K</kbd> 显示可点按的迷你键盘。网格或列表（<kbd>L</kbd>），按名称、种类、日期或大小排序，多个窗口，还有老板键（<kbd>X</kbd>）。</p>",
+      "text": "<p>按 <kbd>F1</kbd> 列出所有按键，还可以打印；按 <kbd>K</kbd> 显示可点按的迷你键盘。可以自定义按键，也可以换成和 Phiewer 一样的按键。网格或列表（<kbd>L</kbd>），按名称、种类、日期或大小排序，多个窗口，还有老板键（<kbd>X</kbd>）。</p>",
       "alt": "按键列表（F1）"
     },
     {
@@ -140,7 +140,7 @@
   ],
   "safeMore": "它具体做了什么，界限又在哪里：<a href=\"https://github.com/JohannesHoppe/schnellbild#safe-with-files-from-others\">别人发来的文件，也能放心看</a>。",
   "modelsTitle": "从 Phiewer、IINA 或 Norton Commander 转过来？",
-  "modelsText": "它们都是 Schnellbild 的榜样：Phiewer 用键盘浏览图片，IINA 快速处理视频，Norton Commander 的双窗格。Schnellbild 与它们相比如何：<a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-phiewer-alternative\">免费的 Phiewer 替代品</a>、<a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-iina-alternative-for-looking-through-videos\">用来浏览视频的免费 IINA 替代品</a>。",
+  "modelsText": "Phiewer 是一款带付费 PRO 版的快速看图软件，IINA 是一款用来看视频的完整播放器；它们和双窗格的 Norton Commander 一样，都是 Schnellbild 的榜样。Schnellbild 把文件夹里的照片和视频放进一款免费应用，按键也可以设成和 Phiewer 一样。Schnellbild 与它们相比如何：<a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-phiewer-alternative\">免费的 Phiewer 替代品</a>、<a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-iina-alternative-for-looking-through-videos\">用来浏览视频的免费 IINA 替代品</a>。",
   "ossTitle": "开源",
   "ossText": "Schnellbild 是采用 MIT 许可证的自由软件，源代码在 <a href=\"https://github.com/JohannesHoppe/schnellbild\">GitHub 上</a>。发现了 bug 或缺少什么功能？<a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">提交 issue</a>。",
   "languagesText": "以你 Mac 的语言显示：",

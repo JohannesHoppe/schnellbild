@@ -10,7 +10,7 @@
   "language": "Dil",
   "iconAlt": "Schnellbild uygulama simgesi",
   "tagline": "Mac için sinir bozmayan bir fotoğraf ve video görüntüleyici.",
-  "lead": "Bir klasör açın, küçük resimleri görün, bir resmi büyük görün, klavyeyle sayfa sayfa gezinin. Videolar da hemen orada oynar, MKV, AVI ve WebM bile. İçe aktarılacak bir kitaplık yok, bekleme yok.",
+  "lead": "Klasörlerinizdeki resimler ve videolar için tek bir ücretsiz uygulama. Bir klasör açın, küçük resimleri görün, bir resmi büyük görün, klavyeyle sayfa sayfa gezinin. Videolar da hemen orada oynar, MKV, AVI ve WebM bile. İçe aktarılacak bir kitaplık yok, bekleme yok.",
   "download": "Ücretsiz indirin",
   "store": "Mac App Store",
   "storeSoon": "yakında, projeye destek için",
@@ -71,7 +71,7 @@
     },
     {
       "title": "Videolar, macOS’in oynatamadığı MKV ve AVI de",
-      "text": "<p>macOS’un kendi oynatabildikleri (MP4, MOV, AVCHD vb.) macOS ile, geri kalan her şey yerleşik VLC motoruyla oynar: MKV, WebM, AVI, WMV, FLV, MPEG, DVD video.</p><ul><li>← → videonun onda biri kadar, ⇧← ⇧→ yüzde biri kadar atlar</li><li>↑ ↓ ses düzeyini ayarlar, tüm videolar için</li><li>Finder ve Hızlı Bakış, MKV, WebM, WMV, FLV ve VOB için de küçük resim alır</li></ul>",
+      "text": "<p>macOS’un kendi oynatabildikleri (MP4, MOV, AVCHD vb.) macOS ile (HDR dahil), geri kalan her şey yerleşik VLC motoruyla oynar: MKV, WebM, AVI, WMV, FLV, MPEG, DVD video.</p><ul><li>← → videonun onda biri kadar, ⇧← ⇧→ yüzde biri kadar atlar</li><li>↑ ↓ ses düzeyini ayarlar, tüm videolar için</li><li>Finder ve Hızlı Bakış, MKV, WebM, WMV, FLV ve VOB için de küçük resim alır</li></ul>",
       "alt": "Schnellbild’de oynayan bir video"
     },
     {
@@ -101,7 +101,7 @@
     },
     {
       "title": "Her tuş elinizin altında",
-      "text": "<p><kbd>F1</kbd> tüm tuşları listeler, yazdırmak için de; <kbd>K</kbd> tıklanabilir küçük bir klavye gösterir. Izgara veya liste (<kbd>L</kbd>), ada, türe, tarihe veya boyuta göre sıralama, birden çok pencere ve bir patron tuşu (<kbd>X</kbd>).</p>",
+      "text": "<p><kbd>F1</kbd> tüm tuşları listeler, yazdırmak için de; <kbd>K</kbd> tıklanabilir küçük bir klavye gösterir. Kendi tuşlarınızı atayın ya da Phiewer’daki tuşları seçin. Izgara veya liste (<kbd>L</kbd>), ada, türe, tarihe veya boyuta göre sıralama, birden çok pencere ve bir patron tuşu (<kbd>X</kbd>).</p>",
       "alt": "Tuş listesi (F1)"
     },
     {
@@ -140,7 +140,7 @@
   ],
   "safeMore": "Ayrıntılı olarak ne yaptığı ve sınırının nerede olduğu: <a href=\"https://github.com/JohannesHoppe/schnellbild#safe-with-files-from-others\">Başkalarının dosyalarıyla güvenli</a> (İngilizce).",
   "modelsTitle": "Phiewer, IINA veya Norton Commander’dan mı geliyorsunuz?",
-  "modelsText": "Örnek alınanlar onlardı: klavyeyle resimlere göz atmak için Phiewer, videoları hızlıca ele almak için IINA, çift bölme için Norton Commander. Schnellbild karşılaştırmada nasıl (İngilizce): <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-phiewer-alternative\">ücretsiz bir Phiewer alternatifi</a>, <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-iina-alternative-for-looking-through-videos\">videolara göz atmak için ücretsiz bir IINA alternatifi</a>.",
+  "modelsText": "Phiewer ücretli PRO sürümü olan hızlı bir fotoğraf görüntüleyici, IINA video izlemek için tam donanımlı bir oynatıcı; ikisi de Schnellbild’e örnek oldu, çift bölme için de Norton Commander. Schnellbild klasörlerinizdeki resimleri ve videoları tek bir ücretsiz uygulamada toplar; isterseniz tuşlar Phiewer’daki gibi de olabilir. Schnellbild karşılaştırmada nasıl (İngilizce): <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-phiewer-alternative\">ücretsiz bir Phiewer alternatifi</a>, <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-iina-alternative-for-looking-through-videos\">videolara göz atmak için ücretsiz bir IINA alternatifi</a>.",
   "ossTitle": "Açık kaynak",
   "ossText": "Schnellbild, MIT Lisansı altında özgür bir yazılımdır, kaynak kodu <a href=\"https://github.com/JohannesHoppe/schnellbild\">GitHub’da</a>. Bir hata mı buldunuz ya da bir şey mi eksik? <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">Bir issue açın</a>.",
   "languagesText": "Mac’inizin dilinde:",

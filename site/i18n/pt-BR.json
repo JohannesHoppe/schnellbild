@@ -10,7 +10,7 @@
   "language": "Idioma",
   "iconAlt": "Ícone do app Schnellbild",
   "tagline": "Um visualizador de fotos e vídeos para Mac que não dá dor de cabeça.",
-  "lead": "Abra uma pasta, veja as miniaturas, olhe uma imagem em tamanho grande e navegue pelo teclado. Os vídeos também tocam ali mesmo, até MKV, AVI e WebM. Sem biblioteca para importar, sem espera.",
+  "lead": "Um só app gratuito para as fotos e os vídeos das suas pastas. Abra uma pasta, veja as miniaturas, olhe uma imagem em tamanho grande e navegue pelo teclado. Os vídeos também tocam ali mesmo, até MKV, AVI e WebM. Sem biblioteca para importar, sem espera.",
   "download": "Baixar grátis",
   "store": "Mac App Store",
   "storeSoon": "em breve, para apoiar o projeto",
@@ -71,7 +71,7 @@
     },
     {
       "title": "Vídeos, até MKV e AVI, que o macOS não reproduz",
-      "text": "<p>O que o macOS reproduz sozinho (MP4, MOV, AVCHD…) toca pelo próprio macOS; todo o resto, pelo mecanismo do VLC integrado: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-Video.</p><ul><li>← → pulam um décimo do vídeo, ⇧← ⇧→ um centésimo</li><li>↑ ↓ ajustam o volume, para todos os vídeos</li><li>O Finder e a Visualização Rápida também ganham miniaturas de MKV, WebM, WMV, FLV e VOB</li></ul>",
+      "text": "<p>O que o macOS reproduz sozinho (MP4, MOV, AVCHD…) toca pelo próprio macOS, inclusive em HDR; todo o resto, pelo mecanismo do VLC integrado: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-Video.</p><ul><li>← → pulam um décimo do vídeo, ⇧← ⇧→ um centésimo</li><li>↑ ↓ ajustam o volume, para todos os vídeos</li><li>O Finder e a Visualização Rápida também ganham miniaturas de MKV, WebM, WMV, FLV e VOB</li></ul>",
       "alt": "Um vídeo sendo reproduzido no Schnellbild"
     },
     {
@@ -101,7 +101,7 @@
     },
     {
       "title": "Todas as teclas à mão",
-      "text": "<p><kbd>F1</kbd> lista todas as teclas, inclusive para imprimir; <kbd>K</kbd> mostra um pequeno teclado para clicar. Grade ou lista (<kbd>L</kbd>), ordenação por nome, tipo, data ou tamanho, várias janelas e uma tecla do chefe (<kbd>X</kbd>).</p>",
+      "text": "<p><kbd>F1</kbd> lista todas as teclas, inclusive para imprimir; <kbd>K</kbd> mostra um pequeno teclado para clicar. Defina suas próprias teclas ou escolha as teclas como no Phiewer. Grade ou lista (<kbd>L</kbd>), ordenação por nome, tipo, data ou tamanho, várias janelas e uma tecla do chefe (<kbd>X</kbd>).</p>",
       "alt": "A lista de teclas (F1)"
     },
     {
@@ -140,7 +140,7 @@
   ],
   "safeMore": "O que ele faz em detalhes, e onde está o limite (em inglês): <a href=\"https://github.com/JohannesHoppe/schnellbild#safe-with-files-from-others\">Seguro com arquivos de outras pessoas</a>.",
   "modelsTitle": "Vem do Phiewer, do IINA ou do Norton Commander?",
-  "modelsText": "Eles foram os modelos: o Phiewer para navegar por imagens pelo teclado, o IINA para lidar com vídeos rapidamente, o Norton Commander para o painel duplo. Como o Schnellbild se compara (em inglês): <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-phiewer-alternative\">uma alternativa gratuita ao Phiewer</a>, <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-iina-alternative-for-looking-through-videos\">uma alternativa gratuita ao IINA para assistir a vídeos</a>.",
+  "modelsText": "O Phiewer é um visualizador de fotos rápido com uma versão PRO paga; o IINA, um player completo para assistir a vídeos. Os dois serviram de modelo para o Schnellbild, assim como o Norton Commander para o painel duplo. O Schnellbild reúne as fotos e os vídeos das suas pastas em um só app gratuito e, se você quiser, com as teclas como no Phiewer. Como o Schnellbild se compara (em inglês): <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-phiewer-alternative\">uma alternativa gratuita ao Phiewer</a>, <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-iina-alternative-for-looking-through-videos\">uma alternativa gratuita ao IINA para assistir a vídeos</a>.",
   "ossTitle": "Código aberto",
   "ossText": "O Schnellbild é software livre sob a Licença MIT, e o código-fonte está <a href=\"https://github.com/JohannesHoppe/schnellbild\">no GitHub</a>. Encontrou um bug ou sentiu falta de algo? <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">Abra uma issue</a>.",
   "languagesText": "No idioma do seu Mac:",

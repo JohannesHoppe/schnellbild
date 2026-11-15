@@ -10,7 +10,7 @@
   "language": "Kieli",
   "iconAlt": "Schnellbildin ohjelmasymboli",
   "tagline": "Kuvankatselin ja videosoitin macOS:lle, eikä yhtään syvältä.",
-  "lead": "Avaa kansio, katso miniatyyrit, tarkastele yhtä kuvaa isona ja selaa näppäimistöllä. Myös videot toistuvat suoraan siinä, jopa MKV, AVI ja WebM. Ei kirjastoa, johon kuvat pitäisi tuoda, ei odottelua.",
+  "lead": "Yksi ilmainen sovellus kansioidesi kuville ja videoille. Avaa kansio, katso miniatyyrit, tarkastele yhtä kuvaa isona ja selaa näppäimistöllä. Myös videot toistuvat suoraan siinä, jopa MKV, AVI ja WebM. Ei kirjastoa, johon kuvat pitäisi tuoda, ei odottelua.",
   "download": "Lataa ilmaiseksi",
   "store": "Mac App Store",
   "storeSoon": "pian, 0,99 € kehityksen tukemiseksi",
@@ -71,7 +71,7 @@
     },
     {
       "title": "Videot, myös MKV ja muut, joita macOS ei osaa toistaa",
-      "text": "<p>Minkä macOS toistaa itse (MP4, MOV, AVCHD …), sen toistaa macOS, kaiken muun sisäänrakennettu VLC-moottori: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-video.</p><ul><li>← → hyppäävät kymmenesosan videosta, ⇧← ⇧→ sadasosan</li><li>↑ ↓ säätävät äänenvoimakkuutta, kaikille videoille</li><li>Finder ja Pikakatselu saavat miniatyyrit myös MKV-, WebM-, WMV-, FLV- ja VOB-tiedostoille</li></ul>",
+      "text": "<p>Minkä macOS toistaa itse (MP4, MOV, AVCHD …), sen toistaa macOS, myös HDR-muodossa; kaiken muun sisäänrakennettu VLC-moottori: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-video.</p><ul><li>← → hyppäävät kymmenesosan videosta, ⇧← ⇧→ sadasosan</li><li>↑ ↓ säätävät äänenvoimakkuutta, kaikille videoille</li><li>Finder ja Pikakatselu saavat miniatyyrit myös MKV-, WebM-, WMV-, FLV- ja VOB-tiedostoille</li></ul>",
       "alt": "Video toistumassa Schnellbildissä"
     },
     {
@@ -101,7 +101,7 @@
     },
     {
       "title": "Kaikki näppäimet käden ulottuvilla",
-      "text": "<p><kbd>F1</kbd> luettelee kaikki näppäimet, myös tulostettavaksi; <kbd>K</kbd> näyttää pienen klikattavan näppäimistön. Ruudukko tai luettelo (<kbd>L</kbd>), lajittelu nimen, lajin, päivämäärän tai koon mukaan, useita ikkunoita ja pomonäppäin (<kbd>X</kbd>).</p>",
+      "text": "<p><kbd>F1</kbd> luettelee kaikki näppäimet, myös tulostettavaksi; <kbd>K</kbd> näyttää pienen klikattavan näppäimistön. Valitse omat näppäimesi tai samat näppäimet kuin Phiewerissä. Ruudukko tai luettelo (<kbd>L</kbd>), lajittelu nimen, lajin, päivämäärän tai koon mukaan, useita ikkunoita ja pomonäppäin (<kbd>X</kbd>).</p>",
       "alt": "Näppäinten luettelo (F1)"
     },
     {
@@ -140,7 +140,7 @@
   ],
   "safeMore": "Mitä se tekee yksityiskohtaisesti ja missä sen raja kulkee: <a href=\"https://github.com/JohannesHoppe/schnellbild#safe-with-files-from-others\">Turvallinen muiden tiedostojen kanssa</a> (englanniksi).",
   "modelsTitle": "Tuletko Phiewerista, IINAsta tai Norton Commanderista?",
-  "modelsText": "Ne olivat esikuvia: Phiewer kuvien selaamiseen näppäimistöllä, IINA videoiden nopeaan käsittelyyn, Norton Commander kahteen paneeliin. Näin Schnellbild vertautuu (englanniksi): <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-phiewer-alternative\">ilmainen vaihtoehto Phiewerille</a>, <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-iina-alternative-for-looking-through-videos\">ilmainen vaihtoehto IINAlle videoiden läpikäyntiin</a>.",
+  "modelsText": "Phiewer on nopea kuvankatselin, jossa on maksullinen PRO-versio, IINA täysiverinen soitin videoiden katseluun; molemmat olivat Schnellbildin esikuvia, samoin Norton Commander kahdelle paneelille. Schnellbild kokoaa kansioidesi kuvat ja videot yhteen ilmaiseen sovellukseen, halutessasi samoilla näppäimillä kuin Phiewer. Näin Schnellbild vertautuu (englanniksi): <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-phiewer-alternative\">ilmainen vaihtoehto Phiewerille</a>, <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-iina-alternative-for-looking-through-videos\">ilmainen vaihtoehto IINAlle videoiden läpikäyntiin</a>.",
   "ossTitle": "Avoin lähdekoodi",
   "ossText": "Schnellbild on vapaata ohjelmistoa MIT-lisenssillä, lähdekoodi on <a href=\"https://github.com/JohannesHoppe/schnellbild\">GitHubissa</a>. Löysitkö bugin tai puuttuuko jotain? <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">Avaa issue</a>.",
   "languagesText": "Macisi kielellä:",
