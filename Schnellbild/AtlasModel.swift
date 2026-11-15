@@ -214,7 +214,7 @@ final class AtlasModel: ObservableObject {
     }
 
     /// Whether every item's facts are read (and the items made of them shown).
-    var isComplete: Bool { readTask == nil && pendingCount == 0 && !rebuilding }
+    var isComplete: Bool { readTask == nil && pendingCount == 0 && !rebuilding && !rebuildAgain }
 
     /// The pane's walk of the subfolders is still bringing items.
     @Published var walking = false { didSet { if !walking { fitIfNeeded() } } }
@@ -230,25 +230,30 @@ final class AtlasModel: ObservableObject {
         rebuildAgain = false
         let entries = Array(media.values), known = self.known
         Task { [weak self] in
-            let made = await Blocking.run(.userInitiated) {
-                AtlasItems.prepared(entries.compactMap { entry -> AtlasItem? in
+            let (made, index) = await Blocking.run(.userInitiated) {
+                let made = AtlasItems.prepared(entries.compactMap { entry -> AtlasItem? in
                     guard let facts = known[entry.url] else { return nil }
                     return AtlasItem.make(url: entry.url, isVideo: entry.kind == .video, facts: facts, modified: entry.modDate)
                 })
+                return (made, Self.index(of: made))
             }
             guard let self else { return }
             self.rebuilding = false
-            self.apply(made)
+            self.apply(made, index: index)
             if self.rebuildAgain { self.rebuild() }
         }
     }
 
-    private func apply(_ made: [AtlasItem]) {
-        items = made
+    nonisolated private static func index(of items: [AtlasItem]) -> [URL: Int] {
         var index: [URL: Int] = [:]
-        index.reserveCapacity(made.count)
-        for (i, item) in made.enumerated() { index[item.url] = i }
-        itemIndex = index
+        index.reserveCapacity(items.count)
+        for (i, item) in items.enumerated() { index[item.url] = i }
+        return index
+    }
+
+    private func apply(_ made: [AtlasItem], index: [URL: Int]? = nil) {
+        items = made
+        itemIndex = index ?? Self.index(of: made)
         if let range, let span, !(span.overlaps(range)) { self.range = nil }
         filter()
         // T while the places were read: the tour, once they are all there

@@ -155,28 +155,33 @@ final class AtlasScaleTests: XCTestCase {
         }
         let m = makeModel()
         await openAndWait(m, tree.root)
-        var longest = Duration.zero
-        var gaps: [String] = []
-        var watching = true
-        let began = ContinuousClock.now
-        let watch = Task { @MainActor in
-            while watching {
-                let start = ContinuousClock.now
-                try? await Task.sleep(for: .milliseconds(10))
-                let gap = ContinuousClock.now - start - .milliseconds(10)
-                longest = max(longest, gap)
-                if gap > .milliseconds(50) { gaps.append("\(start - began) in: \(gap)") }
-            }
+        // A timer on the main queue itself, every 10 ms: how late it fires is
+        // how long the main thread was held (not Swift's executors' timing)
+        final class Watch: @unchecked Sendable {
+            var last = Date()
+            var longest = 0.0
+            var gaps: [String] = []
+            let began = Date()
         }
+        let watch = Watch()
+        let timer = DispatchSource.makeTimerSource(queue: .main)
+        timer.schedule(deadline: .now(), repeating: .milliseconds(10))
+        timer.setEventHandler {
+            let now = Date()
+            let gap = now.timeIntervalSince(watch.last) - 0.01
+            watch.longest = max(watch.longest, gap)
+            if gap > 0.05 { watch.gaps.append(String(format: "%.2f s in: %.3f s", now.timeIntervalSince(watch.began), gap)) }
+            watch.last = now
+        }
+        timer.resume()
         let start = Date()
         m.viewMode = .atlas
         await waitUntil({ !m.deepWalking && m.entries.count == 20_000 && m.atlas.isComplete && m.atlas.items.count == 20_000 },
                         timeout: 180)
-        watching = false
-        await watch.value
-        print("walked and read 20 000 files in \(Date().timeIntervalSince(start)) s, the main thread held at most \(longest)")
-        print("the main thread held over 50 ms: \(gaps)")
+        timer.cancel()
+        print("walked and read 20 000 files in \(Date().timeIntervalSince(start)) s, the main thread held at most \(watch.longest) s")
+        print("the main thread held over 50 ms: \(watch.gaps)")
         XCTAssertEqual(m.entries.count, 20_000)
-        XCTAssertLessThan(longest, .milliseconds(250), "the main thread was held \(longest)")
+        XCTAssertLessThan(watch.longest, 0.25, "the main thread was held \(watch.longest) s")
     }
 }
