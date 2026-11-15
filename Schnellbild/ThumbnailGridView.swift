@@ -510,6 +510,7 @@ struct OtherFileInteractions: ViewModifier {
         let changeable = !ArchivePath.isInside(file.url)
         content
             .onDrag {
+                DropOnce.started()
                 let provider = NSItemProvider(object: file.url as NSURL)
                 if changeable {
                     let paths = [file.url.path]
@@ -543,20 +544,24 @@ struct OtherFileInteractions: ViewModifier {
 /// (copied when on another volume). Nothing inside archives takes part.
 /// One drag, one drop. SwiftUI hands a drag to `performDrop` a second time
 /// now and then (seen on CI, macOS 26: a tile dragged into the other pane
-/// was dropped again a second later, after the mouse came up, and the
+/// was dropped again two seconds later, after the mouse came up, and the
 /// second move asked whether to keep both copies of the file it had just
-/// moved). A drag is known by the drag pasteboard's change count, which
-/// every new drag changes.
+/// moved). Each of the app's drags is numbered where it starts (`started`,
+/// in its `onDrag`); a drop of a drag already dropped is left alone. (The
+/// drag pasteboard's change count can't tell: it changed between the two.)
 @MainActor
 enum DropOnce {
-    private static var last: Int?
+    private static var drag = 0
+    private static var dropped: Int?
+
+    /// A drag of the app's own begins.
+    static func started() { drag += 1 }
 
     /// True for the first drop of the drag going on, false for any after it.
     static func first() -> Bool {
-        let count = NSPasteboard(name: .drag).changeCount
-        let first = count != last
-        BrowserModel.testLog("\(Date().timeIntervalSince1970) drop of drag \(count)\(first ? "" : ": again, left alone")")
-        last = count
+        let first = drag != dropped
+        BrowserModel.testLog("\(Date().timeIntervalSince1970) drop of drag \(drag)\(first ? "" : ": again, left alone")")
+        dropped = drag
         return first
     }
 }
@@ -702,6 +707,7 @@ private struct TileDragSource: ViewModifier {
     func body(content: Content) -> some View {
         if drags {
             content.onDrag {
+                DropOnce.started()
                 let paths = model.isMarked(entry) ? model.actionEntries.map(\.url.path) : [entry.url.path]
                 let provider = NSItemProvider(object: entry.url as NSURL)
                 provider.registerDataRepresentation(forTypeIdentifier: TileDrag.type.identifier, visibility: .ownProcess) { done in

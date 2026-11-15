@@ -302,6 +302,7 @@ struct PlaylistRow: View {
     private func takeOut() { model.removeFromSlideshow(at: [index]) }
 
     private func dragProvider() -> NSItemProvider {
+        DropOnce.started()
         dragged = item.url
         let path = item.url.path
         let provider = NSItemProvider()
