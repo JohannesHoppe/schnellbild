@@ -468,6 +468,33 @@ final class VisualUITests: SchnellbildUITestCase {
         try checkRunningLineWhenSwitching("tracks.mp4", to: "subtitles 2/2 de", "mov_text")
     }
 
+    /// Played to its end and started again (Space), the video opens with
+    /// the subtitle track chosen last, its line from 0 on the first picture.
+    func testVLCReplaysWithTheSubtitlesChosenLast() throws {
+        let log = tempDir.appendingPathComponent("app.log")
+        continueAfterFailure = true   // the log below shows on a failure too
+        defer { print("app log:\n" + ((try? String(contentsOf: log, encoding: .utf8)) ?? "(none)")) }
+        let video = try openVideo("tracks.mkv", vlc: true, extra: ["--test-log=\(log.path)"])
+        eventually("the subtitles are on", timeout: 20) { text(of: video).contains("subtitles 1/2 en") }
+        waitForSoftwarePictures(of: video)
+        app.typeKey("s", modifierFlags: [.control, .command])
+        eventually("the German ones") { text(of: video).contains("subtitles 2/2 de") }
+        guard let line = logSince(log).components(separatedBy: "\n").first(where: { $0.hasPrefix("vlc: handing over subtitles ") }),
+              let german = Int(line.dropFirst("vlc: handing over subtitles ".count).prefix { $0.isNumber }) else {
+            return XCTFail("the German track handed over")
+        }
+        // Near the end (10 % a step), then to the end
+        for _ in 0..<9 { app.typeKey(.rightArrow, modifierFlags: []) }
+        waitForBadge(containing: "Paused", timeout: 20)
+        let mark = logLength(log)
+        app.typeKey(" ", modifierFlags: [])
+        eventually("playing again", timeout: 20) { self.logSince(log, mark).contains("vlc picture 1 of media 2") }
+        let written = logSince(log, mark)
+        XCTAssertTrue(written.contains("vlc: media opened with subtitles \(german)\n"), "opened again with the German track (\(german))")
+        let first = probedPictures(in: written).first { $0.media == 2 }
+        XCTAssertEqual(first?.text, true, "the German line from 0 on the first picture")
+    }
+
     /// The video started in software, decoding the subtitles from its first
     /// picture on, and was not opened again: its first pictures (the five
     /// the app logs) carry the line that begins at 0. `log`: the app's log
