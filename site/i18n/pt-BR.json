@@ -66,7 +66,7 @@
   "features": [
     {
       "title": "Veja em tamanho grande, navegue pelas teclas",
-      "text": "<p>A barra de espaço abre uma imagem tão grande quanto a janela permite, e ← → percorrem a pasta. Amplie com o trackpad ou com + −, gire com ⌥← ⌥→, tela cheia com <kbd>f</kbd>. GIFs animados, SVG e PDF incluídos.</p><p>Uma apresentação (<kbd>s</kbd>) percorre a pasta e todas as subpastas, com fotos e vídeos. O que a apresentação mostra é a playlist: <kbd>p</kbd> abre a lista para mudar a ordem e tirar o que sobra.</p>",
+      "text": "<p>A barra de espaço abre uma imagem tão grande quanto a janela permite, e ← → percorrem a pasta. Amplie com o trackpad ou com + −, gire com ⌥← ⌥→, tela cheia com <kbd>f</kbd>. GIFs animados e SVG incluídos, PDF página por página.</p><p>Uma apresentação (<kbd>s</kbd>) percorre a pasta e todas as subpastas, com fotos e vídeos. O que a apresentação mostra é a playlist: <kbd>p</kbd> abre a lista para mudar a ordem e tirar o que sobra.</p>",
       "alt": "Uma foto na visualização completa"
     },
     {
@@ -159,6 +159,7 @@
       "<strong>Ajustes</strong> (a última pasta, a ordenação, os favoritos, o volume…) nas preferências do próprio app.",
       "<strong>Acesso a pastas:</strong> as pastas que você abriu para o Schnellbild, como marcadores do macOS, para que ele possa mostrá-las de novo depois de reiniciar. Ajustes → {folderAccess} as esquece.",
       "<strong>Senhas de arquivos compactados</strong> que você digitou, no seu chaveiro de início de sessão (item “Schnellbild archive passwords”); Ajustes → {forgetPasswords} as remove.",
+      "<strong>Sua localização</strong>, só quando você clica em Usar Minha Localização ao ordenar por distância: o macOS pergunta antes, a posição é pedida uma vez e guardada só como o ponto de onde as distâncias são medidas, nas preferências do app. Ela nunca sai do seu Mac.",
       "<strong>Miniaturas</strong>, no cache de miniaturas do próprio macOS."
     ],
     "appOutro": "O Schnellbild lê suas imagens, vídeos e arquivos compactados apenas para mostrá-los a você. Ele nunca os envia a lugar nenhum, nem seus nomes, nem qualquer informação sobre eles. A Apple cuida do download e da compra de acordo com a própria política de privacidade e só nos repassa números que não identificam você: as vendas e, se você permitiu no macOS o compartilhamento com desenvolvedores de apps, relatórios de falhas e estatísticas de uso.",

@@ -61,7 +61,7 @@
 "First / last item" = "Premier / dernier élément";
 "Larger / smaller thumbnails" = "Vignettes plus grandes / plus petites";
 "Clear search" = "Effacer la recherche";
-"Previous / next item, also from a video" = "Élément précédent / suivant, aussi depuis une vidéo";
+"Previous / next item, also from a video or PDF" = "Élément précédent / suivant, aussi depuis une vidéo ou un PDF";
 "Next picture · play/pause video" = "Image suivante · lire / mettre en pause la vidéo";
 "Zoom in / out" = "Zoom avant / arrière";
 "Fit to window / 100 %" = "Adapter à la fenêtre / 100 %";
@@ -102,7 +102,7 @@
 "The name must end in a picture extension, such as “.%@”." = "Le nom doit se terminer par une extension d’image, comme « .%@ ».";
 "The name must end in a video extension, such as “.%@”." = "Le nom doit se terminer par une extension de vidéo, comme « .%@ ».";
 "Grid and full view" = "Grille et plein affichage";
-"Pictures: previous / next · Videos: 10 % of the length back / ahead; at the start / end: previous / next item" = "Images : précédente / suivante · Vidéos : 10 % de la durée en arrière / en avant ; au début / à la fin : élément précédent / suivant";
+"Pictures: previous / next · Videos: 10 % of the length back / ahead · PDFs: previous / next page; at the start / end: previous / next item" = "Images : précédente / suivante · Vidéos : 10 % de la durée en arrière / en avant · PDF : page précédente / suivante ; au début / à la fin : élément précédent / suivant";
 "Previous / next · Videos: 10 % of the length back / ahead" = "Précédent / suivant · Vidéos : 10 % de la durée en arrière / en avant";
 "Wrong password for this archive." = "Mot de passe incorrect pour cette archive.";
 "The archive is incomplete: still downloading, a part missing, or damaged." = "L’archive est incomplète : téléchargement en cours, partie manquante ou archive endommagée.";
@@ -424,8 +424,8 @@
 "Look further down (videos: quieter)" = "Voir plus bas (vidéos : moins fort)";
 "Mark all" = "Tout marquer";
 "Menus in the window" = "Menus dans la fenêtre";
-"Next (videos: 10 % ahead)" = "Suivant (vidéos : 10 % en avant)";
-"Previous (videos: 10 % back)" = "Précédent (vidéos : 10 % en arrière)";
+"Next (videos: 10 % ahead, PDFs: next page)" = "Suivant (vidéos : 10 % en avant, PDF : page suivante)";
+"Previous (videos: 10 % back, PDFs: previous page)" = "Précédent (vidéos : 10 % en arrière, PDF : page précédente)";
 "Open bookmark %lld" = "Ouvrir le signet %lld";
 "Playlist: row up" = "Liste de lecture : ligne vers le haut";
 "Playlist: row down" = "Liste de lecture : ligne vers le bas";
@@ -552,3 +552,30 @@
 "NASA/Goddard Space Flight Center Scientific Visualization Studio, made from Gaia DR2, Hipparcos and Tycho-2 data. Public domain." = "NASA/Goddard Space Flight Center Scientific Visualization Studio, à partir des données de Gaia DR2, Hipparcos et Tycho-2. Domaine public.";
 "the lights on the globe's night side" = "les lumières de la face nocturne du globe";
 "NASA Earth Observatory. Used under NASA's media usage guidelines." = "NASA Earth Observatory. Utilisé selon les règles d’utilisation des médias de la NASA.";
+
+/* Sorting by distance: the map and Use My Location */
+"Use My Location" = "Utiliser ma position";
+"Asks macOS once for where this Mac is. The position stays on this Mac." = "Demande une fois à macOS où se trouve ce Mac. La position reste sur ce Mac.";
+"Finding your location…" = "Recherche de votre position…";
+"Click the map to choose a place." = "Cliquez sur la carte pour choisir un lieu.";
+"Schnellbild may not use your location. Allow it in System Settings → Privacy & Security → Location Services." = "Schnellbild n’a pas le droit d’utiliser votre position. Autorisez-le dans Réglages Système → Confidentialité et sécurité → Service de localisation.";
+"Location is restricted on this Mac." = "La localisation est restreinte sur ce Mac.";
+"Location Services are off. Turn them on in System Settings → Privacy & Security → Location Services." = "Le Service de localisation est désactivé. Activez-le dans Réglages Système → Confidentialité et sécurité → Service de localisation.";
+"Your location can't be found right now." = "Votre position est introuvable pour le moment.";
+"Previous page" = "Page précédente";
+"Next page" = "Page suivante";
+"Page %lld / %lld" = "Page %lld / %lld";
+"GPS in the file" = "GPS dans le fichier";
+"GPS from GoPro telemetry" = "GPS de la télémétrie GoPro";
+"From DJI flight log %@" = "Du journal de vol DJI %@";
+"From %@" = "De %@";
+"From the file's XMP data" = "Des données XMP du fichier";
+"From GPX track %@" = "De la trace GPX %@";
+"From the movie header (UTC)" = "De l’en-tête de la vidéo (UTC)";
+"GPS time from GoPro telemetry" = "Heure GPS de la télémétrie GoPro";
+"DOP %@" = "DOP %@";
+"Interpolated, %@ from the nearest track point" = "Interpolé, à %@ du point de trace le plus proche";
+"Source" = "Source";
+"Accuracy" = "Précision";
+"Route" = "Itinéraire";
+"Date Source" = "Source de la date";

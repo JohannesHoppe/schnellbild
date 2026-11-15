@@ -66,7 +66,7 @@
   "features": [
     {
       "title": "Büyük görüntüleyin, tuşlarla gezinin",
-      "text": "<p>Boşluk tuşu bir resmi pencerenin izin verdiği kadar büyük açar, ← → klasörde gezinir. İzleme dörtgeniyle veya + − ile yakınlaştırın, ⌥← ⌥→ ile döndürün, <kbd>f</kbd> ile tam ekran. Hareketli GIF’ler, SVG ve PDF de dahil.</p><p>Slayt gösterisi (<kbd>s</kbd>) klasörü ve tüm alt klasörlerini, fotoğraf ve videoları birlikte dolaşır. Slayt gösterisinin oynattığı her şey oynatma listesidir: <kbd>p</kbd> ile açıp sırasını değiştirebilir, istemediğiniz öğeleri listeden çıkarabilirsiniz.</p>",
+      "text": "<p>Boşluk tuşu bir resmi pencerenin izin verdiği kadar büyük açar, ← → klasörde gezinir. İzleme dörtgeniyle veya + − ile yakınlaştırın, ⌥← ⌥→ ile döndürün, <kbd>f</kbd> ile tam ekran. Hareketli GIF’ler ve SVG de dahil, PDF sayfa sayfa.</p><p>Slayt gösterisi (<kbd>s</kbd>) klasörü ve tüm alt klasörlerini, fotoğraf ve videoları birlikte dolaşır. Slayt gösterisinin oynattığı her şey oynatma listesidir: <kbd>p</kbd> ile açıp sırasını değiştirebilir, istemediğiniz öğeleri listeden çıkarabilirsiniz.</p>",
       "alt": "Büyük görünümde bir fotoğraf"
     },
     {
@@ -159,6 +159,7 @@
       "<strong>Ayarlar</strong> (son klasör, sıralama düzeni, yer işaretleri, ses düzeyi …) uygulamanın kendi tercihlerinde.",
       "<strong>Klasör erişimi:</strong> Schnellbild’e açtığınız klasörler, yeniden başlatmadan sonra onları tekrar gösterebilmesi için macOS yer işaretleri olarak. Ayarlar → {folderAccess} bunları unutur.",
       "Girdiğiniz <strong>arşiv parolaları</strong>, giriş anahtar zincirinizde (“Schnellbild archive passwords” kaydı); Ayarlar → {forgetPasswords} bunları siler.",
+      "<strong>Konumunuz</strong>, yalnızca uzaklığa göre sıralarken Konumumu Kullan'a tıkladığınızda: macOS önce size sorar, konum bir kez alınır ve yalnızca uzaklıkların ölçüldüğü yer olarak uygulamanın tercihlerinde tutulur. Mac'inizden asla çıkmaz.",
       "<strong>Küçük resimler</strong>, macOS’in kendi küçük resim önbelleğinde."
     ],
     "appOutro": "Schnellbild resimlerinizi, videolarınızı ve arşivlerinizi yalnızca size göstermek için okur. Onları, adlarını veya onlarla ilgili herhangi bir şeyi asla hiçbir yere göndermez. İndirme ve satın alma işlemlerini Apple kendi gizlilik politikası kapsamında yürütür ve bize yalnızca kimliğinizi içermeyen rakamlar iletir: satışlar ve macOS’ta uygulama geliştiricileriyle paylaşılmasına izin verdiyseniz çökme raporları ile kullanım istatistikleri.",

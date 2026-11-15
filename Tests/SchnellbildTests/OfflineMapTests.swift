@@ -459,14 +459,19 @@ final class OfflineMapTests: XCTestCase {
                 var start = Date()
                 let image = try XCTUnwrap(renderer.image(of: viewport, scale: 2, palette: palette, languages: .preferring(["en"])))
                 let first = Date().timeIntervalSince(start) * 1000
-                // Drawn again (the median of three): the tiles kept, the labels drawn anew
+                // Drawn again: the tiles kept, the labels laid out and drawn anew. The median
+                // of five, since CI's virtual Macs vary (a single draw there sometimes takes
+                // twice the median); the budget is fixed, not relative to the runner: a real
+                // regression moves the median, a slow moment one draw. The world is the
+                // costliest view (every one-degree cell is asked for labels; the place index
+                // reads a record's min_zoom before it decodes the place).
                 var times: [Double] = []
-                for _ in 0..<3 {
+                for _ in 0..<5 {
                     start = Date()
                     _ = renderer.image(of: viewport, scale: 2, palette: palette, languages: .preferring(["en"]))
                     times.append(Date().timeIntervalSince(start) * 1000)
                 }
-                let again = times.sorted()[1]
+                let again = times.sorted()[2]
                 let theme = palette.isDark ? "dark" : "light"
                 report.append(String(format: "%@-%@: first %.0f ms, again %.0f ms", name, theme, first, again))
                 XCTAssertEqual(image.width, 1920)

@@ -1087,6 +1087,9 @@ final class BrowserModel: ObservableObject {
     @Published private(set) var locationProgress: Progress?
     /// The sheet that takes coordinates or a map link to sort by distance from.
     @Published var distanceOriginRequested = false
+    /// The Mac's position for the sheet's Use My Location (Core Location,
+    /// asked only on that click; nothing at launch).
+    static let liveLocation: LocationProvider = CoreLocationProvider()
     /// "Sort by Distance from Here" on an item without a place: its name, for the alert.
     @Published var locationMissing: String?
 
@@ -2584,65 +2587,17 @@ final class BrowserModel: ObservableObject {
         }
     }
 
-    /// When a photo or video was taken: EXIF DateTimeOriginal for images
-    /// (only the header is read, on a dispatch thread: it waits on the
-    /// disk), the QuickTime creation date for videos.
+    /// When a photo or video was taken, from its header and the files beside
+    /// it (`CaptureReader` through `LocationCache`: EXIF with its offset, XMP
+    /// sidecars, QuickTime, a camera's clip XML, GoPro's GPS time, a DJI
+    /// flight log, the movie header). Not inside archives (not unpacked for sorting).
     nonisolated static func captureDate(of url: URL) async -> Date? {
-        guard !ArchivePath.isInside(url) else { return nil }   // not unpacked for sorting
-        switch mediaKind(of: url) {
-        case .image:
-            return await Blocking.run(.utility) { pictureDate(of: url) }
-        case .video:
-            let asset = AVURLAsset(url: url, options: [AVURLAssetReferenceRestrictionsKey: AVAssetReferenceRestrictions.forbidAll.rawValue])
-            guard let item = try? await asset.load(.creationDate) else { return nil }
-            return try? await item.load(.dateValue)
-        default:
-            return nil
+        guard !ArchivePath.isInside(url) else { return nil }
+        let modified = await Blocking.run(.utility) {
+            try? url.resourceValues(forKeys: [.contentModificationDateKey]).contentModificationDate
         }
+        return await LocationCache.shared.facts(of: url, modified: modified).time?.date
     }
-
-    /// A picture's capture date, from its header.
-    nonisolated private static func pictureDate(of url: URL) -> Date? {
-        guard let source = CGImageSourceCreateWithURL(url as CFURL, nil),
-              let props = CGImageSourceCopyPropertiesAtIndex(
-                  source, 0, [kCGImageSourceShouldCache: false] as CFDictionary) as? [CFString: Any]
-        else { return nil }
-        let exif = props[kCGImagePropertyExifDictionary] as? [CFString: Any]
-        let tiff = props[kCGImagePropertyTIFFDictionary] as? [CFString: Any]
-        // The first date that is one: a camera whose clock was never set
-        // writes "0000:00:00 00:00:00" (or blanks), which the lenient
-        // parser would turn into the year 2
-        let candidates: [(text: String?, offset: String?)] = [
-            (exif?[kCGImagePropertyExifDateTimeOriginal] as? String, exif?[kCGImagePropertyExifOffsetTimeOriginal] as? String),
-            (exif?[kCGImagePropertyExifDateTimeDigitized] as? String, exif?[kCGImagePropertyExifOffsetTimeDigitized] as? String),
-            (tiff?[kCGImagePropertyTIFFDateTime] as? String, nil)
-        ]
-        for case let (text?, offset) in candidates {
-            // With the camera's offset from UTC when it wrote one (as video
-            // dates are), else in the Mac's time zone
-            let date = offset.flatMap { exifOffsetDateFormatter.date(from: text + $0) } ?? exifDateFormatter.date(from: text)
-            if let date, Calendar(identifier: .gregorian).component(.year, from: date) >= 1900 { return date }
-        }
-        return nil
-    }
-
-    /// EXIF dates: "2024:07:14 18:32:05", in the camera's local time.
-    /// Lenient: a time in the Mac's own daylight-saving gap still parses.
-    nonisolated private static let exifDateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        formatter.dateFormat = "yyyy:MM:dd HH:mm:ss"
-        formatter.isLenient = true
-        return formatter
-    }()
-
-    /// An EXIF date followed by its offset time ("+02:00").
-    nonisolated private static let exifOffsetDateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        formatter.dateFormat = "yyyy:MM:dd HH:mm:ssxxx"
-        return formatter
-    }()
 
     private func sorted(_ list: [GridEntry]) -> [GridEntry] {
         entryOrder.sorted(list)
@@ -3259,8 +3214,11 @@ final class BrowserModel: ObservableObject {
     func stepMedia(_ delta: Int) {
         guard let first = firstMediaIndex else { return }
         let current = selection ?? first
-        selection = min(max(current + delta, first), entries.count - 1)
-        resetTransforms()
+        let target = min(max(current + delta, first), entries.count - 1)
+        let moved = target != selection
+        selection = target
+        // At the first / last item a PDF stays on its page
+        if moved { resetTransforms() } else { zoom = 1; rotation = 0 }
     }
 
     // MARK: - Zoom (full-size view)
@@ -3284,7 +3242,51 @@ final class BrowserModel: ObservableObject {
     func rotateRight() { rotation = (rotation + 90).truncatingRemainder(dividingBy: 360) }
 
     /// Reset the view transforms (zoom + rotation) when switching media.
-    private func resetTransforms() { zoom = 1; rotation = 0 }
+    /// (A PDF shown next starts at its first page.)
+    private func resetTransforms() { zoom = 1; rotation = 0; pdfPosition = nil }
+
+    // MARK: - PDF pages (full view)
+
+    /// The PDF the full view shows: the page on screen (from 0) of its
+    /// `count`. Set by `FullImageView` once the PDF is open.
+    struct PDFPosition: Equatable {
+        let url: URL
+        var page: Int
+        let count: Int
+    }
+    @Published private(set) var pdfPosition: PDFPosition?
+
+    /// The page of `url` to show: the one turned to while it is the PDF on
+    /// screen, else its first.
+    func pdfPage(of url: URL) -> Int {
+        guard let position = pdfPosition, position.url == url else { return 0 }
+        return position.page
+    }
+
+    /// The full view opened `url`, a PDF of `count` pages: it starts at its
+    /// first page; the PDF already on screen keeps its page.
+    func pdfOpened(_ url: URL, pages count: Int) {
+        if let position = pdfPosition, position.url == url, position.count == count { return }
+        pdfPosition = PDFPosition(url: url, page: 0, count: max(count, 1))
+    }
+
+    /// The PDF on screen whose pages ← → turn: in the full view only (the
+    /// slideshow shows a PDF as one item, its first page).
+    private var pagedPDF: PDFPosition? {
+        guard slideshow == nil, mode == .detail, let position = pdfPosition,
+              shownMediaEntry?.url == position.url else { return nil }
+        return position
+    }
+
+    /// Turns to `page` (from 0) of the PDF on screen; each page starts at
+    /// fit and upright, as each picture does.
+    func showPDFPage(_ page: Int) {
+        guard var position = pagedPDF, (0..<position.count).contains(page), page != position.page else { return }
+        position.page = page
+        pdfPosition = position
+        zoom = 1
+        rotation = 0
+    }
 
     // MARK: - Grid tile size
 
@@ -4236,7 +4238,9 @@ final class BrowserModel: ObservableObject {
                         free.append(next)
                     }
                 }
-                return TransferProbe(source: source, isFolder: isFolder, files: files,
+                // Gone (moved or deleted since it was dragged): nothing to move
+                let gone = (try? FileManager.default.attributesOfItem(atPath: source.path)) == nil
+                return TransferProbe(source: source, gone: gone, isFolder: isFolder, files: files,
                                      destinationTaken: destinationTaken, freeNames: free,
                                      partTaken: files.dropFirst().contains { taken(folder.appendingPathComponent($0.lastPathComponent), $0) })
             }
@@ -4261,6 +4265,8 @@ final class BrowserModel: ObservableObject {
     /// What a source of a move is, and what is taken in the target folder.
     struct TransferProbe: Sendable {
         let source: URL
+        /// Not there any more (lstat finds nothing).
+        let gone: Bool
         let isFolder: Bool
         let files: [URL]
         let destinationTaken: Bool
@@ -4278,6 +4284,9 @@ final class BrowserModel: ObservableObject {
         var standing: ConflictAnswer.Choice?
         for (number, probe) in probes.enumerated() {
             let source = probe.source
+            // Gone since it was dragged (a drag dropped twice: the first
+            // drop moved it): nothing to ask about, nothing to move
+            if probe.gone { continue }
             let isPlanned: (URL) -> Bool = { planned.contains(Self.canonicalPath($0)) }
             // A later part taken there: the set would be mixed
             if probe.partTaken || probe.files.dropFirst().contains(where: { isPlanned(folder.appendingPathComponent($0.lastPathComponent)) }) {
@@ -4289,7 +4298,7 @@ final class BrowserModel: ObservableObject {
                 if let standing {
                     choice = standing
                 } else {
-                    let more = probes[(number + 1)...].contains { $0.destinationTaken }
+                    let more = probes[(number + 1)...].contains { $0.destinationTaken && !$0.gone }
                     let answer = fileActions.askKeepBoth(source.lastPathComponent, folder.lastPathComponent, more)
                     if answer.forAll { standing = answer.choice }
                     choice = answer.choice
@@ -4704,8 +4713,19 @@ final class BrowserModel: ObservableObject {
 
     /// ←/→ in the full view. Images: previous/next item. Videos: jump a tenth
     /// of the length; past the end → next item, at the start → previous one.
-    /// So one key pages through images and skims through videos.
+    /// So one key pages through images and skims through videos. A PDF in
+    /// the full view: its previous / next page; before its first and after
+    /// its last page the previous / next item, as at a video's start and end.
     func skim(_ direction: Int) {
+        if slideshow == nil, let entry = shownMediaEntry, PDFPages.isPDF(entry.url) {
+            // Not open yet (or unreadable): on as from a picture, but not
+            // with a key held down
+            guard let pdf = pagedPDF else { if !keyRepeating { page(direction) }; return }
+            let target = pdf.page + direction
+            if (0..<pdf.count).contains(target) { showPDFPage(target) }
+            else if !keyRepeating { page(direction) }   // not with a key held down
+            return
+        }
         guard shownMediaEntry?.kind == .video else { page(direction); return }
         guard let player = activePlayer, let progress = player.progress else {
             // Length not known yet: wait for it (a key held down would race

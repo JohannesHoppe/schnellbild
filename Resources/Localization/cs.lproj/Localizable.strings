@@ -61,7 +61,7 @@
 "First / last item" = "První / poslední položka";
 "Larger / smaller thumbnails" = "Větší / menší náhledy";
 "Clear search" = "Vymazat hledání";
-"Previous / next item, also from a video" = "Předchozí / další položka, i z videa";
+"Previous / next item, also from a video or PDF" = "Předchozí / další položka, i z videa nebo PDF";
 "Next picture · play/pause video" = "Další obrázek · přehrát / pozastavit video";
 "Zoom in / out" = "Zvětšit / zmenšit";
 "Fit to window / 100 %" = "Přizpůsobit oknu / 100 %";
@@ -102,7 +102,7 @@
 "The name must end in a picture extension, such as “.%@”." = "Název musí končit příponou obrázku, například „.%@“.";
 "The name must end in a video extension, such as “.%@”." = "Název musí končit příponou videa, například „.%@“.";
 "Grid and full view" = "Mřížka a celé zobrazení";
-"Pictures: previous / next · Videos: 10 % of the length back / ahead; at the start / end: previous / next item" = "Obrázky: předchozí / další · Videa: 10 % délky zpět / vpřed; na začátku / konci: předchozí / další položka";
+"Pictures: previous / next · Videos: 10 % of the length back / ahead · PDFs: previous / next page; at the start / end: previous / next item" = "Obrázky: předchozí / další · Videa: 10 % délky zpět / vpřed · PDF: předchozí / další stránka; na začátku / konci: předchozí / další položka";
 "Previous / next · Videos: 10 % of the length back / ahead" = "Předchozí / další · Videa: 10 % délky zpět / vpřed";
 "Wrong password for this archive." = "Nesprávné heslo pro tento archiv.";
 "The archive is incomplete: still downloading, a part missing, or damaged." = "Archiv je neúplný: stále se stahuje, chybí jeho část, nebo je poškozený.";
@@ -424,8 +424,8 @@
 "Look further down (videos: quieter)" = "Posun dolů (videa: tišeji)";
 "Mark all" = "Označit vše";
 "Menus in the window" = "Nabídky v okně";
-"Next (videos: 10 % ahead)" = "Další (videa: o 10 % vpřed)";
-"Previous (videos: 10 % back)" = "Předchozí (videa: o 10 % zpět)";
+"Next (videos: 10 % ahead, PDFs: next page)" = "Další (videa: o 10 % vpřed, PDF: další stránka)";
+"Previous (videos: 10 % back, PDFs: previous page)" = "Předchozí (videa: o 10 % zpět, PDF: předchozí stránka)";
 "Open bookmark %lld" = "Otevřít záložku %lld";
 "Playlist: row up" = "Playlist: řádek nahoru";
 "Playlist: row down" = "Playlist: řádek dolů";
@@ -552,3 +552,30 @@
 "NASA/Goddard Space Flight Center Scientific Visualization Studio, made from Gaia DR2, Hipparcos and Tycho-2 data. Public domain." = "NASA/Goddard Space Flight Center Scientific Visualization Studio, z dat Gaia DR2, Hipparcos a Tycho-2. Volné dílo.";
 "the lights on the globe's night side" = "světla na noční straně glóbu";
 "NASA Earth Observatory. Used under NASA's media usage guidelines." = "NASA Earth Observatory. Použito podle pravidel NASA pro užití médií.";
+
+/* Sorting by distance: the map and Use My Location */
+"Use My Location" = "Použít moji polohu";
+"Asks macOS once for where this Mac is. The position stays on this Mac." = "Jednou se zeptá macOS, kde tento Mac je. Poloha zůstane na tomto Macu.";
+"Finding your location…" = "Zjišťování polohy…";
+"Click the map to choose a place." = "Kliknutím do mapy vyberte místo.";
+"Schnellbild may not use your location. Allow it in System Settings → Privacy & Security → Location Services." = "Schnellbild nesmí používat vaši polohu. Povolte to v Nastavení systému → Soukromí a zabezpečení → Polohové služby.";
+"Location is restricted on this Mac." = "Poloha je na tomto Macu omezená.";
+"Location Services are off. Turn them on in System Settings → Privacy & Security → Location Services." = "Polohové služby jsou vypnuté. Zapněte je v Nastavení systému → Soukromí a zabezpečení → Polohové služby.";
+"Your location can't be found right now." = "Vaši polohu teď nelze zjistit.";
+"Previous page" = "Předchozí stránka";
+"Next page" = "Další stránka";
+"Page %lld / %lld" = "Strana %lld / %lld";
+"GPS in the file" = "GPS v souboru";
+"GPS from GoPro telemetry" = "GPS z telemetrie GoPro";
+"From DJI flight log %@" = "Z letového záznamu DJI %@";
+"From %@" = "Ze souboru %@";
+"From the file's XMP data" = "Z dat XMP souboru";
+"From GPX track %@" = "Z trasy GPX %@";
+"From the movie header (UTC)" = "Z hlavičky videosouboru (UTC)";
+"GPS time from GoPro telemetry" = "Čas GPS z telemetrie GoPro";
+"DOP %@" = "DOP %@";
+"Interpolated, %@ from the nearest track point" = "Interpolováno, %@ od nejbližšího bodu trasy";
+"Source" = "Zdroj";
+"Accuracy" = "Přesnost";
+"Route" = "Trasa";
+"Date Source" = "Zdroj data";

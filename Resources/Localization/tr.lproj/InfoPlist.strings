@@ -1,0 +1,3 @@
+/* Info.plist, localized: shown by macOS when Use My Location asks for the Mac's position */
+"NSLocationUsageDescription" = "Schnellbild konumunuzu yalnızca Konumumu Kullan'a tıkladığınızda, fotoğrafları ve videoları size olan uzaklıklarına göre sıralamak için kullanır. Konum Mac'inizde kalır.";
+"NSLocationWhenInUseUsageDescription" = "Schnellbild konumunuzu yalnızca Konumumu Kullan'a tıkladığınızda, fotoğrafları ve videoları size olan uzaklıklarına göre sıralamak için kullanır. Konum Mac'inizde kalır.";

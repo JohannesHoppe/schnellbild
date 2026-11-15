@@ -61,7 +61,7 @@
 "First / last item" = "最初 / 最後の項目";
 "Larger / smaller thumbnails" = "サムネールを大きく / 小さく";
 "Clear search" = "検索をクリア";
-"Previous / next item, also from a video" = "前 / 次の項目（ビデオからも）";
+"Previous / next item, also from a video or PDF" = "前 / 次の項目（ビデオや PDF からも）";
 "Next picture · play/pause video" = "次の画像 · ビデオを再生 / 一時停止";
 "Zoom in / out" = "拡大 / 縮小";
 "Fit to window / 100 %" = "ウインドウに合わせる / 100 %";
@@ -102,7 +102,7 @@
 "The name must end in a picture extension, such as “.%@”." = "名前は“.%@”などの画像の拡張子で終わる必要があります。";
 "The name must end in a video extension, such as “.%@”." = "名前は“.%@”などのビデオの拡張子で終わる必要があります。";
 "Grid and full view" = "グリッドと全体表示";
-"Pictures: previous / next · Videos: 10 % of the length back / ahead; at the start / end: previous / next item" = "画像：前 / 次 · ビデオ：長さの 10 % 戻る / 進む。先頭 / 末尾では前 / 次の項目へ";
+"Pictures: previous / next · Videos: 10 % of the length back / ahead · PDFs: previous / next page; at the start / end: previous / next item" = "画像：前 / 次 · ビデオ：長さの 10 % 戻る / 進む · PDF：前 / 次のページ。先頭 / 末尾では前 / 次の項目へ";
 "Previous / next · Videos: 10 % of the length back / ahead" = "前 / 次 · ビデオ：長さの 10 % 戻る / 進む";
 "Wrong password for this archive." = "このアーカイブのパスワードが違います。";
 "The archive is incomplete: still downloading, a part missing, or damaged." = "アーカイブが不完全です。ダウンロード中か、一部が欠けているか、破損しています。";
@@ -424,8 +424,8 @@
 "Look further down (videos: quieter)" = "下を表示（ビデオ：音量を下げる）";
 "Mark all" = "すべてマーク";
 "Menus in the window" = "ウインドウ内のメニュー";
-"Next (videos: 10 % ahead)" = "次へ（ビデオ：10 % 進む）";
-"Previous (videos: 10 % back)" = "前へ（ビデオ：10 % 戻る）";
+"Next (videos: 10 % ahead, PDFs: next page)" = "次へ（ビデオ：10 % 進む、PDF：次のページ）";
+"Previous (videos: 10 % back, PDFs: previous page)" = "前へ（ビデオ：10 % 戻る、PDF：前のページ）";
 "Open bookmark %lld" = "ブックマーク %lld を開く";
 "Playlist: row up" = "プレイリスト：1行上";
 "Playlist: row down" = "プレイリスト：1行下";
@@ -552,3 +552,30 @@
 "NASA/Goddard Space Flight Center Scientific Visualization Studio, made from Gaia DR2, Hipparcos and Tycho-2 data. Public domain." = "NASA/Goddard Space Flight Center Scientific Visualization Studio、Gaia DR2、Hipparcos、Tycho-2 のデータから作成。パブリックドメイン。";
 "the lights on the globe's night side" = "地球儀の夜側の明かり";
 "NASA Earth Observatory. Used under NASA's media usage guidelines." = "NASA Earth Observatory。NASA のメディア利用ガイドラインに従って使用。";
+
+/* Sorting by distance: the map and Use My Location */
+"Use My Location" = "現在地を使用";
+"Asks macOS once for where this Mac is. The position stays on this Mac." = "この Mac の場所を macOS に一度だけ問い合わせます。位置情報はこの Mac から出ません。";
+"Finding your location…" = "現在地を確認中…";
+"Click the map to choose a place." = "マップをクリックして場所を選びます。";
+"Schnellbild may not use your location. Allow it in System Settings → Privacy & Security → Location Services." = "Schnellbild は位置情報を使用できません。システム設定 → プライバシーとセキュリティ → 位置情報サービスで許可してください。";
+"Location is restricted on this Mac." = "この Mac では位置情報が制限されています。";
+"Location Services are off. Turn them on in System Settings → Privacy & Security → Location Services." = "位置情報サービスがオフです。システム設定 → プライバシーとセキュリティ → 位置情報サービスでオンにしてください。";
+"Your location can't be found right now." = "現在地を特定できません。";
+"Previous page" = "前のページ";
+"Next page" = "次のページ";
+"Page %lld / %lld" = "ページ %lld / %lld";
+"GPS in the file" = "ファイル内の GPS";
+"GPS from GoPro telemetry" = "GoPro テレメトリの GPS";
+"From DJI flight log %@" = "DJI フライトログ %@ から";
+"From %@" = "%@ から";
+"From the file's XMP data" = "ファイルの XMP データから";
+"From GPX track %@" = "GPX トラック %@ から";
+"From the movie header (UTC)" = "動画ファイルのヘッダから（UTC）";
+"GPS time from GoPro telemetry" = "GoPro テレメトリの GPS 時刻";
+"DOP %@" = "DOP %@";
+"Interpolated, %@ from the nearest track point" = "補間（最寄りのトラックポイントから %@）";
+"Source" = "ソース";
+"Accuracy" = "精度";
+"Route" = "ルート";
+"Date Source" = "日付のソース";

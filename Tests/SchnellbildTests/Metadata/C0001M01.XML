@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<NonRealTimeMeta xmlns="urn:schemas-professionalDisc:nonRealTimeMeta:ver.2.00" xmlns:lib="urn:schemas-professionalDisc:lib:ver.2.00" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" lastUpdate="2024-11-30T10:08:55+09:00">
+	<Duration value="1395"/>
+	<CreationDate value="2024-11-30T10:08:55+09:00"/>
+	<Device manufacturer="Sony" modelName="ILCE-0000" serialNo="0"/>
+	<AcquisitionRecord>
+		<Group name="ExifGPS">
+			<Item name="VersionID" value="2.2.0.0"/>
+			<Item name="LatitudeRef" value="N"/>
+			<Item name="Latitude" value="35:2:21.600"/>
+			<Item name="LongitudeRef" value="E"/>
+			<Item name="Longitude" value="135:43:46.800"/>
+			<Item name="Status" value="A"/>
+			<Item name="MapDatum" value="WGS-84"/>
+		</Group>
+	</AcquisitionRecord>
+</NonRealTimeMeta>

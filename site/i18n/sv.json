@@ -66,7 +66,7 @@
   "features": [
     {
       "title": "Se bilden stort, bläddra med tangenterna",
-      "text": "<p>Mellanslag öppnar en bild så stor som fönstret tillåter, ← → bläddrar genom mappen. Zooma med styrplattan eller + −, rotera med ⌥← ⌥→, helskärm med <kbd>f</kbd>. Animerade GIF:ar, SVG och PDF ingår.</p><p>Ett bildspel (<kbd>s</kbd>) går igenom mappen och alla dess undermappar, både bilder och videor. Det bildspelet spelar är spellistan: <kbd>p</kbd> öppnar den, så att du kan ändra ordningen och gallra.</p>",
+      "text": "<p>Mellanslag öppnar en bild så stor som fönstret tillåter, ← → bläddrar genom mappen. Zooma med styrplattan eller + −, rotera med ⌥← ⌥→, helskärm med <kbd>f</kbd>. Animerade GIF:ar och SVG ingår, PDF sida för sida.</p><p>Ett bildspel (<kbd>s</kbd>) går igenom mappen och alla dess undermappar, både bilder och videor. Det bildspelet spelar är spellistan: <kbd>p</kbd> öppnar den, så att du kan ändra ordningen och gallra.</p>",
       "alt": "Ett foto i helvyn"
     },
     {
@@ -159,6 +159,7 @@
       "<strong>Inställningar</strong> (den senaste mappen, sorteringsordning, bokmärken, volym …) i appens egna inställningar.",
       "<strong>Mappåtkomst:</strong> de mappar du har öppnat för Schnellbild, som macOS-bokmärken, så att den kan visa dem igen efter en omstart. Inställningar → {folderAccess} glömmer dem.",
       "<strong>Arkivlösenord</strong> du har skrivit in, i din inloggningsnyckelring (posten ”Schnellbild archive passwords”); Inställningar → {forgetPasswords} tar bort dem.",
+      "<strong>Din plats</strong>, bara när du klickar på Använd min plats när du sorterar efter avstånd: macOS frågar dig först, positionen hämtas en gång och sparas bara som platsen avstånden mäts från, i appens inställningar. Den lämnar aldrig din Mac.",
       "<strong>Miniatyrer</strong>, i macOS egna miniatyrcache."
     ],
     "appOutro": "Schnellbild läser dina bilder, videor och arkiv bara för att visa dem för dig. Den skickar aldrig dem, deras namn eller något om dem någonstans. Apple hanterar nedladdningen och köpet enligt sin egen integritetspolicy och ger oss bara siffror utan din identitet: försäljning, samt kraschrapporter och användningsstatistik om du i macOS har tillåtit att de delas med apputvecklare.",

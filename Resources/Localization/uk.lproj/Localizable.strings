@@ -61,7 +61,7 @@
 "First / last item" = "Перший / останній об’єкт";
 "Larger / smaller thumbnails" = "Більші / менші мініатюри";
 "Clear search" = "Очистити пошук";
-"Previous / next item, also from a video" = "Попередній / наступний об’єкт, також із відео";
+"Previous / next item, also from a video or PDF" = "Попередній / наступний об’єкт, також із відео чи PDF";
 "Next picture · play/pause video" = "Наступне зображення · відтворити / пауза";
 "Zoom in / out" = "Збільшити / зменшити";
 "Fit to window / 100 %" = "За розміром вікна / 100 %";
@@ -102,7 +102,7 @@
 "The name must end in a picture extension, such as “.%@”." = "Назва має закінчуватися розширенням зображення, наприклад «.%@».";
 "The name must end in a video extension, such as “.%@”." = "Назва має закінчуватися розширенням відео, наприклад «.%@».";
 "Grid and full view" = "Сітка й повний вигляд";
-"Pictures: previous / next · Videos: 10 % of the length back / ahead; at the start / end: previous / next item" = "Зображення: попереднє / наступне · Відео: 10 % тривалості назад / вперед; на початку / в кінці: попередній / наступний об’єкт";
+"Pictures: previous / next · Videos: 10 % of the length back / ahead · PDFs: previous / next page; at the start / end: previous / next item" = "Зображення: попереднє / наступне · Відео: 10 % тривалості назад / вперед · PDF: попередня / наступна сторінка; на початку / в кінці: попередній / наступний об’єкт";
 "Previous / next · Videos: 10 % of the length back / ahead" = "Попередній / наступний · Відео: 10 % тривалості назад / вперед";
 "Wrong password for this archive." = "Неправильний пароль для цього архіву.";
 "The archive is incomplete: still downloading, a part missing, or damaged." = "Архів неповний: він ще завантажується, бракує частини або його пошкоджено.";
@@ -424,8 +424,8 @@
 "Look further down (videos: quieter)" = "Дивитися нижче (відео: тихіше)";
 "Mark all" = "Позначити все";
 "Menus in the window" = "Меню у вікні";
-"Next (videos: 10 % ahead)" = "Наступний (відео: на 10 % вперед)";
-"Previous (videos: 10 % back)" = "Попередній (відео: на 10 % назад)";
+"Next (videos: 10 % ahead, PDFs: next page)" = "Наступний (відео: на 10 % вперед, PDF: наступна сторінка)";
+"Previous (videos: 10 % back, PDFs: previous page)" = "Попередній (відео: на 10 % назад, PDF: попередня сторінка)";
 "Open bookmark %lld" = "Відкрити закладку %lld";
 "Playlist: row up" = "Плейлист: рядок угору";
 "Playlist: row down" = "Плейлист: рядок униз";
@@ -552,3 +552,30 @@
 "NASA/Goddard Space Flight Center Scientific Visualization Studio, made from Gaia DR2, Hipparcos and Tycho-2 data. Public domain." = "NASA/Goddard Space Flight Center Scientific Visualization Studio, за даними Gaia DR2, Hipparcos і Tycho-2. Суспільне надбання.";
 "the lights on the globe's night side" = "вогні на нічному боці глобуса";
 "NASA Earth Observatory. Used under NASA's media usage guidelines." = "NASA Earth Observatory. Використано згідно з правилами NASA щодо медіаматеріалів.";
+
+/* Sorting by distance: the map and Use My Location */
+"Use My Location" = "Використати моє розташування";
+"Asks macOS once for where this Mac is. The position stays on this Mac." = "Один раз запитує macOS, де цей Mac. Позиція лишається на цьому Mac.";
+"Finding your location…" = "Визначення розташування…";
+"Click the map to choose a place." = "Клацніть на мапі, щоб вибрати місце.";
+"Schnellbild may not use your location. Allow it in System Settings → Privacy & Security → Location Services." = "Schnellbild не може використовувати ваше розташування. Дозвольте це в Системних параметрах → Приватність і безпека → Служби локації.";
+"Location is restricted on this Mac." = "Розташування на цьому Mac обмежене.";
+"Location Services are off. Turn them on in System Settings → Privacy & Security → Location Services." = "Служби локації вимкнено. Увімкніть їх у Системних параметрах → Приватність і безпека → Служби локації.";
+"Your location can't be found right now." = "Зараз не вдається визначити ваше розташування.";
+"Previous page" = "Попередня сторінка";
+"Next page" = "Наступна сторінка";
+"Page %lld / %lld" = "Сторінка %lld / %lld";
+"GPS in the file" = "GPS у файлі";
+"GPS from GoPro telemetry" = "GPS з телеметрії GoPro";
+"From DJI flight log %@" = "З журналу польоту DJI %@";
+"From %@" = "З файлу %@";
+"From the file's XMP data" = "З даних XMP файлу";
+"From GPX track %@" = "З GPX-треку %@";
+"From the movie header (UTC)" = "Із заголовка відеофайлу (UTC)";
+"GPS time from GoPro telemetry" = "Час GPS з телеметрії GoPro";
+"DOP %@" = "DOP %@";
+"Interpolated, %@ from the nearest track point" = "Інтерпольовано, %@ від найближчої точки треку";
+"Source" = "Джерело";
+"Accuracy" = "Точність";
+"Route" = "Маршрут";
+"Date Source" = "Джерело дати";

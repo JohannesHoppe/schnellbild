@@ -61,7 +61,7 @@
 "First / last item" = "Первый / последний объект";
 "Larger / smaller thumbnails" = "Крупнее / мельче миниатюры";
 "Clear search" = "Очистить поиск";
-"Previous / next item, also from a video" = "Предыдущий / следующий объект, также из видео";
+"Previous / next item, also from a video or PDF" = "Предыдущий / следующий объект, также из видео или PDF";
 "Next picture · play/pause video" = "Следующее изображение · воспроизвести / пауза";
 "Zoom in / out" = "Увеличить / уменьшить";
 "Fit to window / 100 %" = "По размеру окна / 100 %";
@@ -102,7 +102,7 @@
 "The name must end in a picture extension, such as “.%@”." = "Имя должно заканчиваться расширением изображения, например «.%@».";
 "The name must end in a video extension, such as “.%@”." = "Имя должно заканчиваться расширением видео, например «.%@».";
 "Grid and full view" = "Сетка и полный вид";
-"Pictures: previous / next · Videos: 10 % of the length back / ahead; at the start / end: previous / next item" = "Изображения: предыдущее / следующее · Видео: 10 % длительности назад / вперед; в начале / конце: предыдущий / следующий объект";
+"Pictures: previous / next · Videos: 10 % of the length back / ahead · PDFs: previous / next page; at the start / end: previous / next item" = "Изображения: предыдущее / следующее · Видео: 10 % длительности назад / вперед · PDF: предыдущая / следующая страница; в начале / конце: предыдущий / следующий объект";
 "Previous / next · Videos: 10 % of the length back / ahead" = "Предыдущий / следующий · Видео: 10 % длительности назад / вперед";
 "Wrong password for this archive." = "Неверный пароль для этого архива.";
 "The archive is incomplete: still downloading, a part missing, or damaged." = "Архив неполный: он ещё загружается, не хватает части, или он повреждён.";
@@ -424,8 +424,8 @@
 "Look further down (videos: quieter)" = "Смотреть ниже (видео: тише)";
 "Mark all" = "Отметить все";
 "Menus in the window" = "Меню в окне";
-"Next (videos: 10 % ahead)" = "Следующий (видео: на 10 % вперёд)";
-"Previous (videos: 10 % back)" = "Предыдущий (видео: на 10 % назад)";
+"Next (videos: 10 % ahead, PDFs: next page)" = "Следующий (видео: на 10 % вперёд, PDF: следующая страница)";
+"Previous (videos: 10 % back, PDFs: previous page)" = "Предыдущий (видео: на 10 % назад, PDF: предыдущая страница)";
 "Open bookmark %lld" = "Открыть закладку %lld";
 "Playlist: row up" = "Плейлист: строка вверх";
 "Playlist: row down" = "Плейлист: строка вниз";
@@ -552,3 +552,30 @@
 "NASA/Goddard Space Flight Center Scientific Visualization Studio, made from Gaia DR2, Hipparcos and Tycho-2 data. Public domain." = "NASA/Goddard Space Flight Center Scientific Visualization Studio, по данным Gaia DR2, Hipparcos и Tycho-2. Общественное достояние.";
 "the lights on the globe's night side" = "огни на ночной стороне глобуса";
 "NASA Earth Observatory. Used under NASA's media usage guidelines." = "NASA Earth Observatory. Используется согласно правилам NASA для медиаматериалов.";
+
+/* Sorting by distance: the map and Use My Location */
+"Use My Location" = "Использовать мою геопозицию";
+"Asks macOS once for where this Mac is. The position stays on this Mac." = "Один раз спрашивает macOS, где находится этот Mac. Позиция остается на этом Mac.";
+"Finding your location…" = "Определение геопозиции…";
+"Click the map to choose a place." = "Щелкните по карте, чтобы выбрать место.";
+"Schnellbild may not use your location. Allow it in System Settings → Privacy & Security → Location Services." = "Schnellbild не может использовать вашу геопозицию. Разрешите это в Системных настройках → Конфиденциальность и безопасность → Службы геолокации.";
+"Location is restricted on this Mac." = "Геопозиция на этом Mac ограничена.";
+"Location Services are off. Turn them on in System Settings → Privacy & Security → Location Services." = "Службы геолокации выключены. Включите их в Системных настройках → Конфиденциальность и безопасность → Службы геолокации.";
+"Your location can't be found right now." = "Сейчас не удается определить вашу геопозицию.";
+"Previous page" = "Предыдущая страница";
+"Next page" = "Следующая страница";
+"Page %lld / %lld" = "Страница %lld / %lld";
+"GPS in the file" = "GPS в файле";
+"GPS from GoPro telemetry" = "GPS из телеметрии GoPro";
+"From DJI flight log %@" = "Из журнала полёта DJI %@";
+"From %@" = "Из файла %@";
+"From the file's XMP data" = "Из данных XMP файла";
+"From GPX track %@" = "Из GPX-трека %@";
+"From the movie header (UTC)" = "Из заголовка видеофайла (UTC)";
+"GPS time from GoPro telemetry" = "Время GPS из телеметрии GoPro";
+"DOP %@" = "DOP %@";
+"Interpolated, %@ from the nearest track point" = "Интерполировано, %@ от ближайшей точки трека";
+"Source" = "Источник";
+"Accuracy" = "Точность";
+"Route" = "Маршрут";
+"Date Source" = "Источник даты";

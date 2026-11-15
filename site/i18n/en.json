@@ -66,7 +66,7 @@
   "features": [
     {
       "title": "Look at it large, page with the keys",
-      "text": "<p>Space opens a picture as large as the window allows, ← → page through the folder. Zoom in with the trackpad or + −, turn with ⌥← ⌥→, full screen with <kbd>f</kbd>. Animated GIFs, SVG and PDF included.</p><p>A slideshow (<kbd>s</kbd>) runs through the folder and all its subfolders, photos and videos alike. Whatever the slideshow plays is the playlist: <kbd>p</kbd> opens it to reorder and weed out.</p>",
+      "text": "<p>Space opens a picture as large as the window allows, ← → page through the folder. Zoom in with the trackpad or + −, turn with ⌥← ⌥→, full screen with <kbd>f</kbd>. Animated GIFs and SVG included, PDFs page by page.</p><p>A slideshow (<kbd>s</kbd>) runs through the folder and all its subfolders, photos and videos alike. Whatever the slideshow plays is the playlist: <kbd>p</kbd> opens it to reorder and weed out.</p>",
       "alt": "A photo in the full view"
     },
     {
@@ -159,6 +159,7 @@
       "<strong>Settings</strong> (the last folder, sort order, bookmarks, volume …) in the app's own preferences.",
       "<strong>Folder access:</strong> the folders you opened to Schnellbild, as macOS bookmarks, so it can show them again after a restart. Settings → {folderAccess} forgets them.",
       "<strong>Archive passwords</strong> you typed, in your login keychain (entry \"Schnellbild archive passwords\"); Settings → {forgetPasswords} removes them.",
+      "<strong>Your location</strong>, only when you click Use My Location while sorting by distance: macOS asks you first, the position is asked for once and kept only as the place to measure distances from, in the app's preferences. It never leaves your Mac.",
       "<strong>Thumbnails</strong>, in macOS's own thumbnail cache."
     ],
     "appOutro": "Schnellbild reads your pictures, videos and archives only to show them to you. It never sends them, their names or anything about them anywhere. Apple handles the download and purchase under its own privacy policy and gives us only figures without your identity: sales, and crash reports and usage statistics if you allowed sharing them with app developers in macOS.",

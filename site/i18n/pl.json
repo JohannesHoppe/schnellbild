@@ -66,7 +66,7 @@
   "features": [
     {
       "title": "Duży podgląd, przewijanie klawiszami",
-      "text": "<p>Spacja otwiera obraz tak duży, jak pozwala okno, a ← → przewijają folder. Powiększaj gładzikiem lub klawiszami + −, obracaj ⌥← ⌥→, pełny ekran włączysz klawiszem <kbd>f</kbd>. Animowane GIF-y, SVG i PDF też.</p><p>Pokaz slajdów (<kbd>s</kbd>) przechodzi przez folder i wszystkie jego podfoldery, zdjęcia i filmy razem. To, co odtwarza pokaz slajdów, jest playlistą: <kbd>p</kbd> otwiera ją, by zmienić kolejność i odsiać zbędne pozycje.</p>",
+      "text": "<p>Spacja otwiera obraz tak duży, jak pozwala okno, a ← → przewijają folder. Powiększaj gładzikiem lub klawiszami + −, obracaj ⌥← ⌥→, pełny ekran włączysz klawiszem <kbd>f</kbd>. Animowane GIF-y i SVG też, PDF strona po stronie.</p><p>Pokaz slajdów (<kbd>s</kbd>) przechodzi przez folder i wszystkie jego podfoldery, zdjęcia i filmy razem. To, co odtwarza pokaz slajdów, jest playlistą: <kbd>p</kbd> otwiera ją, by zmienić kolejność i odsiać zbędne pozycje.</p>",
       "alt": "Zdjęcie w pełnym widoku"
     },
     {
@@ -159,6 +159,7 @@
       "<strong>Ustawienia</strong> (ostatni folder, kolejność sortowania, zakładki, głośność…) we własnych preferencjach aplikacji.",
       "<strong>Dostęp do folderów:</strong> foldery otwarte dla Schnellbild, zapisane jako zakładki macOS, aby mógł je ponownie pokazać po restarcie. Usuniesz je przez Ustawienia → {folderAccess}.",
       "<strong>Hasła do archiwów</strong> wpisane przez Ciebie, przechowywane w pęku kluczy logowania (wpis „Schnellbild archive passwords”); usuniesz je przez Ustawienia → {forgetPasswords}.",
+      "<strong>Twoja lokalizacja</strong>, tylko gdy przy sortowaniu według odległości klikniesz Użyj mojej lokalizacji: macOS najpierw pyta, pozycja jest pobierana raz i zachowywana tylko jako miejsce, od którego mierzone są odległości, w preferencjach aplikacji. Nigdy nie opuszcza Twojego Maca.",
       "<strong>Miniatury</strong>, przechowywane we własnej pamięci podręcznej miniatur systemu macOS."
     ],
     "appOutro": "Schnellbild odczytuje Twoje zdjęcia, filmy i archiwa wyłącznie po to, by Ci je pokazać. Nigdy nigdzie nie wysyła ani ich, ani ich nazw, ani żadnych informacji o nich. Pobieranie i zakup obsługuje Apple zgodnie z własną polityką prywatności i przekazuje nam wyłącznie liczby bez Twojej tożsamości: dane o sprzedaży, a także raporty o awariach i statystyki użytkowania, jeśli w macOS zezwolisz na udostępnianie ich twórcom aplikacji.",

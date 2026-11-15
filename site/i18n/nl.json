@@ -66,7 +66,7 @@
   "features": [
     {
       "title": "Groot bekijken, bladeren met de toetsen",
-      "text": "<p>De spatiebalk opent een afbeelding zo groot als het venster toelaat, met ← → blader je door de map. Zoom in met het trackpad of met + −, draai met ⌥← ⌥→, schermvullend met <kbd>f</kbd>. Geanimeerde GIF’s, SVG en PDF inbegrepen.</p><p>Een diavoorstelling (<kbd>s</kbd>) loopt door de map en alle submappen, foto’s en video’s door elkaar. Wat de diavoorstelling afspeelt, is de afspeellijst: <kbd>p</kbd> opent hem om de volgorde te veranderen en uit te dunnen.</p>",
+      "text": "<p>De spatiebalk opent een afbeelding zo groot als het venster toelaat, met ← → blader je door de map. Zoom in met het trackpad of met + −, draai met ⌥← ⌥→, schermvullend met <kbd>f</kbd>. Geanimeerde GIF’s en SVG inbegrepen, PDF pagina voor pagina.</p><p>Een diavoorstelling (<kbd>s</kbd>) loopt door de map en alle submappen, foto’s en video’s door elkaar. Wat de diavoorstelling afspeelt, is de afspeellijst: <kbd>p</kbd> opent hem om de volgorde te veranderen en uit te dunnen.</p>",
       "alt": "Een foto in de volledige weergave"
     },
     {
@@ -159,6 +159,7 @@
       "<strong>Instellingen</strong> (de laatste map, de sorteervolgorde, bladwijzers, het volume …) in de eigen voorkeuren van de app.",
       "<strong>Maptoegang:</strong> de mappen die je voor Schnellbild hebt geopend, als macOS-bladwijzers, zodat hij ze na een herstart weer kan tonen. Instellingen → {folderAccess} vergeet ze.",
       "<strong>Archiefwachtwoorden</strong> die je hebt ingetypt, in je inlogsleutelhanger (onderdeel ‘Schnellbild archive passwords’); Instellingen → {forgetPasswords} verwijdert ze.",
+      "<strong>Je locatie</strong>, alleen als je bij sorteren op afstand op ‘Gebruik mijn locatie’ klikt: macOS vraagt het je eerst, de positie wordt één keer opgevraagd en alleen bewaard als de plek waarvandaan afstanden worden gemeten, in de voorkeuren van de app. Hij verlaat je Mac nooit.",
       "<strong>Miniaturen</strong>, in de eigen miniaturencache van macOS."
     ],
     "appOutro": "Schnellbild leest je foto’s, video’s en archieven alleen om ze aan jou te tonen. Hij stuurt ze nooit ergens heen, en ook hun namen of andere informatie erover niet. Apple handelt de download en aankoop af volgens zijn eigen privacybeleid en geeft ons alleen cijfers zonder je identiteit: verkopen, en crashrapporten en gebruiksstatistieken als je in macOS hebt toegestaan die met app-ontwikkelaars te delen.",

@@ -61,7 +61,7 @@
 "First / last item" = "Første / siste objekt";
 "Larger / smaller thumbnails" = "Større / mindre miniatyrbilder";
 "Clear search" = "Tøm søket";
-"Previous / next item, also from a video" = "Forrige / neste objekt, også fra en video";
+"Previous / next item, also from a video or PDF" = "Forrige / neste objekt, også fra en video eller PDF";
 "Next picture · play/pause video" = "Neste bilde · spill av / sett video på pause";
 "Zoom in / out" = "Zoom inn / ut";
 "Fit to window / 100 %" = "Tilpass til vinduet / 100 %";
@@ -102,7 +102,7 @@
 "The name must end in a picture extension, such as “.%@”." = "Navnet må slutte med en bildefiltype, for eksempel «.%@».";
 "The name must end in a video extension, such as “.%@”." = "Navnet må slutte med en videofiltype, for eksempel «.%@».";
 "Grid and full view" = "Rutenett og full visning";
-"Pictures: previous / next · Videos: 10 % of the length back / ahead; at the start / end: previous / next item" = "Bilder: forrige / neste · Videoer: 10 % av lengden bakover / fremover; ved starten / slutten: forrige / neste objekt";
+"Pictures: previous / next · Videos: 10 % of the length back / ahead · PDFs: previous / next page; at the start / end: previous / next item" = "Bilder: forrige / neste · Videoer: 10 % av lengden bakover / fremover · PDF-er: forrige / neste side; ved starten / slutten: forrige / neste objekt";
 "Previous / next · Videos: 10 % of the length back / ahead" = "Forrige / neste · Videoer: 10 % av lengden bakover / fremover";
 "Wrong password for this archive." = "Feil passord for dette arkivet.";
 "The archive is incomplete: still downloading, a part missing, or damaged." = "Arkivet er ufullstendig: det lastes fortsatt ned, en del mangler, eller det er skadet.";
@@ -424,8 +424,8 @@
 "Look further down (videos: quieter)" = "Se lenger ned (videoer: lavere)";
 "Mark all" = "Merk alle";
 "Menus in the window" = "Menyer i vinduet";
-"Next (videos: 10 % ahead)" = "Neste (videoer: 10 % frem)";
-"Previous (videos: 10 % back)" = "Forrige (videoer: 10 % tilbake)";
+"Next (videos: 10 % ahead, PDFs: next page)" = "Neste (videoer: 10 % frem, PDF-er: neste side)";
+"Previous (videos: 10 % back, PDFs: previous page)" = "Forrige (videoer: 10 % tilbake, PDF-er: forrige side)";
 "Open bookmark %lld" = "Åpne bokmerke %lld";
 "Playlist: row up" = "Spilleliste: rad opp";
 "Playlist: row down" = "Spilleliste: rad ned";
@@ -552,3 +552,30 @@
 "NASA/Goddard Space Flight Center Scientific Visualization Studio, made from Gaia DR2, Hipparcos and Tycho-2 data. Public domain." = "NASA/Goddard Space Flight Center Scientific Visualization Studio, laget av data fra Gaia DR2, Hipparcos og Tycho-2. Fri for opphavsrett.";
 "the lights on the globe's night side" = "lysene på globusens nattside";
 "NASA Earth Observatory. Used under NASA's media usage guidelines." = "NASA Earth Observatory. Brukt etter NASAs retningslinjer for bruk av medier.";
+
+/* Sorting by distance: the map and Use My Location */
+"Use My Location" = "Bruk min plassering";
+"Asks macOS once for where this Mac is. The position stays on this Mac." = "Spør macOS én gang hvor denne Macen er. Posisjonen blir på denne Macen.";
+"Finding your location…" = "Finner plasseringen din …";
+"Click the map to choose a place." = "Klikk på kartet for å velge et sted.";
+"Schnellbild may not use your location. Allow it in System Settings → Privacy & Security → Location Services." = "Schnellbild får ikke bruke plasseringen din. Tillat det i Systeminnstillinger → Personvern og sikkerhet → Stedstjenester.";
+"Location is restricted on this Mac." = "Plassering er begrenset på denne Macen.";
+"Location Services are off. Turn them on in System Settings → Privacy & Security → Location Services." = "Stedstjenester er slått av. Slå dem på i Systeminnstillinger → Personvern og sikkerhet → Stedstjenester.";
+"Your location can't be found right now." = "Plasseringen din kan ikke finnes akkurat nå.";
+"Previous page" = "Forrige side";
+"Next page" = "Neste side";
+"Page %lld / %lld" = "Side %lld / %lld";
+"GPS in the file" = "GPS i filen";
+"GPS from GoPro telemetry" = "GPS fra GoPro-telemetri";
+"From DJI flight log %@" = "Fra DJI-flylogg %@";
+"From %@" = "Fra %@";
+"From the file's XMP data" = "Fra filens XMP-data";
+"From GPX track %@" = "Fra GPX-spor %@";
+"From the movie header (UTC)" = "Fra videofilens hode (UTC)";
+"GPS time from GoPro telemetry" = "GPS-tid fra GoPro-telemetri";
+"DOP %@" = "DOP %@";
+"Interpolated, %@ from the nearest track point" = "Interpolert, %@ fra nærmeste sporpunkt";
+"Source" = "Kilde";
+"Accuracy" = "Nøyaktighet";
+"Route" = "Rute";
+"Date Source" = "Datoens kilde";

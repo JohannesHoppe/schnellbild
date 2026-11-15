@@ -47,6 +47,9 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
     /// Time spent in the callbacks, to show the handover costs little.
     private var callbackSeconds = 0.0
     private var callbacks = 0
+    /// Pictures shown since the media was handed over (`use`): UI tests
+    /// wait for the media opened anew to reach the screen.
+    private var shownOfMedia = 0
     /// Each picture's number, so an older one never replaces a newer one on
     /// the layer; and when VLC last showed one (a redraw is only needed
     /// while it doesn't, i.e. paused).
@@ -264,6 +267,7 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
     func use(_ media: VLCMedia) {
         lock.lock()
         self.media = media
+        shownOfMedia = 0
         lock.unlock()
     }
 
@@ -399,6 +403,7 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
         lock.lock()
         callbackSeconds += Date().timeIntervalSince(start)
         callbacks += 1
+        shownOfMedia += 1
         lock.unlock()
     }
 
@@ -534,8 +539,9 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
         lock.lock()
         let perFrame = callbacks > 0 ? callbackSeconds / Double(callbacks) * 1000 : 0
         let picture = latest.map(Self.describe) ?? "none"
+        let ofMedia = shownOfMedia
         lock.unlock()
         let edr = Thread.isMainThread ? (showsEDR ? "on" : "off") : "unknown"
-        return "handover \(String(format: "%.2f", perFrame)) ms per picture, pictures \(picture), EDR \(edr)"
+        return "handover \(String(format: "%.2f", perFrame)) ms per picture, \(ofMedia) of this media, pictures \(picture), EDR \(edr)"
     }
 }

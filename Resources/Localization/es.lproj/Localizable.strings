@@ -61,7 +61,7 @@
 "First / last item" = "Primer / último elemento";
 "Larger / smaller thumbnails" = "Miniaturas más grandes / pequeñas";
 "Clear search" = "Borrar la búsqueda";
-"Previous / next item, also from a video" = "Elemento anterior / siguiente, también desde un vídeo";
+"Previous / next item, also from a video or PDF" = "Elemento anterior / siguiente, también desde un vídeo o un PDF";
 "Next picture · play/pause video" = "Imagen siguiente · reproducir / pausar vídeo";
 "Zoom in / out" = "Acercar / alejar";
 "Fit to window / 100 %" = "Ajustar a la ventana / 100 %";
@@ -102,7 +102,7 @@
 "The name must end in a picture extension, such as “.%@”." = "El nombre debe terminar en una extensión de imagen, como «.%@».";
 "The name must end in a video extension, such as “.%@”." = "El nombre debe terminar en una extensión de vídeo, como «.%@».";
 "Grid and full view" = "Cuadrícula y vista completa";
-"Pictures: previous / next · Videos: 10 % of the length back / ahead; at the start / end: previous / next item" = "Imágenes: anterior / siguiente · Vídeos: 10 % de la duración atrás / adelante; al principio / final: elemento anterior / siguiente";
+"Pictures: previous / next · Videos: 10 % of the length back / ahead · PDFs: previous / next page; at the start / end: previous / next item" = "Imágenes: anterior / siguiente · Vídeos: 10 % de la duración atrás / adelante · PDF: página anterior / siguiente; al principio / final: elemento anterior / siguiente";
 "Previous / next · Videos: 10 % of the length back / ahead" = "Anterior / siguiente · Vídeos: 10 % de la duración atrás / adelante";
 "Wrong password for this archive." = "Contraseña incorrecta para este archivo.";
 "The archive is incomplete: still downloading, a part missing, or damaged." = "El archivo está incompleto: aún se está descargando, falta una parte o está dañado.";
@@ -424,8 +424,8 @@
 "Look further down (videos: quieter)" = "Ver más abajo (vídeos: menos volumen)";
 "Mark all" = "Marcar todo";
 "Menus in the window" = "Menús en la ventana";
-"Next (videos: 10 % ahead)" = "Siguiente (vídeos: 10 % adelante)";
-"Previous (videos: 10 % back)" = "Anterior (vídeos: 10 % atrás)";
+"Next (videos: 10 % ahead, PDFs: next page)" = "Siguiente (vídeos: 10 % adelante, PDF: página siguiente)";
+"Previous (videos: 10 % back, PDFs: previous page)" = "Anterior (vídeos: 10 % atrás, PDF: página anterior)";
 "Open bookmark %lld" = "Abrir el marcador %lld";
 "Playlist: row up" = "Lista: fila arriba";
 "Playlist: row down" = "Lista: fila abajo";
@@ -552,3 +552,30 @@
 "NASA/Goddard Space Flight Center Scientific Visualization Studio, made from Gaia DR2, Hipparcos and Tycho-2 data. Public domain." = "NASA/Goddard Space Flight Center Scientific Visualization Studio, a partir de datos de Gaia DR2, Hipparcos y Tycho-2. Dominio público.";
 "the lights on the globe's night side" = "las luces del lado nocturno del globo";
 "NASA Earth Observatory. Used under NASA's media usage guidelines." = "NASA Earth Observatory. Usado según las pautas de uso de medios de la NASA.";
+
+/* Sorting by distance: the map and Use My Location */
+"Use My Location" = "Usar mi ubicación";
+"Asks macOS once for where this Mac is. The position stays on this Mac." = "Pregunta una vez a macOS dónde está este Mac. La posición se queda en este Mac.";
+"Finding your location…" = "Buscando tu ubicación…";
+"Click the map to choose a place." = "Haz clic en el mapa para elegir un lugar.";
+"Schnellbild may not use your location. Allow it in System Settings → Privacy & Security → Location Services." = "Schnellbild no puede usar tu ubicación. Permítelo en Ajustes del Sistema → Privacidad y seguridad → Localización.";
+"Location is restricted on this Mac." = "La ubicación está restringida en este Mac.";
+"Location Services are off. Turn them on in System Settings → Privacy & Security → Location Services." = "La localización está desactivada. Actívala en Ajustes del Sistema → Privacidad y seguridad → Localización.";
+"Your location can't be found right now." = "Ahora mismo no se puede encontrar tu ubicación.";
+"Previous page" = "Página anterior";
+"Next page" = "Página siguiente";
+"Page %lld / %lld" = "Página %lld / %lld";
+"GPS in the file" = "GPS en el archivo";
+"GPS from GoPro telemetry" = "GPS de la telemetría de GoPro";
+"From DJI flight log %@" = "Del registro de vuelo de DJI %@";
+"From %@" = "De %@";
+"From the file's XMP data" = "De los datos XMP del archivo";
+"From GPX track %@" = "De la ruta GPX %@";
+"From the movie header (UTC)" = "Del encabezado del vídeo (UTC)";
+"GPS time from GoPro telemetry" = "Hora GPS de la telemetría de GoPro";
+"DOP %@" = "DOP %@";
+"Interpolated, %@ from the nearest track point" = "Interpolado, a %@ del punto más cercano de la ruta";
+"Source" = "Fuente";
+"Accuracy" = "Precisión";
+"Route" = "Ruta";
+"Date Source" = "Fuente de la fecha";

@@ -33,7 +33,7 @@ How to make the certificates, profiles and secrets again when they run out: `doc
 10. [ ] **Metadata:** `gh workflow run appstore.yml -f metadata=true` (texts in both languages, screenshots, URLs, categories, copyright, review notes; with `-f upload=true` it picks the build too). What's New (`release_notes.txt`) shows only from the second version on: write it anew for each version.
 11. [ ] **Review contact:** the secret `APPSTORE_REVIEW_CONTACT` in the environment `release` (JSON `{"firstName":…,"lastName":…,"phone":…,"email":…}`, kept out of the repository); `appstore_connect.swift` puts it into the review details.
 12. [ ] **By hand in App Store Connect, once:**
-    - **App Privacy:** "Data Not Collected".
+    - **App Privacy:** "Data Not Collected" (the position from Use My Location stays on the Mac: data that never leaves the device isn't collected in Apple's sense; Review sees the location entitlement and `NSLocationUsageDescription`).
     - **Age rating:** Apple's current questionnaire (with the 13+, 16+ and 18+ ratings and the questions on in-app controls and capabilities): every content question "None", no user-generated content shared with others, no messaging or chat, no unrestricted web access, no advertising, no gambling, no contests. Result: 4+.
     - **Content rights:** "Does your app contain, show, or access third-party content?" No: the app brings no content of its own beyond its interface; it shows only the user's own files.
     - **Export compliance** (asked with the first build unless the Info.plist key answers it): see below.

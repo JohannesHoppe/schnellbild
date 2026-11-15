@@ -66,7 +66,7 @@
   "features": [
     {
       "title": "Se billedet stort, bladr med tasterne",
-      "text": "<p>Mellemrum åbner et billede så stort, som vinduet tillader, ← → blader gennem mappen. Zoom med pegefeltet eller + −, drej med ⌥← ⌥→, fuld skærm med <kbd>f</kbd>. Animerede GIF'er, SVG og PDF er med.</p><p>Et diasshow (<kbd>s</kbd>) kører gennem mappen og alle dens undermapper, fotos og videoer på lige fod. Det, diasshowet afspiller, er afspilningslisten: <kbd>p</kbd> åbner den, så du kan ændre rækkefølgen og sortere fra.</p>",
+      "text": "<p>Mellemrum åbner et billede så stort, som vinduet tillader, ← → blader gennem mappen. Zoom med pegefeltet eller + −, drej med ⌥← ⌥→, fuld skærm med <kbd>f</kbd>. Animerede GIF'er og SVG er med, PDF side for side.</p><p>Et diasshow (<kbd>s</kbd>) kører gennem mappen og alle dens undermapper, fotos og videoer på lige fod. Det, diasshowet afspiller, er afspilningslisten: <kbd>p</kbd> åbner den, så du kan ændre rækkefølgen og sortere fra.</p>",
       "alt": "Et foto i fuld visning"
     },
     {
@@ -159,6 +159,7 @@
       "<strong>Indstillinger</strong> (den seneste mappe, sorteringsrækkefølge, bogmærker, lydstyrke …) i appens egne indstillinger.",
       "<strong>Mappeadgang:</strong> de mapper, du har åbnet for Schnellbild, som macOS-bogmærker, så den kan vise dem igen efter en genstart. Indstillinger → {folderAccess} glemmer dem.",
       "<strong>Arkivadgangskoder</strong>, du har indtastet, i din login-nøglering (emnet »Schnellbild archive passwords«); Indstillinger → {forgetPasswords} fjerner dem.",
+      "<strong>Din lokalitet</strong>, kun når du klikker på Brug min lokalitet, mens du sorterer efter afstand: macOS spørger dig først, positionen hentes én gang og gemmes kun som stedet, afstandene måles fra, i appens indstillinger. Den forlader aldrig din Mac.",
       "<strong>Miniaturer</strong> i macOS' egen miniaturecache."
     ],
     "appOutro": "Schnellbild læser dine billeder, videoer og arkiver kun for at vise dig dem. Den sender aldrig dem, deres navne eller noget om dem nogen steder hen. Apple håndterer download og køb efter sin egen privatlivspolitik og giver os kun tal uden din identitet: salg samt nedbrudsrapporter og brugsstatistik, hvis du i macOS har tilladt, at de deles med appudviklere.",

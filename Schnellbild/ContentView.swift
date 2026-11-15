@@ -533,7 +533,7 @@ struct PaneView: View {
         .sheet(item: $model.renameFileTarget) { RenameView(file: $0) }
         .sheet(item: $model.passwordRequest) { PasswordView(request: $0) }
         .sheet(isPresented: $model.newFolderRequested) { NewFolderView() }
-        .sheet(isPresented: $model.distanceOriginRequested) { DistanceOriginView() }
+        .sheet(isPresented: $model.distanceOriginRequested) { DistanceOriginView(start: model.distanceOrigin) }
         .alert(Text(verbatim: model.locationMissing.map { String(localized: "“\($0)” has no location") } ?? ""),
                isPresented: Binding(get: { model.locationMissing != nil }, set: { if !$0 { model.locationMissing = nil } })) {
             Button("OK") { model.locationMissing = nil }
@@ -724,7 +724,7 @@ struct PaneView: View {
         .padding(atTop ? .top : .bottom, 16)
     }
 
-    /// "3 / 12 · name"; in a slideshow "Slideshow · 3 / 57 · name" ("57 so
+    /// "3 / 12 · name" (a PDF: "· Page 2 / 9"); in a slideshow "Slideshow · 3 / 57 · name" ("57 so
     /// far" while subfolders are still being walked).
     private func badgeText(entry: GridEntry) -> String {
         var text: String
@@ -735,6 +735,10 @@ struct PaneView: View {
             if show.paused && entry.kind == .image { text += "  ·  " + String(localized: "Paused") }
         } else {
             text = "\(model.currentMediaNumber ?? 0) / \(model.mediaCount)  ·  \(entry.name)"
+            // A PDF: the page on screen
+            if let pdf = model.pdfPosition, pdf.url == entry.url {
+                text += "  ·  " + String(localized: "Page \(pdf.page + 1) / \(pdf.count)")
+            }
         }
         if entry.kind == .video && model.videoPaused { text += "  ·  " + String(localized: "Paused") }
         if entry.kind == .video && model.playbackSpeed != 1 { text += "  ·  " + PlaybackSpeed.text(model.playbackSpeed) }
@@ -859,8 +863,9 @@ struct EmptyStateView: View {
     }
 }
 
-/// The sort choices, in the View menu (with ⌘1 … ⌘5 unless changed) and in the toolbar.
-/// Choosing the current key again reverses the direction.
+/// The sort choices, in the View menu (with ⌘1 … ⌘6 unless changed) and in the toolbar.
+/// Choosing the current key again reverses the direction; Distance without
+/// a place to measure from opens the sheet that asks for one.
 struct SortChoices: View {
     @ObservedObject var model: BrowserModel
     @ObservedObject var keys = Shortcuts.shared
@@ -1300,7 +1305,6 @@ private struct PaneDrop: DropDelegate {
         guard let folder = target else { return false }
         let pane = pane
         BrowserModel.testLog("\(Date().timeIntervalSince1970) drop into the pane")
-        guard DropOnce.first() else { return true }
         TileDrag.loadURLs(info.itemProviders(for: [TileDrag.type])) { urls in
             BrowserModel.testLog("\(Date().timeIntervalSince1970) drop: moving \(urls.count)")
             pane.move(urls, into: folder)

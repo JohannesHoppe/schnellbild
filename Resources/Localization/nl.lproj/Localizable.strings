@@ -61,7 +61,7 @@
 "First / last item" = "Eerste / laatste onderdeel";
 "Larger / smaller thumbnails" = "Grotere / kleinere miniaturen";
 "Clear search" = "Wis zoekopdracht";
-"Previous / next item, also from a video" = "Vorig / volgend onderdeel, ook vanuit een video";
+"Previous / next item, also from a video or PDF" = "Vorig / volgend onderdeel, ook vanuit een video of PDF";
 "Next picture · play/pause video" = "Volgende afbeelding · video afspelen / pauzeren";
 "Zoom in / out" = "Zoom in / uit";
 "Fit to window / 100 %" = "Passend in venster / 100 %";
@@ -102,7 +102,7 @@
 "The name must end in a picture extension, such as “.%@”." = "De naam moet eindigen op een afbeeldingsextensie, zoals ‘.%@’.";
 "The name must end in a video extension, such as “.%@”." = "De naam moet eindigen op een video-extensie, zoals ‘.%@’.";
 "Grid and full view" = "Raster en volledige weergave";
-"Pictures: previous / next · Videos: 10 % of the length back / ahead; at the start / end: previous / next item" = "Afbeeldingen: vorige / volgende · Video’s: 10 % van de lengte terug / vooruit; aan het begin / einde: vorige / volgende onderdeel";
+"Pictures: previous / next · Videos: 10 % of the length back / ahead · PDFs: previous / next page; at the start / end: previous / next item" = "Afbeeldingen: vorige / volgende · Video’s: 10 % van de lengte terug / vooruit · PDF’s: vorige / volgende pagina; aan het begin / einde: vorige / volgende onderdeel";
 "Previous / next · Videos: 10 % of the length back / ahead" = "Vorige / volgende · Video’s: 10 % van de lengte terug / vooruit";
 "Wrong password for this archive." = "Onjuist wachtwoord voor dit archief.";
 "The archive is incomplete: still downloading, a part missing, or damaged." = "Het archief is onvolledig: het wordt nog gedownload, er ontbreekt een deel, of het is beschadigd.";
@@ -424,8 +424,8 @@
 "Look further down (videos: quieter)" = "Verder omlaag kijken (video’s: zachter)";
 "Mark all" = "Markeer alles";
 "Menus in the window" = "Menu’s in het venster";
-"Next (videos: 10 % ahead)" = "Volgende (video’s: 10 % vooruit)";
-"Previous (videos: 10 % back)" = "Vorige (video’s: 10 % terug)";
+"Next (videos: 10 % ahead, PDFs: next page)" = "Volgende (video’s: 10 % vooruit, PDF’s: volgende pagina)";
+"Previous (videos: 10 % back, PDFs: previous page)" = "Vorige (video’s: 10 % terug, PDF’s: vorige pagina)";
 "Open bookmark %lld" = "Bladwijzer %lld openen";
 "Playlist: row up" = "Afspeellijst: rij omhoog";
 "Playlist: row down" = "Afspeellijst: rij omlaag";
@@ -552,3 +552,30 @@
 "NASA/Goddard Space Flight Center Scientific Visualization Studio, made from Gaia DR2, Hipparcos and Tycho-2 data. Public domain." = "NASA/Goddard Space Flight Center Scientific Visualization Studio, gemaakt met gegevens van Gaia DR2, Hipparcos en Tycho-2. Publiek domein.";
 "the lights on the globe's night side" = "de lichten op de nachtzijde van de wereldbol";
 "NASA Earth Observatory. Used under NASA's media usage guidelines." = "NASA Earth Observatory. Gebruikt volgens de mediarichtlijnen van NASA.";
+
+/* Sorting by distance: the map and Use My Location */
+"Use My Location" = "Gebruik mijn locatie";
+"Asks macOS once for where this Mac is. The position stays on this Mac." = "Vraagt macOS één keer waar deze Mac is. De positie blijft op deze Mac.";
+"Finding your location…" = "Locatie zoeken…";
+"Click the map to choose a place." = "Klik op de kaart om een plek te kiezen.";
+"Schnellbild may not use your location. Allow it in System Settings → Privacy & Security → Location Services." = "Schnellbild mag je locatie niet gebruiken. Sta het toe in Systeeminstellingen → Privacy en beveiliging → Locatievoorzieningen.";
+"Location is restricted on this Mac." = "Locatie is beperkt op deze Mac.";
+"Location Services are off. Turn them on in System Settings → Privacy & Security → Location Services." = "Locatievoorzieningen staan uit. Zet ze aan in Systeeminstellingen → Privacy en beveiliging → Locatievoorzieningen.";
+"Your location can't be found right now." = "Je locatie kan nu niet worden gevonden.";
+"Previous page" = "Vorige pagina";
+"Next page" = "Volgende pagina";
+"Page %lld / %lld" = "Pagina %lld / %lld";
+"GPS in the file" = "GPS in het bestand";
+"GPS from GoPro telemetry" = "GPS uit de GoPro-telemetrie";
+"From DJI flight log %@" = "Uit DJI-vluchtlog %@";
+"From %@" = "Uit %@";
+"From the file's XMP data" = "Uit de XMP-gegevens van het bestand";
+"From GPX track %@" = "Uit GPX-track %@";
+"From the movie header (UTC)" = "Uit de header van de video (UTC)";
+"GPS time from GoPro telemetry" = "GPS-tijd uit de GoPro-telemetrie";
+"DOP %@" = "DOP %@";
+"Interpolated, %@ from the nearest track point" = "Geïnterpoleerd, %@ van het dichtstbijzijnde trackpunt";
+"Source" = "Bron";
+"Accuracy" = "Nauwkeurigheid";
+"Route" = "Route";
+"Date Source" = "Bron van de datum";

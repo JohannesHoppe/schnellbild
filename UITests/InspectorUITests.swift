@@ -37,6 +37,9 @@ final class InspectorUITests: SchnellbildUITestCase {
         XCTAssertTrue(app.staticTexts["Example Camera One"].exists)
         XCTAssertTrue(app.staticTexts["64 × 48 px"].exists)
         XCTAssertTrue(element("openInMaps").exists)
+        // The offline map and the town near the place, from the map data the app carries
+        XCTAssertTrue(element("inspectorMap").waitForExistence(timeout: 10))
+        eventually("the town near it") { text(of: element("inspectorPlace")) == "near Munich, Germany" }
         // The next item: the sidebar follows the selection
         tile("geo-paris.jpg").click()
         eventually("Paris") { app.staticTexts["48.8584° N, 2.2945° E"].exists }
@@ -87,18 +90,33 @@ final class InspectorUITests: SchnellbildUITestCase {
         XCTAssertTrue(element("column.distance").waitForExistence(timeout: 5))
     }
 
+    /// ⌘6 (Distance) with no place yet asks for one.
     func testSortByDistanceFromPastedCoordinates() throws {
         try putPlaces()
         launchOnTempDir(waitFor: "geo.jpg")
-        clickMenu("View", "Distance")
+        app.typeKey("6", modifierFlags: .command)
         let field = app.textFields["distanceOriginField"]
         XCTAssertTrue(field.waitForExistence(timeout: 5), "no place yet: the sheet asks for one")
         field.typeText("33.8568 S, 151.2153 E")
-        eventually("read") { text(of: element("distanceOriginParsed")).contains("33.85") }
+        eventually("read") { text(of: element("distanceOriginParsed").firstMatch).contains("33.85") }
         app.typeKey(.return, modifierFlags: [])
         eventually("Sydney, New York, Munich, Paris, then those without a place") {
             comesBefore("geo-sydney.jpg", "geo-newyork.jpg") && comesBefore("geo-newyork.jpg", "geo.jpg")
                 && comesBefore("geo.jpg", "geo-paris.jpg") && comesBefore("geo-paris.jpg", "a.jpg")
         }
+    }
+
+    /// A click on the sheet's map picks the place under it; Sort sorts from there.
+    func testAClickOnTheSheetsMapPicksTheOrigin() throws {
+        try putPlaces()
+        launchOnTempDir(waitFor: "geo.jpg")
+        app.typeKey("6", modifierFlags: .command)
+        let pick = element("distanceOriginMap").firstMatch
+        XCTAssertTrue(pick.waitForExistence(timeout: 10), "the offline map in the sheet")
+        XCTAssertTrue(element("useMyLocation").exists, "Use My Location (not clicked: CI can't answer macOS's question)")
+        pick.click()
+        eventually("the place clicked is read") { text(of: element("distanceOriginParsed").firstMatch).contains("°") }
+        app.buttons["distanceOriginSort"].click()
+        eventually("sorted by distance") { sortLabel().contains("Distance ↑") }
     }
 }

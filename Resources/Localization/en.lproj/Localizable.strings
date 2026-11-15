@@ -61,7 +61,7 @@
 "First / last item" = "First / last item";
 "Larger / smaller thumbnails" = "Larger / smaller thumbnails";
 "Clear search" = "Clear search";
-"Previous / next item, also from a video" = "Previous / next item, also from a video";
+"Previous / next item, also from a video or PDF" = "Previous / next item, also from a video or PDF";
 "Next picture · play/pause video" = "Next picture · play/pause video";
 "Zoom in / out" = "Zoom in / out";
 "Fit to window / 100 %" = "Fit to window / 100 %";
@@ -102,7 +102,7 @@
 "The name must end in a picture extension, such as “.%@”." = "The name must end in a picture extension, such as “.%@”.";
 "The name must end in a video extension, such as “.%@”." = "The name must end in a video extension, such as “.%@”.";
 "Grid and full view" = "Grid and full view";
-"Pictures: previous / next · Videos: 10 % of the length back / ahead; at the start / end: previous / next item" = "Pictures: previous / next · Videos: 10 % of the length back / ahead; at the start / end: previous / next item";
+"Pictures: previous / next · Videos: 10 % of the length back / ahead · PDFs: previous / next page; at the start / end: previous / next item" = "Pictures: previous / next · Videos: 10 % of the length back / ahead · PDFs: previous / next page; at the start / end: previous / next item";
 "Previous / next · Videos: 10 % of the length back / ahead" = "Previous / next · Videos: 10 % of the length back / ahead";
 "Wrong password for this archive." = "Wrong password for this archive.";
 "The archive is incomplete: still downloading, a part missing, or damaged." = "The archive is incomplete: still downloading, a part missing, or damaged.";
@@ -424,8 +424,8 @@
 "Look further down (videos: quieter)" = "Look further down (videos: quieter)";
 "Mark all" = "Mark all";
 "Menus in the window" = "Menus in the window";
-"Next (videos: 10 % ahead)" = "Next (videos: 10 % ahead)";
-"Previous (videos: 10 % back)" = "Previous (videos: 10 % back)";
+"Next (videos: 10 % ahead, PDFs: next page)" = "Next (videos: 10 % ahead, PDFs: next page)";
+"Previous (videos: 10 % back, PDFs: previous page)" = "Previous (videos: 10 % back, PDFs: previous page)";
 "Open bookmark %lld" = "Open bookmark %lld";
 "Playlist: row up" = "Playlist: row up";
 "Playlist: row down" = "Playlist: row down";
@@ -552,3 +552,30 @@
 "NASA/Goddard Space Flight Center Scientific Visualization Studio, made from Gaia DR2, Hipparcos and Tycho-2 data. Public domain." = "NASA/Goddard Space Flight Center Scientific Visualization Studio, made from Gaia DR2, Hipparcos and Tycho-2 data. Public domain.";
 "the lights on the globe's night side" = "the lights on the globe's night side";
 "NASA Earth Observatory. Used under NASA's media usage guidelines." = "NASA Earth Observatory. Used under NASA's media usage guidelines.";
+
+/* Sorting by distance: the map and Use My Location */
+"Use My Location" = "Use My Location";
+"Asks macOS once for where this Mac is. The position stays on this Mac." = "Asks macOS once for where this Mac is. The position stays on this Mac.";
+"Finding your location…" = "Finding your location…";
+"Click the map to choose a place." = "Click the map to choose a place.";
+"Schnellbild may not use your location. Allow it in System Settings → Privacy & Security → Location Services." = "Schnellbild may not use your location. Allow it in System Settings → Privacy & Security → Location Services.";
+"Location is restricted on this Mac." = "Location is restricted on this Mac.";
+"Location Services are off. Turn them on in System Settings → Privacy & Security → Location Services." = "Location Services are off. Turn them on in System Settings → Privacy & Security → Location Services.";
+"Your location can't be found right now." = "Your location can't be found right now.";
+"Previous page" = "Previous page";
+"Next page" = "Next page";
+"Page %lld / %lld" = "Page %lld / %lld";
+"GPS in the file" = "GPS in the file";
+"GPS from GoPro telemetry" = "GPS from GoPro telemetry";
+"From DJI flight log %@" = "From DJI flight log %@";
+"From %@" = "From %@";
+"From the file's XMP data" = "From the file's XMP data";
+"From GPX track %@" = "From GPX track %@";
+"From the movie header (UTC)" = "From the movie header (UTC)";
+"GPS time from GoPro telemetry" = "GPS time from GoPro telemetry";
+"DOP %@" = "DOP %@";
+"Interpolated, %@ from the nearest track point" = "Interpolated, %@ from the nearest track point";
+"Source" = "Source";
+"Accuracy" = "Accuracy";
+"Route" = "Route";
+"Date Source" = "Date Source";

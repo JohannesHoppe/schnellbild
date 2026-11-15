@@ -66,7 +66,7 @@
   "features": [
     {
       "title": "Katso isona, selaa näppäimillä",
-      "text": "<p>Välilyönti avaa kuvan niin isona kuin ikkuna sallii, ← → selaavat kansiota. Lähennä ohjauslevyllä tai näppäimillä + −, käännä ⌥← ⌥→, koko näyttö näppäimellä <kbd>f</kbd>. Myös animoidut GIFit, SVG ja PDF.</p><p>Diaesitys (<kbd>s</kbd>) käy läpi kansion ja kaikki sen alikansiot, kuvat ja videot yhtä lailla. Mitä diaesitys toistaa, se on soittolista: <kbd>p</kbd> avaa sen, ja voit järjestää kohteita uudelleen ja karsia niitä listalta.</p>",
+      "text": "<p>Välilyönti avaa kuvan niin isona kuin ikkuna sallii, ← → selaavat kansiota. Lähennä ohjauslevyllä tai näppäimillä + −, käännä ⌥← ⌥→, koko näyttö näppäimellä <kbd>f</kbd>. Myös animoidut GIFit ja SVG, PDF sivu kerrallaan.</p><p>Diaesitys (<kbd>s</kbd>) käy läpi kansion ja kaikki sen alikansiot, kuvat ja videot yhtä lailla. Mitä diaesitys toistaa, se on soittolista: <kbd>p</kbd> avaa sen, ja voit järjestää kohteita uudelleen ja karsia niitä listalta.</p>",
       "alt": "Kuva koko näkymässä"
     },
     {
@@ -159,6 +159,7 @@
       "<strong>Asetukset</strong> (viimeisin kansio, lajittelujärjestys, kirjanmerkit, äänenvoimakkuus …) ohjelman omissa asetuksissa.",
       "<strong>Kansioiden käyttö:</strong> kansiot, jotka olet avannut Schnellbildille, macOS-kirjanmerkkeinä, jotta se voi näyttää ne uudelleen käynnistyksen jälkeen. Asetukset → {folderAccess} unohtaa ne.",
       "<strong>Arkistojen salasanat</strong>, jotka olet kirjoittanut, kirjautumisavainnipussasi (kohde ”Schnellbild archive passwords”); Asetukset → {forgetPasswords} poistaa ne.",
+      "<strong>Sijaintisi</strong>, vain kun osoitat Käytä sijaintiani etäisyyden mukaan järjestäessä: macOS kysyy ensin, sijainti pyydetään kerran ja säilytetään vain paikkana, josta etäisyydet mitataan, apin asetuksissa. Se ei koskaan lähde Macistasi.",
       "<strong>Miniatyyrit</strong> macOS:n omassa miniatyyrivälimuistissa."
     ],
     "appOutro": "Schnellbild lukee kuviasi, videoitasi ja arkistojasi vain näyttääkseen ne sinulle. Se ei koskaan lähetä niitä, niiden nimiä tai mitään niistä minnekään. Apple hoitaa latauksen ja oston oman tietosuojakäytäntönsä mukaisesti ja antaa meille vain lukuja ilman henkilöllisyyttäsi: myynnit sekä kaatumisraportit ja käyttötilastot, jos olet sallinut macOS:ssä niiden jakamisen appien kehittäjien kanssa.",
