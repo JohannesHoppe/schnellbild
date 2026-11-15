@@ -496,12 +496,12 @@ class TileReader:
         return f
 
     def read(self, offset, length):
-        for start, end, path in self.chunks:
-            if start <= offset and offset + length <= end:
-                f = self._file(path)
-                f.seek(offset - start)
-                return gzip.decompress(f.read(length))
-        raise IOError(f"tile data {offset}+{length} not in the cache")
+        """A tile, decompressed; it may run across chunk files (they end where they end, not
+        between tiles)."""
+        data = b""
+        while len(data) < length:
+            data += self.raw(offset + len(data), length - len(data))
+        return gzip.decompress(data)
 
     def raw(self, offset, length):
         """Up to <length> bytes of the tile data section from <offset>, from the chunk holding
@@ -510,7 +510,9 @@ class TileReader:
             if start <= offset < end:
                 f = self._file(path)
                 f.seek(offset - start)
-                return f.read(min(length, end - offset))
+                data = f.read(min(length, end - offset))
+                if data:
+                    return data
         raise IOError(f"tile data at {offset} not in the cache")
 
 
@@ -1562,9 +1564,11 @@ def main():
     limit = first_id(places_zoom + 1)
     unique = sorted({(offset, tile_id, length) for tile_id, run, length, offset in entries if tile_id < limit and run == 1})
     batches = [[(t, o, l) for o, t, l in unique[i:i + 300]] for i in range(0, len(unique), 300)]
+    # In the batches' order: build_places keeps the first of a place's copies from the same
+    # zoom, so the order of the rows decides between them and must be the same on every run
     rows = []
     with ctx.Pool(args.jobs, initializer=_init_worker, initargs=(chunks,)) as pool:
-        for i, part in enumerate(pool.imap_unordered(places_work, batches)):
+        for i, part in enumerate(pool.imap(places_work, batches)):
             rows += part
             if i % 200 == 0:
                 print(f"   {i} of {len(batches)} batches", file=sys.stderr)
