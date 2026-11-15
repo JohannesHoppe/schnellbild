@@ -156,6 +156,10 @@ targets:
       - path: Vendor/Map
         type: folder
         buildPhase: resources
+      # The globe's data (Scripts/fetch_globe.sh), as Resources/Globe
+      - path: Vendor/Globe
+        type: folder
+        buildPhase: resources
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: art.haushoppe.schnellbild

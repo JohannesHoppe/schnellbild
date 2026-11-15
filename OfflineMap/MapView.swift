@@ -14,31 +14,54 @@ public struct MapMarker: Identifiable, Equatable, Sendable {
 
 /// What an overlay needs to place its views on the map: where a coordinate
 /// is in the map view (origin top left) and back, the camera, and moving it.
+/// The same for the flat `MapView` and the `GlobeView`: on the globe a
+/// coordinate on the far side is not visible (`isVisible`), and a point
+/// off the Earth gives the nearest place on its rim.
 @MainActor
 public struct MapProxy {
     public let viewport: MapViewport
-    fileprivate let link: MapLink
+    let link: MapLink
+    /// Set for the globe
+    var globe: GlobeProjection? = nil
 
     public var camera: MapCamera { viewport.camera }
     public var size: CGSize { viewport.size }
 
-    public func point(for coordinate: Coordinate) -> CGPoint { viewport.point(for: coordinate) }
-    public func coordinate(at point: CGPoint) -> Coordinate { viewport.coordinate(at: point) }
+    public func point(for coordinate: Coordinate) -> CGPoint { globe?.point(for: coordinate) ?? viewport.point(for: coordinate) }
+
+    public func coordinate(at point: CGPoint) -> Coordinate {
+        guard let globe else { return viewport.coordinate(at: point) }
+        if let c = globe.coordinate(at: point) { return c }
+        // Off the Earth: the place on its rim in that direction
+        let dx = Double(point.x - size.width / 2), dy = Double(point.y - size.height / 2), d = max(1e-9, hypot(dx, dy))
+        let r = globe.radius * 0.999
+        return globe.coordinate(at: CGPoint(x: Double(size.width) / 2 + dx / d * r, y: Double(size.height) / 2 + dy / d * r)) ?? camera.center
+    }
+
+    /// Whether a coordinate can be seen (on the globe: not on its far side).
+    public func isVisible(_ coordinate: Coordinate) -> Bool { globe?.isVisible(coordinate) ?? true }
 
     /// Moves the map to the camera, gliding unless `animated` is false (or Reduce motion is on).
     public func move(to camera: MapCamera, animated: Bool = true) {
+        if let globe = link.globe {
+            globe.move(to: camera, animated: animated)
+            return
+        }
         guard let surface = link.surface else { return }
         if animated { surface.animate(to: camera) } else { surface.camera = camera; surface.onCameraChange?(surface.viewport.clamped()) }
     }
 
     /// Zooms in (positive) or out by whole steps about a point of the view (the middle when nil).
-    public func zoom(by steps: Double, at point: CGPoint? = nil) { link.surface?.zoom(by: steps, at: point) }
+    public func zoom(by steps: Double, at point: CGPoint? = nil) {
+        if let globe = link.globe { globe.zoom(by: steps, at: point) } else { link.surface?.zoom(by: steps, at: point) }
+    }
 }
 
-/// Ties the SwiftUI view to its map surface (the zoom buttons and the proxy act on it).
+/// Ties the SwiftUI view to its map surface or globe (the zoom buttons and the proxy act on it).
 @MainActor
 final class MapLink {
     weak var surface: MapSurfaceView?
+    weak var globe: GlobeSurfaceView?
 }
 
 /// The offline map as a SwiftUI view: the bundled OpenStreetMap data, drawn
