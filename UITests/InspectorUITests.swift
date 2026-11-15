@@ -105,4 +105,18 @@ final class InspectorUITests: SchnellbildUITestCase {
                 && comesBefore("geo.jpg", "geo-paris.jpg") && comesBefore("geo-paris.jpg", "a.jpg")
         }
     }
+
+    /// A click on the sheet's map picks the place under it; Sort sorts from there.
+    func testAClickOnTheSheetsMapPicksTheOrigin() throws {
+        try putPlaces()
+        launchOnTempDir(waitFor: "geo.jpg")
+        app.typeKey("6", modifierFlags: .command)
+        let pick = element("distanceOriginMapPick")
+        XCTAssertTrue(pick.waitForExistence(timeout: 10), "the offline map in the sheet")
+        XCTAssertTrue(element("useMyLocation").exists, "Use My Location (not clicked: CI can't answer macOS's question)")
+        pick.click()
+        eventually("the place clicked is read") { text(of: element("distanceOriginParsed")).contains("°") }
+        app.buttons["distanceOriginSort"].click()
+        eventually("sorted by distance") { sortLabel().contains("Distance ↑") }
+    }
 }

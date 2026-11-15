@@ -541,3 +541,13 @@
 "near %@" = "vicino a %@";
 "map data for the offline map" = "dati della mappa offline";
 "© OpenStreetMap contributors. Open Database License (ODbL) 1.0. Made from Protomaps' OpenStreetMap build, with thanks to Protomaps; how the files are made is in Schnellbild's repository." = "© contributori di OpenStreetMap. Open Database License (ODbL) 1.0. Ricavati dalla build OpenStreetMap di Protomaps, con un ringraziamento a Protomaps; come vengono creati i file è nel repository di Schnellbild.";
+
+/* Sorting by distance: the map and Use My Location */
+"Use My Location" = "Usa la mia posizione";
+"Asks macOS once for where this Mac is. The position stays on this Mac." = "Chiede una volta a macOS dove si trova questo Mac. La posizione resta su questo Mac.";
+"Finding your location…" = "Ricerca della posizione…";
+"Click the map to choose a place." = "Fai clic sulla mappa per scegliere un luogo.";
+"Schnellbild may not use your location. Allow it in System Settings → Privacy & Security → Location Services." = "Schnellbild non può usare la tua posizione. Consentilo in Impostazioni di Sistema → Privacy e sicurezza → Servizi di localizzazione.";
+"Location is restricted on this Mac." = "La localizzazione è limitata su questo Mac.";
+"Location Services are off. Turn them on in System Settings → Privacy & Security → Location Services." = "I Servizi di localizzazione sono disattivati. Attivali in Impostazioni di Sistema → Privacy e sicurezza → Servizi di localizzazione.";
+"Your location can't be found right now." = "Al momento non è possibile trovare la tua posizione.";

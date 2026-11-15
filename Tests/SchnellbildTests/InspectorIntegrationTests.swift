@@ -1,6 +1,7 @@
 import XCTest
 import SwiftUI
 import OfflineMap
+import CoreLocation
 @testable import Schnellbild
 
 /// The Inspector and sorting by distance in the shortcut system (I and ⌘I,
@@ -128,5 +129,67 @@ final class InspectorIntegrationTests: XCTestCase {
         host.frame = CGRect(x: 0, y: 0, width: InspectorView.width - 28, height: 160)
         host.layoutSubtreeIfNeeded()
         XCTAssertGreaterThan(host.subviews.count, 0)
+    }
+
+    // MARK: The distance sheet: the map and Use My Location
+
+    func testUseMyLocationFillsInThePlaceOrSaysWhy() async throws {
+        let stub = LocationStub()
+        let munich = try XCTUnwrap(GeoPoint(latitude: 48.137, longitude: 11.575))
+        stub.answer = .success(munich)
+        let picker = OriginPicker(location: stub, geography: { nil })
+        XCTAssertEqual(stub.asked, 0, "nothing is asked before the click")
+        await picker.useMyLocation()
+        XCTAssertEqual(stub.asked, 1, "once")
+        XCTAssertEqual(picker.point?.latitude ?? 0, 48.137, accuracy: 1e-6)
+        XCTAssertNil(picker.locationProblem)
+        XCTAssertFalse(picker.locating)
+        for failure in [LocationFailure.denied, .restricted, .servicesOff, .unavailable] {
+            stub.answer = .failure(failure)
+            picker.text = ""
+            await picker.useMyLocation()
+            XCTAssertEqual(picker.locationProblem, failure.message)
+            XCTAssertNil(picker.point, "\(failure): no place")
+            XCTAssertFalse(failure.message.isEmpty)
+        }
+        XCTAssertEqual(Set([LocationFailure.denied, .restricted, .servicesOff, .unavailable].map(\.message)).count, 4, "each says its own")
+    }
+
+    func testThePermissionDecidesWhetherToAsk() {
+        XCTAssertEqual(CoreLocationProvider.failure(for: .denied), .denied)
+        XCTAssertEqual(CoreLocationProvider.failure(for: .restricted), .restricted)
+        XCTAssertNil(CoreLocationProvider.failure(for: .notDetermined), "asks the user")
+        XCTAssertNil(CoreLocationProvider.failure(for: .authorizedAlways))
+    }
+
+    func testAClickOnTheMapPicksThePlaceUnderIt() async throws {
+        let camera = MapCamera(center: Coordinate(latitude: 48.137, longitude: 11.575), zoom: 8)
+        let size = CGSize(width: 440, height: 220)
+        let middle = try XCTUnwrap(OriginPicker.point(at: CGPoint(x: 220, y: 110), camera: camera, size: size))
+        XCTAssertEqual(middle.latitude, 48.137, accuracy: 1e-6)
+        XCTAssertEqual(middle.longitude, 11.575, accuracy: 1e-6)
+        let east = try XCTUnwrap(OriginPicker.point(at: CGPoint(x: 320, y: 110), camera: camera, size: size))
+        XCTAssertGreaterThan(east.longitude, 11.575, "right of the middle: further east")
+        let north = try XCTUnwrap(OriginPicker.point(at: CGPoint(x: 220, y: 10), camera: camera, size: size))
+        XCTAssertGreaterThan(north.latitude, 48.137, "above the middle: further north")
+        // The place picked goes into the field, with the town near it
+        let geography = try XCTUnwrap(BundledGeography.make(renderer: try bundledRenderer()))
+        let picker = OriginPicker(location: LocationStub(), geography: { geography })
+        picker.pick(middle)
+        XCTAssertEqual(GeoPoint.parse(picker.text), middle)
+        await picker.placeNameRead()
+        XCTAssertTrue(picker.placeName?.contains("Munich") == true || picker.placeName?.contains("München") == true,
+                      picker.placeName ?? "nil")
+    }
+}
+
+/// Stands in for Core Location: answers what the test sets, counts the requests.
+@MainActor
+private final class LocationStub: LocationProvider {
+    var answer: Result<GeoPoint, LocationFailure> = .failure(.unavailable)
+    var asked = 0
+    func currentLocation() async -> Result<GeoPoint, LocationFailure> {
+        asked += 1
+        return answer
     }
 }

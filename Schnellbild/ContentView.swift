@@ -533,7 +533,7 @@ struct PaneView: View {
         .sheet(item: $model.renameFileTarget) { RenameView(file: $0) }
         .sheet(item: $model.passwordRequest) { PasswordView(request: $0) }
         .sheet(isPresented: $model.newFolderRequested) { NewFolderView() }
-        .sheet(isPresented: $model.distanceOriginRequested) { DistanceOriginView() }
+        .sheet(isPresented: $model.distanceOriginRequested) { DistanceOriginView(start: model.distanceOrigin) }
         .alert(Text(verbatim: model.locationMissing.map { String(localized: "“\($0)” has no location") } ?? ""),
                isPresented: Binding(get: { model.locationMissing != nil }, set: { if !$0 { model.locationMissing = nil } })) {
             Button("OK") { model.locationMissing = nil }

@@ -1087,6 +1087,9 @@ final class BrowserModel: ObservableObject {
     @Published private(set) var locationProgress: Progress?
     /// The sheet that takes coordinates or a map link to sort by distance from.
     @Published var distanceOriginRequested = false
+    /// The Mac's position for the sheet's Use My Location (Core Location,
+    /// asked only on that click; nothing at launch).
+    static let liveLocation: LocationProvider = CoreLocationProvider()
     /// "Sort by Distance from Here" on an item without a place: its name, for the alert.
     @Published var locationMissing: String?
 

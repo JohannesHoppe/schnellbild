@@ -159,6 +159,7 @@
       "<strong>Réglages</strong> (dernier dossier, ordre de tri, signets, volume…) dans les préférences propres à l’app.",
       "<strong>Accès aux dossiers :</strong> les dossiers que vous avez ouverts à Schnellbild, sous forme de signets macOS, pour qu’elle puisse les afficher à nouveau après un redémarrage. Réglages → {folderAccess} les oublie.",
       "<strong>Mots de passe des archives</strong> que vous avez saisis, dans votre trousseau de session (élément « Schnellbild archive passwords ») ; Réglages → {forgetPasswords} les supprime.",
+      "<strong>Votre position</strong>, uniquement lorsque vous cliquez sur Utiliser ma position en triant par distance : macOS vous le demande d’abord, la position est demandée une fois et conservée seulement comme point de départ des distances, dans les préférences de l’app. Elle ne quitte jamais votre Mac.",
       "<strong>Vignettes</strong>, dans le cache de vignettes de macOS."
     ],
     "appOutro": "Schnellbild lit vos images, vidéos et archives uniquement pour vous les montrer. Elle ne les envoie jamais nulle part, pas plus que leurs noms ou quoi que ce soit les concernant. Apple gère le téléchargement et l’achat conformément à sa propre politique de confidentialité et ne nous transmet que des chiffres qui ne vous identifient pas : les ventes et, si vous avez autorisé dans macOS le partage avec les développeurs d’apps, des rapports de plantage et des statistiques d’utilisation.",

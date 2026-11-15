@@ -53,6 +53,8 @@
 	<string>15.0</string>
 	<key>NSHighResolutionCapable</key>
 	<true/>
+	<key>NSLocationUsageDescription</key>
+	<string>Schnellbild uses your location only when you click Use My Location, to sort photos and videos by their distance from you. It stays on your Mac.</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>© 2026 HAUS HOPPE - ITS (Johannes Hoppe). MIT License.</string>
 	<key>UTExportedTypeDeclarations</key>
