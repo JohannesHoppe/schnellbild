@@ -1,10 +1,13 @@
 # Makes the globe's data again from its archived inputs (the pre-release
 # SOURCE_RELEASE_TAG in Scripts/globe_data.env) on a clean Mac of each
 # macOS version and fails unless every file matches its pinned SHA-256:
-# the pipeline gives the same bytes everywhere.
+# the pipeline gives the same bytes everywhere. Runs when the pipeline or its
+# pins change, and by hand.
 name: Globe data check
 
 on:
+  push:
+    paths: [ 'Scripts/build_globe_data.py', 'Scripts/globe_data.env', '.github/workflows/globe-data-check.yml' ]
   workflow_dispatch:
 
 permissions:
