@@ -373,9 +373,9 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         let current = Int(player.currentVideoSubTitleIndex)
         if let wanted = wantedSubtitle { subtitleOnceOpen = wanted } else { subtitleOnceOpen = current >= 0 ? current : nil }
         let ended = reachedEnd || player.position >= 0.999
-        let time = ended ? 0 : max(Int(player.time.intValue), 0)
+        let time = ended ? 0 : max(timeNow, 0)
         player.stop()
-        BrowserModel.testLog("vlc: software decoding for subtitles, stopped at \(time) ms")
+        BrowserModel.testLog("vlc: software decoding for subtitles, stopped at \(time) ms (VLC's last report \(player.time.intValue) ms)")
         Task { @MainActor [weak self] in
             for _ in 0..<100 {
                 guard let self, self.player.delegate != nil else { return }   // stopped for good meanwhile
@@ -519,6 +519,25 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
     /// quick "ended" would already be "stopped" and the end missed. It is
     /// handled once VLCKit's callback has returned, since handling it can
     /// move on to the next item and stop this player.
+    /// VLC's time as last reported and when it arrived.
+    private var timeReported: (ms: Int, at: Date)?
+
+    nonisolated func mediaPlayerTimeChanged(_ aNotification: Notification) {
+        let at = Date()
+        Task { @MainActor in self.timeReported = (Int(self.player.time.intValue), at) }
+    }
+
+    /// The time now: VLC reports it four times a second (its input's
+    /// statistics), so while playing the time since its last report is
+    /// added (at most a second, at the speed played).
+    private var timeNow: Int {
+        let ms = Int(player.time.intValue)
+        guard player.state == .playing || player.state == .buffering, isPlaying,
+              let reported = timeReported, reported.ms == ms else { return ms }
+        let since = min(max(Date().timeIntervalSince(reported.at), 0), 1)
+        return ms + Int(since * 1000 * Double(player.rate))
+    }
+
     nonisolated func mediaPlayerStateChanged(_ aNotification: Notification) {
         let state = (aNotification.object as? VLCMediaPlayer)?.state
         Task { @MainActor in self.stateChanged(to: state ?? self.player.state) }

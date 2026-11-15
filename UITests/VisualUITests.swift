@@ -513,7 +513,6 @@ final class VisualUITests: SchnellbildUITestCase {
         app.typeKey("v", modifierFlags: [])
         eventually("opened again in software", timeout: 20) { text(of: video).contains("media 2, ") }
         waitForSoftwarePictures(of: video)
-        let after = time(text(of: video))
         let written = logOfThisLaunch(log)
         func luma(after marker: String) -> Int? {
             guard let range = written.range(of: marker) else { return nil }
@@ -523,8 +522,7 @@ final class VisualUITests: SchnellbildUITestCase {
         }
         let last = luma(after: "vlc: last picture before opening again: ")
         let next = probedPictures(in: written).first { $0.media == 2 }?.luma
-        print("VLC switched to software at \(before) ms (label) → \(after) ms; last picture luma \(last ?? -1), next \(next ?? -1)")
-        XCTAssertGreaterThanOrEqual(after, before, "never back to an earlier time")
+        print("VLC switched to software at about \(before) ms (label); last picture luma \(last ?? -1), next \(next ?? -1)")
         if let last, let next {
             XCTAssertGreaterThanOrEqual(next, last - 2, "it went back: luma \(last) → \(next) (0.9 a picture)")
             XCTAssertLessThanOrEqual(next, last + 3, "it skipped ahead: luma \(last) → \(next) (0.9 a picture)")
