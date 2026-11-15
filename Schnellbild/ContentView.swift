@@ -459,7 +459,8 @@ struct PaneView: View {
         // time the list turns empty or not (a field rebuilt while typing)
         HStack(spacing: 0) {
         ZStack {
-            if model.entries.isEmpty && model.slideshow == nil {
+            // (the Atlas of the subfolders shows while they are read)
+            if model.entries.isEmpty && model.slideshow == nil && !(model.viewMode == .atlas && model.showsDeep) {
                 EmptyStateView(isLoading: model.isLoading)
             } else {
                 // The grid stays alive under the full view, so it keeps its
@@ -512,7 +513,7 @@ struct PaneView: View {
         .overlay {
             // A folder without media or subfolders still shows its ".." tile.
             if model.mode == .grid, !model.isLoading, !model.isFiltering,
-               model.folderCount + model.archiveCount + model.mediaCount == 0, model.otherFiles.isEmpty {
+               model.folderCount + model.archiveCount + model.mediaCount == 0, model.otherFiles.isEmpty, !model.showsDeep {
                 EmptyStateView(isLoading: false)
             }
         }

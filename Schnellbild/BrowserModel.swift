@@ -1651,6 +1651,7 @@ final class BrowserModel: ObservableObject {
             searchDebounce = .milliseconds(ms)
         }
         showMiniKeyboard = defaults.bool(forKey: Self.miniKeyboardKey)
+        followAtlasSubfolders()
         if let seconds = defaults.object(forKey: Self.slideshowSecondsKey) as? Int,
            Self.slideshowSecondsRange.contains(seconds) { slideshowInterval = .seconds(seconds) }
         if let raw = defaults.string(forKey: settingsPrefix + "viewMode"), let mode = ViewMode(rawValue: raw) { viewMode = mode }
@@ -1733,6 +1734,7 @@ final class BrowserModel: ObservableObject {
         captureDatesRead = Set(captureDates.keys)
         stopReadingLocations()
         leaveSearch()
+        stopDeep()
         pendingResultSelection = nil
         accessLimited = false
         folderURL = location.folder
@@ -1831,6 +1833,8 @@ final class BrowserModel: ObservableObject {
             } else {
                 self.selectDefault(in: self.entries)
             }
+            // The Atlas with the subfolders: an item of one (from the history) once it comes
+            if self.wantsDeep { self.startDeep(selectAt: self.index(of: target) == nil ? target : nil) }
         }
     }
 
@@ -2504,7 +2508,7 @@ final class BrowserModel: ObservableObject {
             keepSelection(index(of: keep) ?? selection)
             return
         }
-        let all = allEntries, shown = entries, filtering = isFiltering
+        let all = allEntries, shown = entries, filtering = isFiltering || deep != nil
         let order = entryOrder, orderSeen = orderRevision, listSeen = listRevision
         resortTask = Task { [weak self] in
             // (not searching: the grid shows the folder's listing itself)
@@ -2670,8 +2674,10 @@ final class BrowserModel: ObservableObject {
             let keep = selectedEntry?.url
             entries = allEntries
             if let kept = index(of: keep) { keepSelection(kept) } else { selectDefault(in: allEntries) }
+            updateDeep()
             return
         }
+        stopDeep()
         mode = .grid
         // The folder's own items at once; with a regular expression (which
         // can take long on a name) off the main thread, first thing in the task
@@ -3438,7 +3444,7 @@ final class BrowserModel: ObservableObject {
             defaults.set(viewMode.rawValue, forKey: settingsPrefix + "viewMode")
             if viewMode == .list { columnCount = 1 }
             if viewMode != .atlas, oldValue != .atlas { viewModeBeforeAtlas = viewMode }
-            if viewMode == .atlas { atlasFollow() } else if oldValue == .atlas { atlasIfMade?.pause() }
+            if viewMode == .atlas { updateDeep(); atlasFollow() } else if oldValue == .atlas { updateDeep(); atlasIfMade?.pause() }
         }
     }
     /// What W goes back to from the Atlas.
@@ -3467,7 +3473,217 @@ final class BrowserModel: ObservableObject {
     /// The Atlas reads the facts of what the pane lists, while it is shown.
     private func atlasFollow() {
         guard viewMode == .atlas else { return }
-        atlas.entriesChanged(entries, context: (folderPath ?? "") + "\u{1}" + query)
+        atlas.walking = deepWalking
+        atlas.entriesChanged(entries, context: (folderPath ?? "") + "\u{1}" + query + (deep != nil ? "\u{1}deep" : ""))
+    }
+
+    // MARK: The Atlas with the subfolders
+
+    static let atlasSubfoldersKey = "atlasSubfolders"
+    /// The Atlas of a folder shows its subfolders' photos and videos too
+    /// (app-wide, on unless turned off; a search's results come from every
+    /// subfolder anyway).
+    @Published var atlasSubfolders = true {
+        didSet {
+            guard atlasSubfolders != oldValue else { return }
+            defaults.set(atlasSubfolders, forKey: Self.atlasSubfoldersKey)
+            NotificationCenter.default.post(name: Self.atlasSubfoldersChanged, object: defaults)
+            updateDeep()
+        }
+    }
+    /// Every pane follows a change of the preference (those of the same preferences).
+    static let atlasSubfoldersChanged = Notification.Name("SchnellbildAtlasSubfoldersChanged")
+    private var atlasSubfoldersObserver: NSObjectProtocol?
+
+    func followAtlasSubfolders() {
+        atlasSubfolders = defaults.object(forKey: Self.atlasSubfoldersKey) as? Bool ?? true
+        guard atlasSubfoldersObserver == nil else { return }
+        let defaults = self.defaults
+        atlasSubfoldersObserver = NotificationCenter.default.addObserver(forName: Self.atlasSubfoldersChanged, object: defaults,
+                                                                         queue: .main) { [weak self] _ in
+            MainActor.assumeIsolated {
+                guard let self else { return }
+                let value = self.defaults.object(forKey: Self.atlasSubfoldersKey) as? Bool ?? true
+                if self.atlasSubfolders != value { self.atlasSubfolders = value }
+            }
+        }
+    }
+
+    /// The walk of a folder's subfolders for the Atlas: the photos and videos
+    /// below the folder, found by the slideshow's walk (`walkForSlideshow`:
+    /// hidden folders and links left out, archives opened), shown in the
+    /// pane's list as they arrive, as search results are.
+    final class DeepWalk {
+        let root: String
+        /// The items below the folder (not its own), in `entries`.
+        var items: [GridEntry] = []
+        /// Found, not shown yet (a batch goes in every quarter of a second).
+        var pending: [GridEntry] = []
+        var seen: Set<String> = []
+        var task: Task<Void, Never>?
+        var flushScheduled = false
+        /// A walk again after changes outside the app: what it finds replaces
+        /// the items once it is through, so nothing on the map goes and comes.
+        var quiet = false
+        var found: [GridEntry] = []
+        /// The first item inside this folder (or archive) is selected when it comes.
+        var selectInside: String?
+        /// This item is selected when it comes (from the history).
+        var selectAt: URL?
+
+        init(root: String) { self.root = root }
+    }
+    private var deep: DeepWalk?
+    /// The pane lists its folder's subfolders too (the Atlas with subfolders on).
+    var showsDeep: Bool { deep != nil }
+    /// Its walk is still going.
+    @Published private(set) var deepWalking = false {
+        didSet { atlasIfMade?.walking = deepWalking }
+    }
+
+    /// Whether the pane should list the subfolders now: the Atlas shown, the
+    /// preference on, a folder read and no search.
+    private var wantsDeep: Bool {
+        viewMode == .atlas && atlasSubfolders && !isFiltering && !isLoading && loadError == nil && folderPath != nil
+    }
+
+    /// Starts or ends the walk of the subfolders as the view, the
+    /// preference, the folder or the search ask.
+    func updateDeep() {
+        if wantsDeep {
+            if deep?.root != folderPath { startDeep() }
+        } else if deep != nil {
+            leaveDeep()
+        }
+    }
+
+    /// The pane's list with the subfolders: the folder's own photos and
+    /// videos and those below it, in the pane's order; the selection stays
+    /// on its item, a folder selected hands it to its first item once that
+    /// comes.
+    private func startDeep(quiet: Bool = false, selectAt: URL? = nil) {
+        guard let folderURL, let folderPath else { return }
+        deep?.task?.cancel()
+        let walk = DeepWalk(root: folderPath)
+        let selected = selectedEntry
+        if quiet, let old = deep {
+            walk.items = old.items
+            walk.quiet = true
+        } else if let selected, selected.kind == .folder || selected.isArchive {
+            walk.selectInside = Self.canonicalPath(selected.browseURL)
+        }
+        walk.selectAt = selectAt
+        let own = allEntries.filter(\.isMedia)
+        walk.seen = Set(own.map { Self.canonicalPath($0.url) })
+        deep = walk
+        if !quiet { showDeep(keeping: selected?.url) }
+        deepWalking = true
+        walk.task = Task { [weak self] in
+            await Self.walkForSlideshow(folderURL, key: .name, ascending: true) { batch in
+                self?.deepFound(batch, in: walk)
+            }
+            guard !Task.isCancelled else { return }
+            self?.deepFinished(walk)
+        }
+    }
+
+    /// The folder's own media and the walk's items as the pane's list.
+    private func showDeep(keeping url: URL?) {
+        guard let deep else { return }
+        let previous = selection
+        entries = sorted(allEntries.filter(\.isMedia) + deep.items)
+        if let index = index(of: url) {
+            keepSelection(index)
+        } else if !entries.isEmpty {
+            keepSelection(previous.map { min($0, entries.count - 1) } ?? 0)
+        } else {
+            keepSelection(nil)
+        }
+    }
+
+    private func deepFound(_ batch: [GridEntry], in walk: DeepWalk) {
+        guard deep === walk else { return }
+        let new = batch.filter { walk.seen.insert(Self.canonicalPath($0.url)).inserted }
+        guard !new.isEmpty else { return }
+        if walk.quiet { walk.found += new; return }
+        walk.pending += new
+        guard !walk.flushScheduled else { return }
+        walk.flushScheduled = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { [weak self] in
+            MainActor.assumeIsolated { self?.flushDeep(walk) }
+        }
+    }
+
+    private func flushDeep(_ walk: DeepWalk) {
+        walk.flushScheduled = false
+        guard deep === walk, !walk.pending.isEmpty else { return }
+        let fresh = walk.pending
+        walk.pending = []
+        walk.items += fresh
+        let keep = selectedEntry?.url
+        entries = entryOrder.merged(entries, fresh)
+        if let at = walk.selectAt, let index = index(of: at) {
+            walk.selectAt = nil
+            walk.selectInside = nil
+            selection = index
+        } else if let inside = walk.selectInside,
+                  let first = fresh.first(where: { Self.canonicalPath($0.url).hasPrefix(inside + "/") }),
+                  let index = index(of: first.url) {
+            walk.selectInside = nil
+            selection = index
+        } else if let index = index(of: keep) {
+            keepSelection(index)
+        }
+    }
+
+    private func deepFinished(_ walk: DeepWalk) {
+        guard deep === walk else { return }
+        if walk.quiet {
+            walk.items = walk.found
+            walk.found = []
+            walk.quiet = false
+            showDeep(keeping: selectedEntry?.url)
+        } else {
+            flushDeep(walk)
+        }
+        walk.selectInside = nil
+        walk.selectAt = nil
+        deepWalking = false
+    }
+
+    /// Back to the folder's own listing (the grid or list, the preference
+    /// off, a search): an item of a subfolder hands the selection to the
+    /// folder (or archive) of the listing it lies in.
+    private func leaveDeep() {
+        let selected = selectedEntry?.url
+        stopDeep()
+        guard !isFiltering, !isLoading else { return }
+        entries = allEntries
+        if let index = index(of: selected) {
+            keepSelection(index)
+        } else if let selected {
+            let path = Self.canonicalPath(selected)
+            let holder = allEntries.firstIndex { entry in
+                (entry.kind == .folder || entry.isArchive) && path.hasPrefix(Self.canonicalPath(entry.browseURL) + "/")
+            }
+            if let holder { keepSelection(holder) } else { selectDefault(in: entries) }
+        } else {
+            selectDefault(in: entries)
+        }
+    }
+
+    /// The walk stops; the list is left to the caller.
+    private func stopDeep() {
+        deep?.task?.cancel()
+        deep = nil
+        if deepWalking { deepWalking = false }
+    }
+
+    /// Changes below the folder made outside the app: the walk again, its
+    /// items replaced once it is through.
+    private func rewalkDeep() {
+        guard deep != nil, wantsDeep else { return }
+        startDeep(quiet: true)
     }
 
     /// T: the tour of what the Atlas shows (the Atlas comes first).
@@ -3954,11 +4170,13 @@ final class BrowserModel: ObservableObject {
         guard let changed else {
             forgetBelow(nil)
             relist(force: true, searchAgain: isFiltering)
+            rewalkDeep()
             return
         }
         let below = changed.filter { $0 != folderPath && Self.isSameOrInside($0, folderPath) }
         if !below.isEmpty {
             forgetBelow(below)
+            rewalkDeep()
             // A search shown finds what arrived there, and drops what went
             if isFiltering, let run = search {
                 let folders = below.map { URL(fileURLWithPath: $0, isDirectory: true) }
@@ -4078,6 +4296,7 @@ final class BrowserModel: ObservableObject {
             if let run = search, let folderURL { searchArrivals(in: [folderURL], below: folderURL, for: run) }
             return
         }
+        if deep != nil { showDeep(keeping: keep); return }
         entries = allEntries
         keepSelection(index(of: keep) ?? previous.map { min($0, entries.count - 1) })
     }
@@ -4225,7 +4444,7 @@ final class BrowserModel: ObservableObject {
         let entry = GridEntry(url: url, kind: .folder, modDate: Date())
         allEntries = entryOrder.merged(allEntries, [entry])
         noteFolder(url, empty: true)
-        if !isFiltering {
+        if !isFiltering, deep == nil {
             entries = allEntries
             selection = index(of: url)
         }
@@ -4432,7 +4651,8 @@ final class BrowserModel: ObservableObject {
         let before = (allEntries.count, entries.count)
         let previous = selection
         allEntries = allEntries.filter(inShown)
-        entries = isFiltering ? entries.filter(belowShown) : allEntries
+        deep?.items = deep?.items.filter(belowShown) ?? []
+        entries = isFiltering || deep != nil ? entries.filter(belowShown) : allEntries
         guard (allEntries.count, entries.count) != before else { return }
         // Marks only on what is still listed
         if !marked.isEmpty { marked.formIntersection(entries.map { Self.canonicalPath($0.url) }) }
@@ -4644,6 +4864,12 @@ final class BrowserModel: ObservableObject {
         backStack = backStack.map { location in changes.reduce(location) { $1.apply(to: $0) } }
         forwardStack = forwardStack.map { location in changes.reduce(location) { $1.apply(to: $0) } }
         entries = order.following(entries, lookup)
+        // The Atlas's subfolders: what moved out of the folder leaves them
+        if let deep, let shown = folderPath {
+            let below: (GridEntry) -> Bool = { Self.isSameOrInside(Self.canonicalPath($0.url), shown) }
+            deep.items = order.following(deep.items, lookup).filter(below)
+            entries = entries.filter(below)
+        }
         // The other files too: renamed in place, gone when trashed or moved
         // out of the folder shown
         if !otherFiles.isEmpty, let shown = folderPath {

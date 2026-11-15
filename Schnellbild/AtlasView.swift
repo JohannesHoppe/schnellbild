@@ -2,6 +2,7 @@ import SwiftUI
 import AppKit
 import AVFoundation
 import OfflineMap
+import VLCFrames
 
 /// The Atlas view (W): the pane's photos and videos at their places on the
 /// offline map, as thumbnails, close ones as one tile with their count;
@@ -79,6 +80,21 @@ struct AtlasView: View {
             .lineLimit(1)
             .accessibilityElement(children: .combine)
             .accessibilityIdentifier("atlasCount")
+            // (a search's results come from every subfolder anyway)
+            if !model.isFiltering {
+                Divider().frame(height: 14)
+                Toggle(isOn: $model.atlasSubfolders) { Text("Include subfolders").font(.caption) }
+                    .toggleStyle(.checkbox)
+                    .controlSize(.small)
+                    .help("The photos and videos of every subfolder too, archives included")
+                    .accessibilityIdentifier("atlasSubfolders")
+                if atlas.walking {
+                    ProgressView().controlSize(.mini)
+                        .help("Reading subfolders…")
+                        .accessibilityLabel(Text("Reading subfolders…"))
+                        .accessibilityIdentifier("atlasWalking")
+                }
+            }
         }
         .padding(.horizontal, 10).padding(.vertical, 6)
         .background(.regularMaterial, in: Capsule())
@@ -643,8 +659,12 @@ private struct TourPicture: View {
             } else {
                 Rectangle().fill(Color.secondary.opacity(0.15))
             }
-            if item.isVideo, !VideoDetailView.playsInVLC(item.url) {
-                TourVideo(url: item.url, paused: paused)
+            if item.isVideo, !ArchivePath.isInside(item.url) {
+                if VideoDetailView.playsInVLC(item.url) {
+                    TourVLCVideo(url: item.url, paused: paused)
+                } else {
+                    TourVideo(url: item.url, paused: paused)
+                }
             }
         }
         .frame(maxWidth: side, maxHeight: side)
@@ -652,11 +672,46 @@ private struct TourPicture: View {
         .clipShape(RoundedRectangle(cornerRadius: 8))
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(verbatim: item.name))
+        // What plays it, for the UI tests
+        .accessibilityValue(!VideoDetailView.uiTesting ? "" : !item.isVideo ? "picture"
+            : VideoDetailView.playsInVLC(item.url) ? "video vlc" : "video avkit")
         .accessibilityIdentifier("tourItem")
         .task(id: item.url) {
             image = ThumbnailCache.shared.image(for: item.url)
             if let large = await ThumbnailCache.shared.thumbnail(for: item.url, side: max(256, side), modified: modified) { image = large }
         }
+    }
+}
+
+/// A video only VLC plays (MKV, WebM …) at a station: as `TourVideo`,
+/// through VLC with the full view's safeguards (`VLCSafety`: one reader by
+/// the file's first bytes), its sound at zero.
+private struct TourVLCVideo: View {
+    let url: URL
+    let paused: Bool
+    @State private var control: VLCPlaybackControl?
+
+    var body: some View {
+        ZStack {
+            if let control { VLCVideoView(control: control) }
+        }
+        .task(id: url) {
+            // The file's first bytes off the main thread (a share can be slow)
+            let head = await Blocking.run { VLCSafety.head(of: url) }
+            guard !Task.isCancelled else { return }
+            let made = VLCPlaybackControl(source: .file(url, head: head), onStateChange: { _, _ in })
+            made.setVolume(0)
+            if paused { made.pause() }
+            control = made
+        }
+        .onChange(of: paused) { _, paused in
+            if paused { control?.pause() } else { control?.play() }
+        }
+        .onDisappear {
+            control?.stop()
+            control = nil
+        }
+        .accessibilityIdentifier("tourVideo.vlc")
     }
 }
 

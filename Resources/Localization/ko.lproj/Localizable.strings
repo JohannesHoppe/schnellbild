@@ -622,3 +622,6 @@
 "double-click" = "이중 클릭";
 "timeline" = "타임라인";
 "Tour: previous / next place" = "여행: 이전 / 다음 장소";
+"Include subfolders" = "하위 폴더 포함";
+"The photos and videos of every subfolder too, archives included" = "모든 하위 폴더의 사진과 비디오도 표시(압축 파일 포함)";
+"Reading subfolders…" = "하위 폴더 읽는 중…";
