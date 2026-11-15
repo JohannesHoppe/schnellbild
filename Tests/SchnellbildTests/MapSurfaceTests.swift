@@ -31,6 +31,11 @@ final class MapSurfaceTests: XCTestCase {
         let ctx = CGContext(data: nil, width: Int(view.bounds.width * scale), height: Int(view.bounds.height * scale), bitsPerComponent: 8,
                             bytesPerRow: 0, space: CGColorSpace(name: CGColorSpace.sRGB)!, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)!
         ctx.scaleBy(x: scale, y: scale)
+        // A flipped view's layers run downwards (NSHostingView)
+        if view.isFlipped {
+            ctx.translateBy(x: 0, y: view.bounds.height)
+            ctx.scaleBy(x: 1, y: -1)
+        }
         view.layer?.render(in: ctx)
         return ctx.makeImage()
     }
