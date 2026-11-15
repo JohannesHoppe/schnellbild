@@ -71,6 +71,7 @@ final class AtlasModel: ObservableObject {
             done = 0
             total = 0
             range = nil
+            tourWanted = false
             needsFit = true
             userMovedMap = false
             if tour != nil { endTour() }
@@ -92,6 +93,7 @@ final class AtlasModel: ObservableObject {
         readTask?.cancel()
         readTask = nil
         pending = []
+        tourWanted = false
         progress = nil
         done = 0
         total = 0
@@ -121,6 +123,10 @@ final class AtlasModel: ObservableObject {
             self.done = 0
             self.total = 0
             self.rebuild()
+            if self.tourWanted {
+                self.tourWanted = false
+                self.startTour()
+            }
         }
     }
 
@@ -368,6 +374,8 @@ final class AtlasModel: ObservableObject {
     /// Counts the steps: a key that jumps (← →) makes the running step give way.
     private var tourStep = 0
     private var tourEnteredFullScreen = false
+    /// Asked for while the places were still being read.
+    private var tourWanted = false
 
     /// The stations of the tour as it would run now (the timeline's range).
     var stations: [TourStation] { TourPlanner.stations(from: placed) }
@@ -378,6 +386,8 @@ final class AtlasModel: ObservableObject {
     func startTour() -> Bool {
         guard tour == nil else { return true }
         let stations = self.stations
+        // T before the places are read (the Atlas just opened): it starts once they are
+        if stations.isEmpty, !isComplete { tourWanted = true; return true }
         guard !stations.isEmpty else { NSSound.beep(); return false }
         let way = TourPlanner.route(through: stations)
         route = way.points

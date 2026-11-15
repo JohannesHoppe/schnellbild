@@ -387,6 +387,18 @@ final class AtlasTests: XCTestCase {
         XCTAssertEqual(m.selectedEntry?.name, "norway-14-trollstigen.jpg", "the item shown last is selected")
     }
 
+    func testTInTheGridStartsTheTourOnceThePlacesAreRead() async throws {
+        let (w, m, _, tree) = try window()
+        await openAndWait(m, tree.root)
+        XCTAssertEqual(m.viewMode, .grid)
+        XCTAssertTrue(w.typeKey(.char("t")))
+        XCTAssertEqual(m.viewMode, .atlas, "the Atlas first")
+        await waitUntil { m.touring }
+        XCTAssertEqual(m.atlas.tour?.stations.count, 8)
+        XCTAssertTrue(w.typeKey(.escape))
+        XCTAssertFalse(m.touring)
+    }
+
     func testTheArrowsReachTheStripAndBack() async throws {
         let (w, m, _, tree) = try window()
         await openAndWait(m, tree.root)
