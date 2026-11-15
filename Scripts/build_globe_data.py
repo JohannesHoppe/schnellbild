@@ -176,7 +176,8 @@ def heightmap(bands):
 # - Colour: JFIF's YCbCr (BT.601 full range), chroma 4:2:0 (each Cb / Cr
 #   sample the mean of 2 × 2 pixels); grey: one component.
 # - Each 8 × 8 block: level shift by 128, the DCT-II as T.81 A.3.3 defines it
-#   (double precision, separable, a fixed cosine table and summation order),
+#   (double precision, separable, a cosine table written out and a fixed
+#   summation order: the same on every Python),
 #   divided by the quantisation table and rounded half away from zero.
 # - Quantisation: T.81 Annex K's luminance and chrominance tables scaled by
 #   the IJG quality formula (q < 50: 5000 / q %, else 200 − 2q %, each entry
@@ -203,13 +204,29 @@ CHROMA_QUANT = [
     17, 18, 24, 47, 99, 99, 99, 99, 18, 21, 26, 66, 99, 99, 99, 99,
     24, 26, 56, 99, 99, 99, 99, 99, 47, 66, 99, 99, 99, 99, 99, 99,
 ] + [99] * 32
-# cos((2x + 1) u π / 16), with C(0) = 1/√2, halved: the 1-D DCT's matrix
-DCT = [[(math.sqrt(0.5) if u == 0 else 1.0) * 0.5 * math.cos((2 * x + 1) * u * math.pi / 16) for x in range(8)] for u in range(8)]
+# The 1-D DCT's matrix, C(u) / 2 · cos((2x + 1) u π / 16) with C(0) = 1/√2,
+# written out (exact doubles): no libm in the encoder
+DCT = [
+    [0.3535533905932738, 0.3535533905932738, 0.3535533905932738, 0.3535533905932738, 0.3535533905932738, 0.3535533905932738, 0.3535533905932738, 0.3535533905932738],
+    [0.4903926402016152, 0.4157348061512726, 0.27778511650980114, 0.09754516100806417, -0.0975451610080641, -0.277785116509801, -0.4157348061512727, -0.4903926402016152],
+    [0.46193976625564337, 0.19134171618254492, -0.19134171618254486, -0.46193976625564337, -0.4619397662556434, -0.19134171618254517, 0.191341716182545, 0.46193976625564326],
+    [0.4157348061512726, -0.0975451610080641, -0.4903926402016152, -0.2777851165098011, 0.2777851165098009, 0.4903926402016152, 0.09754516100806439, -0.41573480615127256],
+    [0.3535533905932738, -0.35355339059327373, -0.35355339059327384, 0.3535533905932737, 0.35355339059327384, -0.35355339059327334, -0.3535533905932736, 0.3535533905932733],
+    [0.27778511650980114, -0.4903926402016152, 0.09754516100806415, 0.41573480615127273, -0.41573480615127256, -0.09754516100806401, 0.4903926402016153, -0.27778511650980076],
+    [0.19134171618254492, -0.4619397662556434, 0.46193976625564326, -0.19134171618254495, -0.19134171618254528, 0.46193976625564337, -0.4619397662556432, 0.19134171618254478],
+    [0.09754516100806417, -0.2777851165098011, 0.41573480615127273, -0.4903926402016153, 0.4903926402016152, -0.4157348061512725, 0.27778511650980076, -0.09754516100806429],
+]
 
 
 def jpeg_quant(table, quality):
     scale = 5000 // quality if quality < 50 else 200 - 2 * quality
     return [max(1, min(255, (v * scale + 50) // 100)) for v in table]
+
+
+def dot8(a, b):
+    """Eight products added left to right (not `sum`, which adds floats with
+    compensation from Python 3.12 on: other bytes on other Pythons)."""
+    return ((((((a[0] * b[0] + a[1] * b[1]) + a[2] * b[2]) + a[3] * b[3]) + a[4] * b[4]) + a[5] * b[5]) + a[6] * b[6]) + a[7] * b[7]
 
 
 def jpeg_block(pixels, quant):
@@ -218,13 +235,12 @@ def jpeg_block(pixels, quant):
     rows = []
     for y in range(8):
         r = [pixels[8 * y + x] - 128 for x in range(8)]
-        rows.append([sum(c[x] * r[x] for x in range(8)) for c in DCT])
+        rows.append([dot8(c, r) for c in DCT])
     coefficients = [0] * 64
     for u in range(8):
         column = [rows[y][u] for y in range(8)]
         for v in range(8):
-            c = DCT[v]
-            value = sum(c[y] * column[y] for y in range(8)) / quant[8 * v + u]
+            value = dot8(DCT[v], column) / quant[8 * v + u]
             coefficients[8 * v + u] = int(value + 0.5) if value >= 0 else -int(-value + 0.5)
     return [coefficients[k] for k in ZIGZAG]
 
