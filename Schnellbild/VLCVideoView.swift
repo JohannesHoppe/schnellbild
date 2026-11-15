@@ -667,6 +667,19 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         return ms + Int(since * 1000 * Double(player.rate))
     }
 
+    /// A track found or the media playing: the menus list the tracks, the
+    /// choices apply to them (the model's first: subtitles it turns off never
+    /// make VLC decode in software), and the model learns the tracks as
+    /// they are then on. With the tracks read before playing the model has
+    /// chosen already and doesn't choose again for the same list: it takes
+    /// what the player has on, which before `applyChoices` can still be the
+    /// file's default track, so it is told again after them.
+    private func tracksFound() {
+        onTracksChanged(self)
+        applyChoices()
+        onTracksChanged(self)
+    }
+
     /// The state is read while the notification is delivered: read later, a
     /// quick "ended" would already be "stopped" and the end missed. It is
     /// handled once VLCKit's callback has returned, since handling it can
@@ -692,18 +705,13 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
                 pauseOnceOpen = false
                 player.pause()
             }
-            onTracksChanged(self)
-            applyChoices()
+            tracksFound()
         case .ended:
             reachedEnd = true
             isPlaying = false
         case .paused, .error:   isPlaying = false
         case .esAdded:
-            // A track found: the menus list it, the choices apply to it
-            // (the model's first: subtitles it turns off never make VLC
-            // decode in software)
-            onTracksChanged(self)
-            applyChoices()
+            tracksFound()
             return
         default:                        return
         }
