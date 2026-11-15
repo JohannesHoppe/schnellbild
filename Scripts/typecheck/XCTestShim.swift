@@ -76,6 +76,7 @@ public class XCUIElement {
     public var isEnabled: Bool { false }
     public var frame: CGRect { .zero }
     public var label: String { "" }
+    public var identifier: String { "" }
     public var title: String { "" }
     public var value: Any? { nil }
     public var firstMatch: XCUIElement { self }
