@@ -127,8 +127,10 @@ public struct Heightmap: Sendable {
         }
         // Distance to the coast in cells north–south (two-pass chamfer, wrapping east–west; a step east or
         // west is as long as the row's cosine), for land and for sea
-        let steps: [(Double, Double)] = (0..<height).map { j in
-            let c = cos((90 - (Double(j) + 0.5) * 180 / Double(height)) * .pi / 180) * Double(height) * 2 / Double(width)
+        let aspect = Double(height) * 2 / Double(width)
+        let steps: [(Double, Double)] = (0..<height).map { (j: Int) -> (Double, Double) in
+            let latitude: Double = 90 - (Double(j) + 0.5) * 180 / Double(height)
+            let c: Double = cos(latitude * Double.pi / 180) * aspect
             return (c, (1 + c * c).squareRoot())
         }
         func distances(inside: (UInt8) -> Bool) -> [Double] {

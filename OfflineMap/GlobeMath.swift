@@ -46,19 +46,23 @@ public enum Astronomy {
         let m = 357.529_11 + t * (35_999.050_29 - 0.000_153_7 * t)
         let e = 0.016_708_634 - t * (0.000_042_037 + 0.000_000_126_7 * t)
         let mr = radians(m)
-        let c = sin(mr) * (1.914_602 - t * (0.004_817 + 0.000_014 * t))
-            + sin(2 * mr) * (0.019_993 - 0.000_101 * t) + sin(3 * mr) * 0.000_289
+        let c1: Double = sin(mr) * (1.914_602 - t * (0.004_817 + 0.000_014 * t))
+        let c2: Double = sin(2 * mr) * (0.019_993 - 0.000_101 * t)
+        let c: Double = c1 + c2 + sin(3 * mr) * 0.000_289
         let trueLongitude = l0 + c
         let omega = radians(125.04 - 1_934.136 * t)
         let lambda = radians(trueLongitude - 0.005_69 - 0.004_78 * sin(omega))
-        let eps0 = 23 + (26 + (21.448 - t * (46.815 + t * (0.000_59 - t * 0.001_813))) / 60) / 60
+        let seconds: Double = 21.448 - t * (46.815 + t * (0.000_59 - t * 0.001_813))
+        let eps0: Double = 23 + (26 + seconds / 60) / 60
         let eps = radians(eps0 + 0.002_56 * cos(omega))
         let declination = degrees(asin(sin(eps) * sin(lambda)))
         let rightAscension = wrap360(degrees(atan2(cos(eps) * sin(lambda), cos(lambda))))
         // The equation of time (Meeus 28.3, with the mean obliquity's correction as NOAA has it)
         let y = pow(tan(eps / 2), 2), l0r = radians(l0)
-        let eot = y * sin(2 * l0r) - 2 * e * sin(mr) + 4 * e * y * sin(mr) * cos(2 * l0r)
-            - 0.5 * y * y * sin(4 * l0r) - 1.25 * e * e * sin(2 * mr)
+        let e1: Double = y * sin(2 * l0r) - 2 * e * sin(mr)
+        let e2: Double = 4 * e * y * sin(mr) * cos(2 * l0r)
+        let e3: Double = 0.5 * y * y * sin(4 * l0r) + 1.25 * e * e * sin(2 * mr)
+        let eot: Double = e1 + e2 - e3
         return Sun(declination: declination, rightAscension: rightAscension, equationOfTime: 4 * degrees(eot))
     }
 
@@ -75,7 +79,9 @@ public enum Astronomy {
     /// Greenwich mean sidereal time in degrees (Meeus 12.4).
     public static func siderealTime(julianDay jd: Double) -> Double {
         let t = centuries(jd)
-        return wrap360(280.460_618_37 + 360.985_647_366_29 * (jd - 2_451_545) + 0.000_387_933 * t * t - t * t * t / 38_710_000)
+        let days: Double = jd - 2_451_545
+        let angle: Double = 280.460_618_37 + 360.985_647_366_29 * days
+        return wrap360(angle + 0.000_387_933 * t * t - t * t * t / 38_710_000)
     }
 
     public static func siderealTime(at date: Date) -> Double { siderealTime(julianDay: julianDay(date)) }
