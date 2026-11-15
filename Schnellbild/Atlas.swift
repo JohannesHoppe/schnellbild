@@ -183,6 +183,76 @@ enum AtlasTimeline {
     }
 
     /// How many items fall into each of `bins` equal parts of the span.
+    /// The first index in `items` (in the order of time) at or after `date`.
+    static func firstIndex(atOrAfter date: Date, in items: [AtlasItem]) -> Int {
+        var low = 0, high = items.count
+        while low < high {
+            let mid = (low + high) / 2
+            if items[mid].date < date { low = mid + 1 } else { high = mid }
+        }
+        return low
+    }
+
+    /// The items in the range, of items in the order of time: two binary
+    /// searches, no walk through all of them.
+    static func slice(_ items: [AtlasItem], to range: ClosedRange<Date>?) -> ArraySlice<AtlasItem> {
+        guard let range else { return items[...] }
+        let start = firstIndex(atOrAfter: range.lowerBound, in: items)
+        let end = firstIndex(atOrAfter: range.upperBound.addingTimeInterval(1e-6), in: items)
+        return items[start..<max(start, end)]
+    }
+
+    /// The item nearest a time, of items in the order of time (a binary search).
+    static func nearest(to date: Date, sorted items: ArraySlice<AtlasItem>) -> AtlasItem? {
+        guard !items.isEmpty else { return nil }
+        var low = items.startIndex, high = items.endIndex
+        while low < high {
+            let mid = (low + high) / 2
+            if items[mid].date < date { low = mid + 1 } else { high = mid }
+        }
+        let after = low < items.endIndex ? items[low] : nil
+        let before = low > items.startIndex ? items[low - 1] : nil
+        guard let after else { return before }
+        guard let before else { return after }
+        return date.timeIntervalSince(before.date) <= after.date.timeIntervalSince(date) ? before : after
+    }
+
+    /// How many items fall into each part of the span, of items in the order
+    /// of time: a binary search per part's edge.
+    static func histogram(sorted items: [AtlasItem], span: ClosedRange<Date>, bins: Int) -> [Int] {
+        guard bins > 0, !items.isEmpty else { return Array(repeating: 0, count: max(0, bins)) }
+        let length = span.upperBound.timeIntervalSince(span.lowerBound)
+        guard length > 0 else {
+            var counts = Array(repeating: 0, count: bins)
+            counts[bins / 2] = items.count
+            return counts
+        }
+        var counts: [Int] = []
+        counts.reserveCapacity(bins)
+        var start = firstIndex(atOrAfter: span.lowerBound, in: items)
+        for bin in 0..<bins {
+            let end = bin == bins - 1 ? items.count
+                : firstIndex(atOrAfter: span.lowerBound.addingTimeInterval(length * Double(bin + 1) / Double(bins)), in: items)
+            counts.append(max(0, end - start))
+            start = max(start, end)
+        }
+        return counts
+    }
+
+    /// The first item of each of `slots` parts of the span (none where a part is empty).
+    static func firstOfSlots(sorted items: [AtlasItem], span: ClosedRange<Date>, slots: Int) -> [Int: AtlasItem] {
+        guard slots > 0, !items.isEmpty else { return [:] }
+        let length = span.upperBound.timeIntervalSince(span.lowerBound)
+        guard length > 0 else { return [slots / 2: items[0]] }
+        var firsts: [Int: AtlasItem] = [:]
+        for slot in 0..<slots {
+            let i = firstIndex(atOrAfter: span.lowerBound.addingTimeInterval(length * Double(slot) / Double(slots)), in: items)
+            guard i < items.count, AtlasTimeline.bin(of: items[i].date, span: span, bins: slots) == slot else { continue }
+            firsts[slot] = items[i]
+        }
+        return firsts
+    }
+
     static func histogram(_ items: [AtlasItem], span: ClosedRange<Date>, bins: Int) -> [Int] {
         guard bins > 0 else { return [] }
         var counts = Array(repeating: 0, count: bins)

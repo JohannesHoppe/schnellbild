@@ -385,14 +385,14 @@ private struct AtlasTimelineView: View {
 
     private func label(of date: Date?) -> String {
         guard let date else { return "" }
-        return AtlasTimeline.text(date, in: AtlasTimeline.zone(at: date, in: atlas.items), time: true)
+        return AtlasTimeline.text(date, in: atlas.zone(at: date), time: true)
     }
 
     @ViewBuilder
     private func track(width: CGFloat) -> some View {
         if let span = atlas.span, width > 0 {
             let bins = max(1, Int(width / 4))
-            let counts = AtlasTimeline.histogram(atlas.items, span: span, bins: bins)
+            let counts = AtlasTimeline.histogram(sorted: atlas.items, span: span, bins: bins)
             let most = max(1, counts.max() ?? 1)
             let lower = AtlasTimeline.fraction(of: range?.lowerBound ?? span.lowerBound, span: span)
             let upper = AtlasTimeline.fraction(of: range?.upperBound ?? span.upperBound, span: span)
@@ -444,11 +444,8 @@ private struct AtlasTimelineView: View {
     /// A thumbnail about every 46 points: the first item of that stretch.
     private func thumbnails(span: ClosedRange<Date>, width: CGFloat, lower: Double, upper: Double) -> some View {
         let slots = max(1, Int(width / 46))
-        var firsts: [Int: AtlasItem] = [:]
-        for item in atlas.items {
-            let slot = AtlasTimeline.bin(of: item.date, span: span, bins: slots)
-            if firsts[slot] == nil { firsts[slot] = item }
-        }
+        // (the items are in the order of time: a binary search per slot)
+        let firsts = AtlasTimeline.firstOfSlots(sorted: atlas.items, span: span, slots: slots)
         let slotWidth = width / CGFloat(slots)
         return ForEach(firsts.keys.sorted(), id: \.self) { slot in
             let item = firsts[slot]!

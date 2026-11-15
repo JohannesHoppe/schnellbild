@@ -97,7 +97,7 @@ The **timeline** at the bottom lays everything out by the time it was taken, a b
 
 **Tour** (`T`, or the Tour button over the map) plays the trip back in full screen: the photos and videos are grouped into places (the same day, within about a kilometre), the map glides from one to the next in the order of time, the route grows on the map in the accent colour (along a GoPro's or DJI drone's GPS track where a video has one), and at each place its photos show large one after another while a video (also an MKV or another format only VLC plays) plays a few seconds without sound. Space pauses, ← → go to the previous or next place, `Esc` ends it. It keeps to the part of the timeline you chose. With Reduce motion on, the map cuts from place to place.
 
-The times and places come from the same sources as sorting by date taken and by distance (EXIF, a phone's video, a GoPro's telemetry, a DJI flight log, a Sony clip file, XMP sidecars, GPX tracks in the folder), read in the background. The map is OpenStreetMap data inside the app: nothing is uploaded, no location leaves your Mac, and Schnellbild doesn't go online for it.
+The times and places come from the same sources as sorting by date taken and by distance (EXIF, a phone's video, a GoPro's telemetry, a DJI flight log, a Sony clip file, XMP sidecars, GPX tracks in the folder), read in the background; with tens of thousands of photos the map fills in while they are read, one photo of every folder first, so every place shows early, then the folders you are looking at. The map is OpenStreetMap data inside the app: nothing is uploaded, no location leaves your Mac, and Schnellbild doesn't go online for it.
 
 | Key | Action |
 |---|---|

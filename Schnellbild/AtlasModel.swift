@@ -52,10 +52,20 @@ final class AtlasModel: ObservableObject {
     @Published private(set) var unplaced: [AtlasItem] = []
     /// While facts are read: how many of how many.
     @Published private(set) var progress: BrowserModel.Progress?
+    /// Where each item is in `items`.
+    private var itemIndex: [URL: Int] = [:]
 
     private var media: [URL: GridEntry] = [:]
+    /// Only the small facts (time, place, a video's route of at most 500
+    /// points), never pictures: a tree of 100 000 photos stays a few tens of MB.
     private var known: [URL: CaptureFacts] = [:]
-    private var pending: [(url: URL, modified: Date?)] = []
+    /// What waits to be read, by folder (in the order the pane lists them).
+    private var pending: [String: [(url: URL, modified: Date?)]] = [:]
+    private var pendingFolders: [String] = []
+    private var pendingCount = 0
+    private var pendingURLs: Set<URL> = []
+    /// A known place of each folder: its other items come first while it is in view.
+    private var folderPlaces: [String: Coordinate] = [:]
     private var readTask: Task<Void, Never>?
     private var done = 0, total = 0
     /// The folder and query the items belong to: another one starts afresh.
@@ -63,56 +73,128 @@ final class AtlasModel: ObservableObject {
 
     /// The pane's list changed (or the Atlas is shown): read what is new.
     func entriesChanged(_ entries: [GridEntry], context newContext: String) {
-        if newContext != context {
-            context = newContext
-            readTask?.cancel()
-            readTask = nil
-            pending = []
-            done = 0
-            total = 0
-            range = nil
-            tourWanted = false
-            needsFit = true
-            userMovedMap = false
-            if tour != nil { endTour() }
-        }
+        startContext(newContext)
         var next: [URL: GridEntry] = [:]
+        next.reserveCapacity(entries.count)
         for entry in entries where entry.isMedia { next[entry.url] = entry }
         media = next
-        let queued = Set(pending.map(\.url))
-        for entry in entries where entry.isMedia && known[entry.url] == nil && !queued.contains(entry.url) {
-            pending.append((entry.url, entry.modDate))
+        queue(entries.filter { $0.isMedia && known[$0.url] == nil })
+        rebuild()
+    }
+
+    /// Items added to the pane's list (the walk of the subfolders): only
+    /// they are looked at, not the whole list again.
+    func entriesAdded(_ added: [GridEntry], context newContext: String) {
+        guard newContext == context else { return }
+        let fresh = added.filter { $0.isMedia && media[$0.url] == nil }
+        for entry in fresh { media[entry.url] = entry }
+        queue(fresh.filter { known[$0.url] == nil })
+        if fresh.contains(where: { known[$0.url] != nil }) { rebuild() }
+    }
+
+    private func startContext(_ newContext: String) {
+        guard newContext != context else { return }
+        context = newContext
+        readTask?.cancel()
+        readTask = nil
+        pending = [:]
+        pendingFolders = []
+        pendingCount = 0
+        pendingURLs = []
+        sampled = []
+        done = 0
+        total = 0
+        range = nil
+        tourWanted = false
+        needsFit = true
+        userMovedMap = false
+        if tour != nil { endTour() }
+    }
+
+    /// Puts files to be read by their folder; reading starts if it rests.
+    private func queue(_ entries: [GridEntry]) {
+        for entry in entries where pendingURLs.insert(entry.url).inserted {
+            let folder = entry.url.deletingLastPathComponent().path
+            if pending[folder] == nil { pending[folder] = []; pendingFolders.append(folder) }
+            pending[folder]!.append((entry.url, entry.modDate))
+            pendingCount += 1
             total += 1
         }
-        rebuild()
-        if readTask == nil, !pending.isEmpty { startReading() }
+        if readTask == nil, pendingCount > 0 { startReading() }
     }
 
     /// Stops reading (another view chosen); what is known stays.
     func pause() {
         readTask?.cancel()
         readTask = nil
-        pending = []
+        pending = [:]
+        pendingFolders = []
+        pendingCount = 0
+        pendingURLs = []
+        sampled = []
         tourWanted = false
         progress = nil
         done = 0
         total = 0
     }
 
+    /// Files read per step.
+    nonisolated static let chunk = 64
+
+    /// The next files to read, the most wanted first: the selected item's
+    /// folder; then one file of every folder not yet sampled (so every place
+    /// shows early); then the folders with a place in view; then the rest
+    /// in the pane's order.
+    func nextChunk(size: Int = AtlasModel.chunk) -> [(url: URL, modified: Date?)] {
+        var chunk: [(url: URL, modified: Date?)] = []
+        func take(from folder: String, count: Int) {
+            guard var list = pending[folder], !list.isEmpty, count > 0 else { return }
+            let n = min(count, list.count, size - chunk.count)
+            chunk += list.prefix(n)
+            for file in list.prefix(n) { pendingURLs.remove(file.url) }
+            list.removeFirst(n)
+            pendingCount -= n
+            pending[folder] = list.isEmpty ? nil : list
+        }
+        if let selected = browser?.selectedEntry, selected.isMedia {
+            take(from: selected.url.deletingLastPathComponent().path, count: size)
+        }
+        for folder in pendingFolders where chunk.count < size && folderPlaces[folder] == nil && !sampled.contains(folder) {
+            sampled.insert(folder)
+            take(from: folder, count: 1)
+        }
+        if chunk.count < size, mapSize.width > 0 {
+            let bounds = CGRect(origin: .zero, size: mapSize)
+            for folder in pendingFolders where chunk.count < size {
+                guard let place = folderPlaces[folder], let p = point(for: place), bounds.contains(p) else { continue }
+                take(from: folder, count: size)
+            }
+        }
+        for folder in pendingFolders where chunk.count < size { take(from: folder, count: size) }
+        pendingFolders.removeAll { pending[$0] == nil }
+        return chunk
+    }
+    /// Folders a file was read from already for the first places.
+    private var sampled: Set<String> = []
+
     private func startReading() {
         readTask = Task { [weak self] in
             var lastRebuild = Date.distantPast
             while let self, !Task.isCancelled {
-                let chunk = Array(self.pending.prefix(64))
+                let chunk = self.nextChunk()
                 if chunk.isEmpty { break }
-                self.pending.removeFirst(chunk.count)
-                if self.total > 64 { self.progress = BrowserModel.Progress(done: self.done, total: self.total) }
+                if self.total > Self.chunk { self.progress = BrowserModel.Progress(done: self.done, total: self.total) }
                 let found = await self.readFacts(chunk)
                 guard !Task.isCancelled else { return }
                 self.known.merge(found) { _, new in new }
+                for (url, facts) in found {
+                    if let point = facts.place?.location.point {
+                        self.folderPlaces[url.deletingLastPathComponent().path] = Coordinate(latitude: point.latitude, longitude: point.longitude)
+                    }
+                }
                 self.done += chunk.count
                 if self.progress != nil { self.progress = BrowserModel.Progress(done: self.done, total: self.total) }
-                if self.pending.isEmpty || Date().timeIntervalSince(lastRebuild) > 0.4 {
+                if self.pendingCount == 0 || Date().timeIntervalSince(lastRebuild) > 0.5 {
                     lastRebuild = Date()
                     self.rebuild()
                 }
@@ -132,22 +214,45 @@ final class AtlasModel: ObservableObject {
 
     /// Items known already, without a pane (tests).
     func load(_ given: [AtlasItem]) {
-        items = AtlasItems.prepared(given)
-        filter()
+        apply(AtlasItems.prepared(given))
     }
 
-    /// Whether every item's facts are read.
-    var isComplete: Bool { readTask == nil && pending.isEmpty }
+    /// Whether every item's facts are read (and the items made of them shown).
+    var isComplete: Bool { readTask == nil && pendingCount == 0 && !rebuilding }
 
     /// The pane's walk of the subfolders is still bringing items.
     @Published var walking = false { didSet { if !walking { fitIfNeeded() } } }
 
+    private var rebuilding = false
+    private var rebuildAgain = false
+
+    /// The items made of what is known, off the main thread (100 000 items
+    /// sort there, not under the user's hands), one making at a time.
     private func rebuild() {
-        let built = media.values.compactMap { entry -> AtlasItem? in
-            guard let facts = known[entry.url] else { return nil }
-            return AtlasItem.make(url: entry.url, isVideo: entry.kind == .video, facts: facts, modified: entry.modDate)
+        guard !rebuilding else { rebuildAgain = true; return }
+        rebuilding = true
+        rebuildAgain = false
+        let entries = Array(media.values), known = self.known
+        Task { [weak self] in
+            let made = await Blocking.run(.userInitiated) {
+                AtlasItems.prepared(entries.compactMap { entry -> AtlasItem? in
+                    guard let facts = known[entry.url] else { return nil }
+                    return AtlasItem.make(url: entry.url, isVideo: entry.kind == .video, facts: facts, modified: entry.modDate)
+                })
+            }
+            guard let self else { return }
+            self.rebuilding = false
+            self.apply(made)
+            if self.rebuildAgain { self.rebuild() }
         }
-        items = AtlasItems.prepared(built)
+    }
+
+    private func apply(_ made: [AtlasItem]) {
+        items = made
+        var index: [URL: Int] = [:]
+        index.reserveCapacity(made.count)
+        for (i, item) in made.enumerated() { index[item.url] = i }
+        itemIndex = index
         if let range, let span, !(span.overlaps(range)) { self.range = nil }
         filter()
     }
@@ -157,23 +262,36 @@ final class AtlasModel: ObservableObject {
     /// The timeline's from–to; nil: the whole span.
     @Published var range: ClosedRange<Date>? { didSet { if range != oldValue { filter() } } }
 
-    /// From the first item's time to the last's.
-    var span: ClosedRange<Date>? { AtlasTimeline.span(of: items) }
+    /// From the first item's time to the last's (the items are in the order of time).
+    var span: ClosedRange<Date>? {
+        guard let first = items.first, let last = items.last else { return nil }
+        return first.date...last.date
+    }
 
     /// What the timeline lets through.
     var shown: [AtlasItem] { placed + unplaced }
 
+    /// The time zone a moment is shown in: the clock of the item taken nearest it.
+    func zone(at date: Date) -> TimeZone {
+        AtlasTimeline.nearest(to: date, sorted: items[...])?.zone ?? .current
+    }
+
+    /// The items in the range: a slice found by binary search (they are in
+    /// the order of time), so narrowing stays quick with 100 000.
     private func filter() {
-        let shown = AtlasTimeline.filter(items, to: range)
-        placed = shown.filter { $0.coordinate != nil }
-        unplaced = shown.filter { $0.coordinate == nil }
+        let shown = AtlasTimeline.slice(items, to: range)
+        var onMap: [AtlasItem] = [], off: [AtlasItem] = []
+        onMap.reserveCapacity(shown.count)
+        for item in shown { if item.coordinate != nil { onMap.append(item) } else { off.append(item) } }
+        placed = onMap
+        unplaced = off
         fitIfNeeded()
         scheduleClusters()
     }
 
     /// A click on the timeline: the item nearest that time selected, the map on it.
     func jump(to date: Date) {
-        guard let item = AtlasTimeline.nearest(to: date, in: shown) else { return }
+        guard let item = AtlasTimeline.nearest(to: date, sorted: AtlasTimeline.slice(items, to: range)) else { return }
         select(item.url)
         if let coordinate = item.coordinate { reveal(coordinate) }
     }
@@ -283,7 +401,7 @@ final class AtlasModel: ObservableObject {
 
     /// A double click on a cluster: the map zooms until its items part.
     func zoom(into cluster: AtlasCluster) {
-        let coordinates = cluster.ids.compactMap { id in placed.first { $0.url == id }?.coordinate }
+        let coordinates = cluster.ids.compactMap { item($0)?.coordinate }
         let fitted = MapCamera.fitting(coordinates, in: mapSize, padding: 90, maxZoom: MapViewport.maxZoom)
         let zoom = max(camera.zoom + 2, fitted?.zoom ?? 0)
         let target = held(MapCamera(center: fitted?.center ?? cluster.coordinate, zoom: min(MapViewport.maxZoom, zoom)))
@@ -357,7 +475,7 @@ final class AtlasModel: ObservableObject {
         return entry.url
     }
 
-    func item(_ url: URL) -> AtlasItem? { items.first { $0.url == url } }
+    func item(_ url: URL) -> AtlasItem? { itemIndex[url].map { items[$0] } }
 
     /// The file's date as listed (the thumbnail cache's key).
     func modified(_ url: URL) -> Date? { media[url]?.modDate }

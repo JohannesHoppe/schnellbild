@@ -3474,8 +3474,12 @@ final class BrowserModel: ObservableObject {
     private func atlasFollow() {
         guard viewMode == .atlas else { return }
         atlas.walking = deepWalking
-        atlas.entriesChanged(entries, context: (folderPath ?? "") + "\u{1}" + query + (deep != nil ? "\u{1}deep" : ""))
+        let context = (folderPath ?? "") + "\u{1}" + query + (deep != nil ? "\u{1}deep" : "")
+        // The walk's batches: only what came is looked at
+        if let added = atlasAdded { atlas.entriesAdded(added, context: context) } else { atlas.entriesChanged(entries, context: context) }
     }
+    /// What the walk of the subfolders just added to `entries`.
+    private var atlasAdded: [GridEntry]?
 
     // MARK: The Atlas with the subfolders
 
@@ -3530,6 +3534,9 @@ final class BrowserModel: ObservableObject {
         var selectInside: String?
         /// This item is selected when it comes (from the history).
         var selectAt: URL?
+        /// Sortings of the whole list asked for, and done (off the main thread).
+        var sorting = 0
+        var sorted = 0
 
         init(root: String) { self.root = root }
     }
@@ -3590,15 +3597,40 @@ final class BrowserModel: ObservableObject {
     /// The folder's own media and the walk's items as the pane's list.
     private func showDeep(keeping url: URL?) {
         guard let deep else { return }
+        let list = allEntries.filter(\.isMedia) + deep.items
+        // A long list is sorted off the main thread; what the walk brings
+        // meanwhile is merged in when it is there
+        guard list.count > Self.mainThreadSortLimit else { showDeepList(sorted(list), keeping: url); return }
+        let order = entryOrder
+        deep.sorting += 1
+        let round = deep.sorting
+        let count = deep.items.count
+        Task { [weak self] in
+            let ordered = await Blocking.run(.userInitiated) { order.sorted(list) }
+            guard let self, self.deep === deep, deep.sorting == round else { return }
+            deep.sorted = round
+            let later = Array(deep.items.dropFirst(count))
+            self.showDeepList(later.isEmpty ? ordered : self.entryOrder.merged(ordered, later), keeping: self.selectedEntry?.url ?? url)
+        }
+    }
+
+    private func showDeepList(_ list: [GridEntry], keeping url: URL?) {
         let previous = selection
-        entries = sorted(allEntries.filter(\.isMedia) + deep.items)
-        if let index = index(of: url) {
+        entries = list
+        if let index = indexByURL(url) {
             keepSelection(index)
         } else if !entries.isEmpty {
             keepSelection(previous.map { min($0, entries.count - 1) } ?? 0)
         } else {
             keepSelection(nil)
         }
+    }
+
+    /// Where an item is in the list, found by its URL first (quick in a
+    /// list of 100 000), else by its canonical path.
+    private func indexByURL(_ url: URL?) -> Int? {
+        guard let url else { return nil }
+        return entries.firstIndex { $0.url == url } ?? index(of: url)
     }
 
     private func deepFound(_ batch: [GridEntry], in walk: DeepWalk) {
@@ -3621,17 +3653,21 @@ final class BrowserModel: ObservableObject {
         walk.pending = []
         walk.items += fresh
         let keep = selectedEntry?.url
+        // (a long list being sorted takes the batch in when it is done)
+        guard walk.sorting == walk.sorted else { return }
+        atlasAdded = fresh
         entries = entryOrder.merged(entries, fresh)
-        if let at = walk.selectAt, let index = index(of: at) {
+        atlasAdded = nil
+        if let at = walk.selectAt, let index = indexByURL(at) {
             walk.selectAt = nil
             walk.selectInside = nil
             selection = index
         } else if let inside = walk.selectInside,
                   let first = fresh.first(where: { Self.canonicalPath($0.url).hasPrefix(inside + "/") }),
-                  let index = index(of: first.url) {
+                  let index = indexByURL(first.url) {
             walk.selectInside = nil
             selection = index
-        } else if let index = index(of: keep) {
+        } else if let index = indexByURL(keep) {
             keepSelection(index)
         }
     }
