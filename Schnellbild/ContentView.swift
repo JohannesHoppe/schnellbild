@@ -264,6 +264,14 @@ private struct WindowView: View {
         guard !Self.monitorsInstalled else { return }
         Self.monitorsInstalled = true
         ModifierClicks.start()
+        // For the UI tests: when the mouse went down and up (a drag's end), next to the keys
+        if VideoDetailView.uiTesting, ProcessInfo.processInfo.arguments.contains(where: { $0.hasPrefix("--test-log=") }) {
+            _ = NSEvent.addLocalMonitorForEvents(matching: [.leftMouseDown, .leftMouseUp]) { event in
+                BrowserModel.testLog("\(Date().timeIntervalSince1970) mouse \(event.type == .leftMouseDown ? "down" : "up") "
+                                     + "window=\(event.window.map { String(describing: type(of: $0)) } ?? "nil")")
+                return event
+            }
+        }
         _ = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
             // Hidden by the boss key: every key is its (X X X brings the app back)
             if MainActor.assumeIsolated({ BossKey.engaged }) {
@@ -272,13 +280,20 @@ private struct WindowView: View {
             }
             // A modal dialog (the Trash confirmation, the open panel) keeps
             // its keys: Return confirms it, Esc cancels it.
-            if NSApp.modalWindow != nil || event.window is NSSavePanel { return event }
+            if NSApp.modalWindow != nil || event.window is NSSavePanel {
+                BrowserModel.testLog("\(Date().timeIntervalSince1970) key \(event.charactersIgnoringModifiers.debugDescription) passed on: a modal window")
+                return event
+            }
             // The browser window the key was typed in; the Adjustments
             // popover passes its keys on to the window in front; another
             // window of the app (the About panel) keeps its keys
             let popover = event.window.map { NSStringFromClass(type(of: $0)).contains("Popover") } ?? false
             guard let window = MainActor.assumeIsolated({ WindowModel.of(event.window) ?? (popover ? WindowModel.current : nil) })
-            else { return event }
+            else {
+                BrowserModel.testLog("\(Date().timeIntervalSince1970) key \(event.charactersIgnoringModifiers.debugDescription) passed on: "
+                                     + "window=\(event.window.map { String(describing: type(of: $0)) } ?? "nil")")
+                return event
+            }
             let code = event.keyCode
             let command = event.modifierFlags.contains(.command)
             let control = event.modifierFlags.contains(.control)
@@ -1233,7 +1248,11 @@ private struct PaneDrop: DropDelegate {
         pane.dropIntoFolderTargeted = false
         guard let folder = target else { return false }
         let pane = pane
-        TileDrag.loadURLs(info.itemProviders(for: [TileDrag.type])) { urls in pane.move(urls, into: folder) }
+        BrowserModel.testLog("\(Date().timeIntervalSince1970) drop into the pane")
+        TileDrag.loadURLs(info.itemProviders(for: [TileDrag.type])) { urls in
+            BrowserModel.testLog("\(Date().timeIntervalSince1970) drop: moving \(urls.count)")
+            pane.move(urls, into: folder)
+        }
         window.activate(pane)
         return true
     }

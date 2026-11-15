@@ -395,6 +395,7 @@ final class ActionsUITests: SchnellbildUITestCase {
             right.descendants(matching: .any).matching(identifier: "tile.c.jpg").firstMatch.exists && !leftC.exists
         }
 
+        print("moved seen at \(Date().timeIntervalSince1970); typing D")
         app.typeKey("d", modifierFlags: [])
         let closed = Date()
         let deadline = Date().addingTimeInterval(10)
