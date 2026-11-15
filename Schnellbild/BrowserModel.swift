@@ -1420,10 +1420,11 @@ final class BrowserModel: ObservableObject {
     /// A subtitle track chosen (nil: none): its language is remembered.
     func selectSubtitle(_ id: Int?) {
         guard videoOnScreen else { return }
-        setShowSubtitles(id != nil)
+        // The language first: the other pane, switched on with it, picks by it
         if let id, let language = videoTracks.subtitles.first(where: { $0.id == id })?.language {
             defaults.set(language, forKey: Self.subtitleLanguageKey)
         }
+        setShowSubtitles(id != nil)
         showSubtitleTrack(id)
         if id == nil { note("captions.bubble", String(localized: "Subtitles off")) }
     }
@@ -1487,8 +1488,17 @@ final class BrowserModel: ObservableObject {
              String(localized: "Speed \(PlaybackSpeed.text(speed))"))
     }
 
-    /// Subtitles switched on or off in another pane: its next video follows.
-    func adoptShowSubtitles(_ shown: Bool) { showSubtitles = shown }
+    /// Subtitles switched on or off in another pane: the video on screen
+    /// follows (on: the track in the language chosen last), as the next ones do.
+    func adoptShowSubtitles(_ shown: Bool) {
+        guard shown != showSubtitles else { return }
+        showSubtitles = shown
+        guard videoOnScreen, !videoTracks.subtitles.isEmpty else { return }
+        let wanted = VideoTracks.subtitleChoice(in: videoTracks, show: shown, language: subtitleLanguage)
+        guard wanted != videoTracks.subtitleID else { return }
+        activePlayer?.selectSubtitleTrack(wanted)
+        videoTracks.subtitleID = wanted
+    }
 
     /// The speed another pane set (one speed for the window).
     func adoptSpeed(_ speed: Double) {
