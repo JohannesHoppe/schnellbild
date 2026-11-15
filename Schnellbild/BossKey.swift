@@ -1,7 +1,8 @@
 import AppKit
 
-/// The boss key: X hides every window of the app and mutes it at once;
-/// X typed three times or a click on the Dock icon brings it back, and ⌘Q
+/// The boss key: X (or the key set in Settings) hides every window of the
+/// app and mutes it at once; that key typed three times or a click on the
+/// Dock icon brings it back, and ⌘Q
 /// still quits. The windows stay open, invisible and letting clicks through,
 /// so ⌘-Tab brings the app forward with nothing to see, and its keys still
 /// arrive here. A window in full screen has a space of its own, black
@@ -61,11 +62,12 @@ enum BossKey {
             NSApp.terminate(nil)
             return
         }
-        let x = modifiers.isEmpty && !event.isARepeat && letter == "x"
+        // The boss key, as set (X unless changed)
+        let x = !event.isARepeat && KeyChord.from(event).map(Shortcuts.shared.keys(.bossKey).contains) == true
         if counter.typed(x: x, at: Date()) { release() }
     }
 
-    /// Shows every window again (X X X, the Dock icon).
+    /// Shows every window again (the boss key three times, the Dock icon).
     static func release() {
         guard engaged else { return }
         engaged = false
@@ -78,7 +80,7 @@ enum BossKey {
         if let exitWatch { NotificationCenter.default.removeObserver(exitWatch) }
         exitWatch = nil
         NotificationCenter.default.post(name: changed, object: nil)
-        // X X X typed while hidden (the keys still arrive): shown again
+        // The boss key typed three times while hidden (the keys still arrive): shown again
         NSApp.unhide(nil)
         NSApp.activate(ignoringOtherApps: true)
         for window in fullScreenWindows { _ = FullScreenSwitch.shared.set(true, window: window) }

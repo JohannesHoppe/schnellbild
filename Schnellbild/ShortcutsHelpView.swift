@@ -1,130 +1,200 @@
 import SwiftUI
 import PDFKit
 
-private struct Shortcut: Identifiable {
-    let id = UUID()
-    /// Key glyphs as on Apple's keyboards and menus (⌫ ↩ ⎋ ⇥ ↖ ↘), shown
-    /// as they are; "Space", the one key Apple names in words, in the
-    /// user's language.
-    let keys: String
-    let action: LocalizedStringKey
-    /// The action's English text (its localization key), for sizing.
-    let actionKey: String
-    /// The keys column holds words besides key names ("drag"): translated.
-    var wordsInKeys = false
+/// What the keys column of a row shows: actions' keys as set (Settings →
+/// Keyboard), keys that can't be changed, or words ("drag").
+enum HelpKeys {
+    /// The action's keys: "Space / F3".
+    case action(ShortcutAction)
+    /// Two actions side by side: "← →", "⌘[ / ⌘]"; with more keys each,
+    /// pair by pair: "+ / − · ⌘+ / ⌘−".
+    case pair(ShortcutAction, ShortcutAction, String)
+    /// Several actions, one key each: "⌘1 … ⌘5" while they have
+    /// Schnellbild's keys, else every key.
+    case range([ShortcutAction])
+    /// Keys that stay as they are (⌘Q, ⌃⌘F: the system's; the search
+    /// field's keys).
+    case fixed(String)
+    /// Words, translated ("drag", "⌘-click").
+    case words(String)
 
-    init(keys: String, action: String, wordsInKeys: Bool = false) {
-        self.keys = keys
-        self.action = LocalizedStringKey(action)
-        actionKey = action
-        self.wordsInKeys = wordsInKeys
-    }
-
-    var keysText: Text {
-        wordsInKeys ? Text(LocalizedStringKey(keys))
-            : Text(verbatim: keys.replacingOccurrences(of: "Space", with: String(localized: "Space")))
+    /// The keys as shown; nil for actions that have none.
+    @MainActor
+    func text(_ shortcuts: Shortcuts) -> String? {
+        switch self {
+        case .action(let action):
+            let text = shortcuts.text(action)
+            return text.isEmpty ? nil : text
+        case .pair(let a, let b, let joiner):
+            let first = shortcuts.keys(a), second = shortcuts.keys(b)
+            if !first.isEmpty, first.count == second.count {
+                return zip(first, second).map { $0.text + joiner + $1.text }.joined(separator: " · ")
+            }
+            let both = [shortcuts.text(a), shortcuts.text(b)].filter { !$0.isEmpty }
+            return both.isEmpty ? nil : both.joined(separator: " · ")
+        case .range(let actions):
+            let standard = actions.allSatisfy { shortcuts.keys($0) == $0.standardKeys && $0.standardKeys.count == 1 }
+            if standard, let first = actions.first, let last = actions.last {
+                return shortcuts.text(first) + " … " + shortcuts.text(last)
+            }
+            let all = actions.flatMap { shortcuts.keys($0) }.map(\.text)
+            return all.isEmpty ? nil : all.joined(separator: " ")
+        case .fixed(let keys):
+            return keys.replacingOccurrences(of: "Space", with: String(localized: "Space"))
+        case .words(let words):
+            return String(localized: String.LocalizationValue(words))
+        }
     }
 }
 
-private struct Group: Identifiable {
-    let id = UUID()
+/// One line of the cheat sheet: the keys and what they do.
+struct HelpShortcut: Identifiable {
+    let id: Int
+    let keys: String
+    let action: String
+}
+
+struct HelpGroup: Identifiable {
+    let id: Int
     let title: LocalizedStringKey
-    let shortcuts: [Shortcut]
+    let shortcuts: [HelpShortcut]
+}
+
+/// A row as written in `ShortcutsHelpView.groups`, before its keys are
+/// looked up.
+private struct Row {
+    let keys: [HelpKeys]
+    let action: String
+
+    /// `action`: the English text, translated here.
+    init(_ keys: HelpKeys..., action: String) {
+        self.keys = keys
+        self.action = String(localized: String.LocalizationValue(action))
+    }
+
+    /// `text`: translated already (it holds keys of its own).
+    init(_ keys: HelpKeys..., text: String) {
+        self.keys = keys
+        action = text
+    }
 }
 
 /// The keyboard-shortcut cheat sheet, shown via F1 or the "Schnellbild Help"
-/// menu item, and printed on one page (`printCheatSheet`).
+/// menu item, and printed on one page (`printCheatSheet`). Its keys are the
+/// ones set in Settings → Keyboard.
 struct ShortcutsHelpView: View {
     @Environment(\.dismiss) private var dismiss
+    @ObservedObject private var shortcuts = Shortcuts.shared
 
-    fileprivate static let groups: [Group] = [
-        Group(title: "Grid", shortcuts: [
-            Shortcut(keys: "← →", action: "Previous / next item"),
-            Shortcut(keys: "↑ ↓", action: "One row up / down"),
-            Shortcut(keys: "Space / F3", action: "Open picture or video · open folder or archive"),
-            Shortcut(keys: "⌫", action: "Back (where you were, also a search); without history the enclosing folder"),
-            Shortcut(keys: "↖ / ↘", action: "First / last item"),
-            Shortcut(keys: "L", action: "Grid or list (a click on a column sorts by it)"),
-            Shortcut(keys: "+ / − · ⌘+ / ⌘−", action: "Larger / smaller thumbnails"),
-            Shortcut(keys: "↩ / F2 / ⇧F6", action: "Rename (F6 too in a single pane)"),
-            Shortcut(keys: "⇧⌘N / F7", action: "New folder: type its name, ↩ creates it, Esc creates none"),
-            Shortcut(keys: "F8", action: "Move to Trash"),
-            Shortcut(keys: "⎋", action: "Clear search"),
-        ]),
-        Group(title: "Full view", shortcuts: [
-            Shortcut(keys: "← →", action: "Pictures: previous / next · Videos: 10 % of the length back / ahead; at the start / end: previous / next item"),
-            Shortcut(keys: "⌘← ⌘→", action: "Previous / next item, also from a video"),
-            Shortcut(keys: "↑ ↓", action: "Pictures zoomed in: look further up / down · Videos: volume up / down (remembered)"),
-            Shortcut(keys: "⇧← ⇧→", action: "Video: 1 % of the length back / ahead"),
-            Shortcut(keys: "Space", action: "Next picture · play/pause video"),
-            Shortcut(keys: "+ / −", action: "Zoom in / out"),
-            Shortcut(keys: "0 / 1", action: "Fit to window / 100 %"),
-            Shortcut(keys: "⌥← / ⌥→", action: "Rotate left / right"),
-            Shortcut(keys: "i", action: "File info"),
-            Shortcut(keys: "F2", action: "Rename"),
-            Shortcut(keys: "⎋ / ⌫ / ↩", action: "Back to grid"),
-        ]),
-        Group(title: "Videos", shortcuts: [
-            Shortcut(keys: "V", action: "Subtitles on / off (remembered, with the language chosen)"),
-            Shortcut(keys: "⌃⌘S", action: "Next subtitle track, then none"),
-            Shortcut(keys: "⌃⌘A", action: "Next audio track (the language is remembered)"),
-            Shortcut(keys: "< / >", action: "Slower / faster (0.5× … 2×, until the app quits)"),
-            Shortcut(keys: "⌘\\", action: "Normal speed"),
-            Shortcut(keys: "drag", action: "The control bar by its grip: it stays there for every video; double-click the grip: back to the bottom", wordsInKeys: true),
-            Shortcut(keys: "right-click", action: "Subtitles, audio track, speed", wordsInKeys: true),
-        ]),
-        Group(title: "Slideshow", shortcuts: [
-            Shortcut(keys: "s", action: "Start: all pictures and videos in this folder and its subfolders (while searching: the results)"),
-            Shortcut(keys: "Space", action: "Pause / resume"),
-            Shortcut(keys: "← →", action: "Previous / next · Videos: 10 % of the length back / ahead"),
-            Shortcut(keys: "⇧← ⇧→", action: "Video: 1 % of the length back / ahead"),
-            Shortcut(keys: "⌘← ⌘→", action: "Previous / next item"),
-            Shortcut(keys: "↑ ↓", action: "Pictures zoomed in: look further up / down · Videos: volume up / down (remembered)"),
-            Shortcut(keys: "f", action: "Toggle full screen"),
-            Shortcut(keys: "i", action: "File info"),
-            Shortcut(keys: "e", action: "Auto enhance on / off (exposure, contrast, saturation, sharpness; files are not changed)"),
-            Shortcut(keys: "a", action: "Sliders: adjust by hand (switches auto enhance off)"),
-            Shortcut(keys: "p", action: "Playlist: the show's order; drag to reorder, click to show an item"),
-            Shortcut(keys: "↑ ↓ / ↩ / ⌫", action: "In the playlist, after a click in it: choose / show / take out of the playlist (the file stays)"),
-            Shortcut(keys: "⎋ / s / ↩ / ⌫", action: "End the slideshow (⎋ ↩ ⌫ close the playlist first)"),
-        ]),
-        Group(title: "Dual pane and marking", shortcuts: [
-            Shortcut(keys: "D / ⌃O", action: "Dual pane on / off: two folders side by side"),
-            Shortcut(keys: "⇥", action: "Switch to the other pane"),
-            Shortcut(keys: "⇧⌘C / ⇧⌘M · F5 / F6", action: "Copy / move the marked items into the other pane's folder"),
-            Shortcut(keys: "⌘-click / M / Insert", action: "Mark / unmark an item (M, Insert: then on to the next)", wordsInKeys: true),
-            Shortcut(keys: "⇧-click / ⇧ arrows", action: "Mark a range", wordsInKeys: true),
-            Shortcut(keys: "⌘A / ⎋", action: "Mark all / unmark all"),
-            Shortcut(keys: "drag", action: "Marked items onto a folder or into the other pane: moved (copied to another volume)", wordsInKeys: true),
-        ]),
-        Group(title: "Search field", shortcuts: [
-            Shortcut(keys: "⌘F", action: "Search names of folders, archives, pictures and videos (incl. subfolders)"),
-            Shortcut(keys: "↓", action: "Move into the results"),
-            Shortcut(keys: "↩", action: "Open the selected result"),
-            Shortcut(keys: "⎋", action: "Clear the search; again: leave the field"),
-        ]),
-        Group(title: "Grid and full view", shortcuts: [
-            Shortcut(keys: "⌘[ / ⌘]", action: "Back / forward (history)"),
-            Shortcut(keys: "⌘↑", action: "Enclosing folder"),
-            Shortcut(keys: "⌘R", action: "Read the folder again"),
-            Shortcut(keys: "⌘1 … ⌘5", action: "Sort by name, kind, date modified, date taken, size (again: reverse)"),
-            Shortcut(keys: "f / ⌃⌘F", action: "Toggle full screen"),
-            Shortcut(keys: "e", action: "Auto enhance on / off (exposure, contrast, saturation, sharpness; files are not changed)"),
-            Shortcut(keys: "a", action: "Sliders: adjust by hand (switches auto enhance off)"),
-            Shortcut(keys: "⌘O", action: "Open folder"),
-            Shortcut(keys: "⌘N", action: "New window (e.g. for another display)"),
-            Shortcut(keys: "⇧⌘R", action: "Reveal in Finder"),
-            Shortcut(keys: "⌘↩ / F4", action: "Open with default app"),
-            Shortcut(keys: "⌘⌫", action: "Move to Trash"),
-            Shortcut(keys: "⌘Q / F10", action: "Quit (F10 asks first)"),
-            Shortcut(keys: "F9", action: "The app's menus in the window"),
-            Shortcut(keys: "K", action: "Show / hide the mini keyboard"),
-            Shortcut(keys: "⌘D", action: "Bookmark the folder shown, or remove its bookmark"),
-            Shortcut(keys: "⌃1 … ⌃9", action: "Open bookmark 1 … 9"),
-            Shortcut(keys: "X", action: "Boss key: hidden and silent at once; X X X or the Dock icon brings it back"),
-            Shortcut(keys: "F1 / ⌘?", action: "Show this list"),
-        ]),
-    ]
+    /// The groups, with the keys as set.
+    @MainActor
+    static func groups(_ s: Shortcuts) -> [HelpGroup] {
+        let thrice = s.keys(.bossKey).first.map { key in Array(repeating: key.text, count: 3).joined(separator: " ") }
+            ?? String(localized: "no key")
+        // The keys that end the slideshow; all but S close the playlist first
+        let closers = s.keys(.endSlideshow).filter { $0 != KeyChord(.char("s")) }.map(\.text).joined(separator: " ")
+        let rows: [(LocalizedStringKey, [Row])] = [
+            ("Grid", [
+                Row(.pair(.gridPrevious, .gridNext, " "), action: "Previous / next item"),
+                Row(.pair(.gridRowUp, .gridRowDown, " "), action: "One row up / down"),
+                Row(.action(.gridOpen), action: "Open picture or video · open folder or archive"),
+                Row(.action(.gridBack), action: "Back (where you were, also a search); without history the enclosing folder"),
+                Row(.pair(.gridFirst, .gridLast, " / "), action: "First / last item"),
+                Row(.action(.toggleList), action: "Grid or list (a click on a column sorts by it)"),
+                Row(.pair(.largerThumbnails, .smallerThumbnails, " / "), action: "Larger / smaller thumbnails"),
+                Row(.action(.gridRename), action: s.keys(.moveToOther).contains(KeyChord(.f6)) ? "Rename (F6 too in a single pane)" : "Rename"),
+                Row(.action(.newFolder), action: "New folder: type its name, ↩ creates it, Esc creates none"),
+                Row(.action(.trash), action: "Move to Trash"),
+                Row(.action(.gridClear), action: "Clear search"),
+            ]),
+            ("Full view", [
+                Row(.pair(.fullPrevious, .fullNext, " "), action: "Pictures: previous / next · Videos: 10 % of the length back / ahead; at the start / end: previous / next item"),
+                Row(.pair(.fullPreviousItem, .fullNextItem, " "), action: "Previous / next item, also from a video"),
+                Row(.pair(.fullUp, .fullDown, " "), action: "Pictures zoomed in: look further up / down · Videos: volume up / down (remembered)"),
+                Row(.pair(.fullFineBack, .fullFineAhead, " "), action: "Video: 1 % of the length back / ahead"),
+                Row(.action(.fullSpace), action: "Next picture · play/pause video"),
+                Row(.pair(.zoomIn, .zoomOut, " / "), action: "Zoom in / out"),
+                Row(.pair(.zoomFit, .zoomActual, " / "), action: "Fit to window / 100 %"),
+                Row(.pair(.rotateLeft, .rotateRight, " / "), action: "Rotate left / right"),
+                Row(.action(.info), action: "File info"),
+                Row(.action(.fullRename), action: "Rename"),
+                Row(.action(.closeFullView), action: "Back to grid"),
+            ]),
+            ("Videos", [
+                Row(.action(.subtitles), action: "Subtitles on / off (remembered, with the language chosen)"),
+                Row(.action(.nextSubtitle), action: "Next subtitle track, then none"),
+                Row(.action(.nextAudio), action: "Next audio track (the language is remembered)"),
+                Row(.pair(.slower, .faster, " / "), action: "Slower / faster (0.5× … 2×, until the app quits)"),
+                Row(.action(.normalSpeed), action: "Normal speed"),
+                Row(.words("drag"), action: "The control bar by its grip: it stays there for every video; double-click the grip: back to the bottom"),
+                Row(.words("right-click"), action: "Subtitles, audio track, speed"),
+            ]),
+            ("Slideshow", [
+                Row(.action(.startSlideshow), action: "Start: all pictures and videos in this folder and its subfolders (while searching: the results)"),
+                Row(.action(.showPause), action: "Pause / resume"),
+                Row(.pair(.fullPrevious, .fullNext, " "), action: "Previous / next · Videos: 10 % of the length back / ahead"),
+                Row(.pair(.fullFineBack, .fullFineAhead, " "), action: "Video: 1 % of the length back / ahead"),
+                Row(.pair(.fullPreviousItem, .fullNextItem, " "), action: "Previous / next item"),
+                Row(.pair(.fullUp, .fullDown, " "), action: "Pictures zoomed in: look further up / down · Videos: volume up / down (remembered)"),
+                Row(.action(.fullScreen), action: "Toggle full screen"),
+                Row(.action(.info), action: "File info"),
+                Row(.action(.enhance), action: "Auto enhance on / off (exposure, contrast, saturation, sharpness; files are not changed)"),
+                Row(.action(.adjust), action: "Sliders: adjust by hand (switches auto enhance off)"),
+                Row(.action(.playlist), action: "Playlist: the show's order; drag to reorder, click to show an item"),
+                Row(.pair(.listUp, .listDown, " "), .action(.listShow), .action(.listTakeOut),
+                    action: "In the playlist, after a click in it: choose / show / take out of the playlist (the file stays)"),
+                Row(.action(.endSlideshow), text: closers.isEmpty ? String(localized: "End the slideshow")
+                    : String(localized: "End the slideshow (\(closers) close the playlist first)")),
+            ]),
+            ("Dual pane and marking", [
+                Row(.action(.toggleDual), action: "Dual pane on / off: two folders side by side"),
+                Row(.action(.switchPane), action: "Switch to the other pane"),
+                Row(.pair(.copyToOther, .moveToOther, " / "), action: "Copy / move the marked items into the other pane's folder"),
+                Row(.words("⌘-click"), .action(.mark), action: s.keys(.mark) == ShortcutAction.mark.standardKeys
+                    ? "Mark / unmark an item (M, Insert: then on to the next)" : "Mark / unmark an item, then on to the next"),
+                Row(.words("⇧-click / ⇧ arrows"), action: "Mark a range"),
+                Row(.pair(.markAll, .gridClear, " / "), action: "Mark all / unmark all"),
+                Row(.words("drag"), action: "Marked items onto a folder or into the other pane: moved (copied to another volume)"),
+            ]),
+            ("Search field", [
+                Row(.action(.search), action: "Search names of folders, archives, pictures and videos (incl. subfolders)"),
+                Row(.fixed("↓"), action: "Move into the results"),
+                Row(.fixed("↩"), action: "Open the selected result"),
+                Row(.fixed("⎋"), action: "Clear the search; again: leave the field"),
+            ]),
+            ("Grid and full view", [
+                Row(.pair(.back, .forward, " / "), action: "Back / forward (history)"),
+                Row(.action(.enclosingFolder), action: "Enclosing folder"),
+                Row(.action(.reload), action: "Read the folder again"),
+                Row(.range(ShortcutAction.sorts), action: "Sort by name, kind, date modified, date taken, size (again: reverse)"),
+                Row(.action(.fullScreen), .fixed("⌃⌘F"), action: "Toggle full screen"),
+                Row(.action(.enhance), action: "Auto enhance on / off (exposure, contrast, saturation, sharpness; files are not changed)"),
+                Row(.action(.adjust), action: "Sliders: adjust by hand (switches auto enhance off)"),
+                Row(.action(.openFolder), action: "Open folder"),
+                Row(.action(.newWindow), action: "New window (e.g. for another display)"),
+                Row(.action(.reveal), action: "Reveal in Finder"),
+                Row(.action(.openDefault), action: "Open with default app"),
+                Row(.action(.trash), action: "Move to Trash"),
+                Row(.fixed("⌘Q"), .action(.quit), text: s.keys(.quit).isEmpty ? String(localized: "Quit")
+                    : String(localized: "Quit (\(s.text(.quit)) asks first)")),
+                Row(.action(.menus), action: "The app's menus in the window"),
+                Row(.action(.miniKeyboard), action: "Show / hide the mini keyboard"),
+                Row(.action(.bookmark), action: "Bookmark the folder shown, or remove its bookmark"),
+                Row(.range(ShortcutAction.bookmarks), action: "Open bookmark 1 … 9"),
+                Row(.action(.bossKey), text: String(localized: "Boss key: hidden and silent at once; \(thrice) or the Dock icon brings it back")),
+                Row(.action(.help), action: "Show this list"),
+            ]),
+        ]
+        var number = 0
+        return rows.enumerated().map { index, group in
+            HelpGroup(id: index, title: group.0, shortcuts: group.1.map { row in
+                number += 1
+                let parts = row.keys.compactMap { $0.text(s) }
+                return HelpShortcut(id: number, keys: parts.isEmpty ? String(localized: "no key") : parts.joined(separator: " / "),
+                                    action: row.action)
+            })
+        }
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -147,23 +217,26 @@ struct ShortcutsHelpView: View {
             Divider()
             ScrollView {
                 VStack(alignment: .leading, spacing: 22) {
-                    ForEach(Self.groups) { group in
+                    ForEach(Self.groups(shortcuts)) { group in
                         VStack(alignment: .leading, spacing: 8) {
                             Text(group.title)
                                 .font(.headline)
                                 .foregroundStyle(.secondary)
                             ForEach(group.shortcuts) { shortcut in
                                 HStack(alignment: .firstTextBaseline, spacing: 16) {
-                                    shortcut.keysText
+                                    Text(verbatim: shortcut.keys)
                                         .font(.system(.callout, design: .monospaced))
                                         .frame(width: 180, alignment: .leading)
-                                    Text(shortcut.action)
+                                    Text(verbatim: shortcut.action)
                                         .font(.callout)
                                     Spacer(minLength: 0)
                                 }
                             }
                         }
                     }
+                    Text("Keys can be changed in Settings → Keyboard.")
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
                 }
                 .padding()
             }
@@ -186,10 +259,10 @@ struct ShortcutsHelpView: View {
     /// The cheat sheet as a one-page PDF on the given paper, scaled down if
     /// it would not fit (vector: sharp at any printer's resolution).
     @MainActor
-    static func cheatSheetPDF(paper: CGSize = CGSize(width: 595, height: 842)) -> Data {
+    static func cheatSheetPDF(paper: CGSize = CGSize(width: 595, height: 842), shortcuts: Shortcuts? = nil) -> Data {
         let margin: CGFloat = 32
         let usable = CGSize(width: paper.width - 2 * margin, height: paper.height - 2 * margin)
-        let renderer = ImageRenderer(content: CheatSheetPage().frame(width: usable.width))
+        let renderer = ImageRenderer(content: CheatSheetPage(groups: groups(shortcuts ?? .shared)).frame(width: usable.width))
         let data = NSMutableData()
         renderer.render { size, draw in
             var page = CGRect(origin: .zero, size: paper)
@@ -210,8 +283,10 @@ struct ShortcutsHelpView: View {
 
 /// The printed cheat sheet: black on white, the groups in two columns.
 private struct CheatSheetPage: View {
+    let groups: [HelpGroup]
+
     var body: some View {
-        let (left, right) = Self.columns(ShortcutsHelpView.groups)
+        let (left, right) = Self.columns(groups)
         VStack(alignment: .leading, spacing: 10) {
             HStack(alignment: .firstTextBaseline) {
                 Text(verbatim: "Schnellbild").font(.system(size: 17, weight: .bold))
@@ -227,7 +302,7 @@ private struct CheatSheetPage: View {
         .environment(\.colorScheme, .light)
     }
 
-    private func column(_ groups: [Group]) -> some View {
+    private func column(_ groups: [HelpGroup]) -> some View {
         VStack(alignment: .leading, spacing: 9) {
             ForEach(groups) { group in
                 VStack(alignment: .leading, spacing: 2.5) {
@@ -235,11 +310,11 @@ private struct CheatSheetPage: View {
                         .padding(.bottom, 1)
                     ForEach(group.shortcuts) { shortcut in
                         HStack(alignment: .firstTextBaseline, spacing: 6) {
-                            shortcut.keysText
+                            Text(verbatim: shortcut.keys)
                                 .font(.system(size: 8.5, weight: .semibold, design: .monospaced))
                                 .fixedSize(horizontal: false, vertical: true)
                                 .frame(width: 84, alignment: .leading)
-                            Text(shortcut.action)
+                            Text(verbatim: shortcut.action)
                                 .font(.system(size: 8.5))
                                 .fixedSize(horizontal: false, vertical: true)
                             Spacer(minLength: 0)
@@ -254,10 +329,9 @@ private struct CheatSheetPage: View {
 
     /// The groups in order, split where both columns are about as tall
     /// (a long action or key list takes more than one line).
-    static func columns(_ groups: [Group]) -> ([Group], [Group]) {
-        func lines(_ shortcut: Shortcut) -> Int {
-            let action = String(localized: String.LocalizationValue(stringLiteral: shortcut.actionKey)).count
-            return max(1, (action + 43) / 44, (shortcut.keys.count + 12) / 13)
+    static func columns(_ groups: [HelpGroup]) -> ([HelpGroup], [HelpGroup]) {
+        func lines(_ shortcut: HelpShortcut) -> Int {
+            max(1, (shortcut.action.count + 43) / 44, (shortcut.keys.count + 12) / 13)
         }
         let lines = groups.map { $0.shortcuts.map(lines).reduce(0, +) + 2 }
         let total = lines.reduce(0, +)
@@ -270,4 +344,3 @@ private struct CheatSheetPage: View {
         return (Array(groups[..<best]), Array(groups[best...]))
     }
 }
-

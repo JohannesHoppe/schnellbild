@@ -96,14 +96,14 @@ final class LocalizationTests: XCTestCase {
     /// `String(localized: "…")`, `.accessibilityLabel("…")`, both sides of
     /// `Text(a ? "…" : "…")` …), what a helper returning a
     /// `LocalizedStringKey` returns, the help's `action: "…"`, and its keys
-    /// where they hold words (`wordsInKeys: true`), with each interpolation
+    /// where they hold words (`.words("drag")`), with each interpolation
     /// `\(…)` kept as a marker. A small scanner, not a regular expression:
     /// interpolations can hold quotes of their own.
     static func uiTexts(in source: String) -> [String] {
         let calls = ["Text(", "Button(", "Label(", "Toggle(", "TextField(", "SecureField(", "ShortcutLabel(", "CommandMenu(",
                      "Menu(", "Section(", "Picker(", "LabeledContent(", "Stepper(", ".confirmationDialog(", ".alert(",
                      ".navigationTitle(", "headerButton(", "slider(", "infoRow(", ".help(", ".accessibilityLabel(",
-                     ".accessibilityValue(", "String(localized: ", "action: ", "word: ", "Group(title: ", "title: "]
+                     ".accessibilityValue(", "String(localized: ", "action: ", "word: ", "Group(title: ", "title: ", ".words("]
         let chars = Array(source)
         var texts: [String] = []
         var i = 0
@@ -133,22 +133,6 @@ final class LocalizationTests: XCTestCase {
                 j += 1
             }
             i = j
-        }
-        // The help's keys column, where it holds words ("drag")
-        i = 0
-        let shortcut = "Shortcut(keys: "
-        while i < chars.count {
-            guard matches(shortcut, chars, at: i) else { i += 1; continue }
-            let (literals, end) = argument(chars, from: i + shortcut.count)
-            var close = end, depth = 1
-            while close < chars.count, depth > 0 {
-                if chars[close] == "(" { depth += 1 } else if chars[close] == ")" { depth -= 1 }
-                close += 1
-            }
-            if String(chars[i..<min(close, chars.count)]).contains("wordsInKeys: true") {
-                texts += literals.filter { $0.contains(where: \.isLetter) }
-            }
-            i = max(end, i + 1)
         }
         return texts
     }
@@ -281,7 +265,7 @@ final class LocalizationTests: XCTestCase {
         headerButton("Date Modified", key: .modified)
         .accessibilityValue(up ? "ascending" : "descending") .accessibilityLabel("Stop search")
         Text(format("No"))
-        Shortcut(keys: "⌘F", action: "Search") Shortcut(keys: "drag", action: "Move", wordsInKeys: true)
+        Row(.action(.search), action: "Search") Row(.words("drag"), action: "Move")
         Menu("Remove Bookmark") { } Section("Appearance") { Picker("Mode", selection: $x) { } }
         LabeledContent("Saved passwords", value: "\(n)") Stepper(value: $v, in: 1...9) { }
         .confirmationDialog("Forget all?", isPresented: $y) .navigationTitle(name ?? "Schnellbild")
@@ -289,9 +273,9 @@ final class LocalizationTests: XCTestCase {
             case .a: return "Undo Rename"
             default: return big ? "Undo All" : "Undo" } }
         """#
-        XCTAssertEqual(Self.uiTexts(in: source), ["Search stopped", "No \u{1} matches", "Date Modified", "ascending", "descending",
+        XCTAssertEqual(Self.uiTexts(in: source).sorted(), ["Search stopped", "No \u{1} matches", "Date Modified", "ascending", "descending",
                                                   "Stop search", "Search", "Move", "Remove Bookmark", "Appearance", "Mode",
-                                                  "Saved passwords", "Forget all?", "Undo Rename", "Undo All", "Undo", "drag"])
+                                                  "Saved passwords", "Forget all?", "Undo Rename", "Undo All", "Undo", "drag"].sorted())
     }
 
     /// Each language's plurals have the categories its numbers need, as
@@ -371,35 +355,28 @@ final class LocalizationTests: XCTestCase {
 
     /// Keys are shown as on Apple's keyboards and menus: glyphs (⌫ ↩ ⎋ ⇥
     /// ↖ ↘) where Apple has them, and the space bar by its name in each
-    /// language ("Space" in the help's keys, translated where it is shown).
-    /// The keys columns of the F1 help and the mini keyboard's caps hold no
-    /// English key names; only "Insert", a key Apple's keyboards don't have,
-    /// keeps its name (in a translated row).
+    /// language. The actions' keys are drawn by `KeyChord.text`
+    /// (`ShortcutsTests.testKeysAreShownAsOnApplesKeyboards`); the keys the
+    /// F1 help writes out itself hold no English key names either, and the
+    /// mini keyboard names its keys in the stored form only.
     func testKeyNamesAreGlyphsOrTranslated() throws {
         let sources = root.deletingLastPathComponent().deletingLastPathComponent().appendingPathComponent("Schnellbild")
         let help = try String(contentsOf: sources.appendingPathComponent("ShortcutsHelpView.swift"), encoding: .utf8)
-        let keys = try NSRegularExpression(pattern: "Shortcut\\(keys: \"([^\"]+)\"")
+        let fixed = try NSRegularExpression(pattern: "\\.fixed\\(\"([^\"]+)\"\\)")
         let names = try NSRegularExpression(pattern: "\\b(Backspace|Delete|Return|Enter|Esc|Escape|Tab|Home|End|Page ?Up|Page ?Down|space)\\b")
         var found = 0
-        for match in keys.matches(in: help, range: NSRange(help.startIndex..., in: help)) {
+        for match in fixed.matches(in: help, range: NSRange(help.startIndex..., in: help)) {
             let text = (help as NSString).substring(with: match.range(at: 1))
             found += 1
             XCTAssertEqual(names.numberOfMatches(in: text, range: NSRange(text.startIndex..., in: text)), 0,
                            "F1 help: “\(text)” names a key in English; Apple's glyph instead")
         }
-        XCTAssertGreaterThan(found, 40, "the scanner finds the help's keys")
-        // The mini keyboard's caps: glyphs, letters, F-keys; its word caps go through `shownCap`
+        XCTAssertGreaterThan(found, 3, "the scanner finds the help's own keys")
+        // The mini keyboard's keys: an action and its key in the stored form ("space", "@f")
         let keyboard = try String(contentsOf: sources.appendingPathComponent("MiniKeyboard.swift"), encoding: .utf8)
-        let caps = try NSRegularExpression(pattern: "Key\\(cap: \"([^\"]+)\"")
-        let mapped = ["space", "esc", "Tab"]
-        for match in caps.matches(in: keyboard, range: NSRange(keyboard.startIndex..., in: keyboard)) {
-            let cap = (keyboard as NSString).substring(with: match.range(at: 1))
-            let words = cap.filter(\.isLetter).count
-            XCTAssertTrue(words <= 1 || mapped.contains(cap), "mini keyboard: the cap “\(cap)” is a word")
-        }
-        for cap in mapped {
-            XCTAssertTrue(keyboard.contains("case \"\(cap)\":"), "mini keyboard: `shownCap` shows “\(cap)” as Apple does")
-        }
+        let keys = try NSRegularExpression(pattern: "Key\\(\\.[A-Za-z0-9]+, \"([^\"]+)\", word:")
+        XCTAssertGreaterThan(keys.numberOfMatches(in: keyboard, range: NSRange(keyboard.startIndex..., in: keyboard)), 50,
+                             "the scanner finds the mini keyboard's keys")
         for language in languages {
             XCTAssertNotNil(try table(language, "Localizable.strings")["Space"], "\(language): the space bar's name")
         }

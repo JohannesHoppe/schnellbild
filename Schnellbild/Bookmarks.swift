@@ -54,10 +54,11 @@ final class Bookmarks: ObservableObject {
 }
 
 /// The bookmarks' menu items: this folder's on / off (⌘D in the menu bar),
-/// then every bookmark (the first nine with ⌃1 … ⌃9), and their removal.
+/// then every bookmark (the first nine with ⌃1 … ⌃9 unless changed), and their removal.
 struct BookmarkItems: View {
     @ObservedObject var model: BrowserModel
     @ObservedObject var bookmarks = Bookmarks.shared
+    @ObservedObject var keys = Shortcuts.shared
     let shortcuts: Bool
 
     var body: some View {
@@ -67,14 +68,14 @@ struct BookmarkItems: View {
             if let shown { bookmarks.toggle(shown) }
         }
         .disabled(shown == nil)
-        if shortcuts { toggle.keyboardShortcut("d", modifiers: .command) } else { toggle }
+        if shortcuts { toggle.keyboardShortcut(keys.menuShortcut(.bookmark)) } else { toggle }
         if !bookmarks.folders.isEmpty {
             Divider()
             ForEach(Array(bookmarks.folders.enumerated()), id: \.element) { index, folder in
                 let item = Button(bookmarks.title(of: folder)) { model.open(folder: folder) }
                     .help(folder.path)
                 if shortcuts, index < 9 {
-                    item.keyboardShortcut(KeyEquivalent(Character(String(index + 1))), modifiers: .control)
+                    item.keyboardShortcut(keys.menuShortcut(ShortcutAction.bookmarks[index]))
                 } else {
                     item
                 }

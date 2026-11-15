@@ -239,6 +239,12 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         app.typeKey(",", modifierFlags: .command)
         XCTAssertTrue(element("settings.slideshowSeconds").waitForExistence(timeout: 5))
         shoot("settings", front: true)
+        // Its Keyboard tab: every action's keys
+        let keyboardTab = [app.toolbars.buttons[ui("Keyboard")], app.radioButtons[ui("Keyboard")]].map(\.firstMatch).first { $0.exists }
+        XCTAssertNotNil(keyboardTab, "the Keyboard tab")
+        keyboardTab?.click()
+        XCTAssertTrue(element("shortcuts.list").waitForExistence(timeout: 5))
+        shoot("shortcuts", front: true)
         app.typeKey("w", modifierFlags: .command)
     }
 }
