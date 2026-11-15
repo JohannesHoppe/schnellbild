@@ -451,7 +451,12 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
                 player.currentVideoSubTitleIndex = Int32(target)
             }
         }
-        if Int(player.currentVideoSubTitleIndex) >= 0, !softwareDecoding {
+        // Subtitles to show: the track chosen, or before any choice the one
+        // VLC opened with. Switched off, the file's default track VLC turns
+        // on as it finds it (before it takes the -1) is no reason to decode
+        // in software (seen on CI: `ramp.mkv` with subtitles off)
+        let shows = wantedSubtitle.map { $0 != nil } ?? true
+        if shows, Int(player.currentVideoSubTitleIndex) >= 0, !softwareDecoding {
             decodeInSoftware()
             return
         }
