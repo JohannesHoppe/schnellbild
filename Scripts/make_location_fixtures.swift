@@ -1,8 +1,10 @@
-// Draws the fixtures with places and camera metadata for the Inspector and
-// for sorting by distance: photos with EXIF and GPS at public landmarks, one
-// without a place, and a QuickTime video with an ISO 6709 location, a
-// creation date and a camera, as iPhones write them. Made-up camera names,
-// no personal data. Always the same output.
+// Draws the fixtures with places and camera metadata for the Inspector, for
+// sorting by distance and for the Atlas view: photos with EXIF and GPS at
+// public landmarks, one without a place, a QuickTime video with an ISO 6709
+// location, a creation date and a camera, as iPhones write them, and a
+// made-up five-day trip through Norway (norway-*: photos with local times
+// and places, one without a place, a video). Made-up camera names, no
+// personal data. Always the same output.
 //
 //   swift Scripts/make_location_fixtures.swift Tests/SchnellbildTests/Locations UITests/Fixtures
 import AVFoundation
@@ -101,7 +103,8 @@ try writeJPEG("nogeo.jpg", tint: 0.0, properties: [
 
 /// One second of the picture as an H.264 QuickTime movie with the metadata
 /// an iPhone writes: place (ISO 6709), creation date, make and model.
-func writeMovie(_ name: String) throws {
+func writeMovie(_ name: String, location: String = "+48.1372+011.5761+519.000/",
+                created: String = "2024-06-18T22:31:09+0200", tint: Double = 0.5) throws {
     for folder in folders {
         let url = folder.appendingPathComponent(name)
         try? FileManager.default.removeItem(at: url)
@@ -114,8 +117,8 @@ func writeMovie(_ name: String) throws {
             return item
         }
         writer.metadata = [
-            item(.quickTimeMetadataLocationISO6709, "+48.1372+011.5761+519.000/"),
-            item(.quickTimeMetadataCreationDate, "2024-06-18T22:31:09+0200"),
+            item(.quickTimeMetadataLocationISO6709, location),
+            item(.quickTimeMetadataCreationDate, created),
             item(.quickTimeMetadataMake, "Example"),
             item(.quickTimeMetadataModel, "Example Camera One"),
         ]
@@ -131,7 +134,7 @@ func writeMovie(_ name: String) throws {
         writer.startWriting()
         writer.startSession(atSourceTime: .zero)
         let context = CIContext()
-        let image = CIImage(cgImage: picture(width: width, height: height, tint: 0.5))
+        let image = CIImage(cgImage: picture(width: width, height: height, tint: tint))
         for i in 0..<10 {
             while !input.isReadyForMoreMediaData { Thread.sleep(forTimeInterval: 0.01) }
             var buffer: CVPixelBuffer?
@@ -147,4 +150,32 @@ func writeMovie(_ name: String) throws {
     }
 }
 try writeMovie("geo.mov")
+
+// The Norway trip (the same itinerary as the screenshots' sample library,
+// Scripts/make_sample_media.swift): local times at UTC+02:00, eight places
+// on five days (two of them less than a kilometre apart only within a
+// day), one photo without a place
+let norway: [(name: String, taken: String, place: (Double, Double)?)] = [
+    ("norway-01-bryggen.jpg", "2026:06:14 10:12:05", (60.3975, 5.3245)),
+    ("norway-02-bryggen.jpg", "2026:06:14 10:20:41", (60.3978, 5.3236)),
+    ("norway-03-harbour.jpg", "2026:06:14 10:31:17", (60.3966, 5.3226)),
+    ("norway-04-floyen.jpg", "2026:06:14 14:05:52", (60.3940, 5.3460)),
+    ("norway-05-flam.jpg", "2026:06:15 09:40:10", (60.8628, 7.1137)),
+    ("norway-06-flam.jpg", "2026:06:15 09:52:33", (60.8634, 7.1149)),
+    ("norway-07-stegastein.jpg", "2026:06:15 13:15:02", (60.9097, 7.2112)),
+    ("norway-08-geiranger.jpg", "2026:06:16 11:02:44", (62.1009, 7.2059)),
+    ("norway-09-geiranger.jpg", "2026:06:16 11:10:09", (62.1015, 7.2071)),
+    ("norway-11-dalsnibba.jpg", "2026:06:16 16:30:55", (62.0469, 7.2717)),
+    ("norway-12-alesund.jpg", "2026:06:17 19:45:21", (62.4747, 6.1595)),
+    ("norway-13-evening.jpg", "2026:06:17 21:03:12", nil),
+    ("norway-14-trollstigen.jpg", "2026:06:18 10:30:00", (62.4565, 7.6644)),
+]
+for (index, photo) in norway.enumerated() {
+    var properties: [CFString: Any] = [kCGImagePropertyExifDictionary: [
+        kCGImagePropertyExifDateTimeOriginal: photo.taken, kCGImagePropertyExifOffsetTimeOriginal: "+02:00",
+    ]]
+    if let (latitude, longitude) = photo.place { properties[kCGImagePropertyGPSDictionary] = gps(latitude, longitude) }
+    try writeJPEG(photo.name, tint: Double(index % 5) / 5, properties: properties)
+}
+try writeMovie("norway-10-geiranger.mov", location: "+62.1012+007.2066/", created: "2026-06-16T11:20:30+0200", tint: 0.3)
 print("Wrote the location fixtures to " + folders.map(\.path).joined(separator: ", "))

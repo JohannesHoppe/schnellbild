@@ -276,8 +276,8 @@ final class WindowModel: ObservableObject {
     /// Tab (switch), F5 / F6 (to the other pane). Not while typing.
     func handleWindowKey(_ key: BrowserModel.KeyInput, command: Bool, control: Bool, shift: Bool = false,
                          textEditing: Bool) -> Bool {
-        // Not while typing, not during a slideshow, not over a sheet of either pane
-        guard !textEditing, !panes.contains(where: { $0.slideshow != nil || $0.anySheetOpen }) else { return false }
+        // Not while typing, not during a slideshow or the tour, not over a sheet of either pane
+        guard !textEditing, !panes.contains(where: { $0.presenting || $0.anySheetOpen }) else { return false }
         // ⇧F6 renames (the pane's), as in Total Commander
         if key == .f6, shift { return false }
         let handled = dispatchWindowKey(key, command: command, control: control, shift: shift)

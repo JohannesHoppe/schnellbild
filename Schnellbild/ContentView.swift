@@ -72,11 +72,11 @@ private struct WindowView: View {
                 slideshowKeysShown = false
             }
         }
-        .toolbar(model.slideshow == nil ? .visible : .hidden, for: .windowToolbar)
+        .toolbar(model.presenting ? .hidden : .visible, for: .windowToolbar)
         // The slideshow fills the whole screen, also where the (hidden) title
         // bar would be.
         .background(model.slideshow == nil ? Color.clear : Color.black)
-        .ignoresSafeArea(.container, edges: model.slideshow == nil ? [] : .all)
+        .ignoresSafeArea(.container, edges: model.presenting ? .all : [])
         .onAppear {
             if !launched {
                 launched = true
@@ -104,9 +104,9 @@ private struct WindowView: View {
     /// window. The left pane keeps its place in the view tree either way, so
     /// D doesn't rebuild it (a video playing in it goes on).
     private var panes: some View {
-        let rightShows = model.slideshow != nil && model === window.right
+        let rightShows = model.presenting && model === window.right
         let showsLeft = !(window.dual && rightShows)
-        let showsRight = window.dual && (model.slideshow == nil || rightShows)
+        let showsRight = window.dual && (!model.presenting || rightShows)
         let both = showsLeft && showsRight && window.right != nil
         return GeometryReader { geometry in
             let total = geometry.size.width
@@ -126,7 +126,7 @@ private struct WindowView: View {
         PaneView()
             .environmentObject(pane)
             .overlay {
-                if window.dual, model.slideshow == nil, pane === model {
+                if window.dual, !model.presenting, pane === model {
                     Rectangle().strokeBorder(Color.accentColor.opacity(0.8), lineWidth: 2).allowsHitTesting(false)
                 }
             }
@@ -362,7 +362,7 @@ private struct WindowView: View {
                 // F9 / F10 as in Norton Commander: the app's menus, quit (after asking)
                 // The other pane's sheet (a password asked for) keeps the keys
                 if window.panes.contains(where: { $0 !== model && $0.anySheetOpen }) { return false }
-                if !typing, !command, model.slideshow == nil, !model.anySheetOpen {
+                if !typing, !command, !model.presenting, !model.anySheetOpen {
                     switch key {
                     case .f9:  NortonMenus.showMainMenus(); model.noteKeyPress(key, command: false); return true
                     case .f10: NortonMenus.askToQuit(); return true
@@ -470,7 +470,11 @@ struct PaneView: View {
                 let gridShown = detailEntry == nil && model.slideshow == nil
                 ZStack {
                     Group {
-                        if model.viewMode == .list { EntryListView() } else { ThumbnailGridView() }
+                        switch model.viewMode {
+                        case .grid: ThumbnailGridView()
+                        case .list: EntryListView()
+                        case .atlas: AtlasView(atlas: model.atlas)
+                        }
                     }
                         .opacity(gridShown ? 1 : 0)
                         .allowsHitTesting(gridShown)
@@ -523,10 +527,10 @@ struct PaneView: View {
         }
         .safeAreaInset(edge: .top, spacing: 0) {
             // One identity per pane, so the field is kept across updates
-            if model.slideshow == nil { searchBar.id(ObjectIdentifier(model)) }
+            if !model.presenting { searchBar.id(ObjectIdentifier(model)) }
         }
         .safeAreaInset(edge: .bottom, spacing: 0) {
-            if model.mode == .grid, model.slideshow == nil, model.folderURL != nil { statusBar }
+            if model.mode == .grid, !model.presenting, model.folderURL != nil { statusBar }
         }
         .sheet(isPresented: $model.showHelp) { ShortcutsHelpView() }
         .sheet(item: $model.renameTarget) { RenameView(entry: $0) }
@@ -641,17 +645,21 @@ struct PaneView: View {
             } else {
                 Spacer(minLength: 0)
             }
-            // Tiles or a list (L)
+            // Tiles, a list (L) or the Atlas (W)
             Picker("", selection: $model.viewMode) {
                 Image(systemName: "square.grid.2x2").tag(BrowserModel.ViewMode.grid)
+                    .accessibilityLabel(Text("as Grid"))
                 Image(systemName: "list.bullet").tag(BrowserModel.ViewMode.list)
+                    .accessibilityLabel(Text("as List"))
+                Image(systemName: "map").tag(BrowserModel.ViewMode.atlas)
+                    .accessibilityLabel(Text("as Atlas"))
             }
             .pickerStyle(.segmented)
             .labelsHidden()
             .fixedSize()
-            .help(String(localized: "Grid or list (\(shortcuts.hint(.toggleList)))"))
+            .help(String(localized: "Grid or list (\(shortcuts.hint(.toggleList))), Atlas (\(shortcuts.hint(.toggleAtlas)))"))
             .accessibilityIdentifier("viewModePicker")
-            if let key = shortcuts.keys(.toggleList).first { KeyCap(key.capText) }
+            if let key = shortcuts.keys(model.viewMode == .atlas ? .toggleAtlas : .toggleList).first { KeyCap(key.capText) }
             // The mini keyboard's switch (here, not in the toolbar: that has
             // no room left in a narrow window)
             Button { model.showMiniKeyboard.toggle() } label: {

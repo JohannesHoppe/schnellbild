@@ -145,6 +145,17 @@ struct ShortcutsHelpView: View {
                 Row(.action(.endSlideshow), text: closers.isEmpty ? String(localized: "End the slideshow")
                     : String(localized: "End the slideshow (\(closers) close the playlist first)")),
             ]),
+            ("Atlas", [
+                Row(.action(.toggleAtlas), action: "Atlas: the photos and videos on the map; again: back to the grid or list"),
+                Row(.words("arrows"), action: "Atlas: to the nearest item on the map that way; down into the strip of items without a location"),
+                Row(.pair(.largerThumbnails, .smallerThumbnails, " / "), action: "Atlas: zoom the map in / out"),
+                Row(.words("double-click"), action: "Atlas: on several items, zoom in until they part; on one, open it"),
+                Row(.words("timeline"), action: "Drag across or move a handle: only that time on the map; click: the item taken nearest then"),
+                Row(.action(.startTour), action: "Tour: the places in the order of time, full screen, the route drawn on the map"),
+                Row(.action(.tourPause), action: "Tour: pause / resume"),
+                Row(.pair(.tourPrevious, .tourNext, " "), action: "Tour: previous / next place"),
+                Row(.action(.endTour), action: "End the tour"),
+            ]),
             ("Dual pane and marking", [
                 Row(.action(.toggleDual), action: "Dual pane on / off: two folders side by side"),
                 Row(.action(.switchPane), action: "Switch to the other pane"),

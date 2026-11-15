@@ -69,6 +69,7 @@ The tables list Schnellbild's own keys. Every one of them can be changed in Sett
 | f / ⌃⌘F | full screen |
 | Return / F2 / ⇧F6 | rename the selected folder or file, as in the Finder (Return on `..`: up a level; F6 too in a single pane) |
 | L | grid or list (a click on a column header sorts by it) |
+| W | Atlas: the photos and videos on the map (again: back) |
 | i / ⌘I | file info beside the grid for the selected item (also Get Info in its right-click menu) |
 | D / ⌃O | dual pane on / off |
 | K | mini keyboard on / off |
@@ -87,6 +88,28 @@ The tables list Schnellbild's own keys. Every one of them can be changed in Sett
 </picture></p>
 
 `L` (or the switch in the status bar) shows the folder as a list: a small preview (for a folder, its first pictures fanned out as on its tile), the whole name, kind, date modified, date taken and size in columns, and while sorting by distance how far away each one was taken. A click on a column's header sorts by it, another reverses it, the same sort as the sort menu. Everything else works as in the grid: clicking, marking, dragging, opening. Each half of the dual pane keeps its own choice, and Schnellbild remembers it.
+
+### Atlas: your photos on the map, with a timeline and a tour
+
+`W` (or the map in the status bar's switch, or View → as Atlas) shows the folder's photos and videos where they were taken, on a world map inside Schnellbild: a thumbnail at each place, and where several lie close together one tile with their number, which parts as you zoom in. While you search, it shows the results from all subfolders. Drag or scroll to move the map, pinch, ⌘-scroll or `+` `−` to zoom. A click selects (the same item as in the grid and the list), Space or a double click opens it, a double click on a tile of several zooms in until they part, and the arrow keys go to the nearest tile that way. Photos and videos without a location wait in a strip under the map ("No location · 12"), to select and open like the others; none gets a made-up place.
+
+The **timeline** at the bottom lays everything out by the time it was taken, a bar for each stretch of time with a thumbnail now and then. Drag across it, or move one of its handles, and the map and the strip show only that part of the trip; Show All brings back the whole span. A click on the timeline selects the photo taken nearest that moment. Times are those of the clock where each photo was taken, also when your Mac is in another time zone, and a video whose file only knows the time in UTC gets the offset of the photos around it.
+
+**Tour** (`T`, or the Tour button over the map) plays the trip back in full screen: the photos and videos are grouped into places (the same day, within about a kilometre), the map glides from one to the next in the order of time, the route grows on the map in the accent colour (along a GoPro's or DJI drone's GPS track where a video has one), and at each place its photos show large one after another while a video plays a few seconds without sound. Space pauses, ← → go to the previous or next place, `Esc` ends it. It keeps to the part of the timeline you chose. With Reduce motion on, the map cuts from place to place.
+
+The times and places come from the same sources as sorting by date taken and by distance (EXIF, a phone's video, a GoPro's telemetry, a DJI flight log, a Sony clip file, XMP sidecars, GPX tracks in the folder), read in the background. The map is OpenStreetMap data inside the app: nothing is uploaded, no location leaves your Mac, and Schnellbild doesn't go online for it.
+
+| Key | Action |
+|---|---|
+| w | Atlas (again: back to the grid or list) |
+| ← → ↑ ↓ | to the nearest item on the map that way; down into the strip of items without a location |
+| Space / double-click | open the item; on a tile of several, a double click zooms in |
+| + / − | zoom the map in / out |
+| Home / End | the first / last item in time |
+| t | play the tour |
+| Space | in the tour: pause / resume |
+| ← → | in the tour: previous / next place |
+| Esc / t | end the tour |
 
 ### Sort
 
@@ -382,7 +405,7 @@ ZIP, RAR and 7z archives (comic books as .cbz and .cbr too) open like folders: b
   <img src="docs/screenshots/help-light.webp" width="760" alt="The keyboard cheat sheet">
 </picture></p>
 
-F1 (or ⌘?) shows a cheat sheet of the keys; Print… (⌘P) in it prints it on one page, or saves it as a PDF. `K` (or View → Mini Keyboard, or the keyboard switch in the status bar) slides up the **mini keyboard** under the window: the keys that work on what's on screen right now (the grid, a picture, a PDF, a video, the slideshow and its playlist), each with what it does. It is a cheat sheet you can click, handy with only a trackpad; a key you press on the real keyboard lights up on it, so you see what just happened. In a slideshow it shows while you move the mouse. The action buttons (Dual Pane, Auto Enhance, Adjust, Slideshow, Grid) show their key on the button; the others name it in their tooltip.
+F1 (or ⌘?) shows a cheat sheet of the keys; Print… (⌘P) in it prints it on one page, or saves it as a PDF. `K` (or View → Mini Keyboard, or the keyboard switch in the status bar) slides up the **mini keyboard** under the window: the keys that work on what's on screen right now (the grid, the Atlas and its tour, a picture, a PDF, a video, the slideshow and its playlist), each with what it does. It is a cheat sheet you can click, handy with only a trackpad; a key you press on the real keyboard lights up on it, so you see what just happened. In a slideshow it shows while you move the mouse. The action buttons (Dual Pane, Auto Enhance, Adjust, Slideshow, Grid) show their key on the button; the others name it in their tooltip.
 
 <p align="center"><picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/keyboard-dark.webp">

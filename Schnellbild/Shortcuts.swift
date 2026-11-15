@@ -202,13 +202,15 @@ struct ShortcutScope: OptionSet, Hashable {
     static let full = ShortcutScope(rawValue: 2)
     static let show = ShortcutScope(rawValue: 4)
     static let list = ShortcutScope(rawValue: 8)
+    /// The Atlas view's tour.
+    static let tour = ShortcutScope(rawValue: 16)
 
     func overlaps(_ other: ShortcutScope) -> Bool { !intersection(other).isEmpty }
 }
 
 /// The groups of actions, as F1 shows them.
 enum ShortcutGroup: CaseIterable {
-    case grid, fullView, videos, slideshow, dual, search, general
+    case grid, fullView, videos, slideshow, atlas, dual, search, general
 
     var name: String {
         switch self {
@@ -216,6 +218,7 @@ enum ShortcutGroup: CaseIterable {
         case .fullView:  return String(localized: "Full view")
         case .videos:    return String(localized: "Videos")
         case .slideshow: return String(localized: "Slideshow")
+        case .atlas:     return String(localized: "Atlas")
         case .dual:      return String(localized: "Dual pane and marking")
         case .search:    return String(localized: "Search field")
         case .general:   return String(localized: "Grid and full view")
@@ -237,6 +240,8 @@ enum ShortcutAction: String, CaseIterable {
     case subtitles, nextSubtitle, nextAudio, slower, faster, normalSpeed
     // Slideshow
     case startSlideshow, showPause, playlist, listUp, listDown, listShow, listTakeOut, endSlideshow
+    // Atlas
+    case toggleAtlas, startTour, tourPause, tourPrevious, tourNext, endTour
     // Dual pane and marking
     case toggleDual, switchPane, copyToOther, moveToOther, mark, markAll
     // Search field
@@ -267,6 +272,7 @@ enum ShortcutAction: String, CaseIterable {
     private static let gridAndFull: ShortcutScope = [.grid, .full]
     private static let viewing: ShortcutScope = [.full, .show]
     private static let everywhere: ShortcutScope = [.grid, .full, .show]
+    private static let alsoInTour: ShortcutScope = [.grid, .full, .show, .tour]
 
     var spec: Spec {
         switch self {
@@ -326,6 +332,13 @@ enum ShortcutAction: String, CaseIterable {
         case .endSlideshow:      return Spec(group: .slideshow, scope: .show, standard: ["escape", "s", "return", "delete"],
                                              phiewer: ["escape", "~@s", "return", "delete"], performer: "escape")
 
+        case .toggleAtlas:       return Spec(group: .atlas, scope: Self.gridAndFull, standard: ["w"], performer: "w")
+        case .startTour:         return Spec(group: .atlas, scope: .grid, standard: ["t"], performer: "t")
+        case .tourPause:         return Spec(group: .atlas, scope: .tour, standard: ["space"], performer: "space")
+        case .tourPrevious:      return Spec(group: .atlas, scope: .tour, standard: ["left"], performer: "left")
+        case .tourNext:          return Spec(group: .atlas, scope: .tour, standard: ["right"], performer: "right")
+        case .endTour:           return Spec(group: .atlas, scope: .tour, standard: ["escape", "t"], performer: "escape")
+
         case .toggleDual:        return Spec(group: .dual, scope: Self.gridAndFull, standard: ["d", "^o"], performer: "d")
         case .switchPane:        return Spec(group: .dual, scope: Self.gridAndFull, standard: ["tab"], performer: "tab")
         case .copyToOther:       return Spec(group: .dual, scope: Self.gridAndFull, standard: ["@$c", "f5"], performer: "@$c")
@@ -345,21 +358,21 @@ enum ShortcutAction: String, CaseIterable {
         case .sortTaken:         return Spec(group: .general, scope: Self.gridAndFull, standard: ["@4"], performer: nil)
         case .sortSize:          return Spec(group: .general, scope: Self.gridAndFull, standard: ["@5"], performer: nil)
         case .sortDistance:      return Spec(group: .general, scope: Self.gridAndFull, standard: ["@6"], performer: nil)
-        case .fullScreen:        return Spec(group: .general, scope: Self.everywhere, standard: ["f"], performer: "f")
+        case .fullScreen:        return Spec(group: .general, scope: Self.alsoInTour, standard: ["f"], performer: "f")
         case .enhance:           return Spec(group: .general, scope: Self.everywhere, standard: ["e"], performer: "e")
         case .adjust:            return Spec(group: .general, scope: Self.everywhere, standard: ["a"], performer: "a")
         case .openFolder:        return Spec(group: .general, scope: Self.gridAndFull, standard: ["@o"], performer: nil)
-        case .newWindow:         return Spec(group: .general, scope: Self.everywhere, standard: ["@n"], performer: nil)
+        case .newWindow:         return Spec(group: .general, scope: Self.alsoInTour, standard: ["@n"], performer: nil)
         case .reveal:            return Spec(group: .general, scope: Self.gridAndFull, standard: ["@$r"], performer: nil)
         case .openDefault:       return Spec(group: .general, scope: Self.gridAndFull, standard: ["@return", "f4"], performer: nil)
         case .menus:             return Spec(group: .general, scope: Self.gridAndFull, standard: ["f9"], performer: nil)
         case .quit:              return Spec(group: .general, scope: Self.gridAndFull, standard: ["f10"], performer: nil)
-        case .miniKeyboard:      return Spec(group: .general, scope: Self.everywhere, standard: ["k"], performer: "k")
+        case .miniKeyboard:      return Spec(group: .general, scope: Self.alsoInTour, standard: ["k"], performer: "k")
         case .bookmark:          return Spec(group: .general, scope: Self.gridAndFull, standard: ["@d"], performer: nil)
         case .bookmark1, .bookmark2, .bookmark3, .bookmark4, .bookmark5, .bookmark6, .bookmark7, .bookmark8, .bookmark9:
             return Spec(group: .general, scope: Self.gridAndFull, standard: ["^\(bookmarkIndex! + 1)"], performer: nil)
-        case .bossKey:           return Spec(group: .general, scope: Self.everywhere, standard: ["x"], performer: nil)
-        case .help:              return Spec(group: .general, scope: Self.everywhere, standard: ["f1", "@?"], performer: "f1")
+        case .bossKey:           return Spec(group: .general, scope: Self.alsoInTour, standard: ["x"], performer: nil)
+        case .help:              return Spec(group: .general, scope: Self.alsoInTour, standard: ["f1", "@?"], performer: "f1")
         }
     }
 
@@ -414,6 +427,12 @@ enum ShortcutAction: String, CaseIterable {
         case .gridFirst:         return String(localized: "First item")
         case .gridLast:          return String(localized: "Last item")
         case .toggleList:        return String(localized: "Grid or list")
+        case .toggleAtlas:       return String(localized: "Atlas (map)")
+        case .startTour:         return String(localized: "Play the tour")
+        case .tourPause:         return String(localized: "Tour: pause / resume")
+        case .tourPrevious:      return String(localized: "Tour: previous place")
+        case .tourNext:          return String(localized: "Tour: next place")
+        case .endTour:           return String(localized: "End the tour")
         case .largerThumbnails:  return String(localized: "Larger Thumbnails")
         case .smallerThumbnails: return String(localized: "Smaller Thumbnails")
         case .gridRename, .fullRename: return String(localized: "Rename")
@@ -727,6 +746,7 @@ extension WindowModel {
     var shortcutContext: ShortcutScope {
         let model = active
         if model.slideshow != nil { return model.showPlaylist && model.playlistFocused ? [.show, .list] : .show }
+        if model.touring { return .tour }
         return model.mode == .detail ? .full : .grid
     }
 

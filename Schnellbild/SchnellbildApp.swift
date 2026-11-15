@@ -138,6 +138,11 @@ struct SchnellbildApp: App {
                 Divider()
                 Toggle("as Grid", isOn: Binding(get: { model.viewMode == .grid }, set: { if $0 { model.viewMode = .grid } }))
                 Toggle("as List", isOn: Binding(get: { model.viewMode == .list }, set: { if $0 { model.viewMode = .list } }))
+                Toggle("as Atlas", isOn: Binding(get: { model.viewMode == .atlas }, set: { if $0 { model.viewMode = .atlas } }))
+                    .disabled(model.folderURL == nil)
+                Button("Play Tour") { model.startTour() }
+                    .keyboardShortcut(shortcuts.menuShortcut(.startTour))
+                    .disabled(model.folderURL == nil || model.mode != .grid || model.presenting || window.anySheetOpen)
                 Divider()
                 Toggle("Dual Pane", isOn: Binding(get: { window.dual }, set: { window.setDual($0) }))
                     // As the key: not during a slideshow, not over a sheet (of either pane)

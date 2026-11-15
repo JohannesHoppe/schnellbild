@@ -143,6 +143,33 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         try newFeatureScreenshots()
     }
 
+    /// The Atlas view on the sample library's Norway trip: the map with
+    /// the timeline (a photo selected), and a frame of the tour.
+    func testAtlasScreenshots() throws {
+        launch(open: tempDir.appendingPathComponent("Norway").path)
+        XCTAssertTrue(tile("Geirangerfjord.jpg").waitForExistence(timeout: 15))
+        tile("Geirangerfjord.jpg").click()
+        waitForSelected("Geirangerfjord.jpg")
+        app.typeKey("w", modifierFlags: [])
+        XCTAssertTrue(element("atlas").waitForExistence(timeout: 10))
+        let tiles = app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH 'atlas.'"))
+        eventually("the places are on the map", timeout: 20) { tiles.count >= 5 }
+        shoot("atlas", settle: 4)
+
+        app.typeKey("t", modifierFlags: [])
+        let status = element("tourStatus")
+        XCTAssertTrue(status.waitForExistence(timeout: 10))
+        // On to Geiranger (the fifth place), its photo shown, then held
+        for _ in 0..<4 { app.typeKey(.rightArrow, modifierFlags: []) }
+        eventually("Geiranger's photo", timeout: 15) { self.text(of: status).contains("showing") }
+        app.typeKey(.space, modifierFlags: [])
+        eventually("held") { self.text(of: status).hasSuffix("paused") }
+        shoot("tour", settle: 2)
+        app.typeKey(.escape, modifierFlags: [])
+        eventually("the tour ended", timeout: 10) { !status.exists }
+        RunLoop.current.run(until: Date().addingTimeInterval(2))   // out of full screen
+    }
+
     /// Archives, other files, the password sheet, the mini keyboard, a new
     /// folder, the volume.
     private func newFeatureScreenshots() throws {

@@ -39,7 +39,7 @@ struct MiniKeyboard: View {
     /// What's on screen decides the keys.
     /// `playlist`: the slideshow's playlist open; `playlistKeys`: it has the
     /// keys (after a click in it).
-    enum Context { case grid, dualGrid, picture, pdf, video, slideshow, playlist, playlistKeys }
+    enum Context { case grid, dualGrid, atlas, tour, picture, pdf, video, slideshow, playlist, playlistKeys }
 
     static func keys(for context: Context) -> [Key] {
         switch context {
@@ -76,6 +76,30 @@ struct MiniKeyboard: View {
                 Key(.search, "@f", word: "Search"),
                 Key(.toggleDual, "d", word: "Single pane"),
                 Key(.help, "f1", word: "Help"),
+            ]
+        case .atlas:
+            return [
+                Key(.gridBack, "delete", word: "Back"),
+                Key(.gridPrevious, "left", word: "Left"),
+                Key(.gridRowUp, "up", word: "Up"),
+                Key(.gridRowDown, "down", word: "Down"),
+                Key(.gridNext, "right", word: "Right"),
+                Key(.gridOpen, "space", word: "Open"),
+                Key(.largerThumbnails, "+", word: "Zoom in"),
+                Key(.smallerThumbnails, "-", word: "Zoom out"),
+                Key(.startTour, "t", word: "Tour"),
+                Key(.toggleAtlas, "w", word: "Grid"),
+                Key(.info, "i", word: "Info"),
+                Key(.search, "@f", word: "Search"),
+                Key(.help, "f1", word: "Help"),
+            ]
+        case .tour:
+            return [
+                Key(.tourPause, "space", word: "Pause"),
+                Key(.tourPrevious, "left", word: "Previous place"),
+                Key(.tourNext, "right", word: "Next place"),
+                Key(.fullScreen, "f", word: "Full Screen"),
+                Key(.endTour, "escape", word: "End"),
             ]
         case .picture:
             return [
@@ -172,7 +196,11 @@ struct MiniKeyboard: View {
             guard model.showPlaylist else { return .slideshow }
             return model.playlistFocused ? .playlistKeys : .playlist
         }
-        guard model.mode == .detail else { return window.dual ? .dualGrid : .grid }
+        if model.touring { return .tour }
+        guard model.mode == .detail else {
+            if model.viewMode == .atlas { return .atlas }
+            return window.dual ? .dualGrid : .grid
+        }
         guard let shown = model.shownMediaEntry else { return .picture }
         if shown.kind == .video { return .video }
         return PDFPages.isPDF(shown.url) ? .pdf : .picture

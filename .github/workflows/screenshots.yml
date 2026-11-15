@@ -18,6 +18,9 @@ on:
       language:
         description: "The app's language (en, de, fr, pt-BR, zh-Hans …: a folder of Resources/Localization) or all"
         default: en
+      test:
+        description: "The screenshot test to run (ReadmeScreenshots, or one of its tests, e.g. ReadmeScreenshots/testAtlasScreenshots)"
+        default: ReadmeScreenshots
 
 permissions:
   contents: read
@@ -114,6 +117,7 @@ jobs:
       - name: Take the screenshots
         env:
           LANGUAGE_INPUT: ${{ matrix.language }}
+          TEST_INPUT: ${{ inputs.test }}
         run: |
           mkdir -p shots
           # The test asks for each picture on the pasteboard ("shoot:<name>")
@@ -157,7 +161,7 @@ jobs:
             TEST_RUNNER_SCREENSHOTS=1 TEST_RUNNER_SCREENSHOT_SUFFIX="-$mode$tag" TEST_RUNNER_LANGUAGE="$language" TEST_RUNNER_PHOTOS_DIR=/Users/Shared/Photos \
               xcodebuild test-without-building -project Schnellbild.xcodeproj -scheme Schnellbild \
                 -destination 'platform=macOS' -derivedDataPath build/DerivedData \
-                -only-testing:SchnellbildUITests/ReadmeScreenshots || status=1
+                -only-testing:"SchnellbildUITests/${TEST_INPUT:-ReadmeScreenshots}" || status=1
           done
           kill "$helper" 2>/dev/null || true
           ls -la shots

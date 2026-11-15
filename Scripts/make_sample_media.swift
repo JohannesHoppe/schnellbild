@@ -104,6 +104,30 @@ enum SampleScenes {
         ],
     ]
 
+    /// A made-up five-day trip through Norway for the Atlas view, its
+    /// timeline and its tour: public places, local times (UTC+02:00), one
+    /// photo without a place and a video with its place and time as a
+    /// phone writes them. The same itinerary as the test fixtures
+    /// (`Scripts/make_location_fixtures.swift`).
+    static let norway: [(path: String, taken: String, place: (Double, Double)?, scene: Scene)] = [
+        ("Norway/Bryggen Morning.jpg", "2026:06:14 10:12:05", (60.3975, 5.3245), with(mist, seed: 71)),
+        ("Norway/Bryggen Houses.jpg", "2026:06:14 10:20:41", (60.3978, 5.3236), with(golden, seed: 73)),
+        ("Norway/Bergen Harbour.jpg", "2026:06:14 10:31:17", (60.3966, 5.3226), { var s = blueHour; s.seed = 79; return s }()),
+        ("Norway/View from Floyen.jpg", "2026:06:14 14:05:52", (60.3940, 5.3460), with(alpine, seed: 83)),
+        ("Norway/Flam Valley.jpg", "2026:06:15 09:40:10", (60.8628, 7.1137), with(mist, seed: 89)),
+        ("Norway/Flam Railway.jpg", "2026:06:15 09:52:33", (60.8634, 7.1149), with(golden, seed: 97)),
+        ("Norway/Stegastein.jpg", "2026:06:15 13:15:02", (60.9097, 7.2112), { var s = alpine; s.water = true; s.seed = 101; return s }()),
+        ("Norway/Geirangerfjord.jpg", "2026:06:16 11:02:44", (62.1009, 7.2059), with(fjord, seed: 103)),
+        ("Norway/Seven Sisters.jpg", "2026:06:16 11:10:09", (62.1015, 7.2071), { var s = alpine; s.water = true; s.seed = 107; return s }()),
+        ("Norway/Dalsnibba.jpg", "2026:06:16 16:30:55", (62.0469, 7.2717), with(alpine, seed: 109)),
+        ("Norway/Alesund from Aksla.jpg", "2026:06:17 19:45:21", (62.4747, 6.1595), with(lagoon, seed: 113)),
+        ("Norway/Evening on Deck.jpg", "2026:06:17 21:03:12", nil, with(blueHour, seed: 127)),
+        ("Norway/Trollstigen.jpg", "2026:06:18 10:30:00", (62.4565, 7.6644), with(mist, seed: 131)),
+    ]
+    /// The trip's video: on the ferry in the Geirangerfjord.
+    static let norwayVideo = (path: "Norway/Geiranger Ferry.mov", created: "2026-06-16T11:20:30+0200",
+                              iso6709: "+62.1012+007.2066/", scene: { var s = fjord; s.sunDrift = 0.2; s.seed = 137; return s }())
+
     static func writeLibrary(to folder: URL) async throws {
         for (path, taken, scene) in library {
             let url = try prepare(path, in: folder)
@@ -112,6 +136,19 @@ enum SampleScenes {
         for (path, scene) in videos {
             try await writeVideo(scene, to: try prepare(path, in: folder))
         }
+        for (path, taken, place, scene) in norway {
+            var extra: [CFString: Any] = [kCGImagePropertyExifDictionary: [kCGImagePropertyExifOffsetTimeOriginal: "+02:00"]]
+            if let (latitude, longitude) = place {
+                extra[kCGImagePropertyGPSDictionary] = [
+                    kCGImagePropertyGPSLatitude: latitude, kCGImagePropertyGPSLatitudeRef: "N",
+                    kCGImagePropertyGPSLongitude: longitude, kCGImagePropertyGPSLongitudeRef: "E",
+                ]
+            }
+            try writeJPEG(render(scene, width: 1600, height: 1067), taken: taken, extra: extra, to: try prepare(path, in: folder))
+        }
+        let video = norwayVideo
+        try await writeVideo(video.scene, to: try prepare(video.path, in: folder), seconds: 6,
+                             metadata: [(.quickTimeMetadataLocationISO6709, video.iso6709), (.quickTimeMetadataCreationDate, video.created)])
     }
 
     private static func prepare(_ path: String, in folder: URL) throws -> URL {
@@ -121,9 +158,17 @@ enum SampleScenes {
         return url
     }
 
-    static func writeVideo(_ scene: Scene, to url: URL, seconds: Int = 6, fps: Int32 = 30) async throws {
+    static func writeVideo(_ scene: Scene, to url: URL, seconds: Int = 6, fps: Int32 = 30,
+                           metadata: [(AVMetadataIdentifier, String)] = []) async throws {
         let width = 1280, height = 720
-        let writer = try AVAssetWriter(outputURL: url, fileType: .mp4)
+        let writer = try AVAssetWriter(outputURL: url, fileType: url.pathExtension == "mov" ? .mov : .mp4)
+        writer.metadata = metadata.map { identifier, value in
+            let item = AVMutableMetadataItem()
+            item.identifier = identifier
+            item.value = value as NSString
+            item.dataType = kCMMetadataBaseDataType_UTF8 as String
+            return item
+        }
         let input = AVAssetWriterInput(mediaType: .video, outputSettings: [
             AVVideoCodecKey: AVVideoCodecType.h264,
             AVVideoWidthKey: width,
@@ -303,4 +348,4 @@ enum SampleScenes {
 
 let target = URL(fileURLWithPath: CommandLine.arguments.count > 1 ? CommandLine.arguments[1] : "Photos", isDirectory: true)
 try await SampleScenes.writeLibrary(to: target)
-print("Wrote \(SampleScenes.library.count) pictures and \(SampleScenes.videos.count) videos to \(target.path)")
+print("Wrote \(SampleScenes.library.count + SampleScenes.norway.count) pictures and \(SampleScenes.videos.count + 1) videos to \(target.path)")

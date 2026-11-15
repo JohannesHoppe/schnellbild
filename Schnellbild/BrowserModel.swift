@@ -993,7 +993,7 @@ final class BrowserModel: ObservableObject {
     /// `canonicalPath(folderURL)`, kept so grid cells don't recompute it.
     private var folderPath: String?
     @Published private(set) var entries: [GridEntry] = [] {
-        didSet { listRevision += 1; recomputeDerived(); readCaptureDatesIfNeeded(); readLocationsIfNeeded() }
+        didSet { listRevision += 1; recomputeDerived(); readCaptureDatesIfNeeded(); readLocationsIfNeeded(); atlasFollow() }
     }
     @Published var selection: Int? {
         didSet { if !keepingChoice { selectionChosen = !settingDefaultSelection } }
@@ -3431,13 +3431,51 @@ final class BrowserModel: ObservableObject {
         lastKeyPress = KeyPress(key: key, command: command, shift: shift)
     }
 
-    /// Tiles or a list (L): per pane, remembered.
-    enum ViewMode: String { case grid, list }
+    /// Tiles, a list (L) or the Atlas (W, the map): per pane, remembered.
+    enum ViewMode: String { case grid, list, atlas }
     @Published var viewMode: ViewMode = .grid {
         didSet {
             defaults.set(viewMode.rawValue, forKey: settingsPrefix + "viewMode")
             if viewMode == .list { columnCount = 1 }
+            if viewMode != .atlas, oldValue != .atlas { viewModeBeforeAtlas = viewMode }
+            if viewMode == .atlas { atlasFollow() } else if oldValue == .atlas { atlasIfMade?.pause() }
         }
+    }
+    /// What W goes back to from the Atlas.
+    private var viewModeBeforeAtlas: ViewMode = .grid
+
+    /// W: the Atlas, or back to the grid or list it came from.
+    func toggleAtlas() {
+        viewMode = viewMode == .atlas ? viewModeBeforeAtlas : .atlas
+    }
+
+    /// The Atlas view's state (made when first shown).
+    private(set) lazy var atlas: AtlasModel = {
+        atlasMade = true
+        return AtlasModel(browser: self, readFacts: atlasFacts)
+    }()
+    private var atlasMade = false
+    /// Where the Atlas reads times and places (tests stand in).
+    var atlasFacts: AtlasModel.FactsReader = AtlasModel.liveFacts
+    var atlasIfMade: AtlasModel? { atlasMade ? atlas : nil }
+
+    /// The tour runs (over the pane, full screen).
+    var touring: Bool { atlasIfMade?.tour != nil }
+    /// A slideshow or the tour has the window.
+    var presenting: Bool { slideshow != nil || touring }
+
+    /// The Atlas reads the facts of what the pane lists, while it is shown.
+    private func atlasFollow() {
+        guard viewMode == .atlas else { return }
+        atlas.entriesChanged(entries, context: (folderPath ?? "") + "\u{1}" + query)
+    }
+
+    /// T: the tour of what the Atlas shows (the Atlas comes first).
+    func startTour() {
+        guard mode == .grid, slideshow == nil else { return }
+        if viewMode != .atlas { viewMode = .atlas }
+        searchFocused = false
+        atlas.startTour()
     }
 
     /// A capture date read already (the list's Date Taken column).
@@ -3471,6 +3509,8 @@ final class BrowserModel: ObservableObject {
         // Esc closes the Adjustments popover first, as it would by itself.
         if key == .escape, showAdjustments { showAdjustments = false; return true }
         if slideshow != nil { return handleSlideshowKey(key, command: command, shift: shift) }
+        if let atlas = atlasIfMade, atlas.tour != nil { return tourKey(key, command: command, atlas: atlas) }
+        if mode == .grid, viewMode == .atlas, let handled = atlasKey(key, command: command, shift: shift) { return handled }
         switch key {
         case .f1, .f2:
             return false   // handled above
@@ -3568,7 +3608,13 @@ final class BrowserModel: ObservableObject {
         case "e" where !command: enhance.toggle(); return true
         case "a" where !command: showAdjustments.toggle(); return true
         case "k" where !command: showMiniKeyboard.toggle(); return true
-        case "l" where !command: viewMode = viewMode == .grid ? .list : .grid; return true
+        case "l" where !command: viewMode = viewMode == .list ? .grid : .list; return true
+        case "w" where !command:
+            guard folderURL != nil else { return false }
+            toggleAtlas(); return true
+        case "t" where !command:
+            guard mode == .grid, folderURL != nil else { return false }
+            startTour(); return true
         // The Inspector: in the grid and list too, about the item selected
         case "i" where !command:
             guard viewingMedia || folderURL != nil else { return false }
