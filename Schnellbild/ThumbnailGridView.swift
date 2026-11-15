@@ -96,7 +96,9 @@ struct ThumbnailGridView: View {
         }
         .contentShape(Rectangle())
         .modifier(EntryInteractions(entry: entry))
-        .help(location.map { "\($0)/\(entry.name)" } ?? "")
+        // Where a result lives; sorting by distance, how far away it was taken
+        .help([location.map { "\($0)/\(entry.name)" }, model.knownDistance(of: entry.url).map(GeoPoint.describeDistance)]
+            .compactMap { $0 }.joined(separator: "\n"))
     }
 
     @ViewBuilder
@@ -679,6 +681,10 @@ struct EntryInteractions: ViewModifier {
                             guard model.select(entry) else { return }
                             model.beginRename()
                         }
+                    }
+                    Button("Get Info") { model.getInfo(entry) }
+                    if entry.isMedia {
+                        Button("Sort by Distance from Here") { model.sortByDistance(from: entry) }
                     }
                     Button("Reveal in Finder") {
                         guard model.select(entry) else { return }

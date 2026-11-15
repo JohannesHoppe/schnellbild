@@ -69,6 +69,7 @@ The tables list Schnellbild's own keys. Every one of them can be changed in Sett
 | f / ⌃⌘F | full screen |
 | Return / F2 / ⇧F6 | rename the selected folder or file, as in the Finder (Return on `..`: up a level; F6 too in a single pane) |
 | L | grid or list (a click on a column header sorts by it) |
+| i / ⌘I | file info beside the grid for the selected item (also Get Info in its right-click menu) |
 | D / ⌃O | dual pane on / off |
 | K | mini keyboard on / off |
 | ⌘N | a new window, e.g. for another display: it has its own folders, dual pane and slideshow, and remembers its own last folder |
@@ -85,7 +86,7 @@ The tables list Schnellbild's own keys. Every one of them can be changed in Sett
   <img src="docs/screenshots/list-light.webp" width="760" alt="A folder as a list: preview, name, kind, dates and size in columns">
 </picture></p>
 
-`L` (or the switch in the status bar) shows the folder as a list: a small preview (for a folder, its first pictures fanned out as on its tile), the whole name, kind, date modified, date taken and size in columns. A click on a column's header sorts by it, another reverses it, the same sort as the sort menu. Everything else works as in the grid: clicking, marking, dragging, opening. Each half of the dual pane keeps its own choice, and Schnellbild remembers it.
+`L` (or the switch in the status bar) shows the folder as a list: a small preview (for a folder, its first pictures fanned out as on its tile), the whole name, kind, date modified, date taken and size in columns, and while sorting by distance how far away each one was taken. A click on a column's header sorts by it, another reverses it, the same sort as the sort menu. Everything else works as in the grid: clicking, marking, dragging, opening. Each half of the dual pane keeps its own choice, and Schnellbild remembers it.
 
 ### Sort
 
@@ -94,11 +95,13 @@ The tables list Schnellbild's own keys. Every one of them can be changed in Sett
   <img src="docs/screenshots/sort-light.webp" width="760" alt="The sort menu in the toolbar">
 </picture></p>
 
-By name, kind, date modified, date taken or size, from the toolbar or with one key. The same key again reverses the order. Date taken reads the camera's capture date (EXIF, or the video's creation date), so copied photos still line up in the order they were shot. Dates and sizes start newest and largest first, like Finder. Schnellbild remembers the order.
+By name, kind, date modified, date taken, size or distance, from the toolbar or with one key. The same key again reverses the order. Date taken reads the camera's capture date (EXIF, or the video's creation date), so copied photos still line up in the order they were shot. Dates and sizes start newest and largest first, like Finder. Schnellbild remembers the order.
+
+**By distance:** the photos and videos taken nearest to a place come first, those without a location last. The place is a photo's own (right-click it: Sort by Distance from Here, or the button in its file info), or coordinates you paste: `48.137, 11.575`, `48.137° N 11.575° E`, `48°8′14″N 11°34′27″E`, or a link from Apple Maps, Google Maps or OpenStreetMap (Sort → Distance from Coordinates or Map Link…). It works in a folder and in search results from all its subfolders; the locations come from the files' GPS data (EXIF, or the location an iPhone writes into a video), read once and kept while a file stays the same, with a progress count in the status bar for many files. Choosing another sort stops it. The list view shows each distance, a tile its tooltip, in kilometres or miles as your region uses them.
 
 | Key | Action |
 |---|---|
-| ⌘1 … ⌘5 | sort by name, kind, date modified, date taken, size (again: reverse) |
+| ⌘1 … ⌘6 | sort by name, kind, date modified, date taken, size, distance (again: reverse) |
 
 ### Search, including subfolders
 
@@ -265,16 +268,24 @@ It's a filter on the screen only: your files stay as they are. Photos and videos
 
 <p align="center"><picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/inspector-dark.webp">
-  <img src="docs/screenshots/inspector-light.webp" width="760" alt="The file inspector over a photo">
+  <img src="docs/screenshots/inspector-light.webp" width="760" alt="The file info beside a photo">
 </picture></p>
 
-For the item on screen: name, type, the format its content shows, resolution, size, when it was taken (from the photo's EXIF or the video's creation date) and when it was last changed. For a video also its codecs (video with frames per second, audio with channels and sample rate), length and bitrate; for a photo its bit depth, colour profile and camera.
+A sidebar with everything a file says about itself, for the item selected in the grid or list, or the one on screen in the full view and the slideshow (i, ⌘I, or Get Info in an item's right-click menu):
+
+- **Capture:** date and time as the camera's clock showed them, with its offset from UTC; camera, lens, aperture, shutter speed, ISO, focal length (and its 35 mm equivalent), flash, exposure program and bias, white balance, orientation.
+- **Location:** latitude and longitude (`48.1372° N, 11.5761° E`), altitude and the direction the camera faced, from a photo's GPS data or the location an iPhone writes into a video. Open in Maps shows the place in Apple Maps; that app goes online, Schnellbild itself doesn't.
+- **Picture or video:** resolution, colour space and profile, bit depth, HDR (PQ, HLG, a gain map, Dolby Vision); for a video its codecs (video with frames per second, audio with channels and sample rate), its tracks, length and bitrate. MKV, WebM and the other formats only VLC plays show what VLC reports once they play in the full view.
+- **File:** kind, format by content, size, created, modified and where it lies.
+- **All metadata:** every key of the EXIF, GPS, TIFF, IPTC, maker and XMP data (QuickTime metadata for videos), in groups to fold open, with a filter. Values can be selected and copied (right-click: Copy), and Copy All puts everything on the clipboard as text. Large values such as maker notes are shortened.
+
+Only the file's header is read, in the background, also for pictures inside archives.
 
 A file whose extension names another format than its content (a recording named `.mkv` that is really an MPEG transport stream, a PNG named `.jpg`) gets a note with the extension that fits. Schnellbild shows it anyway, by its content.
 
 | Key | Action |
 |---|---|
-| i | show / hide the file info |
+| i / ⌘I | show / hide the file info |
 
 ### Rename, reveal, trash, sort into folders
 

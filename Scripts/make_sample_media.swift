@@ -81,10 +81,33 @@ enum SampleScenes {
         ("Lofoten/Aurora Timelapse.mp4", with(night, seed: 67)),
     ]
 
+    /// What a phone's camera writes besides the date, for the Inspector's
+    /// screenshot: camera, exposure and the place (Geirangerfjord). Made-up
+    /// camera names.
+    static let cameraFacts: [String: [CFString: Any]] = [
+        "Fjord at Sunset.jpg": [
+            kCGImagePropertyTIFFDictionary: [kCGImagePropertyTIFFMake: "Example", kCGImagePropertyTIFFModel: "Example Camera One"],
+            kCGImagePropertyExifDictionary: [
+                kCGImagePropertyExifOffsetTimeOriginal: "+02:00",
+                kCGImagePropertyExifFNumber: 1.8, kCGImagePropertyExifExposureTime: 1.0 / 500,
+                kCGImagePropertyExifISOSpeedRatings: [50], kCGImagePropertyExifFocalLength: 6.9,
+                kCGImagePropertyExifFocalLenIn35mmFilm: 24, kCGImagePropertyExifFlash: 16,
+                kCGImagePropertyExifExposureProgram: 2, kCGImagePropertyExifExposureBiasValue: 0.0,
+                kCGImagePropertyExifWhiteBalance: 0, kCGImagePropertyExifLensModel: "Example Lens 6.9mm f/1.8",
+            ],
+            kCGImagePropertyGPSDictionary: [
+                kCGImagePropertyGPSLatitude: 62.104900, kCGImagePropertyGPSLatitudeRef: "N",
+                kCGImagePropertyGPSLongitude: 7.206200, kCGImagePropertyGPSLongitudeRef: "E",
+                kCGImagePropertyGPSAltitude: 12.0, kCGImagePropertyGPSAltitudeRef: 0,
+                kCGImagePropertyGPSImgDirection: 254.0, kCGImagePropertyGPSImgDirectionRef: "T",
+            ],
+        ],
+    ]
+
     static func writeLibrary(to folder: URL) async throws {
         for (path, taken, scene) in library {
             let url = try prepare(path, in: folder)
-            try writeJPEG(render(scene), taken: taken, to: url)
+            try writeJPEG(render(scene), taken: taken, extra: cameraFacts[path] ?? [:], to: url)
         }
         for (path, scene) in videos {
             try await writeVideo(scene, to: try prepare(path, in: folder))
@@ -263,17 +286,16 @@ enum SampleScenes {
     }
 
     /// `taken` is the EXIF form "yyyy:MM:dd HH:mm:ss" (local time, no offset).
-    static func writeJPEG(_ image: CGImage, taken: String, to url: URL) throws {
+    static func writeJPEG(_ image: CGImage, taken: String, extra: [CFString: Any] = [:], to url: URL) throws {
         guard let dest = CGImageDestinationCreateWithURL(url as CFURL, UTType.jpeg.identifier as CFString, 1, nil) else {
             throw CocoaError(.fileWriteUnknown)
         }
-        let properties: [CFString: Any] = [
-            kCGImageDestinationLossyCompressionQuality: 0.88,
-            kCGImagePropertyExifDictionary: [
-                kCGImagePropertyExifDateTimeOriginal: taken,
-                kCGImagePropertyExifDateTimeDigitized: taken,
-            ],
-        ]
+        var exif = extra[kCGImagePropertyExifDictionary] as? [CFString: Any] ?? [:]
+        exif[kCGImagePropertyExifDateTimeOriginal] = taken
+        exif[kCGImagePropertyExifDateTimeDigitized] = taken
+        var properties = extra
+        properties[kCGImageDestinationLossyCompressionQuality] = 0.88
+        properties[kCGImagePropertyExifDictionary] = exif
         CGImageDestinationAddImage(dest, image, properties as CFDictionary)
         guard CGImageDestinationFinalize(dest) else { throw CocoaError(.fileWriteUnknown) }
     }

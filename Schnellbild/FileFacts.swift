@@ -117,8 +117,20 @@ struct StreamFacts: Equatable, Sendable {
     var audio: String?
     /// The length in seconds, where the player knows it (for the bitrate).
     var seconds: Double?
+    /// How many video, audio and subtitle tracks the file has.
+    var videoTracks = 0, audioTracks = 0, subtitleTracks = 0
+    /// What VLC's metadata says (title, date, encoder …), for the
+    /// Inspector's All Metadata where AVFoundation can't read the file.
+    var tags: [MetadataGroup.Entry] = []
 
     var isEmpty: Bool { video == nil && audio == nil }
+
+    /// "Video 1 · Audio 2 · Subtitles 1".
+    var tracksText: String? {
+        let parts = [(String(localized: "Video"), videoTracks), (String(localized: "Audio"), audioTracks),
+                     (String(localized: "Subtitles"), subtitleTracks)].filter { $0.1 > 0 }.map { "\($0.0) \($0.1)" }
+        return parts.isEmpty ? nil : parts.joined(separator: " · ")
+    }
 
     /// Units in the user's language: "25 fps", "25 B/s", "25 i/s" …
     static func describeVideo(codec: String, frameRate: Double?) -> String {
@@ -193,7 +205,32 @@ struct StreamFacts: Equatable, Sendable {
         if let duration = try? await asset.load(.duration), duration.isNumeric {
             facts.seconds = CMTimeGetSeconds(duration)
         }
+        if let tracks = try? await asset.load(.tracks) {
+            for track in tracks {
+                switch track.mediaType {
+                case .video: facts.videoTracks += 1
+                case .audio: facts.audioTracks += 1
+                case .subtitle, .text, .closedCaption: facts.subtitleTracks += 1
+                default: break
+                }
+            }
+        }
         return facts
+    }
+
+    /// VLC's metadata of a media (never its artwork: VLC might fetch that).
+    @MainActor static func tags(of meta: VLCMedia.MetaData) -> [MetadataGroup.Entry] {
+        let fields: [(String, String?)] = [
+            ("title", meta.title), ("artist", meta.artist), ("album", meta.album), ("genre", meta.genre),
+            ("date", meta.date), ("description", meta.metaDescription), ("copyright", meta.copyright),
+            ("publisher", meta.publisher), ("encodedBy", meta.encodedBy), ("language", meta.language),
+            ("director", meta.director), ("showName", meta.showName), ("actors", meta.actors),
+            ("albumArtist", meta.albumArtist), ("setting", meta.setting), ("rating", meta.rating),
+        ]
+        return fields.compactMap { key, value in
+            guard let value = value?.trimmingCharacters(in: .whitespacesAndNewlines), !value.isEmpty else { return nil }
+            return MetadataGroup.Entry(key: key, value: MetadataText.shortened(value))
+        }
     }
 
     /// From VLC's media, once it plays (its tracks are known only then).
@@ -226,6 +263,15 @@ struct StreamFacts: Equatable, Sendable {
         }
         let ms = media.length.intValue
         if ms > 0 { facts.seconds = Double(ms) / 1000 }
+        for track in tracks {
+            switch track[VLCMediaTracksInformationType] as? String {
+            case VLCMediaTracksInformationTypeVideo: facts.videoTracks += 1
+            case VLCMediaTracksInformationTypeAudio: facts.audioTracks += 1
+            case VLCMediaTracksInformationTypeText: facts.subtitleTracks += 1
+            default: break
+            }
+        }
+        facts.tags = tags(of: media.metaData)
         return facts
     }
 }

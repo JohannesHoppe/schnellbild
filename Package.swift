@@ -88,7 +88,7 @@ let package = Package(
             name: "SchnellbildTests",
             dependencies: ["Schnellbild", "VLCFrames", "VideoContainers"],
             path: "Tests/SchnellbildTests",
-            resources: [.copy("Archives"), .copy("Videos")]
+            resources: [.copy("Archives"), .copy("Videos"), .copy("Locations")]
         )
     ],
     cxxLanguageStandard: .cxx17
