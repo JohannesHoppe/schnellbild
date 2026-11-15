@@ -19,6 +19,8 @@ private struct WindowView: View {
     @MainActor private static var monitorsInstalled = false
     @ObservedObject var model: BrowserModel
     @EnvironmentObject var window: WindowModel
+    /// The keys the tooltips name (Settings → Keyboard).
+    @ObservedObject private var shortcuts = Shortcuts.shared
     @State private var width: CGFloat = 0
     /// The launch folder is opened once; the view can appear again (full
     /// screen, toolbar shown or hidden) and must not reload it then.
@@ -144,7 +146,7 @@ private struct WindowView: View {
 
     @ToolbarContentBuilder
     /// The navigation buttons carry no key caps: their shortcuts (⌘[ ⌘] ⌘↑
-    /// ⌘O) are the Mac's usual ones, in the tooltips and menus, and a
+    /// ⌘O unless changed) are the Mac's usual ones, in the tooltips and menus, and a
     /// narrow window has no room for more (the sort menu would drop into
     /// the overflow).
     private var toolbarContent: some ToolbarContent {
@@ -152,28 +154,28 @@ private struct WindowView: View {
             Button { model.navigateBack() } label: {
                 Label("Back", systemImage: "chevron.left")
             }
-            .help("Back (⌘[)")
+            .help(String(localized: "Back (\(shortcuts.hint(.back)))"))
             .disabled(!model.canGoBack)
             .accessibilityIdentifier("backButton")
 
             Button { model.navigateForward() } label: {
                 Label("Forward", systemImage: "chevron.right")
             }
-            .help("Forward (⌘])")
+            .help(String(localized: "Forward (\(shortcuts.hint(.forward)))"))
             .disabled(!model.canGoForward)
             .accessibilityIdentifier("forwardButton")
 
             Button { model.goToParentFolder() } label: {
                 Label("Enclosing Folder", systemImage: "arrow.up")
             }
-            .help("Enclosing folder (⌘↑)")
+            .help(String(localized: "Enclosing folder (\(shortcuts.hint(.enclosingFolder)))"))
             .disabled(!model.canGoUp)
             .accessibilityIdentifier("upButton")
 
             Button { model.chooseFolder() } label: {
                 Label("Open Folder", systemImage: "folder")
             }
-            .help("Open folder (⌘O)")
+            .help(String(localized: "Open folder (\(shortcuts.hint(.openFolder)))"))
 
             // The folder's name, where the window's title stands; a click
             // makes it editable to rename the folder
@@ -186,32 +188,32 @@ private struct WindowView: View {
         ToolbarItemGroup(placement: .primaryAction) {
             if model.mode == .detail {
                 Button { model.closeDetail() } label: {
-                    ShortcutLabel("Grid", systemImage: "square.grid.2x2", keys: "esc", showsTitle: true)
+                    ShortcutLabel("Grid", systemImage: "square.grid.2x2", action: .closeFullView, showsTitle: true)
                 }
             }
         }
         ToolbarItem(placement: .primaryAction) {
             // Two panes side by side, as in the file commanders (D, ⌃O)
             Toggle(isOn: Binding(get: { window.dual }, set: { window.setDual($0) })) {
-                ShortcutLabel("Dual Pane", systemImage: "rectangle.split.2x1", keys: "D")
+                ShortcutLabel("Dual Pane", systemImage: "rectangle.split.2x1", action: .toggleDual)
             }
             .toggleStyle(.button)
-            .help("Dual pane: two folders side by side; Tab switches, F5 copies, F6 moves to the other (D, ⌃O)")
+            .help(String(localized: "Dual pane: two folders side by side; \(shortcuts.hint(.switchPane)) switches, \(shortcuts.hint(.copyToOther)) copies, \(shortcuts.hint(.moveToOther)) moves to the other (\(shortcuts.hint(.toggleDual)))"))
             .accessibilityIdentifier("dualPaneButton")
         }
         ToolbarItem(placement: .primaryAction) {
             Toggle(isOn: $model.enhance) {
-                ShortcutLabel("Auto Enhance", systemImage: "wand.and.stars", keys: "E")
+                ShortcutLabel("Auto Enhance", systemImage: "wand.and.stars", action: .enhance)
             }
             .toggleStyle(.button)
-            .help("Auto enhance: sets exposure, contrast, saturation and sharpness per picture or video, for display only; files are not changed (E)")
+            .help(String(localized: "Auto enhance: sets exposure, contrast, saturation and sharpness per picture or video, for display only; files are not changed (\(shortcuts.hint(.enhance)))"))
             .accessibilityIdentifier("enhanceButton")
         }
         ToolbarItem(placement: .primaryAction) {
             Button { model.showAdjustments.toggle() } label: {
-                ShortcutLabel("Adjust", systemImage: "slider.horizontal.3", keys: "A")
+                ShortcutLabel("Adjust", systemImage: "slider.horizontal.3", action: .adjust)
             }
-            .help("Exposure, contrast, saturation and sharpness by hand (A)")
+            .help(String(localized: "Exposure, contrast, saturation and sharpness by hand (\(shortcuts.hint(.adjust)))"))
             .accessibilityIdentifier("adjustButton")
             // In the window; during a slideshow the toolbar is hidden, so the
             // sliders show as a panel over the picture instead (see body).
@@ -222,10 +224,10 @@ private struct WindowView: View {
         }
         ToolbarItem(placement: .primaryAction) {
             Button { model.startSlideshow() } label: {
-                ShortcutLabel("Slideshow", systemImage: "play.fill", keys: "S", showsTitle: true)
+                ShortcutLabel("Slideshow", systemImage: "play.fill", action: .startSlideshow, showsTitle: true)
             }
             .buttonStyle(.borderedProminent)
-            .help("Slideshow of all pictures and videos in this folder and its subfolders; while searching: of the results (S)")
+            .help(String(localized: "Slideshow of all pictures and videos in this folder and its subfolders; while searching: of the results (\(shortcuts.hint(.startSlideshow)))"))
             .disabled(model.folderURL == nil)
             .accessibilityIdentifier("slideshowButton")
         }
@@ -234,7 +236,7 @@ private struct WindowView: View {
                 SortChoices(model: model, shortcuts: false)
             } label: {
                 // No key cap here: a toolbar menu with a label of its own
-                // drops out of the accessibility tree (⌘1 … ⌘5: tooltip, help)
+                // drops out of the accessibility tree (its keys: tooltip, help)
                 // Bounded: the sort key's name is long in some languages
                 // ("Date de prise de vue"), and the toolbar is full
                 Label {
@@ -245,7 +247,7 @@ private struct WindowView: View {
                 }
                 .labelStyle(.titleAndIcon)
             }
-            .help("Sort by (⌘1 … ⌘5; press again to reverse)")
+            .help(String(localized: "Sort by (\(HelpKeys.range(ShortcutAction.sorts).text(shortcuts) ?? String(localized: "no key")); press again to reverse)"))
             .accessibilityIdentifier("sortMenu")
             .accessibilityLabel("Sort: \(model.sortKey.title) \(model.sortAscending ? "↑" : "↓")")
         }
@@ -333,6 +335,11 @@ private struct WindowView: View {
                 let plain = event.charactersIgnoringModifiers?.lowercased() ?? ""
                 let letter = plain.unicodeScalars.allSatisfy(\.isASCII) ? plain : (LatinKeys.character(for: code, shift: false) ?? plain)
                 if control, command, letter == "f" { model.toggleFullScreen(); return true }
+                // The keys as set in Settings → Keyboard: a key given to an
+                // action carries it out, a key taken from one does nothing;
+                // Schnellbild's own keys go on to the key bindings below
+                if let chord = KeyChord.from(event),
+                   let handled = window.handleTyped(chord, textEditing: typing, repeating: event.isARepeat) { return handled }
                 // X: the boss key (everywhere but while typing)
                 if letter == "x", !typing, !command, !control, !event.modifierFlags.contains(.option) {
                     BossKey.engage()
@@ -443,6 +450,8 @@ extension ContentView {
 /// The window shows one, or two side by side (the dual pane).
 struct PaneView: View {
     @EnvironmentObject var model: BrowserModel
+    /// The keys the status bar names (Settings → Keyboard).
+    @ObservedObject private var shortcuts = Shortcuts.shared
 
     var body: some View {
         // One container, not a Group: a Group hands its modifiers to each
@@ -607,17 +616,17 @@ struct PaneView: View {
             .pickerStyle(.segmented)
             .labelsHidden()
             .fixedSize()
-            .help("Grid or list (L)")
+            .help(String(localized: "Grid or list (\(shortcuts.hint(.toggleList)))"))
             .accessibilityIdentifier("viewModePicker")
-            KeyCap("L")
+            if let key = shortcuts.keys(.toggleList).first { KeyCap(key.capText) }
             // The mini keyboard's switch (here, not in the toolbar: that has
             // no room left in a narrow window)
             Button { model.showMiniKeyboard.toggle() } label: {
-                ShortcutLabel("Keyboard", systemImage: "keyboard", keys: "K")
+                ShortcutLabel("Keyboard", systemImage: "keyboard", action: .miniKeyboard)
             }
             .buttonStyle(.plain)
             .foregroundStyle(model.showMiniKeyboard ? Color.accentColor : Color.secondary)
-            .help("Mini keyboard: the keys of what's on screen, clickable (K)")
+            .help(String(localized: "Mini keyboard: the keys of what's on screen, clickable (\(shortcuts.hint(.miniKeyboard)))"))
             .accessibilityIdentifier("keyboardButton")
         }
     }
@@ -713,6 +722,7 @@ struct PaneView: View {
 struct EmptyStateView: View {
     let isLoading: Bool
     @EnvironmentObject var model: BrowserModel
+    @ObservedObject private var shortcuts = Shortcuts.shared
 
     var body: some View {
         VStack(spacing: 16) {
@@ -772,24 +782,28 @@ struct EmptyStateView: View {
                     .font(.title2)
                 // The Pictures folder opened at the first launch, empty: how to get to the pictures
                 if model.folderURL.map(BrowserModel.canonicalPath) == BrowserModel.defaultFolder.map(BrowserModel.canonicalPath) {
-                    Text("Drag a folder here, press ⌘O, or click Open Another Folder…")
+                    Text(shortcuts.keys(.openFolder).first.map { String(localized: "Drag a folder here, press \($0.text), or click Open Another Folder…") }
+                         ?? String(localized: "Drag a folder here or click Open Another Folder…"))
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
                         .accessibilityIdentifier("dropHint.empty")
                 }
-                if model.canGoUp {
-                    Text("⌘↑ goes up one folder level.")
+                if model.canGoUp, let up = shortcuts.keys(.enclosingFolder).first {
+                    Text(String(localized: "\(up.text) goes up one folder level."))
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
                 }
-                Button { model.chooseFolder() } label: { HStack(spacing: 6) { Text("Open Another Folder…"); KeyCap("⌘O") } }
+                Button { model.chooseFolder() } label: {
+                    HStack(spacing: 6) { Text("Open Another Folder…"); if let key = shortcuts.keys(.openFolder).first { KeyCap(key.capText) } }
+                }
             } else {
                 Image(systemName: "photo.on.rectangle.angled")
                     .font(.system(size: 56))
                     .foregroundStyle(.secondary)
                 Text("No folder open")
                     .font(.title2)
-                Text("Drag a folder here, press ⌘O, or click Open Folder…")
+                Text(shortcuts.keys(.openFolder).first.map { String(localized: "Drag a folder here, press \($0.text), or click Open Folder…") }
+                     ?? String(localized: "Drag a folder here or click Open Folder…"))
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
                 if let missing = model.unavailableRestore {
@@ -806,17 +820,20 @@ struct EmptyStateView: View {
                         .multilineTextAlignment(.center)
                         .accessibilityIdentifier("skippedRestore")
                 }
-                Button { model.chooseFolder() } label: { HStack(spacing: 6) { Text("Open Folder…"); KeyCap("⌘O") } }
+                Button { model.chooseFolder() } label: {
+                    HStack(spacing: 6) { Text("Open Folder…"); if let key = shortcuts.keys(.openFolder).first { KeyCap(key.capText) } }
+                }
             }
         }
         .padding(40)
     }
 }
 
-/// The sort choices, in the View menu (with ⌘1 … ⌘5) and in the toolbar.
+/// The sort choices, in the View menu (with ⌘1 … ⌘5 unless changed) and in the toolbar.
 /// Choosing the current key again reverses the direction.
 struct SortChoices: View {
     @ObservedObject var model: BrowserModel
+    @ObservedObject var keys = Shortcuts.shared
     let shortcuts: Bool
 
     var body: some View {
@@ -825,7 +842,7 @@ struct SortChoices: View {
                 get: { model.sortKey == key },
                 set: { _ in model.setSort(key) }))
             if shortcuts {
-                toggle.keyboardShortcut(KeyEquivalent(Character(String(index + 1))), modifiers: .command)
+                toggle.keyboardShortcut(keys.menuShortcut(ShortcutAction.sorts[index]))
             } else {
                 toggle
             }
@@ -1078,17 +1095,19 @@ struct KeyCap: View {
     }
 }
 
-/// A button's icon (with its title when `showsTitle`) and its shortcut.
+/// A button's icon (with its title when `showsTitle`) and the action's
+/// first key as set (Settings → Keyboard); none when it has no key.
 struct ShortcutLabel: View {
     let title: LocalizedStringKey
     let systemImage: String
-    let keys: String
+    let action: ShortcutAction
     var showsTitle = false
+    @ObservedObject private var shortcuts = Shortcuts.shared
 
-    init(_ title: LocalizedStringKey, systemImage: String, keys: String, showsTitle: Bool = false) {
+    init(_ title: LocalizedStringKey, systemImage: String, action: ShortcutAction, showsTitle: Bool = false) {
         self.title = title
         self.systemImage = systemImage
-        self.keys = keys
+        self.action = action
         self.showsTitle = showsTitle
     }
 
@@ -1099,7 +1118,7 @@ struct ShortcutLabel: View {
             } else {
                 Label(title, systemImage: systemImage).labelStyle(.iconOnly)
             }
-            KeyCap(keys)
+            if let key = shortcuts.keys(action).first { KeyCap(key.capText) }
         }
     }
 }
@@ -1312,6 +1331,7 @@ private struct PaneDropHint: View {
 private struct BookmarksButton: View {
     @ObservedObject var model: BrowserModel
     @ObservedObject var bookmarks = Bookmarks.shared
+    @ObservedObject private var shortcuts = Shortcuts.shared
 
     var body: some View {
         let marked = model.folderURL.map(bookmarks.contains) ?? false
@@ -1320,7 +1340,7 @@ private struct BookmarksButton: View {
         } label: {
             Label("Bookmarks", systemImage: marked ? "star.fill" : "star")
         }
-        .help("Bookmarks (⌘D: this folder; ⌃1 … ⌃9: go)")
+        .help(String(localized: "Bookmarks (\(shortcuts.hint(.bookmark)): this folder; \(HelpKeys.range(ShortcutAction.bookmarks).text(shortcuts) ?? String(localized: "no key")): go)"))
         .accessibilityIdentifier("bookmarksMenu")
         .accessibilityValue(marked ? "bookmarked" : "")
     }

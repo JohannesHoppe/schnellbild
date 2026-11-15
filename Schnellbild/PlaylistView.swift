@@ -45,6 +45,7 @@ struct PlaylistLayout: ViewModifier {
 struct PlaylistPanel: View {
     let width: CGFloat
     @EnvironmentObject var model: BrowserModel
+    @ObservedObject private var shortcuts = Shortcuts.shared
 
     private static let previewSide: CGFloat = 40
     /// A row's height: the preview and its padding.
@@ -108,7 +109,7 @@ struct PlaylistPanel: View {
             }
             .buttonStyle(.plain)
             .foregroundStyle(.secondary)
-            .help("Close the playlist (P)")
+            .help(String(localized: "Close the playlist (\(shortcuts.hint(.playlist)))"))
             .accessibilityLabel("Close playlist")
             .accessibilityIdentifier("playlistClose")
         }
@@ -185,11 +186,11 @@ struct PlaylistPanel: View {
                 Button {
                     if let index = model.playlistCursorIndex { model.removeFromSlideshow(at: [index]) }
                 } label: {
-                    ShortcutLabel("Take Out of Playlist", systemImage: "minus.circle", keys: "⌫", showsTitle: true)
+                    ShortcutLabel("Take Out of Playlist", systemImage: "minus.circle", action: .listTakeOut, showsTitle: true)
                 }
                 .buttonStyle(.plain)
                 .disabled(model.playlistCursorIndex == nil)
-                .help("Take the chosen item out of the playlist (⌫ after a click in the list); the file stays where it is")
+                .help(String(localized: "Take the chosen item out of the playlist (\(shortcuts.hint(.listTakeOut)) after a click in the list); the file stays where it is"))
                 .accessibilityIdentifier("playlistTakeOut")
             }
             Text("The file stays where it is.").foregroundStyle(.secondary)

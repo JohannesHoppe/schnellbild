@@ -1,10 +1,22 @@
 import SwiftUI
 import AVFoundation
 
-/// Settings (⌘,): light or dark, how long a picture stays in the slideshow, the archive
+/// Settings (⌘,): General and the keys of every action (Keyboard).
+struct SettingsView: View {
+    var body: some View {
+        TabView {
+            GeneralSettingsView()
+                .tabItem { Label("General", systemImage: "gearshape") }
+            ShortcutsSettingsView()
+                .tabItem { Label("Keyboard", systemImage: "keyboard") }
+        }
+    }
+}
+
+/// Light or dark, how long a picture stays in the slideshow, the archive
 /// passwords Schnellbild has saved, and whether macOS reads MKV and AVCHD itself
 /// (Schnellbild's media extension, turned on in System Settings).
-struct SettingsView: View {
+struct GeneralSettingsView: View {
     @EnvironmentObject var window: WindowModel
     @State private var savedPasswords = ArchiveStore.shared.passwords.count
     @State private var confirming = false

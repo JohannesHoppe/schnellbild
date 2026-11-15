@@ -171,6 +171,8 @@ struct VideoChrome: View {
 /// the grip puts it back at the bottom middle.
 struct VideoControlBar: View {
     @EnvironmentObject var model: BrowserModel
+    /// The keys the tooltips name (Settings → Keyboard).
+    @ObservedObject private var shortcuts = Shortcuts.shared
     let areaWidth: CGFloat
     @Binding var dragging: Bool
     let onDrag: (CGSize) -> Void
@@ -190,7 +192,7 @@ struct VideoControlBar: View {
                     .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
-            .help(model.videoPaused ? "Play (Space)" : "Pause (Space)")
+            .help(model.videoPaused ? String(localized: "Play (\(playKeys))") : String(localized: "Pause (\(playKeys))"))
             .accessibilityLabel(model.videoPaused ? "Play" : "Pause")
             .accessibilityIdentifier("videoBar.playPause")
             position
@@ -204,7 +206,7 @@ struct VideoControlBar: View {
                     .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
-            .help("Full Screen (F)")
+            .help(String(localized: "Full Screen (\(shortcuts.hint(.fullScreen)))"))
             .accessibilityLabel("Full Screen")
             .accessibilityIdentifier("videoBar.fullScreen")
         }
@@ -275,12 +277,15 @@ struct VideoControlBar: View {
             Slider(value: Binding(get: { model.volume }, set: { model.setVolume($0) }), in: 0...1)
                 .controlSize(.mini)
                 .frame(width: 60)
-                .help("Volume (↑ ↓)")
+                .help(String(localized: "Volume (\(HelpKeys.pair(.fullUp, .fullDown, " ").text(shortcuts) ?? String(localized: "no key")))"))
                 .accessibilityLabel("Volume")
                 .accessibilityValue(model.volume.formatted(.percent.precision(.fractionLength(0))))
                 .accessibilityIdentifier("videoBar.volume")
         }
     }
+
+    /// Play / pause: Space in the full view, as the slideshow's pause there.
+    private var playKeys: String { shortcuts.hint(model.slideshow == nil ? .fullSpace : .showPause) }
 
     private var speedMenu: some View {
         Menu {
@@ -291,7 +296,7 @@ struct VideoControlBar: View {
         .menuStyle(.borderlessButton)
         .menuIndicator(.hidden)
         .fixedSize()
-        .help("Speed (< >)")
+        .help(String(localized: "Speed (\(HelpKeys.pair(.slower, .faster, " ").text(shortcuts) ?? String(localized: "no key")))"))
         .accessibilityLabel("Speed")
         .accessibilityValue(PlaybackSpeed.text(model.playbackSpeed))
         .accessibilityIdentifier("videoBar.speed")
@@ -306,7 +311,7 @@ struct VideoControlBar: View {
         .menuStyle(.borderlessButton)
         .menuIndicator(.hidden)
         .fixedSize()
-        .help("Subtitles (V, ⌃⌘S)")
+        .help(String(localized: "Subtitles (\([shortcuts.text(.subtitles), shortcuts.text(.nextSubtitle)].filter { !$0.isEmpty }.joined(separator: ", ")))"))
         .accessibilityLabel("Subtitles")
         .accessibilityValue(model.videoTracks.currentSubtitle?.name ?? String(localized: "Off"))
         .accessibilityIdentifier("videoBar.subtitles")
@@ -321,7 +326,7 @@ struct VideoControlBar: View {
         .menuStyle(.borderlessButton)
         .menuIndicator(.hidden)
         .fixedSize()
-        .help("Audio track (⌃⌘A)")
+        .help(String(localized: "Audio track (\(shortcuts.hint(.nextAudio)))"))
         .accessibilityLabel("Audio Track")
         .accessibilityValue(model.videoTracks.currentAudio?.name ?? "")
         .accessibilityIdentifier("videoBar.audio")

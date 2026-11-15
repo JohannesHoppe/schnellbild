@@ -1,6 +1,6 @@
 # Phiewer's keyboard shortcuts
 
-Phiewer's default shortcuts, copied from its Settings → Shortcuts (as of November 2026), for comparing with Schnellbild's keys and for the planned own keyboard shortcuts (see CLAUDE.md, "Open / next-up"). In Phiewer every one of them can be changed in the PRO version.
+Phiewer's default shortcuts, copied from its Settings → Shortcuts (as of November 2026), for comparing with Schnellbild's keys and for the preset "As in Phiewer" of Schnellbild's own keyboard shortcuts (`ShortcutAction.Spec.phiewer` in `Shortcuts.swift`: Phiewer's key where Schnellbild has the action, Schnellbild's otherwise). In Phiewer every one of them can be changed in the PRO version; in Schnellbild in Settings → Keyboard, free.
 
 The groups are in the order Phiewer's settings show them.
 

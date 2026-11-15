@@ -3,33 +3,36 @@ import SwiftUI
 /// The mini keyboard (K): a row of the keys that work on what's on screen,
 /// each with what it does. A cheat sheet that can be clicked: a click goes
 /// through `WindowModel.handleWindowKey`, then `BrowserModel.handleKey`,
-/// exactly like the key itself. A key that
-/// acts, typed or clicked, lights up.
+/// exactly like the key itself. A key that acts, typed or clicked, lights
+/// up. Each key shows the action's key as set in Settings → Keyboard.
 struct MiniKeyboard: View {
     @EnvironmentObject var model: BrowserModel
+    @ObservedObject private var shortcuts = Shortcuts.shared
 
-    /// One key: its cap, its word, and the input it sends.
+    /// One key: its action, its word, and the key it sends.
     struct Key: Identifiable {
-        /// The key as written in the code and the UI tests' identifiers
-        /// ("space", "esc", "Tab"); shown as `shownCap`.
-        let cap: String
+        let action: ShortcutAction
+        /// The action's key as Schnellbild has it (stored form): what a
+        /// click sends, and the key's identifier for the UI tests
+        /// ("key.space", "key.esc", "key.⌘F"), whatever key it shows.
+        let standard: KeyChord
         let word: LocalizedStringKey
-        let input: BrowserModel.KeyInput
-        var command = false
-        var shift = false
-        var option = false
-        /// The cap is unique within a row ("F" and "⌘F" are two keys).
-        var id: String { cap }
-    }
 
-    /// A cap as Apple's keyboards and menus show it: ⎋ and ⇥ as glyphs,
-    /// the space bar by its name in the user's language.
-    static func shownCap(_ cap: String) -> String {
-        switch cap {
-        case "space": return String(localized: "Space")
-        case "esc":   return "⎋"
-        case "Tab":   return "⇥"
-        default:      return cap
+        init(_ action: ShortcutAction, _ standard: String, word: LocalizedStringKey) {
+            self.action = action
+            self.standard = KeyChord(stored: standard) ?? KeyChord(.space)
+            self.word = word
+        }
+
+        /// Unique within a row ("F" and "⌘F" are two keys).
+        var id: String { standard.idText }
+
+        /// The cap: the key it has always had while the action still has
+        /// it, else the action's first key; nil when the action has none.
+        @MainActor
+        func cap(_ shortcuts: Shortcuts) -> String? {
+            let keys = shortcuts.keys(action)
+            return keys.contains(standard) ? standard.text : keys.first?.text
         }
     }
 
@@ -42,105 +45,105 @@ struct MiniKeyboard: View {
         switch context {
         case .grid:
             return [
-                Key(cap: "⌘]", word: "Forward", input: .char("]"), command: true),
-                Key(cap: "⌫", word: "Back", input: .backspace),
-                Key(cap: "←", word: "Previous", input: .left),
-                Key(cap: "↑", word: "Row up", input: .up),
-                Key(cap: "↓", word: "Row down", input: .down),
-                Key(cap: "→", word: "Next", input: .right),
-                Key(cap: "space", word: "Open", input: .space),
-                Key(cap: "↩", word: "Rename", input: .enter),
-                Key(cap: "S", word: "Slideshow", input: .char("s")),
-                Key(cap: "E", word: "Auto Enhance", input: .char("e")),
-                Key(cap: "A", word: "Adjust", input: .char("a")),
-                Key(cap: "F", word: "Full Screen", input: .char("f")),
-                Key(cap: "⌘F", word: "Search", input: .char("f"), command: true),
-                Key(cap: "F1", word: "Help", input: .f1),
+                Key(.forward, "@]", word: "Forward"),
+                Key(.gridBack, "delete", word: "Back"),
+                Key(.gridPrevious, "left", word: "Previous"),
+                Key(.gridRowUp, "up", word: "Row up"),
+                Key(.gridRowDown, "down", word: "Row down"),
+                Key(.gridNext, "right", word: "Next"),
+                Key(.gridOpen, "space", word: "Open"),
+                Key(.gridRename, "return", word: "Rename"),
+                Key(.startSlideshow, "s", word: "Slideshow"),
+                Key(.enhance, "e", word: "Auto Enhance"),
+                Key(.adjust, "a", word: "Adjust"),
+                Key(.fullScreen, "f", word: "Full Screen"),
+                Key(.search, "@f", word: "Search"),
+                Key(.help, "f1", word: "Help"),
             ]
         case .dualGrid:
             return [
-                Key(cap: "Tab", word: "Other pane", input: .tab),
-                Key(cap: "⇧⌘C", word: "Copy there", input: .char("c"), command: true, shift: true),
-                Key(cap: "⇧⌘M", word: "Move there", input: .char("m"), command: true, shift: true),
-                Key(cap: "F7", word: "New folder", input: .f7),
-                Key(cap: "M", word: "Mark", input: .char("m")),
-                Key(cap: "⌫", word: "Back", input: .backspace),
-                Key(cap: "←", word: "Previous", input: .left),
-                Key(cap: "→", word: "Next", input: .right),
-                Key(cap: "space", word: "Open", input: .space),
-                Key(cap: "↩", word: "Rename", input: .enter),
-                Key(cap: "S", word: "Slideshow", input: .char("s")),
-                Key(cap: "⌘F", word: "Search", input: .char("f"), command: true),
-                Key(cap: "D", word: "Single pane", input: .char("d")),
-                Key(cap: "F1", word: "Help", input: .f1),
+                Key(.switchPane, "tab", word: "Other pane"),
+                Key(.copyToOther, "@$c", word: "Copy there"),
+                Key(.moveToOther, "@$m", word: "Move there"),
+                Key(.newFolder, "f7", word: "New folder"),
+                Key(.mark, "m", word: "Mark"),
+                Key(.gridBack, "delete", word: "Back"),
+                Key(.gridPrevious, "left", word: "Previous"),
+                Key(.gridNext, "right", word: "Next"),
+                Key(.gridOpen, "space", word: "Open"),
+                Key(.gridRename, "return", word: "Rename"),
+                Key(.startSlideshow, "s", word: "Slideshow"),
+                Key(.search, "@f", word: "Search"),
+                Key(.toggleDual, "d", word: "Single pane"),
+                Key(.help, "f1", word: "Help"),
             ]
         case .picture:
             return [
-                Key(cap: "←", word: "Previous", input: .left),
-                Key(cap: "→", word: "Next", input: .right),
-                Key(cap: "+", word: "Zoom in", input: .char("+")),
-                Key(cap: "−", word: "Zoom out", input: .char("-")),
-                Key(cap: "0", word: "Fit", input: .char("0")),
-                Key(cap: "1", word: "100 %", input: .char("1")),
-                Key(cap: "⌥←", word: "Rotate left", input: .left, option: true),
-                Key(cap: "⌥→", word: "Rotate right", input: .right, option: true),
-                Key(cap: "I", word: "Info", input: .char("i")),
-                Key(cap: "E", word: "Auto Enhance", input: .char("e")),
-                Key(cap: "A", word: "Adjust", input: .char("a")),
-                Key(cap: "F", word: "Full Screen", input: .char("f")),
-                Key(cap: "esc", word: "Grid", input: .escape),
-                Key(cap: "F1", word: "Help", input: .f1),
+                Key(.fullPrevious, "left", word: "Previous"),
+                Key(.fullNext, "right", word: "Next"),
+                Key(.zoomIn, "+", word: "Zoom in"),
+                Key(.zoomOut, "-", word: "Zoom out"),
+                Key(.zoomFit, "0", word: "Fit"),
+                Key(.zoomActual, "1", word: "100 %"),
+                Key(.rotateLeft, "~left", word: "Rotate left"),
+                Key(.rotateRight, "~right", word: "Rotate right"),
+                Key(.info, "i", word: "Info"),
+                Key(.enhance, "e", word: "Auto Enhance"),
+                Key(.adjust, "a", word: "Adjust"),
+                Key(.fullScreen, "f", word: "Full Screen"),
+                Key(.closeFullView, "escape", word: "Grid"),
+                Key(.help, "f1", word: "Help"),
             ]
         case .video:
             return [
-                Key(cap: "space", word: "Play / Pause", input: .space),
-                Key(cap: "←", word: "−10 %", input: .left),
-                Key(cap: "→", word: "+10 %", input: .right),
-                Key(cap: "↑", word: "Louder", input: .up),
-                Key(cap: "↓", word: "Quieter", input: .down),
-                Key(cap: "<", word: "Slower", input: .char("<")),
-                Key(cap: ">", word: "Faster", input: .char(">")),
-                Key(cap: "V", word: "Subtitles", input: .char("v")),
-                Key(cap: "⌘←", word: "Previous item", input: .left, command: true),
-                Key(cap: "⌘→", word: "Next item", input: .right, command: true),
-                Key(cap: "E", word: "Auto Enhance", input: .char("e")),
-                Key(cap: "F", word: "Full Screen", input: .char("f")),
-                Key(cap: "esc", word: "Grid", input: .escape),
-                Key(cap: "F1", word: "Help", input: .f1),
+                Key(.fullSpace, "space", word: "Play / Pause"),
+                Key(.fullPrevious, "left", word: "−10 %"),
+                Key(.fullNext, "right", word: "+10 %"),
+                Key(.fullUp, "up", word: "Louder"),
+                Key(.fullDown, "down", word: "Quieter"),
+                Key(.slower, "<", word: "Slower"),
+                Key(.faster, ">", word: "Faster"),
+                Key(.subtitles, "v", word: "Subtitles"),
+                Key(.fullPreviousItem, "@left", word: "Previous item"),
+                Key(.fullNextItem, "@right", word: "Next item"),
+                Key(.enhance, "e", word: "Auto Enhance"),
+                Key(.fullScreen, "f", word: "Full Screen"),
+                Key(.closeFullView, "escape", word: "Grid"),
+                Key(.help, "f1", word: "Help"),
             ]
         case .slideshow:
             return [
-                Key(cap: "space", word: "Pause", input: .space),
-                Key(cap: "←", word: "Previous", input: .left),
-                Key(cap: "→", word: "Next", input: .right),
-                Key(cap: "P", word: "Playlist", input: .char("p")),
-                Key(cap: "I", word: "Info", input: .char("i")),
-                Key(cap: "E", word: "Auto Enhance", input: .char("e")),
-                Key(cap: "A", word: "Adjust", input: .char("a")),
-                Key(cap: "F", word: "Full Screen", input: .char("f")),
-                Key(cap: "esc", word: "End", input: .escape),
+                Key(.showPause, "space", word: "Pause"),
+                Key(.fullPrevious, "left", word: "Previous"),
+                Key(.fullNext, "right", word: "Next"),
+                Key(.playlist, "p", word: "Playlist"),
+                Key(.info, "i", word: "Info"),
+                Key(.enhance, "e", word: "Auto Enhance"),
+                Key(.adjust, "a", word: "Adjust"),
+                Key(.fullScreen, "f", word: "Full Screen"),
+                Key(.endSlideshow, "escape", word: "End"),
             ]
         case .playlist:
             return [
-                Key(cap: "space", word: "Pause", input: .space),
-                Key(cap: "←", word: "Previous", input: .left),
-                Key(cap: "→", word: "Next", input: .right),
-                Key(cap: "I", word: "Info", input: .char("i")),
-                Key(cap: "E", word: "Auto Enhance", input: .char("e")),
-                Key(cap: "A", word: "Adjust", input: .char("a")),
-                Key(cap: "F", word: "Full Screen", input: .char("f")),
-                Key(cap: "esc", word: "Close playlist", input: .escape),
+                Key(.showPause, "space", word: "Pause"),
+                Key(.fullPrevious, "left", word: "Previous"),
+                Key(.fullNext, "right", word: "Next"),
+                Key(.info, "i", word: "Info"),
+                Key(.enhance, "e", word: "Auto Enhance"),
+                Key(.adjust, "a", word: "Adjust"),
+                Key(.fullScreen, "f", word: "Full Screen"),
+                Key(.endSlideshow, "escape", word: "Close playlist"),
             ]
         case .playlistKeys:
             return [
-                Key(cap: "space", word: "Pause", input: .space),
-                Key(cap: "←", word: "Previous", input: .left),
-                Key(cap: "→", word: "Next", input: .right),
-                Key(cap: "↑", word: "Row up", input: .up),
-                Key(cap: "↓", word: "Row down", input: .down),
-                Key(cap: "↩", word: "Show", input: .enter),
-                Key(cap: "⌫", word: "Take out", input: .backspace),
-                Key(cap: "esc", word: "Close playlist", input: .escape),
+                Key(.showPause, "space", word: "Pause"),
+                Key(.fullPrevious, "left", word: "Previous"),
+                Key(.fullNext, "right", word: "Next"),
+                Key(.listUp, "up", word: "Row up"),
+                Key(.listDown, "down", word: "Row down"),
+                Key(.listShow, "return", word: "Show"),
+                Key(.listTakeOut, "delete", word: "Take out"),
+                Key(.endSlideshow, "escape", word: "Close playlist"),
             ]
         }
     }
@@ -157,10 +160,13 @@ struct MiniKeyboard: View {
     }
 
     var body: some View {
-        // One row; at most 14 keys fit the narrowest window
+        // One row; at most 14 keys fit the narrowest window. An action
+        // without a key (Settings → Keyboard) leaves its key out.
         HStack(spacing: 6) {
             ForEach(Self.keys(for: context)) { key in
-                MiniKeyButton(key: key)
+                if let cap = key.cap(shortcuts) {
+                    MiniKeyButton(key: key, cap: cap)
+                }
             }
         }
         .padding(.horizontal, 12)
@@ -176,6 +182,7 @@ struct MiniKeyboard: View {
 /// One key of the mini keyboard: lights up when it acts.
 private struct MiniKeyButton: View {
     let key: MiniKeyboard.Key
+    let cap: String
     @EnvironmentObject var model: BrowserModel
     @EnvironmentObject var window: WindowModel
     @State private var lit = false
@@ -185,13 +192,16 @@ private struct MiniKeyButton: View {
 
     var body: some View {
         Button {
-            // As typed: the window's keys first (D, Tab, F5, F6), then the pane's
-            if !window.handleWindowKey(key.input, command: key.command, control: false, shift: key.shift, textEditing: false) {
-                model.handleKey(key.input, command: key.command, shift: key.shift, option: key.option)
+            // As typed: the window's keys first (D, Tab, F5, F6), then the
+            // pane's. Schnellbild's key for the action does it, whatever key
+            // the action has now.
+            let k = key.standard
+            if !window.handleWindowKey(k.key, command: k.command, control: k.control, shift: k.shift, textEditing: false) {
+                model.handleKey(k.key, command: k.command, shift: k.shift, option: k.option)
             }
         } label: {
             VStack(spacing: 3) {
-                Text(verbatim: MiniKeyboard.shownCap(key.cap))
+                Text(verbatim: cap)
                     .font(.system(size: 12, weight: .semibold))
                     .frame(minWidth: 26, minHeight: 22)
                     .padding(.horizontal, 5)
@@ -213,8 +223,7 @@ private struct MiniKeyButton: View {
         .accessibilityValue(VideoDetailView.uiTesting && presses > 0 ? "pressed \(presses)" : "")
         .onChange(of: model.lastKeyPress) { _, press in
             // Just now: a press stored in the other pane (now active) is old
-            guard let press, Date().timeIntervalSince(press.at) < 0.5,
-                  press.matches(key.input, command: key.command, shift: key.shift, option: key.option) else { return }
+            guard let press, Date().timeIntervalSince(press.at) < 0.5, matches(press) else { return }
             presses += 1
             withAnimation(Motion.animation(.easeOut(duration: 0.08))) { lit = true }
             Task { @MainActor in
@@ -222,5 +231,13 @@ private struct MiniKeyButton: View {
                 withAnimation(Motion.animation(.easeIn(duration: 0.2))) { lit = false }
             }
         }
+    }
+
+    /// The press was this key's: Schnellbild's key for the action, or the
+    /// key a set key is carried out with (`WindowModel.perform`).
+    private func matches(_ press: BrowserModel.KeyPress) -> Bool {
+        var chords = [key.standard]
+        if case .key(let performed) = key.action.performer { chords.append(performed) }
+        return chords.contains { press.matches($0.key, command: $0.command, shift: $0.shift, option: $0.option) }
     }
 }

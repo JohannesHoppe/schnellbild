@@ -11,6 +11,8 @@ struct SchnellbildApp: App {
     /// `WindowModel`); menus act on the active pane of the window in front.
     @StateObject private var first: WindowModel
     @StateObject private var focus = WindowFocus.shared
+    /// The keys the menu items show and answer to (Settings → Keyboard).
+    @StateObject private var shortcuts = Shortcuts.shared
     private let defaults: UserDefaults
     private var window: WindowModel { focus.current ?? first }
     private var model: BrowserModel { window.active }
@@ -62,30 +64,31 @@ struct SchnellbildApp: App {
             CommandGroup(replacing: .newItem) {
                 NewWindowButton()
                 Button("Open Folder…") { model.chooseFolder() }
-                    .keyboardShortcut("o")
+                    .keyboardShortcut(shortcuts.menuShortcut(.openFolder))
                     .disabled(window.anySheetOpen)
             }
             CommandMenu("Go") {
                 Button("Start Slideshow") { model.startSlideshow() }
+                    .keyboardShortcut(shortcuts.menuShortcut(.startSlideshow))
                     .disabled(model.folderURL == nil || window.anySheetOpen)
                 Divider()
                 Button("Back") { model.navigateBack() }
-                    .keyboardShortcut("[", modifiers: .command)
+                    .keyboardShortcut(shortcuts.menuShortcut(.back))
                     .disabled(!model.canGoBack || window.anySheetOpen)
                 Button("Forward") { model.navigateForward() }
-                    .keyboardShortcut("]", modifiers: .command)
+                    .keyboardShortcut(shortcuts.menuShortcut(.forward))
                     .disabled(!model.canGoForward || window.anySheetOpen)
                 Button("Enclosing Folder") { model.goToParentFolder() }
-                    .keyboardShortcut(.upArrow, modifiers: .command)
+                    .keyboardShortcut(shortcuts.menuShortcut(.enclosingFolder))
                     .disabled(!model.canGoUp || window.anySheetOpen)
                 Divider()
                 // (not in a slideshow: the search bar is hidden there)
                 Button("Search") { model.focusSearch() }
-                    .keyboardShortcut("f", modifiers: .command)
+                    .keyboardShortcut(shortcuts.menuShortcut(.search))
                     .disabled(window.anySheetOpen || model.slideshow != nil)
             }
             CommandMenu("Video") {
-                VideoCommands(model: model, window: window)
+                VideoCommands(model: model, window: window, shortcuts: shortcuts)
             }
             CommandMenu("Bookmarks") {
                 BookmarkItems(model: model, shortcuts: true)
@@ -95,35 +98,36 @@ struct SchnellbildApp: App {
                 // Not during a slideshow: the selection is in the hidden grid,
                 // not what's on screen.
                 Button("New Folder") { model.beginNewFolder() }
-                    .keyboardShortcut("n", modifiers: [.command, .shift])
+                    .keyboardShortcut(shortcuts.menuShortcut(.newFolder))
                     .disabled(!model.canCreateFolder)
                 Button("Rename…") { model.beginRename() }
+                    .keyboardShortcut(shortcuts.menuShortcut(.gridRename))
                     .disabled(model.slideshow != nil || window.anySheetOpen || !(model.selectedEntry.map(model.canRename) ?? false))
                 Button("Reveal in Finder") { model.revealInFinder() }
-                    .keyboardShortcut("r", modifiers: [.command, .shift])
+                    .keyboardShortcut(shortcuts.menuShortcut(.reveal))
                     .disabled(model.slideshow != nil || window.anySheetOpen)
                 Button("Open with Default App") { model.openInDefaultApp() }
-                    .keyboardShortcut(.return)
+                    .keyboardShortcut(shortcuts.menuShortcut(.openDefault))
                     .disabled(model.slideshow != nil || window.anySheetOpen || !model.selectionIsChangeable)
                 Divider()
                 // The dual pane (D): the marked items into the other pane's folder
                 // (also F5 / F6, as in Norton Commander)
                 Button("Copy to Other Pane") { _ = window.sendToOtherPane(how: .copy) }
-                    .keyboardShortcut("c", modifiers: [.command, .shift])
+                    .keyboardShortcut(shortcuts.menuShortcut(.copyToOther))
                     .disabled(!window.dual || model.slideshow != nil || window.anySheetOpen)
                 Button("Move to Other Pane") { _ = window.sendToOtherPane(how: .move) }
-                    .keyboardShortcut("m", modifiers: [.command, .shift])
+                    .keyboardShortcut(shortcuts.menuShortcut(.moveToOther))
                     .disabled(!window.dual || model.slideshow != nil || window.anySheetOpen)
                 Divider()
                 Button("Move to Trash…") { model.moveSelectionToTrash() }
-                    .keyboardShortcut(.delete)
+                    .keyboardShortcut(shortcuts.menuShortcut(.trash))
                     .disabled(!model.canTrash || window.anySheetOpen)
             }
             CommandGroup(after: .toolbar) {
                 // The folder read again: changes outside the app show by
                 // themselves where the system reports them (not on every share)
                 Button("Reload") { model.reload() }
-                    .keyboardShortcut("r")
+                    .keyboardShortcut(shortcuts.menuShortcut(.reload))
                     .disabled(model.folderURL == nil || model.isLoading || model.slideshow != nil || window.anySheetOpen)
                 Divider()
                 Toggle("as Grid", isOn: Binding(get: { model.viewMode == .grid }, set: { if $0 { model.viewMode = .grid } }))
@@ -136,15 +140,15 @@ struct SchnellbildApp: App {
                 Divider()
                 // (the key monitor takes ⌘+ / ⌘− first: in the full view they zoom)
                 Button("Larger Thumbnails") { model.growThumbnails() }
-                    .keyboardShortcut("+", modifiers: .command)
+                    .keyboardShortcut(shortcuts.menuShortcut(.largerThumbnails))
                 Button("Smaller Thumbnails") { model.shrinkThumbnails() }
-                    .keyboardShortcut("-", modifiers: .command)
+                    .keyboardShortcut(shortcuts.menuShortcut(.smallerThumbnails))
                 Divider()
                 SortChoices(model: model, shortcuts: true)
             }
             CommandGroup(replacing: .help) {
                 Button("Schnellbild Help") { model.openHelp() }
-                    .keyboardShortcut("?", modifiers: .command)
+                    .keyboardShortcut(shortcuts.menuShortcut(.help))
                     .disabled(model.otherSheetOpen)
             }
         }
@@ -159,6 +163,7 @@ struct SchnellbildApp: App {
 /// shows that one), tied to its AppKit window.
 struct WindowRoot: View {
     @StateObject private var window: WindowModel
+    @Environment(\.openWindow) private var openWindow
 
     init(first: WindowModel, defaults: UserDefaults) {
         _window = StateObject(wrappedValue: WindowModel.claim(first, defaults: defaults))
@@ -170,16 +175,19 @@ struct WindowRoot: View {
             // As narrow as the toolbar keeps all its items (the full view's included)
             .frame(minWidth: 800, minHeight: 520)
             .background(WindowAttach(window: window))
+            // A key set for New Window opens one as the menu item does
+            .onAppear { WindowOpener.open = { [openWindow] in openWindow(id: "browser") } }
     }
 }
 
 /// File → New Window (⌘N): another window, e.g. for another display.
 struct NewWindowButton: View {
     @Environment(\.openWindow) private var openWindow
+    @ObservedObject var shortcuts = Shortcuts.shared
 
     var body: some View {
         Button("New Window") { openWindow(id: "browser") }
-            .keyboardShortcut("n")
+            .keyboardShortcut(shortcuts.menuShortcut(.newWindow))
     }
 }
 
@@ -231,29 +239,34 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 }
 
 /// The Video menu: subtitles, audio track and speed of the video on screen
-/// (V, < and > are taught by F1 and the mini keyboard; ⌃⌘S, ⌃⌘A as in IINA).
+/// (keys without ⌘ or ⌃, such as V, < and >, are taught by F1 and the mini
+/// keyboard; ⌃⌘S, ⌃⌘A as in IINA).
 struct VideoCommands: View {
     @ObservedObject var model: BrowserModel
     @ObservedObject var window: WindowModel
+    @ObservedObject var shortcuts: Shortcuts
 
     var body: some View {
         let off = model.shownMediaEntry?.kind != .video || window.anySheetOpen
         Group {
             Toggle("Show Subtitles", isOn: Binding(get: { model.showSubtitles }, set: { _ in model.toggleSubtitles() }))
+                .keyboardShortcut(shortcuts.menuShortcut(.subtitles))
             Button("Next Subtitle Track") { model.nextSubtitleTrack() }
-                .keyboardShortcut("s", modifiers: [.control, .command])
+                .keyboardShortcut(shortcuts.menuShortcut(.nextSubtitle))
             Menu("Subtitles") { VideoMenus.subtitlePicker(model) }
                 .disabled(model.videoTracks.subtitles.isEmpty)
             Divider()
             Button("Next Audio Track") { model.nextAudioTrack() }
-                .keyboardShortcut("a", modifiers: [.control, .command])
+                .keyboardShortcut(shortcuts.menuShortcut(.nextAudio))
             Menu("Audio Track") { VideoMenus.audioPicker(model) }
                 .disabled(model.videoTracks.audio.count < 2)
             Divider()
             Button("Faster") { model.changeSpeed(by: +1) }
+                .keyboardShortcut(shortcuts.menuShortcut(.faster))
             Button("Slower") { model.changeSpeed(by: -1) }
+                .keyboardShortcut(shortcuts.menuShortcut(.slower))
             Button("Normal Speed") { model.setSpeed(1) }
-                .keyboardShortcut("\\", modifiers: .command)
+                .keyboardShortcut(shortcuts.menuShortcut(.normalSpeed))
             Menu("Speed") { VideoMenus.speedPicker(model) }
             Divider()
             Button("Reset Control Bar Position") { model.resetVideoBarPosition() }

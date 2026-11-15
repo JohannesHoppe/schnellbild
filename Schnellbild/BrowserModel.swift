@@ -961,7 +961,7 @@ final class BrowserModel: ObservableObject {
         /// Like Finder: names A→Z, but dates and sizes newest/largest first.
         var startsAscending: Bool { self == .name || self == .kind }
     }
-    enum KeyInput: Equatable {
+    enum KeyInput: Hashable {
         case left, right, up, down, space, enter, escape, backspace, home, end, f1, f2
         /// The Norton Commander keys, a second way next to the Mac ones:
         /// F3 view, F4 edit (the default app), F5 copy and F6 move to the
@@ -4924,6 +4924,10 @@ final class BrowserModel: ObservableObject {
         if shownRemoved { showSlideshowItem() }
     }
 
+    /// Set while another action's key is carried out with one of the
+    /// playlist's keys (`WindowModel.perform`): the playlist leaves it alone.
+    var playlistKeysOff = false
+
     /// The keys the playlist takes after a click in it; false: not its key.
     private func playlistKey(_ key: KeyInput) -> Bool {
         guard showPlaylist, playlistFocused else { return false }
@@ -4944,7 +4948,7 @@ final class BrowserModel: ObservableObject {
 
     /// Keys while the slideshow runs.
     private func handleSlideshowKey(_ key: KeyInput, command: Bool, shift: Bool) -> Bool {
-        if !command, !shift, playlistKey(key) { return true }
+        if !command, !shift, !playlistKeysOff, playlistKey(key) { return true }
         switch key {
         case .escape, .backspace, .enter:
             // The playlist closes first, then the show ends

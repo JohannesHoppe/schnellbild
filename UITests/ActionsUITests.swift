@@ -389,7 +389,14 @@ final class ActionsUITests: SchnellbildUITestCase {
         // the grid's accessibility frames lag behind its scrolling), F5
         let leftA = left.descendants(matching: .any).matching(identifier: "tile.a.jpg").firstMatch
         leftA.click()
+        // The click taken before ⇧ goes down: the tile's click handler reads
+        // the modifier keys held when it runs, and leaves a ⇧-click to
+        // ModifierClicks
+        eventually("a.jpg selected on the left") { self.text(of: leftA).hasPrefix("selected") }
         app.typeKey(.rightArrow, modifierFlags: .shift)
+        eventually("b.jpg marked too") {
+            self.text(of: left.descendants(matching: .any).matching(identifier: "tile.b.jpg").firstMatch).hasPrefix("selected")
+        }
         app.typeKey(.F5, modifierFlags: [])
         let rightA = right.descendants(matching: .any).matching(identifier: "tile.a.jpg").firstMatch
         XCTAssertTrue(rightA.waitForExistence(timeout: 10), "copied into the other pane")

@@ -22,6 +22,8 @@ final class WindowModel: ObservableObject {
     /// A folder or file from the Finder dragged over the window: the zone
     /// under the pointer (left half browses, right half plays).
     @Published var dropZone: DropZone?
+    /// The keys of every action (`Shortcuts.shared`; a test's own).
+    var shortcuts: Shortcuts = .shared
 
     static let dualKey = "dualPane"
     static let splitKey = "dualPaneSplit"

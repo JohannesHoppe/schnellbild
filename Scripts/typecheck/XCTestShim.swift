@@ -104,6 +104,9 @@ public class XCUIElement {
     public var menuBars: XCUIElementQuery { XCUIElementQuery() }
     public var menuBarItems: XCUIElementQuery { XCUIElementQuery() }
     public var windows: XCUIElementQuery { XCUIElementQuery() }
+    public var toolbars: XCUIElementQuery { XCUIElementQuery() }
+    public var radioButtons: XCUIElementQuery { XCUIElementQuery() }
+    public var tabs: XCUIElementQuery { XCUIElementQuery() }
 }
 public final class XCUIApplication: XCUIElement {
     public override init() {}
