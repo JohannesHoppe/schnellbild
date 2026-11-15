@@ -373,8 +373,17 @@ final class ActionsUITests: SchnellbildUITestCase {
         XCTAssertTrue(rightSorted.waitForExistence(timeout: 15))
         // By its place on screen: on macOS 26 the tile of a pane added next
         // to the first one reports itself as not hittable
-        rightSorted.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).doubleClick()
-        XCTAssertTrue(right.descendants(matching: .any).matching(identifier: "tile...").firstMatch.waitForExistence(timeout: 10))
+        // A click selects it (and makes the right pane the active one), Space
+        // opens it: a double click came as two clicks 0.44 s apart once on
+        // macOS 26 and only selected the folder
+        rightSorted.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).click()
+        eventually("Sorted selected in the right pane") { text(of: rightSorted).hasPrefix("selected") }
+        app.typeKey(.space, modifierFlags: [])
+        // Inside: the folder's own tile is gone, ".." is there (the temp
+        // folder, where the right pane started, has ".." too)
+        eventually("inside Sorted in the right pane") {
+            !rightSorted.exists && right.descendants(matching: .any).matching(identifier: "tile...").firstMatch.exists
+        }
 
         // Left: a.jpg and b.jpg marked (⇧→; a ⌘-click lands a row off here,
         // the grid's accessibility frames lag behind its scrolling), F5
