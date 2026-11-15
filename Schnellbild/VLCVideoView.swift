@@ -468,7 +468,9 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
             self.output.use(media)
             self.openedInSoftware = true
             self.pauseOnceOpen = !wasPlaying
-            if handingOver, let track, let index { self.beginHandover(track: track, index: index, at: Double(time) / 1000) }
+            if handingOver, let track, let index {
+                self.beginHandover(track: track, index: index, at: Double(time) / 1000, holdingPictures: true)
+            }
             self.player.play()
             BrowserModel.testLog("vlc: opened again in software at \(time) ms, subtitles \(String(describing: track))")
             self.isPlaying = wasPlaying
@@ -499,6 +501,9 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         var selected = false
         /// The texts drawn now (redrawn only when they change).
         var shown: [String] = []
+        /// The time switched at: a media opened again reports 0 until it has
+        /// played a moment.
+        var from: Double = 0
     }
     private var handover: Handover?
     private var handoverTask: Task<Void, Never>?
@@ -510,8 +515,11 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
     /// The track to show from `time` (seconds): its lines are read off the
     /// main thread; if they can't be (a stream, another format, a damaged
     /// file), VLC takes the track at once, the running line left out.
-    private func beginHandover(track: Int, index: Int, at time: Double) {
+    /// `holdingPictures`: the media opened again: its pictures wait on the
+    /// layer until the running line is drawn over them.
+    private func beginHandover(track: Int, index: Int, at time: Double, holdingPictures: Bool = false) {
         endHandover()
+        if holdingPictures { output.hold(true) }
         guard case .file(let url, _) = source else {
             player.currentVideoSubTitleIndex = Int32(track)
             return
@@ -519,6 +527,11 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         // Until the lines are read VLC doesn't take the track (`applyChoices`)
         handover = Handover(track: track, lines: SubtitleTrackLines(kind: .text, lines: []),
                             firstOfVLC: .greatestFiniteMagnitude, selectAt: .greatestFiniteMagnitude)
+        // Held pictures show again at the latest after a second (a slow share)
+        Task { @MainActor [weak self] in
+            try? await Task.sleep(for: .seconds(1))
+            self?.output.hold(false)
+        }
         handoverTask = Task { @MainActor [weak self] in
             let read = await Task.detached(priority: .userInitiated) {
                 SubtitleReader.lines(of: url, subtitleIndex: index, from: time, to: time + Self.linesAhead)
@@ -526,6 +539,8 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
             guard let self, !Task.isCancelled, self.player.delegate != nil else { return }
             guard let read else {
                 BrowserModel.testLog("vlc: lines of subtitles \(track) not read, VLC from its next line")
+                self.handover = nil
+                self.output.hold(false)
                 self.player.currentVideoSubTitleIndex = Int32(track)
                 return
             }
@@ -536,14 +551,16 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
                 previous = line.start
             }
             let selectAt = max(time, firstOfVLC - Self.readAhead)
-            self.handover = Handover(track: track, lines: read, firstOfVLC: firstOfVLC, selectAt: selectAt)
+            self.handover = Handover(track: track, lines: read, firstOfVLC: firstOfVLC, selectAt: selectAt, from: time)
             let ours = read.lines.filter { $0.start < firstOfVLC }
             BrowserModel.testLog("vlc: handing over subtitles \(track) at \(String(format: "%.3f", time)) s: \(ours.count) lines drawn by the app, "
                 + "VLC's from \(String(format: "%.3f", firstOfVLC)) s, chosen at \(String(format: "%.3f", selectAt)) s | \(BrowserModel.testClock) ms")
             self.output.logPictures(5)
+            self.followHandover()
+            self.output.hold(false)
             while !Task.isCancelled, self.handover != nil, self.player.delegate != nil {
-                self.followHandover()
                 try? await Task.sleep(for: .milliseconds(20))
+                self.followHandover()
             }
         }
     }
@@ -552,7 +569,7 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
     /// `selectAt`, and ends once the app's lines are over.
     private func followHandover() {
         guard var handover else { return }
-        let now = Double(timeNow) / 1000
+        let now = max(Double(timeNow) / 1000, handover.from)
         if !handover.selected, now >= handover.selectAt {
             handover.selected = true
             player.currentVideoSubTitleIndex = Int32(handover.track)
@@ -595,6 +612,7 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         if selecting, let handover, !handover.selected { player.currentVideoSubTitleIndex = Int32(handover.track) }
         if handover != nil { output.setOverlay(nil) }
         handover = nil
+        output.hold(false)
     }
 
     var tracks: VideoTracks {

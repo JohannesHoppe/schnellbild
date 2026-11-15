@@ -682,17 +682,19 @@ final class VisualUITests: SchnellbildUITestCase {
         waitForSoftwarePictures(of: video)
         let written = logSince(log)
         XCTAssertTrue(written.contains("vlc: tracks not read within"), "played without the tracks")
+        // The first picture shown (in hardware, or in software when the
+        // subtitles came before it), with the line running then
         let opening = loggedTime(of: "vlc: opening", in: written)
-        let first = loggedTime(of: "vlc picture 1 of media 1:", in: written)
+        let first = loggedTime(of: "vlc picture 1 of media ", in: written)
         if let opening, let first {
             print("VLC with late tracks: first picture \(Int(first - opening)) ms after opening")
             XCTAssertLessThan(first - opening, 1500, "the first picture doesn't wait for the tracks")
         } else {
             XCTFail("opening and first picture logged")
         }
-        let after = probedPictures(in: written).filter { $0.media == 2 }
-        print("after opening again: \(after.map { "\($0.number): \($0.text == true ? "text" : "no text")" }.joined(separator: ", "))")
-        XCTAssertEqual(after.first?.text, true, "the running line on the first picture in software")
+        let software = probedPictures(in: written).filter { $0.media == 2 }
+        print("in software: \(software.map { "\($0.number): \($0.text == true ? "text" : "no text")" }.joined(separator: ", "))")
+        XCTAssertEqual(software.first?.text, true, "the running line on the first picture in software")
     }
 
     /// 4K at 60 frames per second through VLC: the picture reaches the
