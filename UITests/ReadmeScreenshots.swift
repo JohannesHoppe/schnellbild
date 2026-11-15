@@ -153,7 +153,11 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         app.typeKey("w", modifierFlags: [])
         XCTAssertTrue(element("atlas").waitForExistence(timeout: 10))
         let tiles = app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH 'atlas.'"))
-        eventually("the places are on the map", timeout: 20) { tiles.count >= 3 }
+        let deadline = Date().addingTimeInterval(20)
+        while tiles.count < 3, Date() < deadline { RunLoop.current.run(until: Date().addingTimeInterval(0.5)) }
+        XCTAssertGreaterThanOrEqual(tiles.count, 3, "the places on the map; count: \(text(of: element("atlasCount"))), "
+            + "strip: \(text(of: element("atlasStripTitle"))), empty: \(text(of: element("atlasEmpty"))), "
+            + "ids: \(tiles.allElementsBoundByIndex.map(\.identifier))")
         shoot("atlas", settle: 4)
 
         app.typeKey("t", modifierFlags: [])
