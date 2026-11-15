@@ -118,6 +118,7 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         player.media = media
         player.delegate = self
         output.attach(to: player)
+        BrowserModel.testLog("vlc: opening | \(BrowserModel.testClock) ms")
         if subtitles { readTracksFirst(media) }
     }
 
@@ -135,7 +136,15 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
     /// longer to read (a slow share) starts in hardware, and subtitles
     /// chosen then open it again in software where it stands
     /// (`decodeInSoftware`).
-    static let parseWait: Duration = .milliseconds(400)
+    static let parseWait: Duration = .milliseconds(300)
+    /// UI tests (`--vlc-parse-delay=<ms>`): the tracks arrive that much
+    /// later, as from a slow share.
+    static let parseDelay: Duration? = {
+        let args = ProcessInfo.processInfo.arguments
+        guard args.contains("--ui-testing"), let arg = args.first(where: { $0.hasPrefix("--vlc-parse-delay=") }),
+              let ms = Int(arg.dropFirst("--vlc-parse-delay=".count)) else { return nil }
+        return .milliseconds(ms)
+    }()
     /// When the reading began (test log).
     private var parseBegan = Date()
 
@@ -167,7 +176,10 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
     }
 
     nonisolated func mediaDidFinishParsing(_ aMedia: VLCMedia) {
-        Task { @MainActor in self.tracksKnown() }
+        Task { @MainActor in
+            if let delay = Self.parseDelay { try? await Task.sleep(for: delay) }
+            self.tracksKnown()
+        }
     }
 
     /// The tracks go to the model, which chooses (`selectSubtitleTrack`);

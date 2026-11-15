@@ -124,7 +124,9 @@ struct VideoDetailView: View {
             // A reference movie names other files or addresses to play; it plays nothing here
             let asset = loader?.makeAsset(fileName: url.lastPathComponent)
                 ?? AVURLAsset(url: url, options: [AVURLAssetReferenceRestrictionsKey: AVAssetReferenceRestrictions.forbidAll.rawValue])
-            let playable = (try? await asset.load(.isPlayable)) ?? false
+            // A video that plays in VLC anyway isn't asked (no wait on AVFoundation)
+            let inVLC = Self.forceVLC || Self.playsInVLC(url)
+            let playable = inVLC ? false : ((try? await asset.load(.isPlayable)) ?? false)
             guard !Task.isCancelled else { stream?.close(); return }   // the user moved on to another file
             checking = false
             playing = (url, nil)

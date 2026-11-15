@@ -548,6 +548,41 @@ final class VisualUITests: SchnellbildUITestCase {
         XCTAssertGreaterThan(shown.spread, 0.03, "text over the lower part of the picture")
     }
 
+    /// The time a "… | <ms> ms" line of the app's log was written.
+    private func loggedTime(of marker: String, in log: String) -> Double? {
+        guard let line = log.components(separatedBy: "\n").first(where: { $0.contains(marker) }),
+              let bar = line.range(of: " | ", options: .backwards) else { return nil }
+        return Double(line[bar.upperBound...].prefix { $0.isNumber || $0 == "." })
+    }
+
+    /// Tracks that come late (a slow share, here held back 3 s with
+    /// `--vlc-parse-delay`) don't hold the first picture: VLC starts in
+    /// hardware after `VLCPlaybackControl.parseWait` and opens the video
+    /// again in software once its subtitles are known, the line running
+    /// then on the first picture shown after.
+    func testVLCStartsAtOnceWhenItsTracksComeLate() throws {
+        let log = tempDir.appendingPathComponent("app.log")
+        continueAfterFailure = true   // the log below shows on a failure too
+        defer { print("app log:\n" + ((try? String(contentsOf: log, encoding: .utf8)) ?? "(none)")) }
+        let video = try openVideo("tracks.mkv", vlc: true, extra: ["--test-log=\(log.path)", "--vlc-parse-delay=3000"])
+        eventually("the subtitles are on", timeout: 20) { text(of: video).contains("subtitles 1/2 en") }
+        eventually("opened again in software", timeout: 20) { text(of: video).contains("media 2, ") }
+        waitForSoftwarePictures(of: video)
+        let written = logSince(log)
+        XCTAssertTrue(written.contains("vlc: tracks not read within"), "played without the tracks")
+        let opening = loggedTime(of: "vlc: opening", in: written)
+        let first = loggedTime(of: "vlc picture 1 of media 1:", in: written)
+        if let opening, let first {
+            print("VLC with late tracks: first picture \(Int(first - opening)) ms after opening")
+            XCTAssertLessThan(first - opening, 1500, "the first picture doesn't wait for the tracks")
+        } else {
+            XCTFail("opening and first picture logged")
+        }
+        let after = probedPictures(in: written).filter { $0.media == 2 }
+        print("after opening again: \(after.map { "\($0.number): \($0.text == true ? "text" : "no text")" }.joined(separator: ", "))")
+        XCTAssertEqual(after.first?.text, true, "the running line on the first picture in software")
+    }
+
     /// 4K at 60 frames per second through VLC: the picture reaches the
     /// screen, and handing each picture over to the app costs little (a
     /// picture has 16 ms at 60 fps). How many pictures VLC loses is only
