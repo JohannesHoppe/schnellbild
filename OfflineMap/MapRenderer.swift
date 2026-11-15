@@ -26,6 +26,14 @@ public final class MapRenderer: @unchecked Sendable {
     private let lock = NSLock()
     /// Decoded tiles kept (a dense tile at zoom 7 holds a few MB of points)
     static let decodedLimit = 40
+    /// Tiles drawn for `image(of:)`, by tile, pixel size and palette: a view
+    /// drawn again (the Inspector's map, a new appearance and back) draws only
+    /// its labels anew
+    private let viewTiles: NSCache<NSString, CGImage> = {
+        let cache = NSCache<NSString, CGImage>()
+        cache.totalCostLimit = 96 << 20
+        return cache
+    }()
     let labelLines = LabelLines()
 
     public init(archive: PMTilesArchive, places: PlaceIndex?) {
@@ -295,7 +303,8 @@ public final class MapRenderer: @unchecked Sendable {
 
     /// The view as an image at `scale` pixels per point.
     /// The tiles are drawn side by side on several threads, each into its
-    /// own whole pixels of the view (so nothing is resampled), then the labels.
+    /// own whole pixels of the view (so nothing is resampled) and kept for the
+    /// next drawing at the same size, then the labels.
     public func image(of viewport: MapViewport, scale: CGFloat, palette: MapPalette, languages: MapLanguages = .system,
                       labels: Bool = true) -> CGImage? {
         let width = Int((viewport.size.width * scale).rounded()), height = Int((viewport.size.height * scale).rounded())
@@ -315,20 +324,29 @@ public final class MapRenderer: @unchecked Sendable {
         images.initialize(repeating: nil)
         defer { images.deallocate() }
         DispatchQueue.concurrentPerform(iterations: tiles.count) { i in
-            let r = rects[i], visible = r.intersection(view)
-            guard !visible.isNull, visible.width >= 1, visible.height >= 1,
-                  let tileContext = Self.context(width: Int(visible.width), height: Int(visible.height)) else { return }
+            let r = rects[i]
+            guard r.intersects(view), r.width >= 1, r.height >= 1 else { return }
+            // A tile drawn at this very size before is taken as it is
+            let n = 1 << tiles[i].key.z
+            let name = "\(tiles[i].key.z)/\(((tiles[i].key.x % n) + n) % n)/\(tiles[i].key.y)/\(Int(r.width))x\(Int(r.height))/\(palette.isDark)" as NSString
+            if let cached = viewTiles.object(forKey: name) { images[i] = cached; return }
+            guard let tileContext = Self.context(width: Int(r.width), height: Int(r.height)) else { return }
             let sx = r.width / 256, sy = r.height / 256
-            tileContext.translateBy(x: r.minX - visible.minX, y: visible.height - (r.minY - visible.minY))
+            tileContext.translateBy(x: 0, y: r.height)
             tileContext.scaleBy(x: sx, y: -sy)
             drawTile(tiles[i].key, in: tileContext, palette: palette, tolerance: 0.5 * Double(scale) / Double(sx))
-            images[i] = tileContext.makeImage()
+            if let image = tileContext.makeImage() {
+                images[i] = image
+                viewTiles.setObject(image, forKey: name, cost: image.bytesPerRow * image.height)
+            }
         }
+        ctx.saveGState()
+        ctx.clip(to: view)
         for (i, r) in rects.enumerated() {
             guard let image = images[i] else { continue }
-            let visible = r.intersection(view)
-            ctx.draw(image, in: CGRect(x: visible.minX, y: CGFloat(height) - visible.maxY, width: visible.width, height: visible.height))
+            ctx.draw(image, in: CGRect(x: r.minX, y: CGFloat(height) - r.maxY, width: r.width, height: r.height))
         }
+        ctx.restoreGState()
         if labels {
             ctx.scaleBy(x: scale, y: scale)
             ctx.translateBy(x: 0, y: viewport.size.height)

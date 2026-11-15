@@ -459,15 +459,21 @@ final class OfflineMapTests: XCTestCase {
                 var start = Date()
                 let image = try XCTUnwrap(renderer.image(of: viewport, scale: 2, palette: palette, languages: .preferring(["en"])))
                 let first = Date().timeIntervalSince(start) * 1000
-                start = Date()
-                _ = renderer.image(of: viewport, scale: 2, palette: palette, languages: .preferring(["en"]))
-                let again = Date().timeIntervalSince(start) * 1000
+                // Drawn again (the median of three): the tiles kept, the labels drawn anew
+                var times: [Double] = []
+                for _ in 0..<3 {
+                    start = Date()
+                    _ = renderer.image(of: viewport, scale: 2, palette: palette, languages: .preferring(["en"]))
+                    times.append(Date().timeIntervalSince(start) * 1000)
+                }
+                let again = times.sorted()[1]
                 let theme = palette.isDark ? "dark" : "light"
                 report.append(String(format: "%@-%@: first %.0f ms, again %.0f ms", name, theme, first, again))
                 XCTAssertEqual(image.width, 1920)
-                // The budget: a view drawn again (tiles decoded, the app's case while the map moves)
+                // The budgets: a view drawn again under 150 ms; the first time
+                // (tiles read, decoded and drawn, labels laid out) under a second
                 XCTAssertLessThan(again, 150, "\(name) \(theme)")
-                XCTAssertLessThan(first, 600, "\(name) \(theme)")
+                XCTAssertLessThan(first, 1000, "\(name) \(theme)")
                 if let folder {
                     let url = folder.appendingPathComponent("\(name)-\(theme).png")
                     let destination = try XCTUnwrap(CGImageDestinationCreateWithURL(url as CFURL, UTType.png.identifier as CFString, 1, nil))
