@@ -3,6 +3,11 @@
 <!-- The UI-test build's Info.plist is generated; this adds what Resources/Info.plist declares beyond the defaults -->
 <plist version="1.0">
 <dict>
+    <!-- Use My Location in the distance sheet (also in InfoPlist.strings per language) -->
+    <key>NSLocationUsageDescription</key>
+    <string>Schnellbild uses your location only when you click Use My Location, to sort photos and videos by their distance from you. It stays on your Mac.</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>Schnellbild uses your location only when you click Use My Location, to sort photos and videos by their distance from you. It stays on your Mac.</string>
     <!-- The app's own tile drags (TileDrag.type): only its own drop targets take them -->
     <key>UTExportedTypeDeclarations</key>
     <array>

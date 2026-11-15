@@ -159,6 +159,7 @@
       "<strong>Einstellungen</strong> (letzter Ordner, Sortierung, Lesezeichen, Lautstärke …) in den Einstellungen der App.",
       "<strong>Ordnerzugriff:</strong> die Ordner, die du für Schnellbild freigegeben hast, als Lesezeichen von macOS, damit die App sie nach einem Neustart wieder zeigen kann. Einstellungen → {folderAccess} vergisst sie.",
       "<strong>Archiv-Passwörter</strong>, die du eingegeben hast, in deinem Anmeldeschlüsselbund (Eintrag „Schnellbild archive passwords“); Einstellungen → {forgetPasswords} löscht sie.",
+      "<strong>Dein Standort</strong>, nur wenn du beim Sortieren nach Entfernung auf „Meinen Standort verwenden“ klickst: macOS fragt dich vorher, die Position wird einmal abgefragt und nur als Ort, von dem aus die Entfernungen gemessen werden, in den Einstellungen der App behalten. Sie verlässt deinen Mac nie.",
       "<strong>Vorschaubilder</strong> im Vorschau-Cache von macOS."
     ],
     "appOutro": "Schnellbild liest deine Bilder, Videos und Archive nur, um sie dir zu zeigen. Die App sendet sie, ihre Namen oder Angaben über sie nirgendwohin. Download und Kauf wickelt Apple nach seiner eigenen Datenschutzerklärung ab und gibt uns nur Zahlen ohne deine Identität: Verkäufe, und Absturzberichte und Nutzungsstatistiken, wenn du in macOS erlaubt hast, sie mit App-Entwicklern zu teilen.",

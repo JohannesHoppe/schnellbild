@@ -533,7 +533,7 @@ struct PaneView: View {
         .sheet(item: $model.renameFileTarget) { RenameView(file: $0) }
         .sheet(item: $model.passwordRequest) { PasswordView(request: $0) }
         .sheet(isPresented: $model.newFolderRequested) { NewFolderView() }
-        .sheet(isPresented: $model.distanceOriginRequested) { DistanceOriginView() }
+        .sheet(isPresented: $model.distanceOriginRequested) { DistanceOriginView(start: model.distanceOrigin) }
         .alert(Text(verbatim: model.locationMissing.map { String(localized: "“\($0)” has no location") } ?? ""),
                isPresented: Binding(get: { model.locationMissing != nil }, set: { if !$0 { model.locationMissing = nil } })) {
             Button("OK") { model.locationMissing = nil }
@@ -859,8 +859,9 @@ struct EmptyStateView: View {
     }
 }
 
-/// The sort choices, in the View menu (with ⌘1 … ⌘5 unless changed) and in the toolbar.
-/// Choosing the current key again reverses the direction.
+/// The sort choices, in the View menu (with ⌘1 … ⌘6 unless changed) and in the toolbar.
+/// Choosing the current key again reverses the direction; Distance without
+/// a place to measure from opens the sheet that asks for one.
 struct SortChoices: View {
     @ObservedObject var model: BrowserModel
     @ObservedObject var keys = Shortcuts.shared

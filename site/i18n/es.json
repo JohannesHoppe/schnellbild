@@ -159,6 +159,7 @@
       "<strong>Ajustes</strong> (la última carpeta, el orden, los marcadores, el volumen…) en las preferencias propias de la app.",
       "<strong>Acceso a carpetas:</strong> las carpetas que has abierto a Schnellbild, como marcadores de macOS, para que pueda mostrarlas de nuevo tras reiniciar. Ajustes → {folderAccess} las olvida.",
       "<strong>Contraseñas de archivos</strong> que hayas escrito, en tu llavero de inicio de sesión (elemento «Schnellbild archive passwords»); Ajustes → {forgetPasswords} las elimina.",
+      "<strong>Tu ubicación</strong>, solo cuando haces clic en Usar mi ubicación al ordenar por distancia: macOS te pregunta antes, la posición se pide una vez y se guarda solo como el lugar desde el que se miden las distancias, en las preferencias de la app. Nunca sale de tu Mac.",
       "<strong>Miniaturas</strong>, en la caché de miniaturas del propio macOS."
     ],
     "appOutro": "Schnellbild lee tus imágenes, vídeos y archivos comprimidos solo para mostrártelos. Nunca envía a ninguna parte ni los archivos, ni sus nombres, ni nada sobre ellos. Apple gestiona la descarga y la compra conforme a su propia política de privacidad y solo nos facilita cifras que no te identifican: las ventas y, si en macOS has permitido compartirlos con los desarrolladores de apps, informes de fallos y estadísticas de uso.",

@@ -1,0 +1,3 @@
+/* Info.plist, localized: shown by macOS when Use My Location asks for the Mac's position */
+"NSLocationUsageDescription" = "Schnellbild använder din plats bara när du klickar på Använd min plats, för att sortera bilder och videor efter avståndet från dig. Den stannar på din Mac.";
+"NSLocationWhenInUseUsageDescription" = "Schnellbild använder din plats bara när du klickar på Använd min plats, för att sortera bilder och videor efter avståndet från dig. Den stannar på din Mac.";

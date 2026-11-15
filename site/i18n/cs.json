@@ -159,6 +159,7 @@
       "<strong>Nastavení</strong> (poslední složka, řazení, záložky, hlasitost …) ve vlastních předvolbách aplikace.",
       "<strong>Přístup ke složkám:</strong> složky, které jste Schnellbildu otevřeli, jako záložky macOS, aby je mohl po restartu znovu zobrazit. Nastavení → {folderAccess} je zapomene.",
       "<strong>Hesla k archivům</strong>, která jste zadali, ve vaší přihlašovací klíčence (položka „Schnellbild archive passwords“); Nastavení → {forgetPasswords} je odstraní.",
+      "<strong>Vaše poloha</strong>, jen když při řazení podle vzdálenosti kliknete na Použít moji polohu: macOS se nejdřív zeptá, poloha se zjistí jednou a uloží jen jako místo, od kterého se měří vzdálenosti, v předvolbách aplikace. Váš Mac nikdy neopustí.",
       "<strong>Miniatury</strong> ve vlastní mezipaměti miniatur systému macOS."
     ],
     "appOutro": "Schnellbild čte vaše obrázky, videa a archivy jen proto, aby vám je zobrazil. Nikdy je, jejich názvy ani nic o nich nikam neposílá. Stažení a nákup zajišťuje Apple podle svých vlastních zásad ochrany osobních údajů a předává nám jen čísla bez vaší identity: prodeje a také hlášení o pádech a statistiky používání, pokud jste v macOS povolili jejich sdílení s vývojáři aplikací.",

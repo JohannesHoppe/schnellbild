@@ -159,6 +159,7 @@
       "<strong>Settings</strong> (the last folder, sort order, bookmarks, volume …) in the app's own preferences.",
       "<strong>Folder access:</strong> the folders you opened to Schnellbild, as macOS bookmarks, so it can show them again after a restart. Settings → {folderAccess} forgets them.",
       "<strong>Archive passwords</strong> you typed, in your login keychain (entry \"Schnellbild archive passwords\"); Settings → {forgetPasswords} removes them.",
+      "<strong>Your location</strong>, only when you click Use My Location while sorting by distance: macOS asks you first, the position is asked for once and kept only as the place to measure distances from, in the app's preferences. It never leaves your Mac.",
       "<strong>Thumbnails</strong>, in macOS's own thumbnail cache."
     ],
     "appOutro": "Schnellbild reads your pictures, videos and archives only to show them to you. It never sends them, their names or anything about them anywhere. Apple handles the download and purchase under its own privacy policy and gives us only figures without your identity: sales, and crash reports and usage statistics if you allowed sharing them with app developers in macOS.",

@@ -541,3 +541,13 @@
 "near %@" = "nær %@";
 "map data for the offline map" = "kartdata til det frakoblede kartet";
 "© OpenStreetMap contributors. Open Database License (ODbL) 1.0. Made from Protomaps' OpenStreetMap build, with thanks to Protomaps; how the files are made is in Schnellbild's repository." = "© OpenStreetMap-bidragsytere. Open Database License (ODbL) 1.0. Laget fra Protomaps’ OpenStreetMap-bygg, med takk til Protomaps; hvordan filene lages, står i Schnellbilds repository.";
+
+/* Sorting by distance: the map and Use My Location */
+"Use My Location" = "Bruk min plassering";
+"Asks macOS once for where this Mac is. The position stays on this Mac." = "Spør macOS én gang hvor denne Macen er. Posisjonen blir på denne Macen.";
+"Finding your location…" = "Finner plasseringen din …";
+"Click the map to choose a place." = "Klikk på kartet for å velge et sted.";
+"Schnellbild may not use your location. Allow it in System Settings → Privacy & Security → Location Services." = "Schnellbild får ikke bruke plasseringen din. Tillat det i Systeminnstillinger → Personvern og sikkerhet → Stedstjenester.";
+"Location is restricted on this Mac." = "Plassering er begrenset på denne Macen.";
+"Location Services are off. Turn them on in System Settings → Privacy & Security → Location Services." = "Stedstjenester er slått av. Slå dem på i Systeminnstillinger → Personvern og sikkerhet → Stedstjenester.";
+"Your location can't be found right now." = "Plasseringen din kan ikke finnes akkurat nå.";
