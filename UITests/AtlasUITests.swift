@@ -206,9 +206,11 @@ final class AtlasUITests: SchnellbildUITestCase {
         // The same drag, and then the throw's turn on top of it
         XCTAssertGreaterThan(abs(Self.wrap(westward(before, after) - dragged)), 3, "the throw went on after the mouse came up: \(after)")
 
-        // A mouse's wheel zooms about the pointer
+        // ⌘-scroll zooms about the pointer (XCUITest's scroll events are a trackpad's, which turn the globe without ⌘)
         before = after
-        globe.coordinate(withNormalizedOffset: CGVector(dx: 0.45, dy: 0.75)).scroll(byDeltaX: 0, deltaY: 4)
+        XCUIElement.perform(withKeyModifiers: .command) {
+            globe.coordinate(withNormalizedOffset: CGVector(dx: 0.45, dy: 0.75)).scroll(byDeltaX: 0, deltaY: 40)
+        }
         eventually("zoomed by the wheel") { abs(self.mapState().zoom - before.zoom) > 0.2 }
 
         // A double click glides one step in
