@@ -53,6 +53,7 @@ final class GlobeSurfaceView: NSView, MTKViewDelegate {
     let flat: MapSurfaceView
     private(set) var renderer: GlobeRenderer?
     private var metal: MTKView?
+    /// Where the pointer was at the drag's last event (window coordinates)
     private var dragStart: NSPoint?
     private var dragged = false
     /// Recent drag steps (time, dx, dy) for the throw at the end
@@ -365,9 +366,13 @@ final class GlobeSurfaceView: NSView, MTKViewDelegate {
     }
 
     override func mouseDragged(with event: NSEvent) {
-        guard interactive, dragStart != nil else { return super.mouseDragged(with: event) }
+        guard interactive, let last = dragStart else { return super.mouseDragged(with: event) }
         dragged = true
-        let dx = Double(event.deltaX), dy = Double(event.deltaY)
+        // From the pointer's places (events posted by other programs, such as
+        // XCUITest's, carry no deltas); y grows downwards as in deltaY
+        let now = event.locationInWindow
+        dragStart = now
+        let dx = Double(now.x - last.x), dy = Double(last.y - now.y)
         dragSteps.append((event.timestamp, dx, dy))
         dragSteps.removeAll { event.timestamp - $0.0 > 0.1 }
         moved(to: pan(by: dx, dy))

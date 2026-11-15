@@ -223,11 +223,13 @@ final class AtlasUITests: SchnellbildUITestCase {
         XCTAssertTrue(globe.waitForExistence(timeout: 10))
         zoomOutToTheGlobe()
 
-        // Let go while moving: it stops where the drag ended
+        // Let go while moving: it turned with the drag and stops where the drag ended
+        let start = mapState()
         globe.coordinate(withNormalizedOffset: CGVector(dx: 0.35, dy: 0.75))
             .press(forDuration: 0.1, thenDragTo: globe.coordinate(withNormalizedOffset: CGVector(dx: 0.55, dy: 0.75)),
                    withVelocity: .fast, thenHoldForDuration: 0)
         let dropped = mapState()
+        XCTAssertGreaterThan(start.longitude - dropped.longitude, 5, "turned: \(start) → \(dropped)")
         RunLoop.current.run(until: Date().addingTimeInterval(1))
         XCTAssertEqual(mapState().longitude, dropped.longitude, accuracy: 1e-9, "no throw")
 
