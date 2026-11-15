@@ -163,6 +163,7 @@ final class MapSurfaceView: NSView {
         let dark = isDark, scale = scale, height = bounds.height
         var wanted = Set<NSString>()
         var used = Set<TileKey>()
+        var missing = false
         if let store {
             let z = Int(min(MapViewport.maxZoom, max(0, camera.zoom.rounded())))
             let n = 1 << z
@@ -190,13 +191,25 @@ final class MapSurfaceView: NSView {
                     tile.contentsRect = rect
                 } else {
                     tile.contents = nil
+                    missing = true
                 }
+                tile.zPosition = 0
             }
             store.keepOnly(wanted)
         }
+        // Tiles of the zoom shown before stay below, in place, while tiles of
+        // this zoom are still being made (zooming out leaves no gaps)
         for (key, l) in tileLayers where !used.contains(key) {
-            l.removeFromSuperlayer()
-            tileLayers[key] = nil
+            if missing, key.z != Int(camera.zoom.rounded()), l.contents != nil {
+                let side = 256 * pow(2, camera.zoom - Double(key.z)), c = viewport.centerWorld
+                let x = Double(key.x) * side - Double(c.x) + Double(bounds.width) / 2
+                let y = Double(key.y) * side - Double(c.y) + Double(bounds.height) / 2
+                l.frame = CGRect(x: x, y: Double(height) - y - side, width: side, height: side)
+                l.zPosition = -1
+            } else {
+                l.removeFromSuperlayer()
+                tileLayers[key] = nil
+            }
         }
         placeLabels()
         CATransaction.commit()
@@ -204,7 +217,7 @@ final class MapSurfaceView: NSView {
 
     /// The part of a made tile of a lower zoom that covers the tile.
     private func placeholder(for key: TileKey, dark: Bool, scale: CGFloat) -> (CGImage, CGRect)? {
-        guard let store else { return nil }
+        guard let store, key.z > 0 else { return nil }
         for up in 1...min(5, key.z) {
             let parent = TileKey(z: key.z - up, x: key.x >> up, y: key.y >> up)
             guard let image = store.cached(parent, dark: dark, scale: scale) else { continue }
