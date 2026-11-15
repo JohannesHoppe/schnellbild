@@ -400,16 +400,22 @@ final class VideoUITests: SchnellbildUITestCase {
         func inPane(_ pane: XCUIElement, _ identifier: String) -> XCUIElement {
             pane.descendants(matching: .any).matching(identifier: identifier).firstMatch
         }
-        // D: the right pane shows the same folder; a double click there opens
-        // the other video (and makes the right pane the active one)
+        // D: the right pane shows the same folder; a click there selects the
+        // other video and makes the right pane the active one, Space opens it
         app.typeKey("d", modifierFlags: [])
         XCTAssertTrue(rightPane.waitForExistence(timeout: 10), "two panes")
         let tile = inPane(rightPane, "tile.right.\(ext)")
         XCTAssertTrue(tile.waitForExistence(timeout: 15))
-        tile.doubleClick()
+        tile.click()
+        eventually("the right pane's tile selected") { text(of: tile).hasPrefix("selected") }
+        app.typeKey(.space, modifierFlags: [])
         let leftVideo = inPane(leftPane, id), rightVideo = inPane(rightPane, id)
-        XCTAssertTrue(rightVideo.waitForExistence(timeout: 20))
         let leftBadge = inPane(leftPane, "positionBadge"), rightBadge = inPane(rightPane, "positionBadge")
+        eventually("the right pane opened its video", timeout: 15) { text(of: rightBadge).contains("right.\(ext)") }
+        if !rightVideo.waitForExistence(timeout: 20) {
+            print(app.debugDescription)
+            XCTFail("the right pane's video in \(id)")
+        }
         func paused(_ badge: XCUIElement) -> Bool { text(of: badge).contains("Paused") }
         func state() -> String { "left: \(text(of: leftVideo)) [\(text(of: leftBadge))]; right: \(text(of: rightVideo)) [\(text(of: rightBadge))]" }
         eventually("each pane plays its own video, the English subtitles on", timeout: 20) {
