@@ -407,6 +407,8 @@
 "End the slideshow (%@ close the playlist first)" = "Termina la presentazione (%@ chiudono prima la playlist)";
 
 /* Inspector and sorting by distance */
+
+/* Offline map */
 "Quit (%@ asks first)" = "Esci (%@ chiede prima)";
 "Boss key: hidden and silent at once; %@ or the Dock icon brings it back" = "Tasto capo: subito nascosto e muto; %@ o l’icona nel Dock lo riporta";
 "⌘-click" = "⌘-clic";
@@ -531,3 +533,11 @@
 "No coordinates found" = "Nessuna coordinata trovata";
 "Sort" = "Ordina";
 "Sort by name, kind, date modified, date taken, size, distance (again: reverse)" = "Ordina per nome, tipo, data di modifica, data di scatto, dimensioni, distanza (di nuovo: inverti)";
+"Map" = "Mappa";
+"Map credits" = "Crediti della mappa";
+"Map data © OpenStreetMap contributors" = "Dati della mappa © contributori di OpenStreetMap";
+"Opens in your browser (online)" = "Si apre nel browser (online)";
+"near %@, %@" = "vicino a %@, %@";
+"near %@" = "vicino a %@";
+"map data for the offline map" = "dati della mappa offline";
+"© OpenStreetMap contributors. Open Database License (ODbL) 1.0. Made from Protomaps' OpenStreetMap build, with thanks to Protomaps; how the files are made is in Schnellbild's repository." = "© contributori di OpenStreetMap. Open Database License (ODbL) 1.0. Ricavati dalla build OpenStreetMap di Protomaps, con un ringraziamento a Protomaps; come vengono creati i file è nel repository di Schnellbild.";

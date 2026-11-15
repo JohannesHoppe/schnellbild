@@ -407,6 +407,8 @@
 "End the slideshow (%@ close the playlist first)" = "结束幻灯片放映（%@ 先关闭播放列表）";
 
 /* Inspector and sorting by distance */
+
+/* Offline map */
 "Quit (%@ asks first)" = "退出（%@ 会先询问）";
 "Boss key: hidden and silent at once; %@ or the Dock icon brings it back" = "老板键：立即隐藏并静音；%@ 或点按程序坞图标恢复";
 "⌘-click" = "⌘-点按";
@@ -531,3 +533,11 @@
 "No coordinates found" = "未找到坐标";
 "Sort" = "排序";
 "Sort by name, kind, date modified, date taken, size, distance (again: reverse)" = "按名称、种类、修改日期、拍摄日期、大小、距离排序（再选一次：反转）";
+"Map" = "地图";
+"Map credits" = "地图来源";
+"Map data © OpenStreetMap contributors" = "地图数据 © OpenStreetMap 贡献者";
+"Opens in your browser (online)" = "在浏览器中打开（联网）";
+"near %@, %@" = "%@附近（%@）";
+"near %@" = "%@附近";
+"map data for the offline map" = "离线地图的地图数据";
+"© OpenStreetMap contributors. Open Database License (ODbL) 1.0. Made from Protomaps' OpenStreetMap build, with thanks to Protomaps; how the files are made is in Schnellbild's repository." = "© OpenStreetMap 贡献者。Open Database License (ODbL) 1.0。由 Protomaps 的 OpenStreetMap 构建制作，感谢 Protomaps；文件的制作方法见 Schnellbild 的代码仓库。";

@@ -407,6 +407,8 @@
 "End the slideshow (%@ close the playlist first)" = "スライドショーを終了（%@ はまずプレイリストを閉じる）";
 
 /* Inspector and sorting by distance */
+
+/* Offline map */
 "Quit (%@ asks first)" = "終了（%@ は確認あり）";
 "Boss key: hidden and silent at once; %@ or the Dock icon brings it back" = "ボスキー：すぐに非表示・消音。%@ または Dock のアイコンで元に戻る";
 "⌘-click" = "⌘-クリック";
@@ -531,3 +533,11 @@
 "No coordinates found" = "座標が見つかりません";
 "Sort" = "並べ替え";
 "Sort by name, kind, date modified, date taken, size, distance (again: reverse)" = "名前、種類、変更日、撮影日、サイズ、距離で並べ替え（もう一度で逆順）";
+"Map" = "地図";
+"Map credits" = "地図のクレジット";
+"Map data © OpenStreetMap contributors" = "地図データ © OpenStreetMap の貢献者";
+"Opens in your browser (online)" = "ブラウザで開きます（オンライン）";
+"near %@, %@" = "%@付近（%@）";
+"near %@" = "%@付近";
+"map data for the offline map" = "オフライン地図の地図データ";
+"© OpenStreetMap contributors. Open Database License (ODbL) 1.0. Made from Protomaps' OpenStreetMap build, with thanks to Protomaps; how the files are made is in Schnellbild's repository." = "© OpenStreetMap の貢献者。Open Database License (ODbL) 1.0。Protomaps の OpenStreetMap ビルドから作成。Protomaps に感謝します。ファイルの作り方は Schnellbild のリポジトリにあります。";

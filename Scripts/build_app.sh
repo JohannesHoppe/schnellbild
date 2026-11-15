@@ -64,6 +64,9 @@ cp -R "$RES/Localization/"*.lproj "$APP/Contents/Resources/"
 # VLCKit-third-party-licenses.txt: FFmpeg and the other libraries inside VLCKit,
 # as published with the VLCKit build (keep it in step with fetch_vlckit.sh)
 cp -R "$RES/Licenses" "$APP/Contents/Resources/Licenses"
+# The offline map (OpenStreetMap data, Scripts/fetch_map.sh), found by OfflineMap in Resources/Map
+[ -n "$(ls "$ROOT/Vendor/Map/"*.pmtiles 2>/dev/null)" ] || { echo "!! no map in Vendor/Map (Scripts/fetch_map.sh)" >&2; exit 1; }
+ditto "$ROOT/Vendor/Map" "$APP/Contents/Resources/Map"
 # A short MKV: Settings plays it through macOS to tell whether the media extension is on
 cp "$RES/FormatsCheck.mkv" "$APP/Contents/Resources/FormatsCheck.mkv"
 cp "$RES/Info.plist" "$APP/Contents/Info.plist"

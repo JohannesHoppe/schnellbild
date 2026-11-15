@@ -407,6 +407,8 @@
 "End the slideshow (%@ close the playlist first)" = "슬라이드 쇼 끝내기(%@는 먼저 재생 목록을 닫음)";
 
 /* Inspector and sorting by distance */
+
+/* Offline map */
 "Quit (%@ asks first)" = "종료(%@은 먼저 확인)";
 "Boss key: hidden and silent at once; %@ or the Dock icon brings it back" = "보스 키: 즉시 숨기고 음소거; %@ 또는 Dock 아이콘으로 다시 표시";
 "⌘-click" = "⌘-클릭";
@@ -531,3 +533,11 @@
 "No coordinates found" = "좌표를 찾을 수 없음";
 "Sort" = "정렬";
 "Sort by name, kind, date modified, date taken, size, distance (again: reverse)" = "이름, 종류, 수정일, 촬영일, 크기, 거리로 정렬(다시 누르면 반대로)";
+"Map" = "지도";
+"Map credits" = "지도 출처";
+"Map data © OpenStreetMap contributors" = "지도 데이터 © OpenStreetMap 기여자";
+"Opens in your browser (online)" = "브라우저에서 열립니다(온라인)";
+"near %@, %@" = "%@ 근처(%@)";
+"near %@" = "%@ 근처";
+"map data for the offline map" = "오프라인 지도의 지도 데이터";
+"© OpenStreetMap contributors. Open Database License (ODbL) 1.0. Made from Protomaps' OpenStreetMap build, with thanks to Protomaps; how the files are made is in Schnellbild's repository." = "© OpenStreetMap 기여자. Open Database License (ODbL) 1.0. Protomaps의 OpenStreetMap 빌드로 만들었으며 Protomaps에 감사드립니다. 파일을 만드는 방법은 Schnellbild 저장소에 있습니다.";

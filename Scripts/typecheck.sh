@@ -28,6 +28,11 @@ swiftc -emit-module -emit-module-path "$WORK/mod/VLCFrames.swiftmodule" -module-
 echo "== VideoContainers (the media extension's parsers, a module for the tests)"
 swiftc -emit-module -emit-module-path "$WORK/mod/VideoContainers.swiftmodule" -module-name VideoContainers -parse-as-library -enable-testing \
   "${FLAGS[@]/-typecheck/}" FormatReader/MatroskaIndex.swift FormatReader/TransportIndex.swift || status=1
+echo "== OfflineMap (the offline map engine and its SwiftUI view)"
+mkdir -p "$WORK/map"
+for f in OfflineMap/*.swift; do perl -pe 's/\@State\b/\@_State/g' "$f" > "$WORK/map/$(basename "$f")"; done
+swiftc -emit-module -emit-module-path "$WORK/mod/OfflineMap.swiftmodule" -module-name OfflineMap -parse-as-library -enable-testing \
+  "${FLAGS[@]/-typecheck/}" Scripts/typecheck/StateShim.swift "$WORK"/map/*.swift || status=1
 FLAGS+=(-I "$WORK/mod")
 echo "== media extension (to SIL: also the checks after typechecking, such as a missing return)"
 swiftc "${FLAGS[@]/-typecheck/-emit-sil}" -wmo -o /dev/null -parse-as-library FormatReader/MatroskaIndex.swift FormatReader/TransportIndex.swift FormatReader/FormatReader.swift || status=1

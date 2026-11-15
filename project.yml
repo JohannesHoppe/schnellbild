@@ -90,6 +90,14 @@ targets:
         GCC_WARN_INHIBIT_ALL_WARNINGS: YES
         HEADER_SEARCH_PATHS: ["$(SRCROOT)/Native/CArchives"]
 
+  # The offline map (OpenStreetMap data drawn with CoreGraphics, the place
+  # index, the SwiftUI map view); its files come from Scripts/fetch_map.sh
+  OfflineMap:
+    type: library.static
+    platform: macOS
+    sources:
+      - path: OfflineMap
+
   # What the app and its thumbnail extension share of VLC
   VLCFrames:
     type: library.static
@@ -144,6 +152,10 @@ targets:
       - path: Resources/Licenses
         type: folder
         buildPhase: resources
+      # The offline map's files (Scripts/fetch_map.sh), as Resources/Map
+      - path: Vendor/Map
+        type: folder
+        buildPhase: resources
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: art.haushoppe.schnellbild
@@ -157,6 +169,7 @@ targets:
     dependencies:
       - target: CArchives
       - target: VLCFrames
+      - target: OfflineMap
       - target: SchnellbildThumbnails
         embed: true
       - sdk: AVKit.framework

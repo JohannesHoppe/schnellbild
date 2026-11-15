@@ -54,7 +54,7 @@ jobs:
         uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
           path: Vendor
-          key: vendor-${{ hashFiles('Scripts/fetch_vlckit.sh', 'Scripts/fetch_unrar.sh') }}
+          key: vendor-${{ hashFiles('Scripts/fetch_vlckit.sh', 'Scripts/fetch_unrar.sh', 'Scripts/fetch_map.sh', 'Scripts/map_data.env') }}
 
       - name: Fetch VLCKit
         run: ./Scripts/fetch_vlckit.sh
@@ -62,7 +62,17 @@ jobs:
       - name: Test
         env:
           CHEATSHEET_PDF: ${{ github.workspace }}/build/cheat-sheet.pdf
+          # OfflineMapTests draws its sample views there (light and dark)
+          MAP_SNAPSHOT_DIR: ${{ github.workspace }}/build/map-snapshots
         run: mkdir -p build && ./Scripts/test.sh
+
+      - name: Keep the map's sample views
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: map-snapshots
+          path: build/map-snapshots/*.png
+          if-no-files-found: error
 
       - name: Keep the printed cheat sheet
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
@@ -148,7 +158,7 @@ jobs:
         uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
           path: Vendor
-          key: vendor-${{ hashFiles('Scripts/fetch_vlckit.sh', 'Scripts/fetch_unrar.sh') }}
+          key: vendor-${{ hashFiles('Scripts/fetch_vlckit.sh', 'Scripts/fetch_unrar.sh', 'Scripts/fetch_map.sh', 'Scripts/map_data.env') }}
 
       - name: Fetch VLCKit
         run: ./Scripts/fetch_vlckit.sh
