@@ -435,10 +435,10 @@ public struct NearbyPlace: Equatable, Sendable {
         return importance - 3 * log2(1 + distance / 2_000)
     }
 
-    /// The country's name in the user's language (from the system), nil when unknown.
+    /// The country's name in the user's language (`CountryNames`), nil when unknown.
     public func countryName(locale: Locale = .current) -> String? {
         guard let code = countryCode else { return nil }
-        return locale.localizedString(forRegionCode: code)
+        return CountryNames.name(code, locale: locale)
     }
 
     /// "near Geiranger, Norway" in the app's language.

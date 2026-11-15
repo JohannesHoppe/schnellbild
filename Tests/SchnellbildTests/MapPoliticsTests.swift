@@ -55,7 +55,9 @@ final class MapPoliticsTests: XCTestCase {
         XCTAssertEqual(places.nearby(Coordinate(latitude: 31.903, longitude: 35.204))?.place.label(in: english), "Ramallah")
         let oldCity = try XCTUnwrap(places.nearby(Coordinate(latitude: 31.7767, longitude: 35.2345)))
         XCTAssertEqual(oldCity.place.label(in: english), "Jerusalem")
-        XCTAssertEqual(oldCity.description(languages: english, locale: us), "near Jerusalem, Palestinian Territories")
+        XCTAssertEqual(oldCity.description(languages: english, locale: us), "near Jerusalem, Palestine")
+        let ramallah = try XCTUnwrap(places.nearby(Coordinate(latitude: 31.903, longitude: 35.204)))
+        XCTAssertEqual(ramallah.countryName(locale: Locale(identifier: "de_DE")), "Palästina")
         XCTAssertEqual(places.nearby(Coordinate(latitude: 31.780, longitude: 35.200))?.description(languages: english, locale: us),
                        "near Jerusalem, Israel")
         XCTAssertEqual(places.regionCountry(at: Coordinate(latitude: 32.992, longitude: 35.688)), "SY")
@@ -75,11 +77,39 @@ final class MapPoliticsTests: XCTestCase {
         }
     }
 
+    /// Palestine as the app names the country: CLDR's short form in each language, never "territories".
+    static let palestine = [
+        "en": "Palestine", "de": "Palästina", "fr": "Palestine", "es": "Palestina", "it": "Palestina", "pt-BR": "Palestina",
+        "nl": "Palestina", "pl": "Palestyna", "sv": "Palestina", "da": "Palæstina", "nb": "Palestina", "fi": "Palestiina",
+        "cs": "Palestina", "tr": "Filistin", "ru": "Палестина", "uk": "Палестина", "ja": "パレスチナ", "ko": "팔레스타인",
+        "zh-Hans": "巴勒斯坦", "zh-Hant": "巴勒斯坦",
+    ]
+
+    static func locale(_ language: String) -> Locale {
+        Locale(identifier: language.replacingOccurrences(of: "-", with: "_"))
+    }
+
+    func testPalestineIsCalledPalestineInEveryLanguage() throws {
+        XCTAssertEqual(Set(Self.palestine.keys), Set(MapLanguages.supported))
+        let places = try XCTUnwrap(renderer().places)
+        let country = try XCTUnwrap(places.places(south: 31, north: 32.6, west: 34.2, east: 35.6, maxMinZoom: 12).first { $0.kind == .country && $0.countryCode == "PS" })
+        for (language, name) in Self.palestine {
+            XCTAssertEqual(CountryNames.name("PS", locale: Self.locale(language)), name, language)
+            XCTAssertEqual(country.label(in: .preferring([language])), name, language)
+        }
+        XCTAssertEqual(CountryNames.name("DE", locale: Locale(identifier: "de_DE")), "Deutschland")   // the others: the system's
+    }
+
     func testKyivAndNorthMacedonia() throws {
         let places = try XCTUnwrap(renderer().places)
         let kyiv = try XCTUnwrap(places.nearby(Coordinate(latitude: 50.4505, longitude: 30.5200))?.place)
-        XCTAssertEqual(kyiv.label(in: .preferring(["en"])), "Kyiv")
+        for language in ["en", "fr", "es", "it", "pt-BR", "nl", "pl", "sv", "da", "nb", "fi", "cs", "tr"] {
+            XCTAssertEqual(kyiv.label(in: .preferring([language])), "Kyiv", language)
+        }
+        XCTAssertEqual(kyiv.label(in: .preferring(["de"])), "Kyjiw")
         XCTAssertEqual(kyiv.label(in: .preferring(["uk"])), "Київ")
+        XCTAssertEqual(kyiv.label(in: .preferring(["ru"])), "Киев")
+        XCTAssertEqual(kyiv.label(in: .preferring(["ja"])), "キーウ")
         let macedonia = try XCTUnwrap(places.places(south: 40, north: 43, west: 20, east: 23.5, maxMinZoom: 12).first { $0.kind == .country && $0.countryCode == "MK" })
         XCTAssertEqual(macedonia.label(in: .preferring(["en"])), "North Macedonia")
     }
@@ -132,7 +162,8 @@ final class MapPoliticsTests: XCTestCase {
         XCTAssertEqual(MapRenderer.name(of: persian, languages: .preferring(["sv"])), "Persiska viken")
         XCTAssertEqual(MapRenderer.name(of: persian, languages: .preferring(["de"])), "Persischer Golf")
         let japan = try waterLabel("Sea of Japan", z: 5, at: Coordinate(latitude: 40, longitude: 135))
-        XCTAssertEqual(MapRenderer.name(of: japan, languages: .preferring(["ko"])), "일본해")
+        XCTAssertEqual(MapRenderer.name(of: japan, languages: .preferring(["ko"])), "동해 (일본해)")
+        XCTAssertEqual(MapRenderer.name(of: japan, languages: .preferring(["de"])), "Japanisches Meer")
         XCTAssertEqual(MapRenderer.name(of: japan, languages: .preferring(["it"])), "Mar del Giappone")
         let ontario = try waterLabel("Lake Ontario", z: 6, at: Coordinate(latitude: 43.6, longitude: -77.9))
         XCTAssertEqual(MapRenderer.name(of: ontario, languages: .preferring(["de"])), "Ontariosee")

@@ -921,6 +921,11 @@ APP_BASE_COUNTRIES = ["IL"]
 #  - Western Sahara's country label: OpenStreetMap names it the Sahrawi Arab Democratic Republic,
 #    which the EU doesn't recognise either; it is labelled Western Sahara (the names: Unicode CLDR's
 #    region name EH in each language, as macOS shows it).
+#  - Kyiv: "Kyjiw" in German, "Kyiv" in English and every other Latin-script language, "Київ" in
+#    Ukrainian; Russian, Japanese, Korean and Chinese keep OpenStreetMap's names (Johannes' decision).
+#  - The Palestinian territories' country label: "Palestine" in each language (Unicode CLDR's short
+#    form of the region name PS, cldr-json cldr-localenames-full territories "PS-alt-short"), as
+#    the app names the country (OfflineMap/CountryNames.swift).
 #  - Fort Polk, Louisiana: named Fort Johnson in 2023 and renamed Fort Polk by the US Army in 2025
 #    under the Trump administration (Army announcement of June 2025, reported e.g. by Texas Public
 #    Radio, https://www.tpr.org/military-veterans-issues/2025-06-12/the-army-is-moving-quickly-to-bring-back-the-original-names-of-bases-named-for-confederates);
@@ -932,7 +937,21 @@ WESTERN_SAHARA = {
     "tr": "Batı Sahra", "ru": "Западная Сахара", "uk": "Західна Сахара", "ja": "西サハラ", "ko": "서사하라",
     "zh-Hans": "西撒哈拉", "zh-Hant": "西撒哈拉",
 }
+KYIV = {
+    "en": "Kyiv", "de": "Kyjiw", "fr": "Kyiv", "es": "Kyiv", "it": "Kyiv", "pt-BR": "Kyiv", "nl": "Kyiv", "pl": "Kyiv",
+    "sv": "Kyiv", "da": "Kyiv", "nb": "Kyiv", "fi": "Kyiv", "cs": "Kyiv", "tr": "Kyiv", "ru": "Киев", "uk": "Київ",
+    "ja": "キーウ", "ko": "키이우", "zh-Hans": "基辅", "zh-Hant": "基輔",
+}
+PALESTINE = {
+    "en": "Palestine", "de": "Palästina", "fr": "Palestine", "es": "Palestina", "it": "Palestina", "pt-BR": "Palestina",
+    "nl": "Palestina", "pl": "Palestyna", "sv": "Palestina", "da": "Palæstina", "nb": "Palestina", "fi": "Palestiina",
+    "cs": "Palestina", "tr": "Filistin", "ru": "Палестина", "uk": "Палестина", "ja": "パレスチナ", "ko": "팔레스타인",
+    "zh-Hans": "巴勒斯坦", "zh-Hant": "巴勒斯坦",
+}
 PLACE_OVERRIDES = [
+    {"kind": "city", "name": "Київ", "at": (50.45, 30.52), "within": 5, "names": KYIV},
+    {"kind": "country", "name": "الأراضي الفلسطينية", "at": (31.52, 35.05), "within": 20, "local": "فلسطين",
+     "names": PALESTINE, "country": "PS"},
     {"kind": "city", "name": "ירושלים", "at": (31.78, 35.22), "within": 5, "country": ""},
     {"kind": "country", "name": "República Árabe Saharaui Democrática", "at": (23.36, -13.15), "within": 50,
      "local": "Western Sahara", "names": WESTERN_SAHARA, "country": "EH"},
@@ -948,8 +967,7 @@ PLACE_OVERRIDES = [
 # Lake Ontario; "Arabian Gulf" for the Persian Gulf was floated in May 2025 and not decreed. The
 # names below are the build's own (OpenStreetMap's) where it has them, so a later build can't bring
 # a renaming in; added: Swedish for the Persian Gulf, Italian, Norwegian and Turkish for the Sea of
-# Japan, and the Sea of Japan's internationally used name in Korean (OpenStreetMap's Korean name is
-# "East Sea", 동해).
+# Japan, and in Korean both of its names, "동해 (일본해)" (East Sea, Sea of Japan; Johannes' decision).
 WATER_NAMES = [
     {"match": {"Gulf of Mexico", "Gulf of America"}, "local": "Golfo de México", "names": {
         "en": "Gulf of Mexico", "de": "Golf von Mexiko", "fr": "Golfe du Mexique", "es": "Golfo de México",
@@ -972,7 +990,7 @@ WATER_NAMES = [
         "en": "Sea of Japan", "de": "Japanisches Meer", "fr": "Mer du Japon", "es": "Mar de Japón",
         "it": "Mar del Giappone", "pt-BR": "Mar do Japão", "nl": "Japanse Zee", "pl": "Morze Japońskie",
         "sv": "Japanska havet", "da": "Japanske Hav", "nb": "Japanhavet", "fi": "Japaninmeri", "cs": "Japonské moře",
-        "tr": "Japon Denizi", "ru": "Японское море", "uk": "Японське море", "ja": "日本海", "ko": "일본해",
+        "tr": "Japon Denizi", "ru": "Японское море", "uk": "Японське море", "ja": "日本海", "ko": "동해 (일본해)",
         "zh-Hans": "日本海", "zh-Hant": "日本海"}},
 ]
 
