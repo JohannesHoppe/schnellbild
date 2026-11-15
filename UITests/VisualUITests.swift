@@ -358,11 +358,11 @@ final class VisualUITests: SchnellbildUITestCase {
 
     // MARK: Subtitles
 
-    /// VLC draws subtitles only into pictures it decoded in software, and
-    /// opens the media again for that once it has found the subtitle track
-    /// (`decodeInSoftware`): until then the pictures on screen are the
-    /// hardware-decoded ones, without text. Waits until pictures of the
-    /// media opened in software have reached the screen.
+    /// VLC draws subtitles only into pictures it decoded in software. With
+    /// subtitles on, a file starts in software (its tracks read first); a
+    /// media opened again for them (`decodeInSoftware`) shows the
+    /// hardware-decoded pictures until then. Waits until pictures of the
+    /// media in software have reached the screen.
     private func waitForSoftwarePictures(of video: XCUIElement) {
         func picturesOfMedia(_ label: String) -> Int {
             let suffix = " of this media"
@@ -375,6 +375,48 @@ final class VisualUITests: SchnellbildUITestCase {
         }
     }
 
+    /// What the app's test log says about the pictures VLC handed over
+    /// (`VLCFrameOutput.probe`): "vlc picture <n> of media <m>: luma <l>[, text | , no text]".
+    private struct ProbedPicture { var number: Int; var media: Int; var luma: Int; var text: Bool? }
+
+    private func probedPictures(in log: String) -> [ProbedPicture] {
+        log.components(separatedBy: "\n").compactMap { line in
+            guard line.hasPrefix("vlc picture ") else { return nil }
+            let words = line.replacingOccurrences(of: ":", with: "").replacingOccurrences(of: ",", with: "")
+                .components(separatedBy: " ")
+            // vlc picture <n> of media <m> luma <l> [text | no text]
+            guard words.count >= 8, let n = Int(words[2]), let m = Int(words[5]), let l = Int(words[7]) else { return nil }
+            let text: Bool? = line.hasSuffix(", no text") ? false : line.hasSuffix(", text") ? true : nil
+            return ProbedPicture(number: n, media: m, luma: l, text: text)
+        }
+    }
+
+    /// The video started in software, decoding the subtitles from its first
+    /// picture on, and was not opened again: its first pictures (the five
+    /// the app logs) carry the line that begins at 0. `log`: the app's log
+    /// of this launch.
+    private func checkStartedInSoftware(_ video: XCUIElement, log: String) {
+        let label = text(of: video)
+        XCTAssertTrue(label.contains("decoding software"), "in software: \(label)")
+        XCTAssertTrue(label.contains("media 1, "), "opened once, not again for the subtitles: \(label)")
+        XCTAssertTrue(log.contains("vlc: software decoding for subtitles from the start"), "chosen before playing")
+        XCTAssertFalse(log.contains("stopped at"), "never stopped to open it again")
+        let first = probedPictures(in: log).filter { $0.media == 1 }
+        let withText = first.first { $0.text == true }
+        print("first pictures: \(first.map { "\($0.number): \($0.text == true ? "text" : "no text")" }.joined(separator: ", "))")
+        // VLC shows its first two or three pictures (0.2 to 0.3 s) before the
+        // line that begins at 0 reaches them (seen on CI with SubRip, ASS
+        // and mov_text alike)
+        XCTAssertNotNil(withText, "the line that begins at 0 in the first five pictures")
+    }
+
+    /// The log written since the last launch read the tracks before playing.
+    private func logOfThisLaunch(_ log: URL) -> String {
+        let all = (try? String(contentsOf: log, encoding: .utf8)) ?? ""
+        guard let last = all.range(of: "vlc: tracks read before playing", options: .backwards) else { return all }
+        return String(all[last.lowerBound...])
+    }
+
     /// The subtitles inside the video are drawn over the picture, by AVKit
     /// and by VLC (into the pictures it hands over through its video
     /// callbacks): on the even grey clip the lower part of the picture,
@@ -385,7 +427,10 @@ final class VisualUITests: SchnellbildUITestCase {
         defer { print("app log:\n" + ((try? String(contentsOf: log, encoding: .utf8)) ?? "(none)")) }
         let video = try openVideo(fixture, vlc: vlc, extra: ["--test-log=\(log.path)"])
         eventually("the subtitles are on", timeout: 20) { text(of: video).contains("subtitles 1/2 en") }
-        if vlc { waitForSoftwarePictures(of: video) }
+        if vlc {
+            waitForSoftwarePictures(of: video)
+            checkStartedInSoftware(video, log: logOfThisLaunch(log))
+        }
         // The mouse off the video: the control bar goes and covers nothing
         app.windows.firstMatch.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.02)).hover()
         settle(4)
@@ -426,6 +471,7 @@ final class VisualUITests: SchnellbildUITestCase {
         XCTAssertTrue(video.waitForExistence(timeout: 20))
         eventually("the ASS track at once", timeout: 20) { text(of: video).contains("subtitles 2/2 de") }
         waitForSoftwarePictures(of: video)
+        checkStartedInSoftware(video, log: logOfThisLaunch(log))
         app.windows.firstMatch.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.02)).hover()
         settle(4)
         let picture = picture(in: video)
@@ -434,6 +480,65 @@ final class VisualUITests: SchnellbildUITestCase {
         let shown = try screenStats(of: lower)
         print("VLC ASS subtitles: ± \(shown.spread) (mean \(shown.mean)); \(text(of: video))")
         XCTAssertGreaterThan(shown.spread, 0.05, "text over the lower part of the picture")
+    }
+
+    /// Subtitles switched on while VLC plays in hardware: it opens the video
+    /// again in software and goes on at the picture it stood at, neither
+    /// back nor ahead. `ramp.mkv` grows brighter with time (0.9 luma steps
+    /// a picture), so a picture's luma tells where it is; the app logs the
+    /// last picture before opening again and the first ones after.
+    func testVLCGoesOnWhereItStoodWhenSubtitlesAreSwitchedOn() throws {
+        let log = tempDir.appendingPathComponent("app.log")
+        continueAfterFailure = true   // the log below shows on a failure too
+        defer { print("app log:\n" + ((try? String(contentsOf: log, encoding: .utf8)) ?? "(none)")) }
+        var video = try openVideo("ramp.mkv", vlc: true, extra: ["--test-log=\(log.path)"])
+        eventually("the subtitles are on", timeout: 20) { text(of: video).contains("subtitles 1/1 en") }
+        app.typeKey("v", modifierFlags: [])
+        eventually("off") { text(of: video).contains("subtitles off/1") }
+        // Started again with subtitles off (kept): in hardware
+        app.terminate()
+        launch(open: tempDir.appendingPathComponent("ramp.mkv").path, resetState: false,
+               extra: ["--force-vlc", "--test-log=\(log.path)"])
+        video = element("video.vlc")
+        XCTAssertTrue(video.waitForExistence(timeout: 20))
+        func time(_ label: String) -> Int {
+            guard let range = label.range(of: "time ") else { return -1 }
+            return Int(label[range.upperBound...].prefix { $0.isNumber }) ?? -1
+        }
+        eventually("playing a while in hardware", timeout: 20) {
+            let label = text(of: video)
+            return label.contains("decoding hardware") && time(label) >= 4000
+        }
+        let before = time(text(of: video))
+        app.typeKey("v", modifierFlags: [])
+        eventually("opened again in software", timeout: 20) { text(of: video).contains("media 2, ") }
+        waitForSoftwarePictures(of: video)
+        let written = logOfThisLaunch(log)
+        func luma(after marker: String) -> Int? {
+            guard let range = written.range(of: marker) else { return nil }
+            let rest = written[range.upperBound...]
+            guard let l = rest.range(of: "luma ") else { return nil }
+            return Int(rest[l.upperBound...].prefix { $0.isNumber })
+        }
+        let last = luma(after: "vlc: last picture before opening again: ")
+        let next = probedPictures(in: written).first { $0.media == 2 }?.luma
+        print("VLC switched to software at about \(before) ms (label); last picture luma \(last ?? -1), next \(next ?? -1)")
+        if let last, let next {
+            XCTAssertGreaterThanOrEqual(next, last - 2, "it went back: luma \(last) → \(next) (0.9 a picture)")
+            XCTAssertLessThanOrEqual(next, last + 3, "it skipped ahead: luma \(last) → \(next) (0.9 a picture)")
+        } else {
+            XCTFail("the pictures around the switch are logged")
+        }
+        // The next line is drawn (a line every 2 s; the running one comes
+        // from its start only)
+        app.windows.firstMatch.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.02)).hover()
+        settle(4)
+        let picture = picture(in: video)
+        let lower = CGRect(x: picture.minX + picture.width * 0.15, y: picture.minY + picture.height * 0.7,
+                           width: picture.width * 0.7, height: picture.height * 0.28)
+        let shown = try screenStats(of: lower)
+        print("VLC ramp subtitles after switching: ± \(shown.spread) (mean \(shown.mean))")
+        XCTAssertGreaterThan(shown.spread, 0.03, "text over the lower part of the picture")
     }
 
     /// 4K at 60 frames per second through VLC: the picture reaches the

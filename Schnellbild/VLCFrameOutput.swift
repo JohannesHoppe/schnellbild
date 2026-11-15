@@ -268,6 +268,7 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
         lock.lock()
         self.media = media
         shownOfMedia = 0
+        openings += 1
         lock.unlock()
     }
 
@@ -404,7 +405,78 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
         callbackSeconds += Date().timeIntervalSince(start)
         callbacks += 1
         shownOfMedia += 1
+        let ofMedia = shownOfMedia, opening = openings
         lock.unlock()
+        guard Self.probing else { return }
+        // Outside the handover's time: what the picture shows, for UI tests
+        let probe = Self.probe(buffer, text: ofMedia <= Self.probedFirst)
+        lock.lock()
+        lastProbePicture = probe
+        lock.unlock()
+        if ofMedia <= Self.probedFirst, let probe {
+            BrowserModel.testLog("vlc picture \(ofMedia) of media \(opening): \(probe)")
+        }
+    }
+
+    // MARK: What the pictures show (UI tests)
+
+    /// Under `--ui-testing` each picture's middle is read (its luma: a test
+    /// video whose brightness rises with time tells where it is), and the
+    /// first ones of each media are looked at for text in their lower part
+    /// (subtitles VLC blended in), written to the test log.
+    private static let probing = ProcessInfo.processInfo.arguments.contains("--ui-testing")
+        && ProcessInfo.processInfo.arguments.contains { $0.hasPrefix("--test-log=") }
+    private static let probedFirst = 5
+    private var lastProbePicture: PictureProbe?
+    /// The media handed over so far (`use`).
+    private var openings = 0
+
+    struct PictureProbe: CustomStringConvertible {
+        /// The mean luma of the picture's middle (8-bit code values).
+        var luma: Int
+        /// Text over the lower part: bright and dark pixels side by side.
+        var text: Bool?
+        var description: String { "luma \(luma)" + (text.map { $0 ? ", text" : ", no text" } ?? "") }
+    }
+
+    /// The last picture shown, as read (UI tests).
+    var lastProbe: String {
+        lock.lock()
+        defer { lock.unlock() }
+        return lastProbePicture.map(String.init(describing:)) ?? "none"
+    }
+
+    /// Reads an 8-bit picture (NV12): the luma of its middle, and with
+    /// `text` whether the lower part (where subtitles go: 70 to 98 % of the
+    /// height, the middle 70 % of the width) holds both light and dark
+    /// pixels. Others are not read.
+    static func probe(_ buffer: CVPixelBuffer, text: Bool) -> PictureProbe? {
+        let format = CVPixelBufferGetPixelFormatType(buffer)
+        guard format == kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange || format == kCVPixelFormatType_420YpCbCr8BiPlanarFullRange,
+              CVPixelBufferLockBaseAddress(buffer, .readOnly) == kCVReturnSuccess else { return nil }
+        defer { CVPixelBufferUnlockBaseAddress(buffer, .readOnly) }
+        guard let base = CVPixelBufferGetBaseAddressOfPlane(buffer, 0) else { return nil }
+        let width = CVPixelBufferGetWidthOfPlane(buffer, 0), height = CVPixelBufferGetHeightOfPlane(buffer, 0)
+        let row = CVPixelBufferGetBytesPerRowOfPlane(buffer, 0)
+        guard width >= 16, height >= 16 else { return nil }
+        let bytes = base.assumingMemoryBound(to: UInt8.self)
+        var sum = 0
+        for y in height / 2 - 4 ..< height / 2 + 4 {
+            for x in width / 2 - 4 ..< width / 2 + 4 { sum += Int(bytes[y * row + x]) }
+        }
+        var probe = PictureProbe(luma: sum / 64)
+        if text {
+            var low = 255, high = 0
+            for y in stride(from: height * 70 / 100, to: height * 98 / 100, by: 2) {
+                for x in stride(from: width * 15 / 100, to: width * 85 / 100, by: 2) {
+                    let value = Int(bytes[y * row + x])
+                    low = min(low, value)
+                    high = max(high, value)
+                }
+            }
+            probe.text = high - low > 48
+        }
+        return probe
     }
 
     /// The settings to show the pictures with; a paused picture is drawn
@@ -539,9 +611,9 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
         lock.lock()
         let perFrame = callbacks > 0 ? callbackSeconds / Double(callbacks) * 1000 : 0
         let picture = latest.map(Self.describe) ?? "none"
-        let ofMedia = shownOfMedia
+        let ofMedia = shownOfMedia, opened = openings
         lock.unlock()
         let edr = Thread.isMainThread ? (showsEDR ? "on" : "off") : "unknown"
-        return "handover \(String(format: "%.2f", perFrame)) ms per picture, \(ofMedia) of this media, pictures \(picture), EDR \(edr)"
+        return "handover \(String(format: "%.2f", perFrame)) ms per picture, media \(opened), \(ofMedia) of this media, pictures \(picture), EDR \(edr)"
     }
 }
