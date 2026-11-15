@@ -205,10 +205,6 @@ final class AtlasModel: ObservableObject {
             self.done = 0
             self.total = 0
             self.rebuild()
-            if self.tourWanted {
-                self.tourWanted = false
-                self.startTour()
-            }
         }
     }
 
@@ -255,6 +251,11 @@ final class AtlasModel: ObservableObject {
         itemIndex = index
         if let range, let span, !(span.overlaps(range)) { self.range = nil }
         filter()
+        // T while the places were read: the tour, once they are all there
+        if tourWanted, isComplete {
+            tourWanted = false
+            startTour()
+        }
     }
 
     // MARK: Timeline
@@ -334,7 +335,14 @@ final class AtlasModel: ObservableObject {
     }
     /// The map is fitted to the items once per folder (again while they come in, until the user moves it).
     private var needsFit = true
-    private(set) var userMovedMap = false
+    /// Moved by the user: it stays where they put it, no fit to the items any more.
+    private(set) var userMovedMap = false { didSet { if userMovedMap { needsFit = false } } }
+
+    /// The map moved as by the user (tests; the view's gestures come through `camera`).
+    func moveByUser(to next: MapCamera) {
+        userMovedMap = true
+        setCamera(held(next))
+    }
 
     /// For the UI tests (`--ui-testing`): the map's zoom and size, the clusters, the fit.
     var testState: String {

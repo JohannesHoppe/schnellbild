@@ -115,8 +115,9 @@ final class AtlasScaleTests: XCTestCase {
             })
         }
         atlas.mapSize = CGSize(width: 960, height: 600)
-        atlas.camera = MapCamera(center: Coordinate(latitude: 61, longitude: 8), zoom: 6)
         atlas.entriesChanged(entries, context: "tree")
+        // Looking at Norway (moved there: the map isn't fitted to all the places)
+        atlas.moveByUser(to: MapCamera(center: Coordinate(latitude: 61, longitude: 8), zoom: 6))
         await waitUntil({ atlas.isComplete && atlas.items.count == 6000 }, timeout: 20)
         let order = requested.flatMap { $0 }
         XCTAssertEqual(order.count, 6000)
@@ -135,8 +136,8 @@ final class AtlasScaleTests: XCTestCase {
             })
         }
         other.mapSize = CGSize(width: 960, height: 600)
-        other.camera = MapCamera(center: Coordinate(latitude: -33, longitude: 151), zoom: 6)
         other.entriesChanged(entries, context: "tree")
+        other.moveByUser(to: MapCamera(center: Coordinate(latitude: -33, longitude: 151), zoom: 6))
         await waitUntil({ other.isComplete && other.items.count == 6000 }, timeout: 20)
         let then = requested.flatMap { $0 }.dropFirst(300).prefix(270 * 19)
         XCTAssertTrue(then.allSatisfy { folder($0) >= 30 })
@@ -155,12 +156,16 @@ final class AtlasScaleTests: XCTestCase {
         let m = makeModel()
         await openAndWait(m, tree.root)
         var longest = Duration.zero
+        var gaps: [String] = []
         var watching = true
+        let began = ContinuousClock.now
         let watch = Task { @MainActor in
             while watching {
                 let start = ContinuousClock.now
                 try? await Task.sleep(for: .milliseconds(10))
-                longest = max(longest, ContinuousClock.now - start - .milliseconds(10))
+                let gap = ContinuousClock.now - start - .milliseconds(10)
+                longest = max(longest, gap)
+                if gap > .milliseconds(50) { gaps.append("\(start - began) in: \(gap)") }
             }
         }
         let start = Date()
@@ -170,6 +175,7 @@ final class AtlasScaleTests: XCTestCase {
         watching = false
         await watch.value
         print("walked and read 20 000 files in \(Date().timeIntervalSince(start)) s, the main thread held at most \(longest)")
+        print("the main thread held over 50 ms: \(gaps)")
         XCTAssertEqual(m.entries.count, 20_000)
         XCTAssertLessThan(longest, .milliseconds(250), "the main thread was held \(longest)")
     }
