@@ -457,3 +457,5 @@
 "Give it to “%@”? “%@” then loses it." = "要指定給「%1$@」嗎？「%2$@」將失去它。";
 "Drag a folder here or click Open Another Folder…" = "將檔案夾拖到這裡，或按一下「打開其他檔案夾…」";
 "Drag a folder here or click Open Folder…" = "將檔案夾拖到這裡，或按一下「打開檔案夾…」";
+"Search actions or keys, such as “rename” or “⌘R”" = "搜尋動作或按鍵，例如「重新命名」或「⌘R」";
+"No action has this name or key" = "沒有動作使用此名稱或按鍵";

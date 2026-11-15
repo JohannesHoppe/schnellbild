@@ -457,3 +457,5 @@
 "Give it to “%@”? “%@” then loses it." = "“%1$@” eylemine verilsin mi? “%2$@” o zaman onu kaybeder.";
 "Drag a folder here or click Open Another Folder…" = "Buraya bir klasör sürükleyin ya da Başka Bir Klasör Aç…’ı tıklayın";
 "Drag a folder here or click Open Folder…" = "Buraya bir klasör sürükleyin ya da Klasör Aç…’ı tıklayın";
+"Search actions or keys, such as “rename” or “⌘R”" = "Eylem veya tuş arayın, örneğin “yeniden adlandır” veya “⌘R”";
+"No action has this name or key" = "Bu ada veya tuşa sahip eylem yok";

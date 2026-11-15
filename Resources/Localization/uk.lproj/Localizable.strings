@@ -457,3 +457,5 @@
 "Give it to “%@”? “%@” then loses it." = "Віддати її «%1$@»? «%2$@» її втратить.";
 "Drag a folder here or click Open Another Folder…" = "Перетягніть сюди папку або клацніть Відкрити іншу папку…";
 "Drag a folder here or click Open Folder…" = "Перетягніть сюди папку або клацніть Відкрити папку…";
+"Search actions or keys, such as “rename” or “⌘R”" = "Шукати дії або клавіші, наприклад «перейменувати» або «⌘R»";
+"No action has this name or key" = "Немає дії з такою назвою або клавішею";

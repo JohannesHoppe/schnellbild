@@ -457,3 +457,5 @@
 "Give it to “%@”? “%@” then loses it." = "Giv den til “%1$@”? “%2$@” mister den så.";
 "Drag a folder here or click Open Another Folder…" = "Træk en mappe hertil, eller klik på Åbn en anden mappe…";
 "Drag a folder here or click Open Folder…" = "Træk en mappe hertil, eller klik på Åbn mappe…";
+"Search actions or keys, such as “rename” or “⌘R”" = "Søg efter handlinger eller taster, f.eks. “omdøb” eller “⌘R”";
+"No action has this name or key" = "Ingen handling har dette navn eller denne tast";

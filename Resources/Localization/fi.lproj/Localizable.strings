@@ -457,3 +457,5 @@
 "Give it to “%@”? “%@” then loses it." = "Annetaanko se toiminnolle ”%1$@”? ”%2$@” menettää sen.";
 "Drag a folder here or click Open Another Folder…" = "Vedä kansio tähän tai osoita Avaa toinen kansio…";
 "Drag a folder here or click Open Folder…" = "Vedä kansio tähän tai osoita Avaa kansio…";
+"Search actions or keys, such as “rename” or “⌘R”" = "Hae toimintoja tai näppäimiä, esimerkiksi ”nimeä” tai ”⌘R”";
+"No action has this name or key" = "Millään toiminnolla ei ole tätä nimeä tai näppäintä";

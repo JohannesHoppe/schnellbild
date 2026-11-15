@@ -32,6 +32,8 @@ struct ShortcutsSettingsView: View {
     /// Why a key typed wasn't taken, shown under its action.
     @State private var refusal: (action: ShortcutAction, text: String)?
     @State private var onlyDiffering = false
+    /// Filters the list by an action's name or one of its keys.
+    @State private var search = ""
     @State private var pendingPreset: ShortcutPreset?
 
     private var differing: Int { ShortcutAction.allCases.filter(shortcuts.differsFromStandard).count }
@@ -55,6 +57,9 @@ struct ShortcutsSettingsView: View {
                 .font(.callout)
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
+            TextField("Search actions or keys, such as “rename” or “⌘R”", text: $search)
+                .textFieldStyle(.roundedBorder)
+                .accessibilityIdentifier("shortcuts.search")
             HStack {
                 Toggle("Only actions whose keys differ from Schnellbild's", isOn: $onlyDiffering)
                     .disabled(differing == 0)
@@ -69,6 +74,7 @@ struct ShortcutsSettingsView: View {
                 ForEach(ShortcutGroup.allCases, id: \.self) { group in
                     let actions = ShortcutAction.allCases.filter {
                         $0.group == group && (!onlyDiffering || shortcuts.differsFromStandard($0))
+                            && shortcuts.matches($0, search: search)
                     }
                     if !actions.isEmpty {
                         Section(group.name) {
@@ -78,6 +84,13 @@ struct ShortcutsSettingsView: View {
                 }
             }
             .accessibilityIdentifier("shortcuts.list")
+            .overlay {
+                if !search.trimmingCharacters(in: .whitespaces).isEmpty,
+                   !ShortcutAction.allCases.contains(where: { shortcuts.matches($0, search: search) }) {
+                    Text("No action has this name or key")
+                        .foregroundStyle(.secondary)
+                }
+            }
         }
         .padding(20)
         .frame(width: 660, height: 580)

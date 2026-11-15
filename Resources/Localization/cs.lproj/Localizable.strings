@@ -457,3 +457,5 @@
 "Give it to “%@”? “%@” then loses it." = "Dát ji akci „%1$@“? „%2$@“ ji pak ztratí.";
 "Drag a folder here or click Open Another Folder…" = "Přetáhněte sem složku nebo klikněte na Otevřít jinou složku…";
 "Drag a folder here or click Open Folder…" = "Přetáhněte sem složku nebo klikněte na Otevřít složku…";
+"Search actions or keys, such as “rename” or “⌘R”" = "Hledat akce nebo klávesy, třeba „přejmenovat“ nebo „⌘R“";
+"No action has this name or key" = "Žádná akce nemá tento název ani klávesu";

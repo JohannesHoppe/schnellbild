@@ -457,3 +457,5 @@
 "Give it to “%@”? “%@” then loses it." = "‘%1$@’에 지정하겠습니까? ‘%2$@’에서는 빠집니다.";
 "Drag a folder here or click Open Another Folder…" = "여기로 폴더를 드래그하거나 ‘다른 폴더 열기…’를 클릭하십시오";
 "Drag a folder here or click Open Folder…" = "여기로 폴더를 드래그하거나 ‘폴더 열기…’를 클릭하십시오";
+"Search actions or keys, such as “rename” or “⌘R”" = "동작 또는 키 검색(예: ‘이름 변경’ 또는 ‘⌘R’)";
+"No action has this name or key" = "이 이름 또는 키를 가진 동작이 없음";

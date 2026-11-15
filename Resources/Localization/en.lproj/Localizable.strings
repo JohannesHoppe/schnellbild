@@ -457,3 +457,5 @@
 "Give it to “%@”? “%@” then loses it." = "Give it to “%@”? “%@” then loses it.";
 "Drag a folder here or click Open Another Folder…" = "Drag a folder here or click Open Another Folder…";
 "Drag a folder here or click Open Folder…" = "Drag a folder here or click Open Folder…";
+"Search actions or keys, such as “rename” or “⌘R”" = "Search actions or keys, such as “rename” or “⌘R”";
+"No action has this name or key" = "No action has this name or key";

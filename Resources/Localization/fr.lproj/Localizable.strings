@@ -457,3 +457,5 @@
 "Give it to “%@”? “%@” then loses it." = "La donner à « %1$@ » ? « %2$@ » la perd alors.";
 "Drag a folder here or click Open Another Folder…" = "Glissez un dossier ici ou cliquez sur Ouvrir un autre dossier…";
 "Drag a folder here or click Open Folder…" = "Glissez un dossier ici ou cliquez sur Ouvrir un dossier…";
+"Search actions or keys, such as “rename” or “⌘R”" = "Rechercher des actions ou des touches, comme « renommer » ou « ⌘R »";
+"No action has this name or key" = "Aucune action n’a ce nom ou cette touche";

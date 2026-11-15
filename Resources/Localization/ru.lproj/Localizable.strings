@@ -457,3 +457,5 @@
 "Give it to “%@”? “%@” then loses it." = "Отдать её «%1$@»? «%2$@» её потеряет.";
 "Drag a folder here or click Open Another Folder…" = "Перетащите сюда папку или щелкните Открыть другую папку…";
 "Drag a folder here or click Open Folder…" = "Перетащите сюда папку или щелкните Открыть папку…";
+"Search actions or keys, such as “rename” or “⌘R”" = "Искать действия или клавиши, например «переименовать» или «⌘R»";
+"No action has this name or key" = "Нет действия с таким названием или клавишей";

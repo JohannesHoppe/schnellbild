@@ -263,6 +263,29 @@ final class ShortcutsTests: XCTestCase {
         XCTAssertEqual(m.mode, .grid)
     }
 
+    // MARK: Searching in Settings → Keyboard
+
+    func testTheSearchFindsActionsByNameAndByKey() {
+        let s = Shortcuts(defaults: makeTestDefaults())
+        func found(_ search: String) -> Set<ShortcutAction> { Set(ShortcutAction.allCases.filter { s.matches($0, search: search) }) }
+        XCTAssertEqual(found("").count, ShortcutAction.allCases.count, "nothing typed: every action")
+        XCTAssertEqual(found("   ").count, ShortcutAction.allCases.count)
+        XCTAssertEqual(found("rename"), [.gridRename, .fullRename], "by name, any case")
+        XCTAssertEqual(found("⌘R"), [.reload, .reveal], "⌘R and ⇧⌘R hold ⌘R")
+        XCTAssertEqual(found("cmd r"), found("⌘R"), "modifiers by their names")
+        XCTAssertEqual(found("shift+cmd+r"), [.reveal])
+        XCTAssertEqual(found("cmd shift r"), [.reveal], "in any order")
+        XCTAssertEqual(found("⌘+"), [.largerThumbnails, .zoomIn], "+ at the end is the key")
+        XCTAssertEqual(found("ctrl cmd s"), [.nextSubtitle])
+        XCTAssertTrue(found("F7").contains(.newFolder))
+        XCTAssertTrue(found("no such thing").isEmpty)
+        s.choose(.phiewer)
+        XCTAssertEqual(found("⌘R").intersection([.gridRename, .fullRename, .reload]), [.gridRename, .fullRename],
+                       "the keys as set: ⌘R renames as in Phiewer")
+        XCTAssertEqual(Shortcuts.keySearch("option command l"), "⌥⌘L")
+        XCTAssertEqual(Shortcuts.keySearch("esc"), "⎋")
+    }
+
     // MARK: Where keys are shown
 
     func testTheHelpAndTheMiniKeyboardShowTheKeysAsSet() {

@@ -378,7 +378,7 @@ F1 (or ⌘?) shows a cheat sheet of the keys; Print… (⌘P) in it prints it on
 
 ### Your own keys
 
-Every action that has a key can get other keys, or more than one, in Settings → Keyboard (free, like everything else). The actions are grouped as in the cheat sheet; click a key and type the new one, `+` adds another, a right-click removes one. A key another action already has moves over after asking, and that action loses it. Each action can go back to its preset's keys, or all at once.
+Every action that has a key can get other keys, or more than one, in Settings → Keyboard (free, like everything else). The actions are grouped as in the cheat sheet, and the search field finds one by its name or its key (“rename”, “⌘R”, “cmd shift r”); click a key and type the new one, `+` adds another, a right-click removes one. A key another action already has moves over after asking, and that action loses it. Each action can go back to its preset's keys, or all at once.
 
 Two presets give every action its keys: **Schnellbild** (the keys in these tables) and **As in Phiewer**, for people coming from Phiewer: ← → page through pictures and videos while ⌘← ⌘→ skip within a video, ⌫ moves to the Trash, ⌘R renames, ⌥⌘L switches between grid and list, ⌥⌘S starts and ends the slideshow. Only what Schnellbild has gets Phiewer's key; everything else keeps Schnellbild's. The actions whose keys differ from Schnellbild's are marked and can be listed on their own.
 

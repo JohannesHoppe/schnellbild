@@ -515,6 +515,38 @@ final class Shortcuts: ObservableObject {
         return text.isEmpty ? String(localized: "no key") : text
     }
 
+    /// Whether the action fits a search in Settings → Keyboard: its name
+    /// holds the words typed ("rename"), or one of its keys holds the keys
+    /// typed, as glyphs ("⌘R") or with their names ("cmd r", "shift+cmd+n").
+    func matches(_ action: ShortcutAction, search: String) -> Bool {
+        let words = search.trimmingCharacters(in: .whitespaces)
+        guard !words.isEmpty else { return true }
+        if action.name.range(of: words, options: [.caseInsensitive, .diacriticInsensitive]) != nil { return true }
+        let wanted = Self.keySearch(words)
+        guard !wanted.isEmpty else { return false }
+        return keys(action).contains { $0.text.uppercased().replacingOccurrences(of: " ", with: "").contains(wanted) }
+    }
+
+    /// Typed keys as `KeyChord.text` writes them: names of modifiers and
+    /// keys become glyphs, spaces and the "+" between keys go, capitals.
+    static func keySearch(_ typed: String) -> String {
+        let names: [(String, String)] = [
+            ("command", "⌘"), ("cmd", "⌘"), ("option", "⌥"), ("opt", "⌥"), ("alt", "⌥"), ("control", "⌃"), ("ctrl", "⌃"),
+            ("shift", "⇧"), ("escape", "⎋"), ("esc", "⎋"), ("return", "↩"), ("enter", "↩"), ("backspace", "⌫"),
+            ("delete", "⌫"), ("tab", "⇥"), ("left", "←"), ("right", "→"), ("up", "↑"), ("down", "↓"),
+        ]
+        var parts = typed.lowercased().split(whereSeparator: { $0 == " " || $0 == "+" }).map(String.init)
+        // A "+" typed last is the plus key itself ("⌘+")
+        if typed.hasSuffix("+"), typed.count > 1 { parts.append("+") }
+        if typed == "+" { parts = ["+"] }
+        let glyphs = parts.map { part in names.first { $0.0 == part }?.1 ?? part }
+        // Modifiers in Apple's order, as `text` writes them
+        let order = ["⌃", "⌥", "⇧", "⌘"]
+        let modifiers = order.filter { glyph in glyphs.contains { $0.contains(glyph) && $0.count == 1 } }
+        let rest = glyphs.filter { !(order.contains($0)) }.joined()
+        return (modifiers.joined() + rest).replacingOccurrences(of: "-", with: "−").uppercased()
+    }
+
     /// The first key with ⌘ or ⌃, for the action's menu item.
     func menuShortcut(_ action: ShortcutAction) -> KeyboardShortcut? {
         keys(action).lazy.compactMap(\.menuShortcut).first

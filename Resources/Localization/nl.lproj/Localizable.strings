@@ -457,3 +457,5 @@
 "Give it to “%@”? “%@” then loses it." = "Aan ‘%1$@’ geven? ‘%2$@’ verliest hem dan.";
 "Drag a folder here or click Open Another Folder…" = "Sleep een map hierheen of klik op Open andere map…";
 "Drag a folder here or click Open Folder…" = "Sleep een map hierheen of klik op Open map…";
+"Search actions or keys, such as “rename” or “⌘R”" = "Zoek acties of toetsen, zoals ‘wijzig naam’ of ‘⌘R’";
+"No action has this name or key" = "Geen actie heeft deze naam of toets";
