@@ -135,6 +135,10 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         BrowserModel.testLog("vlc: tracks read before playing (parse status \(media.parsedStatus.rawValue)), "
             + "\(tracks.subtitles.count) subtitle tracks")
         onTracksChanged(self)
+        // The model chooses only what differs from the tracks reported, which
+        // name none on before playing: no choice is subtitles off (else VLC
+        // would turn on the file's default track)
+        if wantedSubtitle == nil, !tracks.subtitles.isEmpty { wantedSubtitle = .some(nil) }
         if case .some(.some(let id)) = wantedSubtitle, tracks.subtitles.contains(where: { $0.id == id }) {
             softwareDecoding = true
             subtitleOnceOpen = id
