@@ -29,8 +29,14 @@ final class AtlasUITests: SchnellbildUITestCase {
 
     private func atlasTile(_ name: String) -> XCUIElement { element("atlas.\(name)").firstMatch }
     private func atlasSelected(_ name: String) -> Bool { text(of: atlasTile(name)).hasPrefix("selected") }
-    private var mapTiles: Int {
-        app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH 'atlas.norway-'")).count
+    /// The tiles on screen: each one's first item and how many items it holds.
+    private var mapTiles: [String: String] {
+        var tiles: [String: String] = [:]
+        for tile in app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH 'atlas.norway-'"))
+            .allElementsBoundByIndex where tile.exists {
+            tiles[tile.identifier] = text(of: tile).components(separatedBy: ", ").last ?? ""
+        }
+        return tiles
     }
 
     func testTheAtlasShowsTheTripAndSharesTheSelection() throws {
@@ -66,7 +72,6 @@ final class AtlasUITests: SchnellbildUITestCase {
 
     func testClickSelectsAndADoubleClickOnAClusterZoomsIn() throws {
         openAtlas()
-        let before = mapTiles
         // The cluster that holds the trip's first photo
         let first = atlasTile("norway-01-bryggen.jpg")
         XCTAssertTrue(first.waitForExistence(timeout: 5))
@@ -74,10 +79,11 @@ final class AtlasUITests: SchnellbildUITestCase {
         eventually("selected on the map") { self.atlasSelected("norway-01-bryggen.jpg") }
         XCTAssertTrue(text(of: first).contains("items"), text(of: first))
         let count = Int(text(of: first).components(separatedBy: ", ").last?.split(separator: " ").first ?? "") ?? 0
-        if count > 1 {
-            first.doubleClick()
-            eventually("zoomed in: the cluster parts", timeout: 10) { self.mapTiles > before }
-        }
+        XCTAssertGreaterThan(count, 1, "the trip's first place holds several items at the fitted zoom")
+        let before = mapTiles
+        first.doubleClick()
+        // Zoomed in: the tiles on screen change (they part, others leave the view)
+        eventually("zoomed in", timeout: 10) { self.mapTiles != before }
         // The arrows move among the tiles
         app.typeKey(.rightArrow, modifierFlags: [])
         eventually("another tile selected") { !self.atlasSelected("norway-01-bryggen.jpg") }

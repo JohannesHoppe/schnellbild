@@ -196,8 +196,15 @@ final class AtlasModel: ObservableObject {
             if abs(newValue.zoom - (clusterZoom ?? -1)) > 0.001 { scheduleClusters() }
         }
     }
-    /// The map's size in points (the view reports it).
-    var mapSize: CGSize = .zero { didSet { if mapSize != oldValue { fitIfNeeded() } } }
+    /// The map's size in points (the view reports it). A new size fits the
+    /// map again until the user moves it (the view's first sizes are passing ones).
+    var mapSize: CGSize = .zero {
+        didSet {
+            guard mapSize != oldValue else { return }
+            if !userMovedMap, tour == nil { needsFit = true }
+            fitIfNeeded()
+        }
+    }
     /// The map is fitted to the items once per folder (again while they come in, until the user moves it).
     private var needsFit = true
     private(set) var userMovedMap = false
@@ -209,7 +216,7 @@ final class AtlasModel: ObservableObject {
     }
 
     private func fitIfNeeded() {
-        guard tour == nil, mapSize.width > 0, !placed.isEmpty, needsFit || (!isComplete && !userMovedMap) else { return }
+        guard tour == nil, mapSize.width > 40, mapSize.height > 40, !placed.isEmpty, needsFit || (!isComplete && !userMovedMap) else { return }
         fitAll()
         if isComplete { needsFit = false }
     }
