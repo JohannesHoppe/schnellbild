@@ -541,6 +541,26 @@ struct OtherFileInteractions: ViewModifier {
 /// A tile as a drag source (its file, for folder tiles and the Finder) and,
 /// for a folder tile or "..", a drop target: what is dropped moves into it
 /// (copied when on another volume). Nothing inside archives takes part.
+/// One drag, one drop. SwiftUI hands a drag to `performDrop` a second time
+/// now and then (seen on CI, macOS 26: a tile dragged into the other pane
+/// was dropped again a second later, after the mouse came up, and the
+/// second move asked whether to keep both copies of the file it had just
+/// moved). A drag is known by the drag pasteboard's change count, which
+/// every new drag changes.
+@MainActor
+enum DropOnce {
+    private static var last: Int?
+
+    /// True for the first drop of the drag going on, false for any after it.
+    static func first() -> Bool {
+        let count = NSPasteboard(name: .drag).changeCount
+        let first = count != last
+        BrowserModel.testLog("\(Date().timeIntervalSince1970) drop of drag \(count)\(first ? "" : ": again, left alone")")
+        last = count
+        return first
+    }
+}
+
 struct TileDrag: ViewModifier {
     let entry: GridEntry
     @EnvironmentObject var model: BrowserModel
@@ -752,6 +772,7 @@ private struct TileDropDelegate: DropDelegate {
         model.dropIntoFolderTargeted = false
         let target = accepts ? entry.browseURL : model.paneDropFolder
         guard let folder = target, ArchivePath.split(folder) == nil else { return false }
+        guard DropOnce.first() else { return true }
         TileDrag.loadURLs(info.itemProviders(for: [TileDrag.type])) { urls in model.move(urls, into: folder) }
         return true
     }

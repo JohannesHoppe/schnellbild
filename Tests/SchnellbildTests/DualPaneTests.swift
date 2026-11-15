@@ -1,4 +1,5 @@
 import XCTest
+import AppKit
 @testable import Schnellbild
 
 /// The dual pane (D, ⌃O): two panes, marking several items, F5 / F6 into
@@ -365,6 +366,18 @@ final class DualPaneTests: XCTestCase {
         w.setSplit(0.3)
         XCTAssertTrue(w.pane(atX: 400, width: 1000) === w.right)
         XCTAssertTrue(w.pane(atX: 250, width: 1000) === w.left)
+    }
+
+    /// One drag, one drop: SwiftUI handing the same drag to performDrop
+    /// again is left alone; the next drag (the drag pasteboard written anew)
+    /// drops again.
+    func testADragIsDroppedOnce() {
+        let drag = NSPasteboard(name: .drag)
+        drag.clearContents()
+        XCTAssertTrue(DropOnce.first())
+        XCTAssertFalse(DropOnce.first(), "the same drag again")
+        drag.clearContents()
+        XCTAssertTrue(DropOnce.first(), "a new drag")
     }
 
     // MARK: Videos in both panes

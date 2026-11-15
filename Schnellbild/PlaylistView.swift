@@ -340,6 +340,7 @@ private struct PlaylistRowDrop: DropDelegate {
     func dropExited(info: DropInfo) { if mark?.index == index { mark = nil } }
     func performDrop(info: DropInfo) -> Bool {
         mark = nil
+        guard DropOnce.first() else { return true }
         return drop(after(info))
     }
 }
