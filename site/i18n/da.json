@@ -10,7 +10,7 @@
   "language": "Sprog",
   "iconAlt": "Schnellbilds appsymbol",
   "tagline": "En billedfremviser og videoafspiller til macOS, der bare ikke er noget bras.",
-  "lead": "Åbn en mappe, se miniaturerne, se ét billede i stort format, og bladr med tastaturet. Videoer afspilles lige der, også MKV, AVI og WebM. Intet bibliotek at importere til, ingen ventetid.",
+  "lead": "Én gratis app til billederne og videoerne i dine mapper. Åbn en mappe, se miniaturerne, se ét billede i stort format, og bladr med tastaturet. Videoer afspilles lige der, også MKV, AVI og WebM. Intet bibliotek at importere til, ingen ventetid.",
   "download": "Hent gratis",
   "store": "Mac App Store",
   "storeSoon": "snart, for at støtte udviklingen",
@@ -71,7 +71,7 @@
     },
     {
       "title": "Videoer, også MKV og andre, som macOS ikke kan afspille",
-      "text": "<p>Det, macOS selv kan afspille (MP4, MOV, AVCHD …), afspilles af macOS, alt andet af den indbyggede VLC-motor: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-video.</p><ul><li>← → springer en tiendedel af videoen, ⇧← ⇧→ en hundrededel</li><li>↑ ↓ indstiller lydstyrken, for alle videoer</li><li>Finder og Lynoversigt får også miniaturer af MKV, WebM, WMV, FLV og VOB</li></ul>",
+      "text": "<p>Det, macOS selv kan afspille (MP4, MOV, AVCHD …), afspilles af macOS, også i HDR; alt andet af den indbyggede VLC-motor: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-video.</p><ul><li>← → springer en tiendedel af videoen, ⇧← ⇧→ en hundrededel</li><li>↑ ↓ indstiller lydstyrken, for alle videoer</li><li>Finder og Lynoversigt får også miniaturer af MKV, WebM, WMV, FLV og VOB</li></ul>",
       "alt": "En video, der afspilles i Schnellbild"
     },
     {
@@ -101,7 +101,7 @@
     },
     {
       "title": "Alle taster lige ved hånden",
-      "text": "<p><kbd>F1</kbd> viser alle taster, også til udskrift; <kbd>K</kbd> viser et lille tastatur at klikke på. Gitter eller liste (<kbd>L</kbd>), sortering efter navn, type, dato eller størrelse, flere vinduer og en chefknap (<kbd>X</kbd>).</p>",
+      "text": "<p><kbd>F1</kbd> viser alle taster, også til udskrift; <kbd>K</kbd> viser et lille tastatur at klikke på. Vælg dine egne taster, eller tasterne som i Phiewer. Gitter eller liste (<kbd>L</kbd>), sortering efter navn, type, dato eller størrelse, flere vinduer og en chefknap (<kbd>X</kbd>).</p>",
       "alt": "Listen over taster (F1)"
     },
     {
@@ -140,7 +140,7 @@
   ],
   "safeMore": "Hvad den gør i detaljer, og hvor grænsen går: <a href=\"https://github.com/JohannesHoppe/schnellbild#safe-with-files-from-others\">Sikker med filer fra andre</a> (på engelsk).",
   "modelsTitle": "Kommer du fra Phiewer, IINA eller Norton Commander?",
-  "modelsText": "De var forbillederne: Phiewer til at gennemse billeder med tastaturet, IINA til hurtigt at håndtere videoer, Norton Commander til de to paneler. Sådan klarer Schnellbild sig i sammenligning (på engelsk): <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-phiewer-alternative\">et gratis alternativ til Phiewer</a>, <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-iina-alternative-for-looking-through-videos\">et gratis alternativ til IINA til at se videoer igennem</a>.",
+  "modelsText": "Phiewer er en hurtig billedfremviser med en betalt PRO-version, IINA en fuldgyldig afspiller til at se videoer; begge var forbilleder for Schnellbild, ligesom Norton Commander for de to paneler. Schnellbild samler billederne og videoerne i dine mapper i én gratis app, og hvis du vil, med tasterne som i Phiewer. Sådan klarer Schnellbild sig i sammenligning (på engelsk): <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-phiewer-alternative\">et gratis alternativ til Phiewer</a>, <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-iina-alternative-for-looking-through-videos\">et gratis alternativ til IINA til at se videoer igennem</a>.",
   "ossTitle": "Open source",
   "ossText": "Schnellbild er fri software under MIT-licensen, kildekoden ligger <a href=\"https://github.com/JohannesHoppe/schnellbild\">på GitHub</a>. Fundet en fejl eller savner du noget? <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">Opret et issue</a>.",
   "languagesText": "På din Macs sprog:",

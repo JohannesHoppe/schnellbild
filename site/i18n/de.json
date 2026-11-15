@@ -10,7 +10,7 @@
   "language": "Sprache",
   "iconAlt": "Das App-Symbol von Schnellbild",
   "tagline": "Ein Bild- und Videobetrachter für den Mac, der einfach nicht nervt.",
-  "lead": "Ordner öffnen, Vorschaubilder sehen, ein Bild groß ansehen, mit der Tastatur weiterblättern. Videos spielen gleich mit, auch MKV, AVI und WebM. Kein Import, kein Warten.",
+  "lead": "Eine kostenlose App für die Bilder und Videos in deinen Ordnern. Ordner öffnen, Vorschaubilder sehen, ein Bild groß ansehen, mit der Tastatur weiterblättern. Videos spielen gleich mit, auch MKV, AVI und WebM. Kein Import, kein Warten.",
   "download": "Kostenlos laden",
   "store": "Mac App Store",
   "storeSoon": "bald, 0,99 € zur Unterstützung",
@@ -71,7 +71,7 @@
     },
     {
       "title": "Videos, auch die, die macOS nicht abspielt",
-      "text": "<p>Was macOS selbst abspielt (MP4, MOV, AVCHD …), spielt macOS ab, alles andere die eingebaute VLC-Engine: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-Video.</p><ul><li>← → springen ein Zehntel des Videos, ⇧← ⇧→ ein Hundertstel</li><li>↑ ↓ stellen die Lautstärke ein, für alle Videos</li><li>Finder und Übersicht bekommen Vorschaubilder auch für MKV, WebM, WMV, FLV und VOB</li></ul>",
+      "text": "<p>Was macOS selbst abspielt (MP4, MOV, AVCHD …), spielt macOS ab, auch in HDR; alles andere die eingebaute VLC-Engine: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-Video.</p><ul><li>← → springen ein Zehntel des Videos, ⇧← ⇧→ ein Hundertstel</li><li>↑ ↓ stellen die Lautstärke ein, für alle Videos</li><li>Finder und Übersicht bekommen Vorschaubilder auch für MKV, WebM, WMV, FLV und VOB</li></ul>",
       "alt": "Ein Video in Schnellbild"
     },
     {
@@ -101,7 +101,7 @@
     },
     {
       "title": "Alle Tasten griffbereit",
-      "text": "<p><kbd>F1</kbd> zeigt alle Tasten, auch zum Ausdrucken; <kbd>K</kbd> blendet eine kleine Tastatur zum Anklicken ein. Raster oder Liste (<kbd>L</kbd>), sortieren nach Name, Art, Datum oder Größe, mehrere Fenster und ein Boss-Key (<kbd>X</kbd>).</p>",
+      "text": "<p><kbd>F1</kbd> zeigt alle Tasten, auch zum Ausdrucken; <kbd>K</kbd> blendet eine kleine Tastatur zum Anklicken ein. Eigene Tasten belegen oder die Tasten wie in Phiewer wählen. Raster oder Liste (<kbd>L</kbd>), sortieren nach Name, Art, Datum oder Größe, mehrere Fenster und ein Boss-Key (<kbd>X</kbd>).</p>",
       "alt": "Die Liste der Tasten (F1)"
     },
     {
@@ -140,7 +140,7 @@
   ],
   "safeMore": "Was genau dahintersteckt und wo die Grenze liegt (auf Englisch): <a href=\"https://github.com/JohannesHoppe/schnellbild#safe-with-files-from-others\">Safe with files from others</a>.",
   "modelsTitle": "Du kommst von Phiewer, IINA oder dem Norton Commander?",
-  "modelsText": "Sie waren die Vorbilder: Phiewer fürs Blättern mit der Tastatur, IINA für den schnellen Umgang mit Videos, der Norton Commander für die zwei Bereiche. Der Vergleich (auf Englisch): <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-phiewer-alternative\">eine kostenlose Alternative zu Phiewer</a>, <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-iina-alternative-for-looking-through-videos\">eine kostenlose Alternative zu IINA zum Durchsehen von Videos</a>.",
+  "modelsText": "Phiewer ist ein schneller Fotobetrachter mit kostenpflichtiger PRO-Version, IINA ein vollwertiger Player zum Videoschauen; beide waren Vorbilder für Schnellbild, ebenso der Norton Commander für die zwei Bereiche. Schnellbild bringt die Bilder und Videos aus deinen Ordnern in eine kostenlose App, auf Wunsch mit den Tasten wie in Phiewer. Der Vergleich (auf Englisch): <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-phiewer-alternative\">eine kostenlose Alternative zu Phiewer</a>, <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-iina-alternative-for-looking-through-videos\">eine kostenlose Alternative zu IINA zum Durchsehen von Videos</a>.",
   "ossTitle": "Open Source",
   "ossText": "Schnellbild ist freie Software unter der MIT-Lizenz, der Quellcode liegt <a href=\"https://github.com/JohannesHoppe/schnellbild\">auf GitHub</a>. Fehler gefunden oder fehlt dir etwas? <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">Schreib ein Issue</a>.",
   "languagesText": "In der Sprache deines Macs:",

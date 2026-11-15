@@ -10,7 +10,7 @@
   "language": "Idioma",
   "iconAlt": "Icono de la app Schnellbild",
   "tagline": "Un visor de fotos y vídeos para Mac que no da la lata.",
-  "lead": "Abre una carpeta, mira las miniaturas, ve una imagen en grande y pasa a la siguiente con el teclado. Los vídeos se reproducen ahí mismo, incluso en MKV, AVI y WebM. Sin biblioteca a la que importar, sin esperas.",
+  "lead": "Una sola app gratuita para las fotos y los vídeos de tus carpetas. Abre una carpeta, mira las miniaturas, ve una imagen en grande y pasa a la siguiente con el teclado. Los vídeos se reproducen ahí mismo, incluso en MKV, AVI y WebM. Sin biblioteca a la que importar, sin esperas.",
   "download": "Descargar gratis",
   "store": "Mac App Store",
   "storeSoon": "pronto, por 0,99 € para apoyarlo",
@@ -71,7 +71,7 @@
     },
     {
       "title": "Vídeos, también los MKV y AVI que macOS no reproduce",
-      "text": "<p>Lo que macOS reproduce por sí mismo (MP4, MOV, AVCHD…) se reproduce con macOS; todo lo demás, con el motor de VLC integrado: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-Vídeo.</p><ul><li>← → saltan una décima parte del vídeo, ⇧← ⇧→ una centésima</li><li>↑ ↓ ajustan el volumen, para todos los vídeos</li><li>El Finder y Vista Rápida también obtienen miniaturas de MKV, WebM, WMV, FLV y VOB</li></ul>",
+      "text": "<p>Lo que macOS reproduce por sí mismo (MP4, MOV, AVCHD…) se reproduce con macOS, también en HDR; todo lo demás, con el motor de VLC integrado: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-Vídeo.</p><ul><li>← → saltan una décima parte del vídeo, ⇧← ⇧→ una centésima</li><li>↑ ↓ ajustan el volumen, para todos los vídeos</li><li>El Finder y Vista Rápida también obtienen miniaturas de MKV, WebM, WMV, FLV y VOB</li></ul>",
       "alt": "Un vídeo reproduciéndose en Schnellbild"
     },
     {
@@ -101,7 +101,7 @@
     },
     {
       "title": "Todas las teclas a mano",
-      "text": "<p><kbd>F1</kbd> muestra todas las teclas, también para imprimir; <kbd>K</kbd> abre un pequeño teclado en el que hacer clic. Cuadrícula o lista (<kbd>L</kbd>), orden por nombre, tipo, fecha o tamaño, varias ventanas y una tecla del jefe (<kbd>X</kbd>).</p>",
+      "text": "<p><kbd>F1</kbd> muestra todas las teclas, también para imprimir; <kbd>K</kbd> abre un pequeño teclado en el que hacer clic. Asigna tus propias teclas o elige las teclas como en Phiewer. Cuadrícula o lista (<kbd>L</kbd>), orden por nombre, tipo, fecha o tamaño, varias ventanas y una tecla del jefe (<kbd>X</kbd>).</p>",
       "alt": "La lista de teclas (F1)"
     },
     {
@@ -140,7 +140,7 @@
   ],
   "safeMore": "Qué hace en detalle y dónde está su límite (en inglés): <a href=\"https://github.com/JohannesHoppe/schnellbild#safe-with-files-from-others\">Seguro con archivos de otros</a>.",
   "modelsTitle": "¿Vienes de Phiewer, IINA o Norton Commander?",
-  "modelsText": "Fueron los modelos: Phiewer para recorrer imágenes con el teclado, IINA para manejar vídeos con rapidez, Norton Commander para el doble panel. Cómo se compara Schnellbild (en inglés): <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-phiewer-alternative\">una alternativa gratuita a Phiewer</a>, <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-iina-alternative-for-looking-through-videos\">una alternativa gratuita a IINA para ver vídeos</a>.",
+  "modelsText": "Phiewer es un visor de fotos rápido con una versión PRO de pago; IINA, un reproductor completo para ver vídeos. Los dos sirvieron de modelo a Schnellbild, igual que Norton Commander para el doble panel. Schnellbild reúne las fotos y los vídeos de tus carpetas en una sola app gratuita y, si quieres, con las teclas como en Phiewer. Cómo se compara Schnellbild (en inglés): <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-phiewer-alternative\">una alternativa gratuita a Phiewer</a>, <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-iina-alternative-for-looking-through-videos\">una alternativa gratuita a IINA para ver vídeos</a>.",
   "ossTitle": "Código abierto",
   "ossText": "Schnellbild es software libre con licencia MIT; el código fuente está <a href=\"https://github.com/JohannesHoppe/schnellbild\">en GitHub</a>. ¿Has encontrado un error o echas algo en falta? <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">Abre una incidencia</a>.",
   "languagesText": "En el idioma de tu Mac:",

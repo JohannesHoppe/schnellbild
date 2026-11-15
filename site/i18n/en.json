@@ -10,7 +10,7 @@
   "language": "Language",
   "iconAlt": "Schnellbild app icon",
   "tagline": "An image & video viewer for macOS that just doesn't suck.",
-  "lead": "Open a folder, see thumbnails, look at one picture large, page through with the keyboard. Videos play right there, too, even MKV, AVI and WebM. No library to import into, no waiting.",
+  "lead": "One free app for the pictures and videos in your folders. Open a folder, see thumbnails, look at one picture large, page through with the keyboard. Videos play right there, too, even MKV, AVI and WebM. No library to import into, no waiting.",
   "download": "Download for free",
   "store": "Mac App Store",
   "storeSoon": "soon, €0.99 to support it",
@@ -71,7 +71,7 @@
     },
     {
       "title": "Videos, also the ones macOS can't play",
-      "text": "<p>What macOS plays itself (MP4, MOV, AVCHD …) plays through macOS, everything else through the VLC engine built in: MKV, WebM, AVI, WMV, FLV, MPEG, DVD video.</p><ul><li>← → jump a tenth of the video, ⇧← ⇧→ a hundredth</li><li>↑ ↓ set the volume, for every video</li><li>Finder and Quick Look get thumbnails for MKV, WebM, WMV, FLV and VOB too</li></ul>",
+      "text": "<p>What macOS plays itself (MP4, MOV, AVCHD …) plays through macOS, HDR included; everything else through the VLC engine built in: MKV, WebM, AVI, WMV, FLV, MPEG, DVD video.</p><ul><li>← → jump a tenth of the video, ⇧← ⇧→ a hundredth</li><li>↑ ↓ set the volume, for every video</li><li>Finder and Quick Look get thumbnails for MKV, WebM, WMV, FLV and VOB too</li></ul>",
       "alt": "A video playing in Schnellbild"
     },
     {
@@ -101,7 +101,7 @@
     },
     {
       "title": "Every key at hand",
-      "text": "<p><kbd>F1</kbd> lists every key, to print too; <kbd>K</kbd> shows a small keyboard to click. Grid or list (<kbd>L</kbd>), sort by name, kind, date or size, several windows, and a boss key (<kbd>X</kbd>).</p>",
+      "text": "<p><kbd>F1</kbd> lists every key, to print too; <kbd>K</kbd> shows a small keyboard to click. Set your own keys, or pick the keys as in Phiewer. Grid or list (<kbd>L</kbd>), sort by name, kind, date or size, several windows, and a boss key (<kbd>X</kbd>).</p>",
       "alt": "The list of keys (F1)"
     },
     {
@@ -140,7 +140,7 @@
   ],
   "safeMore": "What it does in detail, and where its limit is: <a href=\"https://github.com/JohannesHoppe/schnellbild#safe-with-files-from-others\">Safe with files from others</a>.",
   "modelsTitle": "Coming from Phiewer, IINA or Norton Commander?",
-  "modelsText": "They were the models: Phiewer for browsing pictures by keyboard, IINA for handling videos quickly, Norton Commander for the dual pane. How Schnellbild compares: <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-phiewer-alternative\">a free Phiewer alternative</a>, <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-iina-alternative-for-looking-through-videos\">a free IINA alternative for looking through videos</a>.",
+  "modelsText": "Phiewer is a fast photo viewer with a paid PRO version, IINA a full player for watching videos; both were models for Schnellbild, as was Norton Commander for the dual pane. Schnellbild puts the pictures and videos in your folders into one free app, with the keys as in Phiewer if you like. How Schnellbild compares: <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-phiewer-alternative\">a free Phiewer alternative</a>, <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-iina-alternative-for-looking-through-videos\">a free IINA alternative for looking through videos</a>.",
   "ossTitle": "Open source",
   "ossText": "Schnellbild is free software under the MIT License, the source is <a href=\"https://github.com/JohannesHoppe/schnellbild\">on GitHub</a>. Found a bug or missing something? <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">Open an issue</a>.",
   "languagesText": "In your Mac's language:",

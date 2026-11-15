@@ -10,7 +10,7 @@
   "language": "Język",
   "iconAlt": "Ikona aplikacji Schnellbild",
   "tagline": "Przeglądarka zdjęć i wideo dla macOS, która nie działa na nerwy.",
-  "lead": "Otwórz folder, zobacz miniatury, obejrzyj jedno zdjęcie w dużym rozmiarze, przewijaj klawiaturą. Filmy odtwarzają się od razu na miejscu, nawet MKV, AVI i WebM. Bez biblioteki, do której trzeba importować, bez czekania.",
+  "lead": "Jedna darmowa aplikacja do zdjęć i filmów prosto z folderów. Otwórz folder, zobacz miniatury, obejrzyj jedno zdjęcie w dużym rozmiarze, przewijaj klawiaturą. Filmy odtwarzają się od razu na miejscu, nawet MKV, AVI i WebM. Bez biblioteki, do której trzeba importować, bez czekania.",
   "download": "Pobierz za darmo",
   "store": "Mac App Store",
   "storeSoon": "wkrótce, na wsparcie projektu",
@@ -71,7 +71,7 @@
     },
     {
       "title": "Filmy, także MKV i inne, których macOS nie odtworzy",
-      "text": "<p>To, co macOS potrafi odtworzyć sam (MP4, MOV, AVCHD itp.), odtwarza macOS, a całą resztę odtwarza wbudowany silnik VLC: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-Video.</p><ul><li>← → przeskakują o jedną dziesiątą filmu, ⇧← ⇧→ o jedną setną</li><li>↑ ↓ ustawiają głośność, dla każdego filmu</li><li>Finder i Szybki przegląd dostają miniatury także dla MKV, WebM, WMV, FLV i VOB</li></ul>",
+      "text": "<p>To, co macOS potrafi odtworzyć sam (MP4, MOV, AVCHD itp.), odtwarza macOS, także w HDR, a całą resztę odtwarza wbudowany silnik VLC: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-Video.</p><ul><li>← → przeskakują o jedną dziesiątą filmu, ⇧← ⇧→ o jedną setną</li><li>↑ ↓ ustawiają głośność, dla każdego filmu</li><li>Finder i Szybki przegląd dostają miniatury także dla MKV, WebM, WMV, FLV i VOB</li></ul>",
       "alt": "Film odtwarzany w Schnellbild"
     },
     {
@@ -101,7 +101,7 @@
     },
     {
       "title": "Każdy klawisz pod ręką",
-      "text": "<p><kbd>F1</kbd> pokazuje wszystkie klawisze, także do wydruku; <kbd>K</kbd> wyświetla małą klawiaturę do klikania. Siatka lub lista (<kbd>L</kbd>), sortowanie według nazwy, rodzaju, daty lub rozmiaru, wiele okien i klawisz szefa (<kbd>X</kbd>).</p>",
+      "text": "<p><kbd>F1</kbd> pokazuje wszystkie klawisze, także do wydruku; <kbd>K</kbd> wyświetla małą klawiaturę do klikania. Ustaw własne klawisze albo wybierz klawisze jak w Phiewer. Siatka lub lista (<kbd>L</kbd>), sortowanie według nazwy, rodzaju, daty lub rozmiaru, wiele okien i klawisz szefa (<kbd>X</kbd>).</p>",
       "alt": "Lista klawiszy (F1)"
     },
     {
@@ -140,7 +140,7 @@
   ],
   "safeMore": "Co dokładnie robi i gdzie są jego granice (po angielsku): <a href=\"https://github.com/JohannesHoppe/schnellbild#safe-with-files-from-others\">Bezpieczny z plikami od innych</a>.",
   "modelsTitle": "Przesiadasz się z Phiewer, IINA albo Norton Commandera?",
-  "modelsText": "To one były wzorem: Phiewer do przeglądania zdjęć klawiaturą, IINA do sprawnej obsługi filmów, Norton Commander do dwóch paneli. Jak wypada na ich tle Schnellbild (po angielsku): <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-phiewer-alternative\">darmowa alternatywa dla Phiewer</a>, <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-iina-alternative-for-looking-through-videos\">darmowa alternatywa dla IINA do przeglądania filmów</a>.",
+  "modelsText": "Phiewer to szybka przeglądarka zdjęć z płatną wersją PRO, IINA pełnoprawny odtwarzacz do oglądania filmów; oba były wzorem dla Schnellbild, podobnie jak Norton Commander dla dwóch paneli. Schnellbild łączy zdjęcia i filmy z folderów w jednej darmowej aplikacji, a jeśli chcesz, z klawiszami jak w Phiewer. Jak wypada na ich tle Schnellbild (po angielsku): <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-phiewer-alternative\">darmowa alternatywa dla Phiewer</a>, <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-iina-alternative-for-looking-through-videos\">darmowa alternatywa dla IINA do przeglądania filmów</a>.",
   "ossTitle": "Open source",
   "ossText": "Schnellbild to wolne oprogramowanie na licencji MIT, a kod źródłowy jest <a href=\"https://github.com/JohannesHoppe/schnellbild\">na GitHubie</a>. Coś nie działa albo czegoś brakuje? <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">Otwórz zgłoszenie</a>.",
   "languagesText": "W języku Twojego Maca:",

@@ -10,7 +10,7 @@
   "language": "Språk",
   "iconAlt": "Schnellbild-appsymbol",
   "tagline": "En bildefremviser og videospiller for macOS som rett og slett ikke suger.",
-  "lead": "Åpne en mappe, se miniatyrene, se ett bilde i stort format og bla med tastaturet. Videoer spilles av rett der, også MKV, AVI og WebM. Ikke noe bibliotek å importere til, ingen venting.",
+  "lead": "Én gratis app for bildene og videoene i mappene dine. Åpne en mappe, se miniatyrene, se ett bilde i stort format og bla med tastaturet. Videoer spilles av rett der, også MKV, AVI og WebM. Ikke noe bibliotek å importere til, ingen venting.",
   "download": "Last ned gratis",
   "store": "Mac App Store",
   "storeSoon": "snart, for å støtte utviklingen",
@@ -71,7 +71,7 @@
     },
     {
       "title": "Videoer, også MKV og andre som macOS ikke kan spille av",
-      "text": "<p>Det macOS spiller av selv (MP4, MOV, AVCHD …), spilles av gjennom macOS, alt annet gjennom den innebygde VLC-motoren: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-video.</p><ul><li>← → hopper en tidel av videoen, ⇧← ⇧→ en hundredel</li><li>↑ ↓ stiller volumet, for alle videoer</li><li>Finder og Hurtigvisning får miniatyrer også for MKV, WebM, WMV, FLV og VOB</li></ul>",
+      "text": "<p>Det macOS spiller av selv (MP4, MOV, AVCHD …), spilles av gjennom macOS, også i HDR; alt annet gjennom den innebygde VLC-motoren: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-video.</p><ul><li>← → hopper en tidel av videoen, ⇧← ⇧→ en hundredel</li><li>↑ ↓ stiller volumet, for alle videoer</li><li>Finder og Hurtigvisning får miniatyrer også for MKV, WebM, WMV, FLV og VOB</li></ul>",
       "alt": "En video som spilles av i Schnellbild"
     },
     {
@@ -101,7 +101,7 @@
     },
     {
       "title": "Alle tastene for hånden",
-      "text": "<p><kbd>F1</kbd> viser alle tastene, også for utskrift; <kbd>K</kbd> viser et lite tastatur å klikke på. Rutenett eller liste (<kbd>L</kbd>), sortering etter navn, type, dato eller størrelse, flere vinduer og en sjefstast (<kbd>X</kbd>).</p>",
+      "text": "<p><kbd>F1</kbd> viser alle tastene, også for utskrift; <kbd>K</kbd> viser et lite tastatur å klikke på. Velg dine egne taster, eller tastene som i Phiewer. Rutenett eller liste (<kbd>L</kbd>), sortering etter navn, type, dato eller størrelse, flere vinduer og en sjefstast (<kbd>X</kbd>).</p>",
       "alt": "Listen over taster (F1)"
     },
     {
@@ -140,7 +140,7 @@
   ],
   "safeMore": "Hva den gjør i detalj, og hvor grensen går: <a href=\"https://github.com/JohannesHoppe/schnellbild#safe-with-files-from-others\">Trygg med filer fra andre</a> (på engelsk).",
   "modelsTitle": "Kommer du fra Phiewer, IINA eller Norton Commander?",
-  "modelsText": "De var forbildene: Phiewer for å bla i bilder med tastaturet, IINA for rask håndtering av videoer, Norton Commander for de to panelene. Slik står Schnellbild seg (på engelsk): <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-phiewer-alternative\">et gratis alternativ til Phiewer</a>, <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-iina-alternative-for-looking-through-videos\">et gratis alternativ til IINA for å se gjennom videoer</a>.",
+  "modelsText": "Phiewer er en rask bildeviser med en betalt PRO-versjon, IINA en fullverdig spiller for å se videoer; begge var forbilder for Schnellbild, i likhet med Norton Commander for de to panelene. Schnellbild samler bildene og videoene i mappene dine i én gratis app, om du vil med tastene som i Phiewer. Slik står Schnellbild seg (på engelsk): <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-phiewer-alternative\">et gratis alternativ til Phiewer</a>, <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-iina-alternative-for-looking-through-videos\">et gratis alternativ til IINA for å se gjennom videoer</a>.",
   "ossTitle": "Åpen kildekode",
   "ossText": "Schnellbild er fri programvare under MIT-lisensen, kildekoden ligger <a href=\"https://github.com/JohannesHoppe/schnellbild\">på GitHub</a>. Funnet en feil eller savner du noe? <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">Opprett en sak</a>.",
   "languagesText": "På Macens språk:",

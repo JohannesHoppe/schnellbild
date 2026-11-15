@@ -10,7 +10,7 @@
   "language": "Lingua",
   "iconAlt": "Icona dell’app Schnellbild",
   "tagline": "Un visualizzatore di foto e video per Mac che non ti complica la vita.",
-  "lead": "Apri una cartella, guarda le miniature, visualizza un’immagine in grande, sfoglia con la tastiera. Anche i video si riproducono lì, persino MKV, AVI e WebM. Nessuna libreria in cui importare, nessuna attesa.",
+  "lead": "Un’unica app gratuita per le immagini e i video delle tue cartelle. Apri una cartella, guarda le miniature, visualizza un’immagine in grande, sfoglia con la tastiera. Anche i video si riproducono lì, persino MKV, AVI e WebM. Nessuna libreria in cui importare, nessuna attesa.",
   "download": "Scarica gratis",
   "store": "Mac App Store",
   "storeSoon": "presto, a 0,99 € per sostenerlo",
@@ -71,7 +71,7 @@
     },
     {
       "title": "Video, anche MKV e AVI che macOS non riproduce",
-      "text": "<p>Quello che macOS riproduce da sé (MP4, MOV, AVCHD…) passa da macOS, tutto il resto dal motore VLC integrato: MKV, WebM, AVI, WMV, FLV, MPEG, DVD Video.</p><ul><li>← → saltano di un decimo del video, ⇧← ⇧→ di un centesimo</li><li>↑ ↓ regolano il volume, per tutti i video</li><li>Anche il Finder e Quick Look ottengono le miniature di MKV, WebM, WMV, FLV e VOB</li></ul>",
+      "text": "<p>Quello che macOS riproduce da sé (MP4, MOV, AVCHD…) passa da macOS, anche in HDR; tutto il resto dal motore VLC integrato: MKV, WebM, AVI, WMV, FLV, MPEG, DVD Video.</p><ul><li>← → saltano di un decimo del video, ⇧← ⇧→ di un centesimo</li><li>↑ ↓ regolano il volume, per tutti i video</li><li>Anche il Finder e Quick Look ottengono le miniature di MKV, WebM, WMV, FLV e VOB</li></ul>",
       "alt": "Un video in riproduzione in Schnellbild"
     },
     {
@@ -101,7 +101,7 @@
     },
     {
       "title": "Ogni tasto a portata di mano",
-      "text": "<p><kbd>F1</kbd> elenca tutti i tasti, anche da stampare; <kbd>K</kbd> mostra una piccola tastiera da cliccare. Griglia o elenco (<kbd>L</kbd>), ordinamento per nome, tipo, data o dimensione, più finestre e un tasto capo (<kbd>X</kbd>).</p>",
+      "text": "<p><kbd>F1</kbd> elenca tutti i tasti, anche da stampare; <kbd>K</kbd> mostra una piccola tastiera da cliccare. Scegli i tuoi tasti, oppure i tasti come in Phiewer. Griglia o elenco (<kbd>L</kbd>), ordinamento per nome, tipo, data o dimensione, più finestre e un tasto capo (<kbd>X</kbd>).</p>",
       "alt": "L’elenco dei tasti (F1)"
     },
     {
@@ -140,7 +140,7 @@
   ],
   "safeMore": "Cosa fa nel dettaglio, e dove si ferma (in inglese): <a href=\"https://github.com/JohannesHoppe/schnellbild#safe-with-files-from-others\">Sicuro con i file degli altri</a>.",
   "modelsTitle": "Arrivi da Phiewer, IINA o Norton Commander?",
-  "modelsText": "Sono stati i modelli: Phiewer per sfogliare le immagini da tastiera, IINA per gestire i video al volo, Norton Commander per il doppio pannello. Il confronto con Schnellbild (in inglese): <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-phiewer-alternative\">un’alternativa gratuita a Phiewer</a>, <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-iina-alternative-for-looking-through-videos\">un’alternativa gratuita a IINA per guardare video</a>.",
+  "modelsText": "Phiewer è un visualizzatore di foto veloce con una versione PRO a pagamento, IINA un player completo per guardare video; entrambi sono stati modelli per Schnellbild, come Norton Commander per il doppio pannello. Schnellbild riunisce le immagini e i video delle tue cartelle in un’unica app gratuita, se vuoi con i tasti come in Phiewer. Il confronto con Schnellbild (in inglese): <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-phiewer-alternative\">un’alternativa gratuita a Phiewer</a>, <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-iina-alternative-for-looking-through-videos\">un’alternativa gratuita a IINA per guardare video</a>.",
   "ossTitle": "Open source",
   "ossText": "Schnellbild è software libero con licenza MIT, il codice sorgente è <a href=\"https://github.com/JohannesHoppe/schnellbild\">su GitHub</a>. Hai trovato un bug o ti manca qualcosa? <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">Apri una segnalazione</a>.",
   "languagesText": "Nella lingua del tuo Mac:",
