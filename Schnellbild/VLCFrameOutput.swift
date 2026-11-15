@@ -506,19 +506,22 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
         default: format = "other"
         }
         func attachment(_ key: CFString) -> String? { CVBufferCopyAttachment(buffer, key, nil) as? String }
-        let names: [String: String] = [
-            kCVImageBufferTransferFunction_SMPTE_ST_2084_PQ as String: "PQ",
-            kCVImageBufferTransferFunction_ITU_R_2100_HLG as String: "HLG",
-            kCVImageBufferTransferFunction_ITU_R_709_2 as String: "709",
-            kCVImageBufferColorPrimaries_ITU_R_2020 as String: "2020",
-            kCVImageBufferColorPrimaries_ITU_R_709_2 as String: "709",
-            kCVImageBufferColorPrimaries_SMPTE_C as String: "601",
-            kCVImageBufferColorPrimaries_P3_D65 as String: "P3",
-            kCVImageBufferYCbCrMatrix_ITU_R_2020 as String: "2020",
-            kCVImageBufferYCbCrMatrix_ITU_R_709_2 as String: "709",
-            kCVImageBufferYCbCrMatrix_ITU_R_601_4 as String: "601",
+        // Several of CoreVideo's constants are the same string ("ITU_R_709_2"
+        // names BT.709's transfer, primaries and matrix), so a list, first match
+        let names: [(CFString, String)] = [
+            (kCVImageBufferTransferFunction_SMPTE_ST_2084_PQ, "PQ"),
+            (kCVImageBufferTransferFunction_ITU_R_2100_HLG, "HLG"),
+            (kCVImageBufferTransferFunction_ITU_R_709_2, "709"),
+            (kCVImageBufferColorPrimaries_ITU_R_2020, "2020"),
+            (kCVImageBufferColorPrimaries_SMPTE_C, "601"),
+            (kCVImageBufferColorPrimaries_P3_D65, "P3"),
+            (kCVImageBufferYCbCrMatrix_ITU_R_2020, "2020"),
+            (kCVImageBufferYCbCrMatrix_ITU_R_601_4, "601"),
         ]
-        func name(_ key: CFString) -> String { attachment(key).map { names[$0] ?? $0 } ?? "none" }
+        func name(_ key: CFString) -> String {
+            guard let value = attachment(key) else { return "none" }
+            return names.first { $0.0 as String == value }?.1 ?? value
+        }
         var text = "\(format) \(name(kCVImageBufferTransferFunctionKey)) \(name(kCVImageBufferColorPrimariesKey)) "
             + "matrix \(name(kCVImageBufferYCbCrMatrixKey))"
         if CVBufferCopyAttachment(buffer, kCVImageBufferMasteringDisplayColorVolumeKey, nil) != nil { text += " mastering" }
