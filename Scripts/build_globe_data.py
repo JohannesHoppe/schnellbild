@@ -4,8 +4,9 @@
   python3 -I Scripts/build_globe_data.py [--check]
   python3 -I Scripts/build_globe_data.py --upstream --extract DIR
 
-Python's standard library only, the pictures too (OpenEXR with ZIP compression,
-TIFF with LZW, PNG written with zlib): the same inputs give the same bytes.
+Python's standard library only, the pictures too (OpenEXR with ZIP compression
+and TIFF with LZW read here, a baseline JPEG and a PNG written here): the same
+inputs give the same bytes.
 Downloads go to build/globe-cache/, the files to build/globe/.
 
 The inputs come from the archive: the pre-release SOURCE_RELEASE_TAG of this
@@ -23,7 +24,8 @@ inputs into DIR (the archive's files) and prints their SHA-256.
   each block centred on its cell), rounded to whole metres. Format "SBHM",
   described in OfflineMap/GlobeData.swift (`Heightmap`).
 - SKYMAP_FILE: NASA SVS's "Deep Star Maps 2020" star map (4096 × 2048, public
-  domain), tone-mapped to an 8-bit sRGB PNG (right ascension 0h in the middle,
+  domain), tone-mapped to 8-bit sRGB, a JPEG of quality SKY_QUALITY, 4:4:4
+  (right ascension 0h in the middle,
   increasing to the left, as SVS has it).
 - CITYLIGHTS_FILE: NASA Earth Observatory's Black Marble 2016 (grey GeoTIFF,
   13500 × 6750), reduced to LIGHTS_WIDTH × LIGHTS_WIDTH/2, a grey PNG.
@@ -169,10 +171,313 @@ def heightmap(bands):
 
 
 # ---------------------------------------------------------------------------
+# A baseline JPEG encoder (ITU-T T.81 / JFIF 1.02), written here so the same
+# pixels always give the same bytes: no library, every step fixed.
+# - Colour: JFIF's YCbCr (BT.601 full range), chroma 4:2:0 (each Cb / Cr
+#   sample the mean of 2 × 2 pixels); grey: one component.
+# - Each 8 × 8 block: level shift by 128, the DCT-II as T.81 A.3.3 defines it
+#   (double precision, separable, a fixed cosine table and summation order),
+#   divided by the quantisation table and rounded half away from zero.
+# - Quantisation: T.81 Annex K's luminance and chrominance tables scaled by
+#   the IJG quality formula (q < 50: 5000 / q %, else 200 − 2q %, each entry
+#   rounded and held within 1 ... 255).
+# - Huffman: optimal tables for the picture (T.81 K.2, lengths held to 16
+#   bits as K.2's figure K.3 does), one DC and one AC table for luma and one
+#   pair for chroma; restart markers none.
+
+
+ZIGZAG = [
+    0, 1, 8, 16, 9, 2, 3, 10, 17, 24, 32, 25, 18, 11, 4, 5,
+    12, 19, 26, 33, 40, 48, 41, 34, 27, 20, 13, 6, 7, 14, 21, 28,
+    35, 42, 49, 56, 57, 50, 43, 36, 29, 22, 15, 23, 30, 37, 44, 51,
+    58, 59, 52, 45, 38, 31, 39, 46, 53, 60, 61, 54, 47, 55, 62, 63,
+]
+# T.81 Annex K, tables K.1 and K.2 (in row order)
+LUMA_QUANT = [
+    16, 11, 10, 16, 24, 40, 51, 61, 12, 12, 14, 19, 26, 58, 60, 55,
+    14, 13, 16, 24, 40, 57, 69, 56, 14, 17, 22, 29, 51, 87, 80, 62,
+    18, 22, 37, 56, 68, 109, 103, 77, 24, 35, 55, 64, 81, 104, 113, 92,
+    49, 64, 78, 87, 103, 121, 120, 101, 72, 92, 95, 98, 112, 100, 103, 99,
+]
+CHROMA_QUANT = [
+    17, 18, 24, 47, 99, 99, 99, 99, 18, 21, 26, 66, 99, 99, 99, 99,
+    24, 26, 56, 99, 99, 99, 99, 99, 47, 66, 99, 99, 99, 99, 99, 99,
+] + [99] * 32
+# cos((2x + 1) u π / 16), with C(0) = 1/√2, halved: the 1-D DCT's matrix
+DCT = [[(math.sqrt(0.5) if u == 0 else 1.0) * 0.5 * math.cos((2 * x + 1) * u * math.pi / 16) for x in range(8)] for u in range(8)]
+
+
+def jpeg_quant(table, quality):
+    scale = 5000 // quality if quality < 50 else 200 - 2 * quality
+    return [max(1, min(255, (v * scale + 50) // 100)) for v in table]
+
+
+def jpeg_block(pixels, quant):
+    """One 8 × 8 block (64 samples 0 ... 255, row order) to its 64 quantised
+    coefficients in zig-zag order."""
+    rows = []
+    for y in range(8):
+        r = [pixels[8 * y + x] - 128 for x in range(8)]
+        rows.append([sum(c[x] * r[x] for x in range(8)) for c in DCT])
+    coefficients = [0] * 64
+    for u in range(8):
+        column = [rows[y][u] for y in range(8)]
+        for v in range(8):
+            c = DCT[v]
+            value = sum(c[y] * column[y] for y in range(8)) / quant[8 * v + u]
+            coefficients[8 * v + u] = int(value + 0.5) if value >= 0 else -int(-value + 0.5)
+    return [coefficients[k] for k in ZIGZAG]
+
+
+def jpeg_category(value):
+    return 0 if value == 0 else abs(value).bit_length()
+
+
+def jpeg_symbols(blocks):
+    """The Huffman symbols of a component's blocks: (dc symbol, dc bits, [(ac symbol, bits)…]) per block."""
+    out, previous = [], 0
+    for block in blocks:
+        diff = block[0] - previous
+        previous = block[0]
+        ac, run = [], 0
+        last = 63
+        while last > 0 and block[last] == 0:
+            last -= 1
+        for k in range(1, last + 1):
+            v = block[k]
+            if v == 0:
+                run += 1
+                continue
+            while run > 15:
+                ac.append((0xF0, 0, 0))
+                run -= 16
+            size = jpeg_category(v)
+            ac.append(((run << 4) | size, size, v))
+            run = 0
+        if last < 63:
+            ac.append((0x00, 0, 0))
+        size = jpeg_category(diff)
+        out.append(((size, size, diff), ac))
+    return out
+
+
+def jpeg_huffman(frequencies):
+    """T.81 K.2: code lengths for the symbols' frequencies (a reserved code
+    point so no code is all ones), held to 16 bits; returns (bits[1..16],
+    symbols in order) and a code table symbol → (code, length)."""
+    freq = [0] * 257
+    for s, f in frequencies.items():
+        freq[s] = f
+    freq[256] = 1
+    codesize = [0] * 257
+    others = [-1] * 257
+    while True:
+        v1 = v2 = -1
+        for i in range(257):     # the least frequent, the larger symbol on ties (K.2's figure K.1)
+            if freq[i] and (v1 < 0 or freq[i] <= freq[v1]):
+                v1 = i
+        for i in range(257):
+            if freq[i] and i != v1 and (v2 < 0 or freq[i] <= freq[v2]):
+                v2 = i
+        if v2 < 0:
+            break
+        freq[v1] += freq[v2]
+        freq[v2] = 0
+        codesize[v1] += 1
+        while others[v1] >= 0:
+            v1 = others[v1]
+            codesize[v1] += 1
+        others[v1] = v2
+        codesize[v2] += 1
+        while others[v2] >= 0:
+            v2 = others[v2]
+            codesize[v2] += 1
+    bits = [0] * 33
+    for i in range(257):
+        if codesize[i]:
+            bits[codesize[i]] += 1
+    i = 32                       # K.2's figure K.3: no code longer than 16 bits
+    while i > 16:
+        while bits[i] > 0:
+            j = i - 2
+            while bits[j] == 0:
+                j -= 1
+            bits[i] -= 2
+            bits[i - 1] += 1
+            bits[j + 1] += 2
+            bits[j] -= 1
+        i -= 1
+    while bits[i] == 0:
+        i -= 1
+    bits[i] -= 1                 # the reserved code point
+    order = sorted((s for s in range(256) if codesize[s]), key=lambda s: (codesize[s], s))
+    lengths = [n for n in range(1, 17) for _ in range(bits[n])]
+    codes, code, k = {}, 0, 0
+    for n in range(1, 17):
+        for _ in range(bits[n]):
+            codes[order[k]] = (code, n)
+            code += 1
+            k += 1
+        code <<= 1
+    assert len(lengths) == len(order)
+    return bits[1:17], order, codes
+
+
+class JpegBits:
+    def __init__(self):
+        self.out = bytearray()
+        self.acc = 0
+        self.n = 0
+
+    def put(self, value, length):
+        self.acc = (self.acc << length) | (value & ((1 << length) - 1))
+        self.n += length
+        while self.n >= 8:
+            self.n -= 8
+            byte = (self.acc >> self.n) & 0xFF
+            self.out.append(byte)
+            if byte == 0xFF:
+                self.out.append(0)
+        self.acc &= (1 << self.n) - 1
+
+    def flush(self):
+        if self.n:
+            self.put((1 << (8 - self.n)) - 1, 8 - self.n)   # pad with ones
+
+
+def jpeg(width, height, planes, quality, subsampled=False):
+    """A baseline JPEG of `planes`: [Y] (grey) or [Y, Cb, Cr], Cb and Cr at
+    full size (4:4:4) or, `subsampled`, at half the size in each direction
+    (4:2:0); each plane a list of rows of samples."""
+    colour = len(planes) == 3
+    quants = [jpeg_quant(LUMA_QUANT, quality)] + ([jpeg_quant(CHROMA_QUANT, quality)] if colour else [])
+
+    def blocks_of(plane, w, h, qi):
+        out = []
+        for by in range(0, h, 8):
+            for bx in range(0, w, 8):
+                pixels = []
+                for y in range(by, by + 8):
+                    row = plane[min(y, h - 1)]
+                    pixels += [row[min(x, w - 1)] for x in range(bx, bx + 8)]
+                out.append(jpeg_block(pixels, quants[qi]))
+        return out
+
+    if colour and subsampled:
+        mw, mh = (width + 15) // 16, (height + 15) // 16
+        lw, lh = mw * 16, mh * 16
+    else:
+        mw, mh = (width + 7) // 8, (height + 7) // 8
+        lw, lh = mw * 8, mh * 8
+    # Blocks in the order they go into the scan (interleaved MCUs for colour)
+    y_blocks = blocks_of(planes[0], width, height, 0)
+    if colour and not subsampled:
+        components = [jpeg_symbols(y_blocks), jpeg_symbols(blocks_of(planes[1], width, height, 1)),
+                      jpeg_symbols(blocks_of(planes[2], width, height, 1))]
+    elif colour:
+        cw, ch = (width + 1) // 2, (height + 1) // 2
+        cb_blocks = blocks_of(planes[1], cw, ch, 1)
+        cr_blocks = blocks_of(planes[2], cw, ch, 1)
+        ybw = (width + 7) // 8
+        ybh = (height + 7) // 8
+        cbw = (cw + 7) // 8
+        luma_order, chroma_index = [], []
+        for my in range(mh):
+            for mx in range(mw):
+                for dy in range(2):
+                    for dx in range(2):
+                        by, bx = min(2 * my + dy, ybh - 1), min(2 * mx + dx, ybw - 1)
+                        luma_order.append(y_blocks[by * ybw + bx])
+                chroma_index.append(min(my, (ch + 7) // 8 - 1) * cbw + min(mx, cbw - 1))
+        cb_order = [cb_blocks[i] for i in chroma_index]
+        cr_order = [cr_blocks[i] for i in chroma_index]
+        components = [jpeg_symbols(luma_order), jpeg_symbols(cb_order), jpeg_symbols(cr_order)]
+    else:
+        components = [jpeg_symbols(y_blocks)]
+
+    # Optimal tables: luma's own, chroma's shared by Cb and Cr
+    def tables(lists):
+        dc, ac = {}, {}
+        for symbols in lists:
+            for (d, _, _), acs in symbols:
+                dc[d] = dc.get(d, 0) + 1
+                for s, _, _ in acs:
+                    ac[s] = ac.get(s, 0) + 1
+        return jpeg_huffman(dc), jpeg_huffman(ac)
+    huff = [tables(components[:1])] + ([tables(components[1:])] if colour else [])
+
+    bits = JpegBits()
+    table_of = [0, 1, 1] if colour else [0]
+    if colour:
+        for m in range(mw * mh):
+            for c, count in ((0, 4 if subsampled else 1), (1, 1), (2, 1)):
+                (dcb, dco, dcc), (acb, aco, acc) = huff[table_of[c]]
+                for (d, size, diff), acs in components[c][m * count:(m + 1) * count]:
+                    code, length = dcc[d]
+                    bits.put(code, length)
+                    if size:
+                        bits.put(diff if diff > 0 else diff - 1, size)
+                    for s, size, v in acs:
+                        code, length = acc[s]
+                        bits.put(code, length)
+                        if size:
+                            bits.put(v if v > 0 else v - 1, size)
+    else:
+        (dcb, dco, dcc), (acb, aco, acc) = huff[0]
+        for (d, size, diff), acs in components[0]:
+            code, length = dcc[d]
+            bits.put(code, length)
+            if size:
+                bits.put(diff if diff > 0 else diff - 1, size)
+            for s, size, v in acs:
+                code, length = acc[s]
+                bits.put(code, length)
+                if size:
+                    bits.put(v if v > 0 else v - 1, size)
+    bits.flush()
+
+    def segment(marker, payload):
+        return struct.pack(">BBH", 0xFF, marker, len(payload) + 2) + payload
+    out = bytearray(b"\xFF\xD8")
+    out += segment(0xE0, b"JFIF\0" + struct.pack(">BBBHHBB", 1, 2, 0, 1, 1, 0, 0))
+    for i, q in enumerate(quants):
+        out += segment(0xDB, bytes([i]) + bytes(q[k] for k in ZIGZAG))
+    if colour:
+        sof = struct.pack(">BHHB", 8, height, width, 3) + bytes([1, 0x22 if subsampled else 0x11, 0, 2, 0x11, 1, 3, 0x11, 1])
+    else:
+        sof = struct.pack(">BHHB", 8, height, width, 1) + bytes([1, 0x11, 0])
+    out += segment(0xC0, sof)
+    for t, ((dcb, dco, _), (acb, aco, _)) in enumerate(huff):
+        out += segment(0xC4, bytes([0x00 | t]) + bytes(dcb) + bytes(dco))
+        out += segment(0xC4, bytes([0x10 | t]) + bytes(acb) + bytes(aco))
+    if colour:
+        sos = bytes([3, 1, 0x00, 2, 0x11, 3, 0x11, 0, 63, 0])
+    else:
+        sos = bytes([1, 1, 0x00, 0, 63, 0])
+    out += segment(0xDA, sos)
+    out += bits.out
+    out += b"\xFF\xD9"
+    return bytes(out)
+
+
+def jpeg_rgb(width, height, rows, quality):
+    """RGB rows (bytes, 3 per pixel) as a 4:4:4 JPEG in JFIF's YCbCr, each
+    sample rounded half up (stars are single pixels: their colour isn't
+    shared with their neighbours)."""
+    planes = ([], [], [])
+    for row in rows:
+        r, g, b = row[0::3], row[1::3], row[2::3]
+        planes[0].append([int(0.299 * p + 0.587 * q + 0.114 * t + 0.5) for p, q, t in zip(r, g, b)])
+        planes[1].append([max(0, min(255, int(-0.168736 * p - 0.331264 * q + 0.5 * t + 128.5))) for p, q, t in zip(r, g, b)])
+        planes[2].append([max(0, min(255, int(0.5 * p - 0.418688 * q - 0.081312 * t + 128.5))) for p, q, t in zip(r, g, b)])
+    return jpeg(width, height, list(planes), quality)
+
+
+# ---------------------------------------------------------------------------
 # The two pictures, decoded and written by this script alone (no ImageIO), so
-# the same inputs give the same bytes on every Mac and Python version that
-# has the same zlib (deflate's output at level 9 is stable across zlib
-# 1.2.x); `--check` compares them with their pins.
+# the same inputs give the same bytes on every Mac (the PNG's deflate at
+# level 9 is zlib's, stable across zlib 1.2.x); `--check` compares them with
+# their pins.
 
 
 def png(width, height, rows, colour):
@@ -253,10 +558,10 @@ def half_value(bits):
     return struct.unpack("<e", struct.pack("<H", bits))[0]
 
 
-def sky_png(path):
-    """The star map tone-mapped as `Scripts/globe_data.env` describes: scaled
-    so the 99.95th percentile of the brightness is white, linear up to 0.8,
-    a soft shoulder above, sRGB-encoded, an RGB PNG of the same size."""
+def sky_jpeg(path, quality):
+    """The star map tone-mapped: scaled so the 99.95th percentile of the
+    brightness is white, linear up to 0.8, a soft shoulder above,
+    sRGB-encoded; a JPEG of the same size (`jpeg_rgb`)."""
     width, height, rows = read_exr_zip(path)
     value = [half_value(b) for b in range(65536)]
     value = [v if v == v and v > 0 and v != float("inf") else (65504.0 if v == float("inf") else 0.0) for v in value]
@@ -281,7 +586,7 @@ def sky_png(path):
         line[1::3] = bytes(map(table.__getitem__, g))
         line[2::3] = bytes(map(table.__getitem__, b))
         out_rows.append(line)
-    return png(width, height, out_rows, 2)
+    return jpeg_rgb(width, height, out_rows, quality)
 
 
 def lzw_decode(data):
@@ -424,7 +729,7 @@ def main():
         return
 
     os.makedirs(OUT, exist_ok=True)
-    made = [("HEIGHTMAP", heightmap(bands)), ("SKYMAP", sky_png(sky)), ("CITYLIGHTS", lights_png(lights, int(cfg["LIGHTS_WIDTH"])))]
+    made = [("HEIGHTMAP", heightmap(bands)), ("SKYMAP", sky_jpeg(sky, int(cfg["SKY_QUALITY"]))), ("CITYLIGHTS", lights_png(lights, int(cfg["LIGHTS_WIDTH"])))]
     failed = False
     for key, data in made:
         open(os.path.join(OUT, cfg[key + "_FILE"]), "wb").write(data)

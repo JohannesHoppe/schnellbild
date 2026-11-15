@@ -201,7 +201,7 @@ public struct Heightmap: Sendable {
 /// The globe's data in the app's resources (`Globe/`, fetched by
 /// Scripts/fetch_globe.sh; made by Scripts/build_globe_data.py): the
 /// elevation model (`*.sbhm`, NOAA ETOPO 2022 in cells of 1/8°), the night
-/// sky (`schnellbild-sky-*.png`, NASA SVS's Deep Star Maps 2020, equirectangular
+/// sky (`schnellbild-sky-*.jpg`, NASA SVS's Deep Star Maps 2020, equirectangular
 /// in right ascension and declination, 0h in the middle, increasing to the
 /// left) and the lights of the night side (`schnellbild-citylights-*.png`,
 /// NASA's Black Marble 2016, grey, equirectangular, 180° W at the left edge,
