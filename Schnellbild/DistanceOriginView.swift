@@ -163,6 +163,8 @@ struct DistanceOriginView: View {
         }
         .font(.callout)
         .fixedSize(horizontal: false, vertical: true)
+        // One element: the point and the town near it
+        .accessibilityElement(children: .combine)
         .accessibilityIdentifier("distanceOriginParsed")
     }
 
@@ -180,6 +182,10 @@ struct DistanceOriginView: View {
             }
             .frame(height: 220)
             .clipShape(RoundedRectangle(cornerRadius: 8))
+            // One element for VoiceOver and the UI tests; clicks still reach the pick layer
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(Text("Click the map to choose a place."))
+            .accessibilityAddTraits(.isButton)
             .accessibilityIdentifier("distanceOriginMap")
             Text("Click the map to choose a place.").font(.caption).foregroundStyle(.secondary)
         }
@@ -215,9 +221,5 @@ private struct MapPickLayer: View {
                     dragStart = nil
                     if hypot(drag.translation.width, drag.translation.height) < 4 { picked(drag.location) }
                 })
-            .accessibilityElement()
-            .accessibilityLabel(Text("Click the map to choose a place."))
-            .accessibilityAddTraits(.isButton)
-            .accessibilityIdentifier("distanceOriginMapPick")
     }
 }

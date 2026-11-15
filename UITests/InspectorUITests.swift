@@ -98,7 +98,7 @@ final class InspectorUITests: SchnellbildUITestCase {
         let field = app.textFields["distanceOriginField"]
         XCTAssertTrue(field.waitForExistence(timeout: 5), "no place yet: the sheet asks for one")
         field.typeText("33.8568 S, 151.2153 E")
-        eventually("read") { text(of: element("distanceOriginParsed")).contains("33.85") }
+        eventually("read") { text(of: element("distanceOriginParsed").firstMatch).contains("33.85") }
         app.typeKey(.return, modifierFlags: [])
         eventually("Sydney, New York, Munich, Paris, then those without a place") {
             comesBefore("geo-sydney.jpg", "geo-newyork.jpg") && comesBefore("geo-newyork.jpg", "geo.jpg")
@@ -111,11 +111,11 @@ final class InspectorUITests: SchnellbildUITestCase {
         try putPlaces()
         launchOnTempDir(waitFor: "geo.jpg")
         app.typeKey("6", modifierFlags: .command)
-        let pick = element("distanceOriginMapPick")
+        let pick = element("distanceOriginMap").firstMatch
         XCTAssertTrue(pick.waitForExistence(timeout: 10), "the offline map in the sheet")
         XCTAssertTrue(element("useMyLocation").exists, "Use My Location (not clicked: CI can't answer macOS's question)")
         pick.click()
-        eventually("the place clicked is read") { text(of: element("distanceOriginParsed")).contains("°") }
+        eventually("the place clicked is read") { text(of: element("distanceOriginParsed").firstMatch).contains("°") }
         app.buttons["distanceOriginSort"].click()
         eventually("sorted by distance") { sortLabel().contains("Distance ↑") }
     }

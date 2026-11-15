@@ -176,7 +176,9 @@ final class InspectorIntegrationTests: XCTestCase {
         let geography = try XCTUnwrap(BundledGeography.make(renderer: try bundledRenderer()))
         let picker = OriginPicker(location: LocationStub(), geography: { geography })
         picker.pick(middle)
-        XCTAssertEqual(GeoPoint.parse(picker.text), middle)
+        let written = try XCTUnwrap(GeoPoint.parse(picker.text))
+        XCTAssertEqual(written.latitude, middle.latitude, accuracy: 1e-6, "six decimals: about 10 cm")
+        XCTAssertEqual(written.longitude, middle.longitude, accuracy: 1e-6)
         await picker.placeNameRead()
         XCTAssertTrue(picker.placeName?.contains("Munich") == true || picker.placeName?.contains("München") == true,
                       picker.placeName ?? "nil")
