@@ -3,13 +3,45 @@
 # Tests/SchnellbildTests/Videos, all from UITests/Fixtures/clip.mp4 (2 s,
 # a keyframe every half second, as camcorders and encoders write them), and
 # the UI tests' videos with two audio and two subtitle tracks
-# (UITests/Fixtures/tracks.mp4 and tracks.mkv).
-# Needs ffmpeg; the clips are committed, so tests don't.
+# (UITests/Fixtures/tracks.mp4 and tracks.mkv), and the HDR clips (`hdr` as
+# the only argument draws just those).
+# Needs ffmpeg (with libx265 for the HDR clips); the clips are committed, so
+# tests don't.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 FFMPEG="${FFMPEG:-ffmpeg}"
 OUT=Tests/SchnellbildTests/Videos
 mkdir -p "$OUT"
+
+# HDR: 2 s of SMPTE colour bars as 10-bit HEVC (Main10), the bars' code
+# values read as PQ or HLG. hdr10.mkv states its colours twice (Matroska's
+# Colour element and the stream's VUI), hdr10-vui.mkv only in the stream (VLC
+# learns them from the decoder, after its video output has opened); both
+# carry HDR10's mastering display and content light level. hlg.mkv is HLG,
+# sdr10.mkv 10-bit BT.709 (SDR in a 10-bit stream). hdr10.mp4 and the UI
+# tests' copy of hdr10.mkv show AVKit and VLC side by side. The colours are
+# stated on the pictures (setparams), so the encoder writes them into the
+# stream and the muxer into the container; hdr10-vui.mkv's go to the encoder
+# only (x265's own parameters).
+hdr() {
+  local out=$1 colours=$2 params=$3; shift 3
+  "$FFMPEG" -loglevel error -y -f lavfi -i "smptebars=s=320x180:r=10:d=2" -an \
+    -vf "format=yuv420p10le,setparams=range=tv:$colours" -c:v libx265 -preset fast -crf 28 \
+    -x265-params "log-level=error:keyint=10$params" \
+    "$@" -fflags +bitexact -flags:v +bitexact "$out"
+}
+draw_hdr() {
+  local hdr10=":hdr10=1:master-display=G(13250,34500)B(7500,3000)R(34000,16000)WP(15635,16450)L(10000000,50):max-cll=1000,400"
+  local pq="color_primaries=bt2020:color_trc=smpte2084:colorspace=bt2020nc"
+  hdr "$OUT/hdr10.mkv" "$pq" "$hdr10"
+  hdr "$OUT/hdr10-vui.mkv" "colorspace=bt2020nc" ":colorprim=bt2020:transfer=smpte2084:colormatrix=bt2020nc$hdr10"
+  hdr "$OUT/hlg.mkv" "color_primaries=bt2020:color_trc=arib-std-b67:colorspace=bt2020nc" ""
+  hdr "$OUT/sdr10.mkv" "color_primaries=bt709:color_trc=bt709:colorspace=bt709" ""
+  hdr UITests/Fixtures/hdr10.mp4 "$pq" "$hdr10" -tag:v hvc1 -movflags +faststart
+  cp "$OUT/hdr10.mkv" UITests/Fixtures/hdr10.mkv
+}
+if [ "${1:-}" = hdr ]; then draw_hdr; exit 0; fi
+
 make() { local name=$1; shift; "$FFMPEG" -loglevel error -y -i UITests/Fixtures/clip.mp4 -t 2 -an -g 12 "$@" "$OUT/$name"; }
 make clip.mkv  -c:v libx264 -pix_fmt yuv420p
 make clip.webm -c:v libvpx-vp9 -crf 40 -b:v 0
@@ -64,4 +96,5 @@ tracks() {
 }
 tracks tracks.mp4 de.srt -c:s mov_text
 tracks tracks.mkv de.ass -c:s:0 srt -c:s:1 ass
+draw_hdr
 finished=1

@@ -8,8 +8,10 @@ import VLCFrames
 /// Shows VLC's video without VLC's own OpenGL output: VLC hands every
 /// decoded picture to these callbacks, written into IOSurface-backed pixel
 /// buffers in the video's own form (NV12: brightness, then colour at half
-/// resolution, so no colour conversion on the processor), and a layer shows
-/// them; the compositor turns them into RGB. So VLC videos need no OpenGL (which
+/// resolution, so no colour conversion on the processor; P010, the same
+/// with 10 bits, for videos of more than 8 bits), and a layer shows them;
+/// the compositor turns them into RGB. HDR videos (PQ or HLG, from 10 bits)
+/// are tagged as such and shown in EDR, as AVKit's layer shows them. So VLC videos need no OpenGL (which
 /// macOS deprecates and virtual Macs such as CI runners don't have). The
 /// look (`setLook`) is applied here with Core Image, the same `Look.apply`
 /// as for AVKit videos and photos; auto enhance measures the picture before
@@ -38,6 +40,10 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
     private var latest: CVPixelBuffer?
     private let context = CIContext(options: [.cacheIntermediates: false])
     private let sRGB = CGColorSpace(name: CGColorSpace.sRGB)!
+    /// For pictures of more than 8 bits with a look: half floats, extended
+    /// linear Display P3 (values above 1 are brighter than SDR white).
+    private let deepContext = CIContext(options: [.cacheIntermediates: false, .workingFormat: NSNumber(value: CIFormat.RGBAh.rawValue)])
+    private let extendedLinear = CGColorSpace(name: CGColorSpace.extendedLinearDisplayP3)!
     /// Time spent in the callbacks, to show the handover costs little.
     private var callbackSeconds = 0.0
     private var callbacks = 0
@@ -117,7 +123,8 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
     }
 
     /// VLC tells the decoder's picture format and size and takes the one
-    /// asked for here: NV12 (two planes) at the size to show. VLC's size is
+    /// asked for here: NV12 (two planes), P010 for a source of more than 8
+    /// bits, at the size to show. VLC's size is
     /// the decoder's buffer, often padded (1080 rows decode into 1088 or
     /// 1152), and VLC scales its visible part to whatever size is set here;
     /// so the buffers get the track's visible size with its pixels made
@@ -129,18 +136,27 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
         // JPEG-style chromas (J420, J422 …) use the full 0-255 range; VLC
         // converts them to NV12 without changing the values
         let fullRange = chroma[0] == CChar(bitPattern: UInt8(ascii: "J"))
-        for (i, c) in "NV12".utf8.enumerated() { chroma[i] = CChar(bitPattern: c) }
+        let source = String(decoding: (0..<4).map { UInt8(bitPattern: chroma[$0]) }, as: UTF8.self)
+        let deep = Self.isDeep(chroma: source)
+        for (i, c) in (deep ? "P010" : "NV12").utf8.enumerated() { chroma[i] = CChar(bitPattern: c) }
         lock.lock()
         let media = self.media
         lock.unlock()
+        // What the container states is known already; what the decoder finds
+        // in the stream comes once this output has opened (`refreshColour`)
+        let colour = deep ? media.flatMap(LibVLCVideo.colour(of:)) : nil
         let shown = Self.shownSize(track: media.flatMap(Self.videoTrack(of:)),
                                    decoded: (Int(width.pointee), Int(height.pointee)))
         let w = shown.width, h = shown.height
         width.pointee = UInt32(w)
         height.pointee = UInt32(h)
-        let format = fullRange ? kCVPixelFormatType_420YpCbCr8BiPlanarFullRange : kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange
+        let format = deep
+            ? (colour?.fullRange == true ? kCVPixelFormatType_420YpCbCr10BiPlanarFullRange : kCVPixelFormatType_420YpCbCr10BiPlanarVideoRange)
+            : (fullRange ? kCVPixelFormatType_420YpCbCr8BiPlanarFullRange : kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange)
+        // The look keeps an HDR picture's highlights in half floats
         guard let made = Self.makePool(width: w, height: h, format: format),
-              let forLook = Self.makePool(width: w, height: h, format: kCVPixelFormatType_32BGRA) else { return 0 }
+              let forLook = Self.makePool(width: w, height: h, format: deep ? kCVPixelFormatType_64RGBAHalf : kCVPixelFormatType_32BGRA)
+        else { return 0 }
         // The row lengths the buffers really have, so VLC writes into them right
         var probe: CVPixelBuffer?
         CVPixelBufferPoolCreatePixelBuffer(nil, made, &probe)
@@ -155,6 +171,9 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
         // HD and larger use the HD colour standard (BT.709), smaller ones SD
         // (BT.601), decided by the visible height as VLC does
         hd = shown.visibleHeight > 576
+        self.deep = deep
+        self.colour = colour
+        colourLookups = deep && colour == nil ? Self.colourLookupLimit : 0
         pool = made
         lookPool = forLook
         latest = nil
@@ -167,11 +186,70 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
         scratchColour = newScratch + lumaBytes
         lock.unlock()
         oldScratch?.deallocate()
+        showInEDR(deep && colour?.isHDR == true)
         _ = Unmanaged.passUnretained(self).retain()   // released by the cleanup callback
         return 1
     }
 
     private var hd = true
+
+    /// The buffers are P010: the source has more than 8 bits (VideoToolbox's
+    /// 10-bit pictures, FFmpeg's 10-, 12- or 16-bit ones). Only these are
+    /// shown as HDR: an 8-bit source that VLC hands over as such is SDR, or
+    /// VideoToolbox has made it 8-bit RGB already.
+    private var deep = false
+    /// The video's colours once VLC states them (nil: not yet).
+    private var colour: VideoColour?
+    /// How many more pictures look for the colours the decoder found.
+    private var colourLookups = 0
+    /// VLC learns those from the decoder right after this output opened,
+    /// with the next data it reads: a few pictures in. A video that never
+    /// states them is SDR.
+    private static let colourLookupLimit = 120
+    /// The layer shows EDR (main thread).
+    private(set) var showsEDR = false
+
+    /// VLC's chromas of more than 8 bits per sample (`vlc_fourcc.h`):
+    /// VideoToolbox's 10-bit pictures, P010, and the planar YUV and RGB
+    /// ones with 9, 10, 12 or 16 bits.
+    static func isDeep(chroma: String) -> Bool {
+        if chroma == "CVPP" || chroma == "P010" { return true }
+        let c = Array(chroma)
+        guard c.count == 4 else { return false }
+        if ["I0", "I2", "I4"].contains(String(c[0...1])), "9ACF".contains(c[2]), "LB".contains(c[3]) { return true }
+        return chroma.hasPrefix("GB") && "9ACF".contains(c[2]) && "LB".contains(c[3])
+    }
+
+    /// While the colours aren't known, each picture asks VLC again, up to
+    /// `colourLookupLimit` pictures.
+    private func refreshColour() {
+        lock.lock()
+        guard colourLookups > 0, let media else { lock.unlock(); return }
+        colourLookups -= 1
+        lock.unlock()
+        guard let found = LibVLCVideo.colour(of: media) else { return }
+        lock.lock()
+        let still = colour == nil && deep
+        if still {
+            colour = found
+            colourLookups = 0
+        }
+        lock.unlock()
+        if still { showInEDR(found.isHDR) }
+    }
+
+    /// HDR pictures show beyond SDR white where the display can (EDR), as in
+    /// AVKit's `AVPlayerLayer`; SDR ones within SDR.
+    private func showInEDR(_ on: Bool) {
+        DispatchQueue.main.async { [self] in
+            guard showsEDR != on else { return }
+            showsEDR = on
+            CATransaction.begin()
+            CATransaction.setDisableActions(true)
+            layer.wantsExtendedDynamicRangeContent = on
+            CATransaction.commit()
+        }
+    }
 
     /// The video track's pixel size and pixel shape (VLCKit's track
     /// information).
@@ -246,6 +324,7 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
 
     private func lockPicture(_ planes: UnsafeMutablePointer<UnsafeMutableRawPointer?>?) -> UnsafeMutableRawPointer? {
         let start = Date()
+        refreshColour()
         lock.lock()
         defer {
             callbackSeconds += Date().timeIntervalSince(start)
@@ -268,11 +347,15 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
             CVPixelBufferUnlockBaseAddress(buffer, [])
             return intoScratch()
         }
-        let matrix = hd ? kCVImageBufferYCbCrMatrix_ITU_R_709_2 : kCVImageBufferYCbCrMatrix_ITU_R_601_4
-        let primaries = hd ? kCVImageBufferColorPrimaries_ITU_R_709_2 : kCVImageBufferColorPrimaries_SMPTE_C
-        CVBufferSetAttachment(buffer, kCVImageBufferYCbCrMatrixKey, matrix, .shouldPropagate)
-        CVBufferSetAttachment(buffer, kCVImageBufferColorPrimariesKey, primaries, .shouldPropagate)
-        CVBufferSetAttachment(buffer, kCVImageBufferTransferFunctionKey, kCVImageBufferTransferFunction_ITU_R_709_2, .shouldPropagate)
+        if deep, let hdr = self.colour, hdr.isHDR {
+            hdr.attach(to: buffer)
+        } else {
+            let matrix = hd ? kCVImageBufferYCbCrMatrix_ITU_R_709_2 : kCVImageBufferYCbCrMatrix_ITU_R_601_4
+            let primaries = hd ? kCVImageBufferColorPrimaries_ITU_R_709_2 : kCVImageBufferColorPrimaries_SMPTE_C
+            CVBufferSetAttachment(buffer, kCVImageBufferYCbCrMatrixKey, matrix, .shouldPropagate)
+            CVBufferSetAttachment(buffer, kCVImageBufferColorPrimariesKey, primaries, .shouldPropagate)
+            CVBufferSetAttachment(buffer, kCVImageBufferTransferFunctionKey, kCVImageBufferTransferFunction_ITU_R_709_2, .shouldPropagate)
+        }
         planes?.pointee = base
         planes?.advanced(by: 1).pointee = colour
         drawing[base] = Drawn(buffer: buffer)
@@ -342,7 +425,10 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
     }
 
     /// Puts a picture on the layer, with the look applied (Core Image, on
-    /// the GPU) unless it is neutral.
+    /// the GPU) unless it is neutral. A picture of more than 8 bits goes
+    /// through the look in half floats in extended linear light, so an HDR
+    /// picture keeps what lies beyond SDR white (Core Image reads PQ and HLG
+    /// into values above 1).
     private func present(_ buffer: CVPixelBuffer, with look: Look, number: Int) {
         var surfaceBuffer = buffer
         if !look.isNeutral {
@@ -352,9 +438,11 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
             var out: CVPixelBuffer?
             if let pool { CVPixelBufferPoolCreatePixelBuffer(nil, pool, &out) }
             if let out {
-                CVBufferSetAttachment(out, kCVImageBufferCGColorSpaceKey, sRGB, .shouldPropagate)
+                let deep = CVPixelBufferGetPixelFormatType(out) == kCVPixelFormatType_64RGBAHalf
+                let space = deep ? extendedLinear : sRGB
+                CVBufferSetAttachment(out, kCVImageBufferCGColorSpaceKey, space, .shouldPropagate)
                 let image = CIImage(cvPixelBuffer: buffer)
-                context.render(look.apply(to: image), to: out, bounds: image.extent, colorSpace: sRGB)
+                (deep ? deepContext : context).render(look.apply(to: image), to: out, bounds: image.extent, colorSpace: space)
                 surfaceBuffer = out
             }
         }
@@ -377,19 +465,73 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
     }
 
     /// What auto enhance measures: the picture as decoded, before the look;
-    /// nil before the first.
+    /// nil before the first. An HDR picture is measured tone-mapped to SDR
+    /// (`CIToneMapHeadroom`), as on an SDR screen: its highlights would
+    /// otherwise all count as white.
     var latestStats: PictureStats? {
         lock.lock()
         let buffer = latest
         lock.unlock()
-        return buffer.flatMap { PictureStats.of(CIImage(cvPixelBuffer: $0)) }
+        guard let buffer else { return nil }
+        var image = CIImage(cvPixelBuffer: buffer)
+        if Self.isHDR(buffer), let toSDR = CIFilter(name: "CIToneMapHeadroom") {
+            toSDR.setValue(image, forKey: kCIInputImageKey)
+            toSDR.setValue(1, forKey: "inputTargetHeadroom")
+            image = toSDR.outputImage ?? image
+        }
+        return PictureStats.of(image)
+    }
+
+    /// The last picture VLC showed, as decoded (tests).
+    var latestPicture: CVPixelBuffer? {
+        lock.lock()
+        defer { lock.unlock() }
+        return latest
+    }
+
+    static func isHDR(_ buffer: CVPixelBuffer) -> Bool {
+        let transfer = CVBufferCopyAttachment(buffer, kCVImageBufferTransferFunctionKey, nil) as? String
+        return transfer == kCVImageBufferTransferFunction_SMPTE_ST_2084_PQ as String
+            || transfer == kCVImageBufferTransferFunction_ITU_R_2100_HLG as String
+    }
+
+    /// A picture's format and colours, e.g. "P010 PQ 2020 matrix 2020
+    /// mastering light level" (UI tests read it).
+    static func describe(_ buffer: CVPixelBuffer) -> String {
+        let format: String
+        switch CVPixelBufferGetPixelFormatType(buffer) {
+        case kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange, kCVPixelFormatType_420YpCbCr8BiPlanarFullRange: format = "NV12"
+        case kCVPixelFormatType_420YpCbCr10BiPlanarVideoRange, kCVPixelFormatType_420YpCbCr10BiPlanarFullRange: format = "P010"
+        default: format = "other"
+        }
+        func attachment(_ key: CFString) -> String? { CVBufferCopyAttachment(buffer, key, nil) as? String }
+        let names: [String: String] = [
+            kCVImageBufferTransferFunction_SMPTE_ST_2084_PQ as String: "PQ",
+            kCVImageBufferTransferFunction_ITU_R_2100_HLG as String: "HLG",
+            kCVImageBufferTransferFunction_ITU_R_709_2 as String: "709",
+            kCVImageBufferColorPrimaries_ITU_R_2020 as String: "2020",
+            kCVImageBufferColorPrimaries_ITU_R_709_2 as String: "709",
+            kCVImageBufferColorPrimaries_SMPTE_C as String: "601",
+            kCVImageBufferColorPrimaries_P3_D65 as String: "P3",
+            kCVImageBufferYCbCrMatrix_ITU_R_2020 as String: "2020",
+            kCVImageBufferYCbCrMatrix_ITU_R_709_2 as String: "709",
+            kCVImageBufferYCbCrMatrix_ITU_R_601_4 as String: "601",
+        ]
+        func name(_ key: CFString) -> String { attachment(key).map { names[$0] ?? $0 } ?? "none" }
+        var text = "\(format) \(name(kCVImageBufferTransferFunctionKey)) \(name(kCVImageBufferColorPrimariesKey)) "
+            + "matrix \(name(kCVImageBufferYCbCrMatrixKey))"
+        if CVBufferCopyAttachment(buffer, kCVImageBufferMasteringDisplayColorVolumeKey, nil) != nil { text += " mastering" }
+        if CVBufferCopyAttachment(buffer, kCVImageBufferContentLightLevelInfoKey, nil) != nil { text += " light level" }
+        return text
     }
 
     /// For UI tests: what the output did.
     var diagnostics: String {
         lock.lock()
-        defer { lock.unlock() }
         let perFrame = callbacks > 0 ? callbackSeconds / Double(callbacks) * 1000 : 0
-        return "handover \(String(format: "%.2f", perFrame)) ms per picture"
+        let picture = latest.map(Self.describe) ?? "none"
+        lock.unlock()
+        let edr = Thread.isMainThread ? (showsEDR ? "on" : "off") : "unknown"
+        return "handover \(String(format: "%.2f", perFrame)) ms per picture, pictures \(picture), EDR \(edr)"
     }
 }

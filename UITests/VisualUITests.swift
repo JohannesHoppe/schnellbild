@@ -191,6 +191,57 @@ final class VisualUITests: SchnellbildUITestCase {
         }
     }
 
+    // MARK: HDR
+
+    /// An HDR10 video (10-bit HEVC, PQ, BT.2020) through VLC goes to the
+    /// screen as HDR: 10-bit pictures tagged PQ and BT.2020, the layer in
+    /// EDR (what `VLCFrameOutput` reports). CI's virtual display has no EDR
+    /// headroom, so how bright the highlights get on an HDR screen can't be
+    /// seen here; what is compared instead is that VLC's picture looks like
+    /// AVKit's (both turn the PQ picture into what the display can show), in
+    /// brightness and channel by channel. An SDR video beside it stays 8-bit
+    /// BT.709 without EDR.
+    func testAVKitAndVLCShowAnHDRVideoAlike() throws {
+        var shown: [String: ScreenStats] = [:]
+        for vlc in [false, true] {
+            let video = try openVideo("hdr10.mp4", vlc: vlc)
+            if vlc {
+                eventually("VLC hands over HDR pictures in EDR: \(text(of: video))", timeout: 15) {
+                    let label = text(of: video)
+                    return label.contains("pictures P010 PQ 2020 matrix 2020") && label.contains("EDR on")
+                }
+            }
+            shown[vlc ? "VLC" : "AVKit"] = try screenStats(of: picture(in: video))
+            app.terminate()
+        }
+        let avkit = try XCTUnwrap(shown["AVKit"]), vlc = try XCTUnwrap(shown["VLC"])
+        let report = String(format: "AVKit %.3f (%.3f %.3f %.3f), VLC %.3f (%.3f %.3f %.3f)",
+                            avkit.mean, avkit.red, avkit.green, avkit.blue, vlc.mean, vlc.red, vlc.green, vlc.blue)
+        print("hdr10.mp4: " + report)
+        XCTAssertGreaterThan(avkit.mean, 0.1, "AVKit shows the picture: \(report)")
+        XCTAssertEqual(vlc.mean, avkit.mean, accuracy: 0.05, report)
+        XCTAssertEqual(vlc.red, avkit.red, accuracy: 0.06, report)
+        XCTAssertEqual(vlc.green, avkit.green, accuracy: 0.06, report)
+        XCTAssertEqual(vlc.blue, avkit.blue, accuracy: 0.06, report)
+    }
+
+    /// The same for HDR10 in Matroska (always VLC), and an SDR video after
+    /// it: 8-bit NV12, BT.709's transfer, no EDR.
+    func testVLCShowsHDRMatroskaAsHDRAndSDRAsSDR() throws {
+        let hdr = try openVideo("hdr10.mkv", vlc: true)
+        eventually("HDR pictures in EDR: \(text(of: hdr))", timeout: 15) {
+            let label = text(of: hdr)
+            return label.contains("pictures P010 PQ 2020 matrix 2020") && label.contains("EDR on")
+        }
+        XCTAssertGreaterThan(try screenBrightness(of: hdr), 0.1, "the picture is on screen")
+        app.terminate()
+        let sdr = try openVideo("clip.mkv", vlc: true)
+        eventually("SDR pictures without EDR: \(text(of: sdr))", timeout: 15) {
+            let label = text(of: sdr)
+            return label.contains("pictures NV12 709") && label.contains("EDR off")
+        }
+    }
+
     /// The same video in both players, every correction one after the
     /// other: AVKit (what the app uses for MP4) and VLC (its pipeline,
     /// tested on the same file) show each the same, channel by channel.
