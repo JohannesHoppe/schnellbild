@@ -228,6 +228,7 @@ final class LocalizationTests: XCTestCase {
     static let readByUITests: Set<String> = [
         "%@, %@, %lld previews", "%lld columns, %lld laid out, selection %@", "zoom %lld %, rotation %lld°",
         "volume %lld %", "pressed %lld",
+        "selected", "not selected", "%@, %@ items", "station %@ of %@, %@%@",
     ]
 
     /// Every text the app shows has an English entry, so every language
