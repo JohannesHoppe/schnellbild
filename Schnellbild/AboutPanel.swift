@@ -77,6 +77,10 @@ enum AboutPanel {
         Component(name: "libarchive", use: String(localized: "reads ZIP and 7z archives (the copy built into macOS)"),
                   license: String(localized: "© Tim Kientzle and the libarchive contributors. BSD 2-clause license."),
                   link: "https://www.libarchive.org"),
+        // The map files and how they are made: Scripts/build_map_data.py, Resources/Licenses/OpenStreetMap-data.txt
+        Component(name: "OpenStreetMap", use: String(localized: "map data for the offline map"),
+                  license: String(localized: "© OpenStreetMap contributors. Open Database License (ODbL) 1.0. Made from Protomaps' OpenStreetMap build, with thanks to Protomaps; how the files are made is in Schnellbild's repository."),
+                  link: "https://www.openstreetmap.org/copyright"),
     ]
 }
 

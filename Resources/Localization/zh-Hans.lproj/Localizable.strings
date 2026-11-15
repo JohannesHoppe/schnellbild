@@ -407,3 +407,13 @@
 "Playlist: the show's order; drag to reorder, click to show an item" = "播放列表：幻灯片放映的顺序；拖移以重新排序，点按以显示项目";
 "In the playlist, after a click in it: choose / show / take out of the playlist (the file stays)" = "在播放列表中点按后：选择 / 显示 / 从播放列表中移出（文件保留）";
 "End the slideshow (⎋ ↩ ⌫ close the playlist first)" = "结束幻灯片放映（⎋ ↩ ⌫ 先关闭播放列表）";
+
+/* Offline map */
+"Map" = "地图";
+"Map credits" = "地图来源";
+"Map data © OpenStreetMap contributors" = "地图数据 © OpenStreetMap 贡献者";
+"Opens in your browser (online)" = "在浏览器中打开（联网）";
+"near %@, %@" = "%@附近（%@）";
+"near %@" = "%@附近";
+"map data for the offline map" = "离线地图的地图数据";
+"© OpenStreetMap contributors. Open Database License (ODbL) 1.0. Made from Protomaps' OpenStreetMap build, with thanks to Protomaps; how the files are made is in Schnellbild's repository." = "© OpenStreetMap 贡献者。Open Database License (ODbL) 1.0。由 Protomaps 的 OpenStreetMap 构建制作，感谢 Protomaps；文件的制作方法见 Schnellbild 的代码仓库。";

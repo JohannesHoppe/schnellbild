@@ -407,3 +407,13 @@
 "Playlist: the show's order; drag to reorder, click to show an item" = "Playlista: kolejność pokazu; przeciągnij, aby zmienić kolejność, kliknij, aby pokazać element";
 "In the playlist, after a click in it: choose / show / take out of the playlist (the file stays)" = "W playliście, po kliknięciu w nią: wybierz / pokaż / wyjmij z playlisty (plik zostaje)";
 "End the slideshow (⎋ ↩ ⌫ close the playlist first)" = "Zakończ pokaz slajdów (⎋ ↩ ⌫ najpierw zamykają playlistę)";
+
+/* Offline map */
+"Map" = "Mapa";
+"Map credits" = "Źródła mapy";
+"Map data © OpenStreetMap contributors" = "Dane mapy © współtwórcy OpenStreetMap";
+"Opens in your browser (online)" = "Otwiera się w przeglądarce (online)";
+"near %@, %@" = "w pobliżu: %@, %@";
+"near %@" = "w pobliżu: %@";
+"map data for the offline map" = "dane mapy offline";
+"© OpenStreetMap contributors. Open Database License (ODbL) 1.0. Made from Protomaps' OpenStreetMap build, with thanks to Protomaps; how the files are made is in Schnellbild's repository." = "© współtwórcy OpenStreetMap. Open Database License (ODbL) 1.0. Wykonane z kompilacji OpenStreetMap od Protomaps, z podziękowaniem dla Protomaps; jak powstają pliki, opisano w repozytorium Schnellbilda.";

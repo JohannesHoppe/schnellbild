@@ -407,3 +407,13 @@
 "Playlist: the show's order; drag to reorder, click to show an item" = "Afspeellijst: de volgorde van de diavoorstelling; slepen om te herschikken, klik om een item te tonen";
 "In the playlist, after a click in it: choose / show / take out of the playlist (the file stays)" = "In de afspeellijst, na een klik erin: kiezen / tonen / uit de afspeellijst halen (het bestand blijft)";
 "End the slideshow (⎋ ↩ ⌫ close the playlist first)" = "Beëindig de diavoorstelling (⎋ ↩ ⌫ sluiten eerst de afspeellijst)";
+
+/* Offline map */
+"Map" = "Kaart";
+"Map credits" = "Kaartbronnen";
+"Map data © OpenStreetMap contributors" = "Kaartgegevens © OpenStreetMap-bijdragers";
+"Opens in your browser (online)" = "Opent in je browser (online)";
+"near %@, %@" = "bij %@, %@";
+"near %@" = "bij %@";
+"map data for the offline map" = "kaartgegevens voor de offline kaart";
+"© OpenStreetMap contributors. Open Database License (ODbL) 1.0. Made from Protomaps' OpenStreetMap build, with thanks to Protomaps; how the files are made is in Schnellbild's repository." = "© OpenStreetMap-bijdragers. Open Database License (ODbL) 1.0. Gemaakt van de OpenStreetMap-build van Protomaps, met dank aan Protomaps; hoe de bestanden worden gemaakt, staat in de repository van Schnellbild.";

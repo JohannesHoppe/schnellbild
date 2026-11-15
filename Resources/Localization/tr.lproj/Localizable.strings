@@ -407,3 +407,13 @@
 "Playlist: the show's order; drag to reorder, click to show an item" = "Oynatma listesi: gösterinin sırası; yeniden sıralamak için sürükleyin, bir öğeyi göstermek için tıklayın";
 "In the playlist, after a click in it: choose / show / take out of the playlist (the file stays)" = "Oynatma listesinde, içine tıkladıktan sonra: seç / göster / listeden çıkar (dosya kalır)";
 "End the slideshow (⎋ ↩ ⌫ close the playlist first)" = "Slayt gösterisini bitir (⎋ ↩ ⌫ önce oynatma listesini kapatır)";
+
+/* Offline map */
+"Map" = "Harita";
+"Map credits" = "Harita kaynakları";
+"Map data © OpenStreetMap contributors" = "Harita verileri © OpenStreetMap katkıda bulunanları";
+"Opens in your browser (online)" = "Tarayıcınızda açılır (çevrimiçi)";
+"near %@, %@" = "%@ yakını, %@";
+"near %@" = "%@ yakını";
+"map data for the offline map" = "çevrimdışı haritanın verileri";
+"© OpenStreetMap contributors. Open Database License (ODbL) 1.0. Made from Protomaps' OpenStreetMap build, with thanks to Protomaps; how the files are made is in Schnellbild's repository." = "© OpenStreetMap katkıda bulunanları. Open Database License (ODbL) 1.0. Protomaps’in OpenStreetMap derlemesinden yapıldı, Protomaps’e teşekkürler; dosyaların nasıl yapıldığı Schnellbild deposunda.";

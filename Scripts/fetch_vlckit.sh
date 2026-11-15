@@ -18,9 +18,10 @@ SHA256="0c73bc1a20d8e93db8edeb0410193aa56e628ead81d1c8269092d6ba603e159f"
 # tree_sha256 (fetch_verified.sh) of the unpacked VLCKit.xcframework
 TREE_SHA256="fdfb3a2f725f57c7dee0359414149d3479aacbccfd8642380dd73eb9c4a1f327"
 
-# The UnRAR source is vendored alongside (every build that needs VLCKit
-# needs it too).
+# The UnRAR source and the offline map's files are vendored alongside (every
+# build that needs VLCKit needs them too).
 "$ROOT/Scripts/fetch_unrar.sh"
+"$ROOT/Scripts/fetch_map.sh"
 
 DEST="$ROOT/Vendor"
 FRAMEWORK="$DEST/VLCKit.xcframework"

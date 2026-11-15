@@ -20,7 +20,7 @@ let package = Package(
     targets: [
         .executableTarget(
             name: "Schnellbild",
-            dependencies: ["VLCKit", "VLCFrames", "CArchives"],
+            dependencies: ["VLCKit", "VLCFrames", "CArchives", "OfflineMap"],
             path: "Schnellbild",
             linkerSettings: [
                 // Linked explicitly: without it, AVPlayerView can be missing
@@ -28,6 +28,13 @@ let package = Package(
                 .linkedFramework("AVKit"),
                 .linkedFramework("AVFoundation")
             ]
+        ),
+        // The offline map: OpenStreetMap data (Scripts/fetch_map.sh puts the
+        // files into Vendor/Map, the app carries them in Resources/Map) drawn
+        // with CoreGraphics and CoreText, the place index, the SwiftUI map view
+        .target(
+            name: "OfflineMap",
+            path: "OfflineMap"
         ),
         // What the app and its thumbnail extension share of VLC: one frame of
         // a video, and what VLC may do with a file someone else made.
@@ -86,7 +93,7 @@ let package = Package(
         ),
         .testTarget(
             name: "SchnellbildTests",
-            dependencies: ["Schnellbild", "VLCFrames", "VideoContainers"],
+            dependencies: ["Schnellbild", "VLCFrames", "VideoContainers", "OfflineMap"],
             path: "Tests/SchnellbildTests",
             resources: [.copy("Archives"), .copy("Videos")]
         )

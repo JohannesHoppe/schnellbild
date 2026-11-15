@@ -407,3 +407,13 @@
 "Playlist: the show's order; drag to reorder, click to show an item" = "播放列表：幻燈片秀的順序；拖移以重新排序，按一下以顯示項目";
 "In the playlist, after a click in it: choose / show / take out of the playlist (the file stays)" = "在播放列表中按一下後：選擇 / 顯示 / 從播放列表中移出（檔案保留）";
 "End the slideshow (⎋ ↩ ⌫ close the playlist first)" = "結束幻燈片秀（⎋ ↩ ⌫ 先關閉播放列表）";
+
+/* Offline map */
+"Map" = "地圖";
+"Map credits" = "地圖來源";
+"Map data © OpenStreetMap contributors" = "地圖資料 © OpenStreetMap 貢獻者";
+"Opens in your browser (online)" = "在瀏覽器中開啟（連網）";
+"near %@, %@" = "%@附近（%@）";
+"near %@" = "%@附近";
+"map data for the offline map" = "離線地圖的地圖資料";
+"© OpenStreetMap contributors. Open Database License (ODbL) 1.0. Made from Protomaps' OpenStreetMap build, with thanks to Protomaps; how the files are made is in Schnellbild's repository." = "© OpenStreetMap 貢獻者。Open Database License (ODbL) 1.0。以 Protomaps 的 OpenStreetMap 建置製作，感謝 Protomaps；檔案的製作方式請見 Schnellbild 的程式碼庫。";

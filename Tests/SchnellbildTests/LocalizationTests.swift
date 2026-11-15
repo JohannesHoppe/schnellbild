@@ -252,12 +252,19 @@ final class LocalizationTests: XCTestCase {
         let english = Set(try table("en", "Localizable.strings").keys)
             .union(try table("en", "Localizable.stringsdict").keys)
             .union(Self.readByUITests)
-        let sources = root.deletingLastPathComponent().deletingLastPathComponent().appendingPathComponent("Schnellbild")
-        let files = try FileManager.default.contentsOfDirectory(atPath: sources.path).filter { $0.hasSuffix(".swift") }
+        // The app and the offline map's module (its texts are looked up in the app's tables)
+        let repository = root.deletingLastPathComponent().deletingLastPathComponent()
+        var files: [URL] = []
+        for folder in ["Schnellbild", "OfflineMap"] {
+            let sources = repository.appendingPathComponent(folder)
+            files += try FileManager.default.contentsOfDirectory(atPath: sources.path).filter { $0.hasSuffix(".swift") }
+                .map { sources.appendingPathComponent($0) }
+        }
         XCTAssertFalse(files.isEmpty)
         var found = 0
-        for file in files {
-            let source = try String(contentsOf: sources.appendingPathComponent(file), encoding: .utf8)
+        for url in files {
+            let file = url.lastPathComponent
+            let source = try String(contentsOf: url, encoding: .utf8)
             for text in Self.uiTexts(in: source) {
                 found += 1
                 let candidates = Self.keys(for: text)

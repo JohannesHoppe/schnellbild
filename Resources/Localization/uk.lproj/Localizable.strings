@@ -407,3 +407,13 @@
 "Playlist: the show's order; drag to reorder, click to show an item" = "Плейлист: порядок показу; перетягуйте, щоб змінити порядок, клацання показує елемент";
 "In the playlist, after a click in it: choose / show / take out of the playlist (the file stays)" = "У плейлисті, після клацання в ньому: вибрати / показати / прибрати з плейлиста (файл лишається)";
 "End the slideshow (⎋ ↩ ⌫ close the playlist first)" = "Завершити слайд-шоу (⎋ ↩ ⌫ спершу закривають плейлист)";
+
+/* Offline map */
+"Map" = "Мапа";
+"Map credits" = "Джерела мапи";
+"Map data © OpenStreetMap contributors" = "Картографічні дані © учасники OpenStreetMap";
+"Opens in your browser (online)" = "Відкриється в браузері (онлайн)";
+"near %@, %@" = "поруч: %@, %@";
+"near %@" = "поруч: %@";
+"map data for the offline map" = "дані офлайн-мапи";
+"© OpenStreetMap contributors. Open Database License (ODbL) 1.0. Made from Protomaps' OpenStreetMap build, with thanks to Protomaps; how the files are made is in Schnellbild's repository." = "© учасники OpenStreetMap. Open Database License (ODbL) 1.0. Зроблено зі збірки OpenStreetMap від Protomaps, дякуємо Protomaps; як створюються файли, описано в репозиторії Schnellbild.";

@@ -500,3 +500,5 @@ Building from source, tests and releases: [BUILDING.md](BUILDING.md).
 [MIT](LICENSE) © 2026 HAUS HOPPE - ITS (Johannes Hoppe)
 
 The MIT License covers Schnellbild's own code. The app also contains VLCKit (GNU LGPL 2.1 or later; built by us without VLC's GPL modules, with FFmpeg and other libraries inside under their own licenses), UnRAR (UnRAR license) and uses the libarchive built into macOS (BSD); each keeps its own license. Details, the source of VLCKit and the license texts: [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) and the app's About window.
+
+The offline map's data is © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors, under the Open Database License (ODbL) 1.0. The map files are made from [Protomaps](https://protomaps.com)' OpenStreetMap build, with thanks to Protomaps; how they are made: `Scripts/build_map_data.py`. Country codes for places: [Natural Earth](https://www.naturalearthdata.com) (public domain).
