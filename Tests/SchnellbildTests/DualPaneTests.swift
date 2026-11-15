@@ -322,6 +322,28 @@ final class DualPaneTests: XCTestCase {
         XCTAssertEqual(w.left.names, ["..", "Sub", "b.jpg"])
     }
 
+    /// A tile dropped into the other pane a second time (SwiftUI dragged it
+    /// again after the first drop, seen on CI on macOS 26): the file is
+    /// gone from where it was dragged, so nothing is asked and nothing fails.
+    func testATileDroppedTwiceMovesOnceAndAsksNothing() async throws {
+        let tree = try TempTree(self)
+        let c = try tree.file("c.jpg")
+        let sorted = try tree.folder("Sorted")
+        let spy = FileActionsSpy()
+        let w = window(spy)
+        await openAndWait(w.left, tree.root)
+        w.left.move([c], into: sorted)
+        await waitUntil { w.left.transfersRunning == 0 }
+        XCTAssertTrue(FileManager.default.fileExists(atPath: sorted.appendingPathComponent("c.jpg").path))
+        let moves = spy.moved.count
+        w.left.move([c], into: sorted)
+        await waitUntil { w.left.transfersRunning == 0 }
+        XCTAssertEqual(spy.keepBothAsked, 0, "no question about the file just moved")
+        XCTAssertEqual(spy.moved.count, moves, "nothing moved again")
+        XCTAssertTrue(spy.reported.isEmpty, "nothing failed: \(spy.reported)")
+        XCTAssertTrue(FileManager.default.fileExists(atPath: sorted.appendingPathComponent("c.jpg").path))
+    }
+
     func testEachPaneRemembersItsFolder() async throws {
         let tree = try TempTree(self)
         let one = try tree.folder("one"), two = try tree.folder("two")
@@ -365,16 +387,6 @@ final class DualPaneTests: XCTestCase {
         w.setSplit(0.3)
         XCTAssertTrue(w.pane(atX: 400, width: 1000) === w.right)
         XCTAssertTrue(w.pane(atX: 250, width: 1000) === w.left)
-    }
-
-    /// One drag, one drop: SwiftUI handing the same drag to performDrop
-    /// again is left alone; the next drag drops again.
-    func testADragIsDroppedOnce() {
-        DropOnce.started()
-        XCTAssertTrue(DropOnce.first())
-        XCTAssertFalse(DropOnce.first(), "the same drag again")
-        DropOnce.started()
-        XCTAssertTrue(DropOnce.first(), "a new drag")
     }
 
     // MARK: Videos in both panes

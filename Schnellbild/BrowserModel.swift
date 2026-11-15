@@ -4043,7 +4043,9 @@ final class BrowserModel: ObservableObject {
                         free.append(next)
                     }
                 }
-                return TransferProbe(source: source, isFolder: isFolder, files: files,
+                // Gone (moved or deleted since it was dragged): nothing to move
+                let gone = (try? FileManager.default.attributesOfItem(atPath: source.path)) == nil
+                return TransferProbe(source: source, gone: gone, isFolder: isFolder, files: files,
                                      destinationTaken: destinationTaken, freeNames: free,
                                      partTaken: files.dropFirst().contains { taken(folder.appendingPathComponent($0.lastPathComponent), $0) })
             }
@@ -4068,6 +4070,8 @@ final class BrowserModel: ObservableObject {
     /// What a source of a move is, and what is taken in the target folder.
     struct TransferProbe: Sendable {
         let source: URL
+        /// Not there any more (lstat finds nothing).
+        let gone: Bool
         let isFolder: Bool
         let files: [URL]
         let destinationTaken: Bool
@@ -4085,6 +4089,9 @@ final class BrowserModel: ObservableObject {
         var standing: ConflictAnswer.Choice?
         for (number, probe) in probes.enumerated() {
             let source = probe.source
+            // Gone since it was dragged (a drag dropped twice: the first
+            // drop moved it): nothing to ask about, nothing to move
+            if probe.gone { continue }
             let isPlanned: (URL) -> Bool = { planned.contains(Self.canonicalPath($0)) }
             // A later part taken there: the set would be mixed
             if probe.partTaken || probe.files.dropFirst().contains(where: { isPlanned(folder.appendingPathComponent($0.lastPathComponent)) }) {
@@ -4096,7 +4103,7 @@ final class BrowserModel: ObservableObject {
                 if let standing {
                     choice = standing
                 } else {
-                    let more = probes[(number + 1)...].contains { $0.destinationTaken }
+                    let more = probes[(number + 1)...].contains { $0.destinationTaken && !$0.gone }
                     let answer = fileActions.askKeepBoth(source.lastPathComponent, folder.lastPathComponent, more)
                     if answer.forAll { standing = answer.choice }
                     choice = answer.choice

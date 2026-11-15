@@ -1249,7 +1249,6 @@ private struct PaneDrop: DropDelegate {
         guard let folder = target else { return false }
         let pane = pane
         BrowserModel.testLog("\(Date().timeIntervalSince1970) drop into the pane")
-        guard DropOnce.first() else { return true }
         TileDrag.loadURLs(info.itemProviders(for: [TileDrag.type])) { urls in
             BrowserModel.testLog("\(Date().timeIntervalSince1970) drop: moving \(urls.count)")
             pane.move(urls, into: folder)
