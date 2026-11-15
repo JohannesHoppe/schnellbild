@@ -33,8 +33,8 @@ struct InspectorView: View {
                     if let report, !report.capture.isEmpty {
                         section("Capture", id: "capture") { rows(report.capture) }
                     }
-                    if let location = report?.location {
-                        section("Location", id: "location") { locationSection(location) }
+                    if let report, let location = report.location {
+                        section("Location", id: "location") { locationSection(location, report: report) }
                     }
                     if entry.isMedia, !mediaRows.isEmpty {
                         section(entry.kind == .video ? "Video" : "Picture", id: "media") { rows(mediaRows) }
@@ -140,8 +140,8 @@ struct InspectorView: View {
     // MARK: Location
 
     @ViewBuilder
-    private func locationSection(_ location: MediaLocation) -> some View {
-        rows(Self.locationRows(location))
+    private func locationSection(_ location: MediaLocation, report: MediaReport) -> some View {
+        rows(Self.locationRows(location, report: report))
         OfflineMapSlot(point: location.point)
         HStack(spacing: 8) {
             Button { model.sortByDistance(from: location.point) } label: {
@@ -165,8 +165,14 @@ struct InspectorView: View {
         }
     }
 
-    static func locationRows(_ location: MediaLocation) -> [InfoRow] {
+    static func locationRows(_ location: MediaLocation, report: MediaReport? = nil) -> [InfoRow] {
         var rows = [InfoRow(label: String(localized: "Coordinates"), value: location.point.text)]
+        if let source = report?.placeSource {
+            rows.append(InfoRow(label: String(localized: "Source"), value: source.placeText))
+        }
+        if let accuracy = report?.placeAccuracy {
+            rows.append(InfoRow(label: String(localized: "Accuracy"), value: accuracy.text))
+        }
         if let altitude = location.altitude {
             let metres = Measurement(value: altitude, unit: UnitLength.meters)
                 .formatted(.measurement(width: .abbreviated, usage: .asProvided, numberFormatStyle: .number.precision(.fractionLength(0))))
@@ -176,6 +182,9 @@ struct InspectorView: View {
             let degrees = Int(direction.rounded()) % 360
             let value = location.trueNorth ? String(localized: "\(degrees)° from true north") : String(localized: "\(degrees)° from magnetic north")
             rows.append(InfoRow(label: String(localized: "Direction"), value: value))
+        }
+        if let track = report?.track {
+            rows.append(InfoRow(label: String(localized: "Route"), value: GeoPoint.describeDistance(track.length)))
         }
         return rows
     }
@@ -227,7 +236,7 @@ struct InspectorView: View {
 
     private var allGroups: [MetadataGroup] {
         var groups = report?.groups ?? []
-        if let tags = streams?.tags, !tags.isEmpty, report == nil { groups.append(MetadataGroup(name: "VLC", entries: tags)) }
+        if let tags = streams?.tags, !tags.isEmpty, report?.groups.isEmpty ?? true { groups.append(MetadataGroup(name: "VLC", entries: tags)) }
         return groups
     }
 
@@ -294,7 +303,7 @@ struct InspectorView: View {
             parts += rows.map { "\($0.label): \($0.value)" }
         }
         add(String(localized: "Capture"), report?.capture ?? [])
-        if let location = report?.location { add(String(localized: "Location"), Self.locationRows(location)) }
+        if let report, let location = report.location { add(String(localized: "Location"), Self.locationRows(location, report: report)) }
         if entry.isMedia { add(entry.kind == .video ? String(localized: "Video") : String(localized: "Picture"), mediaRows) }
         add(String(localized: "File"), fileRows)
         for group in allGroups {
@@ -319,8 +328,18 @@ struct InspectorView: View {
         filter = ""
         let url = entry.url
         let kind = entry.kind
+        let modified = entry.modDate
         let found = await detachedCancellable(priority: .utility) { () -> (MediaReport?, FileFacts?, Date?) in
             let created = FileReport.created(url)
+            // Time and place from every source, the files beside it too (not inside archives)
+            func adopting(_ report: MediaReport?) async -> MediaReport? {
+                guard !ArchivePath.isInside(url) else { return report }
+                let facts = await LocationCache.shared.facts(of: url, modified: modified)
+                guard !facts.isEmpty else { return report }
+                var adopted = report ?? MediaReport()
+                adopted.adopt(facts)
+                return adopted
+            }
             switch kind {
             case .image:
                 // SVG, PDF: their own size (ImageIO reads neither)
@@ -332,12 +351,12 @@ struct InspectorView: View {
                     return (MediaReport(media: [InfoRow(label: String(localized: "Resolution"), value: shown)]), nil, created)
                 }
                 guard let source = await MediaData.imageSource(url) else { return (nil, nil, created) }
-                return (PictureMetadata.report(source), FileFacts.picture(source, named: url), created)
+                return (await adopting(PictureMetadata.report(source)), FileFacts.picture(source, named: url), created)
             case .video:
                 // Inside an archive there are no first bytes to read without unpacking
                 guard !ArchivePath.isInside(url) else { return (nil, nil, created) }
                 let facts = FileFacts.video(head: VLCSafety.head(of: url), named: url)
-                return (await VideoMetadata.report(url), facts, created)
+                return (await adopting(await VideoMetadata.report(url)), facts, created)
             default:
                 return (nil, nil, created)
             }

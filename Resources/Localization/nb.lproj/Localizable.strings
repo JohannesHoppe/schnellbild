@@ -554,3 +554,17 @@
 "Previous page" = "Forrige side";
 "Next page" = "Neste side";
 "Page %lld / %lld" = "Side %lld / %lld";
+"GPS in the file" = "GPS i filen";
+"GPS from GoPro telemetry" = "GPS fra GoPro-telemetri";
+"From DJI flight log %@" = "Fra DJI-flylogg %@";
+"From %@" = "Fra %@";
+"From the file's XMP data" = "Fra filens XMP-data";
+"From GPX track %@" = "Fra GPX-spor %@";
+"From the movie header (UTC)" = "Fra videofilens hode (UTC)";
+"GPS time from GoPro telemetry" = "GPS-tid fra GoPro-telemetri";
+"DOP %@" = "DOP %@";
+"Interpolated, %@ from the nearest track point" = "Interpolert, %@ fra nærmeste sporpunkt";
+"Source" = "Kilde";
+"Accuracy" = "Nøyaktighet";
+"Route" = "Rute";
+"Date Source" = "Datoens kilde";

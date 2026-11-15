@@ -554,3 +554,17 @@
 "Previous page" = "Önceki sayfa";
 "Next page" = "Sonraki sayfa";
 "Page %lld / %lld" = "Sayfa %lld / %lld";
+"GPS in the file" = "Dosyadaki GPS";
+"GPS from GoPro telemetry" = "GoPro telemetrisinden GPS";
+"From DJI flight log %@" = "DJI uçuş kaydından: %@";
+"From %@" = "Şu dosyadan: %@";
+"From the file's XMP data" = "Dosyanın XMP verilerinden";
+"From GPX track %@" = "GPX izinden: %@";
+"From the movie header (UTC)" = "Video dosyasının başlığından (UTC)";
+"GPS time from GoPro telemetry" = "GoPro telemetrisinden GPS saati";
+"DOP %@" = "DOP %@";
+"Interpolated, %@ from the nearest track point" = "Enterpolasyonla, en yakın iz noktasına %@";
+"Source" = "Kaynak";
+"Accuracy" = "Doğruluk";
+"Route" = "Rota";
+"Date Source" = "Tarih kaynağı";

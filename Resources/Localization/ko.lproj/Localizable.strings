@@ -554,3 +554,17 @@
 "Previous page" = "이전 페이지";
 "Next page" = "다음 페이지";
 "Page %lld / %lld" = "페이지 %lld / %lld";
+"GPS in the file" = "파일의 GPS";
+"GPS from GoPro telemetry" = "GoPro 텔레메트리의 GPS";
+"From DJI flight log %@" = "DJI 비행 기록 %@에서";
+"From %@" = "%@에서";
+"From the file's XMP data" = "파일의 XMP 데이터에서";
+"From GPX track %@" = "GPX 트랙 %@에서";
+"From the movie header (UTC)" = "동영상 파일 헤더에서(UTC)";
+"GPS time from GoPro telemetry" = "GoPro 텔레메트리의 GPS 시간";
+"DOP %@" = "DOP %@";
+"Interpolated, %@ from the nearest track point" = "보간됨, 가장 가까운 트랙 포인트에서 %@";
+"Source" = "출처";
+"Accuracy" = "정확도";
+"Route" = "경로";
+"Date Source" = "날짜 출처";

@@ -554,3 +554,17 @@
 "Previous page" = "Попередня сторінка";
 "Next page" = "Наступна сторінка";
 "Page %lld / %lld" = "Сторінка %lld / %lld";
+"GPS in the file" = "GPS у файлі";
+"GPS from GoPro telemetry" = "GPS з телеметрії GoPro";
+"From DJI flight log %@" = "З журналу польоту DJI %@";
+"From %@" = "З файлу %@";
+"From the file's XMP data" = "З даних XMP файлу";
+"From GPX track %@" = "З GPX-треку %@";
+"From the movie header (UTC)" = "Із заголовка відеофайлу (UTC)";
+"GPS time from GoPro telemetry" = "Час GPS з телеметрії GoPro";
+"DOP %@" = "DOP %@";
+"Interpolated, %@ from the nearest track point" = "Інтерпольовано, %@ від найближчої точки треку";
+"Source" = "Джерело";
+"Accuracy" = "Точність";
+"Route" = "Маршрут";
+"Date Source" = "Джерело дати";

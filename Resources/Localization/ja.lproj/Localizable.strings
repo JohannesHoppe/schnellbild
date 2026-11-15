@@ -554,3 +554,17 @@
 "Previous page" = "前のページ";
 "Next page" = "次のページ";
 "Page %lld / %lld" = "ページ %lld / %lld";
+"GPS in the file" = "ファイル内の GPS";
+"GPS from GoPro telemetry" = "GoPro テレメトリの GPS";
+"From DJI flight log %@" = "DJI フライトログ %@ から";
+"From %@" = "%@ から";
+"From the file's XMP data" = "ファイルの XMP データから";
+"From GPX track %@" = "GPX トラック %@ から";
+"From the movie header (UTC)" = "動画ファイルのヘッダから（UTC）";
+"GPS time from GoPro telemetry" = "GoPro テレメトリの GPS 時刻";
+"DOP %@" = "DOP %@";
+"Interpolated, %@ from the nearest track point" = "補間（最寄りのトラックポイントから %@）";
+"Source" = "ソース";
+"Accuracy" = "精度";
+"Route" = "ルート";
+"Date Source" = "日付のソース";

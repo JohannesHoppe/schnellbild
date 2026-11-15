@@ -554,3 +554,17 @@
 "Previous page" = "Previous page";
 "Next page" = "Next page";
 "Page %lld / %lld" = "Page %lld / %lld";
+"GPS in the file" = "GPS in the file";
+"GPS from GoPro telemetry" = "GPS from GoPro telemetry";
+"From DJI flight log %@" = "From DJI flight log %@";
+"From %@" = "From %@";
+"From the file's XMP data" = "From the file's XMP data";
+"From GPX track %@" = "From GPX track %@";
+"From the movie header (UTC)" = "From the movie header (UTC)";
+"GPS time from GoPro telemetry" = "GPS time from GoPro telemetry";
+"DOP %@" = "DOP %@";
+"Interpolated, %@ from the nearest track point" = "Interpolated, %@ from the nearest track point";
+"Source" = "Source";
+"Accuracy" = "Accuracy";
+"Route" = "Route";
+"Date Source" = "Date Source";

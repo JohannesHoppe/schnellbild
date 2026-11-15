@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="XMP Core 4.4.0-Exiv2">
+ <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <rdf:Description rdf:about="" xmlns:e="http://ns.adobe.com/exif/1.0/" xmlns:darktable="http://darktable.sf.net/">
+   <e:DateTimeOriginal>2019-08-10T06:30:00</e:DateTimeOriginal>
+   <e:GPSLatitude>
+    <rdf:Alt><rdf:li xml:lang="x-default">33,51,24.6S</rdf:li></rdf:Alt>
+   </e:GPSLatitude>
+   <e:GPSLongitude>151,12,54.0E</e:GPSLongitude>
+   <e:GPSAltitude>5/1</e:GPSAltitude>
+   <e:GPSAltitudeRef>1</e:GPSAltitudeRef>
+   <e:GPSHPositioningError>12/2</e:GPSHPositioningError>
+  </rdf:Description>
+ </rdf:RDF>
+</x:xmpmeta>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="make_metadata_fixtures.py" xmlns="http://www.topografix.com/GPX/1/1">
+  <trk>
+    <name>Bryggen</name>
+    <trkseg>
+      <trkpt lat="60.397500" lon="5.324000"><ele>5</ele><time>2024-05-17T08:00:00Z</time></trkpt>
+      <trkpt lat="60.397600" lon="5.324200"><ele>6</ele><time>2024-05-17T08:00:10Z</time></trkpt>
+      <trkpt lat="60.397700" lon="5.324400"><ele>7</ele><time>2024-05-17T08:00:20Z</time></trkpt>
+      <trkpt lat="60.397800" lon="5.324600"><ele>8</ele><time>2024-05-17T08:00:30Z</time></trkpt>
+      <trkpt lat="60.397900" lon="5.324800"><ele>9</ele><time>2024-05-17T08:00:40Z</time></trkpt>
+      <trkpt lat="60.398000" lon="5.325000"><ele>10</ele><time>2024-05-17T08:00:50Z</time></trkpt>
+      <trkpt lat="60.398100" lon="5.325200"><ele>11</ele><time>2024-05-17T08:01:00Z</time></trkpt>
+      <trkpt lat="60.398200" lon="5.325400"><ele>12</ele><time>2024-05-17T08:01:10Z</time></trkpt>
+      <trkpt lat="60.398300" lon="5.325600"><ele>13</ele><time>2024-05-17T08:01:20Z</time></trkpt>
+      <trkpt lat="60.398400" lon="5.325800"><ele>14</ele><time>2024-05-17T08:01:30Z</time></trkpt>
+      <trkpt lat="60.398500" lon="5.326000"><ele>15</ele><time>2024-05-17T08:01:40Z</time></trkpt>
+      <trkpt lat="60.398600" lon="5.326200"><ele>16</ele><time>2024-05-17T08:01:50Z</time></trkpt>
+      <trkpt lat="60.398700" lon="5.326400"><ele>17</ele><time>2024-05-17T08:02:00Z</time></trkpt>
+      <trkpt lat="60.398800" lon="5.326600"><ele>18</ele><time>2024-05-17T08:02:10Z</time></trkpt>
+      <trkpt lat="60.398900" lon="5.326800"><ele>19</ele><time>2024-05-17T08:02:20Z</time></trkpt>
+      <trkpt lat="60.399000" lon="5.327000"><ele>20</ele><time>2024-05-17T08:02:30Z</time></trkpt>
+      <trkpt lat="60.399100" lon="5.327200"><ele>21</ele><time>2024-05-17T08:02:40Z</time></trkpt>
+      <trkpt lat="60.399200" lon="5.327400"><ele>22</ele><time>2024-05-17T08:02:50Z</time></trkpt>
+      <trkpt lat="60.399300" lon="5.327600"><ele>23</ele><time>2024-05-17T08:03:00Z</time></trkpt>
+      <trkpt lat="60.399400" lon="5.327800"><ele>24</ele><time>2024-05-17T08:03:10Z</time></trkpt>
+      <trkpt lat="60.399500" lon="5.328000"><ele>25</ele><time>2024-05-17T08:03:20Z</time></trkpt>
+      <trkpt lat="60.399600" lon="5.328200"><ele>26</ele><time>2024-05-17T08:03:30Z</time></trkpt>
+      <trkpt lat="60.399700" lon="5.328400"><ele>27</ele><time>2024-05-17T08:03:40Z</time></trkpt>
+      <trkpt lat="60.399800" lon="5.328600"><ele>28</ele><time>2024-05-17T08:03:50Z</time></trkpt>
+      <trkpt lat="60.399900" lon="5.328800"><ele>29</ele><time>2024-05-17T08:04:00Z</time></trkpt>
+      <trkpt lat="60.400000" lon="5.329000"><ele>30</ele><time>2024-05-17T08:04:10Z</time></trkpt>
+      <trkpt lat="60.400100" lon="5.329200"><ele>31</ele><time>2024-05-17T08:04:20Z</time></trkpt>
+      <trkpt lat="60.400200" lon="5.329400"><ele>32</ele><time>2024-05-17T08:04:30Z</time></trkpt>
+      <trkpt lat="60.400300" lon="5.329600"><ele>33</ele><time>2024-05-17T08:04:40Z</time></trkpt>
+      <trkpt lat="60.400400" lon="5.329800"><ele>34</ele><time>2024-05-17T08:04:50Z</time></trkpt>
+    </trkseg>
+    <trkseg>
+      <trkpt lat="60.395000" lon="5.330000"><ele>3</ele><time>2024-05-17T09:30:00Z</time></trkpt>
+      <trkpt lat="60.394900" lon="5.330000"><ele>3</ele><time>2024-05-17T09:31:00Z</time></trkpt>
+      <trkpt lat="60.394800" lon="5.330000"><ele>3</ele><time>2024-05-17T09:32:00Z</time></trkpt>
+      <trkpt lat="60.394700" lon="5.330000"><ele>3</ele><time>2024-05-17T09:33:00Z</time></trkpt>
+      <trkpt lat="60.394600" lon="5.330000"><ele>3</ele><time>2024-05-17T09:34:00Z</time></trkpt>
+      <trkpt lat="60.394500" lon="5.330000"><ele>3</ele><time>2024-05-17T09:35:00Z</time></trkpt>
+      <trkpt lat="60.394400" lon="5.330000"><ele>3</ele><time>2024-05-17T09:36:00Z</time></trkpt>
+      <trkpt lat="60.394300" lon="5.330000"><ele>3</ele><time>2024-05-17T09:37:00Z</time></trkpt>
+      <trkpt lat="60.394200" lon="5.330000"><ele>3</ele><time>2024-05-17T09:38:00Z</time></trkpt>
+      <trkpt lat="60.394100" lon="5.330000"><ele>3</ele><time>2024-05-17T09:39:00Z</time></trkpt>
+    </trkseg>
+  </trk>
+</gpx>

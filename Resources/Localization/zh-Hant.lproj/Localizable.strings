@@ -554,3 +554,17 @@
 "Previous page" = "上一頁";
 "Next page" = "下一頁";
 "Page %lld / %lld" = "第 %lld / %lld 頁";
+"GPS in the file" = "檔案中的 GPS";
+"GPS from GoPro telemetry" = "來自 GoPro 遙測的 GPS";
+"From DJI flight log %@" = "來自 DJI 飛行記錄 %@";
+"From %@" = "來自 %@";
+"From the file's XMP data" = "來自檔案的 XMP 資料";
+"From GPX track %@" = "來自 GPX 軌跡 %@";
+"From the movie header (UTC)" = "來自影片檔頭（UTC）";
+"GPS time from GoPro telemetry" = "來自 GoPro 遙測的 GPS 時間";
+"DOP %@" = "DOP %@";
+"Interpolated, %@ from the nearest track point" = "內插，距最近的軌跡點 %@";
+"Source" = "來源";
+"Accuracy" = "精確度";
+"Route" = "路線";
+"Date Source" = "日期來源";
