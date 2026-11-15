@@ -10,6 +10,12 @@ name: VLCKit without GPL
 
 on:
   workflow_dispatch:
+    inputs:
+      offline:
+        description: "Build without network once the sources are in place (VLCKIT_OFFLINE=1 in build_vlckit_lgpl.sh)"
+        type: boolean
+        required: false
+        default: false
 
 permissions:
   contents: read
@@ -26,6 +32,8 @@ jobs:
         run: Scripts/select_xcode.sh
 
       - name: Build
+        env:
+          VLCKIT_OFFLINE: ${{ inputs.offline && '1' || '' }}
         run: ./Scripts/build_vlckit_lgpl.sh "$RUNNER_TEMP/vlckit-lgpl"
 
       - name: Pack the framework

@@ -126,10 +126,14 @@ NETWORK_FLAG=""
 if [ -d "$VLC" ] && [ ! -d "$VLC/.git" ]; then
     NETWORK_FLAG="-n"
 fi
+CONTRIB_ARCHIVED=""
 if [ -d "$VLC" ] && from_release VLCKit-contrib-sources.tar "$CONTRIB_SOURCES_SHA256"; then
     tar -xf src/VLCKit-contrib-sources.tar -C "$VLC/contrib"
+    CONTRIB_ARCHIVED=1
 fi
+TOOLS_ARCHIVED=""
 if [ -d "$VLC" ] && from_release VLC-tools-sources.tar "$TOOLS_SOURCES_SHA256"; then
+    TOOLS_ARCHIVED=1
     tar -xf src/VLC-tools-sources.tar -C "$VLC/extras/tools"
     (
         cd "$VLC/extras/tools"
@@ -171,8 +175,29 @@ export VLC_PATH="$WORK/bin"
 # ninja still builds each library on every core
 export MAKE_JOBS=1
 
+# VLCKIT_OFFLINE=1: VideoLAN's build gets no network. Its sources must have
+# come from SOURCE_RELEASE; the build tools' downloads, when SOURCE_RELEASE
+# has none, are fetched first (each checked against extras/tools/SHA512SUMS
+# by its download rule). Every proxy variable then points at a closed port,
+# so curl and git fail at once on any download the build still tries.
+OFFLINE_ENV=()
+if [ "${VLCKIT_OFFLINE:-}" = 1 ]; then
+    if [ "$NETWORK_FLAG" != "-n" ] || [ -z "$CONTRIB_ARCHIVED" ] || [ -d "$WORK/vlckit/.git" ]; then
+        echo "!! VLCKIT_OFFLINE: VLCKit, VLC and the contrib downloads must come from $SOURCE_RELEASE" >&2
+        exit 1
+    fi
+    if [ -z "$TOOLS_ARCHIVED" ]; then
+        echo "==> The build tools' downloads (not in $SOURCE_RELEASE), before the network goes" >&2
+        (cd "$VLC/extras/tools" && ./bootstrap && PATH="$WORK/bin:$PATH" make fetch-all)
+    fi
+    closed="http://127.0.0.1:9"
+    OFFLINE_ENV=(http_proxy="$closed" https_proxy="$closed" HTTP_PROXY="$closed" HTTPS_PROXY="$closed"
+                 ALL_PROXY="$closed" all_proxy="$closed" ftp_proxy="$closed" FTP_PROXY="$closed" no_proxy= NO_PROXY=)
+    echo "==> buildMobileVLCKit.sh without network" >&2
+fi
+
 # macOS (-x), arm64 only: Schnellbild runs on Apple silicon only
-./buildMobileVLCKit.sh -vx $NETWORK_FLAG -a aarch64
+env ${OFFLINE_ENV[@]+"${OFFLINE_ENV[@]}"} ./buildMobileVLCKit.sh -vx $NETWORK_FLAG -a aarch64
 
 FRAMEWORK="$(pwd)/build/VLCKit.xcframework"
 BINARY="$(find "$FRAMEWORK" -path '*VLCKit.framework/Versions/A/VLCKit' -type f | head -1)"
