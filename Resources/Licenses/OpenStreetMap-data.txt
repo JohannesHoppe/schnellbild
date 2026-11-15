@@ -1,8 +1,8 @@
 Schnellbild offline map data (2026-11-14)
 
 Files:
-  schnellbild-map-20261114.pmtiles
-  schnellbild-places-20261114.bin
+  schnellbild-map-20261114c.pmtiles
+  schnellbild-places-20261114c.bin
 
 Map data © OpenStreetMap contributors.
 https://www.openstreetmap.org/copyright
@@ -20,18 +20,30 @@ That build's earth and water polygons come from osmdata.openstreetmap.de (made b
 osmcoastline, also ODbL); its lowest zooms hold Natural Earth data (public domain).
 
 What was filtered (the rest of the build is left out):
-- schnellbild-map-20261114.pmtiles: zoom 0 to 7 (21845 tiles). The layers earth,
+- schnellbild-map-20261114c.pmtiles: zoom 0 to 7 (21845 tiles). The layers earth,
   water, boundaries and roads, and from landuse only glaciers. Attributes kept: kind,
   kind_detail and disputed for boundaries; kind and min_zoom for water and roads; names
   (name and the app's 20 languages) only on water label points. Geometry as in the build.
-- schnellbild-places-20261114.bin: 1010780 countries, regions and localities from the places
+- schnellbild-places-20261114c.bin: 1010780 countries, regions and localities from the places
   layer of the tiles up to zoom 10 (places up to min_zoom 11), with their
   kind, min_zoom, population rank, capital status and names in the app's 20 languages.
   Each place's country code comes from Natural Earth's countries as Germany sees
   them (public domain, https://www.naturalearthdata.com), by the country its point
   lies in, else the country of the nearest place within two degrees.
 
+Political positions (the map shows the world as the EU and Germany read it): places in
+the regions of Natural Earth's disputed areas listed in build_map_data.py
+(REGION_COUNTRIES: Crimea and the occupied oblasts as Ukraine, the Golan Heights as
+Syria, the West Bank, East Jerusalem and Gaza as Palestinian, Northern Cyprus as Cyprus,
+Abkhazia and South Ossetia as Georgia, Transnistria as Moldova, Kosovo, Western Sahara,
+Taiwan ...) take that country; country borders with the same country on both sides in
+that reading are left out (lines of occupation or of de facto authorities), and the
+border of Western Sahara with Morocco is drawn as a disputed country border. A few
+place and water names are set (Western Sahara's label, names from before the US
+renamings of 2025 and 2026, the internationally used names of seas); each with its
+source in build_map_data.py.
+
 How the files are made: Scripts/build_map_data.py in
 https://github.com/JohannesHoppe/schnellbild (the source build and the checksums are
 pinned in Scripts/map_data.env). The files are published as assets of the release
-map-20261114 of that repository.
+map-20261114c of that repository.
