@@ -149,10 +149,11 @@ final class MapSurfaceView: NSView {
             // held in this size
             DispatchQueue.main.async { [weak self] in
                 guard let self else { return }
-                let wanted = self.ownerCamera?() ?? held
+                guard let owner = self.ownerCamera else { self.onCameraChange?(held); return }
+                let wanted = owner()
                 let now = MapViewport(camera: wanted, size: self.bounds.size).clamped()
                 if now != self.camera { self.camera = now }
-                if self.ownerCamera == nil || now != wanted { self.onCameraChange?(now) }
+                if now != wanted { self.onCameraChange?(now) }
             }
         } else {
             layoutMap()
