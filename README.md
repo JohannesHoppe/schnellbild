@@ -53,6 +53,8 @@ Schnellbild follows your Mac's language: English, Deutsch, Français, Español, 
 - **Other files** (not pictures, videos or archives) are listed by name under the grid, so a folder never looks empty when it isn't. A folder that can't be read says so, with the reason.
 - **Links** count by what they point to: a link to a folder opens that folder, while renaming or trashing it acts on the link, as in the Finder.
 
+The tables list Schnellbild's own keys. Every one of them can be changed in Settings → Keyboard, also to Phiewer's keys at once ([your own keys](#your-own-keys)).
+
 | Key | Action |
 |---|---|
 | ← → | previous / next item |
@@ -374,6 +376,14 @@ F1 (or ⌘?) shows a cheat sheet of the keys; Print… (⌘P) in it prints it on
   <img src="docs/screenshots/keyboard-light.webp" width="760" alt="The mini keyboard under the grid">
 </picture></p>
 
+### Your own keys
+
+Every action that has a key can get other keys, or more than one, in Settings → Keyboard (free, like everything else). The actions are grouped as in the cheat sheet; click a key and type the new one, `+` adds another, a right-click removes one. A key another action already has moves over after asking, and that action loses it. Each action can go back to its preset's keys, or all at once.
+
+Two presets give every action its keys: **Schnellbild** (the keys in these tables) and **As in Phiewer**, for people coming from Phiewer: ← → page through pictures and videos while ⌘← ⌘→ skip within a video, ⌫ moves to the Trash, ⌘R renames, ⌥⌘L switches between grid and list, ⌥⌘S starts and ends the slideshow. Only what Schnellbild has gets Phiewer's key; everything else keeps Schnellbild's. The actions whose keys differ from Schnellbild's are marked and can be listed on their own.
+
+The cheat sheet (also printed), the mini keyboard, the menus, the tooltips and the keys on the buttons always show the keys as set. Keys macOS keeps for itself (⌘Q, ⌘W, ⌘H, ⌘M, ⌘,, ⌃⌘F …) and those text fields need (⌘C, ⌘V, ⌘X, ⌘Z) can't be given to an action.
+
 ### Settings
 
 <p align="center"><picture>
@@ -381,7 +391,7 @@ F1 (or ⌘?) shows a cheat sheet of the keys; Print… (⌘P) in it prints it on
   <img src="docs/screenshots/settings-light.webp" width="460" alt="Settings: how long a picture stays in the slideshow, and the saved archive passwords">
 </picture></p>
 
-Schnellbild → Settings (⌘,) has five things: light or dark (as the system, or always light or always dark, whatever the system's setting), the folders you opened to Schnellbild (to forget them), how long a picture stays in the slideshow (1 to 60 seconds), whether macOS reads MKV and AVCHD itself (the media extension, with a button to System Settings), and the archive passwords Schnellbild has saved, which you can forget all at once. Everything else it remembers: the folder, the sort order, grid or list, the search mode, the dual pane, the mini keyboard, the volume, the bookmarks, the slideshow playlist's pin and width. Quitting while files are still being copied or moved asks first and can wait until they are done.
+Schnellbild → Settings (⌘,) has two tabs. Keyboard holds [your own keys](#your-own-keys). General has five things: light or dark (as the system, or always light or always dark, whatever the system's setting), the folders you opened to Schnellbild (to forget them), how long a picture stays in the slideshow (1 to 60 seconds), whether macOS reads MKV and AVCHD itself (the media extension, with a button to System Settings), and the archive passwords Schnellbild has saved, which you can forget all at once. Everything else it remembers: the folder, the sort order, grid or list, the search mode, the dual pane, the mini keyboard, the volume, the bookmarks, the slideshow playlist's pin and width, the keys. Quitting while files are still being copied or moved asks first and can wait until they are done.
 
 ### Supported file formats
 
@@ -461,7 +471,7 @@ Three programs were the models for Schnellbild: Phiewer for browsing pictures by
 | Two panes side by side, Norton Commander keys | yes | no |
 | Auto enhance and sliders for photos and videos | yes, as a view: files are never changed | edits with filters and undo; crop in PRO |
 | Audio files, Finder tags, export, printing pictures | no | yes |
-| Your own keyboard shortcuts | no (F1 shows every key) | yes (in PRO) |
+| Your own keyboard shortcuts | yes, free, with Phiewer's keys as a preset | yes (in PRO) |
 
 ## A free IINA alternative for looking through videos
 
@@ -482,7 +492,8 @@ Three programs were the models for Schnellbild: Phiewer for browsing pictures by
 | Subtitles, chapters, online subtitle search | no | yes |
 | Picture in Picture, playback speed, frame by frame | no | yes |
 | Audio files (music mode) | no | yes |
-| Your own keyboard shortcuts, plugins | no (F1 shows every key) | yes |
+| Your own keyboard shortcuts | yes | yes |
+| Plugins | no | yes |
 
 ## Why so fast?
 
