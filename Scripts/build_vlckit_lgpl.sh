@@ -14,8 +14,8 @@
 # (Scripts/vlckit_licenses.py --no-gpl --local-only). Leaves in <work dir>/dist
 # what is published next to it: the licence texts of every third-party
 # library VLC's build compiled in (VLCKit-third-party-licenses.txt) and the
-# complete source (VLCKit and VLC as built, the third-party libraries'
-# downloads). Runs on CI (vlckit-lgpl.yml); takes hours.
+# complete source (VLCKit and VLC as built, the third-party libraries' and
+# the build tools' downloads). Runs on CI (vlckit-lgpl.yml); takes hours.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 ROOT="$(pwd)"
@@ -63,17 +63,87 @@ libarchive_plugin libfile_keystore_plugin libkeychain_plugin libmemory_keystore_
 libgnutls_plugin libfolder_plugin liblua_plugin
 libflaschen_plugin libafile_plugin libdemuxdump_plugin"
 
+# The sources come from a pre-release of this repository first (one of our
+# earlier builds of this tag published them), each pinned by SHA-256; VideoLAN's
+# servers are asked only for what isn't there or can't be reached.
+# - VLCKit at the tag (`git archive`), and VLC with VLCKit's patches applied:
+#   then buildMobileVLCKit.sh runs with -n (no clone, no `git am`).
+# - the third-party libraries' downloads (contrib/tarballs): `make fetch`
+#   checks each against contrib/src/<name>/SHA512SUMS and downloads only those
+#   missing.
+# - the build tools' downloads (extras/tools), checked here against
+#   extras/tools/SHA512SUMS; the tools' make downloads those missing.
+# VLC's changeset string (`git describe` of the patched tree, which holds the
+# date `git am` committed at) is written as src/revision.txt, the one our
+# build of SOURCE_RELEASE carries.
+SOURCE_RELEASE="vlckit-3.7.5-lgpl-11"
+SOURCE_BASE="https://github.com/JohannesHoppe/schnellbild/releases/download/$SOURCE_RELEASE"
+VLCKIT_SOURCE_SHA256="b4f31dcdbb6c5e9300a81a01abe2dc55f1c67c7cc49f19fa2b7d3c22a9cfcd10"
+VLC_SOURCE_SHA256="59d6086a1b3743c3c2d217bc63f06bec23077530c153c8cb697b4d46b79e0fb3"
+CONTRIB_SOURCES_SHA256="4f3f4258b238be789e18a2a57f137691908d69fe6b0863841ca53711f50a15d9"
+TOOLS_SOURCES_SHA256=""     # VLC-tools-sources.tar, not in SOURCE_RELEASE: from upstream
+VLC_REVISION="3.0.24-43-g6037734914"
+
+# from_release <file> <sha256>: SOURCE_RELEASE's <file> into $WORK/src; fails
+# (for the fallback) when nothing is pinned or the release can't be reached,
+# aborts on another SHA-256.
+from_release() {
+    [ -n "$2" ] || return 1
+    mkdir -p "$WORK/src"
+    [ -f "$WORK/src/$1" ] && [ "$(shasum -a 256 "$WORK/src/$1" | awk '{print $1}')" = "$2" ] && return 0
+    curl -fsSL --retry 5 --retry-delay 5 -o "$WORK/src/$1" "$SOURCE_BASE/$1" \
+        || { echo "==> $1 not available from $SOURCE_RELEASE, VideoLAN's servers instead" >&2; rm -f "$WORK/src/$1"; return 1; }
+    [ "$(shasum -a 256 "$WORK/src/$1" | awk '{print $1}')" = "$2" ] \
+        || { echo "!! $1 from $SOURCE_RELEASE: SHA-256 mismatch" >&2; exit 1; }
+    echo "==> $1 from $SOURCE_RELEASE, SHA-256 ok" >&2
+}
+
 mkdir -p "$WORK"
 WORK="$(cd "$WORK" && pwd)"
 cd "$WORK"
+# No git repository above the work folder answers for VLC's tree (`git describe`)
+export GIT_CEILING_DIRECTORIES="$WORK"
+VLC="$WORK/vlckit/libvlc/vlc"
+VLCKIT_ARCHIVE="VLCKit-$TAG-source.tar.gz"
+VLC_ARCHIVE="vlc-3.0.24-vlckit-$TAG-source.tar.gz"
 if [ ! -d vlckit ]; then
-    git clone --branch "$TAG" --depth 1 https://code.videolan.org/videolan/VLCKit.git vlckit
+    if from_release "$VLCKIT_ARCHIVE" "$VLCKIT_SOURCE_SHA256"; then
+        mkdir vlckit
+        tar -xzf "src/$VLCKIT_ARCHIVE" -C vlckit --strip-components 1
+    else
+        git clone --branch "$TAG" --depth 1 https://code.videolan.org/videolan/VLCKit.git vlckit
+    fi
 fi
-[ "$(git -C vlckit rev-parse HEAD)" = "$COMMIT" ] || { echo "!! VLCKit $TAG is not commit $COMMIT" >&2; exit 1; }
+if [ -d vlckit/.git ]; then
+    [ "$(git -C vlckit rev-parse HEAD)" = "$COMMIT" ] || { echo "!! VLCKit $TAG is not commit $COMMIT" >&2; exit 1; }
+fi
+if [ ! -d "$VLC" ] && from_release "$VLC_ARCHIVE" "$VLC_SOURCE_SHA256"; then
+    mkdir -p "$VLC"
+    tar -xzf "src/$VLC_ARCHIVE" -C "$VLC" --strip-components 1
+    printf '%s\n' "$VLC_REVISION" > "$VLC/src/revision.txt"
+fi
+NETWORK_FLAG=""
+if [ -d "$VLC" ] && [ ! -d "$VLC/.git" ]; then
+    NETWORK_FLAG="-n"
+fi
+if [ -d "$VLC" ] && from_release VLCKit-contrib-sources.tar "$CONTRIB_SOURCES_SHA256"; then
+    tar -xf src/VLCKit-contrib-sources.tar -C "$VLC/contrib"
+fi
+if [ -d "$VLC" ] && from_release VLC-tools-sources.tar "$TOOLS_SOURCES_SHA256"; then
+    tar -xf src/VLC-tools-sources.tar -C "$VLC/extras/tools"
+    (
+        cd "$VLC/extras/tools"
+        for file in $(tar -tf "$WORK/src/VLC-tools-sources.tar"); do
+            grep -E "  (\./)?$file\$" SHA512SUMS | /usr/bin/shasum -a 512 -c - >/dev/null \
+                || { echo "!! $file: not the download extras/tools/SHA512SUMS names" >&2; exit 1; }
+        done
+    )
+fi
 
 # Into the build script's list of modules it deletes before linking (the list
 # ends with output_livehttp); the plugin list it links is made from what is left
 cd vlckit
+[ -f "$WORK/buildMobileVLCKit.sh.orig" ] || cp buildMobileVLCKit.sh "$WORK/buildMobileVLCKit.sh.orig"
 python3 -I - "$GPL_MODULES $UNNEEDED_MODULES" <<'EOF'
 import sys
 path = "buildMobileVLCKit.sh"
@@ -102,7 +172,7 @@ export VLC_PATH="$WORK/bin"
 export MAKE_JOBS=1
 
 # macOS (-x), arm64 only: Schnellbild runs on Apple silicon only
-./buildMobileVLCKit.sh -vx -a aarch64
+./buildMobileVLCKit.sh -vx $NETWORK_FLAG -a aarch64
 
 FRAMEWORK="$(pwd)/build/VLCKit.xcframework"
 BINARY="$(find "$FRAMEWORK" -path '*VLCKit.framework/Versions/A/VLCKit' -type f | head -1)"
@@ -110,7 +180,6 @@ BINARY="$(find "$FRAMEWORK" -path '*VLCKit.framework/Versions/A/VLCKit' -type f 
 python3 -I "$ROOT/Scripts/vlckit_licenses.py" "$BINARY" --no-gpl --local-only
 
 # What is published with it (vlckit-lgpl.yml)
-VLC="$WORK/vlckit/libvlc/vlc"
 DIST="$WORK/dist"
 rm -rf "$DIST"
 mkdir -p "$DIST"
@@ -167,10 +236,23 @@ echo "==> Licences of $found third-party libraries: $LICENSES"
 # script's change to its build script (the diff), VLC with VLCKit's patches
 # applied (buildMobileVLCKit.sh commits them with git am), and the
 # third-party libraries' downloads (each checked by VLC's build against its
-# SHA-512 in contrib/src/<name>/SHA512SUMS)
-git -C "$WORK/vlckit" archive --format=tar.gz --prefix="VLCKit-$TAG/" HEAD > "$DIST/VLCKit-$TAG-source.tar.gz"
-git -C "$WORK/vlckit" diff -- buildMobileVLCKit.sh > "$DIST/VLCKit-$TAG-build-changes.patch"
-git -C "$VLC" archive --format=tar.gz --prefix="vlc-3.0.24-vlckit-$TAG/" HEAD > "$DIST/vlc-3.0.24-vlckit-$TAG-source.tar.gz"
+# SHA-512 in contrib/src/<name>/SHA512SUMS), and the build tools' downloads
+# (extras/tools, every tool it knows, also those this runner didn't build).
+# Trees unpacked from SOURCE_RELEASE are published as they came.
+if [ -d "$WORK/vlckit/.git" ]; then
+    git -C "$WORK/vlckit" archive --format=tar.gz --prefix="VLCKit-$TAG/" HEAD > "$DIST/$VLCKIT_ARCHIVE"
+else
+    cp "$WORK/src/$VLCKIT_ARCHIVE" "$DIST/"
+fi
+diff -u --label a/buildMobileVLCKit.sh --label b/buildMobileVLCKit.sh \
+    "$WORK/buildMobileVLCKit.sh.orig" "$WORK/vlckit/buildMobileVLCKit.sh" > "$DIST/VLCKit-$TAG-build-changes.patch" || [ $? -eq 1 ]
+if [ -d "$VLC/.git" ]; then
+    git -C "$VLC" archive --format=tar.gz --prefix="vlc-3.0.24-vlckit-$TAG/" HEAD > "$DIST/$VLC_ARCHIVE"
+else
+    cp "$WORK/src/$VLC_ARCHIVE" "$DIST/"
+fi
 tar -cf "$DIST/VLCKit-contrib-sources.tar" -C "$VLC/contrib" tarballs
+make -C "$VLC/extras/tools" fetch-all
+(cd "$VLC/extras/tools" && tar -cf "$DIST/VLC-tools-sources.tar" $(ls | grep -E '\.(tar\.(gz|bz2|xz)|tgz|zip)$'))
 echo "==> $FRAMEWORK"
 ls -l "$DIST"
