@@ -1,0 +1,53 @@
+decoder: with a subtitle track chosen, the first picture waits for the buffering
+
+VLC shows a video's first picture as soon as it is decoded, while the
+input still buffers, and holds its subtitles until the buffering ends:
+that first picture never carries a line that begins with it. When a
+subtitle track is chosen at the start (sub-track-id), the decoder's very
+first picture waits for the buffering to end like the pictures after it
+and is shown at its time, with its subtitles. After a seek the first
+picture is shown at once, as before (a paused video shows where it went).
+Applied after 0001, with patch -p1 (Scripts/build_vlckit_lgpl.sh).
+
+diff --git a/src/input/decoder.c b/src/input/decoder.c
+--- a/src/input/decoder.c
++++ b/src/input/decoder.c
+@@ -123,6 +123,10 @@
+     bool b_waiting;
+     bool b_first;
+     bool b_has_data;
++    /* The first picture waits for the buffering to end like the others
++     * instead of being shown at once (a subtitle track chosen: the
++     * subtitles reach the pictures only then) */
++    bool b_first_waits;
+ 
+     /* Flushing */
+     bool flushing;
+@@ -1035,7 +1039,7 @@
+     /* */
+     vlc_mutex_lock( &p_owner->lock );
+ 
+-    if( p_owner->b_waiting && !p_owner->b_first )
++    if( p_owner->b_waiting && ( !p_owner->b_first || p_owner->b_first_waits ) )
+     {
+         p_owner->b_has_data = true;
+         vlc_cond_signal( &p_owner->wait_acknowledge );
+@@ -1043,6 +1047,9 @@
+     bool b_first_after_wait = p_owner->b_waiting && p_owner->b_has_data;
+ 
+     DecoderWaitUnblock( p_dec );
++    /* Only the very first picture of the decoder: a seek shows its first
++     * picture at once again */
++    p_owner->b_first_waits = false;
+ 
+     if( p_owner->b_waiting )
+     {
+@@ -1699,6 +1706,8 @@
+     p_owner->b_waiting = false;
+     p_owner->b_first = true;
+     p_owner->b_has_data = false;
++    p_owner->b_first_waits = fmt->i_cat == VIDEO_ES && p_input != NULL
++        && var_InheritInteger( p_input, "sub-track-id" ) >= 0;
+ 
+     p_owner->error = false;
+ 
