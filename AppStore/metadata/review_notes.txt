@@ -18,4 +18,4 @@ BOSS KEY
 X is a boss key: it hides all windows at once; press X three times (or click the Dock icon) to bring them back. If the app seems to have no window after pressing X, this is why.
 
 LICENSES
-Schnellbild's own code is open source (MIT). It embeds VLCKit (LGPL 2.1, built from VideoLAN's source without VLC's GPL modules) and UnRAR. The custom license agreement allows what the LGPL asks (modifying VLCKit and reverse engineering to debug such modifications); the About window lists every component, and the license texts are in Contents/Resources/Licenses.
+Schnellbild's own code is open source (MIT). It embeds VLCKit (LGPL 2.1, built from VideoLAN's source without VLC's GPL modules) and UnRAR. The custom license agreement allows what the LGPL asks (modifying VLCKit and reverse engineering to debug such modifications); the About window (Schnellbild > About Schnellbild) shows every component and its full license text.

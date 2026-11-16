@@ -148,7 +148,10 @@ targets:
       # The UI's translations; the .lproj folders become localized resources
       - path: Resources/Localization
         buildPhase: resources
-      # The libraries' license texts (the About window points here)
+      # The license texts the About window shows: Schnellbild's own and
+      # those of everything the app carries
+      - path: LICENSE
+        buildPhase: resources
       - path: Resources/Licenses
         type: folder
         buildPhase: resources

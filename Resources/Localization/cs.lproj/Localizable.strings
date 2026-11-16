@@ -178,13 +178,10 @@
 "Grid or list (a click on a column sorts by it)" = "Mřížka nebo seznam (klik na sloupec podle něj seřadí)";
 "Back (where you were, also a search); without history the enclosing folder" = "Zpět (kde jste byli, i k hledání); bez historie do nadřazené složky";
 "Click to rename this folder" = "Kliknutím složku přejmenujete";
-"Built with" = "Vytvořeno s";
-"The full license texts are in the app (Contents/Resources/Licenses)." = "Úplné texty licencí jsou v aplikaci (Contents/Resources/Licenses).";
 "Privacy Policy" = "Zásady ochrany osobních údajů";
 "VLCKit includes FFmpeg and other libraries, each under its own license." = "VLCKit obsahuje FFmpeg a další knihovny, každou pod vlastní licencí.";
 "plays the video formats macOS can't (AVI, MKV, WebM …)" = "přehrává formáty videa, které macOS neumí (AVI, MKV, WebM …)";
 "reads RAR archives" = "čte archivy RAR";
-"reads ZIP and 7z archives (the copy built into macOS)" = "čte archivy ZIP a 7z (verze vestavěná v macOS)";
 "out of memory" = "nedostatek paměti";
 "damaged data" = "poškozená data";
 "damaged archive" = "poškozený archiv";
@@ -207,9 +204,6 @@
 /* VoiceOver: the sorted column of the list */
 "ascending" = "vzestupně";
 "descending" = "sestupně";
-/* About window: the libraries' licenses */
-"© Tim Kientzle and the libarchive contributors. BSD 2-clause license." = "© Tim Kientzle a přispěvatelé libarchive. Licence BSD se 2 klauzulemi.";
-"© Alexander Roshal. The UnRAR license, in its own words:" = "© Alexander Roshal. Licence UnRAR v původním znění:";
 "This file is too large to show from inside an archive." = "Tento soubor je příliš velký, aby se dal zobrazit z archivu.";
 /* Settings */
 "Archive passwords" = "Hesla archivů";
@@ -284,7 +278,6 @@
 "Forget the access to every folder?" = "Zapomenout přístup ke všem složkám?";
 "Forget Folder Access" = "Zapomenout přístup ke složkám";
 "Each folder asks for your permission again." = "Každá složka znovu požádá o tvé svolení.";
-"© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later. Built from its source without VLC's modules under the GPL; the build script and its changes are in Schnellbild's repository (github.com/JohannesHoppe/schnellbild)." = "© VideoLAN a autoři VLC. GNU Lesser General Public License 2.1 nebo novější. Sestaveno ze zdrojového kódu bez modulů VLC pod GPL; sestavovací skript a jeho změny jsou v repozitáři Schnellbild (github.com/JohannesHoppe/schnellbild).";
 "The link will be moved to the Trash. The folder it points to stays where it is." = "Odkaz bude přesunut do koše. Složka, na kterou odkazuje, zůstane, kde je.";
 "Keep both: the new one gets a number. Skip: it stays where it is. Cancel: nothing is moved or copied." = "Ponechat obě: nová položka dostane číslo. Přeskočit: zůstane, kde je. Zrušit: nic se nepřesune ani nezkopíruje.";
 "Apply to all" = "Použít pro všechny";
@@ -540,18 +533,14 @@
 "near %@, %@" = "poblíž: %@, %@";
 "near %@" = "poblíž: %@";
 "map data for the offline map" = "mapová data offline mapy";
-"© OpenStreetMap contributors. Open Database License (ODbL) 1.0. Made from Protomaps' OpenStreetMap build, with thanks to Protomaps; how the files are made is in Schnellbild's repository." = "© přispěvatelé OpenStreetMap. Open Database License (ODbL) 1.0. Vytvořeno ze sestavení OpenStreetMap od Protomaps, s poděkováním Protomaps; jak soubory vznikají, je v repozitáři Schnellbildu.";
 "Globe" = "Glóbus";
 "Show day and night" = "Zobrazit den a noc";
 "Hide day and night" = "Skrýt den a noc";
 "Exaggerate the relief" = "Převýšit reliéf";
 "Show the relief at true scale" = "Zobrazit reliéf ve skutečném měřítku";
 "elevation and ocean depth on the globe" = "nadmořské výšky a hloubky oceánů na glóbu";
-"NOAA National Centers for Environmental Information. Public domain (CC0 1.0). Not to be used for navigation." = "NOAA National Centers for Environmental Information. Volné dílo (CC0 1.0). Není určeno k navigaci.";
 "the night sky behind the globe" = "noční obloha za glóbem";
-"NASA/Goddard Space Flight Center Scientific Visualization Studio, made from Gaia DR2, Hipparcos and Tycho-2 data. Public domain." = "NASA/Goddard Space Flight Center Scientific Visualization Studio, z dat Gaia DR2, Hipparcos a Tycho-2. Volné dílo.";
 "the lights on the globe's night side" = "světla na noční straně glóbu";
-"Used under NASA's media usage guidelines." = "Použito podle pravidel NASA pro užití médií.";
 
 /* Sorting by distance: the map and Use My Location */
 "Use My Location" = "Použít moji polohu";
@@ -625,3 +614,30 @@
 "Include subfolders" = "Včetně podsložek";
 "The photos and videos of every subfolder too, archives included" = "Také fotky a videa ze všech podsložek, včetně archivů";
 "Reading subfolders…" = "Čtou se podsložky…";
+/* About window: the license texts */
+"In Schnellbild" = "Ve Schnellbildu";
+"Copyright" = "Autorská práva";
+"License" = "Licence";
+"Credit" = "Zdroj";
+"Website" = "Web";
+"Schnellbild uses an LGPL-only build of VLCKit and libVLC, licensed under the GNU Lesser General Public License 2.1 and built from source without any of VLC's modules under the GPL. VLC as VideoLAN builds it also carries modules under the GPL; they are not in Schnellbild's build." = "Schnellbild používá sestavení VLCKit a libVLC pouze pod LGPL, licencované pod GNU Lesser General Public License 2.1 a sestavené ze zdrojového kódu bez jakéhokoli modulu VLC pod GPL. VLC, jak ho sestavuje VideoLAN, obsahuje i moduly pod GPL; v sestavení Schnellbildu nejsou.";
+"Schnellbild's build makes five small changes to VLC (Scripts/vlc-patches, 0001 to 0005): four to its subtitle timing and one to its audio output on macOS." = "Sestavení Schnellbildu dělá ve VLC pět malých změn (Scripts/vlc-patches, 0001 až 0005): čtyři v časování titulků a jednu ve zvukovém výstupu v macOS.";
+"The complete source of this build, with these changes, is attached to its release: %@. The script that builds it is Scripts/build_vlckit_lgpl.sh in Schnellbild's repository." = "Úplný zdrojový kód tohoto sestavení i s těmito změnami je přiložen k jeho vydání: %@. Skript, který ho sestavuje, je Scripts/build_vlckit_lgpl.sh v repozitáři Schnellbildu.";
+"© VideoLAN and the VLC authors" = "© VideoLAN a autoři VLC";
+"Libraries included in VLCKit, each under its own license" = "Knihovny obsažené ve VLCKit, každá pod vlastní licencí";
+"Libraries included in VLCKit" = "Knihovny obsažené ve VLCKit";
+"These are the license files at the top of each library's source, as VLC's build collected them." = "Jsou to licenční soubory ze začátku zdrojového kódu každé knihovny, jak je sestavení VLC posbíralo.";
+"UnRAR license" = "Licence UnRAR";
+"© OpenStreetMap contributors" = "© přispěvatelé OpenStreetMap";
+"Made from Protomaps' OpenStreetMap build, with thanks to Protomaps. How the files are made is in Schnellbild's repository." = "Vytvořeno ze sestavení OpenStreetMap od Protomaps, s poděkováním Protomaps. Jak soubory vznikají, je v repozitáři Schnellbildu.";
+"Notice of Schnellbild's map files" = "Upozornění k mapovým souborům Schnellbildu";
+"Globe data" = "Data glóbu";
+"the globe's elevation, night sky and city lights" = "výšky, noční obloha a světla měst na glóbu";
+"Notice of Schnellbild's globe files" = "Upozornění k souborům glóbu Schnellbildu";
+"None (public domain)" = "Žádná (volné dílo)";
+"Not to be used for navigation." = "Není určeno k navigaci.";
+"Public domain" = "Volné dílo";
+"No endorsement by NASA is implied." = "Neznamená to žádné schválení ze strany NASA.";
+"NASA's media usage guidelines" = "Pravidla NASA pro užití médií";
+"⌘F searches the license texts." = "⌘F hledá v textech licencí.";
+"License texts" = "Texty licencí";

@@ -178,13 +178,10 @@
 "Grid or list (a click on a column sorts by it)" = "Grille ou liste (un clic sur une colonne trie selon elle)";
 "Back (where you were, also a search); without history the enclosing folder" = "Retour (là où vous étiez, aussi à une recherche) ; sans historique, au dossier parent";
 "Click to rename this folder" = "Cliquez pour renommer ce dossier";
-"Built with" = "Réalisé avec";
-"The full license texts are in the app (Contents/Resources/Licenses)." = "Les textes complets des licences se trouvent dans l’app (Contents/Resources/Licenses).";
 "Privacy Policy" = "Politique de confidentialité";
 "VLCKit includes FFmpeg and other libraries, each under its own license." = "VLCKit contient FFmpeg et d’autres bibliothèques, chacune sous sa propre licence.";
 "plays the video formats macOS can't (AVI, MKV, WebM …)" = "lit les formats vidéo que macOS ne lit pas (AVI, MKV, WebM …)";
 "reads RAR archives" = "lit les archives RAR";
-"reads ZIP and 7z archives (the copy built into macOS)" = "lit les archives ZIP et 7z (la version intégrée à macOS)";
 "out of memory" = "mémoire insuffisante";
 "damaged data" = "données endommagées";
 "damaged archive" = "archive endommagée";
@@ -207,9 +204,6 @@
 /* VoiceOver: the sorted column of the list */
 "ascending" = "croissant";
 "descending" = "décroissant";
-/* About window: the libraries' licenses */
-"© Tim Kientzle and the libarchive contributors. BSD 2-clause license." = "© Tim Kientzle et les contributeurs de libarchive. Licence BSD à 2 clauses.";
-"© Alexander Roshal. The UnRAR license, in its own words:" = "© Alexander Roshal. La licence UnRAR, dans son texte original :";
 "This file is too large to show from inside an archive." = "Ce fichier est trop volumineux pour être affiché depuis une archive.";
 /* Settings */
 "Archive passwords" = "Mots de passe des archives";
@@ -284,7 +278,6 @@
 "Forget the access to every folder?" = "Oublier l’accès à tous les dossiers ?";
 "Forget Folder Access" = "Oublier l’accès aux dossiers";
 "Each folder asks for your permission again." = "Chaque dossier demandera à nouveau votre autorisation.";
-"© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later. Built from its source without VLC's modules under the GPL; the build script and its changes are in Schnellbild's repository (github.com/JohannesHoppe/schnellbild)." = "© VideoLAN et les auteurs de VLC. GNU Lesser General Public License 2.1 ou ultérieure. Compilé depuis ses sources sans les modules de VLC sous GPL ; le script de compilation et ses modifications se trouvent dans le dépôt de Schnellbild (github.com/JohannesHoppe/schnellbild).";
 "The link will be moved to the Trash. The folder it points to stays where it is." = "Le lien sera placé dans la corbeille. Le dossier vers lequel il pointe reste à sa place.";
 "Keep both: the new one gets a number. Skip: it stays where it is. Cancel: nothing is moved or copied." = "Garder les deux : le nouvel élément reçoit un numéro. Ignorer : il reste où il est. Annuler : rien n’est déplacé ni copié.";
 "Apply to all" = "Appliquer à tous";
@@ -540,18 +533,14 @@
 "near %@, %@" = "près de %@, %@";
 "near %@" = "près de %@";
 "map data for the offline map" = "données de la carte hors ligne";
-"© OpenStreetMap contributors. Open Database License (ODbL) 1.0. Made from Protomaps' OpenStreetMap build, with thanks to Protomaps; how the files are made is in Schnellbild's repository." = "© contributeurs d’OpenStreetMap. Open Database License (ODbL) 1.0. Réalisées à partir de l’export OpenStreetMap de Protomaps, avec nos remerciements à Protomaps ; la façon dont les fichiers sont produits se trouve dans le dépôt de Schnellbild.";
 "Globe" = "Globe";
 "Show day and night" = "Afficher le jour et la nuit";
 "Hide day and night" = "Masquer le jour et la nuit";
 "Exaggerate the relief" = "Exagérer le relief";
 "Show the relief at true scale" = "Afficher le relief à l’échelle réelle";
 "elevation and ocean depth on the globe" = "altitudes et profondeurs océaniques du globe";
-"NOAA National Centers for Environmental Information. Public domain (CC0 1.0). Not to be used for navigation." = "NOAA National Centers for Environmental Information. Domaine public (CC0 1.0). Ne pas utiliser pour la navigation.";
 "the night sky behind the globe" = "le ciel nocturne derrière le globe";
-"NASA/Goddard Space Flight Center Scientific Visualization Studio, made from Gaia DR2, Hipparcos and Tycho-2 data. Public domain." = "NASA/Goddard Space Flight Center Scientific Visualization Studio, à partir des données de Gaia DR2, Hipparcos et Tycho-2. Domaine public.";
 "the lights on the globe's night side" = "les lumières de la face nocturne du globe";
-"Used under NASA's media usage guidelines." = "Utilisé selon les règles d’utilisation des médias de la NASA.";
 
 /* Sorting by distance: the map and Use My Location */
 "Use My Location" = "Utiliser ma position";
@@ -625,3 +614,30 @@
 "Include subfolders" = "Inclure les sous-dossiers";
 "The photos and videos of every subfolder too, archives included" = "Aussi les photos et vidéos de tous les sous-dossiers, archives comprises";
 "Reading subfolders…" = "Lecture des sous-dossiers…";
+/* About window: the license texts */
+"In Schnellbild" = "Dans Schnellbild";
+"Copyright" = "Copyright";
+"License" = "Licence";
+"Credit" = "Crédit";
+"Website" = "Site web";
+"Schnellbild uses an LGPL-only build of VLCKit and libVLC, licensed under the GNU Lesser General Public License 2.1 and built from source without any of VLC's modules under the GPL. VLC as VideoLAN builds it also carries modules under the GPL; they are not in Schnellbild's build." = "Schnellbild utilise une version de VLCKit et de libVLC uniquement sous LGPL, distribuée sous la GNU Lesser General Public License 2.1 et compilée depuis les sources sans aucun des modules de VLC sous GPL. VLC tel que VideoLAN le compile contient aussi des modules sous GPL ; ils ne font pas partie de la version de Schnellbild.";
+"Schnellbild's build makes five small changes to VLC (Scripts/vlc-patches, 0001 to 0005): four to its subtitle timing and one to its audio output on macOS." = "La version de Schnellbild apporte cinq petites modifications à VLC (Scripts/vlc-patches, 0001 à 0005) : quatre concernent le minutage des sous-titres, une la sortie audio sous macOS.";
+"The complete source of this build, with these changes, is attached to its release: %@. The script that builds it is Scripts/build_vlckit_lgpl.sh in Schnellbild's repository." = "Les sources complètes de cette version, avec ces modifications, sont jointes à sa publication : %@. Le script qui la compile est Scripts/build_vlckit_lgpl.sh, dans le dépôt de Schnellbild.";
+"© VideoLAN and the VLC authors" = "© VideoLAN et les auteurs de VLC";
+"Libraries included in VLCKit, each under its own license" = "Bibliothèques incluses dans VLCKit, chacune sous sa propre licence";
+"Libraries included in VLCKit" = "Bibliothèques incluses dans VLCKit";
+"These are the license files at the top of each library's source, as VLC's build collected them." = "Voici les fichiers de licence placés en tête des sources de chaque bibliothèque, tels que la compilation de VLC les a rassemblés.";
+"UnRAR license" = "Licence UnRAR";
+"© OpenStreetMap contributors" = "© contributeurs d’OpenStreetMap";
+"Made from Protomaps' OpenStreetMap build, with thanks to Protomaps. How the files are made is in Schnellbild's repository." = "Réalisées à partir de l’export OpenStreetMap de Protomaps, avec nos remerciements à Protomaps. La façon dont les fichiers sont produits se trouve dans le dépôt de Schnellbild.";
+"Notice of Schnellbild's map files" = "Avis sur les fichiers de carte de Schnellbild";
+"Globe data" = "Données du globe";
+"the globe's elevation, night sky and city lights" = "le relief, le ciel étoilé et les lumières des villes du globe";
+"Notice of Schnellbild's globe files" = "Avis sur les fichiers du globe de Schnellbild";
+"None (public domain)" = "Aucun (domaine public)";
+"Not to be used for navigation." = "Ne pas utiliser pour la navigation.";
+"Public domain" = "Domaine public";
+"No endorsement by NASA is implied." = "Aucune approbation de la NASA n’est sous-entendue.";
+"NASA's media usage guidelines" = "Règles d’utilisation des médias de la NASA";
+"⌘F searches the license texts." = "⌘F cherche dans les textes de licence.";
+"License texts" = "Textes de licence";

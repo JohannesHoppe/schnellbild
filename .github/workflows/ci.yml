@@ -172,7 +172,8 @@ jobs:
         run: |
           # VisualUITests measure the screen through this shell, which may
           # record it: the test asks with "measure:<id>:<x>,<y>,<w>,<h>" on the
-          # pasteboard and gets "measured:<id>:<mean luminance>:<std deviation>:<red>:<green>:<blue>" back.
+          # pasteboard and gets "measured:<id>:<mean luminance>:<std deviation>:<red>:<green>:<blue>" back;
+          # "shot:<name>:<x>,<y>,<w>,<h>" keeps a picture of that region as measurements/<name>.png.
           mkdir -p measurements
           (
             # One failed capture must not end the helper (the step runs with -e)
@@ -190,6 +191,15 @@ jobs:
                   read -r mean spread red green blue < <(build/measure_brightness "$shot" || echo "-1 -1 -1 -1 -1")
                   echo "== measure $id $rect: $mean ± $spread (RGB $red $green $blue)"
                   printf 'measured:%s:%s:%s:%s:%s:%s' "$id" "$mean" "$spread" "$red" "$green" "$blue" | pbcopy
+                  ;;
+                shot:*)
+                  # A picture to look at (AboutUITests): "shot:<name>:<x>,<y>,<w>,<h>"
+                  rest=${request#shot:}
+                  name=${rest%%:*}
+                  rect=${rest#*:}
+                  echo "== shot $name $rect"
+                  screencapture -x -R "$rect" "measurements/$name.png"
+                  printf 'shot-done:%s' "$name" | pbcopy
                   ;;
                 sample:*)
                   # A test found the app hanging: what its threads are doing

@@ -115,6 +115,8 @@ public class XCUIElement {
     public var radioButtons: XCUIElementQuery { XCUIElementQuery() }
     public var tabs: XCUIElementQuery { XCUIElementQuery() }
     public var images: XCUIElementQuery { XCUIElementQuery() }
+    public var textViews: XCUIElementQuery { XCUIElementQuery() }
+    public var scrollViews: XCUIElementQuery { XCUIElementQuery() }
 }
 public final class XCUIApplication: XCUIElement {
     public override init() {}

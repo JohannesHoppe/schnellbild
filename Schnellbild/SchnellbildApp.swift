@@ -37,6 +37,12 @@ struct SchnellbildApp: App {
         let defaults = BrowserModel.makeDefaults()
         self.defaults = defaults
         AppAppearance.defaults = defaults
+        // UI tests: light or dark whatever the runner's (`--appearance=dark`)
+        if VideoDetailView.uiTesting,
+           let arg = ProcessInfo.processInfo.arguments.first(where: { $0.hasPrefix("--appearance=") }),
+           let chosen = AppAppearance(rawValue: String(arg.dropFirst("--appearance=".count))) {
+            defaults.set(chosen.rawValue, forKey: AppAppearance.key)
+        }
         // The folders opened to the app before (App Sandbox), before any is read
         FolderAccess.shared.defaults = defaults
         FolderAccess.shared.restore()
