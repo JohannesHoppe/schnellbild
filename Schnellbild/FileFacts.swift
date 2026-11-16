@@ -34,7 +34,7 @@ struct FileFacts: Equatable, Sendable {
         facts.camera = camera.isEmpty ? nil : camera
         if let identifier = CGImageSourceGetType(source) as String?, let type = UTType(identifier) {
             facts.format = type.localizedDescription
-            facts.recommendedExtension = recommendedExtension(for: url.pathExtension, content: type)
+            facts.recommendedExtension = recommendedExtension(for: DownloadName.finalExtension(of: url), content: type)
         }
         return facts
     }
@@ -102,7 +102,7 @@ struct FileFacts: Equatable, Sendable {
         var facts = FileFacts()
         guard let head, let container = container(in: head) else { return facts }
         facts.format = container.name
-        if !container.extensions.contains(url.pathExtension.lowercased()) {
+        if !container.extensions.contains(DownloadName.finalExtension(of: url)) {
             facts.recommendedExtension = container.extensions.first
         }
         return facts
@@ -273,5 +273,143 @@ struct StreamFacts: Equatable, Sendable {
         }
         facts.tags = tags(of: media.metaData)
         return facts
+    }
+}
+
+// MARK: - Content
+
+extension FileFacts {
+    /// What a file holds by its first bytes, whatever its name says: a
+    /// picture (ImageIO's type of the content, PDF included), a video (the
+    /// container VLC would read, `container(in:)`) or an archive
+    /// (`ArchiveStore.format(in:)`).
+    struct Content: Equatable, Sendable {
+        enum Kind: Equatable, Sendable { case picture, video, archive(ArchiveFormat) }
+        let kind: Kind
+        /// The extension that names it ("jpeg", "mp4", "zip").
+        let fileExtension: String
+        /// The format's name ("JPEG image", "MPEG-4").
+        let name: String
+
+        var mediaKind: GridEntry.Kind? {
+            switch kind {
+            case .picture: return .image
+            case .video:   return .video
+            case .archive: return nil
+            }
+        }
+
+        var archiveFormat: ArchiveFormat? {
+            if case .archive(let format) = kind { return format }
+            return nil
+        }
+    }
+
+    /// What `head` (a file's first bytes, 512 are enough) shows; nil for
+    /// anything else (text, a playlist, too few bytes).
+    static func content(in head: Data) -> Content? {
+        guard head.count >= 4 else { return nil }
+        if let format = ArchiveStore.format(in: head) {
+            let ext: String
+            switch format {
+            case .zip:      ext = "zip"
+            case .rar:      ext = "rar"
+            case .sevenZip: ext = "7z"
+            }
+            return Content(kind: .archive(format), fileExtension: ext, name: ext.uppercased())
+        }
+        // Pictures before videos: HEIF and AVIF are boxes with an "ftyp" too
+        if let source = CGImageSourceCreateWithData(head as CFData, nil),
+           let identifier = CGImageSourceGetType(source) as String?, let type = UTType(identifier),
+           let ext = (type.tags[.filenameExtension] ?? []).first(where: { BrowserModel.imageExtensions.contains($0.lowercased()) }) {
+            return Content(kind: .picture, fileExtension: ext.lowercased(), name: type.localizedDescription ?? ext.uppercased())
+        }
+        if let container = container(in: head), let ext = container.extensions.first {
+            return Content(kind: .video, fileExtension: ext, name: container.name)
+        }
+        return nil
+    }
+}
+
+/// What files hold whose names don't say (no extension, one no app knows,
+/// "x.part" of a file without one), read from their first bytes once and
+/// kept by path, size and date; ".ts" files too (TypeScript far more often
+/// than a TV recording). `BrowserModel.mediaKind` and the archive rules ask
+/// `known` (no disk access); a listing has the files it holds of that sort
+/// read off the main thread (`BrowserModel.sniffOtherFiles`), a file opened
+/// or dropped is read before it opens.
+final class ContentSniffer: @unchecked Sendable {
+    static let shared = ContentSniffer()
+    private let lock = NSLock()
+    private struct Answer {
+        let size: Int64
+        let stamp: String
+        let content: FileFacts.Content?
+    }
+    private var answers: [String: Answer] = [:]
+    /// Archives found by their content (canonical paths), for `ArchivePath`.
+    private var archives: Set<String> = []
+    /// Kept answers at most (a folder of code has many .ts files).
+    private let limit = 20_000
+
+    /// The answer kept for the file, without looking at the disk.
+    func known(_ url: URL) -> FileFacts.Content? {
+        lock.withLock { answers[BrowserModel.canonicalPath(url)]?.content }
+    }
+
+    /// Whether the file must be read (again): never read, or listed now
+    /// with another size than when it was read (a download growing).
+    func needsReading(_ url: URL, size: Int?) -> Bool {
+        lock.withLock {
+            guard let answer = answers[BrowserModel.canonicalPath(url)] else { return true }
+            return size.map { Int64($0) != answer.size } ?? false
+        }
+    }
+
+    /// Reads the file's first bytes unless the answer for its size and date
+    /// is kept. Off the main thread: it touches the disk.
+    @discardableResult
+    func content(of url: URL) -> FileFacts.Content? {
+        // A path through an archive has no first bytes to read without unpacking
+        guard !ArchivePath.isInside(url) else { return nil }
+        var info = stat()
+        guard stat(url.path, &info) == 0, (info.st_mode & S_IFMT) == S_IFREG else { return nil }
+        let stamp = "\(info.st_size) \(info.st_mtimespec.tv_sec).\(info.st_mtimespec.tv_nsec)"
+        let path = BrowserModel.canonicalPath(url)
+        if let answer = lock.withLock({ answers[path] }), answer.stamp == stamp { return answer.content }
+        let content = VLCSafety.head(of: url).flatMap(FileFacts.content(in:))
+        lock.withLock {
+            if answers.count >= limit { answers.removeAll(keepingCapacity: true); archives.removeAll() }
+            answers[path] = Answer(size: Int64(info.st_size), stamp: stamp, content: content)
+            if content?.archiveFormat != nil { archives.insert(path) } else { archives.remove(path) }
+        }
+        return content
+    }
+
+    /// The archive found by its content that `url` is or lies in, and the
+    /// path inside it ("" for the archive itself), both canonical.
+    func archive(containing url: URL) -> (archive: String, inner: String)? {
+        guard lock.withLock({ !archives.isEmpty }) else { return nil }
+        let path = BrowserModel.canonicalPath(url)
+        return lock.withLock {
+            archives.first { path == $0 || path.hasPrefix($0 + "/") }
+                .map { ($0, String(path.dropFirst($0.count).drop { $0 == "/" })) }
+        }
+    }
+
+    /// Names whose content is worth a look: no extension, one that names
+    /// nothing the system knows ("x.xyz"; "x.part" of a file without one),
+    /// or a catch-all ("x.bin", "x.dat"). Never a later volume of a split
+    /// archive ("x.r00", "x.z01" start like archives of their own).
+    static func isUnknown(_ name: String) -> Bool {
+        guard !name.hasPrefix(".") else { return false }
+        let final = DownloadName.finalName(of: name)
+        let ext = (final as NSString).pathExtension.lowercased()
+        if ext.isEmpty { return true }
+        if BrowserModel.imageExtensions.contains(ext) || BrowserModel.videoExtensions.contains(ext) || ext == "ts" { return false }
+        if ArchiveName.format(of: name) != nil || !ArchiveName.firstVolumeNames(of: final).isEmpty { return false }
+        if ["bin", "dat", "data", "tmp", "temp", "file", "unknown"].contains(ext) { return true }
+        guard let type = UTType(filenameExtension: ext) else { return true }
+        return type.isDynamic
     }
 }

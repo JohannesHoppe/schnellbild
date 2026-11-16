@@ -24,7 +24,7 @@ final class PDFPages: @unchecked Sendable {
         count = document.pageCount
     }
 
-    static func isPDF(_ url: URL) -> Bool { url.pathExtension.lowercased() == "pdf" }
+    static func isPDF(_ url: URL) -> Bool { BrowserModel.shownExtension(of: url) == "pdf" }
 
     /// nil for a file that isn't a readable PDF, has no pages, or is locked
     /// with a password.

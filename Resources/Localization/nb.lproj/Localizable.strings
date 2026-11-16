@@ -625,3 +625,11 @@
 "Include subfolders" = "Ta med undermapper";
 "The photos and videos of every subfolder too, archives included" = "Også bildene og videoene i alle undermapper, arkiver medregnet";
 "Reading subfolders…" = "Leser undermapper…";
+
+/* Downloads not finished */
+"Download not finished" = "Nedlasting ikke fullført";
+"Incomplete" = "Ufullstendig";
+"Download" = "Nedlasting";
+"Not finished" = "Ikke fullført";
+"In progress, the file is growing" = "Pågår, filen vokser fortsatt";
+"This video can't play until its download is finished: the part that tells how to play it lies at the end of the file." = "Videoen kan først spilles av når nedlastingen er fullført: det som trengs for å spille den av, ligger på slutten av filen.";

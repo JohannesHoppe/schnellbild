@@ -625,3 +625,11 @@
 "Include subfolders" = "包括子文件夹";
 "The photos and videos of every subfolder too, archives included" = "也显示所有子文件夹中的照片和视频，包括归档";
 "Reading subfolders…" = "正在读取子文件夹…";
+
+/* Downloads not finished */
+"Download not finished" = "下载未完成";
+"Incomplete" = "不完整";
+"Download" = "下载";
+"Not finished" = "未完成";
+"In progress, the file is growing" = "进行中，文件仍在增大";
+"This video can't play until its download is finished: the part that tells how to play it lies at the end of the file." = "下载完成前无法播放此视频：播放所需的信息位于文件末尾。";

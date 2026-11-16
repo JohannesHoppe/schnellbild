@@ -625,3 +625,11 @@
 "Include subfolders" = "Incluir subcarpetas";
 "The photos and videos of every subfolder too, archives included" = "También las fotos y vídeos de todas las subcarpetas, archivos comprimidos incluidos";
 "Reading subfolders…" = "Leyendo subcarpetas…";
+
+/* Downloads not finished */
+"Download not finished" = "Descarga sin terminar";
+"Incomplete" = "Incompleto";
+"Download" = "Descarga";
+"Not finished" = "Sin terminar";
+"In progress, the file is growing" = "En curso, el archivo sigue creciendo";
+"This video can't play until its download is finished: the part that tells how to play it lies at the end of the file." = "Este vídeo no se puede reproducir hasta que termine la descarga: lo que hace falta para reproducirlo está al final del archivo.";

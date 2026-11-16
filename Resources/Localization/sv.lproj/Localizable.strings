@@ -625,3 +625,11 @@
 "Include subfolders" = "Ta med undermappar";
 "The photos and videos of every subfolder too, archives included" = "Även bilderna och videorna i alla undermappar, arkiv medräknade";
 "Reading subfolders…" = "Läser undermappar…";
+
+/* Downloads not finished */
+"Download not finished" = "Hämtningen inte klar";
+"Incomplete" = "Ofullständig";
+"Download" = "Hämtning";
+"Not finished" = "Inte klar";
+"In progress, the file is growing" = "Pågår, filen växer fortfarande";
+"This video can't play until its download is finished: the part that tells how to play it lies at the end of the file." = "Videon kan spelas upp först när hämtningen är klar: det som behövs för att spela upp den ligger i slutet av filen.";

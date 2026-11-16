@@ -625,3 +625,11 @@
 "Include subfolders" = "Incluir subpastas";
 "The photos and videos of every subfolder too, archives included" = "Também as fotos e vídeos de todas as subpastas, arquivos compactados incluídos";
 "Reading subfolders…" = "Lendo subpastas…";
+
+/* Downloads not finished */
+"Download not finished" = "Download não concluído";
+"Incomplete" = "Incompleto";
+"Download" = "Download";
+"Not finished" = "Não concluído";
+"In progress, the file is growing" = "Em andamento, o arquivo ainda está crescendo";
+"This video can't play until its download is finished: the part that tells how to play it lies at the end of the file." = "Este vídeo só poderá ser reproduzido quando o download terminar: o que é preciso para reproduzi-lo fica no fim do arquivo.";

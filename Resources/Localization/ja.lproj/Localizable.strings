@@ -625,3 +625,11 @@
 "Include subfolders" = "サブフォルダも含める";
 "The photos and videos of every subfolder too, archives included" = "すべてのサブフォルダの写真とビデオも表示（アーカイブを含む）";
 "Reading subfolders…" = "サブフォルダを読み込み中…";
+
+/* Downloads not finished */
+"Download not finished" = "ダウンロード未完了";
+"Incomplete" = "不完全";
+"Download" = "ダウンロード";
+"Not finished" = "未完了";
+"In progress, the file is growing" = "進行中（ファイルが増え続けています）";
+"This video can't play until its download is finished: the part that tells how to play it lies at the end of the file." = "このビデオはダウンロードが完了するまで再生できません。再生に必要な情報がファイルの末尾にあります。";

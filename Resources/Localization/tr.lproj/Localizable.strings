@@ -625,3 +625,11 @@
 "Include subfolders" = "Alt klasörleri dahil et";
 "The photos and videos of every subfolder too, archives included" = "Tüm alt klasörlerin fotoğrafları ve videoları da, arşivler dahil";
 "Reading subfolders…" = "Alt klasörler okunuyor…";
+
+/* Downloads not finished */
+"Download not finished" = "İndirme tamamlanmadı";
+"Incomplete" = "Eksik";
+"Download" = "İndirme";
+"Not finished" = "Tamamlanmadı";
+"In progress, the file is growing" = "Sürüyor, dosya hâlâ büyüyor";
+"This video can't play until its download is finished: the part that tells how to play it lies at the end of the file." = "Bu video indirme tamamlanana kadar oynatılamaz: oynatmak için gereken bilgi dosyanın sonunda yer alıyor.";
