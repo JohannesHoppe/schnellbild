@@ -73,8 +73,7 @@ final class GridUITests: SchnellbildUITestCase {
         launchOnTempDir()
         tile("c.jpg").click()
         waitForSelected("c.jpg")
-        tile("b.jpg").doubleClick()
-        waitForBadge(containing: "b.jpg")
+        openInFullView("b.jpg")
     }
 
     func testCommandPlusAndMinusResizeTiles() {
@@ -259,8 +258,7 @@ final class GridUITests: SchnellbildUITestCase {
         // The new window is in front (windows come front to back)
         let second = app.windows.element(boundBy: 0)
         eventually("the new window on the same folder", timeout: 15) { tiles("sub", in: second).exists }
-        tiles("sub", in: second).coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).doubleClick()
-        eventually("into sub in that window", timeout: 10) { tiles("x.jpg", in: second).exists }
+        open(tiles("sub", in: second), until: "into sub in that window") { tiles("x.jpg", in: second).exists }
         let first = app.windows.element(boundBy: 1)
         XCTAssertTrue(tiles("sub", in: first).exists, "the first window stays where it was")
         XCTAssertFalse(tiles("x.jpg", in: first).exists)
@@ -308,8 +306,7 @@ final class GridUITests: SchnellbildUITestCase {
         let name = element("column.name").firstMatch
         name.coordinate(withNormalizedOffset: CGVector(dx: 0.9, dy: 0.5)).click()
         eventually("by name") { self.sortLabel.contains("Name ↑") }
-        element("row.b.jpg").firstMatch.doubleClick()
-        eventually("the picture opens", timeout: 15) { self.text(of: self.element("fullImage")).hasSuffix("loaded") }
+        open(element("row.b.jpg").firstMatch, until: "the picture opens") { self.text(of: self.element("fullImage")).hasSuffix("loaded") }
         app.typeKey(.escape, modifierFlags: [])
         app.typeKey("l", modifierFlags: [])
         XCTAssertTrue(tile("a.jpg").waitForExistence(timeout: 5), "tiles again")

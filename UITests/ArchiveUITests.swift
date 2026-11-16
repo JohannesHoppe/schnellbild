@@ -33,26 +33,18 @@ final class ArchiveUITests: SchnellbildUITestCase {
         XCTAssertTrue(archive.waitForExistence(timeout: 10))
         XCTAssertTrue(text(of: archive).contains("archive"), text(of: archive))
         eventually("the archive tile previews its pictures", timeout: 20) { self.text(of: archive).contains("previews") && !self.text(of: archive).hasSuffix("0 previews") }
-        archive.doubleClick()
         let beach = tile("beach.jpg")
-        XCTAssertTrue(beach.waitForExistence(timeout: 15))
+        open(archive, until: "the archive opened") { beach.exists }
         eventually("a thumbnail from inside the archive", timeout: 15) { self.text(of: beach).hasSuffix("preview") }
         XCTAssertTrue(tile("Day 1").exists)
-        beach.doubleClick()
         let image = element("fullImage")
-        eventually("the picture opens", timeout: 15) { self.text(of: image).hasSuffix("loaded") }
+        open(beach, until: "the picture opens") { self.text(of: image).hasSuffix("loaded") }
         app.typeKey(.escape, modifierFlags: [])
-        // Back in the grid first: a double click while the full view still
-        // lies over it (CI, macOS 15, 0.2 s after Esc) reaches the picture, not the tile
-        let day = tile("Day 1")
-        eventually("the full view closed") { !image.exists && day.isHittable }
-        day.doubleClick()
-        // A double click the window took as two single ones only selects: Space opens
-        for _ in 0..<2 where !tile("sun.jpg").waitForExistence(timeout: 5) && day.exists {
-            day.click()
-            app.typeKey(.space, modifierFlags: [])
-        }
-        XCTAssertTrue(tile("sun.jpg").waitForExistence(timeout: 15))
+        // `open` waits until the tile can be clicked: a double click while the
+        // full view still lies over it (CI, macOS 15, 0.2 s after Esc) reaches
+        // the picture, not the tile
+        eventually("the full view closed") { !image.exists }
+        openTile("Day 1", showing: tile("sun.jpg"))
     }
 
     /// Typed once, the password is remembered: after a restart the archive
@@ -89,8 +81,7 @@ final class ArchiveUITests: SchnellbildUITestCase {
         launch(open: archive.path, extra: vlc ? ["--force-vlc"] : [])
         let clip = tile("clip.mp4")
         XCTAssertTrue(clip.waitForExistence(timeout: 15))
-        clip.doubleClick()
-        XCTAssertTrue(element(vlc ? "video.vlc" : "video.avkit").waitForExistence(timeout: 20), "plays")
+        open(clip, until: "plays", timeout: 20) { self.element(vlc ? "video.vlc" : "video.avkit").exists }
         waitForBadge(containing: "clip.mp4")
         RunLoop.current.run(until: Date().addingTimeInterval(1))
         app.typeKey(.space, modifierFlags: [])
@@ -131,17 +122,14 @@ final class ArchiveUITests: SchnellbildUITestCase {
         let beach = tile("beach.jpg")
         XCTAssertTrue(beach.waitForExistence(timeout: 15))
         eventually("a thumbnail from the RAR", timeout: 15) { self.text(of: beach).hasSuffix("preview") }
-        tile("Day 1").doubleClick()
         let big = tile("big.jpg")
-        XCTAssertTrue(big.waitForExistence(timeout: 15))
-        big.doubleClick()
-        eventually("the picture opens", timeout: 15) { self.text(of: self.element("fullImage")).hasSuffix("loaded") }
+        openTile("Day 1", showing: big)
+        open(big, until: "the picture opens") { self.text(of: self.element("fullImage")).hasSuffix("loaded") }
         app.typeKey(.escape, modifierFlags: [])
         app.typeKey(.upArrow, modifierFlags: .command)
         let clip = tile("clip.mp4")
         XCTAssertTrue(clip.waitForExistence(timeout: 15))
-        clip.doubleClick()
-        XCTAssertTrue(element(vlc ? "video.vlc" : "video.avkit").waitForExistence(timeout: 20), "the video plays")
+        open(clip, until: "the video plays", timeout: 20) { self.element(vlc ? "video.vlc" : "video.avkit").exists }
         waitForBadge(containing: "clip.mp4")
         app.typeKey(.space, modifierFlags: [])
         waitForBadge(containing: "Paused")
@@ -166,11 +154,9 @@ final class ArchiveUITests: SchnellbildUITestCase {
         let first = tile("photos-vols.part1.rar")
         XCTAssertTrue(first.waitForExistence(timeout: 15))
         XCTAssertFalse(tile("photos-vols.part2.rar").exists, "later volumes aren't shown")
-        first.doubleClick()
-        tile("Day 1").doubleClick()
-        XCTAssertTrue(tile("big.jpg").waitForExistence(timeout: 15), "a picture spread over the volumes")
-        tile("big.jpg").doubleClick()
-        eventually("opens", timeout: 15) { self.text(of: self.element("fullImage")).hasSuffix("loaded") }
+        open(first, until: "the archive opened") { self.tile("Day 1").exists }
+        openTile("Day 1", showing: tile("big.jpg"))   // a picture spread over the volumes
+        open(tile("big.jpg"), until: "opens") { self.text(of: self.element("fullImage")).hasSuffix("loaded") }
     }
 
     /// A RAR download in progress shows the pictures that have arrived.
@@ -179,8 +165,7 @@ final class ArchiveUITests: SchnellbildUITestCase {
         launch(open: tempDir.appendingPathComponent("photos-cut.rar.part").path)
         let beach = tile("beach.jpg")
         XCTAssertTrue(beach.waitForExistence(timeout: 15))
-        beach.doubleClick()
-        eventually("opens", timeout: 15) { self.text(of: self.element("fullImage")).hasSuffix("loaded") }
+        open(beach, until: "opens") { self.text(of: self.element("fullImage")).hasSuffix("loaded") }
     }
 
     func testRarFolders() throws {
@@ -188,8 +173,7 @@ final class ArchiveUITests: SchnellbildUITestCase {
         launch(open: tempDir.appendingPathComponent("subdirs.rar").path)
         let sub = tile("sub")
         XCTAssertTrue(sub.waitForExistence(timeout: 15))
-        sub.doubleClick()
-        XCTAssertTrue(tile("dir1").waitForExistence(timeout: 15))
+        openTile("sub", showing: tile("dir1"))
         XCTAssertTrue(tile("with space").exists)
         XCTAssertTrue(tile("üȵĩöḋè").exists, "Unicode names")
     }
@@ -204,7 +188,6 @@ final class ArchiveUITests: SchnellbildUITestCase {
         try Data(whole.prefix(whole.count / 2)).write(to: cut)
         launch(open: cut.path)
         XCTAssertTrue(tile("1.jpg").waitForExistence(timeout: 15), "the first picture is there")
-        tile("1.jpg").doubleClick()
-        eventually("and opens", timeout: 15) { self.text(of: self.element("fullImage")).hasSuffix("loaded") }
+        open(tile("1.jpg"), until: "and opens") { self.text(of: self.element("fullImage")).hasSuffix("loaded") }
     }
 }

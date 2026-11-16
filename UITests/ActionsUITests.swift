@@ -150,8 +150,7 @@ final class ActionsUITests: SchnellbildUITestCase {
 
     func testF6InTheFullViewRenamesTheFileShown() {
         launchOnTempDir(waitFor: "album")
-        tile("b.jpg").doubleClick()
-        waitForBadge(containing: "b.jpg")
+        openInFullView("b.jpg")
         app.typeKey(.F6, modifierFlags: [])   // Norton Commander's rename
         enterName("Harbour.jpg")
         waitForBadge(containing: "Harbour.jpg")
@@ -280,8 +279,7 @@ final class ActionsUITests: SchnellbildUITestCase {
         tile("b.jpg").press(forDuration: 0.6, thenDragTo: folder)
         eventually("b.jpg went into the folder", timeout: 10) { !self.tile("b.jpg").exists }
         XCTAssertTrue(FileManager.default.fileExists(atPath: tempDir.appendingPathComponent("Sorted/b.jpg").path))
-        folder.doubleClick()
-        XCTAssertTrue(tile("b.jpg").waitForExistence(timeout: 10), "inside the folder")
+        open(folder, until: "inside the folder") { self.tile("b.jpg").exists }
     }
 
     /// The divider between the panes: dragged, the left pane grows; a
