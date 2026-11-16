@@ -23,7 +23,7 @@ uploads (one artifact per language, unpacked into a folder each):
 
     docs/screenshots/<name>.webp   cwebp -lossless -z 9: English all of them (README),
                                    every other language only those the website shows
-                                   (HERO_SHOT, FEATURE_SHOTS) and the light ones the
+                                   (HERO_SHOT, GLOBE_SHOT, FEATURE_SHOTS) and the light ones the
                                    App Store shows (STORE_SHOTS)
 
 Their variants, so a phone loads a small file and a large screen the full width:
@@ -67,6 +67,8 @@ ICON = ROOT / "Resources" / "icon_1024.png"
 LANGUAGES = ["en", "de", "fr", "es", "it", "pt-BR", "nl", "pl", "sv", "da", "nb", "fi",
              "cs", "tr", "ru", "uk", "ja", "ko", "zh-Hans", "zh-Hant"]
 HERO_SHOT = "grid"
+# The home page's hero in a language that has its own of it (English: the master), else HERO_SHOT
+GLOBE_SHOT = "atlas-globe"
 # The website's feature pictures, in the order of the features (site/i18n); a feature
 # whose picture has no master in docs/screenshots yet is shown as text alone
 FEATURE_SHOTS = ["full", "atlas", "video", "archives", "dualpane", "search", "adjust", "inspector", "help", "settings"]
@@ -172,7 +174,7 @@ def shots():
 def kept(name):
     """Whether a screenshot, <motif>-<light|dark>[-<lang>], goes into docs/screenshots."""
     motif, mode, language = re.fullmatch(r"(.+?)-(light|dark)(?:-(.+))?", name).groups()
-    return not language or motif in [HERO_SHOT, *FEATURE_SHOTS] or (motif in STORE_SHOTS and mode == "light")
+    return not language or motif in [HERO_SHOT, GLOBE_SHOT, *FEATURE_SHOTS] or (motif in STORE_SHOTS and mode == "light")
 
 
 def import_shots(folders):

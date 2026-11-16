@@ -33,7 +33,7 @@ from pathlib import Path
 
 sys.dont_write_bytecode = True  # no __pycache__ in Scripts/ from the imports below
 from site_alternatives import Alternatives  # noqa: E402
-from make_site_images import FEATURE_SHOTS, HERO_SHOT, png_size, shot_variants  # noqa: E402
+from make_site_images import FEATURE_SHOTS, GLOBE_SHOT, HERO_SHOT, png_size, shot_variants  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 I18N = ROOT / "site" / "i18n"
@@ -138,8 +138,9 @@ def shot(name, code, alt, extra=""):
     tag = f"-{code}" if code != "en" and (DOCS / "screenshots" / f"{name}-light-{code}.webp").exists() else ""
     light, dark = DOCS / "screenshots" / f"{name}-light{tag}.webp", DOCS / "screenshots" / f"{name}-dark{tag}.webp"
     width, height = png_size(light)
-    sizes = HERO_SIZES if name == HERO_SHOT else FEATURE_SIZES
-    size = f' width="{width}" height="{height}"' + (' fetchpriority="high"' if name == HERO_SHOT else ' loading="lazy" decoding="async"')
+    hero = name in (HERO_SHOT, GLOBE_SHOT)
+    sizes = HERO_SIZES if hero else FEATURE_SIZES
+    size = f' width="{width}" height="{height}"' + (' fetchpriority="high"' if hero else ' loading="lazy" decoding="async"')
     img = f'<img src="/screenshots/{light.name}"{size} alt="{esc(alt)}"{extra}>'
     sources = []
     if dark.exists():
@@ -340,6 +341,14 @@ def alternative_links(code, text):
     return re.sub(r"\{alt:([a-z0-9-]+)\}", lambda m: alternatives.link(code, m.group(1)), text)
 
 
+def hero_shot(code, t):
+    """The globe where the language has its own picture of it (English: the master), else the grid."""
+    globe = DOCS / "screenshots" / (f"{GLOBE_SHOT}-light.webp" if code == "en" else f"{GLOBE_SHOT}-light-{code}.webp")
+    if globe.exists():
+        return shot(GLOBE_SHOT, code, t["features"][FEATURE_SHOTS.index("atlas")]["alt"])
+    return shot(HERO_SHOT, code, t["shotAlt"])
+
+
 def home(code, t):
     path_of = home_path
     stats = "".join(
@@ -382,7 +391,7 @@ def home(code, t):
     {buttons}
     <p class="fineprint">{fineprint(t['fineprint'])}</p>
   </div>
-  <div class="wrap wide"><div class="shot">{shot(HERO_SHOT, code, t['shotAlt'])}</div></div>
+  <div class="wrap wide"><div class="shot">{hero_shot(code, t)}</div></div>
 </div>
 
 <div class="wrap stats">{stats}</div>
