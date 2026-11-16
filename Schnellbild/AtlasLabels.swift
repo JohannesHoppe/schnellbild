@@ -71,7 +71,7 @@ struct AtlasHeader: View {
             VStack(alignment: .leading, spacing: 4) {
                 tourButton
                 countLabel(stacked: true)
-                if showsSubfolders { subfolderToggle }
+                if showsSubfolders { subfolderToggle(stacked: true) }
             }
             .modifier(HeaderChrome(shape: .rounded))
         }
@@ -112,12 +112,15 @@ struct AtlasHeader: View {
         .accessibilityIdentifier("atlasCount")
     }
 
-    var subfolderToggle: some View {
+    var subfolderToggle: some View { subfolderToggle(stacked: false) }
+
+    func subfolderToggle(stacked: Bool) -> some View {
         HStack(spacing: 6) {
-            Toggle(isOn: $subfolders) { Text(verbatim: texts.subfolders).font(.caption).fixedSize() }
+            // (one part a row: the words go onto a second line rather than out of the pane)
+            Toggle(isOn: $subfolders) { Text(verbatim: texts.subfolders).font(.caption).fixedSize(horizontal: !stacked, vertical: true) }
                 .toggleStyle(.checkbox)
                 .controlSize(.small)
-                .fixedSize()
+                .fixedSize(horizontal: !stacked, vertical: true)
                 .help(texts.subfoldersHelp)
                 .accessibilityIdentifier("atlasSubfolders")
             if walking {

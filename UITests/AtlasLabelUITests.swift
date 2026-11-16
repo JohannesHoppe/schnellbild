@@ -34,9 +34,14 @@ final class AtlasLabelUITests: SchnellbildUITestCase {
         ceil((text as NSString).size(withAttributes: [.font: NSFont.systemFont(ofSize: size)]).width)
     }
 
+    /// Each control's width less its words' is what it adds (an icon, a
+    /// key, a box): the same in every language. A word cut short ("Viag…")
+    /// leaves a control narrower by a letter or more, so its share falls
+    /// below the others' (3 pt allowed for how fonts measure).
     func testTheHeadersWordsAreWholeInEveryLanguage() throws {
         continueAfterFailure = true
         XCTAssertEqual(languages.count, 20, "\(languages)")
+        var tourChrome: [String: CGFloat] = [:], countChrome: [String: CGFloat] = [:], toggleChrome: [String: CGFloat] = [:]
         for language in languages {
             let table = strings(language)
             launch(open: tempDir.path, language: language)
@@ -46,16 +51,18 @@ final class AtlasLabelUITests: SchnellbildUITestCase {
             let onMap = String(format: table["%lld on the map"] ?? "%lld on the map", 13)
             eventually("\(language): the places are read", timeout: 20) { self.text(of: count) == onMap }
             let tour = table["Tour"] ?? "Tour", subfolders = table["Include subfolders"] ?? "Include subfolders"
-            // (with its icon and the spacing beside the word: 20 pt at least)
-            let tourFrame = element("tourButton").firstMatch.frame
-            XCTAssertGreaterThanOrEqual(tourFrame.width, width(tour, size: NSFont.systemFontSize) + 20,
-                                        "\(language): Tour “\(tour)” in \(tourFrame.width) pt")
-            XCTAssertGreaterThanOrEqual(count.frame.width, width(onMap, size: 10), "\(language): “\(onMap)” in \(count.frame.width) pt")
-            let toggle = element("atlasSubfolders").firstMatch.frame
-            XCTAssertGreaterThanOrEqual(toggle.width, width(subfolders, size: 10) + 14,
-                                        "\(language): “\(subfolders)” and its box in \(toggle.width) pt")
-            print("\(language): Tour “\(tour)” \(tourFrame.width) pt, count \(count.frame.width) pt, subfolders \(toggle.width) pt")
+            let tourFrame = element("tourButton").firstMatch.frame, toggleFrame = element("atlasSubfolders").firstMatch.frame
+            tourChrome[language] = tourFrame.width - width(tour, size: NSFont.systemFontSize)
+            countChrome[language] = count.frame.width - width(onMap, size: 10)
+            toggleChrome[language] = toggleFrame.width - width(subfolders, size: 10)
+            print("\(language): Tour “\(tour)” \(tourFrame.width) pt (adds \(tourChrome[language]!)), “\(onMap)” \(count.frame.width) pt (adds \(countChrome[language]!)), “\(subfolders)” \(toggleFrame.width) pt (adds \(toggleChrome[language]!))")
             app.terminate()
+        }
+        for (name, shares) in [("Tour", tourChrome), ("the count", countChrome), ("Include subfolders", toggleChrome)] {
+            let usual = shares.values.max() ?? 0
+            for (language, share) in shares.sorted(by: { $0.key < $1.key }) {
+                XCTAssertGreaterThanOrEqual(share, usual - 3, "\(language): \(name) adds \(share) pt to its words, the others \(usual) pt: cut short")
+            }
         }
     }
 }
