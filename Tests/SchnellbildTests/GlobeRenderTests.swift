@@ -93,9 +93,11 @@ final class GlobeRenderTests: XCTestCase {
         _ = try picture(GlobeScene(camera: MapCamera(center: alps, zoom: flatZoom), size: size, date: summer), "globe-flat")
         _ = try picture(GlobeScene(camera: MapCamera(center: Coordinate(latitude: -17, longitude: 180), zoom: over), size: size, date: summer),
                         "globe-antimeridian")
-        // The middle shows the palette's land (Libya), space around the Earth
-        XCTAssertGreaterThan(brightness(light, at: CGPoint(x: 480, y: 330)), brightness(dark, at: CGPoint(x: 480, y: 330)) + 80)
-        XCTAssertLessThan(brightness(light, at: CGPoint(x: 15, y: 15), radius: 20), brightness(light, at: CGPoint(x: 480, y: 330)) - 100, "space")
+        // The middle shows the satellite picture's desert (Libya) in both appearances, space around the Earth darker
+        let libya = brightness(light, at: CGPoint(x: 480, y: 330))
+        XCTAssertGreaterThan(libya, 110, "the desert")
+        XCTAssertEqual(brightness(dark, at: CGPoint(x: 480, y: 330)), libya, accuracy: 10, "the same picture in the dark")
+        XCTAssertLessThan(brightness(light, at: CGPoint(x: 15, y: 15), radius: 20), libya - 50, "space")
     }
 
     func testTheSunLightsItsSideOnly() throws {
