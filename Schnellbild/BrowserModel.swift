@@ -1847,12 +1847,17 @@ final class BrowserModel: ObservableObject {
         guard arguments.contains("--ui-testing"),
               let arg = arguments.first(where: { $0.hasPrefix("--test-log=") }) else { return }
         let path = String(arg.dropFirst("--test-log=".count))
+        // One writer at a time: lines come from the main thread and VLC's
+        // threads, and two writers at the same end would write over each other
+        testLogLock.lock()
+        defer { testLogLock.unlock() }
         if !FileManager.default.fileExists(atPath: path) { FileManager.default.createFile(atPath: path, contents: nil) }
         guard let handle = FileHandle(forWritingAtPath: path) else { return }
         handle.seekToEndOfFile()
         handle.write(Data((line + "\n").utf8))
         try? handle.close()
     }
+    nonisolated private static let testLogLock = NSLock()
 
     /// Reopen the last folder on launch (if it still exists).
     /// Checked off the main thread: a share that is mounted but unreachable
