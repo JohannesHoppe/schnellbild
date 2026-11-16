@@ -83,9 +83,8 @@ final class AtlasUITests: SchnellbildUITestCase {
         let count = Int(text(of: first).components(separatedBy: ", ").last?.split(separator: " ").first ?? "") ?? 0
         XCTAssertGreaterThan(count, 1, "the trip's first place holds several items at the fitted zoom")
         let before = mapTiles
-        first.doubleClick()
         // Zoomed in: the tiles on screen change (they part, others leave the view)
-        eventually("zoomed in", timeout: 10) { self.mapTiles != before }
+        open(first, until: "zoomed in", timeout: 10) { self.mapTiles != before }
         // The arrows move among the tiles
         app.typeKey(.rightArrow, modifierFlags: [])
         eventually("another tile selected") { !self.atlasSelected("norway-01-bryggen.jpg") }

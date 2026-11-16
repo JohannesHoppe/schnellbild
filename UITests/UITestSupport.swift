@@ -137,6 +137,33 @@ class SchnellbildUITestCase: XCTestCase {
         XCTFail(message, file: file, line: line)
     }
 
+    /// Opens an item as a user does, with a double click: a tile, a list row
+    /// or an Atlas place, once it can be clicked (nothing lies over it, such
+    /// as a full view still closing), then waits until `opened` holds (the
+    /// folder or archive shown, the picture or video open). The app tells a
+    /// double click by the click count the event carries (`Clicks`), so one
+    /// double click is enough.
+    func open(_ item: XCUIElement, until what: String, timeout: TimeInterval = 15,
+              file: StaticString = #filePath, line: UInt = #line, _ opened: () -> Bool) {
+        eventually("\(item) can be clicked", timeout: 10, file: file, line: line) { item.exists && item.isHittable }
+        item.doubleClick()
+        eventually(what, timeout: timeout, file: file, line: line, opened)
+    }
+
+    /// Opens a tile (see `open(_:until:)`) and waits for `shown`: a tile of
+    /// the folder opened, the picture's name in the badge …
+    func openTile(_ name: String, showing shown: XCUIElement, timeout: TimeInterval = 15,
+                  file: StaticString = #filePath, line: UInt = #line) {
+        open(tile(name), until: "“\(name)” opened", timeout: timeout, file: file, line: line) { shown.exists }
+    }
+
+    /// Opens a picture's or video's tile and waits for the full view to show it.
+    func openInFullView(_ name: String, timeout: TimeInterval = 15, file: StaticString = #filePath, line: UInt = #line) {
+        open(tile(name), until: "“\(name)” in the full view", timeout: timeout, file: file, line: line) {
+            self.badge.exists && self.text(of: self.badge).contains(name)
+        }
+    }
+
     /// The full view's position badge ("n / m  ·  name").
     var badge: XCUIElement { app.staticTexts["positionBadge"] }
 
