@@ -119,7 +119,7 @@ struct ThumbnailGridView: View {
             }
         case .image, .video:
             ThumbnailView(url: entry.url, side: side, isSelected: cursor, isMarked: marked, isVideo: entry.kind == .video,
-                          modified: entry.modDate, unfinished: entry.unfinishedNote)
+                          modified: entry.previewDate, unfinished: entry.unfinishedNote)
         }
     }
 }

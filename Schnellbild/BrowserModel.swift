@@ -26,6 +26,14 @@ struct GridEntry: Identifiable, Hashable {
     /// volume missing) whose data runs past what is there.
     var isIncomplete = false
 
+    /// The date a tile's preview is made for: a download still growing
+    /// changes its date with every write, so its preview is made again at
+    /// most every 30 seconds.
+    var previewDate: Date? {
+        guard isDownloading, let modDate else { return modDate }
+        return Date(timeIntervalSinceReferenceDate: (modDate.timeIntervalSinceReferenceDate / 30).rounded(.down) * 30)
+    }
+
     /// What the tile's and row's small arrow says, nil for a whole file.
     var unfinishedNote: String? {
         if isDownloading { return String(localized: "Download not finished") }

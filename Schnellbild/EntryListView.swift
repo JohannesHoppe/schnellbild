@@ -224,7 +224,7 @@ struct EntryListView: View {
                            isEmpty: model.isEmptyFolder(entry), kindLabel: archive ? "archive" : "folder")
             }
         case .image, .video:
-            ThumbnailView(url: entry.url, side: Self.previewSide, isSelected: false, isVideo: false, modified: entry.modDate)
+            ThumbnailView(url: entry.url, side: Self.previewSide, isSelected: false, isVideo: false, modified: entry.previewDate)
         }
     }
 

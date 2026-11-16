@@ -61,8 +61,8 @@ struct InspectorView: View {
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("inspector")
         .task(id: entry.url) { await load() }
-        // (again when a growing download's size changed: its player was opened again)
-        .task(id: PlayerKey(url: entry.url, size: downloadedSize)) { await loadFromPlayer() }
+        // (again for another player: a growing download's video opened again)
+        .task(id: PlayerKey(url: entry.url, player: model.activePlayer.map(ObjectIdentifier.init))) { await loadFromPlayer() }
         .task(id: entry.url) { await watchDownload() }
     }
 
@@ -383,7 +383,7 @@ struct InspectorView: View {
 
     private struct PlayerKey: Hashable {
         let url: URL
-        let size: Int64?
+        let player: ObjectIdentifier?
     }
 
     /// A download not finished ("x.mp4.part"): its size looked at every two
