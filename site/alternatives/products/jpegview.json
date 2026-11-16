@@ -1,0 +1,565 @@
+{
+ "name": "JPEGView",
+ "short": "JPEGView",
+ "vendor": "sylikc (fork of David Kleiner's JPEGView)",
+ "website": "https://github.com/sylikc/jpegview",
+ "platforms": [
+  "Windows"
+ ],
+ "mac_available": "no",
+ "page": "switcher",
+ "section": "windows",
+ "price": "Free",
+ "license": "GPL-2.0",
+ "current_version": "1.3.46",
+ "last_update": "2023-10-07 (last release; last commit 2024-07-06)",
+ "engine": "Own decoders + libwebp, libjxl, libheif, libavif, LibRaw, WIC",
+ "category": "image",
+ "summary": "Lean, very fast Windows image viewer with a minimal full-screen GUI, real-time image correction (auto contrast, local density, sharpening) and keyboard control through an editable KeyMap. Handles modern formats and RAW. No thumbnails, no video, no file browser; the fork has had no release since 2023.",
+ "where_it_wins": [
+  "Real-time automatic colour, contrast and local density correction while viewing",
+  "Extremely small and portable (no install)",
+  "Fully remappable keys via KeyMap.txt",
+  "Lossless JPEG crop/rotate",
+  "Image series played as a movie at a set frame rate"
+ ],
+ "where_schnellbild_wins": [
+  "Runs natively on the Mac",
+  "Thumbnail grid with folder previews and list view",
+  "Plays videos, also MKV/AVI/WebM",
+  "Archives and comics as folders",
+  "Recursive and regex search",
+  "Dual pane, move/copy, undo",
+  "Actively developed"
+ ],
+ "search_terms": [
+  "jpegview mac",
+  "jpegview for mac",
+  "jpegview macos",
+  "jpegview alternative",
+  "jpegview alternative mac",
+  "jpegview mac os x",
+  "jpegview 맥",
+  "jpegview mac 代わり",
+  "leichter bildbetrachter mac wie jpegview"
+ ],
+ "matrix": {
+  "free": {
+   "value": "yes",
+   "evidence": [
+    "https://github.com/sylikc/jpegview"
+   ],
+   "how": "docs"
+  },
+  "open_source": {
+   "value": "yes",
+   "note": "GPL-2.0",
+   "evidence": [
+    "https://github.com/sylikc/jpegview"
+   ],
+   "how": "source"
+  },
+  "native_apple_silicon": {
+   "value": "no",
+   "note": "Windows only (32/64-bit x86 builds)",
+   "evidence": [
+    "https://github.com/sylikc/jpegview/releases/tag/v1.3.46"
+   ],
+   "how": "store"
+  },
+  "no_account_no_tracking": {
+   "value": "yes",
+   "evidence": [
+    "https://github.com/sylikc/jpegview/blob/master/src/JPEGView/Config/JPEGView.ini"
+   ],
+   "how": "source"
+  },
+  "dark_light_setting": {
+   "value": "partial",
+   "note": "Dark UI; background and UI colours are set in the INI file, no light/dark switch",
+   "evidence": [
+    "https://github.com/sylikc/jpegview/blob/master/src/JPEGView/Config/JPEGView.ini"
+   ],
+   "how": "source"
+  },
+  "languages_20": {
+   "value": "yes",
+   "note": "28 languages",
+   "evidence": [
+    "https://github.com/sylikc/jpegview",
+    "https://github.com/sylikc/jpegview/tree/master/src/JPEGView/Config"
+   ],
+   "how": "source"
+  },
+  "folder_browsing": {
+   "value": "partial",
+   "note": "Opens an image and pages through its folder (also recursively, F8); no folder browser",
+   "evidence": [
+    "https://github.com/sylikc/jpegview/blob/master/src/JPEGView/Config/readme.html"
+   ],
+   "how": "docs"
+  },
+  "thumbnail_grid": {
+   "value": "no",
+   "note": "Single-image viewer, no thumbnail view",
+   "evidence": [
+    "https://github.com/sylikc/jpegview/blob/master/src/JPEGView/Config/readme.html"
+   ],
+   "how": "docs"
+  },
+  "list_view": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/sylikc/jpegview/blob/master/src/JPEGView/Config/readme.html"
+   ],
+   "how": "docs"
+  },
+  "recursive_search": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/sylikc/jpegview/blob/master/src/JPEGView/Config/readme.html"
+   ],
+   "how": "docs"
+  },
+  "regex_search": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/sylikc/jpegview/blob/master/src/JPEGView/Config/readme.html"
+   ],
+   "how": "docs"
+  },
+  "network_shares_fast": {
+   "value": "partial",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched readme.html, JPEGView.ini and source: a read-ahead thread loads the next image, nothing specific to network shares or big folders"
+  },
+  "multiple_windows": {
+   "value": "yes",
+   "note": "Multiple instances allowed by default (SingleInstance=false)",
+   "evidence": [
+    "https://github.com/sylikc/jpegview/blob/master/src/JPEGView/Config/JPEGView.ini"
+   ],
+   "how": "source"
+  },
+  "bookmarks": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/sylikc/jpegview/blob/master/src/JPEGView/Config/readme.html",
+    "https://github.com/sylikc/jpegview/blob/master/src/JPEGView/Config/JPEGView.ini"
+   ],
+   "how": "source"
+  },
+  "img_modern_formats": {
+   "value": "yes",
+   "note": "WebP, JXL, HEIF/HEIC, AVIF",
+   "evidence": [
+    "https://github.com/sylikc/jpegview"
+   ],
+   "how": "docs"
+  },
+  "img_raw": {
+   "value": "yes",
+   "note": "LibRaw",
+   "evidence": [
+    "https://github.com/sylikc/jpegview"
+   ],
+   "how": "docs"
+  },
+  "img_psd_exr": {
+   "value": "partial",
+   "note": "PSD/PSB yes, no OpenEXR",
+   "evidence": [
+    "https://github.com/sylikc/jpegview"
+   ],
+   "how": "docs"
+  },
+  "img_svg_pdf": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/sylikc/jpegview"
+   ],
+   "how": "docs"
+  },
+  "img_animated": {
+   "value": "yes",
+   "note": "Animated GIF, PNG and WebP",
+   "evidence": [
+    "https://github.com/sylikc/jpegview/blob/master/src/JPEGView/Config/readme.html",
+    "https://github.com/sylikc/jpegview/blob/master/CHANGELOG.txt"
+   ],
+   "how": "changelog"
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "note": "PgUp/PgDn, Home/End, mouse side buttons",
+   "evidence": [
+    "https://github.com/sylikc/jpegview/blob/master/src/JPEGView/Config/readme.html"
+   ],
+   "how": "docs"
+  },
+  "zoom_rotate": {
+   "value": "yes",
+   "note": "Rotation follows EXIF; lossless JPEG transforms when saved",
+   "evidence": [
+    "https://github.com/sylikc/jpegview/blob/master/src/JPEGView/Config/readme.html"
+   ],
+   "how": "docs"
+  },
+  "slideshow": {
+   "value": "yes",
+   "note": "1..9 keys start it with n seconds, transitions",
+   "evidence": [
+    "https://github.com/sylikc/jpegview/blob/master/src/JPEGView/Config/readme.html"
+   ],
+   "how": "docs"
+  },
+  "slideshow_recursive": {
+   "value": "partial",
+   "note": "Navigation mode F8 runs through subfolders; images only",
+   "evidence": [
+    "https://github.com/sylikc/jpegview/blob/master/src/JPEGView/Config/readme.html"
+   ],
+   "how": "docs"
+  },
+  "auto_enhance_view": {
+   "value": "yes",
+   "note": "Automatic colour/contrast correction, local density correction, landscape mode applied while viewing; file unchanged unless saved",
+   "evidence": [
+    "https://github.com/sylikc/jpegview/blob/master/src/JPEGView/Config/readme.html",
+    "https://github.com/sylikc/jpegview/blob/master/src/JPEGView/Config/JPEGView.ini"
+   ],
+   "how": "docs"
+  },
+  "file_info_exif": {
+   "value": "partial",
+   "note": "EXIF info and histogram (F2); no video info",
+   "evidence": [
+    "https://github.com/sylikc/jpegview/blob/master/src/JPEGView/Config/readme.html"
+   ],
+   "how": "docs"
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/sylikc/jpegview/blob/master/src/JPEGView/ImageLoadThread.cpp"
+   ],
+   "how": "source",
+   "note": "Detects JPEG/PNG/GIF/WebP/PSD etc. by magic bytes and decodes them correctly, but shows no notice about the wrong extension"
+  },
+  "video_native": {
+   "value": "no",
+   "note": "Image viewer; \"movie mode\" only plays a folder of JPEGs at a frame rate",
+   "evidence": [
+    "https://github.com/sylikc/jpegview/blob/master/src/JPEGView/Config/readme.html"
+   ],
+   "how": "docs"
+  },
+  "video_mkv_avi_webm": {
+   "value": "no",
+   "note": "Image viewer; \"movie mode\" only plays a folder of JPEGs at a frame rate",
+   "evidence": [
+    "https://github.com/sylikc/jpegview/blob/master/src/JPEGView/Config/readme.html"
+   ],
+   "how": "docs"
+  },
+  "photos_videos_one_grid": {
+   "value": "no",
+   "note": "Image viewer; \"movie mode\" only plays a folder of JPEGs at a frame rate",
+   "evidence": [
+    "https://github.com/sylikc/jpegview/blob/master/src/JPEGView/Config/readme.html"
+   ],
+   "how": "docs"
+  },
+  "video_skim_arrows": {
+   "value": "no",
+   "note": "Image viewer; \"movie mode\" only plays a folder of JPEGs at a frame rate",
+   "evidence": [
+    "https://github.com/sylikc/jpegview/blob/master/src/JPEGView/Config/readme.html"
+   ],
+   "how": "docs"
+  },
+  "subtitles_embedded": {
+   "value": "no",
+   "note": "Image viewer; \"movie mode\" only plays a folder of JPEGs at a frame rate",
+   "evidence": [
+    "https://github.com/sylikc/jpegview/blob/master/src/JPEGView/Config/readme.html"
+   ],
+   "how": "docs"
+  },
+  "subtitles_external_files": {
+   "value": "no",
+   "note": "Image viewer; \"movie mode\" only plays a folder of JPEGs at a frame rate",
+   "evidence": [
+    "https://github.com/sylikc/jpegview/blob/master/src/JPEGView/Config/readme.html"
+   ],
+   "how": "docs"
+  },
+  "audio_track_choice": {
+   "value": "no",
+   "note": "Image viewer; \"movie mode\" only plays a folder of JPEGs at a frame rate",
+   "evidence": [
+    "https://github.com/sylikc/jpegview/blob/master/src/JPEGView/Config/readme.html"
+   ],
+   "how": "docs"
+  },
+  "playback_speed": {
+   "value": "no",
+   "note": "Image viewer; \"movie mode\" only plays a folder of JPEGs at a frame rate",
+   "evidence": [
+    "https://github.com/sylikc/jpegview/blob/master/src/JPEGView/Config/readme.html"
+   ],
+   "how": "docs"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "note": "Image viewer; \"movie mode\" only plays a folder of JPEGs at a frame rate",
+   "evidence": [
+    "https://github.com/sylikc/jpegview/blob/master/src/JPEGView/Config/readme.html"
+   ],
+   "how": "docs"
+  },
+  "playlist": {
+   "value": "partial",
+   "note": "Slide show from a text file listing images",
+   "evidence": [
+    "https://github.com/sylikc/jpegview/blob/master/src/JPEGView/Config/readme.html"
+   ],
+   "how": "docs"
+  },
+  "saved_playlists": {
+   "value": "partial",
+   "note": "Slide show text files (images only)",
+   "evidence": [
+    "https://github.com/sylikc/jpegview/blob/master/src/JPEGView/Config/readme.html"
+   ],
+   "how": "docs"
+  },
+  "pip": {
+   "value": "no",
+   "note": "Image viewer; \"movie mode\" only plays a folder of JPEGs at a frame rate",
+   "evidence": [
+    "https://github.com/sylikc/jpegview/blob/master/src/JPEGView/Config/readme.html"
+   ],
+   "how": "docs"
+  },
+  "music_mode": {
+   "value": "no",
+   "note": "Image viewer; \"movie mode\" only plays a folder of JPEGs at a frame rate",
+   "evidence": [
+    "https://github.com/sylikc/jpegview/blob/master/src/JPEGView/Config/readme.html"
+   ],
+   "how": "docs"
+  },
+  "streaming_urls": {
+   "value": "no",
+   "note": "Image viewer; \"movie mode\" only plays a folder of JPEGs at a frame rate",
+   "evidence": [
+    "https://github.com/sylikc/jpegview/blob/master/src/JPEGView/Config/readme.html"
+   ],
+   "how": "docs"
+  },
+  "online_subtitles": {
+   "value": "no",
+   "note": "Image viewer; \"movie mode\" only plays a folder of JPEGs at a frame rate",
+   "evidence": [
+    "https://github.com/sylikc/jpegview/blob/master/src/JPEGView/Config/readme.html"
+   ],
+   "how": "docs"
+  },
+  "video_filters_enhance": {
+   "value": "no",
+   "note": "Image viewer; \"movie mode\" only plays a folder of JPEGs at a frame rate",
+   "evidence": [
+    "https://github.com/sylikc/jpegview/blob/master/src/JPEGView/Config/readme.html"
+   ],
+   "how": "docs"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "note": "Windows app, no video",
+   "evidence": [
+    "https://github.com/sylikc/jpegview/blob/master/src/JPEGView/Config/readme.html"
+   ],
+   "how": "docs"
+  },
+  "archives_as_folders": {
+   "value": "no",
+   "note": "No archive support",
+   "evidence": [
+    "https://github.com/sylikc/jpegview"
+   ],
+   "how": "docs"
+  },
+  "comics_cbz_cbr": {
+   "value": "no",
+   "note": "No archive support",
+   "evidence": [
+    "https://github.com/sylikc/jpegview"
+   ],
+   "how": "docs"
+  },
+  "archive_passwords": {
+   "value": "no",
+   "note": "No archive support",
+   "evidence": [
+    "https://github.com/sylikc/jpegview"
+   ],
+   "how": "docs"
+  },
+  "split_archives": {
+   "value": "no",
+   "note": "No archive support",
+   "evidence": [
+    "https://github.com/sylikc/jpegview"
+   ],
+   "how": "docs"
+  },
+  "videos_in_archives": {
+   "value": "no",
+   "note": "No archive support",
+   "evidence": [
+    "https://github.com/sylikc/jpegview"
+   ],
+   "how": "docs"
+  },
+  "manga_two_page": {
+   "value": "no",
+   "note": "No archive support",
+   "evidence": [
+    "https://github.com/sylikc/jpegview"
+   ],
+   "how": "docs"
+  },
+  "rename_trash": {
+   "value": "partial",
+   "note": "Rename from the bottom panel, delete to Recycle Bin; no new folder",
+   "evidence": [
+    "https://github.com/sylikc/jpegview/blob/master/src/JPEGView/Config/readme.html"
+   ],
+   "how": "docs"
+  },
+  "move_copy": {
+   "value": "partial",
+   "note": "Batch copy and rename into target folders",
+   "evidence": [
+    "https://github.com/sylikc/jpegview/blob/master/src/JPEGView/Config/readme.html"
+   ],
+   "how": "docs"
+  },
+  "dual_pane": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/sylikc/jpegview/blob/master/src/JPEGView/Config/readme.html"
+   ],
+   "how": "docs"
+  },
+  "undo_file_actions": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/sylikc/jpegview/blob/master/src/JPEGView/resource.h",
+    "https://github.com/sylikc/jpegview/blob/master/src/JPEGView/Config/KeyMap.txt.default"
+   ],
+   "how": "source",
+   "note": "Command list (IDM_* in resource.h) has rename and recycle-bin delete but no undo"
+  },
+  "image_editing": {
+   "value": "yes",
+   "note": "Crop, rotate, perspective, sharpness, colour, save",
+   "evidence": [
+    "https://github.com/sylikc/jpegview",
+    "https://github.com/sylikc/jpegview/blob/master/src/JPEGView/Config/readme.html"
+   ],
+   "how": "docs"
+  },
+  "batch_convert": {
+   "value": "partial",
+   "note": "Batch rename and copy; no batch format conversion documented",
+   "evidence": [
+    "https://github.com/sylikc/jpegview/blob/master/src/JPEGView/Config/readme.html"
+   ],
+   "how": "docs"
+  },
+  "library_catalog": {
+   "value": "no",
+   "note": "Only a parameter DB that stores per-image processing settings",
+   "evidence": [
+    "https://github.com/sylikc/jpegview/blob/master/src/JPEGView/Config/readme.html"
+   ],
+   "how": "docs"
+  },
+  "cloud_sync": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/sylikc/jpegview/blob/master/src/JPEGView/Config/readme.html"
+   ],
+   "how": "docs"
+  },
+  "keyboard_first": {
+   "value": "yes",
+   "note": "Minimal GUI, nearly everything on keys",
+   "evidence": [
+    "https://github.com/sylikc/jpegview",
+    "https://github.com/sylikc/jpegview/blob/master/src/JPEGView/Config/readme.html"
+   ],
+   "how": "docs"
+  },
+  "custom_shortcuts": {
+   "value": "yes",
+   "note": "KeyMap.txt",
+   "evidence": [
+    "https://github.com/sylikc/jpegview/tree/master/src/JPEGView/Config"
+   ],
+   "how": "source"
+  },
+  "shortcut_cheatsheet": {
+   "value": "partial",
+   "note": "Keys are listed in the bundled readme.html",
+   "evidence": [
+    "https://github.com/sylikc/jpegview/blob/master/src/JPEGView/Config/readme.html"
+   ],
+   "how": "docs"
+  },
+  "boss_key": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/sylikc/jpegview/blob/master/src/JPEGView/resource.h",
+    "https://github.com/sylikc/jpegview/blob/master/src/JPEGView/Config/KeyMap.txt.default"
+   ],
+   "how": "source",
+   "note": "Only a mappable minimize command (IDM_MINIMIZE) and Esc to quit; no hide-all key"
+  },
+  "app_sandbox": {
+   "value": "na",
+   "note": "Windows-only app",
+   "evidence": [
+    "https://github.com/sylikc/jpegview/releases/tag/v1.3.46"
+   ],
+   "how": "docs"
+  },
+  "no_network": {
+   "value": "yes",
+   "note": "Opens a map site in the browser only when asked (GPS location)",
+   "evidence": [
+    "https://github.com/sylikc/jpegview/blob/master/src/JPEGView/Config/JPEGView.ini"
+   ],
+   "how": "source"
+  },
+  "notarized_attested": {
+   "value": "na",
+   "note": "Windows-only; MSI not code-signed",
+   "evidence": [
+    "https://github.com/sylikc/jpegview"
+   ],
+   "how": "docs"
+  },
+  "mac_app_store": {
+   "value": "no",
+   "note": "Windows only",
+   "evidence": [
+    "https://github.com/sylikc/jpegview/releases/tag/v1.3.46"
+   ],
+   "how": "store"
+  }
+ }
+}

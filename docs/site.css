@@ -33,6 +33,14 @@
   --lift: 0 10px 24px rgba(0, 0, 0, 0.18);
   --float: 0 18px 50px rgba(0, 0, 0, 0.18);
   --scrim: rgba(0, 0, 0, 0.85);
+  /* The comparison's symbols: each at least 3:1 on the page, the glyph inside 4.5:1 on it */
+  --yes: #1a7f37;
+  --no: #cf222e;
+  --partial: #bc4c00;
+  --purpose: #f5c400;
+  --purpose-ring: #8a6100;
+  --purpose-ink: #3b2a00;
+  --glyph: #ffffff;
   color-scheme: light dark;
 }
 /* Dark where the visitor's system is dark, unless they picked light with the
@@ -60,6 +68,11 @@
     --lift: none;
     --float: 0 18px 50px rgba(0, 0, 0, 0.5);
     --scrim: rgba(18, 18, 18, 0.97);
+    --yes: #57c27a;
+    --no: #f47067;
+    --partial: #f0883e;
+    --purpose-ring: #f5c400;
+    --glyph: #121212;
   }
 }
 :root[data-theme="dark"] {
@@ -84,6 +97,11 @@
   --lift: none;
   --float: 0 18px 50px rgba(0, 0, 0, 0.5);
   --scrim: rgba(18, 18, 18, 0.97);
+  --yes: #57c27a;
+  --no: #f47067;
+  --partial: #f0883e;
+  --purpose-ring: #f5c400;
+  --glyph: #121212;
   color-scheme: dark;
 }
 :root[data-theme="light"] { color-scheme: light; }
@@ -335,3 +353,71 @@ dialog.lightbox::backdrop { background: var(--scrim); }
 dialog.lightbox img { max-width: 96vw; max-height: 94vh; width: auto; height: auto; cursor: zoom-out; }
 dialog.lightbox .close { position: fixed; top: 14px; right: 14px; width: 40px; height: 40px; border: 0; border-radius: 999px; background: var(--overlay); color: #e0e0e0; font-size: 26px; line-height: 1; cursor: pointer; }
 dialog.lightbox .close:hover { background: #454545; }
+
+/* Alternatives: text on the page like an article; tiles only for the program's short facts */
+.sr { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.alt { max-width: 860px; overflow-wrap: break-word; }
+.alt-page > .alt:first-child { padding-top: 24px; padding-bottom: 24px; }
+.alt h1 { font-size: clamp(34px, 5.6vw, 54px); line-height: 1.06; letter-spacing: -0.03em; margin: 12px 0 18px; }
+.alt h2 { font-size: clamp(26px, 3.4vw, 34px); margin: 52px 0 14px; }
+.alt h2.small { font-size: 22px; margin-top: 40px; }
+.alt h3 { font-size: 19px; margin: 0 0 10px; }
+.alt p, .alt li { color: var(--muted); }
+.alt li { margin: 6px 0; }
+.alt strong { color: var(--text); }
+.alt .lead { font-size: clamp(18px, 2vw, 21px); color: var(--muted); margin: 0 0 28px; }
+.crumbs { font-size: 14px; }
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin: 0 0 8px; }
+.fact { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 14px 16px; box-shadow: var(--raise); }
+.fact span { display: block; color: var(--muted); font-size: 13px; }
+.fact b { display: block; font-size: 15px; font-weight: 600; line-height: 1.35; margin-top: 2px; }
+.alt .note { border-left: 3px solid var(--line-strong); padding: 2px 0 2px 16px; }
+.wins { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 40px; }
+.alt ul:not(.legend):not(.alt-links) { padding-left: 20px; margin: 0; }
+@media (max-width: 700px) { .wins { grid-template-columns: 1fr; gap: 28px; } }
+.alt-shot { margin: 44px 0 0; }
+.alt-shot img { max-height: 480px; width: auto; margin-inline: auto; }
+
+/* The comparison: Feature | Schnellbild | the other, grouped; the column names stay in view */
+.legend { list-style: none; padding: 0; margin: 0 0 18px; display: flex; flex-wrap: wrap; gap: 6px 20px; font-size: 14px; }
+.alt .legend li { display: flex; align-items: center; gap: 7px; margin: 0; }
+.v { width: 20px; height: 20px; flex: none; vertical-align: -4px; overflow: visible; }
+.v .g { fill: none; stroke: var(--glyph); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.v.yes circle { fill: var(--yes); }
+.v.no circle { fill: var(--no); }
+.v.partial .ring { fill: none; stroke: var(--partial); stroke-width: 1.6; }
+.v.partial path { fill: var(--partial); }
+.v.intentional circle { fill: var(--purpose); stroke: var(--purpose-ring); stroke-width: 1.2; }
+.v.intentional .g { stroke: var(--purpose-ink); }
+.v.na .g { stroke: var(--muted); }
+.matrix { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 15px; line-height: 1.4; }
+.matrix th, .matrix td { padding: 10px 8px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; hyphens: auto; }
+.matrix thead th { position: sticky; top: 60px; z-index: 2; background: var(--bg); color: var(--muted); font-size: 13px; font-weight: 600; border-bottom: 1px solid var(--line-strong); }
+.matrix thead th:first-child { width: 46%; }
+.matrix tbody th[scope="row"] { font-weight: 400; color: var(--text); }
+.matrix tr.group th { padding: 28px 8px 8px; font-size: 18px; font-weight: 650; color: var(--text); border-bottom: 1px solid var(--line-strong); }
+.matrix tbody:first-of-type tr.group th { padding-top: 14px; }
+.matrix td small { display: block; color: var(--muted); font-size: 13px; line-height: 1.35; margin-top: 4px; }
+.matrix .v { vertical-align: top; }
+.cite { display: inline-flex; flex-wrap: wrap; gap: 0 5px; margin-left: 6px; font-size: 12px; line-height: 1; vertical-align: top; }
+.method { font-size: 14px; margin-top: 18px; }
+.sources { font-size: 13px; padding-left: 28px; overflow-wrap: anywhere; }
+.alt .sources li { margin: 3px 0; }
+@media (max-width: 640px) {
+  .matrix { font-size: 14px; }
+  .matrix th, .matrix td { padding: 9px 4px; }
+  .matrix thead th:first-child { width: 40%; }
+}
+
+/* Lists of alternatives: columns on the overview, pills on the home page and under a page */
+.alt-links { list-style: none; padding: 0; margin: 0; }
+.alt-links.columns { columns: 3 190px; column-gap: 24px; }
+.alt .alt-links.columns li { margin: 0; padding: 5px 0; break-inside: avoid; }
+.alt-links:not(.columns) { display: flex; flex-wrap: wrap; gap: 8px; }
+.alt-links:not(.columns) li { margin: 0; }
+.alt-links:not(.columns) a { display: inline-block; padding: 7px 14px; border: 1px solid var(--line-strong); border-radius: 999px; background: var(--control); color: var(--text); font-size: 15px; }
+.alt-links:not(.columns) a:hover { background: var(--control-hover); text-decoration: none; }
+.more-alternatives, .alt .all { font-weight: 600; margin: 18px 0 0; }
+.more-alternatives { margin-bottom: 36px; }
+.alt .trademark { font-size: 13px; margin: 36px 0 48px; }
+.alt-cta { padding: 64px 0; }

@@ -1,6 +1,7 @@
 {
   "name": "日本語",
   "privacySlug": "privacy",
+  "alternativesSlug": "alternatives",
   "title": "Schnellbild：イライラしない、Mac用の画像・動画ビューア",
   "seoTitle": "Schnellbild · Mac用の画像ビューア。動画再生、漫画、スライドショーも",
   "seoDescription": "Mac用の高速で無料の画像ビューア。AVI・MKVの動画再生、ZIP・RARの漫画（CBZ・CBR）、スライドショーに対応し、キーボードでめくれます。Honeyview、MassiGra、Leeyesの代わりにMacで。",
@@ -140,7 +141,10 @@
   ],
   "safeMore": "具体的に何をしているのか、そしてどこに限界があるのか：<a href=\"https://github.com/JohannesHoppe/schnellbild#safe-with-files-from-others\">他人から届いたファイルも安全に</a>。",
   "modelsTitle": "Phiewer、IINA、Norton Commanderから乗り換えますか？",
-  "modelsText": "Phiewerは有料のPRO版がある高速なフォトビューア、IINAは動画を観るための本格的なプレーヤー。どちらもSchnellbildのお手本で、デュアルペインはNorton Commanderがお手本です。Schnellbildは、フォルダの中の写真と動画をひとつの無料アプリで扱えます。キーはPhiewerと同じ配置にもできます。Schnellbildとの比較はこちら：<a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-phiewer-alternative\">Phiewerの無料の代替</a>、<a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-iina-alternative-for-looking-through-videos\">動画を見るためのIINAの無料の代替</a>。 WindowsでHoneyview、MassiGra、Leeyesを使っていた方も、Macで同じようにフォルダやZIP・RARの画像をキーボードでめくれます。",
+  "modelsText": "Phiewerは有料のPRO版がある高速なフォトビューア、IINAは動画を観るための本格的なプレーヤー。どちらもSchnellbildのお手本で、デュアルペインはNorton Commanderがお手本です。Schnellbildは、フォルダの中の写真と動画をひとつの無料アプリで扱えます。キーはPhiewerと同じ配置にもできます。Schnellbildとの比較はこちら：<a href=\"{alt:phiewer}\">Phiewerの無料の代替</a>、<a href=\"{alt:iina}\">動画を見るためのIINAの無料の代替</a>、<a href=\"{alt:norton-commander}\">Norton CommanderからMacへ</a>。 WindowsでHoneyview、MassiGra、Leeyesを使っていた方も、Macで同じようにフォルダやZIP・RARの画像をキーボードでめくれます。",
+  "altTitle": "代わりのアプリをお探しですか？",
+  "altText": "Macで探されることの多いアプリとSchnellbildを、機能ごとに、すべての記述に出典を付けて比較しています：",
+  "altAll": "すべての代替アプリ",
   "ossTitle": "オープンソース",
   "ossText": "SchnellbildはMITライセンスのフリーソフトウェアで、ソースコードは<a href=\"https://github.com/JohannesHoppe/schnellbild\">GitHub</a>で公開しています。バグを見つけたり、欲しい機能があったりしたら、<a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">Issueを作成</a>してください。",
   "languagesText": "お使いのMacの言語で：",
@@ -149,6 +153,7 @@
   "footerPrivacy": "プライバシー",
   "footerImprint": "法的情報 (Impressum)",
   "footerEula": "使用許諾契約",
+  "footerAlternatives": "代替アプリ",
   "privacy": {
     "title": "プライバシーポリシー",
     "description": "Schnellbildは個人データを一切収集しません。アカウントなし、解析なし、トラッキングなし、ネットワークアクセスなし。",

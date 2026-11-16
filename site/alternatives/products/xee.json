@@ -1,0 +1,565 @@
+{
+ "name": "Xee³",
+ "short": "Xee³",
+ "vendor": "MacPaw (originally Dag Ågren / WAHa.06x36)",
+ "website": "https://theunarchiver.com/xee",
+ "platforms": [
+  "macOS"
+ ],
+ "mac_available": "yes",
+ "page": "matrix",
+ "section": "comic",
+ "price": "no longer sold (formerly paid licence with trial; App Store listing removed)",
+ "license": "proprietary (Xee 2.x source public)",
+ "current_version": "3.5.4",
+ "last_update": "2021-12-21",
+ "engine": "own image loaders + The Unarchiver archive code",
+ "category": "comic",
+ "summary": "Classic lightweight Mac image viewer that flips through folders and archives (ZIP, RAR, 7z, CBZ/CBR) without extracting them, with many old and exotic formats. Still listed on theunarchiver.com but without download or buy links; last build 3.5.4 (Dec 2021) is Intel-only.",
+ "where_it_wins": [
+  "Exotic legacy formats (PCX, IFF, MAG, PVR, XBM)",
+  "JPEG creator identification from quantization tables",
+  "PSD layers view",
+  "Lossless JPEG crop"
+ ],
+ "where_schnellbild_wins": [
+  "Actively developed, native on Apple silicon",
+  "Available to download",
+  "Videos (incl. inside archives)",
+  "Thumbnail grid and recursive search",
+  "HEIC, AVIF, JPEG XL",
+  "Dual pane file sorting",
+  "Open source"
+ ],
+ "search_terms": [
+  "xee mac",
+  "xee3 alternative",
+  "xee apple silicon",
+  "xee image viewer replacement",
+  "xee nachfolger"
+ ],
+ "matrix": {
+  "free": {
+   "value": "no",
+   "note": "was paid (trial + licence); no longer sold",
+   "evidence": [
+    "http://web.archive.org/web/20161218165646/http://xee.c3.cx/",
+    "https://theunarchiver.com/xee"
+   ],
+   "how": "docs"
+  },
+  "open_source": {
+   "value": "partial",
+   "note": "Xee 2.x source is public (code.google export); Xee 3 is closed",
+   "evidence": [
+    "https://github.com/gco/xee"
+   ],
+   "how": "source"
+  },
+  "native_apple_silicon": {
+   "value": "no",
+   "note": "3.5.4 is Intel-only (Rosetta)",
+   "evidence": [
+    "https://rosettacheck.com/apps/cx.c3.Xee3"
+   ],
+   "how": "review"
+  },
+  "no_account_no_tracking": {
+   "value": "yes",
+   "note": "No account needed; whether the current MacPaw build sends analytics is not documented. Searched theunarchiver.com/xee, archived xee.c3.cx pages, AlternativeTo.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "dark_light_setting": {
+   "value": "yes",
+   "note": "window styles Normal and Black (Dark dropped in 3.5)",
+   "evidence": [
+    "http://web.archive.org/web/20161123070831/http://xee.c3.cx/features",
+    "http://web.archive.org/web/20161123092655/http://xee.c3.cx/changes"
+   ],
+   "how": "docs"
+  },
+  "languages_20": {
+   "value": "no",
+   "note": "AlternativeTo lists English only; no language list published for Xee 3.",
+   "evidence": [
+    "https://alternativeto.net/software/xee/about/"
+   ],
+   "how": "review"
+  },
+  "folder_browsing": {
+   "value": "yes",
+   "note": "flips through the folder of the opened image, optionally subfolders",
+   "evidence": [
+    "http://web.archive.org/web/20161123070831/http://xee.c3.cx/features"
+   ],
+   "how": "docs"
+  },
+  "thumbnail_grid": {
+   "value": "no",
+   "note": "AlternativeTo user review: 'No thumbnails mode'; the feature pages describe flipping through images one by one.",
+   "evidence": [
+    "https://alternativeto.net/software/xee/about/",
+    "http://web.archive.org/web/20161123070831/http://xee.c3.cx/features"
+   ],
+   "how": "review"
+  },
+  "list_view": {
+   "value": "no",
+   "note": "Feature pages describe a single-image window with forward/backward browsing; no browser view.",
+   "evidence": [
+    "http://web.archive.org/web/20161123070831/http://xee.c3.cx/features",
+    "https://alternativeto.net/software/xee/about/"
+   ],
+   "how": "docs"
+  },
+  "recursive_search": {
+   "value": "no",
+   "note": "Optionally scans subfolders for further images; no search feature on the feature pages.",
+   "evidence": [
+    "http://web.archive.org/web/20161123070831/http://xee.c3.cx/features"
+   ],
+   "how": "docs"
+  },
+  "regex_search": {
+   "value": "no",
+   "note": "No search feature.",
+   "evidence": [
+    "http://web.archive.org/web/20161123070831/http://xee.c3.cx/features"
+   ],
+   "how": "docs"
+  },
+  "network_shares_fast": {
+   "value": "no",
+   "note": "No statement found; Xee 2.1 notes only fixed list updates on network shares. Searched archived feature/changes pages and reviews.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "multiple_windows": {
+   "value": "yes",
+   "note": "single-window mode removed in 3.0; one window per image set",
+   "evidence": [
+    "http://web.archive.org/web/20161123092655/http://xee.c3.cx/changes"
+   ],
+   "how": "changelog"
+  },
+  "bookmarks": {
+   "value": "partial",
+   "note": "list of recent move/copy destinations",
+   "evidence": [
+    "http://web.archive.org/web/20161123070831/http://xee.c3.cx/features"
+   ],
+   "how": "docs"
+  },
+  "img_modern_formats": {
+   "value": "partial",
+   "note": "WebP yes; HEIC/AVIF/JPEG XL not supported (last update Dec 2021)",
+   "evidence": [
+    "http://web.archive.org/web/20161123070831/http://xee.c3.cx/features",
+    "https://updateinfo.devmate.com/cx.c3.Xee3/updates.xml"
+   ],
+   "how": "docs"
+  },
+  "img_raw": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "http://web.archive.org/web/20161123070831/http://xee.c3.cx/features"
+   ],
+   "how": "docs"
+  },
+  "img_psd_exr": {
+   "value": "partial",
+   "note": "PSD with layers; OpenEXR not listed",
+   "evidence": [
+    "http://web.archive.org/web/20161123070831/http://xee.c3.cx/features"
+   ],
+   "how": "docs"
+  },
+  "img_svg_pdf": {
+   "value": "partial",
+   "note": "only bitmap images inside PDF; no SVG",
+   "evidence": [
+    "http://web.archive.org/web/20161123070831/http://xee.c3.cx/features"
+   ],
+   "how": "docs"
+  },
+  "img_animated": {
+   "value": "yes",
+   "note": "GIF, APNG, WebP",
+   "evidence": [
+    "http://web.archive.org/web/20161123070831/http://xee.c3.cx/features"
+   ],
+   "how": "docs"
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "note": "directional browsing shortcuts",
+   "evidence": [
+    "http://web.archive.org/web/20161123092655/http://xee.c3.cx/changes"
+   ],
+   "how": "changelog"
+  },
+  "zoom_rotate": {
+   "value": "yes",
+   "note": "GPU scaling, rotate gestures",
+   "evidence": [
+    "http://web.archive.org/web/20161123070831/http://xee.c3.cx/features",
+    "http://web.archive.org/web/20161123092637/http://xee.c3.cx/advanced"
+   ],
+   "how": "docs"
+  },
+  "slideshow": {
+   "value": "yes",
+   "note": "User reviews: 'Easy to watch a slide show of your image folder'.",
+   "evidence": [
+    "https://slashdot.org/software/p/Xee"
+   ],
+   "how": "review"
+  },
+  "slideshow_recursive": {
+   "value": "partial",
+   "note": "Subfolder scanning is optional and the slideshow runs through it; images only, no video.",
+   "evidence": [
+    "http://web.archive.org/web/20161123070831/http://xee.c3.cx/features",
+    "https://slashdot.org/software/p/Xee"
+   ],
+   "how": "docs"
+  },
+  "auto_enhance_view": {
+   "value": "no",
+   "note": "Feature and advanced pages list scaling, metadata, JPEG creator detection; no adjustments.",
+   "evidence": [
+    "http://web.archive.org/web/20161123070831/http://xee.c3.cx/features",
+    "http://web.archive.org/web/20161123092637/http://xee.c3.cx/advanced"
+   ],
+   "how": "docs"
+  },
+  "file_info_exif": {
+   "value": "yes",
+   "note": "ExifTool metadata, JPEG creator identification",
+   "evidence": [
+    "http://web.archive.org/web/20161123092637/http://xee.c3.cx/advanced"
+   ],
+   "how": "docs"
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "note": "Not documented either way. Searched archived feature/advanced/changes pages.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "video_native": {
+   "value": "no",
+   "note": "image viewer only",
+   "evidence": [
+    "http://web.archive.org/web/20161123070831/http://xee.c3.cx/features"
+   ],
+   "how": "docs"
+  },
+  "video_mkv_avi_webm": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "http://web.archive.org/web/20161123070831/http://xee.c3.cx/features"
+   ],
+   "how": "docs"
+  },
+  "photos_videos_one_grid": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "http://web.archive.org/web/20161123070831/http://xee.c3.cx/features"
+   ],
+   "how": "docs"
+  },
+  "video_skim_arrows": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "http://web.archive.org/web/20161123070831/http://xee.c3.cx/features"
+   ],
+   "how": "docs"
+  },
+  "subtitles_embedded": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "http://web.archive.org/web/20161123070831/http://xee.c3.cx/features"
+   ],
+   "how": "docs"
+  },
+  "subtitles_external_files": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "http://web.archive.org/web/20161123070831/http://xee.c3.cx/features"
+   ],
+   "how": "docs"
+  },
+  "audio_track_choice": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "http://web.archive.org/web/20161123070831/http://xee.c3.cx/features"
+   ],
+   "how": "docs"
+  },
+  "playback_speed": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "http://web.archive.org/web/20161123070831/http://xee.c3.cx/features"
+   ],
+   "how": "docs"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "http://web.archive.org/web/20161123070831/http://xee.c3.cx/features"
+   ],
+   "how": "docs"
+  },
+  "playlist": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "http://web.archive.org/web/20161123070831/http://xee.c3.cx/features"
+   ],
+   "how": "docs"
+  },
+  "saved_playlists": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "http://web.archive.org/web/20161123070831/http://xee.c3.cx/features"
+   ],
+   "how": "docs"
+  },
+  "pip": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "http://web.archive.org/web/20161123070831/http://xee.c3.cx/features"
+   ],
+   "how": "docs"
+  },
+  "music_mode": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "http://web.archive.org/web/20161123070831/http://xee.c3.cx/features"
+   ],
+   "how": "docs"
+  },
+  "streaming_urls": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "http://web.archive.org/web/20161123070831/http://xee.c3.cx/features"
+   ],
+   "how": "docs"
+  },
+  "online_subtitles": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "http://web.archive.org/web/20161123070831/http://xee.c3.cx/features"
+   ],
+   "how": "docs"
+  },
+  "video_filters_enhance": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "http://web.archive.org/web/20161123070831/http://xee.c3.cx/features"
+   ],
+   "how": "docs"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "http://web.archive.org/web/20161123070831/http://xee.c3.cx/features"
+   ],
+   "how": "docs"
+  },
+  "archives_as_folders": {
+   "value": "yes",
+   "note": "any format The Unarchiver reads: ZIP, RAR (incl. RAR5), 7z",
+   "evidence": [
+    "http://web.archive.org/web/20161123070831/http://xee.c3.cx/features",
+    "http://web.archive.org/web/20161123092655/http://xee.c3.cx/changes"
+   ],
+   "how": "docs"
+  },
+  "comics_cbz_cbr": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "http://web.archive.org/web/20161123070831/http://xee.c3.cx/features",
+    "http://web.archive.org/web/20161123092655/http://xee.c3.cx/changes"
+   ],
+   "how": "docs"
+  },
+  "archive_passwords": {
+   "value": "partial",
+   "note": "Xee 2.1 added reading files from password-protected archives; not restated for Xee 3 (which browses all formats The Unarchiver supports).",
+   "evidence": [
+    "http://web.archive.org/web/20161123092655/http://xee.c3.cx/changes",
+    "http://web.archive.org/web/20161123070831/http://xee.c3.cx/features"
+   ],
+   "how": "changelog"
+  },
+  "split_archives": {
+   "value": "partial",
+   "note": "Browses any format The Unarchiver supports (RAR 5 since 3.5.2); multi-part sets not mentioned explicitly.",
+   "evidence": [
+    "http://web.archive.org/web/20161123070831/http://xee.c3.cx/features",
+    "http://web.archive.org/web/20161123092655/http://xee.c3.cx/changes"
+   ],
+   "how": "docs"
+  },
+  "videos_in_archives": {
+   "value": "no",
+   "note": "no video",
+   "evidence": [
+    "http://web.archive.org/web/20161123070831/http://xee.c3.cx/features"
+   ],
+   "how": "docs"
+  },
+  "manga_two_page": {
+   "value": "no",
+   "note": "CBZ/CBR are browsed one image at a time; no two-page or RTL mode on the feature pages.",
+   "evidence": [
+    "http://web.archive.org/web/20161123070831/http://xee.c3.cx/features"
+   ],
+   "how": "docs"
+  },
+  "rename_trash": {
+   "value": "yes",
+   "note": "delete, rename",
+   "evidence": [
+    "http://web.archive.org/web/20161123070831/http://xee.c3.cx/features"
+   ],
+   "how": "docs"
+  },
+  "move_copy": {
+   "value": "yes",
+   "note": "quick copy/move with destination list",
+   "evidence": [
+    "http://web.archive.org/web/20161123070831/http://xee.c3.cx/features"
+   ],
+   "how": "docs"
+  },
+  "dual_pane": {
+   "value": "no",
+   "note": "Single image window; moves go through a destination list.",
+   "evidence": [
+    "http://web.archive.org/web/20161123070831/http://xee.c3.cx/features"
+   ],
+   "how": "docs"
+  },
+  "undo_file_actions": {
+   "value": "no",
+   "note": "Not documented. Searched archived feature/changes pages.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "image_editing": {
+   "value": "partial",
+   "note": "crop (lossless JPEG MCU snapping), export",
+   "evidence": [
+    "http://web.archive.org/web/20161123092655/http://xee.c3.cx/changes"
+   ],
+   "how": "changelog"
+  },
+  "batch_convert": {
+   "value": "no",
+   "note": "Single-image export only; no batch functions in the feature pages or changelog.",
+   "evidence": [
+    "http://web.archive.org/web/20161123070831/http://xee.c3.cx/features",
+    "http://web.archive.org/web/20161123092655/http://xee.c3.cx/changes"
+   ],
+   "how": "docs"
+  },
+  "library_catalog": {
+   "value": "no",
+   "note": "Finder labels only",
+   "evidence": [
+    "http://web.archive.org/web/20161123070831/http://xee.c3.cx/features"
+   ],
+   "how": "docs"
+  },
+  "cloud_sync": {
+   "value": "partial",
+   "note": "Share menu (3.3)",
+   "evidence": [
+    "http://web.archive.org/web/20161123092655/http://xee.c3.cx/changes"
+   ],
+   "how": "changelog"
+  },
+  "keyboard_first": {
+   "value": "partial",
+   "note": "keyboard browsing; gesture-heavy design",
+   "evidence": [
+    "http://web.archive.org/web/20161123070831/http://xee.c3.cx/features",
+    "http://web.archive.org/web/20161123092655/http://xee.c3.cx/changes"
+   ],
+   "how": "docs"
+  },
+  "custom_shortcuts": {
+   "value": "partial",
+   "note": "Xee 3 changelog mentions only tweaks to fixed shortcuts (3.1); configurability not documented.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "shortcut_cheatsheet": {
+   "value": "no",
+   "note": "Not documented.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "boss_key": {
+   "value": "no",
+   "note": "Not documented.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "app_sandbox": {
+   "value": "partial",
+   "note": "App Store build sandboxed; direct build not (author recommended direct build)",
+   "evidence": [
+    "http://web.archive.org/web/20161218165646/http://xee.c3.cx/"
+   ],
+   "how": "docs"
+  },
+  "no_network": {
+   "value": "no",
+   "note": "direct build checks Sparkle/DevMate updates",
+   "evidence": [
+    "http://web.archive.org/web/20161123092655/http://xee.c3.cx/changes",
+    "https://updateinfo.devmate.com/cx.c3.Xee3/updates.xml"
+   ],
+   "how": "changelog"
+  },
+  "notarized_attested": {
+   "value": "no",
+   "note": "closed source; last build Dec 2021",
+   "evidence": [
+    "https://updateinfo.devmate.com/cx.c3.Xee3/updates.xml"
+   ],
+   "how": "docs"
+  },
+  "mac_app_store": {
+   "value": "no",
+   "note": "was id639764244; listing now returns 404",
+   "evidence": [
+    "http://web.archive.org/web/20221216115930/https://theunarchiver.com/xee",
+    "https://apps.apple.com/us/app/id639764244"
+   ],
+   "how": "store"
+  }
+ }
+}

@@ -1,0 +1,588 @@
+{
+ "name": "VidHub",
+ "short": "VidHub",
+ "vendor": "Nanjing Oumi Software Development Co., Ltd. (Oka Apps)",
+ "website": "https://okaapps.com/product/1659622164",
+ "platforms": [
+  "macOS",
+  "iOS",
+  "iPadOS",
+  "tvOS",
+  "visionOS",
+  "Android TV"
+ ],
+ "mac_available": "yes",
+ "page": "matrix",
+ "section": "video",
+ "price": "Free with VIP (Mac-only lifetime $14.99; all devices $25.99-39.99 lifetime; $9.99/year; $1.49/month)",
+ "license": "proprietary",
+ "current_version": "3.0.3 (Mac)",
+ "last_update": "2026-11-04",
+ "engine": "not disclosed ('player 2.0 core')",
+ "category": "video",
+ "summary": "Infuse-style video library and player for Apple devices: it scans local folders, NAS, cloud drives and Emby/Jellyfin/Plex servers, builds a poster library from TMDB and syncs progress over iCloud. One of the most-rated media players in the Mac App Store (2.8K ratings, US).",
+ "where_it_wins": [
+  "Movie/TV library with posters and metadata",
+  "iCloud sync across iPhone, iPad, Apple TV, Mac",
+  "Cloud drives, NAS, Emby/Jellyfin/Plex",
+  "Online subtitle search",
+  "Casting via DLNA, Chromecast, Roku, AirPlay"
+ ],
+ "where_schnellbild_wins": [
+  "No import or scraping: opens folders as they are",
+  "Photos and videos together",
+  "Keyboard-first browsing and skimming",
+  "Archives as folders, videos inside them",
+  "File sorting with two panes and undo",
+  "Never goes online; open source; no VIP"
+ ],
+ "search_terms": [
+  "vidhub mac",
+  "vidhub alternative",
+  "vidhub vs infuse",
+  "video library app mac"
+ ],
+ "matrix": {
+  "free": {
+   "value": "partial",
+   "note": "Free with VIP: Mac-only lifetime $14.99, all devices lifetime $25.99-39.99, $9.99/year, $1.49/month",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1659622164?platform=mac"
+   ],
+   "how": "store"
+  },
+  "open_source": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1659622164?platform=mac"
+   ],
+   "how": "store"
+  },
+  "native_apple_silicon": {
+   "value": "yes",
+   "how": "unverified",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1659622164?platform=mac",
+    "https://okaapps.com/product/1659622164"
+   ],
+   "note": "Not stated on the App Store or vendor page; binary architecture not checked"
+  },
+  "no_account_no_tracking": {
+   "value": "yes",
+   "note": "Privacy label 'Data Not Collected'; no account needed for local files; VIP upsell",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1659622164?platform=mac"
+   ],
+   "how": "store"
+  },
+  "dark_light_setting": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1659622164?platform=mac"
+   ],
+   "note": "Changelog only mentions icons optimized for Dark Mode; no separate setting found"
+  },
+  "languages_20": {
+   "value": "partial",
+   "note": "18 on the App Store",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1659622164?platform=mac"
+   ],
+   "how": "store"
+  },
+  "folder_browsing": {
+   "value": "partial",
+   "note": "Adds local, SMB/WebDAV and cloud 'file sources' and scrapes them into a library",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1659622164?platform=mac",
+    "https://okaapps.com/product/1659622164"
+   ],
+   "how": "store"
+  },
+  "thumbnail_grid": {
+   "value": "partial",
+   "note": "Poster wall from TMDB metadata, not file thumbnails",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1659622164?platform=mac",
+    "https://okaapps.com/product/1659622164"
+   ],
+   "how": "store"
+  },
+  "list_view": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1659622164?platform=mac"
+   ],
+   "note": "Poster-wall library; a list view is not documented"
+  },
+  "recursive_search": {
+   "value": "partial",
+   "note": "Global search by file name and movie/show title in the library",
+   "evidence": [
+    "https://okaapps.com/product/1659622164"
+   ],
+   "how": "docs"
+  },
+  "regex_search": {
+   "value": "no",
+   "note": "Regular expressions only for renaming cloud files",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1659622164?platform=mac"
+   ],
+   "how": "store"
+  },
+  "network_shares_fast": {
+   "value": "partial",
+   "note": "SMB/CIFS, WebDAV, NAS and many cloud drives; speed unknown",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1659622164?platform=mac"
+   ],
+   "how": "store"
+  },
+  "multiple_windows": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1659622164?platform=mac"
+   ],
+   "note": "Not documented"
+  },
+  "bookmarks": {
+   "value": "partial",
+   "note": "Favorites (synced via iCloud)",
+   "evidence": [
+    "https://okaapps.com/product/1659622164"
+   ],
+   "how": "docs"
+  },
+  "img_modern_formats": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1659622164?platform=mac",
+    "https://okaapps.com/product/1659622164"
+   ],
+   "note": "Description and vendor page list video formats only"
+  },
+  "img_raw": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1659622164?platform=mac",
+    "https://okaapps.com/product/1659622164"
+   ],
+   "note": "Video formats only"
+  },
+  "img_psd_exr": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1659622164?platform=mac",
+    "https://okaapps.com/product/1659622164"
+   ],
+   "note": "Video formats only"
+  },
+  "img_svg_pdf": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1659622164?platform=mac",
+    "https://okaapps.com/product/1659622164"
+   ],
+   "note": "Video formats only"
+  },
+  "img_animated": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1659622164?platform=mac",
+    "https://okaapps.com/product/1659622164"
+   ],
+   "note": "Video formats only"
+  },
+  "keyboard_paging": {
+   "value": "partial",
+   "how": "unverified",
+   "evidence": [
+    "https://okaapps.com/product/1659622164"
+   ],
+   "note": "Auto-plays the next episode; next/previous keys not documented"
+  },
+  "zoom_rotate": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1659622164?platform=mac"
+   ],
+   "note": "Not documented"
+  },
+  "slideshow": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1659622164?platform=mac",
+    "https://okaapps.com/product/1659622164"
+   ],
+   "note": "Video library app without still images"
+  },
+  "slideshow_recursive": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1659622164?platform=mac",
+    "https://okaapps.com/product/1659622164"
+   ],
+   "note": "Video library app without still images"
+  },
+  "auto_enhance_view": {
+   "value": "partial",
+   "note": "Video color correction, video only",
+   "evidence": [
+    "https://okaapps.com/product/1659622164"
+   ],
+   "how": "docs"
+  },
+  "file_info_exif": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1659622164?platform=mac"
+   ],
+   "note": "Not documented"
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1659622164?platform=mac"
+   ],
+   "note": "Not documented"
+  },
+  "video_native": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1659622164?platform=mac"
+   ],
+   "how": "store"
+  },
+  "video_mkv_avi_webm": {
+   "value": "yes",
+   "note": "MKV, AVI, WMV, RMVB and more; strm and ISO",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1659622164?platform=mac"
+   ],
+   "how": "store"
+  },
+  "photos_videos_one_grid": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1659622164?platform=mac",
+    "https://okaapps.com/product/1659622164"
+   ],
+   "note": "Library shows movies and TV shows only"
+  },
+  "video_skim_arrows": {
+   "value": "partial",
+   "how": "unverified",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1659622164?platform=mac"
+   ],
+   "note": "Seeking exists; arrow-key behaviour not documented anywhere found"
+  },
+  "subtitles_embedded": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1659622164?platform=mac"
+   ],
+   "how": "store"
+  },
+  "subtitles_external_files": {
+   "value": "yes",
+   "note": "SRT, SSA, SUB",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1659622164?platform=mac"
+   ],
+   "how": "store"
+  },
+  "audio_track_choice": {
+   "value": "yes",
+   "note": "Audio tracks incl. TrueHD (3.0.2 fix); not spelled out in the description",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1659622164?platform=mac"
+   ],
+   "how": "changelog"
+  },
+  "playback_speed": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://okaapps.com/product/1659622164"
+   ],
+   "how": "docs"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1659622164?platform=mac"
+   ],
+   "note": "Not documented"
+  },
+  "playlist": {
+   "value": "yes",
+   "note": "Playlists, season playback",
+   "evidence": [
+    "https://okaapps.com/product/1659622164"
+   ],
+   "how": "docs"
+  },
+  "saved_playlists": {
+   "value": "yes",
+   "note": "Playlists synced via iCloud",
+   "evidence": [
+    "https://okaapps.com/product/1659622164"
+   ],
+   "how": "docs"
+  },
+  "pip": {
+   "value": "yes",
+   "how": "forum",
+   "evidence": [
+    "https://community.firecore.com/t/macos-26-picture-in-picture-windows-stays-on/57581.md?page=2"
+   ],
+   "note": "A user lists VidHub among Mac apps whose Picture in Picture works on macOS 26"
+  },
+  "music_mode": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1659622164?platform=mac",
+    "https://okaapps.com/product/1659622164"
+   ],
+   "note": "Description and vendor page cover video only"
+  },
+  "streaming_urls": {
+   "value": "partial",
+   "note": "Cloud drives, Emby/Jellyfin/Plex servers, WebDAV; arbitrary URLs not documented",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1659622164?platform=mac"
+   ],
+   "how": "store"
+  },
+  "online_subtitles": {
+   "value": "yes",
+   "note": "Online subtitle search (incl. SubHD)",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1659622164?platform=mac",
+    "https://okaapps.com/product/1659622164"
+   ],
+   "how": "changelog"
+  },
+  "video_filters_enhance": {
+   "value": "yes",
+   "note": "Color correction, audio equalizer",
+   "evidence": [
+    "https://okaapps.com/product/1659622164"
+   ],
+   "how": "docs"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1659622164?platform=mac"
+   ],
+   "note": "Not mentioned"
+  },
+  "archives_as_folders": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1659622164?platform=mac",
+    "https://okaapps.com/product/1659622164"
+   ],
+   "note": "Not among file sources or formats"
+  },
+  "comics_cbz_cbr": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1659622164?platform=mac",
+    "https://okaapps.com/product/1659622164"
+   ],
+   "note": "Video app"
+  },
+  "archive_passwords": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1659622164?platform=mac",
+    "https://okaapps.com/product/1659622164"
+   ],
+   "note": "No archive support listed"
+  },
+  "split_archives": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1659622164?platform=mac",
+    "https://okaapps.com/product/1659622164"
+   ],
+   "note": "No archive support listed"
+  },
+  "videos_in_archives": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1659622164?platform=mac",
+    "https://okaapps.com/product/1659622164"
+   ],
+   "note": "No archive support listed"
+  },
+  "manga_two_page": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1659622164?platform=mac",
+    "https://okaapps.com/product/1659622164"
+   ],
+   "note": "Video app"
+  },
+  "rename_trash": {
+   "value": "partial",
+   "note": "Renames cloud files (add/replace characters, regex); delete not documented",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1659622164?platform=mac"
+   ],
+   "how": "store"
+  },
+  "move_copy": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1659622164?platform=mac"
+   ],
+   "note": "Only renaming of cloud files is listed"
+  },
+  "dual_pane": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1659622164?platform=mac"
+   ],
+   "note": "No file manager features beyond renaming cloud files"
+  },
+  "undo_file_actions": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1659622164?platform=mac"
+   ],
+   "note": "Not documented"
+  },
+  "image_editing": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1659622164?platform=mac",
+    "https://okaapps.com/product/1659622164"
+   ],
+   "note": "Screen capture only"
+  },
+  "batch_convert": {
+   "value": "partial",
+   "note": "Batch rename of cloud files; no conversion",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1659622164?platform=mac"
+   ],
+   "how": "store"
+  },
+  "library_catalog": {
+   "value": "yes",
+   "note": "TMDB-scraped movie/TV library, sorting by type, date, rating; Trakt sync",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1659622164?platform=mac"
+   ],
+   "how": "store"
+  },
+  "cloud_sync": {
+   "value": "yes",
+   "note": "iCloud sync of library, progress, playlists, favorites; cloud drives",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1659622164?platform=mac",
+    "https://okaapps.com/product/1659622164"
+   ],
+   "how": "store"
+  },
+  "keyboard_first": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1659622164?platform=mac"
+   ],
+   "note": "Not documented"
+  },
+  "custom_shortcuts": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1659622164?platform=mac"
+   ],
+   "note": "Not documented"
+  },
+  "shortcut_cheatsheet": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1659622164?platform=mac"
+   ],
+   "note": "Not documented"
+  },
+  "boss_key": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1659622164?platform=mac"
+   ],
+   "note": "Not documented"
+  },
+  "app_sandbox": {
+   "value": "yes",
+   "note": "Mac App Store app",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1659622164?platform=mac"
+   ],
+   "how": "store"
+  },
+  "no_network": {
+   "value": "no",
+   "note": "Fetches metadata and artwork from TMDB, iCloud sync",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1659622164?platform=mac"
+   ],
+   "how": "store"
+  },
+  "notarized_attested": {
+   "value": "partial",
+   "note": "App Store signed; closed source",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1659622164?platform=mac"
+   ],
+   "how": "store"
+  },
+  "mac_app_store": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1659622164?platform=mac"
+   ],
+   "how": "store"
+  }
+ }
+}

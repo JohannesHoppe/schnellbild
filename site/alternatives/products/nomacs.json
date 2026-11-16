@@ -1,0 +1,606 @@
+{
+ "name": "nomacs",
+ "short": "nomacs",
+ "vendor": "nomacs team (open source)",
+ "website": "https://nomacs.org/",
+ "platforms": [
+  "macOS",
+  "Windows",
+  "Linux",
+  "FreeBSD",
+  "Haiku"
+ ],
+ "mac_available": "yes",
+ "page": "matrix",
+ "section": "image",
+ "price": "free",
+ "license": "open source (GPL-3.0)",
+ "current_version": "3.22.5 (beta 3.23.4)",
+ "last_update": "2026-11-05",
+ "engine": "Qt 6, OpenCV, LibRaw, exiv2, KImageFormats",
+ "category": "image",
+ "summary": "nomacs ('Image Lounge') is a free, open-source image viewer with RAW and PSD support, metadata panels, image adjustments and batch processing. A distinctive feature is synchronising several instances to compare images side by side. Current macOS builds exist for Apple silicon and Intel, though they are not notarized.",
+ "where_it_wins": [
+  "Batch processing and basic image editing",
+  "Synchronise several windows to compare images",
+  "Metadata panels, histogram and star ratings",
+  "Plugins (paint, composite, transforms)",
+  "Runs on Windows, Linux, FreeBSD and Haiku"
+ ],
+ "where_schnellbild_wins": [
+  "Plays videos next to photos in one grid",
+  "RAR and 7z archives as folders, CBR, passwords, multi-part",
+  "Notarized, sandboxed, never goes online",
+  "Two-pane file manager with undo",
+  "Slideshow through all subfolders with photos and videos",
+  "Native Mac UI instead of Qt"
+ ],
+ "search_terms": [
+  "nomacs mac",
+  "nomacs macos",
+  "nomacs apple silicon",
+  "nomacs alternative",
+  "nomacs alternative mac",
+  "nomacs für mac"
+ ],
+ "matrix": {
+  "free": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://github.com/nomacs/nomacs"
+   ],
+   "how": "source"
+  },
+  "open_source": {
+   "value": "yes",
+   "note": "GPL-3.0.",
+   "evidence": [
+    "https://github.com/nomacs/nomacs"
+   ],
+   "how": "source"
+  },
+  "native_apple_silicon": {
+   "value": "yes",
+   "note": "Separate nomacs-macOS-arm64.dmg built on macos-15 runners.",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/releases/tag/3.22.5",
+    "https://github.com/nomacs/nomacs/blob/master/.github/workflows/macos.yml"
+   ],
+   "how": "source"
+  },
+  "no_account_no_tracking": {
+   "value": "yes",
+   "note": "No account or telemetry; update check only.",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkCore/DkUpdater.cpp",
+    "https://github.com/nomacs/nomacs"
+   ],
+   "how": "source"
+  },
+  "dark_light_setting": {
+   "value": "yes",
+   "note": "Dark, Light and System themes.",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/tree/master/ImageLounge/src/themes",
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkCore/DkSettings.cpp"
+   ],
+   "how": "source"
+  },
+  "languages_20": {
+   "value": "yes",
+   "note": "30 translations (Crowdin).",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/tree/master/ImageLounge/translations",
+    "https://github.com/nomacs/nomacs/releases/tag/3.22.0"
+   ],
+   "how": "source"
+  },
+  "folder_browsing": {
+   "value": "yes",
+   "note": "File explorer panel and folder navigation.",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkCore/DkActionManager.cpp"
+   ],
+   "how": "source"
+  },
+  "thumbnail_grid": {
+   "value": "partial",
+   "note": "Thumbnail strip and thumbnail preview grid of the current folder; no folder previews.",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkCore/DkActionManager.cpp"
+   ],
+   "how": "source"
+  },
+  "list_view": {
+   "value": "partial",
+   "note": "File explorer dock shows a tree/list with columns; not the main view.",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkCore/DkActionManager.cpp"
+   ],
+   "how": "source"
+  },
+  "recursive_search": {
+   "value": "partial",
+   "note": "'Find & Filter' searches the loaded file list; with 'Scan Folder Recursive' it covers subfolders.",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkCore/DkActionManager.cpp",
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkCore/DkImageLoader.cpp",
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkGui/DkDialog.cpp"
+   ],
+   "how": "source"
+  },
+  "regex_search": {
+   "value": "yes",
+   "note": "Search falls back to regular expressions, then wildcards.",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkCore/DkUtils.cpp"
+   ],
+   "how": "source"
+  },
+  "network_shares_fast": {
+   "value": "no",
+   "note": "Known slowness on network shares: re-reads images from SMB/NAS, freezes on disconnected network links (issues #1696, #1011).",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/issues/1696",
+    "https://github.com/nomacs/nomacs/issues/1011"
+   ],
+   "how": "forum"
+  },
+  "multiple_windows": {
+   "value": "yes",
+   "note": "Tabs and multiple instances (single-instance mode is new in 3.23 beta), synchronised views.",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkCore/DkActionManager.cpp",
+    "https://github.com/nomacs/nomacs/releases/tag/3.22.5"
+   ],
+   "how": "source"
+  },
+  "bookmarks": {
+   "value": "no",
+   "note": "Recent files/folders only.",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkCore/DkActionManager.cpp"
+   ],
+   "how": "source"
+  },
+  "img_modern_formats": {
+   "value": "yes",
+   "note": "WebP via Qt; AVIF, HEIC, JXL via KImageFormats bundled in the full macOS build.",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/blob/master/.github/workflows/macos.yml",
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkCore/DkSettings.cpp"
+   ],
+   "how": "source"
+  },
+  "img_raw": {
+   "value": "yes",
+   "note": "LibRaw.",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkCore/DkSettings.cpp",
+    "https://github.com/nomacs/nomacs/blob/master/.github/workflows/macos.yml"
+   ],
+   "how": "source"
+  },
+  "img_psd_exr": {
+   "value": "yes",
+   "note": "PSD/PSB built in; EXR via KImageFormats.",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkCore/DkSettings.cpp",
+    "https://github.com/nomacs/nomacs"
+   ],
+   "how": "source"
+  },
+  "img_svg_pdf": {
+   "value": "partial",
+   "note": "SVG yes; no PDF.",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkCore/DkSettings.cpp"
+   ],
+   "how": "source"
+  },
+  "img_animated": {
+   "value": "yes",
+   "note": "GIF, APNG, animated AVIF/WebP with frame stepping.",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkCore/DkSettings.cpp",
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkCore/DkActionManager.cpp"
+   ],
+   "how": "source"
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkCore/DkActionManager.cpp"
+   ],
+   "how": "source"
+  },
+  "zoom_rotate": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkCore/DkActionManager.cpp"
+   ],
+   "how": "source"
+  },
+  "slideshow": {
+   "value": "yes",
+   "note": "Slideshow player.",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkCore/DkActionManager.cpp"
+   ],
+   "how": "source"
+  },
+  "slideshow_recursive": {
+   "value": "partial",
+   "note": "'Step through Folder and Sub Folders' for images; no videos.",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkCore/DkActionManager.cpp",
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkCore/DkSettings.cpp"
+   ],
+   "how": "source"
+  },
+  "auto_enhance_view": {
+   "value": "partial",
+   "note": "Image adjustments panel (OpenCV); applied as edits that can be saved, not a view-only filter.",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkCore/DkActionManager.cpp",
+    "https://github.com/nomacs/nomacs"
+   ],
+   "how": "source"
+  },
+  "file_info_exif": {
+   "value": "yes",
+   "note": "Metadata panel and ribbon, histogram.",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkCore/DkActionManager.cpp"
+   ],
+   "how": "source"
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "note": "Loads files with a wrong extension anyway; the mismatch is only written to the debug log (qWarning), not shown.",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkCore/DkBasicLoader.cpp"
+   ],
+   "how": "source"
+  },
+  "video_native": {
+   "value": "no",
+   "note": "No video playback (animated images only).",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkCore/DkSettings.cpp",
+    "https://github.com/nomacs/nomacs"
+   ],
+   "how": "source"
+  },
+  "video_mkv_avi_webm": {
+   "value": "no",
+   "note": "No video playback (animated images only).",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkCore/DkSettings.cpp",
+    "https://github.com/nomacs/nomacs"
+   ],
+   "how": "source"
+  },
+  "photos_videos_one_grid": {
+   "value": "no",
+   "note": "No video playback (animated images only).",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkCore/DkSettings.cpp",
+    "https://github.com/nomacs/nomacs"
+   ],
+   "how": "source"
+  },
+  "video_skim_arrows": {
+   "value": "no",
+   "note": "No video playback (animated images only).",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkCore/DkSettings.cpp",
+    "https://github.com/nomacs/nomacs"
+   ],
+   "how": "source"
+  },
+  "subtitles_embedded": {
+   "value": "no",
+   "note": "No video playback (animated images only).",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkCore/DkSettings.cpp",
+    "https://github.com/nomacs/nomacs"
+   ],
+   "how": "source"
+  },
+  "subtitles_external_files": {
+   "value": "no",
+   "note": "No video playback (animated images only).",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkCore/DkSettings.cpp",
+    "https://github.com/nomacs/nomacs"
+   ],
+   "how": "source"
+  },
+  "audio_track_choice": {
+   "value": "no",
+   "note": "No video playback (animated images only).",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkCore/DkSettings.cpp",
+    "https://github.com/nomacs/nomacs"
+   ],
+   "how": "source"
+  },
+  "playback_speed": {
+   "value": "no",
+   "note": "No video playback (animated images only).",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkCore/DkSettings.cpp",
+    "https://github.com/nomacs/nomacs"
+   ],
+   "how": "source"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "note": "No video playback (animated images only).",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkCore/DkSettings.cpp",
+    "https://github.com/nomacs/nomacs"
+   ],
+   "how": "source"
+  },
+  "playlist": {
+   "value": "no",
+   "note": "No video playback (animated images only).",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkCore/DkSettings.cpp",
+    "https://github.com/nomacs/nomacs"
+   ],
+   "how": "source"
+  },
+  "saved_playlists": {
+   "value": "no",
+   "note": "No video playback (animated images only).",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkCore/DkSettings.cpp",
+    "https://github.com/nomacs/nomacs"
+   ],
+   "how": "source"
+  },
+  "pip": {
+   "value": "no",
+   "note": "No video playback (animated images only).",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkCore/DkSettings.cpp",
+    "https://github.com/nomacs/nomacs"
+   ],
+   "how": "source"
+  },
+  "music_mode": {
+   "value": "no",
+   "note": "No video playback (animated images only).",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkCore/DkSettings.cpp",
+    "https://github.com/nomacs/nomacs"
+   ],
+   "how": "source"
+  },
+  "streaming_urls": {
+   "value": "no",
+   "note": "No video playback (animated images only).",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkCore/DkSettings.cpp",
+    "https://github.com/nomacs/nomacs"
+   ],
+   "how": "source"
+  },
+  "online_subtitles": {
+   "value": "no",
+   "note": "No video playback (animated images only).",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkCore/DkSettings.cpp",
+    "https://github.com/nomacs/nomacs"
+   ],
+   "how": "source"
+  },
+  "video_filters_enhance": {
+   "value": "no",
+   "note": "No video playback (animated images only).",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkCore/DkSettings.cpp",
+    "https://github.com/nomacs/nomacs"
+   ],
+   "how": "source"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "note": "No video playback (animated images only).",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkCore/DkSettings.cpp",
+    "https://github.com/nomacs/nomacs"
+   ],
+   "how": "source"
+  },
+  "archives_as_folders": {
+   "value": "partial",
+   "note": "ZIP (and CBZ) only, via QuaZip, enabled in the full macOS build; no RAR/7z.",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkCore/DkSettings.cpp",
+    "https://github.com/nomacs/nomacs/blob/master/.github/workflows/macos.yml",
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkCore/DkActionManager.cpp"
+   ],
+   "how": "source"
+  },
+  "comics_cbz_cbr": {
+   "value": "partial",
+   "note": "CBZ yes, CBR no.",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkCore/DkSettings.cpp"
+   ],
+   "how": "source"
+  },
+  "archive_passwords": {
+   "value": "no",
+   "note": "ZIP only via QuaZip; no password handling anywhere in the source.",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkCore/DkBasicLoader.cpp",
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkCore/DkFileInfo.cpp"
+   ],
+   "how": "source"
+  },
+  "split_archives": {
+   "value": "no",
+   "note": "Only single ZIP files are opened; no multi-volume code.",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkCore/DkFileInfo.cpp"
+   ],
+   "how": "source"
+  },
+  "videos_in_archives": {
+   "value": "no",
+   "note": "No video.",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkCore/DkSettings.cpp"
+   ],
+   "how": "source"
+  },
+  "manga_two_page": {
+   "value": "no",
+   "note": "No two-page or right-to-left reading mode in the source.",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkCore/DkActionManager.cpp"
+   ],
+   "how": "source"
+  },
+  "rename_trash": {
+   "value": "yes",
+   "note": "Rename, delete; file manager panel.",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkCore/DkActionManager.cpp"
+   ],
+   "how": "source"
+  },
+  "move_copy": {
+   "value": "yes",
+   "note": "Thumbnail view: paste and drag-and-drop copy, move (Shift) or link files into folders.",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkGui/DkThumbsWidgets.cpp"
+   ],
+   "how": "source"
+  },
+  "dual_pane": {
+   "value": "partial",
+   "note": "Several synchronised instances side by side for comparing images; no two-pane file manager.",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkCore/DkActionManager.cpp"
+   ],
+   "how": "source"
+  },
+  "undo_file_actions": {
+   "value": "no",
+   "note": "Undo/redo is for image edits.",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkCore/DkActionManager.cpp"
+   ],
+   "how": "source"
+  },
+  "image_editing": {
+   "value": "yes",
+   "note": "Crop, resize, adjustments, paint plugins, save.",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkCore/DkActionManager.cpp",
+    "https://github.com/nomacs/nomacs"
+   ],
+   "how": "source"
+  },
+  "batch_convert": {
+   "value": "yes",
+   "note": "Batch processing (convert, resize, rename).",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkCore/DkActionManager.cpp"
+   ],
+   "how": "source"
+  },
+  "library_catalog": {
+   "value": "partial",
+   "note": "Star ratings written to metadata; no catalog database.",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkCore/DkActionManager.cpp"
+   ],
+   "how": "source"
+  },
+  "cloud_sync": {
+   "value": "no",
+   "note": "Only LAN sync between instances.",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkCore/DkActionManager.cpp"
+   ],
+   "how": "source"
+  },
+  "keyboard_first": {
+   "value": "yes",
+   "note": "Extensive shortcuts for nearly all actions.",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkCore/DkActionManager.cpp"
+   ],
+   "how": "source"
+  },
+  "custom_shortcuts": {
+   "value": "yes",
+   "note": "Keyboard Shortcuts dialog.",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkCore/DkActionManager.cpp"
+   ],
+   "how": "source"
+  },
+  "shortcut_cheatsheet": {
+   "value": "no",
+   "note": "Shortcuts editable in a dialog; printing exists only for images (DkPrintPreviewDialog).",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkGui/DkDialog.cpp"
+   ],
+   "how": "source"
+  },
+  "boss_key": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkCore/DkActionManager.cpp"
+   ],
+   "how": "source"
+  },
+  "app_sandbox": {
+   "value": "no",
+   "note": "Portable bundle, ad-hoc signed, no sandbox entitlements.",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/macosx/make-portable.sh"
+   ],
+   "how": "source"
+  },
+  "no_network": {
+   "value": "no",
+   "note": "Update and translation download, plugin download, LAN sync.",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkCore/DkUpdater.cpp",
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/src/DkCore/DkActionManager.cpp"
+   ],
+   "how": "source"
+  },
+  "notarized_attested": {
+   "value": "partial",
+   "note": "Built in public GitHub Actions from source, but only ad-hoc signed, not notarized.",
+   "evidence": [
+    "https://github.com/nomacs/nomacs/blob/master/.github/workflows/macos.yml",
+    "https://github.com/nomacs/nomacs/blob/master/ImageLounge/macosx/make-portable.sh",
+    "https://github.com/nomacs/nomacs/pull/1470"
+   ],
+   "how": "source"
+  },
+  "mac_app_store": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://itunes.apple.com/search?term=nomacs&entity=macSoftware&limit=8"
+   ],
+   "how": "store"
+  }
+ }
+}

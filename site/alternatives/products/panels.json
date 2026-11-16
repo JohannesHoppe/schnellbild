@@ -1,0 +1,574 @@
+{
+ "name": "Panels - Comic Reader",
+ "short": "Panels",
+ "vendor": "Produkt Studio (Produkt Software Engineering S.L.)",
+ "website": "https://www.panels.app/",
+ "platforms": [
+  "macOS",
+  "iOS",
+  "iPadOS"
+ ],
+ "mac_available": "yes",
+ "page": "matrix",
+ "section": "comic",
+ "price": "Free download; Premium via Panels+ subscription (monthly/yearly) or Panels 3 one-time purchase (EUR 22.99 one-time / EUR 11.99 per year, May 2025)",
+ "license": "Proprietary",
+ "current_version": "3.13.11",
+ "last_update": "2026-11-11",
+ "engine": "Native Apple app (App Store universal purchase)",
+ "category": "comic",
+ "summary": "Panels is a polished comic reader for iPhone, iPad and Mac with a cover library, reading presets, panel-by-panel view and OPDS support for Komga/Kavita. Advanced features such as cloud libraries, page filters and text detection need Premium.",
+ "where_it_wins": [
+  "Synced library and progress across Mac, iPhone and iPad",
+  "OPDS streaming (Komga, Kavita, Calibre)",
+  "Panel-by-panel guided view, reading presets",
+  "Live Text and subject detection",
+  "In-app DRM-free comic store"
+ ],
+ "where_schnellbild_wins": [
+  "Every feature free, no subscription",
+  "No analytics data collection, never goes online",
+  "Plays videos and shows any image folder, not just comics",
+  "Your own keyboard shortcuts",
+  "File manager with two panes, undo, slideshow through subfolders",
+  "Open source"
+ ],
+ "search_terms": [
+  "panels comic reader mac",
+  "panels app alternative",
+  "panels comic reader alternative",
+  "comic reader mac without subscription",
+  "Comic Reader Mac ohne Abo"
+ ],
+ "matrix": {
+  "free": {
+   "value": "partial",
+   "note": "Free basic reader; Premium via Panels+ subscription (monthly/yearly) or Panels 3 one-time purchase (EUR 22.99 one-time / EUR 11.99 per year as of May 2025)",
+   "evidence": [
+    "https://github.com/Produkt/panels-guides/blob/main/docs/premium/what-is-panels-premium.md",
+    "https://www.appgefahren.de/panels-comic-reader-app-jetzt-auch-fuer-den-mac-379100.html"
+   ],
+   "how": "docs"
+  },
+  "open_source": {
+   "value": "no",
+   "note": "Proprietary",
+   "evidence": [
+    "https://apps.apple.com/us/app/panels-comic-reader/id1236567663"
+   ],
+   "how": "store"
+  },
+  "native_apple_silicon": {
+   "value": "yes",
+   "note": "Native macOS app from the App Store (Mac, iPhone, iPad universal purchase)",
+   "evidence": [
+    "https://www.panels.app/comic-reader-mac",
+    "https://apps.apple.com/us/app/panels-comic-reader/id1236567663"
+   ],
+   "how": "docs"
+  },
+  "no_account_no_tracking": {
+   "value": "partial",
+   "note": "No account for local files, but App Privacy lists usage data, diagnostics and identifiers; in-app store and upsell",
+   "evidence": [
+    "https://apps.apple.com/us/app/panels-comic-reader/id1236567663",
+    "https://www.panels.app/comic-reader-mac"
+   ],
+   "how": "store"
+  },
+  "dark_light_setting": {
+   "value": "yes",
+   "note": "Light, dark and further themes (premium themes extra)",
+   "evidence": [
+    "https://apps.apple.com/us/app/panels-comic-reader/id1236567663",
+    "https://github.com/Produkt/panels-guides/blob/main/docs/premium/what-is-panels-premium.md"
+   ],
+   "how": "store"
+  },
+  "languages_20": {
+   "value": "partial",
+   "note": "12 languages (8 of them machine translated); set via macOS per-app language",
+   "evidence": [
+    "https://github.com/Produkt/panels-guides/blob/main/docs/help/change-app-language.md",
+    "https://apps.apple.com/us/app/panels-comic-reader/id1236567663"
+   ],
+   "how": "docs"
+  },
+  "folder_browsing": {
+   "value": "partial",
+   "note": "Libraries are plain folders you add; extra folders free, external disks and iCloud are Premium",
+   "evidence": [
+    "https://github.com/Produkt/panels-guides/blob/main/docs/libraries/how-libraries-work.md",
+    "https://www.panels.app/comic-reader-mac"
+   ],
+   "how": "docs"
+  },
+  "thumbnail_grid": {
+   "value": "yes",
+   "note": "Cover grid with custom folder colours, logos and covers",
+   "evidence": [
+    "https://apps.apple.com/us/app/panels-comic-reader/id1236567663",
+    "https://www.panels.app/"
+   ],
+   "how": "store"
+  },
+  "list_view": {
+   "value": "partial",
+   "evidence": [
+    "https://github.com/Produkt/panels-guides/blob/main/docs/remotes-and-controllers/keyboard-shortcuts.md"
+   ],
+   "how": "docs",
+   "note": "Library shows as grid or list (Cmd-1 / Cmd-2); columns not documented"
+  },
+  "recursive_search": {
+   "value": "yes",
+   "note": "Library search; across multiple libraries with Premium",
+   "evidence": [
+    "https://github.com/Produkt/panels-guides/blob/main/docs/premium/what-is-panels-premium.md"
+   ],
+   "how": "docs"
+  },
+  "regex_search": {
+   "value": "no",
+   "note": "Search exists; syntax not documented in guides or store page",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "network_shares_fast": {
+   "value": "partial",
+   "note": "SMB import and OPDS streaming (Premium); handles thousands of comics",
+   "evidence": [
+    "https://github.com/Produkt/panels-guides/blob/main/docs/premium/what-is-panels-premium.md",
+    "https://www.panels.app/"
+   ],
+   "how": "docs"
+  },
+  "multiple_windows": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/Produkt/panels-guides/blob/main/docs/remotes-and-controllers/keyboard-shortcuts.md"
+   ],
+   "how": "docs",
+   "note": "No new-window command in the complete shortcut list"
+  },
+  "bookmarks": {
+   "value": "partial",
+   "note": "Favorite library locations (Premium), favorites, continue reading",
+   "evidence": [
+    "https://github.com/Produkt/panels-guides/blob/main/docs/premium/what-is-panels-premium.md",
+    "https://github.com/Produkt/panels-guides/blob/main/docs/remotes-and-controllers/keyboard-shortcuts.md"
+   ],
+   "how": "docs"
+  },
+  "img_modern_formats": {
+   "value": "yes",
+   "note": "WebP, AVIF, HEIC, JPEG XL inside comic archives",
+   "evidence": [
+    "https://github.com/Produkt/panels-guides/blob/main/docs/import-content/supported-files.md"
+   ],
+   "how": "docs"
+  },
+  "img_raw": {
+   "value": "no",
+   "note": "Not in format list",
+   "evidence": [
+    "https://github.com/Produkt/panels-guides/blob/main/docs/import-content/supported-files.md"
+   ],
+   "how": "docs"
+  },
+  "img_psd_exr": {
+   "value": "no",
+   "note": "Not in format list",
+   "evidence": [
+    "https://github.com/Produkt/panels-guides/blob/main/docs/import-content/supported-files.md"
+   ],
+   "how": "docs"
+  },
+  "img_svg_pdf": {
+   "value": "partial",
+   "note": "PDF yes, SVG no",
+   "evidence": [
+    "https://github.com/Produkt/panels-guides/blob/main/docs/import-content/supported-files.md"
+   ],
+   "how": "docs"
+  },
+  "img_animated": {
+   "value": "no",
+   "note": "GIF/WebP pages supported; animation playback not documented",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "note": "Shift+arrows, Home/End",
+   "evidence": [
+    "https://github.com/Produkt/panels-guides/blob/main/docs/remotes-and-controllers/keyboard-shortcuts.md"
+   ],
+   "how": "docs"
+  },
+  "zoom_rotate": {
+   "value": "partial",
+   "note": "Zoom, fit/fill; rotation not documented",
+   "evidence": [
+    "https://github.com/Produkt/panels-guides/blob/main/docs/remotes-and-controllers/keyboard-shortcuts.md",
+    "https://github.com/Produkt/panels-guides/blob/main/docs/read-content/reader-configurations.md"
+   ],
+   "how": "docs"
+  },
+  "slideshow": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/Produkt/panels-guides/blob/main/docs/read-content/reader-configurations.md",
+    "https://github.com/Produkt/panels-guides/blob/main/docs/remotes-and-controllers/keyboard-shortcuts.md"
+   ],
+   "how": "docs",
+   "note": "Not among reader configurations or the complete shortcut list"
+  },
+  "slideshow_recursive": {
+   "value": "no",
+   "note": "No video support, so no mixed photo/video slideshow",
+   "evidence": [
+    "https://apps.apple.com/us/app/panels-comic-reader/id1236567663"
+   ],
+   "how": "docs"
+  },
+  "auto_enhance_view": {
+   "value": "partial",
+   "note": "Page filters (noise, sharpness, moire, borders) are Premium",
+   "evidence": [
+    "https://github.com/Produkt/panels-guides/blob/main/docs/premium/what-is-panels-premium.md",
+    "https://apps.apple.com/us/app/panels-comic-reader/id1236567663"
+   ],
+   "how": "docs"
+  },
+  "file_info_exif": {
+   "value": "partial",
+   "note": "Show info for comics (Cmd+I), no EXIF",
+   "evidence": [
+    "https://github.com/Produkt/panels-guides/blob/main/docs/remotes-and-controllers/keyboard-shortcuts.md"
+   ],
+   "how": "docs"
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "note": "Warns only when an EPUB is text, not a comic",
+   "evidence": [
+    "https://github.com/Produkt/panels-guides/blob/main/docs/import-content/supported-files.md"
+   ],
+   "how": "docs"
+  },
+  "video_native": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://apps.apple.com/us/app/panels-comic-reader/id1236567663"
+   ],
+   "how": "docs"
+  },
+  "video_mkv_avi_webm": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://apps.apple.com/us/app/panels-comic-reader/id1236567663"
+   ],
+   "how": "docs"
+  },
+  "photos_videos_one_grid": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://apps.apple.com/us/app/panels-comic-reader/id1236567663"
+   ],
+   "how": "docs"
+  },
+  "video_skim_arrows": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://apps.apple.com/us/app/panels-comic-reader/id1236567663"
+   ],
+   "how": "docs"
+  },
+  "subtitles_embedded": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://apps.apple.com/us/app/panels-comic-reader/id1236567663"
+   ],
+   "how": "docs"
+  },
+  "subtitles_external_files": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://apps.apple.com/us/app/panels-comic-reader/id1236567663"
+   ],
+   "how": "docs"
+  },
+  "audio_track_choice": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://apps.apple.com/us/app/panels-comic-reader/id1236567663"
+   ],
+   "how": "docs"
+  },
+  "playback_speed": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://apps.apple.com/us/app/panels-comic-reader/id1236567663"
+   ],
+   "how": "docs"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://apps.apple.com/us/app/panels-comic-reader/id1236567663"
+   ],
+   "how": "docs"
+  },
+  "playlist": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://apps.apple.com/us/app/panels-comic-reader/id1236567663"
+   ],
+   "how": "docs"
+  },
+  "saved_playlists": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://apps.apple.com/us/app/panels-comic-reader/id1236567663"
+   ],
+   "how": "docs"
+  },
+  "pip": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://apps.apple.com/us/app/panels-comic-reader/id1236567663"
+   ],
+   "how": "docs"
+  },
+  "music_mode": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://apps.apple.com/us/app/panels-comic-reader/id1236567663"
+   ],
+   "how": "docs"
+  },
+  "streaming_urls": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://apps.apple.com/us/app/panels-comic-reader/id1236567663"
+   ],
+   "how": "docs"
+  },
+  "online_subtitles": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://apps.apple.com/us/app/panels-comic-reader/id1236567663"
+   ],
+   "how": "docs"
+  },
+  "video_filters_enhance": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://apps.apple.com/us/app/panels-comic-reader/id1236567663"
+   ],
+   "how": "docs"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://apps.apple.com/us/app/panels-comic-reader/id1236567663"
+   ],
+   "how": "docs"
+  },
+  "archives_as_folders": {
+   "value": "partial",
+   "evidence": [
+    "https://github.com/Produkt/panels-guides/blob/main/docs/import-content/supported-files.md"
+   ],
+   "how": "docs",
+   "note": "opens an archive as a comic book, not as a folder"
+  },
+  "comics_cbz_cbr": {
+   "value": "yes",
+   "note": "Plus CB7, PDF, comic EPUB",
+   "evidence": [
+    "https://github.com/Produkt/panels-guides/blob/main/docs/import-content/supported-files.md"
+   ],
+   "how": "docs"
+  },
+  "archive_passwords": {
+   "value": "no",
+   "note": "Guides and store page searched; password lock covers Panels folders only, encrypted archives not mentioned",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "split_archives": {
+   "value": "no",
+   "note": "Supported files guide lists formats only",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "videos_in_archives": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://apps.apple.com/us/app/panels-comic-reader/id1236567663"
+   ],
+   "how": "docs"
+  },
+  "manga_two_page": {
+   "value": "yes",
+   "note": "Double page, right-to-left reading",
+   "evidence": [
+    "https://github.com/Produkt/panels-guides/blob/main/docs/read-content/reader-configurations.md",
+    "https://apps.apple.com/us/app/panels-comic-reader/id1236567663"
+   ],
+   "how": "docs"
+  },
+  "rename_trash": {
+   "value": "partial",
+   "note": "Rename and delete inside the library",
+   "evidence": [
+    "https://github.com/Produkt/panels-guides/blob/main/docs/remotes-and-controllers/keyboard-shortcuts.md"
+   ],
+   "how": "docs"
+  },
+  "move_copy": {
+   "value": "partial",
+   "note": "Copy, move, paste inside the library",
+   "evidence": [
+    "https://github.com/Produkt/panels-guides/blob/main/docs/remotes-and-controllers/keyboard-shortcuts.md"
+   ],
+   "how": "docs"
+  },
+  "dual_pane": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/Produkt/panels-guides/blob/main/docs/remotes-and-controllers/keyboard-shortcuts.md"
+   ],
+   "how": "docs",
+   "note": "No second pane in the complete shortcut list"
+  },
+  "undo_file_actions": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/Produkt/panels-guides/blob/main/docs/remotes-and-controllers/keyboard-shortcuts.md"
+   ],
+   "how": "docs",
+   "note": "No undo in the complete library shortcut list"
+  },
+  "image_editing": {
+   "value": "no",
+   "note": "Save page to disk only",
+   "evidence": [
+    "https://github.com/Produkt/panels-guides/blob/main/docs/remotes-and-controllers/keyboard-shortcuts.md"
+   ],
+   "how": "docs"
+  },
+  "batch_convert": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/Produkt/panels-guides/blob/main/docs/premium/what-is-panels-premium.md",
+    "https://github.com/Produkt/panels-guides/blob/main/docs/remotes-and-controllers/keyboard-shortcuts.md"
+   ],
+   "how": "docs",
+   "note": "Not in the complete feature table or shortcut list"
+  },
+  "library_catalog": {
+   "value": "yes",
+   "note": "Library with collections, favorites, read state, locking",
+   "evidence": [
+    "https://github.com/Produkt/panels-guides/blob/main/docs/premium/what-is-panels-premium.md",
+    "https://github.com/Produkt/panels-guides/blob/main/docs/remotes-and-controllers/keyboard-shortcuts.md"
+   ],
+   "how": "docs"
+  },
+  "cloud_sync": {
+   "value": "yes",
+   "note": "iCloud Drive and Dropbox libraries, progress sync, OPDS (Premium)",
+   "evidence": [
+    "https://github.com/Produkt/panels-guides/blob/main/docs/premium/what-is-panels-premium.md",
+    "https://www.panels.app/comic-reader-mac"
+   ],
+   "how": "docs"
+  },
+  "keyboard_first": {
+   "value": "partial",
+   "note": "Many shortcuts for reader and library",
+   "evidence": [
+    "https://github.com/Produkt/panels-guides/blob/main/docs/remotes-and-controllers/keyboard-shortcuts.md"
+   ],
+   "how": "docs"
+  },
+  "custom_shortcuts": {
+   "value": "no",
+   "note": "Fixed shortcuts; docs list them for mapping remotes",
+   "evidence": [
+    "https://github.com/Produkt/panels-guides/blob/main/docs/remotes-and-controllers/keyboard-shortcuts.md"
+   ],
+   "how": "docs"
+  },
+  "shortcut_cheatsheet": {
+   "value": "yes",
+   "note": "Full shortcut reference page in the guides",
+   "evidence": [
+    "https://github.com/Produkt/panels-guides/blob/main/docs/remotes-and-controllers/keyboard-shortcuts.md"
+   ],
+   "how": "docs"
+  },
+  "boss_key": {
+   "value": "no",
+   "note": "Has an incognito reading mode, no boss key",
+   "evidence": [
+    "https://github.com/Produkt/panels-guides/blob/main/docs/premium/what-is-panels-premium.md"
+   ],
+   "how": "docs"
+  },
+  "app_sandbox": {
+   "value": "yes",
+   "note": "Mac App Store app (sandbox required)",
+   "evidence": [
+    "https://apps.apple.com/us/app/panels-comic-reader/id1236567663"
+   ],
+   "how": "store"
+  },
+  "no_network": {
+   "value": "no",
+   "note": "OPDS, cloud libraries, store, sync, analytics",
+   "evidence": [
+    "https://apps.apple.com/us/app/panels-comic-reader/id1236567663",
+    "https://www.panels.app/comic-reader-mac"
+   ],
+   "how": "store"
+  },
+  "notarized_attested": {
+   "value": "partial",
+   "note": "Signed through the Mac App Store; closed source",
+   "evidence": [
+    "https://apps.apple.com/us/app/panels-comic-reader/id1236567663"
+   ],
+   "how": "store"
+  },
+  "mac_app_store": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://apps.apple.com/us/app/panels-comic-reader/id1236567663"
+   ],
+   "how": "store"
+  }
+ }
+}

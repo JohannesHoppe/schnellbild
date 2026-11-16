@@ -1,0 +1,595 @@
+{
+ "name": "FastRawViewer",
+ "short": "FastRawViewer",
+ "vendor": "LibRaw LLC",
+ "website": "https://www.fastrawviewer.com/",
+ "platforms": [
+  "macOS",
+  "Windows"
+ ],
+ "mac_available": "yes",
+ "page": "matrix",
+ "section": "image",
+ "price": "$23.99 one-time (Nov 2026 sale price, 25% off; 2 computers per license), 30-day trial",
+ "license": "proprietary",
+ "current_version": "2.0.11 (build 2088)",
+ "last_update": "2026 (2.0.11 current in Nov 2026; vendor publishes no release date)",
+ "engine": "LibRaw (own RAW decoding, GPU rendering); no video engine",
+ "category": "image",
+ "summary": "FastRawViewer is a fast RAW viewer and culling tool for photographers. It shows the actual RAW data with a RAW histogram, exposure warnings and quick WB/exposure corrections saved to XMP, and lets you rate, label, filter, rename, copy and move shots without a catalog.",
+ "where_it_wins": [
+  "Accurate RAW rendering with RAW histogram, over/underexposure display and focus peaking",
+  "Ratings/labels/XMP compatible with Lightroom and other converters",
+  "Filename filter with PCRE regex",
+  "2/4-up compare with synchronized zoom",
+  "Fully customizable shortcuts, keymaps imitating other apps",
+  "Tuning for NAS and slow media",
+  "Also on Windows"
+ ],
+ "where_schnellbild_wins": [
+  "Free and open source",
+  "Plays videos (MP4, MOV, MKV, WebM, AVI) next to photos in one grid and slideshow",
+  "Archives and comics open like folders",
+  "AVIF, JPEG XL, WebP, PSD, EXR, SVG, PDF, animated GIF/WebP",
+  "Light/dark setting and 20 languages",
+  "Dual pane with F5/F6, real trash",
+  "App Sandbox and never goes online (FRV needs online activation)",
+  "Several windows on Mac",
+  "Recursive name search with results streaming in"
+ ],
+ "search_terms": [
+  "fastrawviewer mac",
+  "fastrawviewer alternative",
+  "fastrawviewer free alternative",
+  "fast raw viewer mac",
+  "raw viewer mac free",
+  "fastrawviewer alternative kostenlos",
+  "schneller raw viewer mac"
+ ],
+ "matrix": {
+  "free": {
+   "value": "no",
+   "note": "$23.99 shown (Mid-Fall Sale, 25% off, until 2026-11-15); 30-day trial; license for 2 computers",
+   "evidence": [
+    "https://www.fastrawviewer.com/",
+    "https://www.fastrawviewer.com/download"
+   ],
+   "how": "docs"
+  },
+  "open_source": {
+   "value": "no",
+   "note": "Proprietary; built on the open-source LibRaw library",
+   "evidence": [
+    "https://www.fastrawviewer.com/"
+   ],
+   "how": "docs"
+  },
+  "native_apple_silicon": {
+   "value": "yes",
+   "note": "Universal binary, no Rosetta",
+   "evidence": [
+    "https://www.fastrawviewer.com/download"
+   ],
+   "how": "docs"
+  },
+  "no_account_no_tracking": {
+   "value": "partial",
+   "note": "No account or ads; license/trial activation contacts the vendor once (sends version and a hashed machine ID)",
+   "evidence": [
+    "https://updates.fastrawviewer.com/data/FastRawViewer2-Manual-ENG.pdf"
+   ],
+   "how": "docs"
+  },
+  "dark_light_setting": {
+   "value": "partial",
+   "note": "Dark UI by default; no light/dark switch, but window background and panel colors are adjustable in Preferences",
+   "evidence": [
+    "https://www.fastrawviewer.com/node/1046"
+   ],
+   "how": "forum"
+  },
+  "languages_20": {
+   "value": "no",
+   "note": "The 248-page manual has no interface-language setting; English UI.",
+   "evidence": [
+    "https://updates.fastrawviewer.com/data/FastRawViewer2-Manual-ENG.pdf"
+   ],
+   "how": "docs"
+  },
+  "folder_browsing": {
+   "value": "yes",
+   "note": "Works on any file system, no catalogs or import",
+   "evidence": [
+    "https://www.fastrawviewer.com/"
+   ],
+   "how": "docs"
+  },
+  "thumbnail_grid": {
+   "value": "partial",
+   "note": "Grid view of files; folders are shown in a folder tree panel, not as preview tiles",
+   "evidence": [
+    "https://www.fastrawviewer.com/",
+    "https://www.fastrawviewer.com/usermanual20"
+   ],
+   "how": "docs"
+  },
+  "list_view": {
+   "value": "no",
+   "note": "Manual: view modes are Grid and Single file (with filmstrip); no column list.",
+   "evidence": [
+    "https://updates.fastrawviewer.com/data/FastRawViewer2-Manual-ENG.pdf"
+   ],
+   "how": "docs"
+  },
+  "recursive_search": {
+   "value": "partial",
+   "note": "Filename filter (substring, mask, PCRE) on the current list; combine with 'Open folder with subfolders' mode for a flat list of all subfolders",
+   "evidence": [
+    "https://updates.fastrawviewer.com/data/FastRawViewer2-Manual-ENG.pdf",
+    "https://www.fastrawviewer.com/node/695"
+   ],
+   "how": "docs"
+  },
+  "regex_search": {
+   "value": "yes",
+   "note": "Filename filter accepts PCRE regular expressions (leading /)",
+   "evidence": [
+    "https://updates.fastrawviewer.com/data/FastRawViewer2-Manual-ENG.pdf"
+   ],
+   "how": "docs"
+  },
+  "network_shares_fast": {
+   "value": "yes",
+   "note": "Documents NAS use and has separate parallel-access, caching and 'slow media' settings for network volumes",
+   "evidence": [
+    "https://updates.fastrawviewer.com/data/FastRawViewer2-Manual-ENG.pdf",
+    "https://www.fastrawviewer.com/usermanual20"
+   ],
+   "how": "docs"
+  },
+  "multiple_windows": {
+   "value": "partial",
+   "note": "Mac: single instance (second one only via Terminal); 'Multi-window mode' is a 2/4-up compare view inside one window",
+   "evidence": [
+    "https://updates.fastrawviewer.com/data/FastRawViewer2-Manual-ENG.pdf",
+    "https://www.fastrawviewer.com/node/1122"
+   ],
+   "how": "docs"
+  },
+  "bookmarks": {
+   "value": "yes",
+   "note": "Favorite Folders panel",
+   "evidence": [
+    "https://updates.fastrawviewer.com/data/FastRawViewer2-Manual-ENG.pdf"
+   ],
+   "how": "docs"
+  },
+  "img_modern_formats": {
+   "value": "partial",
+   "note": "HEIC/HEIF yes; AVIF, JPEG XL, WebP not supported",
+   "evidence": [
+    "https://www.fastrawviewer.com/",
+    "https://updates.fastrawviewer.com/data/FastRawViewer2-Manual-ENG.pdf"
+   ],
+   "how": "docs"
+  },
+  "img_raw": {
+   "value": "yes",
+   "note": "Almost all RAW formats (not Sigma Foveon); shows real RAW data, not only the embedded JPEG",
+   "evidence": [
+    "https://www.fastrawviewer.com/"
+   ],
+   "how": "docs"
+  },
+  "img_psd_exr": {
+   "value": "no",
+   "note": "Supported formats: RAW/DNG, JPEG, PNG, TIFF, HEIC/HEIF only",
+   "evidence": [
+    "https://www.fastrawviewer.com/usermanual20",
+    "https://updates.fastrawviewer.com/data/FastRawViewer2-Manual-ENG.pdf"
+   ],
+   "how": "docs"
+  },
+  "img_svg_pdf": {
+   "value": "no",
+   "note": "Not among supported formats",
+   "evidence": [
+    "https://www.fastrawviewer.com/usermanual20",
+    "https://updates.fastrawviewer.com/data/FastRawViewer2-Manual-ENG.pdf"
+   ],
+   "how": "docs"
+  },
+  "img_animated": {
+   "value": "no",
+   "note": "No GIF/animated formats supported",
+   "evidence": [
+    "https://www.fastrawviewer.com/usermanual20",
+    "https://updates.fastrawviewer.com/data/FastRawViewer2-Manual-ENG.pdf"
+   ],
+   "how": "docs"
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://updates.fastrawviewer.com/data/FastRawViewer%20Keyboard%20Shortcuts_Windows.pdf",
+    "https://updates.fastrawviewer.com/data/FastRawViewer2-Manual-ENG.pdf"
+   ],
+   "how": "docs"
+  },
+  "zoom_rotate": {
+   "value": "yes",
+   "note": "Zoom/pan; rotation is stored in XMP, file untouched",
+   "evidence": [
+    "https://www.fastrawviewer.com/usermanual20",
+    "https://updates.fastrawviewer.com/data/FastRawViewer2-Manual-ENG.pdf"
+   ],
+   "how": "docs"
+  },
+  "slideshow": {
+   "value": "partial",
+   "note": "Basic slideshow: timed next/previous, set delay and file limit, no transitions",
+   "evidence": [
+    "https://www.fastrawviewer.com/node/695",
+    "https://updates.fastrawviewer.com/data/FastRawViewer2-Manual-ENG.pdf"
+   ],
+   "how": "docs"
+  },
+  "slideshow_recursive": {
+   "value": "partial",
+   "note": "Slideshow works in subfolder browse mode; photos only, no videos",
+   "evidence": [
+    "https://www.fastrawviewer.com/node/695"
+   ],
+   "how": "docs"
+  },
+  "auto_enhance_view": {
+   "value": "yes",
+   "note": "Exposure, white balance, contrast, auto-ETTR applied for viewing; saved only as XMP, RAW file unchanged",
+   "evidence": [
+    "https://www.fastrawviewer.com/",
+    "https://www.fastrawviewer.com/node/1156"
+   ],
+   "how": "docs"
+  },
+  "file_info_exif": {
+   "value": "yes",
+   "note": "EXIF panel with selectable fields, RAW histogram and statistics; no video codec info (no video)",
+   "evidence": [
+    "https://www.fastrawviewer.com/",
+    "https://updates.fastrawviewer.com/data/FastRawViewer2-Manual-ENG.pdf"
+   ],
+   "how": "docs"
+  },
+  "wrong_extension_note": {
+   "value": "partial",
+   "note": "Optional 'Determine the file type by its content' opens files by header; no explicit warning shown",
+   "evidence": [
+    "https://updates.fastrawviewer.com/data/FastRawViewer2-Manual-ENG.pdf"
+   ],
+   "how": "docs"
+  },
+  "video_native": {
+   "value": "no",
+   "note": "No video playback; Canon CRM movies/CR3 bursts only show the first frame",
+   "evidence": [
+    "https://www.fastrawviewer.com/node/1156",
+    "https://www.fastrawviewer.com/usermanual20"
+   ],
+   "how": "docs"
+  },
+  "video_mkv_avi_webm": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://www.fastrawviewer.com/usermanual20"
+   ],
+   "how": "docs"
+  },
+  "photos_videos_one_grid": {
+   "value": "no",
+   "note": "Video files are not listed",
+   "evidence": [
+    "https://updates.fastrawviewer.com/data/FastRawViewer2-Manual-ENG.pdf"
+   ],
+   "how": "docs"
+  },
+  "video_skim_arrows": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://www.fastrawviewer.com/usermanual20"
+   ],
+   "how": "docs"
+  },
+  "subtitles_embedded": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://www.fastrawviewer.com/usermanual20"
+   ],
+   "how": "docs"
+  },
+  "subtitles_external_files": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://www.fastrawviewer.com/usermanual20"
+   ],
+   "how": "docs"
+  },
+  "audio_track_choice": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://www.fastrawviewer.com/usermanual20"
+   ],
+   "how": "docs"
+  },
+  "playback_speed": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://www.fastrawviewer.com/usermanual20"
+   ],
+   "how": "docs"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://www.fastrawviewer.com/usermanual20"
+   ],
+   "how": "docs"
+  },
+  "playlist": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://www.fastrawviewer.com/usermanual20"
+   ],
+   "how": "docs"
+  },
+  "saved_playlists": {
+   "value": "no",
+   "note": "Saved selections exist for photos, not playlists",
+   "evidence": [
+    "https://www.fastrawviewer.com/node/1156"
+   ],
+   "how": "docs"
+  },
+  "pip": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://www.fastrawviewer.com/usermanual20"
+   ],
+   "how": "docs"
+  },
+  "music_mode": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://www.fastrawviewer.com/usermanual20"
+   ],
+   "how": "docs"
+  },
+  "streaming_urls": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://www.fastrawviewer.com/usermanual20"
+   ],
+   "how": "docs"
+  },
+  "online_subtitles": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://www.fastrawviewer.com/usermanual20"
+   ],
+   "how": "docs"
+  },
+  "video_filters_enhance": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://www.fastrawviewer.com/usermanual20"
+   ],
+   "how": "docs"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://www.fastrawviewer.com/usermanual20"
+   ],
+   "how": "docs"
+  },
+  "archives_as_folders": {
+   "value": "no",
+   "note": "No archive support in the format list",
+   "evidence": [
+    "https://www.fastrawviewer.com/usermanual20"
+   ],
+   "how": "docs"
+  },
+  "comics_cbz_cbr": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://www.fastrawviewer.com/usermanual20"
+   ],
+   "how": "docs"
+  },
+  "archive_passwords": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://www.fastrawviewer.com/usermanual20"
+   ],
+   "how": "docs"
+  },
+  "split_archives": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://www.fastrawviewer.com/usermanual20"
+   ],
+   "how": "docs"
+  },
+  "videos_in_archives": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://www.fastrawviewer.com/usermanual20"
+   ],
+   "how": "docs"
+  },
+  "manga_two_page": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://www.fastrawviewer.com/usermanual20"
+   ],
+   "how": "docs"
+  },
+  "rename_trash": {
+   "value": "yes",
+   "note": "Rename with name templates; delete goes to a _Rejected subfolder (by design, no direct trash); new folder via folder tree when enabled",
+   "evidence": [
+    "https://updates.fastrawviewer.com/data/FastRawViewer2-Manual-ENG.pdf",
+    "https://www.fastrawviewer.com/"
+   ],
+   "how": "docs"
+  },
+  "move_copy": {
+   "value": "yes",
+   "note": "Copy/move to chosen folders, drag and drop, conflict resolution options",
+   "evidence": [
+    "https://www.fastrawviewer.com/",
+    "https://www.fastrawviewer.com/node/1156",
+    "https://updates.fastrawviewer.com/data/FastRawViewer2-Manual-ENG.pdf"
+   ],
+   "how": "docs"
+  },
+  "dual_pane": {
+   "value": "no",
+   "note": "Multi-window mode compares images; there is no two-pane file manager",
+   "evidence": [
+    "https://updates.fastrawviewer.com/data/FastRawViewer2-Manual-ENG.pdf"
+   ],
+   "how": "docs"
+  },
+  "undo_file_actions": {
+   "value": "yes",
+   "note": "'Undo: Reversing File Operations'",
+   "evidence": [
+    "https://www.fastrawviewer.com/usermanual20",
+    "https://updates.fastrawviewer.com/data/FastRawViewer2-Manual-ENG.pdf"
+   ],
+   "how": "docs"
+  },
+  "image_editing": {
+   "value": "partial",
+   "note": "Only exposure/WB/contrast/orientation stored in XMP; no crop, resize or save; hands files to an external converter",
+   "evidence": [
+    "https://www.fastrawviewer.com/",
+    "https://updates.fastrawviewer.com/data/FastRawViewer2-Manual-ENG.pdf"
+   ],
+   "how": "docs"
+  },
+  "batch_convert": {
+   "value": "partial",
+   "note": "Batch rename yes; no format conversion",
+   "evidence": [
+    "https://www.fastrawviewer.com/usermanual20",
+    "https://www.fastrawviewer.com/"
+   ],
+   "how": "docs"
+  },
+  "library_catalog": {
+   "value": "partial",
+   "note": "Ratings, labels, titles in XMP sidecars, filter by them; no database or catalog",
+   "evidence": [
+    "https://www.fastrawviewer.com/",
+    "https://updates.fastrawviewer.com/data/FastRawViewer2-Manual-ENG.pdf"
+   ],
+   "how": "docs"
+  },
+  "cloud_sync": {
+   "value": "no",
+   "note": "No cloud, upload or sharing functions in the manual.",
+   "evidence": [
+    "https://updates.fastrawviewer.com/data/FastRawViewer2-Manual-ENG.pdf"
+   ],
+   "how": "docs"
+  },
+  "keyboard_first": {
+   "value": "yes",
+   "note": "Built for keyboard culling; every action has a shortcut",
+   "evidence": [
+    "https://updates.fastrawviewer.com/data/FastRawViewer%20Keyboard%20Shortcuts_Windows.pdf",
+    "https://updates.fastrawviewer.com/data/FastRawViewer2-Manual-ENG.pdf"
+   ],
+   "how": "docs"
+  },
+  "custom_shortcuts": {
+   "value": "yes",
+   "note": "Keyboard Shortcuts Editor; downloadable keymaps imitating other apps",
+   "evidence": [
+    "https://www.fastrawviewer.com/",
+    "https://updates.fastrawviewer.com/data/FastRawViewer2-Manual-ENG.pdf"
+   ],
+   "how": "docs"
+  },
+  "shortcut_cheatsheet": {
+   "value": "partial",
+   "note": "Vendor PDF of default shortcuts exists for Windows; no Mac sheet found",
+   "evidence": [
+    "https://updates.fastrawviewer.com/data/FastRawViewer%20Keyboard%20Shortcuts_Windows.pdf"
+   ],
+   "how": "docs"
+  },
+  "boss_key": {
+   "value": "no",
+   "note": "Tab hides the information panels only; no hide-all key in the manual.",
+   "evidence": [
+    "https://updates.fastrawviewer.com/data/FastRawViewer2-Manual-ENG.pdf"
+   ],
+   "how": "docs"
+  },
+  "app_sandbox": {
+   "value": "no",
+   "note": "Direct download outside the Mac App Store; the manual does not cover sandboxing.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "no_network": {
+   "value": "no",
+   "note": "Needs internet (or manual code) for license/trial activation",
+   "evidence": [
+    "https://updates.fastrawviewer.com/data/FastRawViewer2-Manual-ENG.pdf"
+   ],
+   "how": "docs"
+  },
+  "notarized_attested": {
+   "value": "no",
+   "note": "Closed source, so the build cannot be attested; the manual covers only the signed Windows installer.",
+   "evidence": [
+    "https://updates.fastrawviewer.com/data/FastRawViewer2-Manual-ENG.pdf",
+    "https://www.fastrawviewer.com/"
+   ],
+   "how": "docs"
+  },
+  "mac_app_store": {
+   "value": "no",
+   "note": "Download from vendor only",
+   "evidence": [
+    "https://www.fastrawviewer.com/download",
+    "https://updates.fastrawviewer.com/data/FastRawViewer2-Manual-ENG.pdf"
+   ],
+   "how": "docs"
+  }
+ }
+}

@@ -1,0 +1,2375 @@
+{
+ "ui": {
+  "overviewTitle": "Schnellbild jako alternativa",
+  "overviewSeoTitle": "Alternativa k {names} pro Mac zdarma · Schnellbild",
+  "overviewDescription": "Schnellbild ve srovnání s {count} prohlížeči obrázků, přehrávači videa, čtečkami komiksů a správci souborů, funkci po funkci a se zdroji. Zdarma, open source, pro Mac.",
+  "overviewIntro": "<p>Schnellbild je alternativa s jasným názorem. Složky místo playlistů a knihovny: otevřete složku a seznam je hotový, prezentace si playlist udělá sama. Z internetu nic, z principu: žádný účet, žádné sledování, vůbec žádná síť. A zdarma, včetně vlastních klávesových zkratek, za které si některé jiné programy nechávají platit.</p><p>Tady je, jak si vede v porovnání s programy, které lidé na Macu hledají, se zdrojem u každé buňky. Kde je jiný program lepší, stránka to uvádí.</p>",
+  "overviewNoMac": "Tyto programy běží jen ve Windows (nebo už ne na dnešním Macu). U každého najdete, co se na něm fanouškům líbilo a jak to řeší Schnellbild.",
+  "matrixH1": "Bezplatná alternativa k {name} pro Mac",
+  "matrixSeoTitle": "Alternativa k {name} pro Mac zdarma · Schnellbild",
+  "matrixDescription": "{name}, nebo Schnellbild? Srovnání funkci po funkci se zdroji: kde je silnější {name} a kde Schnellbild. Zdarma, open source, přehraje MKV, otevře ZIP a RAR jako složky.",
+  "matrixLead": "Schnellbild a {name} vedle sebe: co kdo umí lépe a pak každá funkce se zdrojem.",
+  "switcherH1": "{name} pro Mac? Tady je alternativa",
+  "switcherSeoTitle": "{name} pro Mac? Alternativa zdarma · Schnellbild",
+  "switcherDescription": "Hledáte {name} pro Mac? Co se fanouškům na programu {name} líbí a jak to zdarma řeší Schnellbild: složky, klávesy, MKV, ZIP a RAR jako složky.",
+  "facts": "{name} v kostce",
+  "factPrice": "Cena",
+  "factPlatforms": "Platformy",
+  "factVersion": "Verze",
+  "factUpdated": "Poslední aktualizace",
+  "aboutTitle": "V čem je {name} dobrý",
+  "theyWin": "Kde je silnější {name}",
+  "weWin": "Kde je silnější Schnellbild",
+  "matrixTitle": "Funkci po funkci",
+  "colFeature": "Funkce",
+  "legendTitle": "Co znamenají symboly",
+  "yes": "Ano",
+  "no": "Ne",
+  "partial": "Částečně",
+  "intentional": "Záměrně vynecháno",
+  "na": "Netýká se",
+  "source": "Zdroj {n}",
+  "sources": "Zdroje",
+  "asOf": "Stav k listopadu 2026: {name} {version}, Schnellbild {ours}. Sloupec programu {name} vychází ze zdrojů níže, sloupec Schnellbildu z jeho README a zdrojového kódu.",
+  "leftOut": "Vynecháno, protože o programu {name} chybí spolehlivý zdroj: {count} z {total} funkcí.",
+  "fileManager": "Schnellbild není plnohodnotný správce souborů: žádné připojení přes FTP, SFTP ani ke cloudu, žádná synchronizace složek, žádné vytváření archivů. Je udělaný na procházení a třídění fotek a videí: náhledy všeho, dva panely vedle sebe, F5 kopíruje a F6 přesouvá, archivy se otevírají jako složky.",
+  "likedTitle": "Co se fanouškům na programu {name} líbí a jak to funguje ve Schnellbildu",
+  "aheadTitle": "Kde má {name} navrch",
+  "purposeTitle": "Záměrně vynecháno",
+  "similarTitle": "Podobné alternativy",
+  "allAlternatives": "Všechny alternativy",
+  "breadcrumb": "Alternativy",
+  "trademark": "{name} je produkt společnosti {vendor}. Všechny názvy a ochranné známky patří jejich vlastníkům; Schnellbild s nimi není nijak spojen.",
+  "trademarkAll": "Všechny názvy produktů a ochranné známky patří jejich vlastníkům; Schnellbild s nimi není nijak spojen.",
+  "ctaTitle": "Vyzkoušejte ho na vlastních složkách.",
+  "ctaText": "Zdarma, bez účtu, se všemi funkcemi.",
+  "keywords": "alternativa k {name}, {name} mac, {name} pro mac, {name} mac zdarma, alternativa k {name} pro mac, bezplatná alternativa k {name}, {name} vs Schnellbild, Schnellbild",
+  "listSep": ", "
+ },
+ "sections": {
+  "image": "Prohlížeče obrázků",
+  "video": "Přehrávače videa",
+  "comic": "Čtečky komiksů",
+  "files": "Správci souborů",
+  "photos": "Apple a správa fotek",
+  "windows": "Přecházíte z Windows"
+ },
+ "jokes": {
+  "image": "Přestěhovali jste se na Mac. Fotky jely s vámi, prsty si pamatují všechny zkratky, jen {name} zůstává na starém počítači. Tak to ale zůstat nemusí.",
+  "video": "Nový Mac, stará videa a {name} se stěhovat odmítá. Vaše soubory MKV mezitím trpělivě čekají, až je někdo pustí.",
+  "comic": "Komiksy se na Mac přestěhovaly bez jediného oslího ucha. Na {name} se v autě nějak nedostalo místo.",
+  "files": "Dva panely, funkční klávesy a prsty, které znají F5 a F6 déle, než jsou na světě někteří kolegové. Pak přišel Mac a {name} nepustil ani přes práh.",
+  "photos": "Fotky se přestěhovaly na Mac. {name} zůstává doma a hlídá byt."
+ },
+ "groups": {
+  "basics": "Základ",
+  "browse": "Procházení",
+  "images": "Obrázky",
+  "video": "Videa",
+  "archives": "Archivy a komiksy",
+  "files": "Soubory",
+  "keys": "Klávesnice",
+  "safety": "Bezpečnost"
+ },
+ "rows": {
+  "free": {
+   "label": "Zdarma, se všemi funkcemi",
+   "how": "Všechny funkce v bezplatném stažení, žádná verze Pro."
+  },
+  "open_source": {
+   "label": "Open source",
+   "how": "Licence MIT, zdrojový kód je na GitHubu."
+  },
+  "native_apple_silicon": {
+   "label": "Nativně na Apple silicon",
+   "how": "Sestaveno pro Apple silicon.",
+   "note": "jen Apple silicon"
+  },
+  "no_account_no_tracking": {
+   "label": "Bez účtu, reklam a sledování",
+   "how": "Žádný účet, žádné reklamy, žádná analytika."
+  },
+  "dark_light_setting": {
+   "label": "Světlý nebo tmavý nezávisle na systému",
+   "how": "Nastavení (⌘,): podle systému, světlý nebo tmavý."
+  },
+  "languages_20": {
+   "label": "Rozhraní v mnoha jazycích",
+   "how": "20 jazyků, podle jazyka vašeho Macu.",
+   "note": "20 jazyků"
+  },
+  "folder_browsing": {
+   "label": "Prochází přímo složky, bez importu",
+   "how": "Složku otevřete přes ⌘O nebo ji přetáhněte do okna."
+  },
+  "thumbnail_grid": {
+   "label": "Mřížka náhledů s náhledy složek",
+   "how": "Složky ukazují své první obrázky; složky bez obrázků jsou zašedlé."
+  },
+  "list_view": {
+   "label": "Seznam se sloupci",
+   "how": "L přepíná mezi mřížkou a seznamem."
+  },
+  "recursive_search": {
+   "label": "Hledání názvů ve všech podsložkách",
+   "how": "Pole hledání (⌘F) prohledá složku i všechny podsložky."
+  },
+  "regex_search": {
+   "label": "Hledání regulárními výrazy",
+   "how": ".* vedle pole hledání přijme regulární výraz."
+  },
+  "network_shares_fast": {
+   "label": "Rychlý na síťových discích a ve velkých složkách",
+   "how": "Náhledy přibývají během posouvání, i na síťových discích."
+  },
+  "multiple_windows": {
+   "label": "Více oken",
+   "how": "⌘N otevře další okno."
+  },
+  "bookmarks": {
+   "label": "Záložky složek",
+   "how": "⌘D přidá záložku složky, ⌃1 … ⌃9 ji otevřou."
+  },
+  "img_modern_formats": {
+   "label": "HEIC, AVIF, JPEG XL, WebP",
+   "how": "Přes ImageIO, vestavěné v macOS."
+  },
+  "img_raw": {
+   "label": "RAW z fotoaparátů",
+   "how": "Formáty RAW, které zná macOS, vyvolané macOS.",
+   "note": "modely, které zná macOS"
+  },
+  "img_psd_exr": {
+   "label": "PSD, OpenEXR",
+   "how": "Zobrazí se jako každý jiný obrázek."
+  },
+  "img_svg_pdf": {
+   "label": "SVG a PDF",
+   "how": "Jako vektorové obrázky, u PDF každá stránka."
+  },
+  "img_animated": {
+   "label": "Animované GIF, PNG, WebP",
+   "how": "Přehrávají se a dají se zvětšit a otočit jako každý obrázek."
+  },
+  "keyboard_paging": {
+   "label": "Listování klávesnicí",
+   "how": "Mezerník otevře obrázek, ← → listují složkou."
+  },
+  "zoom_rotate": {
+   "label": "Zvětšení, posun, otočení (jen zobrazení)",
+   "how": "+ − nebo sevření prstů zvětšuje, ⌥← ⌥→ otáčí; soubor zůstane, jak je."
+  },
+  "slideshow": {
+   "label": "Prezentace",
+   "how": "S ji spustí, mezerník pozastaví."
+  },
+  "slideshow_recursive": {
+   "label": "Prezentace přes všechny podsložky, fotky a videa dohromady",
+   "how": "Všechny podsložky, fotky i videa dohromady, ve vašem řazení."
+  },
+  "auto_enhance_view": {
+   "label": "Automatické vylepšení a posuvníky bez změny souboru",
+   "how": "E vylepší, A ukáže posuvníky; mění se jen zobrazení."
+  },
+  "file_info_exif": {
+   "label": "Informace o souboru: EXIF, kodeky, datový tok",
+   "how": "I ukáže formát, fotoaparát, kodeky a datový tok."
+  },
+  "wrong_extension_note": {
+   "label": "Upozorní na příponu, která neodpovídá obsahu",
+   "how": "Informace o souboru uvedou příponu, která sedí."
+  },
+  "video_native": {
+   "label": "Přehraje MP4, MOV",
+   "how": "Přes samotný macOS."
+  },
+  "video_mkv_avi_webm": {
+   "label": "Přehraje MKV, WebM, AVI, WMV, FLV",
+   "how": "Přes vestavěné jádro VLC.",
+   "note": "vestavěné jádro VLC"
+  },
+  "photos_videos_one_grid": {
+   "label": "Fotky a videa společně v jedné mřížce",
+   "how": "Jedna mřížka pro obojí, v každé složce."
+  },
+  "video_skim_arrows": {
+   "label": "Procházení videí šipkami",
+   "how": "← → skočí o desetinu videa, s ⇧ o setinu."
+  },
+  "subtitles_embedded": {
+   "label": "Titulky uložené ve videu",
+   "how": "V je zapne a vypne, ⌃⌘S vybere stopu."
+  },
+  "subtitles_external_files": {
+   "label": "Načte soubory titulků vedle videa",
+   "why": "Čte jen samotné video, nic, co leží vedle něj."
+  },
+  "audio_track_choice": {
+   "label": "Výběr zvukové stopy",
+   "how": "⌃⌘A nebo ovládací lišta."
+  },
+  "playback_speed": {
+   "label": "Rychlost přehrávání",
+   "how": "< a > od 0,5× do 2×, hlasy si zachovají výšku."
+  },
+  "control_bar_movable": {
+   "label": "Ovládací lišta zůstane, kam ji dáte",
+   "how": "Přetáhněte ji za úchyt: zůstane tam u všech videí."
+  },
+  "playlist": {
+   "label": "Playlist",
+   "how": "Seznam prezentace jako postranní panel: změňte pořadí, něco vyřaďte.",
+   "note": "vzniká za běhu z prezentace, neukládá se"
+  },
+  "saved_playlists": {
+   "label": "Uložené playlisty",
+   "why": "Složky místo playlistů: seznam udělá prezentace."
+  },
+  "pip": {
+   "label": "Obraz v obraze",
+   "why": "Je udělaný na procházení složek; na sledování bokem se lépe hodí přehrávač videa."
+  },
+  "music_mode": {
+   "label": "Zvukové soubory, hudební režim",
+   "why": "Jen obrázky a videa; zvukové soubory se otevřou ve své aplikaci."
+  },
+  "streaming_urls": {
+   "label": "Přehrává streamy a adresy z internetu",
+   "why": "Z principu se nikdy nepřipojuje k internetu."
+  },
+  "online_subtitles": {
+   "label": "Stahuje titulky z internetu",
+   "why": "Z principu se nikdy nepřipojuje k internetu."
+  },
+  "video_filters_enhance": {
+   "label": "Úpravy videa (jas, kontrast …)",
+   "how": "Stejné posuvníky jako u fotek."
+  },
+  "quicklook_mkv_thumbnails": {
+   "label": "Náhledy ve Finderu a Rychlém náhledu pro MKV a další",
+   "how": "MKV, WebM, WMV, FLV a VOB dostanou ve Finderu náhledy.",
+   "note": "MKV, WebM, WMV, FLV, Ogg, VOB"
+  },
+  "archives_as_folders": {
+   "label": "ZIP, RAR, 7z se otevírají jako složky",
+   "how": "Otevírají se jako složky, nic se nerozbaluje na disk."
+  },
+  "comics_cbz_cbr": {
+   "label": "Komiksy CBZ, CBR",
+   "how": "CBZ a CBR se otevírají jako složky; listujete ← →."
+  },
+  "archive_passwords": {
+   "label": "Archivy chráněné heslem",
+   "how": "Zeptá se jednou a zapamatuje si ho.",
+   "note": "ZIP a RAR; šifrovaný 7z otevřít nejde"
+  },
+  "split_archives": {
+   "label": "Archivy rozdělené na více částí",
+   "how": "Zobrazí se jednou, podle první části."
+  },
+  "videos_in_archives": {
+   "label": "Přehrává videa přímo z archivů",
+   "how": "Streamuje se přímo z archivu."
+  },
+  "manga_two_page": {
+   "label": "Dvoustrana, režim mangy zprava doleva",
+   "why": "Vždy jeden obrázek, tak velký, jak okno dovolí."
+  },
+  "rename_trash": {
+   "label": "Přejmenovat, do koše, nová složka",
+   "how": "Return nebo F2 přejmenuje, ⌘⌫ přesune do koše, ⇧⌘N vytvoří složku."
+  },
+  "move_copy": {
+   "label": "Přesun a kopírování přetažením do složek",
+   "how": "Přetáhněte dlaždice na složku."
+  },
+  "dual_pane": {
+   "label": "Dva panely vedle sebe (F5 kopírovat, F6 přesunout)",
+   "how": "D ukáže dva panely, F5 kopíruje, F6 přesouvá."
+  },
+  "undo_file_actions": {
+   "label": "Odvolání přejmenování, přesunu, koše",
+   "how": "Nahoře v nabídce pravého tlačítka."
+  },
+  "image_editing": {
+   "label": "Úpravy obrázků (oříznutí, změna velikosti, uložení)",
+   "why": "Zobrazuje obrázky, aniž by je měnil: vaše soubory zůstanou, jak jsou."
+  },
+  "batch_convert": {
+   "label": "Hromadný převod nebo přejmenování",
+   "why": "Hromadný převod a přejmenování nechává Schnellbild jiným aplikacím."
+  },
+  "library_catalog": {
+   "label": "Knihovna, katalog, štítky, hodnocení",
+   "why": "Složky místo knihovny: nic se neimportuje."
+  },
+  "cloud_sync": {
+   "label": "Synchronizace s cloudem, sdílení online",
+   "why": "Z principu se nikdy nepřipojuje k internetu."
+  },
+  "keyboard_first": {
+   "label": "Vše z klávesnice",
+   "how": "Každá akce má svou klávesu."
+  },
+  "custom_shortcuts": {
+   "label": "Vlastní klávesové zkratky",
+   "how": "Vlastní klávesy zdarma, s předvolbou jako v Phieweru.",
+   "note": "zdarma, s předvolbou jako v Phieweru"
+  },
+  "shortcut_cheatsheet": {
+   "label": "Tahák všech kláves k tisku",
+   "how": "F1 vypíše všechny klávesy, i k tisku."
+  },
+  "boss_key": {
+   "label": "Šéfovo tlačítko (vše naráz schovat)",
+   "how": "X schová všechna okna a ztlumí všechna videa."
+  },
+  "app_sandbox": {
+   "label": "Běží v App Sandboxu od Applu",
+   "how": "Aplikace i její rozšíření běží v něm."
+  },
+  "no_network": {
+   "label": "Nikdy se nepřipojuje k internetu",
+   "how": "Vůbec žádný přístup k síti."
+  },
+  "notarized_attested": {
+   "label": "Notarizováno, prokazatelně sestaveno z veřejného kódu",
+   "how": "Každé stažení má atestaci sestavení od GitHubu."
+  },
+  "mac_app_store": {
+   "label": "V Mac App Storu",
+   "how": "Brzy, za 0,99 € na podporu projektu.",
+   "note": "brzy, 0,99 € na podporu"
+  }
+ },
+ "products": {
+  "2345-kantuwang": {
+   "name": "2345看图王",
+   "vendor": "2345.com",
+   "summary": "Jeden z nejrozšířenějších prohlížečů obrázků pro Windows v Číně: rychle otevře asi 98 obrazových formátů včetně PSD, RAW, SVG a AVIF, k tomu PDF/OFD a CAD. Přidává jednoduché úpravy, hromadné nástroje, OCR, fotky na doklady a AI ořez pozadí, některé z toho jen s členstvím VIP.",
+   "wins": [
+    "Velmi široká nabídka obrazových formátů (PSD/PSB, AI, RAW, CAD, OFD)",
+    "Vestavěné úpravy, hromadný převod a přejmenování, OCR, fotky na doklady a tisk",
+    "Čínští uživatelé Windows ho znají, zkratky kompatibilní s ACDSee"
+   ],
+   "price": "Prohlížeč zdarma; členství VIP pro úpravy, AI a PDF navíc (měsíčně, ročně, doživotně)",
+   "version": "13.2",
+   "updated": "2025-09-30 (záznam v obchodě Tencent pro v13.2; články na webu do 2026-10)",
+   "platforms": "Windows"
+  },
+  "5kplayer": {
+   "name": "5KPlayer",
+   "vendor": "Digiarty Software",
+   "summary": "Bezplatný univerzální přehrávač pro Mac a Windows: přehraje video, hudbu, DVD a rádio, přijímá zrcadlení přes AirPlay, streamuje přes DLNA a stahuje videa z internetu.",
+   "wins": [
+    "Přijímač AirPlay a nahrávání zrcadlené obrazovky",
+    "Server a renderer DLNA",
+    "Stahování videí z internetu (YouTube aj.)",
+    "Přehrávání DVD a ISO",
+    "Hudební knihovna, rádio, IPTV",
+    "Rychlost přehrávání, stříhání videa, vytažení MP3"
+   ],
+   "price": "Zdarma (s reklamami, volitelná registrace e-mailem)",
+   "version": "6.11",
+   "updated": "2026-01-30",
+   "platforms": "macOS, Windows",
+   "notes": {
+    "list_view": "Seznamy knihovny (oblíbené, YouTube, DLNA, playlist), bez sloupců souborů",
+    "bookmarks": "Záložky ve videích a oblíbené, ne záložky složek",
+    "zoom_rotate": "Otáčí a zrcadlí video o 90°; obrázky nezobrazuje",
+    "auto_enhance_view": "Video Tuner a efekty jen pro video; fotky ne",
+    "file_info_exif": "Informace o médiu a stopách; bez EXIF (žádné obrázky)",
+    "pip": "Bez obrazu v obraze; jen „vždy navrchu“",
+    "online_subtitles": "Titulky z YouTube spolu s videem; pro místní soubory nehledá",
+    "batch_convert": "Převod videa na MP3/AAC/MP4 po jednom; plný převodník je placený zvlášť",
+    "library_catalog": "Knihovna s oblíbenými a playlisty; bez štítků a hodnocení",
+    "cloud_sync": "Bez synchronizace s cloudem; sdílí na zařízení DLNA/AirPlay",
+    "keyboard_first": "Zkratky pro přehrávání; knihovna hlavně myší",
+    "shortcut_cheatsheet": "Seznam zkratek v online příručce",
+    "notarized_attested": "Notarizováno (Digiarty Software, Inc.); uzavřený kód"
+   }
+  },
+  "acdsee": {
+   "name": "ACDSee",
+   "vendor": "ACD Systems",
+   "summary": "Zavedený správce fotek (DAM) a editor RAW, který pracuje s existujícími složkami bez importu: katalogová databáze, hodnocení, klíčová slova, AI rozpoznávání tváří a klíčových slov, nedestruktivní režim Develop a hromadné nástroje. Verze pro Windows přehraje i běžná videa a prochází archivy ZIP/RAR; verze pro Mac je v tom omezenější. Placený, určený fotografům, kteří fotky spravují a upravují.",
+   "wins": [
+    "Plnohodnotný DAM: hodnocení, klíčová slova, kategorie, tváře, AI klíčová slova a hledání podobných snímků",
+    "Nedestruktivní úpravy RAW s AI maskováním",
+    "Hromadné přejmenování, změna velikosti, převod, metadata",
+    "Hledání duplicit",
+    "Úpravy generativní AI",
+    "Windows: procházení ZIP/RAR a metadata videí"
+   ],
+   "price": "Mac 27: 119,99 $ jednorázově (předprodej 99,95 $ do 2026-11-18); Mac App Store: roční předplatné; Windows Home/Professional/Ultimate 2027 jednorázově nebo předplatné ACDSee 365",
+   "version": "Mac 26.0.3 (Mac 27 koncem listopadu 2026); Windows 2027",
+   "updated": "2026-05-27 (Mac App Store 26.0.3); Windows 2027 vydáno 2026-09",
+   "platforms": "macOS, Windows, iOS (doprovodné aplikace)",
+   "notes": {
+    "no_account_no_tracking": "Aktivace a předplatné vyžadují e-mail acdID a internet; AI běží v zařízení",
+    "languages_20": "Mac App Store: angličtina, francouzština, němčina, japonština; web pro Windows v 10 jazycích",
+    "network_shares_fast": "Ukazuje síťové svazky bez importu; Indexer katalogizuje v nečinnosti",
+    "multiple_windows": "Panely v jednom okně, zachované mezi spuštěními",
+    "bookmarks": "Panely, uložená hledání; Windows: až pět košíků obrázků",
+    "img_psd_exr": "PSD ano; OpenEXR neuvedeno",
+    "img_svg_pdf": "SVG ve Windows; PDF jen ve Windows Professional/Ultimate; Mac přes Rychlý náhled",
+    "img_animated": "Animované GIF a WebP; animované AVIF ne",
+    "video_native": "Windows přehraje MP4/MOV/M4V/AVI/WMV; Mac ukazuje videa v Rychlém náhledu",
+    "video_mkv_avi_webm": "Windows: AVI, WMV, ASF; bez MKV, WebM, FLV",
+    "music_mode": "Windows čte MP3, WAV, WMA, M4A",
+    "archives_as_folders": "Windows: ZIP, RAR (ne RAR5), TAR, GZ, CAB, ARJ aj.; bez 7z; na Macu ne",
+    "cloud_sync": "iCloud Drive (Mac), OneDrive (Windows), sdílení SendPix, Mobile Sync",
+    "keyboard_first": "Metadata a výběr snímků klávesnicí; jinak hodně myší",
+    "app_sandbox": "Verze z Mac App Storu (požadavek obchodu); u přímého stažení neuvedeno"
+   }
+  },
+  "adobe-bridge": {
+   "name": "Adobe Bridge",
+   "vendor": "Adobe",
+   "summary": "Adobe Bridge je bezplatný správce kreativních podkladů pro procházení složek s fotkami, grafikou a videem s náhledy. Přidává metadata, klíčová slova, hodnocení, kolekce, hromadné přejmenování a export a předává soubory do Photoshopu, Camera Raw a dalších aplikací Creative Cloud.",
+   "wins": [
+    "Náhledy formátů Adobe (PSD, AI, INDD, After Effects, Substance 3D) a PDF",
+    "Plné úpravy metadat, klíčová slova, štítky, hodnocení, kolekce a chytré kolekce",
+    "Hromadné přejmenování, panel Export a postupy pro hromadný převod",
+    "Spolupracuje s Camera Raw, Photoshopem, Premiere a knihovnami Creative Cloud",
+    "Kontaktní archy v PDF, publikování do Adobe Stock a Portfolia",
+    "Verze pro Windows"
+   ],
+   "price": "Zdarma ke stažení s účtem Adobe (přes aplikaci Creative Cloud); úpravy v Camera Raw a předání do Photoshopu vyžadují placený plán Creative Cloud",
+   "version": "17.0 (listopad 2026)",
+   "updated": "2026-11-10",
+   "platforms": "macOS, Windows",
+   "notes": {
+    "free": "Zdarma s účtem Adobe; úpravy RAW v Camera Raw jen s placeným plánem",
+    "network_shares_fast": "Pro rychlost umí použít vložené náhledy; jinak vytváří náhledy a mezipaměť",
+    "video_mkv_avi_webm": "FLV, F4V, SWF a co umí nainstalovaný QuickTime; MKV/WebM/AVI neuvedeno",
+    "music_mode": "Zvukové soubory se přehrají v panelu Náhled",
+    "dual_pane": "Více panelů obsahu či oken vedle sebe; bez kopírování a přesunu F5/F6",
+    "image_editing": "Rychlé akce: oříznutí, velikost, odstranění pozadí; pixely přes Camera Raw/Photoshop (placené)",
+    "keyboard_first": "Mnoho zkratek, ale práce je stavěná na panely a myš",
+    "shortcut_cheatsheet": "Zkratky v nápovědě a vizuální panel zkratek; tahák k tisku ne"
+   }
+  },
+  "alsee": {
+   "name": "ALSee",
+   "vendor": "ESTsoft",
+   "summary": "Zavedený korejský prohlížeč obrázků od ESTsoftu z rodiny ALTools (ALZip, ALYac): procházení náhledů a seznamu, velké zobrazení a celá obrazovka, obrázky v archivech, hromadný převod, změna velikosti a otočení, tisk a v předplatném AI úpravy (zvětšení rozlišení, odstranění pozadí, rozmazání tváří).",
+   "wins": [
+    "Tiskové rozvržení a hromadné otočení, změna velikosti a převod",
+    "AI zvětšení rozlišení, odstranění pozadí, rozmazání tváří (předplatné)",
+    "Napojení na kontextovou nabídku Průzkumníka Windows"
+   ],
+   "price": "Zdarma s reklamami; odstranění reklam AD-ZERO 5 900 KRW měsíčně (všechny ALTools); předplatné ALTools AI pro funkce AI",
+   "version": "10.02",
+   "updated": "2026-10-07",
+   "platforms": "Windows"
+  },
+  "apolloone": {
+   "name": "ApolloOne",
+   "vendor": "Anogeissus",
+   "summary": "Rychlý prohlížeč a nástroj na výběr fotek pro fotografy, který pracuje se složkami bez importu. Silný v RAW, HDR, metadatech, hodnocení, bodech ostření a hromadné práci; mnoho funkcí je rozděleno do tří placených edic.",
+   "wins": [
+    "Výběr snímků: označení, hodnocení, Focus Score, hodnocení AI, stohy",
+    "Zobrazení HDR RAW a export HDR",
+    "Úpravy EXIF/IPTC/XMP, klíčová slova, mapy GPS",
+    "Import z paměťových karet",
+    "Externí titulky SRT",
+    "Automatizace přes AppleScript"
+   ],
+   "price": "Free Edition; Standard 35,99 $, Pro 59,99 $, Max 99,99 $ jednorázově; nebo ročně Standard 14,99 $ / Pro 23,99 $",
+   "version": "5.1.0",
+   "updated": "2026-10-22",
+   "platforms": "macOS",
+   "notes": {
+    "free": "Free Edition; Standard 35,99 $, Pro 59,99 $, Max 99,99 $ jednorázově, nebo ročně od 14,99 $",
+    "no_account_no_tracking": "Bez účtu; podle App Storu sbírá údaje o používání pro analytiku, nepropojené s vámi",
+    "languages_20": "11: EN, NL, FR, DE, IT, JA, KO, PL, zh-Hans, ES, zh-Hant",
+    "list_view": "Standard: řaditelná tabulka se sloupci EXIF",
+    "regex_search": "Regulární výrazy v metadatech (Pro); názvy souborů jen se zástupnými znaky",
+    "network_shares_fast": "NAS přes SMB funguje; recenze uvádí 5 až 10 s na složku přes AFP",
+    "multiple_windows": "Standard: panely a okna",
+    "img_psd_exr": "OpenEXR zobrazení i export; PSD neuvedeno",
+    "img_svg_pdf": "SVG předem převedené na rastr; PDF neuvedeno",
+    "img_animated": "GIF uvedeny; animované WebP/PNG neuvedeny",
+    "auto_enhance_view": "Pro: nedestruktivní posuvníky Quick Edit včetně Auto Tone Curve",
+    "video_skim_arrows": "← → po snímcích; J/K/L převíjení",
+    "playback_speed": "J/L přepínají rychlost převíjení; pevné nastavení rychlosti ne",
+    "music_mode": "Playlisty Apple Music jen jako hudba k prezentaci",
+    "undo_file_actions": "Odvolání přesunu do koše, dokud aplikace běží; vrácení volitelným skriptem",
+    "image_editing": "oříznutí (Standard), Quick Edit a změna velikosti (Pro)",
+    "batch_convert": "hromadné přejmenování (Standard); velikost, převod, export (Pro)",
+    "cloud_sync": "AirDrop a sdílení přes InstaBake; bez synchronizace",
+    "custom_shortcuts": "edice Pro"
+   }
+  },
+  "apple-photos": {
+   "name": "Apple Fotky",
+   "vendor": "Apple",
+   "summary": "Knihovna fotek od Applu se synchronizací přes iCloud mezi zařízeními. Dobrá na uspořádání a úpravy osobní sbírky fotek, s rozpoznáváním lidí, vzpomínkami a nedestruktivními úpravami.",
+   "wins": [
+    "Synchronizace přes iCloud s iPhonem a iPadem",
+    "Nedestruktivní úpravy fotek a videí",
+    "Hledání podle lidí, míst a obsahu",
+    "Vzpomínky, prezentace s hudbou, sdílená alba"
+   ],
+   "price": "Zdarma (součást macOS); úložiště iCloud+ pro Fotky na iCloudu je placené",
+   "version": "Fotky 12.0 v macOS Golden Gate 27.2.1",
+   "updated": "2026-11-09 (macOS 27.2.1)",
+   "platforms": "macOS, iOS, iPadOS, visionOS",
+   "notes": {
+    "no_account_no_tracking": "Funguje bez Apple účtu; iCloud ho potřebuje, Rozšířené vizuální hledání porovnává fotky s Applem",
+    "thumbnail_grid": "Mřížka knihovny po letech a měsících; alba, ne složky na disku",
+    "recursive_search": "Hledá v celé knihovně podle obsahu, názvu, data; ne názvy souborů ve složkách",
+    "img_psd_exr": "PSD se importuje sloučené (vrstvy se ztratí); OpenEXR neuvedeno",
+    "slideshow_recursive": "Prezentace z výběru nebo alba, fotky i videa; bez stromu složek",
+    "playback_speed": "Zpomalení (1/2, 1/4, 1/5) jen u videí s vysokou snímkovou frekvencí",
+    "saved_playlists": "Uložené projekty prezentací drží seřazený seznam fotek a videí",
+    "rename_trash": "Smazání (Naposledy smazané) a názvy; bez přejmenování souborů a složek na disku",
+    "undo_file_actions": "Odvolání ⌘Z a album Naposledy smazané",
+    "batch_convert": "Export více položek ve zvoleném formátu; bez hromadného přejmenování",
+    "keyboard_first": "mnoho zkratek, ale ne na všechno",
+    "custom_shortcuts": "Zkratky aplikací v macOS pro příkazy nabídek",
+    "boss_key": "⌘H aplikaci skryje; vlastní šéfovo tlačítko ne"
+   }
+  },
+  "apple-preview": {
+   "name": "Apple Náhled",
+   "vendor": "Apple",
+   "summary": "Vestavěný prohlížeč PDF a obrázků od Applu na každém Macu. Silný v PDF, poznámkách, podepisování a rychlých úpravách obrázků, jako je oříznutí, změna velikosti a převod formátu.",
+   "wins": [
+    "Na každém Macu už nainstalovaný",
+    "Plná sada nástrojů pro PDF: poznámky, podepisování formulářů, spojování, ochrana heslem",
+    "Úpravy obrázků: oříznutí, změna velikosti, odstranění pozadí, hromadný převod",
+    "Otevře 3D soubory"
+   ],
+   "price": "Zdarma (součást macOS)",
+   "version": "Náhled 11.0 v macOS Golden Gate 27.2.1",
+   "updated": "2026-11-09 (macOS 27.2.1)",
+   "platforms": "macOS",
+   "notes": {
+    "thumbnail_grid": "Miniatury / kontaktní arch otevřených souborů či stránek; bez náhledů složek",
+    "img_svg_pdf": "PDF je hlavní formát Náhledu; SVG v příručce neuvedeno",
+    "img_animated": "Snímky animovaného GIFu ukáže jako statické; přehrát ho umí Rychlý náhled",
+    "slideshow": "Prezentace jen pro stránky PDF",
+    "manga_two_page": "Zobrazení dvou stránek u PDF; bez režimu zprava doleva",
+    "rename_trash": "Přejmenuje či přesune otevřený soubor z titulku okna; bez koše a nové složky",
+    "move_copy": "Duplikovat či exportovat otevřený soubor, přesun přes titulek; bez správy složek",
+    "cloud_sync": "Otevírá a ukládá dokumenty na iCloud Drive",
+    "keyboard_first": "Mnoho zkratek, ale bez procházení složek klávesnicí",
+    "custom_shortcuts": "Zkratky aplikací v macOS umí přemapovat příkazy nabídek",
+    "boss_key": "Jen systémové ⌘H (skrýt aplikaci); vlastní šéfovo tlačítko ne"
+   }
+  },
+  "bandiview": {
+   "name": "BandiView",
+   "vendor": "Bandisoft",
+   "summary": "Nástupce Honeyview od tvůrců Bandizipu: rychlý prohlížeč obrázků pro Windows 10/11 se čtením archivů a komiksů, chytrým dvoustránkovým režimem a režimem webtoonů, výstupem HDR a rychlým hromadným převodníkem. V Koreji velmi oblíbený na čtení mangy a webtoonů.",
+   "wins": [
+    "Výstup HDR pro obrázky HDR (PRO)",
+    "Svislý pás pro webtoony a chytrý dvoustránkový režim pro mangu",
+    "Clip Studio Paint, HEIC (PRO), mnoho formátů archivů (ALZ, EGG, ISO, ZPAQ …)",
+    "Rychlý vícevláknový hromadný převodník",
+    "Vlastní klávesové zkratky a akce myši, i ve verzi zdarma"
+   ],
+   "price": "Zkušební verze zdarma (nekomerční domácí použití, reklamy, některé funkce zamčené); Professional 39 $ jednorázově (1 PC), 58,50 $ (2 PC), množstevní slevy",
+   "version": "8.05",
+   "updated": "2026-11-03",
+   "platforms": "Windows"
+  },
+  "cdisplayex": {
+   "name": "CDisplayEx",
+   "vendor": "Progdigy Software",
+   "summary": "CDisplayEx je zavedená, lehká čtečka komiksů pro Windows, nástupce CDisplay, známá rychlým načítáním, změnou velikosti metodou Lanczos a plně nastavitelnými klávesami. Verze pro počítač se už nevyvíjí; práce pokračuje na aplikaci pro Android.",
+   "wins": [
+    "Každou funkci si můžete dát na vlastní klávesu",
+    "Automatická korekce barev a gama pro staré skeny",
+    "Dvoustrana a japonský režim (zprava doleva)",
+    "Náhledy komiksových souborů v Průzkumníku Windows"
+   ],
+   "price": "Verze pro počítač zdarma; Android Lite (s reklamami) a Premium (placená)",
+   "version": "1.10.33 (pro počítač)",
+   "updated": "2015-06-20 (verze pro počítač; podle vývojáře se už nevyvíjí)",
+   "platforms": "Windows, Android"
+  },
+  "cisdem-video-player": {
+   "name": "Cisdem Video Player",
+   "vendor": "Cisdem",
+   "summary": "Bezplatný, lehký přehrávač videa pro Mac pro soubory MKV, AVI, WMV, WebM a 4K/8K, s playlistem, přepínáním titulků a zvukových stop a režimem samostatných oken. Převod do jiných formátů je placený doplněk.",
+   "wins": [
+    "Převod videa do předvoleb pro zařízení (placený)",
+    "Samostatná okna pro video, ovládání a playlist",
+    "Pamatuje si playlist a pozici",
+    "Kapitoly, mini obrazovka, anonymní režim",
+    "Verze pro Windows"
+   ],
+   "price": "Přehrávání zdarma; převod 19,99 $ jednorázově nebo 9,99 $ ročně",
+   "version": "6.0.0",
+   "updated": "2025-07-22",
+   "platforms": "macOS, Windows",
+   "notes": {
+    "free": "Přehrávání zdarma; převod jako nákup v aplikaci za 19,99 $ nebo 9,99 $ ročně",
+    "no_account_no_tracking": "Štítek soukromí „Data nejsou shromažďována“; recenze zmiňuje výzvu k upgradu",
+    "folder_browsing": "Naimportuje složku do playlistu",
+    "zoom_rotate": "Otočení a zrcadlení videa",
+    "saved_playlists": "Pamatuje si poslední playlist a pozici; bez pojmenovaných playlistů",
+    "pip": "Režim „Mini Screen“, ne systémový obraz v obraze",
+    "batch_convert": "Převod videa (MP4, HEVC, MKV, MP3 …) jako placený nákup v aplikaci",
+    "keyboard_first": "Zkratky pro přehrávání, hlasitost, krokování",
+    "shortcut_cheatsheet": "Tabulka zkratek v online příručce",
+    "notarized_attested": "Podepsáno pro App Store; uzavřený kód"
+   }
+  },
+  "commander-one": {
+   "name": "Commander One",
+   "vendor": "Electronic Team",
+   "summary": "Dvoupanelový správce souborů pro macOS ve stylu Total Commanderu s ovládáním funkčními klávesami, hledáním regulárními výrazy, vestavěným prohlížečem F3 (text, hex, obrázky, média) a prací s archivy. PRO Pack přidává RAR/7z, FTP/SFTP, cloudová úložiště, terminál a motivy.",
+   "wins": [
+    "Klasická práce commanderu s F-klávesami a frontou operací",
+    "Hledání regulárními výrazy i v obsahu, také v archivech a na FTP",
+    "PRO: FTP/SFTP a mnoho cloudových služeb, zařízení MTP/iOS/Android",
+    "Vestavěný prohlížeč hex, textu a binárních dat",
+    "Prohlížeč procesů, terminál (PRO)"
+   ],
+   "price": "Verze zdarma; PRO Pack 29,99 $ osobní (1 Mac) nebo 99,99 $ týmová (5 Maců), jednorázově; Mac App Store: zdarma s nákupem v aplikaci nebo „Commander One PRO“ za 29,99 $",
+   "version": "3.18 (4006)",
+   "updated": "2026-09-25",
+   "platforms": "macOS",
+   "notes": {
+    "free": "Verze zdarma (dva panely, jen ZIP); PRO Pack 29,99 $ jednorázově",
+    "languages_20": "14 jazyků včetně češtiny; jazyk rozhraní lze zvolit",
+    "thumbnail_grid": "Režim „Thumbs“; bez náhledů složek",
+    "network_shares_fast": "SMB/NetBIOS, FTP, cloud podporovány; o rychlosti nic konkrétního",
+    "img_modern_formats": "Rychlý náhled či vestavěný prohlížeč s kodeky macOS; žádný vlastní prohlížeč obrázků",
+    "img_raw": "Přes prohlížeč a Rychlý náhled, tedy RAW podle macOS; bez vlastního dekodéru",
+    "keyboard_paging": "V Rychlém náhledu (F3) šipky procházejí výběrem",
+    "zoom_rotate": "Zvětšení jen v Rychlém náhledu; režim obrázků F3 zvětšení nemá",
+    "file_info_exif": "Informace ukážou velikost, data, oprávnění; EXIF a kodeky neuvedeny",
+    "wrong_extension_note": "Pozná formát podle obsahu a obrázek ukáže, ale na chybnou příponu neupozorní",
+    "photos_videos_one_grid": "Režim Thumbs ukáže náhled každého souboru; bez náhledů složek",
+    "music_mode": "Prohlížeč médií přehraje zvuk přes Rychlý náhled",
+    "archives_as_folders": "Zdarma jen ZIP; PRO (29,99 $): 7z, TAR čtení i zápis, RAR/ISO/XAR jen čtení",
+    "videos_in_archives": "Náhled souborů v archivu bez rozbalení (Rychlý náhled), bez přehrávače",
+    "library_catalog": "Jen podpora štítků Finderu",
+    "cloud_sync": "Jen PRO: Dropbox, Google Drive, OneDrive, S3, WebDAV, FTP/SFTP aj.",
+    "shortcut_cheatsheet": "Seznam kláves v předvolbách; tahák k tisku ne",
+    "app_sandbox": "Verze z Mac App Storu v sandboxu (s omezeními); verze PRO z webu ne"
+   }
+  },
+  "cooviewer": {
+   "name": "cooViewer",
+   "vendor": "coo a fork ysmx",
+   "summary": "Zavedený japonský prohlížeč mangy a komiksů pro Mac, dnes udržovaný jako aktivně aktualizovaný open source fork s univerzální binárkou. Otevře složky, PDF a téměř jakýkoli archiv (ZIP, RAR, 7z, LHA, rozdělené archivy i chráněné heslem) jako knihu, s dvoustranami zprava doleva, záložkami stránek, libovolně přiřaditelnými klávesami a akcemi myši a s náhledy komiksových archivů ve Finderu.",
+   "wins": [
+    "Specializovaná čtečka mangy: dvoustrany zprava doleva s automatickým rozpoznáním samostatných stránek, uložené pro každou knihu",
+    "Pojmenované záložky stránek a zapamatovaná poslední stránka každé knihy",
+    "Každou klávesu a akci myši lze přiřadit, výchozí nastavení na jednu ruku",
+    "Otevře obrovské množství formátů archivů, včetně rozdělených RAR/ZIP a archivů s heslem",
+    "Zobrazovací filtry Core Image, lupa",
+    "Náhledy ve Finderu a Rychlý náhled pro CBZ/CBR/ZIP/RAR/7z"
+   ],
+   "price": "Zdarma",
+   "version": "1.7.1 (fork ysmx); původní sestavení coo-ona skončilo u 1.2b25 (2020)",
+   "updated": "2026-10-30",
+   "platforms": "macOS",
+   "notes": {
+    "dark_light_setting": "Vlastní barvy pozadí a lišty stránek; bez přepínání světlého a tmavého",
+    "thumbnail_grid": "Mřížka stránek otevřené knihy; bez náhledů složek",
+    "network_shares_fast": "Líné načítání u složek s mnoha podsložkami a archivy; síťové disky neuvedeny",
+    "bookmarks": "Pojmenované záložky stránek v knize a nedávné knihy; bez oblíbených složek",
+    "img_modern_formats": "HEIC/HEIF, WebP, AVIF uvedeny; JPEG XL ne",
+    "img_psd_exr": "PSD ano; OpenEXR neuvedeno",
+    "img_svg_pdf": "PDF ano (stránky jako kniha); SVG neuvedeno",
+    "slideshow_recursive": "S volbou čtení vnořených složek zahrne podsložky; jen obrázky, bez videí",
+    "auto_enhance_view": "Ruční filtry barev a ostrosti na zobrazení; bez automatického vylepšení",
+    "archives_as_folders": "otevře archiv jako komiksovou knihu, ne jako složku",
+    "rename_trash": "Obrázek levé či pravé stránky do koše; bez přejmenování a nové složky",
+    "shortcut_cheatsheet": "Tabulka kláves v online příručce (japonsky); tahák v aplikaci ne",
+    "boss_key": "Esc knihu okamžitě zavře; klávesa na skrytí všeho ne"
+   }
+  },
+  "digikam": {
+   "name": "digiKam",
+   "vendor": "tým digiKam z KDE",
+   "summary": "digiKam je plnohodnotná open source sada pro správu fotek od KDE pro velké sbírky. Indexuje složky do databáze a nabízí štítky, rozpoznávání tváří, geolokaci, hledání podobných snímků, schopný editor obrázků, hromadné zpracování a mnoho cílů exportu.",
+   "wins": [
+    "Databáze se štítky, značkami, rozpoznáváním tváří, hledáním podobných snímků a duplicit, hledáním na mapě a v časové ose",
+    "Hledání přirozeným jazykem i pokročilé hledání napříč sbírkami",
+    "Plný editor obrázků a Batch Queue Manager s verzováním",
+    "Zpracování RAW přes LibRaw, 16 bitů a správa barev",
+    "Rychlost přehrávání videa a krokování po snímcích",
+    "Mnoho cílů exportu (Dropbox, OneDrive, Flickr, Piwigo, galerie HTML) a DLNA",
+    "Zdarma, open source, běží i na Linuxu a Windows"
+   ],
+   "price": "Zdarma",
+   "version": "9.1.0",
+   "updated": "2026-06-07",
+   "platforms": "macOS, Windows, Linux",
+   "notes": {
+    "folder_browsing": "Alba jsou skutečné složky, ale každou je třeba nejdřív přidat a naskenovat do databáze",
+    "thumbnail_grid": "Náhledy položek; složky jen ve stromu alb",
+    "network_shares_fast": "Síťové disky fungují, ale jejich skenování může být pomalé",
+    "multiple_windows": "Jedno hlavní okno plus samostatná okna Light Table, editor a Survey",
+    "img_animated": "GIF a WebP jako statické obrázky; MNG se přehraje jako video",
+    "zoom_rotate": "Zvětšení a posun v náhledu; otočení změní soubor nebo jeho značku EXIF",
+    "music_mode": "Zvukové soubory (MP3, FLAC, OGG …) ve výchozím filtru s přehrávačem",
+    "undo_file_actions": "Smazání přesune do koše digiKamu (lze obnovit); odvolání přejmenování a přesunu neuvedeno",
+    "keyboard_first": "Spousta zkratek, ale mnoho úkonů přes postranní panel a myš",
+    "notarized_attested": "Veřejný kód; všechna stažení podepsaná GnuPG; notarizace pro macOS a reprodukovatelná sestavení neuvedeny"
+   }
+  },
+  "directory-opus": {
+   "name": "Directory Opus",
+   "vendor": "GP Software",
+   "summary": "Velmi nastavitelná náhrada Průzkumníka pro Windows s jedním nebo dvěma panely, kartami, štítky, hodnocením, značkami, panelem prohlížeče a samostatným prohlížečem obrázků s prezentací. Silný v hledání, synchronizaci, hledání duplicit, hromadném přejmenování a převodu obrázků, s plnou podporou skriptů.",
+   "wins": [
+    "Obrovská nastavitelnost a skriptování",
+    "Protokol pro odvolání souborových operací",
+    "Štítky, hodnocení, značky, úpravy metadat",
+    "Převodník obrázků a hromadné přejmenování",
+    "Hledání duplicit, synchronizace, napojení na Everything",
+    "Prezentace s prolínáním"
+   ],
+   "price": "89 AUD jedna licence, 129 AUD dvě, 249 AUD pět PC; rok aktualizací, pak 25/40/75 AUD ročně; 30denní zkušební verze (60 s registrací)",
+   "version": "13.25",
+   "updated": "2026-08-21",
+   "platforms": "Windows"
+  },
+  "double-commander": {
+   "name": "Double Commander",
+   "vendor": "Alexander Koblov a přispěvatelé",
+   "summary": "Bezplatný open source dvoupanelový správce souborů inspirovaný Total Commanderem, včetně jeho rozhraní pro pluginy. Běží nativně na Apple silicon, s kartami, hledáním souborů s regulárními výrazy, hromadným přejmenováním, archivy jako složkami a vestavěným prohlížečem textu a obrázků.",
+   "wins": [
+    "Plnohodnotný správce souborů ve stylu Total Commanderu na Macu: synchronizace složek, hromadné přejmenování, kontrolní součty, FTP/SFTP",
+    "Spouští pluginy Total Commanderu (WCX/WDX/WFX/WLX)",
+    "Multiplatformní (macOS, Windows, Linux)",
+    "Prohlížeč umí obrázky oříznout, zmenšit a uložit",
+    "Skriptování v Lua a úpravy panelu nástrojů"
+   ],
+   "price": "Zdarma",
+   "version": "1.2.11",
+   "updated": "2026-11-08",
+   "platforms": "macOS, Windows, Linux, FreeBSD",
+   "notes": {
+    "thumbnail_grid": "Zobrazení náhledů (na macOS Rychlý náhled); složky jen jako ikony",
+    "network_shares_fast": "Přístup k SMB a síti přes pluginy; rychlost neuvedena",
+    "multiple_windows": "Karty ve dvou panelech; prohlížeč a editor v samostatných oknech",
+    "img_modern_formats": "Na macOS přes přibalený plugin Rychlého náhledu",
+    "img_raw": "Windows přes kodeky WIC; macOS přes plugin Rychlého náhledu",
+    "img_psd_exr": "PSD vestavěné; OpenEXR neuvedeno",
+    "img_svg_pdf": "SVG vestavěné; PDF přes plugin Rychlého náhledu na macOS nebo jiné pluginy WLX",
+    "img_animated": "Animované GIF s ovládáním snímků; APNG a animované WebP neuvedeny",
+    "slideshow": "Jen v prohlížeči na celou obrazovku, aktuální složka, 1 až 25 s na obrázek",
+    "file_info_exif": "Vestavěný plugin Exif (JPEG: datum, velikost, orientace, fotoaparát)",
+    "video_native": "Vlastní přehrávač ne: macOS přes Rychlý náhled, Windows přes WMP, Linux přes MPlayer",
+    "video_mkv_avi_webm": "Na macOS jen to, co přehraje Rychlý náhled",
+    "photos_videos_one_grid": "Náhledy ze systému (na macOS Rychlý náhled)",
+    "music_mode": "Přehraje vždy jeden zvukový soubor v prohlížeči (na macOS Rychlý náhled)",
+    "archives_as_folders": "ZIP, TAR, GZ vestavěné, RAR přes plugin UnRAR; 7z na macOS potřebuje externí 7zz",
+    "comics_cbz_cbr": "Bez čtečky komiksů; CBZ a CBR se otevřou jako složky po přiřazení pluginům",
+    "archive_passwords": "Hesla podle formátu u pluginů a externích archivátorů",
+    "split_archives": "Vícesvazkové RAR přes plugin UnRAR",
+    "videos_in_archives": "F3 rozbalí soubor do dočasné složky a otevře ho",
+    "batch_convert": "Hromadné přejmenování ano; hromadný převod obrázků ne",
+    "library_catalog": "Komentáře v descript.ion; štítky Finderu na macOS; bez databáze hodnocení",
+    "cloud_sync": "iCloud Drive a plugin MacCloud (OAuth/S3), FTP/SFTP; bez synchronizace",
+    "shortcut_cheatsheet": "Rozložení kláves v dokumentaci; ne tahák k tisku"
+   }
+  },
+  "elmedia-player": {
+   "name": "Elmedia Player",
+   "vendor": "Electronic Team",
+   "summary": "Univerzální přehrávač videa a hudby s mnoha formáty, hledáním na OpenSubtitles, ekvalizérem a silným odesíláním na zařízení AirPlay, Chromecast, DLNA a Roku. Pokročilé funkce jako obraz v obraze a úpravy obrazu jsou ve verzi PRO.",
+   "wins": [
+    "Streamování na chytré televize, Chromecast, Roku, DLNA; přijímač AirPlay",
+    "Přehrávání hudby s ekvalizérem a vizualizací",
+    "Videa z internetu a hledání na OpenSubtitles",
+    "Přesouvatelné samostatné okno ovládání, barevné motivy, vlastní klávesové zkratky"
+   ],
+   "price": "Zdarma; funkce PRO ve verzi z Mac App Storu za 19,99 $ nebo s přímou licencí PRO (cena se bez skriptu nezobrazí)",
+   "version": "8.24 (3472)",
+   "updated": "2025-12-05",
+   "platforms": "macOS",
+   "notes": {
+    "free": "Přehrávání zdarma; PRO (úpravy, obraz v obraze, streamování na TV) 19,99 $",
+    "languages_20": "12 jazyků; jazyk rozhraní lze nastavit v aplikaci",
+    "folder_browsing": "Složky lze přidat do playlistu; bez prohlížeče",
+    "zoom_rotate": "Jen video: otočení, převrácení, zrcadlení, poměr stran",
+    "auto_enhance_view": "Jen video, PRO",
+    "file_info_exif": "Okno > Informace o médiu (⌘I); bez EXIF",
+    "pip": "Jen PRO",
+    "video_filters_enhance": "Jas, kontrast, sytost; PRO",
+    "keyboard_first": "Vlastní klávesové zkratky pro přehrávání",
+    "app_sandbox": "Verze z Mac App Storu v sandboxu; u verze z webu neuvedeno"
+   }
+  },
+  "fastrawviewer": {
+   "name": "FastRawViewer",
+   "vendor": "LibRaw",
+   "summary": "FastRawViewer je rychlý prohlížeč RAW a nástroj na výběr snímků pro fotografy. Ukazuje skutečná data RAW s RAW histogramem, varováním před přepalem a podexpozicí a rychlými korekcemi vyvážení bílé a expozice ukládanými do XMP; snímky lze hodnotit, označovat, filtrovat, přejmenovat, kopírovat a přesouvat bez katalogu.",
+   "wins": [
+    "Přesné zobrazení RAW s RAW histogramem, zobrazením přepalu a podexpozice a zvýrazněním ostrosti",
+    "Hodnocení, štítky a XMP kompatibilní s Lightroomem a dalšími převodníky",
+    "Filtr názvů souborů s regulárními výrazy PCRE",
+    "Porovnání 2 nebo 4 snímků se synchronizovaným zvětšením",
+    "Plně nastavitelné zkratky, rozložení napodobující jiné aplikace",
+    "Ladění pro NAS a pomalá média",
+    "Také pro Windows"
+   ],
+   "price": "23,99 $ jednorázově (akční cena v listopadu 2026, sleva 25 %; 2 počítače na licenci), 30denní zkušební verze",
+   "version": "2.0.11 (build 2088)",
+   "updated": "2026 (2.0.11 aktuální v listopadu 2026; výrobce datum vydání neuvádí)",
+   "platforms": "macOS, Windows",
+   "notes": {
+    "no_account_no_tracking": "Bez účtu a reklam; aktivace se jednou spojí s výrobcem",
+    "dark_light_setting": "Tmavé rozhraní; barvy nastavitelné, bez přepínání světlý/tmavý",
+    "thumbnail_grid": "Mřížka souborů; složky ve stromu, ne jako dlaždice s náhledem",
+    "recursive_search": "Filtr názvů (i PCRE) v seznamu; podsložky přes otevření složky s podsložkami",
+    "multiple_windows": "Na Macu jedno okno; „více oken“ je porovnání 2 nebo 4 snímků",
+    "img_modern_formats": "HEIC/HEIF ano; AVIF, JPEG XL, WebP ne",
+    "slideshow": "Jednoduchá prezentace s časovačem a limitem souborů, bez přechodů",
+    "slideshow_recursive": "Prezentace funguje v režimu podsložek; jen fotky, bez videí",
+    "wrong_extension_note": "Volitelně pozná typ podle obsahu; výslovně neupozorní",
+    "image_editing": "Jen expozice, vyvážení bílé, kontrast, orientace do XMP; bez oříznutí a změny velikosti",
+    "batch_convert": "Hromadné přejmenování ano; převod formátu ne",
+    "library_catalog": "Hodnocení, štítky, názvy v souborech XMP, s filtrem; bez databáze či katalogu",
+    "shortcut_cheatsheet": "PDF s výchozími zkratkami pro Windows; pro Mac nenalezeno"
+   }
+  },
+  "faststone-image-viewer": {
+   "name": "FastStone Image Viewer",
+   "vendor": "FastStone Soft",
+   "summary": "FastStone Image Viewer je dlouholetý prohlížeč obrázků pro Windows se stromem složek jako v Průzkumníku, režimem celé obrazovky s vysouvacími panely a mnoha nástroji na úpravy a hromadnou práci. Přehraje i videa přes kodeky Windows a štítky a hodnocení ukládá do vlastní databáze.",
+   "wins": [
+    "Nástroje na úpravy: křivky, úrovně, razítko, retušovací štětec, červené oči",
+    "Porovnání až čtyř obrázků vedle sebe",
+    "Hromadný převod a přejmenování, kontaktní archy, tiskové rozvržení",
+    "Štítky a hodnocení 1 až 5 hvězdičkami",
+    "Podpora skeneru a snímání obrazovky",
+    "Prezentace s hudbou a více než 150 přechody"
+   ],
+   "price": "Zdarma pro osobní a vzdělávací použití; komerční 34,95 USD jednorázově, rodinná 69,95 USD (5 PC)",
+   "version": "8.5",
+   "updated": "2026-06-24",
+   "platforms": "Windows"
+  },
+  "finder-quick-look": {
+   "name": "Finder a Rychlý náhled",
+   "vendor": "Apple",
+   "summary": "Správce souborů Macu s Rychlým náhledem, náhledem přes mezerník pro téměř jakýkoli soubor. Stačí na rychlý pohled na obrázek nebo MP4 a na běžnou práci se soubory.",
+   "wins": [
+    "Součást macOS, funguje s téměř každým typem souboru",
+    "Štítky, chytré složky, hledání Spotlightem",
+    "Hromadné přejmenování a rychlé akce",
+    "iCloud Drive a AirDrop"
+   ],
+   "price": "Zdarma (součást macOS)",
+   "version": "Finder 27.2 v macOS Golden Gate 27.2.1",
+   "updated": "2026-11-09 (macOS 27.2.1)",
+   "platforms": "macOS",
+   "notes": {
+    "thumbnail_grid": "Zobrazení ikon ukazuje náhledy souborů; složky jen jako ikony, bez náhledu obsahu",
+    "network_shares_fast": "Připojí se k SMB a serverům; rychlost u velkých sdílení neuvedena",
+    "img_animated": "Rychlý náhled přehraje animované GIFy; APNG a animované WebP neuvedeny",
+    "music_mode": "Rychlý náhled přehraje a zkrátí zvukové soubory",
+    "image_editing": "Otočení a anotace v Rychlém náhledu; rychlé akce",
+    "library_catalog": "Štítky a chytré složky, bez databáze hodnocení",
+    "custom_shortcuts": "Zkratky aplikací pro příkazy nabídek",
+    "boss_key": "⌘H / ⌥⌘H skryjí aplikace; vlastní šéfovo tlačítko ne",
+    "app_sandbox": "Prohlížeč Rychlého náhledu je v sandboxu, Finder sám ne"
+   }
+  },
+  "flowvision": {
+   "name": "FlowVision",
+   "vendor": "netdcy",
+   "summary": "FlowVision je nativní open source prohlížeč obrázků pro macOS postavený na vodopádovém a zarovnaném rozvržení náhledů a správě souborů jako ve Finderu. Je vyladěný na velmi velké složky, přehrává nativní videoformáty Macu a přidává rekurzivní režim, štítky Finderu, hodnocení a gesta myší pro skoky mezi složkami.",
+   "wins": [
+    "Vodopádové a zarovnané rozvržení náhledů",
+    "Gesta pravým tlačítkem myši pro skoky mezi složkami",
+    "Štítky Finderu a hodnocení XMP s filtry",
+    "Zobrazení HDR",
+    "Profily s předvolbami rozvržení",
+    "Běží na macOS 11 a novějším"
+   ],
+   "price": "Zdarma (dary)",
+   "version": "1.7.6",
+   "updated": "2026-09-08",
+   "platforms": "macOS",
+   "notes": {
+    "languages_20": "17 jazyků",
+    "img_svg_pdf": "SVG ano; PDF ve zdrojovém kódu vypnuté",
+    "slideshow_recursive": "Automatické přehrávání seznamu, i rekurzivně; nečeká na konec videí",
+    "video_mkv_avi_webm": "Náhledy a informace pro MKV, WebM, AVI; přehrávání v externím přehrávači",
+    "image_editing": "Otočení a režim anotací (pero, zvýrazňovač, šipky)",
+    "batch_convert": "Hromadné přejmenování pořadovým číslem; bez převodu formátu",
+    "library_catalog": "Štítky Finderu a hodnocení XMP s filtry; bez vlastní databáze",
+    "cloud_sync": "Jen nabídka sdílení macOS",
+    "keyboard_first": "Klávesy pro navigaci, ale stavěný na myš a gesta",
+    "custom_shortcuts": "Nastavit lze jen chování Enter/Esc",
+    "notarized_attested": "Podepsáno Developer ID; sestavováno lokálně, bez atestace sestavení"
+   }
+  },
+  "forklift": {
+   "name": "ForkLift",
+   "vendor": "BinaryNights",
+   "summary": "Dvoupanelový správce souborů a klient pro přenos souborů pro macOS. Silný ve vzdálených připojeních (SFTP, S3, cloudová úložiště), synchronizaci složek, hromadném přejmenování a práci se soubory z klávesnice, s panelem náhledu pro obrázky, zvuk, video a PDF.",
+   "wins": [
+    "Vzdálená a cloudová připojení (SFTP, FTP, WebDAV, S3, Google Drive, OneDrive, Dropbox)",
+    "Synchronizace složek a porovnání souborů",
+    "Hromadné přejmenování s regulárními výrazy a metadaty",
+    "Stav Gitu, štítky, pracovní prostory, odinstalace aplikací",
+    "Plnohodnotný správce souborů: odvolání, řešení konfliktů, fronta přenosů"
+   ],
+   "price": "Placená doživotní licence s 1 nebo 2 roky aktualizací: 19,95 $ / 34,95 $ jeden uživatel, 29,95 $ / 49,95 $ rodina, 69,95 $ / 119,95 $ malá firma (5 Maců); zkušební verze zdarma; také v Setappu",
+   "version": "4.7.7",
+   "updated": "2026-10-20",
+   "platforms": "macOS",
+   "notes": {
+    "languages_20": "14 jazyků",
+    "thumbnail_grid": "Zobrazení ikon s náhledy; bez náhledů složek",
+    "network_shares_fast": "SMB, AFP, NFS, SFTP, cloud; o rychlosti ve velkých složkách nic",
+    "img_modern_formats": "Panel náhledu přes macOS (HEIC, AVIF, WebP, JPEG XL, jak je čte systém)",
+    "img_raw": "Jen panel náhledu a Rychlý náhled, RAW podle macOS; bez vlastního dekodéru",
+    "img_svg_pdf": "Náhled PDF v panelu náhledu; SVG jen tak, jak ho vykreslí macOS",
+    "zoom_rotate": "Zvětšení jen v okně Rychlého náhledu; vlastní prohlížeč ne",
+    "video_mkv_avi_webm": "Jen s nainstalovaným pluginem třetí strany „QuickLook Video“",
+    "music_mode": "Přehraje zvuk v panelu náhledu, bez hudebního režimu",
+    "archive_passwords": "Vytvoří ZIP s heslem; otevírání šifrovaných archivů neuvedeno",
+    "videos_in_archives": "Rychlý náhled v archivech jde; bez přehrávače",
+    "batch_convert": "Hromadné přejmenování s regulárními výrazy a metadaty; převod obrázků ne",
+    "library_catalog": "Jen štítky Finderu; bez hodnocení a databáze"
+   }
+  },
+  "gom-player": {
+   "name": "GOM Player",
+   "vendor": "GOM & Company",
+   "summary": "GOM Player je oblíbený bezplatný korejský přehrávač pro Windows s velkým online archivem titulků, AI převodem řeči na titulky, 360° VR, opakováním A-B a skiny; verze zdarma ukazuje reklamy, GOM Player+ je odstraní. Verze pro Mac postavená na mpv existuje, ale od roku 2020 se neaktualizuje a je jen pro Intel.",
+   "wins": [
+    "Velký online archiv titulků a generování titulků pomocí AI",
+    "Přehrávání 360° VR, opakování A-B a více úseků",
+    "Streamování adres URL a YouTube",
+    "Přehrávání hudby s ekvalizérem",
+    "GOM Player+: čtyři videa najednou, AI zvětšení rozlišení"
+   ],
+   "price": "Zdarma s reklamami; GOM Player+ bez reklam: doživotní licence (v Koreji 11 000 ₩) nebo předplatné GOM Easy Pass (od 4,90 $ měsíčně); funkce AI za kredity",
+   "version": "Windows 2.3.123 (13. 10. 2026); Mac 1.0.0 (2020)",
+   "updated": "2026-10-13 (Windows); 2020-11-11 (Mac)",
+   "platforms": "Windows, macOS (sestavení pro Intel), Android, iOS",
+   "macNote": "Verze GOM Playeru pro Mac zůstává od roku 2020 na 1.0.0, sestavená pro Macy s procesorem Intel."
+  },
+  "google-photos": {
+   "name": "Fotky Google",
+   "vendor": "Google",
+   "summary": "Cloudová knihovna fotek od Googlu s automatickým zálohováním z telefonů. Dobrá na to, mít všechny fotky na každém zařízení, hledat podle obsahu a sdílet alba.",
+   "wins": [
+    "Automatické zálohování z Androidu a iPhonu",
+    "Hledání podle lidí, věcí a míst",
+    "Sdílení alb a sdílení s partnerem",
+    "Přístup z jakéhokoli prohlížeče"
+   ],
+   "price": "Zdarma 15 GB (společně s Gmailem a Diskem); Google One od 1,99 € měsíčně za 100 GB, 9,99 € měsíčně 2 TB, 21,99 € měsíčně 5 TB",
+   "version": "web (průběžně); aplikace pro iOS 8.1.0",
+   "updated": "2026-11-13 (aplikace pro iOS 8.1.0)",
+   "platforms": "Web, Android, iOS",
+   "notes": {
+    "free": "15 GB zdarma společně s Gmailem a Diskem; Google One od 1,99 € měsíčně (100 GB)",
+    "thumbnail_grid": "Mřížka fotek a obálky alb; bez složek na disku",
+    "recursive_search": "Hledá v celé knihovně podle obsahu, názvu souboru v uvozovkách, modelu fotoaparátu",
+    "multiple_windows": "Webová aplikace na photos.google.com; více karet či oken prohlížeče",
+    "img_modern_formats": "HEIC, AVIF, WebP; JPEG XL neuvedeno",
+    "img_animated": "GIF a WebP uvedeny; animované PNG neuvedeno",
+    "slideshow_recursive": "Prezentace alba; bez stromu složek",
+    "file_info_exif": "Panel informací s datem, místem, fotoaparátem, IPTC; kodeky a datový tok neuvedeny",
+    "video_mkv_avi_webm": "MKV, AVI, WMV po zpracování přehraje; WebM a FLV neuvedeny",
+    "playback_speed": "Uvedeno pro aplikaci pro Android; pro web ne",
+    "rename_trash": "Smazání do koše; bez přejmenování souborů",
+    "undo_file_actions": "Obnovení z koše",
+    "keyboard_first": "Zkratky na webu (seznam přes ⇧?); aplikace žádné",
+    "shortcut_cheatsheet": "Panel v aplikaci přes ⇧?"
+   }
+  },
+  "graphicconverter": {
+   "name": "GraphicConverter",
+   "vendor": "Lemke Software",
+   "summary": "GraphicConverter je dlouholetý „švýcarský nožík na obrázky“ pro Mac: prohlížeč souborů a obrázků, prezentace, editor a hromadný převodník, který otevře asi 200 formátů. Jeho prohlížeč přehraje i filmy a zvuk kompatibilní s QuickTime, zvládá rozsáhlá metadata a má hledání duplicit, ploché zobrazení a hledání Spotlightem.",
+   "wins": [
+    "Otevře asi 200 obrazových formátů a do asi 80 exportuje, včetně starých a vědeckých formátů",
+    "Plný editor obrázků a hromadný převod s akcemi",
+    "Úpravy metadat (EXIF/IPTC/XMP, tváře, mapa GPS)",
+    "Mnoho možností prezentace (přechody, náhodné pořadí, metadata, řazení během prezentace)",
+    "Zobrazení seznamu, Cover Flow a náhledů, ploché zobrazení všech podsložek",
+    "Hledání duplicit, kontaktní archy, webové galerie",
+    "Vlastní zkratky, 14 jazyků, světlý a tmavý režim"
+   ],
+   "price": "39,95 $ / 34,95 € jednorázově (upgrade 25,95 $, rodinná 59,95 $); 34,99 $ v Mac App Storu; zkušební shareware",
+   "version": "12.5.4 (12.6 v betě)",
+   "updated": "2026-08-27 (12.5.4 v Mac App Storu; 12.6 beta build 7423 dne 2026-11-12)",
+   "platforms": "macOS",
+   "notes": {
+    "languages_20": "14 jazyků",
+    "recursive_search": "Hledání ve všech podsložkách přes Spotlight (ne tam, kde je vypnutý, např. na mnoha síťových discích)",
+    "regex_search": "Regulární výrazy v prezentaci s hledáním a v přejmenování, ne v poli hledání",
+    "slideshow_recursive": "Prezentace umí zahrnout podsložky; zda přehraje filmy, neuvedeno",
+    "auto_enhance_view": "Automatické úrovně a vylepšení mění obrázek, ne jen zobrazení",
+    "wrong_extension_note": "Příkaz zkontroluje a opraví přípony vybraných souborů; při prohlížení neupozorní",
+    "playlist": "Paleta seznamu prezentace; ne playlist videí",
+    "saved_playlists": "Předvolby prezentací a uložená hledání, ne playlisty",
+    "music_mode": "MP3 a M4A se přehrají v pravém panelu prohlížeče",
+    "archives_as_folders": "Otevře obrázky z archivů RAR; procházení ZIP/7z jako složek neuvedeno",
+    "library_catalog": "Hodnocení, štítky, značky, tváře v metadatech souborů; hledání duplicit; bez centrální databáze",
+    "cloud_sync": "Nahrávání přes FTP a webové galerie; cloudové složky přes jejich aplikace",
+    "shortcut_cheatsheet": "Tabulky zkratek v příručce PDF",
+    "app_sandbox": "Verze z Mac App Storu v sandboxu (s omezeními); přímá verze ne"
+   }
+  },
+  "hamana": {
+   "name": "Hamana",
+   "vendor": "miyano",
+   "summary": "Japonský prohlížeč obrázků akcelerovaný přes DirectX se čtením archivů (zip/cbz, 7z, rar/cbr, cab, lzh), režimem dvou obrázků, efekty prezentace a bohatým nastavením kláves. Umí běžet jako spořič obrazovky. Od roku 2006 beze změn, ke stažení je stále na webu autora.",
+   "wins": [
+    "Zobrazovací filtry na GPU (tónová křivka, doostření) a 3D otáčení",
+    "Efekty přechodů v prezentaci",
+    "Režim spořiče obrazovky",
+    "PDF přes Ghostscript"
+   ],
+   "price": "Zdarma",
+   "version": "1.48",
+   "updated": "2006-06-19",
+   "platforms": "Windows"
+  },
+  "honeyview": {
+   "name": "Honeyview",
+   "vendor": "Bandisoft",
+   "summary": "Lehký, rychlý bezplatný prohlížeč obrázků, který byl léta v Koreji výchozí čtečkou komiksů a mangy (꿀뷰). Ukazuje obrázky v archivech ZIP/RAR/7Z bez rozbalení, dvoustránkový režim, EXIF s GPS. Ukončený: další aktualizace nebudou; Bandisoft odkazuje na BandiView.",
+   "wins": [
+    "Velmi lehký a rychlý na starých Windows (XP až 11, 32 bitů)",
+    "Chytrý dvoustránkový režim pro mangu zprava doleva",
+    "Více formátů archivů (LZH, TAR) a BPG"
+   ],
+   "price": "Zdarma (freeware)",
+   "version": "5.53",
+   "updated": "2024-06-21",
+   "platforms": "Windows"
+  },
+  "iina": {
+   "name": "IINA",
+   "vendor": "projekt IINA",
+   "summary": "IINA je bezplatný open source přehrávač videa pro macOS postavený na mpv, s moderním rozhraním Macu. Silný na sledování: titulky (včetně hledání online), obraz v obraze, hudební režim, playlisty, náhledy při posouvání a pluginy.",
+   "wins": [
+    "Plné funkce přehrávání: kapitoly, krokování po snímcích, smyčka A-B, obraz v obraze, hudební režim",
+    "Hledání titulků online a chytré párování místních titulků",
+    "Pluginy, konfigurace a skripty mpv, rozšíření pro prohlížeče",
+    "Podporuje macOS 12 a Macy s procesorem Intel",
+    "Náhledy na časové ose, historie přehrávání a pokračování"
+   ],
+   "price": "Zdarma",
+   "version": "1.5.1",
+   "updated": "2026-11-06",
+   "platforms": "macOS",
+   "notes": {
+    "folder_browsing": "přetažení či otevření složky přidá do playlistu všechny přehratelné soubory (i z podsložek); bez prohlížeče souborů",
+    "recursive_search": "jen hledání v historii přehrávání, ne v souborech",
+    "img_animated": "GIF se přehraje jako video; APNG a animované WebP ne",
+    "auto_enhance_view": "ekvalizér a filtry videa, bez automatického vylepšení",
+    "file_info_exif": "Okno Inspektor: kodeky, datový tok, stopy; bez EXIF",
+    "split_archives": "mpv čte vícesvazkové RAR, IINA to ale nenabízí",
+    "videos_in_archives": "Soubor > Otevřít přehraje média v ZIP či RAR přes mpv; nezdokumentováno",
+    "rename_trash": "Smazání přehrávaného souboru do koše; bez přejmenování a nové složky",
+    "shortcut_cheatsheet": "klávesy v Nastavení > Key Bindings; ne k tisku",
+    "notarized_attested": "notarizováno od 1.0.5; bez atestace sestavení"
+   }
+  },
+  "imageglass": {
+   "name": "ImageGlass",
+   "vendor": "Duong Dieu Phap",
+   "summary": "Rychlý open source prohlížeč obrázků, ve verzi 10 přestavěný na .NET/Avalonia pro Windows, macOS (Apple silicon) a Linux. Široká podpora formátů (přes 90 včetně RAW, JXL, HEIC, AVIF, HDR, nativní SVG), chytrá mezipaměť, motivy, vlastní klávesové zkratky a pluginy kodeků. Je to prohlížeč jednoho obrázku s pásem galerie, ne prohlížeč složek, a videa nepřehrává.",
+   "wins": [
+    "Běží na Windows, macOS i Linuxu z jednoho kódu",
+    "Tone mapping HDR pro AVIF, JPEG XL, HDR a EXR",
+    "Nativní vykreslování animovaných SVG",
+    "SDK pro pluginy kodeků s dalšími formáty",
+    "Vestavěné oříznutí, změna velikosti a kapátko barev",
+    "Motivy a vlastní rozvržení",
+    "Vlastní klávesové zkratky i v bezplatné edici"
+   ],
+   "price": "Classic zdarma; Pro Individual 14,90 $ jednorázově, Pro Team 69 $ jednorázově (3 uživatelé), Pro Business podle počtu (od 290 $ ročně pro 25 uživatelů)",
+   "version": "10.0.6.906",
+   "updated": "2026-09-05",
+   "platforms": "Windows, macOS, Linux",
+   "notes": {
+    "free": "Classic zdarma (GPLv3); Pro za 14,90 $ jednorázově přidá tone mapping HDR a další",
+    "dark_light_setting": "Podle systému; lze nastavit motiv pro tmavý a pro světlý režim",
+    "folder_browsing": "Listuje složkou otevřeného souboru; bez stromu složek a podsložek",
+    "thumbnail_grid": "Galerie obrázků aktuální složky (pás či sloupce); bez dlaždic složek",
+    "network_shares_fast": "Dekódování mimo hlavní vlákno a přednačítání; pro síťové disky nic zvláštního",
+    "img_svg_pdf": "Nativní SVG/SVGZ včetně animovaných; bez PDF",
+    "slideshow_recursive": "Umí načíst obrázky z podsložek; jen obrázky, bez videí",
+    "file_info_exif": "EXIF přes samostatný nástroj ExifGlass; bez informací o videu",
+    "rename_trash": "Smazání či koš pro zobrazený obrázek (s potvrzením); bez nové složky",
+    "move_copy": "Kopírování či vyjmutí souborů do schránky (vyjmutí ne na macOS)",
+    "keyboard_first": "Zkratky pro příkazy nabídek, ale rozhraní je na lištu a myš",
+    "notarized_attested": "DMG podepsaný Developer ID a notarizovaný; bez atestace sestavení"
+   }
+  },
+  "imagine": {
+   "name": "Imagine",
+   "vendor": "Sejin Chun",
+   "summary": "Drobný, velmi rychlý bezplatný prohlížeč obrázků a animací pro Windows z Koreje s prohlížečem náhledů, obrovským seznamem formátů (včetně JXL, AVIF, HEIF, CLIP, KRA, mnoha RAW), procházením archivů, hromadným převodem a přejmenováním, jednoduchým kreslením a editorem animací. Funguje i jako pluginy Total Commanderu.",
+   "wins": [
+    "Obrovský seznam formátů včetně KRA, ORA, CLIP, DICOM a formátů HDR",
+    "Vestavěné úpravy, tvorba animací a hromadné přejmenování",
+    "Pluginy Lister/Packer/Content pro Total Commander",
+    "Běží na všem od Windows 95 po Windows 11 ARM64"
+   ],
+   "price": "Zdarma (donationware; za dar od 20 $ osobní licenční kód)",
+   "version": "2.8.1",
+   "updated": "2026-11-14",
+   "platforms": "Windows"
+  },
+  "infuse": {
+   "name": "Infuse",
+   "vendor": "Firecore",
+   "summary": "Přehrávač ve stylu mediálního centra, který z video složek, sdílení na NAS, Plex/Emby/Jellyfin a cloudových úložišť udělá knihovnu s plakáty a metadaty. Velmi dobrý na sledování filmů a seriálů napříč zařízeními Apple se synchronizovaným postupem.",
+   "wins": [
+    "Knihovna filmů a seriálů s obrázky a metadaty z TMDB",
+    "Streamuje z NAS, mediálních serverů a cloudových služeb",
+    "Synchronizuje postup mezi iPhonem, iPadem, Apple TV, Macem a Vision Pro",
+    "Stahování z OpenSubtitles, synchronizace s Trakt, AirPlay a Google Cast",
+    "Obrazy disků (ISO, VIDEO_TS, BDMV)"
+   ],
+   "price": "Zdarma; Infuse Pro 1,99 $ měsíčně, 16,99 $ ročně nebo 99,99 $ doživotně",
+   "version": "8.5.10",
+   "updated": "2026-11-09",
+   "platforms": "macOS, iOS, iPadOS, tvOS, visionOS",
+   "notes": {
+    "free": "Základ zdarma; Infuse Pro 1,99 $ měsíčně, 16,99 $ ročně nebo 99,99 $ doživotně",
+    "no_account_no_tracking": "Účet netřeba (Trakt volitelně), bez reklam; štítek soukromí: diagnostika nepropojená s vámi",
+    "thumbnail_grid": "Dlaždice s plakáty pro videa ve složkách a knihovně; bez fotek",
+    "list_view": "Tlačítko řazení v zobrazení složky; sloupce neuvedeny",
+    "recursive_search": "Hledání v naskenované knihovně (názvy), ne v názvech souborů",
+    "zoom_rotate": "8 možností zvětšení videa; bez otočení",
+    "file_info_exif": "Informace o videu (kodek, rozlišení, zvuk); bez EXIF",
+    "streaming_urls": "Playlisty M3U/M3U8 a mediální servery; Pro streamuje trailery",
+    "rename_trash": "Správa souborů umožní mazat vzdálená videa; bez přejmenování",
+    "move_copy": "Stahování videí ze síťových zařízení do Macu",
+    "keyboard_first": "Zkratky pro přehrávání; knihovnou se klávesnicí pohybuje jen omezeně",
+    "shortcut_cheatsheet": "Seznam zkratek v článku podpory",
+    "notarized_attested": "Sestavení z App Storu, uzavřený kód"
+   }
+  },
+  "irfanview": {
+   "name": "IrfanView",
+   "vendor": "Irfan Skiljan",
+   "summary": "IrfanView je drobný, velmi rychlý prohlížeč obrázků pro Windows, který existuje od roku 1996 a díky pluginům čte obrovské množství formátů. Kromě prohlížení umí hromadný převod, základní úpravy, skenování, tisk a prezentace, vše ovládané spoustou klávesových zkratek.",
+   "wins": [
+    "Obrovský seznam formátů, včetně vzácných a retro formátů",
+    "Hromadný převod a hromadné přejmenování",
+    "Úpravy obrázků, plugin na kreslení, efekty, filtry Photoshopu 8BF",
+    "Skenování, tisk, plugin OCR",
+    "Hledání podle EXIF/IPTC a textu, nejen podle názvů",
+    "Prezentace uložené jako EXE, spořič obrazovky nebo MP4",
+    "Běží na velmi starých Windows i z USB flash disku"
+   ],
+   "price": "Zdarma pro soukromé, nekomerční a vzdělávací použití; komerční licence 18 USD / 15 EUR (trvalá)",
+   "version": "4.76",
+   "updated": "2026-09-18",
+   "platforms": "Windows"
+  },
+  "isee-pro": {
+   "name": "iSee Pro",
+   "vendor": "Dummy Apps",
+   "summary": "iSee Pro je malý prohlížeč obrázků z Mac App Storu, který načte všechny obrázky složky a jejích podsložek a přednačítá je pro rychlé listování. Má zobrazení seznamu, náhledů a plné velikosti, hledání podle názvu, velikosti a data, překryv EXIF, lupu a otevírá archivy ZIP/RAR, jejichž hesla si pamatuje. Vyžaduje macOS 12.",
+   "wins": [
+    "Velmi levný (Pro za 0,99 $) a drobný (4,4 MB)",
+    "Pamatuje si hesla archivů",
+    "Hledání podle rozměrů obrázku a parametrů Draw Things",
+    "Funkce živé tapety a plochy"
+   ],
+   "price": "Zdarma s nákupem v aplikaci: Pro 0,99 $",
+   "version": "11.5",
+   "updated": "2025-05-30",
+   "platforms": "macOS",
+   "notes": {
+    "free": "Zdarma; verze Pro za 0,99 $ (podle recenze ruší limit 50 obrázků)",
+    "thumbnail_grid": "Zobrazení náhledů; náhledy složek neuvedeny",
+    "network_shares_fast": "Používá se na NAS a vzdálených serverech; rychlost neuvedena",
+    "img_modern_formats": "WebP od 11.0; „všechny populární formáty“ a vlastní přípony; HEIC/AVIF/JXL nejmenovány",
+    "img_raw": "Neuvedeno; vlastní přípony lze přidat v předvolbách, dekóduje macOS",
+    "img_psd_exr": "Neuvedeno; vlastní přípony lze přidat, dekóduje macOS",
+    "slideshow_recursive": "Načte rekurzivně všechny podsložky, jen obrázky (bez videa)",
+    "file_info_exif": "Překryv EXIF (⌘I); jen obrázky",
+    "archives_as_folders": "ZIP a RAR otevře („rozbalí“); 7z neuvedeno",
+    "rename_trash": "Přejmenování (Enter v seznamu), smazání; nová složka neuvedena",
+    "move_copy": "Přetažením do složky obrázky uloží; příkazy přesunu a kopírování neuvedeny",
+    "library_catalog": "Jen označování obrázků, bez databáze",
+    "keyboard_first": "Spousta zkratek, ale dá se ovládat čistě myší",
+    "notarized_attested": "Sestavení z Mac App Storu kontrolované Applem; bez veřejného kódu"
+   }
+  },
+  "jpegview": {
+   "name": "JPEGView",
+   "vendor": "sylikc a David Kleiner",
+   "summary": "Štíhlý, velmi rychlý prohlížeč obrázků pro Windows s minimalistickým rozhraním na celou obrazovku, korekcemi obrazu v reálném čase (automatický kontrast, lokální hustota, doostření) a ovládáním klávesnicí přes upravitelný KeyMap. Zvládá moderní formáty i RAW. Bez náhledů, bez videa, bez prohlížeče souborů; fork nemá od roku 2023 nové vydání.",
+   "wins": [
+    "Automatická korekce barev, kontrastu a lokální hustoty v reálném čase při prohlížení",
+    "Extrémně malý a přenosný (bez instalace)",
+    "Plně přemapovatelné klávesy přes KeyMap.txt",
+    "Bezztrátové oříznutí a otočení JPEG",
+    "Série obrázků přehraná jako film se zvolenou snímkovou frekvencí"
+   ],
+   "price": "Zdarma",
+   "version": "1.3.46",
+   "updated": "2023-10-07 (poslední vydání; poslední commit 2024-07-06)",
+   "platforms": "Windows"
+  },
+  "kmplayer": {
+   "name": "KMPlayer",
+   "vendor": "PandoraTV",
+   "summary": "KMPlayer je zavedený bezplatný přehrávač pro Windows s vestavěnými kodeky, přehráváním 4K/8K, 3D a 360° VR, přehráváním a stahováním z URL a YouTube a rozložením kláves, kde skoro každá klávesa něco dělá. Edice 64X je bez reklam, 32bitová edice reklamy ukazuje. Podle výrobce aktuální aplikace pro macOS neexistuje.",
+   "wins": [
+    "Velmi široká podpora kodeků a formátů včetně 3D a 360° VR",
+    "Přehrávání a stahování z URL a YouTube",
+    "Jemné ovládání klávesnicí, globální zkratky, šéfovo tlačítko (Esc)",
+    "Předvolby ekvalizéru, záznam videa a zvuku, záznam GIF",
+    "Skiny a barevná schémata, 42 jazyků"
+   ],
+   "price": "Zdarma; KMPlayer 64X bez reklam, 32bitový KMPlayer s reklamami; aplikace pro Android má upgrade Premium",
+   "version": "KMPlayer 64X 2026.10.27.9; KMPlayer (32 bitů) 4.2.3.38",
+   "updated": "2026-10-28",
+   "platforms": "Windows, Android, iOS, iPadOS"
+  },
+  "kodi": {
+   "name": "Kodi",
+   "vendor": "Kodi Foundation",
+   "summary": "Bezplatné open source mediální centrum s rozhraním pro televizi a dálkové ovládání. Spravuje velké knihovny videa a hudby, prochází místní i síťové složky a ukazuje i fotky v prezentacích.",
+   "wins": [
+    "mediální centrum pro televizi s dálkovým ovládáním, knihovny s plakáty a metadaty",
+    "hudební knihovna a přehrávač",
+    "doplňky pro streamování a titulky, PVR a živá TV",
+    "hesla RAR a vícedílné RAR přes doplněk",
+    "běží na TV boxech, Androidu, Linuxu, Raspberry Pi"
+   ],
+   "price": "Zdarma",
+   "version": "21.3 Omega (22.0 Piers RC2 z 2026-11-10)",
+   "updated": "2025-10-31",
+   "platforms": "macOS, Windows, Linux, Android, iOS/tvOS, LibreELEC",
+   "notes": {
+    "network_shares_fast": "Síťové zdroje jako místní; náhledy se při první návštěvě uloží do mezipaměti",
+    "img_modern_formats": "WebP a AVIF vestavěné; HEIC přes doplněk; JPEG XL neuvedeno",
+    "img_raw": "přes doplněk imagedecoder.raw",
+    "auto_enhance_view": "Jas a kontrast v nastavení videa; pro fotky nic",
+    "online_subtitles": "přes doplňky služeb titulků",
+    "comics_cbz_cbr": "CBZ/CBR se procházejí jako složky obrázků; bez režimu čtení",
+    "archive_passwords": "jen RAR (zeptá se nebo zkusí uložená hesla)",
+    "split_archives": "vícedílné RAR (.partN.rar) přes vfs.rar",
+    "rename_trash": "Správce souborů přejmenuje, smaže (bez koše), vytvoří složky",
+    "dual_pane": "Správce souborů má dva panely vedle sebe; bez kláves F5/F6",
+    "cloud_sync": "Vlastní cloud ne; knihovny a zhlédnuté lze sdílet přes server MySQL/MariaDB",
+    "shortcut_cheatsheet": "Stránka wiki uvádí všechny výchozí klávesy",
+    "notarized_attested": "Balení pro macOS má skript na notarizaci; bez atestace sestavení"
+   }
+  },
+  "leeyes": {
+   "name": "Leeyes",
+   "vendor": "Kenji (けんじ)",
+   "summary": "Třípanelový japonský prohlížeč (strom složek, seznam souborů, obrázek) stavěný na čtení naskenované mangy ve dvoustranách, s knihovnou oblíbených složek. Všechny formáty kromě BMP obstarávají pluginy Susie. Poslední vydání 2011; web autora už není dostupný, zbyly jen archivované kopie.",
+   "wins": [
+    "Seznamy knihovny lze exportovat a importovat jako text",
+    "Dvoustrana vyladěná na naskenované knihy"
+   ],
+   "price": "Zdarma pro nekomerční použití",
+   "version": "2.6.1",
+   "updated": "2011-10-26",
+   "platforms": "Windows"
+  },
+  "lyn": {
+   "name": "Lyn",
+   "vendor": "Mirko Viviani",
+   "summary": "Dlouholetý lehký prohlížeč obrázků pro fotografy a grafiky s postranním panelem složek, mapou geotagů, nedestruktivními úpravami a sdílením na Flickr, Dropbox a SmugMug. Prodává se přímo, běží až po macOS 10.13.",
+   "wins": [
+    "Geotagování na mapě",
+    "Nedestruktivní úpravy barev",
+    "Otevře knihovny Fotek, Aperture a Lightroomu",
+    "Sdílení na Flickr, Dropbox, SmugMug",
+    "Běží na starém macOS (10.13 a novější)"
+   ],
+   "price": "26 € / 29,99 $ jednorázově s 15 měsíci aktualizací; 15denní zkušební verze",
+   "version": "2.4.10",
+   "updated": "2026-07-09",
+   "platforms": "macOS",
+   "notes": {
+    "languages_20": "Angličtina, k tomu francouzština a čínština; úplný seznam nezveřejněn",
+    "recursive_search": "Chytré složky s rozsahem hledání; prosté rekurzivní hledání názvů neuvedeno",
+    "bookmarks": "položky postranního panelu a chytré složky",
+    "img_psd_exr": "OpenEXR ano; PSD jen přes ImageIO v macOS",
+    "img_animated": "animované WebP a animované obrázky v prohlížeči; APNG neuvedeno",
+    "video_skim_arrows": "mezerník, J/K/L",
+    "playback_speed": "J/L převíjení zpět a vpřed",
+    "library_catalog": "klíčová slova, IPTC, barevné štítky, chytré složky; bez vlastního katalogu"
+   }
+  },
+  "mangameeya": {
+   "name": "MangaMeeya",
+   "vendor": "",
+   "summary": "Dlouho nejznámější čtečka mangy pro Windows: otevírá komiksy v ZIP/RAR, i vnořené archivy, s dvoustranami, náhledy, kartami a nastavitelnými klávesami. Ukončená, bez oficiálního stažení; kopie a kompaktní MangaMeeyaCE kolují po zrcadlech.",
+   "wins": [
+    "Známý postup čtení mangy pro dlouholeté uživatele",
+    "Karty a rozdělená okna přes dva monitory"
+   ],
+   "price": "Zdarma",
+   "version": "na AlternativeTo uvedena jako 2.4 (ukončená)",
+   "updated": "2006-06 (podle AlternativeTo)",
+   "platforms": "Windows"
+  },
+  "marta": {
+   "name": "Marta",
+   "vendor": "Yan Zhulanow",
+   "summary": "Nativní dvoupanelový správce souborů ovládaný hlavně klávesnicí, napsaný ve Swiftu, konfigurovaný textovým DSL a rozšiřitelný pluginy v Lua. Mnoho formátů archivů otevře jako složky; náhledy souborů přes Rychlý náhled.",
+   "wins": [
+    "API pro pluginy v Lua a textová konfigurace",
+    "Práce s F-klávesami ve stylu commanderu a Action Panel",
+    "Podpora archivů včetně vnořených, ZIP pro čtení i zápis",
+    "Vestavěný terminál se synchronizací složky, analýza místa na disku",
+    "Look Up s predikáty Spotlightu"
+   ],
+   "price": "Zdarma během bety; po betě se plánuje placená licence (podporovatelé na Patreonu od 15 $ dostanou trvalou licenci)",
+   "version": "0.8.2",
+   "updated": "2024-08-03",
+   "platforms": "macOS",
+   "notes": {
+    "free": "Zdarma během bety; placená licence je ohlášená",
+    "regex_search": "Rychlý výběr a hledání v aktuálním seznamu regulárním výrazem; Look Up používá predikáty",
+    "img_modern_formats": "Jen Rychlý náhled (mezerník); vlastní prohlížeč ani přehrávač ne",
+    "img_raw": "Náhled je okno Rychlého náhledu (mezerník); vlastní prohlížeč ne",
+    "img_psd_exr": "Náhled je okno Rychlého náhledu (mezerník); vlastní prohlížeč ne",
+    "img_svg_pdf": "Náhled je okno Rychlého náhledu (mezerník); vlastní prohlížeč ne",
+    "img_animated": "Náhled je okno Rychlého náhledu (mezerník); vlastní prohlížeč ne",
+    "zoom_rotate": "Jen zvětšení v Rychlém náhledu; náhled na celou obrazovku je otevřený požadavek",
+    "video_native": "Rychlý náhled přehraje MP4/MOV",
+    "video_mkv_avi_webm": "Jen to, co přehraje Rychlý náhled; které formáty, Marta neuvádí",
+    "music_mode": "Rychlý náhled přehraje jeden zvukový soubor; ne celou složku",
+    "archives_as_folders": "ZIP čtení i zápis; TAR, 7Z, ISO aj. jen čtení; RAR omezeně, bez RAR5",
+    "comics_cbz_cbr": "Bez čtečky komiksů; další přípony ZIP (např. cbz) lze přidat v konfiguraci",
+    "shortcut_cheatsheet": "Dokumentace uvádí výchozí klávesy; tahák k tisku ne"
+   }
+  },
+  "massigra": {
+   "name": "MassiGra",
+   "vendor": "Toshi Fuku",
+   "summary": "Malý, rychlý prohlížeč obrázků z Japonska v jednom okně, který listuje složkou, s režimem mangy a jednoduchými úpravami. Vestavěné formáty jsou BMP, GIF, JPEG a PNG; vše ostatní, včetně archivů, obstarávají pluginy Susie. Pět let po sobě vedl žebříček stahování prohlížečů na Vectoru, ale od roku 2013 se nezměnil.",
+   "wins": [
+    "Drobný a velmi nenáročný na starém hardwaru",
+    "Základní úpravy obrázků a uložení (úrovně, barvy, oříznutí, změna velikosti)",
+    "Přesun a kopírování do předvolených složek jednou klávesou",
+    "Dlouholetí japonští uživatelé Windows ho znají"
+   ],
+   "price": "Zdarma",
+   "version": "0.45",
+   "updated": "2013-04-23",
+   "platforms": "Windows"
+  },
+  "mcomix": {
+   "name": "MComix",
+   "vendor": "vývojáři MComix",
+   "summary": "MComix je přizpůsobitelný prohlížeč komiksů a obrázků v GTK pro Linux a Windows, fork Comixu. Čte CBR/CBZ/CB7/CBT/LHA a PDF, má dvoustránkový režim a režim mangy, vylepšení obrazu, prezentaci a volitelnou knihovnu.",
+   "wins": [
+    "Dvoustrana a režim mangy",
+    "Vylepšení obrazu (jas, kontrast, ostrost, automatický kontrast)",
+    "Upravitelné klávesové zkratky",
+    "Editor archivů a volitelná knihovna s kolekcemi",
+    "25 jazyků rozhraní",
+    "Verze pro Linux a Windows"
+   ],
+   "price": "Zdarma",
+   "version": "3.2.0",
+   "updated": "2026-08-20",
+   "platforms": "Linux, Windows"
+  },
+  "mediaone": {
+   "name": "MediaOne",
+   "vendor": "MediaArt Studio",
+   "summary": "MediaOne (dříve ImageOne) je prohlížeč médií z Mac App Storu pro fotky, videa a zvuk, který pracuje se složkami a oblíbenými bez importu. Nabízí několik rozvržení náhledů, hledání na celém disku, hodnocení hvězdičkami a štítky, porovnávací zobrazení, stříhání videa, export GIF a hromadný převod. Vyžaduje macOS 12.4.",
+   "wins": [
+    "Náhledy, které se přehrají a posouvají pod kurzorem",
+    "Hodnocení hvězdičkami, štítky, chytré filtry a mapa fotek",
+    "Stříhání videa, uložení snímku, video na GIF, hromadný převod obrázků a videí",
+    "Přehrává zvukové soubory",
+    "Hledání na celém disku s uloženými chytrými dotazy"
+   ],
+   "price": "Zdarma s nákupem v aplikaci: ImageOne 6,99 $",
+   "version": "5.4.1",
+   "updated": "2026-08-23",
+   "platforms": "macOS",
+   "notes": {
+    "free": "Zdarma s jedním nákupem „ImageOne“ za 6,99 $; co odemyká, obchod neuvádí",
+    "list_view": "Seznam uveden; sloupce nepopsány",
+    "img_modern_formats": "WebP uvedeno; HEIC/AVIF/JXL ne (HEIC možná zvládne systém)",
+    "slideshow_recursive": "„Show All Subfolders“ sesbírá fotky a videa; prezentace přes ně neuvedena",
+    "file_info_exif": "EXIF u obrázků; kodeky a datový tok neuvedeny",
+    "video_skim_arrows": "⌥ a šipky po snímcích, posouvání kurzorem",
+    "dual_pane": "Porovnávací zobrazení ve dvou sloupcích; bez souborových panelů s F5/F6",
+    "image_editing": "Otočení a převrácení, stříhání videa, uložení snímku, video na GIF",
+    "batch_convert": "Hromadný převod obrázků a videí; hromadné přejmenování neuvedeno",
+    "library_catalog": "Hodnocení a štítky u souborů, chytré filtry, mapa; bez importní databáze",
+    "keyboard_first": "Šipky, mezerník a ⌥ zdokumentovány; stavěný na myš",
+    "notarized_attested": "Sestavení z Mac App Storu kontrolované Applem; bez veřejného kódu"
+   }
+  },
+  "meitu-kankan": {
+   "name": "美图看看",
+   "vendor": "Meitu",
+   "summary": "Malý, rychlý bezplatný prohlížeč obrázků od Meitu, který byl na začátku 2010. let velmi oblíbený na čínských počítačích s Windows, s oblíbenými složkami, zobrazením všech obrázků z podsložek a sdílením jedním kliknutím na čínské sociální sítě. Už se nevyvíjí (poslední vydání 2.7.8), ale stále je ke stažení.",
+   "wins": [
+    "Drobný a nenáročný na starých PC",
+    "Ukáže najednou všechny obrázky ze všech podsložek (穿透文件夹)",
+    "CMYK PSD zobrazené jako ve Photoshopu"
+   ],
+   "price": "Zdarma",
+   "version": "2.7.8",
+   "updated": "2014-11-25 (web); obchod Tencent uvádí datum souboru 2019-05-08",
+   "platforms": "Windows, Android"
+  },
+  "microsoft-photos": {
+   "name": "Microsoft Fotografie",
+   "vendor": "Microsoft",
+   "summary": "Aplikace na fotky a videa zabudovaná ve Windows: časová osa Galerie přes složky v PC, OneDrive a iCloud, rychlý prohlížeč, který listuje složkou, a editor s nástroji AI. Dobrá na občasné prohlížení a rychlé úpravy; Fotky (starší verze) zachovávají dřívější editor videa a tvorbu prezentací. Bez archivů, bez funkcí správce souborů.",
+   "wins": [
+    "Předinstalované na každém PC s Windows",
+    "Fotky z OneDrive a iCloudu v jedné Galerii",
+    "Úpravy pomocí AI: odstranění objektů, Relight, superrozlišení na počítačích Copilot+",
+    "Lidé, alba, chvíle a hledání přirozeným jazykem",
+    "Prezentace s hudbou",
+    "Porovnání více snímků"
+   ],
+   "price": "Zdarma s Windows (rozšíření HEVC Video Extensions 0,99 $)",
+   "version": "2026.11090.22001 (nová Galerie, editor a prohlížeč se zavádějí od října 2026)",
+   "updated": "2026-10-06",
+   "platforms": "Windows"
+  },
+  "movist-pro": {
+   "name": "Movist Pro",
+   "vendor": "Movist",
+   "summary": "Placený přehrávač na sledování filmů a seriálů se silnou prací s titulky (více stop titulků najednou, styly podle jazyka), tone mappingem HDR a Dolby Vision a AirPlay pro jakýkoli formát. Pro přidává síťové servery, YouTube a webová média a obraz v obraze.",
+   "wins": [
+    "Styly titulků a dvojité titulky",
+    "Tone mapping HDR a Dolby Vision",
+    "AirPlay i pro formáty, které Apple TV nativně nepřehraje",
+    "Síťové servery (SMB, SFTP, FTP, WebDAV), YouTube, obraz v obraze (Pro)",
+    "Uložené playlisty, zvukový ekvalizér"
+   ],
+   "price": "Movist Pro 17,99 $ jednorázově (přímo); Movist 9,99 $ (Mac App Store); Movist Pro v předplatném Setapp",
+   "version": "2.21.1 (přímo); Movist 2.20.0 v Mac App Storu",
+   "updated": "2026-10-17 (App Store 2.20.0); 2.21.1 později, datum neuvedeno",
+   "platforms": "macOS",
+   "notes": {
+    "languages_20": "6: angličtina, japonština, korejština, ruština, zjednodušená a tradiční čínština",
+    "folder_browsing": "Naplní playlist ze složky; Pro prochází síťová sdílení (SMB, SFTP, FTP, WebDAV)",
+    "network_shares_fast": "Pro přehrává přímo ze serverů SMB, SFTP, FTP, WebDAV",
+    "zoom_rotate": "Jen video: zvětšení, otočení, převrácení",
+    "auto_enhance_view": "Jen video: filtry Core Image",
+    "file_info_exif": "Okno Inspektor se stopami a kodeky; bez EXIF",
+    "pip": "Jen Movist Pro",
+    "music_mode": "Přehraje hudbu s ekvalizérem; bez knihovny",
+    "streaming_urls": "Jen Pro: otevření URL, YouTube/Twitch a webová média, rozšíření prohlížečů",
+    "rename_trash": "Smazání aktuálního souboru z nabídky Soubor; bez přejmenování a nové složky",
+    "keyboard_first": "Vlastní zkratky pro přehrávání; bez procházení souborů",
+    "app_sandbox": "Movist z App Storu je v sandboxu; Pro se chlubí, že nepotřebuje oprávnění ke složkám",
+    "mac_app_store": "Jen menší „Movist“ (9,99 $); Pro se prodává přímo a přes Setapp"
+   }
+  },
+  "mpc-be": {
+   "name": "MPC-BE",
+   "vendor": "Aleksoid1978 a přispěvatelé",
+   "summary": "Přehrávač videa pro Windows odvozený od Media Player Classic, s vlastními dekodéry, tmavým motivem a častými vydáními. Dobrý na místní video soubory a YouTube přes yt-dlp.",
+   "wins": [
+    "lehký přehrávač pro Windows s častými aktualizacemi",
+    "tmavý motiv, mnoho možností rendereru a dekodérů",
+    "stahování titulků, streamování přes yt-dlp",
+    "šéfovo tlačítko, nastavitelné klávesy"
+   ],
+   "price": "Zdarma",
+   "version": "1.9.3",
+   "updated": "2026-11-05",
+   "platforms": "Windows"
+  },
+  "mpc-hc": {
+   "name": "MPC-HC",
+   "vendor": "clsid2 a přispěvatelé",
+   "summary": "Lehký klasický přehrávač videa pro Windows s vestavěnými LAV Filters, mnoha renderery a velmi nastavitelnými klávesami. Oblíbený pro jednoduché rozhraní a nízkou zátěž; obrázky nejsou jeho parketa.",
+   "wins": [
+    "velmi lehký a rychle startuje",
+    "renderery a shadery pro nadšence (madVR, MPC VR)",
+    "hledání a stahování titulků, streamování přes yt-dlp",
+    "šéfovo tlačítko, krokování po snímcích, mnoho nastavitelných kláves"
+   ],
+   "price": "Zdarma",
+   "version": "2.8.5",
+   "updated": "2026-11-06",
+   "platforms": "Windows"
+  },
+  "mpv": {
+   "name": "mpv",
+   "vendor": "projekt mpv",
+   "summary": "mpv je minimalistický, skriptovatelný přehrávač ovládaný z příkazové řádky, s vykreslováním přes GPU (HDR, Dolby Vision) a velmi širokou podporou formátů. Konfiguruje se textovými soubory a skripty v Lua/JS a má jen malé ovládání na obrazovce.",
+   "wins": [
+    "Vykreslování videa přes gpu-next, s HDR a Dolby Vision",
+    "Extrémně nastavitelný přes mpv.conf, input.conf a skripty",
+    "Přehrává média přímo ze ZIP/RAR/7z a vícesvazkových RAR",
+    "Multiplatformní (macOS, Windows, Linux)",
+    "Streamy a YouTube přes yt-dlp, nabídky DVD a Blu-ray"
+   ],
+   "price": "Zdarma",
+   "version": "0.42.0",
+   "updated": "2026-11-05",
+   "platforms": "macOS, Windows, Linux, BSD, Android (přes mpv-android)",
+   "notes": {
+    "dark_light_setting": "jen titulek okna přes --macos-title-bar-appearance; bez motivu rozhraní",
+    "folder_browsing": "Otevřená složka se stane playlistem, i rekurzivně; bez prohlížeče souborů",
+    "img_psd_exr": "Otevře EXR a PSD, ale ze složek je nebere",
+    "img_svg_pdf": "SVG v image-exts (vyžaduje FFmpeg s librsvg); bez PDF",
+    "auto_enhance_view": "klávesy 1 až 8 mění kontrast, jas, gamu, sytost; bez automatického vylepšení",
+    "file_info_exif": "překryv statistik (i/I): kodeky, datový tok; bez EXIF",
+    "saved_playlists": "načte m3u/pls/cue/edl; vestavěný příkaz k uložení ne",
+    "archives_as_folders": "ZIP, RAR, 7z (i CBZ/CBR) jako playlist médií, ne jako procházitelná složka",
+    "comics_cbz_cbr": "CBZ/CBR jako playlist obrázků; bez režimu čtení",
+    "batch_convert": "kódování z příkazové řádky (--o); bez hromadného přejmenování",
+    "shortcut_cheatsheet": "? ukáže stránku kláves v překryvu; výchozí v input.conf",
+    "no_network": "Bez kontroly aktualizací a telemetrie; jde online pro URL, které otevřete (yt-dlp)"
+   }
+  },
+  "neeview": {
+   "name": "NeeView",
+   "vendor": "neelabo",
+   "summary": "Prohlížeč pro Windows ve stylu knihy, který bere složky a archivy jako knihy a obrázky jako stránky. Velmi nastavitelný: každá akce je příkaz s vlastními klávesami, gesty myši a skripty, k tomu knihovna, záložky, playlisty a dvoustrany pro mangu. Videa přehrává přes Windows nebo nainstalovaný VLC.",
+   "wins": [
+    "Každá akce nastavitelná: příkazy, gesta, skriptování v JavaScriptu",
+    "Dvoustrana se čtením zprava doleva a dělením stránek",
+    "Vnořené archivy a hesla archivů (přes 7z.dll)",
+    "Uložené playlisty, historie a hledání s operátory pro datum, velikost a regulární výrazy",
+    "Panel efektů obrazu, tisk, export jako ZIP či složka",
+    "Sestavení pro Microsoft Store a přenosný ZIP"
+   ],
+   "price": "Zdarma",
+   "version": "46.3",
+   "updated": "2026-08-09",
+   "platforms": "Windows"
+  },
+  "nomacs": {
+   "name": "nomacs",
+   "vendor": "tým nomacs",
+   "summary": "nomacs („Image Lounge“) je bezplatný open source prohlížeč obrázků s podporou RAW a PSD, panely metadat, úpravami obrazu a hromadným zpracováním. Zvláštností je synchronizace více instancí pro porovnání obrázků vedle sebe. Aktuální sestavení pro macOS existují pro Apple silicon i Intel, nejsou ale notarizovaná.",
+   "wins": [
+    "Hromadné zpracování a základní úpravy obrázků",
+    "Synchronizace více oken pro porovnání obrázků",
+    "Panely metadat, histogram a hodnocení hvězdičkami",
+    "Pluginy (kreslení, kompozice, transformace)",
+    "Běží na Windows, Linuxu, FreeBSD a Haiku"
+   ],
+   "price": "Zdarma",
+   "version": "3.22.5 (beta 3.23.4)",
+   "updated": "2026-11-05",
+   "platforms": "macOS, Windows, Linux, FreeBSD, Haiku",
+   "notes": {
+    "thumbnail_grid": "Pás a mřížka náhledů aktuální složky; bez náhledů složek",
+    "list_view": "Panel průzkumníka se stromem a sloupci; ne hlavní zobrazení",
+    "recursive_search": "„Find & Filter“ hledá v načteném seznamu; s rekurzivním skenováním i v podsložkách",
+    "img_svg_pdf": "SVG ano; PDF ne",
+    "slideshow_recursive": "Procházení složky a podsložek pro obrázky; bez videí",
+    "auto_enhance_view": "Panel úprav (OpenCV); úpravy se dají uložit, nejde o filtr jen pro zobrazení",
+    "archives_as_folders": "Jen ZIP (a CBZ) přes QuaZip v plném sestavení pro macOS; bez RAR/7z",
+    "comics_cbz_cbr": "CBZ ano, CBR ne",
+    "dual_pane": "Více synchronizovaných instancí vedle sebe na porovnání; bez dvoupanelového správce",
+    "library_catalog": "Hodnocení zapsané do metadat; bez katalogové databáze",
+    "notarized_attested": "Sestaveno veřejně v GitHub Actions, ale jen ad hoc podepsané, nenotarizované"
+   }
+  },
+  "norton-commander": {
+   "name": "Norton Commander",
+   "vendor": "Symantec",
+   "summary": "Původní ortodoxní dvoupanelový správce souborů pro MS-DOS (1986 až 1998), který zavedl rozložení F3 zobrazit, F5 kopírovat, F6 přesunout, převzaté Total Commanderem, Midnight Commanderem a mnoha dalšími. Z nostalgie se dodnes hodně hledá; běží už jen v DOSu nebo v emulátorech.",
+   "wins": [
+    "Definoval práci se dvěma panely a F-klávesami",
+    "Drobný a rychlý v textovém režimu",
+    "Synchronizace adresářů a File Finder s výsledky v panelu"
+   ],
+   "price": "Ukončený; byl komerční (NC 3.0 za 149 $, NC 4.0 za 99 $ doporučená cena)",
+   "version": "5.51 (DOS)",
+   "updated": "1998-07-01",
+   "platforms": "MS-DOS, Windows (NC for Windows 2.01), OS/2"
+  },
+  "nplayer": {
+   "name": "nPlayer",
+   "vendor": "Newin",
+   "summary": "Placená verze oblíbeného přehrávače nPlayer z iOS pro Mac: přehraje téměř každý formát videa, zvuku a titulků a streamuje z SMB, NFS, WebDAV, FTP, UPnP a cloudových služeb, se silnými styly titulků, opakováním A-B a obrazem v obraze. Aktualizace pro Mac jsou vzácné.",
+   "wins": [
+    "Síťové protokoly (SMB, NFS, SFTP, WebDAV, UPnP)",
+    "Pokročilé titulky (styly, synchronizace, SMI, SUP)",
+    "Opakování A-B, „Listening Drill“ pro výuku jazyků",
+    "Obraz v obraze, rychlost přehrávání",
+    "Zvukový ekvalizér a synchronizace zvuku"
+   ],
+   "price": "9,99 $ jednorázově (Mac)",
+   "version": "1.5.0",
+   "updated": "2025-02-14",
+   "platforms": "macOS, iOS, iPadOS, Android, tvOS",
+   "notes": {
+    "dark_light_setting": "Motivy přehrávače od 1.4.0; zda světlý či tmavý nezávisle na systému, nevíme",
+    "languages_20": "9 v App Storu",
+    "folder_browsing": "Prochází síťové zdroje (SMB, FTP, WebDAV, UPnP, cloud); místní soubory z Finderu",
+    "thumbnail_grid": "Vytváří náhledy videí; rozvržení neuvedeno",
+    "network_shares_fast": "WebDAV, FTP, SFTP, HTTP, SMB/CIFS, NFS, UPnP/DLNA; rychlost neznámá",
+    "zoom_rotate": "Otočení o 90/180/270°, převrácení videa",
+    "auto_enhance_view": "Jas a sytost videa",
+    "saved_playlists": "Otevře soubory playlistů; ukládání vlastních neuvedeno",
+    "library_catalog": "Metadata z TMDb",
+    "cloud_sync": "Streamuje z Box, Dropbox, OneDrive; bez synchronizace",
+    "notarized_attested": "Podepsáno pro App Store; uzavřený kód"
+   }
+  },
+  "omniplayer": {
+   "name": "OmniPlayer",
+   "vendor": "Oka Apps",
+   "summary": "Přehrávač z Mac App Storu pro MKV, AVI, WMV a většinu dalších formátů, s hledáním titulků, rychlostí přehrávání, zvukovým ekvalizérem a odesíláním na DLNA, Chromecast a Roku. Přímočarý přehrávač na sledování jednoho souboru s playlistem.",
+   "wins": [
+    "Hledání titulků online",
+    "Rychlost přehrávání až po 0,1×, po snímcích",
+    "Odesílání na televize (DLNA, Chromecast, Roku)",
+    "Adresy YouTube/Vimeo, zdroje SMB/FTP",
+    "Zvukový ekvalizér, přehrávání hudby",
+    "Úpravy obrazu a export GIF"
+   ],
+   "price": "Zdarma s VIP: doživotně 9,99 $, ročně 6,99 $, měsíčně 3,99 $; OmniPlayer Pro 8,99 $ jednorázově",
+   "version": "2.1.22",
+   "updated": "2026-06-18",
+   "platforms": "macOS",
+   "notes": {
+    "free": "Zdarma; VIP od 3,99 $ měsíčně nebo 9,99 $ doživotně; které funkce potřebují VIP, neuvádí",
+    "languages_20": "7 v App Storu (EN, FR, DE, IT, JA, zh-Hans, zh-Hant); web výrobce uvádí 11",
+    "folder_browsing": "Přetažené složky se stanou playlistem („režim složek“); bez prohlížeče složek",
+    "recursive_search": "Hledání v playlistu; přetáhnout lze i víceúrovňové složky",
+    "network_shares_fast": "Přehrává ze serverů SMB/FTP a Alist; rychlost ve velkých složkách neznámá",
+    "zoom_rotate": "Otočení videa, poměr stran, velikost okna; bez obrázků",
+    "auto_enhance_view": "Jas, kontrast a sytost jen pro video",
+    "file_info_exif": "Recenze zmiňuje okno s informacemi o médiu (kodeky); bez EXIF",
+    "saved_playlists": "Playlist se drží automaticky, lze ho mazat při ukončení; bez pojmenovaných playlistů",
+    "keyboard_first": "Zkratky pro přehrávání, rychlost (⌘[ / ⌘]), titulky",
+    "notarized_attested": "Podepsáno pro App Store; uzavřený kód"
+   }
+  },
+  "opencomic": {
+   "name": "OpenComic",
+   "vendor": "ollm",
+   "summary": "OpenComic je multiplatformní open source čtečka komiksů, mangy a e-knih s kartami, více okny, OPDS a připojením k serverům. Nabízí režim mangy a webtoonu, úpravy obrazu a nástroje na zvětšení rozlišení pomocí AI.",
+   "wins": [
+    "Mnoho formátů včetně EPUB, MOBI, SVG, JPEG XL, archivů ACE/LZH",
+    "Manga, webtoon, dvoustrana a řízené zobrazení",
+    "Přímo SMB/FTP/SFTP/WebDAV/S3 a OPDS",
+    "AI zvětšení rozlišení, odstranění rastru a artefaktů",
+    "Karty a více oken; vlastní zkratky a gamepad"
+   ],
+   "price": "Zdarma (GitHub); 4,99 $ v Mac App Storu",
+   "version": "2.0.0 (GitHub); 1.6.11 v Mac App Storu",
+   "updated": "2026-11-14",
+   "platforms": "macOS, Windows, Linux",
+   "notes": {
+    "network_shares_fast": "Přímé připojení SMB, FTP, SFTP, WebDAV, S3; seznamy souborů v mezipaměti",
+    "bookmarks": "Záložky stránek, oblíbené a vlastní štítky",
+    "img_modern_formats": "WebP, AVIF, JPEG XL; HEIC opět odebráno",
+    "zoom_rotate": "Zvětšení a lupa; otočení neuvedeno",
+    "music_mode": "Hudba v pozadí a zvukové efekty při čtení; bez hudebního přehrávače",
+    "rename_trash": "Do koše a trvalé smazání; bez přejmenování v kontextové nabídce",
+    "cloud_sync": "Připojení k serverům a OPDS; bez vlastní synchronizace",
+    "app_sandbox": "Sestavení z Mac App Storu v sandboxu; DMG z GitHubu ne",
+    "notarized_attested": "DMG/PKG pro Mac sestavené lokálně a notarizované; bez atestace sestavení"
+   }
+  },
+  "panels": {
+   "name": "Panels",
+   "vendor": "Produkt Studio",
+   "summary": "Panels je čtečka komiksů pro iPhone, iPad a Mac s knihovnou obálek, předvolbami čtení, zobrazením po jednotlivých panelech a podporou OPDS pro Komga/Kavita. Pokročilé funkce jako cloudové knihovny, filtry stránek a rozpoznávání textu vyžadují Premium.",
+   "wins": [
+    "Synchronizovaná knihovna a postup čtení mezi Macem, iPhonem a iPadem",
+    "Streamování přes OPDS (Komga, Kavita, Calibre)",
+    "Řízené zobrazení po panelech, předvolby čtení",
+    "Živý text a rozpoznání objektů",
+    "Obchod s komiksy bez DRM přímo v aplikaci"
+   ],
+   "price": "Zdarma ke stažení; Premium přes předplatné Panels+ (měsíčně, ročně) nebo jednorázový nákup Panels 3 (22,99 EUR jednorázově / 11,99 EUR ročně, květen 2025)",
+   "version": "3.13.11",
+   "updated": "2026-11-11",
+   "platforms": "macOS, iOS, iPadOS",
+   "notes": {
+    "free": "Základní čtečka zdarma; Premium předplatným nebo jednorázově (22,99 EUR)",
+    "no_account_no_tracking": "Pro místní soubory bez účtu; podle App Storu údaje o používání, diagnostika, identifikátory",
+    "languages_20": "12 jazyků (8 strojově přeložených); nastavení přes jazyk aplikace v macOS",
+    "folder_browsing": "Knihovny jsou obyčejné složky, které přidáte; externí disky a iCloud jen Premium",
+    "list_view": "Knihovna jako mřížka nebo seznam (⌘1 / ⌘2); sloupce neuvedeny",
+    "network_shares_fast": "Import přes SMB a streamování OPDS (Premium); zvládne tisíce komiksů",
+    "bookmarks": "Oblíbená umístění knihovny (Premium), oblíbené, pokračovat ve čtení",
+    "img_svg_pdf": "PDF ano, SVG ne",
+    "zoom_rotate": "Zvětšení, přizpůsobení a vyplnění; otočení neuvedeno",
+    "auto_enhance_view": "Filtry stránek (šum, ostrost, moaré, okraje) jen Premium",
+    "file_info_exif": "Informace o komiksu (⌘I), bez EXIF",
+    "archives_as_folders": "otevře archiv jako komiksovou knihu, ne jako složku",
+    "rename_trash": "Přejmenování a mazání v knihovně",
+    "move_copy": "Kopírování, přesun a vložení v knihovně",
+    "keyboard_first": "Mnoho zkratek pro čtečku i knihovnu",
+    "notarized_attested": "Podepsáno přes Mac App Store; uzavřený kód"
+   }
+  },
+  "path-finder": {
+   "name": "Path Finder",
+   "vendor": "Cocoatech",
+   "summary": "Dlouholetá náhrada Finderu se dvěma panely, moduly (náhled, informace, terminál, Drop Stack), prohlížečem velikostí, hromadným přejmenováním a synchronizací složek. Dobrý pro pokročilé uživatele, kteří chtějí kolem prohlížeče ve stylu Finderu spoustu nástrojů.",
+   "wins": [
+    "Moduly: náhled, informace, terminál, Drop Stack, Git, hex a textový editor",
+    "Prohlížeč velikostí a synchronizace a slučování složek",
+    "Hromadné přejmenování, bezpečné mazání, přístup administrátora",
+    "20 jazyků rozhraní",
+    "Lišta záložek, předvolby karet"
+   ],
+   "price": "Předplatné 29,95 $ ročně nebo 2,95 $ měsíčně, nebo licenční klíč od 32,95 $ (1 rok aktualizací), 55,95 $ (2 roky), 122,95 $ (5 let); 30denní zkušební verze",
+   "version": "26.1.10",
+   "updated": "2026-10-22",
+   "platforms": "macOS",
+   "notes": {
+    "no_account_no_tracking": "Bez údajů o používání; předplatné vyžaduje přihlášení a kontroly online",
+    "thumbnail_grid": "Zobrazení ikon pro obrázky; bez náhledů složek",
+    "regex_search": "Název „odpovídá vzoru“ (zástupné znaky); regulární výrazy neuvedeny",
+    "network_shares_fast": "Rychlejší náhledy na síťových svazcích; obecně o rychlosti nic",
+    "img_modern_formats": "Modul náhledu a Rychlý náhled s kodeky macOS; bez vlastního prohlížeče",
+    "img_raw": "Přes macOS; náhled ARW přidán v 26.1.8",
+    "img_animated": "Animovaný GIF se přehraje v Rychlém náhledu; APNG a WebP neuvedeny",
+    "zoom_rotate": "Jen zvětšení v Rychlém náhledu",
+    "slideshow": "Bez vlastní prezentace; Rychlý náhled ukáže výběr jako prezentaci",
+    "file_info_exif": "Panel informací s rozměry, délkou a metadaty macOS; kodeky a datový tok neuvedeny",
+    "video_mkv_avi_webm": "Náhled WebM přidán; MKV/AVI neuvedeny",
+    "music_mode": "Zvuk jen v náhledu či Rychlém náhledu",
+    "archive_passwords": "Vytvoří a rozbalí ZIP s heslem (AES-128/256)",
+    "dual_pane": "Dva panely, ale kopírování a přesun přes ⌘C/⌘V/⌘X nebo tažením; F5/F6 jen po přiřazení",
+    "batch_convert": "Hromadné přejmenování; bez převodu obrázků",
+    "library_catalog": "Jen štítky a barevné značky Finderu",
+    "cloud_sync": "Napojení na Dropbox, Cloud Uploader, iCloud Drive",
+    "keyboard_first": "Mnoho zkratek, ale rozhraní ve stylu Finderu je na myš",
+    "shortcut_cheatsheet": "Článek podpory uvádí běžné zkratky; tahák k tisku ne"
+   }
+  },
+  "phiewer": {
+   "name": "Phiewer",
+   "vendor": "Thomas Zinnbauer",
+   "summary": "Rychlý prohlížeč médií přívětivý ke klávesnici pro složky s fotkami, RAW, videi a zvukem. PRO přidává Showcases (virtuální alba), hledání duplicit, porovnávací zobrazení, nedestruktivní úpravy, štítky Finderu a vlastní zkratky za nízkou jednorázovou cenu.",
+   "wins": [
+    "Hledání duplicit a porovnání až 9 obrázků",
+    "Showcases: uložená virtuální alba napříč složkami",
+    "Štítky a komentáře Finderu, hledání podle štítků, EXIF a data",
+    "Zvukové soubory a tisk",
+    "Úpravy obrázků (oříznutí, filtry, změna velikosti) v PRO",
+    "Režim kina"
+   ],
+   "price": "Phiewer (lite) zdarma; Phiewer PRO 7,99 $ jednorázově (Mac App Store)",
+   "version": "8",
+   "updated": "2026-11-07",
+   "platforms": "macOS",
+   "notes": {
+    "free": "lite zdarma (procházení, všechny formáty, prezentace, EXIF); vše ostatní PRO, 7,99 $ jednorázově",
+    "no_account_no_tracking": "Bez účtu a reklam; podle App Storu analytika, nepropojená s vámi",
+    "languages_20": "8: EN, DE, FR, ES, PT, IT, NL, PL",
+    "recursive_search": "Název, štítky, komentáře, datum, EXIF (PRO); podsložky lze zahrnout do zobrazení",
+    "img_modern_formats": "HEIC, AVIF, WebP ano; JPEG XL neuvedeno",
+    "img_animated": "GIF a animované WebP; APNG neuvedeno",
+    "slideshow_recursive": "Jen PRO; podsložky a náhodné pořadí; přehraje i videa (lze ztlumit)",
+    "auto_enhance_view": "PRO: filtry a úpravy s odvoláním, jako editace; bez automatického vylepšení zobrazení",
+    "file_info_exif": "EXIF a informace o souboru; kodeky a datový tok neuvedeny",
+    "wrong_extension_note": "pozná obrázek se špatnou příponou a otevře ho; upozornění neuvedeno",
+    "video_mkv_avi_webm": "AVI, MPG, 3GP, MTS, M2TS, TS uvedeny; MKV, WebM, WMV, FLV ne",
+    "video_skim_arrows": "nastavitelný skok (ovládání videa PRO); šipkami neuvedeno",
+    "playback_speed": "ovládání videa PRO",
+    "playlist": "PRO Showcases: virtuální kolekce „jako playlisty“ napříč složkami",
+    "saved_playlists": "PRO Showcases se ukládají",
+    "undo_file_actions": "⌘Z u přesunů přetažením; u přejmenování a koše neuvedeno",
+    "image_editing": "PRO: QuickEdit oříznutí, otočení, převrácení, velikost, komprese, filtry",
+    "batch_convert": "PRO: hromadný export a komprese; hromadné přejmenování neuvedeno",
+    "library_catalog": "Štítky a komentáře Finderu, oblíbené, Showcases; bez katalogové databáze",
+    "cloud_sync": "PRO: sdílení přes nabídku macOS; bez synchronizace",
+    "custom_shortcuts": "jen PRO",
+    "shortcut_cheatsheet": "všechny zkratky v Nastavení > Klávesové zkratky; tahák k tisku ne"
+   }
+  },
+  "photo-mechanic": {
+   "name": "Photo Mechanic",
+   "vendor": "Camera Bits",
+   "summary": "Photo Mechanic je rychlý nástroj na stažení, výběr snímků a metadata pro profesionální fotografy, zvlášť pro zpravodajce, sportovní a svatební fotografy. Otevírá přímo složky a paměťové karty, soubory RAW ukazuje okamžitě z vložených náhledů a je udělaný na popisky, metadata IPTC, klíčová slova, hromadné přejmenování a nahrávání v termínu.",
+   "wins": [
+    "Stahování z více paměťových karet najednou, s přejmenováním a metadaty během kopírování",
+    "Metadata IPTC/XMP, náhradní kódy, proměnné a strukturovaná klíčová slova pro popisky v termínu",
+    "Hodnocení hvězdičkami, barevné třídy a štítky na rychlý výběr z tisíců RAW",
+    "Hromadné přejmenování, Uložit jako, změna velikosti, vodoznak a nahrávání přímo na FTP, Dropbox, S3, PhotoShelter a další",
+    "Hledání a nahrazování regulárními výrazy v názvech souborů i metadatech",
+    "Plně nastavitelné zkratky s předvolbami a zkratky k tisku v PDF",
+    "Verze pro Windows se stejnými funkcemi"
+   ],
+   "price": "Photo Mechanic: 14,99 $ měsíčně, 149 $ ročně nebo 299 $ trvale (1 rok aktualizací); 30denní zkušební verze zdarma. Photo Mechanic Plus (s katalogem, 24,99 $ měsíčně, 249 $ ročně, 399 $ trvale) se od 27. 2. 2026 novým zákazníkům neprodává, obchod ho ale dosud uvádí.",
+   "version": "2026.6 (build 9175), poslední ohlášená na blogu Camera Bits",
+   "updated": "2026-06-18",
+   "platforms": "macOS, Windows",
+   "notes": {
+    "no_account_no_tracking": "Bez reklam; licence se aktivuje a čas od času kontroluje online",
+    "dark_light_setting": "Světlý nebo tmavý motiv pro zprávy a dialogy; pozadí náhledu nastavitelné",
+    "thumbnail_grid": "Mřížka náhledů Contact Sheet; složky ve stromu Navigator, ne jako dlaždice",
+    "recursive_search": "Otevření složky s podsložkami v jednom archu, pak hledání podle názvu či IPTC",
+    "img_psd_exr": "PSD (uložené s maximální kompatibilitou) ano; OpenEXR ne",
+    "zoom_rotate": "Zvětšení a posun v náhledu; otočení zapíše příznak orientace EXIF (nejen zobrazení)",
+    "slideshow_recursive": "Jde přes složku s podsložkami; videa v prezentaci neuvedena",
+    "video_mkv_avi_webm": "AVI uvedeno; MKV, WebM, WMV, FLV ne",
+    "undo_file_actions": "Úpravy > Odvolat na macOS „je-li k dispozici“; pro které akce, neuvedeno",
+    "image_editing": "Oříznutí, otočení, velikost a vodoznak při exportu; pixely v externích editorech",
+    "library_catalog": "Štítky, hvězdičky, barevné třídy, klíčová slova IPTC v souborech; katalog se už neprodává"
+   }
+  },
+  "picasa": {
+   "name": "Picasa",
+   "vendor": "Google",
+   "summary": "Bezplatný organizér a prohlížeč fotek od Googlu, ukončený v březnu 2016 a od roku 2018 offline. Skenoval složky do knihovny se štítky, tvářemi a alby a nabízel jednoduché nedestruktivní opravy a prezentace. Dodnes ho hledá spousta lidí, kteří chtějí jednoduchý, bezplatný, místní prohlížeč fotek.",
+   "wins": [
+    "Rozpoznávání tváří, štítky a alba",
+    "Nedestruktivní opravy jedním kliknutím",
+    "Koláže, tiskové rozvržení a export",
+    "Mnoho dlouholetých uživatelů ho zná"
+   ],
+   "price": "Zdarma (ukončený, bez oficiálního stažení)",
+   "version": "3.9.141.259 (Windows) / 3.9.141.306",
+   "updated": "2015-10-09 (podpora skončila 2016-03-15)",
+   "platforms": "Windows, macOS (Intel, beta), Linux (Wine, starý)"
+  },
+  "picview": {
+   "name": "PicView",
+   "vendor": "Ruben Hyldgaard Negendahl",
+   "summary": "PicView je rychlý, bezplatný open source prohlížeč obrázků pro Windows a macOS postavený na Avalonii. Díky Magick.NET čte prakticky každý obrazový formát, otevírá komiksy a archivy a přidává galerii, karty, oříznutí, hromadnou změnu velikosti a okno s informacemi o obrázku. Velmi přizpůsobitelný, včetně kláves.",
+   "wins": [
+    "Velmi široká podpora obrazových formátů (Magick.NET)",
+    "Vestavěné oříznutí, změna velikosti, převod a hromadná změna velikosti",
+    "Karty s historií pro každou kartu",
+    "Zobrazení dvou obrázků vedle sebe",
+    "Úpravy hodnocení a klíčových slov v EXIF",
+    "Také pro Windows"
+   ],
+   "price": "Zdarma",
+   "version": "5.2.2",
+   "updated": "2026-11-10",
+   "platforms": "macOS, Windows",
+   "notes": {
+    "folder_browsing": "Otevře soubor a listuje jeho složkou s galerií; bez stromu složek",
+    "thumbnail_grid": "Galerie aktuální složky dole nebo přes celé okno; bez náhledů složek",
+    "recursive_search": "Ctrl+F hledá v aktuální složce, volitelně i v podsložkách",
+    "network_shares_fast": "Ve velmi velkých složkách lze galerii skrýt; síť zvlášť neřeší",
+    "bookmarks": "Oblíbené soubory s klávesovými sloty a historie; záložky složek nepotvrzeny",
+    "img_svg_pdf": "SVG ano; PDF neuvedeno",
+    "slideshow_recursive": "Nastavení „zahrnout podsložky“; jen obrázky",
+    "auto_enhance_view": "Efekty (jas, kontrast, filtry) na zobrazení, lze uložit; bez automatického vylepšení",
+    "manga_two_page": "Dva obrázky vedle sebe; pořadí zprava doleva nenalezeno",
+    "move_copy": "Přesun přejmenováním cesty; kopírování souboru; bez přetažení do složek",
+    "library_catalog": "Upraví hodnocení a klíčová slova v EXIF; bez katalogové databáze",
+    "shortcut_cheatsheet": "Seznam zkratek na picview.org; ne tahák k tisku"
+   }
+  },
+  "pixea": {
+   "name": "Pixea",
+   "vendor": "ImageTasks",
+   "summary": "Minimalistický prohlížeč obrázků a videí, z něhož vyrostl editor fotek s maskami, odstraňováním objektů a zvětšením rozlišení. Prochází složky, knihovny fotek a archivy ZIP/CBZ a přehraje MKV s titulky a výběrem zvukové stopy; hledání, řazení a vlastní zkratky vyžadují Pixea Plus.",
+   "wins": [
+    "Editor obrázků s maskami, odstraněním objektů, zvětšením rozlišení a LUT",
+    "Hromadné úpravy a převod",
+    "Vložené titulky, zvuková stopa, rychlost přehrávání",
+    "Otevře knihovny Fotek",
+    "Štítky a hodnocení se soubory XMP",
+    "Hledání duplicit"
+   ],
+   "price": "Zdarma; Pixea Plus 19,99 $ doživotně, 14,99 $ ročně nebo 1,99 $ měsíčně",
+   "version": "8.4.1",
+   "updated": "2026-10-27",
+   "platforms": "macOS",
+   "notes": {
+    "free": "základ zdarma; Pixea Plus 19,99 $ doživotně, 14,99 $ ročně nebo 1,99 $ měsíčně",
+    "dark_light_setting": "Motiv Liquid Glass nebo Classic a barva pozadí; bez přepínání světlý/tmavý",
+    "languages_20": "12: EN, BG, FR, DE, IT, JA, KO, PT, RU, zh-Hans, ES, UK",
+    "recursive_search": "hledání jen v Plus; podsložky do hloubky 1 až 5",
+    "network_shares_fast": "na síťových svazcích lze přeskočit metadata; rychlejší velké složky",
+    "img_psd_exr": "PSD ano; Radiance HDR uvedeno, OpenEXR ne",
+    "slideshow_recursive": "prezentace přes složku a podsložky do hloubky 5, náhodně; fotky i videa dohromady",
+    "auto_enhance_view": "nedestruktivní úpravy lze uložit ve formátu Pixea Image; bez automatického vylepšení zobrazení",
+    "file_info_exif": "Panel EXIF; údaje na obrazovce u videí (Plus); kodeky a datový tok neuvedeny",
+    "video_mkv_avi_webm": "MKV, AVI, WMV, FLV, VOB, RM ano; WebM neuvedeno",
+    "video_skim_arrows": "skok o 10 s/30 s; šipky přejdou na další médium",
+    "archives_as_folders": "jen ZIP; RAR/7z neuvedeny",
+    "comics_cbz_cbr": "jen CBZ",
+    "videos_in_archives": "hledání zahrnuje videa v ZIP; přehrávání ze ZIP neuvedeno",
+    "undo_file_actions": "odvolat a opakovat akce, rozsah neuvedeno",
+    "batch_convert": "zdarma 3 obrázky, Plus bez omezení",
+    "cloud_sync": "tlačítko sdílení; bez synchronizace",
+    "keyboard_first": "zkratky pro procházení, zvětšení, hodnocení",
+    "custom_shortcuts": "jen Plus",
+    "shortcut_cheatsheet": "krátký seznam kláves na webu",
+    "no_network": "Data nejsou shromažďována; na požádání stáhne model ML"
+   }
+  },
+  "potplayer": {
+   "name": "PotPlayer",
+   "vendor": "Kakao",
+   "summary": "PotPlayer je velmi nastavitelný přehrávač pro Windows od Kakao s vestavěnými kodeky, hardwarovým dekódováním, výstupem 3D a 360°, nástroji na titulky včetně převodu řeči na titulky přes Whisper a streamováním. Otevře i statické obrázky a přehrává média přímo z archivů ZIP/RAR.",
+   "wins": [
+    "Obrovské množství nastavení, rendererů a filtrů (madVR, tone mapping HDR, zdvojení snímků)",
+    "Stahování titulků online, překlad titulků a převod řeči na titulky (Whisper)",
+    "Streamování (YouTube, HLS/DASH), TV, DVD a Blu-ray, 3D a 360° VR",
+    "Plně nastavitelné klávesové zkratky a skiny",
+    "Přehrávání hudby s obaly alb, texty, ReplayGain"
+   ],
+   "price": "Zdarma (freeware)",
+   "version": "261021 (sestavení 1.7.x, 21. 10. 2026)",
+   "updated": "2026-10-21",
+   "platforms": "Windows"
+  },
+  "qspace": {
+   "name": "QSpace",
+   "vendor": "Tian Wenda",
+   "summary": "Vícepanelový správce souborů ve stylu Finderu s 12 rozvrženími, pracovními prostory, bohatým přizpůsobením (klávesy, kontextová nabídka, barvy) a hledáním regulárními výrazy. Placená rozšíření přidávají procházení archivů, připojení k serverům a cloudu a pokročilé hromadné přejmenování.",
+   "wins": [
+    "Až 12 rozvržení panelů a uložené pracovní prostory",
+    "Nastavitelné klávesy, kontextové nabídky, lišta a barvy",
+    "Synchronizace složek, kontrolní součty, šablony souborů",
+    "Rychlé akce s obrázky (otočení, převod, odstranění pozadí)",
+    "Sloupce s metadaty videa (snímková frekvence, datový tok)"
+   ],
+   "price": "Jednorázově: QSpace (Mac App Store) 12,99 $, QSpace Pro (přímo) akční cena 13,99 $ (běžně 27,99 $/29,99 $); placená rozšíření: Stash Shelf, Advanced Batch Rename, Server Connections (0,99 $ až 9,99 $), Enhanced Archiver (v akci zdarma, běžně 4,99 $)",
+   "version": "Pro 7.0.4 (Mac App Store 7.0.3; beta 7.0.4.018)",
+   "updated": "2026-10-09",
+   "platforms": "macOS",
+   "notes": {
+    "no_account_no_tracking": "Licence Pro je vázaná na účet (2 zařízení); podle App Storu identifikátory propojené s vámi",
+    "dark_light_setting": "Barevná schémata se světlým a tmavým režimem (beta); samostatný přepínač neuveden",
+    "languages_20": "Asi 14 jazyků (EN, ZH-Hans/Hant, NL, FR, DE, HU, IT, JA, KO, PL, RU, ES, TR)",
+    "img_modern_formats": "Náhled přes macOS; jmenovitě jen HEIC",
+    "zoom_rotate": "Zvětšení v Rychlém náhledu; otočení změní soubor",
+    "slideshow": "Kontextová nabídka „Instant SlideShow“ (Rychlý náhled na celou obrazovku)",
+    "video_mkv_avi_webm": "MKV a podobné přes rozšíření médií v macOS",
+    "music_mode": "Jen obaly zvukových souborů a přehrávání v Rychlém náhledu",
+    "archives_as_folders": "Rozšíření Enhanced Archiver (běžně 4,99 $): RAR, ZIP, 7z jako složky",
+    "comics_cbz_cbr": "Bez čtečky komiksů; seznam přípon archivů lze upravit, takže CBZ/CBR jdou procházet jako archivy",
+    "videos_in_archives": "Volba náhledu v QSpace pro archivy; bez přehrávače",
+    "dual_pane": "Až 12 panelů; kopírování a přesun vlastními klávesami, výchozí F5/F6 ne",
+    "image_editing": "Rychlé akce: otočení, převod, odstranění pozadí, vytvoření PDF",
+    "batch_convert": "Převod obrázků; Advanced Batch Rename je placené rozšíření",
+    "library_catalog": "Jen štítky a komentáře Finderu",
+    "cloud_sync": "Rozšíření Server Connections: FTP, SFTP, Dropbox, OneDrive, Google Drive, S3 …",
+    "app_sandbox": "Verze z Mac App Storu v sandboxu (složky přidat ručně); Pro používá plný přístup k disku"
+   }
+  },
+  "quicktime-player": {
+   "name": "QuickTime Player",
+   "vendor": "Apple",
+   "summary": "Vestavěný přehrávač médií od Applu. Otevře to, co umí přehrát AVFoundation (MP4, MOV, M4V, HEVC, ProRes), s obrazem v obraze, ovládáním rychlosti a jednoduchými úpravami jako zkrácení a rozdělení, k tomu nahrávání obrazovky a zvuku.",
+   "wins": [
+    "Už nainstalovaný, nic se nestahuje",
+    "Nahrávání obrazovky, filmu a zvuku",
+    "Jednoduché úpravy videa: zkrácení, rozdělení, otočení, odstranění zvuku, export",
+    "Obraz v obraze a prostorové video"
+   ],
+   "price": "Zdarma (součást macOS)",
+   "version": "10.5 (macOS 27)",
+   "updated": "součást macOS 27 (2026)",
+   "platforms": "macOS",
+   "notes": {
+    "zoom_rotate": "Jen videa; otočení a převrácení jsou úpravy",
+    "file_info_exif": "Inspektor filmu: formát, komprese, velikost, fps, datový tok; bez EXIF",
+    "video_skim_arrows": "Šipky vlevo/vpravo o snímek; ⌥ a šipky na začátek či konec; bez časových skoků",
+    "music_mode": "Přehraje zvukové soubory po jednom; bez knihovny a fronty",
+    "rename_trash": "Přejmenování otevřeného filmu; bez koše a nové složky",
+    "undo_file_actions": "Odvolání úprav filmu (zkrácení, rozdělení), ne souborových operací",
+    "cloud_sync": "Otevírá soubory na iCloud Drive; nabídka Sdílet",
+    "keyboard_first": "Přehrávání z klávesnice; bez navigace v souborech",
+    "shortcut_cheatsheet": "Seznam zkratek na stránce nápovědy Applu",
+    "no_network": "Může jít online (otevření adresy, sdílení); bez vlastních kontrol aktualizací a telemetrie",
+    "notarized_attested": "Systémová aplikace podepsaná Applem; uzavřený kód"
+   }
+  },
+  "quickviewer": {
+   "name": "QuickViewer",
+   "vendor": "KATO Kanryu",
+   "summary": "Rychlý prohlížeč obrázků a komiksů na OpenGL, který čte archivy bez rozbalování a ukazuje dvoustrany. Má katalogovou databázi pro velké sbírky komiksů. Vývojář projekt v listopadu 2025 kvůli nemoci ukončil; 1.2.8 byla bezpečnostní oprava pro UnRAR.",
+   "wins": [
+    "Katalogová databáze pro tisíce komiksů",
+    "Velmi rychlé přepínání stránek přes OpenGL",
+    "Široká podpora archivů včetně tar.gz/bz2/xz a cab",
+    "Správně zobrazené CMYK JPEG"
+   ],
+   "price": "Zdarma",
+   "version": "1.2.8",
+   "updated": "2025-12-12",
+   "platforms": "Windows, macOS (Intel, do 1.1.1), Linux (do 1.1.1)"
+  },
+  "qview": {
+   "name": "qView",
+   "vendor": "jurplel (Interverse)",
+   "summary": "qView je minimalistický multiplatformní prohlížeč obrázků bez panelů nástrojů: otevře jeden soubor a nechá vás listovat zbytkem složky. Startuje rychle, přednačítá sousední obrázky a díky pluginům Qt podporuje animované obrázky a mnoho formátů.",
+   "wins": [
+    "Extrémně minimalistické okno bez ovládacích prvků",
+    "Běží i na Windows a Linuxu a na starším macOS (sestavení legacy pro 10.13 a novější)",
+    "Krokování snímků a ovládání rychlosti u animovaných obrázků",
+    "Otevření obrázku přímo z URL"
+   ],
+   "price": "Zdarma",
+   "version": "7.1",
+   "updated": "2025-07-26 (vydání; noční sestavení pokračují, poslední 2026-11-04)",
+   "platforms": "macOS, Windows, Linux",
+   "notes": {
+    "dark_light_setting": "Nastavitelná barva pozadí a tmavý titulek okna; bez plného světlého a tmavého motivu",
+    "folder_browsing": "Otevře soubor a listuje jeho složkou; bez prohlížeče složek",
+    "img_svg_pdf": "SVG ano, PDF ne",
+    "file_info_exif": "Informace ukážou velikost a rozměry; bez EXIF",
+    "wrong_extension_note": "Volitelně otevře soubor podle obsahu, ale na nesoulad neupozorní",
+    "rename_trash": "Přejmenování a přesun do koše; bez nové složky",
+    "undo_file_actions": "Jen odvolání smazání (obnovení z koše)"
+   }
+  },
+  "raw-power": {
+   "name": "RAW Power",
+   "vendor": "Gentlemen Coders",
+   "summary": "RAW Power je nedestruktivní editor RAW a JPEG od bývalého vedoucího vývoje Aperture, použitelný samostatně se složkami ve Finderu, jako správce knihovny Fotek nebo jako rozšíření pro úpravy ve Fotkách. Nabízí úpravy ve stylu Aperture, hodnocení a příznaky synchronizované přes Fotky na iCloudu a hromadný export. Uživatele macOS 13 a novějšího výrobce dnes odkazuje na nástupce Nitro Photo.",
+   "wins": [
+    "Nedestruktivní úpravy RAW/JPEG (křivky, LUT, efekt hloubky, Boost)",
+    "Pracuje přímo s knihovnou Fotek a synchronizuje přes Fotky na iCloudu",
+    "Hromadné předvolby a export",
+    "Verze pro iPhone a iPad",
+    "Karty pro více složek"
+   ],
+   "price": "39,99 $ jednorázově v Mac App Storu (web výrobce: 49,99 $ Mac, 9,99 $ iOS; samostatné nákupy)",
+   "version": "3.5.6",
+   "updated": "2026-07-27",
+   "platforms": "macOS, iOS, iPadOS",
+   "notes": {
+    "no_account_no_tracking": "Bez účtu a reklam; podle App Storu údaje o používání (analytika, nepropojená s vámi)",
+    "languages_20": "6: angličtina, francouzština, němčina, španělština, zjednodušená a tradiční čínština",
+    "thumbnail_grid": "Mřížka náhledů s odznaky; náhledy složek neuvedeny",
+    "rename_trash": "Umí mazat obrázky a vytvářet alba a složky; přejmenování neuvedeno",
+    "move_copy": "Uspořádá alba Fotek; přesun a kopírování souborů na disku nepopsány",
+    "keyboard_first": "Zkratky pro hodnocení, příznaky a navigaci; úpravy posuvníky a myší"
+   }
+  },
+  "sequential": {
+   "name": "Sequential",
+   "vendor": "chuchusoft a The Sequential Project",
+   "summary": "Sequential je klasický open source prohlížeč obrázků a komiksů pro Mac, který otevírá složky, PDF a archivy (ZIP/CBZ, RAR/CBR, 7z) a listuje jimi v jednom okně. Fork chuchusoft ho zmodernizoval jako univerzální aplikaci pro macOS 11.4 a novější na Apple silicon; správce říká, že další vývoj je nepravděpodobný. Původní btrask/Sequential byl naposledy aktualizován v roce 2013.",
+   "wins": [
+    "Čte PDF po stránkách s přechodem na stránku a režimem invertovaných barev",
+    "Směr čtení zprava doleva pro mangu",
+    "Pozastavit/pokračovat uloží pozici čtení v archivu",
+    "Mnoho formátů archivů přes XADMaster, včetně rozděleného 7z",
+    "Běží na starším macOS (10.14 Intel / 11.4 Apple silicon)"
+   ],
+   "price": "Zdarma",
+   "version": "2.6.0",
+   "updated": "2024-09-07",
+   "platforms": "macOS",
+   "notes": {
+    "languages_20": "12 lokalizací: de en es fr it ja nl pl pt_BR ru sv zh_TW",
+    "thumbnail_grid": "Náhledy v postranním panelu, ne mřížka",
+    "recursive_search": "Hledání názvů stránek v otevřené složce nebo archivu",
+    "network_shares_fast": "Funguje na připojených serverech; bez zvláštní mezipaměti",
+    "bookmarks": "Pozastavit/pokračovat uloží pozici v dokumentu; bez oblíbených složek",
+    "img_modern_formats": "HEIC/HEIF a WebP uvedeny; AVIF a JPEG XL ne",
+    "img_svg_pdf": "PDF plně (stránky, přechod na stránku); SVG uvedeno, vykreslení podle macOS",
+    "img_animated": "Animovaný GIF (zapnout animaci, pauza mezerníkem); APNG a animované WebP neuvedeny",
+    "slideshow_recursive": "Časovač projde celý strom včetně podsložek a archivů, ale jen obrázky (bez videa)",
+    "file_info_exif": "Inspektor ukáže EXIF a vlastnosti obrázku; bez videa",
+    "streaming_urls": "Bez streamů, ale Soubor > Otevřít URL načte obrázky z internetu",
+    "split_archives": "Rozdělený 7-Zip (.7z.001) od 2.4.0; rozdělené RAR/ZIP neuvedeny",
+    "manga_two_page": "Směr čtení zprava doleva; bez dvoustrany",
+    "rename_trash": "Přesun místních obrázků do koše; bez přejmenování a nové složky",
+    "move_copy": "Uložit obrázky do… je zkopíruje či vybalí; Úpravy > Kopírovat; bez přesunu",
+    "shortcut_cheatsheet": "Nápověda > Klávesové zkratky otevře stránku s klávesami; tahák k tisku ne"
+   }
+  },
+  "simple-comic": {
+   "name": "Simple Comic",
+   "vendor": "Dancing Tortoise Software a komunita Simple Comic",
+   "summary": "Simple Comic je štíhlý, nativní prohlížeč komiksů pro macOS zaměřený na čtení s co nejmenším počtem úkonů. Otevírá CBZ/CBR/CB7, PDF a složky s obrázky jako knihu, s dvoustranami, pořadím mangy zprava doleva a živým textem na stránkách komiksu.",
+   "wins": [
+    "Dvoustrany a režim mangy zprava doleva",
+    "Živý text: výběr, kopírování a předčítání textu na stránkách komiksu",
+    "Vícesvazkové RAR a vnořené archivy se otevřou jako jeden komiks",
+    "Čtení PDF",
+    "Náhledy komiksových archivů ve Finderu přes Rychlý náhled"
+   ],
+   "price": "Zdarma (Mac App Store a GitHub)",
+   "version": "1.12.0 (GitHub, odesláno do App Storu); App Store ukazuje 1.11.0",
+   "updated": "2026-11-11",
+   "platforms": "macOS",
+   "notes": {
+    "languages_20": "9 jazyků (de, en, fr, it, ja, ko, pt, zh-Hans, zh-Hant)",
+    "folder_browsing": "Otevře složku nebo archiv jako jednu knihu, bez navigace ve složkách",
+    "thumbnail_grid": "Přehled náhledů jen ze stránek otevřené knihy",
+    "network_shares_fast": "Archivy na síťových svazcích se na pozadí uloží lokálně; stránky přibývají během načítání",
+    "img_raw": "Přijme každý typ NSImage/ImageIO (na macOS včetně RAW); neuvádí se",
+    "img_psd_exr": "Přijme každý typ NSImage/ImageIO (včetně PSD, OpenEXR); neuvádí se",
+    "img_svg_pdf": "PDF ano (jako kniha); SVG jen pokud ho NSImage zná",
+    "archives_as_folders": "otevře archiv jako komiksovou knihu, ne jako složku",
+    "keyboard_first": "Listování, zvětšení a nabídky klávesnicí; procházení souborů klávesnicí ne",
+    "shortcut_cheatsheet": "Nápověda uvádí klávesy pro navigaci",
+    "no_network": "Verze z Mac App Storu se k síti nepřipojuje; přímá verze kvůli aktualizacím Sparkle ano",
+    "notarized_attested": "Přímá verze notarizovaná; bez veřejné atestace sestavení"
+   }
+  },
+  "smplayer": {
+   "name": "SMPlayer",
+   "vendor": "Ricardo Villalba",
+   "summary": "SMPlayer je bezplatné open source rozhraní v Qt pro mpv a MPlayer, které si pamatuje nastavení pro každý soubor. Nabízí klasické rozhraní přehrávače se skiny, přehrávání z YouTube, stahování z opensubtitles.org, filtry a nastavitelný editor zkratek.",
+   "wins": [
+    "Každý soubor pokračuje se svým nastavením (zvuk, titulky, pozice)",
+    "Přehrávání z YouTube a stahování titulků online",
+    "Uložené playlisty, oblíbené, seznamy TV a rádií",
+    "Skiny a motivy ikon, přes 30 jazyků",
+    "Běží i na Windows a Linuxu"
+   ],
+   "price": "Zdarma",
+   "version": "26.8.29 (sestavení pro macOS 10461, 2026-10-06)",
+   "updated": "2026-10-06",
+   "platforms": "Windows, Linux, macOS",
+   "notes": {
+    "dark_light_setting": "skiny, motivy ikon a styly Qt, bez jednoduchého přepínání světlý/tmavý",
+    "folder_browsing": "Otevřít adresář přidá složku do playlistu (volitelně rekurzivně); bez prohlížeče souborů",
+    "list_view": "tabulka playlistu se sloupci (název, délka …), ne zobrazení složky",
+    "recursive_search": "jen filtr v playlistu",
+    "multiple_windows": "výchozí je jedna instance; lze vypnout",
+    "bookmarks": "oblíbené soubory a URL a záložky ve videu; bez záložek složek",
+    "auto_enhance_view": "ekvalizér videa (Ctrl+E), bez automatického vylepšení",
+    "file_info_exif": "vlastnosti souboru: kodeky, datový tok, stopy; bez EXIF",
+    "music_mode": "přehrává zvukové soubory; kompaktní režim (Ctrl+C), seznam rádií",
+    "shortcut_cheatsheet": "tabulku zkratek v předvolbách lze uložit jako soubor .keys; tahák k tisku ne"
+   }
+  },
+  "tencent-kantu": {
+   "name": "看图 Kantu",
+   "vendor": "Tencent",
+   "summary": "Bezplatný prohlížeč a organizér obrázků od Tencentu pro Mac: prochází složky jako Stažené soubory bez importu, importuje z telefonů a fotoaparátů, třídí podle tváří, míst a data, hledá duplicity a sestavuje vybraná alba. Od roku 2019 se neaktualizuje.",
+   "wins": [
+    "Rozpoznávání tváří, mapa míst, hledání duplicit, vybraná alba",
+    "Import přímo z telefonů, fotoaparátů a zařízení PTP",
+    "Hodnocení a filtry pro velké soubory"
+   ],
+   "price": "Zdarma",
+   "version": "2.5.2",
+   "updated": "2019-11-08",
+   "platforms": "macOS",
+   "notes": {
+    "no_account_no_tracking": "Účet netřeba; volitelné přihlášení WeChat či QQ nahrává alba do cloudu Tencentu",
+    "dark_light_setting": "Tmavý režim od 2.0 (Mojave); nastavení nezávislé na systému neuvedeno",
+    "thumbnail_grid": "Mřížka jako ve Fotkách, panel ukazuje počet obrázků ve složce; bez náhledů složek",
+    "recursive_search": "2.5: hledání obrázků podle názvu, data, místa, scény ve všech umístěních",
+    "bookmarks": "Umístění přidaná ručně v postranním panelu; oblíbené obrázky",
+    "img_modern_formats": "WebP od 1.9.4; HEIC, AVIF, JPEG XL neuvedeny",
+    "img_psd_exr": "Náhled PSD; EXR neuvedeno",
+    "img_animated": "Náhled GIF; APNG a animované WebP neuvedeny",
+    "zoom_rotate": "Zvětšení kolečkem či trackpadem, podle recenzí rozmazané; otočení neuvedeno",
+    "slideshow_recursive": "Vybraná alba přehrají fotky a videa za sebou; ne průchod podsložkami",
+    "file_info_exif": "Zobrazení EXIF; bez informací o kodeku videa",
+    "video_native": "Videa vypíše a filtruje, ale podle recenze každé otevře v samostatném přehrávači",
+    "rename_trash": "Přejmenování, mazání s košem Naposledy smazané; nová složka neuvedena",
+    "undo_file_actions": "Smazané obrázky lze obnovit z Naposledy smazaných",
+    "image_editing": "Bez úprav; položka pro anotace v kontextové nabídce",
+    "cloud_sync": "Přihlášení WeChat/QQ, nahrání alb do cloudu Tencentu, sdílení přes WeChat",
+    "notarized_attested": "Podepsáno přes Mac App Store; bez veřejného kódu"
+   }
+  },
+  "total-commander": {
+   "name": "Total Commander",
+   "vendor": "Ghisler Software",
+   "summary": "Nejznámější ortodoxní (dvoupanelový) správce souborů pro Windows, vyvíjený od roku 1993. Silný v souborových operacích, archivech, FTP, hromadném přejmenování a synchronizaci adresářů, s prohlížečem Lister a pluginy pro obrázky a média.",
+   "wins": [
+    "Dvoupanelová správa souborů: synchronizace adresářů, porovnání, hromadné přejmenování, kontrolní součty",
+    "Vestavěný klient FTP/FTPS",
+    "Obrovský ekosystém pluginů (Lister, archivátory, souborové systémy)",
+    "Přehrávač v Listeru přepíná titulky, zvukové stopy a rychlost",
+    "Běží na Windows od 95 po 11, k tomu bezplatná aplikace pro Android"
+   ],
+   "price": "Shareware: 42 EUR + DPH za licenci (studenti 31,50 EUR), aktualizace zdarma; verze pro Android zdarma",
+   "version": "11.58.1",
+   "updated": "2026-10-29",
+   "platforms": "Windows, Android"
+  },
+  "vidhub": {
+   "name": "VidHub",
+   "vendor": "Oka Apps",
+   "summary": "Knihovna a přehrávač videí pro zařízení Apple ve stylu Infuse: prohledá místní složky, NAS, cloudová úložiště a servery Emby/Jellyfin/Plex, z TMDB sestaví knihovnu s plakáty a synchronizuje postup přes iCloud. Jeden z nejčastěji hodnocených přehrávačů v Mac App Storu (2,8 tisíce hodnocení, USA).",
+   "wins": [
+    "Knihovna filmů a seriálů s plakáty a metadaty",
+    "Synchronizace přes iCloud mezi iPhonem, iPadem, Apple TV a Macem",
+    "Cloudová úložiště, NAS, Emby/Jellyfin/Plex",
+    "Hledání titulků online",
+    "Odesílání přes DLNA, Chromecast, Roku, AirPlay"
+   ],
+   "price": "Zdarma s VIP (jen Mac doživotně 14,99 $; všechna zařízení doživotně 25,99 $ až 39,99 $; 9,99 $ ročně; 1,49 $ měsíčně)",
+   "version": "3.0.3 (Mac)",
+   "updated": "2026-11-04",
+   "platforms": "macOS, iOS, iPadOS, tvOS, visionOS, Android TV",
+   "notes": {
+    "free": "Zdarma s VIP: jen Mac doživotně 14,99 $, všechna zařízení 25,99 $ až 39,99 $, 9,99 $ ročně, 1,49 $ měsíčně",
+    "languages_20": "18 v App Storu",
+    "folder_browsing": "Přidá místní, SMB/WebDAV a cloudové zdroje a zpracuje je do knihovny",
+    "thumbnail_grid": "Stěna plakátů z metadat TMDB, ne náhledy souborů",
+    "recursive_search": "Hledání v knihovně podle názvu souboru a názvu filmu či seriálu",
+    "network_shares_fast": "SMB/CIFS, WebDAV, NAS a mnoho cloudových úložišť; rychlost neznámá",
+    "bookmarks": "Oblíbené (synchronizované přes iCloud)",
+    "auto_enhance_view": "Korekce barev videa, jen video",
+    "streaming_urls": "Cloudová úložiště, servery Emby/Jellyfin/Plex, WebDAV; libovolné URL neuvedeny",
+    "rename_trash": "Přejmenuje soubory v cloudu (i regulárním výrazem); mazání neuvedeno",
+    "batch_convert": "Hromadné přejmenování souborů v cloudu; bez převodu",
+    "notarized_attested": "Podepsáno pro App Store; uzavřený kód"
+   }
+  },
+  "vlc": {
+   "name": "VLC",
+   "vendor": "VideoLAN",
+   "summary": "Nejznámější bezplatný open source přehrávač: přehraje téměř každý soubor, disk nebo stream na každé platformě bez balíčků kodeků. Je to především přehrávač; obrázky ukazuje jako statické snímky na čas a nemá prohlížeč souborů ani mřížku náhledů.",
+   "wins": [
+    "přehraje téměř každý formát, disky (DVD/Blu-ray), síťové streamy a záznamová zařízení",
+    "běží na všech desktopových i mobilních systémech",
+    "titulky ze souborů i online (VLSub), zvukové stopy, rychlost, filtry, převod a streamování ven",
+    "uložené playlisty, hudba, vizualizace",
+    "plně přemapovatelné klávesové zkratky"
+   ],
+   "price": "Zdarma",
+   "version": "3.0.24",
+   "updated": "2026-09-22",
+   "platforms": "macOS, Windows, Linux, iOS, Android a další",
+   "notes": {
+    "dark_light_setting": "macOS: volba tmavého vzhledu rozhraní; Windows/Linux Qt: tmavá paleta",
+    "folder_browsing": "Otevře složku jako playlist; bez skutečného prohlížeče souborů",
+    "list_view": "Playlist s řaditelnými sloupci (název, interpret …), ne seznam souborů",
+    "recursive_search": "Hledání v playlistu filtruje jen položky playlistu",
+    "network_shares_fast": "přehrává přímo z SMB, NFS, SFTP, FTP, UPnP; bez procházení náhledů",
+    "multiple_windows": "Windows/Linux: více instancí, je-li vypnuta „jedna instance“; macOS: jedno okno",
+    "img_modern_formats": "WebP otevře (statický snímek na 10 s); HEIC, AVIF, JPEG XL ne",
+    "img_svg_pdf": "SVG přes dekodér svg (librsvg); bez PDF",
+    "img_animated": "Animované GIFy předá demuxeru FFmpeg; APNG a animované WebP nepotvrzeny",
+    "zoom_rotate": "zvětšení, ořez a otočení videa filtry; bez posunu obrázku",
+    "slideshow": "obrázky v playlistu se ukazují po 10 s",
+    "slideshow_recursive": "otevřená složka se rozbalí i s podsložkami, fotky (po 10 s) a videa v jednom playlistu",
+    "auto_enhance_view": "ruční úpravy a efekty (jas, kontrast, odstín …), bez automatického vylepšení",
+    "file_info_exif": "Informace o médiu: kodeky, datový tok, statistiky; bez EXIF",
+    "video_skim_arrows": "skoky na modifikátor a šipku (macOS ⌘⌃←/→ 3 s, ⌘⌥ 10 s, ⌘⇧ 1 min)",
+    "control_bar_movable": "Na celé obrazovce lze ovládání přetáhnout a drží místo; v okně ne",
+    "archives_as_folders": "libarchive vypíše soubory archivu do playlistu; ne jako procházitelná složka",
+    "split_archives": "kód předá libarchive více svazků; nezdokumentováno",
+    "batch_convert": "Převést/Uložit převede více souborů; bez hromadného přejmenování",
+    "library_catalog": "jednoduchá knihovna médií v panelu playlistu, bez štítků a hodnocení",
+    "keyboard_first": "přehrávání plně klávesami, procházení myší",
+    "boss_key": "akce „Boss key“ (skrýt a pozastavit) existuje, ale nemá výchozí klávesu",
+    "no_network": "Kontroluje aktualizace; stahování metadat online je ve výchozím stavu vypnuté"
+   }
+  },
+  "windows-media-player": {
+   "name": "Windows Media Player",
+   "vendor": "Microsoft",
+   "summary": "Vestavěný přehrávač Windows: aplikace s knihovnou zaměřená hlavně na hudbu, která přehraje i místní videa, s titulky, zvukovými stopami, rychlostí přehrávání, úpravami obrazu, mini přehrávačem a odesíláním na zařízení. Pro HEVC a AV1 potřebuje placené doplňky nebo doplňky z Microsoft Storu a podle recenzí je pomalejší a těžkopádnější než klasický Windows Media Player (starší verze), který Microsoft ponechává jako volitelnou funkci.",
+   "wins": [
+    "Předinstalovaný ve Windows, nic se nenastavuje",
+    "Hudební knihovna s obaly alb, playlisty a ripováním CD",
+    "Mini přehrávač, odesílání na zařízení",
+    "Řídí se nastavením titulků a motivu ve Windows"
+   ],
+   "price": "Součást Windows; HEVC Video Extensions 0,99 $, další kodeky jako doplňky z Microsoft Storu",
+   "version": "Media Player 11.2610.5.0 (Insider, listopad 2026); Windows Media Player Legacy 12",
+   "updated": "2026-11 (poznámky k vydání Insider)",
+   "platforms": "Windows"
+  },
+  "xee": {
+   "name": "Xee³",
+   "vendor": "MacPaw",
+   "summary": "Klasický lehký prohlížeč obrázků pro Mac, který listuje složkami a archivy (ZIP, RAR, 7z, CBZ/CBR) bez rozbalování, s mnoha starými a exotickými formáty. Na theunarchiver.com je stále uveden, ale bez odkazů ke stažení či koupi; poslední sestavení 3.5.4 (prosinec 2021) je jen pro Intel.",
+   "wins": [
+    "Exotické staré formáty (PCX, IFF, MAG, PVR, XBM)",
+    "Rozpoznání autora JPEG podle kvantizačních tabulek",
+    "Zobrazení vrstev PSD",
+    "Bezztrátové oříznutí JPEG"
+   ],
+   "price": "Už se neprodává (dříve placená licence se zkušební verzí; z App Storu stažen)",
+   "version": "3.5.4",
+   "updated": "2021-12-21",
+   "platforms": "macOS",
+   "notes": {
+    "open_source": "Kód Xee 2.x je veřejný; Xee 3 je uzavřený",
+    "bookmarks": "seznam nedávných cílů přesunu a kopírování",
+    "img_modern_formats": "WebP ano; HEIC/AVIF/JPEG XL ne (poslední aktualizace prosinec 2021)",
+    "img_psd_exr": "PSD s vrstvami; OpenEXR neuvedeno",
+    "img_svg_pdf": "jen bitmapy uvnitř PDF; bez SVG",
+    "slideshow_recursive": "Procházení podsložek je volitelné a prezentace jimi projde; jen obrázky, bez videa",
+    "archive_passwords": "Archivy s heslem přibyly v Xee 2.1; pro Xee 3 znovu neuvedeno",
+    "split_archives": "Čte to, co The Unarchiver; vícedílné sady neuvedeny",
+    "image_editing": "oříznutí (bezztrátové JPEG), export",
+    "cloud_sync": "Nabídka Sdílet",
+    "keyboard_first": "procházení klávesnicí; design stavěný na gesta",
+    "app_sandbox": "Verze z App Storu v sandboxu; přímá verze ne (autor doporučoval přímou)"
+   }
+  },
+  "xnview-mp": {
+   "name": "XnView MP",
+   "vendor": "XnSoft",
+   "summary": "XnView MP je dlouholetý multiplatformní prohlížeč a organizér obrázků, který čte přes 500 formátů. Spojuje v jedné aplikaci prohlížeč souborů, prohlížeč obrázků, katalog s kategoriemi a hodnocením, hromadný převodník a jednoduchý editor. Na Macu je to aplikace v Qt, pro soukromé použití zdarma.",
+   "wins": [
+    "Přes 500 obrazových formátů, export do asi 70",
+    "Hromadný převod a hromadné přejmenování s regulárními výrazy",
+    "Katalog s kategoriemi, hodnocením a barevnými štítky",
+    "Úpravy metadat (EXIF, IPTC, XMP)",
+    "Úpravy obrázků, porovnání až 4 obrázků, hledání duplicit",
+    "Běží i na Windows a Linuxu"
+   ],
+   "price": "Zdarma pro soukromé, vzdělávací a neziskové použití; komerční licence 29 EUR (množstevní slevy až na 3,90 EUR)",
+   "version": "1.12.3",
+   "updated": "2026-11-09",
+   "platforms": "macOS, Windows, Linux",
+   "notes": {
+    "free": "Zdarma pro soukromé, vzdělávací a neziskové použití; firmy potřebují licenci (29 EUR)",
+    "regex_search": "Regulární výrazy jen v hromadném přejmenování; hledání souborů se zástupnými znaky",
+    "network_shares_fast": "Funguje na síťových discích, ale changelog tam uvádí pomalost",
+    "multiple_windows": "Karty; lze spustit více instancí",
+    "slideshow_recursive": "Zobrazení souborů z podsložek plní prezentaci, která čeká na videa",
+    "auto_enhance_view": "Automatické úrovně a úpravy jsou editace (po uložení se soubor změní)",
+    "saved_playlists": "Prezentace lze uložit jako soubory .sld (obrázky, se zvukem)",
+    "music_mode": "Uveden multimediální přehrávač; bez hudební knihovny",
+    "dual_pane": "Porovnání až 4 obrázků; F6 přepíná panely; bez režimu dvou složek",
+    "cloud_sync": "Funkce nahrávání na web; bez synchronizace s cloudem"
+   }
+  },
+  "yacreader": {
+   "name": "YACReader",
+   "vendor": "Luis Ángel San Martín",
+   "summary": "YACReader je čtečka komiksů a k ní správce knihovny (YACReaderLibrary) pro velké sbírky, s metadaty z Comic Vine, seznamy ke čtení a domácím serverem pro mobilní aplikace. Čtečka nabízí dvoustranu, režim mangy a plynulé posouvání s úpravami obrazu.",
+   "wins": [
+    "Plnohodnotná knihovna komiksů: metadata z Comic Vine, seznamy ke čtení, chytré seznamy, hodnocení",
+    "Server a aplikace pro iOS/Android se synchronizovaným postupem čtení",
+    "Režim mangy, dvoustrana, plynulé posouvání pro webtoony",
+    "Jas, kontrast a gama pro staré skeny",
+    "12 motivů a editor motivů; přiřaditelné zkratky",
+    "Verze pro Windows a Linux"
+   ],
+   "price": "Desktop i server zdarma (dary); aplikace pro iOS/Android zvlášť",
+   "version": "10.5.1",
+   "updated": "2026-11-13",
+   "platforms": "macOS, Windows, Linux, iOS, Android, Docker/server",
+   "notes": {
+    "languages_20": "14 jazyků (de, en, es, fr, it, ko, nl, pt, pt-PT, ru, tr, zh-CN, zh-HK, zh-TW), volba v aplikaci",
+    "folder_browsing": "Čtečka otevře soubory a složky; procházení jde přes databázi knihovny",
+    "network_shares_fast": "10.5 zrychlila otevírání knihovny na síťových discích; knihovna musí být zaindexovaná",
+    "bookmarks": "Záložky stránek, oblíbené, seznamy ke čtení, štítky",
+    "img_modern_formats": "JPEG, PNG, GIF, TIFF, BMP, WebP; další jen přes ručně nainstalované pluginy Qt",
+    "img_svg_pdf": "PDF ano (pdfium); SVG ne",
+    "archives_as_folders": "otevře archiv jako komiksovou knihu, ne jako složku",
+    "rename_trash": "Přejmenování složek v knihovně a souborů podle metadat; bez koše",
+    "move_copy": "Uspořádání souborů do složek podle metadat (experimentální)",
+    "undo_file_actions": "Uspořádání souborů vede deník a lze ho odvolat; obecné odvolání ne",
+    "batch_convert": "Hromadné přejmenování jen podle metadat; bez převodu formátu",
+    "cloud_sync": "Vlastní server a aplikace synchronizují postup ve vaší síti; bez cloudové služby",
+    "shortcut_cheatsheet": "Dialog zkratek uvádí všechny klávesy; tahák k tisku ne",
+    "notarized_attested": "Sestavení pro macOS notarizovaná; bez atestace sestavení"
+   }
+  }
+ }
+}

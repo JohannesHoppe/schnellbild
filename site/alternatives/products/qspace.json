@@ -1,0 +1,596 @@
+{
+ "name": "QSpace",
+ "short": "QSpace",
+ "vendor": "Tian Wenda (awehunt)",
+ "website": "https://qspace.awehunt.com/",
+ "platforms": [
+  "macOS"
+ ],
+ "mac_available": "yes",
+ "page": "matrix",
+ "section": "files",
+ "price": "One-time: QSpace (MAS) $12.99, QSpace Pro (direct) $13.99 sale price (list $27.99/$29.99); paid extensions: Stash Shelf, Advanced Batch Rename, Server Connections ($0.99-$9.99), Enhanced Archiver (free promo, list $4.99)",
+ "license": "proprietary",
+ "current_version": "Pro 7.0.4 (MAS 7.0.3; beta 7.0.4.018)",
+ "last_update": "2026-10-09",
+ "engine": "macOS Quick Look (side preview)",
+ "category": "file-manager",
+ "summary": "Finder-like multi-pane file manager with 12 layouts, workspaces, heavy customization (hotkeys, context menu, colors) and regex search. Paid extensions add archive browsing, server/cloud connections and advanced batch rename.",
+ "where_it_wins": [
+  "Up to 12 pane layouts and saved workspaces",
+  "Deep customization of hotkeys, context menus, toolbar, colors",
+  "Folder sync, file hashes, file templates",
+  "Quick image actions (rotate, convert, remove background)",
+  "Video metadata columns (frame rate, data rate)"
+ ],
+ "where_schnellbild_wins": [
+  "Free, no paid extensions; archives included",
+  "Real image/video viewer with slideshow and full-size paging",
+  "MKV/AVI/WebM via built-in VLC",
+  "Videos and comics straight from archives",
+  "No account, never online, open source"
+ ],
+ "search_terms": [
+  "qspace mac",
+  "qspace pro",
+  "qspace alternative",
+  "qspace file manager",
+  "qspace vs forklift",
+  "qspace alternative kostenlos"
+ ],
+ "matrix": {
+  "free": {
+   "value": "no",
+   "note": "One-time: MAS $12.99 or Pro $13.99 (sale prices; list $27.99/$29.99), extensions $0.99-$9.99 each; Pro has 30-day trial",
+   "evidence": [
+    "https://qspace.awehunt.com/en-us/pricing.html"
+   ],
+   "how": "docs"
+  },
+  "open_source": {
+   "value": "no",
+   "note": "Proprietary",
+   "evidence": [
+    "https://qspace.awehunt.com/en-us/index.html"
+   ],
+   "how": "docs"
+  },
+  "native_apple_silicon": {
+   "value": "yes",
+   "note": "Supports Intel and Apple chips",
+   "evidence": [
+    "https://qspace.awehunt.com/en-us/index.html"
+   ],
+   "how": "docs"
+  },
+  "no_account_no_tracking": {
+   "value": "partial",
+   "note": "Pro license is tied to an account (2 devices); App Store label: Identifiers linked to you",
+   "evidence": [
+    "https://qspace.awehunt.com/en-us/pricing.html",
+    "https://apps.apple.com/us/app/qspace/id1469774098"
+   ],
+   "how": "store"
+  },
+  "dark_light_setting": {
+   "value": "partial",
+   "note": "Custom color schemes with light/dark modes (beta 7.0.4); separate app appearance switch not documented",
+   "evidence": [
+    "https://qspace.awehunt.com/en-us/changelog.html"
+   ],
+   "how": "changelog"
+  },
+  "languages_20": {
+   "value": "partial",
+   "note": "About 14 languages (EN, ZH-Hans/Hant, NL, FR, DE, HU, IT, JA, KO, PL, RU, ES, TR)",
+   "evidence": [
+    "https://apps.apple.com/us/app/qspace/id1469774098",
+    "https://qspace.awehunt.com/en-us/changelog.html"
+   ],
+   "how": "store"
+  },
+  "folder_browsing": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://qspace.awehunt.com/en-us/index.html"
+   ],
+   "how": "docs"
+  },
+  "thumbnail_grid": {
+   "value": "yes",
+   "note": "Icon view with thumbnails, folder perspective thumbnails; Gallery view in 7.0.4 beta",
+   "evidence": [
+    "https://qspace.awehunt.com/en-us/changelog.html"
+   ],
+   "how": "changelog"
+  },
+  "list_view": {
+   "value": "yes",
+   "note": "List view with many columns incl. frame rate and data rate",
+   "evidence": [
+    "https://qspace.awehunt.com/en-us/changelog.html"
+   ],
+   "how": "changelog"
+  },
+  "recursive_search": {
+   "value": "yes",
+   "note": "Pane search with 'Search in subfolders', plus Spotlight search",
+   "evidence": [
+    "https://qspace.awehunt.com/en-us/guide/search.html"
+   ],
+   "how": "docs"
+  },
+  "regex_search": {
+   "value": "yes",
+   "note": "Pane search: keywords, wildcard or regular expression",
+   "evidence": [
+    "https://qspace.awehunt.com/en-us/guide/search.html"
+   ],
+   "how": "docs"
+  },
+  "network_shares_fast": {
+   "value": "yes",
+   "note": "Option to reduce metadata reads on network volumes (on by default)",
+   "evidence": [
+    "https://qspace.awehunt.com/en-us/changelog.html"
+   ],
+   "how": "changelog"
+  },
+  "multiple_windows": {
+   "value": "yes",
+   "note": "Windows as workspaces, tabs, 12 pane layouts",
+   "evidence": [
+    "https://qspace.awehunt.com/en-us/guide.html",
+    "https://apps.apple.com/us/app/qspace/id1469774098"
+   ],
+   "how": "docs"
+  },
+  "bookmarks": {
+   "value": "yes",
+   "note": "Bookmarks with groups and colors",
+   "evidence": [
+    "https://apps.apple.com/us/app/qspace/id1469774098"
+   ],
+   "how": "store"
+  },
+  "img_modern_formats": {
+   "value": "partial",
+   "note": "Side preview/Quick Look with macOS codecs; only HEIC named (folder thumbnails); AVIF/JXL/WebP not mentioned",
+   "evidence": [
+    "https://qspace.awehunt.com/en-us/changelog.html"
+   ],
+   "how": "changelog"
+  },
+  "img_raw": {
+   "value": "partial",
+   "note": "Would depend on macOS Quick Look/ImageIO; RAW not mentioned. Searched user guide, changelog, App Store page",
+   "evidence": [
+    "https://qspace.awehunt.com/en-us/changelog.html",
+    "https://apps.apple.com/us/app/qspace/id1469774098"
+   ],
+   "how": "unverified"
+  },
+  "img_psd_exr": {
+   "value": "partial",
+   "note": "Would depend on macOS Quick Look/ImageIO; PSD/EXR not mentioned. Searched user guide, changelog, App Store page",
+   "evidence": [
+    "https://qspace.awehunt.com/en-us/changelog.html",
+    "https://apps.apple.com/us/app/qspace/id1469774098"
+   ],
+   "how": "unverified"
+  },
+  "img_svg_pdf": {
+   "value": "yes",
+   "note": "Side preview and Quick Look show PDF and SVG (SVG dimensions, PDF tools in changelog)",
+   "evidence": [
+    "https://qspace.awehunt.com/en-us/changelog.html",
+    "https://apps.apple.com/us/app/qspace/id1469774098"
+   ],
+   "how": "changelog"
+  },
+  "img_animated": {
+   "value": "partial",
+   "note": "Would depend on macOS Quick Look (plays GIF); QSpace docs do not mention animated images. Searched user guide, changelog",
+   "evidence": [
+    "https://qspace.awehunt.com/en-us/changelog.html",
+    "https://support.apple.com/guide/preview/view-an-animated-gifs-frames-prvw1016/mac"
+   ],
+   "how": "unverified"
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "note": "Quick Look and side preview follow the (marked) item while navigating",
+   "evidence": [
+    "https://qspace.awehunt.com/en-us/changelog.html"
+   ],
+   "how": "changelog"
+  },
+  "zoom_rotate": {
+   "value": "partial",
+   "note": "Quick Look zoom; Rotate action changes the file",
+   "evidence": [
+    "https://qspace.awehunt.com/en-us/changelog.html"
+   ],
+   "how": "changelog"
+  },
+  "slideshow": {
+   "value": "partial",
+   "note": "Context menu 'Instant SlideShow' (macOS Quick Look full screen)",
+   "evidence": [
+    "https://qspace.awehunt.com/en-us/changelog.html",
+    "https://support.apple.com/guide/mac-help/preview-a-file-mh14119/mac"
+   ],
+   "how": "changelog"
+  },
+  "slideshow_recursive": {
+   "value": "no",
+   "note": "'Instant SlideShow' runs on the selection; whether it works on subfolder search results is not documented. Searched user guide and changelog",
+   "evidence": [
+    "https://qspace.awehunt.com/en-us/changelog.html"
+   ],
+   "how": "unverified"
+  },
+  "auto_enhance_view": {
+   "value": "no",
+   "note": "No such feature in the user guide, the App Store description or the full changelog; image actions (rotate, flip, convert) change the file",
+   "evidence": [
+    "https://qspace.awehunt.com/en-us/changelog.html",
+    "https://apps.apple.com/us/app/qspace/id1469774098"
+   ],
+   "how": "changelog"
+  },
+  "file_info_exif": {
+   "value": "yes",
+   "note": "Get Info/side preview show video frame rate, data rate, duration",
+   "evidence": [
+    "https://qspace.awehunt.com/en-us/changelog.html"
+   ],
+   "how": "changelog"
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "note": "No such feature in the user guide, the App Store description or the full changelog",
+   "evidence": [
+    "https://qspace.awehunt.com/en-us/changelog.html",
+    "https://qspace.awehunt.com/en-us/guide.html"
+   ],
+   "how": "changelog"
+  },
+  "video_native": {
+   "value": "yes",
+   "note": "Side preview plays videos",
+   "evidence": [
+    "https://qspace.awehunt.com/en-us/changelog.html"
+   ],
+   "how": "changelog"
+  },
+  "video_mkv_avi_webm": {
+   "value": "partial",
+   "note": "Preview relies on macOS media extensions for formats like MKV (changelog fix for 'videos requiring media extensions')",
+   "evidence": [
+    "https://qspace.awehunt.com/en-us/changelog.html"
+   ],
+   "how": "changelog"
+  },
+  "photos_videos_one_grid": {
+   "value": "yes",
+   "note": "Icon/Gallery views show all file types",
+   "evidence": [
+    "https://qspace.awehunt.com/en-us/changelog.html"
+   ],
+   "how": "changelog"
+  },
+  "video_skim_arrows": {
+   "value": "no",
+   "note": "Arrow keys move the selection (Quick Look/side preview follow it), not through the video",
+   "evidence": [
+    "https://qspace.awehunt.com/en-us/changelog.html"
+   ],
+   "how": "changelog"
+  },
+  "subtitles_embedded": {
+   "value": "no",
+   "note": "Not mentioned; subtitle menu of the macOS Quick Look player not documented. Searched user guide, changelog, App Store page",
+   "evidence": [
+    "https://qspace.awehunt.com/en-us/changelog.html",
+    "https://support.apple.com/guide/mac-help/preview-a-file-mh14119/mac"
+   ],
+   "how": "unverified"
+  },
+  "subtitles_external_files": {
+   "value": "no",
+   "note": "Media plays only in the side preview or the macOS Quick Look window; the full changelog has no player settings",
+   "evidence": [
+    "https://qspace.awehunt.com/en-us/changelog.html",
+    "https://qspace.awehunt.com/en-us/guide.html"
+   ],
+   "how": "changelog"
+  },
+  "audio_track_choice": {
+   "value": "no",
+   "note": "Not mentioned; track menu of the macOS Quick Look player not documented. Searched user guide, changelog, App Store page",
+   "evidence": [
+    "https://qspace.awehunt.com/en-us/changelog.html",
+    "https://support.apple.com/guide/mac-help/preview-a-file-mh14119/mac"
+   ],
+   "how": "unverified"
+  },
+  "playback_speed": {
+   "value": "no",
+   "note": "Media plays only in the side preview or the macOS Quick Look window; the full changelog has no player settings",
+   "evidence": [
+    "https://qspace.awehunt.com/en-us/changelog.html",
+    "https://qspace.awehunt.com/en-us/guide.html"
+   ],
+   "how": "changelog"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "note": "Media plays only in the side preview or the macOS Quick Look window; the full changelog has no player settings",
+   "evidence": [
+    "https://qspace.awehunt.com/en-us/changelog.html",
+    "https://qspace.awehunt.com/en-us/guide.html"
+   ],
+   "how": "changelog"
+  },
+  "playlist": {
+   "value": "no",
+   "note": "No such feature in the user guide, the App Store description or the full changelog",
+   "evidence": [
+    "https://qspace.awehunt.com/en-us/changelog.html",
+    "https://qspace.awehunt.com/en-us/guide.html"
+   ],
+   "how": "changelog"
+  },
+  "saved_playlists": {
+   "value": "no",
+   "note": "No such feature in the user guide, the App Store description or the full changelog",
+   "evidence": [
+    "https://qspace.awehunt.com/en-us/changelog.html",
+    "https://qspace.awehunt.com/en-us/guide.html"
+   ],
+   "how": "changelog"
+  },
+  "pip": {
+   "value": "no",
+   "note": "Media plays only in the side preview or the macOS Quick Look window; the full changelog has no player settings",
+   "evidence": [
+    "https://qspace.awehunt.com/en-us/changelog.html",
+    "https://qspace.awehunt.com/en-us/guide.html"
+   ],
+   "how": "changelog"
+  },
+  "music_mode": {
+   "value": "partial",
+   "note": "Audio cover thumbnails and Quick Look playback only",
+   "evidence": [
+    "https://qspace.awehunt.com/en-us/changelog.html"
+   ],
+   "how": "changelog"
+  },
+  "streaming_urls": {
+   "value": "no",
+   "note": "No such feature in the user guide, the App Store description or the full changelog (Server Connections browse files, no streaming URLs)",
+   "evidence": [
+    "https://qspace.awehunt.com/en-us/changelog.html",
+    "https://apps.apple.com/us/app/qspace/id1469774098"
+   ],
+   "how": "changelog"
+  },
+  "online_subtitles": {
+   "value": "no",
+   "note": "No such feature in the user guide, the App Store description or the full changelog",
+   "evidence": [
+    "https://qspace.awehunt.com/en-us/changelog.html",
+    "https://qspace.awehunt.com/en-us/guide.html"
+   ],
+   "how": "changelog"
+  },
+  "video_filters_enhance": {
+   "value": "no",
+   "note": "Media plays only in the side preview or the macOS Quick Look window; the full changelog has no player settings; only rotate/flip MOV/MP4 as a file action",
+   "evidence": [
+    "https://qspace.awehunt.com/en-us/changelog.html"
+   ],
+   "how": "changelog"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "note": "Uses the system's Quick Look and media extensions; installs no Quick Look generator of its own",
+   "evidence": [
+    "https://qspace.awehunt.com/en-us/changelog.html"
+   ],
+   "how": "changelog"
+  },
+  "archives_as_folders": {
+   "value": "partial",
+   "note": "Enhanced Archiver extension (listed 'Free', regular $4.99): browse RAR, ZIP, 7z, TAR … as folders, nested too",
+   "evidence": [
+    "https://qspace.awehunt.com/en-us/guide/extension-enhanced-archiver.html",
+    "https://qspace.awehunt.com/en-us/pricing.html",
+    "https://apps.apple.com/us/app/qspace/id1469774098"
+   ],
+   "how": "docs"
+  },
+  "comics_cbz_cbr": {
+   "value": "partial",
+   "note": "No comic reader; archive extension list is customizable, so CBZ/CBR could be browsed as archives",
+   "evidence": [
+    "https://qspace.awehunt.com/en-us/guide/extension-enhanced-archiver.html"
+   ],
+   "how": "docs"
+  },
+  "archive_passwords": {
+   "value": "yes",
+   "note": "Encrypted archives, automatic password list (extension)",
+   "evidence": [
+    "https://qspace.awehunt.com/en-us/guide/extension-enhanced-archiver.html"
+   ],
+   "how": "docs"
+  },
+  "split_archives": {
+   "value": "yes",
+   "note": "Creates split volumes (extension); extraction of split sets not stated",
+   "evidence": [
+    "https://qspace.awehunt.com/en-us/guide/extension-enhanced-archiver.html",
+    "https://apps.apple.com/us/app/qspace/id1469774098"
+   ],
+   "how": "docs"
+  },
+  "videos_in_archives": {
+   "value": "partial",
+   "note": "'Preview in QSpace' option for archives; no player",
+   "evidence": [
+    "https://qspace.awehunt.com/en-us/guide/extension-enhanced-archiver.html"
+   ],
+   "how": "docs"
+  },
+  "manga_two_page": {
+   "value": "no",
+   "note": "No such feature in the user guide, the App Store description or the full changelog",
+   "evidence": [
+    "https://qspace.awehunt.com/en-us/changelog.html",
+    "https://qspace.awehunt.com/en-us/guide.html"
+   ],
+   "how": "changelog"
+  },
+  "rename_trash": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://apps.apple.com/us/app/qspace/id1469774098"
+   ],
+   "how": "store"
+  },
+  "move_copy": {
+   "value": "yes",
+   "note": "Copy/Move to Pane, drag and drop",
+   "evidence": [
+    "https://qspace.awehunt.com/en-us/guide/multi-pane.html"
+   ],
+   "how": "docs"
+  },
+  "dual_pane": {
+   "value": "partial",
+   "note": "Up to 12 multi-pane layouts; Copy/Move to Pane via custom hotkeys (no F5/F6 defaults stated); Windows key bindings option",
+   "evidence": [
+    "https://qspace.awehunt.com/en-us/guide/multi-pane.html",
+    "https://qspace.awehunt.com/en-us/faq/howto-set-windows-keys.html"
+   ],
+   "how": "docs"
+  },
+  "undo_file_actions": {
+   "value": "yes",
+   "note": "Undo/Redo for file actions",
+   "evidence": [
+    "https://qspace.awehunt.com/en-us/changelog.html"
+   ],
+   "how": "changelog"
+  },
+  "image_editing": {
+   "value": "partial",
+   "note": "Quick actions: rotate, convert image, remove background, create PDF",
+   "evidence": [
+    "https://apps.apple.com/us/app/qspace/id1469774098",
+    "https://qspace.awehunt.com/en-us/changelog.html"
+   ],
+   "how": "store"
+  },
+  "batch_convert": {
+   "value": "partial",
+   "note": "Convert images; Advanced Batch Rename is a paid extension",
+   "evidence": [
+    "https://apps.apple.com/us/app/qspace/id1469774098",
+    "https://qspace.awehunt.com/en-us/changelog.html"
+   ],
+   "how": "store"
+  },
+  "library_catalog": {
+   "value": "partial",
+   "note": "Finder tags and comments only",
+   "evidence": [
+    "https://qspace.awehunt.com/en-us/guide/search.html"
+   ],
+   "how": "docs"
+  },
+  "cloud_sync": {
+   "value": "partial",
+   "note": "Server Connections extension: FTP, SFTP, Dropbox, OneDrive, Google Drive, S3 …",
+   "evidence": [
+    "https://apps.apple.com/us/app/qspace/id1469774098",
+    "https://qspace.awehunt.com/en-us/pricing.html"
+   ],
+   "how": "store"
+  },
+  "keyboard_first": {
+   "value": "yes",
+   "note": "Nearly every action can get a hotkey",
+   "evidence": [
+    "https://qspace.awehunt.com/en-us/guide/hotkeys.html"
+   ],
+   "how": "docs"
+  },
+  "custom_shortcuts": {
+   "value": "yes",
+   "note": "Custom hotkeys in both MAS and Pro",
+   "evidence": [
+    "https://qspace.awehunt.com/en-us/guide/hotkeys.html",
+    "https://qspace.awehunt.com/en-us/faq/differences-between-mas-and-pro.html"
+   ],
+   "how": "docs"
+  },
+  "shortcut_cheatsheet": {
+   "value": "no",
+   "note": "Hotkeys page explains assigning hotkeys but lists no keys; no printable sheet",
+   "evidence": [
+    "https://qspace.awehunt.com/en-us/guide/hotkeys.html"
+   ],
+   "how": "docs"
+  },
+  "boss_key": {
+   "value": "no",
+   "note": "No such feature in the user guide, the App Store description or the full changelog",
+   "evidence": [
+    "https://qspace.awehunt.com/en-us/changelog.html",
+    "https://qspace.awehunt.com/en-us/guide.html"
+   ],
+   "how": "changelog"
+  },
+  "app_sandbox": {
+   "value": "partial",
+   "note": "MAS version is sandboxed (folders must be added manually); Pro version uses Full Disk Access",
+   "evidence": [
+    "https://qspace.awehunt.com/en-us/faq/howto-authorization.html",
+    "https://qspace.awehunt.com/en-us/faq/differences-between-mas-and-pro.html"
+   ],
+   "how": "docs"
+  },
+  "no_network": {
+   "value": "no",
+   "note": "Server/cloud connections, license account",
+   "evidence": [
+    "https://apps.apple.com/us/app/qspace/id1469774098",
+    "https://qspace.awehunt.com/en-us/pricing.html"
+   ],
+   "how": "store"
+  },
+  "notarized_attested": {
+   "value": "no",
+   "note": "Closed source (SHA256 of the DMG published)",
+   "evidence": [
+    "https://qspace.awehunt.com/en-us/index.html"
+   ],
+   "how": "docs"
+  },
+  "mac_app_store": {
+   "value": "yes",
+   "note": "QSpace (MAS, $12.99) with fewer features than QSpace Pro",
+   "evidence": [
+    "https://apps.apple.com/us/app/qspace/id1469774098",
+    "https://qspace.awehunt.com/en-us/faq/differences-between-mas-and-pro.html"
+   ],
+   "how": "store"
+  }
+ }
+}

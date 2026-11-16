@@ -1,0 +1,2375 @@
+{
+ "ui": {
+  "overviewTitle": "Schnellbild som alternativ",
+  "overviewSeoTitle": "Gratis Mac-alternativ til {names} · Schnellbild",
+  "overviewDescription": "Schnellbild sammenlignet med {count} bildefremvisere, videospillere, tegneserielesere og filbehandlere, funksjon for funksjon og med kilder. Gratis, åpen kildekode, for Mac.",
+  "overviewIntro": "<p>Schnellbild er et alternativ med en klar mening. Mapper i stedet for spillelister og bibliotek: Åpne en mappe, så er listen der, og lysbildefremvisningen lager spillelisten selv. Ingenting fra internett, av prinsipp: ingen konto, ingen sporing, ikke noe nettverk i det hele tatt. Og gratis, med egne hurtigtaster inkludert, som noen andre tar betalt for.</p><p>Her ser du hvordan den står seg mot programmene folk leter etter på Mac, med en kilde for hver celle. Der et annet program er bedre, står det.</p>",
+  "overviewNoMac": "Disse kjører bare på Windows (eller ikke lenger på dagens Mac). For hvert av dem: hva brukerne likte, og hvordan Schnellbild gjør det.",
+  "matrixH1": "Et gratis alternativ til {name} for Mac",
+  "matrixSeoTitle": "{name}-alternativ for Mac, gratis · Schnellbild",
+  "matrixDescription": "{name} eller Schnellbild? Sammenlignet funksjon for funksjon, med kilder: hvor {name} er sterkest, og hvor Schnellbild er det. Gratis, åpen kildekode, spiller av MKV, åpner ZIP og RAR som mapper.",
+  "matrixLead": "Schnellbild og {name} side om side: hva hver av dem gjør best, og så hver funksjon med kilde.",
+  "switcherH1": "{name} for Mac? Her er alternativet",
+  "switcherSeoTitle": "{name} for Mac? Et gratis alternativ · Schnellbild",
+  "switcherDescription": "Ser du etter {name} for Mac? Hva {name}-brukere liker, og hvordan Schnellbild gjør det, gratis: mapper, taster, MKV, ZIP og RAR som mapper.",
+  "facts": "{name} i korte trekk",
+  "factPrice": "Pris",
+  "factPlatforms": "Plattformer",
+  "factVersion": "Versjon",
+  "factUpdated": "Sist oppdatert",
+  "aboutTitle": "Hva {name} er god til",
+  "theyWin": "Der {name} er sterkest",
+  "weWin": "Der Schnellbild er sterkest",
+  "matrixTitle": "Funksjon for funksjon",
+  "colFeature": "Funksjon",
+  "legendTitle": "Hva symbolene betyr",
+  "yes": "Ja",
+  "no": "Nei",
+  "partial": "Delvis",
+  "intentional": "Utelatt med vilje",
+  "na": "Ikke aktuelt",
+  "source": "Kilde {n}",
+  "sources": "Kilder",
+  "asOf": "Per november 2026: {name} {version}, Schnellbild {ours}. Kolonnen for {name} bygger på kildene nedenfor, kolonnen for Schnellbild på README og kildekoden.",
+  "leftOut": "Utelatt fordi det mangler en pålitelig kilde om {name}: {count} av {total} funksjoner.",
+  "fileManager": "Schnellbild er ingen fullverdig filbehandler: ingen FTP-, SFTP- eller skytilkoblinger, ingen mappesynkronisering, ingen pakking av arkiver. Den er laget for å se gjennom og sortere bilder og videoer: miniatyrer av alt, to paneler side om side med F5 for å kopiere og F6 for å flytte, og arkiver som åpnes som mapper.",
+  "likedTitle": "Hva {name}-brukere liker, og hvordan det fungerer i Schnellbild",
+  "aheadTitle": "Der {name} fortsatt ligger foran",
+  "purposeTitle": "Utelatt med vilje",
+  "similarTitle": "Lignende alternativer",
+  "allAlternatives": "Alle alternativer",
+  "breadcrumb": "Alternativer",
+  "trademark": "{name} er et produkt fra {vendor}. Alle navn og varemerker tilhører sine eiere; Schnellbild har ingen tilknytning til dem.",
+  "trademarkAll": "Alle produktnavn og varemerker tilhører sine eiere; Schnellbild har ingen tilknytning til dem.",
+  "ctaTitle": "Prøv den med dine egne mapper.",
+  "ctaText": "Gratis, ingen konto, alle funksjoner inkludert.",
+  "keywords": "{name} alternativ, {name} mac, {name} for mac, alternativ til {name} mac, gratis {name}-alternativ, {name} vs Schnellbild, Schnellbild",
+  "listSep": ", "
+ },
+ "sections": {
+  "image": "Bildefremvisere",
+  "video": "Videospillere",
+  "comic": "Tegneserielesere",
+  "files": "Filbehandlere",
+  "photos": "Apple og bildehåndtering",
+  "windows": "Fra Windows"
+ },
+ "jokes": {
+  "image": "Du kom deg over til Mac. Bildene ble med, fingrene husker fortsatt alt, bare {name} ble igjen på den gamle PC-en. Det trenger ikke å bli værende sånn.",
+  "video": "Ny Mac, de samme videoene, og {name} var det eneste som ikke ble med på flyttelasset. MKV-filene dine venter fortsatt.",
+  "comic": "Tegneseriene flyttet til Mac uten å klage. {name} fikk ikke plass i flyttebilen.",
+  "files": "To paneler, funksjonstaster og fingre som har kunnet dette lenger enn noen av kollegene dine har jobbet. Så kom Macen, og {name} kom ikke inn døra.",
+  "photos": "Bildene dine har flyttet til Mac. {name} ble boende hjemme."
+ },
+ "groups": {
+  "basics": "Grunnleggende",
+  "browse": "Blaing",
+  "images": "Bilder",
+  "video": "Videoer",
+  "archives": "Arkiver og tegneserier",
+  "files": "Filer",
+  "keys": "Tastatur",
+  "safety": "Sikkerhet"
+ },
+ "rows": {
+  "free": {
+   "label": "Gratis, alle funksjoner",
+   "how": "Alle funksjoner i den gratis nedlastingen, ingen pro-versjon."
+  },
+  "open_source": {
+   "label": "Åpen kildekode",
+   "how": "MIT-lisens, kildekoden ligger på GitHub."
+  },
+  "native_apple_silicon": {
+   "label": "Kjører direkte på Apple silicon",
+   "how": "Bygget for Apple silicon.",
+   "note": "bare Apple silicon"
+  },
+  "no_account_no_tracking": {
+   "label": "Ingen konto, ingen reklame, ingen sporing",
+   "how": "Ingen konto, ingen reklame, ingen analyse."
+  },
+  "dark_light_setting": {
+   "label": "Lyst eller mørkt, uavhengig av systemet",
+   "how": "Innstillinger (⌘,): som systemet, lys eller mørk."
+  },
+  "languages_20": {
+   "label": "Grensesnitt på mange språk",
+   "how": "20 språk, følger språket på Macen.",
+   "note": "20 språk"
+  },
+  "folder_browsing": {
+   "label": "Blar direkte i mapper, ingen import",
+   "how": "Åpne en mappe med ⌘O eller slipp den på vinduet."
+  },
+  "thumbnail_grid": {
+   "label": "Miniatyrrutenett med mappeforhåndsvisning",
+   "how": "Mapper viser de første bildene sine; mapper uten bilder er grå."
+  },
+  "list_view": {
+   "label": "Listevisning med kolonner",
+   "how": "L bytter mellom rutenett og liste."
+  },
+  "recursive_search": {
+   "label": "Søk i navn gjennom alle undermapper",
+   "how": "Søkefeltet (⌘F) leter i mappen og alle undermappene."
+  },
+  "regex_search": {
+   "label": "Søk med regulære uttrykk",
+   "how": ".* ved søkefeltet tar et regulært uttrykk."
+  },
+  "network_shares_fast": {
+   "label": "Rask på nettverksdisker og i store mapper",
+   "how": "Miniatyrene kommer mens du blar, også på nettverksdisker."
+  },
+  "multiple_windows": {
+   "label": "Flere vinduer",
+   "how": "⌘N åpner et nytt vindu."
+  },
+  "bookmarks": {
+   "label": "Mappebokmerker",
+   "how": "⌘D bokmerker en mappe, ⌃1 … ⌃9 åpner dem."
+  },
+  "img_modern_formats": {
+   "label": "HEIC, AVIF, JPEG XL, WebP",
+   "how": "Gjennom macOS’ egen ImageIO."
+  },
+  "img_raw": {
+   "label": "Kamera-RAW",
+   "how": "RAW-formatene macOS kjenner, fremkalt av macOS.",
+   "note": "modellene macOS kjenner"
+  },
+  "img_psd_exr": {
+   "label": "PSD, OpenEXR",
+   "how": "Vises som alle andre bilder."
+  },
+  "img_svg_pdf": {
+   "label": "SVG og PDF",
+   "how": "Som vektorbilder, alle sidene i en PDF."
+  },
+  "img_animated": {
+   "label": "Animert GIF, PNG, WebP",
+   "how": "De spilles av og kan zoomes og roteres som andre bilder."
+  },
+  "keyboard_paging": {
+   "label": "Bla med tastaturet",
+   "how": "Mellomrom åpner et bilde, ← → blar gjennom mappen."
+  },
+  "zoom_rotate": {
+   "label": "Zoom, panorer, roter (bare visning)",
+   "how": "+ − eller knip for å zoome, ⌥← ⌥→ for å rotere; filen forblir som den er."
+  },
+  "slideshow": {
+   "label": "Lysbildefremvisning",
+   "how": "S starter den, mellomrom setter på pause."
+  },
+  "slideshow_recursive": {
+   "label": "Lysbildefremvisning gjennom alle undermapper, bilder og videoer om hverandre",
+   "how": "Alle undermapper, bilder og videoer om hverandre, i sorteringsrekkefølgen din."
+  },
+  "auto_enhance_view": {
+   "label": "Autoforbedring og skyveknapper uten å endre filen",
+   "how": "E forbedrer, A viser skyveknappene; bare visningen endres."
+  },
+  "file_info_exif": {
+   "label": "Filinfo: EXIF, kodeker, bitrate",
+   "how": "I viser format, kamera, kodeker og bitrate."
+  },
+  "wrong_extension_note": {
+   "label": "Sier fra når filetternavnet ikke stemmer med innholdet",
+   "how": "Filinfoen nevner etternavnet som passer."
+  },
+  "video_native": {
+   "label": "Spiller av MP4, MOV",
+   "how": "Gjennom macOS selv."
+  },
+  "video_mkv_avi_webm": {
+   "label": "Spiller av MKV, WebM, AVI, WMV, FLV",
+   "how": "Gjennom den innebygde VLC-motoren.",
+   "note": "innebygd VLC-motor"
+  },
+  "photos_videos_one_grid": {
+   "label": "Bilder og videoer sammen i ett rutenett",
+   "how": "Ett rutenett for begge, i hver mappe."
+  },
+  "video_skim_arrows": {
+   "label": "Bla gjennom videoer med piltastene",
+   "how": "← → hopper en tidel av videoen, med ⇧ en hundredel."
+  },
+  "subtitles_embedded": {
+   "label": "Undertekster fra selve videoen",
+   "how": "V slår dem på og av, ⌃⌘S velger sporet."
+  },
+  "subtitles_external_files": {
+   "label": "Laster undertekstfiler som ligger ved siden av videoen",
+   "why": "Leser bare selve videoen, ingenting som ligger ved siden av."
+  },
+  "audio_track_choice": {
+   "label": "Velg lydspor",
+   "how": "⌃⌘A eller kontrollinjen."
+  },
+  "playback_speed": {
+   "label": "Avspillingshastighet",
+   "how": "< og > fra 0,5× til 2×, stemmene beholder tonehøyden."
+  },
+  "control_bar_movable": {
+   "label": "Kontrollinje som blir der du setter den",
+   "how": "Dra den i håndtaket: Den blir der for alle videoer."
+  },
+  "playlist": {
+   "label": "Spilleliste",
+   "how": "Listen fra lysbildefremvisningen som sidepanel: endre rekkefølgen, ta ting ut.",
+   "note": "lages underveis fra lysbildefremvisningen, lagres ikke"
+  },
+  "saved_playlists": {
+   "label": "Lagrede spillelister",
+   "why": "Mapper i stedet for spillelister: Lysbildefremvisningen lager listen."
+  },
+  "pip": {
+   "label": "Bilde-i-bilde",
+   "why": "Laget for å se gjennom mapper; til å se noe ved siden av passer en videospiller bedre."
+  },
+  "music_mode": {
+   "label": "Lydfiler, musikkmodus",
+   "why": "Bare bilder og videoer; lydfiler åpnes i sin egen app."
+  },
+  "streaming_urls": {
+   "label": "Spiller av strømmer og adresser fra internett",
+   "why": "Går aldri på nettet, av prinsipp."
+  },
+  "online_subtitles": {
+   "label": "Laster ned undertekster fra internett",
+   "why": "Går aldri på nettet, av prinsipp."
+  },
+  "video_filters_enhance": {
+   "label": "Videojusteringer (lysstyrke, kontrast …)",
+   "how": "De samme skyveknappene som for bilder."
+  },
+  "quicklook_mkv_thumbnails": {
+   "label": "Miniatyrer i Finder og Hurtigvisning for MKV og mer",
+   "how": "MKV, WebM, WMV, FLV og VOB får miniatyrer i Finder.",
+   "note": "MKV, WebM, WMV, FLV, Ogg, VOB"
+  },
+  "archives_as_folders": {
+   "label": "ZIP, RAR, 7z åpnes som mapper",
+   "how": "Åpnes som mapper, ingenting pakkes ut på disken."
+  },
+  "comics_cbz_cbr": {
+   "label": "Tegneserier CBZ, CBR",
+   "how": "CBZ og CBR åpnes som mapper; bla med ← →."
+  },
+  "archive_passwords": {
+   "label": "Passordbeskyttede arkiver",
+   "how": "Spør én gang og husker det.",
+   "note": "ZIP og RAR; krypterte 7z kan ikke åpnes"
+  },
+  "split_archives": {
+   "label": "Arkiver delt i flere deler",
+   "how": "Vises én gang, ved første del."
+  },
+  "videos_in_archives": {
+   "label": "Spiller av videoer rett fra arkiver",
+   "how": "Strømmes rett fra arkivet."
+  },
+  "manga_two_page": {
+   "label": "Dobbeltside, manga fra høyre mot venstre",
+   "why": "Ett bilde om gangen, så stort som vinduet."
+  },
+  "rename_trash": {
+   "label": "Gi nytt navn, papirkurv, ny mappe",
+   "how": "Retur eller F2 gir nytt navn, ⌘⌫ flytter til papirkurven, ⇧⌘N lager en mappe."
+  },
+  "move_copy": {
+   "label": "Flytt og kopier ved å dra til mapper",
+   "how": "Dra rutene til en mappe."
+  },
+  "dual_pane": {
+   "label": "To paneler side om side (F5 kopier, F6 flytt)",
+   "how": "D viser to paneler, F5 kopierer, F6 flytter."
+  },
+  "undo_file_actions": {
+   "label": "Angre nytt navn, flytting, papirkurv",
+   "how": "Øverst i høyreklikkmenyen."
+  },
+  "image_editing": {
+   "label": "Redigerer bilder (beskjær, endre størrelse, lagre)",
+   "why": "Viser bilder uten å endre dem: Filene dine forblir som de er."
+  },
+  "batch_convert": {
+   "label": "Konverter eller gi nytt navn i bunt",
+   "why": "Konvertering og nytt navn i bunt overlater Schnellbild til andre apper."
+  },
+  "library_catalog": {
+   "label": "Bibliotek, katalog, stikkord, vurderinger",
+   "why": "Mapper i stedet for bibliotek: ingenting å importere."
+  },
+  "cloud_sync": {
+   "label": "Skysynkronisering, deling på nett",
+   "why": "Går aldri på nettet, av prinsipp."
+  },
+  "keyboard_first": {
+   "label": "Alt med tastaturet",
+   "how": "Hver handling har en tast."
+  },
+  "custom_shortcuts": {
+   "label": "Egne hurtigtaster",
+   "how": "Velg dine egne taster, gratis, med et oppsett som i Phiewer.",
+   "note": "gratis, med et oppsett som i Phiewer"
+  },
+  "shortcut_cheatsheet": {
+   "label": "Utskriftsvennlig oversikt over alle taster",
+   "how": "F1 viser alle tastene, også for utskrift."
+  },
+  "boss_key": {
+   "label": "Sjefstast (skjul alt med en gang)",
+   "how": "X skjuler alle vinduer og demper alle videoer."
+  },
+  "app_sandbox": {
+   "label": "Kjører i Apples App Sandbox",
+   "how": "Appen og utvidelsene dens kjører i den."
+  },
+  "no_network": {
+   "label": "Går aldri på nettet",
+   "how": "Ingen nettverkstilgang i det hele tatt."
+  },
+  "notarized_attested": {
+   "label": "Notarisert, bevislig bygget fra åpen kildekode",
+   "how": "Hver nedlasting har GitHubs byggattestasjon."
+  },
+  "mac_app_store": {
+   "label": "I Mac App Store",
+   "how": "Snart, for 0,99 € for å støtte utviklingen.",
+   "note": "snart, 0,99 € som støtte"
+  }
+ },
+ "products": {
+  "2345-kantuwang": {
+   "name": "2345看图王",
+   "vendor": "2345.com",
+   "summary": "En av de mest installerte bildefremviserne for Windows i Kina: åpner rundt 98 bildeformater raskt, blant dem PSD, RAW, SVG og AVIF, i tillegg til PDF/OFD og CAD. Den har enkel redigering, buntverktøy, OCR, passbilder og AI-utklipp, noe av det bak et VIP-medlemskap.",
+   "wins": [
+    "Svært mange bildeformater (PSD/PSB, AI, RAW, CAD, OFD)",
+    "Innebygd redigering, buntkonvertering og nytt navn i bunt, OCR, passbilder og utskrift",
+    "Kjent for kinesiske Windows-brukere, hurtigtaster som i ACDSee"
+   ],
+   "price": "Gratis fremviser; VIP-medlemskap for redigering, AI og PDF-ekstra (per måned, per år, livstid)",
+   "version": "13.2",
+   "updated": "2025-09-30 (oppføring i Tencents appbutikk for v13.2; artikler på nettstedet til 2026-10)",
+   "platforms": "Windows"
+  },
+  "5kplayer": {
+   "name": "5KPlayer",
+   "vendor": "Digiarty Software",
+   "summary": "Gratis alt-i-ett-mediespiller for Mac og Windows som spiller av video, musikk, DVD og radio, tar imot AirPlay-speiling, strømmer over DLNA og laster ned videoer fra nettet.",
+   "wins": [
+    "AirPlay-mottaker og opptak av skjermspeiling",
+    "DLNA-server og -avspiller",
+    "Nedlasting av nettvideoer (YouTube osv.)",
+    "Avspilling av DVD og ISO",
+    "Musikkbibliotek, radio, IPTV",
+    "Avspillingshastighet, videoklipping, uttrekk av MP3"
+   ],
+   "price": "Gratis (med reklame, valgfri registrering med e-post)",
+   "version": "6.11",
+   "updated": "2026-01-30",
+   "platforms": "macOS, Windows",
+   "notes": {
+    "list_view": "Bibliotekslister (favoritter, YouTube, DLNA, spilleliste, AirRecord), ingen filkolonner",
+    "bookmarks": "Bokmerker i videoer og favoritter, ikke mappebokmerker",
+    "zoom_rotate": "Roterer og speilvender video 90 grader; viser ikke bilder",
+    "auto_enhance_view": "Videojustering og videoeffekter, bare for video",
+    "file_info_exif": "Medieinfo: kilde, spor, format; ingen EXIF (ingen bilder)",
+    "pip": "Ikke bilde-i-bilde; «Alltid øverst»",
+    "online_subtitles": "Laster ned YouTube-undertekster med videoen; ikke søk etter undertekster til lokale filer",
+    "batch_convert": "Konverterer én video om gangen til MP3/AAC/MP4; full konvertering er et eget betalt produkt",
+    "library_catalog": "Bibliotek med favoritter og spillelister; ingen stikkord eller vurderinger",
+    "cloud_sync": "Ingen skysynkronisering; deler til DLNA- og AirPlay-enheter",
+    "keyboard_first": "Hurtigtaster for avspilling; biblioteket mest med mus",
+    "shortcut_cheatsheet": "Liste over hurtigtaster i brukerveiledningen på nett",
+    "notarized_attested": "Notarisert med Developer ID; lukket kildekode"
+   }
+  },
+  "acdsee": {
+   "name": "ACDSee",
+   "vendor": "ACD Systems",
+   "summary": "Veletablert bildearkiv og RAW-redigering som jobber på eksisterende mapper uten import: katalogdatabase, vurderinger, nøkkelord, AI for ansikter og nøkkelord, ikke-destruktiv fremkalling og buntverktøy. Windows-utgavene spiller også av vanlige videoer og blar i ZIP- og RAR-arkiver; Mac-utgaven er mer begrenset der. Betalt, laget for fotografer som organiserer og redigerer.",
+   "wins": [
+    "Fullt bildearkiv: vurderinger, nøkkelord, kategorier, ansikter, AI-nøkkelord og bildelikhet",
+    "Ikke-destruktiv RAW-redigering med AI-maskering",
+    "Nytt navn, størrelse, konvertering og metadata i bunt",
+    "Finner duplikater",
+    "Generativ AI-redigering",
+    "Windows: blaing i ZIP og RAR og videometadata"
+   ],
+   "price": "Mac 27: $119.99 engangskjøp (forhåndssalg $99.95 til 2026-11-18); Mac App Store: årsabonnement; Windows Home/Professional/Ultimate 2027 engangskjøp eller ACDSee 365-abonnement",
+   "version": "Mac 26.0.3 (Mac 27 slutten av nov. 2026); Windows 2027",
+   "updated": "2026-05-27 (Mac App Store 26.0.3); Windows 2027 lansert 2026-09",
+   "platforms": "macOS, Windows, iOS (følgeapper)",
+   "notes": {
+    "no_account_no_tracking": "Aktivering og abonnement krever acdID-e-post og internett; AI kjører på enheten",
+    "languages_20": "Mac App Store: engelsk, fransk, tysk, japansk; Windows: 10 språk",
+    "network_shares_fast": "Viser nettverksvolumer uten import; indeksering i bakgrunnen",
+    "multiple_windows": "Faner i ett vindu, huskes mellom øktene",
+    "bookmarks": "Faner, lagrede søk; Windows: opptil fem bildekurver",
+    "img_psd_exr": "PSD ja; OpenEXR ikke oppført",
+    "img_svg_pdf": "SVG på Windows; PDF bare i Windows Professional/Ultimate; Mac via Hurtigvisning",
+    "img_animated": "Animert GIF og WebP; ikke animert AVIF",
+    "video_native": "Windows spiller av MP4/MOV/M4V/AVI/WMV; Mac viser videoer i Hurtigvisning",
+    "video_mkv_avi_webm": "Windows: AVI, WMV, ASF; ikke MKV, WebM, FLV",
+    "music_mode": "Windows leser MP3, WAV, WMA, M4A",
+    "archives_as_folders": "Windows: ZIP, RAR (ikke RAR5), TAR, GZ, CAB, ARJ m.fl.; ikke 7z; ikke på Mac",
+    "cloud_sync": "iCloud Drive (Mac), OneDrive (Windows), SendPix-deling, Mobile Sync",
+    "keyboard_first": "Metadata og utsortering med tastatur; ellers mye mus",
+    "app_sandbox": "Utgaven i Mac App Store (krav fra butikken); direkte nedlasting ukjent"
+   }
+  },
+  "adobe-bridge": {
+   "name": "Adobe Bridge",
+   "vendor": "Adobe",
+   "summary": "Adobe Bridge er en gratis ressursbehandler for å bla i mapper med bilder, designfiler og video med forhåndsvisninger. Den har metadata, nøkkelord, vurderinger, samlinger, nytt navn i bunt og eksport, og sender filer videre til Photoshop, Camera Raw og andre Creative Cloud-apper.",
+   "wins": [
+    "Forhåndsvisning av Adobe-formater (PSD, AI, INDD, After Effects, Substance 3D) og PDF",
+    "Full metadataredigering, nøkkelord, etiketter, vurderinger, samlinger og smarte samlinger",
+    "Nytt navn i bunt, eksportpanel og arbeidsflyter for masseomforming",
+    "Samarbeider med Camera Raw, Photoshop, Premiere og Creative Cloud Libraries",
+    "Kontaktark som PDF, publisering til Adobe Stock og Portfolio",
+    "Windows-versjon"
+   ],
+   "price": "Gratis nedlasting med Adobe-konto (via Creative Cloud-appen); redigering i Camera Raw og overføring til Photoshop krever et betalt Creative Cloud-abonnement",
+   "version": "17.0 (november 2026)",
+   "updated": "2026-11-10",
+   "platforms": "macOS, Windows",
+   "notes": {
+    "free": "Gratis med Adobe-konto; RAW i Camera Raw krever betalt Photoshop/Creative Cloud",
+    "network_shares_fast": "Kan bruke innebygde forhåndsvisninger for fart; ellers lager og bufrer den egne",
+    "video_mkv_avi_webm": "FLV, F4V, SWF og det QuickTime støtter; MKV/WebM/AVI ikke nevnt",
+    "music_mode": "Lydfiler forhåndsvises med autoavspilling og gjentakelse",
+    "dual_pane": "Flere innholdspaneler og vinduer side om side; ikke F5/F6",
+    "image_editing": "Hurtighandlinger: beskjær, størrelse, fjern bakgrunn; pikselredigering via Camera Raw/Photoshop (betalt)",
+    "keyboard_first": "Mange hurtigtaster, men arbeidsflyten er bygget for paneler og mus",
+    "shortcut_cheatsheet": "Hjelpeside med hurtigtaster og visuelt hurtigtastpanel; ingen utskriftsark"
+   }
+  },
+  "alsee": {
+   "name": "ALSee",
+   "vendor": "ESTsoft",
+   "summary": "ESTsofts veletablerte koreanske bildefremviser fra ALTools-familien (ALZip, ALYac): blaing med miniatyrer og liste, stor visning og fullskjerm, bilder i arkiver, konvertering, størrelse og rotering i bunt, utskrift og AI-redigering med abonnement (oppskalering, fjerning av bakgrunn, ansiktsmosaikk).",
+   "wins": [
+    "Utskriftsoppsett og rotering, størrelse og konvertering i bunt",
+    "AI-oppskalering, fjerning av bakgrunn, ansiktsmosaikk (abonnement)",
+    "Integrert i hurtigmenyen i Windows Utforsker"
+   ],
+   "price": "Gratis med reklame; AD-ZERO uten reklame 5,900 KRW/måned (alle ALTools); ALTools AI-abonnement for AI-funksjoner",
+   "version": "10.02",
+   "updated": "2026-10-07",
+   "platforms": "Windows"
+  },
+  "apolloone": {
+   "name": "ApolloOne",
+   "vendor": "Anogeissus",
+   "summary": "Rask bildefremviser og utsorteringsverktøy for fotografer som jobber på mapper uten import. Sterk på RAW, HDR, metadata, vurderinger, AF-punkter og buntarbeid; mange funksjoner er fordelt på tre betalte utgaver.",
+   "wins": [
+    "Utsortering: valg, vurderinger, Focus Score, AI-vurdering, stabler",
+    "HDR-visning av RAW og HDR-eksport",
+    "Redigering av EXIF/IPTC/XMP, nøkkelord, GPS-kart",
+    "Import fra minnekort",
+    "Eksterne SRT-undertekster",
+    "Automatisering med AppleScript"
+   ],
+   "price": "Free Edition; Standard $35.99, Pro $59.99, Max $99.99 engangskjøp; eller per år Standard $14.99 / Pro $23.99",
+   "version": "5.1.0",
+   "updated": "2026-10-22",
+   "platforms": "macOS",
+   "notes": {
+    "free": "Free Edition etter 14 dagers Max-prøve; Standard $35.99, Pro $59.99, Max $99.99, eller fra $14.99/år",
+    "no_account_no_tracking": "Ingen konto; bruksdata til analyse, ikke knyttet til deg; AI via Apple Private Cloud Compute",
+    "languages_20": "11: EN, NL, FR, DE, IT, JA, KO, PL, zh-Hans, ES, zh-Hant",
+    "list_view": "Standard: sorterbar tabell med EXIF-kolonner",
+    "regex_search": "Regex-søk i metadata (Pro); filnavn bare med jokertegn",
+    "network_shares_fast": "NAS over SMB fungerer; én anmeldelse nevner 5-10 s per mappe over AFP",
+    "multiple_windows": "Standard: faner og vinduer",
+    "img_psd_exr": "OpenEXR vise/eksportere; PSD ikke nevnt",
+    "img_svg_pdf": "SVG rastreres på forhånd; PDF ikke nevnt",
+    "img_animated": "GIF oppført; animert WebP/PNG ikke nevnt",
+    "auto_enhance_view": "Pro: ikke-destruktive glidebrytere med automatisk tonekurve, lagret som parametere",
+    "video_skim_arrows": "← → bilde for bilde; J/K/L for spoling",
+    "playback_speed": "J/L veksler spolehastighet; ingen fast hastighet",
+    "music_mode": "Apple Music-spillelister bare som bakgrunnsmusikk",
+    "undo_file_actions": "Angre papirkurv mens appen kjører; legg tilbake via valgfritt skript",
+    "image_editing": "Beskjæring (Standard), hurtigredigering og størrelse (Pro)",
+    "batch_convert": "Nytt navn i bunt (Standard); størrelse, konvertering, eksport (Pro)",
+    "cloud_sync": "AirDrop/deling via InstaBake; ingen synkronisering",
+    "custom_shortcuts": "Pro-utgaven"
+   }
+  },
+  "apple-photos": {
+   "name": "Apple Bilder",
+   "vendor": "Apple",
+   "summary": "Apples bildebibliotek med iCloud-synkronisering mellom enhetene. Godt egnet til å organisere og redigere en personlig bildesamling, med gjenkjenning av personer, minner og ikke-destruktiv redigering.",
+   "wins": [
+    "iCloud-synkronisering med iPhone og iPad",
+    "Ikke-destruktiv redigering av bilder og videoer",
+    "Søk etter personer, steder og innhold",
+    "Minner, lysbildefremvisninger med musikk, delte album"
+   ],
+   "price": "Gratis (følger med macOS); iCloud+-lagring for iCloud-bilder koster",
+   "version": "Bilder 12.0 på macOS Golden Gate 27.2.1",
+   "updated": "2026-11-09 (macOS 27.2.1)",
+   "platforms": "macOS, iOS, iPadOS, visionOS",
+   "notes": {
+    "no_account_no_tracking": "Fungerer uten Apple-konto; iCloud krever en; Forbedret visuelt søk sammenligner bilder med Apple",
+    "thumbnail_grid": "Bibliotek etter år, måneder, alle bilder; album, ikke mapper på disken",
+    "recursive_search": "Søker i biblioteket etter innhold, tittel, nøkkelord, dato; ikke filnavn i mapper",
+    "img_psd_exr": "PSD importeres flatet ut (lagene forsvinner); OpenEXR ikke dokumentert",
+    "slideshow_recursive": "Av et utvalg eller album, bilder og videoer; ikke et mappetre",
+    "playback_speed": "Sakte film (1/2, 1/4, 1/5) bare for videoer med høy bildefrekvens",
+    "saved_playlists": "Lagrede lysbildeprosjekter har en ordnet liste med bilder og videoer",
+    "rename_trash": "Slett (Nylig slettet) og titler; ikke nytt filnavn eller mapper på disken",
+    "undo_file_actions": "Angre med ⌘Z og albumet Nylig slettet",
+    "batch_convert": "Eksporterer flere objekter i valgt format; ikke nytt navn i bunt",
+    "keyboard_first": "Mange hurtigtaster, ikke for alt",
+    "custom_shortcuts": "Apphurtigtaster i macOS for menykommandoer",
+    "boss_key": "⌘H skjuler appen; ingen egen sjefstast"
+   }
+  },
+  "apple-preview": {
+   "name": "Apple Forhåndsvisning",
+   "vendor": "Apple",
+   "summary": "Apples innebygde fremviser for PDF og bilder på alle Mac-maskiner. Sterk på PDF, merknader, signering og raske bildefikser som beskjæring, størrelse og formatkonvertering.",
+   "wins": [
+    "Allerede installert på alle Mac-maskiner",
+    "Komplett PDF-verktøy: merknader, signere skjemaer, slå sammen, passordbeskytte",
+    "Bilderedigering: beskjæring, størrelse, fjerning av bakgrunn, konvertering i bunt",
+    "Åpner 3D-filer"
+   ],
+   "price": "Gratis (følger med macOS)",
+   "version": "Forhåndsvisning 11.0 på macOS Golden Gate 27.2.1",
+   "updated": "2026-11-09 (macOS 27.2.1)",
+   "platforms": "macOS",
+   "notes": {
+    "thumbnail_grid": "Miniatyrer/kontaktark av filene eller sidene i ett vindu; ingen mappeforhåndsvisning",
+    "img_svg_pdf": "PDF er kjerneformatet; SVG ikke dokumentert i veiledningen",
+    "img_animated": "Viser bildene i en animert GIF som stillbilder; Apple viser til Hurtigvisning",
+    "slideshow": "Lysbildefremvisning for sidene i en PDF",
+    "manga_two_page": "To sider for PDF; ingen høyre-mot-venstre-modus",
+    "rename_trash": "Nytt navn eller flytting av den åpne filen fra tittelen; ikke papirkurv eller ny mappe",
+    "move_copy": "Dupliser eller eksporter den åpne filen, flytt via tittelen; ingen filbehandling",
+    "cloud_sync": "Åpner og lagrer dokumenter i iCloud Drive",
+    "keyboard_first": "Mange hurtigtaster, men ingen mappenavigering med tastatur",
+    "custom_shortcuts": "Apphurtigtaster i macOS kan endre menykommandoer i alle apper",
+    "boss_key": "Bare ⌘H for hele systemet (skjul app); ingen egen sjefstast"
+   }
+  },
+  "bandiview": {
+   "name": "BandiView",
+   "vendor": "Bandisoft",
+   "summary": "Etterfølgeren til Honeyview fra dem som lager Bandizip: en rask enkeltbildefremviser for Windows 10/11 med arkiv- og tegneserielesing, smart dobbeltside- og webtoon-modus, HDR-utdata og en rask buntkonvertering. Svært populær i Korea for manga og webtoons.",
+   "wins": [
+    "HDR-utdata for HDR-bilder (PRO)",
+    "Webtoon-modus med loddrett stripe og smart dobbeltside for manga",
+    "Clip Studio Paint, HEIC (PRO), mange arkivformater (ALZ, EGG, ISO, ZPAQ …)",
+    "Rask flertrådet buntkonvertering",
+    "Egne taster og museknapper, også i gratisversjonen"
+   ],
+   "price": "Gratis prøveversjon (privat, ikke-kommersiell bruk, reklame, noen funksjoner låst); Professional $39 engangskjøp (1 PC), $58.50 (2 PC), mengderabatt",
+   "version": "8.05",
+   "updated": "2026-11-03",
+   "platforms": "Windows"
+  },
+  "cdisplayex": {
+   "name": "CDisplayEx",
+   "vendor": "Progdigy Software",
+   "summary": "CDisplayEx er en veletablert, lett tegneserieleser for Windows, etterfølgeren til CDisplay, kjent for rask lasting, Lanczos-skalering og taster du kan stille inn fritt. Skrivebordsversjonen utvikles ikke lenger; arbeidet fortsetter i Android-appen.",
+   "wins": [
+    "Hver funksjon kan legges på egne taster",
+    "Automatisk fargekorrigering og gamma for gamle skanninger",
+    "Dobbeltside og japansk modus (høyre mot venstre)",
+    "Miniatyrer av tegneseriefiler i Utforsker på Windows"
+   ],
+   "price": "Gratis på skrivebordet; Android Lite (reklame) og Premium (betalt)",
+   "version": "1.10.33 (skrivebord)",
+   "updated": "2015-06-20 (skrivebord; utvikleren sier at skrivebordsversjonen ikke utvikles lenger)",
+   "platforms": "Windows, Android"
+  },
+  "cisdem-video-player": {
+   "name": "Cisdem Video Player",
+   "vendor": "Cisdem",
+   "summary": "Gratis, lett videospiller for Mac til MKV, AVI, WMV, WebM og 4K/8K-filer, med spilleliste, bytte av undertekster og lydspor og en modus med egne vinduer. Konvertering til andre formater er et betalt tillegg.",
+   "wins": [
+    "Videokonvertering med forhåndsinnstillinger for enheter (betalt)",
+    "Egne vinduer for video, kontroller og spilleliste",
+    "Husker spillelisten og posisjonen",
+    "Kapitler, miniskjerm, inkognitomodus",
+    "Windows-versjon"
+   ],
+   "price": "Gratis avspilling; konvertering $19.99 engangskjøp eller $9.99/år",
+   "version": "6.0.0",
+   "updated": "2025-07-22",
+   "platforms": "macOS, Windows",
+   "notes": {
+    "free": "Avspilling gratis; konvertering som kjøp i appen, $19.99 eller $9.99/år",
+    "no_account_no_tracking": "Personvernetikett «Ingen data samles inn»; en anmeldelse nevner oppgraderingsvinduer",
+    "folder_browsing": "Importerer en mappe til spillelisten",
+    "zoom_rotate": "Roterer og speilvender video",
+    "saved_playlists": "Husker siste spilleliste og posisjon; ingen navngitte spillelister",
+    "pip": "Miniskjerm, ikke systemets bilde-i-bilde",
+    "batch_convert": "Videokonvertering (MP4, HEVC, MKV, MP3 …) som betalt kjøp i appen",
+    "keyboard_first": "Hurtigtaster for avspilling, volum, trinnvis",
+    "shortcut_cheatsheet": "Tabell over hurtigtaster i brukerveiledningen på nett",
+    "notarized_attested": "Signert via App Store; lukket kildekode"
+   }
+  },
+  "commander-one": {
+   "name": "Commander One",
+   "vendor": "Electronic Team",
+   "summary": "Filbehandler med to paneler i stil med Total Commander for macOS, med funksjonstaster, regex-søk, innebygd F3-fremviser (tekst, heks, bilde, medier) og arkivhåndtering. PRO Pack legger til RAR/7z, FTP/SFTP, skytjenester, terminal og temaer.",
+   "wins": [
+    "Klassisk commander-arbeidsflyt med F-taster og kø for operasjoner",
+    "Regex- og innholdssøk, også i arkiver og på FTP",
+    "PRO: FTP/SFTP og mange skytjenester, MTP/iOS/Android-enheter",
+    "Innebygd fremviser for heks, tekst og binært",
+    "Prosessvisning, terminal (PRO)"
+   ],
+   "price": "Gratisversjon; PRO Pack $29.99 personlig (1 Mac) eller $99.99 team (5 Mac-er), engangskjøp; MAS: gratis med kjøp i appen eller «Commander One PRO» $29.99",
+   "version": "3.18 (4006)",
+   "updated": "2026-09-25",
+   "platforms": "macOS",
+   "notes": {
+    "free": "Gratisversjon (to paneler, bare ZIP); PRO Pack $29.99, engangskjøp",
+    "languages_20": "14 språk; språket kan velges",
+    "thumbnail_grid": "Visning med miniatyrer; ingen mappeforhåndsvisning",
+    "network_shares_fast": "SMB, FTP og sky støttes; ingenting sagt om fart",
+    "img_modern_formats": "Via Hurtigvisning/fremviser med macOS-kodeker; ingen egen bildefremviser",
+    "img_raw": "Via fremviser og Hurtigvisning, altså macOS’ RAW-støtte; ingen egen dekoder",
+    "keyboard_paging": "Via Hurtigvisning (F3), piltastene blar i utvalget",
+    "zoom_rotate": "Zoom bare i Hurtigvisning (⌘+/⌘−); F3-bildemodus uten dokumentert zoom",
+    "file_info_exif": "Vis info: størrelse, datoer, tillatelser; EXIF/kodeker ikke dokumentert",
+    "wrong_extension_note": "Fremviseren gjenkjenner formatet etter innhold, men sier ikke fra",
+    "photos_videos_one_grid": "Miniatyrvisning for alle filer; ingen mappeforhåndsvisning",
+    "music_mode": "Medievisning spiller lyd via Hurtigvisning",
+    "archives_as_folders": "Gratis: bare ZIP; PRO ($29.99): 7z, TAR lese/skrive, RAR/ISO/XAR bare lese",
+    "videos_in_archives": "Forhåndsvisning i arkiver uten utpakking (Hurtigvisning), ingen spiller",
+    "library_catalog": "Bare Finder-stikkord",
+    "cloud_sync": "Bare PRO: Dropbox, Google Drive, OneDrive, S3, WebDAV, FTP/SFTP osv.",
+    "shortcut_cheatsheet": "Liste over hurtigtaster i innstillingene; ikke for utskrift",
+    "app_sandbox": "Versjonen i Mac App Store er i sandkasse (med begrensninger); PRO fra nettstedet ikke"
+   }
+  },
+  "cooviewer": {
+   "name": "cooViewer",
+   "vendor": "coo og ysmx-forken",
+   "summary": "Veletablert japansk manga- og tegneserieleser for Mac, nå holdt i live som en aktivt oppdatert fork med åpen kildekode og universell binærfil. Åpner mapper, PDF-er og nesten alle arkiver (ZIP, RAR, 7z, LHA, delte og passordbeskyttede) som en bok, med oppslag fra høyre mot venstre, sidebokmerker, fritt valgbare taster og musehandlinger, og Finder-miniatyrer for tegneseriearkiver.",
+   "wins": [
+    "Mangaleser: dobbeltsider fra høyre mot venstre med automatisk enkeltsidegjenkjenning, lagret per bok",
+    "Navngitte sidebokmerker og siste side husket per bok",
+    "Alle taster og musehandlinger kan velges, standardoppsett for én hånd",
+    "Åpner svært mange arkivformater, også delte RAR/ZIP og passordbeskyttede arkiver",
+    "Core Image-filtre på visningen, lupe",
+    "Finder-miniatyrer og Hurtigvisning for CBZ/CBR/ZIP/RAR/7z"
+   ],
+   "price": "Gratis",
+   "version": "1.7.1 (ysmx-fork); den opprinnelige coo-ona-utgaven stoppet på 1.2b25 (2020)",
+   "updated": "2026-10-30",
+   "platforms": "macOS",
+   "notes": {
+    "dark_light_setting": "Egne farger for bakgrunn og sidelinje; ikke lyst/mørkt tema",
+    "thumbnail_grid": "Rutenett med sidene i boken; ingen mappeforhåndsvisning",
+    "network_shares_fast": "Laster mapper med mange undermapper/arkiver gradvis; nettverksdisker ikke nevnt",
+    "bookmarks": "Navngitte sidebokmerker per bok og nylige bøker; ingen mappefavoritter",
+    "img_modern_formats": "HEIC/HEIF, WebP, AVIF; JPEG XL ikke oppført",
+    "img_psd_exr": "PSD ja; OpenEXR ikke oppført",
+    "img_svg_pdf": "PDF ja (sider som bok); SVG ikke oppført",
+    "slideshow_recursive": "Med «Les nestede mapper» kommer undermapper med; bare bilder, ingen videoer",
+    "auto_enhance_view": "Manuelle farge- og skarphetsfiltre på visningen; ingen autoforbedring",
+    "archives_as_folders": "Åpner et arkiv som tegneseriebok, ikke som mappe",
+    "rename_trash": "Flytt venstre/høyre sidebilde til papirkurven; ikke nytt navn eller ny mappe",
+    "shortcut_cheatsheet": "Tastetabell i nettmanualen (japansk); ingen oversikt i appen",
+    "boss_key": "Esc lukker boken med en gang; ingen tast som skjuler alt"
+   }
+  },
+  "digikam": {
+   "name": "digiKam",
+   "vendor": "KDEs digiKam-team",
+   "summary": "digiKam er en komplett bildehåndteringspakke med åpen kildekode fra KDE for store samlinger. Den indekserer mapper i en database og har stikkord, ansiktsgjenkjenning, geoposisjon, likhetssøk, en dyktig bilderedigerer, buntbehandling og mange eksportmål.",
+   "wins": [
+    "Database med stikkord, etiketter, ansiktsgjenkjenning, likhets- og duplikatsøk, kart og tidslinje",
+    "Søk med naturlig språk og avansert søk i alle samlinger",
+    "Full bilderedigerer og Batch Queue Manager med versjoner",
+    "RAW-behandling via LibRaw, 16 bit og fargestyring",
+    "Styring av avspillingshastighet og bilde for bilde i video",
+    "Mange eksportmål (Dropbox, OneDrive, Flickr, Piwigo, HTML-gallerier) og DLNA",
+    "Gratis, åpen kildekode, kjører også på Linux og Windows"
+   ],
+   "price": "Gratis",
+   "version": "9.1.0",
+   "updated": "2026-06-07",
+   "platforms": "macOS, Windows, Linux",
+   "notes": {
+    "folder_browsing": "Album er ekte mapper, men hver må legges til og skannes inn i en database først",
+    "thumbnail_grid": "Miniatyrer av objekter; mapper bare i albumtreet",
+    "network_shares_fast": "Nettverksdisker fungerer, men skanningen kan være treg",
+    "multiple_windows": "Ett hovedvindu og egne vinduer for lysbord, redigering og oversikt",
+    "img_animated": "GIF og WebP som stillbilder; MNG spilles som video",
+    "zoom_rotate": "Zoom og panorering i visningen; rotering endrer filen eller EXIF-feltet",
+    "music_mode": "Lydfiler (MP3, FLAC, OGG …) med en enkel lydspiller",
+    "undo_file_actions": "Sletting går til digiKams papirkurv (kan gjenopprettes); angre nytt navn/flytting ikke dokumentert",
+    "keyboard_first": "Mange hurtigtaster, men mye skjer i sidepaneler med mus",
+    "notarized_attested": "Åpen kildekode; nedlastinger GnuPG-signert; notarisering og reproduserbare bygg ikke dokumentert"
+   }
+  },
+  "directory-opus": {
+   "name": "Directory Opus",
+   "vendor": "GP Software",
+   "summary": "En svært tilpassbar erstatning for Utforsker i Windows med ett eller to paneler, faner, etiketter, vurderinger, stikkord, en fremviserrute og en egen bildefremviser med lysbildefremvisning. Sterk på søk, synkronisering, duplikater, nytt navn i bunt og bildekonvertering, med full skripting.",
+   "wins": [
+    "Enorm tilpasning og skripting",
+    "Angrelogg for filoperasjoner",
+    "Etiketter, vurderinger, stikkord, metadataredigering",
+    "Bildekonvertering og nytt navn i bunt",
+    "Duplikatsøk, synkronisering, integrasjon med Everything",
+    "Lysbildefremvisning med overtoning"
+   ],
+   "price": "AUD 89 én PC, AUD 129 to, AUD 249 fem PC-er; ett år med oppdateringer, deretter AUD 25/40/75 per år; 30 dagers prøve (60 med registrering)",
+   "version": "13.25",
+   "updated": "2026-08-21",
+   "platforms": "Windows"
+  },
+  "double-commander": {
+   "name": "Double Commander",
+   "vendor": "Alexander Koblov med bidragsytere",
+   "summary": "Gratis filbehandler med to paneler og åpen kildekode, inspirert av Total Commander, også av utvidelsesgrensesnittet. Kjører direkte på Apple silicon, med faner, filsøk med regex, nytt navn for mange filer, arkiver som mapper og en innebygd fremviser for tekst og bilder.",
+   "wins": [
+    "Full filbehandler i Total Commander-stil på Mac: synkroniser mapper, nytt navn i bunt, sjekksummer, FTP/SFTP",
+    "Kjører Total Commander-utvidelser (WCX/WDX/WFX/WLX)",
+    "For flere plattformer (macOS, Windows, Linux)",
+    "Fremviseren kan beskjære, endre størrelse og lagre bilder",
+    "Lua-skripting og tilpasning av verktøylinjen"
+   ],
+   "price": "Gratis",
+   "version": "1.2.11",
+   "updated": "2026-11-08",
+   "platforms": "macOS, Windows, Linux, FreeBSD",
+   "notes": {
+    "thumbnail_grid": "Miniatyrvisning (Hurtigvisning på macOS); mapper som symboler, ingen forhåndsvisning",
+    "network_shares_fast": "Nettverkstilgang via SMB og utvidelser; fart ikke dokumentert",
+    "multiple_windows": "Faner i to paneler; fremviser og redigering i egne vinduer",
+    "img_modern_formats": "På macOS via den medfølgende Hurtigvisning-utvidelsen",
+    "img_raw": "Windows via WIC-kodeker; macOS via Hurtigvisning-utvidelse",
+    "img_psd_exr": "PSD innebygd; OpenEXR ikke oppført",
+    "img_svg_pdf": "SVG innebygd; PDF via Hurtigvisning-utvidelse på macOS eller andre utvidelser",
+    "img_animated": "Animert GIF med bildekontroller; APNG/animert WebP ikke oppført",
+    "slideshow": "Bare i fremviseren i fullskjerm, gjeldende mappe, 1 til 25 s per bilde",
+    "file_info_exif": "Innebygd Exif-utvidelse (JPEG: dato, størrelse, retning, kamera)",
+    "video_native": "Ingen egen spiller: via utvidelser (Hurtigvisning, WMP, MPlayer)",
+    "video_mkv_avi_webm": "På macOS bare det Hurtigvisning spiller av",
+    "photos_videos_one_grid": "Miniatyrvisning med systemets miniatyrer (Hurtigvisning på macOS)",
+    "music_mode": "Spiller én lydfil om gangen i fremviseren",
+    "archives_as_folders": "ZIP, TAR, GZ innebygd, RAR via UnRAR-utvidelse; 7z krever ekstern 7zz på macOS",
+    "comics_cbz_cbr": "Ingen tegneserieleser; CBZ og CBR åpnes som mapper når de er knyttet til utvidelsene",
+    "archive_passwords": "Passord støttes, avhengig av format",
+    "split_archives": "RAR i flere deler via UnRAR-utvidelsen",
+    "videos_in_archives": "F3 pakker ut filen til en midlertidig mappe og åpner den",
+    "batch_convert": "Nytt navn i bunt ja; ingen bildekonvertering i bunt",
+    "library_catalog": "Filkommentarer i descript.ion; Finder-stikkord på macOS; ingen vurderinger",
+    "cloud_sync": "iCloud Drive og MacCloud-utvidelse (OAuth/S3), FTP/SFTP; ingen synkronisering",
+    "shortcut_cheatsheet": "Side om tastaturoppsett i dokumentasjonen; ikke for utskrift"
+   }
+  },
+  "elmedia-player": {
+   "name": "Elmedia Player",
+   "vendor": "Electronic Team",
+   "summary": "En allsidig mediespiller for video og musikk med mange formater, søk i OpenSubtitles, equalizer og god strømming til AirPlay-, Chromecast-, DLNA- og Roku-enheter. Avanserte funksjoner som bilde-i-bilde og bildejusteringer er PRO.",
+   "wins": [
+    "Strømming til smart-TV, Chromecast, Roku, DLNA; AirPlay-mottaker",
+    "Musikkavspilling med equalizer og visualisering",
+    "Nettvideo og søk i OpenSubtitles",
+    "Eget flyttbart kontrollvindu, fargetemaer, egne hurtigtaster"
+   ],
+   "price": "Gratis; PRO-funksjoner via versjonen i Mac App Store til $19.99 eller en direkte PRO-lisens (prisen vises ikke uten skript)",
+   "version": "8.24 (3472)",
+   "updated": "2025-12-05",
+   "platforms": "macOS",
+   "notes": {
+    "free": "Gratis avspilling; PRO (justeringer, bilde-i-bilde, strømming til TV) $19.99",
+    "languages_20": "12 språk; grensesnittspråket kan velges i appen",
+    "folder_browsing": "Mapper kan legges til spillelisten; ingen blaing",
+    "zoom_rotate": "Bare video: roter, snu, speilvend, sideforhold",
+    "auto_enhance_view": "Bare video, PRO",
+    "file_info_exif": "Vindu > Medieinfo (⌘I); ingen EXIF",
+    "pip": "Bare PRO",
+    "video_filters_enhance": "Lysstyrke, kontrast, metning; PRO",
+    "keyboard_first": "Egne hurtigtaster for avspilling",
+    "app_sandbox": "Versjonen i Mac App Store er i sandkasse; nettversjonen ukjent"
+   }
+  },
+  "fastrawviewer": {
+   "name": "FastRawViewer",
+   "vendor": "LibRaw",
+   "summary": "FastRawViewer er en rask RAW-fremviser og utsorteringsverktøy for fotografer. Den viser de faktiske RAW-dataene med RAW-histogram, eksponeringsvarsler og raske korreksjoner av hvitbalanse og eksponering lagret i XMP, og lar deg vurdere, merke, filtrere, gi nytt navn, kopiere og flytte bilder uten katalog.",
+   "wins": [
+    "Nøyaktig RAW-gjengivelse med RAW-histogram, over- og undereksponering og fokusmarkering",
+    "Vurderinger, etiketter og XMP som fungerer med Lightroom og andre RAW-konverterere",
+    "Filnavnfilter med PCRE-regex",
+    "Sammenligning av 2 eller 4 bilder med synkronisert zoom",
+    "Fullt tilpassbare hurtigtaster, tasteoppsett som etterligner andre apper",
+    "Tilpasset NAS og trege medier",
+    "Finnes også for Windows"
+   ],
+   "price": "$23.99 engangskjøp (salgspris nov. 2026, 25 % rabatt; 2 maskiner per lisens), 30 dagers prøve",
+   "version": "2.0.11 (build 2088)",
+   "updated": "2026 (2.0.11 gjeldende i nov. 2026; leverandøren oppgir ingen lanseringsdato)",
+   "platforms": "macOS, Windows",
+   "notes": {
+    "no_account_no_tracking": "Ingen konto eller reklame; aktiveringen kontakter leverandøren én gang",
+    "dark_light_setting": "Mørkt grensesnitt; farger kan justeres, ingen lys/mørk-bryter",
+    "thumbnail_grid": "Rutenett med filer; mapper i et mappetre, ikke som forhåndsvisninger",
+    "recursive_search": "Filnavnfilter (også PCRE) på listen; undermapper via «Åpne mappe med undermapper»",
+    "multiple_windows": "Ett vindu på Mac; «flere vinduer» er en sammenligning av 2 eller 4",
+    "img_modern_formats": "HEIC/HEIF ja; ikke AVIF, JPEG XL, WebP",
+    "slideshow": "Enkel lysbildefremvisning med tidsintervall, ingen overganger",
+    "slideshow_recursive": "Fungerer med undermapper; bare bilder, ingen videoer",
+    "wrong_extension_note": "Kan gjenkjenne filtypen etter innhold; ingen tydelig advarsel",
+    "image_editing": "Bare eksponering, hvitbalanse, kontrast, retning lagret i XMP; ingen beskjæring eller størrelse",
+    "batch_convert": "Nytt navn i bunt ja; ingen formatkonvertering",
+    "library_catalog": "Vurderinger, etiketter, titler i XMP-filer, filtrering; ingen database",
+    "shortcut_cheatsheet": "PDF med standardtaster for Windows; ingen for Mac"
+   }
+  },
+  "faststone-image-viewer": {
+   "name": "FastStone Image Viewer",
+   "vendor": "FastStone Soft",
+   "summary": "FastStone Image Viewer er en veletablert bildeblar for Windows med mappetre som i Utforsker, en fullskjermmodus med paneler som glir inn og mange redigerings- og buntverktøy. Den spiller også av videoer gjennom Windows’ kodeker og lagrer stikkord og vurderinger i sin egen database.",
+   "wins": [
+    "Redigeringsverktøy: kurver, nivåer, klonestempel, reparasjonspensel, røde øyne",
+    "Sammenligner opptil fire bilder side om side",
+    "Konvertering og nytt navn i bunt, kontaktark, utskriftsoppsett",
+    "Stikkord og vurdering med 1 til 5 stjerner",
+    "Støtte for skanner og skjermbilder",
+    "Lysbildefremvisning med musikk og over 150 overganger"
+   ],
+   "price": "Gratis for privat bruk og undervisning; kommersielt US$34.95 engangskjøp, familie US$69.95 (5 PC-er)",
+   "version": "8.5",
+   "updated": "2026-06-24",
+   "platforms": "Windows"
+  },
+  "finder-quick-look": {
+   "name": "Finder og Hurtigvisning",
+   "vendor": "Apple",
+   "summary": "Filbehandleren på Mac med Hurtigvisning, en forhåndsvisning med mellomromstasten for nesten alle filer. Fin for et raskt blikk på et bilde eller en MP4 og for vanlig filhåndtering.",
+   "wins": [
+    "Innebygd i macOS, fungerer for nesten alle filtyper",
+    "Stikkord, smarte mapper, Spotlight-søk",
+    "Nytt navn i bunt og hurtighandlinger",
+    "iCloud Drive og AirDrop"
+   ],
+   "price": "Gratis (del av macOS)",
+   "version": "Finder 27.2 på macOS Golden Gate 27.2.1",
+   "updated": "2026-11-09 (macOS 27.2.1)",
+   "platforms": "macOS",
+   "notes": {
+    "thumbnail_grid": "Symbolvisning viser miniatyrer av filer; mapper vises som mappesymboler, ikke med innholdet",
+    "network_shares_fast": "Kobler til SMB og servere; fart på store delte mapper ikke dokumentert",
+    "img_animated": "Hurtigvisning spiller animerte GIF-er; APNG/animert WebP ikke dokumentert",
+    "music_mode": "Hurtigvisning spiller av og klipper lydfiler",
+    "image_editing": "Rotering og Markering i Hurtigvisning; hurtighandlinger",
+    "library_catalog": "Stikkord og smarte mapper, ingen vurderinger",
+    "custom_shortcuts": "Apphurtigtaster for menykommandoer",
+    "boss_key": "⌘H / ⌥⌘H skjuler apper; ingen egen sjefstast",
+    "app_sandbox": "Hurtigvisning kjører i sandkasse, Finder selv ikke"
+   }
+  },
+  "flowvision": {
+   "name": "FlowVision",
+   "vendor": "netdcy",
+   "summary": "FlowVision er en innebygd macOS-bildefremviser med åpen kildekode, bygget rundt et miniatyroppsett i fossefall- eller blokkjustert stil og filhåndtering som i Finder. Den er laget for svært store mapper, spiller av Macens egne videoformater og har en rekursiv modus, Finder-stikkord, vurderinger og musebevegelser for å hoppe mellom mapper.",
+   "wins": [
+    "Miniatyroppsett i fossefall- og blokkjustert stil",
+    "Musebevegelser med høyreklikk for å hoppe mellom mapper",
+    "Finder-stikkord og XMP-vurderinger med filtre",
+    "HDR-visning",
+    "Profiler for oppsett",
+    "Kjører på macOS 11 og nyere"
+   ],
+   "price": "Gratis (donasjoner)",
+   "version": "1.7.6",
+   "updated": "2026-09-08",
+   "platforms": "macOS",
+   "notes": {
+    "languages_20": "17 språk",
+    "img_svg_pdf": "SVG ja; PDF slått av i kildekoden",
+    "slideshow_recursive": "Automatisk avspilling gjennom listen, også rekursivt; venter ikke på at videoer slutter",
+    "video_mkv_avi_webm": "Miniatyrer og info for MKV, WebM, AVI; avspilling i ekstern spiller",
+    "image_editing": "Rotering og en merknadsmodus (penn, markør, piler)",
+    "batch_convert": "Nytt navn i bunt med løpenummer; ingen formatkonvertering",
+    "library_catalog": "Finder-stikkord og XMP-vurderinger med filtre; ingen egen database",
+    "cloud_sync": "Bare delingsmenyen i macOS",
+    "keyboard_first": "Taster for navigering, men bygget for mus og høyreklikkbevegelser",
+    "custom_shortcuts": "Bare Enter/Esc kan stilles inn",
+    "notarized_attested": "Signert med Developer ID; bygget lokalt, så ingen byggattestasjon"
+   }
+  },
+  "forklift": {
+   "name": "ForkLift",
+   "vendor": "BinaryNights",
+   "summary": "Filbehandler med to paneler og filoverføringsklient for macOS. Sterk på eksterne tilkoblinger (SFTP, S3, skytjenester), mappesynkronisering, nytt navn for mange filer og filarbeid med tastaturet, med en forhåndsvisningsrute for bilder, lyd, video og PDF.",
+   "wins": [
+    "Eksterne tilkoblinger og sky (SFTP, FTP, WebDAV, S3, Google Drive, OneDrive, Dropbox)",
+    "Mappesynkronisering og filsammenligning",
+    "Nytt navn for mange filer med regex og metadata",
+    "Git-status, stikkord, arbeidsområder, avinstallering av apper",
+    "Full filbehandler: angre, konflikthåndtering, overføringskø"
+   ],
+   "price": "Betalt livstidslisens med 1 eller 2 års oppdateringer: $19.95 / $34.95 én bruker, $29.95 / $49.95 familie, $69.95 / $119.95 småbedrift (5 Mac-er); gratis prøve; også på Setapp",
+   "version": "4.7.7",
+   "updated": "2026-10-20",
+   "platforms": "macOS",
+   "notes": {
+    "languages_20": "14 språk",
+    "thumbnail_grid": "Symbolvisning med forhåndsvisning; ingen mappeforhåndsvisning",
+    "network_shares_fast": "SMB, AFP, NFS, SFTP, sky støttes; ingenting sagt om fart i store mapper",
+    "img_modern_formats": "Forhåndsvisningsrute via macOS (HEIC, AVIF, WebP, JPEG XL slik systemet leser dem)",
+    "img_raw": "Bare forhåndsvisningsrute/Hurtigvisning med macOS’ RAW-støtte; ingen egen dekoder",
+    "img_svg_pdf": "PDF i forhåndsvisningsruten; SVG bare slik macOS tegner den",
+    "zoom_rotate": "Zoom bare i Hurtigvisning (mellomrom/F3, ⌘+/⌘−); ingen egen fremviser",
+    "video_mkv_avi_webm": "Bare med tredjepartsutvidelsen «QuickLook Video» installert",
+    "music_mode": "Spiller lydfiler i forhåndsvisningsruten, ingen musikkmodus",
+    "archive_passwords": "Lager passordbeskyttede ZIP-filer; åpning av krypterte arkiver ikke dokumentert",
+    "videos_in_archives": "Hurtigvisning i arkiver er mulig; ingen spiller",
+    "batch_convert": "Nytt navn i bunt med regex og metadata; ingen bildekonvertering i bunt",
+    "library_catalog": "Bare Finder-stikkord; ingen vurderinger eller katalog"
+   }
+  },
+  "gom-player": {
+   "name": "GOM Player",
+   "vendor": "GOM & Company",
+   "summary": "GOM Player er en populær gratis koreansk mediespiller for Windows med et stort arkiv av undertekster på nett, AI-undertekster fra tale, 360° VR, A-B-gjentakelse og skall; gratisversjonen viser reklame, GOM Player+ fjerner den. En Mac-versjon basert på mpv finnes, men er ikke oppdatert siden 2020 og kjører bare på Intel.",
+   "wins": [
+    "Stort undertekstarkiv på nett og AI-genererte undertekster",
+    "360° VR-avspilling, A-B- og flerseksjonsgjentakelse",
+    "Strømming av adresser og YouTube",
+    "Musikkavspilling med equalizer",
+    "GOM Player+: fire videoer samtidig, AI-oppskalering"
+   ],
+   "price": "Gratis med reklame; GOM Player+ uten reklame: livstidslisens (₩11,000 i Korea) eller GOM Easy Pass-abonnement (fra $4.90/måned); AI-funksjoner bruker kreditter",
+   "version": "Windows 2.3.123 (13. okt. 2026); Mac 1.0.0 (2020)",
+   "updated": "2026-10-13 (Windows); 2020-11-11 (Mac)",
+   "platforms": "Windows, macOS (Intel-utgave), Android, iOS",
+   "macNote": "Mac-versjonen av GOM Player har stått på 1.0.0 siden 2020 og er bygget for Intel-Mac."
+  },
+  "google-photos": {
+   "name": "Google Foto",
+   "vendor": "Google",
+   "summary": "Googles bildebibliotek i skyen med automatisk sikkerhetskopi fra telefoner. Godt for å ha alle bildene på alle enheter, søke etter innhold og dele album.",
+   "wins": [
+    "Automatisk sikkerhetskopi fra Android og iPhone",
+    "Søk etter personer, ting og steder",
+    "Deling av album og partnerdeling",
+    "Tilgang fra alle nettlesere"
+   ],
+   "price": "Gratis med 15 GB (delt med Gmail/Drive); Google One fra €1.99/md. for 100 GB, €9.99/md. 2 TB, €21.99/md. 5 TB",
+   "version": "nett (løpende); iOS-app 8.1.0",
+   "updated": "2026-11-13 (iOS-app 8.1.0)",
+   "platforms": "Nett, Android, iOS",
+   "notes": {
+    "free": "15 GB gratis, delt med Gmail/Drive; Google One fra €1.99/md. (100 GB)",
+    "thumbnail_grid": "Bilderutenett og albumomslag; ingen mapper på disken",
+    "recursive_search": "Søker i hele biblioteket etter innhold, filnavn i anførselstegn, kameramodell",
+    "multiple_windows": "Nettapp på photos.google.com; flere faner eller vinduer",
+    "img_modern_formats": "HEIC, AVIF, WebP; JPEG XL ikke oppført",
+    "img_animated": "GIF og WebP oppført; animert PNG ikke dokumentert",
+    "slideshow_recursive": "Lysbildefremvisning av et album; ikke et mappetre",
+    "file_info_exif": "Infopanel med dato, sted, kamera, IPTC; kodek og bitrate ikke dokumentert",
+    "video_mkv_avi_webm": "MKV, AVI, WMV lastes opp og spilles etter behandling; WebM og FLV ikke oppført",
+    "playback_speed": "I Android-appen; på nett ikke dokumentert",
+    "rename_trash": "Slett til papirkurven; ikke nytt filnavn",
+    "undo_file_actions": "Gjenopprett fra papirkurven",
+    "keyboard_first": "Hurtigtaster på nett (⇧? viser listen); appene har ingen",
+    "shortcut_cheatsheet": "Panel i appen med ⇧?"
+   }
+  },
+  "graphicconverter": {
+   "name": "GraphicConverter",
+   "vendor": "Lemke Software",
+   "summary": "GraphicConverter er Macens veletablerte «lommekniv for bilder»: fil- og bildeblar, lysbildefremvisning, redigerer og buntkonvertering som åpner rundt 200 formater. Blaren spiller også av QuickTime-kompatible filmer og lyd, håndterer mye metadata og har duplikatsøk, flat visning og Spotlight-søk.",
+   "wins": [
+    "Åpner ca. 200 bildeformater, eksporterer ca. 80, også gamle og vitenskapelige formater",
+    "Full bilderedigerer og buntkonvertering med handlinger",
+    "Metadataredigering (EXIF/IPTC/XMP, ansikter, GPS-kart)",
+    "Mange valg i lysbildefremvisningen (overganger, tilfeldig, metadata, sortering underveis)",
+    "Liste-, Cover Flow- og miniatyrvisning, flat visning av alle undermapper",
+    "Duplikatsøk, kontaktark, nettgallerier",
+    "Egne hurtigtaster, 14 språk, lys/mørk-innstilling"
+   ],
+   "price": "$39.95 / €34.95 engangskjøp (oppgradering $25.95, familie $59.95); $34.99 i Mac App Store; shareware-prøve",
+   "version": "12.5.4 (12.6 i beta)",
+   "updated": "2026-08-27 (12.5.4 i Mac App Store; 12.6 beta build 7423 2026-11-12)",
+   "platforms": "macOS",
+   "notes": {
+    "languages_20": "14 språk",
+    "recursive_search": "Søk i alle undermapper via Spotlight (ikke der Spotlight er av, som på mange nettverksdisker)",
+    "regex_search": "Regex i «lysbildefremvisning med søk» og i navnedialogen, ikke i søkefeltet",
+    "slideshow_recursive": "Kan ta med undermapper; om filmer spilles i fremvisningen, er ikke dokumentert",
+    "auto_enhance_view": "Automatiske nivåer og forbedring endrer bildet, ikke bare visningen",
+    "wrong_extension_note": "En kommando sjekker og retter filetternavn; ingen merknad under visning",
+    "playlist": "Liste for lysbildefremvisning; ikke en videospilleliste",
+    "saved_playlists": "Forhåndsinnstillinger og lagrede søk, ikke spillelister",
+    "music_mode": "MP3 og M4A spilles i blarens høyre rute",
+    "archives_as_folders": "Kan åpne bilder fra RAR; blaing i ZIP/7z som mapper ikke dokumentert",
+    "library_catalog": "Vurderinger, etiketter, stikkord, ansikter i filenes metadata; duplikatsøk; ingen database",
+    "cloud_sync": "FTP-opplasting og nettgallerier; skymapper via egne apper",
+    "shortcut_cheatsheet": "Tabeller over hurtigtaster i PDF-manualen",
+    "app_sandbox": "Utgaven i Mac App Store er i sandkasse (med begrensninger); den direkte ikke"
+   }
+  },
+  "hamana": {
+   "name": "Hamana",
+   "vendor": "miyano",
+   "summary": "DirectX-akselerert japansk bildefremviser som leser arkiver (zip/cbz, 7z, rar/cbr, cab, lzh), med tobildemodus, effekter i lysbildefremvisningen og mange tastevalg. Kan kjøre som skjermsparer. Uendret siden 2006, nedlastingen ligger fortsatt på forfatterens nettsted.",
+   "wins": [
+    "Visningsfiltre på grafikkortet (tonekurve, skarphet) og 3D-rotering",
+    "Overgangseffekter i lysbildefremvisningen",
+    "Skjermsparermodus",
+    "PDF via Ghostscript"
+   ],
+   "price": "Gratis",
+   "version": "1.48",
+   "updated": "2006-06-19",
+   "platforms": "Windows"
+  },
+  "honeyview": {
+   "name": "Honeyview",
+   "vendor": "Bandisoft",
+   "summary": "Lett og rask gratis bildefremviser som i årevis var standardleseren for tegneserier og manga i Korea (꿀뷰). Viser bilder i ZIP/RAR/7Z uten utpakking, dobbeltsidemodus, EXIF med GPS. Avviklet: ingen flere oppdateringer; Bandisoft viser brukerne til BandiView.",
+   "wins": [
+    "Svært lett og rask på eldre Windows (XP til 11, 32 bit)",
+    "Smart dobbeltside for manga fra høyre mot venstre",
+    "Flere arkivformater (LZH, TAR) og BPG"
+   ],
+   "price": "Gratis (freeware)",
+   "version": "5.53",
+   "updated": "2024-06-21",
+   "platforms": "Windows"
+  },
+  "iina": {
+   "name": "IINA",
+   "vendor": "IINA-prosjektet",
+   "summary": "IINA er en gratis videospiller for macOS med åpen kildekode, bygget på mpv, med et moderne Mac-grensesnitt. Den er sterk når du skal se på noe: undertekster (også søk på nett), bilde-i-bilde, musikkmodus, spillelister, miniatyrer på tidslinjen og utvidelser.",
+   "wins": [
+    "Full avspilling: kapitler, bilde for bilde, A-B-løkke, bilde-i-bilde, musikkmodus",
+    "Søk etter undertekster på nett og smart kobling av lokale undertekster",
+    "Utvidelser, mpv-konfigurasjon og skript, nettleserutvidelser",
+    "Støtter macOS 12 og Intel-Mac",
+    "Miniatyrer på tidslinjen, avspillingshistorikk og fortsett der du slapp"
+   ],
+   "price": "Gratis",
+   "version": "1.5.1",
+   "updated": "2026-11-06",
+   "platforms": "macOS",
+   "notes": {
+    "folder_browsing": "En mappe legger alle spillbare filer (rekursivt) i spillelisten; ingen filblaing",
+    "recursive_search": "Bare søk i avspillingshistorikken, ikke filsøk",
+    "img_animated": "GIF spilles som video; ikke APNG/animert WebP",
+    "auto_enhance_view": "Video-equalizer og filtre, ingen autoforbedring",
+    "file_info_exif": "Inspektør: kodeker, bitrate, spor; ingen EXIF",
+    "split_archives": "mpv leser RAR i flere deler, men IINA tilbyr det ikke",
+    "videos_in_archives": "Arkiv > Åpne kan spille medier i ZIP eller RAR via mpv; udokumentert",
+    "rename_trash": "«Slett gjeldende fil» flytter den til papirkurven; ikke nytt navn/ny mappe",
+    "shortcut_cheatsheet": "Tastene står i Innstillinger > Tastebindinger; ikke for utskrift",
+    "notarized_attested": "Notarisert siden 1.0.5; ingen byggattestasjon"
+   }
+  },
+  "imageglass": {
+   "name": "ImageGlass",
+   "vendor": "Duong Dieu Phap",
+   "summary": "Rask bildefremviser med åpen kildekode, bygget på nytt i v10 med .NET/Avalonia for Windows, macOS (Apple silicon) og Linux. Mange formater (over 90, blant dem RAW, JXL, HEIC, AVIF, HDR og SVG), smart hurtigbuffer, temaer, egne hurtigtaster og kodekutvidelser. Den viser ett bilde om gangen med en galleristripe, blar ikke i mapper og spiller ikke av video.",
+   "wins": [
+    "Kjører på Windows, macOS og Linux fra én kodebase",
+    "HDR-tonemapping for AVIF, JPEG XL, HDR og EXR",
+    "Egen gjengivelse av animert SVG",
+    "SDK for kodekutvidelser med flere formater",
+    "Innebygd beskjæring, størrelse og fargevelger",
+    "Temaer og egne oppsett",
+    "Egne hurtigtaster i gratisutgaven"
+   ],
+   "price": "Classic gratis; Pro Individual $14.90 engangskjøp, Pro Team $69 engangskjøp (3 brukere), Pro Business etter volum (fra $290/år for 25 brukere)",
+   "version": "10.0.6.906",
+   "updated": "2026-09-05",
+   "platforms": "Windows, macOS, Linux",
+   "notes": {
+    "free": "Classic gratis (GPLv3); Pro $14.90 engangskjøp gir HDR-tonemapping med mer",
+    "dark_light_setting": "Følger systemet; ett tema for mørkt og ett for lyst kan velges",
+    "folder_browsing": "Blar i mappen til en åpnet fil; ikke mappetre, ikke undermapper",
+    "thumbnail_grid": "Galleri med bildene i mappen (stripe eller kolonner); ingen mapperuter",
+    "network_shares_fast": "Dekoding i bakgrunnen og forhåndslasting; ingenting om nettverksdisker",
+    "img_svg_pdf": "Egen SVG/SVGZ-gjengivelse, også animert; ingen PDF",
+    "slideshow_recursive": "Kan laste bilder fra undermapper; bare bilder, ingen videoer",
+    "file_info_exif": "EXIF via det separate ExifGlass; ingen videoinfo",
+    "rename_trash": "Slett/papirkurv for bildet som vises (med bekreftelse); ingen ny mappe",
+    "move_copy": "Kopier eller klipp ut filer til utklippstavlen (klipp ut ikke på macOS)",
+    "keyboard_first": "Hurtigtaster for menykommandoer, men grensesnittet er bygget for verktøylinje og mus",
+    "notarized_attested": "DMG signert med Developer ID og notarisert; ingen byggattestasjon"
+   }
+  },
+  "imagine": {
+   "name": "Imagine",
+   "vendor": "Sejin Chun",
+   "summary": "Liten, svært rask koreansk gratis bilde- og animasjonsfremviser for Windows med miniatyrblaing, en enorm formatliste (blant annet JXL, AVIF, HEIF, CLIP, KRA, mange RAW), blaing i arkiver, konvertering og nytt navn i bunt, enkel tegning og en animasjonsredigerer. Fungerer også som utvidelser til Total Commander.",
+   "wins": [
+    "Enorm formatliste med KRA, ORA, CLIP, DICOM og HDR-formater",
+    "Redigering, animasjon og nytt navn i bunt innebygd",
+    "Utvidelser for Total Commander (Lister/Packer/Content)",
+    "Kjører på alt fra Windows 95 til Windows 11 ARM64"
+   ],
+   "price": "Gratis (donasjonsbasert; donasjon på $20+ gir en personlig lisenskode)",
+   "version": "2.8.1",
+   "updated": "2026-11-14",
+   "platforms": "Windows"
+  },
+  "infuse": {
+   "name": "Infuse",
+   "vendor": "Firecore",
+   "summary": "En spiller i mediesenterstil som gjør videomapper, NAS-disker, Plex/Emby/Jellyfin og skytjenester til et bibliotek med plakater og metadata. Svært god til å se filmer og serier på tvers av Apple-enheter med synkronisert fremdrift.",
+   "wins": [
+    "Bibliotek for filmer og serier med bilder og metadata fra TMDB",
+    "Strømmer fra NAS, medieservere og skytjenester",
+    "Synkroniserer fremdrift mellom iPhone, iPad, Apple TV, Mac og Vision Pro",
+    "Nedlasting fra OpenSubtitles, Trakt-synkronisering, AirPlay og Google Cast",
+    "Platebilder (ISO, VIDEO_TS, BDMV)"
+   ],
+   "price": "Gratis; Infuse Pro $1.99/måned, $16.99/år eller $99.99 livstid",
+   "version": "8.5.10",
+   "updated": "2026-11-09",
+   "platforms": "macOS, iOS, iPadOS, tvOS, visionOS",
+   "notes": {
+    "free": "Gratis grunnversjon; Infuse Pro $1.99/måned, $16.99/år eller $99.99 livstid",
+    "no_account_no_tracking": "Ingen konto nødvendig (Trakt valgfritt), ingen reklame; diagnosedata ikke knyttet til deg",
+    "thumbnail_grid": "Plakatruter for videoer i mapper og bibliotek; ingen bilder",
+    "list_view": "Sorteringsknapp i mappevisningen; kolonner ikke dokumentert",
+    "recursive_search": "Søk i det skannede biblioteket (titler), ikke filnavn",
+    "zoom_rotate": "8 zoomvalg for video; ingen rotering",
+    "file_info_exif": "Videoinfo (kodek, oppløsning, lydformat); ingen EXIF",
+    "streaming_urls": "M3U/M3U8-spillelister og medieservere; Pro strømmer trailere",
+    "rename_trash": "Innstillingen «Filbehandling» lar deg slette eksterne videoer; ikke nytt navn",
+    "move_copy": "Last ned videoer fra nettverksenheter til Macen",
+    "keyboard_first": "Hurtigtaster for avspilling; begrenset tastaturnavigering i biblioteket",
+    "shortcut_cheatsheet": "Liste over hurtigtaster i en støtteartikkel",
+    "notarized_attested": "Utgave fra App Store, lukket kildekode"
+   }
+  },
+  "irfanview": {
+   "name": "IrfanView",
+   "vendor": "Irfan Skiljan",
+   "summary": "IrfanView er en liten, svært rask bildefremviser for Windows som har eksistert siden 1996 og leser en enorm mengde formater via utvidelser. I tillegg til visning gjør den buntkonvertering, enkel redigering, skanning, utskrift og lysbildefremvisning, alt styrt med mange hurtigtaster.",
+   "wins": [
+    "Enorm formatliste, også sjeldne og gamle formater",
+    "Buntkonvertering og nytt navn i bunt",
+    "Bilderedigering, tegneutvidelse, effekter, Photoshop-filtre (8BF)",
+    "Skanning, utskrift, OCR-utvidelse",
+    "Søk etter EXIF/IPTC og tekst, ikke bare navn",
+    "Lysbildefremvisninger lagret som EXE, skjermsparer eller MP4",
+    "Kjører på svært gamle Windows-versjoner og fra en minnepinne"
+   ],
+   "price": "Gratis for privat, ikke-kommersiell bruk og undervisning; kommersiell lisens US$18 / EUR 15 (evigvarende)",
+   "version": "4.76",
+   "updated": "2026-09-18",
+   "platforms": "Windows"
+  },
+  "isee-pro": {
+   "name": "iSee Pro",
+   "vendor": "Dummy Apps",
+   "summary": "iSee Pro er en liten bildeblar fra Mac App Store som laster alle bildene i en mappe og undermappene med forhåndslasting for rask blaing. Den har liste-, miniatyr- og fullstørrelsesvisning, søk etter navn, størrelse og dato, EXIF-overlegg, lupe og åpner ZIP- og RAR-arkiver og husker passordene. Krever macOS 12.",
+   "wins": [
+    "Svært billig ($0.99 Pro) og liten (4.4 MB)",
+    "Husker arkivpassord",
+    "Søk etter bildemål og Draw Things-parametere",
+    "Funksjoner for levende bakgrunnsbilde og skrivebord"
+   ],
+   "price": "Gratis med kjøp i appen: Pro $0.99",
+   "version": "11.5",
+   "updated": "2025-05-30",
+   "platforms": "macOS",
+   "notes": {
+    "free": "Gratis; Pro-kjøp $0.99 (fjerner ifølge en anmeldelse en grense på 50 bilder)",
+    "thumbnail_grid": "Miniatyrvisning; mappeforhåndsvisning ikke nevnt",
+    "network_shares_fast": "Brukes på NAS og servere; fart der ikke dokumentert",
+    "img_modern_formats": "WebP fra 11.0; «alle populære formater» og egne filetternavn; HEIC/AVIF/JXL ikke nevnt",
+    "img_raw": "Ikke nevnt; egne filetternavn kan legges til, dekodet av macOS",
+    "img_psd_exr": "Ikke nevnt; egne filetternavn kan legges til, dekodet av macOS",
+    "slideshow_recursive": "Laster alle undermapper, bare bilder (ingen video)",
+    "file_info_exif": "EXIF-overlegg (⌘I); bare bilder",
+    "archives_as_folders": "ZIP og RAR åpnes («pakk ut»); 7z ikke nevnt",
+    "rename_trash": "Nytt navn (Enter i listen), slett; ny mappe ikke nevnt",
+    "move_copy": "Dra bilder til en mappe for å lagre dem; ingen flytte-/kopierkommandoer",
+    "library_catalog": "Bare merking av bilder, ingen database",
+    "keyboard_first": "Mange hurtigtaster, men laget for å kunne brukes med bare mus",
+    "notarized_attested": "Gjennomgått av Apple i MAS; ingen åpen kildekode"
+   }
+  },
+  "jpegview": {
+   "name": "JPEGView",
+   "vendor": "sylikc og David Kleiner",
+   "summary": "Slank, svært rask bildefremviser for Windows med minimalt fullskjermgrensesnitt, bildekorrigering i sanntid (autokontrast, lokal tetthet, skarphet) og tastaturstyring via en redigerbar KeyMap. Håndterer moderne formater og RAW. Ingen miniatyrer, ingen video, ingen filblaing; forken har ikke hatt noen ny versjon siden 2023.",
+   "wins": [
+    "Automatisk korrigering av farge, kontrast og lokal tetthet i sanntid mens du ser",
+    "Svært liten og portabel (ingen installasjon)",
+    "Alle taster kan endres via KeyMap.txt",
+    "Tapsfri beskjæring og rotering av JPEG",
+    "Bildeserier spilt som film med valgt bildefrekvens"
+   ],
+   "price": "Gratis",
+   "version": "1.3.46",
+   "updated": "2023-10-07 (siste versjon; siste commit 2024-07-06)",
+   "platforms": "Windows"
+  },
+  "kmplayer": {
+   "name": "KMPlayer",
+   "vendor": "PandoraTV",
+   "summary": "KMPlayer er en veletablert gratis mediespiller for Windows med innebygde kodeker, 4K/8K-avspilling, 3D og 360° VR, avspilling og nedlasting fra adresser og YouTube, og et tastaturoppsett der nesten hver tast gjør noe. 64X-utgaven har ingen reklame; 32-bitsutgaven viser reklame. Leverandøren sier det ikke finnes noen aktuell skrivebordsapp for macOS.",
+   "wins": [
+    "Svært bred støtte for kodeker og formater, også 3D og 360° VR",
+    "Avspilling og nedlasting fra adresser og YouTube",
+    "Finmasket tastaturstyring, globale hurtigtaster, sjefstast (Esc)",
+    "Equalizer-oppsett, video- og lydopptak, GIF-opptak",
+    "Skall og fargeoppsett, 42 språk"
+   ],
+   "price": "Gratis; KMPlayer 64X uten reklame, KMPlayer 32-bit med reklame; Android-appen har en Premium-oppgradering",
+   "version": "KMPlayer 64X 2026.10.27.9; KMPlayer (32-bit) 4.2.3.38",
+   "updated": "2026-10-28",
+   "platforms": "Windows, Android, iOS, iPadOS"
+  },
+  "kodi": {
+   "name": "Kodi",
+   "vendor": "Kodi Foundation",
+   "summary": "Et gratis mediesenter med åpen kildekode og et grensesnitt for TV og fjernkontroll. Det håndterer store video- og musikkbiblioteker, blar i lokale mapper og nettverksmapper og viser også bilder med lysbildefremvisning.",
+   "wins": [
+    "Mediesenter for TV-en med fjernkontroll, biblioteker med plakater og metadata",
+    "Musikkbibliotek og spiller",
+    "Tillegg for strømming og undertekster, PVR/direkte-TV",
+    "RAR-passord og RAR i flere deler via tillegg",
+    "Kjører på TV-bokser, Android, Linux, Raspberry Pi"
+   ],
+   "price": "Gratis",
+   "version": "21.3 Omega (22.0 Piers RC2 fra 2026-11-10)",
+   "updated": "2025-10-31",
+   "platforms": "macOS, Windows, Linux, Android, iOS/tvOS, LibreELEC",
+   "notes": {
+    "network_shares_fast": "Nettverkskilder som lokale; miniatyrer bufres første gang, så senere besøk går raskere",
+    "img_modern_formats": "WebP og AVIF innebygd; HEIC via tillegget «imagedecoder.heif»; JPEG XL ikke oppført",
+    "img_raw": "Via tillegget «imagedecoder.raw»",
+    "auto_enhance_view": "Lysstyrke/kontrast i videoinnstillingene; ingenting for bilder",
+    "online_subtitles": "Via tillegg for undertekster valgt i innstillingene",
+    "comics_cbz_cbr": "CBZ/CBR som bildemapper; ingen lesemodus",
+    "archive_passwords": "Bare RAR (spør om eller prøver lagrede passord)",
+    "split_archives": "RAR i flere deler (.partN.rar)",
+    "rename_trash": "Filbehandleren gir nytt navn, sletter (ingen papirkurv), lager mapper",
+    "dual_pane": "Filbehandleren har to paneler side om side; ikke F5/F6",
+    "cloud_sync": "Ingen egen sky; biblioteker og sett-status kan deles via en MySQL/MariaDB-server",
+    "shortcut_cheatsheet": "Wiki-side med alle standardtaster",
+    "notarized_attested": "macOS-pakken har et notariseringsskript; ingen attestert bygging"
+   }
+  },
+  "leeyes": {
+   "name": "Leeyes",
+   "vendor": "Kenji (けんじ)",
+   "summary": "Japansk fremviser med tre ruter (mappetre, filliste, bilde), laget for å lese skannet manga som dobbeltsider, med en bokhylle for favorittmapper. Alle formater unntatt BMP kommer fra Susie-utvidelser. Siste versjon 2011; forfatterens nettsted er borte, og bare arkiverte kopier finnes.",
+   "wins": [
+    "Bokhyllelister som kan eksporteres og importeres som tekst",
+    "Dobbeltsider tilpasset skannede bøker"
+   ],
+   "price": "Gratis for ikke-kommersiell bruk",
+   "version": "2.6.1",
+   "updated": "2011-10-26",
+   "platforms": "Windows"
+  },
+  "lyn": {
+   "name": "Lyn",
+   "vendor": "Mirko Viviani",
+   "summary": "Veletablert, lett bildeblar for fotografer og designere med mappesidepanel, kart for geotagging, ikke-destruktiv redigering og deling til Flickr, Dropbox og SmugMug. Selges direkte, kjører helt tilbake til macOS 10.13.",
+   "wins": [
+    "Geotagging på kart",
+    "Ikke-destruktiv fargeredigering",
+    "Åpner biblioteker fra Bilder, Aperture og Lightroom",
+    "Deling til Flickr, Dropbox, SmugMug",
+    "Kjører på eldre macOS (10.13 og nyere)"
+   ],
+   "price": "26 € / $29.99 engangskjøp med 15 måneders oppdateringer; 15 dagers prøve",
+   "version": "2.4.10",
+   "updated": "2026-07-09",
+   "platforms": "macOS",
+   "notes": {
+    "languages_20": "Engelsk, fransk og kinesisk nevnt; full liste ikke publisert",
+    "recursive_search": "Smarte mapper med søkeområder; enkelt rekursivt navnesøk ikke beskrevet",
+    "bookmarks": "Sidepanel og smarte mapper",
+    "img_psd_exr": "OpenEXR ja; PSD bare via macOS’ ImageIO",
+    "img_animated": "Animert WebP og animerte bilder i blaren; APNG ikke nevnt",
+    "video_skim_arrows": "Mellomrom, J/K/L",
+    "playback_speed": "J/L spoler bakover og fremover",
+    "library_catalog": "Nøkkelord, IPTC, fargeetiketter, smarte mapper; ingen egen katalog"
+   }
+  },
+  "mangameeya": {
+   "name": "MangaMeeya",
+   "vendor": "",
+   "summary": "Lenge den mest kjente mangaleseren på Windows: åpner tegneserier i ZIP/RAR, også arkiver i arkiver, med dobbeltsider, miniatyrer, faner og egne taster. Avviklet uten offisiell nedlasting; kopier og den kompakte MangaMeeyaCE sirkulerer på speilnettsteder.",
+   "wins": [
+    "Kjent arbeidsflyt for manga for mangeårige brukere",
+    "Faner og delte vinduer over to skjermer"
+   ],
+   "price": "Gratis",
+   "version": "oppført som 2.4 på AlternativeTo (avviklet)",
+   "updated": "2006-06 (ifølge AlternativeTo)",
+   "platforms": "Windows"
+  },
+  "marta": {
+   "name": "Marta",
+   "vendor": "Yan Zhulanow",
+   "summary": "Innebygd filbehandler med to paneler for tastaturet, skrevet i Swift, konfigurert med et tekstspråk og utvidbar med Lua-utvidelser. Åpner mange arkivformater som mapper; forhåndsviser filer via Hurtigvisning.",
+   "wins": [
+    "Lua-API for utvidelser og tekstbasert konfigurasjon",
+    "Commander-arbeidsflyt med F-taster og handlingspanel",
+    "Arkivstøtte også for arkiver i arkiver, ZIP lese/skrive",
+    "Innebygd terminal med mappesynkronisering, analyse av diskbruk",
+    "Oppslag med Spotlight-predikater"
+   ],
+   "price": "Gratis i betaen; betalt lisens planlagt etter betaen (Patreon-støttespillere med $15+ får en evigvarende lisens)",
+   "version": "0.8.2",
+   "updated": "2024-08-03",
+   "platforms": "macOS",
+   "notes": {
+    "free": "Gratis i betaen; en betalt lisens er varslet",
+    "regex_search": "Hurtigvalg/hurtigsøk med regex i gjeldende liste; oppslag bruker predikater",
+    "img_modern_formats": "Bare forhåndsvisning i Hurtigvisning (mellomrom); ingen egen fremviser",
+    "img_raw": "Bare Hurtigvisning (mellomrom), ingen egen fremviser",
+    "img_psd_exr": "Bare Hurtigvisning (mellomrom), ingen egen fremviser",
+    "img_svg_pdf": "Bare Hurtigvisning (mellomrom), ingen egen fremviser",
+    "img_animated": "Bare Hurtigvisning (mellomrom), ingen egen fremviser",
+    "zoom_rotate": "Bare zoom i Hurtigvisning; fullskjermvisning er et åpent ønske",
+    "video_native": "Hurtigvisning spiller av MP4/MOV",
+    "video_mkv_avi_webm": "Bare det Hurtigvisning spiller av; hvilke formater er ikke oppgitt",
+    "music_mode": "Hurtigvisning spiller én lydfil; ingen spiller gjennom en mappe",
+    "archives_as_folders": "ZIP lese/skrive; TAR, 7Z, ISO m.fl. bare lese; RAR begrenset, ikke RAR5",
+    "comics_cbz_cbr": "Ingen tegneserieleser; ekstra ZIP-etternavn (f.eks. cbz) kan registreres i konfigurasjonen",
+    "shortcut_cheatsheet": "Dokumentasjonen viser standardtastene; ikke for utskrift"
+   }
+  },
+  "massigra": {
+   "name": "MassiGra",
+   "vendor": "Toshi Fuku",
+   "summary": "Liten, rask japansk bildefremviser med ett vindu som blar gjennom en mappe, med mangamodus og enkel redigering. Innebygde formater er BMP, GIF, JPEG og PNG; alt annet, også arkiver, kommer via Susie-utvidelser. Lå øverst på Vectors nedlastingsliste for bildefremvisere fem år på rad, men har ikke endret seg siden 2013.",
+   "wins": [
+    "Liten og svært lett på gammel maskinvare",
+    "Enkel redigering og lagring (nivåer, farge, beskjæring, størrelse)",
+    "Flytt/kopier til faste mapper med én tast",
+    "Kjent for mangeårige japanske Windows-brukere"
+   ],
+   "price": "Gratis",
+   "version": "0.45",
+   "updated": "2013-04-23",
+   "platforms": "Windows"
+  },
+  "mcomix": {
+   "name": "MComix",
+   "vendor": "MComix-utviklerne",
+   "summary": "MComix er en tilpassbar GTK-fremviser for tegneserier og bilder for Linux og Windows, en fork av Comix. Den leser CBR/CBZ/CB7/CBT/LHA og PDF, har dobbeltside- og mangamodus, bildeforbedring, lysbildefremvisning og et valgfritt bibliotek.",
+   "wins": [
+    "Dobbeltside og mangamodus",
+    "Bildeforbedring (lysstyrke, kontrast, skarphet, autokontrast)",
+    "Redigerbare hurtigtaster",
+    "Arkivredigering og valgfritt bibliotek med samlinger",
+    "25 språk i grensesnittet",
+    "Versjoner for Linux og Windows"
+   ],
+   "price": "Gratis",
+   "version": "3.2.0",
+   "updated": "2026-08-20",
+   "platforms": "Linux, Windows"
+  },
+  "mediaone": {
+   "name": "MediaOne",
+   "vendor": "MediaArt Studio",
+   "summary": "MediaOne (tidligere ImageOne) er en mediebla fra Mac App Store for bilder, videoer og lyd som jobber på mapper og favoritter uten import. Den har flere miniatyroppsett, søk på hele disken, stjernevurderinger og stikkord, sammenligningsvisning, videoklipping, GIF-eksport og buntkonvertering. Krever macOS 12.4.",
+   "wins": [
+    "Videoer spilles og spoles når musen holdes over",
+    "Stjernevurderinger, stikkord, smarte filtre og bildekart",
+    "Videoklipping, stillbilde fra video, video til GIF, buntkonvertering av bilder og video",
+    "Spiller av lydfiler",
+    "Søk på hele disken med lagrede smarte søk"
+   ],
+   "price": "Gratis med kjøp i appen: ImageOne $6.99",
+   "version": "5.4.1",
+   "updated": "2026-08-23",
+   "platforms": "macOS",
+   "notes": {
+    "free": "Gratis med ett kjøp i appen, «ImageOne» $6.99; hva det låser opp, står ikke",
+    "list_view": "Listevisning finnes; kolonnevalg ikke beskrevet",
+    "img_modern_formats": "WebP oppført; HEIC/AVIF/JXL ikke oppført",
+    "slideshow_recursive": "«Vis alle undermapper» samler bilder og videoer; lysbildefremvisning av dem ikke nevnt",
+    "file_info_exif": "EXIF for bilder; kodek/bitrate ikke nevnt",
+    "video_skim_arrows": "⌥ + piltast bilde for bilde, spoling med musen",
+    "dual_pane": "Sammenligning i to kolonner; ikke filpaneler med F5/F6",
+    "image_editing": "Roter/speilvend, klipp video, lagre stillbilde, video til GIF",
+    "batch_convert": "Buntkonvertering av bilder og video; nytt navn i bunt ikke nevnt",
+    "library_catalog": "Stjerner og stikkord på filer, smarte filtre, kart; ingen importdatabase",
+    "keyboard_first": "Piltaster, mellomrom og ⌥ dokumentert; bygget for mus",
+    "notarized_attested": "Gjennomgått av Apple i MAS; ingen åpen kildekode"
+   }
+  },
+  "meitu-kankan": {
+   "name": "美图看看",
+   "vendor": "Meitu",
+   "summary": "En liten, rask gratis bildefremviser fra Meitu som var svært populær på kinesiske Windows-PC-er tidlig på 2010-tallet, med mappefavoritter, visning av alle bilder i undermapper og deling med ett klikk til kinesiske sosiale nettverk. Den utvikles ikke lenger (siste versjon 2.7.8), men kan fortsatt lastes ned.",
+   "wins": [
+    "Liten og lett på gamle PC-er",
+    "Viser alle bildene i alle undermapper samtidig (穿透文件夹)",
+    "CMYK-PSD vist som i Photoshop"
+   ],
+   "price": "Gratis",
+   "version": "2.7.8",
+   "updated": "2014-11-25 (nettstedet); Tencents appbutikk oppgir fildato 2019-05-08",
+   "platforms": "Windows, Android"
+  },
+  "microsoft-photos": {
+   "name": "Microsoft Bilder",
+   "vendor": "Microsoft",
+   "summary": "Bilde- og videoappen som følger med Windows: en galleritidslinje over mapper på PC-en, OneDrive og iCloud, en rask fremviser som blar gjennom en mappe, og en redigerer med AI-verktøy. Godt for uformell blaing og rask redigering; Bilder (eldre versjon) beholder den gamle videoredigereren og lysbildeverktøyet. Ingen arkiver, ingen filbehandling.",
+   "wins": [
+    "Forhåndsinstallert på alle Windows-PC-er",
+    "Bilder fra OneDrive og iCloud i ett galleri",
+    "AI-redigering: fjerne objekter, ny belysning, superoppløsning på Copilot+-PC-er",
+    "Personer, album, øyeblikk og søk med naturlig språk",
+    "Lysbildefremvisning med musikk",
+    "Sammenligning av flere bilder"
+   ],
+   "price": "Gratis med Windows (HEVC-videoutvidelser $0.99)",
+   "version": "2026.11090.22001 (nytt galleri, redigering og fremviser rulles ut fra okt. 2026)",
+   "updated": "2026-10-06",
+   "platforms": "Windows"
+  },
+  "movist-pro": {
+   "name": "Movist Pro",
+   "vendor": "Movist",
+   "summary": "En betalt videospiller for filmer og serier, med god undertekststøtte (flere undertekstspor samtidig, stiler per språk), tonemapping for HDR og Dolby Vision og AirPlay av alle formater. Pro legger til nettverksservere, YouTube og nettmedier og bilde-i-bilde.",
+   "wins": [
+    "Stiler for undertekster og doble undertekster",
+    "Tonemapping for HDR og Dolby Vision",
+    "AirPlay av formater Apple TV ikke spiller selv",
+    "Nettverksservere (SMB, SFTP, FTP, WebDAV), YouTube, bilde-i-bilde (Pro)",
+    "Lagrede spillelister, equalizer"
+   ],
+   "price": "Movist Pro $17.99 engangskjøp (direkte); Movist $9.99 (Mac App Store); Movist Pro i Setapp-abonnement",
+   "version": "2.21.1 (direkte); Movist 2.20.0 i Mac App Store",
+   "updated": "2026-10-17 (App Store 2.20.0); 2.21.1 senere, dato ikke oppgitt",
+   "platforms": "macOS",
+   "notes": {
+    "languages_20": "6: engelsk, japansk, koreansk, russisk, forenklet og tradisjonell kinesisk",
+    "folder_browsing": "Fyller spillelisten fra mappen; Pro blar i nettverksdisker (SMB, SFTP, FTP, WebDAV)",
+    "network_shares_fast": "Pro spiller direkte fra SMB-, SFTP-, FTP- og WebDAV-servere",
+    "zoom_rotate": "Bare video: zoom, roter, speilvend",
+    "auto_enhance_view": "Bare video: Core Image-filtre",
+    "file_info_exif": "Inspektør med spor og kodeker; ingen EXIF",
+    "pip": "Bare Movist Pro",
+    "music_mode": "Spiller musikkfiler med equalizer; intet bibliotek",
+    "streaming_urls": "Bare Pro: åpne adresse, YouTube/Twitch og nettmedier, nettleserutvidelser",
+    "rename_trash": "Slett gjeldende fil fra Arkiv-menyen; ikke nytt navn/ny mappe",
+    "keyboard_first": "Egne hurtigtaster for avspilling; ingen filblaing",
+    "app_sandbox": "Movist fra App Store er i sandkasse; Pro trenger ifølge seg selv ingen mappetillatelser",
+    "mac_app_store": "Bare den mindre «Movist» ($9.99); Pro selges direkte og via Setapp"
+   }
+  },
+  "mpc-be": {
+   "name": "MPC-BE",
+   "vendor": "Aleksoid1978 med bidragsytere",
+   "summary": "En videospiller for Windows avledet fra Media Player Classic, med egne dekodere, mørkt tema og hyppige nye versjoner. God for lokale videofiler og YouTube via yt-dlp.",
+   "wins": [
+    "Lett Windows-spiller med hyppige oppdateringer",
+    "Mørkt tema, mange valg for gjengivelse og dekodere",
+    "Nedlasting av undertekster, strømming via yt-dlp",
+    "Sjefstast, taster som kan stilles inn"
+   ],
+   "price": "Gratis",
+   "version": "1.9.3",
+   "updated": "2026-11-05",
+   "platforms": "Windows"
+  },
+  "mpc-hc": {
+   "name": "MPC-HC",
+   "vendor": "clsid2 med bidragsytere",
+   "summary": "En lett, klassisk videospiller for Windows med innebygde LAV Filters, mange gjengivere og svært fleksible taster. Populær for det enkle grensesnittet og lite ressursbruk; bilder er ikke dens oppgave.",
+   "wins": [
+    "Svært lett og rask å starte",
+    "Gjengivere og shadere for entusiaster (madVR, MPC VR)",
+    "Søk og nedlasting av undertekster, strømming via yt-dlp",
+    "Sjefstast, bilde for bilde, mange taster som kan stilles inn"
+   ],
+   "price": "Gratis",
+   "version": "2.8.5",
+   "updated": "2026-11-06",
+   "platforms": "Windows"
+  },
+  "mpv": {
+   "name": "mpv",
+   "vendor": "mpv-prosjektet",
+   "summary": "mpv er en minimal, skriptbar mediespiller for kommandolinjen med GPU-gjengivelse (HDR, Dolby Vision) og svært bred formatstøtte. Den konfigureres med tekstfiler og Lua/JS-skript og har bare en liten kontroll på skjermen.",
+   "wins": [
+    "Videogjengivelse med gpu-next, HDR og Dolby Vision",
+    "Svært konfigurerbar via mpv.conf, input.conf og skript",
+    "Spiller medier rett fra ZIP/RAR/7z og RAR i flere deler",
+    "For flere plattformer (macOS, Windows, Linux)",
+    "Strømmer og YouTube via yt-dlp, DVD- og Blu-ray-menyer"
+   ],
+   "price": "Gratis",
+   "version": "0.42.0",
+   "updated": "2026-11-05",
+   "platforms": "macOS, Windows, Linux, BSD, Android (via mpv-android)",
+   "notes": {
+    "dark_light_setting": "Bare tittellinjen via --macos-title-bar-appearance; ikke tema",
+    "folder_browsing": "En mappe blir en spilleliste, også rekursivt; ingen filblaing",
+    "img_psd_exr": "Åpner EXR og PSD, men tar dem ikke med fra mapper",
+    "img_svg_pdf": "SVG i image-exts (krever FFmpeg med librsvg); ingen PDF",
+    "auto_enhance_view": "Tastene 1 til 8 endrer kontrast, lysstyrke, gamma, metning; ingen autoforbedring",
+    "file_info_exif": "Statistikkoverlegg (i/I): kodeker, bitrate; ingen EXIF",
+    "saved_playlists": "Laster m3u/pls/cue/edl; ingen innebygd lagring",
+    "archives_as_folders": "ZIP, RAR, 7z (også CBZ/CBR) åpnes som spilleliste, ikke som mappe",
+    "comics_cbz_cbr": "CBZ/CBR åpnes som bildespilleliste; ingen lesemodus",
+    "batch_convert": "Kodingsmodus på kommandolinjen (--o); ikke nytt navn i bunt",
+    "shortcut_cheatsheet": "? viser tastene i statistikkoverlegget; input.conf dokumenterer standardene",
+    "no_network": "Ingen oppdateringssjekk eller telemetri; går på nett for adresser du åpner (yt-dlp for nettsider)"
+   }
+  },
+  "neeview": {
+   "name": "NeeView",
+   "vendor": "neelabo",
+   "summary": "Bokfremviser for Windows som behandler mapper og arkiver som bøker og bilder som sider. Svært konfigurerbar: hver handling er en kommando med egne taster, musebevegelser og skript, i tillegg til bokhylle, bokmerker, spillelister og dobbeltsider for manga. Videoer spilles via Windows eller en installert VLC.",
+   "wins": [
+    "Hver handling kan stilles inn: kommandoer, bevegelser, JavaScript-skripting",
+    "Dobbeltside med lesing fra høyre mot venstre og sidedeling",
+    "Arkiver i arkiver og arkivpassord (via 7z.dll)",
+    "Lagrede spillelister, historikk og søk med dato, størrelse og regex",
+    "Panel for bildeeffekter, utskrift, eksport som ZIP eller mappe",
+    "Utgaver i Microsoft Store og som portabel ZIP"
+   ],
+   "price": "Gratis",
+   "version": "46.3",
+   "updated": "2026-08-09",
+   "platforms": "Windows"
+  },
+  "nomacs": {
+   "name": "nomacs",
+   "vendor": "nomacs-teamet",
+   "summary": "nomacs («Image Lounge») er en gratis bildefremviser med åpen kildekode, med støtte for RAW og PSD, metadatapaneler, bildejusteringer og buntbehandling. Særpreget er at flere vinduer kan synkroniseres for å sammenligne bilder side om side. Det finnes aktuelle macOS-utgaver for Apple silicon og Intel, men de er ikke notarisert.",
+   "wins": [
+    "Buntbehandling og enkel bilderedigering",
+    "Synkroniserer flere vinduer for å sammenligne bilder",
+    "Metadatapaneler, histogram og stjernevurderinger",
+    "Utvidelser (tegning, sammensetting, transformasjoner)",
+    "Kjører på Windows, Linux, FreeBSD og Haiku"
+   ],
+   "price": "Gratis",
+   "version": "3.22.5 (beta 3.23.4)",
+   "updated": "2026-11-05",
+   "platforms": "macOS, Windows, Linux, FreeBSD, Haiku",
+   "notes": {
+    "thumbnail_grid": "Miniatyrstripe og miniatyrrutenett for mappen; ingen mappeforhåndsvisning",
+    "list_view": "Filutforskerpanelet viser tre/liste med kolonner; ikke hovedvisningen",
+    "recursive_search": "«Finn og filtrer» søker i fillisten; med rekursiv skanning også undermapper",
+    "img_svg_pdf": "SVG ja; ingen PDF",
+    "slideshow_recursive": "Blar gjennom mappe og undermapper for bilder; ingen videoer",
+    "auto_enhance_view": "Bildejusteringer (OpenCV) som redigering som kan lagres, ikke bare visning",
+    "archives_as_folders": "Bare ZIP (og CBZ) via QuaZip i full macOS-utgave; ikke RAR/7z",
+    "comics_cbz_cbr": "CBZ ja, CBR nei",
+    "dual_pane": "Flere synkroniserte vinduer side om side for sammenligning; ikke filbehandler med to paneler",
+    "library_catalog": "Stjernevurderinger i metadata; ingen katalogdatabase",
+    "notarized_attested": "Bygget fra kildekoden i offentlige GitHub Actions, men bare ad hoc-signert, ikke notarisert"
+   }
+  },
+  "norton-commander": {
+   "name": "Norton Commander",
+   "vendor": "Symantec",
+   "summary": "Den opprinnelige ortodokse filbehandleren med to paneler for MS-DOS (1986 til 1998), som la oppsettet med F3 vis, F5 kopier og F6 flytt som Total Commander, Midnight Commander og mange andre har kopiert. Fortsatt mye søkt av nostalgi; i dag kjører den bare i DOS eller emulatorer.",
+   "wins": [
+    "Definerte arbeidsflyten med to paneler og F-taster",
+    "Liten og rask i tekstmodus",
+    "Mappesynkronisering og filsøk med treff i panelet"
+   ],
+   "price": "Avviklet; var kommersiell (NC 3.0 $149, NC 4.0 $99 veil. pris)",
+   "version": "5.51 (DOS)",
+   "updated": "1998-07-01",
+   "platforms": "MS-DOS, Windows (NC for Windows 2.01), OS/2"
+  },
+  "nplayer": {
+   "name": "nPlayer",
+   "vendor": "Newin",
+   "summary": "Betalt Mac-versjon av den populære iOS-spilleren nPlayer: spiller nesten alle video-, lyd- og undertekstformater og strømmer fra SMB, NFS, WebDAV, FTP, UPnP og skytjenester, med god stil på undertekster, A-B-gjentakelse og bilde-i-bilde. Mac-oppdateringer er sjeldne.",
+   "wins": [
+    "Nettverksprotokoller (SMB, NFS, SFTP, WebDAV, UPnP)",
+    "Avanserte undertekster (stil, synkronisering, SMI, SUP)",
+    "A-B-gjentakelse, «Listening Drill» for språklæring",
+    "Bilde-i-bilde, avspillingshastighet",
+    "Equalizer og lydsynkronisering"
+   ],
+   "price": "$9.99 engangskjøp (Mac)",
+   "version": "1.5.0",
+   "updated": "2025-02-14",
+   "platforms": "macOS, iOS, iPadOS, Android, tvOS",
+   "notes": {
+    "dark_light_setting": "Spillertemaer siden 1.4.0; om lyst/mørkt uavhengig av systemet er ukjent",
+    "languages_20": "9 i App Store",
+    "folder_browsing": "Blar i nettverkskilder (SMB, FTP, WebDAV, UPnP, sky); lokale filer åpnes fra Finder",
+    "thumbnail_grid": "Lager videominiatyrer; oppsett ikke dokumentert",
+    "network_shares_fast": "WebDAV, FTP, SFTP, HTTP, SMB/CIFS, NFS, UPnP/DLNA; fart ukjent",
+    "zoom_rotate": "Roter 90/180/270, speilvend video",
+    "auto_enhance_view": "Lysstyrke og metning for video",
+    "saved_playlists": "Åpner spillelistefiler; lagring av egne ikke dokumentert",
+    "library_catalog": "Metadata fra TMDb",
+    "cloud_sync": "Strømmer fra Box, Dropbox, OneDrive; ingen synkronisering",
+    "notarized_attested": "Signert via App Store; lukket kildekode"
+   }
+  },
+  "omniplayer": {
+   "name": "OmniPlayer",
+   "vendor": "Oka Apps",
+   "summary": "Mediespiller fra Mac App Store for MKV, AVI, WMV og de fleste andre formater, med søk etter undertekster, avspillingshastighet, equalizer og sending til DLNA, Chromecast og Roku. En enkel spiller for å se én fil om gangen, med spilleliste.",
+   "wins": [
+    "Søk etter undertekster på nett",
+    "Avspillingshastighet ned til 0.1x, bilde for bilde",
+    "Sending til TV (DLNA, Chromecast, Roku)",
+    "Adresser fra YouTube/Vimeo, SMB/FTP-kilder",
+    "Equalizer, musikkavspilling",
+    "Bildejusteringer og GIF-eksport"
+   ],
+   "price": "Gratis med VIP: livstid $9.99, per år $6.99, per måned $3.99; OmniPlayer Pro $8.99 engangskjøp",
+   "version": "2.1.22",
+   "updated": "2026-06-18",
+   "platforms": "macOS",
+   "notes": {
+    "free": "Gratis; VIP fra $3.99 i måneden eller $9.99 livstid; hvilke funksjoner som krever VIP, står ikke",
+    "languages_20": "7 i App Store; leverandørens side oppgir 11",
+    "folder_browsing": "Mapper som dras inn, blir en spilleliste («mappemodus»); ingen mappeblaing",
+    "recursive_search": "Søk i spillelisten; mapper i flere nivåer kan dras inn",
+    "network_shares_fast": "Spiller fra SMB/FTP-servere og Alist; fart i store mapper ukjent",
+    "zoom_rotate": "Videorotering, sideforhold, vindusstørrelse; ingen bilder",
+    "auto_enhance_view": "Lysstyrke/kontrast/metning bare for video",
+    "file_info_exif": "En anmeldelse nevner en medieinfoboks (kodeker); ingen EXIF",
+    "saved_playlists": "Spillelisten huskes automatisk; ingen navngitte spillelister",
+    "keyboard_first": "Hurtigtaster for avspilling, hastighet (⌘[ / ⌘]), undertekster",
+    "notarized_attested": "Signert via App Store; lukket kildekode"
+   }
+  },
+  "opencomic": {
+   "name": "OpenComic",
+   "vendor": "ollm",
+   "summary": "OpenComic er en leser for tegneserier, manga og e-bøker med åpen kildekode for flere plattformer, med faner, flere vinduer, OPDS og servertilkoblinger. Den har manga- og webtoon-modus, bildejusteringer og AI-oppskalering.",
+   "wins": [
+    "Mange formater, blant dem EPUB, MOBI, SVG, JPEG XL, ACE/LZH-arkiver",
+    "Manga, webtoon, dobbeltside og guidet visning",
+    "Direkte SMB/FTP/SFTP/WebDAV/S3 og OPDS",
+    "AI-oppskalering, fjerning av raster og artefakter",
+    "Faner og flere vinduer; egne hurtigtaster og spillkontroller"
+   ],
+   "price": "Gratis (GitHub); $4.99 i Mac App Store",
+   "version": "2.0.0 (GitHub); 1.6.11 i Mac App Store",
+   "updated": "2026-11-14",
+   "platforms": "macOS, Windows, Linux",
+   "notes": {
+    "network_shares_fast": "Direkte SMB, FTP, SFTP, WebDAV, S3; fillister bufres",
+    "bookmarks": "Sidebokmerker, favoritter og egne etiketter",
+    "img_modern_formats": "WebP, AVIF, JPEG XL; HEIC fjernet igjen",
+    "zoom_rotate": "Zoom og lupe; rotering ikke dokumentert",
+    "music_mode": "Bakgrunnsmusikk og lydeffekter under lesing; ingen musikkspiller",
+    "rename_trash": "Flytt til papirkurven og slett permanent; ikke nytt navn",
+    "cloud_sync": "Servertilkoblinger og OPDS; ingen egen skysynkronisering",
+    "app_sandbox": "Utgaven i Mac App Store er i sandkasse; DMG fra GitHub ikke",
+    "notarized_attested": "DMG/PKG for Mac bygget lokalt og notarisert; ingen byggattestasjon"
+   }
+  },
+  "panels": {
+   "name": "Panels",
+   "vendor": "Produkt Studio",
+   "summary": "Panels er en tegneserieleser for iPhone, iPad og Mac med omslagsbibliotek, leseoppsett, rute-for-rute-visning og OPDS for Komga/Kavita. Avanserte funksjoner som skybiblioteker, sidefiltre og tekstgjenkjenning krever Premium.",
+   "wins": [
+    "Synkronisert bibliotek og fremdrift mellom Mac, iPhone og iPad",
+    "OPDS-strømming (Komga, Kavita, Calibre)",
+    "Guidet rute-for-rute-visning, leseoppsett",
+    "Direktetekst og motivgjenkjenning",
+    "Tegneseriebutikk uten DRM i appen"
+   ],
+   "price": "Gratis nedlasting; Premium via Panels+-abonnement (måned/år) eller engangskjøp av Panels 3 (EUR 22.99 engangskjøp / EUR 11.99 per år, mai 2025)",
+   "version": "3.13.11",
+   "updated": "2026-11-11",
+   "platforms": "macOS, iOS, iPadOS",
+   "notes": {
+    "free": "Gratis grunnleser; Premium som abonnement eller engangskjøp (EUR 22.99)",
+    "no_account_no_tracking": "Ingen konto for lokale filer; App Store: bruksdata, diagnose, identifikatorer",
+    "languages_20": "12 språk (8 maskinoversatt); velges per app i macOS",
+    "folder_browsing": "Biblioteker er vanlige mapper du legger til; eksterne disker og iCloud er Premium",
+    "list_view": "Rutenett eller liste (⌘1 / ⌘2); kolonner ikke dokumentert",
+    "network_shares_fast": "SMB-import og OPDS-strømming (Premium); takler tusenvis av tegneserier",
+    "bookmarks": "Favorittsteder i biblioteket (Premium), favoritter, fortsett å lese",
+    "img_svg_pdf": "PDF ja, SVG nei",
+    "zoom_rotate": "Zoom, tilpass/fyll; rotering ikke dokumentert",
+    "auto_enhance_view": "Sidefiltre (støy, skarphet, moaré, kanter) er Premium",
+    "file_info_exif": "Info om tegneserier (⌘I), ingen EXIF",
+    "archives_as_folders": "Åpner et arkiv som tegneseriebok, ikke som mappe",
+    "rename_trash": "Nytt navn og sletting i biblioteket",
+    "move_copy": "Kopier, flytt, lim inn i biblioteket",
+    "keyboard_first": "Mange hurtigtaster for leser og bibliotek",
+    "notarized_attested": "Signert via Mac App Store; lukket kildekode"
+   }
+  },
+  "path-finder": {
+   "name": "Path Finder",
+   "vendor": "Cocoatech",
+   "summary": "Veletablert erstatning for Finder med to paneler, moduler (forhåndsvisning, info, terminal, Drop Stack), størrelsesvisning, nytt navn i bunt og mappesynkronisering. God for erfarne brukere som vil ha mange verktøy rundt en Finder-lignende blar.",
+   "wins": [
+    "Moduler: forhåndsvisning, info, terminal, Drop Stack, Git, heks- og tekstredigering",
+    "Størrelsesvisning og synkronisering/sammenslåing av mapper",
+    "Nytt navn i bunt, sikker sletting, administratortilgang",
+    "20 språk i grensesnittet",
+    "Bokmerkelinje, faneoppsett"
+   ],
+   "price": "Abonnement $29.95/år eller $2.95/måned, eller lisensnøkkel fra $32.95 (1 års oppdateringer), $55.95 (2 år), $122.95 (5 år); 30 dagers prøve",
+   "version": "26.1.10",
+   "updated": "2026-10-22",
+   "platforms": "macOS",
+   "notes": {
+    "no_account_no_tracking": "Ingen bruksdata; abonnementet krever innlogging og sjekker på nett",
+    "thumbnail_grid": "Symbolvisning for bilder; ingen mappeforhåndsvisning",
+    "regex_search": "Navn som «samsvarer med mønster» (jokertegn); regulære uttrykk ikke dokumentert",
+    "network_shares_fast": "Raskere forhåndsvisning på nettverksvolumer; ingenting generelt om fart",
+    "img_modern_formats": "Forhåndsvisningsmodul/Hurtigvisning med macOS-kodeker; ingen egen fremviser",
+    "img_raw": "Via macOS; ARW-forhåndsvisning fra 26.1.8",
+    "img_animated": "Animert GIF spilles i Hurtigvisning; APNG og WebP ikke dokumentert",
+    "zoom_rotate": "Bare zoom i Hurtigvisning",
+    "slideshow": "Ingen egen; Hurtigvisning viser et utvalg som lysbildefremvisning",
+    "file_info_exif": "Infopanel med mål, lengde og macOS-metadata; kodek/bitrate ikke dokumentert",
+    "video_mkv_avi_webm": "WebM-forhåndsvisning lagt til; MKV/AVI ikke nevnt",
+    "music_mode": "Lyd bare i forhåndsvisning/Hurtigvisning",
+    "archive_passwords": "Lager og pakker ut passordbeskyttet ZIP (AES-128/256)",
+    "dual_pane": "To paneler, men kopier/flytt med ⌘C/⌘V/⌘X eller dra; ikke F5/F6 som standard (taster kan velges)",
+    "batch_convert": "Nytt navn i bunt; ingen bildekonvertering",
+    "library_catalog": "Bare Finder-stikkord og fargeetiketter",
+    "cloud_sync": "Dropbox-integrasjon, Cloud Uploader, iCloud Drive",
+    "keyboard_first": "Mange hurtigtaster, men grensesnitt for mus som i Finder",
+    "shortcut_cheatsheet": "Støtteartikkel med vanlige standardtaster; ikke for utskrift"
+   }
+  },
+  "phiewer": {
+   "name": "Phiewer",
+   "vendor": "Thomas Zinnbauer",
+   "summary": "Rask, tastaturvennlig mediefremviser for mapper med bilder, RAW, videoer og lyd. PRO legger til Showcases (virtuelle album), duplikatsøk, sammenligningsvisning, ikke-destruktiv redigering, Finder-stikkord og egne hurtigtaster for en lav engangspris.",
+   "wins": [
+    "Duplikatsøk og sammenligning av opptil 9 bilder",
+    "Showcases: lagrede virtuelle album på tvers av mapper",
+    "Finder-stikkord og kommentarer, søk etter stikkord, EXIF og dato",
+    "Lydfiler og utskrift",
+    "Bilderedigering (beskjæring, filtre, størrelse) i PRO",
+    "Kinomodus"
+   ],
+   "price": "Phiewer (lite) gratis; Phiewer PRO $7.99 engangskjøp (Mac App Store)",
+   "version": "8",
+   "updated": "2026-11-07",
+   "platforms": "macOS",
+   "notes": {
+    "free": "Lite gratis (blaing, alle formater, enkel lysbildefremvisning, EXIF); resten PRO, $7.99 engangskjøp",
+    "no_account_no_tracking": "Ingen konto, ingen reklame; App Store: analyse, ikke knyttet til deg",
+    "languages_20": "8: EN, DE, FR, ES, PT, IT, NL, PL",
+    "recursive_search": "Navn, stikkord, kommentarer, dato, EXIF (PRO); undermapper kan tas med i visningen",
+    "img_modern_formats": "HEIC, AVIF, WebP ja; JPEG XL ikke oppført",
+    "img_animated": "GIF og animert WebP; APNG ikke oppført",
+    "slideshow_recursive": "Bare PRO; undermapper og tilfeldig rekkefølge; videoer spilles (kan dempes)",
+    "auto_enhance_view": "PRO: filtre og justeringer med angre, som redigering; ingen autoforbedret visning",
+    "file_info_exif": "EXIF og filinfo; kodek/bitrate ikke oppført",
+    "wrong_extension_note": "Gjenkjenner bilder med feil etternavn og åpner dem; ingen merknad til brukeren",
+    "video_mkv_avi_webm": "AVI, MPG, 3GP, MTS, M2TS, TS; MKV, WebM, WMV, FLV ikke i formatlisten",
+    "video_skim_arrows": "Hoppintervall kan velges (PRO); spoling med piltaster ikke dokumentert",
+    "playback_speed": "Videokontroller i PRO",
+    "playlist": "PRO Showcases: virtuelle samlinger «som spillelister» på tvers av mapper",
+    "saved_playlists": "PRO Showcases lagres",
+    "undo_file_actions": "⌘Z for flytting med dra og slipp; angre nytt navn/papirkurv ikke nevnt",
+    "image_editing": "PRO: beskjær, roter, speilvend, størrelse, komprimering, filtre",
+    "batch_convert": "PRO: eksport og komprimering i bunt; nytt navn i bunt ikke dokumentert",
+    "library_catalog": "Finder-stikkord og kommentarer, favoritter, Showcases; ingen katalogdatabase",
+    "cloud_sync": "PRO: deling via delingsmenyen i macOS; ingen synkronisering",
+    "custom_shortcuts": "Bare PRO",
+    "shortcut_cheatsheet": "Alle taster i Innstillinger > Hurtigtaster; ikke for utskrift"
+   }
+  },
+  "photo-mechanic": {
+   "name": "Photo Mechanic",
+   "vendor": "Camera Bits",
+   "summary": "Photo Mechanic er et raskt verktøy for import, utsortering og metadata for profesjonelle fotografer, særlig innen presse, sport og bryllup. Det åpner mapper og minnekort direkte, viser RAW-filer med en gang fra de innebygde forhåndsvisningene og er laget for bildetekster, IPTC-metadata, nøkkelord, nytt navn i bunt og opplasting under tidspress.",
+   "wins": [
+    "Import fra flere minnekort samtidig, med nytt navn og metadata under kopieringen",
+    "IPTC/XMP-metadata, kodeerstatninger, variabler og strukturerte nøkkelord for bildetekster under tidspress",
+    "Stjerner, fargeklasser og stikkord for å sortere tusenvis av RAW-filer raskt",
+    "Nytt navn i bunt, Arkiver som/størrelse/vannmerke og direkte opplasting til FTP, Dropbox, S3, PhotoShelter m.fl.",
+    "Søk og erstatt med regulære uttrykk i filnavn og metadata",
+    "Fullt tilpassbare hurtigtaster med oppsett, og PDF-er med taster for utskrift",
+    "Windows-versjon med de samme funksjonene"
+   ],
+   "price": "Photo Mechanic: $14.99/måned, $149/år eller $299 evigvarende (1 års oppdateringer); 30 dagers gratis prøve. Photo Mechanic Plus (katalognivå, $24.99/md., $249/år, $399 evigvarende) selges ikke til nye kjøpere siden 27. feb. 2026, selv om butikksiden fortsatt viser den.",
+   "version": "2026.6 (build 9175), den siste kunngjort på Camera Bits’ blogg",
+   "updated": "2026-06-18",
+   "platforms": "macOS, Windows",
+   "notes": {
+    "no_account_no_tracking": "Ingen reklame; lisensen aktiveres og sjekkes på nett fra tid til annen",
+    "dark_light_setting": "Lyst eller mørkt tema for meldinger og dialoger; bakgrunn kan velges",
+    "thumbnail_grid": "Kontaktark med miniatyrer; mapper i et navigasjonstre, ikke som forhåndsvisninger",
+    "recursive_search": "«Åpne mappe og undermapper» i ett kontaktark, så søk etter navn eller IPTC",
+    "img_psd_exr": "PSD (lagret med maksimal kompatibilitet) ja; OpenEXR ikke i formatlisten",
+    "zoom_rotate": "Zoom og panorering; rotering skriver EXIF-retningen (ikke bare visning)",
+    "slideshow_recursive": "Mulig over mappe og undermapper; videoer ikke dokumentert",
+    "video_mkv_avi_webm": "AVI oppført; MKV, WebM, WMV, FLV ikke i formatlisten",
+    "undo_file_actions": "Rediger > Angre/Gjør om «når tilgjengelig»; hvilke filhandlinger er uklart",
+    "image_editing": "Beskjær, roter, størrelse, vannmerke ved eksport; ingen pikselredigering",
+    "library_catalog": "Stikkord, stjerner, fargeklasser, IPTC-nøkkelord i filene; katalogen selges ikke lenger"
+   }
+  },
+  "picasa": {
+   "name": "Picasa",
+   "vendor": "Google",
+   "summary": "Googles gratis bildeorganiserer og fremviser, lagt ned i mars 2016 og borte fra nettet siden 2018. Den skannet mapper inn i et bibliotek med stikkord, ansikter og album, og hadde enkle, ikke-destruktive fikser og lysbildefremvisning. Fortsatt mye søkt av folk som vil ha en enkel, gratis, lokal bildefremviser.",
+   "wins": [
+    "Ansiktsgjenkjenning, stikkord og album",
+    "Ikke-destruktive fikser med ett klikk",
+    "Collager, utskriftsoppsett og eksport",
+    "Kjent for mange mangeårige brukere"
+   ],
+   "price": "Gratis (avviklet, ingen offisiell nedlasting)",
+   "version": "3.9.141.259 (Windows) / 3.9.141.306",
+   "updated": "2015-10-09 (støtten endte 2016-03-15)",
+   "platforms": "Windows, macOS (Intel, beta), Linux (Wine, gammel)"
+  },
+  "picview": {
+   "name": "PicView",
+   "vendor": "Ruben Hyldgaard Negendahl",
+   "summary": "PicView er en rask, gratis bildefremviser med åpen kildekode for Windows og macOS, bygget med Avalonia. Den leser nesten alle bildeformater via Magick.NET, åpner tegneserier og arkiver, og har galleri, faner, beskjæring, størrelse i bunt og et vindu med bildeinfo. Svært tilpassbar, også tastene.",
+   "wins": [
+    "Svært bred formatstøtte (Magick.NET)",
+    "Beskjæring, størrelse, konvertering og størrelse i bunt innebygd",
+    "Faner med egen historikk",
+    "To bilder side om side",
+    "Redigering av EXIF-vurdering og nøkkelord",
+    "Finnes også for Windows"
+   ],
+   "price": "Gratis",
+   "version": "5.2.2",
+   "updated": "2026-11-10",
+   "platforms": "macOS, Windows",
+   "notes": {
+    "folder_browsing": "Åpner en fil og blar gjennom mappen med et galleri; ikke mappetre",
+    "thumbnail_grid": "Galleri nederst eller i full størrelse for mappen; ingen mappeforhåndsvisning",
+    "recursive_search": "⌃F søker i mappen, med valg for undermapper",
+    "network_shares_fast": "Kan skjule galleriet i svært store mapper; ingenting spesielt for nettverk",
+    "bookmarks": "Favorittfiler med tasteplasser og filhistorikk; mappebokmerker ukjent",
+    "img_svg_pdf": "SVG ja; PDF ikke oppført",
+    "slideshow_recursive": "Innstilling for å ta med undermapper; bare bilder",
+    "auto_enhance_view": "Effekter (lysstyrke, kontrast, filtre) på visningen, kan lagres; ingen autoforbedring",
+    "manga_two_page": "To bilder side om side; ingen høyre-mot-venstre-rekkefølge",
+    "move_copy": "Flytt ved å endre stien; kopier fil; ikke dra til mapper",
+    "library_catalog": "Redigerer EXIF-vurdering og nøkkelord; ingen katalogdatabase",
+    "shortcut_cheatsheet": "Liste over taster på picview.org; ikke for utskrift"
+   }
+  },
+  "pixea": {
+   "name": "Pixea",
+   "vendor": "ImageTasks",
+   "summary": "Minimal bilde- og videofremviser som har vokst til en bilderedigerer med masker, fjerning av objekter og oppskalering. Blar i mapper, bildebiblioteker og ZIP/CBZ-arkiver og spiller MKV med valg av undertekster og lydspor; søk, sortering og egne hurtigtaster krever Pixea Plus.",
+   "wins": [
+    "Bilderedigerer med masker, fjerning av objekter, oppskalering, LUT-er",
+    "Redigering og konvertering i bunt",
+    "Innebygde undertekster, lydspor, avspillingshastighet",
+    "Åpner biblioteker fra Bilder",
+    "Stikkord og vurderinger med XMP-filer",
+    "Duplikatsøk"
+   ],
+   "price": "Gratis; Pixea Plus $19.99 livstid, $14.99/år eller $1.99/måned",
+   "version": "8.4.1",
+   "updated": "2026-10-27",
+   "platforms": "macOS",
+   "notes": {
+    "free": "Gratis grunnversjon; Pixea Plus $19.99 livstid, $14.99/år eller $1.99/måned",
+    "dark_light_setting": "Tema Liquid Glass eller Classic og bakgrunnsfarge; ingen lys/mørk-bryter",
+    "languages_20": "12: EN, BG, FR, DE, IT, JA, KO, PT, RU, zh-Hans, ES, UK",
+    "recursive_search": "Søk bare i Plus; undermapper skannes 1 til 5 nivåer ned",
+    "network_shares_fast": "Kan hoppe over metadata på nettverksvolumer; raskere store mapper",
+    "img_psd_exr": "PSD ja; Radiance HDR oppført, OpenEXR ikke",
+    "slideshow_recursive": "Over skannet mappe med undermapper opptil 5 nivåer, tilfeldig; bilder og videoer om hverandre",
+    "auto_enhance_view": "Ikke-destruktive justeringer kan lagres i Pixea-format; ingen autoforbedret visning",
+    "file_info_exif": "EXIF-panel; skjermvisning for videoer (Plus); kodek/bitrate ikke oppgitt",
+    "video_mkv_avi_webm": "MKV, AVI, WMV, FLV, VOB, RM ja; WebM ikke oppført",
+    "video_skim_arrows": "Hopp 10 s/30 s; piltastene går til neste medium",
+    "archives_as_folders": "Bare ZIP; RAR/7z ikke oppført",
+    "comics_cbz_cbr": "Bare CBZ",
+    "videos_in_archives": "Søket dekker videoer i ZIP; avspilling fra ZIP ikke oppgitt",
+    "undo_file_actions": "Angre/gjør om handlinger, omfang ikke oppgitt",
+    "batch_convert": "Gratis 3 bilder, Plus ubegrenset",
+    "cloud_sync": "Delingsknapp; ingen synkronisering",
+    "keyboard_first": "Hurtigtaster for blaing, zoom, vurdering",
+    "custom_shortcuts": "Bare Plus",
+    "shortcut_cheatsheet": "Kort tasteliste på nettstedet",
+    "no_network": "Ingen data samles inn; laster ned en ML-modell ved behov"
+   }
+  },
+  "potplayer": {
+   "name": "PotPlayer",
+   "vendor": "Kakao",
+   "summary": "PotPlayer er en svært konfigurerbar mediespiller for Windows fra Kakao med innebygde kodeker, maskinvaredekoding, 3D/360°-visning, undertekstverktøy med Whisper som gjør tale til undertekster, og strømming. Den åpner også stillbilder og spiller medier rett fra ZIP- og RAR-arkiver.",
+   "wins": [
+    "Enormt mange innstillinger, gjengivere og filtre (madVR, HDR-tonemapping, bildedobling)",
+    "Nedlasting av undertekster, oversettelse av undertekster og tale til undertekster (Whisper)",
+    "Strømming (YouTube, HLS/DASH), TV/DVD/Blu-ray, 3D og 360° VR",
+    "Fullt tilpassbare hurtigtaster og skall",
+    "Musikkavspilling med albumbilder, sangtekster, ReplayGain"
+   ],
+   "price": "Gratis (freeware)",
+   "version": "261021 (1.7.x-bygg, 21. okt. 2026)",
+   "updated": "2026-10-21",
+   "platforms": "Windows"
+  },
+  "qspace": {
+   "name": "QSpace",
+   "vendor": "Tian Wenda",
+   "summary": "Finder-lignende filbehandler med flere paneler, 12 oppsett, arbeidsområder, mye tilpasning (hurtigtaster, hurtigmeny, farger) og regex-søk. Betalte tillegg gir blaing i arkiver, server- og skytilkoblinger og avansert nytt navn i bunt.",
+   "wins": [
+    "Opptil 12 paneloppsett og lagrede arbeidsområder",
+    "Tilpasning av hurtigtaster, hurtigmenyer, verktøylinje, farger",
+    "Mappesynkronisering, sjekksummer, filmaler",
+    "Raske bildehandlinger (roter, konverter, fjern bakgrunn)",
+    "Kolonner med videometadata (bildefrekvens, datahastighet)"
+   ],
+   "price": "Engangskjøp: QSpace (MAS) $12.99, QSpace Pro (direkte) $13.99 salgspris (ordinært $27.99/$29.99); betalte tillegg: Stash Shelf, Advanced Batch Rename, Server Connections ($0.99 til $9.99), Enhanced Archiver (gratis kampanje, ordinært $4.99)",
+   "version": "Pro 7.0.4 (MAS 7.0.3; beta 7.0.4.018)",
+   "updated": "2026-10-09",
+   "platforms": "macOS",
+   "notes": {
+    "no_account_no_tracking": "Pro-lisensen er knyttet til en konto (2 enheter); App Store: identifikatorer knyttet til deg",
+    "dark_light_setting": "Fargeoppsett med lys og mørk modus (beta); ingen egen bryter dokumentert",
+    "languages_20": "Rundt 14 språk",
+    "img_modern_formats": "Forhåndsvisning via macOS; bare HEIC nevnt",
+    "zoom_rotate": "Zoom i Hurtigvisning; rotering endrer filen",
+    "slideshow": "Hurtigmeny «Instant SlideShow» (Hurtigvisning i fullskjerm)",
+    "video_mkv_avi_webm": "MKV o.l. via medieutvidelser i macOS",
+    "music_mode": "Bare omslagsminiatyrer og avspilling i Hurtigvisning",
+    "archives_as_folders": "Tillegget Enhanced Archiver (normalt $4.99): RAR, ZIP, 7z som mapper",
+    "comics_cbz_cbr": "Ingen tegneserieleser; CBZ/CBR kan legges til som arkivtyper",
+    "videos_in_archives": "Forhåndsvisning i arkiver; ingen spiller",
+    "dual_pane": "Opptil 12 paneler; kopier/flytt med egne taster, ikke F5/F6 som standard",
+    "image_editing": "Hurtighandlinger: roter, konverter, fjern bakgrunn, lag PDF",
+    "batch_convert": "Bildekonvertering; Advanced Batch Rename er et betalt tillegg",
+    "library_catalog": "Bare Finder-stikkord og kommentarer",
+    "cloud_sync": "Tillegget Server Connections: FTP, SFTP, Dropbox, OneDrive, Google Drive, S3 …",
+    "app_sandbox": "MAS-versjonen er i sandkasse (mapper legges til manuelt); Pro bruker full disktilgang"
+   }
+  },
+  "quicktime-player": {
+   "name": "QuickTime Player",
+   "vendor": "Apple",
+   "summary": "Apples innebygde mediespiller. Åpner det AVFoundation kan spille av (MP4, MOV, M4V, HEVC, ProRes), med bilde-i-bilde, hastighetskontroll og enkel redigering som klipping og deling, og i tillegg opptak av skjerm og lyd.",
+   "wins": [
+    "Allerede installert, ingenting å laste ned",
+    "Opptak av skjerm, film og lyd",
+    "Enkel videoredigering: klipp, del, roter, fjern lyd, eksporter",
+    "Bilde-i-bilde og romlig video"
+   ],
+   "price": "Gratis (følger med macOS)",
+   "version": "10.5 (macOS 27)",
+   "updated": "følger med macOS 27 (2026)",
+   "platforms": "macOS",
+   "notes": {
+    "zoom_rotate": "Bare videoer; rotering og speilvending er redigering",
+    "file_info_exif": "Filminspektør: format, komprimering, størrelse, bilder/s, datahastighet; ingen EXIF",
+    "video_skim_arrows": "← → ett bilde; ⌥ + piltast til start/slutt; ingen tidshopp",
+    "music_mode": "Spiller én lydfil om gangen; intet bibliotek eller kø",
+    "rename_trash": "Nytt navn på den åpne filmen; ikke papirkurv eller ny mappe",
+    "undo_file_actions": "Angre for filmredigering, ikke for filhandlinger",
+    "cloud_sync": "Åpner filer i iCloud Drive; Del-menyen",
+    "keyboard_first": "Avspilling med tastatur; ingen filnavigering",
+    "shortcut_cheatsheet": "Tasteliste på Apples hjelpeside",
+    "no_network": "Kan gå på nett (åpne adresse, deling); ingen egne oppdateringssjekker eller telemetri",
+    "notarized_attested": "Systemapp signert av Apple; lukket kildekode"
+   }
+  },
+  "quickviewer": {
+   "name": "QuickViewer",
+   "vendor": "KATO Kanryu",
+   "summary": "Rask OpenGL-fremviser for bilder og tegneserier som leser arkiver uten å pakke dem ut og viser dobbeltsider. Har en katalogdatabase for store tegneseriesamlinger. Utvikleren avsluttet prosjektet i november 2025 på grunn av sykdom; 1.2.8 var en sikkerhetsrettelse for UnRAR.",
+   "wins": [
+    "Katalogdatabase for tusenvis av tegneserier",
+    "Svært rask sidebytting via OpenGL",
+    "Bred arkivstøtte, også tar.gz/bz2/xz og cab",
+    "CMYK-JPEG vist riktig"
+   ],
+   "price": "Gratis",
+   "version": "1.2.8",
+   "updated": "2025-12-12",
+   "platforms": "Windows, macOS (Intel, til og med 1.1.1), Linux (til og med 1.1.1)"
+  },
+  "qview": {
+   "name": "qView",
+   "vendor": "jurplel (Interverse)",
+   "summary": "qView er en minimal bildefremviser for flere plattformer uten verktøylinjer: den åpner én fil og lar deg bla gjennom resten av mappen. Den starter raskt, forhåndslaster bildene ved siden av og støtter animerte bilder og mange formater via Qt-utvidelser.",
+   "wins": [
+    "Svært minimal, vindu uten rammeverk",
+    "Kjører også på Windows og Linux, og på eldre macOS (egen utgave for 10.13+)",
+    "Bilde for bilde og hastighet for animerte bilder",
+    "Åpner et bilde rett fra en adresse"
+   ],
+   "price": "Gratis",
+   "version": "7.1",
+   "updated": "2025-07-26 (versjon; nattlige bygg fortsetter, siste 2026-11-04)",
+   "platforms": "macOS, Windows, Linux",
+   "notes": {
+    "dark_light_setting": "Bakgrunnsfarge og mørk tittellinje kan velges; ikke fullt lyst/mørkt tema",
+    "folder_browsing": "Åpner en fil og blar gjennom mappen; ingen mappeblaing",
+    "img_svg_pdf": "SVG ja, ingen PDF",
+    "file_info_exif": "Infodialog med filstørrelse og mål; ingen EXIF",
+    "wrong_extension_note": "Kan åpne filer etter innhold, men sier ikke fra om avviket",
+    "rename_trash": "Nytt navn og flytt til papirkurven; ingen ny mappe",
+    "undo_file_actions": "Bare angre sletting (gjenopprett fra papirkurven)"
+   }
+  },
+  "raw-power": {
+   "name": "RAW Power",
+   "vendor": "Gentlemen Coders",
+   "summary": "RAW Power er en ikke-destruktiv RAW- og JPEG-redigerer fra en tidligere Aperture-leder, som kan brukes alene på Finder-mapper, til å håndtere biblioteket i Apple Bilder eller som redigeringsutvidelse i Bilder. Den har justeringer i Aperture-stil, vurderinger og flagg synkronisert via iCloud-bilder og eksport i bunt. Leverandøren viser nå brukere av macOS 13+ til etterfølgeren Nitro Photo.",
+   "wins": [
+    "Ikke-destruktiv RAW/JPEG-redigering (kurver, LUT-er, dybdeeffekt, Boost)",
+    "Jobber direkte på biblioteket i Apple Bilder og synkroniserer via iCloud-bilder",
+    "Forhåndsinnstillinger og eksport i bunt",
+    "Versjon for iPhone og iPad",
+    "Faner for flere mapper"
+   ],
+   "price": "$39.99 engangskjøp i Mac App Store (leverandørens nettsted: $49.99 Mac, $9.99 iOS; separate kjøp)",
+   "version": "3.5.6",
+   "updated": "2026-07-27",
+   "platforms": "macOS, iOS, iPadOS",
+   "notes": {
+    "no_account_no_tracking": "Ingen konto eller reklame; bruksdata til analyse, ikke knyttet til deg",
+    "languages_20": "6: engelsk, fransk, tysk, spansk, forenklet og tradisjonell kinesisk",
+    "thumbnail_grid": "Miniatyrrutenett med merker; mappeforhåndsvisning ikke dokumentert",
+    "rename_trash": "Kan slette bilder og lage album/mapper; nytt navn ikke dokumentert",
+    "move_copy": "Ordner album i Bilder; flytting/kopiering på disken ikke beskrevet",
+    "keyboard_first": "Hurtigtaster for vurdering, flagg og navigering; redigering med glidebrytere og mus"
+   }
+  },
+  "sequential": {
+   "name": "Sequential",
+   "vendor": "chuchusoft og The Sequential Project",
+   "summary": "Sequential er en klassisk bilde- og tegneseriefremviser for Mac med åpen kildekode som åpner mapper, PDF-er og arkiver (ZIP/CBZ, RAR/CBR, 7z) og blar gjennom dem i ett vindu. Forken fra chuchusoft moderniserte den som universell app for macOS 11.4+ på Apple silicon; vedlikeholderen sier at videre utvikling er lite sannsynlig. Den opprinnelige btrask/Sequential ble sist oppdatert i 2013.",
+   "wins": [
+    "Leser PDF side for side med Gå til side og en modus for inverterte farger",
+    "Leseretning fra høyre mot venstre for manga",
+    "Pause/fortsett bokmerker leseposisjonen i et arkiv",
+    "Mange arkivformater via XADMaster, også delt 7z",
+    "Kjører på eldre macOS (10.14 Intel / 11.4 Apple silicon)"
+   ],
+   "price": "Gratis",
+   "version": "2.6.0",
+   "updated": "2024-09-07",
+   "platforms": "macOS",
+   "notes": {
+    "languages_20": "12 språk: de en es fr it ja nl pl pt_BR ru sv zh_TW",
+    "thumbnail_grid": "Miniatyrer i et sidepanel, ikke et rutenett",
+    "recursive_search": "Søk finner sidenavn i den åpne mappen eller arkivet",
+    "network_shares_fast": "Fungerer på tilkoblede servere; ingen egen hurtigbuffer",
+    "bookmarks": "Pause/fortsett bokmerker en posisjon; ingen mappefavoritter",
+    "img_modern_formats": "HEIC/HEIF og WebP; AVIF og JPEG XL ikke med",
+    "img_svg_pdf": "PDF fullt (sider, Gå til side); SVG oppført, visningen avhenger av macOS",
+    "img_animated": "Animert GIF (pause med mellomrom); APNG/animert WebP ikke dokumentert",
+    "slideshow_recursive": "Tidsur går gjennom hele treet med undermapper og arkiver, men bare bilder (ingen video)",
+    "file_info_exif": "Inspektør viser EXIF og bildeegenskaper; ingen video",
+    "streaming_urls": "Ingen strømmer, men Åpne adresse laster bilder fra internett",
+    "split_archives": "Delt 7-Zip (.7z.001) fra 2.4.0; delt RAR/ZIP ikke dokumentert",
+    "manga_two_page": "Leseretning høyre mot venstre; ingen dobbeltside",
+    "rename_trash": "Flytt til papirkurven for lokale bilder; ikke nytt navn eller ny mappe",
+    "move_copy": "«Lagre bilder i …» kopierer/pakker ut bilder; Kopier; ingen flytting",
+    "shortcut_cheatsheet": "Hjelp > Hurtigtaster åpner en hjelpeside; ikke for utskrift"
+   }
+  },
+  "simple-comic": {
+   "name": "Simple Comic",
+   "vendor": "Dancing Tortoise Software og Simple Comic-fellesskapet",
+   "summary": "Simple Comic er en slank, innebygd tegneseriefremviser for macOS som handler om å lese med så få grep som mulig. Den åpner CBZ/CBR/CB7, PDF og bildemapper som en bok, med dobbeltsider, manga fra høyre mot venstre og Direktetekst på tegneseriesider.",
+   "wins": [
+    "Dobbeltsider og mangamodus fra høyre mot venstre",
+    "Direktetekst: marker, kopier og les opp tekst i tegneseriesider",
+    "RAR i flere deler og arkiver i arkiver åpnes som én tegneserie",
+    "Lesing av PDF",
+    "Hurtigvisning-miniatyrer for tegneseriearkiver i Finder"
+   ],
+   "price": "Gratis (Mac App Store og GitHub)",
+   "version": "1.12.0 (GitHub, sendt til App Store); App Store viser 1.11.0",
+   "updated": "2026-11-11",
+   "platforms": "macOS",
+   "notes": {
+    "languages_20": "9 språk (de, en, fr, it, ja, ko, pt, zh-Hans, zh-Hant)",
+    "folder_browsing": "Åpner en mappe eller et arkiv som én bok, ingen mappenavigering",
+    "thumbnail_grid": "Miniatyroversikt bare over sidene i den åpne boken",
+    "network_shares_fast": "Arkiver på nettverksvolumer bufres lokalt i bakgrunnen; sider vises mens de lastes",
+    "img_raw": "Tar alle typer NSImage/ImageIO kan lese (også kamera-RAW); ikke fremhevet",
+    "img_psd_exr": "Tar alle typer NSImage/ImageIO kan lese (også PSD, OpenEXR); ikke fremhevet",
+    "img_svg_pdf": "PDF ja (som bok); SVG bare hvis NSImage tar den",
+    "archives_as_folders": "Åpner et arkiv som tegneseriebok, ikke som mappe",
+    "keyboard_first": "Sidebytting, zoom og menyer med tastatur; ingen filblaing med tastatur",
+    "shortcut_cheatsheet": "Hjelpeboken viser navigeringstastene",
+    "no_network": "MAS-utgaven går ikke på nett; den direkte har nettverkstilgang for Sparkle-oppdateringer",
+    "notarized_attested": "Direkte utgave notarisert; ingen offentlig byggattestasjon"
+   }
+  },
+  "smplayer": {
+   "name": "SMPlayer",
+   "vendor": "Ricardo Villalba",
+   "summary": "SMPlayer er et gratis Qt-grensesnitt med åpen kildekode for mpv og MPlayer som husker innstillingene per fil. Det har et klassisk spillergrensesnitt med skall, YouTube-avspilling, nedlasting fra opensubtitles.org, filtre og en redigerer for hurtigtaster.",
+   "wins": [
+    "Fortsetter hver fil med egne innstillinger (lyd, undertekster, posisjon)",
+    "YouTube-avspilling og nedlasting av undertekster",
+    "Lagrede spillelister, favoritter, lister for TV og radio",
+    "Skall og symboltemaer, over 30 språk",
+    "Kjører også på Windows og Linux"
+   ],
+   "price": "Gratis",
+   "version": "26.8.29 (macOS-bygg 10461, 2026-10-06)",
+   "updated": "2026-10-06",
+   "platforms": "Windows, Linux, macOS",
+   "notes": {
+    "dark_light_setting": "Skall, symboltemaer og Qt-stiler, ingen enkel lys/mørk-bryter",
+    "folder_browsing": "Åpne mappe legger en mappe i spillelisten (valgfritt rekursivt); ingen filblaing",
+    "list_view": "Spillelistetabell med kolonner (navn, lengde …), ikke mappevisning",
+    "recursive_search": "Bare filterfelt i spillelisten",
+    "multiple_windows": "Én forekomst som standard; kan slås av",
+    "bookmarks": "Favorittliste med filer/adresser og bokmerker i videoer; ingen mappebokmerker",
+    "auto_enhance_view": "Video-equalizer (⌃E), ingen autoforbedring",
+    "file_info_exif": "Filegenskaper: kodeker, bitrate, spor; ingen EXIF",
+    "music_mode": "Spiller lydfiler; kompakt modus (⌃C), radioliste",
+    "shortcut_cheatsheet": "Tastetabellen i innstillingene kan lagres som .keys-fil; ikke for utskrift"
+   }
+  },
+  "tencent-kantu": {
+   "name": "看图 Kantu",
+   "vendor": "Tencent",
+   "summary": "Tencents gratis bildeblar og -organiserer for Mac: blar i mapper som Nedlastinger uten import, importerer fra telefoner og kameraer, grupperer etter ansikter, steder og datoer, finner duplikater og lager utvalgte album. Den er ikke oppdatert siden 2019.",
+   "wins": [
+    "Ansiktsgjenkjenning, stedskart, duplikatsøk, utvalgte album",
+    "Importerer rett fra telefoner, kameraer og PTP-enheter",
+    "Vurderinger og filtre for store filer"
+   ],
+   "price": "Gratis",
+   "version": "2.5.2",
+   "updated": "2019-11-08",
+   "platforms": "macOS",
+   "notes": {
+    "no_account_no_tracking": "Ingen konto nødvendig; valgfri WeChat- eller QQ-innlogging laster album opp til Tencents sky",
+    "dark_light_setting": "Mørk modus fra 2.0 (Mojave); egen innstilling uavhengig av systemet ikke dokumentert",
+    "thumbnail_grid": "Bilderutenett, sidepanelet viser antall bilder per mappe; ingen mappeforhåndsvisning",
+    "recursive_search": "Finner bilder etter filnavn, dato, sted og motiv på tvers av stedene",
+    "bookmarks": "Steder lagt til for hånd i sidepanelet; favoritter for bilder",
+    "img_modern_formats": "WebP fra 1.9.4; HEIC, AVIF, JPEG XL ikke nevnt",
+    "img_psd_exr": "PSD-forhåndsvisning; EXR ikke nevnt",
+    "img_animated": "GIF-forhåndsvisning; APNG/animert WebP ikke nevnt",
+    "zoom_rotate": "Zoom med hjul/styreflate; anmeldere melder om uskarp zoom; rotering ikke dokumentert",
+    "slideshow_recursive": "Utvalgte album spiller bilder og videoer etter hverandre; ikke gjennom undermapper",
+    "file_info_exif": "EXIF-visning; ingen videokodekinfo",
+    "video_native": "Viser og filtrerer videoer, men ifølge en bruker åpner hver video en egen spiller",
+    "rename_trash": "Nytt navn, sletting med Nylig slettet; ny mappe ikke dokumentert",
+    "undo_file_actions": "Slettede bilder kan gjenopprettes fra Nylig slettet",
+    "image_editing": "Ingen redigering; høyreklikk for å lage merknader",
+    "cloud_sync": "WeChat/QQ-innlogging, opplasting av album til Tencents sky, deling via WeChat",
+    "notarized_attested": "Signert via Mac App Store; ingen åpen kildekode"
+   }
+  },
+  "total-commander": {
+   "name": "Total Commander",
+   "vendor": "Ghisler Software",
+   "summary": "Den mest kjente ortodokse filbehandleren (to paneler) for Windows, utviklet siden 1993. Den er sterk på filoperasjoner, arkiver, FTP, nytt navn for mange filer og mappesynkronisering, med fremviseren Lister og utvidelser for bilder og medier.",
+   "wins": [
+    "Filbehandling med to paneler: synkroniser mapper, sammenlign, nytt navn i bunt, sjekksummer",
+    "Innebygd FTP/FTPS-klient",
+    "Enormt økosystem av utvidelser (Lister, pakkere, filsystem)",
+    "Spilleren i Lister bytter undertekster, lydspor og hastighet",
+    "Kjører på Windows fra 95 til 11, i tillegg til en gratis Android-app"
+   ],
+   "price": "Shareware: EUR 42 + mva. per lisens (studenter EUR 31.50), gratis oppdateringer; Android-versjonen gratis",
+   "version": "11.58.1",
+   "updated": "2026-10-29",
+   "platforms": "Windows, Android"
+  },
+  "vidhub": {
+   "name": "VidHub",
+   "vendor": "Oka Apps",
+   "summary": "Videobibliotek og spiller i Infuse-stil for Apple-enheter: skanner lokale mapper, NAS, skytjenester og Emby/Jellyfin/Plex-servere, bygger et plakatbibliotek fra TMDB og synkroniserer fremdrift via iCloud. En av mediespillerne med flest vurderinger i Mac App Store (2.8K vurderinger, USA).",
+   "wins": [
+    "Bibliotek for filmer og TV med plakater og metadata",
+    "iCloud-synkronisering mellom iPhone, iPad, Apple TV og Mac",
+    "Skytjenester, NAS, Emby/Jellyfin/Plex",
+    "Søk etter undertekster på nett",
+    "Sending via DLNA, Chromecast, Roku, AirPlay"
+   ],
+   "price": "Gratis med VIP (bare Mac, livstid $14.99; alle enheter $25.99 til 39.99 livstid; $9.99/år; $1.49/måned)",
+   "version": "3.0.3 (Mac)",
+   "updated": "2026-11-04",
+   "platforms": "macOS, iOS, iPadOS, tvOS, visionOS, Android TV",
+   "notes": {
+    "free": "Gratis med VIP: bare Mac $14.99 livstid, alle enheter $25.99 til 39.99, $9.99/år, $1.49/måned",
+    "languages_20": "18 i App Store",
+    "folder_browsing": "Legger til lokale, SMB/WebDAV- og skykilder og samler dem i et bibliotek",
+    "thumbnail_grid": "Plakatvegg fra TMDB, ikke filminiatyrer",
+    "recursive_search": "Globalt søk etter filnavn og tittel i biblioteket",
+    "network_shares_fast": "SMB/CIFS, WebDAV, NAS og mange skytjenester; fart ukjent",
+    "bookmarks": "Favoritter (synkronisert via iCloud)",
+    "auto_enhance_view": "Fargekorrigering, bare video",
+    "streaming_urls": "Skytjenester, Emby/Jellyfin/Plex, WebDAV; vilkårlige adresser ikke dokumentert",
+    "rename_trash": "Gir skyfiler nytt navn (legg til/erstatt tegn, regex); sletting ikke dokumentert",
+    "batch_convert": "Nytt navn i bunt for skyfiler; ingen konvertering",
+    "notarized_attested": "Signert via App Store; lukket kildekode"
+   }
+  },
+  "vlc": {
+   "name": "VLC",
+   "vendor": "VideoLAN",
+   "summary": "Den mest kjente gratis mediespilleren med åpen kildekode: spiller nesten alle filer, plater og strømmer på alle plattformer uten kodekpakker. Den er først og fremst en spiller; bilder vises som stillbilder en viss tid, og det finnes ingen filblaing eller miniatyrrutenett.",
+   "wins": [
+    "Spiller nesten alle formater, plater (DVD/Blu-ray), nettverksstrømmer og opptaksenheter",
+    "Kjører på alle operativsystemer for datamaskin og mobil",
+    "Undertekster fra filer og nett (VLSub), lydspor, hastighet, filtre, konvertering og videresending",
+    "Lagrede spillelister, musikk, visualiseringer",
+    "Alle hurtigtaster kan endres"
+   ],
+   "price": "Gratis",
+   "version": "3.0.24",
+   "updated": "2026-09-22",
+   "platforms": "macOS, Windows, Linux, iOS, Android m.fl.",
+   "notes": {
+    "dark_light_setting": "macOS: valg for mørkt grensesnitt; Windows/Linux: mørk palett",
+    "folder_browsing": "Åpner en mappe som spilleliste; ingen ekte filblaing",
+    "list_view": "Spilleliste med sorterbare kolonner (tittel, artist …), ikke en filliste",
+    "recursive_search": "«Søk i spilleliste» filtrerer bare spillelisten",
+    "network_shares_fast": "Spiller rett fra SMB, NFS, SFTP, FTP, UPnP; ingen miniatyrblaing å vurdere fart etter",
+    "multiple_windows": "Windows/Linux: flere forekomster; macOS: ett spillervindu",
+    "img_modern_formats": "WebP åpnes (stillbilde i 10 s); HEIC, AVIF, JPEG XL ikke støttet",
+    "img_svg_pdf": "SVG via librsvg; ingen PDF",
+    "img_animated": "Animerte GIF-er går via FFmpeg; APNG/animert WebP uklart",
+    "zoom_rotate": "Videozoom, beskjæring og roteringsfiltre; ingen panorering av bilder",
+    "slideshow": "Bilder i en spilleliste vises i 10 s hver",
+    "slideshow_recursive": "En åpnet mappe tas med undermapper, bilder (10 s hver) og videoer i én spilleliste",
+    "auto_enhance_view": "Manuelle justeringer og effekter (lysstyrke, kontrast, fargetone …), ingen autoforbedring",
+    "file_info_exif": "Medieinfo viser kodeker, bitrate, statistikk; ingen EXIF",
+    "video_skim_arrows": "Hopp med valgtast + pil (macOS ⌘⌃←/→ 3 s, ⌘⌥ 10 s, ⌘⇧ 1 min)",
+    "control_bar_movable": "I fullskjerm kan kontrollene dras og blir der; ikke i vindu",
+    "archives_as_folders": "Legger filene i et arkiv inn i spillelisten; ikke en mappe å bla i",
+    "split_archives": "Kan lese arkiver i flere deler; ikke dokumentert",
+    "batch_convert": "Konverter/lagre omkoder flere filer; ikke nytt navn i bunt",
+    "library_catalog": "Enkelt mediebibliotek i sidepanelet, ingen stikkord/vurderinger",
+    "keyboard_first": "Avspilling helt med taster, blaing med mus",
+    "boss_key": "Sjefstast-handling (skjul og pause) finnes, men har ingen standardtast",
+    "no_network": "Ser etter oppdateringer; henting av metadata på nett er av som standard"
+   }
+  },
+  "windows-media-player": {
+   "name": "Windows Media Player",
+   "vendor": "Microsoft",
+   "summary": "Windows’ innebygde spiller: en bibliotekapp mest for musikk som også spiller lokale videoer, med undertekster, lydspor, avspillingshastighet, bildejusteringer, minispiller og sending til enheter. Den trenger betalte tillegg eller tillegg fra Store for HEVC og AV1, og anmeldere synes den er tregere og tyngre enn den klassiske Windows Media Player Legacy, som Microsoft beholder som valgfri funksjon.",
+   "wins": [
+    "Forhåndsinstallert på Windows, ingenting å sette opp",
+    "Musikkbibliotek med albumbilder, spillelister og CD-ripping",
+    "Minispiller, sending til enheter",
+    "Følger Windows’ innstillinger for teksting og tema"
+   ],
+   "price": "Følger med Windows; HEVC-videoutvidelser $0.99, andre kodeker som tillegg fra Store",
+   "version": "Medieavspiller 11.2610.5.0 (Insider, november 2026); Windows Media Player Legacy 12",
+   "updated": "2026-11 (Insider-versjonsmerknader)",
+   "platforms": "Windows"
+  },
+  "xee": {
+   "name": "Xee³",
+   "vendor": "MacPaw",
+   "summary": "Klassisk, lett bildefremviser for Mac som blar gjennom mapper og arkiver (ZIP, RAR, 7z, CBZ/CBR) uten å pakke dem ut, med mange gamle og eksotiske formater. Står fortsatt på theunarchiver.com, men uten lenker for nedlasting eller kjøp; siste utgave 3.5.4 (des. 2021) er bare for Intel.",
+   "wins": [
+    "Eksotiske gamle formater (PCX, IFF, MAG, PVR, XBM)",
+    "Gjenkjenner hva som laget en JPEG ut fra kvantiseringstabellene",
+    "Visning av PSD-lag",
+    "Tapsfri JPEG-beskjæring"
+   ],
+   "price": "Selges ikke lenger (tidligere betalt lisens med prøve; fjernet fra App Store)",
+   "version": "3.5.4",
+   "updated": "2021-12-21",
+   "platforms": "macOS",
+   "notes": {
+    "open_source": "Kildekoden til Xee 2.x er offentlig; Xee 3 er lukket",
+    "bookmarks": "Liste over nylige mål for flytting/kopiering",
+    "img_modern_formats": "WebP ja; ikke HEIC/AVIF/JPEG XL (siste oppdatering des. 2021)",
+    "img_psd_exr": "PSD med lag; OpenEXR ikke oppført",
+    "img_svg_pdf": "Bare punktgrafikk i PDF; ingen SVG",
+    "slideshow_recursive": "Skanning av undermapper er valgfri, og lysbildefremvisningen går gjennom dem; bare bilder, ingen video",
+    "archive_passwords": "Passordbeskyttede arkiver kom i Xee 2.1; ikke nevnt igjen for Xee 3",
+    "split_archives": "Leser det The Unarchiver leser; arkiver i flere deler ikke nevnt",
+    "image_editing": "Beskjæring (tapsfri JPEG), eksport",
+    "cloud_sync": "Del-menyen",
+    "keyboard_first": "Blaing med tastatur; mye bygget på bevegelser",
+    "app_sandbox": "App Store-utgaven i sandkasse; den direkte ikke (forfatteren anbefalte den direkte)"
+   }
+  },
+  "xnview-mp": {
+   "name": "XnView MP",
+   "vendor": "XnSoft",
+   "summary": "XnView MP er en veletablert bildeblar og -organiserer for flere plattformer som leser over 500 formater. Den samler filblar, fremviser, katalog med kategorier og vurderinger, buntkonvertering og enkel redigering i én app. På Mac er det en Qt-app, gratis for privat bruk.",
+   "wins": [
+    "Over 500 bildeformater, eksport til rundt 70",
+    "Buntkonvertering og nytt navn i bunt med regex",
+    "Katalog med kategorier, vurderinger og fargeetiketter",
+    "Metadataredigering (EXIF, IPTC, XMP)",
+    "Bilderedigering, sammenligning av opptil 4 bilder, duplikatsøk",
+    "Kjører også på Windows og Linux"
+   ],
+   "price": "Gratis for privat bruk, undervisning og ideelle formål; kommersiell lisens 29 EUR (mengderabatt ned til 3.90 EUR)",
+   "version": "1.12.3",
+   "updated": "2026-11-09",
+   "platforms": "macOS, Windows, Linux",
+   "notes": {
+    "free": "Gratis for privat bruk, undervisning og ideelle formål; bedrifter trenger lisens (29 EUR per plass)",
+    "regex_search": "Regex bare ved nytt navn i bunt; filsøk med jokertegn / inneholder",
+    "network_shares_fast": "Fungerer på nettverksdisker, men endringsloggen nevner treghet der",
+    "multiple_windows": "Faner; flere forekomster mulig",
+    "slideshow_recursive": "«Vis filer i undermapper» fyller lysbildefremvisningen, som venter på videoer",
+    "auto_enhance_view": "Automatiske nivåer og justeringer er redigering (filen endres ved lagring)",
+    "saved_playlists": "Lysbildefremvisninger kan lagres som .sld-filer (bilder, med lyd)",
+    "music_mode": "Mediespiller oppført; lydfiler ved siden av; intet musikkbibliotek",
+    "dual_pane": "Sammenligner opptil 4 bilder; F6 bytter panel; ingen modus med to mapper",
+    "cloud_sync": "Har opplasting til nett; ingen skysynkronisering"
+   }
+  },
+  "yacreader": {
+   "name": "YACReader",
+   "vendor": "Luis Ángel San Martín",
+   "summary": "YACReader er en tegneserieleser med bibliotekbehandler (YACReaderLibrary) for store samlinger, med metadata fra Comic Vine, leselister og en hjemmeserver for mobilappene. Leseren har dobbeltside, mangamodus og kontinuerlig rulling med bildejusteringer.",
+   "wins": [
+    "Komplett tegneseriebibliotek: Comic Vine-metadata, leselister, smarte lister, vurderinger",
+    "Server og apper for iOS/Android med synkronisert lesefremdrift",
+    "Mangamodus, dobbeltside, kontinuerlig rulling for webtoons",
+    "Lysstyrke, kontrast og gamma for gamle skanninger",
+    "12 temaer og temaredigering; hurtigtaster som kan endres",
+    "Versjoner for Windows og Linux"
+   ],
+   "price": "Skrivebord og server gratis (donasjoner); iOS- og Android-apper separat",
+   "version": "10.5.1",
+   "updated": "2026-11-13",
+   "platforms": "macOS, Windows, Linux, iOS, Android, Docker/server",
+   "notes": {
+    "languages_20": "14 språk, kan velges i appen",
+    "folder_browsing": "Leseren åpner filer og mapper; blaing går via en bibliotekdatabase",
+    "network_shares_fast": "Raskere åpning av biblioteker på nettverksdisker; biblioteket må indekseres",
+    "bookmarks": "Sidebokmerker, favoritter, leselister, etiketter",
+    "img_modern_formats": "JPEG, PNG, GIF, TIFF, BMP, WebP; andre bare via egne Qt-utvidelser",
+    "img_svg_pdf": "PDF ja (pdfium); SVG nei",
+    "archives_as_folders": "Åpner et arkiv som tegneseriebok, ikke som mappe",
+    "rename_trash": "Nytt navn på mapper i biblioteket, filer fra metadata; ingen papirkurv",
+    "move_copy": "Ordner filer i mappestrukturer ut fra metadata (eksperimentelt)",
+    "undo_file_actions": "Ordning av filer føres i en logg og kan angres; ingen generell angring",
+    "batch_convert": "Nytt navn i bunt bare fra metadata; ingen formatkonvertering",
+    "cloud_sync": "Egen server og mobilapper synkroniserer fremdrift i nettverket ditt; ingen skytjeneste",
+    "shortcut_cheatsheet": "Dialog med alle tastene; ikke for utskrift",
+    "notarized_attested": "macOS-utgaver notarisert; ingen byggattestasjon"
+   }
+  }
+ }
+}

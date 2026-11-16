@@ -1,0 +1,537 @@
+{
+ "name": "Google Photos",
+ "short": "Google Photos",
+ "vendor": "Google",
+ "website": "https://photos.google.com",
+ "platforms": [
+  "Web",
+  "Android",
+  "iOS"
+ ],
+ "mac_available": "no",
+ "page": "matrix",
+ "section": "photos",
+ "price": "free with 15 GB (shared with Gmail/Drive); Google One from €1.99/mo for 100 GB, €9.99/mo 2 TB, €21.99/mo 5 TB",
+ "license": "proprietary",
+ "current_version": "web (continuous); iOS app 8.1.0",
+ "last_update": "2026-11-13 (iOS app 8.1.0)",
+ "engine": "cloud processing; browser video player",
+ "category": "photo-manager",
+ "summary": "Google's cloud photo library with automatic backup from phones. Good for having all photos on every device, searching by content and sharing albums.",
+ "where_it_wins": [
+  "Automatic backup from Android and iPhone",
+  "Search by people, things and places",
+  "Sharing albums and partner sharing",
+  "Access from any browser"
+ ],
+ "where_schnellbild_wins": [
+  "Works offline on local folders, nothing uploaded",
+  "No account, no ads, no tracking",
+  "No storage limit or subscription",
+  "Archives and comics as folders",
+  "File management on disk"
+ ],
+ "search_terms": [
+  "google photos mac app",
+  "google photos desktop app mac",
+  "google photos alternative offline",
+  "google fotos mac",
+  "google fotos alternative",
+  "photo viewer mac without cloud"
+ ],
+ "matrix": {
+  "free": {
+   "value": "partial",
+   "note": "15 GB free shared with Gmail/Drive; Google One from €1.99/mo (100 GB).",
+   "evidence": [
+    "https://one.google.com/about/plans",
+    "https://support.google.com/photos/answer/9312312"
+   ],
+   "how": "docs"
+  },
+  "open_source": {
+   "value": "no",
+   "evidence": [
+    "https://one.google.com/about/plans"
+   ],
+   "how": "docs"
+  },
+  "native_apple_silicon": {
+   "value": "na",
+   "note": "Web app in the browser; no Mac app.",
+   "evidence": [
+    "https://support.google.com/photos/answer/6220402"
+   ],
+   "how": "docs"
+  },
+  "no_account_no_tracking": {
+   "value": "no",
+   "note": "Google Account required; App Store privacy label lists data linked to you, incl. third-party advertising.",
+   "evidence": [
+    "https://apps.apple.com/us/app/google-photos/id962194608",
+    "https://support.google.com/photos/answer/6220402"
+   ],
+   "how": "store"
+  },
+  "dark_light_setting": {
+   "value": "yes",
+   "note": "Web: Settings > Appearance (Light, Dark, device default).",
+   "evidence": [
+    "https://9to5google.com/2025/03/31/google-photos-dark-theme-widely-available/"
+   ],
+   "how": "review"
+  },
+  "languages_20": {
+   "value": "yes",
+   "note": "iOS app: English and 38 more languages.",
+   "evidence": [
+    "https://apps.apple.com/us/app/google-photos/id962194608"
+   ],
+   "how": "store"
+  },
+  "folder_browsing": {
+   "value": "no",
+   "note": "Photos must be uploaded/backed up to the cloud library.",
+   "evidence": [
+    "https://support.google.com/photos/answer/6193313",
+    "https://support.google.com/photos/answer/11828494"
+   ],
+   "how": "docs"
+  },
+  "thumbnail_grid": {
+   "value": "partial",
+   "note": "Photo grid and album covers; no file-system folders.",
+   "evidence": [
+    "https://support.google.com/photos/answer/6220402",
+    "https://support.google.com/photos/answer/6128849"
+   ],
+   "how": "docs"
+  },
+  "list_view": {
+   "value": "no",
+   "note": "Searched Google Photos Help (get started, organize) and web; no statement on a list view.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "recursive_search": {
+   "value": "partial",
+   "note": "Searches the whole library by content, filename text in quotes, camera model.",
+   "evidence": [
+    "https://support.google.com/photos/answer/15235862"
+   ],
+   "how": "docs"
+  },
+  "regex_search": {
+   "value": "no",
+   "note": "Exact-text match with quotes only.",
+   "evidence": [
+    "https://support.google.com/photos/answer/15235862"
+   ],
+   "how": "docs"
+  },
+  "network_shares_fast": {
+   "value": "no",
+   "note": "Items must be uploaded/backed up to the cloud library first.",
+   "evidence": [
+    "https://support.google.com/photos/answer/6193313"
+   ],
+   "how": "docs"
+  },
+  "multiple_windows": {
+   "value": "partial",
+   "note": "Web app at photos.google.com; several browser tabs or windows.",
+   "evidence": [
+    "https://support.google.com/photos/answer/6220402"
+   ],
+   "how": "docs"
+  },
+  "bookmarks": {
+   "value": "no",
+   "note": "Albums inside the service; no file-system folders.",
+   "evidence": [
+    "https://support.google.com/photos/answer/6128849"
+   ],
+   "how": "docs"
+  },
+  "img_modern_formats": {
+   "value": "partial",
+   "note": "HEIC, AVIF, WebP; JPEG XL not listed.",
+   "evidence": [
+    "https://support.google.com/photos/answer/6193313"
+   ],
+   "how": "docs"
+  },
+  "img_raw": {
+   "value": "yes",
+   "note": "Most RAW files.",
+   "evidence": [
+    "https://support.google.com/photos/answer/6193313"
+   ],
+   "how": "docs"
+  },
+  "img_psd_exr": {
+   "value": "no",
+   "note": "Not in the supported list.",
+   "evidence": [
+    "https://support.google.com/photos/answer/6193313"
+   ],
+   "how": "docs"
+  },
+  "img_svg_pdf": {
+   "value": "no",
+   "note": "Not in the supported list.",
+   "evidence": [
+    "https://support.google.com/photos/answer/6193313"
+   ],
+   "how": "docs"
+  },
+  "img_animated": {
+   "value": "partial",
+   "note": "GIF and WebP listed; animated PNG not documented.",
+   "evidence": [
+    "https://support.google.com/photos/answer/6193313"
+   ],
+   "how": "docs"
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "note": "Left/Right arrow on the web.",
+   "evidence": [
+    "https://tutorialtactic.com/blog/google-photos-shortcuts/"
+   ],
+   "how": "review"
+  },
+  "zoom_rotate": {
+   "value": "yes",
+   "note": "Rotate is saved as an edit; Shift+R rotates.",
+   "evidence": [
+    "https://support.google.com/photos/answer/6128850",
+    "https://tutorialtactic.com/blog/google-photos-shortcuts/"
+   ],
+   "how": "docs"
+  },
+  "slideshow": {
+   "value": "yes",
+   "note": "Web only: More menu > Slideshow in an album/photo.",
+   "evidence": [
+    "https://www.techjunkie.com/make-google-photos-slideshow"
+   ],
+   "how": "review"
+  },
+  "slideshow_recursive": {
+   "value": "partial",
+   "note": "Slideshow of an album; no folder tree.",
+   "evidence": [
+    "https://www.techjunkie.com/make-google-photos-slideshow"
+   ],
+   "how": "review"
+  },
+  "auto_enhance_view": {
+   "value": "yes",
+   "note": "Enhance and adjustments; edits can be undone at any time.",
+   "evidence": [
+    "https://support.google.com/photos/answer/6128850"
+   ],
+   "how": "docs"
+  },
+  "file_info_exif": {
+   "value": "partial",
+   "note": "Info panel with date, location, camera details, IPTC; no codec/bitrate details documented.",
+   "evidence": [
+    "https://support.google.com/photos/answer/6153599",
+    "https://support.google.com/photos/answer/15532903"
+   ],
+   "how": "docs"
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "note": "Searched Google Photos Help; nothing on file-type mismatch.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "video_native": {
+   "value": "yes",
+   "evidence": [
+    "https://support.google.com/photos/answer/6193313"
+   ],
+   "how": "docs"
+  },
+  "video_mkv_avi_webm": {
+   "value": "partial",
+   "note": "MKV, AVI, WMV upload and play after processing; WebM and FLV not listed.",
+   "evidence": [
+    "https://support.google.com/photos/answer/6193313",
+    "https://support.google.com/photos/answer/9116257"
+   ],
+   "how": "docs"
+  },
+  "photos_videos_one_grid": {
+   "value": "yes",
+   "evidence": [
+    "https://support.google.com/photos/answer/6220402"
+   ],
+   "how": "docs"
+  },
+  "video_skim_arrows": {
+   "value": "no",
+   "note": "Left/Right arrows move to the previous/next item.",
+   "evidence": [
+    "https://tutorialtactic.com/blog/google-photos-shortcuts/"
+   ],
+   "how": "review"
+  },
+  "subtitles_embedded": {
+   "value": "no",
+   "note": "Searched Google Photos Help and web for subtitles in the player; nothing found.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "subtitles_external_files": {
+   "value": "no",
+   "note": "Searched Google Photos Help and web; nothing found.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "audio_track_choice": {
+   "value": "no",
+   "note": "Searched Google Photos Help and web for audio track choice; nothing found.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "playback_speed": {
+   "value": "partial",
+   "note": "Documented for the Android app (More > Playback speed); web not documented.",
+   "evidence": [
+    "https://support.google.com/photos/answer/10729480"
+   ],
+   "how": "docs"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "note": "Searched Google Photos Help; player controls not described.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "playlist": {
+   "value": "no",
+   "note": "Searched Google Photos Help; no play queue documented, albums and slideshow only.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "saved_playlists": {
+   "value": "no",
+   "note": "Searched Google Photos Help; albums can be reordered but no playlist feature documented.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "pip": {
+   "value": "partial",
+   "note": "Searched Google Photos Help and web; no statement on Picture in Picture.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "music_mode": {
+   "value": "no",
+   "note": "Photos and videos only.",
+   "evidence": [
+    "https://support.google.com/photos/answer/6193313"
+   ],
+   "how": "docs"
+  },
+  "streaming_urls": {
+   "value": "no",
+   "note": "Plays only items backed up to the library.",
+   "evidence": [
+    "https://support.google.com/photos/answer/6193313"
+   ],
+   "how": "docs"
+  },
+  "online_subtitles": {
+   "value": "no",
+   "note": "Searched Google Photos Help and web; nothing found.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "video_filters_enhance": {
+   "value": "yes",
+   "note": "Brightness, contrast and more in the mobile app.",
+   "evidence": [
+    "https://support.google.com/photos/answer/10729480"
+   ],
+   "how": "docs"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "note": "Web service at photos.google.com; installs nothing on the Mac.",
+   "evidence": [
+    "https://support.google.com/photos/answer/6220402"
+   ],
+   "how": "docs"
+  },
+  "archives_as_folders": {
+   "value": "no",
+   "note": "Archives are not a supported type.",
+   "evidence": [
+    "https://support.google.com/photos/answer/6193313"
+   ],
+   "how": "docs"
+  },
+  "comics_cbz_cbr": {
+   "value": "no",
+   "evidence": [
+    "https://support.google.com/photos/answer/6193313"
+   ],
+   "how": "docs"
+  },
+  "archive_passwords": {
+   "value": "no",
+   "evidence": [
+    "https://support.google.com/photos/answer/6193313"
+   ],
+   "how": "docs"
+  },
+  "split_archives": {
+   "value": "no",
+   "evidence": [
+    "https://support.google.com/photos/answer/6193313"
+   ],
+   "how": "docs"
+  },
+  "videos_in_archives": {
+   "value": "no",
+   "evidence": [
+    "https://support.google.com/photos/answer/6193313"
+   ],
+   "how": "docs"
+  },
+  "manga_two_page": {
+   "value": "no",
+   "note": "Searched Google Photos Help and shortcut list; nothing found.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "rename_trash": {
+   "value": "partial",
+   "note": "Delete to trash (#); no file renaming.",
+   "evidence": [
+    "https://support.google.com/photos/answer/6128858",
+    "https://tutorialtactic.com/blog/google-photos-shortcuts/"
+   ],
+   "how": "docs"
+  },
+  "move_copy": {
+   "value": "no",
+   "note": "Albums inside the service.",
+   "evidence": [
+    "https://support.google.com/photos/answer/6128849"
+   ],
+   "how": "docs"
+  },
+  "dual_pane": {
+   "value": "no",
+   "note": "Searched Google Photos Help and shortcut list; nothing found.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "undo_file_actions": {
+   "value": "partial",
+   "note": "Restore from trash.",
+   "evidence": [
+    "https://support.google.com/photos/answer/9343482"
+   ],
+   "how": "docs"
+  },
+  "image_editing": {
+   "value": "yes",
+   "evidence": [
+    "https://support.google.com/photos/answer/6128850"
+   ],
+   "how": "docs"
+  },
+  "batch_convert": {
+   "value": "no",
+   "note": "Searched Google Photos Help (download page offers originals only); no statement on format conversion.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "library_catalog": {
+   "value": "yes",
+   "note": "Albums, face groups, searchable cloud library.",
+   "evidence": [
+    "https://support.google.com/photos/answer/6128849",
+    "https://support.google.com/photos/answer/6128838"
+   ],
+   "how": "docs"
+  },
+  "cloud_sync": {
+   "value": "yes",
+   "evidence": [
+    "https://support.google.com/photos/answer/6193313"
+   ],
+   "how": "docs"
+  },
+  "keyboard_first": {
+   "value": "partial",
+   "note": "Web shortcuts (Shift+? list); apps have none.",
+   "evidence": [
+    "https://tutorialtactic.com/blog/google-photos-shortcuts/"
+   ],
+   "how": "review"
+  },
+  "custom_shortcuts": {
+   "value": "no",
+   "note": "Fixed single-key web shortcuts (Shift+? lists them); no remapping described.",
+   "evidence": [
+    "https://tutorialtactic.com/blog/google-photos-shortcuts/"
+   ],
+   "how": "review"
+  },
+  "shortcut_cheatsheet": {
+   "value": "partial",
+   "note": "In-app panel with Shift+?.",
+   "evidence": [
+    "https://tutorialtactic.com/blog/google-photos-shortcuts/"
+   ],
+   "how": "review"
+  },
+  "boss_key": {
+   "value": "no",
+   "note": "Full web shortcut list has no hide-everything key.",
+   "evidence": [
+    "https://tutorialtactic.com/blog/google-photos-shortcuts/"
+   ],
+   "how": "review"
+  },
+  "app_sandbox": {
+   "value": "na",
+   "note": "Web app; runs in the browser sandbox.",
+   "evidence": [
+    "https://support.google.com/photos/answer/6220402"
+   ],
+   "how": "docs"
+  },
+  "no_network": {
+   "value": "no",
+   "note": "Cloud service.",
+   "evidence": [
+    "https://support.google.com/photos/answer/6193313"
+   ],
+   "how": "docs"
+  },
+  "notarized_attested": {
+   "value": "no",
+   "evidence": [
+    "https://support.google.com/photos/answer/6220402"
+   ],
+   "how": "docs"
+  },
+  "mac_app_store": {
+   "value": "no",
+   "note": "iPhone/iPad app only; on the Mac it is a website.",
+   "evidence": [
+    "https://apps.apple.com/us/app/google-photos/id962194608"
+   ],
+   "how": "store"
+  }
+ }
+}

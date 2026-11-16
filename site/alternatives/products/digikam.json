@@ -1,0 +1,577 @@
+{
+ "name": "digiKam",
+ "short": "digiKam",
+ "vendor": "KDE / digiKam team",
+ "website": "https://www.digikam.org/",
+ "platforms": [
+  "macOS",
+  "Windows",
+  "Linux"
+ ],
+ "mac_available": "yes",
+ "page": "matrix",
+ "section": "photos",
+ "price": "Free",
+ "license": "open source, GPL-2.0",
+ "current_version": "9.1.0",
+ "last_update": "2026-06-07",
+ "engine": "Images: Qt/KDE image loaders, LibRaw, libheif; video: Qt Multimedia QMediaPlayer with bundled FFmpeg (QtAVPlayer in Qt5 builds)",
+ "category": "photo-manager",
+ "summary": "digiKam is a full open-source photo management suite from KDE for large collections. It indexes folders into a database and offers tags, face recognition, geolocation, similarity search, a capable image editor, batch processing and many export targets.",
+ "where_it_wins": [
+  "Database with tags, labels, face recognition, similarity and duplicate search, map and timeline search",
+  "Natural language and advanced search across all collections",
+  "Full image editor and Batch Queue Manager with versioning",
+  "RAW processing via LibRaw, 16-bit and colour management",
+  "Video playback speed control and frame stepping",
+  "Many export targets (Dropbox, OneDrive, Flickr, Piwigo, HTML galleries) and DLNA",
+  "Free, open source, runs on Linux and Windows too"
+ ],
+ "where_schnellbild_wins": [
+  "No collections to set up and no database scan: point at any folder and look",
+  "Quick on network shares and huge folders without indexing",
+  "Native macOS app instead of a Qt/KDE port",
+  "Arrow-key video skimming, subtitles and audio track choice",
+  "Archives and comics (ZIP, RAR, 7z, CBZ, CBR) open like folders",
+  "Shows SVG and PDF",
+  "Dual pane with F5/F6, folder bookmarks, boss key",
+  "App Sandbox, never online, build attestation"
+ ],
+ "search_terms": [
+  "digikam mac",
+  "digikam alternative",
+  "digikam alternative mac",
+  "digikam macos",
+  "digikam too slow",
+  "digikam without database",
+  "digikam alternative einfach",
+  "alternative à digikam",
+  "alternativa a digikam",
+  "simple photo viewer instead of digikam"
+ ],
+ "matrix": {
+  "free": {
+   "value": "yes",
+   "note": "Free, donations welcome",
+   "evidence": [
+    "https://www.digikam.org/download/",
+    "https://invent.kde.org/graphics/digikam"
+   ],
+   "how": "docs"
+  },
+  "open_source": {
+   "value": "yes",
+   "note": "GPL-2.0",
+   "evidence": [
+    "https://github.com/KDE/digikam",
+    "https://invent.kde.org/graphics/digikam"
+   ],
+   "how": "source"
+  },
+  "native_apple_silicon": {
+   "value": "yes",
+   "note": "Separate macOS Silicon bundle (macOS 11.3+)",
+   "evidence": [
+    "https://www.digikam.org/download/"
+   ],
+   "how": "docs"
+  },
+  "no_account_no_tracking": {
+   "value": "yes",
+   "note": "No account or ads; AI models downloaded on demand and run locally",
+   "evidence": [
+    "https://www.digikam.org/about/features/"
+   ],
+   "how": "docs"
+  },
+  "dark_light_setting": {
+   "value": "yes",
+   "note": "Settings > Themes with dark and light colour themes, independent of the system",
+   "evidence": [
+    "https://docs.digikam.org/en/setup_application/theme_settings.html"
+   ],
+   "how": "docs"
+  },
+  "languages_20": {
+   "value": "yes",
+   "note": "61 interface languages",
+   "evidence": [
+    "https://www.digikam.org/news/2026-06-07-9.1.0_release_announcement/",
+    "https://docs.digikam.org/en/setup_application/languages_settings.html"
+   ],
+   "how": "docs"
+  },
+  "folder_browsing": {
+   "value": "partial",
+   "note": "Albums are real folders, but each root folder must be added as a collection and scanned into a database first",
+   "evidence": [
+    "https://www.digikam.org/about/features/",
+    "https://docs.digikam.org/en/setup_application/collections_settings.html"
+   ],
+   "how": "docs"
+  },
+  "thumbnail_grid": {
+   "value": "partial",
+   "note": "Icon view of items; folders shown in the Albums tree (album thumbnails), not as preview tiles in the grid",
+   "evidence": [
+    "https://docs.digikam.org/en/main_window/image_view.html",
+    "https://docs.digikam.org/en/left_sidebar/albums_view.html"
+   ],
+   "how": "docs"
+  },
+  "list_view": {
+   "value": "yes",
+   "note": "Table view with sortable, configurable columns",
+   "evidence": [
+    "https://docs.digikam.org/en/main_window/image_view.html"
+   ],
+   "how": "docs"
+  },
+  "recursive_search": {
+   "value": "yes",
+   "note": "Database-wide searches (filename, tags, dates, faces, advanced/natural language search) across all collections",
+   "evidence": [
+    "https://www.digikam.org/about/features/"
+   ],
+   "how": "docs"
+  },
+  "regex_search": {
+   "value": "no",
+   "note": "Search relations are Equal, Like, LessThan, Interval, OneOf, InTree, Near etc.; no regular expressions",
+   "evidence": [
+    "https://invent.kde.org/graphics/digikam/-/blob/master/core/libs/database/coredb/coredbsearchxml.h"
+   ],
+   "how": "source"
+  },
+  "network_shares_fast": {
+   "value": "partial",
+   "note": "Network-share collections supported, but scanning and change monitoring on network file systems can be slow",
+   "evidence": [
+    "https://docs.digikam.org/en/setup_application/collections_settings.html"
+   ],
+   "how": "docs"
+  },
+  "multiple_windows": {
+   "value": "partial",
+   "note": "One main window plus separate Light Table, Image Editor and Survey windows",
+   "evidence": [
+    "https://www.digikam.org/about/features/",
+    "https://www.digikam.org/news/2026-03-08-9.0.0_release_announcement/"
+   ],
+   "how": "docs"
+  },
+  "bookmarks": {
+   "value": "no",
+   "note": "Albums view docs mention no bookmarks/favourites; not conclusive",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "img_modern_formats": {
+   "value": "yes",
+   "note": "HEIC/HEIF, AVIF, JPEG XL, WebP in the default file filter",
+   "evidence": [
+    "https://invent.kde.org/graphics/digikam/-/blob/master/core/libs/database/coredb/coredbschemaupdater.cpp"
+   ],
+   "how": "source"
+  },
+  "img_raw": {
+   "value": "yes",
+   "note": "RAW via LibRaw (updated 20260523 in 9.1.0)",
+   "evidence": [
+    "https://www.digikam.org/about/features/",
+    "https://www.digikam.org/news/2026-06-07-9.1.0_release_announcement/"
+   ],
+   "how": "docs"
+  },
+  "img_psd_exr": {
+   "value": "yes",
+   "note": "PSD/PSB and EXR in the default file filter",
+   "evidence": [
+    "https://invent.kde.org/graphics/digikam/-/blob/master/core/libs/database/coredb/coredbschemaupdater.cpp"
+   ],
+   "how": "source"
+  },
+  "img_svg_pdf": {
+   "value": "no",
+   "note": "Neither SVG nor PDF is in the default item filter",
+   "evidence": [
+    "https://invent.kde.org/graphics/digikam/-/blob/master/core/libs/database/coredb/coredbschemaupdater.cpp"
+   ],
+   "how": "source"
+  },
+  "img_animated": {
+   "value": "partial",
+   "note": "GIF and WebP are in the still-image filter; MNG is in the video filter (played as video); animated GIF/WebP playback not found",
+   "evidence": [
+    "https://invent.kde.org/graphics/digikam/-/blob/master/core/libs/database/coredb/coredbschemaupdater.cpp"
+   ],
+   "how": "source"
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "note": "Arrow/PgUp/PgDown in preview and slideshow",
+   "evidence": [
+    "https://docs.digikam.org/en/slideshow_tools/slide_tool.html"
+   ],
+   "how": "docs"
+  },
+  "zoom_rotate": {
+   "value": "partial",
+   "note": "Zoom/pan in preview and magnifier; rotation is lossless file rotation or EXIF tag change, not view-only",
+   "evidence": [
+    "https://docs.digikam.org/en/main_window/image_view.html",
+    "https://docs.digikam.org/en/menu_descriptions/menu_mainwindow.html",
+    "https://www.digikam.org/news/2026-03-08-9.0.0_release_announcement/"
+   ],
+   "how": "docs"
+  },
+  "slideshow": {
+   "value": "yes",
+   "note": "Basic slideshow, Presentation tool, OpenGL viewer",
+   "evidence": [
+    "https://docs.digikam.org/en/slideshow_tools/slide_tool.html"
+   ],
+   "how": "docs"
+  },
+  "slideshow_recursive": {
+   "value": "yes",
+   "note": "'Play with Sub-Albums' (Shift+F9); videos play inside the slideshow",
+   "evidence": [
+    "https://docs.digikam.org/en/slideshow_tools/slide_tool.html",
+    "https://docs.digikam.org/en/setup_application/shortcuts_settings.html",
+    "https://docs.digikam.org/en/supported_materials/movie_formats.html"
+   ],
+   "how": "docs"
+  },
+  "auto_enhance_view": {
+   "value": "no",
+   "note": "Features page lists auto-correction tools as Image Editor tools; view-only use not documented either way",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "file_info_exif": {
+   "value": "yes",
+   "note": "Right sidebar with EXIF/IPTC/XMP; video metadata incl. length, fps, size and encoding",
+   "evidence": [
+    "https://www.digikam.org/about/features/",
+    "https://docs.digikam.org/en/supported_materials/movie_formats.html"
+   ],
+   "how": "docs"
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "note": "Not documented",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "video_native": {
+   "value": "yes",
+   "note": "Plays MP4/MOV in preview and slideshow",
+   "evidence": [
+    "https://docs.digikam.org/en/supported_materials/movie_formats.html",
+    "https://invent.kde.org/graphics/digikam/-/blob/master/core/libs/database/coredb/coredbschemaupdater.cpp"
+   ],
+   "how": "docs"
+  },
+  "video_mkv_avi_webm": {
+   "value": "yes",
+   "note": "FFmpeg-based; MKV, WebM, AVI, WMV, MTS, VOB in the default filter (FLV not listed)",
+   "evidence": [
+    "https://docs.digikam.org/en/supported_materials/movie_formats.html",
+    "https://invent.kde.org/graphics/digikam/-/blob/master/core/libs/database/coredb/coredbschemaupdater.cpp"
+   ],
+   "how": "source"
+  },
+  "photos_videos_one_grid": {
+   "value": "yes",
+   "note": "Albums show photos and videos together",
+   "evidence": [
+    "https://docs.digikam.org/en/supported_materials/movie_formats.html"
+   ],
+   "how": "docs"
+  },
+  "video_skim_arrows": {
+   "value": "no",
+   "note": "Player has frame forward/backward buttons; arrow keys switch items",
+   "evidence": [
+    "https://invent.kde.org/graphics/digikam/-/blob/master/core/libs/video/player/mediaplayerview.cpp",
+    "https://docs.digikam.org/en/slideshow_tools/slide_tool.html"
+   ],
+   "how": "source"
+  },
+  "subtitles_embedded": {
+   "value": "no",
+   "note": "Player code has no subtitle handling",
+   "evidence": [
+    "https://invent.kde.org/graphics/digikam/-/blob/master/core/libs/video/player/mediaplayerview.cpp"
+   ],
+   "how": "source"
+  },
+  "subtitles_external_files": {
+   "value": "no",
+   "note": "No subtitle handling",
+   "evidence": [
+    "https://invent.kde.org/graphics/digikam/-/blob/master/core/libs/video/player/mediaplayerview.cpp"
+   ],
+   "how": "source"
+  },
+  "audio_track_choice": {
+   "value": "no",
+   "note": "Only audio output device selection (9.1.0), no track choice in player code",
+   "evidence": [
+    "https://invent.kde.org/graphics/digikam/-/blob/master/core/libs/video/player/mediaplayerview.cpp",
+    "https://www.digikam.org/news/2026-06-07-9.1.0_release_announcement/"
+   ],
+   "how": "source"
+  },
+  "playback_speed": {
+   "value": "yes",
+   "note": "Rate menu 0.5x to 5.0x",
+   "evidence": [
+    "https://invent.kde.org/graphics/digikam/-/blob/master/core/libs/video/player/mediaplayerview.cpp"
+   ],
+   "how": "source"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "note": "Fixed toolbar overlay",
+   "evidence": [
+    "https://invent.kde.org/graphics/digikam/-/blob/master/core/libs/video/player/mediaplayerview.cpp"
+   ],
+   "how": "source"
+  },
+  "playlist": {
+   "value": "no",
+   "note": "No playlist; slideshow of album/selection",
+   "evidence": [
+    "https://docs.digikam.org/en/slideshow_tools/slide_tool.html"
+   ],
+   "how": "docs"
+  },
+  "saved_playlists": {
+   "value": "no",
+   "note": "Not offered",
+   "evidence": [
+    "https://docs.digikam.org/en/slideshow_tools/slide_tool.html"
+   ],
+   "how": "docs"
+  },
+  "pip": {
+   "value": "no",
+   "note": "Not in player code",
+   "evidence": [
+    "https://invent.kde.org/graphics/digikam/-/blob/master/core/libs/video/player/mediaplayerview.cpp"
+   ],
+   "how": "source"
+  },
+  "music_mode": {
+   "value": "partial",
+   "note": "Audio files (MP3, FLAC, OGG …) in the default filter with an audio player widget",
+   "evidence": [
+    "https://invent.kde.org/graphics/digikam/-/blob/master/core/libs/database/coredb/coredbschemaupdater.cpp"
+   ],
+   "how": "source"
+  },
+  "streaming_urls": {
+   "value": "no",
+   "note": "Not documented",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "online_subtitles": {
+   "value": "no",
+   "note": "No subtitle support",
+   "evidence": [
+    "https://invent.kde.org/graphics/digikam/-/blob/master/core/libs/video/player/mediaplayerview.cpp"
+   ],
+   "how": "source"
+  },
+  "video_filters_enhance": {
+   "value": "no",
+   "note": "Player offers rotate, capture frame, rate; no picture adjustments",
+   "evidence": [
+    "https://invent.kde.org/graphics/digikam/-/blob/master/core/libs/video/player/mediaplayerview.cpp"
+   ],
+   "how": "source"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "note": "Not documented on the download page",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "archives_as_folders": {
+   "value": "no",
+   "note": "No archive formats in file filters",
+   "evidence": [
+    "https://invent.kde.org/graphics/digikam/-/blob/master/core/libs/database/coredb/coredbschemaupdater.cpp"
+   ],
+   "how": "source"
+  },
+  "comics_cbz_cbr": {
+   "value": "no",
+   "note": "Not supported",
+   "evidence": [
+    "https://invent.kde.org/graphics/digikam/-/blob/master/core/libs/database/coredb/coredbschemaupdater.cpp"
+   ],
+   "how": "source"
+  },
+  "archive_passwords": {
+   "value": "no",
+   "note": "No archive support",
+   "evidence": [
+    "https://invent.kde.org/graphics/digikam/-/blob/master/core/libs/database/coredb/coredbschemaupdater.cpp"
+   ],
+   "how": "source"
+  },
+  "split_archives": {
+   "value": "no",
+   "note": "No archive support",
+   "evidence": [
+    "https://invent.kde.org/graphics/digikam/-/blob/master/core/libs/database/coredb/coredbschemaupdater.cpp"
+   ],
+   "how": "source"
+  },
+  "videos_in_archives": {
+   "value": "no",
+   "note": "No archive support",
+   "evidence": [
+    "https://invent.kde.org/graphics/digikam/-/blob/master/core/libs/database/coredb/coredbschemaupdater.cpp"
+   ],
+   "how": "source"
+  },
+  "manga_two_page": {
+   "value": "no",
+   "note": "Light Table compares images side by side, no reading mode",
+   "evidence": [
+    "https://www.digikam.org/about/features/"
+   ],
+   "how": "docs"
+  },
+  "rename_trash": {
+   "value": "yes",
+   "note": "Rename, own recoverable trash per collection, new album folders",
+   "evidence": [
+    "https://docs.digikam.org/en/menu_descriptions/menu_mainwindow.html",
+    "https://www.digikam.org/about/features/"
+   ],
+   "how": "docs"
+  },
+  "move_copy": {
+   "value": "yes",
+   "note": "Drag onto an album, choose Move Here or Copy Here",
+   "evidence": [
+    "https://docs.digikam.org/en/left_sidebar/albums_view.html"
+   ],
+   "how": "docs"
+  },
+  "dual_pane": {
+   "value": "no",
+   "note": "Not documented; Light Table compares images side by side, not a file-manager dual pane",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "undo_file_actions": {
+   "value": "partial",
+   "note": "Delete moves items to the digiKam Trash (recoverable); undo for renames/moves not documented",
+   "evidence": [
+    "https://docs.digikam.org/en/menu_descriptions/menu_mainwindow.html"
+   ],
+   "how": "docs"
+  },
+  "image_editing": {
+   "value": "yes",
+   "note": "Full image editor with many tools and versioning",
+   "evidence": [
+    "https://www.digikam.org/about/features/"
+   ],
+   "how": "docs"
+  },
+  "batch_convert": {
+   "value": "yes",
+   "note": "Batch Queue Manager, batch rename, DNG converter",
+   "evidence": [
+    "https://www.digikam.org/about/features/"
+   ],
+   "how": "docs"
+  },
+  "library_catalog": {
+   "value": "yes",
+   "note": "SQLite/MariaDB database with tags, labels, faces, similarity",
+   "evidence": [
+    "https://www.digikam.org/about/features/"
+   ],
+   "how": "docs"
+  },
+  "cloud_sync": {
+   "value": "yes",
+   "note": "Export to Dropbox, OneDrive, Flickr, Box, Piwigo and more; DLNA sharing",
+   "evidence": [
+    "https://www.digikam.org/about/features/"
+   ],
+   "how": "docs"
+  },
+  "keyboard_first": {
+   "value": "partial",
+   "note": "Extensive shortcuts, but many tasks are sidebar/mouse based",
+   "evidence": [
+    "https://docs.digikam.org/en/setup_application/shortcuts_settings.html"
+   ],
+   "how": "docs"
+  },
+  "custom_shortcuts": {
+   "value": "yes",
+   "note": "KDE shortcut editor with schemes, import/export",
+   "evidence": [
+    "https://docs.digikam.org/en/setup_application/shortcuts_settings.html"
+   ],
+   "how": "docs"
+  },
+  "shortcut_cheatsheet": {
+   "value": "yes",
+   "note": "Print button in the shortcut dialog",
+   "evidence": [
+    "https://docs.digikam.org/en/setup_application/shortcuts_settings.html"
+   ],
+   "how": "docs"
+  },
+  "boss_key": {
+   "value": "no",
+   "note": "Shortcut settings page does not list all actions",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "app_sandbox": {
+   "value": "no",
+   "note": "Distributed as PKG outside the Mac App Store; entitlements not checkable without installing",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "no_network": {
+   "value": "no",
+   "note": "Optional web services, map tiles/reverse geocoding, model downloads, update checks, proxy settings",
+   "evidence": [
+    "https://www.digikam.org/about/features/",
+    "https://docs.digikam.org/en/setup_application/miscs_settings.html",
+    "https://www.digikam.org/news/2026-06-07-9.1.0_release_announcement/"
+   ],
+   "how": "docs"
+  },
+  "notarized_attested": {
+   "value": "partial",
+   "note": "Public source; all downloads GnuPG-signed; macOS notarization and reproducible builds not documented",
+   "evidence": [
+    "https://www.digikam.org/download/"
+   ],
+   "how": "docs"
+  },
+  "mac_app_store": {
+   "value": "no",
+   "note": "Not in the Mac App Store",
+   "evidence": [
+    "https://itunes.apple.com/search?term=digikam&entity=macSoftware&limit=10"
+   ],
+   "how": "store"
+  }
+ }
+}

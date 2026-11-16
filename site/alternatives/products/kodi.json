@@ -1,0 +1,580 @@
+{
+ "name": "Kodi",
+ "short": "Kodi",
+ "vendor": "Kodi Foundation (non-profit)",
+ "website": "https://kodi.tv/",
+ "platforms": [
+  "macOS",
+  "Windows",
+  "Linux",
+  "Android",
+  "iOS/tvOS",
+  "LibreELEC"
+ ],
+ "mac_available": "yes",
+ "page": "matrix",
+ "section": "video",
+ "price": "free",
+ "license": "open source, GPL 2.0 or later",
+ "current_version": "21.3 Omega (22.0 Piers RC2 from 2026-11-10)",
+ "last_update": "2025-10-31",
+ "engine": "Kodi VideoPlayer (FFmpeg)",
+ "category": "both",
+ "summary": "A free, open-source media center with a 10-foot interface for TVs and remotes. It manages large video and music libraries, browses local and network folders and also shows photos with slideshows.",
+ "where_it_wins": [
+  "media center for the TV with remote control, libraries with posters and metadata",
+  "music library and player",
+  "streaming and subtitle add-ons, PVR/live TV",
+  "RAR passwords and multi-part RAR via add-on",
+  "runs on TV boxes, Android, Linux, Raspberry Pi"
+ ],
+ "where_schnellbild_wins": [
+  "a normal Mac window app, no fullscreen media-center UI",
+  "HEIC, JPEG XL, RAW, PSD, EXR, PDF, SVG out of the box",
+  "rename to Trash, undo, F5/F6 dual pane",
+  "search names through all subfolders",
+  "App Sandbox, never goes online"
+ ],
+ "search_terms": [
+  "kodi mac",
+  "kodi alternative mac",
+  "kodi apple silicon",
+  "kodi bilder anzeigen",
+  "kodi photo viewer"
+ ],
+ "matrix": {
+  "free": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://kodi.tv/download/macos/"
+   ],
+   "how": "docs"
+  },
+  "open_source": {
+   "value": "yes",
+   "note": "GPL 2.0 or later",
+   "evidence": [
+    "https://github.com/xbmc/xbmc"
+   ],
+   "how": "source"
+  },
+  "native_apple_silicon": {
+   "value": "yes",
+   "note": "separate Apple Silicon (ARM64) download, macOS 10.14+",
+   "evidence": [
+    "https://kodi.tv/download/macos/"
+   ],
+   "how": "docs"
+  },
+  "no_account_no_tracking": {
+   "value": "yes",
+   "how": "docs",
+   "evidence": [
+    "https://kodi.tv/about/privacy-policy/",
+    "https://kodi.tv/download/macos/"
+   ],
+   "note": "No account or ads; privacy policy: Kodi contacts Kodi servers to update add-ons; third-party add-ons vary"
+  },
+  "dark_light_setting": {
+   "value": "yes",
+   "note": "default skin Estuary has selectable colour themes; skins replaceable",
+   "evidence": [
+    "https://github.com/xbmc/xbmc/tree/21.3-Omega/addons/skin.estuary/colors"
+   ],
+   "how": "source"
+  },
+  "languages_20": {
+   "value": "yes",
+   "note": "76 languages for the default skin, installed from the Kodi repository",
+   "evidence": [
+    "https://github.com/xbmc/xbmc/tree/21.3-Omega/addons/skin.estuary/language"
+   ],
+   "how": "source"
+  },
+  "folder_browsing": {
+   "value": "yes",
+   "note": "Videos/Pictures > Files browse local and network sources directly",
+   "evidence": [
+    "https://github.com/xbmc/xbmc/blob/21.3-Omega/xbmc/pictures/GUIWindowPictures.cpp",
+    "https://github.com/xbmc/xbmc/tree/21.3-Omega/xbmc/filesystem"
+   ],
+   "how": "source"
+  },
+  "thumbnail_grid": {
+   "value": "yes",
+   "how": "docs",
+   "evidence": [
+    "https://kodi.wiki/view/Pictures"
+   ],
+   "note": "Pictures section with auto-generated thumbnails in folder views; arrow keys move through rows of images"
+  },
+  "list_view": {
+   "value": "partial",
+   "how": "unverified",
+   "evidence": [
+    "https://kodi.wiki/view/Pictures"
+   ],
+   "note": "Skin-dependent list views; columns not documented"
+  },
+  "recursive_search": {
+   "value": "partial",
+   "how": "unverified",
+   "evidence": [
+    "https://kodi.wiki/view/Video_library"
+   ],
+   "note": "Library search exists; recursive file-name search in folders not documented"
+  },
+  "regex_search": {
+   "value": "no",
+   "note": "regex only in advancedsettings exclude rules",
+   "evidence": [
+    "https://github.com/xbmc/xbmc/blob/21.3-Omega/xbmc/settings/AdvancedSettings.cpp"
+   ],
+   "how": "source"
+  },
+  "network_shares_fast": {
+   "value": "partial",
+   "how": "docs",
+   "evidence": [
+    "https://kodi.wiki/view/Pictures"
+   ],
+   "note": "Network sources like local ones; thumbnails are cached on first view so later visits load faster"
+  },
+  "multiple_windows": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://kodi.tv/download/macos/"
+   ],
+   "note": "Single full-screen-style window; not documented"
+  },
+  "bookmarks": {
+   "value": "yes",
+   "note": "folders can be added as Favourites and as sources",
+   "evidence": [
+    "https://github.com/xbmc/xbmc/blob/21.3-Omega/xbmc/windows/GUIWindowFileManager.cpp"
+   ],
+   "how": "source"
+  },
+  "img_modern_formats": {
+   "value": "partial",
+   "note": "WebP and AVIF built in; HEIC via the 'imagedecoder.heif' add-on; no JPEG XL listed",
+   "evidence": [
+    "https://github.com/xbmc/xbmc/blob/21.3-Omega/xbmc/settings/AdvancedSettings.cpp",
+    "https://github.com/xbmc/imagedecoder.heif"
+   ],
+   "how": "source"
+  },
+  "img_raw": {
+   "value": "partial",
+   "note": "via the 'imagedecoder.raw' add-on",
+   "evidence": [
+    "https://github.com/xbmc/imagedecoder.raw"
+   ],
+   "how": "source"
+  },
+  "img_psd_exr": {
+   "value": "no",
+   "note": "not in the picture extensions",
+   "evidence": [
+    "https://github.com/xbmc/xbmc/blob/21.3-Omega/xbmc/settings/AdvancedSettings.cpp"
+   ],
+   "how": "source"
+  },
+  "img_svg_pdf": {
+   "value": "no",
+   "note": "not in the picture extensions",
+   "evidence": [
+    "https://github.com/xbmc/xbmc/blob/21.3-Omega/xbmc/settings/AdvancedSettings.cpp"
+   ],
+   "how": "source"
+  },
+  "img_animated": {
+   "value": "partial",
+   "how": "unverified",
+   "evidence": [
+    "https://kodi.wiki/view/Pictures",
+    "https://kodi.wiki/view/Advancedsettings.xml"
+   ],
+   "note": "GIF and APNG are supported picture extensions; whether they animate is not documented"
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "note": "←/→ in the slideshow, keyboard navigation everywhere",
+   "evidence": [
+    "https://github.com/xbmc/xbmc/blob/21.3-Omega/system/keymaps/keyboard.xml"
+   ],
+   "how": "source"
+  },
+  "zoom_rotate": {
+   "value": "yes",
+   "note": "slideshow zoom (up to 20x), pan, rotate",
+   "evidence": [
+    "https://github.com/xbmc/xbmc/blob/21.3-Omega/xbmc/pictures/GUIWindowSlideShow.cpp"
+   ],
+   "how": "source"
+  },
+  "slideshow": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://github.com/xbmc/xbmc/blob/21.3-Omega/xbmc/pictures/GUIWindowPictures.cpp"
+   ],
+   "how": "source"
+  },
+  "slideshow_recursive": {
+   "value": "yes",
+   "note": "'Recursive slideshow'; with 'Show videos in picture folders' (on by default) videos play in between",
+   "evidence": [
+    "https://github.com/xbmc/xbmc/blob/21.3-Omega/xbmc/pictures/GUIWindowPictures.cpp",
+    "https://github.com/xbmc/xbmc/blob/21.3-Omega/xbmc/pictures/GUIViewStatePictures.cpp",
+    "https://github.com/xbmc/xbmc/blob/21.3-Omega/system/settings/settings.xml"
+   ],
+   "how": "source"
+  },
+  "auto_enhance_view": {
+   "value": "partial",
+   "how": "docs",
+   "evidence": [
+    "https://kodi.wiki/view/Video_playback"
+   ],
+   "note": "Brightness/contrast in the video OSD settings; nothing for photos"
+  },
+  "file_info_exif": {
+   "value": "yes",
+   "note": "Info shows picture EXIF; CodecInfo/PlayerProcessInfo show codecs and bitrate",
+   "evidence": [
+    "https://github.com/xbmc/xbmc/blob/21.3-Omega/xbmc/input/actions/ActionTranslator.cpp",
+    "https://github.com/xbmc/xbmc/blob/21.3-Omega/system/keymaps/keyboard.xml"
+   ],
+   "how": "source"
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://kodi.wiki/view/Pictures"
+   ],
+   "note": "Not documented"
+  },
+  "video_native": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://github.com/xbmc/xbmc/blob/21.3-Omega/xbmc/settings/AdvancedSettings.cpp"
+   ],
+   "how": "source"
+  },
+  "video_mkv_avi_webm": {
+   "value": "yes",
+   "note": "FFmpeg-based; mkv, webm, avi, wmv, flv in the video extensions",
+   "evidence": [
+    "https://github.com/xbmc/xbmc/blob/21.3-Omega/xbmc/settings/AdvancedSettings.cpp"
+   ],
+   "how": "source"
+  },
+  "photos_videos_one_grid": {
+   "value": "yes",
+   "note": "Pictures section lists videos next to photos by default ('pictures.showvideos' true)",
+   "evidence": [
+    "https://github.com/xbmc/xbmc/blob/21.3-Omega/system/settings/settings.xml",
+    "https://github.com/xbmc/xbmc/blob/21.3-Omega/xbmc/pictures/GUIViewStatePictures.cpp"
+   ],
+   "how": "source"
+  },
+  "video_skim_arrows": {
+   "value": "yes",
+   "note": "←/→ StepBack/StepForward, ↑/↓ big step or chapter",
+   "evidence": [
+    "https://github.com/xbmc/xbmc/blob/21.3-Omega/system/keymaps/keyboard.xml"
+   ],
+   "how": "source"
+  },
+  "subtitles_embedded": {
+   "value": "yes",
+   "note": "NextSubtitle / ShowSubtitles actions",
+   "evidence": [
+    "https://github.com/xbmc/xbmc/blob/21.3-Omega/system/settings/settings.xml",
+    "https://github.com/xbmc/xbmc/blob/21.3-Omega/system/keymaps/keyboard.xml"
+   ],
+   "how": "source"
+  },
+  "subtitles_external_files": {
+   "value": "yes",
+   "note": "subtitle storage mode and custom subtitle folder settings",
+   "evidence": [
+    "https://github.com/xbmc/xbmc/blob/21.3-Omega/system/settings/settings.xml"
+   ],
+   "how": "source"
+  },
+  "audio_track_choice": {
+   "value": "yes",
+   "note": "AudioNextLanguage action",
+   "evidence": [
+    "https://github.com/xbmc/xbmc/blob/21.3-Omega/system/keymaps/keyboard.xml"
+   ],
+   "how": "source"
+  },
+  "playback_speed": {
+   "value": "yes",
+   "note": "tempo up/down actions (speed with audio)",
+   "evidence": [
+    "https://github.com/xbmc/xbmc/blob/21.3-Omega/xbmc/input/actions/ActionTranslator.cpp"
+   ],
+   "how": "source"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "how": "docs",
+   "evidence": [
+    "https://kodi.wiki/view/Video_playback"
+   ],
+   "note": "Wiki: all OSDs are skin dependent; no user positioning"
+  },
+  "playlist": {
+   "value": "yes",
+   "note": "Playlist action/window",
+   "evidence": [
+    "https://github.com/xbmc/xbmc/blob/21.3-Omega/system/keymaps/keyboard.xml"
+   ],
+   "how": "source"
+  },
+  "saved_playlists": {
+   "value": "yes",
+   "note": "M3U, XSPF, smart playlists (.xsp)",
+   "evidence": [
+    "https://github.com/xbmc/xbmc/blob/21.3-Omega/xbmc/settings/AdvancedSettings.cpp"
+   ],
+   "how": "source"
+  },
+  "pip": {
+   "value": "no",
+   "how": "source",
+   "evidence": [
+    "https://github.com/xbmc/xbmc"
+   ],
+   "note": "Source mentions Picture in Picture only for Blu-ray PiP streams; no PiP window mode"
+  },
+  "music_mode": {
+   "value": "yes",
+   "note": "full music library and player",
+   "evidence": [
+    "https://github.com/xbmc/xbmc/blob/21.3-Omega/xbmc/settings/AdvancedSettings.cpp"
+   ],
+   "how": "source"
+  },
+  "streaming_urls": {
+   "value": "yes",
+   "note": "URLs, HLS/DASH, .strm, streaming add-ons",
+   "evidence": [
+    "https://github.com/xbmc/xbmc/blob/21.3-Omega/xbmc/settings/AdvancedSettings.cpp"
+   ],
+   "how": "source"
+  },
+  "online_subtitles": {
+   "value": "partial",
+   "note": "via subtitle service add-ons chosen in settings",
+   "evidence": [
+    "https://github.com/xbmc/xbmc/blob/21.3-Omega/system/settings/settings.xml"
+   ],
+   "how": "source"
+  },
+  "video_filters_enhance": {
+   "value": "yes",
+   "how": "docs",
+   "evidence": [
+    "https://kodi.wiki/view/Video_playback"
+   ],
+   "note": "Video settings: brightness, contrast, deinterlace method, scaling"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "how": "source",
+   "evidence": [
+    "https://github.com/xbmc/xbmc"
+   ],
+   "note": "No Quick Look generator or extension in the repository"
+  },
+  "archives_as_folders": {
+   "value": "yes",
+   "note": "ZIP built in; RAR via 'vfs.rar', 7z/tar via 'vfs.libarchive' add-ons",
+   "evidence": [
+    "https://github.com/xbmc/xbmc/blob/21.3-Omega/xbmc/filesystem/ZipDirectory.cpp",
+    "https://github.com/xbmc/vfs.rar/blob/master/src/RarFile.cpp",
+    "https://github.com/xbmc/vfs.libarchive/blob/master/vfs.libarchive/addon.xml.in"
+   ],
+   "how": "source"
+  },
+  "comics_cbz_cbr": {
+   "value": "partial",
+   "note": "CBZ/CBR browse as picture folders; no reader mode",
+   "evidence": [
+    "https://github.com/xbmc/xbmc/blob/21.3-Omega/xbmc/settings/AdvancedSettings.cpp"
+   ],
+   "how": "source"
+  },
+  "archive_passwords": {
+   "value": "partial",
+   "note": "RAR only (vfs.rar asks for or tries stored passwords)",
+   "evidence": [
+    "https://github.com/xbmc/vfs.rar/blob/master/vfs.rar/resources/language/resource.language.en_gb/strings.po"
+   ],
+   "how": "source"
+  },
+  "split_archives": {
+   "value": "partial",
+   "note": "multi-part RAR (.partN.rar) via vfs.rar",
+   "evidence": [
+    "https://github.com/xbmc/vfs.rar/blob/master/src/RarFile.cpp"
+   ],
+   "how": "source"
+  },
+  "videos_in_archives": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://github.com/xbmc/vfs.rar/blob/master/src/RarFile.cpp",
+    "https://github.com/xbmc/xbmc/blob/21.3-Omega/xbmc/filesystem/ZipDirectory.cpp"
+   ],
+   "how": "source"
+  },
+  "manga_two_page": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://kodi.wiki/view/Pictures"
+   ],
+   "note": "Comics (CBZ/CBR) open as picture lists; no spread mode documented"
+  },
+  "rename_trash": {
+   "value": "partial",
+   "note": "File manager renames, deletes (no Trash), makes folders",
+   "evidence": [
+    "https://github.com/xbmc/xbmc/blob/21.3-Omega/xbmc/windows/GUIWindowFileManager.cpp"
+   ],
+   "how": "source"
+  },
+  "move_copy": {
+   "value": "yes",
+   "note": "File manager copy and move",
+   "evidence": [
+    "https://github.com/xbmc/xbmc/blob/21.3-Omega/xbmc/windows/GUIWindowFileManager.cpp"
+   ],
+   "how": "source"
+  },
+  "dual_pane": {
+   "value": "partial",
+   "note": "File manager has two panes side by side; no F5/F6 keys",
+   "evidence": [
+    "https://github.com/xbmc/xbmc/blob/21.3-Omega/xbmc/windows/GUIWindowFileManager.cpp"
+   ],
+   "how": "source"
+  },
+  "undo_file_actions": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://kodi.wiki/view/Pictures"
+   ],
+   "note": "Not documented"
+  },
+  "image_editing": {
+   "value": "no",
+   "how": "docs",
+   "evidence": [
+    "https://kodi.wiki/view/Pictures"
+   ],
+   "note": "Wiki: Pictures is a simple file browser and viewer (zoom, rotate, info)"
+  },
+  "batch_convert": {
+   "value": "no",
+   "how": "docs",
+   "evidence": [
+    "https://kodi.wiki/view/Pictures"
+   ],
+   "note": "Viewer only"
+  },
+  "library_catalog": {
+   "value": "yes",
+   "how": "docs",
+   "evidence": [
+    "https://kodi.wiki/view/Video_library",
+    "https://kodi.wiki/view/Music_library"
+   ],
+   "note": "Video and music libraries with scrapers"
+  },
+  "cloud_sync": {
+   "value": "partial",
+   "how": "docs",
+   "evidence": [
+    "https://kodi.wiki/view/MySQL"
+   ],
+   "note": "No own cloud; libraries and watched status can be shared over a MySQL/MariaDB server"
+  },
+  "keyboard_first": {
+   "value": "yes",
+   "note": "10-foot UI made for remotes and keyboard",
+   "evidence": [
+    "https://github.com/xbmc/xbmc/blob/21.3-Omega/system/keymaps/keyboard.xml"
+   ],
+   "how": "source"
+  },
+  "custom_shortcuts": {
+   "value": "yes",
+   "note": "keymap XML files, Keymap Editor add-on",
+   "evidence": [
+    "https://github.com/xbmc/xbmc/blob/21.3-Omega/system/keymaps/keyboard.xml"
+   ],
+   "how": "source"
+  },
+  "shortcut_cheatsheet": {
+   "value": "partial",
+   "how": "docs",
+   "evidence": [
+    "https://kodi.wiki/view/Keyboard_controls"
+   ],
+   "note": "Wiki page lists all default keyboard controls"
+  },
+  "boss_key": {
+   "value": "no",
+   "how": "docs",
+   "evidence": [
+    "https://kodi.wiki/view/Keyboard_controls"
+   ],
+   "note": "Only the system Cmd+H / Cmd+M on macOS"
+  },
+  "app_sandbox": {
+   "value": "no",
+   "note": "macOS entitlements contain no app-sandbox key",
+   "evidence": [
+    "https://github.com/xbmc/xbmc/blob/21.3-Omega/tools/darwin/packaging/osx/Kodi.entitlements.in"
+   ],
+   "how": "source"
+  },
+  "no_network": {
+   "value": "no",
+   "note": "add-on update checks, weather, metadata scrapers by default",
+   "evidence": [
+    "https://github.com/xbmc/xbmc/blob/21.3-Omega/system/settings/settings.xml"
+   ],
+   "how": "source"
+  },
+  "notarized_attested": {
+   "value": "partial",
+   "note": "macOS packaging has a notarize script; no attested build",
+   "evidence": [
+    "https://github.com/xbmc/xbmc/blob/21.3-Omega/tools/darwin/packaging/osx/notarize.sh"
+   ],
+   "how": "source"
+  },
+  "mac_app_store": {
+   "value": "no",
+   "how": "docs",
+   "evidence": [
+    "https://kodi.tv/download/macos/"
+   ],
+   "note": "Download page offers Intel and Apple silicon builds directly"
+  }
+ }
+}

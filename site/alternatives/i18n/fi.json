@@ -1,0 +1,2375 @@
+{
+ "ui": {
+  "overviewTitle": "Schnellbild vaihtoehtona",
+  "overviewSeoTitle": "Ilmainen Mac-vaihtoehto: {names} · Schnellbild",
+  "overviewDescription": "Schnellbild verrattuna {count} kuvankatseluohjelmaan, videosoittimeen, sarjakuvalukijaan ja tiedostonhallintaan, ominaisuus kerrallaan ja lähteineen. Ilmainen, avointa lähdekoodia, Macille.",
+  "overviewIntro": "<p>Schnellbild on vaihtoehto, jolla on selvä mielipide. Kansiot soittolistojen ja kirjaston sijaan: avaa kansio, niin luettelo on valmiina, ja diaesitys tekee soittolistan itse. Ei mitään internetistä, periaatteesta: ei tiliä, ei seurantaa, ei verkkoyhteyttä lainkaan. Ja ilmainen, omat pikanäppäimet mukaan lukien, joista osa muista ottaa maksun.</p><p>Tässä näet, miten se vertautuu ohjelmiin, joita Macille etsitään, ja jokaiselle solulle on lähde. Missä toinen ohjelma on parempi, sivu sanoo sen.</p>",
+  "overviewNoMac": "Nämä toimivat vain Windowsissa (tai eivät enää nykyisillä Maceilla). Jokaisesta kerrotaan, mistä sen fanit pitivät ja miten Schnellbild hoitaa saman.",
+  "matrixH1": "{name}: ilmainen vaihtoehto Macille",
+  "matrixSeoTitle": "{name}: ilmainen vaihtoehto Macille · Schnellbild",
+  "matrixDescription": "{name} vai Schnellbild? Vertailu ominaisuus kerrallaan, lähteineen: missä {name} on vahvempi, missä Schnellbild. Ilmainen, avointa lähdekoodia, toistaa MKV:n, avaa ZIPin ja RARin kansioina.",
+  "matrixLead": "Schnellbild ja {name} rinnakkain: kumpi tekee mitäkin paremmin, ja sitten jokainen ominaisuus lähteineen.",
+  "switcherH1": "{name} Macille? Tässä on vaihtoehto",
+  "switcherSeoTitle": "{name} Macille? Ilmainen vaihtoehto · Schnellbild",
+  "switcherDescription": "Etsitkö ohjelmaa {name} Macille? Mistä sen fanit pitävät ja miten Schnellbild tekee saman ilmaiseksi: kansiot, näppäimet, MKV, ZIP ja RAR kansioina.",
+  "facts": "{name} lyhyesti",
+  "factPrice": "Hinta",
+  "factPlatforms": "Alustat",
+  "factVersion": "Versio",
+  "factUpdated": "Viimeisin päivitys",
+  "aboutTitle": "Missä {name} on hyvä",
+  "theyWin": "Missä {name} on vahvempi",
+  "weWin": "Missä Schnellbild on vahvempi",
+  "matrixTitle": "Ominaisuus kerrallaan",
+  "colFeature": "Ominaisuus",
+  "legendTitle": "Mitä merkit tarkoittavat",
+  "yes": "Kyllä",
+  "no": "Ei",
+  "partial": "Osittain",
+  "intentional": "Jätetty pois tarkoituksella",
+  "na": "Ei koske",
+  "source": "Lähde {n}",
+  "sources": "Lähteet",
+  "asOf": "Tilanne marraskuussa 2026: {name} {version}, Schnellbild {ours}. Ohjelman {name} sarake perustuu alla oleviin lähteisiin, Schnellbildin sarake sen README-tiedostoon ja lähdekoodiin.",
+  "leftOut": "Pois jätetty, koska ohjelmasta {name} ei ole luotettavaa lähdettä: {count}/{total} ominaisuutta.",
+  "fileManager": "Schnellbild ei ole täydellinen tiedostonhallinta: ei FTP-, SFTP- tai pilviyhteyksiä, ei kansioiden synkronointia, ei arkistojen pakkaamista. Se on tehty kuvien ja videoiden selaamiseen ja lajitteluun: miniatyyrit kaikesta, kaksi paneelia rinnakkain, F5 kopioi ja F6 siirtää, arkistot aukeavat kuin kansiot.",
+  "likedTitle": "Mistä ohjelman {name} fanit pitävät ja miten se toimii Schnellbildissä",
+  "aheadTitle": "Missä {name} on yhä edellä",
+  "purposeTitle": "Jätetty pois tarkoituksella",
+  "similarTitle": "Samankaltaisia vaihtoehtoja",
+  "allAlternatives": "Kaikki vaihtoehdot",
+  "breadcrumb": "Vaihtoehdot",
+  "trademark": "{name} on tuote, jonka omistaa {vendor}. Kaikki nimet ja tavaramerkit kuuluvat omistajilleen; Schnellbild ei ole sidoksissa niihin.",
+  "trademarkAll": "Kaikki tuotenimet ja tavaramerkit kuuluvat omistajilleen; Schnellbild ei ole sidoksissa niihin.",
+  "ctaTitle": "Kokeile omilla kansioillasi.",
+  "ctaText": "Ilmainen, ei tiliä, kaikki ominaisuudet mukana.",
+  "keywords": "{name} Mac, {name} Macille, {name} for Mac, {name} vaihtoehto, {name} vaihtoehto Mac, ilmainen {name} vaihtoehto, {name} vs Schnellbild, Schnellbild",
+  "listSep": ", "
+ },
+ "sections": {
+  "image": "Kuvankatseluohjelmat",
+  "video": "Videosoittimet",
+  "comic": "Sarjakuvalukijat",
+  "files": "Tiedostonhallinnat",
+  "photos": "Apple ja kuvienhallinta",
+  "windows": "Windowsista tuleville"
+ },
+ "jokes": {
+  "image": "Siirryit Maciin. Kuvat tulivat mukaan, sormet muistavat yhä kaiken, vain {name} jäi vanhalle PC:lle. Sen ei tarvitse jäädä siihen.",
+  "video": "Uusi Mac, samat videot, mutta {name} jäi muuttokuormasta pois. MKV-tiedostot odottavat yhä katsojaansa.",
+  "comic": "Sarjakuvat muuttivat Maciin nurisematta. {name} jäi rappusille.",
+  "files": "Kaksi paneelia, funktionäppäimet ja lihasmuisti, joka on vanhempi kuin osa työkavereista. Sitten tuli Mac, eikä {name} päässyt sisään.",
+  "photos": "Kuvasi muuttivat Maciin. {name} jäi kotiin."
+ },
+ "groups": {
+  "basics": "Perusasiat",
+  "browse": "Selaaminen",
+  "images": "Kuvat",
+  "video": "Videot",
+  "archives": "Arkistot ja sarjakuvat",
+  "files": "Tiedostot",
+  "keys": "Näppäimistö",
+  "safety": "Turvallisuus"
+ },
+ "rows": {
+  "free": {
+   "label": "Ilmainen, kaikki ominaisuudet",
+   "how": "Kaikki ominaisuudet ilmaisessa latauksessa, ei pro-versiota."
+  },
+  "open_source": {
+   "label": "Avoin lähdekoodi",
+   "how": "MIT-lisenssi, lähdekoodi on GitHubissa."
+  },
+  "native_apple_silicon": {
+   "label": "Natiivi Apple siliconilla",
+   "how": "Tehty Apple siliconille.",
+   "note": "vain Apple silicon"
+  },
+  "no_account_no_tracking": {
+   "label": "Ei tiliä, ei mainoksia, ei seurantaa",
+   "how": "Ei tiliä, ei mainoksia, ei analytiikkaa."
+  },
+  "dark_light_setting": {
+   "label": "Vaalea tai tumma järjestelmästä riippumatta",
+   "how": "Asetukset (⌘,): kuten järjestelmä, vaalea tai tumma."
+  },
+  "languages_20": {
+   "label": "Käyttöliittymä monella kielellä",
+   "how": "20 kieltä, Macisi kielen mukaan.",
+   "note": "20 kieltä"
+  },
+  "folder_browsing": {
+   "label": "Selaa kansioita suoraan, ilman tuontia",
+   "how": "Avaa kansio ⌘O:lla tai pudota se ikkunaan."
+  },
+  "thumbnail_grid": {
+   "label": "Miniatyyriruudukko kansioiden esikatseluineen",
+   "how": "Kansiot näyttävät ensimmäiset kuvansa; kansiot ilman kuvia näkyvät himmeinä."
+  },
+  "list_view": {
+   "label": "Luettelonäkymä sarakkeineen",
+   "how": "L vaihtaa ruudukon ja luettelon välillä."
+  },
+  "recursive_search": {
+   "label": "Nimihaku kaikista alikansioista",
+   "how": "Hakukenttä (⌘F) käy läpi kansion ja kaikki sen alikansiot."
+  },
+  "regex_search": {
+   "label": "Haku säännöllisillä lausekkeilla",
+   "how": "Hakukentän vieressä oleva .* ottaa säännöllisen lausekkeen."
+  },
+  "network_shares_fast": {
+   "label": "Nopea verkkolevyillä ja suurissa kansioissa",
+   "how": "Miniatyyrit ilmestyvät vierittäessä, myös verkkolevyillä."
+  },
+  "multiple_windows": {
+   "label": "Useita ikkunoita",
+   "how": "⌘N avaa uuden ikkunan."
+  },
+  "bookmarks": {
+   "label": "Kansioiden kirjanmerkit",
+   "how": "⌘D lisää kansiolle kirjanmerkin, ⌃1 … ⌃9 avaavat ne."
+  },
+  "img_modern_formats": {
+   "label": "HEIC, AVIF, JPEG XL, WebP",
+   "how": "macOS:n oman ImageIO:n kautta."
+  },
+  "img_raw": {
+   "label": "Kameran RAW",
+   "how": "RAW-formaatit, jotka macOS tuntee, macOS:n kehittäminä.",
+   "note": "mallit, jotka macOS tuntee"
+  },
+  "img_psd_exr": {
+   "label": "PSD, OpenEXR",
+   "how": "Näytetään kuten mikä tahansa kuva."
+  },
+  "img_svg_pdf": {
+   "label": "SVG ja PDF",
+   "how": "Vektorikuvina, PDF:stä jokainen sivu."
+  },
+  "img_animated": {
+   "label": "Animoitu GIF, PNG, WebP",
+   "how": "Ne toistuvat, ja niitä voi lähentää ja kiertää kuten muitakin kuvia."
+  },
+  "keyboard_paging": {
+   "label": "Selaus näppäimistöllä",
+   "how": "Välilyönti avaa kuvan, ← → selaavat kansiota."
+  },
+  "zoom_rotate": {
+   "label": "Lähennä, panoroi, kierrä (vain näkymä)",
+   "how": "+ − tai nipistys lähentää, ⌥← ⌥→ kiertää; tiedosto pysyy ennallaan."
+  },
+  "slideshow": {
+   "label": "Diaesitys",
+   "how": "S aloittaa, välilyönti keskeyttää."
+  },
+  "slideshow_recursive": {
+   "label": "Diaesitys kaikista alikansioista, kuvat ja videot sekaisin",
+   "how": "Kaikki alikansiot, kuvat ja videot sekaisin, valitsemassasi järjestyksessä."
+  },
+  "auto_enhance_view": {
+   "label": "Automaattinen parannus ja liukusäätimet tiedostoa muuttamatta",
+   "how": "E parantaa, A näyttää liukusäätimet; vain näkymä muuttuu."
+  },
+  "file_info_exif": {
+   "label": "Tiedoston tiedot: EXIF, koodekit, bittinopeus",
+   "how": "I näyttää formaatin, kameran, koodekit ja bittinopeuden."
+  },
+  "wrong_extension_note": {
+   "label": "Huomauttaa, jos tiedostopääte ei vastaa sisältöä",
+   "how": "Tiedoston tiedot kertovat sopivan päätteen."
+  },
+  "video_native": {
+   "label": "Toistaa MP4:n ja MOV:n",
+   "how": "macOS:n itsensä kautta."
+  },
+  "video_mkv_avi_webm": {
+   "label": "Toistaa MKV:n, WebM:n, AVI:n, WMV:n, FLV:n",
+   "how": "Sisäänrakennetun VLC-moottorin kautta.",
+   "note": "sisäänrakennettu VLC-moottori"
+  },
+  "photos_videos_one_grid": {
+   "label": "Kuvat ja videot samassa ruudukossa",
+   "how": "Yksi ruudukko molemmille, joka kansiossa."
+  },
+  "video_skim_arrows": {
+   "label": "Videoiden pikaselaus nuolinäppäimillä",
+   "how": "← → hyppäävät kymmenesosan videosta, ⇧:n kanssa sadasosan."
+  },
+  "subtitles_embedded": {
+   "label": "Videoon upotetut tekstitykset",
+   "how": "V kytkee ne päälle ja pois, ⌃⌘S valitsee raidan."
+  },
+  "subtitles_external_files": {
+   "label": "Lataa videon vieressä olevat tekstitystiedostot",
+   "why": "Lukee vain itse videon, ei mitään sen vierestä."
+  },
+  "audio_track_choice": {
+   "label": "Ääniraidan valinta",
+   "how": "⌃⌘A tai ohjauspalkki."
+  },
+  "playback_speed": {
+   "label": "Toistonopeus",
+   "how": "< ja > välillä 0,5× ja 2×, äänet säilyttävät korkeutensa."
+  },
+  "control_bar_movable": {
+   "label": "Ohjauspalkki pysyy siellä, minne sen jätät",
+   "how": "Vedä sitä kahvasta: se pysyy paikallaan kaikissa videoissa."
+  },
+  "playlist": {
+   "label": "Soittolista",
+   "how": "Diaesityksen luettelo sivupalkkina: järjestä uudelleen, poista kohteita.",
+   "note": "syntyy lennossa diaesityksestä, ei tallenneta"
+  },
+  "saved_playlists": {
+   "label": "Tallennetut soittolistat",
+   "why": "Kansiot soittolistojen sijaan: diaesitys tekee luettelon."
+  },
+  "pip": {
+   "label": "Kuva kuvassa",
+   "why": "Tehty kansioiden läpikäyntiin; sivusilmällä katsomiseen sopii paremmin videosoitin."
+  },
+  "music_mode": {
+   "label": "Äänitiedostot, musiikkitila",
+   "why": "Vain kuvat ja videot; äänitiedostot aukeavat omassa apissaan."
+  },
+  "streaming_urls": {
+   "label": "Toistaa suoratoistoja ja osoitteita internetistä",
+   "why": "Ei koskaan mene verkkoon, periaatteesta."
+  },
+  "online_subtitles": {
+   "label": "Lataa tekstityksiä internetistä",
+   "why": "Ei koskaan mene verkkoon, periaatteesta."
+  },
+  "video_filters_enhance": {
+   "label": "Videon säädöt (kirkkaus, kontrasti …)",
+   "how": "Samat liukusäätimet kuin kuvissa."
+  },
+  "quicklook_mkv_thumbnails": {
+   "label": "Finderin ja Pikakatselun miniatyyrit MKV:lle ja muille",
+   "how": "MKV, WebM, WMV, FLV ja VOB saavat miniatyyrit Finderissa.",
+   "note": "MKV, WebM, WMV, FLV, Ogg, VOB"
+  },
+  "archives_as_folders": {
+   "label": "ZIP, RAR, 7z aukeavat kuin kansiot",
+   "how": "Aukeavat kuin kansiot, mitään ei pureta levylle."
+  },
+  "comics_cbz_cbr": {
+   "label": "Sarjakuvat CBZ, CBR",
+   "how": "CBZ ja CBR aukeavat kuin kansiot; selaa ← →."
+  },
+  "archive_passwords": {
+   "label": "Salasanalla suojatut arkistot",
+   "how": "Kysyy kerran ja muistaa sen.",
+   "note": "ZIP ja RAR; salattua 7z:aa ei voi avata"
+  },
+  "split_archives": {
+   "label": "Useaan osaan jaetut arkistot",
+   "how": "Näytetään kerran, ensimmäisen osan mukaan."
+  },
+  "videos_in_archives": {
+   "label": "Toistaa videot suoraan arkistosta",
+   "how": "Suoratoistetaan suoraan arkistosta."
+  },
+  "manga_two_page": {
+   "label": "Kahden sivun aukeama, mangatila oikealta vasemmalle",
+   "why": "Yksi kuva kerrallaan, niin isona kuin ikkuna sallii."
+  },
+  "rename_trash": {
+   "label": "Nimeä uudelleen, roskakori, uusi kansio",
+   "how": "Rivinvaihto tai F2 nimeää uudelleen, ⌘⌫ siirtää roskakoriin, ⇧⌘N luo kansion."
+  },
+  "move_copy": {
+   "label": "Siirto ja kopiointi vetämällä kansioihin",
+   "how": "Vedä ruutuja kansion päälle."
+  },
+  "dual_pane": {
+   "label": "Kaksi paneelia rinnakkain (F5 kopioi, F6 siirtää)",
+   "how": "D näyttää kaksi paneelia, F5 kopioi, F6 siirtää."
+  },
+  "undo_file_actions": {
+   "label": "Kumoa nimeäminen, siirto, roskakori",
+   "how": "Oikean painikkeen valikon ylimpänä."
+  },
+  "image_editing": {
+   "label": "Muokkaa kuvia (rajaus, koon muutos, tallennus)",
+   "why": "Näyttää kuvat muuttamatta niitä: tiedostosi pysyvät ennallaan."
+  },
+  "batch_convert": {
+   "label": "Eräkäsittely: muunnos tai uudelleennimeäminen",
+   "why": "Erämuunnokset ja eränimeämisen Schnellbild jättää muille ohjelmille."
+  },
+  "library_catalog": {
+   "label": "Kirjasto, luettelointi, tunnisteet, arviot",
+   "why": "Kansiot kirjaston sijaan: ei mitään tuotavaa."
+  },
+  "cloud_sync": {
+   "label": "Pilvisynkronointi, jakaminen verkossa",
+   "why": "Ei koskaan mene verkkoon, periaatteesta."
+  },
+  "keyboard_first": {
+   "label": "Kaikki näppäimistöllä",
+   "how": "Jokaisella toiminnolla on näppäin."
+  },
+  "custom_shortcuts": {
+   "label": "Omat pikanäppäimet",
+   "how": "Aseta omat näppäimesi ilmaiseksi, valmiina myös Phiewerin kaltainen esiasetus.",
+   "note": "ilmainen, esiasetus kuten Phiewerissä"
+  },
+  "shortcut_cheatsheet": {
+   "label": "Tulostettava luettelo kaikista näppäimistä",
+   "how": "F1 luettelee kaikki näppäimet, myös tulostettavaksi."
+  },
+  "boss_key": {
+   "label": "Pomonäppäin (kaikki piiloon kerralla)",
+   "how": "X piilottaa kaikki ikkunat ja mykistää kaikki videot."
+  },
+  "app_sandbox": {
+   "label": "Toimii Applen App Sandboxissa",
+   "how": "Ohjelma ja sen laajennukset toimivat siinä."
+  },
+  "no_network": {
+   "label": "Ei koskaan mene verkkoon",
+   "how": "Ei lainkaan verkkoyhteyttä."
+  },
+  "notarized_attested": {
+   "label": "Notarisoitu, rakennettu todistettavasti julkisesta lähdekoodista",
+   "how": "Jokaisen latauksen mukana on GitHubin build-todistus."
+  },
+  "mac_app_store": {
+   "label": "Mac App Storessa",
+   "how": "Pian, 0,99 € kehityksen tukemiseksi.",
+   "note": "pian, 0,99 € tueksi"
+  }
+ },
+ "products": {
+  "2345-kantuwang": {
+   "name": "2345看图王",
+   "vendor": "2345.com",
+   "summary": "Yksi Kiinan asennetuimmista Windowsin kuvankatseluohjelmista: avaa nopeasti noin 98 kuvaformaattia, kuten PSD, RAW, SVG ja AVIF, sekä PDF/OFD ja CAD. Mukana kevyt muokkaus, erätyökalut, OCR, passikuvat ja tekoälyrajaus, osa niistä VIP-jäsenyyden takana.",
+   "wins": [
+    "Hyvin laaja kuvaformaattien luettelo (PSD/PSB, AI, RAW, CAD, OFD)",
+    "Sisäänrakennettu muokkaus, eränä muunnos ja uudelleennimeäminen, OCR, passikuvat ja tulostus",
+    "Tuttu kiinalaisille Windows-käyttäjille, ACDSee-yhteensopivat pikanäppäimet"
+   ],
+   "price": "Katselin ilmainen; VIP-jäsenyys muokkaus-, tekoäly- ja PDF-lisille (kuukausi, vuosi, elinikäinen)",
+   "version": "13.2",
+   "updated": "2025-09-30 (Tencentin kaupan merkintä v13.2:lle; sivuston artikkeleita 2026-10 asti)",
+   "platforms": "Windows"
+  },
+  "5kplayer": {
+   "name": "5KPlayer",
+   "vendor": "Digiarty Software",
+   "summary": "Ilmainen kaikki yhdessä -mediasoitin Macille ja Windowsille: toistaa videota, musiikkia, DVD-levyjä ja radiota, vastaanottaa AirPlay-peilauksen, suoratoistaa DLNA:n kautta ja lataa verkkovideoita.",
+   "wins": [
+    "AirPlay-vastaanotin ja näytön peilauksen tallennus",
+    "DLNA-palvelin ja -toistin",
+    "Verkkovideoiden lataus (YouTube ym.)",
+    "DVD- ja ISO-toisto",
+    "Musiikkikirjasto, radio, IPTV",
+    "Toistonopeus, videoleikkuri, MP3:n erotus"
+   ],
+   "price": "Ilmainen (mainosrahoitteinen, vapaaehtoinen rekisteröinti sähköpostilla)",
+   "version": "6.11",
+   "updated": "2026-01-30",
+   "platforms": "macOS, Windows",
+   "notes": {
+    "list_view": "Kirjaston luettelot (suosikit, YouTube, DLNA, soittolista), ei tiedostosarakkeita",
+    "bookmarks": "Kirjanmerkit videoiden sisällä ja suosikit, ei kansioiden kirjanmerkkejä",
+    "zoom_rotate": "Kiertää ja peilaa videota 90 astetta; ei kuvien katselua",
+    "auto_enhance_view": "Videon säädöt ja tehosteet; ei kuville",
+    "file_info_exif": "Mediatiedot: lähde, raidat, formaatti; ei EXIFiä (ei kuvia)",
+    "pip": "Ei kuva kuvassa -tilaa; ”aina päällimmäisenä”",
+    "online_subtitles": "Lataa YouTube-tekstitykset videon mukana; ei hakua paikallisille tiedostoille",
+    "batch_convert": "Muuntaa videon MP3:ksi/AAC:ksi/MP4:ksi yksi kerrallaan; täysi muunnin maksullinen",
+    "library_catalog": "Kirjasto suosikkeineen ja soittolistoineen; ei tunnisteita tai arvioita",
+    "cloud_sync": "Ei pilvisynkronointia; jakaa DLNA- ja AirPlay-laitteille",
+    "keyboard_first": "Pikanäppäimet toistoon; kirjasto lähinnä hiirellä",
+    "shortcut_cheatsheet": "Pikanäppäinluettelo verkko-oppaassa",
+    "notarized_attested": "Notarisoitu Developer ID; suljettu lähdekoodi"
+   }
+  },
+  "acdsee": {
+   "name": "ACDSee",
+   "vendor": "ACD Systems",
+   "summary": "Pitkäikäinen kuvienhallinta- ja RAW-muokkausohjelma, joka toimii olemassa olevissa kansioissa ilman tuontia: luettelotietokanta, arviot, avainsanat, tekoälyn kasvot ja avainsanat, rikkomaton Develop-tila ja erätyökalut. Windows-versiot toistavat myös tavallisia videoita ja selaavat ZIP- ja RAR-arkistoja; Mac-versio on niissä suppeampi. Maksullinen, suunnattu kuviaan hallitseville ja muokkaaville valokuvaajille.",
+   "wins": [
+    "Täysi kuvienhallinta: arviot, avainsanat, luokat, kasvot, tekoälyn avainsanat ja kuvien samankaltaisuus",
+    "Rikkomaton RAW-muokkaus tekoälymaskeilla",
+    "Eränä uudelleennimeäminen, koon muutos, muunnos, metatiedot",
+    "Kaksoiskappaleiden etsintä",
+    "Generatiivinen tekoälymuokkaus",
+    "Windows: ZIP- ja RAR-selaus sekä videoiden metatiedot"
+   ],
+   "price": "Mac 27: 119,99 $ kertamaksu (ennakkomyynti 99,95 $ 2026-11-18 asti); Mac App Store: vuositilaus; Windows Home/Professional/Ultimate 2027 kertamaksu tai ACDSee 365 -tilaus",
+   "version": "Mac 26.0.3 (Mac 27 marraskuun lopussa 2026); Windows 2027",
+   "updated": "2026-05-27 (Mac App Store 26.0.3); Windows 2027 julkaistu 2026-09",
+   "platforms": "macOS, Windows, iOS (kumppanisovellukset)",
+   "notes": {
+    "no_account_no_tracking": "Aktivointi ja tilaukset vaativat acdID-sähköpostin ja verkon; tekoäly toimii laitteella",
+    "languages_20": "Mac App Store: englanti, ranska, saksa, japani; Windows-sivusto 10 kielellä",
+    "network_shares_fast": "Näyttää verkkolevyt ilman tuontia; indeksoi joutoaikana",
+    "multiple_windows": "Välilehdet yhdessä ikkunassa, säilyvät istuntojen välillä",
+    "bookmarks": "Välilehdet, tallennetut haut; Windows: enintään viisi kuvakoria",
+    "img_psd_exr": "PSD kyllä; OpenEXR ei luettelossa",
+    "img_svg_pdf": "SVG Windowsissa; PDF vain Windows Professional/Ultimatessa; Mac avaa PDF:t Pikakatselussa",
+    "img_animated": "Animoitu GIF ja WebP; ei animoitua AVIFia",
+    "video_native": "Windows toistaa MP4/MOV/M4V/AVI/WMV; Mac näyttää videot Pikakatselussa",
+    "video_mkv_avi_webm": "Windows: AVI, WMV, ASF; ei MKV:tä, WebM:ää, FLV:tä",
+    "music_mode": "Windows lukee MP3:n, WAV:n, WMA:n, M4A:n",
+    "archives_as_folders": "Windows: ZIP, RAR (ei RAR5), TAR, GZ, CAB, ARJ ym.; ei 7z:aa; ei Macilla",
+    "cloud_sync": "iCloud Drive (Mac), OneDrive (Windows), SendPix-jako, Mobile Sync",
+    "keyboard_first": "Metatiedot ja karsinta näppäimistöllä; muualla paljon hiirtä",
+    "app_sandbox": "Mac App Store -versio (kaupan vaatimus); suoralatauksesta ei tietoa"
+   }
+  },
+  "adobe-bridge": {
+   "name": "Adobe Bridge",
+   "vendor": "Adobe",
+   "summary": "Adobe Bridge on ilmainen luovan aineiston hallintaohjelma, jolla selataan kuva-, suunnittelu- ja videokansioita esikatseluin. Se lisää metatiedot, avainsanat, arviot, kokoelmat, eränä uudelleennimeämisen ja viennin, ja välittää tiedostot Photoshopille, Camera Raw'lle ja muille Creative Cloud -ohjelmille.",
+   "wins": [
+    "Adoben formaattien (PSD, AI, INDD, After Effects, Substance 3D) ja PDF:n esikatselu",
+    "Täysi metatietojen muokkaus, avainsanat, merkinnät, arviot, kokoelmat ja älykokoelmat",
+    "Eränä uudelleennimeäminen, vientipaneeli ja työnkulut massamuunnoksiin",
+    "Toimii yhdessä Camera Raw'n, Photoshopin, Premieren ja Creative Cloud Librariesin kanssa",
+    "PDF-vedosarkit, julkaisu Adobe Stockiin ja Portfolioon",
+    "Windows-versio"
+   ],
+   "price": "Ilmainen lataus Adobe-tilillä (Creative Cloud -sovelluksen kautta); Camera Raw -muokkaus ja Photoshopiin siirto vaativat maksullisen Creative Cloud -tilauksen",
+   "version": "17.0 (marraskuu 2026)",
+   "updated": "2026-11-10",
+   "platforms": "macOS, Windows",
+   "notes": {
+    "free": "Ilmainen Adobe-tilillä; RAW-muokkaus Camera Raw'ssa vaatii maksullisen tilauksen",
+    "network_shares_fast": "Upotetut esikatselukuvat nopeuttavat; muuten luo esikatselut ja välimuistin",
+    "video_mkv_avi_webm": "Toistaa FLV:n, F4V:n, SWF:n ja minkä QuickTime tukee; MKV/WebM/AVI ei mainittu",
+    "music_mode": "Äänitiedostojen esikuuntelu esikatselupaneelissa",
+    "dual_pane": "Useita sisältöpaneeleja tai ikkunoita rinnakkain; ei F5/F6-kopiointia",
+    "image_editing": "Pikatoiminnot: rajaus, koko, taustan poisto; pikselimuokkaus Camera Raw/Photoshop (maksullinen)",
+    "keyboard_first": "Paljon pikanäppäimiä, mutta työ on paneeli- ja hiirivetoista",
+    "shortcut_cheatsheet": "Ohjesivu luettelee pikanäppäimet; ei tulostettavaa luetteloa"
+   }
+  },
+  "alsee": {
+   "name": "ALSee",
+   "vendor": "ESTsoft",
+   "summary": "ESTsoftin pitkäikäinen korealainen kuvankatseluohjelma ALTools-perheestä (ALZip, ALYac): selaus miniatyyreinä ja luettelona, iso ja koko näytön näkymä, kuvat arkistojen sisällä, eränä muunnos, koon muutos ja kierto, tulostus sekä tilauksella tekoälymuokkaukset (suurennus, taustan poisto, kasvojen sumennus).",
+   "wins": [
+    "Tulostusasettelut sekä eränä kierto, koon muutos ja muunnos",
+    "Tekoälysuurennus, taustan poisto, kasvojen sumennus (tilaus)",
+    "Integroituu Windowsin Resurssienhallinnan pikavalikkoon"
+   ],
+   "price": "Ilmainen mainoksin; AD-ZERO-mainoksettomuus 5 900 KRW/kk (kaikki ALTools); ALTools AI -tilaus tekoälyominaisuuksiin",
+   "version": "10.02",
+   "updated": "2026-10-07",
+   "platforms": "Windows"
+  },
+  "apolloone": {
+   "name": "ApolloOne",
+   "vendor": "Anogeissus",
+   "summary": "Nopea kuvankatselin ja karsintatyökalu valokuvaajille, toimii kansioissa ilman tuontia. Vahva RAW:ssa, HDR:ssä, metatiedoissa, arvioissa, tarkennuspisteissä ja eräkäsittelyssä; monet ominaisuudet jakautuvat kolmeen maksulliseen versioon.",
+   "wins": [
+    "Karsinta: valinnat, arviot, Focus Score, tekoälyarvio, pinot",
+    "HDR-RAW-näyttö ja HDR-vienti",
+    "EXIF/IPTC/XMP-muokkaus, avainsanat, GPS-kartat",
+    "Tuonti muistikortilta",
+    "Ulkoiset SRT-tekstitykset",
+    "AppleScript-automaatio"
+   ],
+   "price": "Free Edition; Standard 35,99 $, Pro 59,99 $, Max 99,99 $ kertamaksuna; tai vuosittain Standard 14,99 $ / Pro 23,99 $",
+   "version": "5.1.0",
+   "updated": "2026-10-22",
+   "platforms": "macOS",
+   "notes": {
+    "free": "Free Edition; Standard 35,99 $, Pro 59,99 $, Max 99,99 $ kertamaksuna, tai vuosittain alkaen 14,99 $",
+    "no_account_no_tracking": "Ei tiliä; App Storen mukaan käyttötietoja analytiikkaan, ei yhdistetty sinuun",
+    "languages_20": "11: EN, NL, FR, DE, IT, JA, KO, PL, zh-Hans, ES, zh-Hant",
+    "list_view": "Standard: lajiteltava taulukko EXIF-sarakkein",
+    "regex_search": "RegEx-haku metatietoihin (Pro); tiedostonimet vain jokerimerkein",
+    "network_shares_fast": "NAS toimii SMB:llä; arvostelun mukaan kansion lataus AFP:llä kestää 5 tai 10 s",
+    "multiple_windows": "Standard: välilehdet ja ikkunat",
+    "img_psd_exr": "OpenEXR katselu ja vienti; PSD:tä ei mainita",
+    "img_svg_pdf": "SVG rasteroidaan etukäteen; PDF:ää ei mainita",
+    "img_animated": "GIF mainittu; animoidusta WebP:stä/PNG:stä ei tietoa",
+    "auto_enhance_view": "Pro: rikkomattomat pikasäätimet, myös automaattinen sävykäyrä",
+    "video_skim_arrows": "← → askeltavat ruutu kerrallaan; J/K/L-kelaus",
+    "playback_speed": "J/L kiertävät kelausnopeuksia; ei kiinteää nopeusasetusta",
+    "music_mode": "Apple Musicin soittolistat vain diaesityksen taustamusiikkina",
+    "undo_file_actions": "Roskakoriin siirron kumous ohjelman ollessa auki; palautus valinnaisella skriptillä",
+    "image_editing": "rajaus (Standard), pikasäädöt ja koon muutos (Pro)",
+    "batch_convert": "eränä uudelleennimeäminen (Standard); koko, muunnos, vienti (Pro)",
+    "cloud_sync": "AirDrop ja jako; ei synkronointia",
+    "custom_shortcuts": "Pro-versiossa"
+   }
+  },
+  "apple-photos": {
+   "name": "Apple Kuvat",
+   "vendor": "Apple",
+   "summary": "Applen kuvakirjasto, joka synkronoituu iCloudin kautta laitteiden välillä. Hyvä henkilökohtaisen kuvakokoelman järjestämiseen ja muokkaamiseen: ihmisten tunnistus, muistot ja rikkomaton muokkaus.",
+   "wins": [
+    "iCloud-synkronointi iPhonen ja iPadin kanssa",
+    "Kuvien ja videoiden rikkomaton muokkaus",
+    "Haku ihmisten, paikkojen ja sisällön mukaan",
+    "Muistot, diaesitykset musiikilla, jaetut albumit"
+   ],
+   "price": "Ilmainen (macOS:n mukana); iCloud-kuvien iCloud+-tallennustila on maksullinen",
+   "version": "Kuvat 12.0, macOS Golden Gate 27.2.1",
+   "updated": "2026-11-09 (macOS 27.2.1)",
+   "platforms": "macOS, iOS, iPadOS, visionOS",
+   "notes": {
+    "no_account_no_tracking": "Toimii ilman Apple-tiliä; iCloud vaatii tilin, visuaalinen haku vertaa kuvia Applen kanssa",
+    "thumbnail_grid": "Kirjaston ruudukko vuosina, kuukausina, kaikkina kuvina; albumit, ei kansioita",
+    "recursive_search": "Hakee koko kirjastosta sisällön, otsikon, avainsanan, päivän mukaan; ei tiedostonimiä",
+    "img_psd_exr": "PSD tuodaan litistettynä (tasot katoavat); OpenEXR:stä ei tietoa",
+    "slideshow_recursive": "Diaesitys valinnasta tai albumista, kuvat ja videot sekaisin; ei kansiopuuta",
+    "playback_speed": "Hidastusnopeudet (1/2, 1/4, 1/5) vain suuren ruutunopeuden videoille",
+    "saved_playlists": "Tallennetut diaesitysprojektit pitävät järjestetyn luettelon",
+    "rename_trash": "Poisto (Äskettäin poistetut) ja otsikot; ei tiedostojen nimeämistä eikä kansioita levyllä",
+    "undo_file_actions": "⌘Z ja Äskettäin poistetut -albumi",
+    "batch_convert": "Vie useita kohteita valittuun formaattiin; ei eränimeämistä",
+    "keyboard_first": "paljon pikanäppäimiä, ei kaikkeen",
+    "custom_shortcuts": "macOS:n apin pikanäppäimet valikkokomennoille",
+    "boss_key": "⌘H kätkee apin; ei erillistä pomonäppäintä"
+   }
+  },
+  "apple-preview": {
+   "name": "Apple Esikatselu",
+   "vendor": "Apple",
+   "summary": "Applen sisäänrakennettu PDF- ja kuvakatselin jokaisessa Macissa. Vahva PDF:issä, merkinnöissä, allekirjoittamisessa ja nopeissa kuvakorjauksissa, kuten rajauksessa, koon muutoksessa ja formaatin muunnoksessa.",
+   "wins": [
+    "Valmiiksi asennettuna jokaisessa Macissa",
+    "Täydet PDF-työkalut: merkinnät, lomakkeiden allekirjoitus, yhdistäminen, salasanasuojaus",
+    "Kuvien muokkaus: rajaus, koon muutos, taustan poisto, eräkäsittelynä muunnos",
+    "Avaa 3D-tiedostoja"
+   ],
+   "price": "Ilmainen (macOS:n mukana)",
+   "version": "Esikatselu 11.0, macOS Golden Gate 27.2.1",
+   "updated": "2026-11-09 (macOS 27.2.1)",
+   "platforms": "macOS",
+   "notes": {
+    "thumbnail_grid": "Miniatyyrit ja vedosarkki samaan ikkunaan avatuista tiedostoista; ei kansioiden esikatselua",
+    "img_svg_pdf": "PDF on Esikatselun ydinformaatti; SVG-tukea ei mainita ohjeessa",
+    "img_animated": "Näyttää animoidun GIFin ruudut pysäytyskuvina; toistoon Pikakatselu",
+    "slideshow": "Diaesitys PDF:n sivuista",
+    "manga_two_page": "Kaksi sivua -näkymä PDF:ille; ei oikealta vasemmalle -tilaa",
+    "rename_trash": "Nimeää tai siirtää avoimen tiedoston otsikkopalkista; ei roskakoria eikä uutta kansiota",
+    "move_copy": "Avoimen tiedoston monistus tai vienti, siirto otsikosta; ei kansioiden tiedostonhallintaa",
+    "cloud_sync": "Avaa ja tallentaa iCloud Driveen",
+    "keyboard_first": "Paljon pikanäppäimiä, mutta ei kansioiden selausta näppäimistöllä",
+    "custom_shortcuts": "macOS:n apin pikanäppäimillä voi vaihtaa minkä tahansa apin valikkokomentojen näppäimiä",
+    "boss_key": "Vain järjestelmän ⌘H (kätke appi); ei erillistä pomonäppäintä"
+   }
+  },
+  "bandiview": {
+   "name": "BandiView",
+   "vendor": "Bandisoft",
+   "summary": "Honeyview'n seuraaja Bandizipin tekijöiltä: nopea kuvankatselin Windows 10/11:lle, lukee arkistoja ja sarjakuvia, älykäs aukeamatila ja webtoon-tila, HDR-ulostulo ja nopea erämuunnin. Hyvin suosittu Koreassa mangan ja webtoonien lukemiseen.",
+   "wins": [
+    "HDR-ulostulo HDR-kuville (PRO)",
+    "Pystysuora webtoon-tila ja älykäs aukeamatila mangalle",
+    "Clip Studio Paint, HEIC (PRO), monet arkistoformaatit (ALZ, EGG, ISO, ZPAQ …)",
+    "Nopea monisäikeinen erämuunnin",
+    "Muokattavat näppäin- ja hiiripikakomennot, myös ilmaisversiossa"
+   ],
+   "price": "Ilmainen kokeiluversio (ei-kaupallinen kotikäyttö, mainoksia, osa ominaisuuksista lukittu); Professional 39 $ kertamaksu (1 PC), 58,50 $ (2 PC), määräalennukset",
+   "version": "8.05",
+   "updated": "2026-11-03",
+   "platforms": "Windows"
+  },
+  "cdisplayex": {
+   "name": "CDisplayEx",
+   "vendor": "Progdigy Software",
+   "summary": "CDisplayEx on pitkäikäinen, kevyt sarjakuvalukija Windowsille, CDisplayn seuraaja, joka tunnetaan nopeasta latautumisesta, Lanczos-skaalauksesta ja täysin muokattavista näppäimistä. Työpöytäversiota ei enää kehitetä; työ jatkuu Android-sovelluksessa.",
+   "wins": [
+    "Jokaisen toiminnon voi asettaa omalle näppäimelle",
+    "Automaattinen värinkorjaus ja gamma vanhoille skannauksille",
+    "Aukeama ja japanilainen (oikealta vasemmalle) tila",
+    "Resurssienhallinnan miniatyyrit sarjakuvatiedostoille Windowsissa"
+   ],
+   "price": "Työpöytäversio ilmainen; Android Lite (mainoksia) ja Premium (maksullinen)",
+   "version": "1.10.33 (työpöytä)",
+   "updated": "2015-06-20 (työpöytä; kehittäjän mukaan työpöytäversiota ei enää kehitetä)",
+   "platforms": "Windows, Android"
+  },
+  "cisdem-video-player": {
+   "name": "Cisdem Video Player",
+   "vendor": "Cisdem",
+   "summary": "Ilmainen, kevyt videosoitin Macille: MKV, AVI, WMV, WebM ja 4K/8K-tiedostot, soittolista, tekstitysten ja ääniraitojen vaihto sekä erillisten ikkunoiden tila. Muunnos muihin formaatteihin on maksullinen lisä.",
+   "wins": [
+    "Videomuunnos laitekohtaisiin esiasetuksiin (maksullinen)",
+    "Erilliset ikkunat videolle, ohjaimille ja soittolistalle",
+    "Muistaa soittolistan ja kohdan",
+    "Kappaleet, minitila, incognito-tila",
+    "Windows-versio"
+   ],
+   "price": "Toisto ilmainen; muunnos 19,99 $ kertamaksu tai 9,99 $/vuosi",
+   "version": "6.0.0",
+   "updated": "2025-07-22",
+   "platforms": "macOS, Windows",
+   "notes": {
+    "free": "Toisto ilmainen; muunnos sovelluksen sisäisenä ostona 19,99 $ tai 9,99 $/vuosi",
+    "no_account_no_tracking": "Tietosuojamerkintä ”Tietoja ei kerätä”; arvostelu mainitsee päivitysponnahdusikkunan",
+    "folder_browsing": "Tuo kansion soittolistaan",
+    "zoom_rotate": "Videon kierto ja peilaus",
+    "saved_playlists": "Muistaa viimeisen soittolistan ja kohdan; ei nimettyjä soittolistoja",
+    "pip": "”Mini Screen” -tila, ei järjestelmän kuva kuvassa",
+    "batch_convert": "Videomuunnos (MP4, HEVC, MKV, MP3 …) maksullisena ostona",
+    "keyboard_first": "Pikanäppäimet toistoon, äänenvoimakkuuteen, askellukseen",
+    "shortcut_cheatsheet": "Pikanäppäintaulukko verkko-oppaassa",
+    "notarized_attested": "App Storen allekirjoittama; suljettu lähdekoodi"
+   }
+  },
+  "commander-one": {
+   "name": "Commander One",
+   "vendor": "Electronic Team",
+   "summary": "Total Commanderin tyylinen kahden paneelin tiedostonhallinta macOS:lle: funktionäppäimiin perustuva työskentely, regex-haku, sisäänrakennettu F3-katselin (teksti, heksa, kuva, media) ja arkistojen käsittely. PRO Pack lisää RAR:n ja 7z:n, FTP/SFTP:n, pilvilevyt, päätteen ja teemat.",
+   "wins": [
+    "Klassinen F-näppäimin toimiva commander-työnkulku ja toimintojono",
+    "Regex- ja sisältöhaku, myös arkistoissa ja FTP:ssä",
+    "PRO: FTP/SFTP ja monet pilvipalvelut, MTP-, iOS- ja Android-laitteet",
+    "Sisäänrakennettu heksa-, teksti- ja binäärikatselin",
+    "Prosessien näyttö, pääte (PRO)"
+   ],
+   "price": "Ilmaisversio; PRO Pack 29,99 $ henkilökohtainen (1 Mac) tai 99,99 $ tiimi (5 Macia), kertamaksu; MAS: ilmainen sovelluksen sisäisellä ostolla tai ”Commander One PRO” 29,99 $",
+   "version": "3.18 (4006)",
+   "updated": "2026-09-25",
+   "platforms": "macOS",
+   "notes": {
+    "free": "Ilmaisversio (kaksi paneelia, vain ZIP); PRO Pack 29,99 $, kertamaksu",
+    "languages_20": "14 kieltä (CS, NL, EN, FR, DE, HU, IT, JA, KO, PL, PT, ZH, ES, UK); kieli valittavissa",
+    "thumbnail_grid": "”Thumbs”-näkymä; ei kansioiden esikatselua",
+    "network_shares_fast": "SMB, FTP ja pilvi tuettu; nopeudesta ei väitteitä",
+    "img_modern_formats": "Pikakatselu tai katselimen kuvatila macOS:n koodekeilla; ei omaa kuvankatselinta",
+    "img_raw": "Katselimen ja Pikakatselun kautta macOS:n RAW-tuella; ei omaa dekooderia",
+    "keyboard_paging": "Pikakatselussa (F3) nuolinäppäimet selaavat valintaa",
+    "zoom_rotate": "Lähennys vain Pikakatselussa (⌘+ / ⌘−); F3-kuvatilassa ei lähennystä",
+    "file_info_exif": "Tietoja näyttää koon, päivät, oikeudet; EXIF- ja koodekkitiedoista ei mainintaa",
+    "wrong_extension_note": "Katselin tunnistaa formaatin sisällöstä, mutta ei huomauta väärästä päätteestä",
+    "photos_videos_one_grid": "Thumbs-näkymä näyttää esikatselun mille tahansa tiedostolle; ei kansioiden esikatselua",
+    "music_mode": "Katselimen mediatila toistaa ääntä Pikakatselun kautta",
+    "archives_as_folders": "Ilmaisversio: vain ZIP; PRO (29,99 $): 7z ja TAR luku ja kirjoitus, RAR/ISO/XAR vain luku",
+    "videos_in_archives": "Esikatselu arkiston sisällä ilman purkua (Pikakatselu), ei soitinta",
+    "library_catalog": "Vain Finderin tunnisteet",
+    "cloud_sync": "Vain PRO: Dropbox, Google Drive, OneDrive, S3, WebDAV, FTP/SFTP ym.",
+    "shortcut_cheatsheet": "Pikanäppäinluettelo asetuksissa; ei tulostettavaa",
+    "app_sandbox": "Mac App Store -versio on hiekkalaatikossa (rajoituksin); sivuston PRO-versio ei"
+   }
+  },
+  "cooviewer": {
+   "name": "cooViewer",
+   "vendor": "coo ja ysmx-haara",
+   "summary": "Pitkäikäinen japanilainen manga- ja sarjakuvakatselin Macille, jota pidetään nyt elossa aktiivisesti päivitettynä avoimen lähdekoodin haarana universal-binäärinä. Avaa kansiot, PDF:t ja lähes minkä tahansa arkiston (ZIP, RAR, 7z, LHA, jaetut ja salasanasuojatut) kirjana: oikealta vasemmalle -aukeamat, sivukirjanmerkit, vapaasti asetettavat näppäimet ja hiiritoiminnot sekä Finderin miniatyyrit sarjakuva-arkistoille.",
+   "wins": [
+    "Oma mangalukija: aukeamat oikealta vasemmalle, automaattinen yksittäissivujen tunnistus, tallentuu kirjakohtaisesti",
+    "Nimetyt sivukirjanmerkit ja viimeksi luettu sivu kirjakohtaisesti",
+    "Jokainen näppäin ja hiiritoiminto asetettavissa, yhden käden oletukset",
+    "Avaa valtavasti arkistoformaatteja, myös jaetut RAR- ja ZIP-arkistot sekä salasanasuojatut",
+    "Core Image -näkymäsuotimet, suurennuslasi",
+    "Finderin miniatyyrit ja Pikakatselu CBZ-, CBR-, ZIP-, RAR- ja 7z-tiedostoille"
+   ],
+   "price": "Ilmainen",
+   "version": "1.7.1 (ysmx-haara); alkuperäinen coo-ona-versio päättyi versioon 1.2b25 (2020)",
+   "updated": "2026-10-30",
+   "platforms": "macOS",
+   "notes": {
+    "dark_light_setting": "Omat värit taustalle ja sivupalkille; ei vaalean ja tumman teeman valintaa",
+    "thumbnail_grid": "Avoimen kirjan sivujen ruudukko; ei kansioiden esikatselua",
+    "network_shares_fast": "Lataa laiskasti kansioissa, joissa on paljon alikansioita tai arkistoja; verkkolevyjä ei mainita",
+    "bookmarks": "Nimetyt sivukirjanmerkit ja viimeisimmät kirjat; ei kansiosuosikkeja",
+    "img_modern_formats": "HEIC/HEIF, WebP, AVIF; JPEG XL ei luettelossa",
+    "img_psd_exr": "PSD kyllä; OpenEXR ei luettelossa",
+    "img_svg_pdf": "PDF kyllä (sivut kirjana); SVG ei luettelossa",
+    "slideshow_recursive": "Asetuksella kirja sisältää alikansiot; vain kuvat, ei videoita",
+    "auto_enhance_view": "Käsin säädettävät väri- ja terävyyssuotimet; ei automaattista parannusta",
+    "archives_as_folders": "avaa arkiston sarjakuvakirjana, ei kansiona",
+    "rename_trash": "Siirtää vasemman tai oikean sivun kuvan roskakoriin; ei nimeämistä eikä uutta kansiota",
+    "shortcut_cheatsheet": "Oletusnäppäimet verkko-oppaassa (japaniksi); ei luetteloa apissa",
+    "boss_key": "Esc sulkee kirjan heti; ei kaiken kätkevää näppäintä"
+   }
+  },
+  "digikam": {
+   "name": "digiKam",
+   "vendor": "KDE:n digiKam-tiimi",
+   "summary": "digiKam on KDE:n täysi avoimen lähdekoodin kuvienhallintaohjelmisto suurille kokoelmille. Se indeksoi kansiot tietokantaan ja tarjoaa tunnisteet, kasvojentunnistuksen, sijaintitiedot, samankaltaisuushaun, pätevän kuvankäsittelyn, eräkäsittelyn ja monet vientikohteet.",
+   "wins": [
+    "Tietokanta: tunnisteet, merkinnät, kasvojentunnistus, samankaltaisuus- ja kaksoiskappalehaku, kartta- ja aikajanahaku",
+    "Luonnollisen kielen ja tarkennettu haku kaikista kokoelmista",
+    "Täysi kuvankäsittely ja Batch Queue Manager versioinnilla",
+    "RAW-käsittely LibRaw'lla, 16-bittisyys ja värinhallinta",
+    "Videon toistonopeus ja ruutu kerrallaan askellus",
+    "Monet vientikohteet (Dropbox, OneDrive, Flickr, Piwigo, HTML-galleriat) ja DLNA",
+    "Ilmainen, avoin lähdekoodi, toimii myös Linuxissa ja Windowsissa"
+   ],
+   "price": "Ilmainen",
+   "version": "9.1.0",
+   "updated": "2026-06-07",
+   "platforms": "macOS, Windows, Linux",
+   "notes": {
+    "folder_browsing": "Albumit ovat oikeita kansioita, mutta ne on ensin lisättävä ja skannattava tietokantaan",
+    "thumbnail_grid": "Kohteiden miniatyyrit; kansiot vain albumipuussa",
+    "network_shares_fast": "Verkkolevyt toimivat, mutta niiden skannaus voi olla hidasta",
+    "multiple_windows": "Pääikkuna sekä erilliset Light Table-, kuvankäsittely- ja Survey-ikkunat",
+    "img_animated": "GIF ja WebP pysäytyskuvina; MNG toistuu videona",
+    "zoom_rotate": "Lähennys ja panorointi esikatselussa; kierto muuttaa tiedostoa tai sen EXIF-merkintää",
+    "music_mode": "Äänitiedostot (MP3, FLAC, OGG …) oletussuodattimessa ja soitinpienoisohjelma",
+    "undo_file_actions": "Poisto siirtää digiKamin roskakoriin; nimeämisen ja siirron kumouksesta ei tietoa",
+    "keyboard_first": "Laajat pikanäppäimet, mutta moni asia sivupalkista ja hiirellä",
+    "notarized_attested": "Avoin lähdekoodi; lataukset GnuPG-allekirjoitettuja; notarisoinnista ei tietoa"
+   }
+  },
+  "directory-opus": {
+   "name": "Directory Opus",
+   "vendor": "GP Software",
+   "summary": "Erittäin muokattava Resurssienhallinnan korvaaja Windowsille: yksi tai kaksi paneelia, välilehdet, merkinnät, arviot, tunnisteet, katselupaneeli ja erillinen kuvankatselin diaesityksineen. Vahva haussa, synkronoinnissa, kaksoiskappaleiden etsinnässä, eränimeämisessä ja kuvamuunnoksissa, täysi skriptaus mukana.",
+   "wins": [
+    "Valtava muokattavuus ja skriptaus",
+    "Kumoamisloki tiedostotoiminnoille",
+    "Merkinnät, arviot, tunnisteet, metatietojen muokkaus",
+    "Kuvamuunnin ja eränimeäminen",
+    "Kaksoiskappaleiden etsintä, synkronointi, Everything-integraatio",
+    "Diaesitys ristihäivytyksellä"
+   ],
+   "price": "89 AUD yksi, 129 AUD kaksi, 249 AUD viisi PC:tä; vuoden päivitykset, sitten 25/40/75 AUD vuodessa; 30 päivän kokeilu (60 rekisteröityneenä)",
+   "version": "13.25",
+   "updated": "2026-08-21",
+   "platforms": "Windows"
+  },
+  "double-commander": {
+   "name": "Double Commander",
+   "vendor": "Alexander Koblov ja muut tekijät",
+   "summary": "Ilmainen avoimen lähdekoodin kahden paneelin tiedostonhallinta, Total Commanderin innoittama, myös sen laajennusrajapinnan osalta. Toimii natiivisti Apple siliconilla: välilehdet, tiedostohaku regexillä, joukkonimeäminen, arkistot kansioina ja sisäänrakennettu katselin tekstille ja kuville.",
+   "wins": [
+    "Täysi Total Commanderin tyylinen tiedostonhallinta Macilla: kansioiden synkronointi, joukkonimeäminen, tarkistussummat, FTP/SFTP",
+    "Ajaa Total Commanderin laajennuksia (WCX/WDX/WFX/WLX)",
+    "Monialustainen (macOS, Windows, Linux)",
+    "Katselin osaa rajata, muuttaa kokoa ja tallentaa kuvia",
+    "Lua-skriptaus ja muokattava työkalupalkki"
+   ],
+   "price": "Ilmainen",
+   "version": "1.2.11",
+   "updated": "2026-11-08",
+   "platforms": "macOS, Windows, Linux, FreeBSD",
+   "notes": {
+    "thumbnail_grid": "Miniatyyrinäkymä (macOS:llä Pikakatselu); kansiot symboleina, ei esikatselua",
+    "network_shares_fast": "SMB ja verkkoyhteys laajennuksin; nopeudesta ei tietoa",
+    "multiple_windows": "Välilehdet kahdessa paneelissa; katselin ja editori erillisissä ikkunoissa",
+    "img_modern_formats": "macOS:llä mukana tulevan Pikakatselu-laajennuksen kautta",
+    "img_raw": "Windowsissa WIC-koodekeilla; macOS:llä Pikakatselu-laajennuksella",
+    "img_psd_exr": "PSD sisäänrakennettu; OpenEXR ei luettelossa",
+    "img_svg_pdf": "SVG sisäänrakennettu; PDF macOS:llä Pikakatselu-laajennuksella tai WLX-laajennuksilla",
+    "img_animated": "Animoitu GIF ruutuohjaimin; APNG ja animoitu WebP ei luettelossa",
+    "slideshow": "Vain koko näytön katselimessa, nykyinen kansio, 1 … 25 s kuvaa kohden",
+    "file_info_exif": "Sisäänrakennettu Exif-laajennus (JPEG: päivä, koko, suunta, kamera)",
+    "video_native": "Ei omaa soitinta: macOS:llä Pikakatselu, Windowsissa WMP, Linuxissa MPlayer laajennuksena",
+    "video_mkv_avi_webm": "macOS:llä vain mitä Pikakatselu toistaa",
+    "photos_videos_one_grid": "Miniatyyrinäkymä järjestelmän miniatyyreillä (macOS:llä Pikakatselu)",
+    "music_mode": "Toistaa yhden äänitiedoston kerrallaan katselimessa",
+    "archives_as_folders": "ZIP, TAR, GZ sisäänrakennettu, RAR UnRAR-laajennuksella; 7z vaatii macOS:llä ulkoisen 7zz:n",
+    "comics_cbz_cbr": "Ei sarjakuvalukijaa; CBZ ja CBR aukeavat kansioina, kun ne liitetään pakkauslaajennuksiin",
+    "archive_passwords": "Salasanat tuettu pakkaajissa, formaattikohtaisesti",
+    "split_archives": "Monivolyyminen RAR UnRAR-laajennuksella",
+    "videos_in_archives": "F3 purkaa tiedoston väliaikaiskansioon ja avaa sen",
+    "batch_convert": "Joukkonimeäminen kyllä; ei kuvien erämuunnosta",
+    "library_catalog": "descript.ion-kommentit; macOS:llä Finderin tunnisteet; ei arviotietokantaa",
+    "cloud_sync": "iCloud Drive ja MacCloud-laajennus (OAuth/S3), FTP/SFTP; ei synkronointia",
+    "shortcut_cheatsheet": "Näppäinsivu ohjeissa; ei tulostettavaa luetteloa"
+   }
+  },
+  "elmedia-player": {
+   "name": "Elmedia Player",
+   "vendor": "Electronic Team",
+   "summary": "Yleiskäyttöinen mediasoitin videolle ja musiikille: monet formaatit, OpenSubtitles-haku, taajuuskorjain ja vahva suoratoisto AirPlay-, Chromecast-, DLNA- ja Roku-laitteisiin. Edistyneet ominaisuudet, kuten kuva kuvassa ja kuvan säädöt, ovat PRO-versiossa.",
+   "wins": [
+    "Suoratoisto älytelevisioihin, Chromecastiin, Rokuun, DLNA:han; AirPlay-vastaanotin",
+    "Musiikin toisto taajuuskorjaimella ja visualisoinnilla",
+    "Verkkovideot ja OpenSubtitles-haku",
+    "Siirrettävä erillinen ohjausikkuna, väriteemat, omat pikanäppäimet"
+   ],
+   "price": "Ilmainen; PRO-ominaisuudet Mac App Storen 19,99 $:n versiona tai suorana PRO-lisenssinä (hinta ei näy ilman skriptiä)",
+   "version": "8.24 (3472)",
+   "updated": "2025-12-05",
+   "platforms": "macOS",
+   "notes": {
+    "free": "Toisto ilmainen; PRO (säädöt, kuva kuvassa, suoratoisto televisioon) 19,99 $",
+    "languages_20": "12 kieltä; kielen voi valita apissa",
+    "folder_browsing": "Kansioita voi lisätä soittolistaan; ei selainta",
+    "zoom_rotate": "Vain video: kierto, käännös, peilaus, kuvasuhde",
+    "auto_enhance_view": "Vain video, PRO",
+    "file_info_exif": "Ikkuna > Mediatiedot (⌘I); ei EXIFiä",
+    "pip": "Vain PRO",
+    "video_filters_enhance": "Kirkkaus, kontrasti, värikylläisyys; PRO",
+    "keyboard_first": "Muokattavat pikanäppäimet toistoon",
+    "app_sandbox": "Mac App Store -versio hiekkalaatikossa; sivuston versiosta ei tietoa"
+   }
+  },
+  "fastrawviewer": {
+   "name": "FastRawViewer",
+   "vendor": "LibRaw",
+   "summary": "FastRawViewer on nopea RAW-katselin ja karsintatyökalu valokuvaajille. Se näyttää todellisen RAW-datan RAW-histogrammilla, valotusvaroituksilla ja nopeilla, XMP:hen tallentuvilla valkotasapainon ja valotuksen korjauksilla, ja kuvia voi arvioida, merkitä, suodattaa, nimetä, kopioida ja siirtää ilman luetteloa.",
+   "wins": [
+    "Tarkka RAW-näyttö RAW-histogrammilla, yli- ja alivalotuksen näytöllä ja tarkennuksen korostuksella",
+    "Arviot, merkinnät ja XMP yhteensopivia Lightroomin ja muiden muuntimien kanssa",
+    "Tiedostonimisuodatin PCRE-regexillä",
+    "2 tai 4 kuvan vertailu synkronoidulla lähennyksellä",
+    "Täysin muokattavat pikanäppäimet, muita ohjelmia jäljittelevät näppäinkartat",
+    "Viritetty NAS:lle ja hitaille levyille",
+    "Myös Windowsille"
+   ],
+   "price": "23,99 $ kertamaksu (marraskuun 2026 alennushinta, −25 %; 2 tietokonetta lisenssiä kohden), 30 päivän kokeilu",
+   "version": "2.0.11 (build 2088)",
+   "updated": "2026 (2.0.11 ajankohtainen marraskuussa 2026; valmistaja ei julkaise päivämääriä)",
+   "platforms": "macOS, Windows",
+   "notes": {
+    "no_account_no_tracking": "Ei tiliä eikä mainoksia; aktivointi ottaa kerran yhteyden valmistajaan",
+    "dark_light_setting": "Tumma käyttöliittymä; värit säädettävissä, ei vaalean ja tumman valintaa",
+    "thumbnail_grid": "Tiedostojen ruudukko; kansiot kansiopuussa, ei esikatseluruutuina",
+    "recursive_search": "Tiedostonimisuodatin (myös PCRE); alikansiot avaamalla kansio alikansioineen",
+    "multiple_windows": "Macilla yksi ikkuna; ”monta ikkunaa” on 2 tai 4 kuvan vertailunäkymä",
+    "img_modern_formats": "HEIC/HEIF kyllä; ei AVIFia, JPEG XL:ää eikä WebP:tä",
+    "slideshow": "Yksinkertainen diaesitys: viive ja tiedostoraja säädettävissä, ei siirtymiä",
+    "slideshow_recursive": "Diaesitys toimii alikansiotilassa; vain kuvat, ei videoita",
+    "wrong_extension_note": "Valinnaisesti tunnistaa tyypin sisällöstä; ei varoitusta",
+    "image_editing": "Vain valotus, valkotasapaino, kontrasti ja suunta XMP:hen; ei rajausta eikä koon muutosta",
+    "batch_convert": "Eränimeäminen kyllä; ei formaattimuunnosta",
+    "library_catalog": "Arviot, merkinnät ja otsikot XMP-sivutiedostoissa, suodatus niillä; ei tietokantaa",
+    "shortcut_cheatsheet": "Valmistajan PDF oletusnäppäimistä Windowsille; Macille ei löytynyt"
+   }
+  },
+  "faststone-image-viewer": {
+   "name": "FastStone Image Viewer",
+   "vendor": "FastStone Soft",
+   "summary": "FastStone Image Viewer on pitkäikäinen Windowsin kuvaselain: Resurssienhallinnan kaltainen kansiopuu, koko näytön tila esiin liukuvine paneeleineen sekä monet muokkaus- ja erätyökalut. Se toistaa myös videoita Windowsin koodekeilla ja pitää tunnisteet ja arviot omassa tietokannassaan.",
+   "wins": [
+    "Muokkaustyökalut: käyrät, tasot, kloonaus, korjaussivellin, punasilmäisyys",
+    "Jopa neljän kuvan vertailu rinnakkain",
+    "Eränä muunnos ja nimeäminen, vedosarkit, tulostusasettelut",
+    "Tunnisteet ja arviot yhdestä viiteen tähteen",
+    "Skannerituki ja näyttökaappaus",
+    "Musiikilliset diaesitykset yli 150 siirtymällä"
+   ],
+   "price": "Ilmainen henkilökohtaiseen ja opetuskäyttöön; kaupallinen 34,95 US$ kertamaksu, perhe 69,95 US$ (5 PC:tä)",
+   "version": "8.5",
+   "updated": "2026-06-24",
+   "platforms": "Windows"
+  },
+  "finder-quick-look": {
+   "name": "Finder ja Pikakatselu",
+   "vendor": "Apple",
+   "summary": "Macin tiedostonhallinta ja Pikakatselu, välilyönnillä aukeava esikatselu lähes mille tahansa tiedostolle. Riittää kuvan tai MP4:n nopeaan vilkaisuun ja tiedostojen arkikäsittelyyn.",
+   "wins": [
+    "Sisäänrakennettu macOS:ään, toimii lähes kaikille tiedostotyypeille",
+    "Tunnisteet, älykansiot, Spotlight-haku",
+    "Eränimeäminen ja pikatoiminnot",
+    "iCloud Drive ja AirDrop"
+   ],
+   "price": "Ilmainen (osa macOS:ää)",
+   "version": "Finder 27.2, macOS Golden Gate 27.2.1",
+   "updated": "2026-11-09 (macOS 27.2.1)",
+   "platforms": "macOS",
+   "notes": {
+    "thumbnail_grid": "Symbolinäkymä näyttää tiedostojen miniatyyrit; kansiot kansiosymboleina, ei sisällön esikatselua",
+    "network_shares_fast": "Yhdistää SMB-palvelimiin; nopeudesta suurilla jaoilla ei tietoa",
+    "img_animated": "Pikakatselu toistaa animoidut GIFit; APNG:stä ja animoidusta WebP:stä ei tietoa",
+    "music_mode": "Pikakatselu toistaa ja lyhentää äänitiedostoja",
+    "image_editing": "Pikakatselun kierto ja Merkinnät; pikatoiminnot",
+    "library_catalog": "Tunnisteet ja älykansiot, ei arviotietokantaa",
+    "custom_shortcuts": "Apin pikanäppäimet valikkokomennoille",
+    "boss_key": "⌘H / ⌥⌘H kätkevät apit; ei erillistä pomonäppäintä",
+    "app_sandbox": "Pikakatselun katselin on hiekkalaatikossa, Finder itse ei"
+   }
+  },
+  "flowvision": {
+   "name": "FlowVision",
+   "vendor": "netdcy",
+   "summary": "FlowVision on natiivi avoimen lähdekoodin kuvankatselin macOS:lle, rakennettu vesiputous- ja tasattujen miniatyyriasettelujen sekä Finderin kaltaisen tiedostonhallinnan ympärille. Se on viritetty hyvin suurille kansioille, toistaa Macin omat videoformaatit ja lisää rekursiivisen tilan, Finderin tunnisteet, arviot ja hiirieleet kansiosta toiseen hyppäämiseen.",
+   "wins": [
+    "Vesiputous- ja tasatut miniatyyriasettelut",
+    "Oikean painikkeen hiirieleet kansioiden välillä",
+    "Finderin tunnisteet ja XMP-arviot suodattimineen",
+    "HDR-näyttö",
+    "Profiilit asetteluesiasetuksille",
+    "Toimii macOS 11:stä alkaen"
+   ],
+   "price": "Ilmainen (lahjoitukset)",
+   "version": "1.7.6",
+   "updated": "2026-09-08",
+   "platforms": "macOS",
+   "notes": {
+    "languages_20": "17 kieltä",
+    "img_svg_pdf": "SVG kyllä; PDF poistettu käytöstä lähdekoodissa",
+    "slideshow_recursive": "Automaattitoisto luettelon läpi, myös rekursiivisesti; ei odota videoiden loppua",
+    "video_mkv_avi_webm": "Miniatyyrit ja tiedot MKV:lle, WebM:lle, AVI:lle; toisto ulkoisessa soittimessa",
+    "image_editing": "Kierto ja merkintätila (kynä, korostus, nuolet)",
+    "batch_convert": "Eränimeäminen juoksevalla numerolla; ei formaattimuunnosta",
+    "library_catalog": "Finderin tunnisteet ja XMP-arviot suodattimin; ei omaa tietokantaa",
+    "cloud_sync": "Vain macOS:n jakovalikko",
+    "keyboard_first": "Näppäimet selaamiseen, mutta rakennettu hiiren ja eleiden ympärille",
+    "custom_shortcuts": "Vain Enterin ja Escin toiminta säädettävissä",
+    "notarized_attested": "Developer ID -allekirjoitettu; käännetään paikallisesti, ei build-todistusta"
+   }
+  },
+  "forklift": {
+   "name": "ForkLift",
+   "vendor": "BinaryNights",
+   "summary": "Kahden paneelin tiedostonhallinta ja tiedostonsiirto-ohjelma macOS:lle. Vahva etäyhteyksissä (SFTP, S3, pilvilevyt), kansioiden synkronoinnissa, joukkonimeämisessä ja näppäimistövetoisessa tiedostotyössä; esikatselupaneeli kuville, äänelle, videolle ja PDF:ille.",
+   "wins": [
+    "Etä- ja pilviyhteydet (SFTP, FTP, WebDAV, S3, Google Drive, OneDrive, Dropbox)",
+    "Kansioiden synkronointi ja tiedostojen vertailu",
+    "Joukkonimeäminen regexillä ja metatiedoilla",
+    "Git-tila, tunnisteet, työtilat, apin poistaja",
+    "Täysi tiedostonhallinta: kumous, ristiriitojen käsittely, siirtojono"
+   ],
+   "price": "Maksullinen elinikäinen lisenssi 1 tai 2 vuoden päivityksillä: 19,95 $ / 34,95 $ yksi käyttäjä, 29,95 $ / 49,95 $ perhe, 69,95 $ / 119,95 $ pienyritys (5 Macia); ilmainen kokeilu; myös Setappissa",
+   "version": "4.7.7",
+   "updated": "2026-10-20",
+   "platforms": "macOS",
+   "notes": {
+    "languages_20": "14 kieltä",
+    "thumbnail_grid": "Symbolinäkymä esikatselusymbolein; ei kansioiden esikatselua",
+    "network_shares_fast": "SMB, AFP, NFS, SFTP ja pilvi tuettu; nopeudesta suurissa kansioissa ei väitteitä",
+    "img_modern_formats": "Esikatselupaneeli macOS:n kautta (HEIC, AVIF, WebP, JPEG XL kuten järjestelmä lukee)",
+    "img_raw": "Vain esikatselupaneeli ja Pikakatselu macOS:n RAW-tuella; ei omaa dekooderia",
+    "img_svg_pdf": "PDF-esikatselu paneelissa; SVG vain kuten macOS sen piirtää",
+    "zoom_rotate": "Lähennys vain macOS:n Pikakatselu-ikkunassa; ei omaa katselinta",
+    "video_mkv_avi_webm": "Vain, jos kolmannen osapuolen QuickLook Video -laajennus on asennettu",
+    "music_mode": "Toistaa äänitiedostoja esikatselupaneelissa, ei musiikkitilaa",
+    "archive_passwords": "Luo salasanasuojattuja ZIPejä; salattujen avaamisesta ei tietoa",
+    "videos_in_archives": "Pikakatselu arkiston sisällä onnistuu; ei soitinta",
+    "batch_convert": "Joukkonimeäminen (regex ja metatiedot); ei kuvien erämuunnosta",
+    "library_catalog": "Vain Finderin tunnisteet; ei arvioita eikä tietokantaa"
+   }
+  },
+  "gom-player": {
+   "name": "GOM Player",
+   "vendor": "GOM & Company",
+   "summary": "GOM Player on suosittu ilmainen korealainen mediasoitin Windowsille: laaja verkon tekstitysarkisto, tekoälyn puheesta tekstitykseksi, 360° VR, A-B-toisto ja teemat; ilmaisversiossa on mainoksia, GOM Player+ poistaa ne. Mpv:hen perustuva Mac-versio on olemassa, mutta sitä ei ole päivitetty vuoden 2020 jälkeen ja se on vain Intelille.",
+   "wins": [
+    "Laaja verkon tekstitysarkisto ja tekoälyn luomat tekstitykset",
+    "360° VR -toisto, A-B- ja monen jakson toisto",
+    "URL-osoitteiden ja YouTuben suoratoisto",
+    "Musiikin toisto taajuuskorjaimella",
+    "GOM Player+: neljä videota kerralla, tekoälysuurennus"
+   ],
+   "price": "Ilmainen mainoksin; GOM Player+ ilman mainoksia: elinikäinen lisenssi (₩11,000 Koreassa) tai GOM Easy Pass -tilaus (alkaen 4,90 $/kk); tekoälyominaisuudet käyttävät krediittejä",
+   "version": "Windows 2.3.123 (13.10.2026); Mac 1.0.0 (2020)",
+   "updated": "2026-10-13 (Windows); 2020-11-11 (Mac)",
+   "platforms": "Windows, macOS (Intel-versio), Android, iOS",
+   "macNote": "GOM Playerin Mac-versio on pysynyt versiossa 1.0.0 vuodesta 2020, tehty Intel-Maceille."
+  },
+  "google-photos": {
+   "name": "Google Kuvat",
+   "vendor": "Google",
+   "summary": "Googlen pilvikuvakirjasto, joka varmuuskopioi kuvat puhelimista automaattisesti. Hyvä, kun haluat kaikki kuvat kaikilla laitteilla, haun sisällön mukaan ja albumien jakamisen.",
+   "wins": [
+    "Automaattinen varmuuskopio Androidista ja iPhonesta",
+    "Haku ihmisten, asioiden ja paikkojen mukaan",
+    "Albumien ja kumppanin kanssa jakaminen",
+    "Käyttö mistä tahansa selaimesta"
+   ],
+   "price": "Ilmainen 15 Gt (yhteinen Gmailin ja Driven kanssa); Google One alkaen 1,99 €/kk 100 Gt, 9,99 €/kk 2 Tt, 21,99 €/kk 5 Tt",
+   "version": "verkko (jatkuva); iOS-sovellus 8.1.0",
+   "updated": "2026-11-13 (iOS-sovellus 8.1.0)",
+   "platforms": "Verkko, Android, iOS",
+   "notes": {
+    "free": "15 Gt ilmaiseksi, yhteinen Gmailin ja Driven kanssa; Google One alkaen 1,99 €/kk (100 Gt)",
+    "thumbnail_grid": "Kuvaruudukko ja albumien kannet; ei tiedostojärjestelmän kansioita",
+    "recursive_search": "Hakee koko kirjastosta sisällön, lainausmerkeissä tiedostonimen, kameramallin mukaan",
+    "multiple_windows": "Verkkosovellus osoitteessa photos.google.com; useita välilehtiä tai ikkunoita",
+    "img_modern_formats": "HEIC, AVIF, WebP; JPEG XL ei luettelossa",
+    "img_animated": "GIF ja WebP luettelossa; animoidusta PNG:stä ei tietoa",
+    "slideshow_recursive": "Albumin diaesitys; ei kansiopuuta",
+    "file_info_exif": "Tietopaneeli: päivä, sijainti, kamera, IPTC; ei koodekki- tai bittinopeustietoja",
+    "video_mkv_avi_webm": "MKV, AVI, WMV toistuvat latauksen ja käsittelyn jälkeen; WebM ja FLV ei luettelossa",
+    "playback_speed": "Android-sovelluksessa (Lisää > Toistonopeus); verkossa ei tietoa",
+    "rename_trash": "Poisto roskakoriin (#); ei tiedostojen nimeämistä",
+    "undo_file_actions": "Palautus roskakorista",
+    "keyboard_first": "Verkossa pikanäppäimet (Vaihto+? luettelee); sovelluksissa ei",
+    "shortcut_cheatsheet": "Paneeli apissa, Vaihto+?"
+   }
+  },
+  "graphicconverter": {
+   "name": "GraphicConverter",
+   "vendor": "Lemke Software",
+   "summary": "GraphicConverter on pitkäikäinen Macin ”kuvien linkkuveitsi”: tiedosto- ja kuvaselain, diaesitys, editori ja erämuunnin, joka avaa noin 200 formaattia. Sen selain toistaa myös QuickTime-yhteensopivia elokuvia ja ääntä, käsittelee laajasti metatietoja ja tarjoaa kaksoiskappaleiden etsinnän, litteät näkymät ja Spotlight-haun.",
+   "wins": [
+    "Avaa noin 200 kuvaformaattia ja vie noin 80, myös vanhoja ja tieteellisiä",
+    "Täysi kuvankäsittely ja erämuunnos toimintoineen",
+    "Metatietojen muokkaus (EXIF/IPTC/XMP, kasvot, GPS-kartta)",
+    "Paljon diaesitysasetuksia (siirtymät, satunnainen, metatiedot, lajittelu esityksen aikana)",
+    "Luettelo-, Cover Flow- ja miniatyyrinäkymät, litteä näkymä kaikista alikansioista",
+    "Kaksoiskappaleiden etsintä, vedosarkit, verkkogalleriat",
+    "Omat pikanäppäimet, 14 kieltä, vaalea tai tumma"
+   ],
+   "price": "39,95 $ / 34,95 € kertamaksu (päivitys 25,95 $, perhe 59,95 $); Mac App Storessa 34,99 $; shareware-kokeilu",
+   "version": "12.5.4 (12.6 betana)",
+   "updated": "2026-08-27 (12.5.4 Mac App Storessa; 12.6 beta build 7423 2026-11-12)",
+   "platforms": "macOS",
+   "notes": {
+    "languages_20": "14 kieltä",
+    "recursive_search": "Haku alikansioista Spotlightin kautta (ei, jos Spotlight on pois, kuten usein verkkolevyillä)",
+    "regex_search": "RegEx haulla tehdyssä diaesityksessä ja nimeämisessä, ei selaimen hakukentässä",
+    "slideshow_recursive": "Diaesitys voi sisältää alikansiot; toistuvatko elokuvat, ei tietoa",
+    "auto_enhance_view": "Automaattiset tasot ja parannus muuttavat kuvaa, eivät vain näkymää",
+    "wrong_extension_note": "Komento tarkistaa ja korjaa päätteet; ei huomautusta katsellessa",
+    "playlist": "Diaesityksen luettelopaletti; ei videosoittolistaa",
+    "saved_playlists": "Diaesityksen esiasetukset ja tallennetut haut, ei soittolistoja",
+    "music_mode": "MP3 ja M4A toistuvat selaimen oikeassa paneelissa",
+    "archives_as_folders": "Avaa kuvia RAR-arkistoista; ZIP/7z-selauksesta kansioina ei tietoa",
+    "library_catalog": "Arviot, merkinnät, tunnisteet, kasvot metatiedoissa; kaksoiskappaleet; ei keskitettyä tietokantaa",
+    "cloud_sync": "FTP-lataus ja verkkogalleriat; pilvikansiot niiden omien sovellusten kautta",
+    "shortcut_cheatsheet": "Pikanäppäintaulukot PDF-käsikirjassa",
+    "app_sandbox": "Mac App Store -versio on hiekkalaatikossa (rajoituksin); suora versio ei"
+   }
+  },
+  "hamana": {
+   "name": "Hamana",
+   "vendor": "miyano",
+   "summary": "DirectX-kiihdytetty japanilainen kuvankatselin, joka lukee arkistoja (zip/cbz, 7z, rar/cbr, cab, lzh): kahden kuvan tila, diaesitystehosteet ja laaja näppäinten muokkaus. Toimii myös näytönsäästäjänä. Ennallaan vuodesta 2006, lataus on yhä tekijän sivulla.",
+   "wins": [
+    "Näytönohjaimella toimivat näyttösuotimet (sävykäyrä, terävöinti) ja 3D-kierto",
+    "Diaesityksen siirtymätehosteet",
+    "Näytönsäästäjätila",
+    "PDF Ghostscriptin avulla"
+   ],
+   "price": "Ilmainen",
+   "version": "1.48",
+   "updated": "2006-06-19",
+   "platforms": "Windows"
+  },
+  "honeyview": {
+   "name": "Honeyview",
+   "vendor": "Bandisoft",
+   "summary": "Kevyt, nopea ilmainen kuvankatselin, joka oli vuosia Korean oletusarvoinen sarjakuva- ja mangakatselin (꿀뷰). Näyttää kuvat ZIP-, RAR- ja 7Z-arkistoista purkamatta, aukeamatila, EXIF GPS-tietoineen. Lopetettu: päivityksiä ei enää tule; Bandisoft ohjaa käyttäjät BandiView'hun.",
+   "wins": [
+    "Hyvin kevyt ja nopea vanhoilla Windowseilla (XP:stä 11:een, 32-bittinen)",
+    "Älykäs aukeamatila mangalle oikealta vasemmalle",
+    "Enemmän arkistoformaatteja (LZH, TAR) ja BPG"
+   ],
+   "price": "Ilmainen (freeware)",
+   "version": "5.53",
+   "updated": "2024-06-21",
+   "platforms": "Windows"
+  },
+  "iina": {
+   "name": "IINA",
+   "vendor": "IINA-projekti",
+   "summary": "IINA on ilmainen, avoimen lähdekoodin videosoitin macOS:lle, rakennettu mpv:n päälle modernilla Mac-käyttöliittymällä. Se on vahva katsomisessa: tekstitykset (myös verkkohaku), kuva kuvassa, musiikkitila, soittolistat, kelausminiatyyrit ja laajennukset.",
+   "wins": [
+    "Täydet toisto-ominaisuudet: kappaleet, ruutu kerrallaan, A-B-silmukka, kuva kuvassa, musiikkitila",
+    "Tekstitysten verkkohaku ja älykäs paikallisten tekstitysten yhdistäminen",
+    "Laajennukset, mpv-asetukset ja skriptit, selainlaajennukset",
+    "Tukee macOS 12:ta ja Intel-Maceja",
+    "Kelauspalkin miniatyyrit, toistohistoria ja jatkaminen"
+   ],
+   "price": "Ilmainen",
+   "version": "1.5.1",
+   "updated": "2026-11-06",
+   "platforms": "macOS",
+   "notes": {
+    "folder_browsing": "kansion avaus lisää kaikki toistettavat tiedostot (rekursiivisesti) soittolistaan; ei selainta",
+    "recursive_search": "vain haettava toistohistoria, ei tiedostohakua",
+    "img_animated": "GIF toistuu videona; ei APNG:tä eikä animoitua WebP:tä",
+    "auto_enhance_view": "videon taajuuskorjain ja suotimet, ei automaattista parannusta",
+    "file_info_exif": "Tarkastin: koodekit, bittinopeus, raidat; ei EXIFiä",
+    "split_archives": "mpv lukee monivolyymisen RAR:n, mutta IINA ei tarjoa sitä",
+    "videos_in_archives": "Avaa-komento voi toistaa ZIPin tai RARin sisältöä mpv:n kautta; dokumentoimaton",
+    "rename_trash": "”Poista nykyinen tiedosto” siirtää sen roskakoriin; ei nimeämistä eikä uutta kansiota",
+    "shortcut_cheatsheet": "näppäimet asetuksissa; ei tulostettavaa",
+    "notarized_attested": "notarisoitu 1.0.5:stä alkaen; ei build-todistusta"
+   }
+  },
+  "imageglass": {
+   "name": "ImageGlass",
+   "vendor": "Duong Dieu Phap",
+   "summary": "Nopea avoimen lähdekoodin kuvankatselin, joka on versiossa 10 rakennettu uudelleen .NET:n ja Avalonian päälle Windowsille, macOS:lle (Apple silicon) ja Linuxille. Laaja formaattituki (yli 90, myös RAW, JXL, HEIC, AVIF, HDR, natiivi SVG), älykäs välimuisti, teemat, omat pikanäppäimet ja koodekkilaajennukset. Se on yhden kuvan katselin galleriakaistalla, ei kansioselain, eikä toista videoita.",
+   "wins": [
+    "Toimii Windowsissa, macOS:ssä ja Linuxissa samalla koodilla",
+    "HDR-sävykartoitus AVIFille, JPEG XL:lle, HDR:lle ja EXR:lle",
+    "Natiivi animoidun SVG:n piirto",
+    "Koodekkilaajennusten SDK lisäformaatteihin",
+    "Sisäänrakennettu rajaus, koon muutos ja väripipetti",
+    "Teemat ja omat asettelut",
+    "Omat pikanäppäimet ilmaisversiossa"
+   ],
+   "price": "Classic ilmainen; Pro Individual 14,90 $ kertamaksu, Pro Team 69 $ kertamaksu (3 käyttäjää), Pro Business määrän mukaan (alkaen 290 $/vuosi 25 käyttäjälle)",
+   "version": "10.0.6.906",
+   "updated": "2026-09-05",
+   "platforms": "Windows, macOS, Linux",
+   "notes": {
+    "free": "Classic ilmainen (GPLv3); Pro 14,90 $ kertamaksu lisää HDR-sävykartoituksen ym.",
+    "dark_light_setting": "Seuraa järjestelmää; tummalle ja vaalealle voi asettaa omat teemat",
+    "folder_browsing": "Selaa avatun tiedoston kansiota; ei kansiopuuta, ei alikansioita",
+    "thumbnail_grid": "Nykyisen kansion kuvagalleria (kaista tai sarakkeet); ei kansioruutuja",
+    "network_shares_fast": "Dekoodaus taustalla ja ennakkovälimuisti; verkkolevyistä ei erikseen tietoa",
+    "img_svg_pdf": "Natiivi SVG/SVGZ, myös animoitu; ei PDF:ää",
+    "slideshow_recursive": "Voi ladata kuvat alikansioista; vain kuvat, ei videoita",
+    "file_info_exif": "EXIF erillisellä ExifGlass-työkalulla; ei videotietoja",
+    "rename_trash": "Näytetyn kuvan poisto roskakoriin (vahvistuksella); ei uutta kansiota",
+    "move_copy": "Kopioi tai leikkaa tiedostot leikepöydälle (leikkaus ei macOS:llä)",
+    "keyboard_first": "Pikanäppäimet valikkokomennoille, mutta työkalupalkki- ja hiirivetoinen",
+    "notarized_attested": "DMG Developer ID -allekirjoitettu ja notarisoitu; ei build-todistusta"
+   }
+  },
+  "imagine": {
+   "name": "Imagine",
+   "vendor": "Sejin Chun",
+   "summary": "Pienen pieni, hyvin nopea korealainen ilmainen kuva- ja animaatiokatselin Windowsille: miniatyyriselain, valtava formaattiluettelo (myös JXL, AVIF, HEIF, CLIP, KRA, monet RAW-formaatit), arkistojen selaus, eränä muunnos ja nimeäminen, yksinkertainen piirto ja animaatioeditori. Toimii myös Total Commanderin laajennuksina.",
+   "wins": [
+    "Valtava formaattiluettelo, myös KRA, ORA, CLIP, DICOM, HDR-formaatit",
+    "Muokkaus, animaatioiden luonti ja eränimeäminen sisäänrakennettuina",
+    "Total Commanderin Lister-, Packer- ja Content-laajennukset",
+    "Toimii kaikessa Windows 95:stä Windows 11 ARM64:ään"
+   ],
+   "price": "Ilmainen (lahjoitusohjelma; vähintään 20 $:n lahjoituksella henkilökohtainen lisenssikoodi)",
+   "version": "2.8.1",
+   "updated": "2026-11-14",
+   "platforms": "Windows"
+  },
+  "infuse": {
+   "name": "Infuse",
+   "vendor": "Firecore",
+   "summary": "Mediakeskustyylinen soitin, joka muuttaa videokansiot, NAS-jaot, Plexin, Embyn, Jellyfinin ja pilvilevyt kirjastoksi julisteineen ja metatietoineen. Erittäin hyvä elokuvien ja sarjojen katseluun Applen laitteilla, edistyminen synkronoituna.",
+   "wins": [
+    "Elokuva- ja sarjakirjasto TMDB:n kuvituksella ja metatiedoilla",
+    "Suoratoisto NAS:sta, mediapalvelimilta ja pilvipalveluista",
+    "Synkronoi edistymisen iPhonen, iPadin, Apple TV:n, Macin ja Vision Pron välillä",
+    "OpenSubtitles-lataus, Trakt-synkronointi, AirPlay ja Google Cast",
+    "Levykuvat (ISO, VIDEO_TS, BDMV)"
+   ],
+   "price": "Ilmainen; Infuse Pro 1,99 $/kk, 16,99 $/vuosi tai 99,99 $ elinikäinen",
+   "version": "8.5.10",
+   "updated": "2026-11-09",
+   "platforms": "macOS, iOS, iPadOS, tvOS, visionOS",
+   "notes": {
+    "free": "Perusversio ilmainen; Infuse Pro 1,99 $/kk, 16,99 $/vuosi tai 99,99 $ elinikäinen",
+    "no_account_no_tracking": "Ei tiliä (Trakt valinnainen), ei mainoksia; diagnostiikkaa, ei yhdistetty sinuun",
+    "thumbnail_grid": "Julisteruudut videoille kansioissa ja kirjastossa; ei kuvia",
+    "list_view": "Lajittelupainike kansionäkymässä; sarakkeista ei tietoa",
+    "recursive_search": "Haku skannatusta kirjastosta (nimikkeet), ei tiedostonimistä",
+    "zoom_rotate": "8 videon lähennysvaihtoehtoa; ei kiertoa",
+    "file_info_exif": "Videotiedot (koodekki, resoluutio, ääniformaatti); ei EXIFiä",
+    "streaming_urls": "M3U/M3U8-soittolistat ja mediapalvelimet; Pro suoratoistaa trailereita",
+    "rename_trash": "Asetus sallii etävideoiden poiston; ei nimeämistä",
+    "move_copy": "Lataa videoita verkkolaitteilta Maciin",
+    "keyboard_first": "Pikanäppäimet toistoon; kirjaston selaus näppäimistöllä rajallista",
+    "shortcut_cheatsheet": "Pikanäppäinluettelo tukiartikkelissa",
+    "notarized_attested": "App Store -versio, suljettu lähdekoodi"
+   }
+  },
+  "irfanview": {
+   "name": "IrfanView",
+   "vendor": "Irfan Skiljan",
+   "summary": "IrfanView on pieni, hyvin nopea Windowsin kuvankatselin, joka on ollut olemassa vuodesta 1996 ja lukee laajennusten avulla valtavan määrän formaatteja. Katselun lisäksi se tekee erämuunnoksia, yksinkertaista muokkausta, skannausta, tulostusta ja diaesityksiä, kaikkea lukuisilla pikanäppäimillä.",
+   "wins": [
+    "Valtava formaattiluettelo, myös harvinaiset ja retroformaatit",
+    "Erämuunnos ja eränimeäminen",
+    "Kuvankäsittely, piirtolaajennus, tehosteet, Photoshopin 8BF-suotimet",
+    "Skannaus, tulostus, OCR-laajennus",
+    "Haku EXIF- ja IPTC-tiedoista ja tekstistä, ei vain nimistä",
+    "Diaesitykset tallennettavissa EXE:nä, näytönsäästäjänä tai MP4:nä",
+    "Toimii hyvin vanhoissa Windowseissa ja USB-tikulta"
+   ],
+   "price": "Ilmainen yksityiseen, ei-kaupalliseen ja opetuskäyttöön; kaupallinen lisenssi 18 US$ / 15 EUR (pysyvä)",
+   "version": "4.76",
+   "updated": "2026-09-18",
+   "platforms": "Windows"
+  },
+  "isee-pro": {
+   "name": "iSee Pro",
+   "vendor": "Dummy Apps",
+   "summary": "iSee Pro on pieni Mac App Storen kuvaselain, joka lataa kansion ja sen alikansioiden kaikki kuvat ennakkoon nopeaa selaamista varten. Luettelo-, miniatyyri- ja täysikokoinen näkymä, haku nimen, koon ja päivän mukaan, EXIF-päällys, suurennuslasi, ja se avaa ZIP- ja RAR-arkistot muistaen niiden salasanat. Vaatii macOS 12:n.",
+   "wins": [
+    "Hyvin edullinen (Pro 0,99 $) ja pieni (4,4 Mt)",
+    "Muistaa arkistojen salasanat",
+    "Haku kuvan mittojen ja Draw Things -parametrien mukaan",
+    "Elävän taustakuvan ja työpöydän toiminnot"
+   ],
+   "price": "Ilmainen, sovelluksen sisäinen osto: Pro 0,99 $",
+   "version": "11.5",
+   "updated": "2025-05-30",
+   "platforms": "macOS",
+   "notes": {
+    "free": "Ilmainen; Pro-osto 0,99 $ (arvostelun mukaan poistaa 50 kuvan rajan)",
+    "thumbnail_grid": "Miniatyyrinäkymä; kansioiden esikatselua ei mainita",
+    "network_shares_fast": "Käytössä NAS- ja etäpalvelimilla; nopeudesta ei tietoa",
+    "img_modern_formats": "WebP 11.0:sta; ”kaikki suositut formaatit” ja omat päätteet; HEIC/AVIF/JXL ei nimetty",
+    "img_raw": "Ei nimetty; omia kuvapäätteitä voi lisätä asetuksissa, macOS dekoodaa",
+    "img_psd_exr": "Ei nimetty; omia kuvapäätteitä voi lisätä, macOS dekoodaa",
+    "slideshow_recursive": "Lataa kaikki alikansiot, vain kuvat (ei videoita)",
+    "file_info_exif": "EXIF-päällys (⌘I); vain kuvat",
+    "archives_as_folders": "ZIP ja RAR avataan (”purku”); 7z:aa ei mainita",
+    "rename_trash": "Nimeäminen (Enter luettelossa), poisto; uutta kansiota ei mainita",
+    "move_copy": "Kuvat tallentuvat vetämällä kansioon; siirto- ja kopiointikomentoja ei nimetä",
+    "library_catalog": "Vain kuvien merkintä, ei tietokantaa",
+    "keyboard_first": "Runsaasti pikanäppäimiä, mutta suunniteltu toimimaan pelkällä hiirellä",
+    "notarized_attested": "Applen tarkastama MAS-versio; ei julkista lähdekoodia"
+   }
+  },
+  "jpegview": {
+   "name": "JPEGView",
+   "vendor": "sylikc ja David Kleiner",
+   "summary": "Kevyt, hyvin nopea Windowsin kuvankatselin: minimaalinen koko näytön käyttöliittymä, reaaliaikainen kuvankorjaus (automaattinen kontrasti, paikallinen tiheys, terävöinti) ja näppäinohjaus muokattavalla KeyMapilla. Käsittelee modernit formaatit ja RAW:n. Ei miniatyyrejä, ei videota, ei tiedostoselainta; haarasta ei ole tullut julkaisua vuoden 2023 jälkeen.",
+   "wins": [
+    "Reaaliaikainen automaattinen värin, kontrastin ja paikallisen tiheyden korjaus katsellessa",
+    "Äärimmäisen pieni ja siirrettävä (ei asennusta)",
+    "Kaikki näppäimet muokattavissa KeyMap.txt:llä",
+    "Häviötön JPEG-rajaus ja -kierto",
+    "Kuvasarjat toistettavissa elokuvana valitulla ruutunopeudella"
+   ],
+   "price": "Ilmainen",
+   "version": "1.3.46",
+   "updated": "2023-10-07 (viimeisin julkaisu; viimeisin commit 2024-07-06)",
+   "platforms": "Windows"
+  },
+  "kmplayer": {
+   "name": "KMPlayer",
+   "vendor": "PandoraTV",
+   "summary": "KMPlayer on pitkäikäinen ilmainen Windowsin mediasoitin: sisäänrakennetut koodekit, 4K/8K-toisto, 3D ja 360° VR, URL- ja YouTube-toisto ja -lataus sekä näppäimistö, jossa lähes jokainen näppäin tekee jotain. 64X-versiossa ei ole mainoksia, 32-bittisessä on. Valmistajan mukaan ajankohtaista macOS-työpöytäsovellusta ei ole.",
+   "wins": [
+    "Hyvin laaja koodekki- ja formaattituki, myös 3D ja 360° VR",
+    "URL- ja YouTube-toisto ja -lataus",
+    "Hienojakoinen näppäinohjaus, globaalit pikanäppäimet, pomonäppäin (Esc)",
+    "Taajuuskorjaimen esiasetukset, video- ja äänikaappaus, GIF-kaappaus",
+    "Teemat ja värimaailmat, 42 kieltä"
+   ],
+   "price": "Ilmainen; KMPlayer 64X ilman mainoksia, KMPlayer 32-bit mainoksin; Android-sovelluksessa Premium-päivitys",
+   "version": "KMPlayer 64X 2026.10.27.9; KMPlayer (32-bit) 4.2.3.38",
+   "updated": "2026-10-28",
+   "platforms": "Windows, Android, iOS, iPadOS"
+  },
+  "kodi": {
+   "name": "Kodi",
+   "vendor": "Kodi Foundation",
+   "summary": "Ilmainen avoimen lähdekoodin mediakeskus, jonka käyttöliittymä on tehty televisioon ja kaukosäätimelle. Se hallitsee suuria video- ja musiikkikirjastoja, selaa paikallisia ja verkkokansioita ja näyttää myös kuvia diaesityksinä.",
+   "wins": [
+    "mediakeskus televisioon kaukosäätimellä, kirjastot julisteineen ja metatietoineen",
+    "musiikkikirjasto ja soitin",
+    "suoratoisto- ja tekstityslisäosat, PVR ja suorat tv-lähetykset",
+    "RAR-salasanat ja moniosainen RAR lisäosalla",
+    "toimii tv-bokseissa, Androidissa, Linuxissa, Raspberry Pi:ssä"
+   ],
+   "price": "Ilmainen",
+   "version": "21.3 Omega (22.0 Piers RC2 2026-11-10)",
+   "updated": "2025-10-31",
+   "platforms": "macOS, Windows, Linux, Android, iOS/tvOS, LibreELEC",
+   "notes": {
+    "network_shares_fast": "Verkkolähteet kuten paikalliset; miniatyyrit tallentuvat välimuistiin ensimmäisellä kerralla",
+    "img_modern_formats": "WebP ja AVIF sisäänrakennettuina; HEIC lisäosalla; JPEG XL ei luettelossa",
+    "img_raw": "imagedecoder.raw-lisäosalla",
+    "auto_enhance_view": "Kirkkaus ja kontrasti videon asetuksissa; kuville ei mitään",
+    "online_subtitles": "tekstityspalvelujen lisäosilla",
+    "comics_cbz_cbr": "CBZ/CBR selattavissa kuvakansioina; ei lukutilaa",
+    "archive_passwords": "Vain RAR (kysyy tai kokeilee tallennettuja salasanoja)",
+    "split_archives": "moniosainen RAR (.partN.rar) vfs.rar-lisäosalla",
+    "rename_trash": "Tiedostonhallinta nimeää, poistaa (ei roskakoria), luo kansioita",
+    "dual_pane": "Tiedostonhallinnassa kaksi paneelia rinnakkain; ei F5/F6-näppäimiä",
+    "cloud_sync": "Ei omaa pilveä; kirjastot ja katselutila jaettavissa MySQL/MariaDB-palvelimella",
+    "shortcut_cheatsheet": "Wikisivu luettelee kaikki oletusnäppäimet",
+    "notarized_attested": "macOS-paketoinnissa notarisointiskripti; ei build-todistusta"
+   }
+  },
+  "leeyes": {
+   "name": "Leeyes",
+   "vendor": "Kenji (けんじ)",
+   "summary": "Kolmen paneelin japanilainen katselin (kansiopuu, tiedostoluettelo, kuva), tehty skannatun mangan lukemiseen aukeamina, kirjahyllyllä suosikkikansioille. Kaikki formaatit BMP:tä lukuun ottamatta tulevat Susie-laajennuksista. Viimeisin julkaisu 2011; tekijän sivusto ei enää vastaa, jäljellä on vain arkistoituja kopioita.",
+   "wins": [
+    "Kirjahyllyn luettelot vietävissä ja tuotavissa tekstinä",
+    "Aukeamatila viritetty skannatuille kirjoille"
+   ],
+   "price": "Ilmainen ei-kaupalliseen käyttöön",
+   "version": "2.6.1",
+   "updated": "2011-10-26",
+   "platforms": "Windows"
+  },
+  "lyn": {
+   "name": "Lyn",
+   "vendor": "Mirko Viviani",
+   "summary": "Pitkäikäinen kevyt kuvaselain valokuvaajille ja suunnittelijoille: kansiosivupalkki, sijaintikartta, rikkomaton muokkaus ja jako Flickriin, Dropboxiin ja SmugMugiin. Myydään suoraan, toimii macOS 10.13:sta alkaen.",
+   "wins": [
+    "Sijaintitiedot kartalla",
+    "Rikkomaton värimuokkaus",
+    "Avaa Kuvat-, Aperture- ja Lightroom-kirjastot",
+    "Jako Flickriin, Dropboxiin, SmugMugiin",
+    "Toimii vanhoilla macOS-versioilla (10.13+)"
+   ],
+   "price": "26 € / 29,99 $ kertamaksu, 15 kuukautta päivityksiä; 15 päivän kokeilu",
+   "version": "2.4.10",
+   "updated": "2026-07-09",
+   "platforms": "macOS",
+   "notes": {
+    "languages_20": "Englanti sekä ranska ja kiina; täyttä luetteloa ei julkaistu",
+    "recursive_search": "Älykansiot hakualueineen; tavallista rekursiivista nimihakua ei kuvata",
+    "bookmarks": "sivupalkin kohteet ja älykansiot",
+    "img_psd_exr": "OpenEXR kyllä; PSD vain macOS:n ImageIO:n kautta",
+    "img_animated": "animoitu WebP ja animoidut kuvat selaimessa; APNG:stä ei tietoa",
+    "video_skim_arrows": "välilyönti, J/K/L",
+    "playback_speed": "J/L kelaavat taakse ja eteen",
+    "library_catalog": "avainsanat, IPTC, väritunnisteet, älykansiot; ei omaa luetteloa"
+   }
+  },
+  "mangameeya": {
+   "name": "MangaMeeya",
+   "vendor": "",
+   "summary": "Pitkään Windowsin tunnetuin mangalukija: avaa ZIP- ja RAR-sarjakuvat, myös sisäkkäiset arkistot, aukeamat, miniatyyrit, välilehdet ja muokattavat näppäimet. Lopetettu, virallista latausta ei ole; kopioita ja kompakti MangaMeeyaCE kiertävät peilisivustoilla.",
+   "wins": [
+    "Tuttu mangan lukutapa pitkäaikaisille käyttäjille",
+    "Välilehdet ja jaetut ikkunat kahdelle näytölle"
+   ],
+   "price": "Ilmainen",
+   "version": "AlternativeTo:ssa 2.4 (lopetettu)",
+   "updated": "2006-06 (AlternativeTo:n mukaan)",
+   "platforms": "Windows"
+  },
+  "marta": {
+   "name": "Marta",
+   "vendor": "Yan Zhulanow",
+   "summary": "Natiivi, näppäimistökeskeinen kahden paneelin tiedostonhallinta, kirjoitettu Swiftillä, määritetään tekstipohjaisella DSL:llä ja laajennetaan Lua-laajennuksilla. Avaa monet arkistoformaatit kuin kansiot; esikatselee tiedostot Pikakatselulla.",
+   "wins": [
+    "Lua-laajennusrajapinta ja tekstipohjaiset asetukset",
+    "Commander-tyylinen F-näppäintyöskentely ja toimintopaneeli",
+    "Arkistotuki, myös sisäkkäiset arkistot, ZIP luku ja kirjoitus",
+    "Upotettu pääte kansioiden synkronoinnilla, levynkäytön analyysi",
+    "Look Up Spotlight-ehdoin"
+   ],
+   "price": "Ilmainen betan aikana; maksullinen lisenssi suunnitteilla betan jälkeen (vähintään 15 $:n Patreon-tukijat saavat pysyvän lisenssin)",
+   "version": "0.8.2",
+   "updated": "2024-08-03",
+   "platforms": "macOS",
+   "notes": {
+    "free": "Ilmainen betan aikana; maksullinen lisenssi on tulossa",
+    "regex_search": "Pikavalinta ja pikahaku nykyisestä luettelosta regexillä; Look Up käyttää ehtoja",
+    "img_modern_formats": "Vain Pikakatselun esikatselu (välilyönti); ei omaa katselinta",
+    "img_raw": "Esikatselu on macOS:n Pikakatselu (välilyönti), ei omaa katselinta",
+    "img_psd_exr": "Esikatselu on macOS:n Pikakatselu (välilyönti), ei omaa katselinta",
+    "img_svg_pdf": "Esikatselu on macOS:n Pikakatselu (välilyönti), ei omaa katselinta",
+    "img_animated": "Esikatselu on macOS:n Pikakatselu (välilyönti), ei omaa katselinta",
+    "zoom_rotate": "Vain Pikakatselun lähennys; koko näytön kuvaesikatselu on avoin toive",
+    "video_native": "Pikakatselu toistaa MP4:n ja MOV:n",
+    "video_mkv_avi_webm": "Vain mitä macOS:n Pikakatselu toistaa",
+    "music_mode": "Pikakatselu toistaa yhden äänitiedoston; ei soitinta kansion läpi",
+    "archives_as_folders": "ZIP luku ja kirjoitus; TAR, 7Z, ISO ym. vain luku; RAR rajoitetusti, ei RAR5",
+    "comics_cbz_cbr": "Ei sarjakuvalukijaa; ZIP-päätteitä (esim. cbz) voi lisätä asetuksiin",
+    "shortcut_cheatsheet": "Ohjeet luettelevat oletusnäppäimet; ei tulostettavaa"
+   }
+  },
+  "massigra": {
+   "name": "MassiGra",
+   "vendor": "Toshi Fuku",
+   "summary": "Pieni, nopea japanilainen yhden ikkunan kuvankatselin, joka selaa kansiota, mangatila ja yksinkertaiset muokkaukset. Sisäänrakennettuina BMP, GIF, JPEG ja PNG; kaikki muu, arkistot mukaan lukien, tulee Susie-laajennuksista. Oli Vectorin grafiikkakatselinten latauslistan kärjessä viisi vuotta peräkkäin, mutta ei ole muuttunut vuoden 2013 jälkeen.",
+   "wins": [
+    "Pienen pieni ja hyvin kevyt vanhalla laitteistolla",
+    "Yksinkertaiset muokkaukset ja tallennus (tasot, väri, rajaus, koko)",
+    "Siirto tai kopiointi esiasetettuihin kansioihin yhdellä näppäimellä",
+    "Tuttu pitkäaikaisille japanilaisille Windows-käyttäjille"
+   ],
+   "price": "Ilmainen",
+   "version": "0.45",
+   "updated": "2013-04-23",
+   "platforms": "Windows"
+  },
+  "mcomix": {
+   "name": "MComix",
+   "vendor": "MComixin kehittäjät",
+   "summary": "MComix on muokattava GTK-pohjainen sarjakuva- ja kuvankatselin Linuxille ja Windowsille, Comixin haara. Se lukee CBR-, CBZ-, CB7-, CBT-, LHA- ja PDF-tiedostoja, ja siinä on aukeama- ja mangatila, kuvan parannus, diaesitys ja valinnainen kirjasto.",
+   "wins": [
+    "Aukeama- ja mangatila",
+    "Kuvan parannus (kirkkaus, kontrasti, terävyys, automaattinen kontrasti)",
+    "Muokattavat pikanäppäimet",
+    "Arkistoeditori ja valinnainen kirjasto kokoelmineen",
+    "25 käyttöliittymän kieltä",
+    "Linux- ja Windows-versiot"
+   ],
+   "price": "Ilmainen",
+   "version": "3.2.0",
+   "updated": "2026-08-20",
+   "platforms": "Linux, Windows"
+  },
+  "mediaone": {
+   "name": "MediaOne",
+   "vendor": "MediaArt Studio",
+   "summary": "MediaOne (aiemmin nimeltään ImageOne) on Mac App Storen mediaselain kuville, videoille ja äänelle; se toimii kansioissa ja suosikeissa ilman tuontia. Siinä on useita miniatyyriasetteluja, koko levyn haku, tähtiarviot ja tunnisteet, vertailunäkymä, videon lyhennys, GIF-vienti ja erämuunnos. Vaatii macOS 12.4:n.",
+   "wins": [
+    "Videot toistuvat ja kelautuvat, kun osoitin on niiden päällä",
+    "Tähtiarviot, tunnisteet, älysuodattimet ja kuvakartta",
+    "Videon lyhennys, ruudun kaappaus, video GIFiksi, kuvien ja videoiden erämuunnos",
+    "Toistaa äänitiedostoja",
+    "Koko levyn haku tallennetuin älykyselyin"
+   ],
+   "price": "Ilmainen, sovelluksen sisäinen osto: ImageOne 6,99 $",
+   "version": "5.4.1",
+   "updated": "2026-08-23",
+   "platforms": "macOS",
+   "notes": {
+    "free": "Ilmainen lataus, yksi osto ”ImageOne” 6,99 $; mitä se avaa, ei kerrota",
+    "list_view": "Luettelonäkymä mainittu; sarakkeista ei tietoa",
+    "img_modern_formats": "WebP mainittu; HEIC/AVIF/JXL ei (järjestelmä voi hoitaa HEICin)",
+    "slideshow_recursive": "”Show All Subfolders” kokoaa kuvat ja videot; diaesityksestä niiden yli ei tietoa",
+    "file_info_exif": "EXIF kuville; koodekki- ja bittinopeustietoja ei mainita",
+    "video_skim_arrows": "⌥ ja nuolet askeltavat ruutuja, kelaus osoittimella",
+    "dual_pane": "Vertailunäkymä kahdessa sarakkeessa; ei F5/F6-tiedostopaneeleja",
+    "image_editing": "Kierto ja peilaus, videon lyhennys, ruudun tallennus, video GIFiksi",
+    "batch_convert": "Kuvien ja videoiden erämuunnos; eränimeämistä ei mainita",
+    "library_catalog": "Tähtiarviot ja tunnisteet tiedostoihin, älysuodattimet, kartta; ei tuontitietokantaa",
+    "keyboard_first": "Nuoli-, välilyönti- ja ⌥-näppäimet; hiirikeskeinen (toisto osoittimella)",
+    "notarized_attested": "Applen tarkastama MAS-versio; ei julkista lähdekoodia"
+   }
+  },
+  "meitu-kankan": {
+   "name": "美图看看",
+   "vendor": "Meitu",
+   "summary": "Meitun pieni, nopea ilmainen kuvankatselin, joka oli hyvin suosittu kiinalaisissa Windows-PC:issä 2010-luvun alussa: kansiosuosikit, näkymä kaikista alikansioiden kuvista ja jakaminen yhdellä napsautuksella kiinalaisiin sosiaalisiin verkostoihin. Sitä ei enää kehitetä (viimeisin julkaisu 2.7.8), mutta se on yhä ladattavissa.",
+   "wins": [
+    "Pienen pieni ja kevyt vanhoilla PC:illä",
+    "Näyttää kaikkien alikansioiden kaikki kuvat kerralla (穿透文件夹)",
+    "CMYK-PSD näkyy kuten Photoshopissa"
+   ],
+   "price": "Ilmainen",
+   "version": "2.7.8",
+   "updated": "2014-11-25 (sivusto); Tencentin kaupassa tiedoston päiväys 2019-05-08",
+   "platforms": "Windows, Android"
+  },
+  "microsoft-photos": {
+   "name": "Microsoftin valokuvat",
+   "vendor": "Microsoft",
+   "summary": "Windowsiin sisäänrakennettu kuva- ja videosovellus: galleria-aikajana PC:n kansioista, OneDrivesta ja iCloudista, nopea katselin, joka selaa kansiota, ja editori tekoälytyökaluineen. Hyvä satunnaiseen selaamiseen ja nopeisiin muokkauksiin; Photos Legacy säilyttää vanhemman videoeditorin ja diaesitysten tekijän. Ei arkistoja, ei tiedostonhallintaa.",
+   "wins": [
+    "Valmiiksi asennettuna jokaisessa Windows-PC:ssä",
+    "OneDriven ja iCloudin kuvat samassa galleriassa",
+    "Tekoälymuokkaus: kohteiden poisto, Relight, superresoluutio Copilot+ PC:illä",
+    "Ihmiset, albumit, hetket ja luonnollisen kielen haku",
+    "Diaesitys taustamusiikilla",
+    "Usean kuvan vertailunäkymä"
+   ],
+   "price": "Ilmainen Windowsin mukana (HEVC Video Extensions 0,99 $)",
+   "version": "2026.11090.22001 (uusi galleria, editori ja katselin julkaistaan vaiheittain lokakuusta 2026)",
+   "updated": "2026-10-06",
+   "platforms": "Windows"
+  },
+  "movist-pro": {
+   "name": "Movist Pro",
+   "vendor": "Movist",
+   "summary": "Maksullinen videosoitin elokuvien ja sarjojen katseluun: vahva tekstitysten käsittely (useita tekstitysraitoja kerralla, kielikohtaiset tyylit), HDR- ja Dolby Vision -sävykartoitus ja AirPlay mille tahansa formaatille. Pro lisää verkkopalvelimet, YouTuben ja verkkomedian sekä kuva kuvassa -tilan.",
+   "wins": [
+    "Tekstitystyylit ja kaksoistekstitykset",
+    "HDR- ja Dolby Vision -sävykartoitus",
+    "AirPlay formaateille, joita Apple TV ei itse toista",
+    "Verkkopalvelimet (SMB, SFTP, FTP, WebDAV), YouTube, kuva kuvassa (Pro)",
+    "Tallennetut soittolistat, äänen taajuuskorjain"
+   ],
+   "price": "Movist Pro 17,99 $ kertamaksu (suoraan); Movist 9,99 $ (Mac App Store); Movist Pro Setapp-tilauksessa",
+   "version": "2.21.1 (suoraan); Movist 2.20.0 Mac App Storessa",
+   "updated": "2026-10-17 (App Store 2.20.0); 2.21.1 myöhemmin, päivää ei näytetä",
+   "platforms": "macOS",
+   "notes": {
+    "languages_20": "6: englanti, japani, korea, venäjä, yksinkertaistettu ja perinteinen kiina",
+    "folder_browsing": "Täyttää soittolistan kansiosta; Pro selaa verkkojakoja (SMB, SFTP, FTP, WebDAV)",
+    "network_shares_fast": "Pro toistaa suoraan SMB-, SFTP-, FTP- ja WebDAV-palvelimilta",
+    "zoom_rotate": "Vain video: lähennys, kierto, peilaus",
+    "auto_enhance_view": "Vain video: Core Image -suotimet",
+    "file_info_exif": "Tarkastin raita- ja koodekkitiedoin; ei EXIFiä",
+    "pip": "Vain Movist Pro",
+    "music_mode": "Toistaa musiikkia taajuuskorjaimella; ei kirjastoa",
+    "streaming_urls": "Vain Pro: avaa URL, YouTube/Twitch ja verkkomedia, selainlaajennukset",
+    "rename_trash": "Nykyisen tiedoston poisto Arkisto-valikosta; ei nimeämistä eikä uutta kansiota",
+    "keyboard_first": "Muokattavat pikanäppäimet toistoon; ei tiedostojen selausta",
+    "app_sandbox": "App Storen Movist on hiekkalaatikossa; Pro mainostaa, ettei kansio-oikeuksia tarvita",
+    "mac_app_store": "Vain suppeampi ”Movist” (9,99 $); Pro myydään suoraan ja Setappissa"
+   }
+  },
+  "mpc-be": {
+   "name": "MPC-BE",
+   "vendor": "Aleksoid1978 ja muut tekijät",
+   "summary": "Media Player Classicista haarautunut Windowsin videosoitin omilla dekoodereilla, tummalla teemalla ja tiheillä julkaisuilla. Hyvä paikallisille videotiedostoille ja YouTubelle yt-dlp:n kautta.",
+   "wins": [
+    "kevyt Windows-soitin tiheillä päivityksillä",
+    "tumma teema, paljon renderöinti- ja dekooderivaihtoehtoja",
+    "tekstitysten lataus, yt-dlp-suoratoisto",
+    "pomonäppäin, muokattavat näppäimet"
+   ],
+   "price": "Ilmainen",
+   "version": "1.9.3",
+   "updated": "2026-11-05",
+   "platforms": "Windows"
+  },
+  "mpc-hc": {
+   "name": "MPC-HC",
+   "vendor": "clsid2 ja muut tekijät",
+   "summary": "Kevyt, klassinen Windowsin videosoitin sisäisillä LAV Filtersillä, monilla renderöijillä ja hyvin muokattavilla näppäimillä. Suosittu yksinkertaisen käyttöliittymänsä ja keveytensä vuoksi; kuvat eivät ole sen tehtävä.",
+   "wins": [
+    "hyvin kevyt ja nopea käynnistymään",
+    "renderöijät ja varjostimet harrastajille (madVR, MPC VR)",
+    "tekstitysten haku ja lataus, yt-dlp-suoratoisto",
+    "pomonäppäin, ruutu kerrallaan, paljon muokattavia näppäimiä"
+   ],
+   "price": "Ilmainen",
+   "version": "2.8.5",
+   "updated": "2026-11-06",
+   "platforms": "Windows"
+  },
+  "mpv": {
+   "name": "mpv",
+   "vendor": "mpv-projekti",
+   "summary": "mpv on minimalistinen, skriptattava komentorivin mediasoitin GPU-piirrolla (HDR, Dolby Vision) ja hyvin laajalla formaattituella. Sitä määritetään tekstitiedostoilla ja Lua- tai JS-skripteillä, ja siinä on vain pieni ruudulla näkyvä ohjain.",
+   "wins": [
+    "Videon piirto gpu-nextillä, HDR ja Dolby Vision",
+    "Äärimmäisen muokattava mpv.confin, input.confin ja skriptien avulla",
+    "Toistaa median suoraan ZIP-, RAR- ja 7z-arkistoista ja monivolyymisesta RAR:sta",
+    "Monialustainen (macOS, Windows, Linux)",
+    "Suoratoistot ja YouTube yt-dlp:llä, DVD- ja Blu-ray-valikot"
+   ],
+   "price": "Ilmainen",
+   "version": "0.42.0",
+   "updated": "2026-11-05",
+   "platforms": "macOS, Windows, Linux, BSD, Android (mpv-androidilla)",
+   "notes": {
+    "dark_light_setting": "vain otsikkopalkki asetuksella --macos-title-bar-appearance; ei teemaa",
+    "folder_browsing": "Kansion avaaminen luo soittolistan, myös rekursiivisesti; ei tiedostoselainta",
+    "img_psd_exr": "Avaa EXR:n ja PSD:n, mutta ei poimi niitä kansioista",
+    "img_svg_pdf": "SVG luettelossa (vaatii FFmpegin librsvg:llä); ei PDF:ää",
+    "auto_enhance_view": "näppäimet 1 … 8 säätävät kontrastia, kirkkautta, gammaa, kylläisyyttä; ei automaattista",
+    "file_info_exif": "tilastopäällys (i/I): koodekit, bittinopeus; ei EXIFiä",
+    "saved_playlists": "lataa m3u/pls/cue/edl; ei tallennuskomentoa",
+    "archives_as_folders": "ZIP, RAR, 7z (myös CBZ/CBR) aukeavat mediansa soittolistana, ei selattavana kansiona",
+    "comics_cbz_cbr": "CBZ/CBR aukeavat kuvasoittolistana; ei lukutilaa",
+    "batch_convert": "koodaustila komentorivillä (--o); ei eränimeämistä",
+    "shortcut_cheatsheet": "? näyttää näppäinsivun tilastopäällyksessä; input.conf kertoo oletukset",
+    "no_network": "Ei päivitystarkistusta eikä telemetriaa; menee verkkoon avaamillesi URL-osoitteille"
+   }
+  },
+  "neeview": {
+   "name": "NeeView",
+   "vendor": "neelabo",
+   "summary": "Kirjamainen katselin Windowsille, joka käsittelee kansiot ja arkistot kirjoina ja kuvat sivuina. Hyvin muokattava: jokainen toiminto on komento omine näppäimineen, hiirieleineen ja skripteineen, lisäksi kirjahylly, kirjanmerkit, soittolistat ja mangan aukeamat. Videot toistuvat Windowsin tai asennetun VLC:n kautta.",
+   "wins": [
+    "Jokainen toiminto säädettävissä: komennot, eleet, JavaScript-skriptaus",
+    "Aukeamatila oikealta vasemmalle lukien ja sivujen jakaminen",
+    "Sisäkkäiset arkistot ja arkistojen salasanat (7z.dll:n kautta)",
+    "Tallennetut soittolistat, historia ja haku päivä-, koko- ja regex-ehdoin",
+    "Kuvatehostepaneeli, tulostus, vienti ZIPinä tai kansiona",
+    "Microsoft Store- ja siirrettävä ZIP-versio"
+   ],
+   "price": "Ilmainen",
+   "version": "46.3",
+   "updated": "2026-08-09",
+   "platforms": "Windows"
+  },
+  "nomacs": {
+   "name": "nomacs",
+   "vendor": "nomacs-tiimi",
+   "summary": "nomacs (”Image Lounge”) on ilmainen avoimen lähdekoodin kuvankatselin RAW- ja PSD-tuella, metatietopaneeleilla, kuvan säädöillä ja eräkäsittelyllä. Erikoisuus on useiden ikkunoiden synkronointi kuvien vertailuun rinnakkain. Ajankohtaiset macOS-versiot ovat olemassa Apple siliconille ja Intelille, mutta niitä ei ole notarisoitu.",
+   "wins": [
+    "Eräkäsittely ja yksinkertainen kuvankäsittely",
+    "Useiden ikkunoiden synkronointi kuvien vertailuun",
+    "Metatietopaneelit, histogrammi ja tähtiarviot",
+    "Laajennukset (piirto, yhdistely, muunnokset)",
+    "Toimii Windowsissa, Linuxissa, FreeBSD:ssä ja Haikussa"
+   ],
+   "price": "Ilmainen",
+   "version": "3.22.5 (beta 3.23.4)",
+   "updated": "2026-11-05",
+   "platforms": "macOS, Windows, Linux, FreeBSD, Haiku",
+   "notes": {
+    "thumbnail_grid": "Miniatyyrikaista ja -ruudukko nykyisestä kansiosta; ei kansioiden esikatselua",
+    "list_view": "Tiedostoselainpaneeli näyttää puun tai luettelon sarakkeineen; ei päänäkymä",
+    "recursive_search": "”Find & Filter” hakee ladatusta luettelosta; rekursiivisella skannauksella myös alikansiot",
+    "img_svg_pdf": "SVG kyllä; ei PDF:ää",
+    "slideshow_recursive": "Kansion ja alikansioiden läpikäynti kuville; ei videoita",
+    "auto_enhance_view": "Kuvan säätöpaneeli; muutokset ovat tallennettavia muokkauksia, ei pelkkä näkymä",
+    "archives_as_folders": "Vain ZIP (ja CBZ), täydessä macOS-versiossa; ei RAR:ia eikä 7z:aa",
+    "comics_cbz_cbr": "CBZ kyllä, CBR ei",
+    "dual_pane": "Useita synkronoituja ikkunoita kuvien vertailuun; ei kahden paneelin tiedostonhallintaa",
+    "library_catalog": "Tähtiarviot metatietoihin; ei luettelotietokantaa",
+    "notarized_attested": "Käännetään julkisesti GitHub Actionsissa, mutta vain ad hoc -allekirjoitettu, ei notarisoitu"
+   }
+  },
+  "norton-commander": {
+   "name": "Norton Commander",
+   "vendor": "Symantec",
+   "summary": "Alkuperäinen ortodoksinen kahden paneelin tiedostonhallinta MS-DOSille (1986 … 1998), joka vakiinnutti asettelun F3 katselu, F5 kopiointi, F6 siirto, jota Total Commander, Midnight Commander ja monet muut kopioivat. Sitä etsitään yhä paljon nostalgiasta; nykyään se toimii vain DOSissa tai emulaattoreissa.",
+   "wins": [
+    "Määritteli kahden paneelin F-näppäintyöskentelyn",
+    "Pienen pieni ja nopea tekstitilassa",
+    "Kansioiden synkronointi ja tiedostohaku tulokset paneelissa"
+   ],
+   "price": "Lopetettu; oli kaupallinen (NC 3.0 149 $, NC 4.0 99 $ ohjehinta)",
+   "version": "5.51 (DOS)",
+   "updated": "1998-07-01",
+   "platforms": "MS-DOS, Windows (NC for Windows 2.01), OS/2"
+  },
+  "nplayer": {
+   "name": "nPlayer",
+   "vendor": "Newin",
+   "summary": "Suositun iOS-soittimen nPlayerin maksullinen Mac-versio: toistaa lähes kaikki video-, ääni- ja tekstitysformaatit ja suoratoistaa SMB-, NFS-, WebDAV-, FTP- ja UPnP-lähteistä ja pilvipalveluista; vahvat tekstitystyylit, A-B-toisto ja kuva kuvassa. Mac-päivityksiä tulee harvoin.",
+   "wins": [
+    "Verkkoprotokollat (SMB, NFS, SFTP, WebDAV, UPnP)",
+    "Edistyneet tekstitykset (tyylit, ajoitus, SMI, SUP)",
+    "A-B-toisto, kieltenopiskeluun ”Listening Drill”",
+    "Kuva kuvassa, toistonopeus",
+    "Äänen taajuuskorjain ja ajoitus"
+   ],
+   "price": "9,99 $ kertamaksu (Mac)",
+   "version": "1.5.0",
+   "updated": "2025-02-14",
+   "platforms": "macOS, iOS, iPadOS, Android, tvOS",
+   "notes": {
+    "dark_light_setting": "Soitinteemat 1.4.0:sta; vaaleasta/tummasta järjestelmästä riippumatta ei tietoa",
+    "languages_20": "9 App Storessa",
+    "folder_browsing": "Selaa verkkolähteitä (SMB, FTP, WebDAV, UPnP, pilvi); paikalliset tiedostot Finderista",
+    "thumbnail_grid": "Luo videoiden miniatyyrit; asettelusta ei tietoa",
+    "network_shares_fast": "WebDAV, FTP, SFTP, HTTP, SMB/CIFS, NFS, UPnP/DLNA; nopeudesta ei tietoa",
+    "zoom_rotate": "Kierto 90/180/270, videon peilaus",
+    "auto_enhance_view": "Kirkkaus ja värikylläisyys videolle",
+    "saved_playlists": "Avaa soittolistatiedostoja; omien tallennuksesta ei tietoa",
+    "library_catalog": "TMDb-metatiedot",
+    "cloud_sync": "Suoratoisto Boxista, Dropboxista, OneDrivesta; ei synkronointia",
+    "notarized_attested": "App Storen allekirjoittama; suljettu lähdekoodi"
+   }
+  },
+  "omniplayer": {
+   "name": "OmniPlayer",
+   "vendor": "Oka Apps",
+   "summary": "Mac App Storen mediasoitin MKV:lle, AVI:lle, WMV:lle ja useimmille muille formaateille: tekstityshaku, toistonopeus, äänen taajuuskorjain ja suoratoisto DLNA-, Chromecast- ja Roku-laitteisiin. Suoraviivainen yhden tiedoston katseluun tehty soitin soittolistalla.",
+   "wins": [
+    "Tekstitysten verkkohaku",
+    "Toistonopeus aina 0,1x:ään, ruutu kerrallaan",
+    "Suoratoisto televisioihin (DLNA, Chromecast, Roku)",
+    "YouTube- ja Vimeo-osoitteet, SMB- ja FTP-lähteet",
+    "Äänen taajuuskorjain, musiikin toisto",
+    "Kuvan säädöt ja GIF-vienti"
+   ],
+   "price": "Ilmainen, VIP: elinikäinen 9,99 $, vuosi 6,99 $, kuukausi 3,99 $; OmniPlayer Pro 8,99 $ kertamaksu",
+   "version": "2.1.22",
+   "updated": "2026-06-18",
+   "platforms": "macOS",
+   "notes": {
+    "free": "Ilmainen; VIP alkaen 3,99 $/kk tai 9,99 $ elinikäinen; mitä VIP avaa, ei kerrota",
+    "languages_20": "7 App Storessa (EN, FR, DE, IT, JA, zh-Hans, zh-Hant); valmistajan sivulla 11",
+    "folder_browsing": "Sisään vedetyt kansiot muuttuvat soittolistaksi; ei kansioselainta",
+    "recursive_search": "Haku soittolistan sisällä; monitasoisia kansioita voi vetää sisään",
+    "network_shares_fast": "Toistaa SMB- ja FTP-palvelimilta ja Alistista; nopeudesta ei tietoa",
+    "zoom_rotate": "Videon kierto, kuvasuhde, ikkunan koko; ei kuvia",
+    "auto_enhance_view": "Kirkkaus, kontrasti, värikylläisyys vain videolle",
+    "file_info_exif": "Arvostelu mainitsee mediatietoruudun (koodekit); ei EXIFiä",
+    "saved_playlists": "Soittolista säilyy automaattisesti; ei nimettyjä soittolistoja",
+    "keyboard_first": "Pikanäppäimet toistoon, nopeuteen (⌘[ / ⌘]), tekstityksiin",
+    "notarized_attested": "App Storen allekirjoittama; suljettu lähdekoodi"
+   }
+  },
+  "opencomic": {
+   "name": "OpenComic",
+   "vendor": "ollm",
+   "summary": "OpenComic on monialustainen avoimen lähdekoodin sarjakuva-, manga- ja e-kirjalukija: välilehdet, useita ikkunoita, OPDS ja palvelinyhteydet. Siinä on manga- ja webtoon-tilat, kuvan säädöt ja tekoälysuurennus.",
+   "wins": [
+    "Monet formaatit, myös EPUB, MOBI, SVG, JPEG XL, ACE- ja LZH-arkistot",
+    "Manga, webtoon, aukeama ja ohjattu näkymä",
+    "Suorat SMB-, FTP-, SFTP-, WebDAV- ja S3-yhteydet sekä OPDS",
+    "Tekoälysuurennus, rasterin ja virheiden poisto",
+    "Välilehdet ja useita ikkunoita; omat pikanäppäimet ja peliohjain"
+   ],
+   "price": "Ilmainen (GitHub); 4,99 $ Mac App Storessa",
+   "version": "2.0.0 (GitHub); 1.6.11 Mac App Storessa",
+   "updated": "2026-11-14",
+   "platforms": "macOS, Windows, Linux",
+   "notes": {
+    "network_shares_fast": "Suorat SMB-, FTP-, SFTP-, WebDAV- ja S3-yhteydet; tiedostoluettelot välimuistissa",
+    "bookmarks": "Sivukirjanmerkit, suosikit ja omat merkinnät",
+    "img_modern_formats": "WebP, AVIF, JPEG XL; HEIC poistettiin",
+    "zoom_rotate": "Lähennys ja suurennuslasi; kierrosta ei tietoa",
+    "music_mode": "Taustamusiikki ja äänitehosteet lukiessa; ei musiikkisoitinta",
+    "rename_trash": "Roskakoriin ja pysyvä poisto; ei nimeämistä",
+    "cloud_sync": "Palvelinyhteydet ja OPDS; ei omaa pilvisynkronointia",
+    "app_sandbox": "Mac App Store -versio hiekkalaatikossa; GitHubin DMG ei",
+    "notarized_attested": "Mac DMG/PKG käännetään paikallisesti ja notarisoidaan; ei build-todistusta"
+   }
+  },
+  "panels": {
+   "name": "Panels",
+   "vendor": "Produkt Studio",
+   "summary": "Panels on sarjakuvalukija iPhonelle, iPadille ja Macille: kansikirjasto, lukuesiasetukset, ruutu kerrallaan -näkymä ja OPDS-tuki Komgalle ja Kavitalle. Edistyneet ominaisuudet, kuten pilvikirjastot, sivusuotimet ja tekstin tunnistus, vaativat Premiumin.",
+   "wins": [
+    "Kirjasto ja edistyminen synkronoituvat Macin, iPhonen ja iPadin välillä",
+    "OPDS-suoratoisto (Komga, Kavita, Calibre)",
+    "Ohjattu ruutu kerrallaan -näkymä, lukuesiasetukset",
+    "Live Text ja kohteiden tunnistus",
+    "Sovelluksen sisäinen DRM-vapaa sarjakuvakauppa"
+   ],
+   "price": "Ilmainen lataus; Premium Panels+-tilauksella (kuukausi/vuosi) tai Panels 3 -kertaostolla (22,99 EUR kertamaksu / 11,99 EUR vuodessa, toukokuu 2025)",
+   "version": "3.13.11",
+   "updated": "2026-11-11",
+   "platforms": "macOS, iOS, iPadOS",
+   "notes": {
+    "free": "Ilmainen peruslukija; Premium tilauksena tai kertaostona (22,99 EUR)",
+    "no_account_no_tracking": "Ei tiliä paikallisille tiedostoille; App Storen mukaan käyttötiedot, diagnostiikka, tunnisteet",
+    "languages_20": "12 kieltä (8 konekäännettyjä); valitaan macOS:n apikohtaisella kielellä",
+    "folder_browsing": "Kirjastot ovat lisäämiäsi kansioita; ulkoiset levyt ja iCloud ovat Premiumia",
+    "list_view": "Kirjasto ruudukkona tai luettelona (⌘1 / ⌘2); sarakkeista ei tietoa",
+    "network_shares_fast": "SMB-tuonti ja OPDS-suoratoisto (Premium); tuhansia sarjakuvia",
+    "bookmarks": "Suosikkisijainnit (Premium), suosikit, jatka lukemista",
+    "img_svg_pdf": "PDF kyllä, SVG ei",
+    "zoom_rotate": "Lähennys, sovitus ja täyttö; kierrosta ei tietoa",
+    "auto_enhance_view": "Sivusuotimet (kohina, terävyys, moiré, reunat) ovat Premiumia",
+    "file_info_exif": "Sarjakuvan tiedot (⌘I), ei EXIFiä",
+    "archives_as_folders": "avaa arkiston sarjakuvakirjana, ei kansiona",
+    "rename_trash": "Nimeäminen ja poisto kirjaston sisällä",
+    "move_copy": "Kopiointi, siirto ja liittäminen kirjaston sisällä",
+    "keyboard_first": "Paljon pikanäppäimiä lukijaan ja kirjastoon",
+    "notarized_attested": "Allekirjoitettu Mac App Storen kautta; suljettu lähdekoodi"
+   }
+  },
+  "path-finder": {
+   "name": "Path Finder",
+   "vendor": "Cocoatech",
+   "summary": "Pitkäikäinen Finderin korvaaja: kaksi paneelia, moduulit (esikatselu, tiedot, pääte, Drop Stack), kokoselain, eränimeäminen ja kansioiden synkronointi. Hyvä tehokäyttäjille, jotka haluavat paljon työkaluja Finderin kaltaisen selaimen ympärille.",
+   "wins": [
+    "Moduulit: esikatselu, tiedot, pääte, Drop Stack, Git, heksa- ja tekstieditori",
+    "Kokoselain sekä kansioiden synkronointi ja yhdistäminen",
+    "Eränimeäminen, turvallinen poisto, ylläpitäjän oikeudet",
+    "20 käyttöliittymän kieltä",
+    "Kirjanmerkkipalkki, välilehtien esiasetukset"
+   ],
+   "price": "Tilaus 29,95 $/vuosi tai 2,95 $/kk, tai lisenssiavain alkaen 32,95 $ (1 vuoden päivitykset), 55,95 $ (2 vuotta), 122,95 $ (5 vuotta); 30 päivän kokeilu",
+   "version": "26.1.10",
+   "updated": "2026-10-22",
+   "platforms": "macOS",
+   "notes": {
+    "no_account_no_tracking": "Ei käyttötietoja; tilaus vaatii kirjautumisen ja verkkotarkistuksia",
+    "thumbnail_grid": "Symbolinäkymä kuville; ei kansioiden esikatselua",
+    "regex_search": "Nimi ”vastaa kuviota” (jokerimerkit); säännöllisistä lausekkeista ei tietoa",
+    "network_shares_fast": "Parempi esikatselun suorituskyky verkkolevyillä; ei yleistä nopeusväitettä",
+    "img_modern_formats": "Esikatselumoduuli tai Pikakatselu macOS:n koodekeilla; ei omaa katselinta",
+    "img_raw": "macOS:n kautta; ARW-esikatselu 26.1.8:sta",
+    "img_animated": "Animoitu GIF toistuu Pikakatselussa; APNG:stä ja WebP:stä ei tietoa",
+    "zoom_rotate": "Vain Pikakatselun lähennys",
+    "slideshow": "Ei omaa diaesitystä; macOS:n Pikakatselu näyttää valinnan diaesityksenä",
+    "file_info_exif": "Tietopaneeli: mitat, kesto, macOS:n metatiedot; koodekeista ei tietoa",
+    "video_mkv_avi_webm": "WebM-esikatselu lisätty; MKV:tä/AVI:a ei mainita",
+    "music_mode": "Äänentoisto vain esikatselussa tai Pikakatselussa",
+    "archive_passwords": "Luo ja purkaa salasanasuojattuja ZIPejä (AES-128/256)",
+    "dual_pane": "Kaksi paneelia, mutta kopiointi ja siirto ⌘C/⌘V/⌘X:llä tai vetämällä; ei F5/F6-oletuksia",
+    "batch_convert": "Eränimeäminen; ei kuvamuunnosta",
+    "library_catalog": "Vain Finderin tunnisteet ja värimerkinnät",
+    "cloud_sync": "Dropbox-integraatio, Cloud Uploader, iCloud Drive",
+    "keyboard_first": "Paljon pikanäppäimiä, mutta hiirivetoinen Finder-tyylinen käyttöliittymä",
+    "shortcut_cheatsheet": "Tukiartikkeli luettelee yleisimmät; ei tulostettavaa"
+   }
+  },
+  "phiewer": {
+   "name": "Phiewer",
+   "vendor": "Thomas Zinnbauer",
+   "summary": "Nopea, näppäimistöystävällinen mediakatselin kuva-, RAW-, video- ja äänikansioille. PRO lisää Showcases-toiminnon (virtuaaliset albumit), kaksoiskappaleiden etsinnän, vertailunäkymän, rikkomattoman muokkauksen, Finderin tunnisteet ja omat pikanäppäimet edulliseen kertahintaan.",
+   "wins": [
+    "Kaksoiskappaleiden etsintä ja jopa 9 kuvan vertailunäkymä",
+    "Showcases: tallennetut virtuaaliset albumit kansioiden yli",
+    "Finderin tunnisteet ja kommentit, haku tunnisteiden, EXIFin ja päivän mukaan",
+    "Äänitiedostot ja tulostus",
+    "Kuvien muokkaus (rajaus, suotimet, koko) PRO-versiossa",
+    "Teatteritila"
+   ],
+   "price": "Phiewer (lite) ilmainen; Phiewer PRO 7,99 $ kertamaksu (Mac App Store)",
+   "version": "8",
+   "updated": "2026-11-07",
+   "platforms": "macOS",
+   "notes": {
+    "free": "lite ilmainen (selaus, kaikki formaatit, diaesitys, EXIF); muu PRO, 7,99 $ kertamaksu",
+    "no_account_no_tracking": "Ei tiliä, ei mainoksia; App Storen mukaan analytiikkaa, ei yhdistetty sinuun",
+    "languages_20": "8: EN, DE, FR, ES, PT, IT, NL, PL",
+    "recursive_search": "Nimi, tunnisteet, kommentit, päivä, EXIF (PRO); alikansiot voi ottaa näkymään",
+    "img_modern_formats": "HEIC, AVIF, WebP kyllä; JPEG XL ei luettelossa",
+    "img_animated": "GIF ja animoitu WebP; APNG ei luettelossa",
+    "slideshow_recursive": "Vain PRO; alikansiot ja satunnaisjärjestys; videot toistuvat (mykistysvalinta)",
+    "auto_enhance_view": "PRO: suotimet ja säädöt kumottavina muokkauksina; ei automaattista parannusta näkymään",
+    "file_info_exif": "EXIF ja tiedoston tiedot; koodekki ja bittinopeus ei luettelossa",
+    "wrong_extension_note": "tunnistaa väärällä päätteellä olevat kuvat ja avaa ne; käyttäjälle ei huomauteta",
+    "video_mkv_avi_webm": "AVI, MPG, 3GP, MTS, M2TS, TS; MKV, WebM, WMV, FLV eivät ole nykyisessä luettelossa",
+    "video_skim_arrows": "säädettävä hyppyväli (PRO); nuolinäppäinselauksesta ei tietoa",
+    "playback_speed": "PRO-videosäätimet",
+    "playlist": "PRO Showcases: virtuaaliset kokoelmat ”kuin soittolistat” kansioiden yli",
+    "saved_playlists": "PRO Showcases tallentuvat",
+    "undo_file_actions": "⌘Z vetämällä tehdyille siirroille; nimeämisen ja roskakorin kumouksesta ei tietoa",
+    "image_editing": "PRO: QuickEdit rajaus, kierto, peilaus, koko, pakkaus, suotimet",
+    "batch_convert": "PRO: monivienti ja eräpakkaus; eränimeämisestä ei tietoa",
+    "library_catalog": "Finderin tunnisteet ja kommentit, suosikit, Showcases; ei tietokantaa",
+    "cloud_sync": "PRO: jako macOS:n jakovalikolla; ei synkronointia",
+    "custom_shortcuts": "Vain PRO",
+    "shortcut_cheatsheet": "kaikki pikanäppäimet asetuksissa; ei tulostettavaa"
+   }
+  },
+  "photo-mechanic": {
+   "name": "Photo Mechanic",
+   "vendor": "Camera Bits",
+   "summary": "Photo Mechanic on nopea tuonti-, karsinta- ja metatietotyökalu ammattivalokuvaajille, erityisesti lehti-, urheilu- ja hääkuvaajille. Se avaa kansiot ja muistikortit suoraan, näyttää RAW-tiedostot heti niiden upotetuista esikatselukuvista ja on tehty kuvateksteihin, IPTC-metatietoihin, avainsanoihin, eränimeämiseen ja lataamiseen kiireellä.",
+   "wins": [
+    "Tuonti useilta muistikorteilta kerralla, nimeäminen ja metatiedot kopioinnin aikana",
+    "IPTC/XMP-metatiedot, koodikorvaukset, muuttujat ja rakenteiset avainsanat kuvateksteihin kiireellä",
+    "Tähtiarviot, väriluokat ja tunnisteet tuhansien RAW-tiedostojen nopeaan karsintaan",
+    "Eränimeäminen, tallennus nimellä, koon muutos, vesileima ja suora lataus FTP:hen, Dropboxiin, S3:een, PhotoShelteriin ym.",
+    "Etsi ja korvaa säännöllisillä lausekkeilla tiedostonimissä ja metatiedoissa",
+    "Täysin muokattavat pikanäppäimet esiasetuksin ja tulostettavat pikanäppäin-PDF:t",
+    "Windows-versio samoin ominaisuuksin"
+   ],
+   "price": "Photo Mechanic: 14,99 $/kk, 149 $/vuosi tai 299 $ pysyvä (1 vuoden päivitykset); 30 päivän ilmainen kokeilu. Photo Mechanic Plus (luettelotaso, 24,99 $/kk, 249 $/vuosi, 399 $ pysyvä) ei ole ollut uusien ostajien saatavilla 27.2.2026 jälkeen, vaikka kauppasivu yhä luettelee sen.",
+   "version": "2026.6 (build 9175), viimeisin Camera Bitsin blogissa ilmoitettu",
+   "updated": "2026-06-18",
+   "platforms": "macOS, Windows",
+   "notes": {
+    "no_account_no_tracking": "Ei mainoksia; lisenssi aktivoidaan ja tarkistetaan verkossa aika ajoin",
+    "dark_light_setting": "Vaalea tai tumma teema viesteille ja valintaikkunoille; esikatselun tausta säädettävä",
+    "thumbnail_grid": "Vedosarkin miniatyyriruudukko; kansiot navigaattoripuussa, ei esikatseluruutuina",
+    "recursive_search": "Kansio ja alikansiot samaan vedosarkkiin, sitten haku nimellä tai IPTC:llä",
+    "img_psd_exr": "PSD (maksimaalisella yhteensopivuudella) kyllä; OpenEXR ei luettelossa",
+    "zoom_rotate": "Lähennys ja panorointi esikatselussa; kierto kirjoittaa EXIF-suunnan (ei vain näkymä)",
+    "slideshow_recursive": "Onnistuu kansion ja alikansioiden yli; videoista diaesityksessä ei tietoa",
+    "video_mkv_avi_webm": "AVI luettelossa; MKV, WebM, WMV, FLV eivät",
+    "undo_file_actions": "Kumoa/Tee uudelleen macOS:llä ”kun mahdollista”; mitkä toiminnot, ei kerrota",
+    "image_editing": "Rajaus, kierto, koko ja vesileima viennissä; ei pikselimuokkausta (ulkoiset editorit)",
+    "library_catalog": "Tunnisteet, tähdet, väriluokat, IPTC-avainsanat tiedostoissa; luetteloa ei enää myydä"
+   }
+  },
+  "picasa": {
+   "name": "Picasa",
+   "vendor": "Google",
+   "summary": "Googlen ilmainen kuvien järjestäjä ja katselin, joka lopetettiin maaliskuussa 2016 ja on ollut poissa verkosta vuodesta 2018. Se skannasi kansiot kirjastoon tunnisteineen, kasvoineen ja albumeineen ja tarjosi yksinkertaisia rikkomattomia korjauksia ja diaesityksiä. Sitä etsitään yhä paljon, kun halutaan yksinkertainen, ilmainen, paikallinen kuvankatselin.",
+   "wins": [
+    "Kasvojentunnistus, tunnisteet ja albumit",
+    "Rikkomattomat korjaukset yhdellä napsautuksella",
+    "Kollaasit, tulostusasettelut ja vienti",
+    "Tuttu monelle pitkäaikaiselle käyttäjälle"
+   ],
+   "price": "Ilmainen (lopetettu, ei virallista latausta)",
+   "version": "3.9.141.259 (Windows) / 3.9.141.306",
+   "updated": "2015-10-09 (tuki päättyi 2016-03-15)",
+   "platforms": "Windows, macOS (Intel, beta), Linux (Wine, vanha)"
+  },
+  "picview": {
+   "name": "PicView",
+   "vendor": "Ruben Hyldgaard Negendahl",
+   "summary": "PicView on nopea, ilmainen avoimen lähdekoodin kuvankatselin Windowsille ja macOS:lle, tehty Avalonialla. Se lukee Magick.NET:n avulla käytännössä minkä tahansa kuvaformaatin, avaa sarjakuvat ja arkistot ja lisää gallerian, välilehdet, rajauksen, eränä koon muutoksen ja kuvan tietoikkunan. Hyvin muokattava, myös näppäimet.",
+   "wins": [
+    "Hyvin laaja kuvaformaattituki (Magick.NET)",
+    "Rajaus, koon muutos, muunnos ja eränä koon muutos sisäänrakennettuina",
+    "Välilehdet, joilla oma historia",
+    "Kaksi kuvaa rinnakkain",
+    "EXIF-arvion ja avainsanojen muokkaus",
+    "Myös Windowsille"
+   ],
+   "price": "Ilmainen",
+   "version": "5.2.2",
+   "updated": "2026-11-10",
+   "platforms": "macOS, Windows",
+   "notes": {
+    "folder_browsing": "Avaa tiedoston ja selaa sen kansiota galleriassa; ei kansiopuuta eikä selainta",
+    "thumbnail_grid": "Ala- tai koko näytön galleria nykyisestä kansiosta; ei kansioiden esikatselua",
+    "recursive_search": "Ctrl+F hakee nykyisestä kansiosta, valinnaisesti alikansioista",
+    "network_shares_fast": "Galleria voidaan piilottaa hyvin suurissa kansioissa; ei erityistä verkkokäsittelyä",
+    "bookmarks": "Tiedostosuosikit näppäinpaikoin ja historia; kansioiden kirjanmerkeistä ei varmuutta",
+    "img_svg_pdf": "SVG kyllä; PDF ei luettelossa",
+    "slideshow_recursive": "Alikansiot mukaan -asetus; vain kuvat",
+    "auto_enhance_view": "Tehosteet (kirkkaus, kontrasti, suotimet) näkymään, tallennettavissa; ei automaattista parannusta",
+    "manga_two_page": "Kaksi kuvaa rinnakkain; oikealta vasemmalle -järjestystä ei löytynyt",
+    "move_copy": "Siirto polkua muuttamalla; kopiointi; ei vetämistä kansioihin",
+    "library_catalog": "Muokkaa EXIF-arviota ja avainsanoja; ei tietokantaa",
+    "shortcut_cheatsheet": "Pikanäppäinluettelo picview.orgissa; ei tulostettavaa"
+   }
+  },
+  "pixea": {
+   "name": "Pixea",
+   "vendor": "ImageTasks",
+   "summary": "Minimalistinen kuva- ja videokatselin, josta on kasvanut kuvankäsittelyohjelma maskeineen, kohteiden poistoineen ja suurennuksineen. Selaa kansioita, kuvakirjastoja ja ZIP- ja CBZ-arkistoja ja toistaa MKV:n tekstitysten ja ääniraidan valinnan kera; haku, lajittelu ja omat pikanäppäimet vaativat Pixea Plusin.",
+   "wins": [
+    "Kuvankäsittely maskeilla, kohteiden poistolla, suurennuksella ja LUTeilla",
+    "Eräkäsittely ja -muunnos",
+    "Upotetut tekstitykset, ääniraita, toistonopeus",
+    "Avaa Kuvat-kirjastoja",
+    "Tunnisteet ja arviot XMP-sivutiedostoin",
+    "Kaksoiskappaleiden haku"
+   ],
+   "price": "Ilmainen; Pixea Plus 19,99 $ elinikäinen, 14,99 $/vuosi tai 1,99 $/kk",
+   "version": "8.4.1",
+   "updated": "2026-10-27",
+   "platforms": "macOS",
+   "notes": {
+    "free": "perusversio ilmainen; Pixea Plus 19,99 $ elinikäinen, 14,99 $/vuosi tai 1,99 $/kk",
+    "dark_light_setting": "Liquid Glass- tai Classic-teema ja taustaväri; ei vaalean ja tumman valintaa",
+    "languages_20": "12: EN, BG, FR, DE, IT, JA, KO, PT, RU, zh-Hans, ES, UK",
+    "recursive_search": "haku vain Plusissa; alikansioiden skannaus 1 … 5 tasoa",
+    "network_shares_fast": "metatiedot voi ohittaa verkkolevyillä; nopeammat suuret kansiot",
+    "img_psd_exr": "PSD kyllä; Radiance HDR luettelossa, OpenEXR ei",
+    "slideshow_recursive": "diaesitys skannatusta kansiosta alikansioineen 5 tasoon asti, sekoitus; kuvat ja videot sekaisin",
+    "auto_enhance_view": "rikkomattomat säädöt tallennettavissa Pixea Image -formaattiin; ei pelkän näkymän parannusta",
+    "file_info_exif": "EXIF-paneeli; videoille ruutunäyttö (Plus); koodekeista ei tietoa",
+    "video_mkv_avi_webm": "MKV, AVI, WMV, FLV, VOB, RM kyllä; WebM ei luettelossa",
+    "video_skim_arrows": "hypyt 10 s / 30 s; nuolet siirtyvät seuraavaan",
+    "archives_as_folders": "vain ZIP; RAR ja 7z ei luettelossa",
+    "comics_cbz_cbr": "vain CBZ",
+    "videos_in_archives": "haku kattaa videot ZIP-arkistoissa; toistosta ZIPistä ei tietoa",
+    "undo_file_actions": "kumoa/tee uudelleen, laajuudesta ei tietoa",
+    "batch_convert": "ilmaiseksi 3 kuvaa, Plus rajattomasti",
+    "cloud_sync": "jakopainike; ei synkronointia",
+    "keyboard_first": "pikanäppäimet selaukseen, lähennykseen, arvioihin",
+    "custom_shortcuts": "vain Plus",
+    "shortcut_cheatsheet": "lyhyt näppäinluettelo verkkosivulla",
+    "no_network": "Tietoja ei kerätä; lataa pyynnöstä ML-mallin"
+   }
+  },
+  "potplayer": {
+   "name": "PotPlayer",
+   "vendor": "Kakao",
+   "summary": "PotPlayer on Kakaon erittäin muokattava Windowsin mediasoitin: sisäänrakennetut koodekit, laitteistodekoodaus, 3D- ja 360°-ulostulo, tekstitystyökalut, myös Whisper puheesta tekstitykseksi, sekä suoratoisto. Se avaa myös pysäytyskuvia ja toistaa median suoraan ZIP- ja RAR-arkistoista.",
+   "wins": [
+    "Valtava määrä asetuksia, renderöijiä ja suotimia (madVR, HDR-sävykartoitus, ruutujen tuplaus)",
+    "Tekstitysten lataus verkosta, tekstitysten käännös ja puheesta tekstitykseksi (Whisper)",
+    "Suoratoisto (YouTube, HLS/DASH), TV/DVD/Blu-ray, 3D ja 360° VR",
+    "Täysin muokattavat pikanäppäimet ja teemat",
+    "Musiikin toisto kansikuvin, sanoituksin ja ReplayGainilla"
+   ],
+   "price": "Ilmainen (freeware)",
+   "version": "261021 (1.7.x-versio, 21.10.2026)",
+   "updated": "2026-10-21",
+   "platforms": "Windows"
+  },
+  "qspace": {
+   "name": "QSpace",
+   "vendor": "Tian Wenda",
+   "summary": "Finderin kaltainen monipaneelinen tiedostonhallinta: 12 asettelua, työtilat, laaja muokattavuus (pikanäppäimet, pikavalikko, värit) ja regex-haku. Maksulliset laajennukset lisäävät arkistojen selauksen, palvelin- ja pilviyhteydet ja edistyneen eränimeämisen.",
+   "wins": [
+    "Jopa 12 paneeliasettelua ja tallennetut työtilat",
+    "Muokattavat pikanäppäimet, pikavalikot, työkalupalkki ja värit",
+    "Kansioiden synkronointi, tiedostojen tiivisteet, tiedostopohjat",
+    "Pikatoiminnot kuville (kierto, muunnos, taustan poisto)",
+    "Videon metatietosarakkeet (ruutunopeus, datanopeus)"
+   ],
+   "price": "Kertamaksu: QSpace (MAS) 12,99 $, QSpace Pro (suoraan) 13,99 $ alennushinta (normaalisti 27,99 $ / 29,99 $); maksulliset laajennukset: Stash Shelf, Advanced Batch Rename, Server Connections (0,99 $:sta 9,99 $:iin), Enhanced Archiver (ilmainen kampanja, normaalisti 4,99 $)",
+   "version": "Pro 7.0.4 (MAS 7.0.3; beta 7.0.4.018)",
+   "updated": "2026-10-09",
+   "platforms": "macOS",
+   "notes": {
+    "no_account_no_tracking": "Pro-lisenssi on sidottu tiliin (2 laitetta); App Storen mukaan tunnisteet yhdistetty sinuun",
+    "dark_light_setting": "Värimallit vaalealla ja tummalla tilalla (beta); erillisestä valinnasta ei tietoa",
+    "languages_20": "Noin 14 kieltä (EN, ZH-Hans/Hant, NL, FR, DE, HU, IT, JA, KO, PL, RU, ES, TR)",
+    "img_modern_formats": "Esikatselu macOS:n kautta; vain HEIC nimetty",
+    "zoom_rotate": "Pikakatselun lähennys; kierto muuttaa tiedostoa",
+    "slideshow": "Pikavalikon pikadiaesitys (macOS:n Pikakatselu koko näytöllä)",
+    "video_mkv_avi_webm": "MKV ja vastaavat macOS:n medialaajennusten kautta",
+    "music_mode": "Vain äänitiedostojen kansikuvat ja Pikakatselun toisto",
+    "archives_as_folders": "Enhanced Archiver -laajennus (normaalisti 4,99 $): RAR, ZIP, 7z kansioina",
+    "comics_cbz_cbr": "Ei sarjakuvalukijaa; arkistopäätteitä voi lisätä, joten CBZ/CBR selattavissa arkistoina",
+    "videos_in_archives": "Esikatselu arkistoissa; ei soitinta",
+    "dual_pane": "Jopa 12 paneelia; kopiointi tai siirto omilla pikanäppäimillä, oletuksena ei F5/F6",
+    "image_editing": "Pikatoiminnot: kierto, kuvan muunnos, taustan poisto, PDF:n luonti",
+    "batch_convert": "Kuvien muunnos; edistynyt eränimeäminen on maksullinen laajennus",
+    "library_catalog": "Vain Finderin tunnisteet ja kommentit",
+    "cloud_sync": "Server Connections -laajennus: FTP, SFTP, Dropbox, OneDrive, Google Drive, S3 …",
+    "app_sandbox": "MAS-versio hiekkalaatikossa (kansiot lisättävä käsin); Pro käyttää täyttä levyn käyttöoikeutta"
+   }
+  },
+  "quicktime-player": {
+   "name": "QuickTime Player",
+   "vendor": "Apple",
+   "summary": "Applen sisäänrakennettu mediasoitin. Avaa sen, minkä AVFoundation osaa toistaa (MP4, MOV, M4V, HEVC, ProRes), ja tarjoaa kuva kuvassa -tilan, nopeuden säädön ja yksinkertaisia muokkauksia, kuten lyhennyksen ja jaon, sekä näytön ja äänen tallennuksen.",
+   "wins": [
+    "Valmiiksi asennettuna, ei mitään ladattavaa",
+    "Näytön, elokuvan ja äänen tallennus",
+    "Yksinkertaiset videomuokkaukset: lyhennys, jako, kierto, äänen poisto, vienti",
+    "Kuva kuvassa ja tilavideo"
+   ],
+   "price": "Ilmainen (macOS:n mukana)",
+   "version": "10.5 (macOS 27)",
+   "updated": "macOS 27:n mukana (2026)",
+   "platforms": "macOS",
+   "notes": {
+    "zoom_rotate": "Vain videot; kierto ja peilaus ovat muokkauksia",
+    "file_info_exif": "Elokuvan tarkastin: formaatti, pakkaus, koko, fps, datanopeus; ei EXIFiä",
+    "video_skim_arrows": "Vasen/oikea askeltaa ruudun; ⌥ ja nuolet alkuun/loppuun; ei aikahyppyä",
+    "music_mode": "Toistaa äänitiedostoja yksi kerrallaan; ei kirjastoa eikä jonoa",
+    "rename_trash": "Avoimen elokuvan nimeäminen; ei roskakoria eikä uutta kansiota",
+    "undo_file_actions": "Kumoaminen elokuvamuokkauksille (lyhennys, jako), ei tiedostotoiminnoille",
+    "cloud_sync": "Avaa tiedostoja iCloud Drivesta; Jaa-valikko",
+    "keyboard_first": "Toisto näppäimistöllä; ei tiedostojen selausta",
+    "shortcut_cheatsheet": "Pikanäppäinluettelo Applen ohjesivulla",
+    "no_network": "Voi mennä verkkoon (Avaa sijainti, jakaminen); ei omia päivitystarkistuksia eikä telemetriaa",
+    "notarized_attested": "Applen allekirjoittama järjestelmäappi; suljettu lähdekoodi"
+   }
+  },
+  "quickviewer": {
+   "name": "QuickViewer",
+   "vendor": "KATO Kanryu",
+   "summary": "Nopea OpenGL-pohjainen kuva- ja sarjakuvakatselin, joka lukee arkistot purkamatta ja näyttää aukeamat. Siinä on luettelotietokanta suurille sarjakuvakokoelmille. Kehittäjä lopetti projektin marraskuussa 2025 sairauden vuoksi; 1.2.8 oli UnRARin tietoturvakorjaus.",
+   "wins": [
+    "Luettelotietokanta tuhansille sarjakuville",
+    "Hyvin nopea sivunvaihto OpenGL:n ansiosta",
+    "Laaja arkistotuki, myös tar.gz/bz2/xz ja cab",
+    "CMYK-JPEG näkyy oikein"
+   ],
+   "price": "Ilmainen",
+   "version": "1.2.8",
+   "updated": "2025-12-12",
+   "platforms": "Windows, macOS (Intel, 1.1.1 asti), Linux (1.1.1 asti)"
+  },
+  "qview": {
+   "name": "qView",
+   "vendor": "jurplel (Interverse)",
+   "summary": "qView on minimalistinen monialustainen kuvankatselin ilman työkalupalkkeja: se avaa yhden tiedoston ja antaa selata kansion loput. Se käynnistyy nopeasti, lataa viereiset kuvat etukäteen ja tukee animoituja kuvia ja monia formaatteja Qt-laajennusten kautta.",
+   "wins": [
+    "Äärimmäisen minimalistinen, kehyksetön ikkuna",
+    "Toimii myös Windowsissa ja Linuxissa sekä vanhemmissa macOS-versioissa (10.13+ legacy-versio)",
+    "Animoitujen kuvien ruutu kerrallaan ja nopeuden säätö",
+    "Kuvan avaaminen suoraan URL-osoitteesta"
+   ],
+   "price": "Ilmainen",
+   "version": "7.1",
+   "updated": "2025-07-26 (julkaisu; yöversiot jatkuvat, viimeisin 2026-11-04)",
+   "platforms": "macOS, Windows, Linux",
+   "notes": {
+    "dark_light_setting": "Taustaväri ja tumma otsikkopalkki säädettävissä; ei täyttä vaaleaa/tummaa teemaa",
+    "folder_browsing": "Avaa tiedoston ja selaa sen kansiota; ei kansioselainta",
+    "img_svg_pdf": "SVG kyllä, ei PDF:ää",
+    "file_info_exif": "Tietoikkuna näyttää koon ja mitat; ei EXIFiä",
+    "wrong_extension_note": "Valinnainen sisällöntunnistus avaa tiedostot sisällön mukaan, mutta ei huomauta ristiriidasta",
+    "rename_trash": "Nimeäminen ja poisto roskakoriin; ei uutta kansiota",
+    "undo_file_actions": "Vain poiston kumoaminen (palautus roskakorista)"
+   }
+  },
+  "raw-power": {
+   "name": "RAW Power",
+   "vendor": "Gentlemen Coders",
+   "summary": "RAW Power on rikkomaton RAW- ja JPEG-editori Aperturen entiseltä kehitysjohtajalta. Sitä voi käyttää itsenäisesti Finderin kansioissa, Apple Kuvien kirjaston hallintaan tai Kuvien muokkauslaajennuksena. Siinä on Aperture-tyyliset säädöt, iCloud-kuvien kautta synkronoituvat arviot ja liput sekä erävienti. Valmistaja ohjaa nyt macOS 13+ -käyttäjät seuraajaan Nitro Photoon.",
+   "wins": [
+    "Rikkomaton RAW- ja JPEG-muokkaus (käyrät, LUTit, syvyystehoste, Boost)",
+    "Toimii suoraan Apple Kuvien kirjastossa ja synkronoituu iCloud-kuvien kautta",
+    "Eräesiasetukset ja vienti",
+    "iPhone- ja iPad-versio",
+    "Välilehdet useille kansioille"
+   ],
+   "price": "39,99 $ kertamaksu Mac App Storessa (valmistajan sivulla 49,99 $ Mac, 9,99 $ iOS; erilliset ostot)",
+   "version": "3.5.6",
+   "updated": "2026-07-27",
+   "platforms": "macOS, iOS, iPadOS",
+   "notes": {
+    "no_account_no_tracking": "Ei tiliä eikä mainoksia; App Storen mukaan käyttötietoja (analytiikka, ei yhdistetty sinuun)",
+    "languages_20": "6: englanti, ranska, saksa, espanja, yksinkertaistettu ja perinteinen kiina",
+    "thumbnail_grid": "Miniatyyriruudukko merkein; kansioiden esikatselusta ei tietoa",
+    "rename_trash": "Voi poistaa kuvia ja luoda albumeja ja kansioita; nimeämisestä ei tietoa",
+    "move_copy": "Järjestää Kuvien albumeja; tiedostojen siirtoa tai kopiointia levyllä ei kuvata",
+    "keyboard_first": "Pikanäppäimet arvioihin, lippuihin ja selaukseen; muokkaus liukusäätimin ja hiirellä"
+   }
+  },
+  "sequential": {
+   "name": "Sequential",
+   "vendor": "chuchusoft ja The Sequential Project",
+   "summary": "Sequential on klassinen avoimen lähdekoodin kuva- ja sarjakuvakatselin Macille: avaa kansiot, PDF:t ja arkistot (ZIP/CBZ, RAR/CBR, 7z) ja selaa niitä yhdessä ikkunassa. chuchusoftin haara uudisti sen Universal-sovellukseksi macOS 11.4+:lle Apple siliconilla; ylläpitäjän mukaan jatkokehitys on epätodennäköistä. Alkuperäinen btrask/Sequential päivitettiin viimeksi 2013.",
+   "wins": [
+    "Lukee PDF:t sivu kerrallaan, siirry sivulle -toiminto ja käänteiset värit",
+    "Lukusuunta oikealta vasemmalle mangalle",
+    "Tauko/jatka tallentaa lukukohdan arkiston sisällä",
+    "Monet arkistoformaatit XADMasterin kautta, myös jaettu 7z",
+    "Toimii vanhemmissa macOS-versioissa (10.14 Intel / 11.4 Apple silicon)"
+   ],
+   "price": "Ilmainen",
+   "version": "2.6.0",
+   "updated": "2024-09-07",
+   "platforms": "macOS",
+   "notes": {
+    "languages_20": "12 kieltä: de en es fr it ja nl pl pt_BR ru sv zh_TW",
+    "thumbnail_grid": "Miniatyyrit sivupalkissa, ei ruudukkona",
+    "recursive_search": "Haku etsii sivujen nimiä avatusta kansiosta tai arkistosta",
+    "network_shares_fast": "Toimii liitetyillä palvelimilla; ei erityistä välimuistia",
+    "bookmarks": "Tauko/jatka tallentaa kohdan dokumentissa; ei kansiosuosikkeja",
+    "img_modern_formats": "HEIC/HEIF ja WebP; AVIF ja JPEG XL eivät ole tuettujen joukossa",
+    "img_svg_pdf": "PDF täysin (sivut, siirry sivulle); SVG ilmoitettu, piirto riippuu macOS:stä",
+    "img_animated": "Animoitu GIF (tauko välilyönnillä); APNG:stä ja animoidusta WebP:stä ei tietoa",
+    "slideshow_recursive": "Ajastin käy läpi koko puun alikansioineen ja arkistoineen, mutta vain kuvat (ei videoita)",
+    "file_info_exif": "Tarkastin näyttää EXIFin ja kuvan ominaisuudet; ei videota",
+    "streaming_urls": "Ei suoratoistoja, mutta Avaa URL lataa kuvia internetistä",
+    "split_archives": "Jaettu 7-Zip (.7z.001) 2.4.0:sta; jaetusta RAR:sta/ZIPistä ei tietoa",
+    "manga_two_page": "Lukusuunta oikealta vasemmalle; ei aukeamaa",
+    "rename_trash": "Paikallisten kuvien siirto roskakoriin; ei nimeämistä eikä uutta kansiota",
+    "move_copy": "Tallenna kuvat -komento kopioi tai purkaa kuvia; Kopioi; ei siirtoa",
+    "shortcut_cheatsheet": "Ohje > Pikanäppäimet avaa ohjesivun; ei tulostettavaa"
+   }
+  },
+  "simple-comic": {
+   "name": "Simple Comic",
+   "vendor": "Dancing Tortoise Software ja Simple Comic -yhteisö",
+   "summary": "Simple Comic on kevyt, natiivi macOS:n sarjakuvakatselin, joka keskittyy lukemiseen mahdollisimman vähin toimin. Se avaa CBZ-, CBR- ja CB7-tiedostot, PDF:t ja kuvakansiot kirjana: aukeamat, mangan järjestys oikealta vasemmalle ja Live Text sarjakuvasivuilla.",
+   "wins": [
+    "Aukeamat ja mangatila oikealta vasemmalle",
+    "Live Text: valitse, kopioi ja kuuntele sarjakuvasivujen tekstiä",
+    "Monivolyyminen RAR ja sisäkkäiset arkistot aukeavat yhtenä sarjakuvana",
+    "PDF:ien lukeminen",
+    "Pikakatselun miniatyyrit sarjakuva-arkistoille Finderissa"
+   ],
+   "price": "Ilmainen (Mac App Store ja GitHub)",
+   "version": "1.12.0 (GitHub, lähetetty App Storeen); App Store näyttää 1.11.0",
+   "updated": "2026-11-11",
+   "platforms": "macOS",
+   "notes": {
+    "languages_20": "9 kieltä (de, en, fr, it, ja, ko, pt, zh-Hans, zh-Hant)",
+    "folder_browsing": "Avaa kansion tai arkiston yhtenä kirjana, ei kansioselainta",
+    "thumbnail_grid": "Miniatyyrinäkymä vain avoimen kirjan sivuista",
+    "network_shares_fast": "Verkkolevyjen arkistot välimuistiin taustalla; sivut näkyvät jo latauksen aikana",
+    "img_raw": "Hyväksyy kaikki ImageIO-tyypit (myös kameran RAW); ei mainosteta",
+    "img_psd_exr": "Hyväksyy kaikki ImageIO-tyypit (myös PSD, OpenEXR); ei mainosteta",
+    "img_svg_pdf": "PDF kyllä (kirjana); SVG vain, jos NSImage tukee",
+    "archives_as_folders": "avaa arkiston sarjakuvakirjana, ei kansiona",
+    "keyboard_first": "Sivunkääntö, lähennys ja valikot näppäimistöllä; ei tiedostojen selausta",
+    "shortcut_cheatsheet": "Ohjekirja luettelee selausnäppäimet",
+    "no_network": "Mac App Store -versio ei tee verkkopyyntöjä; suora versio käyttää verkkoa Sparkle-päivityksiin",
+    "notarized_attested": "Suora versio notarisoitu; ei julkista build-todistusta"
+   }
+  },
+  "smplayer": {
+   "name": "SMPlayer",
+   "vendor": "Ricardo Villalba",
+   "summary": "SMPlayer on ilmainen avoimen lähdekoodin Qt-käyttöliittymä mpv:lle ja MPlayerille, joka muistaa asetukset tiedostokohtaisesti. Siinä on klassinen soitinkäyttöliittymä teemoineen, YouTube-toisto, opensubtitles.org-lataukset, suotimet ja muokattava pikanäppäineditori.",
+   "wins": [
+    "Jatkaa jokaista tiedostoa sen omin asetuksin (ääni, tekstitys, kohta)",
+    "YouTube-toisto ja tekstitysten lataus verkosta",
+    "Tallennetut soittolistat, suosikit, TV- ja radioluettelot",
+    "Teemat ja symboliteemat, yli 30 kieltä",
+    "Toimii myös Windowsissa ja Linuxissa"
+   ],
+   "price": "Ilmainen",
+   "version": "26.8.29 (macOS build 10461, 2026-10-06)",
+   "updated": "2026-10-06",
+   "platforms": "Windows, Linux, macOS",
+   "notes": {
+    "dark_light_setting": "teemat, symboliteemat ja Qt-tyylit, ei yksinkertaista vaalea/tumma-valintaa",
+    "folder_browsing": "Avaa kansio lisää kansion soittolistaan (valinnaisesti rekursiivisesti); ei tiedostoselainta",
+    "list_view": "soittolistataulukko sarakkein (nimi, kesto …), ei kansionäkymä",
+    "recursive_search": "vain soittolistan suodatinkenttä",
+    "multiple_windows": "oletuksena yksi instanssi; voi kytkeä pois",
+    "bookmarks": "tiedostojen ja URL-osoitteiden suosikit sekä kirjanmerkit videon sisällä; ei kansioiden",
+    "auto_enhance_view": "videon taajuuskorjain (Ctrl+E), ei automaattista parannusta",
+    "file_info_exif": "tiedoston ominaisuudet: koodekit, bittinopeus, raidat; ei EXIFiä",
+    "music_mode": "toistaa äänitiedostoja; kompakti tila (Ctrl+C), radioluettelo",
+    "shortcut_cheatsheet": "pikanäppäintaulukon voi tallentaa .keys-tiedostoksi; ei tulostettavaa"
+   }
+  },
+  "tencent-kantu": {
+   "name": "看图 Kantu",
+   "vendor": "Tencent",
+   "summary": "Tencentin ilmainen kuvaselain ja -järjestäjä Macille: selaa kansioita, kuten Latauksia, ilman tuontia, tuo kuvat puhelimista ja kameroista, ryhmittelee kasvojen, paikkojen ja päivien mukaan, etsii kaksoiskappaleet ja koostaa albumeja. Sitä ei ole päivitetty vuoden 2019 jälkeen.",
+   "wins": [
+    "Kasvojentunnistus, paikkakartta, kaksoiskappaleiden etsintä, koostetut albumit",
+    "Tuonti suoraan puhelimista, kameroista ja PTP-laitteista",
+    "Arviot ja suodattimet suurille tiedostoille"
+   ],
+   "price": "Ilmainen",
+   "version": "2.5.2",
+   "updated": "2019-11-08",
+   "platforms": "macOS",
+   "notes": {
+    "no_account_no_tracking": "Ei tiliä; valinnainen WeChat- tai QQ-kirjautuminen lataa albumit Tencentin pilveen",
+    "dark_light_setting": "Tumma tila 2.0:sta (Mojave); järjestelmästä riippumattomasta asetuksesta ei tietoa",
+    "thumbnail_grid": "Kuva-appin tyylinen ruudukko, sivupalkissa kuvamäärä kansioittain; ei kansioiden esikatselua",
+    "recursive_search": "Kuvien haku tiedostonimen, päivän, paikan ja näkymän mukaan",
+    "bookmarks": "Sivupalkkiin käsin lisätyt sijainnit; suosikit kuville",
+    "img_modern_formats": "WebP 1.9.4:stä; HEICiä, AVIFia, JPEG XL:ää ei mainita",
+    "img_psd_exr": "PSD-esikatselu; EXR:ää ei mainita",
+    "img_animated": "GIF-esikatselu; APNG:tä ja animoitua WebP:tä ei mainita",
+    "zoom_rotate": "Lähennys rullalla tai ohjauslevyllä, arvioiden mukaan sumea; kierrosta ei tietoa",
+    "slideshow_recursive": "Koostetut albumit toistavat kuvat ja videot peräkkäin; ei alikansioiden läpikäyntiä",
+    "file_info_exif": "EXIF-näkymä; ei videokoodekkitietoja",
+    "video_native": "Luettelee ja suodattaa videot, mutta käyttäjän mukaan jokainen aukeaa erillisessä soittimessa",
+    "rename_trash": "Nimeäminen, poisto Äskettäin poistetut -koriin; uudesta kansiosta ei tietoa",
+    "undo_file_actions": "Poistetut kuvat palautettavissa Äskettäin poistetuista",
+    "image_editing": "Ei muokkausta; pikavalikosta merkintätyökalu",
+    "cloud_sync": "WeChat/QQ-kirjautuminen, albumien lataus Tencentin pilveen, jako WeChatin miniohjelmalla",
+    "notarized_attested": "Allekirjoitettu Mac App Storen kautta; ei julkista lähdekoodia"
+   }
+  },
+  "total-commander": {
+   "name": "Total Commander",
+   "vendor": "Ghisler Software",
+   "summary": "Tunnetuin ortodoksinen (kahden paneelin) tiedostonhallinta Windowsille, kehitetty vuodesta 1993. Vahva tiedostotoiminnoissa, arkistoissa, FTP:ssä, joukkonimeämisessä ja kansioiden synkronoinnissa; mukana Lister-katselin ja laajennukset kuville ja medialle.",
+   "wins": [
+    "Kahden paneelin tiedostonhallinta: kansioiden synkronointi, vertailu, joukkonimeäminen, tarkistussummat",
+    "Sisäänrakennettu FTP/FTPS-asiakas",
+    "Valtava laajennusekosysteemi (Lister-, pakkaus- ja tiedostojärjestelmälaajennukset)",
+    "Listerin soitin vaihtaa tekstitys- ja ääniraitoja ja nopeutta",
+    "Toimii Windows 95:stä Windows 11:een, lisäksi ilmainen Android-sovellus"
+   ],
+   "price": "Shareware: 42 EUR + ALV lisenssiltä (opiskelijat 31,50 EUR), ilmaiset päivitykset; Android-versio ilmainen",
+   "version": "11.58.1",
+   "updated": "2026-10-29",
+   "platforms": "Windows, Android"
+  },
+  "vidhub": {
+   "name": "VidHub",
+   "vendor": "Oka Apps",
+   "summary": "Infusen tyylinen videokirjasto ja soitin Applen laitteille: skannaa paikalliset kansiot, NAS:n, pilvilevyt sekä Emby-, Jellyfin- ja Plex-palvelimet, rakentaa TMDB:stä julistekirjaston ja synkronoi edistymisen iCloudin kautta. Yksi Mac App Storen eniten arvioiduista mediasoittimista (2,8 tuhatta arviota, Yhdysvallat).",
+   "wins": [
+    "Elokuva- ja sarjakirjasto julisteineen ja metatietoineen",
+    "iCloud-synkronointi iPhonen, iPadin, Apple TV:n ja Macin välillä",
+    "Pilvilevyt, NAS, Emby/Jellyfin/Plex",
+    "Tekstitysten verkkohaku",
+    "Suoratoisto DLNA:lla, Chromecastilla, Rokulla, AirPlaylla"
+   ],
+   "price": "Ilmainen, VIP (vain Mac elinikäinen 14,99 $; kaikki laitteet elinikäinen 25,99 $:sta 39,99 $:iin; 9,99 $/vuosi; 1,49 $/kk)",
+   "version": "3.0.3 (Mac)",
+   "updated": "2026-11-04",
+   "platforms": "macOS, iOS, iPadOS, tvOS, visionOS, Android TV",
+   "notes": {
+    "free": "Ilmainen, VIP: Mac elinikäinen 14,99 $, kaikki laitteet 25,99 $:sta 39,99 $:iin, 9,99 $/v, 1,49 $/kk",
+    "languages_20": "18 App Storessa",
+    "folder_browsing": "Lisää paikalliset, SMB/WebDAV- ja pilvilähteet ja kokoaa niistä kirjaston",
+    "thumbnail_grid": "Julisteseinä TMDB:n tiedoista, ei tiedostojen miniatyyrejä",
+    "recursive_search": "Haku tiedostonimellä sekä elokuvan tai sarjan nimellä kirjastosta",
+    "network_shares_fast": "SMB/CIFS, WebDAV, NAS ja monet pilvilevyt; nopeudesta ei tietoa",
+    "bookmarks": "Suosikit (synkronoituvat iCloudilla)",
+    "auto_enhance_view": "Videon värinkorjaus, vain video",
+    "streaming_urls": "Pilvilevyt, Emby/Jellyfin/Plex, WebDAV; mielivaltaisista URL-osoitteista ei tietoa",
+    "rename_trash": "Nimeää pilvitiedostoja (lisäys, korvaus, regex); poistosta ei tietoa",
+    "batch_convert": "Pilvitiedostojen eränimeäminen; ei muunnosta",
+    "notarized_attested": "App Storen allekirjoittama; suljettu lähdekoodi"
+   }
+  },
+  "vlc": {
+   "name": "VLC",
+   "vendor": "VideoLAN",
+   "summary": "Tunnetuin ilmainen avoimen lähdekoodin mediasoitin: toistaa lähes minkä tahansa tiedoston, levyn tai suoratoiston kaikilla alustoilla ilman koodekkipaketteja. Se on ennen kaikkea soitin; kuvat näkyvät ajastettuina pysäytyskuvina, eikä siinä ole tiedostoselainta eikä miniatyyriruudukkoa.",
+   "wins": [
+    "toistaa lähes kaikki formaatit, levyt (DVD/Blu-ray), verkkosuoratoistot ja kaappauslaitteet",
+    "toimii kaikissa työpöytä- ja mobiilikäyttöjärjestelmissä",
+    "tekstitykset tiedostoista ja verkosta (VLSub), ääniraidat, nopeus, suotimet, muunnos ja suoratoisto ulos",
+    "tallennetut soittolistat, musiikki, visualisoinnit",
+    "kaikki pikanäppäimet muokattavissa"
+   ],
+   "price": "Ilmainen",
+   "version": "3.0.24",
+   "updated": "2026-09-22",
+   "platforms": "macOS, Windows, Linux, iOS, Android, muut",
+   "notes": {
+    "dark_light_setting": "macOS: asetus tummalle käyttöliittymälle; Windows/Linux Qt: tumma paletti",
+    "folder_browsing": "Avaa kansion soittolistana; ei oikeaa tiedostoselainta",
+    "list_view": "Soittolista lajiteltavin sarakkein (nimi, esittäjä …), ei tiedostoluettelo",
+    "recursive_search": "Haku soittolistasta suodattaa vain soittolistan kohteita",
+    "network_shares_fast": "toistaa suoraan SMB:stä, NFS:stä, SFTP:stä, FTP:stä, UPnP:stä; ei miniatyyriselausta",
+    "multiple_windows": "Windows/Linux: useita instansseja, jos ”yksi instanssi” on pois; macOS: yksi soitinikkuna",
+    "img_modern_formats": "WebP aukeaa (pysäytyskuvana 10 s); HEIC, AVIF, JPEG XL eivät",
+    "img_svg_pdf": "SVG librsvg-dekooderilla; ei PDF:ää",
+    "img_animated": "Animoidut GIFit FFmpegin kautta; APNG:stä ja animoidusta WebP:stä ei varmuutta",
+    "zoom_rotate": "videon lähennys, rajaus ja kierto suotimina; ei kuvan panorointia",
+    "slideshow": "soittolistan kuvat näkyvät 10 s kukin",
+    "slideshow_recursive": "avattu kansio laajenee alikansioineen, kuvat (10 s) ja videot samassa soittolistassa",
+    "auto_enhance_view": "käsin säädettävät säädöt ja tehosteet (kirkkaus, kontrasti, sävy …), ei automaattista parannusta",
+    "file_info_exif": "Mediatiedot: koodekit, bittinopeus, tilastot; ei EXIFiä",
+    "video_skim_arrows": "hypyt muokkausnäppäin ja nuoli (macOS ⌘⌃←/→ 3 s, ⌘⌥ 10 s, ⌘⇧ 1 min; Windows ⇧/Alt/Ctrl+←/→)",
+    "control_bar_movable": "Koko näytöllä ohjaimen voi vetää ja se pysyy paikallaan; ei ikkunassa",
+    "archives_as_folders": "luettelee arkiston tiedostot soittolistaan; ei selattava kansio",
+    "split_archives": "lukee useita volyymeja libarchiven kautta; dokumentoimaton",
+    "batch_convert": "Muunna/Tallenna koodaa useita mediatiedostoja; ei eränimeämistä",
+    "library_catalog": "yksinkertainen mediakirjasto soittolistan sivupalkissa, ei tunnisteita tai arvioita",
+    "keyboard_first": "toisto täysin pikanäppäimin, selaus hiirivetoista",
+    "boss_key": "pomonäppäintoiminto (kätke ja keskeytä) on olemassa, mutta ilman oletusnäppäintä",
+    "no_network": "Tarkistaa päivitykset; metatietojen haku verkosta on oletuksena pois"
+   }
+  },
+  "windows-media-player": {
+   "name": "Windows Media Player",
+   "vendor": "Microsoft",
+   "summary": "Windowsin sisäänrakennettu soitin: ensisijaisesti musiikkikirjasto, joka toistaa myös paikallisia videoita tekstityksin, ääniraidoin, toistonopeudella, kuvan säädöillä, minisoittimella ja suoratoistolla laitteisiin. HEVC ja AV1 vaativat maksullisia tai Storen lisäosia, ja arvostelijoiden mielestä se on hitaampi ja raskaampi kuin klassinen Windows Media Player Legacy, jonka Microsoft pitää valinnaisena ominaisuutena.",
+   "wins": [
+    "Valmiiksi asennettuna Windowsissa, ei mitään säädettävää",
+    "Musiikkikirjasto kansikuvin, soittolistoin ja CD-levyjen kopioinnilla",
+    "Minisoitin, suoratoisto laitteisiin",
+    "Seuraa Windowsin tekstitys- ja teema-asetuksia"
+   ],
+   "price": "Windowsin mukana; HEVC Video Extensions 0,99 $, muut koodekit Storen lisäosina",
+   "version": "Media Player 11.2610.5.0 (Insider, marraskuu 2026); Windows Media Player Legacy 12",
+   "updated": "2026-11 (Insider-julkaisutiedot)",
+   "platforms": "Windows"
+  },
+  "xee": {
+   "name": "Xee³",
+   "vendor": "MacPaw",
+   "summary": "Klassinen kevyt Macin kuvankatselin, joka selaa kansioita ja arkistoja (ZIP, RAR, 7z, CBZ/CBR) purkamatta ja tukee monia vanhoja ja eksoottisia formaatteja. Yhä luettelossa sivustolla theunarchiver.com, mutta ilman lataus- tai ostolinkkejä; viimeisin versio 3.5.4 (joulukuu 2021) on vain Intelille.",
+   "wins": [
+    "Eksoottiset vanhat formaatit (PCX, IFF, MAG, PVR, XBM)",
+    "JPEG-tiedoston luojan tunnistus kvantisointitaulukoista",
+    "PSD-tasojen näkymä",
+    "Häviötön JPEG-rajaus"
+   ],
+   "price": "Ei enää myynnissä (oli maksullinen lisenssi kokeilulla; App Store -sivu poistettu)",
+   "version": "3.5.4",
+   "updated": "2021-12-21",
+   "platforms": "macOS",
+   "notes": {
+    "open_source": "Xee 2.x:n lähdekoodi on julkinen; Xee 3 on suljettu",
+    "bookmarks": "luettelo viimeisimmistä siirto- ja kopiointikohteista",
+    "img_modern_formats": "WebP kyllä; ei HEICiä, AVIFia eikä JPEG XL:ää (päivitetty viimeksi 12/2021)",
+    "img_psd_exr": "PSD tasoineen; OpenEXR ei luettelossa",
+    "img_svg_pdf": "vain PDF:n sisäiset bittikarttakuvat; ei SVG:tä",
+    "slideshow_recursive": "Alikansioiden skannaus valinnainen, diaesitys käy ne läpi; vain kuvat, ei videoita",
+    "archive_passwords": "Salasanasuojatut arkistot lisättiin Xee 2.1:ssä; Xee 3:lle ei mainita",
+    "split_archives": "Lukee mitä The Unarchiver lukee; moniosaisia ei mainita",
+    "image_editing": "rajaus (häviötön JPEG), vienti",
+    "cloud_sync": "Jaa-valikko",
+    "keyboard_first": "selaus näppäimistöllä; paljon eleitä",
+    "app_sandbox": "App Store -versio hiekkalaatikossa; suora versio ei (tekijä suositteli suoraa)"
+   }
+  },
+  "xnview-mp": {
+   "name": "XnView MP",
+   "vendor": "XnSoft",
+   "summary": "XnView MP on pitkäikäinen monialustainen kuvaselain ja -järjestäjä, joka lukee yli 500 formaattia. Siinä on samassa ohjelmassa tiedostoselain, katselin, luettelo luokkineen ja arvioineen, erämuunnin ja yksinkertainen editori. Macilla se on Qt-sovellus, ilmainen yksityiskäyttöön.",
+   "wins": [
+    "Yli 500 kuvaformaattia, vienti noin 70:een",
+    "Erämuunnos ja eränimeäminen regexillä",
+    "Luettelo luokin, arvioin ja värimerkinnöin",
+    "Metatietojen muokkaus (EXIF, IPTC, XMP)",
+    "Kuvankäsittely, jopa 4 kuvan vertailu, kaksoiskappaleiden etsintä",
+    "Toimii myös Windowsissa ja Linuxissa"
+   ],
+   "price": "Ilmainen yksityis-, opetus- ja voittoa tavoittelemattomaan käyttöön; kaupallinen lisenssi 29 EUR (määräalennukset 3,90 EUR:oon asti)",
+   "version": "1.12.3",
+   "updated": "2026-11-09",
+   "platforms": "macOS, Windows, Linux",
+   "notes": {
+    "free": "Ilmainen yksityis-, opetus- ja voittoa tavoittelemattomaan käyttöön; yrityksille 29 EUR",
+    "regex_search": "Regex vain eränimeämisessä; tiedostohaku jokerimerkein tai sisältää-ehdolla",
+    "network_shares_fast": "Toimii verkkolevyillä, mutta muutoslokissa mainitaan hitautta",
+    "multiple_windows": "Välilehdet; useita instansseja mahdollista",
+    "slideshow_recursive": "Alikansioiden tiedostot diaesitykseen, joka odottaa videoiden loppua",
+    "auto_enhance_view": "Automaattiset tasot ja säädöt ovat muokkauksia (tiedosto muuttuu tallennettaessa)",
+    "saved_playlists": "Diaesitykset tallennettavissa .sld-tiedostoina (kuvat, ääni)",
+    "music_mode": "Multimediasoitin mainittu; ei musiikkikirjastoa",
+    "dual_pane": "Jopa 4 kuvan vertailu; F6 kiertää paneeleja; ei kahden kansion tiedostonhallintaa",
+    "cloud_sync": "Verkkolataustoiminto; ei pilvisynkronointia"
+   }
+  },
+  "yacreader": {
+   "name": "YACReader",
+   "vendor": "Luis Ángel San Martín",
+   "summary": "YACReader on sarjakuvalukija ja kirjastonhallinta (YACReaderLibrary) suurille kokoelmille: Comic Vine -metatiedot, lukulistat ja kotipalvelin mobiilisovelluksille. Lukijassa on aukeama-, manga- ja jatkuvan vierityksen tila sekä kuvan säädöt.",
+   "wins": [
+    "Täysi sarjakuvakirjasto: Comic Vine -metatiedot, lukulistat, älylistat, arviot",
+    "Palvelin sekä iOS- ja Android-sovellukset synkronoidulla lukukohdalla",
+    "Mangatila, aukeama, jatkuva vieritys webtooneille",
+    "Kirkkaus, kontrasti ja gamma vanhoille skannauksille",
+    "12 teemaa ja teemaeditori; uudelleen asetettavat pikanäppäimet",
+    "Windows- ja Linux-versiot"
+   ],
+   "price": "Työpöytä ja palvelin ilmaisia (lahjoitukset); iOS- ja Android-sovellukset erikseen",
+   "version": "10.5.1",
+   "updated": "2026-11-13",
+   "platforms": "macOS, Windows, Linux, iOS, Android, Docker/palvelin",
+   "notes": {
+    "languages_20": "14 kieltä (de, en, es, fr, it, ko, nl, pt, pt-PT, ru, tr, zh-CN, zh-HK, zh-TW)",
+    "folder_browsing": "Lukija avaa tiedostoja ja kansioita; selaus kirjastotietokannan kautta",
+    "network_shares_fast": "Kirjasto aukeaa nopeammin verkkolevyiltä; kirjasto on indeksoitava",
+    "bookmarks": "Sivukirjanmerkit, suosikit, lukulistat, merkinnät",
+    "img_modern_formats": "JPEG, PNG, GIF, TIFF, BMP, WebP; muut vain itse asennettavilla Qt-laajennuksilla",
+    "img_svg_pdf": "PDF kyllä (pdfium); SVG ei",
+    "archives_as_folders": "avaa arkiston sarjakuvakirjana, ei kansiona",
+    "rename_trash": "Kansioiden nimeäminen kirjastossa, tiedostojen nimeäminen metatiedoista; ei roskakoria",
+    "move_copy": "Tiedostojen järjestely kansioihin metatietojen mukaan (kokeellinen)",
+    "undo_file_actions": "Järjestelyt kirjataan ja ne voi kumota; ei yleistä kumoamista",
+    "batch_convert": "Eränimeäminen vain metatiedoista; ei formaattimuunnosta",
+    "cloud_sync": "Oma palvelin ja mobiilisovellukset synkronoivat lukukohdan verkossasi; ei pilvipalvelua",
+    "shortcut_cheatsheet": "Pikanäppäinikkuna luettelee kaikki näppäimet; ei tulostettavaa",
+    "notarized_attested": "macOS-versiot notarisoitu; ei build-todistusta"
+   }
+  }
+ }
+}

@@ -1,0 +1,594 @@
+{
+ "name": "Phiewer",
+ "short": "Phiewer",
+ "vendor": "Thomas Zinnbauer",
+ "website": "https://phiewer.com/",
+ "platforms": [
+  "macOS"
+ ],
+ "mac_available": "yes",
+ "page": "matrix",
+ "section": "image",
+ "price": "Phiewer (lite) free; Phiewer PRO $7.99 one-time (Mac App Store)",
+ "license": "proprietary",
+ "current_version": "8",
+ "last_update": "2026-11-07",
+ "engine": "native (AVFoundation for video, LibRaw for RAW)",
+ "category": "both",
+ "summary": "Fast keyboard-friendly media viewer for folders of photos, RAW, videos and audio. PRO adds Showcases (virtual albums), duplicate finder, compare view, non-destructive editing, Finder tags and custom shortcuts for a low one-time price.",
+ "where_it_wins": [
+  "Duplicate finder and compare view of up to 9 images",
+  "Showcases: saved virtual albums across folders",
+  "Finder tags and comments, search by tags/EXIF/date",
+  "Audio files and printing",
+  "Image editing (crop, filters, resize) in PRO",
+  "Theater mode"
+ ],
+ "where_schnellbild_wins": [
+  "Free and open source, no PRO tier",
+  "ZIP/RAR/7z and comics as folders",
+  "MKV, WebM and other formats via VLC",
+  "Dual pane with Norton Commander keys",
+  "Never goes online, no analytics",
+  "View-only auto enhance for photos and videos",
+  "Subtitles and audio track choice"
+ ],
+ "search_terms": [
+  "phiewer mac",
+  "phiewer alternative",
+  "phiewer pro",
+  "phiewer free alternative",
+  "phiewer alternative kostenlos"
+ ],
+ "matrix": {
+  "free": {
+   "value": "partial",
+   "note": "lite free (browse, all formats, simple slideshow, EXIF); everything else PRO, $7.99 one-time",
+   "evidence": [
+    "https://phiewer.com/",
+    "https://apps.apple.com/us/app/id1270923434"
+   ],
+   "how": "docs"
+  },
+  "open_source": {
+   "value": "no",
+   "note": "proprietary",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1270923434"
+   ],
+   "how": "store"
+  },
+  "native_apple_silicon": {
+   "value": "yes",
+   "note": "universal since 5.0.1, fully native rewrite in 6",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1270923434"
+   ],
+   "how": "changelog"
+  },
+  "no_account_no_tracking": {
+   "value": "partial",
+   "note": "no account, no ads; App Store privacy label: analytics (device ID, product interaction), not linked to you",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1270923434"
+   ],
+   "how": "store"
+  },
+  "dark_light_setting": {
+   "value": "partial",
+   "note": "Store lists 'Dark Interface' (follows dark mode); an in-app light/dark switch is neither listed in the store, the site nor among the Settings → Shortcuts actions. Searched: phiewer.com, support FAQ, App Store page and version history.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "languages_20": {
+   "value": "partial",
+   "note": "8: EN, DE, FR, ES, PT, IT, NL, PL",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1270923434"
+   ],
+   "how": "store"
+  },
+  "folder_browsing": {
+   "value": "yes",
+   "note": "no import, no library",
+   "evidence": [
+    "https://phiewer.com/",
+    "https://phiewer.com/blog/best-photo-viewer-macos"
+   ],
+   "how": "docs"
+  },
+  "thumbnail_grid": {
+   "value": "yes",
+   "note": "Exposé, Pinboard, Grid; folders can be shown between files (7.1)",
+   "evidence": [
+    "https://phiewer.com/",
+    "https://apps.apple.com/us/app/id1270923434"
+   ],
+   "how": "docs"
+  },
+  "list_view": {
+   "value": "yes",
+   "note": "thumbnail or list view",
+   "evidence": [
+    "https://phiewer.com/"
+   ],
+   "how": "docs"
+  },
+  "recursive_search": {
+   "value": "partial",
+   "note": "search by name, tags, comments, date, EXIF (PRO); option to include subfolders in the current view (7.1)",
+   "evidence": [
+    "https://phiewer.com/support",
+    "https://apps.apple.com/us/app/id1270923434"
+   ],
+   "how": "docs"
+  },
+  "regex_search": {
+   "value": "no",
+   "note": "only OR (space/comma) and AND (+)",
+   "evidence": [
+    "https://phiewer.com/support"
+   ],
+   "how": "docs"
+  },
+  "network_shares_fast": {
+   "value": "yes",
+   "note": "NAS and external drives listed; prefetching; fix for reloads on network drives (6.3)",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1270923434"
+   ],
+   "how": "store"
+  },
+  "multiple_windows": {
+   "value": "no",
+   "note": "The full action list (Settings → Shortcuts) has 'Show main window' but no New Window; site and store describe one main window.",
+   "evidence": [
+    "https://github.com/JohannesHoppe/schnellbild/blob/main/docs/phiewer-shortcuts.md",
+    "https://phiewer.com/"
+   ],
+   "how": "docs"
+  },
+  "bookmarks": {
+   "value": "yes",
+   "note": "favorites in the Locations sidebar",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1270923434"
+   ],
+   "how": "changelog"
+  },
+  "img_modern_formats": {
+   "value": "partial",
+   "note": "HEIC, AVIF, WebP yes; JPEG XL not listed",
+   "evidence": [
+    "https://phiewer.com/",
+    "https://phiewer.com/support"
+   ],
+   "how": "docs"
+  },
+  "img_raw": {
+   "value": "yes",
+   "note": "about 40 RAW extensions via LibRaw",
+   "evidence": [
+    "https://phiewer.com/support"
+   ],
+   "how": "docs"
+  },
+  "img_psd_exr": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://phiewer.com/",
+    "https://phiewer.com/support"
+   ],
+   "how": "docs"
+  },
+  "img_svg_pdf": {
+   "value": "yes",
+   "note": "multi-page PDF scrolling (6.3)",
+   "evidence": [
+    "https://phiewer.com/",
+    "https://apps.apple.com/us/app/id1270923434"
+   ],
+   "how": "docs"
+  },
+  "img_animated": {
+   "value": "partial",
+   "note": "GIF and animated WebP; APNG not listed",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1270923434"
+   ],
+   "how": "changelog"
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "note": "arrow keys",
+   "evidence": [
+    "https://phiewer.com/support"
+   ],
+   "how": "docs"
+  },
+  "zoom_rotate": {
+   "value": "yes",
+   "note": "zoom, pinch, rotate both ways (8)",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1270923434"
+   ],
+   "how": "changelog"
+  },
+  "slideshow": {
+   "value": "yes",
+   "note": "lite: simple slideshow; PRO: animations, intervals, loop",
+   "evidence": [
+    "https://phiewer.com/"
+   ],
+   "how": "docs"
+  },
+  "slideshow_recursive": {
+   "value": "partial",
+   "note": "PRO only; subfolders and global random shuffle; videos play in it (auto-mute option)",
+   "evidence": [
+    "https://phiewer.com/",
+    "https://phiewer.com/blog/phiewer-8-update-showcases-drag-drop",
+    "https://apps.apple.com/us/app/id1270923434"
+   ],
+   "how": "docs"
+  },
+  "auto_enhance_view": {
+   "value": "partial",
+   "note": "PRO: filters and adjustments 'without changing the original' with undo history; it is editing, not an auto-enhance view",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1270923434",
+    "https://phiewer.com/"
+   ],
+   "how": "store"
+  },
+  "file_info_exif": {
+   "value": "partial",
+   "note": "EXIF and file info; codec/bitrate not listed",
+   "evidence": [
+    "https://phiewer.com/"
+   ],
+   "how": "docs"
+  },
+  "wrong_extension_note": {
+   "value": "partial",
+   "note": "detects images with a wrong extension and opens them (6.5); no note to the user documented",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1270923434"
+   ],
+   "how": "changelog"
+  },
+  "video_native": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://phiewer.com/"
+   ],
+   "how": "docs"
+  },
+  "video_mkv_avi_webm": {
+   "value": "partial",
+   "note": "AVI, MPG, 3GP, MTS, M2TS, TS listed; MKV, WebM, WMV, FLV not in the current format list",
+   "evidence": [
+    "https://phiewer.com/",
+    "https://phiewer.com/support"
+   ],
+   "how": "docs"
+  },
+  "photos_videos_one_grid": {
+   "value": "yes",
+   "note": "video thumbnails autoplay in grid (6.3)",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1270923434"
+   ],
+   "how": "changelog"
+  },
+  "video_skim_arrows": {
+   "value": "partial",
+   "note": "configurable skip interval (PRO video controls); arrow-key skimming not documented",
+   "evidence": [
+    "https://phiewer.com/"
+   ],
+   "how": "docs"
+  },
+  "subtitles_embedded": {
+   "value": "no",
+   "note": "Video controls listed: speed, skip interval, loop, volume; no subtitle action in the full shortcut list or in the store's version history.",
+   "evidence": [
+    "https://phiewer.com/",
+    "https://github.com/JohannesHoppe/schnellbild/blob/main/docs/phiewer-shortcuts.md",
+    "https://apps.apple.com/us/app/id1270923434"
+   ],
+   "how": "docs"
+  },
+  "subtitles_external_files": {
+   "value": "no",
+   "note": "No subtitle support in site, store or the full shortcut list.",
+   "evidence": [
+    "https://phiewer.com/",
+    "https://apps.apple.com/us/app/id1270923434"
+   ],
+   "how": "docs"
+  },
+  "audio_track_choice": {
+   "value": "no",
+   "note": "No audio track action in the full shortcut list; video controls listed on the site are speed, skip, loop.",
+   "evidence": [
+    "https://phiewer.com/",
+    "https://github.com/JohannesHoppe/schnellbild/blob/main/docs/phiewer-shortcuts.md"
+   ],
+   "how": "docs"
+  },
+  "playback_speed": {
+   "value": "partial",
+   "note": "PRO video controls",
+   "evidence": [
+    "https://phiewer.com/"
+   ],
+   "how": "docs"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "note": "Not described on phiewer.com, the support page or the App Store page.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "playlist": {
+   "value": "partial",
+   "note": "PRO Showcases: virtual collections 'like playlists' across folders",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1270923434",
+    "https://phiewer.com/blog/phiewer-8-update-showcases-drag-drop"
+   ],
+   "how": "docs"
+  },
+  "saved_playlists": {
+   "value": "partial",
+   "note": "PRO Showcases are saved",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1270923434"
+   ],
+   "how": "changelog"
+  },
+  "pip": {
+   "value": "no",
+   "note": "No Picture in Picture in site, store version history or the full shortcut list (only 'Always On Top').",
+   "evidence": [
+    "https://phiewer.com/",
+    "https://github.com/JohannesHoppe/schnellbild/blob/main/docs/phiewer-shortcuts.md",
+    "https://apps.apple.com/us/app/id1270923434"
+   ],
+   "how": "docs"
+  },
+  "music_mode": {
+   "value": "yes",
+   "note": "MP3, M4A, FLAC, WAV, AIFF, AAC, CAF, AC3",
+   "evidence": [
+    "https://phiewer.com/",
+    "https://phiewer.com/support"
+   ],
+   "how": "docs"
+  },
+  "streaming_urls": {
+   "value": "no",
+   "note": "Opens files and folders only (File → Open …); no URL or stream feature in site or store.",
+   "evidence": [
+    "https://phiewer.com/",
+    "https://github.com/JohannesHoppe/schnellbild/blob/main/docs/phiewer-shortcuts.md"
+   ],
+   "how": "docs"
+  },
+  "online_subtitles": {
+   "value": "no",
+   "note": "No subtitle support at all.",
+   "evidence": [
+    "https://phiewer.com/",
+    "https://apps.apple.com/us/app/id1270923434"
+   ],
+   "how": "docs"
+  },
+  "video_filters_enhance": {
+   "value": "no",
+   "note": "Filters and adjustments are described for images only; videos got zoom and a volume control (6.5).",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1270923434"
+   ],
+   "how": "store"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "note": "a user review asks for Quick Look integration",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1270923434"
+   ],
+   "how": "review"
+  },
+  "archives_as_folders": {
+   "value": "no",
+   "note": "no archive format in the format list",
+   "evidence": [
+    "https://phiewer.com/",
+    "https://phiewer.com/support"
+   ],
+   "how": "docs"
+  },
+  "comics_cbz_cbr": {
+   "value": "no",
+   "note": "not in the format list",
+   "evidence": [
+    "https://phiewer.com/support"
+   ],
+   "how": "docs"
+  },
+  "archive_passwords": {
+   "value": "no",
+   "note": "no archive support",
+   "evidence": [
+    "https://phiewer.com/support"
+   ],
+   "how": "docs"
+  },
+  "split_archives": {
+   "value": "no",
+   "note": "no archive support",
+   "evidence": [
+    "https://phiewer.com/support"
+   ],
+   "how": "docs"
+  },
+  "videos_in_archives": {
+   "value": "no",
+   "note": "no archive support",
+   "evidence": [
+    "https://phiewer.com/support"
+   ],
+   "how": "docs"
+  },
+  "manga_two_page": {
+   "value": "no",
+   "note": "Gallery modes are Exposé, Pinboard, Grid and a compare view (hold C); no reading mode.",
+   "evidence": [
+    "https://phiewer.com/",
+    "https://github.com/JohannesHoppe/schnellbild/blob/main/docs/phiewer-shortcuts.md"
+   ],
+   "how": "docs"
+  },
+  "rename_trash": {
+   "value": "yes",
+   "note": "rename, duplicate, delete, new folder (6.2)",
+   "evidence": [
+    "https://phiewer.com/",
+    "https://apps.apple.com/us/app/id1270923434"
+   ],
+   "how": "docs"
+  },
+  "move_copy": {
+   "value": "yes",
+   "note": "drag and drop like Finder, ⌥ copy, spring-loading (8)",
+   "evidence": [
+    "https://phiewer.com/blog/phiewer-8-update-showcases-drag-drop"
+   ],
+   "how": "docs"
+  },
+  "dual_pane": {
+   "value": "no",
+   "note": "no pane feature on site or changelog; Schnellbild README comparison (from use) says no",
+   "evidence": [
+    "https://phiewer.com/",
+    "https://apps.apple.com/us/app/id1270923434"
+   ],
+   "how": "tested-description"
+  },
+  "undo_file_actions": {
+   "value": "partial",
+   "note": "⌘Z for drag-and-drop moves (8); undo for rename/trash not stated",
+   "evidence": [
+    "https://phiewer.com/blog/phiewer-8-update-showcases-drag-drop",
+    "https://apps.apple.com/us/app/id1270923434"
+   ],
+   "how": "docs"
+  },
+  "image_editing": {
+   "value": "partial",
+   "note": "PRO: QuickEdit crop, rotate, flip, resize, compression, filters",
+   "evidence": [
+    "https://phiewer.com/",
+    "https://apps.apple.com/us/app/id1270923434"
+   ],
+   "how": "docs"
+  },
+  "batch_convert": {
+   "value": "partial",
+   "note": "PRO: multi-export and batch compression; no batch rename documented",
+   "evidence": [
+    "https://phiewer.com/"
+   ],
+   "how": "docs"
+  },
+  "library_catalog": {
+   "value": "partial",
+   "note": "Finder tags and comments, favorites, Showcases; no catalog database",
+   "evidence": [
+    "https://phiewer.com/",
+    "https://phiewer.com/blog/best-photo-viewer-macos"
+   ],
+   "how": "docs"
+  },
+  "cloud_sync": {
+   "value": "partial",
+   "note": "PRO: share via macOS share sheet; no sync",
+   "evidence": [
+    "https://phiewer.com/"
+   ],
+   "how": "docs"
+  },
+  "keyboard_first": {
+   "value": "yes",
+   "note": "all actions can get shortcuts; single keys without modifiers (6.5)",
+   "evidence": [
+    "https://phiewer.com/",
+    "https://apps.apple.com/us/app/id1270923434"
+   ],
+   "how": "docs"
+  },
+  "custom_shortcuts": {
+   "value": "partial",
+   "note": "PRO only",
+   "evidence": [
+    "https://phiewer.com/support",
+    "https://phiewer.com/"
+   ],
+   "how": "docs"
+  },
+  "shortcut_cheatsheet": {
+   "value": "partial",
+   "note": "all shortcuts listed in Settings > Keyboard Shortcuts; no printable sheet",
+   "evidence": [
+    "https://phiewer.com/support"
+   ],
+   "how": "docs"
+  },
+  "boss_key": {
+   "value": "no",
+   "note": "No hide-all action in the full shortcut list; Theater Mode only dims the desktop.",
+   "evidence": [
+    "https://github.com/JohannesHoppe/schnellbild/blob/main/docs/phiewer-shortcuts.md",
+    "https://apps.apple.com/us/app/id1270923434"
+   ],
+   "how": "docs"
+  },
+  "app_sandbox": {
+   "value": "yes",
+   "note": "Mac App Store only",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1270923434"
+   ],
+   "how": "store"
+  },
+  "no_network": {
+   "value": "no",
+   "note": "collects analytics per privacy label",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1270923434"
+   ],
+   "how": "store"
+  },
+  "notarized_attested": {
+   "value": "no",
+   "note": "Apple-signed via the App Store; closed source",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1270923434"
+   ],
+   "how": "store"
+  },
+  "mac_app_store": {
+   "value": "yes",
+   "note": "Phiewer (lite) id1226444549 and Phiewer PRO id1270923434",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1270923434",
+    "https://apps.apple.com/app/id1226444549"
+   ],
+   "how": "store"
+  }
+ }
+}

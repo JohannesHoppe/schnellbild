@@ -1,6 +1,7 @@
 {
   "name": "繁體中文",
   "privacySlug": "privacy",
+  "alternativesSlug": "alternatives",
   "title": "Schnellbild：一款用起來不惱人的 Mac 圖片與影片檢視器",
   "seoTitle": "Schnellbild · 免費的 Mac 看圖軟體與影片播放器（支援 MKV）",
   "seoDescription": "快速、免費的 Mac 看圖軟體與影片播放器：縮圖、鍵盤翻頁、幻燈片秀，播放 MKV、AVI、WebM，ZIP、RAR 壓縮檔和漫畫像檔案夾一樣開啟。Phiewer 的替代選擇。",
@@ -140,7 +141,10 @@
   ],
   "safeMore": "它具體做了什麼，界限又在哪裡：<a href=\"https://github.com/JohannesHoppe/schnellbild#safe-with-files-from-others\">別人傳來的檔案，也能放心看</a>。",
   "modelsTitle": "從 Phiewer、IINA 或 Norton Commander 轉過來？",
-  "modelsText": "Phiewer 是一款附付費 PRO 版的快速看圖軟體，IINA 是一款用來看影片的完整播放器；它們和雙窗格的 Norton Commander 一樣，都是 Schnellbild 的榜樣。Schnellbild 把檔案夾裡的照片和影片放進一款免費 App，按鍵也能設成和 Phiewer 一樣。Schnellbild 和它們相比如何：<a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-phiewer-alternative\">免費的 Phiewer 替代方案</a>、<a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-iina-alternative-for-looking-through-videos\">用來瀏覽影片的免費 IINA 替代方案</a>。",
+  "modelsText": "Phiewer 是一款附付費 PRO 版的快速看圖軟體，IINA 是一款用來看影片的完整播放器；它們和雙窗格的 Norton Commander 一樣，都是 Schnellbild 的榜樣。Schnellbild 把檔案夾裡的照片和影片放進一款免費 App，按鍵也能設成和 Phiewer 一樣。Schnellbild 和它們相比如何：<a href=\"{alt:phiewer}\">免費的 Phiewer 替代方案</a>、<a href=\"{alt:iina}\">用來瀏覽影片的免費 IINA 替代方案</a>、<a href=\"{alt:norton-commander}\">從 Norton Commander 轉到 Mac</a>。",
+  "altTitle": "在找替代軟體嗎？",
+  "altText": "Schnellbild 與大家在 Mac 上常找的程式相比如何，逐項比較，每一項說法都附資料來源：",
+  "altAll": "所有替代軟體",
   "ossTitle": "開放原始碼",
   "ossText": "Schnellbild 是採用 MIT 授權條款的自由軟體，原始碼在 <a href=\"https://github.com/JohannesHoppe/schnellbild\">GitHub 上</a>。發現錯誤或少了什麼功能？<a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">提交 issue</a>。",
   "languagesText": "以你 Mac 的語言顯示：",
@@ -149,6 +153,7 @@
   "footerPrivacy": "隱私權",
   "footerImprint": "法律聲明 (Impressum)",
   "footerEula": "授權合約",
+  "footerAlternatives": "替代軟體",
   "privacy": {
     "title": "隱私權政策",
     "description": "Schnellbild 不蒐集任何個人資料：沒有帳號、沒有分析、沒有追蹤、沒有網路存取。",

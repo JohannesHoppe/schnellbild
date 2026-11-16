@@ -1,0 +1,588 @@
+{
+ "name": "Marta",
+ "short": "Marta",
+ "vendor": "Yan Zhulanow",
+ "website": "https://marta.sh/",
+ "platforms": [
+  "macOS"
+ ],
+ "mac_available": "yes",
+ "page": "matrix",
+ "section": "files",
+ "price": "Free during beta; paid license planned after beta (Patreon supporters with $15+ get a perpetual license)",
+ "license": "proprietary (closed source, public issue tracker)",
+ "current_version": "0.8.2",
+ "last_update": "2024-08-03",
+ "engine": "macOS Quick Look (Space preview)",
+ "category": "file-manager",
+ "summary": "Native, keyboard-centric dual-pane file manager written in Swift, configured via a text DSL and extensible with Lua plugins. Opens many archive formats like folders; previews files via Quick Look.",
+ "where_it_wins": [
+  "Lua plugin API and text-based configuration",
+  "Commander-style F-key workflow and Action Panel",
+  "Archive support incl. nested archives, ZIP read-write",
+  "Embedded terminal with directory sync, disk usage analysis",
+  "Look Up with rich Spotlight predicates"
+ ],
+ "where_schnellbild_wins": [
+  "Thumbnail grid with folder previews (Marta has list views only)",
+  "Real image and video viewer with slideshow",
+  "MKV/AVI/WebM via built-in VLC",
+  "Undo for renames, moves, trash",
+  "20 interface languages",
+  "Actively released, open source, sandboxed"
+ ],
+ "search_terms": [
+  "marta file manager",
+  "marta mac",
+  "marta alternative",
+  "marta file manager alternative",
+  "marta.sh"
+ ],
+ "matrix": {
+  "free": {
+   "value": "partial",
+   "note": "Free during beta; a paid license is announced for after beta ($15+ Patreon gives a perpetual license)",
+   "evidence": [
+    "https://marta.sh/download/",
+    "https://marta.sh/blog/back-on-track/"
+   ],
+   "how": "docs"
+  },
+  "open_source": {
+   "value": "no",
+   "note": "Closed source; only the issue tracker is public on GitHub",
+   "evidence": [
+    "https://github.com/marta-file-manager/marta-issues/issues/696",
+    "https://marta.sh/"
+   ],
+   "how": "source"
+  },
+  "native_apple_silicon": {
+   "value": "yes",
+   "note": "Native Apple Silicon support since 0.8.1",
+   "evidence": [
+    "https://github.com/marta-file-manager/marta-issues/issues/696"
+   ],
+   "how": "forum"
+  },
+  "no_account_no_tracking": {
+   "value": "yes",
+   "note": "'Marta doesn't collect or sell your data'",
+   "evidence": [
+    "https://marta.sh/"
+   ],
+   "how": "docs"
+  },
+  "dark_light_setting": {
+   "value": "yes",
+   "note": "Five themes (light and dark), control style selectable regardless of the system",
+   "evidence": [
+    "https://marta.sh/",
+    "https://marta.sh/docs/configuration/themes/",
+    "https://marta.sh/changelog/"
+   ],
+   "how": "docs"
+  },
+  "languages_20": {
+   "value": "no",
+   "note": "English only; maintainer says a coming version will add localizations",
+   "evidence": [
+    "https://github.com/marta-file-manager/marta-issues/issues/1161"
+   ],
+   "how": "forum"
+  },
+  "folder_browsing": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://marta.sh/docs/"
+   ],
+   "how": "docs"
+  },
+  "thumbnail_grid": {
+   "value": "no",
+   "note": "Only table and multi-column list modes; no thumbnails",
+   "evidence": [
+    "https://marta.sh/docs/core/display-modes/"
+   ],
+   "how": "docs"
+  },
+  "list_view": {
+   "value": "yes",
+   "note": "Table view with configurable columns",
+   "evidence": [
+    "https://marta.sh/docs/core/display-modes/"
+   ],
+   "how": "docs"
+  },
+  "recursive_search": {
+   "value": "yes",
+   "note": "Look Up (Spotlight index) globally or in the current folder",
+   "evidence": [
+    "https://marta.sh/docs/actions/lookup/"
+   ],
+   "how": "docs"
+  },
+  "regex_search": {
+   "value": "partial",
+   "note": "Quick Select / quick search in the current list by regex; Look Up uses predicates",
+   "evidence": [
+    "https://marta.sh/",
+    "https://marta.sh/docs/navigation/base/"
+   ],
+   "how": "docs"
+  },
+  "network_shares_fast": {
+   "value": "no",
+   "note": "Open report: much slower than Finder on a NAS folder with many subfolders (~50 s vs ~10 s)",
+   "evidence": [
+    "https://github.com/marta-file-manager/marta-issues/issues/867"
+   ],
+   "how": "forum"
+  },
+  "multiple_windows": {
+   "value": "yes",
+   "note": "As many windows and tabs as you want",
+   "evidence": [
+    "https://marta.sh/"
+   ],
+   "how": "docs"
+  },
+  "bookmarks": {
+   "value": "yes",
+   "note": "Favorites",
+   "evidence": [
+    "https://marta.sh/docs/navigation/favorites/"
+   ],
+   "how": "docs"
+  },
+  "img_modern_formats": {
+   "value": "partial",
+   "note": "Only Quick Look preview (Space); no own viewer or player",
+   "evidence": [
+    "https://marta.sh/"
+   ],
+   "how": "docs"
+  },
+  "img_raw": {
+   "value": "partial",
+   "note": "Preview is the macOS Quick Look window (Space), no own viewer or player",
+   "evidence": [
+    "https://marta.sh/docs/navigation/base/"
+   ],
+   "how": "docs"
+  },
+  "img_psd_exr": {
+   "value": "partial",
+   "note": "Preview is the macOS Quick Look window (Space), no own viewer or player",
+   "evidence": [
+    "https://marta.sh/docs/navigation/base/"
+   ],
+   "how": "docs"
+  },
+  "img_svg_pdf": {
+   "value": "partial",
+   "note": "Preview is the macOS Quick Look window (Space), no own viewer or player",
+   "evidence": [
+    "https://marta.sh/docs/navigation/base/"
+   ],
+   "how": "docs"
+  },
+  "img_animated": {
+   "value": "partial",
+   "note": "Preview is the macOS Quick Look window (Space), no own viewer or player",
+   "evidence": [
+    "https://marta.sh/docs/navigation/base/"
+   ],
+   "how": "docs"
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "note": "Preview window updates when the cursor moves",
+   "evidence": [
+    "https://marta.sh/changelog/"
+   ],
+   "how": "changelog"
+  },
+  "zoom_rotate": {
+   "value": "partial",
+   "note": "Quick Look zoom only; full-screen image preview is an open request",
+   "evidence": [
+    "https://github.com/marta-file-manager/marta-issues/issues/158"
+   ],
+   "how": "forum"
+  },
+  "slideshow": {
+   "value": "no",
+   "note": "Not offered (open feature request for image browsing)",
+   "evidence": [
+    "https://github.com/marta-file-manager/marta-issues/issues/158"
+   ],
+   "how": "forum"
+  },
+  "slideshow_recursive": {
+   "value": "no",
+   "note": "Not offered",
+   "evidence": [
+    "https://github.com/marta-file-manager/marta-issues/issues/158"
+   ],
+   "how": "forum"
+  },
+  "auto_enhance_view": {
+   "value": "no",
+   "note": "No own image viewer; full-screen image viewing is an open request",
+   "evidence": [
+    "https://github.com/marta-file-manager/marta-issues/issues/158",
+    "https://marta.sh/docs/navigation/base/"
+   ],
+   "how": "forum"
+  },
+  "file_info_exif": {
+   "value": "no",
+   "note": "A file info panel (incl. image/media info) is an open, unimplemented request",
+   "evidence": [
+    "https://github.com/marta-file-manager/marta-issues/issues/292",
+    "https://github.com/marta-file-manager/marta-issues/issues/330"
+   ],
+   "how": "forum"
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "note": "No file info view at all (open request #292)",
+   "evidence": [
+    "https://github.com/marta-file-manager/marta-issues/issues/292"
+   ],
+   "how": "forum"
+  },
+  "video_native": {
+   "value": "partial",
+   "note": "Quick Look plays MP4/MOV",
+   "evidence": [
+    "https://marta.sh/"
+   ],
+   "how": "docs"
+  },
+  "video_mkv_avi_webm": {
+   "value": "partial",
+   "note": "Only what macOS Quick Look plays; which formats that covers is not stated in Marta's docs",
+   "evidence": [
+    "https://marta.sh/docs/navigation/base/"
+   ],
+   "how": "docs"
+  },
+  "photos_videos_one_grid": {
+   "value": "no",
+   "note": "No grid; only file list",
+   "evidence": [
+    "https://marta.sh/docs/core/display-modes/"
+   ],
+   "how": "docs"
+  },
+  "video_skim_arrows": {
+   "value": "no",
+   "note": "Depends on the macOS Quick Look player controls, which no source we read describes; Marta adds no player of its own (searched marta.sh docs and marta-issues)",
+   "evidence": [
+    "https://marta.sh/docs/navigation/base/"
+   ],
+   "how": "unverified"
+  },
+  "subtitles_embedded": {
+   "value": "no",
+   "note": "Depends on the macOS Quick Look player controls, which no source we read describes; Marta adds no player of its own (searched marta.sh docs and marta-issues)",
+   "evidence": [
+    "https://marta.sh/docs/navigation/base/"
+   ],
+   "how": "unverified"
+  },
+  "subtitles_external_files": {
+   "value": "no",
+   "note": "Preview is the macOS Quick Look window (Space), no own viewer or player; no way to attach subtitle files",
+   "evidence": [
+    "https://marta.sh/docs/navigation/base/",
+    "https://github.com/marta-file-manager/marta-issues/issues/158"
+   ],
+   "how": "docs"
+  },
+  "audio_track_choice": {
+   "value": "no",
+   "note": "Depends on the macOS Quick Look player controls, which no source we read describes; Marta adds no player of its own (searched marta.sh docs and marta-issues)",
+   "evidence": [
+    "https://marta.sh/docs/navigation/base/"
+   ],
+   "how": "unverified"
+  },
+  "playback_speed": {
+   "value": "no",
+   "note": "Depends on the macOS Quick Look player controls, which no source we read describes; Marta adds no player of its own (searched marta.sh docs and marta-issues)",
+   "evidence": [
+    "https://marta.sh/docs/navigation/base/"
+   ],
+   "how": "unverified"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "note": "Depends on the macOS Quick Look player controls, which no source we read describes; Marta adds no player of its own (searched marta.sh docs and marta-issues)",
+   "evidence": [
+    "https://marta.sh/docs/navigation/base/"
+   ],
+   "how": "unverified"
+  },
+  "playlist": {
+   "value": "no",
+   "note": "No player; a folder music player is an open request",
+   "evidence": [
+    "https://github.com/marta-file-manager/marta-issues/issues/581"
+   ],
+   "how": "forum"
+  },
+  "saved_playlists": {
+   "value": "no",
+   "note": "No player; a folder music player is an open request",
+   "evidence": [
+    "https://github.com/marta-file-manager/marta-issues/issues/581"
+   ],
+   "how": "forum"
+  },
+  "pip": {
+   "value": "no",
+   "note": "Depends on the macOS Quick Look player controls, which no source we read describes; Marta adds no player of its own (searched marta.sh docs and marta-issues)",
+   "evidence": [
+    "https://marta.sh/docs/navigation/base/"
+   ],
+   "how": "unverified"
+  },
+  "music_mode": {
+   "value": "partial",
+   "note": "Quick Look plays a single audio file; a music player that continues through the folder is an open request",
+   "evidence": [
+    "https://github.com/marta-file-manager/marta-issues/issues/581",
+    "https://marta.sh/docs/navigation/base/"
+   ],
+   "how": "forum"
+  },
+  "streaming_urls": {
+   "value": "no",
+   "note": "Preview is the macOS Quick Look window (Space), no own viewer or player; local and mounted files only",
+   "evidence": [
+    "https://marta.sh/docs/navigation/base/",
+    "https://github.com/marta-file-manager/marta-issues/issues/581"
+   ],
+   "how": "docs"
+  },
+  "online_subtitles": {
+   "value": "no",
+   "note": "Preview is the macOS Quick Look window (Space), no own viewer or player",
+   "evidence": [
+    "https://marta.sh/docs/navigation/base/",
+    "https://github.com/marta-file-manager/marta-issues/issues/581"
+   ],
+   "how": "docs"
+  },
+  "video_filters_enhance": {
+   "value": "no",
+   "note": "Preview is the macOS Quick Look window (Space), no own viewer or player",
+   "evidence": [
+    "https://marta.sh/docs/navigation/base/",
+    "https://github.com/marta-file-manager/marta-issues/issues/581"
+   ],
+   "how": "docs"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "note": "Shows no thumbnails at all (icon/thumbnail view is an open request); ships no Quick Look generator per its feature list",
+   "evidence": [
+    "https://github.com/marta-file-manager/marta-issues/issues/1153",
+    "https://github.com/marta-file-manager/marta-issues/issues/1020",
+    "https://marta.sh/"
+   ],
+   "how": "forum"
+  },
+  "archives_as_folders": {
+   "value": "partial",
+   "note": "ZIP read-write; TAR, XAR, CAB, LZH, ISO, 7Z read-only; RAR only with limitations, RAR5 unsupported (open #290); nested archives",
+   "evidence": [
+    "https://marta.sh/docs/advanced/archive/",
+    "https://marta.sh/",
+    "https://github.com/marta-file-manager/marta-issues/issues/290"
+   ],
+   "how": "docs"
+  },
+  "comics_cbz_cbr": {
+   "value": "partial",
+   "note": "No comic reader; extra ZIP extensions (e.g. cbz) can be registered in the config",
+   "evidence": [
+    "https://marta.sh/docs/advanced/archive/"
+   ],
+   "how": "docs"
+  },
+  "archive_passwords": {
+   "value": "no",
+   "note": "Open report: a password-protected 7z opens as empty; no password prompt",
+   "evidence": [
+    "https://github.com/marta-file-manager/marta-issues/issues/1141"
+   ],
+   "how": "forum"
+  },
+  "split_archives": {
+   "value": "no",
+   "note": "Archive docs list all supported formats; multi-volume archives are not among them",
+   "evidence": [
+    "https://marta.sh/docs/advanced/archive/"
+   ],
+   "how": "docs"
+  },
+  "videos_in_archives": {
+   "value": "no",
+   "note": "Preview of files inside archives fails ('Preview can not be run in this context'), open request",
+   "evidence": [
+    "https://github.com/marta-file-manager/marta-issues/issues/330"
+   ],
+   "how": "forum"
+  },
+  "manga_two_page": {
+   "value": "no",
+   "note": "No own image or comic viewer",
+   "evidence": [
+    "https://github.com/marta-file-manager/marta-issues/issues/158",
+    "https://marta.sh/docs/navigation/base/"
+   ],
+   "how": "forum"
+  },
+  "rename_trash": {
+   "value": "yes",
+   "note": "Shift+F6 rename, F8 trash, F7 new folder",
+   "evidence": [
+    "https://marta.sh/docs/core/file-operations/"
+   ],
+   "how": "docs"
+  },
+  "move_copy": {
+   "value": "yes",
+   "note": "F5 copy, F6 move, to inactive pane",
+   "evidence": [
+    "https://marta.sh/docs/core/file-operations/"
+   ],
+   "how": "docs"
+  },
+  "dual_pane": {
+   "value": "yes",
+   "note": "Dual pane with F5 copy, F6 move by default",
+   "evidence": [
+    "https://marta.sh/docs/",
+    "https://marta.sh/docs/core/file-operations/"
+   ],
+   "how": "docs"
+  },
+  "undo_file_actions": {
+   "value": "no",
+   "note": "Undo for file operations is an open feature request",
+   "evidence": [
+    "https://github.com/marta-file-manager/marta-issues/issues/230"
+   ],
+   "how": "forum"
+  },
+  "image_editing": {
+   "value": "no",
+   "note": "No own image viewer, let alone editing",
+   "evidence": [
+    "https://github.com/marta-file-manager/marta-issues/issues/158"
+   ],
+   "how": "forum"
+  },
+  "batch_convert": {
+   "value": "no",
+   "note": "Batch rename is an open feature request",
+   "evidence": [
+    "https://github.com/marta-file-manager/marta-issues/issues/1059"
+   ],
+   "how": "forum"
+  },
+  "library_catalog": {
+   "value": "no",
+   "note": "Not even macOS tags can be set or shown as text; open requests",
+   "evidence": [
+    "https://github.com/marta-file-manager/marta-issues/issues/443",
+    "https://github.com/marta-file-manager/marta-issues/issues/1010"
+   ],
+   "how": "forum"
+  },
+  "cloud_sync": {
+   "value": "no",
+   "note": "No cloud file systems; maintainer points to third-party mounting tools",
+   "evidence": [
+    "https://github.com/marta-file-manager/marta-issues/issues/534"
+   ],
+   "how": "forum"
+  },
+  "keyboard_first": {
+   "value": "yes",
+   "note": "Keyboard-centric, Action Panel (⌘⇧P)",
+   "evidence": [
+    "https://marta.sh/docs/",
+    "https://marta.sh/"
+   ],
+   "how": "docs"
+  },
+  "custom_shortcuts": {
+   "value": "yes",
+   "note": "All key bindings configurable",
+   "evidence": [
+    "https://marta.sh/docs/",
+    "https://marta.sh/docs/navigation/base/"
+   ],
+   "how": "docs"
+  },
+  "shortcut_cheatsheet": {
+   "value": "partial",
+   "note": "Docs list default hotkeys; no printable sheet",
+   "evidence": [
+    "https://marta.sh/docs/core/file-operations/",
+    "https://marta.sh/docs/navigation/base/"
+   ],
+   "how": "docs"
+  },
+  "boss_key": {
+   "value": "no",
+   "note": "No complete action list is published (Actions Panel only); searched marta.sh docs and marta-issues, nothing found",
+   "evidence": [
+    "https://marta.sh/docs/core/actions/"
+   ],
+   "how": "unverified"
+  },
+  "app_sandbox": {
+   "value": "no",
+   "note": "Direct download outside the Mac App Store; maintainer discussed a sandboxed build (terminal would not work) but none is offered",
+   "evidence": [
+    "https://github.com/marta-file-manager/marta-issues/issues/157",
+    "https://marta.sh/download/"
+   ],
+   "how": "forum"
+  },
+  "no_network": {
+   "value": "no",
+   "note": "Sparkle update checks",
+   "evidence": [
+    "https://marta.sh/blog/back-on-track/"
+   ],
+   "how": "docs"
+  },
+  "notarized_attested": {
+   "value": "no",
+   "note": "Closed source",
+   "evidence": [
+    "https://github.com/marta-file-manager/marta-issues/issues/696"
+   ],
+   "how": "docs"
+  },
+  "mac_app_store": {
+   "value": "no",
+   "note": "Direct download and Homebrew cask only",
+   "evidence": [
+    "https://marta.sh/download/",
+    "https://github.com/Homebrew/homebrew-cask/blob/master/Casks/m/marta.rb",
+    "https://itunes.apple.com/search?term=marta&entity=macSoftware&limit=8"
+   ],
+   "how": "store"
+  }
+ }
+}

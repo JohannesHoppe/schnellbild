@@ -1,0 +1,556 @@
+{
+ "name": "Apple Preview",
+ "short": "Apple Preview",
+ "vendor": "Apple",
+ "website": "https://support.apple.com/guide/preview/welcome/mac",
+ "platforms": [
+  "macOS"
+ ],
+ "mac_available": "yes",
+ "page": "matrix",
+ "section": "photos",
+ "price": "free (included with macOS)",
+ "license": "proprietary",
+ "current_version": "Preview 11.0 on macOS Golden Gate 27.2.1",
+ "last_update": "2026-11-09 (macOS 27.2.1)",
+ "engine": "Apple ImageIO / PDFKit (no video)",
+ "category": "image",
+ "summary": "Apple's built-in viewer for PDFs and images on every Mac. Strong at PDFs, annotations, signing and quick image fixes like crop, resize and format conversion.",
+ "where_it_wins": [
+  "Already installed on every Mac",
+  "Full PDF toolset: annotate, sign forms, combine, password-protect",
+  "Image editing: crop, resize, background removal, batch conversion",
+  "Opens 3D files"
+ ],
+ "where_schnellbild_wins": [
+  "Browses whole folders with a thumbnail grid instead of opening single files",
+  "Plays videos, including MKV, WebM, AVI",
+  "Opens ZIP/RAR/7z and comics as folders",
+  "File management: rename, trash, move/copy, dual pane",
+  "Slideshow through subfolders, photos and videos mixed",
+  "Own light/dark setting"
+ ],
+ "search_terms": [
+  "preview mac alternative",
+  "macos preview alternative image viewer",
+  "preview app open folder of images",
+  "vorschau mac alternative",
+  "bildbetrachter mac vorschau ordner",
+  "alternative à aperçu mac"
+ ],
+ "matrix": {
+  "free": {
+   "value": "yes",
+   "note": "Included with macOS at no cost; no paid tier.",
+   "evidence": [
+    "https://www.apple.com/macos/feature-availability/"
+   ],
+   "how": "docs"
+  },
+  "open_source": {
+   "value": "no",
+   "note": "Proprietary Apple system app.",
+   "evidence": [
+    "https://www.apple.com/macos/feature-availability/"
+   ],
+   "how": "docs"
+  },
+  "native_apple_silicon": {
+   "value": "yes",
+   "note": "Universal system app; binary is arm64e (local check on macOS 27.2 (codesign/lipo/sips on the installed system app)).",
+   "evidence": [
+    "https://www.apple.com/macos/feature-availability/"
+   ],
+   "how": "tested-description"
+  },
+  "no_account_no_tracking": {
+   "value": "yes",
+   "note": "Opens local files without any account.",
+   "evidence": [
+    "https://support.apple.com/guide/preview/open-pdfs-and-images-prvw81f73d4e/mac"
+   ],
+   "how": "docs"
+  },
+  "dark_light_setting": {
+   "value": "no",
+   "note": "Follows the macOS Light/Dark appearance; Preview settings only change the window background colour.",
+   "evidence": [
+    "https://support.apple.com/guide/preview/change-preview-settings-prvw5518ecc0/mac",
+    "https://support.apple.com/guide/mac-help/use-a-light-or-dark-appearance-mchl52e1c2d2/mac"
+   ],
+   "how": "docs"
+  },
+  "languages_20": {
+   "value": "yes",
+   "note": "Follows the macOS system language (about 40 languages; 44 .lproj localisations in the app bundle).",
+   "evidence": [
+    "https://www.apple.com/macos/feature-availability/"
+   ],
+   "how": "docs"
+  },
+  "folder_browsing": {
+   "value": "no",
+   "note": "Opens files, not folders; several files can share one window with a thumbnail sidebar.",
+   "evidence": [
+    "https://support.apple.com/guide/preview/open-pdfs-and-images-prvw81f73d4e/mac"
+   ],
+   "how": "docs"
+  },
+  "thumbnail_grid": {
+   "value": "partial",
+   "note": "Thumbnails / Contact Sheet of the files or pages opened in one window; no folder previews.",
+   "evidence": [
+    "https://support.apple.com/guide/preview/view-pdfs-and-images-prvw11470/mac"
+   ],
+   "how": "docs"
+  },
+  "list_view": {
+   "value": "no",
+   "note": "View menu offers Thumbnails, Contact Sheet, Table of Contents; no column list.",
+   "evidence": [
+    "https://support.apple.com/guide/preview/view-pdfs-and-images-prvw11470/mac"
+   ],
+   "how": "docs"
+  },
+  "recursive_search": {
+   "value": "no",
+   "note": "Search finds text inside PDFs, not file names in subfolders.",
+   "evidence": [
+    "https://support.apple.com/guide/preview/find-text-in-pdfs-prvw2014/mac"
+   ],
+   "how": "docs"
+  },
+  "regex_search": {
+   "value": "no",
+   "note": "Find matches the exact phrase or any word (Any Match); no regular expressions.",
+   "evidence": [
+    "https://support.apple.com/guide/preview/find-text-in-pdfs-prvw2014/mac"
+   ],
+   "how": "docs"
+  },
+  "network_shares_fast": {
+   "value": "no",
+   "note": "Opens individual files via File > Open or the Finder; does not browse folders or shares.",
+   "evidence": [
+    "https://support.apple.com/guide/preview/open-pdfs-and-images-prvw81f73d4e/mac"
+   ],
+   "how": "docs"
+  },
+  "multiple_windows": {
+   "value": "yes",
+   "note": "Separate windows or tabs (Control-Tab).",
+   "evidence": [
+    "https://support.apple.com/guide/preview/open-pdfs-and-images-prvw81f73d4e/mac",
+    "https://support.apple.com/guide/preview/keyboard-shortcuts-cpprvw0003/mac"
+   ],
+   "how": "docs"
+  },
+  "bookmarks": {
+   "value": "no",
+   "note": "Bookmarks are for PDF pages only, not folders.",
+   "evidence": [
+    "https://support.apple.com/guide/preview/bookmark-pdf-pages-prvw1087/mac"
+   ],
+   "how": "docs"
+  },
+  "img_modern_formats": {
+   "value": "yes",
+   "note": "Reads HEIC, AVIF, JPEG XL, WebP through macOS ImageIO (JPEG XL since macOS 14); exports HEIC.",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/JPEG_XL",
+    "https://support.apple.com/guide/preview/convert-image-file-types-prvw1012/mac"
+   ],
+   "how": "tested-description"
+  },
+  "img_raw": {
+   "value": "yes",
+   "note": "System-level RAW support of macOS.",
+   "evidence": [
+    "https://support.apple.com/en-us/105094"
+   ],
+   "how": "docs"
+  },
+  "img_psd_exr": {
+   "value": "yes",
+   "note": "Exports OpenEXR; PSD readable via ImageIO (local check on macOS 27.2 (codesign/lipo/sips on the installed system app)).",
+   "evidence": [
+    "https://support.apple.com/guide/preview/convert-image-file-types-prvw1012/mac"
+   ],
+   "how": "docs"
+  },
+  "img_svg_pdf": {
+   "value": "partial",
+   "note": "PDF is Preview's core format; SVG support not documented in the guide (ImageIO reads SVG locally).",
+   "evidence": [
+    "https://support.apple.com/guide/preview/view-pdfs-and-images-prvw11470/mac"
+   ],
+   "how": "docs"
+  },
+  "img_animated": {
+   "value": "partial",
+   "note": "Shows the frames of an animated GIF as stills; Apple points to Quick Look to play it.",
+   "evidence": [
+    "https://support.apple.com/guide/preview/view-an-animated-gifs-frames-prvw1016/mac"
+   ],
+   "how": "docs"
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "note": "Page Up/Down, Option-Page Up/Down between images in a window.",
+   "evidence": [
+    "https://support.apple.com/guide/preview/keyboard-shortcuts-cpprvw0003/mac"
+   ],
+   "how": "docs"
+  },
+  "zoom_rotate": {
+   "value": "yes",
+   "note": "Zoom, actual size, rotate; rotating changes the file when saved.",
+   "evidence": [
+    "https://support.apple.com/guide/preview/view-pdfs-and-images-prvw11470/mac",
+    "https://support.apple.com/guide/preview/crop-resize-or-rotate-an-image-prvw2015/mac"
+   ],
+   "how": "docs"
+  },
+  "slideshow": {
+   "value": "partial",
+   "note": "Guide documents slideshow for the pages of a PDF.",
+   "evidence": [
+    "https://support.apple.com/guide/preview/display-a-pdf-as-a-slideshow-prvw3b268798/mac"
+   ],
+   "how": "docs"
+  },
+  "slideshow_recursive": {
+   "value": "no",
+   "evidence": [
+    "https://support.apple.com/guide/preview/display-a-pdf-as-a-slideshow-prvw3b268798/mac"
+   ],
+   "how": "docs"
+  },
+  "auto_enhance_view": {
+   "value": "no",
+   "note": "Image adjustments change the file (auto-saved with versions); no view-only adjustments.",
+   "evidence": [
+    "https://support.apple.com/guide/preview/crop-resize-or-rotate-an-image-prvw2015/mac",
+    "https://support.apple.com/guide/preview/save-files-prvw0b1e8d9e/mac"
+   ],
+   "how": "docs"
+  },
+  "file_info_exif": {
+   "value": "yes",
+   "note": "Inspector with General info and More info (EXIF, GPS).",
+   "evidence": [
+    "https://support.apple.com/guide/preview/view-information-about-pdfs-and-images-prvw9c94f0a4/mac"
+   ],
+   "how": "docs"
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "note": "Inspector shows general info, more info, keywords, encryption, crop, annotations; no file-type mismatch notice.",
+   "evidence": [
+    "https://support.apple.com/guide/preview/view-information-about-pdfs-and-images-prvw9c94f0a4/mac"
+   ],
+   "how": "docs"
+  },
+  "video_native": {
+   "value": "no",
+   "note": "Preview opens PDFs, images and 3D files, not video.",
+   "evidence": [
+    "https://support.apple.com/guide/preview/welcome/mac"
+   ],
+   "how": "docs"
+  },
+  "video_mkv_avi_webm": {
+   "value": "no",
+   "evidence": [
+    "https://support.apple.com/guide/preview/welcome/mac"
+   ],
+   "how": "docs"
+  },
+  "photos_videos_one_grid": {
+   "value": "no",
+   "evidence": [
+    "https://support.apple.com/guide/preview/welcome/mac"
+   ],
+   "how": "docs"
+  },
+  "video_skim_arrows": {
+   "value": "no",
+   "evidence": [
+    "https://support.apple.com/guide/preview/welcome/mac"
+   ],
+   "how": "docs"
+  },
+  "subtitles_embedded": {
+   "value": "no",
+   "evidence": [
+    "https://support.apple.com/guide/preview/welcome/mac"
+   ],
+   "how": "docs"
+  },
+  "subtitles_external_files": {
+   "value": "no",
+   "evidence": [
+    "https://support.apple.com/guide/preview/welcome/mac"
+   ],
+   "how": "docs"
+  },
+  "audio_track_choice": {
+   "value": "no",
+   "evidence": [
+    "https://support.apple.com/guide/preview/welcome/mac"
+   ],
+   "how": "docs"
+  },
+  "playback_speed": {
+   "value": "no",
+   "evidence": [
+    "https://support.apple.com/guide/preview/welcome/mac"
+   ],
+   "how": "docs"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "evidence": [
+    "https://support.apple.com/guide/preview/welcome/mac"
+   ],
+   "how": "docs"
+  },
+  "playlist": {
+   "value": "no",
+   "evidence": [
+    "https://support.apple.com/guide/preview/welcome/mac"
+   ],
+   "how": "docs"
+  },
+  "saved_playlists": {
+   "value": "no",
+   "evidence": [
+    "https://support.apple.com/guide/preview/welcome/mac"
+   ],
+   "how": "docs"
+  },
+  "pip": {
+   "value": "no",
+   "evidence": [
+    "https://support.apple.com/guide/preview/welcome/mac"
+   ],
+   "how": "docs"
+  },
+  "music_mode": {
+   "value": "no",
+   "evidence": [
+    "https://support.apple.com/guide/preview/welcome/mac"
+   ],
+   "how": "docs"
+  },
+  "streaming_urls": {
+   "value": "no",
+   "evidence": [
+    "https://support.apple.com/guide/preview/welcome/mac"
+   ],
+   "how": "docs"
+  },
+  "online_subtitles": {
+   "value": "no",
+   "evidence": [
+    "https://support.apple.com/guide/preview/welcome/mac"
+   ],
+   "how": "docs"
+  },
+  "video_filters_enhance": {
+   "value": "no",
+   "evidence": [
+    "https://support.apple.com/guide/preview/welcome/mac"
+   ],
+   "how": "docs"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "note": "Preview User Guide table of contents (full feature list) covers PDFs, images and 3D files only; adds no Quick Look thumbnails.",
+   "evidence": [
+    "https://support.apple.com/guide/preview/welcome/mac"
+   ],
+   "how": "docs"
+  },
+  "archives_as_folders": {
+   "value": "no",
+   "note": "Preview User Guide table of contents (full feature list) covers PDFs, images and 3D files only; no archives.",
+   "evidence": [
+    "https://support.apple.com/guide/preview/welcome/mac",
+    "https://support.apple.com/guide/preview/open-pdfs-and-images-prvw81f73d4e/mac"
+   ],
+   "how": "docs"
+  },
+  "comics_cbz_cbr": {
+   "value": "no",
+   "note": "Preview User Guide table of contents (full feature list) covers PDFs, images and 3D files only; no CBZ/CBR.",
+   "evidence": [
+    "https://support.apple.com/guide/preview/welcome/mac"
+   ],
+   "how": "docs"
+  },
+  "archive_passwords": {
+   "value": "no",
+   "note": "Password protection is documented only for PDFs; no archives.",
+   "evidence": [
+    "https://support.apple.com/guide/preview/welcome/mac"
+   ],
+   "how": "docs"
+  },
+  "split_archives": {
+   "value": "no",
+   "note": "Preview User Guide table of contents (full feature list) covers PDFs, images and 3D files only; no archives.",
+   "evidence": [
+    "https://support.apple.com/guide/preview/welcome/mac"
+   ],
+   "how": "docs"
+  },
+  "videos_in_archives": {
+   "value": "no",
+   "note": "Preview User Guide table of contents (full feature list) covers PDFs, images and 3D files only; no video, no archives.",
+   "evidence": [
+    "https://support.apple.com/guide/preview/welcome/mac"
+   ],
+   "how": "docs"
+  },
+  "manga_two_page": {
+   "value": "partial",
+   "note": "Two Pages view for PDFs; no right-to-left mode.",
+   "evidence": [
+    "https://support.apple.com/guide/preview/view-pdfs-and-images-prvw11470/mac"
+   ],
+   "how": "docs"
+  },
+  "rename_trash": {
+   "value": "partial",
+   "note": "Renames or moves the open file from the window title; no trash or new folder.",
+   "evidence": [
+    "https://support.apple.com/guide/preview/save-files-prvw0b1e8d9e/mac"
+   ],
+   "how": "docs"
+  },
+  "move_copy": {
+   "value": "partial",
+   "note": "Duplicate or Export the open file, move it via the title; no folder file management.",
+   "evidence": [
+    "https://support.apple.com/guide/preview/copy-pdfs-and-images-prvw98091ede/mac",
+    "https://support.apple.com/guide/preview/save-files-prvw0b1e8d9e/mac"
+   ],
+   "how": "docs"
+  },
+  "dual_pane": {
+   "value": "no",
+   "note": "One document view with sidebar; Preview User Guide table of contents (full feature list) covers PDFs, images and 3D files only.",
+   "evidence": [
+    "https://support.apple.com/guide/preview/view-pdfs-and-images-prvw11470/mac",
+    "https://support.apple.com/guide/preview/welcome/mac"
+   ],
+   "how": "docs"
+  },
+  "undo_file_actions": {
+   "value": "no",
+   "note": "Undo and versions apply to edits of the document, not file operations.",
+   "evidence": [
+    "https://support.apple.com/guide/preview/revert-changes-to-pdfs-and-images-prvwf4697c5a/mac"
+   ],
+   "how": "docs"
+  },
+  "image_editing": {
+   "value": "yes",
+   "note": "Crop, resize, rotate, flip, markup, background removal.",
+   "evidence": [
+    "https://support.apple.com/guide/preview/crop-resize-or-rotate-an-image-prvw2015/mac"
+   ],
+   "how": "docs"
+  },
+  "batch_convert": {
+   "value": "yes",
+   "note": "Convert, resize, rotate several images selected in one window's sidebar.",
+   "evidence": [
+    "https://support.apple.com/guide/preview/convert-image-file-types-prvw1012/mac",
+    "https://support.apple.com/guide/preview/crop-resize-or-rotate-an-image-prvw2015/mac"
+   ],
+   "how": "docs"
+  },
+  "library_catalog": {
+   "value": "no",
+   "note": "Only file keywords shown in the inspector; no catalog.",
+   "evidence": [
+    "https://support.apple.com/guide/preview/view-information-about-pdfs-and-images-prvw9c94f0a4/mac"
+   ],
+   "how": "docs"
+  },
+  "cloud_sync": {
+   "value": "partial",
+   "note": "Opens and saves documents in iCloud Drive.",
+   "evidence": [
+    "https://support.apple.com/guide/preview/open-pdfs-and-images-prvw81f73d4e/mac"
+   ],
+   "how": "docs"
+  },
+  "keyboard_first": {
+   "value": "partial",
+   "note": "Many shortcuts, but no folder navigation by keyboard.",
+   "evidence": [
+    "https://support.apple.com/guide/preview/keyboard-shortcuts-cpprvw0003/mac"
+   ],
+   "how": "docs"
+  },
+  "custom_shortcuts": {
+   "value": "partial",
+   "note": "macOS App Shortcuts can rebind menu commands of any app.",
+   "evidence": [
+    "https://support.apple.com/guide/mac-help/mchlp2271/mac"
+   ],
+   "how": "docs"
+  },
+  "shortcut_cheatsheet": {
+   "value": "yes",
+   "note": "Keyboard shortcut page in the Preview User Guide.",
+   "evidence": [
+    "https://support.apple.com/guide/preview/keyboard-shortcuts-cpprvw0003/mac"
+   ],
+   "how": "docs"
+  },
+  "boss_key": {
+   "value": "partial",
+   "note": "Only the system-wide Command-H (hide app); no dedicated boss key.",
+   "evidence": [
+    "https://support.apple.com/en-us/102650"
+   ],
+   "how": "docs"
+  },
+  "app_sandbox": {
+   "value": "yes",
+   "note": "com.apple.security.app-sandbox entitlement (local check on macOS 27.2 (codesign/lipo/sips on the installed system app)).",
+   "evidence": [
+    "https://www.apple.com/macos/feature-availability/"
+   ],
+   "how": "tested-description"
+  },
+  "no_network": {
+   "value": "yes",
+   "note": "No com.apple.security.network.client entitlement (local check on macOS 27.2 (codesign/lipo/sips on the installed system app)); sharing goes through system services.",
+   "evidence": [
+    "https://www.apple.com/macos/feature-availability/"
+   ],
+   "how": "tested-description"
+  },
+  "notarized_attested": {
+   "value": "no",
+   "note": "Signed by Apple as part of macOS, but closed source, so no build attestation.",
+   "evidence": [
+    "https://www.apple.com/macos/feature-availability/"
+   ],
+   "how": "docs"
+  },
+  "mac_app_store": {
+   "value": "no",
+   "note": "Ships with macOS; not a Mac App Store download.",
+   "evidence": [
+    "https://www.apple.com/macos/feature-availability/"
+   ],
+   "how": "docs"
+  }
+ }
+}

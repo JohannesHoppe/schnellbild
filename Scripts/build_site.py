@@ -31,7 +31,8 @@ import re
 import sys
 from pathlib import Path
 
-sys.dont_write_bytecode = True  # no __pycache__ in Scripts/ from the import below
+sys.dont_write_bytecode = True  # no __pycache__ in Scripts/ from the imports below
+from site_alternatives import Alternatives  # noqa: E402
 from make_site_images import FEATURE_SHOTS, HERO_SHOT, png_size, shot_variants  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -313,6 +314,7 @@ def footer(code, t):
   <div class="wrap">
     <span>© 2026 <a href="https://haushoppe-its.de/">HAUS HOPPE - ITS</a> (Johannes Hoppe)</span>
     <nav aria-label="{esc(t['footerPrivacy'])}, {esc(t['footerImprint'])}">
+      <a href="{alternatives.path(code)}">{esc(t['footerAlternatives'])}</a>
       <a href="{privacy_path(code, t)}">{esc(t['footerPrivacy'])}</a>
       <a href="/eula/">{esc(t['footerEula'])}</a>
       <a href="{IMPRINT}">{esc(t['footerImprint'])}</a>
@@ -331,6 +333,11 @@ def fineprint(text):
     if not match:
         return esc(text)
     return esc(text[:match.end()].rstrip()) + "<br>" + esc(text[match.end():].lstrip())
+
+
+def alternative_links(code, text):
+    """{alt:<slug>} in a text becomes the address of that alternative's page in the language."""
+    return re.sub(r"\{alt:([a-z0-9-]+)\}", lambda m: alternatives.link(code, m.group(1)), text)
 
 
 def home(code, t):
@@ -400,7 +407,11 @@ def home(code, t):
 <section>
   <div class="wrap narrow">
     <h2 data-reveal>{esc(t['modelsTitle'])}</h2>
-    <p class="intro" data-reveal>{t['modelsText']}</p>
+    <p class="intro" data-reveal>{alternative_links(code, t['modelsText'])}</p>
+    <h2 data-reveal>{esc(t['altTitle'])}</h2>
+    <p class="intro" data-reveal>{esc(t['altText'])}</p>
+    <div data-reveal>{alternatives.page_links(code, alternatives.top(code), "alt-links pills")}
+    <p class="more-alternatives"><a href="{alternatives.path(code)}">{esc(t['altAll'])} →</a></p></div>
     <h2 data-reveal>{esc(t['ossTitle'])}</h2>
     <p class="intro" data-reveal>{t['ossText']}</p>
     <p class="languages" data-reveal>{esc(t['languagesText'])} {languages}.</p>
@@ -538,6 +549,11 @@ def manifest(t):
 
 english = json.loads((I18N / "en.json").read_text(encoding="utf-8"))
 tr = {code: load(code, english) for code in LANGUAGES}
+alternatives = Alternatives({
+    "esc": esc, "head": head, "topbar": topbar, "footer": footer, "shot": shot, "home_path": home_path,
+    "folder": folder, "json_ld": json_ld, "tr": tr, "LANGUAGES": LANGUAGES, "SITE": SITE, "DMG": DMG,
+    "missing": missing})
+alternative_pages = alternatives.pages()
 
 pages = {}
 for code in LANGUAGES:
@@ -546,6 +562,7 @@ for code in LANGUAGES:
     if not (DOCS / "og" / f"{code}.jpg").exists():
         missing.append(f"{code}: docs/og/{code}.jpg (python3 Scripts/make_site_images.py og)")
 
+pages.update(alternative_pages)
 pages[DOCS / "eula" / "index.html"] = eula(tr["en"])
 pages[DOCS / "404.html"] = not_found(tr["en"])
 pages[DOCS / "site.webmanifest"] = manifest(tr["en"])

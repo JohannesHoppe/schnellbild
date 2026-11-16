@@ -1,0 +1,424 @@
+{
+ "note": "Programs looked at and not given a page, with the reason; and rows suggested for the comparison but not taken in (each would need Schnellbild's and every program's value with a source).",
+ "dropped": [
+  {
+   "name": "Phiewer Select",
+   "why": "separate $4.99 culling app by the Phiewer developer; not a viewer alternative (could be added later)"
+  },
+  {
+   "name": "Camera RawX",
+   "why": "Quick Look extension companion of ApolloOne, not a viewer"
+  },
+  {
+   "name": "PhotoMill X (now 'PhotoMill: The Image Converter', Mac App Store, $14.99, v3.5.1)",
+   "why": "Batch converter/metadata editor; its browser only picks files for conversion. No full-screen viewer, slideshow or video playback in the store description (https://apps.apple.com/us/app/id778590574)."
+  },
+  {
+   "name": "ViewIt (HexCat)",
+   "why": "The real product is HexCat ViewIt, shareware image viewer/browser. Last version 2.66 from 2017-12-18, 'Mac OS X 10.6 or later (Intel only)' per Softpedia (https://mac.softpedia.com/get/Graphics/ViewIt.shtml); hexcat.com no longer serves the product page (TLS certificate belongs to an unrelated host). Dead, no Apple silicon build, little search demand; matrix would be mostly inferred."
+  },
+  {
+   "name": "Vidu",
+   "why": "Vidu is an AI video generation service (Shengshu Technology / Tsinghua), not a Mac image or media viewer; only an unofficial WebCatalog web wrapper exists for Mac (https://webcatalog.io/apps/vidu)."
+  },
+  {
+   "name": "Vidi: Universal 4K Player",
+   "why": "Similar name found while checking Vidu; it is a video-only player, outside this image-viewer group."
+  },
+  {
+   "name": "zGallery - Image Viewer",
+   "why": "Maintained MAS viewer ($9.99, 4.86, July 2026; https://apps.apple.com/us/app/id702923456) with folder tree, tabs, file copy/move and video in slideshow, but the store page is too thin to fill the matrix without mostly inferred cells; candidate for a later hands-on pass."
+  },
+  {
+   "name": "ToyViewer",
+   "why": "Free MAS viewer by Takeshi Ogihara, last update 5.8.0 on 2022-02-12, listed as discontinued with the website gone; no longer available in some storefronts."
+  },
+  {
+   "name": "Fileloupe",
+   "why": "Interesting media browser (images, video, PDF), but last version 1.7.3 dated 2019-09-04 on the MAS (https://apps.apple.com/us/app/fileloupe-media-browser/id944693506); effectively unmaintained."
+  },
+  {
+   "name": "ImageViewer: Video Player and Photo Image Viewer",
+   "why": "Archive-aware image/video viewer on the MAS, but last update 1.71 in 2016 (https://apps.apple.com/us/app/id771344738); dead."
+  },
+  {
+   "name": "ViewPic",
+   "why": "MAS $4.99, last update 1.2.0 in 2015 (https://apps.apple.com/us/app/viewpic/id899361067); dead."
+  },
+  {
+   "name": "FastViewer (Pleeq)",
+   "why": "Small direct-download viewer (JPG, PNG, WebP, AVIF only; https://pleeq.com/macos-apps/fastviewer/), no price/version stated, no visible user base."
+  },
+  {
+   "name": "Viso",
+   "why": "Minimal paid viewer (Viso 6, 2023 Product Hunt launch); conflicting price info and no official page read; low overlap (single-image window)."
+  },
+  {
+   "name": "Vimple",
+   "why": "HDR/EDR full-screen carousel viewer ($5.99, macOS 15); niche, too little overlap."
+  },
+  {
+   "name": "Kuvat / Vimage / Imagine / PictureView",
+   "why": "No Mac image viewer by these names found in search; 'Imagine' is a Windows-only viewer."
+  },
+  {
+   "name": "ACDSee 中国版 (ACDSee 图影工坊 / ACDSee 官方免费版, acdsee.cn)",
+   "why": "Same products as the global ACDSee Photo Studio, ACDSee Photo Studio for Mac and ACDSee Free, sold in China under Chinese names by the distributor 上海昂毅多媒体科技 with CNY prices (e.g. Home ¥298 lifetime or ¥198/year, Mac 26 ¥368/¥798 lifetime as listed 2026-11-14 on https://www.acdsee.cn/). Fold into the global ACDSee entry; Chinese search terms: \"ACDSee 图影工坊\", \"ACDSee mac 中文版\", \"ACDSee 官方免费版\"."
+  },
+  {
+   "name": "光影看图 (Xunlei / Neo Imaging)",
+   "why": "Companion viewer offered by the 光影魔术手 installer (v4.6.4.923 per https://sj.qq.com/appdetail/com.tencent.pcgame.xunguangyingkantu); its own site kantu.xunlei.com doesn't resolve and no feature docs could be found, so a matrix would be mostly guesses"
+  },
+  {
+   "name": "WPS图片 (WPS Photos)",
+   "why": "Desktop viewer last listed as 6.0.0.1 from 2022 (https://sj.qq.com/appdetail/com.tencent.pcgame.wpswpstupian); photo.wps.cn is now an online editor. Too little current documentation"
+  },
+  {
+   "name": "360看图",
+   "why": "No reachable official product page (360 baoku page 404); only third-party download sites"
+  },
+  {
+   "name": "爱奇艺看图",
+   "why": "Only seen as a listing on https://sj.qq.com/software/310010; not researched for lack of time and evidence"
+  },
+  {
+   "name": "Linar",
+   "why": "image filer from 1999 (Madonna no Mori review 1999-02-15); no current site or download found, not searched any more"
+  },
+  {
+   "name": "Susie",
+   "why": "plug-in host/viewer from the 1990s; covered as plug-in ecosystem inside MassiGra, Hamana, Leeyes, NeeView rows"
+  },
+  {
+   "name": "MangaMeeyaCE",
+   "why": "compact fork of MangaMeeya, merged into the MangaMeeya entry"
+  },
+  {
+   "name": "Windows Photo Viewer (classic)",
+   "why": "Part of Windows 7, hidden in Windows 10/11, no product of its own; kept as search terms under Microsoft Photos"
+  },
+  {
+   "name": "Photos Legacy",
+   "why": "Covered as a note under Microsoft Photos (same vendor, older app with video editor)"
+  },
+  {
+   "name": "Plex (desktop / HTPC for Mac)",
+   "why": "Not a local file player: the Mac/desktop app plays libraries from a Plex Media Server; serverless local-file playback exists only on Android. Evidence: https://techcrunch.com/2017/06/14/plex-can-now-play-local-video-files-on-android-no-media-server-required/ , https://forums.plex.tv/t/add-prefer-downloaded-content-for-macos-mod-plex-desktop-apps/875131"
+  },
+  {
+   "name": "NetPlayer (App Store id6755069320)",
+   "why": "An XUI/IPTV client for iPhone/iPad (Spanish-only listing), no Mac app and no local file playback: https://apps.apple.com/us/app/netplayer/id6755069320 . nPlayer (Newin) was added instead in case that was meant."
+  },
+  {
+   "name": "SenPlayer",
+   "why": "Library/NAS player of the same kind as VidHub with fewer ratings (173 US); left out to avoid a near-duplicate page"
+  },
+  {
+   "name": "Downie",
+   "why": "Downloader, not a player (per brief)"
+  },
+  {
+   "name": "KMPlayer for Mac",
+   "why": "Vendor FAQ: 'A dedicated KMPlayer desktop application for macOS is not currently available'; folded into the KMPlayer entry (mac_available no)."
+  },
+  {
+   "name": "GOM Player for iOS/iPad on Mac",
+   "why": "iPad app listed as 'Designed for iPad. Not verified for macOS'; not a Mac player, mentioned in the GOM entry."
+  },
+  {
+   "name": "Windows Media Player Legacy (separate entry)",
+   "why": "Merged into the Windows Media Player entry with notes, as instructed."
+  },
+  {
+   "name": "Chunky Comic Reader",
+   "why": "iPad-only app (App Store lists only iPad devices), last update 2.5.10 on 2020-08-16, no Mac build; https://apps.apple.com/app/id663567628"
+  },
+  {
+   "name": "ComicBookLover (Bitcartel)",
+   "why": "Mac app discontinued, no longer on app stores, vendor download unavailable (AlternativeTo); little current search interest; https://alternativeto.net/software/comicbooklover/about/"
+  },
+  {
+   "name": "Total Commander for Android",
+   "why": "Covered as a note under Total Commander; no Mac relevance"
+  },
+  {
+   "name": "Norton Commander for Windows",
+   "why": "Merged into the Norton Commander entry (same brand, also discontinued)"
+  },
+  {
+   "name": "Photo Mechanic Plus (separate product)",
+   "why": "Treated as a tier inside Photo Mechanic; Camera Bits stopped selling it on 27 Feb 2026 (catalog feature broken on current macOS)"
+  },
+  {
+   "name": "Murasaki",
+   "why": "Maintained (Mac App Store 2.5.1, 2024-11-07, ¥1,300), but it is an EPUB text reader by Genji App: no CBZ/CBR, archives or image folders, so no real overlap with Schnellbild. https://genjiapp.com/mac/murasaki/index_en.html, https://itunes.apple.com/lookup?id=430300762&country=jp"
+  }
+ ],
+ "suggested_rows": [
+  {
+   "key": "duplicate_finder",
+   "label": "Find duplicate / similar images",
+   "why": "Phiewer, Pixea advertise it prominently"
+  },
+  {
+   "key": "compare_view",
+   "label": "Compare images side by side",
+   "why": "Phiewer (C key, 9 images), ApolloOne Split View"
+  },
+  {
+   "key": "ratings_culling",
+   "label": "Ratings, picks, culling",
+   "why": "core of ApolloOne; Pixea 7.1, Phiewer Select"
+  },
+  {
+   "key": "geotag_map",
+   "label": "Photo locations on a map",
+   "why": "Lyn, ApolloOne, Phiewer"
+  },
+  {
+   "key": "theater_mode",
+   "label": "Dim desktop / theater mode",
+   "why": "Phiewer and Pixea both have it"
+  },
+  {
+   "key": "still_maintained",
+   "label": "Actively maintained",
+   "why": "Xee³ last build 2021, Intel only"
+  },
+  {
+   "key": "hdr_display",
+   "label": "Shows HDR photos/videos in HDR",
+   "why": "FlowVision advertises HDR display; relevant for modern iPhone photos."
+  },
+  {
+   "key": "motion_photos",
+   "label": "Plays Live/Motion Photos",
+   "why": "PicView plays embedded Motion Photo clips; common with phone photos."
+  },
+  {
+   "key": "metadata_editing",
+   "label": "Edit EXIF/IPTC/XMP metadata",
+   "why": "XnView MP, nomacs and PicView edit metadata/ratings; distinct from library_catalog."
+  },
+  {
+   "key": "raw_histogram_exposure",
+   "label": "RAW histogram and over/underexposure display",
+   "why": "Core reason people use FastRawViewer and RAW Power; Schnellbild would be 'no'"
+  },
+  {
+   "key": "compare_side_by_side",
+   "label": "Compare 2-4 images side by side with synced zoom",
+   "why": "FastRawViewer multi-window mode, Nitro N-Up; common culling request"
+  },
+  {
+   "key": "xmp_ratings",
+   "label": "Ratings/labels in XMP sidecars (Lightroom compatible)",
+   "why": "Distinguishes culling tools from libraries; 'library_catalog' mixes database and sidecar approaches"
+  },
+  {
+   "key": "no_bundleware",
+   "label": "Installer without bundled extra software",
+   "why": "Chinese Windows viewers often bundle security suites or partner apps (美图看看 with 360 Safe Guard; 2345 recommends its own software); cleaner than folding it into no_account_no_tracking"
+  },
+  {
+   "key": "still_maintained",
+   "label": "Still developed (update in the last 2 years)",
+   "why": "Several viewers people still search for (美图看看, Tencent 看图) are abandoned"
+  },
+  {
+   "key": "plugin_formats",
+   "label": "Extra formats through plug-ins (e.g. Susie)",
+   "why": "Japanese viewers rely on Susie .spi plug-ins; shows whether formats work out of the box"
+  },
+  {
+   "key": "right_to_left",
+   "label": "Right-to-left page order",
+   "why": "split from manga_two_page: some viewers do spreads but not RTL"
+  },
+  {
+   "key": "nested_archives",
+   "label": "Archives inside archives",
+   "why": "NeeView and MangaMeeya do it, Schnellbild not (known limit)"
+  },
+  {
+   "key": "maintained",
+   "label": "Still maintained (release in the last 2 years)",
+   "why": "many searched Windows viewers are frozen since 2006-2013"
+  },
+  {
+   "key": "webtoon_vertical",
+   "label": "Webtoon mode: images joined into one vertical strip",
+   "why": "Core reason Korean users pick BandiView/Honeyview"
+  },
+  {
+   "key": "hdr_output",
+   "label": "Shows HDR photos in HDR (HEIC, AVIF, Ultra HDR JPEG)",
+   "why": "BandiView PRO headline feature"
+  },
+  {
+   "key": "hdr_display",
+   "label": "HDR images shown in HDR / tone mapped",
+   "why": "ImageGlass, Microsoft Photos, ACDSee advertise it"
+  },
+  {
+   "key": "motion_photos",
+   "label": "Motion Photos / Live Photos play",
+   "why": "ImageGlass and Microsoft Photos play the clip inside motion photo JPEG/HEIC"
+  },
+  {
+   "key": "compare_side_by_side",
+   "label": "Compare several images side by side",
+   "why": "ACDSee (4 up), Microsoft Photos multi-view"
+  },
+  {
+   "key": "cross_platform",
+   "label": "Also runs on Windows/Linux",
+   "why": "Relevant for ImageGlass and for people switching from Windows"
+  },
+  {
+   "key": "seek_thumbnails",
+   "label": "Thumbnail preview on the seek bar",
+   "why": "IINA, SMPlayer (26.8) and VLC have it; common in video-player comparisons"
+  },
+  {
+   "key": "resume_position",
+   "label": "Resumes videos where you left off",
+   "why": "standard in IINA, mpv (watch-later), SMPlayer"
+  },
+  {
+   "key": "frame_step",
+   "label": "Frame-by-frame stepping",
+   "why": "README's IINA table already mentions it"
+  },
+  {
+   "key": "disc_playback",
+   "label": "Plays DVD / Blu-ray discs and ISO images",
+   "why": "VLC, Kodi, MPC-HC/BE all do; typical player comparison row"
+  },
+  {
+   "key": "casting_airplay_chromecast",
+   "label": "Sends video to Apple TV / Chromecast / smart TVs",
+   "why": "Main selling point of Elmedia, Infuse, Movist Pro"
+  },
+  {
+   "key": "screen_recording",
+   "label": "Screen and audio recording",
+   "why": "QuickTime's main non-playback use"
+  },
+  {
+   "key": "hdr_dolby_vision",
+   "label": "HDR / Dolby Vision playback",
+   "why": "Prominent in Infuse and Movist"
+  },
+  {
+   "key": "casting",
+   "label": "Casts to TV (AirPlay, DLNA, Chromecast)",
+   "why": "Every player in this group advertises it; buyers compare on it"
+  },
+  {
+   "key": "resume_playback",
+   "label": "Resumes where you stopped",
+   "why": "Standard in video players, frequently searched"
+  },
+  {
+   "key": "vr_3d",
+   "label": "3D and 360° VR video",
+   "why": "PotPlayer, KMPlayer and GOM all advertise it prominently"
+  },
+  {
+   "key": "ab_repeat",
+   "label": "A-B repeat of a section",
+   "why": "Core feature in PotPlayer, KMPlayer, GOM, used for learning/music practice"
+  },
+  {
+   "key": "ai_subtitles",
+   "label": "Subtitles generated from speech (AI)",
+   "why": "PotPlayer (Whisper) and GOM (AI subtitle generation) both have it"
+  },
+  {
+   "key": "ads_free_tier",
+   "label": "No ads in the free version",
+   "why": "Separates KMPlayer 32-bit / GOM free (ads) from 64X/PotPlayer; currently folded into no_account_no_tracking"
+  },
+  {
+   "key": "pdf_tools",
+   "label": "Annotate / sign PDFs",
+   "why": "Preview's main strength; fair to show"
+  },
+  {
+   "key": "face_search",
+   "label": "Search by faces / content",
+   "why": "Photos and Google Photos main strength"
+  },
+  {
+   "key": "phone_sync",
+   "label": "Syncs with your phone",
+   "why": "key reason people use Photos/Google Photos"
+  },
+  {
+   "key": "pdf_reading",
+   "label": "Reads PDF as a book",
+   "why": "Every comic reader here reads PDF; separate from SVG which almost none support"
+  },
+  {
+   "key": "page_spread_rtl",
+   "label": "Right-to-left reading",
+   "why": "manga_two_page mixes two features; comic readers differ less than the combined row suggests"
+  },
+  {
+   "key": "opds",
+   "label": "OPDS / comic server (Komga, Kavita)",
+   "why": "Key differentiator among comic readers (Panels, OpenComic, YACReader server)"
+  },
+  {
+   "key": "text_ocr",
+   "label": "Select text on pages (Live Text / OCR)",
+   "why": "Simple Comic and Panels offer it"
+  },
+  {
+   "key": "remote_connections",
+   "label": "Connects to SFTP/FTP/cloud servers",
+   "why": "Core feature of all file managers in this group; Schnellbild leaves it out on purpose (no network), so it could be yellow"
+  },
+  {
+   "key": "folder_sync",
+   "label": "Folder compare / sync",
+   "why": "ForkLift, Path Finder, QSpace offer it; frequent reason to pick a file manager"
+  },
+  {
+   "key": "quick_view_pane",
+   "label": "Quick view of the file under the cursor in the other pane",
+   "why": "Core orthodox file manager feature (Ctrl+Q); Schnellbild dual pane could answer it"
+  },
+  {
+   "key": "ftp_sftp",
+   "label": "Built-in FTP/SFTP client",
+   "why": "All file managers in this group have it; would be a fair intentional omission for Schnellbild"
+  },
+  {
+   "key": "plugin_system",
+   "label": "Plugin system",
+   "why": "Total Commander/Double Commander/Opus depend on plugins for many viewer formats"
+  },
+  {
+   "key": "folder_sync_compare",
+   "label": "Compare / synchronize folders",
+   "why": "Standard in this category"
+  },
+  {
+   "key": "no_subscription",
+   "label": "No subscription (one-time or free)",
+   "why": "Photo Mechanic and Bridge (paid Camera Raw) tie key features to plans"
+  },
+  {
+   "key": "no_cache_or_database_setup",
+   "label": "Nothing to set up before looking (no collection scan, no cache build)",
+   "why": "digiKam needs collections scanned into a database; separates viewers from managers better than folder_browsing alone"
+  },
+  {
+   "key": "ingest_from_cards",
+   "label": "Copy from memory cards (ingest)",
+   "why": "Core strength of all three photo managers"
+  }
+ ]
+}

@@ -1,6 +1,7 @@
 {
   "name": "Nederlands",
   "privacySlug": "privacy",
+  "alternativesSlug": "alternatieven",
   "title": "Schnellbild: een fotoviewer en videospeler voor macOS waar je niet gek van wordt",
   "seoTitle": "Schnellbild · gratis fotoviewer en MKV-player voor de Mac",
   "seoDescription": "Snelle, gratis fotoviewer voor de Mac, speelt ook MKV, AVI en WebM: miniaturen, diavoorstelling, ZIP en RAR als mappen. Alternatief voor IrfanView en XnView.",
@@ -140,7 +141,10 @@
   ],
   "safeMore": "Wat hij precies doet, en waar de grens ligt (in het Engels): <a href=\"https://github.com/JohannesHoppe/schnellbild#safe-with-files-from-others\">Veilig met bestanden van anderen</a>.",
   "modelsTitle": "Kom je van Phiewer, IINA of Norton Commander?",
-  "modelsText": "Phiewer is een snelle fotoviewer met een betaalde PRO-versie, IINA een volwaardige speler om video’s te kijken; beide stonden model voor Schnellbild, net als Norton Commander voor de twee panelen. Schnellbild brengt de foto’s en video’s in je mappen samen in één gratis app, als je wilt met de toetsen zoals in Phiewer. Hoe Schnellbild zich daartoe verhoudt (in het Engels): <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-phiewer-alternative\">een gratis alternatief voor Phiewer</a>, <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-iina-alternative-for-looking-through-videos\">een gratis alternatief voor IINA om video’s door te kijken</a>.",
+  "modelsText": "Phiewer is een snelle fotoviewer met een betaalde PRO-versie, IINA een volwaardige speler om video’s te kijken; beide stonden model voor Schnellbild, net als Norton Commander voor de twee panelen. Schnellbild brengt de foto’s en video’s in je mappen samen in één gratis app, als je wilt met de toetsen zoals in Phiewer. Hoe Schnellbild zich daartoe verhoudt: <a href=\"{alt:phiewer}\">een gratis alternatief voor Phiewer</a>, <a href=\"{alt:iina}\">een gratis alternatief voor IINA om video’s door te kijken</a>, <a href=\"{alt:norton-commander}\">van Norton Commander naar de Mac</a>.",
+  "altTitle": "Op zoek naar een alternatief?",
+  "altText": "Zo verhoudt Schnellbild zich tot de programma’s die mensen op de Mac zoeken, functie voor functie en met een bron voor elke bewering:",
+  "altAll": "Alle alternatieven",
   "ossTitle": "Open source",
   "ossText": "Schnellbild is vrije software onder de MIT-licentie, de broncode staat <a href=\"https://github.com/JohannesHoppe/schnellbild\">op GitHub</a>. Een bug gevonden of mis je iets? <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">Open een issue</a>.",
   "languagesText": "In de taal van je Mac:",
@@ -149,6 +153,7 @@
   "footerPrivacy": "Privacy",
   "footerImprint": "Juridische informatie (Impressum)",
   "footerEula": "Licentieovereenkomst",
+  "footerAlternatives": "Alternatieven",
   "privacy": {
     "title": "Privacyverklaring",
     "description": "Schnellbild verzamelt geen persoonsgegevens: geen account, geen analytics, geen tracking, geen netwerktoegang.",

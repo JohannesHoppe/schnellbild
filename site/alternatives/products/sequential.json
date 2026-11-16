@@ -1,0 +1,585 @@
+{
+ "name": "Sequential",
+ "short": "Sequential",
+ "vendor": "chuchusoft (maintained fork); original by Ben Trask / The Sequential Project",
+ "website": "https://github.com/chuchusoft/Sequential",
+ "platforms": [
+  "macOS"
+ ],
+ "mac_available": "yes",
+ "page": "matrix",
+ "section": "comic",
+ "price": "free",
+ "license": "open source, BSD-3-Clause-style (The Sequential Project)",
+ "current_version": "2.6.0",
+ "last_update": "2024-09-07",
+ "engine": "AppKit/ImageIO + PDFKit, XADMaster for archives; no video",
+ "category": "comic",
+ "summary": "Sequential is a classic open-source Mac image and comic viewer that opens folders, PDFs and archives (ZIP/CBZ, RAR/CBR, 7z) and pages through them in one window. The chuchusoft fork modernised it as a Universal app for macOS 11.4+ on Apple silicon; the maintainer says further development is unlikely. The original btrask/Sequential was last updated in 2013.",
+ "where_it_wins": [
+  "Reads PDFs page by page with Go to Page and an Invert Colors mode",
+  "Right-to-left reading direction for manga",
+  "Pause/Resume bookmarks a reading position inside an archive",
+  "Many archive formats through XADMaster, including split 7z",
+  "Runs on older macOS (10.14 Intel / 11.4 Apple silicon)"
+ ],
+ "where_schnellbild_wins": [
+  "Plays videos, including MKV/AVI/WebM and videos inside archives",
+  "Full thumbnail grid and list view instead of a sidebar",
+  "Rename, move/copy, two panes, undo",
+  "App Sandbox, no network, notarized and attested builds (Sequential needs the quarantine flag removed)",
+  "Actively developed; AVIF/JPEG XL support",
+  "Light/dark setting independent of the system"
+ ],
+ "search_terms": [
+  "sequential mac",
+  "sequential image viewer",
+  "sequential alternative",
+  "sequential apple silicon",
+  "sequential comic reader mac",
+  "sequential app download"
+ ],
+ "matrix": {
+  "free": {
+   "value": "yes",
+   "note": "Free, no paid tier",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential",
+    "https://github.com/chuchusoft/Sequential/releases/tag/v2.6.0"
+   ],
+   "how": "source"
+  },
+  "open_source": {
+   "value": "yes",
+   "note": "BSD-3-Clause-style license (The Sequential Project); fork of btrask/Sequential",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential/blob/main/License.txt",
+    "https://github.com/btrask/Sequential"
+   ],
+   "how": "source"
+  },
+  "native_apple_silicon": {
+   "value": "yes",
+   "note": "Universal build, macOS 11.4+ on Apple silicon",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential"
+   ],
+   "how": "source"
+  },
+  "no_account_no_tracking": {
+   "value": "yes",
+   "note": "No account, ads or analytics in source",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential",
+    "https://github.com/chuchusoft/Sequential/blob/main/Sequential.xcodeproj/project.pbxproj"
+   ],
+   "how": "source"
+  },
+  "dark_light_setting": {
+   "value": "no",
+   "note": "Follows system appearance; preferences only offer background colour/checkerboard",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential/blob/main/Resources/en.lproj/PGPreference.strings",
+    "https://github.com/chuchusoft/Sequential/blob/main/History.txt"
+   ],
+   "how": "source"
+  },
+  "languages_20": {
+   "value": "partial",
+   "note": "12 UI localizations: de en es fr it ja nl pl pt_BR ru sv zh_TW",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential/tree/main/Resources"
+   ],
+   "how": "source"
+  },
+  "folder_browsing": {
+   "value": "yes",
+   "note": "Opens folders, PDFs and archives directly, no library",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential"
+   ],
+   "how": "source"
+  },
+  "thumbnail_grid": {
+   "value": "partial",
+   "note": "Thumbnail sidebar columns (folder/archive/PDF entries with sizes, PDF first-page thumbnail), not a full-window grid",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential/blob/main/History.txt"
+   ],
+   "how": "source"
+  },
+  "list_view": {
+   "value": "no",
+   "note": "No list view with columns",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential/blob/main/Resources/en.lproj/PGMenu.strings"
+   ],
+   "how": "source"
+  },
+  "recursive_search": {
+   "value": "partial",
+   "note": "Edit > Find searches page names inside the opened document (folder tree/archive), not a file-system search",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential/blob/main/Resources/en.lproj/PGMenu.strings",
+    "https://github.com/chuchusoft/Sequential/blob/main/History.txt"
+   ],
+   "how": "source"
+  },
+  "regex_search": {
+   "value": "no",
+   "note": "Plain name search only",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential/blob/main/Resources/en.lproj/PGMenu.strings"
+   ],
+   "how": "source"
+  },
+  "network_shares_fast": {
+   "value": "partial",
+   "note": "Works from mounted server volumes; 2.6.0 stops mounting offline servers to keep UI responsive; no special network caching",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential/blob/main/History.txt"
+   ],
+   "how": "changelog"
+  },
+  "multiple_windows": {
+   "value": "yes",
+   "note": "One window per opened document, Select Next/Previous Document",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential/blob/main/Resources/en.lproj/PGMenu.strings"
+   ],
+   "how": "source"
+  },
+  "bookmarks": {
+   "value": "partial",
+   "note": "Pause/Resume bookmarks a position in a document; no folder favourites",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential/blob/main/Resources/en.lproj/PGMenu.strings",
+    "https://github.com/chuchusoft/Sequential/blob/main/History.txt"
+   ],
+   "how": "source"
+  },
+  "img_modern_formats": {
+   "value": "partial",
+   "note": "HEIC/HEIF and WebP declared (2.3.0); AVIF and JPEG XL not in document types",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential/blob/main/Info.plist",
+    "https://github.com/chuchusoft/Sequential/blob/main/History.txt"
+   ],
+   "how": "source"
+  },
+  "img_raw": {
+   "value": "yes",
+   "note": "CR2, NEF, ARW, DNG, ORF, RAF, PEF etc. via macOS ImageIO",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential/blob/main/Info.plist"
+   ],
+   "how": "source"
+  },
+  "img_psd_exr": {
+   "value": "yes",
+   "note": "psd and exr declared, decoded by ImageIO",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential/blob/main/Info.plist"
+   ],
+   "how": "source"
+  },
+  "img_svg_pdf": {
+   "value": "partial",
+   "note": "PDF fully (pages, Go to Page); SVG declared in document types, rendering depends on macOS",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential/blob/main/Info.plist",
+    "https://github.com/chuchusoft/Sequential/blob/main/History.txt"
+   ],
+   "how": "source"
+  },
+  "img_animated": {
+   "value": "partial",
+   "note": "Animated GIF (Turn Animation On, pause with space); APNG/animated WebP not documented",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential/blob/main/Resources/en.lproj/PGMenu.strings",
+    "https://github.com/chuchusoft/Sequential/blob/main/History.txt"
+   ],
+   "how": "source"
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "note": "Next/Previous/First/Last, folder skipping, page left/right",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential/blob/main/Resources/en.lproj/PGMenu.strings",
+    "https://github.com/chuchusoft/Sequential/blob/main/Resources/en.lproj/PGPreference.strings"
+   ],
+   "how": "source"
+  },
+  "zoom_rotate": {
+   "value": "yes",
+   "note": "Zoom, fit modes, 90/180 rotation, mirror, free rotation gesture",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential/blob/main/Resources/en.lproj/PGMenu.strings",
+    "https://github.com/chuchusoft/Sequential/blob/main/History.txt"
+   ],
+   "how": "source"
+  },
+  "slideshow": {
+   "value": "yes",
+   "note": "Timer panel advances images; Shuffle and Repeat modes",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential/blob/main/Resources/en.lproj/PGMenu.strings",
+    "https://github.com/chuchusoft/Sequential/blob/main/History.txt"
+   ],
+   "how": "source"
+  },
+  "slideshow_recursive": {
+   "value": "partial",
+   "note": "Timer walks the whole document tree incl. subfolders and archives, but images only (no video)",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential/blob/main/Resources/en.lproj/PGMenu.strings",
+    "https://github.com/chuchusoft/Sequential"
+   ],
+   "how": "source"
+  },
+  "auto_enhance_view": {
+   "value": "no",
+   "note": "Only Invert Colors view toggle (2.6.0)",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential/blob/main/History.txt"
+   ],
+   "how": "source"
+  },
+  "file_info_exif": {
+   "value": "partial",
+   "note": "Inspector shows EXIF/image properties; no video",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential/blob/main/Resources/en.lproj/PGMenu.strings",
+    "https://github.com/chuchusoft/Sequential/blob/main/History.txt"
+   ],
+   "how": "source"
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "note": "No such check found in menus/history",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential/blob/main/History.txt"
+   ],
+   "how": "source"
+  },
+  "video_native": {
+   "value": "no",
+   "note": "No video document types; image/comic viewer only",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential/blob/main/Info.plist"
+   ],
+   "how": "source"
+  },
+  "video_mkv_avi_webm": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential/blob/main/Info.plist"
+   ],
+   "how": "source"
+  },
+  "photos_videos_one_grid": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential/blob/main/Info.plist"
+   ],
+   "how": "source"
+  },
+  "video_skim_arrows": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential/blob/main/Info.plist"
+   ],
+   "how": "source"
+  },
+  "subtitles_embedded": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential/blob/main/Info.plist"
+   ],
+   "how": "source"
+  },
+  "subtitles_external_files": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential/blob/main/Info.plist"
+   ],
+   "how": "source"
+  },
+  "audio_track_choice": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential/blob/main/Info.plist"
+   ],
+   "how": "source"
+  },
+  "playback_speed": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential/blob/main/Info.plist"
+   ],
+   "how": "source"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential/blob/main/Info.plist"
+   ],
+   "how": "source"
+  },
+  "playlist": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential/blob/main/Info.plist"
+   ],
+   "how": "source"
+  },
+  "saved_playlists": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential/blob/main/Info.plist"
+   ],
+   "how": "source"
+  },
+  "pip": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential/blob/main/Info.plist"
+   ],
+   "how": "source"
+  },
+  "music_mode": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential/blob/main/Info.plist"
+   ],
+   "how": "source"
+  },
+  "streaming_urls": {
+   "value": "partial",
+   "note": "No streams, but File > Open URL loads images/web pages from the internet (README: HTML URLs may not work)",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential/blob/main/Resources/en.lproj/PGMenu.strings",
+    "https://github.com/chuchusoft/Sequential"
+   ],
+   "how": "source"
+  },
+  "online_subtitles": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential/blob/main/Info.plist"
+   ],
+   "how": "source"
+  },
+  "video_filters_enhance": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential/blob/main/Info.plist"
+   ],
+   "how": "source"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential/blob/main/Info.plist"
+   ],
+   "how": "source"
+  },
+  "archives_as_folders": {
+   "value": "yes",
+   "note": "ZIP, RAR, 7z (and more via XADMaster) browsed like folders",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential",
+    "https://github.com/chuchusoft/Sequential/blob/main/Info.plist"
+   ],
+   "how": "source"
+  },
+  "comics_cbz_cbr": {
+   "value": "yes",
+   "note": "CBZ, CBR",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential",
+    "https://github.com/chuchusoft/Sequential/blob/main/Info.plist"
+   ],
+   "how": "source"
+  },
+  "archive_passwords": {
+   "value": "yes",
+   "note": "Password-protected archives supported (original changelog entries kept in History)",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential/blob/main/History.txt"
+   ],
+   "how": "changelog"
+  },
+  "split_archives": {
+   "value": "partial",
+   "note": "Split 7-Zip (.7z.001) since 2.4.0; split RAR/ZIP not documented",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential/blob/main/History.txt",
+    "https://github.com/chuchusoft/Sequential/blob/main/Info.plist"
+   ],
+   "how": "changelog"
+  },
+  "videos_in_archives": {
+   "value": "no",
+   "note": "No video playback at all",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential/blob/main/Info.plist"
+   ],
+   "how": "source"
+  },
+  "manga_two_page": {
+   "value": "partial",
+   "note": "Right to Left reading direction; no two-page spread",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential/blob/main/Resources/en.lproj/PGMenu.strings"
+   ],
+   "how": "source"
+  },
+  "rename_trash": {
+   "value": "partial",
+   "note": "Move to Trash for local images; no rename or new folder",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential/blob/main/Resources/en.lproj/PGMenu.strings",
+    "https://github.com/chuchusoft/Sequential/blob/main/History.txt"
+   ],
+   "how": "source"
+  },
+  "move_copy": {
+   "value": "partial",
+   "note": "Save Images To… copies/extracts images out; Edit > Copy; no move",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential/blob/main/Resources/en.lproj/PGMenu.strings",
+    "https://github.com/chuchusoft/Sequential/blob/main/History.txt"
+   ],
+   "how": "source"
+  },
+  "dual_pane": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential/blob/main/Resources/en.lproj/PGMenu.strings"
+   ],
+   "how": "source"
+  },
+  "undo_file_actions": {
+   "value": "no",
+   "note": "Undo/Redo menu entries are standard edit items; no undo for trash documented",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential/blob/main/Resources/en.lproj/PGMenu.strings"
+   ],
+   "how": "source"
+  },
+  "image_editing": {
+   "value": "no",
+   "note": "View-only (rotation/mirror not saved)",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential/blob/main/Resources/en.lproj/PGMenu.strings"
+   ],
+   "how": "source"
+  },
+  "batch_convert": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential/blob/main/Resources/en.lproj/PGMenu.strings"
+   ],
+   "how": "source"
+  },
+  "library_catalog": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential"
+   ],
+   "how": "source"
+  },
+  "cloud_sync": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential"
+   ],
+   "how": "source"
+  },
+  "keyboard_first": {
+   "value": "yes",
+   "note": "Keyboard navigation, zoom and folder jumps; thumbnail sidebar takes keyboard focus",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential/blob/main/Resources/en.lproj/PGMenu.strings",
+    "https://github.com/chuchusoft/Sequential/blob/main/History.txt"
+   ],
+   "how": "source"
+  },
+  "custom_shortcuts": {
+   "value": "no",
+   "note": "Fixed shortcuts (only via macOS App Shortcuts)",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential/blob/main/Resources/en.lproj/PGMenu.strings"
+   ],
+   "how": "source"
+  },
+  "shortcut_cheatsheet": {
+   "value": "partial",
+   "note": "Help > Keyboard Shortcuts opens a help page listing keys; no printable sheet",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential/blob/main/Resources/en.lproj/PGMenu.strings"
+   ],
+   "how": "source"
+  },
+  "boss_key": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential/blob/main/Resources/en.lproj/PGMenu.strings"
+   ],
+   "how": "source"
+  },
+  "app_sandbox": {
+   "value": "no",
+   "note": "No entitlements / App Sandbox in the Xcode project",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential/blob/main/Sequential.xcodeproj/project.pbxproj"
+   ],
+   "how": "source"
+  },
+  "no_network": {
+   "value": "no",
+   "note": "Open URL… fetches from the web on request; otherwise local",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential/blob/main/Resources/en.lproj/PGMenu.strings"
+   ],
+   "how": "source"
+  },
+  "notarized_attested": {
+   "value": "no",
+   "note": "Not notarized: release notes tell users to remove the quarantine attribute; no build attestation",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential/releases/tag/v2.6.0"
+   ],
+   "how": "source"
+  },
+  "mac_app_store": {
+   "value": "no",
+   "note": "GitHub release .tar.xz only",
+   "evidence": [
+    "https://github.com/chuchusoft/Sequential/releases/tag/v2.6.0"
+   ],
+   "how": "source"
+  }
+ }
+}

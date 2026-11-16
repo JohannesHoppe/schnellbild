@@ -1,0 +1,595 @@
+{
+ "name": "qView",
+ "short": "qView",
+ "vendor": "jurplel / Interverse",
+ "website": "https://interversehq.com/qview/",
+ "platforms": [
+  "macOS",
+  "Windows",
+  "Linux"
+ ],
+ "mac_available": "yes",
+ "page": "matrix",
+ "section": "image",
+ "price": "free",
+ "license": "open source (GPL-3.0)",
+ "current_version": "7.1",
+ "last_update": "2025-07-26 (release; nightly builds continue, last 2026-11-04)",
+ "engine": "Qt 6 (QImageReader, KImageFormats plugins)",
+ "category": "image",
+ "summary": "qView is a minimal, cross-platform image viewer with no toolbars: it opens a single file and lets you page through the rest of the folder. It starts fast, preloads neighbouring images and supports animated images and many formats via Qt plugins. It is a good pick for people who only want a clean viewer.",
+ "where_it_wins": [
+  "Extremely minimal, chrome-less window",
+  "Runs on Windows and Linux too, and on older macOS (10.13+ legacy build)",
+  "Animated image frame stepping and speed control",
+  "Open an image straight from a URL"
+ ],
+ "where_schnellbild_wins": [
+  "Thumbnail grid, list view and folder browsing with search through subfolders",
+  "Plays videos (incl. MKV/WebM/AVI via VLC) next to photos in one grid",
+  "Archives and comics open as folders",
+  "Camera RAW and PDF",
+  "File management: move, copy, two panes, undo",
+  "App Sandbox without network access",
+  "Slideshow through all subfolders with photos and videos"
+ ],
+ "search_terms": [
+  "qview mac",
+  "qview alternative",
+  "qview image viewer mac",
+  "minimal image viewer mac",
+  "qview alternative mac"
+ ],
+ "matrix": {
+  "free": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://interversehq.com/qview/"
+   ],
+   "how": "docs"
+  },
+  "open_source": {
+   "value": "yes",
+   "note": "GPL-3.0.",
+   "evidence": [
+    "https://github.com/jurplel/qView"
+   ],
+   "how": "source"
+  },
+  "native_apple_silicon": {
+   "value": "yes",
+   "note": "Main DMG is a Universal build (macOS 12+); separate x64 'legacy' DMG for 10.13+.",
+   "evidence": [
+    "https://github.com/jurplel/qView/blob/main/.github/workflows/build.yml",
+    "https://interversehq.com/qview/download/"
+   ],
+   "how": "source"
+  },
+  "no_account_no_tracking": {
+   "value": "yes",
+   "note": "No account or telemetry; only an opt-in update check.",
+   "evidence": [
+    "https://github.com/jurplel/qView/blob/main/src/updatechecker.cpp",
+    "https://github.com/jurplel/qView/blob/main/src/settingsmanager.cpp"
+   ],
+   "how": "source"
+  },
+  "dark_light_setting": {
+   "value": "partial",
+   "note": "Configurable background colour and a 'force dark mode' title-bar setting; the UI is almost chrome-less, no full light/dark theme.",
+   "evidence": [
+    "https://github.com/jurplel/qView/blob/main/src/settingsmanager.cpp"
+   ],
+   "how": "source"
+  },
+  "languages_20": {
+   "value": "yes",
+   "note": "29 translations.",
+   "evidence": [
+    "https://github.com/jurplel/qView/tree/main/i18n"
+   ],
+   "how": "source"
+  },
+  "folder_browsing": {
+   "value": "partial",
+   "note": "Opens a file and pages through its folder; no folder browser.",
+   "evidence": [
+    "https://github.com/jurplel/qView/blob/main/src/actionmanager.cpp"
+   ],
+   "how": "source"
+  },
+  "thumbnail_grid": {
+   "value": "no",
+   "note": "No thumbnails or gallery.",
+   "evidence": [
+    "https://interversehq.com/qview/",
+    "https://github.com/jurplel/qView/blob/main/src/actionmanager.cpp"
+   ],
+   "how": "source"
+  },
+  "list_view": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/jurplel/qView/blob/main/src/actionmanager.cpp"
+   ],
+   "how": "source"
+  },
+  "recursive_search": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/jurplel/qView/blob/main/src/actionmanager.cpp"
+   ],
+   "how": "source"
+  },
+  "regex_search": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/jurplel/qView/blob/main/src/actionmanager.cpp"
+   ],
+   "how": "source"
+  },
+  "network_shares_fast": {
+   "value": "no",
+   "note": "Users report hangs and long load times on SMB/NAS and network drives (issues #488, #678).",
+   "evidence": [
+    "https://github.com/jurplel/qView/issues/488",
+    "https://github.com/jurplel/qView/issues/678"
+   ],
+   "how": "forum"
+  },
+  "multiple_windows": {
+   "value": "yes",
+   "note": "'New window' action.",
+   "evidence": [
+    "https://github.com/jurplel/qView/blob/main/src/actionmanager.cpp"
+   ],
+   "how": "source"
+  },
+  "bookmarks": {
+   "value": "no",
+   "note": "Recent files only.",
+   "evidence": [
+    "https://github.com/jurplel/qView/blob/main/src/actionmanager.cpp",
+    "https://github.com/jurplel/qView/blob/main/src/settingsmanager.cpp"
+   ],
+   "how": "source"
+  },
+  "img_modern_formats": {
+   "value": "yes",
+   "note": "WebP via Qt; AVIF, HEIC, JXL via bundled KImageFormats plugins.",
+   "evidence": [
+    "https://github.com/jurplel/qView/blob/main/dist/mac/Info.plist.in",
+    "https://github.com/jurplel/qView/blob/main/dist/scripts/download-plugins.ps1",
+    "https://github.com/jurplel/qView/blob/main/dist/scripts/macdeploy.sh"
+   ],
+   "how": "source"
+  },
+  "img_raw": {
+   "value": "no",
+   "note": "No RAW types registered.",
+   "evidence": [
+    "https://github.com/jurplel/qView/blob/main/dist/mac/Info.plist.in"
+   ],
+   "how": "source"
+  },
+  "img_psd_exr": {
+   "value": "yes",
+   "note": "PSD and EXR via KImageFormats.",
+   "evidence": [
+    "https://github.com/jurplel/qView/blob/main/dist/mac/Info.plist.in",
+    "https://github.com/jurplel/qView/blob/main/dist/scripts/download-plugins.ps1"
+   ],
+   "how": "source"
+  },
+  "img_svg_pdf": {
+   "value": "partial",
+   "note": "SVG yes, no PDF.",
+   "evidence": [
+    "https://github.com/jurplel/qView/blob/main/dist/mac/Info.plist.in"
+   ],
+   "how": "source"
+  },
+  "img_animated": {
+   "value": "yes",
+   "note": "GIF, APNG, animated WebP with frame/speed controls.",
+   "evidence": [
+    "https://github.com/jurplel/qView/blob/main/dist/mac/Info.plist.in",
+    "https://github.com/jurplel/qView/blob/main/dist/scripts/download-plugins.ps1",
+    "https://github.com/jurplel/qView/blob/main/src/actionmanager.cpp"
+   ],
+   "how": "source"
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "note": "First/previous/next/last/random file.",
+   "evidence": [
+    "https://github.com/jurplel/qView/blob/main/src/actionmanager.cpp"
+   ],
+   "how": "source"
+  },
+  "zoom_rotate": {
+   "value": "yes",
+   "note": "Zoom, rotate, mirror, flip.",
+   "evidence": [
+    "https://github.com/jurplel/qView/blob/main/src/actionmanager.cpp"
+   ],
+   "how": "source"
+  },
+  "slideshow": {
+   "value": "yes",
+   "note": "Timer setting, reversible.",
+   "evidence": [
+    "https://github.com/jurplel/qView/blob/main/src/actionmanager.cpp",
+    "https://github.com/jurplel/qView/blob/main/src/settingsmanager.cpp"
+   ],
+   "how": "source"
+  },
+  "slideshow_recursive": {
+   "value": "no",
+   "note": "Current folder only; images only.",
+   "evidence": [
+    "https://github.com/jurplel/qView/blob/main/src/settingsmanager.cpp"
+   ],
+   "how": "source"
+  },
+  "auto_enhance_view": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/jurplel/qView/blob/main/src/settingsmanager.cpp"
+   ],
+   "how": "source"
+  },
+  "file_info_exif": {
+   "value": "partial",
+   "note": "Info dialog shows file size and dimensions; no EXIF.",
+   "evidence": [
+    "https://github.com/jurplel/qView/blob/main/src/qvinfodialog.cpp"
+   ],
+   "how": "source"
+  },
+  "wrong_extension_note": {
+   "value": "partial",
+   "note": "Optional MIME content detection opens files by content but does not flag the mismatch.",
+   "evidence": [
+    "https://github.com/jurplel/qView/blob/main/src/settingsmanager.cpp"
+   ],
+   "how": "source"
+  },
+  "video_native": {
+   "value": "no",
+   "note": "Image viewer only, no video playback.",
+   "evidence": [
+    "https://interversehq.com/qview/",
+    "https://github.com/jurplel/qView/blob/main/dist/mac/Info.plist.in"
+   ],
+   "how": "source"
+  },
+  "video_mkv_avi_webm": {
+   "value": "no",
+   "note": "Image viewer only, no video playback.",
+   "evidence": [
+    "https://interversehq.com/qview/",
+    "https://github.com/jurplel/qView/blob/main/dist/mac/Info.plist.in"
+   ],
+   "how": "source"
+  },
+  "photos_videos_one_grid": {
+   "value": "no",
+   "note": "Image viewer only, no video playback.",
+   "evidence": [
+    "https://interversehq.com/qview/",
+    "https://github.com/jurplel/qView/blob/main/dist/mac/Info.plist.in"
+   ],
+   "how": "source"
+  },
+  "video_skim_arrows": {
+   "value": "no",
+   "note": "Image viewer only, no video playback.",
+   "evidence": [
+    "https://interversehq.com/qview/",
+    "https://github.com/jurplel/qView/blob/main/dist/mac/Info.plist.in"
+   ],
+   "how": "source"
+  },
+  "subtitles_embedded": {
+   "value": "no",
+   "note": "Image viewer only, no video playback.",
+   "evidence": [
+    "https://interversehq.com/qview/",
+    "https://github.com/jurplel/qView/blob/main/dist/mac/Info.plist.in"
+   ],
+   "how": "source"
+  },
+  "subtitles_external_files": {
+   "value": "no",
+   "note": "Image viewer only, no video playback.",
+   "evidence": [
+    "https://interversehq.com/qview/",
+    "https://github.com/jurplel/qView/blob/main/dist/mac/Info.plist.in"
+   ],
+   "how": "source"
+  },
+  "audio_track_choice": {
+   "value": "no",
+   "note": "Image viewer only, no video playback.",
+   "evidence": [
+    "https://interversehq.com/qview/",
+    "https://github.com/jurplel/qView/blob/main/dist/mac/Info.plist.in"
+   ],
+   "how": "source"
+  },
+  "playback_speed": {
+   "value": "no",
+   "note": "No video; speed control exists only for animated images.",
+   "evidence": [
+    "https://interversehq.com/qview/",
+    "https://github.com/jurplel/qView/blob/main/dist/mac/Info.plist.in"
+   ],
+   "how": "source"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "note": "Image viewer only, no video playback.",
+   "evidence": [
+    "https://interversehq.com/qview/",
+    "https://github.com/jurplel/qView/blob/main/dist/mac/Info.plist.in"
+   ],
+   "how": "source"
+  },
+  "playlist": {
+   "value": "no",
+   "note": "Image viewer only, no video playback.",
+   "evidence": [
+    "https://interversehq.com/qview/",
+    "https://github.com/jurplel/qView/blob/main/dist/mac/Info.plist.in"
+   ],
+   "how": "source"
+  },
+  "saved_playlists": {
+   "value": "no",
+   "note": "Image viewer only, no video playback.",
+   "evidence": [
+    "https://interversehq.com/qview/",
+    "https://github.com/jurplel/qView/blob/main/dist/mac/Info.plist.in"
+   ],
+   "how": "source"
+  },
+  "pip": {
+   "value": "no",
+   "note": "Image viewer only, no video playback.",
+   "evidence": [
+    "https://interversehq.com/qview/",
+    "https://github.com/jurplel/qView/blob/main/dist/mac/Info.plist.in"
+   ],
+   "how": "source"
+  },
+  "music_mode": {
+   "value": "no",
+   "note": "Image viewer only, no video playback.",
+   "evidence": [
+    "https://interversehq.com/qview/",
+    "https://github.com/jurplel/qView/blob/main/dist/mac/Info.plist.in"
+   ],
+   "how": "source"
+  },
+  "streaming_urls": {
+   "value": "no",
+   "note": "'Open URL' loads a single image from the web; no streams.",
+   "evidence": [
+    "https://github.com/jurplel/qView/blob/main/src/actionmanager.cpp"
+   ],
+   "how": "source"
+  },
+  "online_subtitles": {
+   "value": "no",
+   "note": "Image viewer only, no video playback.",
+   "evidence": [
+    "https://interversehq.com/qview/",
+    "https://github.com/jurplel/qView/blob/main/dist/mac/Info.plist.in"
+   ],
+   "how": "source"
+  },
+  "video_filters_enhance": {
+   "value": "no",
+   "note": "Image viewer only, no video playback.",
+   "evidence": [
+    "https://interversehq.com/qview/",
+    "https://github.com/jurplel/qView/blob/main/dist/mac/Info.plist.in"
+   ],
+   "how": "source"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "note": "Image viewer only, no video playback.",
+   "evidence": [
+    "https://interversehq.com/qview/",
+    "https://github.com/jurplel/qView/blob/main/dist/mac/Info.plist.in"
+   ],
+   "how": "source"
+  },
+  "archives_as_folders": {
+   "value": "no",
+   "note": "No archive types registered.",
+   "evidence": [
+    "https://github.com/jurplel/qView/blob/main/dist/mac/Info.plist.in"
+   ],
+   "how": "source"
+  },
+  "comics_cbz_cbr": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/jurplel/qView/blob/main/dist/mac/Info.plist.in"
+   ],
+   "how": "source"
+  },
+  "archive_passwords": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/jurplel/qView/blob/main/dist/mac/Info.plist.in"
+   ],
+   "how": "source"
+  },
+  "split_archives": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/jurplel/qView/blob/main/dist/mac/Info.plist.in"
+   ],
+   "how": "source"
+  },
+  "videos_in_archives": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/jurplel/qView/blob/main/dist/mac/Info.plist.in"
+   ],
+   "how": "source"
+  },
+  "manga_two_page": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/jurplel/qView/blob/main/src/actionmanager.cpp"
+   ],
+   "how": "source"
+  },
+  "rename_trash": {
+   "value": "partial",
+   "note": "Rename and delete to trash; no new folder.",
+   "evidence": [
+    "https://github.com/jurplel/qView/blob/main/src/actionmanager.cpp"
+   ],
+   "how": "source"
+  },
+  "move_copy": {
+   "value": "no",
+   "note": "Copy/paste works on image data, not file moves.",
+   "evidence": [
+    "https://github.com/jurplel/qView/blob/main/src/actionmanager.cpp"
+   ],
+   "how": "source"
+  },
+  "dual_pane": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/jurplel/qView/blob/main/src/actionmanager.cpp"
+   ],
+   "how": "source"
+  },
+  "undo_file_actions": {
+   "value": "partial",
+   "note": "Undo delete (restore from trash) only.",
+   "evidence": [
+    "https://github.com/jurplel/qView/blob/main/src/actionmanager.cpp"
+   ],
+   "how": "source"
+  },
+  "image_editing": {
+   "value": "no",
+   "note": "View-only rotate/mirror; 'save frame as' for animations.",
+   "evidence": [
+    "https://github.com/jurplel/qView/blob/main/src/actionmanager.cpp"
+   ],
+   "how": "source"
+  },
+  "batch_convert": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/jurplel/qView/blob/main/src/actionmanager.cpp"
+   ],
+   "how": "source"
+  },
+  "library_catalog": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/jurplel/qView/blob/main/src/actionmanager.cpp"
+   ],
+   "how": "source"
+  },
+  "cloud_sync": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/jurplel/qView/blob/main/src/actionmanager.cpp"
+   ],
+   "how": "source"
+  },
+  "keyboard_first": {
+   "value": "yes",
+   "note": "Every action has a shortcut slot.",
+   "evidence": [
+    "https://github.com/jurplel/qView/blob/main/src/actionmanager.cpp"
+   ],
+   "how": "source"
+  },
+  "custom_shortcuts": {
+   "value": "yes",
+   "note": "Shortcut editor in options.",
+   "evidence": [
+    "https://github.com/jurplel/qView/blob/main/src/actionmanager.cpp"
+   ],
+   "how": "source"
+  },
+  "shortcut_cheatsheet": {
+   "value": "no",
+   "note": "Shortcuts are only shown in a table in the options dialog; no print or export code (no QPrinter).",
+   "evidence": [
+    "https://github.com/jurplel/qView/blob/main/src/qvoptionsdialog.ui"
+   ],
+   "how": "source"
+  },
+  "boss_key": {
+   "value": "no",
+   "note": "No such action.",
+   "evidence": [
+    "https://github.com/jurplel/qView/blob/main/src/actionmanager.cpp"
+   ],
+   "how": "source"
+  },
+  "app_sandbox": {
+   "value": "no",
+   "note": "Signed with hardened runtime, no sandbox entitlement.",
+   "evidence": [
+    "https://github.com/jurplel/qView/blob/main/dist/scripts/macdeploy.sh"
+   ],
+   "how": "source"
+  },
+  "no_network": {
+   "value": "no",
+   "note": "Update check (off by default) and 'Open URL'.",
+   "evidence": [
+    "https://github.com/jurplel/qView/blob/main/src/updatechecker.cpp",
+    "https://github.com/jurplel/qView/blob/main/src/settingsmanager.cpp",
+    "https://github.com/jurplel/qView/blob/main/src/actionmanager.cpp"
+   ],
+   "how": "source"
+  },
+  "notarized_attested": {
+   "value": "yes",
+   "note": "Release DMG built, signed and notarized in the public GitHub Actions workflow; no formal build attestation.",
+   "evidence": [
+    "https://github.com/jurplel/qView/blob/main/.github/workflows/build.yml",
+    "https://github.com/jurplel/qView/blob/main/dist/scripts/macdeploy.sh"
+   ],
+   "how": "source"
+  },
+  "mac_app_store": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://itunes.apple.com/search?term=qView&entity=macSoftware&limit=8"
+   ],
+   "how": "store"
+  }
+ }
+}

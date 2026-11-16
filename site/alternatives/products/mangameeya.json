@@ -1,0 +1,507 @@
+{
+ "name": "MangaMeeya",
+ "short": "MangaMeeya",
+ "vendor": "unknown (Japanese freeware author)",
+ "website": "",
+ "platforms": [
+  "Windows"
+ ],
+ "mac_available": "no",
+ "page": "switcher",
+ "section": "windows",
+ "price": "free",
+ "license": "proprietary freeware",
+ "current_version": "listed as 2.4 on AlternativeTo (discontinued)",
+ "last_update": "2006-06 (per AlternativeTo)",
+ "engine": "own, Susie plug-in compatible (CE)",
+ "category": "comic",
+ "summary": "Long the best-known manga reader on Windows: opens ZIP/RAR comics, also nested archives, with spreads, thumbnails, tabs and customisable keys. Discontinued with no official download; copies and the compact MangaMeeyaCE circulate on mirrors.",
+ "where_it_wins": [
+  "Familiar manga workflow for long-time users",
+  "Tabs and split windows over two monitors"
+ ],
+ "where_schnellbild_wins": [
+  "Officially available, maintained and signed",
+  "Native on Mac",
+  "Photos and videos, not only comics",
+  "Modern formats, file management, search"
+ ],
+ "search_terms": [
+  "mangameeya mac",
+  "manga meeya mac",
+  "mangameeya alternative",
+  "マンガミーヤ Mac",
+  "MangaMeeya Mac版",
+  "マンガミーヤ 代わり",
+  "マンガミーヤ 後継",
+  "Mac 画像ビューア",
+  "Mac 漫画ビューア zip",
+  "Mac 見開き ビューア",
+  "Mac 自炊 ビューア",
+  "Mac zip 画像 そのまま 見る",
+  "Mac rar 漫画 見る",
+  "Susie プラグイン Mac"
+ ],
+ "matrix": {
+  "free": {
+   "value": "yes",
+   "note": "freeware",
+   "evidence": [
+    "https://alternativeto.net/software/mangameeya/about/"
+   ],
+   "how": "review"
+  },
+  "open_source": {
+   "value": "no",
+   "note": "proprietary",
+   "evidence": [
+    "https://alternativeto.net/software/mangameeya/about/"
+   ],
+   "how": "review"
+  },
+  "native_apple_silicon": {
+   "value": "no",
+   "note": "Windows only",
+   "evidence": [
+    "https://alternativeto.net/software/mangameeya/about/"
+   ],
+   "how": "review"
+  },
+  "no_account_no_tracking": {
+   "value": "yes",
+   "evidence": [],
+   "how": "unverified",
+   "note": "No official documentation online (discontinued); AlternativeTo description and comments do not cover it"
+  },
+  "dark_light_setting": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "No official documentation online (discontinued); AlternativeTo description and comments do not cover it"
+  },
+  "languages_20": {
+   "value": "no",
+   "note": "Japanese program; version 2.4 exists in an English translation",
+   "evidence": [
+    "https://alternativeto.net/software/mangameeya/about/"
+   ],
+   "how": "review"
+  },
+  "folder_browsing": {
+   "value": "yes",
+   "note": "opens folders and archives directly, no install",
+   "evidence": [
+    "https://alternativeto.net/software/mangameeya/about/"
+   ],
+   "how": "review"
+  },
+  "thumbnail_grid": {
+   "value": "yes",
+   "note": "thumbnails",
+   "evidence": [
+    "https://alternativeto.net/software/mangameeya/about/"
+   ],
+   "how": "review"
+  },
+  "list_view": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "No official documentation online (discontinued); AlternativeTo description and comments do not cover it"
+  },
+  "recursive_search": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "No official documentation online (discontinued); AlternativeTo description and comments do not cover it"
+  },
+  "regex_search": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "No official documentation online (discontinued); AlternativeTo description and comments do not cover it"
+  },
+  "network_shares_fast": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "No official documentation online (discontinued); AlternativeTo description and comments do not cover it"
+  },
+  "multiple_windows": {
+   "value": "partial",
+   "note": "tabs and split windows over two monitors",
+   "evidence": [
+    "https://alternativeto.net/software/mangameeya/about/"
+   ],
+   "how": "review"
+  },
+  "bookmarks": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "No official documentation online (discontinued); AlternativeTo description and comments do not cover it"
+  },
+  "img_modern_formats": {
+   "value": "no",
+   "note": "2000s release; common formats only, more via Susie plug-ins",
+   "evidence": [
+    "https://alternativeto.net/software/mangameeya/about/",
+    "https://alternativeto.net/software/mangameeyace/about/"
+   ],
+   "how": "review"
+  },
+  "img_raw": {
+   "value": "partial",
+   "note": "No official documentation online (discontinued); AlternativeTo description and comments do not cover it",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "img_psd_exr": {
+   "value": "partial",
+   "note": "No official documentation online (discontinued); AlternativeTo description and comments do not cover it",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "img_svg_pdf": {
+   "value": "partial",
+   "note": "No official documentation online (discontinued); AlternativeTo description and comments do not cover it",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "img_animated": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "No official documentation online (discontinued); AlternativeTo description and comments do not cover it"
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "evidence": [
+    "https://alternativeto.net/software/mangameeya/about/"
+   ],
+   "how": "review"
+  },
+  "zoom_rotate": {
+   "value": "yes",
+   "evidence": [],
+   "how": "unverified",
+   "note": "No official documentation online (discontinued); AlternativeTo description and comments do not cover it"
+  },
+  "slideshow": {
+   "value": "partial",
+   "note": "continuous display",
+   "evidence": [
+    "https://alternativeto.net/software/mangameeya/about/"
+   ],
+   "how": "review"
+  },
+  "slideshow_recursive": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "No official documentation online (discontinued); AlternativeTo description and comments do not cover it"
+  },
+  "auto_enhance_view": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "No official documentation online (discontinued); AlternativeTo description and comments do not cover it"
+  },
+  "file_info_exif": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "No official documentation online (discontinued); AlternativeTo description and comments do not cover it"
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "No official documentation online (discontinued); AlternativeTo description and comments do not cover it"
+  },
+  "video_native": {
+   "value": "no",
+   "note": "image and comic viewer",
+   "evidence": [
+    "https://alternativeto.net/software/mangameeya/about/"
+   ],
+   "how": "review"
+  },
+  "video_mkv_avi_webm": {
+   "value": "no",
+   "note": "image and comic viewer",
+   "evidence": [
+    "https://alternativeto.net/software/mangameeya/about/"
+   ],
+   "how": "review"
+  },
+  "photos_videos_one_grid": {
+   "value": "no",
+   "note": "image and comic viewer",
+   "evidence": [
+    "https://alternativeto.net/software/mangameeya/about/"
+   ],
+   "how": "review"
+  },
+  "video_skim_arrows": {
+   "value": "no",
+   "note": "image and comic viewer",
+   "evidence": [
+    "https://alternativeto.net/software/mangameeya/about/"
+   ],
+   "how": "review"
+  },
+  "subtitles_embedded": {
+   "value": "no",
+   "note": "image and comic viewer",
+   "evidence": [
+    "https://alternativeto.net/software/mangameeya/about/"
+   ],
+   "how": "review"
+  },
+  "subtitles_external_files": {
+   "value": "no",
+   "note": "image and comic viewer",
+   "evidence": [
+    "https://alternativeto.net/software/mangameeya/about/"
+   ],
+   "how": "review"
+  },
+  "audio_track_choice": {
+   "value": "no",
+   "note": "image and comic viewer",
+   "evidence": [
+    "https://alternativeto.net/software/mangameeya/about/"
+   ],
+   "how": "review"
+  },
+  "playback_speed": {
+   "value": "no",
+   "note": "image and comic viewer",
+   "evidence": [
+    "https://alternativeto.net/software/mangameeya/about/"
+   ],
+   "how": "review"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "note": "image and comic viewer",
+   "evidence": [
+    "https://alternativeto.net/software/mangameeya/about/"
+   ],
+   "how": "review"
+  },
+  "playlist": {
+   "value": "no",
+   "note": "image and comic viewer",
+   "evidence": [
+    "https://alternativeto.net/software/mangameeya/about/"
+   ],
+   "how": "review"
+  },
+  "saved_playlists": {
+   "value": "no",
+   "note": "image and comic viewer",
+   "evidence": [
+    "https://alternativeto.net/software/mangameeya/about/"
+   ],
+   "how": "review"
+  },
+  "pip": {
+   "value": "no",
+   "note": "image and comic viewer",
+   "evidence": [
+    "https://alternativeto.net/software/mangameeya/about/"
+   ],
+   "how": "review"
+  },
+  "music_mode": {
+   "value": "no",
+   "note": "image and comic viewer",
+   "evidence": [
+    "https://alternativeto.net/software/mangameeya/about/"
+   ],
+   "how": "review"
+  },
+  "streaming_urls": {
+   "value": "no",
+   "note": "image and comic viewer",
+   "evidence": [
+    "https://alternativeto.net/software/mangameeya/about/"
+   ],
+   "how": "review"
+  },
+  "online_subtitles": {
+   "value": "no",
+   "note": "image and comic viewer",
+   "evidence": [
+    "https://alternativeto.net/software/mangameeya/about/"
+   ],
+   "how": "review"
+  },
+  "video_filters_enhance": {
+   "value": "no",
+   "note": "image and comic viewer",
+   "evidence": [
+    "https://alternativeto.net/software/mangameeya/about/"
+   ],
+   "how": "review"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "note": "Windows only",
+   "evidence": [
+    "https://alternativeto.net/software/mangameeya/about/"
+   ],
+   "how": "review"
+  },
+  "archives_as_folders": {
+   "value": "yes",
+   "note": "ZIP, RAR, archives inside archives",
+   "evidence": [
+    "https://alternativeto.net/software/mangameeya/about/"
+   ],
+   "how": "review"
+  },
+  "comics_cbz_cbr": {
+   "value": "yes",
+   "note": "CBZ, CBR",
+   "evidence": [
+    "https://alternativeto.net/software/mangameeya/about/"
+   ],
+   "how": "review"
+  },
+  "archive_passwords": {
+   "value": "yes",
+   "note": "Reads RAR/ZIP comics including password-protected ZIP or RAR archives",
+   "evidence": [
+    "https://alternativeto.net/software/mangameeya/about/"
+   ],
+   "how": "review"
+  },
+  "split_archives": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "No official documentation online (discontinued); AlternativeTo description and comments do not cover it"
+  },
+  "videos_in_archives": {
+   "value": "no",
+   "note": "image and comic viewer",
+   "evidence": [
+    "https://alternativeto.net/software/mangameeya/about/"
+   ],
+   "how": "review"
+  },
+  "manga_two_page": {
+   "value": "yes",
+   "note": "No official documentation online (discontinued); AlternativeTo description and comments do not cover it",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "rename_trash": {
+   "value": "partial",
+   "evidence": [],
+   "how": "unverified",
+   "note": "No official documentation online (discontinued); AlternativeTo description and comments do not cover it"
+  },
+  "move_copy": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "No official documentation online (discontinued); AlternativeTo description and comments do not cover it"
+  },
+  "dual_pane": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "No official documentation online (discontinued); AlternativeTo description and comments do not cover it"
+  },
+  "undo_file_actions": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "No official documentation online (discontinued); AlternativeTo description and comments do not cover it"
+  },
+  "image_editing": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "No official documentation online (discontinued); AlternativeTo description and comments do not cover it"
+  },
+  "batch_convert": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "No official documentation online (discontinued); AlternativeTo description and comments do not cover it"
+  },
+  "library_catalog": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "No official documentation online (discontinued); AlternativeTo description and comments do not cover it"
+  },
+  "cloud_sync": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "No official documentation online (discontinued); AlternativeTo description and comments do not cover it"
+  },
+  "keyboard_first": {
+   "value": "yes",
+   "evidence": [
+    "https://alternativeto.net/software/mangameeya/about/"
+   ],
+   "how": "review"
+  },
+  "custom_shortcuts": {
+   "value": "yes",
+   "note": "customisable menus and shortcuts",
+   "evidence": [
+    "https://alternativeto.net/software/mangameeya/about/"
+   ],
+   "how": "review"
+  },
+  "shortcut_cheatsheet": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "No official documentation online (discontinued); AlternativeTo description and comments do not cover it"
+  },
+  "boss_key": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "No official documentation online (discontinued); AlternativeTo description and comments do not cover it"
+  },
+  "app_sandbox": {
+   "value": "no",
+   "note": "Windows only",
+   "evidence": [
+    "https://alternativeto.net/software/mangameeya/about/"
+   ],
+   "how": "review"
+  },
+  "no_network": {
+   "value": "yes",
+   "evidence": [],
+   "how": "unverified",
+   "note": "No official documentation online (discontinued); AlternativeTo description and comments do not cover it"
+  },
+  "notarized_attested": {
+   "value": "no",
+   "note": "Windows only",
+   "evidence": [
+    "https://alternativeto.net/software/mangameeya/about/"
+   ],
+   "how": "review"
+  },
+  "mac_app_store": {
+   "value": "no",
+   "evidence": [
+    "https://alternativeto.net/software/mangameeya/about/"
+   ],
+   "how": "review"
+  }
+ }
+}

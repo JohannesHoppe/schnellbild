@@ -1,0 +1,592 @@
+{
+ "name": "GOM Player",
+ "short": "GOM Player",
+ "vendor": "GOM & Company",
+ "website": "https://www.gomlab.com/gomplayer-media-player/?language=en",
+ "platforms": [
+  "Windows",
+  "macOS (Intel build)",
+  "Android",
+  "iOS"
+ ],
+ "mac_available": "yes",
+ "page": "switcher",
+ "section": "windows",
+ "price": "Free with ads; GOM Player+ without ads: lifetime licence (₩11,000 in Korea) or GOM Easy Pass subscription (from $4.90/month); AI features use credits",
+ "license": "Proprietary",
+ "current_version": "Windows 2.3.123 (13 Oct 2026); Mac 1.0.0 (2020)",
+ "last_update": "2026-10-13 (Windows); 2020-11-11 (Mac)",
+ "engine": "Windows: own DirectShow-based engine with built-in codecs and codec finder; Mac: libmpv + FFmpeg",
+ "category": "video",
+ "summary": "GOM Player is a popular free Korean media player for Windows with a large online subtitle archive, AI speech-to-subtitle, 360° VR, A-B repeat and skins; the free version shows ads, GOM Player+ removes them. A Mac version based on mpv exists but has not been updated since 2020 and is Intel only.",
+ "where_it_wins": [
+  "Large online subtitle archive and AI subtitle generation",
+  "360° VR playback, A-B and multi-section repeat",
+  "Streaming of URLs and YouTube",
+  "Music playback with equalizer",
+  "GOM Player+: four videos at once, AI upscaling"
+ ],
+ "where_schnellbild_wins": [
+  "Native on Apple silicon and maintained for current macOS; GOM's Mac build is a 2020 Intel app",
+  "No ads, no paid tier",
+  "Folder browsing with thumbnails, photos and videos together",
+  "Real image viewer, archives as folders",
+  "File management, two panes, undo",
+  "Open source, sandboxed, never goes online",
+  "20 languages on the Mac (GOM Mac: 3)"
+ ],
+ "search_terms": [
+  "gom player mac",
+  "gom player for mac",
+  "gom player alternative",
+  "gom player mac m1",
+  "gom player apple silicon",
+  "곰플레이어 맥",
+  "곰플레이어 맥북",
+  "gom player mac download"
+ ],
+ "matrix": {
+  "free": {
+   "value": "partial",
+   "note": "Free with ads; GOM Player+ (no ads, 4-video multi view, AI upscaling) paid: lifetime ₩11,000 in Korea or GOM Easy Pass subscription from $4.90/month",
+   "evidence": [
+    "https://www.gomlab.com/en/gomplayerplus-media-player",
+    "https://www.gomlab.com/gomplayerplus-media-player/",
+    "https://www.gomlab.com/en/plans"
+   ],
+   "how": "docs"
+  },
+  "open_source": {
+   "value": "no",
+   "note": "Proprietary; the Mac build bundles libmpv/FFmpeg",
+   "evidence": [
+    "https://cdn2.gomlab.com/gretech/playermac/gomplayer_mac.dmg"
+   ],
+   "how": "tested-description"
+  },
+  "native_apple_silicon": {
+   "value": "no",
+   "note": "Mac build 1.0.0 (Nov 2020) is Intel x86_64 only, runs under Rosetta",
+   "evidence": [
+    "https://cdn2.gomlab.com/gretech/playermac/gomplayer_mac.dmg"
+   ],
+   "how": "tested-description"
+  },
+  "no_account_no_tracking": {
+   "value": "no",
+   "note": "Free version shows ads (GOM Player+ is 'Without Ads'); GOM Lab account for paid features",
+   "evidence": [
+    "https://www.gomlab.com/en/gomplayerplus-media-player"
+   ],
+   "how": "docs"
+  },
+  "dark_light_setting": {
+   "value": "yes",
+   "note": "Windows: skins (basic, white, simple, touch); Mac: Light/Dark theme in Preferences",
+   "evidence": [
+    "https://www.gomlab.com/gomplayer-media-player/?language=en",
+    "https://www.gomlab.com/en/guide/gomplayer/2024?pageNum=preferences",
+    "https://cdn2.gomlab.com/gretech/playermac/gomplayer_mac.dmg"
+   ],
+   "how": "docs"
+  },
+  "languages_20": {
+   "value": "partial",
+   "note": "Windows 14 languages, Mac 3 (Korean, English, Japanese)",
+   "evidence": [
+    "https://www.gomlab.com/gomplayer-media-player/?language=en"
+   ],
+   "how": "docs"
+  },
+  "folder_browsing": {
+   "value": "partial",
+   "note": "Open Folder adds all videos of a folder; Mac adds files of the same folder automatically; no file browser",
+   "evidence": [
+    "https://www.gomlab.com/en/guide/gomplayer/2024?pageNum=normalvideo",
+    "https://cdn2.gomlab.com/gretech/playermac/gomplayer_mac.dmg"
+   ],
+   "how": "docs"
+  },
+  "thumbnail_grid": {
+   "value": "no",
+   "note": "Mac start screen shows thumbnails of recently played files only",
+   "evidence": [
+    "https://www.gomlab.com/en/guide/gomplayer/2024?pageNum=pcfilevideo"
+   ],
+   "how": "docs"
+  },
+  "list_view": {
+   "value": "partial",
+   "note": "Playlist window",
+   "evidence": [
+    "https://www.gomlab.com/gomplayer-media-player/?language=en",
+    "https://cdn2.gomlab.com/gretech/playermac/gomplayer_mac.dmg"
+   ],
+   "how": "tested-description"
+  },
+  "recursive_search": {
+   "value": "no",
+   "how": "docs",
+   "evidence": [
+    "https://www.gomlab.com/en/faq-info?id=51&page=1&product=GOMPLAYER"
+   ],
+   "note": "Ctrl+F only finds within the playlist"
+  },
+  "regex_search": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://www.gomlab.com/en/faq-info?id=51&page=1&product=GOMPLAYER"
+   ],
+   "note": "Only a playlist find is documented"
+  },
+  "network_shares_fast": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://www.gomlab.com/gomplayer-media-player/?language=en"
+   ],
+   "note": "Nothing documented about network folders"
+  },
+  "multiple_windows": {
+   "value": "yes",
+   "note": "Mac: 'Always open files in new window'; GOM Player+ plays 4 videos in one window",
+   "evidence": [
+    "https://cdn2.gomlab.com/gretech/playermac/gomplayer_mac.dmg",
+    "https://www.gomlab.com/en/gomplayerplus-media-player"
+   ],
+   "how": "tested-description"
+  },
+  "bookmarks": {
+   "value": "yes",
+   "how": "docs",
+   "evidence": [
+    "https://www.gomlab.com/en/faq-info?id=51&page=1&product=GOMPLAYER"
+   ],
+   "note": "Windows: Alt+D adds the current folder to Favorites"
+  },
+  "img_modern_formats": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://www.gomlab.com/gomplayer-media-player/?language=en"
+   ],
+   "how": "docs"
+  },
+  "img_raw": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://www.gomlab.com/gomplayer-media-player/?language=en"
+   ],
+   "how": "docs"
+  },
+  "img_psd_exr": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://www.gomlab.com/gomplayer-media-player/?language=en"
+   ],
+   "how": "docs"
+  },
+  "img_svg_pdf": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://www.gomlab.com/gomplayer-media-player/?language=en"
+   ],
+   "how": "docs"
+  },
+  "img_animated": {
+   "value": "partial",
+   "note": "Mac version lists .gif among video formats",
+   "evidence": [
+    "https://www.gomlab.com/gomplayer-media-player/?language=en"
+   ],
+   "how": "docs"
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "note": "Next file / previous file commands with shortcuts (Mac)",
+   "evidence": [
+    "https://cdn2.gomlab.com/gretech/playermac/gomplayer_mac.dmg"
+   ],
+   "how": "tested-description"
+  },
+  "zoom_rotate": {
+   "value": "partial",
+   "note": "Pan & Scan presets (Windows); rotation not documented",
+   "evidence": [
+    "https://www.gomlab.com/en/guide/gomplayer/2024?pageNum=control"
+   ],
+   "how": "docs"
+  },
+  "slideshow": {
+   "value": "no",
+   "how": "docs",
+   "evidence": [
+    "https://www.gomlab.com/gomplayer-media-player/?language=en"
+   ],
+   "note": "Spec lists video/audio formats only (Mac also .gif)"
+  },
+  "slideshow_recursive": {
+   "value": "no",
+   "how": "docs",
+   "evidence": [
+    "https://www.gomlab.com/gomplayer-media-player/?language=en"
+   ],
+   "note": "No still images among supported formats"
+  },
+  "auto_enhance_view": {
+   "value": "yes",
+   "note": "Brightness, contrast, saturation sliders; Mac video filters",
+   "evidence": [
+    "https://www.gomlab.com/en/guide/gomplayer/2024?pageNum=control",
+    "https://www.gomlab.com/en/guide/gomplayer/2024?pageNum=controlmac"
+   ],
+   "how": "docs"
+  },
+  "file_info_exif": {
+   "value": "partial",
+   "note": "Playback information / video track information; no EXIF",
+   "evidence": [
+    "https://www.gomlab.com/en/guide/gomplayer/2024?pageNum=controlmac",
+    "https://www.gomlab.com/en/guide/gomplayer/2024?pageNum=main"
+   ],
+   "how": "docs"
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://www.gomlab.com/gomplayer-media-player/?language=en"
+   ],
+   "note": "Not documented"
+  },
+  "video_native": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://www.gomlab.com/gomplayer-media-player/?language=en"
+   ],
+   "how": "docs"
+  },
+  "video_mkv_avi_webm": {
+   "value": "yes",
+   "note": "Windows: MKV, AVI, WMV, FLV (WebM via external codec); Mac: MKV, WebM, AVI, WMV, FLV",
+   "evidence": [
+    "https://www.gomlab.com/gomplayer-media-player/?language=en"
+   ],
+   "how": "docs"
+  },
+  "photos_videos_one_grid": {
+   "value": "no",
+   "how": "docs",
+   "evidence": [
+    "https://www.gomlab.com/gomplayer-media-player/?language=en"
+   ],
+   "note": "No still images among supported formats"
+  },
+  "video_skim_arrows": {
+   "value": "partial",
+   "note": "Forward/backward 10 s steps (Mac); arrow-key default not documented",
+   "evidence": [
+    "https://cdn2.gomlab.com/gretech/playermac/gomplayer_mac.dmg"
+   ],
+   "how": "tested-description"
+  },
+  "subtitles_embedded": {
+   "value": "yes",
+   "note": "VobSub and other embedded subtitles; subtitle language switch",
+   "evidence": [
+    "https://www.gomlab.com/gomplayer-media-player/?language=en",
+    "https://www.gomlab.com/en/guide/gomplayer/2024?pageNum=control"
+   ],
+   "how": "docs"
+  },
+  "subtitles_external_files": {
+   "value": "yes",
+   "note": "SRT, SMI, ASS …; Mac can search a set subtitle folder first",
+   "evidence": [
+    "https://www.gomlab.com/gomplayer-media-player/?language=en",
+    "https://cdn2.gomlab.com/gretech/playermac/gomplayer_mac.dmg"
+   ],
+   "how": "docs"
+  },
+  "audio_track_choice": {
+   "value": "yes",
+   "note": "Track selection; Mac can also import an external audio track",
+   "evidence": [
+    "https://www.gomlab.com/en/guide/gomplayer/2024?pageNum=controlmac",
+    "https://cdn2.gomlab.com/gretech/playermac/gomplayer_mac.dmg"
+   ],
+   "how": "tested-description"
+  },
+  "playback_speed": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://www.gomlab.com/en/guide/gomplayer/2024?pageNum=control",
+    "https://www.gomlab.com/en/guide/gomplayer/2024?pageNum=controlmac"
+   ],
+   "how": "docs"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://www.gomlab.com/en/guide/gomplayer/2024?pageNum=control"
+   ],
+   "note": "Floating Control Panel is for settings; playback bar placement not documented"
+  },
+  "playlist": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://www.gomlab.com/gomplayer-media-player/?language=en"
+   ],
+   "how": "docs"
+  },
+  "saved_playlists": {
+   "value": "yes",
+   "note": "Windows ASX/PLS, Mac own JSON format",
+   "evidence": [
+    "https://www.gomlab.com/gomplayer-media-player/?language=en"
+   ],
+   "how": "docs"
+  },
+  "pip": {
+   "value": "partial",
+   "note": "'Keep a window always on top' (Mac); no system PiP",
+   "evidence": [
+    "https://cdn2.gomlab.com/gretech/playermac/gomplayer_mac.dmg"
+   ],
+   "how": "tested-description"
+  },
+  "music_mode": {
+   "value": "yes",
+   "note": "Plays many audio formats, equalizer",
+   "evidence": [
+    "https://www.gomlab.com/gomplayer-media-player/?language=en",
+    "https://www.gomlab.com/en/guide/gomplayer/2024?pageNum=control"
+   ],
+   "how": "docs"
+  },
+  "streaming_urls": {
+   "value": "yes",
+   "note": "Open URL, YouTube URLs, 360° VR videos from the internet",
+   "evidence": [
+    "https://www.gomlab.com/en/guide/gomplayer/2024?pageNum=normalvideo",
+    "https://www.gomlab.com/gomplayer-media-player/?language=en"
+   ],
+   "how": "docs"
+  },
+  "online_subtitles": {
+   "value": "yes",
+   "note": "GOM Lab subtitle archive (220,000+ subtitles), auto search; AI speech-to-subtitle",
+   "evidence": [
+    "https://www.gomlab.com/en/gomplayerplus-media-player",
+    "https://www.gomlab.com/gomplayer-media-player/?language=en",
+    "https://www.gomlab.com/en/gomplayer-media-player/release-note"
+   ],
+   "how": "docs"
+  },
+  "video_filters_enhance": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://www.gomlab.com/en/guide/gomplayer/2024?pageNum=control",
+    "https://www.gomlab.com/en/guide/gomplayer/2024?pageNum=controlmac"
+   ],
+   "how": "docs"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://www.gomlab.com/gomplayer-media-player/?language=en"
+   ],
+   "note": "Not documented"
+  },
+  "archives_as_folders": {
+   "value": "no",
+   "note": "No archive formats in the spec lists",
+   "evidence": [
+    "https://www.gomlab.com/gomplayer-media-player/?language=en"
+   ],
+   "how": "docs"
+  },
+  "comics_cbz_cbr": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://www.gomlab.com/gomplayer-media-player/?language=en"
+   ],
+   "how": "docs"
+  },
+  "archive_passwords": {
+   "value": "no",
+   "how": "docs",
+   "evidence": [
+    "https://www.gomlab.com/gomplayer-media-player/?language=en"
+   ],
+   "note": "No archive formats in the spec"
+  },
+  "split_archives": {
+   "value": "no",
+   "how": "docs",
+   "evidence": [
+    "https://www.gomlab.com/gomplayer-media-player/?language=en"
+   ],
+   "note": "No archive formats in the spec"
+  },
+  "videos_in_archives": {
+   "value": "no",
+   "how": "docs",
+   "evidence": [
+    "https://www.gomlab.com/gomplayer-media-player/?language=en"
+   ],
+   "note": "No archive formats in the spec"
+  },
+  "manga_two_page": {
+   "value": "no",
+   "how": "docs",
+   "evidence": [
+    "https://www.gomlab.com/gomplayer-media-player/?language=en"
+   ],
+   "note": "No image or comic formats"
+  },
+  "rename_trash": {
+   "value": "partial",
+   "how": "docs",
+   "evidence": [
+    "https://www.gomlab.com/en/faq-info?id=51&page=1&product=GOMPLAYER"
+   ],
+   "note": "Windows: Shift+Delete moves the playing file to the trash; no rename or new folder"
+  },
+  "move_copy": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://www.gomlab.com/en/faq-info?id=51&page=1&product=GOMPLAYER"
+   ],
+   "note": "Not in the shortcut list"
+  },
+  "dual_pane": {
+   "value": "no",
+   "how": "docs",
+   "evidence": [
+    "https://www.gomlab.com/en/faq-info?id=51&page=1&product=GOMPLAYER"
+   ],
+   "note": "No file panes in the full shortcut list"
+  },
+  "undo_file_actions": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://www.gomlab.com/en/faq-info?id=51&page=1&product=GOMPLAYER"
+   ],
+   "note": "Not documented"
+  },
+  "image_editing": {
+   "value": "no",
+   "note": "Screen capture only",
+   "evidence": [
+    "https://www.gomlab.com/en/guide/gomplayer/2024?pageNum=control"
+   ],
+   "how": "docs"
+  },
+  "batch_convert": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://www.gomlab.com/gomplayer-media-player/?language=en"
+   ],
+   "note": "No converter in the feature list"
+  },
+  "library_catalog": {
+   "value": "no",
+   "note": "Play history and 'continue watching' only",
+   "evidence": [
+    "https://www.gomlab.com/en/guide/gomplayer/2024?pageNum=pcfilevideo"
+   ],
+   "how": "docs"
+  },
+  "cloud_sync": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://www.gomlab.com/gomplayer-media-player/?language=en"
+   ],
+   "note": "Desktop feature list has no cloud sync"
+  },
+  "keyboard_first": {
+   "value": "yes",
+   "note": "Shortcuts for most functions",
+   "evidence": [
+    "https://www.gomlab.com/en/guide/gomplayer/2024?pageNum=preferences"
+   ],
+   "how": "docs"
+  },
+  "custom_shortcuts": {
+   "value": "yes",
+   "note": "Keyboard Shortcuts preferences: add or modify shortcuts (Mac)",
+   "evidence": [
+    "https://www.gomlab.com/en/guide/gomplayer/2024?pageNum=preferences"
+   ],
+   "how": "docs"
+  },
+  "shortcut_cheatsheet": {
+   "value": "partial",
+   "how": "docs",
+   "evidence": [
+    "https://www.gomlab.com/en/faq-info?id=51&page=1&product=GOMPLAYER",
+    "https://tutorialtactic.com/blog/gom-player-shortcuts/"
+   ],
+   "note": "Full key list in the official FAQ and via F1; printable PDF only from a third party"
+  },
+  "boss_key": {
+   "value": "yes",
+   "how": "docs",
+   "evidence": [
+    "https://www.gomlab.com/en/faq-info?id=51&page=1&product=GOMPLAYER",
+    "https://tutorialtactic.com/blog/gom-player-shortcuts/"
+   ],
+   "note": "Windows: Shift+X or Esc minimizes and pauses"
+  },
+  "app_sandbox": {
+   "value": "no",
+   "note": "Mac build has no entitlements (not sandboxed); Windows n/a",
+   "evidence": [
+    "https://cdn2.gomlab.com/gretech/playermac/gomplayer_mac.dmg"
+   ],
+   "how": "tested-description"
+  },
+  "no_network": {
+   "value": "no",
+   "note": "Ads, update check, online subtitles, URL/YouTube playback",
+   "evidence": [
+    "https://www.gomlab.com/en/gomplayerplus-media-player",
+    "https://www.gomlab.com/gomplayer-media-player/?language=en",
+    "https://cdn2.gomlab.com/gretech/playermac/gomplayer_mac.dmg"
+   ],
+   "how": "docs"
+  },
+  "notarized_attested": {
+   "value": "partial",
+   "note": "Mac build notarized (Developer ID GOM&Company), closed source",
+   "evidence": [
+    "https://cdn2.gomlab.com/gretech/playermac/gomplayer_mac.dmg"
+   ],
+   "how": "tested-description"
+  },
+  "mac_app_store": {
+   "value": "no",
+   "note": "Only the iPhone/iPad app 'GOM Player' is listed; it runs on Apple silicon Macs as 'Designed for iPad. Not verified for macOS'",
+   "evidence": [
+    "https://apps.apple.com/us/app/gom-player/id672542880"
+   ],
+   "how": "store"
+  }
+ }
+}

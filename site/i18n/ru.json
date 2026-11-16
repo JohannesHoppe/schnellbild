@@ -1,6 +1,7 @@
 {
   "name": "Русский",
   "privacySlug": "privacy",
+  "alternativesSlug": "alternatives",
   "title": "Schnellbild: просмотрщик изображений и видео для Mac, который просто не бесит",
   "seoTitle": "Schnellbild · просмотрщик изображений и видеоплеер для Mac",
   "seoDescription": "Быстрый бесплатный просмотрщик фото для Mac с видеоплеером: MKV, AVI, WebM. Миниатюры, клавиши, слайд-шоу, ZIP и RAR как папки. Альтернатива XnView.",
@@ -140,7 +141,10 @@
   ],
   "safeMore": "Что именно он делает и где его предел: <a href=\"https://github.com/JohannesHoppe/schnellbild#safe-with-files-from-others\">Безопасно с чужими файлами</a>.",
   "modelsTitle": "Переходите с Phiewer, IINA или Norton Commander?",
-  "modelsText": "Phiewer, быстрый просмотрщик фото с платной версией PRO, и IINA, полноценный плеер для просмотра видео, послужили образцами для Schnellbild, как и Norton Commander для двух панелей. Schnellbild собирает фото и видео из ваших папок в одном бесплатном приложении, а клавиши при желании можно сделать как в Phiewer. Как Schnellbild выглядит рядом с ними: <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-phiewer-alternative\">бесплатная альтернатива Phiewer</a>, <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-iina-alternative-for-looking-through-videos\">бесплатная альтернатива IINA для просмотра видео</a>.",
+  "modelsText": "Phiewer, быстрый просмотрщик фото с платной версией PRO, и IINA, полноценный плеер для просмотра видео, послужили образцами для Schnellbild, как и Norton Commander для двух панелей. Schnellbild собирает фото и видео из ваших папок в одном бесплатном приложении, а клавиши при желании можно сделать как в Phiewer. Как Schnellbild выглядит рядом с ними: <a href=\"{alt:phiewer}\">бесплатная альтернатива Phiewer</a>, <a href=\"{alt:iina}\">бесплатная альтернатива IINA для просмотра видео</a>, <a href=\"{alt:norton-commander}\">из Norton Commander на Mac</a>.",
+  "altTitle": "Ищете альтернативу?",
+  "altText": "Как Schnellbild выглядит рядом с программами, которые ищут для Mac, функция за функцией и с источником для каждого утверждения:",
+  "altAll": "Все альтернативы",
   "ossTitle": "Открытый исходный код",
   "ossText": "Schnellbild распространяется как свободное ПО под лицензией MIT, исходный код лежит <a href=\"https://github.com/JohannesHoppe/schnellbild\">на GitHub</a>. Нашли ошибку или чего-то не хватает? <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">Создайте issue</a>.",
   "languagesText": "На языке вашего Mac:",
@@ -149,6 +153,7 @@
   "footerPrivacy": "Конфиденциальность",
   "footerImprint": "Правовая информация (Impressum)",
   "footerEula": "Лицензионное соглашение",
+  "footerAlternatives": "Альтернативы",
   "privacy": {
     "title": "Политика конфиденциальности",
     "description": "Schnellbild не собирает персональные данные: ни учётной записи, ни аналитики, ни отслеживания, ни доступа к сети.",

@@ -1,0 +1,570 @@
+{
+ "name": "OmniPlayer",
+ "short": "OmniPlayer",
+ "vendor": "Oka Apps / Nanjing Oumi Software (App Store seller: 成浩 吴)",
+ "website": "https://okaapps.com/product/1470926410",
+ "platforms": [
+  "macOS"
+ ],
+ "mac_available": "yes",
+ "page": "matrix",
+ "section": "video",
+ "price": "Free with VIP: lifetime $9.99, yearly $6.99, monthly $3.99; OmniPlayer Pro $8.99 one-time",
+ "license": "proprietary",
+ "current_version": "2.1.22",
+ "last_update": "2026-06-18",
+ "engine": "not disclosed (hardware decoding)",
+ "category": "video",
+ "summary": "Mac App Store media player for MKV, AVI, WMV and most other formats, with subtitle search, playback speed, audio equalizer and casting to DLNA, Chromecast and Roku. A straightforward watch-one-file player with a playlist.",
+ "where_it_wins": [
+  "Online subtitle search",
+  "Playback speed down to 0.1x, frame by frame",
+  "Casting to TVs (DLNA, Chromecast, Roku)",
+  "YouTube/Vimeo URLs, SMB/FTP sources",
+  "Audio equalizer, music playback",
+  "Picture adjustments and GIF export"
+ ],
+ "where_schnellbild_wins": [
+  "No upsell, no analytics",
+  "Photos and videos in one folder grid",
+  "Folder browsing and subfolder search",
+  "Archives as folders, videos inside them",
+  "Two-pane sorting, rename, trash with undo",
+  "Open source, reproducible build"
+ ],
+ "search_terms": [
+  "omniplayer mac",
+  "omniplayer alternative",
+  "omniplayer free",
+  "mkv player mac",
+  "mkv player mac kostenlos"
+ ],
+ "matrix": {
+  "free": {
+   "value": "partial",
+   "note": "Free with VIP upgrade: lifetime $9.99 (promo $4.99), yearly $6.99, monthly $3.99; separate paid 'OmniPlayer Pro' $8.99. Which features need VIP is not listed",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac",
+    "https://apps.apple.com/us/app/id1522844237?platform=mac"
+   ],
+   "how": "store"
+  },
+  "open_source": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac"
+   ],
+   "how": "store"
+  },
+  "native_apple_silicon": {
+   "value": "yes",
+   "how": "unverified",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac",
+    "https://okaapps.com/product/1470926410"
+   ],
+   "note": "Not stated on the App Store or vendor page; binary architecture not checked"
+  },
+  "no_account_no_tracking": {
+   "value": "no",
+   "note": "Privacy label: analytics, device ID, usage and crash data collected (not linked to you); VIP subscriptions",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac"
+   ],
+   "how": "store"
+  },
+  "dark_light_setting": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac"
+   ],
+   "note": "No appearance option mentioned anywhere found"
+  },
+  "languages_20": {
+   "value": "partial",
+   "note": "7 on the App Store (EN, FR, DE, IT, JA, zh-Hans, zh-Hant); vendor page lists 11",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac",
+    "https://okaapps.com/product/1470926410"
+   ],
+   "how": "store"
+  },
+  "folder_browsing": {
+   "value": "partial",
+   "note": "Folders dragged in become a playlist 'folder mode' (2.1.1/2.1.2); no folder browser",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac"
+   ],
+   "how": "changelog"
+  },
+  "thumbnail_grid": {
+   "value": "no",
+   "note": "Preview images only on the progress bar",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac"
+   ],
+   "how": "store"
+  },
+  "list_view": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac"
+   ],
+   "note": "Playlist with search and delete only, no file list with columns"
+  },
+  "recursive_search": {
+   "value": "partial",
+   "note": "Search inside the playlist; multi-level folders can be dragged in",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac"
+   ],
+   "how": "store"
+  },
+  "regex_search": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac"
+   ],
+   "note": "Search exists only inside the playlist; store feature list has no regex"
+  },
+  "network_shares_fast": {
+   "value": "partial",
+   "note": "Plays from SMB/FTP servers and Alist; speed on big folders unknown",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac",
+    "https://okaapps.com/product/1470926410"
+   ],
+   "how": "store"
+  },
+  "multiple_windows": {
+   "value": "yes",
+   "note": "Several playback windows (2.1.1 fix 'when playing multiple windows')",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac"
+   ],
+   "how": "changelog"
+  },
+  "bookmarks": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac"
+   ],
+   "note": "Not in the store feature list; playlist and history only"
+  },
+  "img_modern_formats": {
+   "value": "no",
+   "note": "Video, audio and subtitle formats only",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac"
+   ],
+   "how": "store"
+  },
+  "img_raw": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac"
+   ],
+   "how": "store"
+  },
+  "img_psd_exr": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac"
+   ],
+   "how": "store"
+  },
+  "img_svg_pdf": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac"
+   ],
+   "how": "store"
+  },
+  "img_animated": {
+   "value": "no",
+   "note": "Creates GIFs from video, does not view images",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac"
+   ],
+   "how": "store"
+  },
+  "keyboard_paging": {
+   "value": "partial",
+   "how": "unverified",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac"
+   ],
+   "note": "Next/previous in playlist exists; key not documented"
+  },
+  "zoom_rotate": {
+   "value": "partial",
+   "note": "Video rotation, aspect ratio, window size; no images",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac"
+   ],
+   "how": "store"
+  },
+  "slideshow": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac"
+   ],
+   "note": "Supported formats list video, audio and subtitles only"
+  },
+  "slideshow_recursive": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac"
+   ],
+   "note": "No still images among supported formats"
+  },
+  "auto_enhance_view": {
+   "value": "partial",
+   "note": "Brightness/contrast/saturation for video only",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac"
+   ],
+   "how": "store"
+  },
+  "file_info_exif": {
+   "value": "partial",
+   "how": "review",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac"
+   ],
+   "note": "App Store review mentions the 'media info box' (codec details); no EXIF"
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac"
+   ],
+   "note": "Not documented"
+  },
+  "video_native": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac"
+   ],
+   "how": "store"
+  },
+  "video_mkv_avi_webm": {
+   "value": "yes",
+   "note": "MKV, WebM, AVI, WMV, FLV, RMVB, TS and more",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac"
+   ],
+   "how": "store"
+  },
+  "photos_videos_one_grid": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac"
+   ],
+   "note": "No still images among supported formats"
+  },
+  "video_skim_arrows": {
+   "value": "yes",
+   "note": "Arrow keys fast-forward/rewind (user reviews); hold to change speed (toggle, 2.1.1); step not documented",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac"
+   ],
+   "how": "review"
+  },
+  "subtitles_embedded": {
+   "value": "yes",
+   "how": "review",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac"
+   ],
+   "note": "App Store review: internal subtitles are loaded by default"
+  },
+  "subtitles_external_files": {
+   "value": "yes",
+   "note": "ASS, SSA, SRT, IDX/SUB",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac"
+   ],
+   "how": "store"
+  },
+  "audio_track_choice": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac"
+   ],
+   "how": "store"
+  },
+  "playback_speed": {
+   "value": "yes",
+   "note": "0.25x to 4x (store), 0.1x to 8x and frame by frame (vendor page)",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac",
+    "https://okaapps.com/product/1470926410"
+   ],
+   "how": "store"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac"
+   ],
+   "note": "Store says controls auto-hide; whether they can be moved is not documented"
+  },
+  "playlist": {
+   "value": "yes",
+   "note": "Search, delete, repeat modes",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac"
+   ],
+   "how": "store"
+  },
+  "saved_playlists": {
+   "value": "partial",
+   "note": "Playlist kept automatically, option to clear on exit; no named playlists",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac"
+   ],
+   "how": "store"
+  },
+  "pip": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac",
+    "https://okaapps.com/product/1470926410"
+   ],
+   "note": "Not in the store feature list or on the vendor page; no user report found either way"
+  },
+  "music_mode": {
+   "value": "yes",
+   "note": "Audio formats incl. FLAC/APE, audio equalizer, music list",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac"
+   ],
+   "how": "store"
+  },
+  "streaming_urls": {
+   "value": "yes",
+   "note": "HTTP/HTTPS, YouTube and Vimeo page URLs, m3u8; casting to DLNA/Chromecast/Roku",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac"
+   ],
+   "how": "store"
+  },
+  "online_subtitles": {
+   "value": "yes",
+   "note": "Search by video name or hash",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac"
+   ],
+   "how": "store"
+  },
+  "video_filters_enhance": {
+   "value": "yes",
+   "note": "Brightness, contrast, saturation",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac"
+   ],
+   "how": "store"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac"
+   ],
+   "note": "Not mentioned"
+  },
+  "archives_as_folders": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac"
+   ],
+   "note": "Supported formats list has no archives"
+  },
+  "comics_cbz_cbr": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac"
+   ],
+   "note": "Supported formats list has no comics"
+  },
+  "archive_passwords": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac"
+   ],
+   "note": "No archive support"
+  },
+  "split_archives": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac"
+   ],
+   "note": "No archive support"
+  },
+  "videos_in_archives": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac"
+   ],
+   "note": "No archive formats; the vendor sells a separate unarchiver"
+  },
+  "manga_two_page": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac"
+   ],
+   "note": "No image or comic support"
+  },
+  "rename_trash": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac"
+   ],
+   "note": "Store feature list: delete removes playlist items only; no file operations"
+  },
+  "move_copy": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac"
+   ],
+   "note": "No file operations in the feature list"
+  },
+  "dual_pane": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac"
+   ],
+   "note": "No file operations in the feature list"
+  },
+  "undo_file_actions": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac"
+   ],
+   "note": "No file operations in the feature list"
+  },
+  "image_editing": {
+   "value": "no",
+   "note": "Screenshots and GIF export only",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac"
+   ],
+   "how": "store"
+  },
+  "batch_convert": {
+   "value": "no",
+   "note": "Conversion is a separate app (OmniConverter)",
+   "evidence": [
+    "https://okaapps.com/product/1470926410"
+   ],
+   "how": "docs"
+  },
+  "library_catalog": {
+   "value": "no",
+   "note": "Playback history, no library",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac"
+   ],
+   "how": "store"
+  },
+  "cloud_sync": {
+   "value": "no",
+   "note": "Casting to TVs, no sync",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac"
+   ],
+   "how": "store"
+  },
+  "keyboard_first": {
+   "value": "partial",
+   "note": "Shortcuts for playback, speed (Cmd+[ / Cmd+]), subtitles",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac"
+   ],
+   "how": "review"
+  },
+  "custom_shortcuts": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac"
+   ],
+   "note": "Not documented; a review asks for extra hotkeys"
+  },
+  "shortcut_cheatsheet": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac"
+   ],
+   "note": "No shortcut list found"
+  },
+  "boss_key": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac"
+   ],
+   "note": "Not documented"
+  },
+  "app_sandbox": {
+   "value": "yes",
+   "note": "Mac App Store app",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac"
+   ],
+   "how": "store"
+  },
+  "no_network": {
+   "value": "no",
+   "note": "Collects analytics/diagnostics per privacy label",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac"
+   ],
+   "how": "store"
+  },
+  "notarized_attested": {
+   "value": "partial",
+   "note": "App Store signed; closed source",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac"
+   ],
+   "how": "store"
+  },
+  "mac_app_store": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1470926410?platform=mac"
+   ],
+   "how": "store"
+  }
+ }
+}

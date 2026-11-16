@@ -1,0 +1,554 @@
+{
+ "name": "Adobe Bridge",
+ "short": "Adobe Bridge",
+ "vendor": "Adobe Inc.",
+ "website": "https://www.adobe.com/products/bridge.html",
+ "platforms": [
+  "macOS",
+  "Windows"
+ ],
+ "mac_available": "yes",
+ "page": "matrix",
+ "section": "photos",
+ "price": "Free download with an Adobe account (via Creative Cloud app); Camera Raw editing and Photoshop hand-off need a paid Creative Cloud plan",
+ "license": "proprietary",
+ "current_version": "17.0 (November 2026)",
+ "last_update": "2026-11-10",
+ "engine": "Adobe's own preview/cache engine with Camera Raw for RAW; video via its own media playback (requires AVX2 on Intel)",
+ "category": "photo-manager",
+ "summary": "Adobe Bridge is a free creative asset manager for browsing folders of photos, design files and video with rich previews. It adds metadata, keywords, ratings, collections, batch renaming and export, and works as the hub for Photoshop, Camera Raw and other Creative Cloud apps.",
+ "where_it_wins": [
+  "Previews of Adobe formats (PSD, AI, INDD, After Effects, Substance 3D) and PDF",
+  "Full metadata editing, keywords, labels, ratings, collections and smart collections",
+  "Batch rename, Export panel and workflows for bulk conversion",
+  "Tight integration with Camera Raw, Photoshop, Premiere and Creative Cloud Libraries",
+  "PDF contact sheets, publishing to Adobe Stock and Portfolio",
+  "Windows version"
+ ],
+ "where_schnellbild_wins": [
+  "No Adobe account, no online activation, no network at all",
+  "Plays MKV, WebM, AVI, WMV through built-in VLC; Bridge documents MP4/MOV/FLV",
+  "Arrow-key video skimming, subtitles, audio track choice, playback speed",
+  "Slideshow through all subfolders with photos and videos mixed",
+  "Archives and comics (ZIP, RAR, 7z, CBZ, CBR) as folders",
+  "Dual pane with F5/F6 copy and move, boss key",
+  "Lightweight and quick to start; no cache build-up",
+  "Open source, App Sandbox, build attestation"
+ ],
+ "search_terms": [
+  "adobe bridge mac",
+  "adobe bridge alternative",
+  "adobe bridge alternative free",
+  "adobe bridge alternative mac",
+  "adobe bridge without creative cloud",
+  "adobe bridge free",
+  "adobe bridge alternative kostenlos",
+  "alternative zu adobe bridge",
+  "alternative à adobe bridge",
+  "alternativa adobe bridge"
+ ],
+ "matrix": {
+  "free": {
+   "value": "partial",
+   "note": "Bridge itself is free with an Adobe account; opening/editing RAW in Camera Raw needs a paid Photoshop/Creative Cloud plan",
+   "evidence": [
+    "https://community.adobe.com/questions-558/how-to-instal-adobe-bridge-without-creative-cloud-175165",
+    "https://community.adobe.com/questions-558/does-adobe-bridge-cc-require-a-creative-cloud-subscription-plan-170770"
+   ],
+   "how": "forum"
+  },
+  "open_source": {
+   "value": "no",
+   "note": "Proprietary",
+   "evidence": [
+    "https://www.adobe.com/products/bridge.html"
+   ],
+   "how": "docs"
+  },
+  "native_apple_silicon": {
+   "value": "yes",
+   "note": "Apple silicon M1 or newer supported natively; some features (Auto stack/Panorama) only in Rosetta mode",
+   "evidence": [
+    "https://helpx.adobe.com/bridge/desktop/get-started/technical-requirements.html",
+    "https://helpx.adobe.com/bridge/desktop/troubleshoot/known-issues.html"
+   ],
+   "how": "docs"
+  },
+  "no_account_no_tracking": {
+   "value": "no",
+   "note": "Adobe ID, internet connection and registration required to activate and use",
+   "evidence": [
+    "https://helpx.adobe.com/bridge/desktop/get-started/technical-requirements.html"
+   ],
+   "how": "docs"
+  },
+  "dark_light_setting": {
+   "value": "yes",
+   "note": "Color Theme: Darkest, Dark, Light, independent of the system",
+   "evidence": [
+    "https://helpx.adobe.com/bridge/desktop/workspaces-and-panels/set-user-interface-preferences.html"
+   ],
+   "how": "docs"
+  },
+  "languages_20": {
+   "value": "yes",
+   "note": "21 interface languages (English plus 20 listed)",
+   "evidence": [
+    "https://helpx.adobe.com/bridge/desktop/get-started/technical-requirements.html",
+    "https://helpx.adobe.com/bridge/desktop/get-started/change-language-settings.html"
+   ],
+   "how": "docs"
+  },
+  "folder_browsing": {
+   "value": "yes",
+   "note": "Browses folders directly via Folders/Favorites panels, no import",
+   "evidence": [
+    "https://helpx.adobe.com/bridge/desktop/workspaces-and-panels/overview-of-the-workspace.html"
+   ],
+   "how": "docs"
+  },
+  "thumbnail_grid": {
+   "value": "yes",
+   "note": "Content panel thumbnails, details or list; folder preview tiles not documented",
+   "evidence": [
+    "https://helpx.adobe.com/bridge/desktop/workspaces-and-panels/adjust-content-panel-display.html"
+   ],
+   "how": "docs"
+  },
+  "list_view": {
+   "value": "yes",
+   "note": "View > As List with metadata columns",
+   "evidence": [
+    "https://helpx.adobe.com/bridge/desktop/workspaces-and-panels/adjust-content-panel-display.html"
+   ],
+   "how": "docs"
+  },
+  "recursive_search": {
+   "value": "yes",
+   "note": "Edit > Find with 'Include All Subfolders'; Quick Search covers the folder and subfolders",
+   "evidence": [
+    "https://helpx.adobe.com/bridge/desktop/organize-and-find-files/organize-files-and-folders/search-for-files-and-folders.html"
+   ],
+   "how": "docs"
+  },
+  "regex_search": {
+   "value": "no",
+   "note": "Find uses criteria/limiters and Match any/all; no regular expressions",
+   "evidence": [
+    "https://helpx.adobe.com/bridge/desktop/organize-and-find-files/organize-files-and-folders/search-for-files-and-folders.html"
+   ],
+   "how": "docs"
+  },
+  "network_shares_fast": {
+   "value": "partial",
+   "note": "\"Browse Quickly By Preferring Embedded Images\" and embedded thumbnails for speed; otherwise builds previews and caches",
+   "evidence": [
+    "https://helpx.adobe.com/bridge/desktop/workspaces-and-panels/adjust-content-panel-display.html"
+   ],
+   "how": "docs"
+  },
+  "multiple_windows": {
+   "value": "yes",
+   "note": "Multi Window plus multiple content panels",
+   "evidence": [
+    "https://www.adobe.com/products/bridge.html",
+    "https://helpx.adobe.com/bridge/desktop/troubleshoot/known-issues.html"
+   ],
+   "how": "docs"
+  },
+  "bookmarks": {
+   "value": "yes",
+   "note": "Favorites panel; drag a folder in to pin it",
+   "evidence": [
+    "https://helpx.adobe.com/bridge/desktop/workspaces-and-panels/overview-of-the-workspace.html"
+   ],
+   "how": "docs"
+  },
+  "img_modern_formats": {
+   "value": "partial",
+   "note": "Only HEIC/HEIF has a help page; AVIF, JPEG XL, WebP not found in help or release notes",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "img_raw": {
+   "value": "yes",
+   "note": "Thumbnails/previews of camera RAW; editing via Camera Raw needs a paid plan",
+   "evidence": [
+    "https://www.adobe.com/products/bridge.html",
+    "https://community.adobe.com/questions-558/how-to-instal-adobe-bridge-without-creative-cloud-175165"
+   ],
+   "how": "docs"
+  },
+  "img_psd_exr": {
+   "value": "partial",
+   "note": "PSD previews implied by release notes (PSD preview bug); OpenEXR not found",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "img_svg_pdf": {
+   "value": "partial",
+   "note": "No supported-input-formats page found in Bridge help",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "img_animated": {
+   "value": "no",
+   "note": "Not documented",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "note": "Arrow keys in Content panel, Full Screen Preview and Review mode",
+   "evidence": [
+    "https://helpx.adobe.com/bridge/desktop/organize-and-find-files/organize-files-and-folders/preview-images-and-edit-capture-time.html",
+    "https://helpx.adobe.com/bridge/desktop/get-started/keyboard-shortcuts.html"
+   ],
+   "how": "docs"
+  },
+  "zoom_rotate": {
+   "value": "yes",
+   "note": "Zoom/pan in Full Screen Preview and slideshow, Loupe tool, rotate in Review mode; rotation is stored as orientation metadata",
+   "evidence": [
+    "https://helpx.adobe.com/bridge/desktop/organize-and-find-files/organize-files-and-folders/preview-images-and-edit-capture-time.html"
+   ],
+   "how": "docs"
+  },
+  "slideshow": {
+   "value": "yes",
+   "note": "View > Slideshow with transitions, captions, pan/zoom",
+   "evidence": [
+    "https://helpx.adobe.com/bridge/desktop/organize-and-find-files/organize-files-and-folders/preview-images-and-edit-capture-time.html"
+   ],
+   "how": "docs"
+  },
+  "slideshow_recursive": {
+   "value": "no",
+   "note": "Slideshow plays a folder or selection; subfolders and videos in slideshows not documented",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "auto_enhance_view": {
+   "value": "no",
+   "note": "Preview panel, Full Screen Preview, Review mode and slideshow offer zoom, loupe, rotate, rate, label; no view-only adjustments",
+   "evidence": [
+    "https://helpx.adobe.com/bridge/desktop/organize-and-find-files/organize-files-and-folders/preview-images-and-edit-capture-time.html"
+   ],
+   "how": "docs"
+  },
+  "file_info_exif": {
+   "value": "yes",
+   "note": "Metadata panel with EXIF/IPTC/XMP, including video metadata",
+   "evidence": [
+    "https://helpx.adobe.com/bridge/desktop/workspaces-and-panels/overview-of-the-workspace.html"
+   ],
+   "how": "docs"
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "note": "Not documented",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "video_native": {
+   "value": "yes",
+   "note": "Plays MP4/MOV in Preview panel and full screen",
+   "evidence": [
+    "https://helpx.adobe.com/bridge/desktop/organize-and-find-files/organize-files-and-folders/preview-dynamic-media-files.html",
+    "https://helpx.adobe.com/bridge/desktop/whats-new/release-notes.html"
+   ],
+   "how": "docs"
+  },
+  "video_mkv_avi_webm": {
+   "value": "partial",
+   "note": "Plays FLV, F4V, SWF and what the installed QuickTime supports; MKV/WebM/AVI not named",
+   "evidence": [
+    "https://helpx.adobe.com/bridge/desktop/organize-and-find-files/organize-files-and-folders/preview-dynamic-media-files.html"
+   ],
+   "how": "docs"
+  },
+  "photos_videos_one_grid": {
+   "value": "yes",
+   "note": "Content panel shows photos and videos together; video hover preview",
+   "evidence": [
+    "https://helpx.adobe.com/bridge/desktop/organize-and-find-files/organize-files-and-folders/preview-dynamic-media-files.html"
+   ],
+   "how": "docs"
+  },
+  "video_skim_arrows": {
+   "value": "no",
+   "note": "Hover-scrub in thumbnails, but no arrow-key skimming",
+   "evidence": [
+    "https://helpx.adobe.com/bridge/desktop/organize-and-find-files/organize-files-and-folders/preview-dynamic-media-files.html"
+   ],
+   "how": "docs"
+  },
+  "subtitles_embedded": {
+   "value": "no",
+   "note": "Preview only offers play, pause, loop, volume",
+   "evidence": [
+    "https://helpx.adobe.com/bridge/desktop/organize-and-find-files/organize-files-and-folders/preview-dynamic-media-files.html"
+   ],
+   "how": "docs"
+  },
+  "subtitles_external_files": {
+   "value": "no",
+   "note": "Not offered",
+   "evidence": [
+    "https://helpx.adobe.com/bridge/desktop/organize-and-find-files/organize-files-and-folders/preview-dynamic-media-files.html"
+   ],
+   "how": "docs"
+  },
+  "audio_track_choice": {
+   "value": "no",
+   "note": "Not offered",
+   "evidence": [
+    "https://helpx.adobe.com/bridge/desktop/organize-and-find-files/organize-files-and-folders/preview-dynamic-media-files.html"
+   ],
+   "how": "docs"
+  },
+  "playback_speed": {
+   "value": "no",
+   "note": "Not offered",
+   "evidence": [
+    "https://helpx.adobe.com/bridge/desktop/organize-and-find-files/organize-files-and-folders/preview-dynamic-media-files.html"
+   ],
+   "how": "docs"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "note": "Fixed controls in Preview panel",
+   "evidence": [
+    "https://helpx.adobe.com/bridge/desktop/organize-and-find-files/organize-files-and-folders/preview-dynamic-media-files.html"
+   ],
+   "how": "docs"
+  },
+  "playlist": {
+   "value": "no",
+   "note": "Not offered",
+   "evidence": [
+    "https://helpx.adobe.com/bridge/desktop/organize-and-find-files/organize-files-and-folders/preview-dynamic-media-files.html"
+   ],
+   "how": "docs"
+  },
+  "saved_playlists": {
+   "value": "no",
+   "note": "Collections save file sets, not playlists",
+   "evidence": [
+    "https://helpx.adobe.com/bridge/desktop/organize-and-find-files/organize-files-and-folders/preview-dynamic-media-files.html"
+   ],
+   "how": "docs"
+  },
+  "pip": {
+   "value": "no",
+   "note": "Not offered",
+   "evidence": [
+    "https://helpx.adobe.com/bridge/desktop/organize-and-find-files/organize-files-and-folders/preview-dynamic-media-files.html"
+   ],
+   "how": "docs"
+  },
+  "music_mode": {
+   "value": "partial",
+   "note": "Audio files preview with autoplay/loop in the Preview panel",
+   "evidence": [
+    "https://helpx.adobe.com/bridge/desktop/organize-and-find-files/organize-files-and-folders/preview-dynamic-media-files.html"
+   ],
+   "how": "docs"
+  },
+  "streaming_urls": {
+   "value": "no",
+   "note": "Media preview plays files selected in the Content panel (play, pause, loop, volume)",
+   "evidence": [
+    "https://helpx.adobe.com/bridge/desktop/organize-and-find-files/organize-files-and-folders/preview-dynamic-media-files.html"
+   ],
+   "how": "docs"
+  },
+  "online_subtitles": {
+   "value": "no",
+   "note": "No subtitle support",
+   "evidence": [
+    "https://helpx.adobe.com/bridge/desktop/organize-and-find-files/organize-files-and-folders/preview-dynamic-media-files.html"
+   ],
+   "how": "docs"
+  },
+  "video_filters_enhance": {
+   "value": "no",
+   "note": "Not offered",
+   "evidence": [
+    "https://helpx.adobe.com/bridge/desktop/organize-and-find-files/organize-files-and-folders/preview-dynamic-media-files.html"
+   ],
+   "how": "docs"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "note": "Not documented",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "archives_as_folders": {
+   "value": "no",
+   "note": "Searched Bridge help and Adobe Community; nothing found",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "comics_cbz_cbr": {
+   "value": "no",
+   "note": "Searched Bridge help and Adobe Community; nothing found",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "archive_passwords": {
+   "value": "no",
+   "note": "Searched Bridge help and Adobe Community; nothing found",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "split_archives": {
+   "value": "no",
+   "note": "Searched Bridge help and Adobe Community; nothing found",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "videos_in_archives": {
+   "value": "no",
+   "note": "Searched Bridge help and Adobe Community; nothing found",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "manga_two_page": {
+   "value": "no",
+   "note": "Viewing modes are Preview panel (up to nine images to compare), Full Screen Preview, Review mode, slideshow; no reading/spread mode",
+   "evidence": [
+    "https://helpx.adobe.com/bridge/desktop/organize-and-find-files/organize-files-and-folders/preview-images-and-edit-capture-time.html"
+   ],
+   "how": "docs"
+  },
+  "rename_trash": {
+   "value": "yes",
+   "note": "Rename, delete, new folder from the Path bar",
+   "evidence": [
+    "https://helpx.adobe.com/bridge/desktop/workspaces-and-panels/overview-of-the-workspace.html",
+    "https://helpx.adobe.com/bridge/desktop/organize-and-find-files/organize-files-and-folders/cut-copy-and-move-files-and-folders.html"
+   ],
+   "how": "docs"
+  },
+  "move_copy": {
+   "value": "yes",
+   "note": "Drag to folders, Copy To/Move To",
+   "evidence": [
+    "https://helpx.adobe.com/bridge/desktop/organize-and-find-files/organize-files-and-folders/cut-copy-and-move-files-and-folders.html"
+   ],
+   "how": "docs"
+  },
+  "dual_pane": {
+   "value": "partial",
+   "note": "Several content panels/windows side by side; no F5/F6 copy/move",
+   "evidence": [
+    "https://helpx.adobe.com/bridge/desktop/workspaces-and-panels/overview-of-the-workspace.html",
+    "https://www.adobe.com/products/bridge.html"
+   ],
+   "how": "docs"
+  },
+  "undo_file_actions": {
+   "value": "partial",
+   "note": "Copy/move/delete help page does not mention undo",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "image_editing": {
+   "value": "partial",
+   "note": "Quick Actions crop/resize/remove background; pixel editing via Camera Raw/Photoshop (paid)",
+   "evidence": [
+    "https://helpx.adobe.com/bridge/desktop/fix-and-prep-photos/use-quick-actions.html",
+    "https://community.adobe.com/questions-558/how-to-instal-adobe-bridge-without-creative-cloud-175165"
+   ],
+   "how": "docs"
+  },
+  "batch_convert": {
+   "value": "yes",
+   "note": "Batch Rename, Export panel (JPEG/PNG/TIFF/DNG), workflows",
+   "evidence": [
+    "https://helpx.adobe.com/bridge/desktop/organize-and-find-files/tag-and-find-files/batch-rename-files.html",
+    "https://helpx.adobe.com/bridge/desktop/share-and-export/export-assets.html"
+   ],
+   "how": "docs"
+  },
+  "library_catalog": {
+   "value": "yes",
+   "note": "Keywords, ratings, labels, collections and smart collections, without importing",
+   "evidence": [
+    "https://www.adobe.com/products/bridge.html",
+    "https://helpx.adobe.com/bridge/desktop/organize-and-find-files/organize-files-and-folders/search-for-files-and-folders.html"
+   ],
+   "how": "docs"
+  },
+  "cloud_sync": {
+   "value": "yes",
+   "note": "Creative Cloud Libraries, publish to Adobe Stock and Portfolio",
+   "evidence": [
+    "https://helpx.adobe.com/bridge/desktop/workspaces-and-panels/overview-of-the-workspace.html",
+    "https://www.adobe.com/products/bridge.html"
+   ],
+   "how": "docs"
+  },
+  "keyboard_first": {
+   "value": "partial",
+   "note": "Many shortcuts, but workflow is panel- and mouse-oriented",
+   "evidence": [
+    "https://helpx.adobe.com/bridge/desktop/get-started/keyboard-shortcuts.html"
+   ],
+   "how": "docs"
+  },
+  "custom_shortcuts": {
+   "value": "yes",
+   "note": "Keyboard Shortcuts panel with visual keyboard and layouts",
+   "evidence": [
+    "https://helpx.adobe.com/bridge/desktop/get-started/keyboard-shortcuts-panel.html"
+   ],
+   "how": "docs"
+  },
+  "shortcut_cheatsheet": {
+   "value": "partial",
+   "note": "Help page lists shortcuts and the visual shortcut panel; no printable sheet documented",
+   "evidence": [
+    "https://helpx.adobe.com/bridge/desktop/get-started/keyboard-shortcuts.html",
+    "https://helpx.adobe.com/bridge/desktop/get-started/keyboard-shortcuts-panel.html"
+   ],
+   "how": "docs"
+  },
+  "boss_key": {
+   "value": "no",
+   "note": "Keyboard shortcuts help page is not a complete list",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "app_sandbox": {
+   "value": "no",
+   "note": "Not in the Mac App Store; entitlements not checkable without installing",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "no_network": {
+   "value": "no",
+   "note": "Needs internet for activation and validation; online services",
+   "evidence": [
+    "https://helpx.adobe.com/bridge/desktop/get-started/technical-requirements.html"
+   ],
+   "how": "docs"
+  },
+  "notarized_attested": {
+   "value": "no",
+   "note": "Closed source; notarization not checkable without installing, no page found",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "mac_app_store": {
+   "value": "no",
+   "note": "Not in the Mac App Store (search finds only other Adobe apps)",
+   "evidence": [
+    "https://itunes.apple.com/search?term=adobe+bridge&entity=macSoftware&limit=10"
+   ],
+   "how": "store"
+  }
+ }
+}

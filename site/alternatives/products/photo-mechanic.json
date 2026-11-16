@@ -1,0 +1,595 @@
+{
+ "name": "Photo Mechanic",
+ "short": "Photo Mechanic",
+ "vendor": "Camera Bits, Inc.",
+ "website": "https://home.camerabits.com/",
+ "platforms": [
+  "macOS",
+  "Windows"
+ ],
+ "mac_available": "yes",
+ "page": "matrix",
+ "section": "photos",
+ "price": "Photo Mechanic: $14.99/month, $149/year, or $299 perpetual (1 year updates); 30-day free trial. Photo Mechanic Plus (catalog tier, $24.99/mo, $249/yr, $399 perpetual) is discontinued for new buyers since 27 Feb 2026, though the store page still lists it.",
+ "license": "proprietary",
+ "current_version": "2026.6 (build 9175), latest announced on the Camera Bits blog",
+ "last_update": "2026-06-18",
+ "engine": "Images: embedded RAW JPEG previews, optional Apple ImageIO/Adobe DNG Converter rendering; video playback macOS only, engine not documented",
+ "category": "photo-manager",
+ "summary": "Photo Mechanic is a fast ingest, culling and metadata tool for working photographers, especially press, sports and wedding shooters. It opens folders and memory cards directly, shows RAW files instantly from their embedded previews, and excels at captions, IPTC metadata, keywording, batch renaming and uploading on deadline.",
+ "where_it_wins": [
+  "Ingest from multiple memory cards at once, with renaming and metadata during copy",
+  "IPTC/XMP metadata, code replacements, variables and structured keywords for captioning on deadline",
+  "Star ratings, colour classes and tags to cull thousands of RAW files quickly",
+  "Batch rename, Save As/resize/watermark and direct upload to FTP, Dropbox, S3, PhotoShelter and more",
+  "Regular-expression find and replace across filenames and metadata",
+  "Fully customizable shortcuts with presets, and printable shortcut PDFs",
+  "Windows version with the same feature set"
+ ],
+ "where_schnellbild_wins": [
+  "Free with every feature; Photo Mechanic costs $149/year or $299",
+  "No license activation or periodic online check; runs in the App Sandbox without network",
+  "Plays MKV, WebM, WMV and more through the built-in VLC engine; Photo Mechanic plays MOV/MP4/MPEG/AVI and only on macOS",
+  "Video skimming with arrow keys, subtitles, audio tracks, playback speed",
+  "Archives and comics (ZIP, RAR, 7z, CBZ, CBR) open like folders",
+  "Slideshow through all subfolders with photos and videos mixed",
+  "List view, folder tiles with previews, dual pane with F5/F6",
+  "Interface in 20 languages; Photo Mechanic is English only",
+  "Boss key, open source, build attestation"
+ ],
+ "search_terms": [
+  "photo mechanic mac",
+  "photo mechanic alternative",
+  "photo mechanic alternative free",
+  "free photo mechanic alternative mac",
+  "photo mechanic plus alternative",
+  "photo mechanic plus discontinued",
+  "photo culling software mac free",
+  "photo mechanic alternative kostenlos",
+  "photo mechanic alternative gratuit",
+  "alternativa a photo mechanic"
+ ],
+ "matrix": {
+  "free": {
+   "value": "no",
+   "note": "Subscription $14.99/month or $149/year, or perpetual $299 (1 year of updates); 30-day trial",
+   "evidence": [
+    "https://home.camerabits.com/get-photomechanic/",
+    "https://docs.camerabits.com/support/solutions/articles/48001252734-photo-mechanic-pricing-and-information"
+   ],
+   "how": "store"
+  },
+  "open_source": {
+   "value": "no",
+   "note": "Proprietary (Camera Bits EULA)",
+   "evidence": [
+    "https://home.camerabits.com/get-photomechanic/"
+   ],
+   "how": "docs"
+  },
+  "native_apple_silicon": {
+   "value": "yes",
+   "note": "Universal binary since the current (non-PM6) builds; PM6/PM Plus legacy builds are Intel-only",
+   "evidence": [
+    "https://home.camerabits.com/whats-new-in-photo-mechanic/",
+    "https://home.camerabits.com/photo-mechanic-6-on-mac-its-time-to-plan-ahead/"
+   ],
+   "how": "docs"
+  },
+  "no_account_no_tracking": {
+   "value": "partial",
+   "note": "No ads, but a license key must be activated and the app goes online periodically to validate the license",
+   "evidence": [
+    "https://docs.camerabits.com/support/solutions/articles/48001080502-system-recommendations-compatibility"
+   ],
+   "how": "docs"
+  },
+  "dark_light_setting": {
+   "value": "partial",
+   "note": "Light or Dark theme setting on macOS covers messages and dialog boxes; preview background colour is separately settable",
+   "evidence": [
+    "https://docs.camerabits.com/support/solutions/articles/48001146204-accessibility-preferences"
+   ],
+   "how": "docs"
+  },
+  "languages_20": {
+   "value": "no",
+   "note": "Docs and downloads show only English; no statement on UI localisation found (Spanish forum board exists)",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "folder_browsing": {
+   "value": "yes",
+   "note": "Opens any folder as a Contact Sheet, no import needed",
+   "evidence": [
+    "https://docs.camerabits.com/support/solutions/articles/48000207551-contact-sheets-an-overview"
+   ],
+   "how": "docs"
+  },
+  "thumbnail_grid": {
+   "value": "partial",
+   "note": "Contact Sheet thumbnail grid; folders appear in a Navigator tree, not as preview tiles",
+   "evidence": [
+    "https://docs.camerabits.com/support/solutions/articles/48000207551-contact-sheets-an-overview"
+   ],
+   "how": "docs"
+  },
+  "list_view": {
+   "value": "no",
+   "note": "View menu (full list) has contact sheet views, filters and cursor modes; no column list view",
+   "evidence": [
+    "https://docs.camerabits.com/support/solutions/articles/48001282952-view-menu"
+   ],
+   "how": "docs"
+  },
+  "recursive_search": {
+   "value": "partial",
+   "note": "'Open Folder and Subfolders' puts a whole tree in one Contact Sheet, then Find searches names/IPTC; Spotlight-based 'Search my Mac' on macOS",
+   "evidence": [
+    "https://docs.camerabits.com/support/solutions/articles/48000207551-contact-sheets-an-overview",
+    "https://docs.camerabits.com/support/solutions/articles/48000361385-the-find-tool",
+    "https://docs.camerabits.com/support/solutions/articles/48000361319--search-my-mac-feature"
+   ],
+   "how": "docs"
+  },
+  "regex_search": {
+   "value": "yes",
+   "note": "Find and Find & Replace support Grep regular expressions",
+   "evidence": [
+    "https://docs.camerabits.com/support/solutions/articles/48000361385-the-find-tool",
+    "https://home.camerabits.com/photo-mechanic-6-is-here/"
+   ],
+   "how": "docs"
+  },
+  "network_shares_fast": {
+   "value": "yes",
+   "note": "Built for speed ('world's fastest photo browser'); Navigator/Favorites threaded so slow network volumes don't block; I/O is the bottleneck",
+   "evidence": [
+    "https://home.camerabits.com/tour-photo-mechanic/",
+    "https://home.camerabits.com/photo-mechanic-6-is-here/",
+    "https://docs.camerabits.com/support/solutions/articles/48001080502-system-recommendations-compatibility"
+   ],
+   "how": "docs"
+  },
+  "multiple_windows": {
+   "value": "yes",
+   "note": "File > New Window (macOS) plus Contact Sheet tabs",
+   "evidence": [
+    "https://docs.camerabits.com/support/solutions/articles/48001282209-file-menu",
+    "https://docs.camerabits.com/support/solutions/articles/48000207551-contact-sheets-an-overview"
+   ],
+   "how": "docs"
+  },
+  "bookmarks": {
+   "value": "yes",
+   "note": "Favorites panel, including multi-folder favorites",
+   "evidence": [
+    "https://docs.camerabits.com/support/solutions/articles/48000207551-contact-sheets-an-overview",
+    "https://docs.camerabits.com/support/solutions/articles/48001282209-file-menu"
+   ],
+   "how": "docs"
+  },
+  "img_modern_formats": {
+   "value": "yes",
+   "note": "HEIC/HEIF, WebP; AVIF and JPEG XL read-only since 2026.6 build 9175",
+   "evidence": [
+    "https://docs.camerabits.com/support/solutions/articles/48000361354-supported-file-formats",
+    "https://home.camerabits.com/photo-mechanic-update-with-new-custom-keyboard-shortcuts-avif-support-and-more/"
+   ],
+   "how": "docs"
+  },
+  "img_raw": {
+   "value": "yes",
+   "note": "Shows the JPEG embedded in RAW files for speed; optional full RAW rendering via Apple ImageIO or Adobe DNG Converter",
+   "evidence": [
+    "https://docs.camerabits.com/support/solutions/articles/48000361354-supported-file-formats",
+    "https://docs.camerabits.com/support/solutions/articles/48001146201-render-cache-preferences"
+   ],
+   "how": "docs"
+  },
+  "img_psd_exr": {
+   "value": "partial",
+   "note": "PSD (saved with maximum compatibility) yes; OpenEXR not in the supported formats list",
+   "evidence": [
+    "https://docs.camerabits.com/support/solutions/articles/48000361354-supported-file-formats"
+   ],
+   "how": "docs"
+  },
+  "img_svg_pdf": {
+   "value": "no",
+   "note": "Neither SVG nor PDF is in the supported formats list (unknown files only as proxy placeholders)",
+   "evidence": [
+    "https://docs.camerabits.com/support/solutions/articles/48000361354-supported-file-formats"
+   ],
+   "how": "docs"
+  },
+  "img_animated": {
+   "value": "no",
+   "note": "GIF listed as supported format; animation playback not documented",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "note": "Arrow keys in Preview window and slide show",
+   "evidence": [
+    "https://docs.camerabits.com/support/solutions/articles/48000317772-keyboard-shortcuts-macos"
+   ],
+   "how": "docs"
+  },
+  "zoom_rotate": {
+   "value": "partial",
+   "note": "Zoom and pan in Preview; rotating writes the EXIF orientation flag (it is not view-only)",
+   "evidence": [
+    "https://docs.camerabits.com/support/solutions/articles/48000317772-keyboard-shortcuts-macos",
+    "https://docs.camerabits.com/support/solutions/articles/48000340686-rotate-photos"
+   ],
+   "how": "docs"
+  },
+  "slideshow": {
+   "value": "yes",
+   "note": "Image > Slide Show (Cmd-L) with transitions, captions, shuffle, loop",
+   "evidence": [
+    "https://docs.camerabits.com/support/solutions/articles/48000339820-slide-shows-from-a-contact-sheet"
+   ],
+   "how": "docs"
+  },
+  "slideshow_recursive": {
+   "value": "partial",
+   "note": "Possible after opening 'Folder and Subfolders' in one Contact Sheet; slide show docs only describe images, so videos in the show are unconfirmed",
+   "evidence": [
+    "https://docs.camerabits.com/support/solutions/articles/48000207551-contact-sheets-an-overview",
+    "https://docs.camerabits.com/support/solutions/articles/48000339820-slide-shows-from-a-contact-sheet"
+   ],
+   "how": "docs"
+  },
+  "auto_enhance_view": {
+   "value": "no",
+   "note": "Preview offers shadow/highlight clipping toggles and histogram, but no auto enhance or adjustment view",
+   "evidence": [
+    "https://docs.camerabits.com/support/solutions/articles/48001144384-the-preview-window",
+    "https://docs.camerabits.com/support/solutions/articles/48000317772-keyboard-shortcuts-macos"
+   ],
+   "how": "docs"
+  },
+  "file_info_exif": {
+   "value": "yes",
+   "note": "Info panel with customizable EXIF/IPTC variables, histogram; codec/bitrate details for videos not documented",
+   "evidence": [
+    "https://docs.camerabits.com/support/solutions/articles/48001144384-the-preview-window"
+   ],
+   "how": "docs"
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "note": "Not documented; View menu only offers \"Unknown files as proxies\"",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "video_native": {
+   "value": "yes",
+   "note": "MOV, MP4, MPEG playback on macOS only (Windows: thumbnails/preview need GStreamer)",
+   "evidence": [
+    "https://docs.camerabits.com/support/solutions/articles/48000361354-supported-file-formats",
+    "https://docs.camerabits.com/support/solutions/articles/48001145359-files-preferences"
+   ],
+   "how": "docs"
+  },
+  "video_mkv_avi_webm": {
+   "value": "partial",
+   "note": "AVI listed; MKV, WebM, WMV, FLV are not in the supported formats list",
+   "evidence": [
+    "https://docs.camerabits.com/support/solutions/articles/48000361354-supported-file-formats"
+   ],
+   "how": "docs"
+  },
+  "photos_videos_one_grid": {
+   "value": "yes",
+   "note": "Videos appear in the Contact Sheet next to photos",
+   "evidence": [
+    "https://docs.camerabits.com/support/solutions/articles/48000361354-supported-file-formats",
+    "https://docs.camerabits.com/support/solutions/articles/48000207551-contact-sheets-an-overview"
+   ],
+   "how": "docs"
+  },
+  "video_skim_arrows": {
+   "value": "no",
+   "note": "In the Preview window ← / → move to the previous/next item",
+   "evidence": [
+    "https://docs.camerabits.com/support/solutions/articles/48000317772-keyboard-shortcuts-macos"
+   ],
+   "how": "docs"
+  },
+  "subtitles_embedded": {
+   "value": "no",
+   "note": "No subtitle command in the full shortcut list or preview toolbar description",
+   "evidence": [
+    "https://docs.camerabits.com/support/solutions/articles/48000317772-keyboard-shortcuts-macos",
+    "https://docs.camerabits.com/support/solutions/articles/48001144384-the-preview-window"
+   ],
+   "how": "docs"
+  },
+  "subtitles_external_files": {
+   "value": "no",
+   "note": "No subtitle command in the full shortcut list or preview toolbar description",
+   "evidence": [
+    "https://docs.camerabits.com/support/solutions/articles/48000317772-keyboard-shortcuts-macos",
+    "https://docs.camerabits.com/support/solutions/articles/48001144384-the-preview-window"
+   ],
+   "how": "docs"
+  },
+  "audio_track_choice": {
+   "value": "no",
+   "note": "Not in the full shortcut list or preview toolbar description",
+   "evidence": [
+    "https://docs.camerabits.com/support/solutions/articles/48000317772-keyboard-shortcuts-macos",
+    "https://docs.camerabits.com/support/solutions/articles/48001144384-the-preview-window"
+   ],
+   "how": "docs"
+  },
+  "playback_speed": {
+   "value": "no",
+   "note": "Not in the full shortcut list or preview toolbar description",
+   "evidence": [
+    "https://docs.camerabits.com/support/solutions/articles/48000317772-keyboard-shortcuts-macos",
+    "https://docs.camerabits.com/support/solutions/articles/48001144384-the-preview-window"
+   ],
+   "how": "docs"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "note": "Docs only mention a video progress bar in the preview window",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "playlist": {
+   "value": "no",
+   "note": "No playlist; slide show runs over the selection/contact sheet",
+   "evidence": [
+    "https://docs.camerabits.com/support/solutions/articles/48000339820-slide-shows-from-a-contact-sheet"
+   ],
+   "how": "docs"
+  },
+  "saved_playlists": {
+   "value": "no",
+   "note": "Slide show settings can be saved as a Snapshot, but not item lists",
+   "evidence": [
+    "https://docs.camerabits.com/support/solutions/articles/48000339820-slide-shows-from-a-contact-sheet"
+   ],
+   "how": "docs"
+  },
+  "pip": {
+   "value": "no",
+   "note": "Not in the full shortcut list or preview toolbar description",
+   "evidence": [
+    "https://docs.camerabits.com/support/solutions/articles/48000317772-keyboard-shortcuts-macos",
+    "https://docs.camerabits.com/support/solutions/articles/48001144384-the-preview-window"
+   ],
+   "how": "docs"
+  },
+  "music_mode": {
+   "value": "no",
+   "note": "Only plays WAV voice notes attached to photos (Play/Stop Sound File)",
+   "evidence": [
+    "https://docs.camerabits.com/support/solutions/articles/48000317772-keyboard-shortcuts-macos",
+    "https://home.camerabits.com/photo-mechanic-6-is-here/"
+   ],
+   "how": "docs"
+  },
+  "streaming_urls": {
+   "value": "no",
+   "note": "Not documented",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "online_subtitles": {
+   "value": "no",
+   "note": "No subtitle support in the shortcut list or preview toolbar",
+   "evidence": [
+    "https://docs.camerabits.com/support/solutions/articles/48000317772-keyboard-shortcuts-macos",
+    "https://docs.camerabits.com/support/solutions/articles/48001144384-the-preview-window"
+   ],
+   "how": "docs"
+  },
+  "video_filters_enhance": {
+   "value": "no",
+   "note": "Preview toolbar: navigate, rotate, IPTC, external editor, copy, delete, 2-up, color management; no video adjustments. Video playback macOS only",
+   "evidence": [
+    "https://docs.camerabits.com/support/solutions/articles/48001144384-the-preview-window",
+    "https://docs.camerabits.com/support/solutions/articles/48001176784-export-video-clips"
+   ],
+   "how": "docs"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "note": "No Quick Look/Finder extension mentioned in docs or downloads",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "archives_as_folders": {
+   "value": "no",
+   "note": "ZIP/RAR/7z not in supported formats",
+   "evidence": [
+    "https://docs.camerabits.com/support/solutions/articles/48000361354-supported-file-formats"
+   ],
+   "how": "docs"
+  },
+  "comics_cbz_cbr": {
+   "value": "no",
+   "note": "Not in supported formats",
+   "evidence": [
+    "https://docs.camerabits.com/support/solutions/articles/48000361354-supported-file-formats"
+   ],
+   "how": "docs"
+  },
+  "archive_passwords": {
+   "value": "no",
+   "note": "No archive support",
+   "evidence": [
+    "https://docs.camerabits.com/support/solutions/articles/48000361354-supported-file-formats"
+   ],
+   "how": "docs"
+  },
+  "split_archives": {
+   "value": "no",
+   "note": "No archive support",
+   "evidence": [
+    "https://docs.camerabits.com/support/solutions/articles/48000361354-supported-file-formats"
+   ],
+   "how": "docs"
+  },
+  "videos_in_archives": {
+   "value": "no",
+   "note": "No archive support",
+   "evidence": [
+    "https://docs.camerabits.com/support/solutions/articles/48000361354-supported-file-formats"
+   ],
+   "how": "docs"
+  },
+  "manga_two_page": {
+   "value": "no",
+   "note": "2-up view exists for comparing photos, not a reading mode",
+   "evidence": [
+    "https://docs.camerabits.com/support/solutions/articles/48000317772-keyboard-shortcuts-macos"
+   ],
+   "how": "docs"
+  },
+  "rename_trash": {
+   "value": "yes",
+   "note": "Rename single/batch, delete to Trash (preference), new folders in the Navigator",
+   "evidence": [
+    "https://docs.camerabits.com/support/solutions/articles/48000207551-contact-sheets-an-overview",
+    "https://docs.camerabits.com/support/solutions/articles/48001145359-files-preferences"
+   ],
+   "how": "docs"
+  },
+  "move_copy": {
+   "value": "yes",
+   "note": "Drag thumbnails onto folders (Option copies); Copy/Move tool to multiple destinations",
+   "evidence": [
+    "https://docs.camerabits.com/support/solutions/articles/48000207551-contact-sheets-an-overview",
+    "https://docs.camerabits.com/support/solutions/articles/48000223598-copy-move-photos-tool"
+   ],
+   "how": "docs"
+  },
+  "dual_pane": {
+   "value": "no",
+   "note": "2-up Preview compares photos; no two file panes with copy/move keys",
+   "evidence": [
+    "https://docs.camerabits.com/support/solutions/articles/48000317772-keyboard-shortcuts-macos"
+   ],
+   "how": "docs"
+  },
+  "undo_file_actions": {
+   "value": "partial",
+   "note": "Edit > Undo/Redo on macOS 'when available'; which file actions are undoable is not specified",
+   "evidence": [
+    "https://docs.camerabits.com/support/solutions/articles/48001282949-edit-menu"
+   ],
+   "how": "docs"
+  },
+  "image_editing": {
+   "value": "partial",
+   "note": "Crop, rotate, resize and watermark on Save As/export; no pixel editing (sends to external editors)",
+   "evidence": [
+    "https://docs.camerabits.com/support/solutions/articles/48001077663--save-as-tool",
+    "https://home.camerabits.com/tour-photo-mechanic/"
+   ],
+   "how": "docs"
+  },
+  "batch_convert": {
+   "value": "yes",
+   "note": "Batch rename, Save As (format/resize), metadata, watermark",
+   "evidence": [
+    "https://home.camerabits.com/tour-photo-mechanic/",
+    "https://docs.camerabits.com/support/solutions/articles/48001077663--save-as-tool"
+   ],
+   "how": "docs"
+  },
+  "library_catalog": {
+   "value": "partial",
+   "note": "Tags, star ratings, colour classes, IPTC keywords stored in files/XMP; the catalog database (Photo Mechanic Plus) is no longer sold since 27 Feb 2026",
+   "evidence": [
+    "https://home.camerabits.com/tour-photo-mechanic/",
+    "https://home.camerabits.com/photo-mechanic-plus-is-no-longer-available-for-purchase/",
+    "https://docs.camerabits.com/support/solutions/articles/48001078324-introduction-to-catalogs-in-photo-mechanic-plus"
+   ],
+   "how": "docs"
+  },
+  "cloud_sync": {
+   "value": "yes",
+   "note": "Upload to FTP/SFTP, Dropbox, Box, Amazon S3, Flickr, SmugMug, PhotoShelter, Zenfolio and more; web galleries; email",
+   "evidence": [
+    "https://docs.camerabits.com/support/solutions/articles/48000361261-upload-to-photo-sharing-storage-services",
+    "https://home.camerabits.com/tour-photo-mechanic/"
+   ],
+   "how": "docs"
+  },
+  "keyboard_first": {
+   "value": "yes",
+   "note": "Built for keyboard culling: single-key rating/tagging, shortcuts for nearly every function",
+   "evidence": [
+    "https://docs.camerabits.com/support/solutions/articles/48000317772-keyboard-shortcuts-macos",
+    "https://docs.camerabits.com/support/solutions/articles/48001271746-custom-keyboard-shortcuts"
+   ],
+   "how": "docs"
+  },
+  "custom_shortcuts": {
+   "value": "yes",
+   "note": "Customizable since 2025.6 (macOS), with snapshots/presets since 2026.01",
+   "evidence": [
+    "https://docs.camerabits.com/support/solutions/articles/48001271746-custom-keyboard-shortcuts"
+   ],
+   "how": "docs"
+  },
+  "shortcut_cheatsheet": {
+   "value": "yes",
+   "note": "Keyboard shortcut PDFs for macOS and Windows on the downloads page",
+   "evidence": [
+    "https://home.camerabits.com/downloads/"
+   ],
+   "how": "docs"
+  },
+  "boss_key": {
+   "value": "no",
+   "note": "Only the standard macOS Hide (Cmd-H)",
+   "evidence": [
+    "https://docs.camerabits.com/support/solutions/articles/48000317772-keyboard-shortcuts-macos"
+   ],
+   "how": "docs"
+  },
+  "app_sandbox": {
+   "value": "no",
+   "note": "Not in the Mac App Store; entitlements not checkable without installing",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "no_network": {
+   "value": "no",
+   "note": "Periodic license validation; uploaders, reverse geocoding, software update checks",
+   "evidence": [
+    "https://docs.camerabits.com/support/solutions/articles/48001080502-system-recommendations-compatibility",
+    "https://docs.camerabits.com/support/solutions/articles/48000361261-upload-to-photo-sharing-storage-services",
+    "https://home.camerabits.com/photo-mechanic-6-is-here/"
+   ],
+   "how": "docs"
+  },
+  "notarized_attested": {
+   "value": "no",
+   "note": "Proprietary paid app (EULA on the download page), so no build from public source; notarization not checkable",
+   "evidence": [
+    "https://home.camerabits.com/downloads/"
+   ],
+   "how": "docs"
+  },
+  "mac_app_store": {
+   "value": "no",
+   "note": "Not found in the Mac App Store; sold via camerabits.com",
+   "evidence": [
+    "https://itunes.apple.com/search?term=photo+mechanic&entity=macSoftware&limit=10",
+    "https://home.camerabits.com/get-photomechanic/"
+   ],
+   "how": "store"
+  }
+ }
+}

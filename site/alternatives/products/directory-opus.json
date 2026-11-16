@@ -1,0 +1,561 @@
+{
+ "name": "Directory Opus",
+ "short": "Directory Opus",
+ "vendor": "GP Software (Jonathan Potter, Greg Perry)",
+ "website": "https://www.gpsoft.com.au/",
+ "platforms": [
+  "Windows"
+ ],
+ "mac_available": "no",
+ "page": "switcher",
+ "section": "windows",
+ "price": "AUD 89 single, AUD 129 dual, AUD 249 five PCs; one year of updates, then AUD 25/40/75 per year; 30-day trial (60 with registration)",
+ "license": "proprietary",
+ "current_version": "13.25",
+ "last_update": "2026-08-21",
+ "engine": "Own image viewer with WIC plugins; Video & Audio plugin (Windows Media Foundation, DirectShow fallback)",
+ "category": "file-manager",
+ "summary": "A highly configurable Explorer replacement for Windows with single or dual panes, tabs, labels, ratings, tags, a viewer pane and a standalone image viewer with slideshow. Strong on search, sync, duplicate finding, batch rename and image conversion, with full scripting.",
+ "where_it_wins": [
+  "Enormous configurability and scripting",
+  "Undo log for file operations",
+  "Labels, ratings, tags, metadata editing",
+  "Image converter and batch rename",
+  "Duplicate finder, sync, Everything integration",
+  "Slideshow with cross-fade"
+ ],
+ "where_schnellbild_wins": [
+  "Native on macOS (Opus is Windows-only)",
+  "Free and open source",
+  "Video subtitles, audio track choice and playback speed (Opus player has none)",
+  "MKV/WebM/AVI via built-in VLC instead of Windows codecs",
+  "Recursive slideshow with photos and videos mixed",
+  "App Sandbox, never goes online"
+ ],
+ "search_terms": [
+  "directory opus mac",
+  "directory opus for mac",
+  "directory opus alternative mac",
+  "directory opus macos",
+  "dopus mac",
+  "directory opus alternative",
+  "directory opus für mac"
+ ],
+ "matrix": {
+  "free": {
+   "value": "no",
+   "evidence": [
+    "https://www.gpsoft.com.au/"
+   ],
+   "how": "docs",
+   "note": "AUD 89 single licence (1 year updates, then AUD 25/yr); 30/60-day trial."
+  },
+  "open_source": {
+   "value": "no",
+   "evidence": [
+    "https://www.gpsoft.com.au/"
+   ],
+   "how": "docs",
+   "note": "Proprietary."
+  },
+  "native_apple_silicon": {
+   "value": "no",
+   "evidence": [
+    "https://www.gpsoft.com.au/"
+   ],
+   "how": "docs",
+   "note": "Windows x64 only; ARM not supported."
+  },
+  "no_account_no_tracking": {
+   "value": "partial",
+   "evidence": [
+    "https://www.gpsoft.com.au/"
+   ],
+   "how": "docs",
+   "note": "No ads; licence needs online activation."
+  },
+  "dark_light_setting": {
+   "value": "yes",
+   "evidence": [
+    "https://docs.dopus.com/doku.php?id=release_history:opus13_detailed:dark_mode"
+   ],
+   "how": "docs",
+   "note": "Dark/light follows Windows or toggled via menu/Preferences."
+  },
+  "languages_20": {
+   "value": "yes",
+   "evidence": [
+    "https://docs.dopus.com/doku.php?id=preferences:preferences_categories:user_interface:language"
+   ],
+   "how": "docs",
+   "note": "UI language selectable in Preferences; count not stated."
+  },
+  "folder_browsing": {
+   "value": "yes",
+   "evidence": [
+    "https://www.gpsoft.com.au/"
+   ],
+   "how": "docs"
+  },
+  "thumbnail_grid": {
+   "value": "yes",
+   "evidence": [
+    "https://docs.dopus.com/doku.php?id=release_history:opus13_detailed:thumbnails"
+   ],
+   "how": "docs",
+   "note": "Thumbnails with Opus-generated folder thumbnails."
+  },
+  "list_view": {
+   "value": "yes",
+   "evidence": [
+    "https://docs.dopus.com/doku.php?id=release_history:opus13_detailed:thumbnails",
+    "https://www.gpsoft.com.au/"
+   ],
+   "how": "docs",
+   "note": "Details/Power modes with columns."
+  },
+  "recursive_search": {
+   "value": "yes",
+   "evidence": [
+    "https://docs.dopus.com/doku.php?id=release_history:opus13_detailed:find"
+   ],
+   "how": "docs",
+   "note": "Find panel, Everything/Windows Search integration."
+  },
+  "regex_search": {
+   "value": "yes",
+   "evidence": [
+    "https://docs.dopus.com/doku.php?id=release_history:opus13_detailed:find"
+   ],
+   "how": "docs"
+  },
+  "network_shares_fast": {
+   "value": "yes",
+   "evidence": [
+    "https://www.gpsoft.com.au/"
+   ],
+   "how": "docs",
+   "note": "Multi-threaded native 64-bit code (vendor claim)."
+  },
+  "multiple_windows": {
+   "value": "yes",
+   "evidence": [
+    "https://docs.dopus.com/doku.php?id=release_history:opus13_detailed:viewer",
+    "https://docs.dopus.com/doku.php?id=additional_functionality:viewing_images"
+   ],
+   "how": "docs",
+   "note": "Multiple Listers, standalone viewer windows."
+  },
+  "bookmarks": {
+   "value": "yes",
+   "evidence": [
+    "https://docs.dopus.com/doku.php?id=release_history:opus13_detailed"
+   ],
+   "how": "docs",
+   "note": "Favourites and folder aliases."
+  },
+  "img_modern_formats": {
+   "value": "partial",
+   "evidence": [
+    "https://docs.dopus.com/doku.php?id=release_history:opus13_detailed:viewer",
+    "https://resource.dopus.com/t/jpeg-xl-support-with-new-microsoft-wic-codec/54787"
+   ],
+   "how": "docs",
+   "note": "HEIC, WebP (plugin), AVIF and JPEG XL via WIC with Microsoft Store codecs."
+  },
+  "img_raw": {
+   "value": "yes",
+   "note": "Built-in Raw Camera plugin (CR3 added 2020); Microsoft Raw Image Extension optional",
+   "evidence": [
+    "https://resource.dopus.com/t/raw-image-extension-microsoft/35263"
+   ],
+   "how": "forum"
+  },
+  "img_psd_exr": {
+   "value": "partial",
+   "evidence": [
+    "https://docs.dopus.com/doku.php?id=preferences:preferences_categories:miscellaneous"
+   ],
+   "how": "docs",
+   "note": "PSD yes; OpenEXR not documented."
+  },
+  "img_svg_pdf": {
+   "value": "yes",
+   "evidence": [
+    "https://docs.dopus.com/doku.php?id=release_history:opus13_detailed:viewer"
+   ],
+   "how": "docs",
+   "note": "SVG via Edge; PDF via preview handler or Edge."
+  },
+  "img_animated": {
+   "value": "partial",
+   "evidence": [
+    "https://docs.dopus.com/doku.php?id=release_history:opus13_detailed:thumbnails"
+   ],
+   "how": "docs",
+   "note": "Animated GIF yes; APNG/animated WebP not documented."
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "evidence": [
+    "https://docs.dopus.com/doku.php?id=additional_functionality:viewing_images:viewer_keys_and_toolbar"
+   ],
+   "how": "docs",
+   "note": "Space/Backspace, wheel."
+  },
+  "zoom_rotate": {
+   "value": "yes",
+   "evidence": [
+    "https://docs.dopus.com/doku.php?id=basic_concepts:the_lister:viewer_pane",
+    "https://docs.dopus.com/doku.php?id=additional_functionality:viewing_images:viewer_keys_and_toolbar"
+   ],
+   "how": "docs",
+   "note": "Rotation in the viewer does not touch the file."
+  },
+  "slideshow": {
+   "value": "yes",
+   "evidence": [
+    "https://docs.dopus.com/doku.php?id=preferences:preferences_categories:viewer:standalone_viewer:slideshow",
+    "https://docs.dopus.com/doku.php?id=additional_functionality:viewing_images"
+   ],
+   "how": "docs",
+   "note": "Speed, cross-fade, random."
+  },
+  "slideshow_recursive": {
+   "value": "partial",
+   "evidence": [
+    "https://docs.dopus.com/doku.php?id=release_history:opus13_detailed:viewer"
+   ],
+   "how": "docs",
+   "note": "Show on a folder adds its images; no mixed photo/video recursive slideshow documented."
+  },
+  "auto_enhance_view": {
+   "value": "partial",
+   "evidence": [
+    "https://docs.dopus.com/doku.php?id=additional_functionality:viewing_images:viewer_keys_and_toolbar"
+   ],
+   "how": "docs",
+   "note": "Gamma correction in the viewer, no auto enhance."
+  },
+  "file_info_exif": {
+   "value": "yes",
+   "evidence": [
+    "https://docs.dopus.com/doku.php?id=release_history:opus13_detailed:viewer",
+    "https://www.gpsoft.com.au/"
+   ],
+   "how": "docs",
+   "note": "Metadata columns and MediaInfo for video."
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "note": "Searched Opus 13 release notes, viewer docs and resource.dopus.com; nothing either way",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "video_native": {
+   "value": "yes",
+   "evidence": [
+    "https://docs.dopus.com/doku.php?id=release_history:opus13_detailed:viewer"
+   ],
+   "how": "docs",
+   "note": "Video & Audio plugin (Media Foundation, DirectShow fallback)."
+  },
+  "video_mkv_avi_webm": {
+   "value": "partial",
+   "evidence": [
+    "https://docs.dopus.com/doku.php?id=release_history:opus13_detailed:viewer"
+   ],
+   "how": "docs",
+   "note": "Depends on Windows codecs; DirectShow fallback for others."
+  },
+  "photos_videos_one_grid": {
+   "value": "yes",
+   "evidence": [
+    "https://docs.dopus.com/doku.php?id=release_history:opus13_detailed:thumbnails"
+   ],
+   "how": "docs",
+   "note": "Video thumbnails via Windows Shell."
+  },
+  "video_skim_arrows": {
+   "value": "partial",
+   "evidence": [
+    "https://docs.dopus.com/doku.php?id=release_history:opus13_detailed:viewer"
+   ],
+   "how": "docs",
+   "note": "Seek via configurable mouse buttons/wheel; arrow keys navigate files."
+  },
+  "subtitles_embedded": {
+   "value": "no",
+   "evidence": [
+    "https://resource.dopus.com/t/video-audio-configuration-feature-requests/46095"
+   ],
+   "how": "forum",
+   "note": "Developer: Windows APIs have no subtitle support."
+  },
+  "subtitles_external_files": {
+   "value": "no",
+   "evidence": [
+    "https://resource.dopus.com/t/video-audio-configuration-feature-requests/46095"
+   ],
+   "how": "forum"
+  },
+  "audio_track_choice": {
+   "value": "no",
+   "note": "Video & Audio plugin feature list: auto-play, auto-mute, seek/pause/fullscreen via mouse, MediaInfo metadata; no track choice",
+   "evidence": [
+    "https://docs.dopus.com/doku.php?id=release_history:opus13_detailed:viewer"
+   ],
+   "how": "docs"
+  },
+  "playback_speed": {
+   "value": "no",
+   "evidence": [
+    "https://resource.dopus.com/t/change-video-playback-speed-for-built-in-player-viewer/53904"
+   ],
+   "how": "forum",
+   "note": "Developer: not currently (Dec 2024)."
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "note": "Not described in viewer docs or release notes; forum search found nothing",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "playlist": {
+   "value": "no",
+   "evidence": [
+    "https://resource.dopus.com/t/video-audio-configuration-feature-requests/46095"
+   ],
+   "how": "forum",
+   "note": "Users request folder playlist/repeat."
+  },
+  "saved_playlists": {
+   "value": "no",
+   "evidence": [
+    "https://resource.dopus.com/t/video-audio-configuration-feature-requests/46095"
+   ],
+   "how": "forum"
+  },
+  "pip": {
+   "value": "no",
+   "note": "Not in the Video & Audio plugin feature list",
+   "evidence": [
+    "https://docs.dopus.com/doku.php?id=release_history:opus13_detailed:viewer"
+   ],
+   "how": "docs"
+  },
+  "music_mode": {
+   "value": "yes",
+   "evidence": [
+    "https://docs.dopus.com/doku.php?id=release_history:opus13_detailed:viewer"
+   ],
+   "how": "docs",
+   "note": "Plays audio in preview pane with cover art."
+  },
+  "streaming_urls": {
+   "value": "no",
+   "note": "Viewer docs only cover files; no statement about URLs found",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "online_subtitles": {
+   "value": "no",
+   "evidence": [
+    "https://resource.dopus.com/t/video-audio-configuration-feature-requests/46095"
+   ],
+   "how": "forum"
+  },
+  "video_filters_enhance": {
+   "value": "no",
+   "note": "Not in the Video & Audio plugin feature list",
+   "evidence": [
+    "https://docs.dopus.com/doku.php?id=release_history:opus13_detailed:viewer"
+   ],
+   "how": "docs"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "evidence": [
+    "https://docs.dopus.com/doku.php?id=release_history:opus13_detailed:thumbnails"
+   ],
+   "how": "docs",
+   "note": "Windows program; uses Windows Shell thumbnails."
+  },
+  "archives_as_folders": {
+   "value": "yes",
+   "evidence": [
+    "https://www.gpsoft.com.au/",
+    "https://docs.dopus.com/doku.php?id=release_history:opus13_detailed:archives"
+   ],
+   "how": "docs",
+   "note": "Zip, 7z, RAR and more."
+  },
+  "comics_cbz_cbr": {
+   "value": "partial",
+   "evidence": [
+    "https://resource.dopus.com/t/have-cbz-thumbnails-while-still-opening-in-external-app/40304"
+   ],
+   "how": "forum",
+   "note": "CBZ/CBR via archive plugin (thumbnails, browse); no reader mode."
+  },
+  "archive_passwords": {
+   "value": "yes",
+   "evidence": [
+    "https://docs.dopus.com/doku.php?id=file_operations:creating_archives:add_to_archive_dialog"
+   ],
+   "how": "docs",
+   "note": "Encrypted Zip/RAR/7z."
+  },
+  "split_archives": {
+   "value": "yes",
+   "note": "Extracts multi-volume RAR natively (developer, forum); Split/Join tool for files",
+   "evidence": [
+    "https://resource.dopus.com/t/multi-volume-archive/13341"
+   ],
+   "how": "forum"
+  },
+  "videos_in_archives": {
+   "value": "partial",
+   "note": "Developer (June 2026): video thumbnails inside archives are blocked by design; playback from archives not documented. https://resource.dopus.com/t/video-thumbnails-in-archives/59588",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "manga_two_page": {
+   "value": "no",
+   "note": "No spread mode; side-by-side viewing only via a user script opening two viewer windows",
+   "evidence": [
+    "https://resource.dopus.com/t/display-two-pictures-side-by-side-in-standalone-viewer/28810"
+   ],
+   "how": "forum"
+  },
+  "rename_trash": {
+   "value": "yes",
+   "evidence": [
+    "https://www.gpsoft.com.au/"
+   ],
+   "how": "docs"
+  },
+  "move_copy": {
+   "value": "yes",
+   "evidence": [
+    "https://www.gpsoft.com.au/"
+   ],
+   "how": "docs",
+   "note": "Queued copies."
+  },
+  "dual_pane": {
+   "value": "yes",
+   "evidence": [
+    "https://www.gpsoft.com.au/"
+   ],
+   "how": "docs",
+   "note": "Dual panes and trees; Commander-style F5/F6 not the default layout."
+  },
+  "undo_file_actions": {
+   "value": "yes",
+   "evidence": [
+    "https://docs.dopus.com/doku.php?id=file_operations:tracking_and_undoing_file_operations"
+   ],
+   "how": "docs",
+   "note": "Undo list and Undo Log for renames, moves, copies; deletes only via recycle bin."
+  },
+  "image_editing": {
+   "value": "yes",
+   "evidence": [
+    "https://docs.dopus.com/doku.php?id=additional_functionality:viewing_images",
+    "https://docs.dopus.com/doku.php?id=additional_functionality:viewing_images:viewer_keys_and_toolbar"
+   ],
+   "how": "docs",
+   "note": "Standalone viewer crops/saves; Image Converter."
+  },
+  "batch_convert": {
+   "value": "yes",
+   "evidence": [
+    "https://www.gpsoft.com.au/",
+    "https://docs.dopus.com/doku.php?id=additional_functionality:viewing_images:viewer_keys_and_toolbar"
+   ],
+   "how": "docs",
+   "note": "Batch rename and image conversion."
+  },
+  "library_catalog": {
+   "value": "yes",
+   "evidence": [
+    "https://www.gpsoft.com.au/"
+   ],
+   "how": "docs",
+   "note": "Labels, star ratings, tags, descriptions (no import, stored with files)."
+  },
+  "cloud_sync": {
+   "value": "partial",
+   "evidence": [
+    "https://docs.dopus.com/doku.php?id=release_history:opus13_detailed:cloud_storage",
+    "https://www.gpsoft.com.au/"
+   ],
+   "how": "docs",
+   "note": "Shows cloud folders (OneDrive, Dropbox) and pin/free-up; FTP; no own sync."
+  },
+  "keyboard_first": {
+   "value": "yes",
+   "evidence": [
+    "https://www.gpsoft.com.au/",
+    "https://docs.dopus.com/doku.php?id=additional_functionality:viewing_images:viewer_keys_and_toolbar"
+   ],
+   "how": "docs"
+  },
+  "custom_shortcuts": {
+   "value": "yes",
+   "evidence": [
+    "https://www.gpsoft.com.au/"
+   ],
+   "how": "docs",
+   "note": "Global or Opus-only hotkeys."
+  },
+  "shortcut_cheatsheet": {
+   "value": "partial",
+   "note": "Help > Keyboard Map lists all configurable hotkeys (searchable); not a printable sheet",
+   "evidence": [
+    "https://resource.dopus.com/t/list-of-keyboard-shortcuts/26759"
+   ],
+   "how": "forum"
+  },
+  "boss_key": {
+   "value": "no",
+   "note": "Not in docs; forum search for boss key only found unrelated workarounds",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "app_sandbox": {
+   "value": "no",
+   "evidence": [
+    "https://www.gpsoft.com.au/"
+   ],
+   "how": "docs",
+   "note": "Windows program."
+  },
+  "no_network": {
+   "value": "no",
+   "evidence": [
+    "https://www.gpsoft.com.au/",
+    "https://docs.dopus.com/doku.php?id=release_history:opus13_detailed:viewer"
+   ],
+   "how": "docs",
+   "note": "FTP, online map lookup for GPS, update checks."
+  },
+  "notarized_attested": {
+   "value": "no",
+   "evidence": [
+    "https://www.gpsoft.com.au/"
+   ],
+   "how": "docs",
+   "note": "Closed source."
+  },
+  "mac_app_store": {
+   "value": "no",
+   "evidence": [
+    "https://www.gpsoft.com.au/"
+   ],
+   "how": "docs",
+   "note": "No Mac version."
+  }
+ }
+}

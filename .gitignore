@@ -16,5 +16,5 @@ build/
 Resources/icon_1024.png
 .claude/worktrees/
 
-# Python bytecode (the pipeline scripts imported by tools)
+# Python byte code (scripts that import one another: the pipeline, build_site.py and site_alternatives.py)
 __pycache__/

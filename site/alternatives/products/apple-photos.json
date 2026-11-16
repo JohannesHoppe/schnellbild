@@ -1,0 +1,566 @@
+{
+ "name": "Apple Photos",
+ "short": "Apple Photos",
+ "vendor": "Apple",
+ "website": "https://support.apple.com/guide/photos/welcome/mac",
+ "platforms": [
+  "macOS",
+  "iOS",
+  "iPadOS",
+  "visionOS"
+ ],
+ "mac_available": "yes",
+ "page": "matrix",
+ "section": "photos",
+ "price": "free (included with macOS); iCloud+ storage for iCloud Photos is paid",
+ "license": "proprietary",
+ "current_version": "Photos 12.0 on macOS Golden Gate 27.2.1",
+ "last_update": "2026-11-09 (macOS 27.2.1)",
+ "engine": "AVFoundation / ImageIO",
+ "category": "photo-manager",
+ "summary": "Apple's photo library with iCloud sync across devices. Good for organising and editing a personal photo collection, with people recognition, memories and non-destructive edits.",
+ "where_it_wins": [
+  "iCloud sync with iPhone and iPad",
+  "Non-destructive editing of photos and videos",
+  "People, places and content search",
+  "Memories, slideshows with music, shared albums"
+ ],
+ "where_schnellbild_wins": [
+  "No import: opens any folder, drive or network share as it is",
+  "Plays MKV, WebM, AVI",
+  "Archives and comics as folders",
+  "Real file operations: rename, move, copy, dual pane",
+  "Never goes online",
+  "Own light/dark setting"
+ ],
+ "search_terms": [
+  "apple photos alternative",
+  "photos app without library mac",
+  "view photos without importing mac",
+  "fotos mac ohne import",
+  "apple fotos alternative",
+  "bilder ansehen ohne mediathek mac"
+ ],
+ "matrix": {
+  "free": {
+   "value": "yes",
+   "note": "Included with macOS; iCloud Photos storage beyond 5 GB is paid iCloud+.",
+   "evidence": [
+    "https://www.apple.com/macos/feature-availability/",
+    "https://support.apple.com/guide/photos/photos-settings-pht5156cc968/mac"
+   ],
+   "how": "docs"
+  },
+  "open_source": {
+   "value": "no",
+   "evidence": [
+    "https://www.apple.com/macos/feature-availability/"
+   ],
+   "how": "docs"
+  },
+  "native_apple_silicon": {
+   "value": "yes",
+   "note": "arm64e binary (local check on macOS 27.2 (codesign/lipo/sips on the installed system app)).",
+   "evidence": [
+    "https://www.apple.com/macos/feature-availability/"
+   ],
+   "how": "tested-description"
+  },
+  "no_account_no_tracking": {
+   "value": "partial",
+   "note": "Works without an Apple Account, but iCloud features need one and Enhanced Visual Search matches photos against an Apple index.",
+   "evidence": [
+    "https://support.apple.com/guide/photos/photos-settings-pht5156cc968/mac"
+   ],
+   "how": "docs"
+  },
+  "dark_light_setting": {
+   "value": "no",
+   "note": "Follows the macOS appearance; no own theme setting.",
+   "evidence": [
+    "https://support.apple.com/guide/photos/photos-settings-pht5156cc968/mac",
+    "https://support.apple.com/guide/mac-help/use-a-light-or-dark-appearance-mchl52e1c2d2/mac"
+   ],
+   "how": "docs"
+  },
+  "languages_20": {
+   "value": "yes",
+   "note": "Follows the macOS system language (about 40 languages).",
+   "evidence": [
+    "https://www.apple.com/macos/feature-availability/"
+   ],
+   "how": "docs"
+  },
+  "folder_browsing": {
+   "value": "no",
+   "note": "Photos and videos must be imported into a Photos library (or referenced from it).",
+   "evidence": [
+    "https://support.apple.com/guide/photos/import-from-storage-devices-phtae4e05c67/mac",
+    "https://support.apple.com/guide/photos/photo-library-overview-pht211de786/mac"
+   ],
+   "how": "docs"
+  },
+  "thumbnail_grid": {
+   "value": "partial",
+   "note": "Library grid with Years/Months/All Photos; albums, not file-system folders.",
+   "evidence": [
+    "https://support.apple.com/guide/photos/keyboard-shortcuts-and-gestures-pht9b4411b24/mac",
+    "https://support.apple.com/guide/photos/browse-your-photo-library-pht53854a251/mac"
+   ],
+   "how": "docs"
+  },
+  "list_view": {
+   "value": "no",
+   "note": "Library views are Years, Months, All Photos (grid); no list with columns.",
+   "evidence": [
+    "https://support.apple.com/guide/photos/keyboard-shortcuts-and-gestures-pht9b4411b24/mac"
+   ],
+   "how": "docs"
+  },
+  "recursive_search": {
+   "value": "partial",
+   "note": "Searches the whole library by content, title, caption, keyword, date; not file names in folders.",
+   "evidence": [
+    "https://support.apple.com/guide/photos/search-for-photos-and-videos-pht64de33e5a/mac"
+   ],
+   "how": "docs"
+  },
+  "regex_search": {
+   "value": "no",
+   "note": "Search by title, caption, keyword, date, content or natural language; no regular expressions.",
+   "evidence": [
+    "https://support.apple.com/guide/photos/search-for-photos-and-videos-pht64de33e5a/mac"
+   ],
+   "how": "docs"
+  },
+  "network_shares_fast": {
+   "value": "no",
+   "note": "Items must be imported into a Photos library first; no browsing of shares.",
+   "evidence": [
+    "https://support.apple.com/guide/photos/photo-library-overview-pht211de786/mac",
+    "https://support.apple.com/guide/photos/import-from-storage-devices-phtae4e05c67/mac"
+   ],
+   "how": "docs"
+  },
+  "multiple_windows": {
+   "value": "no",
+   "note": "Single library window; Command-W closes the window and quits Photos.",
+   "evidence": [
+    "https://support.apple.com/guide/photos/keyboard-shortcuts-and-gestures-pht9b4411b24/mac"
+   ],
+   "how": "docs"
+  },
+  "bookmarks": {
+   "value": "no",
+   "note": "Albums and folders of albums inside the library; no file-system folder bookmarks.",
+   "evidence": [
+    "https://support.apple.com/guide/photos/create-and-work-with-albums-pht6d60a1f1/mac"
+   ],
+   "how": "docs"
+  },
+  "img_modern_formats": {
+   "value": "yes",
+   "note": "Imports formats macOS ImageIO reads (HEIC, AVIF, JPEG XL, WebP); not listed explicitly in the guide.",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/JPEG_XL",
+    "https://support.apple.com/guide/photos/import-from-storage-devices-phtae4e05c67/mac"
+   ],
+   "how": "tested-description"
+  },
+  "img_raw": {
+   "value": "yes",
+   "evidence": [
+    "https://support.apple.com/en-us/105094"
+   ],
+   "how": "docs"
+  },
+  "img_psd_exr": {
+   "value": "partial",
+   "note": "PSD files import flattened (layers are lost); OpenEXR not documented.",
+   "evidence": [
+    "https://forums.macrumors.com/threads/photos-app-and-adobe-photoshop.2192095/"
+   ],
+   "how": "forum"
+  },
+  "img_svg_pdf": {
+   "value": "no",
+   "note": "Searched Photos User Guide and Apple Community; no statement on SVG/PDF import.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "img_animated": {
+   "value": "partial",
+   "note": "Searched Photos User Guide (Media Types page names no Animated collection), web; no source on GIF/APNG/WebP playback in Photos for Mac.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "note": "Arrow keys between photos, Space to open/close.",
+   "evidence": [
+    "https://support.apple.com/guide/photos/keyboard-shortcuts-and-gestures-pht9b4411b24/mac"
+   ],
+   "how": "docs"
+  },
+  "zoom_rotate": {
+   "value": "yes",
+   "note": "Zoom, drag to pan; rotate is a (non-destructive) edit.",
+   "evidence": [
+    "https://support.apple.com/guide/photos/view-photos-and-videos-pht8b9ba4aa9/mac",
+    "https://support.apple.com/guide/photos/keyboard-shortcuts-and-gestures-pht9b4411b24/mac"
+   ],
+   "how": "docs"
+  },
+  "slideshow": {
+   "value": "yes",
+   "note": "Instant slideshows with themes and music, plus saved slideshow projects.",
+   "evidence": [
+    "https://support.apple.com/guide/photos/create-slideshows-phtae8c6d40/mac"
+   ],
+   "how": "docs"
+  },
+  "slideshow_recursive": {
+   "value": "partial",
+   "note": "Slideshows of a selection or album mixing photos and videos; no folder tree.",
+   "evidence": [
+    "https://support.apple.com/guide/photos/create-slideshows-phtae8c6d40/mac"
+   ],
+   "how": "docs"
+  },
+  "auto_enhance_view": {
+   "value": "yes",
+   "note": "Auto Enhance (Command-E) and adjustments are non-destructive; original kept.",
+   "evidence": [
+    "https://support.apple.com/guide/photos/editing-basics-pht304c2ace6/mac",
+    "https://support.apple.com/guide/photos/keyboard-shortcuts-and-gestures-pht9b4411b24/mac"
+   ],
+   "how": "docs"
+  },
+  "file_info_exif": {
+   "value": "yes",
+   "note": "Camera metadata (lens, shutter speed, file size), location, device.",
+   "evidence": [
+    "https://support.apple.com/guide/photos/see-photo-and-video-information-phta8b25fa42/mac"
+   ],
+   "how": "docs"
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "note": "Info window lists capture metadata, location, albums; no file-type mismatch notice.",
+   "evidence": [
+    "https://support.apple.com/guide/photos/see-photo-and-video-information-phta8b25fa42/mac"
+   ],
+   "how": "docs"
+  },
+  "video_native": {
+   "value": "yes",
+   "evidence": [
+    "https://support.apple.com/guide/photos/view-photos-and-videos-pht8b9ba4aa9/mac"
+   ],
+   "how": "docs"
+  },
+  "video_mkv_avi_webm": {
+   "value": "no",
+   "note": "Plays what QuickTime/AVFoundation plays; MKV must be remuxed to MP4 first.",
+   "evidence": [
+    "https://forums.macrumors.com/threads/why-will-this-not-play-in-quicktime-or-photos.2462113/"
+   ],
+   "how": "forum"
+  },
+  "photos_videos_one_grid": {
+   "value": "yes",
+   "evidence": [
+    "https://support.apple.com/guide/photos/view-photos-and-videos-pht8b9ba4aa9/mac"
+   ],
+   "how": "docs"
+  },
+  "video_skim_arrows": {
+   "value": "no",
+   "note": "Arrow keys go to the next item; no documented skimming.",
+   "evidence": [
+    "https://support.apple.com/guide/photos/keyboard-shortcuts-and-gestures-pht9b4411b24/mac"
+   ],
+   "how": "docs"
+  },
+  "subtitles_embedded": {
+   "value": "no",
+   "note": "Video controls and editing documented without any subtitle option; Photos User Guide table of contents (full feature list) has no such feature.",
+   "evidence": [
+    "https://support.apple.com/guide/photos/view-photos-and-videos-pht8b9ba4aa9/mac",
+    "https://support.apple.com/guide/photos/change-a-video-phte8a1fcd79/mac"
+   ],
+   "how": "docs"
+  },
+  "subtitles_external_files": {
+   "value": "no",
+   "note": "No subtitle support documented; Photos User Guide table of contents (full feature list) has no such feature.",
+   "evidence": [
+    "https://support.apple.com/guide/photos/view-photos-and-videos-pht8b9ba4aa9/mac"
+   ],
+   "how": "docs"
+  },
+  "audio_track_choice": {
+   "value": "no",
+   "note": "Only Audio Mix for Spatial Audio videos from recent iPhones; no track selection.",
+   "evidence": [
+    "https://support.apple.com/guide/photos/change-a-video-phte8a1fcd79/mac"
+   ],
+   "how": "docs"
+  },
+  "playback_speed": {
+   "value": "partial",
+   "note": "Slow-motion speeds (1/2, 1/4, 1/5) for high-frame-rate videos only.",
+   "evidence": [
+    "https://support.apple.com/guide/photos/change-a-video-phte8a1fcd79/mac"
+   ],
+   "how": "docs"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "note": "Photos guide only says controls appear when the pointer is over the video; placement not documented.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "playlist": {
+   "value": "no",
+   "note": "Instant slideshow plays a selection or album; no editable play queue.",
+   "evidence": [
+    "https://support.apple.com/guide/photos/create-slideshows-phtae8c6d40/mac"
+   ],
+   "how": "docs"
+  },
+  "saved_playlists": {
+   "value": "partial",
+   "note": "Saved slideshow projects keep an ordered list of photos and videos.",
+   "evidence": [
+    "https://support.apple.com/guide/photos/create-slideshows-phtae8c6d40/mac"
+   ],
+   "how": "docs"
+  },
+  "pip": {
+   "value": "no",
+   "note": "Searched Photos User Guide and web; no statement on Picture in Picture.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "music_mode": {
+   "value": "no",
+   "note": "Imports and plays photos and videos only.",
+   "evidence": [
+    "https://support.apple.com/guide/photos/import-from-storage-devices-phtae4e05c67/mac",
+    "https://support.apple.com/guide/photos/view-photos-and-videos-pht8b9ba4aa9/mac"
+   ],
+   "how": "docs"
+  },
+  "streaming_urls": {
+   "value": "no",
+   "note": "Plays items in the photo library only.",
+   "evidence": [
+    "https://support.apple.com/guide/photos/photo-library-overview-pht211de786/mac"
+   ],
+   "how": "docs"
+  },
+  "online_subtitles": {
+   "value": "no",
+   "note": "No subtitle support at all; Photos User Guide table of contents (full feature list) has no such feature.",
+   "evidence": [
+    "https://support.apple.com/guide/photos/view-photos-and-videos-pht8b9ba4aa9/mac"
+   ],
+   "how": "docs"
+  },
+  "video_filters_enhance": {
+   "value": "yes",
+   "note": "Light, colour, filters, crop for videos (non-destructive).",
+   "evidence": [
+    "https://support.apple.com/guide/photos/change-a-video-phte8a1fcd79/mac"
+   ],
+   "how": "docs"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "note": "Photos User Guide table of contents (full feature list) has no such feature; adds no Finder/Quick Look thumbnails.",
+   "evidence": [
+    "https://support.apple.com/guide/photos/view-photos-and-videos-pht8b9ba4aa9/mac"
+   ],
+   "how": "docs"
+  },
+  "archives_as_folders": {
+   "value": "no",
+   "note": "Imports photos and videos from files and folders; archives are not covered in the Photos User Guide.",
+   "evidence": [
+    "https://support.apple.com/guide/photos/import-from-storage-devices-phtae4e05c67/mac"
+   ],
+   "how": "docs"
+  },
+  "comics_cbz_cbr": {
+   "value": "no",
+   "note": "Imports photos and videos from files and folders; archives are not covered in the Photos User Guide.",
+   "evidence": [
+    "https://support.apple.com/guide/photos/import-from-storage-devices-phtae4e05c67/mac"
+   ],
+   "how": "docs"
+  },
+  "archive_passwords": {
+   "value": "no",
+   "note": "Imports photos and videos from files and folders; archives are not covered in the Photos User Guide.",
+   "evidence": [
+    "https://support.apple.com/guide/photos/import-from-storage-devices-phtae4e05c67/mac"
+   ],
+   "how": "docs"
+  },
+  "split_archives": {
+   "value": "no",
+   "note": "Imports photos and videos from files and folders; archives are not covered in the Photos User Guide.",
+   "evidence": [
+    "https://support.apple.com/guide/photos/import-from-storage-devices-phtae4e05c67/mac"
+   ],
+   "how": "docs"
+  },
+  "videos_in_archives": {
+   "value": "no",
+   "note": "Imports photos and videos from files and folders; archives are not covered in the Photos User Guide.",
+   "evidence": [
+    "https://support.apple.com/guide/photos/import-from-storage-devices-phtae4e05c67/mac"
+   ],
+   "how": "docs"
+  },
+  "manga_two_page": {
+   "value": "no",
+   "note": "Shows one photo at a time; Photos User Guide table of contents (full feature list) has no such feature.",
+   "evidence": [
+    "https://support.apple.com/guide/photos/view-photos-and-videos-pht8b9ba4aa9/mac"
+   ],
+   "how": "docs"
+  },
+  "rename_trash": {
+   "value": "partial",
+   "note": "Delete (Recently Deleted) and titles; no file renaming or folders on disk.",
+   "evidence": [
+    "https://support.apple.com/guide/photos/delete-photos-videos-recover-deleted-pht3bfab2f96/mac",
+    "https://support.apple.com/guide/photos/add-titles-captions-and-more-phta4e5a733f/mac"
+   ],
+   "how": "docs"
+  },
+  "move_copy": {
+   "value": "no",
+   "note": "Organises into albums inside the library, not file-system moves.",
+   "evidence": [
+    "https://support.apple.com/guide/photos/create-and-work-with-albums-pht6d60a1f1/mac"
+   ],
+   "how": "docs"
+  },
+  "dual_pane": {
+   "value": "no",
+   "note": "Single library window; Photos User Guide table of contents (full feature list) has no such feature.",
+   "evidence": [
+    "https://support.apple.com/guide/photos/keyboard-shortcuts-and-gestures-pht9b4411b24/mac"
+   ],
+   "how": "docs"
+  },
+  "undo_file_actions": {
+   "value": "partial",
+   "note": "Command-Z undo and Recently Deleted album.",
+   "evidence": [
+    "https://support.apple.com/guide/photos/keyboard-shortcuts-and-gestures-pht9b4411b24/mac",
+    "https://support.apple.com/guide/photos/delete-photos-videos-recover-deleted-pht3bfab2f96/mac"
+   ],
+   "how": "docs"
+  },
+  "image_editing": {
+   "value": "yes",
+   "evidence": [
+    "https://support.apple.com/guide/photos/editing-basics-pht304c2ace6/mac"
+   ],
+   "how": "docs"
+  },
+  "batch_convert": {
+   "value": "partial",
+   "note": "Exports several items in a chosen format; no batch rename.",
+   "evidence": [
+    "https://support.apple.com/guide/photos/export-photos-videos-slideshows-and-memories-pht6e157c5f/mac"
+   ],
+   "how": "docs"
+  },
+  "library_catalog": {
+   "value": "yes",
+   "note": "Library database with albums, keywords, ratings, people.",
+   "evidence": [
+    "https://support.apple.com/guide/photos/photo-library-overview-pht211de786/mac",
+    "https://support.apple.com/guide/photos/add-keywords-pht8d0ad5198/mac"
+   ],
+   "how": "docs"
+  },
+  "cloud_sync": {
+   "value": "yes",
+   "note": "iCloud Photos, Shared Albums, Shared Library.",
+   "evidence": [
+    "https://support.apple.com/guide/photos/photos-settings-pht5156cc968/mac",
+    "https://support.apple.com/guide/photos/use-icloud-photos-phtf5e48489c/mac"
+   ],
+   "how": "docs"
+  },
+  "keyboard_first": {
+   "value": "partial",
+   "note": "many keyboard shortcuts, not for everything",
+   "evidence": [
+    "https://support.apple.com/guide/photos/keyboard-shortcuts-and-gestures-pht9b4411b24/mac"
+   ],
+   "how": "docs"
+  },
+  "custom_shortcuts": {
+   "value": "partial",
+   "note": "macOS App Shortcuts for menu commands.",
+   "evidence": [
+    "https://support.apple.com/guide/mac-help/mchlp2271/mac"
+   ],
+   "how": "docs"
+  },
+  "shortcut_cheatsheet": {
+   "value": "yes",
+   "evidence": [
+    "https://support.apple.com/guide/photos/keyboard-shortcuts-and-gestures-pht9b4411b24/mac"
+   ],
+   "how": "docs"
+  },
+  "boss_key": {
+   "value": "partial",
+   "note": "Command-H hides the app; no dedicated boss key.",
+   "evidence": [
+    "https://support.apple.com/guide/photos/keyboard-shortcuts-and-gestures-pht9b4411b24/mac"
+   ],
+   "how": "docs"
+  },
+  "app_sandbox": {
+   "value": "yes",
+   "note": "com.apple.security.app-sandbox entitlement (local check on macOS 27.2 (codesign/lipo/sips on the installed system app)).",
+   "evidence": [
+    "https://www.apple.com/macos/feature-availability/"
+   ],
+   "how": "tested-description"
+  },
+  "no_network": {
+   "value": "no",
+   "note": "iCloud Photos, Shared Albums, Enhanced Visual Search; has the network.client entitlement.",
+   "evidence": [
+    "https://support.apple.com/guide/photos/photos-settings-pht5156cc968/mac"
+   ],
+   "how": "docs"
+  },
+  "notarized_attested": {
+   "value": "no",
+   "note": "Closed source system app.",
+   "evidence": [
+    "https://www.apple.com/macos/feature-availability/"
+   ],
+   "how": "docs"
+  },
+  "mac_app_store": {
+   "value": "no",
+   "note": "Ships with macOS.",
+   "evidence": [
+    "https://www.apple.com/macos/feature-availability/"
+   ],
+   "how": "docs"
+  }
+ }
+}

@@ -1,0 +1,565 @@
+{
+ "name": "MPC-HC (Media Player Classic - Home Cinema)",
+ "short": "MPC-HC",
+ "vendor": "clsid2 and contributors (community)",
+ "website": "https://github.com/clsid2/mpc-hc",
+ "platforms": [
+  "Windows"
+ ],
+ "mac_available": "no",
+ "page": "switcher",
+ "section": "windows",
+ "price": "free",
+ "license": "open source, GPL 3.0",
+ "current_version": "2.8.5",
+ "last_update": "2026-11-06",
+ "engine": "DirectShow with LAV Filters (FFmpeg)",
+ "category": "video",
+ "summary": "A lightweight, classic Windows video player with internal LAV Filters, many renderers and very configurable keys. Popular for its simple interface and low overhead; images are not its job.",
+ "where_it_wins": [
+  "very light and quick to start",
+  "renderers and shaders for enthusiasts (madVR, MPC VR)",
+  "subtitle search and download, yt-dlp streaming",
+  "boss key, frame stepping, many configurable keys"
+ ],
+ "where_schnellbild_wins": [
+  "runs on the Mac",
+  "photos and videos together in a thumbnail grid",
+  "folders, recursive search, slideshows",
+  "ZIP, RAR, 7z and comics as folders",
+  "file sorting: rename, move, two panes, undo"
+ ],
+ "search_terms": [
+  "mpc-hc mac",
+  "media player classic mac",
+  "mpc-hc alternative mac",
+  "mpc-hc für mac"
+ ],
+ "matrix": {
+  "free": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/Readme.md"
+   ],
+   "how": "docs"
+  },
+  "open_source": {
+   "value": "yes",
+   "note": "GPL 3.0",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc"
+   ],
+   "how": "source"
+  },
+  "native_apple_silicon": {
+   "value": "no",
+   "note": "Windows only",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/Readme.md"
+   ],
+   "how": "docs"
+  },
+  "no_account_no_tracking": {
+   "value": "yes",
+   "how": "source",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/src/mpc-hc/UpdateChecker.cpp",
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/Readme.md"
+   ],
+   "note": "No account or ads; update check asks on first run and sends OS/version in the user agent"
+  },
+  "dark_light_setting": {
+   "value": "yes",
+   "note": "'Modern GUI Theme (Dark or Light)'",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/Readme.md"
+   ],
+   "how": "docs"
+  },
+  "languages_20": {
+   "value": "yes",
+   "note": "44 translations",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/tree/2.8.5/src/mpc-hc/mpcresources/PO"
+   ],
+   "how": "source"
+  },
+  "folder_browsing": {
+   "value": "partial",
+   "note": "'Open Directory' loads a folder into the playlist",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/src/mpc-hc/resource.h"
+   ],
+   "how": "source"
+  },
+  "thumbnail_grid": {
+   "value": "no",
+   "note": "no such command in the command list (resource.h)",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/src/mpc-hc/resource.h"
+   ],
+   "how": "source"
+  },
+  "list_view": {
+   "value": "partial",
+   "how": "source",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/src/mpc-hc/PlayerPlaylistBar.cpp"
+   ],
+   "note": "Playlist list with Name and Time columns only"
+  },
+  "recursive_search": {
+   "value": "no",
+   "how": "source",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/src/mpc-hc/PlayerPlaylistBar.cpp"
+   ],
+   "note": "Type-ahead find in the playlist only; folders can be added recursively"
+  },
+  "regex_search": {
+   "value": "no",
+   "how": "source",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/src/mpc-hc/PlayerPlaylistBar.cpp"
+   ],
+   "note": "Playlist find is plain substring/prefix matching"
+  },
+  "network_shares_fast": {
+   "value": "partial",
+   "how": "unverified",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/Readme.md"
+   ],
+   "note": "Plays files from SMB paths like any Windows path; no browser, speed not documented"
+  },
+  "multiple_windows": {
+   "value": "partial",
+   "note": "several instances if 'Allow multiple instances' is on (off by default)",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/src/mpc-hc/AppSettings.cpp"
+   ],
+   "how": "source"
+  },
+  "bookmarks": {
+   "value": "partial",
+   "note": "Favorites store files (with position), not folders",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/src/mpc-hc/resource.h"
+   ],
+   "how": "source"
+  },
+  "img_modern_formats": {
+   "value": "no",
+   "note": "no image formats in the media format list",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/src/mpc-hc/MediaFormats.cpp"
+   ],
+   "how": "source"
+  },
+  "img_raw": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/src/mpc-hc/MediaFormats.cpp"
+   ],
+   "how": "source"
+  },
+  "img_psd_exr": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/src/mpc-hc/MediaFormats.cpp"
+   ],
+   "how": "source"
+  },
+  "img_svg_pdf": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/src/mpc-hc/MediaFormats.cpp"
+   ],
+   "how": "source"
+  },
+  "img_animated": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/src/mpc-hc/MediaFormats.cpp"
+   ],
+   "how": "source"
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "note": "Ctrl+PgDn/PgUp next/previous file in the folder",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/src/mpc-hc/AppSettings.cpp"
+   ],
+   "how": "source"
+  },
+  "zoom_rotate": {
+   "value": "partial",
+   "note": "video zoom, pan&scan and rotate commands; no images",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/src/mpc-hc/resource.h"
+   ],
+   "how": "source"
+  },
+  "slideshow": {
+   "value": "no",
+   "note": "no such command in the command list (resource.h)",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/src/mpc-hc/resource.h"
+   ],
+   "how": "source"
+  },
+  "slideshow_recursive": {
+   "value": "no",
+   "note": "no such command in the command list (resource.h)",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/src/mpc-hc/resource.h"
+   ],
+   "how": "source"
+  },
+  "auto_enhance_view": {
+   "value": "partial",
+   "note": "colour controls and pixel shaders for video; no auto enhance",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/src/mpc-hc/resource.h"
+   ],
+   "how": "source"
+  },
+  "file_info_exif": {
+   "value": "partial",
+   "note": "MediaInfo tab in Properties: codecs, bitrate; no EXIF",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/tree/2.8.5/src/thirdparty",
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/src/mpc-hc/resource.h"
+   ],
+   "how": "source"
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/Readme.md"
+   ],
+   "note": "Not documented"
+  },
+  "video_native": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/Readme.md"
+   ],
+   "how": "docs"
+  },
+  "video_mkv_avi_webm": {
+   "value": "yes",
+   "note": "internal LAV Filters",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/Readme.md"
+   ],
+   "how": "docs"
+  },
+  "photos_videos_one_grid": {
+   "value": "no",
+   "note": "no such command in the command list (resource.h)",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/src/mpc-hc/resource.h"
+   ],
+   "how": "source"
+  },
+  "video_skim_arrows": {
+   "value": "yes",
+   "note": "←/→ jump 5 s (configurable), Ctrl+←/→ frame step",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/src/mpc-hc/AppSettings.cpp"
+   ],
+   "how": "source"
+  },
+  "subtitles_embedded": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/Readme.md"
+   ],
+   "how": "docs"
+  },
+  "subtitles_external_files": {
+   "value": "yes",
+   "note": "loads matching subtitle files next to the video (subtitle search paths)",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/Readme.md",
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/src/mpc-hc/AppSettings.cpp"
+   ],
+   "how": "source"
+  },
+  "audio_track_choice": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/src/mpc-hc/resource.h"
+   ],
+   "how": "source"
+  },
+  "playback_speed": {
+   "value": "yes",
+   "note": "Ctrl+↑/↓",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/src/mpc-hc/AppSettings.cpp"
+   ],
+   "how": "source"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "how": "source",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/src/mpc-hc/MainFrm.cpp"
+   ],
+   "note": "Only side panels (playlist, subresync, capture, navigation) are dockable; seek bar and toolbar are fixed"
+  },
+  "playlist": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/src/mpc-hc/resource.h"
+   ],
+   "how": "source"
+  },
+  "saved_playlists": {
+   "value": "yes",
+   "note": "Playlist Save / Save As",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/src/mpc-hc/resource.h"
+   ],
+   "how": "source"
+  },
+  "pip": {
+   "value": "no",
+   "note": "no such command in the command list (resource.h)",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/src/mpc-hc/resource.h"
+   ],
+   "how": "source"
+  },
+  "music_mode": {
+   "value": "yes",
+   "note": "audio player with cover art",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/Readme.md"
+   ],
+   "how": "docs"
+  },
+  "streaming_urls": {
+   "value": "yes",
+   "note": "YouTube and other sites with yt-dlp.exe placed next to it",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/Readme.md"
+   ],
+   "how": "docs"
+  },
+  "online_subtitles": {
+   "value": "yes",
+   "note": "subtitle search, optional automatic download",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/Readme.md",
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/src/mpc-hc/AppSettings.cpp"
+   ],
+   "how": "docs"
+  },
+  "video_filters_enhance": {
+   "value": "yes",
+   "note": "brightness/contrast/hue/saturation, pixel shaders",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/src/mpc-hc/resource.h"
+   ],
+   "how": "source"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "how": "source",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/tree/2.8.5"
+   ],
+   "note": "No Explorer thumbnail handler in the source tree; 'Save Thumbnails' makes a sheet of one video"
+  },
+  "archives_as_folders": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/src/mpc-hc/MediaFormats.cpp"
+   ],
+   "how": "source"
+  },
+  "comics_cbz_cbr": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/src/mpc-hc/MediaFormats.cpp"
+   ],
+   "how": "source"
+  },
+  "archive_passwords": {
+   "value": "no",
+   "how": "source",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/src/thirdparty/RARFileSource/RFS.cpp"
+   ],
+   "note": "RAR source filter rejects encrypted archives ('Encrypted RAR volumes are not supported')"
+  },
+  "split_archives": {
+   "value": "partial",
+   "how": "source",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/src/thirdparty/RARFileSource/RFS.cpp"
+   ],
+   "note": "Multi-volume RAR is handled (redirects to the first volume); no ZIP/7z"
+  },
+  "videos_in_archives": {
+   "value": "partial",
+   "note": "RAR only: plays a video from a RAR archive after picking the entry",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/src/mpc-hc/MediaFormats.cpp",
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/src/mpc-hc/RarEntrySelectorDialog.cpp"
+   ],
+   "how": "source"
+  },
+  "manga_two_page": {
+   "value": "no",
+   "how": "source",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/src/mpc-hc/MediaFormats.cpp"
+   ],
+   "note": "No image or comic formats"
+  },
+  "rename_trash": {
+   "value": "partial",
+   "note": "Del moves the current file to the Recycle Bin; no rename, no new folder",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/src/mpc-hc/AppSettings.cpp"
+   ],
+   "how": "source"
+  },
+  "move_copy": {
+   "value": "no",
+   "note": "no such command in the command list (resource.h)",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/src/mpc-hc/resource.h"
+   ],
+   "how": "source"
+  },
+  "dual_pane": {
+   "value": "no",
+   "note": "no such command in the command list (resource.h)",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/src/mpc-hc/resource.h"
+   ],
+   "how": "source"
+  },
+  "undo_file_actions": {
+   "value": "no",
+   "note": "no such command in the command list (resource.h)",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/src/mpc-hc/resource.h"
+   ],
+   "how": "source"
+  },
+  "image_editing": {
+   "value": "no",
+   "note": "no such command in the command list (resource.h)",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/src/mpc-hc/resource.h"
+   ],
+   "how": "source"
+  },
+  "batch_convert": {
+   "value": "no",
+   "note": "no such command in the command list (resource.h)",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/src/mpc-hc/resource.h"
+   ],
+   "how": "source"
+  },
+  "library_catalog": {
+   "value": "no",
+   "note": "no such command in the command list (resource.h)",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/src/mpc-hc/resource.h"
+   ],
+   "how": "source"
+  },
+  "cloud_sync": {
+   "value": "no",
+   "how": "source",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/tree/2.8.5"
+   ],
+   "note": "No cloud or sync code in the source tree"
+  },
+  "keyboard_first": {
+   "value": "yes",
+   "note": "every command has a configurable key",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/src/mpc-hc/AppSettings.cpp"
+   ],
+   "how": "source"
+  },
+  "custom_shortcuts": {
+   "value": "yes",
+   "note": "Options > Keys",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/src/mpc-hc/AppSettings.cpp"
+   ],
+   "how": "source"
+  },
+  "shortcut_cheatsheet": {
+   "value": "no",
+   "how": "source",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/src/mpc-hc/PPageAccelTbl.cpp"
+   ],
+   "note": "Key table in Options > Keys; no export or print"
+  },
+  "boss_key": {
+   "value": "yes",
+   "note": "'B' (Boss key)",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/src/mpc-hc/AppSettings.cpp"
+   ],
+   "how": "source"
+  },
+  "app_sandbox": {
+   "value": "na",
+   "note": "Windows only",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/Readme.md"
+   ],
+   "how": "docs"
+  },
+  "no_network": {
+   "value": "partial",
+   "note": "update check asks first (default undecided), subtitle download off by default",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/src/mpc-hc/AppSettings.cpp"
+   ],
+   "how": "source"
+  },
+  "notarized_attested": {
+   "value": "na",
+   "note": "Windows only",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/Readme.md"
+   ],
+   "how": "docs"
+  },
+  "mac_app_store": {
+   "value": "no",
+   "note": "Windows only",
+   "evidence": [
+    "https://github.com/clsid2/mpc-hc/blob/2.8.5/Readme.md"
+   ],
+   "how": "docs"
+  }
+ }
+}
