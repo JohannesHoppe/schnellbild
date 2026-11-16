@@ -123,6 +123,8 @@ final class PlayerSpy: PlaybackControl {
     var isPlaying = true   // videos autoplay
     var progress: Double? = 0
     var playsWithoutLength = false
+    var lengthSeconds: Double?
+    var playedSeconds: Double?
     func play()  { calls.append("play"); isPlaying = true }
     func pause() { calls.append("pause"); isPlaying = false }
     func seek(toProgress progress: Double) {

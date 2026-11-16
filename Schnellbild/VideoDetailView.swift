@@ -29,6 +29,10 @@ struct VideoDetailView: View {
     /// The file playing and its identity on disk: renamed or moved on the
     /// same volume (F2, the other pane), it plays on where it is.
     @State private var playing: (url: URL, file: FileIdentity?)?
+    /// The folder's memory of places the video began in
+    /// (`PlaybackPositions.list`): where it stands is remembered there when
+    /// it is left.
+    @State private var positionList: Int?
     /// Why the video can't play (a download cut off before its index).
     @State private var unplayable: String?
     /// Opened again (a download that grew); with where it stood.
@@ -120,9 +124,9 @@ struct VideoDetailView: View {
                     return
                 }
             }
-            let resume = resumeAt
+            let reopenAt = resumeAt
             resumeAt = nil
-            if resume == nil { panOffset = .zero }
+            if reopenAt == nil { panOffset = .zero }
             stop()
             checking = true
             unplayable = nil
@@ -162,6 +166,11 @@ struct VideoDetailView: View {
             playing = (url, nil)
 
             let model = self.model
+            // Opened again where it stood (a download that grew), else left
+            // earlier in this folder: on from there
+            let resume = reopenAt.map { PlaybackPositions.Place(seconds: $0, playing: true) }
+                ?? model.playbackPositions.place(of: url)
+            positionList = model.playbackPositions.list
             let report: @MainActor (PlaybackControl, Bool) -> Void = { control, playing in
                 model.playbackStateChanged(control, isPlaying: playing)
             }
@@ -172,20 +181,20 @@ struct VideoDetailView: View {
             // VLC plays it: a format of its own, or one AVFoundation refused
             // (also once it had opened it: a cut-off download VLC plays as
             // far as its data reaches)
-            @MainActor func playInVLC(from seconds: Double?) async {
+            @MainActor func playInVLC(from place: PlaybackPositions.Place?) async {
                 // The file's first bytes, off the main thread (a network share can be slow)
                 let head = stream == nil ? await Blocking.run { VLCSafety.head(of: url) } : nil
                 guard !Task.isCancelled else { return }
                 let source: VLCPlaybackControl.Source = stream.map { stream in .stream(url, { ArchiveInputStream(stream) }) } ?? .file(url, head: head)
                 // Subtitles off: no reading of the tracks before the first picture
-                let control = VLCPlaybackControl(source: source, subtitles: model.showSubtitles, onStateChange: report)
+                let control = VLCPlaybackControl(source: source, subtitles: model.showSubtitles, resume: place,
+                                                 onStateChange: report)
                 control.onAutoLook = reportLook
                 control.onTracksChanged = reportTracks
                 vlcControl = control
                 model.activePlayer = control
                 model.activePlayerURL = url
                 await noteFile(url)
-                if let seconds { await Self.resume(control, at: seconds) }
                 // VLC knows the size once the video plays: an AVI inside an
                 // archive on a share may take long to open
                 var waited = 0.0
@@ -204,10 +213,9 @@ struct VideoDetailView: View {
                 avControl = control
                 model.activePlayer = control
                 model.activePlayerURL = url
-                control.play()
+                control.begin(at: resume)
                 control.loadTracks()
                 await noteFile(url)
-                if let resume { await Self.resume(control, at: resume) }
                 if let track = try? await asset.loadTracks(withMediaType: .video).first,
                    let (size, transform) = try? await track.load(.naturalSize, .preferredTransform),
                    !Task.isCancelled {   // still this video
@@ -225,7 +233,7 @@ struct VideoDetailView: View {
                         BrowserModel.testLog("video: AVKit failed, VLC takes over | \(url.lastPathComponent)")
                         control.pause()
                         avControl = nil
-                        await playInVLC(from: seconds.isFinite ? seconds : nil)
+                        await playInVLC(from: seconds.isFinite && seconds > 0 ? PlaybackPositions.Place(seconds: seconds, playing: true) : nil)
                         break
                     }
                     try? await Task.sleep(for: .milliseconds(500))
@@ -270,18 +278,6 @@ struct VideoDetailView: View {
     nonisolated private static func fileSize(_ url: URL) -> Int64? {
         var info = stat()
         return stat(url.path, &info) == 0 ? Int64(info.st_size) : nil
-    }
-
-    /// Goes on at `seconds` once the player knows the video's length.
-    private static func resume(_ control: PlaybackControl, at seconds: Double) async {
-        for _ in 0..<50 where !Task.isCancelled {
-            if let length = control.lengthSeconds, length > 0 {
-                control.seek(toProgress: min(seconds / length, 1))
-                control.play()
-                return
-            }
-            try? await Task.sleep(for: .milliseconds(100))
-        }
     }
 
     /// A file of someone else: a reference movie names other files or
@@ -340,6 +336,11 @@ struct VideoDetailView: View {
     }
 
     private func stop() {
+        // Remembered before the player stops (and reads as paused)
+        if let url = playing?.url, let list = positionList, let player = (avControl as PlaybackControl?) ?? vlcControl {
+            model.videoLeft(url, player: player, list: list)
+        }
+        positionList = nil
         playing = nil
         unplayable = nil
         archiveStream?.close()
