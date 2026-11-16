@@ -48,8 +48,8 @@ final class AtlasLabelTests: XCTestCase {
 
     /// The narrowest a pane gets: the dual pane's smaller half (`PaneDivider.leftWidth`).
     private let narrowestPane: CGFloat = 220
-    /// The header's padding (10) and the map's around it (10) on each side.
-    private let headerMargins: CGFloat = 40
+    /// The map's padding around the header (10) on each side (its own is inside it).
+    private let headerMargins: CGFloat = 20
 
     private func header(_ table: [String: String], progress: BrowserModel.Progress? = nil) -> AtlasHeader {
         AtlasHeader(texts: AtlasHeaderTexts(
@@ -93,7 +93,7 @@ final class AtlasLabelTests: XCTestCase {
             let labels = TimelineLabels(texts: TimelineTexts(
                 from: from, to: from, count: format(table, "%lld of %lld", 99_998, 99_999),
                 showAll: table["Show All"] ?? "", showAllHelp: "")) {}
-            let showAll = laidOut(labels.narrowed).width
+            let showAll = laidOut(HStack { labels.narrowed }).width
             XCTAssertGreaterThanOrEqual(showAll, width(labels.texts.count ?? "", size: 10) + width(labels.texts.showAll, size: 10),
                                         "\(language): “\(labels.texts.count ?? "")” and “\(labels.texts.showAll)” get \(showAll) pt")
             XCTAssertGreaterThanOrEqual(laidOut(labels.from).width, width(from, size: 10))

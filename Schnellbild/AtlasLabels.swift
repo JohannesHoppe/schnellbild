@@ -103,7 +103,8 @@ struct AtlasHeader: View {
             if let progress {
                 ProgressView(value: Double(progress.done), total: Double(max(progress.total, 1))).frame(width: 50)
             }
-            Text(verbatim: texts.count).fixedSize()
+            // (one part a row: words that don't fit go onto the next line, never cut)
+            Text(verbatim: texts.count).fixedSize(horizontal: !stacked, vertical: true)
         }
         .font(.caption)
         .foregroundStyle(.secondary)
@@ -191,6 +192,12 @@ struct TimelineLabels: View {
                     Spacer(minLength: 8)
                     to
                 }
+                HStack { narrowed }
+            }
+            // The narrowest panes: one part a row
+            VStack(alignment: .leading, spacing: 2) {
+                from
+                to
                 HStack { narrowed }
             }
         }
