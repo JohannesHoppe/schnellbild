@@ -220,13 +220,66 @@ def icons():
     print("icons written to docs/")
 
 
-def card_shot(code):
-    own = DOCS / "screenshots" / f"{HERO_SHOT}-light-{code}.webp"
-    return own.name if code != "en" and own.exists() else f"{HERO_SHOT}-light.webp"
+def card_shot(code, motif=None):
+    """The screenshot on a language's card: the home page's hero (the globe where the
+    language has its own, else the grid), light."""
+    for name in ([motif] if motif else [GLOBE_SHOT, HERO_SHOT]):
+        own = DOCS / "screenshots" / (f"{name}-light.webp" if code == "en" else f"{name}-light-{code}.webp")
+        if own.exists():
+            return own.name
+    return f"{HERO_SHOT}-light.webp"
+
+
+CHROME = Path("/Applications/Google Chrome.app/Contents/MacOS/Google Chrome")
+# Headless Chrome lays a page out shorter than its window (--window-size=1200,630 gave
+# innerHeight 543), so the window is taller and the card is cut from its top left. sips
+# centres a crop whose offset is 0, 0, so the card is drawn one pixel to the right (inset=1)
+# and cut from x = 1.
+CHROME_WINDOW = (OG_SIZE[0] + 1, 1000)
+
+
+def og_render(codes, motif=None):
+    """Each card drawn by Chrome itself (headless, its own screenshot at 1200 × 630) from
+    site/og/card.html, served from the repository on this Mac only, then saved as JPEG
+    with sips at the highest quality from 80 that stays under OG_LIMIT."""
+    import functools, http.server, threading
+    if not CHROME.exists():
+        sys.exit(f"Google Chrome is missing ({CHROME}); draw the cards by hand: python3 Scripts/make_site_images.py og")
+    if not ICON.exists():
+        sys.exit("Resources/icon_1024.png is missing: swift Scripts/make_icon.swift Resources/icon_1024.png")
+    class Quiet(http.server.SimpleHTTPRequestHandler):
+        def log_message(self, *args):
+            pass
+    handler = functools.partial(Quiet, directory=str(ROOT))
+    server = http.server.ThreadingHTTPServer(("127.0.0.1", 0), handler)
+    threading.Thread(target=server.serve_forever, daemon=True).start()
+    port = server.server_address[1]
+    try:
+        with tempfile.TemporaryDirectory() as tmp:
+            for code in codes:
+                png = Path(tmp) / f"{code}.png"
+                url = f"http://127.0.0.1:{port}/site/og/card.html?lang={code}&shot={card_shot(code, motif)}&inset=1"
+                subprocess.run([str(CHROME), "--headless=new", "--disable-gpu", "--hide-scrollbars",
+                                f"--user-data-dir={tmp}/profile", "--force-device-scale-factor=1",
+                                "--virtual-time-budget=10000", f"--window-size={CHROME_WINDOW[0]},{CHROME_WINDOW[1]}",
+                                f"--screenshot={png}", url], check=True, capture_output=True)
+                sips("-c", OG_SIZE[1], OG_SIZE[0], "--cropOffset", 0, 1, png)
+                if png_size(png) != OG_SIZE:
+                    sys.exit(f"{code}: Chrome drew {png_size(png)}, not {OG_SIZE}")
+                out = DOCS / "og" / f"{code}.jpg"
+                for quality in (80, 75, 70):
+                    sips("-s", "format", "jpeg", "-s", "formatOptions", quality, png, "--out", out)
+                    if out.stat().st_size <= OG_LIMIT:
+                        break
+                print(f"docs/og/{code}.jpg  {card_shot(code, motif)}  {out.stat().st_size // 1000} kB")
+    finally:
+        server.shutdown()
 
 
 def og():
-    print(f"""1. Serve the repository on this Mac only:
+    print(f"""Drawn by Chrome: python3 Scripts/make_site_images.py og render [<lang> …]
+By hand:
+1. Serve the repository on this Mac only:
      python3 -m http.server {PORT} --bind 127.0.0.1 --directory {ROOT}
 2. In the Playwright browser set the viewport to {OG_SIZE[0]} × {OG_SIZE[1]}, open each URL below
    and take a JPEG screenshot of the viewport (not the full page); the page sets
@@ -266,5 +319,7 @@ def check():
 if __name__ == "__main__":
     if sys.argv[1:2] == ["import"] and len(sys.argv) > 2:
         import_shots(sys.argv[2:])
+    elif sys.argv[1:3] == ["og", "render"]:
+        og_render(sys.argv[3:] or LANGUAGES)
     else:
         {"icons": icons, "shots": shots, "og": og, "check": check}.get(sys.argv[1] if len(sys.argv) > 1 else "", lambda: sys.exit(__doc__))()
