@@ -2250,8 +2250,9 @@ final class BrowserModel: ObservableObject {
             }
             var distance: Double?
             if key == .distance, let origin, let point = located[entry.url] { distance = origin.distance(to: point) }
+            // (the extension only where the key reads it: a merge works this out for every probe)
             return Keyed(entry: entry, group: group, name: entry.name,
-                         ext: entry.isMedia ? entry.url.pathExtension.lowercased() : "",
+                         ext: key == .kind && entry.isMedia ? entry.url.pathExtension.lowercased() : "",
                          rank: rank, date: date, size: entry.byteSize ?? 0, distance: distance)
         }
 
@@ -2292,25 +2293,41 @@ final class BrowserModel: ObservableObject {
             entries.map(keyed).sorted(by: before).map(\.entry)
         }
 
-        /// `fresh` merged into `list`, which is in this order already.
+        /// `fresh` merged into `list`, which is in this order already: one
+        /// pass over `list`, a binary search for each new item.
         func merged(_ list: [GridEntry], _ fresh: [GridEntry]) -> [GridEntry] {
             let add = fresh.map(keyed).sorted(by: before)
+            let places = Self.insertionPoints(into: list.count, adding: add.count) { before(keyed(list[$0]), add[$1]) }
             var result: [GridEntry] = []
             result.reserveCapacity(list.count + add.count)
             var i = 0
-            for item in add {
-                // Binary search for where `item` goes among the rest of `list`
-                var low = i, high = list.count
-                while low < high {
-                    let mid = (low + high) / 2
-                    if before(keyed(list[mid]), item) { low = mid + 1 } else { high = mid }
-                }
-                result.append(contentsOf: list[i..<low])
+            for (item, place) in zip(add, places) {
+                result.append(contentsOf: list[i..<place])
                 result.append(item.entry)
-                i = low
+                i = place
             }
             result.append(contentsOf: list[i...])
             return result
+        }
+
+        /// Where each of `adding` sorted new items goes among `count` sorted
+        /// ones (`listBefore(i, j)`: item i of the list comes before new item
+        /// j): a binary search in what is left of the list for each, so at
+        /// most about `adding · (log2(count) + 1)` comparisons.
+        static func insertionPoints(into count: Int, adding: Int, listBefore: (Int, Int) -> Bool) -> [Int] {
+            var places: [Int] = []
+            places.reserveCapacity(adding)
+            var start = 0
+            for j in 0..<adding {
+                var low = start, high = count
+                while low < high {
+                    let mid = (low + high) / 2
+                    if listBefore(mid, j) { low = mid + 1 } else { high = mid }
+                }
+                places.append(low)
+                start = low
+            }
+            return places
         }
 
         /// `list` after `changes`: what is gone leaves it, what stays in place

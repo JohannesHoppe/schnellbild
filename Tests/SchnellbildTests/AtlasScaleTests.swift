@@ -80,22 +80,45 @@ final class AtlasScaleTests: XCTestCase {
         XCTAssertEqual(atlas.shown.count, 100_000)
     }
 
-    func testTheWalksBatchesMergeIntoTheListQuickly() {
+    /// The walk's batches go into the pane's list in its order, with work
+    /// that grows with the batch, not with the list: counted comparisons
+    /// (a binary search per new item; merging by comparing with every item
+    /// listed would take hundreds of times as many), and the time of one
+    /// batch into a list ten times as long against a short one, each the
+    /// best of five runs (the same runner for both: copying the list
+    /// grows with it, comparing barely; inserting item by item into the
+    /// array would take about ten times as long).
+    func testTheWalksBatchesMergeIntoTheListWithWorkThatGrowsWithTheBatch() {
         let order = BrowserModel.EntryOrder(key: .name, ascending: true, captured: [:])
         let entries = manyItems().map { GridEntry(url: $0.url, kind: .image) }
+        // In the pane's order, as the walk brings them: a folder's worth at a time, in no order
         var list: [GridEntry] = []
-        var slowest = 0.0
-        let total = seconds {
-            // As the walk brings them: a folder's worth at a time, in no order
-            for batch in stride(from: 0, to: entries.count, by: 500).map({ Array(entries[$0..<min($0 + 500, entries.count)]) }).reversed() {
-                let one = seconds { list = order.merged(list, batch) }
-                slowest = max(slowest, one)
-            }
+        for batch in stride(from: 0, to: entries.count, by: 500).map({ Array(entries[$0..<min($0 + 500, entries.count)]) }).reversed() {
+            list = order.merged(list, batch)
         }
         XCTAssertEqual(list.count, 100_000)
-        XCTAssertLessThan(total, 6.0, "all batches: \(total) s")
-        XCTAssertLessThan(slowest, 0.15, "the slowest batch: \(slowest) s")
         XCTAssertEqual(list.map(\.url), order.sorted(entries).map(\.url), "in the pane's order")
+
+        // Comparisons: 500 new into 100 000 listed
+        let listed = Array(stride(from: 0, to: 200_000, by: 2)), added = (0..<500).map { $0 * 397 + 1 }
+        var comparisons = 0
+        let places = BrowserModel.EntryOrder.insertionPoints(into: listed.count, adding: added.count) { i, j in
+            comparisons += 1
+            return listed[i] < added[j]
+        }
+        XCTAssertEqual(places, added.map { ($0 + 1) / 2 }, "each where it goes")
+        let bound = added.count * (Int(log2(Double(listed.count))) + 2)
+        XCTAssertLessThanOrEqual(comparisons, bound, "about log2(n) comparisons per new item, not n")
+
+        // Time: a batch into 100 000 against one into 10 000
+        func best(into count: Int) -> Double {
+            let base = Array(list.prefix(count))
+            let batch = (0..<500).map { GridEntry(url: URL(fileURLWithPath: "/tree/new/IMG_\($0 * 7).jpg"), kind: .image) }
+            return (0..<5).map { _ in seconds { _ = order.merged(base, batch) } }.min()!
+        }
+        let short = best(into: 10_000), long = best(into: 100_000)
+        print("500 merged into 10 000: \(short) s, into 100 000: \(long) s")
+        XCTAssertLessThan(long / short, 4, "the work grows with the list: \(short) s, \(long) s")
     }
 
     /// The first files read are one of every folder (each place shows early),
