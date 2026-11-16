@@ -4,21 +4,28 @@ import AVFoundation
 
 /// Video: AVKit for native formats, VLCKit fallback, keyboard control, layout.
 final class VideoUITests: SchnellbildUITestCase {
-    /// Enhance switched on and off quickly, many times, playing and paused:
-    /// AVKit's composition changes and redraws never count as the file
-    /// failing, so AVKit keeps the video (VLC takes over only for data it
-    /// can't read or a download not finished).
+    /// Enhance switched on and off quickly, many times, on a clip that has
+    /// ended, playing and paused: AVKit's composition changes, redraws and
+    /// seeks never count as the file failing, so AVKit keeps the video (VLC
+    /// takes over only for data it can't read or a download not finished).
     func testEnhanceToggledQuicklyKeepsTheVideoInAVKit() throws {
-        try put("dark.mp4", at: "dark.mp4")
-        launch(open: tempDir.appendingPathComponent("dark.mp4").path)
+        try put("bright.mp4", at: "bright.mp4")   // 3 s
+        launch(open: tempDir.appendingPathComponent("bright.mp4").path)
         XCTAssertTrue(element("video.avkit").waitForExistence(timeout: 20))
-        waitForBadge(containing: "dark.mp4")
-        for round in 0..<30 {
-            app.typeKey("e", modifierFlags: [])
-            if round == 15 { app.typeKey(.space, modifierFlags: []) }   // the rest paused: redraws by seeking
-            RunLoop.current.run(until: Date().addingTimeInterval(round % 3 == 0 ? 0.4 : 0.1))
+        waitForBadge(containing: "bright.mp4")
+        RunLoop.current.run(until: Date().addingTimeInterval(5))   // ended
+        func toggle(_ times: Int) {
+            for round in 0..<times {
+                app.typeKey("e", modifierFlags: [])
+                RunLoop.current.run(until: Date().addingTimeInterval(round % 3 == 0 ? 0.4 : 0.1))
+            }
         }
-        // The handover would come within two seconds of a failure
+        toggle(12)
+        app.typeKey(.space, modifierFlags: [])   // from the start again: playing
+        toggle(10)
+        app.typeKey(.space, modifierFlags: [])   // paused: redraws by seeking
+        toggle(10)
+        // A handover would come within two seconds of a failure
         RunLoop.current.run(until: Date().addingTimeInterval(4))
         let video = element("video.avkit")
         XCTAssertTrue(video.exists, "still AVKit; the window holds:\n\(app.debugDescription)")
@@ -393,6 +400,99 @@ final class VideoUITests: SchnellbildUITestCase {
         element("videoBar.grip").doubleClick()
         eventually("back at the bottom") { element("videoBar").frame.midY > element(id).frame.midY }
     }
+
+    // MARK: Going on where a video was left
+
+    /// ⌘→ to the next video and ⌘← back: the first goes on where it was
+    /// left, paused or playing as then; so does opening it again from the
+    /// grid. Another folder and back: it starts from the beginning.
+    /// (`tracks.mp4` in AVKit, `tracks.mkv` in VLC: 20 s each.)
+    private func checkResume(_ fixture: String, player: String) throws {
+        let ext = (fixture as NSString).pathExtension
+        let a = "a.\(ext)", b = "b.\(ext)"
+        try put(fixture, at: "videos/\(a)")
+        try put(fixture, at: "videos/\(b)")
+        let log = tempDir.appendingPathComponent("app.log")
+        continueAfterFailure = true   // the log below shows on a failure too
+        defer { print("app log:\n" + ((try? String(contentsOf: log, encoding: .utf8)) ?? "(none)")) }
+        launch(open: tempDir.appendingPathComponent("videos/\(a)").path, extra: ["--test-log=\(log.path)"])
+        XCTAssertTrue(element(player).waitForExistence(timeout: 20))
+        waitForBadge(containing: a)
+        let progress = element("videoProgress")
+        func percent() -> Int { Int(text(of: progress).filter(\.isNumber)) ?? -1 }
+        eventually("the length is known", timeout: 20) { progress.exists && percent() >= 0 }
+        // Paused about halfway
+        app.typeKey(.space, modifierFlags: [])
+        waitForBadge(containing: "Paused")
+        for _ in 0..<8 where percent() < 45 {
+            app.typeKey(.rightArrow, modifierFlags: [])
+            RunLoop.current.run(until: Date().addingTimeInterval(0.6))
+        }
+        RunLoop.current.run(until: Date().addingTimeInterval(1))
+        let left = percent()
+        XCTAssertTrue((40...70).contains(left), "about halfway: \(left) %")
+        XCTAssertTrue(text(of: badge).contains(a), "still the first video")
+
+        // The next video starts from the beginning, playing
+        app.typeKey(.rightArrow, modifierFlags: .command)
+        waitForBadge(containing: b)
+        eventually("the next one plays from its start", timeout: 15) {
+            !text(of: badge).contains("Paused") && (0...25).contains(percent())
+        }
+        // Back: where it was left, paused
+        app.typeKey(.leftArrow, modifierFlags: .command)
+        waitForBadge(containing: a)
+        eventually("back where it was left (\(left) %), paused", timeout: 15) {
+            abs(percent() - left) <= 3 && text(of: badge).contains("Paused")
+        }
+        RunLoop.current.run(until: Date().addingTimeInterval(1))
+        XCTAssertLessThanOrEqual(abs(percent() - left), 3, "stays there: \(percent()) %")
+        XCTAssertTrue(text(of: badge).contains("Paused"))
+
+        // Playing when left: playing again on coming back
+        app.typeKey(.space, modifierFlags: [])
+        eventually("plays") { !text(of: badge).contains("Paused") }
+        RunLoop.current.run(until: Date().addingTimeInterval(1))
+        app.typeKey(.rightArrow, modifierFlags: .command)
+        waitForBadge(containing: b)
+        app.typeKey(.leftArrow, modifierFlags: .command)
+        waitForBadge(containing: a)
+        eventually("on from where it was left, playing", timeout: 15) {
+            (left...(left + 25)).contains(percent()) && !text(of: badge).contains("Paused")
+        }
+        let playing = percent()
+        RunLoop.current.run(until: Date().addingTimeInterval(1.5))
+        XCTAssertGreaterThan(percent(), playing, "plays on: \(playing) % → \(percent()) %")
+
+        // Back to the grid and opened again: still on from there
+        app.typeKey(.space, modifierFlags: [])
+        waitForBadge(containing: "Paused")
+        RunLoop.current.run(until: Date().addingTimeInterval(0.5))
+        let paused = percent()
+        app.typeKey(.return, modifierFlags: [])
+        waitForSelected(a)
+        app.typeKey(.space, modifierFlags: [])
+        waitForBadge(containing: a)
+        eventually("opened again from the grid: where it was left (\(paused) %)", timeout: 15) {
+            abs(percent() - paused) <= 3 && text(of: badge).contains("Paused")
+        }
+
+        // Another folder and back: from the beginning
+        app.typeKey(.return, modifierFlags: [])
+        waitForSelected(a)
+        app.typeKey(.upArrow, modifierFlags: .command)
+        XCTAssertTrue(tile("videos").waitForExistence(timeout: 10), "the enclosing folder")
+        app.typeKey(.delete, modifierFlags: [])   // Back
+        waitForSelected(a)
+        app.typeKey(.space, modifierFlags: [])
+        waitForBadge(containing: a)
+        eventually("from the beginning, playing, after another folder", timeout: 15) {
+            !text(of: badge).contains("Paused") && (0...25).contains(percent())
+        }
+    }
+
+    func testAVideoGoesOnWhereItWasLeftInAVKit() throws { try checkResume("tracks.mp4", player: "video.avkit") }
+    func testAVideoGoesOnWhereItWasLeftInVLC() throws { try checkResume("tracks.mkv", player: "video.vlc") }
 
     func testTheControlBarStaysWhereItIsPutInAVKit() throws { try checkControlBarStays(vlc: false) }
     func testTheControlBarStaysWhereItIsPutInVLC() throws { try checkControlBarStays(vlc: true) }
