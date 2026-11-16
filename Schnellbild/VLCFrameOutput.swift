@@ -188,7 +188,7 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
         drawnOrder = []
         shownSize = CGSize(width: w, height: h)
         decodedSize = proposed
-        formatReady = true
+        formatPending = false
         // VLC's earlier output has closed: nothing draws into the old scratch
         let oldScratch = scratch
         scratch = newScratch
@@ -269,14 +269,21 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
     }
 
     /// The media the player plays from now on (set with `player.media`).
-    func use(_ media: VLCMedia) {
+    /// `newFormat`: VLC opens its output anew for it (decoded in software
+    /// after VideoToolbox: another chroma); until then the pictures VLC
+    /// still shows of the media before aren't shown here.
+    func use(_ media: VLCMedia, newFormat: Bool = false) {
         lock.lock()
         self.media = media
         shownOfMedia = 0
         openings += 1
-        formatReady = false
+        formatPending = newFormat
+        usedAt = Date()
         lock.unlock()
     }
+
+    /// When the media was handed over (`use`).
+    private var usedAt = Date.distantPast
 
     static func videoTrack(of media: VLCMedia) -> Track? {
         guard let tracks = media.tracksInformation as? [[String: Any]] else { return nil }
@@ -400,8 +407,11 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
             drawn.displayed = true
             drawing[picture] = drawn
         }
-        // Held: the picture on the layer stays (`hold`)
-        if held { lock.unlock(); return }
+        // Held: the picture on the layer stays (`hold`); so do pictures of
+        // the media before (its output closes after a new one is handed over)
+        // until VLC opens its output for the new one (`use(newFormat:)`; two
+        // seconds at most)
+        if held || (formatPending && Date().timeIntervalSince(usedAt) < 2) { lock.unlock(); return }
         latest = buffer
         lastDisplay = start
         sequence += 1
@@ -564,14 +574,15 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
         defer { lock.unlock() }
         return decodedSize
     }
-    /// VLC has opened its output for the media handed over last (`use`):
-    /// the sizes above are that media's (a media opened again in software
-    /// pads its pictures otherwise than VideoToolbox did).
-    private var formatReady = false
+    /// A media handed over with a new format whose output VLC hasn't opened
+    /// yet (`use(newFormat:)`): the sizes above are still the media's before
+    /// (a media opened again in software pads its pictures otherwise than
+    /// VideoToolbox did).
+    private var formatPending = false
     var hasFormat: Bool {
         lock.lock()
         defer { lock.unlock() }
-        return formatReady
+        return !formatPending
     }
 
     /// `logging`: the next pictures with it are logged (UI tests).

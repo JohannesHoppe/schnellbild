@@ -467,7 +467,7 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
             let media = self.makeMedia(subtitles: handingOver ? Self.noSubtitles : track)
             if time > 0 { media.addOption(":start-time=\(String(format: "%.3f", Double(time) / 1000))") }
             self.player.media = media
-            self.output.use(media)
+            self.output.use(media, newFormat: true)
             self.openedInSoftware = true
             self.pauseOnceOpen = !wasPlaying
             if handingOver, let track, let index {
@@ -558,7 +558,6 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
             let ours = read.lines.filter { $0.start < firstOfVLC }
             BrowserModel.testLog("vlc: handing over subtitles \(track) at \(String(format: "%.3f", time)) s: \(ours.count) lines drawn by the app, "
                 + "VLC's from \(String(format: "%.3f", firstOfVLC)) s, chosen at \(String(format: "%.3f", selectAt)) s | \(BrowserModel.testClock) ms")
-            self.output.logPictures(5)
             self.followHandover()
             while !Task.isCancelled, self.handover != nil, self.player.delegate != nil {
                 try? await Task.sleep(for: .milliseconds(20))
@@ -583,7 +582,6 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         // for this media; held pictures show from then on
         // (VLC may keep its output for a media of the same format: half a second at most)
         guard output.hasFormat || Date().timeIntervalSince(handover.began) > 0.5 else { self.handover = handover; return }
-        output.hold(false)
         if texts != handover.shown {
             handover.shown = texts
             BrowserModel.testLog("vlc: the app draws \(texts) at \(String(format: "%.3f", now)) s | \(BrowserModel.testClock) ms")
@@ -595,6 +593,8 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
                 output.setOverlay(nil, logging: 40)
             }
         }
+        // Held pictures show from here on, with the line over them
+        output.hold(false)
         let ours = handover.lines.lines.filter { $0.start < handover.firstOfVLC }
         if handover.selected, now >= (ours.map(\.end).max() ?? 0) {
             self.handover = nil
