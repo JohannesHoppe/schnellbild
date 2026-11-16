@@ -154,11 +154,13 @@ private struct HeaderChrome: ViewModifier {
 /// borderless button showed "Viag…" and "Mat…" for Portuguese's "Viagem"
 /// and Finnish's "Matka" in the screenshots): pressed it dims, disabled it fades.
 struct HeaderButtonStyle: ButtonStyle {
+    /// The word's colour: as the bar's other words, or the accent for a link (Show All).
+    var link = false
     @Environment(\.isEnabled) private var enabled
 
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .foregroundStyle(enabled ? Color.accentColor : Color.secondary)
+            .foregroundStyle(!enabled ? Color.secondary : link ? Color.accentColor : Color.primary)
             .opacity(configuration.isPressed ? 0.6 : enabled ? 1 : 0.5)
             .contentShape(Rectangle())
     }
@@ -215,7 +217,7 @@ struct TimelineLabels: View {
         if let count = texts.count {
             Text(verbatim: count).fixedSize().accessibilityIdentifier("timeline.count")
             Button(action: onShowAll) { Text(verbatim: texts.showAll).fixedSize() }
-                .buttonStyle(HeaderButtonStyle())
+                .buttonStyle(HeaderButtonStyle(link: true))
                 .help(texts.showAllHelp)
                 .accessibilityIdentifier("timeline.all")
         }
