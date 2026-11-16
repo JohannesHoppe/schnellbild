@@ -1,6 +1,7 @@
 {
   "name": "한국어",
   "privacySlug": "privacy",
+  "alternativesSlug": "alternatives",
   "title": "Schnellbild: 짜증 날 일 없는 Mac용 이미지·동영상 뷰어",
   "seoTitle": "Schnellbild · 맥용 이미지 뷰어·동영상 플레이어, 꿀뷰 대안",
   "seoDescription": "맥에서 쓰는 빠르고 무료인 이미지 뷰어이자 동영상 플레이어. MKV·AVI·WebM 재생, ZIP·RAR 만화책(CBZ·CBR)을 폴더처럼, 슬라이드쇼, 키보드로 넘기기. 맥용 꿀뷰(Honeyview) 대안.",
@@ -70,8 +71,13 @@
       "alt": "전체 보기로 표시한 사진"
     },
     {
+      "title": "지도와 지구본 위의 내 사진",
+      "text": "<p><kbd>W</kbd>를 누르면 폴더와 하위 폴더의 사진과 동영상이 촬영한 장소에 표시됩니다. 멀리 축소하면 지도는 별이 가득한 하늘 앞의 지구본이 되고, 원하면 낮과 밤을 켜서 밤 쪽에 도시의 불빛을 볼 수 있습니다. 확대하면 평평한 지도로 펼쳐집니다.</p><ul><li>타임라인은 여행을 시간순으로 펼칩니다. 한 구간을 드래그하면 지도에는 그 부분만 표시됩니다</li><li><kbd>T</kbd>로 여행을 재생합니다. 지도가 장소에서 장소로 이동하고, 사진이 크게 나오고, 동영상이 몇 초씩 재생됩니다</li><li>지도는 앱에 들어 있습니다. 인터넷에 접속하지 않고, 어떤 위치도 Mac 밖으로 나가지 않습니다</li></ul>",
+      "alt": "아틀라스 보기에서 지구본 위에 표시된 여행 사진"
+    },
+    {
       "title": "MKV, AVI까지, macOS가 재생하지 못하는 동영상도",
-      "text": "<p>macOS가 자체적으로 재생하는 형식(MP4, MOV, AVCHD 등)은 macOS로(HDR 포함), 그 밖의 모든 형식(MKV, WebM, AVI, WMV, FLV, MPEG, DVD 비디오)은 내장된 VLC 엔진으로 재생합니다.</p><ul><li>← →로 동영상의 10분의 1, ⇧← ⇧→로 100분의 1씩 이동</li><li>↑ ↓로 음량 조절, 모든 동영상에 적용</li><li>Finder와 훑어보기에서도 MKV, WebM, WMV, FLV, VOB 썸네일 표시</li></ul>",
+      "text": "<p>macOS가 자체적으로 재생하는 형식(MP4, MOV, AVCHD 등)은 macOS로(HDR 포함), 그 밖의 모든 형식(MKV, WebM, AVI, WMV, FLV, MPEG, DVD 비디오)은 내장된 VLC 엔진으로 재생합니다.</p><ul><li>← →로 동영상의 10분의 1, ⇧← ⇧→로 100분의 1씩 이동</li><li>↑ ↓로 음량 조절, 모든 동영상에 적용</li><li>⌘→로 다음 동영상으로, ⌘←로 돌아오면 앞의 동영상은 멈췄던 곳부터 이어집니다</li><li>동영상 속 자막(<kbd>V</kbd>)은 처음부터 표시되고, 재생 중간에 켜도 지금 나오는 대사가 바로 보입니다. ASS 자막은 위치, 색상, 글꼴도 그대로입니다</li><li>Finder와 훑어보기에서도 MKV, WebM, WMV, FLV, VOB 썸네일 표시</li></ul>",
       "alt": "Schnellbild에서 재생 중인 동영상"
     },
     {
@@ -96,12 +102,12 @@
     },
     {
       "title": "파일의 진짜 정체",
-      "text": "<p><kbd>I</kbd>를 누르면 포맷, 해상도, 코덱, 비트레이트, 비트 심도, 색상 프로파일, 카메라가 표시되고, 파일 확장자가 내용과 맞지 않으면 알려 줍니다.</p>",
+      "text": "<p><kbd>I</kbd> 또는 <kbd>⌘</kbd><kbd>I</kbd>를 누르면 이미지 옆에 파일 정보가 열립니다. 언제 어디서 찍었는지(작은 지도와 가까운 지명 포함), 카메라와 렌즈, 포맷, 해상도, 코덱, 비트레이트, 비트 심도, 색상 프로파일, 그리고 모든 메타데이터 키(EXIF, GPS, IPTC, XMP, QuickTime)를 필터링하고 복사할 수 있습니다. 시간과 장소는 XMP 사이드카, GoPro나 DJI 드론의 GPS 데이터, 소니의 클립 파일, 폴더 안의 GPX 트랙에서도 읽어 옵니다.</p><p>확장자가 내용과 맞지 않는 파일은 알려 줍니다. 이름만으로는 알 수 없는 파일은 내용으로 판단하고, 다운로드 중인 파일(.part, .crdownload 등)은 받은 데까지 보여 줍니다.</p>",
       "alt": "사진 옆에 표시된 파일 정보"
     },
     {
       "title": "모든 키를 한눈에",
-      "text": "<p><kbd>F1</kbd>은 모든 키를 보여 주며 인쇄도 할 수 있습니다. <kbd>K</kbd>는 클릭해서 쓰는 작은 키보드를 띄웁니다. 키를 직접 지정하거나 Phiewer와 같은 키 배치로 바꿀 수 있습니다. 격자 또는 목록(<kbd>L</kbd>), 이름, 종류, 날짜, 크기로 정렬, 여러 윈도우, 그리고 보스 키(<kbd>X</kbd>)까지.</p>",
+      "text": "<p><kbd>F1</kbd>은 모든 키를 보여 주며 인쇄도 할 수 있습니다. <kbd>K</kbd>는 클릭해서 쓰는 작은 키보드를 띄웁니다. 키를 직접 지정하거나 Phiewer와 같은 키 배치로 바꿀 수 있습니다. 격자 또는 목록(<kbd>L</kbd>), 이름, 종류, 날짜, 크기, 특정 장소로부터의 거리로 정렬, 여러 윈도우, 그리고 보스 키(<kbd>X</kbd>)까지.</p>",
       "alt": "키 목록(F1)"
     },
     {
@@ -140,7 +146,10 @@
   ],
   "safeMore": "구체적으로 무엇을 하는지, 그리고 한계는 어디인지: <a href=\"https://github.com/JohannesHoppe/schnellbild#safe-with-files-from-others\">다른 사람이 보낸 파일도 안전하게</a>.",
   "modelsTitle": "Phiewer, IINA, Norton Commander를 쓰다가 오셨나요?",
-  "modelsText": "Phiewer는 유료 PRO 버전이 있는 빠른 사진 뷰어이고, IINA는 동영상 감상을 위한 본격적인 플레이어입니다. 둘 다 Schnellbild의 본보기였고, 이중 패널은 Norton Commander가 본보기였습니다. Schnellbild는 폴더 속 사진과 동영상을 무료 앱 하나에 담았고, 원하면 키를 Phiewer와 똑같이 쓸 수 있습니다. Schnellbild와 비교해 보세요: <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-phiewer-alternative\">무료 Phiewer 대안</a>, <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-iina-alternative-for-looking-through-videos\">동영상을 훑어보기 위한 무료 IINA 대안</a>. Windows에서 꿀뷰(Honeyview)나 반디뷰(BandiView)를 쓰던 분도 Mac에서 똑같이 폴더와 ZIP·RAR 속 이미지를 키보드로 넘겨 볼 수 있습니다.",
+  "modelsText": "Phiewer는 유료 PRO 버전이 있는 빠른 사진 뷰어이고, IINA는 동영상 감상을 위한 본격적인 플레이어입니다. 둘 다 Schnellbild의 본보기였고, 이중 패널은 Norton Commander가 본보기였습니다. Schnellbild는 폴더 속 사진과 동영상을 무료 앱 하나에 담았고, 원하면 키를 Phiewer와 똑같이 쓸 수 있습니다. Schnellbild와 비교해 보세요: <a href=\"{alt:phiewer}\">무료 Phiewer 대안</a>, <a href=\"{alt:iina}\">동영상을 훑어보기 위한 무료 IINA 대안</a>, <a href=\"{alt:norton-commander}\">Norton Commander에서 Mac으로</a>. Windows에서 꿀뷰(Honeyview)나 반디뷰(BandiView)를 쓰던 분도 Mac에서 똑같이 폴더와 ZIP·RAR 속 이미지를 키보드로 넘겨 볼 수 있습니다.",
+  "altTitle": "대안을 찾고 계신가요?",
+  "altText": "Mac에서 사람들이 찾는 프로그램들과 Schnellbild를 기능별로, 모든 내용에 출처를 달아 비교했습니다:",
+  "altAll": "모든 대안",
   "ossTitle": "오픈 소스",
   "ossText": "Schnellbild는 MIT 라이선스의 자유 소프트웨어이며, 소스 코드는 <a href=\"https://github.com/JohannesHoppe/schnellbild\">GitHub에</a> 있습니다. 버그를 발견했거나 아쉬운 점이 있나요? <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">이슈를 등록해 주세요</a>.",
   "languagesText": "사용 중인 Mac의 언어로:",
@@ -149,6 +158,7 @@
   "footerPrivacy": "개인정보 보호",
   "footerImprint": "법적 고지 (Impressum)",
   "footerEula": "사용권 계약",
+  "footerAlternatives": "대안",
   "privacy": {
     "title": "개인정보 처리방침",
     "description": "Schnellbild는 개인 데이터를 수집하지 않습니다. 계정, 분석, 추적, 네트워크 접근이 모두 없습니다.",

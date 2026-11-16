@@ -172,6 +172,39 @@ enum MP4Boxes {
         return nil
     }
 
+    /// Whether a movie is cut off before its index: its boxes run past the
+    /// file's end and none of those there is the `moov` (an MP4 written
+    /// with its index last whose download isn't finished). No player can
+    /// play such a file until the rest arrives. False for a movie with its
+    /// index first (it plays as far as its data reaches), a whole file, or
+    /// anything not made of boxes.
+    static func indexCutOff(_ source: ByteSource) -> Bool {
+        var at: UInt64 = 0
+        var count = 0
+        while at < source.size, count < largestBoxCount {
+            count += 1
+            let left = source.size - at
+            // Cut off inside a box's header
+            guard left >= 8 else { return count > 1 }
+            guard let head = source.read(at: at, count: Int(min(16, left))),
+                  let size32 = head.u32(0), let type = head.fourCC(4) else { return false }
+            if count == 1, !["ftyp", "mdat", "wide", "free", "skip", "pnot"].contains(type) { return false }
+            if type == "moov" { return false }
+            var size: UInt64
+            switch size32 {
+            case 0: return type == "mdat"   // the data running to the end: no index after it
+            case 1:
+                guard let size64 = head.u64(8) else { return true }
+                size = size64
+            default: size = UInt64(size32)
+            }
+            guard size >= 8 else { return false }
+            if size > left { return true }
+            at += size
+        }
+        return false
+    }
+
     /// A track's length in seconds (`mdhd`).
     static func mediaLength(_ bytes: [UInt8], track: Box) -> Double? {
         guard let media = child("mdia", of: track, in: bytes), let header = child("mdhd", of: media, in: bytes),

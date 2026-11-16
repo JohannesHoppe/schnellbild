@@ -1,0 +1,584 @@
+{
+ "name": "Windows Media Player",
+ "short": "Windows Media Player",
+ "vendor": "Microsoft",
+ "website": "https://apps.microsoft.com/detail/9wzdncrfj3pt",
+ "platforms": [
+  "Windows"
+ ],
+ "mac_available": "no",
+ "page": "switcher",
+ "section": "windows",
+ "price": "Included with Windows; HEVC Video Extensions $0.99, other codecs as Store add-ons",
+ "license": "Proprietary",
+ "current_version": "Media Player 11.2610.5.0 (Insider, November 2026); Windows Media Player Legacy 12",
+ "last_update": "2026-11 (Insider release notes)",
+ "engine": "Media Foundation (Windows codecs and Store codec extensions)",
+ "category": "video",
+ "summary": "Windows' built-in player: a music-first library app that also plays local videos, with subtitles, audio tracks, playback speed, image adjustments, mini player and casting. It needs paid or Store add-ons for HEVC and AV1, and reviewers find it slower and heavier than the classic Windows Media Player Legacy, which Microsoft keeps as an optional feature.",
+ "where_it_wins": [
+  "Preinstalled on Windows, nothing to set up",
+  "Music library with album art, playlists and CD ripping",
+  "Mini player, casting to devices",
+  "Follows Windows caption and theme settings"
+ ],
+ "where_schnellbild_wins": [
+  "Runs on the Mac; Windows Media Player does not exist for macOS",
+  "Plays HEVC, AV1, FLV and more without buying codecs",
+  "Browses any folder directly, no library indexing",
+  "Photos and videos in one grid, real image viewer",
+  "Archives as folders, file management, two panes",
+  "Arrow-key skimming through videos",
+  "Never goes online, open source"
+ ],
+ "search_terms": [
+  "windows media player mac",
+  "windows media player for mac",
+  "windows media player alternative mac",
+  "wmv player mac",
+  "play wmv on mac",
+  "windows media player für mac",
+  "lecteur windows media mac",
+  "reproductor windows media mac"
+ ],
+ "matrix": {
+  "free": {
+   "value": "yes",
+   "note": "Comes with Windows; HEVC, AV1, MPEG-2 need Store add-ons (HEVC $0.99)",
+   "evidence": [
+    "https://www.windowslatest.com/2026/06/16/microsoft-reveals-windows-11s-media-player-isnt-dead-but-legacy-still-opens-videos-instantly/",
+    "https://en.wikipedia.org/wiki/Windows_Media_Player_(2022)"
+   ],
+   "how": "docs"
+  },
+  "open_source": {
+   "value": "no",
+   "note": "Proprietary (Microsoft)",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Windows_Media_Player_(2022)"
+   ],
+   "how": "docs"
+  },
+  "native_apple_silicon": {
+   "value": "na",
+   "note": "Windows only",
+   "evidence": [],
+   "how": "docs"
+  },
+  "no_account_no_tracking": {
+   "value": "partial",
+   "how": "unverified",
+   "evidence": [
+    "https://apps.microsoft.com/detail/9wzdncrfj3pt"
+   ],
+   "note": "No account or ads; telemetry behaviour not documented for the app itself"
+  },
+  "dark_light_setting": {
+   "value": "yes",
+   "how": "docs",
+   "evidence": [
+    "https://allthings.how/how-to-use-media-player-app-in-windows-11",
+    "https://storeedgefd.dsx.mp.microsoft.com/v9.0/products/9WZDNCRFJ3PT?market=US&locale=en-US&deviceFamily=Windows.Desktop"
+   ],
+   "note": "App theme: Light, Dark or system"
+  },
+  "languages_20": {
+   "value": "yes",
+   "how": "store",
+   "evidence": [
+    "https://apps.microsoft.com/detail/9wzdncrfj3pt",
+    "https://storeedgefd.dsx.mp.microsoft.com/v9.0/products/9WZDNCRFJ3PT?market=US&locale=en-US&deviceFamily=Windows.Desktop"
+   ],
+   "note": "114 languages listed in the Microsoft Store product data"
+  },
+  "folder_browsing": {
+   "value": "no",
+   "note": "Library of monitored Music/Video folders, no folder browser",
+   "evidence": [
+    "https://www.thurrott.com/books/windows-11-field-guide/digital-media/338474/media-player-2",
+    "https://www.windowscentral.com/how-get-started-media-player-app-windows-11-preview"
+   ],
+   "how": "docs"
+  },
+  "thumbnail_grid": {
+   "value": "partial",
+   "how": "unverified",
+   "evidence": [
+    "https://apps.microsoft.com/detail/9wzdncrfj3pt"
+   ],
+   "note": "Video library browsing; thumbnail layout not documented"
+  },
+  "list_view": {
+   "value": "partial",
+   "note": "Song list sortable by several fields",
+   "evidence": [
+    "https://www.windowscentral.com/how-get-started-media-player-app-windows-11-preview"
+   ],
+   "how": "review"
+  },
+  "recursive_search": {
+   "value": "partial",
+   "how": "unverified",
+   "evidence": [
+    "https://allthings.how/how-to-use-media-player-app-in-windows-11"
+   ],
+   "note": "Library search; extent not documented"
+  },
+  "regex_search": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://allthings.how/how-to-use-media-player-app-in-windows-11"
+   ],
+   "note": "Not documented"
+  },
+  "network_shares_fast": {
+   "value": "partial",
+   "note": "Network shares can be library locations; reviewers note slow opening and indexing",
+   "evidence": [
+    "https://www.windowscentral.com/how-get-started-media-player-app-windows-11-preview",
+    "https://www.windowslatest.com/2026/06/16/microsoft-reveals-windows-11s-media-player-isnt-dead-but-legacy-still-opens-videos-instantly/",
+    "https://learn.microsoft.com/en-us/windows-insider/release-notes/apps/media-player"
+   ],
+   "how": "review"
+  },
+  "multiple_windows": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://apps.microsoft.com/detail/9wzdncrfj3pt"
+   ],
+   "note": "Not documented"
+  },
+  "bookmarks": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://apps.microsoft.com/detail/9wzdncrfj3pt"
+   ],
+   "note": "Library folders only; not documented"
+  },
+  "img_modern_formats": {
+   "value": "no",
+   "note": "Audio and video only (Legacy Windows Media Player 12 also has a pictures library)",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Windows_Media_Player_(2022)",
+    "https://www.thurrott.com/books/windows-11-field-guide/digital-media/338474/media-player-2"
+   ],
+   "how": "docs"
+  },
+  "img_raw": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Windows_Media_Player_(2022)"
+   ],
+   "how": "docs"
+  },
+  "img_psd_exr": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Windows_Media_Player_(2022)"
+   ],
+   "how": "docs"
+  },
+  "img_svg_pdf": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Windows_Media_Player_(2022)"
+   ],
+   "how": "docs"
+  },
+  "img_animated": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Windows_Media_Player_(2022)"
+   ],
+   "how": "docs"
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "how": "docs",
+   "evidence": [
+    "https://allthings.how/how-to-use-media-player-app-in-windows-11"
+   ],
+   "note": "Ctrl+F next, Ctrl+B previous"
+  },
+  "zoom_rotate": {
+   "value": "partial",
+   "note": "Crop/zoom to remove black bars; no rotation",
+   "evidence": [
+    "https://tech.yahoo.com/computing/articles/gave-windows-media-player-another-123041358.html"
+   ],
+   "how": "review"
+  },
+  "slideshow": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.microsoft.com/detail/9wzdncrfj3pt",
+    "https://storeedgefd.dsx.mp.microsoft.com/v9.0/products/9WZDNCRFJ3PT?market=US&locale=en-US&deviceFamily=Windows.Desktop"
+   ],
+   "note": "Store features cover music and video only"
+  },
+  "slideshow_recursive": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.microsoft.com/detail/9wzdncrfj3pt",
+    "https://storeedgefd.dsx.mp.microsoft.com/v9.0/products/9WZDNCRFJ3PT?market=US&locale=en-US&deviceFamily=Windows.Desktop"
+   ],
+   "note": "Music and video only"
+  },
+  "auto_enhance_view": {
+   "value": "yes",
+   "note": "Brightness, contrast, saturation settings",
+   "evidence": [
+    "https://tech.yahoo.com/computing/articles/gave-windows-media-player-another-123041358.html"
+   ],
+   "how": "review"
+  },
+  "file_info_exif": {
+   "value": "partial",
+   "note": "Properties dialog with media info; no EXIF",
+   "evidence": [
+    "https://www.windowscentral.com/how-get-started-media-player-app-windows-11-preview"
+   ],
+   "how": "review"
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://apps.microsoft.com/detail/9wzdncrfj3pt"
+   ],
+   "note": "Not documented"
+  },
+  "video_native": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Windows_Media_Player_(2022)"
+   ],
+   "how": "docs"
+  },
+  "video_mkv_avi_webm": {
+   "value": "partial",
+   "note": "MKV, WebM, AVI, WMV yes; FLV not listed; HEVC/AV1 need paid or Store add-ons",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Windows_Media_Player_(2022)",
+    "https://www.windowslatest.com/2026/06/16/microsoft-reveals-windows-11s-media-player-isnt-dead-but-legacy-still-opens-videos-instantly/"
+   ],
+   "how": "docs"
+  },
+  "photos_videos_one_grid": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.microsoft.com/detail/9wzdncrfj3pt",
+    "https://storeedgefd.dsx.mp.microsoft.com/v9.0/products/9WZDNCRFJ3PT?market=US&locale=en-US&deviceFamily=Windows.Desktop"
+   ],
+   "note": "Music and video libraries only"
+  },
+  "video_skim_arrows": {
+   "value": "partial",
+   "how": "docs",
+   "evidence": [
+    "https://allthings.how/how-to-use-media-player-app-in-windows-11"
+   ],
+   "note": "Ctrl+Left skips back 10 s, Ctrl+Right forward 30 s; plain arrows not documented"
+  },
+  "subtitles_embedded": {
+   "value": "yes",
+   "note": "Switch subtitle and audio tracks while playing",
+   "evidence": [
+    "https://tech.yahoo.com/computing/articles/gave-windows-media-player-another-123041358.html"
+   ],
+   "how": "review"
+  },
+  "subtitles_external_files": {
+   "value": "yes",
+   "note": "Caption button adds a subtitle file (e.g. SRT)",
+   "evidence": [
+    "https://tech.yahoo.com/computing/articles/gave-windows-media-player-another-123041358.html"
+   ],
+   "how": "review"
+  },
+  "audio_track_choice": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://tech.yahoo.com/computing/articles/gave-windows-media-player-another-123041358.html"
+   ],
+   "how": "review"
+  },
+  "playback_speed": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://www.windowscentral.com/how-get-started-media-player-app-windows-11-preview",
+    "https://tech.yahoo.com/computing/articles/gave-windows-media-player-another-123041358.html"
+   ],
+   "how": "review"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://apps.microsoft.com/detail/9wzdncrfj3pt"
+   ],
+   "note": "Not documented"
+  },
+  "playlist": {
+   "value": "yes",
+   "note": "Play queue",
+   "evidence": [
+    "https://www.windowscentral.com/how-get-started-media-player-app-windows-11-preview",
+    "https://learn.microsoft.com/en-us/windows-insider/release-notes/apps/media-player"
+   ],
+   "how": "docs"
+  },
+  "saved_playlists": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://www.windowscentral.com/how-get-started-media-player-app-windows-11-preview",
+    "https://learn.microsoft.com/en-us/windows-insider/release-notes/apps/media-player"
+   ],
+   "how": "docs"
+  },
+  "pip": {
+   "value": "yes",
+   "how": "store",
+   "evidence": [
+    "https://apps.microsoft.com/detail/9wzdncrfj3pt",
+    "https://storeedgefd.dsx.mp.microsoft.com/v9.0/products/9WZDNCRFJ3PT?market=US&locale=en-US&deviceFamily=Windows.Desktop",
+    "https://allthings.how/how-to-use-media-player-app-in-windows-11"
+   ],
+   "note": "Always-on-top mini player (Ctrl+M)"
+  },
+  "music_mode": {
+   "value": "yes",
+   "note": "Primarily a music app: library, albums, artists, CD ripping",
+   "evidence": [
+    "https://www.thurrott.com/books/windows-11-field-guide/digital-media/338474/media-player-2",
+    "https://en.wikipedia.org/wiki/Windows_Media_Player_(2022)"
+   ],
+   "how": "docs"
+  },
+  "streaming_urls": {
+   "value": "no",
+   "note": "Modern app plays local and network-share files only (Legacy WMP 12 opens URLs)",
+   "evidence": [
+    "https://www.windowscentral.com/how-get-started-media-player-app-windows-11-preview"
+   ],
+   "how": "review"
+  },
+  "online_subtitles": {
+   "value": "no",
+   "note": "No subtitle search",
+   "evidence": [
+    "https://tech.yahoo.com/computing/articles/gave-windows-media-player-another-123041358.html"
+   ],
+   "how": "review"
+  },
+  "video_filters_enhance": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://tech.yahoo.com/computing/articles/gave-windows-media-player-another-123041358.html"
+   ],
+   "how": "review"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://apps.microsoft.com/detail/9wzdncrfj3pt"
+   ],
+   "note": "Not documented"
+  },
+  "archives_as_folders": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Windows_Media_Player_(2022)"
+   ],
+   "how": "docs"
+  },
+  "comics_cbz_cbr": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.microsoft.com/detail/9wzdncrfj3pt",
+    "https://en.wikipedia.org/wiki/Windows_Media_Player_(2022)"
+   ],
+   "note": "Music and video only"
+  },
+  "archive_passwords": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.microsoft.com/detail/9wzdncrfj3pt",
+    "https://en.wikipedia.org/wiki/Windows_Media_Player_(2022)"
+   ],
+   "note": "No archive support"
+  },
+  "split_archives": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.microsoft.com/detail/9wzdncrfj3pt",
+    "https://en.wikipedia.org/wiki/Windows_Media_Player_(2022)"
+   ],
+   "note": "No archive support"
+  },
+  "videos_in_archives": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Windows_Media_Player_(2022)"
+   ],
+   "how": "docs"
+  },
+  "manga_two_page": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.microsoft.com/detail/9wzdncrfj3pt",
+    "https://en.wikipedia.org/wiki/Windows_Media_Player_(2022)"
+   ],
+   "note": "No image support"
+  },
+  "rename_trash": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://apps.microsoft.com/detail/9wzdncrfj3pt"
+   ],
+   "note": "Not documented"
+  },
+  "move_copy": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://apps.microsoft.com/detail/9wzdncrfj3pt"
+   ],
+   "note": "Not documented"
+  },
+  "dual_pane": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.microsoft.com/detail/9wzdncrfj3pt",
+    "https://storeedgefd.dsx.mp.microsoft.com/v9.0/products/9WZDNCRFJ3PT?market=US&locale=en-US&deviceFamily=Windows.Desktop"
+   ],
+   "note": "Library app, no file manager features listed"
+  },
+  "undo_file_actions": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://apps.microsoft.com/detail/9wzdncrfj3pt"
+   ],
+   "note": "Not documented"
+  },
+  "image_editing": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.microsoft.com/detail/9wzdncrfj3pt",
+    "https://storeedgefd.dsx.mp.microsoft.com/v9.0/products/9WZDNCRFJ3PT?market=US&locale=en-US&deviceFamily=Windows.Desktop"
+   ],
+   "note": "Music and video only"
+  },
+  "batch_convert": {
+   "value": "partial",
+   "note": "CD ripping to AAC, WMA, FLAC, ALAC only",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Windows_Media_Player_(2022)"
+   ],
+   "how": "docs"
+  },
+  "library_catalog": {
+   "value": "yes",
+   "note": "Music and video library, edit album/track info",
+   "evidence": [
+    "https://www.windowscentral.com/how-get-started-media-player-app-windows-11-preview",
+    "https://www.thurrott.com/books/windows-11-field-guide/digital-media/338474/media-player-2"
+   ],
+   "how": "docs"
+  },
+  "cloud_sync": {
+   "value": "no",
+   "note": "Casting to devices only",
+   "evidence": [
+    "https://tech.yahoo.com/computing/articles/gave-windows-media-player-another-123041358.html"
+   ],
+   "how": "review"
+  },
+  "keyboard_first": {
+   "value": "partial",
+   "how": "docs",
+   "evidence": [
+    "https://allthings.how/how-to-use-media-player-app-in-windows-11",
+    "https://storeedgefd.dsx.mp.microsoft.com/v9.0/products/9WZDNCRFJ3PT?market=US&locale=en-US&deviceFamily=Windows.Desktop"
+   ],
+   "note": "Shortcuts for playback, libraries, queue; store notes keyboard and access key support"
+  },
+  "custom_shortcuts": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://allthings.how/how-to-use-media-player-app-in-windows-11"
+   ],
+   "note": "Not documented"
+  },
+  "shortcut_cheatsheet": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://allthings.how/how-to-use-media-player-app-in-windows-11"
+   ],
+   "note": "Only third-party lists found"
+  },
+  "boss_key": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://allthings.how/how-to-use-media-player-app-in-windows-11"
+   ],
+   "note": "Not documented"
+  },
+  "app_sandbox": {
+   "value": "na",
+   "note": "Windows only",
+   "evidence": [],
+   "how": "docs"
+  },
+  "no_network": {
+   "value": "no",
+   "note": "Online album art/info lookup, Store updates",
+   "evidence": [
+    "https://learn.microsoft.com/en-us/windows-insider/release-notes/apps/media-player",
+    "https://www.windowscentral.com/how-get-started-media-player-app-windows-11-preview"
+   ],
+   "how": "docs"
+  },
+  "notarized_attested": {
+   "value": "na",
+   "note": "Windows only, closed source",
+   "evidence": [],
+   "how": "docs"
+  },
+  "mac_app_store": {
+   "value": "no",
+   "note": "Windows only (Microsoft Store)",
+   "evidence": [],
+   "how": "docs"
+  }
+ }
+}

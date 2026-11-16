@@ -1,0 +1,584 @@
+{
+ "name": "YACReader",
+ "short": "YACReader",
+ "vendor": "Luis Ángel San Martín",
+ "website": "https://www.yacreader.com/",
+ "platforms": [
+  "macOS",
+  "Windows",
+  "Linux",
+  "iOS",
+  "Android",
+  "Docker/server"
+ ],
+ "mac_available": "yes",
+ "page": "matrix",
+ "section": "comic",
+ "price": "Desktop and server free (donations); iOS/Android apps separate",
+ "license": "Open source, GPL-3.0",
+ "current_version": "10.5.1",
+ "last_update": "2026-11-13",
+ "engine": "C++/Qt 6, 7-Zip/libarchive, pdfium",
+ "category": "comic",
+ "summary": "YACReader is a comic reader plus a library manager (YACReaderLibrary) for large collections, with Comic Vine metadata, reading lists and a home server for its mobile apps. The reader offers double-page, manga and continuous scroll modes with image adjustments.",
+ "where_it_wins": [
+  "Full comic library: Comic Vine metadata, reading lists, smart lists, ratings",
+  "Server and iOS/Android apps with synced reading progress",
+  "Manga mode, double page, continuous scroll for webtoons",
+  "Brightness/contrast/gamma for old scans",
+  "12 themes plus theme editor; reassignable shortcuts",
+  "Windows and Linux versions"
+ ],
+ "where_schnellbild_wins": [
+  "Plays videos and shows photos and videos in one grid",
+  "No library to build: just open a folder",
+  "Modern image formats (HEIC, AVIF, JPEG XL), RAW, PSD",
+  "Runs in Apple's App Sandbox and never goes online",
+  "Password-protected and split archives",
+  "File manager functions with undo and two panes"
+ ],
+ "search_terms": [
+  "yacreader mac",
+  "yacreader alternative",
+  "yacreader apple silicon",
+  "comic library mac",
+  "YACReader Alternative Mac"
+ ],
+ "matrix": {
+  "free": {
+   "value": "yes",
+   "note": "Desktop and server free; donations via Patreon/PayPal",
+   "evidence": [
+    "https://www.yacreader.com/"
+   ],
+   "how": "docs"
+  },
+  "open_source": {
+   "value": "yes",
+   "note": "GPL-3.0",
+   "evidence": [
+    "https://github.com/YACReader/yacreader"
+   ],
+   "how": "source"
+  },
+  "native_apple_silicon": {
+   "value": "yes",
+   "note": "Universal macOS build (Apple silicon and Intel); legacy build for macOS 12-14.3",
+   "evidence": [
+    "https://www.yacreader.com/features",
+    "https://github.com/YACReader/yacreader/releases/tag/10.5.1"
+   ],
+   "how": "docs"
+  },
+  "no_account_no_tracking": {
+   "value": "yes",
+   "note": "No account or ads; app checks for new versions",
+   "evidence": [
+    "https://github.com/YACReader/yacreader/blob/develop/CHANGELOG.md",
+    "https://www.yacreader.com/"
+   ],
+   "how": "changelog"
+  },
+  "dark_light_setting": {
+   "value": "yes",
+   "note": "Light/dark following system, 12 built-in themes and a theme editor (10.0)",
+   "evidence": [
+    "https://www.yacreader.com/features",
+    "https://github.com/YACReader/yacreader/blob/develop/CHANGELOG.md"
+   ],
+   "how": "docs"
+  },
+  "languages_20": {
+   "value": "partial",
+   "note": "14 languages (de, en, es, fr, it, ko, nl, pt, pt-PT, ru, tr, zh-CN, zh-HK, zh-TW), selectable in app",
+   "evidence": [
+    "https://github.com/YACReader/yacreader/tree/develop/YACReader",
+    "https://github.com/YACReader/yacreader/blob/develop/CHANGELOG.md"
+   ],
+   "how": "source"
+  },
+  "folder_browsing": {
+   "value": "partial",
+   "note": "Reader opens files/folders directly; browsing is in YACReaderLibrary, which indexes folders into a library database",
+   "evidence": [
+    "https://www.yacreader.com/features"
+   ],
+   "how": "docs"
+  },
+  "thumbnail_grid": {
+   "value": "yes",
+   "note": "Library grid with folders and comics together, plus flow view",
+   "evidence": [
+    "https://www.yacreader.com/features",
+    "https://github.com/YACReader/yacreader/blob/develop/CHANGELOG.md"
+   ],
+   "how": "docs"
+  },
+  "list_view": {
+   "value": "yes",
+   "note": "Table view in the library",
+   "evidence": [
+    "https://www.yacreader.com/features"
+   ],
+   "how": "docs"
+  },
+  "recursive_search": {
+   "value": "yes",
+   "note": "Library search across all fields of all comics and folders (indexed library)",
+   "evidence": [
+    "https://www.yacreader.com/features"
+   ],
+   "how": "docs"
+  },
+  "regex_search": {
+   "value": "no",
+   "note": "Field query syntax (writer:Smith, rating>=4), no regex",
+   "evidence": [
+    "https://www.yacreader.com/features"
+   ],
+   "how": "docs"
+  },
+  "network_shares_fast": {
+   "value": "partial",
+   "note": "10.5 improved library opening over network shares; library must be indexed",
+   "evidence": [
+    "https://github.com/YACReader/yacreader/blob/develop/CHANGELOG.md"
+   ],
+   "how": "changelog"
+  },
+  "multiple_windows": {
+   "value": "yes",
+   "evidence": [
+    "https://github.com/YACReader/yacreader/blob/10.5.1/YACReader/main_window_viewer.cpp"
+   ],
+   "how": "source",
+   "note": "File > New instance opens another reader window (macOS); library is a separate window"
+  },
+  "bookmarks": {
+   "value": "partial",
+   "note": "Page bookmarks, favorites, reading lists, labels",
+   "evidence": [
+    "https://www.yacreader.com/features"
+   ],
+   "how": "docs"
+  },
+  "img_modern_formats": {
+   "value": "partial",
+   "note": "JPEG, PNG, GIF, TIFF, BMP, WebP; further formats only via user-installed Qt image plugins",
+   "evidence": [
+    "https://www.yacreader.com/features",
+    "https://github.com/YACReader/yacreader/blob/develop/CHANGELOG.md"
+   ],
+   "how": "docs"
+  },
+  "img_raw": {
+   "value": "no",
+   "note": "Not in format list",
+   "evidence": [
+    "https://www.yacreader.com/features"
+   ],
+   "how": "docs"
+  },
+  "img_psd_exr": {
+   "value": "no",
+   "note": "Not in format list",
+   "evidence": [
+    "https://www.yacreader.com/features"
+   ],
+   "how": "docs"
+  },
+  "img_svg_pdf": {
+   "value": "partial",
+   "note": "PDF yes (pdfium); SVG no",
+   "evidence": [
+    "https://www.yacreader.com/features"
+   ],
+   "how": "docs"
+  },
+  "img_animated": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/YACReader/yacreader/blob/10.5.1/common/comic.cpp"
+   ],
+   "how": "source",
+   "note": "Pages are decoded as still images; no animation playback code (no QMovie)"
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://www.yacreader.com/features"
+   ],
+   "how": "docs"
+  },
+  "zoom_rotate": {
+   "value": "yes",
+   "note": "Zoom, pinch zoom, magnifying glass, rotation",
+   "evidence": [
+    "https://github.com/YACReader/yacreader/blob/develop/CHANGELOG.md",
+    "https://github.com/YACReader/yacreader/blob/develop/YACReader/continuous_page_provider.h"
+   ],
+   "how": "source"
+  },
+  "slideshow": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/YACReader/yacreader/blob/10.5.1/shortcuts_management/shortcuts_manager.h"
+   ],
+   "how": "source",
+   "note": "No slideshow among the reader actions (only auto-scroll)"
+  },
+  "slideshow_recursive": {
+   "value": "no",
+   "note": "No video support, so no mixed photo/video slideshow",
+   "evidence": [
+    "https://www.yacreader.com/features"
+   ],
+   "how": "docs"
+  },
+  "auto_enhance_view": {
+   "value": "yes",
+   "note": "Brightness, contrast, gamma; Lanczos/Bicubic scaling",
+   "evidence": [
+    "https://www.yacreader.com/features",
+    "https://github.com/YACReader/yacreader/blob/develop/YACReader/options_dialog.cpp"
+   ],
+   "how": "docs"
+  },
+  "file_info_exif": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/YACReader/yacreader/blob/10.5.1/YACReader/main_window_viewer.cpp",
+    "https://github.com/YACReader/yacreader/blob/10.5.1/YACReader/viewer.cpp"
+   ],
+   "how": "source",
+   "note": "Show Info toggles a page/position overlay; comic metadata only, no EXIF"
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/YACReader/yacreader/blob/10.5.1/compressed_archive/compressed_archive.cpp"
+   ],
+   "how": "source",
+   "note": "Archive type is detected silently by magic bytes; no notice shown"
+  },
+  "video_native": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://www.yacreader.com/features"
+   ],
+   "how": "docs"
+  },
+  "video_mkv_avi_webm": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://www.yacreader.com/features"
+   ],
+   "how": "docs"
+  },
+  "photos_videos_one_grid": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://www.yacreader.com/features"
+   ],
+   "how": "docs"
+  },
+  "video_skim_arrows": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://www.yacreader.com/features"
+   ],
+   "how": "docs"
+  },
+  "subtitles_embedded": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://www.yacreader.com/features"
+   ],
+   "how": "docs"
+  },
+  "subtitles_external_files": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://www.yacreader.com/features"
+   ],
+   "how": "docs"
+  },
+  "audio_track_choice": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://www.yacreader.com/features"
+   ],
+   "how": "docs"
+  },
+  "playback_speed": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://www.yacreader.com/features"
+   ],
+   "how": "docs"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://www.yacreader.com/features"
+   ],
+   "how": "docs"
+  },
+  "playlist": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://www.yacreader.com/features"
+   ],
+   "how": "docs"
+  },
+  "saved_playlists": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://www.yacreader.com/features"
+   ],
+   "how": "docs"
+  },
+  "pip": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://www.yacreader.com/features"
+   ],
+   "how": "docs"
+  },
+  "music_mode": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://www.yacreader.com/features"
+   ],
+   "how": "docs"
+  },
+  "streaming_urls": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://www.yacreader.com/features"
+   ],
+   "how": "docs"
+  },
+  "online_subtitles": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://www.yacreader.com/features"
+   ],
+   "how": "docs"
+  },
+  "video_filters_enhance": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://www.yacreader.com/features"
+   ],
+   "how": "docs"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://www.yacreader.com/features"
+   ],
+   "how": "docs"
+  },
+  "archives_as_folders": {
+   "value": "partial",
+   "evidence": [
+    "https://www.yacreader.com/features"
+   ],
+   "how": "docs",
+   "note": "opens an archive as a comic book, not as a folder"
+  },
+  "comics_cbz_cbr": {
+   "value": "yes",
+   "note": "Plus CB7, PDF, image EPUB (experimental)",
+   "evidence": [
+    "https://www.yacreader.com/features"
+   ],
+   "how": "docs"
+  },
+  "archive_passwords": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/YACReader/yacreader/blob/10.5.1/compressed_archive/open_callbacks.h",
+    "https://github.com/YACReader/yacreader/blob/10.5.1/compressed_archive/compressed_archive.cpp"
+   ],
+   "how": "source",
+   "note": "7-Zip password callback is a stub ('You can ask real password here from user'); no prompt"
+  },
+  "split_archives": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/YACReader/yacreader/blob/10.5.1/compressed_archive/open_callbacks.h"
+   ],
+   "how": "source",
+   "note": "Open callback implements no volume callback for multi-part archives"
+  },
+  "videos_in_archives": {
+   "value": "no",
+   "note": "Comic reader; plays no video",
+   "evidence": [
+    "https://www.yacreader.com/features"
+   ],
+   "how": "docs"
+  },
+  "manga_two_page": {
+   "value": "yes",
+   "note": "Double page mode, full manga mode (right to left, inverted controls)",
+   "evidence": [
+    "https://www.yacreader.com/features"
+   ],
+   "how": "docs"
+  },
+  "rename_trash": {
+   "value": "partial",
+   "note": "Rename folders inside the library, rename files from metadata; no trash",
+   "evidence": [
+    "https://github.com/YACReader/yacreader/blob/develop/CHANGELOG.md"
+   ],
+   "how": "changelog"
+  },
+  "move_copy": {
+   "value": "partial",
+   "note": "Organize files into folder structures from metadata (experimental)",
+   "evidence": [
+    "https://www.yacreader.com/features",
+    "https://github.com/YACReader/yacreader/blob/develop/CHANGELOG.md"
+   ],
+   "how": "docs"
+  },
+  "dual_pane": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://www.yacreader.com/features"
+   ],
+   "how": "docs"
+  },
+  "undo_file_actions": {
+   "value": "partial",
+   "evidence": [
+    "https://github.com/YACReader/yacreader/blob/10.5.1/YACReaderLibrary/organize_files/organize_files_coordinator.cpp"
+   ],
+   "how": "source",
+   "note": "Organize Files runs keep a journal and can be undone; no general undo"
+  },
+  "image_editing": {
+   "value": "no",
+   "note": "Can save or extract pages as images",
+   "evidence": [
+    "https://www.yacreader.com/features"
+   ],
+   "how": "docs"
+  },
+  "batch_convert": {
+   "value": "partial",
+   "note": "Batch rename from metadata only; no format conversion",
+   "evidence": [
+    "https://www.yacreader.com/features"
+   ],
+   "how": "docs"
+  },
+  "library_catalog": {
+   "value": "yes",
+   "note": "Library database, Comic Vine metadata, reading lists, labels, ratings, smart lists",
+   "evidence": [
+    "https://www.yacreader.com/features",
+    "https://github.com/YACReader/yacreader/blob/develop/CHANGELOG.md"
+   ],
+   "how": "docs"
+  },
+  "cloud_sync": {
+   "value": "partial",
+   "note": "Own server and iOS/Android apps sync progress over your network; no cloud service",
+   "evidence": [
+    "https://www.yacreader.com/features"
+   ],
+   "how": "docs"
+  },
+  "keyboard_first": {
+   "value": "yes",
+   "note": "All reader actions have assignable shortcuts",
+   "evidence": [
+    "https://www.yacreader.com/features",
+    "https://github.com/YACReader/yacreader/blob/develop/CHANGELOG.md"
+   ],
+   "how": "docs"
+  },
+  "custom_shortcuts": {
+   "value": "yes",
+   "note": "Shortcuts dialog to reassign any shortcut",
+   "evidence": [
+    "https://github.com/YACReader/yacreader/blob/develop/CHANGELOG.md"
+   ],
+   "how": "changelog"
+  },
+  "shortcut_cheatsheet": {
+   "value": "partial",
+   "note": "Shortcuts dialog lists all keys; no printable sheet",
+   "evidence": [
+    "https://github.com/YACReader/yacreader/blob/develop/CHANGELOG.md"
+   ],
+   "how": "changelog"
+  },
+  "boss_key": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/YACReader/yacreader/blob/10.5.1/shortcuts_management/shortcuts_manager.h"
+   ],
+   "how": "source",
+   "note": "No such action in the complete shortcut action list"
+  },
+  "app_sandbox": {
+   "value": "no",
+   "note": "DMG distribution, no sandbox entitlements in the repository",
+   "evidence": [
+    "https://github.com/YACReader/yacreader"
+   ],
+   "how": "source"
+  },
+  "no_network": {
+   "value": "no",
+   "note": "Update check, Comic Vine scraper, built-in server",
+   "evidence": [
+    "https://www.yacreader.com/features",
+    "https://github.com/YACReader/yacreader/blob/develop/CHANGELOG.md"
+   ],
+   "how": "docs"
+  },
+  "notarized_attested": {
+   "value": "partial",
+   "note": "macOS builds notarized; no build attestation",
+   "evidence": [
+    "https://github.com/YACReader/yacreader/blob/develop/CHANGELOG.md"
+   ],
+   "how": "changelog"
+  },
+  "mac_app_store": {
+   "value": "no",
+   "note": "DMG from GitHub releases; iOS app is separate",
+   "evidence": [
+    "https://github.com/YACReader/yacreader/releases/tag/10.5.1",
+    "https://www.yacreader.com/"
+   ],
+   "how": "docs"
+  }
+ }
+}

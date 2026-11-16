@@ -614,6 +614,14 @@
 "Include subfolders" = "Unterordner einbeziehen";
 "The photos and videos of every subfolder too, archives included" = "Auch die Fotos und Videos aller Unterordner, Archive eingeschlossen";
 "Reading subfolders…" = "Unterordner werden gelesen …";
+
+/* Downloads not finished */
+"Download not finished" = "Download nicht abgeschlossen";
+"Incomplete" = "Unvollständig";
+"Download" = "Download";
+"Not finished" = "Nicht abgeschlossen";
+"In progress, the file is growing" = "Läuft, die Datei wächst noch";
+"This video can't play until its download is finished: the part that tells how to play it lies at the end of the file." = "Dieses Video lässt sich erst abspielen, wenn der Download abgeschlossen ist: Was zum Abspielen nötig ist, steht am Ende der Datei.";
 /* About window: the license texts */
 "In Schnellbild" = "In Schnellbild";
 "Copyright" = "Copyright";

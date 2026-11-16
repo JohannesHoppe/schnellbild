@@ -1,0 +1,593 @@
+{
+ "name": "Path Finder",
+ "short": "Path Finder",
+ "vendor": "Cocoatech",
+ "website": "https://cocoatech.io/",
+ "platforms": [
+  "macOS"
+ ],
+ "mac_available": "yes",
+ "page": "matrix",
+ "section": "files",
+ "price": "Subscription $29.95/year or $2.95/month, or license key from $32.95 (1 year updates), $55.95 (2 years), $122.95 (5 years); 30-day trial",
+ "license": "proprietary",
+ "current_version": "26.1.10",
+ "last_update": "2026-10-22",
+ "engine": "macOS Quick Look (Preview module)",
+ "category": "file-manager",
+ "summary": "Long-running Finder replacement with dual pane, modules (Preview, Info, Terminal, Drop Stack), size browser, batch rename and folder sync. Good for power users who want many tools around a Finder-like browser.",
+ "where_it_wins": [
+  "Modules: Preview, Info, Terminal, Drop Stack, Git, hex/text editor",
+  "Size Browser and folder sync/merge",
+  "Batch rename, secure delete, admin access",
+  "20 interface languages",
+  "Bookmarks bar, tab presets"
+ ],
+ "where_schnellbild_wins": [
+  "Free, no subscription",
+  "Opens archives as folders (Path Finder only extracts)",
+  "Real image/video viewer with slideshow and full-size paging",
+  "MKV/AVI playback via built-in VLC",
+  "F5/F6 dual pane by default",
+  "Open source, sandboxed, never online"
+ ],
+ "search_terms": [
+  "path finder mac",
+  "path finder alternative",
+  "path finder alternative free",
+  "cocoatech path finder",
+  "path finder subscription alternative",
+  "path finder alternative kostenlos"
+ ],
+ "matrix": {
+  "free": {
+   "value": "no",
+   "note": "$29.95/year or $2.95/month subscription, or license from $32.95 (1 year of updates); 30-day trial with all features",
+   "evidence": [
+    "https://cocoatech.io/pricing/"
+   ],
+   "how": "docs"
+  },
+  "open_source": {
+   "value": "no",
+   "note": "Proprietary",
+   "evidence": [
+    "https://cocoatech.io/"
+   ],
+   "how": "docs"
+  },
+  "native_apple_silicon": {
+   "value": "yes",
+   "note": "Runs natively on Intel and Apple Silicon",
+   "evidence": [
+    "https://support.cocoatech.com/hc/en-us/articles/43462450454292-System-Requirements-for-Path-Finder"
+   ],
+   "how": "docs"
+  },
+  "no_account_no_tracking": {
+   "value": "partial",
+   "note": "No usage data; subscription requires sign-in (email/password) and periodic online check; license key alternative",
+   "evidence": [
+    "https://cocoatech.io/privacy-policy/",
+    "https://cocoatech.io/pricing/"
+   ],
+   "how": "docs"
+  },
+  "dark_light_setting": {
+   "value": "no",
+   "note": "Release notes only mention support for the system Dark Mode; no app-level appearance switch found in Settings articles, release notes or web search",
+   "evidence": [
+    "https://store.cocoatech.io/updates",
+    "https://support.cocoatech.com/hc/en-us/articles/43505977206164-Settings-General"
+   ],
+   "how": "unverified"
+  },
+  "languages_20": {
+   "value": "yes",
+   "note": "20 supported languages",
+   "evidence": [
+    "https://store.cocoatech.io/updates"
+   ],
+   "how": "changelog"
+  },
+  "folder_browsing": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://cocoatech.io/features"
+   ],
+   "how": "docs"
+  },
+  "thumbnail_grid": {
+   "value": "partial",
+   "note": "Icon View for images; no folder preview thumbnails",
+   "evidence": [
+    "https://support.cocoatech.com/hc/en-us/articles/43463424936596-Views-Icon-List-Column"
+   ],
+   "how": "docs"
+  },
+  "list_view": {
+   "value": "yes",
+   "note": "List View with configurable columns",
+   "evidence": [
+    "https://support.cocoatech.com/hc/en-us/articles/43463424936596-Views-Icon-List-Column"
+   ],
+   "how": "docs"
+  },
+  "recursive_search": {
+   "value": "yes",
+   "note": "Find window (FileSearch and Spotlight modes) with many criteria",
+   "evidence": [
+    "https://support.cocoatech.com/hc/en-us/articles/43505688857748-Filtering-and-Low-Level-Search"
+   ],
+   "how": "docs"
+  },
+  "regex_search": {
+   "value": "partial",
+   "note": "Name 'matches pattern' (wildcards); regular expressions not documented",
+   "evidence": [
+    "https://support.cocoatech.com/hc/en-us/articles/43505688857748-Filtering-and-Low-Level-Search"
+   ],
+   "how": "docs"
+  },
+  "network_shares_fast": {
+   "value": "partial",
+   "note": "Improved preview performance on network volumes; no general speed claim",
+   "evidence": [
+    "https://store.cocoatech.io/updates"
+   ],
+   "how": "changelog"
+  },
+  "multiple_windows": {
+   "value": "yes",
+   "note": "Multiple browser windows and tabs",
+   "evidence": [
+    "https://support.cocoatech.com/hc/en-us/articles/43506004951316-Keyboard-Shortcuts-in-Path-Finder"
+   ],
+   "how": "docs"
+  },
+  "bookmarks": {
+   "value": "yes",
+   "note": "Bookmarks Bar and sidebar favorites",
+   "evidence": [
+    "https://support.cocoatech.com/hc/en-us/articles/43462979587732-Use-the-Bookmarks-Bar"
+   ],
+   "how": "docs"
+  },
+  "img_modern_formats": {
+   "value": "partial",
+   "note": "Preview module/Quick Look with macOS codecs; no dedicated viewer",
+   "evidence": [
+    "https://support.cocoatech.com/hc/en-us/articles/43463169352980-Quick-Look-and-Preview-Your-Files"
+   ],
+   "how": "docs"
+  },
+  "img_raw": {
+   "value": "partial",
+   "note": "Via macOS; ARW preview added in 26.1.8",
+   "evidence": [
+    "https://store.cocoatech.io/updates"
+   ],
+   "how": "changelog"
+  },
+  "img_psd_exr": {
+   "value": "partial",
+   "note": "Would depend on macOS Quick Look; neither Cocoatech nor Apple docs name PSD/EXR. Searched help center, release notes, Apple Quick Look guide",
+   "evidence": [
+    "https://support.cocoatech.com/hc/en-us/articles/43463169352980-Quick-Look-and-Preview-Your-Files"
+   ],
+   "how": "unverified"
+  },
+  "img_svg_pdf": {
+   "value": "yes",
+   "note": "Preview module supports SVG and PDF",
+   "evidence": [
+    "https://store.cocoatech.io/updates"
+   ],
+   "how": "changelog"
+  },
+  "img_animated": {
+   "value": "partial",
+   "note": "Animated GIF plays in the macOS Quick Look window (GIF listed by Cocoatech; Apple: Quick Look plays animated GIFs); APNG/WebP not documented",
+   "evidence": [
+    "https://support.cocoatech.com/hc/en-us/articles/43463169352980-Quick-Look-and-Preview-Your-Files",
+    "https://support.apple.com/guide/preview/view-an-animated-gifs-frames-prvw1016/mac"
+   ],
+   "how": "docs"
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "note": "Arrow keys while Quick Look or the Preview module is open",
+   "evidence": [
+    "https://support.cocoatech.com/hc/en-us/articles/43463169352980-Quick-Look-and-Preview-Your-Files"
+   ],
+   "how": "docs"
+  },
+  "zoom_rotate": {
+   "value": "partial",
+   "note": "Quick Look zoom only",
+   "evidence": [
+    "https://support.cocoatech.com/hc/en-us/articles/43463169352980-Quick-Look-and-Preview-Your-Files"
+   ],
+   "how": "docs"
+  },
+  "slideshow": {
+   "value": "partial",
+   "note": "No own slideshow; the macOS Quick Look window shows several selected items as a slideshow in full screen",
+   "evidence": [
+    "https://support.cocoatech.com/hc/en-us/articles/43463169352980-Quick-Look-and-Preview-Your-Files",
+    "https://support.apple.com/guide/mac-help/preview-a-file-mh14119/mac"
+   ],
+   "how": "docs"
+  },
+  "slideshow_recursive": {
+   "value": "no",
+   "note": "No such feature in the help center (all 50 articles), the features page or the release notes; Quick Look only shows the selected items",
+   "evidence": [
+    "https://cocoatech.io/features",
+    "https://support.cocoatech.com/hc/en-us/articles/43463169352980-Quick-Look-and-Preview-Your-Files"
+   ],
+   "how": "docs"
+  },
+  "auto_enhance_view": {
+   "value": "no",
+   "note": "No such feature in the help center (all 50 articles), the features page or the release notes",
+   "evidence": [
+    "https://cocoatech.io/features",
+    "https://store.cocoatech.io/updates"
+   ],
+   "how": "docs"
+  },
+  "file_info_exif": {
+   "value": "partial",
+   "note": "Info panel shows dimensions, duration and macOS metadata; codecs/bitrate not documented",
+   "evidence": [
+    "https://support.cocoatech.com/hc/en-us/articles/43505891245588-Info-Panel-Detailed-File-and-Folder-Information"
+   ],
+   "how": "docs"
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "note": "No such feature in the help center (all 50 articles), the features page or the release notes",
+   "evidence": [
+    "https://cocoatech.io/features",
+    "https://store.cocoatech.io/updates"
+   ],
+   "how": "docs"
+  },
+  "video_native": {
+   "value": "yes",
+   "note": "Preview module with media playback controls",
+   "evidence": [
+    "https://support.cocoatech.com/hc/en-us/articles/43463169352980-Quick-Look-and-Preview-Your-Files",
+    "https://store.cocoatech.io/updates"
+   ],
+   "how": "docs"
+  },
+  "video_mkv_avi_webm": {
+   "value": "partial",
+   "note": "WebM preview added; MKV/AVI not mentioned",
+   "evidence": [
+    "https://store.cocoatech.io/updates"
+   ],
+   "how": "changelog"
+  },
+  "photos_videos_one_grid": {
+   "value": "yes",
+   "note": "Icon View shows all file types",
+   "evidence": [
+    "https://support.cocoatech.com/hc/en-us/articles/43463424936596-Views-Icon-List-Column"
+   ],
+   "how": "docs"
+  },
+  "video_skim_arrows": {
+   "value": "no",
+   "note": "Arrow keys move to the next file in Quick Look/Preview, not through the video",
+   "evidence": [
+    "https://support.cocoatech.com/hc/en-us/articles/43463169352980-Quick-Look-and-Preview-Your-Files"
+   ],
+   "how": "docs"
+  },
+  "subtitles_embedded": {
+   "value": "no",
+   "note": "Not mentioned by Cocoatech; whether the macOS Quick Look player offers a subtitle menu is not documented. Searched help center, release notes, Apple Quick Look guide",
+   "evidence": [
+    "https://support.cocoatech.com/hc/en-us/articles/43463169352980-Quick-Look-and-Preview-Your-Files",
+    "https://support.apple.com/guide/mac-help/preview-a-file-mh14119/mac"
+   ],
+   "how": "unverified"
+  },
+  "subtitles_external_files": {
+   "value": "no",
+   "note": "Media plays only in the Preview module or the macOS Quick Look window; no player settings in the help center or release notes",
+   "evidence": [
+    "https://support.cocoatech.com/hc/en-us/articles/43463169352980-Quick-Look-and-Preview-Your-Files",
+    "https://store.cocoatech.io/updates"
+   ],
+   "how": "docs"
+  },
+  "audio_track_choice": {
+   "value": "no",
+   "note": "Not mentioned by Cocoatech; track menu of the macOS Quick Look player not documented. Searched help center, release notes, Apple Quick Look guide",
+   "evidence": [
+    "https://support.cocoatech.com/hc/en-us/articles/43463169352980-Quick-Look-and-Preview-Your-Files",
+    "https://support.apple.com/guide/mac-help/preview-a-file-mh14119/mac"
+   ],
+   "how": "unverified"
+  },
+  "playback_speed": {
+   "value": "no",
+   "note": "Media plays only in the Preview module or the macOS Quick Look window; no player settings in the help center or release notes",
+   "evidence": [
+    "https://support.cocoatech.com/hc/en-us/articles/43463169352980-Quick-Look-and-Preview-Your-Files",
+    "https://store.cocoatech.io/updates"
+   ],
+   "how": "docs"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "note": "Media plays only in the Preview module or the macOS Quick Look window; no player settings in the help center or release notes",
+   "evidence": [
+    "https://support.cocoatech.com/hc/en-us/articles/43463169352980-Quick-Look-and-Preview-Your-Files",
+    "https://store.cocoatech.io/updates"
+   ],
+   "how": "docs"
+  },
+  "playlist": {
+   "value": "no",
+   "note": "No such feature in the help center (all 50 articles), the features page or the release notes",
+   "evidence": [
+    "https://cocoatech.io/features",
+    "https://support.cocoatech.com/hc/en-us/articles/43462786920212-Modules-What-They-Are-and-How-to-Use-Them"
+   ],
+   "how": "docs"
+  },
+  "saved_playlists": {
+   "value": "no",
+   "note": "No such feature in the help center (all 50 articles), the features page or the release notes",
+   "evidence": [
+    "https://cocoatech.io/features",
+    "https://support.cocoatech.com/hc/en-us/articles/43462786920212-Modules-What-They-Are-and-How-to-Use-Them"
+   ],
+   "how": "docs"
+  },
+  "pip": {
+   "value": "no",
+   "note": "Media plays only in the Preview module or the macOS Quick Look window; no player settings in the help center or release notes",
+   "evidence": [
+    "https://support.cocoatech.com/hc/en-us/articles/43463169352980-Quick-Look-and-Preview-Your-Files",
+    "https://store.cocoatech.io/updates"
+   ],
+   "how": "docs"
+  },
+  "music_mode": {
+   "value": "partial",
+   "note": "Audio playback in Preview/Quick Look only",
+   "evidence": [
+    "https://support.cocoatech.com/hc/en-us/articles/43463169352980-Quick-Look-and-Preview-Your-Files"
+   ],
+   "how": "docs"
+  },
+  "streaming_urls": {
+   "value": "no",
+   "note": "No such feature in the help center (all 50 articles), the features page or the release notes",
+   "evidence": [
+    "https://cocoatech.io/features",
+    "https://support.cocoatech.com/hc/en-us/articles/43462786920212-Modules-What-They-Are-and-How-to-Use-Them"
+   ],
+   "how": "docs"
+  },
+  "online_subtitles": {
+   "value": "no",
+   "note": "No such feature in the help center (all 50 articles), the features page or the release notes",
+   "evidence": [
+    "https://cocoatech.io/features",
+    "https://support.cocoatech.com/hc/en-us/articles/43462786920212-Modules-What-They-Are-and-How-to-Use-Them"
+   ],
+   "how": "docs"
+  },
+  "video_filters_enhance": {
+   "value": "no",
+   "note": "Media plays only in the Preview module or the macOS Quick Look window; no player settings in the help center or release notes",
+   "evidence": [
+    "https://support.cocoatech.com/hc/en-us/articles/43463169352980-Quick-Look-and-Preview-Your-Files",
+    "https://store.cocoatech.io/updates"
+   ],
+   "how": "docs"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "note": "Uses the Quick Look generators installed on the Mac; adds none of its own (WebM preview added in-app)",
+   "evidence": [
+    "https://store.cocoatech.io/updates",
+    "https://support.cocoatech.com/hc/en-us/articles/43463169352980-Quick-Look-and-Preview-Your-Files"
+   ],
+   "how": "changelog"
+  },
+  "archives_as_folders": {
+   "value": "no",
+   "note": "Compress and extract only (ZIP, TAR, GZIP …); archives are not browsed like folders",
+   "evidence": [
+    "https://support.cocoatech.com/hc/en-us/articles/43505626742164-Archiving-Files-Compress-and-Extract"
+   ],
+   "how": "docs"
+  },
+  "comics_cbz_cbr": {
+   "value": "no",
+   "note": "Archives are compressed/extracted only; no comic reader",
+   "evidence": [
+    "https://support.cocoatech.com/hc/en-us/articles/43505626742164-Archiving-Files-Compress-and-Extract",
+    "https://cocoatech.io/features"
+   ],
+   "how": "docs"
+  },
+  "archive_passwords": {
+   "value": "partial",
+   "note": "Create and extract password-protected ZIP (AES-128/256)",
+   "evidence": [
+    "https://store.cocoatech.io/updates"
+   ],
+   "how": "changelog"
+  },
+  "split_archives": {
+   "value": "no",
+   "note": "Archiving article lists ZIP, TAR, GZIP 'etc.' without split sets; release notes silent. Searched help center and release notes",
+   "evidence": [
+    "https://support.cocoatech.com/hc/en-us/articles/43505626742164-Archiving-Files-Compress-and-Extract",
+    "https://store.cocoatech.io/updates"
+   ],
+   "how": "unverified"
+  },
+  "videos_in_archives": {
+   "value": "no",
+   "note": "Archives must be extracted first",
+   "evidence": [
+    "https://support.cocoatech.com/hc/en-us/articles/43505626742164-Archiving-Files-Compress-and-Extract"
+   ],
+   "how": "docs"
+  },
+  "manga_two_page": {
+   "value": "no",
+   "note": "No such feature in the help center (all 50 articles), the features page or the release notes",
+   "evidence": [
+    "https://cocoatech.io/features",
+    "https://support.cocoatech.com/hc/en-us/articles/43462786920212-Modules-What-They-Are-and-How-to-Use-Them"
+   ],
+   "how": "docs"
+  },
+  "rename_trash": {
+   "value": "yes",
+   "note": "Rename, trash, secure delete",
+   "evidence": [
+    "https://cocoatech.io/features",
+    "https://cocoatech.io/post/path-finder-26-1-10/"
+   ],
+   "how": "docs"
+  },
+  "move_copy": {
+   "value": "yes",
+   "note": "Drag and drop, Drop Stack, copy queues",
+   "evidence": [
+    "https://support.cocoatech.com/hc/en-us/articles/43505294193428-Copying-and-Moving-Files"
+   ],
+   "how": "docs"
+  },
+  "dual_pane": {
+   "value": "partial",
+   "note": "Dual pane, but copy/move via ⌘C/⌘V/⌘X or drag; no F5/F6 defaults (shortcuts assignable)",
+   "evidence": [
+    "https://support.cocoatech.com/hc/en-us/articles/43463478327956-Dual-Pane-View-and-Layout-Tips"
+   ],
+   "how": "docs"
+  },
+  "undo_file_actions": {
+   "value": "yes",
+   "note": "Undo for move, copy and send-to-trash via menu or keystroke (introduced in Path Finder 4.5); not described in the current help center",
+   "evidence": [
+    "https://www.mactech.com/2006/08/15/cocoatech-releases-path-finder-4-5/"
+   ],
+   "how": "changelog"
+  },
+  "image_editing": {
+   "value": "no",
+   "note": "Built-in editors are text (Preview module, Text Editor) and hex only",
+   "evidence": [
+    "https://cocoatech.io/features",
+    "https://store.cocoatech.io/updates"
+   ],
+   "how": "docs"
+  },
+  "batch_convert": {
+   "value": "partial",
+   "note": "Batch Rename; no image conversion",
+   "evidence": [
+    "https://cocoatech.io/features"
+   ],
+   "how": "docs"
+  },
+  "library_catalog": {
+   "value": "partial",
+   "note": "Finder tags and color labels only",
+   "evidence": [
+    "https://cocoatech.io/post/path-finder-26-1-10/"
+   ],
+   "how": "docs"
+  },
+  "cloud_sync": {
+   "value": "partial",
+   "note": "Dropbox integration, Cloud Uploader, iCloud Drive",
+   "evidence": [
+    "https://cocoatech.io/features"
+   ],
+   "how": "docs"
+  },
+  "keyboard_first": {
+   "value": "partial",
+   "note": "Many shortcuts, but mouse-oriented Finder-style UI",
+   "evidence": [
+    "https://support.cocoatech.com/hc/en-us/articles/43506004951316-Keyboard-Shortcuts-in-Path-Finder"
+   ],
+   "how": "docs"
+  },
+  "custom_shortcuts": {
+   "value": "yes",
+   "note": "Assignable command shortcuts in Settings",
+   "evidence": [
+    "https://support.cocoatech.com/hc/en-us/articles/43506004951316-Keyboard-Shortcuts-in-Path-Finder",
+    "https://store.cocoatech.io/updates"
+   ],
+   "how": "docs"
+  },
+  "shortcut_cheatsheet": {
+   "value": "partial",
+   "note": "Support article lists common defaults; no printable sheet",
+   "evidence": [
+    "https://support.cocoatech.com/hc/en-us/articles/43506004951316-Keyboard-Shortcuts-in-Path-Finder"
+   ],
+   "how": "docs"
+  },
+  "boss_key": {
+   "value": "no",
+   "note": "No such feature in the help center (all 50 articles), the features page or the release notes",
+   "evidence": [
+    "https://cocoatech.io/features",
+    "https://support.cocoatech.com/hc/en-us/articles/43462786920212-Modules-What-They-Are-and-How-to-Use-Them"
+   ],
+   "how": "docs"
+  },
+  "app_sandbox": {
+   "value": "no",
+   "note": "Not in the Mac App Store; works with administrator privileges and Full Disk Access, which the App Sandbox does not allow",
+   "evidence": [
+    "https://cocoatech.io/features",
+    "https://support.cocoatech.com/hc/en-us/articles/43506126039060-Most-Common-Path-Finder-Issues-and-How-to-Fix-Them"
+   ],
+   "how": "docs"
+  },
+  "no_network": {
+   "value": "no",
+   "note": "Subscription checks, update checks, cloud features",
+   "evidence": [
+    "https://cocoatech.io/privacy-policy/"
+   ],
+   "how": "docs"
+  },
+  "notarized_attested": {
+   "value": "no",
+   "note": "Closed source",
+   "evidence": [
+    "https://cocoatech.io/"
+   ],
+   "how": "docs"
+  },
+  "mac_app_store": {
+   "value": "no",
+   "note": "Not in the Mac App Store; direct download",
+   "evidence": [
+    "https://itunes.apple.com/search?term=path+finder&entity=macSoftware&limit=8",
+    "https://cocoatech.io/"
+   ],
+   "how": "store"
+  }
+ }
+}

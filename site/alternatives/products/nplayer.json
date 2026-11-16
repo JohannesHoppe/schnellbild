@@ -1,0 +1,566 @@
+{
+ "name": "nPlayer",
+ "short": "nPlayer",
+ "vendor": "Newin Inc.",
+ "website": "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12",
+ "platforms": [
+  "macOS",
+  "iOS",
+  "iPadOS",
+  "Android",
+  "tvOS"
+ ],
+ "mac_available": "yes",
+ "page": "matrix",
+ "section": "video",
+ "price": "$9.99 one-time (Mac)",
+ "license": "proprietary",
+ "current_version": "1.5.0",
+ "last_update": "2025-02-14",
+ "engine": "not disclosed (own player, hardware decoding incl. AV1 on M3+)",
+ "category": "video",
+ "summary": "Paid Mac port of the popular iOS player nPlayer: plays nearly every video, audio and subtitle format and streams from SMB, NFS, WebDAV, FTP, UPnP and cloud services, with strong subtitle styling, A-B repeat and PiP. Mac updates are rare.",
+ "where_it_wins": [
+  "Network protocols (SMB, NFS, SFTP, WebDAV, UPnP)",
+  "Advanced subtitles (styling, sync, SMI, SUP)",
+  "A-B repeat, language-learning 'Listening Drill'",
+  "Picture in Picture, playback speed",
+  "Audio equalizer and sync"
+ ],
+ "where_schnellbild_wins": [
+  "Free",
+  "Photos and videos in one folder grid",
+  "Keyboard-first browsing and skimming",
+  "Archives as folders, videos inside them",
+  "File sorting with two panes and undo",
+  "Open source, actively developed for macOS 15+"
+ ],
+ "search_terms": [
+  "nplayer mac",
+  "nplayer alternative",
+  "nplayer for mac",
+  "nplayer mac free alternative"
+ ],
+ "matrix": {
+  "free": {
+   "value": "no",
+   "note": "$9.99 one-time (Mac App Store)",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "how": "store"
+  },
+  "open_source": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "how": "store"
+  },
+  "native_apple_silicon": {
+   "value": "yes",
+   "note": "'Supports Apple Silicon' since 1.4.0 (2021-06-18)",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "how": "changelog"
+  },
+  "no_account_no_tracking": {
+   "value": "yes",
+   "note": "Paid app, privacy label 'Data Not Collected'",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "how": "store"
+  },
+  "dark_light_setting": {
+   "value": "partial",
+   "note": "'Player themes' since 1.4.0; whether light/dark apart from system unknown",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "how": "changelog"
+  },
+  "languages_20": {
+   "value": "partial",
+   "note": "9 on the App Store",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "how": "store"
+  },
+  "folder_browsing": {
+   "value": "partial",
+   "note": "Browses network sources (SMB, FTP, WebDAV, UPnP, cloud); local files opened from Finder",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "how": "store"
+  },
+  "thumbnail_grid": {
+   "value": "partial",
+   "note": "Generates video thumbnails (1.4.2/1.4.3 fixes); layout not documented",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "how": "changelog"
+  },
+  "list_view": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "note": "Layout of the network browser not documented"
+  },
+  "recursive_search": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "note": "Store feature list has no search"
+  },
+  "regex_search": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "note": "Store feature list has no search"
+  },
+  "network_shares_fast": {
+   "value": "partial",
+   "note": "WebDAV, FTP, SFTP, HTTP, SMB/CIFS, NFS, UPnP/DLNA; speed unknown",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "how": "store"
+  },
+  "multiple_windows": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "note": "Not documented"
+  },
+  "bookmarks": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "note": "Saved network servers exist by nature of the app; folder favourites not documented"
+  },
+  "img_modern_formats": {
+   "value": "no",
+   "note": "Video, audio, subtitle, playlist formats only",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "how": "store"
+  },
+  "img_raw": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "how": "store"
+  },
+  "img_psd_exr": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "how": "store"
+  },
+  "img_svg_pdf": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "how": "store"
+  },
+  "img_animated": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "how": "store"
+  },
+  "keyboard_paging": {
+   "value": "partial",
+   "how": "unverified",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "note": "Previous/next subtitle position by mouse drag; keyboard next/previous file not documented"
+  },
+  "zoom_rotate": {
+   "value": "partial",
+   "note": "Rotate 90/180/270, flip video",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "how": "changelog"
+  },
+  "slideshow": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "note": "Store feature list: video, audio, subtitle and playlist files only"
+  },
+  "slideshow_recursive": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "note": "No still images"
+  },
+  "auto_enhance_view": {
+   "value": "partial",
+   "note": "Brightness and saturation for video",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "how": "store"
+  },
+  "file_info_exif": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "note": "Not documented"
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "note": "Not documented"
+  },
+  "video_native": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "how": "store"
+  },
+  "video_mkv_avi_webm": {
+   "value": "yes",
+   "note": "MKV, AVI, WMV, ASF, FLV, OGV, RMVB, TP; WebM not named",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "how": "store"
+  },
+  "photos_videos_one_grid": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "note": "No still images"
+  },
+  "video_skim_arrows": {
+   "value": "partial",
+   "how": "unverified",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "note": "Seeking by mouse drag is documented; arrow keys not documented anywhere found"
+  },
+  "subtitles_embedded": {
+   "value": "yes",
+   "note": "Multi-track embedded, SSA/ASS styling",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "how": "store"
+  },
+  "subtitles_external_files": {
+   "value": "yes",
+   "note": "SMI, SRT, SSA, IDX/SUB, SUP etc.",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "how": "store"
+  },
+  "audio_track_choice": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "how": "store"
+  },
+  "playback_speed": {
+   "value": "yes",
+   "note": "0.1x to 4.0x",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "how": "store"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "note": "Not documented"
+  },
+  "playlist": {
+   "value": "yes",
+   "note": "CUE, M3U, PLS",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "how": "store"
+  },
+  "saved_playlists": {
+   "value": "partial",
+   "note": "Opens playlist files; saving own playlists not documented",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "how": "store"
+  },
+  "pip": {
+   "value": "yes",
+   "note": "Since 1.0.2",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "how": "changelog"
+  },
+  "music_mode": {
+   "value": "yes",
+   "note": "MP3, FLAC, APE, WMA etc., equalizer",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "how": "store"
+  },
+  "streaming_urls": {
+   "value": "yes",
+   "note": "HTTP, built-in web browser (1.2.0), cloud services",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "how": "store"
+  },
+  "online_subtitles": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "note": "Store lists many subtitle features (selection, fonts, sync, SMI tags) but no online search"
+  },
+  "video_filters_enhance": {
+   "value": "yes",
+   "note": "Brightness, saturation, flip",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "how": "store"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "note": "Not mentioned"
+  },
+  "archives_as_folders": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "note": "Supported file types list has no archives"
+  },
+  "comics_cbz_cbr": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "note": "No comics among supported files"
+  },
+  "archive_passwords": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "note": "No archive support"
+  },
+  "split_archives": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "note": "No archive support"
+  },
+  "videos_in_archives": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "note": "No archive support"
+  },
+  "manga_two_page": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "note": "No image support"
+  },
+  "rename_trash": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "note": "No file operations in the store feature list"
+  },
+  "move_copy": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "note": "No file operations in the store feature list"
+  },
+  "dual_pane": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "note": "No file operations in the store feature list"
+  },
+  "undo_file_actions": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "note": "No file operations in the store feature list"
+  },
+  "image_editing": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "note": "Video player only"
+  },
+  "batch_convert": {
+   "value": "no",
+   "how": "store",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "note": "No conversion in the store feature list"
+  },
+  "library_catalog": {
+   "value": "partial",
+   "note": "TMDb metadata (1.1.1)",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "how": "changelog"
+  },
+  "cloud_sync": {
+   "value": "partial",
+   "note": "Streams from Box, Dropbox, OneDrive; no sync",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "how": "store"
+  },
+  "keyboard_first": {
+   "value": "no",
+   "note": "Mouse-drag gestures for seeking, subtitles, volume",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "how": "store"
+  },
+  "custom_shortcuts": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "note": "Not documented; a 2019 review asks for extra hotkeys"
+  },
+  "shortcut_cheatsheet": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "note": "Not documented"
+  },
+  "boss_key": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "note": "Not documented"
+  },
+  "app_sandbox": {
+   "value": "yes",
+   "note": "Mac App Store app",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "how": "store"
+  },
+  "no_network": {
+   "value": "no",
+   "how": "changelog",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "note": "Fetches TMDb metadata (1.1.1), built-in web browser (1.2.0), network sources; 'Data Not Collected' label"
+  },
+  "notarized_attested": {
+   "value": "partial",
+   "note": "App Store signed; closed source",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "how": "store"
+  },
+  "mac_app_store": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://apps.apple.com/us/app/nplayer/id1451273814?mt=12"
+   ],
+   "how": "store"
+  }
+ }
+}

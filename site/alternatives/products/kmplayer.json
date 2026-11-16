@@ -1,0 +1,583 @@
+{
+ "name": "KMPlayer",
+ "short": "KMPlayer",
+ "vendor": "PandoraTV (KMPlayer)",
+ "website": "https://www.kmplayer.com/",
+ "platforms": [
+  "Windows",
+  "Android",
+  "iOS",
+  "iPadOS"
+ ],
+ "mac_available": "no",
+ "page": "switcher",
+ "section": "windows",
+ "price": "Free; KMPlayer 64X without ads, KMPlayer 32-bit with ads; Android app has a Premium upgrade",
+ "license": "Proprietary freeware",
+ "current_version": "KMPlayer 64X 2026.10.27.9; KMPlayer (32-bit) 4.2.3.38",
+ "last_update": "2026-10-28",
+ "engine": "Own engine with built-in codecs (HEVC, H.264, VP9 …), external codecs possible, hardware acceleration",
+ "category": "video",
+ "summary": "KMPlayer is a long-standing free Windows media player with built-in codecs, 4K/8K playback, 3D and 360° VR, URL/YouTube playback and download, and a keyboard layout where almost every key does something. The 64X edition has no ads; the 32-bit edition shows ads. The vendor says there is no current macOS desktop app.",
+ "where_it_wins": [
+  "Very broad codec and format support incl. 3D and 360° VR",
+  "URL and YouTube playback and download",
+  "Fine-grained keyboard control, global hotkeys, boss key (Esc)",
+  "Equalizer presets, video/audio capture, GIF capture",
+  "Skins and colour schemes, 42 languages"
+ ],
+ "where_schnellbild_wins": [
+  "Runs on the Mac (KMPlayer has no macOS desktop app)",
+  "Browses folders with thumbnails; photos and videos in one grid",
+  "Real image viewer with modern and RAW formats",
+  "Archives as folders, comics, passwords",
+  "File management with two panes and undo",
+  "Open source, no ads in any edition, never goes online"
+ ],
+ "search_terms": [
+  "kmplayer mac",
+  "kmplayer for mac",
+  "kmplayer alternative mac",
+  "kmplayer macos",
+  "kmplayer mac free",
+  "kmplayer für mac",
+  "kmplayer mac 다운로드"
+ ],
+ "matrix": {
+  "free": {
+   "value": "yes",
+   "note": "Free; 64X without ads, 32-bit edition shows ads and content",
+   "evidence": [
+    "https://www.kmplayer.com/pc64x",
+    "https://www.kmplayer.com/home"
+   ],
+   "how": "docs"
+  },
+  "open_source": {
+   "value": "no",
+   "note": "Proprietary (PandoraTV)",
+   "evidence": [
+    "https://www.kmplayer.com/home"
+   ],
+   "how": "docs"
+  },
+  "native_apple_silicon": {
+   "value": "na",
+   "note": "Windows only; no macOS desktop app",
+   "evidence": [
+    "https://www.kmplayer.com/home"
+   ],
+   "how": "docs"
+  },
+  "no_account_no_tracking": {
+   "value": "partial",
+   "note": "64X: 'No Advertisements, No spyware, No user tracking'; 32-bit KMPlayer includes advertisements",
+   "evidence": [
+    "https://www.kmplayer.com/pc64x",
+    "https://www.kmplayer.com/home"
+   ],
+   "how": "docs"
+  },
+  "dark_light_setting": {
+   "value": "yes",
+   "note": "Skins and colour schemes",
+   "evidence": [
+    "https://www.filehorse.com/download-kmplayer-64/"
+   ],
+   "how": "review"
+  },
+  "languages_20": {
+   "value": "yes",
+   "note": "42 languages",
+   "evidence": [
+    "https://www.kmplayer.com/pc64x",
+    "https://www.kmplayer.com/pc"
+   ],
+   "how": "docs"
+  },
+  "folder_browsing": {
+   "value": "partial",
+   "note": "Open folder (Ctrl+F) as playlist; no file browser",
+   "evidence": [
+    "https://www.guidingtech.com/13029/kmplayer-keyboard-shortcuts/",
+    "https://tutorialtactic.com/blog/kmplayer-shortcuts/"
+   ],
+   "how": "docs"
+  },
+  "thumbnail_grid": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://www.kmplayer.com/pc64x"
+   ],
+   "note": "Not documented"
+  },
+  "list_view": {
+   "value": "partial",
+   "note": "Playlist editor (Alt+E)",
+   "evidence": [
+    "https://tutorialtactic.com/blog/kmplayer-shortcuts/"
+   ],
+   "how": "docs"
+  },
+  "recursive_search": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://www.kmplayer.com/pc64x"
+   ],
+   "note": "Not documented"
+  },
+  "regex_search": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://www.kmplayer.com/pc64x"
+   ],
+   "note": "Not documented"
+  },
+  "network_shares_fast": {
+   "value": "partial",
+   "how": "unverified",
+   "evidence": [
+    "https://www.kmplayer.com/pc64x"
+   ],
+   "note": "Opens URLs and network paths; big-folder speed not documented"
+  },
+  "multiple_windows": {
+   "value": "yes",
+   "how": "review",
+   "evidence": [
+    "https://www.guidingtech.com/13304/run-multiple-instances-of-kmplayer",
+    "https://www.addictivetips.com/windows-tips/20-features-of-kmplayer-that-you-probably-dont-know-about"
+   ],
+   "note": "Turn off single execution in settings to run several instances"
+  },
+  "bookmarks": {
+   "value": "no",
+   "note": "Bookmarks are positions in a video",
+   "evidence": [
+    "https://tutorialtactic.com/blog/kmplayer-shortcuts/"
+   ],
+   "how": "docs"
+  },
+  "img_modern_formats": {
+   "value": "no",
+   "note": "Not in the supported format lists",
+   "evidence": [
+    "https://www.kmplayer.com/pc64x",
+    "https://www.kmplayer.com/pc"
+   ],
+   "how": "docs"
+  },
+  "img_raw": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://www.kmplayer.com/pc"
+   ],
+   "how": "docs"
+  },
+  "img_psd_exr": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://www.kmplayer.com/pc"
+   ],
+   "how": "docs"
+  },
+  "img_svg_pdf": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://www.kmplayer.com/pc"
+   ],
+   "how": "docs"
+  },
+  "img_animated": {
+   "value": "no",
+   "note": "Captures GIFs from video, does not list GIF as input",
+   "evidence": [
+    "https://www.kmplayer.com/pc64x"
+   ],
+   "how": "docs"
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "note": "Page Up / Page Down = previous / next file in playlist",
+   "evidence": [
+    "https://tutorialtactic.com/blog/kmplayer-shortcuts/"
+   ],
+   "how": "docs"
+  },
+  "zoom_rotate": {
+   "value": "yes",
+   "note": "Zoom and pan (numpad), rotate screen",
+   "evidence": [
+    "https://tutorialtactic.com/blog/kmplayer-shortcuts/",
+    "https://www.kmplayer.com/pc64x"
+   ],
+   "how": "docs"
+  },
+  "slideshow": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://www.kmplayer.com/pc"
+   ],
+   "note": "Not documented"
+  },
+  "slideshow_recursive": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://www.kmplayer.com/pc"
+   ],
+   "note": "Not documented"
+  },
+  "auto_enhance_view": {
+   "value": "yes",
+   "note": "Brightness, contrast, saturation (H/W and S/W), noise reduction",
+   "evidence": [
+    "https://tutorialtactic.com/blog/kmplayer-shortcuts/",
+    "https://www.kmplayer.com/pc64x"
+   ],
+   "how": "docs"
+  },
+  "file_info_exif": {
+   "value": "partial",
+   "how": "review",
+   "evidence": [
+    "https://tutorialtactic.com/blog/kmplayer-shortcuts/"
+   ],
+   "note": "Advanced playback info (codec, bitrate); no EXIF"
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://www.kmplayer.com/pc64x"
+   ],
+   "note": "Not documented"
+  },
+  "video_native": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://www.kmplayer.com/pc64x"
+   ],
+   "how": "docs"
+  },
+  "video_mkv_avi_webm": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://www.kmplayer.com/pc",
+    "https://www.kmplayer.com/pc64x"
+   ],
+   "how": "docs"
+  },
+  "photos_videos_one_grid": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://www.kmplayer.com/pc64x"
+   ],
+   "note": "Not documented"
+  },
+  "video_skim_arrows": {
+   "value": "yes",
+   "note": "Left/Right 5 s, Ctrl 30 s, Alt 1 min",
+   "evidence": [
+    "https://www.guidingtech.com/13029/kmplayer-keyboard-shortcuts/",
+    "https://tutorialtactic.com/blog/kmplayer-shortcuts/"
+   ],
+   "how": "docs"
+  },
+  "subtitles_embedded": {
+   "value": "yes",
+   "note": "Incl. MKS, SUP, IDX",
+   "evidence": [
+    "https://www.kmplayer.com/pc"
+   ],
+   "how": "docs"
+  },
+  "subtitles_external_files": {
+   "value": "yes",
+   "note": "Alt+O loads a subtitle file; SRT, ASS, SMI …",
+   "evidence": [
+    "https://www.kmplayer.com/pc",
+    "https://tutorialtactic.com/blog/kmplayer-shortcuts/"
+   ],
+   "how": "docs"
+  },
+  "audio_track_choice": {
+   "value": "yes",
+   "how": "review",
+   "evidence": [
+    "https://www.guidingtech.com/13304/run-multiple-instances-of-kmplayer"
+   ],
+   "note": "Right-click > Audio Track"
+  },
+  "playback_speed": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://www.kmplayer.com/pc64x",
+    "https://tutorialtactic.com/blog/kmplayer-shortcuts/"
+   ],
+   "how": "docs"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://www.kmplayer.com/pc64x"
+   ],
+   "note": "Not documented"
+  },
+  "playlist": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://tutorialtactic.com/blog/kmplayer-shortcuts/"
+   ],
+   "how": "docs"
+  },
+  "saved_playlists": {
+   "value": "yes",
+   "note": "KPL, M3U, PLS …",
+   "evidence": [
+    "https://www.kmplayer.com/pc64x"
+   ],
+   "how": "docs"
+  },
+  "pip": {
+   "value": "partial",
+   "how": "unverified",
+   "evidence": [
+    "https://www.addictivetips.com/windows-tips/20-features-of-kmplayer-that-you-probably-dont-know-about"
+   ],
+   "note": "Screen controls and always-on-top options; no system PiP documented"
+  },
+  "music_mode": {
+   "value": "yes",
+   "note": "Many audio formats, equalizer presets",
+   "evidence": [
+    "https://www.kmplayer.com/pc64x"
+   ],
+   "how": "docs"
+  },
+  "streaming_urls": {
+   "value": "yes",
+   "note": "URL playback and download incl. YouTube",
+   "evidence": [
+    "https://www.kmplayer.com/pc64x",
+    "https://www.kmplayer.com/pc"
+   ],
+   "how": "docs"
+  },
+  "online_subtitles": {
+   "value": "partial",
+   "how": "changelog",
+   "evidence": [
+    "https://videohelp.com/software/KMPlayer/version-history"
+   ],
+   "note": "Classic KMPlayer 3.5 changelog: 'Modified online subtitle search function'; not documented for 64X"
+  },
+  "video_filters_enhance": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://tutorialtactic.com/blog/kmplayer-shortcuts/",
+    "https://www.kmplayer.com/pc64x"
+   ],
+   "how": "docs"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://www.kmplayer.com/pc64x"
+   ],
+   "note": "Not documented"
+  },
+  "archives_as_folders": {
+   "value": "partial",
+   "note": "32-bit KMPlayer lists ZIP and RAR as playlist formats (plays media inside); not listed for 64X",
+   "evidence": [
+    "https://www.kmplayer.com/pc",
+    "https://www.kmplayer.com/pc64x"
+   ],
+   "how": "docs"
+  },
+  "comics_cbz_cbr": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://www.kmplayer.com/pc"
+   ],
+   "note": "Not in format lists"
+  },
+  "archive_passwords": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://www.kmplayer.com/pc"
+   ],
+   "note": "Not documented"
+  },
+  "split_archives": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://www.kmplayer.com/pc",
+    "https://www.addictivetips.com/windows-tips/20-features-of-kmplayer-that-you-probably-dont-know-about"
+   ],
+   "note": "Plays split video parts as one; split archives not documented"
+  },
+  "videos_in_archives": {
+   "value": "partial",
+   "note": "32-bit KMPlayer: ZIP/RAR as playlists",
+   "evidence": [
+    "https://www.kmplayer.com/pc"
+   ],
+   "how": "docs"
+  },
+  "manga_two_page": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://www.kmplayer.com/pc"
+   ],
+   "note": "Not documented"
+  },
+  "rename_trash": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://tutorialtactic.com/blog/kmplayer-shortcuts/"
+   ],
+   "note": "Not documented"
+  },
+  "move_copy": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://tutorialtactic.com/blog/kmplayer-shortcuts/"
+   ],
+   "note": "Not documented"
+  },
+  "dual_pane": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://tutorialtactic.com/blog/kmplayer-shortcuts/"
+   ],
+   "note": "Not documented"
+  },
+  "undo_file_actions": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://tutorialtactic.com/blog/kmplayer-shortcuts/"
+   ],
+   "note": "Not documented"
+  },
+  "image_editing": {
+   "value": "no",
+   "note": "Screenshot/GIF capture only",
+   "evidence": [
+    "https://www.kmplayer.com/pc64x"
+   ],
+   "how": "docs"
+  },
+  "batch_convert": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://www.kmplayer.com/pc64x"
+   ],
+   "note": "Video/audio capture only; no batch conversion documented"
+  },
+  "library_catalog": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://www.addictivetips.com/windows-tips/20-features-of-kmplayer-that-you-probably-dont-know-about"
+   ],
+   "note": "Playlist editor and bookmarks only"
+  },
+  "cloud_sync": {
+   "value": "no",
+   "note": "Cloud play is a mobile app feature",
+   "evidence": [
+    "https://www.kmplayer.com/home"
+   ],
+   "how": "docs"
+  },
+  "keyboard_first": {
+   "value": "yes",
+   "note": "Almost every key has a function",
+   "evidence": [
+    "https://tutorialtactic.com/blog/kmplayer-shortcuts/"
+   ],
+   "how": "docs"
+  },
+  "custom_shortcuts": {
+   "value": "yes",
+   "note": "F2 > General > Keys/Global Control, also global hotkeys",
+   "evidence": [
+    "https://tutorialtactic.com/blog/kmplayer-shortcuts/"
+   ],
+   "how": "docs"
+  },
+  "shortcut_cheatsheet": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://tutorialtactic.com/blog/kmplayer-shortcuts/"
+   ],
+   "note": "Only third-party lists found"
+  },
+  "boss_key": {
+   "value": "yes",
+   "note": "Esc pauses and hides the player",
+   "evidence": [
+    "https://www.guidingtech.com/13029/kmplayer-keyboard-shortcuts/",
+    "https://tutorialtactic.com/blog/kmplayer-shortcuts/"
+   ],
+   "how": "docs"
+  },
+  "app_sandbox": {
+   "value": "na",
+   "note": "Windows only",
+   "evidence": [],
+   "how": "docs"
+  },
+  "no_network": {
+   "value": "no",
+   "note": "YouTube/URL features; 32-bit edition loads ads and content",
+   "evidence": [
+    "https://www.kmplayer.com/pc64x",
+    "https://www.kmplayer.com/home"
+   ],
+   "how": "docs"
+  },
+  "notarized_attested": {
+   "value": "na",
+   "note": "Windows only, closed source",
+   "evidence": [],
+   "how": "docs"
+  },
+  "mac_app_store": {
+   "value": "no",
+   "note": "Only the iPhone/iPad app is in the App Store and it is not offered for Mac",
+   "evidence": [
+    "https://www.kmplayer.com/home",
+    "https://apps.apple.com/us/app/kmplayer/id835776444"
+   ],
+   "how": "docs"
+  }
+ }
+}

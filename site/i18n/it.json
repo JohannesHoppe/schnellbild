@@ -1,6 +1,7 @@
 {
   "name": "Italiano",
   "privacySlug": "privacy",
+  "alternativesSlug": "alternative",
   "title": "Schnellbild: un visualizzatore di foto e video per Mac che non ti complica la vita",
   "seoTitle": "Schnellbild · visualizzatore foto e lettore MKV per Mac",
   "seoDescription": "Visualizzatore foto e lettore video gratis per Mac: MKV e AVI col motore VLC integrato, ZIP, RAR e fumetti CBZ come cartelle. Alternativa a XnView.",
@@ -70,8 +71,13 @@
       "alt": "Una foto nella vista completa"
     },
     {
+      "title": "Le tue foto sulla mappa e sul globo",
+      "text": "<p><kbd>W</kbd> mostra le foto e i video di una cartella e delle sue sottocartelle nel luogo in cui sono stati scattati. Da molto lontano la mappa è un globo davanti al cielo stellato, se vuoi con il giorno e la notte e le città illuminate sul lato notturno; avvicinandoti diventa la mappa piana.</p><ul><li>La linea del tempo ordina il viaggio per data: trascina su un tratto e la mappa mostra solo quella parte</li><li><kbd>T</kbd> riproduce il viaggio: la mappa scorre da un luogo all’altro, le foto appaiono grandi, i video girano per qualche secondo</li><li>La mappa è dentro l’app: nulla va online, nessun luogo lascia il tuo Mac</li></ul>",
+      "alt": "Le foto di un viaggio sul globo, nella vista Atlante"
+    },
+    {
       "title": "Video, anche MKV e AVI che macOS non riproduce",
-      "text": "<p>Quello che macOS riproduce da sé (MP4, MOV, AVCHD…) passa da macOS, anche in HDR; tutto il resto dal motore VLC integrato: MKV, WebM, AVI, WMV, FLV, MPEG, DVD Video.</p><ul><li>← → saltano di un decimo del video, ⇧← ⇧→ di un centesimo</li><li>↑ ↓ regolano il volume, per tutti i video</li><li>Anche il Finder e Quick Look ottengono le miniature di MKV, WebM, WMV, FLV e VOB</li></ul>",
+      "text": "<p>Quello che macOS riproduce da sé (MP4, MOV, AVCHD…) passa da macOS, anche in HDR; tutto il resto dal motore VLC integrato: MKV, WebM, AVI, WMV, FLV, MPEG, DVD Video.</p><ul><li>← → saltano di un decimo del video, ⇧← ⇧→ di un centesimo</li><li>↑ ↓ regolano il volume, per tutti i video</li><li>⌘→ al video successivo e ⌘← indietro: il primo riprende da dove era rimasto</li><li>I sottotitoli del video (<kbd>V</kbd>) compaiono fin dall’inizio; attivati a metà, la riga in corso appare subito, e i sottotitoli ASS mantengono posizione, colori e caratteri</li><li>Anche il Finder e la Visualizzazione rapida ottengono le miniature di MKV, WebM, WMV, FLV e VOB</li></ul>",
       "alt": "Un video in riproduzione in Schnellbild"
     },
     {
@@ -96,12 +102,12 @@
     },
     {
       "title": "Cos’è davvero il file",
-      "text": "<p><kbd>I</kbd> mostra formato, risoluzione, codec, bitrate, profondità di bit, profilo colore e fotocamera, e ti avvisa quando l’estensione del file non corrisponde al contenuto.</p>",
+      "text": "<p><kbd>I</kbd> o <kbd>⌘</kbd><kbd>I</kbd> apre le info accanto all’immagine: quando e dove è stata scattata, con una piccola mappa e la località vicina, fotocamera e obiettivo, formato, risoluzione, codec, bitrate, profondità di bit e profilo colore, e ogni chiave di metadati (EXIF, GPS, IPTC, XMP, QuickTime) da filtrare e copiare. Date e luoghi arrivano anche dai file XMP affiancati, dai dati GPS di una GoPro o di un drone DJI, dai file clip di Sony e dalle tracce GPX nella cartella.</p><p>Se l’estensione del file non corrisponde al contenuto, compare un avviso. I file con un nome che non dice nulla contano per il contenuto, e i download ancora in corso (.part, .crdownload…) si vedono fin dove sono arrivati.</p>",
       "alt": "Le info sul file accanto a una foto"
     },
     {
       "title": "Ogni tasto a portata di mano",
-      "text": "<p><kbd>F1</kbd> elenca tutti i tasti, anche da stampare; <kbd>K</kbd> mostra una piccola tastiera da cliccare. Scegli i tuoi tasti, oppure i tasti come in Phiewer. Griglia o elenco (<kbd>L</kbd>), ordinamento per nome, tipo, data o dimensione, più finestre e un tasto capo (<kbd>X</kbd>).</p>",
+      "text": "<p><kbd>F1</kbd> elenca tutti i tasti, anche da stampare; <kbd>K</kbd> mostra una piccola tastiera da cliccare. Scegli i tuoi tasti, oppure i tasti come in Phiewer. Griglia o elenco (<kbd>L</kbd>), ordinamento per nome, tipo, data, dimensione o distanza da un luogo, più finestre e un tasto capo (<kbd>X</kbd>).</p>",
       "alt": "L’elenco dei tasti (F1)"
     },
     {
@@ -140,7 +146,10 @@
   ],
   "safeMore": "Cosa fa nel dettaglio, e dove si ferma (in inglese): <a href=\"https://github.com/JohannesHoppe/schnellbild#safe-with-files-from-others\">Sicuro con i file degli altri</a>.",
   "modelsTitle": "Arrivi da Phiewer, IINA o Norton Commander?",
-  "modelsText": "Phiewer è un visualizzatore di foto veloce con una versione PRO a pagamento, IINA un player completo per guardare video; entrambi sono stati modelli per Schnellbild, come Norton Commander per il doppio pannello. Schnellbild riunisce le immagini e i video delle tue cartelle in un’unica app gratuita, se vuoi con i tasti come in Phiewer. Il confronto con Schnellbild (in inglese): <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-phiewer-alternative\">un’alternativa gratuita a Phiewer</a>, <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-iina-alternative-for-looking-through-videos\">un’alternativa gratuita a IINA per guardare video</a>.",
+  "modelsText": "Phiewer è un visualizzatore di foto veloce con una versione PRO a pagamento, IINA un player completo per guardare video; entrambi sono stati modelli per Schnellbild, come Norton Commander per il doppio pannello. Schnellbild riunisce le immagini e i video delle tue cartelle in un’unica app gratuita, se vuoi con i tasti come in Phiewer. Il confronto con Schnellbild: <a href=\"{alt:phiewer}\">un’alternativa gratuita a Phiewer</a>, <a href=\"{alt:iina}\">un’alternativa gratuita a IINA per guardare video</a>, <a href=\"{alt:norton-commander}\">da Norton Commander al Mac</a>.",
+  "altTitle": "Cerchi un’alternativa?",
+  "altText": "Come si confronta Schnellbild con i programmi che si cercano su Mac, funzione per funzione e con una fonte per ogni affermazione:",
+  "altAll": "Tutte le alternative",
   "ossTitle": "Open source",
   "ossText": "Schnellbild è software libero con licenza MIT, il codice sorgente è <a href=\"https://github.com/JohannesHoppe/schnellbild\">su GitHub</a>. Hai trovato un bug o ti manca qualcosa? <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">Apri una segnalazione</a>.",
   "languagesText": "Nella lingua del tuo Mac:",
@@ -149,6 +158,7 @@
   "footerPrivacy": "Privacy",
   "footerImprint": "Note legali (Impressum)",
   "footerEula": "Contratto di licenza",
+  "footerAlternatives": "Alternative",
   "privacy": {
     "title": "Informativa sulla privacy",
     "description": "Schnellbild non raccoglie dati personali: nessun account, nessuna analisi, nessun tracciamento, nessun accesso alla rete.",

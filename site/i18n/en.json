@@ -1,6 +1,7 @@
 {
   "name": "English",
   "privacySlug": "privacy",
+  "alternativesSlug": "alternatives",
   "title": "Schnellbild: an image & video viewer for macOS that just doesn't suck",
   "seoTitle": "Schnellbild · Free Image Viewer & MKV Player for Mac",
   "seoDescription": "Fast, free image viewer and video player for Mac: thumbnails, slideshow, MKV, AVI, WebM, ZIP and RAR as folders. A Phiewer, XnView and IrfanView alternative.",
@@ -70,8 +71,13 @@
       "alt": "A photo in the full view"
     },
     {
+      "title": "Your photos on the map and the globe",
+      "text": "<p><kbd>W</kbd> shows the photos and videos of a folder and its subfolders where they were taken. Zoomed far out, the map is a globe in front of the stars, with day and night if you like and the cities lit on its night side; zoom in and it flattens into the map.</p><ul><li>The timeline lays the trip out by time: drag across it, and the map shows only that part</li><li><kbd>T</kbd> plays the tour: the map glides from place to place, the photos show large, the videos play a few seconds</li><li>The map is inside the app: nothing goes online, no location leaves your Mac</li></ul>",
+      "alt": "The photos of a trip on the globe, in the Atlas view"
+    },
+    {
       "title": "Videos, also the ones macOS can't play",
-      "text": "<p>What macOS plays itself (MP4, MOV, AVCHD …) plays through macOS, HDR included; everything else through the VLC engine built in: MKV, WebM, AVI, WMV, FLV, MPEG, DVD video.</p><ul><li>← → jump a tenth of the video, ⇧← ⇧→ a hundredth</li><li>↑ ↓ set the volume, for every video</li><li>Finder and Quick Look get thumbnails for MKV, WebM, WMV, FLV and VOB too</li></ul>",
+      "text": "<p>What macOS plays itself (MP4, MOV, AVCHD …) plays through macOS, HDR included; everything else through the VLC engine built in: MKV, WebM, AVI, WMV, FLV, MPEG, DVD video.</p><ul><li>← → jump a tenth of the video, ⇧← ⇧→ a hundredth</li><li>↑ ↓ set the volume, for every video</li><li>⌘→ to the next video and ⌘← back: the first goes on where it was left</li><li>Subtitles inside the video (<kbd>V</kbd>) show from the start; switched on halfway, the line already running appears at once, and ASS subtitles keep their position, colours and fonts</li><li>Finder and Quick Look get thumbnails for MKV, WebM, WMV, FLV and VOB too</li></ul>",
       "alt": "A video playing in Schnellbild"
     },
     {
@@ -96,12 +102,12 @@
     },
     {
       "title": "What the file really is",
-      "text": "<p><kbd>I</kbd> shows the format, resolution, codecs, bitrate, bit depth, colour profile and camera, and a note when the file's extension doesn't match its content.</p>",
+      "text": "<p><kbd>I</kbd> or <kbd>⌘</kbd><kbd>I</kbd> opens the file info beside the picture: when and where it was taken, with a small map and the town nearby, camera and lens, format, resolution, codecs, bitrate, bit depth and colour profile, and every metadata key (EXIF, GPS, IPTC, XMP, QuickTime) to filter and copy. Times and places also come from XMP sidecars, a GoPro's or DJI drone's GPS data, Sony's clip files and GPX tracks in the folder.</p><p>A file whose extension doesn't match its content gets a note. Files whose name says nothing count by their content, and downloads still in progress (.part, .crdownload …) show as far as they have arrived.</p>",
       "alt": "The file info next to a photo"
     },
     {
       "title": "Every key at hand",
-      "text": "<p><kbd>F1</kbd> lists every key, to print too; <kbd>K</kbd> shows a small keyboard to click. Set your own keys, or pick the keys as in Phiewer. Grid or list (<kbd>L</kbd>), sort by name, kind, date or size, several windows, and a boss key (<kbd>X</kbd>).</p>",
+      "text": "<p><kbd>F1</kbd> lists every key, to print too; <kbd>K</kbd> shows a small keyboard to click. Set your own keys, or pick the keys as in Phiewer. Grid or list (<kbd>L</kbd>), sort by name, kind, date, size or distance from a place, several windows, and a boss key (<kbd>X</kbd>).</p>",
       "alt": "The list of keys (F1)"
     },
     {
@@ -140,7 +146,10 @@
   ],
   "safeMore": "What it does in detail, and where its limit is: <a href=\"https://github.com/JohannesHoppe/schnellbild#safe-with-files-from-others\">Safe with files from others</a>.",
   "modelsTitle": "Coming from Phiewer, IINA or Norton Commander?",
-  "modelsText": "Phiewer is a fast photo viewer with a paid PRO version, IINA a full player for watching videos; both were models for Schnellbild, as was Norton Commander for the dual pane. Schnellbild puts the pictures and videos in your folders into one free app, with the keys as in Phiewer if you like. How Schnellbild compares: <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-phiewer-alternative\">a free Phiewer alternative</a>, <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-iina-alternative-for-looking-through-videos\">a free IINA alternative for looking through videos</a>.",
+  "modelsText": "Phiewer is a fast photo viewer with a paid PRO version, IINA a full player for watching videos; both were models for Schnellbild, as was Norton Commander for the dual pane. Schnellbild puts the pictures and videos in your folders into one free app, with the keys as in Phiewer if you like. How Schnellbild compares: <a href=\"{alt:phiewer}\">a free Phiewer alternative</a>, <a href=\"{alt:iina}\">a free IINA alternative for looking through videos</a>, <a href=\"{alt:norton-commander}\">from Norton Commander to the Mac</a>.",
+  "altTitle": "Looking for an alternative?",
+  "altText": "How Schnellbild compares with the programs people look for on the Mac, feature by feature and with a source for every claim:",
+  "altAll": "All alternatives",
   "ossTitle": "Open source",
   "ossText": "Schnellbild is free software under the MIT License, the source is <a href=\"https://github.com/JohannesHoppe/schnellbild\">on GitHub</a>. Found a bug or missing something? <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">Open an issue</a>.",
   "languagesText": "In your Mac's language:",
@@ -149,6 +158,7 @@
   "footerPrivacy": "Privacy",
   "footerImprint": "Imprint (Impressum)",
   "footerEula": "License agreement",
+  "footerAlternatives": "Alternatives",
   "privacy": {
     "title": "Privacy policy",
     "description": "Schnellbild collects no personal data: no account, no analytics, no tracking, no network access.",

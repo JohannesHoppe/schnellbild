@@ -1,0 +1,2375 @@
+{
+ "ui": {
+  "overviewTitle": "Schnellbild come alternativa",
+  "overviewSeoTitle": "{names}: alternativa gratis per Mac · Schnellbild",
+  "overviewDescription": "Schnellbild a confronto con {count} visualizzatori di immagini, lettori video, lettori di fumetti e file manager, funzione per funzione e con le fonti. Gratis, open source, per Mac.",
+  "overviewIntro": "<p>Schnellbild è un’alternativa con le idee chiare. Cartelle invece di playlist e librerie: apri una cartella e l’elenco è già lì, la presentazione si crea la playlist da sola. Niente da internet, per principio: nessun account, nessun tracciamento, nessun accesso alla rete. E gratis, scorciatoie da tastiera personalizzate comprese, che alcuni altri programmi fanno pagare.</p><p>Ecco come si confronta con i programmi che si cercano su Mac, con una fonte per ogni casella. Dove un altro programma è migliore, la pagina lo dice.</p>",
+  "overviewNoMac": "Questi funzionano solo su Windows (o non più sui Mac di oggi). Per ciascuno: cosa piaceva ai suoi fan e come lo fa Schnellbild.",
+  "matrixH1": "{name} per Mac: un’alternativa gratuita",
+  "matrixSeoTitle": "{name} per Mac: alternativa gratis · Schnellbild",
+  "matrixDescription": "{name} o Schnellbild? Confronto funzione per funzione, con le fonti: dove è più forte {name}, dove Schnellbild. Gratis, open source, riproduce MKV, apre ZIP e RAR come cartelle.",
+  "matrixLead": "Schnellbild e {name} fianco a fianco: cosa fa meglio ciascuno, poi ogni funzione con la sua fonte.",
+  "switcherH1": "{name} per Mac? Ecco l’alternativa",
+  "switcherSeoTitle": "{name} per Mac? Un’alternativa gratis · Schnellbild",
+  "switcherDescription": "Cerchi {name} per Mac? Cosa piace ai fan di {name} e come lo fa Schnellbild, gratis: cartelle, tasti, MKV, ZIP e RAR come cartelle.",
+  "facts": "{name} in breve",
+  "factPrice": "Prezzo",
+  "factPlatforms": "Piattaforme",
+  "factVersion": "Versione",
+  "factUpdated": "Ultimo aggiornamento",
+  "aboutTitle": "In cosa è bravo {name}",
+  "theyWin": "Dove è più forte {name}",
+  "weWin": "Dove è più forte Schnellbild",
+  "matrixTitle": "Funzione per funzione",
+  "colFeature": "Funzione",
+  "legendTitle": "Cosa significano i simboli",
+  "yes": "Sì",
+  "no": "No",
+  "partial": "In parte",
+  "intentional": "Escluso di proposito",
+  "na": "Non pertinente",
+  "source": "Fonte {n}",
+  "sources": "Fonti",
+  "asOf": "Aggiornato a novembre 2026: {name} {version}, Schnellbild {ours}. La colonna di {name} si basa sulle fonti qui sotto, quella di Schnellbild sul suo README e sul codice sorgente.",
+  "leftOut": "Escluse per mancanza di una fonte affidabile su {name}: {count} funzioni su {total}.",
+  "fileManager": "Schnellbild non è un file manager completo: niente connessioni FTP, SFTP o cloud, niente sincronizzazione di cartelle, niente creazione di archivi. È fatto per guardare e riordinare foto e video: miniature di tutto, due pannelli affiancati con F5 per copiare e F6 per spostare, archivi che si aprono come cartelle.",
+  "likedTitle": "Cosa piace ai fan di {name}, e come funziona in Schnellbild",
+  "aheadTitle": "Dove {name} resta avanti",
+  "purposeTitle": "Escluso di proposito",
+  "similarTitle": "Alternative simili",
+  "allAlternatives": "Tutte le alternative",
+  "breadcrumb": "Alternative",
+  "trademark": "{name} è un prodotto di {vendor}. Tutti i nomi e i marchi appartengono ai rispettivi proprietari; Schnellbild non è affiliato con loro.",
+  "trademarkAll": "Tutti i nomi di prodotti e i marchi appartengono ai rispettivi proprietari; Schnellbild non è affiliato con loro.",
+  "ctaTitle": "Provalo con le tue cartelle.",
+  "ctaText": "Gratis, senza account, tutte le funzioni incluse.",
+  "keywords": "{name} mac, {name} per mac, alternativa {name}, alternativa {name} mac, {name} mac gratis, {name} gratis per mac, {name} vs Schnellbild, Schnellbild",
+  "listSep": ", "
+ },
+ "sections": {
+  "image": "Visualizzatori di immagini",
+  "video": "Lettori video",
+  "comic": "Lettori di fumetti",
+  "files": "File manager",
+  "photos": "Apple e gestione delle foto",
+  "windows": "Per chi arriva da Windows"
+ },
+ "jokes": {
+  "image": "Il trasloco sul Mac è andato liscio: le foto ci sono tutte, le dita ricordano ancora ogni tasto. Solo {name} è rimasto sul vecchio PC, come il parente che non vuole lasciare la casa al paese.",
+  "video": "Mac nuovo, video di sempre, e {name} che ha deciso di non fare le valigie. Intanto i tuoi file MKV aspettano ancora qualcuno che li faccia partire.",
+  "comic": "I tuoi fumetti sono arrivati sul Mac senza perdere una pagina. {name}, invece, è sceso alla stazione prima.",
+  "files": "Due pannelli, tasti funzione, dita che vanno da sole su F5 e F6 da più anni di quanti tu voglia ammettere. Poi è arrivato il Mac, e {name} è rimasto fuori dalla porta.",
+  "photos": "Le tue foto si sono trasferite sul Mac. {name} ha preferito restare a casa."
+ },
+ "groups": {
+  "basics": "Di base",
+  "browse": "Navigazione",
+  "images": "Immagini",
+  "video": "Video",
+  "archives": "Archivi e fumetti",
+  "files": "File",
+  "keys": "Tastiera",
+  "safety": "Sicurezza"
+ },
+ "rows": {
+  "free": {
+   "label": "Gratis, tutte le funzioni",
+   "how": "Tutte le funzioni nel download gratuito, nessuna versione Pro."
+  },
+  "open_source": {
+   "label": "Open source",
+   "how": "Licenza MIT, il codice sorgente è su GitHub."
+  },
+  "native_apple_silicon": {
+   "label": "Nativo per Apple silicon",
+   "how": "Compilato per Apple silicon.",
+   "note": "solo Apple silicon"
+  },
+  "no_account_no_tracking": {
+   "label": "Nessun account, pubblicità o tracciamento",
+   "how": "Nessun account, nessuna pubblicità, nessuna analisi."
+  },
+  "dark_light_setting": {
+   "label": "Chiaro o scuro, indipendente dal sistema",
+   "how": "Impostazioni (⌘,): come il sistema, chiaro o scuro."
+  },
+  "languages_20": {
+   "label": "Interfaccia in molte lingue",
+   "how": "20 lingue, segue quella del tuo Mac.",
+   "note": "20 lingue"
+  },
+  "folder_browsing": {
+   "label": "Sfoglia le cartelle direttamente, senza importare",
+   "how": "Apri una cartella con ⌘O o trascinala sulla finestra."
+  },
+  "thumbnail_grid": {
+   "label": "Griglia di miniature con anteprime delle cartelle",
+   "how": "Le cartelle mostrano le loro prime immagini; quelle senza immagini sono in grigio."
+  },
+  "list_view": {
+   "label": "Vista elenco con colonne",
+   "how": "L passa da griglia a elenco."
+  },
+  "recursive_search": {
+   "label": "Cerca nomi in tutte le sottocartelle",
+   "how": "Il campo di ricerca (⌘F) cerca nella cartella e in ogni sottocartella."
+  },
+  "regex_search": {
+   "label": "Ricerca con espressioni regolari",
+   "how": ".* accanto al campo di ricerca accetta un’espressione regolare."
+  },
+  "network_shares_fast": {
+   "label": "Veloce su condivisioni di rete e cartelle grandi",
+   "how": "Le miniature arrivano mentre scorri, anche sulle condivisioni di rete."
+  },
+  "multiple_windows": {
+   "label": "Più finestre",
+   "how": "⌘N apre un’altra finestra."
+  },
+  "bookmarks": {
+   "label": "Segnalibri per le cartelle",
+   "how": "⌘D aggiunge un segnalibro, ⌃1 … ⌃9 lo aprono."
+  },
+  "img_modern_formats": {
+   "label": "HEIC, AVIF, JPEG XL, WebP",
+   "how": "Tramite ImageIO, il motore di macOS."
+  },
+  "img_raw": {
+   "label": "RAW della fotocamera",
+   "how": "I formati RAW che macOS conosce, sviluppati da macOS.",
+   "note": "i modelli che macOS conosce"
+  },
+  "img_psd_exr": {
+   "label": "PSD, OpenEXR",
+   "how": "Mostrati come qualsiasi altra immagine."
+  },
+  "img_svg_pdf": {
+   "label": "SVG e PDF",
+   "how": "Come immagini vettoriali, ogni pagina di un PDF."
+  },
+  "img_animated": {
+   "label": "GIF, PNG e WebP animati",
+   "how": "Si animano, e si ingrandiscono e ruotano come ogni immagine."
+  },
+  "keyboard_paging": {
+   "label": "Sfogliare con la tastiera",
+   "how": "La barra spaziatrice apre un’immagine, ← → sfogliano la cartella."
+  },
+  "zoom_rotate": {
+   "label": "Ingrandire, spostare, ruotare (solo la vista)",
+   "how": "+ − o un pizzico per ingrandire, ⌥← ⌥→ per ruotare; il file resta com’è."
+  },
+  "slideshow": {
+   "label": "Presentazione",
+   "how": "S la avvia, la barra spaziatrice la mette in pausa."
+  },
+  "slideshow_recursive": {
+   "label": "Presentazione di tutte le sottocartelle, foto e video insieme",
+   "how": "Ogni sottocartella, foto e video insieme, nel tuo ordinamento."
+  },
+  "auto_enhance_view": {
+   "label": "Miglioramento automatico e cursori senza modificare il file",
+   "how": "E migliora, A mostra i cursori; cambia solo la visualizzazione."
+  },
+  "file_info_exif": {
+   "label": "Info sul file: EXIF, codec, bitrate",
+   "how": "I mostra formato, fotocamera, codec e bitrate."
+  },
+  "wrong_extension_note": {
+   "label": "Segnala i file con un’estensione che non corrisponde al contenuto",
+   "how": "Le info sul file indicano l’estensione giusta."
+  },
+  "video_native": {
+   "label": "Riproduce MP4, MOV",
+   "how": "Tramite macOS stesso."
+  },
+  "video_mkv_avi_webm": {
+   "label": "Riproduce MKV, WebM, AVI, WMV, FLV",
+   "how": "Con il motore VLC integrato.",
+   "note": "motore VLC integrato"
+  },
+  "photos_videos_one_grid": {
+   "label": "Foto e video insieme in un’unica griglia",
+   "how": "Una sola griglia per entrambi, in ogni cartella."
+  },
+  "video_skim_arrows": {
+   "label": "Scorrere i video con i tasti freccia",
+   "how": "← → saltano di un decimo del video, con ⇧ di un centesimo."
+  },
+  "subtitles_embedded": {
+   "label": "Sottotitoli contenuti nel video",
+   "how": "V li attiva e disattiva, ⌃⌘S sceglie la traccia."
+  },
+  "subtitles_external_files": {
+   "label": "Carica i file di sottotitoli accanto al video",
+   "why": "Legge solo il video stesso, niente di ciò che gli sta accanto."
+  },
+  "audio_track_choice": {
+   "label": "Scelta della traccia audio",
+   "how": "⌃⌘A o la barra dei controlli."
+  },
+  "playback_speed": {
+   "label": "Velocità di riproduzione",
+   "how": "< e > da 0,5× fino a 2×, le voci mantengono il tono."
+  },
+  "control_bar_movable": {
+   "label": "Barra dei controlli che resta dove la metti",
+   "how": "Trascinala dalla maniglia: resta lì per ogni video."
+  },
+  "playlist": {
+   "label": "Playlist",
+   "how": "L’elenco della presentazione come barra laterale: riordinalo, togli elementi.",
+   "note": "creata al volo dalla presentazione, non salvata"
+  },
+  "saved_playlists": {
+   "label": "Playlist salvate",
+   "why": "Cartelle invece di playlist: l’elenco lo crea la presentazione."
+  },
+  "pip": {
+   "label": "Picture in Picture",
+   "why": "Fatto per sfogliare cartelle; per guardare un video in un angolo dello schermo è più adatto un lettore video."
+  },
+  "music_mode": {
+   "label": "File audio, modalità musica",
+   "why": "Solo immagini e video; i file audio si aprono nella loro app."
+  },
+  "streaming_urls": {
+   "label": "Riproduce stream e indirizzi da internet",
+   "why": "Non va mai online, per principio."
+  },
+  "online_subtitles": {
+   "label": "Scarica sottotitoli da internet",
+   "why": "Non va mai online, per principio."
+  },
+  "video_filters_enhance": {
+   "label": "Regolazioni video (luminosità, contrasto …)",
+   "how": "Gli stessi cursori delle foto."
+  },
+  "quicklook_mkv_thumbnails": {
+   "label": "Miniature nel Finder e nella Visualizzazione rapida per MKV e altri",
+   "how": "MKV, WebM, WMV, FLV e VOB hanno le miniature nel Finder.",
+   "note": "MKV, WebM, WMV, FLV, Ogg, VOB"
+  },
+  "archives_as_folders": {
+   "label": "ZIP, RAR, 7z si aprono come cartelle",
+   "how": "Aperti come cartelle, nulla viene estratto sul disco."
+  },
+  "comics_cbz_cbr": {
+   "label": "Fumetti CBZ, CBR",
+   "how": "CBZ e CBR si aprono come cartelle; sfoglia con ← →."
+  },
+  "archive_passwords": {
+   "label": "Archivi protetti da password",
+   "how": "La chiede una volta e la ricorda.",
+   "note": "ZIP e RAR; i 7z cifrati non si aprono"
+  },
+  "split_archives": {
+   "label": "Archivi divisi in più parti",
+   "how": "Mostrati una sola volta, dalla prima parte."
+  },
+  "videos_in_archives": {
+   "label": "Riproduce i video direttamente dagli archivi",
+   "how": "In streaming direttamente dall’archivio."
+  },
+  "manga_two_page": {
+   "label": "Doppia pagina, modalità manga da destra a sinistra",
+   "why": "Un’immagine alla volta, grande quanto la finestra."
+  },
+  "rename_trash": {
+   "label": "Rinomina, Cestino, nuova cartella",
+   "how": "Invio o F2 rinomina, ⌘⌫ sposta nel Cestino, ⇧⌘N crea una cartella."
+  },
+  "move_copy": {
+   "label": "Spostare e copiare trascinando nelle cartelle",
+   "how": "Trascina le miniature su una cartella."
+  },
+  "dual_pane": {
+   "label": "Due pannelli affiancati (F5 copia, F6 sposta)",
+   "how": "D mostra due pannelli, F5 copia, F6 sposta."
+  },
+  "undo_file_actions": {
+   "label": "Annulla rinomina, spostamento, Cestino",
+   "how": "In cima al menu del clic destro."
+  },
+  "image_editing": {
+   "label": "Modifica le immagini (ritaglio, ridimensionamento, salvataggio)",
+   "why": "Mostra le immagini senza modificarle: i tuoi file restano come sono."
+  },
+  "batch_convert": {
+   "label": "Conversione o rinomina in blocco",
+   "why": "Conversione e rinomina in blocco sono lasciate ad altre app."
+  },
+  "library_catalog": {
+   "label": "Libreria, catalogo, tag, valutazioni",
+   "why": "Cartelle invece di una libreria: niente da importare."
+  },
+  "cloud_sync": {
+   "label": "Sincronizzazione cloud, condivisione online",
+   "why": "Non va mai online, per principio."
+  },
+  "keyboard_first": {
+   "label": "Tutto da tastiera",
+   "how": "Ogni azione ha il suo tasto."
+  },
+  "custom_shortcuts": {
+   "label": "Scorciatoie da tastiera personalizzate",
+   "how": "Imposta i tuoi tasti, gratis, con una configurazione come in Phiewer.",
+   "note": "gratis, con una configurazione come in Phiewer"
+  },
+  "shortcut_cheatsheet": {
+   "label": "Elenco stampabile di tutti i tasti",
+   "how": "F1 elenca tutti i tasti, anche da stampare."
+  },
+  "boss_key": {
+   "label": "Tasto capo (nasconde tutto in un colpo)",
+   "how": "X nasconde tutte le finestre e silenzia tutti i video."
+  },
+  "app_sandbox": {
+   "label": "Gira nell’App Sandbox di Apple",
+   "how": "L’app e le sue estensioni girano al suo interno."
+  },
+  "no_network": {
+   "label": "Non va mai online",
+   "how": "Nessun accesso alla rete."
+  },
+  "notarized_attested": {
+   "label": "Notarizzato, build verificabile dal codice pubblico",
+   "how": "Ogni download ha l’attestazione di build di GitHub."
+  },
+  "mac_app_store": {
+   "label": "Sul Mac App Store",
+   "how": "Presto, a 0,99 € per sostenerlo.",
+   "note": "presto, 0,99 € per sostenerlo"
+  }
+ },
+ "products": {
+  "2345-kantuwang": {
+   "name": "2345看图王",
+   "vendor": "2345.com",
+   "summary": "Uno dei visualizzatori di immagini per Windows più installati in Cina: apre rapidamente circa 98 formati, tra cui PSD, RAW, SVG e AVIF, oltre a PDF/OFD e CAD. Include ritocchi leggeri, strumenti in blocco, OCR, foto tessera e scontorno con l’AI, in parte dietro un abbonamento VIP.",
+   "wins": [
+    "Elenco di formati molto ampio (PSD/PSB, AI, RAW, CAD, OFD)",
+    "Modifica integrata, conversione e rinomina in blocco, OCR, foto tessera e stampa",
+    "Familiare agli utenti Windows cinesi, scorciatoie compatibili con ACDSee"
+   ],
+   "price": "Visualizzatore gratuito; abbonamento VIP per modifica, AI ed extra PDF (mensile, annuale, a vita)",
+   "version": "13.2",
+   "updated": "2025-09-30 (scheda della v13.2 nello store di Tencent; articoli sul sito fino al 2026-10)",
+   "platforms": "Windows"
+  },
+  "5kplayer": {
+   "name": "5KPlayer",
+   "vendor": "Digiarty Software",
+   "summary": "Lettore multimediale tuttofare e gratuito per Mac e Windows: riproduce video, musica, DVD e radio, riceve il mirroring AirPlay, trasmette via DLNA e scarica video online.",
+   "wins": [
+    "Ricevitore AirPlay e registrazione del mirroring",
+    "Server e renderer DLNA",
+    "Download di video online (YouTube ecc.)",
+    "Riproduzione di DVD e ISO",
+    "Libreria musicale, radio, IPTV",
+    "Velocità di riproduzione, taglio video, estrazione MP3"
+   ],
+   "price": "Gratis (con pubblicità, registrazione via e-mail facoltativa)",
+   "version": "6.11",
+   "updated": "2026-01-30",
+   "platforms": "macOS, Windows",
+   "notes": {
+    "list_view": "Elenchi della libreria (Preferiti, YouTube, DLNA, Playlist), senza colonne di file",
+    "bookmarks": "Segnalibri dentro i video e Preferiti, non per cartelle",
+    "zoom_rotate": "Ruota e capovolge i video di 90 gradi; non mostra immagini",
+    "auto_enhance_view": "Video Tuner ed effetti solo per i video; niente foto",
+    "file_info_exif": "Info multimediali (formato, tracce); niente EXIF, non mostra immagini",
+    "pip": "Niente PiP; solo «Sempre in primo piano»",
+    "online_subtitles": "Scarica i sottotitoli di YouTube col video; nessuna ricerca per file locali",
+    "batch_convert": "Converte video in MP3/AAC/MP4 uno alla volta; il convertitore completo è a pagamento",
+    "library_catalog": "Libreria con preferiti e playlist; niente tag né valutazioni",
+    "cloud_sync": "Nessuna sincronizzazione cloud; condivide su dispositivi DLNA/AirPlay",
+    "keyboard_first": "Scorciatoie per la riproduzione; libreria quasi solo col mouse",
+    "shortcut_cheatsheet": "Elenco delle scorciatoie nella guida online",
+    "notarized_attested": "Notarizzato (Developer ID di Digiarty); codice chiuso"
+   }
+  },
+  "acdsee": {
+   "name": "ACDSee",
+   "vendor": "ACD Systems",
+   "summary": "Storico gestionale di foto (DAM) ed editor RAW che lavora sulle cartelle esistenti senza importare: database di catalogo, valutazioni, parole chiave, volti e parole chiave con l’AI, modalità Sviluppo non distruttiva e strumenti in blocco. Le edizioni Windows riproducono anche i video comuni e sfogliano archivi ZIP/RAR; l’edizione Mac è più limitata su questo. A pagamento, pensato per fotografi che gestiscono e ritoccano.",
+   "wins": [
+    "DAM completo: valutazioni, parole chiave, categorie, volti, parole chiave AI e somiglianza tra immagini",
+    "Modifica RAW non distruttiva con mascheratura AI",
+    "Rinomina, ridimensionamento, conversione e metadati in blocco",
+    "Ricerca dei duplicati",
+    "Modifica con AI generativa",
+    "Windows: navigazione in ZIP/RAR e metadati dei video"
+   ],
+   "price": "Mac 27: 119,99 $ una tantum (prevendita 99,95 $ fino al 2026-11-18); Mac App Store: abbonamento annuale; Windows Home/Professional/Ultimate 2027 una tantum o abbonamento ACDSee 365",
+   "version": "Mac 26.0.3 (Mac 27 a fine novembre 2026); Windows 2027",
+   "updated": "2026-05-27 (Mac App Store 26.0.3); Windows 2027 uscito a 2026-09",
+   "platforms": "macOS, Windows, iOS (app di accompagnamento)",
+   "notes": {
+    "no_account_no_tracking": "Attivazione e abbonamenti richiedono un acdID e internet; l’AI gira sul dispositivo",
+    "languages_20": "Mac App Store: inglese, francese, tedesco, giapponese; Windows: 10 lingue",
+    "network_shares_fast": "Mostra i volumi di rete senza importare; l’indicizzatore cataloga a riposo",
+    "multiple_windows": "Pannelli in una finestra, conservati tra le sessioni",
+    "bookmarks": "Pannelli, ricerche salvate; Windows: fino a cinque cestini di immagini",
+    "img_psd_exr": "PSD sì; OpenEXR non indicato",
+    "img_svg_pdf": "SVG su Windows; PDF solo in Windows Professional/Ultimate; su Mac via Visualizzazione rapida",
+    "img_animated": "GIF e WebP animati; AVIF animati no",
+    "video_native": "Windows riproduce MP4/MOV/M4V/AVI/WMV; su Mac i video passano dalla Visualizzazione rapida",
+    "video_mkv_avi_webm": "Windows: AVI, WMV, ASF; niente MKV, WebM, FLV",
+    "music_mode": "Windows legge MP3, WAV, WMA, M4A",
+    "archives_as_folders": "Windows: ZIP, RAR (non RAR5), TAR, GZ, CAB, ARJ; niente 7z; non su Mac",
+    "cloud_sync": "iCloud Drive (Mac), OneDrive (Windows), condivisione SendPix, Mobile Sync",
+    "keyboard_first": "Metadati e selezione da tastiera; per il resto molto mouse",
+    "app_sandbox": "Edizione Mac App Store (obbligo dello Store); download diretto non documentato"
+   }
+  },
+  "adobe-bridge": {
+   "name": "Adobe Bridge",
+   "vendor": "Adobe",
+   "summary": "Adobe Bridge è un gestore gratuito di risorse creative per sfogliare cartelle di foto, file di grafica e video con anteprime. Aggiunge metadati, parole chiave, valutazioni, raccolte, rinomina in blocco ed esportazione, e passa i file a Photoshop, Camera Raw e alle altre app Creative Cloud.",
+   "wins": [
+    "Anteprime dei formati Adobe (PSD, AI, INDD, After Effects, Substance 3D) e PDF",
+    "Modifica completa dei metadati, parole chiave, etichette, valutazioni, raccolte e raccolte smart",
+    "Rinomina in blocco, pannello Esporta e flussi di lavoro per conversioni in massa",
+    "Lavora con Camera Raw, Photoshop, Premiere e le librerie Creative Cloud",
+    "Provini PDF, pubblicazione su Adobe Stock e Portfolio",
+    "Versione per Windows"
+   ],
+   "price": "Download gratuito con account Adobe (tramite l’app Creative Cloud); la modifica in Camera Raw e il passaggio a Photoshop richiedono un piano Creative Cloud a pagamento",
+   "version": "17.0 (novembre 2026)",
+   "updated": "2026-11-10",
+   "platforms": "macOS, Windows",
+   "notes": {
+    "free": "Gratis con account Adobe; modificare RAW in Camera Raw richiede un piano a pagamento",
+    "network_shares_fast": "Può usare le anteprime incorporate per andare veloce; altrimenti genera anteprime e cache",
+    "video_mkv_avi_webm": "Riproduce FLV, F4V, SWF e ciò che supporta QuickTime; MKV/WebM/AVI non citati",
+    "music_mode": "Anteprima dei file audio con riproduzione automatica e loop",
+    "dual_pane": "Più pannelli o finestre affiancati; niente F5/F6 per copiare/spostare",
+    "image_editing": "Ritaglio, ridimensionamento, rimozione sfondo; modifica vera con Camera Raw/Photoshop (a pagamento)",
+    "keyboard_first": "Molte scorciatoie, ma il lavoro è orientato a pannelli e mouse",
+    "shortcut_cheatsheet": "Elenco nella guida e pannello visivo delle scorciatoie; nessun foglio da stampare"
+   }
+  },
+  "alsee": {
+   "name": "ALSee",
+   "vendor": "ESTsoft",
+   "summary": "Storico visualizzatore di immagini coreano di ESTsoft, della famiglia ALTools (ALZip, ALYac): navigazione a miniature o elenco, vista grande e a schermo intero, immagini dentro gli archivi, conversione, ridimensionamento e rotazione in blocco, stampa, e ritocchi AI in abbonamento (upscaling, rimozione sfondo, mosaico sui volti).",
+   "wins": [
+    "Layout di stampa e rotazione, ridimensionamento e conversione in blocco",
+    "Upscaling AI, rimozione dello sfondo, mosaico sui volti (in abbonamento)",
+    "Integrato nel menu contestuale di Esplora file di Windows"
+   ],
+   "price": "Gratis con pubblicità; AD-ZERO senza pubblicità 5.900 KRW al mese (tutti gli ALTools); abbonamento ALTools AI per le funzioni AI",
+   "version": "10.02",
+   "updated": "2026-10-07",
+   "platforms": "Windows"
+  },
+  "apolloone": {
+   "name": "ApolloOne",
+   "vendor": "Anogeissus",
+   "summary": "Visualizzatore veloce e strumento di selezione per fotografi che lavora sulle cartelle senza importare. Forte su RAW, HDR, metadati, valutazioni, punti AF e lavori in blocco; molte funzioni sono distribuite su tre edizioni a pagamento.",
+   "wins": [
+    "Selezione: scelte, valutazioni, Focus Score, valutazione AI, pile",
+    "Visualizzazione RAW in HDR ed esportazione HDR",
+    "Modifica di EXIF/IPTC/XMP, parole chiave, mappe GPS",
+    "Importazione da schede di memoria",
+    "Sottotitoli SRT esterni",
+    "Automazione con AppleScript"
+   ],
+   "price": "Free Edition; Standard 35,99 $, Pro 59,99 $, Max 99,99 $ una tantum; oppure annuale Standard 14,99 $ / Pro 23,99 $",
+   "version": "5.1.0",
+   "updated": "2026-10-22",
+   "platforms": "macOS",
+   "notes": {
+    "free": "Free Edition; Standard 35,99 $, Pro 59,99 $, Max 99,99 $ una tantum, o annuale da 14,99 $",
+    "no_account_no_tracking": "Nessun account; secondo l’App Store raccoglie dati d’uso anonimi per analisi",
+    "languages_20": "11: EN, NL, FR, DE, IT, JA, KO, PL, zh-Hans, ES, zh-Hant",
+    "list_view": "Standard Edition: tabella ordinabile con colonne EXIF",
+    "regex_search": "Espressioni regolari sui metadati (Pro); nomi di file solo con caratteri jolly",
+    "network_shares_fast": "NAS via SMB; una recensione riporta 5 o 10 s per cartella via AFP",
+    "multiple_windows": "Standard Edition: pannelli e finestre",
+    "img_psd_exr": "OpenEXR in visualizzazione ed esportazione; PSD non menzionato",
+    "img_svg_pdf": "SVG convertiti in bitmap; PDF non menzionato",
+    "img_animated": "GIF sì; WebP/PNG animati non indicati",
+    "auto_enhance_view": "Pro: cursori non distruttivi Quick Edit, curva tonale automatica compresa",
+    "video_skim_arrows": "← → fotogramma per fotogramma; J/K/L per scorrere",
+    "playback_speed": "J/L alternano le velocità di avanti e indietro; nessuna velocità fissa",
+    "music_mode": "Playlist di Apple Music solo come sottofondo della presentazione",
+    "undo_file_actions": "Annulla lo spostamento nel Cestino finché l’app è aperta",
+    "image_editing": "ritaglio (Standard), Quick Edit e ridimensionamento (Pro)",
+    "batch_convert": "rinomina in blocco (Standard); ridimensiona, converte, esporta (Pro)",
+    "cloud_sync": "AirDrop e condivisione; nessuna sincronizzazione",
+    "custom_shortcuts": "Pro Edition"
+   }
+  },
+  "apple-photos": {
+   "name": "Foto di Apple",
+   "vendor": "Apple",
+   "summary": "La libreria fotografica di Apple, sincronizzata con iCloud tra i dispositivi. Ottima per organizzare e ritoccare una raccolta personale di foto, con riconoscimento delle persone, ricordi e modifiche non distruttive.",
+   "wins": [
+    "Sincronizzazione iCloud con iPhone e iPad",
+    "Modifica non distruttiva di foto e video",
+    "Ricerca per persone, luoghi e contenuto",
+    "Ricordi, presentazioni con musica, album condivisi"
+   ],
+   "price": "Gratis (incluso in macOS); lo spazio iCloud+ per Foto di iCloud è a pagamento",
+   "version": "Foto 12.0 su macOS Golden Gate 27.2.1",
+   "updated": "2026-11-09 (macOS 27.2.1)",
+   "platforms": "macOS, iOS, iPadOS, visionOS",
+   "notes": {
+    "no_account_no_tracking": "Funziona senza Account Apple, che serve per iCloud; la Ricerca visiva avanzata passa da Apple",
+    "thumbnail_grid": "Griglia della libreria per anni, mesi, tutte le foto; album, non cartelle del disco",
+    "recursive_search": "Cerca nella libreria per contenuto, titolo, parola chiave, data; non nomi di file",
+    "img_psd_exr": "I PSD vengono importati appiattiti (i livelli si perdono); OpenEXR non documentato",
+    "slideshow_recursive": "Presentazioni di una selezione o di un album con foto e video; niente albero di cartelle",
+    "playback_speed": "Rallentatore (1/2, 1/4, 1/5) solo per video ad alta frequenza di fotogrammi",
+    "saved_playlists": "I progetti di presentazione salvati conservano un elenco ordinato di foto e video",
+    "rename_trash": "Elimina (Eliminati di recente) e titoli; niente rinomina di file né cartelle sul disco",
+    "undo_file_actions": "Annulla con ⌘Z e album Eliminati di recente",
+    "batch_convert": "Esporta più elementi in un formato a scelta; niente rinomina in blocco",
+    "keyboard_first": "molte scorciatoie, non per tutto",
+    "custom_shortcuts": "Abbreviazioni da tastiera di macOS per i comandi dei menu",
+    "boss_key": "⌘H nasconde l’app; nessun tasto capo dedicato"
+   }
+  },
+  "apple-preview": {
+   "name": "Anteprima di Apple",
+   "vendor": "Apple",
+   "summary": "Il visualizzatore di PDF e immagini integrato in ogni Mac. Forte sui PDF, sulle annotazioni, sulle firme e sui ritocchi rapidi delle immagini come ritaglio, ridimensionamento e conversione di formato.",
+   "wins": [
+    "Già installato su ogni Mac",
+    "Strumenti PDF completi: annotare, firmare moduli, unire, proteggere con password",
+    "Modifica delle immagini: ritaglio, ridimensionamento, rimozione dello sfondo, conversione in blocco",
+    "Apre file 3D"
+   ],
+   "price": "Gratis (incluso in macOS)",
+   "version": "Anteprima 11.0 su macOS Golden Gate 27.2.1",
+   "updated": "2026-11-09 (macOS 27.2.1)",
+   "platforms": "macOS",
+   "notes": {
+    "thumbnail_grid": "Miniature o provino dei file aperti in una finestra; niente anteprime di cartelle",
+    "img_svg_pdf": "Il PDF è il formato principale; supporto SVG non documentato",
+    "img_animated": "Mostra i fotogrammi di una GIF animata come immagini fisse; per animarla serve la Visualizzazione rapida",
+    "slideshow": "Presentazione documentata per le pagine di un PDF",
+    "manga_two_page": "Vista a due pagine per i PDF; niente lettura da destra a sinistra",
+    "rename_trash": "Rinomina o sposta il file aperto dal titolo della finestra; niente Cestino né nuova cartella",
+    "move_copy": "Duplica o esporta il file aperto, lo sposta dal titolo; nessuna gestione di cartelle",
+    "cloud_sync": "Apre e salva documenti in iCloud Drive",
+    "keyboard_first": "Molte scorciatoie, ma niente navigazione nelle cartelle da tastiera",
+    "custom_shortcuts": "Le abbreviazioni di macOS possono riassegnare i comandi dei menu",
+    "boss_key": "Solo ⌘H di sistema (nasconde l’app); nessun tasto capo dedicato"
+   }
+  },
+  "bandiview": {
+   "name": "BandiView",
+   "vendor": "Bandisoft",
+   "summary": "Il successore di Honeyview, dagli autori di Bandizip: un visualizzatore veloce per Windows 10/11 che legge archivi e fumetti, con doppia pagina intelligente, modalità webtoon, uscita HDR e un convertitore in blocco veloce. Molto popolare in Corea per leggere manga e webtoon.",
+   "wins": [
+    "Uscita HDR per immagini HDR (PRO)",
+    "Modalità webtoon a striscia verticale e doppia pagina intelligente per i manga",
+    "Clip Studio Paint, HEIC (PRO), molti formati di archivio (ALZ, EGG, ISO, ZPAQ …)",
+    "Convertitore in blocco veloce e multithread",
+    "Scorciatoie di tastiera e mouse personalizzabili, anche nella versione gratuita"
+   ],
+   "price": "Prova gratuita (uso domestico non commerciale, pubblicità, alcune funzioni bloccate); Professional 39 $ una tantum (1 PC), 58,50 $ (2 PC), sconti per volumi",
+   "version": "8.05",
+   "updated": "2026-11-03",
+   "platforms": "Windows"
+  },
+  "cdisplayex": {
+   "name": "CDisplayEx",
+   "vendor": "Progdigy Software",
+   "summary": "CDisplayEx è uno storico lettore di fumetti per Windows, leggero, successore di CDisplay, noto per il caricamento rapido, il ridimensionamento Lanczos e i tasti completamente configurabili. La versione desktop non è più sviluppata; il lavoro prosegue sull’app Android.",
+   "wins": [
+    "Ogni funzione si può assegnare ai propri tasti",
+    "Correzione automatica del colore e gamma per vecchie scansioni",
+    "Doppia pagina e modalità giapponese (da destra a sinistra)",
+    "Miniature dei fumetti in Esplora file di Windows"
+   ],
+   "price": "Desktop freeware; Android Lite (con pubblicità) e Premium (a pagamento)",
+   "version": "1.10.33 (desktop)",
+   "updated": "2015-06-20 (desktop; lo sviluppatore dichiara che non è più sviluppato)",
+   "platforms": "Windows, Android"
+  },
+  "cisdem-video-player": {
+   "name": "Cisdem Video Player",
+   "vendor": "Cisdem",
+   "summary": "Lettore video gratuito e leggero per Mac, per file MKV, AVI, WMV, WebM e 4K/8K, con playlist, cambio di sottotitoli e traccia audio e una modalità a finestre separate. La conversione in altri formati è un extra a pagamento.",
+   "wins": [
+    "Conversione video con preset per dispositivi (a pagamento)",
+    "Finestre separate per video, controlli e playlist",
+    "Ricorda playlist e posizione",
+    "Capitoli, mini schermo, modalità in incognito",
+    "Versione per Windows"
+   ],
+   "price": "Gratis per la riproduzione; conversione 19,99 $ una tantum o 9,99 $ all’anno",
+   "version": "6.0.0",
+   "updated": "2025-07-22",
+   "platforms": "macOS, Windows",
+   "notes": {
+    "free": "Riproduzione gratis; conversione come acquisto in-app, 19,99 $ o 9,99 $ all’anno",
+    "no_account_no_tracking": "Etichetta privacy «Nessun dato raccolto»; una recensione cita un pop-up di upgrade",
+    "folder_browsing": "Importa una cartella nella playlist",
+    "zoom_rotate": "Ruota e capovolge i video",
+    "saved_playlists": "Ricorda l’ultima playlist e la posizione; niente playlist con nome",
+    "pip": "Modalità «Mini Screen», non il PiP di sistema",
+    "batch_convert": "Conversione video (MP4, HEVC, MKV, MP3 …) come acquisto in-app",
+    "keyboard_first": "Scorciatoie per riproduzione, volume, avanzamento",
+    "shortcut_cheatsheet": "Tabella delle scorciatoie nella guida online",
+    "notarized_attested": "Firmato per l’App Store; codice chiuso"
+   }
+  },
+  "commander-one": {
+   "name": "Commander One",
+   "vendor": "Electronic Team",
+   "summary": "File manager a due pannelli per macOS nello stile di Total Commander, con lavoro a tasti funzione, ricerca con espressioni regolari, visualizzatore F3 integrato (testo, esadecimale, immagini, media) e gestione degli archivi. Il PRO Pack aggiunge RAR/7z, FTP/SFTP, cloud, terminale e temi.",
+   "wins": [
+    "Classico flusso da commander con tasti F e coda delle operazioni",
+    "Ricerca con espressioni regolari e nel contenuto, anche dentro gli archivi e su FTP",
+    "PRO: FTP/SFTP e molti servizi cloud, dispositivi MTP/iOS/Android",
+    "Visualizzatore integrato esadecimale, testo e binario",
+    "Elenco processi, terminale (PRO)"
+   ],
+   "price": "Versione gratuita; PRO Pack 29,99 $ personale (1 Mac) o 99,99 $ team (5 Mac), una tantum; Mac App Store: gratis con acquisto in-app o «Commander One PRO» a 29,99 $",
+   "version": "3.18 (4006)",
+   "updated": "2026-09-25",
+   "platforms": "macOS",
+   "notes": {
+    "free": "Versione gratuita (doppio pannello, solo ZIP); PRO Pack 29,99 $ una tantum",
+    "languages_20": "14 lingue, italiano compreso; lingua dell’interfaccia selezionabile",
+    "thumbnail_grid": "Vista a miniature; niente anteprime delle cartelle",
+    "network_shares_fast": "SMB, FTP e cloud supportati; nessuna indicazione sulla velocità",
+    "img_modern_formats": "Tramite la Visualizzazione rapida e il visualizzatore integrato con i codec di macOS",
+    "img_raw": "Tramite la Visualizzazione rapida, cioè il supporto RAW di macOS; nessun decoder proprio",
+    "keyboard_paging": "Con la Visualizzazione rapida (F3), le frecce scorrono la selezione",
+    "zoom_rotate": "Zoom solo nella Visualizzazione rapida (⌘+ / ⌘−); nessuno zoom documentato in F3",
+    "file_info_exif": "Ottieni informazioni mostra dimensioni, date, permessi; niente EXIF né codec",
+    "wrong_extension_note": "Riconosce il formato dal contenuto e mostra le immagini con nome sbagliato, senza segnalarle",
+    "photos_videos_one_grid": "Vista a miniature per ogni file; niente anteprime delle cartelle",
+    "music_mode": "Riproduce l’audio tramite la Visualizzazione rapida",
+    "archives_as_folders": "Gratis: solo ZIP; PRO (29,99 $): 7z, TAR in lettura e scrittura, RAR/ISO/XAR in lettura",
+    "videos_in_archives": "Anteprima nei file d’archivio senza estrarre (Visualizzazione rapida), nessun lettore",
+    "library_catalog": "Solo tag del Finder",
+    "cloud_sync": "Solo PRO: Dropbox, Google Drive, OneDrive, S3, WebDAV, FTP/SFTP ecc.",
+    "shortcut_cheatsheet": "Elenco dei tasti nelle Preferenze; nessun foglio da stampare",
+    "app_sandbox": "La versione Mac App Store è in sandbox (con limiti); la PRO dal sito no"
+   }
+  },
+  "cooviewer": {
+   "name": "cooViewer",
+   "vendor": "coo e il fork di ysmx",
+   "summary": "Storico visualizzatore giapponese di manga e fumetti per Mac, tenuto in vita da un fork open source aggiornato con un binario universale. Apre cartelle, PDF e quasi ogni archivio (ZIP, RAR, 7z, LHA, archivi divisi o protetti da password) come un libro, con doppie pagine da destra a sinistra, segnalibri di pagina, tasti e azioni del mouse liberamente assegnabili e miniature nel Finder per gli archivi di fumetti.",
+   "wins": [
+    "Lettore di manga dedicato: doppia pagina da destra a sinistra con riconoscimento automatico delle pagine singole, salvata per ogni libro",
+    "Segnalibri di pagina con nome e ultima pagina ricordata per ogni libro",
+    "Ogni tasto e azione del mouse assegnabile, impostazioni pensate per una mano sola",
+    "Apre moltissimi formati di archivio, anche RAR/ZIP divisi e archivi protetti da password",
+    "Filtri di visualizzazione Core Image, lente",
+    "Miniature nel Finder e nella Visualizzazione rapida per CBZ/CBR/ZIP/RAR/7z"
+   ],
+   "price": "Gratis",
+   "version": "1.7.1 (fork di ysmx); la build originale di coo-ona si è fermata alla 1.2b25 (2020)",
+   "updated": "2026-10-30",
+   "platforms": "macOS",
+   "notes": {
+    "dark_light_setting": "Colori propri per sfondo e barra delle pagine; nessun tema chiaro/scuro",
+    "thumbnail_grid": "Griglia delle pagine del libro aperto; niente anteprime delle cartelle",
+    "network_shares_fast": "Carica in modo differito le cartelle con molte sottocartelle; rete non citata",
+    "bookmarks": "Segnalibri di pagina per libro e libri recenti; niente cartelle preferite",
+    "img_modern_formats": "HEIC/HEIF, WebP, AVIF sì; JPEG XL non indicato",
+    "img_psd_exr": "PSD sì; OpenEXR non indicato",
+    "img_svg_pdf": "PDF sì (pagine come un libro); SVG non indicato",
+    "slideshow_recursive": "Con «Leggi cartelle annidate» include le sottocartelle; solo immagini, niente video",
+    "auto_enhance_view": "Filtri manuali di colore e nitidezza sulla vista; nessun miglioramento automatico",
+    "archives_as_folders": "apre un archivio come fumetto, non come cartella",
+    "rename_trash": "Sposta nel Cestino l’immagine della pagina; niente rinomina né nuova cartella",
+    "shortcut_cheatsheet": "Tabella dei tasti nel manuale online (in giapponese); nessun elenco nell’app",
+    "boss_key": "Esc chiude subito il libro; nessun tasto che nasconde tutto"
+   }
+  },
+  "digikam": {
+   "name": "digiKam",
+   "vendor": "il team digiKam di KDE",
+   "summary": "digiKam è una suite open source completa di KDE per gestire grandi raccolte di foto. Indicizza le cartelle in un database e offre tag, riconoscimento dei volti, geolocalizzazione, ricerca per somiglianza, un editor di immagini capace, elaborazione in blocco e molte destinazioni di esportazione.",
+   "wins": [
+    "Database con tag, etichette, riconoscimento dei volti, ricerca di simili e duplicati, ricerca su mappa e linea temporale",
+    "Ricerca in linguaggio naturale e avanzata su tutte le raccolte",
+    "Editor di immagini completo e Batch Queue Manager con versioni",
+    "Elaborazione RAW con LibRaw, 16 bit e gestione del colore",
+    "Velocità di riproduzione dei video e avanzamento fotogramma per fotogramma",
+    "Molte destinazioni di esportazione (Dropbox, OneDrive, Flickr, Piwigo, gallerie HTML) e DLNA",
+    "Gratis, open source, gira anche su Linux e Windows"
+   ],
+   "price": "Gratis",
+   "version": "9.1.0",
+   "updated": "2026-06-07",
+   "platforms": "macOS, Windows, Linux",
+   "notes": {
+    "folder_browsing": "Gli album sono cartelle vere, ma vanno prima aggiunte e scansionate nel database",
+    "thumbnail_grid": "Miniature degli elementi; cartelle solo nell’albero degli album",
+    "network_shares_fast": "Le condivisioni di rete funzionano, ma la scansione può essere lenta",
+    "multiple_windows": "Una finestra principale più finestre separate per Tavolo luminoso, Editor e confronto",
+    "img_animated": "GIF e WebP mostrati come immagini fisse; MNG si riproduce come video",
+    "zoom_rotate": "Zoom e spostamento nell’anteprima; la rotazione modifica il file o il suo tag EXIF",
+    "music_mode": "File audio (MP3, FLAC, OGG …) con un piccolo lettore audio",
+    "undo_file_actions": "Elimina va nel Cestino di digiKam (recuperabile); annullare rinomine e spostamenti: non documentato",
+    "keyboard_first": "Molte scorciatoie, ma tante operazioni passano da barre laterali e mouse",
+    "notarized_attested": "Codice pubblico; download firmati GnuPG; notarizzazione macOS non documentata"
+   }
+  },
+  "directory-opus": {
+   "name": "Directory Opus",
+   "vendor": "GP Software",
+   "summary": "Un sostituto di Esplora file per Windows configurabilissimo, con uno o due pannelli, schede, etichette, valutazioni, tag, un pannello di anteprima e un visualizzatore di immagini separato con presentazione. Forte su ricerca, sincronizzazione, duplicati, rinomina in blocco e conversione di immagini, con scripting completo.",
+   "wins": [
+    "Configurabilità e scripting enormi",
+    "Registro di annullamento per le operazioni sui file",
+    "Etichette, valutazioni, tag, modifica dei metadati",
+    "Convertitore di immagini e rinomina in blocco",
+    "Ricerca duplicati, sincronizzazione, integrazione con Everything",
+    "Presentazione con dissolvenza incrociata"
+   ],
+   "price": "89 AUD singola, 129 AUD doppia, 249 AUD cinque PC; un anno di aggiornamenti, poi 25/40/75 AUD all’anno; prova di 30 giorni (60 con registrazione)",
+   "version": "13.25",
+   "updated": "2026-08-21",
+   "platforms": "Windows"
+  },
+  "double-commander": {
+   "name": "Double Commander",
+   "vendor": "Alexander Koblov e collaboratori",
+   "summary": "File manager a due pannelli gratuito e open source ispirato a Total Commander, inclusa la sua interfaccia per i plug-in. Gira in modo nativo su Apple silicon, con schede, Cerca file con espressioni regolari, rinomina multipla, archivi come cartelle e un visualizzatore integrato per testo e immagini.",
+   "wins": [
+    "Un file manager completo alla Total Commander sul Mac: sincronizzazione cartelle, rinomina multipla, checksum, FTP/SFTP",
+    "Usa i plug-in di Total Commander (WCX/WDX/WFX/WLX)",
+    "Multipiattaforma (macOS, Windows, Linux)",
+    "Il visualizzatore può ritagliare, ridimensionare e salvare immagini",
+    "Scripting Lua e barra degli strumenti personalizzabile"
+   ],
+   "price": "Gratis",
+   "version": "1.2.11",
+   "updated": "2026-11-08",
+   "platforms": "macOS, Windows, Linux, FreeBSD",
+   "notes": {
+    "thumbnail_grid": "Vista a miniature (Visualizzazione rapida su macOS); cartelle come icone, senza anteprime",
+    "network_shares_fast": "Accesso SMB e di rete tramite plug-in; velocità non documentata",
+    "multiple_windows": "Schede nei due pannelli; visualizzatore ed editor in finestre separate",
+    "img_modern_formats": "Su macOS tramite il plug-in per la Visualizzazione rapida incluso",
+    "img_raw": "Windows con i codec RAW WIC; macOS con il plug-in per la Visualizzazione rapida",
+    "img_psd_exr": "PSD integrato; OpenEXR non indicato",
+    "img_svg_pdf": "SVG integrato; PDF via plug-in per la Visualizzazione rapida su macOS o altri plug-in WLX",
+    "img_animated": "GIF animate con controllo dei fotogrammi; APNG e WebP animati non indicati",
+    "slideshow": "Solo nel visualizzatore a schermo intero, cartella corrente, da 1 a 25 s per immagine",
+    "file_info_exif": "Plug-in EXIF integrato (JPEG: data, dimensioni, orientamento, fotocamera)",
+    "video_native": "Nessun lettore proprio: Visualizzazione rapida su macOS, plug-in WMP su Windows, MPlayer su Linux",
+    "video_mkv_avi_webm": "Su macOS solo ciò che riproduce la Visualizzazione rapida",
+    "photos_videos_one_grid": "Vista a miniature con quelle del sistema (Visualizzazione rapida su macOS)",
+    "music_mode": "Riproduce un file audio alla volta nel visualizzatore (Visualizzazione rapida su macOS)",
+    "archives_as_folders": "ZIP, TAR, GZ integrati, RAR col plug-in UnRAR; per il 7z su macOS serve 7zz esterno",
+    "comics_cbz_cbr": "Nessun lettore di fumetti; CBZ e CBR si aprono come cartelle se associati ai plug-in",
+    "archive_passwords": "Password supportate dai plug-in e archiviatori esterni, a seconda del formato",
+    "split_archives": "RAR multivolume col plug-in UnRAR",
+    "videos_in_archives": "F3 estrae il file in una cartella temporanea e lo apre",
+    "batch_convert": "Rinomina multipla sì; nessuna conversione di immagini in blocco",
+    "library_catalog": "Commenti descript.ion; tag del Finder su macOS; nessun database di valutazioni",
+    "cloud_sync": "iCloud Drive e plug-in MacCloud (OAuth/S3), FTP/SFTP; nessuna sincronizzazione",
+    "shortcut_cheatsheet": "Pagina della tastiera nella documentazione; non un foglio da stampare"
+   }
+  },
+  "elmedia-player": {
+   "name": "Elmedia Player",
+   "vendor": "Electronic Team",
+   "summary": "Un lettore multimediale generico per video e musica con molti formati, ricerca su OpenSubtitles, equalizzatore e un ottimo invio a dispositivi AirPlay, Chromecast, DLNA e Roku. Funzioni avanzate come PiP e regolazioni dell’immagine sono PRO.",
+   "wins": [
+    "Streaming su Smart TV, Chromecast, Roku, DLNA; ricevitore AirPlay",
+    "Riproduzione musicale con equalizzatore e visualizzatore",
+    "Ricerca di video online e su OpenSubtitles",
+    "Finestra dei controlli separata e spostabile, temi colore, tasti personalizzati"
+   ],
+   "price": "Gratis; funzioni PRO con la versione Mac App Store a 19,99 $ o una licenza PRO diretta (prezzo non indicato senza script)",
+   "version": "8.24 (3472)",
+   "updated": "2025-12-05",
+   "platforms": "macOS",
+   "notes": {
+    "free": "Riproduzione gratis; PRO (regolazioni, PiP, streaming su TV) 19,99 $",
+    "languages_20": "12 lingue; lingua dell’interfaccia impostabile nell’app",
+    "folder_browsing": "Si possono aggiungere cartelle alla playlist; nessun browser",
+    "zoom_rotate": "Solo video: ruota, capovolge, specchia, proporzioni",
+    "auto_enhance_view": "Solo video, PRO",
+    "file_info_exif": "Finestra > Info multimediali (⌘I); niente EXIF",
+    "pip": "Solo PRO",
+    "video_filters_enhance": "Luminosità, contrasto, saturazione; PRO",
+    "keyboard_first": "Tasti personalizzabili per la riproduzione",
+    "app_sandbox": "La versione Mac App Store è in sandbox; quella dal sito non documentata"
+   }
+  },
+  "fastrawviewer": {
+   "name": "FastRawViewer",
+   "vendor": "LibRaw",
+   "summary": "FastRawViewer è un visualizzatore RAW veloce e uno strumento di selezione per fotografi. Mostra i dati RAW reali con istogramma RAW, avvisi di esposizione e correzioni rapide di bilanciamento del bianco ed esposizione salvate in XMP, e permette di valutare, etichettare, filtrare, rinominare, copiare e spostare gli scatti senza catalogo.",
+   "wins": [
+    "Resa RAW accurata con istogramma RAW, indicazione di sovra e sottoesposizione e focus peaking",
+    "Valutazioni, etichette e XMP compatibili con Lightroom e altri convertitori",
+    "Filtro dei nomi di file con espressioni regolari PCRE",
+    "Confronto a 2 o 4 immagini con zoom sincronizzato",
+    "Scorciatoie completamente personalizzabili, mappe di tasti che imitano altre app",
+    "Ottimizzazioni per NAS e supporti lenti",
+    "Anche per Windows"
+   ],
+   "price": "23,99 $ una tantum (prezzo scontato del 25% a novembre 2026; 2 computer per licenza), prova di 30 giorni",
+   "version": "2.0.11 (build 2088)",
+   "updated": "2026 (2.0.11 attuale a novembre 2026; il produttore non pubblica date di rilascio)",
+   "platforms": "macOS, Windows",
+   "notes": {
+    "no_account_no_tracking": "Nessun account né pubblicità; l’attivazione contatta una volta il produttore",
+    "dark_light_setting": "Interfaccia scura; colori regolabili, nessun cambio chiaro/scuro",
+    "thumbnail_grid": "Griglia dei file; cartelle in un albero laterale, non come anteprime",
+    "recursive_search": "Filtro sui nomi (anche PCRE); sottocartelle con «Apri cartella con sottocartelle»",
+    "multiple_windows": "Una finestra su Mac; il «multi-finestra» è un confronto a 2 o 4 immagini",
+    "img_modern_formats": "HEIC/HEIF sì; AVIF, JPEG XL, WebP no",
+    "slideshow": "Presentazione semplice: avanti a tempo, ritardo e limite impostabili, niente transizioni",
+    "slideshow_recursive": "Funziona nella navigazione con sottocartelle; solo foto, niente video",
+    "wrong_extension_note": "Può riconoscere il tipo dal contenuto; nessun avviso esplicito",
+    "image_editing": "Solo esposizione, bilanciamento del bianco, contrasto, orientamento in XMP; niente ritaglio",
+    "batch_convert": "Rinomina in blocco sì; nessuna conversione di formato",
+    "library_catalog": "Valutazioni, etichette, titoli in file XMP, filtrabili; nessun database",
+    "shortcut_cheatsheet": "PDF delle scorciatoie per Windows; nessuno per Mac"
+   }
+  },
+  "faststone-image-viewer": {
+   "name": "FastStone Image Viewer",
+   "vendor": "FastStone Soft",
+   "summary": "FastStone Image Viewer è uno storico browser di immagini per Windows con un albero di cartelle simile a Esplora file, una modalità a schermo intero con pannelli a scomparsa e molti strumenti di modifica e in blocco. Riproduce anche i video con i codec di Windows e conserva tag e valutazioni in un proprio database.",
+   "wins": [
+    "Strumenti di modifica: curve, livelli, timbro clone, pennello correttivo, occhi rossi",
+    "Confronto fino a quattro immagini affiancate",
+    "Conversione e rinomina in blocco, provini, layout di stampa",
+    "Tag e valutazioni da 1 a 5 stelle",
+    "Supporto per scanner e cattura dello schermo",
+    "Presentazioni con musica e oltre 150 transizioni"
+   ],
+   "price": "Gratis per uso personale e didattico; commerciale 34,95 $ una tantum, famiglia 69,95 $ (5 PC)",
+   "version": "8.5",
+   "updated": "2026-06-24",
+   "platforms": "Windows"
+  },
+  "finder-quick-look": {
+   "name": "Finder e Visualizzazione rapida",
+   "vendor": "Apple",
+   "summary": "Il file manager del Mac con la Visualizzazione rapida, l’anteprima con la barra spaziatrice per quasi ogni file. Va bene per dare un’occhiata veloce a un’immagine o a un MP4 e per la gestione quotidiana dei file.",
+   "wins": [
+    "Integrato in macOS, funziona con quasi ogni tipo di file",
+    "Tag, cartelle smart, ricerca Spotlight",
+    "Rinomina in blocco e Azioni rapide",
+    "iCloud Drive e AirDrop"
+   ],
+   "price": "Gratis (parte di macOS)",
+   "version": "Finder 27.2 su macOS Golden Gate 27.2.1",
+   "updated": "2026-11-09 (macOS 27.2.1)",
+   "platforms": "macOS",
+   "notes": {
+    "thumbnail_grid": "La vista a icone mostra le miniature dei file; le cartelle restano icone senza anteprima",
+    "network_shares_fast": "Si collega a SMB e server; velocità su grandi condivisioni non documentata",
+    "img_animated": "La Visualizzazione rapida anima le GIF; APNG e WebP animati non documentati",
+    "music_mode": "La Visualizzazione rapida riproduce e taglia i file audio",
+    "image_editing": "Rotazione e Markup nella Visualizzazione rapida; Azioni rapide",
+    "library_catalog": "Tag e cartelle smart, nessun database di valutazioni",
+    "custom_shortcuts": "Abbreviazioni da tastiera per i comandi dei menu",
+    "boss_key": "⌘H / ⌥⌘H nascondono le app; nessun tasto capo dedicato",
+    "app_sandbox": "La Visualizzazione rapida è in sandbox, il Finder no"
+   }
+  },
+  "flowvision": {
+   "name": "FlowVision",
+   "vendor": "netdcy",
+   "summary": "FlowVision è un visualizzatore di immagini nativo e open source per macOS, costruito attorno a una disposizione di miniature a cascata o giustificata e a una gestione dei file simile al Finder. È ottimizzato per cartelle molto grandi, riproduce i formati video nativi del Mac e aggiunge una modalità ricorsiva, tag del Finder, valutazioni e gesti del mouse per saltare tra le cartelle.",
+   "wins": [
+    "Miniature a cascata e giustificate",
+    "Gesti col tasto destro per saltare tra le cartelle",
+    "Tag del Finder e valutazioni XMP con filtri",
+    "Visualizzazione HDR",
+    "Profili con preset di layout",
+    "Gira su macOS 11 e successivi"
+   ],
+   "price": "Gratis (donazioni)",
+   "version": "1.7.6",
+   "updated": "2026-09-08",
+   "platforms": "macOS",
+   "notes": {
+    "languages_20": "17 lingue",
+    "img_svg_pdf": "SVG sì; PDF disattivato nel codice",
+    "slideshow_recursive": "Riproduzione automatica dell’elenco, anche ricorsiva; non aspetta la fine dei video",
+    "video_mkv_avi_webm": "Miniature e info per MKV, WebM, AVI; riproduzione in un lettore esterno",
+    "image_editing": "Rotazione e modalità di annotazione (penna, evidenziatore, frecce)",
+    "batch_convert": "Rinomina in blocco con numerazione; nessuna conversione di formato",
+    "library_catalog": "Tag del Finder e valutazioni XMP con filtri; nessun database proprio",
+    "cloud_sync": "Solo il menu Condividi di macOS",
+    "keyboard_first": "Tasti per navigare, ma pensato per mouse e gesti col tasto destro",
+    "custom_shortcuts": "Configurabile solo il comportamento di Invio ed Esc",
+    "notarized_attested": "Firmato con Developer ID; build locali, quindi nessuna attestazione"
+   }
+  },
+  "forklift": {
+   "name": "ForkLift",
+   "vendor": "BinaryNights",
+   "summary": "File manager a due pannelli e client di trasferimento file per macOS. Forte sulle connessioni remote (SFTP, S3, cloud), sulla sincronizzazione di cartelle, sulla rinomina multipla e sul lavoro da tastiera, con un pannello di anteprima per immagini, audio, video e PDF.",
+   "wins": [
+    "Connessioni remote e cloud (SFTP, FTP, WebDAV, S3, Google Drive, OneDrive, Dropbox)",
+    "Sincronizzazione di cartelle e confronto di file",
+    "Rinomina multipla con espressioni regolari e metadati",
+    "Stato Git, tag, spazi di lavoro, disinstallazione app",
+    "File manager completo: annulla, gestione dei conflitti, coda di trasferimento"
+   ],
+   "price": "Licenza a vita a pagamento con 1 o 2 anni di aggiornamenti: 19,95 $ / 34,95 $ utente singolo, 29,95 $ / 49,95 $ famiglia, 69,95 $ / 119,95 $ piccola impresa (5 Mac); prova gratuita; anche su Setapp",
+   "version": "4.7.7",
+   "updated": "2026-10-20",
+   "platforms": "macOS",
+   "notes": {
+    "languages_20": "14 lingue",
+    "thumbnail_grid": "Vista a icone con anteprime; niente anteprime delle cartelle",
+    "network_shares_fast": "SMB, AFP, NFS, SFTP e cloud supportati; nulla sulla velocità con cartelle grandi",
+    "img_modern_formats": "Pannello di anteprima tramite macOS (HEIC, AVIF, WebP, JPEG XL come li legge il sistema)",
+    "img_raw": "Solo anteprima e Visualizzazione rapida, col supporto RAW di macOS; nessun decoder proprio",
+    "img_svg_pdf": "Anteprima PDF nel pannello; SVG solo come lo mostra macOS",
+    "zoom_rotate": "Zoom solo nella finestra della Visualizzazione rapida (⌘+ / ⌘−); nessun visualizzatore proprio",
+    "video_mkv_avi_webm": "Solo col plug-in di terze parti «QuickLook Video»",
+    "music_mode": "Riproduce l’audio nel pannello di anteprima, nessuna modalità musica",
+    "archive_passwords": "Crea ZIP protetti da password; apertura di archivi cifrati non documentata",
+    "videos_in_archives": "Visualizzazione rapida dentro gli archivi; nessun lettore",
+    "batch_convert": "Rinomina multipla con espressioni regolari e metadati; nessuna conversione di immagini",
+    "library_catalog": "Solo tag del Finder; niente valutazioni né database"
+   }
+  },
+  "gom-player": {
+   "name": "GOM Player",
+   "vendor": "GOM & Company",
+   "summary": "GOM Player è un diffuso lettore multimediale coreano gratuito per Windows, con un grande archivio di sottotitoli online, sottotitoli generati dalla voce con l’AI, VR a 360°, ripetizione A-B e skin; la versione gratuita mostra pubblicità, GOM Player+ la toglie. Esiste una versione Mac basata su mpv, ferma al 2020 e solo per Intel.",
+   "wins": [
+    "Grande archivio di sottotitoli online e generazione di sottotitoli con l’AI",
+    "Riproduzione VR a 360°, ripetizione A-B e di più sezioni",
+    "Streaming di URL e YouTube",
+    "Riproduzione musicale con equalizzatore",
+    "GOM Player+: quattro video insieme, upscaling AI"
+   ],
+   "price": "Gratis con pubblicità; GOM Player+ senza pubblicità: licenza a vita (11.000 ₩ in Corea) o abbonamento GOM Easy Pass (da 4,90 $ al mese); le funzioni AI usano crediti",
+   "version": "Windows 2.3.123 (13 ottobre 2026); Mac 1.0.0 (2020)",
+   "updated": "2026-10-13 (Windows); 2020-11-11 (Mac)",
+   "platforms": "Windows, macOS (build Intel), Android, iOS",
+   "macNote": "La versione Mac di GOM Player è ferma alla 1.0.0 dal 2020, compilata per i Mac Intel."
+  },
+  "google-photos": {
+   "name": "Google Foto",
+   "vendor": "Google",
+   "summary": "La libreria fotografica di Google nel cloud, con backup automatico dagli smartphone. Ottima per avere tutte le foto su ogni dispositivo, cercarle per contenuto e condividere album.",
+   "wins": [
+    "Backup automatico da Android e iPhone",
+    "Ricerca per persone, oggetti e luoghi",
+    "Album condivisi e condivisione con il partner",
+    "Accesso da qualsiasi browser"
+   ],
+   "price": "Gratis con 15 GB (condivisi con Gmail e Drive); Google One da 1,99 € al mese per 100 GB, 9,99 € al mese 2 TB, 21,99 € al mese 5 TB",
+   "version": "web (aggiornamento continuo); app iOS 8.1.0",
+   "updated": "2026-11-13 (app iOS 8.1.0)",
+   "platforms": "Web, Android, iOS",
+   "notes": {
+    "free": "15 GB gratis condivisi con Gmail e Drive; Google One da 1,99 € al mese (100 GB)",
+    "thumbnail_grid": "Griglia di foto e copertine degli album; niente cartelle del disco",
+    "recursive_search": "Cerca in tutta la libreria per contenuto, nome del file tra virgolette, fotocamera",
+    "multiple_windows": "App web su photos.google.com; più schede o finestre del browser",
+    "img_modern_formats": "HEIC, AVIF, WebP; JPEG XL non indicato",
+    "img_animated": "GIF e WebP sì; PNG animati non documentati",
+    "slideshow_recursive": "Presentazione di un album; niente albero di cartelle",
+    "file_info_exif": "Pannello info con data, luogo, fotocamera, IPTC; niente codec né bitrate",
+    "video_mkv_avi_webm": "MKV, AVI, WMV si caricano e si riproducono dopo l’elaborazione; WebM e FLV non indicati",
+    "playback_speed": "Documentata nell’app Android; sul web no",
+    "rename_trash": "Elimina nel cestino; nessuna rinomina di file",
+    "undo_file_actions": "Ripristino dal cestino",
+    "keyboard_first": "Scorciatoie sul web (elenco con ⇧?); le app non ne hanno",
+    "shortcut_cheatsheet": "Pannello nell’app con ⇧?"
+   }
+  },
+  "graphicconverter": {
+   "name": "GraphicConverter",
+   "vendor": "Lemke Software",
+   "summary": "GraphicConverter è lo storico «coltellino svizzero per le immagini» del Mac: browser di file e immagini, presentazione, editor e convertitore in blocco che apre circa 200 formati. Il suo browser riproduce anche film e audio compatibili con QuickTime, gestisce molti metadati e offre ricerca dei duplicati, viste piatte e ricerca Spotlight.",
+   "wins": [
+    "Apre circa 200 formati di immagine e ne esporta circa 80, anche vecchi e scientifici",
+    "Editor di immagini completo e conversione in blocco con azioni",
+    "Modifica dei metadati (EXIF/IPTC/XMP, volti, mappa GPS)",
+    "Presentazioni con molte opzioni (transizioni, ordine casuale, metadati, ordinamento durante la proiezione)",
+    "Viste elenco, Cover Flow e miniature, vista piatta di tutte le sottocartelle",
+    "Ricerca duplicati, provini, gallerie web",
+    "Scorciatoie personalizzate, 14 lingue, impostazione chiaro/scuro"
+   ],
+   "price": "39,95 $ / 34,95 € una tantum (aggiornamento 25,95 $, famiglia 59,95 $); 34,99 $ sul Mac App Store; prova shareware",
+   "version": "12.5.4 (12.6 in beta)",
+   "updated": "2026-08-27 (12.5.4 sul Mac App Store; 12.6 beta build 7423 il 2026-11-12)",
+   "platforms": "macOS",
+   "notes": {
+    "languages_20": "14 lingue",
+    "recursive_search": "Cerca nelle sottocartelle via Spotlight (non dove è spento, come su molte condivisioni)",
+    "regex_search": "Espressioni regolari in «Presentazione con ricerca» e nella rinomina, non nel campo di ricerca",
+    "slideshow_recursive": "La presentazione può includere sottocartelle; non è documentato se riproduce i filmati",
+    "auto_enhance_view": "Livelli e miglioramento automatici modificano l’immagine, non solo la vista",
+    "wrong_extension_note": "Un comando controlla e corregge le estensioni; nessun avviso durante la visione",
+    "playlist": "Palette con l’elenco della presentazione; non una playlist video",
+    "saved_playlists": "Preset di presentazione e ricerche salvate, non playlist",
+    "music_mode": "MP3 e M4A si riproducono nel pannello destro del browser",
+    "archives_as_folders": "Apre immagini da archivi RAR; ZIP/7z come cartelle non documentati",
+    "library_catalog": "Valutazioni, etichette, tag, volti nei metadati; ricerca duplicati; nessun database",
+    "cloud_sync": "Caricamento FTP e gallerie web; cartelle cloud tramite le loro app",
+    "shortcut_cheatsheet": "Tabelle delle scorciatoie nel manuale PDF",
+    "app_sandbox": "La build Mac App Store è in sandbox (con limiti); quella diretta no"
+   }
+  },
+  "hamana": {
+   "name": "Hamana",
+   "vendor": "miyano",
+   "summary": "Visualizzatore di immagini giapponese con accelerazione DirectX, lettura di archivi (zip/cbz, 7z, rar/cbr, cab, lzh), modalità a due immagini, effetti di presentazione e ampia personalizzazione dei tasti. Può funzionare come salvaschermo. Fermo dal 2006, il download è ancora sul sito dell’autore.",
+   "wins": [
+    "Filtri di visualizzazione via GPU (curva tonale, nitidezza) e rotazione 3D",
+    "Effetti di transizione nelle presentazioni",
+    "Modalità salvaschermo",
+    "PDF tramite Ghostscript"
+   ],
+   "price": "Gratis",
+   "version": "1.48",
+   "updated": "2006-06-19",
+   "platforms": "Windows"
+  },
+  "honeyview": {
+   "name": "Honeyview",
+   "vendor": "Bandisoft",
+   "summary": "Visualizzatore di immagini freeware leggero e veloce che per anni è stato in Corea il lettore di fumetti e manga per eccellenza (꿀뷰). Mostra le immagini dentro ZIP/RAR/7Z senza estrarle, ha la doppia pagina e l’EXIF con GPS. Fuori produzione: niente più aggiornamenti, Bandisoft rimanda a BandiView.",
+   "wins": [
+    "Leggerissimo e veloce anche su vecchi Windows (da XP a 11, 32 bit)",
+    "Doppia pagina intelligente da destra a sinistra per i manga",
+    "Più formati di archivio (LZH, TAR) e BPG"
+   ],
+   "price": "Gratis (freeware)",
+   "version": "5.53",
+   "updated": "2024-06-21",
+   "platforms": "Windows"
+  },
+  "iina": {
+   "name": "IINA",
+   "vendor": "il progetto IINA",
+   "summary": "IINA è un lettore video gratuito e open source per macOS basato su mpv, con un’interfaccia moderna da Mac. È forte per guardare: sottotitoli (anche con ricerca online), Picture in Picture, modalità musica, playlist, miniature sulla barra di avanzamento e plug-in.",
+   "wins": [
+    "Riproduzione completa: capitoli, fotogramma per fotogramma, loop A-B, PiP, modalità musica",
+    "Ricerca di sottotitoli online e abbinamento intelligente di quelli locali",
+    "Plug-in, configurazione e script mpv, estensioni per browser",
+    "Supporta macOS 12 e i Mac Intel",
+    "Miniature sulla barra di avanzamento, cronologia e ripresa della riproduzione"
+   ],
+   "price": "Gratis",
+   "version": "1.5.1",
+   "updated": "2026-11-06",
+   "platforms": "macOS",
+   "notes": {
+    "folder_browsing": "una cartella aperta mette tutti i file riproducibili, sottocartelle comprese, in playlist; nessun browser",
+    "recursive_search": "solo ricerca nella cronologia, nessuna ricerca di file",
+    "img_animated": "le GIF si riproducono come video; niente APNG né WebP animati",
+    "auto_enhance_view": "equalizzatore video e filtri, nessun miglioramento automatico",
+    "file_info_exif": "Ispettore: codec, bitrate, tracce; niente EXIF",
+    "split_archives": "mpv legge i RAR multivolume, ma IINA non lo offre né lo documenta",
+    "videos_in_archives": "File > Apri può riprodurre media dentro ZIP o RAR tramite mpv; non documentato",
+    "rename_trash": "«Elimina file corrente» lo sposta nel Cestino; niente rinomina né nuova cartella",
+    "shortcut_cheatsheet": "tasti elencati nelle Impostazioni; non stampabile",
+    "notarized_attested": "notarizzato; nessuna attestazione di build"
+   }
+  },
+  "imageglass": {
+   "name": "ImageGlass",
+   "vendor": "Duong Dieu Phap",
+   "summary": "Visualizzatore di immagini veloce e open source, riscritto nella v10 su .NET/Avalonia per Windows, macOS (Apple silicon) e Linux. Ampio supporto di formati (oltre 90, tra cui RAW, JXL, HEIC, AVIF, HDR, SVG nativo), cache intelligente, temi, tasti personalizzati e plug-in di codec. È un visualizzatore di singole immagini con una striscia di galleria, non un browser di cartelle, e non riproduce video.",
+   "wins": [
+    "Gira su Windows, macOS e Linux con un unico codice",
+    "Tone mapping HDR per AVIF, JPEG XL, HDR ed EXR",
+    "Rendering nativo di SVG animati",
+    "SDK di plug-in per codec aggiuntivi",
+    "Ritaglio, ridimensionamento e contagocce integrati",
+    "Temi e layout personalizzati",
+    "Tasti personalizzati nell’edizione gratuita"
+   ],
+   "price": "Classic gratis; Pro Individual 14,90 $ una tantum, Pro Team 69 $ una tantum (3 utenti), Pro Business a volume (da 290 $ all’anno per 25 utenti)",
+   "version": "10.0.6.906",
+   "updated": "2026-09-05",
+   "platforms": "Windows, macOS, Linux",
+   "notes": {
+    "free": "Classic gratis (GPLv3); Pro a 14,90 $ una tantum aggiunge il tone mapping HDR e altro",
+    "dark_light_setting": "Segue il sistema; si può scegliere un tema per lo scuro e uno per il chiaro",
+    "folder_browsing": "Sfoglia la cartella del file aperto; niente albero di cartelle né sottocartelle",
+    "thumbnail_grid": "Galleria delle immagini della cartella (striscia o colonne); niente riquadri di cartelle",
+    "network_shares_fast": "Decodifica in background e cache anticipata; nulla di specifico sulle reti",
+    "img_svg_pdf": "Rendering SVG/SVGZ nativo, anche animato; niente PDF",
+    "slideshow_recursive": "Può caricare immagini dalle sottocartelle; solo immagini, niente video",
+    "file_info_exif": "EXIF con lo strumento separato ExifGlass; nessuna info sui video",
+    "rename_trash": "Elimina o sposta nel cestino l’immagine mostrata; niente nuova cartella",
+    "move_copy": "Copia o taglia file negli appunti (tagliare non su macOS)",
+    "keyboard_first": "Tasti per i comandi dei menu, ma interfaccia orientata a barra e mouse",
+    "notarized_attested": "DMG firmato con Developer ID e notarizzato; nessuna attestazione di build"
+   }
+  },
+  "imagine": {
+   "name": "Imagine",
+   "vendor": "Sejin Chun",
+   "summary": "Minuscolo e velocissimo visualizzatore freeware coreano di immagini e animazioni per Windows, con browser di miniature, un elenco enorme di formati (tra cui JXL, AVIF, HEIF, CLIP, KRA, molti RAW), navigazione negli archivi, conversione e rinomina in blocco, disegno di base ed editor di animazioni. Funziona anche come plug-in di Total Commander.",
+   "wins": [
+    "Elenco enorme di formati, tra cui KRA, ORA, CLIP, DICOM e formati HDR",
+    "Modifica, creazione di animazioni e rinomina in blocco integrate",
+    "Plug-in Lister/Packer/Content per Total Commander",
+    "Gira su tutto, da Windows 95 a Windows 11 ARM64"
+   ],
+   "price": "Gratis (donationware; con una donazione di almeno 20 $ si riceve un codice di licenza personale)",
+   "version": "2.8.1",
+   "updated": "2026-11-14",
+   "platforms": "Windows"
+  },
+  "infuse": {
+   "name": "Infuse",
+   "vendor": "Firecore",
+   "summary": "Un lettore in stile media center che trasforma cartelle di video, condivisioni NAS, Plex/Emby/Jellyfin e cloud in una libreria con locandine e metadati. Ottimo per guardare film e serie sui dispositivi Apple con l’avanzamento sincronizzato.",
+   "wins": [
+    "Libreria di film e serie con locandine e metadati TMDB",
+    "Streaming da NAS, media server e servizi cloud",
+    "Sincronizza l’avanzamento tra iPhone, iPad, Apple TV, Mac e Vision Pro",
+    "Download da OpenSubtitles, sincronizzazione Trakt, AirPlay e Google Cast",
+    "Immagini disco (ISO, VIDEO_TS, BDMV)"
+   ],
+   "price": "Gratis; Infuse Pro 1,99 $ al mese, 16,99 $ all’anno o 99,99 $ a vita",
+   "version": "8.5.10",
+   "updated": "2026-11-09",
+   "platforms": "macOS, iOS, iPadOS, tvOS, visionOS",
+   "notes": {
+    "free": "Base gratis; Infuse Pro 1,99 $ al mese, 16,99 $ all’anno o 99,99 $ a vita",
+    "no_account_no_tracking": "Nessun account (Trakt facoltativo), niente pubblicità; dati diagnostici non collegati a te",
+    "thumbnail_grid": "Riquadri con locandine per i video; niente foto",
+    "list_view": "Ordinamento dei file nella vista cartella; colonne non documentate",
+    "recursive_search": "Ricerca nella libreria (titoli), non nei nomi dei file",
+    "zoom_rotate": "8 opzioni di zoom video; niente rotazione",
+    "file_info_exif": "Info video (codec, risoluzione, audio); niente EXIF",
+    "streaming_urls": "Playlist M3U/M3U8 e media server; Pro trasmette i trailer",
+    "rename_trash": "«Gestione file» permette di eliminare video remoti; niente rinomina",
+    "move_copy": "Scarica video da dispositivi di rete sul Mac",
+    "keyboard_first": "Scorciatoie per la riproduzione; libreria poco usabile da tastiera",
+    "shortcut_cheatsheet": "Elenco delle scorciatoie in un articolo di supporto",
+    "notarized_attested": "Build App Store, codice chiuso"
+   }
+  },
+  "irfanview": {
+   "name": "IrfanView",
+   "vendor": "Irfan Skiljan",
+   "summary": "IrfanView è un visualizzatore di immagini per Windows minuscolo e velocissimo, in circolazione dal 1996, che legge un elenco enorme di formati grazie ai plug-in. Oltre a mostrare immagini converte in blocco, fa ritocchi di base, scansioni, stampe e presentazioni, il tutto guidato da tanti tasti rapidi.",
+   "wins": [
+    "Elenco enorme di formati, anche rari e retrò",
+    "Conversione e rinomina in blocco",
+    "Modifica delle immagini, plug-in di disegno, effetti, filtri 8BF di Photoshop",
+    "Scansione, stampa, plug-in OCR",
+    "Ricerca per EXIF/IPTC e testo, non solo per nome",
+    "Presentazioni salvabili come EXE, salvaschermo o MP4",
+    "Gira su versioni di Windows molto vecchie e da chiavetta USB"
+   ],
+   "price": "Gratis per uso privato, non commerciale e didattico; licenza commerciale 18 $ / 15 € (perpetua)",
+   "version": "4.76",
+   "updated": "2026-09-18",
+   "platforms": "Windows"
+  },
+  "isee-pro": {
+   "name": "iSee Pro",
+   "vendor": "Dummy Apps",
+   "summary": "iSee Pro è un piccolo browser di immagini del Mac App Store che carica tutte le immagini di una cartella e delle sue sottocartelle con precaricamento, per sfogliare velocemente. Ha viste a elenco, miniature e dimensioni reali, ricerca per nome, dimensione e data, sovrimpressione EXIF, una lente e apre archivi ZIP/RAR ricordandone le password. Richiede macOS 12.",
+   "wins": [
+    "Molto economico (Pro a 0,99 $) e minuscolo (4,4 MB)",
+    "Ricorda le password degli archivi",
+    "Ricerca per dimensioni dell’immagine e parametri di Draw Things",
+    "Funzioni di sfondo animato per la scrivania"
+   ],
+   "price": "Gratis con acquisto in-app: Pro 0,99 $",
+   "version": "11.5",
+   "updated": "2025-05-30",
+   "platforms": "macOS",
+   "notes": {
+    "free": "Gratis; versione Pro in-app a 0,99 $ (secondo una recensione toglie un limite di 50 immagini)",
+    "thumbnail_grid": "Vista a miniature; anteprime delle cartelle non menzionate",
+    "network_shares_fast": "Usato su NAS e server remoti; velocità sulle condivisioni non documentata",
+    "img_modern_formats": "WebP sì, più estensioni personalizzate; HEIC/AVIF/JXL non citati",
+    "img_raw": "Non citato; si possono aggiungere estensioni, decodificate da macOS",
+    "img_psd_exr": "Non citati; si possono aggiungere estensioni, decodificate da macOS",
+    "slideshow_recursive": "Carica tutte le sottocartelle, solo immagini (niente video)",
+    "file_info_exif": "Sovrimpressione EXIF (⌘I); solo immagini",
+    "archives_as_folders": "Apre ZIP e RAR; 7z non citato",
+    "rename_trash": "Rinomina (Invio nell’elenco), elimina; nuova cartella non citata",
+    "move_copy": "Trascina le immagini in una cartella per salvarle; niente comandi sposta/copia",
+    "library_catalog": "Solo contrassegno delle immagini, nessun database",
+    "keyboard_first": "Molte scorciatoie, ma pensato per funzionare anche solo col mouse",
+    "notarized_attested": "Build Mac App Store revisionata da Apple; nessun codice pubblico"
+   }
+  },
+  "jpegview": {
+   "name": "JPEGView",
+   "vendor": "sylikc e David Kleiner",
+   "summary": "Visualizzatore di immagini per Windows essenziale e velocissimo, con un’interfaccia minima a schermo intero, correzione dell’immagine in tempo reale (contrasto automatico, densità locale, nitidezza) e controllo da tastiera con una KeyMap modificabile. Gestisce formati moderni e RAW. Niente miniature, niente video, nessun browser di file; il fork non ha più rilasci dal 2023.",
+   "wins": [
+    "Correzione automatica di colore, contrasto e densità locale in tempo reale durante la visione",
+    "Piccolissimo e portatile (senza installazione)",
+    "Tasti completamente riassegnabili con KeyMap.txt",
+    "Ritaglio e rotazione JPEG senza perdita",
+    "Serie di immagini riprodotte come un filmato a frequenza impostata"
+   ],
+   "price": "Gratis",
+   "version": "1.3.46",
+   "updated": "2023-10-07 (ultimo rilascio; ultimo commit 2024-07-06)",
+   "platforms": "Windows"
+  },
+  "kmplayer": {
+   "name": "KMPlayer",
+   "vendor": "PandoraTV",
+   "summary": "KMPlayer è uno storico lettore multimediale gratuito per Windows con codec integrati, riproduzione 4K/8K, 3D e VR a 360°, riproduzione e download di URL e YouTube, e una tastiera in cui quasi ogni tasto fa qualcosa. L’edizione 64X è senza pubblicità, quella a 32 bit la mostra. Secondo il produttore non esiste un’app desktop attuale per macOS.",
+   "wins": [
+    "Supporto di codec e formati molto ampio, compresi 3D e VR a 360°",
+    "Riproduzione e download di URL e YouTube",
+    "Controllo da tastiera dettagliato, tasti globali, tasto capo (Esc)",
+    "Preset dell’equalizzatore, cattura video e audio, cattura GIF",
+    "Skin e schemi di colore, 42 lingue"
+   ],
+   "price": "Gratis; KMPlayer 64X senza pubblicità, KMPlayer a 32 bit con pubblicità; l’app Android ha un upgrade Premium",
+   "version": "KMPlayer 64X 2026.10.27.9; KMPlayer (32 bit) 4.2.3.38",
+   "updated": "2026-10-28",
+   "platforms": "Windows, Android, iOS, iPadOS"
+  },
+  "kodi": {
+   "name": "Kodi",
+   "vendor": "la Kodi Foundation",
+   "summary": "Un media center gratuito e open source con un’interfaccia da salotto pensata per TV e telecomandi. Gestisce grandi librerie di video e musica, sfoglia cartelle locali e di rete e mostra anche foto con presentazioni.",
+   "wins": [
+    "media center per la TV con telecomando, librerie con locandine e metadati",
+    "libreria e lettore musicale",
+    "add-on per streaming e sottotitoli, PVR e TV in diretta",
+    "password RAR e RAR in più parti tramite add-on",
+    "gira su TV box, Android, Linux, Raspberry Pi"
+   ],
+   "price": "Gratis",
+   "version": "21.3 Omega (22.0 Piers RC2 dal 2026-11-10)",
+   "updated": "2025-10-31",
+   "platforms": "macOS, Windows, Linux, Android, iOS/tvOS, LibreELEC",
+   "notes": {
+    "network_shares_fast": "Sorgenti di rete come quelle locali; miniature in cache dopo la prima visita",
+    "img_modern_formats": "WebP e AVIF integrati; HEIC tramite add-on; JPEG XL non indicato",
+    "img_raw": "tramite l’add-on «imagedecoder.raw»",
+    "auto_enhance_view": "Luminosità e contrasto per i video; nulla per le foto",
+    "online_subtitles": "tramite add-on di servizi di sottotitoli",
+    "comics_cbz_cbr": "CBZ/CBR sfogliabili come cartelle di immagini; nessuna modalità lettura",
+    "archive_passwords": "Solo RAR (chiede o prova le password salvate)",
+    "split_archives": "RAR in più parti (.partN.rar) tramite vfs.rar",
+    "rename_trash": "Il file manager rinomina, elimina (senza Cestino), crea cartelle",
+    "dual_pane": "Il file manager ha due pannelli affiancati; niente tasti F5/F6",
+    "cloud_sync": "Nessun cloud proprio; librerie e stato di visione condivisibili via server MySQL/MariaDB",
+    "shortcut_cheatsheet": "Una pagina del wiki elenca tutti i tasti predefiniti",
+    "notarized_attested": "Script di notarizzazione per macOS; nessuna build attestata"
+   }
+  },
+  "leeyes": {
+   "name": "Leeyes",
+   "vendor": "Kenji (けんじ)",
+   "summary": "Visualizzatore giapponese a tre pannelli (albero delle cartelle, elenco dei file, immagine) pensato per leggere manga scansionati a doppia pagina, con una libreria per le cartelle preferite. Tutti i formati tranne BMP arrivano dai plug-in Susie. Ultimo rilascio nel 2011; il sito dell’autore non è più raggiungibile e restano solo copie d’archivio.",
+   "wins": [
+    "Elenchi della libreria esportabili e importabili come testo",
+    "Doppia pagina pensata per i libri scansionati"
+   ],
+   "price": "Gratis per uso non commerciale",
+   "version": "2.6.1",
+   "updated": "2011-10-26",
+   "platforms": "Windows"
+  },
+  "lyn": {
+   "name": "Lyn",
+   "vendor": "Mirko Viviani",
+   "summary": "Storico browser di immagini leggero per fotografi e grafici, con barra laterale delle cartelle, mappa dei geotag, modifica non distruttiva e condivisione su Flickr, Dropbox e SmugMug. Venduto direttamente, gira fino a macOS 10.13.",
+   "wins": [
+    "Geotag su mappa",
+    "Modifica del colore non distruttiva",
+    "Apre le librerie di Foto, Aperture e Lightroom",
+    "Condivisione su Flickr, Dropbox, SmugMug",
+    "Gira su macOS vecchi (10.13 e successivi)"
+   ],
+   "price": "26 € / 29,99 $ una tantum con 15 mesi di aggiornamenti; prova di 15 giorni",
+   "version": "2.4.10",
+   "updated": "2026-07-09",
+   "platforms": "macOS",
+   "notes": {
+    "languages_20": "Inglese, più francese e cinese; elenco completo non pubblicato",
+    "recursive_search": "Cartelle smart con ambiti di ricerca; ricerca ricorsiva per nome non descritta",
+    "bookmarks": "elementi della barra laterale e cartelle smart",
+    "img_psd_exr": "OpenEXR sì; PSD solo tramite ImageIO di macOS",
+    "img_animated": "WebP animati e immagini animate nel browser; APNG non indicato",
+    "video_skim_arrows": "barra spaziatrice, J/K/L",
+    "playback_speed": "J/L per riavvolgere e avanzare veloce",
+    "library_catalog": "parole chiave, IPTC, etichette colore, cartelle smart; nessun catalogo proprio"
+   }
+  },
+  "mangameeya": {
+   "name": "MangaMeeya",
+   "vendor": "",
+   "summary": "A lungo il lettore di manga più noto su Windows: apre fumetti ZIP/RAR, anche archivi annidati, con doppie pagine, miniature, schede e tasti personalizzabili. Fuori produzione e senza download ufficiale; copie e la versione compatta MangaMeeyaCE circolano su mirror.",
+   "wins": [
+    "Flusso di lettura familiare per chi lo usa da anni",
+    "Schede e finestre divise su due monitor"
+   ],
+   "price": "Gratis",
+   "version": "indicata come 2.4 su AlternativeTo (fuori produzione)",
+   "updated": "2006-06 (secondo AlternativeTo)",
+   "platforms": "Windows"
+  },
+  "marta": {
+   "name": "Marta",
+   "vendor": "Yan Zhulanow",
+   "summary": "File manager a due pannelli nativo e centrato sulla tastiera, scritto in Swift, configurato con un linguaggio testuale ed estendibile con plug-in Lua. Apre molti formati di archivio come cartelle; mostra le anteprime con la Visualizzazione rapida.",
+   "wins": [
+    "API per plug-in Lua e configurazione testuale",
+    "Flusso da commander con tasti F e Action Panel",
+    "Supporto degli archivi, anche annidati, ZIP in lettura e scrittura",
+    "Terminale integrato sincronizzato con la cartella, analisi dello spazio su disco",
+    "Look Up con condizioni Spotlight"
+   ],
+   "price": "Gratis durante la beta; licenza a pagamento prevista dopo la beta (chi sostiene su Patreon con almeno 15 $ riceve una licenza perpetua)",
+   "version": "0.8.2",
+   "updated": "2024-08-03",
+   "platforms": "macOS",
+   "notes": {
+    "free": "Gratis durante la beta; annunciata una licenza a pagamento",
+    "regex_search": "Selezione e ricerca rapida con espressioni regolari nell’elenco; Look Up usa condizioni",
+    "img_modern_formats": "Solo anteprima con la Visualizzazione rapida (barra spaziatrice); nessun visualizzatore proprio",
+    "img_raw": "Solo anteprima con la Visualizzazione rapida (barra spaziatrice); nessun visualizzatore proprio",
+    "img_psd_exr": "Solo anteprima con la Visualizzazione rapida (barra spaziatrice); nessun visualizzatore proprio",
+    "img_svg_pdf": "Solo anteprima con la Visualizzazione rapida (barra spaziatrice); nessun visualizzatore proprio",
+    "img_animated": "Solo anteprima con la Visualizzazione rapida (barra spaziatrice); nessun visualizzatore proprio",
+    "zoom_rotate": "Solo lo zoom della Visualizzazione rapida; anteprima a schermo intero richiesta ma non presente",
+    "video_native": "La Visualizzazione rapida riproduce MP4/MOV",
+    "video_mkv_avi_webm": "Solo ciò che riproduce la Visualizzazione rapida; formati non indicati",
+    "music_mode": "La Visualizzazione rapida riproduce un singolo file audio; niente riproduzione di una cartella",
+    "archives_as_folders": "ZIP in lettura e scrittura; TAR, 7Z, ISO e altri in lettura; RAR limitato, niente RAR5",
+    "comics_cbz_cbr": "Nessun lettore di fumetti; si possono registrare estensioni ZIP come cbz",
+    "shortcut_cheatsheet": "La documentazione elenca i tasti predefiniti; nessun foglio da stampare"
+   }
+  },
+  "massigra": {
+   "name": "MassiGra",
+   "vendor": "Toshi Fuku",
+   "summary": "Piccolo e veloce visualizzatore di immagini giapponese a finestra singola che sfoglia una cartella, con modalità manga e ritocchi semplici. I formati integrati sono BMP, GIF, JPEG e PNG; tutto il resto, archivi compresi, arriva dai plug-in Susie. Per cinque anni di fila primo nella classifica dei download di visualizzatori su Vector, ma fermo dal 2013.",
+   "wins": [
+    "Minuscolo e leggerissimo anche su hardware vecchio",
+    "Ritocchi di base e salvataggio (livelli, colore, ritaglio, ridimensionamento)",
+    "Sposta o copia in cartelle preimpostate con un tasto",
+    "Familiare a chi usa Windows in Giappone da tanti anni"
+   ],
+   "price": "Gratis",
+   "version": "0.45",
+   "updated": "2013-04-23",
+   "platforms": "Windows"
+  },
+  "mcomix": {
+   "name": "MComix",
+   "vendor": "gli sviluppatori di MComix",
+   "summary": "MComix è un visualizzatore di fumetti e immagini GTK personalizzabile per Linux e Windows, fork di Comix. Legge CBR/CBZ/CB7/CBT/LHA e PDF, ha doppia pagina e modalità manga, miglioramento dell’immagine, presentazione e una libreria facoltativa.",
+   "wins": [
+    "Doppia pagina e modalità manga",
+    "Miglioramento dell’immagine (luminosità, contrasto, nitidezza, contrasto automatico)",
+    "Scorciatoie da tastiera modificabili",
+    "Editor di archivi e libreria facoltativa con raccolte",
+    "25 lingue dell’interfaccia",
+    "Versioni per Linux e Windows"
+   ],
+   "price": "Gratis",
+   "version": "3.2.0",
+   "updated": "2026-08-20",
+   "platforms": "Linux, Windows"
+  },
+  "mediaone": {
+   "name": "MediaOne",
+   "vendor": "MediaArt Studio",
+   "summary": "MediaOne (ex ImageOne) è un browser multimediale del Mac App Store per foto, video e audio che lavora su cartelle e Preferiti senza importare. Offre diverse disposizioni di miniature, ricerca su tutto il disco, valutazioni a stelle e tag, vista di confronto, taglio dei video, esportazione GIF e conversione in blocco. Richiede macOS 12.4.",
+   "wins": [
+    "Anteprime che partono al passaggio del mouse e scorrimento dei video col puntatore",
+    "Valutazioni a stelle, tag, filtri smart e mappa delle foto",
+    "Taglio video, cattura fotogrammi, video in GIF, conversione in blocco di immagini e video",
+    "Riproduce file audio",
+    "Ricerca su tutto il disco con ricerche smart salvate"
+   ],
+   "price": "Gratis con acquisto in-app: ImageOne 6,99 $",
+   "version": "5.4.1",
+   "updated": "2026-08-23",
+   "platforms": "macOS",
+   "notes": {
+    "free": "Download gratis con un acquisto in-app «ImageOne» a 6,99 $; cosa sblocca non è indicato",
+    "list_view": "Vista elenco presente; opzioni delle colonne non descritte",
+    "img_modern_formats": "WebP sì; HEIC/AVIF/JXL non indicati (HEIC forse tramite il sistema)",
+    "slideshow_recursive": "«Mostra tutte le sottocartelle» raccoglie foto e video; presentazione non indicata",
+    "file_info_exif": "EXIF per le immagini; nessuna info su codec o bitrate",
+    "video_skim_arrows": "⌥ + frecce fotogramma per fotogramma, scorrimento col puntatore",
+    "dual_pane": "Vista di confronto a due colonne; nessun pannello di file con F5/F6",
+    "image_editing": "Ruota e capovolge, taglia video, salva fotogrammi, video in GIF",
+    "batch_convert": "Conversione in blocco di immagini e video; rinomina in blocco non citata",
+    "library_catalog": "Stelle e tag sui file, filtri smart, mappa; nessun database da importare",
+    "keyboard_first": "Frecce, barra spaziatrice e ⌥ documentati; pensato per il mouse",
+    "notarized_attested": "Build Mac App Store revisionata da Apple; nessun codice pubblico"
+   }
+  },
+  "meitu-kankan": {
+   "name": "美图看看",
+   "vendor": "Meitu",
+   "summary": "Un piccolo e veloce visualizzatore di immagini gratuito di Meitu, molto diffuso sui PC Windows cinesi all’inizio degli anni 2010, con cartelle preferite, una vista di tutte le immagini nelle sottocartelle e condivisione con un clic sui social network cinesi. Non è più sviluppato (ultimo rilascio 2.7.8) ma è ancora scaricabile.",
+   "wins": [
+    "Minuscolo e leggero sui PC vecchi",
+    "Mostra insieme tutte le immagini di tutte le sottocartelle (穿透文件夹)",
+    "PSD in CMYK mostrati come in Photoshop"
+   ],
+   "price": "Gratis",
+   "version": "2.7.8",
+   "updated": "2014-11-25 (sito); lo store di Tencent indica il file al 2019-05-08",
+   "platforms": "Windows, Android"
+  },
+  "microsoft-photos": {
+   "name": "Microsoft Foto",
+   "vendor": "Microsoft",
+   "summary": "L’app di foto e video integrata in Windows: una Galleria cronologica che unisce le cartelle del PC, OneDrive e iCloud, un visualizzatore veloce che sfoglia una cartella e un editor con strumenti AI. Buona per sfogliare e ritoccare al volo; Foto Legacy conserva il vecchio editor video e il creatore di presentazioni. Niente archivi, nessuna funzione da file manager.",
+   "wins": [
+    "Preinstallata su ogni PC Windows",
+    "Foto di OneDrive e iCloud in un’unica Galleria",
+    "Modifica AI: rimozione oggetti, Relight, super risoluzione sui PC Copilot+",
+    "Persone, Album, Momenti e ricerca in linguaggio naturale",
+    "Presentazione con colonne sonore",
+    "Confronto a più viste"
+   ],
+   "price": "Gratis con Windows (Estensioni video HEVC 0,99 $)",
+   "version": "2026.11090.22001 (nuove Galleria, Editor e Visualizzatore in distribuzione da ottobre 2026)",
+   "updated": "2026-10-06",
+   "platforms": "Windows"
+  },
+  "movist-pro": {
+   "name": "Movist Pro",
+   "vendor": "Movist",
+   "summary": "Un lettore video a pagamento per guardare film e serie, forte sui sottotitoli (più tracce insieme, stili per lingua), tone mapping HDR e Dolby Vision e AirPlay di qualsiasi formato. Pro aggiunge server di rete, YouTube e media dal web e Picture in Picture.",
+   "wins": [
+    "Stili dei sottotitoli e doppi sottotitoli",
+    "Tone mapping HDR e Dolby Vision",
+    "AirPlay di formati che Apple TV non riproduce da sé",
+    "Server di rete (SMB, SFTP, FTP, WebDAV), YouTube, PiP (Pro)",
+    "Playlist salvate, equalizzatore audio"
+   ],
+   "price": "Movist Pro 17,99 $ una tantum (diretto); Movist 9,99 $ (Mac App Store); Movist Pro nell’abbonamento Setapp",
+   "version": "2.21.1 (diretto); Movist 2.20.0 sul Mac App Store",
+   "updated": "2026-10-17 (App Store 2.20.0); 2.21.1 più tardi, data non indicata",
+   "platforms": "macOS",
+   "notes": {
+    "languages_20": "6: inglese, giapponese, coreano, russo, cinese semplificato e tradizionale",
+    "folder_browsing": "Riempie la playlist dalla cartella; Pro sfoglia condivisioni di rete (SMB, SFTP, FTP, WebDAV)",
+    "network_shares_fast": "Pro riproduce direttamente da server SMB, SFTP, FTP, WebDAV",
+    "zoom_rotate": "Solo video: zoom, rotazione, capovolgimento",
+    "auto_enhance_view": "Solo video: filtri Core Image",
+    "file_info_exif": "Ispettore con info su tracce e codec; niente EXIF",
+    "pip": "Solo Movist Pro",
+    "music_mode": "Riproduce musica con equalizzatore; nessuna libreria",
+    "streaming_urls": "Solo Pro: Apri URL, YouTube/Twitch e media dal web, estensioni per browser",
+    "rename_trash": "Elimina il file corrente dal menu File; niente rinomina né nuova cartella",
+    "keyboard_first": "Scorciatoie personalizzabili per la riproduzione; nessuna navigazione nei file",
+    "app_sandbox": "Movist dell’App Store è in sandbox; Pro dichiara di non richiedere permessi sulle cartelle",
+    "mac_app_store": "Solo il più semplice «Movist» (9,99 $); Pro si vende direttamente e su Setapp"
+   }
+  },
+  "mpc-be": {
+   "name": "MPC-BE",
+   "vendor": "Aleksoid1978 e collaboratori",
+   "summary": "Un lettore video per Windows nato da Media Player Classic, con decoder propri, tema scuro e rilasci frequenti. Buono per i video locali e per YouTube tramite yt-dlp.",
+   "wins": [
+    "lettore Windows leggero con aggiornamenti frequenti",
+    "tema scuro, molte opzioni di renderer e decoder",
+    "download di sottotitoli, streaming con yt-dlp",
+    "tasto capo, tasti configurabili"
+   ],
+   "price": "Gratis",
+   "version": "1.9.3",
+   "updated": "2026-11-05",
+   "platforms": "Windows"
+  },
+  "mpc-hc": {
+   "name": "MPC-HC",
+   "vendor": "clsid2 e collaboratori",
+   "summary": "Un lettore video classico e leggero per Windows con LAV Filters interni, molti renderer e tasti molto configurabili. Apprezzato per l’interfaccia semplice e il peso ridotto; le immagini non sono il suo mestiere.",
+   "wins": [
+    "leggerissimo e rapido ad avviarsi",
+    "renderer e shader per appassionati (madVR, MPC VR)",
+    "ricerca e download di sottotitoli, streaming con yt-dlp",
+    "tasto capo, avanzamento per fotogrammi, molti tasti configurabili"
+   ],
+   "price": "Gratis",
+   "version": "2.8.5",
+   "updated": "2026-11-06",
+   "platforms": "Windows"
+  },
+  "mpv": {
+   "name": "mpv",
+   "vendor": "il progetto mpv",
+   "summary": "mpv è un lettore multimediale minimale, programmabile e da riga di comando, con resa via GPU (HDR, Dolby Vision) e un supporto di formati amplissimo. Si configura con file di testo e script Lua/JS e ha solo un piccolo controller a schermo.",
+   "wins": [
+    "Resa video con gpu-next, HDR e Dolby Vision",
+    "Configurabilissimo con mpv.conf, input.conf e script",
+    "Riproduce media direttamente da ZIP/RAR/7z e RAR multivolume",
+    "Multipiattaforma (macOS, Windows, Linux)",
+    "Stream e YouTube con yt-dlp, menu DVD e Blu-ray"
+   ],
+   "price": "Gratis",
+   "version": "0.42.0",
+   "updated": "2026-11-05",
+   "platforms": "macOS, Windows, Linux, BSD, Android (con mpv-android)",
+   "notes": {
+    "dark_light_setting": "solo la barra del titolo, via opzione; nessun tema dell’interfaccia",
+    "folder_browsing": "Aprire una cartella crea una playlist, anche ricorsiva; nessun browser di file",
+    "img_psd_exr": "Apre EXR e PSD, ma non li prende dalle cartelle",
+    "img_svg_pdf": "SVG se FFmpeg ha librsvg; niente PDF",
+    "auto_enhance_view": "i tasti da 1 a 8 cambiano contrasto, luminosità, gamma, saturazione; nessun miglioramento automatico",
+    "file_info_exif": "statistiche in sovrimpressione (i/I): codec, bitrate; niente EXIF",
+    "saved_playlists": "carica m3u/pls/cue/edl; nessun comando integrato per salvare",
+    "archives_as_folders": "ZIP, RAR, 7z (anche CBZ/CBR) si aprono come playlist, non come cartelle da sfogliare",
+    "comics_cbz_cbr": "CBZ/CBR come playlist di immagini; nessuna modalità lettura",
+    "batch_convert": "codifica da riga di comando (--o); nessuna rinomina in blocco",
+    "shortcut_cheatsheet": "? mostra i tasti nelle statistiche; input.conf documenta i predefiniti",
+    "no_network": "Nessun controllo aggiornamenti né telemetria; va online per gli URL che apri"
+   }
+  },
+  "neeview": {
+   "name": "NeeView",
+   "vendor": "neelabo",
+   "summary": "Visualizzatore a forma di libro per Windows che tratta cartelle e archivi come libri e immagini come pagine. Configurabilissimo: ogni azione è un comando con i suoi tasti, gesti del mouse e script, più libreria, segnalibri, playlist e doppie pagine per i manga. I video si riproducono tramite Windows o un VLC installato.",
+   "wins": [
+    "Ogni azione configurabile: comandi, gesti, scripting JavaScript",
+    "Doppia pagina con lettura da destra a sinistra e divisione delle pagine",
+    "Archivi annidati e password degli archivi (tramite 7z.dll)",
+    "Playlist salvate, cronologia e ricerca con operatori per data, dimensione ed espressioni regolari",
+    "Pannello effetti, stampa, esportazione come ZIP o cartella",
+    "Build per Microsoft Store e ZIP portatile"
+   ],
+   "price": "Gratis",
+   "version": "46.3",
+   "updated": "2026-08-09",
+   "platforms": "Windows"
+  },
+  "nomacs": {
+   "name": "nomacs",
+   "vendor": "il team di nomacs",
+   "summary": "nomacs («Image Lounge») è un visualizzatore di immagini gratuito e open source con supporto RAW e PSD, pannelli dei metadati, regolazioni dell’immagine ed elaborazione in blocco. Una particolarità è la sincronizzazione di più istanze per confrontare le immagini affiancate. Esistono build macOS attuali per Apple silicon e Intel, anche se non notarizzate.",
+   "wins": [
+    "Elaborazione in blocco e modifica di base delle immagini",
+    "Più finestre sincronizzate per confrontare le immagini",
+    "Pannelli dei metadati, istogramma e valutazioni a stelle",
+    "Plug-in (disegno, composizione, trasformazioni)",
+    "Gira su Windows, Linux, FreeBSD e Haiku"
+   ],
+   "price": "Gratis",
+   "version": "3.22.5 (beta 3.23.4)",
+   "updated": "2026-11-05",
+   "platforms": "macOS, Windows, Linux, FreeBSD, Haiku",
+   "notes": {
+    "thumbnail_grid": "Striscia e griglia di miniature della cartella corrente; niente anteprime delle cartelle",
+    "list_view": "Il pannello esplora file mostra albero ed elenco con colonne; non è la vista principale",
+    "recursive_search": "«Trova e filtra» cerca nell’elenco caricato; con la scansione ricorsiva anche nelle sottocartelle",
+    "img_svg_pdf": "SVG sì; niente PDF",
+    "slideshow_recursive": "Scorre cartella e sottocartelle per le immagini; niente video",
+    "auto_enhance_view": "Pannello di regolazioni applicate come modifiche salvabili, non solo sulla vista",
+    "archives_as_folders": "Solo ZIP (e CBZ) nella build completa per macOS; niente RAR/7z",
+    "comics_cbz_cbr": "CBZ sì, CBR no",
+    "dual_pane": "Più istanze sincronizzate per confrontare immagini; nessun file manager a due pannelli",
+    "library_catalog": "Valutazioni a stelle scritte nei metadati; nessun database",
+    "notarized_attested": "Compilato pubblicamente con GitHub Actions, ma firmato solo ad hoc, non notarizzato"
+   }
+  },
+  "norton-commander": {
+   "name": "Norton Commander",
+   "vendor": "Symantec",
+   "summary": "L’originale file manager «ortodosso» a due pannelli per MS-DOS (1986-1998), che ha fissato lo schema F3 visualizza, F5 copia, F6 sposta poi ripreso da Total Commander, Midnight Commander e tanti altri. Ancora molto cercato per nostalgia; oggi gira solo in DOS o negli emulatori.",
+   "wins": [
+    "Ha definito il lavoro a due pannelli con i tasti F",
+    "Minuscolo e veloce in modalità testo",
+    "Sincronizzazione delle cartelle e File Finder con risultati in un pannello"
+   ],
+   "price": "Fuori produzione; era commerciale (NC 3.0 149 $, NC 4.0 99 $ prezzo consigliato)",
+   "version": "5.51 (DOS)",
+   "updated": "1998-07-01",
+   "platforms": "MS-DOS, Windows (NC for Windows 2.01), OS/2"
+  },
+  "nplayer": {
+   "name": "nPlayer",
+   "vendor": "Newin",
+   "summary": "Versione Mac a pagamento del popolare lettore iOS nPlayer: riproduce quasi ogni formato video, audio e di sottotitoli e trasmette da SMB, NFS, WebDAV, FTP, UPnP e servizi cloud, con stili dei sottotitoli curati, ripetizione A-B e PiP. Gli aggiornamenti per Mac sono rari.",
+   "wins": [
+    "Protocolli di rete (SMB, NFS, SFTP, WebDAV, UPnP)",
+    "Sottotitoli avanzati (stili, sincronizzazione, SMI, SUP)",
+    "Ripetizione A-B, «Listening Drill» per imparare le lingue",
+    "Picture in Picture, velocità di riproduzione",
+    "Equalizzatore e sincronizzazione audio"
+   ],
+   "price": "9,99 $ una tantum (Mac)",
+   "version": "1.5.0",
+   "updated": "2025-02-14",
+   "platforms": "macOS, iOS, iPadOS, Android, tvOS",
+   "notes": {
+    "dark_light_setting": "Temi del lettore; non è chiaro se chiaro/scuro siano indipendenti dal sistema",
+    "languages_20": "9 sull’App Store",
+    "folder_browsing": "Sfoglia sorgenti di rete (SMB, FTP, WebDAV, UPnP, cloud); i file locali si aprono dal Finder",
+    "thumbnail_grid": "Genera miniature dei video; disposizione non documentata",
+    "network_shares_fast": "WebDAV, FTP, SFTP, HTTP, SMB/CIFS, NFS, UPnP/DLNA; velocità non nota",
+    "zoom_rotate": "Ruota di 90/180/270 gradi, capovolge il video",
+    "auto_enhance_view": "Luminosità e saturazione per i video",
+    "saved_playlists": "Apre file di playlist; salvarne di proprie non documentato",
+    "library_catalog": "Metadati TMDb",
+    "cloud_sync": "Streaming da Box, Dropbox, OneDrive; nessuna sincronizzazione",
+    "notarized_attested": "Firmato per l’App Store; codice chiuso"
+   }
+  },
+  "omniplayer": {
+   "name": "OmniPlayer",
+   "vendor": "Oka Apps",
+   "summary": "Lettore multimediale del Mac App Store per MKV, AVI, WMV e quasi tutti gli altri formati, con ricerca di sottotitoli, velocità di riproduzione, equalizzatore audio e invio a DLNA, Chromecast e Roku. Un lettore semplice per guardare un file alla volta, con playlist.",
+   "wins": [
+    "Ricerca di sottotitoli online",
+    "Velocità di riproduzione fino a 0,1x, fotogramma per fotogramma",
+    "Invio alla TV (DLNA, Chromecast, Roku)",
+    "URL di YouTube e Vimeo, sorgenti SMB/FTP",
+    "Equalizzatore audio, riproduzione musicale",
+    "Regolazioni dell’immagine ed esportazione GIF"
+   ],
+   "price": "Gratis con VIP: a vita 9,99 $, annuale 6,99 $, mensile 3,99 $; OmniPlayer Pro 8,99 $ una tantum",
+   "version": "2.1.22",
+   "updated": "2026-06-18",
+   "platforms": "macOS",
+   "notes": {
+    "free": "Gratis; VIP da 3,99 $ al mese o 9,99 $ a vita; non è indicato cosa richiede il VIP",
+    "languages_20": "7 sull’App Store, italiano compreso; il sito ne indica 11",
+    "folder_browsing": "Le cartelle trascinate diventano una playlist; nessun browser di cartelle",
+    "recursive_search": "Ricerca nella playlist; si possono trascinare cartelle su più livelli",
+    "network_shares_fast": "Riproduce da server SMB/FTP e Alist; velocità con cartelle grandi non nota",
+    "zoom_rotate": "Rotazione video, proporzioni, dimensione finestra; niente immagini",
+    "auto_enhance_view": "Luminosità, contrasto, saturazione solo per i video",
+    "file_info_exif": "Riquadro con info sul media (codec); niente EXIF",
+    "saved_playlists": "Playlist conservata automaticamente; niente playlist con nome",
+    "keyboard_first": "Scorciatoie per riproduzione, velocità (⌘[ / ⌘]), sottotitoli",
+    "notarized_attested": "Firmato per l’App Store; codice chiuso"
+   }
+  },
+  "opencomic": {
+   "name": "OpenComic",
+   "vendor": "ollm",
+   "summary": "OpenComic è un lettore open source e multipiattaforma di fumetti, manga ed ebook con schede, più finestre, OPDS e connessioni a server. Offre modalità manga e webtoon, regolazioni dell’immagine e strumenti di upscaling AI.",
+   "wins": [
+    "Molti formati, tra cui EPUB, MOBI, SVG, JPEG XL, archivi ACE/LZH",
+    "Modalità manga, webtoon, doppia pagina e vista guidata",
+    "Connessioni dirette SMB/FTP/SFTP/WebDAV/S3 e OPDS",
+    "Upscaling AI, rimozione del retino e degli artefatti",
+    "Schede e più finestre; scorciatoie personalizzate e gamepad"
+   ],
+   "price": "Gratis (GitHub); 4,99 $ sul Mac App Store",
+   "version": "2.0.0 (GitHub); 1.6.11 sul Mac App Store",
+   "updated": "2026-11-14",
+   "platforms": "macOS, Windows, Linux",
+   "notes": {
+    "network_shares_fast": "Connessioni dirette SMB, FTP, SFTP, WebDAV, S3; elenchi dei file in cache",
+    "bookmarks": "Segnalibri di pagina, preferiti ed etichette personalizzate",
+    "img_modern_formats": "WebP, AVIF, JPEG XL; HEIC di nuovo tolto",
+    "zoom_rotate": "Zoom e lente; rotazione non documentata",
+    "music_mode": "Musica di sottofondo ed effetti sonori durante la lettura; nessun lettore musicale",
+    "rename_trash": "Sposta nel cestino ed elimina definitivamente; niente rinomina",
+    "cloud_sync": "Connessioni a server e OPDS; nessuna sincronizzazione cloud propria",
+    "app_sandbox": "La build Mac App Store è in sandbox; il DMG di GitHub no",
+    "notarized_attested": "DMG/PKG compilati localmente e notarizzati; nessuna attestazione di build"
+   }
+  },
+  "panels": {
+   "name": "Panels",
+   "vendor": "Produkt Studio",
+   "summary": "Panels è un lettore di fumetti per iPhone, iPad e Mac con libreria a copertine, preset di lettura, vista vignetta per vignetta e supporto OPDS per Komga/Kavita. Funzioni avanzate come librerie nel cloud, filtri di pagina e riconoscimento del testo richiedono Premium.",
+   "wins": [
+    "Libreria e avanzamento sincronizzati tra Mac, iPhone e iPad",
+    "Streaming OPDS (Komga, Kavita, Calibre)",
+    "Vista guidata vignetta per vignetta, preset di lettura",
+    "Testo attivo e riconoscimento dei soggetti",
+    "Negozio di fumetti senza DRM nell’app"
+   ],
+   "price": "Download gratuito; Premium con abbonamento Panels+ (mensile o annuale) o acquisto una tantum di Panels 3 (22,99 € una tantum / 11,99 € all’anno, maggio 2025)",
+   "version": "3.13.11",
+   "updated": "2026-11-11",
+   "platforms": "macOS, iOS, iPadOS",
+   "notes": {
+    "free": "Lettore di base gratis; Premium in abbonamento o una tantum (22,99 €)",
+    "no_account_no_tracking": "Nessun account per i file locali; l’App Store indica dati d’uso, diagnostica, identificativi",
+    "languages_20": "12 lingue (8 tradotte automaticamente); lingua impostata per app in macOS",
+    "folder_browsing": "Le librerie sono cartelle che aggiungi; dischi esterni e iCloud sono Premium",
+    "list_view": "Libreria a griglia o elenco (⌘1 / ⌘2); colonne non documentate",
+    "network_shares_fast": "Importazione SMB e streaming OPDS (Premium); regge migliaia di fumetti",
+    "bookmarks": "Posizioni preferite (Premium), preferiti, continua a leggere",
+    "img_svg_pdf": "PDF sì, SVG no",
+    "zoom_rotate": "Zoom, adatta o riempi; rotazione non documentata",
+    "auto_enhance_view": "Filtri di pagina (rumore, nitidezza, moiré, bordi) solo Premium",
+    "file_info_exif": "Info sui fumetti (⌘I), niente EXIF",
+    "archives_as_folders": "apre un archivio come fumetto, non come cartella",
+    "rename_trash": "Rinomina ed elimina dentro la libreria",
+    "move_copy": "Copia, sposta e incolla dentro la libreria",
+    "keyboard_first": "Molte scorciatoie per lettura e libreria",
+    "notarized_attested": "Firmato tramite il Mac App Store; codice chiuso"
+   }
+  },
+  "path-finder": {
+   "name": "Path Finder",
+   "vendor": "Cocoatech",
+   "summary": "Storico sostituto del Finder con doppio pannello, moduli (Anteprima, Info, Terminale, Drop Stack), analisi delle dimensioni, rinomina in blocco e sincronizzazione delle cartelle. Adatto agli utenti esperti che vogliono tanti strumenti attorno a un browser in stile Finder.",
+   "wins": [
+    "Moduli: Anteprima, Info, Terminale, Drop Stack, Git, editor esadecimale e di testo",
+    "Size Browser e sincronizzazione o unione di cartelle",
+    "Rinomina in blocco, eliminazione sicura, accesso da amministratore",
+    "20 lingue dell’interfaccia",
+    "Barra dei segnalibri, preset di schede"
+   ],
+   "price": "Abbonamento 29,95 $ all’anno o 2,95 $ al mese, oppure chiave di licenza da 32,95 $ (1 anno di aggiornamenti), 55,95 $ (2 anni), 122,95 $ (5 anni); prova di 30 giorni",
+   "version": "26.1.10",
+   "updated": "2026-10-22",
+   "platforms": "macOS",
+   "notes": {
+    "no_account_no_tracking": "Nessun dato d’uso; l’abbonamento richiede un accesso e controlli online",
+    "thumbnail_grid": "Vista a icone per le immagini; niente anteprime delle cartelle",
+    "regex_search": "Nome «corrisponde al modello» (caratteri jolly); espressioni regolari non documentate",
+    "network_shares_fast": "Anteprime più rapide sui volumi di rete; nessuna promessa generale sulla velocità",
+    "img_modern_formats": "Modulo Anteprima e Visualizzazione rapida con i codec di macOS; nessun visualizzatore dedicato",
+    "img_raw": "Tramite macOS; anteprima ARW aggiunta",
+    "img_animated": "Le GIF animate si riproducono nella Visualizzazione rapida; APNG e WebP non documentati",
+    "zoom_rotate": "Solo lo zoom della Visualizzazione rapida",
+    "slideshow": "Nessuna presentazione propria; la Visualizzazione rapida mostra una selezione come presentazione",
+    "file_info_exif": "Info mostra dimensioni, durata e metadati di macOS; codec e bitrate non documentati",
+    "video_mkv_avi_webm": "Anteprima WebM aggiunta; MKV/AVI non citati",
+    "music_mode": "Audio solo in Anteprima e nella Visualizzazione rapida",
+    "archive_passwords": "Crea ed estrae ZIP protetti da password (AES-128/256)",
+    "dual_pane": "Doppio pannello, ma copia e sposta con ⌘C/⌘V/⌘X o trascinando; F5/F6 assegnabili",
+    "batch_convert": "Rinomina in blocco; nessuna conversione di immagini",
+    "library_catalog": "Solo tag ed etichette colore del Finder",
+    "cloud_sync": "Integrazione Dropbox, Cloud Uploader, iCloud Drive",
+    "keyboard_first": "Molte scorciatoie, ma interfaccia in stile Finder pensata per il mouse",
+    "shortcut_cheatsheet": "Un articolo di supporto elenca i tasti principali; nessun foglio da stampare"
+   }
+  },
+  "phiewer": {
+   "name": "Phiewer",
+   "vendor": "Thomas Zinnbauer",
+   "summary": "Visualizzatore multimediale veloce e comodo da tastiera per cartelle di foto, RAW, video e audio. PRO aggiunge Showcases (album virtuali), ricerca dei duplicati, vista di confronto, modifica non distruttiva, tag del Finder e scorciatoie personalizzate, a un prezzo una tantum basso.",
+   "wins": [
+    "Ricerca dei duplicati e confronto fino a 9 immagini",
+    "Showcases: album virtuali salvati che attraversano le cartelle",
+    "Tag e commenti del Finder, ricerca per tag, EXIF e data",
+    "File audio e stampa",
+    "Modifica delle immagini (ritaglio, filtri, ridimensionamento) in PRO",
+    "Modalità teatro"
+   ],
+   "price": "Phiewer (lite) gratis; Phiewer PRO 7,99 $ una tantum (Mac App Store)",
+   "version": "8",
+   "updated": "2026-11-07",
+   "platforms": "macOS",
+   "notes": {
+    "free": "lite gratis (sfogliare, tutti i formati, presentazione, EXIF); il resto è PRO, 7,99 $ una tantum",
+    "no_account_no_tracking": "Nessun account né pubblicità; secondo l’App Store raccoglie dati d’uso anonimi",
+    "languages_20": "8: EN, DE, FR, ES, PT, IT, NL, PL",
+    "recursive_search": "Nome, tag, commenti, data, EXIF (PRO); sottocartelle includibili nella vista",
+    "img_modern_formats": "HEIC, AVIF, WebP sì; JPEG XL non indicato",
+    "img_animated": "GIF e WebP animati; APNG non indicato",
+    "slideshow_recursive": "Solo PRO; sottocartelle e ordine casuale, video compresi (anche senza audio)",
+    "auto_enhance_view": "PRO: filtri e regolazioni come modifica, con annulla; nessun miglioramento solo sulla vista",
+    "file_info_exif": "EXIF e info sul file; codec e bitrate non indicati",
+    "wrong_extension_note": "riconosce e apre immagini con estensione sbagliata, senza avvisare",
+    "video_mkv_avi_webm": "AVI, MPG, 3GP, MTS, M2TS, TS; MKV, WebM, WMV, FLV non nell’elenco attuale",
+    "video_skim_arrows": "intervallo di salto configurabile (PRO); scorrimento con le frecce non documentato",
+    "playback_speed": "controlli video PRO",
+    "playlist": "Showcases PRO: raccolte virtuali «come playlist» tra le cartelle",
+    "saved_playlists": "Gli Showcases PRO vengono salvati",
+    "undo_file_actions": "⌘Z per gli spostamenti col trascinamento; annullare rinomina e Cestino non indicato",
+    "image_editing": "PRO: ritaglio, rotazione, capovolgimento, ridimensionamento, compressione, filtri",
+    "batch_convert": "PRO: esportazione multipla e compressione in blocco; rinomina in blocco non documentata",
+    "library_catalog": "Tag e commenti del Finder, preferiti, Showcases; nessun database",
+    "cloud_sync": "PRO: condivisione dal menu di macOS; nessuna sincronizzazione",
+    "custom_shortcuts": "Solo PRO",
+    "shortcut_cheatsheet": "tutte le scorciatoie nelle Impostazioni; nessun foglio da stampare"
+   }
+  },
+  "photo-mechanic": {
+   "name": "Photo Mechanic",
+   "vendor": "Camera Bits",
+   "summary": "Photo Mechanic è uno strumento veloce di importazione, selezione e metadati per fotografi professionisti, soprattutto di cronaca, sport e matrimoni. Apre direttamente cartelle e schede di memoria, mostra subito i file RAW grazie alle anteprime incorporate ed è pensato per didascalie, metadati IPTC, parole chiave, rinomina in blocco e caricamento a ridosso delle scadenze.",
+   "wins": [
+    "Importazione da più schede di memoria insieme, con rinomina e metadati durante la copia",
+    "Metadati IPTC/XMP, sostituzioni di codici, variabili e parole chiave strutturate per le didascalie in tempi stretti",
+    "Stelle, classi di colore e tag per selezionare in fretta migliaia di RAW",
+    "Rinomina in blocco, Salva con nome con ridimensionamento e filigrana, caricamento diretto su FTP, Dropbox, S3, PhotoShelter e altri",
+    "Trova e sostituisci con espressioni regolari su nomi di file e metadati",
+    "Scorciatoie completamente personalizzabili con preset, e PDF delle scorciatoie da stampare",
+    "Versione Windows con le stesse funzioni"
+   ],
+   "price": "Photo Mechanic: 14,99 $ al mese, 149 $ all’anno o 299 $ perpetua (1 anno di aggiornamenti); prova gratuita di 30 giorni. Photo Mechanic Plus (livello con catalogo, 24,99 $ al mese, 249 $ all’anno, 399 $ perpetua) non è più in vendita ai nuovi clienti dal 27 febbraio 2026, anche se la pagina dello store lo elenca ancora.",
+   "version": "2026.6 (build 9175), l’ultima annunciata sul blog di Camera Bits",
+   "updated": "2026-06-18",
+   "platforms": "macOS, Windows",
+   "notes": {
+    "no_account_no_tracking": "Niente pubblicità; la licenza si attiva e si controlla online di tanto in tanto",
+    "dark_light_setting": "Tema chiaro o scuro per messaggi e dialoghi; sfondo dell’anteprima impostabile",
+    "thumbnail_grid": "Griglia del provino; cartelle in un albero, non come anteprime",
+    "recursive_search": "«Apri cartella e sottocartelle» in un provino, poi Trova per nome o IPTC",
+    "img_psd_exr": "PSD (salvati con compatibilità massima) sì; OpenEXR non tra i formati supportati",
+    "zoom_rotate": "Zoom e spostamento nell’anteprima; la rotazione scrive l’orientamento EXIF",
+    "slideshow_recursive": "Possibile su cartella e sottocartelle; video nella presentazione non documentati",
+    "video_mkv_avi_webm": "AVI sì; MKV, WebM, WMV, FLV non tra i formati supportati",
+    "undo_file_actions": "Annulla/Ripeti su macOS «quando disponibile»; non è indicato per quali azioni",
+    "image_editing": "Ritaglio, rotazione, ridimensionamento e filigrana all’esportazione; nessuna modifica dei pixel",
+    "library_catalog": "Tag, stelle, classi di colore, parole chiave IPTC nei file; il catalogo non è più in vendita"
+   }
+  },
+  "picasa": {
+   "name": "Picasa",
+   "vendor": "Google",
+   "summary": "L’organizzatore e visualizzatore di foto gratuito di Google, ritirato a marzo 2016 e offline dal 2018. Scansionava le cartelle in una libreria con tag, volti e album, offriva correzioni semplici non distruttive e presentazioni. Ancora molto cercato da chi vuole un visualizzatore di foto locale, semplice e gratuito.",
+   "wins": [
+    "Riconoscimento dei volti, tag e album",
+    "Correzioni non distruttive con un clic",
+    "Collage, layout di stampa ed esportazione",
+    "Familiare a molti utenti di lunga data"
+   ],
+   "price": "Gratis (fuori produzione, nessun download ufficiale)",
+   "version": "3.9.141.259 (Windows) / 3.9.141.306",
+   "updated": "2015-10-09 (supporto terminato il 2016-03-15)",
+   "platforms": "Windows, macOS (Intel, beta), Linux (Wine, vecchia)"
+  },
+  "picview": {
+   "name": "PicView",
+   "vendor": "Ruben Hyldgaard Negendahl",
+   "summary": "PicView è un visualizzatore di immagini veloce, gratuito e open source per Windows e macOS, costruito con Avalonia. Legge praticamente ogni formato di immagine tramite Magick.NET, apre fumetti e archivi e aggiunge galleria, schede, ritaglio, ridimensionamento in blocco e una finestra di info sull’immagine. Molto personalizzabile, tasti compresi.",
+   "wins": [
+    "Supporto amplissimo dei formati di immagine (Magick.NET)",
+    "Ritaglio, ridimensionamento, conversione e ridimensionamento in blocco integrati",
+    "Schede con cronologia per scheda",
+    "Vista a due immagini affiancate",
+    "Modifica di valutazione e parole chiave EXIF",
+    "Anche per Windows"
+   ],
+   "price": "Gratis",
+   "version": "5.2.2",
+   "updated": "2026-11-10",
+   "platforms": "macOS, Windows",
+   "notes": {
+    "folder_browsing": "Apre un file e sfoglia la sua cartella con una galleria; niente albero né browser di cartelle",
+    "thumbnail_grid": "Galleria in basso o a pieno schermo della cartella; niente anteprime delle cartelle",
+    "recursive_search": "Ctrl+F cerca nella cartella corrente, con opzione per le sottocartelle",
+    "network_shares_fast": "Opzione per nascondere la galleria nelle cartelle enormi; nulla di specifico per la rete",
+    "bookmarks": "Preferiti per i file con tasti dedicati e cronologia; segnalibri di cartelle non confermati",
+    "img_svg_pdf": "SVG sì; PDF non indicato",
+    "slideshow_recursive": "Opzione «Includi sottocartelle»; solo immagini",
+    "auto_enhance_view": "Effetti (luminosità, contrasto, filtri) sulla vista, salvabili; nessun miglioramento automatico",
+    "manga_two_page": "Due immagini affiancate; nessun ordine da destra a sinistra",
+    "move_copy": "Sposta cambiando il percorso nel nome; copia file; niente trascinamento in cartelle",
+    "library_catalog": "Modifica valutazione e parole chiave EXIF; nessun database",
+    "shortcut_cheatsheet": "Elenco delle scorciatoie su picview.org; non un foglio da stampare"
+   }
+  },
+  "pixea": {
+   "name": "Pixea",
+   "vendor": "ImageTasks",
+   "summary": "Visualizzatore minimale di immagini e video diventato un editor fotografico con maschere, rimozione di oggetti e upscaling. Sfoglia cartelle, librerie di Foto e archivi ZIP/CBZ e riproduce MKV con scelta di sottotitoli e traccia audio; ricerca, ordinamento e scorciatoie personalizzate richiedono Pixea Plus.",
+   "wins": [
+    "Editor di immagini con maschere, rimozione oggetti, upscaling, LUT",
+    "Modifica e conversione in blocco",
+    "Sottotitoli incorporati, traccia audio, velocità di riproduzione",
+    "Apre le librerie di Foto",
+    "Tag e valutazioni con file XMP",
+    "Ricerca dei duplicati"
+   ],
+   "price": "Gratis; Pixea Plus 19,99 $ a vita, 14,99 $ all’anno o 1,99 $ al mese",
+   "version": "8.4.1",
+   "updated": "2026-10-27",
+   "platforms": "macOS",
+   "notes": {
+    "free": "base gratis; Pixea Plus 19,99 $ a vita, 14,99 $ all’anno o 1,99 $ al mese",
+    "dark_light_setting": "Tema Liquid Glass o Classico e colore di sfondo; nessun cambio chiaro/scuro",
+    "languages_20": "12: EN, BG, FR, DE, IT, JA, KO, PT, RU, zh-Hans, ES, UK",
+    "recursive_search": "ricerca solo in Plus; scansione delle sottocartelle fino a 5 livelli",
+    "network_shares_fast": "opzione per saltare i metadati sui volumi di rete; cartelle grandi più veloci",
+    "img_psd_exr": "PSD sì; Radiance HDR sì, OpenEXR no",
+    "slideshow_recursive": "presentazione della cartella con sottocartelle fino a 5 livelli, casuale; foto e video insieme",
+    "auto_enhance_view": "regolazioni non distruttive salvabili in formato Pixea; nessun miglioramento solo sulla vista",
+    "file_info_exif": "pannello EXIF; info a schermo per i video (Plus); codec e bitrate non indicati",
+    "video_mkv_avi_webm": "MKV, AVI, WMV, FLV, VOB, RM sì; WebM non indicato",
+    "video_skim_arrows": "salti di 10 o 30 s; le frecce passano al media successivo",
+    "archives_as_folders": "Solo ZIP; RAR/7z non indicati",
+    "comics_cbz_cbr": "Solo CBZ",
+    "videos_in_archives": "la ricerca trova video negli ZIP; riproduzione dallo ZIP non indicata",
+    "undo_file_actions": "annulla e ripeti, portata non indicata",
+    "batch_convert": "gratis 3 immagini, Plus senza limiti",
+    "cloud_sync": "pulsante Condividi; nessuna sincronizzazione",
+    "keyboard_first": "scorciatoie per navigare, zoom, valutazione",
+    "custom_shortcuts": "Solo Plus",
+    "shortcut_cheatsheet": "breve elenco dei tasti sul sito",
+    "no_network": "Nessun dato raccolto; scarica un modello ML su richiesta"
+   }
+  },
+  "potplayer": {
+   "name": "PotPlayer",
+   "vendor": "Kakao",
+   "summary": "PotPlayer è un lettore multimediale per Windows di Kakao, configurabilissimo, con codec integrati, decodifica hardware, uscita 3D e 360°, strumenti per i sottotitoli tra cui la trascrizione vocale con Whisper, e streaming. Apre anche immagini fisse e riproduce media direttamente da archivi ZIP/RAR.",
+   "wins": [
+    "Un’infinità di impostazioni, renderer e filtri (madVR, tone mapping HDR, raddoppio dei fotogrammi)",
+    "Download, traduzione e generazione vocale dei sottotitoli (Whisper)",
+    "Streaming (YouTube, HLS/DASH), TV, DVD, Blu-ray, 3D e VR a 360°",
+    "Tasti e skin completamente personalizzabili",
+    "Riproduzione musicale con copertine, testi, ReplayGain"
+   ],
+   "price": "Gratis (freeware)",
+   "version": "261021 (build 1.7.x, 21 ottobre 2026)",
+   "updated": "2026-10-21",
+   "platforms": "Windows"
+  },
+  "qspace": {
+   "name": "QSpace",
+   "vendor": "Tian Wenda",
+   "summary": "File manager a più pannelli in stile Finder con 12 layout, spazi di lavoro, ampia personalizzazione (tasti, menu contestuale, colori) e ricerca con espressioni regolari. Estensioni a pagamento aggiungono navigazione negli archivi, connessioni a server e cloud e rinomina in blocco avanzata.",
+   "wins": [
+    "Fino a 12 layout di pannelli e spazi di lavoro salvati",
+    "Tasti, menu contestuali, barra degli strumenti e colori personalizzabili",
+    "Sincronizzazione di cartelle, hash dei file, modelli di file",
+    "Azioni rapide sulle immagini (ruota, converti, rimuovi sfondo)",
+    "Colonne con metadati video (frequenza dei fotogrammi, velocità dati)"
+   ],
+   "price": "Una tantum: QSpace (Mac App Store) 12,99 $, QSpace Pro (diretto) 13,99 $ in offerta (listino 27,99 $ / 29,99 $); estensioni a pagamento: Stash Shelf, Advanced Batch Rename, Server Connections (da 0,99 $ a 9,99 $), Enhanced Archiver (gratis in promozione, listino 4,99 $)",
+   "version": "Pro 7.0.4 (Mac App Store 7.0.3; beta 7.0.4.018)",
+   "updated": "2026-10-09",
+   "platforms": "macOS",
+   "notes": {
+    "no_account_no_tracking": "La licenza Pro è legata a un account (2 dispositivi); App Store: identificativi collegati a te",
+    "dark_light_setting": "Schemi di colore con modalità chiara e scura (beta); nessun interruttore separato",
+    "languages_20": "Circa 14 lingue, italiano compreso",
+    "img_modern_formats": "Anteprima tramite macOS; citato solo HEIC",
+    "zoom_rotate": "Zoom della Visualizzazione rapida; l’azione Ruota modifica il file",
+    "slideshow": "«Instant SlideShow» dal menu contestuale (Visualizzazione rapida a schermo intero)",
+    "video_mkv_avi_webm": "MKV e simili tramite le estensioni multimediali di macOS",
+    "music_mode": "Solo copertine audio e riproduzione nella Visualizzazione rapida",
+    "archives_as_folders": "Estensione Enhanced Archiver (di norma 4,99 $): RAR, ZIP, 7z come cartelle",
+    "comics_cbz_cbr": "Nessun lettore di fumetti; CBZ/CBR sfogliabili come archivi aggiungendo l’estensione",
+    "videos_in_archives": "Opzione «Anteprima in QSpace» per gli archivi; nessun lettore",
+    "dual_pane": "Fino a 12 pannelli; copia o sposta con tasti propri, F5/F6 non predefiniti",
+    "image_editing": "Azioni rapide: ruota, converti, rimuovi sfondo, crea PDF",
+    "batch_convert": "Conversione di immagini; Advanced Batch Rename è un’estensione a pagamento",
+    "library_catalog": "Solo tag e commenti del Finder",
+    "cloud_sync": "Estensione Server Connections: FTP, SFTP, Dropbox, OneDrive, Google Drive, S3 …",
+    "app_sandbox": "Versione Mac App Store in sandbox (cartelle da aggiungere a mano); Pro con accesso completo al disco"
+   }
+  },
+  "quicktime-player": {
+   "name": "QuickTime Player",
+   "vendor": "Apple",
+   "summary": "Il lettore multimediale integrato di Apple. Apre ciò che AVFoundation sa riprodurre (MP4, MOV, M4V, HEVC, ProRes), con Picture in Picture, controllo della velocità e modifiche semplici come taglio e divisione, più registrazione dello schermo e dell’audio.",
+   "wins": [
+    "Già installato, niente da scaricare",
+    "Registrazione di schermo, filmati e audio",
+    "Modifiche video semplici: taglia, dividi, ruota, rimuovi audio, esporta",
+    "Picture in Picture e video spaziali"
+   ],
+   "price": "Gratis (incluso in macOS)",
+   "version": "10.5 (macOS 27)",
+   "updated": "incluso in macOS 27 (2026)",
+   "platforms": "macOS",
+   "notes": {
+    "zoom_rotate": "Solo video; rotazione e capovolgimento sono modifiche",
+    "file_info_exif": "Inspector filmato: formato, compressione, dimensioni, fps, velocità dati; niente EXIF",
+    "video_skim_arrows": "← → di un fotogramma; ⌥ + frecce all’inizio o alla fine; nessun salto a tempo",
+    "music_mode": "Riproduce un file audio alla volta; nessuna libreria né coda",
+    "rename_trash": "Rinomina il filmato aperto; niente Cestino né nuova cartella",
+    "undo_file_actions": "Annulla per le modifiche ai filmati, non per le operazioni sui file",
+    "cloud_sync": "Apre file in iCloud Drive; menu Condividi",
+    "keyboard_first": "Riproduzione da tastiera; nessuna navigazione nei file",
+    "shortcut_cheatsheet": "Elenco delle scorciatoie nella guida di Apple",
+    "no_network": "Può andare online (Apri posizione, condivisione); niente telemetria né controllo aggiornamenti",
+    "notarized_attested": "App di sistema firmata da Apple; codice chiuso"
+   }
+  },
+  "quickviewer": {
+   "name": "QuickViewer",
+   "vendor": "KATO Kanryu",
+   "summary": "Visualizzatore di immagini e fumetti veloce basato su OpenGL che legge gli archivi senza estrarli e mostra le doppie pagine. Ha un database di catalogo per grandi raccolte di fumetti. Lo sviluppatore ha chiuso il progetto a novembre 2025 per malattia; la 1.2.8 era una correzione di sicurezza per UnRAR.",
+   "wins": [
+    "Database di catalogo per migliaia di fumetti",
+    "Cambio pagina velocissimo grazie a OpenGL",
+    "Ampio supporto di archivi, compresi tar.gz/bz2/xz e cab",
+    "JPEG in CMYK mostrati correttamente"
+   ],
+   "price": "Gratis",
+   "version": "1.2.8",
+   "updated": "2025-12-12",
+   "platforms": "Windows, macOS (Intel, fino alla 1.1.1), Linux (fino alla 1.1.1)"
+  },
+  "qview": {
+   "name": "qView",
+   "vendor": "jurplel (Interverse)",
+   "summary": "qView è un visualizzatore di immagini minimale e multipiattaforma, senza barre degli strumenti: apre un singolo file e permette di sfogliare il resto della cartella. Si avvia in fretta, precarica le immagini vicine e supporta immagini animate e molti formati tramite i plug-in Qt.",
+   "wins": [
+    "Finestra minimale, senza alcun fronzolo",
+    "Gira anche su Windows e Linux, e su macOS più vecchi (build legacy per 10.13 e successivi)",
+    "Avanzamento per fotogrammi e controllo della velocità nelle immagini animate",
+    "Apre un’immagine direttamente da un URL"
+   ],
+   "price": "Gratis",
+   "version": "7.1",
+   "updated": "2025-07-26 (rilascio; le build notturne continuano, l’ultima il 2026-11-04)",
+   "platforms": "macOS, Windows, Linux",
+   "notes": {
+    "dark_light_setting": "Colore di sfondo e barra del titolo scura impostabili; nessun tema chiaro/scuro completo",
+    "folder_browsing": "Apre un file e sfoglia la sua cartella; nessun browser di cartelle",
+    "img_svg_pdf": "SVG sì, niente PDF",
+    "file_info_exif": "La finestra info mostra dimensioni del file e dell’immagine; niente EXIF",
+    "wrong_extension_note": "Può aprire i file in base al contenuto, ma non segnala l’incongruenza",
+    "rename_trash": "Rinomina e sposta nel cestino; niente nuova cartella",
+    "undo_file_actions": "Solo annullare l’eliminazione (ripristino dal cestino)"
+   }
+  },
+  "raw-power": {
+   "name": "RAW Power",
+   "vendor": "Gentlemen Coders",
+   "summary": "RAW Power è un editor RAW e JPEG non distruttivo creato da un ex responsabile di Aperture, utilizzabile da solo sulle cartelle del Finder, come gestore della libreria di Foto di Apple o come estensione di modifica di Foto. Offre regolazioni in stile Aperture, valutazioni e contrassegni sincronizzati via Foto di iCloud ed esportazione in blocco. Il produttore indirizza ora chi usa macOS 13 o successivi al successore Nitro Photo.",
+   "wins": [
+    "Modifica non distruttiva di RAW e JPEG (curve, LUT, effetto profondità, Boost)",
+    "Lavora direttamente sulla libreria di Foto di Apple e sincronizza via Foto di iCloud",
+    "Preset ed esportazione in blocco",
+    "Versione per iPhone e iPad",
+    "Schede per più cartelle"
+   ],
+   "price": "39,99 $ una tantum sul Mac App Store (sito del produttore: 49,99 $ Mac, 9,99 $ iOS; acquisti separati)",
+   "version": "3.5.6",
+   "updated": "2026-07-27",
+   "platforms": "macOS, iOS, iPadOS",
+   "notes": {
+    "no_account_no_tracking": "Nessun account né pubblicità; secondo l’App Store raccoglie dati d’uso anonimi",
+    "languages_20": "6: inglese, francese, tedesco, spagnolo, cinese semplificato e tradizionale",
+    "thumbnail_grid": "Griglia di miniature con badge; anteprime delle cartelle non documentate",
+    "rename_trash": "Può eliminare immagini e creare album e cartelle; rinomina non documentata",
+    "move_copy": "Organizza gli album di Foto; spostare o copiare file sul disco non descritto",
+    "keyboard_first": "Scorciatoie per valutare, contrassegnare e navigare; la modifica passa da cursori e mouse"
+   }
+  },
+  "sequential": {
+   "name": "Sequential",
+   "vendor": "chuchusoft e The Sequential Project",
+   "summary": "Sequential è un classico visualizzatore open source di immagini e fumetti per Mac che apre cartelle, PDF e archivi (ZIP/CBZ, RAR/CBR, 7z) e li sfoglia in una sola finestra. Il fork di chuchusoft lo ha modernizzato come app universale per macOS 11.4 e successivi su Apple silicon; il manutentore dice che ulteriori sviluppi sono improbabili. L’originale btrask/Sequential è fermo al 2013.",
+   "wins": [
+    "Legge i PDF pagina per pagina con Vai alla pagina e una modalità a colori invertiti",
+    "Lettura da destra a sinistra per i manga",
+    "Pausa e Riprendi salvano la posizione di lettura dentro un archivio",
+    "Molti formati di archivio tramite XADMaster, compresi i 7z divisi",
+    "Gira su macOS più vecchi (10.14 Intel / 11.4 Apple silicon)"
+   ],
+   "price": "Gratis",
+   "version": "2.6.0",
+   "updated": "2024-09-07",
+   "platforms": "macOS",
+   "notes": {
+    "languages_20": "12 lingue dell’interfaccia, italiano compreso",
+    "thumbnail_grid": "Miniature in una barra laterale, non in griglia",
+    "recursive_search": "Trova cerca i nomi delle pagine nella cartella o nell’archivio aperto",
+    "network_shares_fast": "Funziona su server montati; nessuna cache particolare",
+    "bookmarks": "Pausa e Riprendi salvano una posizione nel documento; niente cartelle preferite",
+    "img_modern_formats": "HEIC/HEIF e WebP dichiarati; AVIF e JPEG XL no",
+    "img_svg_pdf": "PDF completo (pagine, Vai alla pagina); SVG dichiarato, la resa dipende da macOS",
+    "img_animated": "GIF animate (pausa con la barra spaziatrice); APNG e WebP animati non documentati",
+    "slideshow_recursive": "Il timer percorre tutto l’albero, sottocartelle e archivi compresi, ma solo immagini",
+    "file_info_exif": "L’Inspector mostra EXIF e proprietà dell’immagine; niente video",
+    "streaming_urls": "Niente stream, ma File > Apri URL carica immagini da internet",
+    "split_archives": "7-Zip divisi (.7z.001); RAR/ZIP divisi non documentati",
+    "manga_two_page": "Lettura da destra a sinistra; niente doppia pagina",
+    "rename_trash": "Sposta nel Cestino per le immagini locali; niente rinomina né nuova cartella",
+    "move_copy": "«Salva immagini in…» copia ed estrae; Modifica > Copia; niente spostamento",
+    "shortcut_cheatsheet": "Aiuto > Scorciatoie da tastiera apre una pagina con i tasti; non stampabile"
+   }
+  },
+  "simple-comic": {
+   "name": "Simple Comic",
+   "vendor": "Dancing Tortoise Software e la community di Simple Comic",
+   "summary": "Simple Comic è un lettore di fumetti per macOS essenziale e nativo, pensato per leggere con il minor numero di interazioni possibile. Apre CBZ/CBR/CB7, PDF e cartelle di immagini come un libro, con doppie pagine, ordine manga da destra a sinistra e Testo attivo nelle pagine.",
+   "wins": [
+    "Doppia pagina e modalità manga da destra a sinistra",
+    "Testo attivo: seleziona, copia e fai leggere il testo delle pagine",
+    "RAR multivolume e archivi annidati si aprono come un unico fumetto",
+    "Lettura di PDF",
+    "Miniature della Visualizzazione rapida per gli archivi di fumetti nel Finder"
+   ],
+   "price": "Gratis (Mac App Store e GitHub)",
+   "version": "1.12.0 (GitHub, inviata all’App Store); l’App Store mostra la 1.11.0",
+   "updated": "2026-11-11",
+   "platforms": "macOS",
+   "notes": {
+    "languages_20": "9 lingue, italiano compreso",
+    "folder_browsing": "Apre una cartella o un archivio come un unico libro, nessun navigatore di cartelle",
+    "thumbnail_grid": "Panoramica a miniature solo delle pagine del libro aperto",
+    "network_shares_fast": "Gli archivi in rete vanno in cache locale in background; le pagine arrivano durante il caricamento",
+    "img_raw": "Accetta ogni tipo NSImage/ImageIO (RAW compresi su macOS); non pubblicizzato",
+    "img_psd_exr": "Accetta ogni tipo NSImage/ImageIO (PSD e OpenEXR compresi); non pubblicizzato",
+    "img_svg_pdf": "PDF sì (come libro); SVG solo se NSImage lo supporta",
+    "archives_as_folders": "apre un archivio come fumetto, non come cartella",
+    "keyboard_first": "Pagine, zoom e menu da tastiera; nessuna navigazione nei file da tastiera",
+    "shortcut_cheatsheet": "La guida elenca i tasti di navigazione",
+    "no_network": "La build Mac App Store non va in rete; quella diretta sì, per gli aggiornamenti Sparkle",
+    "notarized_attested": "Build diretta notarizzata; nessuna attestazione di build pubblica"
+   }
+  },
+  "smplayer": {
+   "name": "SMPlayer",
+   "vendor": "Ricardo Villalba",
+   "summary": "SMPlayer è un’interfaccia Qt gratuita e open source per mpv e MPlayer che ricorda le impostazioni di ogni file. Offre un’interfaccia classica da lettore con skin, riproduzione di YouTube, download da opensubtitles.org, filtri e un editor di scorciatoie configurabile.",
+   "wins": [
+    "Riprende ogni file con le sue impostazioni (audio, sottotitoli, posizione)",
+    "Riproduzione di YouTube e download di sottotitoli online",
+    "Playlist salvate, preferiti, elenchi TV e radio",
+    "Skin e temi di icone, oltre 30 lingue",
+    "Gira anche su Windows e Linux"
+   ],
+   "price": "Gratis",
+   "version": "26.8.29 (build macOS 10461, 2026-10-06)",
+   "updated": "2026-10-06",
+   "platforms": "Windows, Linux, macOS",
+   "notes": {
+    "dark_light_setting": "skin, temi di icone e stili Qt, nessun semplice cambio chiaro/scuro",
+    "folder_browsing": "Apri cartella aggiunge una cartella alla playlist (anche ricorsiva); nessun browser",
+    "list_view": "tabella della playlist con colonne (nome, durata …), non una vista di cartella",
+    "recursive_search": "solo un campo filtro nella playlist",
+    "multiple_windows": "istanza singola di default; disattivabile",
+    "bookmarks": "preferiti di file e URL, segnalibri nei video; niente segnalibri di cartelle",
+    "auto_enhance_view": "equalizzatore video (Ctrl+E), nessun miglioramento automatico",
+    "file_info_exif": "proprietà del file: codec, bitrate, tracce; niente EXIF",
+    "music_mode": "riproduce file audio; modalità compatta (Ctrl+C), elenco radio",
+    "shortcut_cheatsheet": "tabella delle scorciatoie salvabile come file .keys; nessun foglio da stampare"
+   }
+  },
+  "tencent-kantu": {
+   "name": "看图 Kantu",
+   "vendor": "Tencent",
+   "summary": "Il browser e organizzatore di immagini gratuito di Tencent per Mac: sfoglia cartelle come Download senza importare, importa da telefoni e fotocamere, raggruppa per volti, luoghi e date, trova i duplicati e crea album curati. Non è più aggiornato dal 2019.",
+   "wins": [
+    "Riconoscimento dei volti, mappa dei luoghi, ricerca duplicati, album curati",
+    "Importa direttamente da telefoni, fotocamere e dispositivi PTP",
+    "Valutazioni e filtri per i file grandi"
+   ],
+   "price": "Gratis",
+   "version": "2.5.2",
+   "updated": "2019-11-08",
+   "platforms": "macOS",
+   "notes": {
+    "no_account_no_tracking": "Nessun account necessario; l’accesso facoltativo con WeChat o QQ carica album nel cloud di Tencent",
+    "dark_light_setting": "Modalità scura dalla 2.0; un’impostazione indipendente dal sistema non è documentata",
+    "thumbnail_grid": "Griglia in stile Foto con il numero di immagini per cartella; niente anteprime delle cartelle",
+    "recursive_search": "Trova immagini per nome, data, luogo, scena in tutte le sue posizioni",
+    "bookmarks": "Posizioni aggiunte a mano nella barra laterale; preferiti per le immagini",
+    "img_modern_formats": "WebP sì; HEIC, AVIF, JPEG XL non citati",
+    "img_psd_exr": "Anteprima PSD; EXR non citato",
+    "img_animated": "Anteprima GIF; APNG e WebP animati non citati",
+    "zoom_rotate": "Zoom con rotella o trackpad, a detta di alcuni sfocato; rotazione non documentata",
+    "slideshow_recursive": "Gli album curati riproducono foto e video in sequenza; non percorre le sottocartelle",
+    "file_info_exif": "Vista EXIF; nessuna info sui codec video",
+    "video_native": "Elenca e filtra i video, ma secondo un utente ognuno si apre in un lettore separato",
+    "rename_trash": "Rinomina, elimina con un cestino Eliminati di recente; nuova cartella non documentata",
+    "undo_file_actions": "Le immagini eliminate si recuperano da Eliminati di recente",
+    "image_editing": "Nessuna modifica; voce nel clic destro per annotare",
+    "cloud_sync": "Accesso con WeChat/QQ, caricamento degli album nel cloud di Tencent, condivisione via WeChat",
+    "notarized_attested": "Firmato tramite il Mac App Store; nessun codice pubblico"
+   }
+  },
+  "total-commander": {
+   "name": "Total Commander",
+   "vendor": "Ghisler Software",
+   "summary": "Il più noto file manager «ortodosso» a due pannelli per Windows, sviluppato dal 1993. È forte su operazioni sui file, archivi, FTP, rinomina multipla e sincronizzazione delle cartelle, con il visualizzatore Lister e plug-in per immagini e media.",
+   "wins": [
+    "Gestione file a due pannelli: sincronizzazione, confronto, rinomina multipla, checksum",
+    "Client FTP/FTPS integrato",
+    "Enorme ecosistema di plug-in (Lister, archiviatori, file system)",
+    "Il lettore di Lister cambia sottotitoli, tracce audio e velocità",
+    "Gira su Windows da 95 a 11, più un’app Android gratuita"
+   ],
+   "price": "Shareware: 42 € + IVA per licenza (studenti 31,50 €), aggiornamenti gratuiti; versione Android gratis",
+   "version": "11.58.1",
+   "updated": "2026-10-29",
+   "platforms": "Windows, Android"
+  },
+  "vidhub": {
+   "name": "VidHub",
+   "vendor": "Oka Apps",
+   "summary": "Libreria e lettore video in stile Infuse per i dispositivi Apple: scansiona cartelle locali, NAS, cloud e server Emby/Jellyfin/Plex, costruisce una libreria di locandine da TMDB e sincronizza l’avanzamento via iCloud. Uno dei lettori multimediali con più valutazioni sul Mac App Store (2.800 valutazioni, USA).",
+   "wins": [
+    "Libreria di film e serie con locandine e metadati",
+    "Sincronizzazione iCloud tra iPhone, iPad, Apple TV, Mac",
+    "Cloud, NAS, Emby/Jellyfin/Plex",
+    "Ricerca di sottotitoli online",
+    "Invio via DLNA, Chromecast, Roku, AirPlay"
+   ],
+   "price": "Gratis con VIP (solo Mac a vita 14,99 $; tutti i dispositivi a vita da 25,99 $ a 39,99 $; 9,99 $ all’anno; 1,49 $ al mese)",
+   "version": "3.0.3 (Mac)",
+   "updated": "2026-11-04",
+   "platforms": "macOS, iOS, iPadOS, tvOS, visionOS, Android TV",
+   "notes": {
+    "free": "Gratis con VIP: solo Mac a vita 14,99 $, tutti i dispositivi da 25,99 $, o 9,99 $ all’anno",
+    "languages_20": "18 sull’App Store",
+    "folder_browsing": "Aggiunge sorgenti locali, SMB/WebDAV e cloud e le trasforma in una libreria",
+    "thumbnail_grid": "Parete di locandine da TMDB, non miniature dei file",
+    "recursive_search": "Ricerca globale per nome di file e titolo di film o serie nella libreria",
+    "network_shares_fast": "SMB/CIFS, WebDAV, NAS e molti cloud; velocità non nota",
+    "bookmarks": "Preferiti (sincronizzati via iCloud)",
+    "auto_enhance_view": "Correzione colore solo per i video",
+    "streaming_urls": "Cloud, server Emby/Jellyfin/Plex, WebDAV; URL qualsiasi non documentati",
+    "rename_trash": "Rinomina file nel cloud (anche con espressioni regolari); eliminazione non documentata",
+    "batch_convert": "Rinomina in blocco dei file nel cloud; nessuna conversione",
+    "notarized_attested": "Firmato per l’App Store; codice chiuso"
+   }
+  },
+  "vlc": {
+   "name": "VLC",
+   "vendor": "VideoLAN",
+   "summary": "Il più noto lettore multimediale gratuito e open source: riproduce quasi ogni file, disco o stream su ogni piattaforma senza pacchetti di codec. È prima di tutto un lettore; le immagini compaiono come fotogrammi fissi a tempo e non c’è un browser di file né una griglia di miniature.",
+   "wins": [
+    "riproduce quasi ogni formato, dischi (DVD/Blu-ray), stream di rete e dispositivi di acquisizione",
+    "gira su ogni sistema operativo desktop e mobile",
+    "sottotitoli da file e online (VLSub), tracce audio, velocità, filtri, conversione e streaming in uscita",
+    "playlist salvate, musica, visualizzazioni",
+    "tasti completamente riassegnabili"
+   ],
+   "price": "Gratis",
+   "version": "3.0.24",
+   "updated": "2026-09-22",
+   "platforms": "macOS, Windows, Linux, iOS, Android, altri",
+   "notes": {
+    "dark_light_setting": "macOS: opzione per l’interfaccia scura; Windows/Linux: palette scura",
+    "folder_browsing": "Apre una cartella come playlist; nessun vero browser di file",
+    "list_view": "Playlist con colonne ordinabili (titolo, artista …), non un elenco di file",
+    "recursive_search": "«Cerca nella playlist» filtra solo le voci della playlist",
+    "network_shares_fast": "riproduce direttamente da SMB, NFS, SFTP, FTP, UPnP; nessuna navigazione a miniature",
+    "multiple_windows": "Windows/Linux: più istanze se si disattiva l’istanza singola; macOS: una sola finestra",
+    "img_modern_formats": "WebP si apre (fermo per 10 s); HEIC, AVIF, JPEG XL no",
+    "img_svg_pdf": "SVG con librsvg; niente PDF",
+    "img_animated": "GIF animate tramite FFmpeg; APNG e WebP animati non confermati",
+    "zoom_rotate": "zoom, ritaglio e rotazione del video; nessuno spostamento sulle immagini",
+    "slideshow": "le immagini in una playlist restano 10 s ciascuna",
+    "slideshow_recursive": "una cartella aperta si espande con le sottocartelle, foto (10 s) e video insieme in una playlist",
+    "auto_enhance_view": "Regolazioni manuali (luminosità, contrasto, tonalità …), nessun miglioramento automatico",
+    "file_info_exif": "Informazioni multimediali: codec, bitrate, statistiche; niente EXIF",
+    "video_skim_arrows": "salti con modificatore + frecce (macOS ⌘⌃←/→ 3 s, ⌘⌥ 10 s, ⌘⇧ 1 min)",
+    "control_bar_movable": "A schermo intero i controlli si trascinano e restano lì; in finestra no",
+    "archives_as_folders": "elenca i file di un archivio nella playlist; non una cartella da sfogliare",
+    "split_archives": "unisce più volumi tramite libarchive; non documentato",
+    "batch_convert": "Converti/Salva transcodifica più file; nessuna rinomina in blocco",
+    "library_catalog": "libreria multimediale di base nella playlist, niente tag né valutazioni",
+    "keyboard_first": "riproduzione tutta da tastiera, la navigazione è pensata per il mouse",
+    "boss_key": "l’azione «tasto capo» (nasconde e mette in pausa) esiste ma senza tasto predefinito",
+    "no_network": "Controlla gli aggiornamenti; il recupero online dei metadati è disattivato di default"
+   }
+  },
+  "windows-media-player": {
+   "name": "Windows Media Player",
+   "vendor": "Microsoft",
+   "summary": "Il lettore integrato di Windows: un’app con libreria pensata prima di tutto per la musica, che riproduce anche i video locali, con sottotitoli, tracce audio, velocità di riproduzione, regolazioni dell’immagine, mini lettore e invio ad altri dispositivi. Per HEVC e AV1 servono componenti aggiuntivi a pagamento o dallo Store, e i recensori lo trovano più lento e pesante del classico Windows Media Player Legacy, che Microsoft mantiene come funzionalità facoltativa.",
+   "wins": [
+    "Preinstallato su Windows, niente da configurare",
+    "Libreria musicale con copertine, playlist e ripping di CD",
+    "Mini lettore, invio ad altri dispositivi",
+    "Segue le impostazioni di sottotitoli e tema di Windows"
+   ],
+   "price": "Incluso in Windows; Estensioni video HEVC 0,99 $, altri codec come componenti aggiuntivi dello Store",
+   "version": "Lettore multimediale 11.2610.5.0 (Insider, novembre 2026); Windows Media Player Legacy 12",
+   "updated": "2026-11 (note di rilascio Insider)",
+   "platforms": "Windows"
+  },
+  "xee": {
+   "name": "Xee³",
+   "vendor": "MacPaw",
+   "summary": "Classico visualizzatore di immagini leggero per Mac che sfoglia cartelle e archivi (ZIP, RAR, 7z, CBZ/CBR) senza estrarli, con molti formati vecchi ed esotici. Ancora presente su theunarchiver.com ma senza link per scaricarlo o acquistarlo; l’ultima build 3.5.4 (dicembre 2021) è solo per Intel.",
+   "wins": [
+    "Formati storici ed esotici (PCX, IFF, MAG, PVR, XBM)",
+    "Riconoscimento del programma che ha creato un JPEG dalle tabelle di quantizzazione",
+    "Vista dei livelli dei PSD",
+    "Ritaglio JPEG senza perdita"
+   ],
+   "price": "Non più in vendita (era a pagamento con prova; tolto dall’App Store)",
+   "version": "3.5.4",
+   "updated": "2021-12-21",
+   "platforms": "macOS",
+   "notes": {
+    "open_source": "Il codice di Xee 2.x è pubblico; Xee 3 è chiuso",
+    "bookmarks": "elenco delle ultime destinazioni di spostamento e copia",
+    "img_modern_formats": "WebP sì; HEIC/AVIF/JPEG XL no (ultimo aggiornamento dicembre 2021)",
+    "img_psd_exr": "PSD con livelli; OpenEXR non indicato",
+    "img_svg_pdf": "solo le immagini bitmap dentro i PDF; niente SVG",
+    "slideshow_recursive": "La scansione delle sottocartelle è facoltativa e la presentazione la segue; solo immagini",
+    "archive_passwords": "Archivi con password introdotti in Xee 2.1; non ribadito per Xee 3",
+    "split_archives": "Legge ciò che legge The Unarchiver; archivi in più parti non citati",
+    "image_editing": "ritaglio (JPEG senza perdita), esportazione",
+    "cloud_sync": "Menu Condividi",
+    "keyboard_first": "navigazione da tastiera; design molto basato sui gesti",
+    "app_sandbox": "La build App Store è in sandbox; quella diretta no (l’autore consigliava quella)"
+   }
+  },
+  "xnview-mp": {
+   "name": "XnView MP",
+   "vendor": "XnSoft",
+   "summary": "XnView MP è uno storico browser e organizzatore di immagini multipiattaforma che legge più di 500 formati. Unisce in un’unica app browser di file, visualizzatore, catalogo con categorie e valutazioni, convertitore in blocco ed editor di base. Sul Mac è un’app Qt, gratuita per uso privato.",
+   "wins": [
+    "Oltre 500 formati di immagine, esportazione in circa 70",
+    "Conversione e rinomina in blocco con espressioni regolari",
+    "Catalogo con categorie, valutazioni ed etichette colore",
+    "Modifica dei metadati (EXIF, IPTC, XMP)",
+    "Modifica delle immagini, confronto fino a 4 immagini, ricerca dei duplicati",
+    "Gira anche su Windows e Linux"
+   ],
+   "price": "Gratis per uso privato, didattico e non profit; licenza commerciale 29 € (a volume fino a 3,90 €)",
+   "version": "1.12.3",
+   "updated": "2026-11-09",
+   "platforms": "macOS, Windows, Linux",
+   "notes": {
+    "free": "Gratis per uso privato, didattico e non profit; le aziende devono acquistare una licenza (29 €)",
+    "regex_search": "Espressioni regolari solo nella rinomina in blocco; la ricerca usa caratteri jolly",
+    "network_shares_fast": "Funziona sulle condivisioni di rete, ma il changelog segnala lentezze",
+    "multiple_windows": "Schede; più istanze possibili",
+    "slideshow_recursive": "«Mostra i file nelle sottocartelle» alimenta la presentazione, che aspetta i video",
+    "auto_enhance_view": "Livelli automatici e regolazioni sono modifiche (il file cambia se salvi)",
+    "saved_playlists": "Le presentazioni si salvano come file .sld (immagini, con audio)",
+    "music_mode": "«Lettore multimediale» presente; nessuna libreria musicale",
+    "dual_pane": "Confronto fino a 4 immagini; F6 passa tra i pannelli; nessun file manager a due cartelle",
+    "cloud_sync": "Funzione di caricamento web; nessuna sincronizzazione cloud"
+   }
+  },
+  "yacreader": {
+   "name": "YACReader",
+   "vendor": "Luis Ángel San Martín",
+   "summary": "YACReader è un lettore di fumetti con un gestore di libreria (YACReaderLibrary) per grandi raccolte, metadati da Comic Vine, liste di lettura e un server domestico per le sue app mobili. Il lettore offre doppia pagina, modalità manga e scorrimento continuo, con regolazioni dell’immagine.",
+   "wins": [
+    "Libreria di fumetti completa: metadati Comic Vine, liste di lettura, liste smart, valutazioni",
+    "Server e app iOS/Android con avanzamento sincronizzato",
+    "Modalità manga, doppia pagina, scorrimento continuo per i webtoon",
+    "Luminosità, contrasto e gamma per vecchie scansioni",
+    "12 temi più editor di temi; scorciatoie riassegnabili",
+    "Versioni per Windows e Linux"
+   ],
+   "price": "Desktop e server gratis (donazioni); app iOS/Android a parte",
+   "version": "10.5.1",
+   "updated": "2026-11-13",
+   "platforms": "macOS, Windows, Linux, iOS, Android, Docker/server",
+   "notes": {
+    "languages_20": "14 lingue, italiano compreso, selezionabili nell’app",
+    "folder_browsing": "Il lettore apre file e cartelle; la navigazione passa da un database di libreria",
+    "network_shares_fast": "Apertura della libreria sulle condivisioni di rete migliorata; la libreria va indicizzata",
+    "bookmarks": "Segnalibri di pagina, preferiti, liste di lettura, etichette",
+    "img_modern_formats": "JPEG, PNG, GIF, TIFF, BMP, WebP; altri formati solo con plug-in Qt installati a mano",
+    "img_svg_pdf": "PDF sì (pdfium); SVG no",
+    "archives_as_folders": "apre un archivio come fumetto, non come cartella",
+    "rename_trash": "Rinomina cartelle nella libreria e file dai metadati; niente Cestino",
+    "move_copy": "Organizza i file in cartelle in base ai metadati (sperimentale)",
+    "undo_file_actions": "L’organizzazione dei file tiene un registro annullabile; nessun annulla generale",
+    "batch_convert": "Solo rinomina in blocco dai metadati; nessuna conversione di formato",
+    "cloud_sync": "Server proprio e app iOS/Android sincronizzano l’avanzamento in rete locale; nessun servizio cloud",
+    "shortcut_cheatsheet": "Una finestra elenca tutti i tasti; nessun foglio da stampare",
+    "notarized_attested": "Build macOS notarizzate; nessuna attestazione di build"
+   }
+  }
+ }
+}

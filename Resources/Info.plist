@@ -122,6 +122,29 @@
 				</array>
 			</dict>
 		</dict>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.data</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>Download not finished</string>
+			<key>UTTypeIdentifier</key>
+			<string>art.haushoppe.schnellbild.download-in-progress</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>part</string>
+					<string>partial</string>
+					<string>crdownload</string>
+					<string>opdownload</string>
+					<string>!qB</string>
+					<string>!ut</string>
+					<string>!bt</string>
+				</array>
+			</dict>
+		</dict>
 	</array>
 </dict>
 </plist>

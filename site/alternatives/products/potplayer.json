@@ -1,0 +1,578 @@
+{
+ "name": "PotPlayer",
+ "short": "PotPlayer",
+ "vendor": "Kakao Corp.",
+ "website": "https://potplayer.tv/",
+ "platforms": [
+  "Windows"
+ ],
+ "mac_available": "no",
+ "page": "switcher",
+ "section": "windows",
+ "price": "Free (freeware)",
+ "license": "Proprietary freeware",
+ "current_version": "261021 (1.7.x build, 21 Oct 2026)",
+ "last_update": "2026-10-21",
+ "engine": "Own DirectShow-based engine with built-in FFmpeg decoders, DXVA/CUDA/QuickSync, libass",
+ "category": "video",
+ "summary": "PotPlayer is a very configurable Windows media player from Kakao with built-in codecs, hardware decoding, 3D/360° output, subtitle tools including Whisper speech-to-subtitle, and streaming. It also opens still images and plays media straight from ZIP/RAR archives.",
+ "where_it_wins": [
+  "Huge number of settings, renderers and filters (madVR, HDR tone mapping, frame doubling)",
+  "Online subtitle download, subtitle translation and speech-to-subtitle (Whisper)",
+  "Streaming (YouTube, HLS/DASH), TV/DVD/Blu-ray, 3D and 360° VR",
+  "Fully customizable hotkeys and skins",
+  "Music playback with album art, lyrics, ReplayGain"
+ ],
+ "where_schnellbild_wins": [
+  "Runs natively on the Mac; PotPlayer is Windows only",
+  "Photos and videos in one thumbnail grid with folder previews",
+  "Real image viewer: HEIC, AVIF, JPEG XL, RAW, PSD, EXR, SVG, PDF",
+  "Archives open like folders, also with passwords",
+  "File management: rename, trash, move/copy, two panes, undo",
+  "Open source, sandboxed, never goes online",
+  "Simple: no settings maze"
+ ],
+ "search_terms": [
+  "potplayer mac",
+  "potplayer alternative mac",
+  "potplayer for macos",
+  "potplayer mac download",
+  "potplayer mac alternative free",
+  "potplayer für mac",
+  "potplayer mac 代替",
+  "팟플레이어 맥"
+ ],
+ "matrix": {
+  "free": {
+   "value": "yes",
+   "note": "Freeware, no paid tier",
+   "evidence": [
+    "https://potplayer.tv/",
+    "https://en.wikipedia.org/wiki/PotPlayer"
+   ],
+   "how": "docs"
+  },
+  "open_source": {
+   "value": "no",
+   "note": "Proprietary freeware by Kakao",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/PotPlayer"
+   ],
+   "how": "docs"
+  },
+  "native_apple_silicon": {
+   "value": "na",
+   "note": "Windows only (x86, x64, ARM64 builds)",
+   "evidence": [
+    "https://potplayer.tv/"
+   ],
+   "how": "docs"
+  },
+  "no_account_no_tracking": {
+   "value": "partial",
+   "note": "No account. 2019 builds bundled opt-out third-party software and showed ads; Wikipedia says ads and adware stopped in 2021",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/PotPlayer",
+    "https://www.xda-developers.com/potplayer-software-best-media-player/"
+   ],
+   "how": "review"
+  },
+  "dark_light_setting": {
+   "value": "yes",
+   "note": "Skins; option for dark system context menu (191211)",
+   "evidence": [
+    "https://t1.kakaocdn.net/potplayer/PotPlayer/v4/Update2/UpdateEng.html",
+    "https://www.xda-developers.com/potplayer-software-best-media-player/"
+   ],
+   "how": "changelog"
+  },
+  "languages_20": {
+   "value": "yes",
+   "note": "33 interface languages",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/PotPlayer",
+    "https://t1.kakaocdn.net/potplayer/PotPlayer/v4/Update2/UpdateEng.html"
+   ],
+   "how": "docs"
+  },
+  "folder_browsing": {
+   "value": "yes",
+   "note": "File Navigator in the playlist panel with folder pane, Backspace goes to parent folder, network locations",
+   "evidence": [
+    "https://t1.kakaocdn.net/potplayer/PotPlayer/v4/Update2/UpdateEng.html"
+   ],
+   "how": "changelog"
+  },
+  "thumbnail_grid": {
+   "value": "partial",
+   "note": "Playlist and File Navigator can show video thumbnails, plus a scene browser; no folder previews",
+   "evidence": [
+    "https://t1.kakaocdn.net/potplayer/PotPlayer/v4/Update2/UpdateEng.html"
+   ],
+   "how": "changelog"
+  },
+  "list_view": {
+   "value": "partial",
+   "note": "Playlist with sortable columns (name, size, date)",
+   "evidence": [
+    "https://t1.kakaocdn.net/potplayer/PotPlayer/v4/Update2/UpdateEng.html"
+   ],
+   "how": "changelog"
+  },
+  "recursive_search": {
+   "value": "partial",
+   "note": "Search/filter in playlist and File Navigator; not documented as a search through all subfolders",
+   "evidence": [
+    "https://t1.kakaocdn.net/potplayer/PotPlayer/v4/Update2/UpdateEng.html"
+   ],
+   "how": "changelog"
+  },
+  "regex_search": {
+   "value": "no",
+   "note": "Playlist search treats spaces as AND; customizable search method (261021), regex not mentioned",
+   "evidence": [
+    "https://t1.kakaocdn.net/potplayer/PotPlayer/v4/Update2/UpdateEng.html"
+   ],
+   "how": "changelog"
+  },
+  "network_shares_fast": {
+   "value": "partial",
+   "note": "Plays from network shares, FTP, WebDAV, HTTP; nothing documented about speed in big folders",
+   "evidence": [
+    "https://t1.kakaocdn.net/potplayer/PotPlayer/v4/Update2/UpdateEng.html",
+    "https://defkey.com/potplayer-shortcuts"
+   ],
+   "how": "changelog"
+  },
+  "multiple_windows": {
+   "value": "yes",
+   "note": "Several instances possible (option for new instance per file)",
+   "evidence": [
+    "https://t1.kakaocdn.net/potplayer/PotPlayer/v4/Update2/UpdateEng.html"
+   ],
+   "how": "changelog"
+  },
+  "bookmarks": {
+   "value": "no",
+   "note": "Bookmarks are for scenes in a video, not folders",
+   "evidence": [
+    "https://t1.kakaocdn.net/potplayer/PotPlayer/v4/Update2/UpdateEng.html"
+   ],
+   "how": "changelog"
+  },
+  "img_modern_formats": {
+   "value": "partial",
+   "note": "Opens still images through its image source filter, WebP fixed in 241211; HEIC, AVIF, JPEG XL not documented",
+   "evidence": [
+    "https://t1.kakaocdn.net/potplayer/PotPlayer/v4/Update2/UpdateEng.html"
+   ],
+   "how": "changelog"
+  },
+  "img_raw": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://t1.kakaocdn.net/potplayer/PotPlayer/v4/Update2/UpdateEng.html"
+   ],
+   "note": "Image source filter exists; camera RAW never mentioned in the changelog"
+  },
+  "img_psd_exr": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://t1.kakaocdn.net/potplayer/PotPlayer/v4/Update2/UpdateEng.html"
+   ],
+   "note": "Not mentioned in the changelog"
+  },
+  "img_svg_pdf": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://t1.kakaocdn.net/potplayer/PotPlayer/v4/Update2/UpdateEng.html"
+   ],
+   "note": "Not mentioned in the changelog"
+  },
+  "img_animated": {
+   "value": "partial",
+   "note": "Animated GIF and APNG are handled (logo/broadcast and capture); viewing as files not documented in detail",
+   "evidence": [
+    "https://t1.kakaocdn.net/potplayer/PotPlayer/v4/Update2/UpdateEng.html"
+   ],
+   "how": "changelog"
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "note": "Page Up / Page Down = previous / next item",
+   "evidence": [
+    "https://defkey.com/potplayer-shortcuts"
+   ],
+   "how": "docs"
+  },
+  "zoom_rotate": {
+   "value": "yes",
+   "note": "Zoom, pan, rotate, flip of the picture; auto-rotate by EXIF",
+   "evidence": [
+    "https://t1.kakaocdn.net/potplayer/PotPlayer/v4/Update2/UpdateEng.html",
+    "https://defkey.com/potplayer-shortcuts"
+   ],
+   "how": "changelog"
+  },
+  "slideshow": {
+   "value": "partial",
+   "note": "Images in a playlist are shown for a set delay (image source filter delay setting)",
+   "evidence": [
+    "https://t1.kakaocdn.net/potplayer/PotPlayer/v4/Update2/UpdateEng.html"
+   ],
+   "how": "changelog"
+  },
+  "slideshow_recursive": {
+   "value": "partial",
+   "how": "unverified",
+   "evidence": [
+    "https://t1.kakaocdn.net/potplayer/PotPlayer/v4/Update2/UpdateEng.html"
+   ],
+   "note": "Image source filter with delay time and folder playlists; mixed recursive slideshow not documented"
+  },
+  "auto_enhance_view": {
+   "value": "yes",
+   "note": "Brightness, contrast, saturation, hue, sharpen, many video filters; no file change",
+   "evidence": [
+    "https://defkey.com/potplayer-shortcuts?p=2",
+    "https://t1.kakaocdn.net/potplayer/PotPlayer/v4/Update2/UpdateEng.html"
+   ],
+   "how": "docs"
+  },
+  "file_info_exif": {
+   "value": "partial",
+   "note": "Playback/System info (codecs, bitrate); no EXIF view",
+   "evidence": [
+    "https://defkey.com/potplayer-shortcuts"
+   ],
+   "how": "docs"
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://t1.kakaocdn.net/potplayer/PotPlayer/v4/Update2/UpdateEng.html"
+   ],
+   "note": "Not documented"
+  },
+  "video_native": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://potplayer.tv/"
+   ],
+   "how": "docs"
+  },
+  "video_mkv_avi_webm": {
+   "value": "yes",
+   "note": "Built-in codecs, OpenCodec",
+   "evidence": [
+    "https://potplayer.tv/",
+    "https://www.xda-developers.com/potplayer-software-best-media-player/"
+   ],
+   "how": "docs"
+  },
+  "photos_videos_one_grid": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://t1.kakaocdn.net/potplayer/PotPlayer/v4/Update2/UpdateEng.html"
+   ],
+   "note": "Playlist can show thumbnails; mixed photo/video grid not documented"
+  },
+  "video_skim_arrows": {
+   "value": "yes",
+   "note": "Left/Right 5 s, Ctrl 30 s, Shift 1 min; steps configurable",
+   "evidence": [
+    "https://defkey.com/potplayer-shortcuts"
+   ],
+   "how": "docs"
+  },
+  "subtitles_embedded": {
+   "value": "yes",
+   "note": "SRT, ASS/SSA, VobSub, Blu-ray PGS, libass output",
+   "evidence": [
+    "https://potplayer.tv/",
+    "https://t1.kakaocdn.net/potplayer/PotPlayer/v4/Update2/UpdateEng.html"
+   ],
+   "how": "docs"
+  },
+  "subtitles_external_files": {
+   "value": "yes",
+   "note": "Loads matching subtitle files, auto reload on change",
+   "evidence": [
+    "https://potplayer.tv/",
+    "https://t1.kakaocdn.net/potplayer/PotPlayer/v4/Update2/UpdateEng.html"
+   ],
+   "how": "docs"
+  },
+  "audio_track_choice": {
+   "value": "yes",
+   "note": "Multiple audio stream selection, external audio files",
+   "evidence": [
+    "https://t1.kakaocdn.net/potplayer/PotPlayer/v4/Update2/UpdateEng.html"
+   ],
+   "how": "changelog"
+  },
+  "playback_speed": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://defkey.com/potplayer-shortcuts",
+    "https://t1.kakaocdn.net/potplayer/PotPlayer/v4/Update2/UpdateEng.html"
+   ],
+   "how": "docs"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://t1.kakaocdn.net/potplayer/PotPlayer/v4/Update2/UpdateEng.html"
+   ],
+   "note": "Control panel exists in the skin; free placement not documented"
+  },
+  "playlist": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://t1.kakaocdn.net/potplayer/PotPlayer/v4/Update2/UpdateEng.html"
+   ],
+   "how": "changelog"
+  },
+  "saved_playlists": {
+   "value": "yes",
+   "note": "DPL playlists, albums",
+   "evidence": [
+    "https://t1.kakaocdn.net/potplayer/PotPlayer/v4/Update2/UpdateEng.html"
+   ],
+   "how": "changelog"
+  },
+  "pip": {
+   "value": "partial",
+   "how": "forum",
+   "evidence": [
+    "https://forum.videohelp.com/threads/368055-PotPlayer-window-in-window"
+   ],
+   "note": "Always-on-top small window (several instances); no system Picture in Picture"
+  },
+  "music_mode": {
+   "value": "yes",
+   "note": "Audio playback with album art, lyrics, ReplayGain (261021), visualisations",
+   "evidence": [
+    "https://t1.kakaocdn.net/potplayer/PotPlayer/v4/Update2/UpdateEng.html"
+   ],
+   "how": "changelog"
+  },
+  "streaming_urls": {
+   "value": "yes",
+   "note": "HTTP, HLS/DASH, YouTube, FTP/WebDAV",
+   "evidence": [
+    "https://t1.kakaocdn.net/potplayer/PotPlayer/v4/Update2/UpdateEng.html"
+   ],
+   "how": "changelog"
+  },
+  "online_subtitles": {
+   "value": "yes",
+   "note": "OpenSubtitles search/download, online translation, Whisper speech-to-subtitle",
+   "evidence": [
+    "https://t1.kakaocdn.net/potplayer/PotPlayer/v4/Update2/UpdateEng.html",
+    "https://www.xda-developers.com/potplayer-software-best-media-player/"
+   ],
+   "how": "changelog"
+  },
+  "video_filters_enhance": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://defkey.com/potplayer-shortcuts?p=2",
+    "https://t1.kakaocdn.net/potplayer/PotPlayer/v4/Update2/UpdateEng.html"
+   ],
+   "how": "docs"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://t1.kakaocdn.net/potplayer/PotPlayer/v4/Update2/UpdateEng.html"
+   ],
+   "note": "No Explorer thumbnail handler mentioned"
+  },
+  "archives_as_folders": {
+   "value": "partial",
+   "note": "Plays media inside ZIP/RAR, archive contents go into the playlist; no folder-style browsing of archives",
+   "evidence": [
+    "https://t1.kakaocdn.net/potplayer/PotPlayer/v4/Update2/UpdateEng.html"
+   ],
+   "how": "changelog"
+  },
+  "comics_cbz_cbr": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://t1.kakaocdn.net/potplayer/PotPlayer/v4/Update2/UpdateEng.html"
+   ],
+   "note": "ZIP/RAR media playback exists; comic files not mentioned"
+  },
+  "archive_passwords": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://t1.kakaocdn.net/potplayer/PotPlayer/v4/Update2/UpdateEng.html"
+   ],
+   "note": "Not documented"
+  },
+  "split_archives": {
+   "value": "yes",
+   "how": "changelog",
+   "evidence": [
+    "https://t1.kakaocdn.net/potplayer/PotPlayer/v4/Update2/UpdateEng.html"
+   ],
+   "note": "Plays RAR archives split into .part files directly"
+  },
+  "videos_in_archives": {
+   "value": "yes",
+   "note": "Plays videos from ZIP/RAR without unpacking",
+   "evidence": [
+    "https://t1.kakaocdn.net/potplayer/PotPlayer/v4/Update2/UpdateEng.html"
+   ],
+   "how": "changelog"
+  },
+  "manga_two_page": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://t1.kakaocdn.net/potplayer/PotPlayer/v4/Update2/UpdateEng.html"
+   ],
+   "note": "Not documented"
+  },
+  "rename_trash": {
+   "value": "partial",
+   "how": "changelog",
+   "evidence": [
+    "https://t1.kakaocdn.net/potplayer/PotPlayer/v4/Update2/UpdateEng.html"
+   ],
+   "note": "Rename files from the playlist; option to send played files to the Recycle Bin; no new folder"
+  },
+  "move_copy": {
+   "value": "no",
+   "note": "Moves items within the playlist only",
+   "evidence": [
+    "https://t1.kakaocdn.net/potplayer/PotPlayer/v4/Update2/UpdateEng.html"
+   ],
+   "how": "changelog"
+  },
+  "dual_pane": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://t1.kakaocdn.net/potplayer/PotPlayer/v4/Update2/UpdateEng.html"
+   ],
+   "note": "Not documented"
+  },
+  "undo_file_actions": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://t1.kakaocdn.net/potplayer/PotPlayer/v4/Update2/UpdateEng.html"
+   ],
+   "note": "Not documented"
+  },
+  "image_editing": {
+   "value": "no",
+   "note": "Screen/frame capture only",
+   "evidence": [
+    "https://t1.kakaocdn.net/potplayer/PotPlayer/v4/Update2/UpdateEng.html"
+   ],
+   "how": "changelog"
+  },
+  "batch_convert": {
+   "value": "no",
+   "note": "Thumbnail sheet creator and video/GIF capture, no batch conversion",
+   "evidence": [
+    "https://t1.kakaocdn.net/potplayer/PotPlayer/v4/Update2/UpdateEng.html"
+   ],
+   "how": "changelog"
+  },
+  "library_catalog": {
+   "value": "partial",
+   "note": "Playlist albums, playback history, bookmark editor; no tag/rating database",
+   "evidence": [
+    "https://t1.kakaocdn.net/potplayer/PotPlayer/v4/Update2/UpdateEng.html"
+   ],
+   "how": "changelog"
+  },
+  "cloud_sync": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://t1.kakaocdn.net/potplayer/PotPlayer/v4/Update2/UpdateEng.html"
+   ],
+   "note": "Not documented"
+  },
+  "keyboard_first": {
+   "value": "yes",
+   "note": "Hundreds of hotkeys, also global hotkeys",
+   "evidence": [
+    "https://defkey.com/potplayer-shortcuts",
+    "https://t1.kakaocdn.net/potplayer/PotPlayer/v4/Update2/UpdateEng.html"
+   ],
+   "how": "docs"
+  },
+  "custom_shortcuts": {
+   "value": "yes",
+   "note": "Preferences > General > Keyboard",
+   "evidence": [
+    "https://t1.kakaocdn.net/potplayer/PotPlayer/v4/Update2/UpdateEng.html"
+   ],
+   "how": "changelog"
+  },
+  "shortcut_cheatsheet": {
+   "value": "partial",
+   "note": "About dialog has a tab listing all hotkeys; not printable as such",
+   "evidence": [
+    "https://t1.kakaocdn.net/potplayer/PotPlayer/v4/Update2/UpdateEng.html"
+   ],
+   "how": "changelog"
+  },
+  "boss_key": {
+   "value": "yes",
+   "how": "forum",
+   "evidence": [
+    "https://forum.endeavouros.com/t/still-searching-for-the-player-that-has-this-hot-key/55441"
+   ],
+   "note": "Esc pauses and minimizes the player (user report with screenshot)"
+  },
+  "app_sandbox": {
+   "value": "na",
+   "note": "Windows only",
+   "evidence": [],
+   "how": "docs"
+  },
+  "no_network": {
+   "value": "no",
+   "note": "Update check, online subtitles, streaming services",
+   "evidence": [
+    "https://potplayer.tv/",
+    "https://t1.kakaocdn.net/potplayer/PotPlayer/v4/Update2/UpdateEng.html"
+   ],
+   "how": "changelog"
+  },
+  "notarized_attested": {
+   "value": "na",
+   "note": "Windows only, closed source",
+   "evidence": [],
+   "how": "docs"
+  },
+  "mac_app_store": {
+   "value": "no",
+   "note": "Windows only; in the Microsoft Store",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/PotPlayer"
+   ],
+   "how": "docs"
+  }
+ }
+}

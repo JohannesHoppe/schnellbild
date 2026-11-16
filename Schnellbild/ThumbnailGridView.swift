@@ -114,11 +114,12 @@ struct ThumbnailGridView: View {
             } else {
                 FolderTile(folder: entry.browseURL, side: side, isSelected: cursor, isMarked: marked,
                            systemImage: archive ? "archivebox.fill" : "folder.fill",
-                           isEmpty: model.isEmptyFolder(entry), kindLabel: archive ? "archive" : "folder")
+                           isEmpty: model.isEmptyFolder(entry), kindLabel: archive ? "archive" : "folder",
+                           unfinished: entry.unfinishedNote)
             }
         case .image, .video:
             ThumbnailView(url: entry.url, side: side, isSelected: cursor, isMarked: marked, isVideo: entry.kind == .video,
-                          modified: entry.modDate)
+                          modified: entry.previewDate, unfinished: entry.unfinishedNote)
         }
     }
 }
@@ -148,7 +149,8 @@ struct EntryAccessibility: ViewModifier {
         case .image: kind = String(localized: "Picture")
         case .video: kind = String(localized: "Video")
         }
-        return [entry.name, kind, location.map { String(localized: "in \($0)") }].compactMap { $0 }.joined(separator: ", ")
+        return [entry.name, kind, entry.unfinishedNote,
+                location.map { String(localized: "in \($0)") }].compactMap { $0 }.joined(separator: ", ")
     }
 
     func body(content: Content) -> some View {
@@ -183,6 +185,8 @@ struct FolderTile: View {
     /// A drive on the drives' level: its icon, nothing read from it (a
     /// network share would be walked for a preview).
     var previews = true
+    /// An archive whose download isn't finished ("x.rar.part").
+    var unfinished: String? = nil
 
     /// A drive's icon, for an item of the drives' level (`/Volumes`): the
     /// startup disk (its link to "/") or another; nil for anything else.
@@ -202,7 +206,7 @@ struct FolderTile: View {
     @State private var previewImages: [NSImage]
 
     init(folder: URL?, side: CGFloat, isSelected: Bool, isMarked: Bool = false, systemImage: String = "folder.fill",
-         isEmpty: Bool = false, kindLabel: String = "folder", previews: Bool = true) {
+         isEmpty: Bool = false, kindLabel: String = "folder", previews: Bool = true, unfinished: String? = nil) {
         self.folder = folder
         self.side = side
         self.isSelected = isSelected
@@ -211,6 +215,7 @@ struct FolderTile: View {
         self.isEmpty = isEmpty
         self.kindLabel = kindLabel
         self.previews = previews
+        self.unfinished = unfinished
         // Scrolled back into view: its previews at once from memory, not a
         // bare folder that fills in again
         let files = previews ? folder.flatMap(FolderPreviewCache.shared.knownFiles(in:)) ?? [] : []
@@ -227,12 +232,13 @@ struct FolderTile: View {
         }
         .saturation(isEmpty ? 0 : 1)
         .opacity(isEmpty ? (contrast == .increased ? 0.7 : 0.4) : 1)
-        .tileChrome(side: side, isSelected: isSelected, isMarked: isMarked)
+        .tileChrome(side: side, isSelected: isSelected, isMarked: isMarked, unfinished: unfinished)
         .accessibilityElement(children: .ignore)
         // The label ("name, kind") comes from the grid's cell; the UI tests
         // read the tile's state here
         .accessibilityValue(VideoDetailView.uiTesting
             ? "\(TileChrome.selectionLabel(isSelected || isMarked)), \(folder == nil ? "parent folder" : isEmpty ? "empty \(kindLabel)" : kindLabel), \(previewImages.count) previews"
+                + (unfinished != nil ? ", unfinished" : "")
             : TileChrome.spokenState(marked: isMarked))
         // Again after a change made inside the folder (trash, rename): what
         // it previews may have gone.
@@ -523,7 +529,7 @@ struct OtherFileInteractions: ViewModifier {
                 return provider
             }
             // Opened like a document in the Finder, but only documents (no apps, no scripts)
-            .onTapGesture(count: 2) { model.open(file) }
+            .modifier(Clicks(single: {}, double: { model.open(file) }))
             .contextMenu {
                 UndoMenuItems(history: model.undoHistory, model: model)
                 if changeable {
@@ -607,19 +613,17 @@ struct EntryInteractions: ViewModifier {
     func body(content: Content) -> some View {
         content
             .modifier(TileDrag(entry: entry))
-            .onTapGesture(count: 2) {
-                model.searchFocused = false
-                guard model.select(entry) else { return }
-                model.activateSelection()
-            }
-            // At once, not after the double-click interval: a key pressed
-            // right after the click must find it done
-            .simultaneousGesture(TapGesture().onEnded {
-                // ⌘- and ⇧-clicks are ModifierClicks'
+            // ⌘- and ⇧-clicks are ModifierClicks'
+            .modifier(Clicks(single: {
                 guard NSEvent.modifierFlags.intersection([.command, .shift]).isEmpty else { return }
                 model.searchFocused = false
                 model.click(entry, command: false, shift: false)
-            })
+            }, double: {
+                guard NSEvent.modifierFlags.intersection([.command, .shift]).isEmpty else { return }
+                model.searchFocused = false
+                guard model.select(entry) else { return }
+                model.activateSelection()
+            }))
             // SwiftUI's tap gestures don't fire while ⌘ is held: ⌘- and
             // ⇧-clicks go to the tile under the pointer at mouse-down
             .onHover { inside in
@@ -763,6 +767,29 @@ private struct TileDropDelegate: DropDelegate {
     }
 }
 
+/// A click and a double click on a view: one tap gesture for every click,
+/// told apart by the click count the event carries (`NSEvent.clickCount`,
+/// counted where the click is made, by the system's double-click interval
+/// and distance, whatever the app is busy with; `ModifierClicks` reads it
+/// before the view gets the event). `single` runs on every click, at once
+/// (not after the double-click interval: a key pressed right after the
+/// click finds it done), `double` after it on a double click's second one.
+/// Not SwiftUI's `onTapGesture(count: 2)`, which pairs two taps itself and
+/// lets double clicks through as two single ones now and then (seen on CI:
+/// a folder or archive tile selected, not opened).
+struct Clicks: ViewModifier {
+    let single: () -> Void
+    let double: () -> Void
+
+    func body(content: Content) -> some View {
+        // Simultaneous: the view's drag goes on working
+        content.simultaneousGesture(TapGesture().onEnded {
+            single()
+            if ModifierClicks.clickCount == 2 { double() }
+        })
+    }
+}
+
 /// ⌘- and ⇧-clicks on tiles and rows. SwiftUI's tap gestures don't fire
 /// while ⌘ is held, so a monitor acts on the tile the pointer is over (tiles
 /// report it by hovering). It acts when the button comes up near where it
@@ -772,6 +799,8 @@ enum ModifierClicks {
     private static var hovered: (key: String, action: (NSEvent.ModifierFlags) -> Void)?
     private static var pending: (action: (NSEvent.ModifierFlags) -> Void, flags: NSEvent.ModifierFlags, at: NSPoint)?
     private static var monitor: Any?
+    /// The click count of the last left mouse button event (`Clicks`).
+    private(set) static var clickCount = 0
     /// Where each tile or row on screen is (in the window's content, top
     /// left origin): the click goes to the one under the pointer even when
     /// the grid moved under a still pointer (a re-sort, a search batch, a
@@ -816,6 +845,7 @@ enum ModifierClicks {
         // Scrolled: the tile under the pointer is another one, known again
         // once the pointer moves
         if event.type == .scrollWheel { hovered = nil; return }
+        clickCount = event.clickCount
         if event.type == .leftMouseDown {
             pending = nil
             let flags = event.modifierFlags.intersection([.command, .shift])

@@ -1,0 +1,560 @@
+{
+ "name": "2345看图王 (2345 Pic / Kantu Wang)",
+ "short": "2345看图王",
+ "vendor": "上海二三四五移动科技有限公司 (2345.com)",
+ "website": "https://pic.2345.cc/",
+ "platforms": [
+  "Windows"
+ ],
+ "mac_available": "no",
+ "page": "switcher",
+ "section": "windows",
+ "price": "Free viewer; VIP membership for editing/AI/PDF extras (monthly, yearly, lifetime)",
+ "license": "proprietary",
+ "current_version": "13.2",
+ "last_update": "2025-09-30 (Tencent store entry for v13.2; site articles to 2026-10)",
+ "engine": "own image engine (no video)",
+ "category": "image",
+ "summary": "One of the most installed Windows picture viewers in China: opens about 98 image formats including PSD, RAW, SVG and AVIF quickly, plus PDF/OFD and CAD. It bundles light editing, batch tools, OCR, ID photos and AI cutout, some of them behind a VIP membership.",
+ "where_it_wins": [
+  "Very wide image format list (PSD/PSB, AI, RAW, CAD, OFD)",
+  "Built-in editing, batch convert/rename, OCR, ID-photo and printing tools",
+  "Familiar to Chinese Windows users, ACDSee-compatible shortcuts"
+ ],
+ "where_schnellbild_wins": [
+  "Runs on the Mac at all (no Mac version)",
+  "No ads, software recommendations, homepage lock or usage data collection",
+  "Plays videos (MP4, MKV, AVI, WebM) in the same grid",
+  "Archives and comics as folders, dual pane, recursive name and regex search",
+  "Free with every feature, open source"
+ ],
+ "search_terms": [
+  "2345看图王 mac",
+  "2345看图王 mac版",
+  "看图王 mac",
+  "mac 看图软件",
+  "mac 看图软件 推荐",
+  "mac 看图王 替代",
+  "2345看图王 替代",
+  "2345看图王 广告",
+  "2345 pic viewer mac"
+ ],
+ "matrix": {
+  "free": {
+   "value": "partial",
+   "evidence": [
+    "https://pic.2345.cc/help.htm",
+    "https://sj.qq.com/appdetail/2345kantuwang"
+   ],
+   "how": "docs",
+   "note": "Viewer is free; editing/AI/PDF extras sold as VIP membership (monthly to lifetime VIP)"
+  },
+  "open_source": {
+   "value": "no",
+   "evidence": [
+    "https://pic.2345.cc/help.htm"
+   ],
+   "how": "docs",
+   "note": "Proprietary, own license agreement"
+  },
+  "native_apple_silicon": {
+   "value": "no",
+   "evidence": [
+    "https://pic.2345.cc/help.htm"
+   ],
+   "how": "docs",
+   "note": "Windows only (\"适用于所有Windows下系统\"); no Mac version found"
+  },
+  "no_account_no_tracking": {
+   "value": "no",
+   "evidence": [
+    "https://pic.2345.cc/help.htm"
+   ],
+   "how": "docs",
+   "note": "License: pops up recommendations for other 2345 software, offers a homepage lock to 2345 Navigation/Baidu; privacy policy collects device IDs, installed software list, clicks"
+  },
+  "dark_light_setting": {
+   "value": "yes",
+   "evidence": [
+    "https://pic.2345.cc/help.htm"
+   ],
+   "how": "docs",
+   "note": "Skins: 简约白 (light) and 极简黑 (dark)"
+  },
+  "languages_20": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched pic.2345.cc help centre and product pages; not documented either way"
+  },
+  "folder_browsing": {
+   "value": "yes",
+   "evidence": [
+    "https://pic.2345.cc/help.htm",
+    "https://pic.2345.cc/picviewtool/"
+   ],
+   "how": "docs",
+   "note": "Opens a picture and pages through its folder; thumbnail strip of the current folder"
+  },
+  "thumbnail_grid": {
+   "value": "partial",
+   "evidence": [
+    "https://pic.2345.cc/help.htm"
+   ],
+   "how": "docs",
+   "note": "Thumbnail strip in the viewer and an image manager view; folder preview tiles not documented"
+  },
+  "list_view": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched pic.2345.cc help centre and product pages; not documented either way"
+  },
+  "recursive_search": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched pic.2345.cc help centre and product pages; not documented either way"
+  },
+  "regex_search": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched pic.2345.cc help centre and product pages; not documented either way"
+  },
+  "network_shares_fast": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched pic.2345.cc help centre and product pages; not documented either way"
+  },
+  "multiple_windows": {
+   "value": "yes",
+   "evidence": [
+    "https://pic.2345.cc/help.htm"
+   ],
+   "how": "docs",
+   "note": "Ctrl+U allows several viewer windows"
+  },
+  "bookmarks": {
+   "value": "partial",
+   "evidence": [
+    "https://pic.2345.cc/help.htm"
+   ],
+   "how": "docs",
+   "note": "Favourite pictures (收藏图片) in the image manager, not folder bookmarks"
+  },
+  "img_modern_formats": {
+   "value": "partial",
+   "evidence": [
+    "https://pic.2345.cc/",
+    "https://pic.2345.cc/help.htm"
+   ],
+   "how": "docs",
+   "note": "HEIC, AVIF, WebP listed; JPEG XL not mentioned"
+  },
+  "img_raw": {
+   "value": "yes",
+   "evidence": [
+    "https://pic.2345.cc/",
+    "https://sj.qq.com/appdetail/2345kantuwang"
+   ],
+   "how": "docs",
+   "note": "RAW incl. CR2, CR3, with thumbnails"
+  },
+  "img_psd_exr": {
+   "value": "partial",
+   "evidence": [
+    "https://pic.2345.cc/",
+    "https://sj.qq.com/appdetail/2345kantuwang"
+   ],
+   "how": "docs",
+   "note": "PSD/PSB yes; OpenEXR not listed"
+  },
+  "img_svg_pdf": {
+   "value": "yes",
+   "evidence": [
+    "https://pic.2345.cc/",
+    "https://sj.qq.com/appdetail/2345kantuwang"
+   ],
+   "how": "docs",
+   "note": "SVG listed; PDF and OFD viewing"
+  },
+  "img_animated": {
+   "value": "partial",
+   "evidence": [
+    "https://pic.2345.cc/help.htm"
+   ],
+   "how": "docs",
+   "note": "Multi-frame player (Ctrl+F) for GIF/multi-frame images; animated PNG/WebP not documented"
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "evidence": [
+    "https://pic.2345.cc/help.htm"
+   ],
+   "how": "docs",
+   "note": "Arrows, PgUp/PgDn, Space, J/K, W/S/A/D"
+  },
+  "zoom_rotate": {
+   "value": "yes",
+   "evidence": [
+    "https://pic.2345.cc/help.htm"
+   ],
+   "how": "docs",
+   "note": "Zoom up to 16x, rotate Ctrl+L/Ctrl+R"
+  },
+  "slideshow": {
+   "value": "yes",
+   "evidence": [
+    "https://pic.2345.cc/help.htm",
+    "https://pic.2345.cc/"
+   ],
+   "how": "docs",
+   "note": "F5/F6/F8"
+  },
+  "slideshow_recursive": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched pic.2345.cc help centre and product pages; not documented either way"
+  },
+  "auto_enhance_view": {
+   "value": "partial",
+   "evidence": [
+    "https://pic.2345.cc/help.htm"
+   ],
+   "how": "docs",
+   "note": "Brightness/contrast/saturation sliders in the editing window, saved as an edit; no view-only filter"
+  },
+  "file_info_exif": {
+   "value": "partial",
+   "evidence": [
+    "https://pic.2345.cc/help.htm"
+   ],
+   "how": "docs",
+   "note": "Image info (Alt+Enter): name, format, size; no codec info (no video)"
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched pic.2345.cc help centre and product pages; not documented either way"
+  },
+  "video_native": {
+   "value": "no",
+   "evidence": [
+    "https://pic.2345.cc/",
+    "https://sj.qq.com/appdetail/2345kantuwang"
+   ],
+   "how": "docs",
+   "note": "Format lists (96-98 formats) name only image, PDF/OFD and CAD formats; no video playback documented"
+  },
+  "video_mkv_avi_webm": {
+   "value": "no",
+   "evidence": [
+    "https://pic.2345.cc/",
+    "https://sj.qq.com/appdetail/2345kantuwang"
+   ],
+   "how": "docs",
+   "note": "Format lists (96-98 formats) name only image, PDF/OFD and CAD formats; no video playback documented"
+  },
+  "photos_videos_one_grid": {
+   "value": "no",
+   "evidence": [
+    "https://pic.2345.cc/",
+    "https://sj.qq.com/appdetail/2345kantuwang"
+   ],
+   "how": "docs",
+   "note": "Format lists (96-98 formats) name only image, PDF/OFD and CAD formats; no video playback documented"
+  },
+  "video_skim_arrows": {
+   "value": "no",
+   "evidence": [
+    "https://pic.2345.cc/",
+    "https://sj.qq.com/appdetail/2345kantuwang"
+   ],
+   "how": "docs",
+   "note": "Format lists (96-98 formats) name only image, PDF/OFD and CAD formats; no video playback documented"
+  },
+  "subtitles_embedded": {
+   "value": "no",
+   "evidence": [
+    "https://pic.2345.cc/",
+    "https://sj.qq.com/appdetail/2345kantuwang"
+   ],
+   "how": "docs",
+   "note": "Format lists (96-98 formats) name only image, PDF/OFD and CAD formats; no video playback documented"
+  },
+  "subtitles_external_files": {
+   "value": "no",
+   "evidence": [
+    "https://pic.2345.cc/",
+    "https://sj.qq.com/appdetail/2345kantuwang"
+   ],
+   "how": "docs",
+   "note": "Format lists (96-98 formats) name only image, PDF/OFD and CAD formats; no video playback documented"
+  },
+  "audio_track_choice": {
+   "value": "no",
+   "evidence": [
+    "https://pic.2345.cc/",
+    "https://sj.qq.com/appdetail/2345kantuwang"
+   ],
+   "how": "docs",
+   "note": "Format lists (96-98 formats) name only image, PDF/OFD and CAD formats; no video playback documented"
+  },
+  "playback_speed": {
+   "value": "no",
+   "evidence": [
+    "https://pic.2345.cc/",
+    "https://sj.qq.com/appdetail/2345kantuwang"
+   ],
+   "how": "docs",
+   "note": "Format lists (96-98 formats) name only image, PDF/OFD and CAD formats; no video playback documented"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "evidence": [
+    "https://pic.2345.cc/",
+    "https://sj.qq.com/appdetail/2345kantuwang"
+   ],
+   "how": "docs",
+   "note": "Format lists (96-98 formats) name only image, PDF/OFD and CAD formats; no video playback documented"
+  },
+  "playlist": {
+   "value": "no",
+   "evidence": [
+    "https://pic.2345.cc/",
+    "https://sj.qq.com/appdetail/2345kantuwang"
+   ],
+   "how": "docs",
+   "note": "Format lists (96-98 formats) name only image, PDF/OFD and CAD formats; no video playback documented"
+  },
+  "saved_playlists": {
+   "value": "no",
+   "evidence": [
+    "https://pic.2345.cc/",
+    "https://sj.qq.com/appdetail/2345kantuwang"
+   ],
+   "how": "docs",
+   "note": "Format lists (96-98 formats) name only image, PDF/OFD and CAD formats; no video playback documented"
+  },
+  "pip": {
+   "value": "no",
+   "evidence": [
+    "https://pic.2345.cc/",
+    "https://sj.qq.com/appdetail/2345kantuwang"
+   ],
+   "how": "docs",
+   "note": "Format lists (96-98 formats) name only image, PDF/OFD and CAD formats; no video playback documented"
+  },
+  "music_mode": {
+   "value": "no",
+   "evidence": [
+    "https://pic.2345.cc/",
+    "https://sj.qq.com/appdetail/2345kantuwang"
+   ],
+   "how": "docs",
+   "note": "Format lists (96-98 formats) name only image, PDF/OFD and CAD formats; no video playback documented"
+  },
+  "streaming_urls": {
+   "value": "no",
+   "evidence": [
+    "https://pic.2345.cc/",
+    "https://sj.qq.com/appdetail/2345kantuwang"
+   ],
+   "how": "docs",
+   "note": "Format lists (96-98 formats) name only image, PDF/OFD and CAD formats; no video playback documented"
+  },
+  "online_subtitles": {
+   "value": "no",
+   "evidence": [
+    "https://pic.2345.cc/",
+    "https://sj.qq.com/appdetail/2345kantuwang"
+   ],
+   "how": "docs",
+   "note": "Format lists (96-98 formats) name only image, PDF/OFD and CAD formats; no video playback documented"
+  },
+  "video_filters_enhance": {
+   "value": "no",
+   "evidence": [
+    "https://pic.2345.cc/",
+    "https://sj.qq.com/appdetail/2345kantuwang"
+   ],
+   "how": "docs",
+   "note": "Format lists (96-98 formats) name only image, PDF/OFD and CAD formats; no video playback documented"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "evidence": [
+    "https://pic.2345.cc/help.htm"
+   ],
+   "how": "docs",
+   "note": "Adds Explorer thumbnails for PSD, not for videos"
+  },
+  "archives_as_folders": {
+   "value": "partial",
+   "evidence": [
+    "https://pic.2345.cc/help.htm"
+   ],
+   "how": "docs",
+   "note": "Pictures inside archives only together with 2345's separate archiver 好压 (HaoZip)"
+  },
+  "comics_cbz_cbr": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched pic.2345.cc help centre and product pages; not documented either way"
+  },
+  "archive_passwords": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched pic.2345.cc help centre and product pages; not documented either way"
+  },
+  "split_archives": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched pic.2345.cc help centre and product pages; not documented either way"
+  },
+  "videos_in_archives": {
+   "value": "no",
+   "evidence": [
+    "https://pic.2345.cc/",
+    "https://sj.qq.com/appdetail/2345kantuwang"
+   ],
+   "how": "docs",
+   "note": "Format lists (96-98 formats) name only image, PDF/OFD and CAD formats; no video playback documented"
+  },
+  "manga_two_page": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched pic.2345.cc help centre and product pages; not documented either way"
+  },
+  "rename_trash": {
+   "value": "partial",
+   "evidence": [
+    "https://pic.2345.cc/help.htm"
+   ],
+   "how": "docs",
+   "note": "F2 rename, Del to Recycle Bin; new folder not documented"
+  },
+  "move_copy": {
+   "value": "yes",
+   "evidence": [
+    "https://pic.2345.cc/help.htm"
+   ],
+   "how": "docs",
+   "note": "Copy to (Ctrl+Shift+C), Move to (Ctrl+Shift+M)"
+  },
+  "dual_pane": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched pic.2345.cc help centre and product pages; not documented either way"
+  },
+  "undo_file_actions": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched pic.2345.cc help centre and product pages; not documented either way"
+  },
+  "image_editing": {
+   "value": "yes",
+   "evidence": [
+    "https://pic.2345.cc/",
+    "https://pic.2345.cc/help.htm"
+   ],
+   "how": "docs",
+   "note": "Crop, resize, text, mosaic, filters, AI eraser and cutout (AI partly VIP)"
+  },
+  "batch_convert": {
+   "value": "yes",
+   "evidence": [
+    "https://pic.2345.cc/help.htm",
+    "https://pic.2345.cc/"
+   ],
+   "how": "docs",
+   "note": "Batch convert (Ctrl+M), batch rename (Ctrl+N), watermark, compress"
+  },
+  "library_catalog": {
+   "value": "partial",
+   "evidence": [
+    "https://pic.2345.cc/help.htm"
+   ],
+   "how": "docs",
+   "note": "Image manager with favourites and batch actions; no ratings/tags database documented"
+  },
+  "cloud_sync": {
+   "value": "partial",
+   "evidence": [
+    "https://pic.2345.cc/help.htm"
+   ],
+   "how": "docs",
+   "note": "AI services upload files to 2345/partner servers; online design templates; no photo cloud sync"
+  },
+  "keyboard_first": {
+   "value": "partial",
+   "evidence": [
+    "https://pic.2345.cc/help.htm"
+   ],
+   "how": "docs",
+   "note": "Many shortcuts, ACDSee-compatible keys; editing and design tools are mouse-driven"
+  },
+  "custom_shortcuts": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched pic.2345.cc help centre and product pages; not documented either way"
+  },
+  "shortcut_cheatsheet": {
+   "value": "partial",
+   "evidence": [
+    "https://pic.2345.cc/help.htm"
+   ],
+   "how": "docs",
+   "note": "Shortcut list on the help page, not printable from the app"
+  },
+  "boss_key": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched pic.2345.cc help centre and product pages; not documented either way"
+  },
+  "app_sandbox": {
+   "value": "no",
+   "evidence": [
+    "https://pic.2345.cc/help.htm"
+   ],
+   "how": "docs",
+   "note": "Windows program"
+  },
+  "no_network": {
+   "value": "no",
+   "evidence": [
+    "https://pic.2345.cc/help.htm"
+   ],
+   "how": "docs",
+   "note": "Software recommendations, auto-updates, online AI and design services"
+  },
+  "notarized_attested": {
+   "value": "no",
+   "evidence": [
+    "https://pic.2345.cc/help.htm"
+   ],
+   "how": "docs",
+   "note": "Closed source Windows program"
+  },
+  "mac_app_store": {
+   "value": "no",
+   "evidence": [
+    "https://pic.2345.cc/help.htm"
+   ],
+   "how": "docs",
+   "note": "Windows only"
+  }
+ }
+}

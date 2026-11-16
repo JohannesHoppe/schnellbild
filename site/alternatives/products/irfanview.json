@@ -1,0 +1,617 @@
+{
+ "name": "IrfanView",
+ "short": "IrfanView",
+ "vendor": "Irfan Skiljan",
+ "website": "https://www.irfanview.com/",
+ "platforms": [
+  "Windows"
+ ],
+ "mac_available": "no",
+ "page": "switcher",
+ "section": "windows",
+ "price": "Free for private, non-commercial and educational use; commercial licence US$18 / EUR 15 (perpetual)",
+ "license": "Proprietary freeware",
+ "current_version": "4.76",
+ "last_update": "2026-09-18",
+ "engine": "Own decoders plus plug-ins (LibRaw, libjxl, libavif, Pdfium); video through Windows DirectShow/Media Foundation codecs",
+ "category": "image",
+ "summary": "IrfanView is a tiny, very fast Windows image viewer that has been around since 1996 and reads an enormous list of formats through plug-ins. Besides viewing it does batch conversion, basic editing, scanning, printing and slideshows, all driven by many hotkeys.",
+ "where_it_wins": [
+  "Huge format list, including rare and retro formats",
+  "Batch conversion and batch rename",
+  "Image editing, paint plug-in, effects, Photoshop 8BF filters",
+  "Scanning, printing, OCR plug-in",
+  "Search by EXIF/IPTC and text, not only names",
+  "Slideshows saved as EXE, screensaver or MP4",
+  "Runs on very old Windows versions and from a USB stick"
+ ],
+ "where_schnellbild_wins": [
+  "Runs natively on the Mac (Apple silicon)",
+  "Plays MKV, WebM, AVI itself with built-in VLC, no codec packs",
+  "Videos and photos in one grid, skimming with the arrow keys, subtitles, audio tracks",
+  "Archives and comics (ZIP, RAR, 7z, CBZ, CBR) open like folders",
+  "Folder tiles with previews, dual pane with F5/F6, undo of file actions",
+  "Regular expression search through all subfolders",
+  "Free for everyone, also commercially, and open source; sandboxed, never online"
+ ],
+ "search_terms": [
+  "irfanview mac",
+  "irfanview for mac",
+  "irfanview mac alternative",
+  "irfanview macos",
+  "irfanview apple silicon",
+  "irfanview m1",
+  "irfanview alternative mac",
+  "irfanview für mac",
+  "irfanview mac deutsch",
+  "irfanview pour mac",
+  "alternative irfanview mac",
+  "irfanview para mac",
+  "irfanview mac os x",
+  "irfanview mac 版",
+  "irfanview 맥",
+  "programa como irfanview para mac"
+ ],
+ "matrix": {
+  "free": {
+   "value": "partial",
+   "evidence": [
+    "https://www.irfanview.com/main_what_is_engl.htm"
+   ],
+   "how": "docs",
+   "note": "Free for private, non-commercial and educational use; commercial use US$18 / EUR 15 per licence"
+  },
+  "open_source": {
+   "value": "no",
+   "evidence": [
+    "https://www.irfanview.com/main_what_is_engl.htm"
+   ],
+   "how": "docs",
+   "note": "Proprietary freeware"
+  },
+  "native_apple_silicon": {
+   "value": "no",
+   "evidence": [
+    "https://www.irfanview.com/faq.htm",
+    "https://www.irfanview.com/"
+   ],
+   "how": "docs",
+   "note": "No macOS version; FAQ points Mac users to Wine/WineBottler. Native builds exist for Windows 32/64-bit and Windows ARM64"
+  },
+  "no_account_no_tracking": {
+   "value": "yes",
+   "evidence": [
+    "https://www.irfanview.com/main_what_is_engl.htm",
+    "https://www.irfanview.com/faq.htm"
+   ],
+   "how": "docs",
+   "note": "No account; FAQ: no spyware; 'no Shareware messages'"
+  },
+  "dark_light_setting": {
+   "value": "yes",
+   "evidence": [
+    "https://www.irfanview.com/main_what_is_engl.htm",
+    "https://softerviews.org/IrfanView.html"
+   ],
+   "how": "docs",
+   "note": "Dark mode option in Properties->Viewing (since 4.65), independent of Windows"
+  },
+  "languages_20": {
+   "value": "yes",
+   "evidence": [
+    "https://www.irfanview.com/languages.htm"
+   ],
+   "how": "docs",
+   "note": "About 34 languages as separate add-on downloads (19 updated for 4.76); English and German built in"
+  },
+  "folder_browsing": {
+   "value": "yes",
+   "evidence": [
+    "https://www.irfanview.com/main_what_is_engl.htm",
+    "https://softerviews.org/IrfanView.html"
+   ],
+   "how": "docs",
+   "note": "Browses the folder of the opened file and a Thumbnails window with folder tree; no import"
+  },
+  "thumbnail_grid": {
+   "value": "partial",
+   "evidence": [
+    "https://softerviews.org/IrfanView.html"
+   ],
+   "how": "docs",
+   "note": "Thumbnails window with folder tree; folders are shown in the tree, not as preview tiles"
+  },
+  "list_view": {
+   "value": "yes",
+   "evidence": [
+    "https://softerviews.org/IrfanView.html"
+   ],
+   "how": "docs",
+   "note": "Thumbnails window View menu: Thumbnails, Tiles, Details, List"
+  },
+  "recursive_search": {
+   "value": "yes",
+   "evidence": [
+    "https://softerviews.org/IrfanView.html",
+    "https://www.irfanview.com/main_what_is_engl.htm"
+   ],
+   "how": "docs",
+   "note": "Search files (Ctrl+F) in the folder and subfolders by filename pattern, date, EXIF/IPTC or text"
+  },
+  "regex_search": {
+   "value": "no",
+   "evidence": [
+    "https://softerviews.org/IrfanView.html"
+   ],
+   "how": "docs",
+   "note": "Filename patterns (wildcards) only; no regular expressions documented"
+  },
+  "network_shares_fast": {
+   "value": "partial",
+   "evidence": [
+    "https://www.irfanview.com/",
+    "https://www.irfanview.com/main_what_is_engl.htm"
+   ],
+   "how": "docs",
+   "note": "Known as fast and compact for browsing; no specific network optimisation documented"
+  },
+  "multiple_windows": {
+   "value": "yes",
+   "evidence": [
+    "https://softerviews.org/IrfanView.html"
+   ],
+   "how": "docs",
+   "note": "Ctrl+N opens the file in a new instance; option 'Only 1 instance' can be switched"
+  },
+  "bookmarks": {
+   "value": "yes",
+   "evidence": [
+    "https://www.irfanview.com/main_history.htm",
+    "https://softerviews.org/IrfanView.html"
+   ],
+   "how": "changelog",
+   "note": "Thumbnails window menu Favorite folders (max 15, new in 4.76); 14 favourite folders for Move/Copy"
+  },
+  "img_modern_formats": {
+   "value": "yes",
+   "evidence": [
+    "https://www.irfanview.com/main_formats.htm",
+    "https://www.irfanview.com/plugins.htm",
+    "https://www.irfanview.com/faq.htm"
+   ],
+   "how": "docs",
+   "note": "HEIC/AVIF, JPEG XL, WebP via the included/optional plug-ins; HEIC also needs Microsoft's HEVC extensions"
+  },
+  "img_raw": {
+   "value": "yes",
+   "evidence": [
+    "https://www.irfanview.com/main_formats.htm",
+    "https://www.irfanview.com/plugins.htm"
+   ],
+   "how": "docs",
+   "note": "CamRAW plug-in (LibRaw 0.22.3): CR2/CR3, NEF, ARW, DNG, ORF, RAF, RW2 and more"
+  },
+  "img_psd_exr": {
+   "value": "yes",
+   "evidence": [
+    "https://www.irfanview.com/main_formats.htm",
+    "https://www.irfanview.com/plugins.htm"
+   ],
+   "how": "docs",
+   "note": "PSD built in, EXR via plug-in"
+  },
+  "img_svg_pdf": {
+   "value": "partial",
+   "evidence": [
+    "https://www.irfanview.com/main_formats.htm",
+    "https://www.irfanview.com/plugins.htm",
+    "https://softerviews.org/IrfanView.html"
+   ],
+   "how": "docs",
+   "note": "SVG and PDF via plug-ins (new SVG plug-in 4.76.1, PDF via Pdfium plug-in; Ghostscript for PS/EPS/AI)"
+  },
+  "img_animated": {
+   "value": "yes",
+   "evidence": [
+    "https://www.irfanview.com/main_what_is_engl.htm",
+    "https://www.irfanview.com/main_history.htm",
+    "https://softerviews.org/IrfanView.html"
+   ],
+   "how": "docs",
+   "note": "Animated GIF (first viewer with it), animated WebP, animated AVIF (4.76), MNG/APNG via plug-in"
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "evidence": [
+    "https://softerviews.org/IrfanView.html"
+   ],
+   "how": "docs",
+   "note": "Arrow keys / Page keys browse the folder"
+  },
+  "zoom_rotate": {
+   "value": "yes",
+   "evidence": [
+    "https://www.irfanview.com/main_what_is_engl.htm",
+    "https://softerviews.org/IrfanView.html"
+   ],
+   "how": "docs",
+   "note": "Zoom, pan, rotate; rotation can also be saved (lossless JPG rotation)"
+  },
+  "slideshow": {
+   "value": "yes",
+   "evidence": [
+    "https://www.irfanview.com/main_what_is_engl.htm",
+    "https://softerviews.org/IrfanView.html"
+   ],
+   "how": "docs",
+   "note": "Slideshow dialog with timer, random, loop, transitions; can save as EXE/SCR or MP4"
+  },
+  "slideshow_recursive": {
+   "value": "partial",
+   "evidence": [
+    "https://softerviews.org/IrfanView.html"
+   ],
+   "how": "docs",
+   "note": "Thumbnails can load all subfolders and start a slideshow from that list (Ctrl+W); videos in a slideshow depend on installed codecs"
+  },
+  "auto_enhance_view": {
+   "value": "partial",
+   "evidence": [
+    "https://softerviews.org/IrfanView.html"
+   ],
+   "how": "docs",
+   "note": "Auto adjust colours (Shift+U) and colour corrections apply to the image in memory; you must not save, but it is an edit, not a view filter"
+  },
+  "file_info_exif": {
+   "value": "partial",
+   "evidence": [
+    "https://softerviews.org/IrfanView.html",
+    "https://www.irfanview.com/faq.htm"
+   ],
+   "how": "docs",
+   "note": "Image->Information and EXIF/IPTC dialogs; video codec name shown, no bitrate details"
+  },
+  "wrong_extension_note": {
+   "value": "yes",
+   "evidence": [
+    "https://softerviews.org/IrfanView.html",
+    "https://www.irfanview.com/faq.htm"
+   ],
+   "how": "docs",
+   "note": "Option 'Ask to rename if incorrect extension' (Properties->File Handling)"
+  },
+  "video_native": {
+   "value": "partial",
+   "evidence": [
+    "https://www.irfanview.com/faq.htm",
+    "https://www.irfanview.com/main_formats.htm"
+   ],
+   "how": "docs",
+   "note": "Plays via Windows codecs (DirectShow / Windows Media Player plug-in): 'IrfanView is NOT playing a video, it just starts the installed codecs'"
+  },
+  "video_mkv_avi_webm": {
+   "value": "partial",
+   "evidence": [
+    "https://www.irfanview.com/main_formats.htm",
+    "https://www.irfanview.com/faq.htm"
+   ],
+   "how": "docs",
+   "note": "AVI, WMV, ASF built in; MKV/WebM via plug-in and installed codecs (FAQ recommends K-Lite Codec Pack)"
+  },
+  "photos_videos_one_grid": {
+   "value": "partial",
+   "note": "Thumbnails window shows video files with images; frame extraction for thumbnails depends on installed codecs",
+   "evidence": [
+    "https://www.irfanview.com/history_old.htm"
+   ],
+   "how": "changelog"
+  },
+  "video_skim_arrows": {
+   "value": "no",
+   "note": "Arrow keys browse files; video seeking only via the play bar (B toggles it in full screen)",
+   "evidence": [
+    "https://www.irfanview.com/history_old.htm",
+    "https://softerviews.org/IrfanView.html"
+   ],
+   "how": "changelog"
+  },
+  "subtitles_embedded": {
+   "value": "no",
+   "note": "Video/Sound options are only internal/external player, DirectShow, loop, hide playbar, window size; the version history since 1996 adds no subtitle feature; 'IrfanView is NOT playing a video, it just starts the installed codecs'",
+   "evidence": [
+    "https://softerviews.org/IrfanView.html",
+    "https://www.irfanview.com/history_old.htm",
+    "https://www.irfanview.com/faq.htm"
+   ],
+   "how": "docs"
+  },
+  "subtitles_external_files": {
+   "value": "no",
+   "note": "Video/Sound options are only internal/external player, DirectShow, loop, hide playbar, window size; the version history since 1996 adds no subtitle feature; 'IrfanView is NOT playing a video, it just starts the installed codecs'",
+   "evidence": [
+    "https://softerviews.org/IrfanView.html",
+    "https://www.irfanview.com/history_old.htm"
+   ],
+   "how": "docs"
+  },
+  "audio_track_choice": {
+   "value": "no",
+   "note": "Video/Sound options are only internal/external player, DirectShow, loop, hide playbar, window size; the version history since 1996 adds no track selection; 'IrfanView is NOT playing a video, it just starts the installed codecs'",
+   "evidence": [
+    "https://softerviews.org/IrfanView.html",
+    "https://www.irfanview.com/history_old.htm"
+   ],
+   "how": "docs"
+  },
+  "playback_speed": {
+   "value": "no",
+   "note": "Video/Sound options are only internal/external player, DirectShow, loop, hide playbar, window size; the version history since 1996 adds no speed control (only GIF/ANI/PNG animation speed); 'IrfanView is NOT playing a video, it just starts the installed codecs'",
+   "evidence": [
+    "https://softerviews.org/IrfanView.html",
+    "https://www.irfanview.com/history_old.htm"
+   ],
+   "how": "docs"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "evidence": [
+    "https://softerviews.org/IrfanView.html"
+   ],
+   "how": "docs",
+   "note": "Simple play bar; option only to hide it in full screen"
+  },
+  "playlist": {
+   "value": "partial",
+   "evidence": [
+    "https://softerviews.org/IrfanView.html"
+   ],
+   "how": "docs",
+   "note": "Slideshow file lists (Slideshow.lst, TXT) can hold images; no video playlist"
+  },
+  "saved_playlists": {
+   "value": "partial",
+   "evidence": [
+    "https://softerviews.org/IrfanView.html"
+   ],
+   "how": "docs",
+   "note": "Slideshow lists can be saved as TXT and run again"
+  },
+  "pip": {
+   "value": "no",
+   "note": "Not among the Video/Sound options or in the version history",
+   "evidence": [
+    "https://softerviews.org/IrfanView.html",
+    "https://www.irfanview.com/history_old.htm"
+   ],
+   "how": "docs"
+  },
+  "music_mode": {
+   "value": "partial",
+   "evidence": [
+    "https://softerviews.org/IrfanView.html",
+    "https://www.irfanview.com/main_formats.htm"
+   ],
+   "how": "docs",
+   "note": "Plays audio files (MP3, FLAC, WAV ...) in the main window; background sound for slideshows"
+  },
+  "streaming_urls": {
+   "value": "no",
+   "note": "Plays local files through installed codecs; no URL/stream opening in menus or history (FTP plug-in only uploads)",
+   "evidence": [
+    "https://softerviews.org/IrfanView.html",
+    "https://www.irfanview.com/history_old.htm",
+    "https://www.irfanview.com/faq.htm"
+   ],
+   "how": "docs"
+  },
+  "online_subtitles": {
+   "value": "no",
+   "note": "No subtitle features at all",
+   "evidence": [
+    "https://softerviews.org/IrfanView.html",
+    "https://www.irfanview.com/history_old.htm"
+   ],
+   "how": "docs"
+  },
+  "video_filters_enhance": {
+   "value": "no",
+   "note": "Colour corrections apply to images; video player context menu only copies a frame and changes volume",
+   "evidence": [
+    "https://www.irfanview.com/history_old.htm"
+   ],
+   "how": "changelog"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "evidence": [
+    "https://www.irfanview.com/faq.htm",
+    "https://www.irfanview.com/plugins.htm"
+   ],
+   "how": "docs",
+   "note": "Not a shell extension: 'IrfanView does NOT show/change anything in Windows File Explorer' (a separate Shell Extension plug-in adds context menus only)"
+  },
+  "archives_as_folders": {
+   "value": "no",
+   "evidence": [
+    "https://www.irfanview.com/main_formats.htm"
+   ],
+   "how": "docs",
+   "note": "No archive browsing in the format list"
+  },
+  "comics_cbz_cbr": {
+   "value": "no",
+   "evidence": [
+    "https://www.irfanview.com/main_formats.htm"
+   ],
+   "how": "docs",
+   "note": "Not in the format list"
+  },
+  "archive_passwords": {
+   "value": "no",
+   "evidence": [
+    "https://www.irfanview.com/main_formats.htm"
+   ],
+   "how": "docs",
+   "note": "No archive support"
+  },
+  "split_archives": {
+   "value": "no",
+   "evidence": [
+    "https://www.irfanview.com/main_formats.htm"
+   ],
+   "how": "docs",
+   "note": "No archive support"
+  },
+  "videos_in_archives": {
+   "value": "no",
+   "evidence": [
+    "https://www.irfanview.com/main_formats.htm"
+   ],
+   "how": "docs",
+   "note": "No archive support"
+  },
+  "manga_two_page": {
+   "value": "no",
+   "note": "No two-page or right-to-left reading mode in menus or version history (Panorama only joins images into a new file)",
+   "evidence": [
+    "https://softerviews.org/IrfanView.html",
+    "https://www.irfanview.com/history_old.htm"
+   ],
+   "how": "docs"
+  },
+  "rename_trash": {
+   "value": "yes",
+   "evidence": [
+    "https://softerviews.org/IrfanView.html"
+   ],
+   "how": "docs",
+   "note": "Rename (F2), Delete (Del); Move/Copy create missing target folders"
+  },
+  "move_copy": {
+   "value": "yes",
+   "evidence": [
+    "https://softerviews.org/IrfanView.html"
+   ],
+   "how": "docs",
+   "note": "Move (F7) / Copy (F8) to favourite folders; drag and drop in Thumbnails window"
+  },
+  "dual_pane": {
+   "value": "no",
+   "evidence": [
+    "https://softerviews.org/IrfanView.html"
+   ],
+   "how": "docs",
+   "note": "Single Thumbnails pane; Move/Copy via dialogs"
+  },
+  "undo_file_actions": {
+   "value": "no",
+   "evidence": [
+    "https://softerviews.org/IrfanView.html"
+   ],
+   "how": "docs",
+   "note": "Undo covers image edits only (up to 20 steps)"
+  },
+  "image_editing": {
+   "value": "yes",
+   "evidence": [
+    "https://www.irfanview.com/main_what_is_engl.htm",
+    "https://softerviews.org/IrfanView.html"
+   ],
+   "how": "docs",
+   "note": "Crop, resize, colour, effects, paint plug-in, text, watermark, save in many formats"
+  },
+  "batch_convert": {
+   "value": "yes",
+   "evidence": [
+    "https://www.irfanview.com/main_what_is_engl.htm",
+    "https://softerviews.org/IrfanView.html"
+   ],
+   "how": "docs",
+   "note": "Batch conversion/rename with multithreading"
+  },
+  "library_catalog": {
+   "value": "no",
+   "evidence": [
+    "https://www.irfanview.com/faq.htm"
+   ],
+   "how": "docs",
+   "note": "No database; tagging only marks files for the session (X / Shift+X)"
+  },
+  "cloud_sync": {
+   "value": "partial",
+   "evidence": [
+    "https://www.irfanview.com/plugins.htm",
+    "https://www.irfanview.com/main_what_is_engl.htm"
+   ],
+   "how": "docs",
+   "note": "Email and FTP upload plug-ins; no cloud sync"
+  },
+  "keyboard_first": {
+   "value": "yes",
+   "evidence": [
+    "https://www.irfanview.com/main_what_is_engl.htm",
+    "https://softerviews.org/IrfanView.html"
+   ],
+   "how": "docs",
+   "note": "'Many hotkeys'; nearly every menu has a key"
+  },
+  "custom_shortcuts": {
+   "value": "yes",
+   "evidence": [
+    "https://www.irfanview.com/main_what_is_engl.htm",
+    "https://softerviews.org/IrfanView.html"
+   ],
+   "how": "docs",
+   "note": "Menu hotkeys changeable by right-click on a menu item (since 4.56)"
+  },
+  "shortcut_cheatsheet": {
+   "value": "partial",
+   "evidence": [
+    "https://softerviews.org/IrfanView.html"
+   ],
+   "how": "docs",
+   "note": "Keyboard Shortcuts topic in the help file (F1); not a printable sheet in the app"
+  },
+  "boss_key": {
+   "value": "partial",
+   "note": "M minimizes IrfanView to the taskbar; the changelog calls it 'BOSS-Key'. One window only, nothing else hidden",
+   "evidence": [
+    "https://www.irfanview.com/history_old.htm",
+    "https://softerviews.org/IrfanView.html"
+   ],
+   "how": "changelog"
+  },
+  "app_sandbox": {
+   "value": "no",
+   "evidence": [
+    "https://www.irfanview.com/faq.htm"
+   ],
+   "how": "docs",
+   "note": "no macOS version (FAQ: only via Wine/WineBottler)"
+  },
+  "no_network": {
+   "value": "partial",
+   "evidence": [
+    "https://www.irfanview.com/plugins.htm"
+   ],
+   "how": "docs",
+   "note": "Viewing is offline; optional email/FTP plug-ins go online"
+  },
+  "notarized_attested": {
+   "value": "no",
+   "evidence": [
+    "https://www.irfanview.com/plugins.htm"
+   ],
+   "how": "docs",
+   "note": "Closed source Windows binary; SHA-256 checksums published for plug-ins"
+  },
+  "mac_app_store": {
+   "value": "no",
+   "evidence": [
+    "https://www.irfanview.com/faq.htm"
+   ],
+   "how": "docs",
+   "note": "no macOS version (FAQ: only via Wine/WineBottler)"
+  }
+ }
+}

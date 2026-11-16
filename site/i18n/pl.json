@@ -1,6 +1,7 @@
 {
   "name": "Polski",
   "privacySlug": "privacy",
+  "alternativesSlug": "alternatywy",
   "title": "Schnellbild: przeglądarka zdjęć i wideo dla macOS, która nie działa na nerwy",
   "seoTitle": "Schnellbild · przeglądarka zdjęć i odtwarzacz MKV na Maca",
   "seoDescription": "Szybka, darmowa przeglądarka zdjęć na Maca, odtwarza też MKV, AVI i WebM: miniatury, pokaz slajdów, ZIP i RAR jak foldery. Alternatywa dla IrfanView i XnView.",
@@ -70,8 +71,13 @@
       "alt": "Zdjęcie w pełnym widoku"
     },
     {
+      "title": "Twoje zdjęcia na mapie i na globusie",
+      "text": "<p><kbd>W</kbd> pokazuje zdjęcia i filmy z folderu i jego podfolderów w miejscach, w których powstały. Przy dużym oddaleniu mapa jest globusem na tle gwiazd, jeśli chcesz z dniem i nocą oraz światłami miast po nocnej stronie; po przybliżeniu spłaszcza się w mapę.</p><ul><li>Oś czasu układa podróż według czasu: przeciągnij po fragmencie, a mapa pokaże tylko tę część</li><li><kbd>T</kbd> odtwarza podróż: mapa płynie od miejsca do miejsca, zdjęcia pojawiają się w dużym rozmiarze, filmy grają kilka sekund</li><li>Mapa jest w aplikacji: nic nie trafia do internetu, żadna lokalizacja nie opuszcza Twojego Maca</li></ul>",
+      "alt": "Zdjęcia z podróży na globusie, w widoku atlasu"
+    },
+    {
       "title": "Filmy, także MKV i inne, których macOS nie odtworzy",
-      "text": "<p>To, co macOS potrafi odtworzyć sam (MP4, MOV, AVCHD itp.), odtwarza macOS, także w HDR, a całą resztę odtwarza wbudowany silnik VLC: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-Video.</p><ul><li>← → przeskakują o jedną dziesiątą filmu, ⇧← ⇧→ o jedną setną</li><li>↑ ↓ ustawiają głośność, dla każdego filmu</li><li>Finder i Szybki przegląd dostają miniatury także dla MKV, WebM, WMV, FLV i VOB</li></ul>",
+      "text": "<p>To, co macOS potrafi odtworzyć sam (MP4, MOV, AVCHD itp.), odtwarza macOS, także w HDR, a całą resztę odtwarza wbudowany silnik VLC: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-Video.</p><ul><li>← → przeskakują o jedną dziesiątą filmu, ⇧← ⇧→ o jedną setną</li><li>↑ ↓ ustawiają głośność, dla każdego filmu</li><li>⌘→ do następnego filmu i ⌘← z powrotem: pierwszy gra dalej od miejsca, w którym został</li><li>Napisy w filmie (<kbd>V</kbd>) widać od początku; włączone w trakcie od razu pokazują bieżącą linię, a napisy ASS zachowują położenie, kolory i czcionki</li><li>Finder i Szybki przegląd dostają miniatury także dla MKV, WebM, WMV, FLV i VOB</li></ul>",
       "alt": "Film odtwarzany w Schnellbild"
     },
     {
@@ -96,12 +102,12 @@
     },
     {
       "title": "Czym naprawdę jest plik",
-      "text": "<p><kbd>I</kbd> pokazuje format, rozdzielczość, kodeki, przepływność, głębię bitową, profil kolorów i aparat, a także ostrzega, gdy rozszerzenie pliku nie pasuje do jego zawartości.</p>",
+      "text": "<p><kbd>I</kbd> lub <kbd>⌘</kbd><kbd>I</kbd> otwiera informacje obok obrazu: kiedy i gdzie powstał, z małą mapą i pobliską miejscowością, aparat i obiektyw, format, rozdzielczość, kodeki, przepływność, głębia bitowa i profil kolorów, a do tego każdy klucz metadanych (EXIF, GPS, IPTC, XMP, QuickTime) do filtrowania i kopiowania. Czas i miejsce pochodzą też z plików XMP obok zdjęć, z danych GPS kamery GoPro lub drona DJI, z plików klipów Sony i ze ścieżek GPX w folderze.</p><p>Gdy rozszerzenie pliku nie pasuje do zawartości, pojawia się uwaga. Pliki o nic niemówiących nazwach liczą się według zawartości, a pobierane jeszcze pliki (.part, .crdownload itp.) widać w takim stopniu, w jakim już dotarły.</p>",
       "alt": "Informacje o pliku obok zdjęcia"
     },
     {
       "title": "Każdy klawisz pod ręką",
-      "text": "<p><kbd>F1</kbd> pokazuje wszystkie klawisze, także do wydruku; <kbd>K</kbd> wyświetla małą klawiaturę do klikania. Ustaw własne klawisze albo wybierz klawisze jak w Phiewer. Siatka lub lista (<kbd>L</kbd>), sortowanie według nazwy, rodzaju, daty lub rozmiaru, wiele okien i klawisz szefa (<kbd>X</kbd>).</p>",
+      "text": "<p><kbd>F1</kbd> pokazuje wszystkie klawisze, także do wydruku; <kbd>K</kbd> wyświetla małą klawiaturę do klikania. Ustaw własne klawisze albo wybierz klawisze jak w Phiewer. Siatka lub lista (<kbd>L</kbd>), sortowanie według nazwy, rodzaju, daty, rozmiaru lub odległości od miejsca, wiele okien i klawisz szefa (<kbd>X</kbd>).</p>",
       "alt": "Lista klawiszy (F1)"
     },
     {
@@ -140,7 +146,10 @@
   ],
   "safeMore": "Co dokładnie robi i gdzie są jego granice (po angielsku): <a href=\"https://github.com/JohannesHoppe/schnellbild#safe-with-files-from-others\">Bezpieczny z plikami od innych</a>.",
   "modelsTitle": "Przesiadasz się z Phiewer, IINA albo Norton Commandera?",
-  "modelsText": "Phiewer to szybka przeglądarka zdjęć z płatną wersją PRO, IINA pełnoprawny odtwarzacz do oglądania filmów; oba były wzorem dla Schnellbild, podobnie jak Norton Commander dla dwóch paneli. Schnellbild łączy zdjęcia i filmy z folderów w jednej darmowej aplikacji, a jeśli chcesz, z klawiszami jak w Phiewer. Jak wypada na ich tle Schnellbild (po angielsku): <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-phiewer-alternative\">darmowa alternatywa dla Phiewer</a>, <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-iina-alternative-for-looking-through-videos\">darmowa alternatywa dla IINA do przeglądania filmów</a>.",
+  "modelsText": "Phiewer to szybka przeglądarka zdjęć z płatną wersją PRO, IINA pełnoprawny odtwarzacz do oglądania filmów; oba były wzorem dla Schnellbild, podobnie jak Norton Commander dla dwóch paneli. Schnellbild łączy zdjęcia i filmy z folderów w jednej darmowej aplikacji, a jeśli chcesz, z klawiszami jak w Phiewer. Jak wypada na ich tle Schnellbild: <a href=\"{alt:phiewer}\">darmowa alternatywa dla Phiewer</a>, <a href=\"{alt:iina}\">darmowa alternatywa dla IINA do przeglądania filmów</a>, <a href=\"{alt:norton-commander}\">z Norton Commandera na Maca</a>.",
+  "altTitle": "Szukasz alternatywy?",
+  "altText": "Jak Schnellbild wypada na tle programów, których ludzie szukają na Maca, funkcja po funkcji i ze źródłem dla każdego stwierdzenia:",
+  "altAll": "Wszystkie alternatywy",
   "ossTitle": "Open source",
   "ossText": "Schnellbild to wolne oprogramowanie na licencji MIT, a kod źródłowy jest <a href=\"https://github.com/JohannesHoppe/schnellbild\">na GitHubie</a>. Coś nie działa albo czegoś brakuje? <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">Otwórz zgłoszenie</a>.",
   "languagesText": "W języku Twojego Maca:",
@@ -149,6 +158,7 @@
   "footerPrivacy": "Prywatność",
   "footerImprint": "Nota prawna (Impressum)",
   "footerEula": "Umowa licencyjna",
+  "footerAlternatives": "Alternatywy",
   "privacy": {
     "title": "Polityka prywatności",
     "description": "Schnellbild nie zbiera żadnych danych osobowych: bez konta, bez analityki, bez śledzenia, bez dostępu do sieci.",

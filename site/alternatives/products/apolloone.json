@@ -1,0 +1,582 @@
+{
+ "name": "ApolloOne",
+ "short": "ApolloOne",
+ "vendor": "Anogeissus Limited",
+ "website": "https://anogeissus.com/apolloone.html",
+ "platforms": [
+  "macOS"
+ ],
+ "mac_available": "yes",
+ "page": "matrix",
+ "section": "photos",
+ "price": "Free Edition; Standard $35.99, Pro $59.99, Max $99.99 one-time; or yearly Standard $14.99 / Pro $23.99",
+ "license": "proprietary",
+ "current_version": "5.1.0",
+ "last_update": "2026-10-22",
+ "engine": "Apple RAW/ImageIO + LibRaw, RawBridge; system video player; ExifTool, MediaInfo",
+ "category": "photo-manager",
+ "summary": "Fast photo viewer and culling tool for photographers that works on folders without imports. Strong on RAW, HDR, metadata, ratings, AF points and batch work; many features are spread over three paid editions.",
+ "where_it_wins": [
+  "Culling: picks, ratings, Focus Score, AI rating, stacks",
+  "HDR RAW display and HDR export",
+  "Deep EXIF/IPTC/XMP editing, keywords, GPS maps",
+  "Memory card import",
+  "External SRT subtitles",
+  "AppleScript automation"
+ ],
+ "where_schnellbild_wins": [
+  "Free, no editions or subscriptions",
+  "Archives and comics as folders",
+  "MKV/WebM via VLC",
+  "Dual pane with F5/F6",
+  "No analytics, never online",
+  "Simpler, keyboard-first viewing"
+ ],
+ "search_terms": [
+  "apolloone mac",
+  "apolloone alternative",
+  "apollo one photo viewer",
+  "apolloone free alternative"
+ ],
+ "matrix": {
+  "free": {
+   "value": "partial",
+   "note": "Free Edition after 14-day Max trial; Standard $35.99, Pro $59.99, Max $99.99 perpetual, or yearly from $14.99",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1044484672",
+    "https://anogeissus.com/apolloone-faq.html"
+   ],
+   "how": "store"
+  },
+  "open_source": {
+   "value": "no",
+   "note": "proprietary",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1044484672"
+   ],
+   "how": "store"
+  },
+  "native_apple_silicon": {
+   "value": "yes",
+   "note": "User guide: Apple Silicon (M1) support since 2.9.0; requirements 'Intel x86 and Apple Silicon CPUs'.",
+   "evidence": [
+    "https://anogeissus.com/downloads/ApolloOne-Help-en.pdf?v=501"
+   ],
+   "how": "docs"
+  },
+  "no_account_no_tracking": {
+   "value": "partial",
+   "note": "no account; privacy label: usage data for analytics, not linked; AI features use Apple Private Cloud Compute",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1044484672",
+    "https://anogeissus.com/apolloone.html"
+   ],
+   "how": "store"
+  },
+  "dark_light_setting": {
+   "value": "yes",
+   "note": "Dark Mode UI setting and window background colour under Settings > Appearance",
+   "evidence": [
+    "https://anogeissus.com/downloads/ApolloOne-Help-en.pdf?v=501"
+   ],
+   "how": "docs"
+  },
+  "languages_20": {
+   "value": "partial",
+   "note": "11: EN, NL, FR, DE, IT, JA, KO, PL, zh-Hans, ES, zh-Hant",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1044484672"
+   ],
+   "how": "store"
+  },
+  "folder_browsing": {
+   "value": "yes",
+   "note": "no database imports; Folder Browser and Places",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1044484672",
+    "https://anogeissus.com/downloads/ApolloOne-Help-en.pdf?v=501"
+   ],
+   "how": "docs"
+  },
+  "thumbnail_grid": {
+   "value": "yes",
+   "note": "Contact Sheet; folder grouping with path bars (4.7)",
+   "evidence": [
+    "https://anogeissus.com/apolloone.html",
+    "https://apps.apple.com/us/app/id1044484672"
+   ],
+   "how": "docs"
+  },
+  "list_view": {
+   "value": "partial",
+   "note": "Standard Edition: sortable table with EXIF columns (5.0)",
+   "evidence": [
+    "https://anogeissus.com/apolloone.html",
+    "https://apps.apple.com/us/app/id1044484672"
+   ],
+   "how": "docs"
+  },
+  "recursive_search": {
+   "value": "yes",
+   "note": "toolbar search with ? and * wildcards; Include Subfolders scans all subfolders",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1044484672",
+    "https://anogeissus.com/downloads/ApolloOne-Help-en.pdf?v=501"
+   ],
+   "how": "docs"
+  },
+  "regex_search": {
+   "value": "partial",
+   "note": "RegEx search on metadata tags (Pro); filenames via wildcards only",
+   "evidence": [
+    "https://anogeissus.com/downloads/ApolloOne-Help-en.pdf?v=501",
+    "https://anogeissus.com/apolloone-faq.html"
+   ],
+   "how": "docs"
+  },
+  "network_shares_fast": {
+   "value": "partial",
+   "note": "NAS works over SMB; a review reports 5-10 s folder loads over AFP",
+   "evidence": [
+    "https://anogeissus.com/apolloone-faq.html",
+    "https://apps.apple.com/us/app/id1044484672"
+   ],
+   "how": "review"
+  },
+  "multiple_windows": {
+   "value": "partial",
+   "note": "Standard Edition: tabs and windows (5.0)",
+   "evidence": [
+    "https://anogeissus.com/apolloone.html",
+    "https://anogeissus.com/apolloone-faq.html"
+   ],
+   "how": "docs"
+  },
+  "bookmarks": {
+   "value": "yes",
+   "note": "Places",
+   "evidence": [
+    "https://anogeissus.com/downloads/ApolloOne-Help-en.pdf?v=501"
+   ],
+   "how": "docs"
+  },
+  "img_modern_formats": {
+   "value": "yes",
+   "note": "HEIC, AVIF (4.3), JPEG XL; WebP view and export",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1044484672",
+    "https://anogeissus.com/downloads/ApolloOne-Help-en.pdf?v=501"
+   ],
+   "how": "docs"
+  },
+  "img_raw": {
+   "value": "yes",
+   "note": "Apple RAW + LibRaw + RawBridge",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1044484672"
+   ],
+   "how": "store"
+  },
+  "img_psd_exr": {
+   "value": "partial",
+   "note": "OpenEXR view/export; PSD not mentioned in store text or user guide",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1044484672",
+    "https://anogeissus.com/downloads/ApolloOne-Help-en.pdf?v=501"
+   ],
+   "how": "docs"
+  },
+  "img_svg_pdf": {
+   "value": "partial",
+   "note": "SVG pre-rasterized (4.3); PDF not mentioned",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1044484672"
+   ],
+   "how": "changelog"
+  },
+  "img_animated": {
+   "value": "partial",
+   "note": "GIFs listed; animated WebP/PNG not stated",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1044484672"
+   ],
+   "how": "store"
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://anogeissus.com/downloads/ApolloOne-Help-en.pdf?v=501"
+   ],
+   "how": "docs"
+  },
+  "zoom_rotate": {
+   "value": "yes",
+   "note": "keyboard zoom, pan, rotate images and videos",
+   "evidence": [
+    "https://anogeissus.com/downloads/ApolloOne-Help-en.pdf?v=501"
+   ],
+   "how": "docs"
+  },
+  "slideshow": {
+   "value": "yes",
+   "note": "F5; shuffle (Standard), HDR slideshow (Pro), music from Apple Music, record to video (Pro)",
+   "evidence": [
+    "https://anogeissus.com/downloads/ApolloOne-Help-en.pdf?v=501",
+    "https://anogeissus.com/apolloone-faq.html"
+   ],
+   "how": "docs"
+  },
+  "slideshow_recursive": {
+   "value": "yes",
+   "note": "slideshow runs through all photos and videos of the file scan, which can include subfolders",
+   "evidence": [
+    "https://anogeissus.com/downloads/ApolloOne-Help-en.pdf?v=501"
+   ],
+   "how": "docs"
+  },
+  "auto_enhance_view": {
+   "value": "partial",
+   "note": "Pro: non-destructive Quick Edit sliders incl. Auto Tone Curve, saved as parameters",
+   "evidence": [
+    "https://anogeissus.com/apolloone.html",
+    "https://apps.apple.com/us/app/id1044484672"
+   ],
+   "how": "docs"
+  },
+  "file_info_exif": {
+   "value": "yes",
+   "note": "ExifTool incl. maker notes; MediaInfo for video",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1044484672"
+   ],
+   "how": "changelog"
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "note": "Not in the complete user guide (file info, Inspector, formats).",
+   "evidence": [
+    "https://anogeissus.com/downloads/ApolloOne-Help-en.pdf?v=501"
+   ],
+   "how": "docs"
+  },
+  "video_native": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://anogeissus.com/downloads/ApolloOne-Help-en.pdf?v=501"
+   ],
+   "how": "docs"
+  },
+  "video_mkv_avi_webm": {
+   "value": "no",
+   "note": "Video plays in the system player (HUD controller, AirPlay); the user guide names only QuickTime/HEVC MOV, no MKV, WebM or AVI.",
+   "evidence": [
+    "https://anogeissus.com/downloads/ApolloOne-Help-en.pdf?v=501"
+   ],
+   "how": "docs"
+  },
+  "photos_videos_one_grid": {
+   "value": "yes",
+   "note": "Photo Video Viewer; videos in Contact Sheet",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1044484672",
+    "https://anogeissus.com/downloads/ApolloOne-Help-en.pdf?v=501"
+   ],
+   "how": "docs"
+  },
+  "video_skim_arrows": {
+   "value": "partial",
+   "note": "← → step frame by frame; J/K/L shuttle",
+   "evidence": [
+    "https://anogeissus.com/downloads/ApolloOne-Help-en.pdf?v=501"
+   ],
+   "how": "docs"
+  },
+  "subtitles_embedded": {
+   "value": "no",
+   "note": "User guide documents only an external SRT file next to the video ('Use SRT Subtitle').",
+   "evidence": [
+    "https://anogeissus.com/downloads/ApolloOne-Help-en.pdf?v=501"
+   ],
+   "how": "docs"
+  },
+  "subtitles_external_files": {
+   "value": "yes",
+   "note": "SRT with the same name next to the video",
+   "evidence": [
+    "https://anogeissus.com/downloads/ApolloOne-Help-en.pdf?v=501"
+   ],
+   "how": "docs"
+  },
+  "audio_track_choice": {
+   "value": "no",
+   "note": "Video options menu: SRT subtitle, frame stepping, export frame; no audio track choice.",
+   "evidence": [
+    "https://anogeissus.com/downloads/ApolloOne-Help-en.pdf?v=501"
+   ],
+   "how": "docs"
+  },
+  "playback_speed": {
+   "value": "partial",
+   "note": "J/L cycle rewind/fast-forward speeds; no fixed speed setting",
+   "evidence": [
+    "https://anogeissus.com/downloads/ApolloOne-Help-en.pdf?v=501"
+   ],
+   "how": "docs"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "note": "User guide only says the video controller is HUD-style; whether it stays where dragged is not stated. Searched user guide, site, FAQ.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "playlist": {
+   "value": "no",
+   "note": "Slideshow with shuffle over the file scan; playlists exist only as Apple Music background music.",
+   "evidence": [
+    "https://anogeissus.com/downloads/ApolloOne-Help-en.pdf?v=501"
+   ],
+   "how": "docs"
+  },
+  "saved_playlists": {
+   "value": "no",
+   "note": "No video playlists in the user guide (only Apple Music playlists for slideshow music).",
+   "evidence": [
+    "https://anogeissus.com/downloads/ApolloOne-Help-en.pdf?v=501"
+   ],
+   "how": "docs"
+  },
+  "pip": {
+   "value": "no",
+   "note": "Video section documents AirPlay, JKL, frame stepping; no Picture in Picture.",
+   "evidence": [
+    "https://anogeissus.com/downloads/ApolloOne-Help-en.pdf?v=501"
+   ],
+   "how": "docs"
+  },
+  "music_mode": {
+   "value": "partial",
+   "note": "Apple Music playlists only as slideshow background music",
+   "evidence": [
+    "https://anogeissus.com/downloads/ApolloOne-Help-en.pdf?v=501",
+    "https://anogeissus.com/apolloone-faq.html"
+   ],
+   "how": "docs"
+  },
+  "streaming_urls": {
+   "value": "no",
+   "note": "Image URLs can be dragged in and are downloaded; no video streams or URL playback.",
+   "evidence": [
+    "https://anogeissus.com/downloads/ApolloOne-Help-en.pdf?v=501"
+   ],
+   "how": "docs"
+  },
+  "online_subtitles": {
+   "value": "no",
+   "note": "Only a local SRT next to the video.",
+   "evidence": [
+    "https://anogeissus.com/downloads/ApolloOne-Help-en.pdf?v=501"
+   ],
+   "how": "docs"
+  },
+  "video_filters_enhance": {
+   "value": "no",
+   "note": "Filters and adjustments are described for images; videos can be rotated/flipped.",
+   "evidence": [
+    "https://anogeissus.com/downloads/ApolloOne-Help-en.pdf?v=501"
+   ],
+   "how": "docs"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "note": "separate paid app Camera RawX adds Quick Look for RAW/Quick Edits, not for MKV",
+   "evidence": [
+    "https://anogeissus.com/downloads/ApolloOne-Help-en.pdf?v=501",
+    "https://apps.apple.com/us/app/id6587554858"
+   ],
+   "how": "docs"
+  },
+  "archives_as_folders": {
+   "value": "no",
+   "note": "the 6,400-line user guide never mentions archives",
+   "evidence": [
+    "https://anogeissus.com/downloads/ApolloOne-Help-en.pdf?v=501"
+   ],
+   "how": "docs"
+  },
+  "comics_cbz_cbr": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://anogeissus.com/downloads/ApolloOne-Help-en.pdf?v=501"
+   ],
+   "how": "docs"
+  },
+  "archive_passwords": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://anogeissus.com/downloads/ApolloOne-Help-en.pdf?v=501"
+   ],
+   "how": "docs"
+  },
+  "split_archives": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://anogeissus.com/downloads/ApolloOne-Help-en.pdf?v=501"
+   ],
+   "how": "docs"
+  },
+  "videos_in_archives": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://anogeissus.com/downloads/ApolloOne-Help-en.pdf?v=501"
+   ],
+   "how": "docs"
+  },
+  "manga_two_page": {
+   "value": "no",
+   "note": "Split View is a two-image compare view; no comic/RTL reading mode in the user guide.",
+   "evidence": [
+    "https://anogeissus.com/downloads/ApolloOne-Help-en.pdf?v=501"
+   ],
+   "how": "docs"
+  },
+  "rename_trash": {
+   "value": "yes",
+   "note": "batch rename in Standard",
+   "evidence": [
+    "https://anogeissus.com/apolloone-faq.html",
+    "https://anogeissus.com/downloads/ApolloOne-Help-en.pdf?v=501"
+   ],
+   "how": "docs"
+  },
+  "move_copy": {
+   "value": "yes",
+   "note": "Copy To / Move To, drag-and-drop folder moves",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1044484672",
+    "https://anogeissus.com/downloads/ApolloOne-Help-en.pdf?v=501"
+   ],
+   "how": "docs"
+  },
+  "dual_pane": {
+   "value": "no",
+   "note": "Split View compares two images, not two folders",
+   "evidence": [
+    "https://anogeissus.com/downloads/ApolloOne-Help-en.pdf?v=501"
+   ],
+   "how": "docs"
+  },
+  "undo_file_actions": {
+   "value": "partial",
+   "note": "Undo Move to Trash while the app runs; Put Back via optional user script",
+   "evidence": [
+    "https://anogeissus.com/downloads/ApolloOne-Help-en.pdf?v=501"
+   ],
+   "how": "docs"
+  },
+  "image_editing": {
+   "value": "partial",
+   "note": "crop (Standard), Quick Edits and resize (Pro)",
+   "evidence": [
+    "https://anogeissus.com/apolloone-faq.html"
+   ],
+   "how": "docs"
+  },
+  "batch_convert": {
+   "value": "partial",
+   "note": "batch rename (Standard); resize/convert/export (Pro)",
+   "evidence": [
+    "https://anogeissus.com/apolloone-faq.html"
+   ],
+   "how": "docs"
+  },
+  "library_catalog": {
+   "value": "yes",
+   "note": "ratings, picks, colour labels, keywords, IPTC/XMP written to files; no import database",
+   "evidence": [
+    "https://anogeissus.com/apolloone.html",
+    "https://apps.apple.com/us/app/id1044484672"
+   ],
+   "how": "docs"
+  },
+  "cloud_sync": {
+   "value": "partial",
+   "note": "AirDrop/share via InstaBake; no sync",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1044484672"
+   ],
+   "how": "store"
+  },
+  "keyboard_first": {
+   "value": "yes",
+   "note": "culling, rating, video and slideshow all by keys",
+   "evidence": [
+    "https://anogeissus.com/downloads/ApolloOne-Help-en.pdf?v=501"
+   ],
+   "how": "docs"
+  },
+  "custom_shortcuts": {
+   "value": "partial",
+   "note": "Pro Edition",
+   "evidence": [
+    "https://anogeissus.com/apolloone-faq.html",
+    "https://anogeissus.com/downloads/ApolloOne-Help-en.pdf?v=501"
+   ],
+   "how": "docs"
+  },
+  "shortcut_cheatsheet": {
+   "value": "yes",
+   "note": "'All Shortcut Keys' section in the PDF user guide",
+   "evidence": [
+    "https://anogeissus.com/downloads/ApolloOne-Help-en.pdf?v=501"
+   ],
+   "how": "docs"
+  },
+  "boss_key": {
+   "value": "no",
+   "note": "Not in the user guide's menus and shortcut keys.",
+   "evidence": [
+    "https://anogeissus.com/downloads/ApolloOne-Help-en.pdf?v=501"
+   ],
+   "how": "docs"
+  },
+  "app_sandbox": {
+   "value": "yes",
+   "note": "Mac App Store; guide cites App Store sandboxing limits",
+   "evidence": [
+    "https://anogeissus.com/downloads/ApolloOne-Help-en.pdf?v=501"
+   ],
+   "how": "docs"
+  },
+  "no_network": {
+   "value": "no",
+   "note": "analytics, Google Maps/Street View, Private Cloud Compute AI",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1044484672",
+    "https://anogeissus.com/apolloone.html"
+   ],
+   "how": "store"
+  },
+  "notarized_attested": {
+   "value": "no",
+   "note": "Apple-signed via the App Store; closed source",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1044484672"
+   ],
+   "how": "store"
+  },
+  "mac_app_store": {
+   "value": "yes",
+   "note": "id1044484672",
+   "evidence": [
+    "https://apps.apple.com/us/app/id1044484672"
+   ],
+   "how": "store"
+  }
+ }
+}

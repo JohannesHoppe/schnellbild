@@ -1,6 +1,7 @@
 {
   "name": "Dansk",
   "privacySlug": "privacy",
+  "alternativesSlug": "alternativer",
   "title": "Schnellbild: en billedfremviser og videoafspiller til macOS, der bare ikke er noget bras",
   "seoTitle": "Schnellbild · gratis billedfremviser og MKV-afspiller til Mac",
   "seoDescription": "Hurtig, gratis billedfremviser til Mac, der også afspiller MKV, AVI og WebM: miniaturer, diasshow, ZIP og RAR som mapper. Alternativ til IrfanView og XnView.",
@@ -70,8 +71,13 @@
       "alt": "Et foto i fuld visning"
     },
     {
+      "title": "Dine fotos på kortet og globussen",
+      "text": "<p><kbd>W</kbd> viser fotos og videoer fra en mappe og dens undermapper dér, hvor de blev taget. Langt ude er kortet en globus foran stjernehimlen, hvis du vil med dag og nat og byernes lys på natsiden; zoomer du ind, bliver den til det flade kort.</p><ul><li>Tidslinjen ordner turen efter tid: træk hen over et stykke, så viser kortet kun den del</li><li><kbd>T</kbd> afspiller turen: kortet glider fra sted til sted, fotos vises stort, videoer kører nogle sekunder</li><li>Kortet ligger i appen: intet går online, ingen placering forlader din Mac</li></ul>",
+      "alt": "Fotos fra en tur på globussen, i atlasvisningen"
+    },
+    {
       "title": "Videoer, også MKV og andre, som macOS ikke kan afspille",
-      "text": "<p>Det, macOS selv kan afspille (MP4, MOV, AVCHD …), afspilles af macOS, også i HDR; alt andet af den indbyggede VLC-motor: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-video.</p><ul><li>← → springer en tiendedel af videoen, ⇧← ⇧→ en hundrededel</li><li>↑ ↓ indstiller lydstyrken, for alle videoer</li><li>Finder og Lynoversigt får også miniaturer af MKV, WebM, WMV, FLV og VOB</li></ul>",
+      "text": "<p>Det, macOS selv kan afspille (MP4, MOV, AVCHD …), afspilles af macOS, også i HDR; alt andet af den indbyggede VLC-motor: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-video.</p><ul><li>← → springer en tiendedel af videoen, ⇧← ⇧→ en hundrededel</li><li>↑ ↓ indstiller lydstyrken, for alle videoer</li><li>⌘→ til næste video og ⌘← tilbage: den første fortsætter, hvor den slap</li><li>Undertekster i videoen (<kbd>V</kbd>) vises fra starten; slår du dem til midt i, står den igangværende linje der med det samme, og ASS-undertekster beholder placering, farver og skrifter</li><li>Finder og funktionen Vis får også miniaturer af MKV, WebM, WMV, FLV og VOB</li></ul>",
       "alt": "En video, der afspilles i Schnellbild"
     },
     {
@@ -96,12 +102,12 @@
     },
     {
       "title": "Hvad filen i virkeligheden er",
-      "text": "<p><kbd>I</kbd> viser format, opløsning, codecs, bitrate, bitdybde, farveprofil og kamera. Passer filens filtype ikke til indholdet, får du en bemærkning.</p>",
+      "text": "<p><kbd>I</kbd> eller <kbd>⌘</kbd><kbd>I</kbd> åbner filinfo ved siden af billedet: hvornår og hvor det blev taget, med et lille kort og byen i nærheden, kamera og objektiv, format, opløsning, codecs, bitrate, bitdybde og farveprofil, og hver metadatanøgle (EXIF, GPS, IPTC, XMP, QuickTime) til at filtrere og kopiere. Tid og sted kommer også fra XMP-sidefiler, GPS-data fra en GoPro eller DJI-drone, Sonys klipfiler og GPX-spor i mappen.</p><p>Passer filtypen ikke til indholdet, får du en bemærkning. Filer, hvis navn intet siger, tæller efter indholdet, og downloads, der stadig er i gang (.part, .crdownload …), vises så langt, de er nået.</p>",
       "alt": "Filinfo ved siden af et foto"
     },
     {
       "title": "Alle taster lige ved hånden",
-      "text": "<p><kbd>F1</kbd> viser alle taster, også til udskrift; <kbd>K</kbd> viser et lille tastatur at klikke på. Vælg dine egne taster, eller tasterne som i Phiewer. Gitter eller liste (<kbd>L</kbd>), sortering efter navn, type, dato eller størrelse, flere vinduer og en chefknap (<kbd>X</kbd>).</p>",
+      "text": "<p><kbd>F1</kbd> viser alle taster, også til udskrift; <kbd>K</kbd> viser et lille tastatur at klikke på. Vælg dine egne taster, eller tasterne som i Phiewer. Gitter eller liste (<kbd>L</kbd>), sortering efter navn, type, dato, størrelse eller afstand fra et sted, flere vinduer og en chefknap (<kbd>X</kbd>).</p>",
       "alt": "Listen over taster (F1)"
     },
     {
@@ -140,7 +146,10 @@
   ],
   "safeMore": "Hvad den gør i detaljer, og hvor grænsen går: <a href=\"https://github.com/JohannesHoppe/schnellbild#safe-with-files-from-others\">Sikker med filer fra andre</a> (på engelsk).",
   "modelsTitle": "Kommer du fra Phiewer, IINA eller Norton Commander?",
-  "modelsText": "Phiewer er en hurtig billedfremviser med en betalt PRO-version, IINA en fuldgyldig afspiller til at se videoer; begge var forbilleder for Schnellbild, ligesom Norton Commander for de to paneler. Schnellbild samler billederne og videoerne i dine mapper i én gratis app, og hvis du vil, med tasterne som i Phiewer. Sådan klarer Schnellbild sig i sammenligning (på engelsk): <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-phiewer-alternative\">et gratis alternativ til Phiewer</a>, <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-iina-alternative-for-looking-through-videos\">et gratis alternativ til IINA til at se videoer igennem</a>.",
+  "modelsText": "Phiewer er en hurtig billedfremviser med en betalt PRO-version, IINA en fuldgyldig afspiller til at se videoer; begge var forbilleder for Schnellbild, ligesom Norton Commander for de to paneler. Schnellbild samler billederne og videoerne i dine mapper i én gratis app, og hvis du vil, med tasterne som i Phiewer. Sådan klarer Schnellbild sig i sammenligning: <a href=\"{alt:phiewer}\">et gratis alternativ til Phiewer</a>, <a href=\"{alt:iina}\">et gratis alternativ til IINA til at se videoer igennem</a>, <a href=\"{alt:norton-commander}\">fra Norton Commander til Mac</a>.",
+  "altTitle": "Leder du efter et alternativ?",
+  "altText": "Sådan klarer Schnellbild sig mod de programmer, folk leder efter på Mac, funktion for funktion og med en kilde til hver påstand:",
+  "altAll": "Alle alternativer",
   "ossTitle": "Open source",
   "ossText": "Schnellbild er fri software under MIT-licensen, kildekoden ligger <a href=\"https://github.com/JohannesHoppe/schnellbild\">på GitHub</a>. Fundet en fejl eller savner du noget? <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">Opret et issue</a>.",
   "languagesText": "På din Macs sprog:",
@@ -149,6 +158,7 @@
   "footerPrivacy": "Privatliv",
   "footerImprint": "Juridiske oplysninger (Impressum)",
   "footerEula": "Licensaftale",
+  "footerAlternatives": "Alternativer",
   "privacy": {
     "title": "Privatlivspolitik",
     "description": "Schnellbild indsamler ingen personoplysninger: ingen konto, ingen analyse, ingen sporing, ingen netværksadgang.",

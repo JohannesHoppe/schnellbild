@@ -1,0 +1,577 @@
+{
+ "name": "5KPlayer",
+ "short": "5KPlayer",
+ "vendor": "Digiarty Software, Inc. (DearMob brand)",
+ "website": "https://www.5kplayer.com/",
+ "platforms": [
+  "macOS",
+  "Windows"
+ ],
+ "mac_available": "yes",
+ "page": "matrix",
+ "section": "video",
+ "price": "Free (ad-supported, optional email registration)",
+ "license": "proprietary",
+ "current_version": "6.11",
+ "last_update": "2026-01-30",
+ "engine": "libVLC + FFmpeg (Qt 6 UI)",
+ "category": "video",
+ "summary": "Free all-in-one media player for Mac and Windows that plays video, music, DVDs and radio, receives AirPlay mirroring, streams over DLNA and downloads online videos. Its strength is breadth of extras around playback.",
+ "where_it_wins": [
+  "AirPlay receiver and screen-mirror recording",
+  "DLNA server/renderer",
+  "Online video downloader (YouTube etc.)",
+  "DVD and ISO playback",
+  "Music library, radio, IPTV",
+  "Playback speed, video cutter, MP3 extraction"
+ ],
+ "where_schnellbild_wins": [
+  "No ads, no registration, no network",
+  "Photos and videos together in one folder grid",
+  "Browses folders directly, search through subfolders",
+  "Archives (ZIP/RAR/7z) as folders, videos inside them",
+  "Two-pane file sorting with F5/F6",
+  "App Sandbox, open source, reproducible build",
+  "Arrow keys skim by fractions of the video"
+ ],
+ "search_terms": [
+  "5kplayer mac",
+  "5kplayer alternative",
+  "5kplayer alternative mac",
+  "5kplayer safe",
+  "5kplayer ohne werbung",
+  "5kplayer alternative kostenlos"
+ ],
+ "matrix": {
+  "free": {
+   "value": "yes",
+   "note": "Free download, no paid tier for the player; shows ads for Digiarty products (ad config URL in the binary)",
+   "evidence": [
+    "https://www.5kplayer.com/",
+    "https://www.5kplayer.com/5kplayer-download-mac.htm",
+    "https://www.5kplayer.com/download/5kplayer-setup.dmg"
+   ],
+   "how": "docs"
+  },
+  "open_source": {
+   "value": "no",
+   "note": "Proprietary (Digiarty Software); bundles LGPL libVLC/FFmpeg",
+   "evidence": [
+    "https://www.5kplayer.com/download/5kplayer-setup.dmg"
+   ],
+   "how": "tested-description"
+  },
+  "native_apple_silicon": {
+   "value": "yes",
+   "note": "Native Apple silicon since 6.11 (2026-01-30); universal x86_64+arm64 binary",
+   "evidence": [
+    "https://www.5kplayer.com/software/update-history.htm",
+    "https://www.5kplayer.com/download/5kplayer-setup.dmg"
+   ],
+   "how": "changelog"
+  },
+  "no_account_no_tracking": {
+   "value": "no",
+   "note": "Seen in the 6.11 app bundle (dmg mounted read-only, app not run): in-app ad config (dl1.5kplayer.com/5kp-mac-ads/ad.config) and an email registration dialog ('Get registration code by email')",
+   "evidence": [
+    "https://www.5kplayer.com/download/5kplayer-setup.dmg"
+   ],
+   "how": "tested-description"
+  },
+  "dark_light_setting": {
+   "value": "no",
+   "note": "No theme option in the documented Preferences (General, Downloader, Subtitle, DLNA, AirPlay)",
+   "evidence": [
+    "https://www.5kplayer.com/user-guide/index.htm"
+   ],
+   "how": "docs"
+  },
+  "languages_20": {
+   "value": "partial",
+   "how": "unverified",
+   "evidence": [
+    "https://www.5kplayer.com/"
+   ],
+   "note": "Website in about 8 languages; app UI language count not documented"
+  },
+  "folder_browsing": {
+   "value": "no",
+   "note": "Files are added via Open / drag and drop into a library and playlists; no folder browser",
+   "evidence": [
+    "https://www.5kplayer.com/user-guide/index.htm"
+   ],
+   "how": "docs"
+  },
+  "thumbnail_grid": {
+   "value": "no",
+   "how": "docs",
+   "evidence": [
+    "https://www.5kplayer.com/user-guide/index.htm"
+   ],
+   "note": "Media library lists (Favorites, Playlist, YouTube, DLNA, AirRecord); no thumbnail grid described"
+  },
+  "list_view": {
+   "value": "partial",
+   "note": "Library lists (Favorites, YouTube, DLNA Share, Playlist, AirRecord), no file columns",
+   "evidence": [
+    "https://www.5kplayer.com/user-guide/index.htm"
+   ],
+   "how": "docs"
+  },
+  "recursive_search": {
+   "value": "no",
+   "how": "docs",
+   "evidence": [
+    "https://www.5kplayer.com/user-guide/index.htm"
+   ],
+   "note": "No search in the user guide"
+  },
+  "regex_search": {
+   "value": "no",
+   "how": "docs",
+   "evidence": [
+    "https://www.5kplayer.com/user-guide/index.htm"
+   ],
+   "note": "No search in the user guide"
+  },
+  "network_shares_fast": {
+   "value": "no",
+   "note": "No SMB/NAS browsing documented; network = DLNA/AirPlay/URLs",
+   "evidence": [
+    "https://www.5kplayer.com/user-guide/index.htm"
+   ],
+   "how": "docs"
+  },
+  "multiple_windows": {
+   "value": "no",
+   "how": "docs",
+   "evidence": [
+    "https://www.5kplayer.com/user-guide/index.htm"
+   ],
+   "note": "Single main interface; closing playback returns to it"
+  },
+  "bookmarks": {
+   "value": "partial",
+   "note": "Bookmarks inside videos (6.5) and Favorites, not folder bookmarks",
+   "evidence": [
+    "https://www.5kplayer.com/software/update-history.htm",
+    "https://www.5kplayer.com/user-guide/index.htm"
+   ],
+   "how": "changelog"
+  },
+  "img_modern_formats": {
+   "value": "no",
+   "note": "Media formats listed are video, music, DVD only",
+   "evidence": [
+    "https://www.5kplayer.com/user-guide/index.htm"
+   ],
+   "how": "docs"
+  },
+  "img_raw": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://www.5kplayer.com/user-guide/index.htm"
+   ],
+   "how": "docs"
+  },
+  "img_psd_exr": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://www.5kplayer.com/user-guide/index.htm"
+   ],
+   "how": "docs"
+  },
+  "img_svg_pdf": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://www.5kplayer.com/user-guide/index.htm"
+   ],
+   "how": "docs"
+  },
+  "img_animated": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://www.5kplayer.com/user-guide/index.htm"
+   ],
+   "how": "docs"
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "note": "Cmd+Left / Cmd+Right previous / next item",
+   "evidence": [
+    "https://www.5kplayer.com/user-guide/index.htm"
+   ],
+   "how": "docs"
+  },
+  "zoom_rotate": {
+   "value": "partial",
+   "note": "Rotates/flips video 90 degrees; no image viewing",
+   "evidence": [
+    "https://www.5kplayer.com/user-guide/index.htm"
+   ],
+   "how": "docs"
+  },
+  "slideshow": {
+   "value": "no",
+   "how": "docs",
+   "evidence": [
+    "https://www.5kplayer.com/user-guide/index.htm"
+   ],
+   "note": "Supported media are video, music, DVD, radio; no still images"
+  },
+  "slideshow_recursive": {
+   "value": "no",
+   "how": "docs",
+   "evidence": [
+    "https://www.5kplayer.com/user-guide/index.htm"
+   ],
+   "note": "No still images"
+  },
+  "auto_enhance_view": {
+   "value": "partial",
+   "note": "Video Tuner and video effect mode (6.8) for video; no photos",
+   "evidence": [
+    "https://www.5kplayer.com/user-guide/index.htm",
+    "https://www.5kplayer.com/software/update-history.htm"
+   ],
+   "how": "docs"
+  },
+  "file_info_exif": {
+   "value": "partial",
+   "note": "Media Info: source, track info, format; no EXIF (no images)",
+   "evidence": [
+    "https://www.5kplayer.com/user-guide/index.htm"
+   ],
+   "how": "docs"
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "how": "docs",
+   "evidence": [
+    "https://www.5kplayer.com/user-guide/index.htm"
+   ],
+   "note": "Media Info shows source/track/format only"
+  },
+  "video_native": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://www.5kplayer.com/user-guide/index.htm"
+   ],
+   "how": "docs"
+  },
+  "video_mkv_avi_webm": {
+   "value": "yes",
+   "note": "MKV, WebM, WMV, FLV, RMVB, VOB etc.; engine libVLC + FFmpeg",
+   "evidence": [
+    "https://www.5kplayer.com/user-guide/index.htm",
+    "https://www.5kplayer.com/download/5kplayer-setup.dmg"
+   ],
+   "how": "docs"
+  },
+  "photos_videos_one_grid": {
+   "value": "no",
+   "how": "docs",
+   "evidence": [
+    "https://www.5kplayer.com/user-guide/index.htm"
+   ],
+   "note": "No still images"
+  },
+  "video_skim_arrows": {
+   "value": "yes",
+   "note": "Left/Right step 5 seconds; Up/Down volume",
+   "evidence": [
+    "https://www.5kplayer.com/user-guide/index.htm"
+   ],
+   "how": "docs"
+  },
+  "subtitles_embedded": {
+   "value": "yes",
+   "note": "Subtitle track button selects tracks",
+   "evidence": [
+    "https://www.5kplayer.com/user-guide/index.htm"
+   ],
+   "how": "docs"
+  },
+  "subtitles_external_files": {
+   "value": "yes",
+   "note": "SRT, SSA, ASS, SUB etc.; auto-loads from the video's folder",
+   "evidence": [
+    "https://www.5kplayer.com/",
+    "https://www.5kplayer.com/user-guide/index.htm"
+   ],
+   "how": "docs"
+  },
+  "audio_track_choice": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://www.5kplayer.com/user-guide/index.htm"
+   ],
+   "how": "docs"
+  },
+  "playback_speed": {
+   "value": "yes",
+   "note": "Presets 0.5x to 2x",
+   "evidence": [
+    "https://www.5kplayer.com/user-guide/index.htm"
+   ],
+   "how": "docs"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://www.5kplayer.com/user-guide/index.htm"
+   ],
+   "note": "Control bar placement not described"
+  },
+  "playlist": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://www.5kplayer.com/user-guide/index.htm"
+   ],
+   "how": "docs"
+  },
+  "saved_playlists": {
+   "value": "yes",
+   "note": "'+ New list' named playlists in the library",
+   "evidence": [
+    "https://www.5kplayer.com/user-guide/index.htm"
+   ],
+   "how": "docs"
+  },
+  "pip": {
+   "value": "partial",
+   "note": "No PiP; 'Stay on Top' always/while playing",
+   "evidence": [
+    "https://www.5kplayer.com/user-guide/index.htm"
+   ],
+   "how": "docs"
+  },
+  "music_mode": {
+   "value": "yes",
+   "note": "Music library, equalizer, lyrics (6.9), radio",
+   "evidence": [
+    "https://www.5kplayer.com/user-guide/index.htm",
+    "https://www.5kplayer.com/software/update-history.htm"
+   ],
+   "how": "docs"
+  },
+  "streaming_urls": {
+   "value": "yes",
+   "note": "Play by URL, radio, IPTV/M3U8 (6.9), YouTube download from 300+ sites",
+   "evidence": [
+    "https://www.5kplayer.com/user-guide/index.htm",
+    "https://www.5kplayer.com/software/update-history.htm"
+   ],
+   "how": "docs"
+  },
+  "online_subtitles": {
+   "value": "partial",
+   "note": "Downloads YouTube subtitles with a video; no subtitle search for local files",
+   "evidence": [
+    "https://www.5kplayer.com/user-guide/index.htm"
+   ],
+   "how": "docs"
+  },
+  "video_filters_enhance": {
+   "value": "yes",
+   "note": "Video Tuner; color balance (saturation, contrast, brightness)",
+   "evidence": [
+    "https://www.5kplayer.com/user-guide/index.htm"
+   ],
+   "how": "docs"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "note": "Seen in the 6.11 app bundle (dmg mounted read-only, app not run): no Quick Look or app extension inside",
+   "evidence": [
+    "https://www.5kplayer.com/download/5kplayer-setup.dmg"
+   ],
+   "how": "tested-description"
+  },
+  "archives_as_folders": {
+   "value": "no",
+   "how": "docs",
+   "evidence": [
+    "https://www.5kplayer.com/user-guide/index.htm"
+   ],
+   "note": "Format lists have no archives"
+  },
+  "comics_cbz_cbr": {
+   "value": "no",
+   "how": "docs",
+   "evidence": [
+    "https://www.5kplayer.com/user-guide/index.htm"
+   ],
+   "note": "No comic formats"
+  },
+  "archive_passwords": {
+   "value": "no",
+   "how": "docs",
+   "evidence": [
+    "https://www.5kplayer.com/user-guide/index.htm"
+   ],
+   "note": "No archive support"
+  },
+  "split_archives": {
+   "value": "no",
+   "how": "docs",
+   "evidence": [
+    "https://www.5kplayer.com/user-guide/index.htm"
+   ],
+   "note": "No archive support"
+  },
+  "videos_in_archives": {
+   "value": "no",
+   "how": "docs",
+   "evidence": [
+    "https://www.5kplayer.com/user-guide/index.htm"
+   ],
+   "note": "No archive support"
+  },
+  "manga_two_page": {
+   "value": "no",
+   "how": "docs",
+   "evidence": [
+    "https://www.5kplayer.com/user-guide/index.htm"
+   ],
+   "note": "No image support"
+  },
+  "rename_trash": {
+   "value": "no",
+   "note": "Library add/delete only",
+   "evidence": [
+    "https://www.5kplayer.com/user-guide/index.htm"
+   ],
+   "how": "docs"
+  },
+  "move_copy": {
+   "value": "no",
+   "how": "docs",
+   "evidence": [
+    "https://www.5kplayer.com/user-guide/index.htm"
+   ],
+   "note": "Library add/delete only"
+  },
+  "dual_pane": {
+   "value": "no",
+   "how": "docs",
+   "evidence": [
+    "https://www.5kplayer.com/user-guide/index.htm"
+   ],
+   "note": "No file manager features"
+  },
+  "undo_file_actions": {
+   "value": "no",
+   "how": "docs",
+   "evidence": [
+    "https://www.5kplayer.com/user-guide/index.htm"
+   ],
+   "note": "No file operations"
+  },
+  "image_editing": {
+   "value": "no",
+   "note": "Video cutter (cut, rotate, speed, color) for videos, not images",
+   "evidence": [
+    "https://www.5kplayer.com/user-guide/index.htm"
+   ],
+   "how": "docs"
+  },
+  "batch_convert": {
+   "value": "partial",
+   "note": "Converts video to MP3/AAC/MP4 one at a time; full converter is a separate paid product",
+   "evidence": [
+    "https://www.5kplayer.com/user-guide/index.htm"
+   ],
+   "how": "docs"
+  },
+  "library_catalog": {
+   "value": "partial",
+   "note": "Library with favorites and playlists; no tags/ratings",
+   "evidence": [
+    "https://www.5kplayer.com/user-guide/index.htm"
+   ],
+   "how": "docs"
+  },
+  "cloud_sync": {
+   "value": "partial",
+   "note": "No cloud sync; shares to DLNA/AirPlay devices",
+   "evidence": [
+    "https://www.5kplayer.com/user-guide/index.htm"
+   ],
+   "how": "docs"
+  },
+  "keyboard_first": {
+   "value": "partial",
+   "note": "Playback shortcuts; library mostly by mouse",
+   "evidence": [
+    "https://www.5kplayer.com/user-guide/index.htm"
+   ],
+   "how": "docs"
+  },
+  "custom_shortcuts": {
+   "value": "no",
+   "how": "docs",
+   "evidence": [
+    "https://www.5kplayer.com/user-guide/index.htm"
+   ],
+   "note": "Fixed shortcut list; Preferences have no key settings"
+  },
+  "shortcut_cheatsheet": {
+   "value": "partial",
+   "note": "Shortcut list in the online user guide",
+   "evidence": [
+    "https://www.5kplayer.com/user-guide/index.htm"
+   ],
+   "how": "docs"
+  },
+  "boss_key": {
+   "value": "no",
+   "how": "docs",
+   "evidence": [
+    "https://www.5kplayer.com/user-guide/index.htm"
+   ],
+   "note": "Shortcut list has only Cmd+M minimize"
+  },
+  "app_sandbox": {
+   "value": "no",
+   "note": "Seen in the 6.11 app bundle (dmg mounted read-only, app not run): signed without entitlements, Developer ID outside the App Store",
+   "evidence": [
+    "https://www.5kplayer.com/download/5kplayer-setup.dmg"
+   ],
+   "how": "tested-description"
+  },
+  "no_network": {
+   "value": "no",
+   "note": "Update check (Cmd+U, scheduled), ad config download, YouTube downloader updates",
+   "evidence": [
+    "https://www.5kplayer.com/user-guide/index.htm",
+    "https://www.5kplayer.com/download/5kplayer-setup.dmg"
+   ],
+   "how": "docs"
+  },
+  "notarized_attested": {
+   "value": "partial",
+   "note": "Notarized Developer ID (Digiarty Software, Inc.); closed source",
+   "evidence": [
+    "https://www.5kplayer.com/download/5kplayer-setup.dmg"
+   ],
+   "how": "tested-description"
+  },
+  "mac_app_store": {
+   "value": "no",
+   "note": "Website download only",
+   "evidence": [
+    "https://www.5kplayer.com/5kplayer-download-mac.htm"
+   ],
+   "how": "docs"
+  }
+ }
+}

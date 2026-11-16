@@ -1,6 +1,7 @@
 {
   "name": "日本語",
   "privacySlug": "privacy",
+  "alternativesSlug": "alternatives",
   "title": "Schnellbild：イライラしない、Mac用の画像・動画ビューア",
   "seoTitle": "Schnellbild · Mac用の画像ビューア。動画再生、漫画、スライドショーも",
   "seoDescription": "Mac用の高速で無料の画像ビューア。AVI・MKVの動画再生、ZIP・RARの漫画（CBZ・CBR）、スライドショーに対応し、キーボードでめくれます。Honeyview、MassiGra、Leeyesの代わりにMacで。",
@@ -70,8 +71,13 @@
       "alt": "全体表示した写真"
     },
     {
+      "title": "写真を地図と地球儀の上に",
+      "text": "<p><kbd>W</kbd>で、フォルダとサブフォルダの写真や動画を撮影した場所に並べます。大きくズームアウトすると地図は星空を背にした地球儀になり、昼と夜を表示すれば夜の側に街の明かりがともります。ズームインすると平らな地図に変わります。</p><ul><li>タイムラインは旅を時間順に並べます。一部をドラッグすると、地図にはその部分だけが表示されます</li><li><kbd>T</kbd>で旅を再生。地図が場所から場所へ移動し、写真が大きく表示され、動画が数秒再生されます</li><li>地図はアプリに内蔵。インターネットには接続せず、位置情報がMacの外に出ることはありません</li></ul>",
+      "alt": "アトラス表示で地球儀の上に並んだ旅の写真"
+    },
+    {
       "title": "macOSで再生できないAVIやMKVも再生",
-      "text": "<p>macOS自体で再生できる形式（MP4、MOV、AVCHDなど）はmacOSで（HDRにも対応）、それ以外（MKV、WebM、AVI、WMV、FLV、MPEG、DVDビデオ）は内蔵のVLCエンジンで再生します。</p><ul><li>← →で動画の10分の1、⇧← ⇧→で100分の1ジャンプ</li><li>↑ ↓で音量を調整。すべての動画に共通です</li><li>MKV、WebM、WMV、FLV、VOBのサムネールもFinderとクイックルックで表示されます</li></ul>",
+      "text": "<p>macOS自体で再生できる形式（MP4、MOV、AVCHDなど）はmacOSで（HDRにも対応）、それ以外（MKV、WebM、AVI、WMV、FLV、MPEG、DVDビデオ）は内蔵のVLCエンジンで再生します。</p><ul><li>← →で動画の10分の1、⇧← ⇧→で100分の1ジャンプ</li><li>↑ ↓で音量を調整。すべての動画に共通です</li><li>⌘→で次の動画へ、⌘←で戻ると、前の動画は止めた位置から続きます</li><li>動画内の字幕（<kbd>V</kbd>）は最初から表示。再生の途中でオンにしても、表示中のセリフがすぐに出ます。ASS字幕は位置、色、フォントもそのままです</li><li>MKV、WebM、WMV、FLV、VOBのサムネールもFinderとクイックルックで表示されます</li></ul>",
       "alt": "Schnellbildで再生中の動画"
     },
     {
@@ -96,12 +102,12 @@
     },
     {
       "title": "ファイルの正体がわかる",
-      "text": "<p><kbd>I</kbd>でフォーマット、解像度、コーデック、ビットレート、ビット深度、カラープロファイル、カメラを表示。ファイルの拡張子と中身が一致しないときは、そのことも知らせます。</p>",
+      "text": "<p><kbd>I</kbd>または<kbd>⌘</kbd><kbd>I</kbd>で、画像の横にファイル情報を表示。撮影日時と撮影場所（小さな地図と近くの地名つき）、カメラとレンズ、フォーマット、解像度、コーデック、ビットレート、ビット深度、カラープロファイル、そしてすべてのメタデータ（EXIF、GPS、IPTC、XMP、QuickTime）をフィルタしてコピーできます。日時と場所は、XMPサイドカー、GoProやDJIドローンのGPSデータ、ソニーのクリップファイル、フォルダ内のGPXトラックからも読み取ります。</p><p>拡張子と中身が一致しないファイルには、そのことを表示します。名前から形式がわからないファイルは中身で判断し、ダウンロード中のファイル（.part、.crdownloadなど）は届いたところまで表示します。</p>",
       "alt": "写真の横に表示したファイル情報"
     },
     {
       "title": "すべてのキーがすぐわかる",
-      "text": "<p><kbd>F1</kbd>ですべてのキーを一覧表示。印刷もできます。<kbd>K</kbd>でクリックして使える小さなキーボードを表示。キーは自分で割り当てることも、Phiewerと同じ配置にすることもできます。グリッドとリスト（<kbd>L</kbd>）の切り替え、名前、種類、日付、サイズでの並べ替え、複数のウインドウ、そしてボスキー（<kbd>X</kbd>）も。</p>",
+      "text": "<p><kbd>F1</kbd>ですべてのキーを一覧表示。印刷もできます。<kbd>K</kbd>でクリックして使える小さなキーボードを表示。キーは自分で割り当てることも、Phiewerと同じ配置にすることもできます。グリッドとリスト（<kbd>L</kbd>）の切り替え、名前、種類、日付、サイズ、ある場所からの距離での並べ替え、複数のウインドウ、そしてボスキー（<kbd>X</kbd>）も。</p>",
       "alt": "キーの一覧（F1）"
     },
     {
@@ -140,7 +146,10 @@
   ],
   "safeMore": "具体的に何をしているのか、そしてどこに限界があるのか：<a href=\"https://github.com/JohannesHoppe/schnellbild#safe-with-files-from-others\">他人から届いたファイルも安全に</a>。",
   "modelsTitle": "Phiewer、IINA、Norton Commanderから乗り換えますか？",
-  "modelsText": "Phiewerは有料のPRO版がある高速なフォトビューア、IINAは動画を観るための本格的なプレーヤー。どちらもSchnellbildのお手本で、デュアルペインはNorton Commanderがお手本です。Schnellbildは、フォルダの中の写真と動画をひとつの無料アプリで扱えます。キーはPhiewerと同じ配置にもできます。Schnellbildとの比較はこちら：<a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-phiewer-alternative\">Phiewerの無料の代替</a>、<a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-iina-alternative-for-looking-through-videos\">動画を見るためのIINAの無料の代替</a>。 WindowsでHoneyview、MassiGra、Leeyesを使っていた方も、Macで同じようにフォルダやZIP・RARの画像をキーボードでめくれます。",
+  "modelsText": "Phiewerは有料のPRO版がある高速なフォトビューア、IINAは動画を観るための本格的なプレーヤー。どちらもSchnellbildのお手本で、デュアルペインはNorton Commanderがお手本です。Schnellbildは、フォルダの中の写真と動画をひとつの無料アプリで扱えます。キーはPhiewerと同じ配置にもできます。Schnellbildとの比較はこちら：<a href=\"{alt:phiewer}\">Phiewerの無料の代替</a>、<a href=\"{alt:iina}\">動画を見るためのIINAの無料の代替</a>、<a href=\"{alt:norton-commander}\">Norton CommanderからMacへ</a>。 WindowsでHoneyview、MassiGra、Leeyesを使っていた方も、Macで同じようにフォルダやZIP・RARの画像をキーボードでめくれます。",
+  "altTitle": "代わりのアプリをお探しですか？",
+  "altText": "Macで探されることの多いアプリとSchnellbildを、機能ごとに、すべての記述に出典を付けて比較しています：",
+  "altAll": "すべての代替アプリ",
   "ossTitle": "オープンソース",
   "ossText": "SchnellbildはMITライセンスのフリーソフトウェアで、ソースコードは<a href=\"https://github.com/JohannesHoppe/schnellbild\">GitHub</a>で公開しています。バグを見つけたり、欲しい機能があったりしたら、<a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">Issueを作成</a>してください。",
   "languagesText": "お使いのMacの言語で：",
@@ -149,6 +158,7 @@
   "footerPrivacy": "プライバシー",
   "footerImprint": "法的情報 (Impressum)",
   "footerEula": "使用許諾契約",
+  "footerAlternatives": "代替アプリ",
   "privacy": {
     "title": "プライバシーポリシー",
     "description": "Schnellbildは個人データを一切収集しません。アカウントなし、解析なし、トラッキングなし、ネットワークアクセスなし。",

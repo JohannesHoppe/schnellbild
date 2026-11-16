@@ -1,0 +1,602 @@
+{
+ "name": "RAW Power",
+ "short": "RAW Power",
+ "vendor": "Gentlemen Coders LLC",
+ "website": "https://www.gentlemencoders.com/raw-power-for-macos/",
+ "platforms": [
+  "macOS",
+  "iOS",
+  "iPadOS"
+ ],
+ "mac_available": "yes",
+ "page": "matrix",
+ "section": "photos",
+ "price": "$39.99 one-time on the Mac App Store (vendor site: $49.99 Mac, $9.99 iOS; separate purchases)",
+ "license": "proprietary",
+ "current_version": "3.5.6",
+ "last_update": "2026-07-27",
+ "engine": "Apple RAW engine (Core Image/Metal) plus own decoders; no video",
+ "category": "photo-manager",
+ "summary": "RAW Power is a non-destructive RAW and JPEG editor by a former Aperture lead, usable standalone on Finder folders, as an Apple Photos library manager, or as a Photos editing extension. It offers Aperture-style adjustments, ratings/flags synced over iCloud Photos and batch export. The vendor now points macOS 13+ users to its successor Nitro Photo.",
+ "where_it_wins": [
+  "Powerful non-destructive RAW/JPEG editing (curves, LUTs, depth effect, Boost)",
+  "Works directly on the Apple Photos library and syncs via iCloud Photos",
+  "Batch presets and export",
+  "iPhone/iPad version",
+  "Tabs for several folders"
+ ],
+ "where_schnellbild_wins": [
+  "Free and open source",
+  "Plays videos, including MKV/WebM/AVI, mixed with photos",
+  "Slideshow through all subfolders",
+  "Archives and comics as folders",
+  "Name and regex search through subfolders",
+  "List view, dual pane, move/copy/rename with undo",
+  "Custom shortcuts, cheat sheet, boss key",
+  "No analytics, never goes online",
+  "20 languages, light/dark setting"
+ ],
+ "search_terms": [
+  "raw power mac",
+  "raw power alternative",
+  "raw power app alternative",
+  "gentlemen coders raw power",
+  "raw power vs nitro",
+  "aperture alternative mac viewer"
+ ],
+ "matrix": {
+  "free": {
+   "value": "no",
+   "note": "$39.99 on the Mac App Store (vendor site lists $49.99); trial download from vendor",
+   "evidence": [
+    "https://apps.apple.com/us/app/raw-power/id1157116444?mt=12",
+    "https://www.gentlemencoders.com/raw-power-for-macos/"
+   ],
+   "how": "store"
+  },
+  "open_source": {
+   "value": "no",
+   "note": "Proprietary",
+   "evidence": [
+    "https://apps.apple.com/us/app/raw-power/id1157116444?mt=12"
+   ],
+   "how": "store"
+  },
+  "native_apple_silicon": {
+   "value": "yes",
+   "note": "Not stated anywhere. Searched RAW Power 3.0 help, vendor site, App Store description and version history.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "no_account_no_tracking": {
+   "value": "partial",
+   "note": "No account or ads; App Privacy lists Usage Data (analytics, not linked to you)",
+   "evidence": [
+    "https://apps.apple.com/us/app/raw-power/id1157116444?mt=12"
+   ],
+   "how": "store"
+  },
+  "dark_light_setting": {
+   "value": "no",
+   "note": "Developer reply on the App Store page: the panels follow the macOS colours; no own appearance setting in the help.",
+   "evidence": [
+    "https://apps.apple.com/us/app/raw-power/id1157116444?mt=12",
+    "https://www.gentlemencoders.com/manuals/RAW-Power-3.0-for-Mac-Help.pdf"
+   ],
+   "how": "store"
+  },
+  "languages_20": {
+   "value": "partial",
+   "note": "6: English, French, German, Spanish, Simplified and Traditional Chinese",
+   "evidence": [
+    "https://apps.apple.com/us/app/raw-power/id1157116444?mt=12"
+   ],
+   "how": "store"
+  },
+  "folder_browsing": {
+   "value": "yes",
+   "note": "Browses any folder on disk without import, or the Photos library",
+   "evidence": [
+    "https://apps.apple.com/us/app/raw-power/id1157116444?mt=12",
+    "https://www.gentlemencoders.com/raw-power-for-macos/"
+   ],
+   "how": "store"
+  },
+  "thumbnail_grid": {
+   "value": "partial",
+   "note": "Thumbnail grid with badges; folder preview tiles not documented",
+   "evidence": [
+    "https://apps.apple.com/us/app/raw-power/id1157116444?mt=12"
+   ],
+   "how": "store"
+  },
+  "list_view": {
+   "value": "no",
+   "note": "Help describes the browser's thumbnail grid only.",
+   "evidence": [
+    "https://www.gentlemencoders.com/manuals/RAW-Power-3.0-for-Mac-Help.pdf"
+   ],
+   "how": "docs"
+  },
+  "recursive_search": {
+   "value": "no",
+   "note": "Filtering by file type, edited, rating, flag and tag, plus 'Show all items in subfolders'; no name search.",
+   "evidence": [
+    "https://www.gentlemencoders.com/manuals/RAW-Power-3.0-for-Mac-Help.pdf",
+    "https://apps.apple.com/us/app/raw-power/id1157116444?mt=12"
+   ],
+   "how": "docs"
+  },
+  "regex_search": {
+   "value": "no",
+   "note": "No name search at all.",
+   "evidence": [
+    "https://www.gentlemencoders.com/manuals/RAW-Power-3.0-for-Mac-Help.pdf"
+   ],
+   "how": "docs"
+  },
+  "network_shares_fast": {
+   "value": "no",
+   "note": "No statements about network volumes. Searched RAW Power 3.0 help, vendor site, App Store description and version history.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "multiple_windows": {
+   "value": "yes",
+   "note": "Multiple windows and tabs",
+   "evidence": [
+    "https://apps.apple.com/us/app/raw-power/id1157116444?mt=12",
+    "https://fstoppers.com/originals/raw-power-30-offers-mac-based-photographers-capable-editor-and-ios-integration-476845"
+   ],
+   "how": "store"
+  },
+  "bookmarks": {
+   "value": "yes",
+   "note": "'pick favorite folders'",
+   "evidence": [
+    "https://apps.apple.com/us/app/raw-power/id1157116444?mt=12"
+   ],
+   "how": "store"
+  },
+  "img_modern_formats": {
+   "value": "partial",
+   "note": "Uses Apple's RAW/image engine; HEIC, AVIF, WebP, JPEG XL not named. Searched RAW Power 3.0 help, vendor site, App Store description and version history.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "img_raw": {
+   "value": "yes",
+   "note": "Apple RAW engine plus own decoders for extra cameras (Fujifilm compressed, Nikon HE)",
+   "evidence": [
+    "https://apps.apple.com/us/app/raw-power/id1157116444?mt=12",
+    "https://apps.apple.com/us/app/raw-power/id1157116444?see-all=version-history"
+   ],
+   "how": "store"
+  },
+  "img_psd_exr": {
+   "value": "no",
+   "note": "Help names JPEG, TIFF, PNG 'and other formats'. Searched RAW Power 3.0 help, vendor site, App Store description and version history.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "img_svg_pdf": {
+   "value": "no",
+   "note": "Not named. Searched RAW Power 3.0 help, vendor site, App Store description and version history.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "img_animated": {
+   "value": "no",
+   "note": "Not named. Searched RAW Power 3.0 help, vendor site, App Store description and version history.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "note": "Aperture-like shortcuts; rate and flag with a single key",
+   "evidence": [
+    "https://apps.apple.com/us/app/raw-power/id1157116444?mt=12",
+    "https://www.gentlemencoders.com/raw-power-for-macos/"
+   ],
+   "how": "review"
+  },
+  "zoom_rotate": {
+   "value": "yes",
+   "note": "Zoom to 800%; rotate/flip is a non-destructive edit",
+   "evidence": [
+    "https://apps.apple.com/us/app/raw-power/id1157116444?mt=12"
+   ],
+   "how": "store"
+  },
+  "slideshow": {
+   "value": "no",
+   "note": "No slideshow in the help or the App Store feature list.",
+   "evidence": [
+    "https://www.gentlemencoders.com/manuals/RAW-Power-3.0-for-Mac-Help.pdf",
+    "https://apps.apple.com/us/app/raw-power/id1157116444?mt=12"
+   ],
+   "how": "docs"
+  },
+  "slideshow_recursive": {
+   "value": "no",
+   "note": "No slideshow.",
+   "evidence": [
+    "https://www.gentlemencoders.com/manuals/RAW-Power-3.0-for-Mac-Help.pdf",
+    "https://apps.apple.com/us/app/raw-power/id1157116444?mt=12"
+   ],
+   "how": "docs"
+  },
+  "auto_enhance_view": {
+   "value": "yes",
+   "note": "Auto Enhance, Auto WB and all edits are non-destructive (sidecars), original untouched",
+   "evidence": [
+    "https://apps.apple.com/us/app/raw-power/id1157116444?mt=12"
+   ],
+   "how": "store"
+  },
+  "file_info_exif": {
+   "value": "yes",
+   "note": "Metadata panel with shot info and map; no video codec info",
+   "evidence": [
+    "https://apps.apple.com/us/app/raw-power/id1157116444?mt=12"
+   ],
+   "how": "store"
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "note": "Not documented. Searched RAW Power 3.0 help, vendor site, App Store description and version history.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "video_native": {
+   "value": "no",
+   "note": "Photo editor: no video or audio playback in the App Store feature list, version history (2022-2026) or the help.",
+   "evidence": [
+    "https://apps.apple.com/us/app/raw-power/id1157116444?mt=12",
+    "https://apps.apple.com/us/app/raw-power/id1157116444?see-all=version-history",
+    "https://www.gentlemencoders.com/manuals/RAW-Power-3.0-for-Mac-Help.pdf"
+   ],
+   "how": "store"
+  },
+  "video_mkv_avi_webm": {
+   "value": "no",
+   "note": "Photo editor: no video or audio playback in the App Store feature list, version history (2022-2026) or the help.",
+   "evidence": [
+    "https://apps.apple.com/us/app/raw-power/id1157116444?mt=12",
+    "https://apps.apple.com/us/app/raw-power/id1157116444?see-all=version-history",
+    "https://www.gentlemencoders.com/manuals/RAW-Power-3.0-for-Mac-Help.pdf"
+   ],
+   "how": "store"
+  },
+  "photos_videos_one_grid": {
+   "value": "no",
+   "note": "Photo editor: no video or audio playback in the App Store feature list, version history (2022-2026) or the help.",
+   "evidence": [
+    "https://apps.apple.com/us/app/raw-power/id1157116444?mt=12",
+    "https://apps.apple.com/us/app/raw-power/id1157116444?see-all=version-history",
+    "https://www.gentlemencoders.com/manuals/RAW-Power-3.0-for-Mac-Help.pdf"
+   ],
+   "how": "store"
+  },
+  "video_skim_arrows": {
+   "value": "no",
+   "note": "Photo editor: no video or audio playback in the App Store feature list, version history (2022-2026) or the help.",
+   "evidence": [
+    "https://apps.apple.com/us/app/raw-power/id1157116444?mt=12",
+    "https://apps.apple.com/us/app/raw-power/id1157116444?see-all=version-history",
+    "https://www.gentlemencoders.com/manuals/RAW-Power-3.0-for-Mac-Help.pdf"
+   ],
+   "how": "store"
+  },
+  "subtitles_embedded": {
+   "value": "no",
+   "note": "Photo editor: no video or audio playback in the App Store feature list, version history (2022-2026) or the help.",
+   "evidence": [
+    "https://apps.apple.com/us/app/raw-power/id1157116444?mt=12",
+    "https://apps.apple.com/us/app/raw-power/id1157116444?see-all=version-history",
+    "https://www.gentlemencoders.com/manuals/RAW-Power-3.0-for-Mac-Help.pdf"
+   ],
+   "how": "store"
+  },
+  "subtitles_external_files": {
+   "value": "no",
+   "note": "Photo editor: no video or audio playback in the App Store feature list, version history (2022-2026) or the help.",
+   "evidence": [
+    "https://apps.apple.com/us/app/raw-power/id1157116444?mt=12",
+    "https://apps.apple.com/us/app/raw-power/id1157116444?see-all=version-history",
+    "https://www.gentlemencoders.com/manuals/RAW-Power-3.0-for-Mac-Help.pdf"
+   ],
+   "how": "store"
+  },
+  "audio_track_choice": {
+   "value": "no",
+   "note": "Photo editor: no video or audio playback in the App Store feature list, version history (2022-2026) or the help.",
+   "evidence": [
+    "https://apps.apple.com/us/app/raw-power/id1157116444?mt=12",
+    "https://apps.apple.com/us/app/raw-power/id1157116444?see-all=version-history",
+    "https://www.gentlemencoders.com/manuals/RAW-Power-3.0-for-Mac-Help.pdf"
+   ],
+   "how": "store"
+  },
+  "playback_speed": {
+   "value": "no",
+   "note": "Photo editor: no video or audio playback in the App Store feature list, version history (2022-2026) or the help.",
+   "evidence": [
+    "https://apps.apple.com/us/app/raw-power/id1157116444?mt=12",
+    "https://apps.apple.com/us/app/raw-power/id1157116444?see-all=version-history",
+    "https://www.gentlemencoders.com/manuals/RAW-Power-3.0-for-Mac-Help.pdf"
+   ],
+   "how": "store"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "note": "Photo editor: no video or audio playback in the App Store feature list, version history (2022-2026) or the help.",
+   "evidence": [
+    "https://apps.apple.com/us/app/raw-power/id1157116444?mt=12",
+    "https://apps.apple.com/us/app/raw-power/id1157116444?see-all=version-history",
+    "https://www.gentlemencoders.com/manuals/RAW-Power-3.0-for-Mac-Help.pdf"
+   ],
+   "how": "store"
+  },
+  "playlist": {
+   "value": "no",
+   "note": "Photo editor: no video or audio playback in the App Store feature list, version history (2022-2026) or the help.",
+   "evidence": [
+    "https://apps.apple.com/us/app/raw-power/id1157116444?mt=12",
+    "https://apps.apple.com/us/app/raw-power/id1157116444?see-all=version-history",
+    "https://www.gentlemencoders.com/manuals/RAW-Power-3.0-for-Mac-Help.pdf"
+   ],
+   "how": "store"
+  },
+  "saved_playlists": {
+   "value": "no",
+   "note": "Photo editor: no video or audio playback in the App Store feature list, version history (2022-2026) or the help.",
+   "evidence": [
+    "https://apps.apple.com/us/app/raw-power/id1157116444?mt=12",
+    "https://apps.apple.com/us/app/raw-power/id1157116444?see-all=version-history",
+    "https://www.gentlemencoders.com/manuals/RAW-Power-3.0-for-Mac-Help.pdf"
+   ],
+   "how": "store"
+  },
+  "pip": {
+   "value": "no",
+   "note": "Photo editor: no video or audio playback in the App Store feature list, version history (2022-2026) or the help.",
+   "evidence": [
+    "https://apps.apple.com/us/app/raw-power/id1157116444?mt=12",
+    "https://apps.apple.com/us/app/raw-power/id1157116444?see-all=version-history",
+    "https://www.gentlemencoders.com/manuals/RAW-Power-3.0-for-Mac-Help.pdf"
+   ],
+   "how": "store"
+  },
+  "music_mode": {
+   "value": "no",
+   "note": "Photo editor: no video or audio playback in the App Store feature list, version history (2022-2026) or the help.",
+   "evidence": [
+    "https://apps.apple.com/us/app/raw-power/id1157116444?mt=12",
+    "https://apps.apple.com/us/app/raw-power/id1157116444?see-all=version-history",
+    "https://www.gentlemencoders.com/manuals/RAW-Power-3.0-for-Mac-Help.pdf"
+   ],
+   "how": "store"
+  },
+  "streaming_urls": {
+   "value": "no",
+   "note": "Photo editor: no video or audio playback in the App Store feature list, version history (2022-2026) or the help.",
+   "evidence": [
+    "https://apps.apple.com/us/app/raw-power/id1157116444?mt=12",
+    "https://apps.apple.com/us/app/raw-power/id1157116444?see-all=version-history",
+    "https://www.gentlemencoders.com/manuals/RAW-Power-3.0-for-Mac-Help.pdf"
+   ],
+   "how": "store"
+  },
+  "online_subtitles": {
+   "value": "no",
+   "note": "Photo editor: no video or audio playback in the App Store feature list, version history (2022-2026) or the help.",
+   "evidence": [
+    "https://apps.apple.com/us/app/raw-power/id1157116444?mt=12",
+    "https://apps.apple.com/us/app/raw-power/id1157116444?see-all=version-history",
+    "https://www.gentlemencoders.com/manuals/RAW-Power-3.0-for-Mac-Help.pdf"
+   ],
+   "how": "store"
+  },
+  "video_filters_enhance": {
+   "value": "no",
+   "note": "Photo editor: no video or audio playback in the App Store feature list, version history (2022-2026) or the help.",
+   "evidence": [
+    "https://apps.apple.com/us/app/raw-power/id1157116444?mt=12",
+    "https://apps.apple.com/us/app/raw-power/id1157116444?see-all=version-history",
+    "https://www.gentlemencoders.com/manuals/RAW-Power-3.0-for-Mac-Help.pdf"
+   ],
+   "how": "store"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "note": "Photo editor: no video or audio playback in the App Store feature list, version history (2022-2026) or the help.",
+   "evidence": [
+    "https://apps.apple.com/us/app/raw-power/id1157116444?mt=12",
+    "https://apps.apple.com/us/app/raw-power/id1157116444?see-all=version-history",
+    "https://www.gentlemencoders.com/manuals/RAW-Power-3.0-for-Mac-Help.pdf"
+   ],
+   "how": "store"
+  },
+  "archives_as_folders": {
+   "value": "no",
+   "note": "No archive formats in the help or the App Store description.",
+   "evidence": [
+    "https://www.gentlemencoders.com/manuals/RAW-Power-3.0-for-Mac-Help.pdf",
+    "https://apps.apple.com/us/app/raw-power/id1157116444?mt=12"
+   ],
+   "how": "docs"
+  },
+  "comics_cbz_cbr": {
+   "value": "no",
+   "note": "No archive formats in the help or the App Store description.",
+   "evidence": [
+    "https://www.gentlemencoders.com/manuals/RAW-Power-3.0-for-Mac-Help.pdf",
+    "https://apps.apple.com/us/app/raw-power/id1157116444?mt=12"
+   ],
+   "how": "docs"
+  },
+  "archive_passwords": {
+   "value": "no",
+   "note": "No archive formats in the help or the App Store description.",
+   "evidence": [
+    "https://www.gentlemencoders.com/manuals/RAW-Power-3.0-for-Mac-Help.pdf",
+    "https://apps.apple.com/us/app/raw-power/id1157116444?mt=12"
+   ],
+   "how": "docs"
+  },
+  "split_archives": {
+   "value": "no",
+   "note": "No archive formats in the help or the App Store description.",
+   "evidence": [
+    "https://www.gentlemencoders.com/manuals/RAW-Power-3.0-for-Mac-Help.pdf",
+    "https://apps.apple.com/us/app/raw-power/id1157116444?mt=12"
+   ],
+   "how": "docs"
+  },
+  "videos_in_archives": {
+   "value": "no",
+   "note": "No archive formats in the help or the App Store description.",
+   "evidence": [
+    "https://www.gentlemencoders.com/manuals/RAW-Power-3.0-for-Mac-Help.pdf",
+    "https://apps.apple.com/us/app/raw-power/id1157116444?mt=12"
+   ],
+   "how": "docs"
+  },
+  "manga_two_page": {
+   "value": "no",
+   "note": "No comic or reading mode.",
+   "evidence": [
+    "https://www.gentlemencoders.com/manuals/RAW-Power-3.0-for-Mac-Help.pdf"
+   ],
+   "how": "docs"
+  },
+  "rename_trash": {
+   "value": "partial",
+   "note": "Can delete images and create albums/folders; renaming not documented",
+   "evidence": [
+    "https://apps.apple.com/us/app/raw-power/id1157116444?mt=12",
+    "https://fstoppers.com/originals/raw-power-30-offers-mac-based-photographers-capable-editor-and-ios-integration-476845"
+   ],
+   "how": "store"
+  },
+  "move_copy": {
+   "value": "partial",
+   "note": "Items can be added and rearranged in Photos albums; moving or copying files on disk in the File Browser is not described.",
+   "evidence": [
+    "https://www.gentlemencoders.com/manuals/RAW-Power-3.0-for-Mac-Help.pdf"
+   ],
+   "how": "docs"
+  },
+  "dual_pane": {
+   "value": "no",
+   "note": "Browser windows and tabs; no two-pane file mode.",
+   "evidence": [
+    "https://www.gentlemencoders.com/manuals/RAW-Power-3.0-for-Mac-Help.pdf"
+   ],
+   "how": "docs"
+  },
+  "undo_file_actions": {
+   "value": "no",
+   "note": "Undo is documented for edits (e.g. Auto Enhance) only.",
+   "evidence": [
+    "https://www.gentlemencoders.com/manuals/RAW-Power-3.0-for-Mac-Help.pdf"
+   ],
+   "how": "docs"
+  },
+  "image_editing": {
+   "value": "yes",
+   "note": "Full RAW/JPEG editor: crop, curves, LUTs, depth effect etc.",
+   "evidence": [
+    "https://apps.apple.com/us/app/raw-power/id1157116444?mt=12",
+    "https://www.macstories.net/reviews/raw-power-review/"
+   ],
+   "how": "store"
+  },
+  "batch_convert": {
+   "value": "yes",
+   "note": "Batch presets, paste adjustments and export with size/format/name control",
+   "evidence": [
+    "https://apps.apple.com/us/app/raw-power/id1157116444?mt=12",
+    "https://www.gentlemencoders.com/raw-power-for-macos/"
+   ],
+   "how": "store"
+  },
+  "library_catalog": {
+   "value": "yes",
+   "note": "Manages the Apple Photos library; ratings and flags sync via iCloud Photos",
+   "evidence": [
+    "https://apps.apple.com/us/app/raw-power/id1157116444?mt=12",
+    "https://fstoppers.com/originals/raw-power-30-offers-mac-based-photographers-capable-editor-and-ios-integration-476845"
+   ],
+   "how": "store"
+  },
+  "cloud_sync": {
+   "value": "yes",
+   "note": "iCloud Photos sync of library changes, ratings and flags",
+   "evidence": [
+    "https://apps.apple.com/us/app/raw-power/id1157116444?mt=12"
+   ],
+   "how": "store"
+  },
+  "keyboard_first": {
+   "value": "partial",
+   "note": "Keyboard shortcuts for rating/flagging and navigation; editing is slider/mouse driven",
+   "evidence": [
+    "https://apps.apple.com/us/app/raw-power/id1157116444?mt=12",
+    "https://www.gentlemencoders.com/raw-power-for-macos/"
+   ],
+   "how": "review"
+  },
+  "custom_shortcuts": {
+   "value": "no",
+   "note": "Only single-key rating/flag shortcuts are mentioned. Searched RAW Power 3.0 help, vendor site, App Store description and version history.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "shortcut_cheatsheet": {
+   "value": "no",
+   "note": "Not documented. Searched RAW Power 3.0 help, vendor site, App Store description and version history.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "boss_key": {
+   "value": "no",
+   "note": "Not documented. Searched RAW Power 3.0 help, vendor site, App Store description and version history.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "app_sandbox": {
+   "value": "yes",
+   "note": "Mac App Store build (MAS apps are sandboxed); a vendor trial build also exists",
+   "evidence": [
+    "https://apps.apple.com/us/app/raw-power/id1157116444?mt=12"
+   ],
+   "how": "store"
+  },
+  "no_network": {
+   "value": "no",
+   "note": "iCloud Photos sync and analytics",
+   "evidence": [
+    "https://apps.apple.com/us/app/raw-power/id1157116444?mt=12"
+   ],
+   "how": "store"
+  },
+  "notarized_attested": {
+   "value": "no",
+   "note": "Closed source, no build attestation",
+   "evidence": [
+    "https://apps.apple.com/us/app/raw-power/id1157116444?mt=12"
+   ],
+   "how": "store"
+  },
+  "mac_app_store": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://apps.apple.com/us/app/raw-power/id1157116444?mt=12"
+   ],
+   "how": "store"
+  }
+ }
+}

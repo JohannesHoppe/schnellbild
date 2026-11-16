@@ -1,6 +1,7 @@
 {
   "name": "Čeština",
   "privacySlug": "privacy",
+  "alternativesSlug": "alternativy",
   "title": "Schnellbild: prohlížeč obrázků a videí pro macOS, který prostě není na houby",
   "seoTitle": "Schnellbild · prohlížeč obrázků a přehrávač MKV pro Mac",
   "seoDescription": "Rychlý prohlížeč fotek pro Mac zdarma, který přehraje i MKV, AVI a WebM: náhledy, prezentace, ZIP a RAR jako složky. Alternativa k IrfanView a XnView.",
@@ -70,8 +71,13 @@
       "alt": "Fotka v plném zobrazení"
     },
     {
+      "title": "Vaše fotky na mapě a na glóbu",
+      "text": "<p><kbd>W</kbd> ukáže fotky a videa ze složky a jejích podsložek tam, kde vznikly. Při velkém oddálení je mapa glóbus před hvězdnou oblohou, podle přání se dnem a nocí a světly měst na noční straně; při přiblížení se zploští v mapu.</p><ul><li>Časová osa řadí cestu podle času: přetáhněte přes úsek a mapa ukáže jen tu část</li><li><kbd>T</kbd> přehraje cestu: mapa plyne z místa na místo, fotky se ukážou velké, videa hrají pár sekund</li><li>Mapa je přímo v aplikaci: nic nejde na internet, žádná poloha neopustí váš Mac</li></ul>",
+      "alt": "Fotky z cesty na glóbu, v zobrazení atlasu"
+    },
+    {
       "title": "Videa, i MKV a další, která macOS neumí přehrát",
-      "text": "<p>Co umí přehrát samotný macOS (MP4, MOV, AVCHD aj.), přehraje macOS, i v HDR; vše ostatní vestavěné jádro VLC: MKV, WebM, AVI, WMV, FLV, MPEG, DVD video.</p><ul><li>← → přeskakují o desetinu videa, ⇧← ⇧→ o setinu</li><li>↑ ↓ nastavují hlasitost, pro všechna videa</li><li>Finder a Rychlý náhled dostanou miniatury i pro MKV, WebM, WMV, FLV a VOB</li></ul>",
+      "text": "<p>Co umí přehrát samotný macOS (MP4, MOV, AVCHD aj.), přehraje macOS, i v HDR; vše ostatní vestavěné jádro VLC: MKV, WebM, AVI, WMV, FLV, MPEG, DVD video.</p><ul><li>← → přeskakují o desetinu videa, ⇧← ⇧→ o setinu</li><li>↑ ↓ nastavují hlasitost, pro všechna videa</li><li>⌘→ na další video a ⌘← zpět: první pokračuje tam, kde skončilo</li><li>Titulky ve videu (<kbd>V</kbd>) jsou vidět od začátku; zapnuté uprostřed hned ukážou běžící řádek a titulky ASS si drží polohu, barvy i písma</li><li>Finder a Rychlý náhled dostanou miniatury i pro MKV, WebM, WMV, FLV a VOB</li></ul>",
       "alt": "Video přehrávané ve Schnellbildu"
     },
     {
@@ -96,12 +102,12 @@
     },
     {
       "title": "Co soubor doopravdy je",
-      "text": "<p><kbd>I</kbd> ukáže formát, rozlišení, kodeky, datový tok, bitovou hloubku, barevný profil i fotoaparát a upozorní, když přípona souboru neodpovídá jeho obsahu.</p>",
+      "text": "<p><kbd>I</kbd> nebo <kbd>⌘</kbd><kbd>I</kbd> otevře informace vedle obrázku: kdy a kde vznikl, s malou mapou a obcí poblíž, fotoaparát a objektiv, formát, rozlišení, kodeky, datový tok, bitová hloubka a barevný profil, a každý klíč metadat (EXIF, GPS, IPTC, XMP, QuickTime) k filtrování a kopírování. Čas a místo berou i z doprovodných souborů XMP, z dat GPS kamery GoPro nebo dronu DJI, z klipových souborů Sony a ze záznamů GPX ve složce.</p><p>Když přípona souboru neodpovídá obsahu, objeví se upozornění. Soubory s nic neříkajícím názvem se počítají podle obsahu a stahování, která ještě běží (.part, .crdownload aj.), se ukážou tak daleko, kam už dorazila.</p>",
       "alt": "Informace o souboru vedle fotky"
     },
     {
       "title": "Všechny klávesy po ruce",
-      "text": "<p><kbd>F1</kbd> vypíše všechny klávesy, i k tisku; <kbd>K</kbd> ukáže malou klávesnici na klikání. Klávesy si můžete nastavit podle sebe, nebo zvolit klávesy jako v Phieweru. Mřížka nebo seznam (<kbd>L</kbd>), řazení podle názvu, druhu, data nebo velikosti, více oken a šéfovo tlačítko (<kbd>X</kbd>).</p>",
+      "text": "<p><kbd>F1</kbd> vypíše všechny klávesy, i k tisku; <kbd>K</kbd> ukáže malou klávesnici na klikání. Klávesy si můžete nastavit podle sebe, nebo zvolit klávesy jako v Phieweru. Mřížka nebo seznam (<kbd>L</kbd>), řazení podle názvu, druhu, data, velikosti nebo vzdálenosti od místa, více oken a šéfovo tlačítko (<kbd>X</kbd>).</p>",
       "alt": "Seznam kláves (F1)"
     },
     {
@@ -140,7 +146,10 @@
   ],
   "safeMore": "Co přesně dělá a kde má své hranice: <a href=\"https://github.com/JohannesHoppe/schnellbild#safe-with-files-from-others\">Bezpečně se soubory od jiných</a> (anglicky).",
   "modelsTitle": "Přecházíte z Phieweru, IINA nebo Norton Commanderu?",
-  "modelsText": "Phiewer je rychlý prohlížeč fotek s placenou verzí PRO, IINA plnohodnotný přehrávač na sledování videí; oba byly vzorem pro Schnellbild, stejně jako Norton Commander pro dva panely. Schnellbild spojí obrázky a videa z vašich složek v jedné bezplatné aplikaci, a když chcete, i s klávesami jako v Phieweru. Jak si Schnellbild vede ve srovnání (anglicky): <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-phiewer-alternative\">bezplatná alternativa k Phieweru</a>, <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-iina-alternative-for-looking-through-videos\">bezplatná alternativa k IINA pro procházení videí</a>.",
+  "modelsText": "Phiewer je rychlý prohlížeč fotek s placenou verzí PRO, IINA plnohodnotný přehrávač na sledování videí; oba byly vzorem pro Schnellbild, stejně jako Norton Commander pro dva panely. Schnellbild spojí obrázky a videa z vašich složek v jedné bezplatné aplikaci, a když chcete, i s klávesami jako v Phieweru. Jak si Schnellbild vede ve srovnání: <a href=\"{alt:phiewer}\">bezplatná alternativa k Phieweru</a>, <a href=\"{alt:iina}\">bezplatná alternativa k IINA pro procházení videí</a>, <a href=\"{alt:norton-commander}\">od Norton Commanderu k Macu</a>.",
+  "altTitle": "Hledáte alternativu?",
+  "altText": "Jak si Schnellbild vede ve srovnání s programy, které lidé na Macu hledají, funkci po funkci a se zdrojem u každého tvrzení:",
+  "altAll": "Všechny alternativy",
   "ossTitle": "Open source",
   "ossText": "Schnellbild je svobodný software pod licencí MIT, zdrojový kód je <a href=\"https://github.com/JohannesHoppe/schnellbild\">na GitHubu</a>. Našli jste chybu nebo vám něco chybí? <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">Založte issue</a>.",
   "languagesText": "V jazyce vašeho Macu:",
@@ -149,6 +158,7 @@
   "footerPrivacy": "Soukromí",
   "footerImprint": "Právní informace (Impressum)",
   "footerEula": "Licenční smlouva",
+  "footerAlternatives": "Alternativy",
   "privacy": {
     "title": "Zásady ochrany osobních údajů",
     "description": "Schnellbild neshromažďuje žádné osobní údaje: žádný účet, žádná analytika, žádné sledování, žádný přístup k síti.",

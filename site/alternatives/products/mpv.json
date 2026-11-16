@@ -1,0 +1,576 @@
+{
+ "name": "mpv",
+ "short": "mpv",
+ "vendor": "mpv project",
+ "website": "https://mpv.io/",
+ "platforms": [
+  "macOS",
+  "Windows",
+  "Linux",
+  "BSD",
+  "Android (via mpv-android)"
+ ],
+ "mac_available": "yes",
+ "page": "matrix",
+ "section": "video",
+ "price": "free",
+ "license": "open source, GPL-2.0+ (LGPL build option)",
+ "current_version": "0.42.0",
+ "last_update": "2026-11-05",
+ "engine": "mpv (FFmpeg, libplacebo)",
+ "category": "video",
+ "summary": "mpv is a minimal, scriptable, command-line media player with top-quality rendering and very wide format support. It is configured through text files and Lua/JS scripts and has only a small on-screen controller.",
+ "where_it_wins": [
+  "Best-in-class video rendering (gpu-next, HDR, Dolby Vision)",
+  "Extremely configurable via mpv.conf, input.conf and scripts",
+  "Plays media straight from ZIP/RAR/7z and multi-volume RAR",
+  "Cross-platform (macOS, Windows, Linux)",
+  "Streams and YouTube via yt-dlp, DVD/Blu-ray menus"
+ ],
+ "where_schnellbild_wins": [
+  "Real Mac app with a folder browser and thumbnail grid",
+  "No config files needed; everything visible in the UI",
+  "Image viewing with RAW, PSD, PDF, EXIF info",
+  "File management: two panes, copy, move, rename, trash, undo",
+  "Notarized, sandboxed build; mpv macOS builds are ad-hoc signed"
+ ],
+ "search_terms": [
+  "mpv mac",
+  "mpv macos gui",
+  "mpv alternative mac",
+  "mpv image viewer",
+  "mpv player mac download"
+ ],
+ "matrix": {
+  "free": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://github.com/mpv-player/mpv/releases/tag/v0.42.0"
+   ],
+   "how": "docs"
+  },
+  "open_source": {
+   "value": "yes",
+   "note": "GPL-2.0+ (LGPL build possible)",
+   "evidence": [
+    "https://github.com/mpv-player/mpv"
+   ],
+   "how": "source"
+  },
+  "native_apple_silicon": {
+   "value": "yes",
+   "note": "arm64 builds for macOS 15, 26, 27",
+   "evidence": [
+    "https://github.com/mpv-player/mpv/releases/tag/v0.42.0"
+   ],
+   "how": "store"
+  },
+  "no_account_no_tracking": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://github.com/mpv-player/mpv/releases/tag/v0.42.0"
+   ],
+   "how": "source"
+  },
+  "dark_light_setting": {
+   "value": "partial",
+   "note": "only the title bar via --macos-title-bar-appearance; no UI theme",
+   "evidence": [
+    "https://github.com/mpv-player/mpv/blob/master/DOCS/man/options.rst"
+   ],
+   "how": "source"
+  },
+  "languages_20": {
+   "value": "no",
+   "note": "English only, no UI translations",
+   "evidence": [
+    "https://github.com/mpv-player/mpv"
+   ],
+   "how": "source"
+  },
+  "folder_browsing": {
+   "value": "partial",
+   "note": "opening a folder makes a playlist (subfolders lazily or recursive), --autocreate-playlist from the parent folder; no file browser",
+   "evidence": [
+    "https://github.com/mpv-player/mpv/blob/master/DOCS/man/options.rst"
+   ],
+   "how": "docs"
+  },
+  "thumbnail_grid": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/mpv-player/mpv/blob/master/DOCS/man/options.rst"
+   ],
+   "how": "docs"
+  },
+  "list_view": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/mpv-player/mpv/blob/master/DOCS/man/options.rst"
+   ],
+   "how": "docs"
+  },
+  "recursive_search": {
+   "value": "no",
+   "note": "fuzzy filter of the current playlist only (g-p)",
+   "evidence": [
+    "https://github.com/mpv-player/mpv/blob/master/etc/input.conf"
+   ],
+   "how": "source"
+  },
+  "regex_search": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/mpv-player/mpv/blob/master/etc/input.conf"
+   ],
+   "how": "source"
+  },
+  "network_shares_fast": {
+   "value": "no",
+   "note": "no browser; plays from mounted shares and URLs",
+   "evidence": [
+    "https://github.com/mpv-player/mpv/blob/master/DOCS/man/options.rst"
+   ],
+   "how": "docs"
+  },
+  "multiple_windows": {
+   "value": "partial",
+   "how": "unverified",
+   "evidence": [
+    "https://github.com/mpv-player/mpv/blob/master/DOCS/man/options.rst"
+   ],
+   "note": "One window per mpv process; start another instance for a second window"
+  },
+  "bookmarks": {
+   "value": "no",
+   "note": "watch-later/resume only",
+   "evidence": [
+    "https://github.com/mpv-player/mpv/blob/master/DOCS/man/options.rst"
+   ],
+   "how": "docs"
+  },
+  "img_modern_formats": {
+   "value": "yes",
+   "note": "image-exts include avif, heic, heif, jxl, webp (decoding depends on the FFmpeg build)",
+   "evidence": [
+    "https://github.com/mpv-player/mpv/blob/master/options/options.c"
+   ],
+   "how": "source"
+  },
+  "img_raw": {
+   "value": "no",
+   "note": "not in image-exts; FFmpeg has no general camera-RAW decoder",
+   "evidence": [
+    "https://github.com/mpv-player/mpv/blob/master/options/options.c"
+   ],
+   "how": "source"
+  },
+  "img_psd_exr": {
+   "value": "partial",
+   "how": "source",
+   "evidence": [
+    "https://github.com/FFmpeg/FFmpeg/blob/master/libavformat/img2dec.c",
+    "https://github.com/mpv-player/mpv/blob/master/options/options.c"
+   ],
+   "note": "FFmpeg's image demuxer autodetects EXR and PSD; not in mpv's image-exts, so not picked up from folders"
+  },
+  "img_svg_pdf": {
+   "value": "partial",
+   "note": "SVG listed in image-exts (needs FFmpeg with librsvg); no PDF",
+   "evidence": [
+    "https://github.com/mpv-player/mpv/blob/master/options/options.c"
+   ],
+   "how": "source"
+  },
+  "img_animated": {
+   "value": "yes",
+   "how": "source",
+   "evidence": [
+    "https://github.com/FFmpeg/FFmpeg/tree/master/libavformat"
+   ],
+   "note": "FFmpeg demuxers for GIF, APNG and animated WebP (webp_anim_dec; needs a recent FFmpeg build)"
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "note": "< and > (also Enter) for previous/next playlist entry",
+   "evidence": [
+    "https://github.com/mpv-player/mpv/blob/master/etc/input.conf"
+   ],
+   "how": "source"
+  },
+  "zoom_rotate": {
+   "value": "yes",
+   "note": "Alt+arrows pan, Alt+ +/- zoom, cursor-centric zoom; rotation via video-rotate property (no default key)",
+   "evidence": [
+    "https://github.com/mpv-player/mpv/blob/master/etc/input.conf"
+   ],
+   "how": "source"
+  },
+  "slideshow": {
+   "value": "yes",
+   "note": "images play for --image-display-duration (default 5 s)",
+   "evidence": [
+    "https://github.com/mpv-player/mpv/blob/master/DOCS/man/options.rst"
+   ],
+   "how": "docs"
+  },
+  "slideshow_recursive": {
+   "value": "yes",
+   "note": "opening a folder lists video, audio and images from subfolders in one playlist; images timed, videos play",
+   "evidence": [
+    "https://github.com/mpv-player/mpv/blob/master/DOCS/man/options.rst"
+   ],
+   "how": "docs"
+  },
+  "auto_enhance_view": {
+   "value": "partial",
+   "note": "keys 1-8 change contrast, brightness, gamma, saturation; no auto enhance",
+   "evidence": [
+    "https://github.com/mpv-player/mpv/blob/master/etc/input.conf"
+   ],
+   "how": "source"
+  },
+  "file_info_exif": {
+   "value": "partial",
+   "note": "stats overlay (i/I): codecs, bitrate; no EXIF",
+   "evidence": [
+    "https://github.com/mpv-player/mpv/blob/master/etc/input.conf",
+    "https://github.com/mpv-player/mpv/blob/master/player/lua/stats.lua"
+   ],
+   "how": "source"
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://github.com/mpv-player/mpv/blob/master/DOCS/man/options.rst"
+   ],
+   "note": "Probes content regardless of extension; no warning found"
+  },
+  "video_native": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://github.com/mpv-player/mpv/blob/master/options/options.c"
+   ],
+   "how": "source"
+  },
+  "video_mkv_avi_webm": {
+   "value": "yes",
+   "note": "FFmpeg",
+   "evidence": [
+    "https://github.com/mpv-player/mpv/blob/master/options/options.c"
+   ],
+   "how": "source"
+  },
+  "photos_videos_one_grid": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/mpv-player/mpv/blob/master/DOCS/man/options.rst"
+   ],
+   "how": "docs"
+  },
+  "video_skim_arrows": {
+   "value": "yes",
+   "note": "Left/Right 5 s, Up/Down 60 s, Shift for exact 1 s",
+   "evidence": [
+    "https://github.com/mpv-player/mpv/blob/master/etc/input.conf"
+   ],
+   "how": "source"
+  },
+  "subtitles_embedded": {
+   "value": "yes",
+   "note": "j/J switch subtitle track",
+   "evidence": [
+    "https://github.com/mpv-player/mpv/blob/master/etc/input.conf"
+   ],
+   "how": "source"
+  },
+  "subtitles_external_files": {
+   "value": "yes",
+   "note": "--sub-auto (default exact)",
+   "evidence": [
+    "https://github.com/mpv-player/mpv/blob/master/DOCS/man/options.rst"
+   ],
+   "how": "docs"
+  },
+  "audio_track_choice": {
+   "value": "yes",
+   "note": "# cycles audio, g-a menu",
+   "evidence": [
+    "https://github.com/mpv-player/mpv/blob/master/etc/input.conf"
+   ],
+   "how": "source"
+  },
+  "playback_speed": {
+   "value": "yes",
+   "note": "[ and ]",
+   "evidence": [
+    "https://github.com/mpv-player/mpv/blob/master/etc/input.conf"
+   ],
+   "how": "source"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "note": "OSC has fixed layouts (bottombar, floating, box …), not draggable",
+   "evidence": [
+    "https://github.com/mpv-player/mpv/blob/master/DOCS/man/osc.rst"
+   ],
+   "how": "docs"
+  },
+  "playlist": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://github.com/mpv-player/mpv/blob/master/etc/input.conf"
+   ],
+   "how": "source"
+  },
+  "saved_playlists": {
+   "value": "partial",
+   "note": "loads m3u/pls/cue/edl; no built-in save command",
+   "evidence": [
+    "https://github.com/mpv-player/mpv/blob/master/options/options.c",
+    "https://github.com/mpv-player/mpv/blob/master/DOCS/man/input.rst"
+   ],
+   "how": "source"
+  },
+  "pip": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/mpv-player/mpv/blob/master/DOCS/man/options.rst"
+   ],
+   "how": "docs"
+  },
+  "music_mode": {
+   "value": "yes",
+   "note": "plays audio files; no separate music UI",
+   "evidence": [
+    "https://github.com/mpv-player/mpv/blob/master/options/options.c"
+   ],
+   "how": "source"
+  },
+  "streaming_urls": {
+   "value": "yes",
+   "note": "HTTP/HLS etc.; YouTube via yt-dlp hook",
+   "evidence": [
+    "https://github.com/mpv-player/mpv/releases/tag/v0.42.0",
+    "https://github.com/mpv-player/mpv/blob/master/player/lua/ytdl_hook.lua"
+   ],
+   "how": "source"
+  },
+  "online_subtitles": {
+   "value": "no",
+   "how": "source",
+   "evidence": [
+    "https://github.com/mpv-player/mpv"
+   ],
+   "note": "No subtitle download code in the repository (code search for 'opensubtitles' finds nothing); third-party scripts only"
+  },
+  "video_filters_enhance": {
+   "value": "yes",
+   "note": "equalizer properties and FFmpeg filters (--vf)",
+   "evidence": [
+    "https://github.com/mpv-player/mpv/blob/master/etc/input.conf",
+    "https://github.com/mpv-player/mpv/blob/master/DOCS/man/options.rst"
+   ],
+   "how": "source"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/mpv-player/mpv/tree/master/TOOLS/osxbundle"
+   ],
+   "how": "source"
+  },
+  "archives_as_folders": {
+   "value": "partial",
+   "note": "ZIP, RAR, 7z (also CBZ/CBR) open as a playlist of their media, not as a browsable folder",
+   "evidence": [
+    "https://github.com/mpv-player/mpv/blob/master/options/options.c",
+    "https://github.com/mpv-player/mpv/blob/master/demux/demux_libarchive.c"
+   ],
+   "how": "source"
+  },
+  "comics_cbz_cbr": {
+   "value": "partial",
+   "note": "CBZ/CBR open as image playlist; no reader mode",
+   "evidence": [
+    "https://github.com/mpv-player/mpv/blob/master/options/options.c"
+   ],
+   "how": "source"
+  },
+  "archive_passwords": {
+   "value": "no",
+   "note": "no password handling in the libarchive stream",
+   "evidence": [
+    "https://github.com/mpv-player/mpv/blob/master/stream/stream_libarchive.c"
+   ],
+   "how": "source"
+  },
+  "split_archives": {
+   "value": "yes",
+   "note": "multi-volume RAR (--rar-list-all-volumes)",
+   "evidence": [
+    "https://github.com/mpv-player/mpv/blob/master/stream/stream_libarchive.c",
+    "https://github.com/mpv-player/mpv/blob/master/demux/demux_libarchive.c"
+   ],
+   "how": "source"
+  },
+  "videos_in_archives": {
+   "value": "yes",
+   "note": "archive:// stream plays media straight from ZIP/RAR/7z",
+   "evidence": [
+    "https://github.com/mpv-player/mpv/blob/master/stream/stream_libarchive.c",
+    "https://github.com/mpv-player/mpv/blob/master/demux/demux_libarchive.c"
+   ],
+   "how": "source"
+  },
+  "manga_two_page": {
+   "value": "no",
+   "how": "docs",
+   "evidence": [
+    "https://github.com/mpv-player/mpv/blob/master/DOCS/man/options.rst"
+   ],
+   "note": "No two-page or right-to-left image layout option"
+  },
+  "rename_trash": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/mpv-player/mpv/blob/master/etc/input.conf"
+   ],
+   "how": "source"
+  },
+  "move_copy": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/mpv-player/mpv/blob/master/etc/input.conf"
+   ],
+   "how": "source"
+  },
+  "dual_pane": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/mpv-player/mpv/blob/master/DOCS/man/options.rst"
+   ],
+   "how": "docs"
+  },
+  "undo_file_actions": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/mpv-player/mpv/blob/master/etc/input.conf"
+   ],
+   "how": "source"
+  },
+  "image_editing": {
+   "value": "no",
+   "note": "screenshots only",
+   "evidence": [
+    "https://github.com/mpv-player/mpv/blob/master/etc/input.conf"
+   ],
+   "how": "source"
+  },
+  "batch_convert": {
+   "value": "partial",
+   "note": "encoding mode on the command line (--o); no batch rename",
+   "evidence": [
+    "https://github.com/mpv-player/mpv/blob/master/DOCS/man/encode.rst"
+   ],
+   "how": "docs"
+  },
+  "library_catalog": {
+   "value": "no",
+   "note": "watch history only",
+   "evidence": [
+    "https://github.com/mpv-player/mpv/blob/master/etc/input.conf"
+   ],
+   "how": "source"
+  },
+  "cloud_sync": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/mpv-player/mpv/blob/master/DOCS/man/options.rst"
+   ],
+   "how": "docs"
+  },
+  "keyboard_first": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://github.com/mpv-player/mpv/blob/master/etc/input.conf"
+   ],
+   "how": "source"
+  },
+  "custom_shortcuts": {
+   "value": "yes",
+   "note": "input.conf",
+   "evidence": [
+    "https://github.com/mpv-player/mpv/blob/master/etc/input.conf"
+   ],
+   "how": "source"
+  },
+  "shortcut_cheatsheet": {
+   "value": "partial",
+   "note": "? shows a key bindings page in the stats overlay; input.conf documents defaults",
+   "evidence": [
+    "https://github.com/mpv-player/mpv/blob/master/etc/input.conf"
+   ],
+   "how": "source"
+  },
+  "boss_key": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/mpv-player/mpv/blob/master/etc/input.conf"
+   ],
+   "how": "source"
+  },
+  "app_sandbox": {
+   "value": "no",
+   "note": "bundle has no entitlements, ad-hoc signed",
+   "evidence": [
+    "https://github.com/mpv-player/mpv/blob/master/TOOLS/osxbundle.py"
+   ],
+   "how": "source"
+  },
+  "no_network": {
+   "value": "partial",
+   "how": "source",
+   "evidence": [
+    "https://github.com/mpv-player/mpv",
+    "https://github.com/mpv-player/mpv/blob/master/player/lua/ytdl_hook.lua"
+   ],
+   "note": "No update check or telemetry in the code; goes online for URLs you open (yt-dlp hook for web pages)"
+  },
+  "notarized_attested": {
+   "value": "no",
+   "note": "macOS builds are ad-hoc signed CI artifacts, not notarized; built publicly on GitHub Actions",
+   "evidence": [
+    "https://github.com/mpv-player/mpv/blob/master/TOOLS/osxbundle.py",
+    "https://github.com/mpv-player/mpv/releases/tag/v0.42.0"
+   ],
+   "how": "source"
+  },
+  "mac_app_store": {
+   "value": "no",
+   "note": "",
+   "evidence": [
+    "https://github.com/mpv-player/mpv/releases/tag/v0.42.0"
+   ],
+   "how": "docs"
+  }
+ }
+}

@@ -1,0 +1,575 @@
+{
+ "name": "GraphicConverter",
+ "short": "GraphicConverter",
+ "vendor": "Lemke Software GmbH",
+ "website": "https://www.lemkesoft.de/en/products/graphicconverter/",
+ "platforms": [
+  "macOS"
+ ],
+ "mac_available": "yes",
+ "page": "matrix",
+ "section": "image",
+ "price": "$39.95 / €34.95 one-time (upgrade $25.95, family $59.95); $34.99 on the Mac App Store; shareware trial",
+ "license": "proprietary (shareware)",
+ "current_version": "12.5.4 (12.6 in beta)",
+ "last_update": "2026-08-27 (12.5.4 on the Mac App Store; 12.6 beta build 7423 on 2026-11-12)",
+ "engine": "Own import/export (~200 formats in, ~80 out); videos via AVKit",
+ "category": "both",
+ "summary": "GraphicConverter is a long-running Mac 'pocket knife for pictures': a file and picture browser, slideshow, editor and batch converter that opens about 200 formats. Its browser also plays QuickTime-compatible movies and audio, handles extensive metadata and has duplicate finding, flat views and Spotlight search.",
+ "where_it_wins": [
+  "Opens ~200 image formats, exports ~80, including legacy and scientific formats",
+  "Full image editor and powerful batch conversion with actions",
+  "Deep metadata editing (EXIF/IPTC/XMP, faces, GPS map)",
+  "Rich slideshow options (transitions, random, metadata, sorting during the show)",
+  "List, Cover Flow and thumbnail views, flat view of all subfolders",
+  "Duplicate finder, contact sheets, web galleries",
+  "Custom shortcuts, 14 languages, light/dark setting"
+ ],
+ "where_schnellbild_wins": [
+  "Free and open source, no shareware limits",
+  "MKV, WebM, AVI, WMV, FLV via built-in VLC; subtitle/audio track choice and speed in its own control bar",
+  "ZIP/RAR/7z and CBZ/CBR as folders, including videos inside",
+  "Dual pane with F5/F6",
+  "Keyboard first, boss key, printable cheat sheet",
+  "Always sandboxed and never online (direct GC build is not sandboxed and checks for updates)",
+  "Slideshow through all subfolders with photos and videos mixed",
+  "Simple, fast UI without editor clutter"
+ ],
+ "search_terms": [
+  "graphicconverter mac",
+  "graphicconverter alternative",
+  "graphicconverter free alternative",
+  "graphicconverter alternative kostenlos",
+  "graphic converter browser alternative",
+  "lemkesoft graphicconverter",
+  "graphicconverter vs xnview"
+ ],
+ "matrix": {
+  "free": {
+   "value": "no",
+   "note": "$39.95 / €34.95 direct (upgrade $25.95, family $59.95), $34.99 on Mac App Store; shareware trial with few limits, batch disabled unregistered",
+   "evidence": [
+    "https://www.lemkesoft.de/en/products/graphicconverter/",
+    "https://apps.apple.com/us/app/graphicconverter-12/id1671632937?mt=12",
+    "https://www.lemkesoft.de/en/products/graphicconverter/key-features"
+   ],
+   "how": "docs"
+  },
+  "open_source": {
+   "value": "no",
+   "note": "Proprietary",
+   "evidence": [
+    "https://www.lemkesoft.de/en/products/graphicconverter/"
+   ],
+   "how": "docs"
+  },
+  "native_apple_silicon": {
+   "value": "yes",
+   "note": "Universal binary",
+   "evidence": [
+    "https://www.lemkesoft.de/en/products/graphicconverter/download"
+   ],
+   "how": "docs"
+  },
+  "no_account_no_tracking": {
+   "value": "yes",
+   "note": "App Privacy: Data Not Collected; no account",
+   "evidence": [
+    "https://apps.apple.com/us/app/graphicconverter-12/id1671632937?mt=12"
+   ],
+   "how": "store"
+  },
+  "dark_light_setting": {
+   "value": "yes",
+   "note": "Settings > General > Appearance: always light, always dark, or system",
+   "evidence": [
+    "https://www.lemkesoft.info/files/manuals_gc12/Manual_GC12_EN.pdf"
+   ],
+   "how": "docs"
+  },
+  "languages_20": {
+   "value": "partial",
+   "note": "14 (English + 13 per App Store; vendor lists Brazilian Portuguese, Chinese x2, Czech, Danish, Dutch, English, French, German, Italian, Japanese, Russian, Spanish, Swedish)",
+   "evidence": [
+    "https://www.lemkesoft.de/en/products/graphicconverter/download",
+    "https://apps.apple.com/us/app/graphicconverter-12/id1671632937?mt=12",
+    "https://www.lemkesoft.info/files/manuals_gc12/Manual_GC12_EN.pdf"
+   ],
+   "how": "docs"
+  },
+  "folder_browsing": {
+   "value": "yes",
+   "note": "File and picture browser on folders; MAS build needs folders added by drag and drop (sandbox)",
+   "evidence": [
+    "https://www.lemkesoft.de/en/products/graphicconverter/key-features/graphical-file-and-image-browser-on-the-mac",
+    "https://www.lemkesoft.de/en/products/graphicconverter/mac-app-store"
+   ],
+   "how": "docs"
+  },
+  "thumbnail_grid": {
+   "value": "yes",
+   "note": "Thumbnails with folder tree; multi-frame previews for movies",
+   "evidence": [
+    "https://www.lemkesoft.de/en/products/graphicconverter/key-features/graphical-file-and-image-browser-on-the-mac",
+    "https://www.lemkesoft.info/files/manuals_gc12/Manual_GC12_EN.pdf"
+   ],
+   "how": "docs"
+  },
+  "list_view": {
+   "value": "yes",
+   "note": "Thumbnails, List, Cover Flow and Small List displays",
+   "evidence": [
+    "https://www.lemkesoft.info/files/manuals_gc12/Manual_GC12_EN.pdf"
+   ],
+   "how": "docs"
+  },
+  "recursive_search": {
+   "value": "partial",
+   "note": "Browser search field searches the folder and all subfolders via Spotlight (fails where Spotlight is off, e.g. many network shares); Browse Flat shows all subfolders",
+   "evidence": [
+    "https://www.lemkesoft.info/files/manuals_gc12/Manual_GC12_EN.pdf"
+   ],
+   "how": "docs"
+  },
+  "regex_search": {
+   "value": "partial",
+   "note": "RegEx in 'Slide Show with find' and Rename dialog, not in the browser search field",
+   "evidence": [
+    "https://www.lemkesoft.info/files/manuals_gc12/Manual_GC12_EN.pdf"
+   ],
+   "how": "docs"
+  },
+  "network_shares_fast": {
+   "value": "partial",
+   "note": "No speed claims for network volumes; the manual notes the browser search relies on Spotlight. Searched manual and site.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "multiple_windows": {
+   "value": "yes",
+   "note": "Several browser windows ('Show in New Browser', drag between two browsers)",
+   "evidence": [
+    "https://www.lemkesoft.de/en/products/graphicconverter/key-features/graphical-file-and-image-browser-on-the-mac",
+    "https://www.lemkesoft.info/files/manuals_gc12/Manual_GC12_EN.pdf"
+   ],
+   "how": "docs"
+  },
+  "bookmarks": {
+   "value": "yes",
+   "note": "Favorites area under the file tree",
+   "evidence": [
+    "https://www.lemkesoft.info/files/manuals_gc12/Manual_GC12_EN.pdf"
+   ],
+   "how": "docs"
+  },
+  "img_modern_formats": {
+   "value": "yes",
+   "note": "HEIC/HEIF, WebP, AVIF, JPEG XL",
+   "evidence": [
+    "https://www.lemkesoft.de/en/products/graphicconverter/key-features",
+    "https://www.lemkesoft.info/files/manuals_gc12/Manual_GC12_EN.pdf"
+   ],
+   "how": "docs"
+  },
+  "img_raw": {
+   "value": "yes",
+   "note": "Camera RAW import (some RAF/X3F missing in MAS build)",
+   "evidence": [
+    "https://www.lemkesoft.de/en/products/graphicconverter/key-features",
+    "https://www.lemkesoft.de/en/products/graphicconverter/mac-app-store"
+   ],
+   "how": "docs"
+  },
+  "img_psd_exr": {
+   "value": "yes",
+   "note": "PSD and OpenEXR import/export",
+   "evidence": [
+    "https://www.lemkesoft.info/files/manuals_gc12/Manual_GC12_EN.pdf"
+   ],
+   "how": "docs"
+  },
+  "img_svg_pdf": {
+   "value": "yes",
+   "note": "PDF incl. pages/layers; SVG import",
+   "evidence": [
+    "https://www.lemkesoft.info/files/manuals_gc12/Manual_GC12_EN.pdf"
+   ],
+   "how": "docs"
+  },
+  "img_animated": {
+   "value": "yes",
+   "note": "GIF and APNG animations play in the browser, optional loop",
+   "evidence": [
+    "https://www.lemkesoft.de/en/products/graphicconverter/key-features/graphical-file-and-image-browser-on-the-mac",
+    "https://www.lemkesoft.info/files/manuals_gc12/Manual_GC12_EN.pdf"
+   ],
+   "how": "docs"
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "note": "Next/previous image in browser, viewer and slideshow",
+   "evidence": [
+    "https://www.lemkesoft.info/files/manuals_gc12/Manual_GC12_EN.pdf"
+   ],
+   "how": "docs"
+  },
+  "zoom_rotate": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://www.lemkesoft.info/files/manuals_gc12/Manual_GC12_EN.pdf"
+   ],
+   "how": "docs"
+  },
+  "slideshow": {
+   "value": "yes",
+   "note": "Full-screen or window, random, transitions, metadata overlay, rate/move/trash during show",
+   "evidence": [
+    "https://www.lemkesoft.de/en/products/graphicconverter/key-features/slide-show-functions",
+    "https://www.lemkesoft.info/files/manuals_gc12/Manual_GC12_EN.pdf"
+   ],
+   "how": "docs"
+  },
+  "slideshow_recursive": {
+   "value": "partial",
+   "note": "Slideshow can include subfolders; whether movies play inside the slideshow is not documented",
+   "evidence": [
+    "https://www.lemkesoft.info/files/manuals_gc12/Manual_GC12_EN.pdf"
+   ],
+   "how": "docs"
+  },
+  "auto_enhance_view": {
+   "value": "partial",
+   "note": "Auto Levels and an Auto Enhancement batch action exist, but they edit the picture (saved on save), not a view-only toggle.",
+   "evidence": [
+    "https://www.lemkesoft.info/files/manuals_gc12/Manual_GC12_EN.pdf"
+   ],
+   "how": "docs"
+  },
+  "file_info_exif": {
+   "value": "yes",
+   "note": "Extensive metadata (EXIF/IPTC/XMP, MOV/MP4 metadata); video codec/bitrate not documented",
+   "evidence": [
+    "https://www.lemkesoft.de/en/products/graphicconverter/key-features",
+    "https://apps.apple.com/us/app/graphicconverter-12/id1671632937?mt=12"
+   ],
+   "how": "docs"
+  },
+  "wrong_extension_note": {
+   "value": "partial",
+   "note": "Browser command Filename Extension › Verify and correct checks the selected files and corrects mismatched extensions; no passive note while viewing.",
+   "evidence": [
+    "https://www.lemkesoft.info/files/manuals_gc12/Manual_GC12_EN.pdf"
+   ],
+   "how": "docs"
+  },
+  "video_native": {
+   "value": "yes",
+   "note": "Browser plays movies in the right pane via AVKit",
+   "evidence": [
+    "https://www.lemkesoft.de/en/products/graphicconverter/key-features/graphical-file-and-image-browser-on-the-mac",
+    "https://www.lemkesoft.info/files/manuals_gc12/Manual_GC12_EN.pdf"
+   ],
+   "how": "docs"
+  },
+  "video_mkv_avi_webm": {
+   "value": "no",
+   "note": "Only what AVKit/QuickTime plays; can convert AVI to MP4",
+   "evidence": [
+    "https://www.lemkesoft.de/en/products/graphicconverter/key-features/graphical-file-and-image-browser-on-the-mac",
+    "https://www.lemkesoft.info/files/manuals_gc12/Manual_GC12_EN.pdf"
+   ],
+   "how": "docs"
+  },
+  "photos_videos_one_grid": {
+   "value": "yes",
+   "note": "Movies show in the browser among pictures",
+   "evidence": [
+    "https://www.lemkesoft.de/en/products/graphicconverter/key-features/graphical-file-and-image-browser-on-the-mac",
+    "https://www.lemkesoft.info/files/manuals_gc12/Manual_GC12_EN.pdf"
+   ],
+   "how": "docs"
+  },
+  "video_skim_arrows": {
+   "value": "no",
+   "note": "Movie controls in the browser's right pane are described only briefly; arrow-key skimming not stated.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "subtitles_embedded": {
+   "value": "partial",
+   "note": "Manual has no subtitle feature; whether the standard movie controls offer a subtitle menu is not stated.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "subtitles_external_files": {
+   "value": "no",
+   "note": "No subtitle files anywhere in the complete manual.",
+   "evidence": [
+    "https://www.lemkesoft.info/files/manuals_gc12/Manual_GC12_EN.pdf"
+   ],
+   "how": "docs"
+  },
+  "audio_track_choice": {
+   "value": "partial",
+   "note": "Not in the manual; depends on the standard movie controls, not documented.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "playback_speed": {
+   "value": "partial",
+   "note": "Manual mentions only the playback-speed tag in video metadata, not a player speed control.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "note": "AVKit controls; slideshow navigation palette is movable, but not for video",
+   "evidence": [
+    "https://www.lemkesoft.info/files/manuals_gc12/Manual_GC12_EN.pdf"
+   ],
+   "how": "docs"
+  },
+  "playlist": {
+   "value": "partial",
+   "note": "Slideshow list palette; not a video playlist",
+   "evidence": [
+    "https://www.lemkesoft.info/files/manuals_gc12/Manual_GC12_EN.pdf"
+   ],
+   "how": "docs"
+  },
+  "saved_playlists": {
+   "value": "partial",
+   "note": "Slideshow presets and saved searches, not playlists",
+   "evidence": [
+    "https://www.lemkesoft.info/files/manuals_gc12/Manual_GC12_EN.pdf"
+   ],
+   "how": "docs"
+  },
+  "pip": {
+   "value": "no",
+   "note": "Not in the manual.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "music_mode": {
+   "value": "partial",
+   "note": "MP3 and M4A play in the browser's right pane",
+   "evidence": [
+    "https://www.lemkesoft.info/files/manuals_gc12/Manual_GC12_EN.pdf"
+   ],
+   "how": "docs"
+  },
+  "streaming_urls": {
+   "value": "no",
+   "note": "Can load single images from a URL; no streams",
+   "evidence": [
+    "https://www.lemkesoft.info/files/manuals_gc12/Manual_GC12_EN.pdf"
+   ],
+   "how": "docs"
+  },
+  "online_subtitles": {
+   "value": "no",
+   "note": "No subtitle features in the manual.",
+   "evidence": [
+    "https://www.lemkesoft.info/files/manuals_gc12/Manual_GC12_EN.pdf"
+   ],
+   "how": "docs"
+  },
+  "video_filters_enhance": {
+   "value": "no",
+   "note": "Manual covers converting/scaling movies, not view adjustments during playback.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "note": "Quick Look appears only as a full-screen preview option; no Quick Look generator for video formats; for MP2 the manual recommends VLC.",
+   "evidence": [
+    "https://www.lemkesoft.info/files/manuals_gc12/Manual_GC12_EN.pdf"
+   ],
+   "how": "docs"
+  },
+  "archives_as_folders": {
+   "value": "partial",
+   "note": "Can open images from RAR archives; no browsing of ZIP/7z as folders documented",
+   "evidence": [
+    "https://www.lemkesoft.info/files/manuals_gc12/Manual_GC12_EN.pdf"
+   ],
+   "how": "docs"
+  },
+  "comics_cbz_cbr": {
+   "value": "no",
+   "note": "CBZ/CBR not in the manual's format list or text.",
+   "evidence": [
+    "https://www.lemkesoft.info/files/manuals_gc12/Manual_GC12_EN.pdf"
+   ],
+   "how": "docs"
+  },
+  "archive_passwords": {
+   "value": "no",
+   "note": "Manual mentions only opening images from RAR archives; no archive passwords.",
+   "evidence": [
+    "https://www.lemkesoft.info/files/manuals_gc12/Manual_GC12_EN.pdf"
+   ],
+   "how": "docs"
+  },
+  "split_archives": {
+   "value": "no",
+   "note": "No multi-part archives in the manual.",
+   "evidence": [
+    "https://www.lemkesoft.info/files/manuals_gc12/Manual_GC12_EN.pdf"
+   ],
+   "how": "docs"
+  },
+  "videos_in_archives": {
+   "value": "no",
+   "note": "Archive support is described for images from RAR only.",
+   "evidence": [
+    "https://www.lemkesoft.info/files/manuals_gc12/Manual_GC12_EN.pdf"
+   ],
+   "how": "docs"
+  },
+  "manga_two_page": {
+   "value": "no",
+   "note": "No two-page or right-to-left reading mode in the manual.",
+   "evidence": [
+    "https://www.lemkesoft.info/files/manuals_gc12/Manual_GC12_EN.pdf"
+   ],
+   "how": "docs"
+  },
+  "rename_trash": {
+   "value": "yes",
+   "note": "Rename (presets, RegEx, QR code), delete, new folder",
+   "evidence": [
+    "https://www.lemkesoft.de/en/products/graphicconverter/key-features/graphical-file-and-image-browser-on-the-mac",
+    "https://www.lemkesoft.info/files/manuals_gc12/Manual_GC12_EN.pdf"
+   ],
+   "how": "docs"
+  },
+  "move_copy": {
+   "value": "yes",
+   "note": "Drag and drop between browsers and Finder",
+   "evidence": [
+    "https://www.lemkesoft.de/en/products/graphicconverter/key-features/graphical-file-and-image-browser-on-the-mac"
+   ],
+   "how": "docs"
+  },
+  "dual_pane": {
+   "value": "no",
+   "note": "Several browser windows can be placed side by side and dragged between; no two-pane mode with F5/F6.",
+   "evidence": [
+    "https://www.lemkesoft.info/files/manuals_gc12/Manual_GC12_EN.pdf"
+   ],
+   "how": "docs"
+  },
+  "undo_file_actions": {
+   "value": "yes",
+   "note": "Undo in browser via system file revisions (can be turned off)",
+   "evidence": [
+    "https://www.lemkesoft.info/files/manuals_gc12/Manual_GC12_EN.pdf"
+   ],
+   "how": "docs"
+  },
+  "image_editing": {
+   "value": "yes",
+   "note": "Full editor: crop, resize, filters, effects, ~80 export formats",
+   "evidence": [
+    "https://www.lemkesoft.de/en/products/graphicconverter/key-features"
+   ],
+   "how": "docs"
+  },
+  "batch_convert": {
+   "value": "yes",
+   "note": "Batch conversion with actions, batch rename",
+   "evidence": [
+    "https://www.lemkesoft.de/en/products/graphicconverter/key-features",
+    "https://talk.tidbits.com/t/graphicconverter-12-5-3/34050"
+   ],
+   "how": "docs"
+  },
+  "library_catalog": {
+   "value": "partial",
+   "note": "Ratings, labels, tags, faces in file metadata; duplicate finder; no central database",
+   "evidence": [
+    "https://www.lemkesoft.de/en/products/graphicconverter/key-features/graphical-file-and-image-browser-on-the-mac",
+    "https://www.lemkesoft.info/files/manuals_gc12/Manual_GC12_EN.pdf"
+   ],
+   "how": "docs"
+  },
+  "cloud_sync": {
+   "value": "partial",
+   "note": "FTP upload, web gallery export, cloud folders via their clients (no direct cloud access in MAS build)",
+   "evidence": [
+    "https://www.lemkesoft.info/files/manuals_gc12/Manual_GC12_EN.pdf",
+    "https://www.lemkesoft.de/en/products/graphicconverter/mac-app-store"
+   ],
+   "how": "docs"
+  },
+  "keyboard_first": {
+   "value": "partial",
+   "note": "Shortcuts are editable; whether all browser work is possible without the mouse is not documented.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "custom_shortcuts": {
+   "value": "yes",
+   "note": "GraphicConverter > Edit Shortcuts…, import/export list",
+   "evidence": [
+    "https://lemkesoft.info/forum/viewtopic.php?p=27554",
+    "https://www.lemkesoft.info/files/manuals_gc12/Manual_GC12_EN.pdf"
+   ],
+   "how": "docs"
+  },
+  "shortcut_cheatsheet": {
+   "value": "partial",
+   "note": "Shortcut tables in the PDF manual",
+   "evidence": [
+    "https://www.lemkesoft.info/files/manuals_gc12/Manual_GC12_EN.pdf"
+   ],
+   "how": "docs"
+  },
+  "boss_key": {
+   "value": "no",
+   "note": "No hide-all key in the manual's shortcut tables.",
+   "evidence": [
+    "https://www.lemkesoft.info/files/manuals_gc12/Manual_GC12_EN.pdf"
+   ],
+   "how": "docs"
+  },
+  "app_sandbox": {
+   "value": "partial",
+   "note": "Mac App Store build is sandboxed (with restrictions); the direct build is not",
+   "evidence": [
+    "https://www.lemkesoft.de/en/products/graphicconverter/mac-app-store"
+   ],
+   "how": "docs"
+  },
+  "no_network": {
+   "value": "no",
+   "note": "Checks for updates online; maps, FTP, image from URL",
+   "evidence": [
+    "https://www.lemkesoft.info/files/manuals_gc12/Manual_GC12_EN.pdf"
+   ],
+   "how": "docs"
+  },
+  "notarized_attested": {
+   "value": "no",
+   "note": "Closed source, so the build cannot be attested; the manual does not cover notarization.",
+   "evidence": [
+    "https://www.lemkesoft.info/files/manuals_gc12/Manual_GC12_EN.pdf",
+    "https://www.lemkesoft.de/en/products/graphicconverter/"
+   ],
+   "how": "docs"
+  },
+  "mac_app_store": {
+   "value": "yes",
+   "note": "GraphicConverter 12, $34.99",
+   "evidence": [
+    "https://apps.apple.com/us/app/graphicconverter-12/id1671632937?mt=12",
+    "https://www.lemkesoft.de/en/products/graphicconverter/mac-app-store"
+   ],
+   "how": "store"
+  }
+ }
+}

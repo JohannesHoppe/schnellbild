@@ -1,0 +1,588 @@
+{
+ "name": "cooViewer",
+ "short": "cooViewer",
+ "vendor": "coo (original author); maintained fork by ysmx on GitHub",
+ "website": "https://github.com/ysmx/cooViewer",
+ "platforms": [
+  "macOS"
+ ],
+ "mac_available": "yes",
+ "page": "matrix",
+ "section": "comic",
+ "price": "Free",
+ "license": "open source (MIT)",
+ "current_version": "1.7.1 (ysmx fork); original coo-ona build stopped at 1.2b25 (2020)",
+ "last_update": "2026-10-30",
+ "engine": "AppKit/ImageIO, XADMaster for archives",
+ "category": "comic",
+ "summary": "Long-standing Japanese manga and comic viewer for the Mac, now kept alive as an actively updated open-source fork with a universal binary. Opens folders, PDFs and almost any archive (ZIP, RAR, 7z, LHA, split archives, password-protected ones) as a book, with right-to-left spreads, page bookmarks, freely assignable keys and mouse actions, and Finder thumbnails for comic archives.",
+ "where_it_wins": [
+  "Dedicated manga reader: right-to-left two-page spreads with automatic single-page detection, saved per book",
+  "Named page bookmarks and remembered last page per book",
+  "Every key and mouse action assignable, one-handed defaults",
+  "Opens a huge range of archive formats, including split RAR/ZIP and password-protected archives",
+  "Core Image view filters, loupe",
+  "Finder thumbnails and Quick Look for CBZ/CBR/ZIP/RAR/7z"
+ ],
+ "where_schnellbild_wins": [
+  "Videos (MP4, MKV, WebM …), including straight from archives",
+  "Browses folders and archives as folders with a thumbnail grid and folder previews",
+  "File management: rename, move, copy, two panes, undo",
+  "App Sandbox, notarized, in many languages (cooViewer: English and Japanese)",
+  "Mixed photo and video slideshow through all subfolders"
+ ],
+ "search_terms": [
+  "cooviewer",
+  "cooviewer mac",
+  "cooviewer apple silicon",
+  "cooviewer alternative",
+  "cooviewer 代わり",
+  "mac 漫画ビューア",
+  "mac マンガビューア 無料",
+  "cooviewer m1"
+ ],
+ "matrix": {
+  "free": {
+   "value": "yes",
+   "evidence": [
+    "https://github.com/ysmx/cooViewer",
+    "https://github.com/ysmx/cooViewer/releases/tag/v1.7.1"
+   ],
+   "how": "source",
+   "note": "Free, no paid tier"
+  },
+  "open_source": {
+   "value": "yes",
+   "evidence": [
+    "https://github.com/ysmx/cooViewer"
+   ],
+   "how": "source",
+   "note": "MIT (community-maintained fork of coo's original)"
+  },
+  "native_apple_silicon": {
+   "value": "yes",
+   "evidence": [
+    "https://github.com/ysmx/cooViewer/releases/tag/v1.7.1",
+    "https://github.com/ysmx/cooViewer/blob/master/update-notes.md"
+   ],
+   "how": "changelog",
+   "note": "Universal binary (arm64 + x86_64) since the fork's Sequoia update"
+  },
+  "no_account_no_tracking": {
+   "value": "yes",
+   "evidence": [
+    "https://github.com/ysmx/cooViewer/blob/master/Sources/Loader/COImageLoader.m",
+    "https://github.com/ysmx/cooViewer"
+   ],
+   "how": "source",
+   "note": "No account, ads or network code; local viewer"
+  },
+  "dark_light_setting": {
+   "value": "partial",
+   "evidence": [
+    "https://github.com/ysmx/cooViewer/blob/master/Resources/en.lproj/MainMenu.strings",
+    "https://coo-ona.github.io/cooViewer/manual.html"
+   ],
+   "how": "source",
+   "note": "Own colour settings for background, page number and page bar; no separate light/dark app theme switch found"
+  },
+  "languages_20": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/ysmx/cooViewer"
+   ],
+   "how": "source",
+   "note": "English and Japanese only (en.lproj, ja.lproj)"
+  },
+  "folder_browsing": {
+   "value": "yes",
+   "evidence": [
+    "https://coo-ona.github.io/cooViewer/manual.html"
+   ],
+   "how": "docs",
+   "note": "Opens a folder or archive directly as a book; next/previous folder and 'Open in Same Folder'; no file browser"
+  },
+  "thumbnail_grid": {
+   "value": "partial",
+   "evidence": [
+    "https://coo-ona.github.io/cooViewer/manual.html",
+    "https://github.com/ysmx/cooViewer/blob/master/update-notes.md"
+   ],
+   "how": "docs",
+   "note": "Thumbnail grid of the pages of the open book (can open archives from it since 1.4.2); no folder-preview browser"
+  },
+  "list_view": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/ysmx/cooViewer/blob/master/Resources/en.lproj/MainMenu.strings"
+   ],
+   "how": "source",
+   "note": "No list or column view in the interface"
+  },
+  "recursive_search": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/ysmx/cooViewer/blob/master/Resources/en.lproj/MainMenu.strings",
+    "https://github.com/ysmx/cooViewer/blob/master/Resources/en.lproj/Localizable.strings"
+   ],
+   "how": "source",
+   "note": "No file name search in menus or panels (opens Finder saved searches as a book)"
+  },
+  "regex_search": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/ysmx/cooViewer/blob/master/Resources/en.lproj/MainMenu.strings",
+    "https://github.com/ysmx/cooViewer/blob/master/Resources/en.lproj/Localizable.strings"
+   ],
+   "how": "source",
+   "note": "No search function"
+  },
+  "network_shares_fast": {
+   "value": "partial",
+   "evidence": [
+    "https://github.com/ysmx/cooViewer/blob/master/update-notes.md"
+   ],
+   "how": "changelog",
+   "note": "1.4.2 made loading lazy for folders with many subfolders/archives; network shares not mentioned"
+  },
+  "multiple_windows": {
+   "value": "no",
+   "how": "unverified",
+   "evidence": [
+    "https://coo-ona.github.io/cooViewer/manual.html",
+    "https://github.com/ysmx/cooViewer/blob/master/Resources/en.lproj/MainMenu.strings"
+   ],
+   "note": "Menus show a single viewer window and no 'New Window'; not stated explicitly. Searched manual, menu strings, changelog"
+  },
+  "bookmarks": {
+   "value": "partial",
+   "evidence": [
+    "https://coo-ona.github.io/cooViewer/manual.html",
+    "https://github.com/ysmx/cooViewer/blob/master/update-notes.md"
+   ],
+   "how": "docs",
+   "note": "Named page bookmarks per book and Recent Books; no folder favourites"
+  },
+  "img_modern_formats": {
+   "value": "partial",
+   "evidence": [
+    "https://github.com/ysmx/cooViewer/blob/master/Info.plist",
+    "https://github.com/ysmx/cooViewer"
+   ],
+   "how": "source",
+   "note": "HEIC/HEIF, WebP, AVIF declared; JPEG XL not listed"
+  },
+  "img_raw": {
+   "value": "yes",
+   "evidence": [
+    "https://github.com/ysmx/cooViewer/blob/master/Info.plist",
+    "https://github.com/ysmx/cooViewer"
+   ],
+   "how": "source",
+   "note": "DNG, CR2/CR3, NEF, ARW, RAF, RW2, ORF, PEF and more via macOS"
+  },
+  "img_psd_exr": {
+   "value": "partial",
+   "evidence": [
+    "https://github.com/ysmx/cooViewer/blob/master/Info.plist"
+   ],
+   "how": "source",
+   "note": "PSD yes; OpenEXR not listed"
+  },
+  "img_svg_pdf": {
+   "value": "partial",
+   "evidence": [
+    "https://github.com/ysmx/cooViewer/blob/master/Info.plist",
+    "https://github.com/ysmx/cooViewer/blob/master/Sources/Loader/COImageLoader.m"
+   ],
+   "how": "source",
+   "note": "PDF yes (pages as a book); SVG not listed"
+  },
+  "img_animated": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/ysmx/cooViewer/blob/master/Sources/Views/CustomImageView.m"
+   ],
+   "how": "source",
+   "note": "No frame-animation code found in the image view; animated GIF playback not documented. Searched source, manual, changelog"
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "evidence": [
+    "https://coo-ona.github.io/cooViewer/manual.html"
+   ],
+   "how": "docs",
+   "note": "Arrows, space, Z/X; skip 10 pages, 0-9 jump to 0-90 %"
+  },
+  "zoom_rotate": {
+   "value": "yes",
+   "evidence": [
+    "https://coo-ona.github.io/cooViewer/manual.html",
+    "https://github.com/ysmx/cooViewer/blob/master/Resources/en.lproj/MainMenu.strings"
+   ],
+   "how": "source",
+   "note": "Fit to screen, fit width, no scale, actual size window, loupe, rotate left/right"
+  },
+  "slideshow": {
+   "value": "yes",
+   "evidence": [
+    "https://coo-ona.github.io/cooViewer/manual.html"
+   ],
+   "how": "docs",
+   "note": "Slideshow with 0-60 s interval, shuffle"
+  },
+  "slideshow_recursive": {
+   "value": "partial",
+   "evidence": [
+    "https://coo-ona.github.io/cooViewer/manual.html"
+   ],
+   "how": "docs",
+   "note": "With 'Read nested folders' the book includes subfolders; images only, no videos"
+  },
+  "auto_enhance_view": {
+   "value": "partial",
+   "evidence": [
+    "https://github.com/ysmx/cooViewer/blob/master/Sources/Panels/Filter/FilterPanelController.m",
+    "https://github.com/ysmx/cooViewer/blob/master/Resources/en.lproj/Localizable.strings"
+   ],
+   "how": "source",
+   "note": "Core Image filter panel (colour adjustments, sharpness, blur) applied to the view; manual, no auto enhance"
+  },
+  "file_info_exif": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/ysmx/cooViewer/blob/master/Resources/en.lproj/MainMenu.strings",
+    "https://coo-ona.github.io/cooViewer/manual.html"
+   ],
+   "how": "source",
+   "note": "Page display shows page number and file names only; no metadata panel"
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/ysmx/cooViewer/blob/master/Resources/en.lproj/Localizable.strings"
+   ],
+   "how": "source",
+   "note": "No such warning among the app's messages"
+  },
+  "video_native": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/ysmx/cooViewer/blob/master/Info.plist"
+   ],
+   "how": "source",
+   "note": "Images, PDFs and archives only; no video or audio file types declared"
+  },
+  "video_mkv_avi_webm": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/ysmx/cooViewer/blob/master/Info.plist"
+   ],
+   "how": "source",
+   "note": "Images, PDFs and archives only; no video or audio file types declared"
+  },
+  "photos_videos_one_grid": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/ysmx/cooViewer/blob/master/Info.plist"
+   ],
+   "how": "source",
+   "note": "Images, PDFs and archives only; no video or audio file types declared"
+  },
+  "video_skim_arrows": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/ysmx/cooViewer/blob/master/Info.plist"
+   ],
+   "how": "source",
+   "note": "Images, PDFs and archives only; no video or audio file types declared"
+  },
+  "subtitles_embedded": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/ysmx/cooViewer/blob/master/Info.plist"
+   ],
+   "how": "source",
+   "note": "Images, PDFs and archives only; no video or audio file types declared"
+  },
+  "subtitles_external_files": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/ysmx/cooViewer/blob/master/Info.plist"
+   ],
+   "how": "source",
+   "note": "Images, PDFs and archives only; no video or audio file types declared"
+  },
+  "audio_track_choice": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/ysmx/cooViewer/blob/master/Info.plist"
+   ],
+   "how": "source",
+   "note": "Images, PDFs and archives only; no video or audio file types declared"
+  },
+  "playback_speed": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/ysmx/cooViewer/blob/master/Info.plist"
+   ],
+   "how": "source",
+   "note": "Images, PDFs and archives only; no video or audio file types declared"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/ysmx/cooViewer/blob/master/Info.plist"
+   ],
+   "how": "source",
+   "note": "Images, PDFs and archives only; no video or audio file types declared"
+  },
+  "playlist": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/ysmx/cooViewer/blob/master/Info.plist"
+   ],
+   "how": "source",
+   "note": "Images, PDFs and archives only; no video or audio file types declared"
+  },
+  "saved_playlists": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/ysmx/cooViewer/blob/master/Info.plist"
+   ],
+   "how": "source",
+   "note": "Images, PDFs and archives only; no video or audio file types declared"
+  },
+  "pip": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/ysmx/cooViewer/blob/master/Info.plist"
+   ],
+   "how": "source",
+   "note": "Images, PDFs and archives only; no video or audio file types declared"
+  },
+  "music_mode": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/ysmx/cooViewer/blob/master/Info.plist"
+   ],
+   "how": "source",
+   "note": "Images, PDFs and archives only; no video or audio file types declared"
+  },
+  "streaming_urls": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/ysmx/cooViewer/blob/master/Info.plist"
+   ],
+   "how": "source",
+   "note": "Images, PDFs and archives only; no video or audio file types declared"
+  },
+  "online_subtitles": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/ysmx/cooViewer/blob/master/Info.plist"
+   ],
+   "how": "source",
+   "note": "Images, PDFs and archives only; no video or audio file types declared"
+  },
+  "video_filters_enhance": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/ysmx/cooViewer/blob/master/Info.plist"
+   ],
+   "how": "source",
+   "note": "Images, PDFs and archives only; no video or audio file types declared"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/ysmx/cooViewer/blob/master/update-notes.md"
+   ],
+   "how": "changelog",
+   "note": "Ships Finder thumbnails and Quick Look for CBZ/CBR/ZIP/RAR/7z since 1.7.0, not for videos"
+  },
+  "archives_as_folders": {
+   "value": "partial",
+   "evidence": [
+    "https://coo-ona.github.io/cooViewer/manual.html",
+    "https://github.com/ysmx/cooViewer/blob/master/Info.plist"
+   ],
+   "how": "docs",
+   "note": "opens an archive as a comic book, not as a folder"
+  },
+  "comics_cbz_cbr": {
+   "value": "yes",
+   "evidence": [
+    "https://github.com/ysmx/cooViewer/blob/master/Info.plist",
+    "https://github.com/ysmx/cooViewer"
+   ],
+   "how": "source"
+  },
+  "archive_passwords": {
+   "value": "yes",
+   "evidence": [
+    "https://coo-ona.github.io/cooViewer/",
+    "https://github.com/ysmx/cooViewer/blob/master/Sources/Loader/COImageLoader.m"
+   ],
+   "how": "docs",
+   "note": "Password-protected ZIP/RAR without extracting; Japanese passwords not supported"
+  },
+  "split_archives": {
+   "value": "yes",
+   "evidence": [
+    "https://github.com/ysmx/cooViewer/blob/master/Info.plist"
+   ],
+   "how": "source",
+   "note": "Declares multi-part RAR (.r00…), ZIP (.z01) and .001 split files"
+  },
+  "videos_in_archives": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/ysmx/cooViewer/blob/master/Info.plist"
+   ],
+   "how": "source",
+   "note": "Images, PDFs and archives only; no video or audio file types declared"
+  },
+  "manga_two_page": {
+   "value": "yes",
+   "evidence": [
+    "https://coo-ona.github.io/cooViewer/manual.html"
+   ],
+   "how": "docs",
+   "note": "Right-to-left/left-to-right, two-page spread with automatic single-page detection, saved per book"
+  },
+  "rename_trash": {
+   "value": "partial",
+   "evidence": [
+    "https://github.com/ysmx/cooViewer/blob/master/Sources/Controller/Controller_input.m",
+    "https://github.com/ysmx/cooViewer/blob/master/Resources/en.lproj/Localizable.strings"
+   ],
+   "how": "source",
+   "note": "Move the left/right page image to the Trash; no rename or new folder"
+  },
+  "move_copy": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/ysmx/cooViewer/blob/master/Resources/en.lproj/MainMenu.strings"
+   ],
+   "how": "source",
+   "note": "No move or copy commands"
+  },
+  "dual_pane": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/ysmx/cooViewer/blob/master/Resources/en.lproj/MainMenu.strings"
+   ],
+   "how": "source",
+   "note": "Viewer only"
+  },
+  "undo_file_actions": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/ysmx/cooViewer/blob/master/Sources/Controller/Controller_input.m"
+   ],
+   "how": "source",
+   "note": "Trash asks for confirmation; no undo"
+  },
+  "image_editing": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/ysmx/cooViewer/blob/master/Resources/en.lproj/MainMenu.strings",
+    "https://github.com/ysmx/cooViewer/blob/master/Sources/Panels/Filter/FilterPanelController.m"
+   ],
+   "how": "source",
+   "note": "Filters only change the view; no crop or save"
+  },
+  "batch_convert": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/ysmx/cooViewer/blob/master/Resources/en.lproj/MainMenu.strings"
+   ],
+   "how": "source",
+   "note": "No batch tools"
+  },
+  "library_catalog": {
+   "value": "no",
+   "evidence": [
+    "https://coo-ona.github.io/cooViewer/manual.html"
+   ],
+   "how": "docs",
+   "note": "Remembers per-book settings, last page and bookmarks; no library, tags or ratings"
+  },
+  "cloud_sync": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/ysmx/cooViewer"
+   ],
+   "how": "source",
+   "note": "No network code"
+  },
+  "keyboard_first": {
+   "value": "yes",
+   "evidence": [
+    "https://coo-ona.github.io/cooViewer/manual.html"
+   ],
+   "how": "docs",
+   "note": "Almost all actions by keyboard, one-handed defaults"
+  },
+  "custom_shortcuts": {
+   "value": "yes",
+   "evidence": [
+    "https://coo-ona.github.io/cooViewer/manual.html",
+    "https://coo-ona.github.io/cooViewer/"
+   ],
+   "how": "docs",
+   "note": "Keys and mouse actions freely assignable per view mode"
+  },
+  "shortcut_cheatsheet": {
+   "value": "partial",
+   "evidence": [
+    "https://coo-ona.github.io/cooViewer/manual.html"
+   ],
+   "how": "docs",
+   "note": "Default key table in the online manual (Japanese); no cheat sheet in the app"
+  },
+  "boss_key": {
+   "value": "partial",
+   "evidence": [
+    "https://coo-ona.github.io/cooViewer/"
+   ],
+   "how": "docs",
+   "note": "Esc closes the book at once (the homepage pitches it for that); no hide-everything key"
+  },
+  "app_sandbox": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/ysmx/cooViewer/blob/master/cooViewer.xcodeproj/project.pbxproj"
+   ],
+   "how": "source",
+   "note": "Only the Quick Look extensions have entitlements; the app itself is not sandboxed"
+  },
+  "no_network": {
+   "value": "yes",
+   "evidence": [
+    "https://github.com/ysmx/cooViewer/blob/master/Sources/Loader/COImageLoader.m",
+    "https://github.com/ysmx/cooViewer/blob/master/Resources/en.lproj/Localizable.strings"
+   ],
+   "how": "source",
+   "note": "No network code; links in PDFs are only handed to the browser after asking"
+  },
+  "notarized_attested": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/ysmx/cooViewer/blob/master/update-notes.md",
+    "https://github.com/ysmx/homebrew-cooviewer/blob/main/Casks/cooviewer.rb"
+   ],
+   "how": "source",
+   "note": "Ad hoc signed; the Homebrew cask removes the quarantine flag; release zip not built in CI"
+  },
+  "mac_app_store": {
+   "value": "no",
+   "evidence": [
+    "https://itunes.apple.com/search?term=cooviewer&entity=macSoftware&country=jp"
+   ],
+   "how": "store",
+   "note": "Not in the Mac App Store; GitHub zip or Homebrew tap"
+  }
+ }
+}

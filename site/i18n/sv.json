@@ -1,6 +1,7 @@
 {
   "name": "Svenska",
   "privacySlug": "privacy",
+  "alternativesSlug": "alternativ",
   "title": "Schnellbild: en bildvisare och videospelare för macOS som helt enkelt inte suger",
   "seoTitle": "Schnellbild · gratis bildvisare och MKV-spelare för Mac",
   "seoDescription": "Snabb, gratis bildvisare för Mac som även spelar MKV, AVI och WebM: miniatyrer, bildspel, ZIP och RAR som mappar. Alternativ till IrfanView och XnView.",
@@ -70,8 +71,13 @@
       "alt": "Ett foto i helvyn"
     },
     {
+      "title": "Dina foton på kartan och jordgloben",
+      "text": "<p><kbd>W</kbd> visar foton och videor i en mapp och dess undermappar där de togs. Långt utzoomad är kartan en jordglob framför stjärnhimlen, om du vill med dag och natt och städernas ljus på nattsidan; zoomar du in planas den ut till kartan.</p><ul><li>Tidslinjen ordnar resan efter tid: dra över en del, så visar kartan bara den</li><li><kbd>T</kbd> spelar upp resan: kartan glider från plats till plats, foton visas stort, videor spelas några sekunder</li><li>Kartan finns i appen: inget går ut på nätet, ingen plats lämnar din Mac</li></ul>",
+      "alt": "Foton från en resa på jordgloben, i atlasvyn"
+    },
+    {
       "title": "Videor, även MKV och andra som macOS inte kan spela",
-      "text": "<p>Det macOS spelar självt (MP4, MOV, AVCHD …) spelas via macOS, även i HDR; allt annat via den inbyggda VLC-motorn: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-video.</p><ul><li>← → hoppar en tiondel av videon, ⇧← ⇧→ en hundradel</li><li>↑ ↓ ställer in volymen, för alla videor</li><li>Finder och Snabbtitt får miniatyrer även för MKV, WebM, WMV, FLV och VOB</li></ul>",
+      "text": "<p>Det macOS spelar självt (MP4, MOV, AVCHD …) spelas via macOS, även i HDR; allt annat via den inbyggda VLC-motorn: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-video.</p><ul><li>← → hoppar en tiondel av videon, ⇧← ⇧→ en hundradel</li><li>↑ ↓ ställer in volymen, för alla videor</li><li>⌘→ till nästa video och ⌘← tillbaka: den första fortsätter där den var</li><li>Undertexter i videon (<kbd>V</kbd>) syns från början; slår du på dem mitt i syns raden som pågår direkt, och ASS-undertexter behåller position, färger och typsnitt</li><li>Finder och Överblick får miniatyrer även för MKV, WebM, WMV, FLV och VOB</li></ul>",
       "alt": "En video som spelas i Schnellbild"
     },
     {
@@ -96,12 +102,12 @@
     },
     {
       "title": "Vad filen egentligen är",
-      "text": "<p><kbd>I</kbd> visar format, upplösning, kodekar, bithastighet, bitdjup, färgprofil och kamera, och en notering när filändelsen inte stämmer med innehållet.</p>",
+      "text": "<p><kbd>I</kbd> eller <kbd>⌘</kbd><kbd>I</kbd> öppnar filinfon bredvid bilden: när och var den togs, med en liten karta och orten i närheten, kamera och objektiv, format, upplösning, kodekar, bithastighet, bitdjup och färgprofil, och varje metadatanyckel (EXIF, GPS, IPTC, XMP, QuickTime) att filtrera och kopiera. Tid och plats kommer också från XMP-sidofiler, GPS-data från en GoPro eller DJI-drönare, Sonys klippfiler och GPX-spår i mappen.</p><p>Stämmer filändelsen inte med innehållet får du en notering. Filer vars namn inte säger något räknas efter innehållet, och nedladdningar som pågår (.part, .crdownload …) visas så långt de har kommit.</p>",
       "alt": "Filinfo bredvid ett foto"
     },
     {
       "title": "Alla tangenter nära till hands",
-      "text": "<p><kbd>F1</kbd> listar alla tangenter, även för utskrift; <kbd>K</kbd> visar ett litet tangentbord att klicka på. Välj egna tangenter, eller tangenterna som i Phiewer. Rutnät eller lista (<kbd>L</kbd>), sortera efter namn, typ, datum eller storlek, flera fönster och en chefsknapp (<kbd>X</kbd>).</p>",
+      "text": "<p><kbd>F1</kbd> listar alla tangenter, även för utskrift; <kbd>K</kbd> visar ett litet tangentbord att klicka på. Välj egna tangenter, eller tangenterna som i Phiewer. Rutnät eller lista (<kbd>L</kbd>), sortera efter namn, typ, datum, storlek eller avstånd från en plats, flera fönster och en chefsknapp (<kbd>X</kbd>).</p>",
       "alt": "Listan över tangenter (F1)"
     },
     {
@@ -140,7 +146,10 @@
   ],
   "safeMore": "Vad den gör i detalj och var gränsen går: <a href=\"https://github.com/JohannesHoppe/schnellbild#safe-with-files-from-others\">Säker med filer från andra</a> (på engelska).",
   "modelsTitle": "Kommer du från Phiewer, IINA eller Norton Commander?",
-  "modelsText": "Phiewer är en snabb bildvisare med en betald PRO-version, IINA en fullfjädrad spelare för att titta på videor; båda var förebilder för Schnellbild, liksom Norton Commander för de två panelerna. Schnellbild samlar bilderna och videorna i dina mappar i en gratis app, om du vill med tangenterna som i Phiewer. Så står sig Schnellbild (på engelska): <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-phiewer-alternative\">ett gratis alternativ till Phiewer</a>, <a href=\"https://github.com/JohannesHoppe/schnellbild#a-free-iina-alternative-for-looking-through-videos\">ett gratis alternativ till IINA för att titta igenom videor</a>.",
+  "modelsText": "Phiewer är en snabb bildvisare med en betald PRO-version, IINA en fullfjädrad spelare för att titta på videor; båda var förebilder för Schnellbild, liksom Norton Commander för de två panelerna. Schnellbild samlar bilderna och videorna i dina mappar i en gratis app, om du vill med tangenterna som i Phiewer. Så står sig Schnellbild: <a href=\"{alt:phiewer}\">ett gratis alternativ till Phiewer</a>, <a href=\"{alt:iina}\">ett gratis alternativ till IINA för att titta igenom videor</a>, <a href=\"{alt:norton-commander}\">från Norton Commander till Mac</a>.",
+  "altTitle": "Letar du efter ett alternativ?",
+  "altText": "Så står sig Schnellbild mot de program folk letar efter på Mac, funktion för funktion och med en källa för varje påstående:",
+  "altAll": "Alla alternativ",
   "ossTitle": "Öppen källkod",
   "ossText": "Schnellbild är fri programvara under MIT-licensen, källkoden finns <a href=\"https://github.com/JohannesHoppe/schnellbild\">på GitHub</a>. Hittat en bugg eller saknar du något? <a href=\"https://github.com/JohannesHoppe/schnellbild/issues\">Skapa ett ärende</a>.",
   "languagesText": "På din Macs språk:",
@@ -149,6 +158,7 @@
   "footerPrivacy": "Integritet",
   "footerImprint": "Juridisk information (Impressum)",
   "footerEula": "Licensavtal",
+  "footerAlternatives": "Alternativ",
   "privacy": {
     "title": "Integritetspolicy",
     "description": "Schnellbild samlar inte in några personuppgifter: inget konto, ingen analys, ingen spårning, ingen nätverksåtkomst.",

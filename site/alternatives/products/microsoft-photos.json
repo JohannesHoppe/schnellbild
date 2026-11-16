@@ -1,0 +1,525 @@
+{
+ "name": "Microsoft Photos",
+ "short": "Microsoft Photos",
+ "vendor": "Microsoft",
+ "website": "https://apps.microsoft.com/detail/9wzdncrfjbh4",
+ "platforms": [
+  "Windows"
+ ],
+ "mac_available": "no",
+ "page": "switcher",
+ "section": "windows",
+ "price": "Free with Windows (HEVC Video Extensions $0.99)",
+ "license": "Proprietary",
+ "current_version": "2026.11090.22001 (new Gallery/Editor/Viewer rolling out from Oct 2026)",
+ "last_update": "2026-10-06",
+ "engine": "Windows Media Foundation (video), WIC codecs",
+ "category": "photo-manager",
+ "summary": "The photo and video app built into Windows: a Gallery timeline across PC folders, OneDrive and iCloud, a fast viewer that pages through a folder, and an editor with AI tools. Good for casual browsing and quick edits; Photos Legacy keeps the older video editor and slideshow maker. No archives, no file-manager features.",
+ "where_it_wins": [
+  "Preinstalled on every Windows PC",
+  "OneDrive and iCloud photos in one Gallery",
+  "AI editing: object removal, Relight, super resolution on Copilot+ PCs",
+  "People, Albums, Moments and natural-language search",
+  "Slideshow with soundtracks",
+  "Multi-view comparison"
+ ],
+ "where_schnellbild_wins": [
+  "Runs on the Mac",
+  "Folder browser with folder previews, list view, regex search",
+  "Plays MKV, WebM, AVI, FLV through VLC with subtitles and audio track choice",
+  "Archives and comics as folders",
+  "Dual pane, move/copy, undo",
+  "No account or cloud, never goes online",
+  "Custom shortcuts and keyboard-first use"
+ ],
+ "search_terms": [
+  "windows photos for mac",
+  "windows photo viewer mac",
+  "windows fotoanzeige mac",
+  "windows foto app mac",
+  "microsoft photos mac",
+  "windows photo viewer alternative mac",
+  "photos app windows equivalent mac",
+  "windows 照片查看器 mac",
+  "windows フォト mac",
+  "windows 사진 뷰어 맥",
+  "visionneuse de photos windows mac",
+  "visualizzatore foto di windows mac"
+ ],
+ "matrix": {
+  "free": {
+   "value": "yes",
+   "note": "Part of Windows; some AI features need a Copilot+ PC; HEVC codec is $0.99",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Microsoft_Photos",
+    "https://blogs.windows.com/windowsexperience/2026/10/15/meet-the-new-photos-app-on-windows-11/"
+   ],
+   "how": "docs"
+  },
+  "open_source": {
+   "value": "no",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Microsoft_Photos"
+   ],
+   "how": "docs"
+  },
+  "native_apple_silicon": {
+   "value": "no",
+   "note": "Windows only",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Microsoft_Photos"
+   ],
+   "how": "docs"
+  },
+  "no_account_no_tracking": {
+   "value": "partial",
+   "note": "Local photos work without signing in; People, Albums, Moments and search by content need a Microsoft account / OneDrive",
+   "evidence": [
+    "https://support.microsoft.com/en-us/onedrive/windows/browse-your-photos-on-windows"
+   ],
+   "how": "docs"
+  },
+  "dark_light_setting": {
+   "value": "yes",
+   "note": "Checked Microsoft support pages (changes in new Photos, browse your photos), Windows blog post of 2026-10-15 and Thurrott guide; not covered",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "languages_20": {
+   "value": "yes",
+   "note": "Checked Microsoft support pages (changes in new Photos, browse your photos), Windows blog post of 2026-10-15 and Thurrott guide; not covered",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "folder_browsing": {
+   "value": "partial",
+   "note": "Opening a file pages through its folder; Gallery shows added folders as a timeline; no free folder navigation",
+   "evidence": [
+    "https://www.thurrott.com/books/windows-11-field-guide/digital-media/279010/photos",
+    "https://support.microsoft.com/en-us/onedrive/windows/browse-your-photos-on-windows",
+    "https://support.microsoft.com/en-US/Windows/apps/photos/changes-in-the-new-photos-app"
+   ],
+   "how": "docs"
+  },
+  "thumbnail_grid": {
+   "value": "partial",
+   "note": "Gallery grid and filmstrip; Folders section in the side menu; no folder preview tiles documented",
+   "evidence": [
+    "https://support.microsoft.com/en-US/Windows/apps/photos/changes-in-the-new-photos-app",
+    "https://support.microsoft.com/en-us/onedrive/windows/browse-your-photos-on-windows"
+   ],
+   "how": "docs"
+  },
+  "list_view": {
+   "value": "no",
+   "note": "Checked Microsoft support pages (changes in new Photos, browse your photos), Windows blog post of 2026-10-15 and Thurrott guide; not covered",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "recursive_search": {
+   "value": "partial",
+   "note": "Gallery search by file name/tags (work accounts) or by content (OneDrive, Copilot+ PCs); Gallery can include subfolders",
+   "evidence": [
+    "https://support.microsoft.com/en-us/onedrive/windows/browse-your-photos-on-windows",
+    "https://en.wikipedia.org/wiki/Microsoft_Photos"
+   ],
+   "how": "docs"
+  },
+  "regex_search": {
+   "value": "no",
+   "evidence": [
+    "https://support.microsoft.com/en-us/onedrive/windows/browse-your-photos-on-windows"
+   ],
+   "how": "docs"
+  },
+  "network_shares_fast": {
+   "value": "no",
+   "note": "Checked Microsoft support pages (changes in new Photos, browse your photos), Windows blog post of 2026-10-15 and Thurrott guide; not covered",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "multiple_windows": {
+   "value": "no",
+   "note": "Single-instance app; multi-view compares items in one window",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Microsoft_Photos",
+    "https://support.microsoft.com/en-US/Windows/apps/photos/changes-in-the-new-photos-app"
+   ],
+   "how": "review"
+  },
+  "bookmarks": {
+   "value": "partial",
+   "note": "Favorites (files) and added folders in the side menu",
+   "evidence": [
+    "https://support.microsoft.com/en-us/onedrive/windows/browse-your-photos-on-windows",
+    "https://support.microsoft.com/en-US/Windows/apps/photos/changes-in-the-new-photos-app"
+   ],
+   "how": "docs"
+  },
+  "img_modern_formats": {
+   "value": "yes",
+   "note": "HEIC (HEIF/HEVC extensions), AVIF, JPEG XL, WebP",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Microsoft_Photos",
+    "https://blogs.windows.com/windowsexperience/2026/10/15/meet-the-new-photos-app-on-windows-11/"
+   ],
+   "how": "review"
+  },
+  "img_raw": {
+   "value": "yes",
+   "note": "Raw Image Extension, included in Windows 11",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Microsoft_Photos"
+   ],
+   "how": "review"
+  },
+  "img_psd_exr": {
+   "value": "no",
+   "note": "Not in the listed formats",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Microsoft_Photos"
+   ],
+   "how": "review"
+  },
+  "img_svg_pdf": {
+   "value": "partial",
+   "note": "SVG viewing in the 2026 update; no PDF",
+   "evidence": [
+    "https://blogs.windows.com/windowsexperience/2026/10/15/meet-the-new-photos-app-on-windows-11/",
+    "https://en.wikipedia.org/wiki/Microsoft_Photos"
+   ],
+   "how": "docs"
+  },
+  "img_animated": {
+   "value": "partial",
+   "note": "Animated GIF; motion photos; animated PNG/WebP not documented",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Microsoft_Photos"
+   ],
+   "how": "review"
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "note": "Arrow keys",
+   "evidence": [
+    "https://www.thurrott.com/books/windows-11-field-guide/digital-media/279010/photos",
+    "https://blogs.windows.com/windowsexperience/2026/10/15/meet-the-new-photos-app-on-windows-11/"
+   ],
+   "how": "docs"
+  },
+  "zoom_rotate": {
+   "value": "partial",
+   "note": "Zoom with mouse wheel or Ctrl+Plus; view-only rotation not documented",
+   "evidence": [
+    "https://www.thurrott.com/books/windows-11-field-guide/digital-media/279010/photos"
+   ],
+   "how": "docs"
+  },
+  "slideshow": {
+   "value": "yes",
+   "note": "With 25 soundtracks",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Microsoft_Photos"
+   ],
+   "how": "review"
+  },
+  "slideshow_recursive": {
+   "value": "partial",
+   "note": "Checked Microsoft support pages (changes in new Photos, browse your photos), Windows blog post of 2026-10-15 and Thurrott guide; not covered",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "auto_enhance_view": {
+   "value": "no",
+   "note": "Enhance/Relight are edits saved to a file",
+   "evidence": [
+    "https://blogs.windows.com/windowsexperience/2026/10/15/meet-the-new-photos-app-on-windows-11/"
+   ],
+   "how": "docs"
+  },
+  "file_info_exif": {
+   "value": "partial",
+   "note": "Info pane: file name, date, camera details, map, histogram; codecs/bitrate not shown",
+   "evidence": [
+    "https://blogs.windows.com/windowsexperience/2026/10/15/meet-the-new-photos-app-on-windows-11/"
+   ],
+   "how": "docs"
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Checked Microsoft support pages (changes in new Photos, browse your photos), Windows blog post of 2026-10-15 and Thurrott guide; not covered"
+  },
+  "video_native": {
+   "value": "yes",
+   "note": "Plays videos in the viewer and Gallery",
+   "evidence": [
+    "https://support.microsoft.com/en-US/Windows/apps/photos/changes-in-the-new-photos-app",
+    "https://support.microsoft.com/en-us/onedrive/windows/browse-your-photos-on-windows"
+   ],
+   "how": "docs"
+  },
+  "video_mkv_avi_webm": {
+   "value": "partial",
+   "note": "Checked Microsoft support pages (changes in new Photos, browse your photos), Windows blog post of 2026-10-15 and Thurrott guide; not covered",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "photos_videos_one_grid": {
+   "value": "yes",
+   "note": "Filmstrip and Gallery show photos and videos together",
+   "evidence": [
+    "https://support.microsoft.com/en-US/Windows/apps/photos/changes-in-the-new-photos-app"
+   ],
+   "how": "docs"
+  },
+  "video_skim_arrows": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Checked Microsoft support pages (changes in new Photos, browse your photos), Windows blog post of 2026-10-15 and Thurrott guide; not covered"
+  },
+  "subtitles_embedded": {
+   "value": "no",
+   "note": "Checked Microsoft support pages (changes in new Photos, browse your photos), Windows blog post of 2026-10-15 and Thurrott guide; not covered",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "subtitles_external_files": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Checked Microsoft support pages (changes in new Photos, browse your photos), Windows blog post of 2026-10-15 and Thurrott guide; not covered"
+  },
+  "audio_track_choice": {
+   "value": "no",
+   "note": "Checked Microsoft support pages (changes in new Photos, browse your photos), Windows blog post of 2026-10-15 and Thurrott guide; not covered",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "playback_speed": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Checked Microsoft support pages (changes in new Photos, browse your photos), Windows blog post of 2026-10-15 and Thurrott guide; not covered"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Checked Microsoft support pages (changes in new Photos, browse your photos), Windows blog post of 2026-10-15 and Thurrott guide; not covered"
+  },
+  "playlist": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Checked Microsoft support pages (changes in new Photos, browse your photos), Windows blog post of 2026-10-15 and Thurrott guide; not covered"
+  },
+  "saved_playlists": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Checked Microsoft support pages (changes in new Photos, browse your photos), Windows blog post of 2026-10-15 and Thurrott guide; not covered"
+  },
+  "pip": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Checked Microsoft support pages (changes in new Photos, browse your photos), Windows blog post of 2026-10-15 and Thurrott guide; not covered"
+  },
+  "music_mode": {
+   "value": "no",
+   "note": "Photos and videos only",
+   "evidence": [
+    "https://support.microsoft.com/en-US/Windows/apps/photos/changes-in-the-new-photos-app"
+   ],
+   "how": "docs"
+  },
+  "streaming_urls": {
+   "value": "no",
+   "note": "OneDrive/iCloud content only",
+   "evidence": [
+    "https://support.microsoft.com/en-us/onedrive/windows/browse-your-photos-on-windows"
+   ],
+   "how": "docs"
+  },
+  "online_subtitles": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Checked Microsoft support pages (changes in new Photos, browse your photos), Windows blog post of 2026-10-15 and Thurrott guide; not covered"
+  },
+  "video_filters_enhance": {
+   "value": "no",
+   "note": "Video editing moved to Clipchamp",
+   "evidence": [
+    "https://support.microsoft.com/en-US/Windows/apps/photos/changes-in-the-new-photos-app",
+    "https://en.wikipedia.org/wiki/Microsoft_Photos"
+   ],
+   "how": "docs"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "na",
+   "note": "Windows app",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Microsoft_Photos"
+   ],
+   "how": "docs"
+  },
+  "archives_as_folders": {
+   "value": "no",
+   "note": "Checked Microsoft support pages (changes in new Photos, browse your photos), Windows blog post of 2026-10-15 and Thurrott guide; not covered",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "comics_cbz_cbr": {
+   "value": "no",
+   "note": "Checked Microsoft support pages (changes in new Photos, browse your photos), Windows blog post of 2026-10-15 and Thurrott guide; not covered",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "archive_passwords": {
+   "value": "no",
+   "note": "Checked Microsoft support pages (changes in new Photos, browse your photos), Windows blog post of 2026-10-15 and Thurrott guide; not covered",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "split_archives": {
+   "value": "no",
+   "note": "Checked Microsoft support pages (changes in new Photos, browse your photos), Windows blog post of 2026-10-15 and Thurrott guide; not covered",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "videos_in_archives": {
+   "value": "no",
+   "note": "Checked Microsoft support pages (changes in new Photos, browse your photos), Windows blog post of 2026-10-15 and Thurrott guide; not covered",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "manga_two_page": {
+   "value": "no",
+   "note": "Checked Microsoft support pages (changes in new Photos, browse your photos), Windows blog post of 2026-10-15 and Thurrott guide; not covered",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "rename_trash": {
+   "value": "partial",
+   "note": "Checked Microsoft support pages (changes in new Photos, browse your photos), Windows blog post of 2026-10-15 and Thurrott guide; not covered",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "move_copy": {
+   "value": "no",
+   "note": "Checked Microsoft support pages (changes in new Photos, browse your photos), Windows blog post of 2026-10-15 and Thurrott guide; not covered",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "dual_pane": {
+   "value": "no",
+   "note": "Multi-view compares items, not folders",
+   "evidence": [
+    "https://support.microsoft.com/en-US/Windows/apps/photos/changes-in-the-new-photos-app"
+   ],
+   "how": "docs"
+  },
+  "undo_file_actions": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Checked Microsoft support pages (changes in new Photos, browse your photos), Windows blog post of 2026-10-15 and Thurrott guide; not covered"
+  },
+  "image_editing": {
+   "value": "yes",
+   "note": "Crop, Enhance, Repair (object removal), Stylize, Relight; edits HDR, HEIC, WebP",
+   "evidence": [
+    "https://blogs.windows.com/windowsexperience/2026/10/15/meet-the-new-photos-app-on-windows-11/"
+   ],
+   "how": "docs"
+  },
+  "batch_convert": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Checked Microsoft support pages (changes in new Photos, browse your photos), Windows blog post of 2026-10-15 and Thurrott guide; not covered"
+  },
+  "library_catalog": {
+   "value": "yes",
+   "note": "Gallery timeline, Albums, People (OneDrive), Favorites, Moments",
+   "evidence": [
+    "https://blogs.windows.com/windowsexperience/2026/10/15/meet-the-new-photos-app-on-windows-11/",
+    "https://support.microsoft.com/en-us/onedrive/windows/browse-your-photos-on-windows"
+   ],
+   "how": "docs"
+  },
+  "cloud_sync": {
+   "value": "yes",
+   "note": "OneDrive and iCloud",
+   "evidence": [
+    "https://support.microsoft.com/en-us/onedrive/windows/browse-your-photos-on-windows",
+    "https://blogs.windows.com/windowsexperience/2026/10/15/meet-the-new-photos-app-on-windows-11/"
+   ],
+   "how": "docs"
+  },
+  "keyboard_first": {
+   "value": "partial",
+   "note": "Left/right arrows, F (filmstrip), Esc, Ctrl+Plus documented; mouse/touch-first UI",
+   "evidence": [
+    "https://www.thurrott.com/books/windows-11-field-guide/digital-media/279010/photos"
+   ],
+   "how": "docs"
+  },
+  "custom_shortcuts": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Checked Microsoft support pages (changes in new Photos, browse your photos), Windows blog post of 2026-10-15 and Thurrott guide; not covered"
+  },
+  "shortcut_cheatsheet": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Checked Microsoft support pages (changes in new Photos, browse your photos), Windows blog post of 2026-10-15 and Thurrott guide; not covered"
+  },
+  "boss_key": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Checked Microsoft support pages (changes in new Photos, browse your photos), Windows blog post of 2026-10-15 and Thurrott guide; not covered"
+  },
+  "app_sandbox": {
+   "value": "na",
+   "note": "Windows app (Microsoft Store package)",
+   "evidence": [
+    "https://support.microsoft.com/en-us/onedrive/windows/browse-your-photos-on-windows"
+   ],
+   "how": "docs"
+  },
+  "no_network": {
+   "value": "no",
+   "note": "OneDrive, iCloud, visual search, cloud face grouping",
+   "evidence": [
+    "https://support.microsoft.com/en-us/onedrive/windows/browse-your-photos-on-windows",
+    "https://en.wikipedia.org/wiki/Microsoft_Photos"
+   ],
+   "how": "docs"
+  },
+  "notarized_attested": {
+   "value": "na",
+   "note": "Windows app, closed source",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Microsoft_Photos"
+   ],
+   "how": "docs"
+  },
+  "mac_app_store": {
+   "value": "no",
+   "note": "Windows only",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Microsoft_Photos"
+   ],
+   "how": "docs"
+  }
+ }
+}

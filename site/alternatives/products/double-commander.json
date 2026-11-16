@@ -1,0 +1,592 @@
+{
+ "name": "Double Commander",
+ "short": "Double Commander",
+ "vendor": "Alexander Koblov and contributors",
+ "website": "https://doublecmd.sourceforge.io/",
+ "platforms": [
+  "macOS",
+  "Windows",
+  "Linux",
+  "FreeBSD"
+ ],
+ "mac_available": "yes",
+ "page": "matrix",
+ "section": "files",
+ "price": "Free",
+ "license": "open source (GPL-2.0)",
+ "current_version": "1.2.11",
+ "last_update": "2026-11-08",
+ "engine": "Built-in image viewer (Image32, optional libheif/libjxl/librsvg); media via WLX plugins (Quick Look on macOS, WMP on Windows, MPlayer on Linux)",
+ "category": "file-manager",
+ "summary": "Free, open-source two-panel file manager inspired by Total Commander, including its plugin interface. Runs natively on Apple silicon, with tabs, Find Files with regex, multi-rename, archives as folders and a built-in viewer for text and images.",
+ "where_it_wins": [
+  "Full Total Commander-style file manager on the Mac: sync dirs, multi-rename, checksums, FTP/SFTP",
+  "Runs Total Commander plugins (WCX/WDX/WFX/WLX)",
+  "Cross-platform (macOS, Windows, Linux)",
+  "Viewer can crop, resize and save images",
+  "Lua scripting and toolbar customisation"
+ ],
+ "where_schnellbild_wins": [
+  "Real video player with MKV/AVI/WebM via VLC, skim with arrow keys",
+  "Thumbnail grid with folder previews, photos and videos together",
+  "Recursive slideshow with photos and videos mixed",
+  "Modern formats (HEIC, AVIF, JPEG XL, WebP) work out of the box on the Mac",
+  "Runs in the App Sandbox, never goes online; signed, notarized, build attested",
+  "Undo for renames, moves and trash"
+ ],
+ "search_terms": [
+  "double commander mac",
+  "double commander macos",
+  "double commander alternative",
+  "double commander apple silicon",
+  "double commander image viewer",
+  "double commander video",
+  "double commander mac deutsch",
+  "double commander альтернатива"
+ ],
+ "matrix": {
+  "free": {
+   "value": "yes",
+   "evidence": [
+    "https://github.com/doublecmd/doublecmd"
+   ],
+   "how": "source"
+  },
+  "open_source": {
+   "value": "yes",
+   "evidence": [
+    "https://github.com/doublecmd/doublecmd"
+   ],
+   "how": "source",
+   "note": "GPL-2.0."
+  },
+  "native_apple_silicon": {
+   "value": "yes",
+   "evidence": [
+    "https://github.com/doublecmd/doublecmd/releases/tag/v1.2.11"
+   ],
+   "how": "source",
+   "note": "cocoa.aarch64.dmg in each release."
+  },
+  "no_account_no_tracking": {
+   "value": "yes",
+   "evidence": [
+    "https://github.com/doublecmd/doublecmd"
+   ],
+   "how": "source",
+   "note": "Open source, no account or ads."
+  },
+  "dark_light_setting": {
+   "value": "yes",
+   "evidence": [
+    "https://doublecmd.github.io/doc/en/configuration.html"
+   ],
+   "how": "docs",
+   "note": "Dark mode: Auto / Enabled / Disabled (macOS, Windows 10 1809+)."
+  },
+  "languages_20": {
+   "value": "yes",
+   "evidence": [
+    "https://github.com/doublecmd/doublecmd/tree/master/language",
+    "https://doublecmd.github.io/doc/en/configuration.html"
+   ],
+   "how": "source",
+   "note": "33 (32 translation files plus English)."
+  },
+  "folder_browsing": {
+   "value": "yes",
+   "evidence": [
+    "https://doublecmd.github.io/doc/en/help.html"
+   ],
+   "how": "docs"
+  },
+  "thumbnail_grid": {
+   "value": "partial",
+   "evidence": [
+    "https://doublecmd.github.io/doc/en/help.html"
+   ],
+   "how": "docs",
+   "note": "Thumbnails view (Quick Look on macOS); folders show icons, no folder previews."
+  },
+  "list_view": {
+   "value": "yes",
+   "evidence": [
+    "https://doublecmd.github.io/doc/en/help.html"
+   ],
+   "how": "docs",
+   "note": "Full view with configurable columns."
+  },
+  "recursive_search": {
+   "value": "yes",
+   "evidence": [
+    "https://doublecmd.github.io/doc/en/findfiles.html",
+    "https://doublecmd.github.io/doc/en/help.html"
+   ],
+   "how": "docs",
+   "note": "Find Files with subfolder depth; also Flat view of all subfolders."
+  },
+  "regex_search": {
+   "value": "yes",
+   "evidence": [
+    "https://doublecmd.github.io/doc/en/findfiles.html"
+   ],
+   "how": "docs"
+  },
+  "network_shares_fast": {
+   "value": "partial",
+   "evidence": [
+    "https://doublecmd.github.io/doc/en/faq.html",
+    "https://doublecmd.github.io/doc/en/help.html"
+   ],
+   "how": "docs",
+   "note": "SMB/network access (Windows network, GVfs, samba plugin); speed not documented."
+  },
+  "multiple_windows": {
+   "value": "partial",
+   "evidence": [
+    "https://doublecmd.github.io/doc/en/help.html",
+    "https://doublecmd.github.io/doc/en/viewer.html"
+   ],
+   "how": "docs",
+   "note": "Tabs in two panes; viewer/editor open in separate windows."
+  },
+  "bookmarks": {
+   "value": "yes",
+   "evidence": [
+    "https://doublecmd.github.io/doc/en/directoryhotlist.html",
+    "https://doublecmd.github.io/doc/en/configuration.html"
+   ],
+   "how": "docs",
+   "note": "Directory Hotlist, favourite tabs."
+  },
+  "img_modern_formats": {
+   "value": "partial",
+   "evidence": [
+    "https://doublecmd.github.io/doc/en/viewer.html",
+    "https://github.com/doublecmd/doublecmd/blob/master/plugins/wlx/MacPreview/src/MacPreview.lpr",
+    "https://github.com/doublecmd/doublecmd/blob/master/src/platform/udefaultplugins.pas"
+   ],
+   "how": "docs",
+   "note": "HEIC/AVIF/JPEG XL/WebP need extra libraries (libheif, libjxl, libwebp) or WIC on Windows; on macOS via the bundled Quick Look viewer plugin."
+  },
+  "img_raw": {
+   "value": "partial",
+   "evidence": [
+    "https://doublecmd.github.io/doc/en/viewer.html",
+    "https://github.com/doublecmd/doublecmd/blob/master/plugins/wlx/MacPreview/src/MacPreview.lpr"
+   ],
+   "how": "docs",
+   "note": "Windows via WIC RAW codecs; macOS via Quick Look plugin."
+  },
+  "img_psd_exr": {
+   "value": "partial",
+   "evidence": [
+    "https://doublecmd.github.io/doc/en/viewer.html"
+   ],
+   "how": "docs",
+   "note": "PSD built in; OpenEXR not listed."
+  },
+  "img_svg_pdf": {
+   "value": "partial",
+   "evidence": [
+    "https://doublecmd.github.io/doc/en/viewer.html",
+    "https://github.com/doublecmd/doublecmd/blob/master/plugins/wlx/MacPreview/src/MacPreview.lpr"
+   ],
+   "how": "docs",
+   "note": "SVG built in; PDF via Quick Look plugin on macOS or other WLX plugins."
+  },
+  "img_animated": {
+   "value": "partial",
+   "evidence": [
+    "https://doublecmd.github.io/doc/en/viewer.html"
+   ],
+   "how": "docs",
+   "note": "Animated GIF with frame controls; APNG/animated WebP not listed."
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "evidence": [
+    "https://doublecmd.github.io/doc/en/viewer.html"
+   ],
+   "how": "docs",
+   "note": "Previous/Next file commands in the viewer, hotkeys configurable."
+  },
+  "zoom_rotate": {
+   "value": "yes",
+   "evidence": [
+    "https://doublecmd.github.io/doc/en/viewer.html"
+   ],
+   "how": "docs",
+   "note": "Zoom, rotate, mirror in the viewer."
+  },
+  "slideshow": {
+   "value": "partial",
+   "evidence": [
+    "https://doublecmd.github.io/doc/en/viewer.html"
+   ],
+   "how": "docs",
+   "note": "Only in full-screen viewer, current folder, 1-25 s per image."
+  },
+  "slideshow_recursive": {
+   "value": "no",
+   "evidence": [
+    "https://doublecmd.github.io/doc/en/viewer.html"
+   ],
+   "how": "docs",
+   "note": "Slideshow covers the current directory only."
+  },
+  "auto_enhance_view": {
+   "value": "no",
+   "evidence": [
+    "https://doublecmd.github.io/doc/en/viewer.html"
+   ],
+   "how": "docs"
+  },
+  "file_info_exif": {
+   "value": "partial",
+   "evidence": [
+    "https://doublecmd.github.io/doc/en/plugins.html"
+   ],
+   "how": "docs",
+   "note": "Built-in Exif content plugin (JPEG: date, size, orientation, camera)."
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "note": "Viewer and command reference contain no such notice",
+   "evidence": [
+    "https://doublecmd.github.io/doc/en/viewer.html",
+    "https://doublecmd.github.io/doc/en/cmds.html"
+   ],
+   "how": "docs"
+  },
+  "video_native": {
+   "value": "partial",
+   "evidence": [
+    "https://github.com/doublecmd/doublecmd/blob/master/plugins/wlx/MacPreview/src/MacPreview.lpr",
+    "https://github.com/doublecmd/doublecmd/tree/master/plugins/wlx"
+   ],
+   "how": "source",
+   "note": "No own player: macOS via Quick Look viewer plugin, Windows via WMP plugin, Linux via MPlayer plugin."
+  },
+  "video_mkv_avi_webm": {
+   "value": "partial",
+   "note": "Linux: embedded MPlayer plugin handles AVI/MKV/FLV/MPG/MP4/VOB; macOS: only what Quick Look plays; Windows: WMP plugin",
+   "evidence": [
+    "https://github.com/doublecmd/doublecmd/blob/master/plugins/wlx/wlxmplayer/src/wlxMplayer.lpr",
+    "https://github.com/doublecmd/doublecmd/blob/master/plugins/wlx/MacPreview/src/MacPreview.lpr"
+   ],
+   "how": "source"
+  },
+  "photos_videos_one_grid": {
+   "value": "partial",
+   "evidence": [
+    "https://doublecmd.github.io/doc/en/help.html"
+   ],
+   "how": "docs",
+   "note": "Thumbnails view uses OS thumbnailers (Quick Look on macOS), so videos appear with frames where the OS supplies them."
+  },
+  "video_skim_arrows": {
+   "value": "no",
+   "note": "On macOS video plays in a Quick Look view (MacPreview plugin); Double Commander adds no player controls of its own, and what the Quick Look controls offer is not documented (searched DC docs, source, issues)",
+   "evidence": [
+    "https://github.com/doublecmd/doublecmd/blob/master/plugins/wlx/MacPreview/src/MacPreview.lpr",
+    "https://doublecmd.github.io/doc/en/viewer.html"
+   ],
+   "how": "unverified"
+  },
+  "subtitles_embedded": {
+   "value": "no",
+   "note": "On macOS video plays in a Quick Look view (MacPreview plugin); Double Commander adds no player controls of its own, and what the Quick Look controls offer is not documented (searched DC docs, source, issues)",
+   "evidence": [
+    "https://github.com/doublecmd/doublecmd/blob/master/plugins/wlx/MacPreview/src/MacPreview.lpr"
+   ],
+   "how": "unverified"
+  },
+  "subtitles_external_files": {
+   "value": "no",
+   "note": "Viewer has no subtitle function; macOS plugin is a plain Quick Look view",
+   "evidence": [
+    "https://doublecmd.github.io/doc/en/viewer.html",
+    "https://github.com/doublecmd/doublecmd/blob/master/plugins/wlx/MacPreview/src/MacPreview.lpr"
+   ],
+   "how": "source"
+  },
+  "audio_track_choice": {
+   "value": "no",
+   "note": "On macOS video plays in a Quick Look view (MacPreview plugin); Double Commander adds no player controls of its own, and what the Quick Look controls offer is not documented (searched DC docs, source, issues)",
+   "evidence": [
+    "https://github.com/doublecmd/doublecmd/blob/master/plugins/wlx/MacPreview/src/MacPreview.lpr"
+   ],
+   "how": "unverified"
+  },
+  "playback_speed": {
+   "value": "no",
+   "note": "On macOS video plays in a Quick Look view (MacPreview plugin); Double Commander adds no player controls of its own, and what the Quick Look controls offer is not documented (searched DC docs, source, issues)",
+   "evidence": [
+    "https://github.com/doublecmd/doublecmd/blob/master/plugins/wlx/MacPreview/src/MacPreview.lpr"
+   ],
+   "how": "unverified"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "note": "On macOS video plays in a Quick Look view (MacPreview plugin); Double Commander adds no player controls of its own, and what the Quick Look controls offer is not documented (searched DC docs, source, issues)",
+   "evidence": [
+    "https://github.com/doublecmd/doublecmd/blob/master/plugins/wlx/MacPreview/src/MacPreview.lpr"
+   ],
+   "how": "unverified"
+  },
+  "playlist": {
+   "value": "no",
+   "note": "Viewer has no playlist; media plays one file at a time through WLX plugins",
+   "evidence": [
+    "https://doublecmd.github.io/doc/en/viewer.html",
+    "https://github.com/doublecmd/doublecmd/blob/master/plugins/wlx/MacPreview/src/MacPreview.lpr"
+   ],
+   "how": "source"
+  },
+  "saved_playlists": {
+   "value": "no",
+   "note": "Viewer has no playlist",
+   "evidence": [
+    "https://doublecmd.github.io/doc/en/viewer.html",
+    "https://github.com/doublecmd/doublecmd/blob/master/plugins/wlx/MacPreview/src/MacPreview.lpr"
+   ],
+   "how": "source"
+  },
+  "pip": {
+   "value": "no",
+   "note": "On macOS video plays in a Quick Look view (MacPreview plugin); Double Commander adds no player controls of its own, and what the Quick Look controls offer is not documented (searched DC docs, source, issues)",
+   "evidence": [
+    "https://github.com/doublecmd/doublecmd/blob/master/plugins/wlx/MacPreview/src/MacPreview.lpr"
+   ],
+   "how": "unverified"
+  },
+  "music_mode": {
+   "value": "partial",
+   "note": "Audio plays one file at a time in the viewer plugin (Quick Look on macOS); bundled audioinfo content plugin shows tags as columns",
+   "evidence": [
+    "https://github.com/doublecmd/doublecmd/blob/master/plugins/wlx/MacPreview/src/MacPreview.lpr",
+    "https://github.com/doublecmd/doublecmd/blob/master/src/platform/udefaultplugins.pas"
+   ],
+   "how": "source"
+  },
+  "streaming_urls": {
+   "value": "no",
+   "note": "Viewer opens local files (or files fetched by FTP/cloud plugins); no stream URLs",
+   "evidence": [
+    "https://doublecmd.github.io/doc/en/viewer.html"
+   ],
+   "how": "docs"
+  },
+  "online_subtitles": {
+   "value": "no",
+   "note": "Viewer has no subtitle function",
+   "evidence": [
+    "https://doublecmd.github.io/doc/en/viewer.html"
+   ],
+   "how": "docs"
+  },
+  "video_filters_enhance": {
+   "value": "no",
+   "note": "Image adjustments exist only for pictures; no video adjustments in viewer or plugins",
+   "evidence": [
+    "https://doublecmd.github.io/doc/en/viewer.html",
+    "https://github.com/doublecmd/doublecmd/blob/master/plugins/wlx/MacPreview/src/MacPreview.lpr"
+   ],
+   "how": "source"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "evidence": [
+    "https://doublecmd.github.io/doc/en/help.html"
+   ],
+   "how": "docs",
+   "note": "Uses Quick Look, does not add generators."
+  },
+  "archives_as_folders": {
+   "value": "partial",
+   "note": "macOS: ZIP, TAR, GZ, BZ2, LZMA built in, RAR via bundled UnRAR plugin; the 7-Zip plugin is Windows/Linux only, so 7z needs an external 7zz set up in MultiArc (open #1669)",
+   "evidence": [
+    "https://github.com/doublecmd/doublecmd/blob/master/src/platform/udefaultplugins.pas",
+    "https://doublecmd.github.io/doc/en/plugins.html",
+    "https://github.com/doublecmd/doublecmd/blob/master/.github/scripts/create_release.sh",
+    "https://github.com/doublecmd/doublecmd/issues/1669"
+   ],
+   "how": "source"
+  },
+  "comics_cbz_cbr": {
+   "value": "partial",
+   "note": "No comic reader; CBZ/CBR open as folders once the extensions are assigned to the Zip/UnRAR packer plugins in Options > Plugins > WCX",
+   "evidence": [
+    "https://doublecmd.github.io/doc/en/configuration.html",
+    "https://doublecmd.github.io/doc/en/plugins.html"
+   ],
+   "how": "docs"
+  },
+  "archive_passwords": {
+   "value": "partial",
+   "evidence": [
+    "https://doublecmd.github.io/doc/en/multiarc.html"
+   ],
+   "how": "docs",
+   "note": "Password supported for packers/external archivers; per-format."
+  },
+  "split_archives": {
+   "value": "partial",
+   "note": "Multi-volume RAR via the UnRAR plugin (volume change callback); MultiArc packs volumes (%V); Split/Combine file commands",
+   "evidence": [
+    "https://github.com/doublecmd/doublecmd/blob/master/plugins/wcx/unrar/src/unrarfunc.pas",
+    "https://doublecmd.github.io/doc/en/multiarc.html",
+    "https://doublecmd.github.io/doc/en/cmds.html"
+   ],
+   "how": "source"
+  },
+  "videos_in_archives": {
+   "value": "partial",
+   "evidence": [
+    "https://doublecmd.github.io/doc/en/multiarc.html"
+   ],
+   "how": "docs",
+   "note": "F3 extracts the file to a temp folder and opens it."
+  },
+  "manga_two_page": {
+   "value": "no",
+   "note": "Viewer has no two-page or right-to-left mode",
+   "evidence": [
+    "https://doublecmd.github.io/doc/en/viewer.html"
+   ],
+   "how": "docs"
+  },
+  "rename_trash": {
+   "value": "yes",
+   "evidence": [
+    "https://doublecmd.github.io/doc/en/help.html"
+   ],
+   "how": "docs"
+  },
+  "move_copy": {
+   "value": "yes",
+   "evidence": [
+    "https://doublecmd.github.io/doc/en/shortcuts.html"
+   ],
+   "how": "docs"
+  },
+  "dual_pane": {
+   "value": "yes",
+   "evidence": [
+    "https://doublecmd.github.io/doc/en/shortcuts.html",
+    "https://doublecmd.github.io/doc/en/cmds.html"
+   ],
+   "how": "docs",
+   "note": "F5 copy, F6 move."
+  },
+  "undo_file_actions": {
+   "value": "no",
+   "evidence": [
+    "https://doublecmd.github.io/doc/en/cmds.html"
+   ],
+   "how": "docs",
+   "note": "No undo command for file operations."
+  },
+  "image_editing": {
+   "value": "yes",
+   "evidence": [
+    "https://doublecmd.github.io/doc/en/viewer.html"
+   ],
+   "how": "docs",
+   "note": "Viewer can crop, resize, rotate, red-eye, draw and save (BMP/ICO/JPEG/PNG/PNM)."
+  },
+  "batch_convert": {
+   "value": "partial",
+   "evidence": [
+    "https://doublecmd.github.io/doc/en/multirename.html"
+   ],
+   "how": "docs",
+   "note": "Multi-Rename Tool yes; no batch image conversion."
+  },
+  "library_catalog": {
+   "value": "partial",
+   "evidence": [
+    "https://doublecmd.github.io/doc/en/help.html",
+    "https://doublecmd.github.io/doc/en/faq.html"
+   ],
+   "how": "docs",
+   "note": "descript.ion file comments; Finder tags on macOS; no ratings database."
+  },
+  "cloud_sync": {
+   "value": "partial",
+   "evidence": [
+    "https://doublecmd.github.io/doc/en/help.html",
+    "https://github.com/doublecmd/doublecmd/tree/master/plugins/wfx/MacCloud",
+    "https://doublecmd.github.io/doc/en/plugins.html"
+   ],
+   "how": "source",
+   "note": "iCloud Drive access and MacCloud plugin (OAuth/S3 drivers), FTP/SFTP; no sync."
+  },
+  "keyboard_first": {
+   "value": "yes",
+   "evidence": [
+    "https://doublecmd.github.io/doc/en/shortcuts.html"
+   ],
+   "how": "docs"
+  },
+  "custom_shortcuts": {
+   "value": "yes",
+   "evidence": [
+    "https://doublecmd.github.io/doc/en/configuration.html"
+   ],
+   "how": "docs",
+   "note": "Keys > Hot Keys, multiple shortcut files."
+  },
+  "shortcut_cheatsheet": {
+   "value": "partial",
+   "evidence": [
+    "https://doublecmd.github.io/doc/en/shortcuts.html"
+   ],
+   "how": "docs",
+   "note": "Keyboard layout page in the docs; not a printable sheet."
+  },
+  "boss_key": {
+   "value": "no",
+   "note": "Command reference lists only cm_Minimize for the own window; no global hide hotkey",
+   "evidence": [
+    "https://doublecmd.github.io/doc/en/cmds.html"
+   ],
+   "how": "docs"
+  },
+  "app_sandbox": {
+   "value": "no",
+   "evidence": [
+    "https://doublecmd.github.io/doc/en/faq.html"
+   ],
+   "how": "docs",
+   "note": "Asks for Full Disk Access on macOS."
+  },
+  "no_network": {
+   "value": "no",
+   "evidence": [
+    "https://doublecmd.github.io/doc/en/plugins.html",
+    "https://github.com/doublecmd/doublecmd/tree/master/plugins/wfx/MacCloud"
+   ],
+   "how": "docs",
+   "note": "FTP/SFTP, SMB and cloud plugins."
+  },
+  "notarized_attested": {
+   "value": "no",
+   "note": "macOS release script signs the app ad hoc (codesign --sign '-'), no notarization or build attestation",
+   "evidence": [
+    "https://github.com/doublecmd/doublecmd/blob/master/.github/scripts/create_release.sh"
+   ],
+   "how": "source"
+  },
+  "mac_app_store": {
+   "value": "no",
+   "note": "Not in the Mac App Store (store search finds no Double Commander); DMG from GitHub/SourceForge",
+   "evidence": [
+    "https://itunes.apple.com/search?term=double+commander&entity=macSoftware&limit=10",
+    "https://github.com/doublecmd/doublecmd/releases/tag/v1.2.11"
+   ],
+   "how": "store"
+  }
+ }
+}

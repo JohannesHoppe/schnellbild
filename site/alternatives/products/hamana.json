@@ -1,0 +1,548 @@
+{
+ "name": "Hamana",
+ "short": "Hamana",
+ "vendor": "miyano",
+ "website": "http://miyano.s53.xrea.com/",
+ "platforms": [
+  "Windows"
+ ],
+ "mac_available": "no",
+ "page": "switcher",
+ "section": "windows",
+ "price": "free",
+ "license": "proprietary freeware (bundled Susie plug-ins LGPL)",
+ "current_version": "1.48",
+ "last_update": "2006-06-19",
+ "engine": "DirectX 9 (Direct3D), Susie plug-ins, Ghostscript for PDF",
+ "category": "comic",
+ "summary": "DirectX-accelerated Japanese image viewer with archive reading (zip/cbz, 7z, rar/cbr, cab, lzh), two-image mode, slideshow effects and strong key customisation. Can run as a screensaver. Unchanged since 2006, the download is still on the author's site.",
+ "where_it_wins": [
+  "GPU display filters (tone curve, sharpen) and 3D rotation",
+  "Slideshow transition effects",
+  "Screensaver mode",
+  "PDF via Ghostscript"
+ ],
+ "where_schnellbild_wins": [
+  "Native and maintained on Mac",
+  "Modern formats and real video playback",
+  "Recursive and regex search, file management, undo",
+  "Sandboxed, offline"
+ ],
+ "search_terms": [
+  "hamana mac",
+  "hamana viewer mac",
+  "Hamana 画像ビューア Mac",
+  "Hamana 代わり",
+  "Mac 画像ビューア",
+  "Mac 漫画ビューア zip",
+  "Mac 見開き ビューア",
+  "Mac 自炊 ビューア",
+  "Mac zip 画像 そのまま 見る",
+  "Mac rar 漫画 見る",
+  "Susie プラグイン Mac"
+ ],
+ "matrix": {
+  "free": {
+   "value": "yes",
+   "note": "freeware",
+   "evidence": [
+    "https://alternativeto.net/software/hamana/about/"
+   ],
+   "how": "docs"
+  },
+  "open_source": {
+   "value": "no",
+   "note": "proprietary; its extracted Susie plug-ins are LGPL",
+   "evidence": [
+    "http://miyano.s53.xrea.com/",
+    "https://alternativeto.net/software/hamana/about/"
+   ],
+   "how": "docs"
+  },
+  "native_apple_silicon": {
+   "value": "no",
+   "note": "Windows (DirectX 9.0c) only",
+   "evidence": [
+    "http://miyano.s53.xrea.com/"
+   ],
+   "how": "docs"
+  },
+  "no_account_no_tracking": {
+   "value": "yes",
+   "note": "Freeware download, offline viewer; no account or online feature in the manual",
+   "evidence": [
+    "http://miyano.s53.xrea.com/",
+    "http://miyano.s53.xrea.com/manual.html"
+   ],
+   "how": "docs"
+  },
+  "dark_light_setting": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Manual describes functions, not UI themes; settings dialog not fully documented"
+  },
+  "languages_20": {
+   "value": "partial",
+   "note": "5: Japanese, English, Simplified and Traditional Chinese, Portuguese (patches)",
+   "evidence": [
+    "http://miyano.s53.xrea.com/"
+   ],
+   "how": "docs"
+  },
+  "folder_browsing": {
+   "value": "yes",
+   "note": "file list and thumbnail view",
+   "evidence": [
+    "http://miyano.s53.xrea.com/"
+   ],
+   "how": "docs"
+  },
+  "thumbnail_grid": {
+   "value": "yes",
+   "note": "file list / thumbnail view (screenshot)",
+   "evidence": [
+    "http://miyano.s53.xrea.com/"
+   ],
+   "how": "screenshot"
+  },
+  "list_view": {
+   "value": "partial",
+   "note": "file list view",
+   "evidence": [
+    "http://miyano.s53.xrea.com/"
+   ],
+   "how": "screenshot"
+  },
+  "recursive_search": {
+   "value": "no",
+   "note": "Incremental search (Ctrl+F) only searches the current file list",
+   "evidence": [
+    "http://miyano.s53.xrea.com/manual.html"
+   ],
+   "how": "docs"
+  },
+  "regex_search": {
+   "value": "yes",
+   "note": "Incremental search in the file list has a regular-expression mode (ECMAScript + Perl extensions); current list only",
+   "evidence": [
+    "http://miyano.s53.xrea.com/manual.html"
+   ],
+   "how": "docs"
+  },
+  "network_shares_fast": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Manual covers thumbnail cache performance (tested with 500k files) but not network shares"
+  },
+  "multiple_windows": {
+   "value": "no",
+   "note": "Window functions in the manual are only full screen and always on top",
+   "evidence": [
+    "http://miyano.s53.xrea.com/manual.html"
+   ],
+   "how": "docs"
+  },
+  "bookmarks": {
+   "value": "partial",
+   "note": "\"library\" lists",
+   "evidence": [
+    "http://miyano.s53.xrea.com/"
+   ],
+   "how": "changelog"
+  },
+  "img_modern_formats": {
+   "value": "no",
+   "note": "Built-in decoders (ifgdip.spi): jpg, png, gif, bmp, tif, ico, wmf, emf; last release 2006",
+   "evidence": [
+    "http://miyano.s53.xrea.com/"
+   ],
+   "how": "docs"
+  },
+  "img_raw": {
+   "value": "partial",
+   "note": "via Susie plug-ins (e.g. ifcrw_t.spi)",
+   "evidence": [
+    "http://miyano.s53.xrea.com/"
+   ],
+   "how": "changelog"
+  },
+  "img_psd_exr": {
+   "value": "partial",
+   "note": "Susie plug-ins can add formats, but PSD/EXR support is not documented",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "img_svg_pdf": {
+   "value": "partial",
+   "note": "PDF with Ghostscript installed; no SVG",
+   "evidence": [
+    "http://miyano.s53.xrea.com/"
+   ],
+   "how": "docs"
+  },
+  "img_animated": {
+   "value": "partial",
+   "note": "Animation not mentioned on the site or in the manual",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "evidence": [
+    "http://miyano.s53.xrea.com/"
+   ],
+   "how": "docs"
+  },
+  "zoom_rotate": {
+   "value": "yes",
+   "note": "DirectX zoom, even 3D rotation",
+   "evidence": [
+    "http://miyano.s53.xrea.com/"
+   ],
+   "how": "screenshot"
+  },
+  "slideshow": {
+   "value": "yes",
+   "note": "with prefetch and transition effects",
+   "evidence": [
+    "http://miyano.s53.xrea.com/"
+   ],
+   "how": "docs"
+  },
+  "slideshow_recursive": {
+   "value": "no",
+   "note": "Auto slideshow returns to the start of the list instead of moving to the next folder; no mixed video",
+   "evidence": [
+    "http://miyano.s53.xrea.com/manual.html"
+   ],
+   "how": "docs"
+  },
+  "auto_enhance_view": {
+   "value": "partial",
+   "note": "tone curve, sharpen and smooth filters as display shaders; no auto",
+   "evidence": [
+    "http://miyano.s53.xrea.com/"
+   ],
+   "how": "docs"
+  },
+  "file_info_exif": {
+   "value": "partial",
+   "note": "Image info (I) shows EXIF data; nothing for video codecs",
+   "evidence": [
+    "http://miyano.s53.xrea.com/manual.html"
+   ],
+   "how": "docs"
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Not mentioned on the site or in the manual"
+  },
+  "video_native": {
+   "value": "partial",
+   "note": "\"動画再生(仮対応)\": provisional video playback through installed codecs",
+   "evidence": [
+    "http://miyano.s53.xrea.com/"
+   ],
+   "how": "screenshot"
+  },
+  "video_mkv_avi_webm": {
+   "value": "partial",
+   "note": "Video playback is provisional through installed codecs; formats not listed",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "photos_videos_one_grid": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "File list shows all files; how videos appear there is not documented"
+  },
+  "video_skim_arrows": {
+   "value": "partial",
+   "note": "video seek by seconds exists (fixed in 1.48)",
+   "evidence": [
+    "http://miyano.s53.xrea.com/"
+   ],
+   "how": "changelog"
+  },
+  "subtitles_embedded": {
+   "value": "no",
+   "note": "The manual's complete key list has no video controls; video playback is marked provisional (動画再生(仮対応))",
+   "evidence": [
+    "http://miyano.s53.xrea.com/manual.html",
+    "http://miyano.s53.xrea.com/"
+   ],
+   "how": "docs"
+  },
+  "subtitles_external_files": {
+   "value": "no",
+   "note": "The manual's complete key list has no video controls; video playback is marked provisional (動画再生(仮対応))",
+   "evidence": [
+    "http://miyano.s53.xrea.com/manual.html",
+    "http://miyano.s53.xrea.com/"
+   ],
+   "how": "docs"
+  },
+  "audio_track_choice": {
+   "value": "no",
+   "note": "The manual's complete key list has no video controls; video playback is marked provisional (動画再生(仮対応))",
+   "evidence": [
+    "http://miyano.s53.xrea.com/manual.html",
+    "http://miyano.s53.xrea.com/"
+   ],
+   "how": "docs"
+  },
+  "playback_speed": {
+   "value": "no",
+   "note": "The manual's complete key list has no video controls; video playback is marked provisional (動画再生(仮対応))",
+   "evidence": [
+    "http://miyano.s53.xrea.com/manual.html",
+    "http://miyano.s53.xrea.com/"
+   ],
+   "how": "docs"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "note": "The manual's complete key list has no video controls; video playback is marked provisional (動画再生(仮対応))",
+   "evidence": [
+    "http://miyano.s53.xrea.com/manual.html",
+    "http://miyano.s53.xrea.com/"
+   ],
+   "how": "docs"
+  },
+  "playlist": {
+   "value": "no",
+   "note": "Libraries (*.hfl) list images for viewing; no video playlist",
+   "evidence": [
+    "http://miyano.s53.xrea.com/manual.html"
+   ],
+   "how": "docs"
+  },
+  "saved_playlists": {
+   "value": "no",
+   "note": "Libraries (*.hfl) are saved image lists, not playlists",
+   "evidence": [
+    "http://miyano.s53.xrea.com/manual.html"
+   ],
+   "how": "docs"
+  },
+  "pip": {
+   "value": "no",
+   "note": "The manual's complete key list has no video controls; video playback is marked provisional (動画再生(仮対応))",
+   "evidence": [
+    "http://miyano.s53.xrea.com/manual.html"
+   ],
+   "how": "docs"
+  },
+  "music_mode": {
+   "value": "no",
+   "note": "Only page-turn sound effects in libraries; no audio playback",
+   "evidence": [
+    "http://miyano.s53.xrea.com/manual.html"
+   ],
+   "how": "docs"
+  },
+  "streaming_urls": {
+   "value": "no",
+   "note": "Opens files, archives and libraries only",
+   "evidence": [
+    "http://miyano.s53.xrea.com/manual.html"
+   ],
+   "how": "docs"
+  },
+  "online_subtitles": {
+   "value": "no",
+   "note": "The manual's complete key list has no video controls; video playback is marked provisional (動画再生(仮対応))",
+   "evidence": [
+    "http://miyano.s53.xrea.com/manual.html"
+   ],
+   "how": "docs"
+  },
+  "video_filters_enhance": {
+   "value": "partial",
+   "note": "Tone curve correction also applies to video playback (needs Pixel Shader 2.0)",
+   "evidence": [
+    "http://miyano.s53.xrea.com/manual.html"
+   ],
+   "how": "docs"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "note": "Windows only",
+   "evidence": [
+    "http://miyano.s53.xrea.com/"
+   ],
+   "how": "docs"
+  },
+  "archives_as_folders": {
+   "value": "yes",
+   "note": "zip, 7z, rar, cab, arj, lzh without extracting",
+   "evidence": [
+    "http://miyano.s53.xrea.com/"
+   ],
+   "how": "docs"
+  },
+  "comics_cbz_cbr": {
+   "value": "yes",
+   "evidence": [
+    "http://miyano.s53.xrea.com/"
+   ],
+   "how": "docs"
+  },
+  "archive_passwords": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Not mentioned on the site or in the manual"
+  },
+  "split_archives": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Not mentioned on the site or in the manual"
+  },
+  "videos_in_archives": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Not mentioned on the site or in the manual"
+  },
+  "manga_two_page": {
+   "value": "yes",
+   "note": "Two-image mode (2) with left/right order switch (S) for right-to-left reading; wide images shown single",
+   "evidence": [
+    "http://miyano.s53.xrea.com/manual.html"
+   ],
+   "how": "docs"
+  },
+  "rename_trash": {
+   "value": "no",
+   "note": "No rename or delete commands in the manual or key list (Delete changes text size); only via an external program bound to a key",
+   "evidence": [
+    "http://miyano.s53.xrea.com/manual.html"
+   ],
+   "how": "docs"
+  },
+  "move_copy": {
+   "value": "no",
+   "note": "No built-in move/copy; the manual shows calling an external 'mv' through a custom key",
+   "evidence": [
+    "http://miyano.s53.xrea.com/manual.html"
+   ],
+   "how": "docs"
+  },
+  "dual_pane": {
+   "value": "no",
+   "evidence": [
+    "http://miyano.s53.xrea.com/"
+   ],
+   "how": "docs"
+  },
+  "undo_file_actions": {
+   "value": "no",
+   "note": "No file actions to undo",
+   "evidence": [
+    "http://miyano.s53.xrea.com/manual.html"
+   ],
+   "how": "docs"
+  },
+  "image_editing": {
+   "value": "no",
+   "note": "display filters only",
+   "evidence": [
+    "http://miyano.s53.xrea.com/"
+   ],
+   "how": "docs"
+  },
+  "batch_convert": {
+   "value": "no",
+   "note": "Viewer only; no conversion in the manual",
+   "evidence": [
+    "http://miyano.s53.xrea.com/manual.html"
+   ],
+   "how": "docs"
+  },
+  "library_catalog": {
+   "value": "partial",
+   "note": "\"library\" lists, no ratings database",
+   "evidence": [
+    "http://miyano.s53.xrea.com/"
+   ],
+   "how": "changelog"
+  },
+  "cloud_sync": {
+   "value": "no",
+   "note": "No online features in the manual",
+   "evidence": [
+    "http://miyano.s53.xrea.com/manual.html"
+   ],
+   "how": "docs"
+  },
+  "keyboard_first": {
+   "value": "yes",
+   "evidence": [
+    "http://miyano.s53.xrea.com/"
+   ],
+   "how": "docs"
+  },
+  "custom_shortcuts": {
+   "value": "yes",
+   "note": "\"強力なキーカスタマイズ\"",
+   "evidence": [
+    "http://miyano.s53.xrea.com/"
+   ],
+   "how": "docs"
+  },
+  "shortcut_cheatsheet": {
+   "value": "partial",
+   "note": "The online manual has a list of all default keys (Appendix A.1); nothing in the app",
+   "evidence": [
+    "http://miyano.s53.xrea.com/manual.html"
+   ],
+   "how": "docs"
+  },
+  "boss_key": {
+   "value": "no",
+   "note": "Not in the key list (ESC quits)",
+   "evidence": [
+    "http://miyano.s53.xrea.com/manual.html"
+   ],
+   "how": "docs"
+  },
+  "app_sandbox": {
+   "value": "no",
+   "note": "Windows only",
+   "evidence": [
+    "http://miyano.s53.xrea.com/"
+   ],
+   "how": "docs"
+  },
+  "no_network": {
+   "value": "yes",
+   "note": "No online features in the manual",
+   "evidence": [
+    "http://miyano.s53.xrea.com/manual.html"
+   ],
+   "how": "docs"
+  },
+  "notarized_attested": {
+   "value": "no",
+   "note": "Windows only",
+   "evidence": [
+    "http://miyano.s53.xrea.com/"
+   ],
+   "how": "docs"
+  },
+  "mac_app_store": {
+   "value": "no",
+   "evidence": [
+    "http://miyano.s53.xrea.com/"
+   ],
+   "how": "docs"
+  }
+ }
+}

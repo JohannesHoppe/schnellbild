@@ -229,10 +229,9 @@ private struct AtlasTile: View {
         }
         .frame(width: Self.side + 4, height: Self.side + 4)
         .contentShape(Rectangle())
-        .onTapGesture(count: 2) {
+        .modifier(Clicks(single: { atlas.click(cluster) }, double: {
             if cluster.count > 1 { atlas.zoom(into: cluster) } else { atlas.open(cluster.ids[0]) }
-        }
-        .simultaneousGesture(TapGesture().onEnded { atlas.click(cluster) })
+        }))
         .help(help)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(verbatim: label))
@@ -313,8 +312,7 @@ private struct AtlasStrip: View {
                                 .overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.accentColor, lineWidth: selected ? 3 : 0).padding(-1))
                                 .padding(2)
                                 .contentShape(Rectangle())
-                                .onTapGesture(count: 2) { atlas.open(item.url) }
-                                .simultaneousGesture(TapGesture().onEnded { atlas.select(item.url) })
+                                .modifier(Clicks(single: { atlas.select(item.url) }, double: { atlas.open(item.url) }))
                                 .help(item.name)
                                 .id(item.url)
                                 .accessibilityElement(children: .ignore)

@@ -614,6 +614,14 @@
 "Include subfolders" = "Medtag undermapper";
 "The photos and videos of every subfolder too, archives included" = "Også fotos og videoer i alle undermapper, arkiver medregnet";
 "Reading subfolders…" = "Læser undermapper…";
+
+/* Downloads not finished */
+"Download not finished" = "Overførsel ikke færdig";
+"Incomplete" = "Ufuldstændig";
+"Download" = "Overførsel";
+"Not finished" = "Ikke færdig";
+"In progress, the file is growing" = "I gang, filen vokser stadig";
+"This video can't play until its download is finished: the part that tells how to play it lies at the end of the file." = "Videoen kan først afspilles, når overførslen er færdig: det, der skal bruges til at afspille den, ligger i slutningen af filen.";
 /* About window: the license texts */
 "In Schnellbild" = "I Schnellbild";
 "Copyright" = "Ophavsret";

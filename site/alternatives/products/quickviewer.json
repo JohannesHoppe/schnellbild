@@ -1,0 +1,558 @@
+{
+ "name": "QuickViewer",
+ "short": "QuickViewer",
+ "vendor": "KATO Kanryu",
+ "website": "https://kanryu.github.io/quickviewer/",
+ "platforms": [
+  "Windows",
+  "macOS (Intel, up to 1.1.1)",
+  "Linux (up to 1.1.1)"
+ ],
+ "mac_available": "no",
+ "page": "switcher",
+ "section": "windows",
+ "price": "free",
+ "license": "open source (GPL-3.0)",
+ "current_version": "1.2.8",
+ "last_update": "2025-12-12",
+ "engine": "Qt + OpenGL, 7-Zip/UnRAR for archives",
+ "category": "comic",
+ "summary": "Fast OpenGL image and comic viewer that reads archives without extracting them and shows two-page spreads. Has a catalog database for large comic collections. The developer ended the project in November 2025 because of illness; 1.2.8 was a security fix for UnRAR.",
+ "where_it_wins": [
+  "Catalog database for thousands of comics",
+  "Very fast page switching through OpenGL",
+  "Wide archive support including tar.gz/bz2/xz and cab",
+  "CMYK JPEG shown correctly"
+ ],
+ "where_schnellbild_wins": [
+  "Maintained, native Apple silicon app (QuickViewer's last Mac build is an old Intel DMG)",
+  "Plays videos, also inside archives",
+  "Thumbnail grid with folder previews, recursive and regex search",
+  "File management: dual pane, move, copy, undo",
+  "Sandboxed and offline"
+ ],
+ "search_terms": [
+  "quickviewer mac",
+  "quickviewer mac apple silicon",
+  "quickviewer alternative",
+  "QuickViewer Mac版",
+  "QuickViewer 後継",
+  "QuickViewer 開発終了 代わり",
+  "Mac 画像ビューア",
+  "Mac 漫画ビューア zip",
+  "Mac 見開き ビューア",
+  "Mac 自炊 ビューア",
+  "Mac zip 画像 そのまま 見る",
+  "Mac rar 漫画 見る",
+  "Susie プラグイン Mac"
+ ],
+ "matrix": {
+  "free": {
+   "value": "yes",
+   "evidence": [
+    "https://github.com/kanryu/quickviewer"
+   ],
+   "how": "source"
+  },
+  "open_source": {
+   "value": "yes",
+   "note": "GPL-3.0",
+   "evidence": [
+    "https://github.com/kanryu/quickviewer"
+   ],
+   "how": "source"
+  },
+  "native_apple_silicon": {
+   "value": "no",
+   "note": "old Intel macOS .dmg up to v1.1.1 only; current builds Windows x64",
+   "evidence": [
+    "https://github.com/kanryu/quickviewer"
+   ],
+   "how": "docs"
+  },
+  "no_account_no_tracking": {
+   "value": "yes",
+   "evidence": [
+    "https://github.com/kanryu/quickviewer/blob/master/QuickViewer/QuickViewer.pro"
+   ],
+   "how": "source",
+   "note": "Qt modules core, gui, concurrent, sql, svgwidgets, opengl; no network module, no account"
+  },
+  "dark_light_setting": {
+   "value": "yes",
+   "note": "theme selector with dark theme",
+   "evidence": [
+    "https://github.com/kanryu/quickviewer/blob/master/CHANGELOG.md"
+   ],
+   "how": "changelog"
+  },
+  "languages_20": {
+   "value": "partial",
+   "note": "about 9: en, ja, es, fr, el, ar, ru, zh-Hans, de",
+   "evidence": [
+    "https://github.com/kanryu/quickviewer",
+    "https://github.com/kanryu/quickviewer/blob/master/CHANGELOG.md"
+   ],
+   "how": "docs"
+  },
+  "folder_browsing": {
+   "value": "yes",
+   "note": "open folder/archive, next/previous volume, folder window",
+   "evidence": [
+    "https://github.com/kanryu/quickviewer",
+    "https://github.com/kanryu/quickviewer/blob/master/CHANGELOG.md"
+   ],
+   "how": "docs"
+  },
+  "thumbnail_grid": {
+   "value": "partial",
+   "note": "catalog shows book thumbnails; no folder thumbnail grid",
+   "evidence": [
+    "https://forest.watch.impress.co.jp/docs/review/2074605.html",
+    "https://github.com/kanryu/quickviewer"
+   ],
+   "how": "review"
+  },
+  "list_view": {
+   "value": "partial",
+   "evidence": [
+    "https://github.com/kanryu/quickviewer/blob/master/QuickViewer/src/folderview/folderwindow.cpp",
+    "https://github.com/kanryu/quickviewer/blob/master/QuickViewer/translations/quickviewer_ja.ts"
+   ],
+   "how": "source",
+   "note": "Folder window shows a list; undocked as its own window it has two columns (name, updated) and sorts by name or date"
+  },
+  "recursive_search": {
+   "value": "partial",
+   "note": "search inside the catalog database of registered books",
+   "evidence": [
+    "https://github.com/kanryu/quickviewer"
+   ],
+   "how": "docs"
+  },
+  "regex_search": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/kanryu/quickviewer/blob/master/QuickViewer/translations/quickviewer_ja.ts"
+   ],
+   "how": "source",
+   "note": "Only the catalog searches by title; no regex option in any UI string"
+  },
+  "network_shares_fast": {
+   "value": "partial",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched README and source: fast display through OpenGL and prefetching, nothing about network shares"
+  },
+  "multiple_windows": {
+   "value": "partial",
+   "evidence": [
+    "https://github.com/kanryu/quickviewer/blob/master/QuickViewer/src/mainwindow.ui"
+   ],
+   "how": "source",
+   "note": "Catalog and folder windows can be undocked into separate windows; one image window"
+  },
+  "bookmarks": {
+   "value": "yes",
+   "evidence": [
+    "https://github.com/kanryu/quickviewer/blob/master/QuickViewer/translations/quickviewer_ja.ts",
+    "https://github.com/kanryu/quickviewer/blob/master/QuickViewer/src/mainwindow.ui"
+   ],
+   "how": "source",
+   "note": "Add, load and manage bookmarks; a bookmark points to an image in its folder or archive"
+  },
+  "img_modern_formats": {
+   "value": "partial",
+   "note": "WebP, AVIF; no HEIC or JPEG XL listed",
+   "evidence": [
+    "https://github.com/kanryu/quickviewer"
+   ],
+   "how": "docs"
+  },
+  "img_raw": {
+   "value": "yes",
+   "note": "Canon, Nikon, Sony, Ricoh and more",
+   "evidence": [
+    "https://github.com/kanryu/quickviewer"
+   ],
+   "how": "docs"
+  },
+  "img_psd_exr": {
+   "value": "no",
+   "note": "not listed",
+   "evidence": [
+    "https://github.com/kanryu/quickviewer"
+   ],
+   "how": "docs"
+  },
+  "img_svg_pdf": {
+   "value": "partial",
+   "note": "SVG since 1.2.3; PDF not listed",
+   "evidence": [
+    "https://github.com/kanryu/quickviewer/blob/master/CHANGELOG.md",
+    "https://github.com/kanryu/quickviewer"
+   ],
+   "how": "changelog"
+  },
+  "img_animated": {
+   "value": "yes",
+   "note": "GIF, APNG",
+   "evidence": [
+    "https://github.com/kanryu/quickviewer"
+   ],
+   "how": "docs"
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "evidence": [
+    "https://github.com/kanryu/quickviewer"
+   ],
+   "how": "docs"
+  },
+  "zoom_rotate": {
+   "value": "partial",
+   "note": "zoom and pan; EXIF auto-rotation",
+   "evidence": [
+    "https://github.com/kanryu/quickviewer"
+   ],
+   "how": "docs"
+  },
+  "slideshow": {
+   "value": "yes",
+   "evidence": [
+    "https://github.com/kanryu/quickviewer/blob/master/CHANGELOG.md"
+   ],
+   "how": "changelog"
+  },
+  "slideshow_recursive": {
+   "value": "no",
+   "note": "images only",
+   "evidence": [
+    "https://github.com/kanryu/quickviewer"
+   ],
+   "how": "docs"
+  },
+  "auto_enhance_view": {
+   "value": "partial",
+   "note": "brightness, contrast, gamma retouching, no auto",
+   "evidence": [
+    "https://github.com/kanryu/quickviewer"
+   ],
+   "how": "docs"
+  },
+  "file_info_exif": {
+   "value": "partial",
+   "note": "EXIF only",
+   "evidence": [
+    "https://github.com/kanryu/quickviewer"
+   ],
+   "how": "docs"
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/kanryu/quickviewer/blob/master/QuickViewer/src/models/volumemanagerbuilder.cpp"
+   ],
+   "how": "source",
+   "note": "Archive type is picked from the file suffix; no mismatch notice in the UI strings"
+  },
+  "video_native": {
+   "value": "no",
+   "note": "image viewer, no video",
+   "evidence": [
+    "https://github.com/kanryu/quickviewer"
+   ],
+   "how": "source"
+  },
+  "video_mkv_avi_webm": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/kanryu/quickviewer"
+   ],
+   "how": "source"
+  },
+  "photos_videos_one_grid": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/kanryu/quickviewer"
+   ],
+   "how": "docs"
+  },
+  "video_skim_arrows": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/kanryu/quickviewer"
+   ],
+   "how": "docs"
+  },
+  "subtitles_embedded": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/kanryu/quickviewer"
+   ],
+   "how": "docs"
+  },
+  "subtitles_external_files": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/kanryu/quickviewer"
+   ],
+   "how": "docs"
+  },
+  "audio_track_choice": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/kanryu/quickviewer"
+   ],
+   "how": "docs"
+  },
+  "playback_speed": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/kanryu/quickviewer"
+   ],
+   "how": "docs"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/kanryu/quickviewer"
+   ],
+   "how": "docs"
+  },
+  "playlist": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/kanryu/quickviewer"
+   ],
+   "how": "docs"
+  },
+  "saved_playlists": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/kanryu/quickviewer"
+   ],
+   "how": "docs"
+  },
+  "pip": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/kanryu/quickviewer"
+   ],
+   "how": "docs"
+  },
+  "music_mode": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/kanryu/quickviewer"
+   ],
+   "how": "docs"
+  },
+  "streaming_urls": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/kanryu/quickviewer"
+   ],
+   "how": "docs"
+  },
+  "online_subtitles": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/kanryu/quickviewer"
+   ],
+   "how": "docs"
+  },
+  "video_filters_enhance": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/kanryu/quickviewer"
+   ],
+   "how": "docs"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "note": "Windows only",
+   "evidence": [
+    "https://github.com/kanryu/quickviewer"
+   ],
+   "how": "docs"
+  },
+  "archives_as_folders": {
+   "value": "yes",
+   "note": "zip, 7z, rar, cab, tar.gz/bz2/xz, read without extracting",
+   "evidence": [
+    "https://github.com/kanryu/quickviewer",
+    "https://forest.watch.impress.co.jp/docs/review/2074605.html"
+   ],
+   "how": "docs"
+  },
+  "comics_cbz_cbr": {
+   "value": "yes",
+   "note": "cbz, cbr, cb7",
+   "evidence": [
+    "https://github.com/kanryu/quickviewer"
+   ],
+   "how": "docs"
+  },
+  "archive_passwords": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/kanryu/quickviewer/blob/master/fileloader/fileloaderrararchive.cpp",
+    "https://github.com/kanryu/quickviewer/blob/master/unrar/rarextractor.cpp",
+    "https://github.com/kanryu/quickviewer/blob/master/QuickViewer/translations/quickviewer_ja.ts"
+   ],
+   "how": "source",
+   "note": "Archives are opened with an empty password and the UI has no password prompt"
+  },
+  "split_archives": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Checked fileloader and unrar sources: no volume handling code, but whether 7-Zip/unrar follow volumes on their own is not documented"
+  },
+  "videos_in_archives": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/kanryu/quickviewer"
+   ],
+   "how": "docs"
+  },
+  "manga_two_page": {
+   "value": "yes",
+   "note": "spread view bound right (Japanese style)",
+   "evidence": [
+    "https://github.com/kanryu/quickviewer",
+    "https://forest.watch.impress.co.jp/docs/review/2074605.html"
+   ],
+   "how": "docs"
+  },
+  "rename_trash": {
+   "value": "yes",
+   "note": "F2 rename, Delete to trash",
+   "evidence": [
+    "https://github.com/kanryu/quickviewer"
+   ],
+   "how": "docs"
+  },
+  "move_copy": {
+   "value": "partial",
+   "note": "copy image to clipboard; no move/copy to folder documented",
+   "evidence": [
+    "https://github.com/kanryu/quickviewer"
+   ],
+   "how": "docs"
+  },
+  "dual_pane": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/kanryu/quickviewer"
+   ],
+   "how": "docs"
+  },
+  "undo_file_actions": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/kanryu/quickviewer/blob/master/QuickViewer/translations/quickviewer_ja.ts"
+   ],
+   "how": "source",
+   "note": "Rename and delete exist; no undo string in the UI"
+  },
+  "image_editing": {
+   "value": "partial",
+   "note": "retouching brightness/contrast/gamma",
+   "evidence": [
+    "https://github.com/kanryu/quickviewer"
+   ],
+   "how": "docs"
+  },
+  "batch_convert": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/kanryu/quickviewer/blob/master/QuickViewer/translations/quickviewer_ja.ts"
+   ],
+   "how": "source",
+   "note": "No batch conversion or batch rename in the UI"
+  },
+  "library_catalog": {
+   "value": "yes",
+   "note": "catalog database for thousands of books",
+   "evidence": [
+    "https://github.com/kanryu/quickviewer"
+   ],
+   "how": "docs"
+  },
+  "cloud_sync": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/kanryu/quickviewer/blob/master/QuickViewer/QuickViewer.pro",
+    "https://github.com/kanryu/quickviewer/blob/master/QuickViewer/translations/quickviewer_ja.ts"
+   ],
+   "how": "source",
+   "note": "No network module; only hands an image to the local mail program"
+  },
+  "keyboard_first": {
+   "value": "yes",
+   "evidence": [
+    "https://github.com/kanryu/quickviewer",
+    "https://forest.watch.impress.co.jp/docs/review/2074605.html"
+   ],
+   "how": "docs"
+  },
+  "custom_shortcuts": {
+   "value": "yes",
+   "note": "key config dialog",
+   "evidence": [
+    "https://forest.watch.impress.co.jp/docs/review/2074605.html",
+    "https://github.com/kanryu/quickviewer/blob/master/CHANGELOG.md"
+   ],
+   "how": "review"
+  },
+  "shortcut_cheatsheet": {
+   "value": "no",
+   "note": "README lists the default keys only",
+   "evidence": [
+    "https://github.com/kanryu/quickviewer"
+   ],
+   "how": "docs"
+  },
+  "boss_key": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/kanryu/quickviewer/blob/master/QuickViewer/translations/quickviewer_ja.ts"
+   ],
+   "how": "source",
+   "note": "No hide or minimize command; only options to hide bars in full screen"
+  },
+  "app_sandbox": {
+   "value": "no",
+   "note": "Windows only",
+   "evidence": [
+    "https://github.com/kanryu/quickviewer"
+   ],
+   "how": "docs"
+  },
+  "no_network": {
+   "value": "yes",
+   "evidence": [
+    "https://github.com/kanryu/quickviewer/blob/master/QuickViewer/QuickViewer.pro",
+    "https://github.com/kanryu/quickviewer/blob/master/README.md"
+   ],
+   "how": "source",
+   "note": "Built without the Qt network module; \"Put the current image into your mailer\" hands it to the local mail program"
+  },
+  "notarized_attested": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/kanryu/quickviewer/releases"
+   ],
+   "how": "docs"
+  },
+  "mac_app_store": {
+   "value": "no",
+   "evidence": [
+    "https://github.com/kanryu/quickviewer"
+   ],
+   "how": "docs"
+  }
+ }
+}

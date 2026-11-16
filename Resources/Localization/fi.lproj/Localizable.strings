@@ -614,6 +614,14 @@
 "Include subfolders" = "Myös alikansiot";
 "The photos and videos of every subfolder too, archives included" = "Myös kaikkien alikansioiden kuvat ja videot, arkistot mukaan lukien";
 "Reading subfolders…" = "Luetaan alikansioita…";
+
+/* Downloads not finished */
+"Download not finished" = "Lataus kesken";
+"Incomplete" = "Keskeneräinen";
+"Download" = "Lataus";
+"Not finished" = "Kesken";
+"In progress, the file is growing" = "Käynnissä, tiedosto kasvaa yhä";
+"This video can't play until its download is finished: the part that tells how to play it lies at the end of the file." = "Videota voi toistaa vasta, kun lataus on valmis: toistoon tarvittavat tiedot ovat tiedoston lopussa.";
 /* About window: the license texts */
 "In Schnellbild" = "Schnellbildissä";
 "Copyright" = "Tekijänoikeus";

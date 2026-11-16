@@ -2,8 +2,9 @@
 # Checks the built app's QuickLook thumbnail extension the way macOS uses it:
 # registered, then asked from another process for a thumbnail of each format
 # it claims (which extension answered is printed: on newer macOS, Apple's own
-# reads some of them itself), an MKV's thumbnail kept by the system (a second
-# process gets it from the cache), and no thumbnail for a damaged file.
+# reads some of them itself), downloads not finished ("x.mkv.part"), an MKV's
+# thumbnail kept by the system (a second process gets it from the cache), and
+# no thumbnail for a damaged file.
 # AVI and AVCHD are printed, not checked: macOS gives those to its own
 # extension, which has no picture for them.
 set -euo pipefail
@@ -45,6 +46,12 @@ probe() {   # probe <ext> <must get a thumbnail: yes/no>
 for ext in mkv webm wmv asf flv ogv vob; do probe "$ext" yes; done
 for ext in avi m2ts mts; do probe "$ext" no; done
 "$OUT/probe" "$FILES/clip.mkv"      # a new process: from the system's cache
+# Downloads not finished (`DownloadName`): by their content, as far as it reaches
+cp "$FILES/clip.mkv" "$FILES/film.mkv.part"
+head -c 20000 UITests/Fixtures/large.jpg > "$FILES/photo.jpg.crdownload"
+for f in film.mkv.part photo.jpg.crdownload; do
+  "$OUT/probe" "$FILES/$f" "$OUT/$f.png" || { echo "$f got no thumbnail"; mdls -name kMDItemContentType "$FILES/$f"; exit 1; }
+done
 # A damaged video gets no thumbnail and doesn't hang
 "$OUT/probe" UITests/Fixtures/broken.mkv && { echo "broken.mkv got a thumbnail"; exit 1; } || true
 finished=1

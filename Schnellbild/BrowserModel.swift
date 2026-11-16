@@ -19,6 +19,26 @@ struct GridEntry: Identifiable, Hashable {
     /// `url` is the link itself, so trash, rename, move and marks act on the
     /// link (as in the Finder), and opening it goes to this folder.
     var linkTarget: URL?
+    /// A download not finished: its name has an in-progress ending
+    /// ("x.mp4.part", `DownloadName`). By the name, worked out once.
+    let isDownloading: Bool
+    /// An entry of an archive read only in part (a download not finished, a
+    /// volume missing) whose data runs past what is there.
+    var isIncomplete = false
+
+    /// The date a tile's preview is made for: a download still growing
+    /// changes its date with every write, so its preview is made again at
+    /// most every 30 seconds.
+    var previewDate: Date? {
+        guard isDownloading, let modDate else { return modDate }
+        return Date(timeIntervalSinceReferenceDate: (modDate.timeIntervalSinceReferenceDate / 30).rounded(.down) * 30)
+    }
+
+    /// What the tile's and row's small arrow says, nil for a whole file.
+    var unfinishedNote: String? {
+        if isDownloading { return String(localized: "Download not finished") }
+        return isIncomplete ? String(localized: "Incomplete") : nil
+    }
 
     init(url: URL, kind: Kind, modDate: Date? = nil, byteSize: Int? = nil, linkTarget: URL? = nil) {
         self.url = url
@@ -27,6 +47,7 @@ struct GridEntry: Identifiable, Hashable {
         self.byteSize = byteSize
         self.linkTarget = linkTarget
         isArchive = linkTarget == nil && Self.isArchive(url, kind: kind)
+        isDownloading = kind != .parent && DownloadName.isPartial(url.lastPathComponent)
     }
 
     var id: URL { url }
@@ -86,6 +107,9 @@ protocol PlaybackControl: AnyObject {
     func setVolume(_ volume: Double)
     /// The video's length in seconds, once known (the time left).
     var lengthSeconds: Double? { get }
+    /// Where the video stands, in seconds; nil while not known (the pane
+    /// remembers it when the user moves on, `PlaybackPositions`).
+    var playedSeconds: Double? { get }
     /// The codecs, once the player has opened the video (the Inspector).
     func streamFacts() async -> StreamFacts?
     /// The video's sound and subtitle tracks and which are on, once the
@@ -110,6 +134,7 @@ extension PlaybackControl {
     var playsWithoutLength: Bool { false }
     var videoSize: CGSize? { nil }
     var lengthSeconds: Double? { nil }
+    var playedSeconds: Double? { nil }
     func streamFacts() async -> StreamFacts? { nil }
     var tracks: VideoTracks { VideoTracks() }
     func selectAudioTrack(_ id: Int) {}
@@ -1312,6 +1337,18 @@ final class BrowserModel: ObservableObject {
 
     /// The file `activePlayer` plays (the Inspector asks only that one).
     var activePlayerURL: URL?
+
+    /// Where each video of the folder shown stood when the user left it;
+    /// cleared by another folder (`load`).
+    private(set) var playbackPositions = PlaybackPositions()
+
+    /// The video at `url` is left (another item, the grid, another folder):
+    /// where it stands is remembered for this folder. `list` is
+    /// `playbackPositions.list` from when it began to play.
+    func videoLeft(_ url: URL, player: PlaybackControl, list: Int) {
+        playbackPositions.leave(url, at: player.playedSeconds, length: player.lengthSeconds,
+                                playing: player.isPlaying, list: list)
+    }
     /// The player of the video on screen — for keyboard control
     /// (play/pause, skimming). Set by the video views.
     weak var activePlayer: PlaybackControl? {
@@ -1624,19 +1661,41 @@ final class BrowserModel: ObservableObject {
     nonisolated static let videoExtensions: Set<String> = [
         "mp4", "mov", "qt", "m4v", "avi", "mkv", "webm", "m2ts", "mts",
         "mpg", "mpeg", "m2v", "vob", "3gp", "3g2", "dv", "wmv", "flv", "ogv"
-        // (".ts" by its content: `TransportStreams`)
+        // (".ts" by its content: `isTransportStream`)
     ]
 
     /// The one rule for which files the app shows: image, video, or nil.
     /// "._" files are never pictures: macOS keeps a file's extra data in them
-    /// on volumes that can't hold it (SMB shares, exFAT, FAT).
+    /// on volumes that can't hold it (SMB shares, exFAT, FAT). A download
+    /// still in progress counts by the name it will have ("x.mp4.part" is a
+    /// video, `DownloadName`); a file whose name says nothing known counts
+    /// by what its first bytes showed (`ContentSniffer`, no disk access here).
     nonisolated static func mediaKind(of url: URL) -> GridEntry.Kind? {
         guard !url.lastPathComponent.hasPrefix("._") else { return nil }
-        let ext = url.pathExtension.lowercased()
+        let ext = DownloadName.finalExtension(of: url)
         if imageExtensions.contains(ext) { return .image }
         if videoExtensions.contains(ext) { return .video }
-        if ext == "ts", TransportStreams.shared.isVideo(url) { return .video }
-        return nil
+        if ext == "ts" { return isTransportStream(url) ? .video : nil }
+        return ContentSniffer.shared.known(url)?.mediaKind
+    }
+
+    /// ".ts" names TypeScript code far more often than an MPEG transport
+    /// stream (a TV or IPTV recording): such a file is a video only when its
+    /// first bytes show a transport stream (a sync byte every 188 or 192
+    /// bytes, as VLC opens it: `VLCSafety.container`), read once and kept
+    /// by `ContentSniffer`. Inside archives never (no first bytes without
+    /// unpacking).
+    nonisolated static func isTransportStream(_ url: URL) -> Bool {
+        ContentSniffer.shared.content(of: url)?.name == "MPEG-TS"
+    }
+
+    /// The extension that says what the file is: the one of the name a
+    /// download will have, else the one its content showed ("jpeg" for a
+    /// JPEG named "IMG"), else its own.
+    nonisolated static func shownExtension(of url: URL) -> String {
+        let ext = DownloadName.finalExtension(of: url)
+        if imageExtensions.contains(ext) || videoExtensions.contains(ext) || ext == "ts" { return ext }
+        return ContentSniffer.shared.known(url)?.fileExtension ?? ext
     }
 
     init(defaults: UserDefaults = .standard, fileActions: FileActions = .live, settingsPrefix: String = "") {
@@ -1738,6 +1797,7 @@ final class BrowserModel: ObservableObject {
         pendingResultSelection = nil
         accessLimited = false
         folderURL = location.folder
+        playbackPositions.enter(location.folder)
         entries = []
         allEntries = []
         otherFiles = []
@@ -1774,6 +1834,7 @@ final class BrowserModel: ObservableObject {
             switch scanned {
             case .success(let listing):
                 self.otherFiles = listing.others
+                self.sniffOtherFiles()
             case .failure(let error as CocoaError):
                 // A grant kept for a volume that wasn't there opens now: read again
                 if FolderAccess.shared.retry(covering: url) {
@@ -2014,6 +2075,12 @@ final class BrowserModel: ObservableObject {
             // (only parts of an archive the grid shows)
             let names = Set(listing.entries.filter(\.isArchive).map { $0.name.lowercased() })
             listing.others.removeAll { ArchiveName.firstVolumeNames(of: $0.name).contains { names.contains($0.lowercased()) } }
+            // Firefox makes an empty file of the final name when a download
+            // starts and writes into "x.mp4.part": the empty one isn't shown
+            let downloading = Set(listing.entries.filter(\.isDownloading).map { DownloadName.finalName(of: $0.name).lowercased() })
+            if !downloading.isEmpty {
+                listing.entries.removeAll { $0.byteSize == 0 && !$0.isDownloading && downloading.contains($0.name.lowercased()) }
+            }
             listing.others.sort { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
             return listing
         }
@@ -2062,8 +2129,8 @@ final class BrowserModel: ObservableObject {
         if isLink, ArchiveName.format(of: item.lastPathComponent) != nil,
            ArchiveName.format(of: target.lastPathComponent) != ArchiveName.format(of: item.lastPathComponent)
             || target.pathExtension.lowercased() != item.pathExtension.lowercased() { return nil }
-        // An archive opens like a folder
-        if ArchiveName.format(of: item.lastPathComponent) != nil {
+        // An archive opens like a folder (one found by its content too)
+        if ArchiveName.format(ofFile: item) != nil {
             ArchivePath.noteArchive(item)
             return GridEntry(url: item, kind: .folder, modDate: date, byteSize: vals?.fileSize)
         }
@@ -2112,7 +2179,7 @@ final class BrowserModel: ObservableObject {
                 guard let url = walk.nextObject() as? URL else { return false }
                 // An archive opens like a folder; what's in it isn't looked into
                 // here (that means unpacking), so it counts as holding something
-                if mediaKind(of: url) != nil || ArchiveName.format(of: url.lastPathComponent) != nil, isFile(url) { return true }
+                if mediaKind(of: url) != nil || ArchiveName.format(ofFile: url) != nil, isFile(url) { return true }
                 return nil
             }
             if let found { return found }
@@ -2252,7 +2319,7 @@ final class BrowserModel: ObservableObject {
             if key == .distance, let origin, let point = located[entry.url] { distance = origin.distance(to: point) }
             // (the extension only where the key reads it: a merge works this out for every probe)
             return Keyed(entry: entry, group: group, name: entry.name,
-                         ext: key == .kind && entry.isMedia ? entry.url.pathExtension.lowercased() : "",
+                         ext: key == .kind && entry.isMedia ? BrowserModel.shownExtension(of: entry.url) : "",
                          rank: rank, date: date, size: entry.byteSize ?? 0, distance: distance)
         }
 
@@ -2959,6 +3026,12 @@ final class BrowserModel: ObservableObject {
         let look: @Sendable () -> (exists: Bool, isFolder: Bool, isPackage: Bool) = {
             var isDir: ObjCBool = false
             let exists = FileManager.default.fileExists(atPath: first.path, isDirectory: &isDir)
+            // A file whose name says nothing known ("x.part", "IMG", "x.xyz")
+            // counts by its content: read before its folder is listed
+            if exists, !isDir.boolValue, BrowserModel.mediaKind(of: first) == nil,
+               ArchiveName.format(of: first.lastPathComponent) == nil {
+                ContentSniffer.shared.content(of: first)
+            }
             return (exists, isDir.boolValue, isDir.boolValue && BrowserModel.isPackage(first))
         }
         guard fileActions.runsOffMain else { openDropped(first, look(), slideshow: slideshow); return }
@@ -2970,7 +3043,7 @@ final class BrowserModel: ObservableObject {
         // An archive opens like a folder; a package (a Photos library, an
         // app) is one item, as in the Finder: its folder opens, with it selected
         let isPackage = found.isPackage
-        let opensAsFolder = (found.isFolder && !isPackage) || ArchiveName.format(of: first.lastPathComponent) != nil
+        let opensAsFolder = (found.isFolder && !isPackage) || (!found.isFolder && ArchiveName.format(ofFile: first) != nil)
         let folder = opensAsFolder ? first : first.deletingLastPathComponent()
         let file = opensAsFolder ? nil : first
         if slideshow {
@@ -4242,12 +4315,59 @@ final class BrowserModel: ObservableObject {
     /// The watch follows the folder shown (none inside an archive: nothing
     /// changes there).
     private func updateWatch() {
+        watchArchiveDownload()
         guard watchesFolder, inWindow, let folderURL, ArchivePath.split(folderURL) == nil else { watch = nil; return }
         guard watch?.path != folderURL.path else { return }
         watch = nil
         watch = FolderWatch(path: folderURL.path) { [weak self] changed, rootChanged in
             self?.changedOutside(changed, rootChanged: rootChanged)
         }
+    }
+
+    private var archiveDownload: (archive: URL, task: Task<Void, Never>)?
+
+    /// Inside an archive whose download isn't finished ("x.rar.part"): its
+    /// size is looked at every three seconds, and when it grew its listing
+    /// is read again and merged in place (what arrived shows, the selection
+    /// stays). Renamed to its final name ("x.rar"), the pane follows it.
+    private func watchArchiveDownload() {
+        guard watchesFolder, inWindow, let folderURL, let archive = ArchivePath.split(folderURL)?.archive,
+              DownloadName.isPartial(archive.lastPathComponent) else {
+            archiveDownload?.task.cancel()
+            archiveDownload = nil
+            return
+        }
+        guard archiveDownload?.archive != archive else { return }
+        archiveDownload?.task.cancel()
+        let task = Task { [weak self] in
+            func size() async -> Int64? {
+                await Blocking.run(.utility) {
+                    var info = stat()
+                    return stat(archive.path, &info) == 0 ? Int64(info.st_size) : nil
+                }
+            }
+            var known = await size()
+            while !Task.isCancelled {
+                try? await Task.sleep(for: .seconds(3))
+                let now = await size()
+                guard let self, !Task.isCancelled else { return }
+                if now == nil {
+                    let final = archive.deletingLastPathComponent().appendingPathComponent(DownloadName.finalName(of: archive.lastPathComponent))
+                    if await Blocking.run(.utility, { FileManager.default.fileExists(atPath: final.path) }) {
+                        let change = FileChange.moved(archive, to: final)
+                        self.followFolder(through: [change])
+                        self.applyHere([change])
+                    }
+                    return
+                }
+                guard now != known, !self.isLoading, let shown = self.folderURL else { continue }
+                known = now
+                if case .success(let listing) = await Self.listing(shown), self.folderURL == shown, !self.isLoading {
+                    self.merge(listing)
+                }
+            }
+        }
+        archiveDownload = (archive, task)
     }
 
     /// FSEvents: something changed in or below the folder shown (`changed`:
@@ -4354,9 +4474,13 @@ final class BrowserModel: ObservableObject {
     /// every list (as if trashed here), what came or changed goes where it
     /// sorts; nothing else moves.
     private func merge(_ listing: FolderListing) {
-        if listing.others != otherFiles { otherFiles = listing.others }
+        if listing.others != otherFiles {
+            otherFiles = listing.others
+            sniffOtherFiles()
+        }
         var fresh: [String: GridEntry] = [:]
         for entry in listing.entries { fresh[Self.canonicalPath(entry.url)] = entry }
+        followFinishedDownloads(fresh)
         var gone: [FileChange] = []
         var renewed: [GridEntry] = []
         var listed = Set<String>()
@@ -4388,6 +4512,62 @@ final class BrowserModel: ObservableObject {
         entries = allEntries
         keepSelection(index(of: keep) ?? previous.map { min($0, entries.count - 1) })
     }
+
+    /// A download finished: its tool renamed "x.mp4.part" to "x.mp4". That
+    /// is a move for every list (`FileChange.moved`), so the selection, the
+    /// marks and the video playing go on with the file under its new name.
+    /// An empty file of the final name listed before (Firefox makes one when
+    /// the download starts) goes.
+    private func followFinishedDownloads(_ fresh: [String: GridEntry]) {
+        var placeholders: [FileChange] = []
+        var finished: [FileChange] = []
+        let listed = Set(allEntries.map { Self.canonicalPath($0.url) })
+        for entry in allEntries where entry.isDownloading && fresh[Self.canonicalPath(entry.url)] == nil {
+            let final = entry.url.deletingLastPathComponent().appendingPathComponent(DownloadName.finalName(of: entry.name))
+            let finalPath = Self.canonicalPath(final)
+            guard let now = fresh[finalPath], now.kind == entry.kind else { continue }
+            if listed.contains(finalPath) { placeholders.append(.removed(final)) }
+            finished.append(.moved(entry.url, to: final))
+        }
+        if !placeholders.isEmpty { applyHere(placeholders) }
+        if !finished.isEmpty { applyHere(finished) }
+    }
+
+    /// Other files whose names say nothing known ("IMG", "x.xyz", "x.part")
+    /// have their first bytes read off the main thread (`ContentSniffer`,
+    /// once per file and size, at most `sniffLimit` of a listing); a
+    /// picture, video or archive among them is listed again, in the grid.
+    private func sniffOtherFiles() {
+        sniffing?.cancel()
+        guard let folderURL, ArchivePath.split(folderURL) == nil, !otherFiles.isEmpty else { return }
+        let files = otherFiles
+        let generation = loadGeneration
+        sniffing = Task {
+            let found = await Blocking.run(.utility) { () -> Bool in
+                let candidates = files.lazy.filter {
+                    ContentSniffer.isUnknown($0.name) && ContentSniffer.shared.needsReading($0.url, size: $0.byteSize)
+                }.prefix(Self.sniffLimit).map(\.url)
+                let urls = Array(candidates)
+                guard !urls.isEmpty else { return false }
+                let any = ManagedFlag()
+                // A few at a time: on a network share each is a round trip
+                DispatchQueue.concurrentPerform(iterations: min(4, urls.count)) { lane in
+                    for index in stride(from: lane, to: urls.count, by: 4) {
+                        let content = ContentSniffer.shared.content(of: urls[index])
+                        if content?.mediaKind != nil || content?.archiveFormat != nil { any.set() }
+                    }
+                }
+                return any.isSet
+            }
+            while isLoading, loadGeneration == generation, !Task.isCancelled { try? await Task.sleep(for: .milliseconds(100)) }
+            guard found, !Task.isCancelled, loadGeneration == generation else { return }
+            relist(force: true)
+        }
+    }
+
+    private var sniffing: Task<Void, Never>?
+    /// Files of a listing read for their content at most.
+    nonisolated static let sniffLimit = 5_000
 
     /// The folder shown went (deleted, moved away, its volume gone): the
     /// nearest folder around it still there opens, at last the drives' level.
@@ -4946,6 +5126,7 @@ final class BrowserModel: ObservableObject {
         let keep = selectedEntry.flatMap { lookup.url($0.url) }
         let previous = selection
         if !marked.isEmpty { marked = Set(marked.compactMap { lookup.path($0) }) }
+        playbackPositions.follow(lookup)
         allEntries = order.following(allEntries, lookup)
         for run in allSearches { run.apply(changes) }
         pendingResultSelection = pendingResultSelection.flatMap { lookup.url($0) }
@@ -5702,9 +5883,11 @@ final class AVPlaybackControl: PlaybackControl {
     /// holds it weakly).
     var resourceLoader: ArchiveResourceLoader?
     private var observation: NSKeyValueObservation?
+    private let onStateChange: @MainActor (PlaybackControl, Bool) -> Void
 
     init(player: AVPlayer, onStateChange: @escaping @MainActor (PlaybackControl, Bool) -> Void = { _, _ in }) {
         self.player = player
+        self.onStateChange = onStateChange
         // The subtitles and sound track the app chooses, not the system's
         // accessibility preferences; another speed keeps the pitch
         player.appliesMediaSelectionCriteriaAutomatically = false
@@ -5712,7 +5895,7 @@ final class AVPlaybackControl: PlaybackControl {
         observation = player.observe(\.timeControlStatus) { [weak self] player, _ in
             let playing = player.timeControlStatus != .paused
             Task { @MainActor in
-                guard let self else { return }
+                guard let self, self.resumeAt == nil else { return }
                 // A look set after the last frame was drawn (just before the
                 // end) reaches the picture it stops on
                 if !playing, self.enhancer?.isStale == true { self.redrawIfPaused() }
@@ -5721,7 +5904,53 @@ final class AVPlaybackControl: PlaybackControl {
         }
     }
 
-    var isPlaying: Bool { player.timeControlStatus != .paused }
+    var isPlaying: Bool { resumeAt?.playing ?? (player.timeControlStatus != .paused) }
+
+    /// Where the video goes on, until the player is there: it stands
+    /// (paused, unreported) until the item can seek.
+    private var resumeAt: PlaybackPositions.Place?
+    private var resumeTask: Task<Void, Never>?
+    /// (An item that never gets ready isn't waited for after the player went.)
+    deinit { resumeTask?.cancel() }
+
+    /// Starts the video: from the beginning, playing, or where the user left
+    /// it (`place`), playing or paused as then. The seek waits until the item
+    /// is ready (before, it has nothing it can seek in).
+    func begin(at place: PlaybackPositions.Place?) {
+        guard let place else { play(); return }
+        resumeAt = place
+        BrowserModel.testLog("avkit resumes at \(String(format: "%.1f", place.seconds)) s, \(place.playing ? "playing" : "paused")")
+        resumeTask = Task { @MainActor [weak self] in
+            // (asked every 50 ms, as long as the player is there, at most 10 s)
+            var waited = 0
+            while let item = self?.player.currentItem, item.status == .unknown, !Task.isCancelled, waited < 200 {
+                try? await Task.sleep(for: .milliseconds(50))
+                waited += 1
+            }
+            guard let self, !Task.isCancelled, let place = self.resumeAt else { return }
+            BrowserModel.testLog("avkit item status \(self.player.currentItem?.status.rawValue ?? -1) after \(waited * 50) ms")
+            // A seek of the player's own (a subtitle track chosen, a look
+            // redrawn) interrupts this one: it is made again
+            for attempt in 1...5 where self.player.currentItem.map({ $0.status != .failed }) == true {
+                let done = await self.player.seek(to: CMTime(seconds: place.seconds, preferredTimescale: 600),
+                                                  toleranceBefore: .zero, toleranceAfter: .zero)
+                BrowserModel.testLog("avkit resume seek \(attempt): \(done ? "there" : "interrupted"), at \(String(format: "%.1f", CMTimeGetSeconds(self.player.currentTime()))) s")
+                if done || Task.isCancelled { break }
+                try? await Task.sleep(for: .milliseconds(100))
+            }
+            // (Space may have changed its mind meanwhile)
+            guard !Task.isCancelled, let place = self.resumeAt else { return }
+            self.resumeAt = nil
+            if place.playing { self.player.play() } else { self.onStateChange(self, false) }
+        }
+    }
+
+    /// Where it stands (the place it goes on from, while getting there).
+    var playedSeconds: Double? {
+        if let resumeAt { return resumeAt.seconds }
+        let seconds = CMTimeGetSeconds(player.currentTime())
+        return seconds.isFinite ? seconds : nil
+    }
 
     func setVolume(_ volume: Double) { player.volume = Float(volume) }
     var playerVolume: Double? { Double(player.volume) }
@@ -5827,6 +6056,8 @@ final class AVPlaybackControl: PlaybackControl {
             // (once the item can seek)
             for _ in 0..<50 {
                 guard let self, let item = self.player.currentItem else { return }
+                // Getting to where it was left: that seek draws the choice
+                if self.resumeAt != nil { try? await Task.sleep(for: .milliseconds(100)); continue }
                 if item.status == .readyToPlay {
                     self.player.seek(to: self.player.currentTime(), toleranceBefore: .zero, toleranceAfter: .zero) { _ in
                         guard clearing else { return }
@@ -5869,8 +6100,13 @@ final class AVPlaybackControl: PlaybackControl {
         return await StreamFacts.of(asset)
     }
 
-    /// At the end, playing starts over.
+    /// At the end, playing starts over. While getting to the place it goes
+    /// on from, it then plays there.
     func play() {
+        if let place = resumeAt {
+            resumeAt = PlaybackPositions.Place(seconds: place.seconds, playing: true)
+            return
+        }
         if let item = player.currentItem {
             let duration = CMTimeGetSeconds(item.duration)
             if duration.isFinite, duration > 0, CMTimeGetSeconds(player.currentTime()) >= duration - 0.05 {
@@ -5880,7 +6116,13 @@ final class AVPlaybackControl: PlaybackControl {
         player.play()
     }
 
-    func pause() { player.pause() }
+    func pause() {
+        if let place = resumeAt {
+            resumeAt = PlaybackPositions.Place(seconds: place.seconds, playing: false)
+            return
+        }
+        player.pause()
+    }
 
     private var composition: AVVideoComposition?
     private var enhancer: VideoEnhancer?
@@ -5958,10 +6200,11 @@ final class AVPlaybackControl: PlaybackControl {
     /// composition put back just now, can still leave the frame drawn with
     /// an earlier look: a stale frame is drawn again, a little later each time.
     private func redrawIfPaused(after delay: Duration = .zero, attempts: Int = 6) {
-        guard !isPlaying else { return }
+        // (getting to where it was left: that seek draws the look)
+        guard !isPlaying, resumeAt == nil else { return }
         Task { @MainActor [weak self] in
             if delay > .zero { try? await Task.sleep(for: delay) }
-            guard let self, !self.isPlaying else { return }
+            guard let self, !self.isPlaying, self.resumeAt == nil else { return }
             let now = self.player.currentTime()
             if let frame = self.frameDuration, now.seconds.isFinite {
                 // A quarter and a half into the frame shown, by turns
@@ -6016,33 +6259,5 @@ final class AVPlaybackControl: PlaybackControl {
         player.seek(to: CMTime(seconds: duration * min(max(progress, 0), 1), preferredTimescale: 600),
                     toleranceBefore: .zero, toleranceAfter: .zero)
         if ended { player.play() }
-    }
-}
-
-/// ".ts" names TypeScript code far more often than an MPEG transport stream
-/// (a TV or IPTV recording): such a file is a video only when its first bytes
-/// show a transport stream (a sync byte every 188 or 192 bytes, as VLC opens
-/// it: `VLCSafety.container`). Each file is read once; the answer is kept by
-/// its path, size and date, so a file written anew is read again.
-final class TransportStreams: @unchecked Sendable {
-    static let shared = TransportStreams()
-    private let lock = NSLock()
-    private var known: [String: (stamp: String, video: Bool)] = [:]
-    /// Kept answers at most (a folder of code has many .ts files).
-    private let limit = 20_000
-
-    func isVideo(_ url: URL) -> Bool {
-        // A path through an archive has no first bytes to read without unpacking
-        guard !ArchivePath.isInside(url) else { return false }
-        var info = stat()
-        guard stat(url.path, &info) == 0, (info.st_mode & S_IFMT) == S_IFREG else { return false }
-        let stamp = "\(info.st_size) \(info.st_mtimespec.tv_sec).\(info.st_mtimespec.tv_nsec)"
-        if let answer = lock.withLock({ known[url.path] }), answer.stamp == stamp { return answer.video }
-        let video = VLCSafety.head(of: url).flatMap(VLCSafety.container(in:))?.demux == "ts"
-        lock.withLock {
-            if known.count >= limit { known.removeAll(keepingCapacity: true) }
-            known[url.path] = (stamp, video)
-        }
-        return video
     }
 }

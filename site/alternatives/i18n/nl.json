@@ -1,0 +1,2375 @@
+{
+ "ui": {
+  "overviewTitle": "Schnellbild als alternatief",
+  "overviewSeoTitle": "Gratis Mac-alternatief voor {names} · Schnellbild",
+  "overviewDescription": "Schnellbild vergeleken met {count} fotoviewers, videospelers, stripreaders en bestandsbeheerders, functie voor functie en met bronnen. Gratis, open source, voor de Mac.",
+  "overviewIntro": "<p>Schnellbild is een alternatief met een duidelijke mening. Mappen in plaats van afspeellijsten en een bibliotheek: open een map en de lijst staat er, de diavoorstelling maakt de afspeellijst zelf. Niets van internet, uit principe: geen account, geen tracking, helemaal geen netwerk. En gratis, inclusief je eigen toetscombinaties, waar sommige andere programma’s geld voor vragen.</p><p>Zo verhoudt hij zich tot de programma’s die mensen op de Mac zoeken, met een bron voor elke cel. Waar een ander programma beter is, staat dat er ook.</p>",
+  "overviewNoMac": "Deze draaien alleen op Windows (of niet meer op een Mac van nu). Per programma: wat de fans er goed aan vonden en hoe Schnellbild dat doet.",
+  "matrixH1": "Een gratis alternatief voor {name} op de Mac",
+  "matrixSeoTitle": "{name} alternatief voor Mac, gratis · Schnellbild",
+  "matrixDescription": "{name} of Schnellbild? Functie voor functie vergeleken, met bronnen: waar {name} sterker is en waar Schnellbild. Gratis, open source, speelt MKV af, opent ZIP en RAR als mappen.",
+  "matrixLead": "Schnellbild en {name} naast elkaar: wat elk beter doet, en daarna elke functie met een bron.",
+  "switcherH1": "{name} voor Mac? Dit is het alternatief",
+  "switcherSeoTitle": "{name} voor Mac? Gratis alternatief · Schnellbild",
+  "switcherDescription": "Zoek je {name} voor de Mac? Wat fans van {name} goed vinden en hoe Schnellbild het doet, gratis: mappen, toetsen, MKV, ZIP en RAR als mappen.",
+  "facts": "{name} in het kort",
+  "factPrice": "Prijs",
+  "factPlatforms": "Platforms",
+  "factVersion": "Versie",
+  "factUpdated": "Laatste update",
+  "aboutTitle": "Waar {name} goed in is",
+  "theyWin": "Waar {name} sterker is",
+  "weWin": "Waar Schnellbild sterker is",
+  "matrixTitle": "Functie voor functie",
+  "colFeature": "Functie",
+  "legendTitle": "Wat de symbolen betekenen",
+  "yes": "Ja",
+  "no": "Nee",
+  "partial": "Deels",
+  "intentional": "Bewust weggelaten",
+  "na": "Niet van toepassing",
+  "source": "Bron {n}",
+  "sources": "Bronnen",
+  "asOf": "Stand november 2026: {name} {version}, Schnellbild {ours}. De kolom van {name} komt uit de bronnen hieronder, die van Schnellbild uit de README en de broncode.",
+  "leftOut": "Weggelaten bij gebrek aan een betrouwbare bron over {name}: {count} van {total} functies.",
+  "fileManager": "Schnellbild is geen volledige bestandsbeheerder: geen FTP-, SFTP- of cloudverbindingen, geen mappen synchroniseren, geen archieven inpakken. Hij is gemaakt om foto’s en video’s door te kijken en te sorteren: miniaturen van alles, twee panelen naast elkaar met F5 om te kopiëren en F6 om te verplaatsen, archieven die opengaan als mappen.",
+  "likedTitle": "Wat fans van {name} goed vinden, en hoe dat in Schnellbild werkt",
+  "aheadTitle": "Waar {name} voor blijft",
+  "purposeTitle": "Bewust weggelaten",
+  "similarTitle": "Vergelijkbare alternatieven",
+  "allAlternatives": "Alle alternatieven",
+  "breadcrumb": "Alternatieven",
+  "trademark": "{name} is een product van {vendor}. Alle namen en handelsmerken zijn eigendom van hun eigenaars; Schnellbild is niet aan hen gelieerd.",
+  "trademarkAll": "Alle productnamen en handelsmerken zijn eigendom van hun eigenaars; Schnellbild is niet aan hen gelieerd.",
+  "ctaTitle": "Probeer het met je eigen mappen.",
+  "ctaText": "Gratis, geen account, alle functies inbegrepen.",
+  "keywords": "{name} mac, {name} voor mac, {name} alternatief, {name} alternatief mac, gratis {name} alternatief, {name} downloaden mac, {name} vs Schnellbild, Schnellbild",
+  "listSep": ", "
+ },
+ "sections": {
+  "image": "Fotoviewers",
+  "video": "Videospelers",
+  "comic": "Stripreaders",
+  "files": "Bestandsbeheerders",
+  "photos": "Apple en fotobeheer",
+  "windows": "Overstappers van Windows"
+ },
+ "jokes": {
+  "image": "Je bent overgestapt op de Mac. De foto’s zijn mee verhuisd, je vingers kennen de sneltoetsen nog, alleen {name} is achtergebleven op de oude pc. Zo hoeft het niet te blijven.",
+  "video": "Nieuwe Mac, dezelfde video’s, en uitgerekend {name} is niet mee verhuisd. Die MKV’s spelen zichzelf niet af.",
+  "comic": "Je strips zijn zonder morren mee verhuisd naar de Mac. {name} bleef liever thuis.",
+  "files": "Twee panelen, functietoetsen, sneltoetsen die je al blind kent sinds de diskette. Toen kwam de Mac, en {name} kwam de deur niet in.",
+  "photos": "Je foto’s zijn naar de Mac verhuisd. {name} niet, die bleef op de oude pc."
+ },
+ "groups": {
+  "basics": "Basis",
+  "browse": "Bladeren",
+  "images": "Afbeeldingen",
+  "video": "Video’s",
+  "archives": "Archieven en strips",
+  "files": "Bestanden",
+  "keys": "Toetsenbord",
+  "safety": "Veiligheid"
+ },
+ "rows": {
+  "free": {
+   "label": "Gratis, alle functies",
+   "how": "Alle functies in de gratis download, geen pro-versie."
+  },
+  "open_source": {
+   "label": "Open source",
+   "how": "MIT-licentie, de broncode staat op GitHub."
+  },
+  "native_apple_silicon": {
+   "label": "Native op Apple silicon",
+   "how": "Gebouwd voor Apple silicon.",
+   "note": "alleen Apple silicon"
+  },
+  "no_account_no_tracking": {
+   "label": "Geen account, geen advertenties, geen tracking",
+   "how": "Geen account, geen advertenties, geen analytics."
+  },
+  "dark_light_setting": {
+   "label": "Licht of donker, los van het systeem",
+   "how": "Instellingen (⌘,): zoals het systeem, licht of donker."
+  },
+  "languages_20": {
+   "label": "Interface in veel talen",
+   "how": "20 talen, volgt de taal van je Mac.",
+   "note": "20 talen"
+  },
+  "folder_browsing": {
+   "label": "Bladert direct door mappen, zonder import",
+   "how": "Open een map met ⌘O of sleep hem op het venster."
+  },
+  "thumbnail_grid": {
+   "label": "Miniaturenraster met voorvertoning van mappen",
+   "how": "Mappen tonen hun eerste afbeeldingen; mappen zonder afbeeldingen zijn grijs."
+  },
+  "list_view": {
+   "label": "Lijstweergave met kolommen",
+   "how": "L wisselt tussen raster en lijst."
+  },
+  "recursive_search": {
+   "label": "Namen zoeken in alle submappen",
+   "how": "Het zoekveld (⌘F) doorzoekt de map en alle submappen."
+  },
+  "regex_search": {
+   "label": "Zoeken met reguliere expressies",
+   "how": ".* naast het zoekveld neemt een reguliere expressie."
+  },
+  "network_shares_fast": {
+   "label": "Snel op netwerkshares en in grote mappen",
+   "how": "Miniaturen komen binnen terwijl je scrolt, ook op netwerkshares."
+  },
+  "multiple_windows": {
+   "label": "Meerdere vensters",
+   "how": "⌘N opent nog een venster."
+  },
+  "bookmarks": {
+   "label": "Bladwijzers voor mappen",
+   "how": "⌘D zet een bladwijzer, ⌃1 … ⌃9 openen ze."
+  },
+  "img_modern_formats": {
+   "label": "HEIC, AVIF, JPEG XL, WebP",
+   "how": "Via ImageIO van macOS zelf."
+  },
+  "img_raw": {
+   "label": "Camera-RAW",
+   "how": "De RAW-formaten die macOS kent, ontwikkeld door macOS.",
+   "note": "de modellen die macOS kent"
+  },
+  "img_psd_exr": {
+   "label": "PSD, OpenEXR",
+   "how": "Getoond zoals elke andere afbeelding."
+  },
+  "img_svg_pdf": {
+   "label": "SVG en PDF",
+   "how": "Als vectorafbeeldingen, elke pagina van een PDF."
+  },
+  "img_animated": {
+   "label": "Geanimeerde GIF, PNG, WebP",
+   "how": "Ze spelen af, en zoomen en draaien zoals elke afbeelding."
+  },
+  "keyboard_paging": {
+   "label": "Bladeren met het toetsenbord",
+   "how": "Spatie opent een afbeelding, ← → bladeren door de map."
+  },
+  "zoom_rotate": {
+   "label": "Zoomen, verschuiven, draaien (alleen weergave)",
+   "how": "+ − of knijpen om te zoomen, ⌥← ⌥→ om te draaien; het bestand blijft zoals het is."
+  },
+  "slideshow": {
+   "label": "Diavoorstelling",
+   "how": "S start hem, Spatie pauzeert."
+  },
+  "slideshow_recursive": {
+   "label": "Diavoorstelling door alle submappen, foto’s en video’s door elkaar",
+   "how": "Elke submap, foto’s en video’s door elkaar, in jouw sorteervolgorde."
+  },
+  "auto_enhance_view": {
+   "label": "Automatisch verbeteren en schuifknoppen zonder het bestand te wijzigen",
+   "how": "E verbetert, A toont de schuifknoppen; alleen de weergave verandert."
+  },
+  "file_info_exif": {
+   "label": "Bestandsinfo: EXIF, codecs, bitsnelheid",
+   "how": "I toont formaat, camera, codecs en bitsnelheid."
+  },
+  "wrong_extension_note": {
+   "label": "Meldt bestanden waarvan de extensie niet bij de inhoud past",
+   "how": "De bestandsinfo noemt de extensie die past."
+  },
+  "video_native": {
+   "label": "Speelt MP4, MOV af",
+   "how": "Via macOS zelf."
+  },
+  "video_mkv_avi_webm": {
+   "label": "Speelt MKV, WebM, AVI, WMV, FLV af",
+   "how": "Via de ingebouwde VLC-engine.",
+   "note": "ingebouwde VLC-engine"
+  },
+  "photos_videos_one_grid": {
+   "label": "Foto’s en video’s samen in één raster",
+   "how": "Eén raster voor allebei, in elke map."
+  },
+  "video_skim_arrows": {
+   "label": "Door video’s springen met de pijltoetsen",
+   "how": "← → springen een tiende van de video, met ⇧ een honderdste."
+  },
+  "subtitles_embedded": {
+   "label": "Ondertitels uit de video zelf",
+   "how": "V zet ze aan en uit, ⌃⌘S kiest de track."
+  },
+  "subtitles_external_files": {
+   "label": "Laadt ondertitelbestanden naast de video",
+   "why": "Leest alleen de video zelf, niets wat ernaast staat."
+  },
+  "audio_track_choice": {
+   "label": "Audiotrack kiezen",
+   "how": "⌃⌘A of de bedieningsbalk."
+  },
+  "playback_speed": {
+   "label": "Afspeelsnelheid",
+   "how": "< en > van 0,5× tot 2×, stemmen houden hun toonhoogte."
+  },
+  "control_bar_movable": {
+   "label": "Bedieningsbalk die blijft waar je hem neerzet",
+   "how": "Sleep hem aan zijn greep: hij blijft daar bij elke video."
+  },
+  "playlist": {
+   "label": "Afspeellijst",
+   "how": "De lijst van de diavoorstelling als zijbalk: herschikken, dingen eruit halen.",
+   "note": "ter plekke gemaakt uit de diavoorstelling, niet bewaard"
+  },
+  "saved_playlists": {
+   "label": "Bewaarde afspeellijsten",
+   "why": "Mappen in plaats van afspeellijsten: de diavoorstelling maakt de lijst."
+  },
+  "pip": {
+   "label": "Beeld-in-beeld",
+   "why": "Gemaakt om door mappen te kijken; om iets naast je werk te kijken past een videospeler beter."
+  },
+  "music_mode": {
+   "label": "Audiobestanden, muziekmodus",
+   "why": "Alleen afbeeldingen en video’s; audiobestanden openen in hun eigen app."
+  },
+  "streaming_urls": {
+   "label": "Speelt streams en adressen van internet af",
+   "why": "Gaat nooit online, uit principe."
+  },
+  "online_subtitles": {
+   "label": "Downloadt ondertitels van internet",
+   "why": "Gaat nooit online, uit principe."
+  },
+  "video_filters_enhance": {
+   "label": "Videoaanpassingen (helderheid, contrast …)",
+   "how": "Dezelfde schuifknoppen als voor foto’s."
+  },
+  "quicklook_mkv_thumbnails": {
+   "label": "Miniaturen in Finder en Snelle weergave voor MKV en meer",
+   "how": "MKV, WebM, WMV, FLV en VOB krijgen miniaturen in de Finder.",
+   "note": "MKV, WebM, WMV, FLV, Ogg, VOB"
+  },
+  "archives_as_folders": {
+   "label": "ZIP, RAR, 7z openen als mappen",
+   "how": "Geopend als mappen, niets uitgepakt naar de schijf."
+  },
+  "comics_cbz_cbr": {
+   "label": "Strips CBZ, CBR",
+   "how": "CBZ en CBR openen als mappen; bladeren met ← →."
+  },
+  "archive_passwords": {
+   "label": "Archieven met wachtwoord",
+   "how": "Vraagt één keer en onthoudt het.",
+   "note": "ZIP en RAR; versleutelde 7z gaan niet open"
+  },
+  "split_archives": {
+   "label": "Archieven in meerdere delen",
+   "how": "Eén keer getoond, via het eerste deel."
+  },
+  "videos_in_archives": {
+   "label": "Speelt video’s direct uit archieven af",
+   "how": "Rechtstreeks uit het archief gestreamd."
+  },
+  "manga_two_page": {
+   "label": "Dubbele pagina, mangamodus van rechts naar links",
+   "why": "Eén afbeelding tegelijk, zo groot als het venster."
+  },
+  "rename_trash": {
+   "label": "Naam wijzigen, prullenmand, nieuwe map",
+   "how": "Return of F2 wijzigt de naam, ⌘⌫ naar de prullenmand, ⇧⌘N maakt een map."
+  },
+  "move_copy": {
+   "label": "Verplaatsen en kopiëren door naar mappen te slepen",
+   "how": "Sleep tegels op een map."
+  },
+  "dual_pane": {
+   "label": "Twee panelen naast elkaar (F5 kopiëren, F6 verplaatsen)",
+   "how": "D toont twee panelen, F5 kopieert, F6 verplaatst."
+  },
+  "undo_file_actions": {
+   "label": "Naam wijzigen, verplaatsen, prullenmand ongedaan maken",
+   "how": "Bovenaan in het contextmenu."
+  },
+  "image_editing": {
+   "label": "Bewerkt afbeeldingen (bijsnijden, schalen, bewaren)",
+   "why": "Toont foto’s zonder ze te veranderen: je bestanden blijven zoals ze zijn."
+  },
+  "batch_convert": {
+   "label": "In bulk converteren of hernoemen",
+   "why": "Bulk converteren en hernoemen laat Schnellbild aan andere apps over."
+  },
+  "library_catalog": {
+   "label": "Bibliotheek, catalogus, tags, beoordelingen",
+   "why": "Mappen in plaats van een bibliotheek: niets te importeren."
+  },
+  "cloud_sync": {
+   "label": "Cloudsynchronisatie, online delen",
+   "why": "Gaat nooit online, uit principe."
+  },
+  "keyboard_first": {
+   "label": "Alles met het toetsenbord",
+   "how": "Elke actie heeft een toets."
+  },
+  "custom_shortcuts": {
+   "label": "Eigen toetscombinaties",
+   "how": "Stel je eigen toetsen in, gratis, met een voorinstelling zoals in Phiewer.",
+   "note": "gratis, met een voorinstelling zoals in Phiewer"
+  },
+  "shortcut_cheatsheet": {
+   "label": "Afdrukbaar overzicht van alle toetsen",
+   "how": "F1 toont elke toets, ook om af te drukken."
+  },
+  "boss_key": {
+   "label": "Baastoets (alles in één keer verbergen)",
+   "how": "X verbergt elk venster en zet elke video stil."
+  },
+  "app_sandbox": {
+   "label": "Draait in de App Sandbox van Apple",
+   "how": "De app en zijn extensies draaien erin."
+  },
+  "no_network": {
+   "label": "Gaat nooit online",
+   "how": "Helemaal geen netwerktoegang."
+  },
+  "notarized_attested": {
+   "label": "Genotariseerd, aantoonbaar gebouwd uit openbare broncode",
+   "how": "Elke download heeft de build-attestatie van GitHub."
+  },
+  "mac_app_store": {
+   "label": "In de Mac App Store",
+   "how": "Binnenkort, voor € 0,99 om het te steunen.",
+   "note": "binnenkort, € 0,99 om het te steunen"
+  }
+ },
+ "products": {
+  "2345-kantuwang": {
+   "name": "2345看图王",
+   "vendor": "2345.com",
+   "summary": "Een van de meest geïnstalleerde fotoviewers voor Windows in China: opent snel zo’n 98 afbeeldingsformaten, waaronder PSD, RAW, SVG en AVIF, plus PDF/OFD en CAD. Er zitten lichte bewerking, bulktools, OCR, pasfoto’s en AI-uitknippen bij, deels achter een VIP-lidmaatschap.",
+   "wins": [
+    "Zeer lange lijst afbeeldingsformaten (PSD/PSB, AI, RAW, CAD, OFD)",
+    "Ingebouwde bewerking, bulk converteren/hernoemen, OCR, pasfoto’s en afdrukken",
+    "Vertrouwd voor Chinese Windows-gebruikers, sneltoetsen compatibel met ACDSee"
+   ],
+   "price": "Viewer gratis; VIP-lidmaatschap voor extra’s voor bewerking/AI/PDF (per maand, per jaar, levenslang)",
+   "version": "13.2",
+   "updated": "2025-09-30 (vermelding in de Tencent-store voor v13.2; artikelen op de site tot 2026-10)",
+   "platforms": "Windows"
+  },
+  "5kplayer": {
+   "name": "5KPlayer",
+   "vendor": "Digiarty Software",
+   "summary": "Gratis alles-in-één mediaspeler voor Mac en Windows die video, muziek, dvd’s en radio afspeelt, AirPlay-schermdeling ontvangt, via DLNA streamt en online video’s downloadt.",
+   "wins": [
+    "AirPlay-ontvanger en opnemen van schermdeling",
+    "DLNA-server/renderer",
+    "Downloader voor online video’s (YouTube enz.)",
+    "Afspelen van dvd en ISO",
+    "Muziekbibliotheek, radio, IPTV",
+    "Afspeelsnelheid, videoknipper, MP3 uit video halen"
+   ],
+   "price": "Gratis (met advertenties, optionele registratie per e-mail)",
+   "version": "6.11",
+   "updated": "2026-01-30",
+   "platforms": "macOS, Windows",
+   "notes": {
+    "list_view": "Bibliotheeklijsten (favorieten, YouTube, DLNA, afspeellijst), geen bestandskolommen",
+    "bookmarks": "Bladwijzers in video’s en favorieten, geen bladwijzers voor mappen",
+    "zoom_rotate": "Draait/spiegelt video 90 graden; geen afbeeldingen",
+    "auto_enhance_view": "Video Tuner en video-effecten, alleen voor video; geen foto’s",
+    "file_info_exif": "Media-info: bron, tracks, formaat; geen EXIF (geen afbeeldingen)",
+    "pip": "Geen beeld-in-beeld; ‘altijd bovenop’",
+    "online_subtitles": "Downloadt YouTube-ondertitels met een video; niet voor lokale bestanden",
+    "batch_convert": "Converteert video één voor één naar MP3/AAC/MP4; volledige converter is apart en betaald",
+    "library_catalog": "Bibliotheek met favorieten en afspeellijsten; geen tags/beoordelingen",
+    "cloud_sync": "Geen cloudsync; deelt naar DLNA-/AirPlay-apparaten",
+    "keyboard_first": "Sneltoetsen voor afspelen; bibliotheek vooral met de muis",
+    "shortcut_cheatsheet": "Lijst met sneltoetsen in de online handleiding",
+    "notarized_attested": "Genotariseerd (Developer ID); closed source"
+   }
+  },
+  "acdsee": {
+   "name": "ACDSee",
+   "vendor": "ACD Systems",
+   "summary": "Gevestigde DAM- en RAW-editor voor foto’s die zonder import op bestaande mappen werkt: catalogusdatabase, beoordelingen, trefwoorden, gezichten en trefwoorden via AI, niet-destructieve ontwikkelmodus en bulktools. De Windows-edities spelen ook gangbare video’s af en bladeren door ZIP/RAR-archieven; de Mac-editie kan daar minder. Betaald, bedoeld voor fotografen die beheren en bewerken.",
+   "wins": [
+    "Volledig DAM: beoordelingen, trefwoorden, categorieën, gezichten, AI-trefwoorden en vergelijkbare afbeeldingen",
+    "Niet-destructieve RAW-bewerking met AI-maskers",
+    "Bulk hernoemen, schalen, converteren, metadata",
+    "Dubbele foto’s vinden",
+    "Generatieve AI-bewerking",
+    "Windows: door ZIP/RAR bladeren en metadata van video’s"
+   ],
+   "price": "Mac 27: $119.99 eenmalig (voorverkoop $99.95 tot 2026-11-18); Mac App Store: jaarabonnement; Windows Home/Professional/Ultimate 2027 eenmalig of ACDSee 365-abonnement",
+   "version": "Mac 26.0.3 (Mac 27 eind nov. 2026); Windows 2027",
+   "updated": "2026-05-27 (Mac App Store 26.0.3); Windows 2027 verschenen 2026-09",
+   "platforms": "macOS, Windows, iOS (begeleidende apps)",
+   "notes": {
+    "no_account_no_tracking": "Activering en abonnementen vragen een acdID-e-mailadres en internet; AI draait op het apparaat",
+    "languages_20": "Mac App Store: Engels, Frans, Duits, Japans; Windows-website in 10 talen",
+    "network_shares_fast": "Toont netwerkvolumes zonder import; indexeert als de computer niets doet",
+    "multiple_windows": "Tabbladen in één venster, bewaard tussen sessies",
+    "bookmarks": "Tabbladen, bewaarde zoekopdrachten; Windows: tot vijf fotomandjes",
+    "img_psd_exr": "PSD ja; OpenEXR niet vermeld",
+    "img_svg_pdf": "SVG op Windows; PDF alleen in Windows Professional/Ultimate; Mac via Snelle weergave",
+    "img_animated": "Geanimeerde GIF en WebP; geanimeerde AVIF niet",
+    "video_native": "Windows speelt MP4/MOV/M4V/AVI/WMV af; Mac toont video’s in Snelle weergave",
+    "video_mkv_avi_webm": "Windows: AVI, WMV, ASF; geen MKV, WebM, FLV",
+    "music_mode": "Windows leest MP3, WAV, WMA, M4A",
+    "archives_as_folders": "Windows: ZIP, RAR (geen RAR5), TAR, GZ, CAB, ARJ e.a.; geen 7z; niet op Mac",
+    "cloud_sync": "iCloud Drive (Mac), OneDrive (Windows), delen via SendPix, Mobile Sync",
+    "keyboard_first": "Metadata invoeren en selecteren met het toetsenbord; elders veel muis",
+    "app_sandbox": "Mac App Store-editie (verplicht in de Store); directe download onbekend"
+   }
+  },
+  "adobe-bridge": {
+   "name": "Adobe Bridge",
+   "vendor": "Adobe",
+   "summary": "Adobe Bridge is een gratis beheerder voor creatieve bestanden om door mappen met foto’s, ontwerpbestanden en video te bladeren, met voorvertoningen. Hij voegt metadata, trefwoorden, beoordelingen, verzamelingen, bulk hernoemen en exporteren toe, en geeft bestanden door aan Photoshop, Camera Raw en andere Creative Cloud-apps.",
+   "wins": [
+    "Voorvertoningen van Adobe-formaten (PSD, AI, INDD, After Effects, Substance 3D) en PDF",
+    "Volledige bewerking van metadata, trefwoorden, labels, beoordelingen, verzamelingen en slimme verzamelingen",
+    "Bulk hernoemen, exportpaneel en workflows om in bulk te converteren",
+    "Werkt samen met Camera Raw, Photoshop, Premiere en Creative Cloud-bibliotheken",
+    "PDF-contactbladen, publiceren naar Adobe Stock en Portfolio",
+    "Windows-versie"
+   ],
+   "price": "Gratis download met een Adobe-account (via de Creative Cloud-app); bewerken in Camera Raw en doorgeven aan Photoshop vragen een betaald Creative Cloud-abonnement",
+   "version": "17.0 (november 2026)",
+   "updated": "2026-11-10",
+   "platforms": "macOS, Windows",
+   "notes": {
+    "free": "Bridge zelf gratis met Adobe-account; RAW in Camera Raw vraagt een betaald abonnement",
+    "network_shares_fast": "Snel via ingesloten voorvertoningen; anders bouwt hij voorvertoningen en een cache",
+    "video_mkv_avi_webm": "Speelt FLV, F4V, SWF en wat QuickTime kan; MKV/WebM/AVI niet genoemd",
+    "music_mode": "Audiobestanden te beluisteren in het voorvertoningspaneel",
+    "dual_pane": "Meerdere inhoudspanelen/vensters naast elkaar; geen F5/F6",
+    "image_editing": "Snelle acties bijsnijden/schalen/achtergrond weg; pixels bewerken via Camera Raw/Photoshop (betaald)",
+    "keyboard_first": "Veel sneltoetsen, maar werkt vooral met panelen en de muis",
+    "shortcut_cheatsheet": "Helppagina en sneltoetsenpaneel; geen afdrukbaar overzicht"
+   }
+  },
+  "alsee": {
+   "name": "ALSee",
+   "vendor": "ESTsoft",
+   "summary": "De gevestigde Koreaanse fotoviewer van ESTsoft uit de ALTools-familie (ALZip, ALYac): bladeren met miniaturen of lijst, grote en schermvullende weergave, afbeeldingen in archieven, bulk converteren/schalen/draaien, afdrukken, en AI-bewerkingen per abonnement (upscaling, achtergrond verwijderen, gezichten vervagen).",
+   "wins": [
+    "Afdrukindelingen en bulk draaien/schalen/converteren",
+    "AI-upscaling, achtergrond verwijderen, gezichten vervagen (abonnement)",
+    "Geïntegreerd in het contextmenu van Windows Verkenner"
+   ],
+   "price": "Gratis met advertenties; AD-ZERO zonder advertenties 5,900 KRW/maand (alle ALTools); ALTools AI-abonnement voor AI-functies",
+   "version": "10.02",
+   "updated": "2026-10-07",
+   "platforms": "Windows"
+  },
+  "apolloone": {
+   "name": "ApolloOne",
+   "vendor": "Anogeissus",
+   "summary": "Snelle fotoviewer en selectietool voor fotografen die zonder import op mappen werkt. Sterk in RAW, HDR, metadata, beoordelingen, AF-punten en bulkwerk; veel functies zijn verdeeld over drie betaalde edities.",
+   "wins": [
+    "Selecteren: picks, beoordelingen, Focus Score, AI-beoordeling, stapels",
+    "HDR-weergave van RAW en HDR-export",
+    "EXIF/IPTC/XMP-bewerking, trefwoorden, GPS-kaarten",
+    "Importeren van geheugenkaarten",
+    "Externe SRT-ondertitels",
+    "Automatiseren met AppleScript"
+   ],
+   "price": "Free Edition; Standard $35.99, Pro $59.99, Max $99.99 eenmalig; of per jaar Standard $14.99 / Pro $23.99",
+   "version": "5.1.0",
+   "updated": "2026-10-22",
+   "platforms": "macOS",
+   "notes": {
+    "free": "Free Edition na 14 dagen proef; Standard $35.99, Pro $59.99, Max $99.99, of per jaar vanaf $14.99",
+    "no_account_no_tracking": "Geen account; gebruiksgegevens voor analytics, niet gekoppeld; AI via Apple Private Cloud Compute",
+    "languages_20": "11: EN, NL, FR, DE, IT, JA, KO, PL, zh-Hans, ES, zh-Hant",
+    "list_view": "Standard Edition: sorteerbare tabel met EXIF-kolommen",
+    "regex_search": "Regex op metadata (Pro); bestandsnamen alleen met jokertekens",
+    "network_shares_fast": "NAS werkt via SMB; een review meldt 5 tot 10 s laadtijd via AFP",
+    "multiple_windows": "Standard Edition: tabbladen en vensters",
+    "img_psd_exr": "OpenEXR bekijken/exporteren; PSD niet genoemd",
+    "img_svg_pdf": "SVG vooraf gerasterd; PDF niet genoemd",
+    "img_animated": "GIF genoemd; geanimeerde WebP/PNG niet",
+    "auto_enhance_view": "Pro: niet-destructieve schuifknoppen incl. automatische tooncurve",
+    "video_skim_arrows": "← → per beeld; J/K/L om te spoelen",
+    "playback_speed": "J/L wisselen spoelsnelheden; geen vaste snelheid",
+    "music_mode": "Apple Music-afspeellijsten alleen als muziek bij diavoorstellingen",
+    "undo_file_actions": "Prullenmand ongedaan maken zolang de app draait; terugzetten via optioneel script",
+    "image_editing": "Bijsnijden (Standard), snelle bewerkingen en schalen (Pro)",
+    "batch_convert": "Bulk hernoemen (Standard); schalen/converteren/exporteren (Pro)",
+    "cloud_sync": "AirDrop/delen via InstaBake; geen synchronisatie",
+    "custom_shortcuts": "Pro Edition"
+   }
+  },
+  "apple-photos": {
+   "name": "Apple Foto’s",
+   "vendor": "Apple",
+   "summary": "De fotobibliotheek van Apple met iCloud-synchronisatie tussen apparaten. Goed om een persoonlijke fotoverzameling te ordenen en te bewerken, met herkenning van personen, herinneringen en niet-destructieve bewerkingen.",
+   "wins": [
+    "iCloud-synchronisatie met iPhone en iPad",
+    "Niet-destructieve bewerking van foto’s en video’s",
+    "Zoeken op personen, plaatsen en inhoud",
+    "Herinneringen, diavoorstellingen met muziek, gedeelde albums"
+   ],
+   "price": "Gratis (zit bij macOS); iCloud+-opslag voor iCloud-foto’s is betaald",
+   "version": "Foto’s 12.0 op macOS Golden Gate 27.2.1",
+   "updated": "2026-11-09 (macOS 27.2.1)",
+   "platforms": "macOS, iOS, iPadOS, visionOS",
+   "notes": {
+    "no_account_no_tracking": "Werkt zonder Apple Account; iCloud vraagt er een, Uitgebreid visueel zoeken vergelijkt met Apple",
+    "thumbnail_grid": "Bibliotheekraster per jaar/maand; albums, geen mappen op de schijf",
+    "recursive_search": "Zoekt in de hele bibliotheek op inhoud, titel, trefwoord, datum; niet op bestandsnamen",
+    "img_psd_exr": "PSD wordt platgemaakt geïmporteerd (lagen gaan verloren); OpenEXR niet vermeld",
+    "slideshow_recursive": "Diavoorstelling van een selectie of album, foto’s en video’s gemengd; geen mappenstructuur",
+    "playback_speed": "Slow motion (1/2, 1/4, 1/5) alleen voor video’s met hoge framerate",
+    "saved_playlists": "Bewaarde diavoorstellingsprojecten houden een geordende lijst bij",
+    "rename_trash": "Verwijderen (Onlangs verwijderd) en titels; geen bestandsnamen of mappen op de schijf",
+    "undo_file_actions": "⌘Z en het album Onlangs verwijderd",
+    "batch_convert": "Exporteert meerdere onderdelen in een gekozen formaat; geen bulk hernoemen",
+    "keyboard_first": "Veel sneltoetsen, niet voor alles",
+    "custom_shortcuts": "Toetscombinaties voor menucommando’s via macOS",
+    "boss_key": "⌘H verbergt de app; geen aparte baastoets"
+   }
+  },
+  "apple-preview": {
+   "name": "Apple Voorvertoning",
+   "vendor": "Apple",
+   "summary": "De ingebouwde viewer van Apple voor PDF’s en afbeeldingen op elke Mac. Sterk in PDF’s, aantekeningen, ondertekenen en snelle aanpassingen aan afbeeldingen zoals bijsnijden, schalen en formaat omzetten.",
+   "wins": [
+    "Staat al op elke Mac",
+    "Complete PDF-gereedschapskist: aantekeningen, formulieren ondertekenen, samenvoegen, met wachtwoord beveiligen",
+    "Afbeeldingen bewerken: bijsnijden, schalen, achtergrond verwijderen, in bulk omzetten",
+    "Opent 3D-bestanden"
+   ],
+   "price": "Gratis (zit bij macOS)",
+   "version": "Voorvertoning 11.0 op macOS Golden Gate 27.2.1",
+   "updated": "2026-11-09 (macOS 27.2.1)",
+   "platforms": "macOS",
+   "notes": {
+    "thumbnail_grid": "Miniaturen/contactblad van de geopende bestanden of pagina’s; geen voorvertoning van mappen",
+    "img_svg_pdf": "PDF is de kern; SVG niet gedocumenteerd (ImageIO leest SVG wel)",
+    "img_animated": "Toont de frames van een GIF als stilstaande beelden; afspelen via Snelle weergave",
+    "slideshow": "Diavoorstelling voor de pagina’s van een PDF",
+    "manga_two_page": "Weergave met twee pagina’s voor PDF’s; geen rechts-naar-links",
+    "rename_trash": "Naam wijzigen of verplaatsen via de venstertitel; geen prullenmand of nieuwe map",
+    "move_copy": "Dupliceren of exporteren van het geopende bestand; geen bestandsbeheer",
+    "cloud_sync": "Opent en bewaart documenten in iCloud Drive",
+    "keyboard_first": "Veel sneltoetsen, maar niet door mappen navigeren",
+    "custom_shortcuts": "Toetscombinaties via macOS voor menucommando’s van elke app",
+    "boss_key": "Alleen ⌘H van het systeem (app verbergen); geen aparte baastoets"
+   }
+  },
+  "bandiview": {
+   "name": "BandiView",
+   "vendor": "Bandisoft",
+   "summary": "De opvolger van Honeyview van de makers van Bandizip: een snelle viewer voor één afbeelding tegelijk voor Windows 10/11, met archieven en strips, slimme dubbele pagina’s en webtoonmodus, HDR-weergave en een snelle bulkconverter. Erg populair in Korea voor manga en webtoons.",
+   "wins": [
+    "HDR-weergave van HDR-afbeeldingen (PRO)",
+    "Verticale webtoonmodus en slimme dubbele pagina voor manga",
+    "Clip Studio Paint, HEIC (PRO), veel archiefformaten (ALZ, EGG, ISO, ZPAQ …)",
+    "Snelle multithreaded bulkconverter",
+    "Eigen toetsen en muisacties, ook in de gratis versie"
+   ],
+   "price": "Gratis proefversie (niet-commercieel thuisgebruik, advertenties, enkele functies op slot); Professional $39 eenmalig (1 pc), $58.50 (2 pc’s), volumekorting",
+   "version": "8.05",
+   "updated": "2026-11-03",
+   "platforms": "Windows"
+  },
+  "cdisplayex": {
+   "name": "CDisplayEx",
+   "vendor": "Progdigy Software",
+   "summary": "CDisplayEx is een gevestigde, lichte stripreader voor Windows, opvolger van CDisplay, bekend om snel laden, Lanczos-schaling en volledig instelbare toetsen. De desktopversie wordt niet meer ontwikkeld; het werk gaat door in de Android-app.",
+   "wins": [
+    "Elke functie op je eigen toetsen te zetten",
+    "Automatische kleurcorrectie en gamma voor oude scans",
+    "Dubbele pagina en Japanse modus (rechts naar links)",
+    "Miniaturen van stripbestanden in Windows Verkenner"
+   ],
+   "price": "Desktop freeware; Android Lite (advertenties) en Premium (betaald)",
+   "version": "1.10.33 (desktop)",
+   "updated": "2015-06-20 (desktop; volgens de ontwikkelaar wordt de desktopversie niet meer ontwikkeld)",
+   "platforms": "Windows, Android"
+  },
+  "cisdem-video-player": {
+   "name": "Cisdem Video Player",
+   "vendor": "Cisdem",
+   "summary": "Gratis, lichte videospeler voor de Mac voor MKV, AVI, WMV, WebM en 4K/8K-bestanden, met afspeellijst, wisselen van ondertitels en audiotracks en een modus met losse vensters. Converteren naar andere formaten is een betaalde uitbreiding.",
+   "wins": [
+    "Video converteren naar voorinstellingen voor apparaten (betaald)",
+    "Losse vensters voor video, bediening en afspeellijst",
+    "Onthoudt afspeellijst en positie",
+    "Hoofdstukken, minischerm, incognitomodus",
+    "Windows-versie"
+   ],
+   "price": "Gratis om af te spelen; converteren $19.99 eenmalig of $9.99/jaar",
+   "version": "6.0.0",
+   "updated": "2025-07-22",
+   "platforms": "macOS, Windows",
+   "notes": {
+    "free": "Afspelen gratis; converteren via in-app-aankoop $19.99 of $9.99/jaar",
+    "no_account_no_tracking": "Privacylabel ‘Geen gegevens verzameld’; een review noemt een upgrade-pop-up",
+    "folder_browsing": "Importeert een map in de afspeellijst",
+    "zoom_rotate": "Video draaien en spiegelen",
+    "saved_playlists": "Onthoudt de laatste afspeellijst en positie; geen benoemde lijsten",
+    "pip": "Modus ‘Mini Screen’, geen beeld-in-beeld van het systeem",
+    "batch_convert": "Video converteren (MP4, HEVC, MKV, MP3 …) als betaalde in-app-aankoop",
+    "keyboard_first": "Sneltoetsen voor afspelen, volume, stappen",
+    "shortcut_cheatsheet": "Tabel met sneltoetsen in de online handleiding",
+    "notarized_attested": "Ondertekend via de App Store; closed source"
+   }
+  },
+  "commander-one": {
+   "name": "Commander One",
+   "vendor": "Electronic Team",
+   "summary": "Bestandsbeheerder met twee panelen in de stijl van Total Commander voor macOS, met werken via functietoetsen, zoeken met regex, een ingebouwde F3-viewer (tekst, hex, afbeelding, media) en archieven. Het PRO Pack voegt RAR/7z, FTP/SFTP, clouddiensten, terminal en thema’s toe.",
+   "wins": [
+    "Klassiek werken met F-toetsen en een wachtrij voor bewerkingen",
+    "Zoeken met regex en op inhoud, ook in archieven en op FTP",
+    "PRO: FTP/SFTP en veel clouddiensten, MTP/iOS/Android-apparaten",
+    "Ingebouwde hex/tekst/binaire viewer",
+    "Procesviewer, terminal (PRO)"
+   ],
+   "price": "Gratis versie; PRO Pack $29.99 persoonlijk (1 Mac) of $99.99 team (5 Macs), eenmalig; MAS: gratis met in-app-aankoop of ‘Commander One PRO’ $29.99",
+   "version": "3.18 (4006)",
+   "updated": "2026-09-25",
+   "platforms": "macOS",
+   "notes": {
+    "free": "Gratis versie (twee panelen, basisbewerkingen, alleen ZIP); PRO Pack $29.99 / $99.99 team, eenmalig",
+    "languages_20": "14 talen (o.a. Nederlands); taal van de interface instelbaar",
+    "thumbnail_grid": "Weergave ‘Thumbs’; geen voorvertoning van mappen",
+    "network_shares_fast": "SMB, FTP, cloud ondersteund; niets bekend over snelheid",
+    "img_modern_formats": "Via Snelle weergave/viewer met de codecs van macOS; geen eigen fotoviewer",
+    "img_raw": "Via de viewer en Snelle weergave, dus de RAW-ondersteuning van macOS",
+    "keyboard_paging": "Snelle weergave bladert met de pijltoetsen door de selectie",
+    "zoom_rotate": "Zoomen alleen via Snelle weergave; F3-afbeeldingsmodus zonder zoom",
+    "file_info_exif": "Info toont grootte, datums, rechten; geen EXIF/codecs",
+    "wrong_extension_note": "Herkent het formaat aan de inhoud, maar meldt verkeerde extensies niet",
+    "photos_videos_one_grid": "‘Thumbs’ toont een miniatuur voor elk bestand; geen voorvertoning van mappen",
+    "music_mode": "Mediamodus speelt audio af via Snelle weergave",
+    "archives_as_folders": "Gratis: alleen ZIP; PRO ($29.99): 7z, TAR lezen/schrijven, RAR/ISO alleen lezen",
+    "videos_in_archives": "Voorvertoning in archieven via Snelle weergave, geen speler",
+    "library_catalog": "Alleen Finder-tags",
+    "cloud_sync": "Alleen PRO: Dropbox, Google Drive, OneDrive, S3, WebDAV, FTP/SFTP enz.",
+    "shortcut_cheatsheet": "Sneltoetsen in de voorkeuren; niet afdrukbaar",
+    "app_sandbox": "Versie uit de Mac App Store in de sandbox (beperkt); PRO-versie van de website niet"
+   }
+  },
+  "cooviewer": {
+   "name": "cooViewer",
+   "vendor": "coo en de ysmx-fork",
+   "summary": "Gevestigde Japanse manga- en stripviewer voor de Mac, nu in leven gehouden als actief bijgewerkte open-sourcefork met een universal binary. Opent mappen, PDF’s en bijna elk archief (ZIP, RAR, 7z, LHA, archieven in delen, met wachtwoord) als boek, met dubbele pagina’s van rechts naar links, paginabladwijzers, vrij in te stellen toetsen en muisacties, en Finder-miniaturen voor striparchieven.",
+   "wins": [
+    "Mangareader: dubbele pagina’s van rechts naar links met automatische herkenning van enkele pagina’s, per boek bewaard",
+    "Benoemde paginabladwijzers en de laatste pagina per boek onthouden",
+    "Elke toets en muisactie in te stellen, standaard met één hand te bedienen",
+    "Opent heel veel archiefformaten, ook RAR/ZIP in delen en met wachtwoord",
+    "Core Image-filters voor de weergave, loep",
+    "Finder-miniaturen en Snelle weergave voor CBZ/CBR/ZIP/RAR/7z"
+   ],
+   "price": "Gratis",
+   "version": "1.7.1 (ysmx-fork); de oorspronkelijke versie van coo-ona stopte bij 1.2b25 (2020)",
+   "updated": "2026-10-30",
+   "platforms": "macOS",
+   "notes": {
+    "dark_light_setting": "Eigen kleuren voor achtergrond, paginanummer en paginabalk; geen licht/donker-thema",
+    "thumbnail_grid": "Miniaturen van de pagina’s van het geopende boek; geen mappenbrowser met voorvertoning",
+    "network_shares_fast": "Laadt grote mappen geleidelijk; netwerkshares niet genoemd",
+    "bookmarks": "Benoemde paginabladwijzers per boek en recente boeken; geen favoriete mappen",
+    "img_modern_formats": "HEIC/HEIF, WebP, AVIF; JPEG XL niet",
+    "img_psd_exr": "PSD ja; OpenEXR niet",
+    "img_svg_pdf": "PDF ja (pagina’s als boek); SVG niet",
+    "slideshow_recursive": "Met ‘geneste mappen lezen’ telt het boek submappen mee; alleen afbeeldingen",
+    "auto_enhance_view": "Core Image-filters (kleur, scherpte, vervaging) op de weergave; handmatig, niet automatisch",
+    "archives_as_folders": "Opent een archief als stripboek, niet als map",
+    "rename_trash": "Afbeelding van de linker/rechter pagina naar de prullenmand; geen naam wijzigen of nieuwe map",
+    "shortcut_cheatsheet": "Toetsentabel in de online handleiding (Japans); niet in de app",
+    "boss_key": "Esc sluit het boek meteen; geen toets die alles verbergt"
+   }
+  },
+  "digikam": {
+   "name": "digiKam",
+   "vendor": "het KDE digiKam-team",
+   "summary": "digiKam is een complete open-source suite van KDE voor fotobeheer van grote verzamelingen. Hij indexeert mappen in een database en biedt tags, gezichtsherkenning, geolocatie, zoeken op gelijkenis, een capabele fotobewerker, bulkverwerking en veel exportbestemmingen.",
+   "wins": [
+    "Database met tags, labels, gezichtsherkenning, zoeken op gelijkenis en dubbele foto’s, op kaart en tijdlijn",
+    "Zoeken in gewone taal en geavanceerd zoeken in alle verzamelingen",
+    "Volledige fotobewerker en Batch Queue Manager met versiebeheer",
+    "RAW-verwerking via LibRaw, 16 bit en kleurbeheer",
+    "Afspeelsnelheid en beeld voor beeld bij video",
+    "Veel exportbestemmingen (Dropbox, OneDrive, Flickr, Piwigo, HTML-galerijen) en DLNA",
+    "Gratis, open source, draait ook op Linux en Windows"
+   ],
+   "price": "Gratis",
+   "version": "9.1.0",
+   "updated": "2026-06-07",
+   "platforms": "macOS, Windows, Linux",
+   "notes": {
+    "folder_browsing": "Albums zijn echte mappen, maar elke hoofdmap moet eerst in een database worden ingelezen",
+    "thumbnail_grid": "Pictogramweergave; mappen in de albumboom, niet als tegels met voorvertoning",
+    "network_shares_fast": "Netwerkshares mogelijk, maar inlezen en bijhouden kan traag zijn",
+    "multiple_windows": "Hoofdvenster plus losse vensters voor Light Table, bewerker en vergelijken",
+    "img_animated": "GIF en WebP als stilstaand beeld; MNG als video; geanimeerde GIF/WebP afspelen niet gevonden",
+    "zoom_rotate": "Zoomen/verschuiven en loep; draaien wijzigt het bestand of de EXIF-tag",
+    "music_mode": "Audiobestanden (MP3, FLAC, OGG …) met een audiospeler",
+    "undo_file_actions": "Verwijderen naar de digiKam-prullenmand; hernoemen/verplaatsen ongedaan maken onbekend",
+    "keyboard_first": "Veel sneltoetsen, maar veel taken via zijbalk en muis",
+    "notarized_attested": "Openbare broncode, downloads GnuPG-ondertekend; notarisatie niet gedocumenteerd"
+   }
+  },
+  "directory-opus": {
+   "name": "Directory Opus",
+   "vendor": "GP Software",
+   "summary": "Een uiterst configureerbare vervanger van Verkenner voor Windows, met één of twee panelen, tabbladen, labels, beoordelingen, tags, een viewerpaneel en een losse fotoviewer met diavoorstelling. Sterk in zoeken, synchroniseren, dubbele bestanden vinden, bulk hernoemen en afbeeldingen omzetten, met volledige scripting.",
+   "wins": [
+    "Enorm configureerbaar, met scripting",
+    "Logboek om bestandsbewerkingen ongedaan te maken",
+    "Labels, beoordelingen, tags, metadata bewerken",
+    "Afbeeldingsconverter en bulk hernoemen",
+    "Dubbele bestanden vinden, synchroniseren, integratie met Everything",
+    "Diavoorstelling met overvloeiing"
+   ],
+   "price": "AUD 89 voor één pc, AUD 129 voor twee, AUD 249 voor vijf pc’s; een jaar updates, daarna AUD 25/40/75 per jaar; 30 dagen proef (60 met registratie)",
+   "version": "13.25",
+   "updated": "2026-08-21",
+   "platforms": "Windows"
+  },
+  "double-commander": {
+   "name": "Double Commander",
+   "vendor": "Alexander Koblov en bijdragers",
+   "summary": "Gratis open-source bestandsbeheerder met twee panelen, geïnspireerd op Total Commander, inclusief diens plug-in-interface. Draait native op Apple silicon, met tabbladen, Bestanden zoeken met regex, multi-hernoemen, archieven als mappen en een ingebouwde viewer voor tekst en afbeeldingen.",
+   "wins": [
+    "Volledige bestandsbeheerder in Total Commander-stijl op de Mac: mappen synchroniseren, multi-hernoemen, checksums, FTP/SFTP",
+    "Draait plug-ins van Total Commander (WCX/WDX/WFX/WLX)",
+    "Cross-platform (macOS, Windows, Linux)",
+    "Viewer kan afbeeldingen bijsnijden, schalen en bewaren",
+    "Lua-scripting en aanpasbare knoppenbalk"
+   ],
+   "price": "Gratis",
+   "version": "1.2.11",
+   "updated": "2026-11-08",
+   "platforms": "macOS, Windows, Linux, FreeBSD",
+   "notes": {
+    "thumbnail_grid": "Miniaturenweergave (Snelle weergave op macOS); mappen als pictogram, geen voorvertoning",
+    "network_shares_fast": "Netwerktoegang (SMB, GVfs, samba-plug-in); snelheid onbekend",
+    "multiple_windows": "Tabbladen in twee panelen; viewer/editor in losse vensters",
+    "img_modern_formats": "Op macOS via de meegeleverde plug-in voor Snelle weergave",
+    "img_raw": "Windows via WIC-codecs; macOS via plug-in voor Snelle weergave",
+    "img_psd_exr": "PSD ingebouwd; OpenEXR niet vermeld",
+    "img_svg_pdf": "SVG ingebouwd; PDF via plug-in (Snelle weergave op macOS)",
+    "img_animated": "Geanimeerde GIF met framebediening; APNG/WebP niet vermeld",
+    "slideshow": "Alleen in de schermvullende viewer, huidige map, 1 tot 25 s per afbeelding",
+    "file_info_exif": "Ingebouwde Exif-plug-in (JPEG: datum, grootte, oriëntatie, camera)",
+    "video_native": "Geen eigen speler: plug-ins voor Snelle weergave, WMP of MPlayer",
+    "video_mkv_avi_webm": "Op macOS alleen wat Snelle weergave afspeelt",
+    "photos_videos_one_grid": "Miniaturen van het systeem (Snelle weergave op macOS)",
+    "music_mode": "Speelt één audiobestand tegelijk in de viewer",
+    "archives_as_folders": "ZIP, TAR, GZ ingebouwd, RAR via UnRAR-plug-in; 7z vraagt op macOS een externe 7zz",
+    "comics_cbz_cbr": "Geen stripreader; CBZ/CBR openen als map na koppeling aan de plug-ins",
+    "archive_passwords": "Wachtwoorden per formaat, via plug-ins of externe archivers",
+    "split_archives": "RAR in delen via de UnRAR-plug-in",
+    "videos_in_archives": "F3 pakt het bestand uit naar een tijdelijke map en opent het",
+    "batch_convert": "Multi-hernoemen ja; geen bulkconversie van afbeeldingen",
+    "library_catalog": "Opmerkingen in descript.ion; Finder-tags; geen beoordelingen",
+    "cloud_sync": "iCloud Drive, MacCloud-plug-in (S3 e.a.), FTP/SFTP; geen synchronisatie",
+    "shortcut_cheatsheet": "Toetsenpagina in de documentatie; niet afdrukbaar"
+   }
+  },
+  "elmedia-player": {
+   "name": "Elmedia Player",
+   "vendor": "Electronic Team",
+   "summary": "Een veelzijdige mediaspeler voor video en muziek met veel formaten, zoeken op OpenSubtitles, een equalizer en sterk casten naar AirPlay, Chromecast, DLNA en Roku. Geavanceerde functies zoals beeld-in-beeld en beeldaanpassingen zijn PRO.",
+   "wins": [
+    "Streamen naar smart-tv’s, Chromecast, Roku, DLNA; AirPlay-ontvanger",
+    "Muziek afspelen met equalizer en visualisatie",
+    "Online video’s en zoeken op OpenSubtitles",
+    "Verplaatsbaar los bedieningsvenster, kleurthema’s, eigen sneltoetsen"
+   ],
+   "price": "Gratis; PRO-functies via de versie in de Mac App Store ($19.99) of een directe PRO-licentie (prijs niet zichtbaar op de site)",
+   "version": "8.24 (3472)",
+   "updated": "2025-12-05",
+   "platforms": "macOS",
+   "notes": {
+    "free": "Afspelen gratis; PRO (aanpassingen, beeld-in-beeld, streamen naar tv) $19.99",
+    "languages_20": "12 talen; taal in de app instelbaar",
+    "folder_browsing": "Mappen toe te voegen aan de afspeellijst; geen browser",
+    "zoom_rotate": "Alleen video: draaien, spiegelen, beeldverhouding",
+    "auto_enhance_view": "Alleen video, PRO",
+    "file_info_exif": "Venster > Media-info (⌘I); geen EXIF",
+    "pip": "Alleen PRO",
+    "video_filters_enhance": "Helderheid, contrast, verzadiging; PRO",
+    "keyboard_first": "Eigen sneltoetsen voor afspelen",
+    "app_sandbox": "Versie uit de Mac App Store in de sandbox; websiteversie onbekend"
+   }
+  },
+  "fastrawviewer": {
+   "name": "FastRawViewer",
+   "vendor": "LibRaw",
+   "summary": "FastRawViewer is een snelle RAW-viewer en selectietool voor fotografen. Hij toont de echte RAW-gegevens met een RAW-histogram, waarschuwingen voor belichting en snelle correcties van witbalans en belichting die in XMP worden bewaard, en laat je opnamen beoordelen, labelen, filteren, hernoemen, kopiëren en verplaatsen zonder catalogus.",
+   "wins": [
+    "Nauwkeurige RAW-weergave met RAW-histogram, over- en onderbelichting en focus peaking",
+    "Beoordelingen/labels/XMP compatibel met Lightroom en andere converters",
+    "Filter op bestandsnaam met PCRE-regex",
+    "Vergelijken met 2 of 4 naast elkaar met gesynchroniseerde zoom",
+    "Volledig eigen sneltoetsen, toetsindelingen die andere apps nadoen",
+    "Afgesteld op NAS en trage media",
+    "Ook voor Windows"
+   ],
+   "price": "$23.99 eenmalig (aanbieding nov. 2026, 25% korting; 2 computers per licentie), 30 dagen proef",
+   "version": "2.0.11 (build 2088)",
+   "updated": "2026 (2.0.11 actueel in nov. 2026; de maker publiceert geen releasedatum)",
+   "platforms": "macOS, Windows",
+   "notes": {
+    "no_account_no_tracking": "Geen account of advertenties; activering neemt één keer contact op met de maker",
+    "dark_light_setting": "Donkere interface; kleuren instelbaar, geen licht/donker-schakelaar",
+    "thumbnail_grid": "Raster van bestanden; mappen in een boom, niet als tegels met voorvertoning",
+    "recursive_search": "Filter op bestandsnaam (ook PCRE); submappen via ‘map met submappen openen’",
+    "multiple_windows": "Eén venster op de Mac; ‘meerdere vensters’ is vergelijken met 2 of 4",
+    "img_modern_formats": "HEIC/HEIF ja; AVIF, JPEG XL, WebP niet",
+    "slideshow": "Eenvoudige diavoorstelling met interval, zonder overgangen",
+    "slideshow_recursive": "Werkt met submappen; alleen foto’s, geen video’s",
+    "wrong_extension_note": "Kan het type aan de inhoud herkennen; geen waarschuwing",
+    "image_editing": "Alleen belichting, witbalans, contrast, oriëntatie in XMP; niet bijsnijden of schalen",
+    "batch_convert": "Bulk hernoemen ja; geen formaatconversie",
+    "library_catalog": "Beoordelingen, labels, titels in XMP-bestanden, daarop filteren; geen database",
+    "shortcut_cheatsheet": "PDF met standaardsneltoetsen voor Windows; niet voor de Mac"
+   }
+  },
+  "faststone-image-viewer": {
+   "name": "FastStone Image Viewer",
+   "vendor": "FastStone Soft",
+   "summary": "FastStone Image Viewer is een al lang bestaande fotobrowser voor Windows met een mappenboom zoals in Verkenner, een schermvullende modus met uitschuifpanelen en veel bewerkings- en bulktools. Hij speelt ook video’s af via de codecs van Windows en bewaart tags en beoordelingen in een eigen database.",
+   "wins": [
+    "Bewerken: curven, niveaus, kloonstempel, retoucheerpenseel, rode ogen",
+    "Tot vier afbeeldingen naast elkaar vergelijken",
+    "Bulk converteren en hernoemen, contactbladen, afdrukindelingen",
+    "Tags en beoordelingen van 1 tot 5 sterren",
+    "Scannerondersteuning en schermopnamen",
+    "Diavoorstellingen met muziek en meer dan 150 overgangen"
+   ],
+   "price": "Gratis voor persoonlijk gebruik en onderwijs; commercieel US$34.95 eenmalig, gezin US$69.95 (5 pc’s)",
+   "version": "8.5",
+   "updated": "2026-06-24",
+   "platforms": "Windows"
+  },
+  "finder-quick-look": {
+   "name": "Finder en Snelle weergave",
+   "vendor": "Apple",
+   "summary": "De bestandsbeheerder van de Mac met Snelle weergave, een voorvertoning met de spatiebalk voor bijna elk bestand. Prima om even naar een foto of MP4 te kijken en voor dagelijks bestandsbeheer.",
+   "wins": [
+    "Zit in macOS, werkt voor bijna elk bestandstype",
+    "Tags, slimme mappen, zoeken met Spotlight",
+    "Bulk hernoemen en snelle acties",
+    "iCloud Drive en AirDrop"
+   ],
+   "price": "Gratis (onderdeel van macOS)",
+   "version": "Finder 27.2 op macOS Golden Gate 27.2.1",
+   "updated": "2026-11-09 (macOS 27.2.1)",
+   "platforms": "macOS",
+   "notes": {
+    "thumbnail_grid": "Symboolweergave toont miniaturen van bestanden; mappen als mapsymbool, zonder voorvertoning",
+    "network_shares_fast": "Verbindt met SMB/servers; snelheid op grote shares onbekend",
+    "img_animated": "Snelle weergave speelt GIF’s af; APNG/geanimeerde WebP niet gedocumenteerd",
+    "music_mode": "Snelle weergave speelt audiobestanden af en knipt ze in",
+    "image_editing": "Draaien en Markeringen in Snelle weergave; snelle acties",
+    "library_catalog": "Tags en slimme mappen, geen beoordelingen",
+    "custom_shortcuts": "Toetscombinaties voor menucommando’s via macOS",
+    "boss_key": "⌘H / ⌥⌘H verbergen apps; geen aparte baastoets",
+    "app_sandbox": "De viewer van Snelle weergave draait in een sandbox, de Finder zelf niet"
+   }
+  },
+  "flowvision": {
+   "name": "FlowVision",
+   "vendor": "netdcy",
+   "summary": "FlowVision is een native, open-source fotoviewer voor macOS, gebouwd rond een waterval- of uitgevulde miniaturenindeling en bestandsbeheer zoals in de Finder. Hij is afgestemd op heel grote mappen, speelt de videoformaten van de Mac af en heeft een recursieve modus, Finder-tags, beoordelingen en muisgebaren om tussen mappen te springen.",
+   "wins": [
+    "Miniaturen als waterval of uitgevuld",
+    "Muisgebaren met rechtsklik om tussen mappen te springen",
+    "Finder-tags en XMP-beoordelingen met filters",
+    "HDR-weergave",
+    "Profielen voor indelingen",
+    "Draait op macOS 11 en nieuwer"
+   ],
+   "price": "Gratis (donaties)",
+   "version": "1.7.6",
+   "updated": "2026-09-08",
+   "platforms": "macOS",
+   "notes": {
+    "languages_20": "17 talen",
+    "img_svg_pdf": "SVG ja; PDF uitgeschakeld",
+    "slideshow_recursive": "Automatisch afspelen door de lijst, ook recursief; wacht niet tot video’s klaar zijn",
+    "video_mkv_avi_webm": "Miniaturen en info voor MKV, WebM, AVI; afspelen in een externe speler",
+    "image_editing": "Draaien en een aantekenmodus (pen, markeerstift, pijlen)",
+    "batch_convert": "Bulk hernoemen met volgnummer; geen formaatconversie",
+    "library_catalog": "Finder-tags en XMP-beoordelingen met filters; geen eigen database",
+    "cloud_sync": "Alleen het deelmenu van macOS",
+    "keyboard_first": "Toetsen om te navigeren, maar gebouwd rond muis en gebaren",
+    "custom_shortcuts": "Alleen Enter/Esc instelbaar",
+    "notarized_attested": "Ondertekend met Developer ID; lokaal gebouwd, dus geen build-attestatie"
+   }
+  },
+  "forklift": {
+   "name": "ForkLift",
+   "vendor": "BinaryNights",
+   "summary": "Bestandsbeheerder met twee panelen en client voor bestandsoverdracht voor macOS. Sterk in verbindingen op afstand (SFTP, S3, clouddiensten), mappen synchroniseren, multi-hernoemen en bestandswerk met het toetsenbord, met een voorvertoningspaneel voor afbeeldingen, audio, video en PDF’s.",
+   "wins": [
+    "Verbindingen op afstand en cloud (SFTP, FTP, WebDAV, S3, Google Drive, OneDrive, Dropbox)",
+    "Mappen synchroniseren en bestanden vergelijken",
+    "Multi-hernoemen met regex en metadata",
+    "Git-status, tags, werkruimtes, app-verwijderaar",
+    "Volledig bestandsbeheer: ongedaan maken, conflicten afhandelen, overdrachtswachtrij"
+   ],
+   "price": "Betaalde levenslange licentie met 1 of 2 jaar updates: $19.95 / $34.95 voor één gebruiker, $29.95 / $49.95 gezin, $69.95 / $119.95 klein bedrijf (5 Macs); gratis proef; ook via Setapp",
+   "version": "4.7.7",
+   "updated": "2026-10-20",
+   "platforms": "macOS",
+   "notes": {
+    "languages_20": "14 talen",
+    "thumbnail_grid": "Symboolweergave met voorvertoning; geen voorvertoning van mappen",
+    "network_shares_fast": "SMB, AFP, NFS, SFTP, cloud; niets bekend over snelheid in grote mappen",
+    "img_modern_formats": "Voorvertoningspaneel via macOS (zoals het systeem ze leest)",
+    "img_raw": "Alleen voorvertoning/Snelle weergave met de RAW-ondersteuning van macOS",
+    "img_svg_pdf": "PDF in het voorvertoningspaneel; SVG zoals macOS het toont",
+    "zoom_rotate": "Zoomen alleen in Snelle weergave van macOS; geen eigen viewer",
+    "video_mkv_avi_webm": "Alleen met de externe plug-in ‘QuickLook Video’",
+    "music_mode": "Speelt audio in het voorvertoningspaneel, geen muziekmodus",
+    "archive_passwords": "Maakt ZIP’s met wachtwoord; versleutelde archieven openen onbekend",
+    "videos_in_archives": "Snelle weergave in archieven mogelijk; geen speler",
+    "batch_convert": "Multi-hernoemen met regex en metadata; geen bulkconversie van afbeeldingen",
+    "library_catalog": "Alleen Finder-tags; geen beoordelingen of catalogus"
+   }
+  },
+  "gom-player": {
+   "name": "GOM Player",
+   "vendor": "GOM & Company",
+   "summary": "GOM Player is een populaire gratis Koreaanse mediaspeler voor Windows met een groot online archief van ondertitels, AI die spraak omzet in ondertitels, 360°-VR, A-B-herhaling en skins; de gratis versie toont advertenties, GOM Player+ haalt ze weg. Er bestaat een Mac-versie op basis van mpv, maar die is sinds 2020 niet bijgewerkt en alleen voor Intel.",
+   "wins": [
+    "Groot online archief van ondertitels en ondertitels maken met AI",
+    "360°-VR, A-B-herhaling en herhaling van meerdere fragmenten",
+    "Streamen van URL’s en YouTube",
+    "Muziek afspelen met equalizer",
+    "GOM Player+: vier video’s tegelijk, AI-upscaling"
+   ],
+   "price": "Gratis met advertenties; GOM Player+ zonder advertenties: levenslange licentie (₩11,000 in Korea) of abonnement GOM Easy Pass (vanaf $4.90/maand); AI-functies kosten credits",
+   "version": "Windows 2.3.123 (13 okt. 2026); Mac 1.0.0 (2020)",
+   "updated": "2026-10-13 (Windows); 2020-11-11 (Mac)",
+   "platforms": "Windows, macOS (Intel-versie), Android, iOS",
+   "macNote": "De Mac-versie van GOM Player staat sinds 2020 op 1.0.0, gebouwd voor Intel-Macs."
+  },
+  "google-photos": {
+   "name": "Google Foto’s",
+   "vendor": "Google",
+   "summary": "De fotobibliotheek van Google in de cloud, met automatische back-up vanaf telefoons. Handig om alle foto’s op elk apparaat te hebben, op inhoud te zoeken en albums te delen.",
+   "wins": [
+    "Automatische back-up vanaf Android en iPhone",
+    "Zoeken op personen, dingen en plaatsen",
+    "Albums delen en partnerdeling",
+    "Toegang vanuit elke browser"
+   ],
+   "price": "Gratis met 15 GB (gedeeld met Gmail/Drive); Google One vanaf €1.99/mnd voor 100 GB, €9.99/mnd 2 TB, €21.99/mnd 5 TB",
+   "version": "web (doorlopend); iOS-app 8.1.0",
+   "updated": "2026-11-13 (iOS-app 8.1.0)",
+   "platforms": "Web, Android, iOS",
+   "notes": {
+    "free": "15 GB gratis, gedeeld met Gmail/Drive; Google One vanaf €1.99/mnd (100 GB)",
+    "thumbnail_grid": "Fotoraster en albumomslagen; geen mappen op de schijf",
+    "recursive_search": "Zoekt in de hele bibliotheek op inhoud, bestandsnaam tussen aanhalingstekens, cameramodel",
+    "multiple_windows": "Webapp op photos.google.com; meerdere tabbladen of vensters",
+    "img_modern_formats": "HEIC, AVIF, WebP; JPEG XL niet vermeld",
+    "img_animated": "GIF en WebP; geanimeerde PNG niet gedocumenteerd",
+    "slideshow_recursive": "Diavoorstelling van een album; geen mappenstructuur",
+    "file_info_exif": "Infopaneel met datum, locatie, camera, IPTC; geen codecs/bitsnelheid",
+    "video_mkv_avi_webm": "MKV, AVI, WMV na verwerking; WebM en FLV niet vermeld",
+    "playback_speed": "In de Android-app; web niet gedocumenteerd",
+    "rename_trash": "Naar de prullenbak; geen bestandsnamen wijzigen",
+    "undo_file_actions": "Terugzetten uit de prullenbak",
+    "keyboard_first": "Sneltoetsen op het web (lijst met Shift+?); apps hebben er geen",
+    "shortcut_cheatsheet": "Paneel in de app met Shift+?"
+   }
+  },
+  "graphicconverter": {
+   "name": "GraphicConverter",
+   "vendor": "Lemke Software",
+   "summary": "GraphicConverter is al jaren het ‘zakmes voor afbeeldingen’ op de Mac: bestands- en fotobrowser, diavoorstelling, editor en bulkconverter die zo’n 200 formaten opent. De browser speelt ook QuickTime-compatibele films en audio af, beheert uitgebreide metadata en kan dubbele bestanden vinden, platte weergaven tonen en zoeken met Spotlight.",
+   "wins": [
+    "Opent ca. 200 afbeeldingsformaten, exporteert ca. 80, ook oude en wetenschappelijke formaten",
+    "Volledige fotobewerker en bulkconversie met acties",
+    "Bewerking van metadata (EXIF/IPTC/XMP, gezichten, GPS-kaart)",
+    "Veel opties voor diavoorstellingen (overgangen, willekeurig, metadata, sorteren tijdens de voorstelling)",
+    "Lijst-, Cover Flow- en miniaturenweergave, platte weergave van alle submappen",
+    "Dubbele bestanden vinden, contactbladen, webgalerijen",
+    "Eigen sneltoetsen, 14 talen, licht/donker instelbaar"
+   ],
+   "price": "$39.95 / €34.95 eenmalig (upgrade $25.95, gezin $59.95); $34.99 in de Mac App Store; shareware-proefversie",
+   "version": "12.5.4 (12.6 in bèta)",
+   "updated": "2026-08-27 (12.5.4 in de Mac App Store; 12.6 bèta build 7423 op 2026-11-12)",
+   "platforms": "macOS",
+   "notes": {
+    "languages_20": "14 talen",
+    "recursive_search": "Zoeken in alle submappen via Spotlight (niet waar Spotlight uit staat, zoals veel netwerkshares)",
+    "regex_search": "Regex in ‘Diavoorstelling met zoeken’ en hernoemen, niet in het zoekveld",
+    "slideshow_recursive": "Diavoorstelling kan submappen meenemen; of films meespelen is niet gedocumenteerd",
+    "auto_enhance_view": "Automatische niveaus en verbetering wijzigen de afbeelding, niet alleen de weergave",
+    "wrong_extension_note": "Een commando controleert en corrigeert extensies; geen melding tijdens het kijken",
+    "playlist": "Lijstpalet voor diavoorstellingen; geen video-afspeellijst",
+    "saved_playlists": "Voorinstellingen voor diavoorstellingen en bewaarde zoekopdrachten, geen afspeellijsten",
+    "music_mode": "MP3 en M4A spelen af in het rechterpaneel",
+    "archives_as_folders": "Opent afbeeldingen uit RAR; ZIP/7z als mappen niet gedocumenteerd",
+    "library_catalog": "Beoordelingen, labels, tags, gezichten in de metadata; dubbele bestanden vinden; geen database",
+    "cloud_sync": "Uploaden via FTP en webgalerijen; cloudmappen via hun eigen apps",
+    "shortcut_cheatsheet": "Tabellen met sneltoetsen in de PDF-handleiding",
+    "app_sandbox": "Versie uit de Mac App Store in de sandbox (beperkt); directe versie niet"
+   }
+  },
+  "hamana": {
+   "name": "Hamana",
+   "vendor": "miyano",
+   "summary": "Japanse fotoviewer met DirectX-versnelling die archieven leest (zip/cbz, 7z, rar/cbr, cab, lzh), met een modus voor twee afbeeldingen, effecten in diavoorstellingen en veel instelbare toetsen. Kan ook als schermbeveiliging draaien. Sinds 2006 onveranderd, de download staat nog op de site van de maker.",
+   "wins": [
+    "Weergavefilters via de GPU (tooncurve, verscherpen) en 3D-draaien",
+    "Overgangseffecten in diavoorstellingen",
+    "Schermbeveiligingsmodus",
+    "PDF via Ghostscript"
+   ],
+   "price": "Gratis",
+   "version": "1.48",
+   "updated": "2006-06-19",
+   "platforms": "Windows"
+  },
+  "honeyview": {
+   "name": "Honeyview",
+   "vendor": "Bandisoft",
+   "summary": "Lichte, snelle gratis fotoviewer die jarenlang dé standaardviewer voor strips en manga in Korea was (꿀뷰). Toont afbeeldingen in ZIP/RAR/7Z zonder uitpakken, dubbele-paginamodus, EXIF met GPS. Stopgezet: geen updates meer; Bandisoft verwijst naar BandiView.",
+   "wins": [
+    "Heel licht en snel op oude Windows-versies (XP tot 11, 32-bit)",
+    "Slimme mangamodus met dubbele pagina van rechts naar links",
+    "Meer archiefformaten (LZH, TAR) en BPG"
+   ],
+   "price": "Gratis (freeware)",
+   "version": "5.53",
+   "updated": "2024-06-21",
+   "platforms": "Windows"
+  },
+  "iina": {
+   "name": "IINA",
+   "vendor": "het IINA-project",
+   "summary": "IINA is een gratis open-source videospeler voor macOS, gebouwd op mpv, met een moderne Mac-interface. Sterk om te kijken: ondertitels (ook online zoeken), beeld-in-beeld, muziekmodus, afspeellijsten, miniaturen bij het spoelen en plug-ins.",
+   "wins": [
+    "Alles voor het afspelen: hoofdstukken, beeld voor beeld, A-B-herhaling, beeld-in-beeld, muziekmodus",
+    "Ondertitels online zoeken en slim lokale ondertitels koppelen",
+    "Plug-ins, mpv-configuratie en scripts, browserextensies",
+    "Ondersteunt macOS 12 en Intel-Macs",
+    "Miniaturen in de tijdbalk, afspeelgeschiedenis en verder kijken"
+   ],
+   "price": "Gratis",
+   "version": "1.5.1",
+   "updated": "2026-11-06",
+   "platforms": "macOS",
+   "notes": {
+    "folder_browsing": "Een map openen zet alle afspeelbare bestanden (recursief) in de afspeellijst; geen bestandsbrowser",
+    "recursive_search": "Alleen doorzoekbare afspeelgeschiedenis, geen bestanden zoeken",
+    "img_animated": "GIF speelt als video; geen APNG/geanimeerde WebP",
+    "auto_enhance_view": "Video-equalizer en filters, niet automatisch",
+    "file_info_exif": "Inspectievenster: codecs, bitsnelheid, tracks; geen EXIF",
+    "split_archives": "mpv leest RAR in delen, maar IINA biedt het niet aan",
+    "videos_in_archives": "Kan via mpv media in ZIP of RAR afspelen; niet gedocumenteerd",
+    "rename_trash": "Huidig bestand naar de prullenmand; geen naam wijzigen/nieuwe map",
+    "shortcut_cheatsheet": "Toetsen in de instellingen; niet afdrukbaar",
+    "notarized_attested": "Genotariseerd sinds 1.0.5; geen build-attestatie"
+   }
+  },
+  "imageglass": {
+   "name": "ImageGlass",
+   "vendor": "Duong Dieu Phap",
+   "summary": "Snelle open-source fotoviewer, in v10 opnieuw gebouwd op .NET/Avalonia voor Windows, macOS (Apple silicon) en Linux. Ondersteunt veel formaten (meer dan 90, waaronder RAW, JXL, HEIC, AVIF, HDR, native SVG), met slimme cache, thema’s, eigen sneltoetsen en codec-plug-ins. Het is een viewer voor één afbeelding met een galerijstrook, geen mappenbrowser, en hij speelt geen video’s af.",
+   "wins": [
+    "Draait op Windows, macOS en Linux met één codebase",
+    "HDR-tonemapping voor AVIF, JPEG XL, HDR en EXR",
+    "Native weergave van geanimeerde SVG",
+    "SDK voor codec-plug-ins voor extra formaten",
+    "Ingebouwd bijsnijden, schalen en kleurkiezer",
+    "Thema’s en eigen indelingen",
+    "Eigen sneltoetsen in de gratis editie"
+   ],
+   "price": "Classic gratis; Pro Individual $14.90 eenmalig, Pro Team $69 eenmalig (3 gebruikers), Pro Business op volume (vanaf $290/jaar voor 25 gebruikers)",
+   "version": "10.0.6.906",
+   "updated": "2026-09-05",
+   "platforms": "Windows, macOS, Linux",
+   "notes": {
+    "free": "Classic gratis (GPLv3); Pro $14.90 eenmalig voegt o.a. HDR-tonemapping toe",
+    "dark_light_setting": "Volgt het systeem; een thema voor donker en een voor licht in te stellen",
+    "folder_browsing": "Bladert door de map van een geopend bestand; geen mappenboom, geen submappen",
+    "thumbnail_grid": "Galerij van de afbeeldingen in de map; geen tegels voor mappen",
+    "network_shares_fast": "Decoderen op de achtergrond en vooruit cachen; niets specifiek voor netwerkshares",
+    "img_svg_pdf": "Native SVG/SVGZ, ook geanimeerd; geen PDF",
+    "slideshow_recursive": "Kan afbeeldingen uit submappen laden; alleen afbeeldingen, geen video’s",
+    "file_info_exif": "EXIF via de losse tool ExifGlass; geen video-info",
+    "rename_trash": "Getoonde afbeelding weggooien (met bevestiging); geen nieuwe map",
+    "move_copy": "Kopiëren of knippen naar het klembord (knippen niet op macOS)",
+    "keyboard_first": "Sneltoetsen voor menucommando’s, maar interface gericht op knoppen en muis",
+    "notarized_attested": "DMG ondertekend met Developer ID en genotariseerd; geen build-attestatie"
+   }
+  },
+  "imagine": {
+   "name": "Imagine",
+   "vendor": "Sejin Chun",
+   "summary": "Piepkleine, heel snelle Koreaanse freeware-viewer voor afbeeldingen en animaties op Windows, met miniaturenbrowser, een enorme lijst formaten (o.a. JXL, AVIF, HEIF, CLIP, KRA, veel RAW), bladeren in archieven, bulk converteren/hernoemen, eenvoudig tekenen en een animatie-editor. Werkt ook als plug-ins voor Total Commander.",
+   "wins": [
+    "Enorme lijst formaten, o.a. KRA, ORA, CLIP, DICOM, HDR-formaten",
+    "Bewerken, animaties maken en bulk hernoemen ingebouwd",
+    "Plug-ins voor Total Commander (Lister/Packer/Content)",
+    "Draait op alles van Windows 95 tot Windows 11 ARM64"
+   ],
+   "price": "Gratis (donationware; donatie vanaf $20 voor een persoonlijke licentiecode)",
+   "version": "2.8.1",
+   "updated": "2026-11-14",
+   "platforms": "Windows"
+  },
+  "infuse": {
+   "name": "Infuse",
+   "vendor": "Firecore",
+   "summary": "Een speler in mediacenterstijl die videomappen, NAS-shares, Plex/Emby/Jellyfin en clouddiensten verandert in een bibliotheek met posters en metadata. Heel goed om films en series te kijken op Apple-apparaten, met gesynchroniseerde voortgang.",
+   "wins": [
+    "Bibliotheek voor films/series met artwork en metadata van TMDB",
+    "Streamt vanaf NAS, mediaservers en clouddiensten",
+    "Synchroniseert voortgang tussen iPhone, iPad, Apple TV, Mac en Vision Pro",
+    "Ondertitels van OpenSubtitles, Trakt-sync, AirPlay en Google Cast",
+    "Schijfkopieën (ISO, VIDEO_TS, BDMV)"
+   ],
+   "price": "Gratis; Infuse Pro $1.99/maand, $16.99/jaar of $99.99 levenslang",
+   "version": "8.5.10",
+   "updated": "2026-11-09",
+   "platforms": "macOS, iOS, iPadOS, tvOS, visionOS",
+   "notes": {
+    "free": "Basis gratis; Infuse Pro $1.99/maand, $16.99/jaar of $99.99 levenslang",
+    "no_account_no_tracking": "Geen account nodig (Trakt optioneel), geen advertenties; diagnose niet aan jou gekoppeld",
+    "thumbnail_grid": "Postertegels voor video’s in mappen en bibliotheek; geen foto’s",
+    "list_view": "Sorteerknop in de mapweergave; kolommen niet gedocumenteerd",
+    "recursive_search": "Zoekt in de ingelezen bibliotheek (titels), niet op bestandsnamen",
+    "zoom_rotate": "8 zoomopties voor video; niet draaien",
+    "file_info_exif": "Video-info (codec, resolutie, audio); geen EXIF",
+    "streaming_urls": "M3U/M3U8-lijsten en mediaservers; Pro streamt trailers",
+    "rename_trash": "Instelling ‘Bestandsbeheer’ laat video’s op afstand verwijderen; geen naam wijzigen",
+    "move_copy": "Video’s van netwerkapparaten naar de Mac downloaden",
+    "keyboard_first": "Sneltoetsen voor afspelen; bibliotheek met toetsenbord beperkt",
+    "shortcut_cheatsheet": "Lijst met sneltoetsen in een supportartikel",
+    "notarized_attested": "App Store-versie, closed source"
+   }
+  },
+  "irfanview": {
+   "name": "IrfanView",
+   "vendor": "Irfan Skiljan",
+   "summary": "IrfanView is een piepkleine, heel snelle fotoviewer voor Windows die al sinds 1996 bestaat en via plug-ins een enorme lijst formaten leest. Naast bekijken doet hij bulkconversie, eenvoudige bewerking, scannen, afdrukken en diavoorstellingen, allemaal met veel sneltoetsen.",
+   "wins": [
+    "Enorme lijst formaten, ook zeldzame en retroformaten",
+    "Bulk converteren en bulk hernoemen",
+    "Afbeeldingen bewerken, teken-plug-in, effecten, Photoshop 8BF-filters",
+    "Scannen, afdrukken, OCR-plug-in",
+    "Zoeken op EXIF/IPTC en tekst, niet alleen op namen",
+    "Diavoorstellingen opslaan als EXE, schermbeveiliging of MP4",
+    "Draait op heel oude Windows-versies en vanaf een USB-stick"
+   ],
+   "price": "Gratis voor privé, niet-commercieel gebruik en onderwijs; commerciële licentie US$18 / EUR 15 (onbeperkt geldig)",
+   "version": "4.76",
+   "updated": "2026-09-18",
+   "platforms": "Windows"
+  },
+  "isee-pro": {
+   "name": "iSee Pro",
+   "vendor": "Dummy Apps",
+   "summary": "iSee Pro is een kleine fotobrowser uit de Mac App Store die alle afbeeldingen van een map en de submappen laadt, met vooruit laden voor snel bladeren. Hij heeft lijst-, miniaturen- en volledige weergave, zoeken op naam/grootte/datum, EXIF-overlay, een loep, en opent ZIP/RAR-archieven waarvan hij de wachtwoorden onthoudt. Vereist macOS 12.",
+   "wins": [
+    "Heel goedkoop ($0.99 Pro) en klein (4.4 MB)",
+    "Onthoudt wachtwoorden van archieven",
+    "Zoeken op afmetingen en Draw Things-parameters",
+    "Functies voor bewegende achtergronden/bureaublad"
+   ],
+   "price": "Gratis met in-app-aankoop: Pro $0.99",
+   "version": "11.5",
+   "updated": "2025-05-30",
+   "platforms": "macOS",
+   "notes": {
+    "free": "Gratis; Pro $0.99 (volgens een review vervalt dan een limiet van 50 afbeeldingen)",
+    "thumbnail_grid": "Miniaturenweergave; voorvertoning van mappen niet genoemd",
+    "network_shares_fast": "Wordt op NAS/servers gebruikt; snelheid onbekend",
+    "img_modern_formats": "WebP sinds 11.0; eigen extensies toe te voegen; HEIC/AVIF/JXL niet genoemd",
+    "img_raw": "Niet genoemd; eigen extensies toe te voegen, gedecodeerd door macOS",
+    "img_psd_exr": "Niet genoemd; eigen extensies toe te voegen, gedecodeerd door macOS",
+    "slideshow_recursive": "Laadt alle submappen, alleen afbeeldingen (geen video)",
+    "file_info_exif": "EXIF-overlay (⌘I); alleen afbeeldingen",
+    "archives_as_folders": "ZIP en RAR (uitgepakt); 7z niet genoemd",
+    "rename_trash": "Naam wijzigen (Enter), verwijderen; nieuwe map niet genoemd",
+    "move_copy": "Afbeeldingen naar een map slepen om op te slaan; geen commando’s",
+    "library_catalog": "Alleen afbeeldingen markeren, geen database",
+    "keyboard_first": "Veel sneltoetsen, maar ook met alleen de muis te bedienen",
+    "notarized_attested": "Door Apple beoordeeld in de App Store; geen openbare broncode"
+   }
+  },
+  "jpegview": {
+   "name": "JPEGView",
+   "vendor": "sylikc en David Kleiner",
+   "summary": "Slanke, heel snelle fotoviewer voor Windows met een minimale schermvullende interface, realtime beeldcorrectie (automatisch contrast, lokale dichtheid, verscherpen) en bediening met het toetsenbord via een bewerkbare KeyMap. Kan moderne formaten en RAW aan. Geen miniaturen, geen video, geen bestandsbrowser; de fork heeft sinds 2023 geen release gehad.",
+   "wins": [
+    "Realtime automatische correctie van kleur, contrast en lokale dichtheid tijdens het kijken",
+    "Extreem klein en draagbaar (geen installatie)",
+    "Alle toetsen opnieuw toe te wijzen via KeyMap.txt",
+    "JPEG verliesvrij bijsnijden/draaien",
+    "Afbeeldingsreeksen afspelen als film met een ingestelde framerate"
+   ],
+   "price": "Gratis",
+   "version": "1.3.46",
+   "updated": "2023-10-07 (laatste release; laatste commit 2024-07-06)",
+   "platforms": "Windows"
+  },
+  "kmplayer": {
+   "name": "KMPlayer",
+   "vendor": "PandoraTV",
+   "summary": "KMPlayer is een al lang bestaande gratis mediaspeler voor Windows met ingebouwde codecs, 4K/8K, 3D en 360°-VR, afspelen en downloaden van URL’s en YouTube, en een toetsenbordindeling waarin bijna elke toets iets doet. De 64X-editie heeft geen advertenties, de 32-bit-editie wel. Volgens de maker is er geen actuele desktopapp voor macOS.",
+   "wins": [
+    "Heel brede ondersteuning van codecs en formaten, ook 3D en 360°-VR",
+    "URL’s en YouTube afspelen en downloaden",
+    "Fijnmazige bediening met het toetsenbord, globale sneltoetsen, baastoets (Esc)",
+    "Equalizer-voorinstellingen, video/audio opnemen, GIF’s maken",
+    "Skins en kleurenschema’s, 42 talen"
+   ],
+   "price": "Gratis; KMPlayer 64X zonder advertenties, KMPlayer 32-bit met advertenties; de Android-app heeft een Premium-upgrade",
+   "version": "KMPlayer 64X 2026.10.27.9; KMPlayer (32-bit) 4.2.3.38",
+   "updated": "2026-10-28",
+   "platforms": "Windows, Android, iOS, iPadOS"
+  },
+  "kodi": {
+   "name": "Kodi",
+   "vendor": "de Kodi Foundation",
+   "summary": "Een gratis open-source mediacenter met een interface voor tv en afstandsbediening. Beheert grote video- en muziekbibliotheken, bladert door lokale mappen en netwerkmappen en toont ook foto’s met diavoorstellingen.",
+   "wins": [
+    "Mediacenter voor de tv met afstandsbediening, bibliotheken met posters en metadata",
+    "Muziekbibliotheek en -speler",
+    "Add-ons voor streaming en ondertitels, PVR/live-tv",
+    "RAR met wachtwoord en RAR in delen via add-on",
+    "Draait op tv-boxen, Android, Linux, Raspberry Pi"
+   ],
+   "price": "Gratis",
+   "version": "21.3 Omega (22.0 Piers RC2 van 2026-11-10)",
+   "updated": "2025-10-31",
+   "platforms": "macOS, Windows, Linux, Android, iOS/tvOS, LibreELEC",
+   "notes": {
+    "network_shares_fast": "Netwerkbronnen zoals lokale; miniaturen in de cache, dus later sneller",
+    "img_modern_formats": "WebP en AVIF ingebouwd; HEIC via add-on; geen JPEG XL",
+    "img_raw": "Via de add-on ‘imagedecoder.raw’",
+    "auto_enhance_view": "Helderheid/contrast in de video-instellingen; niets voor foto’s",
+    "online_subtitles": "Via add-ons voor ondertiteldiensten",
+    "comics_cbz_cbr": "CBZ/CBR als fotomappen; geen leesmodus",
+    "archive_passwords": "Alleen RAR (vraagt of probeert bewaarde wachtwoorden)",
+    "split_archives": "RAR in delen (.partN.rar) via vfs.rar",
+    "rename_trash": "Bestandsbeheer: naam wijzigen, verwijderen (zonder prullenmand), mappen maken",
+    "dual_pane": "Bestandsbeheer met twee panelen; geen F5/F6",
+    "cloud_sync": "Geen eigen cloud; bibliotheken te delen via een MySQL/MariaDB-server",
+    "shortcut_cheatsheet": "Wikipagina met alle standaardtoetsen",
+    "notarized_attested": "macOS-pakket wordt genotariseerd; geen build-attestatie"
+   }
+  },
+  "leeyes": {
+   "name": "Leeyes",
+   "vendor": "Kenji (けんじ)",
+   "summary": "Japanse viewer met drie panelen (mappenboom, bestandslijst, afbeelding), gemaakt om gescande manga als dubbele pagina’s te lezen, met een boekenplank voor favoriete mappen. Alle formaten behalve BMP komen uit Susie-plug-ins. Laatste release 2011; de site van de maker is niet meer bereikbaar, er zijn alleen gearchiveerde kopieën.",
+   "wins": [
+    "Boekenplanklijsten als tekst te exporteren en importeren",
+    "Dubbele pagina afgestemd op gescande boeken"
+   ],
+   "price": "Gratis voor niet-commercieel gebruik",
+   "version": "2.6.1",
+   "updated": "2011-10-26",
+   "platforms": "Windows"
+  },
+  "lyn": {
+   "name": "Lyn",
+   "vendor": "Mirko Viviani",
+   "summary": "Al lang bestaande, lichte fotobrowser voor fotografen en ontwerpers met een mappenzijbalk, geotagkaart, niet-destructieve bewerking en delen naar Flickr, Dropbox en SmugMug. Direct verkocht, draait tot terug op macOS 10.13.",
+   "wins": [
+    "Geotaggen op een kaart",
+    "Niet-destructieve kleurbewerking",
+    "Opent bibliotheken van Foto’s/Aperture/Lightroom",
+    "Delen naar Flickr, Dropbox, SmugMug",
+    "Draait op oude macOS (10.13 en nieuwer)"
+   ],
+   "price": "26 € / $29.99 eenmalig met 15 maanden updates; 15 dagen proef",
+   "version": "2.4.10",
+   "updated": "2026-07-09",
+   "platforms": "macOS",
+   "notes": {
+    "languages_20": "Engels plus Frans en Chinees; geen volledige lijst",
+    "recursive_search": "Slimme mappen met zoekbereik; gewoon recursief op naam zoeken niet beschreven",
+    "bookmarks": "Onderdelen in de zijbalk en slimme mappen",
+    "img_psd_exr": "OpenEXR ja; PSD alleen via ImageIO van macOS",
+    "img_animated": "Geanimeerde WebP en geanimeerde afbeeldingen in de browser; APNG niet vermeld",
+    "video_skim_arrows": "Spatie, J/K/L",
+    "playback_speed": "J/L terug- en vooruitspoelen",
+    "library_catalog": "Trefwoorden, IPTC, kleurlabels, slimme mappen; geen eigen catalogus"
+   }
+  },
+  "mangameeya": {
+   "name": "MangaMeeya",
+   "vendor": "",
+   "summary": "Lange tijd de bekendste mangareader op Windows: opent strips in ZIP/RAR, ook archieven in archieven, met dubbele pagina’s, miniaturen, tabbladen en instelbare toetsen. Stopgezet zonder officiële download; kopieën en het compacte MangaMeeyaCE circuleren op mirrors.",
+   "wins": [
+    "Vertrouwde mangaworkflow voor wie hem al jaren gebruikt",
+    "Tabbladen en gesplitste vensters over twee monitoren"
+   ],
+   "price": "Gratis",
+   "version": "op AlternativeTo vermeld als 2.4 (stopgezet)",
+   "updated": "2006-06 (volgens AlternativeTo)",
+   "platforms": "Windows"
+  },
+  "marta": {
+   "name": "Marta",
+   "vendor": "Yan Zhulanow",
+   "summary": "Native bestandsbeheerder met twee panelen, gericht op het toetsenbord, geschreven in Swift, ingesteld via een tekst-DSL en uit te breiden met Lua-plug-ins. Opent veel archiefformaten als mappen; voorvertoning via Snelle weergave.",
+   "wins": [
+    "Lua-plug-in-API en configuratie in tekst",
+    "Werken met F-toetsen in commander-stijl en een actiepaneel",
+    "Archieven, ook archieven in archieven, ZIP lezen en schrijven",
+    "Ingebouwde terminal die met de map meegaat, analyse van schijfgebruik",
+    "Look Up met Spotlight-predicaten"
+   ],
+   "price": "Gratis tijdens de bèta; betaalde licentie gepland na de bèta (supporters op Patreon vanaf $15 krijgen een levenslange licentie)",
+   "version": "0.8.2",
+   "updated": "2024-08-03",
+   "platforms": "macOS",
+   "notes": {
+    "free": "Gratis tijdens de bèta; een betaalde licentie is aangekondigd",
+    "regex_search": "Snel selecteren/zoeken in de huidige lijst met regex; Look Up met predicaten",
+    "img_modern_formats": "Alleen voorvertoning via Snelle weergave (Spatie); geen eigen viewer",
+    "img_raw": "Alleen voorvertoning via Snelle weergave (Spatie); geen eigen viewer",
+    "img_psd_exr": "Alleen voorvertoning via Snelle weergave (Spatie); geen eigen viewer",
+    "img_svg_pdf": "Alleen voorvertoning via Snelle weergave (Spatie); geen eigen viewer",
+    "img_animated": "Alleen voorvertoning via Snelle weergave (Spatie); geen eigen viewer",
+    "zoom_rotate": "Alleen zoomen in Snelle weergave; schermvullende voorvertoning gevraagd, nog niet gebouwd",
+    "video_native": "Snelle weergave speelt MP4/MOV af",
+    "video_mkv_avi_webm": "Alleen wat Snelle weergave van macOS afspeelt; welke formaten is onbekend",
+    "music_mode": "Snelle weergave speelt één audiobestand; geen speler voor een hele map",
+    "archives_as_folders": "ZIP lezen en schrijven; TAR, 7Z, ISO e.a. alleen lezen; RAR beperkt, geen RAR5",
+    "comics_cbz_cbr": "Geen stripreader; extensies zoals cbz als ZIP te registreren",
+    "shortcut_cheatsheet": "Documentatie noemt de standaardtoetsen; niet afdrukbaar"
+   }
+  },
+  "massigra": {
+   "name": "MassiGra",
+   "vendor": "Toshi Fuku",
+   "summary": "Kleine, snelle Japanse fotoviewer met één venster die door een map bladert, met mangamodus en eenvoudige bewerkingen. Ingebouwd zijn BMP, GIF, JPEG en PNG; al het andere, archieven inbegrepen, komt via Susie-plug-ins. Stond vijf jaar op rij bovenaan de downloadranglijst voor fotoviewers van Vector, maar is sinds 2013 niet veranderd.",
+   "wins": [
+    "Piepklein en heel licht op oude hardware",
+    "Eenvoudige bewerkingen en opslaan (niveaus, kleur, bijsnijden, schalen)",
+    "Met één toets verplaatsen/kopiëren naar vooraf ingestelde mappen",
+    "Vertrouwd voor Japanse Windows-gebruikers van het eerste uur"
+   ],
+   "price": "Gratis",
+   "version": "0.45",
+   "updated": "2013-04-23",
+   "platforms": "Windows"
+  },
+  "mcomix": {
+   "name": "MComix",
+   "vendor": "de MComix-ontwikkelaars",
+   "summary": "MComix is een aanpasbare GTK-viewer voor strips en afbeeldingen voor Linux en Windows, een fork van Comix. Leest CBR/CBZ/CB7/CBT/LHA en PDF, heeft dubbele-pagina- en mangamodus, beeldverbetering, een diavoorstelling en een optionele bibliotheek.",
+   "wins": [
+    "Dubbele pagina en mangamodus",
+    "Beeldverbetering (helderheid, contrast, scherpte, automatisch contrast)",
+    "Bewerkbare sneltoetsen",
+    "Archiefeditor en optionele bibliotheek met verzamelingen",
+    "Interface in 25 talen",
+    "Versies voor Linux en Windows"
+   ],
+   "price": "Gratis",
+   "version": "3.2.0",
+   "updated": "2026-08-20",
+   "platforms": "Linux, Windows"
+  },
+  "mediaone": {
+   "name": "MediaOne",
+   "vendor": "MediaArt Studio",
+   "summary": "MediaOne (voorheen ImageOne) is een mediabrowser uit de Mac App Store voor foto’s, video’s en audio die zonder import op mappen en favorieten werkt. Hij biedt meerdere miniaturenindelingen, zoeken op de hele schijf, sterrenbeoordelingen en tags, een vergelijkweergave, video’s inkorten, GIF-export en bulkconversie. Vereist macOS 12.4.",
+   "wins": [
+    "Video’s spelen af en scrubben als je eroverheen beweegt",
+    "Sterrenbeoordelingen, tags, slimme filters en fotokaart",
+    "Video inkorten, frame opslaan, video naar GIF, bulkconversie van afbeeldingen/video",
+    "Speelt audiobestanden af",
+    "Zoeken op de hele schijf met bewaarde slimme zoekopdrachten"
+   ],
+   "price": "Gratis met in-app-aankoop: ImageOne $6.99",
+   "version": "5.4.1",
+   "updated": "2026-08-23",
+   "platforms": "macOS",
+   "notes": {
+    "free": "Gratis met één in-app-aankoop ‘ImageOne’ $6.99; wat die ontgrendelt is niet vermeld",
+    "list_view": "Lijstweergave genoemd; kolommen niet beschreven",
+    "img_modern_formats": "WebP genoemd; HEIC/AVIF/JXL niet (HEIC mogelijk via het systeem)",
+    "slideshow_recursive": "‘Alle submappen tonen’ verzamelt foto’s en video’s; diavoorstelling daarover niet vermeld",
+    "file_info_exif": "EXIF voor afbeeldingen; geen codecs/bitsnelheid",
+    "video_skim_arrows": "Option+pijltjes per frame, scrubben met de muis",
+    "dual_pane": "Vergelijkweergave in twee kolommen; geen bestandspanelen met F5/F6",
+    "image_editing": "Draaien/spiegelen, video inkorten, frame opslaan, video naar GIF",
+    "batch_convert": "Bulkconversie van afbeeldingen en video; bulk hernoemen niet genoemd",
+    "library_catalog": "Sterren en tags op bestanden, slimme filters, kaart; geen importdatabase",
+    "keyboard_first": "Pijltjes/Spatie/Option gedocumenteerd; gericht op de muis",
+    "notarized_attested": "Door Apple beoordeeld in de App Store; geen openbare broncode"
+   }
+  },
+  "meitu-kankan": {
+   "name": "美图看看",
+   "vendor": "Meitu",
+   "summary": "Een kleine, snelle gratis fotoviewer van Meitu die begin jaren 2010 heel populair was op Chinese Windows-pc’s, met favoriete mappen, een weergave van alle foto’s in submappen en delen met één klik naar Chinese sociale netwerken. Wordt niet meer ontwikkeld (laatste release 2.7.8), maar is nog te downloaden.",
+   "wins": [
+    "Piepklein en licht op oude pc’s",
+    "Toont alle foto’s van alle submappen tegelijk (穿透文件夹)",
+    "CMYK-PSD weergegeven zoals in Photoshop"
+   ],
+   "price": "Gratis",
+   "version": "2.7.8",
+   "updated": "2014-11-25 (site); de Tencent-store vermeldt bestandsdatum 2019-05-08",
+   "platforms": "Windows, Android"
+  },
+  "microsoft-photos": {
+   "name": "Microsoft Foto’s",
+   "vendor": "Microsoft",
+   "summary": "De foto- en video-app die in Windows zit: een galerij als tijdlijn over pc-mappen, OneDrive en iCloud, een snelle viewer die door een map bladert, en een editor met AI-tools. Goed om even rond te kijken en snel iets te bewerken; Foto’s (verouderd) houdt de oudere video-editor en diavoorstellingsmaker. Geen archieven, geen bestandsbeheer.",
+   "wins": [
+    "Staat op elke Windows-pc",
+    "Foto’s van OneDrive en iCloud in één galerij",
+    "AI-bewerking: objecten verwijderen, Relight, superresolutie op Copilot+ pc’s",
+    "Personen, albums, momenten en zoeken in gewone taal",
+    "Diavoorstelling met muziek",
+    "Meerdere foto’s naast elkaar vergelijken"
+   ],
+   "price": "Gratis bij Windows (HEVC-video-extensies $0.99)",
+   "version": "2026.11090.22001 (nieuwe galerij/editor/viewer worden uitgerold vanaf okt. 2026)",
+   "updated": "2026-10-06",
+   "platforms": "Windows"
+  },
+  "movist-pro": {
+   "name": "Movist Pro",
+   "vendor": "Movist",
+   "summary": "Een betaalde videospeler om films en series te kijken, sterk in ondertitels (meerdere ondertiteltracks tegelijk, stijlen per taal), HDR/Dolby Vision-tonemapping en AirPlay van elk formaat. Pro voegt netwerkservers, YouTube en webmedia en beeld-in-beeld toe.",
+   "wins": [
+    "Opmaak van ondertitels en dubbele ondertitels",
+    "HDR- en Dolby Vision-tonemapping",
+    "AirPlay van formaten die Apple TV zelf niet afspeelt",
+    "Netwerkservers (SMB, SFTP, FTP, WebDAV), YouTube, beeld-in-beeld (Pro)",
+    "Bewaarde afspeellijsten, audio-equalizer"
+   ],
+   "price": "Movist Pro $17.99 eenmalig (direct); Movist $9.99 (Mac App Store); Movist Pro in het Setapp-abonnement",
+   "version": "2.21.1 (direct); Movist 2.20.0 in de Mac App Store",
+   "updated": "2026-10-17 (App Store 2.20.0); 2.21.1 later, datum onbekend",
+   "platforms": "macOS",
+   "notes": {
+    "languages_20": "6: Engels, Japans, Koreaans, Russisch, vereenvoudigd en traditioneel Chinees",
+    "folder_browsing": "Vult de afspeellijst uit de map; Pro bladert door netwerkshares",
+    "network_shares_fast": "Pro speelt direct van SMB-, SFTP-, FTP- en WebDAV-servers",
+    "zoom_rotate": "Alleen video: zoomen, draaien, spiegelen",
+    "auto_enhance_view": "Alleen video: Core Image-filters",
+    "file_info_exif": "Inspectievenster met tracks/codecs; geen EXIF",
+    "pip": "Alleen Movist Pro",
+    "music_mode": "Speelt muziek af met equalizer; geen bibliotheek",
+    "streaming_urls": "Alleen Pro: URL openen, YouTube/Twitch en webmedia, browserextensies",
+    "rename_trash": "Huidig bestand verwijderen via het menu Archief; geen naam wijzigen/nieuwe map",
+    "keyboard_first": "Eigen sneltoetsen voor afspelen; niet door bestanden bladeren",
+    "app_sandbox": "Movist uit de App Store in de sandbox; Pro vraagt geen maptoestemming",
+    "mac_app_store": "Alleen de kleinere ‘Movist’ ($9.99); Pro direct en via Setapp"
+   }
+  },
+  "mpc-be": {
+   "name": "MPC-BE",
+   "vendor": "Aleksoid1978 en bijdragers",
+   "summary": "Een videospeler voor Windows, afgesplitst van Media Player Classic, met eigen decoders, een donker thema en frequente releases. Goed voor lokale videobestanden en YouTube via yt-dlp.",
+   "wins": [
+    "Lichte Windows-speler met frequente updates",
+    "Donker thema, veel opties voor renderers en decoders",
+    "Ondertitels downloaden, streamen via yt-dlp",
+    "Baastoets, instelbare toetsen"
+   ],
+   "price": "Gratis",
+   "version": "1.9.3",
+   "updated": "2026-11-05",
+   "platforms": "Windows"
+  },
+  "mpc-hc": {
+   "name": "MPC-HC",
+   "vendor": "clsid2 en bijdragers",
+   "summary": "Een lichte, klassieke videospeler voor Windows met ingebouwde LAV Filters, veel renderers en zeer instelbare toetsen. Populair om de eenvoudige interface en het lage verbruik; afbeeldingen zijn niet zijn taak.",
+   "wins": [
+    "Heel licht en snel gestart",
+    "Renderers en shaders voor liefhebbers (madVR, MPC VR)",
+    "Ondertitels zoeken en downloaden, streamen via yt-dlp",
+    "Baastoets, beeld voor beeld, veel instelbare toetsen"
+   ],
+   "price": "Gratis",
+   "version": "2.8.5",
+   "updated": "2026-11-06",
+   "platforms": "Windows"
+  },
+  "mpv": {
+   "name": "mpv",
+   "vendor": "het mpv-project",
+   "summary": "mpv is een minimalistische, scriptbare mediaspeler voor de opdrachtregel met GPU-weergave (HDR, Dolby Vision) en ondersteuning voor heel veel formaten. Je stelt hem in met tekstbestanden en Lua/JS-scripts, en hij heeft alleen een kleine bediening op het scherm.",
+   "wins": [
+    "Videoweergave met gpu-next, HDR en Dolby Vision",
+    "Extreem instelbaar via mpv.conf, input.conf en scripts",
+    "Speelt media direct uit ZIP/RAR/7z en RAR in delen",
+    "Cross-platform (macOS, Windows, Linux)",
+    "Streams en YouTube via yt-dlp, dvd/Blu-ray-menu’s"
+   ],
+   "price": "Gratis",
+   "version": "0.42.0",
+   "updated": "2026-11-05",
+   "platforms": "macOS, Windows, Linux, BSD, Android (via mpv-android)",
+   "notes": {
+    "dark_light_setting": "Alleen de titelbalk via een optie; geen thema voor de interface",
+    "folder_browsing": "Een map openen maakt een afspeellijst, ook recursief; geen bestandsbrowser",
+    "img_psd_exr": "Opent EXR en PSD, maar pakt ze niet op uit mappen",
+    "img_svg_pdf": "SVG (vraagt FFmpeg met librsvg); geen PDF",
+    "auto_enhance_view": "Toetsen 1 tot 8 regelen contrast, helderheid, gamma, verzadiging; niet automatisch",
+    "file_info_exif": "Statistiekenoverlay (i/I): codecs, bitsnelheid; geen EXIF",
+    "saved_playlists": "Laadt m3u/pls/cue/edl; geen ingebouwd commando om op te slaan",
+    "archives_as_folders": "ZIP, RAR, 7z (ook CBZ/CBR) openen als afspeellijst, niet als map om door te bladeren",
+    "comics_cbz_cbr": "CBZ/CBR openen als lijst met afbeeldingen; geen leesmodus",
+    "batch_convert": "Coderen via de opdrachtregel (--o); geen bulk hernoemen",
+    "shortcut_cheatsheet": "? toont de toetsen in de statistiekenoverlay; standaardtoetsen in input.conf",
+    "no_network": "Geen updatecheck of telemetrie; gaat online voor URL’s die je opent"
+   }
+  },
+  "neeview": {
+   "name": "NeeView",
+   "vendor": "neelabo",
+   "summary": "Viewer voor Windows in boekstijl die mappen en archieven als boeken en afbeeldingen als pagina’s behandelt. Heel instelbaar: elke actie is een commando met eigen toetsen, muisgebaren en scripts, plus boekenplank, bladwijzers, afspeellijsten en dubbele mangapagina’s. Video’s spelen af via Windows of een geïnstalleerde VLC.",
+   "wins": [
+    "Elke actie instelbaar: commando’s, gebaren, JavaScript",
+    "Dubbele pagina met lezen van rechts naar links en pagina’s splitsen",
+    "Archieven in archieven en wachtwoorden (via 7z.dll)",
+    "Bewaarde afspeellijsten, geschiedenis en zoeken met datum/grootte/regex",
+    "Paneel met beeldeffecten, afdrukken, exporteren als ZIP/map",
+    "Versies voor de Microsoft Store en als draagbare ZIP"
+   ],
+   "price": "Gratis",
+   "version": "46.3",
+   "updated": "2026-08-09",
+   "platforms": "Windows"
+  },
+  "nomacs": {
+   "name": "nomacs",
+   "vendor": "het nomacs-team",
+   "summary": "nomacs (‘Image Lounge’) is een gratis open-source fotoviewer met RAW en PSD, metadatapanelen, beeldaanpassingen en bulkverwerking. Bijzonder is dat je meerdere vensters kunt synchroniseren om afbeeldingen naast elkaar te vergelijken. Er zijn actuele macOS-versies voor Apple silicon en Intel, al zijn ze niet genotariseerd.",
+   "wins": [
+    "Bulkverwerking en eenvoudige fotobewerking",
+    "Meerdere vensters synchroniseren om te vergelijken",
+    "Metadatapanelen, histogram en sterrenbeoordelingen",
+    "Plug-ins (tekenen, samenvoegen, transformaties)",
+    "Draait op Windows, Linux, FreeBSD en Haiku"
+   ],
+   "price": "Gratis",
+   "version": "3.22.5 (bèta 3.23.4)",
+   "updated": "2026-11-05",
+   "platforms": "macOS, Windows, Linux, FreeBSD, Haiku",
+   "notes": {
+    "thumbnail_grid": "Miniaturenstrook en -raster van de huidige map; geen voorvertoning van mappen",
+    "list_view": "Verkennerpaneel met boom/lijst en kolommen; niet de hoofdweergave",
+    "recursive_search": "Zoekt in de geladen lijst; met recursief scannen ook in submappen",
+    "img_svg_pdf": "SVG ja; geen PDF",
+    "slideshow_recursive": "Door map en submappen voor afbeeldingen; geen video’s",
+    "auto_enhance_view": "Paneel met aanpassingen; als bewerking op te slaan, niet alleen weergave",
+    "archives_as_folders": "Alleen ZIP (en CBZ) in de volledige macOS-versie; geen RAR/7z",
+    "comics_cbz_cbr": "CBZ ja, CBR nee",
+    "dual_pane": "Meerdere gesynchroniseerde vensters om te vergelijken; geen bestandsbeheer met twee panelen",
+    "library_catalog": "Sterren in de metadata; geen catalogus",
+    "notarized_attested": "Openbaar gebouwd via GitHub Actions, maar alleen ad-hoc ondertekend, niet genotariseerd"
+   }
+  },
+  "norton-commander": {
+   "name": "Norton Commander",
+   "vendor": "Symantec",
+   "summary": "De oorspronkelijke orthodoxe bestandsbeheerder met twee panelen voor MS-DOS (1986 tot 1998), die de indeling F3 bekijken, F5 kopiëren, F6 verplaatsen vastlegde die Total Commander, Midnight Commander en vele anderen overnamen. Er wordt uit nostalgie nog veel naar gezocht; tegenwoordig draait hij alleen nog in DOS of een emulator.",
+   "wins": [
+    "Legde het werken met twee panelen en F-toetsen vast",
+    "Piepklein en snel in tekstmodus",
+    "Mappen synchroniseren en Bestanden zoeken met resultaten in een paneel"
+   ],
+   "price": "Stopgezet; was commercieel (NC 3.0 $149, NC 4.0 $99 adviesprijs)",
+   "version": "5.51 (DOS)",
+   "updated": "1998-07-01",
+   "platforms": "MS-DOS, Windows (NC for Windows 2.01), OS/2"
+  },
+  "nplayer": {
+   "name": "nPlayer",
+   "vendor": "Newin",
+   "summary": "Betaalde Mac-versie van de populaire iOS-speler nPlayer: speelt bijna elk video-, audio- en ondertitelformaat af en streamt vanaf SMB, NFS, WebDAV, FTP, UPnP en clouddiensten, met uitgebreide opmaak van ondertitels, A-B-herhaling en beeld-in-beeld. Mac-updates zijn zeldzaam.",
+   "wins": [
+    "Netwerkprotocollen (SMB, NFS, SFTP, WebDAV, UPnP)",
+    "Geavanceerde ondertitels (opmaak, synchronisatie, SMI, SUP)",
+    "A-B-herhaling, ‘Listening Drill’ om talen te leren",
+    "Beeld-in-beeld, afspeelsnelheid",
+    "Audio-equalizer en synchronisatie"
+   ],
+   "price": "$9.99 eenmalig (Mac)",
+   "version": "1.5.0",
+   "updated": "2025-02-14",
+   "platforms": "macOS, iOS, iPadOS, Android, tvOS",
+   "notes": {
+    "dark_light_setting": "Spelerthema’s sinds 1.4.0; of licht/donker los van het systeem kan, is onbekend",
+    "languages_20": "9 in de App Store",
+    "folder_browsing": "Bladert door netwerkbronnen (SMB, FTP, WebDAV, UPnP, cloud); lokale bestanden via de Finder",
+    "thumbnail_grid": "Maakt videominiaturen; indeling niet gedocumenteerd",
+    "network_shares_fast": "WebDAV, FTP, SFTP, HTTP, SMB, NFS, UPnP/DLNA; snelheid onbekend",
+    "zoom_rotate": "Video draaien 90/180/270, spiegelen",
+    "auto_enhance_view": "Helderheid en verzadiging voor video",
+    "saved_playlists": "Opent afspeellijstbestanden; zelf opslaan niet gedocumenteerd",
+    "library_catalog": "Metadata van TMDb",
+    "cloud_sync": "Streamt van Box, Dropbox, OneDrive; geen synchronisatie",
+    "notarized_attested": "Ondertekend via de App Store; closed source"
+   }
+  },
+  "omniplayer": {
+   "name": "OmniPlayer",
+   "vendor": "Oka Apps",
+   "summary": "Mediaspeler uit de Mac App Store voor MKV, AVI, WMV en de meeste andere formaten, met ondertitels zoeken, afspeelsnelheid, audio-equalizer en casten naar DLNA, Chromecast en Roku. Een rechttoe-rechtaan speler voor één bestand tegelijk, met afspeellijst.",
+   "wins": [
+    "Ondertitels online zoeken",
+    "Afspeelsnelheid tot 0.1x, beeld voor beeld",
+    "Casten naar tv’s (DLNA, Chromecast, Roku)",
+    "URL’s van YouTube/Vimeo, bronnen via SMB/FTP",
+    "Audio-equalizer, muziek afspelen",
+    "Beeldaanpassingen en GIF-export"
+   ],
+   "price": "Gratis met VIP: levenslang $9.99, per jaar $6.99, per maand $3.99; OmniPlayer Pro $8.99 eenmalig",
+   "version": "2.1.22",
+   "updated": "2026-06-18",
+   "platforms": "macOS",
+   "notes": {
+    "free": "Gratis; VIP vanaf $3.99 per maand of $9.99 levenslang; welke functies VIP vragen is niet vermeld",
+    "languages_20": "7 in de App Store; de site van de maker noemt 11",
+    "folder_browsing": "Ingesleepte mappen worden een afspeellijst (‘mapmodus’); geen mappenbrowser",
+    "recursive_search": "Zoeken in de afspeellijst; mappen met meerdere niveaus in te slepen",
+    "network_shares_fast": "Speelt van SMB/FTP-servers en Alist; snelheid onbekend",
+    "zoom_rotate": "Video draaien, beeldverhouding, venstergrootte; geen afbeeldingen",
+    "auto_enhance_view": "Helderheid/contrast/verzadiging, alleen video",
+    "file_info_exif": "Venster met media-info (codecs); geen EXIF",
+    "saved_playlists": "Afspeellijst blijft automatisch bewaard; geen benoemde lijsten",
+    "keyboard_first": "Sneltoetsen voor afspelen, snelheid (⌘[ / ⌘]), ondertitels",
+    "notarized_attested": "Ondertekend via de App Store; closed source"
+   }
+  },
+  "opencomic": {
+   "name": "OpenComic",
+   "vendor": "ollm",
+   "summary": "OpenComic is een cross-platform open-source reader voor strips, manga en e-books, met tabbladen, meerdere vensters, OPDS en serververbindingen. Biedt manga- en webtoonmodus, beeldaanpassingen en AI-upscaling.",
+   "wins": [
+    "Veel formaten, o.a. EPUB, MOBI, SVG, JPEG XL, ACE/LZH-archieven",
+    "Manga, webtoon, dubbele pagina en geleide weergave",
+    "Direct SMB/FTP/SFTP/WebDAV/S3 en OPDS",
+    "AI-upscaling, rasters en artefacten verwijderen",
+    "Tabbladen en meerdere vensters; eigen sneltoetsen en gamepad"
+   ],
+   "price": "Gratis (GitHub); $4.99 in de Mac App Store",
+   "version": "2.0.0 (GitHub); 1.6.11 in de Mac App Store",
+   "updated": "2026-11-14",
+   "platforms": "macOS, Windows, Linux",
+   "notes": {
+    "network_shares_fast": "Direct SMB, FTP, SFTP, WebDAV, S3; bestandslijsten in de cache",
+    "bookmarks": "Paginabladwijzers, favorieten en eigen labels",
+    "img_modern_formats": "WebP, AVIF, JPEG XL; HEIC weer verwijderd",
+    "zoom_rotate": "Zoomen en loep; draaien niet gedocumenteerd",
+    "music_mode": "Achtergrondmuziek en geluidseffecten bij het lezen; geen muziekspeler",
+    "rename_trash": "Naar de prullenmand en definitief verwijderen; geen naam wijzigen",
+    "cloud_sync": "Serververbindingen en OPDS; geen eigen cloudsync",
+    "app_sandbox": "Versie uit de Mac App Store in de sandbox; DMG van GitHub niet",
+    "notarized_attested": "DMG/PKG lokaal gebouwd en genotariseerd; geen build-attestatie"
+   }
+  },
+  "panels": {
+   "name": "Panels",
+   "vendor": "Produkt Studio",
+   "summary": "Panels is een stripreader voor iPhone, iPad en Mac met een bibliotheek van omslagen, leesvoorinstellingen, weergave per panel en OPDS voor Komga/Kavita. Geavanceerde functies zoals cloudbibliotheken, paginafilters en tekstherkenning vragen Premium.",
+   "wins": [
+    "Gesynchroniseerde bibliotheek en voortgang tussen Mac, iPhone en iPad",
+    "Streamen via OPDS (Komga, Kavita, Calibre)",
+    "Geleide weergave per panel, leesvoorinstellingen",
+    "Live Text en herkenning van onderwerpen",
+    "Winkel in de app met strips zonder DRM"
+   ],
+   "price": "Gratis download; Premium via een Panels+-abonnement (per maand/jaar) of de eenmalige aankoop Panels 3 (EUR 22.99 eenmalig / EUR 11.99 per jaar, mei 2025)",
+   "version": "3.13.11",
+   "updated": "2026-11-11",
+   "platforms": "macOS, iOS, iPadOS",
+   "notes": {
+    "free": "Basisreader gratis; Premium per abonnement of eenmalig (EUR 22.99)",
+    "no_account_no_tracking": "Geen account voor lokale bestanden; App Store-label: gebruiksgegevens, diagnose, ID’s",
+    "languages_20": "12 talen (8 machinevertaald); in te stellen via de taal per app van macOS",
+    "folder_browsing": "Bibliotheken zijn gewone mappen; extra mappen gratis, externe schijven en iCloud Premium",
+    "list_view": "Bibliotheek als raster of lijst (⌘1 / ⌘2); kolommen niet gedocumenteerd",
+    "network_shares_fast": "SMB-import en OPDS-streaming (Premium); kan duizenden strips aan",
+    "bookmarks": "Favoriete locaties (Premium), favorieten, verder lezen",
+    "img_svg_pdf": "PDF ja, SVG nee",
+    "zoom_rotate": "Zoomen, passend/vullend; draaien niet gedocumenteerd",
+    "auto_enhance_view": "Paginafilters (ruis, scherpte, moiré, randen) zijn Premium",
+    "file_info_exif": "Info over strips (⌘I), geen EXIF",
+    "archives_as_folders": "Opent een archief als stripboek, niet als map",
+    "rename_trash": "Naam wijzigen en verwijderen in de bibliotheek",
+    "move_copy": "Kopiëren, verplaatsen, plakken in de bibliotheek",
+    "keyboard_first": "Veel sneltoetsen voor reader en bibliotheek",
+    "notarized_attested": "Ondertekend via de Mac App Store; closed source"
+   }
+  },
+  "path-finder": {
+   "name": "Path Finder",
+   "vendor": "Cocoatech",
+   "summary": "Al lang bestaande vervanger van de Finder met twee panelen, modules (voorvertoning, info, terminal, Drop Stack), een browser voor mapgroottes, bulk hernoemen en mappen synchroniseren. Goed voor gevorderden die veel gereedschap rond een Finder-achtige browser willen.",
+   "wins": [
+    "Modules: voorvertoning, info, terminal, Drop Stack, Git, hex-/teksteditor",
+    "Size Browser en mappen synchroniseren/samenvoegen",
+    "Bulk hernoemen, veilig verwijderen, beheerderstoegang",
+    "Interface in 20 talen",
+    "Bladwijzerbalk, voorinstellingen voor tabbladen"
+   ],
+   "price": "Abonnement $29.95/jaar of $2.95/maand, of licentiesleutel vanaf $32.95 (1 jaar updates), $55.95 (2 jaar), $122.95 (5 jaar); 30 dagen proef",
+   "version": "26.1.10",
+   "updated": "2026-10-22",
+   "platforms": "macOS",
+   "notes": {
+    "no_account_no_tracking": "Geen gebruiksgegevens; het abonnement vraagt inloggen en online controles",
+    "thumbnail_grid": "Symboolweergave voor afbeeldingen; geen voorvertoning van mappen",
+    "regex_search": "Naam ‘komt overeen met patroon’ (jokertekens); regex niet gedocumenteerd",
+    "network_shares_fast": "Snellere voorvertoning op netwerkvolumes; verder niets over snelheid",
+    "img_modern_formats": "Voorvertoningsmodule/Snelle weergave met de codecs van macOS; geen eigen viewer",
+    "img_raw": "Via macOS; ARW-voorvertoning toegevoegd in 26.1.8",
+    "img_animated": "GIF speelt in Snelle weergave; APNG en WebP niet gedocumenteerd",
+    "zoom_rotate": "Alleen zoomen in Snelle weergave",
+    "slideshow": "Geen eigen diavoorstelling; Snelle weergave toont een selectie als diavoorstelling",
+    "file_info_exif": "Infopaneel met afmetingen, duur en metadata van macOS; geen codecs/bitsnelheid",
+    "video_mkv_avi_webm": "WebM-voorvertoning toegevoegd; MKV/AVI niet genoemd",
+    "music_mode": "Audio alleen in voorvertoning/Snelle weergave",
+    "archive_passwords": "ZIP met wachtwoord maken en uitpakken (AES-128/256)",
+    "dual_pane": "Twee panelen, maar kopiëren/verplaatsen via ⌘C/⌘V/⌘X of slepen; F5/F6 zelf toe te wijzen",
+    "batch_convert": "Bulk hernoemen; geen conversie van afbeeldingen",
+    "library_catalog": "Alleen Finder-tags en kleurlabels",
+    "cloud_sync": "Dropbox-integratie, Cloud Uploader, iCloud Drive",
+    "keyboard_first": "Veel sneltoetsen, maar interface in Finder-stijl, gericht op de muis",
+    "shortcut_cheatsheet": "Supportartikel met gangbare toetsen; niet afdrukbaar"
+   }
+  },
+  "phiewer": {
+   "name": "Phiewer",
+   "vendor": "Thomas Zinnbauer",
+   "summary": "Snelle mediaviewer, goed te bedienen met het toetsenbord, voor mappen met foto’s, RAW, video’s en audio. PRO voegt Showcases (virtuele albums), dubbele foto’s vinden, een vergelijkweergave, niet-destructieve bewerking, Finder-tags en eigen sneltoetsen toe, voor een lage eenmalige prijs.",
+   "wins": [
+    "Dubbele foto’s vinden en tot 9 afbeeldingen vergelijken",
+    "Showcases: bewaarde virtuele albums over mappen heen",
+    "Finder-tags en opmerkingen, zoeken op tags/EXIF/datum",
+    "Audiobestanden en afdrukken",
+    "Afbeeldingen bewerken (bijsnijden, filters, schalen) in PRO",
+    "Theatermodus"
+   ],
+   "price": "Phiewer (lite) gratis; Phiewer PRO $7.99 eenmalig (Mac App Store)",
+   "version": "8",
+   "updated": "2026-11-07",
+   "platforms": "macOS",
+   "notes": {
+    "free": "Lite gratis (bladeren, alle formaten, eenvoudige diavoorstelling, EXIF); de rest PRO, $7.99 eenmalig",
+    "no_account_no_tracking": "Geen account, geen advertenties; App Store-label: analytics, niet aan jou gekoppeld",
+    "languages_20": "8: EN, DE, FR, ES, PT, IT, NL, PL",
+    "recursive_search": "Naam, tags, opmerkingen, datum, EXIF (PRO); submappen kunnen in de weergave",
+    "img_modern_formats": "HEIC, AVIF, WebP ja; JPEG XL niet vermeld",
+    "img_animated": "GIF en geanimeerde WebP; APNG niet vermeld",
+    "slideshow_recursive": "Alleen PRO; submappen en willekeurige volgorde; video’s spelen mee",
+    "auto_enhance_view": "PRO: filters en aanpassingen als bewerking; niet automatisch, niet alleen weergave",
+    "file_info_exif": "EXIF en bestandsinfo; codecs/bitsnelheid niet vermeld",
+    "wrong_extension_note": "Herkent afbeeldingen met verkeerde extensie en opent ze; geen melding",
+    "video_mkv_avi_webm": "AVI, MPG, 3GP, MTS, M2TS, TS; MKV, WebM, WMV, FLV niet in de lijst",
+    "video_skim_arrows": "Instelbare spronglengte (PRO); springen met de pijltoetsen niet gedocumenteerd",
+    "playback_speed": "Videobediening in PRO",
+    "playlist": "PRO Showcases: virtuele verzamelingen ‘zoals afspeellijsten’",
+    "saved_playlists": "PRO Showcases worden bewaard",
+    "undo_file_actions": "⌘Z voor verplaatsen met slepen; hernoemen/prullenmand niet vermeld",
+    "image_editing": "PRO: bijsnijden, draaien, spiegelen, schalen, compressie, filters",
+    "batch_convert": "PRO: meerdere tegelijk exporteren en comprimeren; geen bulk hernoemen",
+    "library_catalog": "Finder-tags en opmerkingen, favorieten, Showcases; geen database",
+    "cloud_sync": "PRO: delen via het deelmenu van macOS; geen synchronisatie",
+    "custom_shortcuts": "Alleen PRO",
+    "shortcut_cheatsheet": "Alle toetsen in de instellingen; niet afdrukbaar"
+   }
+  },
+  "photo-mechanic": {
+   "name": "Photo Mechanic",
+   "vendor": "Camera Bits",
+   "summary": "Photo Mechanic is een snelle tool voor importeren, selecteren en metadata voor beroepsfotografen, vooral in pers, sport en bruiloften. Hij opent mappen en geheugenkaarten direct, toont RAW-bestanden meteen via hun ingesloten voorvertoning en is gemaakt voor bijschriften, IPTC-metadata, trefwoorden, bulk hernoemen en uploaden onder tijdsdruk.",
+   "wins": [
+    "Importeren van meerdere geheugenkaarten tegelijk, met hernoemen en metadata tijdens het kopiëren",
+    "IPTC/XMP-metadata, codevervangingen, variabelen en gestructureerde trefwoorden voor bijschriften onder deadline",
+    "Sterren, kleurklassen en tags om duizenden RAW-bestanden snel te selecteren",
+    "Bulk hernoemen, opslaan als/schalen/watermerk en direct uploaden naar FTP, Dropbox, S3, PhotoShelter en meer",
+    "Zoeken en vervangen met reguliere expressies in bestandsnamen en metadata",
+    "Volledig eigen sneltoetsen met voorinstellingen, en afdrukbare PDF’s met sneltoetsen",
+    "Windows-versie met dezelfde functies"
+   ],
+   "price": "Photo Mechanic: $14.99/maand, $149/jaar of $299 onbeperkt geldig (1 jaar updates); 30 dagen gratis proef. Photo Mechanic Plus (met catalogus, $24.99/mnd, $249/jaar, $399 onbeperkt) is sinds 27 feb. 2026 niet meer te koop voor nieuwe klanten, al staat hij nog in de webwinkel.",
+   "version": "2026.6 (build 9175), de laatste die op de blog van Camera Bits is aangekondigd",
+   "updated": "2026-06-18",
+   "platforms": "macOS, Windows",
+   "notes": {
+    "no_account_no_tracking": "Geen advertenties; de licentie wordt online geactiveerd en af en toe gecontroleerd",
+    "dark_light_setting": "Licht of donker thema voor meldingen en dialogen; achtergrond instelbaar",
+    "thumbnail_grid": "Contactblad als miniaturenraster; mappen in een boom, niet als tegels",
+    "recursive_search": "‘Map en submappen openen’ in één contactblad, daarna zoeken op naam of IPTC",
+    "img_psd_exr": "PSD (met maximale compatibiliteit) ja; OpenEXR niet",
+    "zoom_rotate": "Zoomen en verschuiven; draaien schrijft de EXIF-oriëntatie (niet alleen weergave)",
+    "slideshow_recursive": "Mogelijk over map en submappen; video’s niet gedocumenteerd",
+    "video_mkv_avi_webm": "AVI ja; MKV, WebM, WMV, FLV niet in de lijst",
+    "undo_file_actions": "Ongedaan maken ‘waar mogelijk’; welke bestandsacties is niet vermeld",
+    "image_editing": "Bijsnijden, draaien, schalen, watermerk bij exporteren; geen pixelbewerking",
+    "library_catalog": "Tags, sterren, kleurklassen, IPTC in de bestanden; de catalogus wordt niet meer verkocht"
+   }
+  },
+  "picasa": {
+   "name": "Picasa",
+   "vendor": "Google",
+   "summary": "De gratis foto-organizer en viewer van Google, stopgezet in maart 2016 en sinds 2018 offline. Hij las mappen in een bibliotheek in met tags, gezichten en albums, bood eenvoudige niet-destructieve correcties en diavoorstellingen. Er wordt nog veel naar gezocht door mensen die een eenvoudige, gratis, lokale fotoviewer willen.",
+   "wins": [
+    "Gezichtsherkenning, tags en albums",
+    "Niet-destructieve correcties met één klik",
+    "Collages, afdrukindelingen en exporteren",
+    "Vertrouwd voor veel gebruikers van het eerste uur"
+   ],
+   "price": "Gratis (stopgezet, geen officiële download)",
+   "version": "3.9.141.259 (Windows) / 3.9.141.306",
+   "updated": "2015-10-09 (ondersteuning gestopt 2016-03-15)",
+   "platforms": "Windows, macOS (Intel, bèta), Linux (Wine, oud)"
+  },
+  "picview": {
+   "name": "PicView",
+   "vendor": "Ruben Hyldgaard Negendahl",
+   "summary": "PicView is een snelle, gratis open-source fotoviewer voor Windows en macOS, gebouwd met Avalonia. Leest vrijwel elk afbeeldingsformaat via Magick.NET, opent strips en archieven, en heeft een galerij, tabbladen, bijsnijden, bulk schalen en een venster met afbeeldingsinfo. Zeer aanpasbaar, ook de toetsen.",
+   "wins": [
+    "Heel brede ondersteuning van afbeeldingsformaten (Magick.NET)",
+    "Bijsnijden, schalen, converteren en bulk schalen ingebouwd",
+    "Tabbladen met eigen geschiedenis",
+    "Twee afbeeldingen naast elkaar",
+    "EXIF-beoordeling en trefwoorden bewerken",
+    "Ook voor Windows"
+   ],
+   "price": "Gratis",
+   "version": "5.2.2",
+   "updated": "2026-11-10",
+   "platforms": "macOS, Windows",
+   "notes": {
+    "folder_browsing": "Opent een bestand en bladert door de map met een galerij; geen mappenbrowser",
+    "thumbnail_grid": "Galerij onderaan of volledig van de huidige map; geen voorvertoning van mappen",
+    "recursive_search": "Ctrl+F zoekt in de huidige map, optioneel in submappen",
+    "network_shares_fast": "Galerij te verbergen in heel grote mappen; niets specifiek voor netwerk",
+    "bookmarks": "Favoriete bestanden met toetsen, plus geschiedenis; geen mapbladwijzers",
+    "img_svg_pdf": "SVG ja; PDF niet vermeld",
+    "slideshow_recursive": "Optie ‘submappen meenemen’; alleen afbeeldingen",
+    "auto_enhance_view": "Effecten (helderheid, contrast, filters) op de weergave, op te slaan; niet automatisch",
+    "manga_two_page": "Twee afbeeldingen naast elkaar; geen rechts-naar-links",
+    "move_copy": "Verplaatsen door het pad te wijzigen; kopiëren; niet naar mappen slepen",
+    "library_catalog": "Bewerkt EXIF-beoordeling en trefwoorden; geen catalogus",
+    "shortcut_cheatsheet": "Lijst met sneltoetsen op picview.org; niet afdrukbaar"
+   }
+  },
+  "pixea": {
+   "name": "Pixea",
+   "vendor": "ImageTasks",
+   "summary": "Minimalistische viewer voor afbeeldingen en video die uitgroeide tot fotobewerker met maskers, objecten verwijderen en upscaling. Bladert door mappen, fotobibliotheken en ZIP/CBZ-archieven en speelt MKV af met keuze van ondertitels en audiotrack; zoeken, sorteren en eigen sneltoetsen vragen Pixea Plus.",
+   "wins": [
+    "Fotobewerker met maskers, objecten verwijderen, upscaling, LUT’s",
+    "Bulk bewerken en converteren",
+    "Ingesloten ondertitels, audiotrack, afspeelsnelheid",
+    "Opent bibliotheken van Foto’s",
+    "Tags en beoordelingen met XMP-bestanden",
+    "Dubbele foto’s zoeken"
+   ],
+   "price": "Gratis; Pixea Plus $19.99 levenslang, $14.99/jaar of $1.99/maand",
+   "version": "8.4.1",
+   "updated": "2026-10-27",
+   "platforms": "macOS",
+   "notes": {
+    "free": "Basis gratis; Pixea Plus $19.99 levenslang, $14.99/jaar of $1.99/maand",
+    "dark_light_setting": "Thema Liquid Glass of Classic en achtergrondkleur; geen licht/donker-schakelaar",
+    "languages_20": "12: EN, BG, FR, DE, IT, JA, KO, PT, RU, zh-Hans, ES, UK",
+    "recursive_search": "Zoeken alleen in Plus; submappen tot 1 à 5 niveaus diep",
+    "network_shares_fast": "Optie om metadata op netwerkvolumes over te slaan; sneller in grote mappen",
+    "img_psd_exr": "PSD ja; Radiance HDR wel, OpenEXR niet",
+    "slideshow_recursive": "Over de map met submappen tot 5 niveaus, willekeurig; foto’s en video’s gemengd",
+    "auto_enhance_view": "Niet-destructieve aanpassingen, op te slaan in Pixea-formaat; niet automatisch",
+    "file_info_exif": "EXIF-paneel; info op het scherm bij video’s (Plus); codecs niet vermeld",
+    "video_mkv_avi_webm": "MKV, AVI, WMV, FLV, VOB, RM ja; WebM niet vermeld",
+    "video_skim_arrows": "Sprongen van 10 s/30 s; pijltjes gaan naar het volgende bestand",
+    "archives_as_folders": "Alleen ZIP; RAR/7z niet vermeld",
+    "comics_cbz_cbr": "Alleen CBZ",
+    "videos_in_archives": "Zoeken vindt video’s in ZIP; afspelen uit ZIP niet vermeld",
+    "undo_file_actions": "Ongedaan maken/opnieuw, reikwijdte niet vermeld",
+    "batch_convert": "Gratis 3 afbeeldingen, Plus onbeperkt",
+    "cloud_sync": "Deelknop; geen synchronisatie",
+    "keyboard_first": "Sneltoetsen voor bladeren, zoomen, beoordelen",
+    "custom_shortcuts": "Alleen Plus",
+    "shortcut_cheatsheet": "Korte lijst met toetsen op de website",
+    "no_network": "Geen gegevens verzameld; downloadt op verzoek een ML-model"
+   }
+  },
+  "potplayer": {
+   "name": "PotPlayer",
+   "vendor": "Kakao",
+   "summary": "PotPlayer is een zeer instelbare mediaspeler voor Windows van Kakao met ingebouwde codecs, hardwaredecodering, 3D/360°-weergave, ondertiteltools waaronder spraak naar ondertitels met Whisper, en streaming. Hij opent ook stilstaande afbeeldingen en speelt media direct uit ZIP/RAR-archieven af.",
+   "wins": [
+    "Enorm veel instellingen, renderers en filters (madVR, HDR-tonemapping, frameverdubbeling)",
+    "Ondertitels online downloaden, vertalen en uit spraak maken (Whisper)",
+    "Streaming (YouTube, HLS/DASH), tv/dvd/Blu-ray, 3D en 360°-VR",
+    "Volledig eigen sneltoetsen en skins",
+    "Muziek afspelen met albumhoes, songteksten, ReplayGain"
+   ],
+   "price": "Gratis (freeware)",
+   "version": "261021 (build 1.7.x, 21 okt. 2026)",
+   "updated": "2026-10-21",
+   "platforms": "Windows"
+  },
+  "qspace": {
+   "name": "QSpace",
+   "vendor": "Tian Wenda",
+   "summary": "Finder-achtige bestandsbeheerder met meerdere panelen, 12 indelingen, werkruimtes, veel aanpassingsmogelijkheden (sneltoetsen, contextmenu, kleuren) en zoeken met regex. Betaalde extensies voegen bladeren in archieven, server- en cloudverbindingen en geavanceerd bulk hernoemen toe.",
+   "wins": [
+    "Tot 12 paneelindelingen en bewaarde werkruimtes",
+    "Sneltoetsen, contextmenu’s, knoppenbalk en kleuren aan te passen",
+    "Mappen synchroniseren, hashes, bestandssjablonen",
+    "Snelle acties voor afbeeldingen (draaien, converteren, achtergrond verwijderen)",
+    "Kolommen met videometadata (framerate, datasnelheid)"
+   ],
+   "price": "Eenmalig: QSpace (MAS) $12.99, QSpace Pro (direct) $13.99 aanbieding (normaal $27.99/$29.99); betaalde extensies: Stash Shelf, Advanced Batch Rename, Server Connections ($0.99 tot $9.99), Enhanced Archiver (tijdelijk gratis, normaal $4.99)",
+   "version": "Pro 7.0.4 (MAS 7.0.3; bèta 7.0.4.018)",
+   "updated": "2026-10-09",
+   "platforms": "macOS",
+   "notes": {
+    "no_account_no_tracking": "Pro-licentie aan een account gekoppeld (2 apparaten); App Store-label: ID’s gekoppeld aan jou",
+    "dark_light_setting": "Kleurenschema’s met licht en donker (bèta); geen aparte schakelaar",
+    "languages_20": "Ongeveer 14 talen, waaronder Nederlands",
+    "img_modern_formats": "Voorvertoning via macOS; alleen HEIC genoemd",
+    "zoom_rotate": "Zoomen in Snelle weergave; draaien wijzigt het bestand",
+    "slideshow": "‘Instant SlideShow’ in het contextmenu (Snelle weergave schermvullend)",
+    "video_mkv_avi_webm": "MKV e.d. via media-extensies van macOS",
+    "music_mode": "Alleen hoesminiaturen en afspelen in Snelle weergave",
+    "archives_as_folders": "Extensie Enhanced Archiver (normaal $4.99): RAR, ZIP, 7z als mappen",
+    "comics_cbz_cbr": "Geen stripreader; CBZ/CBR als archief toe te voegen",
+    "videos_in_archives": "Voorvertoning in archieven; geen speler",
+    "dual_pane": "Tot 12 panelen; kopiëren of verplaatsen met eigen sneltoetsen, standaard geen F5/F6",
+    "image_editing": "Snelle acties: draaien, converteren, achtergrond verwijderen, PDF maken",
+    "batch_convert": "Afbeeldingen converteren; geavanceerd bulk hernoemen is een betaalde extensie",
+    "library_catalog": "Alleen Finder-tags en opmerkingen",
+    "cloud_sync": "Extensie Server Connections: FTP, SFTP, Dropbox, OneDrive, Google Drive, S3 …",
+    "app_sandbox": "MAS-versie in de sandbox (mappen handmatig toevoegen); Pro gebruikt volledige schijftoegang"
+   }
+  },
+  "quicktime-player": {
+   "name": "QuickTime Player",
+   "vendor": "Apple",
+   "summary": "De ingebouwde mediaspeler van Apple. Opent wat AVFoundation kan afspelen (MP4, MOV, M4V, HEVC, ProRes), met beeld-in-beeld, snelheidsregeling en eenvoudige bewerkingen zoals inkorten en splitsen, plus scherm- en audio-opname.",
+   "wins": [
+    "Staat er al, niets te downloaden",
+    "Scherm-, film- en audio-opname",
+    "Eenvoudige videobewerking: inkorten, splitsen, draaien, geluid verwijderen, exporteren",
+    "Beeld-in-beeld en ruimtelijke video"
+   ],
+   "price": "Gratis (zit bij macOS)",
+   "version": "10.5 (macOS 27)",
+   "updated": "zit bij macOS 27 (2026)",
+   "platforms": "macOS",
+   "notes": {
+    "zoom_rotate": "Alleen video’s; draaien en spiegelen zijn bewerkingen",
+    "file_info_exif": "Filminspector: formaat, compressie, grootte, fps, datasnelheid; geen EXIF",
+    "video_skim_arrows": "← → per beeld; Option-pijltjes naar begin/einde; geen tijdsprongen",
+    "music_mode": "Speelt audiobestanden één voor één; geen bibliotheek of wachtrij",
+    "rename_trash": "Naam van de geopende film wijzigen; geen prullenmand of nieuwe map",
+    "undo_file_actions": "Ongedaan maken voor filmbewerkingen, niet voor bestandsacties",
+    "cloud_sync": "Opent bestanden in iCloud Drive; deelmenu",
+    "keyboard_first": "Afspelen met het toetsenbord; niet door bestanden navigeren",
+    "shortcut_cheatsheet": "Lijst met sneltoetsen op de helppagina van Apple",
+    "no_network": "Kan online gaan (locatie openen, delen); geen eigen updatecheck of telemetrie",
+    "notarized_attested": "Door Apple ondertekende systeemapp; closed source"
+   }
+  },
+  "quickviewer": {
+   "name": "QuickViewer",
+   "vendor": "KATO Kanryu",
+   "summary": "Snelle OpenGL-viewer voor afbeeldingen en strips die archieven zonder uitpakken leest en dubbele pagina’s toont. Heeft een catalogusdatabase voor grote stripverzamelingen. De ontwikkelaar stopte in november 2025 met het project wegens ziekte; 1.2.8 was een beveiligingsfix voor UnRAR.",
+   "wins": [
+    "Catalogusdatabase voor duizenden strips",
+    "Heel snel van pagina wisselen via OpenGL",
+    "Brede ondersteuning van archieven, ook tar.gz/bz2/xz en cab",
+    "CMYK-JPEG correct weergegeven"
+   ],
+   "price": "Gratis",
+   "version": "1.2.8",
+   "updated": "2025-12-12",
+   "platforms": "Windows, macOS (Intel, tot 1.1.1), Linux (tot 1.1.1)"
+  },
+  "qview": {
+   "name": "qView",
+   "vendor": "jurplel (Interverse)",
+   "summary": "qView is een minimalistische cross-platform fotoviewer zonder knoppenbalken: hij opent één bestand en laat je door de rest van de map bladeren. Start snel, laadt naburige afbeeldingen vooruit en ondersteunt geanimeerde afbeeldingen en veel formaten via Qt-plug-ins.",
+   "wins": [
+    "Extreem minimaal venster zonder franje",
+    "Draait ook op Windows en Linux, en op oudere macOS (legacy-versie voor 10.13 en nieuwer)",
+    "Frames van animaties doorlopen en snelheid regelen",
+    "Een afbeelding direct van een URL openen"
+   ],
+   "price": "Gratis",
+   "version": "7.1",
+   "updated": "2025-07-26 (release; nightly builds gaan door, laatste 2026-11-04)",
+   "platforms": "macOS, Windows, Linux",
+   "notes": {
+    "dark_light_setting": "Achtergrondkleur en donkere titelbalk instelbaar; geen volledig licht/donker-thema",
+    "folder_browsing": "Opent een bestand en bladert door de map; geen mappenbrowser",
+    "img_svg_pdf": "SVG ja, geen PDF",
+    "file_info_exif": "Info toont grootte en afmetingen; geen EXIF",
+    "wrong_extension_note": "Kan bestanden aan de inhoud herkennen, maar meldt verkeerde extensies niet",
+    "rename_trash": "Naam wijzigen en naar de prullenmand; geen nieuwe map",
+    "undo_file_actions": "Alleen verwijderen ongedaan maken (terug uit prullenmand)"
+   }
+  },
+  "raw-power": {
+   "name": "RAW Power",
+   "vendor": "Gentlemen Coders",
+   "summary": "RAW Power is een niet-destructieve editor voor RAW en JPEG van een voormalig hoofdontwikkelaar van Aperture, los te gebruiken op Finder-mappen, als beheerder van de Apple Foto’s-bibliotheek of als bewerkingsextensie in Foto’s. Biedt aanpassingen in Aperture-stijl, beoordelingen/vlaggen gesynchroniseerd via iCloud-foto’s en bulkexport. De maker verwijst gebruikers van macOS 13 en nieuwer nu naar de opvolger Nitro Photo.",
+   "wins": [
+    "Niet-destructieve RAW/JPEG-bewerking (curven, LUT’s, diepte-effect, Boost)",
+    "Werkt direct op de Apple Foto’s-bibliotheek en synchroniseert via iCloud-foto’s",
+    "Bulkvoorinstellingen en exporteren",
+    "Versie voor iPhone/iPad",
+    "Tabbladen voor meerdere mappen"
+   ],
+   "price": "$39.99 eenmalig in de Mac App Store (site van de maker: $49.99 Mac, $9.99 iOS; los te kopen)",
+   "version": "3.5.6",
+   "updated": "2026-07-27",
+   "platforms": "macOS, iOS, iPadOS",
+   "notes": {
+    "no_account_no_tracking": "Geen account of advertenties; App Store: gebruiksgegevens (analytics, niet aan jou gekoppeld)",
+    "languages_20": "6: Engels, Frans, Duits, Spaans, vereenvoudigd en traditioneel Chinees",
+    "thumbnail_grid": "Miniaturenraster met badges; voorvertoning van mappen niet gedocumenteerd",
+    "rename_trash": "Kan afbeeldingen verwijderen en albums/mappen maken; hernoemen niet gedocumenteerd",
+    "move_copy": "Ordent albums in Foto’s; bestanden op de schijf verplaatsen/kopiëren niet beschreven",
+    "keyboard_first": "Sneltoetsen voor beoordelen en navigeren; bewerken met schuifknoppen en muis"
+   }
+  },
+  "sequential": {
+   "name": "Sequential",
+   "vendor": "chuchusoft en The Sequential Project",
+   "summary": "Sequential is een klassieke open-source viewer voor afbeeldingen en strips op de Mac die mappen, PDF’s en archieven (ZIP/CBZ, RAR/CBR, 7z) opent en er in één venster doorheen bladert. De fork van chuchusoft maakte er een Universal-app van voor macOS 11.4 en nieuwer op Apple silicon; volgens de beheerder is verdere ontwikkeling onwaarschijnlijk. Het origineel btrask/Sequential is voor het laatst bijgewerkt in 2013.",
+   "wins": [
+    "Leest PDF’s pagina voor pagina met Ga naar pagina en een modus met omgekeerde kleuren",
+    "Leesrichting van rechts naar links voor manga",
+    "Pauzeren/hervatten zet een bladwijzer op de leespositie in een archief",
+    "Veel archiefformaten via XADMaster, ook 7z in delen",
+    "Draait op oudere macOS (10.14 Intel / 11.4 Apple silicon)"
+   ],
+   "price": "Gratis",
+   "version": "2.6.0",
+   "updated": "2024-09-07",
+   "platforms": "macOS",
+   "notes": {
+    "languages_20": "12 talen, waaronder Nederlands",
+    "thumbnail_grid": "Miniaturen in een zijbalk, geen raster",
+    "recursive_search": "Zoeken op paginanamen in de geopende map of het archief",
+    "network_shares_fast": "Werkt op gekoppelde servers; geen speciale cache",
+    "bookmarks": "Pauzeren/hervatten bewaart een positie; geen favoriete mappen",
+    "img_modern_formats": "HEIC/HEIF en WebP; AVIF en JPEG XL niet",
+    "img_svg_pdf": "PDF volledig (pagina’s, Ga naar pagina); SVG afhankelijk van macOS",
+    "img_animated": "Geanimeerde GIF (pauzeren met Spatie); APNG/geanimeerde WebP niet gedocumenteerd",
+    "slideshow_recursive": "Timer loopt door de hele boom incl. submappen en archieven, alleen afbeeldingen",
+    "file_info_exif": "Inspector toont EXIF/eigenschappen; geen video",
+    "streaming_urls": "Geen streams, maar URL openen laadt afbeeldingen van internet",
+    "split_archives": "7-Zip in delen (.7z.001); RAR/ZIP in delen niet gedocumenteerd",
+    "manga_two_page": "Van rechts naar links; geen dubbele pagina",
+    "rename_trash": "Lokale afbeeldingen naar de prullenmand; geen naam wijzigen of nieuwe map",
+    "move_copy": "Afbeeldingen opslaan naar… kopieert ze eruit; kopiëren; niet verplaatsen",
+    "shortcut_cheatsheet": "Helppagina met de toetsen; niet afdrukbaar"
+   }
+  },
+  "simple-comic": {
+   "name": "Simple Comic",
+   "vendor": "Dancing Tortoise Software en de Simple Comic-community",
+   "summary": "Simple Comic is een slanke, native stripviewer voor macOS, gericht op lezen met zo min mogelijk handelingen. Opent CBZ/CBR/CB7, PDF en mappen met afbeeldingen als boek, met dubbele pagina’s, mangavolgorde van rechts naar links en Live Text op strippagina’s.",
+   "wins": [
+    "Dubbele pagina’s en mangamodus van rechts naar links",
+    "Live Text: tekst in strippagina’s selecteren, kopiëren en laten voorlezen",
+    "RAR in delen en archieven in archieven openen als één strip",
+    "PDF’s lezen",
+    "Miniaturen in Snelle weergave voor striparchieven in de Finder"
+   ],
+   "price": "Gratis (Mac App Store en GitHub)",
+   "version": "1.12.0 (GitHub, ingediend bij de App Store); de App Store toont 1.11.0",
+   "updated": "2026-11-11",
+   "platforms": "macOS",
+   "notes": {
+    "languages_20": "9 talen (de, en, fr, it, ja, ko, pt, zh-Hans, zh-Hant)",
+    "folder_browsing": "Opent een map of archief als één boek, geen mappennavigator",
+    "thumbnail_grid": "Miniatuuroverzicht van alleen de pagina’s van het geopende boek",
+    "network_shares_fast": "Archieven op netwerkvolumes lokaal gecachet; pagina’s komen binnen tijdens het laden",
+    "img_raw": "Neemt elk ImageIO-type aan (dus camera-RAW); niet aangeprezen",
+    "img_psd_exr": "Neemt elk ImageIO-type aan (dus PSD, OpenEXR); niet aangeprezen",
+    "img_svg_pdf": "PDF ja (als boek); SVG alleen als macOS het aanbiedt",
+    "archives_as_folders": "Opent een archief als stripboek, niet als map",
+    "keyboard_first": "Bladeren, zoomen en menu’s met het toetsenbord; niet door bestanden bladeren",
+    "shortcut_cheatsheet": "Helpboek noemt de navigatietoetsen",
+    "no_network": "Versie uit de Mac App Store gaat niet online; directe versie zoekt naar updates (Sparkle)",
+    "notarized_attested": "Directe versie genotariseerd; geen openbare build-attestatie"
+   }
+  },
+  "smplayer": {
+   "name": "SMPlayer",
+   "vendor": "Ricardo Villalba",
+   "summary": "SMPlayer is een gratis open-source Qt-schil voor mpv en MPlayer die instellingen per bestand onthoudt. Biedt een klassieke spelerinterface met skins, YouTube, downloads van opensubtitles.org, filters en een instelbare editor voor sneltoetsen.",
+   "wins": [
+    "Hervat elk bestand met zijn eigen instellingen (audio, ondertitels, positie)",
+    "YouTube afspelen en ondertitels online downloaden",
+    "Bewaarde afspeellijsten, favorieten, tv/radiolijsten",
+    "Skins en pictogramthema’s, meer dan 30 talen",
+    "Draait ook op Windows en Linux"
+   ],
+   "price": "Gratis",
+   "version": "26.8.29 (macOS-build 10461, 2026-10-06)",
+   "updated": "2026-10-06",
+   "platforms": "Windows, Linux, macOS",
+   "notes": {
+    "dark_light_setting": "Skins, pictogramthema’s en Qt-stijlen, geen simpele licht/donker-schakelaar",
+    "folder_browsing": "Map openen zet een map in de afspeellijst (optioneel recursief); geen bestandsbrowser",
+    "list_view": "Afspeellijst met kolommen (naam, duur …), geen mapweergave",
+    "recursive_search": "Alleen een filter in de afspeellijst",
+    "multiple_windows": "Standaard één exemplaar; uit te zetten",
+    "bookmarks": "Favoriete bestanden/URL’s en bladwijzers in video’s; geen mapbladwijzers",
+    "auto_enhance_view": "Video-equalizer (Ctrl+E), niet automatisch",
+    "file_info_exif": "Eigenschappen: codecs, bitsnelheid, tracks; geen EXIF",
+    "music_mode": "Speelt audiobestanden; compacte modus (Ctrl+C), radiolijst",
+    "shortcut_cheatsheet": "Tabel met sneltoetsen op te slaan als .keys-bestand; niet afdrukbaar"
+   }
+  },
+  "tencent-kantu": {
+   "name": "看图 Kantu",
+   "vendor": "Tencent",
+   "summary": "De gratis fotobrowser en -organizer van Tencent voor de Mac: bladert zonder import door mappen zoals Downloads, importeert van telefoons en camera’s, groepeert op gezichten, plaatsen en datums, vindt dubbele foto’s en maakt samengestelde albums. Sinds 2019 niet bijgewerkt.",
+   "wins": [
+    "Gezichtsherkenning, kaart met plaatsen, dubbele foto’s vinden, samengestelde albums",
+    "Importeert direct van telefoons, camera’s en PTP-apparaten",
+    "Beoordelingen en filters voor grote bestanden"
+   ],
+   "price": "Gratis",
+   "version": "2.5.2",
+   "updated": "2019-11-08",
+   "platforms": "macOS",
+   "notes": {
+    "no_account_no_tracking": "Geen account nodig; optioneel inloggen met WeChat of QQ uploadt albums naar de cloud van Tencent",
+    "dark_light_setting": "Donkere modus sinds 2.0; instelling los van het systeem niet gedocumenteerd",
+    "thumbnail_grid": "Raster zoals in een fotoapp, zijbalk met aantal foto’s per map; geen voorvertoning van mappen",
+    "recursive_search": "Foto’s zoeken op bestandsnaam, datum, plaats, scène",
+    "bookmarks": "Handmatig toegevoegde locaties in de zijbalk; favoriete foto’s",
+    "img_modern_formats": "WebP sinds 1.9.4; HEIC, AVIF, JPEG XL niet genoemd",
+    "img_psd_exr": "PSD-voorvertoning; EXR niet genoemd",
+    "img_animated": "GIF-voorvertoning; APNG/geanimeerde WebP niet genoemd",
+    "zoom_rotate": "Zoomen met wieltje/trackpad; reviewers melden wazig zoomen; draaien niet gedocumenteerd",
+    "slideshow_recursive": "Samengestelde albums spelen foto’s en video’s achter elkaar; niet door submappen",
+    "file_info_exif": "EXIF-weergave; geen videocodecs",
+    "video_native": "Toont en filtert video’s, maar volgens een gebruiker opent elke video in een aparte speler",
+    "rename_trash": "Naam wijzigen, verwijderen met ‘Onlangs verwijderd’; nieuwe map niet gedocumenteerd",
+    "undo_file_actions": "Verwijderde foto’s terug te halen uit ‘Onlangs verwijderd’",
+    "image_editing": "Geen bewerking; aantekenen via rechtsklik",
+    "cloud_sync": "Inloggen met WeChat/QQ, albums uploaden naar de cloud van Tencent, delen via WeChat",
+    "notarized_attested": "Ondertekend via de Mac App Store; geen openbare broncode"
+   }
+  },
+  "total-commander": {
+   "name": "Total Commander",
+   "vendor": "Ghisler Software",
+   "summary": "De bekendste orthodoxe bestandsbeheerder (met twee panelen) voor Windows, in ontwikkeling sinds 1993. Sterk in bestandsbewerkingen, archieven, FTP, multi-hernoemen en mappen synchroniseren, met de viewer Lister en plug-ins voor afbeeldingen en media.",
+   "wins": [
+    "Bestandsbeheer met twee panelen: mappen synchroniseren, vergelijken, multi-hernoemen, checksums",
+    "Ingebouwde FTP/FTPS-client",
+    "Enorm aanbod aan plug-ins (Lister, packer, bestandssysteem)",
+    "Speler in Lister wisselt ondertitel-/audiotracks en snelheid",
+    "Draait op Windows van 95 tot 11, plus een gratis Android-app"
+   ],
+   "price": "Shareware: EUR 42 + btw per licentie (studenten EUR 31.50), gratis updates; Android-versie gratis",
+   "version": "11.58.1",
+   "updated": "2026-10-29",
+   "platforms": "Windows, Android"
+  },
+  "vidhub": {
+   "name": "VidHub",
+   "vendor": "Oka Apps",
+   "summary": "Videobibliotheek en speler in Infuse-stijl voor Apple-apparaten: scant lokale mappen, NAS, clouddiensten en Emby/Jellyfin/Plex-servers, bouwt een posterbibliotheek uit TMDB en synchroniseert de voortgang via iCloud. Een van de meest beoordeelde mediaspelers in de Mac App Store (2.8K beoordelingen, VS).",
+   "wins": [
+    "Bibliotheek voor films/tv met posters en metadata",
+    "iCloud-sync tussen iPhone, iPad, Apple TV, Mac",
+    "Clouddiensten, NAS, Emby/Jellyfin/Plex",
+    "Ondertitels online zoeken",
+    "Casten via DLNA, Chromecast, Roku, AirPlay"
+   ],
+   "price": "Gratis met VIP (alleen Mac levenslang $14.99; alle apparaten levenslang $25.99 tot 39.99; $9.99/jaar; $1.49/maand)",
+   "version": "3.0.3 (Mac)",
+   "updated": "2026-11-04",
+   "platforms": "macOS, iOS, iPadOS, tvOS, visionOS, Android TV",
+   "notes": {
+    "free": "Gratis met VIP: Mac levenslang $14.99, alle apparaten $25.99 tot 39.99, $9.99/jaar, $1.49/maand",
+    "languages_20": "18 in de App Store",
+    "folder_browsing": "Voegt lokale, SMB/WebDAV- en cloudbronnen toe en leest ze in een bibliotheek in",
+    "thumbnail_grid": "Posterwand uit TMDB-metadata, geen miniaturen van bestanden",
+    "recursive_search": "Zoekt in de bibliotheek op bestandsnaam en titel van film/serie",
+    "network_shares_fast": "SMB, WebDAV, NAS en veel clouddiensten; snelheid onbekend",
+    "bookmarks": "Favorieten (via iCloud gesynchroniseerd)",
+    "auto_enhance_view": "Kleurcorrectie, alleen video",
+    "streaming_urls": "Clouddiensten, Emby/Jellyfin/Plex, WebDAV; willekeurige URL’s niet gedocumenteerd",
+    "rename_trash": "Hernoemt cloudbestanden (ook met regex); verwijderen niet gedocumenteerd",
+    "batch_convert": "Bulk hernoemen van cloudbestanden; geen conversie",
+    "notarized_attested": "Ondertekend via de App Store; closed source"
+   }
+  },
+  "vlc": {
+   "name": "VLC",
+   "vendor": "VideoLAN",
+   "summary": "De bekendste gratis open-source mediaspeler: speelt bijna elk bestand, elke schijf en elke stream af op elk platform, zonder codecpakketten. Hij is in de eerste plaats een speler; afbeeldingen verschijnen als stilstaand beeld met een timer en er is geen bestandsbrowser of miniaturenraster.",
+   "wins": [
+    "Speelt bijna elk formaat af, schijven (dvd/Blu-ray), netwerkstreams en opnameapparaten",
+    "Draait op elk desktop- en mobiel besturingssysteem",
+    "Ondertitels uit bestanden en online (VLSub), audiotracks, snelheid, filters, converteren/streamen",
+    "Bewaarde afspeellijsten, muziek, visualisaties",
+    "Alle sneltoetsen opnieuw toe te wijzen"
+   ],
+   "price": "Gratis",
+   "version": "3.0.24",
+   "updated": "2026-09-22",
+   "platforms": "macOS, Windows, Linux, iOS, Android, en meer",
+   "notes": {
+    "dark_light_setting": "macOS: optie voor een donkere interface; Windows/Linux: donker palet",
+    "folder_browsing": "Opent een map als afspeellijst; geen echte bestandsbrowser",
+    "list_view": "Afspeellijst met sorteerbare kolommen, geen bestandslijst",
+    "recursive_search": "Zoeken filtert alleen de afspeellijst",
+    "network_shares_fast": "Speelt direct van SMB, NFS, SFTP, FTP, UPnP; geen miniaturen om snelheid te beoordelen",
+    "multiple_windows": "Windows/Linux: meerdere exemplaren mogelijk; macOS: één spelervenster",
+    "img_modern_formats": "WebP opent (10 s als stilstaand beeld); HEIC, AVIF, JPEG XL niet",
+    "img_svg_pdf": "SVG via librsvg; geen PDF",
+    "img_animated": "Geanimeerde GIF via FFmpeg; APNG/geanimeerde WebP onzeker",
+    "zoom_rotate": "Video zoomen, bijsnijden, draaien met filters; afbeeldingen niet verschuiven",
+    "slideshow": "Afbeeldingen in een afspeellijst staan elk 10 s in beeld",
+    "slideshow_recursive": "Een geopende map wordt met submappen uitgeklapt, foto’s (10 s) en video’s gemengd",
+    "auto_enhance_view": "Handmatige aanpassingen en effecten (helderheid, contrast, tint …), niet automatisch",
+    "file_info_exif": "Media-info toont codecs, bitsnelheid, statistieken; geen EXIF",
+    "video_skim_arrows": "Sprongen met modifier+pijltjes (macOS ⌘⌃←/→ 3 s, ⌘⌥ 10 s, ⌘⇧ 1 min)",
+    "control_bar_movable": "Schermvullend blijft de bediening waar je hem sleept; niet in een venster",
+    "archives_as_folders": "Zet de bestanden van een archief in de afspeellijst; geen map om door te bladeren",
+    "split_archives": "Kan meerdere delen aan elkaar koppelen; niet gedocumenteerd",
+    "batch_convert": "Converteren/opslaan van meerdere bestanden; geen bulk hernoemen",
+    "library_catalog": "Eenvoudige mediabibliotheek in de zijbalk, geen tags/beoordelingen",
+    "keyboard_first": "Afspelen volledig met toetsen, bladeren vooral met de muis",
+    "boss_key": "Actie ‘baastoets’ (verbergen en pauzeren) bestaat, maar zonder standaardtoets",
+    "no_network": "Zoekt naar updates; online metadata ophalen staat standaard uit"
+   }
+  },
+  "windows-media-player": {
+   "name": "Windows Media Player",
+   "vendor": "Microsoft",
+   "summary": "De ingebouwde speler van Windows: een bibliotheekapp die vooral voor muziek is, maar ook lokale video’s afspeelt, met ondertitels, audiotracks, afspeelsnelheid, beeldaanpassingen, minispeler en casten. Voor HEVC en AV1 zijn betaalde extensies of extensies uit de Store nodig, en reviewers vinden hem trager en zwaarder dan de klassieke Windows Media Player Legacy, die Microsoft als optionele functie aanbiedt.",
+   "wins": [
+    "Staat op Windows, niets in te stellen",
+    "Muziekbibliotheek met albumhoezen, afspeellijsten en cd’s rippen",
+    "Minispeler, casten naar apparaten",
+    "Volgt de ondertitel- en thema-instellingen van Windows"
+   ],
+   "price": "Zit bij Windows; HEVC-video-extensies $0.99, andere codecs als extensies in de Store",
+   "version": "Mediaspeler 11.2610.5.0 (Insider, november 2026); Windows Media Player Legacy 12",
+   "updated": "2026-11 (Insider-releasenotes)",
+   "platforms": "Windows"
+  },
+  "xee": {
+   "name": "Xee³",
+   "vendor": "MacPaw",
+   "summary": "Klassieke lichte fotoviewer voor de Mac die zonder uitpakken door mappen en archieven bladert (ZIP, RAR, 7z, CBZ/CBR), met veel oude en exotische formaten. Staat nog op theunarchiver.com, maar zonder download- of koopknop; de laatste build 3.5.4 (dec. 2021) is alleen voor Intel.",
+   "wins": [
+    "Exotische oude formaten (PCX, IFF, MAG, PVR, XBM)",
+    "Herkent het programma dat een JPEG maakte aan de kwantisatietabellen",
+    "PSD-lagen bekijken",
+    "JPEG verliesvrij bijsnijden"
+   ],
+   "price": "Niet meer te koop (voorheen betaalde licentie met proefversie; uit de App Store gehaald)",
+   "version": "3.5.4",
+   "updated": "2021-12-21",
+   "platforms": "macOS",
+   "notes": {
+    "open_source": "Broncode van Xee 2.x is openbaar; Xee 3 is gesloten",
+    "bookmarks": "Lijst met recente bestemmingen voor verplaatsen/kopiëren",
+    "img_modern_formats": "WebP ja; HEIC/AVIF/JPEG XL niet (laatste update dec. 2021)",
+    "img_psd_exr": "PSD met lagen; OpenEXR niet vermeld",
+    "img_svg_pdf": "Alleen bitmaps in een PDF; geen SVG",
+    "slideshow_recursive": "Submappen optioneel, de diavoorstelling loopt erdoor; alleen afbeeldingen",
+    "archive_passwords": "Archieven met wachtwoord sinds Xee 2.1; voor Xee 3 niet opnieuw vermeld",
+    "split_archives": "Leest wat The Unarchiver leest; archieven in delen niet genoemd",
+    "image_editing": "Bijsnijden (verliesvrij JPEG), exporteren",
+    "cloud_sync": "Deelmenu",
+    "keyboard_first": "Bladeren met het toetsenbord; ontwerp leunt op gebaren",
+    "app_sandbox": "App Store-versie in de sandbox; directe versie niet (de maker raadde die aan)"
+   }
+  },
+  "xnview-mp": {
+   "name": "XnView MP",
+   "vendor": "XnSoft",
+   "summary": "XnView MP is een al lang bestaande cross-platform fotobrowser en -organizer die meer dan 500 formaten leest. Combineert bestandsbrowser, viewer, catalogus met categorieën en beoordelingen, bulkconverter en eenvoudige editor in één app. Op de Mac is het een Qt-app, gratis voor privégebruik.",
+   "wins": [
+    "Meer dan 500 afbeeldingsformaten, export naar zo’n 70",
+    "Bulk converteren en bulk hernoemen met regex",
+    "Catalogus met categorieën, beoordelingen en kleurlabels",
+    "Metadata bewerken (EXIF, IPTC, XMP)",
+    "Fotobewerking, tot 4 afbeeldingen vergelijken, dubbele foto’s vinden",
+    "Draait ook op Windows en Linux"
+   ],
+   "price": "Gratis voor privé, onderwijs en non-profit; commerciële licentie 29 EUR (volumestaffels tot 3.90 EUR)",
+   "version": "1.12.3",
+   "updated": "2026-11-09",
+   "platforms": "macOS, Windows, Linux",
+   "notes": {
+    "free": "Gratis voor privé, onderwijs en non-profit; bedrijven hebben een licentie nodig (29 EUR per plek)",
+    "regex_search": "Regex alleen bij bulk hernoemen; zoeken met jokertekens / ‘bevat’",
+    "network_shares_fast": "Werkt op netwerkshares, maar de changelog noemt traagheid daar",
+    "multiple_windows": "Tabbladen; meerdere exemplaren mogelijk",
+    "slideshow_recursive": "‘Bestanden in submappen tonen’ voedt de diavoorstelling, die op video’s wacht",
+    "auto_enhance_view": "Automatische niveaus en aanpassingen zijn bewerkingen (bestand wijzigt bij opslaan)",
+    "saved_playlists": "Diavoorstellingen op te slaan als .sld-bestanden (afbeeldingen, met audio)",
+    "music_mode": "‘Multimediaspeler’ genoemd; geen muziekbibliotheek",
+    "dual_pane": "Tot 4 afbeeldingen vergelijken; F6 wisselt panelen; geen bestandsbeheer met twee mappen",
+    "cloud_sync": "Kan uploaden naar het web; geen cloudsync"
+   }
+  },
+  "yacreader": {
+   "name": "YACReader",
+   "vendor": "Luis Ángel San Martín",
+   "summary": "YACReader is een stripreader plus bibliotheekbeheerder (YACReaderLibrary) voor grote verzamelingen, met metadata van Comic Vine, leeslijsten en een thuisserver voor de mobiele apps. De reader biedt dubbele pagina, mangamodus en doorlopend scrollen, met beeldaanpassingen.",
+   "wins": [
+    "Complete stripbibliotheek: metadata van Comic Vine, leeslijsten, slimme lijsten, beoordelingen",
+    "Server en iOS/Android-apps met gesynchroniseerde leesvoortgang",
+    "Mangamodus, dubbele pagina, doorlopend scrollen voor webtoons",
+    "Helderheid/contrast/gamma voor oude scans",
+    "12 thema’s plus thema-editor; sneltoetsen opnieuw toe te wijzen",
+    "Versies voor Windows en Linux"
+   ],
+   "price": "Desktop en server gratis (donaties); iOS/Android-apps apart",
+   "version": "10.5.1",
+   "updated": "2026-11-13",
+   "platforms": "macOS, Windows, Linux, iOS, Android, Docker/server",
+   "notes": {
+    "languages_20": "14 talen, waaronder Nederlands, in de app te kiezen",
+    "folder_browsing": "De reader opent bestanden en mappen; bladeren gaat via een bibliotheekdatabase",
+    "network_shares_fast": "Sneller openen van bibliotheken op netwerkshares; bibliotheek moet geïndexeerd zijn",
+    "bookmarks": "Paginabladwijzers, favorieten, leeslijsten, labels",
+    "img_modern_formats": "JPEG, PNG, GIF, TIFF, BMP, WebP; meer alleen via zelf geïnstalleerde Qt-plug-ins",
+    "img_svg_pdf": "PDF ja (pdfium); SVG nee",
+    "archives_as_folders": "Opent een archief als stripboek, niet als map",
+    "rename_trash": "Mappen in de bibliotheek hernoemen, bestanden hernoemen uit metadata; geen prullenmand",
+    "move_copy": "Bestanden ordenen in mappen op basis van metadata (experimenteel)",
+    "undo_file_actions": "Ordenen houdt een logboek bij en is ongedaan te maken; verder geen ongedaan maken",
+    "batch_convert": "Alleen bulk hernoemen uit metadata; geen formaatconversie",
+    "cloud_sync": "Eigen server en apps synchroniseren voortgang via je netwerk; geen clouddienst",
+    "shortcut_cheatsheet": "Dialoog met alle toetsen; niet afdrukbaar",
+    "notarized_attested": "macOS-builds genotariseerd; geen build-attestatie"
+   }
+  }
+ }
+}

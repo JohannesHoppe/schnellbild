@@ -1,0 +1,603 @@
+{
+ "name": "PicView",
+ "short": "PicView",
+ "vendor": "Ruben Hyldgaard Negendahl (Ruben2776)",
+ "website": "https://picview.org/",
+ "platforms": [
+  "macOS",
+  "Windows"
+ ],
+ "mac_available": "yes",
+ "page": "matrix",
+ "section": "image",
+ "price": "free",
+ "license": "open source (GPL-3.0)",
+ "current_version": "5.2.2",
+ "last_update": "2026-11-10",
+ "engine": "C# .NET NativeAOT, Avalonia UI, Magick.NET; small FFmpeg build for Motion Photos only",
+ "category": "image",
+ "summary": "PicView is a fast, free, open-source picture viewer for Windows and macOS built with Avalonia. It reads virtually every image format via Magick.NET, opens comics and archives, and adds a gallery, tabs, crop, batch resize and an image info window. Highly customisable, including key bindings.",
+ "where_it_wins": [
+  "Very broad image format support (Magick.NET)",
+  "Crop, resize, convert and batch resize built in",
+  "Tabs with per-tab history",
+  "Side-by-side two-image view",
+  "Edit EXIF rating and keywords",
+  "Also on Windows"
+ ],
+ "where_schnellbild_wins": [
+  "Plays videos (MP4/MOV, MKV/WebM/AVI via VLC) next to photos",
+  "Folder browser with thumbnail grid, folder previews and list view",
+  "Password-protected and multi-part archives, videos inside archives",
+  "Two-pane file manager with undo",
+  "App Sandbox and no network access",
+  "Slideshow through all subfolders mixing photos and videos"
+ ],
+ "search_terms": [
+  "picview mac",
+  "picview macos",
+  "picview alternative",
+  "picview alternative mac",
+  "picview apple silicon"
+ ],
+ "matrix": {
+  "free": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://github.com/Ruben2776/PicView"
+   ],
+   "how": "docs"
+  },
+  "open_source": {
+   "value": "yes",
+   "note": "GPL-3.0.",
+   "evidence": [
+    "https://github.com/Ruben2776/PicView"
+   ],
+   "how": "source"
+  },
+  "native_apple_silicon": {
+   "value": "yes",
+   "note": "Separate macOS arm64 and x64 DMGs (.NET NativeAOT).",
+   "evidence": [
+    "https://github.com/Ruben2776/PicView/releases/tag/5.2.2",
+    "https://github.com/Ruben2776/PicView/blob/dev/.github/workflows/BuildMacOS.yml"
+   ],
+   "how": "source"
+  },
+  "no_account_no_tracking": {
+   "value": "yes",
+   "note": "'does not collect, send, or receive any user data'; 'zero tracking'.",
+   "evidence": [
+    "https://github.com/Ruben2776/PicView",
+    "https://picview.org/"
+   ],
+   "how": "docs"
+  },
+  "dark_light_setting": {
+   "value": "yes",
+   "note": "Dark/light theme, accent colours, optional follow-system.",
+   "evidence": [
+    "https://github.com/Ruben2776/PicView/blob/dev/src/PicView.Core/Config/AppSettings.cs",
+    "https://picview.org/"
+   ],
+   "how": "source"
+  },
+  "languages_20": {
+   "value": "yes",
+   "note": "25 languages.",
+   "evidence": [
+    "https://github.com/Ruben2776/PicView/tree/dev/src/PicView.Core/Config/Languages",
+    "https://github.com/Ruben2776/PicView"
+   ],
+   "how": "source"
+  },
+  "folder_browsing": {
+   "value": "partial",
+   "note": "Opens a file and pages through its folder with a gallery; no folder tree/browser.",
+   "evidence": [
+    "https://github.com/Ruben2776/PicView",
+    "https://github.com/Ruben2776/PicView/blob/dev/src/PicView.Core/Config/AppSettings.cs"
+   ],
+   "how": "source"
+  },
+  "thumbnail_grid": {
+   "value": "partial",
+   "note": "Bottom or full gallery of the current folder; no folder previews.",
+   "evidence": [
+    "https://github.com/Ruben2776/PicView",
+    "https://github.com/Ruben2776/PicView/releases/tag/5.2.2"
+   ],
+   "how": "docs"
+  },
+  "list_view": {
+   "value": "no",
+   "note": "Gallery is a thumbnail strip/grid; no list or column view (no ListView/DataGrid in the UI).",
+   "evidence": [
+    "https://github.com/Ruben2776/PicView"
+   ],
+   "how": "source"
+  },
+  "recursive_search": {
+   "value": "partial",
+   "note": "Ctrl+F searches images in the current directory (with 'Include subdirectories' the list covers subfolders).",
+   "evidence": [
+    "https://picview.org/",
+    "https://github.com/Ruben2776/PicView/blob/dev/src/PicView.Core/FileSearch/FileSearcher.cs",
+    "https://github.com/Ruben2776/PicView/blob/dev/src/PicView.Core/Config/AppSettings.cs"
+   ],
+   "how": "source"
+  },
+  "regex_search": {
+   "value": "no",
+   "note": "Relevance-scored name matching, no regex.",
+   "evidence": [
+    "https://github.com/Ruben2776/PicView/blob/dev/src/PicView.Core/FileSearch/FileSearcher.cs"
+   ],
+   "how": "source"
+  },
+  "network_shares_fast": {
+   "value": "partial",
+   "note": "Option to hide the gallery in very large folders; no specific network handling.",
+   "evidence": [
+    "https://github.com/Ruben2776/PicView/releases/tag/5.2.2"
+   ],
+   "how": "changelog"
+  },
+  "multiple_windows": {
+   "value": "yes",
+   "note": "Tabs (draggable) and optional new windows.",
+   "evidence": [
+    "https://github.com/Ruben2776/PicView/blob/dev/src/PicView.Avalonia/CustomControls/DraggableTabControl.cs",
+    "https://github.com/Ruben2776/PicView/blob/dev/src/PicView.Core/Config/AppSettings.cs",
+    "https://github.com/Ruben2776/PicView/releases/tag/5.2.2"
+   ],
+   "how": "source"
+  },
+  "bookmarks": {
+   "value": "partial",
+   "note": "Favorites for files with keybind slots, plus file history; no folder bookmarks confirmed.",
+   "evidence": [
+    "https://github.com/Ruben2776/PicView/blob/dev/src/PicView.Core/Favorites/FavoritesManager.cs"
+   ],
+   "how": "source"
+  },
+  "img_modern_formats": {
+   "value": "yes",
+   "note": "HEIC, AVIF, JXL, WebP (Magick.NET).",
+   "evidence": [
+    "https://github.com/Ruben2776/PicView"
+   ],
+   "how": "docs"
+  },
+  "img_raw": {
+   "value": "yes",
+   "note": "Long RAW list.",
+   "evidence": [
+    "https://github.com/Ruben2776/PicView"
+   ],
+   "how": "docs"
+  },
+  "img_psd_exr": {
+   "value": "yes",
+   "note": "PSD/PSB and EXR.",
+   "evidence": [
+    "https://github.com/Ruben2776/PicView"
+   ],
+   "how": "docs"
+  },
+  "img_svg_pdf": {
+   "value": "partial",
+   "note": "SVG yes; PDF not listed.",
+   "evidence": [
+    "https://github.com/Ruben2776/PicView"
+   ],
+   "how": "docs"
+  },
+  "img_animated": {
+   "value": "yes",
+   "note": "Animated GIF and WebP.",
+   "evidence": [
+    "https://github.com/Ruben2776/PicView"
+   ],
+   "how": "docs"
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://picview.org/"
+   ],
+   "how": "docs"
+  },
+  "zoom_rotate": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://picview.org/"
+   ],
+   "how": "docs"
+  },
+  "slideshow": {
+   "value": "yes",
+   "note": "F5.",
+   "evidence": [
+    "https://picview.org/",
+    "https://github.com/Ruben2776/PicView/blob/dev/src/PicView.Core/Config/AppSettings.cs"
+   ],
+   "how": "docs"
+  },
+  "slideshow_recursive": {
+   "value": "partial",
+   "note": "'Include subdirectories' setting; images only.",
+   "evidence": [
+    "https://github.com/Ruben2776/PicView/blob/dev/src/PicView.Core/Config/AppSettings.cs"
+   ],
+   "how": "source"
+  },
+  "auto_enhance_view": {
+   "value": "partial",
+   "note": "Effects window (brightness, contrast, filters) applied to the view and savable; no one-click auto enhance.",
+   "evidence": [
+    "https://github.com/Ruben2776/PicView/blob/dev/src/PicView.Core/ImageEffects/ImageEffectsHelper.cs",
+    "https://picview.org/"
+   ],
+   "how": "source"
+  },
+  "file_info_exif": {
+   "value": "yes",
+   "note": "Image info window with EXIF, GPS, keywords; edit rating.",
+   "evidence": [
+    "https://github.com/Ruben2776/PicView",
+    "https://github.com/Ruben2776/PicView/releases/tag/5.2.2"
+   ],
+   "how": "docs"
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "note": "No code that compares file content with the extension.",
+   "evidence": [
+    "https://github.com/Ruben2776/PicView"
+   ],
+   "how": "source"
+  },
+  "video_native": {
+   "value": "no",
+   "note": "No video playback; only Motion Photos (embedded clip, no audio) play.",
+   "evidence": [
+    "https://github.com/Ruben2776/PicView",
+    "https://github.com/Ruben2776/PicView/blob/dev/src/PicView.Avalonia/MotionPhoto/FFmpegService.cs"
+   ],
+   "how": "source"
+  },
+  "video_mkv_avi_webm": {
+   "value": "no",
+   "note": "No video playback; only Motion Photos (embedded clip, no audio) play.",
+   "evidence": [
+    "https://github.com/Ruben2776/PicView",
+    "https://github.com/Ruben2776/PicView/blob/dev/src/PicView.Avalonia/MotionPhoto/FFmpegService.cs"
+   ],
+   "how": "source"
+  },
+  "photos_videos_one_grid": {
+   "value": "no",
+   "note": "No video playback; only Motion Photos (embedded clip, no audio) play.",
+   "evidence": [
+    "https://github.com/Ruben2776/PicView",
+    "https://github.com/Ruben2776/PicView/blob/dev/src/PicView.Avalonia/MotionPhoto/FFmpegService.cs"
+   ],
+   "how": "source"
+  },
+  "video_skim_arrows": {
+   "value": "no",
+   "note": "No video playback; only Motion Photos (embedded clip, no audio) play.",
+   "evidence": [
+    "https://github.com/Ruben2776/PicView",
+    "https://github.com/Ruben2776/PicView/blob/dev/src/PicView.Avalonia/MotionPhoto/FFmpegService.cs"
+   ],
+   "how": "source"
+  },
+  "subtitles_embedded": {
+   "value": "no",
+   "note": "No video playback; only Motion Photos (embedded clip, no audio) play.",
+   "evidence": [
+    "https://github.com/Ruben2776/PicView",
+    "https://github.com/Ruben2776/PicView/blob/dev/src/PicView.Avalonia/MotionPhoto/FFmpegService.cs"
+   ],
+   "how": "source"
+  },
+  "subtitles_external_files": {
+   "value": "no",
+   "note": "No video playback; only Motion Photos (embedded clip, no audio) play.",
+   "evidence": [
+    "https://github.com/Ruben2776/PicView",
+    "https://github.com/Ruben2776/PicView/blob/dev/src/PicView.Avalonia/MotionPhoto/FFmpegService.cs"
+   ],
+   "how": "source"
+  },
+  "audio_track_choice": {
+   "value": "no",
+   "note": "No video playback; only Motion Photos (embedded clip, no audio) play.",
+   "evidence": [
+    "https://github.com/Ruben2776/PicView",
+    "https://github.com/Ruben2776/PicView/blob/dev/src/PicView.Avalonia/MotionPhoto/FFmpegService.cs"
+   ],
+   "how": "source"
+  },
+  "playback_speed": {
+   "value": "no",
+   "note": "No video playback; only Motion Photos (embedded clip, no audio) play.",
+   "evidence": [
+    "https://github.com/Ruben2776/PicView",
+    "https://github.com/Ruben2776/PicView/blob/dev/src/PicView.Avalonia/MotionPhoto/FFmpegService.cs"
+   ],
+   "how": "source"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "note": "No video playback; only Motion Photos (embedded clip, no audio) play.",
+   "evidence": [
+    "https://github.com/Ruben2776/PicView",
+    "https://github.com/Ruben2776/PicView/blob/dev/src/PicView.Avalonia/MotionPhoto/FFmpegService.cs"
+   ],
+   "how": "source"
+  },
+  "playlist": {
+   "value": "no",
+   "note": "No video playback; only Motion Photos (embedded clip, no audio) play.",
+   "evidence": [
+    "https://github.com/Ruben2776/PicView",
+    "https://github.com/Ruben2776/PicView/blob/dev/src/PicView.Avalonia/MotionPhoto/FFmpegService.cs"
+   ],
+   "how": "source"
+  },
+  "saved_playlists": {
+   "value": "no",
+   "note": "No video playback; only Motion Photos (embedded clip, no audio) play.",
+   "evidence": [
+    "https://github.com/Ruben2776/PicView",
+    "https://github.com/Ruben2776/PicView/blob/dev/src/PicView.Avalonia/MotionPhoto/FFmpegService.cs"
+   ],
+   "how": "source"
+  },
+  "pip": {
+   "value": "no",
+   "note": "No video playback; only Motion Photos (embedded clip, no audio) play.",
+   "evidence": [
+    "https://github.com/Ruben2776/PicView",
+    "https://github.com/Ruben2776/PicView/blob/dev/src/PicView.Avalonia/MotionPhoto/FFmpegService.cs"
+   ],
+   "how": "source"
+  },
+  "music_mode": {
+   "value": "no",
+   "note": "No video playback; only Motion Photos (embedded clip, no audio) play.",
+   "evidence": [
+    "https://github.com/Ruben2776/PicView",
+    "https://github.com/Ruben2776/PicView/blob/dev/src/PicView.Avalonia/MotionPhoto/FFmpegService.cs"
+   ],
+   "how": "source"
+  },
+  "streaming_urls": {
+   "value": "no",
+   "note": "No video playback; only Motion Photos (embedded clip, no audio) play.",
+   "evidence": [
+    "https://github.com/Ruben2776/PicView",
+    "https://github.com/Ruben2776/PicView/blob/dev/src/PicView.Avalonia/MotionPhoto/FFmpegService.cs"
+   ],
+   "how": "source"
+  },
+  "online_subtitles": {
+   "value": "no",
+   "note": "No video playback; only Motion Photos (embedded clip, no audio) play.",
+   "evidence": [
+    "https://github.com/Ruben2776/PicView",
+    "https://github.com/Ruben2776/PicView/blob/dev/src/PicView.Avalonia/MotionPhoto/FFmpegService.cs"
+   ],
+   "how": "source"
+  },
+  "video_filters_enhance": {
+   "value": "no",
+   "note": "No video playback; only Motion Photos (embedded clip, no audio) play.",
+   "evidence": [
+    "https://github.com/Ruben2776/PicView",
+    "https://github.com/Ruben2776/PicView/blob/dev/src/PicView.Avalonia/MotionPhoto/FFmpegService.cs"
+   ],
+   "how": "source"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "note": "No video playback; only Motion Photos (embedded clip, no audio) play.",
+   "evidence": [
+    "https://github.com/Ruben2776/PicView",
+    "https://github.com/Ruben2776/PicView/blob/dev/src/PicView.Avalonia/MotionPhoto/FFmpegService.cs"
+   ],
+   "how": "source"
+  },
+  "archives_as_folders": {
+   "value": "yes",
+   "note": "ZIP, 7z, RAR, TAR, ISO and more via SharpCompress; respects folder structure inside.",
+   "evidence": [
+    "https://github.com/Ruben2776/PicView",
+    "https://github.com/Ruben2776/PicView/blob/dev/src/PicView.Core/ArchiveHandling/ArchiveExtractionService.cs",
+    "https://github.com/Ruben2776/PicView/releases/tag/5.2.2"
+   ],
+   "how": "source"
+  },
+  "comics_cbz_cbr": {
+   "value": "yes",
+   "note": "CBZ, CBR, CB7, CBT.",
+   "evidence": [
+    "https://github.com/Ruben2776/PicView"
+   ],
+   "how": "docs"
+  },
+  "archive_passwords": {
+   "value": "no",
+   "note": "No password handling found in source.",
+   "evidence": [
+    "https://github.com/Ruben2776/PicView/blob/dev/src/PicView.Core/ArchiveHandling/ArchiveExtractionService.cs"
+   ],
+   "how": "source"
+  },
+  "split_archives": {
+   "value": "no",
+   "note": "Archives are opened as one file via SharpCompress ArchiveFactory; no multi-volume handling.",
+   "evidence": [
+    "https://github.com/Ruben2776/PicView/blob/dev/src/PicView.Core/ArchiveHandling/ArchiveExtractionService.cs"
+   ],
+   "how": "source"
+  },
+  "videos_in_archives": {
+   "value": "no",
+   "note": "No video.",
+   "evidence": [
+    "https://github.com/Ruben2776/PicView"
+   ],
+   "how": "source"
+  },
+  "manga_two_page": {
+   "value": "partial",
+   "note": "Side-by-side two-image view; no right-to-left order found.",
+   "evidence": [
+    "https://github.com/Ruben2776/PicView/blob/dev/src/PicView.Core/Config/AppSettings.cs",
+    "https://github.com/Ruben2776/PicView/releases/tag/5.2.2"
+   ],
+   "how": "source"
+  },
+  "rename_trash": {
+   "value": "yes",
+   "note": "Rename/move in title bar (F2), recycle bin.",
+   "evidence": [
+    "https://github.com/Ruben2776/PicView"
+   ],
+   "how": "docs"
+  },
+  "move_copy": {
+   "value": "partial",
+   "note": "Move by renaming the path; copy file; no drag into folders.",
+   "evidence": [
+    "https://github.com/Ruben2776/PicView"
+   ],
+   "how": "docs"
+  },
+  "dual_pane": {
+   "value": "no",
+   "note": "Side-by-side shows two images, not two file panes; no copy/move between panes.",
+   "evidence": [
+    "https://github.com/Ruben2776/PicView"
+   ],
+   "how": "source"
+  },
+  "undo_file_actions": {
+   "value": "no",
+   "note": "Undo exists only in the keybinding editor; file deletes go to the recycle bin on Windows (FOF_ALLOWUNDO).",
+   "evidence": [
+    "https://github.com/Ruben2776/PicView/blob/dev/src/PicView.Core.WindowsNT/FileHandling/WinFileHelper.cs"
+   ],
+   "how": "source"
+  },
+  "image_editing": {
+   "value": "yes",
+   "note": "Crop, resize, convert, effects, save.",
+   "evidence": [
+    "https://github.com/Ruben2776/PicView"
+   ],
+   "how": "docs"
+  },
+  "batch_convert": {
+   "value": "yes",
+   "note": "Batch resize/convert/optimize, thumbnail generation.",
+   "evidence": [
+    "https://github.com/Ruben2776/PicView"
+   ],
+   "how": "docs"
+  },
+  "library_catalog": {
+   "value": "partial",
+   "note": "Edits EXIF rating and keywords; no catalog database.",
+   "evidence": [
+    "https://github.com/Ruben2776/PicView",
+    "https://github.com/Ruben2776/PicView/releases/tag/5.2.2"
+   ],
+   "how": "docs"
+  },
+  "cloud_sync": {
+   "value": "no",
+   "note": "No cloud or upload code in the source.",
+   "evidence": [
+    "https://github.com/Ruben2776/PicView"
+   ],
+   "how": "source"
+  },
+  "keyboard_first": {
+   "value": "yes",
+   "note": "Shortcuts for nearly everything, WASD gallery navigation.",
+   "evidence": [
+    "https://github.com/Ruben2776/PicView",
+    "https://picview.org/"
+   ],
+   "how": "docs"
+  },
+  "custom_shortcuts": {
+   "value": "yes",
+   "note": "Keybindings window (K).",
+   "evidence": [
+    "https://github.com/Ruben2776/PicView",
+    "https://picview.org/"
+   ],
+   "how": "docs"
+  },
+  "shortcut_cheatsheet": {
+   "value": "partial",
+   "note": "Shortcut list on picview.org; not a printable sheet.",
+   "evidence": [
+    "https://picview.org/",
+    "https://github.com/Ruben2776/PicView"
+   ],
+   "how": "docs"
+  },
+  "boss_key": {
+   "value": "no",
+   "note": "No hide-all/boss key action in the source.",
+   "evidence": [
+    "https://github.com/Ruben2776/PicView"
+   ],
+   "how": "source"
+  },
+  "app_sandbox": {
+   "value": "no",
+   "note": "Entitlements contain no app-sandbox key.",
+   "evidence": [
+    "https://github.com/Ruben2776/PicView/blob/dev/src/PicView.Core.MacOS/entitlements.plist"
+   ],
+   "how": "source"
+  },
+  "no_network": {
+   "value": "no",
+   "note": "Update check/download from picview.org; GPS buttons open Google/Bing maps.",
+   "evidence": [
+    "https://github.com/Ruben2776/PicView/blob/dev/src/PicView.Core/Update/UpdateManager.cs",
+    "https://github.com/Ruben2776/PicView"
+   ],
+   "how": "source"
+  },
+  "notarized_attested": {
+   "value": "yes",
+   "note": "Signed with Developer ID and notarized in a public GitHub Actions workflow; no formal attestation.",
+   "evidence": [
+    "https://github.com/Ruben2776/PicView/blob/dev/.github/workflows/NotarizeMacOS.yml"
+   ],
+   "how": "source"
+  },
+  "mac_app_store": {
+   "value": "no",
+   "note": "The 'Picview - Image Viewer' in the Mac App Store is an unrelated app by another vendor.",
+   "evidence": [
+    "https://itunes.apple.com/search?term=PicView&entity=macSoftware&limit=8"
+   ],
+   "how": "store"
+  }
+ }
+}

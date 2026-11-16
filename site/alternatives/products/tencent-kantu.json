@@ -1,0 +1,534 @@
+{
+ "name": "看图 Kantu (Tencent)",
+ "short": "看图 Kantu",
+ "vendor": "Tencent Technology (Shenzhen) Company Limited",
+ "website": "https://apps.apple.com/cn/app/%E7%9C%8B%E5%9B%BE-%E8%BD%BB%E6%9D%BE%E6%89%BE%E7%85%A7%E7%89%87/id1314842898?mt=12",
+ "platforms": [
+  "macOS"
+ ],
+ "mac_available": "yes",
+ "page": "matrix",
+ "section": "photos",
+ "price": "Free",
+ "license": "proprietary",
+ "current_version": "2.5.2",
+ "last_update": "2019-11-08",
+ "engine": "macOS image frameworks (videos open in another player)",
+ "category": "photo-manager",
+ "summary": "Tencent's free Mac picture browser and organiser: browses folders such as Downloads without import, imports from phones and cameras, groups by faces, places and dates, finds duplicates and makes curated albums. It hasn't been updated since 2019.",
+ "where_it_wins": [
+  "Face recognition, places map, duplicates finder, curated albums",
+  "Imports straight from phones, cameras and PTP devices",
+  "Ratings and filters for big files"
+ ],
+ "where_schnellbild_wins": [
+  "Maintained and native on Apple silicon (Kantu's last build is from 2019)",
+  "Plays videos itself, including MKV, AVI, WebM",
+  "Keyboard first with cheat sheet, dual pane, regex search",
+  "Archives and comics as folders",
+  "No login or cloud upload, never goes online"
+ ],
+ "search_terms": [
+  "腾讯看图 mac",
+  "看图 mac 腾讯",
+  "kantu mac",
+  "mac 看图软件",
+  "mac 看图 推荐",
+  "mac 图片浏览器",
+  "mac 看图 免费",
+  "腾讯看图 停止更新"
+ ],
+ "matrix": {
+  "free": {
+   "value": "yes",
+   "evidence": [
+    "https://apps.apple.com/cn/app/%E7%9C%8B%E5%9B%BE-%E8%BD%BB%E6%9D%BE%E6%89%BE%E7%85%A7%E7%89%87/id1314842898?mt=12",
+    "https://sspai.com/post/43370"
+   ],
+   "how": "store",
+   "note": "Free, no in-app purchases listed"
+  },
+  "open_source": {
+   "value": "no",
+   "evidence": [
+    "https://apps.apple.com/cn/app/%E7%9C%8B%E5%9B%BE-%E8%BD%BB%E6%9D%BE%E6%89%BE%E7%85%A7%E7%89%87/id1314842898?mt=12"
+   ],
+   "how": "store",
+   "note": "Proprietary (Tencent)"
+  },
+  "native_apple_silicon": {
+   "value": "no",
+   "note": "Last build 2.5.2 dated 2019-11-08, requires macOS 10.11; predates Apple silicon, so it runs under Rosetta 2",
+   "evidence": [
+    "https://apps.apple.com/cn/app/%E7%9C%8B%E5%9B%BE-%E8%BD%BB%E6%9D%BE%E6%89%BE%E7%85%A7%E7%89%87/id1314842898?mt=12"
+   ],
+   "how": "store"
+  },
+  "no_account_no_tracking": {
+   "value": "partial",
+   "evidence": [
+    "https://apps.apple.com/cn/app/%E7%9C%8B%E5%9B%BE-%E8%BD%BB%E6%9D%BE%E6%89%BE%E7%85%A7%E7%89%87/id1314842898?mt=12"
+   ],
+   "how": "store",
+   "note": "No account needed for browsing; optional WeChat/QQ login uploads albums to Tencent cloud; developer gave Apple no privacy details"
+  },
+  "dark_light_setting": {
+   "value": "partial",
+   "evidence": [
+    "https://apps.apple.com/cn/app/%E7%9C%8B%E5%9B%BE-%E8%BD%BB%E6%9D%BE%E6%89%BE%E7%85%A7%E7%89%87/id1314842898?mt=12"
+   ],
+   "how": "store",
+   "note": "Dark mode since 2.0 (Mojave); a setting apart from the system isn't documented"
+  },
+  "languages_20": {
+   "value": "no",
+   "evidence": [
+    "https://apps.apple.com/cn/app/%E7%9C%8B%E5%9B%BE-%E8%BD%BB%E6%9D%BE%E6%89%BE%E7%85%A7%E7%89%87/id1314842898?mt=12"
+   ],
+   "how": "store",
+   "note": "Simplified Chinese and English (2)"
+  },
+  "folder_browsing": {
+   "value": "yes",
+   "evidence": [
+    "https://sspai.com/post/43370",
+    "https://apps.apple.com/cn/app/%E7%9C%8B%E5%9B%BE-%E8%BD%BB%E6%9D%BE%E6%89%BE%E7%85%A7%E7%89%87/id1314842898?mt=12"
+   ],
+   "how": "review",
+   "note": "Browses folders such as Downloads and added locations, no import"
+  },
+  "thumbnail_grid": {
+   "value": "partial",
+   "evidence": [
+    "https://sspai.com/post/43370"
+   ],
+   "how": "review",
+   "note": "Photo-style grid, sidebar shows picture count per folder; folder preview tiles not shown"
+  },
+  "list_view": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched Mac App Store page (description, reviews, notes) and sspai review; not mentioned"
+  },
+  "recursive_search": {
+   "value": "partial",
+   "evidence": [
+    "https://apps.apple.com/cn/app/%E7%9C%8B%E5%9B%BE-%E8%BD%BB%E6%9D%BE%E6%89%BE%E7%85%A7%E7%89%87/id1314842898?mt=12"
+   ],
+   "how": "changelog",
+   "note": "2.5: find pictures by file name, date, place, scene across its locations"
+  },
+  "regex_search": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched Mac App Store page (description, reviews, notes) and sspai review; not mentioned"
+  },
+  "network_shares_fast": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched Mac App Store page (description, reviews, notes) and sspai review; not mentioned"
+  },
+  "multiple_windows": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched Mac App Store page (description, reviews, notes) and sspai review; not mentioned"
+  },
+  "bookmarks": {
+   "value": "partial",
+   "evidence": [
+    "https://sspai.com/post/43370",
+    "https://apps.apple.com/cn/app/%E7%9C%8B%E5%9B%BE-%E8%BD%BB%E6%9D%BE%E6%89%BE%E7%85%A7%E7%89%87/id1314842898?mt=12"
+   ],
+   "how": "review",
+   "note": "Locations added by hand in the sidebar; favourites for pictures"
+  },
+  "img_modern_formats": {
+   "value": "partial",
+   "evidence": [
+    "https://apps.apple.com/cn/app/%E7%9C%8B%E5%9B%BE-%E8%BD%BB%E6%9D%BE%E6%89%BE%E7%85%A7%E7%89%87/id1314842898?mt=12"
+   ],
+   "how": "changelog",
+   "note": "WebP since 1.9.4; HEIC, AVIF, JPEG XL not mentioned"
+  },
+  "img_raw": {
+   "value": "yes",
+   "evidence": [
+    "https://apps.apple.com/cn/app/%E7%9C%8B%E5%9B%BE-%E8%BD%BB%E6%9D%BE%E6%89%BE%E7%85%A7%E7%89%87/id1314842898?mt=12"
+   ],
+   "how": "changelog",
+   "note": "RAW loading (1.8), Sony ARW (2.0)"
+  },
+  "img_psd_exr": {
+   "value": "partial",
+   "evidence": [
+    "https://apps.apple.com/cn/app/%E7%9C%8B%E5%9B%BE-%E8%BD%BB%E6%9D%BE%E6%89%BE%E7%85%A7%E7%89%87/id1314842898?mt=12"
+   ],
+   "how": "changelog",
+   "note": "PSD preview (1.9.3); EXR not mentioned"
+  },
+  "img_svg_pdf": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched Mac App Store page (description, reviews, notes) and sspai review; not mentioned"
+  },
+  "img_animated": {
+   "value": "partial",
+   "evidence": [
+    "https://apps.apple.com/cn/app/%E7%9C%8B%E5%9B%BE-%E8%BD%BB%E6%9D%BE%E6%89%BE%E7%85%A7%E7%89%87/id1314842898?mt=12"
+   ],
+   "how": "changelog",
+   "note": "GIF preview (1.9.3); APNG/animated WebP not mentioned"
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "evidence": [
+    "https://sspai.com/post/43370",
+    "https://apps.apple.com/cn/app/%E7%9C%8B%E5%9B%BE-%E8%BD%BB%E6%9D%BE%E6%89%BE%E7%85%A7%E7%89%87/id1314842898?mt=12"
+   ],
+   "how": "review",
+   "note": "Arrow keys after a double click; a review reports ← / → reversed"
+  },
+  "zoom_rotate": {
+   "value": "partial",
+   "evidence": [
+    "https://apps.apple.com/cn/app/%E7%9C%8B%E5%9B%BE-%E8%BD%BB%E6%9D%BE%E6%89%BE%E7%85%A7%E7%89%87/id1314842898?mt=12"
+   ],
+   "how": "review",
+   "note": "Zoom with wheel/trackpad; reviewers report blurry zoom; rotation not documented"
+  },
+  "slideshow": {
+   "value": "yes",
+   "evidence": [
+    "https://apps.apple.com/cn/app/%E7%9C%8B%E5%9B%BE-%E8%BD%BB%E6%9D%BE%E6%89%BE%E7%85%A7%E7%89%87/id1314842898?mt=12"
+   ],
+   "how": "changelog",
+   "note": "Slideshow of a selection (1.9.4) and of albums"
+  },
+  "slideshow_recursive": {
+   "value": "partial",
+   "evidence": [
+    "https://apps.apple.com/cn/app/%E7%9C%8B%E5%9B%BE-%E8%BD%BB%E6%9D%BE%E6%89%BE%E7%85%A7%E7%89%87/id1314842898?mt=12"
+   ],
+   "how": "changelog",
+   "note": "Curated albums play photos and videos in a row (2.5); not a walk through subfolders"
+  },
+  "auto_enhance_view": {
+   "value": "no",
+   "evidence": [
+    "https://sspai.com/post/43370"
+   ],
+   "how": "review",
+   "note": "No editing or adjustments"
+  },
+  "file_info_exif": {
+   "value": "partial",
+   "evidence": [
+    "https://apps.apple.com/cn/app/%E7%9C%8B%E5%9B%BE-%E8%BD%BB%E6%9D%BE%E6%89%BE%E7%85%A7%E7%89%87/id1314842898?mt=12"
+   ],
+   "how": "changelog",
+   "note": "EXIF view (1.9); no video codec info"
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched Mac App Store page (description, reviews, notes) and sspai review; not mentioned"
+  },
+  "video_native": {
+   "value": "partial",
+   "evidence": [
+    "https://apps.apple.com/cn/app/%E7%9C%8B%E5%9B%BE-%E8%BD%BB%E6%9D%BE%E6%89%BE%E7%85%A7%E7%89%87/id1314842898?mt=12"
+   ],
+   "how": "review",
+   "note": "Lists and filters videos, but a user review says each video opens a separate player"
+  },
+  "video_mkv_avi_webm": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched Mac App Store page (description, reviews, notes) and sspai review; not mentioned"
+  },
+  "photos_videos_one_grid": {
+   "value": "yes",
+   "evidence": [
+    "https://apps.apple.com/cn/app/%E7%9C%8B%E5%9B%BE-%E8%BD%BB%E6%9D%BE%E6%89%BE%E7%85%A7%E7%89%87/id1314842898?mt=12",
+    "https://sspai.com/post/43370"
+   ],
+   "how": "store",
+   "note": "Device and folder views show photos and videos"
+  },
+  "video_skim_arrows": {
+   "value": "no",
+   "note": "Videos open in a separate video player app (Mac App Store review, 2018); Kantu has no player of its own",
+   "evidence": [
+    "https://apps.apple.com/cn/app/%E7%9C%8B%E5%9B%BE-%E8%BD%BB%E6%9D%BE%E6%89%BE%E7%85%A7%E7%89%87/id1314842898?mt=12"
+   ],
+   "how": "review"
+  },
+  "subtitles_embedded": {
+   "value": "no",
+   "note": "Videos open in a separate video player app (Mac App Store review, 2018); Kantu has no player of its own",
+   "evidence": [
+    "https://apps.apple.com/cn/app/%E7%9C%8B%E5%9B%BE-%E8%BD%BB%E6%9D%BE%E6%89%BE%E7%85%A7%E7%89%87/id1314842898?mt=12"
+   ],
+   "how": "review"
+  },
+  "subtitles_external_files": {
+   "value": "no",
+   "note": "Videos open in a separate video player app (Mac App Store review, 2018); Kantu has no player of its own",
+   "evidence": [
+    "https://apps.apple.com/cn/app/%E7%9C%8B%E5%9B%BE-%E8%BD%BB%E6%9D%BE%E6%89%BE%E7%85%A7%E7%89%87/id1314842898?mt=12"
+   ],
+   "how": "review"
+  },
+  "audio_track_choice": {
+   "value": "no",
+   "note": "Videos open in a separate video player app (Mac App Store review, 2018); Kantu has no player of its own",
+   "evidence": [
+    "https://apps.apple.com/cn/app/%E7%9C%8B%E5%9B%BE-%E8%BD%BB%E6%9D%BE%E6%89%BE%E7%85%A7%E7%89%87/id1314842898?mt=12"
+   ],
+   "how": "review"
+  },
+  "playback_speed": {
+   "value": "no",
+   "note": "Videos open in a separate video player app (Mac App Store review, 2018); Kantu has no player of its own",
+   "evidence": [
+    "https://apps.apple.com/cn/app/%E7%9C%8B%E5%9B%BE-%E8%BD%BB%E6%9D%BE%E6%89%BE%E7%85%A7%E7%89%87/id1314842898?mt=12"
+   ],
+   "how": "review"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "note": "Videos open in a separate video player app (Mac App Store review, 2018); Kantu has no player of its own",
+   "evidence": [
+    "https://apps.apple.com/cn/app/%E7%9C%8B%E5%9B%BE-%E8%BD%BB%E6%9D%BE%E6%89%BE%E7%85%A7%E7%89%87/id1314842898?mt=12"
+   ],
+   "how": "review"
+  },
+  "playlist": {
+   "value": "no",
+   "note": "Videos open in a separate video player app (Mac App Store review, 2018); Kantu has no player of its own",
+   "evidence": [
+    "https://apps.apple.com/cn/app/%E7%9C%8B%E5%9B%BE-%E8%BD%BB%E6%9D%BE%E6%89%BE%E7%85%A7%E7%89%87/id1314842898?mt=12"
+   ],
+   "how": "review"
+  },
+  "saved_playlists": {
+   "value": "no",
+   "note": "Videos open in a separate video player app (Mac App Store review, 2018); Kantu has no player of its own",
+   "evidence": [
+    "https://apps.apple.com/cn/app/%E7%9C%8B%E5%9B%BE-%E8%BD%BB%E6%9D%BE%E6%89%BE%E7%85%A7%E7%89%87/id1314842898?mt=12"
+   ],
+   "how": "review"
+  },
+  "pip": {
+   "value": "no",
+   "note": "Videos open in a separate video player app (Mac App Store review, 2018); Kantu has no player of its own",
+   "evidence": [
+    "https://apps.apple.com/cn/app/%E7%9C%8B%E5%9B%BE-%E8%BD%BB%E6%9D%BE%E6%89%BE%E7%85%A7%E7%89%87/id1314842898?mt=12"
+   ],
+   "how": "review"
+  },
+  "music_mode": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched Mac App Store page (description, reviews, notes) and sspai review; not mentioned"
+  },
+  "streaming_urls": {
+   "value": "no",
+   "note": "Videos open in a separate video player app (Mac App Store review, 2018); Kantu has no player of its own",
+   "evidence": [
+    "https://apps.apple.com/cn/app/%E7%9C%8B%E5%9B%BE-%E8%BD%BB%E6%9D%BE%E6%89%BE%E7%85%A7%E7%89%87/id1314842898?mt=12"
+   ],
+   "how": "review"
+  },
+  "online_subtitles": {
+   "value": "no",
+   "note": "Videos open in a separate video player app (Mac App Store review, 2018); Kantu has no player of its own",
+   "evidence": [
+    "https://apps.apple.com/cn/app/%E7%9C%8B%E5%9B%BE-%E8%BD%BB%E6%9D%BE%E6%89%BE%E7%85%A7%E7%89%87/id1314842898?mt=12"
+   ],
+   "how": "review"
+  },
+  "video_filters_enhance": {
+   "value": "no",
+   "note": "Videos open in a separate video player app (Mac App Store review, 2018); Kantu has no player of its own",
+   "evidence": [
+    "https://apps.apple.com/cn/app/%E7%9C%8B%E5%9B%BE-%E8%BD%BB%E6%9D%BE%E6%89%BE%E7%85%A7%E7%89%87/id1314842898?mt=12"
+   ],
+   "how": "review"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched Mac App Store page (description, reviews, notes) and sspai review; not mentioned"
+  },
+  "archives_as_folders": {
+   "value": "no",
+   "evidence": [
+    "https://apps.apple.com/cn/app/%E7%9C%8B%E5%9B%BE-%E8%BD%BB%E6%9D%BE%E6%89%BE%E7%85%A7%E7%89%87/id1314842898?mt=12"
+   ],
+   "how": "changelog",
+   "note": "Only exports a selection as ZIP (2.5.1); doesn't open archives"
+  },
+  "comics_cbz_cbr": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched Mac App Store page (description, reviews, notes) and sspai review; not mentioned"
+  },
+  "archive_passwords": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched Mac App Store page (description, reviews, notes) and sspai review; not mentioned"
+  },
+  "split_archives": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched Mac App Store page (description, reviews, notes) and sspai review; not mentioned"
+  },
+  "videos_in_archives": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched Mac App Store page (description, reviews, notes) and sspai review; not mentioned"
+  },
+  "manga_two_page": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched Mac App Store page (description, reviews, notes) and sspai review; not mentioned"
+  },
+  "rename_trash": {
+   "value": "partial",
+   "evidence": [
+    "https://apps.apple.com/cn/app/%E7%9C%8B%E5%9B%BE-%E8%BD%BB%E6%9D%BE%E6%89%BE%E7%85%A7%E7%89%87/id1314842898?mt=12",
+    "https://sspai.com/post/43370"
+   ],
+   "how": "store",
+   "note": "Rename, delete with a Recently Deleted bin; new folder not documented"
+  },
+  "move_copy": {
+   "value": "yes",
+   "evidence": [
+    "https://sspai.com/post/43370"
+   ],
+   "how": "review",
+   "note": "Move pictures between folders"
+  },
+  "dual_pane": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched Mac App Store page (description, reviews, notes) and sspai review; not mentioned"
+  },
+  "undo_file_actions": {
+   "value": "partial",
+   "evidence": [
+    "https://apps.apple.com/cn/app/%E7%9C%8B%E5%9B%BE-%E8%BD%BB%E6%9D%BE%E6%89%BE%E7%85%A7%E7%89%87/id1314842898?mt=12"
+   ],
+   "how": "changelog",
+   "note": "Deleted pictures can be restored from Recently Deleted (1.9.1)"
+  },
+  "image_editing": {
+   "value": "partial",
+   "evidence": [
+    "https://sspai.com/post/43370",
+    "https://apps.apple.com/cn/app/%E7%9C%8B%E5%9B%BE-%E8%BD%BB%E6%9D%BE%E6%89%BE%E7%85%A7%E7%89%87/id1314842898?mt=12"
+   ],
+   "how": "changelog",
+   "note": "No editing (sspai); right-click entry to annotate (1.9)"
+  },
+  "batch_convert": {
+   "value": "no",
+   "note": "sspai review: Kantu does not edit images; store description lists rename, delete, move, rating only",
+   "evidence": [
+    "https://sspai.com/post/43370",
+    "https://apps.apple.com/cn/app/%E7%9C%8B%E5%9B%BE-%E8%BD%BB%E6%9D%BE%E6%89%BE%E7%85%A7%E7%89%87/id1314842898?mt=12"
+   ],
+   "how": "review"
+  },
+  "library_catalog": {
+   "value": "yes",
+   "evidence": [
+    "https://apps.apple.com/cn/app/%E7%9C%8B%E5%9B%BE-%E8%BD%BB%E6%9D%BE%E6%89%BE%E7%85%A7%E7%89%87/id1314842898?mt=12",
+    "https://sspai.com/post/43370"
+   ],
+   "how": "store",
+   "note": "Ratings (good/medium/bad), face recognition, places, scenes, duplicates, curated albums"
+  },
+  "cloud_sync": {
+   "value": "partial",
+   "evidence": [
+    "https://apps.apple.com/cn/app/%E7%9C%8B%E5%9B%BE-%E8%BD%BB%E6%9D%BE%E6%89%BE%E7%85%A7%E7%89%87/id1314842898?mt=12"
+   ],
+   "how": "changelog",
+   "note": "2.3/2.5: WeChat/QQ login, upload curated albums to Tencent cloud, share via WeChat mini program"
+  },
+  "keyboard_first": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched Mac App Store page (description, reviews, notes) and sspai review; not mentioned"
+  },
+  "custom_shortcuts": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched Mac App Store page (description, reviews, notes) and sspai review; not mentioned"
+  },
+  "shortcut_cheatsheet": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched Mac App Store page (description, reviews, notes) and sspai review; not mentioned"
+  },
+  "boss_key": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched Mac App Store page (description, reviews, notes) and sspai review; not mentioned"
+  },
+  "app_sandbox": {
+   "value": "yes",
+   "evidence": [
+    "https://apps.apple.com/cn/app/%E7%9C%8B%E5%9B%BE-%E8%BD%BB%E6%9D%BE%E6%89%BE%E7%85%A7%E7%89%87/id1314842898?mt=12"
+   ],
+   "how": "store",
+   "note": "Mac App Store apps run sandboxed"
+  },
+  "no_network": {
+   "value": "no",
+   "evidence": [
+    "https://apps.apple.com/cn/app/%E7%9C%8B%E5%9B%BE-%E8%BD%BB%E6%9D%BE%E6%89%BE%E7%85%A7%E7%89%87/id1314842898?mt=12"
+   ],
+   "how": "changelog",
+   "note": "Cloud album upload, update notices"
+  },
+  "notarized_attested": {
+   "value": "partial",
+   "evidence": [
+    "https://apps.apple.com/cn/app/%E7%9C%8B%E5%9B%BE-%E8%BD%BB%E6%9D%BE%E6%89%BE%E7%85%A7%E7%89%87/id1314842898?mt=12"
+   ],
+   "how": "store",
+   "note": "Signed through the Mac App Store; no public source"
+  },
+  "mac_app_store": {
+   "value": "yes",
+   "evidence": [
+    "https://apps.apple.com/cn/app/%E7%9C%8B%E5%9B%BE-%E8%BD%BB%E6%9D%BE%E6%89%BE%E7%85%A7%E7%89%87/id1314842898?mt=12"
+   ],
+   "how": "store",
+   "note": "Free in the Mac App Store"
+  }
+ }
+}

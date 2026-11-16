@@ -1,0 +1,580 @@
+{
+ "name": "FastStone Image Viewer",
+ "short": "FastStone Image Viewer",
+ "vendor": "FastStone Soft",
+ "website": "https://www.faststone.org/FSViewerDetail.htm",
+ "platforms": [
+  "Windows"
+ ],
+ "mac_available": "no",
+ "page": "switcher",
+ "section": "windows",
+ "price": "Free for personal and educational use; commercial US$34.95 one-time, family US$69.95 (5 PCs)",
+ "license": "Proprietary freeware",
+ "current_version": "8.5",
+ "last_update": "2026-06-24",
+ "engine": "Own decoders plus Windows WIC (HEIC); internal video player on Windows' codecs",
+ "category": "image",
+ "summary": "FastStone Image Viewer is a long-running Windows image browser with an Explorer-like folder tree, a polished full-screen mode with fly-out panels, and many editing and batch tools. It also plays videos through Windows' codecs and keeps tags and ratings in its own database.",
+ "where_it_wins": [
+  "Editing tools: curves, levels, clone stamp, healing brush, red-eye",
+  "Compare up to four images side by side",
+  "Batch convert and rename, contact sheets, printing layouts",
+  "Tags and 1-5 star ratings",
+  "Scanner support and screen capture",
+  "Musical slideshows with 150+ transitions"
+ ],
+ "where_schnellbild_wins": [
+  "Runs natively on the Mac (Apple silicon)",
+  "Plays MKV, WebM, AVI itself with built-in VLC, no codecs to install",
+  "Subtitles, audio tracks, skimming videos with the arrow keys",
+  "Archives and comics as folders (FastStone needs its separate paid MaxView for that)",
+  "Search names through all subfolders, also with regular expressions",
+  "Dual pane with F5/F6 and undo of file actions",
+  "Free for everyone including business use, open source, sandboxed, never online"
+ ],
+ "search_terms": [
+  "faststone mac",
+  "faststone image viewer mac",
+  "faststone image viewer for mac",
+  "faststone mac alternative",
+  "faststone image viewer macos",
+  "faststone alternative mac",
+  "faststone für mac",
+  "faststone image viewer mac deutsch",
+  "faststone pour mac",
+  "faststone para mac",
+  "faststone mac 版",
+  "faststone 맥"
+ ],
+ "matrix": {
+  "free": {
+   "value": "partial",
+   "evidence": [
+    "https://www.faststone.org/order.htm",
+    "https://www.faststone.org/FSViewerDetail.htm"
+   ],
+   "how": "docs",
+   "note": "Free for personal and educational use; commercial licence US$34.95 (family licence US$69.95 for 5 PCs)"
+  },
+  "open_source": {
+   "value": "no",
+   "evidence": [
+    "https://www.faststone.org/FSViewerDetail.htm"
+   ],
+   "how": "docs",
+   "note": "Proprietary freeware"
+  },
+  "native_apple_silicon": {
+   "value": "no",
+   "evidence": [
+    "https://www.faststone.org/FSViewerDetail.htm",
+    "https://www.faststone.org/FSViewerDownload.htm"
+   ],
+   "how": "docs",
+   "note": "Windows only, no macOS version"
+  },
+  "no_account_no_tracking": {
+   "value": "yes",
+   "evidence": [
+    "https://www.faststone.org/FSViewerDetail.htm"
+   ],
+   "how": "docs",
+   "note": "'No adware, no spyware'; no account"
+  },
+  "dark_light_setting": {
+   "value": "yes",
+   "evidence": [
+    "https://www.faststone.org/FSViewerDetail.htm",
+    "https://softerviews.org/FastStoneViewer.html"
+   ],
+   "how": "docs",
+   "note": "Three built-in themes: Bright, Gray, Dark"
+  },
+  "languages_20": {
+   "value": "yes",
+   "evidence": [
+    "https://www.faststone.org/FSViewerDownload.htm"
+   ],
+   "how": "docs",
+   "note": "21 languages (English plus 20 credited translations)"
+  },
+  "folder_browsing": {
+   "value": "yes",
+   "evidence": [
+    "https://www.faststone.org/FSViewerDetail.htm"
+   ],
+   "how": "docs",
+   "note": "Explorer-like browser with folder tree and thumbnails, no import"
+  },
+  "thumbnail_grid": {
+   "value": "partial",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Thumbnail browser with folders (option Folders in Browser); whether folder tiles show image previews is not documented"
+  },
+  "list_view": {
+   "value": "yes",
+   "evidence": [
+    "https://www.faststone.org/FSViewerDetail.htm"
+   ],
+   "how": "changelog",
+   "note": "Details and List views"
+  },
+  "recursive_search": {
+   "value": "no",
+   "evidence": [
+    "https://www.faststone.org/FSViewerDetail.htm"
+   ],
+   "how": "changelog",
+   "note": "'Search by Name' (7.8) filters the current folder; no documented subfolder search"
+  },
+  "regex_search": {
+   "value": "no",
+   "note": "'Search by Name' (7.8) filters the current folder by name; regular expressions are not mentioned in the history",
+   "evidence": [
+    "https://www.faststone.org/FSViewerDetail.htm"
+   ],
+   "how": "changelog"
+  },
+  "network_shares_fast": {
+   "value": "partial",
+   "evidence": [
+    "https://www.faststone.org/FSViewerDetail.htm",
+    "https://softerviews.org/FastStoneViewer.html"
+   ],
+   "how": "changelog",
+   "note": "Thumbnail database and pre-scan; changelog notes 'improved performance on network folders'"
+  },
+  "multiple_windows": {
+   "value": "partial",
+   "evidence": [
+    "https://www.faststone.org/FSViewerDetail.htm",
+    "https://softerviews.org/FastStoneViewer.html"
+   ],
+   "how": "changelog",
+   "note": "Dual instances: two viewers at once (since 5.8)"
+  },
+  "bookmarks": {
+   "value": "yes",
+   "evidence": [
+    "https://www.faststone.org/FSViewerDetail.htm",
+    "https://softerviews.org/FastStoneViewer.html"
+   ],
+   "how": "changelog",
+   "note": "Favorites menu and shortcuts for favourite folders"
+  },
+  "img_modern_formats": {
+   "value": "yes",
+   "evidence": [
+    "https://www.faststone.org/FSViewerDetail.htm"
+   ],
+   "how": "changelog",
+   "note": "HEIC (via Windows WIC codecs), AVIF (7.8), WebP native (8.1), JPEG XL (8.4)"
+  },
+  "img_raw": {
+   "value": "yes",
+   "evidence": [
+    "https://www.faststone.org/FSViewerDetail.htm"
+   ],
+   "how": "docs",
+   "note": "CR2, CR3, CRW, NEF, ARW, DNG, ORF, RAF, RW2 and more"
+  },
+  "img_psd_exr": {
+   "value": "partial",
+   "evidence": [
+    "https://www.faststone.org/FSViewerDetail.htm"
+   ],
+   "how": "docs",
+   "note": "PSD yes; OpenEXR not listed"
+  },
+  "img_svg_pdf": {
+   "value": "yes",
+   "evidence": [
+    "https://www.faststone.org/FSViewerDetail.htm"
+   ],
+   "how": "changelog",
+   "note": "PDF since 8.4, SVG since 8.5"
+  },
+  "img_animated": {
+   "value": "partial",
+   "evidence": [
+    "https://www.faststone.org/FSViewerDetail.htm"
+   ],
+   "how": "changelog",
+   "note": "Animated GIF yes; animated PNG/WebP not documented"
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "evidence": [
+    "https://www.faststone.org/FSViewerDetail.htm",
+    "https://softerviews.org/FastStoneViewer.html"
+   ],
+   "how": "docs",
+   "note": "Keyboard and mouse wheel browsing in full screen and window"
+  },
+  "zoom_rotate": {
+   "value": "yes",
+   "evidence": [
+    "https://www.faststone.org/FSViewerDetail.htm"
+   ],
+   "how": "docs",
+   "note": "Zoom, magnifier, rotate, best fit / actual size"
+  },
+  "slideshow": {
+   "value": "yes",
+   "evidence": [
+    "https://www.faststone.org/FSViewerDetail.htm"
+   ],
+   "how": "docs",
+   "note": "Slideshow with 150+ transitions and music"
+  },
+  "slideshow_recursive": {
+   "value": "yes",
+   "note": "Slideshow option 'Auto-Play Folders' plays across multiple folders; videos play in slideshows (6.3)",
+   "evidence": [
+    "https://www.faststone.org/FSViewerDetail.htm"
+   ],
+   "how": "changelog"
+  },
+  "auto_enhance_view": {
+   "value": "no",
+   "evidence": [
+    "https://www.faststone.org/FSViewerDetail.htm",
+    "https://softerviews.org/FastStoneViewer.html"
+   ],
+   "how": "docs",
+   "note": "Colour and light adjustments are edits that are saved; no view-only filter"
+  },
+  "file_info_exif": {
+   "value": "partial",
+   "evidence": [
+    "https://www.faststone.org/FSViewerDetail.htm"
+   ],
+   "how": "docs",
+   "note": "EXIF panel, histogram, file properties (Alt+I); no video codec details documented"
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Searched FastStone feature list and full version history; nothing found either way"
+  },
+  "video_native": {
+   "value": "yes",
+   "evidence": [
+    "https://www.faststone.org/FSViewerDetail.htm"
+   ],
+   "how": "changelog",
+   "note": "Internal video player (since 6.3) on Windows' codecs; MP4/MOV thumbnails"
+  },
+  "video_mkv_avi_webm": {
+   "value": "partial",
+   "evidence": [
+    "https://www.faststone.org/FSViewerDetail.htm"
+   ],
+   "how": "changelog",
+   "note": "AVI, WMV, MPG, M2TS listed; MKV/WebM depend on the codecs installed in Windows ('We do not provide video codecs')"
+  },
+  "photos_videos_one_grid": {
+   "value": "yes",
+   "evidence": [
+    "https://www.faststone.org/FSViewerDetail.htm"
+   ],
+   "how": "changelog",
+   "note": "Video files show as thumbnails in the browser next to images"
+  },
+  "video_skim_arrows": {
+   "value": "no",
+   "note": "The version history lists every video player feature (resume position, auto-play next, loop, play bar with time hint, plays in slideshows); no keyboard seeking",
+   "evidence": [
+    "https://www.faststone.org/FSViewerDetail.htm"
+   ],
+   "how": "changelog"
+  },
+  "subtitles_embedded": {
+   "value": "no",
+   "note": "The version history lists every video player feature (resume position, auto-play next, loop, play bar with time hint, plays in slideshows); no subtitles",
+   "evidence": [
+    "https://www.faststone.org/FSViewerDetail.htm"
+   ],
+   "how": "changelog"
+  },
+  "subtitles_external_files": {
+   "value": "no",
+   "note": "The version history lists every video player feature (resume position, auto-play next, loop, play bar with time hint, plays in slideshows); no subtitles",
+   "evidence": [
+    "https://www.faststone.org/FSViewerDetail.htm"
+   ],
+   "how": "changelog"
+  },
+  "audio_track_choice": {
+   "value": "no",
+   "note": "The version history lists every video player feature (resume position, auto-play next, loop, play bar with time hint, plays in slideshows); no track selection",
+   "evidence": [
+    "https://www.faststone.org/FSViewerDetail.htm"
+   ],
+   "how": "changelog"
+  },
+  "playback_speed": {
+   "value": "no",
+   "note": "The version history lists every video player feature (resume position, auto-play next, loop, play bar with time hint, plays in slideshows); no speed control",
+   "evidence": [
+    "https://www.faststone.org/FSViewerDetail.htm"
+   ],
+   "how": "changelog"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "evidence": [
+    "https://www.faststone.org/FSViewerDetail.htm"
+   ],
+   "how": "changelog",
+   "note": "Play bar auto-shows at the bottom in full screen"
+  },
+  "playlist": {
+   "value": "partial",
+   "evidence": [
+    "https://www.faststone.org/FSViewerDetail.htm"
+   ],
+   "how": "changelog",
+   "note": "Auto-plays the next video when one ends; no playlist editor"
+  },
+  "saved_playlists": {
+   "value": "no",
+   "note": "The version history lists every video player feature (resume position, auto-play next, loop, play bar with time hint, plays in slideshows); no playlists",
+   "evidence": [
+    "https://www.faststone.org/FSViewerDetail.htm"
+   ],
+   "how": "changelog"
+  },
+  "pip": {
+   "value": "no",
+   "note": "The version history lists every video player feature (resume position, auto-play next, loop, play bar with time hint, plays in slideshows); no picture in picture",
+   "evidence": [
+    "https://www.faststone.org/FSViewerDetail.htm"
+   ],
+   "how": "changelog"
+  },
+  "music_mode": {
+   "value": "partial",
+   "evidence": [
+    "https://www.faststone.org/FSViewerDetail.htm"
+   ],
+   "how": "docs",
+   "note": "Plays audio files; music for slideshows"
+  },
+  "streaming_urls": {
+   "value": "no",
+   "note": "The version history lists every video player feature (resume position, auto-play next, loop, play bar with time hint, plays in slideshows); no streams or URLs",
+   "evidence": [
+    "https://www.faststone.org/FSViewerDetail.htm"
+   ],
+   "how": "changelog"
+  },
+  "online_subtitles": {
+   "value": "no",
+   "note": "The version history lists every video player feature (resume position, auto-play next, loop, play bar with time hint, plays in slideshows); no subtitles",
+   "evidence": [
+    "https://www.faststone.org/FSViewerDetail.htm"
+   ],
+   "how": "changelog"
+  },
+  "video_filters_enhance": {
+   "value": "no",
+   "note": "The version history lists every video player feature (resume position, auto-play next, loop, play bar with time hint, plays in slideshows); no video adjustments",
+   "evidence": [
+    "https://www.faststone.org/FSViewerDetail.htm"
+   ],
+   "how": "changelog"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "note": "Explorer integration is a 'Browse with FastStone' folder context menu; no thumbnail handler in the history",
+   "evidence": [
+    "https://www.faststone.org/FSViewerDetail.htm"
+   ],
+   "how": "changelog"
+  },
+  "archives_as_folders": {
+   "value": "no",
+   "evidence": [
+    "https://www.faststone.org/FSViewerDetail.htm",
+    "https://www.faststone.org/order.htm"
+   ],
+   "how": "docs",
+   "note": "Image Viewer can only create ZIP files (8.2); FastStone's separate MaxView (US$19.95) is the viewer with archive support"
+  },
+  "comics_cbz_cbr": {
+   "value": "no",
+   "evidence": [
+    "https://www.faststone.org/FSViewerDetail.htm",
+    "https://www.faststone.org/order.htm"
+   ],
+   "how": "docs",
+   "note": "Not in the format list (see FastStone MaxView)"
+  },
+  "archive_passwords": {
+   "value": "no",
+   "evidence": [
+    "https://www.faststone.org/FSViewerDetail.htm"
+   ],
+   "how": "docs",
+   "note": "No archive viewing"
+  },
+  "split_archives": {
+   "value": "no",
+   "evidence": [
+    "https://www.faststone.org/FSViewerDetail.htm"
+   ],
+   "how": "docs",
+   "note": "No archive viewing"
+  },
+  "videos_in_archives": {
+   "value": "no",
+   "evidence": [
+    "https://www.faststone.org/FSViewerDetail.htm"
+   ],
+   "how": "docs",
+   "note": "No archive viewing"
+  },
+  "manga_two_page": {
+   "value": "no",
+   "evidence": [
+    "https://www.faststone.org/FSViewerDetail.htm"
+   ],
+   "how": "docs",
+   "note": "Compare mode shows up to 4 images, but no two-page reading mode"
+  },
+  "rename_trash": {
+   "value": "yes",
+   "evidence": [
+    "https://www.faststone.org/FSViewerDetail.htm",
+    "https://softerviews.org/FastStoneViewer.html"
+   ],
+   "how": "docs",
+   "note": "Rename, delete, folder management in the Explorer-like browser"
+  },
+  "move_copy": {
+   "value": "yes",
+   "evidence": [
+    "https://www.faststone.org/FSViewerDetail.htm",
+    "https://softerviews.org/FastStoneViewer.html"
+   ],
+   "how": "docs",
+   "note": "Drag and drop to copy/move; Copy/Move to folder with keys 1-9"
+  },
+  "dual_pane": {
+   "value": "partial",
+   "evidence": [
+    "https://www.faststone.org/FSViewerDetail.htm",
+    "https://softerviews.org/FastStoneViewer.html"
+   ],
+   "how": "changelog",
+   "note": "Two instances side by side with drag and drop between them; no F5/F6"
+  },
+  "undo_file_actions": {
+   "value": "no",
+   "evidence": [
+    "https://www.faststone.org/FSViewerDetail.htm",
+    "https://softerviews.org/FastStoneViewer.html"
+   ],
+   "how": "docs",
+   "note": "Undo/redo covers image edits"
+  },
+  "image_editing": {
+   "value": "yes",
+   "evidence": [
+    "https://www.faststone.org/FSViewerDetail.htm"
+   ],
+   "how": "docs",
+   "note": "Resize, crop, curves/levels, clone stamp, healing brush, red-eye, text"
+  },
+  "batch_convert": {
+   "value": "yes",
+   "evidence": [
+    "https://www.faststone.org/FSViewerDetail.htm"
+   ],
+   "how": "docs",
+   "note": "Batch convert and rename"
+  },
+  "library_catalog": {
+   "value": "partial",
+   "evidence": [
+    "https://softerviews.org/FastStoneViewer.html"
+   ],
+   "how": "changelog",
+   "note": "Tags and 1-5 ratings kept in a database (7.6); no catalog or import"
+  },
+  "cloud_sync": {
+   "value": "partial",
+   "evidence": [
+    "https://www.faststone.org/FSViewerDetail.htm"
+   ],
+   "how": "docs",
+   "note": "Email images; no cloud sync"
+  },
+  "keyboard_first": {
+   "value": "partial",
+   "evidence": [
+    "https://www.faststone.org/FSViewerDetail.htm"
+   ],
+   "how": "docs",
+   "note": "Many shortcuts, but the full-screen workflow is mouse-driven fly-out panels"
+  },
+  "custom_shortcuts": {
+   "value": "no",
+   "evidence": [
+    "https://www.faststone.org/FSViewerDetail.htm"
+   ],
+   "how": "changelog",
+   "note": "Configurable mouse clicks and wheel, no keyboard remapping documented"
+  },
+  "shortcut_cheatsheet": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Shortcuts are scattered through the version history; the help file was not checked"
+  },
+  "boss_key": {
+   "value": "no",
+   "note": "Only a Minimize button hidden in the full-screen corner (4.8); no hide-all key in the version history",
+   "evidence": [
+    "https://www.faststone.org/FSViewerDetail.htm"
+   ],
+   "how": "changelog"
+  },
+  "app_sandbox": {
+   "value": "no",
+   "evidence": [
+    "https://www.faststone.org/FSViewerDetail.htm"
+   ],
+   "how": "docs",
+   "note": "Windows only"
+  },
+  "no_network": {
+   "value": "partial",
+   "evidence": [
+    "https://www.faststone.org/FSViewerDetail.htm"
+   ],
+   "how": "changelog",
+   "note": "Viewing is offline; email and Show in Google Maps / OpenStreetMap use the internet"
+  },
+  "notarized_attested": {
+   "value": "no",
+   "evidence": [
+    "https://www.faststone.org/FSViewerDetail.htm"
+   ],
+   "how": "docs",
+   "note": "Closed-source Windows binary"
+  },
+  "mac_app_store": {
+   "value": "no",
+   "evidence": [
+    "https://www.faststone.org/FSViewerDetail.htm"
+   ],
+   "how": "docs",
+   "note": "Windows only"
+  }
+ }
+}

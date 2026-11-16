@@ -1,0 +1,503 @@
+{
+ "name": "Picasa",
+ "short": "Picasa",
+ "vendor": "Google (discontinued)",
+ "website": "https://googlephotos.blogspot.com/2016/02/moving-on-from-picasa.html",
+ "platforms": [
+  "Windows",
+  "macOS (Intel, beta)",
+  "Linux (Wine, old)"
+ ],
+ "mac_available": "no",
+ "page": "switcher",
+ "section": "windows",
+ "price": "Free (discontinued, no official download)",
+ "license": "Proprietary freeware",
+ "current_version": "3.9.141.259 (Windows) / 3.9.141.306",
+ "last_update": "2015-10-09 (support ended 2016-03-15)",
+ "engine": "n/a (system codecs for video)",
+ "category": "photo-manager",
+ "summary": "Google's free photo organizer and viewer, retired in March 2016 and offline since 2018. It scanned folders into a library with tags, faces and albums, offered simple non-destructive fixes and slideshows. Still widely searched by people who want a simple, free, local photo viewer.",
+ "where_it_wins": [
+  "Face recognition, tags and albums",
+  "One-click non-destructive fixes",
+  "Collages, printing layouts and export",
+  "Familiar to many long-time users"
+ ],
+ "where_schnellbild_wins": [
+  "Maintained and runs natively on Apple silicon",
+  "Modern formats: HEIC, AVIF, JPEG XL",
+  "Videos incl. MKV/AVI/WebM",
+  "Archives and comics as folders",
+  "No library scan, opens folders directly",
+  "Search with regex, dual pane, undo",
+  "Sandboxed, never online"
+ ],
+ "search_terms": [
+  "picasa mac",
+  "picasa for mac",
+  "picasa alternative",
+  "picasa alternative mac",
+  "picasa replacement mac",
+  "picasa ersatz mac",
+  "picasa nachfolger",
+  "picasa download mac",
+  "alternative à picasa mac",
+  "alternativa a picasa mac",
+  "picasa 替代 mac",
+  "picasa 代わり mac"
+ ],
+ "matrix": {
+  "free": {
+   "value": "yes",
+   "note": "Was freeware; discontinued 2016",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Picasa",
+    "https://googlephotos.blogspot.com/2016/02/moving-on-from-picasa.html"
+   ],
+   "how": "docs"
+  },
+  "open_source": {
+   "value": "no",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Picasa"
+   ],
+   "how": "docs"
+  },
+  "native_apple_silicon": {
+   "value": "no",
+   "note": "Mac version was an Intel-only Google Labs beta",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Picasa"
+   ],
+   "how": "docs"
+  },
+  "no_account_no_tracking": {
+   "value": "partial",
+   "note": "Local use without account; online features needed a Google account and stopped working in 2018",
+   "evidence": [
+    "https://googlephotos.blogspot.com/2016/02/moving-on-from-picasa.html",
+    "https://en.wikipedia.org/wiki/Picasa"
+   ],
+   "how": "docs"
+  },
+  "dark_light_setting": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Picasa discontinued; checked the remaining Google help articles, a copy of the shortcut list and Wikipedia; Wayback copies of the old help were rate-limited"
+  },
+  "languages_20": {
+   "value": "yes",
+   "note": "Picasa discontinued; checked the remaining Google help articles, a copy of the shortcut list and Wikipedia; Wayback copies of the old help were rate-limited",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "folder_browsing": {
+   "value": "partial",
+   "note": "Scans watched folders into its database (no copying), shows them as a folder list",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Picasa"
+   ],
+   "how": "review"
+  },
+  "thumbnail_grid": {
+   "value": "partial",
+   "note": "Small/large thumbnail views (Ctrl-1/Ctrl-2); folders are listed on the left, not shown as preview tiles",
+   "evidence": [
+    "https://sites.google.com/site/picasaresources/picasa/keyboard-shortcuts",
+    "https://support.google.com/picasa/answer/156339?hl=en"
+   ],
+   "how": "docs"
+  },
+  "list_view": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Picasa discontinued; checked the remaining Google help articles, a copy of the shortcut list and Wikipedia; Wayback copies of the old help were rate-limited"
+  },
+  "recursive_search": {
+   "value": "partial",
+   "note": "Picasa discontinued; checked the remaining Google help articles, a copy of the shortcut list and Wikipedia; Wayback copies of the old help were rate-limited",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "regex_search": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Picasa discontinued; checked the remaining Google help articles, a copy of the shortcut list and Wikipedia; Wayback copies of the old help were rate-limited"
+  },
+  "network_shares_fast": {
+   "value": "no",
+   "note": "Picasa discontinued; checked the remaining Google help articles, a copy of the shortcut list and Wikipedia; Wayback copies of the old help were rate-limited",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "multiple_windows": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Picasa discontinued; checked the remaining Google help articles, a copy of the shortcut list and Wikipedia; Wayback copies of the old help were rate-limited"
+  },
+  "bookmarks": {
+   "value": "partial",
+   "note": "Albums, starred photos, collections",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Picasa"
+   ],
+   "how": "review"
+  },
+  "img_modern_formats": {
+   "value": "partial",
+   "note": "WebP only; predates HEIC/AVIF/JPEG XL support",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Picasa"
+   ],
+   "how": "review"
+  },
+  "img_raw": {
+   "value": "yes",
+   "note": "Most RAW formats, edits exported without touching the RAW",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Picasa"
+   ],
+   "how": "review"
+  },
+  "img_psd_exr": {
+   "value": "partial",
+   "note": "Picasa discontinued; checked the remaining Google help articles, a copy of the shortcut list and Wikipedia; Wayback copies of the old help were rate-limited",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "img_svg_pdf": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Picasa discontinued; checked the remaining Google help articles, a copy of the shortcut list and Wikipedia; Wayback copies of the old help were rate-limited"
+  },
+  "img_animated": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Picasa discontinued; checked the remaining Google help articles, a copy of the shortcut list and Wikipedia; Wayback copies of the old help were rate-limited"
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "note": "Photo Viewer: left/right arrows or J/K for next/previous image",
+   "evidence": [
+    "https://sites.google.com/site/picasaresources/picasa/keyboard-shortcuts"
+   ],
+   "how": "docs"
+  },
+  "zoom_rotate": {
+   "value": "yes",
+   "note": "No separate viewer: view area in edit view, full screen via slideshow",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Picasa"
+   ],
+   "how": "review"
+  },
+  "slideshow": {
+   "value": "yes",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Picasa"
+   ],
+   "how": "review"
+  },
+  "slideshow_recursive": {
+   "value": "no",
+   "note": "Slideshow plays the open album or folder",
+   "evidence": [
+    "https://support.google.com/picasa/answer/19539?hl=en"
+   ],
+   "how": "docs"
+  },
+  "auto_enhance_view": {
+   "value": "yes",
+   "note": "Non-destructive basic fixes (colour enhancement, auto contrast) until exported; Picasa 2 and earlier overwrote with a backup",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Picasa"
+   ],
+   "how": "review"
+  },
+  "file_info_exif": {
+   "value": "partial",
+   "note": "Picasa discontinued; checked the remaining Google help articles, a copy of the shortcut list and Wikipedia; Wayback copies of the old help were rate-limited",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Picasa discontinued; checked the remaining Google help articles, a copy of the shortcut list and Wikipedia; Wayback copies of the old help were rate-limited"
+  },
+  "video_native": {
+   "value": "partial",
+   "note": "Picasa discontinued; checked the remaining Google help articles, a copy of the shortcut list and Wikipedia; Wayback copies of the old help were rate-limited",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "video_mkv_avi_webm": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Picasa discontinued; checked the remaining Google help articles, a copy of the shortcut list and Wikipedia; Wayback copies of the old help were rate-limited"
+  },
+  "photos_videos_one_grid": {
+   "value": "yes",
+   "note": "Photos and videos in one library",
+   "evidence": [
+    "https://googlephotos.blogspot.com/2016/02/moving-on-from-picasa.html"
+   ],
+   "how": "docs"
+  },
+  "video_skim_arrows": {
+   "value": "partial",
+   "note": "Keys for videos: / play/pause, comma rewind, period fast forward; not the arrow keys",
+   "evidence": [
+    "https://sites.google.com/site/picasaresources/picasa/keyboard-shortcuts"
+   ],
+   "how": "docs"
+  },
+  "subtitles_embedded": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Picasa discontinued; checked the remaining Google help articles, a copy of the shortcut list and Wikipedia; Wayback copies of the old help were rate-limited"
+  },
+  "subtitles_external_files": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Picasa discontinued; checked the remaining Google help articles, a copy of the shortcut list and Wikipedia; Wayback copies of the old help were rate-limited"
+  },
+  "audio_track_choice": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Picasa discontinued; checked the remaining Google help articles, a copy of the shortcut list and Wikipedia; Wayback copies of the old help were rate-limited"
+  },
+  "playback_speed": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Picasa discontinued; checked the remaining Google help articles, a copy of the shortcut list and Wikipedia; Wayback copies of the old help were rate-limited"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Picasa discontinued; checked the remaining Google help articles, a copy of the shortcut list and Wikipedia; Wayback copies of the old help were rate-limited"
+  },
+  "playlist": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Picasa discontinued; checked the remaining Google help articles, a copy of the shortcut list and Wikipedia; Wayback copies of the old help were rate-limited"
+  },
+  "saved_playlists": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Picasa discontinued; checked the remaining Google help articles, a copy of the shortcut list and Wikipedia; Wayback copies of the old help were rate-limited"
+  },
+  "pip": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Picasa discontinued; checked the remaining Google help articles, a copy of the shortcut list and Wikipedia; Wayback copies of the old help were rate-limited"
+  },
+  "music_mode": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Picasa discontinued; checked the remaining Google help articles, a copy of the shortcut list and Wikipedia; Wayback copies of the old help were rate-limited"
+  },
+  "streaming_urls": {
+   "value": "no",
+   "note": "Web albums closed in 2016",
+   "evidence": [
+    "https://googlephotos.blogspot.com/2016/02/moving-on-from-picasa.html"
+   ],
+   "how": "docs"
+  },
+  "online_subtitles": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Picasa discontinued; checked the remaining Google help articles, a copy of the shortcut list and Wikipedia; Wayback copies of the old help were rate-limited"
+  },
+  "video_filters_enhance": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Picasa discontinued; checked the remaining Google help articles, a copy of the shortcut list and Wikipedia; Wayback copies of the old help were rate-limited"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Picasa discontinued; checked the remaining Google help articles, a copy of the shortcut list and Wikipedia; Wayback copies of the old help were rate-limited"
+  },
+  "archives_as_folders": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Picasa discontinued; checked the remaining Google help articles, a copy of the shortcut list and Wikipedia; Wayback copies of the old help were rate-limited"
+  },
+  "comics_cbz_cbr": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Picasa discontinued; checked the remaining Google help articles, a copy of the shortcut list and Wikipedia; Wayback copies of the old help were rate-limited"
+  },
+  "archive_passwords": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Picasa discontinued; checked the remaining Google help articles, a copy of the shortcut list and Wikipedia; Wayback copies of the old help were rate-limited"
+  },
+  "split_archives": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Picasa discontinued; checked the remaining Google help articles, a copy of the shortcut list and Wikipedia; Wayback copies of the old help were rate-limited"
+  },
+  "videos_in_archives": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Picasa discontinued; checked the remaining Google help articles, a copy of the shortcut list and Wikipedia; Wayback copies of the old help were rate-limited"
+  },
+  "manga_two_page": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Picasa discontinued; checked the remaining Google help articles, a copy of the shortcut list and Wikipedia; Wayback copies of the old help were rate-limited"
+  },
+  "rename_trash": {
+   "value": "partial",
+   "note": "Rename file (Mac fn-F3), delete duplicates from the computer; new folder not documented",
+   "evidence": [
+    "https://sites.google.com/site/picasaresources/picasa/keyboard-shortcuts",
+    "https://support.google.com/picasa/answer/156339?hl=en"
+   ],
+   "how": "docs"
+  },
+  "move_copy": {
+   "value": "yes",
+   "note": "Drag photos to another folder or album; folder changes act on the disk",
+   "evidence": [
+    "https://support.google.com/picasa/answer/156339?hl=en"
+   ],
+   "how": "docs"
+  },
+  "dual_pane": {
+   "value": "no",
+   "note": "Side-by-side only compares two photos (A|B, A|A), not folders",
+   "evidence": [
+    "https://support.google.com/picasa/answer/156342?hl=en"
+   ],
+   "how": "docs"
+  },
+  "undo_file_actions": {
+   "value": "partial",
+   "note": "Picasa discontinued; checked the remaining Google help articles, a copy of the shortcut list and Wikipedia; Wayback copies of the old help were rate-limited",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "image_editing": {
+   "value": "yes",
+   "note": "Crop, red-eye, colour enhancement, text",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Picasa"
+   ],
+   "how": "review"
+  },
+  "batch_convert": {
+   "value": "partial",
+   "note": "Export/resize several pictures at once",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Picasa"
+   ],
+   "how": "review"
+  },
+  "library_catalog": {
+   "value": "yes",
+   "note": "Tags, face recognition, collections, albums, timeline",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Picasa"
+   ],
+   "how": "review"
+  },
+  "cloud_sync": {
+   "value": "partial",
+   "note": "Picasa Web Albums / Google+; offline since 2018",
+   "evidence": [
+    "https://googlephotos.blogspot.com/2016/02/moving-on-from-picasa.html"
+   ],
+   "how": "docs"
+  },
+  "keyboard_first": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Picasa discontinued; checked the remaining Google help articles, a copy of the shortcut list and Wikipedia; Wayback copies of the old help were rate-limited"
+  },
+  "custom_shortcuts": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Picasa discontinued; checked the remaining Google help articles, a copy of the shortcut list and Wikipedia; Wayback copies of the old help were rate-limited"
+  },
+  "shortcut_cheatsheet": {
+   "value": "partial",
+   "note": "Keyboard shortcut list in the Google help article; nothing in the app",
+   "evidence": [
+    "https://support.google.com/picasa/answer/18393?hl=en",
+    "https://sites.google.com/site/picasaresources/picasa/keyboard-shortcuts"
+   ],
+   "how": "docs"
+  },
+  "boss_key": {
+   "value": "no",
+   "note": "Not in the keyboard shortcut list",
+   "evidence": [
+    "https://sites.google.com/site/picasaresources/picasa/keyboard-shortcuts",
+    "https://support.google.com/picasa/answer/18393?hl=en"
+   ],
+   "how": "docs"
+  },
+  "app_sandbox": {
+   "value": "no",
+   "note": "Picasa discontinued; checked the remaining Google help articles, a copy of the shortcut list and Wikipedia; Wayback copies of the old help were rate-limited",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "no_network": {
+   "value": "partial",
+   "note": "Online features dead since 2018, the desktop app still works offline",
+   "evidence": [
+    "https://googlephotos.blogspot.com/2016/02/moving-on-from-picasa.html"
+   ],
+   "how": "docs"
+  },
+  "notarized_attested": {
+   "value": "no",
+   "note": "Last version 2015, before notarization",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Picasa"
+   ],
+   "how": "docs"
+  },
+  "mac_app_store": {
+   "value": "no",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/Picasa"
+   ],
+   "how": "docs"
+  }
+ }
+}

@@ -1,0 +1,552 @@
+{
+ "name": "ALSee (알씨)",
+ "short": "ALSee",
+ "vendor": "ESTsoft (ALTools)",
+ "website": "https://altools.co.kr/product/ALSEE",
+ "platforms": [
+  "Windows"
+ ],
+ "mac_available": "no",
+ "page": "switcher",
+ "section": "windows",
+ "price": "Free with ads; AD-ZERO ad removal 5,900 KRW/month (all ALTools); ALTools AI subscription for AI features",
+ "license": "Proprietary (ad-supported)",
+ "current_version": "10.02",
+ "last_update": "2026-10-07",
+ "engine": "n/a (image viewer, no video)",
+ "category": "image",
+ "summary": "ESTsoft's long-standing Korean image viewer from the ALTools family (ALZip, ALYac): thumbnail/list browsing, large and full-screen view, images inside archives, batch convert/resize/rotate, printing, and subscription AI edits (upscaling, background removal, face mosaic).",
+ "where_it_wins": [
+  "Printing layouts and batch rotate/resize/convert",
+  "AI upscaling, background removal, face mosaic (subscription)",
+  "Integrates with Windows Explorer context menu"
+ ],
+ "where_schnellbild_wins": [
+  "Runs natively on the Mac (Apple silicon), Honeyview/BandiView-style viewing without Windows or Wine",
+  "Plays videos (MP4, MOV, MKV, WebM, AVI …) in the same grid and slideshow",
+  "Thumbnail grid with folder previews and list view, recursive name search with regular expressions",
+  "Free with every feature, no ads, open source, App Sandbox, never goes online",
+  "Dual pane with F5/F6 copy/move, undo for file actions",
+  "No ads, no subscription"
+ ],
+ "search_terms": [
+  "알씨 맥",
+  "알씨 맥북",
+  "알씨 맥 버전",
+  "알씨 대체",
+  "alsee mac",
+  "맥 사진 뷰어",
+  "맥 이미지 뷰어 무료"
+ ],
+ "matrix": {
+  "free": {
+   "value": "partial",
+   "evidence": [
+    "https://altools.co.kr/product/ALSEE",
+    "https://altools.co.kr/adzero/intro"
+   ],
+   "how": "docs",
+   "note": "Free with ads; ad removal via ALTools AD-ZERO subscription (5,900 KRW/month); AI features via ALTools AI subscription"
+  },
+  "open_source": {
+   "value": "no",
+   "evidence": [
+    "https://altools.co.kr/product/ALSEE"
+   ],
+   "how": "docs",
+   "note": "Proprietary"
+  },
+  "native_apple_silicon": {
+   "value": "no",
+   "evidence": [
+    "https://altools.co.kr/product/ALSEE"
+   ],
+   "how": "docs",
+   "note": "Windows only (no macOS version)"
+  },
+  "no_account_no_tracking": {
+   "value": "no",
+   "evidence": [
+    "https://altools.co.kr/adzero/intro"
+   ],
+   "how": "docs",
+   "note": "Ads in the free version"
+  },
+  "dark_light_setting": {
+   "value": "no",
+   "note": "Settings chapter (General, Explorer, View, Slideshow, Associations, Thumbnails) has only a view background colour, no light/dark theme",
+   "evidence": [
+    "https://cdn.estsoft.com/altools/help/alsee/100/alsee_100_manual.pdf"
+   ],
+   "how": "docs"
+  },
+  "languages_20": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Product site and ALSee 10.0 manual are Korean only; UI language options not documented"
+  },
+  "folder_browsing": {
+   "value": "yes",
+   "evidence": [
+    "https://altools.co.kr/product/ALSEE"
+   ],
+   "how": "docs",
+   "note": "List view (목록보기) browses folders"
+  },
+  "thumbnail_grid": {
+   "value": "yes",
+   "evidence": [
+    "https://altools.co.kr/product/ALSEE"
+   ],
+   "how": "docs",
+   "note": "목록보기 / 여럿보기 (thumbnail list, multi view)"
+  },
+  "list_view": {
+   "value": "yes",
+   "note": "List view modes include Details (자세히): size, type, attributes, date",
+   "evidence": [
+    "https://cdn.estsoft.com/altools/help/alsee/100/alsee_100_manual.pdf"
+   ],
+   "how": "docs"
+  },
+  "recursive_search": {
+   "value": "no",
+   "evidence": [
+    "https://altools.co.kr/product/ALSEE"
+   ],
+   "how": "docs",
+   "note": "No file name search inside the viewer"
+  },
+  "regex_search": {
+   "value": "no",
+   "evidence": [
+    "https://altools.co.kr/product/ALSEE"
+   ],
+   "how": "docs",
+   "note": "No file name search inside the viewer"
+  },
+  "network_shares_fast": {
+   "value": "partial",
+   "evidence": [
+    "https://altools.co.kr/product/ALSEE"
+   ],
+   "how": "changelog",
+   "note": "v9.54 improved performance on network shares"
+  },
+  "multiple_windows": {
+   "value": "partial",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Not described in the ALSee 10.0 manual"
+  },
+  "bookmarks": {
+   "value": "yes",
+   "evidence": [
+    "https://altools.co.kr/product/ALSEE"
+   ],
+   "how": "changelog",
+   "note": "Shortcut folders (바로가기 폴더)"
+  },
+  "img_modern_formats": {
+   "value": "partial",
+   "evidence": [
+    "https://altools.co.kr/product/ALSEE"
+   ],
+   "how": "docs",
+   "note": "WebP, AVIF listed; HEIC/JPEG XL not listed"
+  },
+  "img_raw": {
+   "value": "no",
+   "note": "Supported-format list in the 10.0 manual (26 types) has no camera RAW",
+   "evidence": [
+    "https://cdn.estsoft.com/altools/help/alsee/100/alsee_100_manual.pdf"
+   ],
+   "how": "docs"
+  },
+  "img_psd_exr": {
+   "value": "partial",
+   "evidence": [
+    "https://altools.co.kr/product/ALSEE"
+   ],
+   "how": "docs",
+   "note": "PSD yes; EXR not listed"
+  },
+  "img_svg_pdf": {
+   "value": "no",
+   "note": "Not in the supported-format list of the 10.0 manual",
+   "evidence": [
+    "https://cdn.estsoft.com/altools/help/alsee/100/alsee_100_manual.pdf"
+   ],
+   "how": "docs"
+  },
+  "img_animated": {
+   "value": "partial",
+   "note": "GIF, ANI and WebP are in the format list; animated playback itself is not described",
+   "evidence": [
+    "https://cdn.estsoft.com/altools/help/alsee/100/alsee_100_manual.pdf"
+   ],
+   "how": "docs"
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "evidence": [
+    "https://altools.co.kr/product/ALSEE"
+   ],
+   "how": "changelog",
+   "note": "Arrow keys in list and large view"
+  },
+  "zoom_rotate": {
+   "value": "yes",
+   "evidence": [
+    "https://altools.co.kr/product/ALSEE"
+   ],
+   "how": "docs",
+   "note": "Zoom in large view (크게보기); rotate"
+  },
+  "slideshow": {
+   "value": "yes",
+   "evidence": [
+    "https://altools.co.kr/product/ALSEE"
+   ],
+   "how": "docs",
+   "note": "Continuous / full-screen view (연속보기, 전체화면 보기)"
+  },
+  "slideshow_recursive": {
+   "value": "no",
+   "evidence": [
+    "https://altools.co.kr/product/ALSEE"
+   ],
+   "how": "docs",
+   "note": "Images only"
+  },
+  "auto_enhance_view": {
+   "value": "no",
+   "evidence": [
+    "https://altools.co.kr/product/ALSEE"
+   ],
+   "how": "docs",
+   "note": "AI upscaling/background removal are edits, not a view filter"
+  },
+  "file_info_exif": {
+   "value": "partial",
+   "note": "Camera info pane (F12) shows EXIF; status bar shows resolution and size; no video",
+   "evidence": [
+    "https://cdn.estsoft.com/altools/help/alsee/100/alsee_100_manual.pdf"
+   ],
+   "how": "docs"
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Not mentioned in the ALSee 10.0 manual"
+  },
+  "video_native": {
+   "value": "no",
+   "evidence": [
+    "https://altools.co.kr/product/ALSEE"
+   ],
+   "how": "docs",
+   "note": "Image viewer; product page lists only image formats"
+  },
+  "video_mkv_avi_webm": {
+   "value": "no",
+   "evidence": [
+    "https://altools.co.kr/product/ALSEE"
+   ],
+   "how": "docs",
+   "note": "Image viewer; product page lists only image formats"
+  },
+  "photos_videos_one_grid": {
+   "value": "no",
+   "evidence": [
+    "https://altools.co.kr/product/ALSEE"
+   ],
+   "how": "docs",
+   "note": "Image viewer; product page lists only image formats"
+  },
+  "video_skim_arrows": {
+   "value": "no",
+   "evidence": [
+    "https://altools.co.kr/product/ALSEE"
+   ],
+   "how": "docs",
+   "note": "Image viewer; product page lists only image formats"
+  },
+  "subtitles_embedded": {
+   "value": "no",
+   "evidence": [
+    "https://altools.co.kr/product/ALSEE"
+   ],
+   "how": "docs",
+   "note": "Image viewer; product page lists only image formats"
+  },
+  "subtitles_external_files": {
+   "value": "no",
+   "evidence": [
+    "https://altools.co.kr/product/ALSEE"
+   ],
+   "how": "docs",
+   "note": "Image viewer; product page lists only image formats"
+  },
+  "audio_track_choice": {
+   "value": "no",
+   "evidence": [
+    "https://altools.co.kr/product/ALSEE"
+   ],
+   "how": "docs",
+   "note": "Image viewer; product page lists only image formats"
+  },
+  "playback_speed": {
+   "value": "no",
+   "evidence": [
+    "https://altools.co.kr/product/ALSEE"
+   ],
+   "how": "docs",
+   "note": "Image viewer; product page lists only image formats"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "evidence": [
+    "https://altools.co.kr/product/ALSEE"
+   ],
+   "how": "docs",
+   "note": "Image viewer; product page lists only image formats"
+  },
+  "playlist": {
+   "value": "no",
+   "evidence": [
+    "https://altools.co.kr/product/ALSEE"
+   ],
+   "how": "docs",
+   "note": "Image viewer; product page lists only image formats"
+  },
+  "saved_playlists": {
+   "value": "no",
+   "evidence": [
+    "https://altools.co.kr/product/ALSEE"
+   ],
+   "how": "docs",
+   "note": "Image viewer; product page lists only image formats"
+  },
+  "pip": {
+   "value": "no",
+   "evidence": [
+    "https://altools.co.kr/product/ALSEE"
+   ],
+   "how": "docs",
+   "note": "Image viewer; product page lists only image formats"
+  },
+  "music_mode": {
+   "value": "no",
+   "evidence": [
+    "https://altools.co.kr/product/ALSEE"
+   ],
+   "how": "docs",
+   "note": "Image viewer; product page lists only image formats"
+  },
+  "streaming_urls": {
+   "value": "no",
+   "evidence": [
+    "https://altools.co.kr/product/ALSEE"
+   ],
+   "how": "docs",
+   "note": "Image viewer; product page lists only image formats"
+  },
+  "online_subtitles": {
+   "value": "no",
+   "evidence": [
+    "https://altools.co.kr/product/ALSEE"
+   ],
+   "how": "docs",
+   "note": "Image viewer; product page lists only image formats"
+  },
+  "video_filters_enhance": {
+   "value": "no",
+   "evidence": [
+    "https://altools.co.kr/product/ALSEE"
+   ],
+   "how": "docs",
+   "note": "Image viewer; product page lists only image formats"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "evidence": [
+    "https://altools.co.kr/product/ALSEE"
+   ],
+   "how": "docs",
+   "note": "Image viewer; product page lists only image formats"
+  },
+  "archives_as_folders": {
+   "value": "partial",
+   "evidence": [
+    "https://altools.co.kr/product/ALSEE"
+   ],
+   "how": "docs",
+   "note": "Views images inside archives without extracting (via Explorer context menu)"
+  },
+  "comics_cbz_cbr": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Manual says images inside archives can be viewed via the Explorer context menu, but lists no archive formats"
+  },
+  "archive_passwords": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Not mentioned in the ALSee 10.0 manual"
+  },
+  "split_archives": {
+   "value": "no",
+   "evidence": [],
+   "how": "unverified",
+   "note": "Not mentioned in the ALSee 10.0 manual"
+  },
+  "videos_in_archives": {
+   "value": "no",
+   "evidence": [
+    "https://altools.co.kr/product/ALSEE"
+   ],
+   "how": "docs",
+   "note": "Image viewer; product page lists only image formats"
+  },
+  "manga_two_page": {
+   "value": "yes",
+   "note": "Two-page view (Ctrl+Alt+2, described as 'manga view') with 'swap left/right pages' setting",
+   "evidence": [
+    "https://cdn.estsoft.com/altools/help/alsee/100/alsee_100_manual.pdf"
+   ],
+   "how": "docs"
+  },
+  "rename_trash": {
+   "value": "yes",
+   "note": "Rename (F2), delete (Del, optional to Recycle Bin), new folder (Ctrl+N)",
+   "evidence": [
+    "https://cdn.estsoft.com/altools/help/alsee/100/alsee_100_manual.pdf"
+   ],
+   "how": "docs"
+  },
+  "move_copy": {
+   "value": "yes",
+   "note": "Move or copy to a chosen path",
+   "evidence": [
+    "https://cdn.estsoft.com/altools/help/alsee/100/alsee_100_manual.pdf"
+   ],
+   "how": "docs"
+  },
+  "dual_pane": {
+   "value": "no",
+   "evidence": [
+    "https://altools.co.kr/product/ALSEE"
+   ],
+   "how": "docs"
+  },
+  "undo_file_actions": {
+   "value": "no",
+   "note": "No undo in the menus or the shortcut list of the 10.0 manual",
+   "evidence": [
+    "https://cdn.estsoft.com/altools/help/alsee/100/alsee_100_manual.pdf"
+   ],
+   "how": "docs"
+  },
+  "image_editing": {
+   "value": "yes",
+   "evidence": [
+    "https://altools.co.kr/product/ALSEE"
+   ],
+   "how": "docs",
+   "note": "Resize, rotate, convert, print; AI upscaling, background removal, eraser, face mosaic (subscription)"
+  },
+  "batch_convert": {
+   "value": "yes",
+   "evidence": [
+    "https://altools.co.kr/product/ALSEE"
+   ],
+   "how": "docs",
+   "note": "Batch rotate, convert, resize"
+  },
+  "library_catalog": {
+   "value": "no",
+   "evidence": [
+    "https://altools.co.kr/product/ALSEE"
+   ],
+   "how": "docs",
+   "note": "Folder-based viewer, no catalog database"
+  },
+  "cloud_sync": {
+   "value": "no",
+   "evidence": [
+    "https://altools.co.kr/product/ALSEE"
+   ],
+   "how": "docs",
+   "note": "Separate ALDrive product"
+  },
+  "keyboard_first": {
+   "value": "partial",
+   "evidence": [
+    "https://altools.co.kr/product/ALSEE"
+   ],
+   "how": "changelog",
+   "note": "Shortcuts exist; mouse-oriented UI"
+  },
+  "custom_shortcuts": {
+   "value": "no",
+   "note": "Settings chapter has no key configuration; fixed shortcut list",
+   "evidence": [
+    "https://cdn.estsoft.com/altools/help/alsee/100/alsee_100_manual.pdf"
+   ],
+   "how": "docs"
+  },
+  "shortcut_cheatsheet": {
+   "value": "partial",
+   "note": "Shortcut table on p.65 of the PDF manual; nothing in the app",
+   "evidence": [
+    "https://cdn.estsoft.com/altools/help/alsee/100/alsee_100_manual.pdf"
+   ],
+   "how": "docs"
+  },
+  "boss_key": {
+   "value": "no",
+   "note": "Not in the shortcut list",
+   "evidence": [
+    "https://cdn.estsoft.com/altools/help/alsee/100/alsee_100_manual.pdf"
+   ],
+   "how": "docs"
+  },
+  "app_sandbox": {
+   "value": "no",
+   "evidence": [
+    "https://altools.co.kr/product/ALSEE"
+   ],
+   "how": "docs",
+   "note": "Windows desktop app; no macOS App Sandbox"
+  },
+  "no_network": {
+   "value": "no",
+   "evidence": [
+    "https://altools.co.kr/product/ALSEE",
+    "https://altools.co.kr/adzero/intro"
+   ],
+   "how": "docs",
+   "note": "Ads and online AI services"
+  },
+  "notarized_attested": {
+   "value": "no",
+   "evidence": [
+    "https://altools.co.kr/product/ALSEE"
+   ],
+   "how": "docs",
+   "note": "Closed source Windows app; no macOS build, no build attestation"
+  },
+  "mac_app_store": {
+   "value": "no",
+   "evidence": [
+    "https://altools.co.kr/product/ALSEE"
+   ],
+   "how": "docs",
+   "note": "Windows only (Win 10/11)"
+  }
+ }
+}

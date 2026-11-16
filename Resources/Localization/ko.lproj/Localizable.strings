@@ -614,6 +614,14 @@
 "Include subfolders" = "하위 폴더 포함";
 "The photos and videos of every subfolder too, archives included" = "모든 하위 폴더의 사진과 비디오도 표시(압축 파일 포함)";
 "Reading subfolders…" = "하위 폴더 읽는 중…";
+
+/* Downloads not finished */
+"Download not finished" = "다운로드 미완료";
+"Incomplete" = "불완전함";
+"Download" = "다운로드";
+"Not finished" = "완료되지 않음";
+"In progress, the file is growing" = "진행 중, 파일이 계속 커지고 있음";
+"This video can't play until its download is finished: the part that tells how to play it lies at the end of the file." = "다운로드가 완료되어야 이 비디오를 재생할 수 있습니다. 재생에 필요한 정보가 파일 끝에 있습니다.";
 /* About window: the license texts */
 "In Schnellbild" = "Schnellbild에서의 역할";
 "Copyright" = "저작권";

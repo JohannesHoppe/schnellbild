@@ -100,9 +100,28 @@ final class ThumbnailCache {
            let frame = await VLCThumbnails.shared.thumbnail(for: url, width: side * NSScreen.mainBackingScale) {
             image = NSImage(cgImage: frame, size: NSSize(width: frame.width, height: frame.height))
         }
+        // A picture QuickLook doesn't know by its name ("x.jpg.part", "IMG"):
+        // ImageIO reads it by its content, as far as its bytes reach
+        if rep?.type != .thumbnail, BrowserModel.mediaKind(of: url) == .image, !Task.isCancelled,
+           let picture = await Self.pictureThumbnail(of: url, side: side) {
+            image = picture
+        }
         guard let image, !Task.isCancelled else { return nil }
         keep(image, side: side, modified: modified, for: url)
         return image
+    }
+
+    /// A picture scaled down by ImageIO, off the main thread.
+    private static func pictureThumbnail(of url: URL, side: CGFloat) async -> NSImage? {
+        let maxPixel = Int(side * NSScreen.mainBackingScale)
+        return await detachedCancellable(priority: .utility) { () -> NSImage? in
+            guard !VectorPicture.isVector(url), let source = CGImageSourceCreateWithURL(url as CFURL, nil) else { return nil }
+            let options: [CFString: Any] = [kCGImageSourceCreateThumbnailFromImageAlways: true,
+                                            kCGImageSourceCreateThumbnailWithTransform: true,
+                                            kCGImageSourceThumbnailMaxPixelSize: maxPixel]
+            guard let cg = CGImageSourceCreateThumbnailAtIndex(source, 0, options as CFDictionary) else { return nil }
+            return NSImage(cgImage: cg, size: NSSize(width: cg.width, height: cg.height))
+        }
     }
 
     /// Archive dates as read lately: every picture of an archive asks, and
@@ -164,24 +183,29 @@ struct ThumbnailView: View {
     var isMarked: Bool = false
     var isVideo: Bool = false
     var modified: Date? = nil
+    /// A download not finished ("x.mp4.part") or an entry of an archive cut
+    /// off: a small arrow in the corner, this as its tooltip.
+    var unfinished: String? = nil
 
     @State private var image: NSImage?
     @State private var failed = false
 
-    init(url: URL, side: CGFloat, isSelected: Bool, isMarked: Bool = false, isVideo: Bool = false, modified: Date? = nil) {
+    init(url: URL, side: CGFloat, isSelected: Bool, isMarked: Bool = false, isVideo: Bool = false, modified: Date? = nil,
+         unfinished: String? = nil) {
         self.url = url
         self.side = side
         self.isSelected = isSelected
         self.isMarked = isMarked
         self.isVideo = isVideo
         self.modified = modified
+        self.unfinished = unfinished
         // Scrolled back into view: the picture at once, not a spinner first
         _image = State(initialValue: ThumbnailCache.shared.cached(for: url, side: side, modified: modified))
     }
 
     var body: some View {
         content
-            .tileChrome(side: side, isSelected: isSelected, isMarked: isMarked)
+            .tileChrome(side: side, isSelected: isSelected, isMarked: isMarked, unfinished: unfinished)
             .overlay(alignment: .bottomTrailing) {
                 if isVideo {
                     Image(systemName: "play.circle.fill")
@@ -196,6 +220,7 @@ struct ThumbnailView: View {
             // tests read the tile's state here
             .accessibilityValue(VideoDetailView.uiTesting
                 ? "\(TileChrome.selectionLabel(isSelected || isMarked)), \(isVideo ? "video" : "image")"
+                    + (unfinished != nil ? ", unfinished" : "")
                     + (image.map { $0.accessibilityDescription == ThumbnailCache.fileIcon ? ", file icon" : ", preview" }
                        ?? (failed ? ", no preview" : ""))
                 : TileChrome.spokenState(marked: isMarked, failed: failed))
@@ -242,6 +267,9 @@ struct TileChrome: ViewModifier {
     let side: CGFloat
     let isSelected: Bool
     var isMarked = false
+    /// A download not finished: a small arrow in the lower left corner,
+    /// clear of the video's play sign and the mark's checkmark.
+    var unfinished: String? = nil
     @Environment(\.colorSchemeContrast) private var contrast
 
     /// Start of every tile's state under `--ui-testing`; the UI tests read it.
@@ -278,11 +306,31 @@ struct TileChrome: ViewModifier {
                     .padding(side < 60 ? 1 : 5)
             }
         }
+        .overlay(alignment: .bottomLeading) {
+            if let unfinished { DownloadBadge(note: unfinished, size: min(16, side * 0.3)).padding(side < 60 ? 1 : 6) }
+        }
+    }
+}
+
+/// The sign of a download not finished ("x.mp4.part", "x.rar.crdownload")
+/// or of an entry an archive cut off doesn't hold whole: small and quiet, on
+/// tiles, its meaning as the tooltip.
+struct DownloadBadge: View {
+    let note: String
+    var size: CGFloat = 16
+
+    var body: some View {
+        Image(systemName: "arrow.down.circle.fill")
+            .symbolRenderingMode(.palette)
+            .foregroundStyle(.white, .black.opacity(0.5))
+            .font(.system(size: size))
+            .help(note)
+            .accessibilityHidden(true)
     }
 }
 
 extension View {
-    func tileChrome(side: CGFloat, isSelected: Bool, isMarked: Bool = false) -> some View {
-        modifier(TileChrome(side: side, isSelected: isSelected, isMarked: isMarked))
+    func tileChrome(side: CGFloat, isSelected: Bool, isMarked: Bool = false, unfinished: String? = nil) -> some View {
+        modifier(TileChrome(side: side, isSelected: isSelected, isMarked: isMarked, unfinished: unfinished))
     }
 }

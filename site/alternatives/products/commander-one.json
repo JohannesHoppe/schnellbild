@@ -1,0 +1,611 @@
+{
+ "name": "Commander One",
+ "short": "Commander One",
+ "vendor": "Electronic Team, Inc. (formerly Eltima)",
+ "website": "https://commander-one.com/",
+ "platforms": [
+  "macOS"
+ ],
+ "mac_available": "yes",
+ "page": "matrix",
+ "section": "files",
+ "price": "Free version; PRO Pack $29.99 personal (1 Mac) or $99.99 team (5 Macs), one-time; MAS: free with in-app purchase or 'Commander One PRO' $29.99",
+ "license": "proprietary (freemium)",
+ "current_version": "3.18 (4006)",
+ "last_update": "2026-09-25",
+ "engine": "macOS Quick Look (viewer media mode)",
+ "category": "file-manager",
+ "summary": "Total Commander-style dual-pane file manager for macOS with function-key workflow, regex search, a built-in F3 viewer (text, hex, image, media) and archive handling. The PRO Pack adds RAR/7z, FTP/SFTP, cloud drives, terminal and themes.",
+ "where_it_wins": [
+  "Classic F-key commander workflow and operations queue",
+  "Regex and content search, also inside archives and on FTP",
+  "PRO: FTP/SFTP and many cloud services, MTP/iOS/Android devices",
+  "Built-in hex/text/binary viewer",
+  "Process viewer, terminal (PRO)"
+ ],
+ "where_schnellbild_wins": [
+  "All features free, no PRO upsell; RAR and 7z included",
+  "Real image and video viewer with slideshow and full-size paging",
+  "MKV/AVI/WebM playback via built-in VLC",
+  "Photo/video thumbnail grid with folder previews",
+  "Comics CBZ/CBR, videos straight from archives",
+  "Open source, sandboxed, never online"
+ ],
+ "search_terms": [
+  "commander one mac",
+  "commander one alternative",
+  "commander one free vs pro",
+  "total commander mac",
+  "norton commander mac",
+  "total commander alternative mac",
+  "commander one alternative kostenlos"
+ ],
+ "matrix": {
+  "free": {
+   "value": "partial",
+   "note": "Free version (dual pane, basic file ops, ZIP only); PRO Pack $29.99 personal / $99.99 team (5 Macs), one-time",
+   "evidence": [
+    "https://commander-one.com/pricing/",
+    "https://commander-one.com/manual/",
+    "https://apps.apple.com/us/app/commander-one-file-manager/id1035236694"
+   ],
+   "how": "docs"
+  },
+  "open_source": {
+   "value": "no",
+   "note": "Proprietary",
+   "evidence": [
+    "https://commander-one.com/"
+   ],
+   "how": "docs"
+  },
+  "native_apple_silicon": {
+   "value": "yes",
+   "note": "'Optimized for both Apple silicon and Intel'",
+   "evidence": [
+    "https://commander-one.com/"
+   ],
+   "how": "docs"
+  },
+  "no_account_no_tracking": {
+   "value": "yes",
+   "note": "App Store privacy label: Data Not Collected; no account needed; free version shows PRO upsell",
+   "evidence": [
+    "https://apps.apple.com/us/app/commander-one-file-manager/id1035236694"
+   ],
+   "how": "store"
+  },
+  "dark_light_setting": {
+   "value": "yes",
+   "note": "Color themes incl. light and dark; custom themes in PRO",
+   "evidence": [
+    "https://commander-one.com/manual/",
+    "https://apps.apple.com/us/app/commander-one-file-manager/id1035236694"
+   ],
+   "how": "docs"
+  },
+  "languages_20": {
+   "value": "partial",
+   "note": "14 languages (CS, NL, EN, FR, DE, HU, IT, JA, KO, PL, PT, ZH, ES, UK); UI language selectable",
+   "evidence": [
+    "https://apps.apple.com/us/app/commander-one-file-manager/id1035236694"
+   ],
+   "how": "store"
+  },
+  "folder_browsing": {
+   "value": "yes",
+   "note": "",
+   "evidence": [
+    "https://commander-one.com/manage-files/"
+   ],
+   "how": "docs"
+  },
+  "thumbnail_grid": {
+   "value": "partial",
+   "note": "'Thumbs' view mode; no folder preview thumbnails",
+   "evidence": [
+    "https://apps.apple.com/us/app/commander-one-file-manager/id1035236694",
+    "https://commander-one.com/manual/"
+   ],
+   "how": "store"
+  },
+  "list_view": {
+   "value": "yes",
+   "note": "Full and Brief modes with columns",
+   "evidence": [
+    "https://apps.apple.com/us/app/commander-one-file-manager/id1035236694",
+    "https://commander-one.com/manual/"
+   ],
+   "how": "docs"
+  },
+  "recursive_search": {
+   "value": "yes",
+   "note": "Search with depth limit, in archives, on FTP; also Spotlight",
+   "evidence": [
+    "https://commander-one.com/manual/"
+   ],
+   "how": "docs"
+  },
+  "regex_search": {
+   "value": "yes",
+   "note": "RegEx option in file search (also in the free version)",
+   "evidence": [
+    "https://commander-one.com/manual/",
+    "https://apps.apple.com/us/app/commander-one-file-manager/id1035236694"
+   ],
+   "how": "docs"
+  },
+  "network_shares_fast": {
+   "value": "partial",
+   "note": "SMB/NetBIOS, FTP, cloud supported; no specific speed claim",
+   "evidence": [
+    "https://apps.apple.com/us/app/commander-one-file-manager/id1035236694",
+    "https://help.electronic.us/support/solutions/articles/44001773821"
+   ],
+   "how": "docs"
+  },
+  "multiple_windows": {
+   "value": "yes",
+   "note": "File > New Window (since 1.1); tabs per pane",
+   "evidence": [
+    "https://help.electronic.us/support/solutions/articles/44001773821-commander-one-from-the-electronic-team-website"
+   ],
+   "how": "changelog"
+  },
+  "bookmarks": {
+   "value": "yes",
+   "note": "Favorites and History",
+   "evidence": [
+    "https://commander-one.com/manual/",
+    "https://commander-one.com/manage-files/"
+   ],
+   "how": "docs"
+  },
+  "img_modern_formats": {
+   "value": "partial",
+   "note": "Quick Look/built-in viewer image mode with macOS codecs; no dedicated image viewer",
+   "evidence": [
+    "https://commander-one.com/manual/"
+   ],
+   "how": "docs"
+  },
+  "img_raw": {
+   "value": "partial",
+   "note": "Via image/media viewer modes and Quick Look, i.e. macOS system RAW support; no own decoder",
+   "evidence": [
+    "https://commander-one.com/manual/",
+    "https://support.apple.com/en-us/105094"
+   ],
+   "how": "docs"
+  },
+  "img_psd_exr": {
+   "value": "partial",
+   "note": "No source names PSD/OpenEXR; searched manual, version history, feature pages",
+   "evidence": [
+    "https://commander-one.com/manual/",
+    "https://help.electronic.us/support/solutions/articles/44001773821-commander-one-from-the-electronic-team-website"
+   ],
+   "how": "unverified"
+  },
+  "img_svg_pdf": {
+   "value": "partial",
+   "note": "SVG/PDF preview not named; searched manual, version history, feature pages",
+   "evidence": [
+    "https://commander-one.com/manual/",
+    "https://help.electronic.us/support/solutions/articles/44001773821-commander-one-from-the-electronic-team-website",
+    "https://commander-one.com/manage-files/"
+   ],
+   "how": "unverified"
+  },
+  "img_animated": {
+   "value": "partial",
+   "note": "Animated images not documented; searched manual, version history",
+   "evidence": [
+    "https://commander-one.com/manual/",
+    "https://help.electronic.us/support/solutions/articles/44001773821-commander-one-from-the-electronic-team-website"
+   ],
+   "how": "unverified"
+  },
+  "keyboard_paging": {
+   "value": "partial",
+   "note": "Quick Look (toolbar) / F3 media mode = Quick Look; Quick Look browses selected items with the arrow keys",
+   "evidence": [
+    "https://commander-one.com/manual/",
+    "https://support.apple.com/guide/mac-help/preview-a-file-mh14119/mac"
+   ],
+   "how": "docs"
+  },
+  "zoom_rotate": {
+   "value": "partial",
+   "note": "Zoom only via Quick Look (Command-Plus/Minus); F3 image mode has no documented zoom",
+   "evidence": [
+    "https://commander-one.com/manual/",
+    "https://support.apple.com/guide/mac-help/preview-a-file-mh14119/mac"
+   ],
+   "how": "docs"
+  },
+  "slideshow": {
+   "value": "no",
+   "note": "No slideshow in manual or version history; whether its Quick Look window offers the macOS full-screen slideshow is not documented",
+   "evidence": [
+    "https://commander-one.com/manual/",
+    "https://help.electronic.us/support/solutions/articles/44001773821-commander-one-from-the-electronic-team-website",
+    "https://support.apple.com/guide/mac-help/preview-a-file-mh14119/mac"
+   ],
+   "how": "unverified"
+  },
+  "slideshow_recursive": {
+   "value": "no",
+   "note": "No slideshow feature in manual or version history",
+   "evidence": [
+    "https://commander-one.com/manual/",
+    "https://help.electronic.us/support/solutions/articles/44001773821-commander-one-from-the-electronic-team-website"
+   ],
+   "how": "docs"
+  },
+  "auto_enhance_view": {
+   "value": "no",
+   "note": "Viewer modes are binary, media, HTML, text, Hex, image; no adjustments",
+   "evidence": [
+    "https://commander-one.com/manual/"
+   ],
+   "how": "docs"
+  },
+  "file_info_exif": {
+   "value": "partial",
+   "note": "Get Info shows size, dates, permissions; EXIF/codec details not documented",
+   "evidence": [
+    "https://commander-one.com/manual/"
+   ],
+   "how": "docs"
+  },
+  "wrong_extension_note": {
+   "value": "partial",
+   "note": "Viewer image mode detects the format by content and shows misnamed images, but does not flag them",
+   "evidence": [
+    "https://commander-one.com/manual/"
+   ],
+   "how": "docs"
+  },
+  "video_native": {
+   "value": "yes",
+   "note": "F3 viewer 'media' mode = Quick Look playback",
+   "evidence": [
+    "https://commander-one.com/manual/"
+   ],
+   "how": "docs"
+  },
+  "video_mkv_avi_webm": {
+   "value": "no",
+   "note": "Media mode is identical to Quick Look, which plays MP4/MOV; no own decoder",
+   "evidence": [
+    "https://commander-one.com/manual/"
+   ],
+   "how": "docs"
+  },
+  "photos_videos_one_grid": {
+   "value": "partial",
+   "note": "Thumbs view / 'Use thumbs' shows a thumbnail preview for any file; no folder previews",
+   "evidence": [
+    "https://help.electronic.us/support/solutions/articles/44001751227-preferences-commander-one",
+    "https://commander-one.com/manage-files/"
+   ],
+   "how": "docs"
+  },
+  "video_skim_arrows": {
+   "value": "no",
+   "note": "Arrow keys move the selection; Quick Look arrows browse items",
+   "evidence": [
+    "https://commander-one.com/manual/",
+    "https://support.apple.com/guide/mac-help/preview-a-file-mh14119/mac"
+   ],
+   "how": "docs"
+  },
+  "subtitles_embedded": {
+   "value": "no",
+   "note": "F3 media mode 'is identical to preview via QuickLook'; which player controls appear is not documented. Searched manual, version history, feature pages, web.",
+   "evidence": [
+    "https://commander-one.com/manual/",
+    "https://help.electronic.us/support/solutions/articles/44001773821-commander-one-from-the-electronic-team-website"
+   ],
+   "how": "unverified"
+  },
+  "subtitles_external_files": {
+   "value": "no",
+   "note": "F3 media mode 'is identical to preview via QuickLook'; which player controls appear is not documented. Searched manual, version history, feature pages, web.",
+   "evidence": [
+    "https://commander-one.com/manual/",
+    "https://help.electronic.us/support/solutions/articles/44001773821-commander-one-from-the-electronic-team-website"
+   ],
+   "how": "unverified"
+  },
+  "audio_track_choice": {
+   "value": "no",
+   "note": "F3 media mode 'is identical to preview via QuickLook'; which player controls appear is not documented. Searched manual, version history, feature pages, web.",
+   "evidence": [
+    "https://commander-one.com/manual/",
+    "https://help.electronic.us/support/solutions/articles/44001773821-commander-one-from-the-electronic-team-website"
+   ],
+   "how": "unverified"
+  },
+  "playback_speed": {
+   "value": "no",
+   "note": "F3 media mode 'is identical to preview via QuickLook'; which player controls appear is not documented. Searched manual, version history, feature pages, web.",
+   "evidence": [
+    "https://commander-one.com/manual/",
+    "https://help.electronic.us/support/solutions/articles/44001773821-commander-one-from-the-electronic-team-website"
+   ],
+   "how": "unverified"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "note": "F3 media mode 'is identical to preview via QuickLook'; which player controls appear is not documented. Searched manual, version history, feature pages, web.",
+   "evidence": [
+    "https://commander-one.com/manual/",
+    "https://help.electronic.us/support/solutions/articles/44001773821-commander-one-from-the-electronic-team-website"
+   ],
+   "how": "unverified"
+  },
+  "playlist": {
+   "value": "no",
+   "note": "No media playlist in manual or version history (2015-2026)",
+   "evidence": [
+    "https://commander-one.com/manual/",
+    "https://help.electronic.us/support/solutions/articles/44001773821-commander-one-from-the-electronic-team-website"
+   ],
+   "how": "docs"
+  },
+  "saved_playlists": {
+   "value": "no",
+   "note": "No media playlist in manual or version history",
+   "evidence": [
+    "https://commander-one.com/manual/",
+    "https://help.electronic.us/support/solutions/articles/44001773821-commander-one-from-the-electronic-team-website"
+   ],
+   "how": "docs"
+  },
+  "pip": {
+   "value": "no",
+   "note": "F3 media mode 'is identical to preview via QuickLook'; which player controls appear is not documented. Searched manual, version history, feature pages, web.",
+   "evidence": [
+    "https://commander-one.com/manual/",
+    "https://help.electronic.us/support/solutions/articles/44001773821-commander-one-from-the-electronic-team-website"
+   ],
+   "how": "unverified"
+  },
+  "music_mode": {
+   "value": "partial",
+   "note": "Viewer media mode plays audio via Quick Look",
+   "evidence": [
+    "https://commander-one.com/manual/"
+   ],
+   "how": "docs"
+  },
+  "streaming_urls": {
+   "value": "no",
+   "note": "FTP/cloud file access only; no streaming player",
+   "evidence": [
+    "https://commander-one.com/manual/",
+    "https://commander-one.com/manage-files/"
+   ],
+   "how": "docs"
+  },
+  "online_subtitles": {
+   "value": "no",
+   "note": "Not in manual or version history",
+   "evidence": [
+    "https://commander-one.com/manual/",
+    "https://help.electronic.us/support/solutions/articles/44001773821-commander-one-from-the-electronic-team-website"
+   ],
+   "how": "docs"
+  },
+  "video_filters_enhance": {
+   "value": "no",
+   "note": "Not in manual or version history",
+   "evidence": [
+    "https://commander-one.com/manual/",
+    "https://help.electronic.us/support/solutions/articles/44001773821-commander-one-from-the-electronic-team-website"
+   ],
+   "how": "docs"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "note": "No Quick Look extension in manual, feature pages or version history",
+   "evidence": [
+    "https://commander-one.com/manual/",
+    "https://commander-one.com/manage-files/",
+    "https://help.electronic.us/support/solutions/articles/44001773821-commander-one-from-the-electronic-team-website"
+   ],
+   "how": "docs"
+  },
+  "archives_as_folders": {
+   "value": "partial",
+   "note": "Free: ZIP only; PRO ($29.99): 7z, TAR variants read-write, RAR/ISO/XAR read-only",
+   "evidence": [
+    "https://commander-one.com/manual/",
+    "https://commander-one.com/manage-archives/",
+    "https://apps.apple.com/us/app/commander-one-file-manager/id1035236694"
+   ],
+   "how": "docs"
+  },
+  "comics_cbz_cbr": {
+   "value": "no",
+   "note": "No comic reader; CBZ/CBR not listed among formats",
+   "evidence": [
+    "https://commander-one.com/manage-archives/"
+   ],
+   "how": "docs"
+  },
+  "archive_passwords": {
+   "value": "yes",
+   "note": "Password-protect .zip and .7z archives",
+   "evidence": [
+    "https://commander-one.com/manage-archives/"
+   ],
+   "how": "docs"
+  },
+  "split_archives": {
+   "value": "no",
+   "note": "Full format list (create/modify/read-only) has no split or multi-volume archives",
+   "evidence": [
+    "https://commander-one.com/manual/",
+    "https://commander-one.com/manage-archives/"
+   ],
+   "how": "docs"
+  },
+  "videos_in_archives": {
+   "value": "partial",
+   "note": "Preview files inside archives without extraction (Quick Look), no player",
+   "evidence": [
+    "https://commander-one.com/manage-archives/"
+   ],
+   "how": "docs"
+  },
+  "manga_two_page": {
+   "value": "no",
+   "note": "No comic reader",
+   "evidence": [
+    "https://commander-one.com/manage-archives/",
+    "https://commander-one.com/manual/"
+   ],
+   "how": "docs"
+  },
+  "rename_trash": {
+   "value": "yes",
+   "note": "F8 delete/trash, rename",
+   "evidence": [
+    "https://commander-one.com/manual/"
+   ],
+   "how": "docs"
+  },
+  "move_copy": {
+   "value": "yes",
+   "note": "F5 copy, drag and drop, operations queue",
+   "evidence": [
+    "https://commander-one.com/manual/"
+   ],
+   "how": "docs"
+  },
+  "dual_pane": {
+   "value": "yes",
+   "note": "Classic dual pane, F5 copy and F8 delete documented; F6 move not stated in the manual",
+   "evidence": [
+    "https://commander-one.com/manual/",
+    "https://commander-one.com/"
+   ],
+   "how": "docs"
+  },
+  "undo_file_actions": {
+   "value": "no",
+   "note": "No undo in manual or full version history 2015-2026",
+   "evidence": [
+    "https://commander-one.com/manual/",
+    "https://help.electronic.us/support/solutions/articles/44001773821-commander-one-from-the-electronic-team-website"
+   ],
+   "how": "changelog"
+  },
+  "image_editing": {
+   "value": "no",
+   "note": "F4 edits files in a text editor (TextEdit by default); no image editing",
+   "evidence": [
+    "https://commander-one.com/manual/"
+   ],
+   "how": "docs"
+  },
+  "batch_convert": {
+   "value": "no",
+   "note": "Single-file rename only; no batch rename or conversion in manual or version history",
+   "evidence": [
+    "https://commander-one.com/manual/",
+    "https://help.electronic.us/support/solutions/articles/44001773821-commander-one-from-the-electronic-team-website"
+   ],
+   "how": "changelog"
+  },
+  "library_catalog": {
+   "value": "partial",
+   "note": "Finder tags support only",
+   "evidence": [
+    "https://apps.apple.com/us/app/commander-one-file-manager/id1035236694"
+   ],
+   "how": "store"
+  },
+  "cloud_sync": {
+   "value": "partial",
+   "note": "PRO only: Dropbox, Google Drive, OneDrive, S3, WebDAV, FTP/SFTP etc.",
+   "evidence": [
+    "https://apps.apple.com/us/app/commander-one-file-manager/id1035236694",
+    "https://itunes.apple.com/lookup?id=1035237815"
+   ],
+   "how": "store"
+  },
+  "keyboard_first": {
+   "value": "yes",
+   "note": "Function-key driven (F3-F8), configurable hotkeys",
+   "evidence": [
+    "https://commander-one.com/manual/"
+   ],
+   "how": "docs"
+  },
+  "custom_shortcuts": {
+   "value": "yes",
+   "note": "Hotkeys tab: assign own shortcuts",
+   "evidence": [
+    "https://commander-one.com/manual/",
+    "https://commander-one.com/manage-files/"
+   ],
+   "how": "docs"
+  },
+  "shortcut_cheatsheet": {
+   "value": "partial",
+   "note": "Hotkey list viewable in Preferences; no printable sheet",
+   "evidence": [
+    "https://commander-one.com/manual/"
+   ],
+   "how": "docs"
+  },
+  "boss_key": {
+   "value": "no",
+   "note": "Not in manual, hotkey preferences or version history",
+   "evidence": [
+    "https://commander-one.com/manual/",
+    "https://help.electronic.us/support/solutions/articles/44001751227-preferences-commander-one",
+    "https://help.electronic.us/support/solutions/articles/44001773821-commander-one-from-the-electronic-team-website"
+   ],
+   "how": "docs"
+  },
+  "app_sandbox": {
+   "value": "partial",
+   "note": "Mac App Store version is sandboxed (with limits); website PRO version is not",
+   "evidence": [
+    "https://commander-one.com/mas-vs-site-version-differences/",
+    "https://apps.apple.com/us/app/commander-one-file-manager/id1035236694"
+   ],
+   "how": "docs"
+  },
+  "no_network": {
+   "value": "no",
+   "note": "FTP/cloud client; network browsing",
+   "evidence": [
+    "https://apps.apple.com/us/app/commander-one-file-manager/id1035236694"
+   ],
+   "how": "store"
+  },
+  "notarized_attested": {
+   "value": "no",
+   "note": "Closed source",
+   "evidence": [
+    "https://commander-one.com/"
+   ],
+   "how": "docs"
+  },
+  "mac_app_store": {
+   "value": "yes",
+   "note": "Free app with PRO in-app purchase, plus separate 'Commander One PRO' ($29.99)",
+   "evidence": [
+    "https://apps.apple.com/us/app/commander-one-file-manager/id1035236694",
+    "https://itunes.apple.com/lookup?id=1035237815"
+   ],
+   "how": "store"
+  }
+ }
+}

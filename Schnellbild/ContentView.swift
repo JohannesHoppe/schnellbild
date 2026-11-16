@@ -270,7 +270,7 @@ private struct WindowView: View {
         if VideoDetailView.uiTesting, ProcessInfo.processInfo.arguments.contains(where: { $0.hasPrefix("--test-log=") }) {
             _ = NSEvent.addLocalMonitorForEvents(matching: [.leftMouseDown, .leftMouseUp]) { event in
                 BrowserModel.testLog("\(Date().timeIntervalSince1970) mouse \(event.type == .leftMouseDown ? "down" : "up") "
-                                     + "window=\(event.window.map { String(describing: type(of: $0)) } ?? "nil")")
+                                     + "clicks=\(event.clickCount) window=\(event.window.map { String(describing: type(of: $0)) } ?? "nil")")
                 return event
             }
         }
@@ -1479,7 +1479,7 @@ struct PaneDivider: View {
                 }
                 .onEnded { _ in window.setSplit(window.split, remember: true) }
         )
-        .onTapGesture(count: 2) { window.setSplit(0.5, remember: true) }
+        .modifier(Clicks(single: {}, double: { window.setSplit(0.5, remember: true) }))
         .accessibilityElement()
         .accessibilityIdentifier("paneDivider")
         .accessibilityLabel("Divider between the panes")

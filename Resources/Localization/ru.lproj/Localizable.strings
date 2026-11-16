@@ -614,6 +614,14 @@
 "Include subfolders" = "Включая вложенные папки";
 "The photos and videos of every subfolder too, archives included" = "Также фото и видео из всех вложенных папок, включая архивы";
 "Reading subfolders…" = "Чтение вложенных папок…";
+
+/* Downloads not finished */
+"Download not finished" = "Загрузка не завершена";
+"Incomplete" = "Неполный";
+"Download" = "Загрузка";
+"Not finished" = "Не завершена";
+"In progress, the file is growing" = "Идёт, файл ещё растёт";
+"This video can't play until its download is finished: the part that tells how to play it lies at the end of the file." = "Это видео можно будет воспроизвести только после завершения загрузки: данные для воспроизведения находятся в конце файла.";
 /* About window: the license texts */
 "In Schnellbild" = "В Schnellbild";
 "Copyright" = "Авторские права";

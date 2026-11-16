@@ -1,0 +1,578 @@
+{
+ "name": "XnView MP",
+ "short": "XnView MP",
+ "vendor": "XnSoft (Pierre Gougelet)",
+ "website": "https://www.xnview.com/en/xnviewmp/",
+ "platforms": [
+  "macOS",
+  "Windows",
+  "Linux"
+ ],
+ "mac_available": "yes",
+ "page": "matrix",
+ "section": "photos",
+ "price": "Free for private/educational/non-profit use; commercial license 29 EUR (volume tiers down to 3.90 EUR)",
+ "license": "proprietary freeware",
+ "current_version": "1.12.3",
+ "last_update": "2026-11-09",
+ "engine": "Qt 6; video via MDK SDK (FFmpeg based); LibRaw, libheif, libarchive",
+ "category": "photo-manager",
+ "summary": "XnView MP is a long-running cross-platform image browser and organizer that reads more than 500 formats. It combines a file browser, viewer, catalog with categories and ratings, batch converter and basic editor in one app. On the Mac it is a Qt app, free for private use.",
+ "where_it_wins": [
+  "More than 500 image formats, export to about 70",
+  "Batch convert and batch rename with regex",
+  "Catalog with categories, ratings and color labels",
+  "Metadata editing (EXIF, IPTC, XMP)",
+  "Image editing, compare up to 4 images, duplicate finder",
+  "Runs on Windows and Linux too"
+ ],
+ "where_schnellbild_wins": [
+  "Free and open source for everyone, including companies",
+  "Native Mac app in Apple's App Sandbox without network access",
+  "Video player with subtitles, audio tracks, speed and a movable control bar; skim videos with arrow keys",
+  "Two-pane file manager with F5/F6 and undo for file actions",
+  "Archives incl. passwords and multi-part play videos straight from inside",
+  "Slideshow through all subfolders mixing photos and videos, with a playlist on the fly",
+  "Keyboard first, with a printable cheat sheet"
+ ],
+ "search_terms": [
+  "xnview mac",
+  "xnview mp mac",
+  "xnview alternative",
+  "xnview alternative mac",
+  "xnview mac apple silicon",
+  "xnview für mac",
+  "xnview mac alternative kostenlos"
+ ],
+ "matrix": {
+  "free": {
+   "value": "partial",
+   "note": "Free for private, educational and non-profit use; companies need a license (29 EUR single seat).",
+   "evidence": [
+    "https://www.xnview.com/en/xnviewmp/"
+   ],
+   "how": "docs"
+  },
+  "open_source": {
+   "value": "no",
+   "note": "Proprietary freeware.",
+   "evidence": [
+    "https://www.xnview.com/en/xnviewmp/",
+    "https://en.wikipedia.org/wiki/XnView"
+   ],
+   "how": "docs"
+  },
+  "native_apple_silicon": {
+   "value": "yes",
+   "note": "Developer: 'Mac Intel or Arm is supported'. Release posts still label the single Mac DMG 'x64'.",
+   "evidence": [
+    "https://newsgroup.xnview.com/viewtopic.php?p=202095",
+    "https://newsgroup.xnview.com/viewtopic.php?t=51573"
+   ],
+   "how": "forum"
+  },
+  "no_account_no_tracking": {
+   "value": "yes",
+   "note": "Vendor states 'NO Adware, NO Spyware'; no account needed.",
+   "evidence": [
+    "https://www.xnview.com/en/xnviewmp/"
+   ],
+   "how": "docs"
+  },
+  "dark_light_setting": {
+   "value": "yes",
+   "note": "Own themes incl. dark theme, switchable in settings.",
+   "evidence": [
+    "https://www.xnview.com/en/xnviewmp/",
+    "https://www.xnview.com/mantisbt/changelog_page.php"
+   ],
+   "how": "changelog"
+  },
+  "languages_20": {
+   "value": "yes",
+   "note": "28 languages.",
+   "evidence": [
+    "https://en.wikipedia.org/wiki/XnView"
+   ],
+   "how": "review"
+  },
+  "folder_browsing": {
+   "value": "yes",
+   "note": "Built-in file browser with folder tree.",
+   "evidence": [
+    "https://www.xnview.com/en/xnviewmp/"
+   ],
+   "how": "docs"
+  },
+  "thumbnail_grid": {
+   "value": "yes",
+   "note": "Thumbnail view, folder thumbnails.",
+   "evidence": [
+    "https://www.xnview.com/en/xnviewmp/",
+    "https://www.xnview.com/mantisbt/changelog_page.php"
+   ],
+   "how": "changelog"
+  },
+  "list_view": {
+   "value": "yes",
+   "note": "Details view with configurable columns.",
+   "evidence": [
+    "https://www.xnview.com/mantisbt/changelog_page.php"
+   ],
+   "how": "changelog"
+  },
+  "recursive_search": {
+   "value": "yes",
+   "note": "Advanced File Search (pathname, metadata, categories); 'Show files in subfolders'.",
+   "evidence": [
+    "https://www.xnview.com/en/xnviewmp/",
+    "https://www.xnview.com/mantisbt/changelog_page.php"
+   ],
+   "how": "changelog"
+  },
+  "regex_search": {
+   "value": "partial",
+   "note": "Regex only in Batch Rename; file search uses wildcards / contains.",
+   "evidence": [
+    "https://www.xnview.com/mantisbt/changelog_page.php"
+   ],
+   "how": "changelog"
+  },
+  "network_shares_fast": {
+   "value": "partial",
+   "note": "Works on SMB/UNC, but changelog lists hangs/slowness on UNC paths, network shares and many subfolders.",
+   "evidence": [
+    "https://newsgroup.xnview.com/viewtopic.php?t=51573",
+    "https://www.xnview.com/mantisbt/changelog_page.php"
+   ],
+   "how": "changelog"
+  },
+  "multiple_windows": {
+   "value": "partial",
+   "note": "Tabs; multiple instances possible.",
+   "evidence": [
+    "https://www.xnview.com/mantisbt/changelog_page.php"
+   ],
+   "how": "changelog"
+  },
+  "bookmarks": {
+   "value": "yes",
+   "note": "Favorites pane.",
+   "evidence": [
+    "https://www.xnview.com/mantisbt/changelog_page.php"
+   ],
+   "how": "changelog"
+  },
+  "img_modern_formats": {
+   "value": "yes",
+   "note": "HEIC/HEIF, AVIF, JPEG-XL, WebP.",
+   "evidence": [
+    "https://www.xnview.com/en/xnviewmp/"
+   ],
+   "how": "docs"
+  },
+  "img_raw": {
+   "value": "yes",
+   "note": "Camera RAW via LibRaw.",
+   "evidence": [
+    "https://www.xnview.com/en/xnviewmp/",
+    "https://newsgroup.xnview.com/viewtopic.php?t=51573"
+   ],
+   "how": "docs"
+  },
+  "img_psd_exr": {
+   "value": "yes",
+   "note": "PSD and OpenEXR listed.",
+   "evidence": [
+    "https://www.xnview.com/en/xnviewmp/"
+   ],
+   "how": "docs"
+  },
+  "img_svg_pdf": {
+   "value": "yes",
+   "note": "PDF listed; SVG supported (changelog SVG fixes).",
+   "evidence": [
+    "https://www.xnview.com/en/xnviewmp/",
+    "https://www.xnview.com/mantisbt/changelog_page.php"
+   ],
+   "how": "changelog"
+  },
+  "img_animated": {
+   "value": "yes",
+   "note": "GIF, APNG, animated WebP and AVIF.",
+   "evidence": [
+    "https://www.xnview.com/en/xnviewmp/",
+    "https://www.xnview.com/mantisbt/changelog_page.php"
+   ],
+   "how": "changelog"
+  },
+  "keyboard_paging": {
+   "value": "yes",
+   "note": "Viewer paging with arrow keys.",
+   "evidence": [
+    "https://www.xnview.com/mantisbt/changelog_page.php"
+   ],
+   "how": "changelog"
+  },
+  "zoom_rotate": {
+   "value": "yes",
+   "note": "Zoom, rotate, lossless JPEG rotate.",
+   "evidence": [
+    "https://www.xnview.com/en/xnviewmp/"
+   ],
+   "how": "docs"
+  },
+  "slideshow": {
+   "value": "yes",
+   "note": "Slideshow with effects, saved as .sld.",
+   "evidence": [
+    "https://www.xnview.com/en/xnviewmp/",
+    "https://www.xnview.com/mantisbt/changelog_page.php"
+   ],
+   "how": "docs"
+  },
+  "slideshow_recursive": {
+   "value": "partial",
+   "note": "Slideshow waits for videos to end (fix 0000646); 'show files in subfolders' feeds it. Mixed run through all subfolders not described as one feature.",
+   "evidence": [
+    "https://www.xnview.com/mantisbt/changelog_page.php"
+   ],
+   "how": "changelog"
+  },
+  "auto_enhance_view": {
+   "value": "partial",
+   "note": "Auto Levels/Contrast and adjustments are edit tools (file changes when saved), not a view-only filter.",
+   "evidence": [
+    "https://www.xnview.com/en/xnviewmp/"
+   ],
+   "how": "docs"
+  },
+  "file_info_exif": {
+   "value": "yes",
+   "note": "EXIF/IPTC/XMP panels, histogram; video info in thumbnail labels.",
+   "evidence": [
+    "https://www.xnview.com/en/xnviewmp/",
+    "https://www.xnview.com/mantisbt/changelog_page.php"
+   ],
+   "how": "changelog"
+  },
+  "wrong_extension_note": {
+   "value": "no",
+   "note": "Files with a wrong extension are opened (changelog fixes), but no note: an open suggestion asks for a hint or auto-rename.",
+   "evidence": [
+    "https://newsgroup.xnview.com/viewtopic.php?t=29619",
+    "https://www.xnview.com/mantisbt/changelog_page.php"
+   ],
+   "how": "forum"
+  },
+  "video_native": {
+   "value": "yes",
+   "note": "Built-in player (MDK SDK, FFmpeg based).",
+   "evidence": [
+    "https://www.xnview.com/en/faq/",
+    "https://www.xnview.com/mantisbt/changelog_page.php"
+   ],
+   "how": "docs"
+  },
+  "video_mkv_avi_webm": {
+   "value": "yes",
+   "note": "FAQ: MP4, MOV, AVI, MKV, WebM and most FFmpeg containers.",
+   "evidence": [
+    "https://www.xnview.com/en/faq/"
+   ],
+   "how": "docs"
+  },
+  "photos_videos_one_grid": {
+   "value": "yes",
+   "note": "Video thumbnails in the browser next to images.",
+   "evidence": [
+    "https://www.xnview.com/en/faq/",
+    "https://www.xnview.com/mantisbt/changelog_page.php"
+   ],
+   "how": "docs"
+  },
+  "video_skim_arrows": {
+   "value": "no",
+   "note": "Not found in the changelog or forum searches.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "subtitles_embedded": {
+   "value": "no",
+   "note": "Full changelog of the MDK-based player has no subtitle entry; forum search finds no MP subtitle feature.",
+   "evidence": [
+    "https://www.xnview.com/mantisbt/changelog_page.php"
+   ],
+   "how": "changelog"
+  },
+  "subtitles_external_files": {
+   "value": "no",
+   "note": "No subtitle support in the full changelog.",
+   "evidence": [
+    "https://www.xnview.com/mantisbt/changelog_page.php"
+   ],
+   "how": "changelog"
+  },
+  "audio_track_choice": {
+   "value": "no",
+   "note": "No audio track entry in the full changelog.",
+   "evidence": [
+    "https://www.xnview.com/mantisbt/changelog_page.php"
+   ],
+   "how": "changelog"
+  },
+  "playback_speed": {
+   "value": "no",
+   "note": "Open suggestion 'Video Playback Speed Options' (2022); no speed entry in the changelog.",
+   "evidence": [
+    "https://newsgroup.xnview.com/viewtopic.php?t=43275",
+    "https://www.xnview.com/mantisbt/changelog_page.php"
+   ],
+   "how": "forum"
+  },
+  "control_bar_movable": {
+   "value": "no",
+   "note": "Not described in docs, changelog or forum.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "playlist": {
+   "value": "no",
+   "note": "No playlist entry in the full changelog; videos play from the browser or slideshow.",
+   "evidence": [
+    "https://www.xnview.com/mantisbt/changelog_page.php"
+   ],
+   "how": "changelog"
+  },
+  "saved_playlists": {
+   "value": "partial",
+   "note": "Slideshows can be saved as .sld files (images, with audio).",
+   "evidence": [
+    "https://www.xnview.com/mantisbt/changelog_page.php"
+   ],
+   "how": "changelog"
+  },
+  "pip": {
+   "value": "no",
+   "note": "No Picture in Picture in the full changelog.",
+   "evidence": [
+    "https://www.xnview.com/mantisbt/changelog_page.php"
+   ],
+   "how": "changelog"
+  },
+  "music_mode": {
+   "value": "partial",
+   "note": "'Multimedia Player' listed; audio companion files; no music library.",
+   "evidence": [
+    "https://www.xnview.com/en/xnviewmp/",
+    "https://www.xnview.com/mantisbt/changelog_page.php"
+   ],
+   "how": "docs"
+  },
+  "streaming_urls": {
+   "value": "no",
+   "note": "Plays local files only; no stream/URL playback in the changelog.",
+   "evidence": [
+    "https://www.xnview.com/mantisbt/changelog_page.php"
+   ],
+   "how": "changelog"
+  },
+  "online_subtitles": {
+   "value": "no",
+   "note": "No subtitle support.",
+   "evidence": [
+    "https://www.xnview.com/mantisbt/changelog_page.php"
+   ],
+   "how": "changelog"
+  },
+  "video_filters_enhance": {
+   "value": "no",
+   "note": "Adjustments apply to images; no video adjustment entry in the changelog.",
+   "evidence": [
+    "https://www.xnview.com/mantisbt/changelog_page.php"
+   ],
+   "how": "changelog"
+  },
+  "quicklook_mkv_thumbnails": {
+   "value": "no",
+   "note": "No Quick Look extension in the changelog; XnShell is Windows-only.",
+   "evidence": [
+    "https://www.xnview.com/mantisbt/changelog_page.php"
+   ],
+   "how": "changelog"
+  },
+  "archives_as_folders": {
+   "value": "yes",
+   "note": "ZIP, RAR, CAB, 7-Zip browsable via LibArchive; changelog shows recurring archive bugs.",
+   "evidence": [
+    "https://www.xnview.com/mantisbt/changelog_page.php"
+   ],
+   "how": "changelog"
+  },
+  "comics_cbz_cbr": {
+   "value": "yes",
+   "note": "Developer: cbz/cbr are in the archive extension list.",
+   "evidence": [
+    "https://newsgroup.xnview.com/viewtopic.php?p=190547",
+    "https://www.xnview.com/mantisbt/changelog_page.php"
+   ],
+   "how": "forum"
+  },
+  "archive_passwords": {
+   "value": "no",
+   "note": "Archives via libarchive/unrar; no password entry in the changelog; only an old Classic suggestion asks for it.",
+   "evidence": [
+    "https://www.xnview.com/mantisbt/changelog_page.php",
+    "https://newsgroup.xnview.com/viewtopic.php?t=14422"
+   ],
+   "how": "changelog"
+  },
+  "split_archives": {
+   "value": "no",
+   "note": "Not mentioned in changelog or forum.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "videos_in_archives": {
+   "value": "no",
+   "note": "Not mentioned in changelog or forum.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "manga_two_page": {
+   "value": "no",
+   "note": "CBZ/CBR shown as archives; no two-page or right-to-left mode in the changelog.",
+   "evidence": [
+    "https://www.xnview.com/mantisbt/changelog_page.php"
+   ],
+   "how": "changelog"
+  },
+  "rename_trash": {
+   "value": "yes",
+   "note": "Rename, batch rename, delete to trash in browser.",
+   "evidence": [
+    "https://www.xnview.com/en/xnviewmp/",
+    "https://www.xnview.com/mantisbt/changelog_page.php"
+   ],
+   "how": "changelog"
+  },
+  "move_copy": {
+   "value": "yes",
+   "note": "Move/copy incl. drag and drop into folders.",
+   "evidence": [
+    "https://www.xnview.com/mantisbt/changelog_page.php"
+   ],
+   "how": "changelog"
+  },
+  "dual_pane": {
+   "value": "partial",
+   "note": "Compare up to 4 images; F6 cycles browser panels; no two-folder file-manager mode.",
+   "evidence": [
+    "https://www.xnview.com/en/xnviewmp/",
+    "https://www.xnview.com/mantisbt/changelog_page.php"
+   ],
+   "how": "changelog"
+  },
+  "undo_file_actions": {
+   "value": "no",
+   "note": "Open suggestion 'Do we have a move undo?' (2018-2019); undo exists for edits/paint only.",
+   "evidence": [
+    "https://newsgroup.xnview.com/viewtopic.php?t=37903"
+   ],
+   "how": "forum"
+  },
+  "image_editing": {
+   "value": "yes",
+   "note": "Resize, crop, rotate, adjust, filters, paint.",
+   "evidence": [
+    "https://www.xnview.com/en/xnviewmp/"
+   ],
+   "how": "docs"
+  },
+  "batch_convert": {
+   "value": "yes",
+   "note": "Batch convert (~70 output formats), batch rename.",
+   "evidence": [
+    "https://www.xnview.com/en/xnviewmp/"
+   ],
+   "how": "docs"
+  },
+  "library_catalog": {
+   "value": "yes",
+   "note": "Catalog database, categories, ratings, color labels.",
+   "evidence": [
+    "https://newsgroup.xnview.com/viewtopic.php?t=51573",
+    "https://www.xnview.com/mantisbt/changelog_page.php"
+   ],
+   "how": "changelog"
+  },
+  "cloud_sync": {
+   "value": "partial",
+   "note": "Has a web upload function; no cloud sync.",
+   "evidence": [
+    "https://www.xnview.com/mantisbt/changelog_page.php"
+   ],
+   "how": "changelog"
+  },
+  "keyboard_first": {
+   "value": "partial",
+   "note": "Many configurable shortcuts; whether everything works without the mouse is not documented.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "custom_shortcuts": {
+   "value": "yes",
+   "note": "Settings > Interface > Shortcuts.",
+   "evidence": [
+    "https://www.xnview.com/mantisbt/changelog_page.php"
+   ],
+   "how": "changelog"
+  },
+  "shortcut_cheatsheet": {
+   "value": "no",
+   "note": "Users ask for a list of all shortcuts; pre-assigned F-keys are not even listed in Settings → Shortcuts.",
+   "evidence": [
+    "https://newsgroup.xnview.com/viewtopic.php?t=46597"
+   ],
+   "how": "forum"
+  },
+  "boss_key": {
+   "value": "no",
+   "note": "Suggestion thread 'boss key'; answer recommends an external tool.",
+   "evidence": [
+    "https://newsgroup.xnview.com/viewtopic.php?t=25265"
+   ],
+   "how": "forum"
+  },
+  "app_sandbox": {
+   "value": "no",
+   "note": "Direct download outside the Mac App Store; entitlements not documented.",
+   "evidence": [],
+   "how": "unverified"
+  },
+  "no_network": {
+   "value": "no",
+   "note": "Has a 'Check for update' function and web upload.",
+   "evidence": [
+    "https://www.xnview.com/mantisbt/changelog_page.php"
+   ],
+   "how": "changelog"
+  },
+  "notarized_attested": {
+   "value": "no",
+   "note": "Closed source, so no build from public source; notarization not verified.",
+   "evidence": [
+    "https://www.xnview.com/en/xnviewmp/"
+   ],
+   "how": "docs"
+  },
+  "mac_app_store": {
+   "value": "no",
+   "note": "Not in the Mac App Store (only XnRetro is).",
+   "evidence": [
+    "https://itunes.apple.com/search?term=XnView&entity=macSoftware&limit=8"
+   ],
+   "how": "store"
+  }
+ }
+}

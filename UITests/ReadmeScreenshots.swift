@@ -192,17 +192,15 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         element("grid").firstMatch.scroll(byDeltaX: 0, deltaY: -2000)   // down to the other files
         shoot("archives")
 
-        tile("Iceland 2025.zip").doubleClick()
         // Inside the archive: its name in the title bar (its pictures are named
         // like some outside it)
-        eventually("the archive opened", timeout: 15) { self.text(of: self.element("folderTitle").firstMatch) == "Iceland 2025.zip" }
+        open(tile("Iceland 2025.zip"), until: "the archive opened") { self.text(of: self.element("folderTitle").firstMatch) == "Iceland 2025.zip" }
         XCTAssertTrue(app.staticTexts[(photos.first! as NSString).lastPathComponent].waitForExistence(timeout: 15))
         shoot("archive-inside")
         app.typeKey(.delete, modifierFlags: [])   // Backspace: back
         XCTAssertTrue(tile("Private.zip").waitForExistence(timeout: 15))
 
-        tile("Private.zip").doubleClick()
-        XCTAssertTrue(app.secureTextFields["passwordField"].waitForExistence(timeout: 15))
+        openTile("Private.zip", showing: app.secureTextFields["passwordField"])
         shoot("password")
         app.typeKey(.escape, modifierFlags: [])
         XCTAssertTrue(tile("Private.zip").waitForExistence(timeout: 15))
@@ -220,8 +218,7 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         shoot("newfolder")
         app.typeKey(.escape, modifierFlags: [])   // made none
 
-        tile("Sunset Timelapse.mp4").doubleClick()
-        XCTAssertTrue(element("video.avkit").waitForExistence(timeout: 15))
+        openTile("Sunset Timelapse.mp4", showing: element("video.avkit"))
         RunLoop.current.run(until: Date().addingTimeInterval(1.5))
         app.typeKey(.space, modifierFlags: [])
         waitForBadge(containing: ui("Paused"))
@@ -251,16 +248,9 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         XCTAssertTrue(right.waitForExistence(timeout: 10))
         let rightTrip = right.descendants(matching: .any).matching(identifier: "tile.Lofoten").firstMatch
         XCTAssertTrue(rightTrip.waitForExistence(timeout: 15))
-        // Inside the trip ("tile..." is in the library too). A double click
-        // may only make the right pane active (seen on CI): then the trip,
-        // selected by a click, is opened with Space, as often as it takes.
+        // Inside the trip ("tile..." is in the library too)
         let inTrip = right.descendants(matching: .any).matching(identifier: "tile.Northern Lights.jpg").firstMatch
-        rightTrip.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).doubleClick()
-        for _ in 0..<3 where !inTrip.waitForExistence(timeout: 5) && rightTrip.exists {
-            rightTrip.click()
-            app.typeKey(.space, modifierFlags: [])
-        }
-        XCTAssertTrue(inTrip.waitForExistence(timeout: 10))
+        open(rightTrip, until: "inside the trip") { inTrip.exists }
         let leftPhoto = left.descendants(matching: .any).matching(identifier: "tile.Fjord at Sunset.jpg").firstMatch
         XCTAssertTrue(leftPhoto.waitForExistence(timeout: 10))
         leftPhoto.click()

@@ -31,8 +31,9 @@ import re
 import sys
 from pathlib import Path
 
-sys.dont_write_bytecode = True  # no __pycache__ in Scripts/ from the import below
-from make_site_images import FEATURE_SHOTS, HERO_SHOT, png_size, shot_variants  # noqa: E402
+sys.dont_write_bytecode = True  # no __pycache__ in Scripts/ from the imports below
+from site_alternatives import Alternatives  # noqa: E402
+from make_site_images import FEATURE_SHOTS, GLOBE_SHOT, HERO_SHOT, png_size, shot_variants  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 I18N = ROOT / "site" / "i18n"
@@ -137,8 +138,9 @@ def shot(name, code, alt, extra=""):
     tag = f"-{code}" if code != "en" and (DOCS / "screenshots" / f"{name}-light-{code}.webp").exists() else ""
     light, dark = DOCS / "screenshots" / f"{name}-light{tag}.webp", DOCS / "screenshots" / f"{name}-dark{tag}.webp"
     width, height = png_size(light)
-    sizes = HERO_SIZES if name == HERO_SHOT else FEATURE_SIZES
-    size = f' width="{width}" height="{height}"' + (' fetchpriority="high"' if name == HERO_SHOT else ' loading="lazy" decoding="async"')
+    hero = name in (HERO_SHOT, GLOBE_SHOT)
+    sizes = HERO_SIZES if hero else FEATURE_SIZES
+    size = f' width="{width}" height="{height}"' + (' fetchpriority="high"' if hero else ' loading="lazy" decoding="async"')
     img = f'<img src="/screenshots/{light.name}"{size} alt="{esc(alt)}"{extra}>'
     sources = []
     if dark.exists():
@@ -313,6 +315,7 @@ def footer(code, t):
   <div class="wrap">
     <span>© 2026 <a href="https://haushoppe-its.de/">HAUS HOPPE - ITS</a> (Johannes Hoppe)</span>
     <nav aria-label="{esc(t['footerPrivacy'])}, {esc(t['footerImprint'])}">
+      <a href="{alternatives.path(code)}">{esc(t['footerAlternatives'])}</a>
       <a href="{privacy_path(code, t)}">{esc(t['footerPrivacy'])}</a>
       <a href="/eula/">{esc(t['footerEula'])}</a>
       <a href="{IMPRINT}">{esc(t['footerImprint'])}</a>
@@ -333,6 +336,19 @@ def fineprint(text):
     return esc(text[:match.end()].rstrip()) + "<br>" + esc(text[match.end():].lstrip())
 
 
+def alternative_links(code, text):
+    """{alt:<slug>} in a text becomes the address of that alternative's page in the language."""
+    return re.sub(r"\{alt:([a-z0-9-]+)\}", lambda m: alternatives.link(code, m.group(1)), text)
+
+
+def hero_shot(code, t):
+    """The globe where the language has its own picture of it (English: the master), else the grid."""
+    globe = DOCS / "screenshots" / (f"{GLOBE_SHOT}-light.webp" if code == "en" else f"{GLOBE_SHOT}-light-{code}.webp")
+    if globe.exists():
+        return shot(GLOBE_SHOT, code, t["features"][FEATURE_SHOTS.index("atlas")]["alt"])
+    return shot(HERO_SHOT, code, t["shotAlt"])
+
+
 def home(code, t):
     path_of = home_path
     stats = "".join(
@@ -342,13 +358,20 @@ def home(code, t):
         f'<div class="card" data-reveal style="--i:{i % 3}"><svg class="i" viewBox="0 0 24 24" aria-hidden="true">{WHY_ICONS[i]}</svg>'
         f'<h3>{esc(title)}</h3><p>{esc(text)}</p></div>'
         for i, (title, text) in enumerate(t["why"]))
-    features = "".join(
-        f"""
+    def feature(name, f):
+        text = f"""<div class="text" data-reveal><h3>{esc(f['title'])}</h3>{f['text']}</div>"""
+        if not (DOCS / "screenshots" / f"{name}-light.webp").exists():
+            return f"""
+    <div class="feature text-only">
+      {text}
+    </div>"""
+        return f"""
     <div class="feature">
-      <div class="text" data-reveal><h3>{esc(f['title'])}</h3>{f['text']}</div>
+      {text}
       <div class="media" data-reveal><div data-parallax>{shot(name, code, f['alt'])}</div></div>
     </div>"""
-        for name, f in zip(FEATURE_SHOTS, t["features"]))
+    assert len(t["features"]) == len(FEATURE_SHOTS), f"{code}: {len(t['features'])} features, {len(FEATURE_SHOTS)} pictures"
+    features = "".join(feature(name, f) for name, f in zip(FEATURE_SHOTS, t["features"]))
     safe = "".join(f'<li data-reveal style="--i:{i}"><strong>{esc(a)}</strong> {esc(b)}</li>' for i, (a, b) in enumerate(t["safe"]))
     languages = ", ".join(
         f'<a href="{home_path(c)}" hreflang="{c}" lang="{c}">{esc(tr[c]["name"])}</a>' for c in LANGUAGES)
@@ -368,7 +391,7 @@ def home(code, t):
     {buttons}
     <p class="fineprint">{fineprint(t['fineprint'])}</p>
   </div>
-  <div class="wrap wide"><div class="shot">{shot(HERO_SHOT, code, t['shotAlt'])}</div></div>
+  <div class="wrap wide"><div class="shot">{hero_shot(code, t)}</div></div>
 </div>
 
 <div class="wrap stats">{stats}</div>
@@ -400,7 +423,11 @@ def home(code, t):
 <section>
   <div class="wrap narrow">
     <h2 data-reveal>{esc(t['modelsTitle'])}</h2>
-    <p class="intro" data-reveal>{t['modelsText']}</p>
+    <p class="intro" data-reveal>{alternative_links(code, t['modelsText'])}</p>
+    <h2 data-reveal>{esc(t['altTitle'])}</h2>
+    <p class="intro" data-reveal>{esc(t['altText'])}</p>
+    <div data-reveal>{alternatives.page_links(code, alternatives.top(code), "alt-links pills")}
+    <p class="more-alternatives"><a href="{alternatives.path(code)}">{esc(t['altAll'])} →</a></p></div>
     <h2 data-reveal>{esc(t['ossTitle'])}</h2>
     <p class="intro" data-reveal>{t['ossText']}</p>
     <p class="languages" data-reveal>{esc(t['languagesText'])} {languages}.</p>
@@ -538,6 +565,11 @@ def manifest(t):
 
 english = json.loads((I18N / "en.json").read_text(encoding="utf-8"))
 tr = {code: load(code, english) for code in LANGUAGES}
+alternatives = Alternatives({
+    "esc": esc, "head": head, "topbar": topbar, "footer": footer, "shot": shot, "home_path": home_path,
+    "folder": folder, "json_ld": json_ld, "tr": tr, "LANGUAGES": LANGUAGES, "SITE": SITE, "DMG": DMG,
+    "missing": missing})
+alternative_pages = alternatives.pages()
 
 pages = {}
 for code in LANGUAGES:
@@ -546,6 +578,7 @@ for code in LANGUAGES:
     if not (DOCS / "og" / f"{code}.jpg").exists():
         missing.append(f"{code}: docs/og/{code}.jpg (python3 Scripts/make_site_images.py og)")
 
+pages.update(alternative_pages)
 pages[DOCS / "eula" / "index.html"] = eula(tr["en"])
 pages[DOCS / "404.html"] = not_found(tr["en"])
 pages[DOCS / "site.webmanifest"] = manifest(tr["en"])
