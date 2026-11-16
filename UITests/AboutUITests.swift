@@ -72,18 +72,21 @@ final class AboutUITests: SchnellbildUITestCase {
         eventually("scrolled to VLCKit") { self.scrolled > 100 && self.scrolled < atUnRAR }
         photograph("about-vlckit-light")
 
-        // ⌘↑ goes back to the top
-        // A click into the text's left margin (no link there) gives it the keys
-        licenseScroll.coordinate(withNormalizedOffset: CGVector(dx: 0.02, dy: 0.5)).click()
-        aboutWindow.typeKey(.upArrow, modifierFlags: .command)
-        eventually("back at the top") { abs(self.scrolled) < 5 }
-
         // ⌘F finds in the text: the Black Marble credit, after UnRAR
         aboutWindow.typeKey("f", modifierFlags: .command)
         let find = aboutWindow.searchFields.firstMatch
         XCTAssertTrue(find.waitForExistence(timeout: 5), "the find bar")
         find.typeText("Joshua Stevens\r")
         eventually("found near the end") { self.scrolled > atUnRAR }
+        photograph("about-find-light")
+
+        // ⌘↑ goes back to the top; a click into the text's left margin (no
+        // link there) gives the text the keys
+        licenseScroll.coordinate(withNormalizedOffset: CGVector(dx: 0.02, dy: 0.5)).click()
+        aboutWindow.typeKey(.upArrow, modifierFlags: .command)
+        let deadline = Date().addingTimeInterval(5)
+        while abs(scrolled) >= 5, Date() < deadline { RunLoop.current.run(until: Date().addingTimeInterval(0.2)) }
+        XCTAssertLessThan(abs(scrolled), 5, "back at the top")
     }
 
     func testTheWindowInDarkMode() throws {

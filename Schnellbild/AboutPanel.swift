@@ -439,6 +439,9 @@ private struct LicenseTextView: NSViewRepresentable {
     func makeNSView(context: Context) -> NSScrollView {
         let scroll = NSScrollView()
         scroll.hasVerticalScroller = true
+        // The text's top is the view's top: no insets of the window's bars
+        scroll.automaticallyAdjustsContentInsets = false
+        scroll.contentInsets = NSEdgeInsetsZero
         scroll.borderType = .noBorder
         scroll.setAccessibilityIdentifier("aboutLicenseScroll")
         let view = LicenseNSTextView(usingTextLayoutManager: false)
@@ -463,6 +466,9 @@ private struct LicenseTextView: NSViewRepresentable {
         view.setAccessibilityLabel(String(localized: "License texts"))
         scroll.documentView = view
         context.coordinator.attach(scroll: scroll, text: view)
+        // Laid out, the view starts at the top (the text's inset in view)
+        let coordinator = context.coordinator
+        DispatchQueue.main.async { coordinator.jump(to: "schnellbild") }
         context.coordinator.onTop = { id in
             if selection != id { selection = id }
         }
