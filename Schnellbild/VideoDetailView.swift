@@ -218,8 +218,8 @@ struct VideoDetailView: View {
                     let turned = size.applying(transform)
                     videoSize = CGSize(width: abs(turned.width), height: abs(turned.height))
                 }
-                // AVFoundation gives up on it (a file cut off, data it can't
-                // decode): VLC goes on from where it stood
+                // AVFoundation gives up on it (a download cut off, data it
+                // can't read or decode): VLC goes on from where it stood
                 guard let item = control.player.currentItem, stream == nil else { return }
                 let failed = ManagedFlag()
                 let failure = FailureNote()
@@ -228,20 +228,29 @@ struct VideoDetailView: View {
                     failed.set()
                 }
                 while !Task.isCancelled, avControl === control {
-                    if item.status == .failed || failed.isSet {
-                        let seconds = CMTimeGetSeconds(control.player.currentTime())
-                        let error = (item.status == .failed ? item.error as NSError? : nil) ?? failure.error
-                        let reason = "\(item.status == .failed ? "item failed" : "failed to play to end") "
-                            + "\(error.map { "\($0.domain) \($0.code) \($0.localizedDescription) \(($0.userInfo[NSUnderlyingErrorKey] as? NSError).map { "\($0.domain) \($0.code)" } ?? "")" } ?? "no error")"
-                            + " at \(seconds)"
-                        takenOver = reason
-                        BrowserModel.testLog("video: AVKit failed, VLC takes over | \(url.lastPathComponent) | \(reason)")
-                        control.pause()
-                        avControl = nil
-                        await playInVLC(from: seconds.isFinite ? seconds : nil)
-                        break
-                    }
                     try? await Task.sleep(for: .milliseconds(500))
+                    guard !Task.isCancelled, avControl === control, item.status == .failed || failed.isSet else { continue }
+                    // Around the app's own changes (enhance on or off, a
+                    // redraw, a seek) AVFoundation may report a failure for
+                    // a moment: looked at again once that has settled
+                    try? await Task.sleep(for: .seconds(1))
+                    guard !Task.isCancelled, avControl === control else { break }
+                    let stopped = item.status == .failed || (failed.isSet && control.player.timeControlStatus != .playing)
+                    let error = (item.status == .failed ? item.error as NSError? : nil) ?? failure.error
+                    let reason = Self.describeFailure(item.status == .failed, error)
+                    guard stopped, !control.changedLately,
+                          DownloadName.isPartial(url.lastPathComponent) || AVPlaybackControl.isDataFailure(error) else {
+                        BrowserModel.testLog("video: AVKit reported a failure, AVKit plays on | \(url.lastPathComponent) | \(reason)")
+                        failed.reset()
+                        continue
+                    }
+                    let seconds = CMTimeGetSeconds(control.player.currentTime())
+                    takenOver = reason + " at \(seconds)"
+                    BrowserModel.testLog("video: AVKit failed, VLC takes over | \(url.lastPathComponent) | \(takenOver)")
+                    control.pause()
+                    avControl = nil
+                    await playInVLC(from: seconds.isFinite ? seconds : nil)
+                    break
                 }
                 _ = token
             } else {
@@ -272,6 +281,13 @@ struct VideoDetailView: View {
             }
         }
         .onDisappear { stop() }
+    }
+
+    /// What AVFoundation reported, for the test log and the UI tests' label.
+    private static func describeFailure(_ itemFailed: Bool, _ error: NSError?) -> String {
+        let underlying = (error?.userInfo[NSUnderlyingErrorKey] as? NSError).map { " (\($0.domain) \($0.code))" } ?? ""
+        return (itemFailed ? "item failed" : "failed to play to end")
+            + (error.map { ": \($0.domain) \($0.code) \($0.localizedDescription)\(underlying)" } ?? ", no error")
     }
 
     /// The error a notification brought, kept for the main thread.

@@ -5861,6 +5861,13 @@ final class FullScreenSwitch {
 @MainActor
 final class AVPlaybackControl: PlaybackControl {
     let player: AVPlayer
+    /// When the app last changed the item itself (its composition, a seek)
+    /// or such a change finished: AVFoundation may report a failure for a
+    /// moment around it, which is no fault of the file (`changedLately`).
+    private var ownChangeAt = Date.distantPast
+    private func noteOwnChange() { ownChangeAt = Date() }
+    /// The app changed the item within the last two seconds.
+    var changedLately: Bool { Date().timeIntervalSince(ownChangeAt) < 2 }
     /// Feeds the player a video inside an archive (held here: the asset
     /// holds it weakly).
     var resourceLoader: ArchiveResourceLoader?
@@ -5991,7 +5998,9 @@ final class AVPlaybackControl: PlaybackControl {
             for _ in 0..<50 {
                 guard let self, let item = self.player.currentItem else { return }
                 if item.status == .readyToPlay {
-                    self.player.seek(to: self.player.currentTime(), toleranceBefore: .zero, toleranceAfter: .zero) { _ in
+                    self.noteOwnChange()
+                    self.player.seek(to: self.player.currentTime(), toleranceBefore: .zero, toleranceAfter: .zero) { [weak self] _ in
+                        Task { @MainActor in self?.noteOwnChange() }
                         guard clearing else { return }
                         Task { @MainActor [weak self] in self?.clearSubtitleLine() }
                     }
@@ -6056,6 +6065,7 @@ final class AVPlaybackControl: PlaybackControl {
     /// composition is taken away so the video plays unfiltered.
     func setEnhancement(_ enhancement: Enhancement) {
         guard let item = player.currentItem else { return }
+        noteOwnChange()
         BrowserModel.testLog("avkit enhancement \(enhancement), composition \(composition != nil), attached \(item.videoComposition != nil), playing \(isPlaying)")
         if enhancement == .off {
             compositionTask?.cancel()
@@ -6132,7 +6142,9 @@ final class AVPlaybackControl: PlaybackControl {
                 self.nudgeLater.toggle()
                 let target = CMTime(seconds: start + frame * (self.nudgeLater ? 0.5 : 0.25), preferredTimescale: 600_000)
                 BrowserModel.testLog("avkit redraw at \(target.seconds)")
+                self.noteOwnChange()
                 self.player.seek(to: target, toleranceBefore: .zero, toleranceAfter: .zero) { [weak self] finished in
+                    Task { @MainActor in self?.noteOwnChange() }
                     guard finished else { return }
                     Task { @MainActor in
                         guard let self, attempts > 1, self.enhancer?.isStale == true else { return }
@@ -6149,7 +6161,9 @@ final class AVPlaybackControl: PlaybackControl {
             if CMTimeCompare(target, .zero) < 0 { target = CMTimeAdd(now, step) }
             self.nudgedAhead = CMTimeCompare(target, now) > 0 ? target : nil
             BrowserModel.testLog("avkit redraw at \(target.seconds)")
+            self.noteOwnChange()
             self.player.seek(to: target, toleranceBefore: .zero, toleranceAfter: .zero) { [weak self] finished in
+                Task { @MainActor in self?.noteOwnChange() }
                 BrowserModel.testLog("avkit redraw finished \(finished)")
                 guard finished else { return }   // a newer seek takes over
                 Task { @MainActor in
@@ -6176,8 +6190,32 @@ final class AVPlaybackControl: PlaybackControl {
     func seek(toProgress progress: Double) {
         guard let duration else { return }
         let ended = !isPlaying && (self.progress ?? 0) >= 0.999
+        noteOwnChange()
         player.seek(to: CMTime(seconds: duration * min(max(progress, 0), 1), preferredTimescale: 600),
-                    toleranceBefore: .zero, toleranceAfter: .zero)
+                    toleranceBefore: .zero, toleranceAfter: .zero) { [weak self] _ in
+            Task { @MainActor in self?.noteOwnChange() }
+        }
         if ended { player.play() }
+    }
+
+    /// Whether an error of AVFoundation's says the file's data can't be read
+    /// or decoded (itself or what it was caused by), the only failures VLC
+    /// takes a whole file over for: a format AVFoundation doesn't read, data
+    /// it can't parse or decode, a file it can't read (gone, cut short).
+    nonisolated static func isDataFailure(_ error: NSError?) -> Bool {
+        var current = error
+        while let error = current {
+            if error.domain == AVFoundationErrorDomain {
+                let codes: Set<AVError.Code> = [.decodeFailed, .fileFormatNotRecognized, .failedToParse, .fileFailedToParse,
+                                                .noDataCaptured, .contentIsUnavailable, .noSourceTrack, .undecodableMediaData]
+                if let code = AVError.Code(rawValue: error.code), codes.contains(code) { return true }
+            }
+            if error.domain == NSPOSIXErrorDomain || error.domain == NSCocoaErrorDomain && [CocoaError.fileReadUnknown.rawValue,
+                CocoaError.fileReadCorruptFile.rawValue, CocoaError.fileReadNoSuchFile.rawValue, CocoaError.fileReadTooLarge.rawValue].contains(error.code) {
+                return true
+            }
+            current = error.userInfo[NSUnderlyingErrorKey] as? NSError
+        }
+        return false
     }
 }

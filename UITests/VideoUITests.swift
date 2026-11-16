@@ -4,6 +4,28 @@ import AVFoundation
 
 /// Video: AVKit for native formats, VLCKit fallback, keyboard control, layout.
 final class VideoUITests: SchnellbildUITestCase {
+    /// Enhance switched on and off quickly, many times, playing and paused:
+    /// AVKit's composition changes and redraws never count as the file
+    /// failing, so AVKit keeps the video (VLC takes over only for data it
+    /// can't read or a download not finished).
+    func testEnhanceToggledQuicklyKeepsTheVideoInAVKit() throws {
+        try put("dark.mp4", at: "dark.mp4")
+        launch(open: tempDir.appendingPathComponent("dark.mp4").path)
+        XCTAssertTrue(element("video.avkit").waitForExistence(timeout: 20))
+        waitForBadge(containing: "dark.mp4")
+        for round in 0..<30 {
+            app.typeKey("e", modifierFlags: [])
+            if round == 15 { app.typeKey(.space, modifierFlags: []) }   // the rest paused: redraws by seeking
+            RunLoop.current.run(until: Date().addingTimeInterval(round % 3 == 0 ? 0.4 : 0.1))
+        }
+        // The handover would come within two seconds of a failure
+        RunLoop.current.run(until: Date().addingTimeInterval(4))
+        let video = element("video.avkit")
+        XCTAssertTrue(video.exists, "still AVKit; the window holds:\n\(app.debugDescription)")
+        XCTAssertFalse(element("video.vlc").exists)
+        XCTAssertFalse(text(of: video).contains("taken over from AVKit"), text(of: video))
+    }
+
     func testMP4PlaysInAVKitAndSpaceTogglesPause() throws {
         try put("clip.mp4", at: "clip.mp4")
         launch(open: tempDir.appendingPathComponent("clip.mp4").path)
