@@ -71,8 +71,13 @@
       "alt": "Fotka v plném zobrazení"
     },
     {
+      "title": "Vaše fotky na mapě a na glóbu",
+      "text": "<p><kbd>W</kbd> ukáže fotky a videa ze složky a jejích podsložek tam, kde vznikly. Při velkém oddálení je mapa glóbus před hvězdnou oblohou, podle přání se dnem a nocí a světly měst na noční straně; při přiblížení se zploští v mapu.</p><ul><li>Časová osa řadí cestu podle času: přetáhněte přes úsek a mapa ukáže jen tu část</li><li><kbd>T</kbd> přehraje cestu: mapa plyne z místa na místo, fotky se ukážou velké, videa hrají pár sekund</li><li>Mapa je přímo v aplikaci: nic nejde na internet, žádná poloha neopustí váš Mac</li></ul>",
+      "alt": "Fotky z cesty na glóbu, v zobrazení atlasu"
+    },
+    {
       "title": "Videa, i MKV a další, která macOS neumí přehrát",
-      "text": "<p>Co umí přehrát samotný macOS (MP4, MOV, AVCHD aj.), přehraje macOS, i v HDR; vše ostatní vestavěné jádro VLC: MKV, WebM, AVI, WMV, FLV, MPEG, DVD video.</p><ul><li>← → přeskakují o desetinu videa, ⇧← ⇧→ o setinu</li><li>↑ ↓ nastavují hlasitost, pro všechna videa</li><li>⌘→ na další video a ⌘← zpět: první pokračuje tam, kde skončilo</li><li>Finder a Rychlý náhled dostanou miniatury i pro MKV, WebM, WMV, FLV a VOB</li></ul>",
+      "text": "<p>Co umí přehrát samotný macOS (MP4, MOV, AVCHD aj.), přehraje macOS, i v HDR; vše ostatní vestavěné jádro VLC: MKV, WebM, AVI, WMV, FLV, MPEG, DVD video.</p><ul><li>← → přeskakují o desetinu videa, ⇧← ⇧→ o setinu</li><li>↑ ↓ nastavují hlasitost, pro všechna videa</li><li>⌘→ na další video a ⌘← zpět: první pokračuje tam, kde skončilo</li><li>Titulky ve videu (<kbd>V</kbd>) jsou vidět od začátku; zapnuté uprostřed hned ukážou běžící řádek a titulky ASS si drží polohu, barvy i písma</li><li>Finder a Rychlý náhled dostanou miniatury i pro MKV, WebM, WMV, FLV a VOB</li></ul>",
       "alt": "Video přehrávané ve Schnellbildu"
     },
     {
@@ -97,12 +102,12 @@
     },
     {
       "title": "Co soubor doopravdy je",
-      "text": "<p><kbd>I</kbd> ukáže formát, rozlišení, kodeky, datový tok, bitovou hloubku, barevný profil i fotoaparát a upozorní, když přípona souboru neodpovídá jeho obsahu.</p>",
+      "text": "<p><kbd>I</kbd> nebo <kbd>⌘</kbd><kbd>I</kbd> otevře informace vedle obrázku: kdy a kde vznikl, s malou mapou a obcí poblíž, fotoaparát a objektiv, formát, rozlišení, kodeky, datový tok, bitová hloubka a barevný profil, a každý klíč metadat (EXIF, GPS, IPTC, XMP, QuickTime) k filtrování a kopírování. Čas a místo berou i z doprovodných souborů XMP, z dat GPS kamery GoPro nebo dronu DJI, z klipových souborů Sony a ze záznamů GPX ve složce.</p><p>Když přípona souboru neodpovídá obsahu, objeví se upozornění. Soubory s nic neříkajícím názvem se počítají podle obsahu a stahování, která ještě běží (.part, .crdownload aj.), se ukážou tak daleko, kam už dorazila.</p>",
       "alt": "Informace o souboru vedle fotky"
     },
     {
       "title": "Všechny klávesy po ruce",
-      "text": "<p><kbd>F1</kbd> vypíše všechny klávesy, i k tisku; <kbd>K</kbd> ukáže malou klávesnici na klikání. Klávesy si můžete nastavit podle sebe, nebo zvolit klávesy jako v Phieweru. Mřížka nebo seznam (<kbd>L</kbd>), řazení podle názvu, druhu, data nebo velikosti, více oken a šéfovo tlačítko (<kbd>X</kbd>).</p>",
+      "text": "<p><kbd>F1</kbd> vypíše všechny klávesy, i k tisku; <kbd>K</kbd> ukáže malou klávesnici na klikání. Klávesy si můžete nastavit podle sebe, nebo zvolit klávesy jako v Phieweru. Mřížka nebo seznam (<kbd>L</kbd>), řazení podle názvu, druhu, data, velikosti nebo vzdálenosti od místa, více oken a šéfovo tlačítko (<kbd>X</kbd>).</p>",
       "alt": "Seznam kláves (F1)"
     },
     {

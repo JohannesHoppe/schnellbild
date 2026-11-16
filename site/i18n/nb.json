@@ -71,8 +71,13 @@
       "alt": "Et bilde i full visning"
     },
     {
+      "title": "Bildene dine på kartet og globusen",
+      "text": "<p><kbd>W</kbd> viser bilder og videoer fra en mappe og undermappene der de ble tatt. Langt ute er kartet en globus foran stjernehimmelen, om du vil med dag og natt og byenes lys på nattsiden; zoomer du inn, flates den ut til kartet.</p><ul><li>Tidslinjen ordner turen etter tid: dra over en del, så viser kartet bare den</li><li><kbd>T</kbd> spiller av turen: kartet glir fra sted til sted, bildene vises stort, videoene spiller noen sekunder</li><li>Kartet ligger i appen: ingenting går på nett, ingen posisjon forlater Macen din</li></ul>",
+      "alt": "Bildene fra en tur på globusen, i atlasvisningen"
+    },
+    {
       "title": "Videoer, også MKV og andre som macOS ikke kan spille av",
-      "text": "<p>Det macOS spiller av selv (MP4, MOV, AVCHD …), spilles av gjennom macOS, også i HDR; alt annet gjennom den innebygde VLC-motoren: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-video.</p><ul><li>← → hopper en tidel av videoen, ⇧← ⇧→ en hundredel</li><li>↑ ↓ stiller volumet, for alle videoer</li><li>⌘→ til neste video og ⌘← tilbake: den første fortsetter der den slapp</li><li>Finder og Hurtigvisning får miniatyrer også for MKV, WebM, WMV, FLV og VOB</li></ul>",
+      "text": "<p>Det macOS spiller av selv (MP4, MOV, AVCHD …), spilles av gjennom macOS, også i HDR; alt annet gjennom den innebygde VLC-motoren: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-video.</p><ul><li>← → hopper en tidel av videoen, ⇧← ⇧→ en hundredel</li><li>↑ ↓ stiller volumet, for alle videoer</li><li>⌘→ til neste video og ⌘← tilbake: den første fortsetter der den slapp</li><li>Undertekster i videoen (<kbd>V</kbd>) vises fra starten; slår du dem på midt i, står linjen som går, der med en gang, og ASS-undertekster beholder plassering, farger og skrifter</li><li>Finder og Hurtigvisning får miniatyrer også for MKV, WebM, WMV, FLV og VOB</li></ul>",
       "alt": "En video som spilles av i Schnellbild"
     },
     {
@@ -97,12 +102,12 @@
     },
     {
       "title": "Hva filen egentlig er",
-      "text": "<p><kbd>I</kbd> viser format, oppløsning, kodeker, bitrate, bitdybde, fargeprofil og kamera, og en merknad når filetternavnet ikke stemmer med innholdet.</p>",
+      "text": "<p><kbd>I</kbd> eller <kbd>⌘</kbd><kbd>I</kbd> åpner filinfo ved siden av bildet: når og hvor det ble tatt, med et lite kart og stedet i nærheten, kamera og objektiv, format, oppløsning, kodeker, bitrate, bitdybde og fargeprofil, og hver metadatanøkkel (EXIF, GPS, IPTC, XMP, QuickTime) til å filtrere og kopiere. Tid og sted kommer også fra XMP-sidefiler, GPS-data fra en GoPro eller DJI-drone, Sonys klippfiler og GPX-spor i mappen.</p><p>Stemmer ikke filetternavnet med innholdet, får du en merknad. Filer med et navn som ikke sier noe, telles etter innholdet, og nedlastinger som pågår (.part, .crdownload …), vises så langt de har kommet.</p>",
       "alt": "Filinfo ved siden av et bilde"
     },
     {
       "title": "Alle tastene for hånden",
-      "text": "<p><kbd>F1</kbd> viser alle tastene, også for utskrift; <kbd>K</kbd> viser et lite tastatur å klikke på. Velg dine egne taster, eller tastene som i Phiewer. Rutenett eller liste (<kbd>L</kbd>), sortering etter navn, type, dato eller størrelse, flere vinduer og en sjefstast (<kbd>X</kbd>).</p>",
+      "text": "<p><kbd>F1</kbd> viser alle tastene, også for utskrift; <kbd>K</kbd> viser et lite tastatur å klikke på. Velg dine egne taster, eller tastene som i Phiewer. Rutenett eller liste (<kbd>L</kbd>), sortering etter navn, type, dato, størrelse eller avstand fra et sted, flere vinduer og en sjefstast (<kbd>X</kbd>).</p>",
       "alt": "Listen over taster (F1)"
     },
     {

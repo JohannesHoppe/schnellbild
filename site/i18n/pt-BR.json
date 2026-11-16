@@ -71,8 +71,13 @@
       "alt": "Uma foto na visualização completa"
     },
     {
+      "title": "Suas fotos no mapa e no globo",
+      "text": "<p><kbd>W</kbd> mostra as fotos e os vídeos de uma pasta e das subpastas no lugar onde foram feitos. Bem de longe, o mapa é um globo diante do céu estrelado, com dia e noite se você quiser e as cidades iluminadas no lado noturno; ao aproximar, ele se achata no mapa.</p><ul><li>A linha do tempo organiza a viagem por data: arraste sobre um trecho e o mapa mostra só essa parte</li><li><kbd>T</kbd> reproduz a viagem: o mapa desliza de um lugar a outro, as fotos aparecem grandes, os vídeos tocam alguns segundos</li><li>O mapa fica dentro do app: nada vai para a internet, nenhuma localização sai do seu Mac</li></ul>",
+      "alt": "As fotos de uma viagem no globo, na visualização Atlas"
+    },
+    {
       "title": "Vídeos, até MKV e AVI, que o macOS não reproduz",
-      "text": "<p>O que o macOS reproduz sozinho (MP4, MOV, AVCHD…) toca pelo próprio macOS, inclusive em HDR; todo o resto, pelo mecanismo do VLC integrado: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-Video.</p><ul><li>← → pulam um décimo do vídeo, ⇧← ⇧→ um centésimo</li><li>↑ ↓ ajustam o volume, para todos os vídeos</li><li>⌘→ para o próximo vídeo e ⌘← de volta: o primeiro continua de onde parou</li><li>O Finder e a Visualização Rápida também ganham miniaturas de MKV, WebM, WMV, FLV e VOB</li></ul>",
+      "text": "<p>O que o macOS reproduz sozinho (MP4, MOV, AVCHD…) toca pelo próprio macOS, inclusive em HDR; todo o resto, pelo mecanismo do VLC integrado: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-Video.</p><ul><li>← → pulam um décimo do vídeo, ⇧← ⇧→ um centésimo</li><li>↑ ↓ ajustam o volume, para todos os vídeos</li><li>⌘→ para o próximo vídeo e ⌘← de volta: o primeiro continua de onde parou</li><li>As legendas do vídeo (<kbd>V</kbd>) aparecem desde o início; ligadas no meio, a linha em curso aparece na hora, e legendas ASS mantêm posição, cores e fontes</li><li>O Finder e a Visualização Rápida também ganham miniaturas de MKV, WebM, WMV, FLV e VOB</li></ul>",
       "alt": "Um vídeo sendo reproduzido no Schnellbild"
     },
     {
@@ -97,12 +102,12 @@
     },
     {
       "title": "O que o arquivo realmente é",
-      "text": "<p><kbd>I</kbd> mostra formato, resolução, codecs, taxa de bits, profundidade de bits, perfil de cor e câmera, e avisa quando a extensão do arquivo não corresponde ao conteúdo.</p>",
+      "text": "<p><kbd>I</kbd> ou <kbd>⌘</kbd><kbd>I</kbd> abre as informações ao lado da imagem: quando e onde foi feita, com um pequeno mapa e a cidade próxima, câmera e lente, formato, resolução, codecs, taxa de bits, profundidade de bits e perfil de cor, e cada chave de metadados (EXIF, GPS, IPTC, XMP, QuickTime) para filtrar e copiar. Datas e lugares também vêm de arquivos XMP auxiliares, dos dados de GPS de uma GoPro ou de um drone DJI, dos arquivos de clipe da Sony e de trilhas GPX na pasta.</p><p>Quando a extensão do arquivo não corresponde ao conteúdo, aparece um aviso. Arquivos cujo nome não diz nada contam pelo conteúdo, e downloads ainda em andamento (.part, .crdownload…) aparecem até onde chegaram.</p>",
       "alt": "As informações do arquivo ao lado de uma foto"
     },
     {
       "title": "Todas as teclas à mão",
-      "text": "<p><kbd>F1</kbd> lista todas as teclas, inclusive para imprimir; <kbd>K</kbd> mostra um pequeno teclado para clicar. Defina suas próprias teclas ou escolha as teclas como no Phiewer. Grade ou lista (<kbd>L</kbd>), ordenação por nome, tipo, data ou tamanho, várias janelas e uma tecla do chefe (<kbd>X</kbd>).</p>",
+      "text": "<p><kbd>F1</kbd> lista todas as teclas, inclusive para imprimir; <kbd>K</kbd> mostra um pequeno teclado para clicar. Defina suas próprias teclas ou escolha as teclas como no Phiewer. Grade ou lista (<kbd>L</kbd>), ordenação por nome, tipo, data, tamanho ou distância de um lugar, várias janelas e uma tecla do chefe (<kbd>X</kbd>).</p>",
       "alt": "A lista de teclas (F1)"
     },
     {

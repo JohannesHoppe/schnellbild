@@ -349,13 +349,20 @@ def home(code, t):
         f'<div class="card" data-reveal style="--i:{i % 3}"><svg class="i" viewBox="0 0 24 24" aria-hidden="true">{WHY_ICONS[i]}</svg>'
         f'<h3>{esc(title)}</h3><p>{esc(text)}</p></div>'
         for i, (title, text) in enumerate(t["why"]))
-    features = "".join(
-        f"""
+    def feature(name, f):
+        text = f"""<div class="text" data-reveal><h3>{esc(f['title'])}</h3>{f['text']}</div>"""
+        if not (DOCS / "screenshots" / f"{name}-light.webp").exists():
+            return f"""
+    <div class="feature text-only">
+      {text}
+    </div>"""
+        return f"""
     <div class="feature">
-      <div class="text" data-reveal><h3>{esc(f['title'])}</h3>{f['text']}</div>
+      {text}
       <div class="media" data-reveal><div data-parallax>{shot(name, code, f['alt'])}</div></div>
     </div>"""
-        for name, f in zip(FEATURE_SHOTS, t["features"]))
+    assert len(t["features"]) == len(FEATURE_SHOTS), f"{code}: {len(t['features'])} features, {len(FEATURE_SHOTS)} pictures"
+    features = "".join(feature(name, f) for name, f in zip(FEATURE_SHOTS, t["features"]))
     safe = "".join(f'<li data-reveal style="--i:{i}"><strong>{esc(a)}</strong> {esc(b)}</li>' for i, (a, b) in enumerate(t["safe"]))
     languages = ", ".join(
         f'<a href="{home_path(c)}" hreflang="{c}" lang="{c}">{esc(tr[c]["name"])}</a>' for c in LANGUAGES)

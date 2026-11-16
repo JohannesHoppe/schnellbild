@@ -71,8 +71,13 @@
       "alt": "Büyük görünümde bir fotoğraf"
     },
     {
+      "title": "Fotoğraflarınız haritada ve küre üzerinde",
+      "text": "<p><kbd>W</kbd>, bir klasörün ve alt klasörlerinin fotoğraflarını ve videolarını çekildikleri yerde gösterir. Çok uzaktan bakınca harita, yıldızlı gökyüzünün önünde bir küredir; isterseniz gece ve gündüzüyle, gece tarafında şehirlerin ışıklarıyla. Yaklaştıkça düz haritaya dönüşür.</p><ul><li>Zaman çizelgesi geziyi zamana göre dizer: bir bölümün üzerinden sürükleyin, harita yalnızca o kısmı göstersin</li><li><kbd>T</kbd> geziyi oynatır: harita yerden yere kayar, fotoğraflar büyük görünür, videolar birkaç saniye oynar</li><li>Harita uygulamanın içindedir: hiçbir şey internete çıkmaz, hiçbir konum Mac’inizden ayrılmaz</li></ul>",
+      "alt": "Bir gezinin fotoğrafları küre üzerinde, Atlas görünümünde"
+    },
+    {
       "title": "Videolar, macOS’in oynatamadığı MKV ve AVI de",
-      "text": "<p>macOS’un kendi oynatabildikleri (MP4, MOV, AVCHD vb.) macOS ile (HDR dahil), geri kalan her şey yerleşik VLC motoruyla oynar: MKV, WebM, AVI, WMV, FLV, MPEG, DVD video.</p><ul><li>← → videonun onda biri kadar, ⇧← ⇧→ yüzde biri kadar atlar</li><li>↑ ↓ ses düzeyini ayarlar, tüm videolar için</li><li>⌘→ ile sonraki videoya, ⌘← ile geri: ilk video kaldığı yerden devam eder</li><li>Finder ve Göz At, MKV, WebM, WMV, FLV ve VOB için de küçük resim alır</li></ul>",
+      "text": "<p>macOS’un kendi oynatabildikleri (MP4, MOV, AVCHD vb.) macOS ile (HDR dahil), geri kalan her şey yerleşik VLC motoruyla oynar: MKV, WebM, AVI, WMV, FLV, MPEG, DVD video.</p><ul><li>← → videonun onda biri kadar, ⇧← ⇧→ yüzde biri kadar atlar</li><li>↑ ↓ ses düzeyini ayarlar, tüm videolar için</li><li>⌘→ ile sonraki videoya, ⌘← ile geri: ilk video kaldığı yerden devam eder</li><li>Videodaki altyazılar (<kbd>V</kbd>) baştan görünür; ortada açıldığında o an akan satır hemen belirir, ASS altyazıları da konumunu, renklerini ve yazı tiplerini korur</li><li>Finder ve Göz At, MKV, WebM, WMV, FLV ve VOB için de küçük resim alır</li></ul>",
       "alt": "Schnellbild’de oynayan bir video"
     },
     {
@@ -97,12 +102,12 @@
     },
     {
       "title": "Dosya aslında ne",
-      "text": "<p><kbd>I</kbd> biçimi, çözünürlüğü, kodekleri, bit hızını, bit derinliğini, renk profilini ve fotoğraf makinesini gösterir; dosya uzantısı içerikle uyuşmadığında da bir not düşer.</p>",
+      "text": "<p><kbd>I</kbd> veya <kbd>⌘</kbd><kbd>I</kbd>, dosya bilgilerini resmin yanında açar: ne zaman ve nerede çekildiği, küçük bir harita ve yakındaki yerleşimle, fotoğraf makinesi ve objektif, biçim, çözünürlük, kodekler, bit hızı, bit derinliği ve renk profili, ayrıca filtrelenip kopyalanabilen her meta veri anahtarı (EXIF, GPS, IPTC, XMP, QuickTime). Zaman ve yer bilgisi XMP yan dosyalarından, bir GoPro’nun ya da DJI drone’un GPS verilerinden, Sony’nin klip dosyalarından ve klasördeki GPX izlerinden de gelir.</p><p>Dosya uzantısı içerikle uyuşmazsa bir not düşer. Adı bir şey söylemeyen dosyalar içeriklerine göre tanınır, süren indirmeler (.part, .crdownload vb.) de geldikleri yere kadar gösterilir.</p>",
       "alt": "Bir fotoğrafın yanında dosya bilgileri"
     },
     {
       "title": "Her tuş elinizin altında",
-      "text": "<p><kbd>F1</kbd> tüm tuşları listeler, yazdırmak için de; <kbd>K</kbd> tıklanabilir küçük bir klavye gösterir. Kendi tuşlarınızı atayın ya da Phiewer’daki tuşları seçin. Izgara veya liste (<kbd>L</kbd>), ada, türe, tarihe veya boyuta göre sıralama, birden çok pencere ve bir patron tuşu (<kbd>X</kbd>).</p>",
+      "text": "<p><kbd>F1</kbd> tüm tuşları listeler, yazdırmak için de; <kbd>K</kbd> tıklanabilir küçük bir klavye gösterir. Kendi tuşlarınızı atayın ya da Phiewer’daki tuşları seçin. Izgara veya liste (<kbd>L</kbd>), ada, türe, tarihe, boyuta veya bir yere uzaklığa göre sıralama, birden çok pencere ve bir patron tuşu (<kbd>X</kbd>).</p>",
       "alt": "Tuş listesi (F1)"
     },
     {

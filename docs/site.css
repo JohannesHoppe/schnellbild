@@ -242,6 +242,7 @@ h3 { font-size: 21px; line-height: 1.25; margin: 0 0 8px; letter-spacing: -0.01e
 .feature { display: grid; grid-template-columns: 1fr 1.4fr; gap: 56px; align-items: center; padding: 48px 0; }
 .feature:nth-of-type(even) { grid-template-columns: 1.4fr 1fr; }
 .feature:nth-of-type(even) .text { order: 2; }
+.feature.text-only, .feature.text-only:nth-of-type(even) { grid-template-columns: minmax(0, 40rem); }
 .feature h3 { font-size: clamp(24px, 2.6vw, 30px); letter-spacing: -0.02em; }
 .feature p { color: var(--muted); margin: 0 0 12px; }
 .feature ul { color: var(--muted); margin: 0; padding-left: 20px; }

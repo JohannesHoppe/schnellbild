@@ -71,8 +71,13 @@
       "alt": "Une photo en affichage complet"
     },
     {
+      "title": "Vos photos sur la carte et le globe",
+      "text": "<p><kbd>W</kbd> place les photos et vidéos d’un dossier et de ses sous-dossiers là où elles ont été prises. De très loin, la carte est un globe devant le ciel étoilé, avec le jour et la nuit si vous le voulez et les villes éclairées sur sa face nocturne ; en zoomant, il s’aplatit en carte.</p><ul><li>La frise chronologique range le voyage dans le temps : faites glisser sur une période, la carte ne montre plus que celle-ci</li><li><kbd>T</kbd> lance le voyage : la carte glisse d’un lieu à l’autre, les photos s’affichent en grand, les vidéos jouent quelques secondes</li><li>La carte est dans l’app : rien ne passe par Internet, aucun lieu ne quitte votre Mac</li></ul>",
+      "alt": "Les photos d’un voyage sur le globe, dans la vue Atlas"
+    },
+    {
       "title": "Les vidéos aussi, même les MKV et AVI que macOS ne lit pas",
-      "text": "<p>Ce que macOS lit lui-même (MP4, MOV, AVCHD…) passe par macOS, HDR compris ; tout le reste par le moteur VLC intégré : MKV, WebM, AVI, WMV, FLV, MPEG, DVD vidéo.</p><ul><li>← → avancent ou reculent d’un dixième de la vidéo, ⇧← ⇧→ d’un centième</li><li>↑ ↓ règlent le volume, pour toutes les vidéos</li><li>⌘→ vers la vidéo suivante et ⌘← retour : la première reprend là où elle s’était arrêtée</li><li>Le Finder et Coup d’œil obtiennent aussi des vignettes pour MKV, WebM, WMV, FLV et VOB</li></ul>",
+      "text": "<p>Ce que macOS lit lui-même (MP4, MOV, AVCHD…) passe par macOS, HDR compris ; tout le reste par le moteur VLC intégré : MKV, WebM, AVI, WMV, FLV, MPEG, DVD vidéo.</p><ul><li>← → avancent ou reculent d’un dixième de la vidéo, ⇧← ⇧→ d’un centième</li><li>↑ ↓ règlent le volume, pour toutes les vidéos</li><li>⌘→ vers la vidéo suivante et ⌘← retour : la première reprend là où elle s’était arrêtée</li><li>Les sous-titres de la vidéo (<kbd>V</kbd>) s’affichent dès le début ; activés en cours de lecture, la ligne en cours apparaît aussitôt, et les sous-titres ASS gardent leur position, leurs couleurs et leurs polices</li><li>Le Finder et Coup d’œil obtiennent aussi des vignettes pour MKV, WebM, WMV, FLV et VOB</li></ul>",
       "alt": "Une vidéo en lecture dans Schnellbild"
     },
     {
@@ -97,12 +102,12 @@
     },
     {
       "title": "Ce qu’est vraiment le fichier",
-      "text": "<p><kbd>I</kbd> affiche le format, la résolution, les codecs, le débit, la profondeur de bits, le profil colorimétrique et l’appareil photo, et vous prévient quand l’extension du fichier ne correspond pas à son contenu.</p>",
+      "text": "<p><kbd>I</kbd> ou <kbd>⌘</kbd><kbd>I</kbd> ouvre les infos à côté de l’image : quand et où elle a été prise, avec une petite carte et la ville la plus proche, appareil et objectif, format, résolution, codecs, débit, profondeur de bits et profil colorimétrique, ainsi que chaque clé de métadonnées (EXIF, GPS, IPTC, XMP, QuickTime), à filtrer et à copier. Dates et lieux viennent aussi des fichiers XMP annexes, des données GPS d’une GoPro ou d’un drone DJI, des fichiers de clip Sony et des traces GPX du dossier.</p><p>Un fichier dont l’extension ne correspond pas au contenu est signalé. Les fichiers dont le nom ne dit rien comptent selon leur contenu, et les téléchargements en cours (.part, .crdownload…) s’affichent jusqu’où ils sont arrivés.</p>",
       "alt": "Les infos sur le fichier à côté d’une photo"
     },
     {
       "title": "Toutes les touches sous la main",
-      "text": "<p><kbd>F1</kbd> liste toutes les touches, à imprimer aussi ; <kbd>K</kbd> affiche un petit clavier où cliquer. Choisissez vos propres touches, ou celles de Phiewer. Grille ou liste (<kbd>L</kbd>), tri par nom, type, date ou taille, plusieurs fenêtres, et une touche patron (<kbd>X</kbd>).</p>",
+      "text": "<p><kbd>F1</kbd> liste toutes les touches, à imprimer aussi ; <kbd>K</kbd> affiche un petit clavier où cliquer. Choisissez vos propres touches, ou celles de Phiewer. Grille ou liste (<kbd>L</kbd>), tri par nom, type, date, taille ou distance d’un lieu, plusieurs fenêtres, et une touche patron (<kbd>X</kbd>).</p>",
       "alt": "La liste des touches (F1)"
     },
     {

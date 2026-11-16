@@ -71,8 +71,13 @@
       "alt": "Una foto en la vista completa"
     },
     {
+      "title": "Tus fotos en el mapa y en el globo",
+      "text": "<p><kbd>W</kbd> muestra las fotos y los vídeos de una carpeta y sus subcarpetas en el lugar donde se tomaron. Muy alejado, el mapa es un globo delante del cielo estrellado, con el día y la noche si quieres y las ciudades iluminadas en su lado nocturno; al acercarte se aplana en el mapa.</p><ul><li>La línea de tiempo ordena el viaje por fechas: arrastra sobre un tramo y el mapa muestra solo esa parte</li><li><kbd>T</kbd> reproduce el viaje: el mapa se desliza de un lugar a otro, las fotos se ven en grande y los vídeos se reproducen unos segundos</li><li>El mapa va dentro de la app: nada sale a internet y ninguna ubicación sale de tu Mac</li></ul>",
+      "alt": "Las fotos de un viaje en el globo, en la vista Atlas"
+    },
+    {
       "title": "Vídeos, también los MKV y AVI que macOS no reproduce",
-      "text": "<p>Lo que macOS reproduce por sí mismo (MP4, MOV, AVCHD…) se reproduce con macOS, también en HDR; todo lo demás, con el motor de VLC integrado: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-Vídeo.</p><ul><li>← → saltan una décima parte del vídeo, ⇧← ⇧→ una centésima</li><li>↑ ↓ ajustan el volumen, para todos los vídeos</li><li>⌘→ al siguiente vídeo y ⌘← de vuelta: el primero sigue donde se dejó</li><li>El Finder y Vista Rápida también obtienen miniaturas de MKV, WebM, WMV, FLV y VOB</li></ul>",
+      "text": "<p>Lo que macOS reproduce por sí mismo (MP4, MOV, AVCHD…) se reproduce con macOS, también en HDR; todo lo demás, con el motor de VLC integrado: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-Vídeo.</p><ul><li>← → saltan una décima parte del vídeo, ⇧← ⇧→ una centésima</li><li>↑ ↓ ajustan el volumen, para todos los vídeos</li><li>⌘→ al siguiente vídeo y ⌘← de vuelta: el primero sigue donde se dejó</li><li>Los subtítulos del vídeo (<kbd>V</kbd>) se ven desde el principio; si los activas a mitad, la línea en curso aparece al instante, y los subtítulos ASS mantienen su posición, colores y fuentes</li><li>El Finder y Vista Rápida también obtienen miniaturas de MKV, WebM, WMV, FLV y VOB</li></ul>",
       "alt": "Un vídeo reproduciéndose en Schnellbild"
     },
     {
@@ -97,12 +102,12 @@
     },
     {
       "title": "Qué es de verdad el archivo",
-      "text": "<p><kbd>I</kbd> muestra el formato, la resolución, los códecs, la tasa de bits, la profundidad de bits, el perfil de color y la cámara, y avisa cuando la extensión del archivo no coincide con su contenido.</p>",
+      "text": "<p><kbd>I</kbd> o <kbd>⌘</kbd><kbd>I</kbd> abre la información junto a la imagen: cuándo y dónde se tomó, con un pequeño mapa y la localidad cercana, cámara y objetivo, formato, resolución, códecs, tasa de bits, profundidad de bits y perfil de color, y cada clave de metadatos (EXIF, GPS, IPTC, XMP, QuickTime) para filtrar y copiar. Fechas y lugares también salen de archivos XMP adjuntos, de los datos GPS de una GoPro o un dron DJI, de los archivos de clip de Sony y de los tracks GPX de la carpeta.</p><p>Si la extensión del archivo no coincide con su contenido, lo indica. Los archivos cuyo nombre no dice nada cuentan por su contenido, y las descargas en curso (.part, .crdownload…) se muestran hasta donde han llegado.</p>",
       "alt": "La información del archivo junto a una foto"
     },
     {
       "title": "Todas las teclas a mano",
-      "text": "<p><kbd>F1</kbd> muestra todas las teclas, también para imprimir; <kbd>K</kbd> abre un pequeño teclado en el que hacer clic. Asigna tus propias teclas o elige las teclas como en Phiewer. Cuadrícula o lista (<kbd>L</kbd>), orden por nombre, tipo, fecha o tamaño, varias ventanas y una tecla del jefe (<kbd>X</kbd>).</p>",
+      "text": "<p><kbd>F1</kbd> muestra todas las teclas, también para imprimir; <kbd>K</kbd> abre un pequeño teclado en el que hacer clic. Asigna tus propias teclas o elige las teclas como en Phiewer. Cuadrícula o lista (<kbd>L</kbd>), orden por nombre, tipo, fecha, tamaño o distancia a un lugar, varias ventanas y una tecla del jefe (<kbd>X</kbd>).</p>",
       "alt": "La lista de teclas (F1)"
     },
     {

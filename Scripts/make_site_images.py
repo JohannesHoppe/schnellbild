@@ -67,8 +67,9 @@ ICON = ROOT / "Resources" / "icon_1024.png"
 LANGUAGES = ["en", "de", "fr", "es", "it", "pt-BR", "nl", "pl", "sv", "da", "nb", "fi",
              "cs", "tr", "ru", "uk", "ja", "ko", "zh-Hans", "zh-Hant"]
 HERO_SHOT = "grid"
-# The website's feature pictures, in the order of the features (site/i18n)
-FEATURE_SHOTS = ["full", "video", "archives", "dualpane", "search", "adjust", "inspector", "help", "settings"]
+# The website's feature pictures, in the order of the features (site/i18n); a feature
+# whose picture has no master in docs/screenshots yet is shown as text alone
+FEATURE_SHOTS = ["full", "atlas", "video", "archives", "dualpane", "search", "adjust", "inspector", "help", "settings"]
 # The App Store's pictures (light), in their order there (by name)
 STORE_SHOTS = ["archive-inside", "dualpane", "full", "grid", "inspector", "video"]
 OG_SIZE = (1200, 630)

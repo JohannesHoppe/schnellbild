@@ -71,8 +71,13 @@
       "alt": "Kuva koko näkymässä"
     },
     {
+      "title": "Kuvasi kartalla ja maapallolla",
+      "text": "<p><kbd>W</kbd> näyttää kansion ja sen alikansioiden kuvat ja videot siellä, missä ne on otettu. Kaukaa katsottuna kartta on maapallo tähtitaivasta vasten, halutessasi päivän ja yön kanssa, kaupunkien valot yöpuolella; lähemmäs zoomatessa se litistyy kartaksi.</p><ul><li>Aikajana järjestää matkan ajan mukaan: vedä jakson yli, niin kartta näyttää vain sen osan</li><li><kbd>T</kbd> toistaa matkan: kartta liukuu paikasta toiseen, kuvat näkyvät suurina, videot pyörivät muutaman sekunnin</li><li>Kartta on sovelluksessa: mitään ei haeta verkosta, eikä mikään sijainti lähde Macistasi</li></ul>",
+      "alt": "Matkan kuvat maapallolla atlasnäkymässä"
+    },
+    {
       "title": "Videot, myös MKV ja muut, joita macOS ei osaa toistaa",
-      "text": "<p>Minkä macOS toistaa itse (MP4, MOV, AVCHD …), sen toistaa macOS, myös HDR-muodossa; kaiken muun sisäänrakennettu VLC-moottori: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-video.</p><ul><li>← → hyppäävät kymmenesosan videosta, ⇧← ⇧→ sadasosan</li><li>↑ ↓ säätävät äänenvoimakkuutta, kaikille videoille</li><li>⌘→ seuraavaan videoon ja ⌘← takaisin: ensimmäinen jatkuu siitä, mihin se jäi</li><li>Finder ja Pikakatselu saavat miniatyyrit myös MKV-, WebM-, WMV-, FLV- ja VOB-tiedostoille</li></ul>",
+      "text": "<p>Minkä macOS toistaa itse (MP4, MOV, AVCHD …), sen toistaa macOS, myös HDR-muodossa; kaiken muun sisäänrakennettu VLC-moottori: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-video.</p><ul><li>← → hyppäävät kymmenesosan videosta, ⇧← ⇧→ sadasosan</li><li>↑ ↓ säätävät äänenvoimakkuutta, kaikille videoille</li><li>⌘→ seuraavaan videoon ja ⌘← takaisin: ensimmäinen jatkuu siitä, mihin se jäi</li><li>Videon tekstitykset (<kbd>V</kbd>) näkyvät alusta asti; kesken päälle kytkettynä käynnissä oleva rivi näkyy heti, ja ASS-tekstitykset säilyttävät sijaintinsa, värinsä ja fonttinsa</li><li>Finder ja Pikakatselu saavat miniatyyrit myös MKV-, WebM-, WMV-, FLV- ja VOB-tiedostoille</li></ul>",
       "alt": "Video toistumassa Schnellbildissä"
     },
     {
@@ -97,12 +102,12 @@
     },
     {
       "title": "Mikä tiedosto oikeasti on",
-      "text": "<p><kbd>I</kbd> näyttää formaatin, resoluution, koodekit, bittinopeuden, bittisyvyyden, väriprofiilin ja kameran sekä huomautuksen, jos tiedostopääte ei vastaa sisältöä.</p>",
+      "text": "<p><kbd>I</kbd> tai <kbd>⌘</kbd><kbd>I</kbd> avaa tiedoston tiedot kuvan viereen: milloin ja missä se on otettu, pienen kartan ja lähimmän paikkakunnan kera, kamera ja objektiivi, formaatti, resoluutio, koodekit, bittinopeus, bittisyvyys ja väriprofiili sekä jokainen metatietoavain (EXIF, GPS, IPTC, XMP, QuickTime) suodatettavaksi ja kopioitavaksi. Aika ja paikka saadaan myös XMP-sivutiedostoista, GoPron tai DJI-dronen GPS-tiedoista, Sonyn klippitiedostoista ja kansion GPX-jäljistä.</p><p>Jos tiedostopääte ei vastaa sisältöä, saat huomautuksen. Tiedostot, joiden nimi ei kerro mitään, tunnistetaan sisällöstä, ja kesken olevat lataukset (.part, .crdownload …) näkyvät niin pitkälle kuin ne ovat ehtineet.</p>",
       "alt": "Tiedoston tiedot kuvan vieressä"
     },
     {
       "title": "Kaikki näppäimet käden ulottuvilla",
-      "text": "<p><kbd>F1</kbd> luettelee kaikki näppäimet, myös tulostettavaksi; <kbd>K</kbd> näyttää pienen klikattavan näppäimistön. Valitse omat näppäimesi tai samat näppäimet kuin Phiewerissä. Ruudukko tai luettelo (<kbd>L</kbd>), lajittelu nimen, lajin, päivämäärän tai koon mukaan, useita ikkunoita ja pomonäppäin (<kbd>X</kbd>).</p>",
+      "text": "<p><kbd>F1</kbd> luettelee kaikki näppäimet, myös tulostettavaksi; <kbd>K</kbd> näyttää pienen klikattavan näppäimistön. Valitse omat näppäimesi tai samat näppäimet kuin Phiewerissä. Ruudukko tai luettelo (<kbd>L</kbd>), lajittelu nimen, lajin, päivämäärän, koon tai etäisyyden mukaan valitusta paikasta, useita ikkunoita ja pomonäppäin (<kbd>X</kbd>).</p>",
       "alt": "Näppäinten luettelo (F1)"
     },
     {

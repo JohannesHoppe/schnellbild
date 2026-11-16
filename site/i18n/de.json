@@ -71,8 +71,13 @@
       "alt": "Ein Foto in der Vollansicht"
     },
     {
+      "title": "Deine Fotos auf der Karte und dem Globus",
+      "text": "<p><kbd>W</kbd> zeigt die Fotos und Videos eines Ordners und seiner Unterordner dort, wo sie aufgenommen wurden. Weit herausgezoomt ist die Karte ein Globus vor dem Sternenhimmel, auf Wunsch mit Tag und Nacht und den Lichtern der Städte auf der Nachtseite; beim Hineinzoomen wird er zur flachen Karte.</p><ul><li>Die Zeitleiste ordnet die Reise nach der Zeit: Zieh über einen Abschnitt, und die Karte zeigt nur diesen Teil</li><li><kbd>T</kbd> spielt die Reise ab: Die Karte gleitet von Ort zu Ort, die Fotos erscheinen groß, die Videos laufen ein paar Sekunden</li><li>Die Karte steckt in der App: Nichts geht online, kein Ort verlässt deinen Mac</li></ul>",
+      "alt": "Die Fotos einer Reise auf dem Globus, in der Atlas-Ansicht"
+    },
+    {
       "title": "Videos, auch die, die macOS nicht abspielt",
-      "text": "<p>Was macOS selbst abspielt (MP4, MOV, AVCHD …), spielt macOS ab, auch in HDR; alles andere die eingebaute VLC-Engine: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-Video.</p><ul><li>← → springen ein Zehntel des Videos, ⇧← ⇧→ ein Hundertstel</li><li>↑ ↓ stellen die Lautstärke ein, für alle Videos</li><li>⌘→ zum nächsten Video und ⌘← zurück: Das erste läuft dort weiter, wo es stand</li><li>Finder und Übersicht bekommen Vorschaubilder auch für MKV, WebM, WMV, FLV und VOB</li></ul>",
+      "text": "<p>Was macOS selbst abspielt (MP4, MOV, AVCHD …), spielt macOS ab, auch in HDR; alles andere die eingebaute VLC-Engine: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-Video.</p><ul><li>← → springen ein Zehntel des Videos, ⇧← ⇧→ ein Hundertstel</li><li>↑ ↓ stellen die Lautstärke ein, für alle Videos</li><li>⌘→ zum nächsten Video und ⌘← zurück: Das erste läuft dort weiter, wo es stand</li><li>Untertitel im Video (<kbd>V</kbd>) erscheinen von Anfang an; mittendrin eingeschaltet, steht die gerade laufende Zeile sofort da, und ASS-Untertitel behalten Position, Farben und Schriften</li><li>Finder und Übersicht bekommen Vorschaubilder auch für MKV, WebM, WMV, FLV und VOB</li></ul>",
       "alt": "Ein Video in Schnellbild"
     },
     {
@@ -97,12 +102,12 @@
     },
     {
       "title": "Was die Datei wirklich ist",
-      "text": "<p><kbd>I</kbd> zeigt Format, Auflösung, Codecs, Bitrate, Farbtiefe, Farbprofil und Kamera, und einen Hinweis, wenn die Dateiendung nicht zum Inhalt passt.</p>",
+      "text": "<p><kbd>I</kbd> oder <kbd>⌘</kbd><kbd>I</kbd> öffnet die Datei-Info neben dem Bild: wann und wo es aufgenommen wurde, mit kleiner Karte und dem Ort in der Nähe, Kamera und Objektiv, Format, Auflösung, Codecs, Bitrate, Farbtiefe und Farbprofil, dazu jeder Metadaten-Schlüssel (EXIF, GPS, IPTC, XMP, QuickTime) zum Filtern und Kopieren. Zeit und Ort kommen auch aus XMP-Begleitdateien, den GPS-Daten einer GoPro oder DJI-Drohne, Sonys Clip-Dateien und GPX-Tracks im Ordner.</p><p>Passt die Dateiendung nicht zum Inhalt, gibt es einen Hinweis. Dateien, deren Name nichts verrät, zählen nach ihrem Inhalt, und Downloads, die noch laufen (.part, .crdownload …), zeigen, was schon angekommen ist.</p>",
       "alt": "Die Datei-Info neben einem Foto"
     },
     {
       "title": "Alle Tasten griffbereit",
-      "text": "<p><kbd>F1</kbd> zeigt alle Tasten, auch zum Ausdrucken; <kbd>K</kbd> blendet eine kleine Tastatur zum Anklicken ein. Eigene Tasten belegen oder die Tasten wie in Phiewer wählen. Raster oder Liste (<kbd>L</kbd>), sortieren nach Name, Art, Datum oder Größe, mehrere Fenster und ein Boss-Key (<kbd>X</kbd>).</p>",
+      "text": "<p><kbd>F1</kbd> zeigt alle Tasten, auch zum Ausdrucken; <kbd>K</kbd> blendet eine kleine Tastatur zum Anklicken ein. Eigene Tasten belegen oder die Tasten wie in Phiewer wählen. Raster oder Liste (<kbd>L</kbd>), sortieren nach Name, Art, Datum, Größe oder Entfernung von einem Ort, mehrere Fenster und ein Boss-Key (<kbd>X</kbd>).</p>",
       "alt": "Die Liste der Tasten (F1)"
     },
     {
