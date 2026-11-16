@@ -504,6 +504,7 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         /// The time switched at: a media opened again reports 0 until it has
         /// played a moment.
         var from: Double = 0
+        var began = Date()
     }
     private var handover: Handover?
     private var handoverTask: Task<Void, Never>?
@@ -557,7 +558,6 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
                 + "VLC's from \(String(format: "%.3f", firstOfVLC)) s, chosen at \(String(format: "%.3f", selectAt)) s | \(BrowserModel.testClock) ms")
             self.output.logPictures(5)
             self.followHandover()
-            self.output.hold(false)
             while !Task.isCancelled, self.handover != nil, self.player.delegate != nil {
                 try? await Task.sleep(for: .milliseconds(20))
                 self.followHandover()
@@ -577,6 +577,11 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         }
         let running = handover.lines.lines.filter { $0.start < handover.firstOfVLC && $0.start <= now && now < $0.end }
         let texts = running.flatMap(\.text)
+        // Drawn at the size VLC lays its lines out in, once its output is open
+        // for this media; held pictures show from then on
+        // (VLC may keep its output for a media of the same format: half a second at most)
+        guard output.hasFormat || Date().timeIntervalSince(handover.began) > 0.5 else { self.handover = handover; return }
+        output.hold(false)
         if texts != handover.shown {
             handover.shown = texts
             if let size = output.bufferSize, !texts.isEmpty {
@@ -645,6 +650,8 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         tracks.audioID = audio >= 0 ? audio : nil
         let subtitle = Int(player.currentVideoSubTitleIndex)
         tracks.subtitleID = subtitle >= 0 ? subtitle : nil
+        // The app draws the track's lines until VLC takes it: it is on
+        if let handover, !handover.selected { tracks.subtitleID = handover.track }
         return tracks
     }
 

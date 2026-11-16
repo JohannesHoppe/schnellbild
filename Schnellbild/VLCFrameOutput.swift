@@ -188,6 +188,7 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
         drawnOrder = []
         shownSize = CGSize(width: w, height: h)
         decodedSize = proposed
+        formatReady = true
         // VLC's earlier output has closed: nothing draws into the old scratch
         let oldScratch = scratch
         scratch = newScratch
@@ -273,6 +274,7 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
         self.media = media
         shownOfMedia = 0
         openings += 1
+        formatReady = false
         lock.unlock()
     }
 
@@ -558,6 +560,15 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
         lock.lock()
         defer { lock.unlock() }
         return decodedSize
+    }
+    /// VLC has opened its output for the media handed over last (`use`):
+    /// the sizes above are that media's (a media opened again in software
+    /// pads its pictures otherwise than VideoToolbox did).
+    private var formatReady = false
+    var hasFormat: Bool {
+        lock.lock()
+        defer { lock.unlock() }
+        return formatReady
     }
 
     func setOverlay(_ new: CIImage?) {
