@@ -1,0 +1,31 @@
+coreaudio: a block without a date starts the output at once
+
+Seeked into the last second of a file, the input can reach its end before
+the audio output has played anything since the seek (every block late or
+none decoded yet). At the end the decoder drains: the resampler (soxr)
+hands over what it holds in a block without a date, and that block, the
+first one since the seek, set the output's first render time from a date
+of 0 less the latency: far beyond any time the render callback reaches.
+The render callback then put out silence for ever, the drain
+(ca_Flush with wait) waited for the buffer to empty for ever, and the
+input never reported its end ("waiting decoder fifos to empty"). Such a
+block starts the output at once. Applied after 0004, with patch -p1
+(Scripts/build_vlckit_lgpl.sh).
+
+diff --git a/modules/audio_output/coreaudio_common.c b/modules/audio_output/coreaudio_common.c
+--- a/modules/audio_output/coreaudio_common.c
++++ b/modules/audio_output/coreaudio_common.c
+@@ -355,7 +355,12 @@
+          * first (non-silence/zero) frame is rendered by the render callback.
+          * Once the rendering is truly started, the date can be ignored. */
+ 
+-        const vlc_tick_t first_render_time = p_block->i_pts - ca_GetLatencyLocked(p_aout);
++        /* A block without a date (what a resampler hands over when it is
++         * drained at the end, with nothing played since a seek) starts at
++         * once: its date taken as 0 put the start far beyond any time the
++         * render callback reaches, and draining waited for it for ever */
++        const vlc_tick_t first_render_time = p_block->i_pts != VLC_TICK_INVALID
++            ? p_block->i_pts - ca_GetLatencyLocked(p_aout) : mdate();
+         p_sys->i_first_render_host_time =
+             TickToHostTime(p_sys, first_render_time);
+     }
