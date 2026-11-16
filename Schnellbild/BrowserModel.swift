@@ -5758,17 +5758,22 @@ final class AVPlaybackControl: PlaybackControl {
         resumeAt = place
         BrowserModel.testLog("avkit resumes at \(String(format: "%.1f", place.seconds)) s, \(place.playing ? "playing" : "paused")")
         resumeTask = Task { @MainActor [weak self] in
-            if let item = self?.player.currentItem {
-                for await status in item.publisher(for: \.status).values where status != .unknown { break }
+            // (asked every 50 ms, as long as the player is there, at most 10 s)
+            var waited = 0
+            while let item = self?.player.currentItem, item.status == .unknown, !Task.isCancelled, waited < 200 {
+                try? await Task.sleep(for: .milliseconds(50))
+                waited += 1
             }
             guard let self, !Task.isCancelled, let place = self.resumeAt else { return }
+            BrowserModel.testLog("avkit item status \(self.player.currentItem?.status.rawValue ?? -1) after \(waited * 50) ms")
             // A seek of the player's own (a subtitle track chosen, a look
             // redrawn) interrupts this one: it is made again
-            for attempt in 1...5 where self.player.currentItem?.status == .readyToPlay {
+            for attempt in 1...5 where self.player.currentItem.map({ $0.status != .failed }) == true {
                 let done = await self.player.seek(to: CMTime(seconds: place.seconds, preferredTimescale: 600),
                                                   toleranceBefore: .zero, toleranceAfter: .zero)
                 BrowserModel.testLog("avkit resume seek \(attempt): \(done ? "there" : "interrupted"), at \(String(format: "%.1f", CMTimeGetSeconds(self.player.currentTime()))) s")
                 if done || Task.isCancelled { break }
+                try? await Task.sleep(for: .milliseconds(100))
             }
             // (Space may have changed its mind meanwhile)
             guard !Task.isCancelled, let place = self.resumeAt else { return }
