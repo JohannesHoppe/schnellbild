@@ -223,7 +223,7 @@ struct LicenseDocument {
         }
         func resolve(_ section: LicenseSection) -> LicenseSection {
             var section = section
-            section.parts = section.files.map { .init(heading: $0.heading, body: read($0.file)) }
+            section.parts += section.files.map { .init(heading: $0.heading, body: read($0.file)) }
             if let file = section.librariesFile {
                 let split = splitLibraries(read(file))
                 section.parts.append(.init(heading: nil, body: split.intro))
