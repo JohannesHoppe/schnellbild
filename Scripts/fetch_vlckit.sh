@@ -12,11 +12,11 @@ cd "$(dirname "$0")/.."
 ROOT="$(pwd)"
 source "$ROOT/Scripts/fetch_verified.sh"
 
-VERSION="3.7.5-lgpl-16"
+VERSION="3.7.5-lgpl-17"
 URL="https://github.com/JohannesHoppe/schnellbild/releases/download/vlckit-$VERSION/VLCKit-lgpl.xcframework.zip"
-SHA256="440c6a8e5c67854170aecc33d5002bde3d2dcdeb24dac05e4b9c653b469c374d"
+SHA256="e9a7de803898df49cd6665da977c22a4d4baf34a16ae3664adc975e729259809"
 # tree_sha256 (fetch_verified.sh) of the unpacked VLCKit.xcframework
-TREE_SHA256="079d98d5cf019e872c3b2c04ede4d9f40fe5b9abcd5d3d6df4d4fc424373a49a"
+TREE_SHA256="22f658a5c7cf6a100593e7aeb3c93a6d3f3ca826a5529642fb78e8b7cc1dbd95"
 
 # The UnRAR source, the offline map's files and the globe's are vendored
 # alongside (every build that needs VLCKit needs them too).
