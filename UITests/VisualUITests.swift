@@ -444,6 +444,14 @@ final class VisualUITests: SchnellbildUITestCase {
         try checkRunningLineWhenSwitching("tracks720.mkv", from: "subtitles 1/2 de", to: "subtitles 2/2 en", "SubRip HD")
     }
 
+    /// ASS lines with override tags (`asstags.mkv`: one at the top in red,
+    /// bold and larger with a white outline, one placed by `\pos` in two
+    /// italic underlined lines in another font): the app's running line
+    /// where libass puts VLC's next one.
+    func testVLCShowsTheRunningASSLineWithItsTagsWhenSwitchedTo() throws {
+        try checkRunningLineWhenSwitching("asstags.mkv", to: "subtitles 2/2 de", "ASS tags")
+    }
+
     /// Played to its end and started again (Space), the video opens with
     /// the subtitle track chosen last, its line from 0 on the first picture.
     func testVLCReplaysWithTheSubtitlesChosenLast() throws {

@@ -3,12 +3,24 @@ import Compression
 import VLCFrames
 
 /// One line of a subtitle track: when it shows, its text (tags taken out,
-/// one string per line of text), and for ASS the style it names.
+/// one string per line of text), and for ASS the style it names and the
+/// event as the file holds it.
 struct SubtitleLine: Equatable {
     var start: Double       // seconds
     var end: Double
     var text: [String]
     var style: String?
+    var ass: ASSEvent? = nil
+}
+
+/// An ASS event's own fields: its text with the override tags, its order
+/// in the script and its margins (0: the style's).
+struct ASSEvent: Equatable {
+    var text: String
+    var readOrder = 0
+    var marginL = 0.0
+    var marginR = 0.0
+    var marginV = 0.0
 }
 
 /// A subtitle track's lines around a time, read from the file by the app
@@ -90,15 +102,23 @@ struct ASSStyles: Equatable {
         var back = RGBA(r: 0, g: 0, b: 0, a: 1)
         var bold = false
         var italic = false
+        var underline = false
+        var strikeOut = false
         var outline = 2.0
         var shadow = 2.0
         /// Numpad alignment (1 … 9), 2 bottom centre.
         var alignment = 2
+        var marginL = 20.0
+        var marginR = 20.0
         var marginV = 20.0
     }
     struct RGBA: Equatable { var r, g, b, a: Double }
 
+    var playResX = 384.0
     var playResY = 288.0
+    /// 0 and 3: long lines broken into lines of about the same width, 1: at
+    /// the end of each line, 2: not at all (and `\n` breaks a line).
+    var wrapStyle = 0
     var styles: [String: Style] = [:]
 
     func style(_ name: String?) -> Style {
@@ -122,6 +142,7 @@ struct ASSStyles: Equatable {
             if section == "[script info]" {
                 if key == "playresy" { playResY = Double(value) }
                 if key == "playresx" { playResX = Double(value) }
+                if key == "wrapstyle" { result.wrapStyle = Int(value) ?? 0 }
             } else if section.contains("styles") {
                 let fields = value.components(separatedBy: ",").map { $0.trimmingCharacters(in: .whitespaces) }
                 if key == "format" { format = fields.map { $0.lowercased() } }
@@ -141,12 +162,16 @@ struct ASSStyles: Equatable {
                         case "backcolour": style.back = colour(v) ?? style.back
                         case "bold": style.bold = (Int(v) ?? 0) != 0
                         case "italic": style.italic = (Int(v) ?? 0) != 0
+                        case "underline": style.underline = (Int(v) ?? 0) != 0
+                        case "strikeout": style.strikeOut = (Int(v) ?? 0) != 0
                         case "outline": style.outline = Double(v) ?? style.outline
                         case "shadow": style.shadow = Double(v) ?? style.shadow
                         case "alignment":
                             let a = Int(v) ?? 2
                             // SSA (V4) numbers its alignments otherwise: 1-3 bottom, +4 top, +8 middle
-                            style.alignment = section.contains("v4+") ? a : (a > 8 ? a - 5 : a > 4 ? a + 3 : a)
+                            style.alignment = section.contains("v4+") ? a : ASSStyles.numpad(ssa: a)
+                        case "marginl": style.marginL = Double(v) ?? style.marginL
+                        case "marginr": style.marginR = Double(v) ?? style.marginR
                         case "marginv": style.marginV = Double(v) ?? style.marginV
                         default: break
                         }
@@ -155,10 +180,19 @@ struct ASSStyles: Equatable {
                 }
             }
         }
-        // libass's rule: a missing PlayResY follows PlayResX (4:3), else 288
-        result.playResY = playResY ?? playResX.map { $0 * 3 / 4 } ?? 288
+        // libass's rule: a missing PlayResY follows PlayResX (4:3), else 288,
+        // and a missing PlayResX follows PlayResY (4:3; 1280 for 1024, as libass)
+        result.playResY = playResY ?? playResX.map { $0 == 1280 ? 1024 : $0 * 3 / 4 } ?? 288
         if result.playResY <= 0 { result.playResY = 288 }
+        result.playResX = playResX ?? (result.playResY == 1024 ? 1280 : result.playResY * 4 / 3)
+        if result.playResX <= 0 { result.playResX = result.playResY * 4 / 3 }
         return result
+    }
+
+    /// SSA's alignment (1 … 3 at the bottom, 4 added for the top, 8 for the
+    /// middle) as the numpad's (1 … 9).
+    static func numpad(ssa a: Int) -> Int {
+        a > 8 ? a - 5 : a > 4 ? a + 2 : a
     }
 
     /// `&HAABBGGRR` (alpha 00 opaque) or a decimal number.
@@ -174,6 +208,211 @@ struct ASSStyles: Equatable {
         guard let value else { return nil }
         return RGBA(r: Double(value & 0xFF) / 255, g: Double(value >> 8 & 0xFF) / 255,
                     b: Double(value >> 16 & 0xFF) / 255, a: 1 - Double(value >> 24 & 0xFF) / 255)
+    }
+}
+
+// MARK: - ASS override tags
+
+/// An ASS event's text as libass lays it out: runs of text, each in its own
+/// style after the override tags before it (`{\b1}`, `{\c&H0000FF&}` …),
+/// in lines (`\N`), with the event's alignment and position.
+///
+/// Read: `\an` and `\a` (alignment), `\pos`, `\b`, `\i`, `\u`, `\s`, `\c`
+/// and `\1c` … `\4c`, `\alpha` and `\1a` … `\4a`, `\fs` (also `\fs+` /
+/// `\fs-`), `\fn`, `\bord`, `\shad`, `\r` (back to the event's or a named
+/// style), `\q` (wrapping), `\p` (a drawing, left out), `\N`, `\n` (a line
+/// break with WrapStyle 2, else a space), `\h`. As libass, the first `\an` / `\a` and
+/// the first `\pos` of an event count, and a tag without its value goes
+/// back to the style's. Every other tag is passed over (see `SubtitleOverlay`).
+struct ASSText: Equatable {
+    /// What a run is drawn with: the style, changed by the tags before it.
+    struct RunStyle: Equatable {
+        var font: String
+        var size: Double
+        var bold: Bool
+        var italic: Bool
+        var underline: Bool
+        var strikeOut: Bool
+        var primary: ASSStyles.RGBA
+        var outlineColour: ASSStyles.RGBA
+        var back: ASSStyles.RGBA
+        var outline: Double
+        var shadow: Double
+
+        init(_ style: ASSStyles.Style) {
+            font = style.font; size = style.size; bold = style.bold; italic = style.italic
+            underline = style.underline; strikeOut = style.strikeOut
+            primary = style.primary; outlineColour = style.outlineColour; back = style.back
+            outline = style.outline; shadow = style.shadow
+        }
+    }
+    struct Run: Equatable {
+        var text: String
+        var style: RunStyle
+    }
+    struct Point: Equatable { var x, y: Double }
+
+    /// One array of runs per line (`\N`).
+    var lines: [[Run]]
+    /// Numpad alignment, 1 … 9.
+    var alignment: Int
+    /// `\pos`: where the alignment's point of the text lies, in the
+    /// script's coordinates (PlayResX × PlayResY).
+    var position: Point?
+    /// The track's WrapStyle, or the event's `\q`.
+    var wrapStyle: Int
+
+    static func parse(_ text: String, style name: String?, in styles: ASSStyles) -> ASSText {
+        let base = styles.style(name)
+        var style = RunStyle(base)
+        var alignment: Int?
+        var position: Point?
+        var lines: [[Run]] = [[]]
+        var drawing = false
+        var wrapStyle = styles.wrapStyle
+        func append(_ string: String) {
+            guard !drawing, !string.isEmpty else { return }
+            if let last = lines[lines.count - 1].last, last.style == style {
+                lines[lines.count - 1][lines[lines.count - 1].count - 1].text += string
+            } else {
+                lines[lines.count - 1].append(Run(text: string, style: style))
+            }
+        }
+        let characters = Array(text)
+        var i = 0
+        while i < characters.count {
+            let c = characters[i]
+            if c == "{", let close = characters[i...].firstIndex(of: "}") {
+                for (tag, value) in tags(String(characters[(i + 1)..<close])) {
+                    apply(tag, value, to: &style, base: base, styles: styles, alignment: &alignment, position: &position,
+                          drawing: &drawing, wrapStyle: &wrapStyle)
+                }
+                i = close + 1
+                continue
+            }
+            if c == "\\", i + 1 < characters.count {
+                switch characters[i + 1] {
+                case "N": if !drawing { lines.append([]) }; i += 2; continue
+                case "n":
+                    if wrapStyle == 2 { if !drawing { lines.append([]) } } else { append(" ") }
+                    i += 2; continue
+                case "h": append("\u{00A0}"); i += 2; continue
+                default: break
+                }
+            }
+            append(String(c))
+            i += 1
+        }
+        return ASSText(lines: lines, alignment: alignment ?? base.alignment, position: position, wrapStyle: wrapStyle)
+    }
+
+    /// The tags of one override block, each with its value: `\fs20` is
+    /// ("fs", "20"), `\pos(1,2)` ("pos", "1,2"), `\fnArial Bold` ("fn",
+    /// "Arial Bold"); a `\t(…)` keeps its own tags inside its value.
+    static func tags(_ block: String) -> [(String, String)] {
+        let characters = Array(block)
+        var result: [(String, String)] = []
+        var i = 0
+        while i < characters.count {
+            guard characters[i] == "\\" else { i += 1; continue }
+            i += 1
+            var name = ""
+            // \1c … \4c, \1a … \4a
+            if i + 1 < characters.count, ("1"..."4").contains(characters[i]), "ca".contains(characters[i + 1]) {
+                name = String(characters[i...(i + 1)])
+                i += 2
+            } else {
+                while i < characters.count, characters[i].isLetter { name.append(characters[i]); i += 1 }
+            }
+            // Names that run on into their value: \fn<font>, \r<style>
+            var value = ""
+            if name.hasPrefix("fn"), name != "fn" { value = String(name.dropFirst(2)); name = "fn" }
+            else if name.hasPrefix("r"), name != "r" { value = String(name.dropFirst()); name = "r" }
+            if i < characters.count, characters[i] == "(" {
+                var depth = 0
+                var j = i
+                while j < characters.count {
+                    if characters[j] == "(" { depth += 1 }
+                    if characters[j] == ")" { depth -= 1; if depth == 0 { break } }
+                    j += 1
+                }
+                value = String(characters[(i + 1)..<min(j, characters.count)])
+                i = min(j + 1, characters.count)
+            } else {
+                while i < characters.count, characters[i] != "\\" { value.append(characters[i]); i += 1 }
+            }
+            if !name.isEmpty { result.append((name, value.trimmingCharacters(in: .whitespaces))) }
+        }
+        return result
+    }
+
+    private static func apply(_ tag: String, _ value: String, to style: inout RunStyle, base: ASSStyles.Style,
+                              styles: ASSStyles, alignment: inout Int?, position: inout Point?, drawing: inout Bool,
+                              wrapStyle: inout Int) {
+        let number = Double(value)
+        // 0 or 1; else the style's
+        func flag(_ fallback: Bool) -> Bool { Int(value).flatMap { $0 == 0 || $0 == 1 ? $0 == 1 : nil } ?? fallback }
+        // &HBBGGRR&: the colour only, its alpha stays; none: the style's
+        func colour(_ current: ASSStyles.RGBA, _ fallback: ASSStyles.RGBA) -> ASSStyles.RGBA {
+            let from: UInt32? = value.isEmpty ? nil : UInt32(hex(value).prefix(8), radix: 16)
+            guard value.isEmpty || from != nil else { return current }
+            guard let v = from else { return ASSStyles.RGBA(r: fallback.r, g: fallback.g, b: fallback.b, a: current.a) }
+            return ASSStyles.RGBA(r: Double(v & 0xFF) / 255, g: Double(v >> 8 & 0xFF) / 255, b: Double(v >> 16 & 0xFF) / 255,
+                                  a: current.a)
+        }
+        // &HAA&: the alpha only (00 opaque)
+        func alpha(_ current: ASSStyles.RGBA, _ fallback: ASSStyles.RGBA) -> ASSStyles.RGBA {
+            let from: UInt32? = value.isEmpty ? nil : UInt32(hex(value).prefix(8), radix: 16)
+            guard value.isEmpty || from != nil else { return current }
+            let a = from.map { 1 - Double($0 & 0xFF) / 255 } ?? fallback.a
+            return ASSStyles.RGBA(r: current.r, g: current.g, b: current.b, a: a)
+        }
+        switch tag {
+        case "an":
+            if alignment == nil { alignment = Int(value).flatMap { (1...9).contains($0) ? $0 : nil } ?? base.alignment }
+        case "a":
+            // SSA's numbers; libass takes \a4 and \a8 as \a5 (as VSFilter)
+            if alignment == nil {
+                if let a = Int(value), (1...11).contains(a) { alignment = ASSStyles.numpad(ssa: a & 3 == 0 ? 5 : a) }
+                else { alignment = base.alignment }
+            }
+        case "pos":
+            let parts = value.split(separator: ",").compactMap { Double($0.trimmingCharacters(in: .whitespaces)) }
+            if position == nil, parts.count == 2 { position = Point(x: parts[0], y: parts[1]) }
+        case "b":
+            // 0, 1 or a weight (from 100; bold from 600); else the style's
+            if let n = Int(value), n == 0 || n == 1 || n >= 100 { style.bold = n == 1 || n >= 600 } else { style.bold = base.bold }
+        case "i": style.italic = flag(base.italic)
+        case "u": style.underline = flag(base.underline)
+        case "s": style.strikeOut = flag(base.strikeOut)
+        case "c", "1c": style.primary = colour(style.primary, base.primary)
+        case "3c": style.outlineColour = colour(style.outlineColour, base.outlineColour)
+        case "4c": style.back = colour(style.back, base.back)
+        case "alpha":
+            style.primary = alpha(style.primary, base.primary)
+            style.outlineColour = alpha(style.outlineColour, base.outlineColour)
+            style.back = alpha(style.back, base.back)
+        case "1a": style.primary = alpha(style.primary, base.primary)
+        case "3a": style.outlineColour = alpha(style.outlineColour, base.outlineColour)
+        case "4a": style.back = alpha(style.back, base.back)
+        case "fs":
+            // \fs+n / \fs-n: n tenths more or less (libass)
+            var size = 0.0
+            if let n = number { size = value.hasPrefix("+") || value.hasPrefix("-") ? style.size * (1 + n / 10) : n }
+            style.size = size > 0 ? size : base.size
+        case "fn": style.font = value.isEmpty || value == "0" ? base.font : value
+        case "bord": style.outline = number.map { max($0, 0) } ?? base.outline
+        case "shad": style.shadow = number.map { max($0, 0) } ?? base.shadow
+        case "r": style = RunStyle(value.isEmpty ? base : styles.style(value))
+        case "p": drawing = (number ?? 0) > 0
+        case "q": wrapStyle = Int(value).flatMap { (0...3).contains($0) ? $0 : nil } ?? styles.wrapStyle
+        default: break   // \2c \2a (karaoke), \k, \t, \move, \fad, \fscx, \fsp, \fr, \clip, \blur, \be …
+        }
+    }
+
+    /// The hex digits of `&H00FF00&` and its kin.
+    private static func hex(_ value: String) -> String {
+        value.uppercased().replacingOccurrences(of: "&", with: "").replacingOccurrences(of: "H", with: "")
     }
 }
 
@@ -338,8 +577,11 @@ enum MatroskaSubtitles {
             // ReadOrder, Layer, Style, Name, MarginL, MarginR, MarginV, Effect, Text
             let fields = text.split(separator: ",", maxSplits: 8, omittingEmptySubsequences: false)
             guard fields.count == 9 else { return nil }
+            func number(_ i: Int) -> Double { Double(fields[i].trimmingCharacters(in: .whitespaces)) ?? 0 }
+            let event = ASSEvent(text: String(fields[8]), readOrder: Int(number(0)), marginL: number(4), marginR: number(5),
+                                 marginV: number(6))
             return SubtitleLine(start: time, end: end, text: SubtitleReader.assText(String(fields[8])),
-                                style: String(fields[2]).trimmingCharacters(in: .whitespaces))
+                                style: String(fields[2]).trimmingCharacters(in: .whitespaces), ass: event)
         }
         return SubtitleLine(start: time, end: end, text: SubtitleReader.plainText(text), style: nil)
     }

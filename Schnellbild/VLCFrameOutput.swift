@@ -495,9 +495,10 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
 
     /// Reads a picture: the luma of its middle (8-bit NV12 as VLC handed it
     /// over), and in the picture as shown (`shown`: NV12, or BGRA with a look
-    /// or a subtitle line of the app's own) whether the lower part (where
-    /// subtitles go: 70 to 98 % of the height, the middle 70 % of the width)
-    /// holds text, and its box. Others are not read.
+    /// or a subtitle line of the app's own) whether it holds text (pixels
+    /// away from the middle's even grey of the test videos, anywhere: ASS
+    /// lines may lie at the top or at their `\pos`), and its box. Others are
+    /// not read.
     static func probe(_ buffer: CVPixelBuffer, shown: CVPixelBuffer?) -> PictureProbe? {
         guard let luma = middleLuma(buffer) else { return nil }
         var probe = PictureProbe(luma: luma)
@@ -538,15 +539,31 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
         let row = nv12 ? CVPixelBufferGetBytesPerRowOfPlane(buffer, 0) : CVPixelBufferGetBytesPerRow(buffer)
         guard width >= 16, height >= 16 else { return (nil, nil) }
         let bytes = base.assumingMemoryBound(to: UInt8.self)
-        func value(_ x: Int, _ y: Int) -> Int { Int(bytes[y * row + (nv12 ? x : x * 4 + 1)]) }
+        // Luma, or BGRA's green
+        let stride = nv12 ? 1 : 4, offset = nv12 ? 0 : 1
         var sum = 0
-        for y in height / 2 - 4 ..< height / 2 + 4 { for x in width / 2 - 4 ..< width / 2 + 4 { sum += value(x, y) } }
-        let reference = sum / 64
+        for y in height / 2 - 4 ..< height / 2 + 4 {
+            for x in width / 2 - 4 ..< width / 2 + 4 { sum += Int(bytes[y * row + x * stride + offset]) }
+        }
+        let low = sum / 64 - 40, high = sum / 64 + 40
         var x0 = Int.max, x1 = -1, y0 = Int.max, y1 = -1, count = 0
-        for y in height * 70 / 100 ..< height * 98 / 100 {
-            for x in width * 15 / 100 ..< width * 85 / 100 where abs(value(x, y) - reference) > 40 {
-                count += 1
-                x0 = min(x0, x); x1 = max(x1, x); y0 = min(y0, y); y1 = max(y1, y)
+        // Plain loops over the rows: it runs on VLC's output thread, in a debug build too
+        for y in 0 ..< height {
+            let line = bytes + y * row + offset
+            var x = 0, first = -1, last = -1
+            while x < width {
+                let v = Int(line[x * stride])
+                if v < low || v > high {
+                    if first < 0 { first = x }
+                    last = x
+                    count += 1
+                }
+                x += 1
+            }
+            if first >= 0 {
+                x0 = min(x0, first); x1 = max(x1, last)
+                if y0 == Int.max { y0 = y }
+                y1 = y
             }
         }
         guard count > 20 else { return (false, nil) }

@@ -118,5 +118,40 @@ tracks tracks.mkv de.ass -c:s:0 srt -c:s:1 ass
   -metadata:s:s:0 language=deu -metadata:s:s:0 title=Deutsch -metadata:s:s:1 language=eng -metadata:s:s:1 title=English \
   -disposition:s:0 default -disposition:s:1 0 -t 10 \
   -fflags +bitexact -flags:v +bitexact UITests/Fixtures/tracks720.mkv
+
+# asstags.mkv: 10 s of even grey at 1280 × 720, the English SubRip lines
+# first (the default) and second an ASS track whose lines carry override
+# tags, two events every 2 s: one at the top (\an8) in red, bold and larger
+# with a white outline, one placed by \pos at its bottom left in two lines,
+# italic, underlined, in Courier New with a deeper shadow. The app's own
+# line compared with VLC's (libass) where the tags put it.
+asstags() {
+  cat <<'ASS'
+[Script Info]
+ScriptType: v4.00+
+PlayResX: 1280
+PlayResY: 720
+WrapStyle: 0
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Default,Arial,48,&H00FFFFFF,&H000000FF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,1,2,2,2,40,40,30,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+ASS
+  local i from to
+  for i in 0 1 2 3 4; do
+    from=$(printf '0:00:%02d.00' $((i * 2))); to=$(printf '0:00:%02d.00' $((i * 2 + 2)))
+    echo "Dialogue: 0,$from,$to,Default,,0,0,0,,{\\an8\\fs60\\b1\\c&H0000FF&\\3c&HFFFFFF&\\bord3}TOP LINE"
+    echo "Dialogue: 0,$from,$to,Default,,0,0,0,,{\\pos(320,500)\\an1\\i1\\u1\\fnCourier New\\fs40\\shad4}LEFT\\NPOS"
+  done
+}
+asstags > "$SUBS/tags.ass"
+"$FFMPEG" -loglevel error -y -f lavfi -i "color=c=0x808080:s=1280x720:r=10:d=10" \
+  -i "$SUBS/en.srt" -i "$SUBS/tags.ass" -map 0:v -map 1:s -map 2:s -c:v libx264 -pix_fmt yuv420p -g 10 -c:s:0 srt -c:s:1 ass \
+  -metadata:s:s:0 language=eng -metadata:s:s:0 title=English -metadata:s:s:1 language=deu -metadata:s:s:1 title=Tags \
+  -disposition:s:0 default -disposition:s:1 0 -t 10 \
+  -fflags +bitexact -flags:v +bitexact UITests/Fixtures/asstags.mkv
 draw_hdr
 finished=1

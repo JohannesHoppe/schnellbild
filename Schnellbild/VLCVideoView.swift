@@ -586,7 +586,7 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
             handover.shown = texts
             BrowserModel.testLog("vlc: the app draws \(texts) at \(String(format: "%.3f", now)) s | \(BrowserModel.testClock) ms")
             if let size = output.bufferSize, !texts.isEmpty {
-                output.setOverlay(SubtitleOverlay.image(texts, kind: handover.lines.kind, style: running.last?.style,
+                output.setOverlay(SubtitleOverlay.image(running, kind: handover.lines.kind,
                                                         width: size.width, height: size.height, decoded: output.proposedSize),
                                   logging: 3)
             } else {
