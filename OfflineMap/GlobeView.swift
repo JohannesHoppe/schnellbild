@@ -78,27 +78,29 @@ public struct GlobeView<Overlay: View>: View {
         .allowsHitTesting(false)
     }
 
-    private func button(_ symbol: String, _ help: LocalizedStringKey, action: @escaping () -> Void) -> some View {
+    /// A button of the map's groups; `title` is its help and VoiceOver label
+    /// (the label "title:" is what LocalizationTests' scanner reads).
+    private func button(_ symbol: String, title: LocalizedStringKey, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Image(systemName: symbol).frame(width: 28, height: 26).contentShape(Rectangle())
         }
-        .help(Text(help))
-        .accessibilityLabel(Text(help))
+        .help(Text(title))
+        .accessibilityLabel(Text(title))
     }
 
     private var buttons: some View {
         VStack(spacing: 8) {
             VStack(spacing: 0) {
-                button("plus", "Zoom in") { link.globe?.zoom(by: 1) }
+                button("plus", title: "Zoom in") { link.globe?.zoom(by: 1) }
                 Divider().frame(width: 20)
-                button("minus", "Zoom out") { link.globe?.zoom(by: -1) }
+                button("minus", title: "Zoom out") { link.globe?.zoom(by: -1) }
             }
             .modifier(MapButtonGroup())
             VStack(spacing: 0) {
-                button(lighting ? "sun.max.fill" : "sun.max", lighting ? "Hide day and night" : "Show day and night") { lighting.toggle() }
+                button(lighting ? "sun.max.fill" : "sun.max", title: lighting ? "Hide day and night" : "Show day and night") { lighting.toggle() }
                 Divider().frame(width: 20)
                 button(exaggerated ? "mountain.2.fill" : "mountain.2",
-                       exaggerated ? "Show the relief at true scale" : "Exaggerate the relief") { exaggerated.toggle() }
+                       title: exaggerated ? "Show the relief at true scale" : "Exaggerate the relief") { exaggerated.toggle() }
             }
             .modifier(MapButtonGroup())
         }
@@ -148,6 +150,7 @@ struct GlobeSurface: NSViewRepresentable {
         view.exaggerated = exaggerated
         view.keepFree = keepFree
         view.onCameraChange = { next in if camera != next { camera = next } }
+        view.ownerCamera = { camera }
         view.onInteraction = onInteraction
         if view.camera != camera { view.camera = camera }
         link.globe = view

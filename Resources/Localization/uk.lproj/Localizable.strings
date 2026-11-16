@@ -551,7 +551,7 @@
 "the night sky behind the globe" = "нічне небо за глобусом";
 "NASA/Goddard Space Flight Center Scientific Visualization Studio, made from Gaia DR2, Hipparcos and Tycho-2 data. Public domain." = "NASA/Goddard Space Flight Center Scientific Visualization Studio, за даними Gaia DR2, Hipparcos і Tycho-2. Суспільне надбання.";
 "the lights on the globe's night side" = "вогні на нічному боці глобуса";
-"NASA Earth Observatory. Used under NASA's media usage guidelines." = "NASA Earth Observatory. Використано згідно з правилами NASA щодо медіаматеріалів.";
+"Used under NASA's media usage guidelines." = "Використано згідно з правилами NASA щодо медіаматеріалів.";
 
 /* Sorting by distance: the map and Use My Location */
 "Use My Location" = "Використати моє розташування";
@@ -622,3 +622,6 @@
 "double-click" = "подвійне клацання";
 "timeline" = "шкала часу";
 "Tour: previous / next place" = "Подорож: попереднє / наступне місце";
+"Include subfolders" = "Разом із вкладеними папками";
+"The photos and videos of every subfolder too, archives included" = "Також фото й відео з усіх вкладених папок, разом з архівами";
+"Reading subfolders…" = "Читання вкладених папок…";

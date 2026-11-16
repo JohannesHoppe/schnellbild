@@ -551,7 +551,7 @@
 "the night sky behind the globe" = "yötaivas karttapallon takana";
 "NASA/Goddard Space Flight Center Scientific Visualization Studio, made from Gaia DR2, Hipparcos and Tycho-2 data. Public domain." = "NASA/Goddard Space Flight Center Scientific Visualization Studio, tehty Gaia DR2:n, Hipparcosin ja Tycho-2:n tiedoista. Vapaasti käytettävissä.";
 "the lights on the globe's night side" = "valot karttapallon yöpuolella";
-"NASA Earth Observatory. Used under NASA's media usage guidelines." = "NASA Earth Observatory. Käytetty NASAn median käyttöohjeiden mukaisesti.";
+"Used under NASA's media usage guidelines." = "Käytetty NASAn median käyttöohjeiden mukaisesti.";
 
 /* Sorting by distance: the map and Use My Location */
 "Use My Location" = "Käytä sijaintiani";
@@ -622,3 +622,6 @@
 "double-click" = "kaksoisosoitus";
 "timeline" = "aikajana";
 "Tour: previous / next place" = "Matka: edellinen / seuraava paikka";
+"Include subfolders" = "Myös alikansiot";
+"The photos and videos of every subfolder too, archives included" = "Myös kaikkien alikansioiden kuvat ja videot, arkistot mukaan lukien";
+"Reading subfolders…" = "Luetaan alikansioita…";

@@ -1,0 +1,31 @@
+# Makes the globe's data again from its archived inputs (the pre-release
+# SOURCE_RELEASE_TAG in Scripts/globe_data.env) on a clean Mac of each
+# macOS version and fails unless every file matches its pinned SHA-256:
+# the pipeline gives the same bytes everywhere. Runs when the pipeline or its
+# pins change, and by hand.
+name: Globe data check
+
+on:
+  push:
+    paths: [ 'Scripts/build_globe_data.py', 'Scripts/globe_data.env', '.github/workflows/globe-data-check.yml' ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: Globe data (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-15, macos-26]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: Make the files and compare them with their pins
+        run: |
+          python3 --version
+          python3 -c "import zlib; print('zlib', zlib.ZLIB_RUNTIME_VERSION)"
+          python3 -I Scripts/build_globe_data.py --check

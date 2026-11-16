@@ -551,7 +551,7 @@
 "the night sky behind the globe" = "kürenin arkasındaki gece gökyüzü";
 "NASA/Goddard Space Flight Center Scientific Visualization Studio, made from Gaia DR2, Hipparcos and Tycho-2 data. Public domain." = "NASA/Goddard Space Flight Center Scientific Visualization Studio, Gaia DR2, Hipparcos ve Tycho-2 verilerinden. Kamu malı.";
 "the lights on the globe's night side" = "kürenin gece tarafındaki ışıklar";
-"NASA Earth Observatory. Used under NASA's media usage guidelines." = "NASA Earth Observatory. NASA’nın medya kullanım yönergelerine göre kullanılmıştır.";
+"Used under NASA's media usage guidelines." = "NASA’nın medya kullanım yönergelerine göre kullanılmıştır.";
 
 /* Sorting by distance: the map and Use My Location */
 "Use My Location" = "Konumumu Kullan";
@@ -622,3 +622,6 @@
 "double-click" = "çift tıklama";
 "timeline" = "zaman çizelgesi";
 "Tour: previous / next place" = "Gezi: önceki / sonraki yer";
+"Include subfolders" = "Alt klasörleri dahil et";
+"The photos and videos of every subfolder too, archives included" = "Tüm alt klasörlerin fotoğrafları ve videoları da, arşivler dahil";
+"Reading subfolders…" = "Alt klasörler okunuyor…";

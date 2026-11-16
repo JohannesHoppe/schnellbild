@@ -307,10 +307,11 @@ final class MapSurfaceView: NSView {
     func animate(to target: MapCamera) {
         animation?.invalidate()
         let target = MapViewport(camera: target, size: bounds.size).clamped()
-        if NSWorkspace.shared.accessibilityDisplayShouldReduceMotion {
+        if MapMotion.reduced {
             moved(to: target)
             return
         }
+        MapMotion.began("glide")
         animationTarget = target
         let start = camera, began = Date(), duration = 0.25
         var startWorld = WebMercator.unitPoint(start.center)

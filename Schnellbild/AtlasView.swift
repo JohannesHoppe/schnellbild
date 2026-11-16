@@ -2,6 +2,7 @@ import SwiftUI
 import AppKit
 import AVFoundation
 import OfflineMap
+import VLCFrames
 
 /// The Atlas view (W): the pane's photos and videos at their places on the
 /// offline map, as thumbnails, close ones as one tile with their count;
@@ -79,6 +80,21 @@ struct AtlasView: View {
             .lineLimit(1)
             .accessibilityElement(children: .combine)
             .accessibilityIdentifier("atlasCount")
+            // (a search's results come from every subfolder anyway)
+            if !model.isFiltering {
+                Divider().frame(height: 14)
+                Toggle(isOn: $model.atlasSubfolders) { Text("Include subfolders").font(.caption) }
+                    .toggleStyle(.checkbox)
+                    .controlSize(.small)
+                    .help("The photos and videos of every subfolder too, archives included")
+                    .accessibilityIdentifier("atlasSubfolders")
+                if atlas.walking {
+                    ProgressView().controlSize(.mini)
+                        .help("Reading subfolders…")
+                        .accessibilityLabel(Text("Reading subfolders…"))
+                        .accessibilityIdentifier("atlasWalking")
+                }
+            }
         }
         .padding(.horizontal, 10).padding(.vertical, 6)
         .background(.regularMaterial, in: Capsule())
@@ -118,10 +134,14 @@ private struct AtlasMap: View {
         .overlay(alignment: .bottomLeading) {
             // What the UI tests read about the map (not shown, not for VoiceOver users)
             if VideoDetailView.uiTesting {
-                Color.clear.frame(width: 1, height: 1)
-                    .accessibilityElement()
-                    .accessibilityLabel(Text(verbatim: atlas.testState))
-                    .accessibilityIdentifier("atlasMapState")
+                // Read again four times a second: the map's own movements (a fade
+                // after its last camera change) change no state SwiftUI watches
+                TimelineView(.periodic(from: .now, by: 0.25)) { _ in
+                    Color.clear.frame(width: 1, height: 1)
+                        .accessibilityElement()
+                        .accessibilityLabel(Text(verbatim: atlas.testState))
+                        .accessibilityIdentifier("atlasMapState")
+                }
             }
         }
     }
@@ -369,14 +389,14 @@ private struct AtlasTimelineView: View {
 
     private func label(of date: Date?) -> String {
         guard let date else { return "" }
-        return AtlasTimeline.text(date, in: AtlasTimeline.zone(at: date, in: atlas.items), time: true)
+        return AtlasTimeline.text(date, in: atlas.zone(at: date), time: true)
     }
 
     @ViewBuilder
     private func track(width: CGFloat) -> some View {
         if let span = atlas.span, width > 0 {
             let bins = max(1, Int(width / 4))
-            let counts = AtlasTimeline.histogram(atlas.items, span: span, bins: bins)
+            let counts = AtlasTimeline.histogram(sorted: atlas.items, span: span, bins: bins)
             let most = max(1, counts.max() ?? 1)
             let lower = AtlasTimeline.fraction(of: range?.lowerBound ?? span.lowerBound, span: span)
             let upper = AtlasTimeline.fraction(of: range?.upperBound ?? span.upperBound, span: span)
@@ -428,11 +448,8 @@ private struct AtlasTimelineView: View {
     /// A thumbnail about every 46 points: the first item of that stretch.
     private func thumbnails(span: ClosedRange<Date>, width: CGFloat, lower: Double, upper: Double) -> some View {
         let slots = max(1, Int(width / 46))
-        var firsts: [Int: AtlasItem] = [:]
-        for item in atlas.items {
-            let slot = AtlasTimeline.bin(of: item.date, span: span, bins: slots)
-            if firsts[slot] == nil { firsts[slot] = item }
-        }
+        // (the items are in the order of time: a binary search per slot)
+        let firsts = AtlasTimeline.firstOfSlots(sorted: atlas.items, span: span, slots: slots)
         let slotWidth = width / CGFloat(slots)
         return ForEach(firsts.keys.sorted(), id: \.self) { slot in
             let item = firsts[slot]!
@@ -636,6 +653,11 @@ private struct TourPicture: View {
     let modified: Date?
     @State private var image: NSImage?
 
+    /// What shows it (UI tests).
+    private var player: String {
+        !item.isVideo || ArchivePath.isInside(item.url) ? "picture" : VideoDetailView.playsInVLC(item.url) ? "video vlc" : "video avkit"
+    }
+
     var body: some View {
         ZStack {
             if let image {
@@ -643,20 +665,57 @@ private struct TourPicture: View {
             } else {
                 Rectangle().fill(Color.secondary.opacity(0.15))
             }
-            if item.isVideo, !VideoDetailView.playsInVLC(item.url) {
-                TourVideo(url: item.url, paused: paused)
+            if item.isVideo, !ArchivePath.isInside(item.url) {
+                if VideoDetailView.playsInVLC(item.url) {
+                    TourVLCVideo(url: item.url, paused: paused)
+                } else {
+                    TourVideo(url: item.url, paused: paused)
+                }
             }
         }
         .frame(maxWidth: side, maxHeight: side)
         .aspectRatio(image.map { $0.size.width / max(1, $0.size.height) } ?? 1.5, contentMode: .fit)
         .clipShape(RoundedRectangle(cornerRadius: 8))
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Text(verbatim: item.name))
+        // Under `--ui-testing` also what shows it (a plain group's value doesn't reach XCUITest)
+        .accessibilityLabel(Text(verbatim: VideoDetailView.uiTesting ? item.name + " · " + player : item.name))
         .accessibilityIdentifier("tourItem")
         .task(id: item.url) {
             image = ThumbnailCache.shared.image(for: item.url)
             if let large = await ThumbnailCache.shared.thumbnail(for: item.url, side: max(256, side), modified: modified) { image = large }
         }
+    }
+}
+
+/// A video only VLC plays (MKV, WebM …) at a station: as `TourVideo`,
+/// through VLC with the full view's safeguards (`VLCSafety`: one reader by
+/// the file's first bytes), its sound at zero.
+private struct TourVLCVideo: View {
+    let url: URL
+    let paused: Bool
+    @State private var control: VLCPlaybackControl?
+
+    var body: some View {
+        ZStack {
+            if let control { VLCVideoView(control: control) }
+        }
+        .task(id: url) {
+            // The file's first bytes off the main thread (a share can be slow)
+            let head = await Blocking.run { VLCSafety.head(of: url) }
+            guard !Task.isCancelled else { return }
+            let made = VLCPlaybackControl(source: .file(url, head: head), onStateChange: { _, _ in })
+            made.setVolume(0)
+            if paused { made.pause() }
+            control = made
+        }
+        .onChange(of: paused) { _, paused in
+            if paused { control?.pause() } else { control?.play() }
+        }
+        .onDisappear {
+            control?.stop()
+            control = nil
+        }
+        .accessibilityIdentifier("tourVideo.vlc")
     }
 }
 

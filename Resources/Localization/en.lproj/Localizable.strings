@@ -551,7 +551,7 @@
 "the night sky behind the globe" = "the night sky behind the globe";
 "NASA/Goddard Space Flight Center Scientific Visualization Studio, made from Gaia DR2, Hipparcos and Tycho-2 data. Public domain." = "NASA/Goddard Space Flight Center Scientific Visualization Studio, made from Gaia DR2, Hipparcos and Tycho-2 data. Public domain.";
 "the lights on the globe's night side" = "the lights on the globe's night side";
-"NASA Earth Observatory. Used under NASA's media usage guidelines." = "NASA Earth Observatory. Used under NASA's media usage guidelines.";
+"Used under NASA's media usage guidelines." = "Used under NASA's media usage guidelines.";
 
 /* Sorting by distance: the map and Use My Location */
 "Use My Location" = "Use My Location";
@@ -622,3 +622,6 @@
 "double-click" = "double-click";
 "timeline" = "timeline";
 "Tour: previous / next place" = "Tour: previous / next place";
+"Include subfolders" = "Include subfolders";
+"The photos and videos of every subfolder too, archives included" = "The photos and videos of every subfolder too, archives included";
+"Reading subfolders…" = "Reading subfolders…";

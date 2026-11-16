@@ -551,7 +551,7 @@
 "the night sky behind the globe" = "nattehimmelen bak globusen";
 "NASA/Goddard Space Flight Center Scientific Visualization Studio, made from Gaia DR2, Hipparcos and Tycho-2 data. Public domain." = "NASA/Goddard Space Flight Center Scientific Visualization Studio, laget av data fra Gaia DR2, Hipparcos og Tycho-2. Fri for opphavsrett.";
 "the lights on the globe's night side" = "lysene på globusens nattside";
-"NASA Earth Observatory. Used under NASA's media usage guidelines." = "NASA Earth Observatory. Brukt etter NASAs retningslinjer for bruk av medier.";
+"Used under NASA's media usage guidelines." = "Brukt etter NASAs retningslinjer for bruk av medier.";
 
 /* Sorting by distance: the map and Use My Location */
 "Use My Location" = "Bruk min plassering";
@@ -622,3 +622,6 @@
 "double-click" = "dobbeltklikk";
 "timeline" = "tidslinje";
 "Tour: previous / next place" = "Tur: forrige / neste sted";
+"Include subfolders" = "Ta med undermapper";
+"The photos and videos of every subfolder too, archives included" = "Også bildene og videoene i alle undermapper, arkiver medregnet";
+"Reading subfolders…" = "Leser undermapper…";

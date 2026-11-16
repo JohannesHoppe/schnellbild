@@ -2,13 +2,14 @@ import SwiftUI
 import AppKit
 import ImageIO
 import VLCFrames
+import OfflineMap
 
 /// The app's movements (scrolling to the selection, the mini keyboard
 /// sliding in, a key lighting up, panning a zoomed picture): none while the
 /// user asks for less motion (System Settings → Accessibility → Display →
 /// Reduce motion); then things simply are where they go.
 enum Motion {
-    static var reduced: Bool { NSWorkspace.shared.accessibilityDisplayShouldReduceMotion }
+    static var reduced: Bool { MapMotion.reduced }
 
     static func animation(_ animation: Animation) -> Animation? { reduced ? nil : animation }
 }

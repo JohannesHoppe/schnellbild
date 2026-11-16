@@ -551,7 +551,7 @@
 "the night sky behind the globe" = "地球仪背后的夜空";
 "NASA/Goddard Space Flight Center Scientific Visualization Studio, made from Gaia DR2, Hipparcos and Tycho-2 data. Public domain." = "NASA/Goddard Space Flight Center Scientific Visualization Studio，根据 Gaia DR2、Hipparcos 和 Tycho-2 的数据制作。公有领域。";
 "the lights on the globe's night side" = "地球仪夜侧的灯光";
-"NASA Earth Observatory. Used under NASA's media usage guidelines." = "NASA Earth Observatory。按照 NASA 媒体使用准则使用。";
+"Used under NASA's media usage guidelines." = "按照 NASA 媒体使用准则使用。";
 
 /* Sorting by distance: the map and Use My Location */
 "Use My Location" = "使用我的位置";
@@ -622,3 +622,6 @@
 "double-click" = "连按两次";
 "timeline" = "时间轴";
 "Tour: previous / next place" = "旅程：上一个 / 下一个地点";
+"Include subfolders" = "包括子文件夹";
+"The photos and videos of every subfolder too, archives included" = "也显示所有子文件夹中的照片和视频，包括归档";
+"Reading subfolders…" = "正在读取子文件夹…";

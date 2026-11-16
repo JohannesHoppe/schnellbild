@@ -551,7 +551,7 @@
 "the night sky behind the globe" = "지구본 뒤의 밤하늘";
 "NASA/Goddard Space Flight Center Scientific Visualization Studio, made from Gaia DR2, Hipparcos and Tycho-2 data. Public domain." = "NASA/Goddard Space Flight Center Scientific Visualization Studio, Gaia DR2, Hipparcos, Tycho-2 데이터로 제작. 퍼블릭 도메인.";
 "the lights on the globe's night side" = "지구본 밤쪽의 불빛";
-"NASA Earth Observatory. Used under NASA's media usage guidelines." = "NASA Earth Observatory. NASA 미디어 사용 지침에 따라 사용.";
+"Used under NASA's media usage guidelines." = "NASA 미디어 사용 지침에 따라 사용.";
 
 /* Sorting by distance: the map and Use My Location */
 "Use My Location" = "내 위치 사용";
@@ -622,3 +622,6 @@
 "double-click" = "이중 클릭";
 "timeline" = "타임라인";
 "Tour: previous / next place" = "여행: 이전 / 다음 장소";
+"Include subfolders" = "하위 폴더 포함";
+"The photos and videos of every subfolder too, archives included" = "모든 하위 폴더의 사진과 비디오도 표시(압축 파일 포함)";
+"Reading subfolders…" = "하위 폴더 읽는 중…";

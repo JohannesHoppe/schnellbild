@@ -167,8 +167,22 @@ extension MapView where Overlay == EmptyView {
 /// Animations of the map's own controls: none with Reduce motion.
 enum Motion {
     static var animation: Animation? {
-        NSWorkspace.shared.accessibilityDisplayShouldReduceMotion ? nil : .easeInOut(duration: 0.25)
+        MapMotion.reduced ? nil : .easeInOut(duration: 0.25)
     }
+}
+
+/// Whether the map and the globe move on their own (glides, a drag's throw,
+/// the globe fading out over the flat map): not with Reduce motion. The UI
+/// tests set `reduceOverride` (the app's `--reduce-motion`) and read what
+/// moved in `counts`.
+public enum MapMotion {
+    /// Set: taken instead of the system's Reduce motion (set once at launch)
+    nonisolated(unsafe) public static var reduceOverride: Bool?
+    public static var reduced: Bool { reduceOverride ?? NSWorkspace.shared.accessibilityDisplayShouldReduceMotion }
+
+    /// How often each kind of movement began ("glide", "throw", "fade"; on the main thread)
+    nonisolated(unsafe) public private(set) static var counts: [String: Int] = [:]
+    static func began(_ kind: String) { counts[kind, default: 0] += 1 }
 }
 
 /// The credit for the map data: "© OpenStreetMap" in the corner, an ⓘ once

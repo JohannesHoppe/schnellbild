@@ -303,11 +303,12 @@ final class AtlasTests: XCTestCase {
 
     // MARK: Keys
 
-    private func window() throws -> (WindowModel, BrowserModel, Shortcuts, TempTree) {
+    private func window(folders: [String: String] = [:], spy given: FileActionsSpy? = nil,
+                        defaults: UserDefaults = makeTestDefaults()) throws -> (WindowModel, BrowserModel, Shortcuts, TempTree) {
         let tree = try TempTree(self)
-        for item in trip { try tree.file(item.name) }
-        let defaults = makeTestDefaults()
-        let left = BrowserModel(defaults: defaults, fileActions: FileActionsSpy().actions)
+        for item in trip { try tree.file((folders[item.name].map { $0 + "/" } ?? "") + item.name) }
+        let spy = given ?? FileActionsSpy()
+        let left = BrowserModel(defaults: defaults, fileActions: spy.actions)
         left.searchDebounce = .zero
         left.setFullScreen = { _ in false }
         let facts = Dictionary(uniqueKeysWithValues: trip.map { ($0.name, $0) })
@@ -446,6 +447,130 @@ final class AtlasTests: XCTestCase {
         XCTAssertEqual(m.selectedEntry?.name, "norway-14-trollstigen.jpg", "End: the last in time")
         XCTAssertTrue(w.typeKey(.home))
         XCTAssertEqual(m.selectedEntry?.name, "norway-01-bryggen.jpg")
+    }
+
+    // MARK: Subfolders
+
+    /// The trip in folders by day, the first day's photos in the folder
+    /// itself, and a hidden folder (left out, as by the slideshow).
+    private let byDay: [String: String] = [
+        "norway-05-flam.jpg": "Day 2", "norway-06-flam.jpg": "Day 2", "norway-07-stegastein.jpg": "Day 2",
+        "norway-08-geiranger.jpg": "Day 3", "norway-09-geiranger.jpg": "Day 3", "norway-10-geiranger.mov": "Day 3",
+        "norway-11-dalsnibba.jpg": "Day 3", "norway-12-alesund.jpg": "Day 4/Evening", "norway-13-evening.jpg": "Day 4/Evening",
+        "norway-14-trollstigen.jpg": "Day 5",
+    ]
+
+    private func atlasOfTheTree(spy: FileActionsSpy? = nil, defaults: UserDefaults = makeTestDefaults())
+        async throws -> (WindowModel, BrowserModel, TempTree) {
+        let (w, m, _, tree) = try window(folders: byDay, spy: spy, defaults: defaults)
+        try tree.file(".hidden/norway-99-hidden.jpg")
+        await openAndWait(m, tree.root)
+        m.viewMode = .atlas
+        await waitUntil({ !m.deepWalking && m.entries.count == 14 && m.atlas.items.count == 14 && m.atlas.isComplete }, timeout: 10)
+        m.atlas.mapSize = CGSize(width: 960, height: 600)
+        m.atlas.fitAll()
+        m.atlas.clusterNow()
+        return (w, m, tree)
+    }
+
+    private func names(_ entries: [GridEntry]) -> [String] { entries.map(\.name) }
+
+    func testTheAtlasShowsTheSubfoldersUnlessTurnedOff() async throws {
+        let defaults = makeTestDefaults()
+        let (_, m, _) = try await atlasOfTheTree(defaults: defaults)
+        XCTAssertTrue(m.atlasSubfolders, "on unless turned off")
+        XCTAssertTrue(m.showsDeep)
+        XCTAssertEqual(names(m.entries), trip.map(\.name), "every day's photos and the video, in the pane's order; no folders")
+        XCTAssertFalse(m.entries.contains { $0.name == "norway-99-hidden.jpg" }, "hidden folders are left out")
+        XCTAssertEqual(m.atlas.stations.count, 8)
+        // Another pane of the same preferences follows the switch, and it is kept
+        let other = BrowserModel(defaults: defaults, fileActions: FileActionsSpy().actions)
+        m.atlasSubfolders = false
+        XCTAssertFalse(other.atlasSubfolders)
+        XCTAssertFalse(BrowserModel(defaults: defaults, fileActions: FileActionsSpy().actions).atlasSubfolders, "remembered")
+        XCTAssertFalse(m.showsDeep)
+        XCTAssertEqual(Set(names(m.entries.filter(\.isMedia))), ["norway-01-bryggen.jpg", "norway-02-bryggen.jpg",
+                                                                  "norway-03-harbour.jpg", "norway-04-floyen.jpg"])
+        XCTAssertTrue(m.entries.contains { $0.name == "Day 3" }, "the folder's own listing again")
+        await waitUntil { m.atlas.items.count == 4 }
+        m.atlasSubfolders = true
+        await waitUntil({ !m.deepWalking && m.entries.count == 14 }, timeout: 10)
+        XCTAssertTrue(BrowserModel(defaults: defaults, fileActions: FileActionsSpy().actions).atlasSubfolders)
+    }
+
+    func testTheSelectionCrossesBetweenTheAtlasAndTheGrid() async throws {
+        let (w, m, _) = try await atlasOfTheTree()
+        // Selected in the Atlas, in a subfolder: back in the grid its folder is selected
+        let geiranger = try XCTUnwrap(m.entries.first { $0.name == "norway-09-geiranger.jpg" })
+        m.atlas.select(geiranger.url)
+        XCTAssertEqual(m.selectedEntry?.name, "norway-09-geiranger.jpg")
+        XCTAssertTrue(w.typeKey(.char("w")))
+        XCTAssertEqual(m.viewMode, .grid)
+        XCTAssertEqual(m.selectedEntry?.name, "Day 3", "the folder the item lies in")
+        XCTAssertFalse(m.showsDeep)
+        // A folder selected in the grid: the Atlas selects its first item once it comes
+        XCTAssertTrue(w.typeKey(.char("w")))
+        await waitUntil({ !m.deepWalking && m.entries.count == 14 }, timeout: 10)
+        XCTAssertEqual(m.selectedEntry?.name, "norway-08-geiranger.jpg")
+        // The full view pages through every folder's items, in the pane's order
+        XCTAssertTrue(w.typeKey(.space))
+        XCTAssertEqual(m.mode, .detail)
+        for expected in ["norway-09-geiranger.jpg", "norway-10-geiranger.mov", "norway-11-dalsnibba.jpg", "norway-12-alesund.jpg"] {
+            XCTAssertTrue(w.typeKey(.right, command: true))
+            XCTAssertEqual(m.shownMediaEntry?.name, expected)
+        }
+        XCTAssertTrue(w.typeKey(.escape))
+        XCTAssertEqual(m.mode, .grid)
+        XCTAssertEqual(m.viewMode, .atlas)
+        XCTAssertEqual(m.selectedEntry?.name, "norway-12-alesund.jpg", "the item shown last stays selected")
+        // Two levels down: the folder of the listing that holds it
+        XCTAssertTrue(w.typeKey(.char("w")))
+        XCTAssertEqual(m.selectedEntry?.name, "Day 4")
+        // A photo of the folder itself stays selected either way
+        m.selectEntry(named: "norway-02-bryggen.jpg")
+        XCTAssertTrue(w.typeKey(.char("w")))
+        await waitUntil({ !m.deepWalking }, timeout: 10)
+        XCTAssertEqual(m.selectedEntry?.name, "norway-02-bryggen.jpg")
+        XCTAssertTrue(w.typeKey(.char("w")))
+        XCTAssertEqual(m.selectedEntry?.name, "norway-02-bryggen.jpg")
+    }
+
+    func testSwitchingWhileTheWalkRunsKeepsTheSelectionInRange() async throws {
+        let (w, m, _) = try await atlasOfTheTree()
+        for round in 0..<20 {
+            w.typeKey(.char("w"))
+            if round % 3 == 0 { m.atlasSubfolders.toggle() }
+            if let selection = m.selection { XCTAssertTrue(m.entries.indices.contains(selection), "round \(round)") }
+            w.typeKey(.right)
+            if let selection = m.selection { XCTAssertTrue(m.entries.indices.contains(selection), "round \(round)") }
+            await Task.yield()
+        }
+        m.viewMode = .atlas
+        m.atlasSubfolders = true
+        await waitUntil({ !m.deepWalking && m.entries.count == 14 }, timeout: 10)
+        if let selection = m.selection { XCTAssertTrue(m.entries.indices.contains(selection)) }
+    }
+
+    func testAnItemTrashedFromASubfolderLeavesTheAtlas() async throws {
+        let spy = FileActionsSpy()
+        let (_, m, _) = try await atlasOfTheTree(spy: spy)
+        m.selectEntry(named: "norway-06-flam.jpg")
+        m.moveSelectionToTrash()
+        await waitUntil { m.entries.count == 13 }
+        XCTAssertEqual(spy.trashed.map(\.lastPathComponent), ["norway-06-flam.jpg"])
+        XCTAssertFalse(m.entries.contains { $0.name == "norway-06-flam.jpg" })
+        await waitUntil { m.atlas.items.count == 13 }
+        if let selection = m.selection { XCTAssertTrue(m.entries.indices.contains(selection)) }
+    }
+
+    func testASearchInTheAtlasTakesOverAndGivesBack() async throws {
+        let (_, m, _) = try await atlasOfTheTree()
+        m.searchText = "geiranger"
+        await waitUntil { !m.isSearching && m.entries.count == 3 }
+        XCTAssertFalse(m.showsDeep, "a search's results come from every subfolder anyway")
+        m.searchText = ""
+        await waitUntil({ !m.deepWalking && m.entries.count == 14 }, timeout: 10)
+        XCTAssertTrue(m.showsDeep)
     }
 
     // MARK: The fixtures as the app reads them

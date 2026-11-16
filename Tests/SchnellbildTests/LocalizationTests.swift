@@ -228,7 +228,7 @@ final class LocalizationTests: XCTestCase {
     static let readByUITests: Set<String> = [
         "%@, %@, %lld previews", "%lld columns, %lld laid out, selection %@", "zoom %lld %, rotation %lld°",
         "volume %lld %", "pressed %lld",
-        "selected", "not selected", "%@, %@ items", "station %@ of %@, %@%@",
+        "selected", "not selected", "%@, %@ items", "station %@ of %@, %@%@", "picture", "video vlc", "video avkit",
     ]
 
     /// Every text the app shows has an English entry, so every language
@@ -284,6 +284,17 @@ final class LocalizationTests: XCTestCase {
         XCTAssertEqual(Self.uiTexts(in: source).sorted(), ["Search stopped", "No \u{1} matches", "Date Modified", "ascending", "descending",
                                                   "Stop search", "Search", "Move", "Remove Bookmark", "Appearance", "Mode",
                                                   "Saved passwords", "Forget all?", "Undo Rename", "Undo All", "Undo", "drag"].sorted())
+    }
+
+    /// The globe's buttons name their help through a helper's `title:`,
+    /// which the scanner reads (both sides of each `?:`).
+    func testTheGlobesButtonsAreSeen() throws {
+        let file = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent()
+            .deletingLastPathComponent().appendingPathComponent("OfflineMap/GlobeView.swift")
+        let texts = Set(Self.uiTexts(in: try String(contentsOf: file, encoding: .utf8)))
+        for text in ["Zoom in", "Zoom out", "Show day and night", "Hide day and night", "Exaggerate the relief", "Show the relief at true scale"] {
+            XCTAssertTrue(texts.contains(text), text)
+        }
     }
 
     /// Each language's plurals have the categories its numbers need, as

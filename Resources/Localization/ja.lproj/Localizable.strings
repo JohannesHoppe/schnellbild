@@ -551,7 +551,7 @@
 "the night sky behind the globe" = "地球儀の背後の夜空";
 "NASA/Goddard Space Flight Center Scientific Visualization Studio, made from Gaia DR2, Hipparcos and Tycho-2 data. Public domain." = "NASA/Goddard Space Flight Center Scientific Visualization Studio、Gaia DR2、Hipparcos、Tycho-2 のデータから作成。パブリックドメイン。";
 "the lights on the globe's night side" = "地球儀の夜側の明かり";
-"NASA Earth Observatory. Used under NASA's media usage guidelines." = "NASA Earth Observatory。NASA のメディア利用ガイドラインに従って使用。";
+"Used under NASA's media usage guidelines." = "NASA のメディア利用ガイドラインに従って使用。";
 
 /* Sorting by distance: the map and Use My Location */
 "Use My Location" = "現在地を使用";
@@ -622,3 +622,6 @@
 "double-click" = "ダブルクリック";
 "timeline" = "タイムライン";
 "Tour: previous / next place" = "旅：前 / 次の場所";
+"Include subfolders" = "サブフォルダも含める";
+"The photos and videos of every subfolder too, archives included" = "すべてのサブフォルダの写真とビデオも表示（アーカイブを含む）";
+"Reading subfolders…" = "サブフォルダを読み込み中…";

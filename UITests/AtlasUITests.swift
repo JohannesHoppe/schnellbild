@@ -3,7 +3,8 @@ import XCTest
 /// The Atlas view (W) on the Norway trip of `UITests/Fixtures` (norway-*:
 /// 13 photos and a video on five days, one photo without a place):
 /// switching to it, selecting on the map and in the strip (the grid's
-/// selection), opening, narrowing the timeline, and the tour.
+/// selection), opening, narrowing the timeline, the tour, and the globe's
+/// gestures with and without Reduce motion.
 final class AtlasUITests: SchnellbildUITestCase {
     private let trip = [
         "norway-01-bryggen.jpg", "norway-02-bryggen.jpg", "norway-03-harbour.jpg", "norway-04-floyen.jpg",
@@ -20,8 +21,9 @@ final class AtlasUITests: SchnellbildUITestCase {
     }
 
     /// The trip open in the Atlas, every place read.
-    private func openAtlas() {
-        launchOnTempDir(waitFor: "norway-01-bryggen.jpg")
+    private func openAtlas(extra: [String] = []) {
+        launch(open: tempDir.path, extra: extra)
+        XCTAssertTrue(app.staticTexts["norway-01-bryggen.jpg"].waitForExistence(timeout: 15), "the grid")
         app.typeKey("w", modifierFlags: [])
         XCTAssertTrue(element("atlas").waitForExistence(timeout: 10))
         eventually("the places are read", timeout: 20) { self.text(of: self.element("atlasCount")).contains("13 on the map") }
@@ -133,5 +135,139 @@ final class AtlasUITests: SchnellbildUITestCase {
         eventually("the tour ended", timeout: 10) { !status.exists }
         XCTAssertTrue(searchField.waitForExistence(timeout: 10))
         XCTAssertTrue(element("timeline").waitForExistence(timeout: 5))
+    }
+
+    // MARK: The globe's gestures
+
+    /// What the map reports under `--ui-testing` (`AtlasModel.testState`).
+    private struct MapState {
+        var zoom = 0.0, latitude = 0.0, longitude = 0.0
+        var glides = 0, thrown = 0, fades = 0
+    }
+
+    private func mapState() -> MapState {
+        let text = self.text(of: element("atlasMapState"))
+        func number(after key: String, _ index: Int = 0) -> Double {
+            guard let range = text.range(of: key + " ") else { return .nan }
+            let words = text[range.upperBound...].split(whereSeparator: { $0 == " " || $0 == "," })
+            return index < words.count ? Double(words[index]) ?? .nan : .nan
+        }
+        return MapState(zoom: number(after: "zoom"), latitude: number(after: "center"), longitude: number(after: "center", 1),
+                        glides: Int(number(after: "glides")), thrown: Int(number(after: "throws")), fades: Int(number(after: "fades")))
+    }
+
+    /// An angle in -180 ..< 180.
+    private static func wrap(_ degrees: Double) -> Double {
+        let r = (degrees + 180).truncatingRemainder(dividingBy: 360)
+        return (r < 0 ? r + 360 : r) - 180
+    }
+
+    /// How far the centre moved west (the globe turned east under a drag to the right), across the antimeridian too.
+    private func westward(_ from: MapState, _ to: MapState) -> Double { Self.wrap(from.longitude - to.longitude) }
+
+    /// The globe's view (its accessibility element; tiles lie over it only around the trip).
+    private var globe: XCUIElement { app.images["Globe"].firstMatch }
+
+    /// Zoomed out with the − button until the Earth is a globe in space.
+    private func zoomOutToTheGlobe() {
+        let minus = app.buttons["Zoom out"].firstMatch
+        XCTAssertTrue(minus.waitForExistence(timeout: 5))
+        for _ in 0..<8 where mapState().zoom > 2.2 {
+            minus.click()
+            RunLoop.current.run(until: Date().addingTimeInterval(0.6))
+        }
+        eventually("the globe") { self.mapState().zoom <= 2.2 }
+    }
+
+    func testTheGlobeTurnsThrowsAndZooms() throws {
+        openAtlas()
+        XCTAssertTrue(globe.waitForExistence(timeout: 10))
+        zoomOutToTheGlobe()
+        XCTAssertGreaterThan(mapState().glides, 0, "the − button glides")
+
+        // A slow drag to the right, held at its end: the globe turns west under the pointer, nothing thrown
+        var before = mapState()
+        globe.coordinate(withNormalizedOffset: CGVector(dx: 0.42, dy: 0.75))
+            .press(forDuration: 0.2, thenDragTo: globe.coordinate(withNormalizedOffset: CGVector(dx: 0.50, dy: 0.75)),
+                   withVelocity: .slow, thenHoldForDuration: 0.5)
+        var after = mapState()
+        let dragged = westward(before, after)
+        XCTAssertGreaterThan(dragged, 5, "turned: \(before) → \(after)")
+        XCTAssertEqual(after.thrown, before.thrown, "held still: no throw")
+
+        // Let go while moving: it keeps turning a moment
+        before = after
+        globe.coordinate(withNormalizedOffset: CGVector(dx: 0.42, dy: 0.75))
+            .press(forDuration: 0.1, thenDragTo: globe.coordinate(withNormalizedOffset: CGVector(dx: 0.50, dy: 0.75)),
+                   withVelocity: .fast, thenHoldForDuration: 0)
+        eventually("thrown") { self.mapState().thrown > before.thrown }
+        RunLoop.current.run(until: Date().addingTimeInterval(2))
+        after = mapState()
+        // The same drag, and then the throw's turn on top of it
+        XCTAssertGreaterThan(abs(Self.wrap(westward(before, after) - dragged)), 3, "the throw went on after the mouse came up: \(after)")
+
+        // ⌘-scroll zooms about the pointer (XCUITest's scroll events are a trackpad's, which turn the globe without ⌘)
+        before = after
+        XCUIElement.perform(withKeyModifiers: .command) {
+            globe.coordinate(withNormalizedOffset: CGVector(dx: 0.45, dy: 0.75)).scroll(byDeltaX: 0, deltaY: 40)
+        }
+        eventually("zoomed by the wheel") { abs(self.mapState().zoom - before.zoom) > 0.2 }
+
+        // (XCUITest's scroll is a mouse wheel's on macOS 15, a quarter step a line, and a trackpad's on 26,
+        // a hundredth a point: the 40 can reach the flat map; back to the globe for what follows)
+        zoomOutToTheGlobe()
+
+        // A double click glides one step in
+        before = mapState()
+        globe.coordinate(withNormalizedOffset: CGVector(dx: 0.45, dy: 0.75)).doubleClick()
+        eventually("one step in") { abs(self.mapState().zoom - (before.zoom + 1)) < 0.05 }
+        XCTAssertGreaterThan(mapState().glides, before.glides, "it glided")
+
+        // In to the flat map: the globe fades out over it
+        before = mapState()
+        XCTAssertLessThan(before.zoom, 4, "still the globe: \(before)")
+        let plus = app.buttons["Zoom in"].firstMatch
+        for _ in 0..<5 where mapState().zoom < 5.5 {
+            plus.click()
+            RunLoop.current.run(until: Date().addingTimeInterval(0.6))
+        }
+        let deadline = Date().addingTimeInterval(10)
+        while mapState().fades <= before.fades, Date() < deadline { RunLoop.current.run(until: Date().addingTimeInterval(0.3)) }
+        let flat = mapState()
+        XCTAssertGreaterThan(flat.fades, before.fades, "the flat map, the globe faded out: \(before) → \(flat)")
+    }
+
+    func testWithReduceMotionNothingGlidesThrowsOrFades() throws {
+        openAtlas(extra: ["--reduce-motion"])
+        XCTAssertTrue(globe.waitForExistence(timeout: 10))
+        zoomOutToTheGlobe()
+
+        // Let go while moving: it turned with the drag and stops where the drag ended
+        let start = mapState()
+        globe.coordinate(withNormalizedOffset: CGVector(dx: 0.42, dy: 0.75))
+            .press(forDuration: 0.1, thenDragTo: globe.coordinate(withNormalizedOffset: CGVector(dx: 0.50, dy: 0.75)),
+                   withVelocity: .fast, thenHoldForDuration: 0)
+        let dropped = mapState()
+        XCTAssertGreaterThan(westward(start, dropped), 5, "turned: \(start) → \(dropped)")
+        RunLoop.current.run(until: Date().addingTimeInterval(1))
+        XCTAssertEqual(mapState().longitude, dropped.longitude, accuracy: 1e-9, "no throw")
+
+        // A double click jumps one step in
+        let before = mapState()
+        globe.coordinate(withNormalizedOffset: CGVector(dx: 0.45, dy: 0.75)).doubleClick()
+        eventually("one step in") { abs(self.mapState().zoom - (before.zoom + 1)) < 0.05 }
+
+        // In to the flat map
+        let plus = app.buttons["Zoom in"].firstMatch
+        for _ in 0..<5 where mapState().zoom < 5.5 {
+            plus.click()
+            RunLoop.current.run(until: Date().addingTimeInterval(0.4))
+        }
+        eventually("the flat map") { self.mapState().zoom >= 5.5 }
+        RunLoop.current.run(until: Date().addingTimeInterval(1))
+        let state = mapState()
+        XCTAssertEqual(state.glides, 0, "no glides: \(state)")
+        XCTAssertEqual(state.thrown, 0, "no throws")
+        XCTAssertEqual(state.fades, 0, "no fades")
     }
 }
