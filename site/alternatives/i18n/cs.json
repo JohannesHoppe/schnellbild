@@ -52,6 +52,7 @@
   "comic": "Čtečky komiksů",
   "files": "Správci souborů",
   "photos": "Apple a správa fotek",
+  "maps": "Mapy a glóby",
   "windows": "Přecházíte z Windows"
  },
  "jokes": {
@@ -173,7 +174,7 @@
   },
   "file_info_exif": {
    "label": "Informace o souboru: EXIF, kodeky, datový tok",
-   "how": "I ukáže formát, fotoaparát, kodeky a datový tok."
+   "how": "I ukáže formát, fotoaparát, kodeky a datový tok, místo pořízení na malé mapě a každý klíč metadat."
   },
   "wrong_extension_note": {
    "label": "Upozorní na příponu, která neodpovídá obsahu",
@@ -198,7 +199,7 @@
   },
   "subtitles_embedded": {
    "label": "Titulky uložené ve videu",
-   "how": "V je zapne a vypne, ⌃⌘S vybere stopu."
+   "how": "V je zapne a vypne, ⌃⌘S vybere stopu; zapnuté uprostřed hned ukážou běžící řádek a ASS si drží své styly."
   },
   "subtitles_external_files": {
    "label": "Načte soubory titulků vedle videa",
@@ -955,6 +956,59 @@
    "updated": "2026-10-13 (Windows); 2020-11-11 (Mac)",
    "platforms": "Windows, macOS (sestavení pro Intel), Android, iOS",
    "macNote": "Verze GOM Playeru pro Mac zůstává od roku 2020 na 1.0.0, sestavená pro Macy s procesorem Intel."
+  },
+  "google-earth": {
+   "name": "Google Earth",
+   "vendor": "Google",
+   "h1": "Bezplatná alternativa ke Google Earth pro vaše vlastní fotky",
+   "seoTitle": "Alternativa ke Google Earth pro vaše fotky na Macu · Schnellbild",
+   "description": "Vaše fotky a videa na offline mapě a glóbu podle dat GPS, s časovou osou a cestou. Zdarma pro Mac. Co zůstává u Google Earth.",
+   "keywords": "alternativa Google Earth, Google Earth Mac, fotky na mapě Mac, mapa fotek offline, offline glóbus Mac, GPS fotky mapa, Schnellbild",
+   "lead": "Schnellbild ukáže, kde vznikly vaše fotky a videa, na mapě a glóbu přímo v aplikaci, bez připojení k internetu. Pro satelitní snímky, 3D města a Street View zůstává správnou adresou Google Earth.",
+   "summary": "Virtuální glóbus od Googlu, na webu, v telefonu a tabletu a jako Google Earth Pro na počítači (Windows, Mac, Linux). Ukazuje satelitní snímky ve vysokém rozlišení, 3D terén a budovy ve stovkách měst a Street View; Earth Pro přidává historické snímky a importuje data GPS a GIS. Pro profesionální práci nabízí Google placené tarify.",
+   "wins": [
+    "Satelitní snímky celé Země",
+    "3D terén a budovy ve stovkách měst",
+    "Street View",
+    "Historické snímky",
+    "Hledání míst, adres a souřadnic",
+    "Import dat GPS a GIS"
+   ],
+   "offersTitle": "Co nabízí Schnellbild",
+   "offers": [
+    "Každá fotka a video ze složky a jejích podsložek na mapě podle dat GPS: z fotoaparátu nebo telefonu, z GoPro, dronu DJI, fotoaparátu Sony, doprovodného souboru XMP nebo záznamu GPX ve složce",
+    "Glóbus před hvězdnou oblohou, podle přání se dnem a nocí a světly měst na noční straně; při přiblížení se zploští v mapu",
+    "Časová osa cesty: přetáhněte přes úsek a uvidíte jen tu část",
+    "Cesta (T), která plyne z místa na místo, ukazuje fotky velké a pouští videa na pár sekund",
+    "Mapa je přímo v aplikaci: funguje bez internetu a žádná poloha neopustí váš Mac",
+    "Zdarma, bez účtu, v App Sandboxu od Applu"
+   ],
+   "lacksTitle": "Co Schnellbild neumí",
+   "lacks": [
+    "Žádné satelitní ani letecké snímky: mapa se kreslí z dat OpenStreetMap",
+    "Žádné 3D budovy a žádné Street View",
+    "Žádné hledání míst ani adres; pro řazení podle vzdálenosti bere souřadnice nebo odkaz na mapu",
+    "Žádné historické snímky ani nástroje GIS"
+   ],
+   "facts": [
+    [
+     "Platformy",
+     "Web, telefon a tablet, počítač (Windows, Mac, Linux)"
+    ],
+    [
+     "Google Earth Pro",
+     "Verze 7.3.7"
+    ],
+    [
+     "Stažení Earth Pro",
+     "do 25. června 2027"
+    ]
+   ],
+   "notes": {
+    "own_photos": "Google Earth Pro: fotka přidaná ke značce místa ji může přesunout na polohu GPS fotky",
+    "mac_app": "Google Earth Pro (Google uvádí Mac s procesorem Intel a alespoň Mac OS 10.8; stažení do 25. června 2027) a Google Earth na webu v prohlížeči"
+   },
+   "version": "Pro 7.3.7"
   },
   "google-photos": {
    "name": "Fotky Google",
@@ -2370,6 +2424,47 @@
     "shortcut_cheatsheet": "Dialog zkratek uvádí všechny klávesy; tahák k tisku ne",
     "notarized_attested": "Sestavení pro macOS notarizovaná; bez atestace sestavení"
    }
+  }
+ },
+ "mapRows": {
+  "own_photos": {
+   "label": "Vlastní fotky a videa na mapě podle dat GPS",
+   "note": "Celé složky i s podsložkami"
+  },
+  "offline": {
+   "label": "Mapa a glóbus bez internetu"
+  },
+  "globe_day_night": {
+   "label": "Glóbus se dnem a nocí"
+  },
+  "timeline": {
+   "label": "Časová osa"
+  },
+  "tour": {
+   "label": "Cesta z místa na místo"
+  },
+  "gps_tracks": {
+   "label": "Záznamy GPS (GPX)",
+   "note": "Umístí fotky na záznam GPX ve složce; cesta sleduje záznamy z GoPro a DJI"
+  },
+  "satellite": {
+   "label": "Satelitní snímky"
+  },
+  "buildings_3d": {
+   "label": "3D budovy"
+  },
+  "street_view": {
+   "label": "Street View"
+  },
+  "historical": {
+   "label": "Historické snímky"
+  },
+  "search_places": {
+   "label": "Hledání míst a adres"
+  },
+  "mac_app": {
+   "label": "Aplikace pro Mac",
+   "note": "Nativně na Apple silicon"
   }
  }
 }

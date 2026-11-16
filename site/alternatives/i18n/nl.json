@@ -52,6 +52,7 @@
   "comic": "Stripreaders",
   "files": "Bestandsbeheerders",
   "photos": "Apple en fotobeheer",
+  "maps": "Kaarten en globes",
   "windows": "Overstappers van Windows"
  },
  "jokes": {
@@ -173,7 +174,7 @@
   },
   "file_info_exif": {
    "label": "Bestandsinfo: EXIF, codecs, bitsnelheid",
-   "how": "I toont formaat, camera, codecs en bitsnelheid."
+   "how": "I toont formaat, camera, codecs en bitsnelheid, de opnameplek op een kaartje en elke metadatasleutel."
   },
   "wrong_extension_note": {
    "label": "Meldt bestanden waarvan de extensie niet bij de inhoud past",
@@ -198,7 +199,7 @@
   },
   "subtitles_embedded": {
    "label": "Ondertitels uit de video zelf",
-   "how": "V zet ze aan en uit, ⌃⌘S kiest de track."
+   "how": "V zet ze aan en uit, ⌃⌘S kiest de track; halverwege aangezet staat de lopende regel er meteen, en ASS houdt zijn stijlen."
   },
   "subtitles_external_files": {
    "label": "Laadt ondertitelbestanden naast de video",
@@ -955,6 +956,59 @@
    "updated": "2026-10-13 (Windows); 2020-11-11 (Mac)",
    "platforms": "Windows, macOS (Intel-versie), Android, iOS",
    "macNote": "De Mac-versie van GOM Player staat sinds 2020 op 1.0.0, gebouwd voor Intel-Macs."
+  },
+  "google-earth": {
+   "name": "Google Earth",
+   "vendor": "Google",
+   "h1": "Een gratis alternatief voor Google Earth voor je eigen foto’s",
+   "seoTitle": "Google Earth alternatief voor je foto’s op de Mac · Schnellbild",
+   "description": "Je foto’s en video’s op een offline kaart en globe, op hun gps-gegevens, met tijdlijn en reis. Gratis voor de Mac. Wat bij Google Earth blijft.",
+   "keywords": "Google Earth alternatief, Google Earth Mac, foto’s op kaart Mac, fotokaart offline, offline globe Mac, gps foto’s kaart, Schnellbild",
+   "lead": "Schnellbild laat zien waar je foto’s en video’s gemaakt zijn, op een kaart en een globe in de app, zonder online te gaan. Voor satellietbeelden, 3D-steden en Street View blijft Google Earth de plek.",
+   "summary": "De virtuele globe van Google, op het web, op telefoon en tablet en als Google Earth Pro op de computer (Windows, Mac, Linux). Hij toont satellietbeelden in hoge resolutie, 3D-terrein en gebouwen in honderden steden en Street View; Earth Pro voegt historische beelden toe en importeert gps- en gis-gegevens. Voor professioneel werk biedt Google betaalde abonnementen.",
+   "wins": [
+    "Satellietbeelden van de hele aarde",
+    "3D-terrein en gebouwen in honderden steden",
+    "Street View",
+    "Historische beelden",
+    "Zoeken naar plaatsen, adressen en coördinaten",
+    "Import van gps- en gis-gegevens"
+   ],
+   "offersTitle": "Wat Schnellbild biedt",
+   "offers": [
+    "Elke foto en video van een map en de submappen op de kaart, op hun gps-gegevens: van camera of telefoon, een GoPro, een DJI-drone, een Sony-camera, een XMP-sidecar of een gpx-track in de map",
+    "Een globe voor de sterrenhemel, desgewenst met dag en nacht en de verlichte steden op de nachtkant; bij inzoomen wordt hij de platte kaart",
+    "Een tijdlijn van de reis: sleep over een stuk om alleen dat deel te zien",
+    "Een reis (T) die van plek naar plek glijdt, de foto’s groot toont en de video’s een paar seconden afspeelt",
+    "De kaart zit in de app: hij werkt zonder internet, en geen locatie verlaat je Mac",
+    "Gratis, zonder account, in de App Sandbox van Apple"
+   ],
+   "lacksTitle": "Wat Schnellbild niet doet",
+   "lacks": [
+    "Geen satelliet- of luchtfoto’s: de kaart wordt getekend uit OpenStreetMap-gegevens",
+    "Geen 3D-gebouwen en geen Street View",
+    "Geen zoeken naar plaatsen of adressen; voor sorteren op afstand neemt het coördinaten of een kaartlink",
+    "Geen historische beelden en geen gis-gereedschap"
+   ],
+   "facts": [
+    [
+     "Platforms",
+     "Web, telefoon en tablet, computer (Windows, Mac, Linux)"
+    ],
+    [
+     "Google Earth Pro",
+     "Versie 7.3.7"
+    ],
+    [
+     "Download van Earth Pro",
+     "tot 25 juni 2027"
+    ]
+   ],
+   "notes": {
+    "own_photos": "Google Earth Pro: een foto bij een plaatsmarkering kan die naar de gps-positie van de foto verplaatsen",
+    "mac_app": "Google Earth Pro (Google noemt een Intel-Mac met minstens Mac OS 10.8; download tot 25 juni 2027) en Google Earth op het web in de browser"
+   },
+   "version": "Pro 7.3.7"
   },
   "google-photos": {
    "name": "Google Foto’s",
@@ -2370,6 +2424,47 @@
     "shortcut_cheatsheet": "Dialoog met alle toetsen; niet afdrukbaar",
     "notarized_attested": "macOS-builds genotariseerd; geen build-attestatie"
    }
+  }
+ },
+ "mapRows": {
+  "own_photos": {
+   "label": "Je eigen foto’s en video’s op de kaart, op hun gps-gegevens",
+   "note": "Hele mappen met hun submappen"
+  },
+  "offline": {
+   "label": "Kaart en globe zonder internet"
+  },
+  "globe_day_night": {
+   "label": "Globe met dag en nacht"
+  },
+  "timeline": {
+   "label": "Tijdlijn"
+  },
+  "tour": {
+   "label": "Reis van plek naar plek"
+  },
+  "gps_tracks": {
+   "label": "Gps-tracks (GPX)",
+   "note": "Zet foto’s op een gpx-track in de map; de reis volgt de tracks van GoPro en DJI"
+  },
+  "satellite": {
+   "label": "Satellietbeelden"
+  },
+  "buildings_3d": {
+   "label": "3D-gebouwen"
+  },
+  "street_view": {
+   "label": "Street View"
+  },
+  "historical": {
+   "label": "Historische beelden"
+  },
+  "search_places": {
+   "label": "Zoeken naar plaatsen en adressen"
+  },
+  "mac_app": {
+   "label": "App voor de Mac",
+   "note": "Native op Apple silicon"
   }
  }
 }

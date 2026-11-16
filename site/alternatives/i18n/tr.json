@@ -52,6 +52,7 @@
   "comic": "Çizgi roman okuyucular",
   "files": "Dosya yöneticileri",
   "photos": "Apple ve fotoğraf yönetimi",
+  "maps": "Haritalar ve küreler",
   "windows": "Windows’tan gelenler için"
  },
  "jokes": {
@@ -173,7 +174,7 @@
   },
   "file_info_exif": {
    "label": "Dosya bilgileri: EXIF, kodekler, bit hızı",
-   "how": "I biçimi, fotoğraf makinesini, kodekleri ve bit hızını gösterir."
+   "how": "I biçimi, fotoğraf makinesini, kodekleri ve bit hızını, çekildiği yeri küçük bir haritada ve her meta veri anahtarını gösterir."
   },
   "wrong_extension_note": {
    "label": "Uzantısı içeriğine uymayan dosyayı belirtir",
@@ -198,7 +199,7 @@
   },
   "subtitles_embedded": {
    "label": "Videonun içindeki altyazılar",
-   "how": "V açar ve kapatır, ⌃⌘S parçayı seçer."
+   "how": "V açar ve kapatır, ⌃⌘S parçayı seçer; ortada açıldığında akan satır hemen görünür, ASS de stillerini korur."
   },
   "subtitles_external_files": {
    "label": "Videonun yanındaki altyazı dosyalarını yükler",
@@ -955,6 +956,59 @@
    "updated": "2026-10-13 (Windows); 2020-11-11 (Mac)",
    "platforms": "Windows, macOS (Intel sürümü), Android, iOS",
    "macNote": "GOM Player’ın Mac sürümü 2020’den beri 1.0.0’da duruyor ve Intel Mac’ler için derlenmiş."
+  },
+  "google-earth": {
+   "name": "Google Earth",
+   "vendor": "Google",
+   "h1": "Kendi fotoğraflarınız için ücretsiz bir Google Earth alternatifi",
+   "seoTitle": "Mac’te Fotoğraflarınız için Google Earth Alternatifi · Schnellbild",
+   "description": "Fotoğraf ve videolarınız çevrimdışı bir harita ve kürede, GPS verilerine göre, zaman çizelgesi ve geziyle. Mac için ücretsiz. Google Earth’te kalanlar.",
+   "keywords": "Google Earth alternatifi, Google Earth Mac, haritada fotoğraflar Mac, çevrimdışı fotoğraf haritası, çevrimdışı küre Mac, GPS fotoğraf harita, Schnellbild",
+   "lead": "Schnellbild, fotoğraf ve videolarınızın nerede çekildiğini uygulamanın içindeki bir harita ve kürede, internete çıkmadan gösterir. Uydu görüntüleri, 3D şehirler ve Street View için adres yine Google Earth.",
+   "summary": "Google’ın sanal küresi; web’de, telefon ve tablette ve masaüstünde Google Earth Pro olarak (Windows, Mac, Linux). Yüksek çözünürlüklü uydu görüntüleri, yüzlerce şehirde 3D arazi ve binalar ve Street View sunar; Earth Pro buna geçmiş görüntüleri ekler, GPS ve CBS verilerini içe aktarır. Profesyonel çalışma için Google ücretli planlar sunar.",
+   "wins": [
+    "Bütün Dünya’nın uydu görüntüleri",
+    "Yüzlerce şehirde 3D arazi ve binalar",
+    "Street View",
+    "Geçmiş görüntüler",
+    "Yer, adres ve koordinat arama",
+    "GPS ve CBS verilerini içe aktarma"
+   ],
+   "offersTitle": "Schnellbild ne sunar",
+   "offers": [
+    "Bir klasörün ve alt klasörlerinin her fotoğraf ve videosu haritada, GPS verilerine göre: fotoğraf makinesinden ya da telefondan, bir GoPro’dan, bir DJI drone’dan, bir Sony makineden, bir XMP yan dosyasından ya da klasördeki bir GPX izinden",
+    "Yıldızlı gökyüzünün önünde bir küre; isterseniz gece ve gündüzüyle, gece tarafında şehir ışıklarıyla. Yaklaştıkça düz haritaya dönüşür",
+    "Gezinin zaman çizelgesi: yalnızca bir bölümü görmek için üzerinden sürükleyin",
+    "Yerden yere kayan, fotoğrafları büyük gösteren ve videoları birkaç saniye oynatan bir gezi (T)",
+    "Harita uygulamanın içindedir: internetsiz çalışır, hiçbir konum Mac’inizden ayrılmaz",
+    "Ücretsiz, hesapsız, Apple’ın App Sandbox’ında"
+   ],
+   "lacksTitle": "Schnellbild ne yapmaz",
+   "lacks": [
+    "Uydu ya da hava fotoğrafı yok: harita OpenStreetMap verilerinden çizilir",
+    "3D bina yok, Street View yok",
+    "Yer ya da adres arama yok; uzaklığa göre sıralama için koordinat ya da harita bağlantısı alır",
+    "Geçmiş görüntü ve CBS araçları yok"
+   ],
+   "facts": [
+    [
+     "Platformlar",
+     "Web, telefon ve tablet, masaüstü (Windows, Mac, Linux)"
+    ],
+    [
+     "Google Earth Pro",
+     "Sürüm 7.3.7"
+    ],
+    [
+     "Earth Pro indirme",
+     "25 Haziran 2027’ye kadar"
+    ]
+   ],
+   "notes": {
+    "own_photos": "Google Earth Pro: bir yer işaretine eklenen fotoğraf, işareti fotoğrafın GPS konumuna taşıyabilir",
+    "mac_app": "Google Earth Pro (Google, en az Mac OS 10.8 yüklü bir Intel Mac belirtir; indirme 25 Haziran 2027’ye kadar) ve tarayıcıda web’de Google Earth"
+   },
+   "version": "Pro 7.3.7"
   },
   "google-photos": {
    "name": "Google Fotoğraflar",
@@ -2370,6 +2424,47 @@
     "shortcut_cheatsheet": "Kısayol penceresi tüm tuşları listeler; yazdırılabilir liste yok",
     "notarized_attested": "macOS sürümleri onaylı (notarized); derleme onayı yok"
    }
+  }
+ },
+ "mapRows": {
+  "own_photos": {
+   "label": "Kendi fotoğraf ve videolarınız haritada, GPS verilerine göre",
+   "note": "Alt klasörleriyle birlikte bütün klasörler"
+  },
+  "offline": {
+   "label": "İnternetsiz harita ve küre"
+  },
+  "globe_day_night": {
+   "label": "Gece ve gündüzlü küre"
+  },
+  "timeline": {
+   "label": "Zaman çizelgesi"
+  },
+  "tour": {
+   "label": "Yerden yere gezi"
+  },
+  "gps_tracks": {
+   "label": "GPS izleri (GPX)",
+   "note": "Fotoğrafları klasördeki bir GPX izine yerleştirir; gezi GoPro ve DJI izlerini izler"
+  },
+  "satellite": {
+   "label": "Uydu görüntüleri"
+  },
+  "buildings_3d": {
+   "label": "3D binalar"
+  },
+  "street_view": {
+   "label": "Street View"
+  },
+  "historical": {
+   "label": "Geçmiş görüntüler"
+  },
+  "search_places": {
+   "label": "Yer ve adres arama"
+  },
+  "mac_app": {
+   "label": "Mac uygulaması",
+   "note": "Apple silicon’da yerel"
   }
  }
 }

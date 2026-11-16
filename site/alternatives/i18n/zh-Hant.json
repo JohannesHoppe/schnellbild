@@ -52,6 +52,7 @@
   "comic": "漫畫閱讀器",
   "files": "檔案管理器",
   "photos": "Apple 與照片管理",
+  "maps": "地圖與地球儀",
   "windows": "從 Windows 轉過來"
  },
  "jokes": {
@@ -173,7 +174,7 @@
   },
   "file_info_exif": {
    "label": "檔案資訊：EXIF、編解碼器、位元率",
-   "how": "按 I 顯示格式、相機、編解碼器和位元率。"
+   "how": "按 I 顯示格式、相機、編解碼器和位元率，在小地圖上顯示拍攝地點，以及每一個中繼資料鍵。"
   },
   "wrong_extension_note": {
    "label": "提醒副檔名與內容不符的檔案",
@@ -198,7 +199,7 @@
   },
   "subtitles_embedded": {
    "label": "影片內嵌字幕",
-   "how": "按 V 開關字幕，⌃⌘S 選擇字幕軌道。"
+   "how": "按 V 開關字幕，⌃⌘S 選擇字幕軌道；播放到一半才打開，也會立刻顯示正在進行的那一句，ASS 字幕保留其樣式。"
   },
   "subtitles_external_files": {
    "label": "載入影片旁的字幕檔",
@@ -955,6 +956,59 @@
    "updated": "2026-10-13（Windows）；2020-11-11（Mac）",
    "platforms": "Windows、macOS（Intel 版）、Android、iOS",
    "macNote": "GOM Player 的 Mac 版自 2020 年起一直停在 1.0.0，是為 Intel Mac 建置的。"
+  },
+  "google-earth": {
+   "name": "Google Earth",
+   "vendor": "Google",
+   "h1": "為你自己的照片準備的免費 Google Earth 替代方案",
+   "seoTitle": "在 Mac 上把照片放到地圖上：Google Earth 替代方案 · Schnellbild",
+   "description": "依 GPS 資料把照片和影片放到離線地圖和地球儀上，附時間軸和旅程播放。Mac 免費 App。哪些仍要交給 Google Earth。",
+   "keywords": "Google Earth 替代方案, Google 地球 Mac, 照片 地圖 Mac, 離線 照片地圖, 離線 地球儀 Mac, GPS 照片 地圖, Schnellbild",
+   "lead": "Schnellbild 在 App 內的地圖和地球儀上顯示你的照片和影片是在哪裡拍的，全程不連網。要看衛星影像、3D 城市和街景服務，還是去 Google Earth。",
+   "summary": "Google 的虛擬地球儀，可在網頁、手機和平板上使用，桌面版為 Google Earth Pro（Windows、Mac、Linux）。它提供高解析度衛星影像、數百座城市的 3D 地形和建築以及街景服務；Earth Pro 還能查看歷史影像，並匯入 GPS 和 GIS 資料。針對專業工作，Google 提供付費方案。",
+   "wins": [
+    "整個地球的衛星影像",
+    "數百座城市的 3D 地形和建築",
+    "街景服務",
+    "歷史影像",
+    "搜尋地點、地址和座標",
+    "匯入 GPS 和 GIS 資料"
+   ],
+   "offersTitle": "Schnellbild 能做什麼",
+   "offers": [
+    "依 GPS 資料把檔案夾及其子檔案夾裡的每張照片和每段影片放到地圖上，資料來自相機或手機、GoPro、DJI 空拍機、Sony 相機、XMP 附屬檔或檔案夾裡的 GPX 軌跡",
+    "星空前的地球儀；打開晝夜顯示，夜半球上會亮起城市燈光；放大後攤平成地圖",
+    "旅程的時間軸：拖選一段，就只看這一段",
+    "旅程播放（T）：地圖從一個地點移到下一個，照片放大顯示，影片各播幾秒",
+    "地圖內建在 App 裡：不連網也能用，任何位置資訊都不會離開你的 Mac",
+    "免費，不需帳號，在 Apple 的 App Sandbox 裡執行"
+   ],
+   "lacksTitle": "Schnellbild 不做什麼",
+   "lacks": [
+    "沒有衛星影像和空拍影像：地圖由 OpenStreetMap 資料繪製",
+    "沒有 3D 建築，也沒有街景服務",
+    "不能搜尋地點或地址；依距離排序時，可以輸入座標或地圖連結",
+    "沒有歷史影像，也沒有 GIS 工具"
+   ],
+   "facts": [
+    [
+     "平台",
+     "網頁、手機和平板、桌面（Windows、Mac、Linux）"
+    ],
+    [
+     "Google Earth Pro",
+     "版本 7.3.7"
+    ],
+    [
+     "Earth Pro 下載",
+     "至 2027 年 6 月 25 日"
+    ]
+   ],
+   "notes": {
+    "own_photos": "Google Earth Pro：在地標加上照片後，可以把地標移到照片的 GPS 位置",
+    "mac_app": "Google Earth Pro（Google 列出的需求是 Intel 處理器的 Mac 和 Mac OS 10.8 或更新版本；下載至 2027 年 6 月 25 日），以及在瀏覽器中使用的網頁版 Google Earth"
+   },
+   "version": "Pro 7.3.7"
   },
   "google-photos": {
    "name": "Google 相簿",
@@ -2370,6 +2424,47 @@
     "shortcut_cheatsheet": "快速鍵對話框列出所有按鍵；沒有可列印的總表",
     "notarized_attested": "macOS 版經過公證；沒有建置證明"
    }
+  }
+ },
+ "mapRows": {
+  "own_photos": {
+   "label": "依 GPS 資料把你的照片和影片放到地圖上",
+   "note": "整個檔案夾及其子檔案夾"
+  },
+  "offline": {
+   "label": "不必連網的地圖和地球儀"
+  },
+  "globe_day_night": {
+   "label": "帶晝夜顯示的地球儀"
+  },
+  "timeline": {
+   "label": "時間軸"
+  },
+  "tour": {
+   "label": "從一地到另一地的旅程"
+  },
+  "gps_tracks": {
+   "label": "GPS 軌跡（GPX）",
+   "note": "把照片放到檔案夾裡的 GPX 軌跡上；旅程沿 GoPro 和 DJI 的軌跡前進"
+  },
+  "satellite": {
+   "label": "衛星影像"
+  },
+  "buildings_3d": {
+   "label": "3D 建築"
+  },
+  "street_view": {
+   "label": "街景服務"
+  },
+  "historical": {
+   "label": "歷史影像"
+  },
+  "search_places": {
+   "label": "搜尋地點和地址"
+  },
+  "mac_app": {
+   "label": "Mac App",
+   "note": "原生支援 Apple 晶片"
   }
  }
 }

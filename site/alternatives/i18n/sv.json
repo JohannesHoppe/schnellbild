@@ -52,6 +52,7 @@
   "comic": "Serieläsare",
   "files": "Filhanterare",
   "photos": "Apple och fotohantering",
+  "maps": "Kartor och jordglober",
   "windows": "Från Windows"
  },
  "jokes": {
@@ -173,7 +174,7 @@
   },
   "file_info_exif": {
    "label": "Filinfo: EXIF, kodekar, bithastighet",
-   "how": "I visar format, kamera, kodekar och bithastighet."
+   "how": "I visar format, kamera, kodekar och bithastighet, var bilden togs på en liten karta och varje metadatanyckel."
   },
   "wrong_extension_note": {
    "label": "Säger till när filändelsen inte stämmer med innehållet",
@@ -198,7 +199,7 @@
   },
   "subtitles_embedded": {
    "label": "Undertexter inbäddade i videon",
-   "how": "V slår på och av dem, ⌃⌘S väljer spår."
+   "how": "V slår på och av dem, ⌃⌘S väljer spår; påslagna mitt i syns raden som pågår direkt, och ASS behåller sina stilar."
   },
   "subtitles_external_files": {
    "label": "Läser in undertextfiler som ligger bredvid videon",
@@ -955,6 +956,59 @@
    "updated": "2026-10-13 (Windows); 2020-11-11 (Mac)",
    "platforms": "Windows, macOS (Intel-version), Android, iOS",
    "macNote": "GOM Players Macversion har stått still på 1.0.0 sedan 2020 och är byggd för Intel-Mac."
+  },
+  "google-earth": {
+   "name": "Google Earth",
+   "vendor": "Google",
+   "h1": "Ett gratis alternativ till Google Earth för dina egna foton",
+   "seoTitle": "Alternativ till Google Earth för dina foton på Mac · Schnellbild",
+   "description": "Dina foton och videor på en karta och jordglob offline, efter GPS-data, med tidslinje och resa. Gratis för Mac. Det som stannar hos Google Earth.",
+   "keywords": "Google Earth alternativ, Google Earth Mac, foton på karta Mac, fotokarta offline, jordglob offline Mac, GPS foton karta, Schnellbild",
+   "lead": "Schnellbild visar var dina foton och videor togs, på en karta och en jordglob i appen, utan att gå ut på nätet. För satellitbilder, 3D-städer och Street View är Google Earth fortfarande rätt ställe.",
+   "summary": "Googles virtuella jordglob, på webben, i mobil och surfplatta och som Google Earth Pro på datorn (Windows, Mac, Linux). Den visar högupplösta satellitbilder, terräng och byggnader i 3D i hundratals städer och Street View; Earth Pro lägger till historiska bilder och importerar GPS- och GIS-data. För yrkesmässigt arbete erbjuder Google betalda abonnemang.",
+   "wins": [
+    "Satellitbilder av hela jorden",
+    "Terräng och byggnader i 3D i hundratals städer",
+    "Street View",
+    "Historiska bilder",
+    "Sök efter platser, adresser och koordinater",
+    "Import av GPS- och GIS-data"
+   ],
+   "offersTitle": "Det här erbjuder Schnellbild",
+   "offers": [
+    "Varje foto och video i en mapp och dess undermappar på kartan, efter GPS-data: från kameran eller mobilen, en GoPro, en DJI-drönare, en Sony-kamera, en XMP-sidofil eller ett GPX-spår i mappen",
+    "En jordglob framför stjärnhimlen, om du vill med dag och natt och städernas ljus på nattsidan; zoomar du in planas den ut till kartan",
+    "En tidslinje över resan: dra över en del för att se bara den",
+    "En resa (T) som glider från plats till plats, visar foton stort och spelar videor några sekunder",
+    "Kartan finns i appen: den fungerar utan internet, och ingen plats lämnar din Mac",
+    "Gratis, utan konto, i Apples App Sandbox"
+   ],
+   "lacksTitle": "Det här gör Schnellbild inte",
+   "lacks": [
+    "Inga satellit- eller flygbilder: kartan ritas från OpenStreetMap-data",
+    "Inga 3D-byggnader och ingen Street View",
+    "Ingen sökning efter platser eller adresser; för sortering efter avstånd tar den koordinater eller en kartlänk",
+    "Inga historiska bilder och inga GIS-verktyg"
+   ],
+   "facts": [
+    [
+     "Plattformar",
+     "Webb, mobil och surfplatta, dator (Windows, Mac, Linux)"
+    ],
+    [
+     "Google Earth Pro",
+     "Version 7.3.7"
+    ],
+    [
+     "Nedladdning av Earth Pro",
+     "till 25 juni 2027"
+    ]
+   ],
+   "notes": {
+    "own_photos": "Google Earth Pro: ett foto som läggs till en platsmarkör kan flytta den till fotots GPS-position",
+    "mac_app": "Google Earth Pro (Google anger en Intel-Mac med minst Mac OS 10.8; nedladdning till 25 juni 2027) och Google Earth på webben i webbläsaren"
+   },
+   "version": "Pro 7.3.7"
   },
   "google-photos": {
    "name": "Google Foto",
@@ -2370,6 +2424,47 @@
     "shortcut_cheatsheet": "Dialog med alla tangenter; ingen utskrivbar lista",
     "notarized_attested": "macOS-versioner notariserade; inget byggintyg"
    }
+  }
+ },
+ "mapRows": {
+  "own_photos": {
+   "label": "Dina egna foton och videor på kartan, efter deras GPS-data",
+   "note": "Hela mappar med undermappar"
+  },
+  "offline": {
+   "label": "Karta och jordglob utan internet"
+  },
+  "globe_day_night": {
+   "label": "Jordglob med dag och natt"
+  },
+  "timeline": {
+   "label": "Tidslinje"
+  },
+  "tour": {
+   "label": "Resa från plats till plats"
+  },
+  "gps_tracks": {
+   "label": "GPS-spår (GPX)",
+   "note": "Placerar foton på ett GPX-spår i mappen; resan följer spåren från GoPro och DJI"
+  },
+  "satellite": {
+   "label": "Satellitbilder"
+  },
+  "buildings_3d": {
+   "label": "3D-byggnader"
+  },
+  "street_view": {
+   "label": "Street View"
+  },
+  "historical": {
+   "label": "Historiska bilder"
+  },
+  "search_places": {
+   "label": "Sök efter platser och adresser"
+  },
+  "mac_app": {
+   "label": "App för Mac",
+   "note": "Native på Apple silicon"
   }
  }
 }

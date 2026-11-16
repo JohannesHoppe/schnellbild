@@ -52,6 +52,7 @@
   "comic": "漫画ビューア",
   "files": "ファイラー",
   "photos": "Appleと写真管理",
+  "maps": "地図と地球儀",
   "windows": "Windowsからお越しの方へ"
  },
  "jokes": {
@@ -173,7 +174,7 @@
   },
   "file_info_exif": {
    "label": "ファイル情報：EXIF、コーデック、ビットレート",
-   "how": "Iでフォーマット、カメラ、コーデック、ビットレートを表示。"
+   "how": "Iでフォーマット、カメラ、コーデック、ビットレート、小さな地図上の撮影場所、すべてのメタデータを表示。"
   },
   "wrong_extension_note": {
    "label": "拡張子と中身が一致しないファイルを知らせる",
@@ -198,7 +199,7 @@
   },
   "subtitles_embedded": {
    "label": "動画に埋め込まれた字幕",
-   "how": "Vでオン・オフ、⌃⌘Sでトラックを選択。"
+   "how": "Vでオン・オフ、⌃⌘Sでトラックを選択。途中でオンにしても表示中のセリフがすぐに出て、ASSはスタイルもそのままです。"
   },
   "subtitles_external_files": {
    "label": "動画の横にある字幕ファイルを読み込む",
@@ -955,6 +956,59 @@
    "updated": "2026-10-13（Windows）、2020-11-11（Mac）",
    "platforms": "Windows、macOS（Intel版）、Android、iOS",
    "macNote": "GOM PlayerのMac版は2020年から1.0.0のままで、Intel Mac向けにビルドされています。"
+  },
+  "google-earth": {
+   "name": "Google Earth",
+   "vendor": "Google",
+   "h1": "自分の写真のための無料のGoogle Earthの代替",
+   "seoTitle": "Macで写真を地図に：Google Earthの代替 · Schnellbild",
+   "description": "写真や動画をGPSデータでオフラインの地図と地球儀に。タイムラインと旅の再生つき、Macで無料。Google Earthに任せたほうがよいことも。",
+   "keywords": "Google Earth 代替, Google Earth Mac, 写真 地図 Mac, 写真マップ オフライン, オフライン 地球儀 Mac, GPS 写真 地図, Schnellbild",
+   "lead": "Schnellbildは、写真や動画を撮った場所を、アプリ内の地図と地球儀に表示します。インターネットには接続しません。衛星画像、3Dの街並み、ストリートビューを見るなら、引き続きGoogle Earthです。",
+   "summary": "Googleのバーチャル地球儀。ウェブ、スマートフォンとタブレット、そしてデスクトップ版のGoogle Earth Pro（Windows、Mac、Linux）で使えます。高解像度の衛星画像、数百の都市の3D地形と建物、ストリートビューを表示し、Earth Proでは過去の画像の表示やGPS・GISデータの読み込みもできます。業務向けには有料プランがあります。",
+   "wins": [
+    "地球全体の衛星画像",
+    "数百の都市の3D地形と建物",
+    "ストリートビュー",
+    "過去の画像",
+    "場所、住所、座標の検索",
+    "GPS・GISデータの読み込み"
+   ],
+   "offersTitle": "Schnellbildでできること",
+   "offers": [
+    "フォルダとサブフォルダのすべての写真と動画を、GPSデータで地図上に表示。カメラやスマートフォン、GoPro、DJIのドローン、ソニーのカメラ、XMPサイドカー、フォルダ内のGPXトラックから読み取ります",
+    "星空を背にした地球儀。昼と夜を表示すれば夜の側に街の明かりがともり、ズームインすると平らな地図に変わります",
+    "旅のタイムライン。一部をドラッグすると、その部分だけが表示されます",
+    "旅の再生（T）。場所から場所へ移動し、写真を大きく表示して、動画を数秒ずつ再生します",
+    "地図はアプリに内蔵。インターネットなしで動き、位置情報がMacの外に出ることはありません",
+    "無料、アカウント不要、AppleのApp Sandbox内で動作"
+   ],
+   "lacksTitle": "Schnellbildにできないこと",
+   "lacks": [
+    "衛星写真や航空写真はありません。地図はOpenStreetMapのデータから描いています",
+    "3Dの建物やストリートビューはありません",
+    "場所や住所の検索はありません。距離順の並べ替えには、座標か地図のリンクを使います",
+    "過去の画像やGISツールはありません"
+   ],
+   "facts": [
+    [
+     "プラットフォーム",
+     "ウェブ、スマートフォンとタブレット、デスクトップ（Windows、Mac、Linux）"
+    ],
+    [
+     "Google Earth Pro",
+     "バージョン7.3.7"
+    ],
+    [
+     "Earth Proのダウンロード",
+     "2027年6月25日まで"
+    ]
+   ],
+   "notes": {
+    "own_photos": "Google Earth Pro：目印に写真を追加すると、目印を写真のGPS位置に移動できます",
+    "mac_app": "Google Earth Pro（GoogleはIntel搭載MacとMac OS 10.8以降を挙げています。ダウンロードは2027年6月25日まで）と、ブラウザで使うウェブ版Google Earth"
+   },
+   "version": "Pro 7.3.7"
   },
   "google-photos": {
    "name": "Google フォト",
@@ -2370,6 +2424,47 @@
     "shortcut_cheatsheet": "ショートカットのダイアログに全キーの一覧。印刷できる一覧はなし",
     "notarized_attested": "macOS版は公証済み。ビルドの証明はなし"
    }
+  }
+ },
+ "mapRows": {
+  "own_photos": {
+   "label": "自分の写真や動画をGPSデータで地図上に",
+   "note": "サブフォルダを含むフォルダ全体"
+  },
+  "offline": {
+   "label": "インターネットなしで使える地図と地球儀"
+  },
+  "globe_day_night": {
+   "label": "昼と夜を表示できる地球儀"
+  },
+  "timeline": {
+   "label": "タイムライン"
+  },
+  "tour": {
+   "label": "場所から場所への旅"
+  },
+  "gps_tracks": {
+   "label": "GPSトラック（GPX）",
+   "note": "フォルダ内のGPXトラックに写真を配置。旅はGoProやDJIのトラックに沿って進みます"
+  },
+  "satellite": {
+   "label": "衛星画像"
+  },
+  "buildings_3d": {
+   "label": "3Dの建物"
+  },
+  "street_view": {
+   "label": "ストリートビュー"
+  },
+  "historical": {
+   "label": "過去の画像"
+  },
+  "search_places": {
+   "label": "場所や住所の検索"
+  },
+  "mac_app": {
+   "label": "Macアプリ",
+   "note": "Appleシリコンにネイティブ対応"
   }
  }
 }

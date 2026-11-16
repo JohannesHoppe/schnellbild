@@ -1,0 +1,114 @@
+{
+ "name": "Google Earth",
+ "short": "Google Earth",
+ "vendor": "Google",
+ "website": "https://www.google.com/earth/about/versions/",
+ "platforms": [
+  "Web",
+  "Mobile",
+  "Windows",
+  "macOS",
+  "Linux"
+ ],
+ "mac_available": "yes",
+ "page": "map",
+ "section": "maps",
+ "license": "proprietary",
+ "current_version": "Google Earth Pro 7.3.7 (desktop); web and mobile continuous",
+ "category": "map",
+ "note": "Every Google Earth cell comes from Google's own pages, read in November 2026. Schnellbild's column: README.md (Atlas, Sort) and CLAUDE.md (Atlas, OfflineMap). Not compared for want of a statement on Google's pages: the price of Google Earth for personal use (the plans page loads its prices by script and shows none), accounts, videos.",
+ "ours": {
+  "own_photos": "yes",
+  "offline": "yes",
+  "globe_day_night": "yes",
+  "timeline": "yes",
+  "tour": "yes",
+  "gps_tracks": "partial",
+  "satellite": "no",
+  "buildings_3d": "no",
+  "street_view": "no",
+  "historical": "no",
+  "search_places": "no",
+  "mac_app": "yes"
+ },
+ "map_matrix": {
+  "own_photos": {
+   "value": "partial",
+   "evidence": ["https://support.google.com/earth/answer/40901"],
+   "how": "docs",
+   "quote": "Earth version 7.3.3: When you add a photo to a placemark, the placemark can be automatically repositioned to the GPS location of the photo."
+  },
+  "offline": {
+   "value": "no",
+   "evidence": ["https://support.google.com/earth/answer/21955"],
+   "how": "docs",
+   "quote": "System requirements, Mac minimum: … Internet Connection"
+  },
+  "globe_day_night": {
+   "value": "yes",
+   "evidence": ["https://support.google.com/earth/answer/148094"],
+   "how": "docs",
+   "quote": "Change the time of day: You can view the effect of the sun and sunlight across the landscape. Turn on the sunlight feature"
+  },
+  "timeline": {
+   "value": "yes",
+   "evidence": ["https://support.google.com/earth/answer/148094"],
+   "how": "docs",
+   "quote": "Import GPS tracks from a specific time period or other data that contains time information to view images in a timeline."
+  },
+  "tour": {
+   "value": "yes",
+   "evidence": ["https://support.google.com/earth/answer/148174"],
+   "how": "docs",
+   "quote": "You can use Google Earth 5 and up on your computer to record a tour of the world … When creating a tour from a folder"
+  },
+  "gps_tracks": {
+   "value": "yes",
+   "evidence": ["https://support.google.com/earth/answer/148095"],
+   "how": "docs",
+   "quote": "If your device isn't supported, try importing GPS data as a .gpx or .loc file."
+  },
+  "satellite": {
+   "value": "yes",
+   "evidence": ["https://www.google.com/earth/about/versions/"],
+   "how": "docs",
+   "quote": "View high-resolution satellite imagery"
+  },
+  "buildings_3d": {
+   "value": "yes",
+   "evidence": ["https://www.google.com/earth/about/versions/", "https://support.google.com/earth/answer/148131"],
+   "how": "docs",
+   "quote": "explore 3D terrain and buildings in hundreds of cities"
+  },
+  "street_view": {
+   "value": "yes",
+   "evidence": ["https://support.google.com/earth/answer/1067358"],
+   "how": "docs",
+   "quote": "See places in Street View"
+  },
+  "historical": {
+   "value": "yes",
+   "evidence": ["https://www.google.com/earth/about/versions/"],
+   "how": "docs",
+   "quote": "Import and export GIS data, and go back in time with historical imagery. Available on PC, Mac, or Linux."
+  },
+  "search_places": {
+   "value": "yes",
+   "evidence": ["https://support.google.com/earth/answer/148081"],
+   "how": "docs",
+   "quote": "Search for places … Specific address … Longitude, Latitude"
+  },
+  "mac_app": {
+   "value": "partial",
+   "evidence": ["https://www.google.com/earth/about/versions/", "https://support.google.com/earth/answer/21955"],
+   "how": "docs",
+   "quote": "Google Earth Pro on desktop will no longer be available for download beginning June 25, 2027. / Mac system configuration, Minimum: Operating System: Mac OS 10.8, CPU: Intel 64-bit"
+  }
+ },
+ "search_terms": [
+  "google earth alternative",
+  "google earth mac",
+  "photos on map mac",
+  "offline map photos mac"
+ ]
+}

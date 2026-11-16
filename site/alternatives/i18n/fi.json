@@ -52,6 +52,7 @@
   "comic": "Sarjakuvalukijat",
   "files": "Tiedostonhallinnat",
   "photos": "Apple ja kuvienhallinta",
+  "maps": "Kartat ja maapallot",
   "windows": "Windowsista tuleville"
  },
  "jokes": {
@@ -173,7 +174,7 @@
   },
   "file_info_exif": {
    "label": "Tiedoston tiedot: EXIF, koodekit, bittinopeus",
-   "how": "I näyttää formaatin, kameran, koodekit ja bittinopeuden."
+   "how": "I näyttää formaatin, kameran, koodekit ja bittinopeuden, kuvauspaikan pienellä kartalla ja jokaisen metatietoavaimen."
   },
   "wrong_extension_note": {
    "label": "Huomauttaa, jos tiedostopääte ei vastaa sisältöä",
@@ -198,7 +199,7 @@
   },
   "subtitles_embedded": {
    "label": "Videoon upotetut tekstitykset",
-   "how": "V kytkee ne päälle ja pois, ⌃⌘S valitsee raidan."
+   "how": "V kytkee ne päälle ja pois, ⌃⌘S valitsee raidan; kesken päälle kytkettynä käynnissä oleva rivi näkyy heti, ja ASS säilyttää tyylinsä."
   },
   "subtitles_external_files": {
    "label": "Lataa videon vieressä olevat tekstitystiedostot",
@@ -955,6 +956,59 @@
    "updated": "2026-10-13 (Windows); 2020-11-11 (Mac)",
    "platforms": "Windows, macOS (Intel-versio), Android, iOS",
    "macNote": "GOM Playerin Mac-versio on pysynyt versiossa 1.0.0 vuodesta 2020, tehty Intel-Maceille."
+  },
+  "google-earth": {
+   "name": "Google Earth",
+   "vendor": "Google",
+   "h1": "Ilmainen vaihtoehto Google Earthille omille kuvillesi",
+   "seoTitle": "Vaihtoehto Google Earthille kuvillesi Macilla · Schnellbild",
+   "description": "Kuvasi ja videosi offline-kartalla ja maapallolla GPS-tietojen mukaan, aikajanan ja matkan kera. Ilmainen Macille. Mikä jää Google Earthille.",
+   "keywords": "Google Earth vaihtoehto, Google Earth Mac, kuvat kartalla Mac, kuvakartta offline, offline maapallo Mac, GPS kuvat kartta, Schnellbild",
+   "lead": "Schnellbild näyttää, missä kuvasi ja videosi on otettu, sovelluksen sisäisellä kartalla ja maapallolla, menemättä verkkoon. Satelliittikuviin, 3D-kaupunkeihin ja Street View’hun Google Earth on yhä oikea paikka.",
+   "summary": "Googlen virtuaalinen maapallo verkossa, puhelimessa ja tabletissa sekä Google Earth Pro -sovelluksena tietokoneella (Windows, Mac, Linux). Se näyttää tarkkoja satelliittikuvia, 3D-maaston ja rakennukset sadoissa kaupungeissa sekä Street View’n; Earth Pro lisää historialliset kuvat ja tuo GPS- ja paikkatietoaineistoja. Ammattikäyttöön Google tarjoaa maksullisia tilauksia.",
+   "wins": [
+    "Satelliittikuvat koko maapallosta",
+    "3D-maasto ja rakennukset sadoissa kaupungeissa",
+    "Street View",
+    "Historialliset kuvat",
+    "Paikkojen, osoitteiden ja koordinaattien haku",
+    "GPS- ja paikkatietojen tuonti"
+   ],
+   "offersTitle": "Mitä Schnellbild tarjoaa",
+   "offers": [
+    "Jokainen kansion ja sen alikansioiden kuva ja video kartalla GPS-tietojensa mukaan: kamerasta tai puhelimesta, GoProsta, DJI-dronesta, Sonyn kamerasta, XMP-sivutiedostosta tai kansion GPX-jäljestä",
+    "Maapallo tähtitaivasta vasten, halutessasi päivän ja yön kanssa, kaupunkien valot yöpuolella; lähemmäs zoomatessa se litistyy kartaksi",
+    "Matkan aikajana: vedä jakson yli nähdäksesi vain sen osan",
+    "Matka (T), joka liukuu paikasta toiseen, näyttää kuvat suurina ja toistaa videoita muutaman sekunnin",
+    "Kartta on sovelluksessa: se toimii ilman internetiä, eikä mikään sijainti lähde Macistasi",
+    "Ilmainen, ei tiliä, Applen App Sandboxissa"
+   ],
+   "lacksTitle": "Mitä Schnellbild ei tee",
+   "lacks": [
+    "Ei satelliitti- eikä ilmakuvia: kartta piirretään OpenStreetMapin tiedoista",
+    "Ei 3D-rakennuksia eikä Street View’ta",
+    "Ei paikkojen tai osoitteiden hakua; etäisyyden mukaan lajitteluun se ottaa koordinaatit tai karttalinkin",
+    "Ei historiallisia kuvia eikä paikkatietotyökaluja"
+   ],
+   "facts": [
+    [
+     "Alustat",
+     "Verkko, puhelin ja tabletti, tietokone (Windows, Mac, Linux)"
+    ],
+    [
+     "Google Earth Pro",
+     "Versio 7.3.7"
+    ],
+    [
+     "Earth Pron lataus",
+     "25.6.2027 asti"
+    ]
+   ],
+   "notes": {
+    "own_photos": "Google Earth Pro: paikkamerkkiin lisätty kuva voi siirtää merkin kuvan GPS-sijaintiin",
+    "mac_app": "Google Earth Pro (Google mainitsee Intel-Macin ja vähintään Mac OS 10.8:n; lataus 25.6.2027 asti) sekä Google Earth verkossa selaimessa"
+   },
+   "version": "Pro 7.3.7"
   },
   "google-photos": {
    "name": "Google Kuvat",
@@ -2370,6 +2424,47 @@
     "shortcut_cheatsheet": "Pikanäppäinikkuna luettelee kaikki näppäimet; ei tulostettavaa",
     "notarized_attested": "macOS-versiot notarisoitu; ei build-todistusta"
    }
+  }
+ },
+ "mapRows": {
+  "own_photos": {
+   "label": "Omat kuvat ja videot kartalla GPS-tietojen mukaan",
+   "note": "Kokonaiset kansiot alikansioineen"
+  },
+  "offline": {
+   "label": "Kartta ja maapallo ilman internetiä"
+  },
+  "globe_day_night": {
+   "label": "Maapallo, jossa päivä ja yö"
+  },
+  "timeline": {
+   "label": "Aikajana"
+  },
+  "tour": {
+   "label": "Matka paikasta toiseen"
+  },
+  "gps_tracks": {
+   "label": "GPS-jäljet (GPX)",
+   "note": "Sijoittaa kuvat kansion GPX-jäljelle; matka seuraa GoPron ja DJI:n jälkiä"
+  },
+  "satellite": {
+   "label": "Satelliittikuvat"
+  },
+  "buildings_3d": {
+   "label": "3D-rakennukset"
+  },
+  "street_view": {
+   "label": "Street View"
+  },
+  "historical": {
+   "label": "Historialliset kuvat"
+  },
+  "search_places": {
+   "label": "Paikkojen ja osoitteiden haku"
+  },
+  "mac_app": {
+   "label": "Sovellus Macille",
+   "note": "Natiivi Apple siliconilla"
   }
  }
 }

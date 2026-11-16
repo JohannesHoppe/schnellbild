@@ -13,8 +13,9 @@ Data (site/alternatives/):
                           summary, strengths, price, version and the notes of its partial cells.
                           English is the master; a missing key falls back to it and is reported.
 
-Two kinds of pages: a program that runs on a Mac gets the full comparison ("matrix"); one
-that doesn't gets a short page for people switching from it ("switcher"). One overview lists
+Three kinds of pages: a program that runs on a Mac gets the full comparison ("matrix"); one
+that doesn't gets a short page for people switching from it ("switcher"); a map program gets
+its own comparison of the map rows in its product file ("map"). One overview lists
 them all by section, in the order of what people in that language search for.
 """
 import json
@@ -26,7 +27,7 @@ from make_site_images import FEATURE_SHOTS
 ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "site" / "alternatives"
 
-SECTIONS = ["image", "video", "comic", "files", "photos", "windows"]
+SECTIONS = ["image", "video", "comic", "files", "photos", "maps", "windows"]
 # Where Schnellbild is stronger: the first rows of this order that it has and the other doesn't.
 WE_WIN = ["free", "folder_browsing", "photos_videos_one_grid", "video_mkv_avi_webm", "archives_as_folders",
           "comics_cbz_cbr", "videos_in_archives", "dual_pane", "slideshow_recursive", "recursive_search",
@@ -45,7 +46,9 @@ SIMILAR_COUNT = 6
 HOME_COUNT = 8
 # The screenshot that shows what a section's visitors look for.
 SECTION_SHOT = {"image": "grid", "video": "video", "comic": "archives", "files": "dualpane",
-                "photos": "grid", "windows": "grid"}
+                "photos": "grid", "maps": "atlas-globe", "windows": "grid"}
+# The home page feature whose words describe a screenshot that has no feature of its own.
+SHOT_FEATURE = {"atlas-globe": "atlas"}
 CATEGORY_KIND = {"image": "image", "both": "image", "video": "video", "comic": "comic",
                  "file-manager": "files", "photo-manager": "photos"}
 
@@ -101,7 +104,7 @@ class Alternatives:
             if key not in self.ours:
                 ctx["missing"].append(f"schnellbild.json: no row {key}")
         for slug, p in self.products.items():
-            for key in self.keys:
+            for key in self.keys if p["page"] != "map" else []:
                 if key not in p["matrix"]:
                     ctx["missing"].append(f"products/{slug}.json: no row {key}")
             if slug not in english["products"]:
@@ -109,6 +112,12 @@ class Alternatives:
             elif p["page"] == "matrix":
                 for key in self.shown(slug):
                     if p["matrix"][key]["value"] == "partial" and key not in english["products"][slug].get("notes", {}):
+                        ctx["missing"].append(f"alternatives en: products.{slug}.notes.{key}")
+            elif p["page"] == "map":
+                for key, cell in p["map_matrix"].items():
+                    if key not in english["mapRows"]:
+                        ctx["missing"].append(f"alternatives en: mapRows.{key}")
+                    if cell["value"] == "partial" and key not in english["products"][slug].get("notes", {}):
                         ctx["missing"].append(f"alternatives en: products.{slug}.notes.{key}")
 
     def load(self, code, english):
@@ -154,7 +163,8 @@ class Alternatives:
     def shot(self, name, code):
         """The home page's screenshot of that name, with the home page's words for it."""
         t = self.c["tr"][code]
-        alt = t["features"][FEATURE_SHOTS.index(name)]["alt"] if name in FEATURE_SHOTS else t["shotAlt"]
+        feature = SHOT_FEATURE.get(name, name)
+        alt = t["features"][FEATURE_SHOTS.index(feature)]["alt"] if feature in FEATURE_SHOTS else t["shotAlt"]
         return self.c["shot"](name, code, alt)
 
     def kind(self, slug):
@@ -191,6 +201,7 @@ class Alternatives:
     def similar(self, code, slug):
         """The most searched Mac programs of the same kind: what someone looking at this page could use."""
         kind = self.kind(slug)
+        kind = "photos" if kind == "maps" else kind  # photos on a map: the photo managers are next to it
         others = [s for s, p in self.products.items() if s != slug and self.kind(s) == kind and p["page"] == "matrix"]
         return self.ranked(code, others)[:SIMILAR_COUNT]
 
@@ -400,6 +411,76 @@ class Alternatives:
 </main>
 """ + c["footer"](code, c["tr"][code])
 
+    def map_page(self, code, slug):
+        """A map program: what Schnellbild offers, what it doesn't do, and the map rows with sources."""
+        c, esc = self.c, self.c["esc"]
+        ui, words = self.words[code]["ui"], self.words[code]
+        w = words["products"][slug]
+        p = self.products[slug]
+        name = w["name"]
+        sources = []
+        def cite(urls):
+            numbers = []
+            for url in urls:
+                if url not in sources:
+                    sources.append(url)
+                numbers.append(sources.index(url) + 1)
+            return "".join(f'<a href="#s{n}" aria-label="{esc(fill(ui["source"], n=n))}">{n}</a>' for n in numbers)
+        body = []
+        for key, cell in p["map_matrix"].items():
+            rw = words["mapRows"][key]
+            ours = p["ours"][key]
+            ours_cell = self.symbol(code, ours) + (f'<small>{esc(rw["note"])}</small>' if rw.get("note") else "")
+            note = w.get("notes", {}).get(key) if cell["value"] == "partial" else None
+            theirs = self.symbol(code, cell["value"]) + f'<span class="cite">{cite(cell["evidence"])}</span>'
+            theirs += f'<small>{esc(note)}</small>' if note else ""
+            body.append(f'<tr><th scope="row">{esc(rw["label"])}</th><td>{ours_cell}</td><td>{theirs}</td></tr>')
+        shown_url = lambda u: re.sub(r"^https?://(www\.)?", "", u)
+        source_list = "".join(f'<li id="s{i}"><a href="{esc(u)}">{esc(shown_url(u))}</a></li>' for i, u in enumerate(sources, 1))
+        items = lambda xs: "".join(f"<li>{esc(x)}</li>" for x in xs)
+        tiles = "".join(f'<div class="fact"><span>{esc(label)}</span><b>{esc(value)}</b></div>' for label, value in w["facts"])
+        title, description = w["seoTitle"], w["description"]
+        path_of = lambda lang: self.path(lang, slug)
+        url = c["SITE"] + path_of(code)
+        crumbs = [("Schnellbild", c["home_path"](code)), (ui["breadcrumb"], self.path(code)), (name, path_of(code))]
+        data = c["json_ld"]({"@graph": [
+            {"@type": "WebPage", "@id": url, "url": url, "name": title, "description": description, "inLanguage": code,
+             "isPartOf": {"@id": c["SITE"] + "/#website"},
+             "about": [{"@type": "SoftwareApplication", "@id": c["SITE"] + c["home_path"](code) + "#app", "name": "Schnellbild"},
+                       self.program(code, slug)]},
+            self.breadcrumbs(code, crumbs)]})
+        return c["head"](code, c["tr"][code], title, description, path_of, keywords=w["keywords"], data=data) + \
+            c["topbar"](code, c["tr"][code], path_of, sections=False) + f"""
+<main class="alt-page">
+<div class="wrap alt">
+  <nav class="crumbs" aria-label="{esc(ui['breadcrumb'])}"><a href="{self.path(code)}">{esc(ui['breadcrumb'])}</a></nav>
+  <h1>{esc(w['h1'])}</h1>
+  <p class="lead">{esc(w['lead'])}</p>
+  <div class="facts" aria-label="{esc(fill(ui["facts"], name=name))}">{tiles}</div>
+  <h2>{esc(fill(ui['aboutTitle'], name=name))}</h2>
+  <p>{esc(w['summary'])}</p>
+  <ul>{items(w['wins'])}</ul>
+  <figure class="alt-shot">{self.shot(SECTION_SHOT[self.kind(slug)], code)}</figure>
+  <h2>{esc(w['offersTitle'])}</h2>
+  <ul>{items(w['offers'])}</ul>
+  <h2>{esc(w['lacksTitle'])}</h2>
+  <ul>{items(w['lacks'])}</ul>
+  <h2 id="matrix">{esc(ui['matrixTitle'])}</h2>
+  {self.legend(code)}
+  <table class="matrix">
+    <caption class="sr">{esc(ui['matrixTitle'])}: Schnellbild, {esc(name)}</caption>
+    <thead><tr><th scope="col">{esc(ui['colFeature'])}</th><th scope="col">Schnellbild</th><th scope="col">{esc(name)}</th></tr></thead>
+    <tbody>{''.join(body)}</tbody>
+  </table>
+  <p class="method">{esc(fill(ui['asOf'], name=name, version=w['version'], ours=self.version))}</p>
+  <h2 class="small">{esc(ui['sources'])}</h2>
+  <ol class="sources">{source_list}</ol>
+</div>
+{self.cta(code)}
+{self.tail(code, slug)}
+</main>
+""" + c["footer"](code, c["tr"][code])
+
     def overview(self, code):
         c, esc = self.c, self.c["esc"]
         ui, words = self.words[code]["ui"], self.words[code]
@@ -447,6 +528,6 @@ class Alternatives:
         for code in self.c["LANGUAGES"]:
             out[docs / self.path(code).lstrip("/") / "index.html"] = self.overview(code)
             for slug, p in self.products.items():
-                page = self.matrix_page if p["page"] == "matrix" else self.switcher_page
+                page = {"matrix": self.matrix_page, "switcher": self.switcher_page, "map": self.map_page}[p["page"]]
                 out[docs / self.path(code, slug).lstrip("/") / "index.html"] = page(code, slug)
         return out

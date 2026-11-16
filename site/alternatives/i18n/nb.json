@@ -52,6 +52,7 @@
   "comic": "Tegneserielesere",
   "files": "Filbehandlere",
   "photos": "Apple og bildehåndtering",
+  "maps": "Kart og globuser",
   "windows": "Fra Windows"
  },
  "jokes": {
@@ -173,7 +174,7 @@
   },
   "file_info_exif": {
    "label": "Filinfo: EXIF, kodeker, bitrate",
-   "how": "I viser format, kamera, kodeker og bitrate."
+   "how": "I viser format, kamera, kodeker og bitrate, hvor bildet ble tatt på et lite kart og hver metadatanøkkel."
   },
   "wrong_extension_note": {
    "label": "Sier fra når filetternavnet ikke stemmer med innholdet",
@@ -198,7 +199,7 @@
   },
   "subtitles_embedded": {
    "label": "Undertekster fra selve videoen",
-   "how": "V slår dem på og av, ⌃⌘S velger sporet."
+   "how": "V slår dem på og av, ⌃⌘S velger sporet; slått på midt i står linjen som går, der med en gang, og ASS beholder stilene sine."
   },
   "subtitles_external_files": {
    "label": "Laster undertekstfiler som ligger ved siden av videoen",
@@ -955,6 +956,59 @@
    "updated": "2026-10-13 (Windows); 2020-11-11 (Mac)",
    "platforms": "Windows, macOS (Intel-utgave), Android, iOS",
    "macNote": "Mac-versjonen av GOM Player har stått på 1.0.0 siden 2020 og er bygget for Intel-Mac."
+  },
+  "google-earth": {
+   "name": "Google Earth",
+   "vendor": "Google",
+   "h1": "Et gratis alternativ til Google Earth for dine egne bilder",
+   "seoTitle": "Alternativ til Google Earth for bildene dine på Mac · Schnellbild",
+   "description": "Bildene og videoene dine på et kart og en globus uten nett, etter GPS-data, med tidslinje og tur. Gratis for Mac. Det som blir hos Google Earth.",
+   "keywords": "Google Earth alternativ, Google Earth Mac, bilder på kart Mac, bildekart offline, globus offline Mac, GPS bilder kart, Schnellbild",
+   "lead": "Schnellbild viser hvor bildene og videoene dine ble tatt, på et kart og en globus i appen, uten å gå på nett. For satellittbilder, 3D-byer og Street View er Google Earth fortsatt stedet.",
+   "summary": "Googles virtuelle globus, på nettet, på mobil og nettbrett og som Google Earth Pro på datamaskinen (Windows, Mac, Linux). Den viser satellittbilder i høy oppløsning, terreng og bygninger i 3D i hundrevis av byer og Street View; Earth Pro legger til historiske bilder og importerer GPS- og GIS-data. For profesjonelt arbeid tilbyr Google betalte abonnementer.",
+   "wins": [
+    "Satellittbilder av hele jorden",
+    "Terreng og bygninger i 3D i hundrevis av byer",
+    "Street View",
+    "Historiske bilder",
+    "Søk etter steder, adresser og koordinater",
+    "Import av GPS- og GIS-data"
+   ],
+   "offersTitle": "Dette tilbyr Schnellbild",
+   "offers": [
+    "Hvert bilde og hver video i en mappe og undermappene på kartet, etter GPS-dataene: fra kameraet eller mobilen, en GoPro, en DJI-drone, et Sony-kamera, en XMP-sidefil eller et GPX-spor i mappen",
+    "En globus foran stjernehimmelen, om du vil med dag og natt og byenes lys på nattsiden; zoomer du inn, flates den ut til kartet",
+    "En tidslinje over turen: dra over en del for å se bare den",
+    "En tur (T) som glir fra sted til sted, viser bildene stort og spiller videoene noen sekunder",
+    "Kartet ligger i appen: det virker uten internett, og ingen posisjon forlater Macen din",
+    "Gratis, uten konto, i Apples App Sandbox"
+   ],
+   "lacksTitle": "Dette gjør ikke Schnellbild",
+   "lacks": [
+    "Ingen satellitt- eller flybilder: kartet tegnes fra OpenStreetMap-data",
+    "Ingen 3D-bygninger og ingen Street View",
+    "Ikke søk etter steder eller adresser; for sortering etter avstand tar det koordinater eller en kartlenke",
+    "Ingen historiske bilder og ingen GIS-verktøy"
+   ],
+   "facts": [
+    [
+     "Plattformer",
+     "Nett, mobil og nettbrett, datamaskin (Windows, Mac, Linux)"
+    ],
+    [
+     "Google Earth Pro",
+     "Versjon 7.3.7"
+    ],
+    [
+     "Nedlasting av Earth Pro",
+     "til 25. juni 2027"
+    ]
+   ],
+   "notes": {
+    "own_photos": "Google Earth Pro: et bilde lagt til en stedsmarkør kan flytte den til bildets GPS-posisjon",
+    "mac_app": "Google Earth Pro (Google oppgir en Intel-Mac med minst Mac OS 10.8; nedlasting til 25. juni 2027) og Google Earth på nettet i nettleseren"
+   },
+   "version": "Pro 7.3.7"
   },
   "google-photos": {
    "name": "Google Foto",
@@ -2370,6 +2424,47 @@
     "shortcut_cheatsheet": "Dialog med alle tastene; ikke for utskrift",
     "notarized_attested": "macOS-utgaver notarisert; ingen byggattestasjon"
    }
+  }
+ },
+ "mapRows": {
+  "own_photos": {
+   "label": "Dine egne bilder og videoer på kartet, etter GPS-dataene",
+   "note": "Hele mapper med undermapper"
+  },
+  "offline": {
+   "label": "Kart og globus uten internett"
+  },
+  "globe_day_night": {
+   "label": "Globus med dag og natt"
+  },
+  "timeline": {
+   "label": "Tidslinje"
+  },
+  "tour": {
+   "label": "Tur fra sted til sted"
+  },
+  "gps_tracks": {
+   "label": "GPS-spor (GPX)",
+   "note": "Plasserer bilder på et GPX-spor i mappen; turen følger spor fra GoPro og DJI"
+  },
+  "satellite": {
+   "label": "Satellittbilder"
+  },
+  "buildings_3d": {
+   "label": "3D-bygninger"
+  },
+  "street_view": {
+   "label": "Street View"
+  },
+  "historical": {
+   "label": "Historiske bilder"
+  },
+  "search_places": {
+   "label": "Søk etter steder og adresser"
+  },
+  "mac_app": {
+   "label": "App for Mac",
+   "note": "Native på Apple silicon"
   }
  }
 }

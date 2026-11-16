@@ -52,6 +52,7 @@
   "comic": "Lettori di fumetti",
   "files": "File manager",
   "photos": "Apple e gestione delle foto",
+  "maps": "Mappe e globi",
   "windows": "Per chi arriva da Windows"
  },
  "jokes": {
@@ -173,7 +174,7 @@
   },
   "file_info_exif": {
    "label": "Info sul file: EXIF, codec, bitrate",
-   "how": "I mostra formato, fotocamera, codec e bitrate."
+   "how": "I mostra formato, fotocamera, codec e bitrate, il luogo dello scatto su una piccola mappa e ogni chiave di metadati."
   },
   "wrong_extension_note": {
    "label": "Segnala i file con un’estensione che non corrisponde al contenuto",
@@ -198,7 +199,7 @@
   },
   "subtitles_embedded": {
    "label": "Sottotitoli contenuti nel video",
-   "how": "V li attiva e disattiva, ⌃⌘S sceglie la traccia."
+   "how": "V li attiva e disattiva, ⌃⌘S sceglie la traccia; attivati a metà, la riga in corso appare subito, e l’ASS mantiene i suoi stili."
   },
   "subtitles_external_files": {
    "label": "Carica i file di sottotitoli accanto al video",
@@ -955,6 +956,59 @@
    "updated": "2026-10-13 (Windows); 2020-11-11 (Mac)",
    "platforms": "Windows, macOS (build Intel), Android, iOS",
    "macNote": "La versione Mac di GOM Player è ferma alla 1.0.0 dal 2020, compilata per i Mac Intel."
+  },
+  "google-earth": {
+   "name": "Google Earth",
+   "vendor": "Google",
+   "h1": "Un’alternativa gratuita a Google Earth per le tue foto",
+   "seoTitle": "Alternativa a Google Earth per le tue foto su Mac · Schnellbild",
+   "description": "Le tue foto e i tuoi video su una mappa e un globo offline, secondo i dati GPS, con linea del tempo e viaggio. Gratis per Mac. Cosa resta a Google Earth.",
+   "keywords": "alternativa a Google Earth, Google Earth Mac, foto su mappa Mac, mappa foto offline, globo offline Mac, foto GPS mappa, Schnellbild",
+   "lead": "Schnellbild mostra dove sono state scattate le tue foto e girati i tuoi video, su una mappa e un globo dentro l’app, senza andare online. Per immagini satellitari, città in 3D e Street View, Google Earth resta il posto giusto.",
+   "summary": "Il globo virtuale di Google, sul web, su smartphone e tablet e come Google Earth Pro sul computer (Windows, Mac, Linux). Mostra immagini satellitari ad alta risoluzione, rilievo ed edifici in 3D in centinaia di città e Street View; Earth Pro aggiunge le immagini storiche e importa dati GPS e GIS. Per il lavoro professionale Google offre piani a pagamento.",
+   "wins": [
+    "Immagini satellitari di tutta la Terra",
+    "Rilievo ed edifici in 3D in centinaia di città",
+    "Street View",
+    "Immagini storiche",
+    "Ricerca di luoghi, indirizzi e coordinate",
+    "Importazione di dati GPS e GIS"
+   ],
+   "offersTitle": "Cosa offre Schnellbild",
+   "offers": [
+    "Ogni foto e video di una cartella e delle sue sottocartelle sulla mappa, secondo i dati GPS: dalla fotocamera o dal telefono, da una GoPro, da un drone DJI, da una fotocamera Sony, da un file XMP affiancato o da una traccia GPX nella cartella",
+    "Un globo davanti al cielo stellato, se vuoi con il giorno e la notte e le città illuminate sul lato notturno; avvicinandoti diventa la mappa piana",
+    "Una linea del tempo del viaggio: trascina su un tratto per vedere solo quella parte",
+    "Un viaggio (T) che scorre da un luogo all’altro, mostra le foto in grande e riproduce i video per qualche secondo",
+    "La mappa è dentro l’app: funziona senza internet e nessun luogo lascia il tuo Mac",
+    "Gratis, senza account, nella App Sandbox di Apple"
+   ],
+   "lacksTitle": "Cosa Schnellbild non fa",
+   "lacks": [
+    "Niente immagini satellitari o aeree: la mappa è disegnata dai dati di OpenStreetMap",
+    "Niente edifici in 3D e niente Street View",
+    "Niente ricerca di luoghi o indirizzi; per ordinare per distanza accetta coordinate o un link di mappa",
+    "Niente immagini storiche e niente strumenti GIS"
+   ],
+   "facts": [
+    [
+     "Piattaforme",
+     "Web, smartphone e tablet, computer (Windows, Mac, Linux)"
+    ],
+    [
+     "Google Earth Pro",
+     "Versione 7.3.7"
+    ],
+    [
+     "Download di Earth Pro",
+     "fino al 25 giugno 2027"
+    ]
+   ],
+   "notes": {
+    "own_photos": "Google Earth Pro: una foto aggiunta a un segnaposto può spostarlo nella posizione GPS della foto",
+    "mac_app": "Google Earth Pro (Google indica un Mac Intel con almeno Mac OS 10.8; download fino al 25 giugno 2027) e Google Earth sul web nel browser"
+   },
+   "version": "Pro 7.3.7"
   },
   "google-photos": {
    "name": "Google Foto",
@@ -2370,6 +2424,47 @@
     "shortcut_cheatsheet": "Una finestra elenca tutti i tasti; nessun foglio da stampare",
     "notarized_attested": "Build macOS notarizzate; nessuna attestazione di build"
    }
+  }
+ },
+ "mapRows": {
+  "own_photos": {
+   "label": "Le tue foto e i tuoi video sulla mappa, secondo i dati GPS",
+   "note": "Cartelle intere con le sottocartelle"
+  },
+  "offline": {
+   "label": "Mappa e globo senza internet"
+  },
+  "globe_day_night": {
+   "label": "Globo con giorno e notte"
+  },
+  "timeline": {
+   "label": "Linea del tempo"
+  },
+  "tour": {
+   "label": "Viaggio da un luogo all’altro"
+  },
+  "gps_tracks": {
+   "label": "Tracce GPS (GPX)",
+   "note": "Colloca le foto su una traccia GPX della cartella; il viaggio segue le tracce GoPro e DJI"
+  },
+  "satellite": {
+   "label": "Immagini satellitari"
+  },
+  "buildings_3d": {
+   "label": "Edifici in 3D"
+  },
+  "street_view": {
+   "label": "Street View"
+  },
+  "historical": {
+   "label": "Immagini storiche"
+  },
+  "search_places": {
+   "label": "Ricerca di luoghi e indirizzi"
+  },
+  "mac_app": {
+   "label": "App per Mac",
+   "note": "Nativa su Apple silicon"
   }
  }
 }
