@@ -343,12 +343,13 @@ final class AtlasModel: ObservableObject {
         setCamera(held(next))
     }
 
-    /// For the UI tests (`--ui-testing`): the map's zoom, centre and size, the clusters, the fit, the map's own movements.
+    /// For the UI tests (`--ui-testing`): the map's zoom, centre, tilt, heading and size, the clusters, the fit, the map's own movements.
     var testState: String {
         let motion = MapMotion.counts
-        return String(format: "zoom %.2f, center %.3f %.3f, size %.0f×%.0f, clusters %d at %.2f, fit %@, moved %@, glides %d, throws %d, fades %d",
-                      camera.zoom, camera.center.latitude, camera.center.longitude, mapSize.width, mapSize.height, clusters.count,
-                      clusterZoom ?? -1, needsFit ? "pending" : "done", userMovedMap ? "yes" : "no",
+        return String(format: "zoom %.2f, center %.3f %.3f, pitch %.1f, heading %.1f, size %.0f×%.0f, clusters %d at %.2f, fit %@, moved %@, "
+                      + "glides %d, throws %d, fades %d",
+                      camera.zoom, camera.center.latitude, camera.center.longitude, camera.pitch, camera.heading, mapSize.width, mapSize.height,
+                      clusters.count, clusterZoom ?? -1, needsFit ? "pending" : "done", userMovedMap ? "yes" : "no",
                       motion["glide"] ?? 0, motion["throw"] ?? 0, motion["fade"] ?? 0)
     }
     private var cameraSet: MapCamera?
@@ -362,8 +363,7 @@ final class AtlasModel: ObservableObject {
     /// (`GlobeProjection.minZoom`); from the flat zoom on, the flat map's.
     func held(_ c: MapCamera) -> MapCamera {
         guard mapSize.width > 0, mapSize.height > 0 else { return c }
-        var next = c
-        next.zoom = min(MapViewport.maxZoom, max(GlobeProjection.minZoom(for: mapSize), c.zoom))
+        var next = GlobeProjection.held(c, size: mapSize)
         if GlobeProjection(camera: next, size: mapSize).isFlat { next = MapViewport(camera: next, size: mapSize).panned(by: 0, 0) }
         return next
     }
@@ -384,17 +384,37 @@ final class AtlasModel: ObservableObject {
         if done { needsFit = false }
     }
 
-    /// Shows every item on the map.
+    /// Shows every item on the map (under `--ui-testing`, `--globe-camera=` shows the camera given instead).
     func fitAll() {
+        if let given = Self.testCamera {
+            setCamera(held(given))
+            return
+        }
         guard let fitted = MapCamera.fitting(placed.compactMap(\.coordinate), in: mapSize, padding: 70, maxZoom: 11) else { return }
         setCamera(held(fitted))
     }
+
+    /// The screenshots' camera: `--globe-camera=<latitude>,<longitude>,<zoom>,<pitch>,<heading>` (UI tests only).
+    static let testCamera: MapCamera? = {
+        guard VideoDetailView.uiTesting,
+              let argument = ProcessInfo.processInfo.arguments.first(where: { $0.hasPrefix("--globe-camera=") }) else { return nil }
+        let v = argument.dropFirst("--globe-camera=".count).split(separator: ",").compactMap { Double($0) }
+        guard v.count == 5 else { return nil }
+        return MapCamera(center: Coordinate(latitude: v[0], longitude: v[1]), zoom: v[2], pitch: v[3], heading: v[4])
+    }()
+
+    /// The screenshots' moment for the Sun: `--globe-date=<ISO 8601>` (UI tests only).
+    static let testSunDate: Date? = {
+        guard VideoDetailView.uiTesting,
+              let argument = ProcessInfo.processInfo.arguments.first(where: { $0.hasPrefix("--globe-date=") }) else { return nil }
+        return ISO8601DateFormatter().date(from: String(argument.dropFirst("--globe-date=".count)))
+    }()
 
     /// Moves the map so the place is in view (at once when it already is).
     func reveal(_ coordinate: Coordinate) {
         guard mapSize.width > 0 else { return }
         if let p = point(for: coordinate), CGRect(origin: .zero, size: mapSize).insetBy(dx: 40, dy: 40).contains(p) { return }
-        setCamera(held(MapCamera(center: coordinate, zoom: camera.zoom)))
+        setCamera(held(MapCamera(center: coordinate, zoom: camera.zoom, pitch: camera.pitch, heading: camera.heading)))
     }
 
     /// A double click on a cluster: the map zooms until its items part.
@@ -402,7 +422,8 @@ final class AtlasModel: ObservableObject {
         let coordinates = cluster.ids.compactMap { item($0)?.coordinate }
         let fitted = MapCamera.fitting(coordinates, in: mapSize, padding: 90, maxZoom: MapViewport.maxZoom)
         let zoom = max(camera.zoom + 2, fitted?.zoom ?? 0)
-        let target = held(MapCamera(center: fitted?.center ?? cluster.coordinate, zoom: min(MapViewport.maxZoom, zoom)))
+        let target = held(MapCamera(center: fitted?.center ?? cluster.coordinate, zoom: min(MapViewport.maxZoom, zoom),
+                                    pitch: camera.pitch, heading: camera.heading))
         userMovedMap = true
         setCamera(target)
     }
@@ -411,7 +432,7 @@ final class AtlasModel: ObservableObject {
     func zoomStep(_ steps: Double) {
         guard mapSize.width > 0 else { return }
         userMovedMap = true
-        setCamera(held(MapCamera(center: camera.center, zoom: camera.zoom + steps)))
+        setCamera(held(MapCamera(center: camera.center, zoom: camera.zoom + steps, pitch: camera.pitch, heading: camera.heading)))
     }
 
     // MARK: Clusters (off the main thread)

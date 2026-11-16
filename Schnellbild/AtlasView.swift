@@ -121,7 +121,9 @@ private struct AtlasMap: View {
         let palette = MapPalette.appearance(dark: colorScheme == .dark)
         GeometryReader { geometry in
             // Zoomed far out the globe, flattening into the flat map between `GlobeProjection.morphStart` and `flatZoom`
-            GlobeView(camera: Binding(get: { camera.camera }, set: { atlas.camera = $0 }), interactive: atlas.tour == nil) { proxy in
+            // In the tour the Sun stands where it stood when the station's first photo was taken
+            GlobeView(camera: Binding(get: { camera.camera }, set: { atlas.camera = $0 }), interactive: atlas.tour == nil,
+                      lighting: true, sunDate: atlas.tour?.currentStation?.start ?? AtlasModel.testSunDate) { proxy in
                 if atlas.tour != nil {
                     TourRoute(atlas: atlas, proxy: proxy, palette: palette)
                 } else {

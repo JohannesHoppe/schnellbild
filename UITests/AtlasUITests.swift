@@ -140,7 +140,7 @@ final class AtlasUITests: SchnellbildUITestCase {
 
     /// What the map reports under `--ui-testing` (`AtlasModel.testState`).
     private struct MapState {
-        var zoom = 0.0, latitude = 0.0, longitude = 0.0
+        var zoom = 0.0, latitude = 0.0, longitude = 0.0, pitch = 0.0, heading = 0.0
         var glides = 0, thrown = 0, fades = 0
     }
 
@@ -152,6 +152,7 @@ final class AtlasUITests: SchnellbildUITestCase {
             return index < words.count ? Double(words[index]) ?? .nan : .nan
         }
         return MapState(zoom: number(after: "zoom"), latitude: number(after: "center"), longitude: number(after: "center", 1),
+                        pitch: number(after: "pitch"), heading: number(after: "heading"),
                         glides: Int(number(after: "glides")), thrown: Int(number(after: "throws")), fades: Int(number(after: "fades")))
     }
 
@@ -234,6 +235,55 @@ final class AtlasUITests: SchnellbildUITestCase {
         while mapState().fades <= before.fades, Date() < deadline { RunLoop.current.run(until: Date().addingTimeInterval(0.3)) }
         let flat = mapState()
         XCTAssertGreaterThan(flat.fades, before.fades, "the flat map, the globe faded out: \(before) → \(flat)")
+    }
+
+    func testTheGlobeTiltsAndComesBack() throws {
+        openAtlas()
+        XCTAssertTrue(globe.waitForExistence(timeout: 10))
+        zoomOutToTheGlobe()
+
+        // The button tilts the view towards the horizon
+        let tilt = app.buttons["Tilt the view"].firstMatch
+        XCTAssertTrue(tilt.waitForExistence(timeout: 5))
+        tilt.click()
+        eventually("tilted") { abs(self.mapState().pitch - 60) < 0.5 }
+
+        // ⌥-drag down and to the right: less tilt, turned clockwise
+        var before = mapState()
+        XCUIElement.perform(withKeyModifiers: .option) {
+            globe.coordinate(withNormalizedOffset: CGVector(dx: 0.40, dy: 0.45))
+                .press(forDuration: 0.2, thenDragTo: globe.coordinate(withNormalizedOffset: CGVector(dx: 0.50, dy: 0.60)),
+                       withVelocity: .slow, thenHoldForDuration: 0.3)
+        }
+        var after = mapState()
+        XCTAssertLessThan(after.pitch, before.pitch - 5, "less tilted: \(before) → \(after)")
+        XCTAssertGreaterThan(after.pitch, 0)
+        XCTAssertGreaterThan(Self.wrap(after.heading - before.heading), 5, "turned: \(before) → \(after)")
+        XCTAssertEqual(after.zoom, before.zoom, accuracy: 1e-6, "the ⌥-drag doesn't zoom")
+
+        // Straight down again, north up
+        let back = app.buttons["Look straight down"].firstMatch
+        XCTAssertTrue(back.waitForExistence(timeout: 5))
+        back.click()
+        eventually("straight down") { self.mapState().pitch == 0 && self.mapState().heading == 0 }
+        XCTAssertTrue(app.buttons["Tilt the view"].firstMatch.waitForExistence(timeout: 5))
+
+        // The hand-over to the flat map still works, and tilting there brings the globe back
+        before = mapState()
+        let plus = app.buttons["Zoom in"].firstMatch
+        for _ in 0..<6 where mapState().zoom < 5.5 {
+            plus.click()
+            RunLoop.current.run(until: Date().addingTimeInterval(0.6))
+        }
+        let deadline = Date().addingTimeInterval(10)
+        while mapState().fades <= before.fades, Date() < deadline { RunLoop.current.run(until: Date().addingTimeInterval(0.3)) }
+        after = mapState()
+        XCTAssertGreaterThan(after.fades, before.fades, "the flat map: \(after)")
+        app.buttons["Tilt the view"].firstMatch.click()
+        eventually("tilted over the flat map's place") { abs(self.mapState().pitch - 60) < 0.5 }
+        XCTAssertLessThanOrEqual(mapState().zoom, 7.0001, "no closer than low orbit")
+        app.buttons["Look straight down"].firstMatch.click()
+        eventually("straight down") { self.mapState().pitch == 0 }
     }
 
     func testWithReduceMotionNothingGlidesThrowsOrFades() throws {

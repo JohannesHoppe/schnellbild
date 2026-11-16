@@ -14,6 +14,7 @@ import AppKit
 ///   PHOTOS_DIR         the sample library (Scripts/make_sample_media.swift),
 ///                      outside the runner's container so the status bar
 ///                      shows a short path
+///   WORLD_DIR          the world trip (Scripts/fetch_world_photos.sh)
 final class ReadmeScreenshots: SchnellbildUITestCase {
     private var suffix = ""
 
@@ -176,6 +177,27 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         app.typeKey(.escape, modifierFlags: [])
         eventually("the tour ended", timeout: 10) { !status.exists }
         RunLoop.current.run(until: Date().addingTimeInterval(2))   // out of full screen
+    }
+
+    /// The globe for the website's hero: the world trip (`WORLD_DIR`, real
+    /// photographs from Scripts/build_world_photos.py) in the Atlas view,
+    /// seen from low orbit over the Mediterranean as the Sun rises behind
+    /// the horizon, and the whole Earth by day with the trip's pins.
+    func testGlobeScreenshots() throws {
+        let world = try XCTUnwrap(ProcessInfo.processInfo.environment["WORLD_DIR"], "WORLD_DIR missing")
+        for (name, camera, date) in [("globe-hero", "41,16,5.4,72,48", "2026-06-21T02:12:00Z"),
+                                     ("globe-world", "38,20,2.7,0,0", "2026-06-21T10:30:00Z")] {
+            launch(open: world, extra: ["--globe-camera=\(camera)", "--globe-date=\(date)"])
+            XCTAssertTrue(tile("Rome-Colosseum.jpg").waitForExistence(timeout: 15))
+            app.typeKey("w", modifierFlags: [])
+            XCTAssertTrue(element("atlas").waitForExistence(timeout: 10))
+            let pins = app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH 'atlas.'"))
+            let deadline = Date().addingTimeInterval(20)
+            while pins.count < 4, Date() < deadline { RunLoop.current.run(until: Date().addingTimeInterval(0.5)) }
+            XCTAssertGreaterThanOrEqual(pins.count, 4, "several pins on the globe: \(text(of: element("atlasMapState")))")
+            shoot(name, settle: 6)
+            app.terminate()
+        }
     }
 
     /// Archives, other files, the password sheet, the mini keyboard, a new

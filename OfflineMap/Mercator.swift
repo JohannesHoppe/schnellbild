@@ -66,10 +66,26 @@ public enum WebMercator {
 public struct MapCamera: Equatable, Sendable, Codable {
     public var center: Coordinate
     public var zoom: Double
+    /// The globe's tilt from straight down, degrees (the flat map ignores it)
+    public var pitch: Double
+    /// The globe's view direction, degrees clockwise from north (the flat map ignores it)
+    public var heading: Double
 
-    public init(center: Coordinate, zoom: Double) {
+    public init(center: Coordinate, zoom: Double, pitch: Double = 0, heading: Double = 0) {
         self.center = center
         self.zoom = zoom
+        self.pitch = pitch
+        self.heading = heading
+    }
+
+    private enum CodingKeys: String, CodingKey { case center, zoom, pitch, heading }
+
+    public init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        center = try c.decode(Coordinate.self, forKey: .center)
+        zoom = try c.decode(Double.self, forKey: .zoom)
+        pitch = try c.decodeIfPresent(Double.self, forKey: .pitch) ?? 0
+        heading = try c.decodeIfPresent(Double.self, forKey: .heading) ?? 0
     }
 
     public static let world = MapCamera(center: Coordinate(latitude: 20, longitude: 0), zoom: 1)
@@ -150,7 +166,7 @@ public struct MapViewport: Equatable, Sendable {
         let half = Double(size.height) / 2
         y = s > Double(size.height) ? min(s - half, max(half, y)) : s / 2
         let unit = CGPoint(x: (Double(c.x) - dx) / s, y: y / s)
-        return MapCamera(center: WebMercator.coordinate(unit: unit), zoom: camera.zoom)
+        return MapCamera(center: WebMercator.coordinate(unit: unit), zoom: camera.zoom, pitch: camera.pitch, heading: camera.heading)
     }
 
     /// The camera zoomed to `zoom` (held within the limits), keeping the
@@ -158,7 +174,7 @@ public struct MapViewport: Equatable, Sendable {
     public func zoomed(to zoom: Double, keeping anchor: CGPoint) -> MapCamera {
         let z = min(Self.maxZoom, max(Self.minZoom(for: size), zoom))
         let fixed = coordinate(at: anchor)
-        var next = MapViewport(camera: MapCamera(center: camera.center, zoom: z), size: size)
+        var next = MapViewport(camera: MapCamera(center: camera.center, zoom: z, pitch: camera.pitch, heading: camera.heading), size: size)
         let moved = next.point(for: fixed)
         next.camera = next.panned(by: Double(anchor.x - moved.x), Double(anchor.y - moved.y))
         return next.camera

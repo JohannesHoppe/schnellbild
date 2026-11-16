@@ -41,6 +41,8 @@ final class GlobeSurfaceView: NSView, MTKViewDelegate {
     var interactive = true
     var lighting = false { didSet { if lighting != oldValue { redraw(); scheduleClock() } } }
     var exaggerated = true { didSet { if exaggerated != oldValue { redraw() } } }
+    /// How much of the cloud cover shows (0 none … 1 all)
+    var clouds = 0.0 { didSet { if clouds != oldValue { redraw() } } }
     /// The moment the Sun is placed for (nil: now, updated every minute)
     var date: Date? { didSet { redraw() } }
     var onCameraChange: ((MapCamera) -> Void)?
@@ -58,6 +60,8 @@ final class GlobeSurfaceView: NSView, MTKViewDelegate {
     private var dragged = false
     /// Recent drag steps (time, dx, dy) for the throw at the end
     private var dragSteps: [(TimeInterval, Double, Double)] = []
+    /// The drag tilts and turns the view (⌥ held when it began)
+    private var dragTilts = false
     private var velocity: (x: Double, y: Double)?
     private var glide: (from: MapCamera, to: MapCamera, began: TimeInterval, duration: Double)?
     private var link: CADisplayLink?
@@ -123,7 +127,8 @@ final class GlobeSurfaceView: NSView, MTKViewDelegate {
     private var isDark: Bool { effectiveAppearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua }
     var projection: GlobeProjection { GlobeProjection(camera: camera, size: bounds.size) }
     var scene: GlobeScene {
-        GlobeScene(camera: camera, size: bounds.size, dark: isDark, lighting: lighting, exaggerated: exaggerated, date: date ?? Date())
+        GlobeScene(camera: camera, size: bounds.size, dark: isDark, lighting: lighting, exaggerated: exaggerated, date: date ?? Date(),
+                   clouds: clouds)
     }
 
     /// Every gesture is the globe's, over the flat map too.
@@ -170,8 +175,7 @@ final class GlobeSurfaceView: NSView, MTKViewDelegate {
     func held(_ c: MapCamera) -> MapCamera {
         guard bounds.width > 0, bounds.height > 0 else { return c }
         if flatOnly { return MapViewport(camera: c, size: bounds.size).clamped() }
-        var next = c
-        next.zoom = min(MapViewport.maxZoom, max(GlobeProjection.minZoom(for: bounds.size), c.zoom))
+        var next = GlobeProjection.held(c, size: bounds.size)
         let p = GlobeProjection(camera: next, size: bounds.size)
         if p.isFlat { next = MapViewport(camera: next, size: bounds.size).panned(by: 0, 0) }
         return next
@@ -305,9 +309,11 @@ final class GlobeSurfaceView: NSView, MTKViewDelegate {
             let t = min(1, (now - g.began) / g.duration)
             let e = 1 - pow(1 - t, 3)
             let dLon = Astronomy.wrap180(g.to.center.longitude - g.from.center.longitude)
+            let dHeading = Astronomy.wrap180(g.to.heading - g.from.heading)
             let next = MapCamera(center: Coordinate(latitude: g.from.center.latitude + (g.to.center.latitude - g.from.center.latitude) * e,
                                                     longitude: Astronomy.wrap180(g.from.center.longitude + dLon * e)),
-                                 zoom: g.from.zoom + (g.to.zoom - g.from.zoom) * e)
+                                 zoom: g.from.zoom + (g.to.zoom - g.from.zoom) * e,
+                                 pitch: g.from.pitch + (g.to.pitch - g.from.pitch) * e, heading: g.from.heading + dHeading * e)
             camera = held(next)
             onCameraChange?(camera)
             if t >= 1 { glide = nil }
@@ -367,7 +373,8 @@ final class GlobeSurfaceView: NSView, MTKViewDelegate {
         dragStart = event.locationInWindow
         dragged = false
         dragSteps = []
-        if event.clickCount == 2 { zoom(by: 1, at: point(event)) }
+        dragTilts = event.modifierFlags.contains(.option) && !flatOnly
+        if event.clickCount == 2 && !dragTilts { zoom(by: 1, at: point(event)) }
     }
 
     override func mouseDragged(with event: NSEvent) {
@@ -378,6 +385,10 @@ final class GlobeSurfaceView: NSView, MTKViewDelegate {
         let now = event.locationInWindow
         dragStart = now
         let dx = Double(now.x - last.x), dy = Double(last.y - now.y)
+        if dragTilts {
+            tilt(by: -dy * 0.3, turn: dx * 0.3)
+            return
+        }
         dragSteps.append((event.timestamp, dx, dy))
         dragSteps.removeAll { event.timestamp - $0.0 > 0.1 }
         moved(to: pan(by: dx, dy))
@@ -387,7 +398,7 @@ final class GlobeSurfaceView: NSView, MTKViewDelegate {
     override func mouseUp(with event: NSEvent) {
         guard interactive else { return super.mouseUp(with: event) }
         dragStart = nil
-        guard dragged else { return }
+        guard dragged, !dragTilts else { return }
         NSCursor.arrow.set()
         // The last tenth of a second's speed carries on (not with Reduce motion)
         let recent = dragSteps.filter { event.timestamp - $0.0 <= 0.1 }
@@ -403,6 +414,12 @@ final class GlobeSurfaceView: NSView, MTKViewDelegate {
 
     override func scrollWheel(with event: NSEvent) {
         guard interactive else { return super.scrollWheel(with: event) }
+        if event.modifierFlags.contains(.option), !flatOnly {
+            // ⌥ with two fingers: up and down tilt, left and right turn
+            let k = event.hasPreciseScrollingDeltas ? 0.3 : 3.0
+            tilt(by: Double(event.scrollingDeltaY) * k, turn: -Double(event.scrollingDeltaX) * k)
+            return
+        }
         scroll(dx: Double(event.scrollingDeltaX), dy: Double(event.scrollingDeltaY), precise: event.hasPreciseScrollingDeltas,
                command: event.modifierFlags.contains(.command), at: point(event))
     }
@@ -410,6 +427,42 @@ final class GlobeSurfaceView: NSView, MTKViewDelegate {
     override func magnify(with event: NSEvent) {
         guard interactive else { return super.magnify(with: event) }
         pinch(by: Double(event.magnification), at: point(event))
+    }
+
+    override func rotate(with event: NSEvent) {
+        guard interactive, !flatOnly else { return super.rotate(with: event) }
+        // Two fingers turning turn the view, as in Apple's Maps
+        tilt(by: 0, turn: -Double(event.rotation))
+    }
+
+    /// Tilts the view by `degrees` (towards the horizon when positive) and
+    /// turns it by `turn` degrees clockwise. A tilt from straight down
+    /// beyond the tilted camera's zoom glides in to it first.
+    func tilt(by degrees: Double, turn: Double = 0) {
+        stopMotion()
+        var next = camera
+        next.pitch = min(GlobeProjection.maxPitch, max(0, camera.pitch + degrees))
+        next.heading = camera.heading + turn
+        if next.pitch > 0 && camera.zoom > GlobeProjection.tiltedMaxZoom {
+            next.zoom = GlobeProjection.tiltedMaxZoom
+            move(to: next)
+            return
+        }
+        moved(to: next)
+    }
+
+    /// The tilt button: from straight down to the tilted view near the
+    /// horizon, and back to straight down with north up.
+    func toggleTilt() {
+        var next = camera
+        if camera.pitch > 1 {
+            next.pitch = 0
+            next.heading = 0
+        } else {
+            next.pitch = 60
+            next.zoom = min(camera.zoom, GlobeProjection.tiltedMaxZoom)
+        }
+        move(to: next)
     }
 
     /// A pinch step (AppKit's magnification: 0.1 is 10 % larger) about a point of the view.

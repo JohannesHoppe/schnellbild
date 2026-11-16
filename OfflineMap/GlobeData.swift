@@ -211,11 +211,16 @@ public struct GlobeData: @unchecked Sendable {
     public var heightmap: Heightmap?
     public var sky: CGImage?
     public var cityLights: CGImage?
+    public var clouds: CGImage?
+    public var satellite: SatelliteTiles?
 
-    public init(heightmap: Heightmap? = nil, sky: CGImage? = nil, cityLights: CGImage? = nil) {
+    public init(heightmap: Heightmap? = nil, sky: CGImage? = nil, cityLights: CGImage? = nil, clouds: CGImage? = nil,
+                satellite: SatelliteTiles? = nil) {
         self.heightmap = heightmap
         self.sky = sky
         self.cityLights = cityLights
+        self.clouds = clouds
+        self.satellite = satellite
     }
 
     /// The files in a folder (the app's `Resources/Globe`, or `Vendor/Globe` for tests).
@@ -230,6 +235,8 @@ public struct GlobeData: @unchecked Sendable {
         data.heightmap = files.last { $0.pathExtension == "sbhm" }.flatMap { try? Heightmap(url: $0) }
         data.sky = image(files.last { $0.lastPathComponent.hasPrefix("schnellbild-sky-") })
         data.cityLights = image(files.last { $0.lastPathComponent.hasPrefix("schnellbild-citylights-") })
+        data.clouds = image(files.last { $0.lastPathComponent.hasPrefix("schnellbild-clouds-") })
+        data.satellite = files.last { $0.lastPathComponent.hasPrefix("schnellbild-satellite-") }.flatMap { try? SatelliteTiles(url: $0) }
         return data
     }
 
@@ -239,4 +246,47 @@ public struct GlobeData: @unchecked Sendable {
     }
 
     public static let shared = GlobeData.bundled()
+}
+
+/// The satellite picture's tiles in one file ("SBTL", made by
+/// Scripts/build_globe_data.py's `tile_pack`, little-endian): magic, the
+/// number of entries, per entry its name's length (1 byte), the name, its
+/// offset (8 bytes) and length (4 bytes); then the JPEGs. Read memory-mapped;
+/// each tile decoded when asked for.
+public struct SatelliteTiles: @unchecked Sendable {
+    let data: Data
+    let index: [String: Range<Int>]
+
+    public enum ReadError: Error { case notATilePack, truncated }
+
+    public init(data: Data) throws {
+        guard data.count >= 8, data.prefix(4) == Data("SBTL".utf8) else { throw ReadError.notATilePack }
+        let bytes = [UInt8](data.prefix(min(data.count, 1 << 16)))
+        func u32(_ o: Int) -> Int { Int(bytes[o]) | Int(bytes[o + 1]) << 8 | Int(bytes[o + 2]) << 16 | Int(bytes[o + 3]) << 24 }
+        let count = u32(4)
+        var o = 8, index: [String: Range<Int>] = [:]
+        for _ in 0..<count {
+            guard o < bytes.count else { throw ReadError.truncated }
+            let n = Int(bytes[o])
+            guard o + 1 + n + 12 <= bytes.count, let name = String(bytes: bytes[(o + 1)..<(o + 1 + n)], encoding: .utf8) else { throw ReadError.truncated }
+            let offset = u32(o + 1 + n) | u32(o + 5 + n) << 32, length = u32(o + 9 + n)
+            guard offset >= 0, length > 0, offset + length <= data.count else { throw ReadError.truncated }
+            index[name] = offset..<(offset + length)
+            o += 1 + n + 12
+        }
+        self.data = data
+        self.index = index
+    }
+
+    public init(url: URL) throws { try self.init(data: Data(contentsOf: url, options: .mappedIfSafe)) }
+
+    public var names: [String] { index.keys.sorted() }
+
+    /// A tile's picture ("base", "<level>-<row>-<column>"), nil when it isn't there or doesn't decode.
+    public func image(named name: String) -> CGImage? {
+        guard let range = index[name] else { return nil }
+        let bytes = data.subdata(in: (data.startIndex + range.lowerBound)..<(data.startIndex + range.upperBound))
+        guard let source = CGImageSourceCreateWithData(bytes as CFData, nil) else { return nil }
+        return CGImageSourceCreateImageAtIndex(source, 0, nil)
+    }
 }

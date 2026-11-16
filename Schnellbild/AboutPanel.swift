@@ -166,6 +166,27 @@ enum AboutPanel {
                         notes: [String(localized: "No endorsement by NASA is implied.")],
                         link: "https://science.nasa.gov/earth/earth-observatory/earth-at-night/maps/",
                         files: [.init(file: "NASA-media-usage-guidelines.txt")]),
+                    LicenseSection(
+                        id: "blue-marble-next-generation", name: "Blue Marble: Next Generation (NASA)",
+                        listName: "Blue Marble: Next Generation: " + String(localized: "NASA's media usage guidelines"),
+                        use: String(localized: "the colours of the ground on the globe"),
+                        holder: "NASA",
+                        license: String(localized: "NASA's media usage guidelines"),
+                        // As NASA asks: "please credit NASA Earth Observatory"
+                        credit: "NASA Earth Observatory (produced by Reto Stöckli, NASA Earth Observatory, NASA Goddard Space Flight Center).",
+                        notes: [String(localized: "No endorsement by NASA is implied.")],
+                        link: "https://science.nasa.gov/earth/earth-observatory/blue-marble-next-generation/",
+                        files: [.init(file: "NASA-media-usage-guidelines.txt")]),
+                    LicenseSection(
+                        id: "blue-marble-clouds", name: "The Blue Marble: clouds (NASA)",
+                        listName: "The Blue Marble: " + String(localized: "NASA's media usage guidelines"),
+                        use: String(localized: "the clouds on the globe"),
+                        holder: "NASA",
+                        license: String(localized: "NASA's media usage guidelines"),
+                        credit: "NASA Goddard Space Flight Center. Image by Reto Stöckli.",
+                        notes: [String(localized: "No endorsement by NASA is implied.")],
+                        link: "https://science.nasa.gov/earth/earth-observatory/the-blue-marble-true-color-global-imagery-at-1km-resolution/",
+                        files: [.init(file: "NASA-media-usage-guidelines.txt")]),
                 ]),
         ]
     }

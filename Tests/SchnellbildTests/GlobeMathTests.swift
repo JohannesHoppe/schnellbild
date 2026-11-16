@@ -175,7 +175,124 @@ final class GlobeMathTests: XCTestCase {
         XCTAssertEqual(close.skyOpacity, 0, accuracy: 1e-9)
     }
 
+    // MARK: The tilted camera
+
+    func testATiltedCameraLooksAheadAtTheHorizon() {
+        let alps = Coordinate(latitude: 46, longitude: 9)
+        let p = GlobeProjection(camera: MapCamera(center: alps, zoom: 5.4, pitch: 72, heading: 0), size: size)
+        XCTAssertEqual(p.perspective, 1)
+        XCTAssertEqual(p.flatness, 0, "a tilted globe never flattens")
+        // The target in the middle, the ground ahead higher up and smaller, behind lower down
+        XCTAssertEqual(p.point(for: alps).x, 480, accuracy: 1e-6)
+        XCTAssertEqual(p.point(for: alps).y, 320, accuracy: 1e-6)
+        let ahead = p.point(for: Coordinate(latitude: 49, longitude: 9)), behind = p.point(for: Coordinate(latitude: 43, longitude: 9))
+        XCTAssertLessThan(ahead.y, 320)
+        XCTAssertGreaterThan(behind.y, 320)
+        XCTAssertLessThan(320 - ahead.y, behind.y - 320, "foreshortened ahead")
+        // Space above the horizon, the ground below; the far side behind the horizon
+        XCTAssertNil(p.coordinate(at: CGPoint(x: 480, y: 2)))
+        XCTAssertNotNil(p.coordinate(at: CGPoint(x: 480, y: 638)))
+        XCTAssertFalse(p.isVisible(Coordinate(latitude: 75, longitude: 9)))
+        XCTAssertTrue(p.isVisible(Coordinate(latitude: 52, longitude: 9)))
+        for c in [Coordinate(latitude: 47, longitude: 11), Coordinate(latitude: 44, longitude: 5), Coordinate(latitude: 52, longitude: 14)] {
+            let back = try! XCTUnwrap(p.coordinate(at: p.point(for: c)), "\(c)")
+            XCTAssertEqual(back.latitude, c.latitude, accuracy: 1e-5)
+            XCTAssertEqual(Astronomy.wrap180(back.longitude - c.longitude), 0, accuracy: 1e-5)
+        }
+        // Heading east: the east is ahead (up), the north on the left
+        let east = GlobeProjection(camera: MapCamera(center: alps, zoom: 5.4, pitch: 60, heading: 90), size: size)
+        XCTAssertLessThan(east.point(for: Coordinate(latitude: 46, longitude: 13)).y, 320)
+        XCTAssertLessThan(east.point(for: Coordinate(latitude: 49, longitude: 9)).x, 480)
+    }
+
+    func testTiltingBlendsFromStraightDown() {
+        let camera = MapCamera(center: Coordinate(latitude: 30, longitude: 20), zoom: 3)
+        let straight = GlobeProjection(camera: camera, size: size)
+        var slightly = camera
+        slightly.pitch = 1e-6
+        // The first degrees blend smoothly from the orthographic picture
+        let c = Coordinate(latitude: 40, longitude: 30)
+        XCTAssertEqual(GlobeProjection(camera: slightly, size: size).point(for: c).x, straight.point(for: c).x, accuracy: 1e-3)
+        XCTAssertEqual(GlobeProjection(camera: slightly, size: size).point(for: c).y, straight.point(for: c).y, accuracy: 1e-3)
+        for pitch in [3.0, 6.0, 9.0] {
+            var tilted = camera
+            tilted.pitch = pitch
+            let p = GlobeProjection(camera: tilted, size: size)
+            XCTAssertGreaterThan(p.perspective, 0)
+            XCTAssertLessThan(p.perspective, 1)
+            let back = try! XCTUnwrap(p.coordinate(at: p.point(for: c)), "pitch \(pitch)")
+            XCTAssertEqual(back.latitude, c.latitude, accuracy: 1e-4)
+            XCTAssertEqual(back.longitude, c.longitude, accuracy: 1e-4)
+        }
+    }
+
+    func testTheCameraIsHeldWithinItsLimits() {
+        let c = Coordinate(latitude: 10, longitude: 10)
+        let held = GlobeProjection.held(MapCamera(center: c, zoom: 10, pitch: 90, heading: 190), size: size)
+        XCTAssertEqual(held.pitch, GlobeProjection.maxPitch)
+        XCTAssertEqual(held.heading, -170, accuracy: 1e-9)
+        XCTAssertEqual(held.zoom, GlobeProjection.tiltedMaxZoom, "a tilted camera comes no closer than low orbit")
+        XCTAssertEqual(GlobeProjection.held(MapCamera(center: c, zoom: 10, pitch: -5), size: size).pitch, 0)
+        XCTAssertEqual(GlobeProjection.held(MapCamera(center: c, zoom: 10), size: size).zoom, 10, "straight down to the flat map")
+    }
+
+    func testZoomingATiltedCameraKeepsThePlaceUnderThePointer() {
+        for (pitch, heading, zoom, to) in [(60.0, 0.0, 5.0, 5.6), (72.0, 48.0, 5.4, 6.2), (40.0, -120.0, 4.0, 3.4)] {
+            let p = GlobeProjection(camera: MapCamera(center: Coordinate(latitude: 41, longitude: 16), zoom: zoom, pitch: pitch, heading: heading), size: size)
+            let anchor = CGPoint(x: 600, y: 420)
+            let fixed = try! XCTUnwrap(p.coordinate(at: anchor))
+            let next = GlobeProjection(camera: p.zoomed(to: to, keeping: anchor), size: size)
+            XCTAssertEqual(next.camera.pitch, pitch)
+            XCTAssertEqual(next.camera.heading, heading)
+            XCTAssertEqual(next.point(for: fixed).x, anchor.x, accuracy: 0.5, "\(pitch)° \(zoom) → \(to)")
+            XCTAssertEqual(next.point(for: fixed).y, anchor.y, accuracy: 0.5, "\(pitch)° \(zoom) → \(to)")
+        }
+    }
+
+    func testDraggingATiltedGlobeFollowsTheHeading() {
+        // Heading east: a drag down brings the ground ahead (east) nearer, so the centre moves east
+        let p = GlobeProjection(camera: MapCamera(center: Coordinate(latitude: 0, longitude: 0), zoom: 4, pitch: 50, heading: 90), size: size)
+        let next = p.rotated(by: 0, 40)
+        XCTAssertGreaterThan(next.center.longitude, 0.5)
+        XCTAssertEqual(next.center.latitude, 0, accuracy: 1e-9)
+        XCTAssertEqual(next.pitch, 50)
+        XCTAssertEqual(next.heading, 90)
+    }
+
+    func testACameraSavedWithoutTiltReadsStraightDown() throws {
+        let old = Data(#"{"center":{"latitude":48,"longitude":11},"zoom":3}"#.utf8)
+        let camera = try JSONDecoder().decode(MapCamera.self, from: old)
+        XCTAssertEqual(camera.pitch, 0)
+        XCTAssertEqual(camera.heading, 0)
+        let tilted = MapCamera(center: Coordinate(latitude: 48, longitude: 11), zoom: 5, pitch: 60, heading: -30)
+        XCTAssertEqual(try JSONDecoder().decode(MapCamera.self, from: JSONEncoder().encode(tilted)), tilted)
+    }
+
+    func testTheSkyShowsAboveATiltedHorizonAndCloudsThinOut() {
+        let close = MapCamera(center: Coordinate(latitude: 0, longitude: 0), zoom: 6)
+        XCTAssertEqual(GlobeScene(camera: close, size: size).skyOpacity, 0, accuracy: 1e-9)
+        var tilted = close
+        tilted.pitch = 60
+        XCTAssertEqual(GlobeScene(camera: tilted, size: size).skyOpacity, 1, accuracy: 1e-9)
+        let far = GlobeScene(camera: MapCamera(center: Coordinate(latitude: 0, longitude: 0), zoom: 2), size: size, clouds: 0.65)
+        XCTAssertEqual(far.cloudOpacity, 0.65, accuracy: 1e-9)
+        XCTAssertLessThan(GlobeScene(camera: tilted, size: size, clouds: 0.65).cloudOpacity, 0.4, "thinner in low orbit")
+        XCTAssertEqual(GlobeScene(camera: MapCamera(center: Coordinate(latitude: 0, longitude: 0), zoom: GlobeProjection.flatZoom(for: size)), size: size,
+                                  clouds: 0.65).cloudOpacity, 0, "none on the flat map")
+        XCTAssertEqual(GlobeScene(camera: tilted, size: size, exaggerated: false).reliefFactor, 1)
+        XCTAssertLessThan(GlobeScene(camera: tilted, size: size).reliefFactor, GlobeScene(camera: MapCamera(center: Coordinate(latitude: 0, longitude: 0), zoom: 2), size: size).reliefFactor)
+    }
+
     // MARK: Data
+
+    func testABrokenTilePackThrows() {
+        XCTAssertThrowsError(try SatelliteTiles(data: Data("SBHM\u{0}\u{0}\u{0}\u{0}".utf8)))
+        // One entry whose bytes lie beyond the end
+        var pack = Data("SBTL".utf8) + Data([1, 0, 0, 0, 4]) + Data("base".utf8)
+        pack += Data([0, 1, 0, 0, 0, 0, 0, 0]) + Data([0, 1, 0, 0])
+        XCTAssertThrowsError(try SatelliteTiles(data: pack))
+        XCTAssertThrowsError(try SatelliteTiles(data: Data("SBTL".utf8) + Data([200, 0, 0, 0])), "more entries than the header holds")
+    }
 
     func testTheHeightmapFormatRoundTrips() throws {
         let map = Heightmap(width: 4, height: 2, metres: [1, -2, 3, -4, 8_848, -10_994, 0, 7])
@@ -209,5 +326,18 @@ final class GlobeMathTests: XCTestCase {
         XCTAssertEqual(sky.width, 2 * sky.height)
         let lights = try XCTUnwrap(data.cityLights)
         XCTAssertEqual(lights.width, 2 * lights.height)
+        let clouds = try XCTUnwrap(data.clouds)
+        XCTAssertEqual(clouds.width, 2 * clouds.height)
+        // The satellite picture: the whole Earth, then 8 × 4 and 16 × 8 tiles of 1350 pixels
+        let satellite = try XCTUnwrap(data.satellite)
+        XCTAssertEqual(satellite.names.count, 1 + 32 + 128)
+        let base = try XCTUnwrap(satellite.image(named: "base"))
+        XCTAssertEqual(base.width, 2 * base.height)
+        for name in ["1-0-0", "1-3-7", "2-0-0", "2-7-15"] {
+            let tile = try XCTUnwrap(satellite.image(named: name), name)
+            XCTAssertEqual(tile.width, 1350, name)
+            XCTAssertEqual(tile.height, 1350, name)
+        }
+        XCTAssertNil(satellite.image(named: "2-8-0"))
     }
 }
