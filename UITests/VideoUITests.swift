@@ -291,6 +291,9 @@ final class VideoUITests: SchnellbildUITestCase {
         app.typeKey("\\", modifierFlags: .command)
         eventually("⌘\\: normal speed") { text(of: video).contains("speed 1.0") }
         XCTAssertFalse(text(of: badge).contains("×"), "at 1× the badge shows no speed: \(text(of: badge))")
+        // Back near the start (10 % a step): the 20 s video must still play
+        // for the track keys below (on a slow runner it had ended by then)
+        for _ in 0..<10 { app.typeKey(.leftArrow, modifierFlags: []) }
         app.typeKey("s", modifierFlags: [.control, .command])
         eventually("⌃⌘S: the German subtitles") { text(of: video).contains("subtitles 2/2 de") }
         app.typeKey("v", modifierFlags: [])
