@@ -401,6 +401,22 @@ final class LocalizationTests: XCTestCase {
         }
     }
 
+    /// The kind macOS shows for a download not finished (the description
+    /// of the type the app declares for them) is translated in every
+    /// language, in InfoPlist.strings, where macOS looks it up by its text.
+    func testTheDownloadTypesDescriptionIsTranslated() throws {
+        let plist = root.deletingLastPathComponent().appendingPathComponent("Info.plist")
+        let info = try XCTUnwrap(NSDictionary(contentsOf: plist) as? [String: Any])
+        let types = try XCTUnwrap(info["UTImportedTypeDeclarations"] as? [[String: Any]])
+        let download = try XCTUnwrap(types.first { $0["UTTypeIdentifier"] as? String == "art.haushoppe.schnellbild.download-in-progress" })
+        let description = try XCTUnwrap(download["UTTypeDescription"] as? String)
+        for language in languages {
+            let translated = try table(language, "InfoPlist.strings")[description] as? String
+            XCTAssertNotNil(translated, "\(language): \(description)")
+            if language != "en" { XCTAssertNotEqual(translated, description, "\(language): translated") }
+        }
+    }
+
     /// Info.plist names exactly the languages there are.
     func testInfoPlistListsTheLanguages() throws {
         let plist = root.deletingLastPathComponent().appendingPathComponent("Info.plist")
