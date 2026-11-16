@@ -110,11 +110,24 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
 
     /// `subtitles`: whether subtitles are on (the model's `showSubtitles`):
     /// off, the video starts at once, its tracks are not read first.
-    init(source: Source, subtitles: Bool = true, onStateChange: @escaping @MainActor (PlaybackControl, Bool) -> Void) {
+    /// `resume`: where the user left it, playing or paused (`PlaybackPositions`);
+    /// nil: from the beginning, playing.
+    init(source: Source, subtitles: Bool = true, resume: PlaybackPositions.Place? = nil,
+         onStateChange: @escaping @MainActor (PlaybackControl, Bool) -> Void) {
         self.source = source
         self.onStateChange = onStateChange
         super.init()
         let media = makeMedia()
+        if let resume {
+            // A seek before its first picture, as when opened again in software
+            resumeMs = Int((resume.seconds * 1000).rounded())
+            media.addOption(":start-time=\(String(format: "%.3f", resume.seconds))")
+            if !resume.playing {
+                isPlaying = false
+                pauseOnceOpen = true
+            }
+            BrowserModel.testLog("vlc: resumes at \(String(format: "%.1f", resume.seconds)) s, \(resume.playing ? "playing" : "paused")")
+        }
         player.media = media
         player.delegate = self
         output.attach(to: player)
@@ -149,6 +162,8 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
     }()
     /// When the reading began (test log).
     private var parseBegan = Date()
+    /// Where the first opening starts (ms), until VLC reports a time.
+    private var resumeMs = 0
 
     /// Reads the file's tracks before it plays (libVLC's preparser: the
     /// same input with the media's options, so the same single demuxer
@@ -347,6 +362,7 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
     func play() {
         BrowserModel.testLog("vlc play, state \(player.state.rawValue), position \(player.position)")
         isPlaying = true
+        pauseOnceOpen = false   // (resumed paused, played before its first picture)
         if parsing { playWhenParsed = true; return }
         // Not played yet: the media as prepared (its tracks chosen)
         if !started { startPlaying(); return }
@@ -448,7 +464,7 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         let current = Int(player.currentVideoSubTitleIndex)
         if let wanted = wantedSubtitle { subtitleOnceOpen = wanted } else { subtitleOnceOpen = current >= 0 ? current : nil }
         let ended = reachedEnd || player.position >= 0.999
-        let time = ended ? 0 : max(timeNow, 0)
+        let time = ended ? 0 : timeReported == nil && resumeMs > 0 ? resumeMs : max(timeNow, 0)
         let track = subtitleToOpen
         let index = track.flatMap(subtitleIndex(of:))
         player.stop()
@@ -724,6 +740,14 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
     var lengthSeconds: Double? {
         let ms = player.media?.length.intValue ?? 0
         return ms > 0 ? Double(ms) / 1000 : nil
+    }
+
+    /// Where it stands: the end once played to it; before VLC reports a time,
+    /// the place it was opened at (none from the beginning).
+    var playedSeconds: Double? {
+        if reachedEnd || player.state == .ended { return lengthSeconds }
+        guard timeReported != nil else { return resumeMs > 0 ? Double(resumeMs) / 1000 : nil }
+        return Double(max(timeNow, 0)) / 1000
     }
 
     var progress: Double? {

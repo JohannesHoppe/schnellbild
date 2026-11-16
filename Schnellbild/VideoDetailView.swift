@@ -28,6 +28,10 @@ struct VideoDetailView: View {
     /// The file playing and its identity on disk: renamed or moved on the
     /// same volume (F2, the other pane), it plays on where it is.
     @State private var playing: (url: URL, file: FileIdentity?)?
+    /// The folder's memory of places the video began in
+    /// (`PlaybackPositions.list`): where it stands is remembered there when
+    /// it is left.
+    @State private var positionList: Int?
 
     /// The zoom and turn (and, for the UI tests, the tracks, speed and what
     /// VLC reports).
@@ -132,6 +136,9 @@ struct VideoDetailView: View {
             playing = (url, nil)
 
             let model = self.model
+            // Left earlier in this folder: on from there
+            let resume = model.playbackPositions.place(of: url)
+            positionList = model.playbackPositions.list
             let report: @MainActor (PlaybackControl, Bool) -> Void = { control, playing in
                 model.playbackStateChanged(control, isPlaying: playing)
             }
@@ -147,7 +154,7 @@ struct VideoDetailView: View {
                 avControl = control
                 model.activePlayer = control
                 model.activePlayerURL = url
-                control.play()
+                control.begin(at: resume)
                 control.loadTracks()
                 await noteFile(url)
                 if let track = try? await asset.loadTracks(withMediaType: .video).first,
@@ -164,7 +171,8 @@ struct VideoDetailView: View {
                 guard !Task.isCancelled else { return }
                 let source: VLCPlaybackControl.Source = stream.map { stream in .stream(url, { ArchiveInputStream(stream) }) } ?? .file(url, head: head)
                 // Subtitles off: no reading of the tracks before the first picture
-                let control = VLCPlaybackControl(source: source, subtitles: model.showSubtitles, onStateChange: report)
+                let control = VLCPlaybackControl(source: source, subtitles: model.showSubtitles, resume: resume,
+                                                 onStateChange: report)
                 control.onAutoLook = reportLook
                 control.onTracksChanged = reportTracks
                 vlcControl = control
@@ -228,6 +236,11 @@ struct VideoDetailView: View {
     }
 
     private func stop() {
+        // Remembered before the player stops (and reads as paused)
+        if let url = playing?.url, let list = positionList, let player = (avControl as PlaybackControl?) ?? vlcControl {
+            model.videoLeft(url, player: player, list: list)
+        }
+        positionList = nil
         playing = nil
         archiveStream?.close()
         archiveStream = nil

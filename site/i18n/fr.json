@@ -71,7 +71,7 @@
     },
     {
       "title": "Les vidéos aussi, même les MKV et AVI que macOS ne lit pas",
-      "text": "<p>Ce que macOS lit lui-même (MP4, MOV, AVCHD…) passe par macOS, HDR compris ; tout le reste par le moteur VLC intégré : MKV, WebM, AVI, WMV, FLV, MPEG, DVD vidéo.</p><ul><li>← → avancent ou reculent d’un dixième de la vidéo, ⇧← ⇧→ d’un centième</li><li>↑ ↓ règlent le volume, pour toutes les vidéos</li><li>Le Finder et Coup d’œil obtiennent aussi des vignettes pour MKV, WebM, WMV, FLV et VOB</li></ul>",
+      "text": "<p>Ce que macOS lit lui-même (MP4, MOV, AVCHD…) passe par macOS, HDR compris ; tout le reste par le moteur VLC intégré : MKV, WebM, AVI, WMV, FLV, MPEG, DVD vidéo.</p><ul><li>← → avancent ou reculent d’un dixième de la vidéo, ⇧← ⇧→ d’un centième</li><li>↑ ↓ règlent le volume, pour toutes les vidéos</li><li>⌘→ vers la vidéo suivante et ⌘← retour : la première reprend là où elle s’était arrêtée</li><li>Le Finder et Coup d’œil obtiennent aussi des vignettes pour MKV, WebM, WMV, FLV et VOB</li></ul>",
       "alt": "Une vidéo en lecture dans Schnellbild"
     },
     {

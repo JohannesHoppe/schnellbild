@@ -226,6 +226,7 @@ Zoom with the keyboard or a trackpad pinch, drag to pan, rotate in steps of 90°
 
 - **Everything plays:** MP4 and MOV through macOS itself (HDR included), what macOS can't play (AVI, MKV, WebM, DVD's VOB …) through the VLC engine built in. Media Extensions you turned on in System Settings are used too.
 - **The arrow keys skim:** each press jumps a tenth of the video, ⇧ a hundredth, past the end on to the next item. So one key pages through photos and skims through videos; ⌘← ⌘→ skip a video at once.
+- **Back where you left it:** halfway through a video, ⌘→ shows what the next one brings, and ⌘← takes you back to the place you left, playing or paused as you left it. The same when you open it again from the grid. A video watched to its end starts from the beginning. The places last as long as you stay in the folder: open another one, and back here every video starts from the beginning again.
 - **A thin bar** at the top shows how far the video has played and the time left.
 - **One control bar for every video**, whichever engine plays it: play and pause, the position to drag, the time played and left, volume, speed, subtitles and the audio track (where the video has more than one), full screen. It shows while the mouse moves over the video and goes after a few seconds of rest, never dimming the picture. Drag it by its grip wherever it suits you: it stays there for every video, also after a restart, and a double click on the grip puts it back at the bottom. On a zoomed or turned video it stays upright.
 - **↑ ↓ set the volume** of every video, kept for the next launch.
@@ -238,7 +239,7 @@ Zoom with the keyboard or a trackpad pinch, drag to pan, rotate in steps of 90°
 |---|---|
 | Space | play / pause |
 | ← → | 10 % of the length back / ahead; at the end on to the next item, at the start back to the previous one |
-| ⌘← ⌘→ | previous / next item straight away |
+| ⌘← ⌘→ | previous / next item straight away; a video you come back to goes on where you left it (in the same folder) |
 | ↑ ↓ | volume up / down in tenths, for every video, remembered (shown while it changes) |
 | ⇧← ⇧→ | 1 % of the length back / ahead, to find a place exactly |
 | V | subtitles on / off (remembered) |

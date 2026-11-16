@@ -71,7 +71,7 @@
     },
     {
       "title": "Video, anche MKV e AVI che macOS non riproduce",
-      "text": "<p>Quello che macOS riproduce da sé (MP4, MOV, AVCHD…) passa da macOS, anche in HDR; tutto il resto dal motore VLC integrato: MKV, WebM, AVI, WMV, FLV, MPEG, DVD Video.</p><ul><li>← → saltano di un decimo del video, ⇧← ⇧→ di un centesimo</li><li>↑ ↓ regolano il volume, per tutti i video</li><li>Anche il Finder e Quick Look ottengono le miniature di MKV, WebM, WMV, FLV e VOB</li></ul>",
+      "text": "<p>Quello che macOS riproduce da sé (MP4, MOV, AVCHD…) passa da macOS, anche in HDR; tutto il resto dal motore VLC integrato: MKV, WebM, AVI, WMV, FLV, MPEG, DVD Video.</p><ul><li>← → saltano di un decimo del video, ⇧← ⇧→ di un centesimo</li><li>↑ ↓ regolano il volume, per tutti i video</li><li>⌘→ al video successivo e ⌘← indietro: il primo riprende da dove era rimasto</li><li>Anche il Finder e Quick Look ottengono le miniature di MKV, WebM, WMV, FLV e VOB</li></ul>",
       "alt": "Un video in riproduzione in Schnellbild"
     },
     {

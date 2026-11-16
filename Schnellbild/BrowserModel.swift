@@ -86,6 +86,9 @@ protocol PlaybackControl: AnyObject {
     func setVolume(_ volume: Double)
     /// The video's length in seconds, once known (the time left).
     var lengthSeconds: Double? { get }
+    /// Where the video stands, in seconds; nil while not known (the pane
+    /// remembers it when the user moves on, `PlaybackPositions`).
+    var playedSeconds: Double? { get }
     /// The codecs, once the player has opened the video (the Inspector).
     func streamFacts() async -> StreamFacts?
     /// The video's sound and subtitle tracks and which are on, once the
@@ -110,6 +113,7 @@ extension PlaybackControl {
     var playsWithoutLength: Bool { false }
     var videoSize: CGSize? { nil }
     var lengthSeconds: Double? { nil }
+    var playedSeconds: Double? { nil }
     func streamFacts() async -> StreamFacts? { nil }
     var tracks: VideoTracks { VideoTracks() }
     func selectAudioTrack(_ id: Int) {}
@@ -1312,6 +1316,18 @@ final class BrowserModel: ObservableObject {
 
     /// The file `activePlayer` plays (the Inspector asks only that one).
     var activePlayerURL: URL?
+
+    /// Where each video of the folder shown stood when the user left it;
+    /// cleared by another folder (`load`).
+    private(set) var playbackPositions = PlaybackPositions()
+
+    /// The video at `url` is left (another item, the grid, another folder):
+    /// where it stands is remembered for this folder. `list` is
+    /// `playbackPositions.list` from when it began to play.
+    func videoLeft(_ url: URL, player: PlaybackControl, list: Int) {
+        playbackPositions.leave(url, at: player.playedSeconds, length: player.lengthSeconds,
+                                playing: player.isPlaying, list: list)
+    }
     /// The player of the video on screen — for keyboard control
     /// (play/pause, skimming). Set by the video views.
     weak var activePlayer: PlaybackControl? {
@@ -1738,6 +1754,7 @@ final class BrowserModel: ObservableObject {
         pendingResultSelection = nil
         accessLimited = false
         folderURL = location.folder
+        playbackPositions.enter(location.folder)
         entries = []
         allEntries = []
         otherFiles = []
@@ -4946,6 +4963,7 @@ final class BrowserModel: ObservableObject {
         let keep = selectedEntry.flatMap { lookup.url($0.url) }
         let previous = selection
         if !marked.isEmpty { marked = Set(marked.compactMap { lookup.path($0) }) }
+        playbackPositions.follow(lookup)
         allEntries = order.following(allEntries, lookup)
         for run in allSearches { run.apply(changes) }
         pendingResultSelection = pendingResultSelection.flatMap { lookup.url($0) }
@@ -5702,9 +5720,11 @@ final class AVPlaybackControl: PlaybackControl {
     /// holds it weakly).
     var resourceLoader: ArchiveResourceLoader?
     private var observation: NSKeyValueObservation?
+    private let onStateChange: @MainActor (PlaybackControl, Bool) -> Void
 
     init(player: AVPlayer, onStateChange: @escaping @MainActor (PlaybackControl, Bool) -> Void = { _, _ in }) {
         self.player = player
+        self.onStateChange = onStateChange
         // The subtitles and sound track the app chooses, not the system's
         // accessibility preferences; another speed keeps the pitch
         player.appliesMediaSelectionCriteriaAutomatically = false
@@ -5712,7 +5732,7 @@ final class AVPlaybackControl: PlaybackControl {
         observation = player.observe(\.timeControlStatus) { [weak self] player, _ in
             let playing = player.timeControlStatus != .paused
             Task { @MainActor in
-                guard let self else { return }
+                guard let self, self.resumeAt == nil else { return }
                 // A look set after the last frame was drawn (just before the
                 // end) reaches the picture it stops on
                 if !playing, self.enhancer?.isStale == true { self.redrawIfPaused() }
@@ -5721,7 +5741,44 @@ final class AVPlaybackControl: PlaybackControl {
         }
     }
 
-    var isPlaying: Bool { player.timeControlStatus != .paused }
+    var isPlaying: Bool { resumeAt?.playing ?? (player.timeControlStatus != .paused) }
+
+    /// Where the video goes on, until the player is there: it stands
+    /// (paused, unreported) until the item can seek.
+    private var resumeAt: PlaybackPositions.Place?
+    private var resumeTask: Task<Void, Never>?
+    /// (An item that never gets ready isn't waited for after the player went.)
+    deinit { resumeTask?.cancel() }
+
+    /// Starts the video: from the beginning, playing, or where the user left
+    /// it (`place`), playing or paused as then. The seek waits until the item
+    /// is ready (before, it has nothing it can seek in).
+    func begin(at place: PlaybackPositions.Place?) {
+        guard let place else { play(); return }
+        resumeAt = place
+        BrowserModel.testLog("avkit resumes at \(String(format: "%.1f", place.seconds)) s, \(place.playing ? "playing" : "paused")")
+        resumeTask = Task { @MainActor [weak self] in
+            if let item = self?.player.currentItem {
+                for await status in item.publisher(for: \.status).values where status != .unknown { break }
+            }
+            guard let self, !Task.isCancelled, let place = self.resumeAt else { return }
+            if self.player.currentItem?.status == .readyToPlay {
+                _ = await self.player.seek(to: CMTime(seconds: place.seconds, preferredTimescale: 600),
+                                           toleranceBefore: .zero, toleranceAfter: .zero)
+            }
+            // (Space may have changed its mind meanwhile)
+            guard !Task.isCancelled, let place = self.resumeAt else { return }
+            self.resumeAt = nil
+            if place.playing { self.player.play() } else { self.onStateChange(self, false) }
+        }
+    }
+
+    /// Where it stands (the place it goes on from, while getting there).
+    var playedSeconds: Double? {
+        if let resumeAt { return resumeAt.seconds }
+        let seconds = CMTimeGetSeconds(player.currentTime())
+        return seconds.isFinite ? seconds : nil
+    }
 
     func setVolume(_ volume: Double) { player.volume = Float(volume) }
     var playerVolume: Double? { Double(player.volume) }
@@ -5869,8 +5926,13 @@ final class AVPlaybackControl: PlaybackControl {
         return await StreamFacts.of(asset)
     }
 
-    /// At the end, playing starts over.
+    /// At the end, playing starts over. While getting to the place it goes
+    /// on from, it then plays there.
     func play() {
+        if let place = resumeAt {
+            resumeAt = PlaybackPositions.Place(seconds: place.seconds, playing: true)
+            return
+        }
         if let item = player.currentItem {
             let duration = CMTimeGetSeconds(item.duration)
             if duration.isFinite, duration > 0, CMTimeGetSeconds(player.currentTime()) >= duration - 0.05 {
@@ -5880,7 +5942,13 @@ final class AVPlaybackControl: PlaybackControl {
         player.play()
     }
 
-    func pause() { player.pause() }
+    func pause() {
+        if let place = resumeAt {
+            resumeAt = PlaybackPositions.Place(seconds: place.seconds, playing: false)
+            return
+        }
+        player.pause()
+    }
 
     private var composition: AVVideoComposition?
     private var enhancer: VideoEnhancer?

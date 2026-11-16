@@ -71,7 +71,7 @@
     },
     {
       "title": "Videos, auch die, die macOS nicht abspielt",
-      "text": "<p>Was macOS selbst abspielt (MP4, MOV, AVCHD …), spielt macOS ab, auch in HDR; alles andere die eingebaute VLC-Engine: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-Video.</p><ul><li>← → springen ein Zehntel des Videos, ⇧← ⇧→ ein Hundertstel</li><li>↑ ↓ stellen die Lautstärke ein, für alle Videos</li><li>Finder und Übersicht bekommen Vorschaubilder auch für MKV, WebM, WMV, FLV und VOB</li></ul>",
+      "text": "<p>Was macOS selbst abspielt (MP4, MOV, AVCHD …), spielt macOS ab, auch in HDR; alles andere die eingebaute VLC-Engine: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-Video.</p><ul><li>← → springen ein Zehntel des Videos, ⇧← ⇧→ ein Hundertstel</li><li>↑ ↓ stellen die Lautstärke ein, für alle Videos</li><li>⌘→ zum nächsten Video und ⌘← zurück: Das erste läuft dort weiter, wo es stand</li><li>Finder und Übersicht bekommen Vorschaubilder auch für MKV, WebM, WMV, FLV und VOB</li></ul>",
       "alt": "Ein Video in Schnellbild"
     },
     {

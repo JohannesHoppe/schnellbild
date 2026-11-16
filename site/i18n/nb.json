@@ -71,7 +71,7 @@
     },
     {
       "title": "Videoer, også MKV og andre som macOS ikke kan spille av",
-      "text": "<p>Det macOS spiller av selv (MP4, MOV, AVCHD …), spilles av gjennom macOS, også i HDR; alt annet gjennom den innebygde VLC-motoren: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-video.</p><ul><li>← → hopper en tidel av videoen, ⇧← ⇧→ en hundredel</li><li>↑ ↓ stiller volumet, for alle videoer</li><li>Finder og Hurtigvisning får miniatyrer også for MKV, WebM, WMV, FLV og VOB</li></ul>",
+      "text": "<p>Det macOS spiller av selv (MP4, MOV, AVCHD …), spilles av gjennom macOS, også i HDR; alt annet gjennom den innebygde VLC-motoren: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-video.</p><ul><li>← → hopper en tidel av videoen, ⇧← ⇧→ en hundredel</li><li>↑ ↓ stiller volumet, for alle videoer</li><li>⌘→ til neste video og ⌘← tilbake: den første fortsetter der den slapp</li><li>Finder og Hurtigvisning får miniatyrer også for MKV, WebM, WMV, FLV og VOB</li></ul>",
       "alt": "En video som spilles av i Schnellbild"
     },
     {
