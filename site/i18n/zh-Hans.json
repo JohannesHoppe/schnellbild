@@ -71,7 +71,7 @@
     },
     {
       "title": "视频播放器，连 macOS 播放不了的格式也能播",
-      "text": "<p>macOS 自身能播放的格式（MP4、MOV、AVCHD 等）由 macOS 播放（支持 HDR），其余格式（MKV、WebM、AVI、WMV、FLV、MPEG、DVD 视频）则由内置的 VLC 引擎播放。</p><ul><li>← → 跳转视频的十分之一，⇧← ⇧→ 跳转百分之一</li><li>↑ ↓ 调节音量，对所有视频生效</li><li>访达和快速查看也能显示 MKV、WebM、WMV、FLV 和 VOB 的缩略图</li></ul>",
+      "text": "<p>macOS 自身能播放的格式（MP4、MOV、AVCHD 等）由 macOS 播放（支持 HDR），其余格式（MKV、WebM、AVI、WMV、FLV、MPEG、DVD 视频）则由内置的 VLC 引擎播放。</p><ul><li>← → 跳转视频的十分之一，⇧← ⇧→ 跳转百分之一</li><li>↑ ↓ 调节音量，对所有视频生效</li><li>⌘→ 切到下一个视频，⌘← 返回：前一个视频从离开时的位置继续播放</li><li>访达和快速查看也能显示 MKV、WebM、WMV、FLV 和 VOB 的缩略图</li></ul>",
       "alt": "在 Schnellbild 中播放的视频"
     },
     {

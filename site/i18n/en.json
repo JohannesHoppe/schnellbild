@@ -71,7 +71,7 @@
     },
     {
       "title": "Videos, also the ones macOS can't play",
-      "text": "<p>What macOS plays itself (MP4, MOV, AVCHD …) plays through macOS, HDR included; everything else through the VLC engine built in: MKV, WebM, AVI, WMV, FLV, MPEG, DVD video.</p><ul><li>← → jump a tenth of the video, ⇧← ⇧→ a hundredth</li><li>↑ ↓ set the volume, for every video</li><li>Finder and Quick Look get thumbnails for MKV, WebM, WMV, FLV and VOB too</li></ul>",
+      "text": "<p>What macOS plays itself (MP4, MOV, AVCHD …) plays through macOS, HDR included; everything else through the VLC engine built in: MKV, WebM, AVI, WMV, FLV, MPEG, DVD video.</p><ul><li>← → jump a tenth of the video, ⇧← ⇧→ a hundredth</li><li>↑ ↓ set the volume, for every video</li><li>⌘→ to the next video and ⌘← back: the first goes on where it was left</li><li>Finder and Quick Look get thumbnails for MKV, WebM, WMV, FLV and VOB too</li></ul>",
       "alt": "A video playing in Schnellbild"
     },
     {
