@@ -352,10 +352,13 @@ enum LicenseLayout {
                                          .foregroundColor: NSColor.labelColor,
                                          .paragraphStyle: paragraph(spacingBefore: 16, after: 4)])
                 }
+                // Each line of a text is a paragraph of its own: the room
+                // above the text is a short empty line, not paragraph spacing
+                add("\n", [.font: NSFont.systemFont(ofSize: 6)])
                 add(part.body.trimmingCharacters(in: .newlines) + "\n",
                     [.font: NSFont.monospacedSystemFont(ofSize: 11.5, weight: .regular),
                      .foregroundColor: NSColor.textColor,
-                     .paragraphStyle: paragraph(spacingBefore: 10, after: 0)])
+                     .paragraphStyle: paragraph()])
             }
             for child in s.children ?? [] { section(child, depth: min(depth + 1, 2)) }
         }
