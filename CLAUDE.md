@@ -114,7 +114,7 @@ There is **no Xcode project for the app build**; `xcodegen` generates
   (text field editing via `textEditing:`, open sheets: `anySheetOpen` /
   `otherSheetOpen`) live in the models and are unit-tested. ⌘- and ⇧-clicks
   on tiles go through `ModifierClicks` (a mouse monitor; SwiftUI's taps don't
-  fire with ⌘ held), acting on the tile under the pointer when the button comes up (found by the frames tiles and rows report, `ModifierClicks.place`; the hovered one as a fallback).
+  fire with ⌘ held), acting on the tile under the pointer when the button comes up (found by the frames tiles and rows report, `ModifierClicks.place`; the hovered one as a fallback). Clicks and double clicks on tiles, rows, other files, Atlas places, the pane divider and the playlist's grip go through `Clicks`: one tap gesture for every click, a double click told by the click count the event carries (`NSEvent.clickCount`, which the monitor reads before the view gets the event), not by SwiftUI's `onTapGesture(count: 2)`, which let double clicks through as two single clicks now and then on CI (a folder tile selected, not opened). UI tests open items with `SchnellbildUITestCase.open(_:until:)` / `openTile` / `openInFullView` (a double click once the item can be clicked, then the wait for what it opens).
 - **Video state:** `PlaybackControl.isPlaying` is the player's real state;
   the players report changes (own controls, end of video) through
   `model.playbackStateChanged`, which drives the "Paused" badge.

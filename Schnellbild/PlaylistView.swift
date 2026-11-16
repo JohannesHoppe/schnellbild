@@ -376,7 +376,7 @@ private struct PlaylistGrip: View {
                         model.setPlaylistWidth(model.playlistWidth, remember: true)
                     }
             )
-            .onTapGesture(count: 2) { model.setPlaylistWidth(nil, remember: true) }
+            .modifier(Clicks(single: {}, double: { model.setPlaylistWidth(nil, remember: true) }))
             .accessibilityElement()
             .accessibilityIdentifier("playlistGrip")
             .accessibilityLabel("Playlist width")

@@ -12,8 +12,7 @@ final class NavigationUITests: SchnellbildUITestCase {
         waitForSelected("album")
         app.typeKey(.space, modifierFlags: [])
         XCTAssertTrue(app.staticTexts["inside.jpg"].waitForExistence(timeout: 10))
-        tile("..").doubleClick()
-        XCTAssertTrue(app.staticTexts["a.jpg"].waitForExistence(timeout: 10))
+        openTile("..", showing: app.staticTexts["a.jpg"])
         waitForSelected("album")
     }
 

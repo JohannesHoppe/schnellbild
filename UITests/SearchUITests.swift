@@ -12,8 +12,7 @@ final class SearchUITests: SchnellbildUITestCase {
         launchOnTempDir()
         XCTAssertTrue(searchField.exists)
         XCTAssertTrue(searchField.isEnabled)
-        tile("a.jpg").doubleClick()
-        waitForBadge(containing: "a.jpg")
+        openInFullView("a.jpg")
         XCTAssertTrue(searchField.exists, "still visible in the full view")
     }
 
@@ -40,8 +39,7 @@ final class SearchUITests: SchnellbildUITestCase {
         launchOnTempDir()
         search("deep")
         XCTAssertTrue(app.staticTexts["deep-photo.jpg"].waitForExistence(timeout: 10))
-        tile("deep-photo.jpg").doubleClick()
-        waitForBadge(containing: "deep-photo.jpg")
+        openInFullView("deep-photo.jpg")
         toolbarButton("backButton").click()
         XCTAssertTrue(app.staticTexts["deep-photo.jpg"].waitForExistence(timeout: 5), "back to the results")
         XCTAssertEqual(text(of: searchField), "deep", "the search stays")
@@ -52,8 +50,7 @@ final class SearchUITests: SchnellbildUITestCase {
         launchOnTempDir()
         search("jpg")   // the search field keeps focus while typing
         XCTAssertTrue(app.staticTexts["deep-photo.jpg"].waitForExistence(timeout: 10))
-        tile("a.jpg").doubleClick()
-        waitForBadge(containing: "a.jpg")
+        openInFullView("a.jpg")
         app.typeKey(.rightArrow, modifierFlags: [])
         waitForBadge(containing: "b.jpg")
         XCTAssertEqual(text(of: searchField), "jpg", "the arrow didn't go into the search field")
@@ -131,8 +128,7 @@ final class SearchUITests: SchnellbildUITestCase {
 
     func testTypingInFullViewShowsResults() {
         launchOnTempDir()
-        tile("a.jpg").doubleClick()
-        waitForBadge(containing: "a.jpg")
+        openInFullView("a.jpg")
         search("deep")
         XCTAssertTrue(app.staticTexts["deep-photo.jpg"].waitForExistence(timeout: 10),
                       "search field holds “\(text(of: searchField))”")
