@@ -5762,9 +5762,13 @@ final class AVPlaybackControl: PlaybackControl {
                 for await status in item.publisher(for: \.status).values where status != .unknown { break }
             }
             guard let self, !Task.isCancelled, let place = self.resumeAt else { return }
-            if self.player.currentItem?.status == .readyToPlay {
-                _ = await self.player.seek(to: CMTime(seconds: place.seconds, preferredTimescale: 600),
-                                           toleranceBefore: .zero, toleranceAfter: .zero)
+            // A seek of the player's own (a subtitle track chosen, a look
+            // redrawn) interrupts this one: it is made again
+            for attempt in 1...5 where self.player.currentItem?.status == .readyToPlay {
+                let done = await self.player.seek(to: CMTime(seconds: place.seconds, preferredTimescale: 600),
+                                                  toleranceBefore: .zero, toleranceAfter: .zero)
+                BrowserModel.testLog("avkit resume seek \(attempt): \(done ? "there" : "interrupted"), at \(String(format: "%.1f", CMTimeGetSeconds(self.player.currentTime()))) s")
+                if done || Task.isCancelled { break }
             }
             // (Space may have changed its mind meanwhile)
             guard !Task.isCancelled, let place = self.resumeAt else { return }
@@ -5884,6 +5888,8 @@ final class AVPlaybackControl: PlaybackControl {
             // (once the item can seek)
             for _ in 0..<50 {
                 guard let self, let item = self.player.currentItem else { return }
+                // Getting to where it was left: that seek draws the choice
+                if self.resumeAt != nil { try? await Task.sleep(for: .milliseconds(100)); continue }
                 if item.status == .readyToPlay {
                     self.player.seek(to: self.player.currentTime(), toleranceBefore: .zero, toleranceAfter: .zero) { _ in
                         guard clearing else { return }
@@ -6026,10 +6032,11 @@ final class AVPlaybackControl: PlaybackControl {
     /// composition put back just now, can still leave the frame drawn with
     /// an earlier look: a stale frame is drawn again, a little later each time.
     private func redrawIfPaused(after delay: Duration = .zero, attempts: Int = 6) {
-        guard !isPlaying else { return }
+        // (getting to where it was left: that seek draws the look)
+        guard !isPlaying, resumeAt == nil else { return }
         Task { @MainActor [weak self] in
             if delay > .zero { try? await Task.sleep(for: delay) }
-            guard let self, !self.isPlaying else { return }
+            guard let self, !self.isPlaying, self.resumeAt == nil else { return }
             let now = self.player.currentTime()
             if let frame = self.frameDuration, now.seconds.isFinite {
                 // A quarter and a half into the frame shown, by turns

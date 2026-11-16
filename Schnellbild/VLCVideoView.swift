@@ -162,7 +162,9 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
     }()
     /// When the reading began (test log).
     private var parseBegan = Date()
-    /// Where the first opening starts (ms), until VLC reports a time.
+    /// Where the first opening starts (ms), until VLC reports a time past
+    /// the start or the user seeks: VLCKit's position and time come only
+    /// with VLC's reports, which a video opened paused doesn't send.
     private var resumeMs = 0
 
     /// Reads the file's tracks before it plays (libVLC's preparser: the
@@ -363,6 +365,8 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         BrowserModel.testLog("vlc play, state \(player.state.rawValue), position \(player.position)")
         isPlaying = true
         pauseOnceOpen = false   // (resumed paused, played before its first picture)
+        // A seek made while paused: VLC reports its new place once it plays
+        if let pending = pendingSeek { pendingSeek = (pending.target, Date()) }
         if parsing { playWhenParsed = true; return }
         // Not played yet: the media as prepared (its tracks chosen)
         if !started { startPlaying(); return }
@@ -464,7 +468,7 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         let current = Int(player.currentVideoSubTitleIndex)
         if let wanted = wantedSubtitle { subtitleOnceOpen = wanted } else { subtitleOnceOpen = current >= 0 ? current : nil }
         let ended = reachedEnd || player.position >= 0.999
-        let time = ended ? 0 : timeReported == nil && resumeMs > 0 ? resumeMs : max(timeNow, 0)
+        let time = ended ? 0 : resumeMs > 0 ? resumeMs : max(timeNow, 0)
         let track = subtitleToOpen
         let index = track.flatMap(subtitleIndex(of:))
         player.stop()
@@ -742,20 +746,25 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         return ms > 0 ? Double(ms) / 1000 : nil
     }
 
-    /// Where it stands: the end once played to it; before VLC reports a time,
-    /// the place it was opened at (none from the beginning).
+    /// Where it stands, as `progress` has it (a seek made while paused, the
+    /// place it was opened at); before the length is known, the place it
+    /// was opened at or VLC's time.
     var playedSeconds: Double? {
-        if reachedEnd || player.state == .ended { return lengthSeconds }
-        guard timeReported != nil else { return resumeMs > 0 ? Double(resumeMs) / 1000 : nil }
-        return Double(max(timeNow, 0)) / 1000
+        if let length = lengthSeconds, let progress { return progress * length }
+        if resumeMs > 0 { return Double(resumeMs) / 1000 }
+        return timeReported == nil ? nil : Double(max(timeNow, 0)) / 1000
     }
 
     var progress: Double? {
         if reachedEnd || player.state == .ended { return 1 }
-        guard (player.media?.length.intValue ?? 0) > 0 else { return nil }
+        let length = player.media?.length.intValue ?? 0
+        guard length > 0 else { return nil }
+        // Opened where the user left it: VLC reports nothing while paused
+        if resumeMs > 0 { return min(Double(resumeMs) / Double(length), 1) }
         let reported = Double(min(max(player.position, 0), 1))
         if let pending = pendingSeek {
-            if abs(reported - pending.target) > 0.02, Date().timeIntervalSince(pending.at) < 1.5 {
+            // (paused, VLC reports no new position: the target holds)
+            if abs(reported - pending.target) > 0.02, !isPlaying || Date().timeIntervalSince(pending.at) < 1.5 {
                 return pending.target
             }
             pendingSeek = nil
@@ -771,6 +780,7 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         endHandover(selecting: true)
         let target = min(max(progress, 0), 1)
         reachedEnd = false
+        resumeMs = 0
         pendingSeek = (target, Date())
         if atEnd {
             positionOnceOpen = Float(target)
@@ -786,7 +796,11 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
 
     nonisolated func mediaPlayerTimeChanged(_ aNotification: Notification) {
         let at = Date()
-        Task { @MainActor in self.timeReported = (Int(self.player.time.intValue), at) }
+        Task { @MainActor in
+            let ms = Int(self.player.time.intValue)
+            self.timeReported = (ms, at)
+            if ms > 0 { self.resumeMs = 0 }   // VLC's own reports from here on
+        }
     }
 
     /// The time now: VLC reports it four times a second (its input's
