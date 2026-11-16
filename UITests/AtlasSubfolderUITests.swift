@@ -17,8 +17,9 @@ final class AtlasSubfolderUITests: SchnellbildUITestCase {
         try super.setUpWithError()
         for name in ["a.jpg", "b.jpg", "c.jpg"] { try FileManager.default.removeItem(at: tempDir.appendingPathComponent(name)) }
         for (name, folder) in days { try put(name, at: folder + name) }
-        // An MKV on the ferry, placed and timed by its sidecar (as Lightroom writes one)
-        try put("clip.mkv", at: "Day 3/norway-ferry.mkv")
+        // An MKV on the ferry, placed and timed by its sidecar (as Lightroom
+        // writes one): `ramp.mkv`, grey growing brighter with time (luma 32 + 9 per second)
+        try put("ramp.mkv", at: "Day 3/norway-ferry.mkv")
         let sidecar = """
         <x:xmpmeta xmlns:x="adobe:ns:meta/"><rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
         <rdf:Description rdf:about="" xmlns:exif="http://ns.adobe.com/exif/1.0/" exif:DateTimeOriginal="2026-06-16T11:40:00+02:00"
@@ -62,8 +63,17 @@ final class AtlasSubfolderUITests: SchnellbildUITestCase {
         waitForSelected("Day 5")
     }
 
+    /// The MKV plays through VLC: its pictures reach VLC's output (the
+    /// test log's probes of the first pictures, dark: the start of the
+    /// ramp) and the screen (measured a second in, held by the pause: much
+    /// darker than the frame at 30 % the thumbnail under it shows).
     func testAnMKVPlaysAtItsPlaceInTheTour() throws {
-        openAtlas()
+        let log = tempDir.appendingPathComponent("app.log")
+        launch(open: tempDir.path, extra: ["--test-log=\(log.path)"])
+        XCTAssertTrue(app.staticTexts["Day 3"].waitForExistence(timeout: 15))
+        app.typeKey("w", modifierFlags: [])
+        XCTAssertTrue(element("atlas").waitForExistence(timeout: 10))
+        eventually("every day's places", timeout: 30) { self.count().contains("14 on the map") }
         app.typeKey("t", modifierFlags: [])
         let status = element("tourStatus")
         XCTAssertTrue(status.waitForExistence(timeout: 10))
@@ -72,6 +82,25 @@ final class AtlasSubfolderUITests: SchnellbildUITestCase {
         let item = element("tourItem")
         eventually("the ferry's MKV after the photos and the video", timeout: 40) { item.exists && item.label.hasPrefix("norway-ferry.mkv") }
         XCTAssertEqual(item.label, "norway-ferry.mkv · video vlc", "played through VLC, as in the full view")
+        // Its pictures reach VLC's output
+        eventually("VLC's first pictures", timeout: 10) {
+            ((try? String(contentsOf: log, encoding: .utf8)) ?? "").contains("vlc picture 1 of media")
+        }
+        let probes = ((try? String(contentsOf: log, encoding: .utf8)) ?? "").split(separator: "\n").filter { $0.contains("vlc picture") }
+        print("VLC's pictures:\n" + probes.joined(separator: "\n"))
+        let lumas = probes.compactMap { line in line.range(of: "luma ").flatMap { Int(line[$0.upperBound...].prefix { $0.isNumber }) } }
+        XCTAssertFalse(lumas.isEmpty)
+        XCTAssertTrue(lumas.allSatisfy { $0 < 60 }, "the ramp's start, not a later frame: \(lumas)")
+        // And the screen: a second in, held
+        RunLoop.current.run(until: Date().addingTimeInterval(1))
+        app.typeKey(.space, modifierFlags: [])
+        eventually("paused") { self.text(of: status).hasSuffix("paused") }
+        RunLoop.current.run(until: Date().addingTimeInterval(0.5))
+        let f = item.frame
+        if let shown = try? screenStats(of: CGRect(x: f.midX - f.width / 4, y: f.midY - f.height / 4, width: f.width / 2, height: f.height / 2)) {
+            XCTAssertGreaterThan(shown.mean, 0.03, "a picture, not black")
+            XCTAssertLessThan(shown.mean, 0.22, "VLC's picture of the first seconds, not the thumbnail at 30 % (about 0.32)")
+        }
         app.typeKey(.escape, modifierFlags: [])
         eventually("the tour ended", timeout: 10) { !status.exists }
     }

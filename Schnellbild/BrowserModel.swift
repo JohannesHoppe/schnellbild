@@ -3474,8 +3474,12 @@ final class BrowserModel: ObservableObject {
     private func atlasFollow() {
         guard viewMode == .atlas else { return }
         atlas.walking = deepWalking
-        atlas.entriesChanged(entries, context: (folderPath ?? "") + "\u{1}" + query + (deep != nil ? "\u{1}deep" : ""))
+        let context = (folderPath ?? "") + "\u{1}" + query + (deep != nil ? "\u{1}deep" : "")
+        // The walk's batches: only what came is looked at
+        if let added = atlasAdded { atlas.entriesAdded(added, context: context) } else { atlas.entriesChanged(entries, context: context) }
     }
+    /// What the walk of the subfolders just added to `entries`.
+    private var atlasAdded: [GridEntry]?
 
     // MARK: The Atlas with the subfolders
 
@@ -3530,6 +3534,12 @@ final class BrowserModel: ObservableObject {
         var selectInside: String?
         /// This item is selected when it comes (from the history).
         var selectAt: URL?
+        /// Sortings of the whole list asked for, and done (off the main thread).
+        var sorting = 0
+        var sorted = 0
+        /// A batch is merged off the main thread; the walk ended meanwhile.
+        var merging = false
+        var finishing = false
 
         init(root: String) { self.root = root }
     }
@@ -3574,7 +3584,7 @@ final class BrowserModel: ObservableObject {
         }
         walk.selectAt = selectAt
         let own = allEntries.filter(\.isMedia)
-        walk.seen = Set(own.map { Self.canonicalPath($0.url) })
+        walk.seen = Set(own.map(\.url.path))   // (the walk lists the folder as its listing did: the same paths)
         deep = walk
         if !quiet { showDeep(keeping: selected?.url) }
         deepWalking = true
@@ -3590,9 +3600,27 @@ final class BrowserModel: ObservableObject {
     /// The folder's own media and the walk's items as the pane's list.
     private func showDeep(keeping url: URL?) {
         guard let deep else { return }
+        let list = allEntries.filter(\.isMedia) + deep.items
+        // A long list is sorted off the main thread; what the walk brings
+        // meanwhile is merged in when it is there
+        guard list.count > Self.mainThreadSortLimit else { showDeepList(sorted(list), keeping: url); return }
+        let order = entryOrder
+        deep.sorting += 1
+        let round = deep.sorting
+        let count = deep.items.count
+        Task { [weak self] in
+            let ordered = await Blocking.run(.userInitiated) { order.sorted(list) }
+            guard let self, self.deep === deep, deep.sorting == round else { return }
+            deep.sorted = round
+            let later = Array(deep.items.dropFirst(count))
+            self.showDeepList(later.isEmpty ? ordered : self.entryOrder.merged(ordered, later), keeping: self.selectedEntry?.url ?? url)
+        }
+    }
+
+    private func showDeepList(_ list: [GridEntry], keeping url: URL?) {
         let previous = selection
-        entries = sorted(allEntries.filter(\.isMedia) + deep.items)
-        if let index = index(of: url) {
+        entries = list
+        if let index = indexByURL(url) {
             keepSelection(index)
         } else if !entries.isEmpty {
             keepSelection(previous.map { min($0, entries.count - 1) } ?? 0)
@@ -3601,9 +3629,16 @@ final class BrowserModel: ObservableObject {
         }
     }
 
+    /// Where an item is in the list, found by its URL first (quick in a
+    /// list of 100 000), else by its canonical path.
+    private func indexByURL(_ url: URL?) -> Int? {
+        guard let url else { return nil }
+        return entries.firstIndex { $0.url == url } ?? index(of: url)
+    }
+
     private func deepFound(_ batch: [GridEntry], in walk: DeepWalk) {
         guard deep === walk else { return }
-        let new = batch.filter { walk.seen.insert(Self.canonicalPath($0.url)).inserted }
+        let new = batch.filter { walk.seen.insert($0.url.path).inserted }
         guard !new.isEmpty else { return }
         if walk.quiet { walk.found += new; return }
         walk.pending += new
@@ -3616,28 +3651,56 @@ final class BrowserModel: ObservableObject {
 
     private func flushDeep(_ walk: DeepWalk) {
         walk.flushScheduled = false
-        guard deep === walk, !walk.pending.isEmpty else { return }
+        // (one merge at a time; what comes meanwhile goes in with the next)
+        guard deep === walk, !walk.pending.isEmpty, !walk.merging else { return }
         let fresh = walk.pending
         walk.pending = []
         walk.items += fresh
+        // (a long list being sorted takes the batch in when it is done)
+        guard walk.sorting == walk.sorted else { return }
+        // A long list: merged off the main thread (comparing names as the
+        // Finder does takes its time on thousands)
+        guard entries.count + fresh.count > Self.deepMergeOnMainLimit else { showMerged(entryOrder.merged(entries, fresh), fresh, walk); return }
+        walk.merging = true
+        let list = entries, order = entryOrder, revision = listRevision
+        Task { [weak self] in
+            let merged = await Blocking.run(.userInitiated) { order.merged(list, fresh) }
+            guard let self, self.deep === walk else { return }
+            walk.merging = false
+            // The list changed meanwhile (a change on disk): merged into it as it is now
+            self.showMerged(revision == self.listRevision ? merged : self.entryOrder.merged(self.entries, fresh), fresh, walk)
+            if !walk.pending.isEmpty { self.flushDeep(walk) } else if walk.finishing { self.deepFinished(walk) }
+        }
+    }
+
+    /// Lists up to this long take the walk's batches on the main thread.
+    static let deepMergeOnMainLimit = 2_000
+
+    /// The walk's batch shown: the list with it, the selection kept or
+    /// handed to what came.
+    private func showMerged(_ list: [GridEntry], _ fresh: [GridEntry], _ walk: DeepWalk) {
         let keep = selectedEntry?.url
-        entries = entryOrder.merged(entries, fresh)
-        if let at = walk.selectAt, let index = index(of: at) {
+        atlasAdded = fresh
+        entries = list
+        atlasAdded = nil
+        if let at = walk.selectAt, let index = indexByURL(at) {
             walk.selectAt = nil
             walk.selectInside = nil
             selection = index
         } else if let inside = walk.selectInside,
                   let first = fresh.first(where: { Self.canonicalPath($0.url).hasPrefix(inside + "/") }),
-                  let index = index(of: first.url) {
+                  let index = indexByURL(first.url) {
             walk.selectInside = nil
             selection = index
-        } else if let index = index(of: keep) {
+        } else if let index = indexByURL(keep) {
             keepSelection(index)
         }
     }
 
     private func deepFinished(_ walk: DeepWalk) {
         guard deep === walk else { return }
+        // A batch still being merged: finished once it is in
+        if walk.merging { walk.finishing = true; return }
         if walk.quiet {
             walk.items = walk.found
             walk.found = []

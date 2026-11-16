@@ -42,7 +42,16 @@ final class ArchiveUITests: SchnellbildUITestCase {
         let image = element("fullImage")
         eventually("the picture opens", timeout: 15) { self.text(of: image).hasSuffix("loaded") }
         app.typeKey(.escape, modifierFlags: [])
-        tile("Day 1").doubleClick()
+        // Back in the grid first: a double click while the full view still
+        // lies over it (CI, macOS 15, 0.2 s after Esc) reaches the picture, not the tile
+        let day = tile("Day 1")
+        eventually("the full view closed") { !image.exists && day.isHittable }
+        day.doubleClick()
+        // A double click the window took as two single ones only selects: Space opens
+        for _ in 0..<2 where !tile("sun.jpg").waitForExistence(timeout: 5) && day.exists {
+            day.click()
+            app.typeKey(.space, modifierFlags: [])
+        }
         XCTAssertTrue(tile("sun.jpg").waitForExistence(timeout: 15))
     }
 
