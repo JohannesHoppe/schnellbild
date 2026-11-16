@@ -459,14 +459,12 @@ final class VisualUITests: SchnellbildUITestCase {
               let german = Int(line.dropFirst("vlc: handing over subtitles ".count).prefix { $0.isNumber }) else {
             return XCTFail("the German track handed over")
         }
-        // Near the end (10 % a step, not past it), then to the end
-        let progress = element("videoProgress")
-        func percent() -> Int { Int(text(of: progress).filter(\.isNumber)) ?? -1 }
-        for _ in 0..<9 where percent() < 70 {
-            app.typeKey(.rightArrow, modifierFlags: [])
-            RunLoop.current.run(until: Date().addingTimeInterval(0.3))
-        }
-        waitForBadge(containing: "Paused", timeout: 20)
+        // To the end in 10 % steps, as fast as keys come (a key held down):
+        // the last ones land in the video's last second or past it
+        for _ in 0..<9 { app.typeKey(.rightArrow, modifierFlags: []) }
+        let ended = Date()
+        waitForBadge(containing: "Paused", timeout: 8)
+        print("ended \(String(format: "%.1f", Date().timeIntervalSince(ended))) s after the last step: \(text(of: video))")
         let mark = logLength(log)
         app.typeKey(" ", modifierFlags: [])
         eventually("playing again", timeout: 20) { self.logSince(log, mark).contains("vlc picture 1 of media 2") }

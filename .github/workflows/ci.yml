@@ -230,6 +230,8 @@ jobs:
           grep -i -E "vout|video output|vmem|error|failed|cannot|blend|spu|subpicture|freetype|libass|subtitle" /tmp/schnellbild-vlc.log | sort | uniq -c | sort -rn | head -80
           echo "--- subtitle decoders, in order"
           grep -n -E 'Creating an input|spu decoder module|killing decoder|SET_TIME|SET_POSITION|seek request|selecting|unselecting|libass|ass_|[Ff]ont|subpicture|vout found' /tmp/schnellbild-vlc.log | grep -v -E 'looking for' | tail -150 || true
+          echo "--- the end of the log (the failing test's, as a repeated run stops at its first failure)"
+          grep -v -E 'Buffering [0-9]+%|displayed late|late picture' /tmp/schnellbild-vlc.log | tail -400 || true
 
       - name: Show what macOS did with the thumbnail extension
         if: failure()
