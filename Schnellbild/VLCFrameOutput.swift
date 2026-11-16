@@ -407,15 +407,18 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
         sequence += 1
         let number = sequence
         let look = self.look
+        // The overlay and whether to log this picture, taken together (a
+        // test logs the pictures from the overlay set on)
+        let overlay = self.overlay
+        let logged = shownOfMedia + 1 <= Self.probedFirst || picturesToLog > 0
+        if picturesToLog > 0 { picturesToLog -= 1 }
         lock.unlock()
-        let presented = present(buffer, with: look, number: number)
+        let presented = present(buffer, with: look, overlay: overlay, number: number)
         lock.lock()
         callbackSeconds += Date().timeIntervalSince(start)
         callbacks += 1
         shownOfMedia += 1
         let ofMedia = shownOfMedia, opening = openings
-        let logged = ofMedia <= Self.probedFirst || picturesToLog > 0
-        if picturesToLog > 0 { picturesToLog -= 1 }
         lock.unlock()
         guard Self.probing else { return }
         // Outside the handover's time: what the picture shows, for UI tests
@@ -571,9 +574,11 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
         return formatReady
     }
 
-    func setOverlay(_ new: CIImage?) {
+    /// `logging`: the next pictures with it are logged (UI tests).
+    func setOverlay(_ new: CIImage?, logging: Int = 0) {
         lock.lock()
         overlay = new
+        picturesToLog = max(picturesToLog, logging)
         let paused = latest != nil && Date().timeIntervalSince(lastDisplay) > 0.15
         let queued = pendingRedraw != nil
         if paused { pendingRedraw = look }
@@ -585,8 +590,9 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
             pendingRedraw = nil
             let buffer = latest
             let number = sequence
+            let overlay = self.overlay
             lock.unlock()
-            if let look, let buffer { present(buffer, with: look, number: number) }
+            if let look, let buffer { present(buffer, with: look, overlay: overlay, number: number) }
         }
     }
 
@@ -606,8 +612,9 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
             pendingRedraw = nil
             let buffer = latest
             let number = sequence
+            let overlay = self.overlay
             lock.unlock()
-            if let look, let buffer { present(buffer, with: look, number: number) }
+            if let look, let buffer { present(buffer, with: look, overlay: overlay, number: number) }
         }
     }
 
@@ -617,11 +624,8 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
     /// picture keeps what lies beyond SDR white (Core Image reads PQ and HLG
     /// into values above 1).
     @discardableResult
-    private func present(_ buffer: CVPixelBuffer, with look: Look, number: Int) -> CVPixelBuffer {
+    private func present(_ buffer: CVPixelBuffer, with look: Look, overlay: CIImage?, number: Int) -> CVPixelBuffer {
         var surfaceBuffer = buffer
-        lock.lock()
-        let overlay = self.overlay
-        lock.unlock()
         if !look.isNeutral || overlay != nil {
             lock.lock()
             let pool = lookPool

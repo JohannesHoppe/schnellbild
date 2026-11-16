@@ -119,7 +119,9 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         player.delegate = self
         output.attach(to: player)
         BrowserModel.testLog("vlc: opening | \(BrowserModel.testClock) ms")
-        if subtitles { readTracksFirst(media) }
+        // Off: none until the model chooses one (VLC turns on the file's
+        // default track as it finds it, before the model hears of it)
+        if subtitles { readTracksFirst(media) } else { wantedSubtitle = .some(nil) }
     }
 
     // MARK: Tracks before the first picture
@@ -584,14 +586,14 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         output.hold(false)
         if texts != handover.shown {
             handover.shown = texts
+            BrowserModel.testLog("vlc: the app draws \(texts) at \(String(format: "%.3f", now)) s | \(BrowserModel.testClock) ms")
             if let size = output.bufferSize, !texts.isEmpty {
                 output.setOverlay(SubtitleOverlay.image(texts, kind: handover.lines.kind, style: running.last?.style,
-                                                        width: size.width, height: size.height, decoded: output.proposedSize))
+                                                        width: size.width, height: size.height, decoded: output.proposedSize),
+                                  logging: 3)
             } else {
-                output.setOverlay(nil)
+                output.setOverlay(nil, logging: 40)
             }
-            BrowserModel.testLog("vlc: the app draws \(texts) at \(String(format: "%.3f", now)) s | \(BrowserModel.testClock) ms")
-            output.logPictures(texts.isEmpty ? 40 : 3)
         }
         let ours = handover.lines.lines.filter { $0.start < handover.firstOfVLC }
         if handover.selected, now >= (ours.map(\.end).max() ?? 0) {
