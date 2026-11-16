@@ -553,8 +553,10 @@ final class LicenseNSTextView: NSTextView {
             return true
         }
         func scroll(toEnd: Bool) -> Bool {
-            // Only while the text has the keys: in the find bar ⌘↑ ⌘↓ are the field's
-            guard window?.firstResponder === self, let clip = enclosingScrollView?.contentView else { return false }
+            // Not while typing in the find bar: there ⌘↑ ⌘↓ are the field's
+            // (its field editor is another text view)
+            if let typing = window?.firstResponder as? NSTextView, typing !== self { return false }
+            guard let clip = enclosingScrollView?.contentView else { return false }
             clip.scroll(to: NSPoint(x: 0, y: toEnd ? max(0, frame.height - clip.bounds.height) : 0))
             enclosingScrollView?.reflectScrolledClipView(clip)
             return true
