@@ -27,9 +27,9 @@ final class AboutUITests: SchnellbildUITestCase {
         XCTAssertLessThan(abs(topOffset), 40, "the text starts at the top of its view")
     }
 
-    /// The text's sections, in the list beside it.
+    /// A section of the text, by its id, in the list beside it.
     private func choose(_ section: String) {
-        let row = aboutWindow.staticTexts[section].firstMatch
+        let row = aboutWindow.descendants(matching: .any)["aboutSection.\(section)"].firstMatch
         XCTAssertTrue(row.waitForExistence(timeout: 5), "\(section) in the list")
         row.click()
     }
@@ -64,11 +64,11 @@ final class AboutUITests: SchnellbildUITestCase {
         photograph("about-light")
 
         // The list jumps to a project's section
-        choose("UnRAR: UnRAR license")
+        choose("unrar")
         eventually("scrolled to UnRAR") { self.scrolled > 2000 }
         let atUnRAR = scrolled
         photograph("about-unrar-light")
-        choose("VLCKit: GNU LGPL 2.1")
+        choose("vlckit")
         eventually("scrolled to VLCKit") { self.scrolled > 100 && self.scrolled < atUnRAR }
         photograph("about-vlckit-light")
 
@@ -88,7 +88,7 @@ final class AboutUITests: SchnellbildUITestCase {
     func testTheWindowInDarkMode() throws {
         openAbout(appearance: "dark")
         photograph("about-dark")
-        choose("VLCKit: GNU LGPL 2.1")
+        choose("vlckit")
         eventually("scrolled to VLCKit") { self.scrolled > 100 }
         photograph("about-vlckit-dark")
     }

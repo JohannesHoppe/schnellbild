@@ -308,6 +308,7 @@ enum LicenseLayout {
             if depth == 0, out.length > 0 {
                 // A rule above each project
                 let block = NSTextBlock()
+                block.setContentWidth(100, type: .percentageValueType)
                 block.setWidth(36, type: .absoluteValueType, for: .margin, edge: .minY)
                 block.setWidth(1, type: .absoluteValueType, for: .border, edge: .minY)
                 block.setWidth(14, type: .absoluteValueType, for: .padding, edge: .minY)
@@ -373,6 +374,8 @@ private struct AboutView: View {
                             }
                         }
                         .padding(.vertical, 2)
+                        .accessibilityElement(children: .combine)
+                        .accessibilityIdentifier("aboutSection.\(section.id)")
                     }
                     .listStyle(.sidebar)
                     .accessibilityIdentifier("aboutLicenseList")

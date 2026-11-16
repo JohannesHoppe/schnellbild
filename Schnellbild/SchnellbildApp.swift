@@ -221,6 +221,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        // Again once launched: UI tests set it in the preferences from the
+        // App's init (`--appearance=`)
+        AppAppearance.apply()
         NSApp.setActivationPolicy(.regular)
         NSApp.activate(ignoringOtherApps: true)
         // Windows, no tabs: a tab of its own is a new window anyway (⌘N)
