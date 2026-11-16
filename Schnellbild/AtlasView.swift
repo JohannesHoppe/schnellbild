@@ -51,59 +51,11 @@ struct AtlasView: View {
         .overlay { if atlas.tour != nil { TourStage(atlas: atlas) } }
     }
 
-    /// The count, the reading's progress and Play.
+    /// Tour, the count or the reading's progress, Include subfolders (`AtlasHeader`).
     private var header: some View {
-        HStack(spacing: 8) {
-            Button { model.startTour() } label: {
-                HStack(spacing: 5) {
-                    Image(systemName: "play.fill")
-                    Text("Tour")
-                    if let key = shortcuts.keys(.startTour).first { KeyCap(key.capText) }
-                }
-            }
-            .buttonStyle(.borderless)
-            .disabled(atlas.placed.isEmpty)
-            .help(String(localized: "Play the tour: the places in the order of time, full screen (\(shortcuts.hint(.startTour)))"))
-            .accessibilityLabel(Text("Play the tour"))
-            .accessibilityIdentifier("tourButton")
-            Divider().frame(height: 14)
-            Group {
-                if let progress = atlas.progress {
-                    ProgressView(value: Double(progress.done), total: Double(max(progress.total, 1))).frame(width: 50)
-                    Text("Reading locations: \(progress.done) of \(progress.total)")
-                } else {
-                    Text(countText)
-                }
-            }
-            .font(.caption)
-            .foregroundStyle(.secondary)
-            .lineLimit(1)
-            .accessibilityElement(children: .combine)
-            .accessibilityIdentifier("atlasCount")
-            // (a search's results come from every subfolder anyway)
-            if !model.isFiltering {
-                Divider().frame(height: 14)
-                Toggle(isOn: $model.atlasSubfolders) { Text("Include subfolders").font(.caption) }
-                    .toggleStyle(.checkbox)
-                    .controlSize(.small)
-                    .help("The photos and videos of every subfolder too, archives included")
-                    .accessibilityIdentifier("atlasSubfolders")
-                if atlas.walking {
-                    ProgressView().controlSize(.mini)
-                        .help("Reading subfolders…")
-                        .accessibilityLabel(Text("Reading subfolders…"))
-                        .accessibilityIdentifier("atlasWalking")
-                }
-            }
-        }
-        .padding(.horizontal, 10).padding(.vertical, 6)
-        .background(.regularMaterial, in: Capsule())
-        .overlay(Capsule().stroke(.separator, lineWidth: 0.5))
-    }
-
-    private var countText: String {
-        let onMap = atlas.placed.count
-        return String(localized: "\(onMap) on the map")
+        AtlasHeader(texts: .localized(onMap: atlas.placed.count, progress: atlas.progress, shortcuts: shortcuts),
+                    progress: atlas.progress, tourEnabled: !atlas.placed.isEmpty, showsSubfolders: !model.isFiltering,
+                    subfolders: $model.atlasSubfolders, walking: atlas.walking, onTour: { model.startTour() })
     }
 }
 
@@ -354,22 +306,12 @@ private struct AtlasTimelineView: View {
 
     var body: some View {
         VStack(spacing: 4) {
-            HStack {
-                Text(verbatim: label(of: range?.lowerBound)).accessibilityIdentifier("timeline.from")
-                Spacer()
-                if atlas.range != nil {
-                    Text("\(atlas.shown.count) of \(atlas.items.count)")
-                        .accessibilityIdentifier("timeline.count")
-                    Button("Show All") { atlas.range = nil }
-                        .buttonStyle(.link)
-                        .help("The whole span again")
-                        .accessibilityIdentifier("timeline.all")
-                }
-                Spacer()
-                Text(verbatim: label(of: range?.upperBound)).accessibilityIdentifier("timeline.to")
+            TimelineLabels(texts: TimelineTexts(
+                from: label(of: range?.lowerBound), to: label(of: range?.upperBound),
+                count: atlas.range == nil ? nil : String(localized: "\(atlas.shown.count) of \(atlas.items.count)"),
+                showAll: String(localized: "Show All"), showAllHelp: String(localized: "The whole span again"))) {
+                atlas.range = nil
             }
-            .font(.caption)
-            .foregroundStyle(.secondary)
             GeometryReader { geometry in
                 track(width: geometry.size.width)
             }
@@ -607,7 +549,8 @@ private struct TourStage: View {
             if let place { Text(verbatim: place).font(.headline) }
             Text(verbatim: AtlasTimeline.text(item.date, in: item.zone, time: true) + " · " + item.name)
                 .font(.caption).foregroundStyle(.secondary)
-                .lineLimit(1)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
         }
     }
 
@@ -618,6 +561,7 @@ private struct TourStage: View {
                 button(tour.paused ? "play.fill" : "pause.fill", tour.paused ? "Resume" : "Pause", .tourPause, id: "tour.pause") { atlas.togglePause() }
                 button("forward.fill", "Next place", .tourNext, id: "tour.next") { atlas.nextStation() }
                 Text("Place \(tour.station + 1) of \(tour.stations.count)")
+                    .fixedSize()
                     .font(.callout.monospacedDigit())
                     .foregroundStyle(.secondary)
                     .accessibilityIdentifier("tourStatus")
