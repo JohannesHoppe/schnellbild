@@ -3,7 +3,7 @@
   "overviewTitle": "Schnellbild as an alternative",
   "overviewSeoTitle": "Free Mac alternative to {names} · Schnellbild",
   "overviewDescription": "Schnellbild compared with {count} image viewers, video players, comic readers and file managers, feature by feature and with sources. Free, open source, for Mac.",
-  "overviewIntro": "<p>Schnellbild is an alternative with a clear opinion. Folders instead of playlists and a library: open a folder and the list is there, the slideshow makes the playlist by itself. Nothing from the internet, on principle: no account, no tracking, no network at all. And free, with your own keyboard shortcuts included, which some others charge for.</p><p>Here is how it compares with the programs people look for on the Mac, with a source for every cell. Where another program is better, the page says so.</p>",
+  "overviewIntro": "<p>Each page puts Schnellbild next to one program people look for on the Mac: where each of the two is stronger, then every feature with a source for each cell. Schnellbild's own column comes from its README and source code.</p>",
   "overviewNoMac": "These run only on Windows (or no longer on today's Mac). For each, what its fans liked and how Schnellbild does it.",
   "matrixH1": "A free {name} alternative for Mac",
   "matrixSeoTitle": "{name} Alternative for Mac, Free · Schnellbild",
@@ -44,7 +44,14 @@
   "ctaTitle": "Try it with your own folders.",
   "ctaText": "Free, no account, every feature included.",
   "keywords": "{name} alternative, {name} mac, {name} for mac, {name} alternative mac, free {name} alternative, {name} vs Schnellbild, Schnellbild",
-  "listSep": ", "
+  "listSep": ", ",
+  "introWhat": "Schnellbild is a free Mac app for the pictures and videos in your folders: open a folder and its thumbnails are there, one key shows a picture large. It plays MKV, AVI and WebM, opens ZIP and RAR archives like folders, and works without an account and without network access.",
+  "whyTitle": "Schnellbild instead of {name}?",
+  "kindImage": "Schnellbild opens a folder straight away, with nothing to import, and you page through its pictures with the arrow keys: HEIC, RAW, PSD, animated GIF and PDF included, with the folder's videos in the same grid.",
+  "kindVideo": "Schnellbild isn't a full media player. It shows the videos of a folder as thumbnails next to the photos, plays MKV, AVI and WebM, and the arrow keys skim through a video a tenth at a time.",
+  "kindComic": "Schnellbild opens CBZ, CBR, ZIP, RAR and 7z like folders, without unpacking anything to disk, and you page through them with the arrow keys.",
+  "kindFiles": "Schnellbild isn't a file manager. It is a viewer with two panes: F5 copies and F6 moves the marked pictures into the other pane, and both can be undone.",
+  "kindPhotos": "Schnellbild has no library: it shows the photos and videos where they lie on disk, with the date taken and the place from their metadata, and nothing is uploaded."
  },
  "sections": {
   "image": "Image viewers",

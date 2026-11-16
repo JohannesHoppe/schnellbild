@@ -3,7 +3,7 @@
   "overviewTitle": "Schnellbild jako alternativa",
   "overviewSeoTitle": "Alternativa k {names} pro Mac zdarma · Schnellbild",
   "overviewDescription": "Schnellbild ve srovnání s {count} prohlížeči obrázků, přehrávači videa, čtečkami komiksů a správci souborů, funkci po funkci a se zdroji. Zdarma, open source, pro Mac.",
-  "overviewIntro": "<p>Schnellbild je alternativa s jasným názorem. Složky místo playlistů a knihovny: otevřete složku a seznam je hotový, prezentace si playlist udělá sama. Z internetu nic, z principu: žádný účet, žádné sledování, vůbec žádná síť. A zdarma, včetně vlastních klávesových zkratek, za které si některé jiné programy nechávají platit.</p><p>Tady je, jak si vede v porovnání s programy, které lidé na Macu hledají, se zdrojem u každé buňky. Kde je jiný program lepší, stránka to uvádí.</p>",
+  "overviewIntro": "<p>Každá stránka staví Schnellbild vedle jednoho programu, který lidé na Macu hledají: v čem je který z nich silnější, pak každá funkce se zdrojem pro každou buňku. Sloupec Schnellbildu vychází z jeho README a zdrojového kódu.</p>",
   "overviewNoMac": "Tyto programy běží jen ve Windows (nebo už ne na dnešním Macu). U každého najdete, co se na něm fanouškům líbilo a jak to řeší Schnellbild.",
   "matrixH1": "Bezplatná alternativa k {name} pro Mac",
   "matrixSeoTitle": "Alternativa k {name} pro Mac zdarma · Schnellbild",
@@ -44,7 +44,14 @@
   "ctaTitle": "Vyzkoušejte ho na vlastních složkách.",
   "ctaText": "Zdarma, bez účtu, se všemi funkcemi.",
   "keywords": "alternativa k {name}, {name} mac, {name} pro mac, {name} mac zdarma, alternativa k {name} pro mac, bezplatná alternativa k {name}, {name} vs Schnellbild, Schnellbild",
-  "listSep": ", "
+  "listSep": ", ",
+  "introWhat": "Schnellbild je bezplatná aplikace pro Mac na obrázky a videa ve vašich složkách: otevřete složku a náhledy jsou hned tam, jedna klávesa ukáže obrázek velký. Přehraje MKV, AVI a WebM, otevře archivy ZIP a RAR jako složky a funguje bez účtu a bez přístupu k síti.",
+  "whyTitle": "Schnellbild místo programu {name}?",
+  "kindImage": "Schnellbild otevře složku hned, bez importu, a obrázky listujete šipkami: HEIC, RAW, PSD, animované GIFy i PDF, s videi ze složky ve stejné mřížce.",
+  "kindVideo": "Schnellbild není plnohodnotný přehrávač. Ukazuje videa ze složky jako náhledy vedle fotek, přehraje MKV, AVI a WebM a šipky přeskakují o desetinu videa.",
+  "kindComic": "Schnellbild otevře CBZ, CBR, ZIP, RAR a 7z jako složky, aniž by cokoli rozbaloval na disk, a stránky listujete šipkami.",
+  "kindFiles": "Schnellbild není správce souborů, ale prohlížeč se dvěma panely: F5 kopíruje a F6 přesouvá označené obrázky do druhého panelu a obojí jde vrátit.",
+  "kindPhotos": "Schnellbild nemá knihovnu: ukazuje fotky a videa tam, kde leží na disku, s datem pořízení a místem z jejich metadat, a nic se nenahrává."
  },
  "sections": {
   "image": "Prohlížeče obrázků",

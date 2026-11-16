@@ -3,7 +3,7 @@
   "overviewTitle": "Schnellbild als Alternative",
   "overviewSeoTitle": "Kostenlose Mac-Alternative zu {names} · Schnellbild",
   "overviewDescription": "Schnellbild im Vergleich mit {count} Bildbetrachtern, Videoplayern, Comic-Readern und Dateimanagern, Funktion für Funktion und mit Quellen. Kostenlos, Open Source, für den Mac.",
-  "overviewIntro": "<p>Schnellbild ist eine Alternative mit klarer Haltung. Ordner statt Playlists und Mediathek: Ordner öffnen, und die Liste ist da; die Diashow macht die Playlist von selbst. Nichts aus dem Internet, aus Prinzip: kein Konto, kein Tracking, überhaupt kein Netzwerk. Und kostenlos, eigene Tastaturkurzbefehle inklusive, für die manch anderes Programm Geld nimmt.</p><p>Hier steht, wie es sich gegen die Programme schlägt, die Leute auf dem Mac suchen, mit einer Quelle für jede Zelle. Wo ein anderes Programm besser ist, steht das auch da.</p>",
+  "overviewIntro": "<p>Jede Seite stellt Schnellbild neben ein Programm, das Leute auf dem Mac suchen: wo jedes der beiden stärker ist, dann jede Funktion mit einer Quelle für jede Zelle. Die Spalte von Schnellbild stützt sich auf README und Quellcode.</p>",
   "overviewNoMac": "Diese Programme laufen nur unter Windows (oder nicht mehr auf heutigen Macs). Zu jedem: was seine Fans daran mögen und wie Schnellbild das macht.",
   "matrixH1": "Eine kostenlose {name}-Alternative für den Mac",
   "matrixSeoTitle": "{name} Alternative für Mac, kostenlos · Schnellbild",
@@ -44,7 +44,14 @@
   "ctaTitle": "Probier es mit deinen eigenen Ordnern aus.",
   "ctaText": "Kostenlos, ohne Konto, alle Funktionen inklusive.",
   "keywords": "{name} Mac, {name} für Mac, {name} Alternative, {name} Alternative Mac, {name} Mac kostenlos, kostenlose {name} Alternative, {name} vs Schnellbild, Schnellbild",
-  "listSep": ", "
+  "listSep": ", ",
+  "introWhat": "Schnellbild ist eine kostenlose Mac-App für die Bilder und Videos in deinen Ordnern: Ordner öffnen, und die Vorschaubilder sind da, eine Taste zeigt ein Bild groß. Es spielt MKV, AVI und WebM, öffnet ZIP- und RAR-Archive wie Ordner und kommt ohne Konto und ohne Netzwerkzugriff aus.",
+  "whyTitle": "Schnellbild statt {name}?",
+  "kindImage": "Schnellbild öffnet einen Ordner sofort, ohne Import, und du blätterst mit den Pfeiltasten durch seine Bilder: HEIC, RAW, PSD, animierte GIFs und PDF inklusive, die Videos des Ordners im selben Raster.",
+  "kindVideo": "Schnellbild ist kein vollwertiger Mediaplayer. Es zeigt die Videos eines Ordners als Vorschaubilder neben den Fotos, spielt MKV, AVI und WebM, und die Pfeiltasten springen ein Zehntel durchs Video.",
+  "kindComic": "Schnellbild öffnet CBZ, CBR, ZIP, RAR und 7z wie Ordner, ohne etwas auf die Festplatte zu entpacken, und du blätterst mit den Pfeiltasten.",
+  "kindFiles": "Schnellbild ist kein Dateimanager, sondern ein Betrachter mit zwei Bereichen: F5 kopiert und F6 verschiebt die markierten Bilder in den anderen Bereich, und beides lässt sich widerrufen.",
+  "kindPhotos": "Schnellbild hat keine Mediathek: Es zeigt die Fotos und Videos dort, wo sie auf der Festplatte liegen, mit Aufnahmedatum und Ort aus ihren Metadaten, und nichts wird hochgeladen."
  },
  "sections": {
   "image": "Bildbetrachter",

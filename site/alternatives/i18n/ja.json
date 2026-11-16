@@ -3,7 +3,7 @@
   "overviewTitle": "Schnellbildを代わりのアプリに",
   "overviewSeoTitle": "{names}のMac用無料代替アプリ · Schnellbild",
   "overviewDescription": "Schnellbildを{count}本の画像ビューア、動画プレイヤー、漫画ビューア、ファイラーと機能ごとに比較。出典付き。Mac用、無料、オープンソース。",
-  "overviewIntro": "<p>Schnellbildは、はっきりした考えを持った代替アプリです。プレイリストやライブラリではなく、フォルダ。フォルダを開けば一覧がそこにあり、プレイリストはスライドショーが自分で作ります。インターネットのものは一切使いません。アカウントもトラッキングもなく、ネットワークにもつながりません。そして無料。ほかのアプリでは有料のこともある、自分好みのキーボードショートカットも含めてです。</p><p>Macで探されることの多いアプリとの比較を、表のすべての項目に出典を付けて掲載しています。ほかのアプリのほうが優れている点は、そう書いています。</p>",
+  "overviewIntro": "<p>各ページでは、Macで探されることの多いプログラムとSchnellbildを並べています。それぞれが強いところ、そしてすべての機能を、表の項目ごとに出典を付けて載せています。Schnellbildの列はREADMEとソースコードに基づいています。</p>",
   "overviewNoMac": "以下はWindows専用のアプリ（または現在のMacでは動かないアプリ）です。それぞれ、愛用者に好まれていた点と、Schnellbildでの使い方をご紹介します。",
   "matrixH1": "Macで使える、{name}の無料の代替アプリ",
   "matrixSeoTitle": "{name}の代替アプリ（Mac・無料） · Schnellbild",
@@ -44,7 +44,14 @@
   "ctaTitle": "お手持ちのフォルダで試してみてください。",
   "ctaText": "無料。アカウント不要。すべての機能入り。",
   "keywords": "{name} Mac, {name} Mac版, {name} 代替, {name} 代わり Mac, {name} Mac 無料, {name} 代替 Mac 無料, {name} vs Schnellbild, Schnellbild",
-  "listSep": "、"
+  "listSep": "、",
+  "introWhat": "Schnellbildは、フォルダの中の画像と動画のための無料のMacアプリです。フォルダを開けばサムネールがすぐに並び、キーひとつで画像を大きく表示。MKV、AVI、WebMも再生し、ZIPやRARのアーカイブをフォルダのように開きます。アカウントもネットワーク接続も要りません。",
+  "whyTitle": "{name}の代わりにSchnellbild？",
+  "kindImage": "Schnellbildはフォルダをすぐに開き、読み込みの手間はありません。画像は矢印キーでめくれます。HEIC、RAW、PSD、アニメーションGIF、PDFにも対応し、フォルダの動画も同じグリッドに並びます。",
+  "kindVideo": "Schnellbildは本格的なメディアプレーヤーではありません。フォルダの動画を写真と並べてサムネール表示し、MKV、AVI、WebMを再生します。矢印キーで動画の10分の1ずつジャンプできます。",
+  "kindComic": "SchnellbildはCBZ、CBR、ZIP、RAR、7zをフォルダのように開き、ディスクには何も展開しません。ページは矢印キーでめくれます。",
+  "kindFiles": "Schnellbildはファイルマネージャではなく、2つのペインを持つビューアです。F5で印をつけた画像をもう一方のペインにコピー、F6で移動し、どちらも取り消せます。",
+  "kindPhotos": "Schnellbildにはライブラリがありません。写真と動画をディスク上の置き場所のまま、メタデータの撮影日と撮影場所とともに表示し、何もアップロードしません。"
  },
  "sections": {
   "image": "画像ビューア",

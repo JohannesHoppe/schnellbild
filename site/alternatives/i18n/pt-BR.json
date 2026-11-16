@@ -3,7 +3,7 @@
   "overviewTitle": "Schnellbild como alternativa",
   "overviewSeoTitle": "Alternativa grátis para Mac: {names} · Schnellbild",
   "overviewDescription": "O Schnellbild comparado com {count} visualizadores de imagens, players de vídeo, leitores de quadrinhos e gerenciadores de arquivos, recurso por recurso e com fontes. Grátis, de código aberto, para Mac.",
-  "overviewIntro": "<p>O Schnellbild é uma alternativa com opinião própria. Pastas em vez de playlists e biblioteca: abra uma pasta e a lista já está ali, a apresentação monta a playlist sozinha. Nada da internet, por princípio: sem conta, sem rastreamento, sem rede nenhuma. E grátis, com atalhos de teclado personalizados incluídos, que alguns outros cobram à parte.</p><p>Aqui está como ele se compara com os programas que as pessoas procuram no Mac, com uma fonte para cada célula. Onde outro programa é melhor, a página diz isso.</p>",
+  "overviewIntro": "<p>Cada página põe o Schnellbild ao lado de um programa que as pessoas procuram no Mac: em que cada um dos dois é mais forte, e depois cada função com uma fonte para cada célula. A coluna do Schnellbild vem do README e do código-fonte.</p>",
   "overviewNoMac": "Estes só rodam no Windows (ou não rodam mais no Mac de hoje). Para cada um: o que os fãs gostavam nele e como o Schnellbild faz isso.",
   "matrixH1": "Uma alternativa grátis ao {name} para Mac",
   "matrixSeoTitle": "Alternativa ao {name} para Mac, grátis · Schnellbild",
@@ -44,7 +44,14 @@
   "ctaTitle": "Experimente com as suas próprias pastas.",
   "ctaText": "Grátis, sem conta, com todos os recursos.",
   "keywords": "{name} para Mac, {name} Mac, alternativa ao {name}, alternativa ao {name} para Mac, {name} grátis para Mac, alternativa gratuita ao {name}, {name} ou Schnellbild, Schnellbild",
-  "listSep": ", "
+  "listSep": ", ",
+  "introWhat": "O Schnellbild é um app gratuito para Mac para as imagens e vídeos das suas pastas: abra uma pasta e as miniaturas já estão lá, uma tecla mostra uma imagem grande. Ele reproduz MKV, AVI e WebM, abre arquivos ZIP e RAR como pastas e funciona sem conta e sem acesso à rede.",
+  "whyTitle": "Schnellbild no lugar do {name}?",
+  "kindImage": "O Schnellbild abre uma pasta na hora, sem importar nada, e você passa as imagens com as setas: HEIC, RAW, PSD, GIFs animados e PDF incluídos, com os vídeos da pasta na mesma grade.",
+  "kindVideo": "O Schnellbild não é um player completo. Ele mostra os vídeos de uma pasta como miniaturas ao lado das fotos, reproduz MKV, AVI e WebM, e as setas pulam um décimo do vídeo.",
+  "kindComic": "O Schnellbild abre CBZ, CBR, ZIP, RAR e 7z como pastas, sem descompactar nada no disco, e você passa as páginas com as setas.",
+  "kindFiles": "O Schnellbild não é um gerenciador de arquivos, e sim um visualizador com dois painéis: F5 copia e F6 move as imagens marcadas para o outro painel, e as duas ações podem ser desfeitas.",
+  "kindPhotos": "O Schnellbild não tem biblioteca: mostra as fotos e os vídeos onde estão no disco, com a data da foto e o lugar tirados dos metadados, e nada é enviado para a nuvem."
  },
  "sections": {
   "image": "Visualizadores de imagens",

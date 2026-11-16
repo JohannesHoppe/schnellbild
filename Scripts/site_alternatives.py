@@ -160,12 +160,12 @@ class Alternatives:
         cells = self.products[slug]["matrix"]
         return [k for k in self.keys if cells[k]["how"] != "unverified"]
 
-    def shot(self, name, code):
+    def shot(self, name, code, first=False):
         """The home page's screenshot of that name, with the home page's words for it."""
         t = self.c["tr"][code]
         feature = SHOT_FEATURE.get(name, name)
         alt = t["features"][FEATURE_SHOTS.index(feature)]["alt"] if feature in FEATURE_SHOTS else t["shotAlt"]
-        return self.c["shot"](name, code, alt)
+        return self.c["shot"](name, code, alt, first=first)
 
     def kind(self, slug):
         p = self.products[slug]
@@ -227,17 +227,46 @@ class Alternatives:
             data["author"] = {"@type": "Organization", "name": vendor}
         return data
 
+    def actions(self, code):
+        t, esc, dmg = self.c["tr"][code], self.c["esc"], self.c["DMG"]
+        return f"""<div class="actions">
+    <a class="button primary" href="{dmg}">{esc(t['download'])}<small>Schnellbild.dmg</small></a>
+    <span class="button soon">{esc(t['store'])}<small>{esc(t['storeSoon'])}</small></span>
+  </div>"""
+
+    def hero(self, code, h1, shot, crumbs=True):
+        """The top of every page: what Schnellbild is, the download and a screenshot of the page's kind."""
+        ui, esc = self.words[code]["ui"], self.c["esc"]
+        nav = f'<nav class="crumbs" aria-label="{esc(ui["breadcrumb"])}"><a href="{self.path(code)}">{esc(ui["breadcrumb"])}</a></nav>' if crumbs else ""
+        return f"""<div class="wrap alt-hero">
+  <div class="alt-hero-text">
+  {nav}
+  <h1>{esc(h1)}</h1>
+  <p class="lead">{esc(ui['introWhat'])}</p>
+  {self.actions(code)}
+  </div>
+  <figure class="alt-hero-shot">{self.shot(shot, code, first=True)}</figure>
+</div>"""
+
+    def why(self, code, slug, more=""):
+        """Why Schnellbild is an alternative to this program: a sentence for the page's kind (none for maps,
+        whose page has its own), then the page's own."""
+        ui, esc = self.words[code]["ui"], self.c["esc"]
+        name = self.name(code, slug)
+        kind = "kind" + self.kind(slug).capitalize()
+        sep = "" if code in ("ja", "zh-Hans", "zh-Hant") else " "  # no space after 。
+        text = sep.join(x for x in [ui.get(kind, ""), more] if x)
+        return f"""<h2 class="why">{esc(fill(ui['whyTitle'], name=name))}</h2>
+  <p>{esc(text)}</p>"""
+
     def cta(self, code):
-        t, ui, esc, dmg = self.c["tr"][code], self.words[code]["ui"], self.c["esc"], self.c["DMG"]
+        ui, esc = self.words[code]["ui"], self.c["esc"]
         return f"""<section class="cta alt-cta">
   <div class="wrap" data-reveal>
     <img class="icon" src="/icon.png" alt="" width="96" height="96">
     <h2>{esc(ui['ctaTitle'])}</h2>
     <p class="intro">{esc(ui['ctaText'])}</p>
-    <div class="actions">
-    <a class="button primary" href="{dmg}">{esc(t['download'])}<small>Schnellbild.dmg</small></a>
-    <span class="button soon">{esc(t['store'])}<small>{esc(t['storeSoon'])}</small></span>
-  </div>
+    {self.actions(code)}
   </div>
 </section>"""
 
@@ -334,19 +363,17 @@ class Alternatives:
         return c["head"](code, c["tr"][code], title, description, path_of, keywords=keywords, data=data) + \
             c["topbar"](code, c["tr"][code], path_of, sections=False) + f"""
 <main class="alt-page">
+{self.hero(code, fill(ui['matrixH1'], name=name), SECTION_SHOT[p['section']])}
 <div class="wrap alt">
-  <nav class="crumbs" aria-label="{esc(ui['breadcrumb'])}"><a href="{self.path(code)}">{esc(ui['breadcrumb'])}</a></nav>
-  <h1>{esc(fill(ui['matrixH1'], name=name))}</h1>
-  <p class="lead">{esc(fill(ui['matrixLead'], name=name))}</p>
-  {self.facts(code, slug)}
-  <h2>{esc(fill(ui['aboutTitle'], name=name))}</h2>
-  <p>{esc(w['summary'])}</p>
+  {self.why(code, slug, fill(ui['matrixLead'], name=name))}
   {file_manager}
   <div class="wins">
     <div><h3>{esc(fill(ui['theyWin'], name=name))}</h3><ul>{theirs_win}</ul></div>
     <div><h3>{esc(ui['weWin'])}</h3><ul>{ours_win}</ul></div>
   </div>
-  <figure class="alt-shot">{self.shot(SECTION_SHOT[p['section']], code)}</figure>
+  <h2>{esc(fill(ui['aboutTitle'], name=name))}</h2>
+  {self.facts(code, slug)}
+  <p>{esc(w['summary'])}</p>
   <h2 id="matrix">{esc(ui['matrixTitle'])}</h2>
   {self.legend(code)}
   {table}
@@ -391,20 +418,18 @@ class Alternatives:
         return c["head"](code, c["tr"][code], title, description, path_of, keywords=fill(ui["keywords"], name=name), data=data) + \
             c["topbar"](code, c["tr"][code], path_of, sections=False) + f"""
 <main class="alt-page">
+{self.hero(code, fill(ui['switcherH1'], name=name), SECTION_SHOT[self.kind(slug)])}
 <div class="wrap alt">
-  <nav class="crumbs" aria-label="{esc(ui['breadcrumb'])}"><a href="{self.path(code)}">{esc(ui['breadcrumb'])}</a></nav>
-  <h1>{esc(fill(ui['switcherH1'], name=name))}</h1>
-  <p class="lead">{esc(joke)}</p>
-  {self.facts(code, slug)}
-  {mac_note}
-  <h2>{esc(fill(ui['aboutTitle'], name=name))}</h2>
-  <p>{esc(w['summary'])}</p>
+  {self.why(code, slug, joke)}
   <h2>{esc(fill(ui['likedTitle'], name=name))}</h2>
   <ul class="how">{liked_html}</ul>
-  <figure class="alt-shot">{self.shot(SECTION_SHOT[self.kind(slug)], code)}</figure>
   <h2>{esc(fill(ui['aheadTitle'], name=name))}</h2>
   <ul>{ahead}</ul>
   {purpose_block}
+  <h2>{esc(fill(ui['aboutTitle'], name=name))}</h2>
+  {self.facts(code, slug)}
+  {mac_note}
+  <p>{esc(w['summary'])}</p>
 </div>
 {self.cta(code)}
 {self.tail(code, slug)}
@@ -452,15 +477,13 @@ class Alternatives:
         return c["head"](code, c["tr"][code], title, description, path_of, keywords=w["keywords"], data=data) + \
             c["topbar"](code, c["tr"][code], path_of, sections=False) + f"""
 <main class="alt-page">
+{self.hero(code, w['h1'], SECTION_SHOT[self.kind(slug)])}
 <div class="wrap alt">
-  <nav class="crumbs" aria-label="{esc(ui['breadcrumb'])}"><a href="{self.path(code)}">{esc(ui['breadcrumb'])}</a></nav>
-  <h1>{esc(w['h1'])}</h1>
-  <p class="lead">{esc(w['lead'])}</p>
-  <div class="facts" aria-label="{esc(fill(ui["facts"], name=name))}">{tiles}</div>
+  {self.why(code, slug, w['lead'])}
   <h2>{esc(fill(ui['aboutTitle'], name=name))}</h2>
+  <div class="facts" aria-label="{esc(fill(ui["facts"], name=name))}">{tiles}</div>
   <p>{esc(w['summary'])}</p>
   <ul>{items(w['wins'])}</ul>
-  <figure class="alt-shot">{self.shot(SECTION_SHOT[self.kind(slug)], code)}</figure>
   <h2>{esc(w['offersTitle'])}</h2>
   <ul>{items(w['offers'])}</ul>
   <h2>{esc(w['lacksTitle'])}</h2>
@@ -508,8 +531,8 @@ class Alternatives:
         return c["head"](code, c["tr"][code], title, description, path_of, data=data) + \
             c["topbar"](code, c["tr"][code], path_of, sections=False) + f"""
 <main class="alt-page">
+{self.hero(code, ui['overviewTitle'], "grid", crumbs=False)}
 <div class="wrap alt">
-  <h1>{esc(ui['overviewTitle'])}</h1>
   {ui['overviewIntro']}{sections}
   <p class="trademark">{esc(ui['trademarkAll'])}</p>
 </div>

@@ -3,7 +3,7 @@
   "overviewTitle": "Schnellbild vaihtoehtona",
   "overviewSeoTitle": "Ilmainen Mac-vaihtoehto: {names} · Schnellbild",
   "overviewDescription": "Schnellbild verrattuna {count} kuvankatseluohjelmaan, videosoittimeen, sarjakuvalukijaan ja tiedostonhallintaan, ominaisuus kerrallaan ja lähteineen. Ilmainen, avointa lähdekoodia, Macille.",
-  "overviewIntro": "<p>Schnellbild on vaihtoehto, jolla on selvä mielipide. Kansiot soittolistojen ja kirjaston sijaan: avaa kansio, niin luettelo on valmiina, ja diaesitys tekee soittolistan itse. Ei mitään internetistä, periaatteesta: ei tiliä, ei seurantaa, ei verkkoyhteyttä lainkaan. Ja ilmainen, omat pikanäppäimet mukaan lukien, joista osa muista ottaa maksun.</p><p>Tässä näet, miten se vertautuu ohjelmiin, joita Macille etsitään, ja jokaiselle solulle on lähde. Missä toinen ohjelma on parempi, sivu sanoo sen.</p>",
+  "overviewIntro": "<p>Jokainen sivu asettaa Schnellbildin rinnakkain yhden Macilla haetun ohjelman kanssa: missä kumpikin on vahvempi, sitten jokainen toiminto ja lähde jokaiselle solulle. Schnellbildin sarake perustuu sen README-tiedostoon ja lähdekoodiin.</p>",
   "overviewNoMac": "Nämä toimivat vain Windowsissa (tai eivät enää nykyisillä Maceilla). Jokaisesta kerrotaan, mistä sen fanit pitivät ja miten Schnellbild hoitaa saman.",
   "matrixH1": "{name}: ilmainen vaihtoehto Macille",
   "matrixSeoTitle": "{name}: ilmainen vaihtoehto Macille · Schnellbild",
@@ -44,7 +44,14 @@
   "ctaTitle": "Kokeile omilla kansioillasi.",
   "ctaText": "Ilmainen, ei tiliä, kaikki ominaisuudet mukana.",
   "keywords": "{name} Mac, {name} Macille, {name} for Mac, {name} vaihtoehto, {name} vaihtoehto Mac, ilmainen {name} vaihtoehto, {name} vs Schnellbild, Schnellbild",
-  "listSep": ", "
+  "listSep": ", ",
+  "introWhat": "Schnellbild on ilmainen Mac-sovellus kansioidesi kuville ja videoille: avaa kansio, niin esikatselukuvat ovat heti esillä, ja yksi näppäin näyttää kuvan suurena. Se toistaa MKV-, AVI- ja WebM-videot, avaa ZIP- ja RAR-arkistot kuin kansiot ja toimii ilman tiliä ja ilman verkkoyhteyttä.",
+  "whyTitle": "Schnellbild ohjelman {name} tilalle?",
+  "kindImage": "Schnellbild avaa kansion heti ilman tuontia, ja selaat kuvia nuolinäppäimillä: HEIC, RAW, PSD, animoidut GIFit ja PDF mukaan lukien, kansion videot samassa ruudukossa.",
+  "kindVideo": "Schnellbild ei ole täysi mediasoitin. Se näyttää kansion videot esikatselukuvina kuvien vieressä, toistaa MKV-, AVI- ja WebM-videot, ja nuolinäppäimet hyppäävät kymmenesosan videosta.",
+  "kindComic": "Schnellbild avaa CBZ-, CBR-, ZIP-, RAR- ja 7z-tiedostot kuin kansiot purkamatta mitään levylle, ja selaat sivuja nuolinäppäimillä.",
+  "kindFiles": "Schnellbild ei ole tiedostonhallinta vaan kahden paneelin katseluohjelma: F5 kopioi ja F6 siirtää merkityt kuvat toiseen paneeliin, ja molemmat voi perua.",
+  "kindPhotos": "Schnellbildissä ei ole kirjastoa: se näyttää kuvat ja videot siellä, missä ne levyllä ovat, kuvauspäivän ja paikan metatiedoista, eikä mitään ladata verkkoon."
  },
  "sections": {
   "image": "Kuvankatseluohjelmat",

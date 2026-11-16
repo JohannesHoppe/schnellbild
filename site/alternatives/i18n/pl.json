@@ -3,7 +3,7 @@
   "overviewTitle": "Schnellbild jako alternatywa",
   "overviewSeoTitle": "Darmowa alternatywa na Maca dla {names} · Schnellbild",
   "overviewDescription": "Schnellbild w porównaniu z {count} przeglądarkami zdjęć, odtwarzaczami wideo, czytnikami komiksów i menedżerami plików, funkcja po funkcji i ze źródłami. Darmowy, open source, na Maca.",
-  "overviewIntro": "<p>Schnellbild to alternatywa z wyraźnym zdaniem. Foldery zamiast playlist i biblioteki: otwierasz folder i lista już jest, a pokaz slajdów sam układa playlistę. Nic z internetu, z zasady: bez konta, bez śledzenia, w ogóle bez sieci. I za darmo, razem z własnymi skrótami klawiszowymi, za które niektóre inne programy każą sobie płacić.</p><p>Poniżej porównanie z programami, których ludzie szukają na Maca, ze źródłem dla każdej komórki tabeli. Tam, gdzie inny program jest lepszy, strona to mówi.</p>",
+  "overviewIntro": "<p>Każda strona stawia Schnellbild obok programu, którego ludzie szukają na Maca: w czym każdy z nich jest mocniejszy, a potem każda funkcja ze źródłem dla każdej komórki. Kolumna Schnellbild opiera się na jego README i kodzie źródłowym.</p>",
   "overviewNoMac": "Te programy działają tylko w Windows (albo już nie na dzisiejszym Macu). Przy każdym: co cenią jego fani i jak robi to Schnellbild.",
   "matrixH1": "Darmowa alternatywa dla {name} na Maca",
   "matrixSeoTitle": "Alternatywa dla {name} na Maca, za darmo · Schnellbild",
@@ -44,7 +44,14 @@
   "ctaTitle": "Wypróbuj na własnych folderach.",
   "ctaText": "Za darmo, bez konta, ze wszystkimi funkcjami.",
   "keywords": "{name} mac, {name} na maca, {name} dla mac, alternatywa dla {name}, {name} alternatywa mac, darmowa alternatywa dla {name}, {name} czy Schnellbild, Schnellbild",
-  "listSep": ", "
+  "listSep": ", ",
+  "introWhat": "Schnellbild to darmowa aplikacja na Maca do obrazów i filmów w Twoich folderach: otwierasz folder i miniatury już są, jeden klawisz pokazuje obraz w dużym rozmiarze. Odtwarza MKV, AVI i WebM, otwiera archiwa ZIP i RAR jak foldery i działa bez konta i bez dostępu do sieci.",
+  "whyTitle": "Schnellbild zamiast {name}?",
+  "kindImage": "Schnellbild od razu otwiera folder, bez importu, a obrazy przeglądasz strzałkami: HEIC, RAW, PSD, animowane GIF-y i PDF, a filmy z folderu w tej samej siatce.",
+  "kindVideo": "Schnellbild nie jest pełnym odtwarzaczem multimediów. Pokazuje filmy z folderu jako miniatury obok zdjęć, odtwarza MKV, AVI i WebM, a strzałki przeskakują o jedną dziesiątą filmu.",
+  "kindComic": "Schnellbild otwiera CBZ, CBR, ZIP, RAR i 7z jak foldery, niczego nie rozpakowując na dysk, a strony przewracasz strzałkami.",
+  "kindFiles": "Schnellbild nie jest menedżerem plików, tylko przeglądarką z dwoma panelami: F5 kopiuje, a F6 przenosi zaznaczone obrazy do drugiego panelu, i obie czynności da się cofnąć.",
+  "kindPhotos": "Schnellbild nie ma biblioteki: pokazuje zdjęcia i filmy tam, gdzie leżą na dysku, z datą wykonania i miejscem z ich metadanych, i niczego nie wysyła."
  },
  "sections": {
   "image": "Przeglądarki zdjęć",

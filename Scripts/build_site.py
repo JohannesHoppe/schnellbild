@@ -129,16 +129,16 @@ def srcset(master):
     return ", ".join(f"/{path.relative_to(DOCS)} {width}w" for width, path in variants)
 
 
-def shot(name, code, alt, extra=""):
+def shot(name, code, alt, extra="", first=False):
     """A screenshot, light or dark as the page is (the media query of its dark
     source; site.js sets it when the visitor picked one): the language's own
     where there is one, else English. WebP variants as wide as the place needs
-    (sizes), the lossless master as the img's src. The hero loads first, the
-    others when they come near."""
+    (sizes), the lossless master as the img's src. The hero (or the picture a
+    page shows `first`) loads first, the others when they come near."""
     tag = f"-{code}" if code != "en" and (DOCS / "screenshots" / f"{name}-light-{code}.webp").exists() else ""
     light, dark = DOCS / "screenshots" / f"{name}-light{tag}.webp", DOCS / "screenshots" / f"{name}-dark{tag}.webp"
     width, height = png_size(light)
-    hero = name in (HERO_SHOT, GLOBE_SHOT)
+    hero = first or name in (HERO_SHOT, GLOBE_SHOT)
     sizes = HERO_SIZES if hero else FEATURE_SIZES
     size = f' width="{width}" height="{height}"' + (' fetchpriority="high"' if hero else ' loading="lazy" decoding="async"')
     img = f'<img src="/screenshots/{light.name}"{size} alt="{esc(alt)}"{extra}>'

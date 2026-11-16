@@ -3,7 +3,7 @@
   "overviewTitle": "Schnellbild som alternativ",
   "overviewSeoTitle": "Gratis Mac-alternativ til {names} · Schnellbild",
   "overviewDescription": "Schnellbild sammenlignet med {count} bildefremvisere, videospillere, tegneserielesere og filbehandlere, funksjon for funksjon og med kilder. Gratis, åpen kildekode, for Mac.",
-  "overviewIntro": "<p>Schnellbild er et alternativ med en klar mening. Mapper i stedet for spillelister og bibliotek: Åpne en mappe, så er listen der, og lysbildefremvisningen lager spillelisten selv. Ingenting fra internett, av prinsipp: ingen konto, ingen sporing, ikke noe nettverk i det hele tatt. Og gratis, med egne hurtigtaster inkludert, som noen andre tar betalt for.</p><p>Her ser du hvordan den står seg mot programmene folk leter etter på Mac, med en kilde for hver celle. Der et annet program er bedre, står det.</p>",
+  "overviewIntro": "<p>Hver side setter Schnellbild ved siden av et program folk leter etter på Mac: hvor hver av de to er sterkest, deretter hver funksjon med en kilde for hver celle. Kolonnen for Schnellbild bygger på README og kildekoden.</p>",
   "overviewNoMac": "Disse kjører bare på Windows (eller ikke lenger på dagens Mac). For hvert av dem: hva brukerne likte, og hvordan Schnellbild gjør det.",
   "matrixH1": "Et gratis alternativ til {name} for Mac",
   "matrixSeoTitle": "{name}-alternativ for Mac, gratis · Schnellbild",
@@ -44,7 +44,14 @@
   "ctaTitle": "Prøv den med dine egne mapper.",
   "ctaText": "Gratis, ingen konto, alle funksjoner inkludert.",
   "keywords": "{name} alternativ, {name} mac, {name} for mac, alternativ til {name} mac, gratis {name}-alternativ, {name} vs Schnellbild, Schnellbild",
-  "listSep": ", "
+  "listSep": ", ",
+  "introWhat": "Schnellbild er en gratis Mac-app for bildene og videoene i mappene dine: åpne en mappe, og miniatyrene er der, én tast viser et bilde stort. Den spiller av MKV, AVI og WebM, åpner ZIP- og RAR-arkiver som mapper og virker uten konto og uten nettverkstilgang.",
+  "whyTitle": "Schnellbild i stedet for {name}?",
+  "kindImage": "Schnellbild åpner en mappe med en gang, uten import, og du blar i bildene med piltastene: HEIC, RAW, PSD, animerte GIF-er og PDF inkludert, med mappens videoer i samme rutenett.",
+  "kindVideo": "Schnellbild er ikke en full mediespiller. Den viser videoene i en mappe som miniatyrer ved siden av bildene, spiller av MKV, AVI og WebM, og piltastene hopper en tidel i videoen.",
+  "kindComic": "Schnellbild åpner CBZ, CBR, ZIP, RAR og 7z som mapper, uten å pakke ut noe på disken, og du blar med piltastene.",
+  "kindFiles": "Schnellbild er ingen filbehandler, men en visning med to paneler: F5 kopierer og F6 flytter de merkede bildene til det andre panelet, og begge deler kan angres.",
+  "kindPhotos": "Schnellbild har ikke noe bibliotek: den viser bildene og videoene der de ligger på disken, med opptaksdato og sted fra metadataene, og ingenting lastes opp."
  },
  "sections": {
   "image": "Bildefremvisere",

@@ -3,7 +3,7 @@
   "overviewTitle": "Schnellbild를 대안으로",
   "overviewSeoTitle": "{names}의 맥용 무료 대안 · Schnellbild",
   "overviewDescription": "Schnellbild를 이미지 뷰어, 동영상 플레이어, 만화책 뷰어, 파일 관리자 {count}개와 기능별로, 출처와 함께 비교했습니다. 무료, 오픈 소스, 맥용.",
-  "overviewIntro": "<p>Schnellbild는 분명한 생각을 가진 대안입니다. 재생 목록이나 보관함 대신 폴더: 폴더를 열면 목록이 바로 있고, 재생 목록은 슬라이드 쇼가 알아서 만듭니다. 인터넷과는 원칙적으로 무관: 계정도, 추적도, 네트워크 접속도 전혀 없습니다. 그리고 무료이며, 일부 다른 앱에서는 돈을 받는 나만의 키보드 단축키도 들어 있습니다.</p><p>Mac에서 사람들이 찾는 프로그램들과 어떻게 다른지, 모든 칸에 출처를 달아 비교했습니다. 다른 프로그램이 더 나은 부분은 그렇다고 적었습니다.</p>",
+  "overviewIntro": "<p>각 페이지는 Mac에서 많이 찾는 프로그램 하나와 Schnellbild를 나란히 놓습니다. 둘 중 어느 쪽이 어디에서 강한지, 그리고 모든 기능을 칸마다 출처와 함께 보여 줍니다. Schnellbild 열은 README와 소스 코드를 바탕으로 합니다.</p>",
   "overviewNoMac": "이 프로그램들은 Windows에서만 실행됩니다(또는 지금의 Mac에서는 더 이상 실행되지 않습니다). 각각 팬들이 좋아한 점과 Schnellbild에서는 어떻게 하는지 정리했습니다.",
   "matrixH1": "맥용 무료 {name} 대안",
   "matrixSeoTitle": "맥용 {name} 대안, 무료 · Schnellbild",
@@ -44,7 +44,14 @@
   "ctaTitle": "내 폴더로 직접 써 보세요.",
   "ctaText": "무료, 계정 없이, 모든 기능 포함.",
   "keywords": "맥용 {name}, {name} 맥, 맥 {name}, {name} Mac, {name} 대안, 맥 {name} 대안, 무료 {name} 대안, Schnellbild",
-  "listSep": ", "
+  "listSep": ", ",
+  "introWhat": "Schnellbild는 폴더 속 이미지와 동영상을 위한 무료 Mac 앱입니다. 폴더를 열면 썸네일이 바로 나오고, 키 하나로 이미지를 크게 봅니다. MKV, AVI, WebM을 재생하고, ZIP과 RAR 압축 파일을 폴더처럼 열며, 계정도 네트워크 연결도 필요 없습니다.",
+  "whyTitle": "{name} 대신 Schnellbild?",
+  "kindImage": "Schnellbild는 가져오기 없이 폴더를 바로 열고, 화살표 키로 이미지를 넘깁니다. HEIC, RAW, PSD, 움직이는 GIF, PDF도 되고, 폴더의 동영상도 같은 격자에 나옵니다.",
+  "kindVideo": "Schnellbild는 본격적인 미디어 플레이어가 아닙니다. 폴더의 동영상을 사진 옆에 썸네일로 보여 주고, MKV, AVI, WebM을 재생하며, 화살표 키로 동영상의 10분의 1씩 이동합니다.",
+  "kindComic": "Schnellbild는 CBZ, CBR, ZIP, RAR, 7z를 디스크에 풀지 않고 폴더처럼 열며, 화살표 키로 페이지를 넘깁니다.",
+  "kindFiles": "Schnellbild는 파일 관리자가 아니라 두 개의 패널이 있는 뷰어입니다. F5는 표시한 이미지를 다른 패널로 복사하고 F6은 이동하며, 둘 다 되돌릴 수 있습니다.",
+  "kindPhotos": "Schnellbild에는 보관함이 없습니다. 사진과 동영상을 디스크에 있는 그대로, 메타데이터의 촬영 날짜와 장소와 함께 보여 주고, 아무것도 업로드하지 않습니다."
  },
  "sections": {
   "image": "이미지 뷰어",

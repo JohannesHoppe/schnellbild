@@ -3,7 +3,7 @@
   "overviewTitle": "Schnellbild como alternativa",
   "overviewSeoTitle": "Alternativa gratis para Mac a {names} · Schnellbild",
   "overviewDescription": "Schnellbild frente a {count} visores de imágenes, reproductores de vídeo, lectores de cómics y gestores de archivos, función por función y con fuentes. Gratis, de código abierto, para Mac.",
-  "overviewIntro": "<p>Schnellbild es una alternativa con opinión propia. Carpetas en lugar de listas de reproducción y biblioteca: abres una carpeta y ahí está la lista; el pase de diapositivas crea la lista de reproducción por sí solo. Nada de internet, por principio: sin cuenta, sin rastreo, sin red en absoluto. Y gratis, con atajos de teclado propios incluidos, que algunos otros cobran.</p><p>Aquí verás cómo se compara con los programas que la gente busca para Mac, con una fuente para cada casilla. Donde otro programa es mejor, la página lo dice.</p>",
+  "overviewIntro": "<p>Cada página pone Schnellbild junto a un programa que la gente busca en el Mac: en qué es más fuerte cada uno, y después cada función con una fuente para cada casilla. La columna de Schnellbild sale de su README y su código fuente.</p>",
   "overviewNoMac": "Estos solo funcionan en Windows (o ya no en el Mac actual). Para cada uno, lo que más gustaba a sus usuarios y cómo lo hace Schnellbild.",
   "matrixH1": "Una alternativa gratis a {name} para Mac",
   "matrixSeoTitle": "Alternativa a {name} para Mac, gratis · Schnellbild",
@@ -44,7 +44,14 @@
   "ctaTitle": "Pruébalo con tus propias carpetas.",
   "ctaText": "Gratis, sin cuenta, con todas las funciones.",
   "keywords": "alternativa a {name}, {name} mac, {name} para mac, alternativa a {name} para mac, {name} mac gratis, alternativa gratis a {name}, {name} vs Schnellbild, Schnellbild",
-  "listSep": ", "
+  "listSep": ", ",
+  "introWhat": "Schnellbild es una app gratuita para Mac para las imágenes y los vídeos de tus carpetas: abres una carpeta y las miniaturas ya están, una tecla muestra una imagen en grande. Reproduce MKV, AVI y WebM, abre archivos ZIP y RAR como carpetas y funciona sin cuenta y sin acceso a la red.",
+  "whyTitle": "¿Schnellbild en lugar de {name}?",
+  "kindImage": "Schnellbild abre una carpeta al momento, sin importar nada, y pasas sus imágenes con las flechas: HEIC, RAW, PSD, GIF animados y PDF incluidos, con los vídeos de la carpeta en la misma cuadrícula.",
+  "kindVideo": "Schnellbild no es un reproductor multimedia completo. Muestra los vídeos de una carpeta como miniaturas junto a las fotos, reproduce MKV, AVI y WebM, y las flechas saltan una décima parte del vídeo.",
+  "kindComic": "Schnellbild abre CBZ, CBR, ZIP, RAR y 7z como carpetas, sin descomprimir nada en el disco, y pasas las páginas con las flechas.",
+  "kindFiles": "Schnellbild no es un gestor de archivos, sino un visor con dos paneles: F5 copia y F6 mueve las imágenes marcadas al otro panel, y ambas cosas se pueden deshacer.",
+  "kindPhotos": "Schnellbild no tiene fototeca: muestra las fotos y los vídeos donde están en el disco, con la fecha de captura y el lugar de sus metadatos, y no se sube nada."
  },
  "sections": {
   "image": "Visores de imágenes",

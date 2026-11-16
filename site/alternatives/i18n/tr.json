@@ -3,7 +3,7 @@
   "overviewTitle": "Alternatif olarak Schnellbild",
   "overviewSeoTitle": "{names} yerine ücretsiz Mac alternatifi · Schnellbild",
   "overviewDescription": "Schnellbild, {count} resim görüntüleyici, video oynatıcı, çizgi roman okuyucu ve dosya yöneticisiyle özellik özellik, kaynaklarıyla karşılaştırıldı. Ücretsiz, açık kaynak, Mac için.",
-  "overviewIntro": "<p>Schnellbild net bir görüşü olan bir alternatif. Oynatma listeleri ve kitaplık yerine klasörler: Bir klasör açın, liste hazır; oynatma listesini slayt gösterisi kendisi oluşturur. İnternetten hiçbir şey, ilke olarak: hesap yok, izleme yok, ağ bağlantısı hiç yok. Üstelik ücretsiz, bazı programların para istediği kendi klavye kestirmeleriniz de dahil.</p><p>Mac’te aranan programlarla karşılaştırması burada, her hücre için bir kaynakla. Başka bir program daha iyiyse, sayfada bu da yazıyor.</p>",
+  "overviewIntro": "<p>Her sayfa Schnellbild’i Mac’te aranan bir programın yanına koyar: ikisinden her biri nerede daha güçlü, ardından her özellik ve her hücre için bir kaynak. Schnellbild sütunu README dosyasına ve kaynak koduna dayanır.</p>",
   "overviewNoMac": "Bunlar yalnızca Windows’ta çalışır (ya da bugünün Mac’lerinde artık çalışmaz). Her biri için hayranlarının neyi sevdiği ve Schnellbild’in bunu nasıl yaptığı.",
   "matrixH1": "Mac için ücretsiz bir {name} alternatifi",
   "matrixSeoTitle": "{name} Alternatifi Mac İçin, Ücretsiz · Schnellbild",
@@ -44,7 +44,14 @@
   "ctaTitle": "Kendi klasörlerinizle deneyin.",
   "ctaText": "Ücretsiz, hesapsız, tüm özellikler dahil.",
   "keywords": "{name} alternatifi, {name} mac, {name} mac için, mac için {name}, {name} mac alternatifi, ücretsiz {name} alternatifi, {name} mac indir, Schnellbild",
-  "listSep": ", "
+  "listSep": ", ",
+  "introWhat": "Schnellbild, klasörlerinizdeki resimler ve videolar için ücretsiz bir Mac uygulamasıdır: bir klasör açın, küçük resimler hemen orada, bir tuş bir resmi büyük gösterir. MKV, AVI ve WebM oynatır, ZIP ve RAR arşivlerini klasör gibi açar, hesap ve ağ erişimi olmadan çalışır.",
+  "whyTitle": "{name} yerine Schnellbild mi?",
+  "kindImage": "Schnellbild bir klasörü hemen, içe aktarmadan açar; resimler arasında ok tuşlarıyla gezinirsiniz: HEIC, RAW, PSD, hareketli GIF ve PDF dahil, klasördeki videolar da aynı ızgarada.",
+  "kindVideo": "Schnellbild tam bir medya oynatıcı değildir. Bir klasörün videolarını fotoğrafların yanında küçük resim olarak gösterir, MKV, AVI ve WebM oynatır, ok tuşları videoda onda bir atlar.",
+  "kindComic": "Schnellbild CBZ, CBR, ZIP, RAR ve 7z dosyalarını diske hiçbir şey açmadan klasör gibi açar; sayfaları ok tuşlarıyla çevirirsiniz.",
+  "kindFiles": "Schnellbild bir dosya yöneticisi değil, iki bölmeli bir görüntüleyicidir: F5 işaretli resimleri öbür bölmeye kopyalar, F6 taşır; ikisi de geri alınabilir.",
+  "kindPhotos": "Schnellbild’in kitaplığı yoktur: fotoğrafları ve videoları diskte durdukları yerde, meta verilerindeki çekim tarihi ve yerle gösterir; hiçbir şey yüklenmez."
  },
  "sections": {
   "image": "Resim görüntüleyiciler",

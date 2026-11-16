@@ -3,7 +3,7 @@
   "overviewTitle": "Schnellbild 作为替代软件",
   "overviewSeoTitle": "{names} 的免费 Mac 替代软件 · Schnellbild",
   "overviewDescription": "Schnellbild 与 {count} 款看图软件、视频播放器、漫画阅读器和文件管理器逐项对比，每项都注明来源。免费、开源，适用于 Mac。",
-  "overviewIntro": "<p>Schnellbild 是一款有明确主张的替代软件。用文件夹代替播放列表和图库：打开文件夹，列表就在眼前，幻灯片自己生成播放列表。原则上不碰互联网：无需账户，没有跟踪，完全不联网。而且免费，自定义快捷键也包括在内，有些软件却要为此收费。</p><p>下面是它与人们在 Mac 上寻找的那些程序的对比，每一格都有来源。别的程序做得更好的地方，页面上也写明了。</p>",
+  "overviewIntro": "<p>每个页面都把 Schnellbild 和一款人们在 Mac 上寻找的程序放在一起：两者各自强在哪里，然后是每项功能，每一格都附有来源。Schnellbild 一栏依据其 README 和源代码。</p>",
   "overviewNoMac": "这些程序只能在 Windows 上运行（或已无法在如今的 Mac 上运行）。这里逐一列出它们的用户喜欢什么，以及 Schnellbild 是怎么做的。",
   "matrixH1": "免费的 Mac 版 {name} 替代软件",
   "matrixSeoTitle": "{name} Mac 替代软件，免费 · Schnellbild",
@@ -44,7 +44,14 @@
   "ctaTitle": "用你自己的文件夹试试看。",
   "ctaText": "免费，无需账户，所有功能一应俱全。",
   "keywords": "{name} mac, {name} mac版, {name} 替代, {name} mac 替代软件, 免费 {name} 替代, 类似 {name} 的软件, {name} 和 Schnellbild 对比, Schnellbild",
-  "listSep": "、"
+  "listSep": "、",
+  "introWhat": "Schnellbild 是一款免费的 Mac 应用，用来看你文件夹里的图片和视频：打开文件夹，缩略图马上就在，按一个键就能放大看图。它能播放 MKV、AVI 和 WebM，像打开文件夹一样打开 ZIP 和 RAR 压缩包，无需账户，也不联网。",
+  "whyTitle": "用 Schnellbild 代替 {name}？",
+  "kindImage": "Schnellbild 打开文件夹即可浏览，无需导入，用方向键翻看图片：支持 HEIC、RAW、PSD、动态 GIF 和 PDF，文件夹里的视频也在同一个网格中。",
+  "kindVideo": "Schnellbild 不是完整的媒体播放器。它把文件夹里的视频以缩略图形式放在照片旁边，能播放 MKV、AVI 和 WebM，方向键每次跳转视频的十分之一。",
+  "kindComic": "Schnellbild 像打开文件夹一样打开 CBZ、CBR、ZIP、RAR 和 7z，不往磁盘上解压任何东西，用方向键翻页。",
+  "kindFiles": "Schnellbild 不是文件管理器，而是有两个窗格的看图软件：F5 把标记的图片拷贝到另一个窗格，F6 移动过去，两者都能撤销。",
+  "kindPhotos": "Schnellbild 没有图库：照片和视频在磁盘上的哪里，它就在哪里显示，附带元数据里的拍摄日期和地点，不上传任何东西。"
  },
  "sections": {
   "image": "看图软件",

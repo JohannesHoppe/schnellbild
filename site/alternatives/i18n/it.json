@@ -3,7 +3,7 @@
   "overviewTitle": "Schnellbild come alternativa",
   "overviewSeoTitle": "{names}: alternativa gratis per Mac · Schnellbild",
   "overviewDescription": "Schnellbild a confronto con {count} visualizzatori di immagini, lettori video, lettori di fumetti e file manager, funzione per funzione e con le fonti. Gratis, open source, per Mac.",
-  "overviewIntro": "<p>Schnellbild è un’alternativa con le idee chiare. Cartelle invece di playlist e librerie: apri una cartella e l’elenco è già lì, la presentazione si crea la playlist da sola. Niente da internet, per principio: nessun account, nessun tracciamento, nessun accesso alla rete. E gratis, scorciatoie da tastiera personalizzate comprese, che alcuni altri programmi fanno pagare.</p><p>Ecco come si confronta con i programmi che si cercano su Mac, con una fonte per ogni casella. Dove un altro programma è migliore, la pagina lo dice.</p>",
+  "overviewIntro": "<p>Ogni pagina mette Schnellbild accanto a un programma che si cerca su Mac: dove ciascuno dei due è più forte, poi ogni funzione con una fonte per ogni casella. La colonna di Schnellbild si basa sul suo README e sul codice sorgente.</p>",
   "overviewNoMac": "Questi funzionano solo su Windows (o non più sui Mac di oggi). Per ciascuno: cosa piaceva ai suoi fan e come lo fa Schnellbild.",
   "matrixH1": "{name} per Mac: un’alternativa gratuita",
   "matrixSeoTitle": "{name} per Mac: alternativa gratis · Schnellbild",
@@ -44,7 +44,14 @@
   "ctaTitle": "Provalo con le tue cartelle.",
   "ctaText": "Gratis, senza account, tutte le funzioni incluse.",
   "keywords": "{name} mac, {name} per mac, alternativa {name}, alternativa {name} mac, {name} mac gratis, {name} gratis per mac, {name} vs Schnellbild, Schnellbild",
-  "listSep": ", "
+  "listSep": ", ",
+  "introWhat": "Schnellbild è un’app gratuita per Mac per le immagini e i video nelle tue cartelle: apri una cartella e le miniature sono lì, un tasto mostra un’immagine in grande. Riproduce MKV, AVI e WebM, apre gli archivi ZIP e RAR come cartelle e funziona senza account e senza accesso alla rete.",
+  "whyTitle": "Schnellbild al posto di {name}?",
+  "kindImage": "Schnellbild apre subito una cartella, senza importare nulla, e sfogli le immagini con le frecce: HEIC, RAW, PSD, GIF animate e PDF compresi, con i video della cartella nella stessa griglia.",
+  "kindVideo": "Schnellbild non è un lettore multimediale completo. Mostra i video di una cartella come miniature accanto alle foto, riproduce MKV, AVI e WebM, e le frecce saltano di un decimo del video.",
+  "kindComic": "Schnellbild apre CBZ, CBR, ZIP, RAR e 7z come cartelle, senza estrarre nulla sul disco, e sfogli le pagine con le frecce.",
+  "kindFiles": "Schnellbild non è un file manager, ma un visualizzatore a due pannelli: F5 copia e F6 sposta le immagini marcate nell’altro pannello, ed entrambe le azioni si possono annullare.",
+  "kindPhotos": "Schnellbild non ha una libreria: mostra foto e video dove si trovano sul disco, con data di scatto e luogo presi dai metadati, e non carica nulla online."
  },
  "sections": {
   "image": "Visualizzatori di immagini",
