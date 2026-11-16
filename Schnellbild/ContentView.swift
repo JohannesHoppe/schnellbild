@@ -293,7 +293,7 @@ private struct WindowView: View {
             guard let window = MainActor.assumeIsolated({ WindowModel.of(event.window) ?? (popover ? WindowModel.current : nil) })
             else {
                 BrowserModel.testLog("\(Date().timeIntervalSince1970) key \(event.charactersIgnoringModifiers.debugDescription) passed on: "
-                                     + "clicks=\(event.clickCount) window=\(event.window.map { String(describing: type(of: $0)) } ?? "nil")")
+                                     + "window=\(event.window.map { String(describing: type(of: $0)) } ?? "nil")")
                 return event
             }
             let code = event.keyCode
