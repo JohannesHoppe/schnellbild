@@ -73,12 +73,13 @@ final class AboutUITests: SchnellbildUITestCase {
         photograph("about-vlckit-light")
 
         // ⌘↑ goes back to the top
-        licenseText.click()
-        licenseText.typeKey(.upArrow, modifierFlags: .command)
+        // A click into the text's left margin (no link there) gives it the keys
+        licenseScroll.coordinate(withNormalizedOffset: CGVector(dx: 0.02, dy: 0.5)).click()
+        aboutWindow.typeKey(.upArrow, modifierFlags: .command)
         eventually("back at the top") { abs(self.scrolled) < 5 }
 
         // ⌘F finds in the text: the Black Marble credit, after UnRAR
-        licenseText.typeKey("f", modifierFlags: .command)
+        aboutWindow.typeKey("f", modifierFlags: .command)
         let find = aboutWindow.searchFields.firstMatch
         XCTAssertTrue(find.waitForExistence(timeout: 5), "the find bar")
         find.typeText("Joshua Stevens\r")

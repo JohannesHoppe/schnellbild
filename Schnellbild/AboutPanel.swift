@@ -10,6 +10,7 @@ import SwiftUI
 @MainActor
 enum AboutPanel {
     private static var window: NSWindow?
+    private static var keyMonitor: Any?
 
     /// A window of its own, large and resizable: the license texts run to
     /// about a megabyte (the libraries inside VLCKit).
@@ -24,6 +25,16 @@ enum AboutPanel {
             panel.contentView = NSHostingView(rootView: AboutView(document: LicenseDocument.bundled()))
             panel.center()
             window = panel
+            // The find bar's keys and ⌘↑ ⌘↓ go to the license text before the
+            // app's menus (⌘F searches the browser, ⌘↑ goes up a folder)
+            keyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
+                let used = MainActor.assumeIsolated { () -> Bool in
+                    guard let text = LicenseNSTextView.shown, let window = text.window,
+                          event.window === window, window.isKeyWindow else { return false }
+                    return text.handleKey(event)
+                }
+                return used ? nil : event
+            }
         }
         window?.makeKeyAndOrderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
@@ -431,6 +442,7 @@ private struct LicenseTextView: NSViewRepresentable {
         scroll.borderType = .noBorder
         scroll.setAccessibilityIdentifier("aboutLicenseScroll")
         let view = LicenseNSTextView(usingTextLayoutManager: false)
+        LicenseNSTextView.shown = view
         view.isEditable = false
         view.isSelectable = true
         view.isRichText = true
@@ -497,10 +509,8 @@ private struct LicenseTextView: NSViewRepresentable {
                 let glyph = layout.glyphIndexForCharacter(at: offset)
                 layout.ensureLayout(forCharacterRange: NSRange(location: 0, length: offset + 1))
                 let line = layout.lineFragmentRect(forGlyphAt: glyph, effectiveRange: nil)
-                // The heading's line starts with the rule above it
-                let block = (text.textStorage?.attribute(.paragraphStyle, at: offset, effectiveRange: nil) as? NSParagraphStyle)?
-                    .textBlocks.first?.width(for: .margin, edge: .minY) ?? 0
-                let top = line.minY + text.textContainerOrigin.y + block - 12
+                // A little room above, with the rule over a project's heading
+                let top = line.minY + text.textContainerOrigin.y - 24
                 let limit = max(0, text.frame.height - scroll.contentView.bounds.height)
                 scroll.contentView.scroll(to: NSPoint(x: 0, y: min(max(0, top), limit)))
             }
@@ -525,11 +535,16 @@ private struct LicenseTextView: NSViewRepresentable {
 
 /// The license text view keeps the keys of the find bar and of moving
 /// through the text: the app's menus give ⌘F to the browser's search and ⌘↑
-/// to the enclosing folder, and key equivalents reach the key window first.
-private final class LicenseNSTextView: NSTextView {
-    override func performKeyEquivalent(with event: NSEvent) -> Bool {
-        guard window?.isKeyWindow == true else { return super.performKeyEquivalent(with: event) }
-        let flags = event.modifierFlags.intersection(.deviceIndependentFlagsMask)
+/// to the enclosing folder. `AboutPanel`'s key monitor hands it the About
+/// window's keys before the menus see them.
+final class LicenseNSTextView: NSTextView {
+    /// The text view of the About window, once it has been opened.
+    @MainActor static weak var shown: LicenseNSTextView?
+
+    /// Carries out a key of the find bar or of moving to the start or end;
+    /// false for every other key.
+    func handleKey(_ event: NSEvent) -> Bool {
+        let flags = event.modifierFlags.intersection([.command, .shift, .option, .control])
         let key = event.charactersIgnoringModifiers?.lowercased() ?? ""
         func find(_ action: NSTextFinder.Action) -> Bool {
             let item = NSMenuItem()
@@ -537,20 +552,21 @@ private final class LicenseNSTextView: NSTextView {
             performFindPanelAction(item)
             return true
         }
+        func scroll(toEnd: Bool) -> Bool {
+            // Only while the text has the keys: in the find bar ⌘↑ ⌘↓ are the field's
+            guard window?.firstResponder === self, let clip = enclosingScrollView?.contentView else { return false }
+            clip.scroll(to: NSPoint(x: 0, y: toEnd ? max(0, frame.height - clip.bounds.height) : 0))
+            enclosingScrollView?.reflectScrolledClipView(clip)
+            return true
+        }
         switch (flags, key, event.keyCode) {
         case (.command, "f", _): return find(.showFindInterface)
         case (.command, "g", _): return find(.nextMatch)
         case ([.command, .shift], "g", _): return find(.previousMatch)
         case (.command, "e", _): return find(.setSearchString)
-        case (_, _, 126) where flags.contains(.command):
-            window?.makeFirstResponder(self)
-            scrollToBeginningOfDocument(nil)
-            return true
-        case (_, _, 125) where flags.contains(.command):
-            window?.makeFirstResponder(self)
-            scrollToEndOfDocument(nil)
-            return true
-        default: return super.performKeyEquivalent(with: event)
+        case (.command, _, 126): return scroll(toEnd: false)
+        case (.command, _, 125): return scroll(toEnd: true)
+        default: return false
         }
     }
 }
