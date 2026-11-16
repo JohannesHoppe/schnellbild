@@ -60,9 +60,11 @@ install_name_tool -add_rpath "@executable_path/../Frameworks" "$APP/Contents/Mac
 cp "$RES/AppIcon.icns" "$APP/Contents/Resources/AppIcon.icns"
 # The UI's translations (en.lproj, de.lproj, …), found through Bundle.main
 cp -R "$RES/Localization/"*.lproj "$APP/Contents/Resources/"
-# The libraries' license texts (the About window points here), among them
+# The license texts the About window shows in full: Schnellbild's own (the
+# repository's LICENSE) and those of everything the app carries, among them
 # VLCKit-third-party-licenses.txt: FFmpeg and the other libraries inside VLCKit,
 # as published with the VLCKit build (keep it in step with fetch_vlckit.sh)
+cp "$ROOT/LICENSE" "$APP/Contents/Resources/LICENSE"
 cp -R "$RES/Licenses" "$APP/Contents/Resources/Licenses"
 # The offline map (OpenStreetMap data, Scripts/fetch_map.sh), found by OfflineMap in Resources/Map
 [ -n "$(ls "$ROOT/Vendor/Map/"*.pmtiles 2>/dev/null)" ] || { echo "!! no map in Vendor/Map (Scripts/fetch_map.sh)" >&2; exit 1; }

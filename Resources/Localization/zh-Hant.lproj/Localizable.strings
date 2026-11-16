@@ -178,13 +178,10 @@
 "Grid or list (a click on a column sorts by it)" = "網格或列表（按一下某欄依其排序）";
 "Back (where you were, also a search); without history the enclosing folder" = "返回（之前的位置，也包括搜尋）；沒有歷史時前往上一層檔案夾";
 "Click to rename this folder" = "按一下以重新命名此檔案夾";
-"Built with" = "使用的元件";
-"The full license texts are in the app (Contents/Resources/Licenses)." = "完整的授權條款文字位於 App 內（Contents/Resources/Licenses）。";
 "Privacy Policy" = "隱私權政策";
 "VLCKit includes FFmpeg and other libraries, each under its own license." = "VLCKit 包含 FFmpeg 及其他程式庫，各自依其授權條款提供。";
 "plays the video formats macOS can't (AVI, MKV, WebM …)" = "播放 macOS 無法播放的影片格式（AVI、MKV、WebM …）";
 "reads RAR archives" = "讀取 RAR 封存檔";
-"reads ZIP and 7z archives (the copy built into macOS)" = "讀取 ZIP 和 7z 封存檔（macOS 內建的版本）";
 "out of memory" = "記憶體不足";
 "damaged data" = "資料已損毀";
 "damaged archive" = "封存檔已損毀";
@@ -207,9 +204,6 @@
 /* VoiceOver: the sorted column of the list */
 "ascending" = "遞增";
 "descending" = "遞減";
-/* About window: the libraries' licenses */
-"© Tim Kientzle and the libarchive contributors. BSD 2-clause license." = "© Tim Kientzle 及 libarchive 貢獻者。2 條款 BSD 授權條款。";
-"© Alexander Roshal. The UnRAR license, in its own words:" = "© Alexander Roshal。UnRAR 授權條款原文：";
 "This file is too large to show from inside an archive." = "此檔案太大，無法從封存檔內顯示。";
 /* Settings */
 "Archive passwords" = "封存檔密碼";
@@ -284,7 +278,6 @@
 "Forget the access to every folder?" = "要忘記對所有檔案夾的取用嗎？";
 "Forget Folder Access" = "忘記檔案夾取用";
 "Each folder asks for your permission again." = "每個檔案夾都會再次請求你的允許。";
-"© VideoLAN and the VLC authors. GNU Lesser General Public License 2.1 or later. Built from its source without VLC's modules under the GPL; the build script and its changes are in Schnellbild's repository (github.com/JohannesHoppe/schnellbild)." = "© VideoLAN 與 VLC 作者。GNU Lesser General Public License 2.1 或更新版本。從原始碼建置，不含 GPL 授權的 VLC 模組；建置腳本及其變更位於 Schnellbild 的儲存庫（github.com/JohannesHoppe/schnellbild）。";
 "The link will be moved to the Trash. The folder it points to stays where it is." = "此連結將被丟到垃圾桶。它指向的檔案夾會留在原處。";
 "Keep both: the new one gets a number. Skip: it stays where it is. Cancel: nothing is moved or copied." = "保留兩者：新項目會加上編號。略過：它留在原處。取消：不搬移也不拷貝任何內容。";
 "Apply to all" = "全部套用";
@@ -540,18 +533,14 @@
 "near %@, %@" = "%@附近（%@）";
 "near %@" = "%@附近";
 "map data for the offline map" = "離線地圖的地圖資料";
-"© OpenStreetMap contributors. Open Database License (ODbL) 1.0. Made from Protomaps' OpenStreetMap build, with thanks to Protomaps; how the files are made is in Schnellbild's repository." = "© OpenStreetMap 貢獻者。Open Database License (ODbL) 1.0。以 Protomaps 的 OpenStreetMap 建置製作，感謝 Protomaps；檔案的製作方式請見 Schnellbild 的程式碼庫。";
 "Globe" = "地球儀";
 "Show day and night" = "顯示白天與黑夜";
 "Hide day and night" = "隱藏白天與黑夜";
 "Exaggerate the relief" = "誇大地形起伏";
 "Show the relief at true scale" = "以真實比例顯示地形起伏";
 "elevation and ocean depth on the globe" = "地球儀上的海拔與海洋深度";
-"NOAA National Centers for Environmental Information. Public domain (CC0 1.0). Not to be used for navigation." = "NOAA National Centers for Environmental Information。公有領域（CC0 1.0）。不得用於航海。";
 "the night sky behind the globe" = "地球儀背後的夜空";
-"NASA/Goddard Space Flight Center Scientific Visualization Studio, made from Gaia DR2, Hipparcos and Tycho-2 data. Public domain." = "NASA/Goddard Space Flight Center Scientific Visualization Studio，根據 Gaia DR2、Hipparcos 與 Tycho-2 的資料製作。公有領域。";
 "the lights on the globe's night side" = "地球儀夜側的燈光";
-"Used under NASA's media usage guidelines." = "依照 NASA 媒體使用準則使用。";
 
 /* Sorting by distance: the map and Use My Location */
 "Use My Location" = "使用我的位置";
@@ -633,3 +622,30 @@
 "Not finished" = "未完成";
 "In progress, the file is growing" = "進行中，檔案仍在增大";
 "This video can't play until its download is finished: the part that tells how to play it lies at the end of the file." = "下載完成前無法播放此影片：播放所需的資訊位於檔案結尾。";
+/* About window: the license texts */
+"In Schnellbild" = "在 Schnellbild 中";
+"Copyright" = "版權";
+"License" = "授權條款";
+"Credit" = "署名";
+"Website" = "網站";
+"Schnellbild uses an LGPL-only build of VLCKit and libVLC, licensed under the GNU Lesser General Public License 2.1 and built from source without any of VLC's modules under the GPL. VLC as VideoLAN builds it also carries modules under the GPL; they are not in Schnellbild's build." = "Schnellbild 使用的是只含 LGPL 部分的 VLCKit 與 libVLC 建置，採用 GNU Lesser General Public License 2.1 授權，從原始碼建置，不含任何 GPL 授權的 VLC 模組。VideoLAN 建置的 VLC 也包含 GPL 授權的模組；Schnellbild 的建置中沒有這些模組。";
+"Schnellbild's build makes five small changes to VLC (Scripts/vlc-patches, 0001 to 0005): four to its subtitle timing and one to its audio output on macOS." = "Schnellbild 的建置對 VLC 做了五處小修改（Scripts/vlc-patches，0001 至 0005）：四處與字幕時間有關，一處與 macOS 上的音訊輸出有關。";
+"The complete source of this build, with these changes, is attached to its release: %@. The script that builds it is Scripts/build_vlckit_lgpl.sh in Schnellbild's repository." = "此建置的完整原始碼（含這些修改）附在其發行版本中：%@。建置它的腳本是 Schnellbild 儲存庫中的 Scripts/build_vlckit_lgpl.sh。";
+"© VideoLAN and the VLC authors" = "© VideoLAN 與 VLC 作者";
+"Libraries included in VLCKit, each under its own license" = "VLCKit 包含的程式庫（各自採用自己的授權條款）";
+"Libraries included in VLCKit" = "VLCKit 包含的程式庫";
+"These are the license files at the top of each library's source, as VLC's build collected them." = "以下是各程式庫原始碼最上層的授權檔案，依 VLC 建置收集時的原樣列出。";
+"UnRAR license" = "UnRAR 授權條款";
+"© OpenStreetMap contributors" = "© OpenStreetMap 貢獻者";
+"Made from Protomaps' OpenStreetMap build, with thanks to Protomaps. How the files are made is in Schnellbild's repository." = "以 Protomaps 的 OpenStreetMap 建置製作，感謝 Protomaps。檔案的製作方式請見 Schnellbild 的程式碼庫。";
+"Notice of Schnellbild's map files" = "關於 Schnellbild 地圖檔案的聲明";
+"Globe data" = "地球儀資料";
+"the globe's elevation, night sky and city lights" = "地球儀上的海拔、夜空與城市燈光";
+"Notice of Schnellbild's globe files" = "關於 Schnellbild 地球儀檔案的聲明";
+"None (public domain)" = "無（公有領域）";
+"Not to be used for navigation." = "不得用於航海。";
+"Public domain" = "公有領域";
+"No endorsement by NASA is implied." = "不代表 NASA 的認可。";
+"NASA's media usage guidelines" = "NASA 媒體使用準則";
+"⌘F searches the license texts." = "⌘F 可在授權條款文字中搜尋。";
+"License texts" = "授權條款文字";
