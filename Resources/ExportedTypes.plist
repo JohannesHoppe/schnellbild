@@ -33,7 +33,7 @@
             </array>
         </dict>
     </array>
-    <!-- Matroska and VOB have no system type; declared so QuickLook can hand them to the thumbnail extension (the identifiers VLC uses) -->
+    <!-- Matroska and VOB have no system type (the identifiers VLC uses), nor do downloads not finished ("x.mp4.part"); declared so QuickLook can hand them to the thumbnail extension -->
     <key>UTImportedTypeDeclarations</key>
     <array>
         <dict>
@@ -71,6 +71,29 @@
                 <key>public.filename-extension</key>
                 <array>
                     <string>vob</string>
+                </array>
+            </dict>
+        </dict>
+        <dict>
+            <key>UTTypeConformsTo</key>
+            <array>
+                <string>public.data</string>
+            </array>
+            <key>UTTypeDescription</key>
+            <string>Download not finished</string>
+            <key>UTTypeIdentifier</key>
+            <string>art.haushoppe.schnellbild.download-in-progress</string>
+            <key>UTTypeTagSpecification</key>
+            <dict>
+                <key>public.filename-extension</key>
+                <array>
+                    <string>part</string>
+                    <string>partial</string>
+                    <string>crdownload</string>
+                    <string>opdownload</string>
+                    <string>!qB</string>
+                    <string>!ut</string>
+                    <string>!bt</string>
                 </array>
             </dict>
         </dict>

@@ -625,3 +625,11 @@
 "Include subfolders" = "Submappen meenemen";
 "The photos and videos of every subfolder too, archives included" = "Ook de foto's en video's van alle submappen, archieven inbegrepen";
 "Reading subfolders…" = "Submappen worden gelezen…";
+
+/* Downloads not finished */
+"Download not finished" = "Download niet voltooid";
+"Incomplete" = "Onvolledig";
+"Download" = "Download";
+"Not finished" = "Niet voltooid";
+"In progress, the file is growing" = "Bezig, het bestand groeit nog";
+"This video can't play until its download is finished: the part that tells how to play it lies at the end of the file." = "Deze video kan pas worden afgespeeld als de download voltooid is: wat nodig is om hem af te spelen, staat aan het eind van het bestand.";

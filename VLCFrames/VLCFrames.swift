@@ -191,7 +191,9 @@ public final class VLCFrameGrab: @unchecked Sendable {   // state behind `lock`
 /// a thumbnail. So VLC is told the one reader it may use: the container the
 /// file's first bytes show (a recording named ".mkv" that is a transport
 /// stream), from a fixed list of video containers, else the one its
-/// extension names; and only for a file with a video extension.
+/// extension names (a download's in-progress ending left out: "x.mkv.part"
+/// is read as ".mkv"); a file whose bytes show none of them and whose
+/// extension names no video opens nothing.
 /// One, not a list: VLC takes a reader it is told to use as forced, and some
 /// (MPEG program and transport streams) then take any file, so every reader
 /// after them in a list would never be asked.
@@ -202,8 +204,10 @@ public enum VLCSafety {
     /// (held to that one format, so FFmpeg can't pick a playlist reader
     /// either); nil: VLC opens nothing. `head`: the file's first bytes.
     public static func reader(for url: URL, head: Data? = nil) -> Reader? {
-        guard let named = reader(forExtension: url.pathExtension) else { return nil }
-        return head.flatMap(container(in:)) ?? named
+        // What the content shows wins: none of these readers follows a
+        // playlist or an address
+        if let shown = head.flatMap(container(in:)) { return shown }
+        return reader(forExtension: DownloadName.finalExtension(of: url))
     }
 
     /// The video container its first bytes show; nil when they show none

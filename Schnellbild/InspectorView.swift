@@ -20,6 +20,10 @@ struct InspectorView: View {
     @State private var streams: StreamFacts?
     @State private var filter = ""
     @State private var expanded: Set<String> = []
+    /// A download not finished whose file is growing (its size changed
+    /// between two looks); with its size now.
+    @State private var growing = false
+    @State private var downloadedSize: Int64?
 
     static let width: CGFloat = 320
 
@@ -57,7 +61,9 @@ struct InspectorView: View {
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("inspector")
         .task(id: entry.url) { await load() }
-        .task(id: entry.url) { await loadFromPlayer() }
+        // (again for another player: a growing download's video opened again)
+        .task(id: PlayerKey(url: entry.url, player: model.activePlayer.map(ObjectIdentifier.init))) { await loadFromPlayer() }
+        .task(id: entry.url) { await watchDownload() }
     }
 
     // MARK: Parts
@@ -218,6 +224,14 @@ struct InspectorView: View {
 
     private var fileRows: [InfoRow] {
         var rows = FileReport.rows(for: entry, format: entry.kind == .image ? facts?.format : nil)
+        if entry.isDownloading {
+            rows.insert(InfoRow(label: String(localized: "Download"),
+                                value: growing ? String(localized: "In progress, the file is growing") : String(localized: "Not finished")),
+                        at: 1)
+            if let downloadedSize, Int(downloadedSize) != entry.byteSize, let size = rows.firstIndex(where: { $0.label == String(localized: "Size") }) {
+                rows[size] = InfoRow(label: String(localized: "Size"), value: FileReport.sizeText(Int(downloadedSize)))
+            }
+        }
         if let created { rows.append(InfoRow(label: String(localized: "Created"), value: Self.dateText(created))) }
         if let modified = entry.modDate { rows.append(InfoRow(label: String(localized: "Date Modified"), value: Self.dateText(modified))) }
         rows.append(InfoRow(label: String(localized: "Path"), value: entry.url.path))
@@ -365,6 +379,38 @@ struct InspectorView: View {
         guard !Task.isCancelled else { return }
         (report, facts, created) = found
         reportRead = true
+    }
+
+    private struct PlayerKey: Hashable {
+        let url: URL
+        let player: ObjectIdentifier?
+    }
+
+    /// A download not finished ("x.mp4.part"): its size looked at every two
+    /// seconds; growing while it changes.
+    private func watchDownload() async {
+        growing = false
+        downloadedSize = nil
+        guard entry.isDownloading, !ArchivePath.isInside(entry.url) else { return }
+        let url = entry.url
+        var unchanged = 0
+        while !Task.isCancelled {
+            let size = await Blocking.run(.utility) { () -> Int64? in
+                var info = stat()
+                return stat(url.path, &info) == 0 ? Int64(info.st_size) : nil
+            }
+            guard !Task.isCancelled else { return }
+            if let size, let before = downloadedSize, size != before {
+                growing = true
+                unchanged = 0
+            } else if downloadedSize != nil {
+                unchanged += 1
+                // (a tool writes in bursts: still for 10 s is no longer growing)
+                if unchanged >= 5 { growing = false }
+            }
+            downloadedSize = size
+            try? await Task.sleep(for: .seconds(2))
+        }
     }
 
     /// A video's size and streams from its player once it has opened the

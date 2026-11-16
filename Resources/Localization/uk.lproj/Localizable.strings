@@ -625,3 +625,11 @@
 "Include subfolders" = "Разом із вкладеними папками";
 "The photos and videos of every subfolder too, archives included" = "Також фото й відео з усіх вкладених папок, разом з архівами";
 "Reading subfolders…" = "Читання вкладених папок…";
+
+/* Downloads not finished */
+"Download not finished" = "Завантаження не завершено";
+"Incomplete" = "Неповний";
+"Download" = "Завантаження";
+"Not finished" = "Не завершено";
+"In progress, the file is growing" = "Триває, файл ще росте";
+"This video can't play until its download is finished: the part that tells how to play it lies at the end of the file." = "Це відео можна буде відтворити лише після завершення завантаження: дані для відтворення містяться в кінці файлу.";

@@ -46,6 +46,34 @@ draw_hdr() {
 }
 if [ "${1:-}" = hdr ]; then draw_hdr; exit 0; fi
 
+# Downloads not finished and names that say nothing (UITests/Fixtures/partial,
+# `partial` as the only argument draws just those): 10 s of ffmpeg's test
+# picture as an MP4 with its index first, cut after 60 % of its bytes (plays
+# as far as its data reaches), the same with its index last (can't play until
+# the rest arrives), as Matroska, cut the same way; a JPEG without an
+# extension and a whole MP4 named ".xyz".
+draw_partial() {
+  local P=UITests/Fixtures/partial whole
+  whole=$(mktemp -d)
+  mkdir -p "$P"
+  clip10() {
+    local out=$1; shift
+    "$FFMPEG" -loglevel error -y -f lavfi -i "testsrc2=s=320x180:r=10:d=10" -an -c:v libx264 -pix_fmt yuv420p -g 10 \
+      "$@" -fflags +bitexact -flags:v +bitexact "$whole/$out"
+  }
+  cut60() { head -c $(( $(wc -c < "$1") * 6 / 10 )) "$1" > "$2"; }
+  clip10 front.mp4 -movflags +faststart
+  clip10 end.mp4
+  clip10 film.mkv
+  cut60 "$whole/front.mp4" "$P/front.mp4.part"
+  cut60 "$whole/end.mp4" "$P/end.mp4.part"
+  cut60 "$whole/film.mkv" "$P/film.mkv.part"
+  cp "$whole/front.mp4" "$P/video.xyz"
+  cp UITests/Fixtures/large.jpg "$P/photo"
+  rm -rf "$whole"
+}
+if [ "${1:-}" = partial ]; then draw_partial; exit 0; fi
+
 make() { local name=$1; shift; "$FFMPEG" -loglevel error -y -i UITests/Fixtures/clip.mp4 -t 2 -an -g 12 "$@" "$OUT/$name"; }
 make clip.mkv  -c:v libx264 -pix_fmt yuv420p
 make clip.webm -c:v libvpx-vp9 -crf 40 -b:v 0

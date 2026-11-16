@@ -3,6 +3,7 @@ import AppKit
 import ImageIO
 import Security
 import CArchives
+import VLCFrames
 
 // MARK: - Names and paths
 
@@ -14,19 +15,17 @@ enum ArchiveFormat: Equatable {
 /// shown once, by its first volume; a download still in progress
 /// ("x.rar.part", "x.zip.crdownload") counts by the name it will have.
 enum ArchiveName {
-    /// Endings of downloads still in progress: Firefox, Chrome, qBittorrent, others.
-    static let partialSuffixes = ["part", "crdownload", "!qb", "partial", "download"]
+    /// The name without a download's in-progress ending (`DownloadName`).
+    static func finalName(of name: String) -> String { DownloadName.finalName(of: name) }
 
-    /// The name without a download's in-progress ending.
-    static func finalName(of name: String) -> String {
-        let lower = name.lowercased()
-        for suffix in partialSuffixes where lower.hasSuffix("." + suffix) {
-            return String(name.dropLast(suffix.count + 1))
-        }
-        return name
+    static func isPartial(_ name: String) -> Bool { DownloadName.isPartial(name) }
+
+    /// The format of a file shown as an archive: by its name, else by what
+    /// its first bytes showed when they were read (`ContentSniffer`: "x.bin"
+    /// that is a ZIP). No disk access.
+    static func format(ofFile url: URL) -> ArchiveFormat? {
+        format(of: url.lastPathComponent) ?? ContentSniffer.shared.known(url)?.archiveFormat
     }
-
-    static func isPartial(_ name: String) -> Bool { finalName(of: name) != name }
 
     /// The format of a file shown as an archive, nil for anything else
     /// (also for the later volumes of a split archive).
@@ -160,7 +159,8 @@ enum ArchivePath {
     /// The archive and the path inside it ("" for its top), for a URL
     /// through an archive; nil otherwise. By the name only (no file system
     /// access), except that folders named like an archive which a listing
-    /// has met (`noteFolder`) are folders.
+    /// has met (`noteFolder`) are folders, and that files whose content
+    /// showed an archive (`ContentSniffer`) are archives.
     static func split(_ url: URL) -> (archive: URL, inner: String)? {
         let components = url.standardizedFileURL.pathComponents
         guard components.count > 1 else { return nil }
@@ -169,6 +169,9 @@ enum ArchivePath {
             if isNotedFolder(path) { continue }
             let archive = URL(fileURLWithPath: path, isDirectory: false)
             return (archive, components[(i + 1)...].joined(separator: "/"))
+        }
+        if let found = ContentSniffer.shared.archive(containing: url) {
+            return (URL(fileURLWithPath: found.archive, isDirectory: false), found.inner)
         }
         return nil
     }
@@ -664,6 +667,9 @@ final class ArchiveStore: @unchecked Sendable {
     final class Index {
         /// Read to the end (false: a partial download, or a missing volume).
         let complete: Bool
+        /// Read in part: the last file read, whose data may run past what
+        /// is there (every file before it is whole: the reader got past it).
+        var cutOff: String?
         let password: String?
         /// Reaching a file unpacks all before it (solid RAR, 7z): a pass
         /// keeps the pictures it unpacks on the way.
@@ -793,8 +799,14 @@ final class ArchiveStore: @unchecked Sendable {
     static func sniffedFormat(_ url: URL) -> ArchiveFormat? {
         guard let handle = try? FileHandle(forReadingFrom: url) else { return nil }
         defer { try? handle.close() }
-        guard let head = try? handle.read(upToCount: 6), head.count >= 4 else { return nil }
-        let bytes = [UInt8](head)
+        guard let head = try? handle.read(upToCount: 6) else { return nil }
+        return format(in: head)
+    }
+
+    /// The format the first bytes of a file show.
+    static func format(in head: Data) -> ArchiveFormat? {
+        guard head.count >= 4 else { return nil }
+        let bytes = [UInt8](head.prefix(6))
         if bytes.starts(with: [0x52, 0x61, 0x72, 0x21]) { return .rar }               // "Rar!"
         if bytes.starts(with: [0x50, 0x4B, 0x03, 0x04]) || bytes.starts(with: [0x50, 0x4B, 0x07, 0x08]) { return .zip }   // "PK"
         if bytes.starts(with: [0x37, 0x7A, 0xBC, 0xAF, 0x27, 0x1C]) { return .sevenZip }
@@ -879,6 +891,7 @@ final class ArchiveStore: @unchecked Sendable {
                               bytesKey: "\(BrowserModel.canonicalPath(url))|\(version?.size ?? 0)|\(version?.modified?.timeIntervalSince1970 ?? 0)")
             index.solid = solid
             index.reader = reader
+            if !complete, !capped { index.cutOff = items.last(where: { !$0.isDirectory && $0.source == nil })?.path }
             index.watchesFolder = !complete || flags.volume || ((reader as? LibArchiveReader)?.volumes.count ?? 1) > 1
             lock.lock()
             archive.index = index
@@ -1092,7 +1105,9 @@ final class ArchiveStore: @unchecked Sendable {
             if item.isDirectory {
                 listing.entries.append(GridEntry(url: itemURL, kind: .folder, modDate: item.modified))
             } else if let kind = BrowserModel.mediaKind(of: itemURL) {
-                listing.entries.append(GridEntry(url: itemURL, kind: kind, modDate: item.modified, byteSize: item.knownSize))
+                var entry = GridEntry(url: itemURL, kind: kind, modDate: item.modified, byteSize: item.knownSize)
+                entry.isIncomplete = item.path == index.cutOff
+                listing.entries.append(entry)
             } else if !itemURL.lastPathComponent.hasPrefix(".") {
                 listing.others.append(OtherFile(url: itemURL, byteSize: item.knownSize))
             }

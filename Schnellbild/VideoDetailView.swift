@@ -2,6 +2,7 @@ import SwiftUI
 import AVKit
 import AVFoundation
 import VLCFrames
+import UniformTypeIdentifiers
 
 /// Full-size view for videos. Native formats (MP4/MOV/M4V …) play through AVKit
 /// with autoplay and standard controls. Formats AVFoundation can't handle
@@ -32,6 +33,11 @@ struct VideoDetailView: View {
     /// (`PlaybackPositions.list`): where it stands is remembered there when
     /// it is left.
     @State private var positionList: Int?
+    /// Why the video can't play (a download cut off before its index).
+    @State private var unplayable: String?
+    /// Opened again (a download that grew); with where it stood.
+    @State private var opening = 0
+    @State private var resumeAt: Double?
 
     /// The zoom and turn (and, for the UI tests, the tracks, speed and what
     /// VLC reports).
@@ -57,6 +63,18 @@ struct VideoDetailView: View {
                 } else if let avControl {
                     // The app's own control bar (`VideoControlBar`) serves both players
                     AVPlayerLayerHost(control: avControl)
+                } else if let unplayable {
+                    Label {
+                        Text(unplayable)
+                    } icon: {
+                        Image(systemName: "arrow.down.circle")
+                    }
+                    .font(.callout)
+                    .foregroundStyle(.white.opacity(0.85))
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: 420)
+                    .padding()
+                    .accessibilityIdentifier("video.unplayable")
                 } else if checking {
                     LoadingSpinner()
                 }
@@ -93,9 +111,9 @@ struct VideoDetailView: View {
                 try? await Task.sleep(for: .seconds(1))
             }
         }
-        .task(id: url) {
-            // The same file under a new name (renamed, or its folder): the
-            // player goes on, position and pause kept
+        .task(id: Opening(url: url, count: opening)) {
+            // The same file under a new name (renamed, or its folder; a
+            // download finished): the player goes on, position and pause kept
             if let playing, playing.url != url, let file = playing.file,
                avControl != nil || vlcControl != nil, !ArchivePath.isInside(url) {
                 let same = await FileIdentity.of(url, is: file)
@@ -106,9 +124,12 @@ struct VideoDetailView: View {
                     return
                 }
             }
-            panOffset = .zero
+            let reopenAt = resumeAt
+            resumeAt = nil
+            if reopenAt == nil { panOffset = .zero }
             stop()
             checking = true
+            unplayable = nil
             videoSize = nil
             model.actualSizeFactor = 1   // "1": a video's 100 % is its fitted size
 
@@ -125,9 +146,18 @@ struct VideoDetailView: View {
                 archiveStream = stream
             }
             let loader = stream.map { ArchiveResourceLoader(stream: $0, fileName: url.lastPathComponent) }
+            // An MP4 whose download stopped before its index: nothing can
+            // play it yet, which is said instead of a black view
+            if stream == nil, await Blocking.run(.userInitiated, { FileBytes(url).map(MP4Boxes.indexCutOff) ?? false }) {
+                guard !Task.isCancelled else { return }
+                checking = false
+                unplayable = String(localized: "This video can't play until its download is finished: the part that tells how to play it lies at the end of the file.")
+                BrowserModel.testLog("video: index cut off | \(url.lastPathComponent)")
+                return
+            }
             // A reference movie names other files or addresses to play; it plays nothing here
             let asset = loader?.makeAsset(fileName: url.lastPathComponent)
-                ?? AVURLAsset(url: url, options: [AVURLAssetReferenceRestrictionsKey: AVAssetReferenceRestrictions.forbidAll.rawValue])
+                ?? AVURLAsset(url: url, options: Self.assetOptions(for: url))
             // A video that plays in VLC anyway isn't asked (no wait on AVFoundation)
             let inVLC = Self.forceVLC || Self.playsInVLC(url)
             let playable = inVLC ? false : ((try? await asset.load(.isPlayable)) ?? false)
@@ -136,8 +166,10 @@ struct VideoDetailView: View {
             playing = (url, nil)
 
             let model = self.model
-            // Left earlier in this folder: on from there
-            let resume = model.playbackPositions.place(of: url)
+            // Opened again where it stood (a download that grew), else left
+            // earlier in this folder: on from there
+            let resume = reopenAt.map { PlaybackPositions.Place(seconds: $0, playing: true) }
+                ?? model.playbackPositions.place(of: url)
             positionList = model.playbackPositions.list
             let report: @MainActor (PlaybackControl, Bool) -> Void = { control, playing in
                 model.playbackStateChanged(control, isPlaying: playing)
@@ -146,32 +178,16 @@ struct VideoDetailView: View {
                 model.autoLookMeasured(look, from: control)
             }
             let reportTracks: @MainActor (PlaybackControl) -> Void = { control in model.tracksChanged(from: control) }
-            if playable && !Self.forceVLC && !Self.playsInVLC(url) {
-                let control = AVPlaybackControl(player: AVPlayer(playerItem: AVPlayerItem(asset: asset)), onStateChange: report)
-                control.resourceLoader = loader   // the asset holds its delegate weakly
-                control.onAutoLook = reportLook
-                control.onTracksChanged = reportTracks
-                avControl = control
-                model.activePlayer = control
-                model.activePlayerURL = url
-                control.begin(at: resume)
-                control.loadTracks()
-                await noteFile(url)
-                if let track = try? await asset.loadTracks(withMediaType: .video).first,
-                   let (size, transform) = try? await track.load(.naturalSize, .preferredTransform),
-                   !Task.isCancelled {   // still this video
-                    let turned = size.applying(transform)
-                    videoSize = CGSize(width: abs(turned.width), height: abs(turned.height))
-                }
-            } else {
-                // AVFoundation can't play it — hand off to VLCKit. It starts
-                // playing once its view gives it somewhere to draw.
+            // VLC plays it: a format of its own, or one AVFoundation refused
+            // (also once it had opened it: a cut-off download VLC plays as
+            // far as its data reaches)
+            @MainActor func playInVLC(from place: PlaybackPositions.Place?) async {
                 // The file's first bytes, off the main thread (a network share can be slow)
                 let head = stream == nil ? await Blocking.run { VLCSafety.head(of: url) } : nil
                 guard !Task.isCancelled else { return }
                 let source: VLCPlaybackControl.Source = stream.map { stream in .stream(url, { ArchiveInputStream(stream) }) } ?? .file(url, head: head)
                 // Subtitles off: no reading of the tracks before the first picture
-                let control = VLCPlaybackControl(source: source, subtitles: model.showSubtitles, resume: resume,
+                let control = VLCPlaybackControl(source: source, subtitles: model.showSubtitles, resume: place,
                                                  onStateChange: report)
                 control.onAutoLook = reportLook
                 control.onTracksChanged = reportTracks
@@ -189,8 +205,92 @@ struct VideoDetailView: View {
                     waited += step
                 }
             }
+            if playable && !Self.forceVLC && !Self.playsInVLC(url) {
+                let control = AVPlaybackControl(player: AVPlayer(playerItem: AVPlayerItem(asset: asset)), onStateChange: report)
+                control.resourceLoader = loader   // the asset holds its delegate weakly
+                control.onAutoLook = reportLook
+                control.onTracksChanged = reportTracks
+                avControl = control
+                model.activePlayer = control
+                model.activePlayerURL = url
+                control.begin(at: resume)
+                control.loadTracks()
+                await noteFile(url)
+                if let track = try? await asset.loadTracks(withMediaType: .video).first,
+                   let (size, transform) = try? await track.load(.naturalSize, .preferredTransform),
+                   !Task.isCancelled {   // still this video
+                    let turned = size.applying(transform)
+                    videoSize = CGSize(width: abs(turned.width), height: abs(turned.height))
+                }
+                // AVFoundation gives up on it (a file cut off, data it can't
+                // decode): VLC goes on from where it stood
+                guard let item = control.player.currentItem, stream == nil else { return }
+                let failed = ManagedFlag()
+                let token = NotificationToken(AVPlayerItem.failedToPlayToEndTimeNotification, object: item) { _ in failed.set() }
+                while !Task.isCancelled, avControl === control {
+                    if item.status == .failed || failed.isSet {
+                        let seconds = CMTimeGetSeconds(control.player.currentTime())
+                        BrowserModel.testLog("video: AVKit failed, VLC takes over | \(url.lastPathComponent)")
+                        control.pause()
+                        avControl = nil
+                        await playInVLC(from: seconds.isFinite && seconds > 0 ? PlaybackPositions.Place(seconds: seconds, playing: true) : nil)
+                        break
+                    }
+                    try? await Task.sleep(for: .milliseconds(500))
+                }
+                _ = token
+            } else {
+                // AVFoundation can't play it: VLCKit plays it. It starts
+                // playing once its view gives it somewhere to draw.
+                await playInVLC(from: resume)
+            }
+        }
+        // A download still growing: once more data has arrived, a video that
+        // stopped where the data ended (or couldn't start) opens again, on
+        // from where it stood
+        .task(id: url) {
+            guard DownloadName.isPartial(url.lastPathComponent), !ArchivePath.isInside(url) else { return }
+            var size = await Blocking.run(.utility) { Self.fileSize(url) }
+            while !Task.isCancelled {
+                try? await Task.sleep(for: .seconds(2))
+                let now = await Blocking.run(.utility) { Self.fileSize(url) }
+                guard !Task.isCancelled, now != size, now != nil else { continue }
+                size = now
+                let player = model.activePlayer
+                let stopped = player.map { !$0.isPlaying && ($0.progress ?? 1) >= 0.97 } ?? false
+                guard unplayable != nil || stopped else { continue }
+                if let player, let length = player.lengthSeconds, let progress = player.progress {
+                    resumeAt = length * progress
+                }
+                BrowserModel.testLog("video: grew, opened again | \(url.lastPathComponent)")
+                opening += 1
+            }
         }
         .onDisappear { stop() }
+    }
+
+    /// What `.task` is run again for: another file, or the same opened again.
+    private struct Opening: Hashable {
+        let url: URL
+        let count: Int
+    }
+
+    nonisolated private static func fileSize(_ url: URL) -> Int64? {
+        var info = stat()
+        return stat(url.path, &info) == 0 ? Int64(info.st_size) : nil
+    }
+
+    /// A file of someone else: a reference movie names other files or
+    /// addresses to play, so it plays nothing here. A name that doesn't say
+    /// the format ("x.mp4.part", "x.xyz" holding an MP4) gets the type the
+    /// final name or the content says: AVFoundation goes by the name.
+    static func assetOptions(for url: URL) -> [String: Any] {
+        var options: [String: Any] = [AVURLAssetReferenceRestrictionsKey: AVAssetReferenceRestrictions.forbidAll.rawValue]
+        let shown = BrowserModel.shownExtension(of: url)
+        if shown != url.pathExtension.lowercased(), let mime = UTType(filenameExtension: shown)?.preferredMIMEType {
+            options[AVURLAssetOverrideMIMETypeKey] = mime
+        }
+        return options
     }
 
     /// UI tests (`--ui-testing --force-vlc`) play every video through VLC, so
@@ -215,7 +315,7 @@ struct VideoDetailView: View {
     /// extension, once one is turned on. A transport stream (".ts", a TV
     /// recording) plays through VLC too, which reads every such stream.
     static let vlcFormats: Set<String> = ["mkv", "webm", "wmv", "asf", "flv", "ogv", "vob", "ts"]
-    static func playsInVLC(_ url: URL) -> Bool { vlcFormats.contains(url.pathExtension.lowercased()) }
+    static func playsInVLC(_ url: URL) -> Bool { vlcFormats.contains(BrowserModel.shownExtension(of: url)) }
 
     /// Turned a quarter, the fitted video's now-swapped box is scaled to fit
     /// the view again (as `FullImageView` does for pictures).
@@ -242,6 +342,7 @@ struct VideoDetailView: View {
         }
         positionList = nil
         playing = nil
+        unplayable = nil
         archiveStream?.close()
         archiveStream = nil
         avControl?.pause()

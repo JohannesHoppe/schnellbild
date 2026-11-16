@@ -114,11 +114,12 @@ struct ThumbnailGridView: View {
             } else {
                 FolderTile(folder: entry.browseURL, side: side, isSelected: cursor, isMarked: marked,
                            systemImage: archive ? "archivebox.fill" : "folder.fill",
-                           isEmpty: model.isEmptyFolder(entry), kindLabel: archive ? "archive" : "folder")
+                           isEmpty: model.isEmptyFolder(entry), kindLabel: archive ? "archive" : "folder",
+                           unfinished: entry.unfinishedNote)
             }
         case .image, .video:
             ThumbnailView(url: entry.url, side: side, isSelected: cursor, isMarked: marked, isVideo: entry.kind == .video,
-                          modified: entry.modDate)
+                          modified: entry.previewDate, unfinished: entry.unfinishedNote)
         }
     }
 }
@@ -148,7 +149,8 @@ struct EntryAccessibility: ViewModifier {
         case .image: kind = String(localized: "Picture")
         case .video: kind = String(localized: "Video")
         }
-        return [entry.name, kind, location.map { String(localized: "in \($0)") }].compactMap { $0 }.joined(separator: ", ")
+        return [entry.name, kind, entry.unfinishedNote,
+                location.map { String(localized: "in \($0)") }].compactMap { $0 }.joined(separator: ", ")
     }
 
     func body(content: Content) -> some View {
@@ -183,6 +185,8 @@ struct FolderTile: View {
     /// A drive on the drives' level: its icon, nothing read from it (a
     /// network share would be walked for a preview).
     var previews = true
+    /// An archive whose download isn't finished ("x.rar.part").
+    var unfinished: String? = nil
 
     /// A drive's icon, for an item of the drives' level (`/Volumes`): the
     /// startup disk (its link to "/") or another; nil for anything else.
@@ -202,7 +206,7 @@ struct FolderTile: View {
     @State private var previewImages: [NSImage]
 
     init(folder: URL?, side: CGFloat, isSelected: Bool, isMarked: Bool = false, systemImage: String = "folder.fill",
-         isEmpty: Bool = false, kindLabel: String = "folder", previews: Bool = true) {
+         isEmpty: Bool = false, kindLabel: String = "folder", previews: Bool = true, unfinished: String? = nil) {
         self.folder = folder
         self.side = side
         self.isSelected = isSelected
@@ -211,6 +215,7 @@ struct FolderTile: View {
         self.isEmpty = isEmpty
         self.kindLabel = kindLabel
         self.previews = previews
+        self.unfinished = unfinished
         // Scrolled back into view: its previews at once from memory, not a
         // bare folder that fills in again
         let files = previews ? folder.flatMap(FolderPreviewCache.shared.knownFiles(in:)) ?? [] : []
@@ -227,12 +232,13 @@ struct FolderTile: View {
         }
         .saturation(isEmpty ? 0 : 1)
         .opacity(isEmpty ? (contrast == .increased ? 0.7 : 0.4) : 1)
-        .tileChrome(side: side, isSelected: isSelected, isMarked: isMarked)
+        .tileChrome(side: side, isSelected: isSelected, isMarked: isMarked, unfinished: unfinished)
         .accessibilityElement(children: .ignore)
         // The label ("name, kind") comes from the grid's cell; the UI tests
         // read the tile's state here
         .accessibilityValue(VideoDetailView.uiTesting
             ? "\(TileChrome.selectionLabel(isSelected || isMarked)), \(folder == nil ? "parent folder" : isEmpty ? "empty \(kindLabel)" : kindLabel), \(previewImages.count) previews"
+                + (unfinished != nil ? ", unfinished" : "")
             : TileChrome.spokenState(marked: isMarked))
         // Again after a change made inside the folder (trash, rename): what
         // it previews may have gone.

@@ -54,7 +54,8 @@ final class VideoFormatTests: XCTestCase {
 
     /// A clip under another format's name (a transport stream recorded as
     /// ".mkv", a WMV named ".mkv") opens through the container its first
-    /// bytes show; not a video at all under a video's name opens nothing.
+    /// bytes show, whatever the name; not a video at all under a video's
+    /// name opens nothing.
     func testAClipUnderAnotherFormatsNameOpensByItsContent() async throws {
         let dir = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
@@ -71,8 +72,10 @@ final class VideoFormatTests: XCTestCase {
         XCTAssertEqual(VLCSafety.reader(for: text, head: VLCSafety.head(of: text))?.demux, "mkv", "the extension's reader")
         let none = await VLCFrameGrab.frame(of: text, width: 128, timeout: 4)
         XCTAssertNil(none)
-        XCTAssertNil(VLCSafety.reader(for: dir.appendingPathComponent("a.txt"), head: VLCSafety.head(of: try clip("mkv"))),
-                     "no video extension: nothing, whatever the content")
+        XCTAssertEqual(VLCSafety.reader(for: dir.appendingPathComponent("a.xyz"), head: VLCSafety.head(of: try clip("mkv")))?.demux,
+                       "mkv", "the content wins over a name that says nothing")
+        XCTAssertNil(VLCSafety.reader(for: dir.appendingPathComponent("a.txt"), head: Data("#EXTM3U\n".utf8)),
+                     "no video extension and no video's bytes: nothing")
     }
 
     /// A streaming playlist (HLS) named like a video: VLC must not follow it.

@@ -125,7 +125,15 @@ struct EntryListView: View {
                     .frame(width: 14)
                 preview(entry).frame(width: Self.previewSide, height: Self.previewSide)
                 VStack(alignment: .leading, spacing: 1) {
-                    Text(entry.name).lineLimit(1).truncationMode(.middle)
+                    HStack(spacing: 4) {
+                        Text(entry.name).lineLimit(1).truncationMode(.middle)
+                        if let note = entry.unfinishedNote {
+                            Image(systemName: "arrow.down.circle")
+                                .foregroundStyle(cursor ? Color.white : Color.secondary)
+                                .help(note)
+                                .accessibilityHidden(true)
+                        }
+                    }
                     if let location {
                         Text(location).font(.caption2).foregroundStyle(.secondary).lineLimit(1).truncationMode(.head)
                     }
@@ -216,7 +224,7 @@ struct EntryListView: View {
                            isEmpty: model.isEmptyFolder(entry), kindLabel: archive ? "archive" : "folder")
             }
         case .image, .video:
-            ThumbnailView(url: entry.url, side: Self.previewSide, isSelected: false, isVideo: false, modified: entry.modDate)
+            ThumbnailView(url: entry.url, side: Self.previewSide, isSelected: false, isVideo: false, modified: entry.previewDate)
         }
     }
 

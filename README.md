@@ -258,6 +258,7 @@ Zoom with the keyboard or a trackpad pinch, drag to pan, rotate in steps of 90°
 macOS shows many video formats as plain icons, in the Finder too. Schnellbild teaches macOS some of them: it brings a QuickLook extension that takes a frame from such a video. The Finder and Schnellbild's grid then show a picture, and macOS keeps it in its own thumbnail cache, so a video on a network share is read once, not on every visit.
 
 - Formats: MKV, WebM, WMV, ASF, FLV, Ogg video and DVD video (`.vob`). What macOS reads itself (MP4, MOV, MPEG, …) stays with macOS.
+- Downloads still in progress (`film.mp4.part`, `photo.jpg.crdownload` …) get a picture too, as far as their data reaches.
 - AVI stays an icon in the Finder: macOS hands it to its own extension, not to Schnellbild's. AVCHD camcorder clips (`.mts`, `.m2ts`) get their Finder picture through the media extension below (macOS 26). Schnellbild's grid shows a picture for both either way.
 - Works whether Schnellbild is open or not: macOS starts the extension when a picture is needed and ends it afterwards. It is known to macOS once Schnellbild has been opened, and goes away with the app.
 - Runs in Apple's App Sandbox: no network, and it may read only the one file macOS hands it.
@@ -307,7 +308,7 @@ A sidebar with everything a file says about itself, for the item selected in the
 
 Only the file's header and the files beside it are read, in the background, also for pictures inside archives (there, the header alone).
 
-A file whose extension names another format than its content (a recording named `.mkv` that is really an MPEG transport stream, a PNG named `.jpg`) gets a note with the extension that fits. Schnellbild shows it anyway, by its content.
+A file whose extension names another format than its content (a recording named `.mkv` that is really an MPEG transport stream, a PNG named `.jpg`) gets a note with the extension that fits. Schnellbild shows it anyway, by its content. For a download that isn't finished, the File section says so, and whether the file is still growing.
 
 | Key | Action |
 |---|---|
@@ -377,7 +378,7 @@ ZIP, RAR and 7z archives (comic books as .cbz and .cbr too) open like folders: b
 
 - **RAR** of every version, also solid archives (the official UnRAR inside).
 - **Split archives** show once, by their first part: `x.part1.rar` …, `x.rar` + `x.r00` …, `x.z01` … + `x.zip`, `x.7z.001` ….
-- **Downloads still in progress** (`x.rar.part`, `x.zip.crdownload`) already show what has arrived; a later part that is missing ends the list there.
+- **Downloads still in progress** (`x.rar.part`, `x.zip.crdownload`) already show what has arrived, and more as the download goes on; the file the download has only got part of is marked, and a later part that is missing ends the list there.
 - **Passwords:** a protected archive asks for its password once. ZIP and RAR with a password work, also RAR with encrypted file names; encrypted 7z can't be opened.
 - **7z** goes through the archive library built into macOS, so what it reads depends on the macOS version: on macOS 15 that library lacks 7-Zip's usual LZMA compression, so most 7z archives can't be read there; recent versions read them.
 
@@ -452,7 +453,11 @@ Animated GIF, PNG and WebP play. RAW files show their built-in preview as a tile
 
 A `.ts` file counts as a video when its content is an MPEG transport stream (a TV or IPTV recording); TypeScript code, which uses the same ending, stays among the other files. Thumbnails in the Finder for these videos: see [Finder previews for more videos](#finder-previews-for-more-videos).
 
-**Archives** (opened like folders, see [Archives as folders](#archives-as-folders)): ZIP and comic books (`.zip`, `.cbz`), RAR (`.rar`, `.cbr`, all versions, also in volumes `.part1.rar` … and `.rar` / `.r00` …), 7z (`.7z`, `.cb7`), and archives split by bytes (`.zip.001`, `.7z.001`) or as ZIP volumes (`.z01` …). Still downloading (`.part`, `.crdownload`, `.download`, `.partial`, `.!qb`), they open with what is there so far.
+**Archives** (opened like folders, see [Archives as folders](#archives-as-folders)): ZIP and comic books (`.zip`, `.cbz`), RAR (`.rar`, `.cbr`, all versions, also in volumes `.part1.rar` … and `.rar` / `.r00` …), 7z (`.7z`, `.cb7`), and archives split by bytes (`.zip.001`, `.7z.001`) or as ZIP volumes (`.z01` …).
+
+**Downloads still in progress** count as what they will be: `film.mp4.part` is an MP4, `photos.rar.part` a RAR, whichever tool is downloading them (Firefox, JDownloader and Transmission `.part`, `.partial`, Chrome `.crdownload`, Opera `.opdownload`, qBittorrent `.!qB`, µTorrent `.!ut` / `.!bt`, `.download`). A small arrow on the tile and in the list marks them. Pictures show as far as they have arrived, videos play as far as their data reaches (an MP4 that keeps its index at the end can only play once it is complete, and the full view says so), archives open with what is there; while the file grows, a video that stopped at the end of its data goes on and an archive shows what arrived. When the download finishes and the file gets its final name, the selection and a video playing go along.
+
+**Files whose names say nothing** (no extension, or one no app knows, such as `IMG` or `video.xyz`) count by their content: Schnellbild reads their first bytes, in the background for a folder's files and at once for a file you open or drop, and shows the pictures, videos, PDFs and archives among them.
 
 **Everything else** is listed by name and size under the grid; documents among it open with their app on a double click.
 

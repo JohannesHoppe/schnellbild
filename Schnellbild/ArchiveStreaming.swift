@@ -1,6 +1,7 @@
 import Foundation
 import AVFoundation
 import UniformTypeIdentifiers
+import VLCFrames
 
 /// A file inside an archive, readable at any offset while it is unpacked:
 /// the players stream videos from archives through it, nothing is written
@@ -304,7 +305,7 @@ final class ArchiveResourceLoader: NSObject, AVAssetResourceLoaderDelegate, @unc
 
     init(stream: ArchiveEntryStream, fileName: String) {
         self.stream = stream
-        contentType = UTType(filenameExtension: (fileName as NSString).pathExtension)?.identifier ?? UTType.mpeg4Movie.identifier
+        contentType = UTType(filenameExtension: (DownloadName.finalName(of: fileName) as NSString).pathExtension)?.identifier ?? UTType.mpeg4Movie.identifier
     }
 
     /// An asset reading through this loader; a reference movie in the

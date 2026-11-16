@@ -53,6 +53,7 @@
                 <string>org.xiph.ogv</string>
                 <string>org.xiph.ogg-video</string>
                 <string>org.videolan.vob</string>
+                <string>art.haushoppe.schnellbild.download-in-progress</string>
             </array>
             <key>QLThumbnailMinimumDimension</key>
             <integer>16</integer>

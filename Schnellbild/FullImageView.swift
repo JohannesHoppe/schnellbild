@@ -512,7 +512,7 @@ enum VectorPicture {
     /// bytes, at full zoom; the adjusted copy needs as much again).
     static let largestSide = 4096
 
-    static func isVector(_ url: URL) -> Bool { ["svg", "pdf"].contains(url.pathExtension.lowercased()) }
+    static func isVector(_ url: URL) -> Bool { ["svg", "pdf"].contains(BrowserModel.shownExtension(of: url)) }
 
     /// The picture, from disk or from inside an archive (`MediaData`).
     private static func image(_ url: URL) async -> NSImage? {

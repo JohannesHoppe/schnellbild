@@ -625,3 +625,11 @@
 "Include subfolders" = "Include subfolders";
 "The photos and videos of every subfolder too, archives included" = "The photos and videos of every subfolder too, archives included";
 "Reading subfolders…" = "Reading subfolders…";
+
+/* Downloads not finished */
+"Download not finished" = "Download not finished";
+"Incomplete" = "Incomplete";
+"Download" = "Download";
+"Not finished" = "Not finished";
+"In progress, the file is growing" = "In progress, the file is growing";
+"This video can't play until its download is finished: the part that tells how to play it lies at the end of the file." = "This video can't play until its download is finished: the part that tells how to play it lies at the end of the file.";
