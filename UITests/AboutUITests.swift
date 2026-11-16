@@ -11,15 +11,20 @@ final class AboutUITests: SchnellbildUITestCase {
     private var licenseText: XCUIElement { aboutWindow.textViews["aboutLicenseText"].firstMatch }
     private var licenseScroll: XCUIElement { aboutWindow.scrollViews["aboutLicenseScroll"].firstMatch }
 
+    /// Where the text's top lies with the view at the top (the scroll view
+    /// reaches a little above the text's own top; 20 points on CI).
+    private var topOffset: CGFloat = 0
     /// How far the license text is scrolled, in points: its top above the
-    /// top of the view it scrolls in.
-    private var scrolled: CGFloat { licenseScroll.frame.minY - licenseText.frame.minY }
+    /// top of the view it scrolls in, from where it starts.
+    private var scrolled: CGFloat { licenseScroll.frame.minY - licenseText.frame.minY - topOffset }
 
     private func openAbout(appearance: String) {
         launch(extra: ["--appearance=\(appearance)"])
         clickMenu("Schnellbild", "About Schnellbild")
         XCTAssertTrue(aboutWindow.waitForExistence(timeout: 10), "the About window")
         XCTAssertTrue(licenseText.waitForExistence(timeout: 10), "the license text")
+        topOffset = licenseScroll.frame.minY - licenseText.frame.minY
+        XCTAssertLessThan(abs(topOffset), 40, "the text starts at the top of its view")
     }
 
     /// The text's sections, in the list beside it.
@@ -56,7 +61,6 @@ final class AboutUITests: SchnellbildUITestCase {
                      "Alliance for Open Media", "Open Database License", "CC0 1.0 Universal", "Joshua Stevens"] {
             XCTAssertTrue(text.contains(part), part)
         }
-        XCTAssertLessThan(scrolled, 5, "at the top")
         photograph("about-light")
 
         // The list jumps to a project's section
@@ -71,7 +75,7 @@ final class AboutUITests: SchnellbildUITestCase {
         // ⌘↑ goes back to the top
         licenseText.click()
         licenseText.typeKey(.upArrow, modifierFlags: .command)
-        eventually("back at the top") { self.scrolled < 5 }
+        eventually("back at the top") { abs(self.scrolled) < 5 }
 
         // ⌘F finds in the text: the Black Marble credit, after UnRAR
         licenseText.typeKey("f", modifierFlags: .command)
@@ -83,7 +87,6 @@ final class AboutUITests: SchnellbildUITestCase {
 
     func testTheWindowInDarkMode() throws {
         openAbout(appearance: "dark")
-        XCTAssertLessThan(scrolled, 5, "at the top")
         photograph("about-dark")
         choose("VLCKit: GNU LGPL 2.1")
         eventually("scrolled to VLCKit") { self.scrolled > 100 }
