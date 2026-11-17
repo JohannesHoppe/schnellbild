@@ -69,8 +69,9 @@ final class CraftedArchiveTests: XCTestCase {
         return vint(record.count) + record
     }
 
-    private static func rar(_ files: [Data]) -> Data {
-        Data("Rar!\u{1A}\u{07}\u{01}\u{00}".utf8) + block(1, fields: vint(0)) + files.reduce(Data(), +) + block(5, fields: vint(0))
+    /// The main header's archive flags: 0x0004 solid.
+    private static func rar(_ files: [Data], solid: Bool = false) -> Data {
+        Data("Rar!\u{1A}\u{07}\u{01}\u{00}".utf8) + block(1, fields: vint(solid ? 0x0004 : 0)) + files.reduce(Data(), +) + block(5, fields: vint(0))
     }
 
     private func write(_ data: Data, _ name: String, in tree: TempTree) throws -> URL {
@@ -131,7 +132,230 @@ final class CraftedArchiveTests: XCTestCase {
         }
     }
 
+    /// Entry names that point outside the archive (`../`, absolute paths)
+    /// or take detours (`./`, empty parts) are cleaned: every path stays
+    /// inside the archive, a backslash is part of a name (RAR5 separates
+    /// with "/"), two names that clean to the same path are one entry (the
+    /// first, which a read also gets), and a file copy whose source names
+    /// a place outside reads nothing from there.
+    func testRarEntryNamesStayInsideTheArchive() async throws {
+        let tree = try TempTree(self)
+        let url = try write(Self.rar([
+            Self.file("../../x.jpg", Data("X-FIRST".utf8)),
+            Self.file("/etc/y.jpg", Data("Y".utf8)),
+            Self.file("a/./b.jpg", Data("B".utf8)),
+            Self.file("a\\..\\c.jpg", Data("C".utf8)),
+            Self.file("x.jpg", Data("X2".utf8)),
+            Self.file("copy.jpg", extra: Self.redirect(5, to: "../outside.jpg"), size: 1),
+            Self.file("copy2.jpg", extra: Self.redirect(5, to: "..\\..\\x.jpg"), size: 7),
+        ]), "names.rar", in: tree)
+        let store = ArchiveStore()
+        let index = try await store.index(of: url)
+        XCTAssertEqual(index.byPath.values.filter { !$0.isDirectory }.map(\.path).sorted(),
+                       ["a/b.jpg", "a\\..\\c.jpg", "copy.jpg", "copy2.jpg", "etc/y.jpg", "x.jpg"])
+        assertInside(index, url)
+        let expected = ["x.jpg": "X-FIRST", "etc/y.jpg": "Y", "a/b.jpg": "B", "a\\..\\c.jpg": "C", "copy2.jpg": "X-FIRST"]
+        for (path, text) in expected {
+            let data = try await store.data(of: url.appendingPathComponent(path))
+            XCTAssertEqual(String(decoding: data, as: UTF8.self), text, path)
+        }
+        do {
+            _ = try await store.data(of: url.appendingPathComponent("copy.jpg"))
+            XCTFail("a copy of a file outside read something")
+        } catch ArchiveError.notFound {}
+    }
+
+    /// The same for ZIP (read by libarchive, which leaves names as stored).
+    func testZipEntryNamesStayInsideTheArchive() async throws {
+        let tree = try TempTree(self)
+        let url = try write(Self.zip([(Data("../../x.jpg".utf8), Data("X-FIRST".utf8)), (Data("/etc/y.jpg".utf8), Data("Y".utf8)),
+                                      (Data("a/./b.jpg".utf8), Data("B".utf8)), (Data("..\\..\\c.jpg".utf8), Data("C".utf8)),
+                                      (Data("x.jpg".utf8), Data("X2".utf8)), (Data("//d.jpg".utf8), Data("D".utf8))]),
+                            "names.zip", in: tree)
+        let store = ArchiveStore()
+        let index = try await store.index(of: url)
+        assertInside(index, url)
+        let files = index.byPath.values.filter { !$0.isDirectory }.map(\.path)
+        XCTAssertEqual(files.count, 5, "\(files.sorted())")
+        XCTAssertTrue(Set(files).isSuperset(of: ["x.jpg", "etc/y.jpg", "a/b.jpg", "d.jpg"]), "\(files.sorted())")
+        let first = try await store.data(of: url.appendingPathComponent("x.jpg"))
+        XCTAssertEqual(first, Data("X-FIRST".utf8), "the entry listed, not the one with the same name after it")
+        for path in files {
+            let data = try await store.data(of: url.appendingPathComponent(path))
+            XCTAssertEqual(data.count, index.byPath[path]?.knownSize, path)
+        }
+    }
+
+    private func assertInside(_ index: ArchiveStore.Index, _ archive: URL, file: StaticString = #filePath, line: UInt = #line) {
+        for path in index.byPath.keys {
+            XCTAssertFalse(path.hasPrefix("/"), path, file: file, line: line)
+            for part in path.split(separator: "/", omittingEmptySubsequences: false) {
+                XCTAssertFalse(part.isEmpty || part == "." || part == "..", path, file: file, line: line)
+            }
+            let inside = archive.appendingPathComponent(path).standardizedFileURL.path
+            XCTAssertTrue(inside.hasPrefix(archive.standardizedFileURL.path + "/"), path, file: file, line: line)
+        }
+    }
+
+    /// In a solid archive a pass keeps the pictures it unpacks on the way.
+    /// One asked for while it is being unpacked (its request missed the
+    /// cache) is answered with those bytes, not as missing.
+    func testAPictureUnpackedOnTheWayIsServedWhenAskedForMeanwhile() async throws {
+        let tree = try TempTree(self)
+        let pages = ["a.jpg", "b.jpg", "c.jpg"].map { ($0, Data(repeating: UInt8($0.utf8.first!), count: 1000)) }
+        let url = try write(Self.rar(pages.map { Self.file($0.0, $0.1) }, solid: true), "comic.rar", in: tree)
+        let store = ArchiveStore()
+        let index = try await store.index(of: url)
+        XCTAssertTrue(index.solid)
+        let a = url.appendingPathComponent("a.jpg"), b = url.appendingPathComponent("b.jpg"), c = url.appendingPathComponent("c.jpg")
+        let late = LateRequest()
+        store.unpacked = { path in
+            func wait(for url: URL) {
+                let deadline = Date().addingTimeInterval(10)
+                while !store.isWaiting(for: url), Date() < deadline { usleep(1000) }
+            }
+            switch path {
+            case "a.jpg":
+                wait(for: c)   // c is waiting too: the pass goes on past b
+            case "b.jpg":
+                // b, unpacked to be kept, is asked for now
+                late.task = Task { try await store.data(of: b) }
+                wait(for: b)
+            default: break
+            }
+        }
+        async let first = store.data(of: a)
+        async let last = store.data(of: c)
+        let (firstData, lastData) = try await (first, last)
+        XCTAssertEqual(firstData, pages[0].1)
+        XCTAssertEqual(lastData, pages[2].1)
+        let lateData = try await XCTUnwrap(late.task).value
+        XCTAssertEqual(lateData, pages[1].1)
+    }
+
+    private final class LateRequest: @unchecked Sendable {
+        var task: Task<Data, Error>?
+    }
+
+    /// A read given up before it joined the line (a tile scrolled away
+    /// right after asking) is not unpacked for nobody.
+    func testAReadGivenUpBeforeItIsQueuedIsNotUnpacked() async throws {
+        let tree = try TempTree(self)
+        let url = try write(Self.rar([Self.file("a.jpg", Data("A".utf8)), Self.file("b.jpg", Data("B".utf8))]), "two.rar", in: tree)
+        let store = ArchiveStore()
+        _ = try await store.index(of: url)
+        let unpacked = Paths()
+        store.unpacked = { unpacked.add($0) }
+        let given = Task { () async throws -> Data in
+            withUnsafeCurrentTask { $0?.cancel() }
+            return try await store.data(of: url.appendingPathComponent("a.jpg"))
+        }
+        do {
+            _ = try await given.value
+            XCTFail("read for nobody")
+        } catch is CancellationError {}
+        // The archive's next read runs the first pass
+        let b = try await store.data(of: url.appendingPathComponent("b.jpg"))
+        XCTAssertEqual(b, Data("B".utf8))
+        XCTAssertEqual(unpacked.all, ["b.jpg"])
+    }
+
+    private final class Paths: @unchecked Sendable {
+        private let lock = NSLock()
+        private var list: [String] = []
+        func add(_ path: String) { lock.withLock { list.append(path) } }
+        var all: [String] { lock.withLock { list } }
+    }
+
+    /// RAR5 checks a password against a stored value before any data
+    /// comes out: the first bytes prove it, the rest isn't unpacked. Without
+    /// that value (RAR4) the whole entry is, to its checksum.
+    func testAPasswordCheckedBeforeTheDataIsTriedOnItsFirstBytes() throws {
+        for checked in [true, false] {
+            let reader = Chunks(checked: checked)
+            let probe = ArchiveItem(path: "p.jpg", isDirectory: false, size: 100 * 4096, modified: nil, encrypted: true, passwordChecked: checked)
+            XCTAssertTrue(ArchiveStore.opens(reader, probe, with: "secret"))
+            XCTAssertEqual(reader.given, checked ? 1 : 100, "checked: \(checked)")
+        }
+        // UnRAR's header says which: RAR5 made by RAR 7 has the value, RAR4 not
+        func flags(_ url: URL) throws -> [Bool] {
+            var found: [Bool] = []
+            _ = try RarReader(url: url).walk(password: nil, listOnly: true) { item in
+                if item.encrypted { found.append(item.passwordChecked) }
+                return .skip
+            }
+            return found
+        }
+        let rar5 = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
+            .appendingPathComponent("UITests/Fixtures/rar/photos-psw.rar")
+        XCTAssertEqual(try flags(rar5), [true, true, true, true])
+        let rar4 = try XCTUnwrap(Bundle.module.url(forResource: "rar3-comment-psw.rar", withExtension: nil, subdirectory: "Archives"))
+        XCTAssertEqual(try flags(rar4), [false, false])
+    }
+
+    /// One encrypted entry of 100 chunks, counting the chunks handed out.
+    private final class Chunks: ArchiveReader {
+        let checked: Bool
+        var given = 0
+        init(checked: Bool) { self.checked = checked }
+        func walk(password: String?, listOnly: Bool, _ visit: (ArchiveItem) -> ArchiveVisit) throws -> Bool {
+            let item = ArchiveItem(path: "p.jpg", isDirectory: false, size: 100 * 4096, modified: nil, encrypted: true, passwordChecked: checked)
+            guard case .read(let sink, let done) = visit(item) else { return true }
+            let chunk = [UInt8](repeating: 1, count: 4096)
+            for _ in 0..<100 {
+                given += 1
+                if !chunk.withUnsafeBytes({ sink($0) }) { done(nil); return true }
+            }
+            done(nil)
+            return true
+        }
+    }
+
     // MARK: ZIP
+
+    /// Symbolic links (`zip -y`) are not listed: their data is the path
+    /// they point to, not a picture.
+    func testZipSymlinksAreNotListed() async throws {
+        let tree = try TempTree(self)
+        let src = try tree.folder("src")
+        try Data("PICTURE".utf8).write(to: src.appendingPathComponent("real.jpg"))
+        try FileManager.default.createSymbolicLink(atPath: src.appendingPathComponent("cover.jpg").path, withDestinationPath: "../../etc/x")
+        let zipping = Process()
+        zipping.executableURL = URL(fileURLWithPath: "/usr/bin/zip")
+        zipping.arguments = ["-q", "-y", "../links.zip", "real.jpg", "cover.jpg"]
+        zipping.currentDirectoryURL = src
+        try zipping.run(); zipping.waitUntilExit()
+        XCTAssertEqual(zipping.terminationStatus, 0)
+        let index = try await ArchiveStore().index(of: tree.root.appendingPathComponent("links.zip"))
+        XCTAssertEqual(index.byPath.keys.sorted(), ["real.jpg"])
+    }
+
+    /// A ZIP still downloading (a torrent client writes its pieces in any
+    /// order, so its central directory can be there before its data) is
+    /// read in part, and a file whose data hasn't arrived is incomplete,
+    /// not damaged.
+    func testAZipStillDownloadingIsIncomplete() async throws {
+        let tree = try TempTree(self)
+        let whole = Self.zip([(Data("a.jpg".utf8), Data("AAAA".utf8)), (Data("b.jpg".utf8), Data("BBBB".utf8))])
+        let done = try write(whole, "done.zip", in: tree)
+        var pieces = whole
+        // b's data not there yet: zeros
+        let at = try XCTUnwrap(pieces.range(of: Data("BBBB".utf8)))
+        pieces.replaceSubrange(at, with: Data(count: 4))
+        let loading = try write(pieces, "loading.zip.!qB", in: tree)
+        let store = ArchiveStore()
+        let complete = try await store.index(of: done)
+        XCTAssertTrue(complete.complete)
+        let index = try await store.index(of: loading)
+        XCTAssertFalse(index.complete)
+        XCTAssertEqual(index.byPath.keys.sorted(), ["a.jpg", "b.jpg"])
+        let a = try await store.data(of: loading.appendingPathComponent("a.jpg"))
+        XCTAssertEqual(a, Data("AAAA".utf8))
+        do {
+            _ = try await store.data(of: loading.appendingPathComponent("b.jpg"))
+            XCTFail("zeros read as the picture")
+        } catch ArchiveError.incomplete {}
+    }
 
     /// A stored ZIP with names given as raw bytes, without the UTF-8 flag.
     private static func zip(_ entries: [(name: Data, data: Data)]) -> Data {
