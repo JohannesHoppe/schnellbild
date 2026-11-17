@@ -16,6 +16,8 @@ public struct GlobeScene: Equatable, Sendable {
     public var date: Date
     /// How much of the cloud cover shows (0 none … 1 all)
     public var clouds: Double
+    /// The tilted camera's vertical angle of view (degrees; `GlobeProjection.lens`)
+    public var lens = GlobeProjection.fieldOfView
 
     public init(camera: MapCamera, size: CGSize, dark: Bool = false, lighting: Bool = false, exaggerated: Bool = true, date: Date = Date(),
                 clouds: Double = 0) {
@@ -43,7 +45,7 @@ public struct GlobeScene: Equatable, Sendable {
         return 40 * pow(6.0 / 40, close)
     }
 
-    public var projection: GlobeProjection { GlobeProjection(camera: camera, size: size) }
+    public var projection: GlobeProjection { GlobeProjection(camera: camera, size: size, lens: lens) }
 
     /// How visible the night sky is: fully while the Earth is small in the
     /// view, gone once it fills it (and while the map flattens).
