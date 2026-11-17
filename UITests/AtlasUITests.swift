@@ -85,8 +85,12 @@ final class AtlasUITests: SchnellbildUITestCase {
         let before = mapTiles
         // Zoomed in: the tiles on screen change (they part, others leave the view)
         open(first, until: "zoomed in", timeout: 10) { self.mapTiles != before }
-        // The arrows move among the tiles
-        app.typeKey(.rightArrow, modifierFlags: [])
+        // The arrows move among the tiles; Bryggen's photos lie within metres of each other, one tile at
+        // every zoom, which → goes through first
+        for _ in 0..<5 where atlasSelected("norway-01-bryggen.jpg") {
+            app.typeKey(.rightArrow, modifierFlags: [])
+            RunLoop.current.run(until: Date().addingTimeInterval(0.4))
+        }
         eventually("another tile selected") { !self.atlasSelected("norway-01-bryggen.jpg") }
     }
 

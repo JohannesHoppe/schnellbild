@@ -641,6 +641,8 @@ final class AtlasTests: XCTestCase {
         XCTAssertEqual(Set(cluster.ids.map(\.lastPathComponent)), same)
         XCTAssertTrue(cluster.staysTogether, "zooming in can't part them")
         XCTAssertFalse(m.atlas.clusters.contains { $0.count == 1 && $0.staysTogether })
+        // (the pane selects its first item when it opens: something else first)
+        m.selectEntry(named: "norway-14-trollstigen.jpg")
         m.atlas.click(cluster)
         XCTAssertEqual(m.selectedEntry?.url, cluster.ids[0])
         m.atlas.click(cluster)
