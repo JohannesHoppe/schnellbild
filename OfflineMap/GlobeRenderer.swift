@@ -18,11 +18,6 @@ public struct GlobeScene: Equatable, Sendable {
     public var clouds: Double
     /// The tilted camera's vertical angle of view (degrees; `GlobeProjection.lens`)
     public var lens = GlobeProjection.fieldOfView
-    /// The ground lit as by the Sun of this moment while the sky, the stars
-    /// and the Sun's disc stay at `date`'s: not physical, for the website's
-    /// banner picture only (Scripts/render_globe_hero.sh --light-date). nil:
-    /// the Sun lights where it stands.
-    public var lightDate: Date?
 
     public init(camera: MapCamera, size: CGSize, dark: Bool = false, lighting: Bool = false, exaggerated: Bool = true, date: Date = Date(),
                 clouds: Double = 0) {
@@ -226,8 +221,7 @@ public final class GlobeRenderer: @unchecked Sendable {
         let t = projection.flatness
         let fr = projection.frame
         func f4(_ v: SIMD3<Double>, _ w: Double = 0) -> SIMD4<Float> { SIMD4(Float(v.x), Float(v.y), Float(v.z), Float(w)) }
-        let sunVector = GlobeGeometry.unitVector(Astronomy.subsolarPoint(at: scene.lightDate ?? scene.date))
-        let drawnSun = scene.lightDate == nil ? SIMD3<Double>(0, 0, 0) : GlobeGeometry.unitVector(Astronomy.subsolarPoint(at: scene.date))
+        let sunVector = GlobeGeometry.unitVector(Astronomy.subsolarPoint(at: scene.date))
         let m = Astronomy.celestialToEarth(at: scene.date)
         var starMatrix = matrix_identity_float4x4
         for c in 0..<3 { for r in 0..<3 { starMatrix[c][r] = Float(m[c][r]) } }
@@ -252,7 +246,7 @@ public final class GlobeRenderer: @unchecked Sendable {
             heightTexel: SIMD4(heights.map { 1 / Float($0.width) } ?? 0, heights.map { 1 / Float($0.height) } ?? 0, scene.dark ? 1 : 0,
                                textures.satelliteBaseTexture == nil ? 0 : 1),
             satDetail: satDetail.map { SIMD4(Float($0.minX), Float($0.minY), Float($0.width), Float($0.height)) } ?? .zero,
-            extra: SIMD4(satDetail == nil ? 0 : 1, Float(drawnSun.x), Float(drawnSun.y), Float(drawnSun.z)),
+            extra: SIMD4(satDetail == nil ? 0 : 1, 0, 0, 0),
             northColor: color(palette.water), southColor: color(palette.glacier),
             starMatrix: starMatrix)
     }

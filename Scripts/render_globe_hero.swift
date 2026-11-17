@@ -8,8 +8,6 @@
 //   --distance=<Earth radii> the camera's distance from the target instead of the zoom
 //   --lens=<degrees>        vertical angle of view (the app's: 40)
 //   --date=<ISO 8601>       the Sun's moment
-//   --light-date=<ISO 8601> NOT PHYSICAL, the banner variant: the ground lit as at
-//                           this moment while the Sun is drawn where it stands at --date
 //   --size=<width>x<height> in points; --scale=<n> pixels per point (2)
 //   --shift=<points>        the frame moved up (positive) or down over the
 //                           picture, as a shift lens: the horizon lower in
@@ -18,7 +16,8 @@
 //   --clouds=<0…1>          the cloud cover shown (the app's: 0.65)
 //   --photos=<folder>       the photos (Scripts/fetch_world_photos.sh)
 //   --out=<file.jpg|.png>   --quality=<0…1> for JPEG (0.85)
-//   --info                  prints where the Sun and each photo land, renders nothing
+//   --info                  prints where the Sun and each photo land and how round the limb is, renders nothing
+//                           (--limb-points: each point of the limb as well)
 import AppKit
 import CoreGraphics
 import Foundation
@@ -56,10 +55,6 @@ var scene = GlobeScene(camera: MapCamera(center: Coordinate(latitude: values[0],
 let lens = Double(argument("lens") ?? "40") ?? 40
 let focal = size.height / 2 / tan(lens / 2 * .pi / 180)
 scene.lens = 2 * atan(full.height / 2 / focal) * 180 / .pi
-if let light = argument("light-date") {
-    guard let d = ISO8601DateFormatter().date(from: light) else { fail("--light-date=<ISO 8601>") }
-    scene.lightDate = d
-}
 // The camera stands focal / radius Earth radii from its target (GlobeProjection.frame)
 if let distance = argument("distance").flatMap(Double.init) {
     scene.camera.zoom = log2(2 * .pi * focal / (WebMercator.tileSize * distance))
@@ -113,7 +108,7 @@ if info {
     let fr = projection.frame
     let altitude = (simd_length(fr.position) - 1) * 6371
     let sub = GlobeGeometry.coordinate(simd_normalize(fr.position))
-    let sun = GlobeGeometry.unitVector(Astronomy.subsolarPoint(at: scene.lightDate ?? date))
+    let sun = GlobeGeometry.unitVector(Astronomy.subsolarPoint(at: date))
     let elevation = asin(simd_dot(GlobeGeometry.unitVector(sub), sun)) * 180 / .pi
     print(String(format: "camera %.0f km above %.2f, %.2f; the Sun %.1f° high there", altitude, sub.latitude, sub.longitude, elevation))
     // How much of the ground in view has the Sun above it
@@ -163,11 +158,6 @@ if info {
         print(String(format: "the Sun at (%.0f, %.0f), the horizon below it at %.0f", s.x, s.y, horizon))
     } else {
         print("the Sun behind the camera")
-    }
-    if let at = argument("radec")?.split(separator: ",").compactMap({ Double($0) }), at.count == 2 {
-        let d = simd_normalize(fr.focal * fr.forward + (at[0] - full.width / 2) * fr.right + (full.height / 2 - (at[1] + top)) * fr.up)
-        let c = Astronomy.celestialToEarth(at: date).transpose * d
-        print(String(format: "RADEC %.3f %.3f", atan2(c.y, c.x) * 180 / .pi, asin(c.z) * 180 / .pi))
     }
     for t in tiles { print(String(format: "tile (%.0f, %.0f): ", t.point.x, t.point.y) + t.photos.map(\.name).joined(separator: ", ")) }
     exit(0)

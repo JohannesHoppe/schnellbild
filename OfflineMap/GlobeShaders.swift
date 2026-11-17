@@ -22,7 +22,7 @@ struct Uniforms {
     float4 sky;          // sky's opacity, atmosphere's opacity, cloud amount, w: city lights present
     float4 heightTexel;  // heightmap texel (1/width, 1/height), z: dark palette, w: satellite present
     float4 satDetail;    // the satellite detail texture's place: u, v of its top left, its width and height (in the world's 0 … 1)
-    float4 extra;        // x: satellite detail present, yzw: where the Sun is drawn when not where it lights (else 0)
+    float4 extra;        // x: satellite detail present
     float4 northColor;   // beyond the Web Mercator square: the Arctic sea
     float4 southColor;   // and Antarctica's ice
     float4x4 starMatrix; // J2000 directions to Earth-fixed ones (the sky)
@@ -294,8 +294,6 @@ fragment float4 atmosphereFragment(ScreenOut in [[stage_in]], constant Uniforms 
     bool hit = disc > 0 && -b - sqrt(max(disc, 0.0)) > 0;
     bool lit = u.sun.w > 0.5;
     float3 L = u.sun.xyz;
-    // Where the Sun is drawn: where it lights, unless a picture asks for another place
-    float3 S = length(u.extra.yzw) > 0.5 ? u.extra.yzw : L;
     float3 blue = float3(0.32, 0.58, 1.0), warm = float3(1.0, 0.48, 0.20);
     float3 col = float3(0);
     float alpha = 0;
@@ -310,7 +308,7 @@ fragment float4 atmosphereFragment(ScreenOut in [[stage_in]], constant Uniforms 
             float sunDot = dot(at, L);
             float day = smoothstep(-0.28, 0.25, sunDot);
             // The warm band of sunrise and sunset shows looking towards the Sun
-            float towards = saturate(dot(d, S));
+            float towards = saturate(dot(d, L));
             float terminator = exp(-sunDot * sunDot / 0.012) * smoothstep(0.0, 0.7, towards);
             float forward = pow(towards, 6.0);
             col = blue * (0.35 + 0.65 * day) * (1 + forward * 1.6) + warm * terminator * 0.9;
@@ -338,7 +336,7 @@ fragment float4 atmosphereFragment(ScreenOut in [[stage_in]], constant Uniforms 
     float3 premultiplied = col * alpha;
     // The Sun (only through the perspective camera: far out it is behind the viewer)
     if (lit && u.camPos.w > 0.001) {
-        float sd = saturate(dot(d, S));
+        float sd = saturate(dot(d, L));
         float seen = hit ? 0.0 : 1.0;
         float sunDisc = smoothstep(0.99995, 0.99998, sd) * seen * 6.0;
         float glare = pow(sd, 6000.0) * 1.5 * seen + pow(sd, 400.0) * 0.30 * mix(0.4, 1.0, seen) + pow(sd, 24.0) * 0.06;
