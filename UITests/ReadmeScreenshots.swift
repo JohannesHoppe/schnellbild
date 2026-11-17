@@ -185,8 +185,11 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
     /// the horizon, and the whole Earth by day with the trip's pins.
     func testGlobeScreenshots() throws {
         let world = try XCTUnwrap(ProcessInfo.processInfo.environment["WORLD_DIR"], "WORLD_DIR missing")
-        for (name, camera, date) in [("globe-hero", "41,16,5.4,72,48", "2026-06-21T02:12:00Z"),
-                                     ("globe-world", "38,20,2.7,0,0", "2026-06-21T10:30:00Z")] {
+        for (name, camera, date) in [("day-1", "38,26,5.0,62,292", "2026-06-21T16:30:00Z"),
+                                     ("day-2", "36,16,4.2,56,12", "2026-06-21T10:30:00Z"),
+                                     ("day-3", "54,4,4.8,60,145", "2026-06-21T18:15:00Z"),
+                                     ("night-1", "41,16,5.4,72,48", "2026-06-21T02:12:00Z"),
+                                     ("night-2", "44,8,4.4,66,5", "2026-06-21T00:40:00Z")] {
             launch(open: world, extra: ["--globe-camera=\(camera)", "--globe-date=\(date)"])
             XCTAssertTrue(tile("Rome-Colosseum.jpg").waitForExistence(timeout: 15))
             app.typeKey("w", modifierFlags: [])
