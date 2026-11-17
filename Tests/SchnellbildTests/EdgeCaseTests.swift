@@ -230,15 +230,17 @@ final class UnreadableFolderTests: XCTestCase {
     /// A grant whose volume isn't there at launch (a NAS asleep) is kept,
     /// not dropped from the preferences.
     @MainActor
-    func testAGrantThatDoesntOpenIsKept() {
+    func testAGrantThatDoesntOpenIsKept() async {
         let defaults = makeTestDefaults()
         defaults.set([Data("a bookmark of a volume not there".utf8)], forKey: FolderAccess.key)
         let access = FolderAccess(sandboxed: true)
         access.defaults = defaults
         access.restore()
+        await access.restored()
         XCTAssertEqual(access.count, 1)
         XCTAssertEqual((defaults.array(forKey: FolderAccess.key) as? [Data])?.count, 1, "still in the preferences")
-        XCTAssertFalse(access.retry(covering: URL(fileURLWithPath: "/Volumes/NAS/Photos")))
+        let covered = await access.retry(covering: URL(fileURLWithPath: "/Volumes/NAS/Photos"))
+        XCTAssertFalse(covered)
     }
 
     /// The last folder isn't there at launch: said, not a bare "No folder

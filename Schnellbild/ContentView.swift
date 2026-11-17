@@ -528,10 +528,15 @@ struct PaneView: View {
         }
         .safeAreaInset(edge: .top, spacing: 0) {
             // One identity per pane, so the field is kept across updates
-            if !model.presenting { searchBar.id(ObjectIdentifier(model)) }
+            if !model.presenting {
+                searchBar.id(ObjectIdentifier(model))
+                    .modifier(CoversTiles(pane: ObjectIdentifier(model), view: "searchBar"))
+            }
         }
         .safeAreaInset(edge: .bottom, spacing: 0) {
-            if model.mode == .grid, !model.presenting, model.folderURL != nil { statusBar }
+            if model.mode == .grid, !model.presenting, model.folderURL != nil {
+                statusBar.modifier(CoversTiles(pane: ObjectIdentifier(model), view: "statusBar"))
+            }
         }
         .sheet(isPresented: $model.showHelp) { ShortcutsHelpView() }
         .sheet(item: $model.renameTarget) { RenameView(entry: $0) }
@@ -892,7 +897,7 @@ struct SortChoices: View {
             }
         }
         Button("Distance from Coordinates or Map Link…") { model.requestDistanceOrigin() }
-            .disabled(model.anySheetOpen || model.slideshow != nil)
+            .disabled(model.anySheetOpen || model.presenting)
         Divider()
         Toggle("Ascending", isOn: Binding(
             get: { model.sortAscending },

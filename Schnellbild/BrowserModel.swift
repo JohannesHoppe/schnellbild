@@ -482,21 +482,70 @@ enum LiveFiles {
             do { try fm.removeItem(at: from) } catch { throw TransferError.originalKept(error.localizedDescription) }
             return
         }
-        // FileManager refuses a case-only rename ("photos" → "Photos") on
-        // case-insensitive volumes, because the target "exists"; go via a
-        // temporary name.
         if from.path != to.path, from.path.lowercased() == to.path.lowercased() {
-            let temp = from.deletingLastPathComponent().appendingPathComponent(".rename-\(UUID().uuidString)")
-            try fm.moveItem(at: from, to: temp)
-            do {
-                try fm.moveItem(at: temp, to: to)
-            } catch {
-                try? fm.moveItem(at: temp, to: from)   // never leave the folder under the hidden name
-                throw error
-            }
+            try renameCase(from, to)
         } else {
             try fm.moveItem(at: from, to: to)
         }
+    }
+
+    /// A case-only rename ("photos" → "Photos"), which FileManager refuses
+    /// on case-insensitive volumes (the target "exists": it is the item
+    /// itself). The system's rename does it in one step: `renamex_np` with
+    /// `RENAME_EXCL` refuses any other item under the new name; refused
+    /// because that name is the item's own (same device and file number),
+    /// `rename` changes the case. Only a volume that does neither gets a
+    /// temporary name on the way, one that carries the new name, so a
+    /// leftover (the app ended between the two steps) is put back by the
+    /// next listing (`restoreIfLeftOver`).
+    static func renameCase(_ from: URL, _ to: URL) throws {
+        if renamex_np(from.path, to.path, UInt32(RENAME_EXCL)) == 0 { return }
+        let refused = errno
+        if refused == EEXIST, ItemIdentity.of(from).map({ $0 == ItemIdentity.of(to) }) == true, rename(from.path, to.path) == 0 { return }
+        let fm = FileManager.default
+        let temp = from.deletingLastPathComponent().appendingPathComponent(renameTemporaryName(for: to.lastPathComponent))
+        PartialCopies.shared.begin(temp)
+        defer { PartialCopies.shared.end(temp) }
+        try fm.moveItem(at: from, to: temp)
+        do {
+            try fm.moveItem(at: temp, to: to)
+        } catch {
+            try? fm.moveItem(at: temp, to: from)   // never leave the item under the hidden name
+            throw error
+        }
+    }
+
+    /// What an item is called between the two steps of a case-only rename:
+    /// hidden, with the name it gets ("<prefix><UUID>-Photos"); a name too
+    /// long for that goes without it.
+    static let renamePrefix = ".schnellbild-rename-"
+
+    static func renameTemporaryName(for name: String) -> String {
+        let plain = renamePrefix + UUID().uuidString
+        let named = plain + "-" + name
+        return named.utf8.count <= 255 ? named : plain
+    }
+
+    /// The name a rename's temporary item was to get; nil for any other name.
+    static func renameLeftoverTarget(_ name: String) -> String? {
+        guard name.hasPrefix(renamePrefix) else { return nil }
+        let rest = name.dropFirst(renamePrefix.count)
+        guard rest.count > 37, UUID(uuidString: String(rest.prefix(36))) != nil,
+              rest.dropFirst(36).first == "-" else { return nil }
+        let target = String(rest.dropFirst(37))
+        return target.isEmpty || target.contains("/") ? nil : target
+    }
+
+    /// A case-only rename's temporary item left behind (the app ended
+    /// between its two steps): given the name it was to get, unless this
+    /// process is renaming it, it changed in the last `settled` seconds (another Mac
+    /// renaming on a share) or the name is taken. Returns where it is now.
+    static func restoreIfLeftOver(_ url: URL, settled: TimeInterval = 60) -> URL? {
+        guard let target = renameLeftoverTarget(url.lastPathComponent), !PartialCopies.shared.isRunning(url),
+              let changed = (try? url.resourceValues(forKeys: [.attributeModificationDateKey]))?.attributeModificationDate,
+              Date().timeIntervalSince(changed) >= settled else { return nil }
+        let restored = url.deletingLastPathComponent().appendingPathComponent(target)
+        return renamex_np(url.path, restored.path, UInt32(RENAME_EXCL)) == 0 ? restored : nil
     }
 
     /// Moved on the same volume, copied to another (as the Finder does).
@@ -836,10 +885,6 @@ struct FolderFacts {
     }
 }
 
-/// One search: what it has found so far and the tree walk adding to it.
-/// The history keeps it, so going back shows the same results, and a walk
-/// still running goes on in the background.
-@MainActor
 /// How a search matches names: a part of the name ignoring case (by the
 /// same rules in every language: Turkish rules would keep "img" from
 /// "IMG_0001.JPG"), a part with the case as typed, or a regular expression
@@ -853,21 +898,21 @@ struct NameMatcher: Equatable, @unchecked Sendable {
     /// (NSRegularExpression is immutable and safe to share across threads)
     private let expression: NSRegularExpression?
 
-    nonisolated init(_ query: String, mode: Mode = .ignoringCase) {
+    init(_ query: String, mode: Mode = .ignoringCase) {
         self.query = query
         self.mode = mode
         expression = mode == .regex ? try? NSRegularExpression(pattern: query) : nil
     }
 
     /// A regular expression that compiles (the other modes always are).
-    nonisolated var isValid: Bool { mode != .regex || expression != nil }
+    var isValid: Bool { mode != .regex || expression != nil }
 
     /// How long an expression may try one name: one that backtracks without
     /// end ("(a|a)*b") counts as no match after this, and so does every
     /// name once `stop` says the search is over.
-    nonisolated static let regexTimeLimit: TimeInterval = 0.05
+    static let regexTimeLimit: TimeInterval = 0.05
 
-    nonisolated func matches(_ name: String, stop: WalkStop? = nil) -> Bool {
+    func matches(_ name: String, stop: WalkStop? = nil) -> Bool {
         switch mode {
         case .ignoringCase: return name.range(of: query, options: .caseInsensitive, locale: nil) != nil
         case .matchingCase: return name.range(of: query, options: .literal) != nil
@@ -886,16 +931,21 @@ struct NameMatcher: Equatable, @unchecked Sendable {
 
     /// Whether matching may take a while (a regular expression): then the
     /// folder's own items are matched off the main thread too.
-    nonisolated var isCostly: Bool { mode == .regex }
+    var isCostly: Bool { mode == .regex }
 
-    nonisolated static func == (a: NameMatcher, b: NameMatcher) -> Bool { a.query == b.query && a.mode == b.mode }
+    static func == (a: NameMatcher, b: NameMatcher) -> Bool { a.query == b.query && a.mode == b.mode }
 }
 
+/// One search: what it has found so far and the tree walk adding to it.
+/// The history keeps it, so going back shows the same results, and a walk
+/// still running goes on in the background.
+@MainActor
 final class SearchRun {
     let matcher: NameMatcher
     var query: String { matcher.query }
     /// The searched folder (canonical): what moves out of it is no result.
-    let root: String?
+    /// It follows a rename or move of itself or a folder above it.
+    private(set) var root: String?
     let clock = ChangeClock()
     private(set) var results: [GridEntry]
     /// Canonical paths in `results`, so nothing shows up twice.
@@ -946,6 +996,7 @@ final class SearchRun {
     /// Several changes in one pass over the results.
     func apply(_ batch: [FileChange]) {
         let lookup = FileChanges(batch)
+        if let root, let moved = lookup.path(root) { self.root = moved }
         results = results.compactMap { entry in
             guard let url = lookup.url(entry.url) else { return nil }
             if url == entry.url { return entry }
@@ -964,6 +1015,47 @@ final class SearchRun {
         task?.cancel()
         if !finished { if incomplete { stoppedEarly = true } else { stoppedByUser = true } }
         finished = true
+    }
+}
+
+/// What a slideshow's walk found and the show hasn't taken yet: handed on
+/// at once when nothing was handed on for `interval`, else gathered and
+/// handed on together that long after the last time (or on `flush`), so a
+/// search of thousands of results or a tree of thousands of folders
+/// reaches the show in a few steps.
+@MainActor
+final class SlideshowArrivals {
+    static let interval: Duration = .milliseconds(100)
+    private let take: ([(part: Int, items: [GridEntry])]) -> Void
+    private var gathered: [(part: Int, items: [GridEntry])] = []
+    private var lastHanded: ContinuousClock.Instant?
+    private var scheduled: Task<Void, Never>?
+
+    init(_ take: @escaping ([(part: Int, items: [GridEntry])]) -> Void) {
+        self.take = take
+    }
+
+    func add(_ items: [GridEntry], part: Int) {
+        gathered.append((part, items))
+        if lastHanded.map({ ContinuousClock.now - $0 >= Self.interval }) ?? true {
+            flush()
+        } else if scheduled == nil {
+            scheduled = Task { [weak self] in
+                try? await Task.sleep(for: Self.interval)
+                guard !Task.isCancelled else { return }
+                self?.flush()
+            }
+        }
+    }
+
+    func flush() {
+        scheduled?.cancel()
+        scheduled = nil
+        guard !gathered.isEmpty else { return }
+        let batches = gathered
+        gathered = []
+        lastHanded = .now
+        take(batches)
     }
 }
 
@@ -1170,9 +1262,12 @@ final class BrowserModel: ObservableObject {
     /// Each step can hold a full result list; older steps are dropped.
     static let historyLimit = 50
     /// From the full view, Back first returns to the grid it was opened from.
-    var canGoBack: Bool { mode == .detail || !backStack.isEmpty }
-    var canGoForward: Bool { !forwardStack.isEmpty }
-    var canGoUp: Bool { folderURL.flatMap(Self.parentFolder(of:)) != nil }
+    /// No history or navigation during a slideshow or the tour (`presenting`):
+    /// the grid behind them isn't what's on screen, and opening another
+    /// folder would end the show.
+    var canGoBack: Bool { !presenting && (mode == .detail || !backStack.isEmpty) }
+    var canGoForward: Bool { !presenting && !forwardStack.isEmpty }
+    var canGoUp: Bool { !presenting && folderURL.flatMap(Self.parentFolder(of:)) != nil }
 
     /// The enclosing folder; nil at the file system root.
     /// Above "/" lies the level of all drives: `/Volumes`, where macOS
@@ -1737,14 +1832,19 @@ final class BrowserModel: ObservableObject {
     }
 
     /// `--ui-testing` keeps UI-test runs out of the user's real preferences;
-    /// `--reset-state` starts such a run from empty preferences.
-    static func makeDefaults(arguments: [String] = ProcessInfo.processInfo.arguments) -> UserDefaults {
+    /// `--reset-state` starts such a run from empty preferences: emptied
+    /// once per process, at the first call (at launch), so what the run
+    /// writes stays when `Shortcuts`, `Bookmarks` or the quit ask again.
+    static func makeDefaults(arguments: [String] = ProcessInfo.processInfo.arguments,
+                             suite: String = "art.haushoppe.schnellbild.uitests") -> UserDefaults {
         guard arguments.contains("--ui-testing") else { return .standard }
-        let suite = "art.haushoppe.schnellbild.uitests"
         let defaults = UserDefaults(suiteName: suite) ?? .standard
-        if arguments.contains("--reset-state") { defaults.removePersistentDomain(forName: suite) }
+        if arguments.contains("--reset-state"), resetSuites.insert(suite).inserted {
+            defaults.removePersistentDomain(forName: suite)
+        }
         return defaults
     }
+    private static var resetSuites: Set<String> = []
 
     // MARK: - Choosing / loading a folder
 
@@ -1812,6 +1912,8 @@ final class BrowserModel: ObservableObject {
         let url = location.folder
         let target = location.selected
         Task {
+            // The folders kept open to the app (App Sandbox) are open first
+            await FolderAccess.shared.restored()
             // The folder's date first: a change during the listing shows as one later (`relist`)
             let stamp = await FolderPreviewCache.stamp(of: url)
             let scanned = await Self.listing(url, password: password)
@@ -1837,7 +1939,8 @@ final class BrowserModel: ObservableObject {
                 self.sniffOtherFiles()
             case .failure(let error as CocoaError):
                 // A grant kept for a volume that wasn't there opens now: read again
-                if FolderAccess.shared.retry(covering: url) {
+                if await FolderAccess.shared.retry(covering: url) {
+                    guard self.loadGeneration == generation else { return }
                     self.load(location, thenDetail: thenDetail, password: password, keeping: kept)
                     return
                 }
@@ -1868,6 +1971,10 @@ final class BrowserModel: ObservableObject {
             self.allEntries = ordered
             self.isLoading = false
             self.loadingLocation = nil
+            if let from = self.confirmRestoreFrom, generation >= from {
+                self.confirmRestoreFrom = nil
+                self.confirmRestoreLater()
+            }
             if self.isFiltering {
                 if let run = location.search, run.matcher == self.matcher, !run.stoppedEarly {
                     // History: the remembered results; a search still
@@ -1941,6 +2048,22 @@ final class BrowserModel: ObservableObject {
     private var restoreUnconfirmedKey: String { settingsPrefix + Self.restoreUnconfirmedKey }
     static let restoreUnconfirmedKey = "restoreUnconfirmed"
 
+    /// The load from which on a listing shown starts `confirmRestoreLater`.
+    private var confirmRestoreFrom: Int?
+    /// How long the app runs with the reopened folder shown before it counts
+    /// as harmless.
+    var restoreConfirmDelay: Duration = .seconds(15)
+
+    /// Still running a while after the reopened folder's listing is shown:
+    /// it didn't take the app down.
+    private func confirmRestoreLater() {
+        let key = restoreUnconfirmedKey, defaults = defaults, delay = restoreConfirmDelay
+        Task {
+            try? await Task.sleep(for: delay)
+            defaults.removeObject(forKey: key)
+        }
+    }
+
     /// The app quits normally: the folders reopened at launch did no harm,
     /// in every pane of every window ("", "rightPane.", "window<n>." …).
     static func confirmRestore(in defaults: UserDefaults) {
@@ -1981,14 +2104,11 @@ final class BrowserModel: ObservableObject {
         }
         defaults.set(path, forKey: restoreUnconfirmedKey)
         let key = restoreUnconfirmedKey, defaults = defaults
-        Task {
-            // Still running after a while: it didn't take the app down
-            try? await Task.sleep(for: .seconds(15))
-            defaults.removeObject(forKey: key)
-        }
         restoringLastFolder = true
         Task {
             defer { restoringLastFolder = false }
+            // (a folder outside the grants kept can't be looked at before they are open)
+            await FolderAccess.shared.restored()
             let exists = await Blocking.run {
                 // A folder inside an archive: the archive file must still be there
                 if let (archive, _) = ArchivePath.splitChecked(URL(fileURLWithPath: path)) {
@@ -1998,11 +2118,14 @@ final class BrowserModel: ObservableObject {
                 return FileManager.default.fileExists(atPath: path, isDirectory: &isDir) && isDir.boolValue
                     && !BrowserModel.isPackage(URL(fileURLWithPath: path))
             }
-            // Unless the user opened something meanwhile
-            guard folderURL == nil else { return }
+            // Unless the user opened something meanwhile (then it isn't reopened)
+            guard folderURL == nil else { defaults.removeObject(forKey: key); return }
             if exists {
                 unavailableRestore = nil
                 open(folder: URL(fileURLWithPath: path))
+                // Confirmed once its listing is shown and the app has run a
+                // while after it (its tiles decoding), not while it is read
+                confirmRestoreFrom = loadGeneration
                 return
             }
             // Nothing was opened: nothing to guard against at the next launch
@@ -2061,6 +2184,11 @@ final class BrowserModel: ObservableObject {
                 // snapshots) aren't drives one browses
                 if drives, item.lastPathComponent.hasPrefix("com.apple.") { continue }
                 if LiveFiles.isPartialCopy(item.lastPathComponent) { LiveFiles.removeIfLeftOver(item); continue }
+                var item = item
+                if LiveFiles.renameLeftoverTarget(item.lastPathComponent) != nil {
+                    guard let restored = LiveFiles.restoreIfLeftOver(item) else { continue }
+                    item = restored
+                }
                 if let entry = entry(for: item, keys: keys) { listing.entries.append(entry); continue }
                 var vals = try? item.resourceValues(forKeys: keys)
                 if vals?.isSymbolicLink == true { vals = try? item.resolvingSymlinksInPath().resourceValues(forKeys: keys) }
@@ -2648,7 +2776,7 @@ final class BrowserModel: ObservableObject {
         captureDatesRead.formUnion(missing)
         let previous = captureDateTask
         captureDateTask = Task { [weak self] in
-            await previous?.value
+            await Self.after(previous)
             let found = await Self.captureDates(of: Array(missing))
             guard let self, !Task.isCancelled else { return }
             // The list view's Date Taken column shows them
@@ -2656,6 +2784,13 @@ final class BrowserModel: ObservableObject {
             self.captureDates.merge(found) { _, new in new }
             if self.sortKey == .captured { self.resort() }
         }
+    }
+
+    /// Waits for the task before, one of a chain: cancelling the newest
+    /// (another folder opened) cancels every one it waits for.
+    nonisolated static func after(_ previous: Task<Void, Never>?) async {
+        guard let previous else { return }
+        await withTaskCancellationHandler { await previous.value } onCancel: { previous.cancel() }
     }
 
     /// The places of the media among `entries` (through `LocationCache`).
@@ -3019,8 +3154,10 @@ final class BrowserModel: ObservableObject {
     /// that folder behind it.
     func openDropped(_ urls: [URL], slideshow: Bool = false) {
         guard let first = urls.first else { return }
-        // Opened to the app by the drop (App Sandbox), for now and after a restart
-        for url in urls { FolderAccess.shared.grant(url) }
+        // Opened to the app by the drop (App Sandbox): held while it is
+        // looked at; a folder or archive it opens is kept (`openDropped`
+        // below), the other items dropped are left alone
+        FolderAccess.shared.hold(first)
         // What it is: looked up off the main thread (dropped from a share
         // that answers slowly)
         let look: @Sendable () -> (exists: Bool, isFolder: Bool, isPackage: Bool) = {
@@ -3046,6 +3183,8 @@ final class BrowserModel: ObservableObject {
         let opensAsFolder = (found.isFolder && !isPackage) || (!found.isFolder && ArchiveName.format(ofFile: first) != nil)
         let folder = opensAsFolder ? first : first.deletingLastPathComponent()
         let file = opensAsFolder ? nil : first
+        // Kept for a restart: what opens as a folder (a launch reopens folders)
+        if opensAsFolder { FolderAccess.shared.grant(first) }
         if slideshow {
             open(folder: folder, selecting: file)
             startSlideshow(over: folder, startingAt: isPackage ? nil : file)
@@ -3114,6 +3253,7 @@ final class BrowserModel: ObservableObject {
     /// place, over the folder or the search results), so from there Back
     /// returns to that grid, with the search and its results as they were.
     func navigateBack() {
+        guard !presenting else { return }
         if mode == .detail { closeDetail(); return }
         guard let target = backStack.popLast() else { return }
         if let current = currentLocation {
@@ -3125,7 +3265,7 @@ final class BrowserModel: ObservableObject {
     }
 
     func navigateForward() {
-        guard let target = forwardStack.popLast() else { return }
+        guard !presenting, let target = forwardStack.popLast() else { return }
         if let current = currentLocation {
             let pushed = Self.pushing(current, onto: backStack)
             backStack = pushed.stack
@@ -3170,7 +3310,10 @@ final class BrowserModel: ObservableObject {
 
     /// Items marked besides the selection (⌘-click, ⇧-click, ⇧-arrows, ⌘A,
     /// Insert), as canonical paths. Empty: the selection alone counts.
-    @Published private(set) var marked: Set<String> = []
+    @Published private(set) var marked: Set<String> = [] {
+        didSet { markRevision += 1 }
+    }
+    private var markRevision = 0
     /// Where a range (⇧) starts, by its path: re-sorts, search batches and
     /// removals move items around. A plain move of the cursor (arrows,
     /// Home, End) lets the next range start where the cursor is.
@@ -3179,11 +3322,17 @@ final class BrowserModel: ObservableObject {
     func isMarked(_ entry: GridEntry) -> Bool { marked.contains(Self.canonicalPath(entry.url)) }
 
     /// What file actions work on: the marked items in grid order, else the
-    /// selected one. Never "..".
+    /// selected one. Never "..". The marked ones are found once per change
+    /// of the list or the marks: the menus ask on every change of the model
+    /// (a search streaming results), and finding them looks at every entry.
     var actionEntries: [GridEntry] {
         if marked.isEmpty { return selectedEntry.map { $0.kind == .parent ? [] : [$0] } ?? [] }
-        return entries.filter { $0.kind != .parent && marked.contains(Self.canonicalPath($0.url)) }
+        if let cached = markedEntries, cached.list == listRevision, cached.marks == markRevision { return cached.entries }
+        let found = entries.filter { $0.kind != .parent && marked.contains(Self.canonicalPath($0.url)) }
+        markedEntries = (listRevision, markRevision, found)
+        return found
     }
+    private var markedEntries: (list: Int, marks: Int, entries: [GridEntry])?
 
     func clearMarks() {
         if !marked.isEmpty { marked = [] }
@@ -3477,7 +3626,7 @@ final class BrowserModel: ObservableObject {
     }
 
     func goToParentFolder() {
-        guard let current = folderURL, let parent = Self.parentFolder(of: current) else { return }
+        guard !presenting, let current = folderURL, let parent = Self.parentFolder(of: current) else { return }
         open(folder: parent, selecting: current)
     }
 
@@ -4726,9 +4875,11 @@ final class BrowserModel: ObservableObject {
     /// Files or folders dropped onto a folder tile (or ".."), or sent to the
     /// other pane (F5 / F6), go into `folder`. A name taken there asks: keep
     /// both (the new one numbered) or skip. Not into archives, not into
-    /// themselves.
-    func move(_ sources: [URL], into folder: URL, how: Transfer = .asFinder) {
-        guard ArchivePath.split(folder) == nil else { NSSound.beep(); return }
+    /// themselves. Returns whether anything goes (nothing inside an
+    /// archive, of a drive, the folder itself or what is in it already).
+    @discardableResult
+    func move(_ sources: [URL], into folder: URL, how: Transfer = .asFinder) -> Bool {
+        guard ArchivePath.split(folder) == nil else { NSSound.beep(); return false }
         let target = Self.canonicalPath(folder)
         let shown = folderPath
         // By their paths alone (no file system): what can go at all
@@ -4742,7 +4893,7 @@ final class BrowserModel: ObservableObject {
                 && (shown.map { $0 != path && !$0.hasPrefix(path + "/") } ?? true)
                 && Self.canonicalPath(source.deletingLastPathComponent()) != target
         }
-        guard !candidates.isEmpty else { return }
+        guard !candidates.isEmpty else { return false }
         transfersRunning += 1
         // What each item is and what is taken there: looked up off the main
         // thread (a share answers slowly, item by item)
@@ -4793,6 +4944,7 @@ final class BrowserModel: ObservableObject {
                 finishMove(steps, outcomes, into: folder)
             }
         }
+        return true
     }
 
     /// What a source of a move is, and what is taken in the target folder.
@@ -5023,8 +5175,8 @@ final class BrowserModel: ObservableObject {
             let final = ArchiveName.finalName(of: old.lastPathComponent)
             throw RenameError.changesArchiveFormat((final as NSString).pathExtension)
         }
-        if entry.kind != .folder, Self.mediaKind(of: new) != entry.kind {
-            throw RenameError.changesKind(old.pathExtension, video: entry.kind == .video)
+        if entry.kind != .folder, !Self.keepsKind(entry.kind, renaming: old, to: new) {
+            throw RenameError.changesKind(Self.shownExtension(of: old), video: entry.kind == .video)
         }
         let identity = try await renameOnDisk(old, new, name: name)
         undoHistory.record(UndoStep(kind: .rename, parts: [.moved(old, to: new, identity: identity)]))
@@ -5040,6 +5192,19 @@ final class BrowserModel: ObservableObject {
         return new
     }
 
+    /// Whether a picture or video keeps its kind under a new name, decided
+    /// by the names alone (the new path doesn't exist yet, and nothing is
+    /// read on the main thread): an extension of a picture or video says
+    /// so; the same ending as before (".ts" told by its content, a file
+    /// recognised by its content with no or an unknown extension) keeps
+    /// the kind the item has.
+    nonisolated static func keepsKind(_ kind: GridEntry.Kind, renaming old: URL, to new: URL) -> Bool {
+        let ext = DownloadName.finalExtension(of: new)
+        if imageExtensions.contains(ext) { return kind == .image }
+        if videoExtensions.contains(ext) { return kind == .video }
+        return ext == DownloadName.finalExtension(of: old)
+    }
+
     /// Renames on disk: off the main thread for the live actions (a share
     /// answers slowly), inline for a test's spy. Refuses a name taken by
     /// another item.
@@ -5052,6 +5217,9 @@ final class BrowserModel: ObservableObject {
             do { try fileActions.move(old, new) } catch { throw RenameError.failed(error.localizedDescription) }
             return ItemIdentity.of(new)
         }
+        // Counted, so quitting waits for it (a case-only rename can take two steps)
+        Self.transfersUnderWay += 1
+        defer { Self.transfersUnderWay -= 1 }
         return try await Blocking.run {
             try check(LiveFiles.conflicts(new, old))
             do { try LiveFiles.move(old, new) } catch { throw RenameError.failed(error.localizedDescription) }
@@ -5371,18 +5539,23 @@ final class BrowserModel: ObservableObject {
             }
             let first = parts.firstIndex(where: holdsStart) ?? 0
             self?.setSlideshowParts(parts.count, id: id)
+            // What the walk finds goes into the show in a few large steps
+            // (each one a pass over the show's items), not one per result
+            // or folder
+            let arrivals = SlideshowArrivals { [weak self] batches in self?.addToSlideshow(batches, id: id) }
             for (step, number) in ([first] + parts.indices.filter({ $0 != first })).enumerated() {
-                if step > 0, let pause = partPause { try? await Task.sleep(for: pause) }
+                if step > 0, let pause = partPause { arrivals.flush(); try? await Task.sleep(for: pause) }
                 switch parts[number] {
                 case .media(let items):
-                    if !items.isEmpty { self?.addToSlideshow(items, id: id, part: number) }
+                    if !items.isEmpty { arrivals.add(items, part: number) }
                 case .folder(let url):
                     await Self.walkForSlideshow(url, key: key, ascending: ascending, origin: origin) { batch in
-                        self?.addToSlideshow(batch, id: id, part: number)
+                        arrivals.add(batch, part: number)
                     }
                 }
                 if Task.isCancelled { return }
             }
+            arrivals.flush()
             if !Task.isCancelled { self?.slideshowWalkFinished(id: id) }
         }
     }
@@ -5413,31 +5586,57 @@ final class BrowserModel: ObservableObject {
         }
     }
 
-    private func addToSlideshow(_ batch: [GridEntry], id: UUID, part: Int = 0) {
+    /// Adds what the walk found, by part, in one pass over the show's
+    /// items: each part's new items go after the items it has, so the
+    /// parts stay in their order however the walk visits them.
+    private func addToSlideshow(_ batches: [(part: Int, items: [GridEntry])], id: UUID) {
         guard var show = slideshow, show.id == id else { return }   // from a cancelled walk
-        let new = batch.filter { show.seen.insert(Self.canonicalPath($0.url)).inserted }
-        guard !new.isEmpty else { return }
-        let wasEmpty = show.items.isEmpty
-        // After the items of the parts before this one
-        let part = min(part, show.partCounts.count - 1)
-        let offset = show.partCounts[...part].reduce(0, +)
-        let atEnd = offset == show.items.count
-        show.items.insert(contentsOf: new, at: offset)
-        show.partCounts[part] += new.count
+        let lastPart = show.partCounts.count - 1
+        var arrived: [Int: [GridEntry]] = [:]
+        for (part, batch) in batches {
+            let new = batch.filter { show.seen.insert(Self.canonicalPath($0.url)).inserted }
+            if !new.isEmpty { arrived[min(part, lastPart), default: []] += new }
+        }
+        guard !arrived.isEmpty else { return }
+        let old = show.items
+        let wasEmpty = old.isEmpty
+        var items: [GridEntry] = []
+        items.reserveCapacity(old.count + arrived.values.reduce(0) { $0 + $1.count })
+        var shown: Int?          // the item on screen, where it is now
+        var startArrived: Int?   // the item to start at
+        var insideArrived: Int?  // the first item of the folder to start in
+        var firstAtEnd: Int?     // the first item after all there were
+        var cursor = 0
+        for part in show.partCounts.indices {
+            // (the last part takes any items beyond the counts)
+            let end = part == lastPart ? old.count : min(cursor + show.partCounts[part], old.count)
+            if (cursor..<end).contains(show.index) { shown = items.count + show.index - cursor }
+            items += old[cursor..<end]
+            cursor = end
+            guard let new = arrived[part] else { continue }
+            let offset = items.count
+            if startArrived == nil, let startAt = show.startAt,
+               let i = new.firstIndex(where: { Self.samePath($0.url, startAt) }) { startArrived = offset + i }
+            if insideArrived == nil, let inside = show.startInside,
+               let i = new.firstIndex(where: { Self.canonicalPath($0.url).hasPrefix(inside) }) { insideArrived = offset + i }
+            if firstAtEnd == nil, cursor == old.count { firstAtEnd = offset }
+            items += new
+            show.partCounts[part] += new.count
+        }
+        show.items = items
         // The item on screen keeps its place in the show
-        if show.index >= offset, !wasEmpty { show.index += new.count }
+        if !wasEmpty, let shown { show.index = shown }
         var moved = wasEmpty && !show.waitingForStart
-        if let startAt = show.startAt, let i = new.firstIndex(where: { Self.samePath($0.url, startAt) }) {
-            show.index = offset + i   // the item to start at has arrived
+        if let i = startArrived {
+            show.index = i   // the item to start at has arrived
             show.startAt = nil
             moved = true
-        } else if let inside = show.startInside,
-                  let i = new.firstIndex(where: { Self.canonicalPath($0.url).hasPrefix(inside) }) {
-            show.index = offset + i   // the first item of the folder to start in
+        } else if let i = insideArrived {
+            show.index = i   // the first item of the folder to start in
             show.startInside = nil
             moved = true
-        } else if show.waitingForMore, atEnd {
-            show.index = offset
+        } else if show.waitingForMore, let i = firstAtEnd {
+            show.index = i
             moved = true
         }
         if moved { show.waitingForMore = false }
@@ -5718,7 +5917,8 @@ final class BrowserModel: ObservableObject {
             if command { slideshowStep(direction) } else if shift { fineSkim(direction) } else { skim(direction) }
             return true
         case .up, .down:
-            return verticalKey(up: key == .up)
+            // ⌘↑ / ⌘↓ (the enclosing folder, opening) are no navigation here
+            return command || verticalKey(up: key == .up)
         case .char(let raw):
             let c = Character(raw.lowercased())   // also with Shift or Caps Lock
             switch c {

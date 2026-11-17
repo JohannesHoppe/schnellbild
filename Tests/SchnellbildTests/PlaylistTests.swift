@@ -1,4 +1,5 @@
 import XCTest
+import Combine
 @testable import Schnellbild
 
 /// The slideshow's playlist (P): reordering, taking out, jumping, the walk
@@ -104,6 +105,31 @@ final class PlaylistTests: XCTestCase {
         await waitUntil { m.slideshow?.loading == false }
         XCTAssertEqual(names(m), ["c.jpg", "a.jpg", "d.jpg", "e.jpg"], "the rest comes after, b stays out")
         XCTAssertEqual(m.shownMediaEntry?.name, "a.jpg", "the item shown kept its place")
+    }
+
+    /// A slideshow over thousands of search results: they reach the show in
+    /// a few steps (each a pass over its items), in the results' order,
+    /// starting at the one chosen.
+    func testThousandsOfResultsReachTheShowInAFewSteps() async throws {
+        let tree = try TempTree(self)
+        let count = 3000
+        for n in 0..<count { try tree.file(String(format: "IMG_%04d.jpg", n)) }
+        try tree.file("trip/IMG_beach.jpg")
+        let m = makeModel()
+        m.slideshowInterval = .seconds(60)
+        await openAndWait(m, tree.root)
+        await searchAndWait(m, "IMG")
+        XCTAssertEqual(m.entries.count, count + 1)
+        let results = m.entries.map(\.name)
+        let start = m.entries[count / 2].url
+        var steps = 0
+        let watch = m.$slideshow.sink { _ in steps += 1 }
+        defer { watch.cancel() }
+        m.startSlideshow(startingAt: start)
+        await waitUntil({ m.slideshow?.loading == false }, timeout: 20)
+        XCTAssertEqual(names(m), results)
+        XCTAssertEqual(m.shownMediaEntry?.url, start)
+        XCTAssertLessThan(steps, 30, "not one step per result")
     }
 
     /// A search over a folder and a file in it: the file taken out isn't

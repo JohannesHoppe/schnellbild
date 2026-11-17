@@ -42,12 +42,15 @@ struct EntryListView: View {
                                 header
                                 Divider()
                             }
+                            // A ⌘- or ⇧-click on it is the header's, not the row under it
+                            .modifier(CoversTiles(pane: ObjectIdentifier(model), view: "listHeader"))
                         }
                     }
                 }
                 // Undo / Redo also below the rows (a row's own menu has them on top)
                 .contentShape(Rectangle())
                 .contextMenu { UndoMenuItems(history: model.undoHistory, model: model) }
+                .modifier(ClickableArea(pane: ObjectIdentifier(model), view: "list"))
                 .onChange(of: model.selection, initial: true) { oldValue, newValue in
                     guard let newValue, model.entries.indices.contains(newValue) else { return }
                     if model.clickedSelection == newValue { model.clickedSelection = nil; return }

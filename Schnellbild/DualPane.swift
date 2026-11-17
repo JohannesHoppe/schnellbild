@@ -159,6 +159,13 @@ final class WindowModel: ObservableObject {
 
     /// A sheet is open in either pane: it keeps the keys and the menus.
     var anySheetOpen: Bool { panes.contains { $0.anySheetOpen } }
+
+    /// The help (its menu item), in the active pane: not while a sheet of
+    /// either pane is up, since a window shows one sheet at a time.
+    func openHelp() {
+        guard !anySheetOpen else { return }
+        active.openHelp()
+    }
     /// Both panes, the right one also while hidden.
     private var allPanes: [BrowserModel] { [left, right].compactMap { $0 } }
     /// Every pane of every open window.
@@ -268,7 +275,8 @@ final class WindowModel: ObservableObject {
         // In the full view: what it shows (the marks belong to the grid)
         let sources = active.mode == .detail ? (active.selectedMediaEntry.map { [$0.url] } ?? []) : active.actionEntries.map(\.url)
         guard !sources.isEmpty else { NSSound.beep(); return true }
-        active.move(sources, into: folder, how: how)
+        // Nothing that can go (items inside an archive are only read): said as for no selection
+        if !active.move(sources, into: folder, how: how) { NSSound.beep() }
         return true
     }
 
@@ -397,6 +405,9 @@ struct WindowAttach: NSViewRepresentable {
             super.viewDidMoveToWindow()
             guard let window, model.nsWindow !== window else { return }
             model.nsWindow = window
+            // The UI tests tell windows apart by their model's number: the
+            // order XCUITest lists windows in isn't kept
+            if VideoDetailView.uiTesting { window.setAccessibilityIdentifier("window.\(model.number)") }
             if let closing { NotificationCenter.default.removeObserver(closing) }
             closing = NotificationCenter.default.addObserver(forName: NSWindow.willCloseNotification, object: window, queue: .main) { [model] _ in
                 MainActor.assumeIsolated { model.windowClosed() }

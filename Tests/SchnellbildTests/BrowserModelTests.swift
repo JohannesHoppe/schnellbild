@@ -726,6 +726,25 @@ final class OpenFolderTests: XCTestCase {
         await waitUntil { again.isAt(tree.root) }
     }
 
+    /// The reopened folder counts as harmless only a while after its
+    /// listing is shown, however long the listing takes.
+    func testTheRestoredFolderIsConfirmedOnlyAfterItIsShown() async throws {
+        let tree = try TempTree(self)
+        try tree.file("a.jpg")
+        let defaults = makeTestDefaults()
+        await openAndWait(BrowserModel(defaults: defaults), tree.root)
+        let m = BrowserModel(defaults: defaults)
+        m.restoreConfirmDelay = .zero
+        m.restoreLastFolder()
+        var confirmedEarly = false
+        await waitUntil {
+            if defaults.string(forKey: BrowserModel.restoreUnconfirmedKey) == nil, !m.isAt(tree.root) { confirmedEarly = true }
+            return m.isAt(tree.root)
+        }
+        XCTAssertFalse(confirmedEarly, "confirmed before the folder was shown")
+        await waitUntil { defaults.string(forKey: BrowserModel.restoreUnconfirmedKey) == nil }
+    }
+
     /// A normal quit confirms the folders of every window's panes, not only the first window's.
     func testANormalQuitConfirmsTheFoldersOfEveryWindow() {
         let defaults = makeTestDefaults()
@@ -749,11 +768,17 @@ final class OpenFolderTests: XCTestCase {
 
     func testUITestingUsesSeparateResettableDefaults() {
         XCTAssertTrue(BrowserModel.makeDefaults(arguments: ["app"]) === UserDefaults.standard)
-        let suite = BrowserModel.makeDefaults(arguments: ["app", "--ui-testing"])
+        let name = "sb.tests.reset.\(UUID().uuidString)"
+        defer { UserDefaults.standard.removePersistentDomain(forName: name) }
+        let suite = BrowserModel.makeDefaults(arguments: ["app", "--ui-testing"], suite: name)
         XCTAssertFalse(suite === UserDefaults.standard)
         suite.set("x", forKey: BrowserModel.lastFolderKey)
-        let reset = BrowserModel.makeDefaults(arguments: ["app", "--ui-testing", "--reset-state"])
+        let reset = BrowserModel.makeDefaults(arguments: ["app", "--ui-testing", "--reset-state"], suite: name)
         XCTAssertNil(reset.string(forKey: BrowserModel.lastFolderKey))
+        // Written during the run: kept when asked again (Shortcuts, Bookmarks, the quit)
+        reset.set("y", forKey: BrowserModel.lastFolderKey)
+        let again = BrowserModel.makeDefaults(arguments: ["app", "--ui-testing", "--reset-state"], suite: name)
+        XCTAssertEqual(again.string(forKey: BrowserModel.lastFolderKey), "y", "emptied once per launch")
     }
 
     func testEmptyFolderHasOnlyParent() async throws {
@@ -1596,6 +1621,25 @@ final class FileActionTests: XCTestCase {
         XCTAssertTrue(m.names.contains("Iceland 2025"))
     }
 
+    /// The folder of the search on screen renamed from its title: the search
+    /// keeps its results, and so does its history step.
+    func testRenamingTheFolderOfASearchKeepsItsResults() async throws {
+        let tree = try TempTree(self)
+        try tree.file("Trip/IMG_1.jpg")
+        try tree.file("Trip/day 2/IMG_2.jpg")
+        let m = makeModel(FileActionsSpy())
+        await openAndWait(m, tree.root.appendingPathComponent("Trip"))
+        await searchAndWait(m, "IMG")
+        XCTAssertEqual(m.names, ["IMG_1.jpg", "IMG_2.jpg"])
+        await m.renameCurrentFolder(to: "Trip 2024")
+        let renamed = tree.root.appendingPathComponent("Trip 2024")
+        XCTAssertEqual(m.names, ["IMG_1.jpg", "IMG_2.jpg"])
+        await openAndWait(m, renamed.appendingPathComponent("day 2"))
+        m.navigateBack()
+        await waitUntil { m.isAt(renamed) && m.searchText == "IMG" && !m.entries.isEmpty }
+        XCTAssertEqual(m.names, ["IMG_1.jpg", "IMG_2.jpg"], "Back shows the results under the new name")
+    }
+
     /// Dropped onto a folder tile: into it (and out of this listing); onto
     /// ".." a level up; not into itself, not into an archive.
     func testMovingIntoAFolder() async throws {
@@ -1889,6 +1933,32 @@ final class PlaybackTests: XCTestCase {
         XCTAssertNil(m.renameTarget)
         m.handleKey(.char("s"), command: false)
         XCTAssertNil(m.slideshow, "s ends it")
+    }
+
+    /// ⌘↑ and the history's menu items don't move the grid behind a
+    /// slideshow (which would end it): no navigation while presenting.
+    func testNoNavigationDuringASlideshow() async throws {
+        let tree = try TempTree(self)
+        for n in ["trip/a.jpg", "trip/b.jpg", "other/c.jpg"] { try tree.file(n) }
+        let m = makeModel()
+        await openAndWait(m, tree.root.appendingPathComponent("other"))
+        let trip = tree.root.appendingPathComponent("trip")
+        await openAndWait(m, trip)
+        XCTAssertTrue(m.canGoBack)
+        m.slideshowInterval = .seconds(60)
+        m.startSlideshow()
+        await waitUntil { m.slideshow?.loading == false }
+        XCTAssertTrue(m.handleKey(.up, command: true), "⌘↑ taken by the slideshow, not handed to the menu")
+        XCTAssertTrue(m.handleKey(.down, command: true))
+        XCTAssertFalse(m.canGoUp)
+        XCTAssertFalse(m.canGoBack)
+        m.goToParentFolder()
+        m.navigateBack()
+        XCTAssertNotNil(m.slideshow, "the show goes on")
+        XCTAssertTrue(m.isAt(trip), "the grid behind it stays")
+        m.stopSlideshow()
+        XCTAssertTrue(m.canGoUp)
+        XCTAssertTrue(m.canGoBack)
     }
 
     func testSlideshowStartsAtTheItemShownAndOverSearchResultsOrOneFolder() async throws {
@@ -2890,7 +2960,7 @@ final class ReviewFixTests: XCTestCase {
     /// App Sandbox: a folder is readable when it is a granted one or lies
     /// inside one; outside the sandbox every folder is.
     @MainActor
-    func testFolderAccessCoversWhatIsInsideAGrant() {
+    func testFolderAccessCoversWhatIsInsideAGrant() async {
         XCTAssertTrue(FolderAccess.path("/Users/a/Photos", isIn: "/Users/a/Photos"))
         XCTAssertTrue(FolderAccess.path("/Users/a/Photos/2025/x.jpg", isIn: "/Users/a/Photos"))
         XCTAssertTrue(FolderAccess.path("/Users/a/Photos/Trip.zip/Day 1", isIn: "/Users/a/Photos"), "inside an archive")
@@ -2902,6 +2972,7 @@ final class ReviewFixTests: XCTestCase {
         let sandboxed = FolderAccess(sandboxed: true)
         sandboxed.defaults = UserDefaults(suiteName: "access-\(UUID().uuidString)")!
         sandboxed.restore()
+        await sandboxed.restored()
         XCTAssertFalse(sandboxed.covers(URL(fileURLWithPath: "/anywhere")), "nothing granted yet")
         XCTAssertEqual(sandboxed.count, 0)
     }
@@ -2917,6 +2988,67 @@ final class ReviewFixTests: XCTestCase {
         XCTAssertEqual(AppAppearance.light.appearanceName, .aqua)
         defaults.set("purple", forKey: AppAppearance.key)
         XCTAssertEqual(AppAppearance.stored(in: defaults), .system, "an unknown value")
+    }
+
+    /// The marked items are found once per change of the list or the marks,
+    /// not on each of the menus' many questions.
+    func testTheMarkedItemsAreFoundOncePerChange() async throws {
+        let tree = try TempTree(self)
+        for n in 0..<4000 { try tree.file(String(format: "IMG_%04d.jpg", n)) }
+        let m = makeModel(FileActionsSpy())
+        await openAndWait(m, tree.root)
+        for i in [1, 2000, 3999] { m.click(m.entries[i], command: true, shift: false) }
+        let first = Date()
+        XCTAssertEqual(m.actionEntries.count, 3)
+        let once = Date().timeIntervalSince(first)
+        let start = Date()
+        for _ in 0..<200 { XCTAssertTrue(m.canTrash) }
+        XCTAssertLessThan(Date().timeIntervalSince(start), max(once * 20, 0.05), "asked 200 times: not found 200 times")
+        m.click(m.entries[1], command: true, shift: false)   // unmarks one
+        XCTAssertEqual(m.actionEntries.count, 2, "a change of the marks is seen")
+    }
+
+    /// Capture dates are read by a chain of tasks, each waiting for the one
+    /// before: cancelling the newest (another folder) stops them all.
+    func testCancellingAChainOfReadsStopsEveryRead() async {
+        let first = Task<Void, Never> { try? await Task.sleep(for: .seconds(30)) }
+        let second = Task<Void, Never> { await BrowserModel.after(first) }
+        let third = Task<Void, Never> { await BrowserModel.after(second) }
+        third.cancel()
+        let start = Date()
+        await first.value
+        XCTAssertTrue(first.isCancelled)
+        XCTAssertTrue(second.isCancelled)
+        XCTAssertLessThan(Date().timeIntervalSince(start), 10, "the first read stopped, not waited out")
+    }
+
+    /// A ".ts" video and a picture known only by its content are renamed
+    /// like any other: the kind is decided by the names, not by reading the
+    /// new path, which doesn't exist yet.
+    func testRenamingKeepsAKindToldByContent() async throws {
+        let tree = try TempTree(self)
+        let clip = try XCTUnwrap(Bundle.module.url(forResource: "clip", withExtension: "ts", subdirectory: "Videos"))
+        let recording = tree.root.appendingPathComponent("Recording.ts")
+        try FileManager.default.copyItem(at: clip, to: recording)
+        let m = makeModel()
+        await openAndWait(m, tree.root)
+        let entry = try XCTUnwrap(m.entries.first { $0.name == "Recording.ts" })
+        XCTAssertEqual(entry.kind, .video)
+        let renamed = try await m.rename(entry, to: "Holiday.ts")
+        XCTAssertTrue(FileManager.default.fileExists(atPath: renamed.path))
+        XCTAssertEqual(m.entries.first { $0.name == "Holiday.ts" }?.kind, .video)
+
+        func keeps(_ kind: GridEntry.Kind, _ old: String, _ new: String) -> Bool {
+            BrowserModel.keepsKind(kind, renaming: URL(fileURLWithPath: "/x/" + old), to: URL(fileURLWithPath: "/x/" + new))
+        }
+        XCTAssertTrue(keeps(.image, "IMG_0001", "Beach"), "no extension before or after")
+        XCTAssertTrue(keeps(.video, "clip.xyz", "film.XYZ"), "the same unknown ending")
+        XCTAssertTrue(keeps(.image, "IMG_0001", "Beach.jpg"))
+        XCTAssertTrue(keeps(.video, "a.mp4.part", "b.mp4.part"), "a download's final name")
+        XCTAssertFalse(keeps(.image, "IMG_0001", "Beach.txt"))
+        XCTAssertFalse(keeps(.image, "a.jpg", "a.mp4"), "another kind's extension")
+        XCTAssertFalse(keeps(.video, "a.mkv", "a.ts"), "only a .ts that was one stays a video")
+        XCTAssertFalse(keeps(.video, "a.ts", "a.txt"))
     }
 
     /// ".ts" by its content: a transport stream is a video, TypeScript is
@@ -3459,6 +3591,44 @@ final class UndoTests: XCTestCase {
 /// move that fails half way keeps what it did.
 @MainActor
 final class SafeTransferTests: XCTestCase {
+    /// A case-only rename is one step of the system's rename: nothing under
+    /// a temporary name; quitting waits for a rename under way.
+    func testACaseOnlyRenameLeavesNothingBehind() async throws {
+        let tree = try TempTree(self)
+        try tree.file("photos/a.jpg")
+        let m = makeModel()
+        await openAndWait(m, tree.root)
+        let entry = try XCTUnwrap(m.entries.first { $0.name == "photos" })
+        var waitedFor = false
+        let saved = BrowserModel.onTransfersDone
+        BrowserModel.onTransfersDone = { waitedFor = true }
+        defer { BrowserModel.onTransfersDone = saved }
+        try await m.rename(entry, to: "Photos")
+        XCTAssertTrue(waitedFor, "counted among the transfers quitting waits for")
+        XCTAssertEqual(try FileManager.default.contentsOfDirectory(atPath: tree.root.path), ["Photos"])
+        XCTAssertEqual(try FileManager.default.contentsOfDirectory(atPath: tree.root.appendingPathComponent("Photos").path), ["a.jpg"])
+    }
+
+    /// An item left under a case-only rename's temporary name gets the name
+    /// it carries, once it has rested; a listing does that.
+    func testARenameLeftoverIsPutBack() async throws {
+        let tree = try TempTree(self)
+        let name = LiveFiles.renameTemporaryName(for: "Photos")
+        XCTAssertEqual(LiveFiles.renameLeftoverTarget(name), "Photos")
+        XCTAssertNil(LiveFiles.renameLeftoverTarget(LiveFiles.renamePrefix + "not-a-uuid-Photos"))
+        XCTAssertNil(LiveFiles.renameLeftoverTarget(".rename-x"))
+        XCTAssertEqual(LiveFiles.renameTemporaryName(for: String(repeating: "x", count: 240)).count, LiveFiles.renamePrefix.count + 36,
+                       "too long to carry the name")
+        let leftover = try tree.folder(name)
+        try tree.file(name + "/a.jpg")
+        XCTAssertNil(LiveFiles.restoreIfLeftOver(leftover), "just changed: another Mac may be renaming it")
+        let restored = try XCTUnwrap(LiveFiles.restoreIfLeftOver(leftover, settled: 0))
+        XCTAssertEqual(restored.lastPathComponent, "Photos")
+        XCTAssertTrue(FileManager.default.fileExists(atPath: restored.appendingPathComponent("a.jpg").path))
+        let again = try tree.folder(LiveFiles.renameTemporaryName(for: "Photos"))
+        XCTAssertNil(LiveFiles.restoreIfLeftOver(again, settled: 0), "never over a name taken")
+    }
+
     func testACopyIsWrittenUnderATemporaryNameAndLeftoversAreSwept() async throws {
         let tree = try TempTree(self)
         let source = try tree.file("a.jpg", bytes: 100)

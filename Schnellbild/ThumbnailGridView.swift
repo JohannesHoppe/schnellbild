@@ -40,6 +40,7 @@ struct ThumbnailGridView: View {
                 // Undo / Redo also where there is no tile (a tile's own menu has them on top)
                 .contentShape(Rectangle())
                 .contextMenu { UndoMenuItems(history: model.undoHistory, model: model) }
+                .modifier(ClickableArea(pane: ObjectIdentifier(model), view: "grid"))
                 // For the UI tests only (VoiceOver would read it): the columns the keys
                 // step by, and as laid out
                 .accessibilityIdentifier("grid")
@@ -631,7 +632,7 @@ struct EntryInteractions: ViewModifier {
             }
             .onGeometryChange(for: CGRect.self) { $0.frame(in: .global) } action: { frame in
                 let entry = entry, model = model
-                ModifierClicks.place(key, frame: frame, in: window) { flags in
+                ModifierClicks.place(key, frame: frame, pane: ObjectIdentifier(model), in: window) { flags in
                     guard model.mode == .grid, model.slideshow == nil else { return }
                     model.searchFocused = false
                     model.click(entry, command: flags.contains(.command), shift: flags.contains(.shift))
@@ -767,6 +768,41 @@ private struct TileDropDelegate: DropDelegate {
     }
 }
 
+/// Tells `ModifierClicks` where a pane's grid or list can be seen: its
+/// scroll view's frame less the bars laid over it (its safe area insets).
+struct ClickableArea: ViewModifier {
+    let pane: ObjectIdentifier
+    let view: String
+
+    func body(content: Content) -> some View {
+        content
+            .onGeometryChange(for: CGRect.self) { proxy in
+                let frame = proxy.frame(in: .global), insets = proxy.safeAreaInsets
+                return CGRect(x: frame.minX + insets.leading, y: frame.minY + insets.top,
+                              width: max(frame.width - insets.leading - insets.trailing, 0),
+                              height: max(frame.height - insets.top - insets.bottom, 0))
+            } action: { rect in
+                ModifierClicks.show(pane, view: view, rect: rect)
+            }
+            .onDisappear { ModifierClicks.show(pane, view: view, rect: nil) }
+    }
+}
+
+/// Tells `ModifierClicks` where a bar or header lies over a pane's tiles:
+/// a ⌘- or ⇧-click there is the bar's.
+struct CoversTiles: ViewModifier {
+    let pane: ObjectIdentifier
+    let view: String
+
+    func body(content: Content) -> some View {
+        content
+            .onGeometryChange(for: CGRect.self) { $0.frame(in: .global) } action: { rect in
+                ModifierClicks.cover(pane, view: view, rect: rect)
+            }
+            .onDisappear { ModifierClicks.cover(pane, view: view, rect: nil) }
+    }
+}
+
 /// A click and a double click on a view: one tap gesture for every click,
 /// told apart by the click count the event carries (`NSEvent.clickCount`,
 /// counted where the click is made, by the system's double-click interval
@@ -794,6 +830,12 @@ struct Clicks: ViewModifier {
 /// while ⌘ is held, so a monitor acts on the tile the pointer is over (tiles
 /// report it by hovering). It acts when the button comes up near where it
 /// went down: a ⌘- or ⇧-drag of marked tiles still drags.
+///
+/// Only where the grid or list can be seen: tiles lie on under the search
+/// bar, the status bar and the list's pinned header (and the lazy grid
+/// keeps a few just outside), so each pane's grid or list reports where it
+/// can be seen (`show`) and the bars and the header where they lie over it
+/// (`cover`); a click on a bar or the header is left to it.
 @MainActor
 enum ModifierClicks {
     private static var hovered: (key: String, action: (NSEvent.ModifierFlags) -> Void)?
@@ -805,7 +847,12 @@ enum ModifierClicks {
     /// left origin): the click goes to the one under the pointer even when
     /// the grid moved under a still pointer (a re-sort, a search batch, a
     /// scroll to the selection), which sends no hover.
-    private static var frames: [String: (frame: CGRect, window: ObjectIdentifier, action: (NSEvent.ModifierFlags) -> Void)] = [:]
+    private static var frames: [String: (frame: CGRect, pane: ObjectIdentifier, window: ObjectIdentifier, action: (NSEvent.ModifierFlags) -> Void)] = [:]
+    /// Per pane, where its grid or list can be seen (same space as the
+    /// frames), by the view that said so; and what lies over its top (the
+    /// list's header).
+    private static var visible: [ObjectIdentifier: (view: String, rect: CGRect)] = [:]
+    private static var covered: [ObjectIdentifier: [String: CGRect]] = [:]
 
     static func enter(_ key: String, action: @escaping (NSEvent.ModifierFlags) -> Void) {
         hovered = (key, action)
@@ -813,20 +860,55 @@ enum ModifierClicks {
     static func leave(_ key: String) {
         if hovered?.key == key { hovered = nil }
     }
-    static func place(_ key: String, frame: CGRect, in window: WindowModel, action: @escaping (NSEvent.ModifierFlags) -> Void) {
-        frames[key] = (frame, ObjectIdentifier(window), action)
+    static func place(_ key: String, frame: CGRect, pane: ObjectIdentifier, in window: WindowModel,
+                      action: @escaping (NSEvent.ModifierFlags) -> Void) {
+        frames[key] = (frame, pane, ObjectIdentifier(window), action)
     }
     static func remove(_ key: String) {
         frames[key] = nil
         leave(key)
     }
 
-    /// The tile under a point of a browser window, by the frames its tiles reported.
-    private static func tile(at event: NSEvent) -> ((NSEvent.ModifierFlags) -> Void)? {
-        guard let content = event.window?.contentView, let window = WindowModel.of(event.window) else { return nil }
+    /// A pane's grid or list (`view`) can be seen in `rect`; nil: it is gone
+    /// (only the view that said so takes it back: the next may be there already).
+    static func show(_ pane: ObjectIdentifier, view: String, rect: CGRect?) {
+        if let rect { visible[pane] = (view, rect) } else if visible[pane]?.view == view { visible[pane] = nil }
+    }
+
+    /// What lies over a pane's tiles (`view`: the search bar, the status
+    /// bar, the list's pinned header); nil: it is gone.
+    static func cover(_ pane: ObjectIdentifier, view: String, rect: CGRect?) {
+        covered[pane, default: [:]][view] = rect
+    }
+
+    private static func isCovered(_ point: CGPoint, in pane: ObjectIdentifier) -> Bool {
+        covered[pane]?.values.contains { $0.contains(point) } == true
+    }
+
+    /// Whether a point of a pane can be clicked through to its tiles.
+    private static func seen(_ point: CGPoint, in pane: ObjectIdentifier) -> Bool {
+        !isCovered(point, in: pane) && (visible[pane]?.rect.contains(point) ?? true)
+    }
+
+    /// The tile under a point of a browser window, by the frames its tiles
+    /// reported, where the grid or list can be seen; nil also when the point
+    /// lies on a bar or a header over them (`overTiles` false then).
+    static func tile(at point: CGPoint, in window: ObjectIdentifier) -> (action: ((NSEvent.ModifierFlags) -> Void)?, overTiles: Bool) {
+        let hit = frames.values.first { $0.window == window && $0.frame.contains(point) && seen(point, in: $0.pane) }
+        if let hit { return (hit.action, true) }
+        // On no tile: in a grid or list (the hovered one goes on), or on what lies over it
+        let panes = Set(frames.values.filter { $0.window == window }.map(\.pane))
+        let overTiles = panes.isEmpty || panes.contains { pane in
+            visible[pane]?.rect.contains(point) == true && !isCovered(point, in: pane)
+        }
+        return (nil, overTiles)
+    }
+
+    private static func tile(at event: NSEvent) -> (action: ((NSEvent.ModifierFlags) -> Void)?, overTiles: Bool) {
+        guard let content = event.window?.contentView, let window = WindowModel.of(event.window) else { return (nil, false) }
         let local = content.convert(event.locationInWindow, from: nil)
         let point = content.isFlipped ? local : NSPoint(x: local.x, y: content.bounds.height - local.y)
-        return frames.values.first { $0.window == ObjectIdentifier(window) && $0.frame.contains(point) }?.action
+        return tile(at: point, in: ObjectIdentifier(window))
     }
 
     /// The grid moved under a still pointer (a key scrolled it): which tile
@@ -849,8 +931,9 @@ enum ModifierClicks {
         if event.type == .leftMouseDown {
             pending = nil
             let flags = event.modifierFlags.intersection([.command, .shift])
-            guard !flags.isEmpty, WindowModel.of(event.window) != nil,
-                  let action = tile(at: event) ?? hovered?.action else { return }
+            guard !flags.isEmpty, WindowModel.of(event.window) != nil else { return }
+            let found = tile(at: event)
+            guard let action = found.action ?? (found.overTiles ? hovered?.action : nil) else { return }
             pending = (action, flags, event.locationInWindow)
             return
         }

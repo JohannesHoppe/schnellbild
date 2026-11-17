@@ -9,9 +9,25 @@ import AppKit
 /// folder above, a bookmark to elsewhere) asks: the open panel at that
 /// folder (`ask`).
 ///
+/// Only what the app opens is kept: a folder or archive chosen or dropped
+/// (`grant`). A file dropped alone from a folder outside every grant is
+/// held for the session only (`hold`, the newest `heldFileLimit`): a
+/// launch reopens folders, never a lone file. Access is started once per
+/// grant and stopped when a grant goes (one holding it replaces it, the
+/// user forgets them all, its item is gone): Apple's documentation of
+/// `startAccessingSecurityScopedResource()` asks for every start to be
+/// balanced by a stop, since leaked starts eventually keep the app from
+/// adding locations to its sandbox until it is relaunched.
+///
 /// A grant on a volume that isn't there (a NAS asleep, a USB disk
 /// unplugged) is kept as it is and tried again when a volume mounts or a
-/// place inside it is opened (`retry(covering:)`), never dropped.
+/// place inside it is opened (`retry(covering:)`). One whose volume is
+/// mounted but that no longer resolves, or resolves into the Trash, names
+/// an item that is gone: it is dropped.
+///
+/// Bookmarks are resolved off the main thread (a share that is mounted but
+/// doesn't answer holds the resolution until its timeout); reading a
+/// folder waits for the grants kept to be open (`restored()`).
 ///
 /// Without the sandbox (unit tests, a build run from the terminal) every
 /// folder can be read: nothing is granted or kept, and `covers` is always
@@ -22,96 +38,241 @@ final class FolderAccess {
     /// Launched in the App Sandbox.
     nonisolated static let isSandboxed = ProcessInfo.processInfo.environment["APP_SANDBOX_CONTAINER_ID"] != nil
     static let key = "folderAccess"
+    /// How many files dropped alone keep their access for the session:
+    /// enough for Back to reach them again.
+    static let heldFileLimit = 32
+
+    /// What the app asks of the system, so tests can stand in for it.
+    struct System: Sendable {
+        /// A security-scoped bookmark of a URL the sandbox opened to the app.
+        var bookmark: @Sendable (URL) -> Data?
+        /// A bookmark resolved without asking and without mounting a volume.
+        var resolve: @Sendable (Data) -> (url: URL, stale: Bool)?
+        /// The path a bookmark names, read from its data without resolving it.
+        var path: @Sendable (Data) -> String?
+        var start: @Sendable (URL) -> Bool
+        var stop: @Sendable (URL) -> Void
+        /// The mount points of the volumes there now (canonical paths).
+        var mountedVolumes: @Sendable () -> Set<String>
+
+        static let live = System(
+            bookmark: { try? $0.bookmarkData(options: .withSecurityScope, includingResourceValuesForKeys: nil, relativeTo: nil) },
+            resolve: { data in
+                var stale = false
+                guard let url = try? URL(resolvingBookmarkData: data, options: [.withSecurityScope, .withoutUI, .withoutMounting],
+                                         relativeTo: nil, bookmarkDataIsStale: &stale) else { return nil }
+                return (url, stale)
+            },
+            path: { data in
+                URL.resourceValues(forKeys: [.pathKey], fromBookmarkData: data)?.path.map { BrowserModel.canonicalPath(URL(fileURLWithPath: $0)) }
+            },
+            start: { $0.startAccessingSecurityScopedResource() },
+            stop: { $0.stopAccessingSecurityScopedResource() },
+            mountedVolumes: {
+                Set((FileManager.default.mountedVolumeURLs(includingResourceValuesForKeys: nil, options: []) ?? []).map(BrowserModel.canonicalPath))
+            }
+        )
+    }
 
     /// Where the grants are kept (the app's preferences; set at launch).
     var defaults = UserDefaults.standard
     private let sandboxed: Bool
+    private let system: System
 
-    private struct Grant {
+    private struct Grant: Sendable {
         let url: URL
         let path: String
-        let bookmark: Data
+        /// Nil for a file held for the session only.
+        let bookmark: Data?
+        /// This app started the access (and stops it).
+        let started: Bool
     }
     private var grants: [Grant] = []
+    private var held: [Grant] = []
     /// Grants that didn't open (their volume not mounted), with the path
     /// the bookmark names, when it says.
     private var pending: [(bookmark: Data, path: String?)] = []
+    /// Bookmarks being resolved (at launch, a volume mounting): kept in the
+    /// preferences meanwhile.
+    private var resolving: [Data] = []
+    private var restoring: Task<Void, Never>?
 
-    init(sandboxed: Bool = FolderAccess.isSandboxed) {
+    init(sandboxed: Bool = FolderAccess.isSandboxed, system: System = .live) {
         self.sandboxed = sandboxed
+        self.system = system
     }
 
     /// The folders granted before, opened again (once, at launch, before
-    /// any folder is read). Resolved without mounting anything, so a share
-    /// that is gone doesn't hold the launch; those are kept for later.
+    /// any folder is read), off the main thread. Resolved without mounting
+    /// anything, so a share that is gone doesn't hold the launch; those are
+    /// kept for later.
     func restore() {
-        guard sandboxed else { return }
-        for data in defaults.array(forKey: Self.key) as? [Data] ?? [] {
-            if let grant = Self.opened(data) { grants.append(grant) } else { pending.append((data, Self.path(ofBookmark: data))) }
-        }
-        save()
+        guard sandboxed, restoring == nil else { return }
+        let saved = defaults.array(forKey: Self.key) as? [Data] ?? []
+        resolving = saved
+        restoring = Task { await open(saved.map { (bookmark: $0, path: nil) }) }
+    }
+
+    /// Returns once the grants kept are open: a folder is read after it.
+    func restored() async {
+        await restoring?.value
     }
 
     /// A volume was mounted (`DiskEvents`, before the panes hear of it): the
     /// grants waiting for their volume are tried again.
-    func volumeMounted() {
-        _ = retryPending { _ in true }
+    func volumeMounted() async {
+        await restored()
+        _ = await retryPending { _ in true }
     }
 
     /// A grant kept for a volume that wasn't there and covers `url`: tried
     /// again. Returns whether `url` is covered now (read it again then).
-    @discardableResult
-    func retry(covering url: URL) -> Bool {
+    func retry(covering url: URL) async -> Bool {
+        await restored()
         guard sandboxed, !pending.isEmpty, !covers(url) else { return false }
         let path = BrowserModel.canonicalPath(url)
         // (one whose path isn't known is tried too)
-        return retryPending { $0.map { Self.path(path, isIn: $0) } ?? true } && covers(url)
+        return await retryPending { $0.map { Self.path(path, isIn: $0) } ?? true } && covers(url)
     }
 
     /// Opens the pending grants `which` picks; returns whether one opened.
-    private func retryPending(_ which: (String?) -> Bool) -> Bool {
+    private func retryPending(_ which: (String?) -> Bool) async -> Bool {
+        let chosen = pending.filter { which($0.path) }
+        guard !chosen.isEmpty else { return false }
+        let bookmarks = Set(chosen.map(\.bookmark))
+        // Out of `pending` while they are tried: never opened twice at once
+        pending.removeAll { bookmarks.contains($0.bookmark) }
+        resolving += chosen.map(\.bookmark)
+        return await open(chosen)
+    }
+
+    /// Resolves and starts bookmarks off the main thread, then takes what
+    /// opened; what waits for its volume goes back to `pending`, what is
+    /// gone is dropped. Returns whether one opened. The caller has put
+    /// them into `resolving`, so the preferences keep them meanwhile.
+    @discardableResult
+    private func open(_ kept: [(bookmark: Data, path: String?)]) async -> Bool {
+        let system = system
+        let bookmarks = kept.map(\.bookmark)
+        let outcomes = await Blocking.run(.userInitiated) { Self.resolveAll(bookmarks, system) }
         var opened = false
-        pending.removeAll { entry in
-            guard which(entry.path), let grant = Self.opened(entry.bookmark) else { return false }
-            grants.append(grant)
-            opened = true
-            return true
+        for (entry, outcome) in zip(kept, outcomes) {
+            if let index = resolving.firstIndex(of: entry.bookmark) { resolving.remove(at: index) }
+            switch outcome {
+            case .opened(let grant):
+                // Granted meanwhile (dropped while this resolved): not twice
+                if isGranted(grant.path) {
+                    if grant.started { system.stop(grant.url) }
+                } else {
+                    add(grant)
+                    opened = true
+                }
+            case .waiting(let path): pending.append((entry.bookmark, path ?? entry.path))
+            case .gone: break
+            }
         }
-        if opened { save() }
+        save()
         return opened
     }
 
-    /// A folder or file the user chose or dropped: readable from now on and
-    /// after a restart. Called while the sandbox has opened it to the app
-    /// (right after the panel or the drop).
+    private enum Outcome: Sendable {
+        case opened(Grant)
+        case waiting(path: String?)
+        case gone
+    }
+
+    /// Kept bookmarks resolved and their access started (off the main thread).
+    nonisolated private static func resolveAll(_ bookmarks: [Data], _ system: System) -> [Outcome] {
+        var mounted: Set<String>?
+        return bookmarks.map { data in
+            guard let (url, stale) = system.resolve(data) else {
+                // Not resolved: gone when its volume is there, else waiting
+                guard let path = system.path(data) else { return .waiting(path: nil) }
+                if mounted == nil { mounted = system.mountedVolumes() }
+                return mounted!.contains(volume(of: path)) ? .gone : .waiting(path: path)
+            }
+            let path = BrowserModel.canonicalPath(url)
+            guard !isInTrash(path) else { return .gone }
+            let started = system.start(url)
+            guard started else { return .waiting(path: path) }
+            // Moved or renamed meanwhile: the bookmark is made anew
+            let bookmark = stale ? (system.bookmark(url) ?? data) : data
+            return .opened(Grant(url: url, path: path, bookmark: bookmark, started: true))
+        }
+    }
+
+    /// The mount point of the volume a path lies on: "/Volumes/<name>", or
+    /// "/" for the startup disk.
+    nonisolated static func volume(of path: String) -> String {
+        let parts = path.split(separator: "/", omittingEmptySubsequences: true)
+        guard parts.count >= 2, parts[0] == "Volumes" else { return "/" }
+        return "/Volumes/" + parts[1]
+    }
+
+    /// In a Trash: the user's (~/.Trash) or a volume's (/.Trashes).
+    nonisolated static func isInTrash(_ path: String) -> Bool {
+        path.contains("/.Trash/") || path.contains("/.Trashes/")
+    }
+
+    /// A folder or archive the user chose or dropped: readable from now on
+    /// and after a restart. Called while the sandbox has opened it to the
+    /// app (right after the panel or the drop).
     func grant(_ url: URL) {
-        guard sandboxed, !covers(url) else { return }
-        guard url.startAccessingSecurityScopedResource() || FileManager.default.isReadableFile(atPath: url.path),
-              let bookmark = Self.bookmark(of: url) else { return }
+        guard sandboxed else { return }
         let path = BrowserModel.canonicalPath(url)
-        // Grants inside the new one aren't needed beside it
-        for inner in grants where Self.path(inner.path, isIn: path) { inner.url.stopAccessingSecurityScopedResource() }
-        grants.removeAll { Self.path($0.path, isIn: path) }
-        pending.removeAll { $0.path.map { Self.path($0, isIn: path) } ?? false }
-        grants.append(Grant(url: url, path: path, bookmark: bookmark))
+        guard !isGranted(path) else { return }
+        let started = system.start(url)
+        guard started || FileManager.default.isReadableFile(atPath: url.path), let bookmark = system.bookmark(url) else {
+            if started { system.stop(url) }
+            return
+        }
+        add(Grant(url: url, path: path, bookmark: bookmark, started: started))
         save()
+    }
+
+    /// A file the sandbox opened alone (dropped from a folder outside every
+    /// grant): its access is held while the app runs, not kept for a
+    /// restart. The oldest held file beyond `heldFileLimit` is let go.
+    func hold(_ file: URL) {
+        guard sandboxed, !covers(file) else { return }
+        held.append(Grant(url: file, path: BrowserModel.canonicalPath(file), bookmark: nil, started: system.start(file)))
+        while held.count > Self.heldFileLimit { release(held.removeFirst()) }
+    }
+
+    /// A grant taken: grants and held files inside it aren't needed beside it.
+    private func add(_ grant: Grant) {
+        for inner in grants + held where Self.path(inner.path, isIn: grant.path) { release(inner) }
+        grants.removeAll { Self.path($0.path, isIn: grant.path) }
+        held.removeAll { Self.path($0.path, isIn: grant.path) }
+        pending.removeAll { $0.path.map { Self.path($0, isIn: grant.path) } ?? false }
+        grants.append(grant)
+    }
+
+    private func release(_ grant: Grant) {
+        if grant.started { system.stop(grant.url) }
+    }
+
+    private func isGranted(_ path: String) -> Bool {
+        grants.contains { Self.path(path, isIn: $0.path) }
     }
 
     /// Whether the app may read `url` (a folder, a file, a place inside an archive).
     func covers(_ url: URL) -> Bool {
         guard sandboxed else { return true }
         let path = BrowserModel.canonicalPath(url)
-        return grants.contains { Self.path(path, isIn: $0.path) }
+        return isGranted(path) || held.contains { $0.path == path }
     }
 
     /// How many folders are granted (Settings), those on volumes not there included.
-    var count: Int { grants.count + pending.count }
+    var count: Int { grants.count + pending.count + resolving.count }
 
     /// Every grant given up (Settings): folders ask again.
     func forgetAll() {
-        for grant in grants { grant.url.stopAccessingSecurityScopedResource() }
+        for grant in grants + held { release(grant) }
         grants = []
+        held = []
         pending = []
+        resolving = []
         save()
     }
 
@@ -132,28 +293,7 @@ final class FolderAccess {
     }
 
     private func save() {
-        defaults.set(grants.map(\.bookmark) + pending.map(\.bookmark), forKey: Self.key)
-    }
-
-    /// A kept bookmark opened: resolved without asking and without mounting
-    /// a volume, its access started. Nil while its volume isn't there.
-    private static func opened(_ data: Data) -> Grant? {
-        var stale = false
-        guard let url = try? URL(resolvingBookmarkData: data, options: [.withSecurityScope, .withoutUI, .withoutMounting],
-                                 relativeTo: nil, bookmarkDataIsStale: &stale),
-              url.startAccessingSecurityScopedResource() else { return nil }
-        // Moved or renamed meanwhile: the bookmark is made anew
-        let bookmark = stale ? (bookmark(of: url) ?? data) : data
-        return Grant(url: url, path: BrowserModel.canonicalPath(url), bookmark: bookmark)
-    }
-
-    /// The path a bookmark names, read from its data without resolving it.
-    private static func path(ofBookmark data: Data) -> String? {
-        URL.resourceValues(forKeys: [.pathKey], fromBookmarkData: data)?.path.map { BrowserModel.canonicalPath(URL(fileURLWithPath: $0)) }
-    }
-
-    private static func bookmark(of url: URL) -> Data? {
-        try? url.bookmarkData(options: .withSecurityScope, includingResourceValuesForKeys: nil, relativeTo: nil)
+        defaults.set(grants.compactMap(\.bookmark) + pending.map(\.bookmark) + resolving, forKey: Self.key)
     }
 
     /// `path` is `folder` or lies inside it.

@@ -401,6 +401,24 @@ final class LocalizationTests: XCTestCase {
         }
     }
 
+    /// Every action's name in Settings → Keyboard is looked up in the
+    /// language ("100 %" is "%100" in Turkish): none is a bare literal.
+    func testEveryActionNameIsLocalized() throws {
+        let sources = root.deletingLastPathComponent().deletingLastPathComponent().appendingPathComponent("Schnellbild")
+        let code = try String(contentsOf: sources.appendingPathComponent("Shortcuts.swift"), encoding: .utf8)
+        guard let start = code.range(of: "/// The action's name in the settings.\n    var name: String {"), let end = code[start.upperBound...].range(of: "\n    }\n") else {
+            return XCTFail("the action names' switch not found")
+        }
+        let names = code[start.upperBound..<end.lowerBound]
+        let bare = try NSRegularExpression(pattern: "return \"")
+        let text = String(names)
+        XCTAssertGreaterThan(text.components(separatedBy: "String(localized:").count, 50, "the scanner reads the names")
+        for match in bare.matches(in: text, range: NSRange(text.startIndex..., in: text)) {
+            let line = (text as NSString).substring(with: (text as NSString).lineRange(for: match.range))
+            XCTFail("not localized: \(line.trimmingCharacters(in: .whitespacesAndNewlines))")
+        }
+    }
+
     /// The kind macOS shows for a download not finished (the description
     /// of the type the app declares for them) is translated in every
     /// language, in InfoPlist.strings, where macOS looks it up by its text.
