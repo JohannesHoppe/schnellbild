@@ -38,6 +38,8 @@ struct VideoDetailView: View {
     /// Opened again (a download that grew); with where it stood.
     @State private var opening = 0
     @State private var resumeAt: Double?
+    /// UI tests only: why AVKit handed the video over to VLC.
+    @State private var takenOver = ""
 
     /// The zoom and turn (and, for the UI tests, the tracks, speed and what
     /// VLC reports).
@@ -50,6 +52,7 @@ struct VideoDetailView: View {
             if let speed = model.activePlayer?.playerSpeed { text += ", player speed \(speed)" }
         }
         if !vlcDiagnostics.isEmpty { text += ", \(vlcDiagnostics)" }
+        if Self.uiTesting, !takenOver.isEmpty { text += ", taken over from AVKit: \(takenOver)" }
         return text
     }
 
@@ -130,6 +133,7 @@ struct VideoDetailView: View {
             stop()
             checking = true
             unplayable = nil
+            takenOver = ""
             videoSize = nil
             model.actualSizeFactor = 1   // "1": a video's 100 % is its fitted size
 
@@ -222,21 +226,39 @@ struct VideoDetailView: View {
                     let turned = size.applying(transform)
                     videoSize = CGSize(width: abs(turned.width), height: abs(turned.height))
                 }
-                // AVFoundation gives up on it (a file cut off, data it can't
-                // decode): VLC goes on from where it stood
+                // AVFoundation gives up on it (a download cut off, data it
+                // can't read or decode): VLC goes on from where it stood
                 guard let item = control.player.currentItem, stream == nil else { return }
                 let failed = ManagedFlag()
-                let token = NotificationToken(AVPlayerItem.failedToPlayToEndTimeNotification, object: item) { _ in failed.set() }
+                let failure = FailureNote()
+                let token = NotificationToken(AVPlayerItem.failedToPlayToEndTimeNotification, object: item) { note in
+                    failure.set(note.userInfo?[AVPlayerItemFailedToPlayToEndTimeErrorKey] as? NSError)
+                    failed.set()
+                }
                 while !Task.isCancelled, avControl === control {
-                    if item.status == .failed || failed.isSet {
-                        let seconds = CMTimeGetSeconds(control.player.currentTime())
-                        BrowserModel.testLog("video: AVKit failed, VLC takes over | \(url.lastPathComponent)")
-                        control.pause()
-                        avControl = nil
-                        await playInVLC(from: seconds.isFinite && seconds > 0 ? PlaybackPositions.Place(seconds: seconds, playing: true) : nil)
-                        break
-                    }
                     try? await Task.sleep(for: .milliseconds(500))
+                    guard !Task.isCancelled, avControl === control, item.status == .failed || failed.isSet else { continue }
+                    // Around the app's own changes (enhance on or off, a
+                    // redraw, a seek) AVFoundation may report a failure for
+                    // a moment: looked at again once that has settled
+                    try? await Task.sleep(for: .seconds(1))
+                    guard !Task.isCancelled, avControl === control else { break }
+                    let stopped = item.status == .failed || (failed.isSet && control.player.timeControlStatus != .playing)
+                    let error = (item.status == .failed ? item.error as NSError? : nil) ?? failure.error
+                    let reason = Self.describeFailure(item.status == .failed, error)
+                    guard stopped, !control.changedLately,
+                          DownloadName.isPartial(url.lastPathComponent) || AVPlaybackControl.isDataFailure(error) else {
+                        BrowserModel.testLog("video: AVKit reported a failure, AVKit plays on | \(url.lastPathComponent) | \(reason)")
+                        failed.reset()
+                        continue
+                    }
+                    let seconds = CMTimeGetSeconds(control.player.currentTime())
+                    takenOver = reason + " at \(seconds)"
+                    BrowserModel.testLog("video: AVKit failed, VLC takes over | \(url.lastPathComponent) | \(takenOver)")
+                    control.pause()
+                    avControl = nil
+                    await playInVLC(from: seconds.isFinite && seconds > 0 ? PlaybackPositions.Place(seconds: seconds, playing: true) : nil)
+                    break
                 }
                 _ = token
             } else {
@@ -267,6 +289,21 @@ struct VideoDetailView: View {
             }
         }
         .onDisappear { stop() }
+    }
+
+    /// What AVFoundation reported, for the test log and the UI tests' label.
+    private static func describeFailure(_ itemFailed: Bool, _ error: NSError?) -> String {
+        let underlying = (error?.userInfo[NSUnderlyingErrorKey] as? NSError).map { " (\($0.domain) \($0.code))" } ?? ""
+        return (itemFailed ? "item failed" : "failed to play to end")
+            + (error.map { ": \($0.domain) \($0.code) \($0.localizedDescription)\(underlying)" } ?? ", no error")
+    }
+
+    /// The error a notification brought, kept for the main thread.
+    private final class FailureNote: @unchecked Sendable {
+        private let lock = NSLock()
+        private var stored: NSError?
+        func set(_ error: NSError?) { lock.withLock { stored = error } }
+        var error: NSError? { lock.withLock { stored } }
     }
 
     /// What `.task` is run again for: another file, or the same opened again.

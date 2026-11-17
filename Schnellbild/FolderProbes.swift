@@ -80,5 +80,6 @@ final class ManagedFlag: @unchecked Sendable {
     private let lock = NSLock()
     private var value = false
     func set() { lock.withLock { value = true } }
+    func reset() { lock.withLock { value = false } }
     var isSet: Bool { lock.withLock { value } }
 }
