@@ -306,7 +306,9 @@ def check(vlc, binary_symbols, libraries, build, nm_archive=None):
         index = indexes.setdefault(package, SourceIndex(folder))
         linked = 0
         for member, symbols in archive_members(nm_archive(library)):
-            if not any(s in binary_symbols for s in symbols):
+            # The compiler's helpers every C++ object defines (weak) say
+            # nothing about which object the linker took
+            if not any(s in binary_symbols for s in symbols if not s.startswith("___clang_")):
                 continue
             linked += 1
             sources = index.sources(member, symbols)
