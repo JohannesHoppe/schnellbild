@@ -443,7 +443,8 @@ public final class GlobeTextures: @unchecked Sendable {
     static func satelliteKey(for scene: GlobeScene) -> SatelliteKey? {
         let z = scene.camera.zoom
         guard z >= 2.5, scene.projection.flatness < 1 else { return nil }
-        let level = z >= 4.5 ? 2 : 1
+        // Tilted, the ground near the camera lies closer than the centre: the full size half a step earlier
+        let level = z >= (scene.camera.pitch > 30 ? 4.0 : 4.5) ? 2 : 1
         let columns = level == 1 ? 8 : 16, rows = columns / 2
         // Tilted, the ground nearest the camera (the view's lower middle) needs the detail most; the
         // 2 × 2 tiles around the point between it and the centre cover both
