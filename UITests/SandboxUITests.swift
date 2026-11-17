@@ -88,6 +88,68 @@ final class SandboxUITests: SchnellbildUITestCase {
         XCTAssertTrue(tile("Trip").waitForExistence(timeout: 15), "kept")
     }
 
+    /// A photo dropped from the Finder out of a folder nobody opened to the
+    /// app: the sandbox opens only that file, so it alone is shown, at once
+    /// in the full view, with "Allow Access…" there; its XMP sidecar (its
+    /// name, another extension) is read all the same, as a related item.
+    /// Allowed, the folder is read around it: the full view stays on it and
+    /// → goes on to its neighbour.
+    func testAPhotoDroppedAloneFromTheFinder() throws {
+        try put("nogeo.jpg", at: "Outside/photo.jpg")
+        try put("sample.jpg", at: "Outside/second.jpg")
+        let sidecar = """
+        <x:xmpmeta xmlns:x="adobe:ns:meta/"><rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+        <rdf:Description rdf:about="" xmlns:exif="http://ns.adobe.com/exif/1.0/"
+         exif:GPSLatitude="48,8.232N" exif:GPSLongitude="11,34.566E"/></rdf:RDF></x:xmpmeta>
+        """
+        try sidecar.write(to: tempDir.appendingPathComponent("Outside/photo.xmp"), atomically: true, encoding: .utf8)
+        launch(grants: .none)
+        XCTAssertTrue(app.staticTexts["No folder open"].waitForExistence(timeout: 15))
+        dropFromFinder(tempDir.appendingPathComponent("Outside/photo.jpg"))
+        waitForBadge(containing: "photo.jpg")
+        XCTAssertTrue(text(of: badge).contains("1 / 1"), "only the file dropped: \(text(of: badge))")
+        let allow = app.buttons["allowAccess"].firstMatch
+        XCTAssertTrue(allow.waitForExistence(timeout: 5), "the full view says how to see the folder")
+
+        app.typeKey("i", modifierFlags: [])
+        XCTAssertTrue(element("inspector").waitForExistence(timeout: 10))
+        XCTAssertTrue(app.staticTexts["48.1372° N, 11.5761° E"].waitForExistence(timeout: 15), "the place from its sidecar")
+        app.typeKey("i", modifierFlags: [])
+
+        allow.click()
+        confirmOpenPanel()
+        eventually("the folder around it", timeout: 15) { self.text(of: self.badge).contains("1 / 2") }
+        XCTAssertTrue(text(of: badge).contains("photo.jpg"), "still on the photo")
+        XCTAssertFalse(app.buttons["allowAccess"].exists)
+        app.typeKey(.rightArrow, modifierFlags: [])
+        waitForBadge(containing: "second.jpg")
+    }
+
+    /// An archive split by bytes (`Trip.zip.001`, `.002`), its first part
+    /// dropped alone: the second part has its name with another extension,
+    /// so the sandbox opens it too (a related item), and the archive shows whole.
+    func testAnArchiveDroppedAloneReadsItsOtherPart() throws {
+        try put("dark.jpg", at: "src/beach.jpg")
+        try put("bright.jpg", at: "src/sun.jpg")
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: "/usr/bin/zip")
+        process.arguments = ["-q", "-0", "../Trip.zip", "beach.jpg", "sun.jpg"]
+        process.currentDirectoryURL = tempDir.appendingPathComponent("src")
+        try process.run()
+        process.waitUntilExit()
+        let whole = try Data(contentsOf: tempDir.appendingPathComponent("Trip.zip"))
+        let outside = try folder("Parts")
+        let half = whole.count / 2
+        try whole.prefix(half).write(to: outside.appendingPathComponent("Trip.zip.001"))
+        try whole.dropFirst(half).write(to: outside.appendingPathComponent("Trip.zip.002"))
+        launch(grants: .none)
+        XCTAssertTrue(app.staticTexts["No folder open"].waitForExistence(timeout: 15))
+        dropFromFinder(outside.appendingPathComponent("Trip.zip.001"))
+        XCTAssertTrue(tile("beach.jpg").waitForExistence(timeout: 15), "the archive opened")
+        XCTAssertTrue(tile("sun.jpg").waitForExistence(timeout: 10), "the part after the first read too")
+        XCTAssertFalse(app.buttons["allowAccess"].exists, "nothing missing")
+    }
+
     /// The folder the user opened to the app can't be renamed by itself
     /// (the sandbox would refuse: that changes the folder above): its name
     /// in the title bar asks for the folder above first, then renames.

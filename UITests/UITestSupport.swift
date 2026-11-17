@@ -1,4 +1,5 @@
 import XCTest
+import AppKit
 
 /// Base for the end-to-end tests: each test gets a fresh temp folder with
 /// real media fixtures, launches the real app on it (via `--open`) with its
@@ -160,6 +161,26 @@ class SchnellbildUITestCase: XCTestCase {
         closed(panel, file: file, line: line)
     }
 
+    /// Drops `file` from the Finder onto the app's window, as a user drags
+    /// it: the Finder shows it selected in its folder's window, its icon is
+    /// dragged onto the window's lower left (the Browse zone; the Finder's
+    /// window lies over the rest of the app's on the runner's small screen).
+    func dropFromFinder(_ file: URL, file sourceFile: StaticString = #filePath, line: UInt = #line) {
+        let window = app.windows.firstMatch
+        XCTAssertTrue(window.waitForExistence(timeout: 10), "a window", file: sourceFile, line: line)
+        NSWorkspace.shared.activateFileViewerSelecting([file])
+        let finder = XCUIApplication(bundleIdentifier: "com.apple.finder")
+        let item = finder.windows.firstMatch.descendants(matching: .any).matching(identifier: file.lastPathComponent).firstMatch
+        if !item.waitForExistence(timeout: 15) {
+            print("the Finder doesn't show \(file.lastPathComponent):\n\(finder.debugDescription)")
+            XCTFail("the Finder shows \(file.lastPathComponent)", file: sourceFile, line: line)
+            return
+        }
+        let target = window.coordinate(withNormalizedOffset: CGVector(dx: 0.25, dy: 0.93))
+        item.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).press(forDuration: 1, thenDragTo: target)
+        app.activate()
+    }
+
     /// The open panel is up at the folder it was opened at: its button
     /// (Return) chooses that folder.
     func confirmOpenPanel(file: StaticString = #filePath, line: UInt = #line) {
@@ -190,7 +211,7 @@ class SchnellbildUITestCase: XCTestCase {
     /// The open panel (a window of the app; the sandbox shows it from
     /// another process).
     var openPanel: XCUIElement {
-        app.windows.matching(NSPredicate(format: "identifier == 'open-panel' OR title == 'Open' OR elementType == %d", XCUIElement.ElementType.dialog.rawValue)).firstMatch
+        app.dialogs["open-panel"].firstMatch
     }
 
     /// Where the app writes this test's log `name`: pass
