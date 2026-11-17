@@ -1051,10 +1051,10 @@ def main():
     pinned(sky, cfg["SKY_SHA256"], "star map")
     lights = obtain(cfg, os.path.basename(cfg["LIGHTS_URL"]), cfg["LIGHTS_SHA256"], cfg["LIGHTS_URL"])
     pinned(lights, cfg["LIGHTS_SHA256"], "Black Marble")
-    satellite = obtain(cfg, os.path.basename(cfg["SATELLITE_URL"]), cfg["SATELLITE_SHA256"], cfg["SATELLITE_URL"])
-    pinned(satellite, cfg["SATELLITE_SHA256"], "Blue Marble Next Generation")
-    clouds = obtain(cfg, os.path.basename(cfg["CLOUDS_URL"]), cfg["CLOUDS_SHA256"], cfg["CLOUDS_URL"])
-    pinned(clouds, cfg["CLOUDS_SHA256"], "Blue Marble clouds")
+    satellite = obtain(cfg, os.path.basename(cfg["BLUEMARBLE_URL"]), cfg["BLUEMARBLE_SHA256"], cfg["BLUEMARBLE_URL"])
+    pinned(satellite, cfg["BLUEMARBLE_SHA256"], "Blue Marble Next Generation")
+    clouds = obtain(cfg, os.path.basename(cfg["CLOUD_PICTURE_URL"]), cfg["CLOUD_PICTURE_SHA256"], cfg["CLOUD_PICTURE_URL"])
+    pinned(clouds, cfg["CLOUD_PICTURE_SHA256"], "Blue Marble clouds")
 
     if extract:
         os.makedirs(extract, exist_ok=True)
