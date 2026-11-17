@@ -182,7 +182,7 @@ struct Companions: Equatable, Sendable {
         let folder = url.deletingLastPathComponent()
         let found = names.listing(of: folder)
         let listing = found.names
-        guard !listing.isEmpty else { return Companions() }
+        guard !listing.isEmpty else { return related(of: url) }
         let name = url.lastPathComponent
         let base = url.deletingPathExtension().lastPathComponent
         func file(_ wanted: String) -> File? {
@@ -197,6 +197,25 @@ struct Companions: Equatable, Sendable {
             companions.clipXML = file(base + "M01.xml")
         }
         companions.tracks = found.tracks.prefix(largestTrackCount).compactMap { file($0) }
+        return companions
+    }
+
+    /// A file the App Sandbox opened alone (its folder can't be listed):
+    /// the companions of its own name with another extension, opened to the
+    /// app as related items (`RelatedFiles`). A Sony clip's XML and the
+    /// folder's GPX tracks have other names: they need the folder.
+    static func related(of url: URL) -> Companions {
+        guard RelatedFiles.isAlone(url) else { return Companions() }
+        let folder = url.deletingLastPathComponent()
+        let base = url.deletingPathExtension().lastPathComponent
+        func file(_ name: String) -> File? {
+            let candidate = folder.appendingPathComponent(name)
+            guard RelatedFiles.open(candidate, beside: url) else { return nil }
+            return File(url: candidate, modified: try? candidate.resourceValues(forKeys: [.contentModificationDateKey]).contentModificationDate)
+        }
+        var companions = Companions()
+        companions.xmp = [file(url.lastPathComponent + ".xmp"), file(base + ".xmp")].compactMap { $0 }
+        if BrowserModel.mediaKind(of: url) == .video { companions.flightLog = file(base + ".SRT") ?? file(base + ".srt") }
         return companions
     }
 }

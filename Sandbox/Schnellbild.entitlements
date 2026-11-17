@@ -6,8 +6,10 @@
          the App ID and team only with an App Store profile).
          App Sandbox: no network; folders the user chooses or drops
          (read and write: rename, trash, move), kept across launches as
-         security-scoped bookmarks (FolderAccess); the Pictures, Movies and
-         Downloads folders without asking. Location: only when the user
+         security-scoped bookmarks (FolderAccess); the Pictures folder
+         without asking, where the first launch starts. No other standard
+         folder: nothing opens one by itself, and Downloads would also let
+         programs there run. Location: only when the user
          clicks Use My Location in the distance sheet (macOS asks first;
          NSLocationUsageDescription and NSLocationWhenInUseUsageDescription in Info.plist). The same key serves the
          Hardened Runtime of the Developer ID build. -->
@@ -22,10 +24,6 @@
     <key>com.apple.security.files.bookmarks.app-scope</key>
     <true/>
     <key>com.apple.security.assets.pictures.read-write</key>
-    <true/>
-    <key>com.apple.security.assets.movies.read-write</key>
-    <true/>
-    <key>com.apple.security.files.downloads.read-write</key>
     <true/>
     <key>com.apple.security.personal-information.location</key>
     <true/>

@@ -121,7 +121,7 @@
   "safe": [
     [
       "Apple’ın App Sandbox’ında.",
-      "Hiçbir ağ erişimi yok, kendiliğinden hiçbir program başlatmaz, yalnızca ona açtığınız klasörleri, ayrıca Resimler, Filmler ve İndirilenler klasörlerini görür."
+      "Hiçbir ağ erişimi yok, kendiliğinden hiçbir program başlatmaz, yalnızca ona açtığınız klasörleri ve Resimler klasörünü görür."
     ],
     [
       "Yalnızca okuma.",

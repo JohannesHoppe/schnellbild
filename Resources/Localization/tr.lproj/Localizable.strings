@@ -271,6 +271,8 @@
 "Allow Access…" = "Erişime İzin Ver…";
 "Allow Access" = "Erişime İzin Ver";
 "Choose this folder, or one that holds it, so Schnellbild may show it. Schnellbild remembers your choice." = "Schnellbild'in gösterebilmesi için bu klasörü veya onu içeren bir klasörü seçin. Schnellbild seçiminizi hatırlar.";
+"Choose the folder that holds “%@”, so Schnellbild may rename it. Schnellbild remembers your choice." = "Schnellbild'in adını değiştirebilmesi için “%@” öğesini içeren klasörü seçin. Schnellbild seçiminizi hatırlar.";
+"Choose this folder, so Schnellbild may put items into it. Schnellbild remembers your choice." = "Schnellbild'in içine dosya ve klasör koyabilmesi için bu klasörü seçin. Schnellbild seçiminizi hatırlar.";
 "Folder access" = "Klasör erişimi";
 "Folders opened to Schnellbild" = "Schnellbild'e açılan klasörler";
 "Forget Folder Access…" = "Klasör Erişimini Unut…";

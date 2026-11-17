@@ -271,6 +271,8 @@
 "Allow Access…" = "Дозволити доступ…";
 "Allow Access" = "Дозволити доступ";
 "Choose this folder, or one that holds it, so Schnellbild may show it. Schnellbild remembers your choice." = "Виберіть цю папку або папку, що її містить, щоб Schnellbild міг її показати. Schnellbild запам’ятає ваш вибір.";
+"Choose the folder that holds “%@”, so Schnellbild may rename it. Schnellbild remembers your choice." = "Виберіть папку, що містить «%@», щоб Schnellbild міг її перейменувати. Schnellbild запам’ятає ваш вибір.";
+"Choose this folder, so Schnellbild may put items into it. Schnellbild remembers your choice." = "Виберіть цю папку, щоб Schnellbild міг класти в неї файли й папки. Schnellbild запам’ятає ваш вибір.";
 "Folder access" = "Доступ до папок";
 "Folders opened to Schnellbild" = "Папки, відкриті для Schnellbild";
 "Forget Folder Access…" = "Забути доступ до папок…";

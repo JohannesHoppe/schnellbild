@@ -75,11 +75,12 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
     }()
     var player: VLCMediaPlayer { held.player }
 
-    /// UI tests: VLC logs everything to /tmp/schnellbild-vlc.log, which the
-    /// CI workflow shows when a test fails.
+    /// UI tests: VLC logs everything to schnellbild-vlc.log in the app's
+    /// temporary folder (its container), which the CI workflow shows when a
+    /// test fails.
     private static let testLog: Void = {
         guard ProcessInfo.processInfo.arguments.contains("--ui-testing") else { return }
-        let path = "/tmp/schnellbild-vlc.log"
+        let path = BrowserModel.testLogFile("schnellbild-vlc.log").path
         if !FileManager.default.fileExists(atPath: path) { FileManager.default.createFile(atPath: path, contents: nil) }
         guard let handle = FileHandle(forWritingAtPath: path) else { return }
         handle.seekToEndOfFile()

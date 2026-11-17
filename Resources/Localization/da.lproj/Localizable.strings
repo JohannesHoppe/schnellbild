@@ -271,6 +271,8 @@
 "Allow Access…" = "Tillad adgang…";
 "Allow Access" = "Tillad adgang";
 "Choose this folder, or one that holds it, so Schnellbild may show it. Schnellbild remembers your choice." = "Vælg denne mappe, eller en der indeholder den, så Schnellbild må vise den. Schnellbild husker dit valg.";
+"Choose the folder that holds “%@”, so Schnellbild may rename it. Schnellbild remembers your choice." = "Vælg den mappe, der indeholder “%@”, så Schnellbild må omdøbe den. Schnellbild husker dit valg.";
+"Choose this folder, so Schnellbild may put items into it. Schnellbild remembers your choice." = "Vælg denne mappe, så Schnellbild må lægge filer og mapper i den. Schnellbild husker dit valg.";
 "Folder access" = "Mappeadgang";
 "Folders opened to Schnellbild" = "Mapper åbnet for Schnellbild";
 "Forget Folder Access…" = "Glem mappeadgang…";

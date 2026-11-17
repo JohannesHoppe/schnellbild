@@ -133,14 +133,32 @@ enum ArchiveName {
     /// The files next to an archive, looked up by name ignoring case (the
     /// volumes of "MOVIE.PART1.RAR" are "MOVIE.PART2.RAR" …, also on
     /// case-sensitive volumes). The folder is listed once.
+    /// A folder the App Sandbox doesn't let the app list (an archive dropped
+    /// alone): each volume looked up by its name and opened to the app as a
+    /// related item, when it is one (`RelatedFiles`: "x.r00", "x.z01",
+    /// "x.7z.002"; "x.part2.rar" isn't).
     private struct Siblings {
         private let byName: [String: URL]
+        private let alone: URL?
         init(of url: URL) {
             let folder = url.deletingLastPathComponent()
-            let names = (try? FileManager.default.contentsOfDirectory(atPath: folder.path)) ?? []
-            byName = Dictionary(names.map { ($0.lowercased(), folder.appendingPathComponent($0)) }, uniquingKeysWith: { a, _ in a })
+            let names = try? FileManager.default.contentsOfDirectory(atPath: folder.path)
+            byName = Dictionary((names ?? []).map { ($0.lowercased(), folder.appendingPathComponent($0)) }, uniquingKeysWith: { a, _ in a })
+            alone = names == nil && RelatedFiles.isAlone(url) ? url : nil
         }
-        subscript(name: String) -> URL? { byName[name.lowercased()] }
+        subscript(name: String) -> URL? {
+            if let found = byName[name.lowercased()] { return found }
+            guard let alone else { return nil }
+            let candidate = alone.deletingLastPathComponent().appendingPathComponent(name)
+            return RelatedFiles.open(candidate, beside: alone) ? candidate : nil
+        }
+    }
+
+    /// Opens the further volumes of an archive the App Sandbox opened alone
+    /// to the app (UnRAR finds them by their names itself).
+    static func openVolumes(of url: URL) {
+        guard RelatedFiles.isAlone(url) else { return }
+        _ = allFiles(of: url)
     }
 }
 
@@ -763,6 +781,15 @@ final class ArchiveStore: @unchecked Sendable {
         }
     }
 
+    /// Its index read again when next asked for (not while being read): its
+    /// folder was opened to the app, so the volumes beside it can be read now.
+    func forgetIndex(of url: URL) {
+        let key = BrowserModel.canonicalPath(url)
+        lock.lock(); defer { lock.unlock() }
+        guard let archive = archives[key], archive.pending.isEmpty, !archive.passRunning else { return }
+        archives[key] = nil
+    }
+
     private func archive(_ url: URL) -> Archive {
         let key = BrowserModel.canonicalPath(url)
         lock.lock(); defer { lock.unlock() }
@@ -788,7 +815,9 @@ final class ArchiveStore: @unchecked Sendable {
 
     static func reader(for url: URL, format: ArchiveFormat? = nil) -> ArchiveReader? {
         switch format ?? Self.format(of: url) {
-        case .rar:      return RarReader(url: url)
+        case .rar:
+            ArchiveName.openVolumes(of: url)
+            return RarReader(url: url)
         case .zip:      return LibArchiveReader(volumes: ArchiveName.volumes(of: url), format: .zip)
         case .sevenZip: return LibArchiveReader(volumes: ArchiveName.volumes(of: url), format: .sevenZip)
         case nil:       return nil
@@ -1100,6 +1129,7 @@ final class ArchiveStore: @unchecked Sendable {
         guard let (archiveURL, inner) = ArchivePath.split(url) else { return FolderListing() }
         let index = try await index(of: archiveURL, trying: password)
         var listing = FolderListing()
+        listing.incomplete = !index.complete
         for item in index.children[inner] ?? [] {
             let itemURL = archiveURL.appendingPathComponent(item.path, isDirectory: item.isDirectory)
             if item.isDirectory {

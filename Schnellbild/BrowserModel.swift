@@ -78,6 +78,8 @@ struct OtherFile: Identifiable, Hashable {
 struct FolderListing {
     var entries: [GridEntry] = []
     var others: [OtherFile] = []
+    /// An archive read only in part (a download, a volume missing)
+    var incomplete = false
 }
 
 /// Transport control of the video currently on screen. Implemented for AVKit
@@ -1737,12 +1739,19 @@ final class BrowserModel: ObservableObject {
     }
 
     /// `--ui-testing` keeps UI-test runs out of the user's real preferences;
-    /// `--reset-state` starts such a run from empty preferences.
+    /// `--reset-state` starts such a run from empty preferences, except for
+    /// the folders the user opened to the app (`FolderAccess`, the security-
+    /// scoped bookmarks the open panel gave), which go too with
+    /// `--reset-grants`.
     static func makeDefaults(arguments: [String] = ProcessInfo.processInfo.arguments) -> UserDefaults {
         guard arguments.contains("--ui-testing") else { return .standard }
         let suite = "art.haushoppe.schnellbild.uitests"
         let defaults = UserDefaults(suiteName: suite) ?? .standard
-        if arguments.contains("--reset-state") { defaults.removePersistentDomain(forName: suite) }
+        if arguments.contains("--reset-state") {
+            let grants = arguments.contains("--reset-grants") ? nil : defaults.object(forKey: FolderAccess.key)
+            defaults.removePersistentDomain(forName: suite)
+            if let grants { defaults.set(grants, forKey: FolderAccess.key) }
+        }
         return defaults
     }
 
@@ -1765,8 +1774,18 @@ final class BrowserModel: ObservableObject {
     /// to the app (or one that holds it), and it is read again; another
     /// folder chosen instead opens.
     func allowAccess() {
-        guard let folder = folderURL, let granted = FolderAccess.shared.ask(for: folder) else { return }
-        if FolderAccess.shared.covers(folder) { refresh() } else { open(folder: granted) }
+        guard let shown = folderURL else { return }
+        // Inside an archive dropped alone: the folder holding the archive
+        let archive = ArchivePath.split(shown)?.archive
+        let folder = archive?.deletingLastPathComponent() ?? shown
+        guard let granted = FolderAccess.shared.ask(for: folder) else { return }
+        guard FolderAccess.shared.covers(folder) else { open(folder: granted); return }
+        // Its volumes beside it can be read now
+        if let archive { ArchiveStore.shared.forgetIndex(of: archive) }
+        // Read again where it stands: the file shown alone stays on screen
+        // (in the full view too), its neighbours now beside it
+        load(Location(folder: shown, query: searchText, selected: selectedEntry?.url),
+             thenDetail: mode == .detail, keeping: (marked, selectionChosen))
     }
 
     /// Navigate to a folder. Records the current location in the history.
@@ -1835,6 +1854,13 @@ final class BrowserModel: ObservableObject {
             case .success(let listing):
                 self.otherFiles = listing.others
                 self.sniffOtherFiles()
+                // An archive dropped alone, its further volumes in a folder
+                // outside every grant (not related items: "x.part2.rar"):
+                // "Allow Access…" opens them
+                if listing.incomplete, let archive = ArchivePath.split(url)?.archive,
+                   !FolderAccess.shared.covers(archive.deletingLastPathComponent()) {
+                    self.accessLimited = true
+                }
             case .failure(let error as CocoaError):
                 // A grant kept for a volume that wasn't there opens now: read again
                 if FolderAccess.shared.retry(covering: url) {
@@ -1899,15 +1925,17 @@ final class BrowserModel: ObservableObject {
         }
     }
 
-    /// UI tests (`--test-log=<path>`): what happened, a line each, for
-    /// what the screen doesn't show (how often a rename ran).
     /// The clock of timed test log lines: ms since the system started.
     nonisolated static var testClock: String { String(format: "%.1f", ProcessInfo.processInfo.systemUptime * 1000) }
 
+    /// UI tests (`--test-log=<name>`): what happened, a line each, for
+    /// what the screen doesn't show (how often a rename ran). Written into
+    /// the app's own temporary folder (in the App Sandbox: its container),
+    /// where nothing but the app's own rights are needed (`testLogFile`).
     nonisolated static func testLog(_ line: String, arguments: [String] = ProcessInfo.processInfo.arguments) {
         guard arguments.contains("--ui-testing"),
               let arg = arguments.first(where: { $0.hasPrefix("--test-log=") }) else { return }
-        let path = String(arg.dropFirst("--test-log=".count))
+        let path = testLogFile(String(arg.dropFirst("--test-log=".count))).path
         // One writer at a time: lines come from the main thread and VLC's
         // threads, and two writers at the same end would write over each other
         testLogLock.lock()
@@ -1919,6 +1947,12 @@ final class BrowserModel: ObservableObject {
         try? handle.close()
     }
     nonisolated private static let testLogLock = NSLock()
+
+    /// Where a UI test's log goes: by its name, in the app's temporary
+    /// folder (a path given counts by its last part).
+    nonisolated static func testLogFile(_ name: String) -> URL {
+        FileManager.default.temporaryDirectory.appendingPathComponent((name as NSString).lastPathComponent)
+    }
 
     /// Reopen the last folder on launch (if it still exists).
     /// Checked off the main thread: a share that is mounted but unreachable
@@ -4038,9 +4072,10 @@ final class BrowserModel: ObservableObject {
     // MARK: Other files (not pictures, videos or archives)
 
     /// Whether an other file may be renamed, moved or trashed: one on disk,
-    /// not inside an archive (archives are only read).
+    /// not inside an archive (archives are only read), in a folder open to
+    /// the app (App Sandbox).
     func canChange(_ file: OtherFile) -> Bool {
-        slideshow == nil && !ArchivePath.isInside(file.url)
+        slideshow == nil && !ArchivePath.isInside(file.url) && FolderAccess.shared.mayChange(in: file.url.deletingLastPathComponent())
     }
 
     /// Opens an other file with its app, when it is a document (see
@@ -4100,9 +4135,12 @@ final class BrowserModel: ObservableObject {
     }
 
     /// Whether an item may be moved or trashed: one on disk, not inside an
-    /// archive (archives are only read), not a drive.
+    /// archive (archives are only read), not a drive, in a folder open to the
+    /// app (App Sandbox: a file shown alone, dropped from a folder outside
+    /// every grant, can't be renamed or moved, nor put back from the Trash).
     func canChange(_ entry: GridEntry) -> Bool {
         entry.kind != .parent && !ArchivePath.isInside(entry.url) && !Self.isDrive(entry.url)
+            && FolderAccess.shared.mayChange(in: entry.url.deletingLastPathComponent())
     }
 
     /// What the Trash takes: the marked items (grid), else the selected one.
@@ -4668,11 +4706,11 @@ final class BrowserModel: ObservableObject {
     }
 
     /// Whether a folder can be made here: a real folder, not inside an
-    /// archive, no slideshow or sheet in the way.
+    /// archive, open to the app (App Sandbox), no slideshow or sheet in the way.
     var canCreateFolder: Bool {
         // In the grid: what it makes is selected there
         guard let folderURL, mode == .grid, slideshow == nil, !isLoading else { return false }
-        return !anySheetOpen && ArchivePath.split(folderURL) == nil
+        return !anySheetOpen && ArchivePath.split(folderURL) == nil && FolderAccess.shared.mayChange(in: folderURL)
     }
 
     @discardableResult
@@ -4729,6 +4767,15 @@ final class BrowserModel: ObservableObject {
     /// themselves.
     func move(_ sources: [URL], into folder: URL, how: Transfer = .asFinder) {
         guard ArchivePath.split(folder) == nil else { NSSound.beep(); return }
+        // App Sandbox: a folder outside every grant (".." of a granted
+        // folder) is asked for first, the open panel at it; then they go in
+        guard FolderAccess.shared.mayChange(in: folder) else {
+            Task { @MainActor in
+                guard FolderAccess.shared.ask(for: folder, to: .moveInto) != nil, FolderAccess.shared.mayChange(in: folder) else { return }
+                self.move(sources, into: folder, how: how)
+            }
+            return
+        }
         let target = Self.canonicalPath(folder)
         let shown = folderPath
         // By their paths alone (no file system): what can go at all
@@ -4937,10 +4984,34 @@ final class BrowserModel: ObservableObject {
     }
 
     /// Whether the folder shown can be renamed in place (its name in the
-    /// title bar): a real folder, not inside an archive, not a volume's top.
+    /// title bar): a real folder, not inside an archive, not a volume's top,
+    /// in a folder open to the app (App Sandbox: a folder the user granted
+    /// can't be renamed until the folder holding it is granted too,
+    /// `renameNeedsAccess`).
     var canRenameCurrentFolder: Bool {
+        guard isRenameableFolderShown, let folderURL, let parent = Self.parentFolder(of: folderURL) else { return false }
+        return FolderAccess.shared.mayChange(in: parent)
+    }
+
+    /// The folder shown could be renamed once the folder holding it is open
+    /// to the app (a click on its name asks for it: `allowRenamingCurrentFolder`).
+    var renameNeedsAccess: Bool {
+        guard isRenameableFolderShown, let folderURL, let parent = Self.parentFolder(of: folderURL) else { return false }
+        return !FolderAccess.shared.mayChange(in: parent)
+    }
+
+    private var isRenameableFolderShown: Bool {
         guard let folderURL, slideshow == nil, !isLoading, ArchivePath.split(folderURL) == nil else { return false }
         return Self.parentFolder(of: folderURL) != nil && folderURL.pathComponents.count > 3   // not "/" or "/Volumes/X"
+    }
+
+    /// Asks for the folder holding the folder shown (the open panel there),
+    /// so it can be renamed; returns whether it can be now.
+    func allowRenamingCurrentFolder() -> Bool {
+        guard renameNeedsAccess, let folderURL, let parent = Self.parentFolder(of: folderURL) else { return canRenameCurrentFolder }
+        _ = FolderAccess.shared.ask(for: parent, to: .rename(folderURL.lastPathComponent))
+        objectWillChange.send()
+        return canRenameCurrentFolder
     }
 
     /// The folder shown, renamed from its name in the title bar: it stays

@@ -271,6 +271,8 @@
 "Allow Access…" = "Zugriff erlauben …";
 "Allow Access" = "Zugriff erlauben";
 "Choose this folder, or one that holds it, so Schnellbild may show it. Schnellbild remembers your choice." = "Wähle diesen Ordner oder einen, der ihn enthält, damit Schnellbild ihn zeigen darf. Schnellbild merkt sich deine Wahl.";
+"Choose the folder that holds “%@”, so Schnellbild may rename it. Schnellbild remembers your choice." = "Wähle den Ordner, der „%@“ enthält, damit Schnellbild ihn umbenennen darf. Schnellbild merkt sich deine Wahl.";
+"Choose this folder, so Schnellbild may put items into it. Schnellbild remembers your choice." = "Wähle diesen Ordner, damit Schnellbild Dateien und Ordner hineinlegen darf. Schnellbild merkt sich deine Wahl.";
 "Folder access" = "Ordnerzugriff";
 "Folders opened to Schnellbild" = "Für Schnellbild freigegebene Ordner";
 "Forget Folder Access…" = "Ordnerzugriff vergessen …";

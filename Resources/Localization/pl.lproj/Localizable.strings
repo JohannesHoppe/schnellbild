@@ -271,6 +271,8 @@
 "Allow Access…" = "Zezwól na dostęp…";
 "Allow Access" = "Zezwól na dostęp";
 "Choose this folder, or one that holds it, so Schnellbild may show it. Schnellbild remembers your choice." = "Wybierz ten folder lub folder, który go zawiera, aby Schnellbild mógł go pokazać. Schnellbild zapamięta Twój wybór.";
+"Choose the folder that holds “%@”, so Schnellbild may rename it. Schnellbild remembers your choice." = "Wybierz folder, który zawiera „%@”, aby Schnellbild mógł zmienić jego nazwę. Schnellbild zapamięta Twój wybór.";
+"Choose this folder, so Schnellbild may put items into it. Schnellbild remembers your choice." = "Wybierz ten folder, aby Schnellbild mógł umieszczać w nim pliki i foldery. Schnellbild zapamięta Twój wybór.";
 "Folder access" = "Dostęp do folderów";
 "Folders opened to Schnellbild" = "Foldery udostępnione Schnellbild";
 "Forget Folder Access…" = "Zapomnij dostęp do folderów…";

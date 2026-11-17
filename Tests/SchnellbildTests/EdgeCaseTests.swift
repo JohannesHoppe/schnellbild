@@ -227,18 +227,94 @@ final class UnreadableFolderTests: XCTestCase {
         XCTAssertEqual(m.mode, .detail, "the picture at once")
     }
 
-    /// A grant whose volume isn't there at launch (a NAS asleep) is kept,
-    /// not dropped from the preferences.
+    /// A grant whose folder isn't there at launch (its volume not mounted,
+    /// a NAS asleep) is kept, not dropped from the preferences; data that
+    /// is no bookmark at all goes.
     @MainActor
-    func testAGrantThatDoesntOpenIsKept() {
+    func testAGrantThatDoesntOpenIsKept() throws {
+        let tree = try TempTree(self)
+        let gone = try tree.folder("NAS/Photos")
+        let bookmark = try gone.bookmarkData()
+        try FileManager.default.removeItem(at: gone)
         let defaults = makeTestDefaults()
-        defaults.set([Data("a bookmark of a volume not there".utf8)], forKey: FolderAccess.key)
+        defaults.set([bookmark, Data("no bookmark".utf8)], forKey: FolderAccess.key)
         let access = FolderAccess(sandboxed: true)
         access.defaults = defaults
         access.restore()
-        XCTAssertEqual(access.count, 1)
-        XCTAssertEqual((defaults.array(forKey: FolderAccess.key) as? [Data])?.count, 1, "still in the preferences")
-        XCTAssertFalse(access.retry(covering: URL(fileURLWithPath: "/Volumes/NAS/Photos")))
+        XCTAssertEqual(access.count, 1, "the bookmark waits for its folder; the damaged data is gone")
+        XCTAssertEqual(defaults.array(forKey: FolderAccess.key) as? [Data], [bookmark], "still in the preferences")
+        XCTAssertFalse(access.retry(covering: gone), "still not there")
+    }
+
+    /// In the App Sandbox the folder the user opened to the app can be
+    /// read and changed inside, but not renamed or moved itself (that
+    /// changes the folder above, which isn't open to the app): its name in
+    /// the title bar asks for the folder above first. A folder inside it
+    /// renames at once, and nothing is offered for a file shown alone.
+    @MainActor
+    func testOnlyWhatIsInsideAGrantCanBeRenamedOrMoved() async throws {
+        let tree = try TempTree(self)
+        let trip = try tree.folder("Trip")
+        try tree.file("Trip/x.jpg")
+        try tree.folder("Trip/Day 1")
+        let saved = FolderAccess.shared
+        // Trip stands for a folder the user granted
+        let sandbox = FolderAccess(sandboxed: true, standardFolders: [trip])
+        sandbox.defaults = makeTestDefaults()
+        FolderAccess.shared = sandbox
+        defer { FolderAccess.shared = saved }
+        let m = makeModel(FileActionsSpy())
+        m.open(folder: trip)
+        await waitUntil { !m.isLoading && m.names.contains("x.jpg") }
+        XCTAssertFalse(m.canRenameCurrentFolder, "the grant itself")
+        XCTAssertTrue(m.renameNeedsAccess, "its name asks for the folder above")
+        XCTAssertTrue(m.canCreateFolder)
+        let photo = try XCTUnwrap(m.entries.first { $0.name == "x.jpg" })
+        XCTAssertTrue(m.canChange(photo))
+        XCTAssertTrue(m.canRename(photo))
+        XCTAssertFalse(sandbox.mayChange(in: tree.root), "the folder above")
+
+        m.open(folder: trip.appendingPathComponent("Day 1"))
+        await waitUntil { !m.isLoading && m.folderURL?.lastPathComponent == "Day 1" }
+        XCTAssertTrue(m.canRenameCurrentFolder, "a folder inside the grant")
+        XCTAssertFalse(m.renameNeedsAccess)
+
+        // Outside every grant nothing can be changed
+        let outside = GridEntry(url: tree.root.appendingPathComponent("y.jpg"), kind: .image)
+        XCTAssertFalse(m.canChange(outside))
+    }
+
+    /// The UI tests start from empty preferences but keep the folders
+    /// granted through the open panel, unless they ask for none.
+    @MainActor
+    func testResetStateKeepsTheGrantsUnlessAskedNotTo() throws {
+        let suite = "art.haushoppe.schnellbild.uitests"
+        let grants = [Data("grant".utf8)]
+        let first = BrowserModel.makeDefaults(arguments: ["--ui-testing", "--reset-state", "--reset-grants"])
+        first.set(grants, forKey: FolderAccess.key)
+        first.set("/somewhere", forKey: "lastFolder-test")
+        let kept = BrowserModel.makeDefaults(arguments: ["--ui-testing", "--reset-state"])
+        XCTAssertEqual(kept.array(forKey: FolderAccess.key) as? [Data], grants)
+        XCTAssertNil(kept.string(forKey: "lastFolder-test"), "the rest starts empty")
+        let none = BrowserModel.makeDefaults(arguments: ["--ui-testing", "--reset-state", "--reset-grants"])
+        XCTAssertNil(none.array(forKey: FolderAccess.key))
+        UserDefaults(suiteName: suite)?.removePersistentDomain(forName: suite)
+    }
+
+    /// Related items (App Sandbox): the files of a file's name with
+    /// another extension, in its folder.
+    func testRelatedFilesHaveTheNameWithAnotherExtension() {
+        let photo = URL(fileURLWithPath: "/P/IMG_1.JPG")
+        XCTAssertTrue(RelatedFiles.isRelated(URL(fileURLWithPath: "/P/IMG_1.xmp"), to: photo))
+        XCTAssertTrue(RelatedFiles.isRelated(URL(fileURLWithPath: "/P/IMG_1.JPG.xmp"), to: photo), "the whole name and one more")
+        XCTAssertFalse(RelatedFiles.isRelated(URL(fileURLWithPath: "/P/IMG_2.xmp"), to: photo))
+        XCTAssertFalse(RelatedFiles.isRelated(URL(fileURLWithPath: "/Q/IMG_1.xmp"), to: photo), "another folder")
+        XCTAssertFalse(RelatedFiles.isRelated(URL(fileURLWithPath: "/P/IMG_1.jpg"), to: photo), "the file itself")
+        let rar = URL(fileURLWithPath: "/P/film.rar")
+        XCTAssertTrue(RelatedFiles.isRelated(URL(fileURLWithPath: "/P/film.r00"), to: rar))
+        XCTAssertTrue(RelatedFiles.isRelated(URL(fileURLWithPath: "/P/film.7z.002"), to: URL(fileURLWithPath: "/P/film.7z.001")))
+        XCTAssertFalse(RelatedFiles.isRelated(URL(fileURLWithPath: "/P/film.part2.rar"), to: URL(fileURLWithPath: "/P/film.part1.rar")),
+                       "another name: the folder must be opened")
     }
 
     /// The last folder isn't there at launch: said, not a bare "No folder

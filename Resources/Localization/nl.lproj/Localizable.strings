@@ -271,6 +271,8 @@
 "Allow Access…" = "Toegang toestaan…";
 "Allow Access" = "Toegang toestaan";
 "Choose this folder, or one that holds it, so Schnellbild may show it. Schnellbild remembers your choice." = "Kies deze map, of een map die hem bevat, zodat Schnellbild hem mag tonen. Schnellbild onthoudt je keuze.";
+"Choose the folder that holds “%@”, so Schnellbild may rename it. Schnellbild remembers your choice." = "Kies de map die ‘%@’ bevat, zodat Schnellbild de naam ervan mag wijzigen. Schnellbild onthoudt je keuze.";
+"Choose this folder, so Schnellbild may put items into it. Schnellbild remembers your choice." = "Kies deze map, zodat Schnellbild er bestanden en mappen in mag zetten. Schnellbild onthoudt je keuze.";
 "Folder access" = "Maptoegang";
 "Folders opened to Schnellbild" = "Mappen geopend voor Schnellbild";
 "Forget Folder Access…" = "Maptoegang vergeten…";

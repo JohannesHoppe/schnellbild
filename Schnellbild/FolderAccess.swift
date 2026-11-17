@@ -1,4 +1,5 @@
 import AppKit
+import Security
 
 /// Which folders the app may read in the App Sandbox (the DMG and the Mac
 /// App Store build alike). The sandbox opens a folder to the app when the
@@ -12,6 +13,14 @@ import AppKit
 /// A grant on a volume that isn't there (a NAS asleep, a USB disk
 /// unplugged) is kept as it is and tried again when a volume mounts or a
 /// place inside it is opened (`retry(covering:)`), never dropped.
+///
+/// The standard folders the app's entitlements open to it (Pictures) are
+/// covered without a grant (`standardFolders`).
+///
+/// Changing what a folder holds (rename, move, new folder, trash) needs the
+/// folder that holds the item covered: the sandbox refuses to rename a
+/// granted folder itself, since its parent isn't open to the app
+/// (`mayChange(in:)`).
 ///
 /// Without the sandbox (unit tests, a build run from the terminal) every
 /// folder can be read: nothing is granted or kept, and `covers` is always
@@ -37,8 +46,25 @@ final class FolderAccess {
     /// the bookmark names, when it says.
     private var pending: [(bookmark: Data, path: String?)] = []
 
-    init(sandboxed: Bool = FolderAccess.isSandboxed) {
+    /// Folders open without a grant: the standard folders the entitlements name.
+    private let standard: [String]
+
+    init(sandboxed: Bool = FolderAccess.isSandboxed, standardFolders: [URL]? = nil) {
         self.sandboxed = sandboxed
+        standard = (standardFolders ?? (sandboxed ? Self.standardFolders : [])).map(BrowserModel.canonicalPath)
+    }
+
+    /// The user's standard folders the app's own entitlements open to it
+    /// (`com.apple.security.assets.<folder>.read-write`), in the real home
+    /// folder, not the container's.
+    nonisolated static var standardFolders: [URL] {
+        guard let task = SecTaskCreateFromSelf(nil), let home = getpwuid(getuid())?.pointee.pw_dir else { return [] }
+        let homeURL = URL(fileURLWithPath: String(cString: home), isDirectory: true)
+        let folders = ["pictures": "Pictures", "movies": "Movies", "music": "Music"]
+        return folders.compactMap { key, name in
+            let value = SecTaskCopyValueForEntitlement(task, "com.apple.security.assets.\(key).read-write" as CFString, nil)
+            return (value as? Bool) == true ? homeURL.appendingPathComponent(name, isDirectory: true) : nil
+        }
     }
 
     /// The folders granted before, opened again (once, at launch, before
@@ -47,7 +73,12 @@ final class FolderAccess {
     func restore() {
         guard sandboxed else { return }
         for data in defaults.array(forKey: Self.key) as? [Data] ?? [] {
-            if let grant = Self.opened(data) { grants.append(grant) } else { pending.append((data, Self.path(ofBookmark: data))) }
+            if let grant = Self.opened(data) {
+                grants.append(grant)
+            } else if let path = Self.path(ofBookmark: data) {
+                pending.append((data, path))
+            }
+            // Else no bookmark at all (damaged data): nothing it could ever open, dropped
         }
         save()
     }
@@ -101,8 +132,13 @@ final class FolderAccess {
     func covers(_ url: URL) -> Bool {
         guard sandboxed else { return true }
         let path = BrowserModel.canonicalPath(url)
-        return grants.contains { Self.path(path, isIn: $0.path) }
+        return grants.contains { Self.path(path, isIn: $0.path) } || standard.contains { Self.path(path, isIn: $0) }
     }
+
+    /// Whether the app may rename or move what lies in `folder`, or
+    /// add to it: the sandbox needs the folder itself open to the app, so a
+    /// granted folder can't be renamed or moved, only what is inside it.
+    func mayChange(in folder: URL) -> Bool { covers(folder) }
 
     /// How many folders are granted (Settings), those on volumes not there included.
     var count: Int { grants.count + pending.count }
@@ -115,17 +151,34 @@ final class FolderAccess {
         save()
     }
 
+    /// Why a folder is asked for: the panel's message says it.
+    enum Purpose {
+        /// To show it (it lies outside every grant)
+        case show
+        /// To rename the folder named, which lies in it
+        case rename(String)
+        /// To put items into it (a move or copy)
+        case moveInto
+    }
+
     /// Asks the user to open `folder` to the app: the open panel, at that
     /// folder. Returns the folder chosen (it may be one that holds `folder`,
     /// or another one), granted.
-    func ask(for folder: URL) -> URL? {
+    func ask(for folder: URL, to purpose: Purpose = .show) -> URL? {
         let panel = NSOpenPanel()
         panel.canChooseDirectories = true
         panel.canChooseFiles = false
         panel.allowsMultipleSelection = false
         panel.directoryURL = folder
         panel.prompt = String(localized: "Allow Access")
-        panel.message = String(localized: "Choose this folder, or one that holds it, so Schnellbild may show it. Schnellbild remembers your choice.")
+        switch purpose {
+        case .show:
+            panel.message = String(localized: "Choose this folder, or one that holds it, so Schnellbild may show it. Schnellbild remembers your choice.")
+        case .rename(let name):
+            panel.message = String(localized: "Choose the folder that holds “\(name)”, so Schnellbild may rename it. Schnellbild remembers your choice.")
+        case .moveInto:
+            panel.message = String(localized: "Choose this folder, so Schnellbild may put items into it. Schnellbild remembers your choice.")
+        }
         guard panel.runModal() == .OK, let url = panel.url else { return nil }
         grant(url)
         return url

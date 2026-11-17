@@ -121,7 +121,7 @@
   "safe": [
     [
       "In Apple's App Sandbox.",
-      "No network at all, starts no programs by itself, sees only the folders you open to it plus Pictures, Movies and Downloads."
+      "No network at all, starts no programs by itself, sees only the folders you open to it plus Pictures."
     ],
     [
       "Only reading.",

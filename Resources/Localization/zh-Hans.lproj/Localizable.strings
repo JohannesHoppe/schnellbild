@@ -271,6 +271,8 @@
 "Allow Access…" = "允许访问…";
 "Allow Access" = "允许访问";
 "Choose this folder, or one that holds it, so Schnellbild may show it. Schnellbild remembers your choice." = "请选择此文件夹或包含它的文件夹，以便 Schnellbild 显示。Schnellbild 会记住你的选择。";
+"Choose the folder that holds “%@”, so Schnellbild may rename it. Schnellbild remembers your choice." = "请选择包含“%@”的文件夹，以便 Schnellbild 为它重新命名。Schnellbild 会记住你的选择。";
+"Choose this folder, so Schnellbild may put items into it. Schnellbild remembers your choice." = "请选择此文件夹，以便 Schnellbild 将文件和文件夹放入其中。Schnellbild 会记住你的选择。";
 "Folder access" = "文件夹访问";
 "Folders opened to Schnellbild" = "已向 Schnellbild 开放的文件夹";
 "Forget Folder Access…" = "忘记文件夹访问…";

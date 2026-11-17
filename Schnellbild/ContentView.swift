@@ -531,7 +531,13 @@ struct PaneView: View {
             if !model.presenting { searchBar.id(ObjectIdentifier(model)) }
         }
         .safeAreaInset(edge: .bottom, spacing: 0) {
-            if model.mode == .grid, !model.presenting, model.folderURL != nil { statusBar }
+            if model.mode == .grid, !model.presenting, model.folderURL != nil {
+                statusBar
+            } else if model.mode == .detail, !model.presenting, model.accessLimited {
+                // The file dropped alone, in the full view: why ← → find
+                // nothing, and how to see its folder
+                accessLimitedBar
+            }
         }
         .sheet(isPresented: $model.showHelp) { ShortcutsHelpView() }
         .sheet(item: $model.renameTarget) { RenameView(entry: $0) }
@@ -589,6 +595,22 @@ struct PaneView: View {
             statusRow(path: true, wrap: false)
             statusRow(path: false, wrap: false)
             statusRow(path: false, wrap: true)
+        }
+        .font(.caption)
+        .padding(.horizontal, 12)
+        .padding(.vertical, 6)
+        .background(.bar)
+    }
+
+    /// The full view of a file shown alone (`accessLimited`): the status
+    /// bar's note and its "Allow Access…".
+    private var accessLimitedBar: some View {
+        HStack(spacing: 8) {
+            Text("Only the file you opened is shown here.").foregroundStyle(.secondary)
+            Button("Allow Access…") { model.allowAccess() }
+                .buttonStyle(.link)
+                .accessibilityIdentifier("allowAccess")
+            Spacer(minLength: 0)
         }
         .font(.caption)
         .padding(.horizontal, 12)
@@ -1265,7 +1287,8 @@ private struct FolderNameField: View {
                     .onAppear { focused = true }
             } else {
                 Button {
-                    guard model.canRenameCurrentFolder else { return }
+                    // A folder granted itself: the folder holding it is asked for first
+                    guard model.canRenameCurrentFolder || model.allowRenamingCurrentFolder() else { return }
                     name = current
                     editing = true
                     focused = true
@@ -1273,7 +1296,7 @@ private struct FolderNameField: View {
                     Text(verbatim: current).font(.headline).lineLimit(1).truncationMode(.middle)
                 }
                 .buttonStyle(.plain)
-                .help(model.canRenameCurrentFolder ? Text("Click to rename this folder") : Text(verbatim: current))
+                .help(model.canRenameCurrentFolder || model.renameNeedsAccess ? Text("Click to rename this folder") : Text(verbatim: current))
                 .accessibilityIdentifier("folderTitle")
             }
         }

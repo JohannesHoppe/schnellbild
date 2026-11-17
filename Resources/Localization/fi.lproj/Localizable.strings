@@ -271,6 +271,8 @@
 "Allow Access…" = "Salli pääsy…";
 "Allow Access" = "Salli pääsy";
 "Choose this folder, or one that holds it, so Schnellbild may show it. Schnellbild remembers your choice." = "Valitse tämä kansio tai sen sisältävä kansio, jotta Schnellbild saa näyttää sen. Schnellbild muistaa valintasi.";
+"Choose the folder that holds “%@”, so Schnellbild may rename it. Schnellbild remembers your choice." = "Valitse kansio, joka sisältää kohteen ”%@”, jotta Schnellbild saa nimetä sen uudelleen. Schnellbild muistaa valintasi.";
+"Choose this folder, so Schnellbild may put items into it. Schnellbild remembers your choice." = "Valitse tämä kansio, jotta Schnellbild saa siirtää sinne tiedostoja ja kansioita. Schnellbild muistaa valintasi.";
 "Folder access" = "Kansioiden käyttö";
 "Folders opened to Schnellbild" = "Schnellbildille avatut kansiot";
 "Forget Folder Access…" = "Unohda kansioiden käyttö…";

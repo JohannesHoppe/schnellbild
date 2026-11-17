@@ -271,6 +271,8 @@
 "Allow Access…" = "Povolit přístup…";
 "Allow Access" = "Povolit přístup";
 "Choose this folder, or one that holds it, so Schnellbild may show it. Schnellbild remembers your choice." = "Vyber tuto složku nebo složku, která ji obsahuje, aby ji Schnellbild mohl zobrazit. Schnellbild si tvou volbu zapamatuje.";
+"Choose the folder that holds “%@”, so Schnellbild may rename it. Schnellbild remembers your choice." = "Vyber složku, která obsahuje „%@“, aby ji Schnellbild mohl přejmenovat. Schnellbild si tvou volbu zapamatuje.";
+"Choose this folder, so Schnellbild may put items into it. Schnellbild remembers your choice." = "Vyber tuto složku, aby do ní Schnellbild mohl ukládat soubory a složky. Schnellbild si tvou volbu zapamatuje.";
 "Folder access" = "Přístup ke složkám";
 "Folders opened to Schnellbild" = "Složky otevřené pro Schnellbild";
 "Forget Folder Access…" = "Zapomenout přístup ke složkám…";

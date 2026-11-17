@@ -271,6 +271,8 @@
 "Allow Access…" = "アクセスを許可…";
 "Allow Access" = "アクセスを許可";
 "Choose this folder, or one that holds it, so Schnellbild may show it. Schnellbild remembers your choice." = "Schnellbildが表示できるように、このフォルダまたはそれを含むフォルダを選択してください。Schnellbildは選択を記憶します。";
+"Choose the folder that holds “%@”, so Schnellbild may rename it. Schnellbild remembers your choice." = "Schnellbildが“%@”の名前を変更できるように、それを含むフォルダを選択してください。Schnellbildは選択を記憶します。";
+"Choose this folder, so Schnellbild may put items into it. Schnellbild remembers your choice." = "Schnellbildがファイルやフォルダを入れられるように、このフォルダを選択してください。Schnellbildは選択を記憶します。";
 "Folder access" = "フォルダへのアクセス";
 "Folders opened to Schnellbild" = "Schnellbildに許可したフォルダ";
 "Forget Folder Access…" = "フォルダへのアクセスを消去…";
