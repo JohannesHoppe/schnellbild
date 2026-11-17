@@ -146,6 +146,7 @@ class Contrib(unittest.TestCase):
         write(os.path.join(freetype, "LICENSE.TXT"), "FREETYPE LICENSES\n")
         for extra in contrib.EXTRA_LICENCE_FILES["freetype2"]:
             write(os.path.join(freetype, extra), "The FreeType Project LICENSE\n")
+        write(os.path.join(freetype, "include", "freetype", "freetype.h"), "/*\n * Copyright (C) 1996-2026 by\n */\n")
         write(os.path.join(freetype, "src", "base", "ftinit.c"), "/* FreeType Project License */\nvoid FT_Init_FreeType(void) {}\n")
         for name in ("libavutil.a", "libfreetype.a"):
             write(os.path.join(self.lib, name), "")
@@ -200,7 +201,9 @@ class Contrib(unittest.TestCase):
         self.assertIn("  libfreetype.a (freetype2)\n", text)
         rule = "=" * 80
         self.assertIn(f"{rule}\nffmpeg\n{rule}\n--- COPYING.LGPLv2.1\nGNU LESSER", text)
-        self.assertIn(f"{rule}\nfreetype2\n{rule}\n--- LICENSE.TXT\n", text)
+        # The credit the FreeType License asks for, with the version's year
+        self.assertIn(f"{rule}\nfreetype2\n{rule}\nPortions of this software are copyright © 2026 The FreeType Project"
+                      " (https://freetype.org). All rights reserved.\n\n--- LICENSE.TXT\n", text)
         self.assertIn("--- docs/FTL.TXT\nThe FreeType Project LICENSE", text)
 
     def test_a_library_without_a_licence_file_is_reported(self):

@@ -102,6 +102,18 @@ COMPILED_IN = {
 EXTRA_LICENCE_FILES = {
     "freetype2": ["docs/FTL.TXT", "src/bdf/README", "src/pcf/README"],
 }
+# Credits a licence asks for in the documentation, by package: the FreeType
+# License's (docs/FTL.TXT), with the year of the version built
+def freetype_credit(folder):
+    with open(os.path.join(folder, "include", "freetype", "freetype.h"), encoding="utf-8", errors="replace") as f:
+        year = re.search(r"Copyright \(C\) \d{4}-(\d{4})", f.read()).group(1)
+    return (f"Portions of this software are copyright © {year} The FreeType Project (https://freetype.org). "
+            "All rights reserved.")
+
+
+CREDITS = {
+    "freetype2": freetype_credit,
+}
 LICENCE_NAME = re.compile(r"^(copying|licen[cs]e|copyright|notice|unlicense|lgpl|patents)", re.IGNORECASE)
 SOURCE_SUFFIXES = (".c", ".cc", ".cpp", ".cxx", ".m", ".mm", ".S", ".s", ".asm")
 
@@ -288,6 +300,11 @@ def write_licences(path, vlc, build, packages, libraries):
                 missing.append(package)
                 files = []
             out.write(f"{rule}\n{package}\n{rule}\n")
+            if package in CREDITS:
+                try:
+                    out.write(CREDITS[package](folder) + "\n\n")
+                except (OSError, AttributeError):
+                    missing.append(package)
             for file in files:
                 out.write(f"--- {os.path.relpath(file, folder)}\n")
                 with open(file, "rb") as f:
