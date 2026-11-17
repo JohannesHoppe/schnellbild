@@ -1106,18 +1106,29 @@ struct VideoProgressBar: View {
                                     : min(max(progress, 0), 1).formatted(.percent.precision(.fractionLength(0))))
                 // The time left, once the length is known
                 if let length = model.activePlayer?.lengthSeconds, model.activePlayer?.progress != nil {
-                    Text(verbatim: "−" + Self.clock(length * (1 - min(max(progress, 0), 1))))
+                    let left = "−" + Self.clock(length * (1 - min(max(progress, 0), 1)))
+                    Text(verbatim: left)
                         .font(.caption.monospacedDigit())
                         .foregroundStyle(.secondary)
                         .accessibilityIdentifier("videoTimeLeft")
+                        // UI tests: where the player stands, with the app's clock at that
+                        // moment, so a test measures the speed without its own delays
+                        .accessibilityLabel(VideoDetailView.uiTesting ? Self.playerClock(model.activePlayer?.playedSeconds) : left)
                 }
             }
         }
     }
 
+    /// "played 8.432 s at 1234.567 s": the player's place and the system's
+    /// uptime when it was read (UI tests).
+    static func playerClock(_ played: Double?) -> String {
+        String(format: "played %.3f s at %.3f s", played ?? -1, ProcessInfo.processInfo.systemUptime)
+    }
+
     /// "1:05", "1:02:05" (rounded up: the last second shows as 0:01)
     static func clock(_ seconds: Double) -> String {
-        let total = Int(max(seconds, 0).rounded(.up))
+        // Held in Int's range (a crafted length may be anything)
+        let total = seconds.isFinite ? Int(min(max(seconds, 0), 1e15).rounded(.up)) : 0
         let h = total / 3600, m = total / 60 % 60, s = total % 60
         return h > 0 ? String(format: "%d:%02d:%02d", h, m, s) : String(format: "%d:%02d", m, s)
     }

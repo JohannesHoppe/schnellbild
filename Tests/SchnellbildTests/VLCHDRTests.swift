@@ -41,8 +41,15 @@ final class VLCHDRTests: XCTestCase {
             last = output.latestPicture
             if let last, done(last) { break }
         }
-        // EDR is switched on the main thread after the colours are known
-        try await Task.sleep(for: .milliseconds(200))
+        // EDR is switched on the main thread once the colours are known
+        // (`showInEDR`): for an HDR picture, wait until the layer has it;
+        // then let everything the output sent to the main queue so far run,
+        // so an SDR video that would wrongly switch it on shows it too
+        if let last, VLCFrameOutput.isHDR(last) {
+            let deadline = Date().addingTimeInterval(10)
+            while !output.showsEDR, Date() < deadline { try await Task.sleep(for: .milliseconds(20)) }
+        }
+        await withCheckedContinuation { (done: CheckedContinuation<Void, Never>) in DispatchQueue.main.async { done.resume() } }
         let edr = output.showsEDR
         await Task.detached { held.player.stop() }.value
         let picture = try XCTUnwrap(last, "no picture from \(name).\(ext)", file: file, line: line)

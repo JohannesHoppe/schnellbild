@@ -5,7 +5,9 @@ first picture was now and then shown before the subtitle decoder, released
 in the same moment, had handed its line to the video output (seen in one
 run of thirty). With a subtitle track chosen at the start (sub-track-id) and
 a video, the subtitle decoders are released first and the others 10 ms
-later. Applied after 0003, with patch -p1 (Scripts/build_vlckit_lgpl.sh).
+later; the clock's start is set those 10 ms later as well, so the first
+picture and sound are not late for it. Applied after 0003, with patch -p1
+(Scripts/build_vlckit_lgpl.sh).
 
 diff --git a/src/input/es_out.c b/src/input/es_out.c
 --- a/src/input/es_out.c
@@ -20,17 +22,28 @@ diff --git a/src/input/es_out.c b/src/input/es_out.c
      {
          for( int i = 0; i < p_sys->i_es; i++ )
          {
-@@ -749,12 +750,33 @@
+@@ -746,15 +747,41 @@
+     /* */
+     const vlc_tick_t i_wakeup_delay = 10*1000; /* FIXME CLEANUP thread wake up time*/
+     const vlc_tick_t i_current_date = p_sys->b_paused ? p_sys->i_pause_date : mdate();
++
++    /* The subtitle decoders go on first, a moment ahead of the others, so
++     * the line they hold is with the video output before the first picture
++     * is shown (released together, the first picture won now and then).
++     * The start is set that moment later, so the first picture and sound
++     * are not late for it */
++    bool b_spu = false;
++    for( int i = 0; b_spu_first && i < p_sys->i_es; i++ )
++        if( p_sys->es[i]->p_dec && p_sys->es[i]->fmt.i_cat == SPU_ES )
++            b_spu = true;
++    const vlc_tick_t i_spu_lead = b_spu ? 10*1000 : 0;
  
      input_clock_ChangeSystemOrigin( p_sys->p_pgrm->p_clock, true,
-                                     i_current_date + i_wakeup_delay - i_buffering_duration );
-+
-+    /* The subtitle decoders go on first, a moment ahead of the video, so the
-+     * line they hold is with the video output before the first picture is
-+     * shown (released together, the first picture won now and then) */
-+    if( b_spu_first )
+-                                    i_current_date + i_wakeup_delay - i_buffering_duration );
++                                    i_current_date + i_wakeup_delay + i_spu_lead - i_buffering_duration );
+ 
++    if( b_spu )
 +    {
-+        bool b_spu = false;
 +        for( int i = 0; i < p_sys->i_es; i++ )
 +        {
 +            es_out_id_t *p_es = p_sys->es[i];
@@ -39,19 +52,17 @@ diff --git a/src/input/es_out.c b/src/input/es_out.c
 +                input_DecoderStopWait( p_es->p_dec );
 +                if( p_es->p_dec_record )
 +                    input_DecoderStopWait( p_es->p_dec_record );
-+                b_spu = true;
 +            }
 +        }
-+        if( b_spu )
-+            msleep( 10 * 1000 );
++        msleep( i_spu_lead );
 +    }
- 
++
      for( int i = 0; i < p_sys->i_es; i++ )
      {
          es_out_id_t *p_es = p_sys->es[i];
  
 -        if( !p_es->p_dec )
-+        if( !p_es->p_dec || ( b_spu_first && p_es->fmt.i_cat == SPU_ES ) )
++        if( !p_es->p_dec || ( b_spu && p_es->fmt.i_cat == SPU_ES ) )
              continue;
  
          input_DecoderStopWait( p_es->p_dec );

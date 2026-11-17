@@ -513,6 +513,30 @@ final class VisualUITests: SchnellbildUITestCase {
         String(((try? String(contentsOf: log, encoding: .utf8)) ?? "").dropFirst(start))
     }
 
+    /// The lower part of the picture, where the subtitles go, measured
+    /// while a line shows: the fixtures' lines follow each other every 2 s
+    /// up to their end at 20 s, so the video is paused first and the
+    /// player's place checked (a slow runner may have played it to its end,
+    /// and an even grey would read as no text). It plays on afterwards.
+    private func measureWhileALineShows(_ video: XCUIElement, file: StaticString = #filePath, line: UInt = #line) throws -> ScreenStats {
+        app.typeKey(" ", modifierFlags: [])
+        waitForBadge(containing: "Paused", file: file, line: line)
+        // The mouse off the video: the control bar goes and covers nothing
+        app.windows.firstMatch.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.02)).hover()
+        settle(4)
+        let place = playerClock()
+        print("measured paused at \(String(describing: place)); \(text(of: video))")
+        XCTAssertLessThan(place?.played ?? .infinity, 19.8, "paused while a line shows, before the end: \(String(describing: place))",
+                          file: file, line: line)
+        let picture = picture(in: video)
+        let lower = CGRect(x: picture.minX + picture.width * 0.15, y: picture.minY + picture.height * 0.7,
+                           width: picture.width * 0.7, height: picture.height * 0.28)
+        let stats = try screenStats(of: lower, file: file, line: line)
+        app.typeKey(" ", modifierFlags: [])
+        eventually("playing on", file: file, line: line) { !self.text(of: self.badge).contains("Paused") }
+        return stats
+    }
+
     /// The subtitles inside the video are drawn over the picture, by AVKit
     /// and by VLC (into the pictures it hands over through its video
     /// callbacks): on the even grey clip the lower part of the picture,
@@ -527,13 +551,10 @@ final class VisualUITests: SchnellbildUITestCase {
             waitForSoftwarePictures(of: video)
             checkStartedInSoftware(video, log: logSince(log))
         }
-        // The mouse off the video: the control bar goes and covers nothing
-        app.windows.firstMatch.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.02)).hover()
-        settle(4)
+        let shown = try measureWhileALineShows(video)
         let picture = picture(in: video)
         let lower = CGRect(x: picture.minX + picture.width * 0.15, y: picture.minY + picture.height * 0.7,
                            width: picture.width * 0.7, height: picture.height * 0.28)
-        let shown = try screenStats(of: lower)
         app.typeKey("v", modifierFlags: [])
         eventually("off") { text(of: video).contains("subtitles off/2") }
         settle(3)   // past the line that was showing (a line every 2 s)
@@ -569,12 +590,7 @@ final class VisualUITests: SchnellbildUITestCase {
         eventually("the ASS track at once", timeout: 20) { text(of: video).contains("subtitles 2/2 de") }
         waitForSoftwarePictures(of: video)
         checkStartedInSoftware(video, log: logSince(log, mark))
-        app.windows.firstMatch.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.02)).hover()
-        settle(4)
-        let picture = picture(in: video)
-        let lower = CGRect(x: picture.minX + picture.width * 0.15, y: picture.minY + picture.height * 0.7,
-                           width: picture.width * 0.7, height: picture.height * 0.28)
-        let shown = try screenStats(of: lower)
+        let shown = try measureWhileALineShows(video)
         print("VLC ASS subtitles: ± \(shown.spread) (mean \(shown.mean)); \(text(of: video))")
         XCTAssertGreaterThan(shown.spread, 0.05, "text over the lower part of the picture")
     }
@@ -635,12 +651,7 @@ final class VisualUITests: SchnellbildUITestCase {
         eventually("VLC's lines again", timeout: 20) { self.logSince(log, mark).contains("vlc: the app's lines are over") }
         RunLoop.current.run(until: Date().addingTimeInterval(2.5))
         checkTheAppsLineLooksAsVLCs(logSince(log, mark), "SubRip")
-        app.windows.firstMatch.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.02)).hover()
-        settle(4)
-        let picture = picture(in: video)
-        let lower = CGRect(x: picture.minX + picture.width * 0.15, y: picture.minY + picture.height * 0.7,
-                           width: picture.width * 0.7, height: picture.height * 0.28)
-        let shown = try screenStats(of: lower)
+        let shown = try measureWhileALineShows(video)
         print("VLC ramp subtitles after switching: ± \(shown.spread) (mean \(shown.mean))")
         XCTAssertGreaterThan(shown.spread, 0.03, "text over the lower part of the picture")
     }

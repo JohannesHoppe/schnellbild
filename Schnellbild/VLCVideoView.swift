@@ -367,6 +367,7 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         pauseOnceOpen = false   // (resumed paused, played before its first picture)
         // A seek made while paused: VLC reports its new place once it plays
         if let pending = pendingSeek { pendingSeek = (pending.target, Date()) }
+        if reopening { return }
         if parsing { playWhenParsed = true; return }
         // Not played yet: the media as prepared (its tracks chosen)
         if !started { startPlaying(); return }
@@ -380,23 +381,27 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
 
     func pause() {
         isPlaying = false
+        if reopening { return }
         if parsing { playWhenParsed = false; return }
         player.pause()
     }
 
-    /// Stopping waits for VLC's reading thread; with a read stalled on a
-    /// network share that takes until it times out, so it waits off the
-    /// main thread (the block keeps the player until then).
+    /// Stops at once, picture and sound: VLCKit's `stop` hands the closing
+    /// of the input to libVLC's own thread (`libvlc_media_player_stop_async`),
+    /// so nothing waits here, also not for a place on `VLCStops`, whose
+    /// threads a stalled share may hold. Waiting for the player to have
+    /// stopped happens there (the block keeps the player until then).
     func stop() {
         measureTask?.cancel()
         measureTask = nil
         handoverTask?.cancel()
+        overlayTask?.cancel()
         player.delegate = nil
+        player.stop()
         // Nothing else touches it once stopping: the control is going away.
         // (The picture output lives as long as the player: `VLCFrameOutput.attach`.)
         let player = held
         VLCStops.run {
-            player.player.stop()
             for _ in 0..<100 where player.player.state != .stopped { usleep(50_000) }
             BrowserModel.testLog("vlc stopped")
         }
@@ -451,6 +456,12 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
     }
     /// The media in the player is one opened for software decoding.
     private var openedInSoftware = false
+    /// Stopped to be opened again in software (`decodeInSoftware`): play,
+    /// pause and seeks meanwhile are kept for the new media, not handed to
+    /// the player stopping.
+    private var reopening = false
+    /// Where a seek made while `reopening` goes (0 … 1).
+    private var seekWhileReopening: Double?
 
     /// Opens the media again, decoded in software, where the picture stands
     /// (once per video, when subtitles are to be shown while it plays in
@@ -464,15 +475,17 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
     private func decodeInSoftware() {
         guard !softwareDecoding else { return }
         softwareDecoding = true
-        let wasPlaying = isPlaying
         let current = Int(player.currentVideoSubTitleIndex)
         if let wanted = wantedSubtitle { subtitleOnceOpen = wanted } else { subtitleOnceOpen = current >= 0 ? current : nil }
         let ended = reachedEnd || player.position >= 0.999
-        let time = ended ? 0 : resumeMs > 0 ? resumeMs : max(timeNow, 0)
+        let stoppedAt = ended ? 0 : resumeMs > 0 ? resumeMs : max(timeNow, 0)
+        let lengthMs = Int(player.media?.length.intValue ?? 0)
         let track = subtitleToOpen
         let index = track.flatMap(subtitleIndex(of:))
+        reopening = true
+        seekWhileReopening = nil
         player.stop()
-        BrowserModel.testLog("vlc: software decoding for subtitles, stopped at \(time) ms (VLC's last report \(player.time.intValue) ms) "
+        BrowserModel.testLog("vlc: software decoding for subtitles, stopped at \(stoppedAt) ms (VLC's last report \(player.time.intValue) ms) "
             + "| \(BrowserModel.testClock) ms")
         Task { @MainActor [weak self] in
             for _ in 0..<100 {
@@ -481,6 +494,12 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
                 try? await Task.sleep(for: .milliseconds(20))
             }
             guard let self, self.player.delegate != nil else { return }
+            // Space and seeks while it stopped count: it opens where and as they left it
+            self.reopening = false
+            var time = stoppedAt
+            if let target = self.seekWhileReopening, lengthMs > 0 { time = Int((target * Double(lengthMs)).rounded()) }
+            self.seekWhileReopening = nil
+            let playing = self.isPlaying
             BrowserModel.testLog("vlc: last picture before opening again: \(self.output.lastProbe)")
             // From the start VLC reads every line itself; else the app hands over
             let handingOver = time > 0 && track != nil && index != nil
@@ -489,13 +508,12 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
             self.player.media = media
             self.output.use(media, newFormat: true)
             self.openedInSoftware = true
-            self.pauseOnceOpen = !wasPlaying
+            self.pauseOnceOpen = !playing
             if handingOver, let track, let index {
                 self.beginHandover(track: track, index: index, at: Double(time) / 1000, holdingPictures: true)
             }
             self.player.play()
-            BrowserModel.testLog("vlc: opened again in software at \(time) ms, subtitles \(String(describing: track))")
-            self.isPlaying = wasPlaying
+            BrowserModel.testLog("vlc: opened again in software at \(time) ms, \(playing ? "playing" : "paused"), subtitles \(String(describing: track))")
         }
     }
 
@@ -530,6 +548,8 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
     }
     private var handover: Handover?
     private var handoverTask: Task<Void, Never>?
+    /// The running line being drawn (`followHandover`).
+    private var overlayTask: Task<Void, Never>?
     /// How far VLC reads ahead of the picture at most (its decoders' queues).
     nonisolated static let readAhead = 1.5
     /// How far ahead the lines are read (the app draws up to the first gap).
@@ -537,7 +557,8 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
 
     /// The track to show from `time` (seconds): its lines are read off the
     /// main thread; if they can't be (a stream, another format, a damaged
-    /// file), VLC takes the track at once, the running line left out.
+    /// file, a share too slow to read them within `SubtitleReader.budget`),
+    /// VLC takes the track at once, the running line left out.
     /// `holdingPictures`: the media opened again: its pictures wait on the
     /// layer until the running line is drawn over them.
     private func beginHandover(track: Int, index: Int, at time: Double, holdingPictures: Bool = false) {
@@ -556,9 +577,11 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
             self?.output.hold(false)
         }
         handoverTask = Task { @MainActor [weak self] in
-            let read = await Task.detached(priority: .userInitiated) {
+            // Cancelled with the handover (another track, the video left);
+            // a read past `SubtitleReader.budget` gives none
+            let read = await detachedCancellable(priority: .userInitiated) {
                 SubtitleReader.lines(of: url, subtitleIndex: index, from: time, to: time + Self.linesAhead)
-            }.value
+            }
             guard let self, !Task.isCancelled, self.player.delegate != nil else { return }
             guard let read else {
                 BrowserModel.testLog("vlc: lines of subtitles \(track) not read, VLC from its next line")
@@ -605,19 +628,32 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         if texts != handover.shown {
             handover.shown = texts
             BrowserModel.testLog("vlc: the app draws \(texts) at \(String(format: "%.3f", now)) s | \(BrowserModel.testClock) ms")
+            overlayTask?.cancel()
+            overlayTask = nil
             if let size = output.bufferSize, !texts.isEmpty {
-                output.setOverlay(SubtitleOverlay.image(running, kind: handover.lines.kind,
-                                                        width: size.width, height: size.height, decoded: output.proposedSize),
-                                  logging: 3)
+                // Drawn off the main thread (at a 4K video's size the picture
+                // is large); held pictures show once it lies over them
+                let kind = handover.lines.kind, decoded = output.proposedSize
+                overlayTask = Task { @MainActor [weak self] in
+                    let image = await detachedCancellable(priority: .userInitiated) {
+                        SubtitleOverlay.image(running, kind: kind, width: size.width, height: size.height, decoded: decoded)
+                    }
+                    guard let self, !Task.isCancelled, self.handover?.shown == texts else { return }
+                    self.overlayTask = nil
+                    self.output.setOverlay(image, logging: 3)
+                    self.output.hold(false)
+                }
             } else {
                 output.setOverlay(nil, logging: 40)
             }
         }
         // Held pictures show from here on, with the line over them
-        output.hold(false)
+        if overlayTask == nil { output.hold(false) }
         let ours = handover.lines.lines.filter { $0.start < handover.firstOfVLC }
         if handover.selected, now >= (ours.map(\.end).max() ?? 0) {
             self.handover = nil
+            overlayTask?.cancel()
+            overlayTask = nil
             output.setOverlay(nil)
             BrowserModel.testLog("vlc: the app's lines are over at \(String(format: "%.3f", now)) s | \(BrowserModel.testClock) ms")
             return
@@ -636,6 +672,8 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
     private func endHandover(selecting: Bool = false) {
         handoverTask?.cancel()
         handoverTask = nil
+        overlayTask?.cancel()
+        overlayTask = nil
         if selecting, let handover, !handover.selected { player.currentVideoSubTitleIndex = Int32(handover.track) }
         if handover != nil { output.setOverlay(nil) }
         handover = nil
@@ -782,7 +820,9 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         reachedEnd = false
         resumeMs = 0
         pendingSeek = (target, Date())
-        if atEnd {
+        if reopening {
+            seekWhileReopening = target
+        } else if atEnd {
             positionOnceOpen = Float(target)
             play()
         } else {
@@ -884,30 +924,44 @@ struct VLCVideoView: NSViewRepresentable {
     }
 }
 
-/// Thumbnails of videos QuickLook has only an icon for (Schnellbild's
-/// QuickLook extension not registered yet, or a type it doesn't take): VLC decodes
-/// a frame at 30 % of the video (`VLCFrameGrab`). At most two run at a
-/// time, since each one opens and decodes the file.
+/// Thumbnails of videos QuickLook has only an icon for, or none in time
+/// (`ThumbnailCache.videoThumbnail`): VLC decodes a frame at 30 % of the
+/// video (`VLCFrameGrab`). At most two run at a time, since each one opens
+/// and decodes the file.
 @MainActor
 final class VLCThumbnails {
     static let shared = VLCThumbnails()
     private static let limit = 2
     private var running = 0
-    private var queue: [CheckedContinuation<Void, Never>] = []
+    /// Calls waiting for a place; resumed with false when cancelled meanwhile.
+    private var queue: [(id: UUID, admit: CheckedContinuation<Bool, Never>)] = []
 
-    /// A frame `width` pixels wide (the height follows the video), or nil.
-    func thumbnail(for url: URL, width: CGFloat) async -> CGImage? {
+    /// A frame `width` pixels wide (the height follows the video), or why
+    /// there is none.
+    func thumbnail(for url: URL, width: CGFloat) async -> VLCFrameGrab.Outcome {
         // A finishing call hands its place straight to the next waiting one,
-        // so no new call can slip in between
+        // so no new call can slip in between; a tile scrolled away leaves
+        // the line at once
         if running >= Self.limit {
-            await withCheckedContinuation { queue.append($0) }
+            let id = UUID()
+            let admitted = await withTaskCancellationHandler {
+                await withCheckedContinuation { queue.append((id, $0)) }
+            } onCancel: {
+                Task { @MainActor in self.leave(id) }
+            }
+            guard admitted else { return .cancelled }
         } else {
             running += 1
         }
         defer {
-            if queue.isEmpty { running -= 1 } else { queue.removeFirst().resume() }
+            if queue.isEmpty { running -= 1 } else { queue.removeFirst().admit.resume(returning: true) }
         }
-        guard !Task.isCancelled else { return nil }
-        return await VLCFrameGrab.frame(of: url, width: Int(width.rounded()))
+        guard !Task.isCancelled else { return .cancelled }
+        return await VLCFrameGrab.grab(of: url, width: Int(width.rounded()))
+    }
+
+    private func leave(_ id: UUID) {
+        guard let index = queue.firstIndex(where: { $0.id == id }) else { return }
+        queue.remove(at: index).admit.resume(returning: false)
     }
 }
