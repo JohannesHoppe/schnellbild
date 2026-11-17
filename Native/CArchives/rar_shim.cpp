@@ -19,6 +19,20 @@
 #include "include/CArchives.h"
 
 
+// UnRAR's handle, declared as in dll.cpp (fetch_unrar.sh checks that
+// declaration is unchanged): the current file's header holds whether RAR5
+// stored a password check value for it, which the DLL's header doesn't say
+struct DataSet
+{
+  CommandData Cmd;
+  Archive Arc;
+  CmdExtract Extract;
+  int OpenMode;
+  int HeaderSize;
+
+  DataSet():Arc(&Cmd),Extract(&Cmd) {};
+};
+
 // A running CRC32 over a file's data, through UnRAR's own (fast) CRC32,
 // which leaves the start and end inversion to its caller
 static uint32_t crc32Update(uint32_t crc, const uint8_t *bytes, size_t count) {
@@ -148,6 +162,13 @@ extern "C" int sb_rar_next(SBRar *rar, SBRarEntry *entry) {
         // entry's: kept, with that entry's name; links to outside are not
         entry->redirect_type = (int)header->RedirType;
         if (header->RedirType != FSREDIR_HARDLINK && header->RedirType != FSREDIR_FILECOPY) entry->redirect[0] = 0;
+        // RAR5 checks the password against the header's check value before
+        // unpacking (extract.cpp): a wrong one fails with no data, so the
+        // first bytes that come out show it was right. RAR4 and RAR5
+        // without that value show it only by the checksum at the end.
+        const Archive &arc = ((DataSet *)rar->handle)->Arc;
+        entry->password_checked = entry->is_encrypted && arc.Format == RARFMT50
+            && arc.FileHead.UsePswCheck && !arc.BrokenHeader;
         // The CRC of unencrypted, unsplit files (encrypted RAR5 keeps a
         // keyed one; a split file's covers only its part)
         rar->checkCRC = header->HashType == RAR_HASH_CRC32 && !entry->is_encrypted
