@@ -54,6 +54,10 @@ class SchnellbildUITestCase: XCTestCase {
             app.typeKey(.escape, modifierFlags: [])
         }
         app?.terminate()   // macOS apps are single-instance; the next test launches fresh
+        // A failed test: what the app logged (folder access, listings)
+        if tempDir != nil, (testRun?.failureCount ?? 0) > 0 {
+            print("app log of \(name):\n" + ((try? String(contentsOf: testLog("app.log"), encoding: .utf8)) ?? "(none)"))
+        }
         if let tempDir { try? FileManager.default.removeItem(at: tempDir) }
     }
 
@@ -107,6 +111,8 @@ class SchnellbildUITestCase: XCTestCase {
         var args = ["-AppleLanguages", "(\(language))", "-AppleLocale", Self.locale(of: language),
                     "-ApplePersistenceIgnoreState", "YES",
                     "--ui-testing"] + extra
+        // A log of its own unless the test reads one: printed when the test fails
+        if !extra.contains(where: { $0.hasPrefix("--test-log=") }) { args.append("--test-log=\(testLog("app.log").lastPathComponent)") }
         if resetState { args.append("--reset-state") }
         if let path { args.append("--open=\(path)") }
         app.launchArguments = args

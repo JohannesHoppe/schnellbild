@@ -54,9 +54,13 @@ final class SandboxUITests: SchnellbildUITestCase {
         XCTAssertTrue(forget.waitForExistence(timeout: 10))
         eventually("one folder granted") { forget.isEnabled }
         forget.click()
-        let confirm = app.buttons["Forget Folder Access"].firstMatch
-        XCTAssertTrue(confirm.waitForExistence(timeout: 5))
-        confirm.click()
+        // The dialog's button (the Touch Bar has one of the same name)
+        var confirm: XCUIElement?
+        eventually("the dialog asks") {
+            confirm = self.app.buttons.matching(NSPredicate(format: "label == %@ OR title == %@", "Forget Folder Access", "Forget Folder Access")).allElementsBoundByIndex.first { $0.isHittable }
+            return confirm != nil
+        }
+        confirm?.click()
         eventually("nothing granted") { !forget.isEnabled }
         app.terminate()
 

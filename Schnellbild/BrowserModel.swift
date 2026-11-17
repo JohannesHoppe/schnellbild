@@ -1834,6 +1834,7 @@ final class BrowserModel: ObservableObject {
             // The folder's date first: a change during the listing shows as one later (`relist`)
             let stamp = await FolderPreviewCache.stamp(of: url)
             let scanned = await Self.listing(url, password: password)
+            Self.testLog("listed \(url.path): \((try? scanned.get()).map { "\($0.entries.count) entries" } ?? "failed"), covered \(FolderAccess.shared.covers(url))")
             guard self.loadGeneration == generation else { return }   // a newer navigation won
             self.listedStamp = stamp
             var full = (try? scanned.get().entries) ?? []

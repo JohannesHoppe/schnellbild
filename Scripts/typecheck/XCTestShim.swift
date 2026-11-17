@@ -5,12 +5,15 @@ import Foundation
 import CoreGraphics
 import AppKit
 
+open class XCTestRun { public var failureCount: Int { 0 } }
 open class XCTestCase {
     public init() {}
     open func setUpWithError() throws {}
     open func tearDownWithError() throws {}
     open var continueAfterFailure = true
     public func addTeardownBlock(_ block: @escaping () -> Void) {}
+    open var name: String { "" }
+    open var testRun: XCTestRun? { nil }
 }
 /// SwiftPM's resource bundle of a test target.
 extension Bundle { public static var module: Bundle { .main } }

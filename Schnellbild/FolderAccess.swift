@@ -81,6 +81,7 @@ final class FolderAccess {
             // Else no bookmark at all (damaged data): nothing it could ever open, dropped
         }
         save()
+        BrowserModel.testLog("folder access restored: \(grants.map(\.path)), waiting \(pending.compactMap(\.path))")
     }
 
     /// A volume was mounted (`DiskEvents`, before the panes hear of it): the
@@ -120,6 +121,7 @@ final class FolderAccess {
         guard url.startAccessingSecurityScopedResource() || FileManager.default.isReadableFile(atPath: url.path),
               let bookmark = Self.bookmark(of: url) else { return }
         let path = BrowserModel.canonicalPath(url)
+        BrowserModel.testLog("folder access granted: \(path)")
         // Grants inside the new one aren't needed beside it
         for inner in grants where Self.path(inner.path, isIn: path) { inner.url.stopAccessingSecurityScopedResource() }
         grants.removeAll { Self.path($0.path, isIn: path) }
