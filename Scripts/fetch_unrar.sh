@@ -42,6 +42,20 @@ tar -xzf "$TMP/unrar.tar.gz" -C "$TMP"
 # and the app reads several archives at once — another thread's error (a
 # wrong password tried elsewhere, a stopped stream) must not fail this read.
 grep -q '^EXTVAR ErrorHandler ErrHandler;$' "$TMP/unrar/global.hpp" || { echo "!! UnRAR's ErrHandler declaration changed" >&2; exit 1; }
+# Native/CArchives/rar_shim.cpp declares UnRAR's handle (dll.cpp's DataSet)
+# the same way to read the current file's header: it must not have changed.
+EXPECTED_DATASET='struct DataSet
+{
+  CommandData Cmd;
+  Archive Arc;
+  CmdExtract Extract;
+  int OpenMode;
+  int HeaderSize;
+
+  DataSet():Arc(&Cmd),Extract(&Cmd) {};
+};'
+[ "$(sed -n '/^struct DataSet$/,/^};$/p' "$TMP/unrar/dll.cpp" | tr -d '\r')" = "$EXPECTED_DATASET" ] \
+    || { echo "!! UnRAR's DataSet in dll.cpp changed: update rar_shim.cpp's copy" >&2; exit 1; }
 sed -i.orig 's/^EXTVAR ErrorHandler ErrHandler;$/EXTVAR thread_local ErrorHandler ErrHandler;/' "$TMP/unrar/global.hpp"
 rm "$TMP/unrar/global.hpp.orig"
 check_tree "UnRAR $VERSION+$PATCHLEVEL" "$TMP/unrar" "$TREE_SHA256"

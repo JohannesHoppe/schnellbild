@@ -354,7 +354,7 @@ final class HiddenFilesTests: XCTestCase {
         try tree.file("._track.gpx")
         try tree.file(".a.jpg.xmp")
         let listing = FolderNames(recheck: 0).listing(of: tree.root)
-        XCTAssertEqual(listing.tracks, [".track.gpx", "flagged.gpx"], "hidden tracks are read, AppleDouble files aren't tracks")
+        XCTAssertEqual(listing.tracks.map(\.name), [".track.gpx", "flagged.gpx"], "hidden tracks are read, AppleDouble files aren't tracks")
         XCTAssertEqual(listing.names[".a.jpg.xmp"], ".a.jpg.xmp", "hidden sidecars are found")
     }
 }

@@ -20,9 +20,8 @@ struct ClockReading: Equatable, Sendable {
     /// "2024-06-18T22:31:09+02:00", "…09.123Z", "…T22:31+0200", "2024-06-18 22:31:09";
     /// also EXIF's "2024:06:18 22:31:09". A date without a time is no reading.
     static func parse(_ text: String) -> ClockReading? {
-        let pattern = #"^\s*(\d{4})[-:](\d\d)[-:](\d\d)[T ](\d\d):(\d\d)(?::(\d\d)(?:[.,](\d{1,9}))?)?\s*(Z|[+-]\d\d(?::?\d\d)?)?"#
-        guard text.count < 200, let regex = try? NSRegularExpression(pattern: pattern),
-              let match = regex.firstMatch(in: text, range: NSRange(text.startIndex..., in: text)) else { return nil }
+        guard text.count < 200,
+              let match = pattern.firstMatch(in: text, range: NSRange(text.startIndex..., in: text)) else { return nil }
         func group(_ i: Int) -> String? { Range(match.range(at: i), in: text).map { String(text[$0]) } }
         guard let year = group(1).flatMap(Int.init), let month = group(2).flatMap(Int.init), let day = group(3).flatMap(Int.init),
               let hour = group(4).flatMap(Int.init), let minute = group(5).flatMap(Int.init) else { return nil }
@@ -46,6 +45,11 @@ struct ClockReading: Equatable, Sendable {
         return ClockReading(floating: floating.addingTimeInterval(fraction), offset: offset)
     }
 
+    /// Compiled once: a GPX track parses one time per point. Matching is
+    /// thread-safe (NSRegularExpression is immutable).
+    private static let pattern = try! NSRegularExpression(
+        pattern: #"^\s*(\d{4})[-:](\d\d)[-:](\d\d)[T ](\d\d):(\d\d)(?::(\d\d)(?:[.,](\d{1,9}))?)?\s*(Z|[+-]\d\d(?::?\d\d)?)?"#)
+
     /// A wall clock's date (read as UTC), nil for one that doesn't exist.
     static func floatingDate(_ year: Int, _ month: Int, _ day: Int, _ hour: Int, _ minute: Int, _ second: Int) -> Date? {
         var calendar = Calendar(identifier: .gregorian)
@@ -61,10 +65,20 @@ struct ClockReading: Equatable, Sendable {
 
 /// What every XML reader here does before parsing: refuse a document type
 /// declaration (XMP, GPX and Sony's clip files have none; entities are the
-/// way to make a small file expand) and anything larger than `limit`.
+/// way to make a small file expand) and anything larger than `limit`. The
+/// search for one is a search for ASCII bytes, so only documents in an
+/// encoding that writes ASCII as ASCII are parsed: UTF-8 (as XMP requires)
+/// or a declared single-byte one (old GPS tools write ISO-8859-1); not UTF-16
+/// or UTF-32 (libxml2 tells them from the first bytes), UTF-7 or EBCDIC,
+/// where a declaration would hide from the search.
 enum SafeXML {
+    /// The encodings an XML declaration may name, lower case.
+    static let encodings = Set(["utf-8", "utf8", "us-ascii", "ascii"])
+        .union((1...16).map { "iso-8859-\($0)" }).union((1250...1258).map { "windows-\($0)" })
+        .union(["latin1", "iso-latin-1", "cp1252"])
+
     static func parser(for data: Data, limit: Int) -> XMLParser? {
-        guard !data.isEmpty, data.count <= limit else { return nil }
+        guard !data.isEmpty, data.count <= limit, isASCIICompatible(data) else { return nil }
         let head = data.prefix(1 << 20)
         for marker in ["<!DOCTYPE", "<!doctype", "<!ENTITY", "<!entity"] where head.range(of: Data(marker.utf8)) != nil {
             return nil
@@ -75,6 +89,45 @@ enum SafeXML {
         let parser = XMLParser(data: data)
         parser.shouldResolveExternalEntities = false
         return parser
+    }
+
+    /// The first bytes are ASCII (after a UTF-8 byte order mark) and the
+    /// declaration, if any, names an encoding of `encodings`.
+    static func isASCIICompatible(_ data: Data) -> Bool {
+        var body = data[...]
+        if body.starts(with: [0xEF, 0xBB, 0xBF]) { body = body.dropFirst(3) }
+        guard body.prefix(4).allSatisfy({ (0x01...0x7F).contains($0) }) else { return false }
+        let start = body.drop { $0 == 0x20 || $0 == 0x09 || $0 == 0x0A || $0 == 0x0D }
+        guard start.starts(with: Data("<?xml".utf8)) else { return true }
+        // The declaration: up to its "?>"
+        let declaration = start.prefix(200)
+        guard let end = declaration.range(of: Data("?>".utf8)),
+              let text = String(data: Data(declaration[declaration.startIndex..<end.lowerBound]), encoding: .ascii) else { return false }
+        guard let found = text.range(of: #"encoding\s*=\s*["']([^"']*)["']"#, options: .regularExpression) else { return true }
+        let named = text[found].split(whereSeparator: { $0 == "\"" || $0 == "'" }).dropFirst().first.map { $0.lowercased() } ?? ""
+        return encodings.contains(named)
+    }
+}
+
+/// A file beside a picture or video (an XMP sidecar, a GPX track, a flight
+/// log, a clip XML), read only when it is a regular file of at most `limit`
+/// bytes: never a FIFO (a read would wait for a writer), a device (a link
+/// to /dev/zero never ends) or a folder, nor a file larger than its format
+/// allows. Checked on the opened file, opened without waiting.
+enum SidecarFile {
+    static func read(_ url: URL, limit: Int) -> Data? {
+        let descriptor = open(url.path, O_RDONLY | O_NONBLOCK | O_CLOEXEC)
+        guard descriptor >= 0 else { return nil }
+        let handle = FileHandle(fileDescriptor: descriptor, closeOnDealloc: true)
+        var info = stat()
+        guard fstat(descriptor, &info) == 0, info.st_mode & S_IFMT == S_IFREG, info.st_size <= limit else { return nil }
+        do {
+            // At most one byte more than allowed: a file grown meanwhile is refused
+            let data = try handle.read(upToCount: limit + 1) ?? Data()
+            return data.count <= limit ? data : nil
+        } catch {
+            return nil
+        }
     }
 }
 
