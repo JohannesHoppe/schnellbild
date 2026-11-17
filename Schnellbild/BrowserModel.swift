@@ -2178,7 +2178,7 @@ final class BrowserModel: ObservableObject {
     nonisolated private static func anyMedia(below folder: URL, cancelled: () -> Bool) -> Bool? {
         let shown = HiddenFiles.shown
         guard let walk = FileManager.default.enumerator(
-            at: folder, includingPropertiesForKeys: [.isRegularFileKey, .isSymbolicLinkKey, .isAliasFileKey, .isHiddenKey],
+            at: folder, includingPropertiesForKeys: [.isRegularFileKey, .isSymbolicLinkKey, .isAliasFileKey, .isHiddenKey, .isDirectoryKey],
             options: [.skipsPackageDescendants]) else { return false }
         let limit = probeLimit(for: folder)
         var looked = 0
@@ -2203,8 +2203,10 @@ final class BrowserModel: ObservableObject {
     /// folder isn't walked into. The enumerators read the flag along with
     /// the listing.
     nonisolated static func skipsHidden(_ url: URL, in walk: FileManager.DirectoryEnumerator, shown: Bool) -> Bool {
-        guard !HiddenFiles.lists(url, values: try? url.resourceValues(forKeys: HiddenFiles.keys), shown: shown) else { return false }
-        walk.skipDescendants()
+        let values = try? url.resourceValues(forKeys: [.isHiddenKey, .isDirectoryKey])
+        guard !HiddenFiles.lists(url, values: values, shown: shown) else { return false }
+        // Only for a folder: after a file it would skip the rest of the folder holding it
+        if values?.isDirectory == true { walk.skipDescendants() }
         return true
     }
 
@@ -2249,7 +2251,7 @@ final class BrowserModel: ObservableObject {
             return Array(media.filter { mediaKind(of: $0) == .image }.prefix(limit))
         }
         return await FolderProbes.run { cancelled -> [URL]? in
-            let keys: [URLResourceKey] = [.isRegularFileKey, .isSymbolicLinkKey, .isAliasFileKey, .contentModificationDateKey, .isHiddenKey]
+            let keys: [URLResourceKey] = [.isRegularFileKey, .isSymbolicLinkKey, .isAliasFileKey, .contentModificationDateKey, .isHiddenKey, .isDirectoryKey]
             let shown = HiddenFiles.shown
             // The first ones the disk lists at the top, not the first by
             // name: a big folder on a network share isn't listed to its end
