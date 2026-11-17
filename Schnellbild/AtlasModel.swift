@@ -351,7 +351,9 @@ final class AtlasModel: ObservableObject {
             }
         }
         for folder in pending.folders where chunk.count < size { take(from: folder, count: size) }
-        pending.folders.removeAll { pending.lists[$0] == nil }
+        // (the lists read apart from the change: one access to `pending` at a time)
+        let lists = pending.lists
+        pending.folders.removeAll { lists[$0] == nil }
         return chunk
     }
     /// Folders a file was read from already for the first places.
