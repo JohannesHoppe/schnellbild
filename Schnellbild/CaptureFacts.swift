@@ -177,6 +177,7 @@ struct Companions: Equatable, Sendable {
     /// At most this many GPX files of a folder are looked at.
     static let largestTrackCount = 50
 
+    /// Waits on the disk: call it off Swift's threads (`Blocking.run`).
     static func of(_ url: URL, names: FolderNames = .shared) -> Companions {
         guard !ArchivePath.isInside(url) else { return Companions() }
         let folder = url.deletingLastPathComponent()
@@ -196,7 +197,11 @@ struct Companions: Equatable, Sendable {
             companions.flightLog = file(base + ".srt")
             companions.clipXML = file(base + "M01.xml")
         }
-        companions.tracks = found.tracks.prefix(largestTrackCount).compactMap { file($0) }
+        // Their dates from the listing: a folder of thousands of photos
+        // doesn't ask the disk for every track again per photo
+        companions.tracks = found.tracks.compactMap { track in
+            listing[track.name].map { File(url: folder.appendingPathComponent($0), modified: track.modified) }
+        }
         return companions
     }
 
@@ -221,13 +226,19 @@ struct Companions: Equatable, Sendable {
 }
 
 /// The names in folders, by their lower-case form; read again when the
-/// folder's date changes (checked at most every two seconds). Thread-safe.
+/// folder's date changes (checked at most every two seconds, when also the
+/// GPX files' dates are read again: a track edited in place leaves the
+/// folder's date as it was). Thread-safe; waits on the disk.
 final class FolderNames: @unchecked Sendable {
     static let shared = FolderNames()
 
-    /// A folder's names by their lower-case form, and those of its GPX
-    /// files (lower case, sorted), worked out once per listing.
-    struct Listing { var names: [String: String] = [:]; var tracks: [String] = [] }
+    /// A folder's names by their lower-case form, and its first
+    /// `Companions.largestTrackCount` GPX files (lower case, sorted) with
+    /// their dates.
+    struct Listing {
+        var names: [String: String] = [:]
+        var tracks: [(name: String, modified: Date?)] = []
+    }
 
     private struct Known { var checked: Date; var modified: Date?; var listing: Listing }
     private var known: [String: Known] = [:]
@@ -247,14 +258,21 @@ final class FolderNames: @unchecked Sendable {
         lock.unlock()
         let modified = try? folder.resourceValues(forKeys: [.contentModificationDateKey]).contentModificationDate
         var listing = previous?.listing ?? Listing()
+        var trackNames = listing.tracks.map(\.name)
         if previous == nil || previous?.modified != modified || modified == nil {
             listing = Listing()
+            trackNames = []
             for name in (try? FileManager.default.contentsOfDirectory(atPath: folder.path)) ?? [] {
                 let lower = name.lowercased()
                 listing.names[lower] = name
-                if lower.hasSuffix(".gpx"), !lower.hasPrefix(".") { listing.tracks.append(lower) }
+                if lower.hasSuffix(".gpx"), !lower.hasPrefix(".") { trackNames.append(lower) }
             }
-            listing.tracks.sort()
+            trackNames.sort()
+        }
+        listing.tracks = trackNames.prefix(Companions.largestTrackCount).compactMap { lower in
+            listing.names[lower].map { name in
+                (lower, try? folder.appendingPathComponent(name).resourceValues(forKeys: [.contentModificationDateKey]).contentModificationDate)
+            }
         }
         lock.lock()
         if known.count > 2_000 { known.removeAll(keepingCapacity: true) }
@@ -264,27 +282,43 @@ final class FolderNames: @unchecked Sendable {
     }
 }
 
-/// GPX files read, by path and date (a folder's tracks serve all its photos).
+/// GPX files read, by path and date (a folder's tracks serve all its
+/// photos). A file being parsed is parsed once: other callers wait for it.
+/// Blocks: call it off Swift's threads.
 final class TrackFiles: @unchecked Sendable {
     static let shared = TrackFiles()
 
-    private var known: [String: (modified: Date?, track: GPXTrack?)] = [:]
+    private final class Entry: @unchecked Sendable {
+        let modified: Date?
+        var track: GPXTrack?
+        /// Left once `track` is set.
+        let parsed = DispatchGroup()
+        init(modified: Date?) { self.modified = modified; parsed.enter() }
+    }
+
+    private var known: [String: Entry] = [:]
     private let lock = NSLock()
+    private let read: (URL) -> GPXTrack?
+
+    init(read: @escaping (URL) -> GPXTrack? = { SidecarFile.read($0, limit: GPXTrack.largest).flatMap(GPXTrack.read) }) {
+        self.read = read
+    }
 
     func track(_ file: Companions.File) -> GPXTrack? {
         let path = file.url.path
         lock.lock()
         if let entry = known[path], entry.modified == file.modified {
             lock.unlock()
+            entry.parsed.wait()
             return entry.track
         }
-        lock.unlock()
-        let track = (try? Data(contentsOf: file.url, options: .mappedIfSafe)).flatMap(GPXTrack.read)
-        lock.lock()
+        let entry = Entry(modified: file.modified)
         if known.count >= 64 { known.removeAll() }
-        known[path] = (file.modified, track)
+        known[path] = entry
         lock.unlock()
-        return track
+        entry.track = read(file.url)
+        entry.parsed.leave()
+        return entry.track
     }
 }
 
@@ -310,13 +344,18 @@ enum CaptureReader {
 
     static func facts(of url: URL, companions: Companions? = nil) async -> CaptureFacts {
         guard !ArchivePath.isInside(url) else { return CaptureFacts() }
-        let companions = companions ?? Companions.of(url)
+        // The folder and the files beside it: off Swift's threads, they wait on the disk
+        let given = companions
+        let (companions, sidecar) = await Blocking.run(.utility) { () -> (Companions, (String, XMPMetadata.Facts)?) in
+            let companions = given ?? Companions.of(url)
+            let sidecar = companions.xmp.lazy.compactMap { file in
+                SidecarFile.read(file.url, limit: XMPMetadata.largest).flatMap(XMPMetadata.read).map { (file.name, $0) }
+            }.first
+            return (companions, sidecar)
+        }
         var times: [CaptureTime?] = []
         var places: [CapturePlace?] = []
         var track: GeoTrack?
-        let sidecar = companions.xmp.lazy.compactMap { file in
-            (try? Data(contentsOf: file.url)).flatMap(XMPMetadata.read).map { (file.name, $0) }
-        }.first
         times.append(sidecar.flatMap { name, facts in facts.time.map { CaptureTime($0, source: .sidecar(name)) } })
         places.append(sidecar.flatMap { name, facts in
             facts.location.map { CapturePlace(location: $0, source: .sidecar(name), accuracy: facts.accuracy.map(PlaceAccuracy.metres)) }
@@ -421,8 +460,8 @@ enum CaptureReader {
             let file = FileBytes(url)
             let movie = file.flatMap(MP4Boxes.read)
             let goPro = file.flatMap { file in movie.flatMap { telemetry(file, $0.telemetry, starts: $0.telemetryStarts) } }
-            let dji = companions.flightLog.flatMap { try? Data(contentsOf: $0.url, options: .mappedIfSafe) }.flatMap(DJIFlightLog.read)
-            let clip = companions.clipXML.flatMap { try? Data(contentsOf: $0.url) }.flatMap(SonyClipXML.read)
+            let dji = companions.flightLog.flatMap { SidecarFile.read($0.url, limit: DJIFlightLog.largest) }.flatMap(DJIFlightLog.read)
+            let clip = companions.clipXML.flatMap { SidecarFile.read($0.url, limit: SonyClipXML.largest) }.flatMap(SonyClipXML.read)
             let xmp = movie?.xmp.flatMap { XMPMetadata.read(Data($0)) }
             return (movie, goPro, dji, clip, xmp)
         }
@@ -545,7 +584,7 @@ final class LocationCache: @unchecked Sendable {
     }
 
     /// The facts known for this version of the file and its companions; nil
-    /// when they haven't been read.
+    /// when they haven't been read. Looks up the companions: waits on the disk.
     func cachedFacts(_ url: URL, modified: Date?) -> CaptureFacts? {
         cachedFacts(url, stamp: stamp(modified, companions(url)))
     }
@@ -563,8 +602,11 @@ final class LocationCache: @unchecked Sendable {
     }
 
     /// One file's facts, from the cache or the file and its companions.
+    /// The companions are looked up off Swift's threads (they wait on the
+    /// disk; eight at a time on a stalled share would hold the pool).
     func facts(of url: URL, modified: Date?) async -> CaptureFacts {
-        let around = companions(url)
+        let companions = companions
+        let around = await Blocking.run(.utility) { companions(url) }
         let stamp = stamp(modified, around)
         if let cached = cachedFacts(url, stamp: stamp) { return cached }
         let facts = await read(url, around)
