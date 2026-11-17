@@ -286,7 +286,6 @@
 "“%@”: %@" = "«%@»: %@";
 "“%@” is no longer the item Schnellbild put there, so it stays as it is." = "«%@» er ikke lenger objektet Schnellbild la der, så det blir som det er.";
 "“%@” has changed since it was copied, so it isn't moved to the Trash." = "«%@» er endret siden det ble kopiert, så det flyttes ikke til papirkurven.";
-"Schnellbild may not take “%@” out of the Trash. Use “Put Back” in the Finder's Trash." = "Schnellbild kan ikke ta «%@» ut av papirkurven. Bruk «Legg tilbake» i Finders papirkurv.";
 "Keep: try it again later, before the earlier actions. Forget: go on with the earlier actions." = "Behold: prøv igjen senere, før de tidligere handlingene. Glem: fortsett med de tidligere handlingene.";
 "Keep" = "Behold";
 "Forget" = "Glem";
@@ -655,3 +654,15 @@
 "Hide the clouds" = "Skjul skyene";
 "the colours of the ground on the globe" = "bakkens farger på globusen";
 "the clouds on the globe" = "skyene på globusen";
+"Show Hidden Files" = "Vis skjulte filer";
+"Show hidden files and folders" = "Vis skjulte filer og mapper";
+"Names that start with a dot, and what macOS hides, such as the Library folder. Off, they appear nowhere in Schnellbild." = "Navn som begynner med punktum, og det macOS skjuler, for eksempel mappen Bibliotek. Slått av vises de ingen steder i Schnellbild.";
+"Show / hide hidden files and folders" = "Vis / skjul skjulte filer og mapper";
+"Undo" = "Angre";
+"Redo" = "Gjør om";
+"Undo New Folder" = "Angre ny mappe";
+"Redo New Folder" = "Gjør om ny mappe";
+"“%@” isn't empty any more, so it isn't moved to the Trash." = "«%@» er ikke lenger tom, så den flyttes ikke til papirkurven.";
+"“%@” is no longer in the Trash." = "«%@» er ikke lenger i papirkurven.";
+"“%@” couldn't be taken out of the Trash and is still there. %@" = "«%@» kunne ikke tas ut av papirkurven og ligger der fortsatt. %@";
+"Undo / redo renaming, trashing, moving, copying, a new folder" = "Angre / gjør om: endre navn, flytte til papirkurven, flytte, kopiere, ny mappe";

@@ -1,0 +1,32 @@
+# Experiment: what the App Sandbox lets an app do with the Trash
+# (Spike/TrashUndo), by hand: a sandboxed probe with the Store's
+# entitlements moves files and folders to the Trash and back out, from a
+# later process too, and on a volume of its own.
+name: Spike — Trash in the sandbox
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    name: Trash probe (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ macos-15, macos-26 ]
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - name: Select Xcode
+        run: Scripts/select_xcode.sh
+      - name: Store entitlements
+        run: Spike/TrashUndo/run.sh store
+      - name: UI-test entitlements
+        if: always()
+        run: Spike/TrashUndo/run.sh uitests
+      - name: Another volume
+        if: always()
+        run: Spike/TrashUndo/run.sh volume

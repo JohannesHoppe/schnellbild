@@ -286,7 +286,6 @@
 "“%@”: %@" = "«%@»: %@";
 "“%@” is no longer the item Schnellbild put there, so it stays as it is." = "«%@» non è più l’elemento che Schnellbild ha messo lì, quindi resta com’è.";
 "“%@” has changed since it was copied, so it isn't moved to the Trash." = "«%@» è cambiato da quando è stato copiato, quindi non viene spostato nel Cestino.";
-"Schnellbild may not take “%@” out of the Trash. Use “Put Back” in the Finder's Trash." = "Schnellbild non può togliere «%@» dal Cestino. Usa «Ripristina» nel Cestino del Finder.";
 "Keep: try it again later, before the earlier actions. Forget: go on with the earlier actions." = "Mantieni: riprova più tardi, prima delle azioni precedenti. Dimentica: prosegui con le azioni precedenti.";
 "Keep" = "Mantieni";
 "Forget" = "Dimentica";
@@ -655,3 +654,15 @@
 "Hide the clouds" = "Nascondi le nuvole";
 "the colours of the ground on the globe" = "i colori del suolo sul globo";
 "the clouds on the globe" = "le nuvole sul globo";
+"Show Hidden Files" = "Mostra file nascosti";
+"Show hidden files and folders" = "Mostra file e cartelle nascosti";
+"Names that start with a dot, and what macOS hides, such as the Library folder. Off, they appear nowhere in Schnellbild." = "I nomi che iniziano con un punto e ciò che macOS nasconde, come la cartella Libreria. Disattivato, non compaiono da nessuna parte in Schnellbild.";
+"Show / hide hidden files and folders" = "Mostra / nascondi file e cartelle nascosti";
+"Undo" = "Annulla";
+"Redo" = "Ripeti";
+"Undo New Folder" = "Annulla nuova cartella";
+"Redo New Folder" = "Ripeti nuova cartella";
+"“%@” isn't empty any more, so it isn't moved to the Trash." = "«%@» non è più vuota, quindi non viene spostata nel Cestino.";
+"“%@” is no longer in the Trash." = "«%@» non è più nel Cestino.";
+"“%@” couldn't be taken out of the Trash and is still there. %@" = "«%@» non è stato tolto dal Cestino e si trova ancora lì. %@";
+"Undo / redo renaming, trashing, moving, copying, a new folder" = "Annulla / ripeti: rinomina, spostamento nel Cestino, spostamento, copia, nuova cartella";

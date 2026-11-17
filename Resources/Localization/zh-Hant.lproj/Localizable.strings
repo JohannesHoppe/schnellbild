@@ -286,7 +286,6 @@
 "“%@”: %@" = "「%@」：%@";
 "“%@” is no longer the item Schnellbild put there, so it stays as it is." = "「%@」已不是 Schnellbild 放在那裡的項目，因此保持不變。";
 "“%@” has changed since it was copied, so it isn't moved to the Trash." = "「%@」在拷貝後已更改，因此不會丟到垃圾桶。";
-"Schnellbild may not take “%@” out of the Trash. Use “Put Back” in the Finder's Trash." = "Schnellbild 不能將「%@」從垃圾桶中取出。請在 Finder 的垃圾桶中使用「放回原處」。";
 "Keep: try it again later, before the earlier actions. Forget: go on with the earlier actions." = "保留：稍後再試，先於更早的動作。忘記：繼續處理更早的動作。";
 "Keep" = "保留";
 "Forget" = "忘記";
@@ -655,3 +654,15 @@
 "Hide the clouds" = "隱藏雲層";
 "the colours of the ground on the globe" = "地球儀上的地表顏色";
 "the clouds on the globe" = "地球儀上的雲層";
+"Show Hidden Files" = "顯示隱藏檔案";
+"Show hidden files and folders" = "顯示隱藏的檔案和檔案夾";
+"Names that start with a dot, and what macOS hides, such as the Library folder. Off, they appear nowhere in Schnellbild." = "以點開頭的名稱，以及 macOS 隱藏的項目，例如「資源庫」檔案夾。關閉時，它們不會出現在 Schnellbild 的任何地方。";
+"Show / hide hidden files and folders" = "顯示 / 隱藏隱藏的檔案和檔案夾";
+"Undo" = "還原";
+"Redo" = "重做";
+"Undo New Folder" = "還原新增檔案夾";
+"Redo New Folder" = "重做新增檔案夾";
+"“%@” isn't empty any more, so it isn't moved to the Trash." = "「%@」已不再是空的，因此不會丟到垃圾桶。";
+"“%@” is no longer in the Trash." = "「%@」已不在垃圾桶中。";
+"“%@” couldn't be taken out of the Trash and is still there. %@" = "無法將「%@」從垃圾桶取出，它仍在垃圾桶中。%@";
+"Undo / redo renaming, trashing, moving, copying, a new folder" = "還原 / 重做：重新命名、丟到垃圾桶、搬移、拷貝、新增檔案夾";

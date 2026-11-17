@@ -286,7 +286,6 @@
 "“%@”: %@" = "”%@”: %@";
 "“%@” is no longer the item Schnellbild put there, so it stays as it is." = "”%@” ei ole enää kohde, jonka Schnellbild sijoitti sinne, joten se jää ennalleen.";
 "“%@” has changed since it was copied, so it isn't moved to the Trash." = "”%@” on muuttunut kopioinnin jälkeen, joten sitä ei siirretä roskakoriin.";
-"Schnellbild may not take “%@” out of the Trash. Use “Put Back” in the Finder's Trash." = "Schnellbild ei saa ottaa kohdetta ”%@” pois roskakorista. Käytä Finderin roskakorissa komentoa ”Palauta”.";
 "Keep: try it again later, before the earlier actions. Forget: go on with the earlier actions." = "Säilytä: yritä myöhemmin uudelleen ennen aiempia toimintoja. Unohda: jatka aiemmilla toiminnoilla.";
 "Keep" = "Säilytä";
 "Forget" = "Unohda";
@@ -655,3 +654,15 @@
 "Hide the clouds" = "Piilota pilvet";
 "the colours of the ground on the globe" = "maanpinnan värit karttapallolla";
 "the clouds on the globe" = "pilvet karttapallolla";
+"Show Hidden Files" = "Näytä piilotiedostot";
+"Show hidden files and folders" = "Näytä piilotetut tiedostot ja kansiot";
+"Names that start with a dot, and what macOS hides, such as the Library folder. Off, they appear nowhere in Schnellbild." = "Pisteellä alkavat nimet ja se, minkä macOS piilottaa, kuten Kirjasto-kansio. Kun tämä on pois päältä, ne eivät näy missään Schnellbildissä.";
+"Show / hide hidden files and folders" = "Näytä / piilota piilotetut tiedostot ja kansiot";
+"Undo" = "Kumoa";
+"Redo" = "Tee uudelleen";
+"Undo New Folder" = "Kumoa uusi kansio";
+"Redo New Folder" = "Tee uusi kansio uudelleen";
+"“%@” isn't empty any more, so it isn't moved to the Trash." = "”%@” ei ole enää tyhjä, joten sitä ei siirretä roskakoriin.";
+"“%@” is no longer in the Trash." = "”%@” ei ole enää roskakorissa.";
+"“%@” couldn't be taken out of the Trash and is still there. %@" = "Kohdetta ”%@” ei voitu ottaa pois roskakorista, joten se on yhä siellä. %@";
+"Undo / redo renaming, trashing, moving, copying, a new folder" = "Kumoa / tee uudelleen: nimeäminen, siirto roskakoriin, siirto, kopiointi, uusi kansio";

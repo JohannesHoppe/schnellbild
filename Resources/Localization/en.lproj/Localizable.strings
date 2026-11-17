@@ -286,7 +286,6 @@
 "“%@”: %@" = "“%@”: %@";
 "“%@” is no longer the item Schnellbild put there, so it stays as it is." = "“%@” is no longer the item Schnellbild put there, so it stays as it is.";
 "“%@” has changed since it was copied, so it isn't moved to the Trash." = "“%@” has changed since it was copied, so it isn't moved to the Trash.";
-"Schnellbild may not take “%@” out of the Trash. Use “Put Back” in the Finder's Trash." = "Schnellbild may not take “%@” out of the Trash. Use “Put Back” in the Finder's Trash.";
 "Keep: try it again later, before the earlier actions. Forget: go on with the earlier actions." = "Keep: try it again later, before the earlier actions. Forget: go on with the earlier actions.";
 "Keep" = "Keep";
 "Forget" = "Forget";
@@ -655,3 +654,15 @@
 "Hide the clouds" = "Hide the clouds";
 "the colours of the ground on the globe" = "the colours of the ground on the globe";
 "the clouds on the globe" = "the clouds on the globe";
+"Show Hidden Files" = "Show Hidden Files";
+"Show hidden files and folders" = "Show hidden files and folders";
+"Names that start with a dot, and what macOS hides, such as the Library folder. Off, they appear nowhere in Schnellbild." = "Names that start with a dot, and what macOS hides, such as the Library folder. Off, they appear nowhere in Schnellbild.";
+"Show / hide hidden files and folders" = "Show / hide hidden files and folders";
+"Undo" = "Undo";
+"Redo" = "Redo";
+"Undo New Folder" = "Undo New Folder";
+"Redo New Folder" = "Redo New Folder";
+"“%@” isn't empty any more, so it isn't moved to the Trash." = "“%@” isn't empty any more, so it isn't moved to the Trash.";
+"“%@” is no longer in the Trash." = "“%@” is no longer in the Trash.";
+"“%@” couldn't be taken out of the Trash and is still there. %@" = "“%@” couldn't be taken out of the Trash and is still there. %@";
+"Undo / redo renaming, trashing, moving, copying, a new folder" = "Undo / redo renaming, trashing, moving, copying, a new folder";

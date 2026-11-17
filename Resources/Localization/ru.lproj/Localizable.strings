@@ -286,7 +286,6 @@
 "“%@”: %@" = "«%@»: %@";
 "“%@” is no longer the item Schnellbild put there, so it stays as it is." = "«%@» уже не тот объект, который туда поместил Schnellbild, поэтому он остается как есть.";
 "“%@” has changed since it was copied, so it isn't moved to the Trash." = "«%@» изменился после копирования, поэтому он не перемещается в Корзину.";
-"Schnellbild may not take “%@” out of the Trash. Use “Put Back” in the Finder's Trash." = "Schnellbild не может извлечь «%@» из Корзины. Воспользуйтесь командой «Вернуть» в Корзине Finder.";
 "Keep: try it again later, before the earlier actions. Forget: go on with the earlier actions." = "Оставить: повторить позже, перед более ранними действиями. Забыть: перейти к более ранним действиям.";
 "Keep" = "Оставить";
 "Forget" = "Забыть";
@@ -655,3 +654,15 @@
 "Hide the clouds" = "Скрыть облака";
 "the colours of the ground on the globe" = "цвета земной поверхности на глобусе";
 "the clouds on the globe" = "облака на глобусе";
+"Show Hidden Files" = "Показывать скрытые файлы";
+"Show hidden files and folders" = "Показывать скрытые файлы и папки";
+"Names that start with a dot, and what macOS hides, such as the Library folder. Off, they appear nowhere in Schnellbild." = "Имена, начинающиеся с точки, и то, что скрывает macOS, например папка «Библиотека». Если выключено, они нигде в Schnellbild не появляются.";
+"Show / hide hidden files and folders" = "Показать / скрыть скрытые файлы и папки";
+"Undo" = "Отменить";
+"Redo" = "Повторить";
+"Undo New Folder" = "Отменить создание папки";
+"Redo New Folder" = "Повторить создание папки";
+"“%@” isn't empty any more, so it isn't moved to the Trash." = "«%@» больше не пуста, поэтому она не перемещается в Корзину.";
+"“%@” is no longer in the Trash." = "«%@» больше нет в Корзине.";
+"“%@” couldn't be taken out of the Trash and is still there. %@" = "Не удалось извлечь «%@» из Корзины, объект остается там. %@";
+"Undo / redo renaming, trashing, moving, copying, a new folder" = "Отменить / повторить: переименование, перемещение в Корзину, перемещение, копирование, новую папку";

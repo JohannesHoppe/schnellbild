@@ -36,6 +36,14 @@ struct GeneralSettingsView: View {
                 .accessibilityIdentifier("settings.appearance")
                 .onChange(of: appearance) { _, chosen in AppAppearance.choose(chosen) }
             }
+            Section {
+                Toggle("Show hidden files and folders",
+                       isOn: Binding(get: { window.showHiddenFiles }, set: { window.showHiddenFiles = $0 }))
+                    .accessibilityIdentifier("settings.showHiddenFiles")
+                Text("Names that start with a dot, and what macOS hides, such as the Library folder. Off, they appear nowhere in Schnellbild.")
+                    .font(.callout)
+                    .foregroundStyle(.secondary)
+            }
             Section("Slideshow") {
                 Stepper(value: Binding(get: { window.slideshowSeconds }, set: { window.slideshowSeconds = $0 }),
                         in: BrowserModel.slideshowSecondsRange) {
