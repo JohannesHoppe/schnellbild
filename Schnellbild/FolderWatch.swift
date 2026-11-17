@@ -103,11 +103,9 @@ enum DiskEvents {
         // The folder grants waiting for their volume first, then the panes
         // (one reading the new volume needs its grant)
         observers.append(workspace.addObserver(forName: NSWorkspace.didMountNotification, object: nil, queue: .main) { _ in
-            MainActor.assumeIsolated {
-                Task {
-                    await FolderAccess.shared.volumeMounted()
-                    for pane in WindowModel.openPanes { pane.volumesChanged(unmounted: nil) }
-                }
+            Task { @MainActor in
+                await FolderAccess.shared.volumeMounted()
+                for pane in WindowModel.openPanes { pane.volumesChanged(unmounted: nil) }
             }
         })
         observers.append(NotificationCenter.default.addObserver(forName: NSApplication.didBecomeActiveNotification, object: nil, queue: .main) { _ in
