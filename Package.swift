@@ -52,7 +52,7 @@ let package = Package(
             name: "SchnellbildThumbnails",
             dependencies: ["VLCKit", "VLCFrames"],
             path: "ThumbnailExtension",
-            exclude: ["Info.plist", "ThumbnailExtension.entitlements"],
+            exclude: ["Info.plist"],
             swiftSettings: [.unsafeFlags(["-parse-as-library"])],
             linkerSettings: [
                 .linkedFramework("QuickLookThumbnailing"),

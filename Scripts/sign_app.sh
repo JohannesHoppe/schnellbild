@@ -36,13 +36,7 @@ THUMB_ENT="$ROOT/Sandbox/SchnellbildThumbnails.entitlements"
 FORMATS_ENT="$ROOT/FormatReader/FormatReader.entitlements"
 
 # without_profile <entitlements> <out>: what only a profile allows, left out
-without_profile() {
-  cp "$1" "$2"
-  for key in com.apple.application-identifier com.apple.developer.team-identifier \
-             com.apple.developer.mediaextension.formatreader; do
-    /usr/libexec/PlistBuddy -c "Delete :$key" "$2" 2>/dev/null || true
-  done
-}
+without_profile() { "$ROOT/Scripts/entitlements.sh" "$1" "$2"; }
 
 # check_profile <profile> <entitlements> <bundle>: the profile allows what the
 # bundle is signed with (its App ID is the bundle's, its team and every
