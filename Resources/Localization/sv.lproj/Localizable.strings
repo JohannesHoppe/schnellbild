@@ -655,3 +655,7 @@
 "Hide the clouds" = "Dölj molnen";
 "the colours of the ground on the globe" = "markens färger på jordgloben";
 "the clouds on the globe" = "molnen på jordgloben";
+"Show Hidden Files" = "Visa dolda filer";
+"Show hidden files and folders" = "Visa dolda filer och mappar";
+"Names that start with a dot, and what macOS hides, such as the Library folder. Off, they appear nowhere in Schnellbild." = "Namn som börjar med en punkt och det som macOS döljer, till exempel mappen Bibliotek. Avstängt syns de ingenstans i Schnellbild.";
+"Show / hide hidden files and folders" = "Visa / dölj dolda filer och mappar";

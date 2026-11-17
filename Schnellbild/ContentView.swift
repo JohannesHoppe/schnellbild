@@ -339,7 +339,7 @@ private struct WindowView: View {
                 // action carries it out, a key taken from one does nothing;
                 // Schnellbild's own keys go on to the key bindings below
                 if let chord = KeyChord.from(event),
-                   let handled = window.handleTyped(chord, textEditing: typing, repeating: event.isARepeat) { return handled }
+                   let handled = window.handleTyped(chord, physical: KeyChord.physical(event), textEditing: typing, repeating: event.isARepeat) { return handled }
                 // X: the boss key (everywhere but while typing)
                 if letter == "x", !typing, !command, !control, !event.modifierFlags.contains(.option) {
                     BossKey.engage()

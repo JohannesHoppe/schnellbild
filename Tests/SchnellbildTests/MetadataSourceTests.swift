@@ -617,4 +617,116 @@ final class MetadataSourceTests: XCTestCase {
             XCTAssertNil(log?.first?.altitude, "no altitude past any range")
         }
     }
+
+    /// The document-type check searches ASCII bytes: a document in an
+    /// encoding that hides them (UTF-16, UTF-7, EBCDIC) isn't parsed, one in
+    /// an ASCII-compatible encoding is.
+    func testOnlyXMLInAnASCIICompatibleEncodingIsParsed() throws {
+        let track = "<gpx version=\"1.1\"><trk><trkseg><trkpt lat=\"60.0\" lon=\"5.0\"><time>2024-05-17T08:00:00Z</time></trkpt>"
+            + "<trkpt lat=\"60.1\" lon=\"5.1\"><time>2024-05-17T08:01:00Z</time></trkpt></trkseg></trk></gpx>"
+        let laughs = "<!DOCTYPE g [<!ENTITY a \"aaaaaaaaaa\"><!ENTITY b \"&a;&a;&a;&a;&a;&a;&a;&a;&a;&a;\">]>"
+        // UTF-16 with its byte order mark, and without one
+        let utf16 = try XCTUnwrap(("<?xml version=\"1.0\" encoding=\"UTF-16\"?>" + laughs + track).data(using: .utf16))
+        XCTAssertNil(GPXTrack.read(utf16), "UTF-16 with a document type")
+        XCTAssertNil(GPXTrack.read(try XCTUnwrap(track.data(using: .utf16LittleEndian))), "UTF-16 without a byte order mark")
+        XCTAssertNil(XMPMetadata.read(try XCTUnwrap("<x:xmpmeta xmlns:x=\"adobe:ns:meta/\"/>".data(using: .utf16BigEndian))))
+        // UTF-7 writes "<" as "+ADw-": a declaration the search wouldn't see
+        XCTAssertNil(GPXTrack.read(Data(("<?xml version=\"1.0\" encoding=\"UTF-7\"?>+ADw-!DOCTYPE g+AD4-" + track).utf8)))
+        // EBCDIC's "<?xm"
+        XCTAssertNil(GPXTrack.read(Data([0x4C, 0x6F, 0xA7, 0x94]) + Data(track.utf8)))
+        // UTF-8 with its byte order mark, ISO-8859-1 (old GPS tools), none declared
+        XCTAssertNotNil(GPXTrack.read(Data([0xEF, 0xBB, 0xBF]) + Data(track.utf8)))
+        XCTAssertNotNil(GPXTrack.read(Data(("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n" + track).utf8)))
+        XCTAssertNotNil(GPXTrack.read(Data(("<?xml version='1.0' encoding='utf-8'?>" + track).utf8)))
+        XCTAssertNotNil(GPXTrack.read(Data(("  \n" + track).utf8)))
+    }
+
+    /// Files beside a picture are read only when they are regular files
+    /// within their format's limit: a FIFO, a link to a device, a folder or
+    /// an oversized file named like a sidecar is passed over, without waiting.
+    func testSidecarsThatAreNoRegularFilesAreSkipped() throws {
+        let tree = try TempTree(self)
+        let fifo = tree.root.appendingPathComponent("IMG_1.xmp")
+        XCTAssertEqual(mkfifo(fifo.path, 0o644), 0)
+        let device = tree.root.appendingPathComponent("IMG_2.xmp")
+        try FileManager.default.createSymbolicLink(atPath: device.path, withDestinationPath: "/dev/zero")
+        let folder = try tree.folder("IMG_3.xmp")
+        let big = tree.root.appendingPathComponent("IMG_4.xmp")
+        FileManager.default.createFile(atPath: big.path, contents: nil)
+        let handle = try FileHandle(forWritingTo: big)
+        try handle.truncate(atOffset: UInt64(XMPMetadata.largest) + 1)
+        try handle.close()
+        let fine = tree.root.appendingPathComponent("IMG_5.xmp")
+        try FileManager.default.copyItem(at: try fixture("lightroom.xmp"), to: fine)
+        for url in [fifo, device, folder, big] {
+            XCTAssertNil(SidecarFile.read(url, limit: XMPMetadata.largest), url.lastPathComponent)
+        }
+        XCTAssertEqual(SidecarFile.read(fine, limit: XMPMetadata.largest), try Data(contentsOf: fine))
+        XCTAssertNil(SidecarFile.read(fine, limit: 100), "larger than the limit")
+
+        // A photo with a FIFO as its sidecar: read without waiting for a writer
+        let photo = try photo(tree.root.appendingPathComponent("IMG_1.jpg"))
+        let read = DispatchSemaphore(value: 0)
+        let names = FolderNames(recheck: 0)
+        Task.detached {
+            _ = await CaptureReader.facts(of: photo, companions: .of(photo, names: names))
+            read.signal()
+        }
+        XCTAssertEqual(read.wait(timeout: .now() + 20), .success, "waited on the FIFO")
+    }
+
+    /// The companions are looked up off Swift's threads: on a stalled share
+    /// eight lookups at a time would hold the whole pool.
+    func testCompanionsAreLookedUpOffSwiftsThreads() async throws {
+        let tree = try TempTree(self)
+        let url = try photo(tree.root.appendingPathComponent("p.jpg"))
+        let labels = Labels()
+        let cache = LocationCache(companions: { url in
+            labels.add(String(cString: __dispatch_queue_get_label(nil)))
+            return Companions.of(url, names: FolderNames(recheck: 0))
+        })
+        _ = await cache.facts(of: url, modified: nil)
+        _ = await cache.points(of: [(url, Date())])
+        XCTAssertEqual(labels.all.count, 2)
+        for label in labels.all { XCTAssertFalse(label.contains("cooperative"), label) }
+    }
+
+    private final class Labels: @unchecked Sendable {
+        private let lock = NSLock()
+        private var list: [String] = []
+        func add(_ label: String) { lock.withLock { list.append(label) } }
+        var all: [String] { lock.withLock { list } }
+    }
+
+    /// The GPX files' dates come with the folder's listing, read again when
+    /// it is checked (a track edited in place leaves the folder's date as it
+    /// was), not once per photo.
+    func testTrackDatesComeWithTheListing() throws {
+        let tree = try TempTree(self)
+        let track = tree.root.appendingPathComponent("walk.gpx")
+        try Data("<gpx/>".utf8).write(to: track)
+        try FileManager.default.setAttributes([.modificationDate: Date(timeIntervalSince1970: 1_000_000)], ofItemAtPath: track.path)
+        let photo = tree.root.appendingPathComponent("a.jpg")
+        let slow = FolderNames(recheck: 3600), quick = FolderNames(recheck: 0)
+        XCTAssertEqual(Companions.of(photo, names: slow).tracks.first?.modified, Date(timeIntervalSince1970: 1_000_000))
+        try FileManager.default.setAttributes([.modificationDate: Date(timeIntervalSince1970: 2_000_000)], ofItemAtPath: track.path)
+        XCTAssertEqual(Companions.of(photo, names: slow).tracks.first?.modified, Date(timeIntervalSince1970: 1_000_000),
+                       "until the listing is checked again")
+        XCTAssertEqual(Companions.of(photo, names: quick).tracks.first?.modified, Date(timeIntervalSince1970: 2_000_000))
+    }
+
+    /// A GPX file asked for by several photos at once is parsed once.
+    func testATrackIsParsedOnceForCallersAtOnce() {
+        let parses = Labels()
+        let tracks = TrackFiles(read: { url in
+            parses.add(url.path)
+            Thread.sleep(forTimeInterval: 0.2)
+            return nil
+        })
+        let file = Companions.File(url: URL(fileURLWithPath: "/tmp/walk.gpx"), modified: Date(timeIntervalSince1970: 5))
+        DispatchQueue.concurrentPerform(iterations: 8) { _ in _ = tracks.track(file) }
+        XCTAssertEqual(parses.all.count, 1)
+        _ = tracks.track(Companions.File(url: file.url, modified: Date(timeIntervalSince1970: 6)))
+        XCTAssertEqual(parses.all.count, 2, "a new date: parsed again")
+    }
 }

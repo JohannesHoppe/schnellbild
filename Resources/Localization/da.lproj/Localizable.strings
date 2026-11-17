@@ -655,3 +655,7 @@
 "Hide the clouds" = "Skjul skyerne";
 "the colours of the ground on the globe" = "jordens farver på globussen";
 "the clouds on the globe" = "skyerne på globussen";
+"Show Hidden Files" = "Vis skjulte filer";
+"Show hidden files and folders" = "Vis skjulte filer og mapper";
+"Names that start with a dot, and what macOS hides, such as the Library folder. Off, they appear nowhere in Schnellbild." = "Navne, der begynder med et punktum, og det, macOS skjuler, f.eks. mappen Bibliotek. Slået fra vises de ingen steder i Schnellbild.";
+"Show / hide hidden files and folders" = "Vis / skjul skjulte filer og mapper";

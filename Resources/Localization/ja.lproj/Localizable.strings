@@ -655,3 +655,7 @@
 "Hide the clouds" = "雲を非表示";
 "the colours of the ground on the globe" = "地球儀の地表の色";
 "the clouds on the globe" = "地球儀の雲";
+"Show Hidden Files" = "非表示ファイルを表示";
+"Show hidden files and folders" = "非表示のファイルとフォルダを表示";
+"Names that start with a dot, and what macOS hides, such as the Library folder. Off, they appear nowhere in Schnellbild." = "ドットで始まる名前と、「ライブラリ」フォルダなど macOS が隠しているもの。オフのときは Schnellbild のどこにも表示されません。";
+"Show / hide hidden files and folders" = "非表示のファイルとフォルダを表示 / 非表示";

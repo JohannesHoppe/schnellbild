@@ -655,3 +655,7 @@
 "Hide the clouds" = "Skrýt mraky";
 "the colours of the ground on the globe" = "barvy země na glóbu";
 "the clouds on the globe" = "mraky na glóbu";
+"Show Hidden Files" = "Zobrazit skryté soubory";
+"Show hidden files and folders" = "Zobrazovat skryté soubory a složky";
+"Names that start with a dot, and what macOS hides, such as the Library folder. Off, they appear nowhere in Schnellbild." = "Názvy začínající tečkou a to, co macOS skrývá, třeba složka Knihovna. Když je to vypnuté, nikde ve Schnellbildu se neobjeví.";
+"Show / hide hidden files and folders" = "Zobrazit / skrýt skryté soubory a složky";

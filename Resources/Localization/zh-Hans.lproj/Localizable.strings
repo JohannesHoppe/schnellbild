@@ -655,3 +655,7 @@
 "Hide the clouds" = "隐藏云层";
 "the colours of the ground on the globe" = "地球仪上的地表颜色";
 "the clouds on the globe" = "地球仪上的云层";
+"Show Hidden Files" = "显示隐藏文件";
+"Show hidden files and folders" = "显示隐藏的文件和文件夹";
+"Names that start with a dot, and what macOS hides, such as the Library folder. Off, they appear nowhere in Schnellbild." = "以点开头的名称，以及 macOS 隐藏的项目，例如“资源库”文件夹。关闭时，它们不会出现在 Schnellbild 的任何地方。";
+"Show / hide hidden files and folders" = "显示 / 隐藏隐藏的文件和文件夹";
