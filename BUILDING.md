@@ -44,6 +44,8 @@ xcodebuild test -project Schnellbild.xcodeproj -scheme Schnellbild \
   -destination 'platform=macOS' -only-testing:SchnellbildUITests
 ```
 
+The app runs in the App Sandbox there exactly as it ships, so the tests keep their folders in `/Users/Shared/SchnellbildUITests` (make it first) and open them to the app through the open panel; the tests of other volumes want a disk image mounted at `/Volumes/SchnellbildUITests` (`hdiutil create -size 64m -fs APFS -volname SchnellbildUITests x.dmg && hdiutil attach x.dmg`). CI runs them against the bundle `build_app.sh` makes (`TEST_RUNNER_SCHNELLBILD_APP=<path to Schnellbild.app>`).
+
 CI runs both on every push to `main`.
 
 ## Screenshots
