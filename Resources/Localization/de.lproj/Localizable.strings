@@ -286,7 +286,6 @@
 "“%@”: %@" = "„%@“: %@";
 "“%@” is no longer the item Schnellbild put there, so it stays as it is." = "„%@“ ist nicht mehr das Objekt, das Schnellbild dort abgelegt hat, und bleibt daher, wie es ist.";
 "“%@” has changed since it was copied, so it isn't moved to the Trash." = "„%@“ hat sich seit dem Kopieren verändert und wird daher nicht in den Papierkorb gelegt.";
-"Schnellbild may not take “%@” out of the Trash. Use “Put Back” in the Finder's Trash." = "Schnellbild darf „%@“ nicht aus dem Papierkorb nehmen. Nutze „Zurücklegen“ im Papierkorb des Finders.";
 "Keep: try it again later, before the earlier actions. Forget: go on with the earlier actions." = "Behalten: Später noch einmal versuchen, vor den früheren Aktionen. Vergessen: Mit den früheren Aktionen weitermachen.";
 "Keep" = "Behalten";
 "Forget" = "Vergessen";
@@ -659,3 +658,11 @@
 "Show hidden files and folders" = "Versteckte Dateien und Ordner zeigen";
 "Names that start with a dot, and what macOS hides, such as the Library folder. Off, they appear nowhere in Schnellbild." = "Namen, die mit einem Punkt beginnen, und was macOS ausblendet, etwa der Ordner „Library“. Ist das aus, erscheinen sie nirgends in Schnellbild.";
 "Show / hide hidden files and folders" = "Versteckte Dateien und Ordner ein- / ausblenden";
+"Undo" = "Widerrufen";
+"Redo" = "Wiederholen";
+"Undo New Folder" = "Neuer Ordner widerrufen";
+"Redo New Folder" = "Neuer Ordner wiederholen";
+"“%@” isn't empty any more, so it isn't moved to the Trash." = "„%@“ ist nicht mehr leer und wird daher nicht in den Papierkorb gelegt.";
+"“%@” is no longer in the Trash." = "„%@“ ist nicht mehr im Papierkorb.";
+"“%@” couldn't be taken out of the Trash and is still there. %@" = "„%@“ konnte nicht aus dem Papierkorb genommen werden und liegt weiter dort. %@";
+"Undo / redo renaming, trashing, moving, copying, a new folder" = "Widerrufen / wiederholen: Umbenennen, in den Papierkorb legen, Bewegen, Kopieren, neuer Ordner";

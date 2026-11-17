@@ -4110,7 +4110,7 @@ final class BrowserModel: ObservableObject {
     }
 
     func moveToTrash(_ file: OtherFile) {
-        guard canChange(file) else { return }
+        guard canChange(file), !isBeingTrashed(file.url) else { return }
         guard fileActions.confirmTrash([file.name], String(localized: "The file will be moved to the Trash.")) else { return }
         trashFiles([(file.url, false)]) { [self] trashed in apply(trashed.map { FileChange.removed($0) }) }
     }
@@ -4135,11 +4135,18 @@ final class BrowserModel: ObservableObject {
         entry.kind != .parent && !ArchivePath.isInside(entry.url) && !Self.isDrive(entry.url)
     }
 
-    /// What the Trash takes: the marked items (grid), else the selected one.
+    /// What the Trash takes: the marked items (grid), else the selected one;
+    /// not what is on its way there already.
     private var trashEntries: [GridEntry] {
-        guard mode == .grid else { return selectedMediaEntry.map { [$0] }?.filter(canChange) ?? [] }
-        return actionEntries.filter(canChange)
+        let entries = mode == .grid ? actionEntries : selectedMediaEntry.map { [$0] } ?? []
+        return entries.filter { canChange($0) && !isBeingTrashed($0.url) }
     }
+
+    /// Items on their way to the Trash (canonical paths): a second ⌘⌫ while
+    /// a slow share still works on them doesn't ask for them again.
+    private var trashing: Set<String> = []
+
+    private func isBeingTrashed(_ url: URL) -> Bool { trashing.contains(Self.canonicalPath(url)) }
 
     /// The Trash has something to take (the menu item and ⌘⌫).
     var canTrash: Bool { slideshow == nil && !trashLookupPending && !trashEntries.isEmpty }
@@ -4153,7 +4160,7 @@ final class BrowserModel: ObservableObject {
         let items = trashEntries
         // Several (marked): all of them, after one confirmation
         if items.count > 1 { trashMarked(items); return }
-        guard let entry = items.first ?? selectedEntry, entry.kind != .parent else { return }
+        guard let entry = items.first ?? selectedEntry, entry.kind != .parent, !isBeingTrashed(entry.url) else { return }
         guard canChange(entry) else { NSSound.beep(); return }   // archives are only read, drives ejected
         // What goes with it, said exactly: a folder's whole contents (also
         // what the grid doesn't show), all parts of a split archive (found
@@ -4248,7 +4255,10 @@ final class BrowserModel: ObservableObject {
             }
             return (trashed, parts, firstError)
         }
+        let paths = urls.map { Self.canonicalPath($0.0) }
+        trashing.formUnion(paths)
         onFiles(work) { [self] result in
+            trashing.subtract(paths)
             if let error = result.error { fileActions.report(error) }
             undoHistory.record(UndoStep(kind: .trash, parts: result.parts))
             then(result.trashed)
@@ -4855,13 +4865,18 @@ final class BrowserModel: ObservableObject {
             if taken { throw RenameError.alreadyExists(name) }
             do { try create() } catch { throw RenameError.failed(error.localizedDescription) }
         }
+        // (its identity for Undo, which trashes only this folder, still empty)
+        let identity: ItemIdentity?
         if fileActions.runsOffMain {
-            try await Blocking.run {
+            identity = try await Blocking.run {
                 try make(LiveFiles.conflicts(url, folderURL)) { try FileManager.default.createDirectory(at: url, withIntermediateDirectories: false) }
+                return ItemIdentity.of(url, withContents: true)
             }
         } else {
             try make(fileActions.conflicts(url, folderURL)) { try fileActions.createFolder(url) }
+            identity = ItemIdentity.of(url, withContents: true)
         }
+        undoHistory.record(UndoStep(kind: .newFolder, parts: [.created(url, identity: identity)]))
         newFolderRequested = false
         // A folder named like an archive stays a folder
         if ArchiveName.format(of: name) != nil { ArchivePath.noteFolder(url) }

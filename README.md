@@ -324,8 +324,8 @@ A file whose extension names another format than its content (a recording named 
 
 - **Rename** with Return or F2 (as in the Finder), also from the full view, the Actions menu or a right-click. The folder you're in is renamed by clicking its name in the title bar.
 - **Sort into folders:** ⇧⌘N makes a new folder, then drag tiles onto a folder, or onto `..` to move them up a level. On the same disk they move, onto another they're copied. A name that's taken asks: keep both, skip or cancel, once or for all.
-- **Undo** renaming, trashing, moving and copying, as often as you like, from the top of the right-click menu ("Undo Move to Trash"). On purpose without a key, so a stray ⌘Z never moves files around.
-- **Safe by design:** a copy gets its real name only when it's complete, so an interrupted one never leaves a cut-off file. Undo touches only what Schnellbild itself did, never a different file that took the same name. Inside archives nothing is changed.
+- **Undo** renaming, trashing (folders, marked items and archives with all their parts too), moving, copying and new folders, as often as you like: Edit → Undo, ⌘Z, or the top of the right-click menu ("Undo Move to Trash"); ⇧⌘Z redoes. While you type in a field, ⌘Z undoes the typing.
+- **Safe by design:** a copy gets its real name only when it's complete, so an interrupted one never leaves a cut-off file. Undo touches only what Schnellbild itself did, never a different file that took the same name. An Undo that can't be carried out (the Trash emptied, the name taken meanwhile) says why and leaves the item where it is, in the Trash too. Inside archives nothing is changed.
 - **Other files** (anything that isn't a picture, video or archive) are listed under the grid: rename, trash or drag them like tiles; a double click opens documents (text, PDF, office, audio) in their app, but never apps, scripts, installers, disk images or web pages.
 - Reveal in Finder, open with the default app, move to the Trash, or drag tiles to the Finder.
 
@@ -336,6 +336,7 @@ A file whose extension names another format than its content (a recording named 
 | ⇧⌘R | reveal in Finder |
 | ⌘↩ | open with the default app |
 | ⌘⌫ | move to Trash |
+| ⌘Z / ⇧⌘Z | undo / redo renaming, trashing, moving, copying, a new folder |
 
 <p align="center"><picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/newfolder-dark.webp">

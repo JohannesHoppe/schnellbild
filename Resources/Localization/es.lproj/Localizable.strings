@@ -286,7 +286,6 @@
 "“%@”: %@" = "«%@»: %@";
 "“%@” is no longer the item Schnellbild put there, so it stays as it is." = "«%@» ya no es el ítem que Schnellbild puso ahí, así que se queda como está.";
 "“%@” has changed since it was copied, so it isn't moved to the Trash." = "«%@» ha cambiado desde que se copió, así que no se traslada a la papelera.";
-"Schnellbild may not take “%@” out of the Trash. Use “Put Back” in the Finder's Trash." = "Schnellbild no puede sacar «%@» de la papelera. Usa «Devolver» en la papelera del Finder.";
 "Keep: try it again later, before the earlier actions. Forget: go on with the earlier actions." = "Conservar: volver a intentarlo más tarde, antes de las acciones anteriores. Olvidar: seguir con las acciones anteriores.";
 "Keep" = "Conservar";
 "Forget" = "Olvidar";
@@ -659,3 +658,11 @@
 "Show hidden files and folders" = "Mostrar archivos y carpetas ocultos";
 "Names that start with a dot, and what macOS hides, such as the Library folder. Off, they appear nowhere in Schnellbild." = "Nombres que empiezan por un punto y lo que macOS oculta, como la carpeta Biblioteca. Desactivado, no aparecen en ninguna parte de Schnellbild.";
 "Show / hide hidden files and folders" = "Mostrar / ocultar archivos y carpetas ocultos";
+"Undo" = "Deshacer";
+"Redo" = "Rehacer";
+"Undo New Folder" = "Deshacer nueva carpeta";
+"Redo New Folder" = "Rehacer nueva carpeta";
+"“%@” isn't empty any more, so it isn't moved to the Trash." = "«%@» ya no está vacía, así que no se traslada a la papelera.";
+"“%@” is no longer in the Trash." = "«%@» ya no está en la papelera.";
+"“%@” couldn't be taken out of the Trash and is still there. %@" = "No se ha podido sacar «%@» de la papelera y sigue allí. %@";
+"Undo / redo renaming, trashing, moving, copying, a new folder" = "Deshacer / rehacer: renombrar, trasladar a la papelera, trasladar, copiar, nueva carpeta";

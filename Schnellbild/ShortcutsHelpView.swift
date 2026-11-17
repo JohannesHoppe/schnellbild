@@ -186,6 +186,7 @@ struct ShortcutsHelpView: View {
                 Row(.action(.reveal), action: "Reveal in Finder"),
                 Row(.action(.openDefault), action: "Open with default app"),
                 Row(.action(.trash), action: "Move to Trash"),
+                Row(.fixed("⌘Z / ⇧⌘Z"), action: "Undo / redo renaming, trashing, moving, copying, a new folder"),
                 Row(.fixed("⌘Q"), .action(.quit), text: s.keys(.quit).isEmpty ? String(localized: "Quit")
                     : String(localized: "Quit (\(s.text(.quit)) asks first)")),
                 Row(.action(.menus), action: "The app's menus in the window"),

@@ -286,7 +286,6 @@
 "“%@”: %@" = "“%@”：%@";
 "“%@” is no longer the item Schnellbild put there, so it stays as it is." = "“%@”は Schnellbild がそこに置いた項目ではなくなっているため、そのままにします。";
 "“%@” has changed since it was copied, so it isn't moved to the Trash." = "“%@”はコピー後に変更されているため、ゴミ箱に入れません。";
-"Schnellbild may not take “%@” out of the Trash. Use “Put Back” in the Finder's Trash." = "Schnellbild は“%@”をゴミ箱から取り出せません。Finder のゴミ箱で“戻す”を使ってください。";
 "Keep: try it again later, before the earlier actions. Forget: go on with the earlier actions." = "残す：後でもう一度試します（それ以前の操作より先に）。消去：それ以前の操作に進みます。";
 "Keep" = "残す";
 "Forget" = "消去";
@@ -659,3 +658,11 @@
 "Show hidden files and folders" = "非表示のファイルとフォルダを表示";
 "Names that start with a dot, and what macOS hides, such as the Library folder. Off, they appear nowhere in Schnellbild." = "ドットで始まる名前と、「ライブラリ」フォルダなど macOS が隠しているもの。オフのときは Schnellbild のどこにも表示されません。";
 "Show / hide hidden files and folders" = "非表示のファイルとフォルダを表示 / 非表示";
+"Undo" = "取り消す";
+"Redo" = "やり直す";
+"Undo New Folder" = "新規フォルダを取り消す";
+"Redo New Folder" = "新規フォルダをやり直す";
+"“%@” isn't empty any more, so it isn't moved to the Trash." = "“%@”は空ではなくなったため、ゴミ箱に入れません。";
+"“%@” is no longer in the Trash." = "“%@”はもうゴミ箱にありません。";
+"“%@” couldn't be taken out of the Trash and is still there. %@" = "“%@”をゴミ箱から取り出せなかったため、ゴミ箱に残っています。%@";
+"Undo / redo renaming, trashing, moving, copying, a new folder" = "取り消す / やり直す：名前変更、ゴミ箱に入れる、移動、コピー、新規フォルダ";

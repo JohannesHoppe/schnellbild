@@ -286,7 +286,6 @@
 "“%@”: %@" = "”%@”: %@";
 "“%@” is no longer the item Schnellbild put there, so it stays as it is." = "”%@” är inte längre objektet som Schnellbild lade där, så det lämnas som det är.";
 "“%@” has changed since it was copied, so it isn't moved to the Trash." = "”%@” har ändrats sedan det kopierades, så det flyttas inte till papperskorgen.";
-"Schnellbild may not take “%@” out of the Trash. Use “Put Back” in the Finder's Trash." = "Schnellbild får inte ta ut ”%@” ur papperskorgen. Använd ”Lägg tillbaka” i Finders papperskorg.";
 "Keep: try it again later, before the earlier actions. Forget: go on with the earlier actions." = "Behåll: försök igen senare, före de tidigare åtgärderna. Glöm: fortsätt med de tidigare åtgärderna.";
 "Keep" = "Behåll";
 "Forget" = "Glöm";
@@ -659,3 +658,11 @@
 "Show hidden files and folders" = "Visa dolda filer och mappar";
 "Names that start with a dot, and what macOS hides, such as the Library folder. Off, they appear nowhere in Schnellbild." = "Namn som börjar med en punkt och det som macOS döljer, till exempel mappen Bibliotek. Avstängt syns de ingenstans i Schnellbild.";
 "Show / hide hidden files and folders" = "Visa / dölj dolda filer och mappar";
+"Undo" = "Ångra";
+"Redo" = "Gör om";
+"Undo New Folder" = "Ångra ny mapp";
+"Redo New Folder" = "Gör om ny mapp";
+"“%@” isn't empty any more, so it isn't moved to the Trash." = "”%@” är inte längre tom, så den flyttas inte till papperskorgen.";
+"“%@” is no longer in the Trash." = "”%@” finns inte längre i papperskorgen.";
+"“%@” couldn't be taken out of the Trash and is still there. %@" = "”%@” kunde inte tas ut ur papperskorgen och ligger kvar där. %@";
+"Undo / redo renaming, trashing, moving, copying, a new folder" = "Ångra / gör om: byta namn, flytta till papperskorgen, flytta, kopiera, ny mapp";

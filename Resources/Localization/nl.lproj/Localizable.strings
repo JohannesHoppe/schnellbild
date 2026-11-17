@@ -286,7 +286,6 @@
 "“%@”: %@" = "‘%@’: %@";
 "“%@” is no longer the item Schnellbild put there, so it stays as it is." = "‘%@’ is niet meer het onderdeel dat Schnellbild daar heeft neergezet en blijft daarom zoals het is.";
 "“%@” has changed since it was copied, so it isn't moved to the Trash." = "‘%@’ is gewijzigd sinds het is gekopieerd en wordt daarom niet naar de prullenmand verplaatst.";
-"Schnellbild may not take “%@” out of the Trash. Use “Put Back” in the Finder's Trash." = "Schnellbild mag ‘%@’ niet uit de prullenmand halen. Gebruik ‘Zet terug’ in de prullenmand van de Finder.";
 "Keep: try it again later, before the earlier actions. Forget: go on with the earlier actions." = "Bewaar: probeer het later opnieuw, vóór de eerdere acties. Vergeet: ga verder met de eerdere acties.";
 "Keep" = "Bewaar";
 "Forget" = "Vergeet";
@@ -659,3 +658,11 @@
 "Show hidden files and folders" = "Toon verborgen bestanden en mappen";
 "Names that start with a dot, and what macOS hides, such as the Library folder. Off, they appear nowhere in Schnellbild." = "Namen die met een punt beginnen en wat macOS verbergt, zoals de map Bibliotheek. Uitgeschakeld verschijnen ze nergens in Schnellbild.";
 "Show / hide hidden files and folders" = "Toon / verberg verborgen bestanden en mappen";
+"Undo" = "Herstel";
+"Redo" = "Opnieuw";
+"Undo New Folder" = "Nieuwe map herstellen";
+"Redo New Folder" = "Nieuwe map opnieuw";
+"“%@” isn't empty any more, so it isn't moved to the Trash." = "‘%@’ is niet meer leeg en wordt daarom niet naar de prullenmand verplaatst.";
+"“%@” is no longer in the Trash." = "‘%@’ staat niet meer in de prullenmand.";
+"“%@” couldn't be taken out of the Trash and is still there. %@" = "‘%@’ kon niet uit de prullenmand worden gehaald en staat er nog. %@";
+"Undo / redo renaming, trashing, moving, copying, a new folder" = "Herstel / opnieuw: naam wijzigen, naar prullenmand verplaatsen, verplaatsen, kopiëren, nieuwe map";

@@ -286,7 +286,6 @@
 "“%@”: %@" = "« %@ » : %@";
 "“%@” is no longer the item Schnellbild put there, so it stays as it is." = "« %@ » n’est plus l’élément que Schnellbild y a placé ; il reste tel quel.";
 "“%@” has changed since it was copied, so it isn't moved to the Trash." = "« %@ » a changé depuis sa copie ; il n’est pas placé dans la corbeille.";
-"Schnellbild may not take “%@” out of the Trash. Use “Put Back” in the Finder's Trash." = "Schnellbild n’a pas le droit de sortir « %@ » de la corbeille. Utilisez « Remettre » dans la corbeille du Finder.";
 "Keep: try it again later, before the earlier actions. Forget: go on with the earlier actions." = "Garder : réessayer plus tard, avant les actions précédentes. Oublier : continuer avec les actions précédentes.";
 "Keep" = "Garder";
 "Forget" = "Oublier";
@@ -659,3 +658,11 @@
 "Show hidden files and folders" = "Afficher les fichiers et dossiers masqués";
 "Names that start with a dot, and what macOS hides, such as the Library folder. Off, they appear nowhere in Schnellbild." = "Les noms qui commencent par un point et ce que macOS masque, comme le dossier Bibliothèque. Désactivé, ils n’apparaissent nulle part dans Schnellbild.";
 "Show / hide hidden files and folders" = "Afficher / masquer les fichiers et dossiers masqués";
+"Undo" = "Annuler";
+"Redo" = "Rétablir";
+"Undo New Folder" = "Annuler le nouveau dossier";
+"Redo New Folder" = "Rétablir le nouveau dossier";
+"“%@” isn't empty any more, so it isn't moved to the Trash." = "« %@ » n’est plus vide ; il n’est pas placé dans la corbeille.";
+"“%@” is no longer in the Trash." = "« %@ » n’est plus dans la corbeille.";
+"“%@” couldn't be taken out of the Trash and is still there. %@" = "« %@ » n’a pas pu être sorti de la corbeille et s’y trouve toujours. %@";
+"Undo / redo renaming, trashing, moving, copying, a new folder" = "Annuler / rétablir : renommage, placement dans la corbeille, déplacement, copie, nouveau dossier";
