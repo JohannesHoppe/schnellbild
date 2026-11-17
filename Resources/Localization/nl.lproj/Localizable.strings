@@ -629,12 +629,12 @@
 "Credit" = "Bronvermelding";
 "Website" = "Website";
 "Schnellbild uses an LGPL-only build of VLCKit and libVLC, licensed under the GNU Lesser General Public License 2.1 and built from source without any of VLC's modules under the GPL. VLC as VideoLAN builds it also carries modules under the GPL; they are not in Schnellbild's build." = "Schnellbild gebruikt een build van VLCKit en libVLC met alleen LGPL, gelicentieerd onder de GNU Lesser General Public License 2.1 en vanuit de broncode gebouwd zonder een van de VLC-modules onder de GPL. VLC zoals VideoLAN het bouwt bevat ook modules onder de GPL; die zitten niet in de build van Schnellbild.";
-"Schnellbild's build makes five small changes to VLC (Scripts/vlc-patches, 0001 to 0005): four to its subtitle timing and one to its audio output on macOS." = "De build van Schnellbild brengt vijf kleine wijzigingen in VLC aan (Scripts/vlc-patches, 0001 tot 0005): vier aan de timing van ondertitels en één aan de geluidsuitvoer op macOS.";
+"Schnellbild's build makes six small changes to VLC (Scripts/vlc-patches, 0001 to 0006): four to its subtitle timing, one to its audio output on macOS and one that leaves FFmpeg's files under the GPL out of the build." = "De build van Schnellbild brengt zes kleine wijzigingen in VLC aan (Scripts/vlc-patches, 0001 tot 0006): vier aan de timing van ondertitels, één aan de geluidsuitvoer op macOS en één die de bestanden van FFmpeg onder de GPL buiten de build laat.";
 "The complete source of this build, with these changes, is attached to its release: %@. The script that builds it is Scripts/build_vlckit_lgpl.sh in Schnellbild's repository." = "De volledige broncode van deze build, met deze wijzigingen, hangt aan de release ervan: %@. Het script dat hem bouwt is Scripts/build_vlckit_lgpl.sh in de repository van Schnellbild.";
 "© VideoLAN and the VLC authors" = "© VideoLAN en de VLC-auteurs";
 "Libraries included in VLCKit, each under its own license" = "Bibliotheken in VLCKit, elk onder een eigen licentie";
 "Libraries included in VLCKit" = "Bibliotheken in VLCKit";
-"These are the license files at the top of each library's source, as VLC's build collected them." = "Dit zijn de licentiebestanden bovenaan de broncode van elke bibliotheek, zoals de build van VLC ze heeft verzameld.";
+"These are the license files from each library's source, as Schnellbild's build collected them." = "Dit zijn de licentiebestanden uit de broncode van elke bibliotheek, zoals de build van Schnellbild ze heeft verzameld.";
 "UnRAR license" = "UnRAR-licentie";
 "© OpenStreetMap contributors" = "© OpenStreetMap-bijdragers";
 "Made from Protomaps' OpenStreetMap build, with thanks to Protomaps. How the files are made is in Schnellbild's repository." = "Gemaakt van de OpenStreetMap-build van Protomaps, met dank aan Protomaps. Hoe de bestanden worden gemaakt, staat in de repository van Schnellbild.";
