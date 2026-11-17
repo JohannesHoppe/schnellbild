@@ -151,14 +151,25 @@ public enum GlobeGeometry {
 }
 
 /// The globe on a view: where coordinates land and back, for one camera.
-/// Far out the Earth is a sphere seen from space (orthographic, north up,
-/// the camera's centre in the middle); between `morphStart` and `flatZoom`
-/// each point slides from its place on the sphere to its place on the flat
-/// Web Mercator map (`MapViewport`), so at `flatZoom` the two are the same
-/// picture and the flat `MapSurfaceView` takes over. The sphere's radius
-/// grows with the zoom like the flat map's width (256 · 2^zoom points
-/// around the equator) and, while it flattens, by the Mercator stretch of the
-/// centre's latitude, so the scale in the middle matches the flat map's.
+/// Far out and looking straight down the Earth is a sphere seen from space
+/// (orthographic, the camera's centre in the middle, `MapCamera.heading`
+/// up); between `morphStart` and `flatZoom` each point slides from its
+/// place on the sphere to its place on the flat Web Mercator map
+/// (`MapViewport`), so at `flatZoom` the two are the same picture and the
+/// flat `MapSurfaceView` takes over. The sphere's radius grows with the zoom
+/// like the flat map's width (256 · 2^zoom points around the equator) and,
+/// while it flattens, by the Mercator stretch of the centre's latitude, so
+/// the scale in the middle matches the flat map's.
+///
+/// Tilted (`MapCamera.pitch`, 0 … `maxPitch`°) the camera is a perspective
+/// one: it looks at the centre from the south (heading 0), from a distance
+/// that gives the centre the same scale as the sphere's radius, through a
+/// lens of `fieldOfView`; the horizon and the curve of the Earth show, and
+/// zooming in brings the camera down to low orbit (`tiltedMaxZoom`). The
+/// first `perspectiveRamp`° of tilt blend the orthographic picture into the
+/// perspective one, and the same ramp holds the flattening back: a tilted
+/// globe never flattens, and tilting back to straight down at a flat zoom
+/// flattens it.
 public struct GlobeProjection: Equatable, Sendable {
     public var camera: MapCamera
     public var size: CGSize
@@ -167,6 +178,16 @@ public struct GlobeProjection: Equatable, Sendable {
         self.camera = camera
         self.size = size
     }
+
+    /// The most the camera tilts from straight down (degrees).
+    public static let maxPitch = 72.0
+    /// The tilted camera's lens: its vertical angle of view (degrees).
+    public static let fieldOfView = 40.0
+    /// The tilt over which the picture turns from orthographic to perspective (degrees).
+    public static let perspectiveRamp = 10.0
+    /// How far in a tilted camera comes: low orbit (zoom 7: about 600 km
+    /// above the ground at the largest tilt).
+    public static let tiltedMaxZoom = 7.0
 
     /// From this zoom on the map is flat (the flat map view takes over);
     /// at least 1.5 steps above the flat map's smallest zoom for the view.
@@ -185,36 +206,88 @@ public struct GlobeProjection: Equatable, Sendable {
     public var flatZoom: Double { Self.flatZoom(for: size) }
     public var morphStart: Double { Self.morphStart(for: size) }
 
-    /// How flat the map is: 0 a sphere, 1 the flat map (smoothstep between the zooms).
-    public var flatness: Double {
-        let x = min(1, max(0, (camera.zoom - morphStart) / (flatZoom - morphStart)))
-        return x * x * (3 - 2 * x)
+    static func smoothstep(_ x: Double) -> Double {
+        let c = min(1, max(0, x))
+        return c * c * (3 - 2 * c)
     }
 
-    public var isFlat: Bool { camera.zoom >= flatZoom - 1e-9 }
+    /// How much the picture is a perspective one: 0 straight down, 1 from `perspectiveRamp`° of tilt on.
+    public var perspective: Double { Self.smoothstep(camera.pitch / Self.perspectiveRamp) }
+
+    /// How flat the map is: 0 a sphere, 1 the flat map (smoothstep between
+    /// the zooms; held back by the tilt).
+    public var flatness: Double {
+        Self.smoothstep((camera.zoom - morphStart) / (flatZoom - morphStart)) * (1 - perspective)
+    }
+
+    public var isFlat: Bool { flatness >= 1 - 1e-9 }
 
     /// The flat map's width in points at this zoom.
     public var worldSize: Double { WebMercator.worldSize(zoom: camera.zoom) }
 
-    /// The sphere's radius in points.
+    /// The sphere's radius in points (the scale in the middle of the view).
     public var radius: Double {
         let t = flatness
         return worldSize / (2 * .pi) / (1 + (cos(camera.center.latitude * .pi / 180) - 1) * t)
     }
 
-    /// Where a coordinate lands (origin top left) and its depth: 1 facing the
-    /// viewer, 0 on the rim, below 0 behind the Earth (blended towards 1 as
-    /// the map flattens, as the renderer does).
-    public func project(_ c: Coordinate) -> (point: CGPoint, depth: Double) {
-        let t = flatness, r = radius, w = worldSize
+    /// The lens's focal length in points.
+    public var focalLength: Double { Double(size.height) / 2 / tan(Self.fieldOfView / 2 * .pi / 180) }
+
+    /// The camera in the Earth-fixed frame (Earth radii): where it is, where
+    /// it looks (`forward`), the view's right and up, and the target (the
+    /// centre on the ground).
+    public struct Frame: Equatable, Sendable {
+        public var position, forward, right, up, target: SIMD3<Double>
+        /// Points per Earth radius at unit distance
+        public var focal: Double
+        /// The orthographic picture's axes (straight down, turned by the heading)
+        public var flatRight, flatUp, flatToward: SIMD3<Double>
+    }
+
+    public var frame: Frame {
         let (east, north, up) = GlobeGeometry.basis(camera.center)
+        let psi = camera.heading * .pi / 180, theta = camera.pitch * .pi / 180
+        // Ahead (the heading on the ground) and to the right
+        let ahead = north * cos(psi) + east * sin(psi)
+        let right = east * cos(psi) - north * sin(psi)
+        let f = focalLength
+        let distance = f / radius
+        let back = up * cos(theta) - ahead * sin(theta)
+        return Frame(position: up + distance * back, forward: -back, right: right,
+                     up: ahead * cos(theta) + up * sin(theta), target: up, focal: f,
+                     flatRight: right, flatUp: ahead, flatToward: up)
+    }
+
+    /// The sphere's picture of a point on it (origin in the middle, y up) and
+    /// how far it faces the viewer (positive: seen), the orthographic and the
+    /// perspective picture blended by the tilt.
+    func sphere(_ v: SIMD3<Double>, _ fr: Frame) -> (x: Double, y: Double, facing: Double, inFront: Bool) {
+        let s = perspective, r = radius
+        let ox = r * simd_dot(v, fr.flatRight), oy = r * simd_dot(v, fr.flatUp), of = simd_dot(v, fr.flatToward)
+        guard s > 0 else { return (ox, oy, of, true) }
+        let q = v - fr.position
+        let z = simd_dot(q, fr.forward)
+        let px = fr.focal * simd_dot(q, fr.right) / max(z, 1e-9), py = fr.focal * simd_dot(q, fr.up) / max(z, 1e-9)
+        // Seen: on the side of the horizon facing the camera
+        let distance = simd_length(fr.position)
+        let pf = (simd_dot(v, fr.position) - 1) / max(1e-9, distance - 1)
+        return (ox + (px - ox) * s, oy + (py - oy) * s, of + (pf - of) * s, z > 1e-6)
+    }
+
+    /// Where a coordinate lands (origin top left) and its depth: positive
+    /// facing the viewer, below 0 behind the Earth (blended towards 1 as the
+    /// map flattens, as the renderer does).
+    public func project(_ c: Coordinate) -> (point: CGPoint, depth: Double) {
+        let t = flatness, w = worldSize
         let v = GlobeGeometry.unitVector(c)
-        let sx = r * simd_dot(v, east), sy = -r * simd_dot(v, north)
+        let sp = sphere(v, frame)
+        let sx = sp.x, sy = -sp.y
         let dLon = Astronomy.wrap180(c.longitude - camera.center.longitude)
         let fx = dLon / 360 * w
         let fy = (GlobeGeometry.mercatorY(c.latitude) - GlobeGeometry.mercatorY(camera.center.latitude)) * w
         let x = sx + (fx - sx) * t, y = sy + (fy - sy) * t
-        let depth = simd_dot(v, up) * (1 - t) + t
+        let depth = sp.inFront ? sp.facing * (1 - t) + t : -1
         return (CGPoint(x: Double(size.width) / 2 + x, y: Double(size.height) / 2 + y), depth)
     }
 
@@ -226,23 +299,31 @@ public struct GlobeProjection: Equatable, Sendable {
 
     /// The coordinate under a point of the view, nil off the Earth.
     public func coordinate(at p: CGPoint) -> Coordinate? {
-        let t = flatness
+        let t = flatness, s = perspective
         if t >= 1 - 1e-9 { return MapViewport(camera: camera, size: size).coordinate(at: p) }
-        let r = radius
-        let x = (Double(p.x) - Double(size.width) / 2) / r, y = -(Double(p.y) - Double(size.height) / 2) / r
-        let (east, north, up) = GlobeGeometry.basis(camera.center)
-        var guess: Coordinate
-        if x * x + y * y <= 1 {
-            guess = GlobeGeometry.coordinate(x * east + y * north + sqrt(max(0, 1 - x * x - y * y)) * up)
-            if t <= 1e-9 { return guess }
-        } else if t <= 1e-9 {
+        let fr = frame
+        let x = Double(p.x) - Double(size.width) / 2, y = -(Double(p.y) - Double(size.height) / 2)
+        var guess: Coordinate?
+        if s >= 1 - 1e-9 {
+            // The ray from the camera through the point
+            let ray = simd_normalize(fr.focal * fr.forward + x * fr.right + y * fr.up)
+            let b = simd_dot(fr.position, ray), cc = simd_length_squared(fr.position) - 1
+            let disc = b * b - cc
+            guard disc >= 0 else { return nil }
+            let hit = fr.position + (-b - sqrt(disc)) * ray
+            return GlobeGeometry.coordinate(hit)
+        }
+        let ox = x / radius, oy = y / radius
+        if ox * ox + oy * oy <= 1 {
+            guess = GlobeGeometry.coordinate(ox * fr.flatRight + oy * fr.flatUp + sqrt(max(0, 1 - ox * ox - oy * oy)) * fr.flatToward)
+            if t <= 1e-9 && s <= 1e-9 { return guess }
+        } else if t <= 1e-9 && s <= 1e-9 {
             return nil
         } else {
-            let rim = simd_normalize(x * east + y * north)
-            guess = GlobeGeometry.coordinate(rim)
+            guess = GlobeGeometry.coordinate(simd_normalize(ox * fr.flatRight + oy * fr.flatUp))
         }
-        // Flattening: solve point(for: c) == p by Newton's method on (latitude, longitude)
-        guard let solved = solve(start: guess, target: p, { self.project($0).point }) else { return nil }
+        // Flattening or tilting: solve point(for: c) == p by Newton's method on (latitude, longitude)
+        guard let start = guess, let solved = Self.solve(start: start, target: p, { self.project($0).point }) else { return nil }
         return project(solved).depth > 0 ? solved : nil
     }
 
@@ -251,45 +332,80 @@ public struct GlobeProjection: Equatable, Sendable {
         if isFlat { return MapViewport(camera: camera, size: size).panned(by: dx, dy) }
         let t = flatness, w = worldSize, r = radius
         let cosLat = max(0.05, cos(camera.center.latitude * .pi / 180))
+        // The drag in the view's directions (right, ahead), ahead foreshortened by the tilt
+        let psi = camera.heading * .pi / 180
+        let alongRight = -dx, alongAhead = dy / max(0.3, cos(camera.pitch * .pi / 180 * perspective))
+        let toEast = alongRight * cos(psi) + alongAhead * sin(psi)
+        let toNorth = -alongRight * sin(psi) + alongAhead * cos(psi)
         // Points per radian at the centre, east and north
         let perLon = r * cosLat + (w / (2 * .pi) - r * cosLat) * t
         let perLat = r + (w / (2 * .pi * cosLat) - r) * t
-        let lat = min(85, max(-85, camera.center.latitude + dy / perLat * 180 / .pi))
-        let lon = Astronomy.wrap180(camera.center.longitude - dx / perLon * 180 / .pi)
-        return MapCamera(center: Coordinate(latitude: lat, longitude: lon), zoom: camera.zoom)
+        var next = camera
+        next.center = Coordinate(latitude: min(85, max(-85, camera.center.latitude + toNorth / perLat * 180 / .pi)),
+                                 longitude: Astronomy.wrap180(camera.center.longitude + toEast / perLon * 180 / .pi))
+        return next
     }
 
     /// The camera at `zoom` (held between the globe's smallest zoom and the
-    /// flat map's largest), with the coordinate under `anchor` kept there.
+    /// flat map's largest, a tilted camera's at `tiltedMaxZoom`), with the
+    /// coordinate under `anchor` kept there.
     public func zoomed(to zoom: Double, keeping anchor: CGPoint) -> MapCamera {
-        let z = min(MapViewport.maxZoom, max(Self.minZoom(for: size), zoom))
-        var next = GlobeProjection(camera: MapCamera(center: camera.center, zoom: z), size: size)
+        var held = camera
+        held.zoom = zoom
+        held = Self.held(held, size: size)
+        let z = held.zoom
+        var next = GlobeProjection(camera: held, size: size)
         guard let fixed = coordinate(at: anchor) else { return next.camera }
         if isFlat && next.isFlat {
-            return MapViewport(camera: camera, size: size).zoomed(to: z, keeping: anchor)
+            var flat = MapViewport(camera: camera, size: size).zoomed(to: z, keeping: anchor)
+            flat.pitch = camera.pitch
+            flat.heading = camera.heading
+            return flat
         }
         // The centre that brings the fixed coordinate back under the anchor:
-        // exact on the sphere, else found from there
+        // exact on the orthographic sphere, else found from there
         let size = size
-        let sphereCenter = next.sphereCenter(placing: fixed, at: anchor)
-        if next.flatness <= 0, let center = sphereCenter {
+        let sphereCenter = next.perspective <= 0 ? next.sphereCenter(placing: fixed, at: anchor) : nil
+        if next.flatness <= 0, next.perspective <= 0, let center = sphereCenter {
             next.camera.center = Coordinate(latitude: min(85, max(-85, center.latitude)), longitude: Astronomy.wrap180(center.longitude))
-        } else if let center = solve(start: sphereCenter ?? camera.center, target: anchor, { c in
-            GlobeProjection(camera: MapCamera(center: c, zoom: z), size: size).project(fixed).point
+        } else if let center = Self.solve(start: sphereCenter ?? camera.center, target: anchor, { c in
+            var moved = held
+            moved.center = c
+            return GlobeProjection(camera: moved, size: size).project(fixed).point
         }) {
             next.camera.center = Coordinate(latitude: min(85, max(-85, center.latitude)), longitude: Astronomy.wrap180(center.longitude))
         }
-        if next.isFlat { next.camera = MapViewport(camera: next.camera, size: size).panned(by: 0, 0) }
+        if next.isFlat {
+            var flat = MapViewport(camera: next.camera, size: size).panned(by: 0, 0)
+            flat.pitch = next.camera.pitch
+            flat.heading = next.camera.heading
+            next.camera = flat
+        }
         return next.camera
     }
 
-    /// The centre for which the sphere (orthographic, north up, this radius)
-    /// shows `q` at the view's point `p`; nil when `p` lies off the sphere or
-    /// no centre does it. Of the two latitudes that do, the one nearer the
-    /// camera's.
+    /// The camera within the globe's limits: the zoom between the globe's
+    /// smallest and the flat map's largest (a tilted camera's at
+    /// `tiltedMaxZoom`), the tilt within 0 … `maxPitch`, the heading in
+    /// -180 ..< 180.
+    public static func held(_ c: MapCamera, size: CGSize) -> MapCamera {
+        var next = c
+        next.pitch = min(maxPitch, max(0, c.pitch))
+        next.heading = Astronomy.wrap180(c.heading)
+        let top = next.pitch > 0 ? tiltedMaxZoom : MapViewport.maxZoom
+        next.zoom = min(top, max(minZoom(for: size), c.zoom))
+        return next
+    }
+
+    /// The centre for which the orthographic sphere (this radius and
+    /// heading) shows `q` at the view's point `p`; nil when `p` lies off the
+    /// sphere or no centre does it. Of the two latitudes that do, the one
+    /// nearer the camera's.
     func sphereCenter(placing q: Coordinate, at p: CGPoint) -> Coordinate? {
-        let r = radius
-        let x = (Double(p.x) - Double(size.width) / 2) / r, y = -(Double(p.y) - Double(size.height) / 2) / r
+        let r = radius, psi = camera.heading * .pi / 180
+        let sx = (Double(p.x) - Double(size.width) / 2) / r, sy = -(Double(p.y) - Double(size.height) / 2) / r
+        // The view's axes are east and north turned by the heading
+        let x = sx * cos(psi) + sy * sin(psi), y = -sx * sin(psi) + sy * cos(psi)
         guard x * x + y * y < 1 else { return nil }
         let z = sqrt(1 - x * x - y * y)
         // q.z = y cos φ + z sin φ = ρ cos(φ − α)
@@ -305,9 +421,9 @@ public struct GlobeProjection: Equatable, Sendable {
 
     /// Newton's method for the coordinate `c` with `f(c) == target`, the
     /// Jacobian by finite differences; nil when it doesn't converge.
-    private func solve(start: Coordinate, target: CGPoint, _ f: (Coordinate) -> CGPoint) -> Coordinate? {
+    static func solve(start: Coordinate, target: CGPoint, _ f: (Coordinate) -> CGPoint) -> Coordinate? {
         var c = start
-        for _ in 0..<24 {
+        for _ in 0..<32 {
             let p = f(c)
             let ex = Double(target.x - p.x), ey = Double(target.y - p.y)
             if ex * ex + ey * ey < 1e-6 { return c }

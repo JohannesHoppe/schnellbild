@@ -14,14 +14,33 @@ public struct GlobeScene: Equatable, Sendable {
     /// Relief exaggerated (heights ×40 on land, ×6 under the sea, strong hillshade); else at true scale with a soft hillshade
     public var exaggerated: Bool
     public var date: Date
+    /// How much of the cloud cover shows (0 none … 1 all)
+    public var clouds: Double
 
-    public init(camera: MapCamera, size: CGSize, dark: Bool = false, lighting: Bool = false, exaggerated: Bool = true, date: Date = Date()) {
+    public init(camera: MapCamera, size: CGSize, dark: Bool = false, lighting: Bool = false, exaggerated: Bool = true, date: Date = Date(),
+                clouds: Double = 0) {
         self.camera = camera
         self.size = size
         self.dark = dark
         self.lighting = lighting
         self.exaggerated = exaggerated
         self.date = date
+        self.clouds = clouds
+    }
+
+    /// The clouds as they show: thinner the closer the camera comes (the
+    /// ground stays readable), none on the flat map.
+    public var cloudOpacity: Double {
+        let close = GlobeProjection.smoothstep((camera.zoom - 3) / 3.5)
+        return clouds * (1 - 0.65 * close) * (1 - projection.flatness)
+    }
+
+    /// The relief's exaggeration: ×40 far out, down to ×6 in low orbit (a
+    /// mountain stays a mountain), ×1 at true scale.
+    public var reliefFactor: Double {
+        guard exaggerated else { return 1 }
+        let close = GlobeProjection.smoothstep((camera.zoom - 3) / 4)
+        return 40 * pow(6.0 / 40, close)
     }
 
     public var projection: GlobeProjection { GlobeProjection(camera: camera, size: size) }
@@ -31,7 +50,9 @@ public struct GlobeScene: Equatable, Sendable {
     public var skyOpacity: Double {
         let fill = 2 * projection.radius / Double(max(1, min(size.width, size.height)))
         let x = min(1, max(0, (fill - 0.9) / 0.7))
-        return (1 - x * x * (3 - 2 * x)) * (1 - projection.flatness)
+        // Tilted, space shows above the horizon however close the camera is
+        let straightDown = (1 - x * x * (3 - 2 * x)) * (1 - projection.flatness)
+        return straightDown + (1 - straightDown) * projection.perspective
     }
 
     /// The colour of space behind the Earth (the same in both appearances).
@@ -43,14 +64,20 @@ public struct GlobeScene: Equatable, Sendable {
 struct GlobeUniforms {
     var viewport: SIMD4<Float>
     var center: SIMD4<Float>
-    var basisE: SIMD4<Float>
-    var basisN: SIMD4<Float>
-    var basisU: SIMD4<Float>
+    var camPos: SIMD4<Float>
+    var camForward: SIMD4<Float>
+    var camRight: SIMD4<Float>
+    var camUp: SIMD4<Float>
+    var orthoRight: SIMD4<Float>
+    var orthoUp: SIMD4<Float>
+    var orthoToward: SIMD4<Float>
     var sun: SIMD4<Float>
     var relief: SIMD4<Float>
     var detail: SIMD4<Float>
     var sky: SIMD4<Float>
     var heightTexel: SIMD4<Float>
+    var satDetail: SIMD4<Float>
+    var extra: SIMD4<Float>
     var northColor: SIMD4<Float>
     var southColor: SIMD4<Float>
     var starMatrix: simd_float4x4
@@ -73,8 +100,10 @@ public final class GlobeRenderer: @unchecked Sendable {
     public let device: MTLDevice
     let queue: MTLCommandQueue
     let globePipeline: MTLRenderPipelineState
-    let glowPipeline: MTLRenderPipelineState
+    let cloudPipeline: MTLRenderPipelineState
+    let atmospherePipeline: MTLRenderPipelineState
     let skyPipeline: MTLRenderPipelineState
+    let overDepthState: MTLDepthStencilState
     let depthState: MTLDepthStencilState
     let noDepthState: MTLDepthStencilState
     let baseSampler: MTLSamplerState
@@ -124,10 +153,12 @@ public final class GlobeRenderer: @unchecked Sendable {
         vd.attributes[0].bufferIndex = 0
         vd.layouts[0].stride = MemoryLayout<SIMD2<Float>>.stride
         guard let globe = pipeline("globeVertex", "globeFragment", blend: false, vertexDescriptor: vd),
-              let glow = pipeline("glowVertex", "glowFragment", blend: true),
-              let sky = pipeline("skyVertex", "skyFragment", blend: true) else { return nil }
+              let clouds = pipeline("cloudVertex", "cloudFragment", blend: true, vertexDescriptor: vd),
+              let atmosphere = pipeline("screenVertex", "atmosphereFragment", blend: true),
+              let sky = pipeline("screenVertex", "skyFragment", blend: true) else { return nil }
         globePipeline = globe
-        glowPipeline = glow
+        cloudPipeline = clouds
+        atmospherePipeline = atmosphere
         skyPipeline = sky
         let depth = MTLDepthStencilDescriptor()
         depth.depthCompareFunction = .less
@@ -135,9 +166,14 @@ public final class GlobeRenderer: @unchecked Sendable {
         let none = MTLDepthStencilDescriptor()
         none.depthCompareFunction = .always
         none.isDepthWriteEnabled = false
-        guard let ds = device.makeDepthStencilState(descriptor: depth), let nds = device.makeDepthStencilState(descriptor: none) else { return nil }
+        let over = MTLDepthStencilDescriptor()
+        over.depthCompareFunction = .lessEqual
+        over.isDepthWriteEnabled = false
+        guard let ds = device.makeDepthStencilState(descriptor: depth), let nds = device.makeDepthStencilState(descriptor: none),
+              let ods = device.makeDepthStencilState(descriptor: over) else { return nil }
         depthState = ds
         noDepthState = nds
+        overDepthState = ods
         func sampler(repeatX: Bool, mip: Bool) -> MTLSamplerState? {
             let s = MTLSamplerDescriptor()
             s.minFilter = .linear
@@ -181,7 +217,7 @@ public final class GlobeRenderer: @unchecked Sendable {
     func uniforms(for scene: GlobeScene) -> GlobeUniforms {
         let projection = scene.projection
         let t = projection.flatness
-        let (e, n, u) = GlobeGeometry.basis(scene.camera.center)
+        let fr = projection.frame
         func f4(_ v: SIMD3<Double>, _ w: Double = 0) -> SIMD4<Float> { SIMD4(Float(v.x), Float(v.y), Float(v.z), Float(w)) }
         let sunVector = GlobeGeometry.unitVector(Astronomy.subsolarPoint(at: scene.date))
         let m = Astronomy.celestialToEarth(at: scene.date)
@@ -189,26 +225,33 @@ public final class GlobeRenderer: @unchecked Sendable {
         for c in 0..<3 { for r in 0..<3 { starMatrix[c][r] = Float(m[c][r]) } }
         let heights = textures.heightTexture
         let detail = textures.detail(dark: scene.dark)
-        let minSide = Double(max(1, min(scene.size.width, scene.size.height)))
+        let satDetail = textures.satelliteDetailRegion
         let palette = MapPalette.appearance(dark: scene.dark)
         func color(_ c: MapColor) -> SIMD4<Float> { SIMD4(Float(c.red), Float(c.green), Float(c.blue), 1) }
+        let k = scene.reliefFactor
+        let distance = simd_length(fr.position)
         return GlobeUniforms(
             viewport: SIMD4(Float(scene.size.width), Float(scene.size.height), Float(projection.radius), Float(t)),
             center: SIMD4(Float(scene.camera.center.latitude * .pi / 180), Float(scene.camera.center.longitude * .pi / 180),
                           Float(projection.worldSize), Float(GlobeGeometry.mercatorY(scene.camera.center.latitude))),
-            basisE: f4(e), basisN: f4(n), basisU: f4(u),
+            camPos: f4(fr.position, projection.perspective), camForward: f4(fr.forward, fr.focal),
+            camRight: f4(fr.right, max(1e-4, (distance - 1.2) * 0.5)), camUp: f4(fr.up, distance + 2),
+            orthoRight: f4(fr.flatRight), orthoUp: f4(fr.flatUp), orthoToward: f4(fr.flatToward),
             sun: f4(sunVector, scene.lighting ? 1 : 0),
-            relief: SIMD4(scene.exaggerated ? 40 : 1, scene.exaggerated ? 6 : 1, scene.exaggerated ? 14 : 4, heights == nil ? 0 : 1),
+            relief: SIMD4(Float(k), Float(max(1, k * 0.15)), scene.exaggerated ? 14 : 4, heights == nil ? 0 : 1),
             detail: detail.map { SIMD4(Float($0.x0), Float($0.y0), Float(1 << $0.zoom), 1) } ?? .zero,
-            sky: SIMD4(Float(scene.skyOpacity), Float(minSide / 2 / tan(45 * Double.pi / 180)),
-                       Float((1 - t) * (1 - t)), textures.lightsTexture == nil ? 0 : 1),
-            heightTexel: SIMD4(heights.map { 1 / Float($0.width) } ?? 0, heights.map { 1 / Float($0.height) } ?? 0, scene.dark ? 1 : 0, 0),
+            sky: SIMD4(Float(scene.skyOpacity), Float((1 - t) * (1 - t)), Float(scene.cloudOpacity), textures.lightsTexture == nil ? 0 : 1),
+            heightTexel: SIMD4(heights.map { 1 / Float($0.width) } ?? 0, heights.map { 1 / Float($0.height) } ?? 0, scene.dark ? 1 : 0,
+                               textures.satelliteBaseTexture == nil ? 0 : 1),
+            satDetail: satDetail.map { SIMD4(Float($0.minX), Float($0.minY), Float($0.width), Float($0.height)) } ?? .zero,
+            extra: SIMD4(satDetail == nil ? 0 : 1, 0, 0, 0),
             northColor: color(palette.water), southColor: color(palette.glacier),
             starMatrix: starMatrix)
     }
 
     /// Encodes the picture into a render pass whose colour and depth
-    /// attachments are set (multisampled, `sampleCount`).
+    /// attachments are set (multisampled, `sampleCount`): the sky, the
+    /// globe, the clouds, then the air and the Sun over both.
     public func encode(_ scene: GlobeScene, pass: MTLRenderPassDescriptor, into buffer: MTLCommandBuffer) {
         let s = GlobeScene.space
         pass.colorAttachments[0].loadAction = .clear
@@ -228,10 +271,6 @@ public final class GlobeRenderer: @unchecked Sendable {
             encoder.setFragmentSamplerState(baseSampler, index: 0)
             encoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: 4)
         }
-        if u.sky.z > 0.001 {
-            encoder.setRenderPipelineState(glowPipeline)
-            encoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: 4)
-        }
         encoder.setDepthStencilState(depthState)
         encoder.setRenderPipelineState(globePipeline)
         encoder.setCullMode(.none)
@@ -243,10 +282,24 @@ public final class GlobeRenderer: @unchecked Sendable {
         encoder.setFragmentTexture(textures.detail(dark: scene.dark)?.texture ?? textures.blank, index: 1)
         encoder.setFragmentTexture(heights, index: 2)
         encoder.setFragmentTexture(textures.lightsTexture ?? textures.blank, index: 3)
+        encoder.setFragmentTexture(textures.satelliteBaseTexture ?? textures.blank, index: 4)
+        encoder.setFragmentTexture(textures.satelliteDetailTexture ?? textures.blank, index: 5)
         encoder.setFragmentSamplerState(baseSampler, index: 0)
         encoder.setFragmentSamplerState(detailSampler, index: 1)
         encoder.setFragmentSamplerState(heightSampler, index: 2)
         encoder.drawIndexedPrimitives(type: .triangle, indexCount: meshIndexCount, indexType: .uint32, indexBuffer: meshIndices, indexBufferOffset: 0)
+        if let clouds = textures.cloudsTexture, u.sky.z > 0.001 {
+            encoder.setDepthStencilState(overDepthState)
+            encoder.setRenderPipelineState(cloudPipeline)
+            encoder.setFragmentTexture(clouds, index: 0)
+            encoder.setFragmentSamplerState(baseSampler, index: 0)
+            encoder.drawIndexedPrimitives(type: .triangle, indexCount: meshIndexCount, indexType: .uint32, indexBuffer: meshIndices, indexBufferOffset: 0)
+        }
+        if u.sky.y > 0.001 {
+            encoder.setDepthStencilState(noDepthState)
+            encoder.setRenderPipelineState(atmospherePipeline)
+            encoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: 4)
+        }
         encoder.endEncoding()
     }
 
@@ -313,7 +366,13 @@ public final class GlobeRenderer: @unchecked Sendable {
 /// texture of 8 × 8 tiles around the centre at the zoom shown (made again
 /// when the centre moves two tiles away or the zoom changes), the heightmap
 /// (in km as half floats; the bundled one or the placeholder from the map),
-/// the city lights and the night sky. `didChange` reports a texture that became ready.
+/// the city lights, the night sky, the clouds and the satellite picture
+/// (`SatelliteTiles`: the whole world at 2700 × 1350, and 2 × 2 tiles of
+/// 1350 × 1350 around the centre from the level the zoom wants: 45° tiles
+/// from zoom 2.5, 22.5° ones from 4.5, made again when the centre leaves
+/// them). With the satellite picture the map's own textures are made only
+/// once the globe starts to flatten. `didChange` reports a texture that
+/// became ready.
 public final class GlobeTextures: @unchecked Sendable {
     let device: MTLDevice
     let queue: MTLCommandQueue
@@ -326,6 +385,16 @@ public final class GlobeTextures: @unchecked Sendable {
     private var heights: MTLTexture?
     private var lights: MTLTexture?
     private var skyMap: MTLTexture?
+    private var cloudMap: MTLTexture?
+    private var satelliteBase: MTLTexture?
+    private var satelliteDetail: (key: SatelliteKey, texture: MTLTexture)?
+    private var satelliteRunning: SatelliteKey?
+    let satellite: SatelliteTiles?
+    var cloudsTexture: MTLTexture? { lock.withLock { cloudMap } }
+    var satelliteBaseTexture: MTLTexture? { lock.withLock { satelliteBase } }
+    var satelliteDetailTexture: MTLTexture? { lock.withLock { satelliteDetail?.texture } }
+    /// Where the satellite detail texture lies in the world's 0 … 1 (equirectangular, top left origin)
+    var satelliteDetailRegion: CGRect? { lock.withLock { satelliteDetail.map { $0.key.region } } }
     var heightTexture: MTLTexture? { lock.withLock { heights } }
     var lightsTexture: MTLTexture? { lock.withLock { lights } }
     var skyTexture: MTLTexture? { lock.withLock { skyMap } }
@@ -353,6 +422,36 @@ public final class GlobeTextures: @unchecked Sendable {
         if let heightmap = data.heightmap { heights = Self.texture(device: device, heightmap: heightmap) }
         if let image = data.cityLights { lights = Self.texture(device: device, grey: image) }
         if let image = data.sky { skyMap = Self.texture(device: device, queue: queue, colour: image) }
+        if let image = data.clouds { cloudMap = Self.texture(device: device, queue: queue, colour: image) }
+        satellite = data.satellite
+        if let image = data.satellite?.image(named: "base") { satelliteBase = Self.texture(device: device, queue: queue, colour: image) }
+    }
+
+    /// Which satellite tiles a detail texture holds: 2 × 2 of a level from its top left one.
+    struct SatelliteKey: Equatable {
+        var level, x0, y0: Int
+        var columns: Int { level == 1 ? 8 : 16 }
+        var rows: Int { columns / 2 }
+        var region: CGRect {
+            CGRect(x: Double(x0) / Double(columns), y: Double(y0) / Double(rows), width: 2 / Double(columns), height: 2 / Double(rows))
+        }
+    }
+
+    /// The satellite tiles a scene wants (none far out, where the whole world's picture is sharp enough).
+    static func satelliteKey(for scene: GlobeScene) -> SatelliteKey? {
+        let z = scene.camera.zoom
+        guard z >= 2.5, scene.projection.flatness < 1 else { return nil }
+        let level = z >= 4.5 ? 2 : 1
+        let columns = level == 1 ? 8 : 16, rows = columns / 2
+        let u = (scene.camera.center.longitude + 180) / 360, v = (90 - scene.camera.center.latitude) / 180
+        let x0 = ((Int(floor(u * Double(columns) - 0.5)) % columns) + columns) % columns
+        let y0 = min(rows - 2, max(0, Int(floor(v * Double(rows) - 0.5))))
+        return SatelliteKey(level: level, x0: x0, y0: y0)
+    }
+
+    /// Whether the map's own textures are needed: always without the satellite picture, else once the globe flattens.
+    static func needsMap(_ scene: GlobeScene, satellite: Bool) -> Bool {
+        !satellite || scene.projection.flatness > 0
     }
 
     func base(dark: Bool) -> MTLTexture? { lock.withLock { bases[dark] } }
@@ -375,9 +474,12 @@ public final class GlobeTextures: @unchecked Sendable {
 
     /// Whether everything the scene needs is made.
     public func isReady(for scene: GlobeScene) -> Bool {
-        guard map != nil else { return true }
         return lock.withLock {
-            guard bases[scene.dark] != nil, heights != nil else { return false }
+            if satellite != nil, let wanted = Self.satelliteKey(for: scene), satelliteDetail?.key != wanted { return false }
+            guard map != nil else { return true }
+            guard heights != nil else { return false }
+            guard Self.needsMap(scene, satellite: satelliteBase != nil) else { return true }
+            guard bases[scene.dark] != nil else { return false }
             guard let wanted = Self.detailKey(for: scene) else { return true }
             return details[scene.dark]?.key == wanted
         }
@@ -385,10 +487,12 @@ public final class GlobeTextures: @unchecked Sendable {
 
     /// Starts making what the scene needs and isn't there (off the calling thread).
     public func prepare(for scene: GlobeScene) {
+        prepareSatellite(for: scene)
         guard let map else { return }
         let dark = scene.dark
         lock.lock()
-        let needBase = bases[dark] == nil && !basesRunning.contains(dark)
+        let mapWanted = Self.needsMap(scene, satellite: satelliteBase != nil)
+        let needBase = mapWanted && bases[dark] == nil && !basesRunning.contains(dark)
         if needBase { basesRunning.insert(dark) }
         // Only the palette shown keeps its textures (each world texture is about 90 MB)
         bases[!dark] = nil
@@ -396,7 +500,7 @@ public final class GlobeTextures: @unchecked Sendable {
         let needHeights = heights == nil && !heightsRunning
         if needHeights { heightsRunning = true }
         var detailKey: DetailKey?
-        if let wanted = Self.detailKey(for: scene), detailRunning[dark] == nil {
+        if mapWanted, let wanted = Self.detailKey(for: scene), detailRunning[dark] == nil {
             if let have = details[dark]?.key, !Self.needsNewDetail(have: have, wanted: wanted) {} else {
                 detailKey = wanted
                 detailRunning[dark] = wanted
@@ -436,6 +540,36 @@ public final class GlobeTextures: @unchecked Sendable {
                 }
                 self.changed()
             }
+        }
+    }
+
+    /// Starts decoding the satellite tiles the scene wants.
+    private func prepareSatellite(for scene: GlobeScene) {
+        guard let satellite, let wanted = Self.satelliteKey(for: scene) else { return }
+        let start: Bool = lock.withLock {
+            guard satelliteDetail?.key != wanted, satelliteRunning != wanted else { return false }
+            satelliteRunning = wanted
+            return true
+        }
+        guard start else { return }
+        work.async { [weak self] in
+            guard let self else { return }
+            let side = 1350
+            guard let ctx = MapRenderer.context(width: 2 * side, height: 2 * side) else { return }
+            for dy in 0..<2 {
+                for dx in 0..<2 {
+                    let x = (wanted.x0 + dx) % wanted.columns, y = wanted.y0 + dy
+                    guard let tile = satellite.image(named: "\(wanted.level)-\(y)-\(x)") else { continue }
+                    // CoreGraphics' origin is at the bottom
+                    ctx.draw(tile, in: CGRect(x: dx * side, y: (1 - dy) * side, width: side, height: side))
+                }
+            }
+            guard let image = ctx.makeImage(), let texture = Self.texture(device: self.device, queue: self.queue, colour: image) else { return }
+            self.lock.withLock {
+                if self.satelliteRunning == wanted { self.satelliteRunning = nil }
+                self.satelliteDetail = (wanted, texture)
+            }
+            self.changed()
         }
     }
 

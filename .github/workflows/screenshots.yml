@@ -101,6 +101,13 @@ jobs:
           printf 'Rain jacket, tripod, spare batteries\n' > "Packing list.txt"
           printf '<gpx/>\n' > Route.gpx
 
+      # Real photographs (CC0 and public domain, Scripts/build_world_photos.py)
+      # from places around the Mediterranean and beyond: the Atlas view's
+      # globe with its photo pins. A folder of their own, so the archives
+      # above keep their photos.
+      - name: The world trip for the Atlas globe
+        run: ./Scripts/fetch_world_photos.sh /Users/Shared/World
+
       - name: Build the window photographer
         run: swiftc -O Scripts/shoot_window.swift -o build/shoot_window
 
@@ -156,7 +163,7 @@ jobs:
             set_dark "$([ "$mode" = dark ] && echo true || echo false)"
             # Same window size and place in both runs: forget the saved frame
             defaults delete art.haushoppe.schnellbild 2>/dev/null || true
-            TEST_RUNNER_SCREENSHOTS=1 TEST_RUNNER_SCREENSHOT_SUFFIX="-$mode$tag" TEST_RUNNER_LANGUAGE="$language" TEST_RUNNER_PHOTOS_DIR=/Users/Shared/Photos \
+            TEST_RUNNER_SCREENSHOTS=1 TEST_RUNNER_SCREENSHOT_SUFFIX="-$mode$tag" TEST_RUNNER_LANGUAGE="$language" TEST_RUNNER_PHOTOS_DIR=/Users/Shared/Photos TEST_RUNNER_WORLD_DIR=/Users/Shared/World \
               xcodebuild test-without-building -project Schnellbild.xcodeproj -scheme Schnellbild \
                 -destination 'platform=macOS' -derivedDataPath build/DerivedData \
                 -only-testing:"SchnellbildUITests/${TEST_INPUT:-ReadmeScreenshots}" || status=1

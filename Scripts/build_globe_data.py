@@ -29,11 +29,17 @@ inputs into DIR (the archive's files) and prints their SHA-256.
   increasing to the left, as SVS has it).
 - CITYLIGHTS_FILE: NASA Earth Observatory's Black Marble 2016 (grey GeoTIFF,
   13500 × 6750), reduced to LIGHTS_WIDTH × LIGHTS_WIDTH/2, a grey PNG.
+- CLOUDS_FILE: NASA's Blue Marble (2002) cloud picture (2048 × 1024, read by
+  this script's own baseline JPEG decoder), its luma as a grey JPEG.
+- SATELLITE_FILE: Blue Marble Next Generation (July 2004, 21600 × 10800, the
+  Deflate GeoTIFF) in three levels of 1350 × 1350 JPEG tiles, packed into one
+  file ("SBTL", `tile_pack`).
 - NOTICE_FILE: the sources and their terms.
 
 The inputs are checked against their pins once those are set (the first run
 prints them). `--check` makes every file and fails unless each matches its
-pinned SHA-256 (HEIGHTMAP_SHA256, SKYMAP_SHA256, CITYLIGHTS_SHA256).
+pinned SHA-256 (HEIGHTMAP_SHA256, SKYMAP_SHA256, CITYLIGHTS_SHA256, CLOUDS_SHA256,
+SATELLITE_SHA256).
 """
 
 import array
@@ -476,10 +482,25 @@ def jpeg(width, height, planes, quality, subsampled=False):
     return bytes(out)
 
 
-def jpeg_rgb(width, height, rows, quality):
-    """RGB rows (bytes, 3 per pixel) as a 4:4:4 JPEG in JFIF's YCbCr, each
-    sample rounded half up (stars are single pixels: their colour isn't
-    shared with their neighbours)."""
+def jpeg_rgb(width, height, rows, quality, subsampled=False):
+    """RGB rows (bytes, 3 per pixel) as a JPEG in JFIF's YCbCr, each sample
+    rounded half up: 4:4:4 (stars are single pixels: their colour isn't
+    shared with their neighbours), or `subsampled` 4:2:0 for an even width
+    and height, Cb and Cr from the mean RGB of each 2 × 2 pixels (the
+    conversion is linear, so the same as the mean of their Cb and Cr)."""
+    if subsampled:
+        luma, cb, cr = [], [], []
+        for row in rows:
+            r, g, b = row[0::3], row[1::3], row[2::3]
+            luma.append([int(0.299 * p + 0.587 * q + 0.114 * t + 0.5) for p, q, t in zip(r, g, b)])
+        for y in range(0, height, 2):
+            pair = list(map(operator.add, rows[y], rows[y + 1]))
+            r = list(map(operator.add, pair[0::6], pair[3::6]))
+            g = list(map(operator.add, pair[1::6], pair[4::6]))
+            b = list(map(operator.add, pair[2::6], pair[5::6]))
+            cb.append([max(0, min(255, int((-0.168736 * p - 0.331264 * q + 0.5 * t) / 4 + 128.5))) for p, q, t in zip(r, g, b)])
+            cr.append([max(0, min(255, int((0.5 * p - 0.418688 * q - 0.081312 * t) / 4 + 128.5))) for p, q, t in zip(r, g, b)])
+        return jpeg(width, height, [luma, cb, cr], quality, subsampled=True)
     planes = ([], [], [])
     for row in rows:
         r, g, b = row[0::3], row[1::3], row[2::3]
@@ -487,6 +508,289 @@ def jpeg_rgb(width, height, rows, quality):
         planes[1].append([max(0, min(255, int(-0.168736 * p - 0.331264 * q + 0.5 * t + 128.5))) for p, q, t in zip(r, g, b)])
         planes[2].append([max(0, min(255, int(0.5 * p - 0.418688 * q - 0.081312 * t + 128.5))) for p, q, t in zip(r, g, b)])
     return jpeg(width, height, list(planes), quality)
+
+
+def jpeg_luma(path):
+    """The luma (Y) plane of a baseline JPEG (T.81, Huffman, 8-bit, any
+    sampling factors and restart intervals): width, height and rows of
+    samples. The other components are read past, not decoded; the inverse
+    DCT is `DCT`'s transpose with `dot8`, rounded half up: the same on every
+    Python."""
+    data = open(path, "rb").read()
+    if data[:2] != b"\xFF\xD8":
+        sys.exit(f"!! {path}: not a JPEG")
+    quant, dc_tables, ac_tables, components, restart = {}, {}, {}, [], 0
+    i = 2
+    while True:
+        while data[i] != 0xFF:
+            i += 1
+        marker = data[i + 1]
+        i += 2
+        if marker in (0xD8, 0x01) or 0xD0 <= marker <= 0xD7:
+            continue
+        length = struct.unpack(">H", data[i:i + 2])[0]
+        segment = data[i + 2:i + length]
+        i += length
+        if marker == 0xDB:
+            k = 0
+            while k < len(segment):
+                precision, table = segment[k] >> 4, segment[k] & 15
+                if precision:
+                    sys.exit(f"!! {path}: 16-bit quantisation tables aren't read")
+                zigzag = segment[k + 1:k + 65]
+                q = [0] * 64
+                for n in range(64):
+                    q[ZIGZAG[n]] = zigzag[n]
+                quant[table] = q
+                k += 65
+        elif marker == 0xC4:
+            k = 0
+            while k < len(segment):
+                kind, table = segment[k] >> 4, segment[k] & 15
+                counts = segment[k + 1:k + 17]
+                symbols = segment[k + 17:k + 17 + sum(counts)]
+                codes, code, n = {}, 0, 0
+                for length_bits in range(1, 17):
+                    for _ in range(counts[length_bits - 1]):
+                        codes[(length_bits, code)] = symbols[n]
+                        code += 1
+                        n += 1
+                    code <<= 1
+                (ac_tables if kind else dc_tables)[table] = codes
+                k += 17 + sum(counts)
+        elif marker == 0xC0:
+            height, width = struct.unpack(">HH", segment[1:5])
+            for c in range(segment[5]):
+                cid, sampling, table = segment[6 + 3 * c:9 + 3 * c]
+                components.append({"id": cid, "h": sampling >> 4, "v": sampling & 15, "q": table})
+        elif marker in (0xC1, 0xC2, 0xC3, 0xC5, 0xC6, 0xC7, 0xC9, 0xCA, 0xCB, 0xCD, 0xCE, 0xCF):
+            sys.exit(f"!! {path}: only baseline JPEGs are read")
+        elif marker == 0xDD:
+            restart = struct.unpack(">H", segment[:2])[0]
+        elif marker == 0xDA:
+            for c in range(segment[0]):
+                cid, tables = segment[1 + 2 * c:3 + 2 * c]
+                for comp in components:
+                    if comp["id"] == cid:
+                        comp["dc"], comp["ac"] = dc_tables[tables >> 4], ac_tables[tables & 15]
+            break
+    # The entropy-coded data, its stuffed zeros taken out, split at restart markers
+    scan, intervals, start = data[i:], [], 0
+    k = 0
+    current = bytearray()
+    while k < len(scan):
+        b = scan[k]
+        if b == 0xFF:
+            nxt = scan[k + 1]
+            if nxt == 0:
+                current.append(0xFF)
+                k += 2
+                continue
+            if 0xD0 <= nxt <= 0xD7:
+                intervals.append(bytes(current))
+                current = bytearray()
+                k += 2
+                continue
+            break
+        current.append(b)
+        k += 1
+    intervals.append(bytes(current))
+
+    hmax = max(c["h"] for c in components)
+    vmax = max(c["v"] for c in components)
+    mcu_w, mcu_h = 8 * hmax, 8 * vmax
+    mcus_x, mcus_y = (width + mcu_w - 1) // mcu_w, (height + mcu_h - 1) // mcu_h
+    luma = components[0]
+    plane_w, plane_h = mcus_x * luma["h"] * 8, mcus_y * luma["v"] * 8
+    plane = [bytearray(plane_w) for _ in range(plane_h)]
+    q = quant[luma["q"]]
+    per_interval = restart or mcus_x * mcus_y
+
+    for interval, bits_data in enumerate(intervals):
+        acc, nbits, pos = 0, 0, 0
+        n = len(bits_data)
+
+        def bit():
+            nonlocal acc, nbits, pos
+            if nbits == 0:
+                acc = bits_data[pos] if pos < n else 0xFF
+                pos += 1
+                nbits = 8
+            nbits -= 1
+            return (acc >> nbits) & 1
+
+        def receive(size):
+            v = 0
+            for _ in range(size):
+                v = (v << 1) | bit()
+            return v
+
+        def decode(table):
+            code, length = 0, 0
+            while length < 16:
+                code = (code << 1) | bit()
+                length += 1
+                symbol = table.get((length, code))
+                if symbol is not None:
+                    return symbol
+            sys.exit(f"!! {path}: a Huffman code that no table has")
+
+        def extend(v, size):
+            return v - (1 << size) + 1 if size and v < (1 << (size - 1)) else v
+
+        previous = [0] * len(components)
+        first = interval * per_interval
+        for m in range(first, min(first + per_interval, mcus_x * mcus_y)):
+            mx, my = m % mcus_x, m // mcus_x
+            for ci, comp in enumerate(components):
+                for by in range(comp["v"]):
+                    for bx in range(comp["h"]):
+                        size = decode(comp["dc"])
+                        previous[ci] += extend(receive(size), size)
+                        coefficients = [0] * 64
+                        coefficients[0] = previous[ci]
+                        k = 1
+                        while k < 64:
+                            symbol = decode(comp["ac"])
+                            run, size = symbol >> 4, symbol & 15
+                            if size == 0:
+                                if run == 15:
+                                    k += 16
+                                    continue
+                                break
+                            k += run
+                            coefficients[ZIGZAG[k]] = extend(receive(size), size)
+                            k += 1
+                        if ci != 0:
+                            continue
+                        # Dequantise, inverse DCT (columns, then rows), level shift
+                        block = [coefficients[j] * q[j] for j in range(64)]
+                        columns = []
+                        for x in range(8):
+                            column = [block[8 * v + x] for v in range(8)]
+                            columns.append([dot8(INVERSE_DCT[y], column) for y in range(8)])
+                        top, left = (my * comp["v"] + by) * 8, (mx * comp["h"] + bx) * 8
+                        for y in range(8):
+                            row = [columns[x][y] for x in range(8)]
+                            values = [dot8(INVERSE_DCT[x], row) + 128 for x in range(8)]
+                            plane[top + y][left:left + 8] = bytes(max(0, min(255, int(math.floor(v + 0.5)))) for v in values)
+    return width, height, [bytes(plane[y][:width]) for y in range(height)]
+
+
+# The inverse DCT's matrix: INVERSE_DCT[x][u] = DCT[u][x]
+INVERSE_DCT = [[DCT[u][x] for u in range(8)] for x in range(8)]
+
+
+def clouds_jpeg(path, quality):
+    """NASA's Blue Marble cloud picture (2048 × 1024, white clouds on black):
+    its luma as a grey JPEG, the cloud cover the globe lays over the day side."""
+    width, height, rows = jpeg_luma(path)
+    print(f"   clouds {width}×{height}")
+    return jpeg(width, height, [[list(r) for r in rows]], quality)
+
+
+def read_tiff_deflate_rows(path):
+    """A baseline TIFF, little-endian, 8 bits per sample, Adobe Deflate (8)
+    or none, one row per strip, no predictor: width, height, samples and a
+    function giving row y (decompressed on demand, so 700 MB of RGB never
+    sit in memory at once)."""
+    data = open(path, "rb").read()
+    if data[:4] != b"II*\0":
+        sys.exit(f"!! {path}: not a little-endian TIFF")
+    offset = struct.unpack("<I", data[4:8])[0]
+    count = struct.unpack("<H", data[offset:offset + 2])[0]
+    tags = {}
+    for k in range(count):
+        tag, kind, n, value = struct.unpack("<HHII", data[offset + 2 + 12 * k:offset + 14 + 12 * k])
+        size = {3: 2, 4: 4}.get(kind)
+        if size is None:
+            continue
+        raw = data[offset + 10 + 12 * k:offset + 10 + 12 * k + n * size] if n * size <= 4 else data[value:value + n * size]
+        tags[tag] = struct.unpack("<" + ("H" if size == 2 else "I") * n, raw)
+    width, height = tags[256][0], tags[257][0]
+    samples = tags.get(277, (1,))[0]
+    compression = tags.get(259, (1,))[0]
+    if any(b != 8 for b in tags.get(258, (8,))) or compression not in (1, 8, 32946) or tags.get(317, (1,))[0] != 1 \
+            or tags.get(278, (height,))[0] != 1:
+        sys.exit(f"!! {path}: only 8-bit, uncompressed or Deflate without predictor, one row per strip")
+    starts, lengths = tags[273], tags[279]
+
+    def row(y):
+        strip = data[starts[y]:starts[y] + lengths[y]]
+        out = zlib.decompress(strip) if compression != 1 else strip
+        if len(out) < width * samples:
+            sys.exit(f"!! {path}: row {y} decodes to {len(out)} bytes")
+        return out[:width * samples]
+    return width, height, samples, row
+
+
+def satellite_tiles(path, quality):
+    """Blue Marble Next Generation (21600 × 10800 RGB GeoTIFF, 2 km a pixel
+    at the equator) as JPEGs (4:2:0, `quality`; a photograph of the
+    ground, its colour varies slowly) in three levels: "base", the whole
+    world reduced 8:1 to 2700 × 1350; "1-<row>-<column>", reduced 2:1 to
+    10800 × 5400 and cut into 8 × 4 tiles of 1350 × 1350; "2-<row>-<column>",
+    the full 21600 × 10800 in 16 × 8 such tiles. Each reduced pixel is the
+    mean of the source pixels it covers, rounded half up (integers only)."""
+    width, height, samples, row = read_tiff_deflate_rows(path)
+    if (width, height, samples) != (21600, 10800, 3):
+        sys.exit(f"!! {path}: {width}×{height}×{samples}, expected 21600 × 10800 RGB")
+    files = {}
+    half = []                      # 10800 × 5400, sums of 2 × 2 (0 ... 1020)
+    band = []                      # the full rows of the current band of tiles
+    for y in range(0, height, 2):
+        a, b = row(y), row(y + 1)
+        band += [a, b]
+        if len(band) == 1350:
+            ty = y // 1350
+            for tx in range(16):
+                part = [r[3 * 1350 * tx:3 * 1350 * (tx + 1)] for r in band]
+                files[f"2-{ty}-{tx}"] = jpeg_rgb(1350, 1350, part, quality, subsampled=True)
+            band = []
+        s2 = list(map(operator.add, a, b))
+        r = list(map(operator.add, s2[0::6], s2[3::6]))
+        g = list(map(operator.add, s2[1::6], s2[4::6]))
+        bl = list(map(operator.add, s2[2::6], s2[5::6]))
+        line = [0] * (3 * len(r))
+        line[0::3], line[1::3], line[2::3] = r, g, bl
+        half.append(line)
+    print(f"   satellite {width}×{height}: 128 tiles at full size")
+    detail_rows = [bytes((v + 2) // 4 for v in line) for line in half]
+    for ty in range(4):
+        for tx in range(8):
+            part = [r[3 * 1350 * tx:3 * 1350 * (tx + 1)] for r in detail_rows[1350 * ty:1350 * (ty + 1)]]
+            files[f"1-{ty}-{tx}"] = jpeg_rgb(1350, 1350, part, quality, subsampled=True)
+    base_rows = []
+    for y in range(0, 5400, 4):
+        acc = [0] * (3 * 10800)
+        for k in range(4):
+            acc = list(map(operator.add, acc, half[y + k]))
+        out = []
+        for x in range(0, 10800, 4):
+            for c in range(3):
+                o = 3 * x + c
+                out.append((acc[o] + acc[o + 3] + acc[o + 6] + acc[o + 9] + 32) // 64)
+        base_rows.append(bytes(out))
+    files["base"] = jpeg_rgb(2700, 1350, base_rows, quality, subsampled=True)
+    print("   satellite: base 2700 × 1350, 32 tiles of 10800 × 5400, 128 of 21600 × 10800")
+    return files
+
+
+def tile_pack(files):
+    """Named pictures in one file ("SBTL", little-endian): magic, the number
+    of entries, then per entry its name's length (1 byte), the name (UTF-8),
+    its offset from the file's start (8 bytes) and length (4 bytes), then the
+    pictures one after another, in the names' order."""
+    names = sorted(files)
+    header = bytearray(b"SBTL" + struct.pack("<I", len(names)))
+    index_size = sum(1 + len(n.encode()) + 12 for n in names)
+    offset = len(header) + index_size
+    body = bytearray()
+    for n in names:
+        encoded = n.encode()
+        header += bytes([len(encoded)]) + encoded + struct.pack("<QI", offset + len(body), len(files[n]))
+        body += files[n]
+    return bytes(header + body)
 
 
 # ---------------------------------------------------------------------------
@@ -718,6 +1022,19 @@ Suomi NPP VIIRS data from Miguel Román, NASA GSFC
 (https://science.nasa.gov/earth/earth-observatory/earth-at-night/maps/).
 Used under NASA's media usage guidelines; no endorsement by NASA is implied.
 
+{satellite}: the colour of the ground by day, made from "Blue Marble: Next
+Generation" (July 2004, 21600 x 10800, without topography), NASA Earth
+Observatory (produced by Reto Stöckli, NASA Earth Observatory, NASA Goddard
+Space Flight Center; https://science.nasa.gov/earth/earth-observatory/blue-marble-next-generation/).
+NASA asks: "Anyone using or republishing Blue Marble: Next Generation please
+credit NASA Earth Observatory." Used under NASA's media usage guidelines; no
+endorsement by NASA is implied.
+
+{clouds}: the clouds, made from "The Blue Marble" (2002) cloud picture, NASA
+Goddard Space Flight Center, image by Reto Stöckli
+(https://science.nasa.gov/earth/earth-observatory/the-blue-marble-true-color-global-imagery-at-1km-resolution/).
+Used under NASA's media usage guidelines; no endorsement by NASA is implied.
+
 Made by Scripts/build_globe_data.py of https://github.com/JohannesHoppe/schnellbild.
 """
 
@@ -734,10 +1051,14 @@ def main():
     pinned(sky, cfg["SKY_SHA256"], "star map")
     lights = obtain(cfg, os.path.basename(cfg["LIGHTS_URL"]), cfg["LIGHTS_SHA256"], cfg["LIGHTS_URL"])
     pinned(lights, cfg["LIGHTS_SHA256"], "Black Marble")
+    satellite = obtain(cfg, os.path.basename(cfg["BLUEMARBLE_URL"]), cfg["BLUEMARBLE_SHA256"], cfg["BLUEMARBLE_URL"])
+    pinned(satellite, cfg["BLUEMARBLE_SHA256"], "Blue Marble Next Generation")
+    clouds = obtain(cfg, os.path.basename(cfg["CLOUD_PICTURE_URL"]), cfg["CLOUD_PICTURE_SHA256"], cfg["CLOUD_PICTURE_URL"])
+    pinned(clouds, cfg["CLOUD_PICTURE_SHA256"], "Blue Marble clouds")
 
     if extract:
         os.makedirs(extract, exist_ok=True)
-        for p in bands + [sky, lights]:
+        for p in bands + [sky, lights, satellite, clouds]:
             with open(p, "rb") as src, open(os.path.join(extract, os.path.basename(p)), "wb") as dst:
                 dst.write(src.read())
             print(f"{os.path.basename(p)} {os.path.getsize(p)} {sha256(p)}")
@@ -745,7 +1066,10 @@ def main():
         return
 
     os.makedirs(OUT, exist_ok=True)
-    made = [("HEIGHTMAP", heightmap(bands)), ("SKYMAP", sky_jpeg(sky, int(cfg["SKY_QUALITY"]))), ("CITYLIGHTS", lights_png(lights, int(cfg["LIGHTS_WIDTH"])))]
+    made = [("HEIGHTMAP", heightmap(bands)), ("SKYMAP", sky_jpeg(sky, int(cfg["SKY_QUALITY"]))),
+            ("CITYLIGHTS", lights_png(lights, int(cfg["LIGHTS_WIDTH"]))),
+            ("CLOUDS", clouds_jpeg(clouds, int(cfg["CLOUDS_QUALITY"]))),
+            ("SATELLITE", tile_pack(satellite_tiles(satellite, int(cfg["SATELLITE_QUALITY"]))))]
     failed = False
     for key, data in made:
         open(os.path.join(OUT, cfg[key + "_FILE"]), "wb").write(data)
@@ -760,8 +1084,9 @@ def main():
         sys.exit(1)
 
     with open(os.path.join(OUT, cfg["NOTICE_FILE"]), "w") as f:
-        f.write(NOTICE.format(tag=cfg["RELEASE_TAG"], heightmap=cfg["HEIGHTMAP_FILE"], sky=cfg["SKYMAP_FILE"], lights=cfg["CITYLIGHTS_FILE"]))
-    for key in ("HEIGHTMAP_FILE", "SKYMAP_FILE", "CITYLIGHTS_FILE"):
+        f.write(NOTICE.format(tag=cfg["RELEASE_TAG"], heightmap=cfg["HEIGHTMAP_FILE"], sky=cfg["SKYMAP_FILE"], lights=cfg["CITYLIGHTS_FILE"],
+                              satellite=cfg["SATELLITE_FILE"], clouds=cfg["CLOUDS_FILE"]))
+    for key in ("HEIGHTMAP_FILE", "SKYMAP_FILE", "CITYLIGHTS_FILE", "CLOUDS_FILE", "SATELLITE_FILE"):
         p = os.path.join(OUT, cfg[key])
         print(f"{key[:-5]}_SHA256={sha256(p)}  ({os.path.getsize(p)} bytes)")
 

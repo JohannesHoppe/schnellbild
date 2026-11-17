@@ -93,9 +93,11 @@ final class GlobeRenderTests: XCTestCase {
         _ = try picture(GlobeScene(camera: MapCamera(center: alps, zoom: flatZoom), size: size, date: summer), "globe-flat")
         _ = try picture(GlobeScene(camera: MapCamera(center: Coordinate(latitude: -17, longitude: 180), zoom: over), size: size, date: summer),
                         "globe-antimeridian")
-        // The middle shows the palette's land (Libya), space around the Earth
-        XCTAssertGreaterThan(brightness(light, at: CGPoint(x: 480, y: 330)), brightness(dark, at: CGPoint(x: 480, y: 330)) + 80)
-        XCTAssertLessThan(brightness(light, at: CGPoint(x: 15, y: 15), radius: 20), brightness(light, at: CGPoint(x: 480, y: 330)) - 100, "space")
+        // The middle shows the satellite picture's desert (Libya) in both appearances, space around the Earth darker
+        let libya = brightness(light, at: CGPoint(x: 480, y: 330))
+        XCTAssertGreaterThan(libya, 110, "the desert")
+        XCTAssertEqual(brightness(dark, at: CGPoint(x: 480, y: 330)), libya, accuracy: 10, "the same picture in the dark")
+        XCTAssertLessThan(brightness(light, at: CGPoint(x: 15, y: 15), radius: 20), libya - 50, "space")
     }
 
     func testTheSunLightsItsSideOnly() throws {
@@ -109,6 +111,71 @@ final class GlobeRenderTests: XCTestCase {
         let middle = CGPoint(x: 480, y: 320)
         XCTAssertGreaterThan(brightness(day, at: middle, radius: 20), 0.85 * brightness(dayOff, at: middle, radius: 20), "the subsolar point lit")
         XCTAssertLessThan(brightness(night, at: middle, radius: 20), 0.35 * brightness(nightOff, at: middle, radius: 20), "its antipode in the night")
+    }
+
+    /// The mean colour (0 ... 255 per channel) of a square of pixels around a point (in points, scale 2).
+    func colour(_ image: CGImage, at p: CGPoint, radius: Int = 3) -> SIMD3<Double> {
+        let px = pixels(image), cx = Int(p.x * 2), cy = Int(p.y * 2)
+        var sum = SIMD3<Double>(0, 0, 0), n = 0.0
+        for y in max(0, cy - radius)...min(image.height - 1, cy + radius) {
+            for x in max(0, cx - radius)...min(image.width - 1, cx + radius) {
+                let o = (y * image.width + x) * 4
+                sum += SIMD3(Double(px[o]), Double(px[o + 1]), Double(px[o + 2]))
+                n += 1
+            }
+        }
+        return sum / n
+    }
+
+    func testTheAtmosphereGlowsBlueAroundTheEarth() throws {
+        let sun = Astronomy.subsolarPoint(at: summer)
+        let antipode = Coordinate(latitude: -sun.latitude, longitude: Astronomy.wrap180(sun.longitude + 180))
+        for (name, center) in [("day", sun), ("night", antipode)] {
+            let scene = GlobeScene(camera: MapCamera(center: center, zoom: 2), size: size, dark: true, lighting: true, date: summer)
+            let image = try picture(scene, "globe-atmosphere-\(name)")
+            let rim = scene.projection.radius
+            // Just beyond the limb a blue haze, far out space
+            let haze = colour(image, at: CGPoint(x: 480 + rim + 2, y: 320)), space = colour(image, at: CGPoint(x: 480 + rim + 120, y: 320))
+            XCTAssertGreaterThan(haze.z, space.z + 20, "\(name): the haze over space")
+            XCTAssertGreaterThan(haze.z, haze.x + 10, "\(name): blue")
+            XCTAssertGreaterThan(haze.z, colour(image, at: CGPoint(x: 480 + rim + 15, y: 320)).z, "\(name): thin")
+        }
+        // The Sun behind the Earth lights the ring from behind
+        let backlit = try picture(GlobeScene(camera: MapCamera(center: antipode, zoom: 2), size: size, dark: true, lighting: true, date: summer))
+        let frontlit = try picture(GlobeScene(camera: MapCamera(center: sun, zoom: 2), size: size, dark: true, lighting: true, date: summer))
+        let rim = GlobeProjection(camera: MapCamera(center: sun, zoom: 2), size: size).radius
+        let p = CGPoint(x: 480 + rim + 2, y: 320)
+        XCTAssertGreaterThan(brightness(backlit, at: p), brightness(frontlit, at: p) + 50)
+    }
+
+    /// The Sun's place in the view of a tilted camera.
+    func sunPoint(_ scene: GlobeScene) -> CGPoint {
+        let fr = scene.projection.frame
+        let dir = GlobeGeometry.unitVector(Astronomy.subsolarPoint(at: scene.date))
+        let z = simd_dot(dir, fr.forward)
+        return CGPoint(x: Double(scene.size.width) / 2 + fr.focal * simd_dot(dir, fr.right) / z,
+                       y: Double(scene.size.height) / 2 - fr.focal * simd_dot(dir, fr.up) / z)
+    }
+
+    func testTheSunRisesOverATiltedHorizon() throws {
+        // Low over Italy at dawn, looking north-east: the Sun just above the curved horizon, stars above, the night side below
+        let dawn = ISO8601DateFormatter().date(from: "2026-06-21T02:12:00Z")!
+        let scene = GlobeScene(camera: MapCamera(center: Coordinate(latitude: 41, longitude: 16), zoom: 5.4, pitch: 72, heading: 48),
+                               size: size, dark: true, lighting: true, date: dawn, clouds: 0.65)
+        let image = try picture(scene, "globe-tilted-dawn")
+        let sun = sunPoint(scene)
+        XCTAssertTrue(CGRect(origin: .zero, size: size).insetBy(dx: 50, dy: 50).contains(sun), "the Sun in the view: \(sun)")
+        XCTAssertGreaterThan(brightness(image, at: sun), 250, "the Sun's disc")
+        let horizon = try XCTUnwrap((0..<640).first { scene.projection.coordinate(at: CGPoint(x: sun.x, y: Double($0))) != nil }, "the ground")
+        XCTAssertGreaterThan(Double(horizon), sun.y, "the Sun above the horizon")
+        XCTAssertLessThan(Double(horizon) - sun.y, 80, "and near it")
+        XCTAssertLessThan(brightness(image, at: CGPoint(x: 480, y: 600), radius: 20), 60, "the night below")
+        // Seen from straight above, the same place shows no sky
+        var straight = scene
+        straight.camera.pitch = 0
+        XCTAssertNotNil(straight.projection.coordinate(at: CGPoint(x: 480, y: 20)))
+        _ = try picture(GlobeScene(camera: MapCamera(center: Coordinate(latitude: 46, longitude: 9), zoom: 6.5, pitch: 60), size: size,
+                                   dark: true, lighting: true, date: summer, clouds: 0.65), "globe-tilted-alps")
     }
 
     func testTheSkyStandsAsTheSiderealTimeSays() throws {
@@ -162,8 +229,9 @@ final class GlobeRenderTests: XCTestCase {
         let r = try renderer()
         let window = CGSize(width: 1200, height: 800)
         for (name, camera) in [("globe", MapCamera(center: Coordinate(latitude: 30, longitude: 10), zoom: GlobeProjection.overviewZoom(for: window))),
-                               ("flattening", MapCamera(center: Coordinate(latitude: 46, longitude: 9), zoom: GlobeProjection.flatZoom(for: window) - 0.7))] {
-            let scene = GlobeScene(camera: camera, size: window, dark: true, lighting: true, date: summer)
+                               ("flattening", MapCamera(center: Coordinate(latitude: 46, longitude: 9), zoom: GlobeProjection.flatZoom(for: window) - 0.7)),
+                               ("tilted", MapCamera(center: Coordinate(latitude: 41, longitude: 16), zoom: 5.4, pitch: 72, heading: 48))] {
+            let scene = GlobeScene(camera: camera, size: window, dark: true, lighting: true, date: summer, clouds: 0.65)
             r.textures.prepareAndWait(for: scene)
             let seconds = try XCTUnwrap(r.frameTime(scene, scale: 2))
             print("Globe: \(name) frame at 2400 × 1600 px: \(String(format: "%.2f", seconds * 1000)) ms on the GPU")

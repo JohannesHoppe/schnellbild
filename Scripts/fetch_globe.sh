@@ -1,6 +1,6 @@
 #!/bin/bash
 # Fetches the globe's files (Scripts/globe_data.env: the heightmap, the night
-# sky, the city lights) from the GitHub release of this repository that holds
+# sky, the city lights, the clouds, the satellite picture's tiles) from the GitHub release of this repository that holds
 # them, into Vendor/Globe (gitignored), each checked against its SHA-256
 # pinned in globe_data.env; aborts on any mismatch. Files there already are
 # used while their SHA-256 matches. build_app.sh and the Xcode project copy
@@ -35,12 +35,14 @@ fetch() {
 fetch "$HEIGHTMAP_FILE" "$HEIGHTMAP_SHA256"
 fetch "$SKYMAP_FILE" "$SKYMAP_SHA256"
 fetch "$CITYLIGHTS_FILE" "$CITYLIGHTS_SHA256"
+fetch "$CLOUDS_FILE" "$CLOUDS_SHA256"
+fetch "$SATELLITE_FILE" "$SATELLITE_SHA256"
 
 # Files of another build don't go into the app
 for old in "$DEST"/*; do
     [ -e "$old" ] || continue
     case "$(basename "$old")" in
-        "$HEIGHTMAP_FILE"|"$SKYMAP_FILE"|"$CITYLIGHTS_FILE") ;;
+        "$HEIGHTMAP_FILE"|"$SKYMAP_FILE"|"$CITYLIGHTS_FILE"|"$CLOUDS_FILE"|"$SATELLITE_FILE") ;;
         *) echo "==> Removing $(basename "$old") (not in globe_data.env)"; rm -rf "$old" ;;
     esac
 done
