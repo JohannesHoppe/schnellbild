@@ -29,7 +29,9 @@ DEVID="$(trim "${MACOS_SIGN_IDENTITY:-}")"
 APPEX="$APP/Contents/PlugIns/SchnellbildThumbnails.appex"
 FORMATS="$APP/Contents/Extensions/SchnellbildFormats.appex"
 TMP="$(mktemp -d)"
-trap 'rm -rf "$TMP"' EXIT
+# bash 3.2 reports an aborted expansion (an unset variable) as success once an
+# EXIT trap runs: the trap fails unless the script got to its end.
+trap 'rm -rf "$TMP"; [ -n "${finished:-}" ] || exit 1' EXIT
 
 APP_ENT="$ROOT/Sandbox/Schnellbild.entitlements"
 THUMB_ENT="$ROOT/Sandbox/SchnellbildThumbnails.entitlements"
@@ -128,3 +130,4 @@ for part in "$APP" "$APPEX" "$FORMATS"; do
     || { echo "!! not in the App Sandbox: $part" >&2; exit 1; }
 done
 echo "==> Signed; app and extensions in the App Sandbox"
+finished=1

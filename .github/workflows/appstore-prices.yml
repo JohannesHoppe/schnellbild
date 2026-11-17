@@ -1,6 +1,6 @@
 # The Mac App Store prices (started by hand), through Scripts/appstore_prices.swift:
-# "list" uploads what Apple offers per country (artifact price-points) for
-# Scripts/price_proposal.py; "apply" sets AppStore/metadata/prices.json.
+# "list" uploads what Apple offers per country (artifact price-points), from
+# which the prices in AppStore/metadata/prices.json are picked; "apply" sets them.
 name: App Store prices
 
 on:

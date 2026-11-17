@@ -13,6 +13,7 @@ Icons, from Resources/icon_1024.png with macOS's `sips` (no other tools):
     docs/icon-192.png, -512     for site.webmanifest (Android, Chrome)
     docs/icon-64.png, .webp     the bar's icon (32 px at 2x)
     docs/icon.webp              256 px for the home page (docs/icon.png the fallback)
+    Resources/icon-256.png      256 px for the README
 
 Screenshots live in the repository only as WebP, never as PNG. The masters,
 docs/screenshots/<name>.webp (1072 × 752, 1x with the window shadow on
@@ -204,6 +205,7 @@ def icons():
         webp(DOCS / "icon-64.png", DOCS / "icon-64.webp")
         sips("-z", 256, 256, ICON, "--out", tmp / "256.png")
         webp(tmp / "256.png", DOCS / "icon.webp")
+        (ROOT / "Resources" / "icon-256.png").write_bytes((tmp / "256.png").read_bytes())
         for size in (16, 32):
             (DOCS / f"favicon-{size}.png").write_bytes((tmp / f"{size}.png").read_bytes())
         for size in (192, 512):
@@ -217,7 +219,7 @@ def icons():
             entries += struct.pack("<BBBBHHII", size, size, 0, 0, 1, 32, len(png), offset + len(blobs))
             blobs += png
         (DOCS / "favicon.ico").write_bytes(header + entries + blobs)
-    print("icons written to docs/")
+    print("icons written to docs/ and Resources/icon-256.png")
 
 
 def card_shot(code, motif=None):

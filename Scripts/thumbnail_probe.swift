@@ -1,5 +1,6 @@
 // Asks QuickLook for a file's thumbnail, as Finder and Schnellbild's grid do,
-// and prints its kind, size and how long it took. Exits 1 without a thumbnail.
+// and prints its kind, size and how long it took. Exits 1 without a thumbnail,
+// 2 when QuickLook hasn't answered within PROBE_TIMEOUT seconds (60 unless set).
 // Usage: swift Scripts/thumbnail_probe.swift <file> [<png to write>]
 import AppKit
 import QuickLookThumbnailing
@@ -24,5 +25,9 @@ QLThumbnailGenerator.shared.generateBestRepresentation(for: request) { rep, erro
     }
     done.signal()
 }
-done.wait()
+let limit = Double(ProcessInfo.processInfo.environment["PROBE_TIMEOUT"] ?? "") ?? 60
+if done.wait(timeout: .now() + limit) == .timedOut {
+    print("\(file.lastPathComponent): QuickLook didn't answer within \(limit) s")
+    exit(2)
+}
 exit(ok ? 0 : 1)

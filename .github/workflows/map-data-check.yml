@@ -1,0 +1,24 @@
+# The map builder's own checks (Scripts/build_map_data.py --self-test): only
+# pinned bytes are used, from the cache, the archive or Protomaps alike. No
+# downloads. Runs when the builder or its pins change, and by hand. Making the
+# map itself (about 4 GB of input) stays a local step, see CLAUDE.md.
+name: Map data check
+
+on:
+  push:
+    paths: [ 'Scripts/build_map_data.py', 'Scripts/map_data.env', '.github/workflows/map-data-check.yml' ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  self-test:
+    name: Map builder self-test
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: Cache, archive and Protomaps held to the pins
+        run: python3 -I Scripts/build_map_data.py --self-test

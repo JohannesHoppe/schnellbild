@@ -33,13 +33,19 @@ jobs:
     env:
       SIGN: ${{ secrets.MACOS_CERT_P12 != '' }}
     steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      # A published tag is never moved or rebuilt: v<x.y.z> must be the
+      # version in Resources/Info.plist and project.yml before anything is built
+      - name: The tag names the app's version
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: Scripts/check_release_version.sh "$GITHUB_REF_NAME"
+
       - name: A release needs the signing secrets
         if: startsWith(github.ref, 'refs/tags/v') && env.SIGN != 'true'
         run: |
           echo "::error::The signing secrets are missing (environment release): a tag is never published ad-hoc signed"
           exit 1
-
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
       - name: Select Xcode
         run: Scripts/select_xcode.sh

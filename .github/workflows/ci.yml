@@ -1,11 +1,76 @@
 name: CI
 
+# Runs for a change to anything the build or the tests read. The last pattern
+# a file matches decides; CIPathsTests checks the list against what the CI
+# jobs run and what the tests read.
 on:
   push:
     branches: [ main ]
-    paths-ignore: [ '**.md', 'LICENSE', 'Spike/**', 'docs/**', 'site/**', 'Scripts/build_site.py', 'Scripts/make_site_images.py', 'Scripts/make_video_animation.py', 'AppStore/**', '.github/workflows/spike-*.yml', '.github/workflows/appstore*.yml' ]
+    paths:
+      - '**'
+      # Texts, the website and the App Store's metadata
+      - '!**.md'
+      - '!docs/**'
+      - '!site/**'
+      - '!AppStore/**'
+      - '!Spike/**'
+      # Workflows other than this one
+      - '!.github/workflows/**'
+      - '.github/workflows/ci.yml'
+      # Scripts that make the website, the screenshots, Store pictures and
+      # prices, the DMG window's picture or the map, globe and world-photo
+      # data (shell scripts stay: BuildScriptsTests reads every one)
+      - '!Scripts/build_site.py'
+      - '!Scripts/site_alternatives.py'
+      - '!Scripts/make_site_images.py'
+      - '!Scripts/make_video_animation.py'
+      - '!Scripts/make_sample_media.swift'
+      - '!Scripts/shoot_window.swift'
+      - '!Scripts/make_store_screenshots.swift'
+      - '!Scripts/appstore_connect.swift'
+      - '!Scripts/appstore_prices.swift'
+      - '!Scripts/make_dmg_background.swift'
+      - '!Scripts/build_map_data.py'
+      - '!Scripts/build_globe_data.py'
+      - '!Scripts/build_world_photos.py'
+      - '!Scripts/world_photos.env'
+      # The privacy policies the About window links (AboutPanelTests)
+      - 'docs/privacy/index.html'
+      - 'docs/de/datenschutz/index.html'
+      - 'docs/*/privacy/index.html'
   pull_request:
-    paths-ignore: [ '**.md', 'LICENSE', 'Spike/**', 'docs/**', 'site/**', 'Scripts/build_site.py', 'Scripts/make_site_images.py', 'Scripts/make_video_animation.py', 'AppStore/**', '.github/workflows/spike-*.yml', '.github/workflows/appstore*.yml' ]
+    paths:
+      - '**'
+      # Texts, the website and the App Store's metadata
+      - '!**.md'
+      - '!docs/**'
+      - '!site/**'
+      - '!AppStore/**'
+      - '!Spike/**'
+      # Workflows other than this one
+      - '!.github/workflows/**'
+      - '.github/workflows/ci.yml'
+      # Scripts that make the website, the screenshots, Store pictures and
+      # prices, the DMG window's picture or the map, globe and world-photo
+      # data (shell scripts stay: BuildScriptsTests reads every one)
+      - '!Scripts/build_site.py'
+      - '!Scripts/site_alternatives.py'
+      - '!Scripts/make_site_images.py'
+      - '!Scripts/make_video_animation.py'
+      - '!Scripts/make_sample_media.swift'
+      - '!Scripts/shoot_window.swift'
+      - '!Scripts/make_store_screenshots.swift'
+      - '!Scripts/appstore_connect.swift'
+      - '!Scripts/appstore_prices.swift'
+      - '!Scripts/make_dmg_background.swift'
+      - '!Scripts/build_map_data.py'
+      - '!Scripts/build_globe_data.py'
+      - '!Scripts/build_world_photos.py'
+      - '!Scripts/world_photos.env'
+      # The privacy policies the About window links (AboutPanelTests)
+      - 'docs/privacy/index.html'
+      - 'docs/de/datenschutz/index.html'
+      - 'docs/*/privacy/index.html'
   workflow_dispatch:
     inputs:
       only:
@@ -97,6 +162,8 @@ jobs:
     # claims; which formats macOS keeps for its own extension differs by version
     name: Thumbnail extension (${{ matrix.os }})
     needs: build-test
+    # A probe gives up after 60 s; the whole check takes a few minutes
+    timeout-minutes: 30
     permissions:
       contents: read
       actions: read            # the app from this run's artifacts
@@ -149,6 +216,15 @@ jobs:
 
       - name: Install xcodegen
         run: ./Scripts/fetch_xcodegen.sh >> "$GITHUB_PATH"
+
+      # A copy that changed after it was checked (a cache entry) isn't run:
+      # it is fetched and checked again
+      - name: A changed xcodegen is fetched again
+        run: |
+          printf 'changed' >> build/xcodegen/LICENSE
+          ./Scripts/fetch_xcodegen.sh 2> build/xcodegen-refetch.log >/dev/null
+          cat build/xcodegen-refetch.log
+          grep -q 'Downloading XcodeGen' build/xcodegen-refetch.log
 
       - name: Cache VLCKit
         uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
