@@ -151,6 +151,10 @@ struct SchnellbildApp: App {
                     // As the key: not during a slideshow, not over a sheet (of either pane)
                     .disabled(window.panes.contains { $0.slideshow != nil || $0.anySheetOpen })
                 Toggle("Mini Keyboard", isOn: Binding(get: { model.showMiniKeyboard }, set: { model.showMiniKeyboard = $0 }))
+                // As in the Finder (⇧⌘.); also in Settings → General
+                Toggle("Show Hidden Files", isOn: Binding(get: { window.showHiddenFiles }, set: { window.showHiddenFiles = $0 }))
+                    .keyboardShortcut(shortcuts.menuShortcut(.hiddenFiles))
+                    .disabled(window.anySheetOpen)
                 Divider()
                 // (the key monitor takes ⌘+ / ⌘− first: in the full view they zoom)
                 Button("Larger Thumbnails") { model.growThumbnails() }

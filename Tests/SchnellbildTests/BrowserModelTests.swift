@@ -444,7 +444,7 @@ final class SortTests: XCTestCase {
 // MARK: - Directory scan & folder previews
 
 final class ScanTests: XCTestCase {
-    func testScanClassifiesIncludesHiddenExcludesNonMedia() async throws {
+    func testScanClassifiesExcludesHiddenAndNonMedia() async throws {
         let tree = try TempTree(self)
         try tree.file("photo.jpg")
         try tree.file("clip.mp4")
@@ -457,7 +457,7 @@ final class ScanTests: XCTestCase {
         XCTAssertEqual(byName["photo.jpg"]?.kind, .image)
         XCTAssertEqual(byName["clip.mp4"]?.kind, .video)
         XCTAssertEqual(byName["sub"]?.kind, .folder)
-        XCTAssertNotNil(byName[".secret.png"], "hidden media is listed")
+        XCTAssertNil(byName[".secret.png"], "hidden media is listed only while hidden files are shown (HiddenFilesTests)")
         XCTAssertNil(byName["notes.txt"], "non-media files are excluded")
     }
 

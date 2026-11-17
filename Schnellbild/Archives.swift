@@ -1096,11 +1096,15 @@ final class ArchiveStore: @unchecked Sendable {
 
     /// A folder of an archive: its folders and media files as grid entries,
     /// and its other files (archives inside archives among them: not opened).
-    func listing(in url: URL, trying password: String? = nil) async throws -> FolderListing {
+    /// Hidden entries (a name starting with a dot) only while `showingHidden`;
+    /// ".DS_Store", "._…" and "__MACOSX" never (`HiddenFiles`).
+    func listing(in url: URL, trying password: String? = nil,
+                 showingHidden shown: Bool = HiddenFiles.shown) async throws -> FolderListing {
         guard let (archiveURL, inner) = ArchivePath.split(url) else { return FolderListing() }
         let index = try await index(of: archiveURL, trying: password)
         var listing = FolderListing()
         for item in index.children[inner] ?? [] {
+            guard HiddenFiles.lists(archivePath: (item.path as NSString).lastPathComponent, shown: shown) else { continue }
             let itemURL = archiveURL.appendingPathComponent(item.path, isDirectory: item.isDirectory)
             if item.isDirectory {
                 listing.entries.append(GridEntry(url: itemURL, kind: .folder, modDate: item.modified))
@@ -1108,7 +1112,7 @@ final class ArchiveStore: @unchecked Sendable {
                 var entry = GridEntry(url: itemURL, kind: kind, modDate: item.modified, byteSize: item.knownSize)
                 entry.isIncomplete = item.path == index.cutOff
                 listing.entries.append(entry)
-            } else if !itemURL.lastPathComponent.hasPrefix(".") {
+            } else {
                 listing.others.append(OtherFile(url: itemURL, byteSize: item.knownSize))
             }
         }
@@ -1116,27 +1120,33 @@ final class ArchiveStore: @unchecked Sendable {
         return listing
     }
 
-    /// The media files at any depth below a folder of an archive, in path order.
+    /// The media files at any depth below a folder of an archive, in path
+    /// order; hidden ones and those in hidden folders only while shown.
     func media(below url: URL) async throws -> [URL] {
         guard let (archiveURL, inner) = ArchivePath.split(url) else { return [] }
         let index = try await index(of: archiveURL)
         let prefix = inner.isEmpty ? "" : inner + "/"
+        let shown = HiddenFiles.shown
         return index.byPath.values
             // (URLs built without asking the file system whether they are folders)
             .filter { !$0.isDirectory && $0.path.hasPrefix(prefix)
+                && HiddenFiles.lists(archivePath: String($0.path.dropFirst(prefix.count)), shown: shown)
                 && BrowserModel.mediaKind(of: URL(fileURLWithPath: $0.path, isDirectory: false)) != nil }
             .map(\.path)
             .sorted { $0.localizedStandardCompare($1) == .orderedAscending }
             .map { archiveURL.appendingPathComponent($0, isDirectory: false) }
     }
 
-    /// Names `matcher` takes, at any depth below a folder of an archive.
+    /// Names `matcher` takes, at any depth below a folder of an archive;
+    /// hidden ones and those in hidden folders only while shown.
     func matches(below url: URL, matching matcher: NameMatcher) async throws -> [GridEntry] {
         guard let (archiveURL, inner) = ArchivePath.split(url) else { return [] }
         let index = try await index(of: archiveURL)
         let prefix = inner.isEmpty ? "" : inner + "/"
+        let shown = HiddenFiles.shown
         return index.byPath.values.compactMap { item in
             guard !Task.isCancelled, item.path.hasPrefix(prefix),
+                  HiddenFiles.lists(archivePath: String(item.path.dropFirst(prefix.count)), shown: shown),
                   matcher.matches((item.path as NSString).lastPathComponent) else { return nil }
             let itemURL = archiveURL.appendingPathComponent(item.path, isDirectory: item.isDirectory)
             if item.isDirectory { return GridEntry(url: itemURL, kind: .folder, modDate: item.modified) }

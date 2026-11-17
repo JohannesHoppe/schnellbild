@@ -233,7 +233,7 @@ final class FolderNames: @unchecked Sendable {
             for name in (try? FileManager.default.contentsOfDirectory(atPath: folder.path)) ?? [] {
                 let lower = name.lowercased()
                 listing.names[lower] = name
-                if lower.hasSuffix(".gpx"), !lower.hasPrefix(".") { listing.tracks.append(lower) }
+                if lower.hasSuffix(".gpx"), !lower.hasPrefix("._") { listing.tracks.append(lower) }   // hidden ones too, not AppleDouble
             }
             listing.tracks.sort()
         }

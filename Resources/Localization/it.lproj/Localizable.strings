@@ -655,3 +655,7 @@
 "Hide the clouds" = "Nascondi le nuvole";
 "the colours of the ground on the globe" = "i colori del suolo sul globo";
 "the clouds on the globe" = "le nuvole sul globo";
+"Show Hidden Files" = "Mostra file nascosti";
+"Show hidden files and folders" = "Mostra file e cartelle nascosti";
+"Names that start with a dot, and what macOS hides, such as the Library folder. Off, they appear nowhere in Schnellbild." = "I nomi che iniziano con un punto e ciò che macOS nasconde, come la cartella Libreria. Disattivato, non compaiono da nessuna parte in Schnellbild.";
+"Show / hide hidden files and folders" = "Mostra / nascondi file e cartelle nascosti";

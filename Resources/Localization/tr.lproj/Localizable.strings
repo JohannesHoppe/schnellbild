@@ -655,3 +655,7 @@
 "Hide the clouds" = "Bulutları gizle";
 "the colours of the ground on the globe" = "kürede yeryüzünün renkleri";
 "the clouds on the globe" = "küredeki bulutlar";
+"Show Hidden Files" = "Gizli Dosyaları Göster";
+"Show hidden files and folders" = "Gizli dosyaları ve klasörleri göster";
+"Names that start with a dot, and what macOS hides, such as the Library folder. Off, they appear nowhere in Schnellbild." = "Nokta ile başlayan adlar ve Kitaplık klasörü gibi macOS’in gizledikleri. Kapalıyken Schnellbild’in hiçbir yerinde görünmezler.";
+"Show / hide hidden files and folders" = "Gizli dosyaları ve klasörleri göster / gizle";

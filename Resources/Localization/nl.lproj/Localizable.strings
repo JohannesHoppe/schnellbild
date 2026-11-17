@@ -655,3 +655,7 @@
 "Hide the clouds" = "Wolken verbergen";
 "the colours of the ground on the globe" = "de kleuren van de grond op de wereldbol";
 "the clouds on the globe" = "de wolken op de wereldbol";
+"Show Hidden Files" = "Toon verborgen bestanden";
+"Show hidden files and folders" = "Toon verborgen bestanden en mappen";
+"Names that start with a dot, and what macOS hides, such as the Library folder. Off, they appear nowhere in Schnellbild." = "Namen die met een punt beginnen en wat macOS verbergt, zoals de map Bibliotheek. Uitgeschakeld verschijnen ze nergens in Schnellbild.";
+"Show / hide hidden files and folders" = "Toon / verberg verborgen bestanden en mappen";

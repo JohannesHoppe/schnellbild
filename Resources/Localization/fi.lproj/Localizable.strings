@@ -655,3 +655,7 @@
 "Hide the clouds" = "Piilota pilvet";
 "the colours of the ground on the globe" = "maanpinnan värit karttapallolla";
 "the clouds on the globe" = "pilvet karttapallolla";
+"Show Hidden Files" = "Näytä piilotiedostot";
+"Show hidden files and folders" = "Näytä piilotetut tiedostot ja kansiot";
+"Names that start with a dot, and what macOS hides, such as the Library folder. Off, they appear nowhere in Schnellbild." = "Pisteellä alkavat nimet ja se, minkä macOS piilottaa, kuten Kirjasto-kansio. Kun tämä on pois päältä, ne eivät näy missään Schnellbildissä.";
+"Show / hide hidden files and folders" = "Näytä / piilota piilotetut tiedostot ja kansiot";
