@@ -16,6 +16,11 @@
 //   --clouds=<0…1>          the cloud cover shown (the app's: 0.65)
 //   --photos=<folder>       the photos (Scripts/fetch_world_photos.sh)
 //   --out=<file.jpg|.png>   --quality=<0…1> for JPEG (0.85)
+//   --transparent           no stars and no space: transparent around the Earth and its
+//                           air (write PNG); the light of the Sun's glow becomes coverage
+//   --fade-top=<points>     transparent: the light fades out over this much of the frame's
+//   --fade-bottom=<points>  top and bottom (smoothstep), so no edge shows on the page
+//   --backdrop=#rrggbb      the transparent picture laid over this colour (a preview)
 //   --info                  prints where the Sun and each photo land and how round the limb is, renders nothing
 //                           (--limb-points: each point of the limb as well)
 import AppKit
@@ -59,6 +64,7 @@ scene.lens = 2 * atan(full.height / 2 / focal) * 180 / .pi
 if let distance = argument("distance").flatMap(Double.init) {
     scene.camera.zoom = log2(2 * .pi * focal / (WebMercator.tileSize * distance))
 }
+scene.transparent = CommandLine.arguments.contains("--transparent")
 let projection = scene.projection
 
 // The photos and where they were taken (their GPS in the metadata)
@@ -170,12 +176,47 @@ let data = GlobeData.load(folder: root.appendingPathComponent("Vendor/Globe"))
 guard data.satellite != nil, data.clouds != nil else { fail("the globe's data is missing in Vendor/Globe (Scripts/fetch_globe.sh)") }
 guard let renderer = GlobeRenderer(map: MapRenderer(archive: archive, places: nil), data: data) else { fail("no Metal device") }
 renderer.textures.prepareAndWait(for: scene)
-guard let (globe, _) = renderer.snapshot(scene, scale: CGFloat(scale)) else { fail("the render failed") }
+guard let (rendered, _) = renderer.snapshot(scene, scale: CGFloat(scale)) else { fail("the render failed") }
+var globe = rendered
+if scene.transparent {
+    // (GlobeRenderer.snapshot gives the glare its coverage already)
+    guard let c = CGContext(data: nil, width: rendered.width, height: rendered.height, bitsPerComponent: 8, bytesPerRow: rendered.width * 4,
+                            space: CGColorSpace(name: CGColorSpace.sRGB)!, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue),
+          let bytes = c.data?.assumingMemoryBound(to: UInt8.self) else { fail("no context") }
+    c.draw(rendered, in: CGRect(x: 0, y: 0, width: rendered.width, height: rendered.height))
+    for i in stride(from: 0, to: rendered.width * rendered.height * 4, by: 4) {
+        let a = max(bytes[i + 3], bytes[i], bytes[i + 1], bytes[i + 2])
+        bytes[i + 3] = a
+        // The faintest glow ends in 8-bit steps (a visible arc on a dark page): it fades out instead
+        if a < 12 {
+            let x = min(1, max(0, (Double(a) - 2) / 10)), f = x * x * (3 - 2 * x)
+            for k in 0..<4 { bytes[i + k] = UInt8((Double(bytes[i + k]) * f).rounded()) }
+        }
+    }
+    // Faded towards the frame's top and bottom (rows in the render: the frame starts `top` points down)
+    let fadeTop = (Double(argument("fade-top") ?? "0") ?? 0) * scale, fadeBottom = (Double(argument("fade-bottom") ?? "0") ?? 0) * scale
+    let frameTop = top * scale, frameBottom = (top + size.height) * scale
+    for y in 0..<rendered.height {
+        let row = Double(y) + 0.5
+        func smooth(_ x: Double) -> Double { let c = min(1, max(0, x)); return c * c * (3 - 2 * c) }
+        let f = (fadeTop > 0 ? smooth((row - frameTop) / fadeTop) : 1) * (fadeBottom > 0 ? smooth((frameBottom - row) / fadeBottom) : 1)
+        guard f < 1 else { continue }
+        for x in 0..<rendered.width {
+            let i = (y * rendered.width + x) * 4
+            for k in 0..<4 { bytes[i + k] = UInt8((Double(bytes[i + k]) * f).rounded()) }
+        }
+    }
+    globe = c.makeImage() ?? rendered
+}
 
 // The tiles over it
 let w = Int(size.width * scale), h = Int(size.height * scale)
 guard let ctx = CGContext(data: nil, width: w, height: h, bitsPerComponent: 8, bytesPerRow: 0, space: CGColorSpace(name: CGColorSpace.sRGB)!,
                           bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else { fail("no context") }
+if let hex = argument("backdrop"), hex.count == 7, let v = UInt32(hex.dropFirst(), radix: 16) {
+    ctx.setFillColor(CGColor(srgbRed: CGFloat(v >> 16 & 255) / 255, green: CGFloat(v >> 8 & 255) / 255, blue: CGFloat(v & 255) / 255, alpha: 1))
+    ctx.fill(CGRect(x: 0, y: 0, width: w, height: h))
+}
 ctx.draw(globe, in: CGRect(x: 0, y: -(full.height - top - size.height) * scale, width: Double(globe.width), height: Double(globe.height)))
 // Points, origin top left
 ctx.translateBy(x: 0, y: CGFloat(h))
