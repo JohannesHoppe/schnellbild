@@ -5,8 +5,11 @@
 // the same arguments and data give the same picture on the same Mac.
 //
 //   --camera=<latitude>,<longitude>,<zoom>,<pitch>,<heading>  as MapCamera (pitch may exceed 72°)
+//   --distance=<Earth radii> the camera's distance from the target instead of the zoom
 //   --lens=<degrees>        vertical angle of view (the app's: 40)
 //   --date=<ISO 8601>       the Sun's moment
+//   --light-date=<ISO 8601> NOT PHYSICAL, the banner variant: the ground lit as at
+//                           this moment while the Sun is drawn where it stands at --date
 //   --size=<width>x<height> in points; --scale=<n> pixels per point (2)
 //   --shift=<points>        the frame moved up (positive) or down over the
 //                           picture, as a shift lens: the horizon lower in
@@ -53,6 +56,14 @@ var scene = GlobeScene(camera: MapCamera(center: Coordinate(latitude: values[0],
 let lens = Double(argument("lens") ?? "40") ?? 40
 let focal = size.height / 2 / tan(lens / 2 * .pi / 180)
 scene.lens = 2 * atan(full.height / 2 / focal) * 180 / .pi
+if let light = argument("light-date") {
+    guard let d = ISO8601DateFormatter().date(from: light) else { fail("--light-date=<ISO 8601>") }
+    scene.lightDate = d
+}
+// The camera stands focal / radius Earth radii from its target (GlobeProjection.frame)
+if let distance = argument("distance").flatMap(Double.init) {
+    scene.camera.zoom = log2(2 * .pi * focal / (WebMercator.tileSize * distance))
+}
 let projection = scene.projection
 
 // The photos and where they were taken (their GPS in the metadata)
@@ -102,7 +113,7 @@ if info {
     let fr = projection.frame
     let altitude = (simd_length(fr.position) - 1) * 6371
     let sub = GlobeGeometry.coordinate(simd_normalize(fr.position))
-    let sun = GlobeGeometry.unitVector(Astronomy.subsolarPoint(at: date))
+    let sun = GlobeGeometry.unitVector(Astronomy.subsolarPoint(at: scene.lightDate ?? date))
     let elevation = asin(simd_dot(GlobeGeometry.unitVector(sub), sun)) * 180 / .pi
     print(String(format: "camera %.0f km above %.2f, %.2f; the Sun %.1f° high there", altitude, sub.latitude, sub.longitude, elevation))
     // How much of the ground in view has the Sun above it
@@ -116,12 +127,47 @@ if info {
         }
     }
     print(String(format: "ground %.0f %% of the view, %.0f %% of it in daylight", 100 * ground / total, 100 * lit / max(1, ground)))
+    // The limb: in each column the first row on the ground, then a circle fitted to them (Kåsa's least squares)
+    var limb: [(Double, Double)] = []
+    for x in stride(from: 0.0, through: size.width, by: size.width / 120) {
+        guard projection.coordinate(at: CGPoint(x: x, y: size.height - 1 + top)) != nil,
+              projection.coordinate(at: CGPoint(x: x, y: top)) == nil else { continue }
+        var lo = 0.0, hi = size.height - 1
+        for _ in 0..<40 {
+            let mid = (lo + hi) / 2
+            if projection.coordinate(at: CGPoint(x: x, y: mid + top)) == nil { lo = mid } else { hi = mid }
+        }
+        limb.append((x, hi))
+    }
+    if limb.count >= 5 {
+        var m = simd_double3x3(0), r = SIMD3<Double>(0, 0, 0)
+        for (x, y) in limb {
+            let row = SIMD3(x, y, 1), z = -(x * x + y * y)
+            m += simd_double3x3(rows: [row * row.x, row * row.y, row * row.z])
+            r += row * z
+        }
+        let s = m.inverse * r
+        let cx = -s.x / 2, cy = -s.y / 2, radius = sqrt(cx * cx + cy * cy - s.z)
+        let residuals = limb.map { hypot($0.0 - cx, $0.1 - cy) - radius }
+        let rms = sqrt(residuals.map { $0 * $0 }.reduce(0, +) / Double(residuals.count))
+        if CommandLine.arguments.contains("--limb-points") {
+            for (x, y) in limb { print(String(format: "limb-point %.1f %.2f", x, y)) }
+        }
+        print(String(format: "limb: %d points from x %.0f to %.0f, apex y %.0f; circle radius %.0f pt, residual rms %.2f px, max %.2f px",
+                     limb.count, limb.first!.0, limb.last!.0, limb.map(\.1).min()!, radius, rms * scale,
+                     residuals.map(abs).max()! * scale))
+    }
     if let s = sunPoint() {
         let x = min(size.width - 1, max(0, s.x))
         let horizon = stride(from: 0.0, to: size.height, by: 1).first { projection.coordinate(at: CGPoint(x: x, y: $0 + top)) != nil } ?? size.height
         print(String(format: "the Sun at (%.0f, %.0f), the horizon below it at %.0f", s.x, s.y, horizon))
     } else {
         print("the Sun behind the camera")
+    }
+    if let at = argument("radec")?.split(separator: ",").compactMap({ Double($0) }), at.count == 2 {
+        let d = simd_normalize(fr.focal * fr.forward + (at[0] - full.width / 2) * fr.right + (full.height / 2 - (at[1] + top)) * fr.up)
+        let c = Astronomy.celestialToEarth(at: date).transpose * d
+        print(String(format: "RADEC %.3f %.3f", atan2(c.y, c.x) * 180 / .pi, asin(c.z) * 180 / .pi))
     }
     for t in tiles { print(String(format: "tile (%.0f, %.0f): ", t.point.x, t.point.y) + t.photos.map(\.name).joined(separator: ", ")) }
     exit(0)
