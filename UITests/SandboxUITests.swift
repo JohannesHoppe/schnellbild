@@ -14,7 +14,7 @@ final class SandboxUITests: SchnellbildUITestCase {
         XCTAssertTrue(app.staticTexts["Folders opened to Schnellbild"].waitForExistence(timeout: 10),
                       "Settings → Folder access: the app runs in the App Sandbox")
         app.terminate()
-        launch(open: tempDir.path, grants: .none)
+        launch(open: tempDir.path, grants: .nothing)
         XCTAssertTrue(app.buttons["allowAccess"].firstMatch.waitForExistence(timeout: 15), "a folder outside every grant asks")
         XCTAssertFalse(tile("a.jpg").exists, "and shows nothing of it")
     }
@@ -28,7 +28,7 @@ final class SandboxUITests: SchnellbildUITestCase {
         addTeardownBlock { try? FileManager.default.removeItem(at: pictures) }
         let source = try XCTUnwrap(Bundle(for: SchnellbildUITestCase.self).url(forResource: "sample", withExtension: "jpg"))
         try FileManager.default.copyItem(at: source, to: pictures.appendingPathComponent("holiday.jpg"))
-        launch(open: pictures.path, grants: .none)
+        launch(open: pictures.path, grants: .nothing)
         XCTAssertTrue(tile("holiday.jpg").waitForExistence(timeout: 15), "read without a grant")
         XCTAssertFalse(app.buttons["allowAccess"].exists)
     }
@@ -39,7 +39,7 @@ final class SandboxUITests: SchnellbildUITestCase {
     func testAFolderChosenInTheOpenPanelIsKeptAcrossLaunches() throws {
         try put("sample.jpg", at: "Trip/x.jpg")
         let trip = tempDir.appendingPathComponent("Trip")
-        launch(grants: .none)
+        launch(grants: .nothing)
         XCTAssertTrue(app.staticTexts["No folder open"].waitForExistence(timeout: 15))
         grantThroughOpenPanel(trip)
         XCTAssertTrue(tile("x.jpg").waitForExistence(timeout: 15), "the folder chosen")
@@ -57,7 +57,8 @@ final class SandboxUITests: SchnellbildUITestCase {
         // The dialog's button (the Touch Bar has one of the same name)
         var confirm: XCUIElement?
         eventually("the dialog asks") {
-            confirm = self.app.buttons.matching(NSPredicate(format: "label == %@ OR title == %@", "Forget Folder Access", "Forget Folder Access")).allElementsBoundByIndex.first { $0.isHittable }
+            confirm = [self.app.sheets, self.app.dialogs].lazy
+                .map { $0.buttons["Forget Folder Access"].firstMatch }.first { $0.exists }
             return confirm != nil
         }
         confirm?.click()
@@ -74,7 +75,7 @@ final class SandboxUITests: SchnellbildUITestCase {
     /// the folder came from in it, also after a relaunch.
     func testGoingAboveAGrantedFolderAsksForIt() throws {
         try put("sample.jpg", at: "Trip/x.jpg")
-        launch(grants: .none)
+        launch(grants: .nothing)
         grantThroughOpenPanel(tempDir.appendingPathComponent("Trip"))
         XCTAssertTrue(tile("x.jpg").waitForExistence(timeout: 15))
 
@@ -107,7 +108,7 @@ final class SandboxUITests: SchnellbildUITestCase {
          exif:GPSLatitude="48,8.232N" exif:GPSLongitude="11,34.566E"/></rdf:RDF></x:xmpmeta>
         """
         try sidecar.write(to: tempDir.appendingPathComponent("Outside/photo.xmp"), atomically: true, encoding: .utf8)
-        launch(grants: .none)
+        launch(grants: .nothing)
         XCTAssertTrue(app.staticTexts["No folder open"].waitForExistence(timeout: 15))
         dropFromFinder(tempDir.appendingPathComponent("Outside/photo.jpg"))
         waitForBadge(containing: "photo.jpg")
@@ -146,7 +147,7 @@ final class SandboxUITests: SchnellbildUITestCase {
         let half = whole.count / 2
         try whole.prefix(half).write(to: outside.appendingPathComponent("Trip.zip.001"))
         try whole.dropFirst(half).write(to: outside.appendingPathComponent("Trip.zip.002"))
-        launch(grants: .none)
+        launch(grants: .nothing)
         XCTAssertTrue(app.staticTexts["No folder open"].waitForExistence(timeout: 15))
         dropFromFinder(outside.appendingPathComponent("Trip.zip.001"))
         XCTAssertTrue(tile("beach.jpg").waitForExistence(timeout: 15), "the archive opened")
@@ -159,7 +160,7 @@ final class SandboxUITests: SchnellbildUITestCase {
     /// in the title bar asks for the folder above first, then renames.
     func testRenamingTheGrantedFolderAsksForTheFolderAbove() throws {
         try put("sample.jpg", at: "Trip/x.jpg")
-        launch(grants: .none)
+        launch(grants: .nothing)
         grantThroughOpenPanel(tempDir.appendingPathComponent("Trip"))
         XCTAssertTrue(tile("x.jpg").waitForExistence(timeout: 15))
         let title = element("folderTitle").firstMatch

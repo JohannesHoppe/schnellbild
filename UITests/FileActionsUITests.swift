@@ -49,7 +49,7 @@ final class FileActionsUITests: SchnellbildUITestCase {
     /// A on the left, `other` on the right, each opened through the open
     /// panel; the left pane active.
     private func openPanes(right other: URL, showing shown: String) {
-        launch(grants: .none)
+        launch(grants: .nothing)
         XCTAssertTrue(app.staticTexts["No folder open"].waitForExistence(timeout: 15))
         grantThroughOpenPanel(folderA)
         XCTAssertTrue(app.staticTexts["photo.jpg"].waitForExistence(timeout: 15), "A opened")

@@ -36,7 +36,7 @@ class SchnellbildUITestCase: XCTestCase {
         /// What the last launch left (a relaunch)
         case kept
         /// Nothing: the app as on a Mac where no folder was opened to it yet
-        case none
+        case nothing
     }
 
     override func setUpWithError() throws {
@@ -95,7 +95,7 @@ class SchnellbildUITestCase: XCTestCase {
         switch grants ?? (resetState ? .root : .kept) {
         case .root: grantFixtureRoot()
         case .kept: break
-        case .none:
+        case .nothing:
             extra.append("--reset-grants")
             Self.rootGranted = nil
         }
