@@ -53,7 +53,7 @@ final class PartialFilesUITests: SchnellbildUITestCase {
             let state = self.text(of: folder)
             return !state.contains("empty") && !state.contains(" 0 previews")
         }
-        folder.doubleClick()
+        openTile("downloads", showing: tile("film.mp4.part"))
         for name in ["film.mp4.part", "clip.mkv.part", "photo.jpg.crdownload"] {
             XCTAssertTrue(tile(name).waitForExistence(timeout: 15), name)
             eventually("\(name): marked, with its preview", timeout: 30) {
@@ -73,10 +73,8 @@ final class PartialFilesUITests: SchnellbildUITestCase {
         _ = try? screenStats(of: app.windows.firstMatch.frame)
         // Inside the archive cut off: the picture it cuts is marked as incomplete
         app.typeKey("l", modifierFlags: [])
-        archive.doubleClick()
-        let day = tile("Day 1")
-        XCTAssertTrue(day.waitForExistence(timeout: 15))
-        day.doubleClick()
+        openTile("photos.rar.part", showing: tile("Day 1"))
+        openTile("Day 1", showing: tile("big.jpg"))
         eventually("the picture cut off is marked", timeout: 15) { self.text(of: self.tile("big.jpg")).contains("unfinished") }
     }
 
@@ -102,7 +100,7 @@ final class PartialFilesUITests: SchnellbildUITestCase {
         eventually("with its preview", timeout: 20) { self.text(of: photo).hasSuffix(", preview") }
         XCTAssertTrue(tile("clip.xyz").waitForExistence(timeout: 20))
         XCTAssertTrue(text(of: tile("clip.xyz")).contains("video"), text(of: tile("clip.xyz")))
-        photo.doubleClick()
+        openInFullView("IMG_0001")
         eventually("the picture opens", timeout: 15) { self.text(of: self.element("fullImage")).hasSuffix("loaded") }
     }
 

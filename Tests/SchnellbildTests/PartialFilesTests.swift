@@ -201,4 +201,21 @@ final class PartialFilesTests: XCTestCase {
         await waitUntil { m.names == ["..", "a.jpg", "film.mp4"] }
         XCTAssertEqual(m.selectedEntry?.name, "film.mp4")
     }
+
+    /// VLC takes a whole file over from AVKit only for data AVFoundation
+    /// can't read or decode, not for any failure it reports.
+    func testOnlyDataFailuresHandAWholeFileToVLC() {
+        func av(_ code: AVError.Code, underlying: NSError? = nil) -> NSError {
+            NSError(domain: AVFoundationErrorDomain, code: code.rawValue,
+                    userInfo: underlying.map { [NSUnderlyingErrorKey: $0] } ?? [:])
+        }
+        XCTAssertTrue(AVPlaybackControl.isDataFailure(av(.decodeFailed)))
+        XCTAssertTrue(AVPlaybackControl.isDataFailure(av(.fileFormatNotRecognized)))
+        XCTAssertTrue(AVPlaybackControl.isDataFailure(av(.unknown, underlying: NSError(domain: NSPOSIXErrorDomain, code: Int(EIO)))),
+                      "a read error underneath")
+        XCTAssertFalse(AVPlaybackControl.isDataFailure(nil))
+        XCTAssertFalse(AVPlaybackControl.isDataFailure(av(.unknown)))
+        XCTAssertFalse(AVPlaybackControl.isDataFailure(av(.operationNotAllowed)))
+        XCTAssertFalse(AVPlaybackControl.isDataFailure(av(.videoCompositorFailed)))
+    }
 }

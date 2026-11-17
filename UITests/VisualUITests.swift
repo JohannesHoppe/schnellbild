@@ -13,6 +13,10 @@ final class VisualUITests: SchnellbildUITestCase {
 
     /// Mean luminance (0 … 1) of the middle half of an element, as on screen.
     private func screenBrightness(of element: XCUIElement, file: StaticString = #filePath, line: UInt = #line) throws -> Double {
+        guard element.exists else {
+            XCTFail("the element went; the window holds:\n\(app.debugDescription)", file: file, line: line)
+            throw XCTSkip("no element")
+        }
         let f = element.frame
         return try screenStats(of: CGRect(x: f.midX - f.width / 4, y: f.midY - f.height / 4,
                                           width: f.width / 2, height: f.height / 2), file: file, line: line).mean

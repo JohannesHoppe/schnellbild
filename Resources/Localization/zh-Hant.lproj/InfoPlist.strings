@@ -1,3 +1,6 @@
 /* Info.plist, localized: shown by macOS when Use My Location asks for the Mac's position */
 "NSLocationUsageDescription" = "只有在你按一下「使用我的位置」時，Schnellbild 才會使用你的位置，用來依與你的距離排序照片和影片。位置會留在你的 Mac 上。";
 "NSLocationWhenInUseUsageDescription" = "只有在你按一下「使用我的位置」時，Schnellbild 才會使用你的位置，用來依與你的距離排序照片和影片。位置會留在你的 Mac 上。";
+
+/* Info.plist, localized: the kind macOS names a download not finished ("x.mp4.part"), the description of the type art.haushoppe.schnellbild.download-in-progress (a type's description is looked up by its English text) */
+"Download not finished" = "下載未完成";
