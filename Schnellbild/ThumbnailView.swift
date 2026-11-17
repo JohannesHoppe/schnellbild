@@ -43,7 +43,7 @@ final class ThumbnailCache {
     }
 
     /// Marks an image that is only the file's icon, not a picture of it.
-    static let fileIcon = "file icon"
+    nonisolated static let fileIcon = "file icon"
 
     /// From memory only, asking no one: what a tile made again (scrolled
     /// back into view) shows at once. `modified` nil takes any date; the
@@ -135,13 +135,28 @@ final class ThumbnailCache {
     /// once more; one VLC refused or failed on is not. Without a picture
     /// the tile shows QuickLook's icon. `--test-log` names the producer and
     /// why the other gave none.
-    private static func videoThumbnail(for url: URL, request: QLThumbnailGenerator.Request, width: CGFloat) async -> NSImage? {
+    nonisolated private static func videoThumbnail(for url: URL, request: QLThumbnailGenerator.Request, width: CGFloat) async -> NSImage? {
         let name = url.lastPathComponent
         let began = Date()
         func took() -> String { String(format: "%.1f s", Date().timeIntervalSince(began)) }
-        return await withTaskGroup(of: VideoAnswer.self) { group -> NSImage? in
-            group.addTask { .quickLook(await quickLook(request)) }
-            group.addTask {
+        // The producers run as tasks of their own, their answers come in
+        // order: the first picture is taken at once, without waiting for the
+        // other to end (QuickLook's extension may take long to give up after
+        // its request is cancelled)
+        let (answers, answer) = AsyncStream.makeStream(of: VideoAnswer.self)
+        var producers: [Task<Void, Never>] = []
+        var pending = 0
+        func run(_ work: @escaping @Sendable () async -> VideoAnswer) {
+            pending += 1
+            producers.append(Task { answer.yield(await work()) })
+        }
+        let stop = { (producers: [Task<Void, Never>]) in
+            producers.forEach { $0.cancel() }
+            answer.finish()
+        }
+        return await withTaskCancellationHandler { () async -> NSImage? in
+            run { .quickLook(await quickLook(request)) }
+            run {
                 try? await Task.sleep(for: quickLookHeadStart)
                 return .headStartOver
             }
@@ -151,14 +166,15 @@ final class ThumbnailCache {
             func askVLC() {
                 guard vlcTries == 0 else { return }
                 vlcTries = 1
-                group.addTask { .vlc(await VLCThumbnails.shared.thumbnail(for: url, width: width)) }
+                run { .vlc(await VLCThumbnails.shared.thumbnail(for: url, width: width)) }
             }
-            while let answer = await group.next() {
-                switch answer {
+            for await next in answers {
+                pending -= 1
+                switch next {
                 case .quickLook(let rep):
                     if rep?.type == .thumbnail, let image = rep?.nsImage {
                         BrowserModel.testLog("tile \(name): QuickLook's picture after \(took())")
-                        group.cancelAll()
+                        stop(producers)
                         return image
                     }
                     quickLookSaid = rep.map { $0.type == .icon ? "the icon" : "a low-quality thumbnail" } ?? "nothing"
@@ -172,20 +188,23 @@ final class ThumbnailCache {
                 case .vlc(let outcome):
                     if let frame = outcome.image {
                         BrowserModel.testLog("tile \(name): VLC's frame after \(took()), QuickLook: \(quickLookSaid)")
-                        group.cancelAll()
+                        stop(producers)
                         return NSImage(cgImage: frame, size: NSSize(width: frame.width, height: frame.height))
                     }
                     BrowserModel.testLog("tile \(name): VLC \(outcome) after \(took()) (try \(vlcTries)), QuickLook: \(quickLookSaid)")
                     if case .timedOut = outcome, vlcTries == 1, !Task.isCancelled {
                         vlcTries = 2
-                        group.addTask { .vlc(await VLCThumbnails.shared.thumbnail(for: url, width: width)) }
+                        run { .vlc(await VLCThumbnails.shared.thumbnail(for: url, width: width)) }
                     }
                 }
+                if pending == 0 || Task.isCancelled { break }
             }
+            stop(producers)
             return icon
+        } onCancel: {
+            answer.finish()
         }
     }
-
     /// A picture scaled down by ImageIO, off the main thread.
     private static func pictureThumbnail(of url: URL, side: CGFloat) async -> NSImage? {
         let maxPixel = Int(side * NSScreen.mainBackingScale)
