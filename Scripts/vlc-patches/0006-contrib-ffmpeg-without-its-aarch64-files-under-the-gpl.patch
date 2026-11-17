@@ -1,0 +1,42 @@
+contrib: FFmpeg without its AArch64 files under the GPL
+
+FFmpeg is under the LGPL 2.1 or later; its GPL parts are built only with
+--enable-gpl (its LICENSE.md). Three AArch64 files of FFmpeg 8.1.2 state
+the GPL 2 or later in their headers and are built without it:
+libavcodec/aarch64/ac3dsp_init_aarch64.c and ac3dsp_neon.S (the AC-3 DSP
+functions in NEON) and libavutil/aarch64/crc.S (CRC-32 with the CRC
+instructions). The CRC code is switched off in FFmpeg's configure
+(--disable-arm-crc) and its object left out; the AC-3 DSP objects and
+their init call are left out, so FFmpeg's C versions do that work.
+Applied with patch -p1 (Scripts/build_vlckit_lgpl.sh); Scripts/vlckit_contrib.py
+and Scripts/vlckit_licenses.py fail the build while any of it is linked.
+
+--- a/contrib/src/ffmpeg/rules.mak
++++ b/contrib/src/ffmpeg/rules.mak
+@@ -123,6 +123,10 @@
+ ifeq ($(ARCH),aarch64)
+ FFMPEGCONF += --arch=aarch64
+ endif
++# Changed for Schnellbild, 2026-11-17: FFmpeg's AArch64 CRC code
++# (libavutil/aarch64/crc.S) states the GPL; without it the CRCs are the C
++# tables
++FFMPEGCONF += --disable-arm-crc
+
+ # MIPS stuff
+ ifeq ($(ARCH),mipsel)
+@@ -271,6 +275,15 @@
+ 	$(APPLY) $(SRC)/ffmpeg/libav_gsm.patch
+ endif
+ 	$(APPLY) $(SRC)/ffmpeg/patch-as-patch-can.patch
++	# Changed for Schnellbild, 2026-11-17: FFmpeg's AArch64 AC-3 DSP code
++	# (libavcodec/aarch64/ac3dsp_init_aarch64.c, ac3dsp_neon.S) and CRC code
++	# (libavutil/aarch64/crc.S) state the GPL, unlike the rest of the
++	# library; they are left out, the C versions do the work
++	sed -i.orig -e '/aarch64\/ac3dsp/d' $(UNPACK_DIR)/libavcodec/aarch64/Makefile
++	sed -i.orig -e '/aarch64\/crc\.o/d' $(UNPACK_DIR)/libavutil/aarch64/Makefile
++	sed -i.orig -e 's/ff_ac3dsp_init_aarch64(c);//' $(UNPACK_DIR)/libavcodec/ac3dsp.c
++	! grep -q -e 'aarch64/ac3dsp' -e 'aarch64/crc\.o' $(UNPACK_DIR)/libavcodec/aarch64/Makefile $(UNPACK_DIR)/libavutil/aarch64/Makefile
++	! grep -q 'ff_ac3dsp_init_aarch64(c)' $(UNPACK_DIR)/libavcodec/ac3dsp.c
+ 	$(MOVE)
+
+ .ffmpeg: ffmpeg
