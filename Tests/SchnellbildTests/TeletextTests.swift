@@ -15,10 +15,11 @@ final class TeletextTests: XCTestCase {
         let url = try XCTUnwrap(Bundle.module.url(forResource: "teletext", withExtension: "ts", subdirectory: "Videos"))
         let withLine = try await Pictures.of(url, options: [":codec=avcodec,all", ":sub-track=0"])
         let without = try await Pictures.of(url, options: [":codec=avcodec,all", ":no-spu"])
-        let lower = withLine.brightPixels(fromRow: withLine.height * 2 / 3)
-        XCTAssertGreaterThan(lower, 200, "no Teletext line in the lower third")
-        XCTAssertEqual(without.brightPixels(fromRow: without.height * 2 / 3), 0, "the grey is even without subtitles")
-        XCTAssertEqual(withLine.brightPixels(fromRow: 0, toRow: withLine.height / 2), 0, "the line is at the bottom")
+        let lower = withLine.marked(fromRow: withLine.height * 2 / 3)
+        XCTAssertGreaterThan(lower, 200, "no Teletext line in the lower third (\(withLine.marked(fromRow: 0)) pixels "
+                             + "other than the grey in the whole picture, \(withLine.pictures) pictures)")
+        XCTAssertEqual(without.marked(fromRow: 0), 0, "the grey is even without subtitles")
+        XCTAssertEqual(withLine.marked(fromRow: 0, toRow: withLine.height / 2), 0, "the line is at the bottom")
     }
 }
 
@@ -35,16 +36,17 @@ private final class Pictures: @unchecked Sendable {   // state behind `lock`
         buffer = UnsafeMutableRawPointer.allocate(byteCount: 640 * 360 * 4, alignment: 16)
     }
 
-    /// Pixels brighter than 200 in every channel, in rows `fromRow` up to
-    /// `toRow` (the end).
-    func brightPixels(fromRow: Int, toRow: Int? = nil) -> Int {
+    /// Pixels more than 40 away from the video's grey (128) in any channel:
+    /// the line's letters and their outline, in rows `fromRow` up to `toRow`
+    /// (the end).
+    func marked(fromRow: Int, toRow: Int? = nil) -> Int {
         lock.withLock {
             guard !kept.isEmpty else { return -1 }
             var count = 0
             for y in fromRow..<(toRow ?? height) {
                 for x in 0..<width {
                     let i = (y * width + x) * 4
-                    if kept[i] > 200 && kept[i + 1] > 200 && kept[i + 2] > 200 { count += 1 }
+                    if (0..<3).contains(where: { abs(Int(kept[i + $0]) - 128) > 40 }) { count += 1 }
                 }
             }
             return count
@@ -61,6 +63,7 @@ private final class Pictures: @unchecked Sendable {   // state behind `lock`
     }
 
     private var done: Bool { lock.withLock { !kept.isEmpty } }
+    var pictures: Int { lock.withLock { shown } }
 
     static func of(_ url: URL, options: [String]) async throws -> Pictures {
         let api = try XCTUnwrap(LibVLCVideo.shared)

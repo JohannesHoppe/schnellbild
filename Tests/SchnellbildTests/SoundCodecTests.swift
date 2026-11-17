@@ -18,8 +18,9 @@ final class SoundCodecTests: XCTestCase {
                                 "missing \(name).mkv", file: file, line: line)
         let sound = try await DecodedSound.of(url, seconds: 1)
         XCTAssertGreaterThanOrEqual(sound.frames, 48_000, "VLC decoded too little of \(name).mkv", file: file, line: line)
-        // A sine at -6 dBFS or so: far above silence
-        XCTAssertGreaterThan(sound.rms, 3000, "\(name).mkv decoded to silence", file: file, line: line)
+        // ffmpeg's sine at its amplitude of 1/8 (RMS about 2900 of 32767;
+        // about 2000 come out of VLC): far above silence
+        XCTAssertGreaterThan(sound.rms, 1000, "\(name).mkv decoded to silence", file: file, line: line)
         XCTAssertEqual(sound.frequency, 440, accuracy: 15, "\(name).mkv's tone", file: file, line: line)
     }
 }
