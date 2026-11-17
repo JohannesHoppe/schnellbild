@@ -628,12 +628,12 @@
 "Credit" = "출처";
 "Website" = "웹사이트";
 "Schnellbild uses an LGPL-only build of VLCKit and libVLC, licensed under the GNU Lesser General Public License 2.1 and built from source without any of VLC's modules under the GPL. VLC as VideoLAN builds it also carries modules under the GPL; they are not in Schnellbild's build." = "Schnellbild는 LGPL만으로 구성한 VLCKit 및 libVLC 빌드를 사용합니다. GNU Lesser General Public License 2.1로 라이선스되며, GPL로 배포되는 VLC 모듈을 하나도 포함하지 않고 소스 코드로 빌드했습니다. VideoLAN이 빌드하는 VLC에는 GPL 모듈도 들어 있지만, Schnellbild의 빌드에는 없습니다.";
-"Schnellbild's build makes five small changes to VLC (Scripts/vlc-patches, 0001 to 0005): four to its subtitle timing and one to its audio output on macOS." = "Schnellbild의 빌드는 VLC를 다섯 군데 조금 고쳤습니다(Scripts/vlc-patches, 0001~0005). 네 가지는 자막 타이밍, 한 가지는 macOS의 오디오 출력에 관한 것입니다.";
+"Schnellbild's build makes six small changes to VLC (Scripts/vlc-patches, 0001 to 0006): four to its subtitle timing, one to its audio output on macOS and one that leaves FFmpeg's files under the GPL out of the build." = "Schnellbild의 빌드는 VLC를 여섯 군데 조금 고쳤습니다(Scripts/vlc-patches, 0001~0006). 네 가지는 자막 타이밍, 한 가지는 macOS의 오디오 출력에 관한 것이고, 한 가지는 GPL을 따르는 FFmpeg 파일을 빌드에서 뺍니다.";
 "The complete source of this build, with these changes, is attached to its release: %@. The script that builds it is Scripts/build_vlckit_lgpl.sh in Schnellbild's repository." = "이 빌드의 전체 소스 코드는 이 변경 사항과 함께 해당 릴리스에 첨부되어 있습니다: %@. 이 빌드를 만드는 스크립트는 Schnellbild 저장소의 Scripts/build_vlckit_lgpl.sh입니다.";
 "© VideoLAN and the VLC authors" = "© VideoLAN 및 VLC 작성자";
 "Libraries included in VLCKit, each under its own license" = "VLCKit에 포함된 라이브러리(각각 고유한 라이선스)";
 "Libraries included in VLCKit" = "VLCKit에 포함된 라이브러리";
-"These are the license files at the top of each library's source, as VLC's build collected them." = "각 라이브러리 소스 코드의 맨 위에 있는 라이선스 파일을 VLC 빌드가 모은 그대로 실었습니다.";
+"These are the license files from each library's source, as Schnellbild's build collected them." = "각 라이브러리 소스 코드의 라이선스 파일을 Schnellbild 빌드가 모은 그대로 실었습니다.";
 "UnRAR license" = "UnRAR 라이선스";
 "© OpenStreetMap contributors" = "© OpenStreetMap 기여자";
 "Made from Protomaps' OpenStreetMap build, with thanks to Protomaps. How the files are made is in Schnellbild's repository." = "Protomaps의 OpenStreetMap 빌드로 만들었으며 Protomaps에 감사드립니다. 파일을 만드는 방법은 Schnellbild 저장소에 있습니다.";

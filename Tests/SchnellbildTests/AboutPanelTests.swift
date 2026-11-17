@@ -97,6 +97,6 @@ final class AboutPanelTests: XCTestCase {
         XCTAssertFalse(text.contains("AGPL"))
         let patches = try FileManager.default.contentsOfDirectory(atPath: repository.appendingPathComponent("Scripts/vlc-patches").path)
             .filter { $0.hasSuffix(".patch") }
-        XCTAssertEqual(patches.count, 5, "the VLCKit section speaks of five changes to VLC")
+        XCTAssertEqual(patches.count, 6, "the VLCKit section speaks of six changes to VLC")
     }
 }
