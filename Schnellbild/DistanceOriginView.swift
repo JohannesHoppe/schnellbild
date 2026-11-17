@@ -26,15 +26,34 @@ final class OriginPicker: ObservableObject {
 
     var point: GeoPoint? { GeoPoint.parse(text) }
 
+    /// The point a click on the map wrote into the field (as the field reads
+    /// it): the map stays where it is for it, and goes to any other point.
+    private(set) var clickedPoint: GeoPoint?
+
     /// A click on the map: that place.
-    func pick(_ point: GeoPoint) {
+    func pick(_ point: GeoPoint, fromMap: Bool = false) {
+        clickedPoint = fromMap ? GeoPoint.parse(point.decimalPair) : nil
         text = point.decimalPair
+    }
+
+    /// Whether the map goes to the point the field shows now: not to the
+    /// one just clicked on it (the view stays as the user left it).
+    func mapFollows(_ point: GeoPoint?) -> Bool {
+        guard let point else { return false }
+        return point != clickedPoint
     }
 
     /// The coordinate under a click at `spot` in a map of `size` looking through `camera`.
     nonisolated static func point(at spot: CGPoint, camera: MapCamera, size: CGSize) -> GeoPoint? {
         let c = MapViewport(camera: camera, size: size).coordinate(at: spot)
         return GeoPoint(latitude: c.latitude, longitude: c.longitude)
+    }
+
+    /// The map dragged by `translation` from the camera at the drag's start:
+    /// it follows the pointer and stays within the world (the top and bottom
+    /// edges never move inside the view).
+    nonisolated static func dragged(_ start: MapCamera, by translation: CGSize, size: CGSize) -> MapCamera {
+        MapViewport(camera: start, size: size).panned(by: Double(translation.width), Double(translation.height))
     }
 
     /// Use My Location: one request to macOS, only now.
@@ -135,12 +154,10 @@ struct DistanceOriginView: View {
         .onAppear { fieldFocused = true }
         .onChange(of: picker.point) { _, point in
             // Typed or found elsewhere: the map goes there (a click keeps the view)
-            guard let point, !clicked else { clicked = false; return }
+            guard let point, picker.mapFollows(point) else { return }
             camera = MapCamera(center: Coordinate(latitude: point.latitude, longitude: point.longitude), zoom: max(camera.zoom, 5))
         }
     }
-
-    @State private var clicked = false
 
     @ViewBuilder
     private var parsed: some View {
@@ -176,8 +193,7 @@ struct DistanceOriginView: View {
             MapView(camera: $camera, markers: markers, interactive: true, renderer: renderer) { proxy in
                 MapPickLayer(camera: $camera, size: proxy.size) { spot in
                     guard let point = OriginPicker.point(at: spot, camera: camera, size: proxy.size) else { return }
-                    clicked = true
-                    picker.pick(point)
+                    picker.pick(point, fromMap: true)
                 }
             }
             .frame(height: 220)
@@ -214,8 +230,7 @@ private struct MapPickLayer: View {
                     let start = dragStart ?? camera
                     dragStart = start
                     guard hypot(drag.translation.width, drag.translation.height) >= 4 else { return }
-                    let middle = CGPoint(x: size.width / 2 - drag.translation.width, y: size.height / 2 - drag.translation.height)
-                    camera = MapCamera(center: MapViewport(camera: start, size: size).coordinate(at: middle), zoom: start.zoom)
+                    camera = OriginPicker.dragged(start, by: drag.translation, size: size)
                 }
                 .onEnded { drag in
                     dragStart = nil

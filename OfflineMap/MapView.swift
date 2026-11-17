@@ -183,6 +183,11 @@ public enum MapMotion {
     /// How often each kind of movement began ("glide", "throw", "fade"; on the main thread)
     nonisolated(unsafe) public private(set) static var counts: [String: Int] = [:]
     static func began(_ kind: String) { counts[kind, default: 0] += 1 }
+
+    /// How far throws carried the map after the mouse came up, in points of
+    /// the drag, all added up (not folded into a turn of the globe; on the main thread)
+    nonisolated(unsafe) public private(set) static var thrownPoints = 0.0
+    static func threw(_ points: Double) { thrownPoints += points }
 }
 
 /// The credit for the map data: "© OpenStreetMap" in the corner, an ⓘ once

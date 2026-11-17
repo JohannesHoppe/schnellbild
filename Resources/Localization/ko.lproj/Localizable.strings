@@ -591,6 +591,7 @@
 "%lld on the map" = "지도에 %lld개";
 "%lld items here, %@ among them" = "여기에 %1$lld개(%2$@ 포함)";
 "%lld items here: double-click to zoom in" = "여기에 %lld개: 이중 클릭하여 확대";
+"%lld items at one place: click for the next one" = "한 장소에 %lld개: 클릭하면 다음 항목";
 "No location · %lld" = "위치 없음 · %lld";
 "%lld of %lld" = "%2$lld개 중 %1$lld개";
 "Show All" = "모두 보기";
@@ -605,10 +606,12 @@
 "Atlas: to the nearest item on the map that way; down into the strip of items without a location" = "아틀라스: 그 방향으로 지도에서 가장 가까운 항목으로, 아래로 가면 위치 없는 항목 줄로";
 "Atlas: zoom the map in / out" = "아틀라스: 지도 확대 / 축소";
 "Atlas: on several items, zoom in until they part; on one, open it" = "아틀라스: 여러 항목이면 나뉠 때까지 확대, 하나면 열기";
+"Atlas: on items taken at one place, the next one (→ ← too)" = "아틀라스: 같은 장소의 항목이면 다음 항목(→ ←도)";
 "Drag across or move a handle: only that time on the map; click: the item taken nearest then" = "가로질러 드래그하거나 핸들 이동: 그 기간만 지도에 표시, 클릭: 그 시각에 가장 가깝게 찍은 항목";
 "Tour: the places in the order of time, full screen, the route drawn on the map" = "여행: 장소를 시간 순서대로 전체 화면으로, 경로는 지도에 그려짐";
 "arrows" = "화살표";
 "double-click" = "이중 클릭";
+"click" = "클릭";
 "timeline" = "타임라인";
 "Tour: previous / next place" = "여행: 이전 / 다음 장소";
 "Include subfolders" = "하위 폴더 포함";

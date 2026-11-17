@@ -150,6 +150,7 @@ struct ShortcutsHelpView: View {
                 Row(.words("arrows"), action: "Atlas: to the nearest item on the map that way; down into the strip of items without a location"),
                 Row(.pair(.largerThumbnails, .smallerThumbnails, " / "), action: "Atlas: zoom the map in / out"),
                 Row(.words("double-click"), action: "Atlas: on several items, zoom in until they part; on one, open it"),
+                Row(.words("click"), action: "Atlas: on items taken at one place, the next one (→ ← too)"),
                 Row(.words("timeline"), action: "Drag across or move a handle: only that time on the map; click: the item taken nearest then"),
                 Row(.action(.startTour), action: "Tour: the places in the order of time, full screen, the route drawn on the map"),
                 Row(.action(.tourPause), action: "Tour: pause / resume"),

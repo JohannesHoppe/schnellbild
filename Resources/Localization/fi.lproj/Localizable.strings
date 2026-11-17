@@ -591,6 +591,7 @@
 "%lld on the map" = "Kartalla: %lld";
 "%lld items here, %@ among them" = "Täällä: %1$lld, mukana %2$@";
 "%lld items here: double-click to zoom in" = "Täällä: %lld. Lähennä kaksoisosoittamalla";
+"%lld items at one place: click for the next one" = "Samassa paikassa: %lld. Seuraava osoittamalla";
 "No location · %lld" = "Ei sijaintia · %lld";
 "%lld of %lld" = "%1$lld/%2$lld";
 "Show All" = "Näytä kaikki";
@@ -605,10 +606,12 @@
 "Atlas: to the nearest item on the map that way; down into the strip of items without a location" = "Kartasto: lähimpään kohteeseen kartalla siihen suuntaan; alas sijainnittomien kohteiden riville";
 "Atlas: zoom the map in / out" = "Kartasto: lähennä / loitonna karttaa";
 "Atlas: on several items, zoom in until they part; on one, open it" = "Kartasto: useassa kohteessa lähennä, kunnes ne erottuvat; yhdessä avaa se";
+"Atlas: on items taken at one place, the next one (→ ← too)" = "Kartasto: samassa paikassa otetuissa kohteissa seuraava (myös → ←)";
 "Drag across or move a handle: only that time on the map; click: the item taken nearest then" = "Vedä yli tai siirrä kahvaa: kartalla vain se aika; osoitus: kohde, joka otettiin lähimpänä sitä hetkeä";
 "Tour: the places in the order of time, full screen, the route drawn on the map" = "Matka: paikat aikajärjestyksessä, koko näytöllä, reitti piirrettynä karttaan";
 "arrows" = "nuolet";
 "double-click" = "kaksoisosoitus";
+"click" = "osoitus";
 "timeline" = "aikajana";
 "Tour: previous / next place" = "Matka: edellinen / seuraava paikka";
 "Include subfolders" = "Myös alikansiot";

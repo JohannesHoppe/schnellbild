@@ -22,7 +22,8 @@ struct AtlasView: View {
             if atlas.tour == nil {
                 if !atlas.unplaced.isEmpty {
                     Divider()
-                    AtlasStrip(atlas: atlas)
+                    // Drawn again only when its items or the selection change (`equatable`)
+                    AtlasStrip(atlas: atlas, strip: atlas.strip, selected: model.selectedEntry?.url).equatable()
                 }
                 Divider()
                 AtlasTimelineView(atlas: atlas)
@@ -183,8 +184,11 @@ private struct AtlasTile: View {
         }
         .frame(width: Self.side + 4, height: Self.side + 4)
         .contentShape(Rectangle())
-        .modifier(Clicks(single: { atlas.click(cluster) }, double: {
-            if cluster.count > 1 { atlas.zoom(into: cluster) } else { atlas.open(cluster.ids[0]) }
+        .modifier(Clicks(single: {
+            // (a double click's second click opens; it doesn't go on to the next item first)
+            if !(cluster.staysTogether && ModifierClicks.clickCount == 2) { atlas.click(cluster) }
+        }, double: {
+            if cluster.count > 1 && !cluster.staysTogether { atlas.zoom(into: cluster) } else { atlas.open(shown) }
         }))
         .help(help)
         .accessibilityElement(children: .ignore)
@@ -193,8 +197,8 @@ private struct AtlasTile: View {
         .accessibilityValue(VideoDetailView.uiTesting ? "\(selected ? "selected" : "not selected"), \(cluster.count) items" : "")
         .accessibilityIdentifier("atlas.\(cluster.ids[0].lastPathComponent)")
         .accessibilityAction { atlas.click(cluster) }
-        .accessibilityAction(named: Text(cluster.count > 1 ? "Zoom in" : "Open")) {
-            if cluster.count > 1 { atlas.zoom(into: cluster) } else { atlas.open(cluster.ids[0]) }
+        .accessibilityAction(named: Text(cluster.count > 1 && !cluster.staysTogether ? "Zoom in" : "Open")) {
+            if cluster.count > 1 && !cluster.staysTogether { atlas.zoom(into: cluster) } else { atlas.open(shown) }
         }
     }
 
@@ -204,7 +208,9 @@ private struct AtlasTile: View {
     }
 
     private var help: String {
-        cluster.count > 1 ? String(localized: "\(cluster.count) items here: double-click to zoom in") : shown.lastPathComponent
+        guard cluster.count > 1 else { return shown.lastPathComponent }
+        return cluster.staysTogether ? String(localized: "\(cluster.count) items at one place: click for the next one")
+            : String(localized: "\(cluster.count) items here: double-click to zoom in")
     }
 }
 
@@ -245,23 +251,43 @@ struct AtlasThumbnail: View {
 
 // MARK: - Items without a place
 
+/// The strip's title: how many items have no place.
+struct AtlasStripTitle: View {
+    let text: String
+
+    static func localized(count: Int) -> AtlasStripTitle { AtlasStripTitle(text: String(localized: "No location · \(count)")) }
+
+    var body: some View {
+        Text(verbatim: text)
+            .font(.caption).foregroundStyle(.secondary)
+            .fixedSize()
+            .accessibilityIdentifier("atlasStripTitle")
+    }
+}
+
 /// The strip under the map: the items whose place isn't known, as tiles
 /// to select and open like those on the map. None gets a made-up place.
-private struct AtlasStrip: View {
-    @ObservedObject var atlas: AtlasModel
-    @EnvironmentObject var model: BrowserModel
+/// It follows only its own items (`AtlasModel.StripState`) and the
+/// selection, not every step of the reading: a strip of 10 000 items isn't
+/// compared item by item twice a second.
+private struct AtlasStrip: View, Equatable {
+    let atlas: AtlasModel
+    @ObservedObject var strip: AtlasModel.StripState
+    let selected: URL?
+
+    /// (its items come through `strip`, which is the Atlas's own)
+    nonisolated static func == (a: AtlasStrip, b: AtlasStrip) -> Bool {
+        a.atlas === b.atlas && a.selected == b.selected
+    }
 
     var body: some View {
         HStack(spacing: 10) {
-            Text("No location · \(atlas.unplaced.count)")
-                .font(.caption).foregroundStyle(.secondary)
-                .fixedSize()
-                .accessibilityIdentifier("atlasStripTitle")
+            AtlasStripTitle.localized(count: strip.items.count)
             ScrollViewReader { scroller in
                 ScrollView(.horizontal, showsIndicators: false) {
                     LazyHStack(spacing: 6) {
-                        ForEach(atlas.unplaced) { item in
-                            let selected = model.selectedEntry?.url == item.url
+                        ForEach(strip.items) { item in
+                            let selected = self.selected == item.url
                             AtlasThumbnail(url: item.url, modified: atlas.modified(item.url), side: 40, isVideo: item.isVideo)
                                 .overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.accentColor, lineWidth: selected ? 3 : 0).padding(-1))
                                 .padding(2)
@@ -280,8 +306,8 @@ private struct AtlasStrip: View {
                     }
                     .padding(.vertical, 6)
                 }
-                .onChange(of: model.selectedEntry?.url) { _, url in
-                    if let url, atlas.unplaced.contains(where: { $0.url == url }) {
+                .onChange(of: selected) { _, url in
+                    if let url, atlas.isInStrip(url) {
                         withAnimation(Motion.animation(.easeInOut(duration: 0.2))) { scroller.scrollTo(url) }
                     }
                 }
@@ -310,7 +336,7 @@ private struct AtlasTimelineView: View {
         VStack(spacing: 4) {
             TimelineLabels(texts: TimelineTexts(
                 from: label(of: range?.lowerBound), to: label(of: range?.upperBound),
-                count: atlas.range == nil ? nil : String(localized: "\(atlas.shown.count) of \(atlas.items.count)"),
+                count: atlas.range == nil ? nil : String(localized: "\(atlas.shownCount) of \(atlas.items.count)"),
                 showAll: String(localized: "Show All"), showAllHelp: String(localized: "The whole span again"))) {
                 atlas.range = nil
             }
@@ -497,6 +523,23 @@ private struct TourRoute: View {
     }
 }
 
+/// The tour's controls' "Place 3 of 8", always whole.
+struct TourStatusLabel: View {
+    let text: String
+
+    static func localized(station: Int, of count: Int) -> TourStatusLabel {
+        TourStatusLabel(text: String(localized: "Place \(station) of \(count)"))
+    }
+
+    var body: some View {
+        Text(verbatim: text)
+            .fixedSize()
+            .font(.callout.monospacedDigit())
+            .foregroundStyle(.secondary)
+            .accessibilityIdentifier("tourStatus")
+    }
+}
+
 /// Over the map during the tour: the item of the station large (photos one
 /// after another, a video a short part without sound), where and when, the
 /// controls.
@@ -562,11 +605,7 @@ private struct TourStage: View {
                 button("backward.fill", "Previous place", .tourPrevious, id: "tour.previous") { atlas.previousStation() }
                 button(tour.paused ? "play.fill" : "pause.fill", tour.paused ? "Resume" : "Pause", .tourPause, id: "tour.pause") { atlas.togglePause() }
                 button("forward.fill", "Next place", .tourNext, id: "tour.next") { atlas.nextStation() }
-                Text("Place \(tour.station + 1) of \(tour.stations.count)")
-                    .fixedSize()
-                    .font(.callout.monospacedDigit())
-                    .foregroundStyle(.secondary)
-                    .accessibilityIdentifier("tourStatus")
+                TourStatusLabel.localized(station: tour.station + 1, of: tour.stations.count)
                     .accessibilityValue(VideoDetailView.uiTesting
                         ? "station \(tour.station + 1) of \(tour.stations.count), \(tour.phase == .flying ? "flying" : "showing")\(tour.paused ? ", paused" : "")"
                         : "")

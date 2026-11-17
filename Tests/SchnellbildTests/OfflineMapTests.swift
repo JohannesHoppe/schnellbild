@@ -202,6 +202,47 @@ final class OfflineMapTests: XCTestCase {
         var garbage = Data(whole)
         for i in stride(from: 5, to: garbage.count, by: 7) { garbage[i] = 0xFF }
         _ = try? VectorTile(data: garbage)
+
+        // Two points 2^63 apart (two ten-byte varints): their bounding box doesn't overflow
+        var layer = Proto()
+        layer.uint(15, 2)
+        layer.string(1, "far")
+        var feature = Proto()
+        feature.uint(3, 2)
+        feature.bytesField(4, Proto.packed([9, Proto.zigzag(1 << 62), 0, 10, Proto.zigzag(Int.min), 0]))
+        layer.bytesField(2, feature.bytes)
+        layer.uint(5, 4096)
+        var tile = Proto()
+        tile.bytesField(3, layer.bytes)
+        let far = try? VectorTile(data: Data(tile.bytes))
+        if let bounds = far?.layers["far"]?.features.first?.bounds {
+            XCTAssertEqual(Double(bounds.width), pow(2, 63), accuracy: pow(2, 40))
+        }
+    }
+
+    /// A place index whose unpacked block holds fewer bytes than its places
+    /// need is refused when it is opened, not read past its end later.
+    func testAPlaceIndexWithAShortBlockIsRefused() throws {
+        func index(count: Int, stored: Int, length: Int, packed: Bool) -> Data {
+            var data = Data(count: 64 + 24 + stored)
+            func put(_ value: Int, at offset: Int) {
+                withUnsafeBytes(of: UInt32(value).littleEndian) { data.replaceSubrange(offset..<offset + 4, with: $0) }
+            }
+            data.replaceSubrange(0..<8, with: Data("SBPLACE1".utf8))
+            put(1, at: 8)               // blocks
+            put(count, at: 12)          // places
+            put(360, at: 16); put(180, at: 20); put(1_000_000, at: 24)
+            put(64, at: 28)             // the block table
+            put(64 + 24, at: 32); put(0, at: 36)   // no countries
+            put(64 + 24, at: 40); put(0, at: 44)   // no languages
+            // The block: cell 0, tier 0, its places right after the table
+            data[64 + 5] = packed ? 1 : 0
+            put(count, at: 64 + 8); put(64 + 24, at: 64 + 12); put(stored, at: 64 + 16); put(length, at: 64 + 20)
+            return data
+        }
+        XCTAssertThrowsError(try PlaceIndex(data: index(count: 100, stored: 16, length: 1_600, packed: false)),
+                             "100 places in 16 bytes as they are stored")
+        XCTAssertNotNil(try? PlaceIndex(data: index(count: 1, stored: 16, length: 16, packed: false)), "one place in its 16 bytes")
     }
 
     // MARK: Projection

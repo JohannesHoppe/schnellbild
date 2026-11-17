@@ -1325,11 +1325,14 @@ final class BrowserModel: ObservableObject {
     static var appWindow: NSWindow? { WindowModel.current?.nsWindow ?? NSApp.mainWindow ?? NSApp.keyWindow }
 
     /// The window showing this pane closed: nothing goes on playing in it,
-    /// and it stops listening (a model kept for the next window).
+    /// and it stops listening (a model kept for the next window). The tour
+    /// ends there without leaving full screen (`hostWindow` would be another
+    /// window by then), and the Atlas stops reading.
     func leaveWindow() {
         if slideshow != nil { stopSlideshow() }
         if mode == .detail { closeDetail() }
         if isSearching { stopSearch() }
+        atlasIfMade?.leaveWindow()
         bossKeyObserver = nil
         inWindow = false
         updateWatch()
@@ -4375,6 +4378,8 @@ final class BrowserModel: ObservableObject {
     func changedOutside(_ changed: [String]?, rootChanged: Bool) {
         guard let folderURL, let folderPath else { return }
         if rootChanged { followFolderGone(); return }
+        // The Atlas reads the places and times there again (a sidecar or track beside the files)
+        atlasIfMade?.foldersChanged(changed)
         guard let changed else {
             forgetBelow(nil)
             relist(force: true, searchAgain: isFiltering)

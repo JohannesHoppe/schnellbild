@@ -593,4 +593,198 @@ final class AtlasTests: XCTestCase {
         XCTAssertEqual(stations[4].items.map(\.name), ["norway-08-geiranger.jpg", "norway-09-geiranger.jpg", "norway-10-geiranger.mov"])
         XCTAssertEqual(AtlasItems.prepared(items).first?.zone.secondsFromGMT(), oslo)
     }
+
+    // MARK: Edge cases
+
+    /// Taveuni lies on both sides of 180°: on the globe its photos are one
+    /// tile, and the tile stands there, not at longitude 0.
+    func testAClusterAcrossTheAntimeridianStandsOnIt() {
+        let points = [(URL(fileURLWithPath: "/fiji/east.jpg"), Coordinate(latitude: -16.80, longitude: 179.95)),
+                      (URL(fileURLWithPath: "/fiji/west.jpg"), Coordinate(latitude: -16.85, longitude: -179.95))]
+        let projection = GlobeProjection(camera: MapCamera(center: Coordinate(latitude: -17, longitude: 180), zoom: 2),
+                                         size: CGSize(width: 960, height: 600))
+        let clusters = AtlasClustering.clusters(of: points) { projection.isVisible($0) ? projection.point(for: $0) : nil }
+        XCTAssertEqual(clusters.count, 1, "side by side on the globe")
+        XCTAssertGreaterThan(abs(clusters[0].coordinate.longitude), 179.9, "in the Pacific: \(clusters[0].coordinate)")
+        XCTAssertEqual(clusters[0].coordinate.latitude, -16.825, accuracy: 0.01)
+        XCTAssertTrue(projection.isVisible(clusters[0].coordinate), "on the side shown")
+        XCTAssertFalse(clusters[0].staysTogether, "they part when zoomed in")
+    }
+
+    /// Photos taken at the very same place stay one tile at the largest
+    /// zoom: a click (and → ←) goes through them, a double click opens the
+    /// one shown, and the tile says so.
+    func testItemsAtOnePlaceTakeTurns() async throws {
+        let (w, m, _, tree) = try window()
+        let bryggen = Coordinate(latitude: 60.3975, longitude: 5.3245)
+        let same: Set<String> = ["norway-01-bryggen.jpg", "norway-02-bryggen.jpg", "norway-03-harbour.jpg"]
+        let facts = Dictionary(uniqueKeysWithValues: trip.map { ($0.name, $0) })
+        m.atlasFacts = { files in
+            var result: [URL: CaptureFacts] = [:]
+            for file in files {
+                guard let item = facts[file.url.lastPathComponent] else { continue }
+                let c = same.contains(item.name) ? bryggen : item.coordinate
+                let place = c.flatMap { GeoPoint(latitude: $0.latitude, longitude: $0.longitude) }
+                result[file.url] = CaptureFacts(
+                    time: CaptureTime(ClockReading(floating: item.date.addingTimeInterval(7200), offset: 7200), source: .file),
+                    place: place.map { CapturePlace(location: MediaLocation(point: $0), source: .file) }, track: nil)
+            }
+            return result
+        }
+        await openAndWait(m, tree.root)
+        m.viewMode = .atlas
+        await waitUntil { m.atlas.items.count == 14 && m.atlas.isComplete }
+        m.atlas.mapSize = CGSize(width: 960, height: 600)
+        m.atlas.moveByUser(to: MapCamera(center: bryggen, zoom: MapViewport.maxZoom))
+        m.atlas.clusterNow()
+        let cluster = try XCTUnwrap(m.atlas.clusters.first { $0.ids.first?.lastPathComponent == "norway-01-bryggen.jpg" })
+        XCTAssertEqual(Set(cluster.ids.map(\.lastPathComponent)), same)
+        XCTAssertTrue(cluster.staysTogether, "zooming in can't part them")
+        XCTAssertFalse(m.atlas.clusters.contains { $0.count == 1 && $0.staysTogether })
+        m.atlas.click(cluster)
+        XCTAssertEqual(m.selectedEntry?.url, cluster.ids[0])
+        m.atlas.click(cluster)
+        XCTAssertEqual(m.selectedEntry?.url, cluster.ids[1], "the next one")
+        m.atlas.click(cluster)
+        m.atlas.click(cluster)
+        XCTAssertEqual(m.selectedEntry?.url, cluster.ids[0], "round again")
+        XCTAssertTrue(w.typeKey(.right))
+        XCTAssertEqual(m.selectedEntry?.url, cluster.ids[1], "→ goes through them too")
+        XCTAssertTrue(w.typeKey(.left))
+        XCTAssertEqual(m.selectedEntry?.url, cluster.ids[0])
+        // Clusters that part when zoomed in say so as before
+        let apart = AtlasClustering.clusters(of: trip.compactMap { item in item.coordinate.map { (id: item.url, coordinate: $0) } }, zoom: 2)
+        XCTAssertFalse(apart[0].staysTogether)
+    }
+
+    /// A station in the north shown on the globe: it stands at
+    /// `TourFlight.placeShare` of the width as the globe draws it, beside the
+    /// card (the flat map's arithmetic puts it a tenth further right there).
+    func testATourStationOnTheGlobeStandsWhereTheCardLeavesRoom() throws {
+        let atlas = AtlasModel(browser: nil) { _ in [:] }
+        let size = CGSize(width: 960, height: 600)
+        atlas.mapSize = size
+        let station = TourPlanner.stations(from: [item("a.jpg", "2026-06-16 10:00:00", (70, 18)),
+                                                  item("b.jpg", "2026-06-16 11:00:00", (70.003, 18.003))])[0]
+        var wide = station
+        wide.items = [item("c.jpg", "2026-06-16 10:00:00", (61, 5)), item("d.jpg", "2026-06-16 11:00:00", (63, 31))]
+        wide.coordinate = Coordinate(latitude: 62, longitude: 18)
+        for shown in [station, wide] {
+            let camera = atlas.camera(for: shown)
+            let projection = GlobeProjection(camera: camera, size: size)
+            let p = projection.point(for: shown.coordinate)
+            XCTAssertEqual(p.x, size.width * TourFlight.placeShare, accuracy: 1.5, "zoom \(camera.zoom), flat \(projection.isFlat)")
+            XCTAssertEqual(p.y, size.height / 2, accuracy: 1.5)
+        }
+        // The wide one is on the globe, where the flat map's arithmetic misses
+        let camera = atlas.camera(for: wide)
+        XCTAssertFalse(GlobeProjection(camera: camera, size: size).isFlat)
+        let centred = MapViewport(camera: MapCamera(center: wide.coordinate, zoom: camera.zoom), size: size)
+        let flat = MapCamera(center: centred.coordinate(at: CGPoint(x: size.width * (1 - TourFlight.placeShare), y: size.height / 2)),
+                             zoom: camera.zoom)
+        let missed = GlobeProjection(camera: flat, size: size).point(for: wide.coordinate).x
+        XCTAssertGreaterThan(missed - size.width * TourFlight.placeShare, 30, "the flat map's place on the globe: \(missed)")
+    }
+
+    /// An item without any time (no capture time, no file date) comes first
+    /// in the order of time but stays out of the timeline's span.
+    func testItemsWithoutATimeStayOutOfTheTimeline() throws {
+        let undated = AtlasItem.make(url: URL(fileURLWithPath: "/trip/undated.jpg"), isVideo: false, facts: CaptureFacts(), modified: nil)
+        XCTAssertFalse(undated.isDated)
+        let atlas = AtlasModel(browser: nil) { _ in [:] }
+        atlas.load(trip + [undated])
+        XCTAssertEqual(atlas.items.first?.name, "undated.jpg")
+        let span = try XCTUnwrap(atlas.span)
+        XCTAssertEqual(span.lowerBound, time("2026-06-14 10:12:05"), "not the year 1")
+        XCTAssertEqual(AtlasTimeline.span(of: trip + [undated]), span)
+        XCTAssertEqual(AtlasTimeline.histogram(sorted: atlas.items, span: span, bins: 4), [6, 1, 4, 3], "the bars count the dated items")
+        XCTAssertTrue(atlas.isInStrip(undated.url), "in the strip while no range is chosen")
+        XCTAssertNil(AtlasTimeline.span(sorted: [undated]))
+    }
+
+    /// The day by the item's clock as a number agrees with the calendar's
+    /// day, for stated offsets and for the Mac's own zone (with its summer time).
+    func testTheDayNumberIsTheCalendarDay() {
+        var generator = Seeded(seed: 5)
+        let start = Date(timeIntervalSince1970: 1_767_000_000)
+        let items = (0..<600).map { i -> AtlasItem in
+            let date = start.addingTimeInterval(Double(generator.next() % (400 * 86_400)))
+            let offset: Int? = i % 3 == 0 ? nil : 900 * (Int(generator.next() % 105) - 48)
+            return AtlasItem(url: URL(fileURLWithPath: "/d/\(i).jpg"), isVideo: false, coordinate: nil, date: date, offset: offset, hasCaptureTime: true)
+        }
+        for (a, b) in Array(zip(items, items.dropFirst())) + Array(zip(items, items.dropFirst(7))) {
+            XCTAssertEqual(AtlasItems.dayNumber(of: a) == AtlasItems.dayNumber(of: b), AtlasItems.day(of: a) == AtlasItems.day(of: b),
+                           "\(a.date) \(a.offset ?? 0), \(b.date) \(b.offset ?? 0)")
+        }
+        // Around midnight by the item's own clock
+        let late = item("late.jpg", "2026-06-14 23:59:59", nil), early = item("early.jpg", "2026-06-15 00:00:00", nil)
+        XCTAssertEqual(AtlasItems.dayNumber(of: early) - AtlasItems.dayNumber(of: late), 1)
+    }
+
+    /// A file whose place or time changed on disk is read again: its
+    /// modification date changed, or its folder changed (a sidecar dropped
+    /// beside it), also while the Atlas wasn't shown.
+    func testAFileChangedOnDiskIsReadAgain() async throws {
+        final class Disk: @unchecked Sendable {
+            let lock = NSLock()
+            var latitude = 60.0
+            var reads = 0
+        }
+        let disk = Disk()
+        let url = URL(fileURLWithPath: "/trip/photo.jpg")
+        let atlas = AtlasModel(browser: nil) { files in
+            disk.lock.withLock {
+                disk.reads += files.count
+                return Dictionary(uniqueKeysWithValues: files.map {
+                    ($0.url, CaptureFacts(time: nil, place: CapturePlace(location: MediaLocation(point: GeoPoint(latitude: disk.latitude, longitude: 8)!),
+                                                                         source: .file), track: nil))
+                })
+            }
+        }
+        func latitude() -> Double? { atlas.items.first?.coordinate?.latitude }
+        let first = Date(timeIntervalSince1970: 1_780_000_000)
+        atlas.entriesChanged([GridEntry(url: url, kind: .image, modDate: first)], context: "trip")
+        await waitUntil { atlas.isComplete && latitude() == 60 }
+        // Geotagged in another app: a new modification date
+        disk.lock.withLock { disk.latitude = 61 }
+        atlas.entriesChanged([GridEntry(url: url, kind: .image, modDate: first.addingTimeInterval(5))], context: "trip")
+        await waitUntil { atlas.isComplete && latitude() == 61 }
+        // A sidecar beside it: the folder changed, the file didn't
+        disk.lock.withLock { disk.latitude = 62 }
+        atlas.foldersChanged([BrowserModel.canonicalPath(url.deletingLastPathComponent())])
+        await waitUntil { atlas.isComplete && latitude() == 62 }
+        // The same list again: nothing read
+        let reads = disk.lock.withLock { disk.reads }
+        atlas.entriesChanged([GridEntry(url: url, kind: .image, modDate: first.addingTimeInterval(5))], context: "trip")
+        await waitUntil { atlas.isComplete }
+        XCTAssertEqual(disk.lock.withLock { disk.reads }, reads, "unchanged: not read again")
+        // While the Atlas isn't shown: kept for when it is
+        atlas.pause()
+        disk.lock.withLock { disk.latitude = 63 }
+        atlas.foldersChanged(nil)
+        XCTAssertEqual(disk.lock.withLock { disk.reads }, reads, "nothing read while not shown")
+        atlas.entriesChanged([GridEntry(url: url, kind: .image, modDate: first.addingTimeInterval(5))], context: "trip")
+        await waitUntil { atlas.isComplete && latitude() == 63 }
+    }
+
+    /// The window closed during the tour: the tour ends there, without
+    /// taking another window out of full screen, and nothing goes on ticking.
+    func testClosingTheWindowEndsTheTourWithoutLeavingFullScreen() async throws {
+        let (w, m, _, tree) = try window()
+        var fullScreen: [Bool] = []
+        m.setFullScreen = { on in fullScreen.append(on); return true }
+        await openAndWait(m, tree.root)
+        m.viewMode = .atlas
+        await waitUntil { m.atlas.items.count == 14 && m.atlas.isComplete }
+        m.atlas.mapSize = CGSize(width: 960, height: 600)
+        XCTAssertTrue(w.typeKey(.char("t")))
+        XCTAssertTrue(m.touring)
+        XCTAssertEqual(fullScreen, [true])
+        w.windowClosed()
+        XCTAssertFalse(m.touring, "the tour ended with its window")
+        try await Task.sleep(for: .seconds(2.5))
+        XCTAssertFalse(m.touring)
+        XCTAssertEqual(fullScreen, [true], "no window taken out of full screen")
+        XCTAssertNil(m.atlas.progress)
+    }
 }
