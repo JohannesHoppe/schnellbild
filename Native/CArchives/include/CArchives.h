@@ -29,6 +29,7 @@ typedef struct {
     int split_before;         // continues from the previous volume
     int split_after;          // continues in the next volume
     int redirect_type;        // 0, or UnRAR's FSREDIR_*: 1-3 links and junctions, 4 hard link, 5 file copy
+    int password_checked;     // encrypted RAR5 with a password check value: a wrong password fails before any data
     wchar_t redirect[4096];   // for a hard link or file copy: the entry whose data it has
 } SBRarEntry;
 
@@ -78,6 +79,7 @@ struct archive_entry;
 #define SB_ARCHIVE_FAILED (-25)
 #define SB_ARCHIVE_FATAL (-30)
 #define SB_AE_IFDIR 0040000
+#define SB_AE_IFLNK 0120000
 #define SB_AE_IFMT 0170000
 
 struct archive *sb_archive_read_new(void);
@@ -93,6 +95,7 @@ int sb_archive_read_free(struct archive *);
 const char *sb_archive_error_string(struct archive *);
 const char *sb_archive_entry_pathname_utf8(struct archive_entry *);
 const char *sb_archive_entry_pathname(struct archive_entry *);
+const char *sb_archive_entry_hardlink(struct archive_entry *);
 int64_t sb_archive_entry_size(struct archive_entry *);
 int sb_archive_entry_size_is_set(struct archive_entry *);
 mode_t sb_archive_entry_filetype(struct archive_entry *);
