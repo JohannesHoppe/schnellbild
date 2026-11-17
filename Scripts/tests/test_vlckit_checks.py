@@ -109,6 +109,16 @@ class Members(unittest.TestCase):
 """
         self.assertEqual(contrib.archive_members(nm), [("crc.o", ["_av_crc"]), ("crc.o", ["_ff_crc32_aarch64"])])
 
+    def test_archive_members_as_xcodes_nm_writes_them(self):
+        nm = """
+adler32.c.o:
+0000000000000330 T _adler32
+
+crc.o:
+0000000000000000 T _av_crc
+"""
+        self.assertEqual(contrib.archive_members(nm), [("adler32.c.o", ["_adler32"]), ("crc.o", ["_av_crc"])])
+
     def test_the_names_an_object_can_come_from(self):
         self.assertEqual(contrib.member_stems("packet-830.o")[0], "packet-830")
         self.assertIn("packet-830", contrib.member_stems("libzvbi_la-packet-830.o"))
@@ -177,6 +187,10 @@ class Contrib(unittest.TestCase):
         self.assertEqual(problems, [])
         self.assertIn("libavutil.a(crc.o) ffmpeg/libavutil/crc.c", report)
         self.assertIn("libfreetype.a(src_base_ftinit.c.o) freetype2/src/base/ftinit.c", report)
+
+    def test_no_object_found_at_all_fails(self):
+        problems, _, _ = self.run_check({"_something_else"})
+        self.assertEqual(problems, ["no object of any library found in the binary: the symbols weren't read"])
 
     def test_zvbi_and_an_unknown_library_fail(self):
         problems, _, _ = self.run_check({"_vbi_decode_vps_pdc", "_new_function"}, names=("libzvbi.a", "libnew.a"))

@@ -139,14 +139,15 @@ def states_gpl(head):
 
 
 def archive_members(nm_output):
-    """nm's output for a static library ("…lib.a(member.o):" then
-    "<address> <type> <name>" lines) as [(member, [defined external names])],
-    in the archive's order: two members of the same name stay apart."""
+    """nm's output for a static library (a line per member, "member.o:" as
+    Xcode's nm writes it or "…lib.a(member.o):", then "<address> <type>
+    <name>" lines) as [(member, [defined external names])], in the
+    archive's order: two members of the same name stay apart."""
     members = []
     for line in nm_output.splitlines():
-        header = re.match(r"^.*\(([^()]+)\):$", line)
+        header = re.match(r"^(?:.*\(([^()]+)\)|(\S[^()]*?)):$", line)
         if header:
-            members.append((header.group(1), []))
+            members.append((header.group(1) or os.path.basename(header.group(2)), []))
             continue
         parts = line.split()
         if members and len(parts) == 3 and parts[1] not in "UuIi" and parts[1].isupper():
@@ -171,16 +172,43 @@ def member_stems(member):
     return list(dict.fromkeys(s for s in stems if s))
 
 
+# Folders of a package's source that hold no part of its library: its
+# tests, examples, tools and documentation (a source there of the same name
+# as one of the library's is not the library's)
+NOT_LIBRARY = {"test", "tests", "testing", "checkasm", "example", "examples", "doc", "docs", "tools", "fftools",
+               "utils", "contrib", "bin", "programs", "demo", "demos", "fuzz", "fuzzing", "benchmark", "benchmarks"}
+
+
+def trailing_match(a, b):
+    """How many folder names the two paths share at their end."""
+    count = 0
+    for x, y in zip(reversed(a), reversed(b)):
+        if x != y:
+            break
+        count += 1
+    return count
+
+
 class SourceIndex:
-    """The source files of one package's unpacked folder, by name without
-    suffix."""
+    """The source files of one package's unpacked folder by name without
+    suffix, and its object files by name (the build leaves them there: in
+    the source folders, or in a build folder that repeats their paths)."""
 
     def __init__(self, folder):
+        self.folder = folder
         self.by_stem = collections.defaultdict(list)
+        self.objects = collections.defaultdict(list)
         for root, dirs, files in os.walk(folder):
+            parts = os.path.relpath(root, folder).split(os.sep)
+            # CMake puts a folder's objects into CMakeFiles/<target>.dir there
+            if "CMakeFiles" in parts:
+                at = parts.index("CMakeFiles")
+                parts = parts[:at] + [p for p in parts[at + 2:]]
             for name in files:
                 if name.endswith(SOURCE_SUFFIXES):
                     self.by_stem[os.path.splitext(name)[0]].append(os.path.join(root, name))
+                elif name.endswith(".o"):
+                    self.objects[name].append(parts)
         self.texts = {}
 
     def text(self, path):
@@ -191,15 +219,32 @@ class SourceIndex:
 
     def sources(self, member, symbols):
         """The source files the object `member`, defining `symbols`, was
-        compiled from: those of its name that name one of its symbols, else
-        all of its name."""
+        compiled from, among those of its name: the ones whose folders an
+        object file of that name repeats furthest (libavcodec/ac3dsp.c for
+        …/libavcodec/ac3dsp.o, not tests/checkasm/ac3dsp.c), then those
+        outside tests and tools (NOT_LIBRARY), then those that name one of
+        its symbols."""
+        names = [s[1:] if s.startswith("_") else s for s in symbols][:50]
+        objects = self.objects.get(member, [])
         for stem in member_stems(member):
             candidates = self.by_stem.get(stem)
             if not candidates:
                 continue
-            names = [s[1:] if s.startswith("_") else s for s in symbols]
-            naming = [c for c in candidates if any(n in self.text(c) for n in names[:50])]
-            return naming or candidates
+            flattened = member[:-2] if member.endswith(".o") else member
+
+            def score(path):
+                relative = os.path.relpath(path, self.folder)
+                parts = os.path.dirname(relative).split(os.sep)
+                depth = max((trailing_match(parts, o) for o in objects), default=0)
+                # Meson names an object by its source's path, "/" as "_"
+                if relative.replace(os.sep, "_") == flattened:
+                    depth = max(depth, len(parts) + 1)
+                library = not any(p.lower() in NOT_LIBRARY or p.lower().startswith("test") for p in parts)
+                naming = any(n in self.text(path) for n in names)
+                return (depth, library, naming)
+            scores = {c: score(c) for c in candidates}
+            best = max(scores.values())
+            return [c for c in candidates if scores[c] == best]
         return []
 
 
@@ -243,6 +288,7 @@ def check(vlc, binary_symbols, libraries, build, nm_archive=None):
     problems, report = [], []
     packages = collections.defaultdict(list)
     indexes = {}
+    total = 0
     for library in sorted(libraries):
         name = os.path.basename(library)
         if name in FORBIDDEN:
@@ -273,6 +319,11 @@ def check(vlc, binary_symbols, libraries, build, nm_archive=None):
                     problems.append(f"{name}({member}): linked, its source {package}/{relative} states the GPL")
                 report.append(f"{name}({member}) {package}/{relative}")
         report.append(f"{name}: {linked} objects linked")
+        total += linked
+    # A binary that holds none of the libraries' objects, or a symbol table
+    # not read right, would pass every library unchecked
+    if packages and total == 0:
+        problems.append("no object of any library found in the binary: the symbols weren't read")
     return problems, packages, report
 
 
