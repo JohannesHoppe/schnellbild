@@ -78,7 +78,14 @@ final class BuildScriptsTests: XCTestCase {
             }
             for trap in traps {
                 checked += 1
-                XCTAssertTrue(trap.contains("[ -n \"${finished:-}\" ]"), "\(name): \(trap)")
+                // `trap cleanup EXIT`: the guard is in that function's body
+                var handler = trap
+                let words = trap.trimmingCharacters(in: .whitespaces).split(separator: " ")
+                if words.count == 3, let start = source.range(of: "\n\(words[1])() {\n"),
+                   let end = source.range(of: "\n}\n", range: start.upperBound..<source.endIndex) {
+                    handler = String(source[start.upperBound..<end.lowerBound])
+                }
+                XCTAssertTrue(handler.contains("[ -n \"${finished:-}\" ]"), "\(name): \(trap)")
                 XCTAssertTrue(source.contains("\nfinished=1\n"), "\(name) never sets finished=1 at its end")
             }
         }
