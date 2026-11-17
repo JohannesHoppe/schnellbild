@@ -204,13 +204,16 @@ fragment float4 globeFragment(MeshOut in [[stage_in]], constant Uniforms &u [[bu
             float city = lights.sample(baseSampler, float2(fract(ux), ly), gradient2d(float2(gx.x, dfdx(ly)), float2(gy.x, dfdy(ly)))).r;
             night += city * float3(1.0, 0.78, 0.48);
         }
-        // The sea glints where it mirrors the Sun towards the camera
-        if (h < 0 || u.relief.w == 0) {
+        // The sea glints where it mirrors the Sun towards the camera; the
+        // heightmap's cells are 14 km, so the water fades out over the last
+        // tens of metres above the sea floor instead of ending at a cell's edge
+        float water = u.relief.w > 0 ? 1 - smoothstep(-0.04, 0.005, h) : 0;
+        if (water > 0) {
             float3 p = v;
             float3 toEye = normalize(mix(u.orthoToward.xyz, u.camPos.xyz - p, u.camPos.w));
             float3 mirrored = reflect(-L, v);
             float glint = pow(saturate(dot(mirrored, toEye)), 90.0) * 0.9 + pow(saturate(dot(mirrored, toEye)), 12.0) * 0.12;
-            lit += float3(1.0, 0.9, 0.75) * glint * day * (h < 0 ? 1.0 : 0.0);
+            lit += float3(1.0, 0.9, 0.75) * glint * day * water;
         }
         // A warm band along the terminator
         float dusk = exp(-geo * geo * 600) * 0.10;
@@ -253,8 +256,11 @@ fragment float4 cloudFragment(CloudOut in [[stage_in]], constant Uniforms &u [[b
     float c = clouds.sample(wrap, float2(fract(ux), vy), gradient2d(dfdx(uv), dfdy(uv))).r;
     // The picture's faint ground and haze left out: only real clouds
     float a = smoothstep(0.22, 0.85, c) * u.sky.z * (1 - u.viewport.w);
-    if (a <= 0.001) discard_fragment();
     float3 v = normalize(in.normal);
+    // Seen edge-on at the limb the cloud shell would stand out as a thin line above the ground
+    float3 toEye = normalize(mix(u.orthoToward.xyz, u.camPos.xyz - v * 1.006, u.camPos.w));
+    a *= smoothstep(0.02, 0.12, dot(v, toEye));
+    if (a <= 0.001) discard_fragment();
     float light = 0.92;
     if (u.sun.w > 0.5) {
         float geo = dot(v, u.sun.xyz);
@@ -286,7 +292,9 @@ vertex ScreenOut screenVertex(uint vid [[vertex_id]], constant Uniforms &u [[buf
 fragment float4 atmosphereFragment(ScreenOut in [[stage_in]], constant Uniforms &u [[buffer(1)]]) {
     float3 o, d;
     viewRay(in.local, u, o, d);
-    float b = dot(o, d), c = dot(o, o) - 1;
+    // The ground's haze over a sphere a little below sea level: the sea is drawn lowered by its depth
+    // (`relief.y`), and rays between it and the sea level would show haze with nothing behind it
+    float b = dot(o, d), c = dot(o, o) - 0.997 * 0.997;
     float disc = b * b - c;
     bool hit = disc > 0 && -b - sqrt(max(disc, 0.0)) > 0;
     bool lit = u.sun.w > 0.5;
@@ -299,7 +307,7 @@ fragment float4 atmosphereFragment(ScreenOut in [[stage_in]], constant Uniforms 
         float tc = max(-b, 0.0);
         float3 closest = o + tc * d;
         float altitude = length(closest) - 1;
-        float rim = exp(-max(altitude, 0.0) / 0.028) * smoothstep(0.35, 0.0, altitude);
+        float rim = exp(-max(altitude, 0.0) / 0.028) * (1 - smoothstep(0.0, 0.35, altitude));   // smoothstep needs edge0 < edge1 in Metal
         float3 at = normalize(closest);
         if (lit) {
             float sunDot = dot(at, L);
