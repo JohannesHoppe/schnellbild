@@ -286,7 +286,6 @@
 "“%@”: %@" = "«%@»: %@";
 "“%@” is no longer the item Schnellbild put there, so it stays as it is." = "«%@» уже не той об’єкт, який туди поклав Schnellbild, тому він залишається як є.";
 "“%@” has changed since it was copied, so it isn't moved to the Trash." = "«%@» змінився після копіювання, тому його не переміщено в Смітник.";
-"Schnellbild may not take “%@” out of the Trash. Use “Put Back” in the Finder's Trash." = "Schnellbild не може вийняти «%@» зі Смітника. Скористайтеся командою «Повернути» у Смітнику Finder.";
 "Keep: try it again later, before the earlier actions. Forget: go on with the earlier actions." = "Залишити: спробувати пізніше, перед попередніми діями. Забути: перейти до попередніх дій.";
 "Keep" = "Залишити";
 "Forget" = "Забути";
@@ -655,3 +654,11 @@
 "Hide the clouds" = "Сховати хмари";
 "the colours of the ground on the globe" = "кольори земної поверхні на глобусі";
 "the clouds on the globe" = "хмари на глобусі";
+"Undo" = "Скасувати";
+"Redo" = "Повторити";
+"Undo New Folder" = "Скасувати створення папки";
+"Redo New Folder" = "Повторити створення папки";
+"“%@” isn't empty any more, so it isn't moved to the Trash." = "«%@» вже не порожня, тому вона не переміщується в Смітник.";
+"“%@” is no longer in the Trash." = "«%@» більше немає в Смітнику.";
+"“%@” couldn't be taken out of the Trash and is still there. %@" = "Не вдалося вийняти «%@» зі Смітника, об’єкт залишається там. %@";
+"Undo / redo renaming, trashing, moving, copying, a new folder" = "Скасувати / повторити: перейменування, переміщення в Смітник, переміщення, копіювання, нову папку";

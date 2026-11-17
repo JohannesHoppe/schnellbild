@@ -286,7 +286,6 @@
 "“%@”: %@" = "“%@”：%@";
 "“%@” is no longer the item Schnellbild put there, so it stays as it is." = "“%@”已不是 Schnellbild 放在那里的项目，因此保持不变。";
 "“%@” has changed since it was copied, so it isn't moved to the Trash." = "“%@”在拷贝后已更改，因此不会移到废纸篓。";
-"Schnellbild may not take “%@” out of the Trash. Use “Put Back” in the Finder's Trash." = "Schnellbild 不能将“%@”从废纸篓中取出。请在访达的废纸篓中使用“放回原处”。";
 "Keep: try it again later, before the earlier actions. Forget: go on with the earlier actions." = "保留：稍后再试，先于更早的操作。忘记：继续处理更早的操作。";
 "Keep" = "保留";
 "Forget" = "忘记";
@@ -655,3 +654,11 @@
 "Hide the clouds" = "隐藏云层";
 "the colours of the ground on the globe" = "地球仪上的地表颜色";
 "the clouds on the globe" = "地球仪上的云层";
+"Undo" = "撤销";
+"Redo" = "重做";
+"Undo New Folder" = "撤销新建文件夹";
+"Redo New Folder" = "重做新建文件夹";
+"“%@” isn't empty any more, so it isn't moved to the Trash." = "“%@”已不再为空，因此不会移到废纸篓。";
+"“%@” is no longer in the Trash." = "“%@”已不在废纸篓中。";
+"“%@” couldn't be taken out of the Trash and is still there. %@" = "无法将“%@”从废纸篓中取出，它仍在废纸篓中。%@";
+"Undo / redo renaming, trashing, moving, copying, a new folder" = "撤销 / 重做：重新命名、移到废纸篓、移动、拷贝、新建文件夹";

@@ -1,9 +1,9 @@
 import SwiftUI
 
 /// One action on disk the app did, as it can be undone and redone: a
-/// rename, a move to the Trash, a move or copy into a folder.
+/// rename, a move to the Trash, a move or copy into a folder, a new folder.
 struct UndoStep {
-    enum Kind { case rename, trash, move, copy }
+    enum Kind { case rename, trash, move, copy, newFolder }
     /// Each part carries the identity of the item where it lies now (after
     /// the action for Undo, before it for Redo): Undo and Redo act only on
     /// that very item, never on another one that took its name.
@@ -13,6 +13,8 @@ struct UndoStep {
         case copied(URL, to: URL, identity: ItemIdentity?)
         /// Where it lay, and where it lies in the Trash.
         case trashed(URL, inTrash: URL, identity: ItemIdentity?)
+        /// A folder the app made (its identity with its contents: empty).
+        case created(URL, identity: ItemIdentity?)
     }
     let kind: Kind
     var parts: [Part]
@@ -44,6 +46,8 @@ struct ItemIdentity: Sendable, Equatable {
         let base = folder.standardizedFileURL.path.count + 1
         if let walk = FileManager.default.enumerator(at: folder, includingPropertiesForKeys: nil) {
             while let item = walk.nextObject() as? URL {
+                // The Finder's view settings, written when it shows the folder
+                if item.lastPathComponent == ".DS_Store" { continue }
                 paths.append(String(item.standardizedFileURL.path.dropFirst(base)))
             }
         }
@@ -66,8 +70,13 @@ enum UndoError: LocalizedError {
     case notTheSame(String)
     /// A copied folder holds other things now.
     case changed(String)
-    /// The App Sandbox lets the app put items into the Trash, not take them out.
-    case outOfTrashDenied(String)
+    /// A folder the app made isn't empty any more.
+    case filled(String)
+    /// Nothing lies where the item went in the Trash (emptied, put back).
+    case goneFromTrash(String)
+    /// An item couldn't be taken out of the Trash (the name taken, no
+    /// permission, the volume gone): it is still in the Trash.
+    case stillInTrash(String, reason: String)
 
     var errorDescription: String? {
         switch self {
@@ -75,15 +84,18 @@ enum UndoError: LocalizedError {
             return String(localized: "“\(name)” is no longer the item Schnellbild put there, so it stays as it is.")
         case .changed(let name):
             return String(localized: "“\(name)” has changed since it was copied, so it isn't moved to the Trash.")
-        case .outOfTrashDenied(let name):
-            return String(localized: "Schnellbild may not take “\(name)” out of the Trash. Use “Put Back” in the Finder's Trash.")
+        case .filled(let name):
+            return String(localized: "“\(name)” isn't empty any more, so it isn't moved to the Trash.")
+        case .goneFromTrash(let name):
+            return String(localized: "“\(name)” is no longer in the Trash.")
+        case .stillInTrash(let name, let reason):
+            return String(localized: "“\(name)” couldn't be taken out of the Trash and is still there. \(reason)")
         }
     }
 }
 
-/// The window's undo and redo, as often as wanted. Only in the context
-/// menus (no keys): an undo moves files again, which shouldn't happen by
-/// a stray ⌘Z.
+/// The window's undo and redo, as often as wanted: Edit → Undo / Redo
+/// (⌘Z, ⇧⌘Z) and the top of the context menus.
 @MainActor
 final class FileHistory: ObservableObject {
     @Published private(set) var undoSteps: [UndoStep] = []
@@ -167,14 +179,30 @@ extension BrowserModel {
                         if let spy { try MainActor.assumeIsolated { try spy.copy(source, copy) } } else { try LiveFiles.copy(source, copy) }
                         folders.append(copy.deletingLastPathComponent())
                         done.append(.copied(source, to: copy, identity: ItemIdentity.of(copy, withContents: true)))
+                    case (.created(let folder, let identity), true):
+                        do { try check(folder, identity) } catch UndoError.changed { throw UndoError.filled(folder.lastPathComponent) }
+                        _ = try trash(folder)
+                        changes.append(.removed(folder)); done.append(.created(folder, identity: nil))
+                    case (.created(let folder, _), false):
+                        if let spy {
+                            try MainActor.assumeIsolated {
+                                if spy.conflicts(folder, folder.deletingLastPathComponent()) { throw RenameError.alreadyExists(folder.lastPathComponent) }
+                                try spy.createFolder(folder)
+                            }
+                        } else {
+                            if LiveFiles.conflicts(folder, folder.deletingLastPathComponent()) { throw RenameError.alreadyExists(folder.lastPathComponent) }
+                            try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: false)
+                        }
+                        folders.append(folder.deletingLastPathComponent())
+                        done.append(.created(folder, identity: ItemIdentity.of(folder, withContents: true)))
                     case (.trashed(let original, let inTrash, let identity), true):
+                        var info = stat()
+                        guard lstat(inTrash.path, &info) == 0 else { throw UndoError.goneFromTrash(original.lastPathComponent) }
                         try check(inTrash, identity)
                         do {
                             try move(inTrash, original)
-                        } catch let error as RenameError {
-                            throw error
-                        } catch where Self.isPermissionDenied(error) {
-                            throw UndoError.outOfTrashDenied(original.lastPathComponent)
+                        } catch {
+                            throw UndoError.stillInTrash(original.lastPathComponent, reason: error.localizedDescription)
                         }
                         folders.append(original.deletingLastPathComponent())
                         done.append(.trashed(original, inTrash: inTrash, identity: ItemIdentity.of(original)))
@@ -225,25 +253,33 @@ extension BrowserModel {
             }
         }
     }
-
-    /// A move refused for want of permission (the sandbox, the Trash's rights).
-    nonisolated private static func isPermissionDenied(_ error: Error) -> Bool {
-        var current: NSError? = error as NSError
-        while let error = current {
-            if error.domain == NSCocoaErrorDomain, [CocoaError.fileReadNoPermission.rawValue, CocoaError.fileWriteNoPermission.rawValue].contains(error.code) { return true }
-            if error.domain == NSPOSIXErrorDomain, [Int(EPERM), Int(EACCES)].contains(error.code) { return true }
-            current = error.userInfo[NSUnderlyingErrorKey] as? NSError
-        }
-        return false
-    }
 }
 
 extension UndoStep.Part {
     /// The item's place before the action (to tell parts apart).
     var source: String {
         switch self {
-        case .moved(let a, _, _), .copied(let a, _, _), .trashed(let a, _, _): return BrowserModel.canonicalPath(a)
+        case .moved(let a, _, _), .copied(let a, _, _), .trashed(let a, _, _), .created(let a, _): return BrowserModel.canonicalPath(a)
         }
+    }
+}
+
+/// Edit → Undo … / Redo … with ⌘Z and ⇧⌘Z, for the window's file actions.
+/// While text is typed, ⌘Z and ⇧⌘Z are the text field's (the key monitor
+/// hands them to it before the menu sees them).
+struct UndoCommands: View {
+    @ObservedObject var history: FileHistory
+    @ObservedObject var window: WindowModel
+    let model: BrowserModel
+
+    var body: some View {
+        let blocked = history.running || window.anySheetOpen
+        Button(history.undoSteps.last.map { UndoMenuItems.undoTitle($0.kind) } ?? "Undo") { model.undo() }
+            .keyboardShortcut("z", modifiers: .command)
+            .disabled(history.undoSteps.isEmpty || blocked)
+        Button(history.redoSteps.last.map { UndoMenuItems.redoTitle($0.kind) } ?? "Redo") { model.redo() }
+            .keyboardShortcut("z", modifiers: [.command, .shift])
+            .disabled(history.redoSteps.isEmpty || blocked)
     }
 }
 
@@ -268,6 +304,7 @@ struct UndoMenuItems: View {
         case .trash: return "Undo Move to Trash"
         case .move: return "Undo Move"
         case .copy: return "Undo Copy"
+        case .newFolder: return "Undo New Folder"
         }
     }
 
@@ -277,6 +314,7 @@ struct UndoMenuItems: View {
         case .trash: return "Redo Move to Trash"
         case .move: return "Redo Move"
         case .copy: return "Redo Copy"
+        case .newFolder: return "Redo New Folder"
         }
     }
 }

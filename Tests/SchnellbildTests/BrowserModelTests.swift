@@ -1,5 +1,6 @@
 import XCTest
 import Combine
+import AppKit
 import ImageIO
 import CoreImage
 @testable import Schnellbild
@@ -57,6 +58,8 @@ final class FileActionsSpy {
     /// Moves, transfers and copies of files with these names fail.
     var failOn: Set<String> = []
     var trashError: Error?
+    /// Runs while an item is being trashed (a second ⌘⌫ meanwhile).
+    var duringTrash: (() -> Void)?
     var reported: [Error] = []
     /// Forces the "target exists" answer, e.g. to act as a case-sensitive volume.
     var conflictOverride: Bool?
@@ -72,6 +75,7 @@ final class FileActionsSpy {
             },
             trash: { url in
                 if let error = self.trashError { throw error }
+                if let during = self.duringTrash { self.duringTrash = nil; during() }
                 self.trashed.append(url)
                 // A trash of its own, so Undo can bring it back
                 let bin = FileManager.default.temporaryDirectory.appendingPathComponent("spy-trash-\(UUID().uuidString)")
@@ -3432,6 +3436,117 @@ final class UndoTests: XCTestCase {
         await waitUntil { !spy.reported.isEmpty }
         XCTAssertTrue(spy.trashed.isEmpty, "the folder holds something it didn't when copied")
         XCTAssertTrue(FileManager.default.fileExists(atPath: sorted.appendingPathComponent("trip/added later.jpg").path))
+    }
+
+    /// New Folder: Undo moves the folder made to the Trash, Redo makes it
+    /// again; a folder something was put into since stays.
+    func testNewFolderIsUndoneAndRedoneOnlyWhileEmpty() async throws {
+        let tree = try TempTree(self)
+        try tree.file("a.jpg")
+        let spy = FileActionsSpy()
+        let m = makeModel(spy)
+        await openAndWait(m, tree.root)
+        XCTAssertTrue(m.beginNewFolder())
+        let made = try await m.createFolder(named: "Sorted")
+        XCTAssertEqual(m.undoHistory.undoSteps.map(\.kind), [.newFolder])
+        try Data().write(to: made.appendingPathComponent(".DS_Store"))   // the Finder looked at it
+        m.undo()
+        await waitUntil { !FileManager.default.fileExists(atPath: made.path) && !m.names.contains("Sorted") }
+        XCTAssertEqual(spy.trashed.map(\.lastPathComponent), ["Sorted"])
+        XCTAssertEqual(m.undoHistory.redoSteps.map(\.kind), [.newFolder])
+        m.redo()
+        await waitUntil { FileManager.default.fileExists(atPath: made.path) && m.names.contains("Sorted") }
+
+        try tree.file("Sorted/b.jpg")
+        spy.keepFailedUndo = false
+        m.undo()
+        await waitUntil { !spy.reported.isEmpty }
+        XCTAssertEqual((spy.reported.first as? UndoError)?.errorDescription,
+                       UndoError.filled("Sorted").errorDescription)
+        XCTAssertTrue(FileManager.default.fileExists(atPath: tree.root.appendingPathComponent("Sorted/b.jpg").path))
+        XCTAssertEqual(spy.trashed.count, 1, "not trashed a second time")
+    }
+
+    /// Undo Move to Trash that can't be carried out leaves the item in the
+    /// Trash and says so: the name taken meanwhile, the Trash emptied.
+    func testAFailedUndoOfTheTrashLeavesTheItemInTheTrash() async throws {
+        let tree = try TempTree(self)
+        try tree.file("a.jpg")
+        try tree.file("b.jpg")
+        let spy = FileActionsSpy()
+        let m = makeModel(spy)
+        await openAndWait(m, tree.root)
+        func inTrash() throws -> URL {
+            guard case .trashed(_, let url, _)? = m.undoHistory.undoSteps.last?.parts.first else { throw CocoaError(.fileNoSuchFile) }
+            return url
+        }
+        m.selectEntry(named: "a.jpg")
+        m.moveSelectionToTrash()
+        let aInTrash = try inTrash()
+        try tree.file("a.jpg", bytes: 7)   // another file under its name
+        m.undo()
+        await waitUntil { !spy.reported.isEmpty }
+        guard case .stillInTrash(let name, _)? = spy.reported.first as? UndoError else { return XCTFail("\(spy.reported)") }
+        XCTAssertEqual(name, "a.jpg")
+        XCTAssertTrue(FileManager.default.fileExists(atPath: aInTrash.path), "still in the Trash")
+        XCTAssertEqual(try FileManager.default.attributesOfItem(atPath: tree.root.appendingPathComponent("a.jpg").path)[.size] as? Int, 7,
+                       "the other file is untouched")
+        XCTAssertEqual(m.undoHistory.undoSteps.count, 1, "kept to try again")
+
+        spy.reported = []
+        spy.keepFailedUndo = false
+        m.undo()   // forgotten
+        await waitUntil { !spy.reported.isEmpty }
+        m.selectEntry(named: "b.jpg")
+        m.moveSelectionToTrash()
+        try FileManager.default.removeItem(at: try inTrash())   // the Trash emptied
+        spy.reported = []
+        m.undo()
+        await waitUntil { !spy.reported.isEmpty }
+        guard case .goneFromTrash(let gone)? = spy.reported.first as? UndoError else { return XCTFail("\(spy.reported)") }
+        XCTAssertEqual(gone, "b.jpg")
+        XCTAssertFalse(m.undoHistory.running)
+    }
+
+    /// A second ⌘⌫ while a trash is still under way (a slow share) asks
+    /// nothing and trashes nothing again; one Undo step for the items.
+    func testASecondTrashWhileOneRunsLeavesTheItemsAlone() async throws {
+        let tree = try TempTree(self)
+        try tree.file("a.jpg")
+        try tree.file("b.jpg")
+        let spy = FileActionsSpy()
+        let m = makeModel(spy)
+        await openAndWait(m, tree.root)
+        m.selectEntry(named: "a.jpg")
+        var canTrashMeanwhile: Bool?
+        spy.duringTrash = {
+            canTrashMeanwhile = m.canTrash
+            m.moveSelectionToTrash()
+        }
+        m.moveSelectionToTrash()
+        await waitUntil { !m.names.contains("a.jpg") }
+        XCTAssertEqual(canTrashMeanwhile, false, "the menu item is off while it goes")
+        XCTAssertEqual(spy.confirmNames, [["a.jpg"]], "asked once")
+        XCTAssertEqual(spy.trashed.map(\.lastPathComponent), ["a.jpg"])
+        XCTAssertTrue(spy.reported.isEmpty)
+        XCTAssertEqual(m.undoHistory.undoSteps.count, 1)
+        m.selectEntry(named: "b.jpg")
+        XCTAssertTrue(m.canTrash, "free again once done")
+    }
+
+    /// ⌘Z and ⇧⌘Z are told apart from other keys (⌥, ⌃, other letters).
+    func testTheUndoKeys() throws {
+        func key(_ characters: String, _ flags: NSEvent.ModifierFlags, code: UInt16 = 6) throws -> NSEvent {
+            try XCTUnwrap(NSEvent.keyEvent(with: .keyDown, location: .zero, modifierFlags: flags, timestamp: 0, windowNumber: 0,
+                                           context: nil, characters: characters, charactersIgnoringModifiers: characters,
+                                           isARepeat: false, keyCode: code))
+        }
+        XCTAssertTrue(ContentView.isUndoKey(try key("z", .command)))
+        XCTAssertTrue(ContentView.isUndoKey(try key("Z", [.command, .shift])))
+        XCTAssertFalse(ContentView.isUndoKey(try key("z", [])))
+        XCTAssertFalse(ContentView.isUndoKey(try key("z", [.command, .option])))
+        XCTAssertFalse(ContentView.isUndoKey(try key("z", [.command, .control])))
+        XCTAssertFalse(ContentView.isUndoKey(try key("y", .command, code: 16)))
     }
 
     /// The folder shown renamed from the title bar: undone like any rename;

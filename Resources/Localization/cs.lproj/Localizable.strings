@@ -286,7 +286,6 @@
 "“%@”: %@" = "„%@“: %@";
 "“%@” is no longer the item Schnellbild put there, so it stays as it is." = "„%@“ už není položka, kterou tam Schnellbild umístil, a proto zůstane, jak je.";
 "“%@” has changed since it was copied, so it isn't moved to the Trash." = "„%@“ se od zkopírování změnil(a), a proto se nepřesune do koše.";
-"Schnellbild may not take “%@” out of the Trash. Use “Put Back” in the Finder's Trash." = "Schnellbild nesmí vyjmout „%@“ z koše. Použijte „Vrátit zpět“ v koši Finderu.";
 "Keep: try it again later, before the earlier actions. Forget: go on with the earlier actions." = "Ponechat: zkusit znovu později, před dřívějšími akcemi. Zapomenout: pokračovat dřívějšími akcemi.";
 "Keep" = "Ponechat";
 "Forget" = "Zapomenout";
@@ -655,3 +654,11 @@
 "Hide the clouds" = "Skrýt mraky";
 "the colours of the ground on the globe" = "barvy země na glóbu";
 "the clouds on the globe" = "mraky na glóbu";
+"Undo" = "Odvolat";
+"Redo" = "Znovu";
+"Undo New Folder" = "Odvolat novou složku";
+"Redo New Folder" = "Znovu vytvořit novou složku";
+"“%@” isn't empty any more, so it isn't moved to the Trash." = "„%@“ už není prázdná, a proto se nepřesune do koše.";
+"“%@” is no longer in the Trash." = "„%@“ už v koši není.";
+"“%@” couldn't be taken out of the Trash and is still there. %@" = "„%@“ se nepodařilo vyjmout z koše a zůstává v něm. %@";
+"Undo / redo renaming, trashing, moving, copying, a new folder" = "Odvolat / znovu: přejmenování, přesun do koše, přesun, kopírování, novou složku";
