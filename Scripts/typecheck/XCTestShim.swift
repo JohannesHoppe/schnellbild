@@ -40,7 +40,11 @@ public struct XCUIKeyboardKey: RawRepresentable, ExpressibleByStringLiteral {
                       end: Self = "E", home: Self = "H", leftArrow: Self = "l", rightArrow: Self = "R",
                       upArrow: Self = "u", downArrow: Self = "D", F1: Self = "1", F2: Self = "2", F5: Self = "5", F6: Self = "6", tab: Self = "t"
 }
-public struct XCUIElementType { public static let any = XCUIElementType(); public static let menuItem = XCUIElementType() }
+public struct XCUIElementType: Equatable {
+    public var rawValue: UInt = 0
+    public static let any = XCUIElementType(), menuItem = XCUIElementType(), textField = XCUIElementType(), dialog = XCUIElementType(),
+                      sheet = XCUIElementType(), window = XCUIElementType(), button = XCUIElementType(), staticText = XCUIElementType()
+}
 public final class XCUIElementQuery {
     public subscript(_ id: String) -> XCUIElement { XCUIElement() }
     public var firstMatch: XCUIElement { XCUIElement() }
@@ -52,6 +56,8 @@ public final class XCUIElementQuery {
     public var menuBarItems: XCUIElementQuery { self }
     public var menuItems: XCUIElementQuery { self }
     public var buttons: XCUIElementQuery { self }
+    public var textFields: XCUIElementQuery { self }
+    public func descendants(matching type: XCUIElementType) -> XCUIElementQuery { self }
 }
 public struct XCUIGestureVelocity {
     public init(_ value: CGFloat) {}
@@ -70,6 +76,8 @@ public final class XCUICoordinate {
 }
 public final class XCUIScreenshot { public var image: NSImage { NSImage() } }
 public class XCUIElement {
+    public typealias ElementType = XCUIElementType
+    public var elementType: XCUIElementType { .any }
     public static func perform(withKeyModifiers flags: KeyModifierFlags, block: () -> Void) { block() }
     public func scroll(byDeltaX deltaX: CGFloat, deltaY: CGFloat) {}
     public func press(forDuration duration: TimeInterval, thenDragTo element: XCUIElement) {}
@@ -117,9 +125,15 @@ public class XCUIElement {
     public var images: XCUIElementQuery { XCUIElementQuery() }
     public var textViews: XCUIElementQuery { XCUIElementQuery() }
     public var scrollViews: XCUIElementQuery { XCUIElementQuery() }
+    public var sheets: XCUIElementQuery { XCUIElementQuery() }
+    public var dialogs: XCUIElementQuery { XCUIElementQuery() }
+    public var outlines: XCUIElementQuery { XCUIElementQuery() }
+    public var cells: XCUIElementQuery { XCUIElementQuery() }
 }
 public final class XCUIApplication: XCUIElement {
     public override init() {}
+    public init(url: URL) {}
+    public init(bundleIdentifier: String) {}
     public var launchArguments: [String] = []
     public func launch() {}
     public func terminate() {}

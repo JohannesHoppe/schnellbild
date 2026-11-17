@@ -68,8 +68,8 @@ final class AtlasSubfolderUITests: SchnellbildUITestCase {
     /// ramp) and the screen (measured a second in, held by the pause: much
     /// darker than the frame at 30 % the thumbnail under it shows).
     func testAnMKVPlaysAtItsPlaceInTheTour() throws {
-        let log = tempDir.appendingPathComponent("app.log")
-        launch(open: tempDir.path, extra: ["--test-log=\(log.path)"])
+        let log = testLog("app.log")
+        launch(open: tempDir.path, extra: ["--test-log=\(log.lastPathComponent)"])
         XCTAssertTrue(app.staticTexts["Day 3"].waitForExistence(timeout: 15))
         app.typeKey("w", modifierFlags: [])
         XCTAssertTrue(element("atlas").waitForExistence(timeout: 10))

@@ -243,10 +243,10 @@ final class VisualUITests: SchnellbildUITestCase {
             ("auto", "auto", 0),
         ]
         var shown: [String: [ScreenStats]] = [:]
-        let log = tempDir.appendingPathComponent("avkit.log")
+        let log = testLog("avkit.log")
         for vlc in [false, true] {
             let player = vlc ? "VLC" : "AVKit"
-            let video = try openVideo("colours.mp4", vlc: vlc, extra: vlc ? [] : ["--test-log=\(log.path)"])
+            let video = try openVideo("colours.mp4", vlc: vlc, extra: vlc ? [] : ["--test-log=\(log.lastPathComponent)"])
             for step in steps {
                 if !vlc { BrowserModelLogMarker.write("step \(step.name)", to: log) }
                 switch step.slider {
@@ -410,10 +410,10 @@ final class VisualUITests: SchnellbildUITestCase {
     /// drawn by the app, then VLC's from its next line, looking the same.
     private func checkRunningLineWhenSwitching(_ fixture: String, from start: String = "subtitles 1/2 en", to label: String,
                                                _ what: String) throws {
-        let log = tempDir.appendingPathComponent("app.log")
+        let log = testLog("app.log")
         continueAfterFailure = true   // the log below shows on a failure too
         defer { print("app log:\n" + ((try? String(contentsOf: log, encoding: .utf8)) ?? "(none)")) }
-        let video = try openVideo(fixture, vlc: true, extra: ["--test-log=\(log.path)"])
+        let video = try openVideo(fixture, vlc: true, extra: ["--test-log=\(log.lastPathComponent)"])
         eventually("the subtitles are on", timeout: 20) { text(of: video).contains(start) }
         waitForSoftwarePictures(of: video)
         func time(_ label: String) -> Int {
@@ -459,10 +459,10 @@ final class VisualUITests: SchnellbildUITestCase {
     /// Played to its end and started again (Space), the video opens with
     /// the subtitle track chosen last, its line from 0 on the first picture.
     func testVLCReplaysWithTheSubtitlesChosenLast() throws {
-        let log = tempDir.appendingPathComponent("app.log")
+        let log = testLog("app.log")
         continueAfterFailure = true   // the log below shows on a failure too
         defer { print("app log:\n" + ((try? String(contentsOf: log, encoding: .utf8)) ?? "(none)")) }
-        let video = try openVideo("tracks.mkv", vlc: true, extra: ["--test-log=\(log.path)"])
+        let video = try openVideo("tracks.mkv", vlc: true, extra: ["--test-log=\(log.lastPathComponent)"])
         eventually("the subtitles are on", timeout: 20) { text(of: video).contains("subtitles 1/2 en") }
         waitForSoftwarePictures(of: video)
         app.typeKey("s", modifierFlags: [.control, .command])
@@ -518,10 +518,10 @@ final class VisualUITests: SchnellbildUITestCase {
     /// callbacks): on the even grey clip the lower part of the picture,
     /// where they go, shows the text; with V it is even again.
     private func checkSubtitlesAreDrawn(_ fixture: String, vlc: Bool) throws {
-        let log = tempDir.appendingPathComponent("app.log")
+        let log = testLog("app.log")
         continueAfterFailure = true   // the log below shows on a failure too
         defer { print("app log:\n" + ((try? String(contentsOf: log, encoding: .utf8)) ?? "(none)")) }
-        let video = try openVideo(fixture, vlc: vlc, extra: ["--test-log=\(log.path)"])
+        let video = try openVideo(fixture, vlc: vlc, extra: ["--test-log=\(log.lastPathComponent)"])
         eventually("the subtitles are on", timeout: 20) { text(of: video).contains("subtitles 1/2 en") }
         if vlc {
             waitForSoftwarePictures(of: video)
@@ -550,10 +550,10 @@ final class VisualUITests: SchnellbildUITestCase {
 
     /// The ASS subtitles (libass) of the MKV, chosen with ⌃⌘S.
     func testVLCDrawsASSSubtitles() throws {
-        let log = tempDir.appendingPathComponent("app.log")
+        let log = testLog("app.log")
         continueAfterFailure = true   // the log below shows on a failure too
         defer { print("app log:\n" + ((try? String(contentsOf: log, encoding: .utf8)) ?? "(none)")) }
-        var video = try openVideo("tracks.mkv", vlc: true, extra: ["--test-log=\(log.path)"])
+        var video = try openVideo("tracks.mkv", vlc: true, extra: ["--test-log=\(log.lastPathComponent)"])
         eventually("the subtitles are on", timeout: 20) { text(of: video).contains("subtitles 1/2 en") }
         app.typeKey("s", modifierFlags: [.control, .command])
         eventually("the ASS track") { text(of: video).contains("subtitles 2/2 de") }
@@ -563,7 +563,7 @@ final class VisualUITests: SchnellbildUITestCase {
         let mark = logLength(log)
         app.terminate()
         launch(open: tempDir.appendingPathComponent("tracks.mkv").path, resetState: false,
-               extra: ["--force-vlc", "--test-log=\(log.path)"])
+               extra: ["--force-vlc", "--test-log=\(log.lastPathComponent)"])
         video = element("video.vlc")
         XCTAssertTrue(video.waitForExistence(timeout: 20))
         eventually("the ASS track at once", timeout: 20) { text(of: video).contains("subtitles 2/2 de") }
@@ -585,10 +585,10 @@ final class VisualUITests: SchnellbildUITestCase {
     /// a picture), so a picture's luma tells where it is; the app logs the
     /// last picture before opening again and the first ones after.
     func testVLCGoesOnWhereItStoodWhenSubtitlesAreSwitchedOn() throws {
-        let log = tempDir.appendingPathComponent("app.log")
+        let log = testLog("app.log")
         continueAfterFailure = true   // the log below shows on a failure too
         defer { print("app log:\n" + ((try? String(contentsOf: log, encoding: .utf8)) ?? "(none)")) }
-        var video = try openVideo("ramp.mkv", vlc: true, extra: ["--test-log=\(log.path)"])
+        var video = try openVideo("ramp.mkv", vlc: true, extra: ["--test-log=\(log.lastPathComponent)"])
         eventually("the subtitles are on", timeout: 20) { text(of: video).contains("subtitles 1/1 en") }
         app.typeKey("v", modifierFlags: [])
         eventually("off") { text(of: video).contains("subtitles off/1") }
@@ -596,7 +596,7 @@ final class VisualUITests: SchnellbildUITestCase {
         let mark = logLength(log)
         app.terminate()
         launch(open: tempDir.appendingPathComponent("ramp.mkv").path, resetState: false,
-               extra: ["--force-vlc", "--test-log=\(log.path)"])
+               extra: ["--force-vlc", "--test-log=\(log.lastPathComponent)"])
         video = element("video.vlc")
         XCTAssertTrue(video.waitForExistence(timeout: 20))
         func time(_ label: String) -> Int {
@@ -658,10 +658,10 @@ final class VisualUITests: SchnellbildUITestCase {
     /// again in software once its subtitles are known, the line running
     /// then on the first picture shown after.
     func testVLCStartsAtOnceWhenItsTracksComeLate() throws {
-        let log = tempDir.appendingPathComponent("app.log")
+        let log = testLog("app.log")
         continueAfterFailure = true   // the log below shows on a failure too
         defer { print("app log:\n" + ((try? String(contentsOf: log, encoding: .utf8)) ?? "(none)")) }
-        let video = try openVideo("tracks.mkv", vlc: true, extra: ["--test-log=\(log.path)", "--vlc-parse-delay=3000"])
+        let video = try openVideo("tracks.mkv", vlc: true, extra: ["--test-log=\(log.lastPathComponent)", "--vlc-parse-delay=3000"])
         eventually("the subtitles are on", timeout: 20) { text(of: video).contains("subtitles 1/2 en") }
         eventually("opened again in software", timeout: 20) { text(of: video).contains("media 2, ") }
         waitForSoftwarePictures(of: video)
@@ -733,8 +733,8 @@ final class VisualUITests: SchnellbildUITestCase {
     /// The grey video has mid-tones throughout, which exposure moves (pure
     /// colours like a test pattern's bars stay as they are).
     private func checkExposureSlider(vlc: Bool) throws {
-        let log = tempDir.appendingPathComponent("test.log")
-        let video = try openVideo("grey.mp4", vlc: vlc, extra: ["--test-log=\(log.path)"])
+        let log = testLog("test.log")
+        let video = try openVideo("grey.mp4", vlc: vlc, extra: ["--test-log=\(log.lastPathComponent)"])
         let before = try screenBrightness(of: video)
         app.typeKey("a", modifierFlags: [])
         let slider = element("slider.exposure").firstMatch

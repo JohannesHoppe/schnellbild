@@ -3,15 +3,44 @@ import XCTest
 /// Base for the end-to-end tests: each test gets a fresh temp folder with
 /// real media fixtures, launches the real app on it (via `--open`) with its
 /// own, reset preferences, and drives it through the accessibility layer.
+///
+/// The app runs in the App Sandbox exactly as it ships (CI launches the
+/// bundle `build_app.sh` made, `SCHNELLBILD_APP`; `check_entitlements.sh`
+/// holds it to `Sandbox/Schnellbild.entitlements`). So it reads only what
+/// the user opened to it: the temp folders lie in `fixtureRoot`, outside
+/// every app's container, which the app is given the way a user gives it,
+/// through the open panel (`Grants.root`, once a run; every later launch
+/// opens it again from its security-scoped bookmark). The test runner, which
+/// never ships, may write there (`UITests/Runner.entitlements`).
 class SchnellbildUITestCase: XCTestCase {
     var tempDir: URL!
     var app: XCUIApplication!
     /// The app's language where a launch names none.
     var uiLanguage = "en"
 
+    /// Where every test's folders lie (made by the CI shell).
+    static let fixtureRoot = URL(fileURLWithPath: "/Users/Shared/SchnellbildUITests", isDirectory: true)
+    /// The folder `Grants.root` opens to the app: the fixture root (the
+    /// screenshots: the folder holding their photos).
+    var grantedRoot: URL { Self.fixtureRoot }
+    /// The folder opened to the app through the open panel in this run (no
+    /// launch has dropped the grants since).
+    static var rootGranted: URL?
+
+    /// What the app may read when it starts.
+    enum Grants {
+        /// `fixtureRoot`, granted through the open panel (as by a user who
+        /// opened that folder before)
+        case root
+        /// What the last launch left (a relaunch)
+        case kept
+        /// Nothing: the app as on a Mac where no folder was opened to it yet
+        case none
+    }
+
     override func setUpWithError() throws {
         continueAfterFailure = false
-        tempDir = FileManager.default.temporaryDirectory.appendingPathComponent("sbui_\(UUID().uuidString)")
+        tempDir = Self.fixtureRoot.appendingPathComponent("sbui_\(UUID().uuidString)", isDirectory: true)
         try FileManager.default.createDirectory(at: tempDir, withIntermediateDirectories: true)
         for name in ["a.jpg", "b.jpg", "c.jpg"] { try put("sample.jpg", at: name) }
     }
@@ -52,11 +81,21 @@ class SchnellbildUITestCase: XCTestCase {
 
     // MARK: Launch
 
+    /// Launches the app. `grants`: by default the fixture root for a fresh
+    /// start (`resetState`), what the last launch left for a relaunch.
     @discardableResult
     func launch(open path: String? = nil, resetState: Bool = true, extra: [String] = [],
-                language: String? = nil) -> XCUIApplication {
+                language: String? = nil, grants: Grants? = nil) -> XCUIApplication {
+        var extra = extra
+        switch grants ?? (resetState ? .root : .kept) {
+        case .root: grantFixtureRoot()
+        case .kept: break
+        case .none:
+            extra.append("--reset-grants")
+            Self.rootGranted = nil
+        }
         let language = language ?? uiLanguage
-        let app = XCUIApplication()
+        let app = Self.makeApp()
         // English unless a test asks otherwise, whatever the runner's
         // language: the tests match UI text. AppKit reads "-name value"
         // pairs, so these pairs come first and every argument after them
@@ -73,6 +112,98 @@ class SchnellbildUITestCase: XCTestCase {
         app.launch()
         self.app = app
         return app
+    }
+
+    /// The app under test: the bundle CI built and signed as it ships
+    /// (`SCHNELLBILD_APP`, through `TEST_RUNNER_SCHNELLBILD_APP`), else the
+    /// Xcode build's.
+    static func makeApp() -> XCUIApplication {
+        guard let path = ProcessInfo.processInfo.environment["SCHNELLBILD_APP"], !path.isEmpty else { return XCUIApplication() }
+        return XCUIApplication(url: URL(fileURLWithPath: path))
+    }
+
+    /// Opens `grantedRoot` to the app through the open panel, once a run
+    /// (and again after a launch that dropped the grants).
+    func grantFixtureRoot() {
+        let root = grantedRoot
+        guard Self.rootGranted != root else { return }
+        let app = Self.makeApp()
+        app.launchArguments = ["-AppleLanguages", "(en)", "-AppleLocale", "en_US", "-ApplePersistenceIgnoreState", "YES",
+                               "--ui-testing", "--reset-state", "--reset-grants"]
+        app.launch()
+        self.app = app
+        grantThroughOpenPanel(root)
+        XCTAssertTrue(tile(tempDir.lastPathComponent).waitForExistence(timeout: 15), "\(root.path) opened to the app")
+        app.terminate()
+        Self.rootGranted = root
+    }
+
+    /// Opens `folder` to the app as a user does: Open Folder… (⌘O), then the
+    /// folder chosen in the open panel.
+    func grantThroughOpenPanel(_ folder: URL, file: StaticString = #filePath, line: UInt = #line) {
+        XCTAssertTrue(app.windows.firstMatch.waitForExistence(timeout: 15), "a window", file: file, line: line)
+        app.typeKey("o", modifierFlags: .command)
+        chooseInOpenPanel(folder, file: file, line: line)
+    }
+
+    /// The open panel is up (Open Folder…, Allow Access…): `folder` is chosen
+    /// in it, its path typed into Go to Folder (⇧⌘G), then the panel's
+    /// button (Return).
+    func chooseInOpenPanel(_ folder: URL, file: StaticString = #filePath, line: UInt = #line) {
+        let panel = waitForOpenPanel(file: file, line: line)
+        app.typeKey("g", modifierFlags: [.command, .shift])
+        RunLoop.current.run(until: Date().addingTimeInterval(1))
+        app.typeText(folder.path)
+        app.typeKey(.return, modifierFlags: [])
+        RunLoop.current.run(until: Date().addingTimeInterval(1.5))
+        app.typeKey(.return, modifierFlags: [])
+        closed(panel, file: file, line: line)
+    }
+
+    /// The open panel is up at the folder it was opened at: its button
+    /// (Return) chooses that folder.
+    func confirmOpenPanel(file: StaticString = #filePath, line: UInt = #line) {
+        let panel = waitForOpenPanel(file: file, line: line)
+        RunLoop.current.run(until: Date().addingTimeInterval(1))
+        app.typeKey(.return, modifierFlags: [])
+        closed(panel, file: file, line: line)
+    }
+
+    private func waitForOpenPanel(file: StaticString, line: UInt) -> XCUIElement {
+        let panel = openPanel
+        if !panel.waitForExistence(timeout: 10) {
+            print("no open panel; the app's elements:\n\(app.debugDescription)")
+            XCTFail("the open panel", file: file, line: line)
+        }
+        return panel
+    }
+
+    private func closed(_ panel: XCUIElement, file: StaticString, line: UInt) {
+        let deadline = Date().addingTimeInterval(10)
+        while panel.exists, Date() < deadline { RunLoop.current.run(until: Date().addingTimeInterval(0.2)) }
+        if panel.exists {
+            print("the open panel stays; the app's elements:\n\(app.debugDescription)")
+            XCTFail("the open panel closes", file: file, line: line)
+        }
+    }
+
+    /// The open panel (a window of the app; the sandbox shows it from
+    /// another process).
+    var openPanel: XCUIElement {
+        app.windows.matching(NSPredicate(format: "identifier == 'open-panel' OR title == 'Open' OR elementType == %d", XCUIElement.ElementType.dialog.rawValue)).firstMatch
+    }
+
+    /// Where the app writes this test's log `name`: pass
+    /// `--test-log=<its lastPathComponent>`. In the app's container (its
+    /// temporary folder), named after the test's folder, so no other test's
+    /// lines are in it.
+    func testLog(_ name: String) -> URL {
+        Self.appLogFile("\(tempDir.lastPathComponent)-\(name)")
+    }
+
+    static func appLogFile(_ name: String) -> URL {
+        let home = String(cString: getpwuid(getuid())!.pointee.pw_dir)
+        return URL(fileURLWithPath: home).appendingPathComponent("Library/Containers/art.haushoppe.schnellbild/Data/tmp/\(name)")
     }
 
     /// The locale that goes with an app language (Resources/Localization),

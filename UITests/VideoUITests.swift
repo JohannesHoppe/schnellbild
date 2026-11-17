@@ -174,9 +174,9 @@ final class VideoUITests: SchnellbildUITestCase {
     /// player's states (shown when it fails).
     private func checkSpaceAtTheEndPlaysAgain(vlc: Bool) throws {
         try put("dark.mp4", at: "short.mp4")   // three seconds
-        let log = tempDir.appendingPathComponent("test.log")
+        let log = testLog("test.log")
         launch(open: tempDir.appendingPathComponent("short.mp4").path,
-               extra: (vlc ? ["--force-vlc"] : []) + ["--test-log=\(log.path)"])
+               extra: (vlc ? ["--force-vlc"] : []) + ["--test-log=\(log.lastPathComponent)"])
         XCTAssertTrue(element(vlc ? "video.vlc" : "video.avkit").waitForExistence(timeout: 20))
         continueAfterFailure = true
         defer { print("player log:\n" + ((try? String(contentsOf: log, encoding: .utf8)) ?? "(none)")) }
@@ -195,9 +195,9 @@ final class VideoUITests: SchnellbildUITestCase {
     private func checkSlideshowMovesOnAfterAVideo(vlc: Bool) throws {
         try put("dark.mp4", at: "show/v1.mp4")   // three seconds each
         try put("bright.mp4", at: "show/v2.mp4")
-        let log = tempDir.appendingPathComponent("app.log")
+        let log = testLog("app.log")
         launch(open: tempDir.appendingPathComponent("show").path,
-               extra: (vlc ? ["--force-vlc"] : []) + ["--test-log=\(log.path)"])
+               extra: (vlc ? ["--force-vlc"] : []) + ["--test-log=\(log.lastPathComponent)"])
         XCTAssertTrue(tile("v1.mp4").waitForExistence(timeout: 15))
         app.typeKey("s", modifierFlags: [])
         waitForBadge(containing: "v1.mp4", timeout: 20)
@@ -292,12 +292,12 @@ final class VideoUITests: SchnellbildUITestCase {
     /// V switch the subtitles, ⌃⌘A the sound, > the speed, which the badge
     /// shows and the video plays at.
     private func checkTracksAndSpeed(_ fixture: String, vlc: Bool) throws {
-        let log = tempDir.appendingPathComponent("app.log")
+        let log = testLog("app.log")
         continueAfterFailure = true   // the log below shows on a failure too
         defer { print("app log:\n" + ((try? String(contentsOf: log, encoding: .utf8)) ?? "(none)")) }
         try put(fixture, at: fixture)
         launch(open: tempDir.appendingPathComponent(fixture).path,
-               extra: (vlc ? ["--force-vlc"] : []) + ["--hold-video-bar", "--test-log=\(log.path)"])
+               extra: (vlc ? ["--force-vlc"] : []) + ["--hold-video-bar", "--test-log=\(log.lastPathComponent)"])
         let video = element(vlc ? "video.vlc" : "video.avkit")
         XCTAssertTrue(video.waitForExistence(timeout: 20))
         eventually("the tracks are known, the defaults on", timeout: 20) {
@@ -336,7 +336,7 @@ final class VideoUITests: SchnellbildUITestCase {
         // The next launch starts with the choices: German subtitles and sound
         app.terminate()
         launch(open: tempDir.appendingPathComponent(fixture).path, resetState: false,
-               extra: (vlc ? ["--force-vlc"] : []) + ["--test-log=\(log.path)"])
+               extra: (vlc ? ["--force-vlc"] : []) + ["--test-log=\(log.lastPathComponent)"])
         let again = element(vlc ? "video.vlc" : "video.avkit")
         XCTAssertTrue(again.waitForExistence(timeout: 20))
         eventually("remembered", timeout: 20) { text(of: again).contains("audio 2/2 de, subtitles 2/2 de, speed 1.0") }
@@ -412,10 +412,10 @@ final class VideoUITests: SchnellbildUITestCase {
         let a = "a.\(ext)", b = "b.\(ext)"
         try put(fixture, at: "videos/\(a)")
         try put(fixture, at: "videos/\(b)")
-        let log = tempDir.appendingPathComponent("app.log")
+        let log = testLog("app.log")
         continueAfterFailure = true   // the log below shows on a failure too
         defer { print("app log:\n" + ((try? String(contentsOf: log, encoding: .utf8)) ?? "(none)")) }
-        launch(open: tempDir.appendingPathComponent("videos/\(a)").path, extra: ["--test-log=\(log.path)"])
+        launch(open: tempDir.appendingPathComponent("videos/\(a)").path, extra: ["--test-log=\(log.lastPathComponent)"])
         XCTAssertTrue(element(player).waitForExistence(timeout: 20))
         waitForBadge(containing: a)
         let progress = element("videoProgress")

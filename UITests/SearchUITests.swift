@@ -83,8 +83,8 @@ final class SearchUITests: SchnellbildUITestCase {
     }
 
     func testCommandFFocusesSearchAndEscapeClears() {
-        let log = tempDir.appendingPathComponent("test.log")
-        launch(open: tempDir.path, extra: ["--test-log=\(log.path)"])
+        let log = testLog("test.log")
+        launch(open: tempDir.path, extra: ["--test-log=\(log.lastPathComponent)"])
         XCTAssertTrue(app.staticTexts["a.jpg"].waitForExistence(timeout: 15))
         continueAfterFailure = true   // to report the log below
         func appLog() -> String { (try? String(contentsOf: log, encoding: .utf8)) ?? "(none)" }

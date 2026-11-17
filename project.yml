@@ -127,6 +127,7 @@ targets:
         GENERATE_INFOPLIST_FILE: NO
         INFOPLIST_FILE: ThumbnailExtension/Info.plist
         CODE_SIGN_ENTITLEMENTS: build/entitlements/thumbnails.entitlements
+        CODE_SIGN_INJECT_BASE_ENTITLEMENTS: NO
         LD_RUNPATH_SEARCH_PATHS: ["@executable_path/../Frameworks", "@executable_path/../../../../Frameworks"]
         OTHER_SWIFT_FLAGS: ["-parse-as-library"]   # no main: the entry point is the system's extension main
         ENABLE_DEBUG_DYLIB: NO   # one binary, so the step below finds VLCKit's load command in it
@@ -171,6 +172,9 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: art.haushoppe.schnellbild
         CODE_SIGN_ENTITLEMENTS: $(SCHNELLBILD_APP_ENTITLEMENTS)
+        # Exactly these: Xcode's own additions for debugging would open the
+        # whole disk to the app (absolute-path.read-only "/")
+        CODE_SIGN_INJECT_BASE_ENTITLEMENTS: NO
         GENERATE_INFOPLIST_FILE: YES
         INFOPLIST_FILE: Resources/ExportedTypes.plist
         INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.photography
@@ -193,6 +197,7 @@ targets:
     platform: macOS
     sources:
       - path: UITests
+        excludes: ["Runner.entitlements"]
       # The app's translations: ReadmeScreenshots finds the words it clicks
       # in the language it takes the screenshots in
       - path: Resources/Localization
@@ -200,6 +205,8 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: art.haushoppe.schnellbild.uitests
+        # The runner, never shipped: may write where the tests make their folders
+        CODE_SIGN_ENTITLEMENTS: UITests/Runner.entitlements
     dependencies:
       - target: Schnellbild
 

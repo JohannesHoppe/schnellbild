@@ -82,6 +82,9 @@ jobs:
       - name: Build app bundle (release)
         run: ./Scripts/build_app.sh
 
+      - name: Signed with exactly the shipped entitlements
+        run: ./Scripts/check_entitlements.sh build/Schnellbild.app
+
       - name: Zip app
         run: ditto -c -k --keepParent build/Schnellbild.app build/Schnellbild.app.zip
 
@@ -128,8 +131,15 @@ jobs:
 
   ui-tests:
     # Both macOS versions: AVKit's controls look and behave differently
-    # from macOS 26 on (the inline ones dim the whole picture there)
+    # from macOS 26 on (the inline ones dim the whole picture there).
+    # The app under test is the bundle build-test made and signed as it
+    # ships (build_app.sh + sign_app.sh, in the App Sandbox), not the Xcode
+    # build; the tests open their folders to it through the open panel.
     name: UI tests (${{ matrix.os }})
+    needs: build-test
+    permissions:
+      contents: read
+      actions: read            # the app from this run's artifacts
     strategy:
       fail-fast: false
       matrix:
@@ -161,6 +171,24 @@ jobs:
 
       - name: Generate Xcode project
         run: xcodegen generate
+
+      - name: Get the app (built by build-test in this run)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh run download ${{ github.run_id }} --repo ${{ github.repository }} --name Schnellbild-app --dir build/shipped
+          ditto -x -k build/shipped/Schnellbild.app.zip build/shipped
+          ./Scripts/check_entitlements.sh build/shipped/Schnellbild.app
+
+      - name: Folders for the tests
+        # Outside every container: the test runner may write them
+        # (UITests/Runner.entitlements), the app reads them only once they
+        # are opened to it. A disk image for another volume.
+        run: |
+          mkdir -p /Users/Shared/SchnellbildUITests ~/Pictures/SchnellbildUITests
+          hdiutil create -size 64m -fs APFS -volname SchnellbildUITests -o build/uitests-volume.dmg
+          hdiutil attach build/uitests-volume.dmg
+          test -d /Volumes/SchnellbildUITests
 
       - name: Build the brightness meter
         run: mkdir -p build && swiftc -O Scripts/measure_brightness.swift -o build/measure_brightness
@@ -222,7 +250,7 @@ jobs:
             test="$(echo "$test" | xargs)"   # "A, B": no blanks around a name
             [ -n "$test" ] && only+=(-only-testing:"$test")
           done
-          TEST_RUNNER_SCREEN_MEASURE=1 xcodebuild test \
+          TEST_RUNNER_SCHNELLBILD_APP="$PWD/build/shipped/Schnellbild.app" TEST_RUNNER_SCREEN_MEASURE=1 xcodebuild test \
             -project Schnellbild.xcodeproj \
             -scheme Schnellbild \
             -destination 'platform=macOS' \
@@ -235,13 +263,15 @@ jobs:
       - name: Show VLC's log
         if: failure()
         run: |
-          [ -f /tmp/schnellbild-vlc.log ] || { echo "no VLC log"; exit 0; }
-          wc -l /tmp/schnellbild-vlc.log
-          grep -i -E "vout|video output|vmem|error|failed|cannot|blend|spu|subpicture|freetype|libass|subtitle" /tmp/schnellbild-vlc.log | sort | uniq -c | sort -rn | head -80
+          # In the app's container, where the app writes it (BrowserModel.testLogFile)
+          log=~/Library/Containers/art.haushoppe.schnellbild/Data/tmp/schnellbild-vlc.log
+          [ -f "$log" ] || { echo "no VLC log"; exit 0; }
+          wc -l "$log"
+          grep -i -E "vout|video output|vmem|error|failed|cannot|blend|spu|subpicture|freetype|libass|subtitle" "$log" | sort | uniq -c | sort -rn | head -80
           echo "--- subtitle decoders, in order"
-          grep -n -E 'Creating an input|spu decoder module|killing decoder|SET_TIME|SET_POSITION|seek request|selecting|unselecting|libass|ass_|[Ff]ont|subpicture|vout found' /tmp/schnellbild-vlc.log | grep -v -E 'looking for' | tail -150 || true
+          grep -n -E 'Creating an input|spu decoder module|killing decoder|SET_TIME|SET_POSITION|seek request|selecting|unselecting|libass|ass_|[Ff]ont|subpicture|vout found' "$log" | grep -v -E 'looking for' | tail -150 || true
           echo "--- the end of the log (the failing test's, as a repeated run stops at its first failure)"
-          grep -v -E 'Buffering [0-9]+%|displayed late|late picture' /tmp/schnellbild-vlc.log | tail -400 || true
+          grep -v -E 'Buffering [0-9]+%|displayed late|late picture' "$log" | tail -400 || true
 
       - name: Show what macOS did with the thumbnail extension
         if: failure()

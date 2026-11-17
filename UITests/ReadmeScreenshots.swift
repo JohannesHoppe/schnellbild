@@ -31,6 +31,10 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         tempDir = URL(fileURLWithPath: photos, isDirectory: true)
     }
 
+    /// The folder holding the photos and the world trip (`/Users/Shared`),
+    /// opened to the app through the open panel as a user would.
+    override var grantedRoot: URL { tempDir.deletingLastPathComponent() }
+
     override func tearDownWithError() throws {
         app?.terminate()   // keep the library: the dark run uses it too
     }

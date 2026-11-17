@@ -197,8 +197,8 @@ final class FullViewUITests: SchnellbildUITestCase {
     /// doesn't stay in full screen (the end comes during the animation in).
     func testAnEmptySlideshowLeavesNoFullScreen() throws {
         try folder("nothing/inner")
-        let log = tempDir.appendingPathComponent("app.log")
-        launch(open: tempDir.appendingPathComponent("nothing").path, extra: ["--test-log=\(log.path)"])
+        let log = testLog("app.log")
+        launch(open: tempDir.appendingPathComponent("nothing").path, extra: ["--test-log=\(log.lastPathComponent)"])
         continueAfterFailure = true
         XCTAssertTrue(app.staticTexts["inner"].waitForExistence(timeout: 15))
         let window = app.windows.firstMatch

@@ -130,8 +130,8 @@ final class ActionsUITests: SchnellbildUITestCase {
     /// case-only rename twice). The app logs each confirmation and each
     /// rename it runs.
     func testReturnInTheRenameSheetRenamesOnce() throws {
-        let log = tempDir.appendingPathComponent("test.log")
-        launch(open: tempDir.path, extra: ["--test-log=\(log.path)"])
+        let log = testLog("test.log")
+        launch(open: tempDir.path, extra: ["--test-log=\(log.lastPathComponent)"])
         XCTAssertTrue(app.staticTexts["album"].waitForExistence(timeout: 15))
         waitForSelected("album")
         app.typeKey(.F2, modifierFlags: [])
@@ -360,8 +360,8 @@ final class ActionsUITests: SchnellbildUITestCase {
     func testTheDualPane() throws {
         try folder("Sorted")
         // Where each key went (printed when D doesn't close the pane)
-        let log = tempDir.appendingPathComponent("keys.log")
-        launch(open: tempDir.path, extra: ["--test-log=\(log.path)"])
+        let log = testLog("keys.log")
+        launch(open: tempDir.path, extra: ["--test-log=\(log.lastPathComponent)"])
         XCTAssertTrue(app.staticTexts["a.jpg"].waitForExistence(timeout: 15))
         app.typeKey("d", modifierFlags: [])
         let left = element("pane.left"), right = element("pane.right")

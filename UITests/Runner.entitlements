@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- The UI-test runner (project.yml, SchnellbildUITests), never shipped:
+         Xcode sandboxes it and adds its own entitlements to these. It may
+         write where the tests make their folders, outside every app's
+         container: the fixture root, the disk image CI mounts and a folder
+         in Pictures. The app under test gets none of this
+         (Scripts/check_entitlements.sh); it reads those folders only once
+         they are opened to it through the open panel. -->
+    <key>com.apple.security.app-sandbox</key>
+    <true/>
+    <key>com.apple.security.temporary-exception.files.absolute-path.read-write</key>
+    <array>
+        <string>/Users/Shared/SchnellbildUITests/</string>
+        <string>/Volumes/SchnellbildUITests/</string>
+    </array>
+    <key>com.apple.security.temporary-exception.files.home-relative-path.read-write</key>
+    <array>
+        <string>/Pictures/SchnellbildUITests/</string>
+    </array>
+</dict>
+</plist>
