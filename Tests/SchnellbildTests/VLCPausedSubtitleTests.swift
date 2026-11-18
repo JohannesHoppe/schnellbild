@@ -15,6 +15,11 @@ final class VLCPausedSubtitleTests: XCTestCase {
     /// pause on to its output), with the time since the pause was asked for.
     final class PauseLog: NSObject, VLCLogging, @unchecked Sendable {
         static let shared = PauseLog()
+        /// Set once for the whole run and never taken away, as the app does:
+        /// with VLCKit's loggers set and reset for every pause while earlier
+        /// players were still stopping, a run hung (why, not known).
+        private static let once: Void = { VLCLibrary.shared().loggers = [shared] }()
+        static func installed() { _ = once }
         var level: VLCLogLevel = .debug
         private let lock = NSLock()
         private var began = Date()
@@ -50,8 +55,7 @@ final class VLCPausedSubtitleTests: XCTestCase {
     /// pauses once VLC's time passes `at` ms, and reads the pictures VLC
     /// hands over for the next three seconds: whether each holds text.
     private func pausedPictures(track: Int, at: Int64) async throws -> (pausedAt: Int64, texts: [Bool]) {
-        VLCLibrary.shared().loggers = [PauseLog.shared]
-        defer { VLCLibrary.shared().loggers = [] }
+        PauseLog.installed()
         let url = fixture("tracks.mkv")
         let media = VLCMedia(url: url)
         VLCSafety.restrict(media, for: url, head: VLCSafety.head(of: url))
@@ -63,7 +67,6 @@ final class VLCPausedSubtitleTests: XCTestCase {
         let output = VLCFrameOutput()
         output.attach(to: held.player)
         held.player.play()
-        defer { let held = held; Task.detached { held.player.stop() } }
         let native = try XCTUnwrap(LibVLCVideo.nativePlayer(of: held.player))
         let getTime = try XCTUnwrap(Self.getTime), setPause = try XCTUnwrap(Self.setPause)
         let deadline = Date().addingTimeInterval(15)
@@ -96,13 +99,15 @@ final class VLCPausedSubtitleTests: XCTestCase {
             if Date().timeIntervalSince(paused) > 0.5 { texts.append(text) }
         }
         let pausedAt = getTime(native)
+        // Stopped before the next one starts (VLC waits for its threads there)
+        await Task.detached { held.player.stop() }.value
         print("after pausing at \(pausedAt) ms: \(timeline.prefix(12).joined(separator: " ")); \(PauseLog.shared.lines.joined(separator: "; "))")
         return (pausedAt, texts)
     }
 
     private func check(track: Int, _ name: String) async throws {
         var failures: [String] = []
-        for at: Int64 in [700, 1500, 1800, 1900, 1950, 1975, 2000, 2025, 2050, 2075, 2100, 2150, 3850, 3950, 4000, 4050] {
+        for at: Int64 in [700, 1500] + Array(stride(from: 1900, through: 2100, by: 10)) + [3950, 4000, 4050] {
             let (pausedAt, texts) = try await pausedPictures(track: track, at: at)
             let shown = texts.map { $0 ? "T" : "-" }.joined()
             print("\(name) paused at \(pausedAt) ms (asked \(at)): \(shown)")
