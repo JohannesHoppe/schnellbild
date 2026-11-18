@@ -46,8 +46,18 @@ final class VLCPausedSubtitleTests: XCTestCase {
         let native = try XCTUnwrap(LibVLCVideo.nativePlayer(of: held.player))
         let getTime = try XCTUnwrap(Self.getTime), setPause = try XCTUnwrap(Self.setPause)
         let deadline = Date().addingTimeInterval(15)
-        while getTime(native) < at, Date() < deadline { try await Task.sleep(for: .milliseconds(2)) }
+        // The pictures before the pause too: did the line show while playing?
+        var before: [String] = []
+        var seenBefore: CVPixelBuffer?
+        while getTime(native) < at, Date() < deadline {
+            if let picture = output.latestPicture, picture !== seenBefore, getTime(native) > at - 400 {
+                seenBefore = picture
+                before.append("\(getTime(native)):\(VLCFrameOutput.probe(picture, shown: picture)?.text == true ? "T" : "-")")
+            }
+            try await Task.sleep(for: .milliseconds(2))
+        }
         setPause(native, 1)
+        print("before pausing at \(at): \(before.joined(separator: " "))")
         try await Task.sleep(for: .milliseconds(300))
         let pausedAt = getTime(native)
         var texts: [Bool] = []
@@ -63,13 +73,15 @@ final class VLCPausedSubtitleTests: XCTestCase {
     }
 
     private func check(track: Int, _ name: String) async throws {
-        for at: Int64 in [700, 1500, 1800, 1900, 1950, 3850] {
+        var failures: [String] = []
+        for at: Int64 in [700, 1500, 1800, 1900, 1950, 1975, 2000, 2025, 2050, 2075, 2100, 2150, 3850, 3950, 4000, 4050] {
             let (pausedAt, texts) = try await pausedPictures(track: track, at: at)
             let shown = texts.map { $0 ? "T" : "-" }.joined()
             print("\(name) paused at \(pausedAt) ms (asked \(at)): \(shown)")
             XCTAssertFalse(texts.isEmpty, "\(name) at \(at): pictures while paused")
-            XCTAssertTrue(texts.allSatisfy { $0 }, "\(name) paused at \(pausedAt) ms: the line on every picture: \(shown)")
+            if !texts.allSatisfy({ $0 }) { failures.append("\(pausedAt) ms: \(shown)") }
         }
+        XCTAssertTrue(failures.isEmpty, "\(name): paused with no line: \(failures.joined(separator: "; "))")
     }
 
     func testSubRipStaysWhilePaused() async throws { try await check(track: 3, "SubRip") }
