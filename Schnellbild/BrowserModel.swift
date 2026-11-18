@@ -5279,6 +5279,7 @@ final class BrowserModel: ObservableObject {
             folderChanges += 1
         }
         if !failures.isEmpty { fileActions.report(TransferFailure(failures: failures)) }
+        Self.testLog("\(Date().timeIntervalSince1970) moved \(undoParts.count) into \(folder.lastPathComponent): \(outcomes.flatMap(\.done).map(\.from.lastPathComponent))")
         undoHistory.record(UndoStep(kind: undoParts.contains { if case .copied = $0 { return true }; return false } ? .copy : .move,
                                     parts: undoParts))
         // The selection as it was, before the moves rewrite its path

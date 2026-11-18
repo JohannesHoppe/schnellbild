@@ -694,6 +694,7 @@ private struct TileDragSource: ViewModifier {
         if drags {
             content.onDrag {
                 let paths = model.isMarked(entry) ? model.actionEntries.map(\.url.path) : [entry.url.path]
+                BrowserModel.testLog("\(Date().timeIntervalSince1970) drag \(paths.map { ($0 as NSString).lastPathComponent }) buttons=\(NSEvent.pressedMouseButtons)")
                 let provider = NSItemProvider(object: entry.url as NSURL)
                 provider.registerDataRepresentation(forTypeIdentifier: TileDrag.type.identifier, visibility: .ownProcess) { done in
                     done(try? PropertyListEncoder().encode(paths), nil)
@@ -763,6 +764,7 @@ private struct TileDropDelegate: DropDelegate {
         model.dropIntoFolderTargeted = false
         let target = accepts ? entry.browseURL : model.paneDropFolder
         guard let folder = target, ArchivePath.split(folder) == nil else { return false }
+        BrowserModel.testLog("\(Date().timeIntervalSince1970) drop onto \(folder.lastPathComponent)")
         TileDrag.loadURLs(info.itemProviders(for: [TileDrag.type])) { urls in model.move(urls, into: folder) }
         return true
     }

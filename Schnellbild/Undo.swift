@@ -132,6 +132,7 @@ extension BrowserModel {
     /// Undoes the newest action: a rename or move back, a copy to the
     /// Trash, a trashed item back out of the Trash to where it was.
     func undo() {
+        Self.testLog("\(Date().timeIntervalSince1970) undo: \(undoHistory.undoSteps.last.map { "\($0.kind) \($0.parts.map { URL(fileURLWithPath: $0.source).lastPathComponent })" } ?? "nothing"), running \(undoHistory.running)")
         guard !undoHistory.running, let step = undoHistory.popUndo() else { return }
         run(step, undoing: true)
     }
