@@ -5,7 +5,8 @@ import VLCFrames
 import UniformTypeIdentifiers
 
 /// Full-size view for videos. Native formats (MP4/MOV/M4V …) play through AVKit
-/// with autoplay and standard controls. Formats AVFoundation can't handle
+/// with autoplay, under the app's own control bar (`VideoControlBar`, both
+/// players). Formats AVFoundation can't handle
 /// (AVI/MKV/WebM …) fall back to the vendored VLCKit player. Either way one
 /// `PlaybackControl` is created and registered with the model here, so Space
 /// and the arrow keys work for both.

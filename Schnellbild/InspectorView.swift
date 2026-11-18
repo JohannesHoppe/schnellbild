@@ -242,7 +242,8 @@ struct InspectorView: View {
 
     /// "3:05", "1:02:07".
     nonisolated static func duration(_ seconds: Double) -> String {
-        let length = Duration.seconds(Int(seconds.rounded()))
+        // Held in Int's range (a crafted length may be anything)
+        let length = Duration.seconds(seconds.isFinite ? Int(min(max(seconds, 0), 1e15).rounded()) : 0)
         return length.formatted(.time(pattern: seconds >= 3600 ? .hourMinuteSecond : .minuteSecond))
     }
 

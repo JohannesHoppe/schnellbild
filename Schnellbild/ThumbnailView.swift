@@ -1,5 +1,6 @@
 import SwiftUI
 import QuickLookThumbnailing
+import VLCFrames
 
 /// The thumbnails of this session in memory, limited by their pixels
 /// rather than their number: a search with thousands of results stays
@@ -42,7 +43,7 @@ final class ThumbnailCache {
     }
 
     /// Marks an image that is only the file's icon, not a picture of it.
-    static let fileIcon = "file icon"
+    nonisolated static let fileIcon = "file icon"
 
     /// From memory only, asking no one: what a tile made again (scrolled
     /// back into view) shows at once. `modified` nil takes any date; the
@@ -82,24 +83,16 @@ final class ThumbnailCache {
             scale: NSScreen.mainBackingScale,
             representationTypes: .all
         )
-        // Cancelled with its tile (scrolled away), so QuickLook works on the
-        // tiles still shown; a cancelled request answers with the file's
-        // icon, which is never kept
-        let rep = await withTaskCancellationHandler {
-            try? await QLThumbnailGenerator.shared.generateBestRepresentation(for: request)
-        } onCancel: {
-            QLThumbnailGenerator.shared.cancel(request)
+        if BrowserModel.mediaKind(of: url) == .video {
+            guard let image = await Self.videoThumbnail(for: url, request: request, width: side * NSScreen.mainBackingScale),
+                  !Task.isCancelled else { return nil }
+            keep(image, side: side, modified: modified, for: url)
+            return image
         }
+        let rep = await Self.quickLook(request)
         guard !Task.isCancelled else { return nil }
         var image = rep?.nsImage
         if rep?.type == .icon { image?.accessibilityDescription = Self.fileIcon }
-        // MKV, WebM, AVI, AVCHD, VOB … come from Schnellbild's QuickLook extension; a
-        // video QuickLook still has only the icon for (the extension not
-        // registered yet, a type it doesn't take): VLC makes the frame here.
-        if rep?.type != .thumbnail, BrowserModel.mediaKind(of: url) == .video, !Task.isCancelled,
-           let frame = await VLCThumbnails.shared.thumbnail(for: url, width: side * NSScreen.mainBackingScale) {
-            image = NSImage(cgImage: frame, size: NSSize(width: frame.width, height: frame.height))
-        }
         // A picture QuickLook doesn't know by its name ("x.jpg.part", "IMG"):
         // ImageIO reads it by its content, as far as its bytes reach
         if rep?.type != .thumbnail, BrowserModel.mediaKind(of: url) == .image, !Task.isCancelled,
@@ -111,6 +104,107 @@ final class ThumbnailCache {
         return image
     }
 
+    /// QuickLook's best picture of a file. Cancelled with its tile
+    /// (scrolled away), so QuickLook works on the tiles still shown; a
+    /// cancelled request answers with the file's icon, which is never kept.
+    nonisolated private static func quickLook(_ request: QLThumbnailGenerator.Request) async -> QLThumbnailRepresentation? {
+        await withTaskCancellationHandler {
+            try? await QLThumbnailGenerator.shared.generateBestRepresentation(for: request)
+        } onCancel: {
+            QLThumbnailGenerator.shared.cancel(request)
+        }
+    }
+
+    /// How long QuickLook has for a video before VLC is asked as well.
+    nonisolated static let quickLookHeadStart: Duration = .seconds(3)
+
+    private enum VideoAnswer {
+        case quickLook(QLThumbnailRepresentation?)
+        case vlc(VLCFrameGrab.Outcome)
+        case headStartOver
+    }
+
+    /// A video's tile. MKV, WebM, WMV, ASF, FLV, Ogg and VOB come from
+    /// Schnellbild's QuickLook extension, the formats macOS reads from its
+    /// own, and macOS keeps them in its cache. QuickLook gets
+    /// `quickLookHeadStart`; when it has only the icon or hasn't answered by
+    /// then, VLC decodes a frame here as well (`VLCThumbnails`: the
+    /// extension not registered yet, a type it doesn't claim such as AVI, a
+    /// busy extension), and the first picture of either is the tile's. A
+    /// VLC grab that timed out (a busy Mac, a share slow to answer) is tried
+    /// once more; one VLC refused or failed on is not. Without a picture
+    /// the tile shows QuickLook's icon. `--test-log` names the producer and
+    /// why the other gave none.
+    nonisolated private static func videoThumbnail(for url: URL, request: QLThumbnailGenerator.Request, width: CGFloat) async -> NSImage? {
+        let name = url.lastPathComponent
+        let began = Date()
+        func took() -> String { String(format: "%.1f s", Date().timeIntervalSince(began)) }
+        // The producers run as tasks of their own, their answers come in
+        // order: the first picture is taken at once, without waiting for the
+        // other to end (QuickLook's extension may take long to give up after
+        // its request is cancelled)
+        let (answers, answer) = AsyncStream.makeStream(of: VideoAnswer.self)
+        var producers: [Task<Void, Never>] = []
+        var pending = 0
+        func run(_ work: @escaping @Sendable () async -> VideoAnswer) {
+            pending += 1
+            producers.append(Task { answer.yield(await work()) })
+        }
+        let stop = { (producers: [Task<Void, Never>]) in
+            producers.forEach { $0.cancel() }
+            answer.finish()
+        }
+        return await withTaskCancellationHandler { () async -> NSImage? in
+            run { .quickLook(await quickLook(request)) }
+            run {
+                try? await Task.sleep(for: quickLookHeadStart)
+                return .headStartOver
+            }
+            var icon: NSImage?
+            var vlcTries = 0
+            var quickLookSaid = "no answer"
+            func askVLC() {
+                guard vlcTries == 0 else { return }
+                vlcTries = 1
+                run { .vlc(await VLCThumbnails.shared.thumbnail(for: url, width: width)) }
+            }
+            for await next in answers {
+                pending -= 1
+                switch next {
+                case .quickLook(let rep):
+                    if rep?.type == .thumbnail, let image = rep?.nsImage {
+                        BrowserModel.testLog("tile \(name): QuickLook's picture after \(took())")
+                        stop(producers)
+                        return image
+                    }
+                    quickLookSaid = rep.map { $0.type == .icon ? "the icon" : "a low-quality thumbnail" } ?? "nothing"
+                    if let image = rep?.nsImage {
+                        if rep?.type == .icon { image.accessibilityDescription = fileIcon }
+                        icon = image
+                    }
+                    askVLC()
+                case .headStartOver:
+                    askVLC()
+                case .vlc(let outcome):
+                    if let frame = outcome.image {
+                        BrowserModel.testLog("tile \(name): VLC's frame after \(took()), QuickLook: \(quickLookSaid)")
+                        stop(producers)
+                        return NSImage(cgImage: frame, size: NSSize(width: frame.width, height: frame.height))
+                    }
+                    BrowserModel.testLog("tile \(name): VLC \(outcome) after \(took()) (try \(vlcTries)), QuickLook: \(quickLookSaid)")
+                    if case .timedOut = outcome, vlcTries == 1, !Task.isCancelled {
+                        vlcTries = 2
+                        run { .vlc(await VLCThumbnails.shared.thumbnail(for: url, width: width)) }
+                    }
+                }
+                if pending == 0 || Task.isCancelled { break }
+            }
+            stop(producers)
+            return icon
+        } onCancel: {
+            answer.finish()
+        }
+    }
     /// A picture scaled down by ImageIO, off the main thread.
     private static func pictureThumbnail(of url: URL, side: CGFloat) async -> NSImage? {
         let maxPixel = Int(side * NSScreen.mainBackingScale)

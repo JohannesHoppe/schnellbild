@@ -25,6 +25,18 @@ public struct LibVLCVideo {
                            setFormatCallbacks: unsafeBitCast(format, to: (@convention(c) (OpaquePointer, Format, Cleanup) -> Void).self))
     }()
 
+    /// `libvlc_media_player_get_state`: libVLC's state of a player
+    /// (`libvlc_state_t`), asked on any thread, without VLCKit's
+    /// notifications, which come on the main thread.
+    public static let playerState: (@convention(c) (OpaquePointer) -> Int32)? = {
+        guard let symbol = dlsym(dlopen(nil, RTLD_NOW), "libvlc_media_player_get_state") else { return nil }
+        return unsafeBitCast(symbol, to: (@convention(c) (OpaquePointer) -> Int32).self)
+    }()
+
+    /// `libvlc_state_t`'s values for a player that is done: stopped, ended,
+    /// failed.
+    public static let stopped: Int32 = 5, ended: Int32 = 6, failed: Int32 = 7
+
     /// The `libvlc_media_player_t` inside a VLCMediaPlayer.
     public static func nativePlayer(of player: VLCMediaPlayer) -> OpaquePointer? {
         let selector = NSSelectorFromString("libVLCMediaPlayer")
@@ -40,11 +52,43 @@ public struct LibVLCVideo {
 /// lock until its threads have ended, so a picture callback waiting for the
 /// main thread while the main thread asks that player anything would hang
 /// both (VLCKit's own `VLCMediaThumbnailer` waits for the main thread so).
+/// A file VLC may not open (`VLCSafety.reader`) gets no player at all; a
+/// player that fails or reaches the end without a picture (a file with no
+/// video, a broken one) ends the grab at once, not at its timeout.
 public final class VLCFrameGrab: @unchecked Sendable {   // state behind `lock`
+    /// How a grab ended.
+    public enum Outcome: CustomStringConvertible {
+        case frame(CGImage)
+        /// VLC wasn't asked: no reader may open the file (`VLCSafety`).
+        case refused
+        /// VLC opened it and failed (`failed`) or got to its end
+        /// (`ended`, `stopped`) without a picture.
+        case failed(String)
+        case timedOut
+        case cancelled
+
+        public var image: CGImage? {
+            if case .frame(let image) = self { return image }
+            return nil
+        }
+
+        public var description: String {
+            switch self {
+            case .frame(let image): return "a frame \(image.width)×\(image.height)"
+            case .refused:          return "refused"
+            case .failed(let why):  return "failed (\(why))"
+            case .timedOut:         return "timed out"
+            case .cancelled:        return "cancelled"
+            }
+        }
+    }
+    /// How long a player reported as done may still bring its last picture.
+    private static let lastPictureWait = 0.5
+
     private let queue = DispatchQueue(label: "VLCFrameGrab", qos: .utility)
     private let lock = NSLock()
     private let wantedWidth: Int
-    private var done: ((CGImage?) -> Void)?
+    private var done: ((Outcome) -> Void)?
     private var player: VLCMediaPlayer?
     private var pixels: UnsafeMutableRawPointer?
     private var size = (width: 0, height: 0)
@@ -58,21 +102,27 @@ public final class VLCFrameGrab: @unchecked Sendable {   // state behind `lock`
     deinit { pixels?.deallocate() }
 
     /// A frame `width` pixels wide (the height follows the video), or nil
-    /// after `timeout` seconds or when cancelled.
+    /// (see `grab`).
     public static func frame(of url: URL, width: Int, at position: Double = 0.3, timeout: Double = 10) async -> CGImage? {
+        await grab(of: url, width: width, at: position, timeout: timeout).image
+    }
+
+    /// A frame `width` pixels wide, or why there is none: refused, VLC
+    /// failed or ended without one, `timeout` seconds passed, cancelled.
+    public static func grab(of url: URL, width: Int, at position: Double = 0.3, timeout: Double = 10) async -> Outcome {
         let grab = VLCFrameGrab(width: width)
         return await withTaskCancellationHandler {
-            await withCheckedContinuation { (continuation: CheckedContinuation<CGImage?, Never>) in
+            await withCheckedContinuation { (continuation: CheckedContinuation<Outcome, Never>) in
                 grab.lock.lock()
                 let cancelled = grab.finished
                 if !cancelled { grab.done = { continuation.resume(returning: $0) } }
                 grab.lock.unlock()
-                guard !cancelled else { return continuation.resume(returning: nil) }
+                guard !cancelled else { return continuation.resume(returning: .cancelled) }
                 grab.queue.async { grab.start(url: url, position: position) }
-                grab.queue.asyncAfter(deadline: .now() + timeout) { grab.finish(with: nil) }
+                grab.queue.asyncAfter(deadline: .now() + timeout) { grab.finish(with: .timedOut) }
             }
         } onCancel: {
-            grab.finish(with: nil)
+            grab.finish(with: .cancelled)
         }
     }
 
@@ -80,11 +130,15 @@ public final class VLCFrameGrab: @unchecked Sendable {   // state behind `lock`
         lock.lock()
         let over = finished
         lock.unlock()
-        guard !over, let api = LibVLCVideo.shared else { return finish(with: nil) }
-        let media = VLCMedia(url: url)
+        guard !over, let api = LibVLCVideo.shared else { return finish(with: .failed("no libVLC")) }
         let head = VLCSafety.head(of: url)
+        // No reader may open it (`:demux=none`): no picture can come
+        guard VLCSafety.reader(for: url, head: head) != nil else { return finish(with: .refused) }
+        let media = VLCMedia(url: url)
         VLCSafety.restrict(media, for: url, head: head)
-        for option in [":no-audio", ":no-spu", ":no-osd", ":avcodec-threads=1", ":avcodec-skip-idct=4",
+        // `:no-play-and-pause`: at its end the player ends (VLCKit's default
+        // would pause it there), which ends a grab without a picture at once
+        for option in [":no-audio", ":no-spu", ":no-osd", ":no-play-and-pause", ":avcodec-threads=1", ":avcodec-skip-idct=4",
                        ":avcodec-skiploopfilter=3", ":deinterlace=-1", ":avi-index=3"] {
             media.addOption(option)
         }
@@ -94,7 +148,7 @@ public final class VLCFrameGrab: @unchecked Sendable {   // state behind `lock`
         if length > 0 { media.addOption(":start-time=\(Double(length) / 1000 * position)") }
         let player = VLCMediaPlayer()
         player.media = media
-        guard let native = LibVLCVideo.nativePlayer(of: player) else { return finish(with: nil) }
+        guard let native = LibVLCVideo.nativePlayer(of: player) else { return finish(with: .failed("no native player")) }
         lock.lock()
         self.player = player
         lock.unlock()
@@ -114,6 +168,29 @@ public final class VLCFrameGrab: @unchecked Sendable {   // state behind `lock`
             Unmanaged<VLCFrameGrab>.fromOpaque(opaque!).release()
         })
         player.play()
+        watch(native, doneSince: nil)
+    }
+
+    /// Looks at the player's state every 50 ms on the grab's queue (the
+    /// player stays while the grab isn't finished: `finish` stops it on this
+    /// queue): failed, it ends the grab; ended or stopped, after
+    /// `lastPictureWait` (a picture VLC decoded may still be on its way).
+    private func watch(_ native: OpaquePointer, doneSince: Date?) {
+        guard let state = LibVLCVideo.playerState else { return }
+        queue.asyncAfter(deadline: .now() + 0.05) { [self] in
+            lock.lock()
+            let over = finished
+            lock.unlock()
+            guard !over else { return }
+            let now = state(native)
+            if now == LibVLCVideo.failed { return finish(with: .failed("error")) }
+            guard now == LibVLCVideo.ended || now == LibVLCVideo.stopped else { return watch(native, doneSince: nil) }
+            let since = doneSince ?? Date()
+            if Date().timeIntervalSince(since) >= Self.lastPictureWait {
+                return finish(with: .failed(now == LibVLCVideo.ended ? "ended" : "stopped"))
+            }
+            watch(native, doneSince: since)
+        }
     }
 
     /// RGBA at the wanted width, the height by the decoded picture's sides.
@@ -149,7 +226,7 @@ public final class VLCFrameGrab: @unchecked Sendable {   // state behind `lock`
         lock.lock()
         let image = finished ? nil : makeImage()
         lock.unlock()
-        if let image { finish(with: image) }
+        if let image { finish(with: .frame(image)) }
     }
 
     /// (`lock` held)
@@ -165,14 +242,14 @@ public final class VLCFrameGrab: @unchecked Sendable {   // state behind `lock`
 
     /// Answers once, then stops the player on the grab's queue (waiting
     /// there for VLC's threads, which wait for nothing here).
-    private func finish(with image: CGImage?) {
+    private func finish(with outcome: Outcome) {
         lock.lock()
         guard !finished else { return lock.unlock() }
         finished = true
         let answer = done
         done = nil
         lock.unlock()
-        answer?(image)
+        answer?(outcome)
         // The pixels stay until the grab goes: the video output holds it
         // while it may still write into them
         queue.async { [self] in
