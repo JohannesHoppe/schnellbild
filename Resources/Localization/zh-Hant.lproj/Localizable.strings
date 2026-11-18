@@ -633,7 +633,7 @@
 "Credit" = "署名";
 "Website" = "網站";
 "Schnellbild uses an LGPL-only build of VLCKit and libVLC, licensed under the GNU Lesser General Public License 2.1 and built from source without any of VLC's modules under the GPL. VLC as VideoLAN builds it also carries modules under the GPL; they are not in Schnellbild's build." = "Schnellbild 使用的是只含 LGPL 部分的 VLCKit 與 libVLC 建置，採用 GNU Lesser General Public License 2.1 授權，從原始碼建置，不含任何 GPL 授權的 VLC 模組。VideoLAN 建置的 VLC 也包含 GPL 授權的模組；Schnellbild 的建置中沒有這些模組。";
-"Schnellbild's build makes six small changes to VLC (Scripts/vlc-patches, 0001 to 0006): four to its subtitle timing, one to its audio output on macOS and one that leaves FFmpeg's files under the GPL out of the build." = "Schnellbild 的建置對 VLC 做了六處小修改（Scripts/vlc-patches，0001 至 0006）：四處與字幕時間有關，一處與 macOS 上的音訊輸出有關，一處將 FFmpeg 中採用 GPL 的檔案排除在建置之外。";
+"Schnellbild's build makes eight small changes to VLC (Scripts/vlc-patches, 0001 to 0008): five to its subtitles, two to its audio output on macOS and one that leaves FFmpeg's files under the GPL out of the build." = "Schnellbild 的建置對 VLC 做了八處小修改（Scripts/vlc-patches，0001 至 0008）：五處與字幕有關，兩處與 macOS 上的音訊輸出有關，一處將 FFmpeg 中採用 GPL 的檔案排除在建置之外。";
 "The complete source of this build, with these changes, is attached to its release: %@. The script that builds it is Scripts/build_vlckit_lgpl.sh in Schnellbild's repository." = "此建置的完整原始碼（含這些修改）附在其發行版本中：%@。建置它的腳本是 Schnellbild 儲存庫中的 Scripts/build_vlckit_lgpl.sh。";
 "© VideoLAN and the VLC authors" = "© VideoLAN 與 VLC 作者";
 "Libraries included in VLCKit, each under its own license" = "VLCKit 包含的程式庫（各自採用自己的授權條款）";
@@ -661,7 +661,7 @@
 "the clouds on the globe" = "地球儀上的雲層";
 "Show Hidden Files" = "顯示隱藏檔案";
 "Show hidden files and folders" = "顯示隱藏的檔案和檔案夾";
-"Names that start with a dot, and what macOS hides, such as the Library folder. Off, they appear nowhere in Schnellbild." = "以點開頭的名稱，以及 macOS 隱藏的項目，例如「資源庫」檔案夾。關閉時，它們不會出現在 Schnellbild 的任何地方。";
+"Names that start with a dot, what macOS hides, such as the Library folder, and the files macOS keeps for itself, such as .DS_Store. On, everything appears, also inside archives. Off, they appear nowhere in Schnellbild." = "以點開頭的名稱、macOS 隱藏的項目（例如「資源庫」檔案夾），以及 macOS 為自己保留的檔案（例如 .DS_Store）。開啟時，所有項目都會顯示，壓縮檔裡的也一樣。關閉時，它們不會出現在 Schnellbild 的任何地方。";
 "Show / hide hidden files and folders" = "顯示 / 隱藏隱藏的檔案和檔案夾";
 "Undo" = "還原";
 "Redo" = "重做";

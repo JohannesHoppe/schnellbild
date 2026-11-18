@@ -133,6 +133,8 @@ jobs:
         run: ./Scripts/fetch_vlckit.sh
 
       - name: Test
+        # A hang ends the tests after 20 min, the hanging test named (Scripts/test.sh)
+        timeout-minutes: 45
         env:
           CHEATSHEET_PDF: ${{ github.workspace }}/build/cheat-sheet.pdf
           # OfflineMapTests draws its sample views there (light and dark)
@@ -408,14 +410,5 @@ jobs:
         env:
           UNIT: ${{ inputs.unit }}
           REPEAT: ${{ inputs.repeat || '1' }}
-        run: |
-          # As Scripts/test.sh: VLCKit copied into the test bundle, then the tests without building again
-          swift build --build-tests
-          BIN="$(swift build --show-bin-path)"
-          XCTEST="$BIN/SchnellbildPackageTests.xctest"
-          mkdir -p "$XCTEST/Contents/Frameworks"
-          ditto "$BIN/VLCKit.framework" "$XCTEST/Contents/Frameworks/VLCKit.framework"
-          for run in $(seq 1 "$REPEAT"); do
-            echo "=== run $run of $REPEAT"
-            swift test --skip-build --filter "$UNIT"
-          done
+        # Each run of them ends after 20 min, a hang with the hanging test named
+        run: ./Scripts/test.sh --filter "$UNIT"

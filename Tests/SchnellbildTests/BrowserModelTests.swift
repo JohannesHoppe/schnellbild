@@ -3589,13 +3589,13 @@ final class UndoTests: XCTestCase {
         m.redo()
         await waitUntil { FileManager.default.fileExists(atPath: made.path) && m.names.contains("Sorted") }
 
-        try tree.file("Sorted/b.jpg")
+        try tree.file("Sorted/._b.jpg")   // an AppleDouble file, which FileManager doesn't list
         spy.keepFailedUndo = false
         m.undo()
         await waitUntil { !spy.reported.isEmpty }
         XCTAssertEqual((spy.reported.first as? UndoError)?.errorDescription,
                        UndoError.filled("Sorted").errorDescription)
-        XCTAssertTrue(FileManager.default.fileExists(atPath: tree.root.appendingPathComponent("Sorted/b.jpg").path))
+        XCTAssertTrue(FileManager.default.fileExists(atPath: tree.root.appendingPathComponent("Sorted/._b.jpg").path))
         XCTAssertEqual(spy.trashed.count, 1, "not trashed a second time")
     }
 

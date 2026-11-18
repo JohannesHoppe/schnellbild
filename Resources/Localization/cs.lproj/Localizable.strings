@@ -633,7 +633,7 @@
 "Credit" = "Zdroj";
 "Website" = "Web";
 "Schnellbild uses an LGPL-only build of VLCKit and libVLC, licensed under the GNU Lesser General Public License 2.1 and built from source without any of VLC's modules under the GPL. VLC as VideoLAN builds it also carries modules under the GPL; they are not in Schnellbild's build." = "Schnellbild používá sestavení VLCKit a libVLC pouze pod LGPL, licencované pod GNU Lesser General Public License 2.1 a sestavené ze zdrojového kódu bez jakéhokoli modulu VLC pod GPL. VLC, jak ho sestavuje VideoLAN, obsahuje i moduly pod GPL; v sestavení Schnellbildu nejsou.";
-"Schnellbild's build makes six small changes to VLC (Scripts/vlc-patches, 0001 to 0006): four to its subtitle timing, one to its audio output on macOS and one that leaves FFmpeg's files under the GPL out of the build." = "Sestavení Schnellbildu dělá ve VLC šest malých změn (Scripts/vlc-patches, 0001 až 0006): čtyři v časování titulků, jednu ve zvukovém výstupu v macOS a jednu, která ze sestavení vynechává soubory FFmpeg pod licencí GPL.";
+"Schnellbild's build makes eight small changes to VLC (Scripts/vlc-patches, 0001 to 0008): five to its subtitles, two to its audio output on macOS and one that leaves FFmpeg's files under the GPL out of the build." = "Sestavení Schnellbildu dělá ve VLC osm malých změn (Scripts/vlc-patches, 0001 až 0008): pět v titulcích, dvě ve zvukovém výstupu v macOS a jednu, která ze sestavení vynechává soubory FFmpeg pod licencí GPL.";
 "The complete source of this build, with these changes, is attached to its release: %@. The script that builds it is Scripts/build_vlckit_lgpl.sh in Schnellbild's repository." = "Úplný zdrojový kód tohoto sestavení i s těmito změnami je přiložen k jeho vydání: %@. Skript, který ho sestavuje, je Scripts/build_vlckit_lgpl.sh v repozitáři Schnellbildu.";
 "© VideoLAN and the VLC authors" = "© VideoLAN a autoři VLC";
 "Libraries included in VLCKit, each under its own license" = "Knihovny obsažené ve VLCKit, každá pod vlastní licencí";
@@ -661,7 +661,7 @@
 "the clouds on the globe" = "mraky na glóbu";
 "Show Hidden Files" = "Zobrazit skryté soubory";
 "Show hidden files and folders" = "Zobrazovat skryté soubory a složky";
-"Names that start with a dot, and what macOS hides, such as the Library folder. Off, they appear nowhere in Schnellbild." = "Názvy začínající tečkou a to, co macOS skrývá, třeba složka Knihovna. Když je to vypnuté, nikde ve Schnellbildu se neobjeví.";
+"Names that start with a dot, what macOS hides, such as the Library folder, and the files macOS keeps for itself, such as .DS_Store. On, everything appears, also inside archives. Off, they appear nowhere in Schnellbild." = "Názvy začínající tečkou, to, co macOS skrývá, třeba složka Knihovna, a soubory, které si macOS vytváří pro sebe, třeba .DS_Store. Když je to zapnuté, objeví se všechno, i v archivech. Když je to vypnuté, nikde ve Schnellbildu se neobjeví.";
 "Show / hide hidden files and folders" = "Zobrazit / skrýt skryté soubory a složky";
 "Undo" = "Odvolat";
 "Redo" = "Znovu";

@@ -633,7 +633,7 @@
 "Credit" = "Kilde";
 "Website" = "Websted";
 "Schnellbild uses an LGPL-only build of VLCKit and libVLC, licensed under the GNU Lesser General Public License 2.1 and built from source without any of VLC's modules under the GPL. VLC as VideoLAN builds it also carries modules under the GPL; they are not in Schnellbild's build." = "Schnellbild bruger en ren LGPL-udgave af VLCKit og libVLC, licenseret under GNU Lesser General Public License 2.1 og bygget fra kildekoden uden nogen af VLC’s moduler under GPL. VLC, som VideoLAN bygger det, indeholder også moduler under GPL; de er ikke med i Schnellbilds udgave.";
-"Schnellbild's build makes six small changes to VLC (Scripts/vlc-patches, 0001 to 0006): four to its subtitle timing, one to its audio output on macOS and one that leaves FFmpeg's files under the GPL out of the build." = "Schnellbilds udgave laver seks små ændringer i VLC (Scripts/vlc-patches, 0001 til 0006): fire i undertekstenes timing, én i lydudgangen på macOS og én, der udelader FFmpegs filer under GPL fra buildet.";
+"Schnellbild's build makes eight small changes to VLC (Scripts/vlc-patches, 0001 to 0008): five to its subtitles, two to its audio output on macOS and one that leaves FFmpeg's files under the GPL out of the build." = "Schnellbilds udgave laver otte små ændringer i VLC (Scripts/vlc-patches, 0001 til 0008): fem i underteksterne, to i lydudgangen på macOS og én, der udelader FFmpegs filer under GPL fra buildet.";
 "The complete source of this build, with these changes, is attached to its release: %@. The script that builds it is Scripts/build_vlckit_lgpl.sh in Schnellbild's repository." = "Den fulde kildekode til denne udgave, med ændringerne, er vedhæftet dens release: %@. Scriptet, der bygger den, er Scripts/build_vlckit_lgpl.sh i Schnellbilds repository.";
 "© VideoLAN and the VLC authors" = "© VideoLAN og VLC’s forfattere";
 "Libraries included in VLCKit, each under its own license" = "Biblioteker i VLCKit, hvert under sin egen licens";
@@ -661,7 +661,7 @@
 "the clouds on the globe" = "skyerne på globussen";
 "Show Hidden Files" = "Vis skjulte filer";
 "Show hidden files and folders" = "Vis skjulte filer og mapper";
-"Names that start with a dot, and what macOS hides, such as the Library folder. Off, they appear nowhere in Schnellbild." = "Navne, der begynder med et punktum, og det, macOS skjuler, f.eks. mappen Bibliotek. Slået fra vises de ingen steder i Schnellbild.";
+"Names that start with a dot, what macOS hides, such as the Library folder, and the files macOS keeps for itself, such as .DS_Store. On, everything appears, also inside archives. Off, they appear nowhere in Schnellbild." = "Navne, der begynder med et punktum, det, macOS skjuler, f.eks. mappen Bibliotek, og de filer, macOS opretter til sig selv, f.eks. .DS_Store. Slået til vises alt, også i arkiver. Slået fra vises de ingen steder i Schnellbild.";
 "Show / hide hidden files and folders" = "Vis / skjul skjulte filer og mapper";
 "Undo" = "Fortryd";
 "Redo" = "Gentag";

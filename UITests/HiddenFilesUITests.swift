@@ -1,9 +1,9 @@
 import XCTest
 
 /// Hidden files and folders: off, they appear nowhere (the grid, a search
-/// into the subfolders, the Atlas with its subfolders); View → Show Hidden
-/// Files, ⇧⌘. and Settings → General switch them on and off in the open
-/// window at once.
+/// into the subfolders, the Atlas with its subfolders); on, every item
+/// appears, what macOS keeps for itself too. View → Show Hidden Files, ⇧⌘.
+/// and Settings → General switch them on and off in the open window at once.
 final class HiddenFilesUITests: SchnellbildUITestCase {
     override func setUpWithError() throws {
         try super.setUpWithError()
@@ -72,5 +72,26 @@ final class HiddenFilesUITests: SchnellbildUITestCase {
         app.terminate()
         launch(open: tempDir.path, resetState: false)
         XCTAssertTrue(tile(".dot.jpg").waitForExistence(timeout: 15), "still shown after a new launch")
+    }
+
+    /// A folder holding only what macOS keeps for itself: empty while hidden
+    /// items are hidden; shown, those items are listed and it isn't empty.
+    func testAFolderOfSystemFilesShowsThemWithHiddenShown() throws {
+        let system = try folder("system")
+        let names = [".DS_Store", "._a.jpg", "Icon\r"]
+        for name in names { try Data([1]).write(to: system.appendingPathComponent(name)) }
+        try folder("system/__MACOSX")
+        launch(open: system.path)
+        XCTAssertTrue(app.staticTexts["This folder is empty"].waitForExistence(timeout: 15), "hidden off: nothing to show")
+        XCTAssertFalse(element("otherFiles").exists)
+
+        clickMenu("View", "Show Hidden Files")
+        XCTAssertTrue(element("otherFiles").waitForExistence(timeout: 10), "shown: the folder's other files")
+        for name in names { XCTAssertTrue(element("other.\(name)").exists, name) }
+        XCTAssertTrue(tile("__MACOSX").exists, "the AppleDouble folder")
+        XCTAssertFalse(app.staticTexts["This folder is empty"].exists, "not empty while its items show")
+
+        clickMenu("View", "Show Hidden Files")
+        XCTAssertTrue(app.staticTexts["This folder is empty"].waitForExistence(timeout: 10), "hidden again")
     }
 }

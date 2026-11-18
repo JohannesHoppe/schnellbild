@@ -1,6 +1,5 @@
 import XCTest
 @preconcurrency import VLCKit
-import VLCFrames
 
 /// Sound VLC decodes through FFmpeg: AC-3 and E-AC-3 (Dolby Digital and
 /// Dolby Digital Plus, common in films and TV recordings). The bundled
@@ -69,39 +68,82 @@ private final class DecodedSound: @unchecked Sendable {   // state behind `lock`
     }
 
     /// Plays `url` to libVLC's audio callbacks until `seconds` of sound have
-    /// come (or 15 s have passed).
+    /// come (or 15 s have passed). The player is libVLC's own, made, stopped
+    /// and released here, the release awaited, so no two tests' players
+    /// live at once. VLCKit releases its players later, on a queue of its
+    /// own: with the AC-3 test's player still being destroyed there, the
+    /// E-AC-3 test hung (run 44318947133) waiting to write VLC's
+    /// configuration (the CoreAudio output a new player makes at once and
+    /// the audio callbacks replace stores its device there as it closes)
+    /// while another thread waited to read it; which thread held the lock
+    /// isn't known.
     static func of(_ url: URL, seconds: Double) async throws -> DecodedSound {
-        let handle = dlopen(nil, RTLD_NOW)
-        typealias Play = @convention(c) (UnsafeMutableRawPointer?, UnsafeRawPointer?, UInt32, Int64) -> Void
-        typealias Pause = @convention(c) (UnsafeMutableRawPointer?, Int64) -> Void
-        typealias Drain = @convention(c) (UnsafeMutableRawPointer?) -> Void
-        typealias SetCallbacks = @convention(c) (OpaquePointer, Play, Pause?, Pause?, Pause?, Drain?, UnsafeMutableRawPointer?) -> Void
-        typealias SetFormat = @convention(c) (OpaquePointer, UnsafePointer<CChar>, UInt32, UInt32) -> Void
-        let callbacks = try XCTUnwrap(dlsym(handle, "libvlc_audio_set_callbacks"))
-        let format = try XCTUnwrap(dlsym(handle, "libvlc_audio_set_format"))
-        let setCallbacks = unsafeBitCast(callbacks, to: SetCallbacks.self)
-        let setFormat = unsafeBitCast(format, to: SetFormat.self)
-
+        let vlc = try LibVLC()
         let sound = DecodedSound(frames: Int(seconds * 48_000))
-        let media = VLCMedia(url: url)
-        media.addOption(":no-video")
-        let player = VLCMediaPlayer()
-        player.media = media
-        let native = try XCTUnwrap(LibVLCVideo.nativePlayer(of: player))
-        // Held for good: VLC's audio thread may call in until the player is
-        // released, after the test
+        let instance = try XCTUnwrap(VLCLibrary.shared().instance)
+        let media = try XCTUnwrap(url.path.withCString { vlc.mediaNewPath(instance, $0) })
+        ":no-video".withCString { vlc.mediaAddOption(media, $0) }
+        let player = try XCTUnwrap(vlc.playerNewFromMedia(media))
+        vlc.mediaRelease(media)
         let opaque = Unmanaged.passRetained(sound).toOpaque()
-        setCallbacks(native, { opaque, samples, count, _ in
+        vlc.setCallbacks(player, { opaque, samples, count, _ in
             guard let opaque, let samples else { return }
             _ = Unmanaged<DecodedSound>.fromOpaque(opaque).takeUnretainedValue().take(samples, count: Int(count))
         }, nil, nil, nil, nil, opaque)
-        "S16N".withCString { setFormat(native, $0, 48_000, 2) }
-        player.play()
+        "S16N".withCString { vlc.setFormat(player, $0, 48_000, 2) }
+        _ = vlc.play(player)
         let deadline = Date().addingTimeInterval(15)
         while sound.frames < sound.wanted, Date() < deadline {
             try await Task.sleep(nanoseconds: 50_000_000)
         }
-        DispatchQueue.global().async { player.stop() }
+        // Stopped and released before the next test makes a player; the
+        // callbacks' reference goes once nothing can call them any more
+        let held = Held(player)
+        await Task.detached {
+            vlc.stop(held.player)
+            vlc.playerRelease(held.player)
+        }.value
+        Unmanaged<DecodedSound>.fromOpaque(opaque).release()
         return sound
+    }
+}
+
+/// A libVLC player handed to the thread that stops it.
+private final class Held: @unchecked Sendable {
+    let player: OpaquePointer
+    init(_ player: OpaquePointer) { self.player = player }
+}
+
+/// The libVLC functions the test calls, looked up in VLCKit.
+private struct LibVLC: @unchecked Sendable {
+    typealias Play = @convention(c) (UnsafeMutableRawPointer?, UnsafeRawPointer?, UInt32, Int64) -> Void
+    typealias Pause = @convention(c) (UnsafeMutableRawPointer?, Int64) -> Void
+    typealias Drain = @convention(c) (UnsafeMutableRawPointer?) -> Void
+
+    let mediaNewPath: @convention(c) (UnsafeMutableRawPointer, UnsafePointer<CChar>) -> OpaquePointer?
+    let mediaAddOption: @convention(c) (OpaquePointer, UnsafePointer<CChar>) -> Void
+    let mediaRelease: @convention(c) (OpaquePointer) -> Void
+    let playerNewFromMedia: @convention(c) (OpaquePointer) -> OpaquePointer?
+    let setCallbacks: @convention(c) (OpaquePointer, Play, Pause?, Pause?, Pause?, Drain?, UnsafeMutableRawPointer?) -> Void
+    let setFormat: @convention(c) (OpaquePointer, UnsafePointer<CChar>, UInt32, UInt32) -> Void
+    let play: @convention(c) (OpaquePointer) -> Int32
+    let stop: @convention(c) (OpaquePointer) -> Void
+    let playerRelease: @convention(c) (OpaquePointer) -> Void
+
+    init() throws {
+        let handle = dlopen(nil, RTLD_NOW)
+        func find<T>(_ name: String, _: T.Type) throws -> T {
+            unsafeBitCast(try XCTUnwrap(dlsym(handle, name), "no \(name)"), to: T.self)
+        }
+        mediaNewPath = try find("libvlc_media_new_path", (@convention(c) (UnsafeMutableRawPointer, UnsafePointer<CChar>) -> OpaquePointer?).self)
+        mediaAddOption = try find("libvlc_media_add_option", (@convention(c) (OpaquePointer, UnsafePointer<CChar>) -> Void).self)
+        mediaRelease = try find("libvlc_media_release", (@convention(c) (OpaquePointer) -> Void).self)
+        playerNewFromMedia = try find("libvlc_media_player_new_from_media", (@convention(c) (OpaquePointer) -> OpaquePointer?).self)
+        setCallbacks = try find("libvlc_audio_set_callbacks",
+                                (@convention(c) (OpaquePointer, Play, Pause?, Pause?, Pause?, Drain?, UnsafeMutableRawPointer?) -> Void).self)
+        setFormat = try find("libvlc_audio_set_format", (@convention(c) (OpaquePointer, UnsafePointer<CChar>, UInt32, UInt32) -> Void).self)
+        play = try find("libvlc_media_player_play", (@convention(c) (OpaquePointer) -> Int32).self)
+        stop = try find("libvlc_media_player_stop", (@convention(c) (OpaquePointer) -> Void).self)
+        playerRelease = try find("libvlc_media_player_release", (@convention(c) (OpaquePointer) -> Void).self)
     }
 }

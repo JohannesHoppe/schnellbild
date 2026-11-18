@@ -633,7 +633,7 @@
 "Credit" = "Crediti";
 "Website" = "Sito web";
 "Schnellbild uses an LGPL-only build of VLCKit and libVLC, licensed under the GNU Lesser General Public License 2.1 and built from source without any of VLC's modules under the GPL. VLC as VideoLAN builds it also carries modules under the GPL; they are not in Schnellbild's build." = "Schnellbild usa una build di VLCKit e libVLC solo LGPL, distribuita con la GNU Lesser General Public License 2.1 e compilata dal codice sorgente senza nessuno dei moduli di VLC sotto GPL. VLC, così come lo compila VideoLAN, contiene anche moduli sotto GPL; non fanno parte della build di Schnellbild.";
-"Schnellbild's build makes six small changes to VLC (Scripts/vlc-patches, 0001 to 0006): four to its subtitle timing, one to its audio output on macOS and one that leaves FFmpeg's files under the GPL out of the build." = "La build di Schnellbild apporta sei piccole modifiche a VLC (Scripts/vlc-patches, da 0001 a 0006): quattro alla temporizzazione dei sottotitoli, una all’uscita audio su macOS e una che lascia fuori dalla build i file di FFmpeg sotto la GPL.";
+"Schnellbild's build makes eight small changes to VLC (Scripts/vlc-patches, 0001 to 0008): five to its subtitles, two to its audio output on macOS and one that leaves FFmpeg's files under the GPL out of the build." = "La build di Schnellbild apporta otto piccole modifiche a VLC (Scripts/vlc-patches, da 0001 a 0008): cinque ai sottotitoli, due all’uscita audio su macOS e una che lascia fuori dalla build i file di FFmpeg sotto la GPL.";
 "The complete source of this build, with these changes, is attached to its release: %@. The script that builds it is Scripts/build_vlckit_lgpl.sh in Schnellbild's repository." = "Il codice sorgente completo di questa build, con queste modifiche, è allegato alla sua release: %@. Lo script che la compila è Scripts/build_vlckit_lgpl.sh, nel repository di Schnellbild.";
 "© VideoLAN and the VLC authors" = "© VideoLAN e gli autori di VLC";
 "Libraries included in VLCKit, each under its own license" = "Librerie incluse in VLCKit, ognuna con la propria licenza";
@@ -661,7 +661,7 @@
 "the clouds on the globe" = "le nuvole sul globo";
 "Show Hidden Files" = "Mostra file nascosti";
 "Show hidden files and folders" = "Mostra file e cartelle nascosti";
-"Names that start with a dot, and what macOS hides, such as the Library folder. Off, they appear nowhere in Schnellbild." = "I nomi che iniziano con un punto e ciò che macOS nasconde, come la cartella Libreria. Disattivato, non compaiono da nessuna parte in Schnellbild.";
+"Names that start with a dot, what macOS hides, such as the Library folder, and the files macOS keeps for itself, such as .DS_Store. On, everything appears, also inside archives. Off, they appear nowhere in Schnellbild." = "I nomi che iniziano con un punto, ciò che macOS nasconde, come la cartella Libreria, e i file che macOS tiene per sé, come .DS_Store. Attivato, compare tutto, anche dentro gli archivi. Disattivato, non compaiono da nessuna parte in Schnellbild.";
 "Show / hide hidden files and folders" = "Mostra / nascondi file e cartelle nascosti";
 "Undo" = "Annulla";
 "Redo" = "Ripeti";

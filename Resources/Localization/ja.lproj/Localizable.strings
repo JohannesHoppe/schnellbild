@@ -633,7 +633,7 @@
 "Credit" = "クレジット";
 "Website" = "Web サイト";
 "Schnellbild uses an LGPL-only build of VLCKit and libVLC, licensed under the GNU Lesser General Public License 2.1 and built from source without any of VLC's modules under the GPL. VLC as VideoLAN builds it also carries modules under the GPL; they are not in Schnellbild's build." = "Schnellbild は、LGPL のみで構成した VLCKit と libVLC のビルドを使っています。GNU Lesser General Public License 2.1 でライセンスされ、GPL の VLC モジュールを一切含めずにソースコードからビルドしたものです。VideoLAN がビルドする VLC には GPL のモジュールも含まれますが、Schnellbild のビルドには含まれていません。";
-"Schnellbild's build makes six small changes to VLC (Scripts/vlc-patches, 0001 to 0006): four to its subtitle timing, one to its audio output on macOS and one that leaves FFmpeg's files under the GPL out of the build." = "Schnellbild のビルドは VLC に6つの小さな変更を加えています（Scripts/vlc-patches の 0001 から 0006）。4つは字幕のタイミング、1つは macOS での音声出力、1つは GPL の下にある FFmpeg のファイルをビルドから外すものです。";
+"Schnellbild's build makes eight small changes to VLC (Scripts/vlc-patches, 0001 to 0008): five to its subtitles, two to its audio output on macOS and one that leaves FFmpeg's files under the GPL out of the build." = "Schnellbild のビルドは VLC に8つの小さな変更を加えています（Scripts/vlc-patches の 0001 から 0008）。5つは字幕、2つは macOS での音声出力、1つは GPL の下にある FFmpeg のファイルをビルドから外すものです。";
 "The complete source of this build, with these changes, is attached to its release: %@. The script that builds it is Scripts/build_vlckit_lgpl.sh in Schnellbild's repository." = "このビルドの完全なソースコードは、これらの変更を含めてそのリリースに添付されています：%@。ビルドするスクリプトは Schnellbild のリポジトリにある Scripts/build_vlckit_lgpl.sh です。";
 "© VideoLAN and the VLC authors" = "© VideoLAN および VLC の作者";
 "Libraries included in VLCKit, each under its own license" = "VLCKit に含まれるライブラリ（それぞれ独自のライセンス）";
@@ -661,7 +661,7 @@
 "the clouds on the globe" = "地球儀の雲";
 "Show Hidden Files" = "非表示ファイルを表示";
 "Show hidden files and folders" = "非表示のファイルとフォルダを表示";
-"Names that start with a dot, and what macOS hides, such as the Library folder. Off, they appear nowhere in Schnellbild." = "ドットで始まる名前と、「ライブラリ」フォルダなど macOS が隠しているもの。オフのときは Schnellbild のどこにも表示されません。";
+"Names that start with a dot, what macOS hides, such as the Library folder, and the files macOS keeps for itself, such as .DS_Store. On, everything appears, also inside archives. Off, they appear nowhere in Schnellbild." = "ドットで始まる名前、「ライブラリ」フォルダなど macOS が隠しているもの、そして .DS_Store など macOS が自分用に置くファイル。オンのときは、アーカイブの中も含めてすべてが表示されます。オフのときは Schnellbild のどこにも表示されません。";
 "Show / hide hidden files and folders" = "非表示のファイルとフォルダを表示 / 非表示";
 "Undo" = "取り消す";
 "Redo" = "やり直す";

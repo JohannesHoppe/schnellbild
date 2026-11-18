@@ -44,11 +44,23 @@ struct ItemIdentity: Sendable, Equatable {
     private static func contentsHash(_ folder: URL) -> Int {
         var paths: [String] = []
         let base = folder.standardizedFileURL.path.count + 1
-        if let walk = FileManager.default.enumerator(at: folder, includingPropertiesForKeys: nil) {
+        // Every item: FileManager leaves out AppleDouble files ("._x"),
+        // which `readdir` reads in each folder
+        var folders = [folder]
+        if let walk = FileManager.default.enumerator(at: folder, includingPropertiesForKeys: [.isDirectoryKey, .isSymbolicLinkKey]) {
             while let item = walk.nextObject() as? URL {
                 // The Finder's view settings, written when it shows the folder
                 if item.lastPathComponent == ".DS_Store" { continue }
                 paths.append(String(item.standardizedFileURL.path.dropFirst(base)))
+                let values = try? item.resourceValues(forKeys: [.isDirectoryKey, .isSymbolicLinkKey])
+                if values?.isDirectory == true, values?.isSymbolicLink != true { folders.append(item) }
+            }
+        }
+        let walked = Set(paths)
+        for inner in folders {
+            for item in HiddenFiles.appleDoubleItems(in: inner, besides: []) {
+                let path = String(item.standardizedFileURL.path.dropFirst(base))
+                if !walked.contains(path) { paths.append(path) }
             }
         }
         var hasher = Hasher()

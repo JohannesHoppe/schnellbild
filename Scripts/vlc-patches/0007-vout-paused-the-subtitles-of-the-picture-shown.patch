@@ -1,0 +1,37 @@
+vout: paused, the subtitles of the picture shown
+
+Paused, the video output drew the subtitles at the pause's date: when the
+input took the pause. The pictures it shows until the pause reaches it
+(a few ms later) carry later dates and get the subtitles of their dates,
+which takes a line that has ended out of the queue. When a line changed
+between the two dates, the old line was gone and, at the pause's date, the
+next one hadn't begun: the picture paused on showed no line for as long as
+it stayed paused (`VLCPausedSubtitleTests`: about one pause in a hundred
+just after a line began; the picture right after the pause still had the
+line, the ones drawn again while paused none). The subtitles of a paused
+picture are those of its own date, as while playing. Applied with patch -p1
+(Scripts/build_vlckit_lgpl.sh).
+
+diff --git a/src/video_output/video_output.c b/src/video_output/video_output.c
+--- a/src/video_output/video_output.c
++++ b/src/video_output/video_output.c
+@@ -987,11 +987,14 @@
+      * Get the subpicture to be displayed
+      */
+     const bool do_snapshot = vout_snapshot_IsRequested(&vout->p->snapshot);
+-    vlc_tick_t render_subtitle_date;
+-    if (vout->p->pause.is_on)
+-        render_subtitle_date = vout->p->pause.date;
+-    else
+-        render_subtitle_date = filtered->date > 1 ? filtered->date : mdate();
++    /* Changed for Schnellbild on 2026-11-18: Scripts/vlc-patches/0007-vout-paused-the-subtitles-of-the-picture-shown.patch */
++    /* Paused too, the subtitles of the picture's own date: the pause's date
++     * is when the input took the pause, and the pictures the output shows
++     * until the pause reaches it carry later dates; their subtitles, drawn
++     * at their dates, take out a line that ended before them, while at the
++     * pause's date the line after it hasn't begun: the picture paused on
++     * showed none */
++    vlc_tick_t render_subtitle_date = filtered->date > 1 ? filtered->date : mdate();
+     vlc_tick_t render_osd_date = mdate(); /* FIXME wrong */
+ 
+     /*

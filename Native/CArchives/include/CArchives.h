@@ -86,6 +86,7 @@ struct archive *sb_archive_read_new(void);
 int sb_archive_read_support_format_zip_seekable(struct archive *);
 int sb_archive_read_support_format_zip_streamable(struct archive *);
 int sb_archive_read_support_format_7zip(struct archive *);
+int sb_archive_read_set_format_option(struct archive *, const char *module, const char *option, const char *value);
 int sb_archive_read_add_passphrase(struct archive *, const char *);
 int sb_archive_read_open_filenames(struct archive *, const char **filenames, size_t block_size);
 int sb_archive_read_next_header(struct archive *, struct archive_entry **);
