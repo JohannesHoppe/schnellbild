@@ -309,7 +309,7 @@ AVKit stays for the native formats: both decode through VideoToolbox, but AVKit 
   unpaired value for a file to open): `--open=<path>`, `--force-vlc` (every
   video through VLC), `--test-log=<name>` (the app logs what the screen
   doesn't show, e.g. each rename, into its own temporary folder, in its container: `BrowserModel.testLogFile`; a test names it after its folder, `testLog(_:)`, and reads it there; VLC's log goes there too as `schnellbild-vlc.log`, which ci.yml prints after a failure), `--search-delay=<ms>` (a search that stays
-  running), `--reset-state` (empty preferences except the folders granted through the open panel, `FolderAccess.key`), `--reset-grants` (those too),
+  running), `--reset-state` (empty preferences, once a launch, except the folders granted through the open panel, `FolderAccess.key`), `--reset-grants` (those too),
   `--hold-volume-display` (the volume display stays, for a test to read it), `--hold-video-bar` (the video control bar stays once shown), `--appearance=light|dark` (`AppAppearance.testing`: the app light or dark whatever the runner's and the preferences), `--globe-camera=<latitude>,<longitude>,<zoom>,<pitch>,<heading>` (the Atlas view's camera instead of fitting the items, `AtlasModel.testCamera`), `--globe-date=<ISO 8601>` (the Sun as at that moment, `AtlasModel.testSunDate`), `--pictures-folder=<path>` (the folder a first launch opens, `BrowserModel.defaultFolder`: the user's real ~/Pictures outside the UI tests, none in them otherwise, so `--reset-state` still starts with "No folder open"). Not covered
   end-to-end: Reveal in Finder, Open with default app
   (unit-tested through `FileActions`).
