@@ -103,7 +103,7 @@ enum AboutPanel {
                 license: "GNU Lesser General Public License 2.1 (LGPL-2.1-or-later)",
                 notes: [
                     String(localized: "Schnellbild uses an LGPL-only build of VLCKit and libVLC, licensed under the GNU Lesser General Public License 2.1 and built from source without any of VLC's modules under the GPL. VLC as VideoLAN builds it also carries modules under the GPL; they are not in Schnellbild's build."),
-                    String(localized: "Schnellbild's build makes seven small changes to VLC (Scripts/vlc-patches, 0001 to 0007): five to its subtitles, one to its audio output on macOS and one that leaves FFmpeg's files under the GPL out of the build."),
+                    String(localized: "Schnellbild's build makes eight small changes to VLC (Scripts/vlc-patches, 0001 to 0008): five to its subtitles, two to its audio output on macOS and one that leaves FFmpeg's files under the GPL out of the build."),
                     String(localized: "The complete source of this build, with these changes, is attached to its release: \(vlckitRelease). The script that builds it is Scripts/build_vlckit_lgpl.sh in Schnellbild's repository."),
                 ],
                 link: "https://code.videolan.org/videolan/VLCKit",

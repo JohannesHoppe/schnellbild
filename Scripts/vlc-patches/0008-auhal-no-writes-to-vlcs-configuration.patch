@@ -1,0 +1,57 @@
+auhal: no writes to VLC's configuration
+
+The CoreAudio output stored the device it played on (as it closes), the
+volume (as it is set) and the devices it warned about in VLC's
+configuration, under the configuration's lock for writing. Schnellbild
+never saves VLC's configuration, so the stored values only served the next
+output of the same process, and the app sets the volume of every player
+itself. Every player makes an output at once and closes it when it goes or
+its audio is handed to callbacks; with many players at once (thumbnails,
+playback, the unit tests' players) a test process hung with one thread
+waiting to write the configuration in Close and another waiting to read it
+(run 44318947133; which thread held the lock is not known). The output
+writes nothing to the configuration: the device and volume come from the
+configuration's defaults and the app, the warned devices stay on the
+output object. Applied with patch -p1 (Scripts/build_vlckit_lgpl.sh).
+
+diff --git a/modules/audio_output/auhal.c b/modules/audio_output/auhal.c
+--- a/modules/audio_output/auhal.c
++++ b/modules/audio_output/auhal.c
+@@ -927,9 +927,8 @@
+                                         0);
+     }
+ 
+-    if (var_InheritBool(p_aout, "volume-save"))
+-        config_PutInt(p_aout, "auhal-volume",
+-                      lroundf(volume * AOUT_VOLUME_DEFAULT));
++    /* Changed for Schnellbild on 2026-11-18: Scripts/vlc-patches/0008-auhal-no-writes-to-vlcs-configuration.patch */
++    /* The volume isn't stored in VLC's configuration (see Close) */
+ 
+     return ostatus;
+ }
+@@ -1049,7 +1048,7 @@
+                      warned_devices ? ";" : "",
+                      warned_devices ? warned_devices : "") != -1)
+         {
+-            config_PutPsz(p_aout, "auhal-warned-devices", new_warned_devices);
++            /* Kept on the output, not in VLC's configuration (see Close) */
+             var_SetString(p_aout, "auhal-warned-devices", new_warned_devices);
+             free(new_warned_devices);
+         }
+@@ -1685,9 +1684,13 @@
+     CFRelease(device_list_cpy);
+     CFRelease(p_sys->device_list);
+ 
+-    char *psz_device = aout_DeviceGet(p_aout);
+-    config_PutPsz(p_aout, "auhal-audio-device", psz_device);
+-    free(psz_device);
++    /* The device isn't stored in VLC's configuration: an application of
++     * libVLC that never saves it has no use for it, and writing it takes the
++     * configuration's lock for writing while other players' outputs open
++     * and read it (a player's output is made at once and closed when the
++     * player goes or its audio is handed to callbacks: in a process with
++     * many players at once, as a thumbnailer, one such write hung the test
++     * process in that lock) */
+ 
+     vlc_mutex_destroy(&p_sys->selected_device_lock);
+     vlc_mutex_destroy(&p_sys->device_list_lock);

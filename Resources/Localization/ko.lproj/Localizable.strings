@@ -631,7 +631,7 @@
 "Credit" = "출처";
 "Website" = "웹사이트";
 "Schnellbild uses an LGPL-only build of VLCKit and libVLC, licensed under the GNU Lesser General Public License 2.1 and built from source without any of VLC's modules under the GPL. VLC as VideoLAN builds it also carries modules under the GPL; they are not in Schnellbild's build." = "Schnellbild는 LGPL만으로 구성한 VLCKit 및 libVLC 빌드를 사용합니다. GNU Lesser General Public License 2.1로 라이선스되며, GPL로 배포되는 VLC 모듈을 하나도 포함하지 않고 소스 코드로 빌드했습니다. VideoLAN이 빌드하는 VLC에는 GPL 모듈도 들어 있지만, Schnellbild의 빌드에는 없습니다.";
-"Schnellbild's build makes seven small changes to VLC (Scripts/vlc-patches, 0001 to 0007): five to its subtitles, one to its audio output on macOS and one that leaves FFmpeg's files under the GPL out of the build." = "Schnellbild의 빌드는 VLC를 일곱 군데 조금 고쳤습니다(Scripts/vlc-patches, 0001~0007). 다섯 가지는 자막, 한 가지는 macOS의 오디오 출력에 관한 것이고, 한 가지는 GPL을 따르는 FFmpeg 파일을 빌드에서 뺍니다.";
+"Schnellbild's build makes eight small changes to VLC (Scripts/vlc-patches, 0001 to 0008): five to its subtitles, two to its audio output on macOS and one that leaves FFmpeg's files under the GPL out of the build." = "Schnellbild의 빌드는 VLC를 여덟 군데 조금 고쳤습니다(Scripts/vlc-patches, 0001~0008). 다섯 가지는 자막, 두 가지는 macOS의 오디오 출력에 관한 것이고, 한 가지는 GPL을 따르는 FFmpeg 파일을 빌드에서 뺍니다.";
 "The complete source of this build, with these changes, is attached to its release: %@. The script that builds it is Scripts/build_vlckit_lgpl.sh in Schnellbild's repository." = "이 빌드의 전체 소스 코드는 이 변경 사항과 함께 해당 릴리스에 첨부되어 있습니다: %@. 이 빌드를 만드는 스크립트는 Schnellbild 저장소의 Scripts/build_vlckit_lgpl.sh입니다.";
 "© VideoLAN and the VLC authors" = "© VideoLAN 및 VLC 작성자";
 "Libraries included in VLCKit, each under its own license" = "VLCKit에 포함된 라이브러리(각각 고유한 라이선스)";
