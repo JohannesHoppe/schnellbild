@@ -2184,11 +2184,13 @@ final class BrowserModel: ObservableObject {
     nonisolated private static func scanFolder(_ url: URL, showingHidden shown: Bool, kept: Set<String>) async throws -> FolderListing {
         try await Blocking.run {
             let keys = entryKeys
-            let contents = try FileManager.default.contentsOfDirectory(
+            var contents = try FileManager.default.contentsOfDirectory(
                 at: url,
                 includingPropertiesForKeys: Array(keys),
                 options: []
             )
+            // FileManager leaves out AppleDouble files ("._x"); shown, every item is listed
+            if shown { contents += HiddenFiles.appleDoubleItems(in: url, besides: contents) }
             var listing = FolderListing()
             let drives = isDrivesLevel(url)
             for item in contents {

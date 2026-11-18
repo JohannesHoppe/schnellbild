@@ -445,6 +445,11 @@ struct LibArchiveReader: ArchiveReader {
         case .zip:                sb_archive_read_support_format_zip_streamable(archive)
         default:                  sb_archive_read_support_format_7zip(archive)
         }
+        // Every entry as it is in the ZIP: libarchive on macOS otherwise
+        // takes the AppleDouble files under "__MACOSX/" for the other
+        // entries' extra data and lists neither them nor the folder
+        // (what is shown is `HiddenFiles`'s to say)
+        if format == .zip { sb_archive_read_set_format_option(archive, "zip", "mac-ext", nil) }
         if let password { sb_archive_read_add_passphrase(archive, password) }
         let paths = volumes.map { strdup($0.path) }
         defer { paths.forEach { free($0) } }

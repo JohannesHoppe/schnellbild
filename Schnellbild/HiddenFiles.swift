@@ -39,6 +39,24 @@ enum HiddenFiles {
         name == ".DS_Store" || name.hasPrefix("._") || name == "Icon\r" || name == "__MACOSX"
     }
 
+    /// The AppleDouble items ("._x") in `folder` that `listed` (what
+    /// FileManager listed, which leaves them out) misses, read with
+    /// `readdir`. Reads the disk; off the main thread.
+    static func appleDoubleItems(in folder: URL, besides listed: [URL]) -> [URL] {
+        guard let dir = opendir(folder.path) else { return [] }
+        defer { closedir(dir) }
+        let known = Set(listed.map(\.lastPathComponent))
+        var found: [URL] = []
+        while let entry = readdir(dir) {
+            let name = withUnsafeBytes(of: entry.pointee.d_name) { raw in
+                String(decoding: raw.prefix(Int(entry.pointee.d_namlen)), as: UTF8.self)
+            }
+            guard name.hasPrefix("._"), !known.contains(name) else { continue }
+            found.append(folder.appendingPathComponent(name, isDirectory: entry.pointee.d_type == DT_DIR))
+        }
+        return found
+    }
+
     /// Hidden by its name: it starts with a dot, or it is one of macOS's
     /// own items (`isSystemItem`). No disk access.
     static func isHidden(name: String) -> Bool { name.hasPrefix(".") || isSystemItem(name) }
