@@ -26,6 +26,18 @@ struct GeneralSettingsView: View {
     @State private var forgettingAccess = false
 
     var body: some View {
+        // As tall as what it holds, but never taller than the screen: on a
+        // small one the sections scroll, so the last ones stay reachable
+        ScrollView(.vertical) { form }
+            .frame(maxHeight: Self.largestHeight)
+    }
+
+    /// The screen's height less the window's title and tab bar.
+    private static var largestHeight: CGFloat {
+        max(300, (NSScreen.main?.visibleFrame.height ?? 800) - 110)
+    }
+
+    private var form: some View {
         Form {
             Section("Appearance") {
                 Picker("Mode", selection: $appearance) {
