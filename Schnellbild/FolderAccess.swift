@@ -263,7 +263,10 @@ final class FolderAccess {
     /// restart. The oldest held file beyond `heldFileLimit` is let go.
     func hold(_ file: URL) {
         guard sandboxed, !covers(file) else { return }
-        held.append(Grant(url: file, path: BrowserModel.canonicalPath(file), bookmark: nil, started: system.start(file)))
+        // Only what the sandbox opened (a path named on the command line it didn't)
+        let started = system.start(file)
+        guard started || Self.canOpen(file) else { return }
+        held.append(Grant(url: file, path: BrowserModel.canonicalPath(file), bookmark: nil, started: started))
         while held.count > Self.heldFileLimit { release(held.removeFirst()) }
     }
 

@@ -166,12 +166,19 @@ class SchnellbildUITestCase: XCTestCase {
     /// button (Return).
     func chooseInOpenPanel(_ folder: URL, file: StaticString = #filePath, line: UInt = #line) {
         let panel = waitForOpenPanel(file: file, line: line)
-        app.typeKey("g", modifierFlags: [.command, .shift])
-        RunLoop.current.run(until: Date().addingTimeInterval(1))
-        app.typeText(folder.path)
-        app.typeKey(.return, modifierFlags: [])
-        RunLoop.current.run(until: Date().addingTimeInterval(1.5))
-        app.typeKey(.return, modifierFlags: [])
+        // Again when the panel took the keys too early (seen on CI: ⇧⌘G
+        // lost, the panel stayed where it was)
+        for _ in 0..<3 where panel.exists {
+            RunLoop.current.run(until: Date().addingTimeInterval(1))
+            app.typeKey("g", modifierFlags: [.command, .shift])
+            RunLoop.current.run(until: Date().addingTimeInterval(1.5))
+            app.typeText(folder.path)
+            app.typeKey(.return, modifierFlags: [])
+            RunLoop.current.run(until: Date().addingTimeInterval(1.5))
+            app.typeKey(.return, modifierFlags: [])
+            let deadline = Date().addingTimeInterval(4)
+            while panel.exists, Date() < deadline { RunLoop.current.run(until: Date().addingTimeInterval(0.2)) }
+        }
         closed(panel, file: file, line: line)
     }
 
