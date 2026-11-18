@@ -12,6 +12,9 @@
 #
 # Never prints secret values, only counts and the certificate's public name.
 set -euo pipefail
+# Every file written here (the .p12 files with the private key, the PEM, the
+# API key) is readable by this user only
+umask 077
 
 KC="$RUNNER_TEMP/signing.keychain-db"
 
@@ -33,7 +36,7 @@ import_p12() {
   # with RC2-40) and repack it with 3DES/SHA-1.
   OPENSSL="$(brew --prefix openssl@3)/bin/openssl"
   PEM="$RUNNER_TEMP/cert.pem"
-  (umask 077; "$OPENSSL" pkcs12 -legacy -in "$RUNNER_TEMP/cert.p12" -nodes -passin env:P12_PASSWORD -out "$PEM")
+  "$OPENSSL" pkcs12 -legacy -in "$RUNNER_TEMP/cert.p12" -nodes -passin env:P12_PASSWORD -out "$PEM"
   echo "In the .p12: $(grep -c 'BEGIN CERTIFICATE' "$PEM" || true) certificate(s), $(grep -c 'BEGIN .*PRIVATE KEY' "$PEM" || true) private key(s)"
   grep -q 'BEGIN CERTIFICATE' "$PEM" && "$OPENSSL" x509 -in "$PEM" -noout -subject -enddate
   "$OPENSSL" pkcs12 -export -in "$PEM" -passout env:P12_PASSWORD -out "$RUNNER_TEMP/cert-classic.p12" \
@@ -68,7 +71,7 @@ case "${1:-}" in
     ;;
   notary-key)
     : "${P8:?P8 missing}"
-    (umask 077; printf '%s\n' "$P8" > "$RUNNER_TEMP/notary.p8")
+    printf '%s\n' "$P8" > "$RUNNER_TEMP/notary.p8"
     echo "NOTARY_KEY=$RUNNER_TEMP/notary.p8" >> "$GITHUB_ENV"
     ;;
   cleanup)

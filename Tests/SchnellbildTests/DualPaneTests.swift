@@ -16,6 +16,66 @@ final class DualPaneTests: XCTestCase {
         }
     }
 
+    /// A ⌘- or ⇧-click on a bar or header goes to it, not to a tile lying
+    /// under it; only tiles where the grid can be seen take it.
+    func testModifierClicksSkipTilesUnderTheBars() {
+        let window = window(FileActionsSpy())
+        let pane = ObjectIdentifier(window.left)
+        let id = ObjectIdentifier(window)
+        var clicked: [String] = []
+        // The grid seen between y 40 and 600; a row of tiles scrolled up under
+        // the search bar (0…40), one under the status bar (600…630)
+        ModifierClicks.show(pane, view: "grid", rect: CGRect(x: 0, y: 40, width: 800, height: 560))
+        ModifierClicks.cover(pane, view: "searchBar", rect: CGRect(x: 0, y: 0, width: 800, height: 40))
+        ModifierClicks.cover(pane, view: "listHeader", rect: CGRect(x: 0, y: 40, width: 800, height: 20))
+        defer {
+            for key in ["test.top", "test.middle", "test.bottom"] { ModifierClicks.remove(key) }
+            ModifierClicks.show(pane, view: "grid", rect: nil)
+            for view in ["searchBar", "listHeader"] { ModifierClicks.cover(pane, view: view, rect: nil) }
+        }
+        for (key, y) in [("test.top", 0.0), ("test.middle", 200.0), ("test.bottom", 590.0)] {
+            ModifierClicks.place(key, frame: CGRect(x: 0, y: y, width: 100, height: 60), pane: pane, in: window) { _ in clicked.append(key) }
+        }
+        let onSearchBar = ModifierClicks.tile(at: CGPoint(x: 50, y: 20), in: id)
+        XCTAssertNil(onSearchBar.action)
+        XCTAssertFalse(onSearchBar.overTiles, "the bar's: not the tile hovered last either")
+        XCTAssertNil(ModifierClicks.tile(at: CGPoint(x: 50, y: 50), in: id).action, "the header lies over it")
+        XCTAssertNil(ModifierClicks.tile(at: CGPoint(x: 50, y: 610), in: id).action, "below what can be seen")
+        ModifierClicks.tile(at: CGPoint(x: 50, y: 230), in: id).action?([.command])
+        ModifierClicks.tile(at: CGPoint(x: 50, y: 595), in: id).action?([.command])
+        XCTAssertEqual(clicked, ["test.middle", "test.bottom"])
+        XCTAssertTrue(ModifierClicks.tile(at: CGPoint(x: 500, y: 300), in: id).overTiles, "free space in the grid")
+    }
+
+    /// The help's menu item waits while the other pane has a sheet up (a
+    /// window shows one at a time): the help would never show and keep the
+    /// active pane's keys.
+    func testTheHelpWaitsForTheOtherPanesSheet() throws {
+        let w = window(FileActionsSpy())
+        w.setDual(true)
+        let other = try XCTUnwrap(w.right)
+        XCTAssertTrue(w.active === w.left)
+        other.newFolderRequested = true
+        w.openHelp()
+        XCTAssertFalse(w.left.showHelp)
+        other.newFolderRequested = false
+        w.openHelp()
+        XCTAssertTrue(w.left.showHelp)
+    }
+
+    /// F5 / F6 on what can't go (items inside an archive) is told, as an
+    /// empty selection is (a beep), not swallowed: the move says nothing goes.
+    func testAMoveOfNothingThatCanGoSaysSo() throws {
+        let tree = try TempTree(self)
+        let target = try tree.folder("Sorted")
+        let photo = try tree.file("a.jpg")
+        let m = makeModel(FileActionsSpy())
+        XCTAssertFalse(m.move([tree.root.appendingPathComponent("Holiday.zip/Day 1/b.jpg")], into: target, how: .copy),
+                       "inside an archive: only read")
+        XCTAssertFalse(m.move([target], into: target, how: .copy), "not into itself")
+        XCTAssertTrue(m.move([photo], into: target, how: .copy))
+    }
+
     func testMarkingSeveralItems() async throws {
         let tree = try TempTree(self)
         for n in ["a.jpg", "b.jpg", "c.jpg", "d.jpg"] { try tree.file(n) }

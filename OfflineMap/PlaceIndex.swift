@@ -165,7 +165,9 @@ public final class PlaceIndex: @unchecked Sendable {
             let at = tableOffset + 24 * i
             let block = Block(cell: u32(at), tier: Int(data[data.startIndex + at + 4]), packed: data[data.startIndex + at + 5] == 1,
                               count: u32(at + 8), offset: u32(at + 12), storedLength: u32(at + 16), length: u32(at + 20))
-            guard block.offset + block.storedLength <= data.count, block.count * 16 <= block.length else { throw IndexError.malformed }
+            // An unpacked block is read as stored: its stored length must be its length
+            guard block.offset + block.storedLength <= data.count, block.count * 16 <= block.length,
+                  block.packed || block.storedLength == block.length else { throw IndexError.malformed }
             table.append(block)
         }
         blocks = table

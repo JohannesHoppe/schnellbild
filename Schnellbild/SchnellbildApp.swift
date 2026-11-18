@@ -70,7 +70,7 @@ struct SchnellbildApp: App {
                 NewWindowButton()
                 Button("Open Folder…") { model.chooseFolder() }
                     .keyboardShortcut(shortcuts.menuShortcut(.openFolder))
-                    .disabled(window.anySheetOpen)
+                    .disabled(window.anySheetOpen || model.presenting)
             }
             CommandGroup(replacing: .undoRedo) {
                 UndoCommands(history: model.undoHistory, window: window, model: model)
@@ -90,46 +90,46 @@ struct SchnellbildApp: App {
                     .keyboardShortcut(shortcuts.menuShortcut(.enclosingFolder))
                     .disabled(!model.canGoUp || window.anySheetOpen)
                 Divider()
-                // (not in a slideshow: the search bar is hidden there)
+                // (not in a slideshow or the tour: the search bar is hidden there)
                 Button("Search") { model.focusSearch() }
                     .keyboardShortcut(shortcuts.menuShortcut(.search))
-                    .disabled(window.anySheetOpen || model.slideshow != nil)
+                    .disabled(window.anySheetOpen || model.presenting)
             }
             CommandMenu("Video") {
                 VideoCommands(model: model, window: window, shortcuts: shortcuts)
             }
             CommandMenu("Bookmarks") {
                 BookmarkItems(model: model, shortcuts: true)
-                    .disabled(window.anySheetOpen || model.slideshow != nil)
+                    .disabled(window.anySheetOpen || model.presenting)
             }
             CommandMenu("Actions") {
-                // Not during a slideshow: the selection is in the hidden grid,
-                // not what's on screen.
+                // Not during a slideshow or the tour: the selection is in the
+                // hidden grid, not what's on screen.
                 Button("New Folder") { model.beginNewFolder() }
                     .keyboardShortcut(shortcuts.menuShortcut(.newFolder))
                     .disabled(!model.canCreateFolder)
                 Button("Rename…") { model.beginRename() }
                     .keyboardShortcut(shortcuts.menuShortcut(.gridRename))
-                    .disabled(model.slideshow != nil || window.anySheetOpen || !(model.selectedEntry.map(model.canRename) ?? false))
+                    .disabled(model.presenting || window.anySheetOpen || !(model.selectedEntry.map(model.canRename) ?? false))
                 // The Inspector, as the Finder's ⌘I (also I without ⌘)
                 Button("Get Info") { model.showInspector.toggle() }
                     .keyboardShortcut(shortcuts.menuShortcut(.info))
                     .disabled(model.folderURL == nil || window.anySheetOpen)
                 Button("Reveal in Finder") { model.revealInFinder() }
                     .keyboardShortcut(shortcuts.menuShortcut(.reveal))
-                    .disabled(model.slideshow != nil || window.anySheetOpen)
+                    .disabled(model.presenting || window.anySheetOpen)
                 Button("Open with Default App") { model.openInDefaultApp() }
                     .keyboardShortcut(shortcuts.menuShortcut(.openDefault))
-                    .disabled(model.slideshow != nil || window.anySheetOpen || !model.selectionIsChangeable)
+                    .disabled(model.presenting || window.anySheetOpen || !model.selectionIsChangeable)
                 Divider()
                 // The dual pane (D): the marked items into the other pane's folder
                 // (also F5 / F6, as in Norton Commander)
                 Button("Copy to Other Pane") { _ = window.sendToOtherPane(how: .copy) }
                     .keyboardShortcut(shortcuts.menuShortcut(.copyToOther))
-                    .disabled(!window.dual || model.slideshow != nil || window.anySheetOpen)
+                    .disabled(!window.dual || model.presenting || window.anySheetOpen)
                 Button("Move to Other Pane") { _ = window.sendToOtherPane(how: .move) }
                     .keyboardShortcut(shortcuts.menuShortcut(.moveToOther))
-                    .disabled(!window.dual || model.slideshow != nil || window.anySheetOpen)
+                    .disabled(!window.dual || model.presenting || window.anySheetOpen)
                 Divider()
                 Button("Move to Trash…") { model.moveSelectionToTrash() }
                     .keyboardShortcut(shortcuts.menuShortcut(.trash))
@@ -140,7 +140,7 @@ struct SchnellbildApp: App {
                 // themselves where the system reports them (not on every share)
                 Button("Reload") { model.reload() }
                     .keyboardShortcut(shortcuts.menuShortcut(.reload))
-                    .disabled(model.folderURL == nil || model.isLoading || model.slideshow != nil || window.anySheetOpen)
+                    .disabled(model.folderURL == nil || model.isLoading || model.presenting || window.anySheetOpen)
                 Divider()
                 Toggle("as Grid", isOn: Binding(get: { model.viewMode == .grid }, set: { if $0 { model.viewMode = .grid } }))
                 Toggle("as List", isOn: Binding(get: { model.viewMode == .list }, set: { if $0 { model.viewMode = .list } }))
@@ -166,11 +166,12 @@ struct SchnellbildApp: App {
                     .keyboardShortcut(shortcuts.menuShortcut(.smallerThumbnails))
                 Divider()
                 SortChoices(model: model, shortcuts: true)
+                    .disabled(model.presenting)
             }
             CommandGroup(replacing: .help) {
-                Button("Schnellbild Help") { model.openHelp() }
+                Button("Schnellbild Help") { window.openHelp() }
                     .keyboardShortcut(shortcuts.menuShortcut(.help))
-                    .disabled(model.otherSheetOpen)
+                    .disabled(window.anySheetOpen)
             }
         }
         Settings {

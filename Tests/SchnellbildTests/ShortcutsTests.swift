@@ -192,6 +192,13 @@ final class ShortcutsTests: XCTestCase {
         XCTAssertEqual(s.resolve(chord("j"), in: .grid), .custom(.toggleList))
         XCTAssertEqual(s.resolve(chord("l"), in: .grid), .blocked, "L belongs to nothing now")
         XCTAssertEqual(s.resolve(chord("l"), in: .show), .free, "the slideshow never had it")
+        // A letter with ⇧ no action has counts as the letter: taken from its action, given to another
+        XCTAssertEqual(s.resolve(chord("$l"), in: .grid), .blocked, "⇧L doesn't sneak past")
+        XCTAssertEqual(s.resolve(chord("$j"), in: .grid), .custom(.toggleList))
+        XCTAssertEqual(s.resolve(chord("$q"), in: .grid), .free)
+        s.assign(chord("b"), to: .bossKey, replacing: chord("x"))
+        XCTAssertEqual(s.resolve(chord("$x"), in: .grid), .blocked, "the boss key moved: ⇧X doesn't hide the windows")
+        XCTAssertEqual(s.resolve(chord("$b"), in: .grid), .custom(.bossKey))
         // The playlist's keys first while it has them, then the slideshow's
         XCTAssertEqual(s.resolve(chord("up"), in: [.show, .list]), .standard)
         XCTAssertEqual(s.resolve(chord("escape"), in: [.show, .list]), .standard)

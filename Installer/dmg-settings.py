@@ -12,7 +12,8 @@ format = "UDZO"
 filesystem = "HFS+"
 files = [app_path]
 symlinks = {"Applications": "/Applications"}
-icon = "Resources/AppIcon.icns"
+# The volume's icon: the app's own (Scripts/build_app.sh)
+icon = os.path.join(app_path, "Contents", "Resources", "AppIcon.icns")
 # dmgbuild picks up dmg-background@2x.png next to it for Retina displays
 background = "Resources/dmg-background.png"
 

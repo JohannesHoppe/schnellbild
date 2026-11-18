@@ -125,7 +125,7 @@ public final class GlobeRenderer: @unchecked Sendable {
     public static let sampleCount = 4
 
     /// Nil without a Metal device (or when the shaders don't compile).
-    public init?(device: MTLDevice? = MTLCreateSystemDefaultDevice(), map: MapRenderer?, data: GlobeData = .shared) {
+    public init?(device: MTLDevice? = MTLCreateSystemDefaultDevice(), map: MapRenderer?, data: GlobeData = .bundled()) {
         guard let device, let queue = device.makeCommandQueue() else { return nil }
         self.device = device
         self.queue = queue

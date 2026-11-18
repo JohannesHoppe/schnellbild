@@ -476,7 +476,7 @@ enum ShortcutAction: String, CaseIterable {
         case .zoomIn:            return String(localized: "Zoom in")
         case .zoomOut:           return String(localized: "Zoom out")
         case .zoomFit:           return String(localized: "Fit")
-        case .zoomActual:        return "100 %"
+        case .zoomActual:        return String(localized: "100 %")
         case .rotateLeft:        return String(localized: "Rotate left")
         case .rotateRight:       return String(localized: "Rotate right")
         case .info:              return String(localized: "File info")
@@ -651,7 +651,14 @@ final class Shortcuts: ObservableObject {
             // menus as such: carried out here)
             return action.standardKeys.contains(chord) && !takenByList && !chord.isOnKey ? .standard : .custom(action)
         }
-        return here.contains(where: { $0.standardKeys.contains(chord) }) ? .blocked : .free
+        if here.contains(where: { $0.standardKeys.contains(chord) }) { return .blocked }
+        // A letter with ⇧ that no action has: the key bindings (and the boss
+        // key) take it as the letter, so it is resolved as the letter, and a
+        // letter given to another action or taken from one stays so with ⇧
+        if chord.shift, case .char(let c) = chord.key, c.isLetter {
+            return resolve(KeyChord(chord.key, command: chord.command, option: chord.option, control: chord.control), in: context)
+        }
+        return .free
     }
 
     // MARK: Changing
@@ -839,34 +846,34 @@ extension WindowModel {
         let sheet = anySheetOpen
         let video = model.shownMediaEntry?.kind == .video
         if let key = action.sortKey {
-            guard !sheet else { return false }
+            guard !sheet, !model.presenting else { return false }
             model.setSort(key)
             return true
         }
         if let index = action.bookmarkIndex {
             let folders = Bookmarks.shared.folders
-            guard !sheet, model.slideshow == nil, index < folders.count else { return false }
+            guard !sheet, !model.presenting, index < folders.count else { return false }
             model.open(folder: folders[index])
             return true
         }
         switch action {
         case .openFolder:
-            guard !sheet else { return false }
+            guard !sheet, !model.presenting else { return false }
             model.chooseFolder()
         case .newWindow:
             guard let open = WindowOpener.open else { return false }
             open()
         case .reveal:
-            guard model.slideshow == nil, !sheet else { return false }
+            guard !model.presenting, !sheet else { return false }
             model.revealInFinder()
         case .openDefault:
-            guard model.slideshow == nil, !sheet, model.selectionIsChangeable else { return false }
+            guard !model.presenting, !sheet, model.selectionIsChangeable else { return false }
             model.openInDefaultApp()
         case .trash:
             guard model.canTrash, !sheet else { return false }
             model.moveSelectionToTrash()
         case .reload:
-            guard model.folderURL != nil, !model.isLoading, model.slideshow == nil, !sheet else { return false }
+            guard model.folderURL != nil, !model.isLoading, !model.presenting, !sheet else { return false }
             model.reload()
         case .nextSubtitle:
             guard video, !sheet else { return false }
@@ -881,7 +888,7 @@ extension WindowModel {
             guard !sheet else { return false }
             showHiddenFiles.toggle()
         case .bookmark:
-            guard !sheet, model.slideshow == nil, let folder = model.folderURL else { return false }
+            guard !sheet, !model.presenting, let folder = model.folderURL else { return false }
             Bookmarks.shared.toggle(folder)
         case .menus:
             guard !textEditing, model.slideshow == nil, !sheet else { return false }
