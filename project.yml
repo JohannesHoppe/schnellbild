@@ -128,7 +128,6 @@ targets:
         GENERATE_INFOPLIST_FILE: NO
         INFOPLIST_FILE: ThumbnailExtension/Info.plist
         CODE_SIGN_ENTITLEMENTS: build/entitlements/thumbnails.entitlements
-        CODE_SIGN_INJECT_BASE_ENTITLEMENTS: NO
         LD_RUNPATH_SEARCH_PATHS: ["@executable_path/../Frameworks", "@executable_path/../../../../Frameworks"]
         OTHER_SWIFT_FLAGS: ["-parse-as-library"]   # no main: the entry point is the system's extension main
         ENABLE_DEBUG_DYLIB: NO   # one binary, so the step below finds VLCKit's load command in it
@@ -172,10 +171,10 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: art.haushoppe.schnellbild
+        # Xcode adds its own exceptions for testing on top (read-only access
+        # to the whole disk, testmanagerd), so the UI tests on CI launch the
+        # bundle build_app.sh makes instead (SCHNELLBILD_APP)
         CODE_SIGN_ENTITLEMENTS: $(SCHNELLBILD_APP_ENTITLEMENTS)
-        # Exactly these: Xcode's own additions for debugging would open the
-        # whole disk to the app (absolute-path.read-only "/")
-        CODE_SIGN_INJECT_BASE_ENTITLEMENTS: NO
         GENERATE_INFOPLIST_FILE: YES
         INFOPLIST_FILE: Resources/ExportedTypes.plist
         INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.photography
