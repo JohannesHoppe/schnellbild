@@ -73,7 +73,7 @@ The tables list Schnellbild's own keys. Every one of them can be changed in Sett
 | i / ⌘I | file info beside the grid for the selected item (also Get Info in its right-click menu) |
 | D / ⌃O | dual pane on / off |
 | K | mini keyboard on / off |
-| ⇧⌘. | hidden files and folders on / off, as in the Finder (also View → Show Hidden Files and Settings → General); off, they appear nowhere: not in the grid, the search, slideshows or the Atlas |
+| ⇧⌘. | hidden files and folders on / off, as in the Finder (also View → Show Hidden Files and Settings → General); off, they appear nowhere: not in the grid, the search, slideshows or the Atlas; on, everything appears, also `.DS_Store` and the other files macOS keeps for itself, so a folder that looks empty is empty |
 | ⌘N | a new window, e.g. for another display: it has its own folders, dual pane and slideshow, and remembers its own last folder |
 | ⌘D | bookmark the folder shown, or remove its bookmark (also the star in the toolbar, the Bookmarks menu and a folder's right-click menu) |
 | ⌃1 … ⌃9 | open bookmark 1 … 9 |

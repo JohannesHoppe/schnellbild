@@ -659,7 +659,7 @@
 "the clouds on the globe" = "küredeki bulutlar";
 "Show Hidden Files" = "Gizli Dosyaları Göster";
 "Show hidden files and folders" = "Gizli dosyaları ve klasörleri göster";
-"Names that start with a dot, and what macOS hides, such as the Library folder. Off, they appear nowhere in Schnellbild." = "Nokta ile başlayan adlar ve Kitaplık klasörü gibi macOS’in gizledikleri. Kapalıyken Schnellbild’in hiçbir yerinde görünmezler.";
+"Names that start with a dot, what macOS hides, such as the Library folder, and the files macOS keeps for itself, such as .DS_Store. On, everything appears, also inside archives. Off, they appear nowhere in Schnellbild." = "Nokta ile başlayan adlar, Kitaplık klasörü gibi macOS’in gizledikleri ve .DS_Store gibi macOS’in kendisi için tuttuğu dosyalar. Açıkken arşivlerin içi de dahil her şey görünür. Kapalıyken Schnellbild’in hiçbir yerinde görünmezler.";
 "Show / hide hidden files and folders" = "Gizli dosyaları ve klasörleri göster / gizle";
 "Undo" = "Geri Al";
 "Redo" = "Yinele";

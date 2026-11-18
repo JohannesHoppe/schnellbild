@@ -597,12 +597,13 @@ enum LiveFiles {
     /// A copy's temporary item left behind (the app ended during the
     /// copy): removed when its folder is listed, unless this process is
     /// writing it or it changed in the last 12 hours (another Mac may be
-    /// copying into a shared folder).
-    static func removeIfLeftOver(_ url: URL) {
+    /// copying into a shared folder). Whether it was removed.
+    @discardableResult
+    static func removeIfLeftOver(_ url: URL) -> Bool {
         guard isPartialCopy(url.lastPathComponent), !PartialCopies.shared.isRunning(url),
               let changed = (try? url.resourceValues(forKeys: [.contentModificationDateKey]))?.contentModificationDate,
-              Date().timeIntervalSince(changed) > 12 * 3600 else { return }
-        try? FileManager.default.removeItem(at: url)
+              Date().timeIntervalSince(changed) > 12 * 3600 else { return false }
+        return (try? FileManager.default.removeItem(at: url)) != nil
     }
 
     /// Whether `target` exists as an item other than `source`.
@@ -2194,14 +2195,15 @@ final class BrowserModel: ObservableObject {
                 // The drives' level: the system's own mounts (Time Machine's
                 // snapshots) aren't drives one browses
                 if drives, item.lastPathComponent.hasPrefix("com.apple.") { continue }
-                if LiveFiles.isPartialCopy(item.lastPathComponent) { LiveFiles.removeIfLeftOver(item); continue }
+                // A copy or rename the app left behind is tidied up; one
+                // under way is a hidden item like any other
+                if LiveFiles.isPartialCopy(item.lastPathComponent), LiveFiles.removeIfLeftOver(item) { continue }
                 var item = item
                 if LiveFiles.renameLeftoverTarget(item.lastPathComponent) != nil {
-                    guard let restored = LiveFiles.restoreIfLeftOver(item) else { continue }
-                    item = restored
+                    item = LiveFiles.restoreIfLeftOver(item) ?? item
                 }
-                // Hidden items (a dot name, the hidden flag) only while shown;
-                // ".DS_Store", "._…" never
+                // Hidden items (a dot name, the hidden flag, macOS's own
+                // ".DS_Store", "._…", "Icon\r") only while shown
                 guard HiddenFiles.lists(item, values: try? item.resourceValues(forKeys: HiddenFiles.keys),
                                         shown: shown, kept: kept) else { continue }
                 if let entry = entry(for: item, keys: keys) { listing.entries.append(entry); continue }

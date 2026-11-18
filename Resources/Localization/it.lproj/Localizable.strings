@@ -659,7 +659,7 @@
 "the clouds on the globe" = "le nuvole sul globo";
 "Show Hidden Files" = "Mostra file nascosti";
 "Show hidden files and folders" = "Mostra file e cartelle nascosti";
-"Names that start with a dot, and what macOS hides, such as the Library folder. Off, they appear nowhere in Schnellbild." = "I nomi che iniziano con un punto e ciò che macOS nasconde, come la cartella Libreria. Disattivato, non compaiono da nessuna parte in Schnellbild.";
+"Names that start with a dot, what macOS hides, such as the Library folder, and the files macOS keeps for itself, such as .DS_Store. On, everything appears, also inside archives. Off, they appear nowhere in Schnellbild." = "I nomi che iniziano con un punto, ciò che macOS nasconde, come la cartella Libreria, e i file che macOS tiene per sé, come .DS_Store. Attivato, compare tutto, anche dentro gli archivi. Disattivato, non compaiono da nessuna parte in Schnellbild.";
 "Show / hide hidden files and folders" = "Mostra / nascondi file e cartelle nascosti";
 "Undo" = "Annulla";
 "Redo" = "Ripeti";

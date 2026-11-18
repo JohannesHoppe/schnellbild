@@ -659,7 +659,7 @@
 "the clouds on the globe" = "skyerne på globussen";
 "Show Hidden Files" = "Vis skjulte filer";
 "Show hidden files and folders" = "Vis skjulte filer og mapper";
-"Names that start with a dot, and what macOS hides, such as the Library folder. Off, they appear nowhere in Schnellbild." = "Navne, der begynder med et punktum, og det, macOS skjuler, f.eks. mappen Bibliotek. Slået fra vises de ingen steder i Schnellbild.";
+"Names that start with a dot, what macOS hides, such as the Library folder, and the files macOS keeps for itself, such as .DS_Store. On, everything appears, also inside archives. Off, they appear nowhere in Schnellbild." = "Navne, der begynder med et punktum, det, macOS skjuler, f.eks. mappen Bibliotek, og de filer, macOS opretter til sig selv, f.eks. .DS_Store. Slået til vises alt, også i arkiver. Slået fra vises de ingen steder i Schnellbild.";
 "Show / hide hidden files and folders" = "Vis / skjul skjulte filer og mapper";
 "Undo" = "Fortryd";
 "Redo" = "Gentag";

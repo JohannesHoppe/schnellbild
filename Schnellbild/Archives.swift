@@ -708,8 +708,8 @@ final class ArchiveStore: @unchecked Sendable {
             self.bytesKey = bytesKey
             var byPath: [String: ArchiveItem] = [:]
             var whole = complete
-            // Not the AppleDouble files the Finder adds to ZIPs ("__MACOSX/")
-            for item in items where !item.path.isEmpty && item.path != "__MACOSX" && !item.path.hasPrefix("__MACOSX/") {
+            // Every entry, "__MACOSX/" too: what is listed is `HiddenFiles`'s to say
+            for item in items where !item.path.isEmpty {
                 // Deep paths imply a folder for every level: held to the
                 // same limit as the entries, the rest is left out
                 if byPath.count >= ArchiveStore.indexLimit { whole = false; break }
@@ -1139,8 +1139,8 @@ final class ArchiveStore: @unchecked Sendable {
 
     /// A folder of an archive: its folders and media files as grid entries,
     /// and its other files (archives inside archives among them: not opened).
-    /// Hidden entries (a name starting with a dot) only while `showingHidden`;
-    /// ".DS_Store", "._…" and "__MACOSX" never (`HiddenFiles`).
+    /// Hidden entries (a name starting with a dot, "__MACOSX") only while
+    /// `showingHidden` (`HiddenFiles`); then every entry.
     func listing(in url: URL, trying password: String? = nil,
                  showingHidden shown: Bool = HiddenFiles.shown) async throws -> FolderListing {
         guard let (archiveURL, inner) = ArchivePath.split(url) else { return FolderListing() }
