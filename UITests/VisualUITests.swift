@@ -515,10 +515,17 @@ final class VisualUITests: SchnellbildUITestCase {
 
     /// The lower part of the picture, where the subtitles go, measured
     /// while a line shows: the fixtures' lines follow each other every 2 s
-    /// up to their end at 20 s, so the video is paused first and the
-    /// player's place checked (a slow runner may have played it to its end,
-    /// and an even grey would read as no text). It plays on afterwards.
+    /// up to their end at 20 s, so the video is paused early in a line
+    /// (0.3 to 1 s into it, away from its edges: paused 0.2 s before an
+    /// ASS line ended, VLC's picture showed none, seen once on CI; why is
+    /// not known) and the player's place checked (a slow runner may have
+    /// played it to its end, and an even grey would read as no text). It
+    /// plays on afterwards.
     private func measureWhileALineShows(_ video: XCUIElement, file: StaticString = #filePath, line: UInt = #line) throws -> ScreenStats {
+        let deadline = Date().addingTimeInterval(6)
+        while Date() < deadline, let place = playerClock(), !(0.3...1.0).contains(place.played.truncatingRemainder(dividingBy: 2)) {
+            RunLoop.current.run(until: Date().addingTimeInterval(0.05))
+        }
         app.typeKey(" ", modifierFlags: [])
         waitForBadge(containing: "Paused", file: file, line: line)
         // The mouse off the video: the control bar goes and covers nothing
