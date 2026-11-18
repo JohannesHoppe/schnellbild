@@ -268,7 +268,7 @@ AVKit stays for the native formats: both decode through VideoToolbox, but AVKit 
   in the macOS 27 SDK). Without Xcode on the machine, build and test on CI.
 - **`swift test` ALONE FAILS.** VLCKit's `binaryTarget` links into the `.xctest`
   bundle but SwiftPM doesn't embed it (install name `@loader_path/../Frameworks/…`).
-  **Always use `./Scripts/test.sh`** — it fetches VLCKit, `swift build --build-tests`,
+  **Always use `./Scripts/test.sh`** (arguments go to `swift test`, e.g. `--filter VideoFormatTests`; `REPEAT=<n>`; the tests run under a pseudo-terminal, `script`, so each test's line reaches the log at once; past `UNIT_TEST_TIMEOUT`, 1200 s, the test process's threads are sampled into the log and it is ended: a hang names its test and where it waits) — it fetches VLCKit, `swift build --build-tests`,
   copies `VLCKit.framework` into the test bundle, then `swift test --skip-build`.
 - Any build needs `Vendor/VLCKit.xcframework` present → run
   `./Scripts/fetch_vlckit.sh` first (`test.sh` and `build_app.sh` call it for you). With `SCHNELLBILD_OWN_VLCKIT=1` it keeps whatever framework is there (a modified VLCKit, as the LGPL allows; see THIRD-PARTY-NOTICES), and `check_vlckit.sh` reports what fails the module check as a warning, unless the build is signed for release (`MACOS_SIGN_IDENTITY`, `APPSTORE_SIGN_IDENTITY`).
