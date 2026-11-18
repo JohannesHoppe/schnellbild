@@ -219,7 +219,8 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         shoot("archives")
 
         // Inside the archive: its name in the title bar (its pictures are named
-        // like some outside it)
+        // like some outside it), back up where its tile is
+        element("grid").firstMatch.scroll(byDeltaX: 0, deltaY: 2000)
         open(tile("Iceland 2025.zip"), until: "the archive opened") { self.text(of: self.element("folderTitle").firstMatch) == "Iceland 2025.zip" }
         XCTAssertTrue(app.staticTexts[(photos.first! as NSString).lastPathComponent].waitForExistence(timeout: 15))
         shoot("archive-inside")
