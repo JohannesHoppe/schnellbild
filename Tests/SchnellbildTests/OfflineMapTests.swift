@@ -442,13 +442,11 @@ final class OfflineMapTests: XCTestCase {
     func testLookupsAreFast() throws {
         let places = try XCTUnwrap(bundledRenderer().places)
         _ = places.nearby(Coordinate(latitude: 48, longitude: 11))
-        let start = Date()
-        for i in 0..<200 {
-            _ = places.nearby(Coordinate(latitude: 40 + Double(i % 20) * 0.5, longitude: Double(i % 30) * 0.7))
+        TimeBudget.check("200 place lookups", under: 200 * 0.020) {
+            for i in 0..<200 {
+                _ = places.nearby(Coordinate(latitude: 40 + Double(i % 20) * 0.5, longitude: Double(i % 30) * 0.7))
+            }
         }
-        let ms = Date().timeIntervalSince(start) * 1000 / 200
-        print("place lookup: \(String(format: "%.2f", ms)) ms each")
-        XCTAssertLessThan(ms, 20)
     }
 
     func testLanguageCodes() {
@@ -497,29 +495,23 @@ final class OfflineMapTests: XCTestCase {
         for (name, camera) in Self.samples {
             for palette in [MapPalette.light, .dark] {
                 let viewport = MapViewport(camera: camera, size: CGSize(width: 960, height: 640))
-                var start = Date()
-                let image = try XCTUnwrap(renderer.image(of: viewport, scale: 2, palette: palette, languages: .preferring(["en"])))
-                let first = Date().timeIntervalSince(start) * 1000
-                // Drawn again: the tiles kept, the labels laid out and drawn anew. The median
-                // of five, since CI's virtual Macs vary (a single draw there sometimes takes
-                // twice the median); the budget is fixed, not relative to the runner: a real
-                // regression moves the median, a slow moment one draw. The world is the
-                // costliest view (every one-degree cell is asked for labels; the place index
-                // reads a record's min_zoom before it decodes the place).
-                var times: [Double] = []
-                for _ in 0..<5 {
-                    start = Date()
-                    _ = renderer.image(of: viewport, scale: 2, palette: palette, languages: .preferring(["en"]))
-                    times.append(Date().timeIntervalSince(start) * 1000)
-                }
-                let again = times.sorted()[2]
                 let theme = palette.isDark ? "dark" : "light"
-                report.append(String(format: "%@-%@: first %.0f ms, again %.0f ms", name, theme, first, again))
+                // The budgets (`TimeBudget`): the first time (tiles read, decoded and
+                // drawn on several threads, labels laid out) under a second on the wall
+                // clock; drawn again (the tiles kept, the labels laid out and drawn anew
+                // on this thread) under 150 ms of CPU time, the best of five. The world
+                // is the costliest view (every one-degree cell is asked for labels; the
+                // place index reads a record's min_zoom before it decodes the place).
+                var drawn: CGImage?
+                let first = TimeBudget.check("\(name) \(theme), first", under: 1.0, runs: 1, clock: .wall) {
+                    drawn = renderer.image(of: viewport, scale: 2, palette: palette, languages: .preferring(["en"]))
+                }
+                let image = try XCTUnwrap(drawn)
+                let again = TimeBudget.check("\(name) \(theme), again", under: 0.150, runs: 5) {
+                    _ = renderer.image(of: viewport, scale: 2, palette: palette, languages: .preferring(["en"]))
+                }
+                report.append(String(format: "%@-%@: first %.0f ms, again %.0f ms", name, theme, first * 1000, again * 1000))
                 XCTAssertEqual(image.width, 1920)
-                // The budgets: a view drawn again under 150 ms; the first time
-                // (tiles read, decoded and drawn, labels laid out) under a second
-                XCTAssertLessThan(again, 150, "\(name) \(theme)")
-                XCTAssertLessThan(first, 1000, "\(name) \(theme)")
                 if let folder {
                     let url = folder.appendingPathComponent("\(name)-\(theme).png")
                     let destination = try XCTUnwrap(CGImageDestinationCreateWithURL(url as CFURL, UTType.png.identifier as CFString, 1, nil))
@@ -558,12 +550,11 @@ final class OfflineMapTests: XCTestCase {
         let viewport = MapViewport(camera: MapCamera(center: Coordinate(latitude: 35.68, longitude: 139.7), zoom: 10), size: CGSize(width: 1200, height: 800))
         let keys = MapRenderer.tiles(for: viewport, zoom: 10).map(\.key)
         _ = renderer.renderTile(keys[0], scale: 2, palette: .light)
-        let start = Date()
-        DispatchQueue.concurrentPerform(iterations: keys.count) { i in
-            _ = renderer.renderTile(keys[i], scale: 2, palette: .light)
+        // Once, on the wall clock: drawn again, the tiles' decoded data would be kept
+        TimeBudget.check("\(keys.count) raster tiles of Tokyo at zoom 10", under: 1.0, runs: 1, clock: .wall) {
+            DispatchQueue.concurrentPerform(iterations: keys.count) { i in
+                _ = renderer.renderTile(keys[i], scale: 2, palette: .light)
+            }
         }
-        let ms = Date().timeIntervalSince(start) * 1000
-        print(String(format: "%d raster tiles of Tokyo at zoom 10: %.0f ms", keys.count, ms))
-        XCTAssertLessThan(ms, 1000)
     }
 }

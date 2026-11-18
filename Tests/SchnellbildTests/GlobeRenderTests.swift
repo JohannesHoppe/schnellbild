@@ -242,11 +242,8 @@ final class GlobeRenderTests: XCTestCase {
     func testTheTexturesAreMadeSoon() throws {
         let r = try renderer()
         let scene = GlobeScene(camera: MapCamera(center: Coordinate(latitude: 10, longitude: 120), zoom: 4.2), size: size, dark: true)
-        let start = Date()
-        r.textures.prepareAndWait(for: scene)
-        let seconds = Date().timeIntervalSince(start)
-        print("Globe: textures for a new view in \(String(format: "%.2f", seconds)) s")
-        XCTAssertLessThan(seconds, 5)
+        // Once, on the wall clock (drawn on several threads; again they would be kept)
+        TimeBudget.check("Globe: textures for a new view", under: 5, runs: 1, clock: .wall) { r.textures.prepareAndWait(for: scene) }
     }
 }
 
