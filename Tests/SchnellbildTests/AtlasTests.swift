@@ -411,11 +411,16 @@ final class AtlasTests: XCTestCase {
         XCTAssertTrue(w.typeKey(.char("t")))
         XCTAssertEqual(m.atlas.tour?.stations.count, 1)
         await waitUntil({ m.atlas.tour?.phase == .showing }, timeout: 6)
+        let shown = Date()
         XCTAssertEqual(m.atlas.tour?.currentItem?.name, "norway-14-trollstigen.jpg")
         let target = m.atlas.camera(for: m.atlas.tour!.stations[0])
         XCTAssertEqual(m.atlas.camera.center.latitude, target.center.latitude, accuracy: 0.01, "the camera arrived")
         await waitUntil({ !m.touring }, timeout: 8)
         XCTAssertEqual(m.selectedEntry?.name, "norway-14-trollstigen.jpg", "the item shown last is selected")
+        // The photo shown its time on the clock, however long the tour's ticks take
+        let showing = Date().timeIntervalSince(shown)
+        XCTAssertGreaterThan(showing, TourPlayer.photoSeconds - 0.1)
+        XCTAssertLessThan(showing, TourPlayer.photoSeconds + 1.5)
     }
 
     func testTInTheGridStartsTheTourOnceThePlacesAreRead() async throws {

@@ -909,9 +909,11 @@ final class AtlasModel: ObservableObject {
         return Array(route.prefix(tour.phase == .flying ? arrivals[tour.station] + 1 : end))
     }
 
-    /// Steps the tour: each step (a flight, an item shown) lasts its time,
-    /// not counting the time paused; the flight moves the camera on the way
-    /// (cut with Reduce motion).
+    /// Steps the tour: each step (a flight, an item shown) lasts its time
+    /// on the clock, not counting the time paused; the flight moves the
+    /// camera on the way (cut with Reduce motion). The time is read from the
+    /// clock at each tick: a tick's sleep can last longer than asked (seen
+    /// on CI: about twice as long).
     private func runTour() {
         tourTask?.cancel()
         tourTask = Task { [weak self] in
@@ -925,11 +927,15 @@ final class AtlasModel: ObservableObject {
                 let to = player.currentStation.map(self.camera(for:)) ?? from
                 if player.phase == .flying, reduced { self.setCamera(to) }
                 var elapsed = 0.0
-                let tick = 1.0 / 60
+                let clock = ContinuousClock()
+                var last = clock.now
                 while elapsed < duration {
-                    try? await Task.sleep(for: .seconds(tick))
+                    try? await Task.sleep(for: .seconds(1.0 / 60))
+                    let now = clock.now
+                    let passed = (now - last) / .seconds(1)
+                    last = now
                     if Task.isCancelled || self.tourStep != step || self.tour == nil { break }
-                    if self.tour?.paused == false { elapsed += tick }
+                    if self.tour?.paused == false { elapsed += passed }
                     if player.phase == .flying, !reduced {
                         self.setCamera(TourFlight.camera(from: from, to: to, at: min(1, elapsed / duration), size: self.mapSize))
                     }
