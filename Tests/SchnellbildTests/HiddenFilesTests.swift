@@ -264,6 +264,22 @@ final class HiddenFilesTests: XCTestCase {
         XCTAssertEqual(Set(shown.otherFiles.map(\.name)), [".DS_Store", "._a.jpg", "Icon\r"], "every item, so not empty")
     }
 
+    /// FileManager leaves AppleDouble files out of its listings: a folder
+    /// holding only "._x" is listed with it while hidden items are shown.
+    func testAFolderOfOnlyAppleDoubleFilesIsNotEmptyWithHiddenShown() async throws {
+        let tree = try TempTree(self)
+        let folder = try tree.folder("double")
+        try tree.file("double/._a.jpg")
+        XCTAssertEqual(try FileManager.default.contentsOfDirectory(atPath: folder.path), [], "what FileManager lists")
+        XCTAssertEqual(HiddenFiles.appleDoubleItems(in: folder, besides: []).map(\.lastPathComponent), ["._a.jpg"])
+        let m = model()
+        await openAndWait(m, folder)
+        XCTAssertEqual(m.otherFiles.map(\.name), [], "hidden off: empty")
+        let shown = model(showing: true)
+        await openAndWait(shown, folder)
+        XCTAssertEqual(shown.otherFiles.map(\.name), ["._a.jpg"], "shown: listed, so not empty")
+    }
+
     /// A copy under way is listed while hidden items are shown; one left
     /// behind is tidied up either way.
     func testCopiesUnderWayAreHiddenItemsLikeAnyOther() async throws {
