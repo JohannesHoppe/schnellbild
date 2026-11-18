@@ -276,6 +276,12 @@ jobs:
           hdiutil create -size 64m -fs APFS -volname SchnellbildUITests -o build/uitests-volume.dmg
           hdiutil attach build/uitests-volume.dmg
           test -d /Volumes/SchnellbildUITests
+          # The Dock hidden: on the runner's small screen it covers the
+          # bottom of a tall window (Settings → Folder access)
+          defaults write com.apple.dock autohide -bool true
+          defaults write com.apple.dock autohide-delay -float 1000
+          killall Dock
+          sleep 2
 
       - name: Build the brightness meter
         run: mkdir -p build && swiftc -O Scripts/measure_brightness.swift -o build/measure_brightness

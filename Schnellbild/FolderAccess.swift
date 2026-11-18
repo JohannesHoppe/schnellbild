@@ -249,7 +249,7 @@ final class FolderAccess {
         let path = BrowserModel.canonicalPath(url)
         guard !isGranted(path) else { return }
         let started = system.start(url)
-        guard started || FileManager.default.isReadableFile(atPath: url.path), let bookmark = system.bookmark(url) else {
+        guard started || Self.canOpen(url), let bookmark = system.bookmark(url) else {
             if started { system.stop(url) }
             return
         }
@@ -348,6 +348,20 @@ final class FolderAccess {
 
     private func save() {
         defaults.set(grants.compactMap(\.bookmark) + pending.map(\.bookmark) + resolving, forKey: Self.key)
+    }
+
+    /// Whether the process may open `url` now (a folder listed, a file
+    /// read): the sandbox's answer. `isReadableFile` asks only the
+    /// permissions and says yes to a folder the sandbox keeps closed.
+    nonisolated static func canOpen(_ url: URL) -> Bool {
+        var isDirectory: ObjCBool = false
+        guard FileManager.default.fileExists(atPath: url.path, isDirectory: &isDirectory) else { return false }
+        if isDirectory.boolValue {
+            guard let dir = opendir(url.path) else { return false }
+            closedir(dir)
+            return true
+        }
+        return RelatedFiles.canRead(url)
     }
 
     /// `path` is `folder` or lies inside it.

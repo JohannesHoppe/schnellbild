@@ -3236,7 +3236,12 @@ final class BrowserModel: ObservableObject {
             return (exists, isDir.boolValue, isDir.boolValue && BrowserModel.isPackage(first))
         }
         guard fileActions.runsOffMain else { openDropped(first, look(), slideshow: slideshow); return }
-        Task { openDropped(first, await Blocking.run(.userInitiated, look), slideshow: slideshow) }
+        Task {
+            // The grants kept are opened first (at launch: `--open=`, a drop
+            // onto the Dock icon), or a file in one couldn't be read yet
+            await FolderAccess.shared.restored()
+            openDropped(first, await Blocking.run(.userInitiated, look), slideshow: slideshow)
+        }
     }
 
     private func openDropped(_ first: URL, _ found: (exists: Bool, isFolder: Bool, isPackage: Bool), slideshow: Bool) {
