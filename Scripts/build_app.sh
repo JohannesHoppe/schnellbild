@@ -11,15 +11,17 @@ APP="$ROOT/build/Schnellbild.app"
 
 echo "==> Ensuring VLCKit is vendored"
 "$ROOT/Scripts/fetch_vlckit.sh"
-echo "==> No GPL module in VLCKit"
-python3 -I "$ROOT/Scripts/vlckit_licenses.py" \
-  "$(find "$ROOT/Vendor/VLCKit.xcframework" -path '*VLCKit.framework/Versions/A/VLCKit' -type f | head -1)" --no-gpl --local-only
+"$ROOT/Scripts/check_vlckit.sh"
 
 echo "==> Rendering icon"
+# Resources/icon_1024.png is gitignored (the website's icons start from it);
+# the .icns is made in build/icon, so a build changes no tracked file
 swift Scripts/make_icon.swift "$RES/icon_1024.png"
 
 echo "==> Building AppIcon.icns"
-ICONSET="$(mktemp -d)/AppIcon.iconset"
+ICONS="$ROOT/build/icon"
+ICONSET="$ICONS/AppIcon.iconset"
+rm -rf "$ICONS"
 mkdir -p "$ICONSET"
 sips -z 16 16   "$RES/icon_1024.png" --out "$ICONSET/icon_16x16.png"      >/dev/null
 sips -z 32 32   "$RES/icon_1024.png" --out "$ICONSET/icon_16x16@2x.png"   >/dev/null
@@ -31,9 +33,7 @@ sips -z 256 256 "$RES/icon_1024.png" --out "$ICONSET/icon_256x256.png"    >/dev/
 sips -z 512 512 "$RES/icon_1024.png" --out "$ICONSET/icon_256x256@2x.png" >/dev/null
 sips -z 512 512 "$RES/icon_1024.png" --out "$ICONSET/icon_512x512.png"    >/dev/null
 cp "$RES/icon_1024.png" "$ICONSET/icon_512x512@2x.png"
-iconutil -c icns "$ICONSET" -o "$RES/AppIcon.icns"
-# Small PNG for the README hero.
-sips -z 256 256 "$RES/icon_1024.png" --out "$RES/icon-256.png" >/dev/null
+iconutil -c icns "$ICONSET" -o "$ICONS/AppIcon.icns"
 
 echo "==> swift build -c release"
 swift build -c release
@@ -57,7 +57,7 @@ rm -rf "$VLCFW/Headers" "$VLCFW/PrivateHeaders" "$VLCFW/Modules" \
 # VLCKit's own privacy manifest: the reasons behind the system calls in its binary
 cp "$ROOT/Sandbox/VLCKit.xcprivacy" "$VLCFW/Versions/A/Resources/PrivacyInfo.xcprivacy"
 install_name_tool -add_rpath "@executable_path/../Frameworks" "$APP/Contents/MacOS/Schnellbild" 2>/dev/null || true
-cp "$RES/AppIcon.icns" "$APP/Contents/Resources/AppIcon.icns"
+cp "$ICONS/AppIcon.icns" "$APP/Contents/Resources/AppIcon.icns"
 # The UI's translations (en.lproj, de.lproj, …), found through Bundle.main
 cp -R "$RES/Localization/"*.lproj "$APP/Contents/Resources/"
 # The license texts the About window shows in full: Schnellbild's own (the
@@ -79,7 +79,7 @@ printf 'APPL????' > "$APP/Contents/PkgInfo"
 # The App Store asks for the reasons behind some system calls (the app's and VLCKit's)
 cp "$ROOT/Sandbox/PrivacyInfo.xcprivacy" "$APP/Contents/Resources/PrivacyInfo.xcprivacy"
 
-echo "==> Thumbnail extension (QuickLook, for MKV, WebM, AVI …)"
+echo "==> Thumbnail extension (QuickLook, for MKV, WebM, WMV, ASF, FLV, Ogg, VOB)"
 APPEX="$APP/Contents/PlugIns/SchnellbildThumbnails.appex"
 mkdir -p "$APPEX/Contents/MacOS"
 cp "$BINDIR/SchnellbildThumbnails" "$APPEX/Contents/MacOS/SchnellbildThumbnails"

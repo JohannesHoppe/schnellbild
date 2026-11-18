@@ -16,23 +16,27 @@ From the Protomaps daily build pinned in Scripts/map_data.env it makes:
 Usage:
   python3 -I Scripts/build_map_data.py [--cache DIR] [--out DIR] [--jobs N] [--check]
   python3 -I Scripts/build_map_data.py --upstream --extract DIR [--cache DIR]
+  python3 -I Scripts/build_map_data.py --self-test
 
   --cache     where the source's directories and tile data are kept between runs
               (default build/map-cache). Tile data is kept as files tiles-<start>-<end>.bin,
-              <start>/<end> being byte offsets into the source's tile data section; any set
-              of such files is used.
+              <start>/<end> being byte offsets into the source's tile data section. Without
+              --upstream only the archive's parts are used, each checked against its pin;
+              with it any set of such files.
   --out       where the files are written (default build/map)
   --check     fail unless the files' SHA-256 are the ones pinned in map_data.env
   --upstream  take what the cache lacks from Protomaps and naciscdn.org, not from the archive
   --extract   only gather the inputs, write them to DIR as the archive's files (the tile data
               in parts under 2 GiB, GitHub's limit per release asset) and print their pins
+  --self-test check how the cache, the archive and Protomaps are used (no downloads)
 
 The inputs come from the archive: the pre-release SOURCE_RELEASE_TAG of this repository
 holds what the build reads of the Protomaps build (its directory up to zoom 10 and the tile
 data up to the end of zoom 10, about 3.8 GB) and the Natural Earth zips, each pinned by
-SHA-256 in map_data.env. Only when the archive can't be reached does the builder read
-Protomaps (by range requests, in pieces of 256 MiB, after checking the build's size and
-first 16 KiB) and naciscdn.org. `--upstream --extract` makes the archive's files anew from
+SHA-256 in map_data.env. Only when the archive can't be reached does the builder read the
+same bytes from Protomaps (by range requests, in pieces of 256 MiB, after checking the
+build's size and first 16 KiB) and naciscdn.org, held to the same pins; a cached file is used
+only while it matches its pin. `--upstream --extract` makes the archive's files anew from
 upstream while Protomaps still serves the build.
 """
 import argparse, gzip, hashlib, io, json, math, multiprocessing as mp, os, re, struct, sys, time, urllib.error, urllib.request, zipfile
@@ -367,6 +371,7 @@ class Source:
         self.env = env
         self.upstream = upstream
         self.head = None
+        self.verified = {}      # path -> whether it matched its pin (checked once per run)
 
     def check_head(self):
         """The build's first 16 KiB, once its size and their SHA-256 are the pinned ones."""
@@ -392,16 +397,40 @@ class Source:
                 parts.append((int(m.group(1)), int(m.group(2)), name, sha))
         return parts
 
+    def pinned(self, path, sha):
+        """Whether the cached file <path> is the pinned one (a file that isn't is removed)."""
+        if path not in self.verified:
+            ok = os.path.exists(path) and sha256_file(path) == sha
+            if os.path.exists(path) and not ok:
+                print(f"   {os.path.basename(path)} in the cache isn't the pinned one: fetched again", file=sys.stderr)
+                os.remove(path)
+            self.verified[path] = ok
+        return self.verified[path]
+
     def entries(self, max_zoom):
         """Every tile entry up to max_zoom: (tile_id, run_length, length, offset)."""
         name = f"directory-z{max_zoom}.json"
         path = os.path.join(self.dir, name)
-        if not os.path.exists(path) and not self.upstream and self.env.get("SOURCE_DIRECTORY") == name:
-            fetch_archived(self.env, name, self.env["SOURCE_DIRECTORY_SHA256"], path)
-        if os.path.exists(path):
-            with open(path) as f:
-                cached = json.load(f)
-            return cached["header"], [tuple(e) for e in cached["entries"]]
+        if not self.upstream:
+            if self.env.get("SOURCE_DIRECTORY") != name:
+                sys.exit(f"!! map_data.env pins no archived {name}: make the archive with --upstream --extract")
+            pin = self.env["SOURCE_DIRECTORY_SHA256"]
+            if not self.pinned(path, pin):
+                if not fetch_archived(self.env, name, pin, path):
+                    # Our archive can't be reached: the same directory from Protomaps
+                    self.read_directory(max_zoom, path)
+                    if sha256_file(path) != pin:
+                        os.remove(path)
+                        sys.exit(f"!! {name} read from Protomaps isn't the one map_data.env pins")
+                self.verified[path] = True
+        elif not os.path.exists(path):
+            self.read_directory(max_zoom, path)
+        with open(path) as f:
+            cached = json.load(f)
+        return cached["header"], [tuple(e) for e in cached["entries"]]
+
+    def read_directory(self, max_zoom, path):
+        """Reads the build's directories up to max_zoom from Protomaps into <path> (JSON)."""
         head = self.check_head()
         h = parse_header(head)
         root = parse_directory(decompress(head[h["root_offset"]:h["root_offset"] + h["root_length"]], h["internal_compression"]))
@@ -418,9 +447,13 @@ class Source:
                 out.append((tile_id, run, length, offset))
         with open(path, "w") as f:
             json.dump({"url": self.url, "header": h, "entries": out}, f)
-        return h, out
 
     def chunks(self):
+        if not self.upstream:
+            # The archive's parts only, each the pinned one
+            return sorted((start, stop, os.path.join(self.dir, name))
+                          for start, stop, name, sha in self.archived_tiles()
+                          if self.pinned(os.path.join(self.dir, name), sha))
         found = []
         for name in os.listdir(self.dir):
             m = re.fullmatch(r"tiles-(\d+)-(\d+)\.bin", name)
@@ -444,14 +477,36 @@ class Source:
         return out
 
     def ensure_data(self, header, end):
-        """Fetches what the cache lacks of the tile data section up to byte <end>: the archive's
-        parts that cover a gap, then, for what is still missing, Protomaps in pieces of 256 MiB."""
-        if not self.upstream:
-            for start, stop, name, sha in self.archived_tiles():
-                if any(a < stop and start < b for a, b in self.gaps(end)):
-                    if not fetch_archived(self.env, name, sha, os.path.join(self.dir, name)):
-                        break
+        """Fetches what the cache lacks of the tile data section up to byte <end>. Without
+        --upstream: the archive's parts that cover a gap, each from the archive, else the same
+        bytes from Protomaps, held to the part's pin. With it: Protomaps in pieces of 256 MiB."""
         piece = 256 << 20
+        if not self.upstream:
+            parts = self.archived_tiles()
+            if not parts:
+                sys.exit("!! map_data.env pins no archived tile data (SOURCE_TILES): make the archive with --upstream --extract")
+            for start, stop, name, sha in parts:
+                if not any(a < stop and start < b for a, b in self.gaps(end)):
+                    continue
+                path = os.path.join(self.dir, name)
+                if not fetch_archived(self.env, name, sha, path):
+                    # Our archive can't be reached: the same bytes from Protomaps
+                    self.check_head()
+                    print(f"==> {name} from Protomaps, held to the archive's pin", file=sys.stderr)
+                    with open(path + ".upstream", "wb") as f:
+                        pos = start
+                        while pos < stop:
+                            upto = min(stop, pos + piece)
+                            f.write(http_range(self.url, header["data_offset"] + pos, upto - pos))
+                            pos = upto
+                    if sha256_file(path + ".upstream") != sha:
+                        os.remove(path + ".upstream")
+                        sys.exit(f"!! {name} read from Protomaps isn't the one map_data.env pins")
+                    os.replace(path + ".upstream", path)
+                self.verified[path] = True
+            if self.gaps(end):
+                sys.exit(f"!! the archived tile data (SOURCE_TILES) ends before byte {end}: make the archive with --upstream --extract")
+            return
         for gap_start, gap_end in self.gaps(end):
             self.check_head()
             pos = gap_start
@@ -637,15 +692,15 @@ def tile_to_lat_lon(z, x0, y0, extent, gx, gy):
 
 
 def split_border(parts, kind, tile, extent):
-    """A border feature's parts split by the European reading: (kept parts, promoted parts). A
-    segment near a region of the overrides is judged by the countries on its two sides (2 km
-    away, or two tile units at small zooms): a country line with one country on both sides is
-    dropped (water on one side shows no other country); returns (kept parts, [])."""
+    """The parts of a border feature the European reading keeps. A segment near a region of
+    the overrides is judged by the countries on its two sides (2 km away, or two tile units at
+    small zooms): a country line with one country on both sides is dropped (water on one side
+    shows no other country)."""
     z, x0, y0 = tile
     units_per_km = extent * (1 << z) / 40075.0
-    kept, promoted = [], []
+    kept = []
     for part in parts:
-        runs = {"keep": [], "promote": []}
+        runs = {"keep": []}
         current, current_kind = [part[0]], "keep"
         for a, b in zip(part, part[1:]):
             verdict = "keep"
@@ -670,8 +725,7 @@ def split_border(parts, kind, tile, extent):
         if current_kind in runs and len(current) > 1:
             runs[current_kind].append(current)
         kept += runs["keep"]
-        promoted += runs["promote"]
-    return kept, promoted
+    return kept
 
 
 def added_border_parts(tile, extent):
@@ -764,15 +818,10 @@ def thin_layer(name, body, tile=(0, 0, 0)):
         pieces = [(attrs, geometry)]
         if name == "boundaries" and gtype == 2 and kind == "country" and _countries is not None:
             parts = decode_lines(geometry)
-            kept, promoted = split_border(parts, kind, tile, extent)
-            if kept != parts or promoted:
+            kept = split_border(parts, kind, tile, extent)
+            if kept != parts:
                 _borders_changed[0] = True
-                pieces = []
-                if kept:
-                    pieces.append((attrs, encode_lines(kept)))
-                if promoted:
-                    pieces.append(([("kind", string_value("country")), ("kind_detail", varint_bytes((4 << 3) | 0) + varint_bytes(2)),
-                                    ("disputed", varint_bytes((7 << 3) | 0) + varint_bytes(1))], encode_lines(promoted)))
+                pieces = [(attrs, encode_lines(kept))] if kept else []
         for piece_attrs, piece_geometry in pieces:
             new_tags = []
             for k, val in piece_attrs:
@@ -1469,7 +1518,11 @@ def main():
     ap.add_argument("--check", action="store_true")
     ap.add_argument("--upstream", action="store_true")
     ap.add_argument("--extract", metavar="DIR")
+    ap.add_argument("--self-test", action="store_true")
     args = ap.parse_args()
+    if args.self_test:
+        self_test()
+        return
     env = load_env()
     os.makedirs(args.cache, exist_ok=True)
     max_zoom, places_zoom = int(env["MAP_MAX_ZOOM"]), int(env["PLACES_ZOOM"])
@@ -1592,6 +1645,120 @@ def main():
               f"{'' if same else f' (map_data.env {key}: {env[key]})'}")
     if args.check and not ok:
         sys.exit("!! the files differ from the ones pinned in map_data.env")
+
+
+def self_test():
+    """How Source uses the cache, the archive and Protomaps, against stand-ins for both (no
+    network): only pinned bytes are used, whichever way they came."""
+    import tempfile
+    data = bytes((i * 7 + 3) % 251 for i in range(1000))           # the tile data section
+    offset = 16384
+    upstream = bytearray(b"H" * offset + data)
+    parts = [(0, 600), (600, 1000)]
+    env = {"PROTOMAPS_URL": "stand-in", "PROTOMAPS_BUILD": "test", "SOURCE_RELEASE_TAG": "test",
+           "PROTOMAPS_SIZE": str(len(upstream)), "PROTOMAPS_HEAD_SHA256": hashlib.sha256(upstream[:16384]).hexdigest(),
+           "SOURCE_TILES": ",".join(f"tiles-{a}-{b}.bin:{hashlib.sha256(data[a:b]).hexdigest()}" for a, b in parts)}
+    directory = json.dumps({"url": "stand-in", "header": {"data_offset": offset}, "entries": [[0, 1, 1000, 0]]}).encode()
+    env["SOURCE_DIRECTORY"] = "directory-z1.json"
+    env["SOURCE_DIRECTORY_SHA256"] = hashlib.sha256(directory).hexdigest()
+    archive = {}
+    fetched = []
+
+    def stand_in_archive(env_, name, sha, path):
+        if name not in archive:
+            return False
+        fetched.append(name)
+        if hashlib.sha256(archive[name]).hexdigest() != sha:
+            sys.exit(f"!! {name} from the archive has another SHA-256")
+        with open(path, "wb") as f:
+            f.write(archive[name])
+        return True
+
+    def stand_in_range(url, start, length, out=None):
+        fetched.append(f"upstream {start}+{length}")
+        return bytes(upstream[start:start + length])
+
+    def read_directory(self, max_zoom, path):
+        fetched.append("upstream directory")
+        with open(path, "wb") as f:
+            f.write(directory)
+
+    saved = {k: globals()[k] for k in ("fetch_archived", "http_range", "http_size")}
+    saved_read = Source.read_directory
+    globals().update(fetch_archived=stand_in_archive, http_range=stand_in_range, http_size=lambda url: len(upstream))
+    Source.read_directory = read_directory
+
+    def build(cache, upstream_mode=False):
+        source = Source(env, cache, upstream=upstream_mode)
+        header, _ = source.entries(1)
+        source.ensure_data(header, 1000)
+        reader, got = TileReader(source.chunks()), b""
+        while len(got) < 1000:
+            got += reader.raw(len(got), 1000 - len(got))
+        return source, got
+
+    def expect_exit(what, run):
+        try:
+            run()
+        except SystemExit:
+            return
+        raise AssertionError(f"{what}: went on")
+
+    try:
+        with tempfile.TemporaryDirectory() as cache:
+            # 1. Everything from the archive
+            archive.update({f"tiles-{a}-{b}.bin": data[a:b] for a, b in parts})
+            archive["directory-z1.json"] = directory
+            _, got = build(cache)
+            assert got == data, "archive"
+            assert not any(f.startswith("upstream") for f in fetched), fetched
+            # 2. A changed cached part (same size) and directory are fetched again, not used
+            folder = os.path.join(cache, "test")
+            with open(os.path.join(folder, "tiles-0-600.bin"), "r+b") as f:
+                f.write(b"X")
+            with open(os.path.join(folder, "directory-z1.json"), "ab") as f:
+                f.write(b" ")
+            fetched.clear()
+            _, got = build(cache)
+            assert got == data and fetched == ["directory-z1.json", "tiles-0-600.bin"], fetched
+            # 3. A stray chunk of the right size isn't used without --upstream
+            os.remove(os.path.join(folder, "tiles-600-1000.bin"))
+            with open(os.path.join(folder, "tiles-500-1000.bin"), "wb") as f:
+                f.write(b"Y" * 500)
+            fetched.clear()
+            _, got = build(cache)
+            assert got == data and fetched == ["tiles-600-1000.bin"], fetched
+            os.remove(os.path.join(folder, "tiles-500-1000.bin"))
+            # 4. The archive gone: the same bytes from Protomaps, held to the pins
+            archive.clear()
+            for name in os.listdir(folder):
+                os.remove(os.path.join(folder, name))
+            fetched.clear()
+            _, got = build(cache)
+            assert got == data, "from Protomaps"
+            # (the build's size and first 16 KiB checked first)
+            assert fetched == ["upstream directory", "upstream 0+16384", "upstream 16384+600", "upstream 16984+400"], fetched
+            # 5. ... and Protomaps serving other bytes stops the build
+            for name in os.listdir(folder):
+                os.remove(os.path.join(folder, name))
+            upstream[offset + 10] ^= 1
+            expect_exit("changed bytes from Protomaps", lambda: build(cache))
+            assert not os.path.exists(os.path.join(folder, "tiles-0-600.bin"))
+            upstream[offset + 10] ^= 1
+            # 6. A directory from Protomaps that isn't the pinned one stops the build
+            for name in os.listdir(folder):
+                os.remove(os.path.join(folder, name))
+            pinned_directory = env["SOURCE_DIRECTORY_SHA256"]
+            env["SOURCE_DIRECTORY_SHA256"] = "0" * 64
+            expect_exit("changed directory", lambda: build(cache))
+            env["SOURCE_DIRECTORY_SHA256"] = pinned_directory
+            # 7. Tile data the pins don't reach stops the build
+            env["SOURCE_TILES"] = env["SOURCE_TILES"].split(",")[0]
+            expect_exit("pins short of the end", lambda: build(cache))
+    finally:
+        globals().update(saved)
+        Source.read_directory = saved_read
+    print("self-test: ok")
 
 
 if __name__ == "__main__":

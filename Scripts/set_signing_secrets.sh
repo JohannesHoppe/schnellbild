@@ -24,7 +24,9 @@ REPO="${REPO:-JohannesHoppe/schnellbild}"
 TEAM="87884AP46G"
 OPENSSL=/usr/bin/openssl
 TMP="$(mktemp -d)"
-trap 'rm -rf "$TMP"' EXIT
+# bash 3.2 reports an aborted expansion (an unset variable) as success once an
+# EXIT trap runs: the trap fails unless the script got to its end.
+trap 'rm -rf "$TMP"; [ -n "${finished:-}" ] || exit 1' EXIT
 chmod 700 "$TMP"
 
 fail() { echo "error: $*" >&2; exit 1; }
@@ -125,6 +127,8 @@ case "${1:-}" in
     ;;
   *)
     sed -n '2,20p' "$0" | sed 's/^# \{0,1\}//'
+    finished=1
     exit 2
     ;;
 esac
+finished=1
