@@ -68,7 +68,7 @@ ICON = ROOT / "Resources" / "icon_1024.png"
 LANGUAGES = ["en", "de", "fr", "es", "it", "pt-BR", "nl", "pl", "sv", "da", "nb", "fi",
              "cs", "tr", "ru", "uk", "ja", "ko", "zh-Hans", "zh-Hant"]
 HERO_SHOT = "grid"
-# The home page's hero in a language that has its own of it (English: the master), else HERO_SHOT
+# The Atlas view's globe: the maps alternatives' picture (site_alternatives.py)
 GLOBE_SHOT = "atlas-globe"
 # The website's feature pictures, in the order of the features (site/i18n); a feature
 # whose picture has no master in docs/screenshots yet is shown as text alone
@@ -223,9 +223,9 @@ def icons():
 
 
 def card_shot(code, motif=None):
-    """The screenshot on a language's card: the home page's hero (the globe where the
-    language has its own, else the grid), light."""
-    for name in ([motif] if motif else [GLOBE_SHOT, HERO_SHOT]):
+    """The screenshot on a language's card: the home page's hero (the grid, or `motif`),
+    the language's own where there is one, light."""
+    for name in [motif or HERO_SHOT]:
         own = DOCS / "screenshots" / (f"{name}-light.webp" if code == "en" else f"{name}-light-{code}.webp")
         if own.exists():
             return own.name

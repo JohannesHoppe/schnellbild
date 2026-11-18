@@ -33,7 +33,7 @@ from pathlib import Path
 
 sys.dont_write_bytecode = True  # no __pycache__ in Scripts/ from the imports below
 from site_alternatives import Alternatives  # noqa: E402
-from make_site_images import FEATURE_SHOTS, GLOBE_SHOT, HERO_SHOT, png_size, shot_variants  # noqa: E402
+from make_site_images import FEATURE_SHOTS, HERO_SHOT, png_size, shot_variants  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 I18N = ROOT / "site" / "i18n"
@@ -138,7 +138,7 @@ def shot(name, code, alt, extra="", first=False):
     tag = f"-{code}" if code != "en" and (DOCS / "screenshots" / f"{name}-light-{code}.webp").exists() else ""
     light, dark = DOCS / "screenshots" / f"{name}-light{tag}.webp", DOCS / "screenshots" / f"{name}-dark{tag}.webp"
     width, height = png_size(light)
-    hero = first or name in (HERO_SHOT, GLOBE_SHOT)
+    hero = first or name == HERO_SHOT
     sizes = HERO_SIZES if hero else FEATURE_SIZES
     size = f' width="{width}" height="{height}"' + (' fetchpriority="high"' if hero else ' loading="lazy" decoding="async"')
     img = f'<img src="/screenshots/{light.name}"{size} alt="{esc(alt)}"{extra}>'
@@ -310,8 +310,9 @@ def topbar(code, t, path_of, sections=True):
 </header>"""
 
 
-def footer(code, t):
-    return f"""<footer>
+def footer(code, t, globe=False):
+    """The links at the bottom of every page; the home page's end in the globe (globe_band)."""
+    return f"""<footer{' class="globe"' if globe else ''}>
   <div class="wrap">
     <span>© 2026 <a href="https://haushoppe-its.de/">HAUS HOPPE - ITS</a> (Johannes Hoppe)</span>
     <nav aria-label="{esc(t['footerPrivacy'])}, {esc(t['footerImprint'])}">
@@ -322,6 +323,7 @@ def footer(code, t):
       <a class="github" href="{REPO}">{OCTOCAT}GitHub</a>
     </nav>
   </div>
+{globe_band() if globe else ""}
 </footer>
 </body>
 </html>
@@ -341,12 +343,30 @@ def alternative_links(code, text):
     return re.sub(r"\{alt:([a-z0-9-]+)\}", lambda m: alternatives.link(code, m.group(1)), text)
 
 
-def hero_shot(code, t):
-    """The globe where the language has its own picture of it (English: the master), else the grid."""
-    globe = DOCS / "screenshots" / (f"{GLOBE_SHOT}-light.webp" if code == "en" else f"{GLOBE_SHOT}-light-{code}.webp")
-    if globe.exists():
-        return shot(GLOBE_SHOT, code, t["features"][FEATURE_SHOTS.index("atlas")]["alt"])
-    return shot(HERO_SHOT, code, t["shotAlt"])
+HERO = DOCS / "hero"
+
+
+def globe_band():
+    """The home page's footer ends in the Earth's horizon, from edge to edge: drawn by
+    the app's globe without a window and without sky (docs/hero: WebP with alpha,
+    transparent around the Earth and its atmosphere, so the footer's own background is
+    the space behind it; the day side for the light theme, the night side for the dark
+    one; 3200 × 1000 for wide screens, 1200 × 900 for phones). Decoration only, so no
+    alt text; it loads when it comes near."""
+    for theme in ("light", "dark"):
+        for name in ("1600", "3200", "phone"):
+            if not (HERO / f"globe-{theme}-{name}.webp").exists():
+                missing.append(f"docs/hero/globe-{theme}-{name}.webp")
+    phone = "(max-width: 640px)"
+    def wide(theme):
+        return f"/hero/globe-{theme}-1600.webp 1600w, /hero/globe-{theme}-3200.webp 3200w"
+    return (f'<div class="globe-band"><picture>'
+            f'<source type="image/webp" media="(prefers-color-scheme: dark) and {phone}" srcset="/hero/globe-dark-phone.webp 1200w" sizes="100vw" width="1200" height="900">'
+            f'<source type="image/webp" media="{phone}" srcset="/hero/globe-light-phone.webp 1200w" sizes="100vw" width="1200" height="900">'
+            f'<source type="image/webp" media="(prefers-color-scheme: dark)" srcset="{wide("dark")}" sizes="100vw" width="3200" height="1000">'
+            f'<source type="image/webp" srcset="{wide("light")}" sizes="100vw" width="3200" height="1000">'
+            f'<img src="/hero/globe-light-3200.webp" alt="" width="3200" height="1000" loading="lazy" decoding="async">'
+            f'</picture></div>')
 
 
 def home(code, t):
@@ -391,7 +411,7 @@ def home(code, t):
     {buttons}
     <p class="fineprint">{fineprint(t['fineprint'])}</p>
   </div>
-  <div class="wrap wide"><div class="shot">{hero_shot(code, t)}</div></div>
+  <div class="wrap wide"><div class="shot">{shot(HERO_SHOT, code, t['shotAlt'])}</div></div>
 </div>
 
 <div class="wrap stats">{stats}</div>
@@ -443,7 +463,7 @@ def home(code, t):
   </div>
 </section>
 </main>
-""" + footer(code, t)
+""" + footer(code, t, globe=True)
 
 
 def privacy(code, t):
