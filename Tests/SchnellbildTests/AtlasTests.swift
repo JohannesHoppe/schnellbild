@@ -112,9 +112,8 @@ final class AtlasTests: XCTestCase {
             points.append((URL(fileURLWithPath: "/p\(i)"), Coordinate(latitude: 40 + random() * 30, longitude: -10 + random() * 40)))
         }
         for zoom in [1.0, 5.0, 9.0, 12.0] {
-            let start = Date()
-            let clusters = AtlasClustering.clusters(of: points, zoom: zoom)
-            XCTAssertLessThan(Date().timeIntervalSince(start), 1.0, "20 000 items at zoom \(zoom)")
+            var clusters: [AtlasCluster] = []
+            TimeBudget.check("20 000 items at zoom \(zoom)", under: 1.0) { clusters = AtlasClustering.clusters(of: points, zoom: zoom) }
             XCTAssertEqual(clusters.reduce(0) { $0 + $1.count }, 20_000)
         }
     }
@@ -411,11 +410,16 @@ final class AtlasTests: XCTestCase {
         XCTAssertTrue(w.typeKey(.char("t")))
         XCTAssertEqual(m.atlas.tour?.stations.count, 1)
         await waitUntil({ m.atlas.tour?.phase == .showing }, timeout: 6)
+        let shown = Date()
         XCTAssertEqual(m.atlas.tour?.currentItem?.name, "norway-14-trollstigen.jpg")
         let target = m.atlas.camera(for: m.atlas.tour!.stations[0])
         XCTAssertEqual(m.atlas.camera.center.latitude, target.center.latitude, accuracy: 0.01, "the camera arrived")
         await waitUntil({ !m.touring }, timeout: 8)
         XCTAssertEqual(m.selectedEntry?.name, "norway-14-trollstigen.jpg", "the item shown last is selected")
+        // The photo shown its time on the clock, however long the tour's ticks take
+        let showing = Date().timeIntervalSince(shown)
+        XCTAssertGreaterThan(showing, TourPlayer.photoSeconds - 0.1)
+        XCTAssertLessThan(showing, TourPlayer.photoSeconds + 1.5)
     }
 
     func testTInTheGridStartsTheTourOnceThePlacesAreRead() async throws {

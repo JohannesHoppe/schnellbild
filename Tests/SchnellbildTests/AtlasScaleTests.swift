@@ -5,7 +5,7 @@ import OfflineMap
 
 /// The Atlas with a tree of 100 000 photos: clustering, narrowing the
 /// timeline and merging the walk's batches into the pane's list within
-/// time budgets that hold on CI's virtual Macs; the facts read in the order
+/// time budgets (`TimeBudget`); the facts read in the order
 /// that shows the places first; and a real tree of 20 000 files walked and
 /// read without holding the main thread.
 @MainActor
@@ -28,53 +28,42 @@ final class AtlasScaleTests: XCTestCase {
         }
     }
 
-    private func seconds(_ work: () -> Void) -> Double {
-        let start = Date()
-        work()
-        return Date().timeIntervalSince(start)
-    }
-
     func testClusteringOneHundredThousand() {
         let points = manyItems().compactMap { item in item.coordinate.map { (id: item.url, coordinate: $0) } }
         XCTAssertEqual(points.count, 90_000)
         for zoom in [2.0, 6.0, 10.0] {
             var clusters: [AtlasCluster] = []
-            let time = seconds { clusters = AtlasClustering.clusters(of: points, zoom: zoom) }
-            XCTAssertLessThan(time, 2.0, "zoom \(zoom): \(time) s")
+            TimeBudget.check("zoom \(zoom)", under: 2.0) { clusters = AtlasClustering.clusters(of: points, zoom: zoom) }
             XCTAssertEqual(clusters.reduce(0) { $0 + $1.count }, 90_000)
         }
         // On the globe, through its projection (the far side in none)
         let projection = GlobeProjection(camera: MapCamera(center: Coordinate(latitude: 50, longitude: 10), zoom: 2),
                                          size: CGSize(width: 1200, height: 800))
-        let time = seconds {
+        TimeBudget.check("on the globe", under: 2.0) {
             _ = AtlasClustering.clusters(of: points) { projection.isVisible($0) ? projection.point(for: $0) : nil }
         }
-        XCTAssertLessThan(time, 2.0, "on the globe: \(time) s")
     }
 
     func testTheTimelineNarrowsOneHundredThousandQuickly() async {
         let atlas = AtlasModel(browser: nil) { _ in [:] }
         let items = manyItems()
-        let load = seconds { atlas.load(items) }
-        XCTAssertLessThan(load, 4.0, "made ready: \(load) s")
+        TimeBudget.check("made ready", under: 4.0) { atlas.load(items) }
         XCTAssertEqual(atlas.placed.count + atlas.unplaced.count, 100_000)
         let span = try! XCTUnwrap(atlas.span)
         // A month in the middle
         let from = span.lowerBound.addingTimeInterval(150 * 86_400), to = from.addingTimeInterval(30 * 86_400)
-        let narrow = seconds { atlas.range = from...to }
-        XCTAssertLessThan(narrow, 0.2, "narrowed: \(narrow) s")
+        // Once: the same range again changes nothing
+        TimeBudget.check("narrowed", under: 0.2, runs: 1) { atlas.range = from...to }
         let expected = items.filter { (from...to).contains($0.date) }
         XCTAssertEqual(atlas.placed.count + atlas.unplaced.count, expected.count)
         XCTAssertEqual(Set(atlas.shown.map(\.url)), Set(expected.map(\.url)))
         // What the timeline draws: a bar per 4 points of a wide window, a thumbnail per 46
         var counts: [Int] = []
-        let bars = seconds {
+        TimeBudget.check("bars, 10 times", under: 10 * 0.02) {
             for _ in 0..<10 { counts = AtlasTimeline.histogram(sorted: atlas.items, span: span, bins: 600) }
         }
-        XCTAssertLessThan(bars / 10, 0.02, "bars: \(bars / 10) s")
         XCTAssertEqual(counts, AtlasTimeline.histogram(atlas.items, span: span, bins: 600), "the same as counting them all")
-        let slots = seconds { _ = AtlasTimeline.firstOfSlots(sorted: atlas.items, span: span, slots: 50) }
-        XCTAssertLessThan(slots, 0.02)
+        TimeBudget.check("thumbnails' slots", under: 0.02) { _ = AtlasTimeline.firstOfSlots(sorted: atlas.items, span: span, slots: 50) }
         XCTAssertEqual(AtlasTimeline.nearest(to: from, sorted: atlas.items[...])?.url,
                        AtlasTimeline.nearest(to: from, in: atlas.items)?.url)
         atlas.range = nil
@@ -86,7 +75,7 @@ final class AtlasScaleTests: XCTestCase {
     /// (a binary search per new item; merging by comparing with every item
     /// listed would take hundreds of times as many), and the time of one
     /// batch into a list ten times as long against a short one, each the
-    /// best of five runs (the same runner for both: copying the list
+    /// best of five runs in CPU time (the same runner for both: copying the list
     /// grows with it, comparing barely; inserting item by item into the
     /// array would take about ten times as long).
     func testTheWalksBatchesMergeIntoTheListWithWorkThatGrowsWithTheBatch() {
@@ -115,7 +104,7 @@ final class AtlasScaleTests: XCTestCase {
         func best(into count: Int) -> Double {
             let base = Array(list.prefix(count))
             let batch = (0..<500).map { GridEntry(url: URL(fileURLWithPath: "/tree/new/IMG_\($0 * 7).jpg"), kind: .image) }
-            return (0..<5).map { _ in seconds { _ = order.merged(base, batch) } }.min()!
+            return (0..<5).map { _ in TimeBudget.seconds(.thread) { _ = order.merged(base, batch) } }.min()!
         }
         let short = best(into: 10_000), long = best(into: 100_000)
         print("500 merged into 10 000: \(short) s, into 100 000: \(long) s")
