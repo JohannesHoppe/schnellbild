@@ -15,7 +15,7 @@ final class SandboxUITests: SchnellbildUITestCase {
                       "Settings → Folder access: the app runs in the App Sandbox")
         app.terminate()
         launch(open: tempDir.path, grants: .nothing)
-        XCTAssertTrue(app.buttons["allowAccess"].firstMatch.waitForExistence(timeout: 15), "a folder outside every grant asks")
+        XCTAssertTrue(element("allowAccess").firstMatch.waitForExistence(timeout: 15), "a folder outside every grant asks")
         XCTAssertFalse(tile("a.jpg").exists, "and shows nothing of it")
     }
 
@@ -30,7 +30,7 @@ final class SandboxUITests: SchnellbildUITestCase {
         try FileManager.default.copyItem(at: source, to: pictures.appendingPathComponent("holiday.jpg"))
         launch(open: pictures.path, grants: .nothing)
         XCTAssertTrue(tile("holiday.jpg").waitForExistence(timeout: 15), "read without a grant")
-        XCTAssertFalse(app.buttons["allowAccess"].exists)
+        XCTAssertFalse(element("allowAccess").exists)
     }
 
     /// A folder chosen in the open panel shows, and comes back after a
@@ -43,11 +43,11 @@ final class SandboxUITests: SchnellbildUITestCase {
         XCTAssertTrue(app.staticTexts["No folder open"].waitForExistence(timeout: 15))
         grantThroughOpenPanel(trip)
         XCTAssertTrue(tile("x.jpg").waitForExistence(timeout: 15), "the folder chosen")
-        app.terminate()
+        quitApp()
 
         launch(resetState: false)
         XCTAssertTrue(tile("x.jpg").waitForExistence(timeout: 15), "opened again from its bookmark")
-        XCTAssertFalse(app.buttons["allowAccess"].exists)
+        XCTAssertFalse(element("allowAccess").exists)
 
         app.typeKey(",", modifierFlags: .command)
         let forget = app.buttons["Forget Folder Access…"].firstMatch
@@ -63,10 +63,10 @@ final class SandboxUITests: SchnellbildUITestCase {
         }
         confirm?.click()
         eventually("nothing granted") { !forget.isEnabled }
-        app.terminate()
+        quitApp()
 
         launch(resetState: false)
-        XCTAssertTrue(app.buttons["allowAccess"].firstMatch.waitForExistence(timeout: 15), "the last folder asks again")
+        XCTAssertTrue(element("allowAccess").firstMatch.waitForExistence(timeout: 15), "the last folder asks again")
         XCTAssertFalse(tile("x.jpg").exists)
     }
 
@@ -82,12 +82,12 @@ final class SandboxUITests: SchnellbildUITestCase {
         app.typeKey(.upArrow, modifierFlags: .command)
         XCTAssertTrue(app.staticTexts["Schnellbild needs your permission for this folder"].waitForExistence(timeout: 15))
         XCTAssertFalse(tile("a.jpg").exists)
-        app.buttons["allowAccess"].firstMatch.click()
+        element("allowAccess").firstMatch.click()
         // The panel opens at the folder above; its button allows that one
         confirmOpenPanel()
         XCTAssertTrue(tile("Trip").waitForExistence(timeout: 15), "the folder above, with the one came from")
         XCTAssertTrue(tile("a.jpg").exists)
-        app.terminate()
+        quitApp()
 
         launch(resetState: false)
         XCTAssertTrue(tile("Trip").waitForExistence(timeout: 15), "kept")
@@ -113,8 +113,10 @@ final class SandboxUITests: SchnellbildUITestCase {
         dropFromFinder(tempDir.appendingPathComponent("Outside/photo.jpg"))
         waitForBadge(containing: "photo.jpg")
         XCTAssertTrue(text(of: badge).contains("1 / 1"), "only the file dropped: \(text(of: badge))")
-        let allow = app.buttons["allowAccess"].firstMatch
-        XCTAssertTrue(allow.waitForExistence(timeout: 5), "the full view says how to see the folder")
+        let allow = element("allowAccess").firstMatch
+        let shown = allow.waitForExistence(timeout: 5)
+        if !shown { print("no Allow Access… in the full view:\n\(app.debugDescription)") }
+        XCTAssertTrue(shown, "the full view says how to see the folder")
 
         app.typeKey("i", modifierFlags: [])
         XCTAssertTrue(element("inspector").waitForExistence(timeout: 10))
@@ -125,7 +127,7 @@ final class SandboxUITests: SchnellbildUITestCase {
         confirmOpenPanel()
         eventually("the folder around it", timeout: 15) { self.text(of: self.badge).contains("1 / 2") }
         XCTAssertTrue(text(of: badge).contains("photo.jpg"), "still on the photo")
-        XCTAssertFalse(app.buttons["allowAccess"].exists)
+        XCTAssertFalse(element("allowAccess").exists)
         app.typeKey(.rightArrow, modifierFlags: [])
         waitForBadge(containing: "second.jpg")
     }
@@ -152,7 +154,7 @@ final class SandboxUITests: SchnellbildUITestCase {
         dropFromFinder(outside.appendingPathComponent("Trip.zip.001"))
         XCTAssertTrue(tile("beach.jpg").waitForExistence(timeout: 15), "the archive opened")
         XCTAssertTrue(tile("sun.jpg").waitForExistence(timeout: 10), "the part after the first read too")
-        XCTAssertFalse(app.buttons["allowAccess"].exists, "nothing missing")
+        XCTAssertFalse(element("allowAccess").exists, "nothing missing")
     }
 
     /// The folder the user opened to the app can't be renamed by itself

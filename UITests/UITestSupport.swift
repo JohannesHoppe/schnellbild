@@ -121,6 +121,14 @@ class SchnellbildUITestCase: XCTestCase {
         return app
     }
 
+    /// Quits the app as a user does (⌘Q), so it counts the folders it
+    /// reopened at launch as harmless (a launch ended otherwise within 15 s
+    /// doesn't reopen them next time: `restoreUnconfirmed`).
+    func quitApp(file: StaticString = #filePath, line: UInt = #line) {
+        app.typeKey("q", modifierFlags: .command)
+        eventually("the app quits", timeout: 10, file: file, line: line) { self.app.state == .notRunning }
+    }
+
     /// The app under test: the bundle CI built and signed as it ships
     /// (`SCHNELLBILD_APP`, through `TEST_RUNNER_SCHNELLBILD_APP`), else the
     /// Xcode build's.
