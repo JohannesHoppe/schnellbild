@@ -72,7 +72,7 @@ enum AboutPanel {
     /// The VLCKit build the app carries: `VERSION` in Scripts/fetch_vlckit.sh
     /// (AboutPanelTests keeps them the same). Its release holds the complete
     /// source it was built from.
-    static let vlckitBuild = "3.7.5-lgpl-20"
+    static let vlckitBuild = "3.7.5-lgpl-23"
     static var vlckitRelease: String { "\(repository)/releases/tag/vlckit-\(vlckitBuild)" }
 
     /// The credit NASA Earth Observatory gives its Black Marble 2016 maps
