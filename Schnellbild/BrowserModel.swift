@@ -1743,11 +1743,17 @@ final class BrowserModel: ObservableObject {
     /// the folders the user opened to the app (`FolderAccess`, the security-
     /// scoped bookmarks the open panel gave), which go too with
     /// `--reset-grants`.
+    private static var resetDone = false
+
     static func makeDefaults(arguments: [String] = ProcessInfo.processInfo.arguments) -> UserDefaults {
         guard arguments.contains("--ui-testing") else { return .standard }
         let suite = "art.haushoppe.schnellbild.uitests"
         let defaults = UserDefaults(suiteName: suite) ?? .standard
-        if arguments.contains("--reset-state") {
+        // Once a launch: the preferences asked for again later (at quit)
+        // keep what the run wrote
+        let ownLaunch = arguments == ProcessInfo.processInfo.arguments
+        if arguments.contains("--reset-state"), !(ownLaunch && resetDone) {
+            if ownLaunch { resetDone = true }
             let grants = arguments.contains("--reset-grants") ? nil : defaults.object(forKey: FolderAccess.key)
             defaults.removePersistentDomain(forName: suite)
             if let grants { defaults.set(grants, forKey: FolderAccess.key) }
