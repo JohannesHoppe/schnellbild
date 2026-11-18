@@ -10,17 +10,18 @@ later. Applied after 0003, with patch -p1 (Scripts/build_vlckit_lgpl.sh).
 diff --git a/src/input/es_out.c b/src/input/es_out.c
 --- a/src/input/es_out.c
 +++ b/src/input/es_out.c
-@@ -727,7 +727,8 @@
+@@ -728,7 +728,9 @@
       * decoder, busy with a block it was given, finishes it first, so the
       * line it holds reaches the first picture (an idle one with nothing to
       * decode doesn't hold the start) */
 -    if( b_video && var_GetInteger( p_sys->p_input, "sub-track-id" ) >= 0 )
++    /* Changed for Schnellbild on 2026-11-16: Scripts/vlc-patches/0004-es_out-with-a-subtitle-track-chosen-the-subtitle-decoders-go-on-first.patch */
 +    const bool b_spu_first = b_video && var_GetInteger( p_sys->p_input, "sub-track-id" ) >= 0;
 +    if( b_spu_first )
      {
          for( int i = 0; i < p_sys->i_es; i++ )
          {
-@@ -749,12 +750,33 @@
+@@ -751,12 +753,33 @@
  
      input_clock_ChangeSystemOrigin( p_sys->p_pgrm->p_clock, true,
                                      i_current_date + i_wakeup_delay - i_buffering_duration );

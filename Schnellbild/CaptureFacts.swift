@@ -246,7 +246,8 @@ final class FolderNames: @unchecked Sendable {
             for name in (try? FileManager.default.contentsOfDirectory(atPath: folder.path)) ?? [] {
                 let lower = name.lowercased()
                 listing.names[lower] = name
-                if lower.hasSuffix(".gpx"), !lower.hasPrefix(".") { trackNames.append(lower) }
+                // Hidden tracks too (hiding is about what the grid shows); "._" files are AppleDouble, no GPX
+                if lower.hasSuffix(".gpx"), !lower.hasPrefix("._") { trackNames.append(lower) }
             }
             trackNames.sort()
         }

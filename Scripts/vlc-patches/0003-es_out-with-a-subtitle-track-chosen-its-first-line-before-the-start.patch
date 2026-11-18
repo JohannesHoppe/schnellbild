@@ -13,10 +13,11 @@ stops waiting on a decoder that is idle with an empty queue). Applied after
 diff --git a/src/input/es_out.c b/src/input/es_out.c
 --- a/src/input/es_out.c
 +++ b/src/input/es_out.c
-@@ -710,15 +710,31 @@
+@@ -710,15 +710,32 @@
      }
  
      const vlc_tick_t i_decoder_buffering_start = mdate();
++    /* Changed for Schnellbild on 2026-11-15: Scripts/vlc-patches/0003-es_out-with-a-subtitle-track-chosen-its-first-line-before-the-start.patch */
 +    bool b_video = false;
      for( int i = 0; i < p_sys->i_es; i++ )
      {

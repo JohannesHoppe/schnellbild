@@ -1714,6 +1714,7 @@ final class BrowserModel: ObservableObject {
         }
         showMiniKeyboard = defaults.bool(forKey: Self.miniKeyboardKey)
         followAtlasSubfolders()
+        followHiddenFiles()
         if let seconds = defaults.object(forKey: Self.slideshowSecondsKey) as? Int,
            Self.slideshowSecondsRange.contains(seconds) { slideshowInterval = .seconds(seconds) }
         if let raw = defaults.string(forKey: settingsPrefix + "viewMode"), let mode = ViewMode(rawValue: raw) { viewMode = mode }
@@ -1737,6 +1738,8 @@ final class BrowserModel: ObservableObject {
         bossKeyObserver = NotificationToken(BossKey.changed) { [weak self] _ in
             MainActor.assumeIsolated { guard let self else { return }; self.activePlayer?.setVolume(self.audibleVolume) }
         }
+        // Hidden items turned on or off while the window was closed
+        if hiddenFilesStale { hiddenFilesChanged() }
     }
 
     /// `--ui-testing` keeps UI-test runs out of the user's real preferences;
@@ -1760,6 +1763,7 @@ final class BrowserModel: ObservableObject {
         panel.message = String(localized: "Choose a folder")
         if panel.runModal() == .OK, let url = panel.url {
             FolderAccess.shared.grant(url)
+            openExplicitly([url])
             open(folder: url)
         }
     }
@@ -1769,7 +1773,7 @@ final class BrowserModel: ObservableObject {
     /// folder chosen instead opens.
     func allowAccess() {
         guard let folder = folderURL, let granted = FolderAccess.shared.ask(for: folder) else { return }
-        if FolderAccess.shared.covers(folder) { refresh() } else { open(folder: granted) }
+        if FolderAccess.shared.covers(folder) { refresh() } else { openExplicitly([granted]); open(folder: granted) }
     }
 
     /// Navigate to a folder. Records the current location in the history.
@@ -1800,6 +1804,7 @@ final class BrowserModel: ObservableObject {
         pendingResultSelection = nil
         accessLimited = false
         folderURL = location.folder
+        noteRoot(of: location.folder)
         playbackPositions.enter(location.folder)
         entries = []
         allEntries = []
@@ -1813,11 +1818,11 @@ final class BrowserModel: ObservableObject {
         stopSlideshow()
         defaults.set(location.folder.path, forKey: lastFolderKey)
         let url = location.folder
-        let target = location.selected
+        let target = location.selected, shownHidden = explicitItems
         Task {
             // The folder's date first: a change during the listing shows as one later (`relist`)
             let stamp = await FolderPreviewCache.stamp(of: url)
-            let scanned = await Self.listing(url, password: password)
+            let scanned = await Self.listing(url, password: password, kept: shownHidden)
             guard self.loadGeneration == generation else { return }   // a newer navigation won
             self.listedStamp = stamp
             var full = (try? scanned.get().entries) ?? []
@@ -2030,26 +2035,29 @@ final class BrowserModel: ObservableObject {
         return true
     }
 
-    /// Read a directory — including hidden entries, with date/size.
-    /// Runs off the main thread; metadata is prefetched during
+    /// Read a directory, with date/size; hidden items as `HiddenFiles`
+    /// says. Runs off the main thread; metadata is prefetched during
     /// enumeration (no extra round-trips).
-    nonisolated static func scan(_ url: URL) async -> [GridEntry] {
-        (try? await listing(url).get().entries) ?? []
+    nonisolated static func scan(_ url: URL, kept: Set<String> = []) async -> [GridEntry] {
+        (try? await listing(url, kept: kept).get().entries) ?? []
     }
 
     /// What the grid shows of a folder, plus its other files, or why it
     /// can't be read (an archive that needs a password; `password` is one
-    /// just typed for it).
-    nonisolated static func listing(_ url: URL, password: String? = nil) async -> Result<FolderListing, Error> {
+    /// just typed for it). Hidden items only while they are shown
+    /// (`HiddenFiles`), or those in `kept` (canonical paths the user opened
+    /// himself).
+    nonisolated static func listing(_ url: URL, password: String? = nil, kept: Set<String> = []) async -> Result<FolderListing, Error> {
+        let shown = HiddenFiles.shown
         if await Blocking.run(.userInitiated, { ArchivePath.splitChecked(url) != nil }) {
-            do { return .success(try await ArchiveStore.shared.listing(in: url, trying: password)) }
+            do { return .success(try await ArchiveStore.shared.listing(in: url, trying: password, showingHidden: shown)) }
             catch { return .failure(error) }
         }
-        do { return .success(try await scanFolder(url)) }
+        do { return .success(try await scanFolder(url, showingHidden: shown, kept: kept)) }
         catch { return .failure(error) }
     }
 
-    nonisolated private static func scanFolder(_ url: URL) async throws -> FolderListing {
+    nonisolated private static func scanFolder(_ url: URL, showingHidden shown: Bool, kept: Set<String>) async throws -> FolderListing {
         try await Blocking.run {
             let keys = entryKeys
             let contents = try FileManager.default.contentsOfDirectory(
@@ -2064,13 +2072,15 @@ final class BrowserModel: ObservableObject {
                 // snapshots) aren't drives one browses
                 if drives, item.lastPathComponent.hasPrefix("com.apple.") { continue }
                 if LiveFiles.isPartialCopy(item.lastPathComponent) { LiveFiles.removeIfLeftOver(item); continue }
+                // Hidden items (a dot name, the hidden flag) only while shown;
+                // ".DS_Store", "._…" never
+                guard HiddenFiles.lists(item, values: try? item.resourceValues(forKeys: HiddenFiles.keys),
+                                        shown: shown, kept: kept) else { continue }
                 if let entry = entry(for: item, keys: keys) { listing.entries.append(entry); continue }
                 var vals = try? item.resourceValues(forKeys: keys)
                 if vals?.isSymbolicLink == true { vals = try? item.resolvingSymlinksInPath().resourceValues(forKeys: keys) }
-                // Hidden files (".DS_Store", "._…") aren't listed; folders that
-                // aren't shown are packages, which count as files
-                guard !item.lastPathComponent.hasPrefix("."),
-                      vals?.isDirectory != true || vals?.isPackage == true else { continue }
+                // Folders that aren't shown are packages, which count as files
+                guard vals?.isDirectory != true || vals?.isPackage == true else { continue }
                 listing.others.append(OtherFile(url: item, byteSize: vals?.isPackage == true ? nil : vals?.fileSize))
             }
             // A split archive's later volumes belong to its tile
@@ -2099,7 +2109,8 @@ final class BrowserModel: ObservableObject {
 
     /// What `entry(for:keys:)` reads, prefetched by the listings.
     nonisolated static let entryKeys: Set<URLResourceKey> = [
-        .isDirectoryKey, .isPackageKey, .contentModificationDateKey, .fileSizeKey, .isSymbolicLinkKey, .isAliasFileKey
+        .isDirectoryKey, .isPackageKey, .contentModificationDateKey, .fileSizeKey, .isSymbolicLinkKey, .isAliasFileKey,
+        .isHiddenKey
     ]
 
     /// Classify one file system item; nil for non-media files. Packages
@@ -2143,7 +2154,7 @@ final class BrowserModel: ObservableObject {
 
     /// Whether a photo or video lies anywhere below `folder`. Stops at the
     /// first one, so only folders that are really empty are walked to the
-    /// end. Hidden files (".DS_Store", "._…") and anything that isn't a
+    /// end. Hidden items (unless shown, `HiddenFiles`) and anything that isn't a
     /// picture or video ("Thumbs.db", "desktop.ini") don't count.
     /// nil when cancelled before it knew (the tile went away): no answer to
     /// remember.
@@ -2168,9 +2179,10 @@ final class BrowserModel: ObservableObject {
     /// code); nil when cancelled or when it gave up (not known: the folder
     /// isn't greyed out).
     nonisolated private static func anyMedia(below folder: URL, cancelled: () -> Bool) -> Bool? {
+        let shown = HiddenFiles.shown
         guard let walk = FileManager.default.enumerator(
-            at: folder, includingPropertiesForKeys: [.isRegularFileKey, .isSymbolicLinkKey, .isAliasFileKey],
-            options: [.skipsHiddenFiles, .skipsPackageDescendants]) else { return false }
+            at: folder, includingPropertiesForKeys: [.isRegularFileKey, .isSymbolicLinkKey, .isAliasFileKey, .isHiddenKey, .isDirectoryKey],
+            options: [.skipsPackageDescendants]) else { return false }
         let limit = probeLimit(for: folder)
         var looked = 0
         while true {
@@ -2180,6 +2192,7 @@ final class BrowserModel: ObservableObject {
             // A pool per item: a big tree would pile up autoreleased objects
             let found: Bool? = autoreleasepool {
                 guard let url = walk.nextObject() as? URL else { return false }
+                if skipsHidden(url, in: walk, shown: shown) { return nil }
                 // An archive opens like a folder; what's in it isn't looked into
                 // here (that means unpacking), so it counts as holding something
                 if mediaKind(of: url) != nil || ArchiveName.format(ofFile: url) != nil, isFile(url) { return true }
@@ -2187,6 +2200,17 @@ final class BrowserModel: ObservableObject {
             }
             if let found { return found }
         }
+    }
+
+    /// An item of a walk the app doesn't show (`HiddenFiles`): a hidden
+    /// folder isn't walked into. The enumerators read the flag along with
+    /// the listing.
+    nonisolated static func skipsHidden(_ url: URL, in walk: FileManager.DirectoryEnumerator, shown: Bool) -> Bool {
+        let values = try? url.resourceValues(forKeys: [.isHiddenKey, .isDirectoryKey])
+        guard !HiddenFiles.lists(url, values: values, shown: shown) else { return false }
+        // Only for a folder: after a file it would skip the rest of the folder holding it
+        if values?.isDirectory == true { walk.skipDescendants() }
+        return true
     }
 
     /// A file, not a folder named like one ("Export.mov"). The enumerators
@@ -2230,18 +2254,19 @@ final class BrowserModel: ObservableObject {
             return Array(media.filter { mediaKind(of: $0) == .image }.prefix(limit))
         }
         return await FolderProbes.run { cancelled -> [URL]? in
-            let keys: [URLResourceKey] = [.isRegularFileKey, .isSymbolicLinkKey, .isAliasFileKey, .contentModificationDateKey]
+            let keys: [URLResourceKey] = [.isRegularFileKey, .isSymbolicLinkKey, .isAliasFileKey, .contentModificationDateKey, .isHiddenKey, .isDirectoryKey]
+            let shown = HiddenFiles.shown
             // The first ones the disk lists at the top, not the first by
             // name: a big folder on a network share isn't listed to its end
             // for three pictures
             var first: [URL] = []
             if let top = FileManager.default.enumerator(
                 at: folder, includingPropertiesForKeys: keys,
-                options: [.skipsHiddenFiles, .skipsSubdirectoryDescendants, .skipsPackageDescendants]) {
+                options: [.skipsSubdirectoryDescendants, .skipsPackageDescendants]) {
                 while first.count < limit, !cancelled() {
                     let more: Bool = autoreleasepool {
                         guard let url = top.nextObject() as? URL else { return false }
-                        if mediaKind(of: url) != nil, isFile(url) { first.append(url) }
+                        if !skipsHidden(url, in: top, shown: shown), mediaKind(of: url) != nil, isFile(url) { first.append(url) }
                         return true
                     }
                     if !more { break }
@@ -2252,14 +2277,14 @@ final class BrowserModel: ObservableObject {
             // folders previews what's inside them too
             guard let walk = FileManager.default.enumerator(
                 at: folder, includingPropertiesForKeys: keys,
-                options: [.skipsHiddenFiles, .skipsPackageDescendants]) else { return [] }
+                options: [.skipsPackageDescendants]) else { return [] }
             var looked = 0
             let most = probeLimit(for: folder)
             while looked <= most, !cancelled(), first.count < limit {   // a huge tree: give up, not hang
                 looked += 1
                 let more: Bool = autoreleasepool {
                     guard let url = walk.nextObject() as? URL else { return false }
-                    if mediaKind(of: url) != nil, isFile(url) { first.append(url) }
+                    if !skipsHidden(url, in: walk, shown: shown), mediaKind(of: url) != nil, isFile(url) { first.append(url) }
                     return true
                 }
                 if !more { break }
@@ -2887,7 +2912,7 @@ final class BrowserModel: ObservableObject {
 
     /// Deep name match (folders and files) under `root`, delivered in batches
     /// so results appear while a large or slow tree is still being walked.
-    /// Skips hidden items and package contents; stops when the consumer
+    /// Skips hidden items unless they are shown (`HiddenFiles`) and package contents; stops when the consumer
     /// cancels.
     nonisolated static func recursiveMatches(under root: URL, query: String,
                                              clock: ChangeClock? = nil) -> AsyncStream<SearchBatch> {
@@ -2915,12 +2940,13 @@ final class BrowserModel: ObservableObject {
             // has cores): the walk waits on the disk the whole search long
             let stop = WalkStop()
             continuation.onTermination = { _ in stop.set() }
+            let shown = HiddenFiles.shown
             DispatchQueue.global(qos: .userInitiated).async {
                 let keys = entryKeys
                 guard let enumerator = FileManager.default.enumerator(
                     at: root,
                     includingPropertiesForKeys: Array(keys),
-                    options: [.skipsHiddenFiles, .skipsPackageDescendants]
+                    options: [.skipsPackageDescendants]
                 ) else { continuation.finish(); return }
 
                 var batch = SearchBatch(stamp: clock?.now ?? 0, entries: [])
@@ -2932,6 +2958,8 @@ final class BrowserModel: ObservableObject {
                     // otherwise hold every autoreleased object until it ends
                     let more: Bool = autoreleasepool {
                         guard let url = enumerator.nextObject() as? URL else { return false }
+                        // Hidden items and what is in hidden folders: only while shown
+                        if skipsHidden(url, in: enumerator, shown: shown) { return true }
                         // A real folder named like an archive: its results are a folder's
                         if ArchiveName.format(of: url.lastPathComponent) != nil,
                            (try? url.resourceValues(forKeys: [.isDirectoryKey]))?.isDirectory == true {
@@ -3024,6 +3052,7 @@ final class BrowserModel: ObservableObject {
         guard let first = urls.first else { return }
         // Opened to the app by the drop (App Sandbox), for now and after a restart
         for url in urls { FolderAccess.shared.grant(url) }
+        openExplicitly(urls)
         // What it is: looked up off the main thread (dropped from a share
         // that answers slowly)
         let look: @Sendable () -> (exists: Bool, isFolder: Bool, isPackage: Bool) = {
@@ -3616,7 +3645,7 @@ final class BrowserModel: ObservableObject {
 
     /// The walk of a folder's subfolders for the Atlas: the photos and videos
     /// below the folder, found by the slideshow's walk (`walkForSlideshow`:
-    /// hidden folders and links left out, archives opened), shown in the
+    /// hidden folders unless shown and links left out, archives opened), shown in the
     /// pane's list as they arrive, as search results are.
     final class DeepWalk {
         let root: String
@@ -3689,8 +3718,9 @@ final class BrowserModel: ObservableObject {
         deep = walk
         if !quiet { showDeep(keeping: selected?.url) }
         deepWalking = true
+        let kept = explicitItems
         walk.task = Task { [weak self] in
-            await Self.walkForSlideshow(folderURL, key: .name, ascending: true) { batch in
+            await Self.walkForSlideshow(folderURL, key: .name, ascending: true, kept: kept) { batch in
                 self?.deepFound(batch, in: walk)
             }
             guard !Task.isCancelled else { return }
@@ -4083,7 +4113,7 @@ final class BrowserModel: ObservableObject {
     }
 
     func moveToTrash(_ file: OtherFile) {
-        guard canChange(file) else { return }
+        guard canChange(file), !isBeingTrashed(file.url) else { return }
         guard fileActions.confirmTrash([file.name], String(localized: "The file will be moved to the Trash.")) else { return }
         trashFiles([(file.url, false)]) { [self] trashed in apply(trashed.map { FileChange.removed($0) }) }
     }
@@ -4108,11 +4138,18 @@ final class BrowserModel: ObservableObject {
         entry.kind != .parent && !ArchivePath.isInside(entry.url) && !Self.isDrive(entry.url)
     }
 
-    /// What the Trash takes: the marked items (grid), else the selected one.
+    /// What the Trash takes: the marked items (grid), else the selected one;
+    /// not what is on its way there already.
     private var trashEntries: [GridEntry] {
-        guard mode == .grid else { return selectedMediaEntry.map { [$0] }?.filter(canChange) ?? [] }
-        return actionEntries.filter(canChange)
+        let entries = mode == .grid ? actionEntries : selectedMediaEntry.map { [$0] } ?? []
+        return entries.filter { canChange($0) && !isBeingTrashed($0.url) }
     }
+
+    /// Items on their way to the Trash (canonical paths): a second ⌘⌫ while
+    /// a slow share still works on them doesn't ask for them again.
+    private var trashing: Set<String> = []
+
+    private func isBeingTrashed(_ url: URL) -> Bool { trashing.contains(Self.canonicalPath(url)) }
 
     /// The Trash has something to take (the menu item and ⌘⌫).
     var canTrash: Bool { slideshow == nil && !trashLookupPending && !trashEntries.isEmpty }
@@ -4126,7 +4163,7 @@ final class BrowserModel: ObservableObject {
         let items = trashEntries
         // Several (marked): all of them, after one confirmation
         if items.count > 1 { trashMarked(items); return }
-        guard let entry = items.first ?? selectedEntry, entry.kind != .parent else { return }
+        guard let entry = items.first ?? selectedEntry, entry.kind != .parent, !isBeingTrashed(entry.url) else { return }
         guard canChange(entry) else { NSSound.beep(); return }   // archives are only read, drives ejected
         // What goes with it, said exactly: a folder's whole contents (also
         // what the grid doesn't show), all parts of a split archive (found
@@ -4221,7 +4258,10 @@ final class BrowserModel: ObservableObject {
             }
             return (trashed, parts, firstError)
         }
+        let paths = urls.map { Self.canonicalPath($0.0) }
+        trashing.formUnion(paths)
         onFiles(work) { [self] result in
+            trashing.subtract(paths)
             if let error = result.error { fileActions.report(error) }
             undoHistory.record(UndoStep(kind: .trash, parts: result.parts))
             then(result.trashed)
@@ -4315,6 +4355,135 @@ final class BrowserModel: ObservableObject {
     /// In a window (not one that closed, `leaveWindow`).
     private var inWindow = true
 
+    // MARK: Hidden files and folders
+
+    /// Hidden items are shown (Settings → General, View → Show Hidden
+    /// Files, ⇧⌘.): app-wide, every pane of every window follows a change
+    /// (those of the same preferences). Off unless turned on.
+    @Published var showHiddenFiles = false {
+        didSet {
+            guard showHiddenFiles != oldValue, !readingHiddenFiles else { return }
+            defaults.set(showHiddenFiles, forKey: HiddenFiles.shownKey)
+            HiddenFiles.shown = showHiddenFiles
+            NotificationCenter.default.post(name: HiddenFiles.changed, object: defaults)
+            hiddenFilesChanged()
+        }
+    }
+    private var hiddenFilesObserver: NSObjectProtocol?
+    /// The preference being read at the start: nothing to read again yet.
+    private var readingHiddenFiles = false
+
+    /// The preference read at the start, then followed: another pane (or
+    /// window) changed it.
+    func followHiddenFiles() {
+        readingHiddenFiles = true
+        showHiddenFiles = defaults.bool(forKey: HiddenFiles.shownKey)
+        readingHiddenFiles = false
+        HiddenFiles.shown = showHiddenFiles
+        guard hiddenFilesObserver == nil else { return }
+        hiddenFilesObserver = NotificationCenter.default.addObserver(forName: HiddenFiles.changed, object: defaults,
+                                                                     queue: .main) { [weak self] _ in
+            MainActor.assumeIsolated {
+                guard let self else { return }
+                let value = self.defaults.bool(forKey: HiddenFiles.shownKey)
+                if self.showHiddenFiles != value { self.showHiddenFiles = value }
+            }
+        }
+    }
+
+    /// Items the user opened himself (dropped, chosen in the open panel,
+    /// `--open=`), as canonical paths: listed even while hidden items aren't.
+    private(set) var explicitItems: Set<String> = []
+    /// Where the pane's way through the folders began: a folder opened
+    /// directly (dropped, chosen, a bookmark, the last one at launch) or the
+    /// folder above it the user went up to. Hidden folders below it were
+    /// entered while hidden items showed; turned off, the pane leaves them.
+    private var shownRoot: URL?
+    /// The setting changed while the pane's window was closed: done when it opens again.
+    private var hiddenFilesStale = false
+
+    /// The user opens these himself: shown even when hidden.
+    private func openExplicitly(_ urls: [URL]) {
+        explicitItems.formUnion(urls.map(Self.canonicalPath))
+        shownRoot = nil
+    }
+
+    /// The pane's way through the folders, for `shownRoot`.
+    private func noteRoot(of folder: URL) {
+        if let shownRoot, Self.isSameOrInside(Self.canonicalPath(folder), Self.canonicalPath(shownRoot)) { return }
+        shownRoot = folder
+    }
+
+    /// Hidden items were turned on or off: the folder, a search and the
+    /// Atlas's subfolders are read again (selection, marks and scroll
+    /// position stay where their items stay); every folder tile reads its
+    /// previews and emptiness again. Turned off, a pane inside a hidden
+    /// folder it didn't open itself goes to the folder above it, and the
+    /// history and the slideshow lose what is hidden.
+    func hiddenFilesChanged() {
+        guard inWindow else { hiddenFilesStale = true; return }
+        hiddenFilesStale = false
+        forgetBelow(nil)
+        // The history's searches found what was shown then
+        let runs = (backStack + forwardStack).compactMap(\.search)
+        backStack = backStack.map { var location = $0; location.search = nil; return location }
+        forwardStack = forwardStack.map { var location = $0; location.search = nil; return location }
+        let current = allSearches
+        for run in runs where !run.finished && !current.contains(where: { $0 === run }) { run.stop(incomplete: true) }
+        guard let folderURL else { return }
+        guard !HiddenFiles.shown else { showHiddenChange(); return }
+        let root = shownRoot ?? folderURL
+        let historyFolders = (backStack + forwardStack).map(\.folder)
+        let showItems = slideshow?.items.map(\.url) ?? []
+        let kept = explicitItems
+        let generation = loadGeneration
+        Task {
+            let found = await Blocking.run(.userInitiated) { () -> (here: URL?, history: Set<String>, show: [URL]) in
+                let here = HiddenFiles.firstHidden(below: root, to: folderURL)
+                let history = Set(historyFolders.filter { HiddenFiles.firstHidden(below: root, to: $0) != nil }.map(Self.canonicalPath))
+                // Items of the show in hidden folders, or hidden themselves
+                var folders: [String: Bool] = [:]
+                let show = showItems.filter { item in
+                    guard !kept.contains(Self.canonicalPath(item)) else { return false }
+                    if !HiddenFiles.lists(item, values: try? item.resourceValues(forKeys: HiddenFiles.keys), shown: false) { return true }
+                    let folder = item.deletingLastPathComponent()
+                    let key = Self.canonicalPath(folder)
+                    if let known = folders[key] { return known }
+                    let hidden = HiddenFiles.firstHidden(below: root, to: folder) != nil
+                    folders[key] = hidden
+                    return hidden
+                }
+                return (here, history, show)
+            }
+            guard loadGeneration == generation, !HiddenFiles.shown else { return }
+            if !found.history.isEmpty {
+                backStack.removeAll { found.history.contains(Self.canonicalPath($0.folder)) }
+                forwardStack.removeAll { found.history.contains(Self.canonicalPath($0.folder)) }
+            }
+            if !found.show.isEmpty, slideshow != nil { applyHere(found.show.map(FileChange.removed)) }
+            if let here = found.here {
+                // Not into the history: the folder left can't be shown
+                let above = here.deletingLastPathComponent()
+                load(Location(folder: above, query: "", selected: nil))
+                return
+            }
+            showHiddenChange()
+        }
+    }
+
+    /// The folder (or the place in an archive), its search and the Atlas's
+    /// walk again, as the setting is now.
+    private func showHiddenChange() {
+        guard let folderURL else { return }
+        if isLoading {
+            let location = loadingLocation ?? Location(folder: folderURL, query: searchText)
+            load(location, keeping: (marked, selectionChosen))
+            return
+        }
+        relist(force: true, searchAgain: isFiltering)
+        rewalkDeep()
+    }
+
     /// The watch follows the folder shown (none inside an archive: nothing
     /// changes there).
     private func updateWatch() {
@@ -4365,7 +4534,7 @@ final class BrowserModel: ObservableObject {
                 }
                 guard now != known, !self.isLoading, let shown = self.folderURL else { continue }
                 known = now
-                if case .success(let listing) = await Self.listing(shown), self.folderURL == shown, !self.isLoading {
+                if case .success(let listing) = await Self.listing(shown, kept: self.explicitItems), self.folderURL == shown, !self.isLoading {
                     self.merge(listing)
                 }
             }
@@ -4464,7 +4633,7 @@ final class BrowserModel: ObservableObject {
             // it is; a folder deleted or a volume gone is told otherwise,
             // FSEvents' `rootChanged`, `volumesChanged`)
             guard force || (stamp != nil && stamp != known) else { return }
-            guard case .success(let listing) = await Self.listing(folderURL) else { return }
+            guard case .success(let listing) = await Self.listing(folderURL, kept: explicitItems) else { return }
             guard loadGeneration == generation, !isLoading else { return }
             listedStamp = stamp
             merge(listing)
@@ -4701,13 +4870,18 @@ final class BrowserModel: ObservableObject {
             if taken { throw RenameError.alreadyExists(name) }
             do { try create() } catch { throw RenameError.failed(error.localizedDescription) }
         }
+        // (its identity for Undo, which trashes only this folder, still empty)
+        let identity: ItemIdentity?
         if fileActions.runsOffMain {
-            try await Blocking.run {
+            identity = try await Blocking.run {
                 try make(LiveFiles.conflicts(url, folderURL)) { try FileManager.default.createDirectory(at: url, withIntermediateDirectories: false) }
+                return ItemIdentity.of(url, withContents: true)
             }
         } else {
             try make(fileActions.conflicts(url, folderURL)) { try fileActions.createFolder(url) }
+            identity = ItemIdentity.of(url, withContents: true)
         }
+        undoHistory.record(UndoStep(kind: .newFolder, parts: [.created(url, identity: identity)]))
         newFolderRequested = false
         // A folder named like an archive stays a folder
         if ArchiveName.format(of: name) != nil { ArchivePath.noteFolder(url) }
@@ -5344,7 +5518,7 @@ final class BrowserModel: ObservableObject {
         searchFocused = false
         slideshow = show
         slideshowEnteredFullScreen = setFullScreen(true)
-        let key = sortKey, ascending = sortAscending, origin = distanceOrigin
+        let key = sortKey, ascending = sortAscending, origin = distanceOrigin, kept = explicitItems
         let startAt = show.startAt.map(Self.canonicalPath), startInside = show.startInside
         let partPause = slideshowPartPause
         slideshowWalk = Task { [weak self] in
@@ -5353,14 +5527,14 @@ final class BrowserModel: ObservableObject {
             enum Part { case media([GridEntry]), folder(URL) }
             var parts: [Part] = []
             if roots.count == 1, roots[0].kind == .folder {
-                let contents = await Self.scan(roots[0].url)
+                let contents = await Self.scan(roots[0].url, kept: kept)
                 var captured: [URL: Date] = [:]
                 if key == .captured { captured = await Self.captureDates(of: contents.filter(\.isMedia).map(\.url)) }
                 let located = key == .distance ? await Self.locations(of: contents) : [:]
                 let sorted = Self.sortEntries(contents, key: key, ascending: ascending, captured: captured,
                                               origin: origin, located: located)
                 parts = [.media(sorted.filter(\.isMedia))]
-                    + sorted.filter { $0.kind == .folder && !$0.name.hasPrefix(".") }.map { .folder($0.browseURL) }
+                    + sorted.filter { $0.kind == .folder }.map { .folder($0.browseURL) }
             } else {
                 parts = roots.map { $0.isMedia ? .media([$0]) : .folder($0.browseURL) }
             }
@@ -5382,7 +5556,7 @@ final class BrowserModel: ObservableObject {
                 case .media(let items):
                     if !items.isEmpty { self?.addToSlideshow(items, id: id, part: number) }
                 case .folder(let url):
-                    await Self.walkForSlideshow(url, key: key, ascending: ascending, origin: origin) { batch in
+                    await Self.walkForSlideshow(url, key: key, ascending: ascending, origin: origin, kept: kept) { batch in
                         self?.addToSlideshow(batch, id: id, part: number)
                     }
                 }
@@ -5400,10 +5574,10 @@ final class BrowserModel: ObservableObject {
 
     /// Depth first: a folder's own media in the sort order, then each of its
     /// subfolders in the sort order. Hands over one batch per folder.
-    nonisolated static func walkForSlideshow(_ folder: URL, key: SortKey, ascending: Bool, origin: GeoPoint? = nil,
+    nonisolated static func walkForSlideshow(_ folder: URL, key: SortKey, ascending: Bool, origin: GeoPoint? = nil, kept: Set<String> = [],
                                              found: @MainActor ([GridEntry]) -> Void) async {
         guard !Task.isCancelled else { return }
-        let contents = await scan(folder)
+        let contents = await scan(folder, kept: kept)
         var captured: [URL: Date] = [:]
         if key == .captured { captured = await captureDates(of: contents.filter(\.isMedia).map(\.url)) }
         let located = key == .distance ? await locations(of: contents) : [:]
@@ -5411,10 +5585,10 @@ final class BrowserModel: ObservableObject {
         let sorted = sortEntries(contents, key: key, ascending: ascending, captured: captured, origin: origin, located: located)
         let media = sorted.filter(\.isMedia)
         if !media.isEmpty { await found(media) }
-        let folders = sorted.filter { $0.kind == .folder && !$0.name.hasPrefix(".") }
+        let folders = sorted.filter { $0.kind == .folder }
         let links = await Blocking.run { Set(folders.filter { isLink($0.url) }.map(\.url)) }
         for sub in folders where !links.contains(sub.url) {
-            await walkForSlideshow(sub.url, key: key, ascending: ascending, origin: origin, found: found)
+            await walkForSlideshow(sub.url, key: key, ascending: ascending, origin: origin, kept: kept, found: found)
         }
     }
 
