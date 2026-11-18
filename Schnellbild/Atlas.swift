@@ -10,7 +10,8 @@ struct AtlasItem: Identifiable, Equatable, Sendable {
     let isVideo: Bool
     /// Where it was taken; nil: it goes into the strip under the map.
     var coordinate: Coordinate?
-    /// When it was taken (`CaptureFacts`), else the file's modification date.
+    /// When it was taken (`CaptureFacts`), else the file's modification
+    /// date; `Date.distantPast` without either (`isDated`).
     var date: Date
     /// Seconds east of UTC its clock showed; nil: the Mac's time zone.
     var offset: Int?
@@ -24,6 +25,10 @@ struct AtlasItem: Identifiable, Equatable, Sendable {
 
     var id: URL { url }
     var name: String { url.lastPathComponent }
+
+    /// It has a time (its own or the file's date). Items without one come
+    /// first in the order of time and stay out of the timeline's span.
+    var isDated: Bool { date != .distantPast }
 
     /// The time zone its time is shown in.
     var zone: TimeZone { offset.flatMap(TimeZone.init(secondsFromGMT:)) ?? .current }
@@ -51,13 +56,33 @@ enum AtlasItems {
     /// given the offset of the nearest item within a day that states one, so
     /// a video shows the same local time as the photos around it.
     static func prepared(_ items: [AtlasItem]) -> [AtlasItem] {
+        var probes = 0
+        return prepared(items, probes: &probes)
+    }
+
+    /// The same, counting how many stated offsets were looked at (tests count
+    /// the work): a binary search per time read in UTC, as the items with an
+    /// offset are in the order of time too.
+    static func prepared(_ items: [AtlasItem], probes: inout Int) -> [AtlasItem] {
         var sorted = items.sorted { $0.date != $1.date ? $0.date < $1.date : $0.url.path < $1.url.path }
         let stated = sorted.compactMap { item in item.offset.map { (date: item.date, offset: $0) } }
         guard !stated.isEmpty else { return sorted }
         for index in sorted.indices where sorted[index].offset == nil && sorted[index].timeIsUTC {
             let date = sorted[index].date
-            let nearest = stated.min { abs($0.date.timeIntervalSince(date)) < abs($1.date.timeIntervalSince(date)) }!
-            if abs(nearest.date.timeIntervalSince(date)) <= 86_400 { sorted[index].offset = nearest.offset }
+            var low = 0, high = stated.count
+            while low < high {
+                probes += 1
+                let mid = (low + high) / 2
+                if stated[mid].date < date { low = mid + 1 } else { high = mid }
+            }
+            // The nearest is the last one before the time or the first one at or after it
+            var nearest: (date: Date, offset: Int)?
+            for candidate in [low - 1, low] where stated.indices.contains(candidate) {
+                probes += 1
+                let c = stated[candidate]
+                if nearest.map({ abs(c.date.timeIntervalSince(date)) < abs($0.date.timeIntervalSince(date)) }) ?? true { nearest = c }
+            }
+            if let nearest, abs(nearest.date.timeIntervalSince(date)) <= 86_400 { sorted[index].offset = nearest.offset }
         }
         return sorted
     }
@@ -67,6 +92,14 @@ enum AtlasItems {
         var calendar = Calendar(identifier: .gregorian)
         calendar.timeZone = item.zone
         return calendar.dateComponents([.year, .month, .day], from: item.date)
+    }
+
+    /// The same day as a number (days since 1970 by the item's clock), with
+    /// no calendar per item: the tour's stations of 100 000 items are made at once.
+    static func dayNumber(of item: AtlasItem) -> Int {
+        // The offset `zone` takes (a time zone holds up to 18 hours), else the Mac's at that moment
+        let offset = item.offset.flatMap { abs($0) <= 18 * 3600 ? $0 : nil } ?? TimeZone.current.secondsFromGMT(for: item.date)
+        return Int(((item.date.timeIntervalSince1970 + Double(offset)) / 86_400).rounded(.down))
     }
 }
 
@@ -78,6 +111,9 @@ struct AtlasCluster: Equatable, Sendable, Identifiable {
     var ids: [URL]
     /// Where the tile stands: the middle of its items (in the map's projection).
     var coordinate: Coordinate
+    /// Its items stay one tile at the largest zoom (taken at one place):
+    /// a click goes through them, zooming in doesn't part them.
+    var staysTogether = false
     var id: URL { ids[0] }
     var count: Int { ids.count }
 }
@@ -102,16 +138,21 @@ enum AtlasClustering {
     }
 
     /// The same through a projection to the screen (the globe's): an item
-    /// it gives no point (the far side) is in no cluster.
+    /// it gives no point (the far side) is in no cluster. A tile's place is
+    /// the middle of its items in the unit square, each taken on the side of
+    /// the antimeridian its first item lies on (Fiji and Samoa side by side
+    /// on the globe stand in the Pacific, not at longitude 0).
     static func clusters(of points: [(id: URL, coordinate: Coordinate)], spacing: Double = spacing,
                          project: (Coordinate) -> CGPoint?) -> [AtlasCluster] {
-        struct Building { var ids: [URL]; var leader: CGPoint; var sum: CGPoint }
+        struct Building { var ids: [URL]; var leader: CGPoint; var leaderUnit: CGPoint; var sum: CGPoint; var together: Bool }
+        // Closer than this in the unit square: one tile even at the largest zoom
+        let apart = spacing / WebMercator.worldSize(zoom: MapViewport.maxZoom)
         var built: [Building] = []
         var cells: [Int64: [Int]] = [:]
         func key(_ x: Int64, _ y: Int64) -> Int64 { x &* 1_000_003 &+ y }
         for point in points {
             guard let p = project(point.coordinate) else { continue }
-            let unit = WebMercator.unitPoint(point.coordinate)
+            var unit = WebMercator.unitPoint(point.coordinate)
             let cx = Int64((Double(p.x) / spacing).rounded(.down)), cy = Int64((Double(p.y) / spacing).rounded(.down))
             var best: (index: Int, distance: Double)?
             for dx in -1...1 {
@@ -124,18 +165,22 @@ enum AtlasClustering {
                 }
             }
             if let best {
+                let leader = built[best.index].leaderUnit
+                if unit.x - leader.x > 0.5 { unit.x -= 1 } else if leader.x - unit.x > 0.5 { unit.x += 1 }
                 built[best.index].ids.append(point.id)
                 built[best.index].sum.x += unit.x
                 built[best.index].sum.y += unit.y
+                if hypot(Double(unit.x - leader.x), Double(unit.y - leader.y)) >= apart { built[best.index].together = false }
             } else {
                 cells[key(cx, cy), default: []].append(built.count)
-                built.append(Building(ids: [point.id], leader: p, sum: unit))
+                built.append(Building(ids: [point.id], leader: p, leaderUnit: unit, sum: unit, together: true))
             }
         }
         return built.map { cluster in
             let n = CGFloat(cluster.ids.count)
             return AtlasCluster(ids: cluster.ids,
-                                coordinate: WebMercator.coordinate(unit: CGPoint(x: cluster.sum.x / n, y: cluster.sum.y / n)))
+                                coordinate: WebMercator.coordinate(unit: CGPoint(x: cluster.sum.x / n, y: cluster.sum.y / n)),
+                                staysTogether: cluster.ids.count > 1 && cluster.together)
         }
     }
 }
@@ -170,10 +215,20 @@ enum AtlasNavigation {
 // MARK: - Timeline
 
 enum AtlasTimeline {
-    /// From the first to the last item's time; nil without items.
+    /// From the first to the last item's time (items without a time left
+    /// out); nil without such items.
     static func span(of items: [AtlasItem]) -> ClosedRange<Date>? {
-        guard let first = items.map(\.date).min(), let last = items.map(\.date).max() else { return nil }
+        let dated = items.filter(\.isDated).map(\.date)
+        guard let first = dated.min(), let last = dated.max() else { return nil }
         return first...last
+    }
+
+    /// The span of items in the order of time: those without a time come
+    /// first, so the span starts at the first item at or after the earliest time.
+    static func span(sorted items: [AtlasItem]) -> ClosedRange<Date>? {
+        let start = firstIndex(atOrAfter: Date.distantPast.addingTimeInterval(1), in: items)
+        guard start < items.count, let last = items.last else { return nil }
+        return items[start].date...last.date
     }
 
     /// The items whose time lies in the range (all of them without one).
@@ -317,9 +372,15 @@ enum TourPlanner {
     /// one place (within `radius` of the station's first item) on one day
     /// (by each item's own clock). Going back to a place later is a new station.
     static func stations(from items: [AtlasItem]) -> [TourStation] {
-        let placed = AtlasItems.prepared(items.filter { $0.coordinate != nil })
+        stations(fromPrepared: AtlasItems.prepared(items.filter { $0.coordinate != nil }))
+    }
+
+    /// The same of items prepared already (`AtlasItems.prepared`, all with a
+    /// place): the Atlas's `placed`, without sorting them again.
+    static func stations<Items: Collection<AtlasItem>>(fromPrepared placed: Items) -> [TourStation] {
         var stations: [TourStation] = []
         var current: [AtlasItem] = []
+        var currentDay = 0
         func close() {
             guard !current.isEmpty else { return }
             let lat = current.map { $0.coordinate!.latitude }.reduce(0, +) / Double(current.count)
@@ -334,10 +395,11 @@ enum TourPlanner {
             current = []
         }
         for item in placed {
-            if let first = current.first,
-               AtlasItems.day(of: first) != AtlasItems.day(of: item) || first.coordinate!.distance(to: item.coordinate!) > radius {
+            let day = AtlasItems.dayNumber(of: item)
+            if let first = current.first, currentDay != day || first.coordinate!.distance(to: item.coordinate!) > radius {
                 close()
             }
+            if current.isEmpty { currentDay = day }
             current.append(item)
         }
         close()

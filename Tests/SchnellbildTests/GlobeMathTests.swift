@@ -292,6 +292,30 @@ final class GlobeMathTests: XCTestCase {
         pack += Data([0, 1, 0, 0, 0, 0, 0, 0]) + Data([0, 1, 0, 0])
         XCTAssertThrowsError(try SatelliteTiles(data: pack))
         XCTAssertThrowsError(try SatelliteTiles(data: Data("SBTL".utf8) + Data([200, 0, 0, 0])), "more entries than the header holds")
+        // An offset of Int.max: refused, not added up past the end of Int
+        var huge = Data("SBTL".utf8) + Data([1, 0, 0, 0, 4]) + Data("base".utf8)
+        huge += Data([0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x7F]) + Data([1, 0, 0, 0])
+        XCTAssertThrowsError(try SatelliteTiles(data: huge))
+    }
+
+    // MARK: Placing a place on screen
+
+    /// The camera that shows a place at a point of the view, at a zoom on
+    /// the sphere, while flattening and on the flat map, in the north too
+    /// (where the sphere and the flat map differ most). (A point left of the
+    /// middle shows latitudes up to where the sphere's rim allows: 23° at
+    /// zoom 2.5, 49° at zoom 3 for this view.)
+    func testACameraPlacesAPlaceWhereItIsAsked() {
+        let size = CGSize(width: 960, height: 600)
+        let spot = CGPoint(x: 960 * 0.28, y: 300)
+        for (latitude, zoom) in [(15.0, 2.5), (48.0, 3.0), (62.0, 3.8), (-33.9, 4.5), (70.0, 4.4), (62.0, 8.0)] {
+            let place = Coordinate(latitude: latitude, longitude: 18)
+            let camera = GlobeProjection.camera(placing: place, at: spot, zoom: zoom, size: size)
+            XCTAssertEqual(camera.zoom, zoom)
+            let p = GlobeProjection(camera: camera, size: size).point(for: place)
+            XCTAssertEqual(p.x, spot.x, accuracy: 0.5, "\(latitude)° at zoom \(zoom)")
+            XCTAssertEqual(p.y, spot.y, accuracy: 0.5, "\(latitude)° at zoom \(zoom)")
+        }
     }
 
     func testTheHeightmapFormatRoundTrips() throws {

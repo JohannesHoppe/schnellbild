@@ -4,9 +4,19 @@ import QuartzCore
 
 extension GlobeRenderer {
     /// One renderer per map, made off the main thread (compiling the shaders
-    /// and loading the globe's data take a moment) and kept.
+    /// and loading the globe's data take a moment) and kept while a globe
+    /// view of that map is in a window. Its textures (the world and detail
+    /// textures, the sky, the city lights, the satellite picture: about
+    /// 300 MB of memory shared with the GPU) go with it `keepUnused` after
+    /// the last such view left its window; the next globe makes them again.
     @MainActor private static var made: [ObjectIdentifier?: GlobeRenderer] = [:]
     @MainActor private static var waiting: [ObjectIdentifier?: [(GlobeRenderer?) -> Void]] = [:]
+    /// The globe views in a window, per map.
+    @MainActor private static var inUse: [ObjectIdentifier?: Int] = [:]
+    @MainActor private static var dropping: [ObjectIdentifier?: DispatchWorkItem] = [:]
+    /// How long a renderer no view shows is kept (switching back to the
+    /// Atlas a moment later finds it ready).
+    @MainActor static var keepUnused: TimeInterval = 20
 
     @MainActor static func shared(for map: MapRenderer?, _ done: @escaping (GlobeRenderer?) -> Void) {
         let key = map.map(ObjectIdentifier.init)
@@ -14,16 +24,45 @@ extension GlobeRenderer {
         if waiting[key] != nil { waiting[key]?.append(done); return }
         waiting[key] = [done]
         DispatchQueue.global(qos: .userInitiated).async {
-            let renderer = GlobeRenderer(map: map)
+            let renderer = GlobeRenderer(map: map, data: .bundled())
             DispatchQueue.main.async {
                 MainActor.assumeIsolated {
                     made[key] = renderer
                     let callbacks = waiting.removeValue(forKey: key) ?? []
                     callbacks.forEach { $0(renderer) }
+                    if inUse[key, default: 0] == 0 { scheduleDrop(key) }
                 }
             }
         }
     }
+
+    /// A globe view of the map came into a window (true) or left it (false).
+    @MainActor static func shown(for map: MapRenderer?, _ shown: Bool) {
+        let key = map.map(ObjectIdentifier.init)
+        let count = max(0, inUse[key, default: 0] + (shown ? 1 : -1))
+        inUse[key] = count
+        if count > 0 {
+            dropping.removeValue(forKey: key)?.cancel()
+        } else {
+            scheduleDrop(key)
+        }
+    }
+
+    @MainActor private static func scheduleDrop(_ key: ObjectIdentifier?) {
+        dropping.removeValue(forKey: key)?.cancel()
+        let drop = DispatchWorkItem {
+            MainActor.assumeIsolated {
+                dropping[key] = nil
+                guard inUse[key, default: 0] == 0 else { return }
+                made[key] = nil
+            }
+        }
+        dropping[key] = drop
+        DispatchQueue.main.asyncAfter(deadline: .now() + keepUnused, execute: drop)
+    }
+
+    /// Whether a renderer of the map is kept (tests).
+    @MainActor static func isKept(for map: MapRenderer?) -> Bool { made[map.map(ObjectIdentifier.init)] != nil }
 }
 
 /// The globe's own view: the Metal drawing of the globe (`GlobeRenderer`)
@@ -72,7 +111,13 @@ final class GlobeSurfaceView: NSView, MTKViewDelegate {
     /// No Metal: the flat map alone
     private(set) var flatOnly = false
 
+    /// The map it shows (the key of its renderer).
+    private let map: MapRenderer?
+    /// Counted among the globe views in a window (`GlobeRenderer.shown`).
+    private var counted = false
+
     init(map: MapRenderer?) {
+        self.map = map
         flat = MapSurfaceView(renderer: map)
         super.init(frame: .zero)
         wantsLayer = true
@@ -83,13 +128,29 @@ final class GlobeSurfaceView: NSView, MTKViewDelegate {
         setAccessibilityElement(true)
         setAccessibilityRole(.image)
         setAccessibilityLabel(String(localized: "Globe"))
-        GlobeRenderer.shared(for: map) { [weak self] renderer in self?.attach(renderer) }
+        // Made early; taken once the view is in a window (`viewDidMoveToWindow`)
+        GlobeRenderer.shared(for: map) { [weak self] renderer in
+            guard let self, self.window != nil else { return }
+            self.attach(renderer)
+        }
     }
 
     required init?(coder: NSCoder) { fatalError("not used") }
 
     deinit {
         if let texturesObserver { NotificationCenter.default.removeObserver(texturesObserver) }
+    }
+
+    /// Out of its window: the Metal view and the renderer go (its textures
+    /// with it once no other globe shows them, `GlobeRenderer.shown`).
+    private func detach() {
+        if let texturesObserver { NotificationCenter.default.removeObserver(texturesObserver) }
+        texturesObserver = nil
+        metal?.delegate = nil
+        metal?.removeFromSuperview()
+        metal = nil
+        renderer = nil
+        handoffPending = false
     }
 
     /// Shows the globe with this renderer (tests pass their own).
@@ -168,7 +229,22 @@ final class GlobeSurfaceView: NSView, MTKViewDelegate {
     override func viewDidMoveToWindow() {
         super.viewDidMoveToWindow()
         scheduleClock()
-        if window == nil { stopMotion() }
+        let inWindow = window != nil
+        if inWindow != counted {
+            counted = inWindow
+            GlobeRenderer.shown(for: map, inWindow)
+        }
+        if inWindow {
+            if renderer == nil, !flatOnly {
+                GlobeRenderer.shared(for: map) { [weak self] renderer in
+                    guard let self, self.window != nil else { return }
+                    self.attach(renderer)
+                }
+            }
+        } else {
+            stopMotion()
+            detach()
+        }
     }
 
     /// The camera within the globe's zoom limits; on the flat map with the world filling the view vertically.
@@ -319,7 +395,9 @@ final class GlobeSurfaceView: NSView, MTKViewDelegate {
             if t >= 1 { glide = nil }
         } else if let v = velocity {
             // A throw slows down within about half a second
+            let before = camera
             moved(to: pan(by: v.x * dt, v.y * dt))
+            if camera != before { MapMotion.threw(hypot(v.x * dt, v.y * dt)) }
             let decay = exp(-dt / 0.3)
             let next = (x: v.x * decay, y: v.y * decay)
             velocity = hypot(next.x, next.y) < 20 ? nil : next

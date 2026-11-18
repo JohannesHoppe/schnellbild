@@ -27,6 +27,10 @@ Video formats macOS can't play natively (AVI, MKV, WebM …) are handled by a ve
 
 The icon comes from `Scripts/make_icon.swift`, the DMG window's background from `Scripts/make_dmg_background.swift` (both CoreGraphics, no external tools).
 
+## Downloads
+
+Everything the app's build, its tests and CI fetch comes from this repository's own releases, each file checked against its pinned SHA-256: VLCKit (`fetch_vlckit.sh`), the UnRAR source (`fetch_unrar.sh`), the map and globe data (`fetch_map.sh`, `fetch_globe.sh`), XcodeGen (`fetch_xcodegen.sh`) and the Python wheels `dmgbuild` needs (release workflow, `Installer/requirements.txt`) from the pre-release `build-deps`. Only when our copy can't be reached does a script ask the original source, with the same pin: rarlab.com for UnRAR, XcodeGen's GitHub release, PyPI for the wheels (`--require-hashes`). The scripts that make the data (`build_map_data.py`, `build_globe_data.py`) take their inputs from the archive releases `map-source-…` and `globe-source-…` the same way.
+
 ## Tests
 
 Unit tests run via SwiftPM. The script vendors VLCKit and copies it into the test bundle, since SwiftPM doesn't embed binary frameworks there:
@@ -46,12 +50,19 @@ xcodebuild test -project Schnellbild.xcodeproj -scheme Schnellbild \
 
 The app runs in the App Sandbox there exactly as it ships, so the tests keep their folders in `/Users/Shared/SchnellbildUITests` (make it first) and open them to the app through the open panel; the tests of other volumes want a disk image mounted at `/Volumes/SchnellbildUITests` (`hdiutil create -size 64m -fs APFS -volname SchnellbildUITests x.dmg && hdiutil attach x.dmg`). CI runs them against the bundle `build_app.sh` makes (`TEST_RUNNER_SCHNELLBILD_APP=<path to Schnellbild.app>`).
 
-CI runs both on every push to `main`.
+CI runs both on every push to `main` that changes something the build or the tests read (`ci.yml`'s `paths`; `CIPathsTests` checks the list).
 
 ## Screenshots
 
-The README pictures come from the workflow **Screenshots** (`gh workflow run screenshots.yml`). On a clean GitHub runner it draws a sample library of photos and videos (`Scripts/make_sample_media.swift`, the same on every run), drives the app through its views (`UITests/ReadmeScreenshots.swift`) and photographs the window with its shadow, in light and dark mode. The artifact `screenshots` holds the PNGs for `docs/screenshots/`.
+The README pictures come from the workflow **Screenshots** (`gh workflow run screenshots.yml`). On a clean GitHub runner it draws a sample library of photos and videos (`Scripts/make_sample_media.swift`, the same on every run), drives the app through its views (`UITests/ReadmeScreenshots.swift`) and photographs the window with its shadow, in light and dark mode. `-f language=<lang>` takes one of the app's languages (`en`, `de`, `pt-BR`, `zh-Hans` …), `-f language=all` every one; each language's PNGs land in the artifact `screenshots-<lang>`. The repository keeps screenshots only as WebP:
+
+```bash
+gh run download <run id> -n screenshots-en -D shots/en       # one folder per language
+python3 Scripts/make_site_images.py import shots/*          # lossless WebP masters into docs/screenshots/
+python3 Scripts/make_site_images.py shots                   # the sizes the website loads
+python3 Scripts/build_site.py --check
+```
 
 ## Releases
 
-Tagging `vX.Y.Z` builds the app, signs it with the Developer ID, packs the DMG and submits it to Apple for notarization; once Apple accepts it, the DMG is attached to the GitHub Release (`release.yml`, `mac-release.yml`). The workflow **DMG preview** photographs the DMG window in Finder.
+Tagging `vX.Y.Z` first checks that the tag is the version in `Resources/Info.plist` and `project.yml` (`Scripts/check_release_version.sh`; bump both before tagging), then builds the app, signs it with the Developer ID, packs the DMG and submits it to Apple for notarization; once Apple accepts it, the DMG is attached to the GitHub Release (`release.yml`, `mac-release.yml`). The workflow **DMG preview** photographs the DMG window in Finder.

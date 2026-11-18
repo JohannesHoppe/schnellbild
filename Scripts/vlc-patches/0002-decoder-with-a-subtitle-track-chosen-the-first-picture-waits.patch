@@ -12,10 +12,11 @@ Applied after 0001, with patch -p1 (Scripts/build_vlckit_lgpl.sh).
 diff --git a/src/input/decoder.c b/src/input/decoder.c
 --- a/src/input/decoder.c
 +++ b/src/input/decoder.c
-@@ -123,6 +123,10 @@
+@@ -123,6 +123,11 @@
      bool b_waiting;
      bool b_first;
      bool b_has_data;
++    /* Changed for Schnellbild on 2026-11-15: Scripts/vlc-patches/0002-decoder-with-a-subtitle-track-chosen-the-first-picture-waits.patch */
 +    /* The first picture waits for the buffering to end like the others
 +     * instead of being shown at once (a subtitle track chosen: the
 +     * subtitles reach the pictures only then) */
@@ -23,7 +24,7 @@ diff --git a/src/input/decoder.c b/src/input/decoder.c
  
      /* Flushing */
      bool flushing;
-@@ -1035,7 +1039,7 @@
+@@ -1037,7 +1042,7 @@
      /* */
      vlc_mutex_lock( &p_owner->lock );
  
@@ -32,7 +33,7 @@ diff --git a/src/input/decoder.c b/src/input/decoder.c
      {
          p_owner->b_has_data = true;
          vlc_cond_signal( &p_owner->wait_acknowledge );
-@@ -1043,6 +1047,9 @@
+@@ -1045,6 +1050,9 @@
      bool b_first_after_wait = p_owner->b_waiting && p_owner->b_has_data;
  
      DecoderWaitUnblock( p_dec );
@@ -42,7 +43,7 @@ diff --git a/src/input/decoder.c b/src/input/decoder.c
  
      if( p_owner->b_waiting )
      {
-@@ -1699,6 +1706,8 @@
+@@ -1701,6 +1709,8 @@
      p_owner->b_waiting = false;
      p_owner->b_first = true;
      p_owner->b_has_data = false;

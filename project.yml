@@ -112,7 +112,8 @@ targets:
       - framework: Vendor/VLCKit.xcframework
         embed: false
 
-  # QuickLook thumbnails of the videos QuickLook can't read (MKV, WebM, AVI …),
+  # QuickLook thumbnails of the videos QuickLook can't read (MKV, WebM, WMV,
+  # ASF, FLV, Ogg, VOB),
   # in the App Sandbox; uses the app's VLCKit
   SchnellbildThumbnails:
     type: app-extension

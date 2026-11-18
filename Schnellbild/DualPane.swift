@@ -157,6 +157,16 @@ final class WindowModel: ObservableObject {
         }
     }
 
+    /// Hidden files and folders shown (Settings, View → Show Hidden Files,
+    /// ⇧⌘.): app-wide, every pane of every window follows (`BrowserModel.showHiddenFiles`).
+    var showHiddenFiles: Bool {
+        get { left.showHiddenFiles }
+        set {
+            objectWillChange.send()
+            left.showHiddenFiles = newValue
+        }
+    }
+
     /// A sheet is open in either pane: it keeps the keys and the menus.
     var anySheetOpen: Bool { panes.contains { $0.anySheetOpen } }
     /// Both panes, the right one also while hidden.

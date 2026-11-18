@@ -15,11 +15,12 @@ block starts the output at once. Applied after 0004, with patch -p1
 diff --git a/modules/audio_output/coreaudio_common.c b/modules/audio_output/coreaudio_common.c
 --- a/modules/audio_output/coreaudio_common.c
 +++ b/modules/audio_output/coreaudio_common.c
-@@ -355,7 +355,12 @@
+@@ -355,7 +355,13 @@
           * first (non-silence/zero) frame is rendered by the render callback.
           * Once the rendering is truly started, the date can be ignored. */
  
 -        const vlc_tick_t first_render_time = p_block->i_pts - ca_GetLatencyLocked(p_aout);
++        /* Changed for Schnellbild on 2026-11-16: Scripts/vlc-patches/0005-coreaudio-a-block-without-a-date-starts-the-output-at-once.patch */
 +        /* A block without a date (what a resampler hands over when it is
 +         * drained at the end, with nothing played since a seek) starts at
 +         * once: its date taken as 0 put the start far beyond any time the

@@ -236,7 +236,8 @@ public struct VectorTile: Sendable {
         }
         guard !points.isEmpty else { return nil }
         if partEnds.last != points.count { partEnds.append(points.count) }
-        let bounds = CGRect(x: minX, y: minY, width: maxX - minX, height: maxY - minY)
+        // In floating point: points far apart (crafted varints) would overflow an Int's difference
+        let bounds = CGRect(x: CGFloat(minX), y: CGFloat(minY), width: CGFloat(maxX) - CGFloat(minX), height: CGFloat(maxY) - CGFloat(minY))
         var partBounds: [CGRect] = []
         partBounds.reserveCapacity(partEnds.count)
         var start = 0

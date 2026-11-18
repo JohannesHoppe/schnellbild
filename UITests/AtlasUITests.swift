@@ -85,8 +85,12 @@ final class AtlasUITests: SchnellbildUITestCase {
         let before = mapTiles
         // Zoomed in: the tiles on screen change (they part, others leave the view)
         open(first, until: "zoomed in", timeout: 10) { self.mapTiles != before }
-        // The arrows move among the tiles
-        app.typeKey(.rightArrow, modifierFlags: [])
+        // The arrows move among the tiles; Bryggen's photos lie within metres of each other, one tile at
+        // every zoom, which → goes through first
+        for _ in 0..<5 where atlasSelected("norway-01-bryggen.jpg") {
+            app.typeKey(.rightArrow, modifierFlags: [])
+            RunLoop.current.run(until: Date().addingTimeInterval(0.4))
+        }
         eventually("another tile selected") { !self.atlasSelected("norway-01-bryggen.jpg") }
     }
 
@@ -142,6 +146,9 @@ final class AtlasUITests: SchnellbildUITestCase {
     private struct MapState {
         var zoom = 0.0, latitude = 0.0, longitude = 0.0, pitch = 0.0, heading = 0.0
         var glides = 0, thrown = 0, fades = 0
+        /// How far throws carried the globe after the mouse came up, in points, all added up
+        /// (not an angle: a throw of a whole turn reads as far as it went)
+        var thrownPoints = 0.0
     }
 
     private func mapState() -> MapState {
@@ -153,7 +160,8 @@ final class AtlasUITests: SchnellbildUITestCase {
         }
         return MapState(zoom: number(after: "zoom"), latitude: number(after: "center"), longitude: number(after: "center", 1),
                         pitch: number(after: "pitch"), heading: number(after: "heading"),
-                        glides: Int(number(after: "glides")), thrown: Int(number(after: "throws")), fades: Int(number(after: "fades")))
+                        glides: Int(number(after: "glides")), thrown: Int(number(after: "throws")), fades: Int(number(after: "fades")),
+                        thrownPoints: number(after: "thrown"))
     }
 
     /// An angle in -180 ..< 180.
@@ -194,8 +202,12 @@ final class AtlasUITests: SchnellbildUITestCase {
         let dragged = westward(before, after)
         XCTAssertGreaterThan(dragged, 5, "turned: \(before) → \(after)")
         XCTAssertEqual(after.thrown, before.thrown, "held still: no throw")
+        XCTAssertEqual(after.thrownPoints, before.thrownPoints, "held still: nothing carried on")
 
-        // Let go while moving: it keeps turning a moment
+        // Let go while moving: it keeps turning a moment. Measured as the
+        // points the throw carried it after mouse-up, not as a turn of the
+        // globe: zoomed out a throw can turn it by a whole turn, which an
+        // angle would fold to nothing.
         before = after
         globe.coordinate(withNormalizedOffset: CGVector(dx: 0.42, dy: 0.75))
             .press(forDuration: 0.1, thenDragTo: globe.coordinate(withNormalizedOffset: CGVector(dx: 0.50, dy: 0.75)),
@@ -203,8 +215,7 @@ final class AtlasUITests: SchnellbildUITestCase {
         eventually("thrown") { self.mapState().thrown > before.thrown }
         RunLoop.current.run(until: Date().addingTimeInterval(2))
         after = mapState()
-        // The same drag, and then the throw's turn on top of it
-        XCTAssertGreaterThan(abs(Self.wrap(westward(before, after) - dragged)), 3, "the throw went on after the mouse came up: \(after)")
+        XCTAssertGreaterThan(after.thrownPoints - before.thrownPoints, 10, "the throw went on after the mouse came up: \(before) → \(after)")
 
         // ⌘-scroll zooms about the pointer (XCUITest's scroll events are a trackpad's, which turn the globe without ⌘)
         before = after

@@ -5,8 +5,8 @@
 //
 // `list` writes, for every country, its currency, the price Apple derives from
 // the base price by exchange rate (`equalized`) and every price point up to it,
-// so `Scripts/price_proposal.py` can pick a price that fits the country's
-// purchasing power. `apply` makes the price schedule: the base country with its
+// so a price that fits the country's purchasing power can be picked for
+// AppStore/metadata/prices.json. `apply` makes the price schedule: the base country with its
 // price, every listed country with its own price; the rest follow the base by
 // exchange rate (Apple's equalization).
 //

@@ -878,10 +878,30 @@ def half_value(bits):
     return struct.unpack("<e", struct.pack("<H", bits))[0]
 
 
+def sky_strokes(width, height, luminance):
+    """The source's dark strokes: thin lines and outlines (tile seams of the
+    surveys it was made from, near 6h +58° among others) darker than the sky
+    around them. A pixel below 0.55 of the median of the 16 pixels two away
+    from it is one; it takes that ring's median in each channel. Stars are
+    brighter than the ring and stay. Returns {index: ring offsets}."""
+    ring = [dy * width + dx for dy in range(-2, 3) for dx in range(-2, 3) if max(abs(dx), abs(dy)) == 2]
+    lifted = {}
+    for y in range(2, height - 2):
+        base = y * width
+        for x in range(2, width - 2):
+            i = base + x
+            l = luminance[i]
+            m = sorted([luminance[i + o] for o in ring])[8]
+            if l < 0.55 * m:
+                lifted[i] = ring
+    return lifted
+
+
 def sky_jpeg(path, quality):
     """The star map tone-mapped: scaled so the 99.95th percentile of the
     brightness is white, linear up to 0.8, a soft shoulder above,
-    sRGB-encoded; a JPEG of the same size (`jpeg_rgb`)."""
+    sRGB-encoded; a JPEG of the same size (`jpeg_rgb`). The source's dark
+    strokes are lifted first (`sky_strokes`)."""
     width, height, rows = read_exr_zip(path)
     value = [half_value(b) for b in range(65536)]
     value = [v if v == v and v > 0 and v != float("inf") else (65504.0 if v == float("inf") else 0.0) for v in value]
@@ -899,13 +919,21 @@ def sky_jpeg(path, quality):
         s = 12.92 * x if x <= 0.0031308 else 1.055 * x ** (1 / 2.4) - 0.055
         return max(0, min(255, int(math.floor(s * 255 + 0.5))))
     table = bytes(encode(v) for v in value)
+    lifted = sky_strokes(width, height, luminance)
+    print(f"   sky: {len(lifted)} pixels of dark strokes lifted")
     out_rows = []
-    for r, g, b in zip(rows["R"], rows["G"], rows["B"]):
+    for y, (r, g, b) in enumerate(zip(rows["R"], rows["G"], rows["B"])):
         line = bytearray(3 * width)
         line[0::3] = bytes(map(table.__getitem__, r))
         line[1::3] = bytes(map(table.__getitem__, g))
         line[2::3] = bytes(map(table.__getitem__, b))
         out_rows.append(line)
+    for i, ring in lifted.items():
+        y, x = divmod(i, width)
+        for c, channel in enumerate(("R", "G", "B")):
+            plane = rows[channel]
+            m = sorted(value[plane[(i + o) // width][(i + o) % width]] for o in ring)[8]
+            out_rows[y][3 * x + c] = encode(m)
     return jpeg_rgb(width, height, out_rows, quality)
 
 

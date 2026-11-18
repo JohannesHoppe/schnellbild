@@ -240,12 +240,12 @@ public struct GlobeData: @unchecked Sendable {
         return data
     }
 
+    /// The app's files, read for each renderer (`GlobeTextures` turns them
+    /// into textures; the decoded pictures aren't kept beside them).
     public static func bundled(in bundle: Bundle = .main) -> GlobeData {
         guard let folder = bundle.resourceURL?.appendingPathComponent("Globe") else { return GlobeData() }
         return load(folder: folder)
     }
-
-    public static let shared = GlobeData.bundled()
 }
 
 /// The satellite picture's tiles in one file ("SBTL", made by
@@ -270,7 +270,8 @@ public struct SatelliteTiles: @unchecked Sendable {
             let n = Int(bytes[o])
             guard o + 1 + n + 12 <= bytes.count, let name = String(bytes: bytes[(o + 1)..<(o + 1 + n)], encoding: .utf8) else { throw ReadError.truncated }
             let offset = u32(o + 1 + n) | u32(o + 5 + n) << 32, length = u32(o + 9 + n)
-            guard offset >= 0, length > 0, offset + length <= data.count else { throw ReadError.truncated }
+            // (compared without adding: an offset near Int.max would overflow)
+            guard offset >= 0, length > 0, length <= data.count, offset <= data.count - length else { throw ReadError.truncated }
             index[name] = offset..<(offset + length)
             o += 1 + n + 12
         }

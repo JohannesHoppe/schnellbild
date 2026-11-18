@@ -16,6 +16,12 @@ public struct GlobeScene: Equatable, Sendable {
     public var date: Date
     /// How much of the cloud cover shows (0 none … 1 all)
     public var clouds: Double
+    /// The tilted camera's vertical angle of view (degrees; `GlobeProjection.lens`)
+    public var lens = GlobeProjection.fieldOfView
+    /// No sky and no space: the picture is transparent around the Earth and
+    /// its air (the website's hero, laid over the page; `snapshot` keeps the
+    /// alpha, premultiplied)
+    public var transparent = false
 
     public init(camera: MapCamera, size: CGSize, dark: Bool = false, lighting: Bool = false, exaggerated: Bool = true, date: Date = Date(),
                 clouds: Double = 0) {
@@ -43,7 +49,7 @@ public struct GlobeScene: Equatable, Sendable {
         return 40 * pow(6.0 / 40, close)
     }
 
-    public var projection: GlobeProjection { GlobeProjection(camera: camera, size: size) }
+    public var projection: GlobeProjection { GlobeProjection(camera: camera, size: size, lens: lens) }
 
     /// How visible the night sky is: fully while the Earth is small in the
     /// view, gone once it fills it (and while the map flattens).
@@ -119,7 +125,7 @@ public final class GlobeRenderer: @unchecked Sendable {
     public static let sampleCount = 4
 
     /// Nil without a Metal device (or when the shaders don't compile).
-    public init?(device: MTLDevice? = MTLCreateSystemDefaultDevice(), map: MapRenderer?, data: GlobeData = .shared) {
+    public init?(device: MTLDevice? = MTLCreateSystemDefaultDevice(), map: MapRenderer?, data: GlobeData = .bundled()) {
         guard let device, let queue = device.makeCommandQueue() else { return nil }
         self.device = device
         self.queue = queue
@@ -255,7 +261,8 @@ public final class GlobeRenderer: @unchecked Sendable {
     public func encode(_ scene: GlobeScene, pass: MTLRenderPassDescriptor, into buffer: MTLCommandBuffer) {
         let s = GlobeScene.space
         pass.colorAttachments[0].loadAction = .clear
-        pass.colorAttachments[0].clearColor = MTLClearColor(red: s.red, green: s.green, blue: s.blue, alpha: 1)
+        pass.colorAttachments[0].clearColor = scene.transparent ? MTLClearColor(red: 0, green: 0, blue: 0, alpha: 0)
+            : MTLClearColor(red: s.red, green: s.green, blue: s.blue, alpha: 1)
         pass.depthAttachment.loadAction = .clear
         pass.depthAttachment.clearDepth = 1
         pass.depthAttachment.storeAction = .dontCare
@@ -265,7 +272,7 @@ public final class GlobeRenderer: @unchecked Sendable {
         encoder.setVertexBytes(&u, length: size, index: 1)
         encoder.setFragmentBytes(&u, length: size, index: 1)
         encoder.setDepthStencilState(noDepthState)
-        if let sky = textures.skyTexture, u.sky.x > 0.001 {
+        if let sky = textures.skyTexture, u.sky.x > 0.001, !scene.transparent {
             encoder.setRenderPipelineState(skyPipeline)
             encoder.setFragmentTexture(sky, index: 0)
             encoder.setFragmentSamplerState(baseSampler, index: 0)
@@ -335,8 +342,16 @@ public final class GlobeRenderer: @unchecked Sendable {
         guard buffer.status == .completed else { return nil }
         var bytes = [UInt8](repeating: 0, count: w * h * 4)
         resolve.getBytes(&bytes, bytesPerRow: w * 4, from: MTLRegionMake2D(0, 0, w, h), mipmapLevel: 0)
+        if scene.transparent {
+            // The Sun's glare adds light without covering (premultiplied colour above its alpha), and
+            // an image takes a pixel without coverage for empty: it covers as much as it shines
+            for i in stride(from: 0, to: bytes.count, by: 4) {
+                bytes[i + 3] = max(bytes[i + 3], bytes[i], bytes[i + 1], bytes[i + 2])
+            }
+        }
         guard let ctx = CGContext(data: &bytes, width: w, height: h, bitsPerComponent: 8, bytesPerRow: w * 4, space: MapColor.sRGB,
-                                  bitmapInfo: CGImageAlphaInfo.noneSkipFirst.rawValue | CGBitmapInfo.byteOrder32Little.rawValue),
+                                  bitmapInfo: (scene.transparent ? CGImageAlphaInfo.premultipliedFirst : .noneSkipFirst).rawValue
+                                      | CGBitmapInfo.byteOrder32Little.rawValue),
               let image = ctx.makeImage() else { return nil }
         return (image, buffer.gpuEndTime - buffer.gpuStartTime)
     }
@@ -441,9 +456,19 @@ public final class GlobeTextures: @unchecked Sendable {
     static func satelliteKey(for scene: GlobeScene) -> SatelliteKey? {
         let z = scene.camera.zoom
         guard z >= 2.5, scene.projection.flatness < 1 else { return nil }
-        let level = z >= 4.5 ? 2 : 1
+        // Tilted, the ground near the camera lies closer than the centre: the full size half a step earlier
+        let level = z >= (scene.camera.pitch > 30 ? 4.0 : 4.5) ? 2 : 1
         let columns = level == 1 ? 8 : 16, rows = columns / 2
-        let u = (scene.camera.center.longitude + 180) / 360, v = (90 - scene.camera.center.latitude) / 180
+        // Tilted, the ground nearest the camera (the view's lower middle) needs the detail most; the
+        // 2 × 2 tiles around the point between it and the centre cover both
+        var anchor = scene.camera.center
+        let projection = scene.projection
+        if projection.perspective > 0.5,
+           let near = projection.coordinate(at: CGPoint(x: scene.size.width / 2, y: scene.size.height * 0.9)) {
+            let a = GlobeGeometry.unitVector(near), b = GlobeGeometry.unitVector(scene.camera.center)
+            anchor = GlobeGeometry.coordinate(simd_normalize(a + b))
+        }
+        let u = (anchor.longitude + 180) / 360, v = (90 - anchor.latitude) / 180
         let x0 = ((Int(floor(u * Double(columns) - 0.5)) % columns) + columns) % columns
         let y0 = min(rows - 2, max(0, Int(floor(v * Double(rows) - 0.5))))
         return SatelliteKey(level: level, x0: x0, y0: y0)

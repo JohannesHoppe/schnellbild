@@ -1,4 +1,4 @@
-Schnellbild's globe data (globe-20261116)
+Schnellbild's globe data (globe-20261117)
 
 schnellbild-heightmap-20261116.sbhm: elevation and ocean depth in cells of 1/8 degree, made from
 NOAA National Centers for Environmental Information. 2022: ETOPO 2022 15 Arc-Second
@@ -8,7 +8,7 @@ NOAA waives any potential copyright and related rights in these data worldwide
 through the Creative Commons Zero 1.0 Universal Public Domain Dedication (CC0-1.0).
 Not to be used for navigation.
 
-schnellbild-sky-20261116.jpg: the night sky, made from "Deep Star Maps 2020", NASA/Goddard Space Flight
+schnellbild-sky-20261117.jpg: the night sky, made from "Deep Star Maps 2020", NASA/Goddard Space Flight
 Center Scientific Visualization Studio (https://svs.gsfc.nasa.gov/4851), with
 source data courtesy of Gaia DR2 (ESA/Gaia/DPAC), Hipparcos and Tycho-2. SVS
 content is in the public domain. No endorsement by NASA is implied.
