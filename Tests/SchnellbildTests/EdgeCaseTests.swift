@@ -231,19 +231,23 @@ final class UnreadableFolderTests: XCTestCase {
     /// a NAS asleep) is kept, not dropped from the preferences; data that
     /// is no bookmark at all goes.
     @MainActor
-    func testAGrantThatDoesntOpenIsKept() throws {
-        let tree = try TempTree(self)
-        let gone = try tree.folder("NAS/Photos")
-        let bookmark = try gone.bookmarkData()
-        try FileManager.default.removeItem(at: gone)
+    func testAGrantThatDoesntOpenIsKept() async {
+        // A bookmark of a folder on a NAS that isn't mounted, and data that is no bookmark
+        let nas = Data("nas".utf8), damaged = Data("no bookmark".utf8)
+        var system = FolderAccess.System.live
+        system.resolve = { _ in nil }
+        system.path = { $0 == nas ? "/Volumes/NAS/Photos" : nil }
+        system.mountedVolumes = { ["/"] }
         let defaults = makeTestDefaults()
-        defaults.set([bookmark, Data("no bookmark".utf8)], forKey: FolderAccess.key)
-        let access = FolderAccess(sandboxed: true)
+        defaults.set([nas, damaged], forKey: FolderAccess.key)
+        let access = FolderAccess(sandboxed: true, system: system)
         access.defaults = defaults
         access.restore()
-        XCTAssertEqual(access.count, 1, "the bookmark waits for its folder; the damaged data is gone")
-        XCTAssertEqual(defaults.array(forKey: FolderAccess.key) as? [Data], [bookmark], "still in the preferences")
-        XCTAssertFalse(access.retry(covering: gone), "still not there")
+        await access.restored()
+        XCTAssertEqual(access.count, 1, "the bookmark waits for its volume; the damaged data is gone")
+        XCTAssertEqual(defaults.array(forKey: FolderAccess.key) as? [Data], [nas], "still in the preferences")
+        let covered = await access.retry(covering: URL(fileURLWithPath: "/Volumes/NAS/Photos"))
+        XCTAssertFalse(covered)
     }
 
     /// In the App Sandbox the folder the user opened to the app can be
@@ -288,17 +292,21 @@ final class UnreadableFolderTests: XCTestCase {
     /// granted through the open panel, unless they ask for none.
     @MainActor
     func testResetStateKeepsTheGrantsUnlessAskedNotTo() throws {
-        let suite = "art.haushoppe.schnellbild.uitests"
         let grants = [Data("grant".utf8)]
-        let first = BrowserModel.makeDefaults(arguments: ["--ui-testing", "--reset-state", "--reset-grants"])
-        first.set(grants, forKey: FolderAccess.key)
-        first.set("/somewhere", forKey: "lastFolder-test")
-        let kept = BrowserModel.makeDefaults(arguments: ["--ui-testing", "--reset-state"])
+        func suite(_ name: String) throws -> String {
+            let suite = "reset-\(name)-\(UUID().uuidString)"
+            let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+            defaults.set(grants, forKey: FolderAccess.key)
+            defaults.set("/somewhere", forKey: "lastFolder-test")
+            addTeardownBlock { UserDefaults(suiteName: suite)?.removePersistentDomain(forName: suite) }
+            return suite
+        }
+        let kept = BrowserModel.makeDefaults(arguments: ["--ui-testing", "--reset-state"], suite: try suite("kept"))
         XCTAssertEqual(kept.array(forKey: FolderAccess.key) as? [Data], grants)
         XCTAssertNil(kept.string(forKey: "lastFolder-test"), "the rest starts empty")
-        let none = BrowserModel.makeDefaults(arguments: ["--ui-testing", "--reset-state", "--reset-grants"])
+        let none = BrowserModel.makeDefaults(arguments: ["--ui-testing", "--reset-state", "--reset-grants"], suite: try suite("none"))
         XCTAssertNil(none.array(forKey: FolderAccess.key))
-        UserDefaults(suiteName: suite)?.removePersistentDomain(forName: suite)
+        XCTAssertNil(none.string(forKey: "lastFolder-test"))
     }
 
     /// Related items (App Sandbox): the files of a file's name with
