@@ -287,13 +287,18 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 22px; justify-content: s
 footer nav { display: flex; flex-wrap: wrap; gap: 8px 18px; }
 footer a { color: var(--muted); }
 /* The home page's footer ends in the Earth's horizon from edge to edge (100 % of the
-   page, not 100vw, which would count the scrollbar), as high as the picture is at that
-   width. Transparent around the Earth, so the footer's background is the space behind it. */
-footer.globe { padding-bottom: 0; }
-.globe-band { margin-top: 36px; }
+   page, not 100vw, which would count the scrollbar). The picture is transparent around
+   the Earth, so the footer's background is the space behind it. Its empty top slides up
+   under the links (a margin in % counts the width, as the picture's height does), so the
+   photos on the globe come up close to them; the band shows the picture down to 70 % of
+   its height (phones 3/4), the rest of the Earth lies below the page's end; the
+   footer cuts the atmosphere off at its own top edge. */
+footer.globe { padding-bottom: 0; overflow: hidden; }
+footer.globe .wrap { position: relative; z-index: 1; }
+.globe-band { margin-top: calc(14px - 9%); aspect-ratio: 3200 / 700; overflow: hidden; pointer-events: none; }
 .globe-band img { display: block; width: 100%; height: auto; }
 @media (max-width: 640px) {
-  .globe-band { margin-top: 28px; }
+  .globe-band { margin-top: calc(14px - 20%); aspect-ratio: 1200 / 680; }
 }
 
 
