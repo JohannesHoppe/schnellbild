@@ -103,16 +103,31 @@ final class AtlasLabelTests: XCTestCase {
         }
     }
 
-    /// The tour's place count and the strip's title are whole too.
+    /// The tour's place count and the strip's title, the app's own views
+    /// with each language's words, are whole too: on their own and given
+    /// less room than they need (a pane at its narrowest).
     func testTheTourAndTheStripSayTheirWordsWhole() throws {
         for language in languages {
             let table = try strings(language)
             let place = format(table, "Place %lld of %lld", 999, 999)
-            let shown = laidOut(Text(verbatim: place).fixedSize().font(.callout.monospacedDigit())).width
-            XCTAssertGreaterThanOrEqual(shown, width(place, size: 12) - 1, "\(language): “\(place)”")
+            let status = TourStatusLabel(text: place)
+            XCTAssertGreaterThanOrEqual(laidOut(status).width, width(place, size: 12) - 1, "\(language): “\(place)”")
+            XCTAssertGreaterThanOrEqual(laidOut(status, width: 40).width, width(place, size: 12) - 1, "\(language): “\(place)” squeezed")
             let strip = format(table, "No location · %lld", 99_999)
-            XCTAssertGreaterThanOrEqual(laidOut(Text(verbatim: strip).font(.caption).fixedSize()).width, width(strip, size: 10))
+            let title = AtlasStripTitle(text: strip)
+            XCTAssertGreaterThanOrEqual(laidOut(title).width, width(strip, size: 10), "\(language): “\(strip)”")
+            XCTAssertGreaterThanOrEqual(laidOut(title, width: 40).width, width(strip, size: 10), "\(language): “\(strip)” squeezed")
         }
+        // What the app shows is these views with its own words
+        XCTAssertEqual(TourStatusLabel.localized(station: 3, of: 8).text, String(localized: "Place \(3) of \(8)"))
+        XCTAssertEqual(AtlasStripTitle.localized(count: 12).text, String(localized: "No location · \(12)"))
+    }
+
+    /// A status or title cut to a width is caught by the measure above.
+    func testACutStatusIsCaught() {
+        let place = "Place 999 of 999"
+        let cut = laidOut(Text(verbatim: place).font(.callout.monospacedDigit()).frame(width: 40), width: 40).width
+        XCTAssertLessThan(cut, width(place, size: 12) - 1)
     }
 
     /// A control that doesn't size to its label is caught: an AppKit

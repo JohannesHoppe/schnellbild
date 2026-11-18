@@ -85,6 +85,10 @@ on:
         description: "Run each selected UI test up to this many times, until one fails (to catch a rare failure); empty: once"
         required: false
         default: ""
+      unit:
+        description: "Instead of the full run: only these unit tests (swift test --filter), on macos-15 and macos-26, repeat times until one fails"
+        required: false
+        default: ""
 
 # Reads the repository; writes nothing to it
 permissions:
@@ -99,6 +103,7 @@ concurrency:
 jobs:
   build-test:
     name: Build, test & package
+    if: ${{ !inputs.unit }}
     runs-on: macos-15          # GitHub-hosted macOS runner — ships Xcode preinstalled
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
@@ -202,6 +207,7 @@ jobs:
     # Both macOS versions: AVKit's controls look and behave differently
     # from macOS 26 on (the inline ones dim the whole picture there)
     name: UI tests (${{ matrix.os }})
+    if: ${{ !inputs.unit }}
     strategy:
       fail-fast: false
       matrix:
@@ -336,3 +342,44 @@ jobs:
           path: measurements/
           if-no-files-found: ignore
           retention-days: 14
+
+  unit-repeat:
+    # By hand (`-f unit=<filter> -f repeat=<n>`): a few unit tests again and
+    # again on both macOS versions, to see a rare failure, or that it is gone
+    name: Unit tests repeated (${{ matrix.os }})
+    if: ${{ inputs.unit }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-15, macos-26]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: Select Xcode
+        run: Scripts/select_xcode.sh
+
+      - name: Cache VLCKit
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: Vendor
+          key: vendor-${{ hashFiles('Scripts/fetch_vlckit.sh', 'Scripts/fetch_unrar.sh', 'Scripts/fetch_map.sh', 'Scripts/map_data.env', 'Scripts/fetch_globe.sh', 'Scripts/globe_data.env') }}
+
+      - name: Fetch VLCKit
+        run: ./Scripts/fetch_vlckit.sh
+
+      - name: Run the tests
+        env:
+          UNIT: ${{ inputs.unit }}
+          REPEAT: ${{ inputs.repeat || '1' }}
+        run: |
+          # As Scripts/test.sh: VLCKit copied into the test bundle, then the tests without building again
+          swift build --build-tests
+          BIN="$(swift build --show-bin-path)"
+          XCTEST="$BIN/SchnellbildPackageTests.xctest"
+          mkdir -p "$XCTEST/Contents/Frameworks"
+          ditto "$BIN/VLCKit.framework" "$XCTEST/Contents/Frameworks/VLCKit.framework"
+          for run in $(seq 1 "$REPEAT"); do
+            echo "=== run $run of $REPEAT"
+            swift test --skip-build --filter "$UNIT"
+          done

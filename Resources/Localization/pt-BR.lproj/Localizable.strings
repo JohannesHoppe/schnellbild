@@ -590,6 +590,7 @@
 "%lld on the map" = "%lld no mapa";
 "%lld items here, %@ among them" = "%1$lld aqui, entre eles %2$@";
 "%lld items here: double-click to zoom in" = "%lld aqui: clique duas vezes para ampliar";
+"%lld items at one place: click for the next one" = "%lld no mesmo lugar: clique para o próximo";
 "No location · %lld" = "Sem localização · %lld";
 "%lld of %lld" = "%1$lld de %2$lld";
 "Show All" = "Mostrar tudo";
@@ -604,10 +605,12 @@
 "Atlas: to the nearest item on the map that way; down into the strip of items without a location" = "Atlas: ao item mais próximo no mapa nessa direção; para baixo, à faixa de itens sem localização";
 "Atlas: zoom the map in / out" = "Atlas: ampliar / reduzir o mapa";
 "Atlas: on several items, zoom in until they part; on one, open it" = "Atlas: em vários itens, ampliar até se separarem; em um, abri-lo";
+"Atlas: on items taken at one place, the next one (→ ← too)" = "Atlas: em itens do mesmo lugar, o próximo (também → ←)";
 "Drag across or move a handle: only that time on the map; click: the item taken nearest then" = "Arrastar por cima ou mover uma alça: só esse período no mapa; clique: o item feito mais perto desse momento";
 "Tour: the places in the order of time, full screen, the route drawn on the map" = "Viagem: os lugares em ordem de tempo, em tela cheia, a rota desenhada no mapa";
 "arrows" = "setas";
 "double-click" = "clique duplo";
+"click" = "clique";
 "timeline" = "linha do tempo";
 "Tour: previous / next place" = "Viagem: lugar anterior / próximo";
 "Include subfolders" = "Incluir subpastas";

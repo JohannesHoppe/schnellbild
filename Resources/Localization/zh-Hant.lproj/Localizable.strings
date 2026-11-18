@@ -590,6 +590,7 @@
 "%lld on the map" = "地圖上 %lld 項";
 "%lld items here, %@ among them" = "此處 %1$lld 項，包括 %2$@";
 "%lld items here: double-click to zoom in" = "此處 %lld 項：按兩下可放大";
+"%lld items at one place: click for the next one" = "同一地點 %lld 項：按一下可選下一項";
 "No location · %lld" = "無位置 · %lld";
 "%lld of %lld" = "%1$lld / %2$lld";
 "Show All" = "顯示全部";
@@ -604,10 +605,12 @@
 "Atlas: to the nearest item on the map that way; down into the strip of items without a location" = "地圖集：移到該方向上地圖中最近的項目；向下進入無位置項目列";
 "Atlas: zoom the map in / out" = "地圖集：放大 / 縮小地圖";
 "Atlas: on several items, zoom in until they part; on one, open it" = "地圖集：在多個項目上放大直到分開；在單個項目上打開它";
+"Atlas: on items taken at one place, the next one (→ ← too)" = "地圖集：在同一地點的項目上選下一項（→ ← 亦可）";
 "Drag across or move a handle: only that time on the map; click: the item taken nearest then" = "橫向拖移或移動控點：地圖上只顯示該時間段；按一下：顯示最接近該時間拍攝的項目";
 "Tour: the places in the order of time, full screen, the route drawn on the map" = "旅程：依時間順序逐個地點，全螢幕顯示，路線繪製在地圖上";
 "arrows" = "方向鍵";
 "double-click" = "按兩下";
+"click" = "按一下";
 "timeline" = "時間軸";
 "Tour: previous / next place" = "旅程：上一個 / 下一個地點";
 "Include subfolders" = "包括子檔案夾";

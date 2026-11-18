@@ -342,6 +342,49 @@ final class GlobeSurfaceTests: XCTestCase {
         XCTAssertEqual(loneReported?.zoom ?? 0, GlobeProjection.minZoom(for: CGSize(width: 1200, height: 900)), accuracy: 1e-9)
     }
 
+    /// The globe's renderer (and with it every texture: about 300 MB of
+    /// memory shared with the GPU in the app) is kept while a globe view is
+    /// in a window, a moment longer, then let go; the next globe makes it again.
+    func testTheTexturesGoWhenNoGlobeIsShown() throws {
+        guard MTLCreateSystemDefaultDevice() != nil else { throw XCTSkip("no Metal device") }
+        let keep = GlobeRenderer.keepUnused
+        GlobeRenderer.keepUnused = 0.3
+        defer { GlobeRenderer.keepUnused = keep }
+        let map: MapRenderer? = nil   // (the globe without the map's tiles: the same renderer, the same keeping)
+        let size = NSRect(x: 0, y: 0, width: 400, height: 300)
+        let window = NSWindow(contentRect: size, styleMask: [.borderless], backing: .buffered, defer: false)
+        let other = NSWindow(contentRect: size, styleMask: [.borderless], backing: .buffered, defer: false)
+        let first = GlobeSurfaceView(map: map), second = GlobeSurfaceView(map: map)
+        first.frame = size
+        second.frame = size
+        window.contentView = first
+        other.contentView = second
+        wait(30) { first.renderer != nil && second.renderer != nil }
+        weak var made = first.renderer
+        XCTAssertNotNil(made)
+        XCTAssertTrue(first.renderer === second.renderer, "one renderer per map")
+
+        // One globe leaves its window: it lets go of the renderer, the other keeps it
+        window.contentView = nil
+        XCTAssertNil(first.renderer)
+        wait(1) { false }
+        XCTAssertTrue(GlobeRenderer.isKept(for: map), "another globe still shows it")
+        XCTAssertNotNil(made)
+
+        // The last one leaves: a moment later it is gone, textures and all
+        other.contentView = nil
+        XCTAssertNil(second.renderer)
+        wait(5) { made == nil }
+        XCTAssertFalse(GlobeRenderer.isKept(for: map))
+        XCTAssertNil(made, "the renderer and its textures are let go")
+
+        // Shown again: made again
+        window.contentView = first
+        wait(30) { first.renderer != nil }
+        XCTAssertNotNil(first.renderer)
+        window.contentView = nil
+    }
+
     func testTheProxyHidesTheFarSide() {
         let size = CGSize(width: 800, height: 500)
         let camera = MapCamera(center: Coordinate(latitude: 48, longitude: 11), zoom: 2)
