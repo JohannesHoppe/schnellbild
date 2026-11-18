@@ -590,6 +590,7 @@
 "%lld on the map" = "地図上に%lld件";
 "%lld items here, %@ among them" = "ここに%1$lld件（%2$@ など）";
 "%lld items here: double-click to zoom in" = "ここに%lld件：ダブルクリックで拡大";
+"%lld items at one place: click for the next one" = "同じ場所に%lld件：クリックで次へ";
 "No location · %lld" = "位置情報なし · %lld";
 "%lld of %lld" = "%2$lld件中%1$lld件";
 "Show All" = "すべて表示";
@@ -604,10 +605,12 @@
 "Atlas: to the nearest item on the map that way; down into the strip of items without a location" = "アトラス：その方向で地図上の最も近い項目へ。下で位置情報のない項目の列へ";
 "Atlas: zoom the map in / out" = "アトラス：地図を拡大 / 縮小";
 "Atlas: on several items, zoom in until they part; on one, open it" = "アトラス：複数の項目では分かれるまで拡大、1件なら開く";
+"Atlas: on items taken at one place, the next one (→ ← too)" = "アトラス：同じ場所の項目では次の項目（→ ← でも）";
 "Drag across or move a handle: only that time on the map; click: the item taken nearest then" = "ドラッグするかハンドルを動かす：その期間だけを地図に表示。クリック：その時刻に最も近い項目";
 "Tour: the places in the order of time, full screen, the route drawn on the map" = "旅：撮影順に場所を巡り、フルスクリーンで表示し、ルートを地図に描く";
 "arrows" = "矢印";
 "double-click" = "ダブルクリック";
+"click" = "クリック";
 "timeline" = "タイムライン";
 "Tour: previous / next place" = "旅：前 / 次の場所";
 "Include subfolders" = "サブフォルダも含める";

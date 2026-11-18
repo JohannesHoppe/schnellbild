@@ -590,6 +590,7 @@
 "%lld on the map" = "Na mapě: %lld";
 "%lld items here, %@ among them" = "Zde: %1$lld, mezi nimi %2$@";
 "%lld items here: double-click to zoom in" = "Zde: %lld. Dvojitým kliknutím přiblížíte";
+"%lld items at one place: click for the next one" = "Na jednom místě: %lld. Kliknutím vyberete další";
 "No location · %lld" = "Bez polohy · %lld";
 "%lld of %lld" = "%1$lld z %2$lld";
 "Show All" = "Zobrazit vše";
@@ -604,10 +605,12 @@
 "Atlas: to the nearest item on the map that way; down into the strip of items without a location" = "Atlas: k nejbližší položce na mapě tím směrem; dolů do pruhu položek bez polohy";
 "Atlas: zoom the map in / out" = "Atlas: přiblížit / oddálit mapu";
 "Atlas: on several items, zoom in until they part; on one, open it" = "Atlas: na více položkách přiblížit, až se oddělí; na jedné ji otevřít";
+"Atlas: on items taken at one place, the next one (→ ← too)" = "Atlas: na položkách z jednoho místa další z nich (také → ←)";
 "Drag across or move a handle: only that time on the map; click: the item taken nearest then" = "Táhnout přes ni nebo posunout úchyt: na mapě jen toto období; kliknutí: položka pořízená nejblíže tomuto času";
 "Tour: the places in the order of time, full screen, the route drawn on the map" = "Cesta: místa v časovém pořadí, na celou obrazovku, trasa zakreslená na mapě";
 "arrows" = "šipky";
 "double-click" = "dvojité kliknutí";
+"click" = "kliknutí";
 "timeline" = "časová osa";
 "Tour: previous / next place" = "Cesta: předchozí / další místo";
 "Include subfolders" = "Včetně podsložek";

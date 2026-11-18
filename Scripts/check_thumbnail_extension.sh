@@ -26,6 +26,10 @@ sw_vers -productVersion
 swiftc -O Scripts/thumbnail_probe.swift -o "$OUT/probe"
 FILES=$(mktemp -d)
 cp Tests/SchnellbildTests/Videos/clip.* "$FILES/"
+# The probe gives up on QuickLook (status 2) instead of waiting for ever
+status=0
+PROBE_TIMEOUT=0 "$OUT/probe" "$FILES/clip.mkv" || status=$?
+[ "$status" = 2 ] || { echo "the probe doesn't give up on QuickLook (status $status)"; exit 1; }
 
 # Which extension made the picture: ours logs every player it starts
 answered_by() {
@@ -35,10 +39,12 @@ answered_by() {
        | grep -q "creating player"; then echo "Schnellbild"; else echo "macOS"; fi
 }
 probe() {   # probe <ext> <must get a thumbnail: yes/no>
-  local since; since=$(date "+%Y-%m-%d %H:%M:%S")
-  if "$OUT/probe" "$FILES/clip.$1" "$OUT/clip-$1.png"; then
+  local since status=0; since=$(date "+%Y-%m-%d %H:%M:%S")
+  "$OUT/probe" "$FILES/clip.$1" "$OUT/clip-$1.png" || status=$?
+  if [ "$status" = 0 ]; then
     sleep 1; echo "   .$1 answered by $(answered_by "$since")"
   else
+    [ "$status" = 2 ] && { echo ".$1: QuickLook hangs"; exit 1; }
     [ "$2" = yes ] && { echo ".$1 got no thumbnail"; exit 1; }
     echo "   .$1: none (macOS keeps it for its own extension)"
   fi
@@ -52,6 +58,8 @@ head -c 20000 UITests/Fixtures/large.jpg > "$FILES/photo.jpg.crdownload"
 for f in film.mkv.part photo.jpg.crdownload; do
   "$OUT/probe" "$FILES/$f" "$OUT/$f.png" || { echo "$f got no thumbnail"; mdls -name kMDItemContentType "$FILES/$f"; exit 1; }
 done
-# A damaged video gets no thumbnail and doesn't hang
-"$OUT/probe" UITests/Fixtures/broken.mkv && { echo "broken.mkv got a thumbnail"; exit 1; } || true
+# A damaged video gets no thumbnail (status 1) and doesn't hang (status 2)
+status=0
+"$OUT/probe" UITests/Fixtures/broken.mkv || status=$?
+[ "$status" = 1 ] || { echo "broken.mkv: status $status, not 1 (0: a thumbnail, 2: QuickLook hangs)"; exit 1; }
 finished=1

@@ -590,6 +590,7 @@
 "%lld on the map" = "%lld på kartet";
 "%lld items here, %@ among them" = "%1$lld her, blant dem %2$@";
 "%lld items here: double-click to zoom in" = "%lld her: dobbeltklikk for å zoome inn";
+"%lld items at one place: click for the next one" = "%lld på samme sted: klikk for det neste";
 "No location · %lld" = "Uten sted · %lld";
 "%lld of %lld" = "%1$lld av %2$lld";
 "Show All" = "Vis alle";
@@ -604,10 +605,12 @@
 "Atlas: to the nearest item on the map that way; down into the strip of items without a location" = "Atlas: til nærmeste objekt på kartet i den retningen; ned i stripen med objekter uten sted";
 "Atlas: zoom the map in / out" = "Atlas: zoom kartet inn / ut";
 "Atlas: on several items, zoom in until they part; on one, open it" = "Atlas: på flere objekter zoom inn til de skilles; på ett åpne det";
+"Atlas: on items taken at one place, the next one (→ ← too)" = "Atlas: på objekter fra samme sted det neste (også → ←)";
 "Drag across or move a handle: only that time on the map; click: the item taken nearest then" = "Dra over eller flytt et håndtak: bare den tiden på kartet; klikk: objektet tatt nærmest det tidspunktet";
 "Tour: the places in the order of time, full screen, the route drawn on the map" = "Tur: stedene i tidsrekkefølge, i fullskjerm, ruten tegnet på kartet";
 "arrows" = "piler";
 "double-click" = "dobbeltklikk";
+"click" = "klikk";
 "timeline" = "tidslinje";
 "Tour: previous / next place" = "Tur: forrige / neste sted";
 "Include subfolders" = "Ta med undermapper";

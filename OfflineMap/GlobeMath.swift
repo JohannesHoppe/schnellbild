@@ -401,6 +401,27 @@ public struct GlobeProjection: Equatable, Sendable {
         return next
     }
 
+    /// The camera (straight down, north up) at `zoom` that shows `q` at the
+    /// view's point `p`, in the projection that zoom has: on the sphere, while
+    /// flattening, or on the flat map. Where no centre does it (the point off
+    /// the sphere, or a latitude the sphere's rim doesn't reach at that point
+    /// of the view), the flat map's.
+    public static func camera(placing q: Coordinate, at p: CGPoint, zoom: Double, size: CGSize) -> MapCamera {
+        let middle = CGPoint(x: Double(size.width) / 2, y: Double(size.height) / 2)
+        let centred = MapViewport(camera: MapCamera(center: q, zoom: zoom), size: size)
+        let flat = MapCamera(center: centred.coordinate(at: CGPoint(x: 2 * middle.x - p.x, y: 2 * middle.y - p.y)), zoom: zoom)
+        let projection = GlobeProjection(camera: flat, size: size)
+        if projection.isFlat { return flat }
+        let sphere = projection.sphereCenter(placing: q, at: p)
+        if projection.flatness <= 0, let sphere { return MapCamera(center: sphere, zoom: zoom) }
+        let solved = solve(start: sphere ?? flat.center, target: p) { c in
+            GlobeProjection(camera: MapCamera(center: c, zoom: zoom), size: size).project(q).point
+        }
+        guard let solved else { return flat }
+        return MapCamera(center: Coordinate(latitude: min(85, max(-85, solved.latitude)), longitude: Astronomy.wrap180(solved.longitude)),
+                         zoom: zoom)
+    }
+
     /// The centre for which the orthographic sphere (this radius and
     /// heading) shows `q` at the view's point `p`; nil when `p` lies off the
     /// sphere or no centre does it. Of the two latitudes that do, the one

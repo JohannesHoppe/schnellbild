@@ -8,6 +8,10 @@ import OfflineMap
 /// pane's `entries`, so the selection is the grid's and the list's.
 /// Times and places come from `LocationCache` (`CaptureFacts`), read off
 /// the main thread eight files at a time while the Atlas is shown.
+/// Whatever walks every item (the pane's list taken over, the items made
+/// of the facts, the fit of the map, the clusters' input) runs off the main
+/// thread; the main thread takes the results and narrows them to the
+/// timeline's range by binary search (`work` counts both, for the tests).
 @MainActor
 final class AtlasModel: ObservableObject {
     weak var browser: BrowserModel?
@@ -43,53 +47,210 @@ final class AtlasModel: ObservableObject {
         }
     }
 
+    /// The passes over every item, by the number of items each walked, on
+    /// the main thread or off it.
+    final class WorkMeter: @unchecked Sendable {
+        private let lock = NSLock()
+        private var main = 0, background = 0
+
+        nonisolated func walked(_ count: Int) {
+            let onMain = Thread.isMainThread
+            lock.withLock { if onMain { main += count } else { background += count } }
+        }
+
+        nonisolated var counts: (onMain: Int, offMain: Int) { lock.withLock { (main, background) } }
+    }
+    nonisolated let work = WorkMeter()
+
     // MARK: Items
 
     /// Every photo and video whose facts are read, in the order of time.
     @Published private(set) var items: [AtlasItem] = []
-    /// What the timeline lets through: on the map (`placed`) or in the strip under it (`unplaced`).
-    @Published private(set) var placed: [AtlasItem] = []
-    @Published private(set) var unplaced: [AtlasItem] = []
+    /// What the timeline lets through: on the map (`placed`) or in the strip
+    /// under it (`unplaced`), each a part of all of them in the order of time.
+    @Published private(set) var placed: ArraySlice<AtlasItem> = []
+    @Published private(set) var unplaced: ArraySlice<AtlasItem> = []
     /// While facts are read: how many of how many.
     @Published private(set) var progress: BrowserModel.Progress?
-    /// Where each item is in `items`.
-    private var itemIndex: [URL: Int] = [:]
+    /// What the strip under the map shows, in an object of its own: the strip
+    /// follows only it, not every change of the Atlas (a step of the reading).
+    let strip = StripState()
+    final class StripState: ObservableObject {
+        @Published fileprivate(set) var items: ArraySlice<AtlasItem> = []
+    }
+
+    /// Everything made of the facts at once, off the main thread.
+    private struct Made: Sendable {
+        var items: [AtlasItem] = []
+        /// Where each item is in `items`.
+        var index: [URL: Int] = [:]
+        /// The items with a place and those without, each in the order of time.
+        var placed: [AtlasItem] = []
+        var unplaced: [AtlasItem] = []
+        /// `placed`'s places, for the clusters and the fit.
+        var points: [(id: URL, coordinate: Coordinate)] = []
+        /// Where each item without a place is in `unplaced`.
+        var unplacedIndex: [URL: Int] = [:]
+        /// `unplaced` is the one made before (the strip needn't hear of it).
+        var sameUnplaced = false
+
+        nonisolated init() {}
+
+        nonisolated init(_ made: [AtlasItem]) {
+            items = made
+            index.reserveCapacity(made.count)
+            for (i, item) in made.enumerated() {
+                index[item.url] = i
+                if let coordinate = item.coordinate {
+                    placed.append(item)
+                    points.append((item.url, coordinate))
+                } else {
+                    unplacedIndex[item.url] = unplaced.count
+                    unplaced.append(item)
+                }
+            }
+        }
+    }
+    private var made = Made()
+    /// `placed`'s places (a part of `made.points`, the same range).
+    private var placedPoints: ArraySlice<(id: URL, coordinate: Coordinate)> = []
+
+    /// What is known of a file: its facts and the modification date they were read for.
+    private struct Known: Sendable {
+        var modified: Date?
+        var facts: CaptureFacts
+    }
 
     private var media: [URL: GridEntry] = [:]
     /// Only the small facts (time, place, a video's route of at most 500
     /// points), never pictures: a tree of 100 000 photos stays a few tens of MB.
-    private var known: [URL: CaptureFacts] = [:]
+    private var known: [URL: Known] = [:]
     /// What waits to be read, by folder (in the order the pane lists them).
-    private var pending: [String: [(url: URL, modified: Date?)]] = [:]
-    private var pendingFolders: [String] = []
-    private var pendingCount = 0
-    private var pendingURLs: Set<URL> = []
+    private struct Pending: Sendable {
+        var lists: [String: [(url: URL, modified: Date?)]] = [:]
+        var folders: [String] = []
+        var urls: Set<URL> = []
+        var count = 0
+
+        nonisolated init() {}
+
+        /// Files put in by their folder, each once.
+        nonisolated mutating func add<Files: Sequence<GridEntry>>(_ entries: Files) {
+            for entry in entries where urls.insert(entry.url).inserted {
+                let folder = entry.url.deletingLastPathComponent().path
+                if lists[folder] == nil { lists[folder] = []; folders.append(folder) }
+                lists[folder]!.append((entry.url, entry.modDate))
+                count += 1
+            }
+        }
+    }
+    private var pending = Pending()
     /// A known place of each folder: its other items come first while it is in view.
     private var folderPlaces: [String: Coordinate] = [:]
     private var readTask: Task<Void, Never>?
     private var done = 0, total = 0
     /// The folder and query the items belong to: another one starts afresh.
     private var context = ""
+    /// Not shown (another view, the window closed): nothing is read.
+    private var paused = true
+    /// Folders changed on disk (FSEvents) whose known files are read again
+    /// (nil inside: every folder), kept while the Atlas isn't shown.
+    private var changedFolders: Set<String>? = []
+    /// The pane's list being taken over off the main thread (`refreshMedia`).
+    private var mediaGeneration = 0
+    private var makingMedia = false
+    /// What the walk added meanwhile (it goes in once the list is there).
+    private var addedMeanwhile: [GridEntry] = []
 
-    /// The pane's list changed (or the Atlas is shown): read what is new.
+    /// The pane's list changed (or the Atlas is shown): read what is new,
+    /// what changed on disk since it was read (its modification date) and
+    /// what lies in a folder that changed (`foldersChanged`).
     func entriesChanged(_ entries: [GridEntry], context newContext: String) {
         startContext(newContext)
-        var next: [URL: GridEntry] = [:]
-        next.reserveCapacity(entries.count)
-        for entry in entries where entry.isMedia { next[entry.url] = entry }
-        media = next
-        queue(entries.filter { $0.isMedia && known[$0.url] == nil })
-        rebuild()
+        paused = false
+        refreshMedia(from: entries)
     }
 
     /// Items added to the pane's list (the walk of the subfolders): only
     /// they are looked at, not the whole list again.
     func entriesAdded(_ added: [GridEntry], context newContext: String) {
         guard newContext == context else { return }
+        paused = false
         let fresh = added.filter { $0.isMedia && media[$0.url] == nil }
+        if makingMedia { addedMeanwhile += fresh }
         for entry in fresh { media[entry.url] = entry }
-        queue(fresh.filter { known[$0.url] == nil })
+        queue(fresh.filter { Self.needsReading($0, in: known, changed: changedFolders) })
         if fresh.contains(where: { known[$0.url] != nil }) { rebuild() }
+    }
+
+    /// Folders whose contents changed on disk (FSEvents; nil: too many to
+    /// name): the files known there are read again, now or once the Atlas
+    /// is shown (a sidecar or a GPX track beside them may give another place
+    /// or time; unchanged ones come from `LocationCache` at once).
+    /// (`folders`: canonical paths, `BrowserModel.canonicalPath`, as FSEvents' are taken)
+    func foldersChanged(_ folders: [String]?) {
+        if let folders, changedFolders != nil {
+            changedFolders!.formUnion(folders)
+        } else if folders == nil {
+            changedFolders = nil
+        }
+        guard !paused, !media.isEmpty else { return }
+        refreshMedia(from: nil)
+    }
+
+    /// Whether a file is read (again): not known, changed since it was
+    /// read, or in a folder that changed.
+    private nonisolated static func needsReading(_ entry: GridEntry, in known: [URL: Known], changed: Set<String>?) -> Bool {
+        guard let read = known[entry.url] else { return true }
+        if read.modified != entry.modDate { return true }
+        guard let changed else { return true }
+        return !changed.isEmpty && changed.contains(BrowserModel.canonicalPath(entry.url.deletingLastPathComponent()))
+    }
+
+    /// Takes over the pane's list (`entries`, or the one known when nil)
+    /// off the main thread: the media by URL and what is to be read, by folder.
+    private func refreshMedia(from entries: [GridEntry]?) {
+        mediaGeneration += 1
+        let generation = mediaGeneration
+        makingMedia = true
+        addedMeanwhile = []
+        let current = media, known = self.known, changed = changedFolders, work = self.work
+        changedFolders = []
+        Task { [weak self] in
+            let (media, toRead) = await Blocking.run(.userInitiated) { () -> ([URL: GridEntry], Pending) in
+                var media: [URL: GridEntry]
+                if let entries {
+                    work.walked(entries.count)
+                    media = [:]
+                    media.reserveCapacity(entries.count)
+                    for entry in entries where entry.isMedia { media[entry.url] = entry }
+                } else {
+                    media = current
+                }
+                work.walked(media.count)
+                var toRead = Pending()
+                // In the pane's order where it is given
+                if let entries {
+                    toRead.add(entries.lazy.filter { $0.isMedia && AtlasModel.needsReading($0, in: known, changed: changed) })
+                } else {
+                    toRead.add(media.values.lazy.filter { AtlasModel.needsReading($0, in: known, changed: changed) })
+                }
+                return (media, toRead)
+            }
+            guard let self, self.mediaGeneration == generation else { return }
+            var all = media
+            var late: [GridEntry] = []
+            for entry in self.addedMeanwhile where all[entry.url] == nil {
+                all[entry.url] = entry
+                late.append(entry)
+            }
+            self.media = all
+            self.makingMedia = false
+            self.addedMeanwhile = []
+            self.queue(toRead)
+            self.queue(late.filter { AtlasModel.needsReading($0, in: self.known, changed: []) })
+            self.rebuild()
+        }
     }
 
     private func startContext(_ newContext: String) {
@@ -97,10 +258,7 @@ final class AtlasModel: ObservableObject {
         context = newContext
         readTask?.cancel()
         readTask = nil
-        pending = [:]
-        pendingFolders = []
-        pendingCount = 0
-        pendingURLs = []
+        pending = Pending()
         sampled = []
         done = 0
         total = 0
@@ -113,29 +271,51 @@ final class AtlasModel: ObservableObject {
 
     /// Puts files to be read by their folder; reading starts if it rests.
     private func queue(_ entries: [GridEntry]) {
-        for entry in entries where pendingURLs.insert(entry.url).inserted {
-            let folder = entry.url.deletingLastPathComponent().path
-            if pending[folder] == nil { pending[folder] = []; pendingFolders.append(folder) }
-            pending[folder]!.append((entry.url, entry.modDate))
-            pendingCount += 1
-            total += 1
+        guard !entries.isEmpty else { return }
+        let before = pending.count
+        pending.add(entries)
+        total += pending.count - before
+        if readTask == nil, pending.count > 0 { startReading() }
+    }
+
+    /// The same for files grouped off the main thread: taken as they are
+    /// when nothing waits (the whole list at once), else merged.
+    private func queue(_ more: Pending) {
+        guard more.count > 0 else { return }
+        if pending.count == 0 {
+            pending = more
+            total += more.count
+        } else {
+            let before = pending.count
+            for folder in more.folders { pending.add(more.lists[folder]!.lazy.compactMap { self.media[$0.url] }) }
+            total += pending.count - before
         }
-        if readTask == nil, pendingCount > 0 { startReading() }
+        if readTask == nil, pending.count > 0 { startReading() }
     }
 
     /// Stops reading (another view chosen); what is known stays.
     func pause() {
+        paused = true
+        mediaGeneration += 1
+        makingMedia = false
+        addedMeanwhile = []
         readTask?.cancel()
         readTask = nil
-        pending = [:]
-        pendingFolders = []
-        pendingCount = 0
-        pendingURLs = []
+        pending = Pending()
         sampled = []
         tourWanted = false
         progress = nil
         done = 0
         total = 0
+    }
+
+    /// The window showing the pane closed: the tour ends without leaving
+    /// full screen (another window may be in full screen by now), the
+    /// reading stops. A window that takes the model again reads afresh.
+    func leaveWindow() {
+        tourEnteredFullScreen = false
+        if tour != nil { endTour() }
+        pause()
     }
 
     /// Files read per step.
@@ -148,30 +328,32 @@ final class AtlasModel: ObservableObject {
     func nextChunk(size: Int = AtlasModel.chunk) -> [(url: URL, modified: Date?)] {
         var chunk: [(url: URL, modified: Date?)] = []
         func take(from folder: String, count: Int) {
-            guard var list = pending[folder], !list.isEmpty, count > 0 else { return }
+            guard var list = pending.lists[folder], !list.isEmpty, count > 0 else { return }
             let n = min(count, list.count, size - chunk.count)
             chunk += list.prefix(n)
-            for file in list.prefix(n) { pendingURLs.remove(file.url) }
+            for file in list.prefix(n) { pending.urls.remove(file.url) }
             list.removeFirst(n)
-            pendingCount -= n
-            pending[folder] = list.isEmpty ? nil : list
+            pending.count -= n
+            pending.lists[folder] = list.isEmpty ? nil : list
         }
         if let selected = browser?.selectedEntry, selected.isMedia {
             take(from: selected.url.deletingLastPathComponent().path, count: size)
         }
-        for folder in pendingFolders where chunk.count < size && folderPlaces[folder] == nil && !sampled.contains(folder) {
+        for folder in pending.folders where chunk.count < size && folderPlaces[folder] == nil && !sampled.contains(folder) {
             sampled.insert(folder)
             take(from: folder, count: 1)
         }
         if chunk.count < size, mapSize.width > 0 {
             let bounds = CGRect(origin: .zero, size: mapSize)
-            for folder in pendingFolders where chunk.count < size {
+            for folder in pending.folders where chunk.count < size {
                 guard let place = folderPlaces[folder], let p = point(for: place), bounds.contains(p) else { continue }
                 take(from: folder, count: size)
             }
         }
-        for folder in pendingFolders where chunk.count < size { take(from: folder, count: size) }
-        pendingFolders.removeAll { pending[$0] == nil }
+        for folder in pending.folders where chunk.count < size { take(from: folder, count: size) }
+        // (the lists read apart from the change: one access to `pending` at a time)
+        let lists = pending.lists
+        pending.folders.removeAll { lists[$0] == nil }
         return chunk
     }
     /// Folders a file was read from already for the first places.
@@ -186,15 +368,16 @@ final class AtlasModel: ObservableObject {
                 if self.total > Self.chunk { self.progress = BrowserModel.Progress(done: self.done, total: self.total) }
                 let found = await self.readFacts(chunk)
                 guard !Task.isCancelled else { return }
-                self.known.merge(found) { _, new in new }
-                for (url, facts) in found {
+                for file in chunk {
+                    guard let facts = found[file.url] else { continue }
+                    self.known[file.url] = Known(modified: file.modified, facts: facts)
                     if let point = facts.place?.location.point {
-                        self.folderPlaces[url.deletingLastPathComponent().path] = Coordinate(latitude: point.latitude, longitude: point.longitude)
+                        self.folderPlaces[file.url.deletingLastPathComponent().path] = Coordinate(latitude: point.latitude, longitude: point.longitude)
                     }
                 }
                 self.done += chunk.count
                 if self.progress != nil { self.progress = BrowserModel.Progress(done: self.done, total: self.total) }
-                if self.pendingCount == 0 || Date().timeIntervalSince(lastRebuild) > 0.5 {
+                if self.pending.count == 0 || Date().timeIntervalSince(lastRebuild) > 0.5 {
                     lastRebuild = Date()
                     self.rebuild()
                 }
@@ -210,11 +393,11 @@ final class AtlasModel: ObservableObject {
 
     /// Items known already, without a pane (tests).
     func load(_ given: [AtlasItem]) {
-        apply(AtlasItems.prepared(given))
+        apply(Made(AtlasItems.prepared(given)))
     }
 
     /// Whether every item's facts are read (and the items made of them shown).
-    var isComplete: Bool { readTask == nil && pendingCount == 0 && !rebuilding && !rebuildAgain }
+    var isComplete: Bool { readTask == nil && pending.count == 0 && !makingMedia && !rebuilding && !rebuildAgain }
 
     /// The pane's walk of the subfolders is still bringing items.
     @Published var walking = false { didSet { if !walking { fitIfNeeded() } } }
@@ -228,32 +411,28 @@ final class AtlasModel: ObservableObject {
         guard !rebuilding else { rebuildAgain = true; return }
         rebuilding = true
         rebuildAgain = false
-        let entries = Array(media.values), known = self.known
+        let media = self.media, known = self.known, work = self.work, before = made.unplaced
         Task { [weak self] in
-            let (made, index) = await Blocking.run(.userInitiated) {
-                let made = AtlasItems.prepared(entries.compactMap { entry -> AtlasItem? in
-                    guard let facts = known[entry.url] else { return nil }
-                    return AtlasItem.make(url: entry.url, isVideo: entry.kind == .video, facts: facts, modified: entry.modDate)
-                })
-                return (made, Self.index(of: made))
+            let made = await Blocking.run(.userInitiated) { () -> Made in
+                work.walked(media.count)
+                var made = Made(AtlasItems.prepared(media.values.compactMap { entry -> AtlasItem? in
+                    guard let read = known[entry.url] else { return nil }
+                    return AtlasItem.make(url: entry.url, isVideo: entry.kind == .video, facts: read.facts, modified: entry.modDate)
+                }))
+                made.sameUnplaced = made.unplaced == before
+                return made
             }
             guard let self else { return }
             self.rebuilding = false
-            self.apply(made, index: index)
+            self.apply(made)
             if self.rebuildAgain { self.rebuild() }
         }
     }
 
-    nonisolated private static func index(of items: [AtlasItem]) -> [URL: Int] {
-        var index: [URL: Int] = [:]
-        index.reserveCapacity(items.count)
-        for (i, item) in items.enumerated() { index[item.url] = i }
-        return index
-    }
-
-    private func apply(_ made: [AtlasItem], index: [URL: Int]? = nil) {
-        items = made
-        itemIndex = index ?? Self.index(of: made)
+    private func apply(_ next: Made) {
+        made = next
+        if !next.sameUnplaced { unplacedVersion += 1 }
+        items = next.items
         if let range, let span, !(span.overlaps(range)) { self.range = nil }
         filter()
         // T while the places were read: the tour, once they are all there
@@ -268,31 +447,46 @@ final class AtlasModel: ObservableObject {
     /// The timeline's from–to; nil: the whole span.
     @Published var range: ClosedRange<Date>? { didSet { if range != oldValue { filter() } } }
 
-    /// From the first item's time to the last's (the items are in the order of time).
-    var span: ClosedRange<Date>? {
-        guard let first = items.first, let last = items.last else { return nil }
-        return first.date...last.date
-    }
+    /// From the first item's time to the last's (the items are in the order
+    /// of time; those without a time are left out).
+    var span: ClosedRange<Date>? { AtlasTimeline.span(sorted: items) }
 
-    /// What the timeline lets through.
-    var shown: [AtlasItem] { placed + unplaced }
+    /// What the timeline lets through (tests; the view counts `shownCount`).
+    var shown: [AtlasItem] {
+        work.walked(placed.count + unplaced.count)
+        return Array(placed) + Array(unplaced)
+    }
+    var shownCount: Int { placed.count + unplaced.count }
 
     /// The time zone a moment is shown in: the clock of the item taken nearest it.
     func zone(at date: Date) -> TimeZone {
         AtlasTimeline.nearest(to: date, sorted: items[...])?.zone ?? .current
     }
 
-    /// The items in the range: a slice found by binary search (they are in
+    /// The items in the range: parts found by binary search (each list is in
     /// the order of time), so narrowing stays quick with 100 000.
     private func filter() {
-        let shown = AtlasTimeline.slice(items, to: range)
-        var onMap: [AtlasItem] = [], off: [AtlasItem] = []
-        onMap.reserveCapacity(shown.count)
-        for item in shown { if item.coordinate != nil { onMap.append(item) } else { off.append(item) } }
+        let onMap = AtlasTimeline.slice(made.placed, to: range)
         placed = onMap
-        unplaced = off
+        placedPoints = made.points[onMap.indices]
+        let off = AtlasTimeline.slice(made.unplaced, to: range)
+        // (the strip is told only when its part changed)
+        if off.indices != unplaced.indices || stripVersion != unplacedVersion {
+            unplaced = off
+            strip.items = off
+            stripVersion = unplacedVersion
+        }
+        fitInputs += 1
         fitIfNeeded()
         scheduleClusters()
+    }
+    /// Counts new lists of the items without a place; `stripVersion`: the one the strip shows a part of.
+    private var unplacedVersion = 0, stripVersion = 0
+
+    /// Whether an item is in the strip under the map now.
+    func isInStrip(_ url: URL) -> Bool {
+        guard let index = made.unplacedIndex[url] else { return false }
+        return unplaced.indices.contains(index)
     }
 
     /// A click on the timeline: the item nearest that time selected, the map on it.
@@ -300,6 +494,14 @@ final class AtlasModel: ObservableObject {
         guard let item = AtlasTimeline.nearest(to: date, sorted: AtlasTimeline.slice(items, to: range)) else { return }
         select(item.url)
         if let coordinate = item.coordinate { reveal(coordinate) }
+    }
+
+    /// The first and the last item in time of those shown (Home, End).
+    var firstShown: AtlasItem? {
+        [placed.first, unplaced.first].compactMap { $0 }.min { $0.date < $1.date }
+    }
+    var lastShown: AtlasItem? {
+        [placed.last, unplaced.last].compactMap { $0 }.max { $0.date < $1.date }
     }
 
     // MARK: Map
@@ -329,6 +531,7 @@ final class AtlasModel: ObservableObject {
         didSet {
             guard mapSize != oldValue else { return }
             if !userMovedMap, tour == nil { needsFit = true }
+            fitInputs += 1
             fitIfNeeded()
         }
     }
@@ -343,14 +546,15 @@ final class AtlasModel: ObservableObject {
         setCamera(held(next))
     }
 
-    /// For the UI tests (`--ui-testing`): the map's zoom, centre, tilt, heading and size, the clusters, the fit, the map's own movements.
+    /// For the UI tests (`--ui-testing`): the map's zoom, centre, tilt, heading and size, the clusters, the fit,
+    /// the map's own movements and how far its throws carried it (points, all added up: not folded into a turn).
     var testState: String {
         let motion = MapMotion.counts
         return String(format: "zoom %.2f, center %.3f %.3f, pitch %.1f, heading %.1f, size %.0f×%.0f, clusters %d at %.2f, fit %@, moved %@, "
-                      + "glides %d, throws %d, fades %d",
+                      + "glides %d, throws %d, fades %d, thrown %.0f",
                       camera.zoom, camera.center.latitude, camera.center.longitude, camera.pitch, camera.heading, mapSize.width, mapSize.height,
                       clusters.count, clusterZoom ?? -1, needsFit ? "pending" : "done", userMovedMap ? "yes" : "no",
-                      motion["glide"] ?? 0, motion["throw"] ?? 0, motion["fade"] ?? 0)
+                      motion["glide"] ?? 0, motion["throw"] ?? 0, motion["fade"] ?? 0, MapMotion.thrownPoints)
     }
     private var cameraSet: MapCamera?
 
@@ -377,19 +581,51 @@ final class AtlasModel: ObservableObject {
     /// The map shows the globe (or is flattening into the flat map).
     var showsGlobe: Bool { mapSize.width > 0 && !GlobeProjection(camera: camera, size: mapSize).isFlat }
 
+    /// Changes of what the fit depends on (the places shown, the map's size).
+    private var fitInputs = 0
+    private var fitting = false
+
+    /// Fits the map to the places shown while it should (`needsFit`, or
+    /// while they still come in and the user hasn't moved it): worked out
+    /// off the main thread, again when the places or the size changed meanwhile.
     private func fitIfNeeded() {
-        let done = isComplete && !walking
-        guard tour == nil, mapSize.width > 40, mapSize.height > 40, !placed.isEmpty, needsFit || (!done && !userMovedMap) else { return }
-        fitAll()
-        if done { needsFit = false }
+        guard wantsFit else { return }
+        if let given = Self.testCamera {
+            setCamera(held(given))
+            if isComplete && !walking { needsFit = false }
+            return
+        }
+        guard !fitting else { return }
+        fitting = true
+        let inputs = fitInputs, points = placedPoints, size = mapSize, work = self.work
+        Task { [weak self] in
+            let fitted = await Blocking.run(.userInitiated) { () -> MapCamera? in
+                work.walked(points.count)
+                return MapCamera.fitting(points.map(\.coordinate), in: size, padding: 70, maxZoom: 11)
+            }
+            guard let self else { return }
+            self.fitting = false
+            guard inputs == self.fitInputs else { self.fitIfNeeded(); return }
+            guard self.wantsFit, let fitted else { return }
+            self.setCamera(self.held(fitted))
+            if self.isComplete && !self.walking { self.needsFit = false }
+        }
     }
 
-    /// Shows every item on the map (under `--ui-testing`, `--globe-camera=` shows the camera given instead).
+    private var wantsFit: Bool {
+        let done = isComplete && !walking
+        return tour == nil && mapSize.width > 40 && mapSize.height > 40 && !placed.isEmpty && (needsFit || (!done && !userMovedMap))
+    }
+
+    /// Shows every item on the map at once (tests; the app fits through
+    /// `fitIfNeeded`, off the main thread). Under `--ui-testing`,
+    /// `--globe-camera=` shows the camera given instead.
     func fitAll() {
         if let given = Self.testCamera {
             setCamera(held(given))
             return
         }
+        work.walked(placed.count)
         guard let fitted = MapCamera.fitting(placed.compactMap(\.coordinate), in: mapSize, padding: 70, maxZoom: 11) else { return }
         setCamera(held(fitted))
     }
@@ -441,7 +677,7 @@ final class AtlasModel: ObservableObject {
     /// The zoom the clusters were made for (on the flat map moving needs no new ones).
     private(set) var clusterZoom: Double?
     /// The camera they were made for on the globe (turning it changes what is close on screen).
-    private var clusterCamera: MapCamera?
+    private(set) var clusterCamera: MapCamera?
     private var clustering = false
     private var clusterAgain = false
 
@@ -452,8 +688,9 @@ final class AtlasModel: ObservableObject {
         return clusterCamera != nil || abs(c.zoom - (clusterZoom ?? -1)) > 0.001
     }
 
-    private nonisolated static func make(_ points: [(id: URL, coordinate: Coordinate)], camera: MapCamera,
+    private nonisolated static func make(_ points: ArraySlice<(id: URL, coordinate: Coordinate)>, camera: MapCamera,
                                          size: CGSize) -> [AtlasCluster] {
+        let points = Array(points)
         guard size.width > 0 else { return AtlasClustering.clusters(of: points, zoom: camera.zoom) }
         let projection = GlobeProjection(camera: camera, size: size)
         if projection.isFlat { return AtlasClustering.clusters(of: points, zoom: camera.zoom) }
@@ -464,11 +701,14 @@ final class AtlasModel: ObservableObject {
         guard !clustering else { clusterAgain = true; return }
         clustering = true
         clusterAgain = false
-        let points = placed.map { (id: $0.url, coordinate: $0.coordinate!) }
+        let points = placedPoints, work = self.work
         let camera = self.camera, size = mapSize
         let onGlobe = showsGlobe
         Task { [weak self] in
-            let made = await Blocking.run(.userInitiated) { AtlasModel.make(points, camera: camera, size: size) }
+            let made = await Blocking.run(.userInitiated) { () -> [AtlasCluster] in
+                work.walked(points.count)
+                return AtlasModel.make(points, camera: camera, size: size)
+            }
             guard let self else { return }
             self.clusters = made
             self.clusterZoom = camera.zoom
@@ -481,7 +721,8 @@ final class AtlasModel: ObservableObject {
     /// Made at once (tests).
     func clusterNow() {
         let onGlobe = showsGlobe
-        clusters = Self.make(placed.map { (id: $0.url, coordinate: $0.coordinate!) }, camera: camera, size: mapSize)
+        work.walked(placedPoints.count)
+        clusters = Self.make(placedPoints, camera: camera, size: mapSize)
         clusterZoom = camera.zoom
         clusterCamera = onGlobe ? camera : nil
     }
@@ -494,7 +735,7 @@ final class AtlasModel: ObservableObject {
         return entry.url
     }
 
-    func item(_ url: URL) -> AtlasItem? { itemIndex[url].map { items[$0] } }
+    func item(_ url: URL) -> AtlasItem? { made.index[url].map { items[$0] } }
 
     /// The file's date as listed (the thumbnail cache's key).
     func modified(_ url: URL) -> Date? { media[url]?.modDate }
@@ -511,9 +752,14 @@ final class AtlasModel: ObservableObject {
         browser?.activateSelection()
     }
 
-    /// A tile clicked: its cluster's first item, or the selection when it is inside already.
+    /// A tile clicked: its cluster's first item, or the selection when it is
+    /// inside already. Items taken at one place (`staysTogether`: zooming in
+    /// doesn't part them) take turns: each click selects the next.
     func click(_ cluster: AtlasCluster) {
-        if let selected = selectedURL, cluster.ids.contains(selected) { return }
+        if let selected = selectedURL, let index = cluster.ids.firstIndex(of: selected) {
+            if cluster.staysTogether { select(cluster.ids[(index + 1) % cluster.ids.count]) }
+            return
+        }
         select(cluster.ids[0])
     }
 
@@ -534,13 +780,14 @@ final class AtlasModel: ObservableObject {
 
     /// The arrow keys: to the nearest tile on screen that way; down from the
     /// lowest tile into the strip of items without a place, up out of it.
+    /// On a tile of items taken at one place, ← → go through them first.
     /// Without a selection on screen, the tile nearest the middle.
     func move(_ direction: AtlasDirection) {
         let visible = visibleClusters()
-        if let selected = selectedURL, let index = unplaced.firstIndex(where: { $0.url == selected }) {
+        if let selected = selectedURL, isInStrip(selected), let index = made.unplacedIndex[selected] {
             switch direction {
-            case .left:  if index > 0 { select(unplaced[index - 1].url) }
-            case .right: if index + 1 < unplaced.count { select(unplaced[index + 1].url) }
+            case .left:  if unplaced.indices.contains(index - 1) { select(unplaced[index - 1].url) }
+            case .right: if unplaced.indices.contains(index + 1) { select(unplaced[index + 1].url) }
             case .up:
                 let bottom = CGPoint(x: mapSize.width / 2, y: mapSize.height)
                 if let nearest = visible.min(by: { distance($0.point, bottom) < distance($1.point, bottom) }) {
@@ -559,6 +806,10 @@ final class AtlasModel: ObservableObject {
                 select(first.url)
             }
             return
+        }
+        if current.cluster.staysTogether, let selected = selectedURL, let index = current.cluster.ids.firstIndex(of: selected) {
+            let next = direction == .right ? index + 1 : direction == .left ? index - 1 : index
+            if next != index, current.cluster.ids.indices.contains(next) { select(current.cluster.ids[next]); return }
         }
         let others = visible.filter { $0.cluster.id != current.cluster.id }
         if let index = AtlasNavigation.next(from: current.point, among: others.map(\.point), direction) {
@@ -586,7 +837,11 @@ final class AtlasModel: ObservableObject {
     private var tourWanted = false
 
     /// The stations of the tour as it would run now (the timeline's range).
-    var stations: [TourStation] { TourPlanner.stations(from: placed) }
+    /// (`placed` is prepared already: grouped in one pass, no sorting again)
+    var stations: [TourStation] {
+        work.walked(placed.count)
+        return TourPlanner.stations(fromPrepared: placed)
+    }
 
     /// Play: the stations in the order of time, full screen. False when no
     /// item has a place (the tour has nowhere to go).
@@ -637,12 +892,14 @@ final class AtlasModel: ObservableObject {
 
     /// The camera that shows a station.
     /// The place stands left of the middle (at `TourFlight.placeShare` of
-    /// the width), where the card with its photo leaves the map free.
+    /// the width), where the card with its photo leaves the map free: placed
+    /// through the projection that zoom shows, the globe's too (on a sphere
+    /// a degree of longitude in the north is wider than on the flat map).
     func camera(for station: TourStation) -> MapCamera {
-        let centred = MapViewport(camera: MapCamera(center: station.coordinate, zoom: TourFlight.zoom(for: station, size: mapSize)),
-                                  size: mapSize)
-        let middle = centred.coordinate(at: CGPoint(x: mapSize.width * (1 - TourFlight.placeShare), y: mapSize.height / 2))
-        return held(MapCamera(center: middle, zoom: centred.camera.zoom))
+        guard mapSize.width > 0, mapSize.height > 0 else { return MapCamera(center: station.coordinate, zoom: TourFlight.zoom(for: station, size: mapSize)) }
+        let zoom = held(MapCamera(center: station.coordinate, zoom: TourFlight.zoom(for: station, size: mapSize))).zoom
+        let spot = CGPoint(x: mapSize.width * TourFlight.placeShare, y: mapSize.height / 2)
+        return held(GlobeProjection.camera(placing: station.coordinate, at: spot, zoom: zoom, size: mapSize))
     }
 
     /// The route up to where the tour is: to the station it flies to or shows.
@@ -715,10 +972,10 @@ extension BrowserModel {
         case .up where !command:    atlas.move(.up); return true
         case .down where !command:  atlas.move(.down); return true
         case .home:
-            if let first = atlas.shown.min(by: { $0.date < $1.date }) { atlas.select(first.url); first.coordinate.map(atlas.reveal) }
+            if let first = atlas.firstShown { atlas.select(first.url); first.coordinate.map(atlas.reveal) }
             return true
         case .end:
-            if let last = atlas.shown.max(by: { $0.date < $1.date }) { atlas.select(last.url); last.coordinate.map(atlas.reveal) }
+            if let last = atlas.lastShown { atlas.select(last.url); last.coordinate.map(atlas.reveal) }
             return true
         case .char(let c) where c == "+" || c == "=":
             atlas.zoomStep(1); return true

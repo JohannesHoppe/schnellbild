@@ -40,6 +40,12 @@ jobs:
       sha: ${{ steps.find.outputs.sha }}
       tag: ${{ steps.find.outputs.tag }}
     steps:
+      # Only the filter that lists the releases without their DMG
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          sparse-checkout: Scripts/unfinished_releases.jq
+          sparse-checkout-cone-mode: false
+
       - id: find
         env:
           GH_TOKEN: ${{ github.token }}
@@ -61,9 +67,12 @@ jobs:
             echo "The build run must be a number" >&2; exit 1
           fi
           if [ -z "$RUN" ]; then
-            # Newest release without DMG, and its newest build with a submitted DMG
-            for t in $(gh release list -R "$R" -L 5 --json tagName -q '.[].tagName'); do
-              has_dmg "$t" && continue
+            # Newest app release without DMG (every page of the list: data and
+            # VLCKit pre-releases may be many), and its newest build with a submitted DMG
+            # (two steps: a failed listing ends the run red, never as "Nothing to do")
+            releases=$(gh api --paginate "repos/$R/releases?per_page=100")
+            unfinished=$(printf '%s\n' "$releases" | jq -r -f Scripts/unfinished_releases.jq)
+            for t in $unfinished; do
               # Pushed tags and runs started by hand on the tag alike
               for id in $(gh run list -R "$R" -w release.yml -b "$t" -L 10 --json databaseId -q '.[].databaseId'); do
                 if [ -n "$(signed_artifact "$id")" ]; then RUN=$id; break; fi
