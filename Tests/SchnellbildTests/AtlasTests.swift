@@ -112,9 +112,8 @@ final class AtlasTests: XCTestCase {
             points.append((URL(fileURLWithPath: "/p\(i)"), Coordinate(latitude: 40 + random() * 30, longitude: -10 + random() * 40)))
         }
         for zoom in [1.0, 5.0, 9.0, 12.0] {
-            let start = Date()
-            let clusters = AtlasClustering.clusters(of: points, zoom: zoom)
-            XCTAssertLessThan(Date().timeIntervalSince(start), 1.0, "20 000 items at zoom \(zoom)")
+            var clusters: [AtlasCluster] = []
+            TimeBudget.check("20 000 items at zoom \(zoom)", under: 1.0) { clusters = AtlasClustering.clusters(of: points, zoom: zoom) }
             XCTAssertEqual(clusters.reduce(0) { $0 + $1.count }, 20_000)
         }
     }
