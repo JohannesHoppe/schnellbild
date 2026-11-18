@@ -2,9 +2,9 @@ import XCTest
 import SwiftUI
 @testable import Schnellbild
 
-/// Hidden files and folders: one definition (a dot name or the hidden
-/// flag; what macOS keeps for itself never), and every place that lists
-/// items following the setting, off and on.
+/// Hidden files and folders: one definition (a dot name, the hidden flag,
+/// what macOS keeps for itself), and every place that lists items following
+/// the setting: off, none of them; on, every item there is.
 @MainActor
 final class HiddenFilesTests: XCTestCase {
     nonisolated override func tearDownWithError() throws {
@@ -34,6 +34,7 @@ final class HiddenFilesTests: XCTestCase {
         try tree.file(".DS_Store")
         try tree.file("._a.jpg")
         try tree.file("Icon\r")
+        try tree.file("__MACOSX/._b.jpg")
         try tree.file("notes.txt")
         try tree.file(".dotnotes.txt")
         try flagHidden(tree.file("flagged.txt"))
@@ -62,15 +63,19 @@ final class HiddenFilesTests: XCTestCase {
         XCTAssertFalse(HiddenFiles.isHidden(name: "flagged.jpg", values: nil), "the flag needs the values")
     }
 
-    func testWhatMacOSKeepsForItselfIsNeverShown() {
-        for name in [".DS_Store", "._a.jpg", "._", "Icon\r", "__MACOSX", ".schnellbild-copy-\(UUID().uuidString)"] {
-            XCTAssertTrue(HiddenFiles.isNeverShown(name), name)
-            for shown in [false, true] {
-                XCTAssertFalse(HiddenFiles.lists(URL(fileURLWithPath: "/x/\(name)"), values: nil, shown: shown), "\(name), shown \(shown)")
-            }
+    func testWhatMacOSKeepsForItselfIsHiddenAndShownWithTheRest() {
+        for name in [".DS_Store", "._a.jpg", "._", "Icon\r", "__MACOSX"] {
+            XCTAssertTrue(HiddenFiles.isSystemItem(name), name)
         }
-        for name in [".hidden", ".dot.jpg", "Icon", "Icons", "a.jpg", "_a.jpg", ".DS_Store2", "MACOSX"] {
-            XCTAssertFalse(HiddenFiles.isNeverShown(name), name)
+        for name in [".DS_Store", "._a.jpg", "._", "Icon\r", "__MACOSX", ".schnellbild-copy-\(UUID().uuidString)", ".DS_Store2"] {
+            XCTAssertTrue(HiddenFiles.isHidden(name: name), name)
+            let url = URL(fileURLWithPath: "/x/\(name)")
+            XCTAssertFalse(HiddenFiles.lists(url, values: nil, shown: false), "\(name): hidden while hidden items are")
+            XCTAssertTrue(HiddenFiles.lists(url, values: nil, shown: true), "\(name): shown, every item is listed")
+        }
+        for name in ["Icon", "Icons", "a.jpg", "_a.jpg", "MACOSX", "__MACOSX2"] {
+            XCTAssertFalse(HiddenFiles.isSystemItem(name), name)
+            XCTAssertFalse(HiddenFiles.isHidden(name: name), name)
         }
     }
 
@@ -91,8 +96,11 @@ final class HiddenFilesTests: XCTestCase {
         XCTAssertTrue(HiddenFiles.lists(archivePath: "Day 1/a.jpg", shown: false))
         XCTAssertFalse(HiddenFiles.lists(archivePath: ".hidden/a.jpg", shown: false), "a hidden folder on the way")
         XCTAssertTrue(HiddenFiles.lists(archivePath: ".hidden/a.jpg", shown: true))
-        XCTAssertFalse(HiddenFiles.lists(archivePath: "__MACOSX/Day 1/._a.jpg", shown: true), "the Finder's AppleDouble folder")
-        XCTAssertFalse(HiddenFiles.lists(archivePath: "Day 1/.DS_Store", shown: true))
+        XCTAssertFalse(HiddenFiles.lists(archivePath: "__MACOSX/Day 1/a.jpg", shown: false), "the Finder's AppleDouble folder is hidden")
+        XCTAssertFalse(HiddenFiles.lists(archivePath: "Day 1/.DS_Store", shown: false))
+        XCTAssertFalse(HiddenFiles.lists(archivePath: "Day 1/Icon\r", shown: false))
+        XCTAssertTrue(HiddenFiles.lists(archivePath: "__MACOSX/Day 1/._a.jpg", shown: true), "shown: every entry")
+        XCTAssertTrue(HiddenFiles.lists(archivePath: "Day 1/.DS_Store", shown: true))
     }
 
     func testTheFirstHiddenFolderOnTheWay() throws {
@@ -106,6 +114,8 @@ final class HiddenFilesTests: XCTestCase {
                        BrowserModel.canonicalPath(tree.root.appendingPathComponent("flaggedfolder")), "by the flag")
         XCTAssertNil(HiddenFiles.firstHidden(below: tree.root.appendingPathComponent("sub/.inner"), to: deep),
                      "the folder the way starts at counts as shown")
+        XCTAssertEqual(HiddenFiles.firstHidden(below: tree.root, to: tree.root.appendingPathComponent("__MACOSX")).map(BrowserModel.canonicalPath),
+                       BrowserModel.canonicalPath(tree.root.appendingPathComponent("__MACOSX")), "macOS's own folder, without a dot")
     }
 
     // MARK: The grid, the list and the other files
@@ -124,9 +134,10 @@ final class HiddenFilesTests: XCTestCase {
             let shown = model(showing: true)
             shown.viewMode = viewMode
             await openAndWait(shown, tree.root)
-            XCTAssertEqual(Set(shown.names), ["..", "sub", ".hidden", "flaggedfolder", "a.jpg", ".dot.jpg", "flagged.jpg"],
-                           "\(viewMode): every hidden item, nothing macOS keeps for itself")
-            XCTAssertEqual(Set(shown.otherFiles.map(\.name)), ["notes.txt", ".dotnotes.txt", "flagged.txt"])
+            XCTAssertEqual(Set(shown.names), ["..", "sub", ".hidden", "flaggedfolder", "__MACOSX", "a.jpg", ".dot.jpg", "flagged.jpg"],
+                           "\(viewMode): every hidden item, what macOS keeps for itself too")
+            XCTAssertEqual(Set(shown.otherFiles.map(\.name)),
+                           ["notes.txt", ".dotnotes.txt", "flagged.txt", ".DS_Store", "._a.jpg", "Icon\r"])
         }
     }
 
@@ -190,7 +201,7 @@ final class HiddenFilesTests: XCTestCase {
         m.showHiddenFiles = true
         await waitUntil { m.names.contains(".dot.jpg") }
         XCTAssertEqual(m.sortKey, .distance)
-        XCTAssertEqual(Set(m.names), ["..", "sub", ".hidden", "flaggedfolder", "a.jpg", ".dot.jpg", "flagged.jpg"])
+        XCTAssertEqual(Set(m.names), ["..", "sub", ".hidden", "flaggedfolder", "__MACOSX", "a.jpg", ".dot.jpg", "flagged.jpg"])
     }
 
     // MARK: Archives
@@ -221,10 +232,67 @@ final class HiddenFilesTests: XCTestCase {
 
         let shown = model(showing: true)
         await openAndWait(shown, archive)
-        XCTAssertEqual(Set(shown.names), ["..", "Day", ".hidden", "a.jpg", ".b.jpg"], "never __MACOSX")
+        XCTAssertEqual(Set(shown.names), ["..", "Day", ".hidden", "__MACOSX", "a.jpg", ".b.jpg"], "every entry, __MACOSX too")
         XCTAssertEqual(Set(shown.otherFiles.map(\.name)), ["notes.txt", ".notes.txt"])
+        let day = archive.appendingPathComponent("Day", isDirectory: true)
+        let dayHidden = try await ArchiveStore.shared.listing(in: day, showingHidden: false)
+        XCTAssertEqual(dayHidden.others.map(\.name), [])
+        let dayShown = try await ArchiveStore.shared.listing(in: day, showingHidden: true)
+        XCTAssertEqual(dayShown.others.map(\.name), [".DS_Store"])
+        let apple = try await ArchiveStore.shared.listing(in: archive.appendingPathComponent("__MACOSX", isDirectory: true), showingHidden: true)
+        XCTAssertEqual(apple.others.map(\.name), ["._a.jpg"], "an AppleDouble file is listed, never read as a picture")
         await searchAndWait(shown, "jpg")
         XCTAssertEqual(Set(shown.names), ["a.jpg", ".b.jpg", "c.jpg", "d.jpg"])
+    }
+
+    // MARK: A folder of what macOS keeps for itself
+
+    /// Shown, every item is listed: a folder that looks empty is empty, and
+    /// one that holds only ".DS_Store", "._x" or "Icon\r" isn't shown as empty.
+    func testAFolderOfSystemFilesIsOnlyEmptyWhileTheyAreHidden() async throws {
+        let tree = try TempTree(self)
+        let folder = try tree.folder("system")
+        for name in [".DS_Store", "._a.jpg", "Icon\r"] { try tree.file("system/" + name) }
+        let m = model()
+        await openAndWait(m, folder)
+        XCTAssertEqual(m.names, [".."], "hidden off: nothing to show (\"This folder is empty\")")
+        XCTAssertEqual(m.otherFiles.map(\.name), [])
+
+        let shown = model(showing: true)
+        await openAndWait(shown, folder)
+        XCTAssertEqual(shown.names, [".."])
+        XCTAssertEqual(Set(shown.otherFiles.map(\.name)), [".DS_Store", "._a.jpg", "Icon\r"], "every item, so not empty")
+    }
+
+    /// FileManager leaves AppleDouble files out of its listings: a folder
+    /// holding only "._x" is listed with it while hidden items are shown.
+    func testAFolderOfOnlyAppleDoubleFilesIsNotEmptyWithHiddenShown() async throws {
+        let tree = try TempTree(self)
+        let folder = try tree.folder("double")
+        try tree.file("double/._a.jpg")
+        XCTAssertEqual(try FileManager.default.contentsOfDirectory(atPath: folder.path), [], "what FileManager lists")
+        XCTAssertEqual(HiddenFiles.appleDoubleItems(in: folder, besides: []).map(\.lastPathComponent), ["._a.jpg"])
+        let m = model()
+        await openAndWait(m, folder)
+        XCTAssertEqual(m.otherFiles.map(\.name), [], "hidden off: empty")
+        let shown = model(showing: true)
+        await openAndWait(shown, folder)
+        XCTAssertEqual(shown.otherFiles.map(\.name), ["._a.jpg"], "shown: listed, so not empty")
+    }
+
+    /// A copy under way is listed while hidden items are shown; one left
+    /// behind is tidied up either way.
+    func testCopiesUnderWayAreHiddenItemsLikeAnyOther() async throws {
+        let tree = try TempTree(self)
+        let folder = try tree.folder("target")
+        let fresh = folder.appendingPathComponent(LiveFiles.partialCopyPrefix + UUID().uuidString)
+        let old = folder.appendingPathComponent(LiveFiles.partialCopyPrefix + UUID().uuidString)
+        for url in [fresh, old] { try Data(count: 5).write(to: url) }
+        try FileManager.default.setAttributes([.modificationDate: Date(timeIntervalSinceNow: -2 * 86400)], ofItemAtPath: old.path)
+        let shown = model(showing: true)
+        await openAndWait(shown, folder)
+        XCTAssertEqual(shown.otherFiles.map(\.name), [fresh.lastPathComponent])
+        XCTAssertFalse(FileManager.default.fileExists(atPath: old.path), "a leftover is removed")
     }
 
     // MARK: Folder tiles

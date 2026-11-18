@@ -40,7 +40,7 @@ struct GeneralSettingsView: View {
                 Toggle("Show hidden files and folders",
                        isOn: Binding(get: { window.showHiddenFiles }, set: { window.showHiddenFiles = $0 }))
                     .accessibilityIdentifier("settings.showHiddenFiles")
-                Text("Names that start with a dot, and what macOS hides, such as the Library folder. Off, they appear nowhere in Schnellbild.")
+                Text("Names that start with a dot, what macOS hides, such as the Library folder, and the files macOS keeps for itself, such as .DS_Store. On, everything appears, also inside archives. Off, they appear nowhere in Schnellbild.")
                     .font(.callout)
                     .foregroundStyle(.secondary)
             }
