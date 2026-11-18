@@ -19,9 +19,10 @@ import XCTest
 enum TimeBudget {
     enum Clock { case thread, wall }
 
-    /// The reference work's best time on an ordinary macos-15 or macos-26
-    /// runner, in seconds.
-    static let ordinaryReference = 0.040
+    /// The reference work's best time on an ordinary CI runner, in seconds
+    /// (a debug build; macos-15 about 58 ms, macos-26 about 68 ms, seen
+    /// over ten runs each; the work timed alongside goes up and down with it).
+    static let ordinaryReference = 0.060
 
     static func now(_ clock: Clock) -> Double {
         Double(clock_gettime_nsec_np(clock == .thread ? CLOCK_THREAD_CPUTIME_ID : CLOCK_UPTIME_RAW)) / 1e9
