@@ -21,6 +21,7 @@ struct SchnellbildApp: App {
     init() {
         // Before anything starts VLC
         VLCSafety.forgetInjectedOptions()
+        _ = VLCPlaybackControl.testLog
         // UI tests: the map and the globe as with Reduce motion on (`--reduce-motion`) or off
         if VideoDetailView.uiTesting { MapMotion.reduceOverride = ProcessInfo.processInfo.arguments.contains("--reduce-motion") }
         // Media Extensions the user has turned on in System Settings (format
