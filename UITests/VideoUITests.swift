@@ -329,12 +329,17 @@ final class VideoUITests: SchnellbildUITestCase {
         for _ in 0..<4 { app.typeKey(">", modifierFlags: []) }
         eventually("2×") { text(of: video).contains("speed 2.0") }
         waitForBadge(containing: "2×")
-        // Room to play at 2× (on a slow runner the steps above took a while):
-        // back in steps of 10 % (2 s), never past the start (← there would
-        // go to the picture before)
-        if let now = playerClock(), now.played > 6 {
-            for _ in 0..<min(Int((now.played - 2) / 2), 9) { app.typeKey(.leftArrow, modifierFlags: []) }
-            RunLoop.current.run(until: Date().addingTimeInterval(1))
+        // Room to play at 2×: the steps above take a while on a slow runner,
+        // and at 2× the rest of the 20 s video goes fast (also while keys
+        // that step back are typed, each one taking XCUITest most of a
+        // second), so one click on the position slider puts it near the start,
+        // also when it has ended meanwhile
+        video.hover()
+        XCTAssertTrue(element("videoBar").waitForExistence(timeout: 5), "the control bar shows on the mouse moving")
+        element("videoBar.position").coordinate(withNormalizedOffset: CGVector(dx: 0.05, dy: 0.5)).click()
+        eventually("near the start, playing at 2×") {
+            guard let place = self.playerClock() else { return false }
+            return place.played < 6 && !self.text(of: self.badge).contains("Paused")
         }
         // The player's place against the app's clock, both read in the app
         // at the same moment: XCUITest's own delays don't count
