@@ -286,7 +286,6 @@
 "“%@”: %@" = "“%@”: %@";
 "“%@” is no longer the item Schnellbild put there, so it stays as it is." = "“%@” não é mais o item que o Schnellbild colocou ali, então fica como está.";
 "“%@” has changed since it was copied, so it isn't moved to the Trash." = "“%@” mudou desde que foi copiado, então não é movido para o Lixo.";
-"Schnellbild may not take “%@” out of the Trash. Use “Put Back” in the Finder's Trash." = "O Schnellbild não pode tirar “%@” do Lixo. Use “Colocar de Volta” no Lixo do Finder.";
 "Keep: try it again later, before the earlier actions. Forget: go on with the earlier actions." = "Manter: tentar de novo depois, antes das ações anteriores. Esquecer: seguir com as ações anteriores.";
 "Keep" = "Manter";
 "Forget" = "Esquecer";
@@ -629,12 +628,12 @@
 "Credit" = "Créditos";
 "Website" = "Site";
 "Schnellbild uses an LGPL-only build of VLCKit and libVLC, licensed under the GNU Lesser General Public License 2.1 and built from source without any of VLC's modules under the GPL. VLC as VideoLAN builds it also carries modules under the GPL; they are not in Schnellbild's build." = "O Schnellbild usa uma build do VLCKit e da libVLC somente LGPL, licenciada sob a GNU Lesser General Public License 2.1 e compilada a partir do código-fonte sem nenhum dos módulos do VLC sob a GPL. O VLC, como a VideoLAN o compila, também traz módulos sob a GPL; eles não estão na build do Schnellbild.";
-"Schnellbild's build makes five small changes to VLC (Scripts/vlc-patches, 0001 to 0005): four to its subtitle timing and one to its audio output on macOS." = "A build do Schnellbild faz cinco pequenas alterações no VLC (Scripts/vlc-patches, 0001 a 0005): quatro na sincronia das legendas e uma na saída de áudio no macOS.";
+"Schnellbild's build makes six small changes to VLC (Scripts/vlc-patches, 0001 to 0006): four to its subtitle timing, one to its audio output on macOS and one that leaves FFmpeg's files under the GPL out of the build." = "A build do Schnellbild faz seis pequenas alterações no VLC (Scripts/vlc-patches, 0001 a 0006): quatro na sincronia das legendas, uma na saída de áudio no macOS e uma que deixa de fora da build os arquivos do FFmpeg sob a GPL.";
 "The complete source of this build, with these changes, is attached to its release: %@. The script that builds it is Scripts/build_vlckit_lgpl.sh in Schnellbild's repository." = "O código-fonte completo desta build, com essas alterações, está anexado à sua release: %@. O script que a compila é Scripts/build_vlckit_lgpl.sh, no repositório do Schnellbild.";
 "© VideoLAN and the VLC authors" = "© VideoLAN e os autores do VLC";
 "Libraries included in VLCKit, each under its own license" = "Bibliotecas incluídas no VLCKit, cada uma sob sua própria licença";
 "Libraries included in VLCKit" = "Bibliotecas incluídas no VLCKit";
-"These are the license files at the top of each library's source, as VLC's build collected them." = "Estes são os arquivos de licença do início do código-fonte de cada biblioteca, como a build do VLC os reuniu.";
+"These are the license files from each library's source, as Schnellbild's build collected them." = "Estes são os arquivos de licença do código-fonte de cada biblioteca, como a build do Schnellbild os reuniu.";
 "UnRAR license" = "Licença do UnRAR";
 "© OpenStreetMap contributors" = "© colaboradores do OpenStreetMap";
 "Made from Protomaps' OpenStreetMap build, with thanks to Protomaps. How the files are made is in Schnellbild's repository." = "Feitos a partir da build do OpenStreetMap da Protomaps, com agradecimentos à Protomaps. Como os arquivos são feitos está no repositório do Schnellbild.";
@@ -659,3 +658,11 @@
 "Show hidden files and folders" = "Mostrar arquivos e pastas ocultos";
 "Names that start with a dot, and what macOS hides, such as the Library folder. Off, they appear nowhere in Schnellbild." = "Nomes que começam com um ponto e o que o macOS oculta, como a pasta Biblioteca. Desativado, eles não aparecem em lugar nenhum do Schnellbild.";
 "Show / hide hidden files and folders" = "Mostrar / ocultar arquivos e pastas ocultos";
+"Undo" = "Desfazer";
+"Redo" = "Refazer";
+"Undo New Folder" = "Desfazer nova pasta";
+"Redo New Folder" = "Refazer nova pasta";
+"“%@” isn't empty any more, so it isn't moved to the Trash." = "“%@” não está mais vazia, então não é movida para o Lixo.";
+"“%@” is no longer in the Trash." = "“%@” não está mais no Lixo.";
+"“%@” couldn't be taken out of the Trash and is still there. %@" = "Não foi possível tirar “%@” do Lixo, e o item continua lá. %@";
+"Undo / redo renaming, trashing, moving, copying, a new folder" = "Desfazer / refazer: renomear, mover para o Lixo, mover, copiar, nova pasta";

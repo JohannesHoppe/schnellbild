@@ -324,8 +324,8 @@ A file whose extension names another format than its content (a recording named 
 
 - **Rename** with Return or F2 (as in the Finder), also from the full view, the Actions menu or a right-click. The folder you're in is renamed by clicking its name in the title bar.
 - **Sort into folders:** ⇧⌘N makes a new folder, then drag tiles onto a folder, or onto `..` to move them up a level. On the same disk they move, onto another they're copied. A name that's taken asks: keep both, skip or cancel, once or for all.
-- **Undo** renaming, trashing, moving and copying, as often as you like, from the top of the right-click menu ("Undo Move to Trash"). On purpose without a key, so a stray ⌘Z never moves files around.
-- **Safe by design:** a copy gets its real name only when it's complete, so an interrupted one never leaves a cut-off file. Undo touches only what Schnellbild itself did, never a different file that took the same name. Inside archives nothing is changed.
+- **Undo** renaming, trashing (folders, marked items and archives with all their parts too), moving, copying and new folders, as often as you like: Edit → Undo, ⌘Z, or the top of the right-click menu ("Undo Move to Trash"); ⇧⌘Z redoes. While you type in a field, ⌘Z undoes the typing.
+- **Safe by design:** a copy gets its real name only when it's complete, so an interrupted one never leaves a cut-off file. Undo touches only what Schnellbild itself did, never a different file that took the same name. An Undo that can't be carried out (the Trash emptied, the name taken meanwhile) says why and leaves the item where it is, in the Trash too. Inside archives nothing is changed.
 - **Other files** (anything that isn't a picture, video or archive) are listed under the grid: rename, trash or drag them like tiles; a double click opens documents (text, PDF, office, audio) in their app, but never apps, scripts, installers, disk images or web pages.
 - Reveal in Finder, open with the default app, move to the Trash, or drag tiles to the Finder.
 
@@ -336,6 +336,7 @@ A file whose extension names another format than its content (a recording named 
 | ⇧⌘R | reveal in Finder |
 | ⌘↩ | open with the default app |
 | ⌘⌫ | move to Trash |
+| ⌘Z / ⇧⌘Z | undo / redo renaming, trashing, moving, copying, a new folder |
 
 <p align="center"><picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/newfolder-dark.webp">
@@ -555,6 +556,6 @@ Building from source, tests and releases: [BUILDING.md](BUILDING.md).
 
 [MIT](LICENSE) © 2026 HAUS HOPPE - ITS (Johannes Hoppe)
 
-The MIT License covers Schnellbild's own code. The app also contains VLCKit (an LGPL-only build under the GNU LGPL 2.1 or later, made by us without VLC's GPL modules, with FFmpeg and other libraries inside under their own licenses), UnRAR (UnRAR license), the map data and the globe data below; each keeps its own license. The app's About window (Schnellbild → About Schnellbild) shows every one of these license texts in full, Schnellbild's MIT License first. Details and the source of VLCKit: [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
+The MIT License covers Schnellbild's own code. The app also contains VLCKit (an LGPL-only build under the GNU LGPL 2.1 or later, made by us without any code under the GPL: none of VLC's GPL modules and none of the GPL parts of the libraries inside it, FFmpeg and the others, each under its own license), UnRAR (UnRAR license), the map data and the globe data below; each keeps its own license. The app's About window (Schnellbild → About Schnellbild) shows every one of these license texts in full, Schnellbild's MIT License first. Details and the source of VLCKit: [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
 
 The offline map's data is © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors, under the Open Database License (ODbL) 1.0. The map files are made from [Protomaps](https://protomaps.com)' OpenStreetMap build, with thanks to Protomaps; how they are made: `Scripts/build_map_data.py`. Country codes for places: [Natural Earth](https://www.naturalearthdata.com) (public domain). The globe's relief comes from NOAA's [ETOPO 2022](https://doi.org/10.25921/fd45-gt74) (public domain, not to be used for navigation), its night sky from [Deep Star Maps 2020](https://svs.gsfc.nasa.gov/4851) by NASA/Goddard Space Flight Center Scientific Visualization Studio (from Gaia DR2, Hipparcos and Tycho-2 data) and the lights of its night side from [Black Marble 2016](https://science.nasa.gov/earth/earth-observatory/earth-at-night/maps/) (NASA Earth Observatory images by Joshua Stevens, using Suomi NPP VIIRS data from Miguel Román, NASA GSFC), the colours of its ground from [Blue Marble: Next Generation](https://science.nasa.gov/earth/earth-observatory/blue-marble-next-generation/) (NASA Earth Observatory, produced by Reto Stöckli) and its clouds from [The Blue Marble](https://science.nasa.gov/earth/earth-observatory/the-blue-marble-true-color-global-imagery-at-1km-resolution/) (NASA Goddard Space Flight Center, image by Reto Stöckli); how the files are made: `Scripts/build_globe_data.py`.

@@ -286,7 +286,6 @@
 "“%@”: %@" = "“%@”: %@";
 "“%@” is no longer the item Schnellbild put there, so it stays as it is." = "“%@” artık Schnellbild’in oraya koyduğu öğe değil, bu yüzden olduğu gibi kalır.";
 "“%@” has changed since it was copied, so it isn't moved to the Trash." = "“%@” kopyalandığından beri değişti, bu yüzden Çöp Sepetine taşınmaz.";
-"Schnellbild may not take “%@” out of the Trash. Use “Put Back” in the Finder's Trash." = "Schnellbild, “%@” öğesini Çöp Sepetinden çıkaramaz. Finder’ın Çöp Sepetinde “Geri Koy”u kullanın.";
 "Keep: try it again later, before the earlier actions. Forget: go on with the earlier actions." = "Koru: daha sonra, önceki işlemlerden önce yeniden dene. Unut: önceki işlemlerle devam et.";
 "Keep" = "Koru";
 "Forget" = "Unut";
@@ -629,12 +628,12 @@
 "Credit" = "Kaynak";
 "Website" = "Web sitesi";
 "Schnellbild uses an LGPL-only build of VLCKit and libVLC, licensed under the GNU Lesser General Public License 2.1 and built from source without any of VLC's modules under the GPL. VLC as VideoLAN builds it also carries modules under the GPL; they are not in Schnellbild's build." = "Schnellbild, VLCKit ve libVLC’nin yalnızca LGPL içeren bir derlemesini kullanır; bu derleme GNU Lesser General Public License 2.1 ile lisanslıdır ve VLC’nin GPL altındaki modüllerinin hiçbiri olmadan kaynak kodundan derlenmiştir. VideoLAN’ın derlediği VLC, GPL altındaki modülleri de içerir; bunlar Schnellbild’in derlemesinde yoktur.";
-"Schnellbild's build makes five small changes to VLC (Scripts/vlc-patches, 0001 to 0005): four to its subtitle timing and one to its audio output on macOS." = "Schnellbild’in derlemesi VLC’de beş küçük değişiklik yapar (Scripts/vlc-patches, 0001 ile 0005 arası): dördü altyazı zamanlamasında, biri macOS’taki ses çıkışında.";
+"Schnellbild's build makes six small changes to VLC (Scripts/vlc-patches, 0001 to 0006): four to its subtitle timing, one to its audio output on macOS and one that leaves FFmpeg's files under the GPL out of the build." = "Schnellbild’in derlemesi VLC’de altı küçük değişiklik yapar (Scripts/vlc-patches, 0001 ile 0006 arası): dördü altyazı zamanlamasında, biri macOS’taki ses çıkışında, biri de FFmpeg’in GPL kapsamındaki dosyalarını derlemenin dışında bırakır.";
 "The complete source of this build, with these changes, is attached to its release: %@. The script that builds it is Scripts/build_vlckit_lgpl.sh in Schnellbild's repository." = "Bu derlemenin bu değişikliklerle birlikte tam kaynak kodu, sürümüne eklidir: %@. Onu derleyen betik, Schnellbild deposundaki Scripts/build_vlckit_lgpl.sh dosyasıdır.";
 "© VideoLAN and the VLC authors" = "© VideoLAN ve VLC yazarları";
 "Libraries included in VLCKit, each under its own license" = "VLCKit’in içerdiği kitaplıklar, her biri kendi lisansıyla";
 "Libraries included in VLCKit" = "VLCKit’in içerdiği kitaplıklar";
-"These are the license files at the top of each library's source, as VLC's build collected them." = "Bunlar, her kitaplığın kaynak kodunun başındaki lisans dosyalarıdır; VLC’nin derlemesi onları bu şekilde topladı.";
+"These are the license files from each library's source, as Schnellbild's build collected them." = "Bunlar, her kitaplığın kaynak kodundaki lisans dosyalarıdır; Schnellbild’in derlemesi onları bu şekilde topladı.";
 "UnRAR license" = "UnRAR lisansı";
 "© OpenStreetMap contributors" = "© OpenStreetMap katkıda bulunanları";
 "Made from Protomaps' OpenStreetMap build, with thanks to Protomaps. How the files are made is in Schnellbild's repository." = "Protomaps’in OpenStreetMap derlemesinden yapıldı, Protomaps’e teşekkürler. Dosyaların nasıl yapıldığı Schnellbild deposunda.";
@@ -659,3 +658,11 @@
 "Show hidden files and folders" = "Gizli dosyaları ve klasörleri göster";
 "Names that start with a dot, and what macOS hides, such as the Library folder. Off, they appear nowhere in Schnellbild." = "Nokta ile başlayan adlar ve Kitaplık klasörü gibi macOS’in gizledikleri. Kapalıyken Schnellbild’in hiçbir yerinde görünmezler.";
 "Show / hide hidden files and folders" = "Gizli dosyaları ve klasörleri göster / gizle";
+"Undo" = "Geri Al";
+"Redo" = "Yinele";
+"Undo New Folder" = "Yeni Klasörü Geri Al";
+"Redo New Folder" = "Yeni Klasörü Yinele";
+"“%@” isn't empty any more, so it isn't moved to the Trash." = "“%@” artık boş değil, bu yüzden Çöp Sepeti’ne taşınmaz.";
+"“%@” is no longer in the Trash." = "“%@” artık Çöp Sepeti’nde değil.";
+"“%@” couldn't be taken out of the Trash and is still there. %@" = "“%@” Çöp Sepeti’nden çıkarılamadı ve orada duruyor. %@";
+"Undo / redo renaming, trashing, moving, copying, a new folder" = "Geri al / yinele: yeniden adlandırma, Çöp Sepeti’ne taşıma, taşıma, kopyalama, yeni klasör";

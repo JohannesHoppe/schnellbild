@@ -173,10 +173,14 @@ public enum GlobeGeometry {
 public struct GlobeProjection: Equatable, Sendable {
     public var camera: MapCamera
     public var size: CGSize
+    /// The lens's vertical angle of view (degrees): `fieldOfView` in the app,
+    /// wider for a rendered picture (Scripts/render_globe_hero.sh).
+    public var lens: Double
 
-    public init(camera: MapCamera, size: CGSize) {
+    public init(camera: MapCamera, size: CGSize, lens: Double = GlobeProjection.fieldOfView) {
         self.camera = camera
         self.size = size
+        self.lens = lens
     }
 
     /// The most the camera tilts from straight down (degrees).
@@ -232,7 +236,7 @@ public struct GlobeProjection: Equatable, Sendable {
     }
 
     /// The lens's focal length in points.
-    public var focalLength: Double { Double(size.height) / 2 / tan(Self.fieldOfView / 2 * .pi / 180) }
+    public var focalLength: Double { Double(size.height) / 2 / tan(lens / 2 * .pi / 180) }
 
     /// The camera in the Earth-fixed frame (Earth radii): where it is, where
     /// it looks (`forward`), the view's right and up, and the target (the
@@ -354,7 +358,7 @@ public struct GlobeProjection: Equatable, Sendable {
         held.zoom = zoom
         held = Self.held(held, size: size)
         let z = held.zoom
-        var next = GlobeProjection(camera: held, size: size)
+        var next = GlobeProjection(camera: held, size: size, lens: lens)
         guard let fixed = coordinate(at: anchor) else { return next.camera }
         if isFlat && next.isFlat {
             var flat = MapViewport(camera: camera, size: size).zoomed(to: z, keeping: anchor)
@@ -371,7 +375,7 @@ public struct GlobeProjection: Equatable, Sendable {
         } else if let center = Self.solve(start: sphereCenter ?? camera.center, target: anchor, { c in
             var moved = held
             moved.center = c
-            return GlobeProjection(camera: moved, size: size).project(fixed).point
+            return GlobeProjection(camera: moved, size: size, lens: lens).project(fixed).point
         }) {
             next.camera.center = Coordinate(latitude: min(85, max(-85, center.latitude)), longitude: Astronomy.wrap180(center.longitude))
         }

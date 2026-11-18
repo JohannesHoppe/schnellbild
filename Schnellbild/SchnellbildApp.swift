@@ -72,6 +72,9 @@ struct SchnellbildApp: App {
                     .keyboardShortcut(shortcuts.menuShortcut(.openFolder))
                     .disabled(window.anySheetOpen || model.presenting)
             }
+            CommandGroup(replacing: .undoRedo) {
+                UndoCommands(history: model.undoHistory, window: window, model: model)
+            }
             CommandMenu("Go") {
                 Button("Start Slideshow") { model.startSlideshow() }
                     .keyboardShortcut(shortcuts.menuShortcut(.startSlideshow))

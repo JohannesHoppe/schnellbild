@@ -41,6 +41,11 @@ jobs:
       - name: Select Xcode
         run: Scripts/select_xcode.sh
 
+      # The checks that keep code under the GPL out of VLCKit
+      # (vlckit_licenses.py, vlckit_contrib.py)
+      - name: Tests of the VLCKit licence checks
+        run: python3 -I -m unittest discover -s Scripts/tests -v
+
       - name: Cache SwiftPM build
         uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:

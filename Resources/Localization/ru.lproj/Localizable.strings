@@ -286,7 +286,6 @@
 "“%@”: %@" = "«%@»: %@";
 "“%@” is no longer the item Schnellbild put there, so it stays as it is." = "«%@» уже не тот объект, который туда поместил Schnellbild, поэтому он остается как есть.";
 "“%@” has changed since it was copied, so it isn't moved to the Trash." = "«%@» изменился после копирования, поэтому он не перемещается в Корзину.";
-"Schnellbild may not take “%@” out of the Trash. Use “Put Back” in the Finder's Trash." = "Schnellbild не может извлечь «%@» из Корзины. Воспользуйтесь командой «Вернуть» в Корзине Finder.";
 "Keep: try it again later, before the earlier actions. Forget: go on with the earlier actions." = "Оставить: повторить позже, перед более ранними действиями. Забыть: перейти к более ранним действиям.";
 "Keep" = "Оставить";
 "Forget" = "Забыть";
@@ -629,12 +628,12 @@
 "Credit" = "Источник";
 "Website" = "Сайт";
 "Schnellbild uses an LGPL-only build of VLCKit and libVLC, licensed under the GNU Lesser General Public License 2.1 and built from source without any of VLC's modules under the GPL. VLC as VideoLAN builds it also carries modules under the GPL; they are not in Schnellbild's build." = "Schnellbild использует сборку VLCKit и libVLC только под LGPL: она распространяется под GNU Lesser General Public License 2.1 и собрана из исходного кода без единого модуля VLC под GPL. VLC в сборке VideoLAN содержит и модули под GPL; в сборке Schnellbild их нет.";
-"Schnellbild's build makes five small changes to VLC (Scripts/vlc-patches, 0001 to 0005): four to its subtitle timing and one to its audio output on macOS." = "Сборка Schnellbild вносит в VLC пять небольших изменений (Scripts/vlc-patches, с 0001 по 0005): четыре касаются синхронизации субтитров, одно вывода звука в macOS.";
+"Schnellbild's build makes six small changes to VLC (Scripts/vlc-patches, 0001 to 0006): four to its subtitle timing, one to its audio output on macOS and one that leaves FFmpeg's files under the GPL out of the build." = "Сборка Schnellbild вносит в VLC шесть небольших изменений (Scripts/vlc-patches, с 0001 по 0006): четыре касаются синхронизации субтитров, одно вывода звука в macOS, и одно исключает из сборки файлы FFmpeg под лицензией GPL.";
 "The complete source of this build, with these changes, is attached to its release: %@. The script that builds it is Scripts/build_vlckit_lgpl.sh in Schnellbild's repository." = "Полный исходный код этой сборки вместе с этими изменениями приложен к её выпуску: %@. Скрипт, который её собирает, это Scripts/build_vlckit_lgpl.sh в репозитории Schnellbild.";
 "© VideoLAN and the VLC authors" = "© VideoLAN и авторы VLC";
 "Libraries included in VLCKit, each under its own license" = "Библиотеки в составе VLCKit, каждая под своей лицензией";
 "Libraries included in VLCKit" = "Библиотеки в составе VLCKit";
-"These are the license files at the top of each library's source, as VLC's build collected them." = "Это файлы лицензий из начала исходного кода каждой библиотеки в том виде, в каком их собрала сборка VLC.";
+"These are the license files from each library's source, as Schnellbild's build collected them." = "Это файлы лицензий из исходного кода каждой библиотеки в том виде, в каком их собрала сборка Schnellbild.";
 "UnRAR license" = "Лицензия UnRAR";
 "© OpenStreetMap contributors" = "© участники OpenStreetMap";
 "Made from Protomaps' OpenStreetMap build, with thanks to Protomaps. How the files are made is in Schnellbild's repository." = "Сделано из сборки OpenStreetMap от Protomaps, спасибо Protomaps. Как создаются файлы, описано в репозитории Schnellbild.";
@@ -659,3 +658,11 @@
 "Show hidden files and folders" = "Показывать скрытые файлы и папки";
 "Names that start with a dot, and what macOS hides, such as the Library folder. Off, they appear nowhere in Schnellbild." = "Имена, начинающиеся с точки, и то, что скрывает macOS, например папка «Библиотека». Если выключено, они нигде в Schnellbild не появляются.";
 "Show / hide hidden files and folders" = "Показать / скрыть скрытые файлы и папки";
+"Undo" = "Отменить";
+"Redo" = "Повторить";
+"Undo New Folder" = "Отменить создание папки";
+"Redo New Folder" = "Повторить создание папки";
+"“%@” isn't empty any more, so it isn't moved to the Trash." = "«%@» больше не пуста, поэтому она не перемещается в Корзину.";
+"“%@” is no longer in the Trash." = "«%@» больше нет в Корзине.";
+"“%@” couldn't be taken out of the Trash and is still there. %@" = "Не удалось извлечь «%@» из Корзины, объект остается там. %@";
+"Undo / redo renaming, trashing, moving, copying, a new folder" = "Отменить / повторить: переименование, перемещение в Корзину, перемещение, копирование, новую папку";

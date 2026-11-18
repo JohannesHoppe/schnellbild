@@ -280,6 +280,13 @@ private struct WindowView: View {
                 MainActor.assumeIsolated { BossKey.typed(event) }
                 return nil
             }
+            // ⌘Z / ⇧⌘Z while text is typed (the search, a name in a sheet)
+            // undo the typing, not the file action Edit → Undo names
+            if ContentView.isUndoKey(event), MainActor.assumeIsolated({ NSApp.keyWindow?.firstResponder is NSText }) {
+                let redo = event.modifierFlags.contains(.shift)
+                _ = MainActor.assumeIsolated { NSApp.sendAction(Selector((redo ? "redo:" : "undo:")), to: nil, from: nil) }
+                return nil
+            }
             // A modal dialog (the Trash confirmation, the open panel) keeps
             // its keys: Return confirms it, Esc cancels it.
             if NSApp.modalWindow != nil || event.window is NSSavePanel {
@@ -403,6 +410,16 @@ private struct WindowView: View {
 }
 
 extension ContentView {
+    /// ⌘Z or ⇧⌘Z, no ⌃ or ⌥: the letter the layout types (on a layout
+    /// without Latin letters the user's Latin one), as the menus read it.
+    static func isUndoKey(_ event: NSEvent) -> Bool {
+        let flags = event.modifierFlags.intersection([.command, .shift, .control, .option])
+        guard flags == .command || flags == [.command, .shift] else { return false }
+        let plain = event.charactersIgnoringModifiers?.lowercased() ?? ""
+        let letter = plain.unicodeScalars.allSatisfy(\.isASCII) ? plain : (LatinKeys.character(for: event.keyCode, shift: false) ?? plain)
+        return letter == "z"
+    }
+
     /// Keys that go straight to the text field being edited, ahead of the
     /// menu: ⌘⌫, ⌘↩ and ⌘ with an arrow.
     static func textFieldTakes(code: UInt16, command: Bool) -> Bool {
