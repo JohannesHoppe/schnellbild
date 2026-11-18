@@ -28,6 +28,28 @@ final class MediaTests: XCTestCase {
 
     /// VLC's padded decoder size gives way to the track's visible size;
     /// non-square pixels are made square; a turned video stays turned.
+    /// A paused AVKit video is drawn again with a new look by seeks into
+    /// the frame shown, two points by turns. At its end it stands at its
+    /// length, the end of its last frame (here 3.04 s with frames of 0.1 s,
+    /// the last one from 3.0 s): both points lie in that frame and before
+    /// the end, else the seek lands on the end again and draws nothing.
+    func testARedrawAtTheEndSeeksIntoTheLastFrame() {
+        for duration in [3.04, 3.1, 3.0, 3.0999] {
+            var seen: Set<Double> = []
+            for later in [false, true] {
+                let target = AVPlaybackControl.redrawTime(at: duration, frame: 0.1, duration: duration, later: later)
+                XCTAssertLessThan(target, duration, "\(duration), later \(later): before the end")
+                XCTAssertGreaterThanOrEqual(target, (duration - 0.0011) - (duration - 0.0011).truncatingRemainder(dividingBy: 0.1) - 1e-9,
+                                            "\(duration): in the last frame")
+                seen.insert(target)
+            }
+            XCTAssertEqual(seen.count, 2, "\(duration): two points, by turns")
+        }
+        // In the middle: a quarter and a half into the frame shown
+        XCTAssertEqual(AVPlaybackControl.redrawTime(at: 1.23, frame: 0.1, duration: 3.04, later: false), 1.225, accuracy: 1e-9)
+        XCTAssertEqual(AVPlaybackControl.redrawTime(at: 1.23, frame: 0.1, duration: 3.04, later: true), 1.25, accuracy: 1e-9)
+    }
+
     func testVLCPicturesAreShownAtTheVisibleSizeWithSquarePixels() {
         typealias Track = VLCFrameOutput.Track
         func shown(_ track: Track?, _ w: Int, _ h: Int) -> [Int] {

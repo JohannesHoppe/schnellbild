@@ -164,6 +164,21 @@ class SchnellbildUITestCase: XCTestCase {
         }
     }
 
+    /// Where the video on screen stands and the app's clock when it was
+    /// read ("played 8.432 s at 1234.567 s" under the badge: the time left's
+    /// label under `--ui-testing`), so a rate is measured on the app's
+    /// clock, free of how long XCUITest takes to ask.
+    func playerClock() -> (played: Double, at: Double)? {
+        let element = element("videoTimeLeft").firstMatch
+        guard element.exists else { print("no videoTimeLeft"); return nil }
+        for text in [element.label, (element.value as? String) ?? "", element.title] {
+            let numbers = text.split(separator: " ").compactMap { Double($0) }
+            if text.hasPrefix("played "), numbers.count == 2, numbers[0] >= 0 { return (numbers[0], numbers[1]) }
+        }
+        print("videoTimeLeft: label “\(element.label)”, value “\(String(describing: element.value))”, title “\(element.title)”")
+        return nil
+    }
+
     /// The full view's position badge ("n / m  ·  name").
     var badge: XCUIElement { app.staticTexts["positionBadge"] }
 

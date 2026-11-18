@@ -3,8 +3,10 @@ import ImageIO
 import QuickLookThumbnailing
 import VLCFrames
 
-/// Thumbnails of the videos QuickLook can't read itself (MKV, WebM, AVI,
-/// WMV, FLV, Ogg): VLC decodes a frame at 30 % of the video. Downloads not
+/// Thumbnails of the videos QuickLook can't read itself (MKV, WebM, WMV,
+/// ASF, FLV, Ogg, VOB: the types in its `Info.plist`): VLC decodes a frame
+/// at 30 % of the video; a file no VLC reader may open (`VLCSafety.reader`,
+/// such as "setup.dmg.part") gets none at once. Downloads not
 /// finished ("x.mp4.part", "x.jpg.crdownload", `DownloadName`) get theirs as
 /// far as their data reaches: a picture through ImageIO, a video through
 /// VLC. macOS asks for them (Finder, Schnellbild's grid) and keeps them in

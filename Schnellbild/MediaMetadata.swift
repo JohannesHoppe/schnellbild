@@ -215,7 +215,7 @@ enum PictureMetadata {
     /// "1/250 s", "0.5 s", "30 s".
     static func shutter(_ seconds: Double) -> String {
         let text: String
-        if seconds < 0.4 {
+        if seconds < 0.4, (1 / seconds) < 1e15 {
             text = "1/" + Int((1 / seconds).rounded()).formatted()
         } else {
             text = seconds.formatted(.number.precision(.fractionLength(0...1)))
