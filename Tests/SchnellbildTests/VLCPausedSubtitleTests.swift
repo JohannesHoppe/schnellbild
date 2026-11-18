@@ -11,6 +11,25 @@ import VLCFrames
 /// start, as the app plays it; the pictures as VLC hands them over.
 @MainActor
 final class VLCPausedSubtitleTests: XCTestCase {
+    /// VLC's messages about pausing ("toggling pause": a decoder passing the
+    /// pause on to its output), with the time since the pause was asked for.
+    final class PauseLog: NSObject, VLCLogging, @unchecked Sendable {
+        static let shared = PauseLog()
+        var level: VLCLogLevel = .debug
+        private let lock = NSLock()
+        private var began = Date()
+        private var found: [String] = []
+        var lines: [String] { lock.lock(); defer { lock.unlock() }; return found }
+        func start(at date: Date) { lock.lock(); began = date; found = []; lock.unlock() }
+        func handleMessage(_ message: String, logLevel: VLCLogLevel, context: VLCLogContext?) {
+            guard message.contains("toggling") else { return }
+            lock.lock()
+            found.append("\(context?.module ?? "-") \(message) at +\(Int(Date().timeIntervalSince(began) * 1000)) ms")
+            lock.unlock()
+        }
+    }
+
+
     private final class Held: @unchecked Sendable {
         let player = VLCMediaPlayer()
     }
@@ -31,6 +50,8 @@ final class VLCPausedSubtitleTests: XCTestCase {
     /// pauses once VLC's time passes `at` ms, and reads the pictures VLC
     /// hands over for the next three seconds: whether each holds text.
     private func pausedPictures(track: Int, at: Int64) async throws -> (pausedAt: Int64, texts: [Bool]) {
+        VLCLibrary.shared().loggers = [PauseLog.shared]
+        defer { VLCLibrary.shared().loggers = [] }
         let url = fixture("tracks.mkv")
         let media = VLCMedia(url: url)
         VLCSafety.restrict(media, for: url, head: VLCSafety.head(of: url))
@@ -56,19 +77,26 @@ final class VLCPausedSubtitleTests: XCTestCase {
             }
             try await Task.sleep(for: .milliseconds(2))
         }
+        let paused = Date()
+        PauseLog.shared.start(at: paused)
         setPause(native, 1)
         print("before pausing at \(at): \(before.joined(separator: " "))")
-        try await Task.sleep(for: .milliseconds(300))
-        let pausedAt = getTime(native)
+        // Every picture handed over from the pause on, with when it came
+        var timeline: [String] = []
         var texts: [Bool] = []
         var last: CVPixelBuffer?
-        let end = Date().addingTimeInterval(3)
+        let end = paused.addingTimeInterval(3)
         while Date() < end {
-            try await Task.sleep(for: .milliseconds(50))
+            try await Task.sleep(for: .milliseconds(2))
             guard let picture = output.latestPicture, picture !== last else { continue }
             last = picture
-            texts.append(VLCFrameOutput.probe(picture, shown: picture)?.text ?? false)
+            let text = VLCFrameOutput.probe(picture, shown: picture)?.text ?? false
+            timeline.append("+\(Int(Date().timeIntervalSince(paused) * 1000)):\(text ? "T" : "-")")
+            // The pictures after the video output has paused (the last ones it shows again and again)
+            if Date().timeIntervalSince(paused) > 0.5 { texts.append(text) }
         }
+        let pausedAt = getTime(native)
+        print("after pausing at \(pausedAt) ms: \(timeline.prefix(12).joined(separator: " ")); \(PauseLog.shared.lines.joined(separator: "; "))")
         return (pausedAt, texts)
     }
 
