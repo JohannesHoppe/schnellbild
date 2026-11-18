@@ -29,7 +29,7 @@ final class VLCAudioOutputTests: XCTestCase {
         let release = unsafeBitCast(try XCTUnwrap(dlsym(handle, "libvlc_media_player_release")), to: Release.self)
         let setCallbacks = unsafeBitCast(try XCTUnwrap(dlsym(handle, "libvlc_audio_set_callbacks")), to: SetCallbacks.self)
         let instance = try XCTUnwrap(VLCLibrary.shared().instance)
-        let threads = 8, rounds = 60
+        let threads = 8, rounds = 1_500
         let done = Done()
         for thread in 0..<threads {
             Thread.detachNewThread {
