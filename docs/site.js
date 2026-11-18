@@ -88,11 +88,15 @@ if ("IntersectionObserver" in window) {
   const shown = () => root.dataset.theme || (systemDark.matches ? "dark" : "light");
   function apply() {
     const picked = root.dataset.theme;
-    // data-media keeps a source's own query while a choice has set it to "all" / "not all"
+    // data-media keeps a source's own query while a choice has changed it
     document.querySelectorAll('source[media*="prefers-color-scheme"], source[data-media], meta[name="theme-color"]').forEach((element) => {
       if (!element.dataset.media) element.dataset.media = element.getAttribute("media");
-      const forDark = element.dataset.media.includes("dark");
-      element.setAttribute("media", picked ? ((picked === "dark") === forDark ? "all" : "not all") : element.dataset.media);
+      const own = element.dataset.media;
+      const forDark = own.includes("dark");
+      // the theme's part of the query becomes "all" or the whole query "not all"; the
+      // rest of it (the globe's phone picture: "and (max-width: 640px)") stays
+      const rest = own.replace(/\(prefers-color-scheme: (dark|light)\)/, "all");
+      element.setAttribute("media", picked ? ((picked === "dark") === forDark ? rest : "not all") : own);
     });
     if (button) {
       const label = button.dataset[shown() === "dark" ? "light" : "dark"];

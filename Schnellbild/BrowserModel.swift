@@ -6673,10 +6673,9 @@ final class AVPlaybackControl: PlaybackControl {
             guard let self, !self.isPlaying, self.resumeAt == nil else { return }
             let now = self.player.currentTime()
             if let frame = self.frameDuration, now.seconds.isFinite {
-                // A quarter and a half into the frame shown, by turns
-                let start = (now.seconds / frame).rounded(.down) * frame
                 self.nudgeLater.toggle()
-                let target = CMTime(seconds: start + frame * (self.nudgeLater ? 0.5 : 0.25), preferredTimescale: 600_000)
+                let target = CMTime(seconds: Self.redrawTime(at: now.seconds, frame: frame, duration: self.duration, later: self.nudgeLater),
+                                    preferredTimescale: 600_000)
                 BrowserModel.testLog("avkit redraw at \(target.seconds)")
                 self.noteOwnChange()
                 self.player.seek(to: target, toleranceBefore: .zero, toleranceAfter: .zero) { [weak self] finished in
@@ -6708,6 +6707,23 @@ final class AVPlaybackControl: PlaybackControl {
                 }
             }
         }
+    }
+
+    /// Where a redraw seeks: a quarter or (`later`) a half into the frame
+    /// shown at `time`, both before the video's end. A paused video at its
+    /// end stands at its length, which needn't be a whole number of frames
+    /// (a last frame shorter than the others, a longer sound track); a seek
+    /// past the length lands on the end again and draws nothing, so there
+    /// the two points lie between the last frame's start and the end.
+    nonisolated static func redrawTime(at time: Double, frame: Double, duration: Double?, later: Bool) -> Double {
+        let margin = frame * 0.01
+        let end = duration.map { max($0 - margin, 0) } ?? .infinity
+        let start = (min(time, end) / frame).rounded(.down) * frame
+        let quarter = start + frame * 0.25, half = start + frame * 0.5
+        guard half > end else { return later ? half : quarter }
+        // The end lies within the frame's first half: points before it
+        let room = max(end - start, 0)
+        return start + room * (later ? 0.75 : 0.25)
     }
 
     private var duration: Double? {

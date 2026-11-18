@@ -70,8 +70,8 @@ final class VideoFormatTests: XCTestCase {
         let text = dir.appendingPathComponent("notes.mkv")
         try "not a video".write(to: text, atomically: true, encoding: .utf8)
         XCTAssertEqual(VLCSafety.reader(for: text, head: VLCSafety.head(of: text))?.demux, "mkv", "the extension's reader")
-        let none = await VLCFrameGrab.frame(of: text, width: 128, timeout: 4)
-        XCTAssertNil(none)
+        // VLC's Matroska reader refuses it: the grab says so long before its timeout
+        try await assertRefused(text, "text named .mkv")
         XCTAssertEqual(VLCSafety.reader(for: dir.appendingPathComponent("a.xyz"), head: VLCSafety.head(of: try clip("mkv")))?.demux,
                        "mkv", "the content wins over a name that says nothing")
         XCTAssertNil(VLCSafety.reader(for: dir.appendingPathComponent("a.txt"), head: Data("#EXTM3U\n".utf8)),
@@ -91,9 +91,43 @@ final class VideoFormatTests: XCTestCase {
         for ext in ["mkv", "ts", "flv", "mpg", "mp4", "avi", "wmv", "ogv", "m2v", "dv"] {
             let file = dir.appendingPathComponent("playlist.\(ext)")
             try playlist.write(to: file, atomically: true, encoding: .utf8)
-            let frame = await VLCFrameGrab.frame(of: file, width: 128, timeout: 4)
-            XCTAssertNil(frame, "a playlist named .\(ext) was followed")
+            try await assertRefused(file, "a playlist named .\(ext)")
         }
+    }
+
+    /// VLC gave no picture because it refused the file or failed on it (its
+    /// player's state: error, or the end with nothing shown), not because
+    /// the grab timed out: a reader that followed a playlist slowly would
+    /// time out too, and pass unnoticed.
+    private func assertRefused(_ url: URL, _ what: String, file: StaticString = #filePath, line: UInt = #line) async throws {
+        let timeout = 30.0
+        let began = Date()
+        let outcome = await VLCFrameGrab.grab(of: url, width: 128, timeout: timeout)
+        let took = Date().timeIntervalSince(began)
+        print("\(what): \(outcome) after \(String(format: "%.2f", took)) s")
+        switch outcome {
+        case .refused, .failed: break
+        default: XCTFail("\(what): \(outcome), not refused", file: file, line: line)
+        }
+        XCTAssertLessThan(took, timeout / 2, "\(what): ended by VLC, not by the timeout", file: file, line: line)
+    }
+
+    /// A file with no video (an audio-only WebM, a broken clip) ends the
+    /// grab when VLC reaches its end, not at the timeout; a file no reader
+    /// may open gets no player at all.
+    func testAGrabWithoutAPictureEndsAtOnce() async throws {
+        let dir = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: dir) }
+        let broken = dir.appendingPathComponent("broken.mkv")
+        try Data(try Data(contentsOf: try clip("mkv")).prefix(600)).write(to: broken)
+        try await assertRefused(broken, "a Matroska file cut off after its head")
+        let download = dir.appendingPathComponent("setup.dmg.part")
+        try Data(repeating: 0x42, count: 4096).write(to: download)
+        let began = Date()
+        let outcome = await VLCFrameGrab.grab(of: download, width: 128)
+        guard case .refused = outcome else { return XCTFail("a download of a disk image: \(outcome)") }
+        XCTAssertLessThan(Date().timeIntervalSince(began), 1, "no player for a file no reader may open")
     }
 
     /// Options planted in the preferences VLCKit reads ("VLCParams") give

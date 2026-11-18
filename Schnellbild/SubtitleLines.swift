@@ -47,17 +47,35 @@ enum SubtitleReader {
     /// How far back a line may have begun and still run (and how far ahead
     /// lines are read).
     static let reach: Double = 20
+    /// How long a read may take (a file on a share that answers slowly):
+    /// past it there are no lines, and VLC takes the track at once.
+    static let budget: Double = 2
 
     /// The lines of the `index`-th subtitle track (in the file's order, as
     /// VLC lists them) that run in `from ... to`; nil when the file or the
-    /// track can't be read this way.
-    static func lines(of url: URL, subtitleIndex index: Int, from: Double, to: Double) -> SubtitleTrackLines? {
-        guard let bytes = FileBytes(url), let head = bytes.read(at: 0, count: Int(min(400, bytes.size))) else { return nil }
+    /// track can't be read this way, the read takes longer than `budget`
+    /// seconds or its task is cancelled.
+    static func lines(of url: URL, subtitleIndex index: Int, from: Double, to: Double, budget: Double = budget) -> SubtitleTrackLines? {
+        guard let bytes = FileBytes(url) else { return nil }
+        return lines(in: bytes, subtitleIndex: index, from: from, to: to, budget: budget)
+    }
+
+    static func lines(in bytes: ByteSource, subtitleIndex index: Int, from: Double, to: Double,
+                      budget: Double = budget) -> SubtitleTrackLines? {
+        guard let head = bytes.read(at: 0, count: Int(min(400, bytes.size))) else { return nil }
+        let deadline = Date().addingTimeInterval(budget)
+        let over = { Task.isCancelled || Date() > deadline }
         switch VLCSafety.container(in: Data(head))?.demux {
-        case "mkv": return MatroskaSubtitles.lines(bytes, subtitleIndex: index, from: from, to: to)
-        case "mp4": return MP4Subtitles.lines(bytes, subtitleIndex: index, from: from, to: to)
+        case "mkv": return MatroskaSubtitles.lines(bytes, subtitleIndex: index, from: from, to: to, over: over)
+        case "mp4": return MP4Subtitles.lines(bytes, subtitleIndex: index, from: from, to: to, over: over)
         default:    return nil
         }
+    }
+
+    /// A time in a file's units, held in UInt64's range (none before 0).
+    static func units(_ value: Double) -> UInt64 {
+        guard value.isFinite, value > 0 else { return 0 }
+        return value < 18_000_000_000_000_000_000 ? UInt64(value) : .max
     }
 
     /// SubRip's text without its tags (`<i>`, `<font …>`), split into lines.
@@ -140,8 +158,8 @@ struct ASSStyles: Equatable {
             let key = line[..<colon].trimmingCharacters(in: .whitespaces).lowercased()
             let value = line[line.index(after: colon)...].trimmingCharacters(in: .whitespaces)
             if section == "[script info]" {
-                if key == "playresy" { playResY = Double(value) }
-                if key == "playresx" { playResX = Double(value) }
+                if key == "playresy" { playResY = number(value) }
+                if key == "playresx" { playResX = number(value) }
                 if key == "wrapstyle" { result.wrapStyle = Int(value) ?? 0 }
             } else if section.contains("styles") {
                 let fields = value.components(separatedBy: ",").map { $0.trimmingCharacters(in: .whitespaces) }
@@ -156,7 +174,7 @@ struct ASSStyles: Equatable {
                         switch field {
                         case "name": name = v
                         case "fontname": style.font = v
-                        case "fontsize": style.size = Double(v) ?? style.size
+                        case "fontsize": style.size = number(v) ?? style.size
                         case "primarycolour": style.primary = colour(v) ?? style.primary
                         case "outlinecolour": style.outlineColour = colour(v) ?? style.outlineColour
                         case "backcolour": style.back = colour(v) ?? style.back
@@ -164,15 +182,15 @@ struct ASSStyles: Equatable {
                         case "italic": style.italic = (Int(v) ?? 0) != 0
                         case "underline": style.underline = (Int(v) ?? 0) != 0
                         case "strikeout": style.strikeOut = (Int(v) ?? 0) != 0
-                        case "outline": style.outline = Double(v) ?? style.outline
-                        case "shadow": style.shadow = Double(v) ?? style.shadow
+                        case "outline": style.outline = number(v) ?? style.outline
+                        case "shadow": style.shadow = number(v) ?? style.shadow
                         case "alignment":
                             let a = Int(v) ?? 2
                             // SSA (V4) numbers its alignments otherwise: 1-3 bottom, +4 top, +8 middle
                             style.alignment = section.contains("v4+") ? a : ASSStyles.numpad(ssa: a)
-                        case "marginl": style.marginL = Double(v) ?? style.marginL
-                        case "marginr": style.marginR = Double(v) ?? style.marginR
-                        case "marginv": style.marginV = Double(v) ?? style.marginV
+                        case "marginl": style.marginL = number(v) ?? style.marginL
+                        case "marginr": style.marginR = number(v) ?? style.marginR
+                        case "marginv": style.marginV = number(v) ?? style.marginV
                         default: break
                         }
                     }
@@ -187,6 +205,14 @@ struct ASSStyles: Equatable {
         result.playResX = playResX ?? (result.playResY == 1024 ? 1280 : result.playResY * 4 / 3)
         if result.playResX <= 0 { result.playResX = result.playResY * 4 / 3 }
         return result
+    }
+
+    /// A number of a script (a size, a margin, a position): nil for none,
+    /// and for NaN, infinity and anything beyond a million, which no script
+    /// means and drawing can't take.
+    static func number<S: StringProtocol>(_ text: S) -> Double? {
+        guard let value = Double(text), value.isFinite, abs(value) <= 1_000_000 else { return nil }
+        return value
     }
 
     /// SSA's alignment (1 … 3 at the bottom, 4 added for the top, 8 for the
@@ -349,7 +375,7 @@ struct ASSText: Equatable {
     private static func apply(_ tag: String, _ value: String, to style: inout RunStyle, base: ASSStyles.Style,
                               styles: ASSStyles, alignment: inout Int?, position: inout Point?, drawing: inout Bool,
                               wrapStyle: inout Int) {
-        let number = Double(value)
+        let number = ASSStyles.number(value)
         // 0 or 1; else the style's
         func flag(_ fallback: Bool) -> Bool { Int(value).flatMap { $0 == 0 || $0 == 1 ? $0 == 1 : nil } ?? fallback }
         // &HBBGGRR&: the colour only, its alpha stays; none: the style's
@@ -377,7 +403,7 @@ struct ASSText: Equatable {
                 else { alignment = base.alignment }
             }
         case "pos":
-            let parts = value.split(separator: ",").compactMap { Double($0.trimmingCharacters(in: .whitespaces)) }
+            let parts = value.split(separator: ",").compactMap { ASSStyles.number($0.trimmingCharacters(in: .whitespaces)) }
             if position == nil, parts.count == 2 { position = Point(x: parts[0], y: parts[1]) }
         case "b":
             // 0, 1 or a weight (from 100; bold from 600); else the style's
@@ -399,7 +425,7 @@ struct ASSText: Equatable {
             // \fs+n / \fs-n: n tenths more or less (libass)
             var size = 0.0
             if let n = number { size = value.hasPrefix("+") || value.hasPrefix("-") ? style.size * (1 + n / 10) : n }
-            style.size = size > 0 ? size : base.size
+            style.size = size > 0 && size <= 1_000_000 ? size : base.size
         case "fn": style.font = value.isEmpty || value == "0" ? base.font : value
         case "bord": style.outline = number.map { max($0, 0) } ?? base.outline
         case "shad": style.shadow = number.map { max($0, 0) } ?? base.shadow
@@ -435,12 +461,19 @@ enum MatroskaSubtitles {
         var stripped = Data()
     }
 
-    static func lines(_ source: FileBytes, subtitleIndex index: Int, from: Double, to: Double) -> SubtitleTrackLines? {
-        var reader = EBMLFile(source: source)
+    static func lines(_ source: ByteSource, subtitleIndex index: Int, from: Double, to: Double,
+                      over: () -> Bool = { false }) -> SubtitleTrackLines? {
+        var reader = EBMLFile(source: WindowedBytes(source))
         guard let ebml = reader.header(at: 0), ebml.id == 0x1A45DFA3, let ebmlSize = ebml.size,
               let segment = reader.header(at: ebml.dataStart + ebmlSize), segment.id == 0x18538067 else { return nil }
         let segmentStart = segment.dataStart
         let segmentEnd = segment.size.map { min(segmentStart + $0, source.size) } ?? source.size
+        /// A place the file gives relative to the segment's data; nil when
+        /// it lies outside the segment.
+        func inSegment(_ position: UInt64) -> UInt64? {
+            let (at, overflow) = segmentStart.addingReportingOverflow(position)
+            return overflow || at >= segmentEnd ? nil : at
+        }
         var scale: UInt64 = 1_000_000
         var tracks: [Track] = []
         var cues: [(time: UInt64, position: UInt64)] = []
@@ -457,7 +490,7 @@ enum MatroskaSubtitles {
             case 0x1654AE6B:
                 if let data = reader.body(element) { tracks = parseTracks(data) }
             case 0x114D9B74:   // SeekHead: where the Cues are
-                if let data = reader.body(element), let position = cuesPosition(data) { cuesAt = segmentStart + position }
+                if let data = reader.body(element), let position = cuesPosition(data) { cuesAt = inSegment(position) }
             case 0x1C53BB6B:
                 if let data = reader.body(element) { cues = parseCues(data) }
             case 0x1F43B675:
@@ -474,15 +507,18 @@ enum MatroskaSubtitles {
             cues = parseCues(data)
         }
         let subtitleTracks = tracks.filter { $0.type == 0x11 }
-        guard index >= 0, index < subtitleTracks.count, let firstCluster else { return nil }
+        guard index >= 0, index < subtitleTracks.count, let firstCluster, !over() else { return nil }
         let track = subtitleTracks[index]
         let ass = ["S_TEXT/ASS", "S_TEXT/SSA", "S_ASS", "S_SSA"].contains(track.codec)
         guard ass || track.codec == "S_TEXT/UTF8" else { return nil }
         let unitsPerSecond = 1e9 / Double(max(scale, 1))
-        // Where to begin: the last cue at or before `from - reach`
-        let startTime = UInt64(max(0, (from - SubtitleReader.reach) * unitsPerSecond))
+        // Where to begin: the last cue at or before `from - reach`, then the
+        // last cluster from there that begins by then
+        let startTime = SubtitleReader.units((from - SubtitleReader.reach) * unitsPerSecond)
         var clusterAt = firstCluster
-        if let cue = cues.last(where: { $0.time <= startTime }) { clusterAt = segmentStart + cue.position }
+        if let cue = cues.last(where: { $0.time <= startTime }), let place = inSegment(cue.position) { clusterAt = place }
+        guard let begin = lastCluster(&reader, from: clusterAt, startingBy: startTime, end: segmentEnd, over: over) else { return nil }
+        clusterAt = begin
         let stopTime = to * unitsPerSecond
         var lines: [SubtitleLine] = []
         var blocks = 0
@@ -494,6 +530,7 @@ enum MatroskaSubtitles {
             while child < end, let element = reader.header(at: child) {
                 blocks += 1
                 if blocks > largestBlocks { break clusters }
+                if blocks % 256 == 0, over() { return nil }
                 guard let size = element.size, element.dataStart + size <= end else { break clusters }
                 switch element.id {
                 case 0xE7:
@@ -515,6 +552,7 @@ enum MatroskaSubtitles {
             if cluster.size == nil { break }
             clusterAt = end
         }
+        if over() { return nil }
         lines.sort { $0.start < $1.start }
         // A line without a duration ends where the next begins (at most 5 s)
         for i in lines.indices where lines[i].end <= lines[i].start {
@@ -523,6 +561,33 @@ enum MatroskaSubtitles {
         }
         let kind: SubtitleTrackLines.Kind = ass ? .ass(ASSStyles.parse(String(decoding: track.privateData, as: UTF8.self))) : .text
         return SubtitleTrackLines(kind: kind, lines: lines.filter { $0.end > from && $0.start <= to })
+    }
+
+    /// The last cluster from `start` on that begins at `time` or before,
+    /// found by the clusters' heads alone (one read each: the cluster's
+    /// header and its time, its first element), so a file without Cues
+    /// isn't read block by block from its start. A cluster of unknown size
+    /// (a live recording) or without its time first ends the search there.
+    /// Nil when the read is over (`over`).
+    private static func lastCluster(_ reader: inout EBMLFile, from start: UInt64, startingBy time: UInt64, end: UInt64,
+                                    over: () -> Bool) -> UInt64? {
+        var found = start
+        var at = start
+        var steps = 0
+        while at < end {
+            steps += 1
+            if steps % 64 == 0, over() { return nil }
+            guard let head = reader.source.read(at: at, count: Int(min(32, end - at)), direct: true) else { break }
+            var data = EBMLData(data: Data(head))
+            guard let cluster = data.element(checkingSize: false), cluster.id == 0x1F43B675, let size = cluster.size else { break }
+            let dataStart = at + UInt64(data.position)
+            guard let first = data.element(checkingSize: false), first.id == 0xE7, let length = first.size, length <= 8,
+                  let bytes = data.bytes(first) else { break }
+            if bytes.reduce(UInt64(0), { $0 << 8 | UInt64($1) }) > time { break }
+            found = at
+            at = dataStart + size
+        }
+        return found
     }
 
     private static func blockGroup(_ reader: inout EBMLFile, _ group: EBMLFile.Header, track: Track, clusterTime: UInt64,
@@ -570,15 +635,17 @@ enum MatroskaSubtitles {
         case nil: break
         default: return nil
         }
-        let time = Double(Int64(clusterTime) + Int64(relative)) / unitsPerSecond
+        let time = (Double(clusterTime) + Double(relative)) / unitsPerSecond
         let end = duration.map { time + Double($0) / unitsPerSecond } ?? time
         let text = String(decoding: payload, as: UTF8.self)
         if ass {
             // ReadOrder, Layer, Style, Name, MarginL, MarginR, MarginV, Effect, Text
             let fields = text.split(separator: ",", maxSplits: 8, omittingEmptySubsequences: false)
             guard fields.count == 9 else { return nil }
-            func number(_ i: Int) -> Double { Double(fields[i].trimmingCharacters(in: .whitespaces)) ?? 0 }
-            let event = ASSEvent(text: String(fields[8]), readOrder: Int(number(0)), marginL: number(4), marginR: number(5),
+            func number(_ i: Int) -> Double { ASSStyles.number(fields[i].trimmingCharacters(in: .whitespaces)) ?? 0 }
+            // ReadOrder is a whole number; anything else (NaN, 1e999) is none
+            let readOrder = Int(fields[0].trimmingCharacters(in: .whitespaces)) ?? 0
+            let event = ASSEvent(text: String(fields[8]), readOrder: readOrder, marginL: number(4), marginR: number(5),
                                  marginV: number(6))
             return SubtitleLine(start: time, end: end, text: SubtitleReader.assText(String(fields[8])),
                                 style: String(fields[2]).trimmingCharacters(in: .whitespaces), ass: event)
@@ -710,7 +777,7 @@ struct EBMLFile {
         let size: UInt64?       // nil: unknown
         let dataStart: UInt64
     }
-    let source: FileBytes
+    let source: WindowedBytes
 
     func header(at offset: UInt64) -> Header? {
         guard offset < source.size, let bytes = source.read(at: offset, count: Int(min(12, source.size - offset))) else { return nil }
@@ -723,6 +790,36 @@ struct EBMLFile {
         guard let size = header.size, size <= UInt64(MatroskaSubtitles.largestElement),
               let bytes = source.read(at: header.dataStart, count: Int(size)) else { return nil }
         return Data(bytes)
+    }
+}
+
+/// A file's bytes read through a window kept in memory: the heads of a
+/// cluster's blocks lie close together, so one read (one round trip on a
+/// network share) serves many of them.
+final class WindowedBytes: ByteSource {
+    static let window = 64 << 10
+    let source: ByteSource
+    private var start: UInt64 = 0
+    private var bytes: [UInt8] = []
+
+    init(_ source: ByteSource) { self.source = source }
+
+    var size: UInt64 { source.size }
+
+    func read(at offset: UInt64, count: Int) -> [UInt8]? { read(at: offset, count: count, direct: false) }
+
+    /// `direct`: past the window, which stays as it is.
+    func read(at offset: UInt64, count: Int, direct: Bool) -> [UInt8]? {
+        guard count >= 0, offset <= size, UInt64(count) <= size - offset else { return nil }
+        if offset >= start, offset - start <= UInt64(bytes.count), UInt64(count) <= UInt64(bytes.count) - (offset - start) {
+            let from = Int(offset - start)
+            return Array(bytes[from..<from + count])
+        }
+        guard !direct, count <= Self.window else { return source.read(at: offset, count: count) }
+        guard let fresh = source.read(at: offset, count: Int(min(UInt64(Self.window), size - offset))) else { return nil }
+        start = offset
+        bytes = fresh
+        return Array(fresh[0..<count])
     }
 }
 
@@ -772,7 +869,8 @@ struct EBMLData {
 // MARK: - MP4 (3GPP timed text)
 
 enum MP4Subtitles {
-    static func lines(_ source: FileBytes, subtitleIndex index: Int, from: Double, to: Double) -> SubtitleTrackLines? {
+    static func lines(_ source: ByteSource, subtitleIndex index: Int, from: Double, to: Double,
+                      over: () -> Bool = { false }) -> SubtitleTrackLines? {
         guard let movie = MP4Boxes.movieIndex(source) else { return nil }
         let bytes = movie
         let tracks = MP4Boxes.boxes(in: bytes, 0..<bytes.count).filter { $0.type == "trak" }.filter { track in
@@ -788,6 +886,7 @@ enum MP4Subtitles {
         let length = MP4Boxes.mediaLength(bytes, track: tracks[index])
         var lines: [SubtitleLine] = []
         for (i, range) in samples.enumerated() {
+            if i % 256 == 0, over() { return nil }
             let start = starts[i]
             let end = i + 1 < starts.count ? starts[i + 1] : (length ?? start + 5)
             guard end > from - SubtitleReader.reach, start <= to else { continue }

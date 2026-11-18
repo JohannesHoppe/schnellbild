@@ -71,8 +71,13 @@ public struct VideoColour: Equatable, Sendable {
         }
         var bytes = Data()
         func append<T: FixedWidthInteger>(_ value: T) { withUnsafeBytes(of: value.bigEndian) { bytes.append(contentsOf: $0) } }
-        func chromaticity(_ v: Double) -> UInt16 { UInt16(clamping: Int((v * 50000).rounded())) }
-        func luminance(_ v: Double) -> UInt32 { UInt32(clamping: Int((v * 10000).rounded())) }
+        // Held in the field's range (a value VLC read from a crafted file may be anything)
+        func whole<T: FixedWidthInteger>(_ v: Double) -> T {
+            guard v.isFinite, v > 0 else { return 0 }
+            return v < Double(T.max) ? T(v.rounded()) : T.max
+        }
+        func chromaticity(_ v: Double) -> UInt16 { whole(v * 50000) }
+        func luminance(_ v: Double) -> UInt32 { whole(v * 10000) }
         // The SEI's order: green, blue, red, white point; luminance in 0.0001 cd/m²
         if let g = point("Primary G"), let b = point("Primary B"), let r = point("Primary R"),
            let white = point("White point"), let high = number("Max. luminance") {
@@ -83,8 +88,8 @@ public struct VideoColour: Equatable, Sendable {
         }
         if let maxCLL = number("MaxCLL") {
             bytes = Data()
-            append(UInt16(clamping: Int(maxCLL)))
-            append(UInt16(clamping: Int(number("MaxFALL") ?? 0)))
+            append(whole(maxCLL) as UInt16)
+            append(whole(number("MaxFALL") ?? 0) as UInt16)
             contentLightLevel = bytes
         }
     }

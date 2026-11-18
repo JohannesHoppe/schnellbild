@@ -162,11 +162,23 @@ final class VideoUITests: SchnellbildUITestCase {
         try checkSkimming("clip.mkv", player: "video.vlc")
     }
 
-    /// Videos QuickLook can't read get their tile picture from VLC.
+    /// Videos QuickLook can't read get their tile picture from Schnellbild's
+    /// QuickLook extension or from VLC in the app, whichever answers first
+    /// (`ThumbnailCache.videoThumbnail`); the app logs which one did.
     func testMKVTileShowsAFrame() throws {
         try put("clip.mkv", at: "clip.mkv")
-        launchOnTempDir(waitFor: "clip.mkv")
-        eventually("a picture, not the file icon", timeout: 20) { self.text(of: self.tile("clip.mkv")).hasSuffix(", preview") }
+        let log = tempDir.appendingPathComponent("app.log")
+        launch(open: tempDir.path, extra: ["--test-log=\(log.path)"])
+        XCTAssertTrue(app.staticTexts["clip.mkv"].waitForExistence(timeout: 15), "grid should show clip.mkv")
+        let deadline = Date().addingTimeInterval(20)
+        while Date() < deadline, !text(of: tile("clip.mkv")).hasSuffix(", preview") {
+            RunLoop.current.run(until: Date().addingTimeInterval(0.2))
+        }
+        let written = (try? String(contentsOf: log, encoding: .utf8)) ?? "(none)"
+        print("app log:\n" + written)
+        XCTAssertTrue(text(of: tile("clip.mkv")).hasSuffix(", preview"),
+                      "a picture, not the file icon: “\(text(of: tile("clip.mkv")))”; " +
+                      written.components(separatedBy: "\n").filter { $0.contains("tile clip.mkv") }.joined(separator: "; "))
     }
 
     /// At the end of a video Space plays it again from the start, every
@@ -317,14 +329,26 @@ final class VideoUITests: SchnellbildUITestCase {
         for _ in 0..<4 { app.typeKey(">", modifierFlags: []) }
         eventually("2×") { text(of: video).contains("speed 2.0") }
         waitForBadge(containing: "2×")
-        let progress = element("videoProgress")
-        func percent() -> Int { Int(text(of: progress).filter(\.isNumber)) ?? -1 }
-        let before = percent(), start = Date()
-        RunLoop.current.run(until: start.addingTimeInterval(3))
-        let played = Double(percent() - before) / 100 * 20   // seconds of the 20 s video (its subtitles end with it)
-        let took = Date().timeIntervalSince(start)
-        print("\(vlc ? "VLC" : "AVKit") at 2×: \(played) s of video in \(took) s")
-        XCTAssertGreaterThan(played, took * 1.5, "plays faster than 1×")
+        // Room to play at 2× (on a slow runner the steps above took a while):
+        // back in steps of 10 % (2 s), never past the start (← there would
+        // go to the picture before)
+        if let now = playerClock(), now.played > 6 {
+            for _ in 0..<min(Int((now.played - 2) / 2), 9) { app.typeKey(.leftArrow, modifierFlags: []) }
+            RunLoop.current.run(until: Date().addingTimeInterval(1))
+        }
+        // The player's place against the app's clock, both read in the app
+        // at the same moment: XCUITest's own delays don't count
+        let first = playerClock()
+        RunLoop.current.run(until: Date().addingTimeInterval(3))
+        let second = playerClock()
+        if let first, let second, second.at > first.at {
+            let played = second.played - first.played, took = second.at - first.at
+            print("\(vlc ? "VLC" : "AVKit") at 2×: \(played) s of video in \(took) s on the app's clock")
+            XCTAssertLessThan(second.played, 19.5, "still playing when measured (the 20 s video ended)")
+            XCTAssertGreaterThan(played, took * 1.5, "plays faster than 1×")
+        } else {
+            XCTFail("the player's clock is read: \(String(describing: first)), \(String(describing: second))")
+        }
         app.typeKey("\\", modifierFlags: .command)
         eventually("⌘\\: normal speed") { text(of: video).contains("speed 1.0") }
         XCTAssertFalse(text(of: badge).contains("×"), "at 1× the badge shows no speed: \(text(of: badge))")

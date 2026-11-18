@@ -86,7 +86,6 @@ enum MP4Boxes {
     static let largestIndex = 64 << 20
     static let largestXMP = 16 << 20
     static let largestBoxCount = 100_000
-    static let deepest = 12
     /// Telemetry samples (GPMF payloads) larger than this are skipped.
     static let largestSample = 4 << 20
     static let largestSampleCount = 1_000_000
