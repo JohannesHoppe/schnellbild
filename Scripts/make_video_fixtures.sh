@@ -3,8 +3,9 @@
 # Tests/SchnellbildTests/Videos, all from UITests/Fixtures/clip.mp4 (2 s,
 # a keyframe every half second, as camcorders and encoders write them), and
 # the UI tests' videos with two audio and two subtitle tracks
-# (UITests/Fixtures/tracks.mp4 and tracks.mkv), and the HDR clips (`hdr` as
-# the only argument draws just those).
+# (UITests/Fixtures/tracks.mp4 and tracks.mkv), the HDR clips (`hdr` as
+# the only argument draws just those), the AC-3 / E-AC-3 sound (`sound`)
+# and Teletext subtitles (`teletext`).
 # Needs ffmpeg (with libx265 for the HDR clips); the clips are committed, so
 # tests don't.
 set -euo pipefail
@@ -73,6 +74,32 @@ draw_partial() {
   rm -rf "$whole"
 }
 if [ "${1:-}" = partial ]; then draw_partial; exit 0; fi
+
+# Sound VLC decodes through FFmpeg (SoundCodecTests; `sound` as the only
+# argument draws just these): 2 s of a 440 Hz tone, stereo at 48 kHz, as
+# AC-3 and as E-AC-3 in Matroska.
+draw_sound() {
+  local codec
+  for codec in ac3 eac3; do
+    "$FFMPEG" -loglevel error -y -f lavfi -i "sine=frequency=440:sample_rate=48000:duration=2" -ac 2 \
+      -c:a "$codec" -b:a 192k -fflags +bitexact -flags:a +bitexact "$OUT/$codec.mkv"
+  done
+}
+if [ "${1:-}" = sound ]; then draw_sound; exit 0; fi
+
+# Teletext subtitles (TeletextTests; `teletext` as the only argument draws
+# just this): 6 s of even grey as H.264 in a transport stream, with
+# Teletext page 888 showing one line from the start
+# (Scripts/make_teletext_fixture.py; ffmpeg doesn't write Teletext).
+draw_teletext() {
+  local video
+  video=$(mktemp -d)
+  "$FFMPEG" -loglevel error -y -f lavfi -i "color=c=0x808080:s=640x360:r=25:d=6" -an -c:v libx264 -pix_fmt yuv420p -g 25 \
+    -mpegts_pmt_start_pid 0x1000 -mpegts_start_pid 0x100 -fflags +bitexact -flags:v +bitexact -f mpegts "$video/video.ts"
+  python3 -I Scripts/make_teletext_fixture.py "$video/video.ts" "$OUT/teletext.ts" "TELETEXT LINE"
+  rm -rf "$video"
+}
+if [ "${1:-}" = teletext ]; then draw_teletext; exit 0; fi
 
 make() { local name=$1; shift; "$FFMPEG" -loglevel error -y -i UITests/Fixtures/clip.mp4 -t 2 -an -g 12 "$@" "$OUT/$name"; }
 make clip.mkv  -c:v libx264 -pix_fmt yuv420p
@@ -182,4 +209,6 @@ asstags > "$SUBS/tags.ass"
   -disposition:s:0 default -disposition:s:1 0 -t 10 \
   -fflags +bitexact -flags:v +bitexact UITests/Fixtures/asstags.mkv
 draw_hdr
+draw_sound
+draw_teletext
 finished=1

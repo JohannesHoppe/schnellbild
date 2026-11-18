@@ -12,21 +12,21 @@ picture and sound are not late for it. Applied after 0003, with patch -p1
 diff --git a/src/input/es_out.c b/src/input/es_out.c
 --- a/src/input/es_out.c
 +++ b/src/input/es_out.c
-@@ -727,7 +727,8 @@
+@@ -728,7 +728,9 @@
       * decoder, busy with a block it was given, finishes it first, so the
       * line it holds reaches the first picture (an idle one with nothing to
       * decode doesn't hold the start) */
 -    if( b_video && var_GetInteger( p_sys->p_input, "sub-track-id" ) >= 0 )
++    /* Changed for Schnellbild on 2026-11-17: Scripts/vlc-patches/0004-es_out-with-a-subtitle-track-chosen-the-subtitle-decoders-go-on-first.patch */
 +    const bool b_spu_first = b_video && var_GetInteger( p_sys->p_input, "sub-track-id" ) >= 0;
 +    if( b_spu_first )
      {
          for( int i = 0; i < p_sys->i_es; i++ )
          {
-@@ -746,15 +747,41 @@
-     /* */
+@@ -748,14 +750,40 @@
      const vlc_tick_t i_wakeup_delay = 10*1000; /* FIXME CLEANUP thread wake up time*/
      const vlc_tick_t i_current_date = p_sys->b_paused ? p_sys->i_pause_date : mdate();
-+
+ 
 +    /* The subtitle decoders go on first, a moment ahead of the others, so
 +     * the line they hold is with the video output before the first picture
 +     * is shown (released together, the first picture won now and then).
@@ -37,11 +37,11 @@ diff --git a/src/input/es_out.c b/src/input/es_out.c
 +        if( p_sys->es[i]->p_dec && p_sys->es[i]->fmt.i_cat == SPU_ES )
 +            b_spu = true;
 +    const vlc_tick_t i_spu_lead = b_spu ? 10*1000 : 0;
- 
++
      input_clock_ChangeSystemOrigin( p_sys->p_pgrm->p_clock, true,
 -                                    i_current_date + i_wakeup_delay - i_buffering_duration );
 +                                    i_current_date + i_wakeup_delay + i_spu_lead - i_buffering_duration );
- 
++
 +    if( b_spu )
 +    {
 +        for( int i = 0; i < p_sys->i_es; i++ )
@@ -56,7 +56,7 @@ diff --git a/src/input/es_out.c b/src/input/es_out.c
 +        }
 +        msleep( i_spu_lead );
 +    }
-+
+ 
      for( int i = 0; i < p_sys->i_es; i++ )
      {
          es_out_id_t *p_es = p_sys->es[i];

@@ -5,6 +5,9 @@ import AppKit
 /// lower case with ⇧ as a modifier of its own; other characters already
 /// carry what ⇧ made of them ("<", "?"), so ⇧ isn't part of them. "=" is
 /// "+" (the same key on US keyboards, where "+" needs ⇧).
+/// The one other form is a key by its place on the keyboard, as the Finder
+/// has ⇧⌘. on every layout (`onKey`): the character the key types without
+/// ⇧, with ⇧ apart (stored as "$@."), matched by `physical(_:)`.
 struct KeyChord: Hashable {
     let key: BrowserModel.KeyInput
     let command: Bool
@@ -13,14 +16,14 @@ struct KeyChord: Hashable {
     let control: Bool
 
     init(_ key: BrowserModel.KeyInput, command: Bool = false, shift: Bool = false,
-         option: Bool = false, control: Bool = false) {
+         option: Bool = false, control: Bool = false, onKey: Bool = false) {
         var key = key
         var shift = shift
         if case .char(let typed) = key {
             let lower = typed.lowercased()
             let character = lower.count == 1 ? Character(lower) : typed
-            key = .char(character == "=" ? "+" : character)
-            if !typed.isLetter { shift = false }
+            key = .char(character == "=" && !onKey ? "+" : character)
+            if !typed.isLetter, !onKey { shift = false }
         }
         self.key = key
         self.command = command
@@ -75,7 +78,8 @@ struct KeyChord: Hashable {
         } else {
             return nil
         }
-        self.init(key, command: command, shift: shift, option: option, control: control)
+        // (⇧ written with a character other than a letter: the key by its place)
+        self.init(key, command: command, shift: shift, option: option, control: control, onKey: shift)
     }
 
     /// A character a key types that a shortcut can use: not a control
@@ -192,6 +196,25 @@ struct KeyChord: Hashable {
         return KeyChord(key, command: flags.contains(.command), shift: flags.contains(.shift),
                         option: flags.contains(.option), control: flags.contains(.control))
     }
+
+    /// A key by its place: ⇧ with a key that types no letter, ⇧ apart
+    /// ("⇧⌘." where `from` reads "⌘>" on a US layout, "⌘:" on a German one).
+    var isOnKey: Bool {
+        guard shift, case .char(let c) = key else { return false }
+        return !c.isLetter
+    }
+
+    /// The same event by the key's place (`isOnKey`): with ⇧ held on a key
+    /// that types no letter, the character it types without ⇧ (on a layout
+    /// without Latin letters, as on the user's Latin layout); nil otherwise.
+    static func physical(_ event: NSEvent) -> KeyChord? {
+        let flags = event.modifierFlags
+        guard flags.contains(.shift), let plain = event.characters(byApplyingModifiers: []) else { return nil }
+        let base = plain.unicodeScalars.allSatisfy(\.isASCII) ? plain : (LatinKeys.character(for: event.keyCode, shift: false) ?? plain)
+        guard base.count == 1, let c = base.first, !c.isLetter, isTypable(c) else { return nil }
+        return KeyChord(.char(c), command: flags.contains(.command), shift: true,
+                        option: flags.contains(.option), control: flags.contains(.control), onKey: true)
+    }
 }
 
 /// Where an action's keys work. The playlist's keys (`list`) work while it
@@ -249,7 +272,7 @@ enum ShortcutAction: String, CaseIterable {
     // Grid and full view
     case back, forward, enclosingFolder, reload, sortName, sortKind, sortModified, sortTaken, sortSize, sortDistance
     case fullScreen, enhance, adjust, openFolder, newWindow, reveal, openDefault, menus, quit
-    case miniKeyboard, bookmark, bookmark1, bookmark2, bookmark3, bookmark4, bookmark5
+    case miniKeyboard, hiddenFiles, bookmark, bookmark1, bookmark2, bookmark3, bookmark4, bookmark5
     case bookmark6, bookmark7, bookmark8, bookmark9, bossKey, help
 
     /// How the action is carried out: through the window's and the pane's
@@ -368,6 +391,8 @@ enum ShortcutAction: String, CaseIterable {
         case .menus:             return Spec(group: .general, scope: Self.gridAndFull, standard: ["f9"], performer: nil)
         case .quit:              return Spec(group: .general, scope: Self.gridAndFull, standard: ["f10"], performer: nil)
         case .miniKeyboard:      return Spec(group: .general, scope: Self.alsoInTour, standard: ["k"], performer: "k")
+        // As in the Finder: ⇧⌘. by its place on the keyboard (`KeyChord.isOnKey`)
+        case .hiddenFiles:       return Spec(group: .general, scope: Self.gridAndFull, standard: ["$@."], performer: nil)
         case .bookmark:          return Spec(group: .general, scope: Self.gridAndFull, standard: ["@d"], performer: nil)
         case .bookmark1, .bookmark2, .bookmark3, .bookmark4, .bookmark5, .bookmark6, .bookmark7, .bookmark8, .bookmark9:
             return Spec(group: .general, scope: Self.gridAndFull, standard: ["^\(bookmarkIndex! + 1)"], performer: nil)
@@ -490,6 +515,7 @@ enum ShortcutAction: String, CaseIterable {
         case .menus:             return String(localized: "Menus in the window")
         case .quit:              return String(localized: "Quit (asks first)")
         case .miniKeyboard:      return String(localized: "Mini Keyboard")
+        case .hiddenFiles:       return String(localized: "Show Hidden Files")
         case .bookmark:          return String(localized: "Bookmark This Folder")
         case .bossKey:           return String(localized: "Boss key")
         case .help:              return String(localized: "Schnellbild Help")
@@ -621,7 +647,9 @@ final class Shortcuts: ObservableObject {
             // The key bindings would hand the playlist's own keys to the
             // playlist: another action's key goes through `perform`
             let takenByList = !action.scope.contains(.list) && listKeys.contains { $0.standardKeys.contains(chord) }
-            return action.standardKeys.contains(chord) && !takenByList ? .standard : .custom(action)
+            // (a key by its place reaches neither the key bindings nor the
+            // menus as such: carried out here)
+            return action.standardKeys.contains(chord) && !takenByList && !chord.isOnKey ? .standard : .custom(action)
         }
         return here.contains(where: { $0.standardKeys.contains(chord) }) ? .blocked : .free
     }
@@ -756,8 +784,13 @@ extension WindowModel {
     /// A key as typed, before the key bindings see it: a key the user gave
     /// an action carries it out; a key of Schnellbild's that now belongs to
     /// no action here does nothing. nil: the key bindings take it as typed
-    /// (Schnellbild's own key of an action, or no action's key).
-    func handleTyped(_ chord: KeyChord, textEditing: Bool, repeating: Bool = false) -> Bool? {
+    /// (Schnellbild's own key of an action, or no action's key). `physical`:
+    /// the same key by its place (`KeyChord.physical`), taken when the key
+    /// as typed is no action's.
+    func handleTyped(_ chord: KeyChord, physical: KeyChord? = nil, textEditing: Bool, repeating: Bool = false) -> Bool? {
+        var chord = chord
+        if let physical, shortcuts.resolve(chord, in: shortcutContext) == .free,
+           shortcuts.resolve(physical, in: shortcutContext) != .free { chord = physical }
         // While typing, letters, arrows, Return … are the text field's
         if textEditing, (!chord.command && !chord.control && !chord.isFunctionKey) || Self.textEditingKeys.contains(chord) {
             return nil
@@ -844,6 +877,9 @@ extension WindowModel {
         case .normalSpeed:
             guard video, !sheet else { return false }
             model.setSpeed(1)
+        case .hiddenFiles:
+            guard !sheet else { return false }
+            showHiddenFiles.toggle()
         case .bookmark:
             guard !sheet, model.slideshow == nil, let folder = model.folderURL else { return false }
             Bookmarks.shared.toggle(folder)

@@ -160,7 +160,8 @@ for change in "$ROOT"/Scripts/vlc-patches/*.patch; do
 done
 
 # Into the build script's list of modules it deletes before linking (the list
-# ends with output_livehttp); the plugin list it links is made from what is left
+# ends with output_livehttp); the plugin list it links is made from what is
+# left. And libzvbi out of its third-party libraries and VLC's configure.
 cd vlckit
 [ -f "$WORK/buildMobileVLCKit.sh.orig" ] || cp buildMobileVLCKit.sh "$WORK/buildMobileVLCKit.sh.orig"
 python3 -I - "$GPL_MODULES $UNNEEDED_MODULES" <<'EOF'
@@ -171,10 +172,23 @@ end = "    output_livehttp\n    \"\n"
 if "    librotate_plugin\n" not in text:
     assert text.count(end) == 1, "the module list in buildMobileVLCKit.sh changed"
     names = "".join(f"    {m}\n" for m in sys.argv[1].split())
-    open(path, "w").write(text.replace(end, "    output_livehttp\n" + names + "    \"\n"))
+    text = text.replace(end, "    output_livehttp\n" + names + "    \"\n")
+# libzvbi is left out of the third-party libraries and VLC's zvbi module
+# with it: its Teletext packet 8/30 and PDC decoders (src/packet-830.*,
+# src/pdc.*) are under the GPL 2. VLC's own Teletext decoder (telx, LGPL)
+# decodes Teletext subtitles in its place.
+for old, new in (("        --enable-zvbi \\\n", "        --disable-zvbi \\\n"),
+                 ('SCARYFLAG="--enable-dvbpsi --enable-avcodec"',
+                  'SCARYFLAG="--enable-dvbpsi --enable-avcodec --disable-zvbi --enable-telx"')):
+    if new not in text:
+        assert text.count(old) == 1, f"buildMobileVLCKit.sh changed: {old!r}"
+        text = text.replace(old, new)
+open(path, "w").write(text)
 EOF
 grep -q librotate_plugin buildMobileVLCKit.sh
 grep -q libhttps_plugin buildMobileVLCKit.sh
+grep -q -e '--disable-zvbi --enable-telx' buildMobileVLCKit.sh
+if grep -q -e '--enable-zvbi' buildMobileVLCKit.sh; then echo "!! buildMobileVLCKit.sh still builds libzvbi" >&2; exit 1; fi
 
 # VLC checks every download with GNU's `sha512sum -c`, the check lines on
 # standard input; macOS's sha512sum doesn't read them from there, its shasum
@@ -217,60 +231,31 @@ env ${OFFLINE_ENV[@]+"${OFFLINE_ENV[@]}"} ./buildMobileVLCKit.sh -vx $NETWORK_FL
 FRAMEWORK="$(pwd)/build/VLCKit.xcframework"
 BINARY="$(find "$FRAMEWORK" -path '*VLCKit.framework/Versions/A/VLCKit' -type f | head -1)"
 [ -f "$BINARY" ] || { echo "!! no VLCKit binary in $FRAMEWORK" >&2; exit 1; }
-python3 -I "$ROOT/Scripts/vlckit_licenses.py" "$BINARY" --no-gpl --local-only
 
 # What is published with it (vlckit-lgpl.yml)
 DIST="$WORK/dist"
 rm -rf "$DIST"
 mkdir -p "$DIST"
 
-# The licence texts of the third-party libraries. VLC's contrib build
-# unpacks each library it builds into a folder of its build folder (the one
-# with config.mak) and marks it built with a stamp ".<name>" there; the
-# licence files at the top of each such folder are collected, FFmpeg's among
-# them. The libraries linked into VLCKit are those in the contrib prefix's lib.
-LICENSES="$DIST/VLCKit-third-party-licenses.txt"
-{
-    echo "Third-party libraries in VLCKit $TAG (libVLC 3.0.24), built by Scripts/build_vlckit_lgpl.sh"
-    echo "from VideoLAN's contrib build with --disable-gpl. Each keeps its own licence; their texts follow."
-    echo
-    echo "Static libraries linked into VLCKit:"
-    for library in "$VLC"/contrib/*-apple-darwin*/lib/*.a; do
-        if [ -f "$library" ]; then echo "  $(basename "$library")"; fi
-    done | LC_ALL=C sort -u
-    echo
-} > "$LICENSES"
-found=0
-for config in "$VLC"/contrib/*/config.mak; do
-    build="$(dirname "$config")"
-    for stamp in "$build"/.[!.]*; do
-        name="$(basename "$stamp")"; name="${name#.}"
-        package="$build/$name"
-        [ -f "$stamp" ] && [ -d "$package" ] || continue
-        found=$((found + 1))
-        files="$(find "$package" -maxdepth 1 -type f \( -iname 'copying*' -o -iname 'licen[cs]e*' -o -iname 'copyright*' \
-            -o -iname 'notice*' -o -iname 'unlicense*' -o -iname 'lgpl*' \) | LC_ALL=C sort)"
-        {
-            echo "================================================================================"
-            echo "$name"
-            echo "================================================================================"
-            if [ -z "$files" ]; then
-                echo "(no licence file at the top of its source; see its source in VLCKit-contrib-sources.tar)"
-                echo "!! $name: no licence file at the top of its source" >&2
-            fi
-            while IFS= read -r file; do
-                [ -n "$file" ] || continue
-                echo "--- ${file#"$package/"}"
-                cat "$file"
-                echo
-            done <<< "$files"
-            echo
-        } >> "$LICENSES"
-    done
+# The third-party libraries linked into it (every static library in the
+# contrib prefix): each one audited (Scripts/vlckit_contrib.py LIBRARIES),
+# no object of it in the binary from a source file under the GPL, and the
+# licence texts of each into VLCKit-third-party-licenses.txt. Then the VLC
+# modules: every one LGPL, no GPL code by its symbols, none of the left-out
+# ones. What was checked stays in $WORK/check (vlckit-lgpl.yml keeps it when
+# the build fails).
+mkdir -p "$WORK/check"
+for library in "$VLC"/contrib/*-apple-darwin*/lib/*.a; do
+    nm --defined-only -g "$library" > "$WORK/check/$(basename "$library").nm" 2>&1 || true
 done
-[ "$found" -gt 0 ] || { echo "!! no third-party library found in $VLC/contrib" >&2; exit 1; }
-grep -q '^ffmpeg$' "$LICENSES" || { echo "!! FFmpeg's licence is missing" >&2; exit 1; }
-echo "==> Licences of $found third-party libraries: $LICENSES"
+nm -arch arm64 --defined-only "$BINARY" > "$WORK/check/VLCKit.nm"
+(cd "$VLC/contrib" && find . -type f \( -name '*.[cSsm]' -o -name '*.cc' -o -name '*.cpp' -o -name '*.cxx' -o -name '*.asm' \) \
+    -not -path './tarballs/*' | LC_ALL=C sort) > "$WORK/check/contrib-sources.txt"
+contrib=0
+python3 -I "$ROOT/Scripts/vlckit_contrib.py" "$VLC" "$BINARY" "$DIST/VLCKit-third-party-licenses.txt" \
+    --report "$WORK/check/contrib-report.txt" || contrib=$?
+python3 -I "$ROOT/Scripts/vlckit_licenses.py" "$BINARY" --no-gpl --local-only
+[ "$contrib" -eq 0 ] || exit "$contrib"
 
 # The complete source of what was built: VLCKit at the tag with this
 # script's change to its build script (the diff), VLC with VLCKit's patches
@@ -278,7 +263,8 @@ echo "==> Licences of $found third-party libraries: $LICENSES"
 # third-party libraries' downloads (each checked by VLC's build against its
 # SHA-512 in contrib/src/<name>/SHA512SUMS), and the build tools' downloads
 # (extras/tools, every tool it knows, also those this runner didn't build).
-# Trees unpacked from SOURCE_RELEASE are published as they came.
+# Trees and the tools' downloads from SOURCE_RELEASE are published as they
+# came; VideoLAN's servers only for what SOURCE_RELEASE doesn't hold.
 if [ -d "$WORK/vlckit/.git" ]; then
     git -C "$WORK/vlckit" archive --format=tar.gz --prefix="VLCKit-$TAG/" HEAD > "$DIST/$VLCKIT_ARCHIVE"
 else
@@ -293,7 +279,11 @@ else
 fi
 cat "$ROOT"/Scripts/vlc-patches/*.patch > "$DIST/VLC-schnellbild-changes.patch"
 tar -cf "$DIST/VLCKit-contrib-sources.tar" -C "$VLC/contrib" tarballs
-make -C "$VLC/extras/tools" fetch-all
-(cd "$VLC/extras/tools" && tar -cf "$DIST/VLC-tools-sources.tar" $(ls | grep -E '\.(tar\.(gz|bz2|xz)|tgz|zip)$'))
+if [ -n "$TOOLS_ARCHIVED" ]; then
+    cp "$WORK/src/VLC-tools-sources.tar" "$DIST/"
+else
+    make -C "$VLC/extras/tools" fetch-all
+    (cd "$VLC/extras/tools" && tar -cf "$DIST/VLC-tools-sources.tar" $(ls | grep -E '\.(tar\.(gz|bz2|xz)|tgz|zip)$'))
+fi
 echo "==> $FRAMEWORK"
 ls -l "$DIST"

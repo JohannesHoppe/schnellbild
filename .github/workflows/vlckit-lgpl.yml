@@ -16,6 +16,11 @@ on:
         type: boolean
         required: false
         default: false
+      publish:
+        description: "Publish it as a pre-release once built and tested (off: build and test only)"
+        type: boolean
+        required: false
+        default: true
 
 permissions:
   contents: read
@@ -31,10 +36,25 @@ jobs:
       - name: Select Xcode
         run: Scripts/select_xcode.sh
 
+      # The checks that keep code under the GPL out of VLCKit
+      # (vlckit_licenses.py, vlckit_contrib.py)
+      - name: Tests of the VLCKit licence checks
+        run: python3 -I -m unittest discover -s Scripts/tests -v
+
       - name: Build
         env:
           VLCKIT_OFFLINE: ${{ inputs.offline && '1' || '' }}
         run: ./Scripts/build_vlckit_lgpl.sh "$RUNNER_TEMP/vlckit-lgpl"
+
+      # What the licence checks read (each static library's symbols, the
+      # binary's, the contrib build's source files) and found
+      - name: Keep what was checked
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: vlckit-lgpl-check
+          path: ${{ runner.temp }}/vlckit-lgpl/check/
+          if-no-files-found: ignore
 
       - name: Pack the framework
         run: |
@@ -87,6 +107,7 @@ jobs:
   publish:
     name: Publish it (pre-release)
     needs: [build, test]
+    if: inputs.publish
     runs-on: macos-15
     permissions:
       contents: write
@@ -111,7 +132,7 @@ jobs:
           cat > notes.md <<NOTES
           VLCKit 3.7.5 (VideoLAN, tag 3.7.5, commit a213fd11; VLC 3.0.24, commit 6de05adc) for macOS on Apple silicon, built without VLC's modules under the GPL and without the modules a viewer of local files never needs (network access, stream output, service discovery, playlists and adaptive streaming, stream filters that start programs or fetch, keystores; the list is in the build script), for Schnellbild. Not a Schnellbild release.
 
-          Built by [Scripts/build_vlckit_lgpl.sh](https://github.com/$GITHUB_REPOSITORY/blob/$GITHUB_SHA/Scripts/build_vlckit_lgpl.sh) at commit $GITHUB_SHA, in [run $GITHUB_RUN_ID](https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID). Every VLC module is under the GNU LGPL 2.1 or later; the third-party libraries compiled into it (FFmpeg and others) keep their own licences, whose texts are in VLCKit-third-party-licenses.txt. The complete source it was built from is attached: VLCKit at the tag (with the build script change as a patch), VLC with VLCKit's patches applied, Schnellbild's own changes to VLC applied on top of it (VLC-schnellbild-changes.patch), the third-party libraries' downloads (VLCKit-contrib-sources.tar) and the build tools' downloads (VLC-tools-sources.tar). See THIRD-PARTY-NOTICES.md.
+          Built by [Scripts/build_vlckit_lgpl.sh](https://github.com/$GITHUB_REPOSITORY/blob/$GITHUB_SHA/Scripts/build_vlckit_lgpl.sh) at commit $GITHUB_SHA, in [run $GITHUB_RUN_ID](https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID). Every VLC module is under the GNU LGPL 2.1 or later; the third-party libraries compiled into it (FFmpeg and others) keep their own licences, whose texts are in VLCKit-third-party-licenses.txt, and none of their code in it is under the GPL (libzvbi and FFmpeg's AArch64 files under the GPL are left out; Scripts/vlckit_contrib.py checks every object linked). The complete source it was built from is attached: VLCKit at the tag (with the build script change as a patch), VLC with VLCKit's patches applied, Schnellbild's own changes to VLC applied on top of it (VLC-schnellbild-changes.patch), the third-party libraries' downloads (VLCKit-contrib-sources.tar) and the build tools' downloads (VLC-tools-sources.tar). See THIRD-PARTY-NOTICES.md.
 
           SHA-256 of VLCKit-lgpl.xcframework.zip (fetch_vlckit.sh SHA256): \`$SHA\`
           Tree SHA-256 of the unpacked VLCKit.xcframework (fetch_vlckit.sh TREE_SHA256): \`$TREE\`
