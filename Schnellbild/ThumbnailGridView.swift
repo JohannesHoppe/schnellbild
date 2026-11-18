@@ -519,6 +519,7 @@ struct OtherFileInteractions: ViewModifier {
         let changeable = !ArchivePath.isInside(file.url)
         content
             .onDrag {
+                guard TileDrag.byTheUser else { return NSItemProvider() }
                 let provider = NSItemProvider(object: file.url as NSURL)
                 if changeable {
                     let paths = [file.url.path]
@@ -558,6 +559,15 @@ struct TileDrag: ViewModifier {
     /// Marks drags that start on a tile, so the window's drop zones
     /// (Browse / Slideshow) stay out of the way; carries every item dragged.
     static let type = UTType(exportedAs: "art.haushoppe.schnellbild.tile")
+
+    /// Whether a drag starting now is the user's: the left mouse button is
+    /// held. On macOS 26 SwiftUI now and then starts a second drag of the
+    /// tile just dropped, a moment after the drop, with no button held (CI
+    /// test log: "drag [b.jpg] buttons=0" before the mouse came up); its own
+    /// drop would move the file again once an Undo has brought it back, or
+    /// ask whether to keep both copies. Such a drag carries nothing (an
+    /// empty item provider): no drop target takes it.
+    static var byTheUser: Bool { NSEvent.pressedMouseButtons & 1 != 0 }
 
     /// The files of a tile drag (every marked item it carries). Only drags
     /// from the app's own tiles are taken this way: a drop from the Finder
@@ -695,6 +705,7 @@ private struct TileDragSource: ViewModifier {
             content.onDrag {
                 let paths = model.isMarked(entry) ? model.actionEntries.map(\.url.path) : [entry.url.path]
                 BrowserModel.testLog("\(Date().timeIntervalSince1970) drag \(paths.map { ($0 as NSString).lastPathComponent }) buttons=\(NSEvent.pressedMouseButtons)")
+                guard TileDrag.byTheUser else { return NSItemProvider() }
                 let provider = NSItemProvider(object: entry.url as NSURL)
                 provider.registerDataRepresentation(forTypeIdentifier: TileDrag.type.identifier, visibility: .ownProcess) { done in
                     done(try? PropertyListEncoder().encode(paths), nil)
