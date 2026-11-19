@@ -1477,19 +1477,22 @@ enum FinderDrop {
     }
 
     /// The files dropped, read from the drag pasteboard: while the drag is
-    /// over the window (`peek`, once per drag) and again as it is dropped.
-    /// On CI (macOS 15) a Finder drop now and then had the file URL's type on
-    /// its pasteboard but no data for it by the time it was dropped (neither
+    /// over the window (`peek`) and again as it is dropped. On CI (macOS 15)
+    /// a Finder drop now and then found the pasteboard written anew during
+    /// the drag (its change count two higher than while the files were read
+    /// on the way), with the file URL's type but no data for it (neither
     /// from the pasteboard nor from its item provider, NSItemProviderErrorDomain
-    /// -1000, nor a second later), and the drop did nothing. The item
-    /// providers are the way only when the pasteboard never had a file URL.
+    /// -1000, nor a second later): the drop did nothing. Then the files read
+    /// on the way, during the last `seenFor`, are the ones dropped. The item
+    /// providers are the way only when neither has a file URL.
     static func fileURLs(_ info: DropInfo, then open: @escaping @MainActor ([URL]) -> Void) -> Bool {
         let pasteboard = NSPasteboard(name: .drag)
         var urls = read(pasteboard)
+        let onTheWay = Date().timeIntervalSince(seen.at) < seenFor ? seen.urls : []
         BrowserModel.testLog("\(Date().timeIntervalSince1970) drop: \(urls.map(\.lastPathComponent)) from the drag pasteboard (change \(pasteboard.changeCount)), "
-                             + "seen on the way \(seen.change == pasteboard.changeCount ? seen.urls.map(\.lastPathComponent) : [])")
-        if urls.isEmpty, seen.change == pasteboard.changeCount { urls = seen.urls }
-        seen = (-1, [])
+                             + "seen on the way \(onTheWay.map(\.lastPathComponent)) (change \(seen.change))")
+        if urls.isEmpty { urls = onTheWay }
+        seen = (-1, [], .distantPast)
         if !urls.isEmpty {
             DispatchQueue.main.async { open(urls) }
             return true
@@ -1503,8 +1506,12 @@ enum FinderDrop {
         return true
     }
 
-    /// The files of the drag going on, by its pasteboard's change count.
-    @MainActor private static var seen: (change: Int, urls: [URL]) = (-1, [])
+    /// The files of the drag going on, by its pasteboard's change count,
+    /// and when they were read.
+    @MainActor private static var seen: (change: Int, urls: [URL], at: Date) = (-1, [], .distantPast)
+    /// How long the files read on the way stand for a drop without its own:
+    /// one drag over the window, not the one before it.
+    static let seenFor: TimeInterval = 30
 
     /// Reads the files of a drag from outside while it is over the window,
     /// once per drag (until it has them).
@@ -1513,7 +1520,7 @@ enum FinderDrop {
         guard pasteboard.changeCount != seen.change else { return }
         let urls = read(pasteboard)
         guard !urls.isEmpty else { return }
-        seen = (pasteboard.changeCount, urls)
+        seen = (pasteboard.changeCount, urls, Date())
         BrowserModel.testLog("\(Date().timeIntervalSince1970) drag over the window: \(urls.map(\.lastPathComponent)) (change \(pasteboard.changeCount))")
     }
 

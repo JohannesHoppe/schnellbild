@@ -220,7 +220,7 @@ class SchnellbildUITestCase: XCTestCase {
         while !seen(), Date() < deadline { RunLoop.current.run(until: Date().addingTimeInterval(0.2)) }
         RunLoop.current.run(until: Date().addingTimeInterval(0.5))
         print("finder drop: the app's drop lines: "
-              + ((try? String(contentsOf: log, encoding: .utf8)) ?? "").split(separator: "\n").filter { $0.contains(" drop") }.joined(separator: " | "))
+              + ((try? String(contentsOf: log, encoding: .utf8)) ?? "").split(separator: "\n").filter { $0.contains(" drop") || $0.contains("drag over") }.joined(separator: " | "))
         if !seen() {
             print("finder drop: nothing reached the app (\(frames))\n\(finder.debugDescription)")
             let pasteboard = NSPasteboard.general
