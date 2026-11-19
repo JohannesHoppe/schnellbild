@@ -3238,11 +3238,6 @@ final class BrowserModel: ObservableObject {
     /// that folder behind it.
     func openDropped(_ urls: [URL], slideshow: Bool = false) {
         guard let first = urls.first else { return }
-        // Opened to the app by the drop (App Sandbox): held while it is
-        // looked at; a folder or archive it opens is kept (`openDropped`
-        // below), the other items dropped are left alone
-        FolderAccess.shared.hold(first)
-        openExplicitly(urls)
         // What it is: looked up off the main thread (dropped from a share
         // that answers slowly)
         let look: @Sendable () -> (exists: Bool, isFolder: Bool, isPackage: Bool) = {
@@ -3256,16 +3251,22 @@ final class BrowserModel: ObservableObject {
             }
             return (exists, isDir.boolValue, isDir.boolValue && BrowserModel.isPackage(first))
         }
-        guard fileActions.runsOffMain else { openDropped(first, look(), slideshow: slideshow); return }
+        let offMain = fileActions.runsOffMain
         Task {
+            // Opened to the app by the drop (App Sandbox): held while it is
+            // looked at, before anything reads it; a folder or archive it
+            // opens is kept (`openDropped` below), the other items dropped
+            // are left alone
+            await FolderAccess.shared.hold(first)
+            openExplicitly(urls)
             // The grants kept are opened first (at launch: `--open=`, a drop
             // onto the Dock icon), or a file in one couldn't be read yet
             await FolderAccess.shared.restored()
-            openDropped(first, await Blocking.run(.userInitiated, look), slideshow: slideshow)
+            await openDropped(first, offMain ? await Blocking.run(.userInitiated, look) : look(), slideshow: slideshow)
         }
     }
 
-    private func openDropped(_ first: URL, _ found: (exists: Bool, isFolder: Bool, isPackage: Bool), slideshow: Bool) {
+    private func openDropped(_ first: URL, _ found: (exists: Bool, isFolder: Bool, isPackage: Bool), slideshow: Bool) async {
         guard found.exists else { return }
         // An archive opens like a folder; a package (a Photos library, an
         // app) is one item, as in the Finder: its folder opens, with it selected
@@ -3274,7 +3275,7 @@ final class BrowserModel: ObservableObject {
         let folder = opensAsFolder ? first : first.deletingLastPathComponent()
         let file = opensAsFolder ? nil : first
         // Kept for a restart: what opens as a folder (a launch reopens folders)
-        if opensAsFolder { FolderAccess.shared.grant(first) }
+        if opensAsFolder { await FolderAccess.shared.grant(first) }
         if slideshow {
             open(folder: folder, selecting: file)
             startSlideshow(over: folder, startingAt: isPackage ? nil : file)

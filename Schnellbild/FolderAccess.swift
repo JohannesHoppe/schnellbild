@@ -10,8 +10,8 @@ import Security
 /// folder above, a bookmark to elsewhere) asks: the open panel at that
 /// folder (`ask`).
 ///
-/// Only what the app opens is kept: a folder or archive chosen or dropped
-/// (`grant`). A file dropped alone from a folder outside every grant is
+/// Only what the app opens is kept: a folder chosen (`choose`) or a folder
+/// or archive dropped (`grant`). A file dropped alone from a folder outside every grant is
 /// held for the session only (`hold`, the newest `heldFileLimit`): a
 /// launch reopens folders, never a lone file. Access is started once per
 /// grant and stopped when a grant goes (one holding it replaces it, the
@@ -62,6 +62,9 @@ final class FolderAccess {
         var stop: @Sendable (URL) -> Void
         /// The mount points of the volumes there now (canonical paths).
         var mountedVolumes: @Sendable () -> Set<String>
+        /// Whether the process may open a URL now (`canOpen`); waits on the
+        /// disk, so asked off the main thread.
+        var canOpen: @Sendable (URL) -> Bool = { FolderAccess.canOpen($0) }
 
         static let live = System(
             bookmark: { try? $0.bookmarkData(options: .withSecurityScope, includingResourceValuesForKeys: nil, relativeTo: nil) },
@@ -251,15 +254,38 @@ final class FolderAccess {
         path.contains("/.Trash/") || path.contains("/.Trashes/")
     }
 
-    /// A folder or archive the user chose or dropped: readable from now on
-    /// and after a restart. Called while the sandbox has opened it to the
-    /// app (right after the panel or the drop).
-    func grant(_ url: URL) {
+    /// A folder or archive the user dropped: readable from now on and after
+    /// a restart. Called while the sandbox has opened it to the app (right
+    /// after the drop). Access the app can't start itself counts when the
+    /// process may open the item (`canOpen`), asked off the main thread: a
+    /// share that stopped answering holds that until its timeout. Returns
+    /// once it is granted or refused: read it after.
+    func grant(_ url: URL) async {
         guard sandboxed else { return }
         let path = BrowserModel.canonicalPath(url)
         guard !isGranted(path) else { return }
         let started = system.start(url)
-        guard started || Self.canOpen(url), let bookmark = system.bookmark(url) else {
+        if !started {
+            let generation = generation
+            // Granted or forgotten meanwhile: nothing to take
+            guard await opens(url), generation == self.generation, !isGranted(path) else { return }
+        }
+        take(url, path: path, started: started)
+    }
+
+    /// A folder chosen in the open panel: readable from now on and after a
+    /// restart. The panel opens what is chosen to the app for as long as it
+    /// runs, so no answer is waited for.
+    private func grantChosen(_ url: URL) {
+        guard sandboxed else { return }
+        let path = BrowserModel.canonicalPath(url)
+        guard !isGranted(path) else { return }
+        take(url, path: path, started: system.start(url))
+    }
+
+    /// The grant of an item open to the app, kept with its bookmark.
+    private func take(_ url: URL, path: String, started: Bool) {
+        guard let bookmark = system.bookmark(url) else {
             if started { system.stop(url) }
             return
         }
@@ -270,14 +296,26 @@ final class FolderAccess {
 
     /// A file the sandbox opened alone (dropped from a folder outside every
     /// grant): its access is held while the app runs, not kept for a
-    /// restart. The oldest held file beyond `heldFileLimit` is let go.
-    func hold(_ file: URL) {
+    /// restart. The oldest held file beyond `heldFileLimit` is let go. The
+    /// access is started at once; one the app can't start itself counts
+    /// when the process may open the file (`canOpen`, asked off the main
+    /// thread). Returns once it is held or refused: read it after.
+    func hold(_ file: URL) async {
         guard sandboxed, !covers(file) else { return }
-        // Only what the sandbox opened (a path named on the command line it didn't)
         let started = system.start(file)
-        guard started || Self.canOpen(file) else { return }
+        if !started {
+            // Only what the sandbox opened (a path named on the command line it didn't)
+            let generation = generation
+            guard await opens(file), generation == self.generation, !covers(file) else { return }
+        }
         held.append(Grant(url: file, path: BrowserModel.canonicalPath(file), bookmark: nil, started: started))
         while held.count > Self.heldFileLimit { release(held.removeFirst()) }
+    }
+
+    /// Whether the process may open `url` now, asked off the main thread.
+    private func opens(_ url: URL) async -> Bool {
+        let canOpen = system.canOpen
+        return await Blocking.run(.userInitiated) { canOpen(url) }
     }
 
     /// A grant taken: grants and held files inside it aren't needed beside it.
@@ -363,7 +401,7 @@ final class FolderAccess {
         panel.prompt = prompt
         panel.message = message
         guard panel.runModal() == .OK, let url = panel.url else { return nil }
-        grant(url)
+        grantChosen(url)
         return url
     }
 
