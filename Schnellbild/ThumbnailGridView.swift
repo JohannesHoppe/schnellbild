@@ -44,7 +44,7 @@ struct ThumbnailGridView: View {
                 // For the UI tests only (VoiceOver would read it): the columns the keys
                 // step by, and as laid out
                 .accessibilityIdentifier("grid")
-                .accessibilityValue(VideoDetailView.uiTesting ? "\(model.columnCount) columns, \(count) laid out, selection \(model.selection.map(String.init) ?? "none")" : "")
+                .accessibilityValue(test: "\(model.columnCount) columns, \(count) laid out, selection \(model.selection.map(String.init) ?? "none")")
                 // Also when the grid first appears (a folder loaded, Back from a
                 // subfolder): the selection may be far down, so show it at once.
                 .onChange(of: model.selection, initial: true) { oldValue, newValue in
@@ -83,7 +83,7 @@ struct ThumbnailGridView: View {
                 .frame(width: side)
                 .foregroundStyle(cursor || marked ? .primary : .secondary)
                 .opacity(model.isEmptyFolder(entry) ? (contrast == .increased ? 0.8 : 0.5) : 1)
-                .accessibilityHidden(!VideoDetailView.uiTesting)
+                .accessibilityHidden(!TestSwitches.on)
             if let location {
                 // Search results from subfolders: where they live.
                 Text(location)
@@ -92,7 +92,7 @@ struct ThumbnailGridView: View {
                     .truncationMode(.head)
                     .frame(width: side)
                     .foregroundStyle(.tertiary)
-                    .accessibilityHidden(!VideoDetailView.uiTesting)
+                    .accessibilityHidden(!TestSwitches.on)
             }
         }
         .contentShape(Rectangle())
@@ -237,10 +237,9 @@ struct FolderTile: View {
         .accessibilityElement(children: .ignore)
         // The label ("name, kind") comes from the grid's cell; the UI tests
         // read the tile's state here
-        .accessibilityValue(VideoDetailView.uiTesting
-            ? "\(TileChrome.selectionLabel(isSelected || isMarked)), \(folder == nil ? "parent folder" : isEmpty ? "empty \(kindLabel)" : kindLabel), \(previewImages.count) previews"
-                + (unfinished != nil ? ", unfinished" : "")
-            : TileChrome.spokenState(marked: isMarked))
+        .accessibilityValue(test: "\(TileChrome.selectionLabel(isSelected || isMarked)), \(folder == nil ? "parent folder" : isEmpty ? "empty \(kindLabel)" : kindLabel), \(previewImages.count) previews"
+                                + (unfinished != nil ? ", unfinished" : ""),
+                            spoken: TileChrome.spokenState(marked: isMarked))
         // Again after a change made inside the folder (trash, rename): what
         // it previews may have gone.
         .task(id: FolderKey(folder: folder, changes: model.folderChanges)) { await loadPreviews() }

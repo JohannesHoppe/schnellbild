@@ -465,8 +465,7 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
     /// video whose brightness rises with time tells where it is), and the
     /// first ones of each media are looked at for text in their lower part
     /// (subtitles VLC blended in), written to the test log.
-    private static let probing = ProcessInfo.processInfo.arguments.contains("--ui-testing")
-        && ProcessInfo.processInfo.arguments.contains { $0.hasPrefix("--test-log=") }
+    private static let probing = TestSwitches.testLog != nil
     private static let probedFirst = 5
     private var lastProbePicture: PictureProbe?
     /// The media handed over so far (`use`).

@@ -312,12 +312,11 @@ struct ThumbnailView: View {
             .accessibilityElement(children: .ignore)
             // The label ("name, kind") comes from the grid's cell; the UI
             // tests read the tile's state here
-            .accessibilityValue(VideoDetailView.uiTesting
-                ? "\(TileChrome.selectionLabel(isSelected || isMarked)), \(isVideo ? "video" : "image")"
-                    + (unfinished != nil ? ", unfinished" : "")
-                    + (image.map { $0.accessibilityDescription == ThumbnailCache.fileIcon ? ", file icon" : ", preview" }
-                       ?? (failed ? ", no preview" : ""))
-                : TileChrome.spokenState(marked: isMarked, failed: failed))
+            .accessibilityValue(test: "\(TileChrome.selectionLabel(isSelected || isMarked)), \(isVideo ? "video" : "image")"
+                                    + (unfinished != nil ? ", unfinished" : "")
+                                    + (image.map { $0.accessibilityDescription == ThumbnailCache.fileIcon ? ", file icon" : ", preview" }
+                                       ?? (failed ? ", no preview" : "")),
+                                spoken: TileChrome.spokenState(marked: isMarked, failed: failed))
             .task(id: TileKey(url: url, side: side, modified: modified)) { await load() }
     }
 

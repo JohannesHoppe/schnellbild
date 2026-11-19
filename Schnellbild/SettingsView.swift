@@ -163,10 +163,7 @@ enum AppAppearance: String, CaseIterable {
     static var chosen: AppAppearance { testing ?? stored(in: defaults) }
 
     /// UI tests: light or dark whatever the runner's (`--appearance=dark`)
-    static let testing: AppAppearance? = VideoDetailView.uiTesting
-        ? ProcessInfo.processInfo.arguments.first { $0.hasPrefix("--appearance=") }
-            .flatMap { AppAppearance(rawValue: String($0.dropFirst("--appearance=".count))) }
-        : nil
+    static let testing = TestSwitches.value("--appearance=").flatMap(AppAppearance.init(rawValue:))
 
     /// The appearance AppKit is given (nil: the system's).
     var appearanceName: NSAppearance.Name? {

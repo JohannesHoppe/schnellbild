@@ -95,7 +95,7 @@ struct VideoChrome: View {
     /// How long the bar stays after the mouse stops.
     static let idle: Duration = .seconds(3)
     /// UI tests and the README screenshots (`--hold-video-bar`): once shown, it stays.
-    static let holds = VideoDetailView.uiTesting && ProcessInfo.processInfo.arguments.contains("--hold-video-bar")
+    static let holds = TestSwitches.has("--hold-video-bar")
 
     var body: some View {
         GeometryReader { geo in

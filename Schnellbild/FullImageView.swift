@@ -81,7 +81,7 @@ struct FullImageView: View {
             .accessibilityIdentifier("fullImage")
             // The UI tests read the view's state, in English, as the label:
             // XCUITest gets no value from a group like this one
-            .accessibilityLabel(VideoDetailView.uiTesting ? accessibilityState : spokenLabel)
+            .accessibilityLabel(test: accessibilityState, spoken: spokenLabel)
             .task(id: shown) {
                 // Never the previous file's picture: the cached tile, or nothing
                 // yet. Another page of the same PDF: the page shown stays until

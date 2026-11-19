@@ -632,18 +632,15 @@ final class AtlasModel: ObservableObject {
 
     /// The screenshots' camera: `--globe-camera=<latitude>,<longitude>,<zoom>,<pitch>,<heading>` (UI tests only).
     static let testCamera: MapCamera? = {
-        guard VideoDetailView.uiTesting,
-              let argument = ProcessInfo.processInfo.arguments.first(where: { $0.hasPrefix("--globe-camera=") }) else { return nil }
-        let v = argument.dropFirst("--globe-camera=".count).split(separator: ",").compactMap { Double($0) }
+        guard let argument = TestSwitches.value("--globe-camera=") else { return nil }
+        let v = argument.split(separator: ",").compactMap { Double($0) }
         guard v.count == 5 else { return nil }
         return MapCamera(center: Coordinate(latitude: v[0], longitude: v[1]), zoom: v[2], pitch: v[3], heading: v[4])
     }()
 
     /// The screenshots' moment for the Sun: `--globe-date=<ISO 8601>` (UI tests only).
     static let testSunDate: Date? = {
-        guard VideoDetailView.uiTesting,
-              let argument = ProcessInfo.processInfo.arguments.first(where: { $0.hasPrefix("--globe-date=") }) else { return nil }
-        return ISO8601DateFormatter().date(from: String(argument.dropFirst("--globe-date=".count)))
+        TestSwitches.value("--globe-date=").flatMap { ISO8601DateFormatter().date(from: $0) }
     }()
 
     /// Moves the map so the place is in view (at once when it already is).

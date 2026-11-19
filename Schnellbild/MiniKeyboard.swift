@@ -267,7 +267,7 @@ private struct MiniKeyButton: View {
         }
         .buttonStyle(.plain)
         .accessibilityIdentifier("key.\(key.id)")
-        .accessibilityValue(VideoDetailView.uiTesting && presses > 0 ? "pressed \(presses)" : "")
+        .accessibilityValue(test: presses > 0 ? "pressed \(presses)" : "")
         .onChange(of: model.lastKeyPress) { _, press in
             // Just now: a press stored in the other pane (now active) is old
             guard let press, Date().timeIntervalSince(press.at) < 0.5, matches(press) else { return }

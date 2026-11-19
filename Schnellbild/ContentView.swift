@@ -267,7 +267,7 @@ private struct WindowView: View {
         Self.monitorsInstalled = true
         ModifierClicks.start()
         // For the UI tests: when the mouse went down and up (a drag's end), next to the keys
-        if VideoDetailView.uiTesting, ProcessInfo.processInfo.arguments.contains(where: { $0.hasPrefix("--test-log=") }) {
+        if TestSwitches.testLog != nil {
             _ = NSEvent.addLocalMonitorForEvents(matching: [.leftMouseDown, .leftMouseUp]) { event in
                 BrowserModel.testLog("\(Date().timeIntervalSince1970) mouse \(event.type == .leftMouseDown ? "down" : "up") "
                                      + "clicks=\(event.clickCount) window=\(event.window.map { String(describing: type(of: $0)) } ?? "nil")")
@@ -1143,9 +1143,8 @@ struct VideoProgressBar: View {
                 .accessibilityIdentifier("videoProgress")
                 // The UI tests read the number as "42 %" in every language, as the
                 // label: XCUITest gets no value from a group like this one
-                .accessibilityLabel(VideoDetailView.uiTesting ? "\(Int((progress * 100).rounded())) %" : String(localized: "Played"))
-                .accessibilityValue(VideoDetailView.uiTesting ? ""
-                                    : min(max(progress, 0), 1).formatted(.percent.precision(.fractionLength(0))))
+                .accessibilityLabel(test: "\(Int((progress * 100).rounded())) %", spoken: String(localized: "Played"))
+                .accessibilityValue(test: "", spoken: min(max(progress, 0), 1).formatted(.percent.precision(.fractionLength(0))))
                 // The time left, once the length is known
                 if let length = model.activePlayer?.lengthSeconds, model.activePlayer?.progress != nil {
                     let left = "−" + Self.clock(length * (1 - min(max(progress, 0), 1)))
@@ -1155,7 +1154,7 @@ struct VideoProgressBar: View {
                         .accessibilityIdentifier("videoTimeLeft")
                         // UI tests: where the player stands, with the app's clock at that
                         // moment, so a test measures the speed without its own delays
-                        .accessibilityLabel(VideoDetailView.uiTesting ? Self.playerClock(model.activePlayer?.playedSeconds) : left)
+                        .accessibilityLabel(test: Self.playerClock(model.activePlayer?.playedSeconds), spoken: left)
                 }
             }
         }
@@ -1226,8 +1225,7 @@ struct ShortcutLabel: View {
 struct VolumeDisplay: View {
     /// How long it stays; UI tests (`--hold-volume-display`, the README
     /// screenshots) keep it long enough to photograph.
-    static let shownFor: Duration = VideoDetailView.uiTesting
-        && ProcessInfo.processInfo.arguments.contains("--hold-volume-display") ? .seconds(15) : .seconds(1.2)
+    static let shownFor: Duration = TestSwitches.has("--hold-volume-display") ? .seconds(15) : .seconds(1.2)
     @EnvironmentObject var model: BrowserModel
     @State private var shown = false
     @State private var hide: Task<Void, Never>?
@@ -1258,9 +1256,8 @@ struct VolumeDisplay: View {
                 .accessibilityElement(children: .ignore)
                 .accessibilityIdentifier("volumeDisplay")
                 // The UI tests read "volume 80 %" in every language, as the label
-                .accessibilityLabel(VideoDetailView.uiTesting ? "volume \(Int((model.volume * 100).rounded())) %" : String(localized: "Volume"))
-                .accessibilityValue(VideoDetailView.uiTesting ? ""
-                                    : model.volume.formatted(.percent.precision(.fractionLength(0))))
+                .accessibilityLabel(test: "volume \(Int((model.volume * 100).rounded())) %", spoken: String(localized: "Volume"))
+                .accessibilityValue(test: "", spoken: model.volume.formatted(.percent.precision(.fractionLength(0))))
             }
         }
         .animation(.easeOut(duration: 0.15), value: shown)
@@ -1396,9 +1393,9 @@ private struct SearchModePicker: View {
               : model.searchMode == .matchingCase ? "Match case" : "Regular expression")
         .accessibilityLabel("Search mode")
         // The UI tests read the mode's name
-        .accessibilityValue(VideoDetailView.uiTesting ? model.searchMode.rawValue
-                            : model.searchMode == .ignoringCase ? String(localized: "Ignore case")
-                            : model.searchMode == .matchingCase ? String(localized: "Match case") : String(localized: "Regular expression"))
+        .accessibilityValue(test: model.searchMode.rawValue,
+                            spoken: model.searchMode == .ignoringCase ? String(localized: "Ignore case")
+                                : model.searchMode == .matchingCase ? String(localized: "Match case") : String(localized: "Regular expression"))
         .accessibilityIdentifier("searchMode")
     }
 }

@@ -417,7 +417,7 @@ struct WindowAttach: NSViewRepresentable {
             model.nsWindow = window
             // The UI tests tell windows apart by their model's number: the
             // order XCUITest lists windows in isn't kept
-            if VideoDetailView.uiTesting { window.setAccessibilityIdentifier("window.\(model.number)") }
+            if TestSwitches.on { window.setAccessibilityIdentifier("window.\(model.number)") }
             if let closing { NotificationCenter.default.removeObserver(closing) }
             closing = NotificationCenter.default.addObserver(forName: NSWindow.willCloseNotification, object: window, queue: .main) { [model] _ in
                 MainActor.assumeIsolated { model.windowClosed() }

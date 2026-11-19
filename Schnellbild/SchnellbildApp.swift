@@ -23,7 +23,7 @@ struct SchnellbildApp: App {
         VLCSafety.forgetInjectedOptions()
         _ = VLCPlaybackControl.testLog
         // UI tests: the map and the globe as with Reduce motion on (`--reduce-motion`) or off
-        if VideoDetailView.uiTesting { MapMotion.reduceOverride = ProcessInfo.processInfo.arguments.contains("--reduce-motion") }
+        if TestSwitches.on { MapMotion.reduceOverride = TestSwitches.has("--reduce-motion") }
         // Media Extensions the user has turned on in System Settings (format
         // readers and video decoders, Apple's own for ProRes RAW too, or
         // another app's for MKV, AVI …) open those videos in AVKit, and
@@ -43,7 +43,7 @@ struct SchnellbildApp: App {
         FolderAccess.shared.restore()
         // Archive passwords: the login keychain; UI tests keep theirs in
         // their own preferences (`--reset-state` clears them)
-        ArchiveStore.shared.passwords = ProcessInfo.processInfo.arguments.contains("--ui-testing")
+        ArchiveStore.shared.passwords = TestSwitches.on
             ? .defaults(defaults) : .keychain()
         // Each pane watches the folder it shows for changes outside the app;
         // volumes coming and going and the app turning active reach them too

@@ -46,14 +46,14 @@ struct VideoDetailView: View {
     /// VLC reports).
     private var accessibilityText: String {
         var text = "zoom \(Int((model.zoom * 100).rounded())) %, rotation \(Int(model.rotation))°"
-        if Self.uiTesting {
+        if TestSwitches.on {
             text += ", " + Self.describe(model.activePlayer?.tracks ?? model.videoTracks, speed: model.playbackSpeed)
             // What the player itself has (the dual pane's tests: the other pane's player follows)
             if let volume = model.activePlayer?.playerVolume { text += ", player volume \(Int((volume * 100).rounded())) %" }
             if let speed = model.activePlayer?.playerSpeed { text += ", player speed \(speed)" }
         }
         if !vlcDiagnostics.isEmpty { text += ", \(vlcDiagnostics)" }
-        if Self.uiTesting, !takenOver.isEmpty { text += ", taken over from AVKit: \(takenOver)" }
+        if TestSwitches.on, !takenOver.isEmpty { text += ", taken over from AVKit: \(takenOver)" }
         return text
     }
 
@@ -109,7 +109,7 @@ struct VideoDetailView: View {
         .accessibilityLabel(accessibilityText)
         .task(id: vlcControl.map(ObjectIdentifier.init)) {
             vlcDiagnostics = ""
-            guard Self.uiTesting, let control = vlcControl else { return }
+            guard TestSwitches.on, let control = vlcControl else { return }
             while !Task.isCancelled {
                 vlcDiagnostics = control.diagnostics()
                 try? await Task.sleep(for: .seconds(1))
@@ -333,9 +333,7 @@ struct VideoDetailView: View {
 
     /// UI tests (`--ui-testing --force-vlc`) play every video through VLC, so
     /// the same test videos check both players.
-    static let uiTesting = ProcessInfo.processInfo.arguments.contains("--ui-testing")
-    static let forceVLC = ProcessInfo.processInfo.arguments.contains("--ui-testing")
-        && ProcessInfo.processInfo.arguments.contains("--force-vlc")
+    static let forceVLC = TestSwitches.has("--force-vlc")
 
     /// For UI tests: the tracks and which are on as the player has them,
     /// the speed ("audio 2/2 de, subtitles 1/2 en, speed 1.25").

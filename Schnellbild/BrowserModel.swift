@@ -1805,11 +1805,7 @@ final class BrowserModel: ObservableObject {
         self.fileActions = fileActions
         // UI tests (`--search-delay=<ms>`): a search that stays running long
         // enough to be watched and stopped
-        let args = ProcessInfo.processInfo.arguments
-        if args.contains("--ui-testing"), let arg = args.first(where: { $0.hasPrefix("--search-delay=") }),
-           let ms = Int(arg.dropFirst("--search-delay=".count)) {
-            searchDebounce = .milliseconds(ms)
-        }
+        if let delay = TestSwitches.milliseconds("--search-delay=") { searchDebounce = delay }
         showMiniKeyboard = defaults.bool(forKey: Self.miniKeyboardKey)
         followAtlasSubfolders()
         followHiddenFiles()
@@ -2046,18 +2042,15 @@ final class BrowserModel: ObservableObject {
     /// what the screen doesn't show (how often a rename ran). Written into
     /// the app's own temporary folder (in the App Sandbox: its container),
     /// where nothing but the app's own rights are needed (`testLogFile`).
-    nonisolated static func testLog(_ line: String, arguments: [String] = ProcessInfo.processInfo.arguments) {
-        guard arguments.contains("--ui-testing"),
-              let arg = arguments.first(where: { $0.hasPrefix("--test-log=") }) else { return }
-        let path = testLogFile(String(arg.dropFirst("--test-log=".count))).path
+    /// The line is made only while there is a log.
+    nonisolated static func testLog(_ line: @autoclosure () -> String) {
+        guard let path = TestSwitches.testLog else { return }
         // One writer at a time: lines come from the main thread and VLC's
         // threads, and two writers at the same end would write over each other
         testLogLock.lock()
         defer { testLogLock.unlock() }
-        if !FileManager.default.fileExists(atPath: path) { FileManager.default.createFile(atPath: path, contents: nil) }
-        guard let handle = FileHandle(forWritingAtPath: path) else { return }
-        handle.seekToEndOfFile()
-        handle.write(Data((line + "\n").utf8))
+        guard let handle = appendingHandle(path) else { return }
+        handle.write(Data((line() + "\n").utf8))
         try? handle.close()
     }
     nonisolated private static let testLogLock = NSLock()
@@ -2066,6 +2059,14 @@ final class BrowserModel: ObservableObject {
     /// folder (a path given counts by its last part).
     nonisolated static func testLogFile(_ name: String) -> URL {
         FileManager.default.temporaryDirectory.appendingPathComponent((name as NSString).lastPathComponent)
+    }
+
+    /// A log file opened at its end (made when missing).
+    nonisolated static func appendingHandle(_ path: String) -> FileHandle? {
+        if !FileManager.default.fileExists(atPath: path) { FileManager.default.createFile(atPath: path, contents: nil) }
+        let handle = FileHandle(forWritingAtPath: path)
+        handle?.seekToEndOfFile()
+        return handle
     }
 
     /// Reopen the last folder on launch (if it still exists).
@@ -2118,12 +2119,10 @@ final class BrowserModel: ObservableObject {
     /// entitlements grant it), if it is there. UI tests name their own
     /// (`--pictures-folder=<path>`) and have none otherwise.
     static var defaultFolder: URL? {
-        let arguments = ProcessInfo.processInfo.arguments
         let folder: URL
-        if arguments.contains("--ui-testing") {
-            let prefix = "--pictures-folder="
-            guard let path = arguments.first(where: { $0.hasPrefix(prefix) })?.dropFirst(prefix.count) else { return nil }
-            folder = URL(fileURLWithPath: String(path), isDirectory: true)
+        if TestSwitches.on {
+            guard let path = TestSwitches.value("--pictures-folder=") else { return nil }
+            folder = URL(fileURLWithPath: path, isDirectory: true)
         } else {
             guard let home = getpwuid(getuid())?.pointee.pw_dir else { return nil }
             folder = URL(fileURLWithPath: String(cString: home), isDirectory: true).appendingPathComponent("Pictures", isDirectory: true)
