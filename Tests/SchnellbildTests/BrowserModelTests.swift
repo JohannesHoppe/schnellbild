@@ -4010,6 +4010,22 @@ final class ListLookupTests: XCTestCase {
         XCTAssertEqual(Set(m.actionEntries.map(\.name)), ["b.jpg", "c.jpg", "z.jpg"], "a range from its anchor, found by path")
     }
 
+    /// Each folder's change is looked up once and serves every item in it:
+    /// what lies in a removed folder is gone, in a moved one moves, the rest stays.
+    func testChangesFoundPerFolderServeEveryItemInIt() {
+        let changes = FileChanges([.removed(URL(fileURLWithPath: "/r/gone", isDirectory: true)),
+                                   .moved(URL(fileURLWithPath: "/r/old", isDirectory: true), to: URL(fileURLWithPath: "/r/new", isDirectory: true))])
+        for _ in 0..<2 {
+            XCTAssertNil(changes.path("/r/gone"))
+            XCTAssertNil(changes.path("/r/gone/a.jpg"))
+            XCTAssertNil(changes.path("/r/gone/deep/b.jpg"))
+            XCTAssertEqual(changes.path("/r/old/a.jpg"), "/r/new/a.jpg")
+            XCTAssertEqual(changes.path("/r/old/deep/b.jpg"), "/r/new/deep/b.jpg")
+            XCTAssertEqual(changes.path("/r/kept/a.jpg"), "/r/kept/a.jpg")
+            XCTAssertEqual(changes.path("/r/gone-not.jpg"), "/r/gone-not.jpg")
+        }
+    }
+
     func testWhatLeftTheFolderLeavesTheListingAndTheFullView() async throws {
         let tree = try TempTree(self)
         let sub = try tree.folder("sub")

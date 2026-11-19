@@ -773,7 +773,8 @@ struct FileChanges {
         if let bySource {
             if let change = bySource[start] { return change.apply(toPath: start) }
             guard start != "/", !start.isEmpty else { return start }
-            return change(covering: (start as NSString).deletingLastPathComponent, in: bySource)?.apply(toPath: start) ?? start
+            guard let change = change(covering: (start as NSString).deletingLastPathComponent, in: bySource) else { return start }
+            return change.apply(toPath: start)
         }
         var path = start
         for change in all {
