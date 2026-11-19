@@ -511,18 +511,7 @@ struct OtherFileInteractions: ViewModifier {
     func body(content: Content) -> some View {
         let changeable = !ArchivePath.isInside(file.url)
         content
-            .onDrag {
-                guard TileDrag.byTheUser else { return NSItemProvider() }
-                let provider = NSItemProvider(object: file.url as NSURL)
-                if changeable {
-                    let paths = [file.url.path]
-                    provider.registerDataRepresentation(forTypeIdentifier: TileDrag.type.identifier, visibility: .ownProcess) { done in
-                        done(try? PropertyListEncoder().encode(paths), nil)
-                        return nil
-                    }
-                }
-                return provider
-            }
+            .onDrag { TileDrag.provider(file: file.url, paths: changeable ? [file.url.path] : nil) }
             // Opened like a document in the Finder, but only documents (no apps, no scripts)
             .modifier(Clicks(single: {}, double: { model.open(file) }))
             .contextMenu {
@@ -561,6 +550,26 @@ struct TileDrag: ViewModifier {
     /// ask whether to keep both copies. Such a drag carries nothing (an
     /// empty item provider): no drop target takes it.
     static var byTheUser: Bool { NSEvent.pressedMouseButtons & 1 != 0 }
+
+    /// What a drag carries: `make`'s provider when the user started it
+    /// (`byTheUser`), else an empty one.
+    static func provider(_ make: () -> NSItemProvider) -> NSItemProvider { byTheUser ? make() : NSItemProvider() }
+
+    /// A tile's or other file's drag: `file` for the Finder, and `paths`
+    /// (every item it carries) for the app's own drop targets (nil: none
+    /// of them takes it).
+    static func provider(file: URL, paths: [String]?) -> NSItemProvider {
+        provider {
+            let provider = NSItemProvider(object: file as NSURL)
+            if let paths {
+                provider.registerDataRepresentation(forTypeIdentifier: type.identifier, visibility: .ownProcess) { done in
+                    done(try? PropertyListEncoder().encode(paths), nil)
+                    return nil
+                }
+            }
+            return provider
+        }
+    }
 
     /// The files of a tile drag (every marked item it carries). Only drags
     /// from the app's own tiles are taken this way: a drop from the Finder
@@ -698,13 +707,7 @@ private struct TileDragSource: ViewModifier {
             content.onDrag {
                 let paths = model.isMarked(entry) ? model.actionEntries.map(\.url.path) : [entry.url.path]
                 BrowserModel.testLog("\(Date().timeIntervalSince1970) drag \(paths.map { ($0 as NSString).lastPathComponent }) buttons=\(NSEvent.pressedMouseButtons)")
-                guard TileDrag.byTheUser else { return NSItemProvider() }
-                let provider = NSItemProvider(object: entry.url as NSURL)
-                provider.registerDataRepresentation(forTypeIdentifier: TileDrag.type.identifier, visibility: .ownProcess) { done in
-                    done(try? PropertyListEncoder().encode(paths), nil)
-                    return nil
-                }
-                return provider
+                return TileDrag.provider(file: entry.url, paths: paths)
             }
         } else {
             content

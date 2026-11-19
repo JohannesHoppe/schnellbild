@@ -5126,7 +5126,10 @@ final class BrowserModel: ObservableObject {
                         free.append(next)
                     }
                 }
-                // Gone (moved or deleted since it was dragged): nothing to move
+                // Gone (moved or deleted since it was dragged or marked):
+                // nothing to move. Needed beside `TileDrag.byTheUser`: F5 /
+                // F6 hand over the marked items without a drag, and those
+                // may be gone meanwhile (the Finder, another Mac on a share)
                 let gone = (try? FileManager.default.attributesOfItem(atPath: source.path)) == nil
                 return TransferProbe(source: source, gone: gone, isFolder: isFolder, files: files,
                                      destinationTaken: destinationTaken, freeNames: free,
