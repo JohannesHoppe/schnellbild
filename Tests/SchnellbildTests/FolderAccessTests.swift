@@ -196,6 +196,20 @@ final class FolderAccessTests: XCTestCase {
         XCTAssertEqual(fake.open, [BrowserModel.canonicalPath(file): 1])
     }
 
+    /// Whether an item can be opened: a FIFO answers at once (no writer
+    /// waited for) and counts as no file to read.
+    func testAFIFOIsNoFileToRead() throws {
+        let tree = try TempTree(self)
+        let file = try tree.file("a.jpg")
+        let fifo = tree.root.appendingPathComponent("pipe")
+        XCTAssertEqual(mkfifo(fifo.path, 0o600), 0)
+        XCTAssertTrue(FolderAccess.canOpen(file))
+        XCTAssertTrue(FolderAccess.canOpen(tree.root))
+        XCTAssertFalse(FolderAccess.canOpen(fifo))
+        XCTAssertFalse(RelatedFiles.canRead(fifo))
+        XCTAssertFalse(RelatedFiles.canRead(tree.root), "a folder is no file")
+    }
+
     func testTheVolumeOfAPath() {
         XCTAssertEqual(FolderAccess.volume(of: "/Volumes/NAS/Photos/a.jpg"), "/Volumes/NAS")
         XCTAssertEqual(FolderAccess.volume(of: "/Volumes/NAS"), "/Volumes/NAS")
