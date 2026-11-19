@@ -232,11 +232,16 @@ class SchnellbildUITestCase: XCTestCase {
         app.activate()
     }
 
-    /// Every Finder window closed (⌥⌘W in the Finder).
+    /// Every Finder window closed (⌥⌘W in the Finder), and a drag the Finder
+    /// may still have going ended first (Esc): on macOS 26 the Finder began a
+    /// second drag of the file once the first had been dropped (the app saw
+    /// it come over its window again), and once the next drag hung
+    /// in XCUITest for 13 s and reached nothing.
     private func closeFinderWindows(_ finder: XCUIApplication) {
         let windows = finder.windows.matching(identifier: "FinderWindow")
         guard windows.count > 0 else { return }
         finder.activate()
+        finder.typeKey(.escape, modifierFlags: [])
         finder.typeKey("w", modifierFlags: [.command, .option])
         eventually("the Finder's windows closed", timeout: 5) { windows.count == 0 }
     }
