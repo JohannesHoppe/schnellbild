@@ -161,8 +161,8 @@ final class VideoFormatReader: NSObject, MEFormatReader, @unchecked Sendable {
                 },
                 part: { index.cluster(at: $0) },
                 sampleData: nil)
-            // A track without a single frame isn't offered
-            return (0..<index.clusters.count).contains { !(source.frames($0) ?? []).isEmpty } ? source : nil
+            // A track without a frame near the start isn't offered
+            return index.hasFrames(track: number) ? source : nil
         }
         return (CMTime(seconds: index.durationSeconds, preferredTimescale: 1000), sources)
     }
