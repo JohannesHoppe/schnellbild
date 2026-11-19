@@ -559,7 +559,39 @@ struct TileDrag: ViewModifier {
 
     /// What a drag carries: `make`'s provider when the user started it
     /// (`byTheUser`), else an empty one.
-    static func provider(_ make: () -> NSItemProvider) -> NSItemProvider { byTheUser ? make() : NSItemProvider() }
+    static func provider(_ make: () -> NSItemProvider) -> NSItemProvider {
+        guard byTheUser else { return NSItemProvider() }
+        dragStarted = true
+        return make()
+    }
+
+    /// A drag of the user's began during the mouse press under way.
+    private static var dragStarted = false
+    private static var monitor: Any?
+
+    /// The mouse's drag events that reach the app after a drag's drop, with
+    /// the button already up, are left out: the drop ends a drag before the
+    /// app has the press's last drag events and its mouse up (CI test log:
+    /// "drop into the pane" 0.5 to 1.3 s before "mouse up"), and from such
+    /// an event SwiftUI starts the second drag (`byTheUser`). That drag's
+    /// session never sees a mouse up, as the one it waits for came before
+    /// it began, and takes every key typed until Esc ends it (CI: D after a
+    /// drop into the other pane reached no key handler). Drag events while
+    /// the button is held, and those of a press with no drag, are the
+    /// views'.
+    static func start() {
+        guard monitor == nil else { return }
+        monitor = NSEvent.addLocalMonitorForEvents(matching: [.leftMouseDown, .leftMouseUp, .leftMouseDragged]) { event in
+            let dragging = event.type == .leftMouseDragged
+            let leftOut = MainActor.assumeIsolated { () -> Bool in
+                guard dragging else { dragStarted = false; return false }
+                guard dragStarted, !byTheUser else { return false }
+                BrowserModel.testLog("\(Date().timeIntervalSince1970) drag event after the drop left out")
+                return true
+            }
+            return leftOut ? nil : event
+        }
+    }
 
     /// A tile's or other file's drag: `file` for the Finder, and `paths`
     /// (every item it carries) for the app's own drop targets (nil: none

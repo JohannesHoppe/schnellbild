@@ -546,9 +546,20 @@ private struct LicenseTextView: NSViewRepresentable {
             }
             scroll.reflectScrolledClipView(scroll.contentView)
             jumpedTo = scroll.contentView.bounds.origin.y
+            report()
+        }
+
+        /// Under a UI test the scroll view's value is how far the text is
+        /// scrolled: the top of the view in the text, in whole points (0:
+        /// the text's top, its inset above the first line included, is the
+        /// view's top).
+        private func report() {
+            guard TestSwitches.on, let scroll else { return }
+            scroll.setAccessibilityValue(String(Int(scroll.contentView.bounds.origin.y.rounded())))
         }
 
         @objc private func scrolled() {
+            report()
             guard let scroll, let text, let layout = text.layoutManager, let container = text.textContainer else { return }
             let y = scroll.contentView.bounds.origin.y
             if let jumpedTo, abs(jumpedTo - y) < 1 { return }

@@ -266,6 +266,7 @@ private struct WindowView: View {
         guard !Self.monitorsInstalled else { return }
         Self.monitorsInstalled = true
         ModifierClicks.start()
+        TileDrag.start()
         // For the UI tests: when the mouse went down and up (a drag's end), next to the keys
         if TestSwitches.testLog != nil {
             _ = NSEvent.addLocalMonitorForEvents(matching: [.leftMouseDown, .leftMouseUp]) { event in
