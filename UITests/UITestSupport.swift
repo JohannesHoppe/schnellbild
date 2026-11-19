@@ -212,7 +212,10 @@ class SchnellbildUITestCase: XCTestCase {
         }
         let y = (max(finderFrame.maxY, appFrame.minY) + appFrame.maxY) / 2
         let target = window.coordinate(withNormalizedOffset: CGVector(dx: 0.25, dy: (y - appFrame.minY) / appFrame.height))
-        item.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).press(forDuration: 1, thenDragTo: target)
+        // Held over the window before the button comes up, as a hand does:
+        // the window hears the drag enter before it is dropped
+        item.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+            .press(forDuration: 1, thenDragTo: target, withVelocity: XCUIGestureVelocity(300), thenHoldForDuration: 1)
         // What reached the app (its log); without it, the screen is kept
         let log = testLog("app.log")
         let deadline = Date().addingTimeInterval(5)
@@ -228,14 +231,6 @@ class SchnellbildUITestCase: XCTestCase {
             pasteboard.setString("shot:finder-drop-\(tempDir.lastPathComponent):0,0,1024,768", forType: .string)
             RunLoop.current.run(until: Date().addingTimeInterval(3))
         }
-        // On macOS 26 the Finder began a second drag of the file once the first
-        // was dropped (the app saw the same pasteboard come over its window
-        // again, sometimes only after this test had looked); one still going
-        // when the next test drags lets that drag reach nothing. A click on
-        // the Finder's window, where its drag would land in its own folder,
-        // ends it.
-        RunLoop.current.run(until: Date().addingTimeInterval(1.5))
-        folder.coordinate(withNormalizedOffset: CGVector(dx: 0.85, dy: 0.85)).click()
         closeFinderWindows(finder)
         app.activate()
     }
