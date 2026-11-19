@@ -228,20 +228,23 @@ class SchnellbildUITestCase: XCTestCase {
             pasteboard.setString("shot:finder-drop-\(tempDir.lastPathComponent):0,0,1024,768", forType: .string)
             RunLoop.current.run(until: Date().addingTimeInterval(3))
         }
+        // On macOS 26 the Finder began a second drag of the file once the first
+        // was dropped (the app saw the same pasteboard come over its window
+        // again, sometimes only after this test had looked); one still going
+        // when the next test drags lets that drag reach nothing. A click on
+        // the Finder's window, where its drag would land in its own folder,
+        // ends it.
+        RunLoop.current.run(until: Date().addingTimeInterval(1.5))
+        folder.coordinate(withNormalizedOffset: CGVector(dx: 0.85, dy: 0.85)).click()
         closeFinderWindows(finder)
         app.activate()
     }
 
-    /// Every Finder window closed (⌥⌘W in the Finder), and a drag the Finder
-    /// may still have going ended first (Esc): on macOS 26 the Finder began a
-    /// second drag of the file once the first had been dropped (the app saw
-    /// it come over its window again), and once the next drag hung
-    /// in XCUITest for 13 s and reached nothing.
+    /// Every Finder window closed (⌥⌘W in the Finder).
     private func closeFinderWindows(_ finder: XCUIApplication) {
         let windows = finder.windows.matching(identifier: "FinderWindow")
         guard windows.count > 0 else { return }
         finder.activate()
-        finder.typeKey(.escape, modifierFlags: [])
         finder.typeKey("w", modifierFlags: [.command, .option])
         eventually("the Finder's windows closed", timeout: 5) { windows.count == 0 }
     }

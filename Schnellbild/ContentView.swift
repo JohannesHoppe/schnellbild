@@ -1516,8 +1516,7 @@ enum FinderDrop {
 
     /// Reads the files of a drag from outside while it is over the window,
     /// once per drag (until it has them), off the main thread: the read waits
-    /// for the drag's source, and on CI (macOS 26) the window then stayed
-    /// blank and took no drop while the Finder's drag went on.
+    /// for the drag's source to hand the data over.
     @MainActor static func peek() {
         let change = NSPasteboard(name: .drag).changeCount
         guard change != seen.change, change != reading else { return }
