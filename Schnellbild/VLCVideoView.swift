@@ -482,6 +482,7 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         BrowserModel.testLog("vlc: software decoding for subtitles, stopped at \(stoppedAt) ms (VLC's last report \(player.time.intValue) ms) "
             + "| \(BrowserModel.testClock) ms")
         Task { @MainActor [weak self] in
+            // (asked: a player stopped for good meanwhile reports nothing to wait for)
             for _ in 0..<100 {
                 guard let self, self.player.delegate != nil else { return }   // stopped for good meanwhile
                 if self.player.state == .stopped { break }

@@ -1,8 +1,24 @@
 import SwiftUI
 import AVKit
 import AVFoundation
+import Combine
 import VLCFrames
 import UniformTypeIdentifiers
+
+/// The first value of `object`'s `key` that `accepted` takes, the current one
+/// included, as KVO reports it (AVFoundation's item status, its tracks),
+/// looked at on the main thread; nil after `limit` or when the task is cancelled.
+@MainActor
+func firstObserved<Object: NSObject, Value>(_ object: Object, _ key: KeyPath<Object, Value>, within limit: Duration,
+                                            where accepted: @escaping @MainActor (Value) -> Bool) async -> Value? {
+    let seconds = Double(limit.components.seconds) + Double(limit.components.attoseconds) / 1e18
+    for await value in object.publisher(for: key, options: [.initial, .new]).receive(on: DispatchQueue.main)
+        .first(where: { value in MainActor.assumeIsolated { accepted(value) } })
+        .timeout(.seconds(seconds), scheduler: DispatchQueue.main).values {
+        return value
+    }
+    return nil
+}
 
 /// Full-size view for videos. Native formats (MP4/MOV/M4V …) play through AVKit
 /// with autoplay, under the app's own control bar (`VideoControlBar`, both
@@ -201,7 +217,8 @@ struct VideoDetailView: View {
                 model.activePlayerURL = url
                 await noteFile(url)
                 // VLC knows the size once the video plays: an AVI inside an
-                // archive on a share may take long to open
+                // archive on a share may take long to open (asked: VLCKit
+                // reports no size)
                 var waited = 0.0
                 while !Task.isCancelled {
                     if let size = control.videoSize { videoSize = size; break }
@@ -228,7 +245,9 @@ struct VideoDetailView: View {
                     videoSize = CGSize(width: abs(turned.width), height: abs(turned.height))
                 }
                 // AVFoundation gives up on it (a download cut off, data it
-                // can't read or decode): VLC goes on from where it stood
+                // can't read or decode): VLC goes on from where it stood.
+                // Asked every half second: AVFoundation reports a failure
+                // once, and one around the app's own change is looked at again
                 guard let item = control.player.currentItem, stream == nil else { return }
                 let failed = ManagedFlag()
                 let failure = Locked<NSError?>(nil)   // the error a notification brought

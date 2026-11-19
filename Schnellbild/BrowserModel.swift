@@ -6381,14 +6381,13 @@ final class AVPlaybackControl: PlaybackControl {
         resumeAt = place
         BrowserModel.testLog("avkit resumes at \(String(format: "%.1f", place.seconds)) s, \(place.playing ? "playing" : "paused")")
         resumeTask = Task { @MainActor [weak self] in
-            // (asked every 50 ms, as long as the player is there, at most 10 s)
-            var waited = 0
-            while let item = self?.player.currentItem, item.status == .unknown, !Task.isCancelled, waited < 200 {
-                try? await Task.sleep(for: .milliseconds(50))
-                waited += 1
+            // (at most 10 s)
+            let began = ContinuousClock.now
+            if let item = self?.player.currentItem {
+                _ = await firstObserved(item, \.status, within: .seconds(10)) { $0 != .unknown }
             }
             guard let self, !Task.isCancelled, let place = self.resumeAt else { return }
-            BrowserModel.testLog("avkit item status \(self.player.currentItem?.status.rawValue ?? -1) after \(waited * 50) ms")
+            BrowserModel.testLog("avkit item status \(self.player.currentItem?.status.rawValue ?? -1) after \(ContinuousClock.now - began)")
             // A seek of the player's own (a subtitle track chosen, a look
             // redrawn) interrupts this one: it is made again
             for attempt in 1...5 where self.player.currentItem.map({ $0.status != .failed }) == true {
@@ -6450,16 +6449,13 @@ final class AVPlaybackControl: PlaybackControl {
                     let code = try? await track.load(.languageCode)
                     languages[track.trackID] = (tag ?? nil) ?? (code ?? nil)
                 }
-                // The item's tracks come once it is ready to play
-                for _ in 0..<50 where !Task.isCancelled {
-                    let tracks = item.tracks.filter { $0.assetTrack?.mediaType == .audio }
-                    if tracks.count > 1 {
-                        self.audioItemTracks = tracks.map { ($0, $0.assetTrack.flatMap { languages[$0.trackID] }) }
-                        let playing = tracks.firstIndex { $0.isEnabled } ?? 0
-                        for (index, track) in tracks.enumerated() { track.isEnabled = index == playing }
-                        break
-                    }
-                    try? await Task.sleep(for: .milliseconds(100))
+                // The item's tracks come once it is ready to play (at most 5 s)
+                @MainActor func audioOf(_ tracks: [AVPlayerItemTrack]) -> [AVPlayerItemTrack] { tracks.filter { $0.assetTrack?.mediaType == .audio } }
+                if let found = await firstObserved(item, \.tracks, within: .seconds(5), where: { audioOf($0).count > 1 }), !Task.isCancelled {
+                    let tracks = audioOf(found)
+                    self.audioItemTracks = tracks.map { ($0, $0.assetTrack.flatMap { languages[$0.trackID] }) }
+                    let playing = tracks.firstIndex { $0.isEnabled } ?? 0
+                    for (index, track) in tracks.enumerated() { track.isEnabled = index == playing }
                 }
             }
             guard !Task.isCancelled else { return }
@@ -6515,21 +6511,16 @@ final class AVPlaybackControl: PlaybackControl {
     /// done, shows the picture without it.
     private func refreshSubtitles(clearing: Bool = false) {
         Task { @MainActor [weak self] in
-            // (once the item can seek)
-            for _ in 0..<50 {
-                guard let self, let item = self.player.currentItem else { return }
-                // Getting to where it was left: that seek draws the choice
-                if self.resumeAt != nil { try? await Task.sleep(for: .milliseconds(100)); continue }
-                if item.status == .readyToPlay {
-                    self.noteOwnChange()
-                    self.player.seek(to: self.player.currentTime(), toleranceBefore: .zero, toleranceAfter: .zero) { [weak self] _ in
-                        Task { @MainActor in self?.noteOwnChange() }
-                        guard clearing else { return }
-                        Task { @MainActor [weak self] in self?.clearSubtitleLine() }
-                    }
-                    return
-                }
-                try? await Task.sleep(for: .milliseconds(100))
+            // Getting to where it was left first, then once the item can seek (at most 5 s)
+            await self?.resumeTask?.value
+            guard let item = self?.player.currentItem, self?.resumeAt == nil,
+                  await firstObserved(item, \.status, within: .seconds(5), where: { $0 == .readyToPlay }) != nil,
+                  let self else { return }
+            self.noteOwnChange()
+            self.player.seek(to: self.player.currentTime(), toleranceBefore: .zero, toleranceAfter: .zero) { [weak self] _ in
+                Task { @MainActor in self?.noteOwnChange() }
+                guard clearing else { return }
+                Task { @MainActor [weak self] in self?.clearSubtitleLine() }
             }
         }
     }

@@ -416,6 +416,7 @@ struct InspectorView: View {
 
     /// A video's size and streams from its player once it has opened the
     /// video: what stands in for the header where AVFoundation can't read it.
+    /// (Asked: VLC reports neither its size nor its streams.)
     private func loadFromPlayer() async {
         playerSize = nil
         streams = nil
