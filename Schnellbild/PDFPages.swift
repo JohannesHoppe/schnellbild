@@ -52,13 +52,8 @@ final class PDFPages: @unchecked Sendable {
         lock.lock(); defer { lock.unlock() }
         guard index >= 0, index < count, let page = document.page(at: index) else { return nil }
         let size = Self.shownSize(page)
-        guard size.width > 0, size.height > 0, size.width.isFinite, size.height.isFinite else { return nil }
-        let scale = CGFloat(max(longestSide, 1)) / max(size.width, size.height)
-        let width = max(Int((size.width * scale).rounded()), 1)
-        let height = max(Int((size.height * scale).rounded()), 1)
-        guard let context = CGContext(data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: 0,
-                                      space: CGColorSpace(name: CGColorSpace.sRGB)!,
-                                      bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else { return nil }
+        guard let context = MediaInfo.bitmap(for: size, longestSide: longestSide) else { return nil }
+        let width = context.width, height = context.height
         context.setFillColor(CGColor(srgbRed: 1, green: 1, blue: 1, alpha: 1))
         context.fill(CGRect(x: 0, y: 0, width: width, height: height))
         context.interpolationQuality = .high
