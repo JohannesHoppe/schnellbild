@@ -5,6 +5,28 @@ import Combine
 import VLCFrames
 import UniformTypeIdentifiers
 
+/// A download's size, as it grows ("x.mp4.part": the full view, the
+/// Inspector, an archive shown while it downloads).
+enum DownloadSize {
+    /// nil: the file is gone.
+    nonisolated static func of(_ url: URL) -> Int64? {
+        var info = stat()
+        return stat(url.path, &info) == 0 ? Int64(info.st_size) : nil
+    }
+
+    /// The size read off the main thread at once and then every `interval`,
+    /// each reading handed to `reading` until it returns false or the task
+    /// is cancelled.
+    @MainActor
+    static func watch(_ url: URL, every interval: Duration, _ reading: @MainActor (Int64?) async -> Bool) async {
+        while !Task.isCancelled {
+            let size = await Blocking.run(.utility) { of(url) }
+            guard !Task.isCancelled, await reading(size) else { return }
+            try? await Task.sleep(for: interval)
+        }
+    }
+}
+
 /// The first value of `object`'s `key` that `accepted` takes, the current one
 /// included, as KVO reports it (AVFoundation's item status, its tracks),
 /// looked at on the main thread; nil after `limit` or when the task is cancelled.
@@ -292,20 +314,20 @@ struct VideoDetailView: View {
         // from where it stood
         .task(id: url) {
             guard DownloadName.isPartial(url.lastPathComponent), !ArchivePath.isInside(url) else { return }
-            var size = await Blocking.run(.utility) { Self.fileSize(url) }
-            while !Task.isCancelled {
-                try? await Task.sleep(for: .seconds(2))
-                let now = await Blocking.run(.utility) { Self.fileSize(url) }
-                guard !Task.isCancelled, now != size, now != nil else { continue }
+            var size: Int64??   // none before the first reading
+            await DownloadSize.watch(url, every: .seconds(2)) { now in
+                guard let before = size else { size = now; return true }
+                guard now != before, now != nil else { return true }
                 size = now
                 let player = model.activePlayer
                 let stopped = player.map { !$0.isPlaying && ($0.progress ?? 1) >= 0.97 } ?? false
-                guard unplayable != nil || stopped else { continue }
+                guard unplayable != nil || stopped else { return true }
                 if let player, let length = player.lengthSeconds, let progress = player.progress {
                     resumeAt = length * progress
                 }
                 BrowserModel.testLog("video: grew, opened again | \(url.lastPathComponent)")
                 opening += 1
+                return true
             }
         }
         .onDisappear { stop() }
@@ -324,10 +346,6 @@ struct VideoDetailView: View {
         let count: Int
     }
 
-    nonisolated private static func fileSize(_ url: URL) -> Int64? {
-        var info = stat()
-        return stat(url.path, &info) == 0 ? Int64(info.st_size) : nil
-    }
 
     /// A file of someone else: a reference movie names other files or
     /// addresses to play, so it plays nothing here. A name that doesn't say

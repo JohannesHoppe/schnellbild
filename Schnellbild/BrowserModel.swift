@@ -4701,17 +4701,10 @@ final class BrowserModel: ObservableObject {
         guard archiveDownload?.archive != archive else { return }
         archiveDownload?.task.cancel()
         let task = Task { [weak self] in
-            func size() async -> Int64? {
-                await Blocking.run(.utility) {
-                    var info = stat()
-                    return stat(archive.path, &info) == 0 ? Int64(info.st_size) : nil
-                }
-            }
-            var known = await size()
-            while !Task.isCancelled {
-                try? await Task.sleep(for: .seconds(3))
-                let now = await size()
-                guard let self, !Task.isCancelled else { return }
+            var known: Int64??   // none before the first reading
+            await DownloadSize.watch(archive, every: .seconds(3)) { now in
+                guard let before = known else { known = now; return true }
+                guard let self else { return false }
                 if now == nil {
                     let final = archive.deletingLastPathComponent().appendingPathComponent(DownloadName.finalName(of: archive.lastPathComponent))
                     if await Blocking.run(.utility, { FileManager.default.fileExists(atPath: final.path) }) {
@@ -4719,13 +4712,14 @@ final class BrowserModel: ObservableObject {
                         self.followFolder(through: [change])
                         self.applyHere([change])
                     }
-                    return
+                    return false
                 }
-                guard now != known, !self.isLoading, let shown = self.folderURL else { continue }
+                guard now != before, !self.isLoading, let shown = self.folderURL else { return true }
                 known = now
                 if case .success(let listing) = await Self.listing(shown, kept: self.explicitItems), self.folderURL == shown, !self.isLoading {
                     self.merge(listing)
                 }
+                return true
             }
         }
         archiveDownload = (archive, task)

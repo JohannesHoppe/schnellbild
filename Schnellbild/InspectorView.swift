@@ -393,14 +393,8 @@ struct InspectorView: View {
         growing = false
         downloadedSize = nil
         guard entry.isDownloading, !ArchivePath.isInside(entry.url) else { return }
-        let url = entry.url
         var unchanged = 0
-        while !Task.isCancelled {
-            let size = await Blocking.run(.utility) { () -> Int64? in
-                var info = stat()
-                return stat(url.path, &info) == 0 ? Int64(info.st_size) : nil
-            }
-            guard !Task.isCancelled else { return }
+        await DownloadSize.watch(entry.url, every: .seconds(2)) { size in
             if let size, let before = downloadedSize, size != before {
                 growing = true
                 unchanged = 0
@@ -410,7 +404,7 @@ struct InspectorView: View {
                 if unchanged >= 5 { growing = false }
             }
             downloadedSize = size
-            try? await Task.sleep(for: .seconds(2))
+            return true
         }
     }
 
