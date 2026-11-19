@@ -65,14 +65,9 @@ final class MapTileStore {
     }
 }
 
-/// The map's own view: tiles as layers (moved, not redrawn, while the map
-/// moves), the labels as one more layer drawn off the main thread for the
-/// camera of the moment and moved with the map until the next one is
-/// ready. Drag or scroll with two fingers to move, pinch, ⌘-scroll or
-/// double-click to zoom.
-@MainActor
 /// A map view whose camera a new size may move into its limits (`held`);
 /// the owner of the camera hears what it holds then.
+@MainActor
 protocol CameraHolding: NSView {
     var camera: MapCamera { get set }
     var onCameraChange: ((MapCamera) -> Void)? { get }
@@ -109,6 +104,12 @@ extension NSView {
     }
 }
 
+/// The map's own view: tiles as layers (moved, not redrawn, while the map
+/// moves), the labels as one more layer drawn off the main thread for the
+/// camera of the moment and moved with the map until the next one is
+/// ready. Drag or scroll with two fingers to move, pinch, ⌘-scroll or
+/// double-click to zoom.
+@MainActor
 final class MapSurfaceView: NSView, CameraHolding {
     var camera = MapCamera.world { didSet { if camera != oldValue { layoutMap() } } }
     var interactive = true
