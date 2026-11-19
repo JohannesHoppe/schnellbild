@@ -18,6 +18,10 @@ struct FolderWalk {
     /// share: each item is a round trip).
     var limit = Int.max
     var shown = HiddenFiles.shown
+    /// The AppleDouble files too, while hidden items are shown (a `readdir`
+    /// of each folder walked into). Off for a walk after media only: an
+    /// AppleDouble file is none.
+    var appleDoubles = true
 
     enum Ending: Equatable {
         /// Every item was visited.
@@ -36,14 +40,15 @@ struct FolderWalk {
     @discardableResult
     func run(cancelled: () -> Bool = { false }, _ visit: (URL) -> Bool) -> Ending {
         // (a package's flag only while AppleDouble files are read in each folder walked into)
-        let mine = shown && deep ? Self.ownKeys.union([.isPackageKey]) : Self.ownKeys
+        let doubles = shown && appleDoubles
+        let mine = doubles && deep ? Self.ownKeys.union([.isPackageKey]) : Self.ownKeys
         var options: FileManager.DirectoryEnumerationOptions = [.skipsPackageDescendants]
         if !deep { options.insert(.skipsSubdirectoryDescendants) }
         guard let walk = FileManager.default.enumerator(at: root, includingPropertiesForKeys: Array(keys.union(mine)),
                                                         options: options) else { return .whole }
         // AppleDouble files of the folders walked into, visited before the
         // folder's other items; FileManager may list some of them after all
-        var pending = shown ? HiddenFiles.appleDoubleItems(in: root, besides: []) : []
+        var pending = doubles ? HiddenFiles.appleDoubleItems(in: root, besides: []) : []
         var added = Set(pending.map(\.path))
         var looked = 0
         while true {
@@ -63,10 +68,10 @@ struct FolderWalk {
                     if folder { walk.skipDescendants() }
                     return nil
                 }
-                if shown, deep, folder, values?.isPackage != true {
-                    let doubles = HiddenFiles.appleDoubleItems(in: url, besides: [])
-                    pending = doubles
-                    added.formUnion(doubles.map(\.path))
+                if doubles, deep, folder, values?.isPackage != true {
+                    let found = HiddenFiles.appleDoubleItems(in: url, besides: [])
+                    pending = found
+                    added.formUnion(found.map(\.path))
                 }
                 return visit(url) ? nil : .stopped
             }
