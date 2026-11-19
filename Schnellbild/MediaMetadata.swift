@@ -185,12 +185,7 @@ enum PictureMetadata {
     /// The capture time as the camera's clock showed it, with its offset
     /// from UTC where the camera wrote one: "Jun 18, 2024, 10:31:09 PM (UTC+02:00)".
     static func takenText(exif: [CFString: Any], tiff: [CFString: Any]) -> String? {
-        let candidates: [(String?, String?)] = [
-            (exif[kCGImagePropertyExifDateTimeOriginal] as? String, exif[kCGImagePropertyExifOffsetTimeOriginal] as? String),
-            (exif[kCGImagePropertyExifDateTimeDigitized] as? String, exif[kCGImagePropertyExifOffsetTimeDigitized] as? String),
-            (tiff[kCGImagePropertyTIFFDateTime] as? String, exif[kCGImagePropertyExifOffsetTime] as? String),
-        ]
-        for case let (text?, offset) in candidates {
+        for case let (text?, offset) in CaptureReader.pictureClocks(exif: exif, tiff: tiff) {
             if let shown = wallClock(text, offset: offset) { return shown }
         }
         return nil
@@ -302,9 +297,8 @@ enum PictureMetadata {
         let profile = (props[kCGImagePropertyProfileName] as? String ?? "").uppercased()
         if profile.contains("PQ") || profile.contains("2084") { return "PQ (HDR10)" }
         if profile.contains("HLG") { return "HLG" }
-        var gainMap = CGImageSourceCopyAuxiliaryDataInfoAtIndex(source, 0, kCGImageAuxiliaryDataTypeHDRGainMap) != nil
-        if #available(macOS 15.0, *), !gainMap {
-            gainMap = CGImageSourceCopyAuxiliaryDataInfoAtIndex(source, 0, kCGImageAuxiliaryDataTypeISOGainMap) != nil
+        let gainMap = [kCGImageAuxiliaryDataTypeHDRGainMap, kCGImageAuxiliaryDataTypeISOGainMap].contains {
+            CGImageSourceCopyAuxiliaryDataInfoAtIndex(source, 0, $0) != nil
         }
         return gainMap ? String(localized: "Gain map") : nil
     }
