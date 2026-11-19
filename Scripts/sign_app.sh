@@ -101,17 +101,18 @@ else
 fi
 
 is_macho() {
-  case "$(head -c 4 "$1" | xxd -p)" in
+  case "$(xxd -p -l 4 "$1")" in
     cffaedfe|cafebabe|cefaedfe|bebafeca) return 0 ;;
     *) return 1 ;;
   esac
 }
 MAIN="$APP/Contents/MacOS/Schnellbild"
-# Every other file with machine code, longest paths first (nested before what holds it)
+# Every other file with machine code, longest paths first (nested before what
+# holds it), handed to codesign in that order: it signs its paths one by one
 find "$APP/Contents" -type f ! -path "$MAIN" ! -path "$APPEX/Contents/MacOS/*" ! -path "$FORMATS/Contents/MacOS/*" -print0 \
   | while IFS= read -r -d '' f; do if is_macho "$f"; then printf '%s\n' "$f"; fi; done \
   | awk '{ print length, $0 }' | sort -rn | cut -d' ' -f2- \
-  | while IFS= read -r f; do codesign "${OPTS[@]}" "$f"; done
+  | tr '\n' '\0' | xargs -0 codesign "${OPTS[@]}"
 codesign "${OPTS[@]}" "$APP/Contents/Frameworks/VLCKit.framework"
 codesign "${OPTS[@]}" --entitlements "$THUMB_ENT" "$APPEX"
 codesign "${OPTS[@]}" --entitlements "$FORMATS_ENT" "$FORMATS"
