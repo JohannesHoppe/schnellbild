@@ -1002,11 +1002,12 @@ struct DropZoneDelegate: DropDelegate {
     }
     func dropEntered(info: DropInfo) {
         BrowserModel.testLog("\(Date().timeIntervalSince1970) window drop entered at \(info.location)")
-        FinderDrop.peek()
+        // Only a drag from outside: the app's own tile drags aren't read
+        if FinderDrop.isFromFinder(info) { FinderDrop.peek() }
         zone = zone(at: info)
     }
     func dropUpdated(info: DropInfo) -> DropProposal? {
-        FinderDrop.peek()
+        if FinderDrop.isFromFinder(info) { FinderDrop.peek() }
         zone = Self.zone(atX: info.location.x, width: width, mouseDown: NSEvent.pressedMouseButtons != 0)
         return DropProposal(operation: .copy)
     }
