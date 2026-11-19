@@ -1515,17 +1515,30 @@ enum FinderDrop {
     static let seenFor: TimeInterval = 30
 
     /// Reads the files of a drag from outside while it is over the window,
-    /// once per drag (until it has them).
+    /// once per drag (until it has them), off the main thread: the read waits
+    /// for the drag's source, and on CI (macOS 26) the window then stayed
+    /// blank and took no drop while the Finder's drag went on.
     @MainActor static func peek() {
-        let pasteboard = NSPasteboard(name: .drag)
-        guard pasteboard.changeCount != seen.change else { return }
-        let urls = read(pasteboard)
-        guard !urls.isEmpty else { return }
-        seen = (pasteboard.changeCount, urls, Date())
-        BrowserModel.testLog("\(Date().timeIntervalSince1970) drag over the window: \(urls.map(\.lastPathComponent)) (change \(pasteboard.changeCount))")
+        let change = NSPasteboard(name: .drag).changeCount
+        guard change != seen.change, change != reading else { return }
+        reading = change
+        BrowserModel.testLog("\(Date().timeIntervalSince1970) drag over the window: reading its files (change \(change))")
+        DispatchQueue.global(qos: .userInitiated).async {
+            let pasteboard = NSPasteboard(name: .drag)
+            let urls = read(pasteboard), now = pasteboard.changeCount
+            DispatchQueue.main.async {
+                reading = -1
+                guard !urls.isEmpty, now == change else { return }
+                seen = (change, urls, Date())
+                BrowserModel.testLog("\(Date().timeIntervalSince1970) drag over the window: \(urls.map(\.lastPathComponent)) (change \(change))")
+            }
+        }
     }
 
-    private static func read(_ pasteboard: NSPasteboard) -> [URL] {
+    /// The change count of the drag pasteboard being read (`peek`), -1: none.
+    @MainActor private static var reading = -1
+
+    nonisolated private static func read(_ pasteboard: NSPasteboard) -> [URL] {
         pasteboard.readObjects(forClasses: [NSURL.self], options: [.urlReadingFileURLsOnly: true]) as? [URL] ?? []
     }
 }
