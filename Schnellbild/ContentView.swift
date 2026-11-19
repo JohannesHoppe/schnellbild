@@ -339,8 +339,7 @@ private struct WindowView: View {
                 // ⌃⌘F: full screen, as the system's shortcut; other ⌃
                 // combinations are the system's.
                 // (by the letter on the key, as the menus read it, on any layout)
-                let plain = event.charactersIgnoringModifiers?.lowercased() ?? ""
-                let letter = plain.unicodeScalars.allSatisfy(\.isASCII) ? plain : (LatinKeys.character(for: code, shift: false) ?? plain)
+                let letter = LatinKeys.letter(of: event)
                 if control, command, letter == "f" { model.toggleFullScreen(); return true }
                 // The keys as set in Settings → Keyboard: a key given to an
                 // action carries it out, a key taken from one does nothing;
@@ -379,12 +378,8 @@ private struct WindowView: View {
                 // The window's keys first (D, Tab, F5, F6), then the active pane's
                 if window.handleWindowKey(key, command: command, control: false,
                                           shift: event.modifierFlags.contains(.shift), textEditing: typing) { return true }
-                if option {
-                    return model.handleKey(key, command: command, shift: event.modifierFlags.contains(.shift),
-                                           option: true, textEditing: typing, repeating: event.isARepeat)
-                }
                 return model.handleKey(key, command: command, shift: event.modifierFlags.contains(.shift),
-                                       textEditing: typing, repeating: event.isARepeat)
+                                       option: option, textEditing: typing, repeating: event.isARepeat)
             }
             // For the UI tests: where each key went
             BrowserModel.testLog("\(Date().timeIntervalSince1970) key \(chars.debugDescription) handled \(String(format: "%.2f", ProcessInfo.processInfo.systemUptime - event.timestamp)) s after it was typed consumed=\(consume) window=\(event.window.map { String(describing: type(of: $0)) } ?? "nil") "
@@ -415,9 +410,7 @@ extension ContentView {
     static func isUndoKey(_ event: NSEvent) -> Bool {
         let flags = event.modifierFlags.intersection([.command, .shift, .control, .option])
         guard flags == .command || flags == [.command, .shift] else { return false }
-        let plain = event.charactersIgnoringModifiers?.lowercased() ?? ""
-        let letter = plain.unicodeScalars.allSatisfy(\.isASCII) ? plain : (LatinKeys.character(for: event.keyCode, shift: false) ?? plain)
-        return letter == "z"
+        return LatinKeys.letter(of: event) == "z"
     }
 
     /// Keys that go straight to the text field being edited, ahead of the
@@ -1103,6 +1096,17 @@ struct AdjustmentsView: View {
 /// What a key types on the user's Latin layout (the one macOS uses for
 /// shortcuts while a Cyrillic or Greek layout is active).
 enum LatinKeys {
+    /// The letter on the key, as the menus read it: what the layout types
+    /// when it is Latin, else what the user's Latin layout types there.
+    static func letter(_ typed: String, keyCode: UInt16) -> String {
+        typed.unicodeScalars.allSatisfy(\.isASCII) ? typed : (character(for: keyCode, shift: false) ?? typed)
+    }
+
+    /// `letter` of the key typed, without its modifiers, in lower case.
+    static func letter(of event: NSEvent) -> String {
+        letter(event.charactersIgnoringModifiers?.lowercased() ?? "", keyCode: event.keyCode)
+    }
+
     static func character(for keyCode: UInt16, shift: Bool) -> String? {
         guard let source = TISCopyCurrentASCIICapableKeyboardLayoutInputSource()?.takeRetainedValue(),
               let raw = TISGetInputSourceProperty(source, kTISPropertyUnicodeKeyLayoutData) else { return nil }
