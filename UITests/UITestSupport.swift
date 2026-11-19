@@ -210,6 +210,15 @@ class SchnellbildUITestCase: XCTestCase {
             XCTFail("the Finder's window covers the app's: \(frames)", file: sourceFile, line: line)
             return
         }
+        // The Finder's window settled (its icons drawn, the item where it stays)
+        var last = item.frame
+        let settle = Date().addingTimeInterval(5)
+        repeat {
+            RunLoop.current.run(until: Date().addingTimeInterval(0.5))
+            let now = item.frame
+            if now == last, item.isHittable { break }
+            last = now
+        } while Date() < settle
         let y = (max(finderFrame.maxY, appFrame.minY) + appFrame.maxY) / 2
         let target = window.coordinate(withNormalizedOffset: CGVector(dx: 0.25, dy: (y - appFrame.minY) / appFrame.height))
         // Held over the window before the button comes up, as a hand does:
