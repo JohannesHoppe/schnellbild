@@ -517,8 +517,10 @@ struct LibArchiveReader: ArchiveReader {
                     stopped = !buffer.withUnsafeBytes { sink(UnsafeRawBufferPointer(rebasing: $0[..<n])) }
                 }
                 // In a download still in progress, data that fails is data
-                // that hasn't arrived (zeros where a piece is missing)
-                if partial, case .unreadable? = failure { done(.incomplete) } else { done(failure) }
+                // that hasn't arrived (zeros where a piece is missing): the
+                // walk ends there, it isn't whole
+                if partial, case .unreadable? = failure { failure = .incomplete }
+                done(failure)
                 if stopped { return true }
                 if failure == .incomplete { return false }
             }
