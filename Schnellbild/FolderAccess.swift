@@ -104,6 +104,9 @@ final class FolderAccess {
     /// preferences meanwhile.
     private var resolving: [Data] = []
     private var restoring: Task<Void, Never>?
+    /// Counts `forgetAll()`: a resolution that started before the user
+    /// gave every grant up takes nothing when it returns.
+    private var generation = 0
 
     /// Folders open without a grant: the standard folders the entitlements name.
     private let standard: [String]
@@ -135,7 +138,8 @@ final class FolderAccess {
         guard sandboxed, restoring == nil else { return }
         let saved = defaults.array(forKey: Self.key) as? [Data] ?? []
         resolving = saved
-        restoring = Task { await open(saved.map { (bookmark: $0, path: nil) }) }
+        let generation = generation
+        restoring = Task { await open(saved.map { (bookmark: $0, path: nil) }, generation: generation) }
     }
 
     /// Returns once the grants kept are open: a folder is read after it.
@@ -168,18 +172,24 @@ final class FolderAccess {
         // Out of `pending` while they are tried: never opened twice at once
         pending.removeAll { bookmarks.contains($0.bookmark) }
         resolving += chosen.map(\.bookmark)
-        return await open(chosen)
+        return await open(chosen, generation: generation)
     }
 
     /// Resolves and starts bookmarks off the main thread, then takes what
     /// opened; what waits for its volume goes back to `pending`, what is
     /// gone is dropped. Returns whether one opened. The caller has put
-    /// them into `resolving`, so the preferences keep them meanwhile.
+    /// them into `resolving`, so the preferences keep them meanwhile, and
+    /// names the `generation` they were taken from.
     @discardableResult
-    private func open(_ kept: [(bookmark: Data, path: String?)]) async -> Bool {
+    private func open(_ kept: [(bookmark: Data, path: String?)], generation: Int) async -> Bool {
         let system = system
         let bookmarks = kept.map(\.bookmark)
         let outcomes = await Blocking.run(.userInitiated) { Self.resolveAll(bookmarks, system) }
+        // Forgotten while they resolved: nothing comes back, what started stops
+        guard generation == self.generation else {
+            for case .opened(let grant) in outcomes where grant.started { system.stop(grant.url) }
+            return false
+        }
         var opened = false
         for (entry, outcome) in zip(kept, outcomes) {
             if let index = resolving.firstIndex(of: entry.bookmark) { resolving.remove(at: index) }
@@ -313,6 +323,7 @@ final class FolderAccess {
         held = []
         pending = []
         resolving = []
+        generation += 1
         save()
     }
 
