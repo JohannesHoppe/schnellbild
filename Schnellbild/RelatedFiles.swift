@@ -107,5 +107,5 @@ extension Locked where Value == Bool {
     func set() { set(true) }
     func reset() { set(false) }
     /// Sets the flag; true only for the caller that set it first.
-    func claim() -> Bool { withLock { defer { $0 = true }; return !$0 } }
+    func claim() -> Bool { withLock { flag in defer { flag = true }; return !flag } }
 }
