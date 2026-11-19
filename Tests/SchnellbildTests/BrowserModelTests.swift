@@ -60,6 +60,9 @@ final class FileActionsSpy {
     var trashError: Error?
     /// Runs while an item is being trashed (a second ⌘⌫ meanwhile).
     var duringTrash: (() -> Void)?
+    /// Runs once an item was moved or renamed on disk, before the app
+    /// applies the change (FSEvents reporting it meanwhile).
+    var duringMove: (() -> Void)?
     var reported: [Error] = []
     /// Forces the "target exists" answer, e.g. to act as a case-sensitive volume.
     var conflictOverride: Bool?
@@ -89,6 +92,7 @@ final class FileActionsSpy {
                 if self.failOn.contains(from.lastPathComponent) { throw CocoaError(.fileWriteNoPermission) }
                 self.moved.append((from, to))
                 try FileActions.live.move(from, to)
+                if let during = self.duringMove { self.duringMove = nil; during() }
             },
             transfer: { from, to in
                 if let error = self.moveError { throw error }

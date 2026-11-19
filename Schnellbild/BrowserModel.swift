@@ -4311,6 +4311,8 @@ final class BrowserModel: ObservableObject {
     @discardableResult
     func rename(_ file: OtherFile, to rawName: String) async throws -> URL {
         Self.testLog("rename \(file.name) → \(rawName)")
+        Self.transfersUnderWay += 1
+        defer { Self.transfersUnderWay -= 1 }
         let name = try Self.validName(rawName)
         let old = file.url
         guard name != old.lastPathComponent else { renameFileTarget = nil; return old }
@@ -4938,8 +4940,24 @@ final class BrowserModel: ObservableObject {
 
     /// The folder shown went (deleted, moved away, its volume gone): the
     /// nearest folder around it still there opens, at last the drives' level.
+    /// The app's own moves and renames reach the pane as `FileChange`s, and
+    /// the folder shown follows them (`followFolder`); FSEvents may report
+    /// the folder gone before that change arrives or while the disk is read
+    /// here. So the folder is looked for only while none of the app's own
+    /// changes is under way (else once they are done), and the decision is
+    /// taken for the folder shown then: one moved meanwhile is looked for
+    /// under its new path.
     private func followFolderGone() {
         guard let folderURL else { return }
+        guard Self.transfersUnderWay == 0 else {
+            guard !followsFolderGoneLater else { return }
+            followsFolderGoneLater = true
+            Self.whenTransfersDone.append { [weak self] in
+                self?.followsFolderGoneLater = false
+                self?.followFolderGone()
+            }
+            return
+        }
         let generation = loadGeneration
         Task {
             let place = await Blocking.run(.utility) { () -> URL? in
@@ -4951,11 +4969,16 @@ final class BrowserModel: ObservableObject {
                 }
                 return nil
             }
-            guard loadGeneration == generation, let place, !Self.samePath(place, folderURL) else { return }
+            guard loadGeneration == generation, let shown = self.folderURL else { return }
+            guard Self.samePath(shown, folderURL), Self.transfersUnderWay == 0 else { followFolderGone(); return }
+            guard let place, !Self.samePath(place, folderURL) else { return }
             // Not into the history: the folder left is gone
             load(Location(folder: place, query: "", selected: nil))
         }
     }
+
+    /// A folder shown reported gone waits for the app's own changes.
+    private var followsFolderGoneLater = false
 
     /// A volume was mounted or unmounted (`unmounted`): a pane showing a
     /// folder on it goes to the drives' level; one showing the drives' level
@@ -5175,8 +5198,9 @@ final class BrowserModel: ObservableObject {
             Task {
                 let outcomes = await fileActions.run(steps, how)
                 transfersRunning -= 1
-                Self.transfersUnderWay -= 1
+                // Counted down once its changes are applied
                 finishMove(steps, outcomes, into: folder)
+                Self.transfersUnderWay -= 1
             }
         }
         return true
@@ -5248,13 +5272,24 @@ final class BrowserModel: ObservableObject {
 
     /// Copies and moves under way (the status bar says so).
     @Published private(set) var transfersRunning = 0
-    /// The same for the whole app: quitting waits for them
-    /// (`AppDelegate.applicationShouldTerminate`), or a file would be left
-    /// half copied under its final name.
+    /// The app's own changes on disk under way (moves, copies, renames, the
+    /// Trash, Undo), each counted until its `FileChange`s are applied:
+    /// quitting waits for them (`AppDelegate.applicationShouldTerminate`), or
+    /// a file would be left half copied under its final name; and a folder
+    /// shown reported gone is looked for once they are done
+    /// (`followFolderGone`).
     static var transfersUnderWay = 0 {
-        didSet { if transfersUnderWay == 0 { onTransfersDone?() } }
+        didSet {
+            guard transfersUnderWay == 0 else { return }
+            onTransfersDone?()
+            let waiting = whenTransfersDone
+            whenTransfersDone = []
+            for go in waiting { go() }
+        }
     }
     static var onTransfersDone: (() -> Void)?
+    /// Run once, when no transfer is under way any more.
+    private static var whenTransfersDone: [@MainActor () -> Void] = []
 
     /// Applies what was carried out, also the parts of an item that failed
     /// half way (a split archive's first volumes moved): their changes and
@@ -5358,6 +5393,8 @@ final class BrowserModel: ObservableObject {
     /// can't be used is reported.
     func renameCurrentFolder(to raw: String) async {
         guard canRenameCurrentFolder, let old = folderURL else { return }
+        Self.transfersUnderWay += 1
+        defer { Self.transfersUnderWay -= 1 }
         do {
             let name = try Self.validName(raw)
             guard name != old.lastPathComponent else { return }
@@ -5421,6 +5458,8 @@ final class BrowserModel: ObservableObject {
     @discardableResult
     func rename(_ entry: GridEntry, to rawName: String) async throws -> URL {
         Self.testLog("rename \(entry.name) → \(rawName)")
+        Self.transfersUnderWay += 1
+        defer { Self.transfersUnderWay -= 1 }
         let name = try Self.validName(rawName)
         let old = entry.url
         guard name != old.lastPathComponent else { renameTarget = nil; return old }
@@ -5465,7 +5504,10 @@ final class BrowserModel: ObservableObject {
 
     /// Renames on disk: off the main thread for the live actions (a share
     /// answers slowly), inline for a test's spy. Refuses a name taken by
-    /// another item.
+    /// another item. The caller counts the rename in `transfersUnderWay`
+    /// until it applied its `FileChange` (quitting waits for it: a case-only
+    /// rename can take two steps; and so does a folder shown reported gone,
+    /// `followFolderGone`).
     /// Returns the renamed item's identity (for Undo).
     @discardableResult
     private func renameOnDisk(_ old: URL, _ new: URL, name: String) async throws -> ItemIdentity? {
@@ -5475,9 +5517,6 @@ final class BrowserModel: ObservableObject {
             do { try fileActions.move(old, new) } catch { throw RenameError.failed(error.localizedDescription) }
             return ItemIdentity.of(new)
         }
-        // Counted, so quitting waits for it (a case-only rename can take two steps)
-        Self.transfersUnderWay += 1
-        defer { Self.transfersUnderWay -= 1 }
         return try await Blocking.run {
             try check(LiveFiles.conflicts(new, old))
             do { try LiveFiles.move(old, new) } catch { throw RenameError.failed(error.localizedDescription) }

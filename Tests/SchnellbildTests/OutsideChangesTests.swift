@@ -85,6 +85,76 @@ final class OutsideChangesTests: XCTestCase {
         await waitUntil({ m.isAt(tree.root) }, timeout: 15)
     }
 
+    /// The folder shown renamed from its title, FSEvents reporting it gone
+    /// while the rename is under way (on disk, its change not applied yet)
+    /// and again after: the pane stays in it under its new name.
+    func testTheFolderShownRenamedByTheAppStaysWhenReportedGone() async throws {
+        let tree = try TempTree(self)
+        try tree.file("Trip/a.jpg")
+        let spy = FileActionsSpy()
+        let m = makeModel(spy)
+        await openAndWait(m, tree.root.appendingPathComponent("Trip"))
+        spy.duringMove = { m.changedOutside(nil, rootChanged: true) }
+        await m.renameCurrentFolder(to: "Iceland")
+        m.changedOutside(nil, rootChanged: true)
+        let renamed = tree.root.appendingPathComponent("Iceland")
+        await stays(m, renamed)
+        XCTAssertEqual(m.names, ["..", "a.jpg"])
+    }
+
+    /// FSEvents reports the folder shown gone, and while the disk is read
+    /// the folder's move reaches the pane (another pane moved it): the pane
+    /// follows the move and stays there.
+    func testTheFolderShownMovedWhileLookedForStaysUnderItsNewPath() async throws {
+        let tree = try TempTree(self)
+        try tree.file("Trip/a.jpg")
+        let trip = tree.root.appendingPathComponent("Trip")
+        let renamed = tree.root.appendingPathComponent("Iceland")
+        let m = makeModel()
+        await openAndWait(m, trip)
+        try FileManager.default.moveItem(at: trip, to: renamed)
+        m.changedOutside(nil, rootChanged: true)
+        m.adopt([.moved(trip, to: renamed)])
+        await waitUntil { m.isAt(renamed) }
+        await stays(m, renamed)
+    }
+
+    /// The folder shown deleted by another program: the folder around it
+    /// opens, also when the report comes while the app renames something
+    /// in another pane.
+    func testTheFolderShownDeletedElsewhereOpensTheFolderAroundIt() async throws {
+        let tree = try TempTree(self)
+        try tree.file("pics/a.jpg")
+        try tree.file("other/b.jpg")
+        let pics = tree.root.appendingPathComponent("pics")
+        let m = makeModel()
+        await openAndWait(m, pics)
+        let spy = FileActionsSpy()
+        let other = makeModel(spy)
+        await openAndWait(other, tree.root.appendingPathComponent("other"))
+        spy.duringMove = {
+            try? FileManager.default.removeItem(at: pics)
+            m.changedOutside(nil, rootChanged: true)
+        }
+        _ = try await other.rename(try XCTUnwrap(other.entries.first { $0.name == "b.jpg" }), to: "c.jpg")
+        await waitUntil { m.isAt(tree.root) }
+
+        let gone = try tree.folder("again/inner")
+        await openAndWait(m, gone)
+        try FileManager.default.removeItem(at: gone.deletingLastPathComponent())
+        m.changedOutside(nil, rootChanged: true)
+        await waitUntil { m.isAt(tree.root) }
+    }
+
+    /// The pane stays at `folder` for a while (a wrong move would come
+    /// within milliseconds: one look at the disk).
+    private func stays(_ m: BrowserModel, _ folder: URL, file: StaticString = #filePath, line: UInt = #line) async {
+        for _ in 0..<50 {
+            guard m.isAt(folder) else { XCTFail("left \(folder.lastPathComponent): \(m.folderURL?.path ?? "none")", file: file, line: line); return }
+            try? await Task.sleep(for: .milliseconds(20))
+        }
+    }
+
     private func run(_ tool: String, _ arguments: String...) throws {
         let process = Process()
         process.executableURL = URL(fileURLWithPath: tool)
