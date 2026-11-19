@@ -1305,10 +1305,18 @@ enum MediaData {
 
     /// An image source for a picture, from disk or from inside an archive.
     static func imageSource(_ url: URL) async -> CGImageSource? {
+        await picture(url)?.source
+    }
+
+    /// An image source for a picture and how many bytes it holds in memory
+    /// (an archive's entry unpacked whole; 0 for a file on disk, which
+    /// ImageIO reads as it needs).
+    static func picture(_ url: URL) async -> (source: CGImageSource, inMemory: Int)? {
         if ArchivePath.isInside(url), ArchivePath.splitChecked(url) != nil {
-            guard let data = try? await ArchiveStore.shared.data(of: url) else { return nil }
-            return CGImageSourceCreateWithData(data as CFData, nil)
+            guard let data = try? await ArchiveStore.shared.data(of: url),
+                  let source = CGImageSourceCreateWithData(data as CFData, nil) else { return nil }
+            return (source, data.count)
         }
-        return CGImageSourceCreateWithURL(url as CFURL, nil)
+        return CGImageSourceCreateWithURL(url as CFURL, nil).map { ($0, 0) }
     }
 }

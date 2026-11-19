@@ -1,6 +1,7 @@
 import XCTest
 import CoreImage
 import AppKit
+import ImageIO
 @testable import Schnellbild
 
 /// Pictures and videos: what auto enhance measures, the size VLC's pictures
@@ -33,6 +34,25 @@ final class MediaTests: XCTestCase {
     /// length, the end of its last frame (here 3.04 s with frames of 0.1 s,
     /// the last one from 3.0 s): both points lie in that frame and before
     /// the end, else the seek lands on the end again and draws nothing.
+    /// A picture unpacked into memory beyond `OpenedPicture.largestHeld`
+    /// isn't held on screen; a small one or a file on disk is. Its frames
+    /// are known either way.
+    func testALargePictureInMemoryIsNotHeld() throws {
+        let data = NSMutableData()
+        let destination = try XCTUnwrap(CGImageDestinationCreateWithData(data, "public.png" as CFString, 1, nil))
+        let context = try XCTUnwrap(CGContext(data: nil, width: 4, height: 4, bitsPerComponent: 8, bytesPerRow: 0,
+                                              space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue))
+        CGImageDestinationAddImage(destination, try XCTUnwrap(context.makeImage()), nil)
+        XCTAssertTrue(CGImageDestinationFinalize(destination))
+        let source = try XCTUnwrap(CGImageSourceCreateWithData(data, nil))
+        let url = URL(fileURLWithPath: "/x/a.zip/a.png")
+        let large = OpenedPicture(url: url, source: source, inMemory: OpenedPicture.largestHeld + 1)
+        XCTAssertNil(large.source)
+        XCTAssertEqual(large.frames, 1)
+        XCTAssertNotNil(OpenedPicture(url: url, source: source, inMemory: 1_000).source)
+        XCTAssertNotNil(OpenedPicture(url: url, source: source, inMemory: 0).source)
+    }
+
     func testARedrawAtTheEndSeeksIntoTheLastFrame() {
         for duration in [3.04, 3.1, 3.0, 3.0999] {
             var seen: Set<Double> = []
