@@ -71,7 +71,45 @@ final class MapTileStore {
 /// ready. Drag or scroll with two fingers to move, pinch, ⌘-scroll or
 /// double-click to zoom.
 @MainActor
-final class MapSurfaceView: NSView {
+/// A map view whose camera a new size may move into its limits (`held`);
+/// the owner of the camera hears what it holds then.
+protocol CameraHolding: NSView {
+    var camera: MapCamera { get set }
+    var onCameraChange: ((MapCamera) -> Void)? { get }
+    var ownerCamera: (() -> MapCamera)? { get }
+    func held(_ c: MapCamera) -> MapCamera
+}
+
+extension CameraHolding {
+    /// Holds the camera in the limits of the view's size; false when it was in them.
+    func holdCamera() -> Bool {
+        let held = held(camera)
+        guard held != camera else { return false }
+        camera = held
+        // Reported after SwiftUI's layout pass, which this runs in: the
+        // camera the owner holds then (it may have set another meanwhile),
+        // held in this size
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            guard let owner = self.ownerCamera else { self.onCameraChange?(held); return }
+            let wanted = owner()
+            let now = self.held(wanted)
+            if now != self.camera { self.camera = now }
+            if now != wanted { self.onCameraChange?(now) }
+        }
+        return true
+    }
+}
+
+extension NSView {
+    /// A point of the view (origin top left) from an event.
+    func point(_ event: NSEvent) -> CGPoint {
+        let p = convert(event.locationInWindow, from: nil)
+        return CGPoint(x: p.x, y: bounds.height - p.y)
+    }
+}
+
+final class MapSurfaceView: NSView, CameraHolding {
     var camera = MapCamera.world { didSet { if camera != oldValue { layoutMap() } } }
     var interactive = true
     /// The camera after a move by the user (drag, scroll, pinch, double click)
@@ -125,6 +163,9 @@ final class MapSurfaceView: NSView {
     private var scale: CGFloat { window?.backingScaleFactor ?? NSScreen.main?.backingScaleFactor ?? 2 }
     var viewport: MapViewport { MapViewport(camera: camera, size: bounds.size) }
 
+    /// The camera within the map's limits in this size.
+    func held(_ c: MapCamera) -> MapCamera { MapViewport(camera: c, size: bounds.size).clamped() }
+
     override func viewDidChangeEffectiveAppearance() {
         super.viewDidChangeEffectiveAppearance()
         tileLayers.values.forEach { $0.contents = nil }
@@ -141,23 +182,7 @@ final class MapSurfaceView: NSView {
     override func setFrameSize(_ newSize: NSSize) {
         super.setFrameSize(newSize)
         tileLayer.frame = bounds
-        let held = viewport.clamped()
-        if held != camera {
-            camera = held
-            // Reported after SwiftUI's layout pass, which this runs in: the
-            // camera the owner holds then (it may have set another meanwhile),
-            // held in this size
-            DispatchQueue.main.async { [weak self] in
-                guard let self else { return }
-                guard let owner = self.ownerCamera else { self.onCameraChange?(held); return }
-                let wanted = owner()
-                let now = MapViewport(camera: wanted, size: self.bounds.size).clamped()
-                if now != self.camera { self.camera = now }
-                if now != wanted { self.onCameraChange?(now) }
-            }
-        } else {
-            layoutMap()
-        }
+        if !holdCamera() { layoutMap() }
         scheduleLabels()
     }
 
@@ -296,7 +321,7 @@ final class MapSurfaceView: NSView {
         animation?.invalidate()
         animation = nil
         animationTarget = nil
-        let held = MapViewport(camera: next, size: bounds.size).clamped()
+        let held = held(next)
         guard held != camera else { return }
         camera = held
         onCameraChange?(held)
@@ -337,12 +362,6 @@ final class MapSurfaceView: NSView {
     func zoom(by steps: Double, at point: CGPoint? = nil) {
         let anchor = point ?? CGPoint(x: bounds.midX, y: bounds.midY)
         animate(to: viewport.zoomed(to: (animationTarget?.zoom ?? camera.zoom) + steps, keeping: anchor))
-    }
-
-    /// A point of the view (origin top left) from an event.
-    private func point(_ event: NSEvent) -> CGPoint {
-        let p = convert(event.locationInWindow, from: nil)
-        return CGPoint(x: p.x, y: bounds.height - p.y)
     }
 
     override func mouseDown(with event: NSEvent) {
