@@ -527,7 +527,10 @@ enum MatroskaSubtitles {
             let end = cluster.size.map { min(cluster.dataStart + $0, segmentEnd) } ?? segmentEnd
             var clusterTime: UInt64 = 0
             var child = cluster.dataStart
+            // A cluster of unknown size (a live recording) ends where the next cluster begins
+            var next: UInt64?
             while child < end, let element = reader.header(at: child) {
+                if cluster.size == nil, element.id == 0x1F43B675 { next = child; break }
                 blocks += 1
                 if blocks > largestBlocks { break clusters }
                 if blocks % 256 == 0, over() { return nil }
@@ -549,8 +552,12 @@ enum MatroskaSubtitles {
                 }
                 child = element.dataStart + size
             }
-            if cluster.size == nil { break }
-            clusterAt = end
+            if cluster.size == nil {
+                guard let next else { break }
+                clusterAt = next
+            } else {
+                clusterAt = end
+            }
         }
         if over() { return nil }
         lines.sort { $0.start < $1.start }

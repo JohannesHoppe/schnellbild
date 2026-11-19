@@ -62,9 +62,11 @@ final class SubtitleReaderFuzzTests: XCTestCase {
     }
 
     /// A Matroska file: track 1 subtitles (`codec`), track 2 video,
-    /// optionally a SeekHead and Cues, then the clusters.
+    /// optionally a SeekHead and Cues, then the clusters (of unknown size,
+    /// as a live recording writes them, with `unknownSizes`).
     private func matroska(codec: String = "S_TEXT/UTF8", codecPrivate: String? = nil,
-                          seekHead: [UInt8]? = nil, cues: [UInt8]? = nil, clusters: [Cluster]) -> [UInt8] {
+                          seekHead: [UInt8]? = nil, cues: [UInt8]? = nil, clusters: [Cluster],
+                          unknownSizes: Bool = false) -> [UInt8] {
         let header = element(0x1A45DFA3, number(0x4282, 0))
         let info = element(0x1549A966, number(0x2AD7B1, 1_000_000))
         var subtitle = number(0xD7, 1) + number(0x83, 0x11) + element(0x86, Array(codec.utf8))
@@ -83,7 +85,8 @@ final class SubtitleReaderFuzzTests: XCTestCase {
             for _ in 0..<cluster.frames {
                 content += element(0xA3, [0x82, 0, 0, 0x80] + [UInt8](repeating: 0x55, count: cluster.frameSize))
             }
-            body += element(0x1F43B675, content)
+            body += unknownSizes ? [0x1F, 0x43, 0xB6, 0x75, 0x01] + [UInt8](repeating: 0xFF, count: 7) + content
+                                 : element(0x1F43B675, content)
         }
         return header + element(0x18538067, body)
     }
@@ -240,6 +243,17 @@ final class SubtitleReaderFuzzTests: XCTestCase {
         // 360 clusters passed with one read each; the last 40 s (reach) read
         // through the window: about 1.5 reads a cluster
         XCTAssertLessThan(source.reads, 360 + 40 * 4, "the clusters before the time are passed by their heads")
+    }
+
+    /// Clusters of unknown size (a live recording): each ends where the
+    /// next begins, the lines of every cluster are read.
+    func testClustersOfUnknownSizeAreReadOneAfterTheOther() throws {
+        let clusters = (0..<4).map { second in
+            Cluster(time: UInt64(second) * 1000, lines: [(100, 800, "LINE \(second)")], frames: 3, frameSize: 100)
+        }
+        let file = matroska(clusters: clusters, unknownSizes: true)
+        let read = try XCTUnwrap(SubtitleReader.lines(in: MemoryBytes(file), subtitleIndex: 0, from: 0, to: 4))
+        XCTAssertEqual(read.lines.map(\.text), [["LINE 0"], ["LINE 1"], ["LINE 2"], ["LINE 3"]])
     }
 
     /// Past its budget (or cancelled) a read gives up: VLC takes the track.
