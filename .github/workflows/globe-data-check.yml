@@ -7,7 +7,7 @@ name: Globe data check
 
 on:
   push:
-    paths: [ 'Scripts/build_globe_data.py', 'Scripts/globe_data.env', '.github/workflows/globe-data-check.yml' ]
+    paths: [ 'Scripts/build_globe_data.py', 'Scripts/_build_common.py', 'Scripts/globe_data.env', '.github/workflows/globe-data-check.yml' ]
   workflow_dispatch:
 
 permissions:

@@ -54,6 +54,10 @@ import zlib
 import urllib.error
 import urllib.request
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))  # python3 -I leaves Scripts/ off the path
+sys.dont_write_bytecode = True
+from _build_common import RELEASES, read_env, sha256_file  # noqa: E402
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CACHE = os.path.join(ROOT, "build", "globe-cache")
 OUT = os.path.join(ROOT, "build", "globe")
@@ -61,16 +65,6 @@ OUT = os.path.join(ROOT, "build", "globe")
 ROWS, COLUMNS = 21600, 43200      # ETOPO 2022 at 30 arc-seconds, south to north, west to east
 STRIDE, BLOCK = 5, 3              # every fifth sample, 3 × 3 of them per cell (15 × 15 source cells)
 BANDS = 8
-
-
-def env():
-    values = {}
-    for line in open(os.path.join(ROOT, "Scripts", "globe_data.env")):
-        line = line.strip()
-        if line and not line.startswith("#"):
-            key, _, value = line.partition("=")
-            values[key] = value
-    return values
 
 
 def download(url, path):
@@ -94,10 +88,10 @@ def obtain(cfg, name, want, url):
     """build/globe-cache/<name>: kept while its SHA-256 is <want>, else from the archive
     (SOURCE_RELEASE_TAG), else from <url>. Without a pin (<want> empty) only from <url>."""
     path = os.path.join(CACHE, name)
-    if os.path.exists(path) and want and sha256(path) != want:
+    if os.path.exists(path) and want and sha256_file(path) != want:
         os.remove(path)
     if not os.path.exists(path) and want and not UPSTREAM:
-        archived = f"https://github.com/JohannesHoppe/schnellbild/releases/download/{cfg['SOURCE_RELEASE_TAG']}/{name}"
+        archived = f"{RELEASES}/{cfg['SOURCE_RELEASE_TAG']}/{name}"
         try:
             download(archived, path)
         except (urllib.error.URLError, OSError) as e:
@@ -105,16 +99,8 @@ def obtain(cfg, name, want, url):
     return download(url, path)
 
 
-def sha256(path):
-    h = hashlib.sha256()
-    with open(path, "rb") as f:
-        for chunk in iter(lambda: f.read(1 << 20), b""):
-            h.update(chunk)
-    return h.hexdigest()
-
-
 def pinned(path, want, name):
-    got = sha256(path)
+    got = sha256_file(path)
     if want and got != want:
         sys.exit(f"!! {name}: SHA-256 {got}, globe_data.env pins {want}")
     if not want:
@@ -689,11 +675,11 @@ def clouds_jpeg(path, quality):
     return jpeg(width, height, [[list(r) for r in rows]], quality)
 
 
-def read_tiff_deflate_rows(path):
-    """A baseline TIFF, little-endian, 8 bits per sample, Adobe Deflate (8)
-    or none, one row per strip, no predictor: width, height, samples and a
-    function giving row y (decompressed on demand, so 700 MB of RGB never
-    sit in memory at once)."""
+def tiff_strips(path, compressions, name):
+    """A baseline TIFF, little-endian, 8 bits per sample, uncompressed or one of
+    <compressions> (<name> in the message), no predictor, one row per strip: its
+    bytes, width, height, samples per pixel, compression and the strips' starts
+    and lengths."""
     data = open(path, "rb").read()
     if data[:4] != b"II*\0":
         sys.exit(f"!! {path}: not a little-endian TIFF")
@@ -710,10 +696,17 @@ def read_tiff_deflate_rows(path):
     width, height = tags[256][0], tags[257][0]
     samples = tags.get(277, (1,))[0]
     compression = tags.get(259, (1,))[0]
-    if any(b != 8 for b in tags.get(258, (8,))) or compression not in (1, 8, 32946) or tags.get(317, (1,))[0] != 1 \
+    if any(b != 8 for b in tags.get(258, (8,))) or compression not in (1,) + compressions or tags.get(317, (1,))[0] != 1 \
             or tags.get(278, (height,))[0] != 1:
-        sys.exit(f"!! {path}: only 8-bit, uncompressed or Deflate without predictor, one row per strip")
-    starts, lengths = tags[273], tags[279]
+        sys.exit(f"!! {path}: only 8-bit, uncompressed or {name} without predictor, one row per strip")
+    return data, width, height, samples, compression, tags[273], tags[279]
+
+
+def read_tiff_deflate_rows(path):
+    """A baseline TIFF with Adobe Deflate (8) or none (tiff_strips): width,
+    height, samples and a function giving row y (decompressed on demand, so
+    700 MB of RGB never sit in memory at once)."""
+    data, width, height, samples, compression, starts, lengths = tiff_strips(path, (8, 32946), "Deflate")
 
     def row(y):
         strip = data[starts[y]:starts[y] + lengths[y]]
@@ -969,33 +962,11 @@ def lzw_decode(data):
 
 
 def read_tiff_strips(path):
-    """A baseline TIFF (little-endian, 8 bits per sample, LZW or none, one
-    strip per row as NASA's GeoTIFFs have it): width, height, samples per
-    pixel and the rows as bytes, from the top."""
-    data = open(path, "rb").read()
-    if data[:4] != b"II*\0":
-        sys.exit(f"!! {path}: not a little-endian TIFF")
-    offset = struct.unpack("<I", data[4:8])[0]
-    count = struct.unpack("<H", data[offset:offset + 2])[0]
-    tags = {}
-    for k in range(count):
-        tag, kind, n, value = struct.unpack("<HHII", data[offset + 2 + 12 * k:offset + 14 + 12 * k])
-        size = {3: 2, 4: 4}.get(kind)
-        if size is None:
-            continue
-        if n * size <= 4:
-            raw = data[offset + 10 + 12 * k:offset + 10 + 12 * k + n * size]
-        else:
-            raw = data[value:value + n * size]
-        tags[tag] = struct.unpack("<" + ("H" if size == 2 else "I") * n, raw)
-    width, height = tags[256][0], tags[257][0]
-    samples = tags.get(277, (1,))[0]
-    compression = tags.get(259, (1,))[0]
-    if any(b != 8 for b in tags.get(258, (8,))) or compression not in (1, 5) or tags.get(317, (1,))[0] != 1 \
-            or tags.get(278, (height,))[0] != 1:
-        sys.exit(f"!! {path}: only 8-bit, uncompressed or LZW without predictor, one row per strip")
+    """A baseline TIFF with LZW or none (tiff_strips), as NASA's GeoTIFFs have
+    it: width, height, samples per pixel and the rows as bytes, from the top."""
+    data, width, height, samples, compression, starts, lengths = tiff_strips(path, (5,), "LZW")
     rows = []
-    for start, length in zip(tags[273], tags[279]):
+    for start, length in zip(starts, lengths):
         strip = data[start:start + length]
         row = lzw_decode(strip) if compression == 5 else strip
         if len(row) < width * samples:
@@ -1070,7 +1041,7 @@ Made by Scripts/build_globe_data.py of https://github.com/JohannesHoppe/schnellb
 def main():
     check = "--check" in sys.argv
     extract = sys.argv[sys.argv.index("--extract") + 1] if "--extract" in sys.argv else None
-    cfg = env()
+    cfg = read_env("globe_data.env")
 
     bands = [etopo_band(cfg, band) for band in range(BANDS)]
     sky = obtain(cfg, os.path.basename(cfg["SKY_URL"]), cfg["SKY_SHA256"], cfg["SKY_URL"])
@@ -1089,8 +1060,8 @@ def main():
         for p in bands + [sky, lights, satellite, clouds]:
             with open(p, "rb") as src, open(os.path.join(extract, os.path.basename(p)), "wb") as dst:
                 dst.write(src.read())
-            print(f"{os.path.basename(p)} {os.path.getsize(p)} {sha256(p)}")
-        print("ETOPO_BANDS_SHA256=" + ",".join(sha256(p) for p in bands))
+            print(f"{os.path.basename(p)} {os.path.getsize(p)} {sha256_file(p)}")
+        print("ETOPO_BANDS_SHA256=" + ",".join(sha256_file(p) for p in bands))
         return
 
     os.makedirs(OUT, exist_ok=True)
@@ -1116,7 +1087,7 @@ def main():
                               satellite=cfg["SATELLITE_FILE"], clouds=cfg["CLOUDS_FILE"]))
     for key in ("HEIGHTMAP_FILE", "SKYMAP_FILE", "CITYLIGHTS_FILE", "CLOUDS_FILE", "SATELLITE_FILE"):
         p = os.path.join(OUT, cfg[key])
-        print(f"{key[:-5]}_SHA256={sha256(p)}  ({os.path.getsize(p)} bytes)")
+        print(f"{key[:-5]}_SHA256={sha256_file(p)}  ({os.path.getsize(p)} bytes)")
 
 
 if __name__ == "__main__":
