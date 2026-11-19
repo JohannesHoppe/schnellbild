@@ -11,20 +11,24 @@ final class AboutUITests: SchnellbildUITestCase {
     private var licenseText: XCUIElement { aboutWindow.textViews["aboutLicenseText"].firstMatch }
     private var licenseScroll: XCUIElement { aboutWindow.scrollViews["aboutLicenseScroll"].firstMatch }
 
-    /// Where the text's top lies with the view at the top (the scroll view
-    /// reaches a little above the text's own top; 20 points on CI).
-    private var topOffset: CGFloat = 0
-    /// How far the license text is scrolled, in points: its top above the
-    /// top of the view it scrolls in, from where it starts.
-    private var scrolled: CGFloat { licenseScroll.frame.minY - licenseText.frame.minY - topOffset }
+    /// How far the license text is scrolled, in points: the top of the
+    /// view in the text, as the app reports it under --ui-testing (the
+    /// scroll view's value); 0 is the text's top at the view's top, where
+    /// the window opens and where ⌘↑ goes.
+    private var scrolled: CGFloat { CGFloat(Double((licenseScroll.value as? String) ?? "") ?? .nan) }
+
+    /// Where the text's frame lies against the scroll view's, for the log.
+    private func printFrames(_ when: String) {
+        print("\(when): scrolled \(scrolled), text frame \(licenseText.frame), scroll view frame \(licenseScroll.frame)")
+    }
 
     private func openAbout(appearance: String) {
         launch(extra: ["--appearance=\(appearance)"])
         clickMenu("Schnellbild", "About Schnellbild")
         XCTAssertTrue(aboutWindow.waitForExistence(timeout: 10), "the About window")
         XCTAssertTrue(licenseText.waitForExistence(timeout: 10), "the license text")
-        topOffset = licenseScroll.frame.minY - licenseText.frame.minY
-        XCTAssertLessThan(abs(topOffset), 40, "the text starts at the top of its view")
+        eventually("the text starts at the top of its view") { abs(self.scrolled) < 1 }
+        printFrames("opened")
     }
 
     /// A section of the text, by its id, in the list beside it.
@@ -85,8 +89,9 @@ final class AboutUITests: SchnellbildUITestCase {
         licenseScroll.coordinate(withNormalizedOffset: CGVector(dx: 0.02, dy: 0.5)).click()
         aboutWindow.typeKey(.upArrow, modifierFlags: .command)
         let deadline = Date().addingTimeInterval(5)
-        while abs(scrolled) >= 5, Date() < deadline { RunLoop.current.run(until: Date().addingTimeInterval(0.2)) }
-        XCTAssertLessThan(abs(scrolled), 5, "back at the top")
+        while !(abs(scrolled) < 1), Date() < deadline { RunLoop.current.run(until: Date().addingTimeInterval(0.2)) }
+        printFrames("after ⌘↑")
+        XCTAssertLessThan(abs(scrolled), 1, "back at the top")
     }
 
     func testTheWindowInDarkMode() throws {
