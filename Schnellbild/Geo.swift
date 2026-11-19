@@ -1,6 +1,7 @@
 import Foundation
 import AVFoundation
 import ImageIO
+import OfflineMap
 
 /// A place on Earth (WGS 84, as cameras and phones write it).
 struct GeoPoint: Hashable, Sendable {
@@ -14,16 +15,12 @@ struct GeoPoint: Hashable, Sendable {
         self.longitude = longitude
     }
 
+    /// The same place for the offline map.
+    var coordinate: Coordinate { Coordinate(latitude: latitude, longitude: longitude) }
+
     /// The great-circle distance in metres (haversine, on a sphere of the
     /// Earth's mean radius: within half a percent of the ellipsoid's).
-    func distance(to other: GeoPoint) -> Double {
-        let radius = 6_371_008.8
-        let φ1 = latitude * .pi / 180, φ2 = other.latitude * .pi / 180
-        let Δφ = (other.latitude - latitude) * .pi / 180
-        let Δλ = (other.longitude - longitude) * .pi / 180
-        let a = sin(Δφ / 2) * sin(Δφ / 2) + cos(φ1) * cos(φ2) * sin(Δλ / 2) * sin(Δλ / 2)
-        return 2 * radius * atan2(sqrt(a), sqrt(max(0, 1 - a)))
-    }
+    func distance(to other: GeoPoint) -> Double { coordinate.distance(to: other.coordinate) }
 
     /// "48.1372° N, 11.5756° E" (four decimals: about 10 m).
     var text: String {

@@ -41,12 +41,12 @@ struct AtlasItem: Identifiable, Equatable, Sendable {
         // it reads as the camera showed it. A time from a UTC source (a movie
         // header, GPS) has no offset of its own: `AtlasItems.prepared` lends it one.
         return AtlasItem(url: url, isVideo: isVideo,
-                         coordinate: place.map { Coordinate(latitude: $0.latitude, longitude: $0.longitude) },
+                         coordinate: place.map(\.coordinate),
                          date: time?.date ?? modified ?? .distantPast,
                          offset: time?.isCameraClock == false ? time?.offset : nil,
                          hasCaptureTime: time != nil,
                          timeIsUTC: time.map { !$0.isCameraClock && $0.offset == nil } ?? false,
-                         track: facts?.track?.points.map { Coordinate(latitude: $0.point.latitude, longitude: $0.point.longitude) } ?? [])
+                         track: facts?.track?.points.map(\.point.coordinate) ?? [])
     }
 }
 

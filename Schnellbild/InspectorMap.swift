@@ -18,7 +18,7 @@ struct BundledGeography: OfflineGeographyProvider {
 
     func placeName(near point: GeoPoint) async -> String? {
         guard let places = renderer.places else { return nil }
-        let coordinate = Coordinate(latitude: point.latitude, longitude: point.longitude)
+        let coordinate = point.coordinate
         // The index unpacks its cells on first use: off the main thread
         return await Blocking.run(.userInitiated) { places.nearby(coordinate)?.description() }
     }
@@ -42,12 +42,12 @@ struct InspectorMap: View {
     }
 
     static func camera(for point: GeoPoint) -> MapCamera {
-        MapCamera(center: Coordinate(latitude: point.latitude, longitude: point.longitude), zoom: BundledGeography.zoom)
+        MapCamera(center: point.coordinate, zoom: BundledGeography.zoom)
     }
 
     var body: some View {
         MapView(camera: $camera,
-                markers: [MapMarker(id: "photo", coordinate: Coordinate(latitude: point.latitude, longitude: point.longitude))],
+                markers: [MapMarker(id: "photo", coordinate: point.coordinate)],
                 interactive: false, renderer: renderer)
             .onChange(of: point) { _, new in camera = Self.camera(for: new) }
             .accessibilityElement(children: .ignore)

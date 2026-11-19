@@ -372,7 +372,7 @@ final class AtlasModel: ObservableObject {
                     guard let facts = found[file.url] else { continue }
                     self.known[file.url] = Known(modified: file.modified, facts: facts)
                     if let point = facts.place?.location.point {
-                        self.folderPlaces[file.url.deletingLastPathComponent().path] = Coordinate(latitude: point.latitude, longitude: point.longitude)
+                        self.folderPlaces[file.url.deletingLastPathComponent().path] = point.coordinate
                     }
                 }
                 self.done += chunk.count
