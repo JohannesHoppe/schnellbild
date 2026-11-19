@@ -1002,9 +1002,11 @@ struct DropZoneDelegate: DropDelegate {
     }
     func dropEntered(info: DropInfo) {
         BrowserModel.testLog("\(Date().timeIntervalSince1970) window drop entered at \(info.location)")
+        FinderDrop.peek()
         zone = zone(at: info)
     }
     func dropUpdated(info: DropInfo) -> DropProposal? {
+        FinderDrop.peek()
         zone = Self.zone(atX: info.location.x, width: width, mouseDown: NSEvent.pressedMouseButtons != 0)
         return DropProposal(operation: .copy)
     }
@@ -1461,6 +1463,7 @@ enum FinderDrop {
     }
 
     static func update(_ window: WindowModel) {
+        peek()
         guard window.active.slideshow == nil else { return }
         window.dropZone = zone(in: window, mouseDown: NSEvent.pressedMouseButtons != 0)
     }
@@ -1473,28 +1476,23 @@ enum FinderDrop {
         return fileURLs(info) { urls in window.active.openDropped(urls, slideshow: target == .slideshow) }
     }
 
-    /// The files dropped, read from the drag pasteboard while the drop is
-    /// being performed (the sandbox opens them to the app through it). The
-    /// item providers load later, after AppKit may have ended the session:
-    /// on CI (macOS 15) a Finder drop's provider failed now and then with
-    /// "Couldn't load data for type public.file-url" (NSItemProviderErrorDomain
-    /// -1000), and the drop did nothing. They are the way only when the
-    /// pasteboard has no file URL.
+    /// The files dropped, read from the drag pasteboard: while the drag is
+    /// over the window (`peek`, once per drag) and again as it is dropped.
+    /// On CI (macOS 15) a Finder drop now and then had the file URL's type on
+    /// its pasteboard but no data for it by the time it was dropped (neither
+    /// from the pasteboard nor from its item provider, NSItemProviderErrorDomain
+    /// -1000, nor a second later), and the drop did nothing. The item
+    /// providers are the way only when the pasteboard never had a file URL.
     static func fileURLs(_ info: DropInfo, then open: @escaping @MainActor ([URL]) -> Void) -> Bool {
-        let urls = NSPasteboard(name: .drag).readObjects(forClasses: [NSURL.self], options: [.urlReadingFileURLsOnly: true]) as? [URL] ?? []
-        BrowserModel.testLog("\(Date().timeIntervalSince1970) drop: \(urls.map(\.lastPathComponent)) from the drag pasteboard (change \(NSPasteboard(name: .drag).changeCount))")
+        let pasteboard = NSPasteboard(name: .drag)
+        var urls = read(pasteboard)
+        BrowserModel.testLog("\(Date().timeIntervalSince1970) drop: \(urls.map(\.lastPathComponent)) from the drag pasteboard (change \(pasteboard.changeCount)), "
+                             + "seen on the way \(seen.change == pasteboard.changeCount ? seen.urls.map(\.lastPathComponent) : [])")
+        if urls.isEmpty, seen.change == pasteboard.changeCount { urls = seen.urls }
+        seen = (-1, [])
         if !urls.isEmpty {
             DispatchQueue.main.async { open(urls) }
             return true
-        }
-        let pasteboard = NSPasteboard(name: .drag)
-        BrowserModel.testLog("\(Date().timeIntervalSince1970) drop: the drag pasteboard has \(pasteboard.pasteboardItems?.count ?? -1) items, "
-                             + "types \(pasteboard.types?.map(\.rawValue) ?? []), file URL \(pasteboard.string(forType: .fileURL) ?? "none"), change \(pasteboard.changeCount)")
-        for delay in [0.2, 0.5, 1.0] {
-            DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
-                let later = pasteboard.readObjects(forClasses: [NSURL.self], options: [.urlReadingFileURLsOnly: true]) as? [URL] ?? []
-                BrowserModel.testLog("\(Date().timeIntervalSince1970) drop: after \(delay) s the drag pasteboard has \(later.map(\.lastPathComponent)), change \(pasteboard.changeCount)")
-            }
         }
         guard let provider = info.itemProviders(for: [.fileURL]).first else { return false }
         _ = provider.loadObject(ofClass: URL.self) { url, error in
@@ -1503,6 +1501,24 @@ enum FinderDrop {
             DispatchQueue.main.async { open([url]) }
         }
         return true
+    }
+
+    /// The files of the drag going on, by its pasteboard's change count.
+    @MainActor private static var seen: (change: Int, urls: [URL]) = (-1, [])
+
+    /// Reads the files of a drag from outside while it is over the window,
+    /// once per drag (until it has them).
+    @MainActor static func peek() {
+        let pasteboard = NSPasteboard(name: .drag)
+        guard pasteboard.changeCount != seen.change else { return }
+        let urls = read(pasteboard)
+        guard !urls.isEmpty else { return }
+        seen = (pasteboard.changeCount, urls)
+        BrowserModel.testLog("\(Date().timeIntervalSince1970) drag over the window: \(urls.map(\.lastPathComponent)) (change \(pasteboard.changeCount))")
+    }
+
+    private static func read(_ pasteboard: NSPasteboard) -> [URL] {
+        pasteboard.readObjects(forClasses: [NSURL.self], options: [.urlReadingFileURLsOnly: true]) as? [URL] ?? []
     }
 }
 
