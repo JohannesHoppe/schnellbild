@@ -1000,7 +1000,10 @@ struct DropZoneDelegate: DropDelegate {
     func validateDrop(info: DropInfo) -> Bool {
         info.hasItemsConforming(to: [.fileURL]) && !info.hasItemsConforming(to: [TileDrag.type])
     }
-    func dropEntered(info: DropInfo) { zone = zone(at: info) }
+    func dropEntered(info: DropInfo) {
+        BrowserModel.testLog("\(Date().timeIntervalSince1970) window drop entered at \(info.location)")
+        zone = zone(at: info)
+    }
     func dropUpdated(info: DropInfo) -> DropProposal? {
         zone = Self.zone(atX: info.location.x, width: width, mouseDown: NSEvent.pressedMouseButtons != 0)
         return DropProposal(operation: .copy)
@@ -1013,8 +1016,10 @@ struct DropZoneDelegate: DropDelegate {
         // Once more after AppKit has finished the drag session.
         DispatchQueue.main.async { [zone = $zone] in zone.wrappedValue = nil }
         let providers = info.itemProviders(for: [.fileURL])
+        BrowserModel.testLog("\(Date().timeIntervalSince1970) window drop at \(info.location): \(providers.count) items")
         guard let provider = providers.first else { return false }
-        _ = provider.loadObject(ofClass: URL.self) { url, _ in
+        _ = provider.loadObject(ofClass: URL.self) { url, error in
+            BrowserModel.testLog("\(Date().timeIntervalSince1970) window drop: \(url?.lastPathComponent ?? "no URL, \(String(describing: error))")")
             guard let url else { return }
             DispatchQueue.main.async { onDrop([url], target) }
         }
@@ -1471,8 +1476,10 @@ enum FinderDrop {
         let target = zone(in: window, mouseDown: true) ?? .browse
         window.dropZone = nil
         DispatchQueue.main.async { window.dropZone = nil }   // once more after AppKit ends the session
+        BrowserModel.testLog("\(Date().timeIntervalSince1970) Finder drop onto a pane at \(info.location)")
         guard let provider = info.itemProviders(for: [.fileURL]).first else { return false }
-        _ = provider.loadObject(ofClass: URL.self) { url, _ in
+        _ = provider.loadObject(ofClass: URL.self) { url, error in
+            BrowserModel.testLog("\(Date().timeIntervalSince1970) Finder drop: \(url?.lastPathComponent ?? "no URL, \(String(describing: error))")")
             guard let url else { return }
             DispatchQueue.main.async { window.active.openDropped([url], slideshow: target == .slideshow) }
         }
