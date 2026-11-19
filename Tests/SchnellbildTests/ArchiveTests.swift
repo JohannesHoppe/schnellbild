@@ -1,4 +1,5 @@
 import XCTest
+import VLCFrames
 @testable import Schnellbild
 
 /// Archives as folders: names, reading RAR (UnRAR) and ZIP / 7z
@@ -56,7 +57,7 @@ final class ArchiveTests: XCTestCase {
         XCTAssertEqual(ArchiveName.format(of: "x.zip.crdownload"), .zip)
         XCTAssertNil(ArchiveName.format(of: "notes.part"))
         XCTAssertNil(ArchiveName.format(of: "._x.zip"))
-        XCTAssertTrue(ArchiveName.isPartial("x.rar.part"))
+        XCTAssertTrue(DownloadName.isPartial("x.rar.part"))
     }
 
     func testPathsRunThroughTheArchive() {

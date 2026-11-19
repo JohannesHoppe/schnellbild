@@ -46,8 +46,8 @@ public struct LibVLCVideo {
     }
 }
 
-/// One picture of a video, for a tile: VLC decodes a frame at `position` of
-/// the video into memory. Every libVLC call runs on the grab's own queue and
+/// One picture of a video, for a tile: VLC decodes a frame at `position`
+/// (30 %) of the video into memory. Every libVLC call runs on the grab's own queue and
 /// the callbacks never wait for the main thread: stopping a player holds its
 /// lock until its threads have ended, so a picture callback waiting for the
 /// main thread while the main thread asks that player anything would hang
@@ -101,15 +101,18 @@ public final class VLCFrameGrab: @unchecked Sendable {   // state behind `lock`
 
     deinit { pixels?.deallocate() }
 
+    /// Where in the video the frame is taken, as a share of its length.
+    private static let position = 0.3
+
     /// A frame `width` pixels wide (the height follows the video), or nil
     /// (see `grab`).
-    public static func frame(of url: URL, width: Int, at position: Double = 0.3, timeout: Double = 10) async -> CGImage? {
-        await grab(of: url, width: width, at: position, timeout: timeout).image
+    public static func frame(of url: URL, width: Int, timeout: Double = 10) async -> CGImage? {
+        await grab(of: url, width: width, timeout: timeout).image
     }
 
     /// A frame `width` pixels wide, or why there is none: refused, VLC
     /// failed or ended without one, `timeout` seconds passed, cancelled.
-    public static func grab(of url: URL, width: Int, at position: Double = 0.3, timeout: Double = 10) async -> Outcome {
+    public static func grab(of url: URL, width: Int, timeout: Double = 10) async -> Outcome {
         let grab = VLCFrameGrab(width: width)
         return await withTaskCancellationHandler {
             await withCheckedContinuation { (continuation: CheckedContinuation<Outcome, Never>) in
@@ -118,7 +121,7 @@ public final class VLCFrameGrab: @unchecked Sendable {   // state behind `lock`
                 if !cancelled { grab.done = { continuation.resume(returning: $0) } }
                 grab.lock.unlock()
                 guard !cancelled else { return continuation.resume(returning: .cancelled) }
-                grab.queue.async { grab.start(url: url, position: position) }
+                grab.queue.async { grab.start(url: url) }
                 grab.queue.asyncAfter(deadline: .now() + timeout) { grab.finish(with: .timedOut) }
             }
         } onCancel: {
@@ -126,7 +129,7 @@ public final class VLCFrameGrab: @unchecked Sendable {   // state behind `lock`
         }
     }
 
-    private func start(url: URL, position: Double) {
+    private func start(url: URL) {
         lock.lock()
         let over = finished
         lock.unlock()
@@ -145,7 +148,7 @@ public final class VLCFrameGrab: @unchecked Sendable {   // state behind `lock`
         // Where to start: VLC reads the length from the file (no main thread
         // involved); without one the first picture
         let length = media.lengthWait(until: Date().addingTimeInterval(3)).intValue
-        if length > 0 { media.addOption(":start-time=\(Double(length) / 1000 * position)") }
+        if length > 0 { media.addOption(":start-time=\(Double(length) / 1000 * Self.position)") }
         let player = VLCMediaPlayer()
         player.media = media
         guard let native = LibVLCVideo.nativePlayer(of: player) else { return finish(with: .failed("no native player")) }

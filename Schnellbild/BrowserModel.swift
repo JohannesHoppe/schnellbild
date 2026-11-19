@@ -5387,7 +5387,7 @@ final class BrowserModel: ObservableObject {
     func canRename(_ entry: GridEntry) -> Bool {
         guard canChange(entry) else { return false }
         // (by the name the download will have: "x.7z.001.part" is a volume too)
-        let name = ArchiveName.finalName(of: entry.name).lowercased()
+        let name = DownloadName.finalName(of: entry.name).lowercased()
         return !(entry.isArchive && (ArchiveName.rarPart(of: name) != nil || name.hasSuffix(".001")))
     }
 
@@ -5425,7 +5425,7 @@ final class BrowserModel: ObservableObject {
         let new = old.deletingLastPathComponent().appendingPathComponent(name, isDirectory: isFolder)
         if archive, ArchiveName.format(of: name) != ArchiveName.format(of: old.lastPathComponent) {
             // The ending of its format (not a download's ".part")
-            let final = ArchiveName.finalName(of: old.lastPathComponent)
+            let final = DownloadName.finalName(of: old.lastPathComponent)
             throw RenameError.changesArchiveFormat((final as NSString).pathExtension)
         }
         if entry.kind != .folder, !Self.keepsKind(entry.kind, renaming: old, to: new) {
