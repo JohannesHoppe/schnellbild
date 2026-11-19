@@ -245,7 +245,7 @@ extension BrowserModel {
             apply(result.changes)
             // The folder shown went along (its rename undone): follow it;
             // else what went to another folder leaves this one's listing
-            if !followFolder(through: result.changes) { dropWhatLeft(keeping: keep) }
+            followOrDrop(result.changes, keeping: keep)
             // What came back (out of the Trash, a copy made again) is read anew
             let folders = result.folders + result.changes.compactMap { change in
                 change.destination.map { URL(fileURLWithPath: ($0 as NSString).deletingLastPathComponent, isDirectory: true) }

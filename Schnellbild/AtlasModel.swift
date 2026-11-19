@@ -325,7 +325,8 @@ final class AtlasModel: ObservableObject {
     /// folder; then one file of every folder not yet sampled (so every place
     /// shows early); then the folders with a place in view; then the rest
     /// in the pane's order.
-    func nextChunk(size: Int = AtlasModel.chunk) -> [(url: URL, modified: Date?)] {
+    func nextChunk() -> [(url: URL, modified: Date?)] {
+        let size = Self.chunk
         var chunk: [(url: URL, modified: Date?)] = []
         func take(from folder: String, count: Int) {
             guard var list = pending.lists[folder], !list.isEmpty, count > 0 else { return }
@@ -763,15 +764,9 @@ final class AtlasModel: ObservableObject {
         select(cluster.ids[0])
     }
 
-    /// The cluster the selection is in.
-    var selectedCluster: AtlasCluster? {
-        guard let selected = selectedURL else { return nil }
-        return clusters.first { $0.ids.contains(selected) }
-    }
-
     /// The clusters on screen with their points.
-    func visibleClusters(margin: CGFloat = 0) -> [(cluster: AtlasCluster, point: CGPoint)] {
-        let bounds = CGRect(origin: .zero, size: mapSize).insetBy(dx: -margin, dy: -margin)
+    func visibleClusters() -> [(cluster: AtlasCluster, point: CGPoint)] {
+        let bounds = CGRect(origin: .zero, size: mapSize)
         return clusters.compactMap { cluster in
             guard let p = point(for: cluster.coordinate), bounds.contains(p) else { return nil }
             return (cluster, p)

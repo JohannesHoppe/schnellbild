@@ -221,6 +221,15 @@ enum ArchivePath {
         return !inner.isEmpty
     }
 
+    /// Whether `url` is an archive or a place inside one (not a folder
+    /// named like one), the file system asked off the main thread only for
+    /// a name that looks like one: where the listings and walks read from
+    /// `ArchiveStore` instead of the disk.
+    static func readsFromArchive(_ url: URL) async -> Bool {
+        guard split(url) != nil else { return false }
+        return await Blocking.run(.userInitiated) { splitChecked(url) != nil }
+    }
+
     /// Splits only where the archive is a real file, not a folder named
     /// like one. Touches the file system.
     static func splitChecked(_ url: URL) -> (archive: URL, inner: String)? {
@@ -833,13 +842,12 @@ final class ArchiveStore: @unchecked Sendable {
     }
 
     static func reader(for url: URL, format: ArchiveFormat? = nil) -> ArchiveReader? {
-        switch format ?? Self.format(of: url) {
+        guard let format = format ?? Self.format(of: url) else { return nil }
+        switch format {
         case .rar:
             ArchiveName.openVolumes(of: url)
             return RarReader(url: url)
-        case .zip:      return LibArchiveReader(volumes: ArchiveName.volumes(of: url), format: .zip)
-        case .sevenZip: return LibArchiveReader(volumes: ArchiveName.volumes(of: url), format: .sevenZip)
-        case nil:       return nil
+        case .zip, .sevenZip: return LibArchiveReader(volumes: ArchiveName.volumes(of: url), format: format)
         }
     }
 
@@ -1183,15 +1191,10 @@ final class ArchiveStore: @unchecked Sendable {
         listing.incomplete = !index.complete
         for item in index.children[inner] ?? [] {
             guard HiddenFiles.lists(archivePath: (item.path as NSString).lastPathComponent, shown: shown) else { continue }
-            let itemURL = archiveURL.appendingPathComponent(item.path, isDirectory: item.isDirectory)
-            if item.isDirectory {
-                listing.entries.append(GridEntry(url: itemURL, kind: .folder, modDate: item.modified))
-            } else if let kind = BrowserModel.mediaKind(of: itemURL) {
-                var entry = GridEntry(url: itemURL, kind: kind, modDate: item.modified, byteSize: item.knownSize)
-                entry.isIncomplete = item.path == index.cutOff
+            if let entry = Self.entry(for: item, in: archiveURL, cutOff: index.cutOff) {
                 listing.entries.append(entry)
             } else {
-                listing.others.append(OtherFile(url: itemURL, byteSize: item.knownSize))
+                listing.others.append(OtherFile(url: archiveURL.appendingPathComponent(item.path, isDirectory: false), byteSize: item.knownSize))
             }
         }
         listing.others.sort { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
@@ -1260,11 +1263,19 @@ final class ArchiveStore: @unchecked Sendable {
             guard !Task.isCancelled, item.path.hasPrefix(prefix),
                   HiddenFiles.lists(archivePath: String(item.path.dropFirst(prefix.count)), shown: shown),
                   matcher.matches((item.path as NSString).lastPathComponent) else { return nil }
-            let itemURL = archiveURL.appendingPathComponent(item.path, isDirectory: item.isDirectory)
-            if item.isDirectory { return GridEntry(url: itemURL, kind: .folder, modDate: item.modified) }
-            guard let kind = BrowserModel.mediaKind(of: itemURL) else { return nil }
-            return GridEntry(url: itemURL, kind: kind, modDate: item.modified, byteSize: item.knownSize)
+            return Self.entry(for: item, in: archiveURL, cutOff: index.cutOff)
         }
+    }
+
+    /// A folder or media file of an archive as the grid shows it; nil for
+    /// other files.
+    private static func entry(for item: ArchiveItem, in archiveURL: URL, cutOff: String?) -> GridEntry? {
+        let itemURL = archiveURL.appendingPathComponent(item.path, isDirectory: item.isDirectory)
+        if item.isDirectory { return GridEntry(url: itemURL, kind: .folder, modDate: item.modified) }
+        guard let kind = BrowserModel.mediaKind(of: itemURL) else { return nil }
+        var entry = GridEntry(url: itemURL, kind: kind, modDate: item.modified, byteSize: item.knownSize)
+        entry.isIncomplete = item.path == cutOff
+        return entry
     }
 }
 

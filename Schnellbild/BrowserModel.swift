@@ -885,8 +885,8 @@ struct FolderFacts {
             if var folder = folders[path] {
                 let had = folder.hasMedia
                 if path == parent {
-                    if folder.top.count < 3 { folder.top.append(url) }
-                } else if folder.below.count < 3 {
+                    if folder.top.count < BrowserModel.previewCount { folder.top.append(url) }
+                } else if folder.below.count < BrowserModel.previewCount {
                     folder.below.append(url)
                 }
                 folders[path] = folder
@@ -1560,9 +1560,7 @@ final class BrowserModel: ObservableObject {
     }
 
     func changeVolume(by delta: Double) {
-        volume = (min(max(volume + delta, 0), 1) * 10).rounded() / 10
-        defaults.set(volume, forKey: Self.volumeKey)
-        activePlayer?.setVolume(audibleVolume)
+        setVolume((min(max(volume + delta, 0), 1) * 10).rounded() / 10)
         volumeChange = UUID()
     }
 
@@ -2022,7 +2020,6 @@ final class BrowserModel: ObservableObject {
             switch scanned {
             case .success(let listing):
                 self.otherFiles = listing.others
-                self.sniffOtherFiles()
                 // An archive dropped alone, its further volumes in a folder
                 // outside every grant (not related items: "x.part2.rar"):
                 // "Allow Access…" opens them
@@ -2064,6 +2061,8 @@ final class BrowserModel: ObservableObject {
             self.allEntries = ordered
             self.isLoading = false
             self.loadingLocation = nil
+            // (once loaded: what it finds lists the folder again, which waits for no load)
+            self.sniffOtherFiles()
             if let from = self.confirmRestoreFrom, generation >= from {
                 self.confirmRestoreFrom = nil
                 self.confirmRestoreLater()
@@ -2131,8 +2130,8 @@ final class BrowserModel: ObservableObject {
     /// Reopen the last folder on launch (if it still exists).
     /// Checked off the main thread: a share that is mounted but unreachable
     /// (Wi-Fi asleep, VPN down) answers only after its timeout.
-    /// Shown as one of two panes (the window sets it): F6 moves there.
-    var inDualPane = false
+    /// Shown as one of two panes: F6 moves there.
+    var inDualPane: Bool { owner?.dual ?? false }
 
     /// The last folder is being checked (`restoreLastFolder`).
     private(set) var restoringLastFolder = false
@@ -2265,7 +2264,7 @@ final class BrowserModel: ObservableObject {
     /// himself).
     nonisolated static func listing(_ url: URL, password: String? = nil, kept: Set<String> = []) async -> Result<FolderListing, Error> {
         let shown = HiddenFiles.shown
-        if await Blocking.run(.userInitiated, { ArchivePath.splitChecked(url) != nil }) {
+        if await ArchivePath.readsFromArchive(url) {
             do { return .success(try await ArchiveStore.shared.listing(in: url, trying: password, showingHidden: shown)) }
             catch { return .failure(error) }
         }
@@ -2377,7 +2376,7 @@ final class BrowserModel: ObservableObject {
     /// nil when cancelled before it knew (the tile went away): no answer to
     /// remember.
     nonisolated static func containsMedia(_ folder: URL) async -> Bool? {
-        if ArchivePath.split(folder) != nil, await Blocking.run(.userInitiated, { ArchivePath.splitChecked(folder) != nil }) {
+        if await ArchivePath.readsFromArchive(folder) {
             // An archive that needs a password: not known (not greyed out)
             return try? await ArchiveStore.shared.hasMedia(below: folder)
         }
@@ -2435,12 +2434,13 @@ final class BrowserModel: ObservableObject {
         if empty { emptyFolders.insert(path) } else { emptyFolders.remove(path) }
     }
 
-    /// The media files a folder tile previews: the first `limit` the disk
+    /// The media files a folder tile previews: the first `previewCount` the disk
     /// lists at the folder's top (any three: listing a big folder on a
     /// network share to its end to sort it would cost far more), else the
     /// first ones further down.
-    nonisolated static func folderPreviewFiles(in folder: URL, limit: Int = 3) async -> [URL] {
-        if ArchivePath.split(folder) != nil, await Blocking.run(.userInitiated, { ArchivePath.splitChecked(folder) != nil }) {
+    nonisolated static func folderPreviewFiles(in folder: URL) async -> [URL] {
+        let limit = previewCount
+        if await ArchivePath.readsFromArchive(folder) {
             // An archive: its first pictures at any depth
             return (try? await ArchiveStore.shared.pictures(below: folder, limit: limit)) ?? []
         }
@@ -2464,6 +2464,9 @@ final class BrowserModel: ObservableObject {
             return first(deep: true, lookingAt: probeLimit(for: folder))
         } ?? []
     }
+
+    /// How many pictures a folder tile fans out.
+    nonisolated static let previewCount = 3
 
     /// Sorted: ".." on top, then folders, then media — each group by key.
     /// Ties (same kind, date or size) fall back to the name, always A→Z, so
@@ -3140,7 +3143,7 @@ final class BrowserModel: ObservableObject {
             return AsyncStream { continuation in
                 let task = Task.detached(priority: .userInitiated) {
                     let stamp = clock?.now ?? 0
-                    if await Blocking.run(.userInitiated, { ArchivePath.splitChecked(root) != nil }),
+                    if await ArchivePath.readsFromArchive(root),
                        let found = try? await ArchiveStore.shared.matches(below: root, matching: matcher), !found.isEmpty {
                         continuation.yield(SearchBatch(stamp: stamp, entries: found))
                     }
@@ -3810,14 +3813,15 @@ final class BrowserModel: ObservableObject {
     }
 
     /// The Atlas view's state (made when first shown).
-    private(set) lazy var atlas: AtlasModel = {
-        atlasMade = true
-        return AtlasModel(browser: self, readFacts: atlasFacts)
-    }()
-    private var atlasMade = false
+    var atlas: AtlasModel {
+        if let atlasIfMade { return atlasIfMade }
+        let made = AtlasModel(browser: self, readFacts: atlasFacts)
+        atlasIfMade = made
+        return made
+    }
+    private(set) var atlasIfMade: AtlasModel?
     /// Where the Atlas reads times and places (tests stand in).
     var atlasFacts: AtlasModel.FactsReader = AtlasModel.liveFacts
-    var atlasIfMade: AtlasModel? { atlasMade ? atlas : nil }
 
     /// The tour runs (over the pane, full screen).
     var touring: Bool { atlasIfMade?.tour != nil }
@@ -4278,9 +4282,15 @@ final class BrowserModel: ObservableObject {
 
     // MARK: - File actions
 
+    /// The item the file actions of the selection act on: not "..", and
+    /// none during a slideshow (the selection is in the hidden grid).
+    private var actionableSelection: GridEntry? {
+        guard slideshow == nil, let entry = selectedEntry, entry.kind != .parent else { return nil }
+        return entry
+    }
+
     func revealInFinder() {
-        guard slideshow == nil else { return }   // the selection is in the hidden grid
-        guard let entry = selectedEntry, entry.kind != .parent else { return }
+        guard let entry = actionableSelection else { return }
         // Inside an archive: the archive file
         fileActions.reveal(ArchivePath.isInside(entry.url) ? ArchivePath.split(entry.url)!.archive : entry.url)
     }
@@ -4291,7 +4301,14 @@ final class BrowserModel: ObservableObject {
     /// not inside an archive (archives are only read), in a folder open to
     /// the app (App Sandbox).
     func canChange(_ file: OtherFile) -> Bool {
-        slideshow == nil && !ArchivePath.isInside(file.url) && FolderAccess.shared.mayChange(in: file.url.deletingLastPathComponent())
+        slideshow == nil && canChangeItems(in: file.url.deletingLastPathComponent())
+    }
+
+    /// Whether what lies in `folder` may be renamed, moved or trashed, and
+    /// new items made there: a folder on disk (archives are only read) open
+    /// to the app (App Sandbox).
+    func canChangeItems(in folder: URL) -> Bool {
+        ArchivePath.split(folder) == nil && FolderAccess.shared.mayChange(in: folder)
     }
 
     /// Opens an other file with its app, when it is a document (see
@@ -4337,8 +4354,7 @@ final class BrowserModel: ObservableObject {
     }
 
     func openInDefaultApp() {
-        guard slideshow == nil else { return }   // the selection is in the hidden grid
-        guard let entry = selectedEntry, entry.kind != .parent else { return }
+        guard let entry = actionableSelection else { return }
         guard !ArchivePath.isInside(entry.url) else { NSSound.beep(); return }   // not a file other apps can open
         fileActions.openInDefaultApp(entry.url)
     }
@@ -4355,8 +4371,7 @@ final class BrowserModel: ObservableObject {
     /// app (App Sandbox: a file shown alone, dropped from a folder outside
     /// every grant, can't be renamed or moved, nor put back from the Trash).
     func canChange(_ entry: GridEntry) -> Bool {
-        entry.kind != .parent && !ArchivePath.isInside(entry.url) && !Self.isDrive(entry.url)
-            && FolderAccess.shared.mayChange(in: entry.url.deletingLastPathComponent())
+        entry.kind != .parent && !Self.isDrive(entry.url) && canChangeItems(in: entry.url.deletingLastPathComponent())
     }
 
     /// What the Trash takes: the marked items (grid), else the selected one;
@@ -4405,12 +4420,10 @@ final class BrowserModel: ObservableObject {
                 guard !trashed.isEmpty else { return }
                 // (the other pane follows through `onFileChange`)
                 clearMarks()
+                let inFullView = mode == .detail
                 apply(.removed(entry.url))
-                if mode == .detail {
-                    // The next item comes up as paging shows it: at fit, upright.
-                    resetTransforms()
-                    if selectedMediaEntry == nil { mode = .grid }
-                }
+                // The next item comes up as paging shows it: at fit, upright.
+                if inFullView { resetTransforms() }
             }
         }
     }
@@ -4879,11 +4892,7 @@ final class BrowserModel: ObservableObject {
         }
         let changedPaths = Set(renewed.map { $0.canonicalPath })
         renewed += listing.entries.filter { !listed.contains($0.canonicalPath) }
-        if !gone.isEmpty {
-            applyHere(gone)
-            // The picture shown full size went: back to the grid
-            if mode == .detail, selectedMediaEntry == nil { mode = .grid }
-        }
+        if !gone.isEmpty { applyHere(gone) }
         guard !renewed.isEmpty else { return }
         forgetBelow(renewed.filter { $0.kind == .folder }.map { $0.canonicalPath })
         let keep = selectedEntry?.url
@@ -4946,7 +4955,6 @@ final class BrowserModel: ObservableObject {
                 }
                 return any.isSet
             }
-            while isLoading, loadGeneration == generation, !Task.isCancelled { try? await Task.sleep(for: .milliseconds(100)) }
             guard found, !Task.isCancelled, loadGeneration == generation else { return }
             relist(force: true)
         }
@@ -5059,7 +5067,7 @@ final class BrowserModel: ObservableObject {
     var canCreateFolder: Bool {
         // In the grid: what it makes is selected there
         guard let folderURL, mode == .grid, slideshow == nil, !isLoading else { return false }
-        return !anySheetOpen && ArchivePath.split(folderURL) == nil && FolderAccess.shared.mayChange(in: folderURL)
+        return !anySheetOpen && canChangeItems(in: folderURL)
     }
 
     @discardableResult
@@ -5344,26 +5352,27 @@ final class BrowserModel: ObservableObject {
     /// can't be renamed until the folder holding it is granted too,
     /// `renameNeedsAccess`).
     var canRenameCurrentFolder: Bool {
-        guard isRenameableFolderShown, let folderURL, let parent = Self.parentFolder(of: folderURL) else { return false }
-        return FolderAccess.shared.mayChange(in: parent)
+        renameableFolderShown.map { canChangeItems(in: $0.parent) } ?? false
     }
 
     /// The folder shown could be renamed once the folder holding it is open
     /// to the app (a click on its name asks for it: `allowRenamingCurrentFolder`).
     var renameNeedsAccess: Bool {
-        guard isRenameableFolderShown, let folderURL, let parent = Self.parentFolder(of: folderURL) else { return false }
-        return !FolderAccess.shared.mayChange(in: parent)
+        renameableFolderShown.map { !canChangeItems(in: $0.parent) } ?? false
     }
 
-    private var isRenameableFolderShown: Bool {
-        guard let folderURL, slideshow == nil, !isLoading, ArchivePath.split(folderURL) == nil else { return false }
-        return Self.parentFolder(of: folderURL) != nil && folderURL.pathComponents.count > 3   // not "/" or "/Volumes/X"
+    /// The folder shown and the folder holding it, when it is a folder that
+    /// renames in place: not inside an archive, not "/" or "/Volumes/X".
+    private var renameableFolderShown: (folder: URL, parent: URL)? {
+        guard let folderURL, slideshow == nil, !isLoading, ArchivePath.split(folderURL) == nil,
+              let parent = Self.parentFolder(of: folderURL), folderURL.pathComponents.count > 3 else { return nil }
+        return (folderURL, parent)
     }
 
     /// Asks for the folder holding the folder shown (the open panel there),
     /// so it can be renamed; returns whether it can be now.
     func allowRenamingCurrentFolder() -> Bool {
-        guard renameNeedsAccess, let folderURL, let parent = Self.parentFolder(of: folderURL) else { return canRenameCurrentFolder }
+        guard renameNeedsAccess, let (folderURL, parent) = renameableFolderShown else { return canRenameCurrentFolder }
         _ = FolderAccess.shared.ask(for: parent, to: .rename(folderURL.lastPathComponent))
         objectWillChange.send()
         return canRenameCurrentFolder
@@ -5523,10 +5532,15 @@ final class BrowserModel: ObservableObject {
     func adopt(_ changes: [FileChange]) {
         let keep = selectedEntry?.url
         applyHere(changes)
-        if followFolder(through: changes) { return }
-        dropWhatLeft(keeping: keep)
-        // The picture shown full size went: back to the grid
-        if mode == .detail, selectedMediaEntry == nil { mode = .grid }
+        followOrDrop(changes, keeping: keep)
+    }
+
+    /// After changes that may have moved items out of the folder shown (or
+    /// the folder itself): the folder shown follows its own move, else what
+    /// went elsewhere leaves its listing and results, the selection staying
+    /// on `keep` where it is still listed.
+    func followOrDrop(_ changes: [FileChange], keeping keep: URL?) {
+        if !followFolder(through: changes) { dropWhatLeft(keeping: keep) }
     }
 
     /// The folder shown, after changes on disk: under its new path when it
@@ -5601,6 +5615,8 @@ final class BrowserModel: ObservableObject {
         keepSelection(index(of: keep)
             ?? (entries.isEmpty ? nil : previous.map { min($0, entries.count - 1) }))
         if slideshow != nil { applyToSlideshow(lookup) }
+        // The full view shows media only: back to the grid when what it showed went
+        if mode == .detail, selectedMediaEntry == nil { mode = .grid }
         // An open rename sheet follows its item (renamed or moved by the
         // other pane, by Undo) and closes when the item is gone
         if let target = renameTarget {
@@ -5796,12 +5812,7 @@ final class BrowserModel: ObservableObject {
             enum Part { case media([GridEntry]), folder(URL) }
             var parts: [Part] = []
             if roots.count == 1, roots[0].kind == .folder {
-                let contents = await Self.scan(roots[0].url, kept: kept)
-                var captured: [URL: Date] = [:]
-                if key == .captured { captured = await Self.captureDates(of: contents.filter(\.isMedia).map { ($0.url, $0.modDate) }) }
-                let located = key == .distance ? await Self.locations(of: contents) : [:]
-                let sorted = Self.sortEntries(contents, key: key, ascending: ascending, captured: captured,
-                                              origin: origin, located: located)
+                let sorted = await Self.sortedListing(of: roots[0].url, key: key, ascending: ascending, origin: origin, kept: kept)
                 parts = [.media(sorted.filter(\.isMedia))]
                     + sorted.filter { $0.kind == .folder }.map { .folder($0.browseURL) }
             } else {
@@ -5851,12 +5862,8 @@ final class BrowserModel: ObservableObject {
     nonisolated static func walkForSlideshow(_ folder: URL, key: SortKey, ascending: Bool, origin: GeoPoint? = nil, kept: Set<String> = [],
                                              found: @MainActor ([GridEntry]) -> Void) async {
         guard !Task.isCancelled else { return }
-        let contents = await scan(folder, kept: kept)
-        var captured: [URL: Date] = [:]
-        if key == .captured { captured = await captureDates(of: contents.filter(\.isMedia).map { ($0.url, $0.modDate) }) }
-        let located = key == .distance ? await locations(of: contents) : [:]
+        let sorted = await sortedListing(of: folder, key: key, ascending: ascending, origin: origin, kept: kept)
         guard !Task.isCancelled else { return }
-        let sorted = sortEntries(contents, key: key, ascending: ascending, captured: captured, origin: origin, located: located)
         let media = sorted.filter(\.isMedia)
         if !media.isEmpty { await found(media) }
         let folders = sorted.filter { $0.kind == .folder }
@@ -5864,6 +5871,17 @@ final class BrowserModel: ObservableObject {
         for sub in folders where !links.contains(sub.url) {
             await walkForSlideshow(sub.url, key: key, ascending: ascending, origin: origin, kept: kept, found: found)
         }
+    }
+
+    /// A folder's items in a slideshow's order: their capture dates or
+    /// places read first when it sorts by them.
+    nonisolated static func sortedListing(of folder: URL, key: SortKey, ascending: Bool, origin: GeoPoint?,
+                                          kept: Set<String>) async -> [GridEntry] {
+        let contents = await scan(folder, kept: kept)
+        var captured: [URL: Date] = [:]
+        if key == .captured { captured = await captureDates(of: contents.filter(\.isMedia).map { ($0.url, $0.modDate) }) }
+        let located = key == .distance ? await locations(of: contents) : [:]
+        return sortEntries(contents, key: key, ascending: ascending, captured: captured, origin: origin, located: located)
     }
 
     /// Adds what the walk found, by part, in one pass over the show's
