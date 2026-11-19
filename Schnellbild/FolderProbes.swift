@@ -15,12 +15,6 @@ enum FolderProbes {
         return queue
     }()
 
-    private final class Once: @unchecked Sendable {
-        private let lock = NSLock()
-        private var done = false
-        func claim() -> Bool { lock.withLock { defer { done = true }; return !done } }
-    }
-
     /// The operation, sendable for the cancellation handler (it is only
     /// cancelled from there, which Operation allows from any thread).
     private final class Handle: @unchecked Sendable {
@@ -39,7 +33,7 @@ enum FolderProbes {
         let handle = Handle()
         return await withTaskCancellationHandler {
             await withCheckedContinuation { (answer: CheckedContinuation<T?, Never>) in
-                let once = Once()
+                let once = ManagedFlag()
                 let weakHandle = WeakHandle(handle)
                 handle.operation.addExecutionBlock {
                     let result = work { weakHandle.handle?.operation.isCancelled ?? true }
@@ -73,13 +67,4 @@ enum Blocking {
             DispatchQueue.global(qos: qos).async { answer.resume(with: Result { try work() }) }
         }
     }
-}
-
-/// A flag set from several threads at once.
-final class ManagedFlag: @unchecked Sendable {
-    private let lock = NSLock()
-    private var value = false
-    func set() { lock.withLock { value = true } }
-    func reset() { lock.withLock { value = false } }
-    var isSet: Bool { lock.withLock { value } }
 }

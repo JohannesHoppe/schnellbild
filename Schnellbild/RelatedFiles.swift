@@ -85,12 +85,27 @@ private final class RelatedPresenter: NSObject, NSFilePresenter, @unchecked Send
 
 /// A value behind a lock.
 final class Locked<Value>: @unchecked Sendable {
-    private var value: Value
+    private var stored: Value
     private let lock = NSLock()
-    init(_ value: Value) { self.value = value }
+    init(_ value: Value) { stored = value }
     func withLock<T>(_ body: (inout Value) -> T) -> T {
         lock.lock()
         defer { lock.unlock() }
-        return body(&value)
+        return body(&stored)
     }
+    var value: Value { withLock { $0 } }
+    func set(_ value: Value) { withLock { $0 = value } }
+}
+
+/// A flag set from several threads at once (a walk told to stop, a lane
+/// that found something, a continuation resumed once).
+typealias ManagedFlag = Locked<Bool>
+
+extension Locked where Value == Bool {
+    convenience init() { self.init(false) }
+    var isSet: Bool { value }
+    func set() { set(true) }
+    func reset() { set(false) }
+    /// Sets the flag; true only for the caller that set it first.
+    func claim() -> Bool { withLock { defer { $0 = true }; return !$0 } }
 }

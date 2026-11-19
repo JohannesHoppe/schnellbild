@@ -794,11 +794,12 @@ struct FileChanges {
 /// How many changes a search has recorded, readable from its walk: each
 /// batch carries the count from when it began, so only later changes are
 /// replayed on it.
-final class ChangeClock: @unchecked Sendable {
-    private let lock = NSLock()
-    private var count = 0
-    var now: Int { lock.lock(); defer { lock.unlock() }; return count }
-    func set(_ value: Int) { lock.lock(); count = value; lock.unlock() }
+typealias ChangeClock = Locked<Int>
+
+extension Locked where Value == Int {
+    convenience init() { self.init(0) }
+    /// The count of changes recorded so far (`ChangeClock`).
+    var now: Int { value }
 }
 
 /// Matches found by a search's walk, read after `stamp` changes were recorded.
@@ -811,12 +812,7 @@ struct SearchBatch: Sendable {
 }
 
 /// Tells a walk on its own thread to stop (the search went away).
-final class WalkStop: @unchecked Sendable {
-    private let lock = NSLock()
-    private var stopped = false
-    var isSet: Bool { lock.withLock { stopped } }
-    func set() { lock.withLock { stopped = true } }
-}
+typealias WalkStop = ManagedFlag
 
 /// What a search's walk learns about the folders it finds: whether they
 /// hold media and their first pictures, as a folder tile would look them up

@@ -231,7 +231,7 @@ struct VideoDetailView: View {
                 // can't read or decode): VLC goes on from where it stood
                 guard let item = control.player.currentItem, stream == nil else { return }
                 let failed = ManagedFlag()
-                let failure = FailureNote()
+                let failure = Locked<NSError?>(nil)   // the error a notification brought
                 let token = NotificationToken(AVPlayerItem.failedToPlayToEndTimeNotification, object: item) { note in
                     failure.set(note.userInfo?[AVPlayerItemFailedToPlayToEndTimeErrorKey] as? NSError)
                     failed.set()
@@ -245,7 +245,7 @@ struct VideoDetailView: View {
                     try? await Task.sleep(for: .seconds(1))
                     guard !Task.isCancelled, avControl === control else { break }
                     let stopped = item.status == .failed || (failed.isSet && control.player.timeControlStatus != .playing)
-                    let error = (item.status == .failed ? item.error as NSError? : nil) ?? failure.error
+                    let error = (item.status == .failed ? item.error as NSError? : nil) ?? failure.value
                     let reason = Self.describeFailure(item.status == .failed, error)
                     guard stopped, !control.changedLately,
                           DownloadName.isPartial(url.lastPathComponent) || AVPlaybackControl.isDataFailure(error) else {
@@ -297,14 +297,6 @@ struct VideoDetailView: View {
         let underlying = (error?.userInfo[NSUnderlyingErrorKey] as? NSError).map { " (\($0.domain) \($0.code))" } ?? ""
         return (itemFailed ? "item failed" : "failed to play to end")
             + (error.map { ": \($0.domain) \($0.code) \($0.localizedDescription)\(underlying)" } ?? ", no error")
-    }
-
-    /// The error a notification brought, kept for the main thread.
-    private final class FailureNote: @unchecked Sendable {
-        private let lock = NSLock()
-        private var stored: NSError?
-        func set(_ error: NSError?) { lock.withLock { stored = error } }
-        var error: NSError? { lock.withLock { stored } }
     }
 
     /// What `.task` is run again for: another file, or the same opened again.
@@ -460,12 +452,7 @@ struct FileIdentity: Equatable, Sendable {
     /// that doesn't answer within 0.3 s counts as another file, so paging
     /// on never waits for it.
     static func of(_ url: URL, is file: FileIdentity) async -> Bool {
-        final class Once: @unchecked Sendable {
-            private let lock = NSLock()
-            private var done = false
-            func claim() -> Bool { lock.withLock { defer { done = true }; return !done } }
-        }
-        let once = Once()
+        let once = ManagedFlag()
         return await withCheckedContinuation { answer in
             DispatchQueue.global(qos: .userInitiated).async {
                 let same = FileIdentity(of: url) == file
