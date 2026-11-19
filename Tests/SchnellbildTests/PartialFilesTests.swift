@@ -127,6 +127,26 @@ final class PartialFilesTests: XCTestCase {
         XCTAssertEqual(listing.entries.map(\.name).sorted(), ["Day 1", "beach.jpg", "clip.mp4"])
     }
 
+    /// The answers kept reach their limit: the others go, the archives
+    /// found by their content stay, so paths into one still resolve.
+    func testArchivesFoundByTheirContentOutlastTheLimit() throws {
+        let tree = try TempTree(self)
+        let sniffer = ContentSniffer(limit: 3)
+        let zip = tree.root.appendingPathComponent("photos.bin")
+        try Data([0x50, 0x4B, 0x03, 0x04, 0, 0, 0, 0]).write(to: zip)
+        sniffer.content(of: zip)
+        let texts = try (0..<6).map { index in
+            let url = tree.root.appendingPathComponent("note\(index).xyz")
+            try "hello \(index)".write(to: url, atomically: true, encoding: .utf8)
+            return url
+        }
+        for url in texts { sniffer.content(of: url) }
+        XCTAssertEqual(sniffer.known(zip)?.archiveFormat, .zip)
+        XCTAssertEqual(sniffer.archive(containing: zip.appendingPathComponent("a/b.jpg"))?.inner, "a/b.jpg")
+        XCTAssertFalse(sniffer.needsReading(texts.last!, size: nil), "the newest answer kept")
+        XCTAssertTrue(sniffer.needsReading(texts[0], size: nil), "an older one let go")
+    }
+
     // MARK: Cut off
 
     func testAnMP4CutBeforeItsIndexIsTold() throws {
