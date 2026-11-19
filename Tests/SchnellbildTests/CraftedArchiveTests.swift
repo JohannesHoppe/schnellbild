@@ -357,6 +357,26 @@ final class CraftedArchiveTests: XCTestCase {
         } catch ArchiveError.incomplete {}
     }
 
+    /// A ZIP still downloading whose first file's data hasn't arrived: the
+    /// walk ends at that gap (not whole), it doesn't read on past it.
+    func testAWalkThroughADownloadEndsAtAGap() throws {
+        let tree = try TempTree(self)
+        var pieces = Self.zip([(Data("a.jpg".utf8), Data("AAAA".utf8)), (Data("b.jpg".utf8), Data("BBBB".utf8))])
+        let at = try XCTUnwrap(pieces.range(of: Data("AAAA".utf8)))
+        pieces.replaceSubrange(at, with: Data(count: 4))
+        let loading = try write(pieces, "loading.zip.!qB", in: tree)
+        let reader = LibArchiveReader(volumes: [loading], format: .zip)
+        var visited: [String] = []
+        var outcomes: [ArchiveError?] = []
+        let whole = try reader.walk(password: nil, listOnly: false) { item in
+            visited.append(item.path)
+            return .read(sink: { _ in true }, done: { outcomes.append($0) })
+        }
+        XCTAssertFalse(whole)
+        XCTAssertEqual(visited, ["a.jpg"], "not past the gap")
+        XCTAssertEqual(outcomes, [.incomplete])
+    }
+
     /// A stored ZIP with names given as raw bytes, without the UTF-8 flag.
     private static func zip(_ entries: [(name: Data, data: Data)]) -> Data {
         func le16(_ v: Int) -> Data { withUnsafeBytes(of: UInt16(v).littleEndian) { Data($0) } }

@@ -154,6 +154,62 @@ final class FolderAccessTests: XCTestCase {
         XCTAssertEqual(kept(access), [folder.path])
     }
 
+    /// Forget while the kept bookmarks still resolve: the grants the user
+    /// gave up don't come back when the resolution returns, and the access
+    /// it started is stopped. The same for a volume mounting meanwhile.
+    func testForgetWhileResolvingKeepsNothing() async throws {
+        let tree = try TempTree(self)
+        let folder = try tree.folder("Share")
+        let asleep = URL(fileURLWithPath: "/Volumes/NAS asleep/Photos")
+        let fake = FakeSystem()
+        fake.resolveDelay = 0.3
+        let access = sandbox(fake, saved: [folder, asleep])
+        access.restore()
+        access.forgetAll()
+        await access.restored()
+        XCTAssertEqual(kept(access), [])
+        XCTAssertEqual(access.count, 0)
+        XCTAssertEqual(fake.open, [:], "what the resolution started is stopped")
+        XCTAssertFalse(access.covers(folder))
+
+        // A volume mounting while a pending grant resolves
+        let later = sandbox(fake, saved: [asleep])
+        later.restore()
+        await later.restored()
+        XCTAssertEqual(kept(later), [asleep.path])
+        let mounting = Task { await later.volumeMounted() }
+        try await Task.sleep(nanoseconds: 50_000_000)
+        later.forgetAll()
+        await mounting.value
+        XCTAssertEqual(kept(later), [])
+        XCTAssertEqual(later.count, 0)
+    }
+
+    /// A file held already: holding it again starts no second access.
+    func testAFileIsHeldOnce() throws {
+        let tree = try TempTree(self)
+        let file = try tree.file("loose.jpg")
+        let fake = FakeSystem()
+        let access = sandbox(fake)
+        access.hold(file)
+        access.hold(file)
+        XCTAssertEqual(fake.open, [BrowserModel.canonicalPath(file): 1])
+    }
+
+    /// Whether an item can be opened: a FIFO answers at once (no writer
+    /// waited for) and counts as no file to read.
+    func testAFIFOIsNoFileToRead() throws {
+        let tree = try TempTree(self)
+        let file = try tree.file("a.jpg")
+        let fifo = tree.root.appendingPathComponent("pipe")
+        XCTAssertEqual(mkfifo(fifo.path, 0o600), 0)
+        XCTAssertTrue(FolderAccess.canOpen(file))
+        XCTAssertTrue(FolderAccess.canOpen(tree.root))
+        XCTAssertFalse(FolderAccess.canOpen(fifo))
+        XCTAssertFalse(RelatedFiles.canRead(fifo))
+        XCTAssertFalse(RelatedFiles.canRead(tree.root), "a folder is no file")
+    }
+
     func testTheVolumeOfAPath() {
         XCTAssertEqual(FolderAccess.volume(of: "/Volumes/NAS/Photos/a.jpg"), "/Volumes/NAS")
         XCTAssertEqual(FolderAccess.volume(of: "/Volumes/NAS"), "/Volumes/NAS")

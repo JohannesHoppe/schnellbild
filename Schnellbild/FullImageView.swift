@@ -35,7 +35,8 @@ struct FullImageView: View {
     /// The PDF shown, opened once and kept while its pages are turned.
     @State private var pdf: PDFPages?
     /// The picture's image source, opened once for its sharper decodes and
-    /// its animation (a share asked once, an archive's entry unpacked once).
+    /// its animation (a share asked once, an archive's entry unpacked once;
+    /// a large entry's source isn't held, `OpenedPicture.largestHeld`).
     @State private var opened: OpenedPicture?
     /// The file and page whose picture is on screen (a PDF's page stays
     /// while the next one is drawn).
@@ -266,13 +267,14 @@ struct FullImageView: View {
                 guard let rendered = await VectorPicture.render(url, longestSide: maxPixel) else { return .failure(.undecodable) }
                 return .success((NSImage(pixels: rendered.0), rendered.1, rendered.0, nil))
             }
-            let source = if let kept { kept.source } else { await MediaData.imageSource(url) }
-            guard let src = source else { return .failure(.unreadable) }
+            var picture: (source: CGImageSource, inMemory: Int)?
+            if let source = kept?.source { picture = (source, 0) } else { picture = await MediaData.picture(url) }
+            guard let src = picture?.source else { return .failure(.unreadable) }
             guard !Task.isCancelled else { return nil }
             if let failure = LoadFailure(status: CGImageSourceGetStatus(src)) { return .failure(failure) }
             let native = MediaInfo.pixelSize(from: src) ?? .zero
             guard let cg = MediaInfo.scaledDown(src, at: 0, maxPixel: maxPixel, now: true) else { return .failure(.undecodable) }
-            return .success((NSImage(pixels: cg), native, cg, kept ?? OpenedPicture(url: url, source: src)))
+            return .success((NSImage(pixels: cg), native, cg, kept ?? OpenedPicture(url: url, source: src, inMemory: picture?.inMemory ?? 0)))
         }
 
         guard !Task.isCancelled, let outcome = attempt else { return }
@@ -409,9 +411,12 @@ extension FullImageView {
     /// for a picture of one frame.
     private func animate() async {
         guard picture != nil, decodedSide > 0, !VectorPicture.isVector(url) else { return }
-        let side = decodedSide, look = shownLook
-        guard let opened, opened.url == url, let frames = await detachedCancellable(priority: .userInitiated, {
-            AnimationFrames.of(opened.source, side: side)
+        let side = decodedSide, look = shownLook, url = self.url
+        guard let opened, opened.url == url, opened.frames > 1 else { frame = nil; return }
+        guard let frames = await detachedCancellable(priority: .userInitiated, { () -> AnimationFrames? in
+            var source = opened.source
+            if source == nil { source = await MediaData.imageSource(url) }
+            return source.flatMap { AnimationFrames.of($0, side: side) }
         }) else { frame = nil; return }
         var index = frame?.count == frames.count ? frame?.index ?? 0 : 0
         while !Task.isCancelled {
@@ -431,13 +436,21 @@ extension FullImageView {
 }
 
 /// A picture's image source and its file (an image source can be read
-/// from any thread).
+/// from any thread). The source of a picture that holds more than
+/// `largestHeld` bytes in memory (an archive's entry unpacked whole) isn't
+/// held while the picture is on screen: it is opened again for a sharper
+/// decode or the animation.
 final class OpenedPicture: @unchecked Sendable {
+    /// The most bytes in memory a held source may hold.
+    static let largestHeld = 32 << 20
     let url: URL
-    let source: CGImageSource
-    init(url: URL, source: CGImageSource) {
+    let source: CGImageSource?
+    /// Its frames (more than one: an animation).
+    let frames: Int
+    init(url: URL, source: CGImageSource, inMemory: Int) {
         self.url = url
-        self.source = source
+        frames = CGImageSourceGetCount(source)
+        self.source = inMemory > Self.largestHeld ? nil : source
     }
 }
 

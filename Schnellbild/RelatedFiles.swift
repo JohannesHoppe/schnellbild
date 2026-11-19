@@ -60,12 +60,14 @@ enum RelatedFiles {
     }
 
     /// Whether the process may open the file for reading (the sandbox's
-    /// answer, not only the permissions').
+    /// answer, not only the permissions'), and it is a regular file.
+    /// Opened without blocking: a FIFO would otherwise wait for a writer.
     static func canRead(_ url: URL) -> Bool {
-        let fd = Darwin.open(url.path, O_RDONLY)
+        let fd = Darwin.open(url.path, O_RDONLY | O_NONBLOCK)
         guard fd >= 0 else { return false }
-        close(fd)
-        return true
+        defer { close(fd) }
+        var info = stat()
+        return fstat(fd, &info) == 0 && (info.st_mode & S_IFMT) == S_IFREG
     }
 
     private static let presenters = Locked<[RelatedPresenter]>([])

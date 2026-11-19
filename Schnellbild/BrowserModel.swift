@@ -2373,7 +2373,8 @@ final class BrowserModel: ObservableObject {
     /// code); nil when cancelled or when it gave up (not known: the folder
     /// isn't greyed out).
     nonisolated private static func anyMedia(below folder: URL, cancelled: () -> Bool) -> Bool? {
-        let walk = FolderWalk(root: folder, keys: [.isRegularFileKey, .isSymbolicLinkKey, .isAliasFileKey], limit: probeLimit(for: folder))
+        let walk = FolderWalk(root: folder, keys: [.isRegularFileKey, .isSymbolicLinkKey, .isAliasFileKey], limit: probeLimit(for: folder),
+                              appleDoubles: false)
         // An archive opens like a folder; what's in it isn't looked into
         // here (that means unpacking), so it counts as holding something
         switch walk.run(cancelled: cancelled, { url in !((mediaKind(of: url) != nil || ArchiveName.format(ofFile: url) != nil) && isFile(url)) }) {
@@ -2425,7 +2426,8 @@ final class BrowserModel: ObservableObject {
         return await FolderProbes.run { cancelled -> [URL]? in
             func first(deep: Bool, lookingAt most: Int) -> [URL] {
                 var found: [URL] = []
-                FolderWalk(root: folder, keys: [.isRegularFileKey, .isSymbolicLinkKey, .isAliasFileKey], deep: deep, limit: most)
+                FolderWalk(root: folder, keys: [.isRegularFileKey, .isSymbolicLinkKey, .isAliasFileKey], deep: deep, limit: most,
+                           appleDoubles: false)
                     .run(cancelled: cancelled) { url in
                         if mediaKind(of: url) != nil, isFile(url) { found.append(url) }
                         return found.count < limit

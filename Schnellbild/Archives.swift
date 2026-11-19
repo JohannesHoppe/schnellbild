@@ -517,8 +517,10 @@ struct LibArchiveReader: ArchiveReader {
                     stopped = !buffer.withUnsafeBytes { sink(UnsafeRawBufferPointer(rebasing: $0[..<n])) }
                 }
                 // In a download still in progress, data that fails is data
-                // that hasn't arrived (zeros where a piece is missing)
-                if partial, case .unreadable? = failure { done(.incomplete) } else { done(failure) }
+                // that hasn't arrived (zeros where a piece is missing): the
+                // walk ends there, it isn't whole
+                if partial, case .unreadable? = failure { failure = .incomplete }
+                done(failure)
                 if stopped { return true }
                 if failure == .incomplete { return false }
             }
@@ -585,8 +587,12 @@ final class PasswordStore: @unchecked Sendable {
     /// nil: the store can't be read now (a locked keychain, access denied),
     /// which is not the same as no passwords.
     private let load: () -> [String]?
-    private let save: ([String]) -> Void
+    /// Writes the list; false when the store refused it.
+    private let save: ([String]) -> Bool
     private var cached: [String]?
+    /// `cached` isn't in the store yet (the store refused it): written
+    /// again on the next change or remember.
+    private var unstored = false
     /// Passwords that opened something while the store couldn't be read:
     /// used, and written into the stored list once it can be read.
     private var unsaved: [String] = []
@@ -596,7 +602,7 @@ final class PasswordStore: @unchecked Sendable {
     private var failedAt: Date?
     private let retryAfter: TimeInterval
 
-    init(load: @escaping () -> [String]?, save: @escaping ([String]) -> Void, retryAfter: TimeInterval = 60) {
+    init(load: @escaping () -> [String]?, save: @escaping ([String]) -> Bool, retryAfter: TimeInterval = 60) {
         self.load = load
         self.save = save
         self.retryAfter = retryAfter
@@ -617,11 +623,20 @@ final class PasswordStore: @unchecked Sendable {
             unsaved.insert(password, at: 0)
             return
         }
-        if list.first == password { return }
+        if list.first == password {
+            if unstored { store(list) }
+            return
+        }
         list.removeAll { $0 == password }
         list.insert(password, at: 0)
         cached = list
-        save(list)
+        store(list)
+    }
+
+    /// Writes the list; one the store refuses is written again later.
+    /// Called with the lock held.
+    private func store(_ list: [String]) {
+        unstored = !save(list)
     }
 
     /// Reads the store once (again after a failure, after a while); what was
@@ -635,7 +650,7 @@ final class PasswordStore: @unchecked Sendable {
         let merged = unsaved + loaded.filter { !unsaved.contains($0) }
         unsaved = []
         cached = merged
-        save(merged)
+        store(merged)
     }
 
     /// Every saved password goes (Settings): archives that need one ask again.
@@ -644,7 +659,7 @@ final class PasswordStore: @unchecked Sendable {
         unsaved = []
         cached = []
         failedAt = nil
-        save([])
+        store([])
     }
 
     /// How many are saved (Settings).
@@ -652,12 +667,12 @@ final class PasswordStore: @unchecked Sendable {
 
     static func memory() -> PasswordStore {
         let box = Box()
-        return PasswordStore(load: { box.list }, save: { box.list = $0 })
+        return PasswordStore(load: { box.list }, save: { box.list = $0; return true })
     }
     private final class Box { var list: [String] = [] }
 
     static func defaults(_ defaults: UserDefaults, key: String = "archivePasswords") -> PasswordStore {
-        PasswordStore(load: { defaults.stringArray(forKey: key) ?? [] }, save: { defaults.set($0, forKey: key) })
+        PasswordStore(load: { defaults.stringArray(forKey: key) ?? [] }, save: { defaults.set($0, forKey: key); return true })
     }
 
     static let keychainService = "art.haushoppe.schnellbild.archive-passwords"
@@ -675,14 +690,13 @@ final class PasswordStore: @unchecked Sendable {
                   let list = try? JSONDecoder().decode([String].self, from: data) else { return nil }
             return list
         }, save: { list in
-            guard let data = try? JSONEncoder().encode(list) else { return }
+            guard let data = try? JSONEncoder().encode(list) else { return false }
             let status = SecItemUpdate(query as CFDictionary, [kSecValueData: data] as CFDictionary)
-            if status == errSecItemNotFound {
-                var item = query
-                item[kSecValueData] = data
-                item[kSecAttrLabel] = "Schnellbild archive passwords"
-                SecItemAdd(item as CFDictionary, nil)
-            }
+            guard status == errSecItemNotFound else { return status == errSecSuccess }
+            var item = query
+            item[kSecValueData] = data
+            item[kSecAttrLabel] = "Schnellbild archive passwords"
+            return SecItemAdd(item as CFDictionary, nil) == errSecSuccess
         })
     }
 }
@@ -1291,10 +1305,18 @@ enum MediaData {
 
     /// An image source for a picture, from disk or from inside an archive.
     static func imageSource(_ url: URL) async -> CGImageSource? {
+        await picture(url)?.source
+    }
+
+    /// An image source for a picture and how many bytes it holds in memory
+    /// (an archive's entry unpacked whole; 0 for a file on disk, which
+    /// ImageIO reads as it needs).
+    static func picture(_ url: URL) async -> (source: CGImageSource, inMemory: Int)? {
         if ArchivePath.isInside(url), ArchivePath.splitChecked(url) != nil {
-            guard let data = try? await ArchiveStore.shared.data(of: url) else { return nil }
-            return CGImageSourceCreateWithData(data as CFData, nil)
+            guard let data = try? await ArchiveStore.shared.data(of: url),
+                  let source = CGImageSourceCreateWithData(data as CFData, nil) else { return nil }
+            return (source, data.count)
         }
-        return CGImageSourceCreateWithURL(url as CFURL, nil)
+        return CGImageSourceCreateWithURL(url as CFURL, nil).map { ($0, 0) }
     }
 }

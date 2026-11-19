@@ -338,10 +338,10 @@ final class HiddenFilesTests: XCTestCase {
     }
 
     /// What a walk visits, as paths inside the tree.
-    private func walked(_ tree: TempTree, deep: Bool = true, shown: Bool) -> Set<String> {
+    private func walked(_ tree: TempTree, deep: Bool = true, shown: Bool, appleDoubles: Bool = true) -> Set<String> {
         let root = BrowserModel.canonicalPath(tree.root)
         var paths: Set<String> = []
-        FolderWalk(root: tree.root, deep: deep, shown: shown).run { url in
+        FolderWalk(root: tree.root, deep: deep, shown: shown, appleDoubles: appleDoubles).run { url in
             paths.insert(String(BrowserModel.canonicalPath(url).dropFirst(root.count + 1)))
             return true
         }
@@ -359,6 +359,12 @@ final class HiddenFilesTests: XCTestCase {
         XCTAssertEqual(walked(tree, deep: false, shown: false), ["a.jpg", "notes.txt", "sub", "Album.app", "link"])
         XCTAssertTrue(walked(tree, deep: false, shown: true).isSuperset(of: ["._a.jpg", ".hidden", "__MACOSX"]))
         XCTAssertFalse(walked(tree, deep: false, shown: true).contains("__MACOSX/._b.jpg"), "the top only")
+        // A walk after media only: hidden items shown, but no AppleDouble files read
+        XCTAssertEqual(walked(tree, shown: true, appleDoubles: false), [
+            "a.jpg", ".dot.jpg", "flagged.jpg", ".DS_Store", "Icon\r", "__MACOSX",
+            "notes.txt", ".dotnotes.txt", "flagged.txt", "sub", "sub/b.jpg", ".hidden", ".hidden/c.jpg",
+            "flaggedfolder", "flaggedfolder/d.jpg", "Album.app", "link"
+        ])
     }
 
     func testTheWalkStopsGivesUpAndCancels() throws {
