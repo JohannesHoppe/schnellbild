@@ -534,7 +534,7 @@ enum MatroskaSubtitles {
                 guard let size = element.size, element.dataStart + size <= end else { break clusters }
                 switch element.id {
                 case 0xE7:
-                    if let data = reader.body(element) { clusterTime = data.reduce(0) { $0 << 8 | UInt64($1) } }
+                    if let data = reader.body(element) { clusterTime = data.unsignedValue }
                     if Double(clusterTime) > stopTime { break clusters }
                 case 0xA0:   // BlockGroup: Block + BlockDuration
                     if let line = blockGroup(&reader, element, track: track, clusterTime: clusterTime, unitsPerSecond: unitsPerSecond, ass: ass) {
@@ -583,7 +583,7 @@ enum MatroskaSubtitles {
             let dataStart = at + UInt64(data.position)
             guard let first = data.element(checkingSize: false), first.id == 0xE7, let length = first.size, length <= 8,
                   let bytes = data.bytes(first) else { break }
-            if bytes.reduce(UInt64(0), { $0 << 8 | UInt64($1) }) > time { break }
+            if bytes.unsignedValue > time { break }
             found = at
             at = dataStart + size
         }
@@ -604,7 +604,7 @@ enum MatroskaSubtitles {
         while let element = memory.element() {
             switch element.id {
             case 0xA1: block = memory.bytes(element)
-            case 0x9B: duration = memory.bytes(element).map { $0.reduce(0) { $0 << 8 | UInt64($1) } }
+            case 0x9B: duration = memory.bytes(element)?.unsignedValue
             default: _ = memory.bytes(element)
             }
         }
@@ -625,7 +625,7 @@ enum MatroskaSubtitles {
                              unitsPerSecond: Double, ass: Bool) -> SubtitleLine? {
         let bytes = [UInt8](block)
         guard let (number, length) = EBMLData.vint(bytes, 0), number == track.number, bytes.count >= length + 3 else { return nil }
-        let relative = Int16(bitPattern: UInt16(bytes[length]) << 8 | UInt16(bytes[length + 1]))
+        let relative = Int16(bitPattern: bytes.u16(length) ?? 0)
         let flags = bytes[length + 2]
         guard flags & 0x06 == 0 else { return nil }   // laced: not for subtitles
         var payload = Data(bytes[(length + 3)...])
@@ -673,7 +673,7 @@ enum MatroskaSubtitles {
         var reader = EBMLData(data: data)
         while let element = reader.element() {
             let body = reader.bytes(element)
-            if element.id == 0x2AD7B1, let body { return max(1, body.reduce(0) { $0 << 8 | UInt64($1) }) }
+            if element.id == 0x2AD7B1, let body { return max(1, body.unsignedValue) }
         }
         return nil
     }
@@ -688,7 +688,7 @@ enum MatroskaSubtitles {
             var fields = EBMLData(data: body)
             while let element = fields.element() {
                 guard let value = fields.bytes(element) else { break }
-                let number = value.reduce(UInt64(0)) { $0 << 8 | UInt64($1) }
+                let number = value.unsignedValue
                 switch element.id {
                 case 0xD7: track.number = number
                 case 0x83: track.type = number
@@ -718,7 +718,7 @@ enum MatroskaSubtitles {
                 var compression = EBMLData(data: value)
                 while let item = compression.element() {
                     guard let v = compression.bytes(item) else { break }
-                    if item.id == 0x4254 { track.compression = v.reduce(0) { $0 << 8 | UInt64($1) } }
+                    if item.id == 0x4254 { track.compression = v.unsignedValue }
                     if item.id == 0x4255 { track.stripped = v }
                 }
             }
@@ -737,7 +737,7 @@ enum MatroskaSubtitles {
             while let element = fields.element() {
                 guard let value = fields.bytes(element) else { break }
                 if element.id == 0x53AB { id = [UInt8](value) }
-                if element.id == 0x53AC { position = value.reduce(0) { $0 << 8 | UInt64($1) } }
+                if element.id == 0x53AC { position = value.unsignedValue }
             }
             if id == [0x1C, 0x53, 0xBB, 0x6B], let position { return position }
         }
@@ -755,12 +755,12 @@ enum MatroskaSubtitles {
             var position: UInt64?
             while let element = fields.element() {
                 guard let value = fields.bytes(element) else { break }
-                if element.id == 0xB3 { time = value.reduce(0) { $0 << 8 | UInt64($1) } }
+                if element.id == 0xB3 { time = value.unsignedValue }
                 if element.id == 0xB7 {
                     var positions = EBMLData(data: value)
                     while let item = positions.element() {
                         guard let v = positions.bytes(item) else { break }
-                        if item.id == 0xF1, position == nil { position = v.reduce(0) { $0 << 8 | UInt64($1) } }
+                        if item.id == 0xF1, position == nil { position = v.unsignedValue }
                     }
                 }
             }
@@ -821,6 +821,11 @@ final class WindowedBytes: ByteSource {
         bytes = fresh
         return Array(fresh[0..<count])
     }
+}
+
+extension Sequence where Element == UInt8 {
+    /// The bytes as one big-endian unsigned number (an EBML unsigned integer).
+    var unsignedValue: UInt64 { reduce(0) { $0 << 8 | UInt64($1) } }
 }
 
 /// EBML in memory.
@@ -895,7 +900,7 @@ enum MP4Subtitles {
             let raw = Array(sample[2..<2 + Int(textLength)])
             let text: String
             if raw.count >= 2, raw[0] == 0xFE, raw[1] == 0xFF {
-                text = String(decoding: stride(from: 2, to: raw.count - 1, by: 2).map { UInt16(raw[$0]) << 8 | UInt16(raw[$0 + 1]) }, as: UTF16.self)
+                text = String(decoding: stride(from: 2, to: raw.count - 1, by: 2).compactMap { raw.u16($0) }, as: UTF16.self)
             } else {
                 text = String(decoding: raw, as: UTF8.self)
             }
