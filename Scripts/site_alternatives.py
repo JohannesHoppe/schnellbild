@@ -83,6 +83,52 @@ def strings(value, where=""):
         yield where, value
 
 
+def merge_translation(own, english, missing, prefix):
+    """A language's words over English's: a key missing in own falls back to English. Every
+    missing key, key English doesn't have and list of another length goes into missing,
+    each line starting with prefix."""
+    def merge(mine, master, where):
+        if isinstance(master, dict):
+            for extra in set(mine or {}) - set(master):
+                missing.append(f"{prefix}{'.'.join(where + [extra])} is not in English")
+            return {k: merge(mine.get(k) if isinstance(mine, dict) else None, v, where + [k]) for k, v in master.items()}
+        if mine is None:
+            missing.append(f"{prefix}{'.'.join(where)}")
+            return master
+        if isinstance(master, list) and len(mine) != len(master):
+            missing.append(f"{prefix}{'.'.join(where)} has {len(mine)} entries, English {len(master)}")
+        return mine
+    return merge(own, english, [])
+
+
+def breadcrumb_list(items):
+    """schema.org BreadcrumbList of (name, absolute URL) pairs."""
+    return {"@type": "BreadcrumbList", "itemListElement": [
+        {"@type": "ListItem", "position": i, "name": name, "item": url} for i, (name, url) in enumerate(items, 1)]}
+
+
+class Citations:
+    """A page's sources, numbered in the order they are first cited."""
+
+    def __init__(self, esc, ui):
+        self.esc, self.ui, self.urls = esc, ui, []
+
+    def cite(self, urls):
+        numbers = []
+        for url in urls:
+            if url not in self.urls:
+                self.urls.append(url)
+            numbers.append(self.urls.index(url) + 1)
+        return "".join(f'<a href="#s{n}" aria-label="{self.esc(fill(self.ui["source"], n=n))}">{n}</a>' for n in numbers)
+
+    def section(self):
+        esc = self.esc
+        shown = lambda u: re.sub(r"^https?://(www\.)?", "", u)
+        items = "".join(f'<li id="s{i}"><a href="{esc(u)}">{esc(shown(u))}</a></li>' for i, u in enumerate(self.urls, 1))
+        return f"""<h2 class="small">{esc(self.ui['sources'])}</h2>
+  <ol class="sources">{items}</ol>"""
+
+
 class Alternatives:
     def __init__(self, ctx):
         """ctx: what build_site.py shares (esc, head, topbar, footer, shot, home_path, folder,
@@ -128,20 +174,7 @@ class Alternatives:
         if not path.exists():
             missing.append(f"alternatives {code}: no {path.name}")
             return english
-        own = load_json(path)
-
-        def merge(mine, master, where):
-            if isinstance(master, dict):
-                for extra in set(mine or {}) - set(master):
-                    missing.append(f"alternatives {code}: {'.'.join(where + [extra])} is not in English")
-                return {k: merge(mine.get(k) if isinstance(mine, dict) else None, v, where + [k]) for k, v in master.items()}
-            if mine is None:
-                missing.append(f"alternatives {code}: {'.'.join(where)}")
-                return master
-            if isinstance(master, list) and len(mine) != len(master):
-                missing.append(f"alternatives {code}: {'.'.join(where)} has {len(mine)} entries, English {len(master)}")
-            return mine
-        return merge(own, english, [])
+        return merge_translation(load_json(path), english, missing, f"alternatives {code}: ")
 
     # Paths
 
@@ -212,10 +245,21 @@ class Alternatives:
             return ui["trademarkAll"]
         return fill(ui["trademark"], name=self.products[slug]["name"], vendor=vendor)
 
-    def breadcrumbs(self, code, items):
-        site = self.c["SITE"]
-        return {"@type": "BreadcrumbList", "itemListElement": [
-            {"@type": "ListItem", "position": i, "name": name, "item": site + url} for i, (name, url) in enumerate(items, 1)]}
+    def breadcrumbs(self, items):
+        return breadcrumb_list([(name, self.c["SITE"] + url) for name, url in items])
+
+    def page_data(self, code, slug, title, description):
+        """schema.org of a program's page: the page about Schnellbild and the program, its breadcrumbs."""
+        c, ui = self.c, self.words[code]["ui"]
+        path = self.path(code, slug)
+        url = c["SITE"] + path
+        crumbs = [("Schnellbild", c["home_path"](code)), (ui["breadcrumb"], self.path(code)), (self.name(code, slug), path)]
+        return c["json_ld"]({"@graph": [
+            {"@type": "WebPage", "@id": url, "url": url, "name": title, "description": description, "inLanguage": code,
+             "isPartOf": {"@id": c["SITE"] + "/#website"},
+             "about": [{"@type": "SoftwareApplication", "@id": c["SITE"] + c["home_path"](code) + "#app", "name": "Schnellbild"},
+                       self.program(code, slug)]},
+            self.breadcrumbs(crumbs)]})
 
     def program(self, code, slug):
         """schema.org: the compared program, by its facts (no ratings)."""
@@ -302,15 +346,7 @@ class Alternatives:
         rows_words = words["rows"]
         sep = ui.get("listSep", ", ")
 
-        # Sources, numbered in the order they first appear
-        sources = []
-        def cite(urls):
-            numbers = []
-            for url in urls:
-                if url not in sources:
-                    sources.append(url)
-                numbers.append(sources.index(url) + 1)
-            return "".join(f'<a href="#s{n}" aria-label="{esc(fill(ui["source"], n=n))}">{n}</a>' for n in numbers)
+        sources = Citations(esc, ui)
 
         groups = []
         for group in self.rows["groups"]:
@@ -327,7 +363,7 @@ class Alternatives:
                 note = w.get("notes", {}).get(key) if cell["value"] == "partial" else None
                 theirs = self.symbol(code, cell["value"])
                 if cell.get("evidence"):
-                    theirs += f'<span class="cite">{cite(cell["evidence"])}</span>'
+                    theirs += f'<span class="cite">{sources.cite(cell["evidence"])}</span>'
                 theirs += f'<small>{esc(note)}</small>' if note else ""
                 body.append(f'<tr><th scope="row">{esc(rw["label"])}</th><td>{ours_cell}</td><td>{theirs}</td></tr>')
             if body:
@@ -335,9 +371,6 @@ class Alternatives:
                 groups.append(f'<tbody><tr class="group"><th colspan="3" scope="colgroup" id="{gid}">{esc(words["groups"][group["group"]])}</th></tr>'
                               + "".join(body) + "</tbody>")
         left_out = len(self.keys) - len(shown)
-        shown_url = lambda u: re.sub(r"^https?://(www\.)?", "", u)
-        source_list = "".join(f'<li id="s{i}"><a href="{esc(u)}">{esc(shown_url(u))}</a></li>'
-                              for i, u in enumerate(sources, 1))
 
         theirs_win = "".join(f"<li>{esc(x)}</li>" for x in w["wins"])
         ours_win = "".join(f"<li>{esc(rows_words[k]['label'])}</li>" for k in
@@ -346,14 +379,7 @@ class Alternatives:
         title = fill(ui["matrixSeoTitle"], name=name)
         description = fill(ui["matrixDescription"], name=name)
         path_of = lambda lang: self.path(lang, slug)
-        url = c["SITE"] + path_of(code)
-        crumbs = [("Schnellbild", c["home_path"](code)), (ui["breadcrumb"], self.path(code)), (name, path_of(code))]
-        data = c["json_ld"]({"@graph": [
-            {"@type": "WebPage", "@id": url, "url": url, "name": title, "description": description, "inLanguage": code,
-             "isPartOf": {"@id": c["SITE"] + "/#website"},
-             "about": [{"@type": "SoftwareApplication", "@id": c["SITE"] + c["home_path"](code) + "#app", "name": "Schnellbild"},
-                       self.program(code, slug)]},
-            self.breadcrumbs(code, crumbs)]})
+        data = self.page_data(code, slug, title, description)
         keywords = fill(ui["keywords"], name=name)
         table = f"""<table class="matrix">
     <caption class="sr">{esc(ui['matrixTitle'])}: Schnellbild, {esc(name)}</caption>
@@ -378,8 +404,7 @@ class Alternatives:
   {self.legend(code)}
   {table}
   <p class="method">{esc(fill(ui['asOf'], name=name, version=w['version'], ours=self.version))}{(' ' + esc(fill(ui['leftOut'], name=name, count=left_out, total=len(self.keys)))) if left_out else ''}</p>
-  <h2 class="small">{esc(ui['sources'])}</h2>
-  <ol class="sources">{source_list}</ol>
+  {sources.section()}
 </div>
 {self.cta(code)}
 {self.tail(code, slug)}
@@ -406,14 +431,7 @@ class Alternatives:
         title = fill(ui["switcherSeoTitle"], name=name)
         description = fill(ui["switcherDescription"], name=name)
         path_of = lambda lang: self.path(lang, slug)
-        url = c["SITE"] + path_of(code)
-        crumbs = [("Schnellbild", c["home_path"](code)), (ui["breadcrumb"], self.path(code)), (name, path_of(code))]
-        data = c["json_ld"]({"@graph": [
-            {"@type": "WebPage", "@id": url, "url": url, "name": title, "description": description, "inLanguage": code,
-             "isPartOf": {"@id": c["SITE"] + "/#website"},
-             "about": [{"@type": "SoftwareApplication", "@id": c["SITE"] + c["home_path"](code) + "#app", "name": "Schnellbild"},
-                       self.program(code, slug)]},
-            self.breadcrumbs(code, crumbs)]})
+        data = self.page_data(code, slug, title, description)
         purpose_block = f"<h2>{esc(ui['purposeTitle'])}</h2><ul class=\"how\">{purpose_html}</ul>" if purpose else ""
         return c["head"](code, c["tr"][code], title, description, path_of, keywords=fill(ui["keywords"], name=name), data=data) + \
             c["topbar"](code, c["tr"][code], path_of, sections=False) + f"""
@@ -443,37 +461,21 @@ class Alternatives:
         w = words["products"][slug]
         p = self.products[slug]
         name = w["name"]
-        sources = []
-        def cite(urls):
-            numbers = []
-            for url in urls:
-                if url not in sources:
-                    sources.append(url)
-                numbers.append(sources.index(url) + 1)
-            return "".join(f'<a href="#s{n}" aria-label="{esc(fill(ui["source"], n=n))}">{n}</a>' for n in numbers)
+        sources = Citations(esc, ui)
         body = []
         for key, cell in p["map_matrix"].items():
             rw = words["mapRows"][key]
             ours = p["ours"][key]
             ours_cell = self.symbol(code, ours) + (f'<small>{esc(rw["note"])}</small>' if rw.get("note") else "")
             note = w.get("notes", {}).get(key) if cell["value"] == "partial" else None
-            theirs = self.symbol(code, cell["value"]) + f'<span class="cite">{cite(cell["evidence"])}</span>'
+            theirs = self.symbol(code, cell["value"]) + f'<span class="cite">{sources.cite(cell["evidence"])}</span>'
             theirs += f'<small>{esc(note)}</small>' if note else ""
             body.append(f'<tr><th scope="row">{esc(rw["label"])}</th><td>{ours_cell}</td><td>{theirs}</td></tr>')
-        shown_url = lambda u: re.sub(r"^https?://(www\.)?", "", u)
-        source_list = "".join(f'<li id="s{i}"><a href="{esc(u)}">{esc(shown_url(u))}</a></li>' for i, u in enumerate(sources, 1))
         items = lambda xs: "".join(f"<li>{esc(x)}</li>" for x in xs)
         tiles = "".join(f'<div class="fact"><span>{esc(label)}</span><b>{esc(value)}</b></div>' for label, value in w["facts"])
         title, description = w["seoTitle"], w["description"]
         path_of = lambda lang: self.path(lang, slug)
-        url = c["SITE"] + path_of(code)
-        crumbs = [("Schnellbild", c["home_path"](code)), (ui["breadcrumb"], self.path(code)), (name, path_of(code))]
-        data = c["json_ld"]({"@graph": [
-            {"@type": "WebPage", "@id": url, "url": url, "name": title, "description": description, "inLanguage": code,
-             "isPartOf": {"@id": c["SITE"] + "/#website"},
-             "about": [{"@type": "SoftwareApplication", "@id": c["SITE"] + c["home_path"](code) + "#app", "name": "Schnellbild"},
-                       self.program(code, slug)]},
-            self.breadcrumbs(code, crumbs)]})
+        data = self.page_data(code, slug, title, description)
         return c["head"](code, c["tr"][code], title, description, path_of, keywords=w["keywords"], data=data) + \
             c["topbar"](code, c["tr"][code], path_of, sections=False) + f"""
 <main class="alt-page">
@@ -496,8 +498,7 @@ class Alternatives:
     <tbody>{''.join(body)}</tbody>
   </table>
   <p class="method">{esc(fill(ui['asOf'], name=name, version=w['version'], ours=self.version))}</p>
-  <h2 class="small">{esc(ui['sources'])}</h2>
-  <ol class="sources">{source_list}</ol>
+  {sources.section()}
 </div>
 {self.cta(code)}
 {self.tail(code, slug)}
@@ -521,7 +522,7 @@ class Alternatives:
              "mainEntity": {"@type": "ItemList", "numberOfItems": len(ranked), "itemListElement": [
                  {"@type": "ListItem", "position": i, "url": c["SITE"] + self.path(code, s), "name": self.name(code, s)}
                  for i, s in enumerate(ranked, 1)]}},
-            self.breadcrumbs(code, [("Schnellbild", c["home_path"](code)), (ui["breadcrumb"], self.path(code))])]})
+            self.breadcrumbs([("Schnellbild", c["home_path"](code)), (ui["breadcrumb"], self.path(code))])]})
         sections = "".join(
             f"""
   <h2 id="{s}">{esc(words['sections'][s])}</h2>

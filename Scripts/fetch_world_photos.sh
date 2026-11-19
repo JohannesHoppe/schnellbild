@@ -8,10 +8,9 @@ ROOT="$(pwd)"
 DEST="${1:?usage: fetch_world_photos.sh <folder>}"
 source "$ROOT/Scripts/fetch_verified.sh"
 TAG="$(sed -n 's/^RELEASE_TAG=//p' "$ROOT/Scripts/world_photos.env")"
-BASE="https://github.com/JohannesHoppe/schnellbild/releases/download/$TAG"
+BASE="$RELEASES/$TAG"
 mkdir -p "$DEST"
 while read -r name sha; do
     case "$name" in ''|'#'*|RELEASE_TAG=*) continue ;; esac
     fetch_verified "$name" "$BASE/$name" "$sha" "$DEST/$name"
 done < "$ROOT/Scripts/world_photos.env"
-finished=1
