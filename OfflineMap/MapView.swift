@@ -80,8 +80,6 @@ public struct MapView<Overlay: View>: View {
     let renderer: MapRenderer?
     let overlay: (MapProxy) -> Overlay
     @State private var link = MapLink()
-    @State private var attributionCollapsed = false
-    @Environment(\.colorScheme) private var colorScheme
 
     public init(camera: Binding<MapCamera>, markers: [MapMarker] = [], interactive: Bool = true,
                 renderer: MapRenderer? = .shared, @ViewBuilder overlay: @escaping (MapProxy) -> Overlay) {
@@ -93,68 +91,12 @@ public struct MapView<Overlay: View>: View {
     }
 
     public var body: some View {
-        GeometryReader { geometry in
-            let size = geometry.size
-            let proxy = MapProxy(viewport: MapViewport(camera: camera, size: size), link: link)
-            ZStack(alignment: .topLeading) {
-                MapSurface(camera: $camera, interactive: interactive, renderer: renderer, link: link,
-                           keepFree: keepFree(in: size),
-                           onInteraction: { withAnimation(Motion.animation) { attributionCollapsed = true } })
-                markerLayer(proxy)
-                overlay(proxy)
-            }
-            .frame(width: size.width, height: size.height)
-            .overlay(alignment: .bottomTrailing) {
-                MapAttribution(collapsed: $attributionCollapsed).padding(6)
-            }
-            .overlay(alignment: .topTrailing) {
-                if interactive { zoomButtons.padding(8) }
-            }
-            .clipped()
-        }
-        .task {
-            try? await Task.sleep(for: .seconds(5))
-            withAnimation(Motion.animation) { attributionCollapsed = true }
-        }
-    }
-
-    /// Where labels stay away: the credit and the buttons.
-    private func keepFree(in size: CGSize) -> [CGRect] {
-        var boxes = [CGRect(x: size.width - 130, y: size.height - 30, width: 130, height: 30)]
-        if interactive { boxes.append(CGRect(x: size.width - 44, y: 0, width: 44, height: 76)) }
-        return boxes
-    }
-
-    private func markerLayer(_ proxy: MapProxy) -> some View {
-        let palette = MapPalette.appearance(dark: colorScheme == .dark)
-        return ForEach(markers) { marker in
-            Circle()
-                .fill(Color(cgColor: palette.accent.cgColor))
-                .overlay(Circle().stroke(Color(cgColor: (palette.isDark ? MapColor("#121212") : MapColor("#ffffff")).cgColor), lineWidth: 2))
-                .frame(width: 12, height: 12)
-                .position(proxy.point(for: marker.coordinate))
-        }
-        .allowsHitTesting(false)
-    }
-
-    private var zoomButtons: some View {
-        VStack(spacing: 0) {
-            Button { link.surface?.zoom(by: 1) } label: {
-                Image(systemName: "plus").frame(width: 28, height: 26).contentShape(Rectangle())
-            }
-            .help(Text("Zoom in"))
-            .accessibilityLabel(Text("Zoom in"))
-            Divider().frame(width: 20)
-            Button { link.surface?.zoom(by: -1) } label: {
-                Image(systemName: "minus").frame(width: 28, height: 26).contentShape(Rectangle())
-            }
-            .help(Text("Zoom out"))
-            .accessibilityLabel(Text("Zoom out"))
-        }
-        .buttonStyle(.plain)
-        .font(.system(size: 12, weight: .semibold))
-        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 7))
-        .overlay(RoundedRectangle(cornerRadius: 7).stroke(.separator, lineWidth: 0.5))
+        MapChrome(camera: camera, markers: markers, interactive: interactive, link: link, onGlobe: false, buttonsHeight: 76,
+                  surface: { keepFree, onInteraction in
+                      MapSurface(camera: $camera, interactive: interactive, renderer: renderer, link: link,
+                                 keepFree: keepFree, onInteraction: onInteraction)
+                  },
+                  buttons: { EmptyView() }, overlay: overlay)
     }
 }
 
