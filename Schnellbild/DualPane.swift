@@ -361,11 +361,7 @@ enum NortonMenus {
     }
 
     static func askToQuit() {
-        let alert = NSAlert()
-        alert.messageText = String(localized: "Do you want to quit Schnellbild?")
-        alert.addButton(withTitle: String(localized: "Quit"))
-        alert.addButton(withTitle: String(localized: "Cancel"))
-        if alert.runModal() == .alertFirstButtonReturn { NSApp.terminate(nil) }
+        if NSAlert.confirm(String(localized: "Do you want to quit Schnellbild?"), yes: String(localized: "Quit")) { NSApp.terminate(nil) }
     }
 }
 

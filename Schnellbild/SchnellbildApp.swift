@@ -248,12 +248,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     /// Not in the middle of a copy or move: the app quits once it is done.
     func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
         guard BrowserModel.transfersUnderWay > 0 else { return .terminateNow }
-        let alert = NSAlert()
-        alert.messageText = String(localized: "Copying or moving is still under way.")
-        alert.informativeText = String(localized: "Schnellbild quits once it is done. Quitting now would leave files half copied.")
-        alert.addButton(withTitle: String(localized: "Quit When Done"))
-        alert.addButton(withTitle: String(localized: "Cancel"))
-        guard alert.runModal() == .alertFirstButtonReturn else { return .terminateCancel }
+        guard NSAlert.confirm(String(localized: "Copying or moving is still under way."),
+                              detail: String(localized: "Schnellbild quits once it is done. Quitting now would leave files half copied."),
+                              yes: String(localized: "Quit When Done")) else { return .terminateCancel }
         // Done while the alert was open
         guard BrowserModel.transfersUnderWay > 0 else { return .terminateNow }
         BrowserModel.onTransfersDone = { NSApp.reply(toApplicationShouldTerminate: true) }

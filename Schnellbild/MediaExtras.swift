@@ -66,6 +66,22 @@ enum MediaInfo {
     }
 }
 
+extension NSAlert {
+    /// Asks `message` (with `detail` under it) with two buttons: true for
+    /// `yes`, the first.
+    @MainActor
+    static func confirm(_ message: String, detail: String? = nil, yes: String, no: String = String(localized: "Cancel"),
+                        warning: Bool = false) -> Bool {
+        let alert = NSAlert()
+        alert.messageText = message
+        if let detail { alert.informativeText = detail }
+        if warning { alert.alertStyle = .warning }
+        alert.addButton(withTitle: yes)
+        alert.addButton(withTitle: no)
+        return alert.runModal() == .alertFirstButtonReturn
+    }
+}
+
 extension NSImage {
     /// The picture at one point per pixel.
     convenience init(pixels picture: CGImage) {

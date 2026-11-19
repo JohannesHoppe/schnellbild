@@ -179,12 +179,9 @@ struct FileActions {
     /// the steps before it can be reached.
     var keepFailedUndo: @MainActor (_ error: Error, _ canKeep: Bool) -> Bool = { error, canKeep in
         guard canKeep else { NSAlert(error: error).runModal(); return false }
-        let alert = NSAlert()
-        alert.messageText = error.localizedDescription
-        alert.informativeText = String(localized: "Keep: try it again later, before the earlier actions. Forget: go on with the earlier actions.")
-        alert.addButton(withTitle: String(localized: "Keep"))
-        alert.addButton(withTitle: String(localized: "Forget"))
-        return alert.runModal() == .alertFirstButtonReturn
+        return NSAlert.confirm(error.localizedDescription,
+                               detail: String(localized: "Keep: try it again later, before the earlier actions. Forget: go on with the earlier actions."),
+                               yes: String(localized: "Keep"), no: String(localized: "Forget"))
     }
     /// Where moves and copies into folders run: the live actions off the
     /// main thread (a copy to a share takes long) through `LiveFiles`, which
@@ -236,20 +233,12 @@ struct FileActions {
         reveal: { NSWorkspace.shared.activateFileViewerSelecting([$0]) },
         openInDefaultApp: { LiveFiles.openWithDefaultApp($0) },
         confirmTrash: { names, detail in
-            let alert = NSAlert()
-            if names.count == 1 {
-                alert.messageText = String(localized: "Move “\(names[0])” to the Trash?")
-                alert.informativeText = detail
-            } else {
-                // Counted; the names (the first ten) under it
-                alert.messageText = String(localized: "Move \(names.count) items to the Trash?")
-                let listed = names.prefix(10).joined(separator: ", ") + (names.count > 10 ? ", …" : "")
-                alert.informativeText = listed + "\n\n" + detail
-            }
-            alert.alertStyle = .warning
-            alert.addButton(withTitle: String(localized: "Move to Trash"))
-            alert.addButton(withTitle: String(localized: "Cancel"))
-            return alert.runModal() == .alertFirstButtonReturn
+            let yes = String(localized: "Move to Trash")
+            if names.count == 1 { return NSAlert.confirm(String(localized: "Move “\(names[0])” to the Trash?"), detail: detail, yes: yes, warning: true) }
+            // Counted; the names (the first ten) under it
+            let listed = names.prefix(10).joined(separator: ", ") + (names.count > 10 ? ", …" : "")
+            return NSAlert.confirm(String(localized: "Move \(names.count) items to the Trash?"), detail: listed + "\n\n" + detail,
+                                   yes: yes, warning: true)
         },
         trash: { try LiveFiles.trash($0) },
         move: { try LiveFiles.move($0, $1) },
@@ -1854,14 +1843,7 @@ final class BrowserModel: ObservableObject {
     // MARK: - Choosing / loading a folder
 
     func chooseFolder() {
-        let panel = NSOpenPanel()
-        panel.canChooseDirectories = true
-        panel.canChooseFiles = false
-        panel.allowsMultipleSelection = false
-        panel.prompt = String(localized: "Open")
-        panel.message = String(localized: "Choose a folder")
-        if panel.runModal() == .OK, let url = panel.url {
-            FolderAccess.shared.grant(url)
+        if let url = FolderAccess.shared.choose(prompt: String(localized: "Open"), message: String(localized: "Choose a folder")) {
             openExplicitly([url])
             open(folder: url)
         }
