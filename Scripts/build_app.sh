@@ -13,27 +13,32 @@ echo "==> Ensuring VLCKit is vendored"
 "$ROOT/Scripts/fetch_vlckit.sh"
 "$ROOT/Scripts/check_vlckit.sh"
 
-echo "==> Rendering icon"
 # Resources/icon_1024.png is gitignored (the website's icons start from it);
-# the .icns is made in build/icon, so a build changes no tracked file
-swift Scripts/make_icon.swift "$RES/icon_1024.png"
+# the .icns is made in build/icon, so a build changes no tracked file. Each is
+# made again only when it is older than what it is made from.
+if [ ! "$RES/icon_1024.png" -nt "$ROOT/Scripts/make_icon.swift" ]; then
+  echo "==> Rendering icon"
+  swift Scripts/make_icon.swift "$RES/icon_1024.png"
+fi
 
-echo "==> Building AppIcon.icns"
 ICONS="$ROOT/build/icon"
 ICONSET="$ICONS/AppIcon.iconset"
-rm -rf "$ICONS"
-mkdir -p "$ICONSET"
-sips -z 16 16   "$RES/icon_1024.png" --out "$ICONSET/icon_16x16.png"      >/dev/null
-sips -z 32 32   "$RES/icon_1024.png" --out "$ICONSET/icon_16x16@2x.png"   >/dev/null
-sips -z 32 32   "$RES/icon_1024.png" --out "$ICONSET/icon_32x32.png"      >/dev/null
-sips -z 64 64   "$RES/icon_1024.png" --out "$ICONSET/icon_32x32@2x.png"   >/dev/null
-sips -z 128 128 "$RES/icon_1024.png" --out "$ICONSET/icon_128x128.png"    >/dev/null
-sips -z 256 256 "$RES/icon_1024.png" --out "$ICONSET/icon_128x128@2x.png" >/dev/null
-sips -z 256 256 "$RES/icon_1024.png" --out "$ICONSET/icon_256x256.png"    >/dev/null
-sips -z 512 512 "$RES/icon_1024.png" --out "$ICONSET/icon_256x256@2x.png" >/dev/null
-sips -z 512 512 "$RES/icon_1024.png" --out "$ICONSET/icon_512x512.png"    >/dev/null
-cp "$RES/icon_1024.png" "$ICONSET/icon_512x512@2x.png"
-iconutil -c icns "$ICONSET" -o "$ICONS/AppIcon.icns"
+if [ ! "$ICONS/AppIcon.icns" -nt "$RES/icon_1024.png" ]; then
+  echo "==> Building AppIcon.icns"
+  rm -rf "$ICONS"
+  mkdir -p "$ICONSET"
+  sips -z 16 16   "$RES/icon_1024.png" --out "$ICONSET/icon_16x16.png"      >/dev/null
+  sips -z 32 32   "$RES/icon_1024.png" --out "$ICONSET/icon_16x16@2x.png"   >/dev/null
+  sips -z 32 32   "$RES/icon_1024.png" --out "$ICONSET/icon_32x32.png"      >/dev/null
+  sips -z 64 64   "$RES/icon_1024.png" --out "$ICONSET/icon_32x32@2x.png"   >/dev/null
+  sips -z 128 128 "$RES/icon_1024.png" --out "$ICONSET/icon_128x128.png"    >/dev/null
+  sips -z 256 256 "$RES/icon_1024.png" --out "$ICONSET/icon_128x128@2x.png" >/dev/null
+  sips -z 256 256 "$RES/icon_1024.png" --out "$ICONSET/icon_256x256.png"    >/dev/null
+  sips -z 512 512 "$RES/icon_1024.png" --out "$ICONSET/icon_256x256@2x.png" >/dev/null
+  sips -z 512 512 "$RES/icon_1024.png" --out "$ICONSET/icon_512x512.png"    >/dev/null
+  cp "$RES/icon_1024.png" "$ICONSET/icon_512x512@2x.png"
+  iconutil -c icns "$ICONSET" -o "$ICONS/AppIcon.icns"
+fi
 
 echo "==> swift build -c release"
 swift build -c release
