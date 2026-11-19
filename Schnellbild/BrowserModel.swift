@@ -183,12 +183,9 @@ struct FileActions {
     /// the steps before it can be reached.
     var keepFailedUndo: @MainActor (_ error: Error, _ canKeep: Bool) -> Bool = { error, canKeep in
         guard canKeep else { NSAlert(error: error).runModal(); return false }
-        let alert = NSAlert()
-        alert.messageText = error.localizedDescription
-        alert.informativeText = String(localized: "Keep: try it again later, before the earlier actions. Forget: go on with the earlier actions.")
-        alert.addButton(withTitle: String(localized: "Keep"))
-        alert.addButton(withTitle: String(localized: "Forget"))
-        return alert.runModal() == .alertFirstButtonReturn
+        return NSAlert.confirm(error.localizedDescription,
+                               detail: String(localized: "Keep: try it again later, before the earlier actions. Forget: go on with the earlier actions."),
+                               yes: String(localized: "Keep"), no: String(localized: "Forget"))
     }
     /// Where moves and copies into folders run: the live actions off the
     /// main thread (a copy to a share takes long) through `LiveFiles`, which
@@ -240,20 +237,12 @@ struct FileActions {
         reveal: { NSWorkspace.shared.activateFileViewerSelecting([$0]) },
         openInDefaultApp: { LiveFiles.openWithDefaultApp($0) },
         confirmTrash: { names, detail in
-            let alert = NSAlert()
-            if names.count == 1 {
-                alert.messageText = String(localized: "Move “\(names[0])” to the Trash?")
-                alert.informativeText = detail
-            } else {
-                // Counted; the names (the first ten) under it
-                alert.messageText = String(localized: "Move \(names.count) items to the Trash?")
-                let listed = names.prefix(10).joined(separator: ", ") + (names.count > 10 ? ", …" : "")
-                alert.informativeText = listed + "\n\n" + detail
-            }
-            alert.alertStyle = .warning
-            alert.addButton(withTitle: String(localized: "Move to Trash"))
-            alert.addButton(withTitle: String(localized: "Cancel"))
-            return alert.runModal() == .alertFirstButtonReturn
+            let yes = String(localized: "Move to Trash")
+            if names.count == 1 { return NSAlert.confirm(String(localized: "Move “\(names[0])” to the Trash?"), detail: detail, yes: yes, warning: true) }
+            // Counted; the names (the first ten) under it
+            let listed = names.prefix(10).joined(separator: ", ") + (names.count > 10 ? ", …" : "")
+            return NSAlert.confirm(String(localized: "Move \(names.count) items to the Trash?"), detail: listed + "\n\n" + detail,
+                                   yes: yes, warning: true)
         },
         trash: { try LiveFiles.trash($0) },
         move: { try LiveFiles.move($0, $1) },
@@ -824,11 +813,12 @@ struct FileChanges {
 /// How many changes a search has recorded, readable from its walk: each
 /// batch carries the count from when it began, so only later changes are
 /// replayed on it.
-final class ChangeClock: @unchecked Sendable {
-    private let lock = NSLock()
-    private var count = 0
-    var now: Int { lock.lock(); defer { lock.unlock() }; return count }
-    func set(_ value: Int) { lock.lock(); count = value; lock.unlock() }
+typealias ChangeClock = Locked<Int>
+
+extension Locked where Value == Int {
+    convenience init() { self.init(0) }
+    /// The count of changes recorded so far (`ChangeClock`).
+    var now: Int { value }
 }
 
 /// Matches found by a search's walk, read after `stamp` changes were recorded.
@@ -841,12 +831,7 @@ struct SearchBatch: Sendable {
 }
 
 /// Tells a walk on its own thread to stop (the search went away).
-final class WalkStop: @unchecked Sendable {
-    private let lock = NSLock()
-    private var stopped = false
-    var isSet: Bool { lock.withLock { stopped } }
-    func set() { lock.withLock { stopped = true } }
-}
+typealias WalkStop = ManagedFlag
 
 /// What a search's walk learns about the folders it finds: whether they
 /// hold media and their first pictures, as a folder tile would look them up
@@ -1864,11 +1849,7 @@ final class BrowserModel: ObservableObject {
         self.fileActions = fileActions
         // UI tests (`--search-delay=<ms>`): a search that stays running long
         // enough to be watched and stopped
-        let args = ProcessInfo.processInfo.arguments
-        if args.contains("--ui-testing"), let arg = args.first(where: { $0.hasPrefix("--search-delay=") }),
-           let ms = Int(arg.dropFirst("--search-delay=".count)) {
-            searchDebounce = .milliseconds(ms)
-        }
+        if let delay = TestSwitches.milliseconds("--search-delay=") { searchDebounce = delay }
         showMiniKeyboard = defaults.bool(forKey: Self.miniKeyboardKey)
         followAtlasSubfolders()
         followHiddenFiles()
@@ -1921,14 +1902,7 @@ final class BrowserModel: ObservableObject {
     // MARK: - Choosing / loading a folder
 
     func chooseFolder() {
-        let panel = NSOpenPanel()
-        panel.canChooseDirectories = true
-        panel.canChooseFiles = false
-        panel.allowsMultipleSelection = false
-        panel.prompt = String(localized: "Open")
-        panel.message = String(localized: "Choose a folder")
-        if panel.runModal() == .OK, let url = panel.url {
-            FolderAccess.shared.grant(url)
+        if let url = FolderAccess.shared.choose(prompt: String(localized: "Open"), message: String(localized: "Choose a folder")) {
             openExplicitly([url])
             open(folder: url)
         }
@@ -2106,18 +2080,15 @@ final class BrowserModel: ObservableObject {
     /// what the screen doesn't show (how often a rename ran). Written into
     /// the app's own temporary folder (in the App Sandbox: its container),
     /// where nothing but the app's own rights are needed (`testLogFile`).
-    nonisolated static func testLog(_ line: String, arguments: [String] = ProcessInfo.processInfo.arguments) {
-        guard arguments.contains("--ui-testing"),
-              let arg = arguments.first(where: { $0.hasPrefix("--test-log=") }) else { return }
-        let path = testLogFile(String(arg.dropFirst("--test-log=".count))).path
+    /// The line is made only while there is a log.
+    nonisolated static func testLog(_ line: @autoclosure () -> String) {
+        guard let path = TestSwitches.testLog else { return }
         // One writer at a time: lines come from the main thread and VLC's
         // threads, and two writers at the same end would write over each other
         testLogLock.lock()
         defer { testLogLock.unlock() }
-        if !FileManager.default.fileExists(atPath: path) { FileManager.default.createFile(atPath: path, contents: nil) }
-        guard let handle = FileHandle(forWritingAtPath: path) else { return }
-        handle.seekToEndOfFile()
-        handle.write(Data((line + "\n").utf8))
+        guard let handle = appendingHandle(path) else { return }
+        handle.write(Data((line() + "\n").utf8))
         try? handle.close()
     }
     nonisolated private static let testLogLock = NSLock()
@@ -2126,6 +2097,14 @@ final class BrowserModel: ObservableObject {
     /// folder (a path given counts by its last part).
     nonisolated static func testLogFile(_ name: String) -> URL {
         FileManager.default.temporaryDirectory.appendingPathComponent((name as NSString).lastPathComponent)
+    }
+
+    /// A log file opened at its end (made when missing).
+    nonisolated static func appendingHandle(_ path: String) -> FileHandle? {
+        if !FileManager.default.fileExists(atPath: path) { FileManager.default.createFile(atPath: path, contents: nil) }
+        let handle = FileHandle(forWritingAtPath: path)
+        handle?.seekToEndOfFile()
+        return handle
     }
 
     /// Reopen the last folder on launch (if it still exists).
@@ -2178,12 +2157,10 @@ final class BrowserModel: ObservableObject {
     /// entitlements grant it), if it is there. UI tests name their own
     /// (`--pictures-folder=<path>`) and have none otherwise.
     static var defaultFolder: URL? {
-        let arguments = ProcessInfo.processInfo.arguments
         let folder: URL
-        if arguments.contains("--ui-testing") {
-            let prefix = "--pictures-folder="
-            guard let path = arguments.first(where: { $0.hasPrefix(prefix) })?.dropFirst(prefix.count) else { return nil }
-            folder = URL(fileURLWithPath: String(path), isDirectory: true)
+        if TestSwitches.on {
+            guard let path = TestSwitches.value("--pictures-folder=") else { return nil }
+            folder = URL(fileURLWithPath: path, isDirectory: true)
         } else {
             guard let home = getpwuid(getuid())?.pointee.pw_dir else { return nil }
             folder = URL(fileURLWithPath: String(cString: home), isDirectory: true).appendingPathComponent("Pictures", isDirectory: true)
@@ -4747,17 +4724,10 @@ final class BrowserModel: ObservableObject {
         guard archiveDownload?.archive != archive else { return }
         archiveDownload?.task.cancel()
         let task = Task { [weak self] in
-            func size() async -> Int64? {
-                await Blocking.run(.utility) {
-                    var info = stat()
-                    return stat(archive.path, &info) == 0 ? Int64(info.st_size) : nil
-                }
-            }
-            var known = await size()
-            while !Task.isCancelled {
-                try? await Task.sleep(for: .seconds(3))
-                let now = await size()
-                guard let self, !Task.isCancelled else { return }
+            var known: Int64??   // none before the first reading
+            await DownloadSize.watch(archive, every: .seconds(3)) { now in
+                guard let before = known else { known = now; return true }
+                guard let self else { return false }
                 if now == nil {
                     let final = archive.deletingLastPathComponent().appendingPathComponent(DownloadName.finalName(of: archive.lastPathComponent))
                     if await Blocking.run(.utility, { FileManager.default.fileExists(atPath: final.path) }) {
@@ -4765,13 +4735,14 @@ final class BrowserModel: ObservableObject {
                         self.followFolder(through: [change])
                         self.applyHere([change])
                     }
-                    return
+                    return false
                 }
-                guard now != known, !self.isLoading, let shown = self.folderURL else { continue }
+                guard now != before, !self.isLoading, let shown = self.folderURL else { return true }
                 known = now
                 if case .success(let listing) = await Self.listing(shown, kept: self.explicitItems), self.folderURL == shown, !self.isLoading {
                     self.merge(listing)
                 }
+                return true
             }
         }
         archiveDownload = (archive, task)
@@ -5183,7 +5154,10 @@ final class BrowserModel: ObservableObject {
                         free.append(next)
                     }
                 }
-                // Gone (moved or deleted since it was dragged): nothing to move
+                // Gone (moved or deleted since it was dragged or marked):
+                // nothing to move. Needed beside `TileDrag.byTheUser`: F5 /
+                // F6 hand over the marked items without a drag, and those
+                // may be gone meanwhile (the Finder, another Mac on a share)
                 let gone = (try? FileManager.default.attributesOfItem(atPath: source.path)) == nil
                 return TransferProbe(source: source, gone: gone, isFolder: isFolder, files: files,
                                      destinationTaken: destinationTaken, freeNames: free,
@@ -5418,7 +5392,7 @@ final class BrowserModel: ObservableObject {
     func canRename(_ entry: GridEntry) -> Bool {
         guard canChange(entry) else { return false }
         // (by the name the download will have: "x.7z.001.part" is a volume too)
-        let name = ArchiveName.finalName(of: entry.name).lowercased()
+        let name = DownloadName.finalName(of: entry.name).lowercased()
         return !(entry.isArchive && (ArchiveName.rarPart(of: name) != nil || name.hasSuffix(".001")))
     }
 
@@ -5456,7 +5430,7 @@ final class BrowserModel: ObservableObject {
         let new = old.deletingLastPathComponent().appendingPathComponent(name, isDirectory: isFolder)
         if archive, ArchiveName.format(of: name) != ArchiveName.format(of: old.lastPathComponent) {
             // The ending of its format (not a download's ".part")
-            let final = ArchiveName.finalName(of: old.lastPathComponent)
+            let final = DownloadName.finalName(of: old.lastPathComponent)
             throw RenameError.changesArchiveFormat((final as NSString).pathExtension)
         }
         if entry.kind != .folder, !Self.keepsKind(entry.kind, renaming: old, to: new) {
@@ -6427,14 +6401,13 @@ final class AVPlaybackControl: PlaybackControl {
         resumeAt = place
         BrowserModel.testLog("avkit resumes at \(String(format: "%.1f", place.seconds)) s, \(place.playing ? "playing" : "paused")")
         resumeTask = Task { @MainActor [weak self] in
-            // (asked every 50 ms, as long as the player is there, at most 10 s)
-            var waited = 0
-            while let item = self?.player.currentItem, item.status == .unknown, !Task.isCancelled, waited < 200 {
-                try? await Task.sleep(for: .milliseconds(50))
-                waited += 1
+            // (at most 10 s)
+            let began = ContinuousClock.now
+            if let item = self?.player.currentItem {
+                _ = await firstObserved(item, \.status, within: .seconds(10)) { $0 != .unknown }
             }
             guard let self, !Task.isCancelled, let place = self.resumeAt else { return }
-            BrowserModel.testLog("avkit item status \(self.player.currentItem?.status.rawValue ?? -1) after \(waited * 50) ms")
+            BrowserModel.testLog("avkit item status \(self.player.currentItem?.status.rawValue ?? -1) after \(ContinuousClock.now - began)")
             // A seek of the player's own (a subtitle track chosen, a look
             // redrawn) interrupts this one: it is made again
             for attempt in 1...5 where self.player.currentItem.map({ $0.status != .failed }) == true {
@@ -6496,16 +6469,13 @@ final class AVPlaybackControl: PlaybackControl {
                     let code = try? await track.load(.languageCode)
                     languages[track.trackID] = (tag ?? nil) ?? (code ?? nil)
                 }
-                // The item's tracks come once it is ready to play
-                for _ in 0..<50 where !Task.isCancelled {
-                    let tracks = item.tracks.filter { $0.assetTrack?.mediaType == .audio }
-                    if tracks.count > 1 {
-                        self.audioItemTracks = tracks.map { ($0, $0.assetTrack.flatMap { languages[$0.trackID] }) }
-                        let playing = tracks.firstIndex { $0.isEnabled } ?? 0
-                        for (index, track) in tracks.enumerated() { track.isEnabled = index == playing }
-                        break
-                    }
-                    try? await Task.sleep(for: .milliseconds(100))
+                // The item's tracks come once it is ready to play (at most 5 s)
+                @MainActor func audioOf(_ tracks: [AVPlayerItemTrack]) -> [AVPlayerItemTrack] { tracks.filter { $0.assetTrack?.mediaType == .audio } }
+                if let found = await firstObserved(item, \.tracks, within: .seconds(5), where: { audioOf($0).count > 1 }), !Task.isCancelled {
+                    let tracks = audioOf(found)
+                    self.audioItemTracks = tracks.map { ($0, $0.assetTrack.flatMap { languages[$0.trackID] }) }
+                    let playing = tracks.firstIndex { $0.isEnabled } ?? 0
+                    for (index, track) in tracks.enumerated() { track.isEnabled = index == playing }
                 }
             }
             guard !Task.isCancelled else { return }
@@ -6561,21 +6531,16 @@ final class AVPlaybackControl: PlaybackControl {
     /// done, shows the picture without it.
     private func refreshSubtitles(clearing: Bool = false) {
         Task { @MainActor [weak self] in
-            // (once the item can seek)
-            for _ in 0..<50 {
-                guard let self, let item = self.player.currentItem else { return }
-                // Getting to where it was left: that seek draws the choice
-                if self.resumeAt != nil { try? await Task.sleep(for: .milliseconds(100)); continue }
-                if item.status == .readyToPlay {
-                    self.noteOwnChange()
-                    self.player.seek(to: self.player.currentTime(), toleranceBefore: .zero, toleranceAfter: .zero) { [weak self] _ in
-                        Task { @MainActor in self?.noteOwnChange() }
-                        guard clearing else { return }
-                        Task { @MainActor [weak self] in self?.clearSubtitleLine() }
-                    }
-                    return
-                }
-                try? await Task.sleep(for: .milliseconds(100))
+            // Getting to where it was left first, then once the item can seek (at most 5 s)
+            await self?.resumeTask?.value
+            guard let item = self?.player.currentItem, self?.resumeAt == nil,
+                  await firstObserved(item, \.status, within: .seconds(5), where: { $0 == .readyToPlay }) != nil,
+                  let self else { return }
+            self.noteOwnChange()
+            self.player.seek(to: self.player.currentTime(), toleranceBefore: .zero, toleranceAfter: .zero) { [weak self] _ in
+                Task { @MainActor in self?.noteOwnChange() }
+                guard clearing else { return }
+                Task { @MainActor [weak self] in self?.clearSubtitleLine() }
             }
         }
     }

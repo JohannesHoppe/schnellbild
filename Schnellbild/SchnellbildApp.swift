@@ -23,7 +23,7 @@ struct SchnellbildApp: App {
         VLCSafety.forgetInjectedOptions()
         _ = VLCPlaybackControl.testLog
         // UI tests: the map and the globe as with Reduce motion on (`--reduce-motion`) or off
-        if VideoDetailView.uiTesting { MapMotion.reduceOverride = ProcessInfo.processInfo.arguments.contains("--reduce-motion") }
+        if TestSwitches.on { MapMotion.reduceOverride = TestSwitches.has("--reduce-motion") }
         // Media Extensions the user has turned on in System Settings (format
         // readers and video decoders, Apple's own for ProRes RAW too, or
         // another app's for MKV, AVI …) open those videos in AVKit, and
@@ -43,7 +43,7 @@ struct SchnellbildApp: App {
         FolderAccess.shared.restore()
         // Archive passwords: the login keychain; UI tests keep theirs in
         // their own preferences (`--reset-state` clears them)
-        ArchiveStore.shared.passwords = ProcessInfo.processInfo.arguments.contains("--ui-testing")
+        ArchiveStore.shared.passwords = TestSwitches.on
             ? .defaults(defaults) : .keychain()
         // Each pane watches the folder it shows for changes outside the app;
         // volumes coming and going and the app turning active reach them too
@@ -248,12 +248,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     /// Not in the middle of a copy or move: the app quits once it is done.
     func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
         guard BrowserModel.transfersUnderWay > 0 else { return .terminateNow }
-        let alert = NSAlert()
-        alert.messageText = String(localized: "Copying or moving is still under way.")
-        alert.informativeText = String(localized: "Schnellbild quits once it is done. Quitting now would leave files half copied.")
-        alert.addButton(withTitle: String(localized: "Quit When Done"))
-        alert.addButton(withTitle: String(localized: "Cancel"))
-        guard alert.runModal() == .alertFirstButtonReturn else { return .terminateCancel }
+        guard NSAlert.confirm(String(localized: "Copying or moving is still under way."),
+                              detail: String(localized: "Schnellbild quits once it is done. Quitting now would leave files half copied."),
+                              yes: String(localized: "Quit When Done")) else { return .terminateCancel }
         // Done while the alert was open
         guard BrowserModel.transfersUnderWay > 0 else { return .terminateNow }
         BrowserModel.onTransfersDone = { NSApp.reply(toApplicationShouldTerminate: true) }

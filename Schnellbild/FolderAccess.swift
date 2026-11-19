@@ -330,20 +330,27 @@ final class FolderAccess {
     /// folder. Returns the folder chosen (it may be one that holds `folder`,
     /// or another one), granted.
     func ask(for folder: URL, to purpose: Purpose = .show) -> URL? {
+        let message = switch purpose {
+        case .show:
+            String(localized: "Choose this folder, or one that holds it, so Schnellbild may show it. Schnellbild remembers your choice.")
+        case .rename(let name):
+            String(localized: "Choose the folder that holds “\(name)”, so Schnellbild may rename it. Schnellbild remembers your choice.")
+        case .moveInto:
+            String(localized: "Choose this folder, so Schnellbild may put items into it. Schnellbild remembers your choice.")
+        }
+        return choose(prompt: String(localized: "Allow Access"), message: message, at: folder)
+    }
+
+    /// A folder the user chooses in the open panel (starting at `folder`),
+    /// granted to the app; nil when cancelled.
+    func choose(prompt: String, message: String, at folder: URL? = nil) -> URL? {
         let panel = NSOpenPanel()
         panel.canChooseDirectories = true
         panel.canChooseFiles = false
         panel.allowsMultipleSelection = false
-        panel.directoryURL = folder
-        panel.prompt = String(localized: "Allow Access")
-        switch purpose {
-        case .show:
-            panel.message = String(localized: "Choose this folder, or one that holds it, so Schnellbild may show it. Schnellbild remembers your choice.")
-        case .rename(let name):
-            panel.message = String(localized: "Choose the folder that holds “\(name)”, so Schnellbild may rename it. Schnellbild remembers your choice.")
-        case .moveInto:
-            panel.message = String(localized: "Choose this folder, so Schnellbild may put items into it. Schnellbild remembers your choice.")
-        }
+        if let folder { panel.directoryURL = folder }
+        panel.prompt = prompt
+        panel.message = message
         guard panel.runModal() == .OK, let url = panel.url else { return nil }
         grant(url)
         return url

@@ -81,11 +81,7 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
     /// exists (a tile's `VLCFrameGrab` may come first), so no player's
     /// thread logs while VLCKit's loggers change.
     static let testLog: Void = {
-        guard ProcessInfo.processInfo.arguments.contains("--ui-testing") else { return }
-        let path = BrowserModel.testLogFile("schnellbild-vlc.log").path
-        if !FileManager.default.fileExists(atPath: path) { FileManager.default.createFile(atPath: path, contents: nil) }
-        guard let handle = FileHandle(forWritingAtPath: path) else { return }
-        handle.seekToEndOfFile()
+        guard TestSwitches.on, let handle = BrowserModel.appendingHandle(BrowserModel.testLogFile("schnellbild-vlc.log").path) else { return }
         let logger = VLCTestLogger(handle)
         logger.level = .debug
         VLCLibrary.shared().loggers = [logger]
@@ -157,12 +153,7 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
     static let parseWait: Duration = .milliseconds(300)
     /// UI tests (`--vlc-parse-delay=<ms>`): the tracks arrive that much
     /// later, as from a slow share.
-    static let parseDelay: Duration? = {
-        let args = ProcessInfo.processInfo.arguments
-        guard args.contains("--ui-testing"), let arg = args.first(where: { $0.hasPrefix("--vlc-parse-delay=") }),
-              let ms = Int(arg.dropFirst("--vlc-parse-delay=".count)) else { return nil }
-        return .milliseconds(ms)
-    }()
+    static let parseDelay = TestSwitches.milliseconds("--vlc-parse-delay=")
     /// When the reading began (test log).
     private var parseBegan = Date()
     /// Where the first opening starts (ms), until VLC reports a time past
@@ -491,6 +482,7 @@ final class VLCPlaybackControl: NSObject, PlaybackControl, VLCMediaPlayerDelegat
         BrowserModel.testLog("vlc: software decoding for subtitles, stopped at \(stoppedAt) ms (VLC's last report \(player.time.intValue) ms) "
             + "| \(BrowserModel.testClock) ms")
         Task { @MainActor [weak self] in
+            // (asked: a player stopped for good meanwhile reports nothing to wait for)
             for _ in 0..<100 {
                 guard let self, self.player.delegate != nil else { return }   // stopped for good meanwhile
                 if self.player.state == .stopped { break }

@@ -210,7 +210,7 @@ struct KeyChord: Hashable {
     static func physical(_ event: NSEvent) -> KeyChord? {
         let flags = event.modifierFlags
         guard flags.contains(.shift), let plain = event.characters(byApplyingModifiers: []) else { return nil }
-        let base = plain.unicodeScalars.allSatisfy(\.isASCII) ? plain : (LatinKeys.character(for: event.keyCode, shift: false) ?? plain)
+        let base = LatinKeys.letter(plain, keyCode: event.keyCode)
         guard base.count == 1, let c = base.first, !c.isLetter, isTypable(c) else { return nil }
         return KeyChord(.char(c), command: flags.contains(.command), shift: true,
                         option: flags.contains(.option), control: flags.contains(.control), onKey: true)

@@ -41,6 +41,52 @@ enum MediaInfo {
         guard let source = await MediaData.imageSource(url) else { return nil }
         return pixelSize(from: source)
     }
+
+    /// Picture `index` of `source` decoded with its longest side at most
+    /// `maxPixel`, turned upright by its EXIF orientation: the picture
+    /// itself, not the small preview a camera embeds. `now`: decoded at
+    /// once (to be drawn), not when first drawn.
+    static func scaledDown(_ source: CGImageSource, at index: Int, maxPixel: Int, now: Bool) -> CGImage? {
+        var options: [CFString: Any] = [kCGImageSourceCreateThumbnailFromImageAlways: true,
+                                        kCGImageSourceCreateThumbnailWithTransform: true,
+                                        kCGImageSourceThumbnailMaxPixelSize: maxPixel]
+        if now { options[kCGImageSourceShouldCacheImmediately] = true }
+        return CGImageSourceCreateThumbnailAtIndex(source, index, options as CFDictionary)
+    }
+
+    /// A bitmap for drawing a picture of `size` (points) with its longest
+    /// side `longestSide` pixels: sRGB, 8 bits, transparent; nil for an
+    /// empty or endless size.
+    static func bitmap(for size: CGSize, longestSide: Int) -> CGContext? {
+        guard size.width > 0, size.height > 0, size.width.isFinite, size.height.isFinite else { return nil }
+        let scale = CGFloat(max(longestSide, 1)) / max(size.width, size.height)
+        return CGContext(data: nil, width: max(Int((size.width * scale).rounded()), 1), height: max(Int((size.height * scale).rounded()), 1),
+                         bitsPerComponent: 8, bytesPerRow: 0, space: CGColorSpace(name: CGColorSpace.sRGB)!,
+                         bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)
+    }
+}
+
+extension NSAlert {
+    /// Asks `message` (with `detail` under it) with two buttons: true for
+    /// `yes`, the first.
+    @MainActor
+    static func confirm(_ message: String, detail: String? = nil, yes: String, no: String = String(localized: "Cancel"),
+                        warning: Bool = false) -> Bool {
+        let alert = NSAlert()
+        alert.messageText = message
+        if let detail { alert.informativeText = detail }
+        if warning { alert.alertStyle = .warning }
+        alert.addButton(withTitle: yes)
+        alert.addButton(withTitle: no)
+        return alert.runModal() == .alertFirstButtonReturn
+    }
+}
+
+extension NSImage {
+    /// The picture at one point per pixel.
+    convenience init(pixels picture: CGImage) {
+        self.init(cgImage: picture, size: NSSize(width: picture.width, height: picture.height))
+    }
 }
 
 extension NSScreen {

@@ -34,6 +34,9 @@ struct FullImageView: View {
     @State private var frame: (image: NSImage, index: Int, count: Int)?
     /// The PDF shown, opened once and kept while its pages are turned.
     @State private var pdf: PDFPages?
+    /// The picture's image source, opened once for its sharper decodes and
+    /// its animation (a share asked once, an archive's entry unpacked once).
+    @State private var opened: OpenedPicture?
     /// The file and page whose picture is on screen (a PDF's page stays
     /// while the next one is drawn).
     @State private var drawn: Shown?
@@ -81,7 +84,7 @@ struct FullImageView: View {
             .accessibilityIdentifier("fullImage")
             // The UI tests read the view's state, in English, as the label:
             // XCUITest gets no value from a group like this one
-            .accessibilityLabel(VideoDetailView.uiTesting ? accessibilityState : spokenLabel)
+            .accessibilityLabel(test: accessibilityState, spoken: spokenLabel)
             .task(id: shown) {
                 // Never the previous file's picture: the cached tile, or nothing
                 // yet. Another page of the same PDF: the page shown stays until
@@ -126,6 +129,7 @@ struct FullImageView: View {
         }
         .onChange(of: shown) { _, new in
             if pdf?.url != new.url { pdf = nil }
+            if opened?.url != new.url { opened = nil }
             panOffset = .zero
             nativeSize = nil
             picture = nil
@@ -252,37 +256,27 @@ struct FullImageView: View {
             if let pages, !sharper { model.pdfOpened(url, pages: pages.count) }
         }
         let page = shown.page
-        let attempt = await detachedCancellable(priority: .userInitiated) { [pages] () -> Result<(NSImage, CGSize, CGImage), LoadFailure>? in
+        let kept = sharper && opened?.url == url ? opened : nil
+        let attempt = await detachedCancellable(priority: .userInitiated) { [pages] () -> Result<(NSImage, CGSize, CGImage, OpenedPicture?), LoadFailure>? in
             if let pages {
                 guard let rendered = pages.render(page: page, longestSide: maxPixel) else { return .failure(.undecodable) }
-                let cg = rendered.0
-                return .success((NSImage(cgImage: cg, size: NSSize(width: cg.width, height: cg.height)), rendered.1, cg))
+                return .success((NSImage(pixels: rendered.0), rendered.1, rendered.0, nil))
             }
             if VectorPicture.isVector(url) {
                 guard let rendered = await VectorPicture.render(url, longestSide: maxPixel) else { return .failure(.undecodable) }
-                let cg = rendered.0
-                return .success((NSImage(cgImage: cg, size: NSSize(width: cg.width, height: cg.height)), rendered.1, cg))
+                return .success((NSImage(pixels: rendered.0), rendered.1, rendered.0, nil))
             }
-            guard let src = await MediaData.imageSource(url) else { return .failure(.unreadable) }
+            let source = if let kept { kept.source } else { await MediaData.imageSource(url) }
+            guard let src = source else { return .failure(.unreadable) }
             guard !Task.isCancelled else { return nil }
             if let failure = LoadFailure(status: CGImageSourceGetStatus(src)) { return .failure(failure) }
             let native = MediaInfo.pixelSize(from: src) ?? .zero
-
-            let options: [CFString: Any] = [
-                kCGImageSourceCreateThumbnailFromImageAlways: true,
-                kCGImageSourceCreateThumbnailWithTransform: true,
-                kCGImageSourceShouldCacheImmediately: true,
-                kCGImageSourceThumbnailMaxPixelSize: maxPixel
-            ]
-            guard let cg = CGImageSourceCreateThumbnailAtIndex(src, 0, options as CFDictionary) else {
-                return .failure(.undecodable)
-            }
-            let img = NSImage(cgImage: cg, size: NSSize(width: cg.width, height: cg.height))
-            return .success((img, native, cg))
+            guard let cg = MediaInfo.scaledDown(src, at: 0, maxPixel: maxPixel, now: true) else { return .failure(.undecodable) }
+            return .success((NSImage(pixels: cg), native, cg, kept ?? OpenedPicture(url: url, source: src)))
         }
 
         guard !Task.isCancelled, let outcome = attempt else { return }
-        let result: (NSImage, CGSize, CGImage)
+        let result: (NSImage, CGSize, CGImage, OpenedPicture?)
         switch outcome {
         case .success(let loaded):
             result = loaded
@@ -304,6 +298,7 @@ struct FullImageView: View {
             autoLook = nil
         }
         picture = result.2
+        opened = result.3
     }
 
     /// Why a picture can't be shown, as far as ImageIO tells.
@@ -397,7 +392,7 @@ struct FullImageView: View {
             Look.render(picture, with: look)
         }.value
         guard !Task.isCancelled, let result else { return }
-        enhanced = (look, side, NSImage(cgImage: result, size: NSSize(width: result.width, height: result.height)))
+        enhanced = (look, side, NSImage(pixels: result))
     }
 }
 
@@ -414,9 +409,9 @@ extension FullImageView {
     /// for a picture of one frame.
     private func animate() async {
         guard picture != nil, decodedSide > 0, !VectorPicture.isVector(url) else { return }
-        let url = self.url, side = decodedSide, look = shownLook
-        guard let frames = await detachedCancellable(priority: .userInitiated, {
-            await AnimationFrames.open(url, side: side)
+        let side = decodedSide, look = shownLook
+        guard let opened, opened.url == url, let frames = await detachedCancellable(priority: .userInitiated, {
+            AnimationFrames.of(opened.source, side: side)
         }) else { frame = nil; return }
         var index = frame?.count == frames.count ? frame?.index ?? 0 : 0
         while !Task.isCancelled {
@@ -425,13 +420,24 @@ extension FullImageView {
             let next = await detachedCancellable(priority: .userInitiated) { frames.frame(current, look: look) }
             guard !Task.isCancelled else { return }
             if let next {
-                frame = (NSImage(cgImage: next, size: NSSize(width: next.width, height: next.height)), index, frames.count)
+                frame = (NSImage(pixels: next), index, frames.count)
             }
             // Its own time, less what decoding it took
             let wait = Duration.seconds(frames.delays[index]) - (ContinuousClock.now - started)
             if wait > .zero { try? await Task.sleep(for: wait) }
             index = (index + 1) % frames.count
         }
+    }
+}
+
+/// A picture's image source and its file (an image source can be read
+/// from any thread).
+final class OpenedPicture: @unchecked Sendable {
+    let url: URL
+    let source: CGImageSource
+    init(url: URL, source: CGImageSource) {
+        self.url = url
+        self.source = source
     }
 }
 
@@ -458,9 +464,8 @@ final class AnimationFrames: @unchecked Sendable {
         keeps = count * side * side * 4 <= Self.budget
     }
 
-    /// nil for a picture of one frame (or one that can't be read).
-    static func open(_ url: URL, side: Int) async -> AnimationFrames? {
-        guard let source = await MediaData.imageSource(url) else { return nil }
+    /// nil for a picture of one frame.
+    static func of(_ source: CGImageSource, side: Int) -> AnimationFrames? {
         let count = CGImageSourceGetCount(source)
         guard count > 1 else { return nil }
         return AnimationFrames(source: source, count: count, side: side)
@@ -488,13 +493,7 @@ final class AnimationFrames: @unchecked Sendable {
         var decoded = kept[index]
         lock.unlock()
         if decoded == nil {
-            let options: [CFString: Any] = [
-                kCGImageSourceCreateThumbnailFromImageAlways: true,
-                kCGImageSourceCreateThumbnailWithTransform: true,
-                kCGImageSourceShouldCacheImmediately: true,
-                kCGImageSourceThumbnailMaxPixelSize: side
-            ]
-            decoded = CGImageSourceCreateThumbnailAtIndex(source, index, options as CFDictionary)
+            decoded = MediaInfo.scaledDown(source, at: index, maxPixel: side, now: true)
             if keeps, let decoded { lock.lock(); kept[index] = decoded; lock.unlock() }
         }
         guard let decoded else { return nil }
@@ -536,20 +535,11 @@ enum VectorPicture {
     }
 
     private static func render(_ image: NSImage, longestSide: Int) -> (CGImage, CGSize)? {
-        guard image.size.width > 0, image.size.height > 0, image.size.width.isFinite, image.size.height.isFinite else { return nil }
-        let size = image.size
-        let scale = CGFloat(max(longestSide, 1)) / max(size.width, size.height)
-        let width = max(Int((size.width * scale).rounded()), 1)
-        let height = max(Int((size.height * scale).rounded()), 1)
-        guard let context = CGContext(data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: 0,
-                                      space: CGColorSpace(name: CGColorSpace.sRGB)!,
-                                      bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else { return nil }
-        let graphics = NSGraphicsContext(cgContext: context, flipped: false)
+        guard let context = MediaInfo.bitmap(for: image.size, longestSide: longestSide) else { return nil }
         NSGraphicsContext.saveGraphicsState()
-        NSGraphicsContext.current = graphics
-        image.draw(in: NSRect(x: 0, y: 0, width: width, height: height))
+        NSGraphicsContext.current = NSGraphicsContext(cgContext: context, flipped: false)
+        image.draw(in: NSRect(x: 0, y: 0, width: context.width, height: context.height))
         NSGraphicsContext.restoreGraphicsState()
-        guard let cg = context.makeImage() else { return nil }
-        return (cg, size)
+        return context.makeImage().map { ($0, image.size) }
     }
 }

@@ -15,11 +15,6 @@ enum ArchiveFormat: Equatable {
 /// shown once, by its first volume; a download still in progress
 /// ("x.rar.part", "x.zip.crdownload") counts by the name it will have.
 enum ArchiveName {
-    /// The name without a download's in-progress ending (`DownloadName`).
-    static func finalName(of name: String) -> String { DownloadName.finalName(of: name) }
-
-    static func isPartial(_ name: String) -> Bool { DownloadName.isPartial(name) }
-
     /// The format of a file shown as an archive: by its name, else by what
     /// its first bytes showed when they were read (`ContentSniffer`: "x.bin"
     /// that is a ZIP). No disk access.
@@ -31,7 +26,7 @@ enum ArchiveName {
     /// (also for the later volumes of a split archive).
     static func format(of name: String) -> ArchiveFormat? {
         guard !name.hasPrefix("._") else { return nil }
-        let base = finalName(of: name).lowercased() as NSString
+        let base = DownloadName.finalName(of: name).lowercased() as NSString
         switch base.pathExtension {
         case "zip", "cbz": return .zip
         case "7z", "cb7":  return .sevenZip
@@ -109,7 +104,7 @@ enum ArchiveName {
         let folder = Siblings(of: url)
         // The parts are named after the archive's final name (the first part
         // can still be downloading: "x.part1.rar.part")
-        let name = finalName(of: url.lastPathComponent)
+        let name = DownloadName.finalName(of: url.lastPathComponent)
         let lower = name.lowercased()
         var files = [url]
         if rarPart(of: lower) != nil {
@@ -355,7 +350,7 @@ struct RarReader: ArchiveReader {
         while true {
             let r = sb_rar_next(rar, &entry)
             // ERAR_END_ARCHIVE; a download still in progress ends where it has got to
-            if r == 10 { return sb_rar_volume_missing(rar) == 0 && !ArchiveName.isPartial(url.lastPathComponent) }
+            if r == 10 { return sb_rar_volume_missing(rar) == 0 && !DownloadName.isPartial(url.lastPathComponent) }
             if r != 0 {
                 // Encrypted names: a wrong password shows as damaged data
                 if seen == 0, sb_rar_headers_encrypted(rar) != 0 { throw ArchiveError.needsPassword }
@@ -454,7 +449,7 @@ struct LibArchiveReader: ArchiveReader {
         let seekable = format == .zip && volumes.count == 1
         // A download still in progress (a torrent client writes its pieces
         // in any order): read to its end, it still isn't whole
-        let partial = volumes.contains { ArchiveName.isPartial($0.lastPathComponent) }
+        let partial = volumes.contains { DownloadName.isPartial($0.lastPathComponent) }
         do {
             return try walk(seekable: seekable, password: password, partial: partial, visit)
         } catch ArchiveError.unreadable(let reason) where seekable {

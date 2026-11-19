@@ -181,7 +181,7 @@ enum SubtitleOverlay {
     static func windowsMetrics(_ font: CTFont) -> (CGFloat, CGFloat) {
         guard let table = CTFontCopyTable(font, CTFontTableTag(kCTFontTableOS2), []) as Data?, table.count >= 78 else { return (0, 0) }
         let b = [UInt8](table)
-        return (CGFloat(UInt16(b[74]) << 8 | UInt16(b[75])), CGFloat(UInt16(b[76]) << 8 | UInt16(b[77])))
+        return (CGFloat(b.u16(74) ?? 0), CGFloat(b.u16(76) ?? 0))
     }
 
     /// The OS/2 table's yStrikeoutSize and yStrikeoutPosition, in pixels of
@@ -189,8 +189,8 @@ enum SubtitleOverlay {
     static func strikeOut(_ font: CTFont) -> (size: CGFloat, position: CGFloat)? {
         guard let table = CTFontCopyTable(font, CTFontTableTag(kCTFontTableOS2), []) as Data?, table.count >= 30 else { return nil }
         let b = [UInt8](table)
-        let size = CGFloat(Int16(bitPattern: UInt16(b[26]) << 8 | UInt16(b[27])))
-        let position = CGFloat(Int16(bitPattern: UInt16(b[28]) << 8 | UInt16(b[29])))
+        let size = CGFloat(Int16(bitPattern: b.u16(26) ?? 0))
+        let position = CGFloat(Int16(bitPattern: b.u16(28) ?? 0))
         guard size > 0, position >= 0 else { return nil }
         let scale = CTFontGetSize(font) / CGFloat(CTFontGetUnitsPerEm(font))
         return (size * scale, position * scale)

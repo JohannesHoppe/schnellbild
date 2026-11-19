@@ -95,7 +95,7 @@ struct VideoChrome: View {
     /// How long the bar stays after the mouse stops.
     static let idle: Duration = .seconds(3)
     /// UI tests and the README screenshots (`--hold-video-bar`): once shown, it stays.
-    static let holds = VideoDetailView.uiTesting && ProcessInfo.processInfo.arguments.contains("--hold-video-bar")
+    static let holds = TestSwitches.has("--hold-video-bar")
 
     var body: some View {
         GeometryReader { geo in
@@ -532,36 +532,17 @@ struct VideoMouseCatcher: NSViewRepresentable {
 /// volume is).
 struct PlaybackNoticeView: View {
     @EnvironmentObject var model: BrowserModel
-    @State private var shown: BrowserModel.PlaybackNotice?
-    @State private var hide: Task<Void, Never>?
 
     var body: some View {
-        ZStack {
-            if let shown {
-                HStack(spacing: 10) {
-                    Image(systemName: shown.symbol).font(.title2)
-                    Text(verbatim: shown.text)
-                }
-                .padding(.horizontal, 18)
-                .padding(.vertical, 12)
-                .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 14))
-                .transition(.opacity)
-                .accessibilityElement(children: .ignore)
-                .accessibilityLabel(shown.text)
-                .accessibilityIdentifier("playbackNotice")
+        BriefNotice(trigger: model.playbackNotice, animation: Motion.animation(.easeOut(duration: 0.15))) { shown in
+            HStack(spacing: 10) {
+                Image(systemName: shown.symbol).font(.title2)
+                Text(verbatim: shown.text)
             }
+            .noticePlate()
+            .accessibilityLabel(shown.text)
+            .accessibilityIdentifier("playbackNotice")
         }
         .allowsHitTesting(false)
-        .animation(Motion.animation(.easeOut(duration: 0.15)), value: shown)
-        .onChange(of: model.playbackNotice) { _, notice in
-            guard let notice else { return }
-            shown = notice
-            hide?.cancel()
-            hide = Task { @MainActor in
-                try? await Task.sleep(for: VolumeDisplay.shownFor)
-                guard !Task.isCancelled else { return }
-                shown = nil
-            }
-        }
     }
 }

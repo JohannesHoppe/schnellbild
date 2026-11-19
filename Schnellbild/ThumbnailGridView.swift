@@ -45,7 +45,7 @@ struct ThumbnailGridView: View {
                 // For the UI tests only (VoiceOver would read it): the columns the keys
                 // step by, and as laid out
                 .accessibilityIdentifier("grid")
-                .accessibilityValue(VideoDetailView.uiTesting ? "\(model.columnCount) columns, \(count) laid out, selection \(model.selection.map(String.init) ?? "none")" : "")
+                .accessibilityValue(test: "\(model.columnCount) columns, \(count) laid out, selection \(model.selection.map(String.init) ?? "none")")
                 // Also when the grid first appears (a folder loaded, Back from a
                 // subfolder): the selection may be far down, so show it at once.
                 .onChange(of: model.selection, initial: true) { oldValue, newValue in
@@ -83,7 +83,7 @@ struct ThumbnailGridView: View {
                 .frame(width: side)
                 .foregroundStyle(cursor || marked ? .primary : .secondary)
                 .opacity(model.isEmptyFolder(entry) ? (contrast == .increased ? 0.8 : 0.5) : 1)
-                .accessibilityHidden(!VideoDetailView.uiTesting)
+                .accessibilityHidden(!TestSwitches.on)
             if let location {
                 // Search results from subfolders: where they live.
                 Text(location)
@@ -92,7 +92,7 @@ struct ThumbnailGridView: View {
                     .truncationMode(.head)
                     .frame(width: side)
                     .foregroundStyle(.tertiary)
-                    .accessibilityHidden(!VideoDetailView.uiTesting)
+                    .accessibilityHidden(!TestSwitches.on)
             }
         }
         .contentShape(Rectangle())
@@ -237,10 +237,9 @@ struct FolderTile: View {
         .accessibilityElement(children: .ignore)
         // The label ("name, kind") comes from the grid's cell; the UI tests
         // read the tile's state here
-        .accessibilityValue(VideoDetailView.uiTesting
-            ? "\(TileChrome.selectionLabel(isSelected || isMarked)), \(folder == nil ? "parent folder" : isEmpty ? "empty \(kindLabel)" : kindLabel), \(previewImages.count) previews"
-                + (unfinished != nil ? ", unfinished" : "")
-            : TileChrome.spokenState(marked: isMarked))
+        .accessibilityValue(test: "\(TileChrome.selectionLabel(isSelected || isMarked)), \(folder == nil ? "parent folder" : isEmpty ? "empty \(kindLabel)" : kindLabel), \(previewImages.count) previews"
+                                + (unfinished != nil ? ", unfinished" : ""),
+                            spoken: TileChrome.spokenState(marked: isMarked))
         // Again after a change made inside the folder (trash, rename): what
         // it previews may have gone.
         .task(id: FolderKey(folder: folder, changes: folder.map(model.changes(of:)) ?? 0)) { await loadPreviews() }
@@ -283,9 +282,7 @@ struct FolderTile: View {
                     // The date the listing read along (usually no extra trip;
                     // else one, on a dispatch thread): a picture replaced
                     // under the same name gets a new preview
-                    let modified = ArchivePath.isInside(file) ? nil : await Blocking.run(.utility) {
-                        (try? file.resourceValues(forKeys: [.contentModificationDateKey]))?.contentModificationDate
-                    }
+                    let modified = ArchivePath.isInside(file) ? nil : await Blocking.modificationDate(of: file)
                     return (i, await ThumbnailCache.previews.thumbnail(for: file, side: thumbSide, modified: modified))
                 }
             }
@@ -359,11 +356,7 @@ final class FolderPreviewCache {
     /// index is kept by its own version).
     nonisolated static func stamp(of folder: URL) async -> Date? {
         guard !ArchivePath.isInside(folder) else { return .distantPast }
-        // A URL keeps the values it read once: asked afresh
-        let path = folder.path
-        return await Blocking.run(.utility) {
-            (try? URL(fileURLWithPath: path).resourceValues(forKeys: [.contentModificationDateKey]))?.contentModificationDate
-        }
+        return await Blocking.modificationDate(of: folder, fresh: true)
     }
 
     /// Whether what is known still holds: checked lately, or the folder's date unchanged.
@@ -524,18 +517,7 @@ struct OtherFileInteractions: ViewModifier {
     func body(content: Content) -> some View {
         let changeable = !ArchivePath.isInside(file.url)
         content
-            .onDrag {
-                guard TileDrag.byTheUser else { return NSItemProvider() }
-                let provider = NSItemProvider(object: file.url as NSURL)
-                if changeable {
-                    let paths = [file.url.path]
-                    provider.registerDataRepresentation(forTypeIdentifier: TileDrag.type.identifier, visibility: .ownProcess) { done in
-                        done(try? PropertyListEncoder().encode(paths), nil)
-                        return nil
-                    }
-                }
-                return provider
-            }
+            .onDrag { TileDrag.provider(file: file.url, paths: changeable ? [file.url.path] : nil) }
             // Opened like a document in the Finder, but only documents (no apps, no scripts)
             .modifier(Clicks(single: {}, double: { model.open(file) }))
             .contextMenu {
@@ -574,6 +556,26 @@ struct TileDrag: ViewModifier {
     /// ask whether to keep both copies. Such a drag carries nothing (an
     /// empty item provider): no drop target takes it.
     static var byTheUser: Bool { NSEvent.pressedMouseButtons & 1 != 0 }
+
+    /// What a drag carries: `make`'s provider when the user started it
+    /// (`byTheUser`), else an empty one.
+    static func provider(_ make: () -> NSItemProvider) -> NSItemProvider { byTheUser ? make() : NSItemProvider() }
+
+    /// A tile's or other file's drag: `file` for the Finder, and `paths`
+    /// (every item it carries) for the app's own drop targets (nil: none
+    /// of them takes it).
+    static func provider(file: URL, paths: [String]?) -> NSItemProvider {
+        provider {
+            let provider = NSItemProvider(object: file as NSURL)
+            if let paths {
+                provider.registerDataRepresentation(forTypeIdentifier: type.identifier, visibility: .ownProcess) { done in
+                    done(try? PropertyListEncoder().encode(paths), nil)
+                    return nil
+                }
+            }
+            return provider
+        }
+    }
 
     /// The files of a tile drag (every marked item it carries). Only drags
     /// from the app's own tiles are taken this way: a drop from the Finder
@@ -711,13 +713,7 @@ private struct TileDragSource: ViewModifier {
             content.onDrag {
                 let paths = model.isMarked(entry) ? model.actionEntries.map(\.url.path) : [entry.url.path]
                 BrowserModel.testLog("\(Date().timeIntervalSince1970) drag \(paths.map { ($0 as NSString).lastPathComponent }) buttons=\(NSEvent.pressedMouseButtons)")
-                guard TileDrag.byTheUser else { return NSItemProvider() }
-                let provider = NSItemProvider(object: entry.url as NSURL)
-                provider.registerDataRepresentation(forTypeIdentifier: TileDrag.type.identifier, visibility: .ownProcess) { done in
-                    done(try? PropertyListEncoder().encode(paths), nil)
-                    return nil
-                }
-                return provider
+                return TileDrag.provider(file: entry.url, paths: paths)
             }
         } else {
             content
