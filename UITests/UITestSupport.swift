@@ -184,13 +184,17 @@ class SchnellbildUITestCase: XCTestCase {
 
     /// Drops `file` from the Finder onto the app's window, as a user drags
     /// it: the Finder shows it selected in its folder's window, its icon is
-    /// dragged onto the window's lower left (the Browse zone; the Finder's
-    /// window lies over the rest of the app's on the runner's small screen).
+    /// dragged onto the Browse zone (the window's left half), below the
+    /// Finder's window, which covers most of the app's on the runner's small
+    /// screen. The Finder's windows are closed before and after: each new
+    /// one opens further down than the last (seen on CI: after five drops it
+    /// lay over the place dropped on, and the icon was dropped into itself).
     func dropFromFinder(_ file: URL, file sourceFile: StaticString = #filePath, line: UInt = #line) {
         let window = app.windows.firstMatch
         XCTAssertTrue(window.waitForExistence(timeout: 10), "a window", file: sourceFile, line: line)
-        NSWorkspace.shared.activateFileViewerSelecting([file])
         let finder = XCUIApplication(bundleIdentifier: "com.apple.finder")
+        closeFinderWindows(finder)
+        NSWorkspace.shared.activateFileViewerSelecting([file])
         let folder = finder.windows.matching(NSPredicate(format: "title == %@", file.deletingLastPathComponent().lastPathComponent)).firstMatch
         let item = folder.descendants(matching: .any).matching(identifier: file.lastPathComponent).firstMatch
         if !item.waitForExistence(timeout: 15) {
@@ -198,25 +202,40 @@ class SchnellbildUITestCase: XCTestCase {
             XCTFail("the Finder shows \(file.lastPathComponent)", file: sourceFile, line: line)
             return
         }
-        let before = "Finder windows \(finder.windows.allElementsBoundByIndex.map { "\($0.title) \($0.frame)" }), "
-            + "item \(item.frame) hittable \(item.isHittable), app window \(window.frame)"
-        print("finder drop: \(before)")
-        let target = window.coordinate(withNormalizedOffset: CGVector(dx: 0.25, dy: 0.93))
+        // Below the Finder's window: halfway between its bottom and the app window's
+        let finderFrame = folder.frame, appFrame = window.frame
+        let frames = "Finder window \(finderFrame), item \(item.frame), app window \(appFrame)"
+        print("finder drop: \(frames)")
+        guard finderFrame.maxY < appFrame.maxY - 20 else {
+            XCTFail("the Finder's window covers the app's: \(frames)", file: sourceFile, line: line)
+            return
+        }
+        let y = (max(finderFrame.maxY, appFrame.minY) + appFrame.maxY) / 2
+        let target = window.coordinate(withNormalizedOffset: CGVector(dx: 0.25, dy: (y - appFrame.minY) / appFrame.height))
         item.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).press(forDuration: 1, thenDragTo: target)
-        app.activate()
-        // What reached the app (its log): printed with the screen when nothing did
+        // What reached the app (its log); without it, the screen is kept
         let log = testLog("app.log")
         let deadline = Date().addingTimeInterval(5)
         func seen() -> Bool { ((try? String(contentsOf: log, encoding: .utf8)) ?? "").contains(" drop") }
         while !seen(), Date() < deadline { RunLoop.current.run(until: Date().addingTimeInterval(0.2)) }
         if !seen() {
-            print("finder drop: nothing reached the app; before the drag: \(before); after: Finder windows "
-                  + "\(finder.windows.allElementsBoundByIndex.map { "\($0.title) \($0.frame)" }), item \(item.frame)\n\(finder.debugDescription)")
+            print("finder drop: nothing reached the app (\(frames))\n\(finder.debugDescription)")
             let pasteboard = NSPasteboard.general
             pasteboard.clearContents()
             pasteboard.setString("shot:finder-drop-\(tempDir.lastPathComponent):0,0,1024,768", forType: .string)
             RunLoop.current.run(until: Date().addingTimeInterval(3))
         }
+        closeFinderWindows(finder)
+        app.activate()
+    }
+
+    /// Every Finder window closed (⌥⌘W in the Finder).
+    private func closeFinderWindows(_ finder: XCUIApplication) {
+        let windows = finder.windows.matching(identifier: "FinderWindow")
+        guard windows.count > 0 else { return }
+        finder.activate()
+        finder.typeKey("w", modifierFlags: [.command, .option])
+        eventually("the Finder's windows closed", timeout: 5) { windows.count == 0 }
     }
 
     /// The open panel is up at the folder it was opened at: its button
