@@ -32,7 +32,7 @@ import sys
 from pathlib import Path
 
 sys.dont_write_bytecode = True  # no __pycache__ in Scripts/ from the imports below
-from site_alternatives import Alternatives  # noqa: E402
+from site_alternatives import Alternatives, breadcrumb_list, merge_translation  # noqa: E402
 from make_site_images import FEATURE_SHOTS, HERO_SHOT, png_size, shot_variants  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -83,19 +83,7 @@ def load(code, english):
         missing.append(f"{code}: no {path.name}")
         return english
     data = json.loads(path.read_text(encoding="utf-8"))
-
-    def merge(own, master, path):
-        if isinstance(master, dict):
-            for extra in set(own or {}) - set(master):
-                missing.append(f"{code}: {'.'.join(path + [extra])} is not in English")
-            return {k: merge(own.get(k) if isinstance(own, dict) else None, v, path + [k]) for k, v in master.items()}
-        if own is None:
-            missing.append(f"{code}: {'.'.join(path)}")
-            return master
-        if isinstance(master, list) and len(own) != len(master):
-            missing.append(f"{code}: {'.'.join(path)} has {len(own)} entries, English {len(master)}")
-        return own
-    return merge(data, english, []) if code != "en" else data
+    return merge_translation(data, english, missing, f"{code}: ") if code != "en" else data
 
 
 def app_string(code, key):
@@ -231,8 +219,7 @@ def app_data(code, t):
 
 def breadcrumbs(code, t):
     items = [("Schnellbild", SITE + home_path(code)), (t["privacy"]["title"], SITE + privacy_path(code, t))]
-    return json_ld({"@type": "BreadcrumbList", "itemListElement": [
-        {"@type": "ListItem", "position": i, "name": name, "item": url} for i, (name, url) in enumerate(items, 1)]})
+    return json_ld(breadcrumb_list(items))
 
 
 def head(code, t, title, description, path_of=None, share_title=None, keywords=None, data="",
