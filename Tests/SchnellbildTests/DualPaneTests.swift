@@ -28,13 +28,15 @@ final class DualPaneTests: XCTestCase {
         ModifierClicks.show(pane, view: "grid", rect: CGRect(x: 0, y: 40, width: 800, height: 560))
         ModifierClicks.cover(pane, view: "searchBar", rect: CGRect(x: 0, y: 0, width: 800, height: 40))
         ModifierClicks.cover(pane, view: "listHeader", rect: CGRect(x: 0, y: 40, width: 800, height: 20))
+        func key(_ name: String) -> ModifierClicks.Key { ModifierClicks.Key(pane: pane, path: name) }
         defer {
-            for key in ["test.top", "test.middle", "test.bottom"] { ModifierClicks.remove(key) }
+            for name in ["test.top", "test.middle", "test.bottom"] { ModifierClicks.remove(key(name)) }
             ModifierClicks.show(pane, view: "grid", rect: nil)
             for view in ["searchBar", "listHeader"] { ModifierClicks.cover(pane, view: view, rect: nil) }
         }
-        for (key, y) in [("test.top", 0.0), ("test.middle", 200.0), ("test.bottom", 590.0)] {
-            ModifierClicks.place(key, frame: CGRect(x: 0, y: y, width: 100, height: 60), pane: pane, in: window) { _ in clicked.append(key) }
+        for (name, y) in [("test.top", 0.0), ("test.middle", 200.0), ("test.bottom", 590.0)] {
+            ModifierClicks.place(key(name), frame: CGRect(x: 0, y: y, width: 100, height: 60), in: window,
+                                 action: { _ in clicked.append(name) })
         }
         let onSearchBar = ModifierClicks.tile(at: CGPoint(x: 50, y: 20), in: id)
         XCTAssertNil(onSearchBar.action)

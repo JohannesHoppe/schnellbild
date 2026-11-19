@@ -42,25 +42,18 @@ struct ItemIdentity: Sendable, Equatable {
     }
 
     private static func contentsHash(_ folder: URL) -> Int {
+        // Every item by its path inside the folder, AppleDouble files ("._x")
+        // too, one `readdir` per folder (links not followed)
         var paths: [String] = []
-        let base = folder.standardizedFileURL.path.count + 1
-        // Every item: FileManager leaves out AppleDouble files ("._x"),
-        // which `readdir` reads in each folder
-        var folders = [folder]
-        if let walk = FileManager.default.enumerator(at: folder, includingPropertiesForKeys: [.isDirectoryKey, .isSymbolicLinkKey]) {
-            while let item = walk.nextObject() as? URL {
+        let base = folder.standardizedFileURL.path
+        var folders = [""]
+        while let inner = folders.popLast() {
+            for item in FolderWalk.names(in: inner.isEmpty ? base : base + "/" + inner) ?? [] {
                 // The Finder's view settings, written when it shows the folder
-                if item.lastPathComponent == ".DS_Store" { continue }
-                paths.append(String(item.standardizedFileURL.path.dropFirst(base)))
-                let values = try? item.resourceValues(forKeys: [.isDirectoryKey, .isSymbolicLinkKey])
-                if values?.isDirectory == true, values?.isSymbolicLink != true { folders.append(item) }
-            }
-        }
-        let walked = Set(paths)
-        for inner in folders {
-            for item in HiddenFiles.appleDoubleItems(in: inner, besides: []) {
-                let path = String(item.standardizedFileURL.path.dropFirst(base))
-                if !walked.contains(path) { paths.append(path) }
+                if item.name == ".DS_Store" { continue }
+                let path = inner.isEmpty ? item.name : inner + "/" + item.name
+                paths.append(path)
+                if item.isFolder { folders.append(path) }
             }
         }
         var hasher = Hasher()
@@ -252,7 +245,7 @@ extension BrowserModel {
             apply(result.changes)
             // The folder shown went along (its rename undone): follow it;
             // else what went to another folder leaves this one's listing
-            if !followFolder(through: result.changes) { dropWhatLeft(keeping: keep) }
+            followOrDrop(result.changes, keeping: keep)
             // What came back (out of the Trash, a copy made again) is read anew
             let folders = result.folders + result.changes.compactMap { change in
                 change.destination.map { URL(fileURLWithPath: ($0 as NSString).deletingLastPathComponent, isDirectory: true) }

@@ -24,8 +24,9 @@ struct ThumbnailGridView: View {
                         // grid keep showing stale cells when the list changes in place
                         // (search, sort, rename).
                         let filtering = model.isFiltering
-                        ForEach(Array(model.entries.enumerated()), id: \.element.id) { index, entry in
-                            cell(entry: entry, index: index, side: side, filtering: filtering)
+                        let cursorID = model.selectedEntry?.id
+                        ForEach(model.entries) { entry in
+                            cell(entry: entry, cursor: entry.id == cursorID, side: side, filtering: filtering)
                         }
                     }
                     .padding(padding)
@@ -66,9 +67,8 @@ struct ThumbnailGridView: View {
         }
     }
 
-    private func cell(entry: GridEntry, index: Int, side: CGFloat, filtering: Bool) -> some View {
+    private func cell(entry: GridEntry, cursor: Bool, side: CGFloat, filtering: Bool) -> some View {
         // The cursor has the ring; marked items (⌘ / ⇧ / Insert) a tint and a checkmark
-        let cursor = model.selection == index
         let marked = model.isMarked(entry)
         let location = filtering ? model.relativeLocation(of: entry) : nil
         return VStack(spacing: 2) {
@@ -243,7 +243,7 @@ struct FolderTile: View {
             : TileChrome.spokenState(marked: isMarked))
         // Again after a change made inside the folder (trash, rename): what
         // it previews may have gone.
-        .task(id: FolderKey(folder: folder, changes: model.folderChanges)) { await loadPreviews() }
+        .task(id: FolderKey(folder: folder, changes: folder.map(model.changes(of:)) ?? 0)) { await loadPreviews() }
     }
 
     /// A list row's preview: the thumbnails take more of it, or they would
@@ -501,11 +501,17 @@ struct OtherFilesList: View {
     }
 
     /// The icon of the file's type (no file system access: also fast on a
-    /// network share, also for a file inside an archive).
+    /// network share, also for a file inside an archive), made once per
+    /// extension: every row asks on every redraw.
+    @MainActor
     static func icon(for file: OtherFile) -> NSImage {
-        let type = UTType(filenameExtension: file.url.pathExtension) ?? .data
-        return NSWorkspace.shared.icon(for: type)
+        let ext = file.url.pathExtension.lowercased()
+        if let icon = icons[ext] { return icon }
+        let icon = NSWorkspace.shared.icon(for: UTType(filenameExtension: ext) ?? .data)
+        icons[ext] = icon
+        return icon
     }
+    @MainActor private static var icons: [String: NSImage] = [:]
 }
 
 /// What an other file's row does: the context menu (rename, reveal, trash)
@@ -609,7 +615,7 @@ struct EntryInteractions: ViewModifier {
     @EnvironmentObject var model: BrowserModel
     @EnvironmentObject var window: WindowModel
 
-    private var key: String { "\(ObjectIdentifier(model).hashValue)|\(entry.url.path)" }
+    private var key: ModifierClicks.Key { ModifierClicks.Key(pane: ObjectIdentifier(model), path: entry.canonicalPath) }
 
     private func hover() {
         let entry = entry, model = model
@@ -642,11 +648,11 @@ struct EntryInteractions: ViewModifier {
             }
             .onGeometryChange(for: CGRect.self) { $0.frame(in: .global) } action: { frame in
                 let entry = entry, model = model
-                ModifierClicks.place(key, frame: frame, pane: ObjectIdentifier(model), in: window) { flags in
+                ModifierClicks.place(key, frame: frame, in: window, action: { flags in
                     guard model.mode == .grid, model.slideshow == nil else { return }
                     model.searchFocused = false
                     model.click(entry, command: flags.contains(.command), shift: flags.contains(.shift))
-                }
+                })
             }
             .onDisappear { ModifierClicks.remove(key) }
             .contextMenu {
@@ -851,7 +857,13 @@ struct Clicks: ViewModifier {
 /// (`cover`); a click on a bar or the header is left to it.
 @MainActor
 enum ModifierClicks {
-    private static var hovered: (key: String, action: (NSEvent.ModifierFlags) -> Void)?
+    /// A tile or row on screen: its pane and its item (canonical path).
+    struct Key: Hashable {
+        let pane: ObjectIdentifier
+        let path: String
+    }
+
+    private static var hovered: (key: Key, action: (NSEvent.ModifierFlags) -> Void)?
     private static var pending: (action: (NSEvent.ModifierFlags) -> Void, flags: NSEvent.ModifierFlags, at: NSPoint)?
     private static var monitor: Any?
     /// The click count of the last left mouse button event (`Clicks`).
@@ -860,24 +872,27 @@ enum ModifierClicks {
     /// left origin): the click goes to the one under the pointer even when
     /// the grid moved under a still pointer (a re-sort, a search batch, a
     /// scroll to the selection), which sends no hover.
-    private static var frames: [String: (frame: CGRect, pane: ObjectIdentifier, window: ObjectIdentifier, action: (NSEvent.ModifierFlags) -> Void)] = [:]
+    private static var frames: [Key: (frame: CGRect, pane: ObjectIdentifier, window: ObjectIdentifier, action: (NSEvent.ModifierFlags) -> Void)] = [:]
     /// Per pane, where its grid or list can be seen (same space as the
     /// frames), by the view that said so; and what lies over its top (the
     /// list's header).
     private static var visible: [ObjectIdentifier: (view: String, rect: CGRect)] = [:]
     private static var covered: [ObjectIdentifier: [String: CGRect]] = [:]
 
-    static func enter(_ key: String, action: @escaping (NSEvent.ModifierFlags) -> Void) {
+    static func enter(_ key: Key, action: @escaping (NSEvent.ModifierFlags) -> Void) {
         hovered = (key, action)
     }
-    static func leave(_ key: String) {
+    static func leave(_ key: Key) {
         if hovered?.key == key { hovered = nil }
     }
-    static func place(_ key: String, frame: CGRect, pane: ObjectIdentifier, in window: WindowModel,
-                      action: @escaping (NSEvent.ModifierFlags) -> Void) {
-        frames[key] = (frame, pane, ObjectIdentifier(window), action)
+    /// Told on every move of the tile (scrolling): the action is made only
+    /// for a tile not placed yet (the same key is the same item in the same pane).
+    static func place(_ key: Key, frame: CGRect, in window: WindowModel,
+                      action: @autoclosure () -> (NSEvent.ModifierFlags) -> Void) {
+        if frames[key] != nil { frames[key]?.frame = frame; return }
+        frames[key] = (frame, key.pane, ObjectIdentifier(window), action())
     }
-    static func remove(_ key: String) {
+    static func remove(_ key: Key) {
         frames[key] = nil
         leave(key)
     }

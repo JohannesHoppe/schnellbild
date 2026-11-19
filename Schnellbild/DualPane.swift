@@ -216,28 +216,26 @@ final class WindowModel: ObservableObject {
         // One volume, speed, subtitles switch and mini keyboard for the window. @Published sends
         // before the value is stored, so the other pane's own sink would see
         // this one's old value and send it back: `syncing` stops that echo.
-        forwarding.append(pane.$volume.dropFirst().sink { [weak self, weak pane] volume in
-            self?.sync { for other in $0 where other !== pane { other.adoptVolume(volume) } }
-        })
-        forwarding.append(pane.$playbackSpeed.dropFirst().sink { [weak self, weak pane] speed in
-            self?.sync { for other in $0 where other !== pane { other.adoptSpeed(speed) } }
-        })
-        forwarding.append(pane.$showSubtitles.dropFirst().sink { [weak self, weak pane] shown in
-            self?.sync { for other in $0 where other !== pane { other.adoptShowSubtitles(shown) } }
-        })
-        forwarding.append(pane.$showMiniKeyboard.dropFirst().sink { [weak self, weak pane] shown in
-            self?.sync { for other in $0 where other !== pane && other.showMiniKeyboard != shown { other.showMiniKeyboard = shown } }
-        })
+        mirror(pane.$volume, of: pane) { $0.adoptVolume($1) }
+        mirror(pane.$playbackSpeed, of: pane) { $0.adoptSpeed($1) }
+        mirror(pane.$showSubtitles, of: pane) { $0.adoptShowSubtitles($1) }
+        mirror(pane.$showMiniKeyboard, of: pane) { other, shown in
+            if other.showMiniKeyboard != shown { other.showMiniKeyboard = shown }
+        }
     }
 
     private var syncing = false
 
-    /// Hands a change to the other panes (both of them, also the hidden right one).
-    private func sync(_ apply: ([BrowserModel]) -> Void) {
-        guard !syncing else { return }
-        syncing = true
-        defer { syncing = false }
-        apply(allPanes)
+    /// Hands each change of one of `pane`'s values to the window's other
+    /// panes (also the hidden right one).
+    private func mirror<Value>(_ value: Published<Value>.Publisher, of pane: BrowserModel,
+                               _ adopt: @escaping (BrowserModel, Value) -> Void) {
+        forwarding.append(value.dropFirst().sink { [weak self, weak pane] new in
+            guard let self, !self.syncing else { return }
+            self.syncing = true
+            defer { self.syncing = false }
+            for other in self.allPanes where other !== pane { adopt(other, new) }
+        })
     }
 
     func toggleDual() { setDual(!dual) }
@@ -253,7 +251,6 @@ final class WindowModel: ObservableObject {
             pane.restoreLastFolder { [weak self] in self?.left.folderURL }
         }
         dual = on
-        for pane in allPanes { pane.inDualPane = on }
         if !on { rightIsActive = false }
         defaults.set(on, forKey: settingsPrefix + Self.dualKey)
     }

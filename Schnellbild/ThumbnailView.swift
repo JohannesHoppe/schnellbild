@@ -50,8 +50,9 @@ final class ThumbnailCache {
     /// tile's own load checks it afterwards. Not for archive entries (their
     /// date is the archive's, read off the main thread).
     func cached(for url: URL, side: CGFloat, modified: Date?) -> NSImage? {
-        guard !ArchivePath.isInside(url), let entry = cache.object(forKey: url as NSURL), entry.side >= side,
-              modified == nil || entry.modified == modified else { return nil }
+        // (the memory first: asked on every redraw of a tile, mostly for nothing)
+        guard let entry = cache.object(forKey: url as NSURL), entry.side >= side,
+              modified == nil || entry.modified == modified, !ArchivePath.isInside(url) else { return nil }
         return entry.image
     }
 

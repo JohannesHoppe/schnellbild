@@ -391,9 +391,15 @@ final class ContentSniffer: @unchecked Sendable {
     func archive(containing url: URL) -> (archive: String, inner: String)? {
         guard lock.withLock({ !archives.isEmpty }) else { return nil }
         let path = BrowserModel.canonicalPath(url)
-        return lock.withLock {
-            archives.first { path == $0 || path.hasPrefix($0 + "/") }
-                .map { ($0, String(path.dropFirst($0.count).drop { $0 == "/" })) }
+        // The path and the folders above it, each looked up (not every
+        // archive known compared with the path)
+        var candidate = path
+        while true {
+            if lock.withLock({ archives.contains(candidate) }) {
+                return (candidate, String(path.dropFirst(candidate.count).drop { $0 == "/" }))
+            }
+            guard candidate != "/", !candidate.isEmpty else { return nil }
+            candidate = (candidate as NSString).deletingLastPathComponent
         }
     }
 
