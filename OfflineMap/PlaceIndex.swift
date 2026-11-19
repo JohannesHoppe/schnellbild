@@ -1,4 +1,3 @@
-import Compression
 import Foundation
 
 /// A named place of the place index: a country, region or locality.
@@ -148,7 +147,7 @@ public final class PlaceIndex: @unchecked Sendable {
     public init(data: Data) throws {
         self.data = data
         guard data.count >= 64, data.prefix(8).elementsEqual("SBPLACE1".utf8) else { throw IndexError.notAPlaceIndex }
-        let u32 = { (at: Int) -> Int in Self.uint32(data, at) }
+        let u32 = data.le32
         let blockCount = u32(8)
         placeCount = u32(12)
         guard u32(16) == Self.columns, u32(20) == Self.rows, u32(24) == 1_000_000 else { throw IndexError.malformed }
@@ -190,19 +189,19 @@ public final class PlaceIndex: @unchecked Sendable {
             func u32() -> Int? {
                 guard p + 4 <= raw.count else { return nil }
                 defer { p += 4 }
-                return Int(UInt32(littleEndian: raw.loadUnaligned(fromByteOffset: p, as: UInt32.self)))
+                return raw.le32(p)
             }
             func i32() -> Int32? {
                 guard p + 4 <= raw.count else { return nil }
                 defer { p += 4 }
-                return Int32(littleEndian: raw.loadUnaligned(fromByteOffset: p, as: Int32.self))
+                return Int32(truncatingIfNeeded: raw.le32(p))
             }
             guard let count = u32(), count < 10_000 else { return [] }
             var out: [Region] = []
             for _ in 0..<count {
                 guard p + 4 <= raw.count else { return [] }
                 let code = String(decoding: UnsafeRawBufferPointer(rebasing: raw[p..<p + 2]), as: UTF8.self)
-                let ringCount = Int(raw[p + 2]) | Int(raw[p + 3]) << 8
+                let ringCount = raw.le16(p + 2)
                 p += 4
                 var rings: [[(Double, Double)]] = []
                 var south = 90.0, north = -90.0, west = 180.0, east = -180.0
@@ -231,10 +230,6 @@ public final class PlaceIndex: @unchecked Sendable {
         return regions.first { $0.contains(c) }?.code
     }
 
-    static func uint32(_ data: Data, _ at: Int) -> Int {
-        data.withUnsafeBytes { Int(UInt32(littleEndian: $0.loadUnaligned(fromByteOffset: at, as: UInt32.self))) }
-    }
-
     // MARK: Cells
 
     private func blockIndex(cell: Int, tier: Int) -> Int? {
@@ -255,14 +250,8 @@ public final class PlaceIndex: @unchecked Sendable {
         let stored = data.subdata(in: data.startIndex + block.offset..<data.startIndex + block.offset + block.storedLength)
         guard block.packed else { return stored }
         if let cached = cache.object(forKey: NSNumber(value: index)) { return cached as Data }
-        var out = Data(count: block.length)
-        let produced = out.withUnsafeMutableBytes { dst in
-            stored.withUnsafeBytes { src in
-                compression_decode_buffer(dst.bindMemory(to: UInt8.self).baseAddress!, block.length,
-                                          src.bindMemory(to: UInt8.self).baseAddress!, block.storedLength, nil, COMPRESSION_ZLIB)
-            }
-        }
-        guard produced == block.length else { return nil }
+        let out = RawDeflate.decode(stored, capacity: block.length)
+        guard out.count == block.length else { return nil }
         cache.setObject(out as NSData, forKey: NSNumber(value: index), cost: block.length)
         return out
     }
@@ -283,8 +272,7 @@ public final class PlaceIndex: @unchecked Sendable {
                 let at = 16 * i
                 if Double(raw[at + 13]) / 10 > maxMinZoom { return }   // the rest of the cell is less important
                 if let inside {
-                    let lat = south + Double(UInt32(littleEndian: raw.loadUnaligned(fromByteOffset: at, as: UInt32.self))) / 1e6
-                    let lon = west + Double(UInt32(littleEndian: raw.loadUnaligned(fromByteOffset: at + 4, as: UInt32.self))) / 1e6
+                    let lat = south + Double(raw.le32(at)) / 1e6, lon = west + Double(raw.le32(at + 4)) / 1e6
                     if !inside(lat, lon) { continue }
                 }
                 guard let place = place(raw, at: at, south: south, west: west) else { return }
@@ -294,12 +282,11 @@ public final class PlaceIndex: @unchecked Sendable {
     }
 
     private func place(_ raw: UnsafeRawBufferPointer, at: Int, south: Double, west: Double) -> Place? {
-        func u32(_ o: Int) -> Int { Int(UInt32(littleEndian: raw.loadUnaligned(fromByteOffset: o, as: UInt32.self))) }
-        let lat = south + Double(u32(at)) / 1e6, lon = west + Double(u32(at + 4)) / 1e6
+        let lat = south + Double(raw.le32(at)) / 1e6, lon = west + Double(raw.le32(at + 4)) / 1e6
         let kindFlags = raw[at + 12]
         guard let kind = Place.Kind(rawValue: kindFlags & 0x0F) else { return nil }
         let countryIndex = Int(raw[at + 15])
-        var reader = ProtoReader(raw, from: u32(at + 8))
+        var reader = ProtoReader(raw, from: raw.le32(at + 8))
         guard let local = try? reader.string(), reader.position < raw.count else { return nil }
         var names: [String: String] = [:]
         let count = Int(raw[reader.position])

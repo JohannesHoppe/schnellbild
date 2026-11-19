@@ -48,13 +48,7 @@ public final class PMTilesArchive: @unchecked Sendable {
         guard magic.elementsEqual("PMTiles".utf8) else { throw ArchiveError.notPMTiles }
         let version = data[data.startIndex + 7]
         guard version == 3 else { throw ArchiveError.unsupportedVersion(version) }
-        func u64(_ at: Int) -> UInt64 {
-            data.withUnsafeBytes { raw in
-                var v: UInt64 = 0
-                for i in 0..<8 { v |= UInt64(raw[at + i]) << (8 * UInt64(i)) }
-                return v
-            }
-        }
+        func u64(_ at: Int) -> UInt64 { data.le64(at) }
         func u8(_ at: Int) -> UInt8 { data[data.startIndex + at] }
         let h = Header(rootOffset: u64(8), rootLength: u64(16), metadataOffset: u64(24), metadataLength: u64(32),
                        leafOffset: u64(40), leafLength: u64(48), dataOffset: u64(56), dataLength: u64(64),

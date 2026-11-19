@@ -1,5 +1,5 @@
 import Foundation
-import Compression
+import OfflineMap
 import VLCFrames
 
 /// One line of a subtitle track: when it shows, its text (tags taken out,
@@ -657,16 +657,8 @@ enum MatroskaSubtitles {
     static func inflate(_ data: Data) -> Data? {
         guard data.count > 2 else { return nil }
         let deflated = data.dropFirst(2)
-        let capacity = min(max(deflated.count * 8, 4096), 4 << 20)
-        var out = Data(count: capacity)
-        let written = out.withUnsafeMutableBytes { outBytes in
-            deflated.withUnsafeBytes { inBytes in
-                compression_decode_buffer(outBytes.bindMemory(to: UInt8.self).baseAddress!, capacity,
-                                          inBytes.bindMemory(to: UInt8.self).baseAddress!, deflated.count, nil, COMPRESSION_ZLIB)
-            }
-        }
-        guard written > 0 else { return nil }
-        return out.prefix(written)
+        let out = RawDeflate.decode(deflated, capacity: min(max(deflated.count * 8, 4096), 4 << 20))
+        return out.isEmpty ? nil : out
     }
 
     private static func parseInfo(_ data: Data) -> UInt64? {
