@@ -295,6 +295,13 @@ final class VideoTrackReader: NSObject, METrackReader, @unchecked Sendable {
         completionHandler(info, nil)
     }
 
+    /// A cursor on the frame, or the error when its part can't be read
+    /// (again): macOS gets one or the other, never neither.
+    private func answer(_ completionHandler: ((any MESampleCursor)?, (any Error)?) -> Void, part: Int, index: Int) {
+        guard let cursor = VideoCursor(track: self, part: part, index: index) else { return completionHandler(nil, MEError(.noSamples)) }
+        completionHandler(cursor, nil)
+    }
+
     func generateSampleCursor(atPresentationTimeStamp presentationTimeStamp: CMTime,
                               completionHandler: @escaping ((any MESampleCursor)?, (any Error)?) -> Void) {
         queue.async { [self] in
@@ -305,14 +312,14 @@ final class VideoTrackReader: NSObject, METrackReader, @unchecked Sendable {
                   let frames = frames(inPart: part) else { return completionHandler(nil, MEError(.noSamples)) }
             var position = 0
             for (i, frame) in frames.presentation.enumerated() where frames.frames[frame].time <= target { position = i }
-            completionHandler(VideoCursor(track: self, part: part, index: frames.presentation[position]), nil)
+            answer(completionHandler, part: part, index: frames.presentation[position])
         }
     }
 
     func generateSampleCursorAtFirstSampleInDecodeOrder(completionHandler: @escaping ((any MESampleCursor)?, (any Error)?) -> Void) {
         queue.async { [self] in
             guard let part = firstPart() else { return completionHandler(nil, MEError(.noSamples)) }
-            completionHandler(VideoCursor(track: self, part: part, index: 0), nil)
+            answer(completionHandler, part: part, index: 0)
         }
     }
 
@@ -321,7 +328,7 @@ final class VideoTrackReader: NSObject, METrackReader, @unchecked Sendable {
             guard let part = part(from: source.partCount - 1, step: -1), let frames = frames(inPart: part) else {
                 return completionHandler(nil, MEError(.noSamples))
             }
-            completionHandler(VideoCursor(track: self, part: part, index: frames.frames.count - 1), nil)
+            answer(completionHandler, part: part, index: frames.frames.count - 1)
         }
     }
 }
