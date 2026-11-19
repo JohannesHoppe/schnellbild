@@ -68,3 +68,15 @@ enum Blocking {
         }
     }
 }
+
+extension Blocking {
+    /// The modification date of `url`, read off the main thread. `fresh`:
+    /// through a new URL, since a URL keeps the values it read once.
+    static func modificationDate(of url: URL, fresh: Bool = false) async -> Date? {
+        let path = url.path
+        return await run(.utility) {
+            let file = fresh ? URL(fileURLWithPath: path) : url
+            return (try? file.resourceValues(forKeys: [.contentModificationDateKey]))?.contentModificationDate
+        }
+    }
+}

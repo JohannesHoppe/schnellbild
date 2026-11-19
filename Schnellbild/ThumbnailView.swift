@@ -221,9 +221,7 @@ final class ThumbnailCache {
 
     private func archiveDate(of archive: URL) async -> Date? {
         if let known = archiveDates[archive], Date().timeIntervalSince(known.read) < 2 { return known.date }
-        let date = await Blocking.run(.utility) {
-            (try? archive.resourceValues(forKeys: [.contentModificationDateKey]))?.contentModificationDate
-        }
+        let date = await Blocking.modificationDate(of: archive)
         if archiveDates.count > 256 { archiveDates.removeAll() }
         archiveDates[archive] = (date, Date())
         return date

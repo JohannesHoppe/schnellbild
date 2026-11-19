@@ -282,9 +282,7 @@ struct FolderTile: View {
                     // The date the listing read along (usually no extra trip;
                     // else one, on a dispatch thread): a picture replaced
                     // under the same name gets a new preview
-                    let modified = ArchivePath.isInside(file) ? nil : await Blocking.run(.utility) {
-                        (try? file.resourceValues(forKeys: [.contentModificationDateKey]))?.contentModificationDate
-                    }
+                    let modified = ArchivePath.isInside(file) ? nil : await Blocking.modificationDate(of: file)
                     return (i, await ThumbnailCache.previews.thumbnail(for: file, side: thumbSide, modified: modified))
                 }
             }
@@ -358,11 +356,7 @@ final class FolderPreviewCache {
     /// index is kept by its own version).
     nonisolated static func stamp(of folder: URL) async -> Date? {
         guard !ArchivePath.isInside(folder) else { return .distantPast }
-        // A URL keeps the values it read once: asked afresh
-        let path = folder.path
-        return await Blocking.run(.utility) {
-            (try? URL(fileURLWithPath: path).resourceValues(forKeys: [.contentModificationDateKey]))?.contentModificationDate
-        }
+        return await Blocking.modificationDate(of: folder, fresh: true)
     }
 
     /// Whether what is known still holds: checked lately, or the folder's date unchanged.
