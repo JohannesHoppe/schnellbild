@@ -609,26 +609,25 @@ struct PaneView: View {
             statusRow(path: false, wrap: false)
             statusRow(path: false, wrap: true)
         }
-        .font(.caption)
-        .padding(.horizontal, 12)
-        .padding(.vertical, 6)
-        .background(.bar)
+        .statusBarStyle()
     }
 
     /// The full view of a file shown alone (`accessLimited`): the status
     /// bar's note and its "Allow Access…".
     private var accessLimitedBar: some View {
         HStack(spacing: 8) {
-            Text("Only the file you opened is shown here.").foregroundStyle(.secondary)
-            Button("Allow Access…") { model.allowAccess() }
-                .buttonStyle(.link)
-                .accessibilityIdentifier("allowAccess")
+            accessLimitedNote
             Spacer(minLength: 0)
         }
-        .font(.caption)
-        .padding(.horizontal, 12)
-        .padding(.vertical, 6)
-        .background(.bar)
+        .statusBarStyle()
+    }
+
+    /// Only the file dropped can be read: why, and the way to its folder.
+    @ViewBuilder private var accessLimitedNote: some View {
+        Text("Only the file you opened is shown here.").foregroundStyle(.secondary)
+        Button("Allow Access…") { model.allowAccess() }
+            .buttonStyle(.link)
+            .accessibilityIdentifier("allowAccess")
     }
 
     private func statusRow(path: Bool, wrap: Bool) -> some View {
@@ -666,12 +665,7 @@ struct PaneView: View {
                     .foregroundStyle(.secondary).lineLimit(1).fixedSize()
                     .accessibilityIdentifier("locationProgress")
             }
-            if model.accessLimited {
-                Text("Only the file you opened is shown here.").foregroundStyle(.secondary)
-                Button("Allow Access…") { model.allowAccess() }
-                    .buttonStyle(.link)
-                    .accessibilityIdentifier("allowAccess")
-            }
+            if model.accessLimited { accessLimitedNote }
             if path {
                 Text(model.folderURL?.path ?? "")
                     .foregroundStyle(.tertiary)
@@ -1289,6 +1283,14 @@ struct BriefNotice<Trigger: Equatable, Content: View>: View {
 }
 
 extension View {
+    /// The status bar's look, also the bar of a file shown alone.
+    func statusBarStyle() -> some View {
+        font(.caption)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 6)
+            .background(.bar)
+    }
+
     /// A `BriefNotice`'s plate: material behind it, one element for VoiceOver.
     func noticePlate() -> some View {
         padding(.horizontal, 18)
