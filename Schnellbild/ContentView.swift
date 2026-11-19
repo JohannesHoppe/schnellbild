@@ -1015,15 +1015,8 @@ struct DropZoneDelegate: DropDelegate {
         zone = nil
         // Once more after AppKit has finished the drag session.
         DispatchQueue.main.async { [zone = $zone] in zone.wrappedValue = nil }
-        let providers = info.itemProviders(for: [.fileURL])
-        BrowserModel.testLog("\(Date().timeIntervalSince1970) window drop at \(info.location): \(providers.count) items")
-        guard let provider = providers.first else { return false }
-        _ = provider.loadObject(ofClass: URL.self) { url, error in
-            BrowserModel.testLog("\(Date().timeIntervalSince1970) window drop: \(url?.lastPathComponent ?? "no URL, \(String(describing: error))")")
-            guard let url else { return }
-            DispatchQueue.main.async { onDrop([url], target) }
-        }
-        return true
+        BrowserModel.testLog("\(Date().timeIntervalSince1970) window drop at \(info.location)")
+        return FinderDrop.fileURLs(info) { urls in onDrop(urls, target) }
     }
 }
 
@@ -1477,11 +1470,28 @@ enum FinderDrop {
         window.dropZone = nil
         DispatchQueue.main.async { window.dropZone = nil }   // once more after AppKit ends the session
         BrowserModel.testLog("\(Date().timeIntervalSince1970) Finder drop onto a pane at \(info.location)")
+        return fileURLs(info) { urls in window.active.openDropped(urls, slideshow: target == .slideshow) }
+    }
+
+    /// The files dropped, read from the drag pasteboard while the drop is
+    /// being performed (the sandbox opens them to the app through it). The
+    /// item providers load later, after AppKit may have ended the session:
+    /// on CI (macOS 15) a Finder drop's provider failed now and then with
+    /// "Couldn't load data for type public.file-url" (NSItemProviderErrorDomain
+    /// -1000), and the drop did nothing. They are the way only when the
+    /// pasteboard has no file URL.
+    static func fileURLs(_ info: DropInfo, then open: @escaping @MainActor ([URL]) -> Void) -> Bool {
+        let urls = NSPasteboard(name: .drag).readObjects(forClasses: [NSURL.self], options: [.urlReadingFileURLsOnly: true]) as? [URL] ?? []
+        BrowserModel.testLog("\(Date().timeIntervalSince1970) drop: \(urls.map(\.lastPathComponent)) from the drag pasteboard")
+        if !urls.isEmpty {
+            DispatchQueue.main.async { open(urls) }
+            return true
+        }
         guard let provider = info.itemProviders(for: [.fileURL]).first else { return false }
         _ = provider.loadObject(ofClass: URL.self) { url, error in
-            BrowserModel.testLog("\(Date().timeIntervalSince1970) Finder drop: \(url?.lastPathComponent ?? "no URL, \(String(describing: error))")")
+            BrowserModel.testLog("\(Date().timeIntervalSince1970) drop: \(url?.lastPathComponent ?? "no URL, \(String(describing: error))") from its item provider")
             guard let url else { return }
-            DispatchQueue.main.async { window.active.openDropped([url], slideshow: target == .slideshow) }
+            DispatchQueue.main.async { open([url]) }
         }
         return true
     }
