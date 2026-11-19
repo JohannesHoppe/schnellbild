@@ -1198,21 +1198,55 @@ final class ArchiveStore: @unchecked Sendable {
         return listing
     }
 
-    /// The media files at any depth below a folder of an archive, in path
-    /// order; hidden ones and those in hidden folders only while shown.
-    func media(below url: URL) async throws -> [URL] {
+    /// Whether a photo or video lies at any depth below a folder of an
+    /// archive (a folder tile's emptiness); stops at the first.
+    func hasMedia(below url: URL) async throws -> Bool {
+        guard let (archiveURL, inner) = ArchivePath.split(url) else { return false }
+        var found = false
+        Self.files(of: try await index(of: archiveURL), below: inner) { item in
+            found = Self.kind(of: item) != nil
+            return !found
+        }
+        return found
+    }
+
+    /// The first `limit` pictures at any depth below a folder of an archive,
+    /// in path order (a folder tile's previews: archives often hold one
+    /// folder at the top). Not videos: they'd be unpacked. Only the first
+    /// few are kept while looking, not every one sorted.
+    func pictures(below url: URL, limit: Int) async throws -> [URL] {
         guard let (archiveURL, inner) = ArchivePath.split(url) else { return [] }
-        let index = try await index(of: archiveURL)
-        let prefix = inner.isEmpty ? "" : inner + "/"
+        var first: [String] = []
+        Self.files(of: try await index(of: archiveURL), below: inner) { item in
+            guard Self.kind(of: item) == .image else { return true }
+            if first.count == limit {
+                guard let last = first.last, item.path.localizedStandardCompare(last) == .orderedAscending else { return true }
+                first.removeLast()
+            }
+            let at = first.firstIndex { item.path.localizedStandardCompare($0) == .orderedAscending } ?? first.count
+            first.insert(item.path, at: at)
+            return true
+        }
+        return first.map { archiveURL.appendingPathComponent($0, isDirectory: false) }
+    }
+
+    /// The files at any depth below `inner`, hidden ones and those in hidden
+    /// folders only while shown, until `visit` returns false.
+    private static func files(of index: Index, below inner: String, _ visit: (ArchiveItem) -> Bool) {
         let shown = HiddenFiles.shown
-        return index.byPath.values
-            // (URLs built without asking the file system whether they are folders)
-            .filter { !$0.isDirectory && $0.path.hasPrefix(prefix)
-                && HiddenFiles.lists(archivePath: String($0.path.dropFirst(prefix.count)), shown: shown)
-                && BrowserModel.mediaKind(of: URL(fileURLWithPath: $0.path, isDirectory: false)) != nil }
-            .map(\.path)
-            .sorted { $0.localizedStandardCompare($1) == .orderedAscending }
-            .map { archiveURL.appendingPathComponent($0, isDirectory: false) }
+        var folders = [inner]
+        while let folder = folders.popLast() {
+            for item in index.children[folder] ?? [] {
+                guard HiddenFiles.lists(archivePath: (item.path as NSString).lastPathComponent, shown: shown) else { continue }
+                if !item.isDirectory, !visit(item) { return }
+                if index.children[item.path] != nil { folders.append(item.path) }
+            }
+        }
+    }
+
+    /// (by the name alone: a URL built without asking the file system whether it is a folder)
+    private static func kind(of item: ArchiveItem) -> GridEntry.Kind? {
+        BrowserModel.mediaKind(of: URL(fileURLWithPath: item.path, isDirectory: false))
     }
 
     /// Names `matcher` takes, at any depth below a folder of an archive;

@@ -242,6 +242,9 @@ final class FolderNames: @unchecked Sendable {
 
     private struct Known { var checked: Date; var modified: Date?; var listing: Listing }
     private var known: [String: Known] = [:]
+    /// Folders being read now: the photos of one folder are read 8 at a
+    /// time, and each would list the folder again; the others wait for it.
+    private var reading: [String: DispatchGroup] = [:]
     private let lock = NSLock()
     private let recheck: TimeInterval
 
@@ -254,8 +257,25 @@ final class FolderNames: @unchecked Sendable {
             lock.unlock()
             return entry.listing
         }
+        if let other = reading[path] {
+            lock.unlock()
+            other.wait()
+            lock.lock()
+            defer { lock.unlock() }
+            if let entry = known[path] { return entry.listing }
+            return Listing()
+        }
         let previous = known[path]
+        let done = DispatchGroup()
+        done.enter()
+        reading[path] = done
         lock.unlock()
+        defer {
+            lock.lock()
+            reading[path] = nil
+            lock.unlock()
+            done.leave()
+        }
         let modified = try? folder.resourceValues(forKeys: [.contentModificationDateKey]).contentModificationDate
         var listing = previous?.listing ?? Listing()
         var trackNames = listing.tracks.map(\.name)
