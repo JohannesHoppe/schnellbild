@@ -10,7 +10,7 @@ ROOT="$(pwd)"
 source "$ROOT/Scripts/fetch_verified.sh"
 
 VERSION="2.46.0"
-URL="https://github.com/JohannesHoppe/schnellbild/releases/download/build-deps/xcodegen-$VERSION.zip"
+URL="$RELEASES/build-deps/xcodegen-$VERSION.zip"
 UPSTREAM_URL="https://github.com/yonaskolb/XcodeGen/releases/download/$VERSION/xcodegen.zip"
 SHA256="4d9e34b62172d645eed6457cac13fc222569974098ef4ee9c3368bedf0196806"
 # tree_sha256 (fetch_verified.sh) of the unpacked folder: a copy already there

@@ -17,7 +17,7 @@ source "$ROOT/Scripts/fetch_verified.sh"
 VERSION="7.2.7"
 # Bumped when the patch below changes, so a vendored copy is made again
 PATCHLEVEL="tls1"
-URL="https://github.com/JohannesHoppe/schnellbild/releases/download/build-deps/unrarsrc-$VERSION.tar.gz"
+URL="$RELEASES/build-deps/unrarsrc-$VERSION.tar.gz"
 UPSTREAM_URL="https://www.rarlab.com/rar/unrarsrc-$VERSION.tar.gz"
 SHA256="01d903a7dcf413cb2925696d7796e48e38d471f79bfe7ef3ad2aebf6c12dbefd"
 # tree_sha256 (fetch_verified.sh) of Vendor/unrar, unpacked and patched; a
