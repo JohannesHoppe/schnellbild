@@ -1482,10 +1482,19 @@ enum FinderDrop {
     /// pasteboard has no file URL.
     static func fileURLs(_ info: DropInfo, then open: @escaping @MainActor ([URL]) -> Void) -> Bool {
         let urls = NSPasteboard(name: .drag).readObjects(forClasses: [NSURL.self], options: [.urlReadingFileURLsOnly: true]) as? [URL] ?? []
-        BrowserModel.testLog("\(Date().timeIntervalSince1970) drop: \(urls.map(\.lastPathComponent)) from the drag pasteboard")
+        BrowserModel.testLog("\(Date().timeIntervalSince1970) drop: \(urls.map(\.lastPathComponent)) from the drag pasteboard (change \(NSPasteboard(name: .drag).changeCount))")
         if !urls.isEmpty {
             DispatchQueue.main.async { open(urls) }
             return true
+        }
+        let pasteboard = NSPasteboard(name: .drag)
+        BrowserModel.testLog("\(Date().timeIntervalSince1970) drop: the drag pasteboard has \(pasteboard.pasteboardItems?.count ?? -1) items, "
+                             + "types \(pasteboard.types?.map(\.rawValue) ?? []), file URL \(pasteboard.string(forType: .fileURL) ?? "none"), change \(pasteboard.changeCount)")
+        for delay in [0.2, 0.5, 1.0] {
+            DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+                let later = pasteboard.readObjects(forClasses: [NSURL.self], options: [.urlReadingFileURLsOnly: true]) as? [URL] ?? []
+                BrowserModel.testLog("\(Date().timeIntervalSince1970) drop: after \(delay) s the drag pasteboard has \(later.map(\.lastPathComponent)), change \(pasteboard.changeCount)")
+            }
         }
         guard let provider = info.itemProviders(for: [.fileURL]).first else { return false }
         _ = provider.loadObject(ofClass: URL.self) { url, error in
