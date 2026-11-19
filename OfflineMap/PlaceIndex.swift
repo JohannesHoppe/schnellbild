@@ -391,15 +391,18 @@ public final class PlaceIndex: @unchecked Sendable {
     /// How much a place across a border from the photo counts less
     static let borderPenalty = 6.0
 
+    /// How far `nearby` looks, in metres
+    static let nearbyRadius = 50_000.0
+
     /// The place a photo taken here is "near": the most important locality
-    /// within `radius` metres, an important one further away preferred over
+    /// within `nearbyRadius`, an important one further away preferred over
     /// a hamlet next door (`NearbyPlace.score`), one in the photo's own
     /// country over one across a border; nil where none is (the open sea).
     /// The photo's country is the one of the political positions' region it
     /// lies in, else the nearest locality's; a place without a country of its
     /// own (Jerusalem) takes the photo's.
-    public func nearby(_ c: Coordinate, radius: Double = 50_000) -> NearbyPlace? {
-        let found = places(near: c, radius: radius).filter { $0.place.isLocality }
+    public func nearby(_ c: Coordinate) -> NearbyPlace? {
+        let found = places(near: c, radius: Self.nearbyRadius).filter { $0.place.isLocality }
         let here = regionCountry(at: c)
             ?? found.filter { $0.place.countryCode != nil }.min { $0.distance < $1.distance }?.place.countryCode
         var best: (NearbyPlace, Double)?

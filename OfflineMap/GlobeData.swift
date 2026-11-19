@@ -85,7 +85,8 @@ public struct Heightmap: Sendable {
     /// land rises gently from the coast, Antarctica's ice higher, the sea floor
     /// falls from a shelf to the deep ocean. No mountains: it only shows the
     /// relief's machinery where the elevation data is missing.
-    public static func placeholder(from renderer: MapRenderer, width: Int = 720, height: Int = 360) -> Heightmap {
+    public static func placeholder(from renderer: MapRenderer) -> Heightmap {
+        let width = 720, height = 360
         let z = 2, n = 1 << z, side = 256, px = side * n
         var mask = [UInt8](repeating: 0, count: px * px)   // 0 water, 1 land
         let palette = MapPalette.light
