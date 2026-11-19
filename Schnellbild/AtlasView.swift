@@ -88,7 +88,7 @@ private struct AtlasMap: View {
         }
         .overlay(alignment: .bottomLeading) {
             // What the UI tests read about the map (not shown, not for VoiceOver users)
-            if VideoDetailView.uiTesting {
+            if TestSwitches.on {
                 // Read again four times a second: the map's own movements (a fade
                 // after its last camera change) change no state SwiftUI watches
                 TimelineView(.periodic(from: .now, by: 0.25)) { _ in
@@ -194,7 +194,7 @@ private struct AtlasTile: View {
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(verbatim: label))
         .accessibilityAddTraits(selected ? [.isButton, .isSelected] : .isButton)
-        .accessibilityValue(VideoDetailView.uiTesting ? "\(selected ? "selected" : "not selected"), \(cluster.count) items" : "")
+        .accessibilityValue(test: "\(selected ? "selected" : "not selected"), \(cluster.count) items")
         .accessibilityIdentifier("atlas.\(cluster.ids[0].lastPathComponent)")
         .accessibilityAction { atlas.click(cluster) }
         .accessibilityAction(named: Text(cluster.count > 1 && !cluster.staysTogether ? "Zoom in" : "Open")) {
@@ -298,7 +298,7 @@ private struct AtlasStrip: View, Equatable {
                                 .accessibilityElement(children: .ignore)
                                 .accessibilityLabel(Text(verbatim: item.name))
                                 .accessibilityAddTraits(selected ? [.isButton, .isSelected] : .isButton)
-                                .accessibilityValue(VideoDetailView.uiTesting ? (selected ? "selected" : "not selected") : "")
+                                .accessibilityValue(test: selected ? "selected" : "not selected")
                                 .accessibilityIdentifier("atlas.\(item.name)")
                                 .accessibilityAction { atlas.select(item.url) }
                                 .accessibilityAction(named: Text("Open")) { atlas.open(item.url) }
@@ -606,9 +606,7 @@ private struct TourStage: View {
                 button(tour.paused ? "play.fill" : "pause.fill", tour.paused ? "Resume" : "Pause", .tourPause, id: "tour.pause") { atlas.togglePause() }
                 button("forward.fill", "Next place", .tourNext, id: "tour.next") { atlas.nextStation() }
                 TourStatusLabel.localized(station: tour.station + 1, of: tour.stations.count)
-                    .accessibilityValue(VideoDetailView.uiTesting
-                        ? "station \(tour.station + 1) of \(tour.stations.count), \(tour.phase == .flying ? "flying" : "showing")\(tour.paused ? ", paused" : "")"
-                        : "")
+                    .accessibilityValue(test: "station \(tour.station + 1) of \(tour.stations.count), \(tour.phase == .flying ? "flying" : "showing")\(tour.paused ? ", paused" : "")")
                 button("xmark", "End the tour", .endTour, id: "tour.end") { atlas.endTour() }
             }
         }
@@ -661,7 +659,7 @@ private struct TourPicture: View {
         .clipShape(RoundedRectangle(cornerRadius: 8))
         .accessibilityElement(children: .ignore)
         // Under `--ui-testing` also what shows it (a plain group's value doesn't reach XCUITest)
-        .accessibilityLabel(Text(verbatim: VideoDetailView.uiTesting ? item.name + " · " + player : item.name))
+        .accessibilityLabel(test: item.name + " · " + player, spoken: item.name)
         .accessibilityIdentifier("tourItem")
         .task(id: item.url) {
             image = ThumbnailCache.shared.image(for: item.url)

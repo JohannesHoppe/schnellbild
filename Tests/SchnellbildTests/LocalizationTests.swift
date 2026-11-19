@@ -286,12 +286,14 @@ final class LocalizationTests: XCTestCase {
                                                   "Saved passwords", "Forget all?", "Undo Rename", "Undo All", "Undo", "drag"].sorted())
     }
 
-    /// The globe's buttons name their help through a helper's `title:`,
-    /// which the scanner reads (both sides of each `?:`).
+    /// The map's and the globe's buttons name their help through `mapButton`'s
+    /// `title:`, which the scanner reads (both sides of each `?:`).
     func testTheGlobesButtonsAreSeen() throws {
-        let file = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent()
-            .deletingLastPathComponent().appendingPathComponent("OfflineMap/GlobeView.swift")
-        let texts = Set(Self.uiTexts(in: try String(contentsOf: file, encoding: .utf8)))
+        let folder = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent()
+            .deletingLastPathComponent().appendingPathComponent("OfflineMap")
+        let texts = Set(try ["GlobeView.swift", "MapChrome.swift"].flatMap {
+            Self.uiTexts(in: try String(contentsOf: folder.appendingPathComponent($0), encoding: .utf8))
+        })
         for text in ["Zoom in", "Zoom out", "Show day and night", "Hide day and night", "Exaggerate the relief", "Show the relief at true scale"] {
             XCTAssertTrue(texts.contains(text), text)
         }

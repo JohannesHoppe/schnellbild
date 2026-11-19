@@ -1,4 +1,4 @@
-# The Mac App Store prices (started by hand), through Scripts/appstore_prices.swift:
+# The Mac App Store prices (started by hand), through Scripts/appstore_connect.swift prices:
 # "list" uploads what Apple offers per country (artifact price-points), from
 # which the prices in AppStore/metadata/prices.json are picked; "apply" sets them.
 name: App Store prices
@@ -32,9 +32,9 @@ jobs:
           export ASC_KEY_PATH="$RUNNER_TEMP/asc.p8"
           (umask 077; printf '%s\n' "$P8" > "$ASC_KEY_PATH")
           if [ "$MODE" = list ]; then
-            swift Scripts/appstore_prices.swift list price-points.json
+            swift Scripts/appstore_connect.swift prices list price-points.json
           else
-            swift Scripts/appstore_prices.swift apply
+            swift Scripts/appstore_connect.swift prices apply
           fi
 
       - name: Remove the key

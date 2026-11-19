@@ -350,7 +350,9 @@ final class ContentSniffer: @unchecked Sendable {
     /// Archives found by their content (canonical paths), for `ArchivePath`.
     private var archives: Set<String> = []
     /// Kept answers at most (a folder of code has many .ts files).
-    private let limit = 20_000
+    private let limit: Int
+
+    init(limit: Int = 20_000) { self.limit = limit }
 
     /// The answer kept for the file, without looking at the disk.
     func known(_ url: URL) -> FileFacts.Content? {
@@ -379,7 +381,11 @@ final class ContentSniffer: @unchecked Sendable {
         if let answer = lock.withLock({ answers[path] }), answer.stamp == stamp { return answer.content }
         let content = VLCSafety.head(of: url).flatMap(FileFacts.content(in:))
         lock.withLock {
-            if answers.count >= limit { answers.removeAll(keepingCapacity: true); archives.removeAll() }
+            if answers.count >= limit {
+                // The archives found stay: one may be open, its paths go through `ArchivePath`
+                answers = answers.filter { archives.contains($0.key) }
+                if answers.count >= limit { answers.removeAll(keepingCapacity: true); archives.removeAll() }
+            }
             answers[path] = Answer(size: Int64(info.st_size), stamp: stamp, content: content)
             if content?.archiveFormat != nil { archives.insert(path) } else { archives.remove(path) }
         }
@@ -391,9 +397,15 @@ final class ContentSniffer: @unchecked Sendable {
     func archive(containing url: URL) -> (archive: String, inner: String)? {
         guard lock.withLock({ !archives.isEmpty }) else { return nil }
         let path = BrowserModel.canonicalPath(url)
-        return lock.withLock {
-            archives.first { path == $0 || path.hasPrefix($0 + "/") }
-                .map { ($0, String(path.dropFirst($0.count).drop { $0 == "/" })) }
+        // The path and the folders above it, each looked up (not every
+        // archive known compared with the path)
+        var candidate = path
+        while true {
+            if lock.withLock({ archives.contains(candidate) }) {
+                return (candidate, String(path.dropFirst(candidate.count).drop { $0 == "/" }))
+            }
+            guard candidate != "/", !candidate.isEmpty else { return nil }
+            candidate = (candidate as NSString).deletingLastPathComponent
         }
     }
 

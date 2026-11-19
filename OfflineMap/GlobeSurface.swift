@@ -75,7 +75,7 @@ extension GlobeRenderer {
 /// (not with Reduce motion), pinch, ⌘-scroll, the mouse wheel and double
 /// click zoom about the pointer, keeping the place under it.
 @MainActor
-final class GlobeSurfaceView: NSView, MTKViewDelegate {
+final class GlobeSurfaceView: NSView, MTKViewDelegate, CameraHolding {
     var camera = MapCamera(center: Coordinate(latitude: 30, longitude: 10), zoom: 2) { didSet { if camera != oldValue { cameraChanged() } } }
     var interactive = true
     var lighting = false { didSet { if lighting != oldValue { redraw(); scheduleClock() } } }
@@ -202,23 +202,7 @@ final class GlobeSurfaceView: NSView, MTKViewDelegate {
         super.setFrameSize(newSize)
         flat.frame = bounds
         metal?.frame = bounds
-        let held = held(camera)
-        if held != camera {
-            camera = held
-            // Reported after SwiftUI's layout pass, which this runs in: the
-            // camera the owner holds then (it may have set another meanwhile),
-            // held in this size
-            DispatchQueue.main.async { [weak self] in
-                guard let self else { return }
-                guard let owner = self.ownerCamera else { self.onCameraChange?(held); return }
-                let wanted = owner()
-                let now = self.held(wanted)
-                if now != self.camera { self.camera = now }
-                if now != wanted { self.onCameraChange?(now) }
-            }
-        } else {
-            updateMode()
-        }
+        if !holdCamera() { updateMode() }
     }
 
     override func viewDidChangeEffectiveAppearance() {
@@ -437,12 +421,6 @@ final class GlobeSurfaceView: NSView, MTKViewDelegate {
         stopMotion()
         moved(to: flatOnly ? MapViewport(camera: camera, size: bounds.size).zoomed(to: camera.zoom + steps, keeping: point)
               : projection.zoomed(to: camera.zoom + steps, keeping: point))
-    }
-
-    /// A point of the view (origin top left) from an event.
-    private func point(_ event: NSEvent) -> CGPoint {
-        let p = convert(event.locationInWindow, from: nil)
-        return CGPoint(x: p.x, y: bounds.height - p.y)
     }
 
     override func mouseDown(with event: NSEvent) {

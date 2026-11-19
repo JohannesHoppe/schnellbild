@@ -15,6 +15,16 @@ final class FolderAccessTests: XCTestCase {
         private var access: [String: Int] = [:]
         var mounted: Set<String> = ["/"]
         var resolveDelay: TimeInterval = 0
+        /// Whether starting access succeeds (it doesn't for a URL whose
+        /// access the sandbox gave already, as a drop's may be).
+        var starts = true
+        /// The answer of `canOpen`, given after `probeDelay`.
+        var opens = true
+        var probeDelay: TimeInterval = 0
+        private var probes: [Bool] = []
+
+        /// For each `canOpen` asked: whether it ran on the main thread.
+        var probedOnMain: [Bool] { lock.withLock { probes } }
 
         /// Paths with access started and not stopped (each as often as started).
         var open: [String: Int] { lock.withLock { access.filter { $0.value != 0 } } }
@@ -28,9 +38,20 @@ final class FolderAccessTests: XCTestCase {
                     return FileManager.default.fileExists(atPath: path) ? (URL(fileURLWithPath: path), false) : nil
                 },
                 path: { BrowserModel.canonicalPath(URL(fileURLWithPath: String(decoding: $0, as: UTF8.self))) },
-                start: { [self] url in lock.withLock { access[BrowserModel.canonicalPath(url), default: 0] += 1 }; return true },
+                start: { [self] url in
+                    lock.withLock {
+                        guard starts else { return false }
+                        access[BrowserModel.canonicalPath(url), default: 0] += 1
+                        return true
+                    }
+                },
                 stop: { [self] url in lock.withLock { access[BrowserModel.canonicalPath(url), default: 0] -= 1 } },
-                mountedVolumes: { [self] in lock.withLock { mounted } }
+                mountedVolumes: { [self] in lock.withLock { mounted } },
+                canOpen: { [self] _ in
+                    lock.withLock { probes.append(Thread.isMainThread) }
+                    if probeDelay > 0 { Thread.sleep(forTimeInterval: probeDelay) }
+                    return lock.withLock { opens }
+                }
             )
         }
     }
@@ -76,12 +97,12 @@ final class FolderAccessTests: XCTestCase {
 
     /// Files dropped alone are held for the session, the newest few; the
     /// older ones are let go.
-    func testHeldFilesAreLetGo() throws {
+    func testHeldFilesAreLetGo() async throws {
         let tree = try TempTree(self)
         let fake = FakeSystem()
         let access = sandbox(fake)
         let files = try (0..<(FolderAccess.heldFileLimit + 5)).map { try tree.file("f\($0).jpg") }
-        for file in files { access.hold(file) }
+        for file in files { await access.hold(file) }
         XCTAssertEqual(fake.open.count, FolderAccess.heldFileLimit)
         XCTAssertNil(fake.open[BrowserModel.canonicalPath(files[0])], "the oldest stopped")
         XCTAssertTrue(access.covers(files.last!))
@@ -98,11 +119,11 @@ final class FolderAccessTests: XCTestCase {
         let outer = inner.deletingLastPathComponent()
         let fake = FakeSystem()
         let access = sandbox(fake)
-        access.grant(inner)
-        access.hold(file)
-        access.grant(inner)
+        await access.grant(inner)
+        await access.hold(file)
+        await access.grant(inner)
         XCTAssertEqual(fake.open[BrowserModel.canonicalPath(inner)], 1, "granted once")
-        access.grant(outer)
+        await access.grant(outer)
         XCTAssertEqual(fake.open, [BrowserModel.canonicalPath(outer): 1], "inside the new grant: stopped")
         XCTAssertEqual(kept(access), [outer.path])
         access.forgetAll()
@@ -152,6 +173,113 @@ final class FolderAccessTests: XCTestCase {
         await access.restored()
         XCTAssertTrue(access.covers(folder))
         XCTAssertEqual(kept(access), [folder.path])
+    }
+
+    /// Forget while the kept bookmarks still resolve: the grants the user
+    /// gave up don't come back when the resolution returns, and the access
+    /// it started is stopped. The same for a volume mounting meanwhile.
+    func testForgetWhileResolvingKeepsNothing() async throws {
+        let tree = try TempTree(self)
+        let folder = try tree.folder("Share")
+        let asleep = URL(fileURLWithPath: "/Volumes/NAS asleep/Photos")
+        let fake = FakeSystem()
+        fake.resolveDelay = 0.3
+        let access = sandbox(fake, saved: [folder, asleep])
+        access.restore()
+        access.forgetAll()
+        await access.restored()
+        XCTAssertEqual(kept(access), [])
+        XCTAssertEqual(access.count, 0)
+        XCTAssertEqual(fake.open, [:], "what the resolution started is stopped")
+        XCTAssertFalse(access.covers(folder))
+
+        // A volume mounting while a pending grant resolves
+        let later = sandbox(fake, saved: [asleep])
+        later.restore()
+        await later.restored()
+        XCTAssertEqual(kept(later), [asleep.path])
+        let mounting = Task { await later.volumeMounted() }
+        try await Task.sleep(nanoseconds: 50_000_000)
+        later.forgetAll()
+        await mounting.value
+        XCTAssertEqual(kept(later), [])
+        XCTAssertEqual(later.count, 0)
+    }
+
+    /// A file held already: holding it again starts no second access.
+    func testAFileIsHeldOnce() async throws {
+        let tree = try TempTree(self)
+        let file = try tree.file("loose.jpg")
+        let fake = FakeSystem()
+        let access = sandbox(fake)
+        await access.hold(file)
+        await access.hold(file)
+        XCTAssertEqual(fake.open, [BrowserModel.canonicalPath(file): 1])
+    }
+
+    /// A file whose access the app can't start itself counts when the
+    /// process may open it, asked off the main thread (a share that stopped
+    /// answering holds it until its timeout); one it may not open isn't held.
+    func testAccessNotStartedIsAskedOffTheMainThread() async throws {
+        let tree = try TempTree(self)
+        let file = try tree.file("outside/loose.jpg")
+        let folder = try tree.folder("Trip")
+        let fake = FakeSystem()
+        fake.starts = false
+        let access = sandbox(fake)
+        await access.hold(file)
+        await access.grant(folder)
+        XCTAssertTrue(access.covers(file))
+        XCTAssertTrue(access.covers(folder.appendingPathComponent("a.jpg")))
+        XCTAssertEqual(kept(access), [folder.path])
+        XCTAssertEqual(fake.open, [:], "nothing started, nothing to stop")
+        XCTAssertEqual(fake.probedOnMain, [false, false])
+
+        fake.opens = false
+        let other = try tree.file("elsewhere/b.jpg")
+        let closed = try tree.folder("Closed")
+        await access.hold(other)
+        await access.grant(closed)
+        XCTAssertFalse(access.covers(other))
+        XCTAssertFalse(access.covers(closed))
+        XCTAssertEqual(kept(access), [folder.path])
+    }
+
+    /// A file dropped whose access the app can't start itself: it is held
+    /// before its folder opens, though the answer comes late, so the pane
+    /// never reads it uncovered.
+    func testADroppedFileIsHeldBeforeItIsRead() async throws {
+        let tree = try TempTree(self)
+        let file = try tree.file("outside/IMG_1.jpg")
+        let fake = FakeSystem()
+        fake.starts = false
+        fake.probeDelay = 0.3
+        let access = sandbox(fake)
+        let saved = FolderAccess.shared
+        FolderAccess.shared = access
+        defer { FolderAccess.shared = saved }
+        let m = makeModel()
+
+        m.openDropped([file])
+        await waitUntil { m.folderURL != nil }
+        XCTAssertTrue(access.covers(file), "held before the folder opens")
+        XCTAssertEqual(fake.probedOnMain, [false])
+        await waitUntil { !m.isLoading && m.mode == .detail }
+        XCTAssertEqual(m.selectedMediaEntry?.name, "IMG_1.jpg")
+    }
+
+    /// Whether an item can be opened: a FIFO answers at once (no writer
+    /// waited for) and counts as no file to read.
+    func testAFIFOIsNoFileToRead() throws {
+        let tree = try TempTree(self)
+        let file = try tree.file("a.jpg")
+        let fifo = tree.root.appendingPathComponent("pipe")
+        XCTAssertEqual(mkfifo(fifo.path, 0o600), 0)
+        XCTAssertTrue(FolderAccess.canOpen(file))
+        XCTAssertTrue(FolderAccess.canOpen(tree.root))
+        XCTAssertFalse(FolderAccess.canOpen(fifo))
+        XCTAssertFalse(RelatedFiles.canRead(fifo))
+        XCTAssertFalse(RelatedFiles.canRead(tree.root), "a folder is no file")
     }
 
     func testTheVolumeOfAPath() {

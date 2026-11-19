@@ -254,6 +254,53 @@ final class ContainerTests: XCTestCase {
         XCTAssertEqual(try index.frames(inCluster: 0, track: 1).first?.time, Int64(Int16.min))
     }
 
+    // MARK: Many clusters
+
+    /// A Matroska file with two H.264 tracks and `clusters` clusters of one
+    /// frame each, of the track `trackOf` gives for the cluster.
+    private func matroska(clusters: Int, trackOf: (Int) -> UInt8) -> Data {
+        let video = element([0xE0], element([0xB0], [64]) + element([0xBA], [48]))
+        func entry(_ number: UInt8) -> [UInt8] {
+            element([0xAE], element([0xD7], [number]) + element([0x83], [1]) + element([0x86], Array("V_MPEG4/ISO/AVC".utf8))
+                    + element([0x63, 0xA2], [1, 2, 3]) + video)
+        }
+        var body = element([0x16, 0x54, 0xAE, 0x6B], entry(1) + entry(2))
+        for i in 0..<clusters {
+            let block = element([0xA3], [0x80 | trackOf(i), 0, 0, 0x80, 1, 2])
+            body += element([0x1F, 0x43, 0xB6, 0x75], element([0xE7], [UInt8(i & 0x7F)]) + block)
+        }
+        let header = element([0x1A, 0x45, 0xDF, 0xA3], element([0x42, 0x82], Array("matroska".utf8)))
+        return Data(header + [0x18, 0x53, 0x80, 0x67, 0x01, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF] + body)
+    }
+
+    /// Stepping through a long file keeps a bounded number of clusters'
+    /// frame lists, and their frames stay right after the cache is emptied.
+    func testTheClusterCacheIsBounded() throws {
+        let index = try MatroskaIndex(MemoryBytes(matroska(clusters: 300, trackOf: { _ in 1 })))
+        XCTAssertEqual(index.clusters.count, 300)
+        for cluster in index.clusters.indices {
+            XCTAssertEqual(try index.frames(inCluster: cluster, track: 1).count, 1)
+            XCTAssertLessThanOrEqual(index.cachedClusterCount, MatroskaIndex.cachedClusters)
+        }
+        XCTAssertEqual(try index.frames(inCluster: 0, track: 1).count, 1, "read again once dropped")
+    }
+
+    /// Whether a track is offered is decided from the first clusters only:
+    /// a track without frames there doesn't make the whole file be read.
+    func testATrackWithoutFramesIsLookedForInTheFirstClustersOnly() throws {
+        let late = MatroskaIndex.clustersLookedAt + 4
+        let bytes = MemoryBytes(matroska(clusters: 300, trackOf: { $0 == late ? 2 : 1 }))
+        let index = try MatroskaIndex(bytes)
+        XCTAssertTrue(index.hasFrames(track: 1))
+        let before = bytes.reads
+        XCTAssertFalse(index.hasFrames(track: 2), "its only frame lies past the clusters looked at")
+        XCTAssertFalse(index.hasFrames(track: 3), "no such track")
+        XCTAssertLessThanOrEqual(bytes.reads - before, MatroskaIndex.clustersLookedAt)
+        XCTAssertTrue(index.hasFrames(track: 2, clusterLimit: late + 1))
+        let early = try MatroskaIndex(MemoryBytes(matroska(clusters: 300, trackOf: { $0 == 3 ? 2 : 1 })))
+        XCTAssertTrue(early.hasFrames(track: 2))
+    }
+
     func testSaturatingArithmetic() {
         XCTAssertEqual(Int64.max.saturatingAdd(1), .max)
         XCTAssertEqual(Int64.min.saturatingAdd(-1), .min)

@@ -10,8 +10,8 @@ import Security
 /// folder above, a bookmark to elsewhere) asks: the open panel at that
 /// folder (`ask`).
 ///
-/// Only what the app opens is kept: a folder or archive chosen or dropped
-/// (`grant`). A file dropped alone from a folder outside every grant is
+/// Only what the app opens is kept: a folder chosen (`choose`) or a folder
+/// or archive dropped (`grant`). A file dropped alone from a folder outside every grant is
 /// held for the session only (`hold`, the newest `heldFileLimit`): a
 /// launch reopens folders, never a lone file. Access is started once per
 /// grant and stopped when a grant goes (one holding it replaces it, the
@@ -62,6 +62,9 @@ final class FolderAccess {
         var stop: @Sendable (URL) -> Void
         /// The mount points of the volumes there now (canonical paths).
         var mountedVolumes: @Sendable () -> Set<String>
+        /// Whether the process may open a URL now (`canOpen`); waits on the
+        /// disk, so asked off the main thread.
+        var canOpen: @Sendable (URL) -> Bool = { FolderAccess.canOpen($0) }
 
         static let live = System(
             bookmark: { try? $0.bookmarkData(options: .withSecurityScope, includingResourceValuesForKeys: nil, relativeTo: nil) },
@@ -104,6 +107,9 @@ final class FolderAccess {
     /// preferences meanwhile.
     private var resolving: [Data] = []
     private var restoring: Task<Void, Never>?
+    /// Counts `forgetAll()`: a resolution that started before the user
+    /// gave every grant up takes nothing when it returns.
+    private var generation = 0
 
     /// Folders open without a grant: the standard folders the entitlements name.
     private let standard: [String]
@@ -135,7 +141,8 @@ final class FolderAccess {
         guard sandboxed, restoring == nil else { return }
         let saved = defaults.array(forKey: Self.key) as? [Data] ?? []
         resolving = saved
-        restoring = Task { await open(saved.map { (bookmark: $0, path: nil) }) }
+        let generation = generation
+        restoring = Task { await open(saved.map { (bookmark: $0, path: nil) }, generation: generation) }
     }
 
     /// Returns once the grants kept are open: a folder is read after it.
@@ -168,18 +175,24 @@ final class FolderAccess {
         // Out of `pending` while they are tried: never opened twice at once
         pending.removeAll { bookmarks.contains($0.bookmark) }
         resolving += chosen.map(\.bookmark)
-        return await open(chosen)
+        return await open(chosen, generation: generation)
     }
 
     /// Resolves and starts bookmarks off the main thread, then takes what
     /// opened; what waits for its volume goes back to `pending`, what is
     /// gone is dropped. Returns whether one opened. The caller has put
-    /// them into `resolving`, so the preferences keep them meanwhile.
+    /// them into `resolving`, so the preferences keep them meanwhile, and
+    /// names the `generation` they were taken from.
     @discardableResult
-    private func open(_ kept: [(bookmark: Data, path: String?)]) async -> Bool {
+    private func open(_ kept: [(bookmark: Data, path: String?)], generation: Int) async -> Bool {
         let system = system
         let bookmarks = kept.map(\.bookmark)
         let outcomes = await Blocking.run(.userInitiated) { Self.resolveAll(bookmarks, system) }
+        // Forgotten while they resolved: nothing comes back, what started stops
+        guard generation == self.generation else {
+            for case .opened(let grant) in outcomes where grant.started { system.stop(grant.url) }
+            return false
+        }
         var opened = false
         for (entry, outcome) in zip(kept, outcomes) {
             if let index = resolving.firstIndex(of: entry.bookmark) { resolving.remove(at: index) }
@@ -241,15 +254,38 @@ final class FolderAccess {
         path.contains("/.Trash/") || path.contains("/.Trashes/")
     }
 
-    /// A folder or archive the user chose or dropped: readable from now on
-    /// and after a restart. Called while the sandbox has opened it to the
-    /// app (right after the panel or the drop).
-    func grant(_ url: URL) {
+    /// A folder or archive the user dropped: readable from now on and after
+    /// a restart. Called while the sandbox has opened it to the app (right
+    /// after the drop). Access the app can't start itself counts when the
+    /// process may open the item (`canOpen`), asked off the main thread: a
+    /// share that stopped answering holds that until its timeout. Returns
+    /// once it is granted or refused: read it after.
+    func grant(_ url: URL) async {
         guard sandboxed else { return }
         let path = BrowserModel.canonicalPath(url)
         guard !isGranted(path) else { return }
         let started = system.start(url)
-        guard started || Self.canOpen(url), let bookmark = system.bookmark(url) else {
+        if !started {
+            let generation = generation
+            // Granted or forgotten meanwhile: nothing to take
+            guard await opens(url), generation == self.generation, !isGranted(path) else { return }
+        }
+        take(url, path: path, started: started)
+    }
+
+    /// A folder chosen in the open panel: readable from now on and after a
+    /// restart. The panel opens what is chosen to the app for as long as it
+    /// runs, so no answer is waited for.
+    private func grantChosen(_ url: URL) {
+        guard sandboxed else { return }
+        let path = BrowserModel.canonicalPath(url)
+        guard !isGranted(path) else { return }
+        take(url, path: path, started: system.start(url))
+    }
+
+    /// The grant of an item open to the app, kept with its bookmark.
+    private func take(_ url: URL, path: String, started: Bool) {
+        guard let bookmark = system.bookmark(url) else {
             if started { system.stop(url) }
             return
         }
@@ -260,14 +296,26 @@ final class FolderAccess {
 
     /// A file the sandbox opened alone (dropped from a folder outside every
     /// grant): its access is held while the app runs, not kept for a
-    /// restart. The oldest held file beyond `heldFileLimit` is let go.
-    func hold(_ file: URL) {
+    /// restart. The oldest held file beyond `heldFileLimit` is let go. The
+    /// access is started at once; one the app can't start itself counts
+    /// when the process may open the file (`canOpen`, asked off the main
+    /// thread). Returns once it is held or refused: read it after.
+    func hold(_ file: URL) async {
         guard sandboxed, !covers(file) else { return }
-        // Only what the sandbox opened (a path named on the command line it didn't)
         let started = system.start(file)
-        guard started || Self.canOpen(file) else { return }
+        if !started {
+            // Only what the sandbox opened (a path named on the command line it didn't)
+            let generation = generation
+            guard await opens(file), generation == self.generation, !covers(file) else { return }
+        }
         held.append(Grant(url: file, path: BrowserModel.canonicalPath(file), bookmark: nil, started: started))
         while held.count > Self.heldFileLimit { release(held.removeFirst()) }
+    }
+
+    /// Whether the process may open `url` now, asked off the main thread.
+    private func opens(_ url: URL) async -> Bool {
+        let canOpen = system.canOpen
+        return await Blocking.run(.userInitiated) { canOpen(url) }
     }
 
     /// A grant taken: grants and held files inside it aren't needed beside it.
@@ -313,6 +361,7 @@ final class FolderAccess {
         held = []
         pending = []
         resolving = []
+        generation += 1
         save()
     }
 
@@ -330,22 +379,29 @@ final class FolderAccess {
     /// folder. Returns the folder chosen (it may be one that holds `folder`,
     /// or another one), granted.
     func ask(for folder: URL, to purpose: Purpose = .show) -> URL? {
+        let message = switch purpose {
+        case .show:
+            String(localized: "Choose this folder, or one that holds it, so Schnellbild may show it. Schnellbild remembers your choice.")
+        case .rename(let name):
+            String(localized: "Choose the folder that holds “\(name)”, so Schnellbild may rename it. Schnellbild remembers your choice.")
+        case .moveInto:
+            String(localized: "Choose this folder, so Schnellbild may put items into it. Schnellbild remembers your choice.")
+        }
+        return choose(prompt: String(localized: "Allow Access"), message: message, at: folder)
+    }
+
+    /// A folder the user chooses in the open panel (starting at `folder`),
+    /// granted to the app; nil when cancelled.
+    func choose(prompt: String, message: String, at folder: URL? = nil) -> URL? {
         let panel = NSOpenPanel()
         panel.canChooseDirectories = true
         panel.canChooseFiles = false
         panel.allowsMultipleSelection = false
-        panel.directoryURL = folder
-        panel.prompt = String(localized: "Allow Access")
-        switch purpose {
-        case .show:
-            panel.message = String(localized: "Choose this folder, or one that holds it, so Schnellbild may show it. Schnellbild remembers your choice.")
-        case .rename(let name):
-            panel.message = String(localized: "Choose the folder that holds “\(name)”, so Schnellbild may rename it. Schnellbild remembers your choice.")
-        case .moveInto:
-            panel.message = String(localized: "Choose this folder, so Schnellbild may put items into it. Schnellbild remembers your choice.")
-        }
+        if let folder { panel.directoryURL = folder }
+        panel.prompt = prompt
+        panel.message = message
         guard panel.runModal() == .OK, let url = panel.url else { return nil }
-        grant(url)
+        grantChosen(url)
         return url
     }
 

@@ -96,7 +96,7 @@ struct DistanceOriginView: View {
 
     @MainActor init(location: LocationProvider? = nil, start: GeoPoint? = nil) {
         _picker = StateObject(wrappedValue: OriginPicker(location: location ?? BrowserModel.liveLocation))
-        let center = start.map { Coordinate(latitude: $0.latitude, longitude: $0.longitude) }
+        let center = start.map(\.coordinate)
         _camera = State(initialValue: center.map { MapCamera(center: $0, zoom: 5) } ?? .world)
     }
 
@@ -155,7 +155,7 @@ struct DistanceOriginView: View {
         .onChange(of: picker.point) { _, point in
             // Typed or found elsewhere: the map goes there (a click keeps the view)
             guard let point, picker.mapFollows(point) else { return }
-            camera = MapCamera(center: Coordinate(latitude: point.latitude, longitude: point.longitude), zoom: max(camera.zoom, 5))
+            camera = MapCamera(center: point.coordinate, zoom: max(camera.zoom, 5))
         }
     }
 
@@ -188,7 +188,7 @@ struct DistanceOriginView: View {
     /// The offline map: a click picks the place under it; drag moves the
     /// map, + / − zoom.
     private func map(_ renderer: MapRenderer) -> some View {
-        let markers = picker.point.map { [MapMarker(id: "origin", coordinate: Coordinate(latitude: $0.latitude, longitude: $0.longitude))] } ?? []
+        let markers = picker.point.map { [MapMarker(id: "origin", coordinate: $0.coordinate)] } ?? []
         return VStack(alignment: .leading, spacing: 3) {
             MapView(camera: $camera, markers: markers, interactive: true, renderer: renderer) { proxy in
                 MapPickLayer(camera: $camera, size: proxy.size) { spot in

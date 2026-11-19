@@ -225,8 +225,12 @@ final class HiddenFilesTests: XCTestCase {
         await openAndWait(m, archive)
         XCTAssertEqual(Set(m.names), ["..", "Day", "a.jpg"])
         XCTAssertEqual(m.otherFiles.map(\.name), ["notes.txt"])
-        let media = try await ArchiveStore.shared.media(below: archive).map(\.lastPathComponent)
-        XCTAssertEqual(Set(media), ["a.jpg", "d.jpg"], "a folder tile's previews and emptiness")
+        let pictures = try await ArchiveStore.shared.pictures(below: archive, limit: 3).map(\.lastPathComponent)
+        XCTAssertEqual(pictures, ["a.jpg", "d.jpg"], "a folder tile's previews, in path order (\"a.jpg\" before \"Day/d.jpg\")")
+        let first = try await ArchiveStore.shared.pictures(below: archive, limit: 1).map(\.lastPathComponent)
+        XCTAssertEqual(first, ["a.jpg"])
+        let hasMedia = try await ArchiveStore.shared.hasMedia(below: archive)
+        XCTAssertTrue(hasMedia, "a folder tile's emptiness")
         await searchAndWait(m, "jpg")
         XCTAssertEqual(Set(m.names), ["a.jpg", "d.jpg"])
 
@@ -320,6 +324,88 @@ final class HiddenFilesTests: XCTestCase {
         try FileManager.default.removeItem(at: onlyHidden.appendingPathComponent("b.jpg"))
         let deeper = await BrowserModel.folderPreviewFiles(in: onlyHidden)
         XCTAssertEqual(deeper.map(\.lastPathComponent), ["c.jpg"], "from a hidden subfolder while shown")
+    }
+
+    // MARK: The walk
+
+    /// The mixed tree with a package and a link to a folder: neither is walked into.
+    private func walkTree() throws -> TempTree {
+        let tree = try mixedTree()
+        try tree.file("Album.app/inner.jpg")
+        try FileManager.default.createSymbolicLink(at: tree.root.appendingPathComponent("link"),
+                                                   withDestinationURL: tree.root.appendingPathComponent("sub", isDirectory: true))
+        return tree
+    }
+
+    /// What a walk visits, as paths inside the tree.
+    private func walked(_ tree: TempTree, deep: Bool = true, shown: Bool, appleDoubles: Bool = true) -> Set<String> {
+        let root = BrowserModel.canonicalPath(tree.root)
+        var paths: Set<String> = []
+        FolderWalk(root: tree.root, deep: deep, shown: shown, appleDoubles: appleDoubles).run { url in
+            paths.insert(String(BrowserModel.canonicalPath(url).dropFirst(root.count + 1)))
+            return true
+        }
+        return paths
+    }
+
+    func testTheWalkListsWhatTheGridWould() throws {
+        let tree = try walkTree()
+        XCTAssertEqual(walked(tree, shown: false), ["a.jpg", "notes.txt", "sub", "sub/b.jpg", "Album.app", "link"])
+        XCTAssertEqual(walked(tree, shown: true), [
+            "a.jpg", ".dot.jpg", "flagged.jpg", ".DS_Store", "._a.jpg", "Icon\r", "__MACOSX", "__MACOSX/._b.jpg",
+            "notes.txt", ".dotnotes.txt", "flagged.txt", "sub", "sub/b.jpg", ".hidden", ".hidden/c.jpg",
+            "flaggedfolder", "flaggedfolder/d.jpg", "Album.app", "link"
+        ], "shown: every item, AppleDouble files too; still not into the package or through the link")
+        XCTAssertEqual(walked(tree, deep: false, shown: false), ["a.jpg", "notes.txt", "sub", "Album.app", "link"])
+        XCTAssertTrue(walked(tree, deep: false, shown: true).isSuperset(of: ["._a.jpg", ".hidden", "__MACOSX"]))
+        XCTAssertFalse(walked(tree, deep: false, shown: true).contains("__MACOSX/._b.jpg"), "the top only")
+        // A walk after media only: hidden items shown, but no AppleDouble files read
+        XCTAssertEqual(walked(tree, shown: true, appleDoubles: false), [
+            "a.jpg", ".dot.jpg", "flagged.jpg", ".DS_Store", "Icon\r", "__MACOSX",
+            "notes.txt", ".dotnotes.txt", "flagged.txt", "sub", "sub/b.jpg", ".hidden", ".hidden/c.jpg",
+            "flaggedfolder", "flaggedfolder/d.jpg", "Album.app", "link"
+        ])
+    }
+
+    func testTheWalkStopsGivesUpAndCancels() throws {
+        let tree = try walkTree()
+        var seen = 0
+        XCTAssertEqual(FolderWalk(root: tree.root, shown: true).run { _ in seen += 1; return seen < 2 }, .stopped)
+        XCTAssertEqual(seen, 2)
+        XCTAssertEqual(FolderWalk(root: tree.root, limit: 2, shown: true).run { _ in true }, .gaveUp)
+        XCTAssertEqual(FolderWalk(root: tree.root).run(cancelled: { true }) { _ in true }, .cancelled)
+        XCTAssertEqual(FolderWalk(root: tree.root.appendingPathComponent("nope")).run { _ in true }, .whole)
+    }
+
+    /// The search, a folder tile's previews and its emptiness find what they
+    /// found before, hidden or shown: AppleDouble files are walked while
+    /// shown, but never a picture.
+    func testTheWalksCallersFindTheSameItems() async throws {
+        let tree = try walkTree()
+        func search() async -> Set<String> {
+            var found: Set<String> = []
+            for await batch in BrowserModel.recursiveMatches(under: tree.root, query: "jpg") {
+                found.formUnion(batch.entries.map(\.name))
+            }
+            return found
+        }
+        let macosx = tree.root.appendingPathComponent("__MACOSX", isDirectory: true)
+        var found = await search()
+        XCTAssertEqual(found, ["a.jpg", "b.jpg"])
+        var media = await BrowserModel.containsMedia(macosx)
+        XCTAssertEqual(media, false)
+        var previews = await BrowserModel.folderPreviewFiles(in: tree.root)
+        XCTAssertEqual(previews.map(\.lastPathComponent), ["a.jpg"])
+
+        HiddenFiles.shown = true
+        found = await search()
+        XCTAssertEqual(found, ["a.jpg", "b.jpg", ".dot.jpg", "flagged.jpg", "c.jpg", "d.jpg"], "never AppleDouble, never inside the package")
+        media = await BrowserModel.containsMedia(macosx)
+        XCTAssertEqual(media, false, "AppleDouble files hold no pictures")
+        previews = await BrowserModel.folderPreviewFiles(in: tree.root)
+        XCTAssertEqual(Set(previews.map(\.lastPathComponent)), ["a.jpg", ".dot.jpg", "flagged.jpg"])
+        let none = await BrowserModel.folderPreviewFiles(in: macosx)
+        XCTAssertEqual(none, [])
     }
 
     // MARK: What the user opened himself, and paths he didn't

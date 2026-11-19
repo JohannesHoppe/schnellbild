@@ -38,10 +38,8 @@ public struct Heightmap: Sendable {
 
     public init(data: Data) throws {
         guard data.count >= 16, data.prefix(4) == Data("SBHM".utf8) else { throw ReadError.notAHeightmap }
-        func u16(_ o: Int) -> Int { Int(data[data.startIndex + o]) | Int(data[data.startIndex + o + 1]) << 8 }
-        func u32(_ o: Int) -> Int { u16(o) | u16(o + 2) << 16 }
-        guard u16(4) == 1 else { throw ReadError.unsupportedVersion }
-        let w = u32(8), h = u32(12)
+        guard data.le16(4) == 1 else { throw ReadError.unsupportedVersion }
+        let w = data.le32(8), h = data.le32(12)
         guard w > 0, h > 0, w <= 1 << 16, h <= 1 << 15, data.count >= 16 + w * h * 2 else { throw ReadError.truncated }
         var values = [Int16](repeating: 0, count: w * h)
         values.withUnsafeMutableBytes { out in
@@ -85,7 +83,8 @@ public struct Heightmap: Sendable {
     /// land rises gently from the coast, Antarctica's ice higher, the sea floor
     /// falls from a shelf to the deep ocean. No mountains: it only shows the
     /// relief's machinery where the elevation data is missing.
-    public static func placeholder(from renderer: MapRenderer, width: Int = 720, height: Int = 360) -> Heightmap {
+    public static func placeholder(from renderer: MapRenderer) -> Heightmap {
+        let width = 720, height = 360
         let z = 2, n = 1 << z, side = 256, px = side * n
         var mask = [UInt8](repeating: 0, count: px * px)   // 0 water, 1 land
         let palette = MapPalette.light
@@ -262,14 +261,13 @@ public struct SatelliteTiles: @unchecked Sendable {
     public init(data: Data) throws {
         guard data.count >= 8, data.prefix(4) == Data("SBTL".utf8) else { throw ReadError.notATilePack }
         let bytes = [UInt8](data.prefix(min(data.count, 1 << 16)))
-        func u32(_ o: Int) -> Int { Int(bytes[o]) | Int(bytes[o + 1]) << 8 | Int(bytes[o + 2]) << 16 | Int(bytes[o + 3]) << 24 }
-        let count = u32(4)
+        let count = bytes.le32(4)
         var o = 8, index: [String: Range<Int>] = [:]
         for _ in 0..<count {
             guard o < bytes.count else { throw ReadError.truncated }
             let n = Int(bytes[o])
             guard o + 1 + n + 12 <= bytes.count, let name = String(bytes: bytes[(o + 1)..<(o + 1 + n)], encoding: .utf8) else { throw ReadError.truncated }
-            let offset = u32(o + 1 + n) | u32(o + 5 + n) << 32, length = u32(o + 9 + n)
+            let offset = bytes.le32(o + 1 + n) | bytes.le32(o + 5 + n) << 32, length = bytes.le32(o + 9 + n)
             // (compared without adding: an offset near Int.max would overflow)
             guard offset >= 0, length > 0, length <= data.count, offset <= data.count - length else { throw ReadError.truncated }
             index[name] = offset..<(offset + length)

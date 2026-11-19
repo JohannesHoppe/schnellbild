@@ -55,10 +55,7 @@ enum BossKey {
     static func typed(_ event: NSEvent) {
         let modifiers = event.modifierFlags.intersection([.command, .control, .option])
         // By the letter on the key, as the menus read it, on any layout
-        let plain = event.charactersIgnoringModifiers?.lowercased() ?? ""
-        let letter = plain.unicodeScalars.allSatisfy(\.isASCII) ? plain
-            : (LatinKeys.character(for: event.keyCode, shift: false) ?? plain)
-        if modifiers == .command, letter == "q" {
+        if modifiers == .command, LatinKeys.letter(of: event) == "q" {
             NSApp.terminate(nil)
             return
         }

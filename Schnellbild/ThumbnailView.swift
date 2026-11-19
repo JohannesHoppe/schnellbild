@@ -50,8 +50,9 @@ final class ThumbnailCache {
     /// tile's own load checks it afterwards. Not for archive entries (their
     /// date is the archive's, read off the main thread).
     func cached(for url: URL, side: CGFloat, modified: Date?) -> NSImage? {
-        guard !ArchivePath.isInside(url), let entry = cache.object(forKey: url as NSURL), entry.side >= side,
-              modified == nil || entry.modified == modified else { return nil }
+        // (the memory first: asked on every redraw of a tile, mostly for nothing)
+        guard let entry = cache.object(forKey: url as NSURL), entry.side >= side,
+              modified == nil || entry.modified == modified, !ArchivePath.isInside(url) else { return nil }
         return entry.image
     }
 
@@ -189,7 +190,7 @@ final class ThumbnailCache {
                     if let frame = outcome.image {
                         BrowserModel.testLog("tile \(name): VLC's frame after \(took()), QuickLook: \(quickLookSaid)")
                         stop(producers)
-                        return NSImage(cgImage: frame, size: NSSize(width: frame.width, height: frame.height))
+                        return NSImage(pixels: frame)
                     }
                     BrowserModel.testLog("tile \(name): VLC \(outcome) after \(took()) (try \(vlcTries)), QuickLook: \(quickLookSaid)")
                     if case .timedOut = outcome, vlcTries == 1, !Task.isCancelled {
@@ -209,12 +210,9 @@ final class ThumbnailCache {
     private static func pictureThumbnail(of url: URL, side: CGFloat) async -> NSImage? {
         let maxPixel = Int(side * NSScreen.mainBackingScale)
         return await detachedCancellable(priority: .utility) { () -> NSImage? in
-            guard !VectorPicture.isVector(url), let source = CGImageSourceCreateWithURL(url as CFURL, nil) else { return nil }
-            let options: [CFString: Any] = [kCGImageSourceCreateThumbnailFromImageAlways: true,
-                                            kCGImageSourceCreateThumbnailWithTransform: true,
-                                            kCGImageSourceThumbnailMaxPixelSize: maxPixel]
-            guard let cg = CGImageSourceCreateThumbnailAtIndex(source, 0, options as CFDictionary) else { return nil }
-            return NSImage(cgImage: cg, size: NSSize(width: cg.width, height: cg.height))
+            guard !VectorPicture.isVector(url), let source = CGImageSourceCreateWithURL(url as CFURL, nil),
+                  let cg = MediaInfo.scaledDown(source, at: 0, maxPixel: maxPixel, now: false) else { return nil }
+            return NSImage(pixels: cg)
         }
     }
 
@@ -224,9 +222,7 @@ final class ThumbnailCache {
 
     private func archiveDate(of archive: URL) async -> Date? {
         if let known = archiveDates[archive], Date().timeIntervalSince(known.read) < 2 { return known.date }
-        let date = await Blocking.run(.utility) {
-            (try? archive.resourceValues(forKeys: [.contentModificationDateKey]))?.contentModificationDate
-        }
+        let date = await Blocking.modificationDate(of: archive)
         if archiveDates.count > 256 { archiveDates.removeAll() }
         archiveDates[archive] = (date, Date())
         return date
@@ -254,14 +250,11 @@ extension ThumbnailCache {
         return await detachedCancellable(priority: .utility) { () -> NSImage? in
             if VectorPicture.isVector(url) {
                 guard let rendered = await VectorPicture.render(url, longestSide: maxPixel) else { return nil }
-                return NSImage(cgImage: rendered.0, size: NSSize(width: rendered.0.width, height: rendered.0.height))
+                return NSImage(pixels: rendered.0)
             }
-            guard let source = await MediaData.imageSource(url), !Task.isCancelled else { return nil }
-            let options: [CFString: Any] = [kCGImageSourceCreateThumbnailFromImageAlways: true,   // not the small preview a camera embeds
-                                            kCGImageSourceCreateThumbnailWithTransform: true,
-                                            kCGImageSourceThumbnailMaxPixelSize: maxPixel]
-            guard let cg = CGImageSourceCreateThumbnailAtIndex(source, 0, options as CFDictionary) else { return nil }
-            return NSImage(cgImage: cg, size: NSSize(width: cg.width, height: cg.height))
+            guard let source = await MediaData.imageSource(url), !Task.isCancelled,
+                  let cg = MediaInfo.scaledDown(source, at: 0, maxPixel: maxPixel, now: false) else { return nil }
+            return NSImage(pixels: cg)
         }
     }
 }
@@ -312,12 +305,11 @@ struct ThumbnailView: View {
             .accessibilityElement(children: .ignore)
             // The label ("name, kind") comes from the grid's cell; the UI
             // tests read the tile's state here
-            .accessibilityValue(VideoDetailView.uiTesting
-                ? "\(TileChrome.selectionLabel(isSelected || isMarked)), \(isVideo ? "video" : "image")"
-                    + (unfinished != nil ? ", unfinished" : "")
-                    + (image.map { $0.accessibilityDescription == ThumbnailCache.fileIcon ? ", file icon" : ", preview" }
-                       ?? (failed ? ", no preview" : ""))
-                : TileChrome.spokenState(marked: isMarked, failed: failed))
+            .accessibilityValue(test: "\(TileChrome.selectionLabel(isSelected || isMarked)), \(isVideo ? "video" : "image")"
+                                    + (unfinished != nil ? ", unfinished" : "")
+                                    + (image.map { $0.accessibilityDescription == ThumbnailCache.fileIcon ? ", file icon" : ", preview" }
+                                       ?? (failed ? ", no preview" : "")),
+                                spoken: TileChrome.spokenState(marked: isMarked, failed: failed))
             .task(id: TileKey(url: url, side: side, modified: modified)) { await load() }
     }
 

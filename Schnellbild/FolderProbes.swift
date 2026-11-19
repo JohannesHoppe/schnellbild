@@ -15,12 +15,6 @@ enum FolderProbes {
         return queue
     }()
 
-    private final class Once: @unchecked Sendable {
-        private let lock = NSLock()
-        private var done = false
-        func claim() -> Bool { lock.withLock { defer { done = true }; return !done } }
-    }
-
     /// The operation, sendable for the cancellation handler (it is only
     /// cancelled from there, which Operation allows from any thread).
     private final class Handle: @unchecked Sendable {
@@ -39,7 +33,7 @@ enum FolderProbes {
         let handle = Handle()
         return await withTaskCancellationHandler {
             await withCheckedContinuation { (answer: CheckedContinuation<T?, Never>) in
-                let once = Once()
+                let once = ManagedFlag()
                 let weakHandle = WeakHandle(handle)
                 handle.operation.addExecutionBlock {
                     let result = work { weakHandle.handle?.operation.isCancelled ?? true }
@@ -75,11 +69,14 @@ enum Blocking {
     }
 }
 
-/// A flag set from several threads at once.
-final class ManagedFlag: @unchecked Sendable {
-    private let lock = NSLock()
-    private var value = false
-    func set() { lock.withLock { value = true } }
-    func reset() { lock.withLock { value = false } }
-    var isSet: Bool { lock.withLock { value } }
+extension Blocking {
+    /// The modification date of `url`, read off the main thread. `fresh`:
+    /// through a new URL, since a URL keeps the values it read once.
+    static func modificationDate(of url: URL, fresh: Bool = false) async -> Date? {
+        let path = url.path
+        return await run(.utility) {
+            let file = fresh ? URL(fileURLWithPath: path) : url
+            return (try? file.resourceValues(forKeys: [.contentModificationDateKey]))?.contentModificationDate
+        }
+    }
 }

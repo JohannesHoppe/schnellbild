@@ -60,6 +60,9 @@ final class FileActionsSpy {
     var trashError: Error?
     /// Runs while an item is being trashed (a second ⌘⌫ meanwhile).
     var duringTrash: (() -> Void)?
+    /// Runs once an item was moved or renamed on disk, before the app
+    /// applies the change (FSEvents reporting it meanwhile).
+    var duringMove: (() -> Void)?
     var reported: [Error] = []
     /// Forces the "target exists" answer, e.g. to act as a case-sensitive volume.
     var conflictOverride: Bool?
@@ -89,6 +92,7 @@ final class FileActionsSpy {
                 if self.failOn.contains(from.lastPathComponent) { throw CocoaError(.fileWriteNoPermission) }
                 self.moved.append((from, to))
                 try FileActions.live.move(from, to)
+                if let during = self.duringMove { self.duringMove = nil; during() }
             },
             transfer: { from, to in
                 if let error = self.moveError { throw error }
@@ -3977,5 +3981,75 @@ final class LinkTests: XCTestCase {
         XCTAssertFalse(m.canRename(drive))
         XCTAssertFalse(m.canChange(drive))
         XCTAssertTrue(m.canChange(GridEntry(url: URL(fileURLWithPath: "/Volumes/USB/Photos", isDirectory: true), kind: .folder)))
+    }
+}
+
+/// Items found by their path in the list (a map made on the second lookup
+/// after a change), and what follows a change on disk: the folder shown
+/// moving along, what left it leaving the listing, the full view going
+/// back to the grid when what it showed went.
+@MainActor
+final class ListLookupTests: XCTestCase {
+    func testItemsAreFoundByPathAcrossChangesOfTheList() async throws {
+        let tree = try TempTree(self)
+        for name in ["a.jpg", "b.jpg", "c.jpg"] { try tree.file(name) }
+        let m = makeModel()
+        await openAndWait(m, tree.root)
+        func entry(_ name: String) -> GridEntry { m.entries.first { $0.name == name }! }
+        for name in ["c.jpg", "a.jpg", "b.jpg", "c.jpg"] {
+            XCTAssertTrue(m.select(entry(name)))
+            XCTAssertEqual(m.selectedEntry?.name, name)
+        }
+        let a = entry("a.jpg")
+        m.adopt([.moved(a.url, to: tree.root.appendingPathComponent("z.jpg"))])
+        XCTAssertEqual(m.names, ["..", "b.jpg", "c.jpg", "z.jpg"])
+        XCTAssertEqual(m.selectedEntry?.name, "c.jpg", "the selection follows its item")
+        for name in ["z.jpg", "b.jpg", "z.jpg"] {
+            XCTAssertTrue(m.select(entry(name)))
+            XCTAssertEqual(m.selectedEntry?.name, name)
+        }
+        XCTAssertFalse(m.select(a), "gone under its old path")
+        m.click(entry("b.jpg"), command: false, shift: false)
+        m.click(entry("z.jpg"), command: false, shift: true)
+        XCTAssertEqual(Set(m.actionEntries.map(\.name)), ["b.jpg", "c.jpg", "z.jpg"], "a range from its anchor, found by path")
+    }
+
+    /// Each folder's change is looked up once and serves every item in it:
+    /// what lies in a removed folder is gone, in a moved one moves, the rest stays.
+    func testChangesFoundPerFolderServeEveryItemInIt() {
+        let changes = FileChanges([.removed(URL(fileURLWithPath: "/r/gone", isDirectory: true)),
+                                   .moved(URL(fileURLWithPath: "/r/old", isDirectory: true), to: URL(fileURLWithPath: "/r/new", isDirectory: true))])
+        for _ in 0..<2 {
+            XCTAssertNil(changes.path("/r/gone"))
+            XCTAssertNil(changes.path("/r/gone/a.jpg"))
+            XCTAssertNil(changes.path("/r/gone/deep/b.jpg"))
+            XCTAssertEqual(changes.path("/r/old/a.jpg"), "/r/new/a.jpg")
+            XCTAssertEqual(changes.path("/r/old/deep/b.jpg"), "/r/new/deep/b.jpg")
+            XCTAssertEqual(changes.path("/r/kept/a.jpg"), "/r/kept/a.jpg")
+            XCTAssertEqual(changes.path("/r/gone-not.jpg"), "/r/gone-not.jpg")
+        }
+    }
+
+    func testWhatLeftTheFolderLeavesTheListingAndTheFullView() async throws {
+        let tree = try TempTree(self)
+        let sub = try tree.folder("sub")
+        let a = try tree.file("a.jpg")
+        try tree.file("b.jpg")
+        let m = makeModel()
+        await openAndWait(m, tree.root)
+        m.selectEntry(named: "b.jpg")
+        m.activateSelection()
+        XCTAssertEqual(m.mode, .detail)
+        m.adopt([.moved(a, to: sub.appendingPathComponent("a.jpg"))])
+        XCTAssertEqual(m.names, ["..", "sub", "b.jpg"], "moved into a subfolder: out of the listing")
+        XCTAssertEqual(m.mode, .detail, "the picture shown is still there")
+        XCTAssertEqual(m.selectedEntry?.name, "b.jpg")
+        m.adopt([.removed(tree.root.appendingPathComponent("b.jpg"))])
+        XCTAssertEqual(m.names, ["..", "sub"])
+        XCTAssertEqual(m.mode, .grid, "what the full view showed went: back to the grid")
+
+        let moved = tree.root.deletingLastPathComponent().appendingPathComponent("moved-\(UUID().uuidString)", isDirectory: true)
+        m.adopt([.moved(tree.root, to: moved)])
+        XCTAssertTrue(BrowserModel.samePath(m.folderURL!, moved), "the folder shown follows its own move")
     }
 }

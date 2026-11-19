@@ -161,8 +161,8 @@ final class VideoFormatReader: NSObject, MEFormatReader, @unchecked Sendable {
                 },
                 part: { index.cluster(at: $0) },
                 sampleData: nil)
-            // A track without a single frame isn't offered
-            return (0..<index.clusters.count).contains { !(source.frames($0) ?? []).isEmpty } ? source : nil
+            // A track without a frame near the start isn't offered
+            return index.hasFrames(track: number) ? source : nil
         }
         return (CMTime(seconds: index.durationSeconds, preferredTimescale: 1000), sources)
     }
@@ -295,6 +295,13 @@ final class VideoTrackReader: NSObject, METrackReader, @unchecked Sendable {
         completionHandler(info, nil)
     }
 
+    /// A cursor on the frame, or the error when its part can't be read
+    /// (again): macOS gets one or the other, never neither.
+    private func answer(_ completionHandler: ((any MESampleCursor)?, (any Error)?) -> Void, part: Int, index: Int) {
+        guard let cursor = VideoCursor(track: self, part: part, index: index) else { return completionHandler(nil, MEError(.noSamples)) }
+        completionHandler(cursor, nil)
+    }
+
     func generateSampleCursor(atPresentationTimeStamp presentationTimeStamp: CMTime,
                               completionHandler: @escaping ((any MESampleCursor)?, (any Error)?) -> Void) {
         queue.async { [self] in
@@ -305,14 +312,14 @@ final class VideoTrackReader: NSObject, METrackReader, @unchecked Sendable {
                   let frames = frames(inPart: part) else { return completionHandler(nil, MEError(.noSamples)) }
             var position = 0
             for (i, frame) in frames.presentation.enumerated() where frames.frames[frame].time <= target { position = i }
-            completionHandler(VideoCursor(track: self, part: part, index: frames.presentation[position]), nil)
+            answer(completionHandler, part: part, index: frames.presentation[position])
         }
     }
 
     func generateSampleCursorAtFirstSampleInDecodeOrder(completionHandler: @escaping ((any MESampleCursor)?, (any Error)?) -> Void) {
         queue.async { [self] in
             guard let part = firstPart() else { return completionHandler(nil, MEError(.noSamples)) }
-            completionHandler(VideoCursor(track: self, part: part, index: 0), nil)
+            answer(completionHandler, part: part, index: 0)
         }
     }
 
@@ -321,7 +328,7 @@ final class VideoTrackReader: NSObject, METrackReader, @unchecked Sendable {
             guard let part = part(from: source.partCount - 1, step: -1), let frames = frames(inPart: part) else {
                 return completionHandler(nil, MEError(.noSamples))
             }
-            completionHandler(VideoCursor(track: self, part: part, index: frames.frames.count - 1), nil)
+            answer(completionHandler, part: part, index: frames.frames.count - 1)
         }
     }
 }
@@ -329,44 +336,55 @@ final class VideoTrackReader: NSObject, METrackReader, @unchecked Sendable {
 /// A position on one frame (a part and the frame's place in it, decode
 /// order). macOS steps it, and reads the frame's bytes itself where they lie
 /// in one piece (`sampleLocation`), else takes them from
-/// `loadSampleBufferContainingSamples`.
+/// `loadSampleBufferContainingSamples`. Steps and seeks run on the track's
+/// queue; macOS reads the getters from its own threads, so the position is
+/// one value behind a lock, worked out in a copy and stored whole.
 final class VideoCursor: NSObject, MESampleCursor, @unchecked Sendable {
+    /// The part, its frames and the frame's index in them (always in range).
+    struct Position {
+        var part: Int
+        var index: Int
+        var frames: VideoTrackReader.PartFrames
+        var frame: IndexedFrame { frames.frames[index] }
+    }
+
     let track: VideoTrackReader
-    private(set) var part: Int
-    private(set) var index: Int
-    private var frames: VideoTrackReader.PartFrames
+    private let lock = NSLock()
+    private var stored: Position
+    private var position: Position {
+        get { lock.withLock { stored } }
+        set { lock.withLock { stored = newValue } }
+    }
 
     init?(track: VideoTrackReader, part: Int, index: Int) {
         guard let frames = track.frames(inPart: part), frames.frames.indices.contains(index) else { return nil }
         self.track = track
-        self.part = part
-        self.index = index
-        self.frames = frames
+        stored = Position(part: part, index: index, frames: frames)
     }
 
     private init(copying other: VideoCursor) {
         track = other.track
-        part = other.part
-        index = other.index
-        frames = other.frames
+        stored = other.position
     }
 
     func copy(with zone: NSZone? = nil) -> Any { VideoCursor(copying: self) }
 
-    private var frame: IndexedFrame { frames.frames[index] }
     private func time(_ value: Int64) -> CMTime { CMTime(value: value, timescale: track.timescale) }
+    private func presentationTime(_ p: Position) -> CMTime { time(p.frame.time) }
+    private func decodeTime(_ p: Position) -> CMTime { time(p.frames.decodeTimes[p.index]) }
 
-    var presentationTimeStamp: CMTime { time(frame.time) }
-    var decodeTimeStamp: CMTime { time(frames.decodeTimes[index]) }
+    var presentationTimeStamp: CMTime { presentationTime(position) }
+    var decodeTimeStamp: CMTime { decodeTime(position) }
     var currentSampleDuration: CMTime { time(track.source.frameDuration) }
     var currentSampleFormatDescription: CMFormatDescription? { track.source.format }
 
     var syncInfo: AVSampleCursorSyncInfo {
-        AVSampleCursorSyncInfo(sampleIsFullSync: ObjCBool(frame.keyframe), sampleIsPartialSync: false, sampleIsDroppable: false)
+        AVSampleCursorSyncInfo(sampleIsFullSync: ObjCBool(position.frame.keyframe), sampleIsPartialSync: false, sampleIsDroppable: false)
     }
 
     func sampleLocation() throws -> MESampleLocation {
         guard track.source.sampleData == nil else { throw MEError(.locationNotAvailable) }
+        let frame = position.frame
         return MESampleLocation(byteSource: track.byteSource,
                                 sampleLocation: AVSampleCursorStorageRange(offset: frame.offset, length: Int64(frame.length)))
     }
@@ -374,9 +392,10 @@ final class VideoCursor: NSObject, MESampleCursor, @unchecked Sendable {
     /// The frame's data gathered by the container, one frame per buffer.
     func loadSampleBufferContainingSamples(to endSampleCursor: (any MESampleCursor)?,
                                            completionHandler: @escaping (CMSampleBuffer?, (any Error)?) -> Void) {
-        let frame = frame
-        let timing = CMSampleTimingInfo(duration: currentSampleDuration, presentationTimeStamp: presentationTimeStamp,
-                                        decodeTimeStamp: decodeTimeStamp)
+        let now = position
+        let frame = now.frame
+        let timing = CMSampleTimingInfo(duration: currentSampleDuration, presentationTimeStamp: presentationTime(now),
+                                        decodeTimeStamp: decodeTime(now))
         let track = track
         track.queue.async {
             do {
@@ -414,85 +433,96 @@ final class VideoCursor: NSObject, MESampleCursor, @unchecked Sendable {
         return sample
     }
 
-    /// Moves to another part's frames (the next one with frames that way).
-    private func move(toPart target: Int, step: Int) -> Bool {
+    /// Moves `p` to another part's frames (the next one with frames that
+    /// way); its index is left for the caller to set.
+    private func move(_ p: inout Position, toPart target: Int, step: Int) -> Bool {
         guard let found = track.part(from: target, step: step), let newFrames = track.frames(inPart: found) else { return false }
-        part = found
-        frames = newFrames
+        p.part = found
+        p.frames = newFrames
         return true
     }
 
     func stepInDecodeOrder(by stepCount: Int64, completionHandler: @escaping (Int64, (any Error)?) -> Void) {
         track.queue.async { [self] in
+            var p = position
             var left = stepCount, done: Int64 = 0
             while left != 0 {
                 if left > 0 {
-                    if index + 1 < frames.frames.count { index += 1 }
-                    else if move(toPart: part + 1, step: 1) { index = 0 }
+                    if p.index + 1 < p.frames.frames.count { p.index += 1 }
+                    else if move(&p, toPart: p.part + 1, step: 1) { p.index = 0 }
                     else { break }
                     left -= 1; done += 1
                 } else {
-                    if index > 0 { index -= 1 }
-                    else if move(toPart: part - 1, step: -1) { index = frames.frames.count - 1 }
+                    if p.index > 0 { p.index -= 1 }
+                    else if move(&p, toPart: p.part - 1, step: -1) { p.index = p.frames.frames.count - 1 }
                     else { break }
                     left += 1; done -= 1
                 }
             }
+            position = p
             completionHandler(done, nil)
         }
     }
 
     func stepInPresentationOrder(by stepCount: Int64, completionHandler: @escaping (Int64, (any Error)?) -> Void) {
         track.queue.async { [self] in
+            var p = position
             var left = stepCount, done: Int64 = 0
-            var position = frames.positionInPresentation[index]
+            var shown = p.frames.positionInPresentation[p.index]
             while left != 0 {
                 if left > 0 {
-                    if position + 1 < frames.presentation.count { position += 1 }
-                    else if move(toPart: part + 1, step: 1) { position = 0 }
+                    if shown + 1 < p.frames.presentation.count { shown += 1 }
+                    else if move(&p, toPart: p.part + 1, step: 1) { shown = 0 }
                     else { break }
                     left -= 1; done += 1
                 } else {
-                    if position > 0 { position -= 1 }
-                    else if move(toPart: part - 1, step: -1) { position = frames.presentation.count - 1 }
+                    if shown > 0 { shown -= 1 }
+                    else if move(&p, toPart: p.part - 1, step: -1) { shown = p.frames.presentation.count - 1 }
                     else { break }
                     left += 1; done -= 1
                 }
-                index = frames.presentation[position]
+                p.index = p.frames.presentation[shown]
             }
+            position = p
             completionHandler(done, nil)
         }
     }
 
-    /// To the last frame at or before `target` (in decode or presentation
-    /// time); pinned when the time lies outside the track.
-    private func seek(to target: Int64, byDecodeTime: Bool) -> Bool {
+    /// Moves `p` to the last frame at or before `target` (in decode or
+    /// presentation time); pinned when the time lies outside the track.
+    private func seek(_ p: inout Position, to target: Int64, byDecodeTime: Bool) -> Bool {
         let first = track.firstPart() ?? 0
         let start = track.part(from: track.source.part(target), step: -1) ?? first
-        guard move(toPart: start, step: -1) || move(toPart: first, step: 1) else { return true }
-        let times = byDecodeTime ? frames.decodeTimes : frames.presentation.map { frames.frames[$0].time }
-        var position = 0
-        for (i, t) in times.enumerated() where t <= target { position = i }
-        index = byDecodeTime ? position : frames.presentation[position]
+        var moved = p
+        guard move(&moved, toPart: start, step: -1) || move(&moved, toPart: first, step: 1) else { return true }
+        let times = byDecodeTime ? moved.frames.decodeTimes : moved.frames.presentation.map { moved.frames.frames[$0].time }
+        var shown = 0
+        for (i, t) in times.enumerated() where t <= target { shown = i }
+        moved.index = byDecodeTime ? shown : moved.frames.presentation[shown]
+        p = moved
         let pinnedLow = target < (times.first ?? target)
         let lastPart = track.part(from: track.source.partCount - 1, step: -1)
-        let pinnedHigh = part == lastPart && target > (times.max() ?? target).saturatingAdd(track.source.frameDuration)
+        let pinnedHigh = p.part == lastPart && target > (times.max() ?? target).saturatingAdd(track.source.frameDuration)
         return pinnedLow || pinnedHigh
     }
 
     func stepByDecodeTime(_ deltaDecodeTime: CMTime, completionHandler: @escaping (CMTime, Bool, (any Error)?) -> Void) {
         track.queue.async { [self] in
-            let goal = CMTimeConvertScale(CMTimeAdd(decodeTimeStamp, deltaDecodeTime), timescale: track.timescale, method: .default).value
-            let pinned = seek(to: goal, byDecodeTime: true)
-            completionHandler(decodeTimeStamp, pinned, nil)
+            var p = position
+            let goal = CMTimeConvertScale(CMTimeAdd(decodeTime(p), deltaDecodeTime), timescale: track.timescale, method: .default).value
+            let pinned = seek(&p, to: goal, byDecodeTime: true)
+            position = p
+            completionHandler(decodeTime(p), pinned, nil)
         }
     }
 
     func stepByPresentationTime(_ deltaPresentationTime: CMTime, completionHandler: @escaping (CMTime, Bool, (any Error)?) -> Void) {
         track.queue.async { [self] in
-            let goal = CMTimeConvertScale(CMTimeAdd(presentationTimeStamp, deltaPresentationTime), timescale: track.timescale, method: .default).value
-            let pinned = seek(to: goal, byDecodeTime: false)
-            completionHandler(presentationTimeStamp, pinned, nil)
+            var p = position
+            let goal = CMTimeConvertScale(CMTimeAdd(presentationTime(p), deltaPresentationTime), timescale: track.timescale, method: .default).value
+            let pinned = seek(&p, to: goal, byDecodeTime: false)
+            position = p
+            completionHandler(presentationTime(p), pinned, nil)
         }
     }
 }

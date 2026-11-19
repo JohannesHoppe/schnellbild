@@ -21,8 +21,6 @@ public struct GlobeView<Overlay: View>: View {
     @State private var showsClouds: Bool
     let sunDate: Date?
     @State private var link = MapLink()
-    @State private var attributionCollapsed = false
-    @Environment(\.colorScheme) private var colorScheme
 
     public init(camera: Binding<MapCamera>, markers: [MapMarker] = [], interactive: Bool = true,
                 lighting: Bool = false, exaggerated: Bool = true, clouds: Bool = true, sunDate: Date? = nil,
@@ -39,82 +37,30 @@ public struct GlobeView<Overlay: View>: View {
     }
 
     public var body: some View {
-        GeometryReader { geometry in
-            let size = geometry.size
-            let proxy = MapProxy(viewport: MapViewport(camera: camera, size: size), link: link,
-                                 globe: GlobeProjection(camera: camera, size: size))
-            ZStack(alignment: .topLeading) {
-                GlobeSurface(camera: $camera, interactive: interactive, lighting: lighting, exaggerated: exaggerated,
-                             clouds: showsClouds ? 0.65 : 0, sunDate: sunDate, renderer: renderer, link: link, keepFree: keepFree(in: size),
-                             onInteraction: { withAnimation(Motion.animation) { attributionCollapsed = true } })
-                markerLayer(proxy)
-                overlay(proxy)
-            }
-            .frame(width: size.width, height: size.height)
-            .overlay(alignment: .bottomTrailing) {
-                MapAttribution(collapsed: $attributionCollapsed).padding(6)
-            }
-            .overlay(alignment: .topTrailing) {
-                if interactive { buttons.padding(8) }
-            }
-            .clipped()
-        }
-        .task {
-            try? await Task.sleep(for: .seconds(5))
-            withAnimation(Motion.animation) { attributionCollapsed = true }
-        }
+        MapChrome(camera: camera, markers: markers, interactive: interactive, link: link, onGlobe: true, buttonsHeight: 150,
+                  surface: { keepFree, onInteraction in
+                      GlobeSurface(camera: $camera, interactive: interactive, lighting: lighting, exaggerated: exaggerated,
+                                   clouds: showsClouds ? 0.65 : 0, sunDate: sunDate, renderer: renderer, link: link,
+                                   keepFree: keepFree, onInteraction: onInteraction)
+                  },
+                  buttons: { buttons }, overlay: overlay)
     }
 
-    private func keepFree(in size: CGSize) -> [CGRect] {
-        var boxes = [CGRect(x: size.width - 130, y: size.height - 30, width: 130, height: 30)]
-        if interactive { boxes.append(CGRect(x: size.width - 44, y: 0, width: 44, height: 150)) }
-        return boxes
-    }
-
-    private func markerLayer(_ proxy: MapProxy) -> some View {
-        let palette = MapPalette.appearance(dark: colorScheme == .dark)
-        return ForEach(markers.filter { proxy.isVisible($0.coordinate) }) { marker in
-            Circle()
-                .fill(Color(cgColor: palette.accent.cgColor))
-                .overlay(Circle().stroke(Color(cgColor: (palette.isDark ? MapColor("#121212") : MapColor("#ffffff")).cgColor), lineWidth: 2))
-                .frame(width: 12, height: 12)
-                .position(proxy.point(for: marker.coordinate))
-        }
-        .allowsHitTesting(false)
-    }
-
-    /// A button of the map's groups; `title` is its help and VoiceOver label
-    /// (the label "title:" is what LocalizationTests' scanner reads).
-    private func button(_ symbol: String, title: LocalizedStringKey, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            Image(systemName: symbol).frame(width: 28, height: 26).contentShape(Rectangle())
-        }
-        .help(Text(title))
-        .accessibilityLabel(Text(title))
-    }
-
+    /// Below + / −: the tilt, day and night, the clouds, the relief.
     private var buttons: some View {
-        VStack(spacing: 8) {
-            VStack(spacing: 0) {
-                button("plus", title: "Zoom in") { link.globe?.zoom(by: 1) }
-                Divider().frame(width: 20)
-                button("minus", title: "Zoom out") { link.globe?.zoom(by: -1) }
+        VStack(spacing: 0) {
+            mapButton(camera.pitch > 1 ? "view.2d" : "view.3d", title: camera.pitch > 1 ? "Look straight down" : "Tilt the view") {
+                link.globe?.toggleTilt()
             }
-            .modifier(MapButtonGroup())
-            VStack(spacing: 0) {
-                button(camera.pitch > 1 ? "view.2d" : "view.3d", title: camera.pitch > 1 ? "Look straight down" : "Tilt the view") {
-                    link.globe?.toggleTilt()
-                }
-                Divider().frame(width: 20)
-                button(lighting ? "sun.max.fill" : "sun.max", title: lighting ? "Hide day and night" : "Show day and night") { lighting.toggle() }
-                Divider().frame(width: 20)
-                button(showsClouds ? "cloud.fill" : "cloud", title: showsClouds ? "Hide the clouds" : "Show the clouds") { showsClouds.toggle() }
-                Divider().frame(width: 20)
-                button(exaggerated ? "mountain.2.fill" : "mountain.2",
-                       title: exaggerated ? "Show the relief at true scale" : "Exaggerate the relief") { exaggerated.toggle() }
-            }
-            .modifier(MapButtonGroup())
+            Divider().frame(width: 20)
+            mapButton(lighting ? "sun.max.fill" : "sun.max", title: lighting ? "Hide day and night" : "Show day and night") { lighting.toggle() }
+            Divider().frame(width: 20)
+            mapButton(showsClouds ? "cloud.fill" : "cloud", title: showsClouds ? "Hide the clouds" : "Show the clouds") { showsClouds.toggle() }
+            Divider().frame(width: 20)
+            mapButton(exaggerated ? "mountain.2.fill" : "mountain.2",
+                      title: exaggerated ? "Show the relief at true scale" : "Exaggerate the relief") { exaggerated.toggle() }
         }
+        .modifier(MapButtonGroup())
     }
 }
 
@@ -125,17 +71,6 @@ extension GlobeView where Overlay == EmptyView {
         self.init(camera: camera, markers: markers, interactive: interactive, lighting: lighting, exaggerated: exaggerated,
                   clouds: clouds, sunDate: sunDate,
                   renderer: renderer) { _ in EmptyView() }
-    }
-}
-
-/// The look of the map's button groups: small, on material, outlined.
-struct MapButtonGroup: ViewModifier {
-    func body(content: Content) -> some View {
-        content
-            .buttonStyle(.plain)
-            .font(.system(size: 12, weight: .semibold))
-            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 7))
-            .overlay(RoundedRectangle(cornerRadius: 7).stroke(.separator, lineWidth: 0.5))
     }
 }
 

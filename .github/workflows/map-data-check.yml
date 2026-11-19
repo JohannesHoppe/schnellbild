@@ -6,7 +6,7 @@ name: Map data check
 
 on:
   push:
-    paths: [ 'Scripts/build_map_data.py', 'Scripts/map_data.env', '.github/workflows/map-data-check.yml' ]
+    paths: [ 'Scripts/build_map_data.py', 'Scripts/_build_common.py', 'Scripts/map_data.env', '.github/workflows/map-data-check.yml' ]
   workflow_dispatch:
 
 permissions:

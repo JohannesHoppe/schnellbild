@@ -142,9 +142,26 @@ final class MatroskaIndex: @unchecked Sendable {
             default: try reader.skip(element)
             }
         }
-        lock.withLock { framesByCluster[index] = frames }
+        lock.withLock {
+            if framesByCluster.count >= Self.cachedClusters { framesByCluster.removeAll() }
+            framesByCluster[index] = frames
+        }
         return frames[track] ?? []
     }
+
+    /// Whether the track has a frame in the first `clusterLimit` clusters
+    /// (those that can be read): deciding whether to offer a track reads
+    /// no more than these, however long the file.
+    func hasFrames(track: UInt64, clusterLimit: Int = MatroskaIndex.clustersLookedAt) -> Bool {
+        (0..<min(clusters.count, max(0, clusterLimit))).contains { !((try? frames(inCluster: $0, track: track)) ?? []).isEmpty }
+    }
+
+    /// How many clusters' frame lists are kept at most.
+    static let cachedClusters = 64
+    /// How many clusters `hasFrames` reads at most.
+    static let clustersLookedAt = 16
+    /// How many clusters' frame lists are kept now.
+    var cachedClusterCount: Int { lock.withLock { framesByCluster.count } }
 
     /// The cluster that holds `time` (the last one starting at or before it).
     func cluster(at time: Int64) -> Int {

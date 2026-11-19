@@ -267,7 +267,7 @@ private struct WindowView: View {
         Self.monitorsInstalled = true
         ModifierClicks.start()
         // For the UI tests: when the mouse went down and up (a drag's end), next to the keys
-        if VideoDetailView.uiTesting, ProcessInfo.processInfo.arguments.contains(where: { $0.hasPrefix("--test-log=") }) {
+        if TestSwitches.testLog != nil {
             _ = NSEvent.addLocalMonitorForEvents(matching: [.leftMouseDown, .leftMouseUp]) { event in
                 BrowserModel.testLog("\(Date().timeIntervalSince1970) mouse \(event.type == .leftMouseDown ? "down" : "up") "
                                      + "clicks=\(event.clickCount) window=\(event.window.map { String(describing: type(of: $0)) } ?? "nil")")
@@ -339,8 +339,7 @@ private struct WindowView: View {
                 // ⌃⌘F: full screen, as the system's shortcut; other ⌃
                 // combinations are the system's.
                 // (by the letter on the key, as the menus read it, on any layout)
-                let plain = event.charactersIgnoringModifiers?.lowercased() ?? ""
-                let letter = plain.unicodeScalars.allSatisfy(\.isASCII) ? plain : (LatinKeys.character(for: code, shift: false) ?? plain)
+                let letter = LatinKeys.letter(of: event)
                 if control, command, letter == "f" { model.toggleFullScreen(); return true }
                 // The keys as set in Settings → Keyboard: a key given to an
                 // action carries it out, a key taken from one does nothing;
@@ -379,12 +378,8 @@ private struct WindowView: View {
                 // The window's keys first (D, Tab, F5, F6), then the active pane's
                 if window.handleWindowKey(key, command: command, control: false,
                                           shift: event.modifierFlags.contains(.shift), textEditing: typing) { return true }
-                if option {
-                    return model.handleKey(key, command: command, shift: event.modifierFlags.contains(.shift),
-                                           option: true, textEditing: typing, repeating: event.isARepeat)
-                }
                 return model.handleKey(key, command: command, shift: event.modifierFlags.contains(.shift),
-                                       textEditing: typing, repeating: event.isARepeat)
+                                       option: option, textEditing: typing, repeating: event.isARepeat)
             }
             // For the UI tests: where each key went
             BrowserModel.testLog("\(Date().timeIntervalSince1970) key \(chars.debugDescription) handled \(String(format: "%.2f", ProcessInfo.processInfo.systemUptime - event.timestamp)) s after it was typed consumed=\(consume) window=\(event.window.map { String(describing: type(of: $0)) } ?? "nil") "
@@ -415,9 +410,7 @@ extension ContentView {
     static func isUndoKey(_ event: NSEvent) -> Bool {
         let flags = event.modifierFlags.intersection([.command, .shift, .control, .option])
         guard flags == .command || flags == [.command, .shift] else { return false }
-        let plain = event.charactersIgnoringModifiers?.lowercased() ?? ""
-        let letter = plain.unicodeScalars.allSatisfy(\.isASCII) ? plain : (LatinKeys.character(for: event.keyCode, shift: false) ?? plain)
-        return letter == "z"
+        return LatinKeys.letter(of: event) == "z"
     }
 
     /// Keys that go straight to the text field being edited, ahead of the
@@ -616,26 +609,25 @@ struct PaneView: View {
             statusRow(path: false, wrap: false)
             statusRow(path: false, wrap: true)
         }
-        .font(.caption)
-        .padding(.horizontal, 12)
-        .padding(.vertical, 6)
-        .background(.bar)
+        .statusBarStyle()
     }
 
     /// The full view of a file shown alone (`accessLimited`): the status
     /// bar's note and its "Allow Access…".
     private var accessLimitedBar: some View {
         HStack(spacing: 8) {
-            Text("Only the file you opened is shown here.").foregroundStyle(.secondary)
-            Button("Allow Access…") { model.allowAccess() }
-                .buttonStyle(.link)
-                .accessibilityIdentifier("allowAccess")
+            accessLimitedNote
             Spacer(minLength: 0)
         }
-        .font(.caption)
-        .padding(.horizontal, 12)
-        .padding(.vertical, 6)
-        .background(.bar)
+        .statusBarStyle()
+    }
+
+    /// Only the file dropped can be read: why, and the way to its folder.
+    @ViewBuilder private var accessLimitedNote: some View {
+        Text("Only the file you opened is shown here.").foregroundStyle(.secondary)
+        Button("Allow Access…") { model.allowAccess() }
+            .buttonStyle(.link)
+            .accessibilityIdentifier("allowAccess")
     }
 
     private func statusRow(path: Bool, wrap: Bool) -> some View {
@@ -673,12 +665,7 @@ struct PaneView: View {
                     .foregroundStyle(.secondary).lineLimit(1).fixedSize()
                     .accessibilityIdentifier("locationProgress")
             }
-            if model.accessLimited {
-                Text("Only the file you opened is shown here.").foregroundStyle(.secondary)
-                Button("Allow Access…") { model.allowAccess() }
-                    .buttonStyle(.link)
-                    .accessibilityIdentifier("allowAccess")
-            }
+            if model.accessLimited { accessLimitedNote }
             if path {
                 Text(model.folderURL?.path ?? "")
                     .foregroundStyle(.tertiary)
@@ -1104,6 +1091,17 @@ struct AdjustmentsView: View {
 /// What a key types on the user's Latin layout (the one macOS uses for
 /// shortcuts while a Cyrillic or Greek layout is active).
 enum LatinKeys {
+    /// The letter on the key, as the menus read it: what the layout types
+    /// when it is Latin, else what the user's Latin layout types there.
+    static func letter(_ typed: String, keyCode: UInt16) -> String {
+        typed.unicodeScalars.allSatisfy(\.isASCII) ? typed : (character(for: keyCode, shift: false) ?? typed)
+    }
+
+    /// `letter` of the key typed, without its modifiers, in lower case.
+    static func letter(of event: NSEvent) -> String {
+        letter(event.charactersIgnoringModifiers?.lowercased() ?? "", keyCode: event.keyCode)
+    }
+
     static func character(for keyCode: UInt16, shift: Bool) -> String? {
         guard let source = TISCopyCurrentASCIICapableKeyboardLayoutInputSource()?.takeRetainedValue(),
               let raw = TISGetInputSourceProperty(source, kTISPropertyUnicodeKeyLayoutData) else { return nil }
@@ -1144,9 +1142,8 @@ struct VideoProgressBar: View {
                 .accessibilityIdentifier("videoProgress")
                 // The UI tests read the number as "42 %" in every language, as the
                 // label: XCUITest gets no value from a group like this one
-                .accessibilityLabel(VideoDetailView.uiTesting ? "\(Int((progress * 100).rounded())) %" : String(localized: "Played"))
-                .accessibilityValue(VideoDetailView.uiTesting ? ""
-                                    : min(max(progress, 0), 1).formatted(.percent.precision(.fractionLength(0))))
+                .accessibilityLabel(test: "\(Int((progress * 100).rounded())) %", spoken: String(localized: "Played"))
+                .accessibilityValue(test: "", spoken: min(max(progress, 0), 1).formatted(.percent.precision(.fractionLength(0))))
                 // The time left, once the length is known
                 if let length = model.activePlayer?.lengthSeconds, model.activePlayer?.progress != nil {
                     let left = "−" + Self.clock(length * (1 - min(max(progress, 0), 1)))
@@ -1156,7 +1153,7 @@ struct VideoProgressBar: View {
                         .accessibilityIdentifier("videoTimeLeft")
                         // UI tests: where the player stands, with the app's clock at that
                         // moment, so a test measures the speed without its own delays
-                        .accessibilityLabel(VideoDetailView.uiTesting ? Self.playerClock(model.activePlayer?.playedSeconds) : left)
+                        .accessibilityLabel(test: Self.playerClock(model.activePlayer?.playedSeconds), spoken: left)
                 }
             }
         }
@@ -1227,54 +1224,80 @@ struct ShortcutLabel: View {
 struct VolumeDisplay: View {
     /// How long it stays; UI tests (`--hold-volume-display`, the README
     /// screenshots) keep it long enough to photograph.
-    static let shownFor: Duration = VideoDetailView.uiTesting
-        && ProcessInfo.processInfo.arguments.contains("--hold-volume-display") ? .seconds(15) : .seconds(1.2)
+    static let shownFor: Duration = TestSwitches.has("--hold-volume-display") ? .seconds(15) : .seconds(1.2)
     @EnvironmentObject var model: BrowserModel
-    @State private var shown = false
+
+    var body: some View {
+        BriefNotice(trigger: model.volumeChange, animation: .easeOut(duration: 0.15)) { _ in
+            HStack(spacing: 10) {
+                Image(systemName: model.volume == 0 ? "speaker.slash.fill"
+                      : model.volume < 0.5 ? "speaker.wave.1.fill" : "speaker.wave.3.fill")
+                    .font(.title2)
+                    .frame(width: 30)
+                GeometryReader { geo in
+                    ZStack(alignment: .leading) {
+                        Capsule().fill(Color.primary.opacity(0.18))
+                        Capsule().fill(Color.primary.opacity(0.8)).frame(width: geo.size.width * model.volume)
+                    }
+                }
+                .frame(width: 160, height: 6)
+                Text(verbatim: "\(Int((model.volume * 100).rounded())) %")
+                    .monospacedDigit()
+                    .frame(width: 48, alignment: .trailing)
+            }
+            .noticePlate()
+            .accessibilityIdentifier("volumeDisplay")
+                // The UI tests read "volume 80 %" in every language, as the label
+            .accessibilityLabel(test: "volume \(Int((model.volume * 100).rounded())) %", spoken: String(localized: "Volume"))
+            .accessibilityValue(test: "", spoken: model.volume.formatted(.percent.precision(.fractionLength(0))))
+        }
+    }
+}
+
+/// What a key just changed (the volume, the speed, a track), shown a
+/// moment (`VolumeDisplay.shownFor`); each new `trigger` shows it again.
+struct BriefNotice<Trigger: Equatable, Content: View>: View {
+    let trigger: Trigger?
+    let animation: Animation?
+    @ViewBuilder let content: (Trigger) -> Content
+    @State private var shown: Trigger?
     @State private var hide: Task<Void, Never>?
 
     var body: some View {
         ZStack {
-            if shown {
-                HStack(spacing: 10) {
-                    Image(systemName: model.volume == 0 ? "speaker.slash.fill"
-                          : model.volume < 0.5 ? "speaker.wave.1.fill" : "speaker.wave.3.fill")
-                        .font(.title2)
-                        .frame(width: 30)
-                    GeometryReader { geo in
-                        ZStack(alignment: .leading) {
-                            Capsule().fill(Color.primary.opacity(0.18))
-                            Capsule().fill(Color.primary.opacity(0.8)).frame(width: geo.size.width * model.volume)
-                        }
-                    }
-                    .frame(width: 160, height: 6)
-                    Text(verbatim: "\(Int((model.volume * 100).rounded())) %")
-                        .monospacedDigit()
-                        .frame(width: 48, alignment: .trailing)
-                }
-                .padding(.horizontal, 18)
-                .padding(.vertical, 12)
-                .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 14))
-                .transition(.opacity)
-                .accessibilityElement(children: .ignore)
-                .accessibilityIdentifier("volumeDisplay")
-                // The UI tests read "volume 80 %" in every language, as the label
-                .accessibilityLabel(VideoDetailView.uiTesting ? "volume \(Int((model.volume * 100).rounded())) %" : String(localized: "Volume"))
-                .accessibilityValue(VideoDetailView.uiTesting ? ""
-                                    : model.volume.formatted(.percent.precision(.fractionLength(0))))
+            if let shown {
+                content(shown).transition(.opacity)
             }
         }
-        .animation(.easeOut(duration: 0.15), value: shown)
-        .onChange(of: model.volumeChange) { _, change in
-            guard change != nil else { return }
-            shown = true
+        .animation(animation, value: shown)
+        .onChange(of: trigger) { _, new in
+            guard let new else { return }
+            shown = new
             hide?.cancel()
             hide = Task { @MainActor in
-                try? await Task.sleep(for: Self.shownFor)
+                try? await Task.sleep(for: VolumeDisplay.shownFor)
                 guard !Task.isCancelled else { return }
-                shown = false
+                shown = nil
             }
         }
+    }
+}
+
+extension View {
+    /// The status bar's look, also the bar of a file shown alone.
+    func statusBarStyle() -> some View {
+        font(.caption)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 6)
+            .background(.bar)
+    }
+
+    /// A `BriefNotice`'s plate: material behind it, one element for VoiceOver.
+    func noticePlate() -> some View {
+        padding(.horizontal, 18)
+            .padding(.vertical, 12)
+            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 14))
+            .accessibilityElement(children: .ignore)
     }
 }
 
@@ -1397,9 +1420,9 @@ private struct SearchModePicker: View {
               : model.searchMode == .matchingCase ? "Match case" : "Regular expression")
         .accessibilityLabel("Search mode")
         // The UI tests read the mode's name
-        .accessibilityValue(VideoDetailView.uiTesting ? model.searchMode.rawValue
-                            : model.searchMode == .ignoringCase ? String(localized: "Ignore case")
-                            : model.searchMode == .matchingCase ? String(localized: "Match case") : String(localized: "Regular expression"))
+        .accessibilityValue(test: model.searchMode.rawValue,
+                            spoken: model.searchMode == .ignoringCase ? String(localized: "Ignore case")
+                                : model.searchMode == .matchingCase ? String(localized: "Match case") : String(localized: "Regular expression"))
         .accessibilityIdentifier("searchMode")
     }
 }

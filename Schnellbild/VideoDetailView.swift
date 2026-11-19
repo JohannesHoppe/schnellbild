@@ -1,8 +1,46 @@
 import SwiftUI
 import AVKit
 import AVFoundation
+import Combine
 import VLCFrames
 import UniformTypeIdentifiers
+
+/// A download's size, as it grows ("x.mp4.part": the full view, the
+/// Inspector, an archive shown while it downloads).
+enum DownloadSize {
+    /// nil: the file is gone.
+    nonisolated static func of(_ url: URL) -> Int64? {
+        var info = stat()
+        return stat(url.path, &info) == 0 ? Int64(info.st_size) : nil
+    }
+
+    /// The size read off the main thread at once and then every `interval`,
+    /// each reading handed to `reading` until it returns false or the task
+    /// is cancelled.
+    @MainActor
+    static func watch(_ url: URL, every interval: Duration, _ reading: @MainActor (Int64?) async -> Bool) async {
+        while !Task.isCancelled {
+            let size = await Blocking.run(.utility) { of(url) }
+            guard !Task.isCancelled, await reading(size) else { return }
+            try? await Task.sleep(for: interval)
+        }
+    }
+}
+
+/// The first value of `object`'s `key` that `accepted` takes, the current one
+/// included, as KVO reports it (AVFoundation's item status, its tracks),
+/// looked at on the main thread; nil after `limit` or when the task is cancelled.
+@MainActor
+func firstObserved<Object: NSObject, Value>(_ object: Object, _ key: KeyPath<Object, Value>, within limit: Duration,
+                                            where accepted: @escaping @MainActor (Value) -> Bool) async -> Value? {
+    let seconds = Double(limit.components.seconds) + Double(limit.components.attoseconds) / 1e18
+    for await value in object.publisher(for: key, options: [.initial, .new]).receive(on: DispatchQueue.main)
+        .first(where: { value in MainActor.assumeIsolated { accepted(value) } })
+        .timeout(.seconds(seconds), scheduler: DispatchQueue.main).values {
+        return value
+    }
+    return nil
+}
 
 /// Full-size view for videos. Native formats (MP4/MOV/M4V …) play through AVKit
 /// with autoplay, under the app's own control bar (`VideoControlBar`, both
@@ -46,14 +84,14 @@ struct VideoDetailView: View {
     /// VLC reports).
     private var accessibilityText: String {
         var text = "zoom \(Int((model.zoom * 100).rounded())) %, rotation \(Int(model.rotation))°"
-        if Self.uiTesting {
+        if TestSwitches.on {
             text += ", " + Self.describe(model.activePlayer?.tracks ?? model.videoTracks, speed: model.playbackSpeed)
             // What the player itself has (the dual pane's tests: the other pane's player follows)
             if let volume = model.activePlayer?.playerVolume { text += ", player volume \(Int((volume * 100).rounded())) %" }
             if let speed = model.activePlayer?.playerSpeed { text += ", player speed \(speed)" }
         }
         if !vlcDiagnostics.isEmpty { text += ", \(vlcDiagnostics)" }
-        if Self.uiTesting, !takenOver.isEmpty { text += ", taken over from AVKit: \(takenOver)" }
+        if TestSwitches.on, !takenOver.isEmpty { text += ", taken over from AVKit: \(takenOver)" }
         return text
     }
 
@@ -109,7 +147,7 @@ struct VideoDetailView: View {
         .accessibilityLabel(accessibilityText)
         .task(id: vlcControl.map(ObjectIdentifier.init)) {
             vlcDiagnostics = ""
-            guard Self.uiTesting, let control = vlcControl else { return }
+            guard TestSwitches.on, let control = vlcControl else { return }
             while !Task.isCancelled {
                 vlcDiagnostics = control.diagnostics()
                 try? await Task.sleep(for: .seconds(1))
@@ -201,7 +239,8 @@ struct VideoDetailView: View {
                 model.activePlayerURL = url
                 await noteFile(url)
                 // VLC knows the size once the video plays: an AVI inside an
-                // archive on a share may take long to open
+                // archive on a share may take long to open (asked: VLCKit
+                // reports no size)
                 var waited = 0.0
                 while !Task.isCancelled {
                     if let size = control.videoSize { videoSize = size; break }
@@ -228,10 +267,12 @@ struct VideoDetailView: View {
                     videoSize = CGSize(width: abs(turned.width), height: abs(turned.height))
                 }
                 // AVFoundation gives up on it (a download cut off, data it
-                // can't read or decode): VLC goes on from where it stood
+                // can't read or decode): VLC goes on from where it stood.
+                // Asked every half second: AVFoundation reports a failure
+                // once, and one around the app's own change is looked at again
                 guard let item = control.player.currentItem, stream == nil else { return }
                 let failed = ManagedFlag()
-                let failure = FailureNote()
+                let failure = Locked<NSError?>(nil)   // the error a notification brought
                 let token = NotificationToken(AVPlayerItem.failedToPlayToEndTimeNotification, object: item) { note in
                     failure.set(note.userInfo?[AVPlayerItemFailedToPlayToEndTimeErrorKey] as? NSError)
                     failed.set()
@@ -245,7 +286,7 @@ struct VideoDetailView: View {
                     try? await Task.sleep(for: .seconds(1))
                     guard !Task.isCancelled, avControl === control else { break }
                     let stopped = item.status == .failed || (failed.isSet && control.player.timeControlStatus != .playing)
-                    let error = (item.status == .failed ? item.error as NSError? : nil) ?? failure.error
+                    let error = (item.status == .failed ? item.error as NSError? : nil) ?? failure.value
                     let reason = Self.describeFailure(item.status == .failed, error)
                     guard stopped, !control.changedLately,
                           DownloadName.isPartial(url.lastPathComponent) || AVPlaybackControl.isDataFailure(error) else {
@@ -273,20 +314,20 @@ struct VideoDetailView: View {
         // from where it stood
         .task(id: url) {
             guard DownloadName.isPartial(url.lastPathComponent), !ArchivePath.isInside(url) else { return }
-            var size = await Blocking.run(.utility) { Self.fileSize(url) }
-            while !Task.isCancelled {
-                try? await Task.sleep(for: .seconds(2))
-                let now = await Blocking.run(.utility) { Self.fileSize(url) }
-                guard !Task.isCancelled, now != size, now != nil else { continue }
+            var size: Int64??   // none before the first reading
+            await DownloadSize.watch(url, every: .seconds(2)) { now in
+                guard let before = size else { size = now; return true }
+                guard now != before, now != nil else { return true }
                 size = now
                 let player = model.activePlayer
                 let stopped = player.map { !$0.isPlaying && ($0.progress ?? 1) >= 0.97 } ?? false
-                guard unplayable != nil || stopped else { continue }
+                guard unplayable != nil || stopped else { return true }
                 if let player, let length = player.lengthSeconds, let progress = player.progress {
                     resumeAt = length * progress
                 }
                 BrowserModel.testLog("video: grew, opened again | \(url.lastPathComponent)")
                 opening += 1
+                return true
             }
         }
         .onDisappear { stop() }
@@ -299,24 +340,12 @@ struct VideoDetailView: View {
             + (error.map { ": \($0.domain) \($0.code) \($0.localizedDescription)\(underlying)" } ?? ", no error")
     }
 
-    /// The error a notification brought, kept for the main thread.
-    private final class FailureNote: @unchecked Sendable {
-        private let lock = NSLock()
-        private var stored: NSError?
-        func set(_ error: NSError?) { lock.withLock { stored = error } }
-        var error: NSError? { lock.withLock { stored } }
-    }
-
     /// What `.task` is run again for: another file, or the same opened again.
     private struct Opening: Hashable {
         let url: URL
         let count: Int
     }
 
-    nonisolated private static func fileSize(_ url: URL) -> Int64? {
-        var info = stat()
-        return stat(url.path, &info) == 0 ? Int64(info.st_size) : nil
-    }
 
     /// A file of someone else: a reference movie names other files or
     /// addresses to play, so it plays nothing here. A name that doesn't say
@@ -333,9 +362,7 @@ struct VideoDetailView: View {
 
     /// UI tests (`--ui-testing --force-vlc`) play every video through VLC, so
     /// the same test videos check both players.
-    static let uiTesting = ProcessInfo.processInfo.arguments.contains("--ui-testing")
-    static let forceVLC = ProcessInfo.processInfo.arguments.contains("--ui-testing")
-        && ProcessInfo.processInfo.arguments.contains("--force-vlc")
+    static let forceVLC = TestSwitches.has("--force-vlc")
 
     /// For UI tests: the tracks and which are on as the player has them,
     /// the speed ("audio 2/2 de, subtitles 1/2 en, speed 1.25").
@@ -462,12 +489,7 @@ struct FileIdentity: Equatable, Sendable {
     /// that doesn't answer within 0.3 s counts as another file, so paging
     /// on never waits for it.
     static func of(_ url: URL, is file: FileIdentity) async -> Bool {
-        final class Once: @unchecked Sendable {
-            private let lock = NSLock()
-            private var done = false
-            func claim() -> Bool { lock.withLock { defer { done = true }; return !done } }
-        }
-        let once = Once()
+        let once = ManagedFlag()
         return await withCheckedContinuation { answer in
             DispatchQueue.global(qos: .userInitiated).async {
                 let same = FileIdentity(of: url) == file

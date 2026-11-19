@@ -15,11 +15,6 @@ enum ArchiveFormat: Equatable {
 /// shown once, by its first volume; a download still in progress
 /// ("x.rar.part", "x.zip.crdownload") counts by the name it will have.
 enum ArchiveName {
-    /// The name without a download's in-progress ending (`DownloadName`).
-    static func finalName(of name: String) -> String { DownloadName.finalName(of: name) }
-
-    static func isPartial(_ name: String) -> Bool { DownloadName.isPartial(name) }
-
     /// The format of a file shown as an archive: by its name, else by what
     /// its first bytes showed when they were read (`ContentSniffer`: "x.bin"
     /// that is a ZIP). No disk access.
@@ -31,7 +26,7 @@ enum ArchiveName {
     /// (also for the later volumes of a split archive).
     static func format(of name: String) -> ArchiveFormat? {
         guard !name.hasPrefix("._") else { return nil }
-        let base = finalName(of: name).lowercased() as NSString
+        let base = DownloadName.finalName(of: name).lowercased() as NSString
         switch base.pathExtension {
         case "zip", "cbz": return .zip
         case "7z", "cb7":  return .sevenZip
@@ -109,7 +104,7 @@ enum ArchiveName {
         let folder = Siblings(of: url)
         // The parts are named after the archive's final name (the first part
         // can still be downloading: "x.part1.rar.part")
-        let name = finalName(of: url.lastPathComponent)
+        let name = DownloadName.finalName(of: url.lastPathComponent)
         let lower = name.lowercased()
         var files = [url]
         if rarPart(of: lower) != nil {
@@ -219,6 +214,15 @@ enum ArchivePath {
     static func isInside(_ url: URL) -> Bool {
         guard let (_, inner) = split(url) else { return false }
         return !inner.isEmpty
+    }
+
+    /// Whether `url` is an archive or a place inside one (not a folder
+    /// named like one), the file system asked off the main thread only for
+    /// a name that looks like one: where the listings and walks read from
+    /// `ArchiveStore` instead of the disk.
+    static func readsFromArchive(_ url: URL) async -> Bool {
+        guard split(url) != nil else { return false }
+        return await Blocking.run(.userInitiated) { splitChecked(url) != nil }
     }
 
     /// Splits only where the archive is a real file, not a folder named
@@ -346,7 +350,7 @@ struct RarReader: ArchiveReader {
         while true {
             let r = sb_rar_next(rar, &entry)
             // ERAR_END_ARCHIVE; a download still in progress ends where it has got to
-            if r == 10 { return sb_rar_volume_missing(rar) == 0 && !ArchiveName.isPartial(url.lastPathComponent) }
+            if r == 10 { return sb_rar_volume_missing(rar) == 0 && !DownloadName.isPartial(url.lastPathComponent) }
             if r != 0 {
                 // Encrypted names: a wrong password shows as damaged data
                 if seen == 0, sb_rar_headers_encrypted(rar) != 0 { throw ArchiveError.needsPassword }
@@ -445,7 +449,7 @@ struct LibArchiveReader: ArchiveReader {
         let seekable = format == .zip && volumes.count == 1
         // A download still in progress (a torrent client writes its pieces
         // in any order): read to its end, it still isn't whole
-        let partial = volumes.contains { ArchiveName.isPartial($0.lastPathComponent) }
+        let partial = volumes.contains { DownloadName.isPartial($0.lastPathComponent) }
         do {
             return try walk(seekable: seekable, password: password, partial: partial, visit)
         } catch ArchiveError.unreadable(let reason) where seekable {
@@ -513,8 +517,10 @@ struct LibArchiveReader: ArchiveReader {
                     stopped = !buffer.withUnsafeBytes { sink(UnsafeRawBufferPointer(rebasing: $0[..<n])) }
                 }
                 // In a download still in progress, data that fails is data
-                // that hasn't arrived (zeros where a piece is missing)
-                if partial, case .unreadable? = failure { done(.incomplete) } else { done(failure) }
+                // that hasn't arrived (zeros where a piece is missing): the
+                // walk ends there, it isn't whole
+                if partial, case .unreadable? = failure { failure = .incomplete }
+                done(failure)
                 if stopped { return true }
                 if failure == .incomplete { return false }
             }
@@ -581,8 +587,12 @@ final class PasswordStore: @unchecked Sendable {
     /// nil: the store can't be read now (a locked keychain, access denied),
     /// which is not the same as no passwords.
     private let load: () -> [String]?
-    private let save: ([String]) -> Void
+    /// Writes the list; false when the store refused it.
+    private let save: ([String]) -> Bool
     private var cached: [String]?
+    /// `cached` isn't in the store yet (the store refused it): written
+    /// again on the next change or remember.
+    private var unstored = false
     /// Passwords that opened something while the store couldn't be read:
     /// used, and written into the stored list once it can be read.
     private var unsaved: [String] = []
@@ -592,7 +602,7 @@ final class PasswordStore: @unchecked Sendable {
     private var failedAt: Date?
     private let retryAfter: TimeInterval
 
-    init(load: @escaping () -> [String]?, save: @escaping ([String]) -> Void, retryAfter: TimeInterval = 60) {
+    init(load: @escaping () -> [String]?, save: @escaping ([String]) -> Bool, retryAfter: TimeInterval = 60) {
         self.load = load
         self.save = save
         self.retryAfter = retryAfter
@@ -613,11 +623,20 @@ final class PasswordStore: @unchecked Sendable {
             unsaved.insert(password, at: 0)
             return
         }
-        if list.first == password { return }
+        if list.first == password {
+            if unstored { store(list) }
+            return
+        }
         list.removeAll { $0 == password }
         list.insert(password, at: 0)
         cached = list
-        save(list)
+        store(list)
+    }
+
+    /// Writes the list; one the store refuses is written again later.
+    /// Called with the lock held.
+    private func store(_ list: [String]) {
+        unstored = !save(list)
     }
 
     /// Reads the store once (again after a failure, after a while); what was
@@ -631,7 +650,7 @@ final class PasswordStore: @unchecked Sendable {
         let merged = unsaved + loaded.filter { !unsaved.contains($0) }
         unsaved = []
         cached = merged
-        save(merged)
+        store(merged)
     }
 
     /// Every saved password goes (Settings): archives that need one ask again.
@@ -640,7 +659,7 @@ final class PasswordStore: @unchecked Sendable {
         unsaved = []
         cached = []
         failedAt = nil
-        save([])
+        store([])
     }
 
     /// How many are saved (Settings).
@@ -648,12 +667,12 @@ final class PasswordStore: @unchecked Sendable {
 
     static func memory() -> PasswordStore {
         let box = Box()
-        return PasswordStore(load: { box.list }, save: { box.list = $0 })
+        return PasswordStore(load: { box.list }, save: { box.list = $0; return true })
     }
     private final class Box { var list: [String] = [] }
 
     static func defaults(_ defaults: UserDefaults, key: String = "archivePasswords") -> PasswordStore {
-        PasswordStore(load: { defaults.stringArray(forKey: key) ?? [] }, save: { defaults.set($0, forKey: key) })
+        PasswordStore(load: { defaults.stringArray(forKey: key) ?? [] }, save: { defaults.set($0, forKey: key); return true })
     }
 
     static let keychainService = "art.haushoppe.schnellbild.archive-passwords"
@@ -671,14 +690,13 @@ final class PasswordStore: @unchecked Sendable {
                   let list = try? JSONDecoder().decode([String].self, from: data) else { return nil }
             return list
         }, save: { list in
-            guard let data = try? JSONEncoder().encode(list) else { return }
+            guard let data = try? JSONEncoder().encode(list) else { return false }
             let status = SecItemUpdate(query as CFDictionary, [kSecValueData: data] as CFDictionary)
-            if status == errSecItemNotFound {
-                var item = query
-                item[kSecValueData] = data
-                item[kSecAttrLabel] = "Schnellbild archive passwords"
-                SecItemAdd(item as CFDictionary, nil)
-            }
+            guard status == errSecItemNotFound else { return status == errSecSuccess }
+            var item = query
+            item[kSecValueData] = data
+            item[kSecAttrLabel] = "Schnellbild archive passwords"
+            return SecItemAdd(item as CFDictionary, nil) == errSecSuccess
         })
     }
 }
@@ -833,13 +851,12 @@ final class ArchiveStore: @unchecked Sendable {
     }
 
     static func reader(for url: URL, format: ArchiveFormat? = nil) -> ArchiveReader? {
-        switch format ?? Self.format(of: url) {
+        guard let format = format ?? Self.format(of: url) else { return nil }
+        switch format {
         case .rar:
             ArchiveName.openVolumes(of: url)
             return RarReader(url: url)
-        case .zip:      return LibArchiveReader(volumes: ArchiveName.volumes(of: url), format: .zip)
-        case .sevenZip: return LibArchiveReader(volumes: ArchiveName.volumes(of: url), format: .sevenZip)
-        case nil:       return nil
+        case .zip, .sevenZip: return LibArchiveReader(volumes: ArchiveName.volumes(of: url), format: format)
         }
     }
 
@@ -1183,36 +1200,65 @@ final class ArchiveStore: @unchecked Sendable {
         listing.incomplete = !index.complete
         for item in index.children[inner] ?? [] {
             guard HiddenFiles.lists(archivePath: (item.path as NSString).lastPathComponent, shown: shown) else { continue }
-            let itemURL = archiveURL.appendingPathComponent(item.path, isDirectory: item.isDirectory)
-            if item.isDirectory {
-                listing.entries.append(GridEntry(url: itemURL, kind: .folder, modDate: item.modified))
-            } else if let kind = BrowserModel.mediaKind(of: itemURL) {
-                var entry = GridEntry(url: itemURL, kind: kind, modDate: item.modified, byteSize: item.knownSize)
-                entry.isIncomplete = item.path == index.cutOff
+            if let entry = Self.entry(for: item, in: archiveURL, cutOff: index.cutOff) {
                 listing.entries.append(entry)
             } else {
-                listing.others.append(OtherFile(url: itemURL, byteSize: item.knownSize))
+                listing.others.append(OtherFile(url: archiveURL.appendingPathComponent(item.path, isDirectory: false), byteSize: item.knownSize))
             }
         }
         listing.others.sort { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
         return listing
     }
 
-    /// The media files at any depth below a folder of an archive, in path
-    /// order; hidden ones and those in hidden folders only while shown.
-    func media(below url: URL) async throws -> [URL] {
+    /// Whether a photo or video lies at any depth below a folder of an
+    /// archive (a folder tile's emptiness); stops at the first.
+    func hasMedia(below url: URL) async throws -> Bool {
+        guard let (archiveURL, inner) = ArchivePath.split(url) else { return false }
+        var found = false
+        Self.files(of: try await index(of: archiveURL), below: inner) { item in
+            found = Self.kind(of: item) != nil
+            return !found
+        }
+        return found
+    }
+
+    /// The first `limit` pictures at any depth below a folder of an archive,
+    /// in path order (a folder tile's previews: archives often hold one
+    /// folder at the top). Not videos: they'd be unpacked. Only the first
+    /// few are kept while looking, not every one sorted.
+    func pictures(below url: URL, limit: Int) async throws -> [URL] {
         guard let (archiveURL, inner) = ArchivePath.split(url) else { return [] }
-        let index = try await index(of: archiveURL)
-        let prefix = inner.isEmpty ? "" : inner + "/"
+        var first: [String] = []
+        Self.files(of: try await index(of: archiveURL), below: inner) { item in
+            guard Self.kind(of: item) == .image else { return true }
+            if first.count == limit {
+                guard let last = first.last, item.path.localizedStandardCompare(last) == .orderedAscending else { return true }
+                first.removeLast()
+            }
+            let at = first.firstIndex { item.path.localizedStandardCompare($0) == .orderedAscending } ?? first.count
+            first.insert(item.path, at: at)
+            return true
+        }
+        return first.map { archiveURL.appendingPathComponent($0, isDirectory: false) }
+    }
+
+    /// The files at any depth below `inner`, hidden ones and those in hidden
+    /// folders only while shown, until `visit` returns false.
+    private static func files(of index: Index, below inner: String, _ visit: (ArchiveItem) -> Bool) {
         let shown = HiddenFiles.shown
-        return index.byPath.values
-            // (URLs built without asking the file system whether they are folders)
-            .filter { !$0.isDirectory && $0.path.hasPrefix(prefix)
-                && HiddenFiles.lists(archivePath: String($0.path.dropFirst(prefix.count)), shown: shown)
-                && BrowserModel.mediaKind(of: URL(fileURLWithPath: $0.path, isDirectory: false)) != nil }
-            .map(\.path)
-            .sorted { $0.localizedStandardCompare($1) == .orderedAscending }
-            .map { archiveURL.appendingPathComponent($0, isDirectory: false) }
+        var folders = [inner]
+        while let folder = folders.popLast() {
+            for item in index.children[folder] ?? [] {
+                guard HiddenFiles.lists(archivePath: (item.path as NSString).lastPathComponent, shown: shown) else { continue }
+                if !item.isDirectory, !visit(item) { return }
+                if index.children[item.path] != nil { folders.append(item.path) }
+            }
+        }
+    }
+
+    /// (by the name alone: a URL built without asking the file system whether it is a folder)
+    private static func kind(of item: ArchiveItem) -> GridEntry.Kind? {
+        BrowserModel.mediaKind(of: URL(fileURLWithPath: item.path, isDirectory: false))
     }
 
     /// Names `matcher` takes, at any depth below a folder of an archive;
@@ -1226,11 +1272,19 @@ final class ArchiveStore: @unchecked Sendable {
             guard !Task.isCancelled, item.path.hasPrefix(prefix),
                   HiddenFiles.lists(archivePath: String(item.path.dropFirst(prefix.count)), shown: shown),
                   matcher.matches((item.path as NSString).lastPathComponent) else { return nil }
-            let itemURL = archiveURL.appendingPathComponent(item.path, isDirectory: item.isDirectory)
-            if item.isDirectory { return GridEntry(url: itemURL, kind: .folder, modDate: item.modified) }
-            guard let kind = BrowserModel.mediaKind(of: itemURL) else { return nil }
-            return GridEntry(url: itemURL, kind: kind, modDate: item.modified, byteSize: item.knownSize)
+            return Self.entry(for: item, in: archiveURL, cutOff: index.cutOff)
         }
+    }
+
+    /// A folder or media file of an archive as the grid shows it; nil for
+    /// other files.
+    private static func entry(for item: ArchiveItem, in archiveURL: URL, cutOff: String?) -> GridEntry? {
+        let itemURL = archiveURL.appendingPathComponent(item.path, isDirectory: item.isDirectory)
+        if item.isDirectory { return GridEntry(url: itemURL, kind: .folder, modDate: item.modified) }
+        guard let kind = BrowserModel.mediaKind(of: itemURL) else { return nil }
+        var entry = GridEntry(url: itemURL, kind: kind, modDate: item.modified, byteSize: item.knownSize)
+        entry.isIncomplete = item.path == cutOff
+        return entry
     }
 }
 
@@ -1251,10 +1305,18 @@ enum MediaData {
 
     /// An image source for a picture, from disk or from inside an archive.
     static func imageSource(_ url: URL) async -> CGImageSource? {
+        await picture(url)?.source
+    }
+
+    /// An image source for a picture and how many bytes it holds in memory
+    /// (an archive's entry unpacked whole; 0 for a file on disk, which
+    /// ImageIO reads as it needs).
+    static func picture(_ url: URL) async -> (source: CGImageSource, inMemory: Int)? {
         if ArchivePath.isInside(url), ArchivePath.splitChecked(url) != nil {
-            guard let data = try? await ArchiveStore.shared.data(of: url) else { return nil }
-            return CGImageSourceCreateWithData(data as CFData, nil)
+            guard let data = try? await ArchiveStore.shared.data(of: url),
+                  let source = CGImageSourceCreateWithData(data as CFData, nil) else { return nil }
+            return (source, data.count)
         }
-        return CGImageSourceCreateWithURL(url as CFURL, nil)
+        return CGImageSourceCreateWithURL(url as CFURL, nil).map { ($0, 0) }
     }
 }

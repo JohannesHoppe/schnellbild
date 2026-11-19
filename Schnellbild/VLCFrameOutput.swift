@@ -441,13 +441,8 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
         }
     }
 
-    /// UI tests: the next `count` pictures are logged too.
+    /// UI tests: the next pictures are logged too (`setOverlay(logging:)`).
     private var picturesToLog = 0
-    func logPictures(_ count: Int) {
-        lock.lock()
-        picturesToLog = max(picturesToLog, count)
-        lock.unlock()
-    }
 
     /// Pictures VLC shows while held aren't shown here: the one on the layer
     /// stays (VLC catching up, hidden, to where the video stood).
@@ -465,8 +460,7 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
     /// video whose brightness rises with time tells where it is), and the
     /// first ones of each media are looked at for text in their lower part
     /// (subtitles VLC blended in), written to the test log.
-    private static let probing = ProcessInfo.processInfo.arguments.contains("--ui-testing")
-        && ProcessInfo.processInfo.arguments.contains { $0.hasPrefix("--test-log=") }
+    private static let probing = TestSwitches.testLog != nil
     private static let probedFirst = 5
     private var lastProbePicture: PictureProbe?
     /// The media handed over so far (`use`).
@@ -607,31 +601,23 @@ final class VLCFrameOutput: @unchecked Sendable {   // state behind `lock`; the 
         lock.lock()
         overlay = new
         picturesToLog = max(picturesToLog, logging)
-        let paused = latest != nil && Date().timeIntervalSince(lastDisplay) > 0.15
-        let queued = pendingRedraw != nil
-        if paused { pendingRedraw = look }
-        lock.unlock()
-        guard paused, !queued else { return }
-        redraw.async { [self] in
-            lock.lock()
-            let look = pendingRedraw
-            pendingRedraw = nil
-            let buffer = latest
-            let number = sequence
-            let overlay = self.overlay
-            lock.unlock()
-            if let look, let buffer { present(buffer, with: look, overlay: overlay, number: number) }
-        }
+        redrawIfPaused()
     }
 
     func setLook(_ new: Look) {
         lock.lock()
         guard new != look else { lock.unlock(); return }
         look = new
-        // While VLC shows pictures, the next one carries the new look
+        redrawIfPaused()
+    }
+
+    /// Called holding `lock`, which it gives up: the last picture drawn
+    /// again with the look and overlay of now, unless VLC is showing
+    /// pictures (the next one carries them) or a redraw is on its way.
+    private func redrawIfPaused() {
         let paused = latest != nil && Date().timeIntervalSince(lastDisplay) > 0.15
         let queued = pendingRedraw != nil
-        if paused { pendingRedraw = new }
+        if paused { pendingRedraw = look }
         lock.unlock()
         guard paused, !queued else { return }
         redraw.async { [self] in

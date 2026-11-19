@@ -41,6 +41,10 @@ upstream while Protomaps still serves the build.
 """
 import argparse, gzip, hashlib, io, json, math, multiprocessing as mp, os, re, struct, sys, time, urllib.error, urllib.request, zipfile
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))  # python3 -I leaves Scripts/ off the path
+sys.dont_write_bytecode = True
+from _build_common import RELEASES, read_env, sha256_file  # noqa: E402
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 UA = "Schnellbild-map-pipeline (github.com/JohannesHoppe/schnellbild)"
 
@@ -53,17 +57,6 @@ NAME_KEYS = [OSM_NAME_KEY.get(l, "name:" + l) for l in LANGUAGES]
 
 # Kinds in the place file (OfflineMap/PlaceIndex.swift: Place.Kind)
 PLACE_KINDS = ["country", "region", "city", "town", "village", "hamlet", "locality"]
-
-
-def load_env():
-    env = {}
-    with open(os.path.join(ROOT, "Scripts", "map_data.env"), encoding="utf-8") as f:
-        for line in f:
-            line = line.strip()
-            if line and not line.startswith("#"):
-                k, v = line.split("=", 1)
-                env[k] = v
-    return env
 
 
 # --- network -------------------------------------------------------------------------------
@@ -104,16 +97,8 @@ def http_size(url):
         return int(r.headers["Content-Length"])
 
 
-def sha256_file(path):
-    h = hashlib.sha256()
-    with open(path, "rb") as f:
-        for chunk in iter(lambda: f.read(1 << 20), b""):
-            h.update(chunk)
-    return h.hexdigest()
-
-
 def archive_url(env, name):
-    return f"https://github.com/JohannesHoppe/schnellbild/releases/download/{env['SOURCE_RELEASE_TAG']}/{name}"
+    return f"{RELEASES}/{env['SOURCE_RELEASE_TAG']}/{name}"
 
 
 def fetch_archived(env, name, sha, path):
@@ -788,6 +773,24 @@ def thin_layer(name, body, tile=(0, 0, 0)):
     new_keys, new_values = [], []
     key_index, value_index = {}, {}
     features = []
+
+    def add_feature(attrs, gtype, geometry):
+        new_tags = []
+        for k, val in attrs:
+            if k not in key_index:
+                key_index[k] = len(new_keys)
+                new_keys.append(k)
+            if val not in value_index:
+                value_index[val] = len(new_values)
+                new_values.append(val)
+            new_tags += [key_index[k], value_index[val]]
+        feature = bytearray()
+        if new_tags:
+            feature += field_bytes(2, b"".join(varint_bytes(i) for i in new_tags))
+        feature += varint_bytes((3 << 3) | 0) + varint_bytes(gtype)
+        feature += field_bytes(4, geometry)
+        features.append(bytes(feature))
+
     extent = 4096
     for f, t, v, raw in parts:
         if f == 5:
@@ -823,42 +826,14 @@ def thin_layer(name, body, tile=(0, 0, 0)):
                 _borders_changed[0] = True
                 pieces = [(attrs, encode_lines(kept))] if kept else []
         for piece_attrs, piece_geometry in pieces:
-            new_tags = []
-            for k, val in piece_attrs:
-                if k not in keep:
-                    continue
-                if k not in key_index:
-                    key_index[k] = len(new_keys)
-                    new_keys.append(k)
-                if val not in value_index:
-                    value_index[val] = len(new_values)
-                    new_values.append(val)
-                new_tags += [key_index[k], value_index[val]]
-            feature = bytearray()
-            if new_tags:
-                feature += field_bytes(2, b"".join(varint_bytes(i) for i in new_tags))
-            feature += varint_bytes((3 << 3) | 0) + varint_bytes(gtype)
-            feature += field_bytes(4, piece_geometry)
-            features.append(bytes(feature))
+            add_feature([(k, val) for k, val in piece_attrs if k in keep], gtype, piece_geometry)
     if name == "boundaries" and _added_borders:
         added = added_border_parts(tile, extent)
         if added:
             _borders_changed[0] = True
             attrs = [("kind", string_value("country")), ("kind_detail", varint_bytes((4 << 3) | 0) + varint_bytes(2)),
                      ("disputed", varint_bytes((7 << 3) | 0) + varint_bytes(1))]
-            new_tags = []
-            for k, val in attrs:
-                if k not in key_index:
-                    key_index[k] = len(new_keys)
-                    new_keys.append(k)
-                if val not in value_index:
-                    value_index[val] = len(new_values)
-                    new_values.append(val)
-                new_tags += [key_index[k], value_index[val]]
-            feature = field_bytes(2, b"".join(varint_bytes(i) for i in new_tags))
-            feature += varint_bytes((3 << 3) | 0) + varint_bytes(2)
-            feature += field_bytes(4, encode_lines(added))
-            features.append(bytes(feature))
+            add_feature(attrs, 2, encode_lines(added))
     if not features:
         return None
     out = bytearray(varint_bytes((15 << 3) | 0) + varint_bytes(2))
@@ -1523,7 +1498,7 @@ def main():
     if args.self_test:
         self_test()
         return
-    env = load_env()
+    env = read_env("map_data.env")
     os.makedirs(args.cache, exist_ok=True)
     max_zoom, places_zoom = int(env["MAP_MAX_ZOOM"]), int(env["PLACES_ZOOM"])
 

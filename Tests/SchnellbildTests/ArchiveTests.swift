@@ -1,4 +1,5 @@
 import XCTest
+import VLCFrames
 @testable import Schnellbild
 
 /// Archives as folders: names, reading RAR (UnRAR) and ZIP / 7z
@@ -56,7 +57,7 @@ final class ArchiveTests: XCTestCase {
         XCTAssertEqual(ArchiveName.format(of: "x.zip.crdownload"), .zip)
         XCTAssertNil(ArchiveName.format(of: "notes.part"))
         XCTAssertNil(ArchiveName.format(of: "._x.zip"))
-        XCTAssertTrue(ArchiveName.isPartial("x.rar.part"))
+        XCTAssertTrue(DownloadName.isPartial("x.rar.part"))
     }
 
     func testPathsRunThroughTheArchive() {
@@ -316,7 +317,7 @@ final class ArchiveTests: XCTestCase {
         var saved: [[String]] = []
         var readable = false
         var loads = 0
-        let store = PasswordStore(load: { loads += 1; return readable ? ["old"] : nil }, save: { saved.append($0) }, retryAfter: 0)
+        let store = PasswordStore(load: { loads += 1; return readable ? ["old"] : nil }, save: { saved.append($0); return true }, retryAfter: 0)
         store.remember("new")
         XCTAssertTrue(saved.isEmpty, "the stored list isn't overwritten")
         XCTAssertEqual(store.all, ["new"])
@@ -326,9 +327,31 @@ final class ArchiveTests: XCTestCase {
         XCTAssertEqual(store.all, ["newer", "new", "old"])
 
         loads = 0
-        let refusing = PasswordStore(load: { loads += 1; return nil }, save: { _ in })
+        let refusing = PasswordStore(load: { loads += 1; return nil }, save: { _ in true })
         for _ in 0..<5 { _ = refusing.all }
         XCTAssertEqual(loads, 1, "asked once, not for every archive")
+    }
+
+    /// A save the store refuses doesn't count as saved: the list is
+    /// written again on the next remember, also of the same password.
+    func testAPasswordTheStoreRefusedIsSavedAgain() {
+        var stored: [String] = []
+        var accepts = false
+        var saves = 0
+        let store = PasswordStore(load: { stored }, save: { list in
+            saves += 1
+            if accepts { stored = list }
+            return accepts
+        })
+        store.remember("new")
+        XCTAssertEqual(stored, [], "refused")
+        XCTAssertEqual(store.all, ["new"], "used meanwhile")
+        accepts = true
+        store.remember("new")
+        XCTAssertEqual(stored, ["new"], "written again")
+        saves = 0
+        store.remember("new")
+        XCTAssertEqual(saves, 0, "saved: not written again")
     }
 
     /// Names beyond ASCII ("Übersicht.jpg") in a ZIP with UTF-8 names.

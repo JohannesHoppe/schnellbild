@@ -161,7 +161,7 @@ struct EntryListView: View {
                     : (index % 2 == 1 ? Color.primary.opacity(contrast == .increased ? 0.1 : 0.04) : Color.clear))
         .contentShape(Rectangle())
         .modifier(EntryInteractions(entry: entry))
-        .onAppear { if entry.isMedia { model.wantCaptureDate(of: entry.url) } }
+        .onAppear { if entry.isMedia { model.wantCaptureDate(of: entry) } }
         // A folder with no photo or video at any depth is greyed out here
         // too (the grid's folder tiles find it out the same way)
         .task(id: entry.kind == .folder && !entry.isArchive ? entry.url : nil) {

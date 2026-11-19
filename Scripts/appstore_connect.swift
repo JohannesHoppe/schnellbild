@@ -1,13 +1,23 @@
 // Puts the App Store texts (AppStore/metadata) and screenshots into App Store Connect through its API, for the version in Resources/Info.plist,
 // and with --build picks the uploaded build for that version. Nothing is submitted
-// for review: that stays a click in App Store Connect.
+// for review: that stays a click in App Store Connect. `prices` handles the Mac
+// App Store price per country.
 //
 //   swift Scripts/appstore_connect.swift metadata [--build]
+//   swift Scripts/appstore_connect.swift prices list <out.json>   # what Apple offers per country
+//   swift Scripts/appstore_connect.swift prices apply             # sets AppStore/metadata/prices.json
+//
+// `prices list` writes, for every country, its currency, the price Apple derives
+// from the base price by exchange rate (`equalized`) and every price point up to
+// it, so a price that fits the country's purchasing power can be picked for
+// AppStore/metadata/prices.json. `prices apply` makes the price schedule: the base
+// country with its price, every listed country with its own price; the rest
+// follow the base by exchange rate (Apple's equalization).
 //
 // Needs ASC_KEY_ID, ASC_ISSUER_ID and ASC_KEY_PATH (the API key's .p8; a key with
 // the role App Manager or Admin). Optional ASC_REVIEW_CONTACT, a JSON object with
 // firstName, lastName, phone, email, for a version that has no review contact yet.
-// Run by appstore.yml (-f metadata=true).
+// Run by appstore.yml (-f metadata=true) and appstore-prices.yml (prices).
 import Foundation
 import CryptoKit
 
@@ -20,8 +30,11 @@ func fail(_ message: String) -> Never {
 }
 func say(_ message: String) { print(message); fflush(stdout) }
 
-guard CommandLine.arguments.count >= 2, CommandLine.arguments[1] == "metadata" else {
-    fail("usage: swift Scripts/appstore_connect.swift metadata [--build]")
+let arguments = CommandLine.arguments
+let pricesMode = arguments.count >= 3 && arguments[1] == "prices" ? arguments[2] : nil
+guard arguments.count >= 2 && arguments[1] == "metadata"
+        || pricesMode == "list" && arguments.count == 4 || pricesMode == "apply" else {
+    fail("usage: swift Scripts/appstore_connect.swift metadata [--build] | prices list <out.json> | prices apply")
 }
 let pickBuild = CommandLine.arguments.contains("--build")
 guard let keyID = env["ASC_KEY_ID"], let issuer = env["ASC_ISSUER_ID"], let keyPath = env["ASC_KEY_PATH"] else {
@@ -134,6 +147,74 @@ func upsert(_ type: String, existing: JSON?, attributes values: JSON, creating: 
     return result["data"] as? JSON ?? [:]
 }
 
+// MARK: - Prices
+
+/// Every page of a list.
+func all(_ path: String) async throws -> (data: [JSON], included: [JSON]) {
+    var next: String? = path
+    var data: [JSON] = [], included: [JSON] = []
+    while let page = next {
+        let object = try await api("GET", page)
+        data += items(object)
+        included += object["included"] as? [JSON] ?? []
+        next = (object["links"] as? JSON)?["next"] as? String
+    }
+    return (data, included)
+}
+/// The country of a price point (its relationship, else the territory coded in its id).
+func territory(of point: JSON) -> String? {
+    ((point["relationships"] as? JSON)?["territory"] as? JSON).flatMap { ($0["data"] as? JSON)?["id"] as? String }
+}
+func points(in territory: String, appID: String) async throws -> [JSON] {
+    try await all("/v1/apps/\(appID)/appPricePoints?filter%5Bterritory%5D=\(territory)&include=territory&limit=200").data
+}
+func price(_ point: JSON) -> Decimal { Decimal(string: attributes(point)["customerPrice"] as? String ?? "") ?? -1 }
+
+func prices(_ mode: String, appID: String) async throws {
+    let prices = readJSON(metadata.appendingPathComponent("prices.json"))
+    guard let base = prices["base"] as? JSON, let baseTerritory = base["territory"] as? String,
+          let basePrice = base["price"] as? String else { fail("prices.json needs base.territory and base.price") }
+    let basePoints = try await points(in: baseTerritory, appID: appID)
+    guard let basePoint = basePoints.first(where: { price($0) == Decimal(string: basePrice) }),
+          let basePointID = basePoint["id"] as? String else { fail("\(baseTerritory) has no price point \(basePrice)") }
+
+    if mode == "list" {
+        // Apple's price in every other country for the base price, then each country's points up to it
+        let equalized = try await all("/v3/appPricePoints/\(basePointID)/equalizations?include=territory&limit=200")
+        let currencies = Dictionary(equalized.included.filter { $0["type"] as? String == "territories" }
+            .map { ($0["id"] as? String ?? "", attributes($0)["currency"] as? String ?? "") }, uniquingKeysWith: { a, _ in a })
+        var out: [String: JSON] = [baseTerritory: ["currency": currencies[baseTerritory] ?? "EUR", "equalized": basePrice, "points": [basePrice]]]
+        for point in equalized.data {
+            guard let country = territory(of: point) else { continue }
+            let limit = price(point)
+            let available = try await points(in: country, appID: appID).map(price).filter { $0 > 0 && $0 <= limit }.sorted()
+            out[country] = ["currency": currencies[country] ?? "", "equalized": "\(limit)", "points": available.map { "\($0)" }]
+            say("\(country) \(currencies[country] ?? "") \(limit): \(available.count) points up to it")
+        }
+        let data = try JSONSerialization.data(withJSONObject: out, options: [.prettyPrinted, .sortedKeys])
+        try data.write(to: URL(fileURLWithPath: arguments[3]))
+        say("\(out.count) countries written to \(arguments[3])")
+    } else {
+        // The schedule: the base price, and each listed country's own price
+        let own = prices["territories"] as? [String: String] ?? [:]
+        var manual: [(local: String, point: String)] = [("${base}", basePointID)]
+        for (country, wanted) in own.sorted(by: { $0.key < $1.key }) {
+            guard let point = try await points(in: country, appID: appID).first(where: { price($0) == Decimal(string: wanted) }),
+                  let pointID = point["id"] as? String else { fail("\(country) has no price point \(wanted)") }
+            manual.append(("${\(country)}", pointID))
+        }
+        let body: JSON = [
+            "data": ["type": "appPriceSchedules", "relationships": [
+                "app": relation("apps", appID),
+                "baseTerritory": relation("territories", baseTerritory),
+                "manualPrices": ["data": manual.map { ["type": "appPrices", "id": $0.local] }]]],
+            "included": manual.map { ["type": "appPrices", "id": $0.local, "attributes": ["startDate": NSNull()],
+                                      "relationships": ["appPricePoint": relation("appPricePoints", $0.point)]] }]
+        try await api("POST", "/v1/appPriceSchedules", body)
+        say("Price schedule set: \(baseTerritory) \(basePrice), \(own.count) countries with their own price, the rest by exchange rate")
+    }
+}
+
 // MARK: - Run
 
 let editableStates: Set<String> = ["PREPARE_FOR_SUBMISSION", "DEVELOPER_REJECTED", "REJECTED", "METADATA_REJECTED", "INVALID_BINARY"]
@@ -141,6 +222,10 @@ let editableStates: Set<String> = ["PREPARE_FOR_SUBMISSION", "DEVELOPER_REJECTED
 let bundleID = setting("bundleId")
 guard let appID = items(try await api("GET", query("/v1/apps", ["filter[bundleId]": bundleID]))).first.map(id) else {
     fail("no app with the bundle ID \(bundleID) in App Store Connect")
+}
+if let pricesMode {
+    try await prices(pricesMode, appID: appID)
+    exit(0)
 }
 say("App \(bundleID) (\(appID)), version \(versionString) (\(buildNumber))")
 let primaryLocale = attributes(try await api("GET", "/v1/apps/\(appID)")["data"] as? JSON ?? [:])["primaryLocale"] as? String ?? ""

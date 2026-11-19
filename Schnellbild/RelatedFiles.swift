@@ -60,12 +60,14 @@ enum RelatedFiles {
     }
 
     /// Whether the process may open the file for reading (the sandbox's
-    /// answer, not only the permissions').
+    /// answer, not only the permissions'), and it is a regular file.
+    /// Opened without blocking: a FIFO would otherwise wait for a writer.
     static func canRead(_ url: URL) -> Bool {
-        let fd = Darwin.open(url.path, O_RDONLY)
+        let fd = Darwin.open(url.path, O_RDONLY | O_NONBLOCK)
         guard fd >= 0 else { return false }
-        close(fd)
-        return true
+        defer { close(fd) }
+        var info = stat()
+        return fstat(fd, &info) == 0 && (info.st_mode & S_IFMT) == S_IFREG
     }
 
     private static let presenters = Locked<[RelatedPresenter]>([])
@@ -85,12 +87,27 @@ private final class RelatedPresenter: NSObject, NSFilePresenter, @unchecked Send
 
 /// A value behind a lock.
 final class Locked<Value>: @unchecked Sendable {
-    private var value: Value
+    private var stored: Value
     private let lock = NSLock()
-    init(_ value: Value) { self.value = value }
+    init(_ value: Value) { stored = value }
     func withLock<T>(_ body: (inout Value) -> T) -> T {
         lock.lock()
         defer { lock.unlock() }
-        return body(&value)
+        return body(&stored)
     }
+    var value: Value { withLock { $0 } }
+    func set(_ value: Value) { withLock { $0 = value } }
+}
+
+/// A flag set from several threads at once (a walk told to stop, a lane
+/// that found something, a continuation resumed once).
+typealias ManagedFlag = Locked<Bool>
+
+extension Locked where Value == Bool {
+    convenience init() { self.init(false) }
+    var isSet: Bool { value }
+    func set() { set(true) }
+    func reset() { set(false) }
+    /// Sets the flag; true only for the caller that set it first.
+    func claim() -> Bool { withLock { flag in defer { flag = true }; return !flag } }
 }

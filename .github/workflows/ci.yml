@@ -28,10 +28,10 @@ on:
       - '!Scripts/shoot_window.swift'
       - '!Scripts/make_store_screenshots.swift'
       - '!Scripts/appstore_connect.swift'
-      - '!Scripts/appstore_prices.swift'
       - '!Scripts/make_dmg_background.swift'
       - '!Scripts/build_map_data.py'
       - '!Scripts/build_globe_data.py'
+      - '!Scripts/_build_common.py'
       - '!Scripts/build_world_photos.py'
       - '!Scripts/world_photos.env'
       # The privacy policies the About window links (AboutPanelTests)
@@ -61,10 +61,10 @@ on:
       - '!Scripts/shoot_window.swift'
       - '!Scripts/make_store_screenshots.swift'
       - '!Scripts/appstore_connect.swift'
-      - '!Scripts/appstore_prices.swift'
       - '!Scripts/make_dmg_background.swift'
       - '!Scripts/build_map_data.py'
       - '!Scripts/build_globe_data.py'
+      - '!Scripts/_build_common.py'
       - '!Scripts/build_world_photos.py'
       - '!Scripts/world_photos.env'
       # The privacy policies the About window links (AboutPanelTests)

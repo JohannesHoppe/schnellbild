@@ -325,7 +325,8 @@ final class AtlasModel: ObservableObject {
     /// folder; then one file of every folder not yet sampled (so every place
     /// shows early); then the folders with a place in view; then the rest
     /// in the pane's order.
-    func nextChunk(size: Int = AtlasModel.chunk) -> [(url: URL, modified: Date?)] {
+    func nextChunk() -> [(url: URL, modified: Date?)] {
+        let size = Self.chunk
         var chunk: [(url: URL, modified: Date?)] = []
         func take(from folder: String, count: Int) {
             guard var list = pending.lists[folder], !list.isEmpty, count > 0 else { return }
@@ -372,7 +373,7 @@ final class AtlasModel: ObservableObject {
                     guard let facts = found[file.url] else { continue }
                     self.known[file.url] = Known(modified: file.modified, facts: facts)
                     if let point = facts.place?.location.point {
-                        self.folderPlaces[file.url.deletingLastPathComponent().path] = Coordinate(latitude: point.latitude, longitude: point.longitude)
+                        self.folderPlaces[file.url.deletingLastPathComponent().path] = point.coordinate
                     }
                 }
                 self.done += chunk.count
@@ -632,18 +633,15 @@ final class AtlasModel: ObservableObject {
 
     /// The screenshots' camera: `--globe-camera=<latitude>,<longitude>,<zoom>,<pitch>,<heading>` (UI tests only).
     static let testCamera: MapCamera? = {
-        guard VideoDetailView.uiTesting,
-              let argument = ProcessInfo.processInfo.arguments.first(where: { $0.hasPrefix("--globe-camera=") }) else { return nil }
-        let v = argument.dropFirst("--globe-camera=".count).split(separator: ",").compactMap { Double($0) }
+        guard let argument = TestSwitches.value("--globe-camera=") else { return nil }
+        let v = argument.split(separator: ",").compactMap { Double($0) }
         guard v.count == 5 else { return nil }
         return MapCamera(center: Coordinate(latitude: v[0], longitude: v[1]), zoom: v[2], pitch: v[3], heading: v[4])
     }()
 
     /// The screenshots' moment for the Sun: `--globe-date=<ISO 8601>` (UI tests only).
     static let testSunDate: Date? = {
-        guard VideoDetailView.uiTesting,
-              let argument = ProcessInfo.processInfo.arguments.first(where: { $0.hasPrefix("--globe-date=") }) else { return nil }
-        return ISO8601DateFormatter().date(from: String(argument.dropFirst("--globe-date=".count)))
+        TestSwitches.value("--globe-date=").flatMap { ISO8601DateFormatter().date(from: $0) }
     }()
 
     /// Moves the map so the place is in view (at once when it already is).
@@ -763,15 +761,9 @@ final class AtlasModel: ObservableObject {
         select(cluster.ids[0])
     }
 
-    /// The cluster the selection is in.
-    var selectedCluster: AtlasCluster? {
-        guard let selected = selectedURL else { return nil }
-        return clusters.first { $0.ids.contains(selected) }
-    }
-
     /// The clusters on screen with their points.
-    func visibleClusters(margin: CGFloat = 0) -> [(cluster: AtlasCluster, point: CGPoint)] {
-        let bounds = CGRect(origin: .zero, size: mapSize).insetBy(dx: -margin, dy: -margin)
+    func visibleClusters() -> [(cluster: AtlasCluster, point: CGPoint)] {
+        let bounds = CGRect(origin: .zero, size: mapSize)
         return clusters.compactMap { cluster in
             guard let p = point(for: cluster.coordinate), bounds.contains(p) else { return nil }
             return (cluster, p)

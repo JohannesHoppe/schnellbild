@@ -303,15 +303,16 @@ struct PlaylistRow: View {
     private func takeOut() { model.removeFromSlideshow(at: [index]) }
 
     private func dragProvider() -> NSItemProvider {
-        guard TileDrag.byTheUser else { return NSItemProvider() }
-        dragged = item.url
-        let path = item.url.path
-        let provider = NSItemProvider()
-        provider.registerDataRepresentation(forTypeIdentifier: PlaylistPanel.dragType.identifier, visibility: .ownProcess) { done in
-            done(Data(path.utf8), nil)
-            return nil
+        TileDrag.provider {
+            dragged = item.url
+            let path = item.url.path
+            let provider = NSItemProvider()
+            provider.registerDataRepresentation(forTypeIdentifier: PlaylistPanel.dragType.identifier, visibility: .ownProcess) { done in
+                done(Data(path.utf8), nil)
+                return nil
+            }
+            return provider
         }
-        return provider
     }
 
     /// The dragged row lands before (or `after`) this one.
