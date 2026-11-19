@@ -1231,50 +1231,70 @@ struct VolumeDisplay: View {
     /// screenshots) keep it long enough to photograph.
     static let shownFor: Duration = TestSwitches.has("--hold-volume-display") ? .seconds(15) : .seconds(1.2)
     @EnvironmentObject var model: BrowserModel
-    @State private var shown = false
+
+    var body: some View {
+        BriefNotice(trigger: model.volumeChange, animation: .easeOut(duration: 0.15)) { _ in
+            HStack(spacing: 10) {
+                Image(systemName: model.volume == 0 ? "speaker.slash.fill"
+                      : model.volume < 0.5 ? "speaker.wave.1.fill" : "speaker.wave.3.fill")
+                    .font(.title2)
+                    .frame(width: 30)
+                GeometryReader { geo in
+                    ZStack(alignment: .leading) {
+                        Capsule().fill(Color.primary.opacity(0.18))
+                        Capsule().fill(Color.primary.opacity(0.8)).frame(width: geo.size.width * model.volume)
+                    }
+                }
+                .frame(width: 160, height: 6)
+                Text(verbatim: "\(Int((model.volume * 100).rounded())) %")
+                    .monospacedDigit()
+                    .frame(width: 48, alignment: .trailing)
+            }
+            .noticePlate()
+            .accessibilityIdentifier("volumeDisplay")
+                // The UI tests read "volume 80 %" in every language, as the label
+            .accessibilityLabel(test: "volume \(Int((model.volume * 100).rounded())) %", spoken: String(localized: "Volume"))
+            .accessibilityValue(test: "", spoken: model.volume.formatted(.percent.precision(.fractionLength(0))))
+        }
+    }
+}
+
+/// What a key just changed (the volume, the speed, a track), shown a
+/// moment (`VolumeDisplay.shownFor`); each new `trigger` shows it again.
+struct BriefNotice<Trigger: Equatable, Content: View>: View {
+    let trigger: Trigger?
+    let animation: Animation?
+    @ViewBuilder let content: (Trigger) -> Content
+    @State private var shown: Trigger?
     @State private var hide: Task<Void, Never>?
 
     var body: some View {
         ZStack {
-            if shown {
-                HStack(spacing: 10) {
-                    Image(systemName: model.volume == 0 ? "speaker.slash.fill"
-                          : model.volume < 0.5 ? "speaker.wave.1.fill" : "speaker.wave.3.fill")
-                        .font(.title2)
-                        .frame(width: 30)
-                    GeometryReader { geo in
-                        ZStack(alignment: .leading) {
-                            Capsule().fill(Color.primary.opacity(0.18))
-                            Capsule().fill(Color.primary.opacity(0.8)).frame(width: geo.size.width * model.volume)
-                        }
-                    }
-                    .frame(width: 160, height: 6)
-                    Text(verbatim: "\(Int((model.volume * 100).rounded())) %")
-                        .monospacedDigit()
-                        .frame(width: 48, alignment: .trailing)
-                }
-                .padding(.horizontal, 18)
-                .padding(.vertical, 12)
-                .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 14))
-                .transition(.opacity)
-                .accessibilityElement(children: .ignore)
-                .accessibilityIdentifier("volumeDisplay")
-                // The UI tests read "volume 80 %" in every language, as the label
-                .accessibilityLabel(test: "volume \(Int((model.volume * 100).rounded())) %", spoken: String(localized: "Volume"))
-                .accessibilityValue(test: "", spoken: model.volume.formatted(.percent.precision(.fractionLength(0))))
+            if let shown {
+                content(shown).transition(.opacity)
             }
         }
-        .animation(.easeOut(duration: 0.15), value: shown)
-        .onChange(of: model.volumeChange) { _, change in
-            guard change != nil else { return }
-            shown = true
+        .animation(animation, value: shown)
+        .onChange(of: trigger) { _, new in
+            guard let new else { return }
+            shown = new
             hide?.cancel()
             hide = Task { @MainActor in
-                try? await Task.sleep(for: Self.shownFor)
+                try? await Task.sleep(for: VolumeDisplay.shownFor)
                 guard !Task.isCancelled else { return }
-                shown = false
+                shown = nil
             }
         }
+    }
+}
+
+extension View {
+    /// A `BriefNotice`'s plate: material behind it, one element for VoiceOver.
+    func noticePlate() -> some View {
+        padding(.horizontal, 18)
+            .padding(.vertical, 12)
+            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 14))
+            .accessibilityElement(children: .ignore)
     }
 }
 
