@@ -11,6 +11,14 @@ VIDÉOS
 • MP4 et MOV, plus les formats que macOS ne lit pas : MKV, WebM, AVI, WMV, FLV, MPEG, DVD vidéo, AVCHD
 • Parcourez les vidéos avec les flèches, comme vous feuilletez les photos
 
+VOS PHOTOS SUR LA CARTE ET LE GLOBE
+• W ouvre l’Atlas : les photos et vidéos d’un dossier et de ses sous-dossiers, là où elles ont été prises
+• Les lieux viennent des données GPS des fichiers, des fichiers XMP annexes et des traces GPX
+• De très loin, la carte est un globe devant le ciel étoilé, avec le jour et la nuit si vous le voulez et les villes éclairées sur sa face nocturne ; en zoomant, il s’aplatit en carte
+• La frise chronologique range le voyage dans le temps : faites glisser sur une période, la carte ne montre plus que celle-ci
+• T lance le voyage : la carte glisse d’un lieu à l’autre, les photos s’affichent en grand, les vidéos jouent quelques secondes
+• La carte est dans l’app : rien ne passe par Internet, aucun lieu ne quitte votre Mac
+
 LES ARCHIVES COMME DES DOSSIERS
 • ZIP, RAR et 7z s’ouvrent comme des dossiers, bandes dessinées (CBZ, CBR) comprises, même protégés par mot de passe et en plusieurs parties
 • Rien n’est décompressé sur le disque ; les vidéos se lisent directement depuis l’archive

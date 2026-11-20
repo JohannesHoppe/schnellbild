@@ -11,6 +11,14 @@ WIDEO
 • MP4 i MOV, a do tego formaty, których macOS nie odtworzy: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-Video, AVCHD
 • Przewijanie filmów strzałkami, tak jak przegląda się zdjęcia
 
+TWOJE ZDJĘCIA NA MAPIE I NA GLOBUSIE
+• W otwiera Atlas: zdjęcia i filmy z folderu i jego podfolderów w miejscach, w których powstały
+• Miejsca pochodzą z danych GPS w plikach, z plików XMP obok zdjęć i ze ścieżek GPX
+• Przy dużym oddaleniu mapa jest globusem na tle gwiazd, jeśli chcesz z dniem i nocą oraz światłami miast po nocnej stronie; po przybliżeniu spłaszcza się w mapę
+• Oś czasu układa podróż według czasu: przeciągnij po fragmencie, a mapa pokaże tylko tę część
+• T odtwarza podróż: mapa płynie od miejsca do miejsca, zdjęcia pojawiają się w dużym rozmiarze, filmy grają kilka sekund
+• Mapa jest w aplikacji: nic nie trafia do internetu, żadna lokalizacja nie opuszcza Twojego Maca
+
 ARCHIWA JAK FOLDERY
 • ZIP, RAR i 7z otwierają się jak foldery, także komiksy (CBZ, CBR), również z hasłem i podzielone na części
 • Nic nie jest rozpakowywane na dysk; filmy odtwarzają się prosto z archiwum

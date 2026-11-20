@@ -11,6 +11,14 @@ VIDEOT
 • MP4 ja MOV sekä muodot, joita macOS ei osaa toistaa: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-video, AVCHD
 • Selaa videoita nuolinäppäimillä samalla tavalla kuin kuvia
 
+KUVASI KARTALLA JA MAAPALLOLLA
+• W avaa Kartaston: kansion ja sen alikansioiden kuvat ja videot siellä, missä ne on otettu
+• Paikat saadaan tiedostojen GPS-tiedoista, XMP-sivutiedostoista ja GPX-jäljistä
+• Kaukaa katsottuna kartta on maapallo tähtitaivasta vasten, halutessasi päivän ja yön kanssa, kaupunkien valot yöpuolella; lähemmäs zoomatessa se litistyy kartaksi
+• Aikajana järjestää matkan ajan mukaan: vedä jakson yli, niin kartta näyttää vain sen osan
+• T toistaa matkan: kartta liukuu paikasta toiseen, kuvat näkyvät suurina, videot pyörivät muutaman sekunnin
+• Kartta on sovelluksessa: mitään ei haeta verkosta, eikä mikään sijainti lähde Macistasi
+
 ARKISTOT KANSIOINA
 • ZIP, RAR ja 7z aukeavat kuin kansiot, sarjakuvat (CBZ, CBR) mukaan lukien, myös salasanalla suojatut ja osiin jaetut
 • Mitään ei pureta levylle; videot toistuvat suoraan arkistosta

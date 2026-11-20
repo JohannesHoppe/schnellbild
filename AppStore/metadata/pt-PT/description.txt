@@ -11,6 +11,14 @@ VÍDEOS
 • MP4 e MOV, e ainda os formatos que o macOS não reproduz: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-Vídeo, AVCHD
 • Percorra os vídeos com as setas, tal como passa as fotografias
 
+AS SUAS FOTOGRAFIAS NO MAPA E NO GLOBO
+• W abre o Atlas: as fotografias e os vídeos de uma pasta e das subpastas no local onde foram tirados
+• Os locais vêm dos dados de GPS dos ficheiros, de ficheiros XMP auxiliares e de trilhos GPX
+• Visto de muito longe, o mapa é um globo diante do céu estrelado, com o dia e a noite se quiser e as cidades iluminadas no lado noturno; ao aproximar, achata-se no mapa
+• A linha do tempo organiza a viagem por data: arraste sobre um troço e o mapa mostra só essa parte
+• T reproduz a viagem: o mapa desliza de um local para outro, as fotografias aparecem em grande, os vídeos são reproduzidos durante alguns segundos
+• O mapa está dentro da app: nada vai para a internet, nenhuma localização sai do seu Mac
+
 ARQUIVOS COMO PASTAS
 • ZIP, RAR e 7z abrem como pastas, banda desenhada (CBZ, CBR) incluída, também com palavra-passe e em várias partes
 • Nada é extraído para o disco; os vídeos são reproduzidos diretamente a partir do arquivo

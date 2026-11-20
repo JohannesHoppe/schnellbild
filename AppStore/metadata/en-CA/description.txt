@@ -11,6 +11,14 @@ VIDEOS
 • MP4 and MOV, plus the formats macOS can't play: MKV, WebM, AVI, WMV, FLV, MPEG, DVD video, AVCHD
 • Skim through videos with the arrow keys, the way you page through photos
 
+YOUR PHOTOS ON THE MAP AND THE GLOBE
+• W opens the Atlas: the photos and videos of a folder and its subfolders, shown where they were taken
+• The places come from the files' GPS data, XMP sidecars and GPX tracks
+• Zoomed far out, the map is a globe in front of the stars, with day and night if you like and the cities lit on its night side; zoom in and it flattens into the map
+• The timeline lays the trip out by time: drag across it, and the map shows only that part
+• T plays the tour: the map glides from place to place, the photos show large, the videos play a few seconds
+• The map is inside the app: nothing goes online, no location leaves your Mac
+
 ARCHIVES AS FOLDERS
 • ZIP, RAR and 7z open like folders, comic books (CBZ, CBR) included, also with passwords and in parts
 • Nothing is unpacked to disk; videos play straight from the archive

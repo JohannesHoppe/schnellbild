@@ -11,6 +11,14 @@ VIDEOER
 • MP4 og MOV, plus de formater, macOS ikke kan afspille: MKV, WebM, AVI, WMV, FLV, MPEG, dvd-video, AVCHD
 • Spol gennem videoer med piletasterne, ligesom du bladrer gennem fotos
 
+DINE FOTOS PÅ KORTET OG GLOBUSSEN
+• W åbner Atlas: fotos og videoer fra en mappe og dens undermapper dér, hvor de blev taget
+• Stederne kommer fra filernes GPS-data, XMP-sidefiler og GPX-spor
+• Langt ude er kortet en globus foran stjernehimlen, hvis du vil med dag og nat og byernes lys på natsiden; zoomer du ind, bliver den til det flade kort
+• Tidslinjen ordner turen efter tid: træk hen over et stykke, så viser kortet kun den del
+• T afspiller turen: kortet glider fra sted til sted, fotos vises stort, videoer kører nogle sekunder
+• Kortet ligger i appen: intet går online, ingen placering forlader din Mac
+
 ARKIVER SOM MAPPER
 • ZIP, RAR og 7z åbner som mapper, tegneserier (CBZ, CBR) inklusive, også med adgangskode og i flere dele
 • Intet pakkes ud på disken; videoer afspilles direkte fra arkivet

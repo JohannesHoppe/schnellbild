@@ -11,6 +11,14 @@ VİDEOLAR
 • MP4 ve MOV, ayrıca macOS’in oynatamadığı biçimler: MKV, WebM, AVI, WMV, FLV, MPEG, DVD video, AVCHD
 • Fotoğraflarda gezinir gibi ok tuşlarıyla videolarda ileri geri atlayın
 
+FOTOĞRAFLARINIZ HARİTADA VE KÜRE ÜZERİNDE
+• W ile Atlas açılır: bir klasörün ve alt klasörlerinin fotoğrafları ve videoları çekildikleri yerde görünür
+• Konumlar dosyaların GPS verilerinden, XMP yan dosyalarından ve GPX izlerinden gelir
+• Çok uzaktan bakınca harita, yıldızlı gökyüzünün önünde bir küredir; isterseniz gece ve gündüzüyle, gece tarafında şehirlerin ışıklarıyla. Yaklaştıkça düz haritaya dönüşür
+• Zaman çizelgesi geziyi zamana göre dizer: bir bölümün üzerinden sürükleyin, harita yalnızca o kısmı göstersin
+• T geziyi oynatır: harita yerden yere kayar, fotoğraflar büyük görünür, videolar birkaç saniye oynar
+• Harita uygulamanın içindedir: hiçbir şey internete çıkmaz, hiçbir konum Mac’inizden ayrılmaz
+
 KLASÖR GİBİ ARŞİVLER
 • ZIP, RAR ve 7z klasör gibi açılır, çizgi romanlar (CBZ, CBR) dahil, parolalı ve parçalı olanlar da
 • Diske hiçbir şey açılmaz; videolar doğrudan arşivden oynar

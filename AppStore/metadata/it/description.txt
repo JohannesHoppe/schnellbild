@@ -11,6 +11,14 @@ VIDEO
 • MP4 e MOV, più i formati che macOS non riproduce: MKV, WebM, AVI, WMV, FLV, MPEG, DVD Video, AVCHD
 • Scorri i video con le frecce, come sfogli le foto
 
+LE TUE FOTO SULLA MAPPA E SUL GLOBO
+• W apre l’Atlante: le foto e i video di una cartella e delle sue sottocartelle nel luogo in cui sono stati scattati
+• I luoghi arrivano dai dati GPS dei file, dai file XMP affiancati e dalle tracce GPX
+• Da molto lontano la mappa è un globo davanti al cielo stellato, se vuoi con il giorno e la notte e le città illuminate sul lato notturno; avvicinandoti diventa la mappa piana
+• La linea del tempo ordina il viaggio per data: trascina su un tratto e la mappa mostra solo quella parte
+• T riproduce il viaggio: la mappa scorre da un luogo all’altro, le foto appaiono grandi, i video girano per qualche secondo
+• La mappa è dentro l’app: nulla va online, nessun luogo lascia il tuo Mac
+
 ARCHIVI COME CARTELLE
 • ZIP, RAR e 7z si aprono come cartelle, fumetti (CBZ, CBR) compresi, anche protetti da password e divisi in più parti
 • Nulla viene estratto sul disco; i video si riproducono direttamente dall’archivio

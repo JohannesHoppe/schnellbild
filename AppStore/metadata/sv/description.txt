@@ -11,6 +11,14 @@ VIDEOR
 • MP4 och MOV, plus formaten macOS inte kan spela: MKV, WebM, AVI, WMV, FLV, MPEG, dvd-video, AVCHD
 • Spola genom videor med piltangenterna, precis som du bläddrar bland bilder
 
+DINA FOTON PÅ KARTAN OCH JORDGLOBEN
+• W öppnar Atlas: foton och videor i en mapp och dess undermappar där de togs
+• Platserna kommer från filernas GPS-data, XMP-sidofiler och GPX-spår
+• Långt utzoomad är kartan en jordglob framför stjärnhimlen, om du vill med dag och natt och städernas ljus på nattsidan; zoomar du in planas den ut till kartan
+• Tidslinjen ordnar resan efter tid: dra över en del, så visar kartan bara den
+• T spelar upp resan: kartan glider från plats till plats, foton visas stort, videor spelas några sekunder
+• Kartan finns i appen: inget går ut på nätet, ingen plats lämnar din Mac
+
 ARKIV SOM MAPPAR
 • ZIP, RAR och 7z öppnas som mappar, serier (CBZ, CBR) inräknade, även med lösenord och i flera delar
 • Inget packas upp på disken; videor spelas direkt från arkivet

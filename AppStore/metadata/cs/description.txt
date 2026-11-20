@@ -11,6 +11,14 @@ VIDEA
 • MP4 a MOV a k tomu formáty, které macOS neumí přehrát: MKV, WebM, AVI, WMV, FLV, MPEG, DVD video, AVCHD
 • Procházení videí šipkami, stejně jako listujete fotkami
 
+VAŠE FOTKY NA MAPĚ A NA GLÓBU
+• W otevře Atlas: fotky a videa ze složky a jejích podsložek tam, kde vznikly
+• Místa pocházejí z dat GPS v souborech, z doprovodných souborů XMP a ze záznamů GPX
+• Při velkém oddálení je mapa glóbus před hvězdnou oblohou, podle přání se dnem a nocí a světly měst na noční straně; při přiblížení se zploští v mapu
+• Časová osa řadí cestu podle času: přetáhněte přes úsek a mapa ukáže jen tu část
+• T přehraje cestu: mapa plyne z místa na místo, fotky se ukážou velké, videa hrají pár sekund
+• Mapa je v aplikaci: nic nejde na internet, žádná poloha neopustí váš Mac
+
 ARCHIVY JAKO SLOŽKY
 • ZIP, RAR a 7z se otevírají jako složky, včetně komiksů (CBZ, CBR), i s heslem a rozdělené na části
 • Nic se nerozbaluje na disk; videa se přehrávají přímo z archivu

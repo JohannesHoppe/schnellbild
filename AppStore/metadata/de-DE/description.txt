@@ -11,6 +11,14 @@ VIDEOS
 • MP4 und MOV, dazu die Formate, die macOS nicht abspielt: MKV, WebM, AVI, WMV, FLV, MPEG, DVD-Video, AVCHD
 • Mit den Pfeiltasten durch Videos springen, so wie durch Fotos blättern
 
+DEINE FOTOS AUF DER KARTE UND DEM GLOBUS
+• W öffnet den Atlas: die Fotos und Videos eines Ordners und seiner Unterordner dort, wo sie aufgenommen wurden
+• Die Orte kommen aus den GPS-Daten der Dateien, aus XMP-Begleitdateien und GPX-Tracks
+• Weit herausgezoomt ist die Karte ein Globus vor dem Sternenhimmel, auf Wunsch mit Tag und Nacht und den Lichtern der Städte auf der Nachtseite; beim Hineinzoomen wird er zur flachen Karte
+• Die Zeitleiste ordnet die Reise nach der Zeit: Zieh über einen Abschnitt, und die Karte zeigt nur diesen Teil
+• T spielt die Reise ab: Die Karte gleitet von Ort zu Ort, die Fotos erscheinen groß, die Videos laufen ein paar Sekunden
+• Die Karte steckt in der App: Nichts geht online, kein Ort verlässt deinen Mac
+
 ARCHIVE WIE ORDNER
 • ZIP, RAR und 7z öffnen sich wie Ordner, Comics (CBZ, CBR) eingeschlossen, auch mit Passwort und in mehreren Teilen
 • Nichts wird auf die Festplatte entpackt; Videos spielen direkt aus dem Archiv
