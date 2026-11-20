@@ -57,6 +57,9 @@ jobs:
             motion
             screencapture -x -v probe/$mode-v.mov & pid=$!; sleep 20; kill -INT $pid; wait $pid; echo "$mode -v INT exit $?"
             screencapture -x -V 20 -R 0,0,800,600 probe/$mode-R.mov; echo "$mode -V -R exit $?"
+            swiftc -O Scripts/record_screen.swift -o /tmp/record_screen 2>/dev/null
+            motion
+            /tmp/record_screen probe/$mode-sck.mov & pid=$!; sleep 20; kill -INT $pid; wait $pid; echo "$mode sck exit $?"
             osascript -e 'tell application "QuickTime Player" to quit' || true
           done
           ls -la probe
