@@ -19,7 +19,9 @@ for each width w in WIDTHS. Each video is made of parts of the recording
 between two marks, joined by a short dissolve: a mark is a scene the test
 printed ("DEMO-MARK <time> <scene>") with an offset in seconds, "grid-0.3"
 or "tour+9". Each ends with a short fade to white (a loop starts again
-from there). Needs ffmpeg (libx264, libsvtav1) and cwebp (libwebp).
+from there). It warns about a frame in a part that shows the full view
+black or the map empty (`glitches`). Needs ffmpeg (libx264, libsvtav1) and
+cwebp (libwebp).
 """
 import functools
 import re
@@ -29,20 +31,16 @@ import tempfile
 from pathlib import Path
 
 WIDTHS = [1280, 960]
-# The whole demo: the grid, the full view (dissolving in once its photo is
-# decoded), the Atlas (dissolving in from the full view once the map and its
-# thumbnails are drawn; dissolving past the blank map on the way out to the
-# globe), the globe and the tour up to its last station's
-# photo; click to play
-WEB_PARTS = [("grid-0.3", "full view"), ("full view>shown", "full view+5"), ("atlas+2", "globe>blank"),
-             ("globe>unblank", "atlas again-1.4")]
+# The whole demo in one take: the grid, the full view, back to the grid,
+# the Atlas, out to the globe and the tour up to its last station's photo;
+# click to play
+WEB_PARTS = [("grid-0.3", "atlas again-1.4")]
 # About 30 s, for a loop on the website and the App Store: browsing, the
 # full view's first photo, the Atlas out to the globe and the tour diving in
 # to Bergen's first photos
-SHORT_PARTS = [("grid-0.3", "full view"), ("full view>shown", "full view+3.4"), ("atlas+2", "globe>blank"),
-               ("globe>unblank", "tour+10")]
+SHORT_PARTS = [("grid-0.3", "full view+3.4"), ("atlas+2", "tour+10")]
 DISSOLVE = 0.5
-DARK = 60          # mean luma of the full view still black around its badge
+DARK = 60          # mean luma of the full view black around its badge (with its photo about 130)
 BLANK = 220        # mean luma of the Atlas with an empty map (with its tiles about 210)
 FADE = 0.6
 FPS = 30
@@ -80,28 +78,28 @@ def brightness(raw):
     return sorted(frames)
 
 
-def at(spec, marks, raw):
-    """A mark with an offset, or a mark followed by a look at the frames up to
-    5 s after it: "<mark>>shown" is the first frame after the dark ones (the
-    full view is black until its photo is decoded), "<mark>>blank" the first
-    blank one (the map drawing neither its tiles nor the globe for a moment
-    while it zooms out to the globe) and "<mark>>unblank" the frame after the
-    last blank one; without such frames the mark itself plus 2 s."""
-    m = re.fullmatch(r"(.+?)(>shown|>blank|>unblank|[+-][0-9.]+)?", spec)
-    name, suffix = m.group(1), m.group(2) or ""
+def at(spec, marks):
+    """A mark with an offset in seconds."""
+    m = re.fullmatch(r"(.+?)([+-][0-9.]+)?", spec)
+    name, offset = m.group(1), m.group(2) or "0"
     if name not in marks:
         sys.exit(f"no mark {name!r} (marks: {', '.join(marks)})")
-    start = marks[name]
-    if not suffix.startswith(">"):
-        return max(0.0, start + float(suffix or 0))
-    frames = [(t, luma) for t, luma in brightness(raw) if start <= t <= start + 5]
-    odd = [t for t, luma in frames if (luma < DARK if suffix == ">shown" else luma > BLANK)]
-    if not odd:
-        return start + (0 if suffix == ">shown" else 2)
-    if suffix == ">blank":
-        return odd[0]
-    later = [t for t, _ in frames if t > odd[-1]]
-    return later[0] if later else odd[-1]
+    return max(0.0, marks[name] + float(offset))
+
+
+def glitches(raw, marks, spans):
+    """The frames within `spans` that show the full view black (in the 5 s
+    after the mark "full view") or the map empty (in the 5 s after "globe"):
+    (time, what)."""
+    found = []
+    for t, luma in brightness(raw):
+        if not any(a <= t <= b for a, b in spans):
+            continue
+        if "full view" in marks and marks["full view"] <= t <= marks["full view"] + 5 and luma < DARK:
+            found.append((t, "the full view black"))
+        if "globe" in marks and marks["globe"] <= t <= marks["globe"] + 5 and luma > BLANK:
+            found.append((t, "the map empty"))
+    return found
 
 
 def joined(raw, steady, parts, marks, out, size, fade_out=False):
@@ -110,7 +108,9 @@ def joined(raw, steady, parts, marks, out, size, fade_out=False):
     losslessly into `out`; returns its length. The marks' frames are looked
     up in `raw`."""
     w, h = size
-    spans = [(at(a, marks, raw), at(b, marks, raw)) for a, b in parts]
+    spans = [(at(a, marks), at(b, marks)) for a, b in parts]
+    for t, what in glitches(raw, marks, spans):
+        print(f"warning: {what} at {t:.2f} s of the recording")
     inputs, chains = [], []
     for i, (a, b) in enumerate(spans):
         inputs += ["-i", steady]

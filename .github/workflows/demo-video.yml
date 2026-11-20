@@ -135,6 +135,12 @@ jobs:
           ) &
           helper=$!
           defaults delete art.haushoppe.schnellbild 2>/dev/null || true
+          # Diagnostics: the app's stacks during the warm-up (before the recording)
+          (
+            pid=
+            for _ in $(seq 1 1200); do pid=$(pgrep -x Schnellbild) && break; sleep 0.1; done
+            [ -n "$pid" ] && sudo sample "$pid" 30 5 -mayDie -file demo/warmup-sample.txt > /dev/null 2>&1
+          ) &
           status=0
           TEST_RUNNER_SCHNELLBILD_APP="$PWD/build/Schnellbild.app" TEST_RUNNER_DEMO_VIDEO=1 TEST_RUNNER_LANGUAGE="${LANGUAGE_INPUT:-en}" \
             TEST_RUNNER_PHOTOS_DIR=/Users/Shared/Photos TEST_RUNNER_TOUR_STATIONS="$STATIONS_INPUT" \
@@ -157,4 +163,5 @@ jobs:
             demo/display.txt
             demo/recorder.log
             demo/test.log
+            demo/warmup-sample.txt
           if-no-files-found: warn
