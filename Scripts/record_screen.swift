@@ -8,7 +8,8 @@
 // pointer, each frame written by AVAssetWriter as H.264 (High, quality 0.9)
 // with the frame's own time: the stream sends a frame only when the screen
 // changed, so the movie's frame rate varies. The movie starts with the
-// first frame; "recording" is printed then. The permission to record the
+// first frame; "recording <time>" is printed then, with the time that frame
+// was taken (seconds since 1970). The permission to record the
 // screen comes from the shell that starts it.
 import AVFoundation
 import CoreMedia
@@ -69,7 +70,9 @@ final class Recorder: NSObject, SCStreamOutput, SCStreamDelegate, @unchecked Sen
             guard writer.startWriting() else { fail("Writing failed: \(String(describing: writer.error))") }
             writer.startSession(atSourceTime: buffer.presentationTimeStamp)
             started = true
-            print("recording"); fflush(stdout)
+            // When the first frame was taken, on the wall clock (seconds since 1970)
+            let age = CMTimeSubtract(CMClockGetTime(CMClockGetHostTimeClock()), buffer.presentationTimeStamp).seconds
+            print(String(format: "recording %.3f", Date().timeIntervalSince1970 - age)); fflush(stdout)
         }
         if input.isReadyForMoreMediaData, input.append(buffer) { frames += 1 }
     }

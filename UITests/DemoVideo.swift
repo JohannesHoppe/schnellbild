@@ -81,11 +81,15 @@ final class DemoVideo: SchnellbildUITestCase {
         app.typeKey("+", modifierFlags: [])   // larger thumbnails: the trip fills the screen
         // The map's tiles and the globe's textures made once before the
         // recording, so neither shows grey while it loads: the Atlas, out
-        // to the globe and back by keys (the same camera again), the grid
+        // to the globe by the map's button as in the recording, back by keys
+        // (whole steps both: the same camera again), the grid
         app.typeKey("w", modifierFlags: [])
         XCTAssertTrue(element("atlas").waitForExistence(timeout: 10))
         pause(4)
-        for _ in 0..<4 { app.typeKey("-", modifierFlags: []); pause(1) }
+        let zoomOut = app.buttons[ui("Zoom out")].firstMatch
+        XCTAssertTrue(zoomOut.waitForExistence(timeout: 5), "the map's Zoom out button")
+        for _ in 0..<4 { zoomOut.click(); pause(1) }
+        pointerAside()
         pause(3)
         for _ in 0..<4 { app.typeKey("+", modifierFlags: []); pause(0.5) }
         pause(2)
@@ -138,8 +142,6 @@ final class DemoVideo: SchnellbildUITestCase {
         pause(3)
 
         mark("globe")
-        let zoomOut = app.buttons[ui("Zoom out")].firstMatch
-        XCTAssertTrue(zoomOut.waitForExistence(timeout: 5), "the map's Zoom out button")
         for _ in 0..<4 {
             zoomOut.click()
             pause(0.6)

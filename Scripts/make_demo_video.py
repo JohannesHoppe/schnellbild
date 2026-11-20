@@ -28,14 +28,14 @@ import tempfile
 from pathlib import Path
 
 WIDTHS = [1280, 960]
-# The whole demo: the grid, the full view, the Atlas (dissolving in once
-# its thumbnails are drawn), the globe and the tour up to its last station's
+# The whole demo: the grid, the full view, the Atlas (dissolving in from the
+# full view once the map and its thumbnails are drawn), the globe and the tour up to its last station's
 # photo; click to play
-WEB_PARTS = [("grid-0.3", "atlas"), ("atlas+1.2", "atlas again-1.4")]
+WEB_PARTS = [("grid-0.3", "full view+5"), ("atlas+2", "atlas again-1.4")]
 # About 30 s, for a loop on the website and the App Store: browsing, the
 # full view's first photo, the Atlas out to the globe and the tour diving in
 # to Bergen's first photos
-SHORT_PARTS = [("grid-0.3", "full view+3.2"), ("atlas+1.2", "tour+10.6")]
+SHORT_PARTS = [("grid-0.3", "full view+3.2"), ("atlas+2", "tour+10.6")]
 DISSOLVE = 0.5
 FADE = 0.6
 FPS = 30
@@ -74,8 +74,9 @@ def joined(raw, parts, marks, out, size, fade_out=False):
     spans = [(at(a, marks), at(b, marks)) for a, b in parts]
     inputs, chains = [], []
     for i, (a, b) in enumerate(spans):
-        inputs += ["-ss", f"{a:.3f}", "-t", f"{b - a:.3f}", "-i", raw]
-        chains.append(f"[{i}:v]fps={FPS},scale={w}:{h}:force_original_aspect_ratio=decrease:flags=lanczos,"
+        # Cut by the frames' own times (the recording's frame rate varies)
+        inputs += ["-i", raw]
+        chains.append(f"[{i}:v]trim=start={a:.3f}:end={b:.3f},setpts=PTS-STARTPTS,fps={FPS},scale={w}:{h}:force_original_aspect_ratio=decrease:flags=lanczos,"
                       f"pad={w}:{h}:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv444p[p{i}]")
     label, length = "p0", spans[0][1] - spans[0][0]
     for i in range(1, len(spans)):

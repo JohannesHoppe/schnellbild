@@ -5,7 +5,8 @@
 # pointer, nothing of the system's; the screen recording permission is the
 # shell's, and what it starts has it too). The test asks for the start and the end of the recording over
 # the pasteboard and prints a line "DEMO-MARK <time> <scene>" at each scene;
-# the shell prints "DEMO-RECORDING <time>" when it starts recording. The
+# the shell prints "DEMO-RECORDING <time>" with the time of the movie's first
+# frame. The
 # artifact "demo-video-<lang>-<appearance>" holds the recording as it came
 # (raw.mov), its marks (marks.txt) and the display's modes (display.txt).
 # `Scripts/make_demo_video.sh` cuts and encodes it for the website and the
@@ -116,9 +117,9 @@ jobs:
                 record:start)
                   build/record_screen demo/raw.mov art.haushoppe.schnellbild > demo/recorder.log 2>&1 &
                   recorder=$!
-                  # The movie starts with its first frame
-                  for _ in $(seq 1 100); do grep -q recording demo/recorder.log && break; sleep 0.05; done
-                  echo "DEMO-RECORDING $(python3 -c 'import time; print(f"{time.time():.3f}")')" | tee -a demo/marks.txt
+                  # The movie starts with its first frame, taken at the time printed
+                  for _ in $(seq 1 100); do grep -q '^recording' demo/recorder.log && break; sleep 0.05; done
+                  echo "DEMO-RECORDING $(awk '$1 == "recording" { print $2; exit }' demo/recorder.log)" | tee -a demo/marks.txt
                   printf 'recording' | pbcopy
                   ;;
                 record:stop)
