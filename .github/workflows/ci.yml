@@ -17,8 +17,8 @@ on:
       # Workflows other than this one
       - '!.github/workflows/**'
       - '.github/workflows/ci.yml'
-      # Scripts that make the website, the screenshots, Store pictures and
-      # prices, the DMG window's picture or the map, globe and world-photo
+      # Scripts that make the website, the screenshots, the demo video, Store
+      # pictures and prices, the DMG window's picture or the map, globe and world-photo
       # data (shell scripts stay: BuildScriptsTests reads every one)
       - '!Scripts/build_site.py'
       - '!Scripts/site_alternatives.py'
@@ -26,6 +26,9 @@ on:
       - '!Scripts/make_video_animation.py'
       - '!Scripts/make_sample_media.swift'
       - '!Scripts/shoot_window.swift'
+      - '!Scripts/display_mode.swift'
+      - '!Scripts/record_screen.swift'
+      - '!Scripts/make_demo_video.py'
       - '!Scripts/make_store_screenshots.swift'
       - '!Scripts/appstore_connect.swift'
       - '!Scripts/make_dmg_background.swift'
@@ -50,8 +53,8 @@ on:
       # Workflows other than this one
       - '!.github/workflows/**'
       - '.github/workflows/ci.yml'
-      # Scripts that make the website, the screenshots, Store pictures and
-      # prices, the DMG window's picture or the map, globe and world-photo
+      # Scripts that make the website, the screenshots, the demo video, Store
+      # pictures and prices, the DMG window's picture or the map, globe and world-photo
       # data (shell scripts stay: BuildScriptsTests reads every one)
       - '!Scripts/build_site.py'
       - '!Scripts/site_alternatives.py'

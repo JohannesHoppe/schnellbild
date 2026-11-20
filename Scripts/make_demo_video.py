@@ -21,6 +21,7 @@ printed ("DEMO-MARK <time> <scene>") with an offset in seconds, "grid-0.3"
 or "tour+9". Each ends with a short fade to white (a loop starts again
 from there). Needs ffmpeg (libx264, libsvtav1) and cwebp (libwebp).
 """
+import functools
 import re
 import subprocess
 import sys
@@ -28,15 +29,17 @@ import tempfile
 from pathlib import Path
 
 WIDTHS = [1280, 960]
-# The whole demo: the grid, the full view, the Atlas (dissolving in from the
-# full view once the map and its thumbnails are drawn), the globe and the tour up to its last station's
+# The whole demo: the grid, the full view (dissolving in once its photo is
+# decoded), the Atlas (dissolving in from the full view once the map and its
+# thumbnails are drawn), the globe and the tour up to its last station's
 # photo; click to play
-WEB_PARTS = [("grid-0.3", "full view+5"), ("atlas+2", "atlas again-1.4")]
+WEB_PARTS = [("grid-0.3", "full view"), ("full view>shown", "full view+5"), ("atlas+2", "atlas again-1.4")]
 # About 30 s, for a loop on the website and the App Store: browsing, the
 # full view's first photo, the Atlas out to the globe and the tour diving in
 # to Bergen's first photos
-SHORT_PARTS = [("grid-0.3", "full view+3.2"), ("atlas+2", "tour+10.6")]
+SHORT_PARTS = [("grid-0.3", "full view"), ("full view>shown", "full view+3.4"), ("atlas+2", "tour+10")]
 DISSOLVE = 0.5
+DARK = 60          # mean luma of the full view still black around its badge
 FADE = 0.6
 FPS = 30
 
@@ -59,19 +62,42 @@ def read_marks(path):
     return {name: t - start for name, t in marks.items()}
 
 
-def at(spec, marks):
-    m = re.fullmatch(r"(.+?)([+-][0-9.]+)?", spec)
-    name, offset = m.group(1), float(m.group(2) or 0)
+@functools.cache
+def brightness(raw):
+    """Each frame's time and mean luma (0 to 255) in the recording."""
+    probe = subprocess.run(["ffprobe", "-v", "error", "-f", "lavfi", f"movie={raw},signalstats",
+                            "-show_entries", "frame=pts_time:frame_tags=lavfi.signalstats.YAVG", "-of", "csv=p=0"],
+                           capture_output=True, text=True, check=True)
+    frames = []
+    for line in probe.stdout.splitlines():
+        values = [v for v in line.split(",") if v]
+        if len(values) >= 2:
+            frames.append((float(values[0]), float(values[1])))
+    return sorted(frames)
+
+
+def at(spec, marks, raw):
+    """A mark with an offset; "<mark>>shown": the first frame after the mark
+    that isn't dark (the full view is black until its photo is decoded)."""
+    m = re.fullmatch(r"(.+?)(>shown|[+-][0-9.]+)?", spec)
+    name, suffix = m.group(1), m.group(2) or ""
     if name not in marks:
         sys.exit(f"no mark {name!r} (marks: {', '.join(marks)})")
-    return max(0.0, marks[name] + offset)
+    if suffix == ">shown":
+        start = marks[name]
+        dark = [t for t, luma in brightness(raw) if start <= t <= start + 5 and luma < DARK]
+        if not dark:
+            return start
+        later = [t for t, luma in brightness(raw) if t > dark[-1]]
+        return later[0] if later else start
+    return max(0.0, marks[name] + float(suffix or 0))
 
 
 def joined(raw, parts, marks, out, size, fade_out=False):
     """The parts at `size` (w, h; scaled to fit, black around), 30 fps,
     dissolving into each other, losslessly into `out`; returns its length."""
     w, h = size
-    spans = [(at(a, marks), at(b, marks)) for a, b in parts]
+    spans = [(at(a, marks, raw), at(b, marks, raw)) for a, b in parts]
     inputs, chains = [], []
     for i, (a, b) in enumerate(spans):
         # Cut by the frames' own times (the recording's frame rate varies)

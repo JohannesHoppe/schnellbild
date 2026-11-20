@@ -44,6 +44,8 @@ final class Recorder: NSObject, SCStreamOutput, SCStreamDelegate, @unchecked Sen
         input.expectsMediaDataInRealTime = true
         guard writer.canAdd(input) else { fail("The writer takes no H.264 input") }
         writer.add(input)
+        // Ready before the first frame comes: the movie starts with that frame
+        guard writer.startWriting() else { fail("Writing failed: \(String(describing: writer.error))") }
         super.init()
     }
 
@@ -66,15 +68,18 @@ final class Recorder: NSObject, SCStreamOutput, SCStreamDelegate, @unchecked Sen
         guard type == .screen, buffer.isValid,
               let attachments = CMSampleBufferGetSampleAttachmentsArray(buffer, createIfNecessary: false) as? [[SCStreamFrameInfo: Any]],
               let raw = attachments.first?[.status] as? Int, SCFrameStatus(rawValue: raw) == .complete else { return }
+        guard input.isReadyForMoreMediaData else { return }
         if !started {
-            guard writer.startWriting() else { fail("Writing failed: \(String(describing: writer.error))") }
             writer.startSession(atSourceTime: buffer.presentationTimeStamp)
             started = true
-            // When the first frame was taken, on the wall clock (seconds since 1970)
+        }
+        guard input.append(buffer) else { return }
+        frames += 1
+        if frames == 1 {
+            // When the movie's first frame was taken, on the wall clock (seconds since 1970)
             let age = CMTimeSubtract(CMClockGetTime(CMClockGetHostTimeClock()), buffer.presentationTimeStamp).seconds
             print(String(format: "recording %.3f", Date().timeIntervalSince1970 - age)); fflush(stdout)
         }
-        if input.isReadyForMoreMediaData, input.append(buffer) { frames += 1 }
     }
 
     func stream(_ stream: SCStream, didStopWithError error: Error) {
@@ -85,7 +90,7 @@ final class Recorder: NSObject, SCStreamOutput, SCStreamDelegate, @unchecked Sen
         try? await stream?.stopCapture()
         await withCheckedContinuation { (done: CheckedContinuation<Void, Never>) in
             queue.async {
-                guard self.started else { done.resume(); return }
+                guard self.started else { self.writer.cancelWriting(); done.resume(); return }
                 // The last picture lasts until now (the stream sends only changes)
                 self.input.markAsFinished()
                 self.writer.endSession(atSourceTime: CMClockGetTime(CMClockGetHostTimeClock()))
