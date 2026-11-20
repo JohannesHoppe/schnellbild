@@ -3,19 +3,18 @@
 # Atlas, globe, tour) in full screen, and this workflow's shell records the
 # app's windows with Scripts/record_screen.swift (ScreenCaptureKit: no
 # pointer, nothing of the system's; the screen recording permission is the
-# shell's, and what it starts has it too). The test asks for the start and the end of the recording over
-# the pasteboard and prints a line "DEMO-MARK <time> <scene>" at each scene;
-# the shell prints "DEMO-RECORDING <time>" with the time of the movie's first
-# frame. The
+# shell's, and what it starts has it too). The display is switched to the
+# input `screen` first (Scripts/display_mode.swift). The test asks for the
+# start and the end of the recording over the pasteboard and prints a line
+# "DEMO-MARK <time> <scene>" at each scene; the shell prints
+# "DEMO-RECORDING <time>" with the time of the movie's first frame. The
 # artifact "demo-video-<lang>-<appearance>" holds the recording as it came
-# (raw.mov), its marks (marks.txt) and the display's modes (display.txt).
-# `Scripts/make_demo_video.sh` cuts and encodes it for the website and the
-# App Store.
+# (raw.mov), its marks (marks.txt), the display's modes (display.txt) and
+# the recorder's log. `python3 -I Scripts/make_demo_video.py <artifact
+# folder> <out folder>` cuts and encodes it for the website and the App Store.
 name: Demo video
 
 on:
-  push:   # TEMPORARY while iterating on the branch
-    branches: [ demo-video ]
   workflow_dispatch:
     inputs:
       language:
@@ -28,8 +27,8 @@ on:
         description: "How many of the tour's stations to show (empty: the whole tour)"
         default: ""
       screen:
-        description: "The display mode to record in: <w>x<h> points, largest, or empty for the runner's own"
-        default: ""
+        description: "The display mode to record in: <w>x<h> points (1x, up to 1920x1080), largest, or empty for the runner's own 1024x768"
+        default: "1280x720"
 
 permissions:
   contents: read
@@ -81,7 +80,7 @@ jobs:
 
       - name: The display
         env:
-          SCREEN_INPUT: ${{ github.event_name == 'push' && '1280x720' || inputs.screen }}
+          SCREEN_INPUT: ${{ inputs.screen }}
         run: |
           mkdir -p demo
           swiftc -O Scripts/display_mode.swift -o build/display_mode
@@ -96,8 +95,8 @@ jobs:
 
       - name: Record the demo
         env:
-          LANGUAGE_INPUT: ${{ inputs.language || 'en' }}
-          APPEARANCE_INPUT: ${{ inputs.appearance || 'light' }}
+          LANGUAGE_INPUT: ${{ inputs.language }}
+          APPEARANCE_INPUT: ${{ inputs.appearance }}
           STATIONS_INPUT: ${{ inputs.stations }}
         run: |
           case "$APPEARANCE_INPUT" in
@@ -149,7 +148,7 @@ jobs:
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: always()
         with:
-          name: demo-video-${{ inputs.language || 'en' }}-${{ inputs.appearance || 'light' }}
+          name: demo-video-${{ inputs.language }}-${{ inputs.appearance }}
           path: |
             demo/raw.mov
             demo/marks.txt

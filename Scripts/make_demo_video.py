@@ -31,15 +31,19 @@ from pathlib import Path
 WIDTHS = [1280, 960]
 # The whole demo: the grid, the full view (dissolving in once its photo is
 # decoded), the Atlas (dissolving in from the full view once the map and its
-# thumbnails are drawn), the globe and the tour up to its last station's
+# thumbnails are drawn; dissolving past the blank map on the way out to the
+# globe), the globe and the tour up to its last station's
 # photo; click to play
-WEB_PARTS = [("grid-0.3", "full view"), ("full view>shown", "full view+5"), ("atlas+2", "atlas again-1.4")]
+WEB_PARTS = [("grid-0.3", "full view"), ("full view>shown", "full view+5"), ("atlas+2", "globe>blank"),
+             ("globe>unblank", "atlas again-1.4")]
 # About 30 s, for a loop on the website and the App Store: browsing, the
 # full view's first photo, the Atlas out to the globe and the tour diving in
 # to Bergen's first photos
-SHORT_PARTS = [("grid-0.3", "full view"), ("full view>shown", "full view+3.4"), ("atlas+2", "tour+10")]
+SHORT_PARTS = [("grid-0.3", "full view"), ("full view>shown", "full view+3.4"), ("atlas+2", "globe>blank"),
+               ("globe>unblank", "tour+10")]
 DISSOLVE = 0.5
 DARK = 60          # mean luma of the full view still black around its badge
+BLANK = 220        # mean luma of the Atlas with an empty map (with its tiles about 210)
 FADE = 0.6
 FPS = 30
 
@@ -77,32 +81,40 @@ def brightness(raw):
 
 
 def at(spec, marks, raw):
-    """A mark with an offset; "<mark>>shown": the first frame after the mark
-    that isn't dark (the full view is black until its photo is decoded)."""
-    m = re.fullmatch(r"(.+?)(>shown|[+-][0-9.]+)?", spec)
+    """A mark with an offset, or a mark followed by a look at the frames up to
+    5 s after it: "<mark>>shown" is the first frame after the dark ones (the
+    full view is black until its photo is decoded), "<mark>>blank" the first
+    blank one (the map drawing neither its tiles nor the globe for a moment
+    while it zooms out to the globe) and "<mark>>unblank" the frame after the
+    last blank one; without such frames the mark itself plus 2 s."""
+    m = re.fullmatch(r"(.+?)(>shown|>blank|>unblank|[+-][0-9.]+)?", spec)
     name, suffix = m.group(1), m.group(2) or ""
     if name not in marks:
         sys.exit(f"no mark {name!r} (marks: {', '.join(marks)})")
-    if suffix == ">shown":
-        start = marks[name]
-        dark = [t for t, luma in brightness(raw) if start <= t <= start + 5 and luma < DARK]
-        if not dark:
-            return start
-        later = [t for t, luma in brightness(raw) if t > dark[-1]]
-        return later[0] if later else start
-    return max(0.0, marks[name] + float(suffix or 0))
+    start = marks[name]
+    if not suffix.startswith(">"):
+        return max(0.0, start + float(suffix or 0))
+    frames = [(t, luma) for t, luma in brightness(raw) if start <= t <= start + 5]
+    odd = [t for t, luma in frames if (luma < DARK if suffix == ">shown" else luma > BLANK)]
+    if not odd:
+        return start + (0 if suffix == ">shown" else 2)
+    if suffix == ">blank":
+        return odd[0]
+    later = [t for t, _ in frames if t > odd[-1]]
+    return later[0] if later else odd[-1]
 
 
-def joined(raw, parts, marks, out, size, fade_out=False):
-    """The parts at `size` (w, h; scaled to fit, black around), 30 fps,
-    dissolving into each other, losslessly into `out`; returns its length."""
+def joined(raw, steady, parts, marks, out, size, fade_out=False):
+    """The parts of `steady` (the recording at a steady frame rate) at `size`
+    (w, h; scaled to fit, black around), dissolving into each other,
+    losslessly into `out`; returns its length. The marks' frames are looked
+    up in `raw`."""
     w, h = size
     spans = [(at(a, marks, raw), at(b, marks, raw)) for a, b in parts]
     inputs, chains = [], []
     for i, (a, b) in enumerate(spans):
-        # Cut by the frames' own times (the recording's frame rate varies)
-        inputs += ["-i", raw]
-        chains.append(f"[{i}:v]trim=start={a:.3f}:end={b:.3f},setpts=PTS-STARTPTS,fps={FPS},scale={w}:{h}:force_original_aspect_ratio=decrease:flags=lanczos,"
+        inputs += ["-i", steady]
+        chains.append(f"[{i}:v]trim=start={a:.3f}:end={b:.3f},setpts=PTS-STARTPTS,scale={w}:{h}:force_original_aspect_ratio=decrease:flags=lanczos,"
                       f"pad={w}:{h}:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1,format=yuv444p[p{i}]")
     label, length = "p0", spans[0][1] - spans[0][0]
     for i in range(1, len(spans)):
@@ -130,9 +142,14 @@ def main():
 
     with tempfile.TemporaryDirectory() as tmp:
         tmp = Path(tmp)
+        # The recording has a frame only where the screen changed; at a steady
+        # rate each picture lasts until the next, and the parts are cut exactly
+        steady = tmp / "steady.mkv"
+        run("ffmpeg", "-v", "error", "-y", "-i", raw, "-vf", f"fps={FPS}", "-c:v", "libx264", "-preset", "ultrafast",
+            "-qp", "0", steady)
         for name, parts in [("demo", WEB_PARTS), ("demo-short", SHORT_PARTS)]:
             cut = tmp / f"{name}.mkv"
-            length = joined(raw, parts, marks, cut, (rw, rh), fade_out=True)
+            length = joined(raw, steady, parts, marks, cut, (rw, rh), fade_out=True)
             print(f"{name}: {length:.1f} s")
             for w in WIDTHS:
                 scale = f"scale={w}:-2:flags=lanczos,format=yuv420p"
@@ -148,7 +165,7 @@ def main():
                     run("ffmpeg", "-v", "error", "-y", "-i", poster, "-q:v", "3", out / f"demo-poster-{w}.jpg")
 
         store = tmp / "store.mkv"
-        length = joined(raw, SHORT_PARTS, marks, store, (1920, 1080), fade_out=True)
+        length = joined(raw, steady, SHORT_PARTS, marks, store, (1920, 1080), fade_out=True)
         print(f"App Store: {length:.1f} s")
         if not 15 <= length <= 30:
             sys.exit(f"the App Store preview lasts {length:.1f} s: 15 to 30 s")
