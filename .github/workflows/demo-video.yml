@@ -1,9 +1,9 @@
 # Records the demo video on a clean Mac (started by hand): the DemoVideo UI
 # test drives the app on the sample library's Norway trip (grid, full view,
 # Atlas, globe, tour) in full screen, and this workflow's shell records the
-# screen with Scripts/record_screen.swift (ScreenCaptureKit, without the
-# pointer; the screen recording permission is the shell's, and what it
-# starts has it too). The test asks for the start and the end of the recording over
+# app's windows with Scripts/record_screen.swift (ScreenCaptureKit: no
+# pointer, nothing of the system's; the screen recording permission is the
+# shell's, and what it starts has it too). The test asks for the start and the end of the recording over
 # the pasteboard and prints a line "DEMO-MARK <time> <scene>" at each scene;
 # the shell prints "DEMO-RECORDING <time>" when it starts recording. The
 # artifact "demo-video-<lang>-<appearance>" holds the recording as it came
@@ -114,7 +114,7 @@ jobs:
               request=$(pbpaste 2>/dev/null || true)
               case "$request" in
                 record:start)
-                  build/record_screen demo/raw.mov > demo/recorder.log &
+                  build/record_screen demo/raw.mov art.haushoppe.schnellbild > demo/recorder.log 2>&1 &
                   recorder=$!
                   # The movie starts with its first frame
                   for _ in $(seq 1 100); do grep -q recording demo/recorder.log && break; sleep 0.05; done

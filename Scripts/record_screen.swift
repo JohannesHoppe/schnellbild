@@ -1,6 +1,9 @@
 // Records the main display into a movie until it gets SIGINT or SIGTERM,
 // for the demo video (.github/workflows/demo-video.yml):
-//   record_screen <out.mov> [fps]
+//   record_screen <out.mov> <bundle id> [fps]
+// Only the windows of the app with that bundle id are recorded: nothing of
+// the system's comes in, also not the dot macOS shows in a full-screen
+// space's corner while the screen is recorded.
 // ScreenCaptureKit's stream at the display's pixel size, without the
 // pointer, each frame written by AVAssetWriter as H.264 (High, quality 0.9)
 // with the frame's own time: the stream sends a frame only when the screen
@@ -43,7 +46,7 @@ final class Recorder: NSObject, SCStreamOutput, SCStreamDelegate, @unchecked Sen
         super.init()
     }
 
-    func start(display: SCDisplay, width: Int, height: Int, fps: Int) async throws {
+    func start(filter: SCContentFilter, width: Int, height: Int, fps: Int) async throws {
         let config = SCStreamConfiguration()
         config.width = width
         config.height = height
@@ -52,7 +55,7 @@ final class Recorder: NSObject, SCStreamOutput, SCStreamDelegate, @unchecked Sen
         config.queueDepth = 6
         config.pixelFormat = kCVPixelFormatType_32BGRA
         config.colorSpaceName = CGColorSpace.sRGB
-        let stream = SCStream(filter: SCContentFilter(display: display, excludingWindows: []), configuration: config, delegate: self)
+        let stream = SCStream(filter: filter, configuration: config, delegate: self)
         try stream.addStreamOutput(self, type: .screen, sampleHandlerQueue: queue)
         self.stream = stream
         try await stream.startCapture()
@@ -92,9 +95,10 @@ final class Recorder: NSObject, SCStreamOutput, SCStreamDelegate, @unchecked Sen
 }
 
 let args = CommandLine.arguments
-guard args.count > 1 else { fail("Usage: record_screen <out.mov> [fps]") }
+guard args.count > 2 else { fail("Usage: record_screen <out.mov> <bundle id> [fps]") }
 let url = URL(fileURLWithPath: args[1])
-let fps = args.count > 2 ? Int(args[2]) ?? 60 : 60
+let bundleID = args[2]
+let fps = args.count > 3 ? Int(args[3]) ?? 60 : 60
 let id = CGMainDisplayID()
 let width = CGDisplayPixelsWide(id), height = CGDisplayPixelsHigh(id)
 
@@ -106,8 +110,11 @@ Task {
     do {
         let content = try await SCShareableContent.excludingDesktopWindows(false, onScreenWindowsOnly: true)
         guard let display = content.displays.first(where: { $0.displayID == id }) else { fail("No main display") }
+        let apps = content.applications.filter { $0.bundleIdentifier == bundleID }
+        guard !apps.isEmpty else { fail("\(bundleID) isn't running") }
+        let filter = SCContentFilter(display: display, including: apps, exceptingWindows: [])
         let recorder = try Recorder(url: url, width: width, height: height)
-        try await recorder.start(display: display, width: width, height: height, fps: fps)
+        try await recorder.start(filter: filter, width: width, height: height, fps: fps)
         for source in stopSources {
             source.setEventHandler {
                 Task { await recorder.stop(); exit(0) }
