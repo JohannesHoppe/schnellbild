@@ -1060,6 +1060,10 @@ final class ArchiveStore: @unchecked Sendable {
             var served = Set<String>()
             var passed = Set<String>()
             var ended = false
+            // Paths this pass has met: a later entry whose name cleans to
+            // one of them is a duplicate the index left out (it keeps the
+            // first), never read or kept under that path
+            var met = Set<String>()
             func waiting(for path: String) -> (this: Bool, any: Bool) {
                 lock.lock(); defer { lock.unlock() }
                 return (archive.pending[path] != nil, archive.pending.keys.contains { !served.contains($0) })
@@ -1068,7 +1072,7 @@ final class ArchiveStore: @unchecked Sendable {
                 try reader.walk(password: index.password, listOnly: false) { item in
                     let (wanted, anyLeft) = waiting(for: item.path)
                     guard anyLeft else { ended = true; return .stop }
-                    guard !item.isDirectory else { return .skip }
+                    guard met.insert(item.path).inserted, !item.isDirectory else { return .skip }
                     let key = Self.bytesKey(index, item.path)
                     // In a solid archive the pictures on the way are unpacked
                     // anyway: kept for the next request (paging through a comic)
