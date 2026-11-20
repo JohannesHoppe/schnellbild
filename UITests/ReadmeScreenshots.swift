@@ -157,9 +157,11 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
     }
 
     /// The Atlas view on the sample library's Norway trip: the map with
-    /// the timeline (a photo selected), and a frame of the tour.
+    /// the timeline (a photo selected), and a frame of the tour. The Sun
+    /// stands where it stood on the trip's last morning, so the globe shows
+    /// Norway by day whenever the pictures are taken.
     func testAtlasScreenshots() throws {
-        launch(open: tempDir.appendingPathComponent("Norway").path)
+        launch(open: tempDir.appendingPathComponent("Norway").path, extra: ["--globe-date=2026-06-18T10:30:00Z"])
         XCTAssertTrue(tile("Geirangerfjord.jpg").waitForExistence(timeout: 15))
         tile("Geirangerfjord.jpg").click()
         waitForSelected("Geirangerfjord.jpg")
