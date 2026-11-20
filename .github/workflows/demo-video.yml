@@ -1,0 +1,151 @@
+# Records the demo video on a clean Mac (started by hand): the DemoVideo UI
+# test drives the app on the sample library's Norway trip (grid, full view,
+# Atlas, globe, tour) in full screen, and this workflow's shell records the
+# screen with `screencapture -V` (only the shell holds the screen recording
+# permission). The test asks for the start and the end of the recording over
+# the pasteboard and prints a line "DEMO-MARK <time> <scene>" at each scene;
+# the shell prints "DEMO-RECORDING <time>" when it starts recording. The
+# artifact "demo-video-<lang>-<appearance>" holds the recording as it came
+# (raw.mov), its marks (marks.txt) and the display's modes (display.txt).
+# `Scripts/make_demo_video.sh` cuts and encodes it for the website and the
+# App Store.
+name: Demo video
+
+on:
+  workflow_dispatch:
+    inputs:
+      language:
+        description: "The app's language (en, de, fr, pt-BR, zh-Hans …: a folder of Resources/Localization)"
+        default: en
+      appearance:
+        description: "light or dark"
+        default: light
+      stations:
+        description: "How many of the tour's stations to show (empty: the whole tour)"
+        default: ""
+      screen:
+        description: "The display mode to record in: <w>x<h> points, largest, or empty for the runner's own"
+        default: ""
+
+permissions:
+  contents: read
+
+concurrency:
+  group: demo-video-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  record:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: Select Xcode
+        run: Scripts/select_xcode.sh
+
+      - name: Install xcodegen
+        run: ./Scripts/fetch_xcodegen.sh >> "$GITHUB_PATH"
+
+      - name: Cache VLCKit
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: Vendor
+          key: vendor-${{ hashFiles('Scripts/fetch_vlckit.sh', 'Scripts/fetch_unrar.sh', 'Scripts/fetch_map.sh', 'Scripts/map_data.env', 'Scripts/fetch_globe.sh', 'Scripts/globe_data.env') }}
+
+      # The app as it ships (build_app.sh + sign_app.sh, ad hoc): in the App
+      # Sandbox exactly as users get it
+      - name: Build the app
+        run: |
+          ./Scripts/build_app.sh
+          ./Scripts/check_entitlements.sh build/Schnellbild.app
+
+      - name: Build for testing
+        run: |
+          xcodegen generate
+          xcodebuild build-for-testing -project Schnellbild.xcodeproj -scheme Schnellbild \
+            -destination 'platform=macOS' -derivedDataPath build/DerivedData
+
+      - name: Draw the sample media
+        run: swift Scripts/make_sample_media.swift /Users/Shared/Photos
+
+      - name: Hide the Dock
+        run: |
+          defaults write com.apple.dock autohide -bool true
+          defaults write com.apple.dock autohide-delay -float 1000
+          killall Dock
+          sleep 2
+
+      - name: The display
+        env:
+          SCREEN_INPUT: ${{ inputs.screen }}
+        run: |
+          mkdir -p demo
+          swiftc -O Scripts/display_mode.swift -o build/display_mode
+          build/display_mode list | tee demo/display.txt
+          case "$SCREEN_INPUT" in
+            "") ;;
+            largest) build/display_mode set largest | tee -a demo/display.txt ;;
+            *x*) build/display_mode set "${SCREEN_INPUT%x*}" "${SCREEN_INPUT#*x}" | tee -a demo/display.txt ;;
+            *) echo "screen: <w>x<h>, largest or empty"; exit 1 ;;
+          esac
+
+      - name: Record the demo
+        env:
+          LANGUAGE_INPUT: ${{ inputs.language }}
+          APPEARANCE_INPUT: ${{ inputs.appearance }}
+          STATIONS_INPUT: ${{ inputs.stations }}
+        run: |
+          case "$APPEARANCE_INPUT" in
+            light) dark=false ;;
+            dark) dark=true ;;
+            *) echo "appearance: light or dark"; exit 1 ;;
+          esac
+          osascript -e "tell application \"System Events\" to tell appearance preferences to set dark mode to $dark"
+          # The test asks for "record:start" / "record:stop" on the pasteboard
+          # and waits for "recording" / "stopped".
+          (
+            set +e
+            recorder=
+            while :; do
+              request=$(pbpaste 2>/dev/null || true)
+              case "$request" in
+                record:start)
+                  # At most five minutes; the test stops it sooner
+                  screencapture -x -V 300 demo/raw.mov &
+                  recorder=$!
+                  echo "DEMO-RECORDING $(python3 -c 'import time; print(f"{time.time():.3f}")')" | tee -a demo/marks.txt
+                  printf 'recording' | pbcopy
+                  ;;
+                record:stop)
+                  kill -INT "$recorder" 2>/dev/null
+                  for _ in $(seq 1 60); do kill -0 "$recorder" 2>/dev/null || break; sleep 0.5; done
+                  echo "DEMO-STOPPED $(python3 -c 'import time; print(f"{time.time():.3f}")')" | tee -a demo/marks.txt
+                  printf 'stopped' | pbcopy
+                  ;;
+              esac
+              sleep 0.1
+            done
+          ) &
+          helper=$!
+          defaults delete art.haushoppe.schnellbild 2>/dev/null || true
+          status=0
+          TEST_RUNNER_SCHNELLBILD_APP="$PWD/build/Schnellbild.app" TEST_RUNNER_DEMO_VIDEO=1 TEST_RUNNER_LANGUAGE="${LANGUAGE_INPUT:-en}" \
+            TEST_RUNNER_PHOTOS_DIR=/Users/Shared/Photos TEST_RUNNER_TOUR_STATIONS="$STATIONS_INPUT" \
+            xcodebuild test-without-building -project Schnellbild.xcodeproj -scheme Schnellbild \
+              -destination 'platform=macOS' -derivedDataPath build/DerivedData \
+              -only-testing:SchnellbildUITests/DemoVideo 2>&1 | tee demo/test.log || status=1
+          kill "$helper" 2>/dev/null || true
+          grep -h '^DEMO-MARK' demo/test.log >> demo/marks.txt || true
+          cat demo/marks.txt
+          ls -la demo
+          exit $status
+
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: always()
+        with:
+          name: demo-video-${{ inputs.language }}-${{ inputs.appearance }}
+          path: |
+            demo/raw.mov
+            demo/marks.txt
+            demo/display.txt
+          if-no-files-found: warn
