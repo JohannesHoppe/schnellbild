@@ -7,8 +7,9 @@
 # artifact; with "upload" it also goes to App Store Connect with the API key the
 # DMG is notarized with (NOTARY_KEY_*), where it shows as a build of its version.
 # With "metadata" Scripts/appstore_connect.swift puts AppStore/metadata and the
-# screenshots into the version (and with "upload" picks the build); it uses an
-# App Manager key (APPSTORE_API_KEY_P8 / _ID) if there is one (docs/SIGNING.md).
+# screenshots into the version (with "upload" picks the build, with "submit" sends
+# it to App Review); it uses an App Manager key (APPSTORE_API_KEY_P8 / _ID) if
+# there is one (docs/SIGNING.md).
 name: App Store
 
 on:
@@ -20,6 +21,10 @@ on:
         default: false
       metadata:
         description: "Put texts and screenshots (AppStore/metadata) into App Store Connect; with upload also pick the build"
+        type: boolean
+        default: false
+      submit:
+        description: "With metadata: send the version to App Review (App Privacy answered in App Store Connect first)"
         type: boolean
         default: false
 
@@ -121,14 +126,14 @@ jobs:
           ASC_ISSUER_ID: ${{ secrets.NOTARY_ISSUER_ID }}
           ASC_REVIEW_CONTACT: ${{ secrets.APPSTORE_REVIEW_CONTACT }}
           PICK_BUILD: ${{ inputs.upload }}
+          SUBMIT: ${{ inputs.submit }}
         run: |
           export ASC_KEY_PATH="$RUNNER_TEMP/asc.p8"
           (umask 077; printf '%s\n' "$P8" > "$ASC_KEY_PATH")
-          if [ "$PICK_BUILD" = true ]; then
-            swift Scripts/appstore_connect.swift metadata --build
-          else
-            swift Scripts/appstore_connect.swift metadata
-          fi
+          flags=()
+          [ "$PICK_BUILD" = true ] && flags+=(--build)
+          [ "$SUBMIT" = true ] && flags+=(--submit)
+          swift Scripts/appstore_connect.swift metadata "${flags[@]}"
 
       - name: Remove the API key
         if: always()

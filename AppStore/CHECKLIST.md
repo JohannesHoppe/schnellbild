@@ -40,7 +40,7 @@ How to make the certificates, profiles and secrets again when they run out: `doc
     - **Availability:** all countries except **China mainland** (an app there needs an ICP filing number, which Schnellbild has none of). **France:** with the encryption exempt (below) no declaration to the ANSSI is needed; App Store Connect asks for one only for non-exempt encryption.
     - **Price:** base country Germany at 0,99 €; the prices of the other countries are set through the App Store Connect API (not by `appstore_connect.swift`).
     - **License agreement:** App Information → License Agreement → custom, the text of `AppStore/EULA.md` (also published on the website). **Read it first**, and have it checked if in doubt; it is a draft, not legal advice.
-13. [ ] **Submit:** pick the build in the version, then "Add for Review".
+13. [ ] **Submit:** `gh workflow run appstore.yml -f metadata=true -f submit=true` (with `-f upload=true` in the same run once the build is there), after App Privacy is answered: Apple refuses the submission without it. Or "Add for Review" in App Store Connect.
 
 ## Export compliance (answer for App Store Connect)
 

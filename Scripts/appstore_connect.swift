@@ -1,9 +1,9 @@
 // Puts the App Store texts (AppStore/metadata) and screenshots into App Store Connect through its API, for the version in Resources/Info.plist,
-// and with --build picks the uploaded build for that version. Nothing is submitted
-// for review: that stays a click in App Store Connect. `prices` handles the Mac
-// App Store price per country.
+// with --build picks the uploaded build for that version, and with --submit sends
+// the version to App Review (once App Privacy is answered in App Store Connect,
+// which the API can't set). `prices` handles the Mac App Store price per country.
 //
-//   swift Scripts/appstore_connect.swift metadata [--build]
+//   swift Scripts/appstore_connect.swift metadata [--build] [--submit]
 //   swift Scripts/appstore_connect.swift prices list <out.json>   # what Apple offers per country
 //   swift Scripts/appstore_connect.swift prices apply             # sets AppStore/metadata/prices.json
 //
@@ -34,9 +34,10 @@ let arguments = CommandLine.arguments
 let pricesMode = arguments.count >= 3 && arguments[1] == "prices" ? arguments[2] : nil
 guard arguments.count >= 2 && arguments[1] == "metadata"
         || pricesMode == "list" && arguments.count == 4 || pricesMode == "apply" else {
-    fail("usage: swift Scripts/appstore_connect.swift metadata [--build] | prices list <out.json> | prices apply")
+    fail("usage: swift Scripts/appstore_connect.swift metadata [--build] [--submit] | prices list <out.json> | prices apply")
 }
 let pickBuild = CommandLine.arguments.contains("--build")
+let submit = CommandLine.arguments.contains("--submit")
 guard let keyID = env["ASC_KEY_ID"], let issuer = env["ASC_ISSUER_ID"], let keyPath = env["ASC_KEY_PATH"] else {
     fail("ASC_KEY_ID, ASC_ISSUER_ID and ASC_KEY_PATH are needed")
 }
@@ -510,4 +511,30 @@ if pickBuild {
 if !unanswered.isEmpty {
     fail("age rating questions app.json doesn't answer (add them to ageRating): " + unanswered.joined(separator: ", "))
 }
-say("Done. In App Store Connect: App Privacy (\"Data Not Collected\") once, then Submit for Review.")
+// The submission: an open review submission of the app (or a new one) gets the
+// version as its item and is sent. Apple refuses it while App Privacy isn't answered.
+if submit {
+    let open = items(try await api("GET", query("/v1/reviewSubmissions", [
+        "filter[app]": appID, "filter[platform]": "MAC_OS", "filter[state]": "READY_FOR_REVIEW",
+    ]))).first
+    var submissionID = open.map(id) ?? ""
+    if submissionID.isEmpty {
+        submissionID = id(try await upsert("reviewSubmissions", existing: nil, attributes: ["platform": "MAC_OS"],
+                                           create: ["app": relation("apps", appID)]))
+    }
+    let included = try await api("GET", query("/v1/reviewSubmissions/\(submissionID)/items", ["include": "appStoreVersion"]))
+    let hasVersion = items(included).contains { item in
+        (((item["relationships"] as? JSON)?["appStoreVersion"] as? JSON)?["data"] as? JSON).map(id) == versionID
+    }
+    if !hasVersion {
+        try await api("POST", "/v1/reviewSubmissionItems", ["data": ["type": "reviewSubmissionItems", "relationships": [
+            "reviewSubmission": relation("reviewSubmissions", submissionID),
+            "appStoreVersion": relation("appStoreVersions", versionID),
+        ]]])
+    }
+    try await api("PATCH", "/v1/reviewSubmissions/\(submissionID)",
+                  ["data": ["type": "reviewSubmissions", "id": submissionID, "attributes": ["submitted": true]]])
+    say("Version \(versionString) submitted for review")
+} else {
+    say("Done. In App Store Connect: App Privacy (\"Data Not Collected\") once; then submit (appstore.yml -f submit=true, or the button).")
+}
