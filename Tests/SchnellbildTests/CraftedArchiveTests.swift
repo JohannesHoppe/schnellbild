@@ -149,20 +149,52 @@ final class CraftedArchiveTests: XCTestCase {
             Self.file("copy.jpg", extra: Self.redirect(5, to: "../outside.jpg"), size: 1),
             Self.file("copy2.jpg", extra: Self.redirect(5, to: "..\\..\\x.jpg"), size: 7),
         ]), "names.rar", in: tree)
-        let store = ArchiveStore()
-        let index = try await store.index(of: url)
-        XCTAssertEqual(index.byPath.values.filter { !$0.isDirectory }.map(\.path).sorted(),
-                       ["a/b.jpg", "a\\..\\c.jpg", "copy.jpg", "copy2.jpg", "etc/y.jpg", "x.jpg"])
-        assertInside(index, url)
-        let expected = ["x.jpg": "X-FIRST", "etc/y.jpg": "Y", "a/b.jpg": "B", "a\\..\\c.jpg": "C", "copy2.jpg": "X-FIRST"]
-        for (path, text) in expected {
-            let data = try await store.data(of: url.appendingPathComponent(path))
-            XCTAssertEqual(String(decoding: data, as: UTF8.self), text, path)
+        let expected = [("x.jpg", "X-FIRST"), ("etc/y.jpg", "Y"), ("a/b.jpg", "B"), ("a\\..\\c.jpg", "C"), ("copy2.jpg", "X-FIRST")]
+        // Both orders, each with its own store (nothing cached): read first,
+        // and read after a pass has gone by the first "x.jpg"
+        for reads in [expected, Array(expected.reversed())] {
+            let store = ArchiveStore()
+            let index = try await store.index(of: url)
+            XCTAssertEqual(index.byPath.values.filter { !$0.isDirectory }.map(\.path).sorted(),
+                           ["a/b.jpg", "a\\..\\c.jpg", "copy.jpg", "copy2.jpg", "etc/y.jpg", "x.jpg"])
+            assertInside(index, url)
+            for (path, text) in reads {
+                let data = try await store.data(of: url.appendingPathComponent(path))
+                XCTAssertEqual(String(decoding: data, as: UTF8.self), text, path)
+            }
+            do {
+                _ = try await store.data(of: url.appendingPathComponent("copy.jpg"))
+                XCTFail("a copy of a file outside read something")
+            } catch ArchiveError.notFound {}
         }
-        do {
-            _ = try await store.data(of: url.appendingPathComponent("copy.jpg"))
-            XCTFail("a copy of a file outside read something")
-        } catch ArchiveError.notFound {}
+    }
+
+    /// A read asked for while a pass is past an entry's first occurrence
+    /// gets that entry (in the next pass), not a later one whose name
+    /// cleans to the same path.
+    func testARequestDuringAPassGetsTheFirstOfTwoEntriesWithOnePath() async throws {
+        let tree = try TempTree(self)
+        let url = try write(Self.rar([Self.file("../x.jpg", Data("X-FIRST".utf8)),
+                                      Self.file("y.jpg", Data("Y".utf8)),
+                                      Self.file("x.jpg", Data("X2".utf8))]), "twice.rar", in: tree)
+        let store = ArchiveStore()
+        _ = try await store.index(of: url)
+        let x = url.appendingPathComponent("x.jpg")
+        let late = LateRequest()
+        store.unpacked = { path in
+            guard path == "y.jpg" else { return }
+            // x is asked for now: the pass has gone by "../x.jpg" and meets
+            // "x.jpg" next
+            late.task = Task { try await store.data(of: x) }
+            let deadline = Date().addingTimeInterval(10)
+            while !store.isWaiting(for: x), Date() < deadline { usleep(1000) }
+        }
+        let y = try await store.data(of: url.appendingPathComponent("y.jpg"))
+        XCTAssertEqual(y, Data("Y".utf8))
+        let xData = try await XCTUnwrap(late.task).value
+        XCTAssertEqual(String(decoding: xData, as: UTF8.self), "X-FIRST")
+        let again = try await store.data(of: x)
+        XCTAssertEqual(String(decoding: again, as: UTF8.self), "X-FIRST", "read again (cached)")
     }
 
     /// The same for ZIP (read by libarchive, which leaves names as stored).
