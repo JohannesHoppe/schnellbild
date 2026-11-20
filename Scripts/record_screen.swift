@@ -3,7 +3,10 @@
 //   record_screen <out.mov> [fps]
 // ScreenCaptureKit's stream at the display's pixel size, without the
 // pointer, each frame written by AVAssetWriter as H.264 (High, quality 0.9)
-// with the frame's own time. Prints "recording" once the first frame is in.
+// with the frame's own time: the stream sends a frame only when the screen
+// changed, so the movie's frame rate varies. The movie starts with the
+// first frame; "recording" is printed then. The permission to record the
+// screen comes from the shell that starts it.
 import AVFoundation
 import CoreMedia
 import Foundation
@@ -77,7 +80,9 @@ final class Recorder: NSObject, SCStreamOutput, SCStreamDelegate, @unchecked Sen
         await withCheckedContinuation { (done: CheckedContinuation<Void, Never>) in
             queue.async {
                 guard self.started else { done.resume(); return }
+                // The last picture lasts until now (the stream sends only changes)
                 self.input.markAsFinished()
+                self.writer.endSession(atSourceTime: CMClockGetTime(CMClockGetHostTimeClock()))
                 self.writer.finishWriting { done.resume() }
             }
         }

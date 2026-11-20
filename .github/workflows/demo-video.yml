@@ -1,8 +1,9 @@
 # Records the demo video on a clean Mac (started by hand): the DemoVideo UI
 # test drives the app on the sample library's Norway trip (grid, full view,
 # Atlas, globe, tour) in full screen, and this workflow's shell records the
-# screen with `screencapture -V` (only the shell holds the screen recording
-# permission). The test asks for the start and the end of the recording over
+# screen with Scripts/record_screen.swift (ScreenCaptureKit, without the
+# pointer; the screen recording permission is the shell's, and what it
+# starts has it too). The test asks for the start and the end of the recording over
 # the pasteboard and prints a line "DEMO-MARK <time> <scene>" at each scene;
 # the shell prints "DEMO-RECORDING <time>" when it starts recording. The
 # artifact "demo-video-<lang>-<appearance>" holds the recording as it came
@@ -37,41 +38,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  probe:   # TEMPORARY: how screencapture records on the runner
-    runs-on: macos-15
-    steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
-      - name: Probe
-        run: |
-          set +e
-          mkdir -p probe
-          which ffprobe ffmpeg || true
-          sw_vers
-          swift Scripts/make_sample_media.swift /tmp/media >/dev/null
-          swiftc -O Scripts/display_mode.swift -o /tmp/display_mode
-          motion() { open -a "QuickTime Player" "/tmp/media/Sunset Timelapse.mp4"; sleep 1; osascript -e 'tell application "QuickTime Player" to play document 1' || true; }
-          for mode in native big; do
-            [ $mode = big ] && /tmp/display_mode set 1920 1080
-            motion
-            start=$(date +%s); screencapture -x -V 20 probe/$mode-V.mov; echo "$mode -V exit $? after $(( $(date +%s) - start )) s"
-            motion
-            screencapture -x -v probe/$mode-v.mov & pid=$!; sleep 20; kill -INT $pid; wait $pid; echo "$mode -v INT exit $?"
-            screencapture -x -V 20 -R 0,0,800,600 probe/$mode-R.mov; echo "$mode -V -R exit $?"
-            swiftc -O Scripts/record_screen.swift -o /tmp/record_screen 2>/dev/null
-            motion
-            /tmp/record_screen probe/$mode-sck.mov & pid=$!; sleep 20; kill -INT $pid; wait $pid; echo "$mode sck exit $?"
-            osascript -e 'tell application "QuickTime Player" to quit' || true
-          done
-          ls -la probe
-          for f in probe/*.mov; do ffprobe -v error -show_entries stream=codec_name,width,height,avg_frame_rate,nb_frames:format=duration -of compact "$f" 2>&1 || mdls -name kMDItemDurationSeconds "$f"; done
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-        if: always()
-        with:
-          name: probe
-          path: probe
-
   record:
-    if: false   # TEMPORARY while probing
     runs-on: macos-15
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
@@ -117,6 +84,7 @@ jobs:
         run: |
           mkdir -p demo
           swiftc -O Scripts/display_mode.swift -o build/display_mode
+          swiftc -O Scripts/record_screen.swift -o build/record_screen
           build/display_mode list | tee demo/display.txt
           case "$SCREEN_INPUT" in
             "") ;;
@@ -146,15 +114,16 @@ jobs:
               request=$(pbpaste 2>/dev/null || true)
               case "$request" in
                 record:start)
-                  # At most five minutes; the test stops it sooner
-                  screencapture -x -V 300 demo/raw.mov &
+                  build/record_screen demo/raw.mov > demo/recorder.log &
                   recorder=$!
+                  # The movie starts with its first frame
+                  for _ in $(seq 1 100); do grep -q recording demo/recorder.log && break; sleep 0.05; done
                   echo "DEMO-RECORDING $(python3 -c 'import time; print(f"{time.time():.3f}")')" | tee -a demo/marks.txt
                   printf 'recording' | pbcopy
                   ;;
                 record:stop)
                   kill -INT "$recorder" 2>/dev/null
-                  for _ in $(seq 1 60); do kill -0 "$recorder" 2>/dev/null || break; sleep 0.5; done
+                  wait "$recorder"; echo "recorder: exit $?"; cat demo/recorder.log
                   echo "DEMO-STOPPED $(python3 -c 'import time; print(f"{time.time():.3f}")')" | tee -a demo/marks.txt
                   printf 'stopped' | pbcopy
                   ;;
@@ -184,4 +153,5 @@ jobs:
             demo/raw.mov
             demo/marks.txt
             demo/display.txt
+            demo/recorder.log
           if-no-files-found: warn
