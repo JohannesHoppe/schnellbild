@@ -74,7 +74,7 @@ GLOBE_SHOT = "atlas-globe"
 # whose picture has no master in docs/screenshots yet is shown as text alone
 FEATURE_SHOTS = ["full", "atlas", "video", "archives", "dualpane", "search", "adjust", "inspector", "help", "settings"]
 # The App Store's pictures (light), in their order there (by name)
-STORE_SHOTS = ["archive-inside", "dualpane", "full", "grid", "inspector", "video"]
+STORE_SHOTS = ["archive-inside", "atlas", "dualpane", "full", "grid", "inspector", "video"]
 OG_SIZE = (1200, 630)
 OG_LIMIT = 300_000
 PORT = 8917

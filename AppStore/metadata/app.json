@@ -10,6 +10,7 @@
   "screenshots": {
     "shots": [
       "archive-inside",
+      "atlas",
       "dualpane",
       "full",
       "grid",
@@ -44,6 +45,10 @@
       "zh-Hans": "zh-Hans",
       "zh-Hant": "zh-Hant"
     }
+  },
+  "preview": {
+    "file": "AppStore/preview/app-preview.mp4",
+    "frame": "00:00:13:00"
   },
   "contentRights": "DOES_NOT_USE_THIRD_PARTY_CONTENT",
   "eula": "AppStore/EULA.md",

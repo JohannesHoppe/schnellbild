@@ -352,6 +352,12 @@ let storeShots = screenshotPlan["shots"] as? [String] ?? []
 let shotLanguages = screenshotPlan["languages"] as? [String: String] ?? [:]
 let storeShotsFolder = FileManager.default.temporaryDirectory.appendingPathComponent("schnellbild-store-\(ProcessInfo.processInfo.processIdentifier)")
 var madeStoreShots: [String: URL] = [:]
+// The app preview: app.json's "preview" names the video (H.264, 1920 × 1080, 15 to 30 s,
+// stereo AAC: Apple's App Preview specifications for the Mac) and the frame shown
+// before it plays; the same video for every locale.
+let previewPlan = app["preview"] as? [String: String] ?? [:]
+let previewFile = previewPlan["file"].map { root.appendingPathComponent($0) }
+if let previewFile, !FileManager.default.fileExists(atPath: previewFile.path) { fail("\(previewFile.path) is missing") }
 
 func storeScreenshots(_ language: String) throws -> URL {
     if let folder = madeStoreShots[language] { return folder }
@@ -383,6 +389,9 @@ for locale in locales {
     if let language = shotLanguages[locale] {
         try await screenshots(for: id(localization), from: try storeScreenshots(language), locale: locale)
     }
+    if let preview = previewFile {
+        try await appPreview(for: id(localization), file: preview, locale: locale)
+    }
 }
 
 /// Makes the Mac screenshots of a localization those in the folder, in name order;
@@ -392,7 +401,7 @@ func screenshots(for localizationID: String, from folder: URL, locale: String) a
         .filter { $0.pathExtension.lowercased() == "png" }.sorted { $0.lastPathComponent < $1.lastPathComponent }
     guard !files.isEmpty else { say("  \(locale): no screenshots in \(folder.path)"); return }
     let local = try files.map { try Data(contentsOf: $0) }
-    let checksums = local.map { Insecure.MD5.hash(data: $0).map { String(format: "%02x", $0) }.joined() }
+    let checksums = local.map(md5)
 
     let sets = items(try await api("GET", "/v1/appStoreVersionLocalizations/\(localizationID)/appScreenshotSets"))
     var set = sets.first { attributes($0)["screenshotDisplayType"] as? String == "APP_DESKTOP" } ?? [:]
@@ -406,24 +415,61 @@ func screenshots(for localizationID: String, from folder: URL, locale: String) a
     }
     for shot in current { try await api("DELETE", "/v1/appScreenshots/\(id(shot))") }
     for (index, file) in files.enumerated() {
-        let reservation = try await upsert("appScreenshots", existing: nil,
-            attributes: ["fileName": file.lastPathComponent, "fileSize": local[index].count],
-            create: ["appScreenshotSet": relation("appScreenshotSets", id(set))])
-        for operation in attributes(reservation)["uploadOperations"] as? [JSON] ?? [] {
-            guard let urlString = operation["url"] as? String, let url = URL(string: urlString),
-                  let offset = operation["offset"] as? Int, let length = operation["length"] as? Int else { fail("unexpected upload operation") }
-            var request = URLRequest(url: url)
-            request.httpMethod = operation["method"] as? String ?? "PUT"
-            for header in operation["requestHeaders"] as? [JSON] ?? [] {
-                if let name = header["name"] as? String, let value = header["value"] as? String { request.setValue(value, forHTTPHeaderField: name) }
-            }
-            let (_, response) = try await URLSession.shared.upload(for: request, from: local[index].subdata(in: offset..<(offset + length)))
-            guard let status = (response as? HTTPURLResponse)?.statusCode, (200..<300).contains(status) else { fail("upload of \(file.lastPathComponent) failed") }
-        }
-        try await api("PATCH", "/v1/appScreenshots/\(id(reservation))", ["data": ["type": "appScreenshots", "id": id(reservation),
-            "attributes": ["uploaded": true, "sourceFileChecksum": checksums[index]]]])
+        try await upload("appScreenshots", file: file, data: local[index], checksum: checksums[index],
+                         into: ["appScreenshotSet": relation("appScreenshotSets", id(set))])
     }
     say("  \(locale): \(files.count) screenshots uploaded")
+}
+
+func md5(_ data: Data) -> String { Insecure.MD5.hash(data: data).map { String(format: "%02x", $0) }.joined() }
+
+/// Reserves an asset (a screenshot or a preview) in its set, sends its parts as
+/// App Store Connect's upload operations say, then marks it uploaded with its checksum.
+func upload(_ type: String, file: URL, data: Data, checksum: String, attributes extra: JSON = [:], into set: JSON) async throws {
+    var values: JSON = ["fileName": file.lastPathComponent, "fileSize": data.count]
+    values.merge(extra) { $1 }
+    let reservation = try await upsert(type, existing: nil, attributes: values, create: set)
+    for operation in attributes(reservation)["uploadOperations"] as? [JSON] ?? [] {
+        guard let urlString = operation["url"] as? String, let url = URL(string: urlString),
+              let offset = operation["offset"] as? Int, let length = operation["length"] as? Int else { fail("unexpected upload operation") }
+        var request = URLRequest(url: url)
+        request.httpMethod = operation["method"] as? String ?? "PUT"
+        for header in operation["requestHeaders"] as? [JSON] ?? [] {
+            if let name = header["name"] as? String, let value = header["value"] as? String { request.setValue(value, forHTTPHeaderField: name) }
+        }
+        let (_, response) = try await URLSession.shared.upload(for: request, from: data.subdata(in: offset..<(offset + length)))
+        guard let status = (response as? HTTPURLResponse)?.statusCode, (200..<300).contains(status) else { fail("upload of \(file.lastPathComponent) failed") }
+    }
+    try await api("PATCH", "/v1/\(type)/\(id(reservation))", ["data": ["type": type, "id": id(reservation),
+        "attributes": ["uploaded": true, "sourceFileChecksum": checksum]]])
+}
+
+/// Makes the Mac app preview of a localization the video given, only if it differs
+/// (by checksum) or its poster frame changed.
+func appPreview(for localizationID: String, file: URL, locale: String) async throws {
+    let data = try Data(contentsOf: file)
+    let checksum = md5(data)
+    let frame = previewPlan["frame"] ?? "00:00:05:00"
+    let sets = items(try await api("GET", "/v1/appStoreVersionLocalizations/\(localizationID)/appPreviewSets"))
+    var set = sets.first { attributes($0)["previewType"] as? String == "DESKTOP" } ?? [:]
+    if set.isEmpty {
+        set = try await upsert("appPreviewSets", existing: nil, attributes: ["previewType": "DESKTOP"],
+                               create: ["appStoreVersionLocalization": relation("appStoreVersionLocalizations", localizationID)])
+    }
+    let current = items(try await api("GET", "/v1/appPreviewSets/\(id(set))/appPreviews"))
+    if current.count == 1, attributes(current[0])["sourceFileChecksum"] as? String == checksum {
+        if attributes(current[0])["previewFrameTimeCode"] as? String != frame {
+            try await api("PATCH", "/v1/appPreviews/\(id(current[0]))", ["data": ["type": "appPreviews", "id": id(current[0]),
+                "attributes": ["previewFrameTimeCode": frame]]])
+            say("  \(locale): app preview, poster frame set"); return
+        }
+        say("  \(locale): app preview, unchanged"); return
+    }
+    for preview in current { try await api("DELETE", "/v1/appPreviews/\(id(preview))") }
+    try await upload("appPreviews", file: file, data: data, checksum: checksum,
+                     attributes: ["mimeType": "video/mp4", "previewFrameTimeCode": frame],
+                     into: ["appPreviewSet": relation("appPreviewSets", id(set))])
+    say("  \(locale): app preview uploaded")
 }
 
 // Notes for the review (and the contact, if the version has none yet).
