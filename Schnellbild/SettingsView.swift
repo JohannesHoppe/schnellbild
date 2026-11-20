@@ -24,12 +24,16 @@ struct GeneralSettingsView: View {
     @State private var appearance = AppAppearance.chosen
     @State private var grantedFolders = FolderAccess.shared.count
     @State private var forgettingAccess = false
+    /// The form's own height, measured: a scroll view asks for none of its own.
+    @State private var formHeight: CGFloat?
 
     var body: some View {
         // As tall as what it holds, but never taller than the screen: on a
         // small one the sections scroll, so the last ones stay reachable
-        ScrollView(.vertical) { form }
-            .frame(maxHeight: Self.largestHeight)
+        ScrollView(.vertical) {
+            form.onGeometryChange(for: CGFloat.self) { $0.size.height } action: { formHeight = $0 }
+        }
+        .frame(height: formHeight.map { min($0, Self.largestHeight) })
     }
 
     /// The screen's height less the window's title and tab bar.

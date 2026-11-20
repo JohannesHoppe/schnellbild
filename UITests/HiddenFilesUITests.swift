@@ -61,6 +61,10 @@ final class HiddenFilesUITests: SchnellbildUITestCase {
         app.typeKey(",", modifierFlags: .command)
         let toggle = element("settings.showHiddenFiles").firstMatch
         XCTAssertTrue(toggle.waitForExistence(timeout: 10))
+        // As tall as its sections up to the screen's height: the fourth one
+        // shows without scrolling, also on the runner's small screen
+        let formats = element("settings.formatsStatus").firstMatch
+        eventually("the Video formats section in view") { formats.exists && formats.isHittable }
         eventually("off in Settings") { (toggle.value as? Int ?? (toggle.value as? NSNumber)?.intValue ?? -1) == 0 }
         toggle.click()
         eventually("on in Settings") { (toggle.value as? Int ?? (toggle.value as? NSNumber)?.intValue ?? -1) == 1 }
