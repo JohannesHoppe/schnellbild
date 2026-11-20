@@ -33,6 +33,8 @@ final class DemoVideo: SchnellbildUITestCase {
     override func tearDownWithError() throws {
         app?.terminate()   // the library stays: the workflow made it
         // When the main thread answered late and what the views showed when, to read against the marks
+        // (none when skipped: no library, no app)
+        guard tempDir != nil else { return }
         print("app log:\n" + ((try? String(contentsOf: testLog("app.log"), encoding: .utf8)) ?? "(none)"))
     }
 
