@@ -25,6 +25,11 @@ func mainWindow(front: Bool = false) -> (id: Int, bounds: CGRect)? {
     return front ? windows.first : windows.max { $0.1.width * $0.1.height < $1.1.width * $1.1.height }
 }
 
+/// The side, in points, of the screen's top right square that holds the
+/// screen recording indicator (a dot of about 9 pt, 8 pt from the top and
+/// right edges on the runner's 1024 × 768 screen).
+let recordingIndicatorCorner = 24
+
 func load(_ url: URL) -> CGImage? {
     guard let source = CGImageSourceCreateWithURL(url as CFURL, nil) else { return nil }
     return CGImageSourceCreateImageAtIndex(source, 0, nil)
@@ -108,6 +113,17 @@ case "compose" where args.count > 3:
     let cut = context(fw, fh)
     let sh = screen.height * fw / screen.width
     cut.draw(screen, in: CGRect(x: 0, y: fh - sh, width: fw, height: sh))
+    // A window in full screen covers the screen's top right corner, where
+    // macOS draws its screen recording indicator over everything; the
+    // window's own picture has none, so that corner comes from it.
+    let display = CGDisplayBounds(CGMainDisplayID())
+    if fw >= Int(display.width), fh >= Int(display.height) {
+        let corner = CGFloat(recordingIndicatorCorner) * CGFloat(fw) / display.width
+        cut.saveGState()
+        cut.clip(to: CGRect(x: CGFloat(fw) - corner, y: CGFloat(fh) - corner, width: corner, height: corner))
+        cut.draw(flat, in: CGRect(x: 0, y: 0, width: fw, height: fh))
+        cut.restoreGState()
+    }
     cut.setBlendMode(.destinationIn)
     cut.draw(flat, in: CGRect(x: 0, y: 0, width: fw, height: fh))
     // … laid over the window in the shadowed picture
