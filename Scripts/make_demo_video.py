@@ -6,18 +6,20 @@
 
 Writes into <out folder>
 
-    demo-<w>.mp4          the website's video, H.264 (plays everywhere), no sound
+    demo-<w>.mp4          the whole demo for the website, H.264 (plays
+                          everywhere), no sound
     demo-<w>.webm         the same as AV1 in WebM (smaller, for browsers that take it)
-    demo-poster-<w>.webp  its first picture, shown before it plays (and .jpg)
-    appstore-preview.mp4  the App Store's app preview: 1920 x 1080, 30 fps,
-                          H.264 High at level 4.0, about 10 Mbps, a silent
-                          stereo AAC track at 48 kHz, 15 to 30 s
+    demo-short-<w>.mp4 / .webm  its short cut (about 30 s), for a loop
+    demo-poster-<w>.webp  their first picture, shown before they play (and .jpg)
+    appstore-preview.mp4  the short cut as the App Store's app preview:
+                          1920 x 1080, 30 fps, H.264 High at level 4.0, about
+                          10 Mbps, a silent stereo AAC track at 48 kHz, 15 to 30 s
 
 for each width w in WIDTHS. Each video is made of parts of the recording
 between two marks, joined by a short dissolve: a mark is a scene the test
 printed ("DEMO-MARK <time> <scene>") with an offset in seconds, "grid-0.3"
-or "tour+9". Both end with a short fade to white (the website's loop
-starts again from there). Needs ffmpeg (libx264, libsvtav1) and cwebp (libwebp).
+or "tour+9". Each ends with a short fade to white (a loop starts again
+from there). Needs ffmpeg (libx264, libsvtav1) and cwebp (libwebp).
 """
 import re
 import subprocess
@@ -26,12 +28,14 @@ import tempfile
 from pathlib import Path
 
 WIDTHS = [1280, 960]
-# The whole demo (each video ends with a short fade): the grid, the full view, the Atlas, the globe and the tour
-# up to its last station's photo
-WEB_PARTS = [("grid-0.3", "atlas again-1.4")]
-# 30 s at most: browsing, the full view's first photo, the Atlas out to the
-# globe and the tour diving in to Bergen's first photos
-APPSTORE_PARTS = [("grid-0.3", "full view+3.2"), ("atlas-0.2", "tour+9.4")]
+# The whole demo: the grid, the full view, the Atlas (dissolving in once
+# its thumbnails are drawn), the globe and the tour up to its last station's
+# photo; click to play
+WEB_PARTS = [("grid-0.3", "atlas"), ("atlas+1.2", "atlas again-1.4")]
+# About 30 s, for a loop on the website and the App Store: browsing, the
+# full view's first photo, the Atlas out to the globe and the tour diving in
+# to Bergen's first photos
+SHORT_PARTS = [("grid-0.3", "full view+3.2"), ("atlas+1.2", "tour+10.6")]
 DISSOLVE = 0.5
 FADE = 0.6
 FPS = 30
@@ -99,22 +103,25 @@ def main():
 
     with tempfile.TemporaryDirectory() as tmp:
         tmp = Path(tmp)
-        web = tmp / "web.mkv"
-        length = joined(raw, WEB_PARTS, marks, web, (rw, rh), fade_out=True)
-        print(f"website: {length:.1f} s")
-        for w in WIDTHS:
-            scale = f"scale={w}:-2:flags=lanczos,format=yuv420p"
-            run("ffmpeg", "-v", "error", "-y", "-i", web, "-vf", scale, "-c:v", "libx264", "-preset", "slow",
-                "-crf", "24", "-profile:v", "high", "-movflags", "+faststart", "-an", out / f"demo-{w}.mp4")
-            run("ffmpeg", "-v", "error", "-y", "-i", web, "-vf", scale, "-c:v", "libsvtav1", "-preset", "4",
-                "-crf", "36", "-g", "240", "-svtav1-params", "tune=0", "-an", out / f"demo-{w}.webm")
-            poster = tmp / f"poster-{w}.png"
-            run("ffmpeg", "-v", "error", "-y", "-i", web, "-frames:v", "1", "-vf", f"scale={w}:-2:flags=lanczos", poster)
-            run("cwebp", "-quiet", "-q", "88", poster, "-o", out / f"demo-poster-{w}.webp")
-            run("ffmpeg", "-v", "error", "-y", "-i", poster, "-q:v", "3", out / f"demo-poster-{w}.jpg")
+        for name, parts in [("demo", WEB_PARTS), ("demo-short", SHORT_PARTS)]:
+            cut = tmp / f"{name}.mkv"
+            length = joined(raw, parts, marks, cut, (rw, rh), fade_out=True)
+            print(f"{name}: {length:.1f} s")
+            for w in WIDTHS:
+                scale = f"scale={w}:-2:flags=lanczos,format=yuv420p"
+                run("ffmpeg", "-v", "error", "-y", "-i", cut, "-vf", scale, "-c:v", "libx264", "-preset", "slow",
+                    "-crf", "24", "-profile:v", "high", "-movflags", "+faststart", "-an", out / f"{name}-{w}.mp4")
+                run("ffmpeg", "-v", "error", "-y", "-i", cut, "-vf", scale, "-c:v", "libsvtav1", "-preset", "4",
+                    "-crf", "38", "-g", "240", "-an", out / f"{name}-{w}.webm")
+                if name == "demo":
+                    poster = tmp / f"poster-{w}.png"
+                    run("ffmpeg", "-v", "error", "-y", "-i", cut, "-frames:v", "1", "-vf",
+                        f"scale={w}:-2:flags=lanczos", poster)
+                    run("cwebp", "-quiet", "-q", "88", poster, "-o", out / f"demo-poster-{w}.webp")
+                    run("ffmpeg", "-v", "error", "-y", "-i", poster, "-q:v", "3", out / f"demo-poster-{w}.jpg")
 
         store = tmp / "store.mkv"
-        length = joined(raw, APPSTORE_PARTS, marks, store, (1920, 1080), fade_out=True)
+        length = joined(raw, SHORT_PARTS, marks, store, (1920, 1080), fade_out=True)
         print(f"App Store: {length:.1f} s")
         if not 15 <= length <= 30:
             sys.exit(f"the App Store preview lasts {length:.1f} s: 15 to 30 s")

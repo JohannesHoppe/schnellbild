@@ -91,6 +91,21 @@ final class DemoVideo: SchnellbildUITestCase {
         pause(2)
         app.typeKey("w", modifierFlags: [])
         waitForSelected("Alesund from Aksla.jpg")
+        // The full view's photos decoded once, so each shows at once
+        tile("Bryggen Morning.jpg").click()
+        waitForSelected("Bryggen Morning.jpg")
+        app.typeKey(.space, modifierFlags: [])
+        let fullImage = element("fullImage")
+        for step in 0..<3 {
+            if step > 0 { app.typeKey(.rightArrow, modifierFlags: []) }
+            pause(0.5)
+            eventually("the photo loads", timeout: 15) { self.text(of: fullImage).hasSuffix("loaded") }
+            pause(1)
+        }
+        app.typeKey(.escape, modifierFlags: [])
+        tile("Alesund from Aksla.jpg").click()
+        waitForSelected("Alesund from Aksla.jpg")
+        pointerAside()
         pause(3)   // the thumbnails settled
         ask("record:start", answer: "recording")
         pause(1)
@@ -106,7 +121,6 @@ final class DemoVideo: SchnellbildUITestCase {
 
         mark("full view")
         app.typeKey(.space, modifierFlags: [])
-        let fullImage = element("fullImage")
         eventually("the photo loads", timeout: 15) { self.text(of: fullImage).hasSuffix("loaded") }
         pause(1.8)
         for _ in 0..<2 {
