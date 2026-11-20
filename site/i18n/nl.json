@@ -63,7 +63,7 @@
     ]
   ],
   "featuresTitle": "Wat hij doet",
-  "demoLabel": "Video: een foto geopend vanuit het raster, de foto's van de reis op de kaart en de globe, daarna de reis afgespeeld",
+  "demoLabel": "Video: een foto geopend vanuit het raster, de foto's van de reis op de kaart en de wereldbol, daarna de reis afgespeeld",
   "featuresMore": "En nog veel meer functies: alle details op GitHub",
   "features": [
     {
@@ -72,9 +72,9 @@
       "alt": "Een foto in de volledige weergave"
     },
     {
-      "title": "Je foto’s op de kaart en de globe",
-      "text": "<p><kbd>W</kbd> toont de foto’s en video’s van een map en de submappen op de plek waar ze gemaakt zijn. Ver uitgezoomd is de kaart een globe voor de sterrenhemel, desgewenst met dag en nacht en de verlichte steden op de nachtkant; bij inzoomen wordt hij de platte kaart.</p><ul><li>De tijdlijn zet de reis op volgorde van tijd: sleep over een stuk en de kaart toont alleen dat deel</li><li><kbd>T</kbd> speelt de reis af: de kaart glijdt van plek naar plek, de foto’s verschijnen groot, de video’s spelen een paar seconden</li><li>De kaart zit in de app: er gaat niets online, geen locatie verlaat je Mac</li></ul>",
-      "alt": "De foto’s van een reis op de globe, in de atlasweergave"
+      "title": "Je foto’s op de kaart en de wereldbol",
+      "text": "<p><kbd>W</kbd> toont de foto’s en video’s van een map en de submappen op de plek waar ze gemaakt zijn. Ver uitgezoomd is de kaart een wereldbol voor de sterrenhemel, desgewenst met dag en nacht en de verlichte steden op de nachtkant; bij inzoomen wordt hij de platte kaart.</p><ul><li>De tijdlijn zet de reis op volgorde van tijd: sleep over een stuk en de kaart toont alleen dat deel</li><li><kbd>T</kbd> speelt de reis af: de kaart glijdt van plek naar plek, de foto’s verschijnen groot, de video’s spelen een paar seconden</li><li>De kaart zit in de app: er gaat niets online, geen locatie verlaat je Mac</li></ul>",
+      "alt": "De foto’s van een reis op de wereldbol, in de atlasweergave"
     },
     {
       "title": "Video’s, ook MKV en alles wat macOS niet afspeelt",

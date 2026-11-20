@@ -11,10 +11,10 @@ VIDEO’S
 • MP4 en MOV, plus de formaten die macOS niet afspeelt: MKV, WebM, AVI, WMV, FLV, MPEG, dvd-video, AVCHD
 • Snel door video’s gaan met de pijltjestoetsen, zoals je door foto’s bladert
 
-JE FOTO’S OP DE KAART EN DE GLOBE
+JE FOTO’S OP DE KAART EN DE WERELDBOL
 • W opent de Atlas: de foto’s en video’s van een map en de submappen op de plek waar ze gemaakt zijn
 • De plaatsen komen uit de gps-gegevens van de bestanden, XMP-sidecars en gpx-tracks
-• Ver uitgezoomd is de kaart een globe voor de sterrenhemel, desgewenst met dag en nacht en de verlichte steden op de nachtkant; bij inzoomen wordt hij de platte kaart
+• Ver uitgezoomd is de kaart een wereldbol voor de sterrenhemel, desgewenst met dag en nacht en de verlichte steden op de nachtkant; bij inzoomen wordt hij de platte kaart
 • De tijdlijn zet de reis op volgorde van tijd: sleep over een stuk en de kaart toont alleen dat deel
 • T speelt de reis af: de kaart glijdt van plek naar plek, de foto’s verschijnen groot, de video’s spelen een paar seconden
 • De kaart zit in de app: er gaat niets online, geen locatie verlaat je Mac
