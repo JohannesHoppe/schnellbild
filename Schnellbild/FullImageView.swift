@@ -44,6 +44,13 @@ struct FullImageView: View {
     @GestureState private var dragTranslation: CGSize = .zero
     @GestureState private var pinch: CGFloat = 1
 
+    /// The tile's thumbnail from the cache shows, scaled up, from the view's
+    /// first frame until the picture is decoded (black only without one).
+    init(url: URL) {
+        self.url = url
+        _image = State(initialValue: ThumbnailCache.shared.image(for: url))
+    }
+
     var body: some View {
         GeometryReader { geo in
             ZStack {
@@ -91,12 +98,14 @@ struct FullImageView: View {
                 // yet. Another page of the same PDF: the page shown stays until
                 // the next one is drawn.
                 if pdf?.url != url { image = ThumbnailCache.shared.image(for: url) }
+                MainThreadWatch.log("full view \(url.lastPathComponent): \(image == nil ? "black" : "the tile") until decoded")
                 failed = false
                 failure = nil
                 decodedSide = 0
                 let scale = NSScreen.windowBackingScale
                 let maxPixel = max(Int(max(geo.size.width, geo.size.height) * scale), 1)
                 await load(maxPixel: maxPixel, sharper: false)
+                MainThreadWatch.log("full view \(url.lastPathComponent): decoded at \(decodedSide) px")
                 updateActualSizeFactor(in: geo.size)
             }
             .task(id: SharpnessJob(shown: shown, side: wantedSide(in: geo.size), ready: picture != nil)) {

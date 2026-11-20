@@ -32,6 +32,7 @@ struct AtlasView: View {
         .background(Color(nsColor: .windowBackgroundColor))
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("atlas")
+        .onAppear { MainThreadWatch.log("atlas appears") }
     }
 
     private var map: some View {
@@ -215,12 +216,22 @@ private struct AtlasTile: View {
 }
 
 /// A thumbnail from the grid's cache (made by QuickLook or VLC as there).
+/// One in the cache shows in the tile's first frame (the Atlas shown again,
+/// the tour ended), not the grey square first.
 struct AtlasThumbnail: View {
     let url: URL
     let modified: Date?
     let side: CGFloat
     var isVideo = false
     @State private var image: NSImage?
+
+    init(url: URL, modified: Date?, side: CGFloat, isVideo: Bool = false) {
+        self.url = url
+        self.modified = modified
+        self.side = side
+        self.isVideo = isVideo
+        _image = State(initialValue: ThumbnailCache.shared.cached(for: url, side: side, modified: modified))
+    }
 
     var body: some View {
         ZStack(alignment: .bottomLeading) {
@@ -632,7 +643,16 @@ private struct TourPicture: View {
     let side: CGFloat
     let paused: Bool
     let modified: Date?
+    /// Any cached thumbnail of the item at first (in the station's first frame), a large one once made
     @State private var image: NSImage?
+
+    init(item: AtlasItem, side: CGFloat, paused: Bool, modified: Date?) {
+        self.item = item
+        self.side = side
+        self.paused = paused
+        self.modified = modified
+        _image = State(initialValue: ThumbnailCache.shared.image(for: item.url))
+    }
 
     /// What shows it (UI tests).
     private var player: String {

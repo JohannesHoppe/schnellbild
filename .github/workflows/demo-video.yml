@@ -9,8 +9,10 @@
 # "DEMO-MARK <time> <scene>" at each scene; the shell prints
 # "DEMO-RECORDING <time>" with the time of the movie's first frame. The
 # artifact "demo-video-<lang>-<appearance>" holds the recording as it came
-# (raw.mov), its marks (marks.txt), the display's modes (display.txt) and
-# the recorder's log. `python3 -I Scripts/make_demo_video.py <artifact
+# (raw.mov), its marks (marks.txt), the display's modes (display.txt), the
+# recorder's log and the test's (test.log, with the app's log at its end:
+# what the views showed when and when the main thread answered late,
+# `--watch-main-thread`). `python3 -I Scripts/make_demo_video.py <artifact
 # folder> <out folder>` cuts and encodes it for the website and the App Store.
 name: Demo video
 
@@ -154,4 +156,5 @@ jobs:
             demo/marks.txt
             demo/display.txt
             demo/recorder.log
+            demo/test.log
           if-no-files-found: warn

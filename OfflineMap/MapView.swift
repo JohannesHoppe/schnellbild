@@ -122,6 +122,9 @@ public enum MapMotion {
     nonisolated(unsafe) public static var reduceOverride: Bool?
     public static var reduced: Bool { reduceOverride ?? NSWorkspace.shared.accessibilityDisplayShouldReduceMotion }
 
+    /// Where the map and the globe say what they did when (the app's test log under `--test-log`)
+    nonisolated(unsafe) public static var trace: ((String) -> Void)?
+
     /// How often each kind of movement began ("glide", "throw", "fade"; on the main thread)
     nonisolated(unsafe) public private(set) static var counts: [String: Int] = [:]
     static func began(_ kind: String) { counts[kind, default: 0] += 1 }

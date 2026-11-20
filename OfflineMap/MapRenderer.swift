@@ -34,6 +34,13 @@ public final class MapRenderer: @unchecked Sendable {
         cache.totalCostLimit = 96 << 20
         return cache
     }()
+    /// The raster tiles the map's views made (`MapTileStore`), kept for
+    /// every view of the map: a map shown again has its tiles at once
+    let rasterTiles: NSCache<NSString, CGImage> = {
+        let cache = NSCache<NSString, CGImage>()
+        cache.totalCostLimit = 192 << 20
+        return cache
+    }()
     let labelLines = LabelLines()
 
     public init(archive: PMTilesArchive, places: PlaceIndex?) {
