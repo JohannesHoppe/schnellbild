@@ -113,7 +113,15 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         app.typeKey("e", modifierFlags: [])
 
         app.typeKey(.escape, modifierFlags: [])
-        tile("Sunset Timelapse.mp4").click()
+        eventually("the full view closes") { !fullImage.exists }
+        // The video's tile lies below the window's edge: the grid scrolls down to it
+        let videoTile = tile("Sunset Timelapse.mp4")
+        eventually("the video's tile can be clicked") {
+            if videoTile.isHittable { return true }
+            element("grid").firstMatch.scroll(byDeltaX: 0, deltaY: -200)
+            return false
+        }
+        videoTile.click()
         waitForSelected("Sunset Timelapse.mp4")
         app.typeKey(.space, modifierFlags: [])
         XCTAssertTrue(element("video.avkit").waitForExistence(timeout: 15))
