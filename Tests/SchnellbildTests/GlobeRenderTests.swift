@@ -282,11 +282,25 @@ final class GlobeSurfaceTests: XCTestCase {
         XCTAssertTrue(surface.flat.allTilesShown)
         XCTAssertTrue(metal.isHidden, "the globe hands over")
 
-        // Zoomed out again: the globe at once
+        // On the flat map near the flat zoom the globe's textures for the way out are made ahead
+        var handover = surface.scene
+        handover.camera.zoom = GlobeProjection.flatZoom(for: size) - 0.01
+        wait(30) { renderer.textures.isReady(for: handover) }
+        XCTAssertTrue(renderer.textures.isReady(for: handover), "the globe's textures made ahead")
+
+        // Zoomed out again: the globe draws under the flat map, which stays
+        // on top until the globe's frame is there (at most `revealTimeout`):
+        // never neither of them
         surface.move(to: MapCamera(center: Coordinate(latitude: 46, longitude: 9), zoom: 3), animated: false)
         XCTAssertFalse(metal.isHidden)
         XCTAssertEqual(metal.alphaValue, 1)
-        XCTAssertTrue(surface.flat.isHidden)
+        XCTAssertTrue(surface.revealPending)
+        XCTAssertFalse(surface.flat.isHidden, "the flat map until the globe's frame is on screen")
+        XCTAssertTrue(surface.subviews.last === surface.flat, "over the globe meanwhile")
+        wait(GlobeSurfaceView.revealTimeout + 2) { surface.flat.isHidden }
+        XCTAssertTrue(surface.flat.isHidden, "the globe shown")
+        XCTAssertFalse(surface.revealPending)
+        XCTAssertTrue(surface.subviews.last === metal, "the globe on top again")
 
         // Held within the globe's zoom limits
         surface.move(to: MapCamera(center: Coordinate(latitude: 46, longitude: 9), zoom: -3), animated: false)
