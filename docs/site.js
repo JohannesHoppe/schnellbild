@@ -35,6 +35,22 @@ if ("IntersectionObserver" in window) {
   });
   document.querySelectorAll(".stat b").forEach((element) => counter.observe(element));
 
+  // The demo video plays muted while it is on screen and stops when it leaves;
+  // with "reduce motion" it keeps its controls and waits for a click.
+  if (!still) {
+    const playing = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) entry.target.play().catch(() => { entry.target.controls = true; });
+        else entry.target.pause();
+      }
+    }, { threshold: 0.4 });
+    document.querySelectorAll("video.demo").forEach((video) => {
+      video.controls = false;
+      video.muted = true;
+      playing.observe(video);
+    });
+  }
+
   // Close the language menu when clicking or tabbing elsewhere, or with Escape.
   function closeMenus(keep) {
     document.querySelectorAll("details.lang[open]").forEach((menu) => {

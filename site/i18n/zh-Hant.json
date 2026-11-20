@@ -63,6 +63,7 @@
     ]
   ],
   "featuresTitle": "功能一覽",
+  "demoLabel": "影片：從網格中打開一張照片，在地圖和地球儀上查看旅途照片，然後播放旅程",
   "featuresMore": "還有更多功能：所有細節請見 GitHub",
   "features": [
     {

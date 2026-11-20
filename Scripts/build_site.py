@@ -176,6 +176,33 @@ def motion(name):
             f'loading="lazy" decoding="async" style="{style}">')
 
 
+
+DEMO = DOCS / "demo"
+# The Atlas feature shows the demo's short cut (Scripts/make_demo_video.py), the
+# same for every language and theme: 960 px wide on phones, 1280 elsewhere.
+DEMO_FEATURE = "atlas"
+DEMO_PHONE = "(max-width: 640px)"
+
+
+def demo(label):
+    """The short demo video in the place of a feature's screenshot: AV1 in WebM,
+    H.264 in MP4 for browsers without AV1, its first frame as the poster. Muted,
+    looping, nothing loaded before it comes near; site.js plays it while it is on
+    screen and hands it the controls instead with "reduce motion" or without
+    script."""
+    for name in ("demo-short-960.webm", "demo-short-960.mp4", "demo-short-1280.webm",
+                 "demo-short-1280.mp4", "demo-poster-1280.webp"):
+        if not (DEMO / name).exists():
+            missing.append(f"docs/demo/{name}")
+    # AV1 Main, 8 bit, at the files' levels (3.0 and 3.1), so a browser that has
+    # WebM but no AV1 decoder takes the MP4
+    sources = "".join(
+        f'<source src="/demo/demo-short-{width}.{ext}" type="video/{ext}{codec}"{media}>'
+        for width, level, media in (("960", "04", f' media="{DEMO_PHONE}"'), ("1280", "05", ""))
+        for ext, codec in (("webm", f'; codecs=av01.0.{level}M.08'), ("mp4", "; codecs=avc1.64001f")))
+    return (f'<video class="demo" width="1280" height="720" poster="/demo/demo-poster-1280.webp" '
+            f'muted loop playsinline controls preload="none" aria-label="{esc(label)}">{sources}</video>')
+
 # Open Graph wants a territory: the one each language is most at home in.
 OG_LOCALES = {"en": "en_US", "de": "de_DE", "fr": "fr_FR", "es": "es_ES", "it": "it_IT", "pt-BR": "pt_BR",
               "nl": "nl_NL", "pl": "pl_PL", "sv": "sv_SE", "da": "da_DK", "nb": "nb_NO", "fi": "fi_FI",
@@ -372,10 +399,11 @@ def home(code, t):
     <div class="feature text-only">
       {text}
     </div>"""
+        picture = demo(t["demoLabel"]) if name == DEMO_FEATURE else shot(name, code, f['alt'])
         return f"""
     <div class="feature">
       {text}
-      <div class="media" data-reveal><div data-parallax>{shot(name, code, f['alt'])}</div></div>
+      <div class="media" data-reveal><div data-parallax>{picture}</div></div>
     </div>"""
     assert len(t["features"]) == len(FEATURE_SHOTS), f"{code}: {len(t['features'])} features, {len(FEATURE_SHOTS)} pictures"
     features = "".join(feature(name, f) for name, f in zip(FEATURE_SHOTS, t["features"]))

@@ -357,6 +357,9 @@ h1, h2, h3, .tagline, .lead, .intro { text-wrap: balance; }
 /* Screenshots open large (site.js): one at a time, ← → step through them, a click or Esc closes */
 .zoomable { cursor: zoom-in; }
 .media img { max-height: 540px; width: auto; margin-inline: auto; }
+/* The demo video in a feature's place: the app's window content, so it gets the
+   corners and the shadow the screenshots' windows have (build_site.py demo) */
+.media video.demo { display: block; width: 100%; height: auto; border-radius: 10px; box-shadow: var(--lift); background: var(--surface); }
 /* The video's still with the video moving over its picture (build_site.py
    places it; the holes keep the badge and the control bar in front) */
 .playing { position: relative; display: block; width: fit-content; margin-inline: auto; }

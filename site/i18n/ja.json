@@ -63,6 +63,7 @@
     ]
   ],
   "featuresTitle": "できること",
+  "demoLabel": "動画：グリッドから写真を開き、旅の写真を地図と地球儀で表示し、旅をたどる",
   "featuresMore": "ほかにも多くの機能があります。詳しくはGitHubで",
   "features": [
     {
