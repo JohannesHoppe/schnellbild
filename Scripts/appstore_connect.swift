@@ -114,7 +114,12 @@ func api(_ method: String, _ path: String, _ body: JSON? = nil, missingOK: Bool 
     let object = (try? JSONSerialization.jsonObject(with: data) as? JSON) ?? [:]
     if missingOK && status == 404 { return [:] }
     guard (200..<300).contains(status) else {
-        let errors = (object["errors"] as? [JSON] ?? []).map { "\($0["title"] ?? ""): \($0["detail"] ?? "")" }
+        // A refused submission names its reasons in meta.associatedErrors (per resource).
+        let errors = (object["errors"] as? [JSON] ?? []).flatMap { error -> [String] in
+            let associated = ((error["meta"] as? JSON)?["associatedErrors"] as? [String: [JSON]] ?? [:])
+                .flatMap { resource, list in list.map { "    \(resource): \($0["code"] ?? "") \($0["detail"] ?? "")" } }
+            return ["\(error["title"] ?? ""): \(error["detail"] ?? "")"] + associated.sorted()
+        }
         let hint = status == 403 ? " (the API key's role may be too low: App Manager or Admin is needed)" : ""
         fail("\(method) \(url.path) → \(status)\(hint)\n  " + (errors.isEmpty ? String(decoding: data, as: UTF8.self) : errors.joined(separator: "\n  ")))
     }
