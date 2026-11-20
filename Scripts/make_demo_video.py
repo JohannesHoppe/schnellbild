@@ -31,10 +31,9 @@ import tempfile
 from pathlib import Path
 
 WIDTHS = [1280, 960]
-# The whole demo in one take: the grid, the full view, back to the grid,
-# the Atlas, out to the globe and the tour up to its last station's photo;
-# click to play
-WEB_PARTS = [("grid-0.3", "atlas again-1.4")]
+# The whole demo: the grid and the full view, dissolving into the Atlas,
+# out to the globe and the tour up to its last station's photo; click to play
+WEB_PARTS = [("grid-0.3", "full view+5"), ("atlas+2", "atlas again-1.4")]
 # About 30 s, for a loop on the website and the App Store: browsing, the
 # full view's first photo, the Atlas out to the globe and the tour diving in
 # to Bergen's first photos
