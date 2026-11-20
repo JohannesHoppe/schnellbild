@@ -4,12 +4,14 @@ import QuartzCore
 /// Raster tiles of the map, made off the main thread and kept by pixel bytes:
 /// a tile asked for and not there yet is drawn on a queue of its own and
 /// reported through `onTile`; tiles no longer on screen that haven't started
-/// are given up.
+/// are given up. The tiles made are the map's (`MapRenderer.rasterTiles`),
+/// so a map shown again (the Atlas after the grid) has its tiles in its
+/// first frame.
 @MainActor
 final class MapTileStore {
     let renderer: MapRenderer
     var onTile: (() -> Void)?
-    private let cache = NSCache<NSString, CGImage>()
+    private var cache: NSCache<NSString, CGImage> { renderer.rasterTiles }
     private var pending: [NSString: Operation] = [:]
     private let queue: OperationQueue = {
         let q = OperationQueue()
@@ -21,7 +23,6 @@ final class MapTileStore {
 
     init(renderer: MapRenderer) {
         self.renderer = renderer
-        cache.totalCostLimit = 192 << 20
     }
 
     static func name(_ key: TileKey, dark: Bool, scale: CGFloat) -> NSString {

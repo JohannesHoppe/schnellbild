@@ -24,6 +24,7 @@ struct SchnellbildApp: App {
         _ = VLCPlaybackControl.testLog
         // UI tests: the map and the globe as with Reduce motion on (`--reduce-motion`) or off
         if TestSwitches.on { MapMotion.reduceOverride = TestSwitches.has("--reduce-motion") }
+        MainThreadWatch.start()
         // Media Extensions the user has turned on in System Settings (format
         // readers and video decoders, Apple's own for ProRes RAW too, or
         // another app's for MKV, AVI …) open those videos in AVKit, and

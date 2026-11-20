@@ -533,9 +533,11 @@ public final class GlobeTextures: @unchecked Sendable {
         }
         lock.unlock()
         if needBase {
+            let began = Date()
             work.async { [weak self] in
                 guard let self else { return }
                 let texture = self.makeTiles(map: map, zoom: Self.baseZoom, x0: 0, y0: 0, count: 1 << Self.baseZoom, scale: Self.baseScale, dark: dark)
+                MapMotion.trace?(String(format: "globe: world texture made in %.0f ms", Date().timeIntervalSince(began) * 1000))
                 self.lock.withLock {
                     self.basesRunning.remove(dark)
                     if let texture { self.bases[dark] = texture }
@@ -556,9 +558,11 @@ public final class GlobeTextures: @unchecked Sendable {
             }
         }
         if let key = detailKey {
+            let began = Date()
             work.async { [weak self] in
                 guard let self else { return }
                 let texture = self.makeTiles(map: map, zoom: key.zoom, x0: key.x0, y0: key.y0, count: 8, scale: key.scale, dark: dark)
+                MapMotion.trace?(String(format: "globe: detail texture at zoom %d made in %.0f ms", key.zoom, Date().timeIntervalSince(began) * 1000))
                 self.lock.withLock {
                     self.detailRunning[dark] = nil
                     if let texture { self.details[dark] = Detail(key: key, texture: texture) }

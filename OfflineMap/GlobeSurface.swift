@@ -23,8 +23,10 @@ extension GlobeRenderer {
         if let renderer = made[key] { return done(renderer) }
         if waiting[key] != nil { waiting[key]?.append(done); return }
         waiting[key] = [done]
+        let began = Date()
         DispatchQueue.global(qos: .userInitiated).async {
             let renderer = GlobeRenderer(map: map, data: .bundled())
+            MapMotion.trace?(String(format: "globe: renderer made in %.0f ms", Date().timeIntervalSince(began) * 1000))
             DispatchQueue.main.async {
                 MainActor.assumeIsolated {
                     made[key] = renderer
@@ -55,6 +57,7 @@ extension GlobeRenderer {
                 dropping[key] = nil
                 guard inUse[key, default: 0] == 0 else { return }
                 made[key] = nil
+                MapMotion.trace?("globe: renderer let go")
             }
         }
         dropping[key] = drop
@@ -69,7 +72,11 @@ extension GlobeRenderer {
 /// over the flat map (`MapSurfaceView`), one camera for both. Below
 /// `GlobeProjection.flatZoom` the Metal view shows the globe (flattening on
 /// the way); from it on the flat map takes over, once its tiles are drawn
-/// (the Metal view fades out over it, at once with Reduce motion). The view
+/// (the Metal view fades out over it, at once with Reduce motion). Zooming
+/// out of the flat map, the flat map stays over the Metal view until a
+/// frame of the globe with its textures is on screen (`revealPending`), so
+/// one of the two always shows the map; near the flat zoom the globe's
+/// textures for the way out are made ahead (`prewarm`). The view
 /// handles every gesture itself, in both modes: drag or two-finger scroll
 /// turn the globe (pan the flat map) and keep turning a moment after a drag
 /// (not with Reduce motion), pinch, ⌘-scroll, the mouse wheel and double
@@ -107,6 +114,14 @@ final class GlobeSurfaceView: NSView, MTKViewDelegate, CameraHolding {
     private var lastFrame: TimeInterval = 0
     private var clock: Timer?
     private var handoffPending = false
+    /// The globe is drawn under the flat map until a frame with its textures is on screen
+    private(set) var revealPending = false
+    /// Which wait for the globe's frame is the current one (a timer of an earlier one does nothing)
+    private var revealToken = 0
+    /// How long the flat map waits at most for the globe's first frame
+    static let revealTimeout: TimeInterval = 1
+    /// How many zoom steps above the flat zoom the globe's textures are made ahead
+    static let prewarmSteps = 3.0
     nonisolated(unsafe) private var texturesObserver: NSObjectProtocol?
     /// No Metal: the flat map alone
     private(set) var flatOnly = false
@@ -151,6 +166,10 @@ final class GlobeSurfaceView: NSView, MTKViewDelegate, CameraHolding {
         metal = nil
         renderer = nil
         handoffPending = false
+        if revealPending {
+            revealPending = false
+            flatOnTop(false)
+        }
     }
 
     /// Shows the globe with this renderer (tests pass their own).
@@ -250,8 +269,15 @@ final class GlobeSurfaceView: NSView, MTKViewDelegate, CameraHolding {
         guard bounds.width > 0, bounds.height > 0 else { return }
         let isFlat = projection.isFlat || flatOnly
         if isFlat {
+            if revealPending, let metal {
+                // Back on the flat map before the globe showed: it stays the flat map
+                revealPending = false
+                flatOnTop(false)
+                metal.isHidden = true
+            }
             flat.isHidden = false
             if flat.camera != camera { flat.camera = camera }
+            prewarm()
             if let metal, !metal.isHidden {
                 if !handoffPending {
                     handoffPending = true
@@ -261,7 +287,24 @@ final class GlobeSurfaceView: NSView, MTKViewDelegate, CameraHolding {
             }
         } else {
             handoffPending = false
-            if let metal {
+            if revealPending, metal != nil {
+                // Still waiting for the globe's frame: the flat map follows the camera meanwhile
+                if flat.camera != camera { flat.camera = camera }
+            } else if let metal, metal.isHidden, !flat.isHidden {
+                // Out of the flat map: the globe draws under it until its frame is there
+                revealPending = true
+                revealToken += 1
+                let token = revealToken, began = Date()
+                flatOnTop(true)
+                metal.isHidden = false
+                metal.alphaValue = 1
+                if flat.camera != camera { flat.camera = camera }
+                DispatchQueue.main.asyncAfter(deadline: .now() + Self.revealTimeout) { [weak self] in
+                    guard let self, self.revealToken == token, self.revealPending else { return }
+                    self.revealGlobe(since: began, timedOut: true)
+                }
+                revealSince = began
+            } else if let metal {
                 metal.isHidden = false
                 // Through the animator, so a fade still running ends at 1, not at 0
                 NSAnimationContext.runAnimationGroup { context in
@@ -275,6 +318,45 @@ final class GlobeSurfaceView: NSView, MTKViewDelegate, CameraHolding {
             }
             redraw()
         }
+    }
+
+    /// When the current wait for the globe's frame began
+    private var revealSince = Date()
+
+    /// The globe's frame with its textures is on screen (or the wait is
+    /// over): the flat map goes under it and hides.
+    private func revealGlobe(since began: Date, timedOut: Bool) {
+        guard revealPending else { return }
+        revealPending = false
+        flatOnTop(false)
+        flat.isHidden = true
+        MapMotion.trace?(String(format: "globe: shown over the flat map after %.0f ms%@", Date().timeIntervalSince(began) * 1000,
+                                timedOut ? " (its textures not ready)" : ""))
+    }
+
+    /// Puts the flat map over the Metal view or back under it (the subviews' order, back to front).
+    private func flatOnTop(_ onTop: Bool) {
+        var context = onTop
+        withUnsafeMutablePointer(to: &context) { pointer in
+            sortSubviews({ a, b, context in
+                let onTop = context?.load(as: Bool.self) ?? false
+                func rank(_ view: NSView) -> Int { view is MapSurfaceView ? (onTop ? 1 : -1) : 0 }
+                let ra = rank(a), rb = rank(b)
+                return ra < rb ? .orderedAscending : ra > rb ? .orderedDescending : .orderedSame
+            }, context: pointer)
+        }
+    }
+
+    /// On the flat map within `prewarmSteps` of the flat zoom: the globe's
+    /// textures for the camera zoomed out to just below the flat zoom (the
+    /// world and detail textures, the satellite tiles) are made ahead.
+    private func prewarm() {
+        guard let renderer, !flatOnly, bounds.width > 0, bounds.height > 0 else { return }
+        let flatZoom = projection.flatZoom
+        guard camera.zoom < flatZoom + Self.prewarmSteps else { return }
+        var next = scene
+        next.camera.zoom = flatZoom - 0.01
+        renderer.textures.prepare(for: next)
     }
 
     /// Fades the globe out once the flat map's tiles are drawn (at most a second later).
@@ -328,8 +410,21 @@ final class GlobeSurfaceView: NSView, MTKViewDelegate, CameraHolding {
             guard let renderer, let pass = view.currentRenderPassDescriptor, let drawable = view.currentDrawable,
                   let buffer = renderer.queue.makeCommandBuffer(), bounds.width > 0 else { return }
             let scene = scene
+            let ready = renderer.textures.isReady(for: scene)
             renderer.textures.prepare(for: scene)
             renderer.encode(scene, pass: pass, into: buffer)
+            if revealPending, ready {
+                // This frame shows the globe whole: the flat map goes once it is on screen
+                let token = revealToken, began = revealSince
+                drawable.addPresentedHandler { [weak self] _ in
+                    DispatchQueue.main.async {
+                        MainActor.assumeIsolated {
+                            guard let self, self.revealToken == token else { return }
+                            self.revealGlobe(since: began, timedOut: false)
+                        }
+                    }
+                }
+            }
             buffer.present(drawable)
             buffer.commit()
         }

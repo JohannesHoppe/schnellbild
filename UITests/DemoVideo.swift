@@ -32,6 +32,10 @@ final class DemoVideo: SchnellbildUITestCase {
 
     override func tearDownWithError() throws {
         app?.terminate()   // the library stays: the workflow made it
+        // When the main thread answered late and what the views showed when, to read against the marks
+        // (none when skipped: no library, no app)
+        guard tempDir != nil else { return }
+        print("app log:\n" + ((try? String(contentsOf: testLog("app.log"), encoding: .utf8)) ?? "(none)"))
     }
 
     /// The app's own words in its language (Resources/Localization).
@@ -71,7 +75,7 @@ final class DemoVideo: SchnellbildUITestCase {
     func testDemoVideo() throws {
         let stations = Int(ProcessInfo.processInfo.environment["TOUR_STATIONS"] ?? "") ?? .max
         // The globe by day over Europe, as on the trip's first morning
-        launch(open: tempDir.appendingPathComponent("Norway").path, extra: ["--globe-date=2026-06-14T10:00:00Z"])
+        launch(open: tempDir.appendingPathComponent("Norway").path, extra: ["--globe-date=2026-06-14T10:00:00Z", "--watch-main-thread"])
         XCTAssertTrue(tile("Alesund from Aksla.jpg").waitForExistence(timeout: 15))
         tile("Alesund from Aksla.jpg").click()
         waitForSelected("Alesund from Aksla.jpg")

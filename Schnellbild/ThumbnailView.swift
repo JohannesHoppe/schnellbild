@@ -38,7 +38,7 @@ final class ThumbnailCache {
         return max(pixels, Int(image.size.width * image.size.height)) * 4
     }
 
-    private func keep(_ image: NSImage, side: CGFloat, modified: Date?, for url: URL) {
+    func keep(_ image: NSImage, side: CGFloat, modified: Date?, for url: URL) {
         cache.setObject(Entry(image: image, side: side, modified: modified), forKey: url as NSURL, cost: Self.cost(of: image))
     }
 
