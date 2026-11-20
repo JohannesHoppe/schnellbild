@@ -78,7 +78,7 @@ final class DemoVideo: SchnellbildUITestCase {
         app.typeKey("f", modifierFlags: [.control, .command])   // full screen: no menu bar, no desktop
         pointerAside()
         pause(3)   // the move into full screen
-        for _ in 0..<2 { app.typeKey("+", modifierFlags: []) }   // larger thumbnails: the trip fills the screen
+        app.typeKey("+", modifierFlags: [])   // larger thumbnails: the trip fills the screen
         // The map's tiles and the globe's textures made once before the
         // recording, so neither shows grey while it loads: the Atlas, out
         // to the globe and back by keys (the same camera again), the grid
