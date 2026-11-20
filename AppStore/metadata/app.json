@@ -84,6 +84,8 @@
     "koreaAgeRatingOverride": null,
     "developerAgeRatingInfoUrl": null,
     "socialMedia": false,
+    "datingAndRelationships": false,
+    "sharedLocation": false,
     "gracRatingClassificationNumber": null,
     "socialMediaAgeRestricted": null
   }
