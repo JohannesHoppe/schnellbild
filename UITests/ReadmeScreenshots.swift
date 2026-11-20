@@ -113,7 +113,15 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
         app.typeKey("e", modifierFlags: [])
 
         app.typeKey(.escape, modifierFlags: [])
-        tile("Sunset Timelapse.mp4").click()
+        eventually("the full view closes") { !fullImage.exists }
+        // The video's tile lies below the window's edge: the grid scrolls down to it
+        let videoTile = tile("Sunset Timelapse.mp4")
+        eventually("the video's tile can be clicked") {
+            if videoTile.isHittable { return true }
+            element("grid").firstMatch.scroll(byDeltaX: 0, deltaY: -200)
+            return false
+        }
+        videoTile.click()
         waitForSelected("Sunset Timelapse.mp4")
         app.typeKey(.space, modifierFlags: [])
         XCTAssertTrue(element("video.avkit").waitForExistence(timeout: 15))
@@ -149,9 +157,11 @@ final class ReadmeScreenshots: SchnellbildUITestCase {
     }
 
     /// The Atlas view on the sample library's Norway trip: the map with
-    /// the timeline (a photo selected), and a frame of the tour.
+    /// the timeline (a photo selected), and a frame of the tour. The Sun
+    /// stands where it stood on the trip's last morning, so the globe shows
+    /// Norway by day whenever the pictures are taken.
     func testAtlasScreenshots() throws {
-        launch(open: tempDir.appendingPathComponent("Norway").path)
+        launch(open: tempDir.appendingPathComponent("Norway").path, extra: ["--globe-date=2026-06-18T10:30:00Z"])
         XCTAssertTrue(tile("Geirangerfjord.jpg").waitForExistence(timeout: 15))
         tile("Geirangerfjord.jpg").click()
         waitForSelected("Geirangerfjord.jpg")
