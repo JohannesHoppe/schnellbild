@@ -80,7 +80,7 @@ jobs:
 
       - name: The display
         env:
-          SCREEN_INPUT: ${{ github.event_name == 'push' && 'largest' || inputs.screen }}
+          SCREEN_INPUT: ${{ github.event_name == 'push' && '1280x720' || inputs.screen }}
         run: |
           mkdir -p demo
           swiftc -O Scripts/display_mode.swift -o build/display_mode

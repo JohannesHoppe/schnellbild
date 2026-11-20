@@ -70,13 +70,27 @@ final class DemoVideo: SchnellbildUITestCase {
 
     func testDemoVideo() throws {
         let stations = Int(ProcessInfo.processInfo.environment["TOUR_STATIONS"] ?? "") ?? .max
-        launch(open: tempDir.appendingPathComponent("Norway").path)
+        // The globe by day over Europe, as on the trip's first morning
+        launch(open: tempDir.appendingPathComponent("Norway").path, extra: ["--globe-date=2026-06-14T10:00:00Z"])
         XCTAssertTrue(tile("Alesund from Aksla.jpg").waitForExistence(timeout: 15))
         tile("Alesund from Aksla.jpg").click()
         waitForSelected("Alesund from Aksla.jpg")
         app.typeKey("f", modifierFlags: [.control, .command])   // full screen: no menu bar, no desktop
         pointerAside()
-        pause(4)   // the move into full screen and the thumbnails done
+        pause(3)   // the move into full screen
+        // The map's tiles and the globe's textures made once before the
+        // recording, so neither shows grey while it loads: the Atlas, out
+        // to the globe and back by keys (the same camera again), the grid
+        app.typeKey("w", modifierFlags: [])
+        XCTAssertTrue(element("atlas").waitForExistence(timeout: 10))
+        pause(4)
+        for _ in 0..<4 { app.typeKey("-", modifierFlags: []); pause(1) }
+        pause(3)
+        for _ in 0..<4 { app.typeKey("+", modifierFlags: []); pause(0.5) }
+        pause(2)
+        app.typeKey("w", modifierFlags: [])
+        waitForSelected("Alesund from Aksla.jpg")
+        pause(3)   // the thumbnails settled
         ask("record:start", answer: "recording")
         pause(1)
 
@@ -111,9 +125,9 @@ final class DemoVideo: SchnellbildUITestCase {
         mark("globe")
         let zoomOut = app.buttons[ui("Zoom out")].firstMatch
         XCTAssertTrue(zoomOut.waitForExistence(timeout: 5), "the map's Zoom out button")
-        for _ in 0..<6 {
+        for _ in 0..<4 {
             zoomOut.click()
-            pause(0.5)
+            pause(0.6)
         }
         pointerAside()   // before the button's tooltip shows
         pause(2.5)

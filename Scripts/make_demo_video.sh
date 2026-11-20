@@ -11,9 +11,9 @@
 #   demo-poster-<w>.webp / .jpg  its first picture, shown before it plays
 #   appstore-preview.mp4  the App Store's app preview: 1920 × 1080, 30 fps,
 #                     H.264 High at level 4.0, about 10 Mbps, a silent stereo
-#                     AAC track (App Store Connect turns away previews without
-#                     sound), at most 30 s
-# for each width in WIDTHS (default "1024 640"). The cut starts LEAD seconds
+#                     AAC track at 256 kbps and 48 kHz (the sound App Store
+#                     Connect's specification names), 15 to 30 s
+# the website's files for each width in WIDTHS (default "1280 960"). The cut starts LEAD seconds
 # before the first scene's mark ("grid") and ends TAIL seconds after the
 # tour ended ("atlas again"); the App Store's cut is the same, sped up when
 # it is longer than 30 s and held to at least 15 s.
@@ -21,7 +21,7 @@
 set -euo pipefail
 [ $# = 2 ] || { echo "usage: $0 <artifact folder> <out folder>"; exit 1; }
 in=$1 out=$2
-WIDTHS=${WIDTHS:-"1024 640"}
+WIDTHS=${WIDTHS:-"1280 960"}
 LEAD=${LEAD:-0.3}
 TAIL=${TAIL:-2}
 raw="$in/raw.mov"; marks="$in/marks.txt"
@@ -55,12 +55,12 @@ for w in $WIDTHS; do
     rm "$out/.poster-$w.png"
 done
 
-# The App Store's preview: 15 to 30 s, 1920 × 1080 (the recording scaled
-# to fit, on the window's own background colour where its shape differs)
+# The App Store's preview: 15 to 30 s, 1920 × 1080 (the recording's own
+# size when the workflow ran with screen=1920x1080; else scaled to fit)
 speed=$(python3 -c "print(max(1.0, $length / 29.5))")
 pad=$(python3 -c "print(min(15.0, max(0.0, 15.2 - $length / max(1.0, $length / 29.5))))")
 ffmpeg -v error -y -i "$cut" -f lavfi -i anullsrc=channel_layout=stereo:sample_rate=48000 \
-    -filter_complex "[0:v]setpts=PTS/$speed,scale=1920:1080:force_original_aspect_ratio=decrease:flags=lanczos,pad=1920:1080:(ow-iw)/2:(oh-ih)/2:color=${PAD_COLOUR:-#f5f5f7},fps=30,tpad=stop_mode=clone:stop_duration=$pad,format=yuv420p[v]" \
+    -filter_complex "[0:v]setpts=PTS/$speed,scale=1920:1080:force_original_aspect_ratio=decrease:flags=lanczos,pad=1920:1080:(ow-iw)/2:(oh-ih)/2:color=black,fps=30,tpad=stop_mode=clone:stop_duration=$pad,format=yuv420p[v]" \
     -map "[v]" -map 1:a -shortest -c:v libx264 -preset slow -profile:v high -level:v 4.0 \
     -b:v 10M -maxrate 12M -bufsize 20M -c:a aac -b:a 256k -ar 48000 -ac 2 -movflags +faststart \
     "$out/appstore-preview.mp4"
