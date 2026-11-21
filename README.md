@@ -47,9 +47,10 @@ Schnellbild follows your Mac's language: English, Deutsch, Français, Español, 
 ### Browse folders
 
 - **Open** a folder with ⌘O or by dragging it onto the window; a single file dropped opens straight in the full view. Schnellbild reopens the last folder on launch (the very first launch opens Pictures), and ⌘N opens another window.
-- **Folders first**, each previewing its first pictures or videos like the Finder, with a `..` tile to go up. Folders without a single photo or video anywhere inside are greyed out, so you don't bother opening them. `L` switches to a [list](#list-view).
-- **Thumbnails** come from Quick Look: JPEG, HEIC, AVIF, JPEG XL, PNG, GIF, WebP, TIFF, SVG, PDF, PSD, OpenEXR, the camera RAW formats macOS reads, and a frame for videos. Illustrator files, EPS and the other files Schnellbild shows by the picture they carry get that picture (see [Supported file formats](#supported-file-formats)).
+- **Folders first**, each previewing its first pictures or videos like the Finder (from its subfolders, however deep, when it has none of its own; from an archive inside when that is all it holds), with a `..` tile to go up. Folders without a single photo or video anywhere inside are greyed out, so you don't bother opening them. `L` switches to a [list](#list-view).
+- **Thumbnails** come from Quick Look: JPEG, HEIC, AVIF, JPEG XL, PNG, GIF, WebP, TIFF, SVG, PDF, PSD, OpenEXR, the camera RAW formats macOS reads, and a frame for videos. An SVG or PDF Quick Look has no picture of, Schnellbild draws itself. Illustrator files, EPS and the other files Schnellbild shows by the picture they carry get that picture (see [Supported file formats](#supported-file-formats)).
 - **Always current:** what the Finder, a camera import or another app adds, renames or removes shows by itself, without the selection jumping; ⌘R reads the folder again. An ejected drive takes its windows back to the list of drives.
+- **The path** of the folder shown sits at the bottom right of the status bar. Right-click it (or ⌃-click) for Copy Path, Copy Path of Selected Item and Reveal in Finder; inside an archive the path runs through it (`…/Holiday.zip/Day 1`).
 - **Other files** (not pictures, videos or archives) are listed by name under the grid, so a folder never looks empty when it isn't. A folder that can't be read says so, with the reason.
 - **Links** count by what they point to: a link to a folder opens that folder, while renaming or trashing it acts on the link, as in the Finder.
 
@@ -68,8 +69,7 @@ The tables list Schnellbild's own keys. Every one of them can be changed in Sett
 | ⌘[ / ⌘] | back / forward, restoring the folder, the search and the selection |
 | f / ⌃⌘F | full screen |
 | Return / F2 / ⇧F6 | rename the selected folder or file, as in the Finder (Return on `..`: up a level; F6 too in a single pane) |
-| L | grid or list (a click on a column header sorts by it) |
-| W | Atlas: the photos and videos on the map (again: back) |
+| L | the next view: grid, list, Atlas, then the grid again (in the list a click on a column header sorts by it) |
 | i / ⌘I | file info beside the grid for the selected item (also Get Info in its right-click menu) |
 | D / ⌃O | dual pane on / off |
 | K | mini keyboard on / off |
@@ -77,7 +77,8 @@ The tables list Schnellbild's own keys. Every one of them can be changed in Sett
 | ⌘N | a new window, e.g. for another display: it has its own folders, dual pane and slideshow, and remembers its own last folder |
 | ⌘D | bookmark the folder shown, or remove its bookmark (also the star in the toolbar, the Bookmarks menu and a folder's right-click menu) |
 | ⌃1 … ⌃9 | open bookmark 1 … 9 |
-| X | boss key: every window turns invisible and every video silent at once; X X X typed with Schnellbild in front (⌘-Tab, which shows no window meanwhile) or a click on its Dock icon brings them back (in full screen again, if it was); ⌘Q still quits |
+| X | boss key on: every window turns invisible and every video silent at once (the first time, a note says how to come back); a click on the Dock icon or ⌘-Tab brings Schnellbild to the front with every window still invisible |
+| X X X | boss key off: X three times within a second, with Schnellbild in front (⌘-Tab), shows every window again (in full screen again, if it was); ⌘Q still quits while it is on |
 | ⌘A / Esc | mark all / unmark; Esc with nothing marked clears the search |
 | M / Insert | mark or unmark the selected item and move on to the next |
 
@@ -92,7 +93,7 @@ The tables list Schnellbild's own keys. Every one of them can be changed in Sett
 
 ### Atlas: your photos on the map, with a timeline and a tour
 
-`W` (or the map in the status bar's switch, or View → as Atlas) shows the folder's photos and videos where they were taken, on the map inside Schnellbild: a thumbnail at each place, and where several lie close together one tile with their number, which parts as you zoom in. Zoomed far out the map is a globe (from satellite pictures, with clouds, day and night and the relief, if you like), which flattens into the map as you zoom in. The tilt button, ⌥-drag or ⌥ with two fingers tilts the view towards the horizon, down to low orbit, and turning two fingers turns it; the same button looks straight down again. It shows the photos and videos of every subfolder too (archives included, hidden folders only while hidden files are shown), as the slideshow plays them; they come in while the subfolders are read, and "Include subfolders" over the map turns that off (Schnellbild remembers it). While you search, it shows the results. A photo selected in the Atlas stays selected in the grid and the list; one from a subfolder selects the folder it lies in there, and a folder selected in the grid hands the selection to its first photo in the Atlas. The full view opened from the Atlas goes on from folder to folder. Drag or scroll to move the map or turn the globe, pinch, ⌘-scroll or `+` `−` to zoom. A click selects (the same item as in the grid and the list), Space or a double click opens it, a double click on a tile of several zooms in until they part, and the arrow keys go to the nearest tile that way. Photos taken at the very same place stay one tile however far you zoom in: each click on it selects the next of them, as do → and ←. Photos and videos without a location wait in a strip under the map ("No location · 12"), to select and open like the others; none gets a made-up place.
+`L` after the list (or the map in the status bar's switch, or View → as Atlas) shows the folder's photos and videos where they were taken, on the map inside Schnellbild: a thumbnail at each place, and where several lie close together one tile with their number, which parts as you zoom in. Zoomed far out the map is a globe (from satellite pictures, with clouds, day and night and the relief, if you like), which flattens into the map as you zoom in. The tilt button, ⌥-drag or ⌥ with two fingers tilts the view towards the horizon, down to low orbit, and turning two fingers turns it; the same button looks straight down again. It shows the photos and videos of every subfolder too (archives included, hidden folders only while hidden files are shown), as the slideshow plays them; they come in while the subfolders are read, and "Include subfolders" over the map turns that off (Schnellbild remembers it). While you search, it shows the results. A photo selected in the Atlas stays selected in the grid and the list; one from a subfolder selects the folder it lies in there, and a folder selected in the grid hands the selection to its first photo in the Atlas. The full view opened from the Atlas goes on from folder to folder. Drag or scroll to move the map or turn the globe, pinch, ⌘-scroll or `+` `−` to zoom. A click selects (the same item as in the grid and the list), Space or a double click opens it, a double click on a tile of several zooms in until they part, and the arrow keys go to the nearest tile that way. Photos taken at the very same place stay one tile however far you zoom in: each click on it selects the next of them, as do → and ←. Photos and videos without a location wait in a strip under the map ("No location · 12"), to select and open like the others; none gets a made-up place.
 
 The **timeline** at the bottom lays everything out by the time it was taken, a bar for each stretch of time with a thumbnail now and then. Drag across it, or move one of its handles, and the map and the strip show only that part of the trip; Show All brings back the whole span. A click on the timeline selects the photo taken nearest that moment. Times are those of the clock where each photo was taken, also when your Mac is in another time zone, and a video whose file only knows the time in UTC gets the offset of the photos around it.
 
@@ -102,7 +103,7 @@ The times and places come from the same sources as sorting by date taken and by 
 
 | Key | Action |
 |---|---|
-| w | Atlas (again: back to the grid or list) |
+| l | from the list: the Atlas; from the Atlas: back to the grid |
 | ← → ↑ ↓ | to the nearest item on the map that way; down into the strip of items without a location |
 | Space / double-click | open the item; on a tile of several, a double click zooms in |
 | click | on a tile of photos taken at one place: the next of them (→ ← too) |
@@ -432,7 +433,7 @@ The cheat sheet (also printed), the mini keyboard, the menus, the tooltips and t
   <img src="docs/screenshots/settings-light.webp" width="460" alt="Settings: how long a picture stays in the slideshow, and the saved archive passwords">
 </picture></p>
 
-Schnellbild → Settings (⌘,) has two tabs. Keyboard holds [your own keys](#your-own-keys). General has five things: light or dark (as the system, or always light or always dark, whatever the system's setting), the folders you opened to Schnellbild (to forget them), how long a picture stays in the slideshow (1 to 60 seconds), whether macOS reads MKV and AVCHD itself (the media extension, with a button to System Settings), and the archive passwords Schnellbild has saved, which you can forget all at once. Everything else it remembers: the folder, the sort order, grid or list, the search mode, the dual pane, the mini keyboard, the volume, the bookmarks, the slideshow playlist's pin and width, the keys. Quitting while files are still being copied or moved asks first and can wait until they are done.
+Schnellbild → Settings (⌘,) has two tabs. Keyboard holds [your own keys](#your-own-keys). General has five things: light or dark (as the system, or always light or always dark, whatever the system's setting), the folders you opened to Schnellbild (to forget them), how long a picture stays in the slideshow (1 to 60 seconds), whether macOS reads MKV and AVCHD itself (the media extension, with a button to System Settings), and the archive passwords Schnellbild has saved, which you can forget all at once. Everything else it remembers: the folder, the sort order, the view (grid, list or Atlas), the search mode, the dual pane, the mini keyboard, the volume, the bookmarks, the slideshow playlist's pin and width, the keys. Quitting while files are still being copied or moved asks first and can wait until they are done.
 
 ### Supported file formats
 

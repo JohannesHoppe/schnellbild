@@ -47,9 +47,13 @@ struct FileFacts: Equatable, Sendable {
     /// "Encapsulated PostScript, embedded preview": the format its name
     /// says, and that what is shown is the preview it carries.
     static func previewFormat(of url: URL) -> String {
-        let ext = DownloadName.finalExtension(of: url)
-        let name = UTType(filenameExtension: ext).flatMap { $0.isDynamic ? nil : $0.localizedDescription } ?? ext.uppercased()
-        return String(localized: "\(name), embedded preview")
+        String(localized: "\(formatName(ofExtension: DownloadName.finalExtension(of: url))), embedded preview")
+    }
+
+    /// The system's name of the format an extension names ("Encapsulated
+    /// PostScript"), else the extension in capitals.
+    static func formatName(ofExtension ext: String) -> String {
+        UTType(filenameExtension: ext).flatMap { $0.isDynamic ? nil : $0.localizedDescription } ?? ext.uppercased()
     }
 
     /// The extension for a picture whose content is `content` but whose
@@ -405,7 +409,13 @@ final class ContentSniffer: @unchecked Sendable {
         let stamp = "\(info.st_size) \(info.st_mtimespec.tv_sec).\(info.st_mtimespec.tv_nsec)"
         let path = BrowserModel.canonicalPath(url)
         if let answer = lock.withLock({ answers[path] }), answer.stamp == stamp { return answer.content }
-        let content = VLCSafety.head(of: url).flatMap(FileFacts.content(in:))
+        // PostScript, Illustrator files and ZIP documents: a picture when
+        // their bytes hold one the app shows (`EmbeddedPreview`), never an
+        // archive (a Krita file is a ZIP)
+        let ext = DownloadName.finalExtension(of: url)
+        let content = EmbeddedPreview.extensions.contains(ext)
+            ? EmbeddedPreview.content(of: url, ext: ext, size: Int(info.st_size))
+            : VLCSafety.head(of: url).flatMap(FileFacts.content(in:))
         lock.withLock {
             if answers.count >= limit {
                 // The archives found stay: one may be open, its paths go through `ArchivePath`
@@ -437,15 +447,18 @@ final class ContentSniffer: @unchecked Sendable {
 
     /// Names whose content is worth a look: no extension, one that names
     /// nothing the system knows ("x.xyz"; "x.part" of a file without one),
-    /// or a catch-all ("x.bin", "x.dat"). Never a later volume of a split
+    /// a catch-all ("x.bin", "x.dat"), or a format shown by what its bytes
+    /// hold (PostScript, Illustrator, ZIP documents: `EmbeddedPreview`).
+    /// Never a later volume of a split
     /// archive ("x.r00", "x.z01" start like archives of their own).
     static func isUnknown(_ name: String) -> Bool {
         guard !name.hasPrefix(".") else { return false }
         let final = DownloadName.finalName(of: name)
         let ext = (final as NSString).pathExtension.lowercased()
         if ext.isEmpty { return true }
-        if BrowserModel.imageExtensions.contains(ext) || BrowserModel.videoExtensions.contains(ext) || ext == "ts"
-            || EmbeddedPreview.extensions.contains(ext) { return false }
+        // PostScript, Illustrator files, ZIP documents: pictures by their content
+        if EmbeddedPreview.extensions.contains(ext) { return true }
+        if BrowserModel.imageExtensions.contains(ext) || BrowserModel.videoExtensions.contains(ext) || ext == "ts" { return false }
         if ArchiveName.format(of: name) != nil || !ArchiveName.firstVolumeNames(of: final).isEmpty { return false }
         if ["bin", "dat", "data", "tmp", "temp", "file", "unknown"].contains(ext) { return true }
         guard let type = UTType(filenameExtension: ext) else { return true }

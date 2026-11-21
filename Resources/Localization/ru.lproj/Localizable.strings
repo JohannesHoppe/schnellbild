@@ -175,7 +175,7 @@
 "Archive" = "Архив";
 "as Grid" = "сеткой";
 "as List" = "списком";
-"Grid or list (a click on a column sorts by it)" = "Сетка или список (щелчок по столбцу сортирует по нему)";
+"Next view: grid, list, Atlas (a click on a column sorts by it)" = "Следующий вид: сетка, список, атлас (щелчок по столбцу сортирует по нему)";
 "Back (where you were, also a search); without history the enclosing folder" = "Назад (где вы были, и к поиску); без истории в папку выше";
 "Click to rename this folder" = "Щёлкните, чтобы переименовать папку";
 "Privacy Policy" = "Политика конфиденциальности";
@@ -383,7 +383,6 @@
 "Exposure, contrast, saturation and sharpness by hand (%@)" = "Экспозиция, контраст, насыщенность и резкость вручную (%@)";
 "Slideshow of all pictures and videos in this folder and its subfolders; while searching: of the results (%@)" = "Слайд-шоу из всех изображений и видео в этой папке и ее подпапках; при поиске: из результатов (%@)";
 "Sort by (%@; press again to reverse)" = "Сортировать по (%@; повторное нажатие меняет порядок)";
-"Grid or list (%@)" = "Сетка или список (%@)";
 "Mini keyboard: the keys of what's on screen, clickable (%@)" = "Мини-клавиатура: клавиши того, что на экране, нажимаются щелчком (%@)";
 "Bookmarks (%@: this folder; %@: go)" = "Закладки (%1$@: эта папка; %2$@: открыть)";
 "Close the playlist (%@)" = "Закрыть плейлист (%@)";
@@ -404,13 +403,19 @@
 
 /* Offline map */
 "Quit (%@ asks first)" = "Завершить (%@ сначала спрашивает)";
-"Boss key: hidden and silent at once; %@ or the Dock icon brings it back" = "Клавиша «босс»: сразу скрыто и без звука; %@ или значок в Dock возвращает";
 "⌘-click" = "⌘-щелчок";
-"Grid or list" = "Сетка или список";
+"Next view (grid, list, Atlas)" = "Следующий вид (сетка, список, атлас)";
 "General" = "Основные";
 "no key" = "нет клавиши";
 "Back, or the enclosing folder" = "Назад или папка уровнем выше";
 "Boss key" = "Клавиша «босс»";
+"Boss key on" = "Клавиша «босс»: вкл.";
+"Boss key off" = "Клавиша «босс»: выкл.";
+"Boss key on: every window turns invisible and every video silent at once" = "Клавиша «босс», вкл.: каждое окно сразу становится невидимым, каждое видео замолкает";
+"Boss key off: press it three times within a second with Schnellbild in front (⌘-Tab)" = "Клавиша «босс», выкл.: нажмите её три раза в течение секунды, когда Schnellbild на переднем плане (⌘-Tab)";
+"Every window turns invisible and every video silent at once." = "Каждое окно сразу становится невидимым, каждое видео замолкает.";
+"Press the boss key three times within a second with Schnellbild in front (⌘-Tab)." = "Нажмите клавишу «босс» три раза в течение секунды, когда Schnellbild на переднем плане (⌘-Tab).";
+"Schnellbild disappears at once and every video goes silent. A click on the Dock icon doesn't bring it back. To bring it back, switch to Schnellbild (⌘-Tab) and press %@ three times within a second." = "Schnellbild сразу исчезает, и каждое видео замолкает. Щелчок по значку в Dock его не возвращает. Чтобы вернуть его, переключитесь на Schnellbild (⌘-Tab) и нажмите %@ три раза в течение секунды.";
 "End the slideshow" = "Завершить слайд-шоу";
 "First item" = "Первый объект";
 "Last item" = "Последний объект";
@@ -570,14 +575,13 @@
 "Route" = "Маршрут";
 "Date Source" = "Источник даты";
 "Atlas" = "Атлас";
-"Atlas (map)" = "Атлас (карта)";
 "Play the tour" = "Воспроизвести путешествие";
 "Tour: pause / resume" = "Путешествие: пауза / продолжить";
 "Tour: previous place" = "Путешествие: предыдущее место";
 "Tour: next place" = "Путешествие: следующее место";
 "End the tour" = "Завершить путешествие";
 "as Atlas" = "атласом";
-"Grid or list (%@), Atlas (%@)" = "Сетка или список (%1$@), атлас (%2$@)";
+"Next view: grid, list, Atlas (%@)" = "Следующий вид: сетка, список, атлас (%@)";
 "Play Tour" = "Воспроизвести путешествие";
 "Left" = "Влево";
 "Up" = "Вверх";
@@ -603,7 +607,7 @@
 "End of the range" = "Конец периода";
 "Resume" = "Продолжить";
 "Place %lld of %lld" = "Место %1$lld из %2$lld";
-"Atlas: the photos and videos on the map; again: back to the grid or list" = "Атлас: фото и видео на карте; ещё раз: назад к сетке или списку";
+"From the list: the Atlas, the photos and videos on the map; from the Atlas: back to the grid" = "Из списка: атлас, фото и видео на карте; из атласа: назад к сетке";
 "Atlas: to the nearest item on the map that way; down into the strip of items without a location" = "Атлас: к ближайшему объекту на карте в этом направлении; вниз, в полосу объектов без места";
 "Atlas: zoom the map in / out" = "Атлас: приблизить / отдалить карту";
 "Atlas: on several items, zoom in until they part; on one, open it" = "Атлас: на нескольких объектах приблизить, пока они не разойдутся; на одном открыть его";
@@ -671,4 +675,7 @@
 "“%@” is no longer in the Trash." = "«%@» больше нет в Корзине.";
 "“%@” couldn't be taken out of the Trash and is still there. %@" = "Не удалось извлечь «%@» из Корзины, объект остается там. %@";
 "Undo / redo renaming, trashing, moving, copying, a new folder" = "Отменить / повторить: переименование, перемещение в Корзину, перемещение, копирование, новую папку";
+"Copy Path" = "Скопировать путь";
+"Copy Path of Selected Item" = "Скопировать путь выбранного объекта";
+"Right-click to copy" = "Правый клик — скопировать";
 "%@, embedded preview" = "%@, встроенный предпросмотр";

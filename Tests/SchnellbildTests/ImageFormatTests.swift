@@ -21,6 +21,14 @@ final class ImageFormatTests: XCTestCase {
         try? FileManager.default.removeItem(at: dir)
     }
 
+    /// The kind once the file's first bytes are read, as the listing has
+    /// them read off the main thread (`sniffOtherFiles`) for the files
+    /// shown by their content.
+    private func kind(of url: URL) -> GridEntry.Kind? {
+        ContentSniffer.shared.content(of: url)
+        return BrowserModel.mediaKind(of: url)
+    }
+
     private func file(_ name: String, _ data: Data?) throws -> URL {
         let url = dir.appendingPathComponent(name)
         try XCTUnwrap(data, "no fixture for \(name)").write(to: url)
@@ -63,11 +71,11 @@ final class ImageFormatTests: XCTestCase {
             if BrowserModel.systemImageExtensions.contains(ext), !BrowserModel.imageExtensions.contains(ext) {
                 // This macOS doesn't read it (DICOM on macOS 15): another file
                 print("formats: .\(ext) not read by this macOS")
-                XCTAssertNil(BrowserModel.mediaKind(of: url), ext)
+                XCTAssertNil(kind(of: url), ext)
                 continue
             }
             XCTAssertTrue(BrowserModel.imageExtensions.contains(ext), ".\(ext) isn't listed")
-            XCTAssertEqual(BrowserModel.mediaKind(of: url), .image, ext)
+            XCTAssertEqual(kind(of: url), .image, ext)
             let image = try await decoded(url)
             XCTAssertGreaterThan(image.width, 0, ext)
         }
@@ -111,7 +119,7 @@ final class ImageFormatTests: XCTestCase {
         try gzip.run(); gzip.waitUntilExit()
         XCTAssertEqual(gzip.terminationStatus, 0)
         let url = dir.appendingPathComponent("drawing.svgz")
-        XCTAssertEqual(BrowserModel.mediaKind(of: url), .image)
+        XCTAssertEqual(kind(of: url), .image)
         XCTAssertTrue(VectorPicture.isVector(url))
         let size = await VectorPicture.size(of: url)
         XCTAssertEqual(size, CGSize(width: 40, height: 20))
@@ -125,7 +133,7 @@ final class ImageFormatTests: XCTestCase {
     /// that is shown through a grey picture (P5) of its bits, 1 black.
     func testABinaryNetpbmBitmapIsShown() async throws {
         let url = try file("bits.pbm", FormatFixtures.netpbm("P4"))
-        XCTAssertEqual(BrowserModel.mediaKind(of: url), .image)
+        XCTAssertEqual(kind(of: url), .image)
         let image = try await decoded(url)
         XCTAssertEqual([image.width, image.height], [FormatFixtures.width, FormatFixtures.height])
         XCTAssertEqual(pixel(image, x: 0, y: 0), [0, 0, 0], "1 is black")
@@ -142,7 +150,7 @@ final class ImageFormatTests: XCTestCase {
     /// it "really a PDF".
     func testAnIllustratorFileWithPDFContentIsAPDF() async throws {
         let url = try file("logo.ai", FormatFixtures.illustratorWithPDF())
-        XCTAssertEqual(BrowserModel.mediaKind(of: url), .image)
+        XCTAssertEqual(kind(of: url), .image)
         XCTAssertTrue(PDFPages.isPDF(url))
         XCTAssertTrue(VectorPicture.isVector(url))
         XCTAssertEqual(BrowserModel.shownExtension(of: url), "ai", "sorted by kind as Illustrator files")
@@ -158,7 +166,7 @@ final class ImageFormatTests: XCTestCase {
     /// placeholder page: the XMP thumbnail is shown instead, as a preview.
     func testAnIllustratorFileWithoutPDFContentShowsItsThumbnail() async throws {
         let url = try file("old.ai", FormatFixtures.illustratorWithoutPDF())
-        XCTAssertEqual(BrowserModel.mediaKind(of: url), .image)
+        XCTAssertEqual(kind(of: url), .image)
         let pages = try await opened(url)
         XCTAssertTrue(pages.isPreview)
         XCTAssertEqual(pages.count, 1)
@@ -175,8 +183,8 @@ final class ImageFormatTests: XCTestCase {
     /// PostScript one of version 8 or older without one, anything else
     /// named ".ai") is another file, never run as PostScript.
     func testAnIllustratorFileWithNothingToShowIsAnOtherFile() throws {
-        XCTAssertNil(BrowserModel.mediaKind(of: try file("ps.ai", FormatFixtures.postScript)))
-        XCTAssertNil(BrowserModel.mediaKind(of: try file("text.ai", Data("hello".utf8))))
+        XCTAssertNil(kind(of: try file("ps.ai", FormatFixtures.postScript)))
+        XCTAssertNil(kind(of: try file("text.ai", Data("hello".utf8))))
     }
 
     // MARK: PostScript
@@ -185,7 +193,7 @@ final class ImageFormatTests: XCTestCase {
     /// format with "embedded preview", and recommends no other extension.
     func testADOSEPSShowsItsTIFF() async throws {
         let url = try file("figure.eps", FormatFixtures.dosEPS())
-        XCTAssertEqual(BrowserModel.mediaKind(of: url), .image)
+        XCTAssertEqual(kind(of: url), .image)
         let image = try await decoded(url)
         XCTAssertEqual([image.width, image.height], [FormatFixtures.width, FormatFixtures.height])
         XCTAssertEqual(pixel(image, x: 0, y: 0), [255, 0, 0])
@@ -199,7 +207,7 @@ final class ImageFormatTests: XCTestCase {
     /// An EPSI preview (hexadecimal in comments, 0 white): left black, right white.
     func testAnEPSIPreviewIsShown() async throws {
         let url = try file("figure.epsi", FormatFixtures.epsi())
-        XCTAssertEqual(BrowserModel.mediaKind(of: url), .image)
+        XCTAssertEqual(kind(of: url), .image)
         let image = try await decoded(url)
         XCTAssertEqual([image.width, image.height], [FormatFixtures.width, FormatFixtures.height])
         XCTAssertEqual(pixel(image, x: 0, y: 0), [0, 0, 0])
@@ -209,7 +217,7 @@ final class ImageFormatTests: XCTestCase {
     /// Illustrator's EPS carries an XMP thumbnail (in colour), shown before an EPSI preview.
     func testAnEPSWithAnXMPThumbnailShowsIt() async throws {
         let url = try file("logo.eps", FormatFixtures.epsWithXMP())
-        XCTAssertEqual(BrowserModel.mediaKind(of: url), .image)
+        XCTAssertEqual(kind(of: url), .image)
         let image = try await decoded(url)
         XCTAssertGreaterThan(pixel(image, x: 0, y: 0)[0], 200)
     }
@@ -217,13 +225,13 @@ final class ImageFormatTests: XCTestCase {
     /// PostScript without a preview is another file: nothing in macOS 14
     /// and later draws PostScript, and the app runs no PostScript.
     func testPostScriptWithoutAPreviewIsAnOtherFile() throws {
-        XCTAssertNil(BrowserModel.mediaKind(of: try file("plain.eps", FormatFixtures.postScript)))
-        XCTAssertNil(BrowserModel.mediaKind(of: try file("print.ps", FormatFixtures.postScript)))
+        XCTAssertNil(kind(of: try file("plain.eps", FormatFixtures.postScript)))
+        XCTAssertNil(kind(of: try file("print.ps", FormatFixtures.postScript)))
         // A DOS EPS with a WMF preview only (nothing in macOS draws WMF)
         var wmfOnly = [UInt8](try XCTUnwrap(FormatFixtures.dosEPS()))
         for i in 12..<20 { wmfOnly[i] = wmfOnly[i + 8] }   // the TIFF's place given to the WMF
         for i in 20..<28 { wmfOnly[i] = 0 }
-        XCTAssertNil(BrowserModel.mediaKind(of: try file("wmf.eps", Data(wmfOnly))))
+        XCTAssertNil(kind(of: try file("wmf.eps", Data(wmfOnly))))
     }
 
     /// Damaged headers and previews read as nothing, never past the data.
@@ -246,11 +254,62 @@ final class ImageFormatTests: XCTestCase {
     /// print jobs and the ZIP documents are not.
     func testInsideArchivesTheNameDecides() throws {
         let zip = dir.appendingPathComponent("a.zip")
-        func kind(_ name: String) -> GridEntry.Kind? { BrowserModel.mediaKind(of: zip.appendingPathComponent(name)) }
-        XCTAssertEqual(kind("logo.ai"), .image)
-        XCTAssertEqual(kind("figure.eps"), .image)
-        XCTAssertNil(kind("print.ps"))
-        XCTAssertNil(kind("drawing.kra"))
+        func inArchive(_ name: String) -> GridEntry.Kind? { kind(of: zip.appendingPathComponent(name)) }
+        XCTAssertEqual(inArchive("logo.ai"), .image)
+        XCTAssertEqual(inArchive("figure.eps"), .image)
+        XCTAssertNil(inArchive("print.ps"))
+        XCTAssertNil(inArchive("drawing.kra"))
+    }
+
+    // MARK: Read off the main thread
+
+    /// Nothing that decides about such a file on the main thread (its kind,
+    /// extension, vector or PDF path) reads it: until the listing's sniff
+    /// has read it, it is another file, and the sniffer still has nothing.
+    @MainActor
+    func testTheirKindIsDecidedWithoutReadingOnTheMainThread() throws {
+        XCTAssertTrue(Thread.isMainThread)
+        let files = [try file("logo.ai", FormatFixtures.illustratorWithPDF()), try file("figure.eps", FormatFixtures.dosEPS()),
+                     try file("print.ps", FormatFixtures.epsi()), try file("drawing.kra", Data([0x50, 0x4B, 0x03, 0x04, 0, 0]))]
+        for url in files {
+            XCTAssertNil(BrowserModel.mediaKind(of: url), url.lastPathComponent)
+            _ = BrowserModel.shownExtension(of: url)
+            _ = VectorPicture.isVector(url)
+            _ = PDFPages.isPDF(url)
+            _ = EmbeddedPreview.showsPreview(url)
+            XCTAssertTrue(ContentSniffer.isUnknown(url.lastPathComponent), "left to the listing's sniff: \(url.lastPathComponent)")
+            XCTAssertTrue(ContentSniffer.shared.needsReading(url, size: nil), "not read: \(url.lastPathComponent)")
+        }
+    }
+
+    /// A listing shows them as other files first and as pictures once their
+    /// first bytes are read; PostScript without a preview stays another file.
+    @MainActor
+    func testAListingShowsThemOnceTheirContentIsRead() async throws {
+        _ = try file("logo.ai", FormatFixtures.illustratorWithPDF())
+        _ = try file("figure.eps", FormatFixtures.dosEPS())
+        _ = try file("plain.eps", FormatFixtures.postScript)
+        let m = makeModel()
+        await openAndWait(m, dir)
+        await waitUntil { Set(m.names) == ["..", "figure.eps", "logo.ai"] }
+        XCTAssertEqual(m.otherFiles.map(\.name), ["plain.eps"])
+    }
+
+    /// A folder holding only such files has them as its previews and holds
+    /// media (not greyed out): the folder tile's walk reads them itself.
+    func testAFolderOfThemHasPreviews() async throws {
+        let folder = dir.appendingPathComponent("Artwork")
+        try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+        try FormatFixtures.illustratorWithPDF().write(to: folder.appendingPathComponent("a.ai"))
+        try XCTUnwrap(FormatFixtures.dosEPS()).write(to: folder.appendingPathComponent("b.eps"))
+        try FormatFixtures.postScript.write(to: folder.appendingPathComponent("c.ps"))
+        let previews = await BrowserModel.folderPreviewFiles(in: folder)
+        XCTAssertEqual(Set(previews.map(\.lastPathComponent)), ["a.ai", "b.eps"])
+        let holds = await BrowserModel.containsMedia(dir)
+        XCTAssertEqual(holds, true)
+        // The slideshow's walk takes them too
+        let walked = await BrowserModel.scan(folder)
+        XCTAssertEqual(Set(walked.map(\.name)), ["a.ai", "b.eps"])
     }
 
     // MARK: ZIP documents
@@ -273,8 +332,9 @@ final class ImageFormatTests: XCTestCase {
             zipping.currentDirectoryURL = source
             try zipping.run(); zipping.waitUntilExit()
             XCTAssertEqual(zipping.terminationStatus, 0)
-            XCTAssertEqual(BrowserModel.mediaKind(of: url), .image, ext)
-            XCTAssertFalse(ContentSniffer.isUnknown(url.lastPathComponent), "not read as an archive: \(ext)")
+            XCTAssertEqual(kind(of: url), .image, ext)
+            XCTAssertNil(ContentSniffer.shared.known(url)?.archiveFormat, "not taken for an archive: \(ext)")
+            XCTAssertNil(ArchiveName.format(ofFile: url), ext)
             let image = try await decoded(url)
             XCTAssertEqual(pixel(image, x: 0, y: 0), [255, 0, 0], ext)
             let found = await MediaData.imageSource(url)
@@ -282,6 +342,6 @@ final class ImageFormatTests: XCTestCase {
             XCTAssertNil(facts.recommendedExtension, ext)
         }
         // Not a ZIP under such a name: another file
-        XCTAssertNil(BrowserModel.mediaKind(of: try file("fake.kra", Data("not a zip".utf8))))
+        XCTAssertNil(kind(of: try file("fake.kra", Data("not a zip".utf8))))
     }
 }

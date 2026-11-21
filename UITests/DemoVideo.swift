@@ -87,7 +87,7 @@ final class DemoVideo: SchnellbildUITestCase {
         // recording, so neither shows grey while it loads: the Atlas, out
         // to the globe by the map's button as in the recording, back by keys
         // (whole steps both: the same camera again), the grid
-        app.typeKey("w", modifierFlags: [])
+        showAtlasFromTheGrid()
         XCTAssertTrue(element("atlas").waitForExistence(timeout: 10))
         pause(4)
         let zoomOut = app.buttons[ui("Zoom out")].firstMatch
@@ -97,7 +97,7 @@ final class DemoVideo: SchnellbildUITestCase {
         pause(3)
         for _ in 0..<4 { app.typeKey("+", modifierFlags: []); pause(0.5) }
         pause(2)
-        app.typeKey("w", modifierFlags: [])
+        app.typeKey("l", modifierFlags: [])
         waitForSelected("Alesund from Aksla.jpg")
         // The full view's photos decoded once, so each shows at once
         tile("Bryggen Morning.jpg").click()
@@ -139,7 +139,7 @@ final class DemoVideo: SchnellbildUITestCase {
         pause(1)
 
         mark("atlas")
-        app.typeKey("w", modifierFlags: [])
+        showAtlasFromTheGrid()
         XCTAssertTrue(element("atlas").waitForExistence(timeout: 10))
         let tiles = app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH 'atlas.'"))
         eventually("the places on the map", timeout: 20) { tiles.count >= 3 }

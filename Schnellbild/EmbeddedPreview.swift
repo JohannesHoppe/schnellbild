@@ -36,14 +36,17 @@ enum EmbeddedPreview {
     /// Every extension shown by a preview or (Illustrator) as a PDF.
     nonisolated static let extensions: Set<String> = postScriptExtensions.union(zipEntries.keys).union(["ai"])
 
-    /// The picture formats Schnellbild shows through this path or as a PDF
-    /// that `BrowserModel.mediaKind` decides by the file's first bytes.
+    /// Whether such a file is a picture, without touching the disk (asked
+    /// by `BrowserModel.mediaKind` on the main thread too). On disk by what
+    /// its first bytes showed, read off the main thread by the listing
+    /// (`ContentSniffer`, `sniffOtherFiles`: until then it is another file,
+    /// then the folder is listed again) and kept by path, size and date.
     /// Inside an archive (no first bytes without unpacking) the name
     /// decides, except for ".ps" (mostly print jobs without a preview) and
     /// the ZIP documents (libarchive reads them from a file only).
     nonisolated static func isPicture(_ url: URL, ext: String) -> Bool {
         if ArchivePath.isInside(url) { return ext == "ai" || (postScriptExtensions.contains(ext) && ext != "ps") }
-        return probes.shows(url, ext: ext)
+        return ContentSniffer.shared.known(url)?.mediaKind == .image
     }
 
     /// Shown through `picture(_:)` (its preview), not by ImageIO from the
@@ -282,46 +285,28 @@ enum EmbeddedPreview {
 
     // MARK: First bytes
 
-    /// What a file's first bytes say about showing it, read once and kept by
-    /// path, size and date (as `ContentSniffer` does).
-    nonisolated private static let probes = Probes()
+    /// How much of a PostScript file is looked through for its preview: an
+    /// EPSI preview follows the header comments, the XMP packet of
+    /// Illustrator's EPS and AI files lies near their start.
+    static let lookedAt = 256 << 10
 
-    final class Probes: @unchecked Sendable {
-        private let lock = NSLock()
-        private var answers: [String: (stamp: String, shows: Bool)] = [:]
-
-        /// How much of a PostScript file is looked through for its preview:
-        /// an EPSI preview follows the header comments, the XMP packet of
-        /// Illustrator's EPS and AI files lies near their start.
-        static let lookedAt = 256 << 10
-
-        func shows(_ url: URL, ext: String) -> Bool {
-            var info = stat()
-            guard stat(url.path, &info) == 0, (info.st_mode & S_IFMT) == S_IFREG else { return false }
-            let stamp = "\(info.st_size) \(info.st_mtimespec.tv_sec).\(info.st_mtimespec.tv_nsec)"
-            let path = BrowserModel.canonicalPath(url)
-            if let known = lock.withLock({ answers[path] }), known.stamp == stamp { return known.shows }
-            let shows = Self.probe(url, ext: ext, size: Int(info.st_size))
-            lock.withLock {
-                if answers.count >= 20_000 { answers.removeAll(keepingCapacity: true) }
-                answers[path] = (stamp, shows)
-            }
-            return shows
-        }
-
-        /// An Illustrator file with a PDF inside (shown as a PDF), a ZIP
-        /// document, or a PostScript file with a preview.
-        private static func probe(_ url: URL, ext: String, size: Int) -> Bool {
-            guard let handle = try? FileHandle(forReadingFrom: url) else { return false }
-            defer { try? handle.close() }
-            guard let head = try? handle.read(upToCount: 512), head.count >= 4 else { return false }
-            if zipEntries[ext] != nil { return head.starts(with: [0x50, 0x4B, 0x03, 0x04]) }
-            if ext == "ai", head.starts(with: Data("%PDF".utf8)) { return true }
-            if let dos = dosHeader(head, size: size) { return dos.tiff != nil }
-            guard head.starts(with: Data("%!PS".utf8)) else { return false }
-            let rest = (try? handle.read(upToCount: lookedAt - head.count)) ?? Data()
-            let start = head + rest
-            return start.range(of: Data("%%BeginPreview:".utf8)) != nil || start.range(of: Data("xmpGImg:image".utf8)) != nil
-        }
+    /// What such a file (`extensions`) holds for the app, by its first
+    /// bytes: a picture (an Illustrator file with a PDF inside, a ZIP
+    /// document, a PostScript file with a preview) or nil (another file).
+    /// Reads the disk: only `ContentSniffer.content(of:)` asks, off the main
+    /// thread.
+    static func content(of url: URL, ext: String, size: Int) -> FileFacts.Content? {
+        guard let handle = try? FileHandle(forReadingFrom: url) else { return nil }
+        defer { try? handle.close() }
+        guard let head = try? handle.read(upToCount: 512), head.count >= 4 else { return nil }
+        let picture = FileFacts.Content(kind: .picture, fileExtension: ext, name: FileFacts.formatName(ofExtension: ext))
+        if zipEntries[ext] != nil { return head.starts(with: [0x50, 0x4B, 0x03, 0x04]) ? picture : nil }
+        if ext == "ai", head.starts(with: Data("%PDF".utf8)) { return picture }
+        if let dos = dosHeader(head, size: size) { return dos.tiff != nil ? picture : nil }
+        guard head.starts(with: Data("%!PS".utf8)) else { return nil }
+        let rest = (try? handle.read(upToCount: lookedAt - head.count)) ?? Data()
+        let start = head + rest
+        let carries = start.range(of: Data("%%BeginPreview:".utf8)) != nil || start.range(of: Data("xmpGImg:image".utf8)) != nil
+        return carries ? picture : nil
     }
 }

@@ -175,7 +175,7 @@
 "Archive" = "Arkiv";
 "as Grid" = "som gitter";
 "as List" = "som liste";
-"Grid or list (a click on a column sorts by it)" = "Gitter eller liste (et klik på en kolonne sorterer efter den)";
+"Next view: grid, list, Atlas (a click on a column sorts by it)" = "Næste visning: gitter, liste, atlas (et klik på en kolonne sorterer efter den)";
 "Back (where you were, also a search); without history the enclosing folder" = "Tilbage (hvor du var, også til en søgning); uden historik til den overordnede mappe";
 "Click to rename this folder" = "Klik for at omdøbe mappen";
 "Privacy Policy" = "Privatlivspolitik";
@@ -383,7 +383,6 @@
 "Exposure, contrast, saturation and sharpness by hand (%@)" = "Eksponering, kontrast, mætning og skarphed i hånden (%@)";
 "Slideshow of all pictures and videos in this folder and its subfolders; while searching: of the results (%@)" = "Lysbilledshow med alle billeder og videoer i denne mappe og dens undermapper; under søgning: med resultaterne (%@)";
 "Sort by (%@; press again to reverse)" = "Sortér efter (%@; tryk igen for at vende om)";
-"Grid or list (%@)" = "Gitter eller liste (%@)";
 "Mini keyboard: the keys of what's on screen, clickable (%@)" = "Minitastatur: tasterne til det, der er på skærmen, klikbare (%@)";
 "Bookmarks (%@: this folder; %@: go)" = "Bogmærker (%1$@: denne mappe; %2$@: åbn)";
 "Close the playlist (%@)" = "Luk afspilningslisten (%@)";
@@ -404,13 +403,19 @@
 
 /* Offline map */
 "Quit (%@ asks first)" = "Afslut (%@ spørger først)";
-"Boss key: hidden and silent at once; %@ or the Dock icon brings it back" = "Chefknap: skjult og lydløs med det samme; %@ eller symbolet i Dock henter det tilbage";
 "⌘-click" = "⌘-klik";
-"Grid or list" = "Gitter eller liste";
+"Next view (grid, list, Atlas)" = "Næste visning (gitter, liste, atlas)";
 "General" = "Generelt";
 "no key" = "ingen tast";
 "Back, or the enclosing folder" = "Tilbage, eller den overordnede mappe";
 "Boss key" = "Chefknap";
+"Boss key on" = "Chefknap til";
+"Boss key off" = "Chefknap fra";
+"Boss key on: every window turns invisible and every video silent at once" = "Chefknap til: hvert vindue bliver usynligt og hver video lydløs med det samme";
+"Boss key off: press it three times within a second with Schnellbild in front (⌘-Tab)" = "Chefknap fra: tryk på den tre gange inden for et sekund med Schnellbild forrest (⌘-Tab)";
+"Every window turns invisible and every video silent at once." = "Hvert vindue bliver usynligt og hver video lydløs med det samme.";
+"Press the boss key three times within a second with Schnellbild in front (⌘-Tab)." = "Tryk på chefknappen tre gange inden for et sekund med Schnellbild forrest (⌘-Tab).";
+"Schnellbild disappears at once and every video goes silent. A click on the Dock icon doesn't bring it back. To bring it back, switch to Schnellbild (⌘-Tab) and press %@ three times within a second." = "Schnellbild forsvinder med det samme, og hver video bliver lydløs. Et klik på symbolet i Dock henter det ikke tilbage. Skift til Schnellbild (⌘-Tab), og tryk tre gange på %@ inden for et sekund for at hente det tilbage.";
 "End the slideshow" = "Afslut lysbilledshowet";
 "First item" = "Første emne";
 "Last item" = "Sidste emne";
@@ -570,14 +575,13 @@
 "Route" = "Rute";
 "Date Source" = "Datoens kilde";
 "Atlas" = "Atlas";
-"Atlas (map)" = "Atlas (kort)";
 "Play the tour" = "Afspil turen";
 "Tour: pause / resume" = "Tur: pause / fortsæt";
 "Tour: previous place" = "Tur: forrige sted";
 "Tour: next place" = "Tur: næste sted";
 "End the tour" = "Afslut turen";
 "as Atlas" = "som atlas";
-"Grid or list (%@), Atlas (%@)" = "Gitter eller liste (%1$@), atlas (%2$@)";
+"Next view: grid, list, Atlas (%@)" = "Næste visning: gitter, liste, atlas (%@)";
 "Play Tour" = "Afspil tur";
 "Left" = "Venstre";
 "Up" = "Op";
@@ -603,7 +607,7 @@
 "End of the range" = "Slut på perioden";
 "Resume" = "Fortsæt";
 "Place %lld of %lld" = "Sted %1$lld af %2$lld";
-"Atlas: the photos and videos on the map; again: back to the grid or list" = "Atlas: fotos og videoer på kortet; igen: tilbage til gitter eller liste";
+"From the list: the Atlas, the photos and videos on the map; from the Atlas: back to the grid" = "Fra listen: atlasset, fotos og videoer på kortet; fra atlasset: tilbage til gitteret";
 "Atlas: to the nearest item on the map that way; down into the strip of items without a location" = "Atlas: til det nærmeste emne på kortet i den retning; ned i rækken af emner uden placering";
 "Atlas: zoom the map in / out" = "Atlas: zoom kortet ind / ud";
 "Atlas: on several items, zoom in until they part; on one, open it" = "Atlas: på flere emner zoom ind, til de skilles; på ét åbn det";
@@ -671,4 +675,7 @@
 "“%@” is no longer in the Trash." = "“%@” er ikke længere i papirkurven.";
 "“%@” couldn't be taken out of the Trash and is still there. %@" = "“%@” kunne ikke tages ud af papirkurven og ligger der stadig. %@";
 "Undo / redo renaming, trashing, moving, copying, a new folder" = "Fortryd / gentag: omdøbning, flytning til papirkurven, flytning, kopiering, ny mappe";
+"Copy Path" = "Kopiér sti";
+"Copy Path of Selected Item" = "Kopiér stien til det valgte emne";
+"Right-click to copy" = "Højreklik for at kopiere";
 "%@, embedded preview" = "%@, indlejret eksempel";

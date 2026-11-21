@@ -4,7 +4,7 @@ import AVFoundation
 import OfflineMap
 import VLCFrames
 
-/// The Atlas view (W): the pane's photos and videos at their places on the
+/// The Atlas view (L after the list): the pane's photos and videos at their places on the
 /// offline map, as thumbnails, close ones as one tile with their count;
 /// those without a place in a strip under the map; the timeline at the
 /// bottom. During the tour the map takes the whole pane (`TourStage`).

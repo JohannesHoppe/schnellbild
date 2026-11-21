@@ -175,7 +175,7 @@
 "Archive" = "Archive";
 "as Grid" = "en grille";
 "as List" = "en liste";
-"Grid or list (a click on a column sorts by it)" = "Grille ou liste (un clic sur une colonne trie selon elle)";
+"Next view: grid, list, Atlas (a click on a column sorts by it)" = "Vue suivante : grille, liste, atlas (un clic sur une colonne trie selon elle)";
 "Back (where you were, also a search); without history the enclosing folder" = "Retour (là où vous étiez, aussi à une recherche) ; sans historique, au dossier parent";
 "Click to rename this folder" = "Cliquez pour renommer ce dossier";
 "Privacy Policy" = "Politique de confidentialité";
@@ -383,7 +383,6 @@
 "Exposure, contrast, saturation and sharpness by hand (%@)" = "Exposition, contraste, saturation et netteté à la main (%@)";
 "Slideshow of all pictures and videos in this folder and its subfolders; while searching: of the results (%@)" = "Diaporama de toutes les images et vidéos de ce dossier et de ses sous-dossiers ; pendant une recherche : des résultats (%@)";
 "Sort by (%@; press again to reverse)" = "Trier par (%@ ; appuyer à nouveau pour inverser)";
-"Grid or list (%@)" = "Grille ou liste (%@)";
 "Mini keyboard: the keys of what's on screen, clickable (%@)" = "Mini-clavier : les touches de ce qui est à l’écran, cliquables (%@)";
 "Bookmarks (%@: this folder; %@: go)" = "Signets (%1$@ : ce dossier ; %2$@ : ouvrir)";
 "Close the playlist (%@)" = "Fermer la liste de lecture (%@)";
@@ -404,13 +403,19 @@
 
 /* Offline map */
 "Quit (%@ asks first)" = "Quitter (%@ demande d’abord)";
-"Boss key: hidden and silent at once; %@ or the Dock icon brings it back" = "Touche patron : masqué et muet aussitôt ; %@ ou l’icône du Dock le fait revenir";
 "⌘-click" = "⌘-clic";
-"Grid or list" = "Grille ou liste";
+"Next view (grid, list, Atlas)" = "Vue suivante (grille, liste, atlas)";
 "General" = "Général";
 "no key" = "aucune touche";
 "Back, or the enclosing folder" = "Retour, ou le dossier parent";
 "Boss key" = "Touche patron";
+"Boss key on" = "Touche patron activée";
+"Boss key off" = "Touche patron désactivée";
+"Boss key on: every window turns invisible and every video silent at once" = "Touche patron activée : chaque fenêtre devient invisible et chaque vidéo muette aussitôt";
+"Boss key off: press it three times within a second with Schnellbild in front (⌘-Tab)" = "Touche patron désactivée : appuyez dessus trois fois en une seconde, Schnellbild au premier plan (⌘-Tab)";
+"Every window turns invisible and every video silent at once." = "Chaque fenêtre devient invisible et chaque vidéo muette aussitôt.";
+"Press the boss key three times within a second with Schnellbild in front (⌘-Tab)." = "Appuyez trois fois en une seconde sur la touche patron, Schnellbild au premier plan (⌘-Tab).";
+"Schnellbild disappears at once and every video goes silent. A click on the Dock icon doesn't bring it back. To bring it back, switch to Schnellbild (⌘-Tab) and press %@ three times within a second." = "Schnellbild disparaît aussitôt et chaque vidéo se tait. Un clic sur l’icône du Dock ne le fait pas revenir. Pour le faire revenir, passez à Schnellbild (⌘-Tab) et appuyez trois fois sur %@ en une seconde.";
 "End the slideshow" = "Arrêter le diaporama";
 "First item" = "Premier élément";
 "Last item" = "Dernier élément";
@@ -570,14 +575,13 @@
 "Route" = "Itinéraire";
 "Date Source" = "Source de la date";
 "Atlas" = "Atlas";
-"Atlas (map)" = "Atlas (carte)";
 "Play the tour" = "Lire le voyage";
 "Tour: pause / resume" = "Voyage : pause / reprise";
 "Tour: previous place" = "Voyage : lieu précédent";
 "Tour: next place" = "Voyage : lieu suivant";
 "End the tour" = "Terminer le voyage";
 "as Atlas" = "en atlas";
-"Grid or list (%@), Atlas (%@)" = "Grille ou liste (%1$@), atlas (%2$@)";
+"Next view: grid, list, Atlas (%@)" = "Vue suivante : grille, liste, atlas (%@)";
 "Play Tour" = "Lire le voyage";
 "Left" = "Gauche";
 "Up" = "Haut";
@@ -603,7 +607,7 @@
 "End of the range" = "Fin de la période";
 "Resume" = "Reprendre";
 "Place %lld of %lld" = "Lieu %1$lld sur %2$lld";
-"Atlas: the photos and videos on the map; again: back to the grid or list" = "Atlas : les photos et vidéos sur la carte ; encore : retour à la grille ou à la liste";
+"From the list: the Atlas, the photos and videos on the map; from the Atlas: back to the grid" = "Depuis la liste : l'atlas, les photos et vidéos sur la carte ; depuis l'atlas : retour à la grille";
 "Atlas: to the nearest item on the map that way; down into the strip of items without a location" = "Atlas : vers l'élément le plus proche sur la carte dans ce sens ; vers le bas, la bande des éléments sans lieu";
 "Atlas: zoom the map in / out" = "Atlas : zoom avant / arrière sur la carte";
 "Atlas: on several items, zoom in until they part; on one, open it" = "Atlas : sur plusieurs éléments, zoomer jusqu'à les séparer ; sur un seul, l'ouvrir";
@@ -671,4 +675,7 @@
 "“%@” is no longer in the Trash." = "« %@ » n’est plus dans la corbeille.";
 "“%@” couldn't be taken out of the Trash and is still there. %@" = "« %@ » n’a pas pu être sorti de la corbeille et s’y trouve toujours. %@";
 "Undo / redo renaming, trashing, moving, copying, a new folder" = "Annuler / rétablir : renommage, placement dans la corbeille, déplacement, copie, nouveau dossier";
+"Copy Path" = "Copier le chemin";
+"Copy Path of Selected Item" = "Copier le chemin de l’élément sélectionné";
+"Right-click to copy" = "Clic droit pour copier";
 "%@, embedded preview" = "%@, aperçu intégré";

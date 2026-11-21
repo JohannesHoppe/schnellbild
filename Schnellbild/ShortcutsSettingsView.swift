@@ -78,7 +78,10 @@ struct ShortcutsSettingsView: View {
                     }
                     if !actions.isEmpty {
                         Section(group.name) {
-                            ForEach(actions, id: \.self) { action in row(action) }
+                            ForEach(actions, id: \.self) { action in
+                                row(action)
+                                if action == .bossKey { bossKeyOffRow }
+                            }
                         }
                     }
                 }
@@ -170,6 +173,9 @@ struct ShortcutsSettingsView: View {
                     .opacity(changed ? 1 : 0)
                     .disabled(!changed)
             }
+            if action == .bossKey {
+                explanation(Text("Every window turns invisible and every video silent at once."))
+            }
             if let refusal, refusal.action == action {
                 Text(verbatim: refusal.text)
                     .font(.callout)
@@ -178,6 +184,39 @@ struct ShortcutsSettingsView: View {
             }
         }
         .padding(.vertical, 1)
+    }
+
+    /// The boss key's release: the boss key as set above, three times (no
+    /// key of its own).
+    private var bossKeyOffRow: some View {
+        let key = shortcuts.keys(.bossKey).first
+        return VStack(alignment: .leading, spacing: 3) {
+            HStack(spacing: 6) {
+                Text("Boss key off")
+                    .lineLimit(2)
+                    .accessibilityIdentifier("shortcut.bossKeyOff.title")
+                Spacer(minLength: 8)
+                if let key {
+                    HStack(spacing: 4) {
+                        ForEach(0..<3, id: \.self) { _ in cap(Text(verbatim: key.text), highlighted: false) }
+                    }
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel(Text(verbatim: Array(repeating: key.text, count: 3).joined(separator: " ")))
+                    .accessibilityIdentifier("shortcut.bossKeyOff.keys")
+                } else {
+                    Text("no key").foregroundStyle(.tertiary)
+                }
+            }
+            explanation(Text("Press the boss key three times within a second with Schnellbild in front (⌘-Tab)."))
+        }
+        .padding(.vertical, 1)
+    }
+
+    private func explanation(_ text: Text) -> some View {
+        text
+            .font(.callout)
+            .foregroundStyle(.secondary)
+            .fixedSize(horizontal: false, vertical: true)
     }
 
     private func badge(_ text: Text, color: Color) -> some View {

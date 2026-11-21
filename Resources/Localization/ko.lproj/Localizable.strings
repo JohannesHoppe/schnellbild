@@ -175,7 +175,7 @@
 "Archive" = "아카이브";
 "as Grid" = "격자로 보기";
 "as List" = "목록으로 보기";
-"Grid or list (a click on a column sorts by it)" = "격자 또는 목록(열을 클릭하면 그 열로 정렬)";
+"Next view: grid, list, Atlas (a click on a column sorts by it)" = "다음 보기: 격자, 목록, 아틀라스(열을 클릭하면 그 열로 정렬)";
 "Back (where you were, also a search); without history the enclosing folder" = "뒤로(이전 위치, 검색으로도); 기록이 없으면 상위 폴더로";
 "Click to rename this folder" = "클릭하여 이 폴더의 이름 변경";
 "Privacy Policy" = "개인정보 처리방침";
@@ -383,7 +383,6 @@
 "Exposure, contrast, saturation and sharpness by hand (%@)" = "노출, 대비, 채도, 선명도를 직접 조절 (%@)";
 "Slideshow of all pictures and videos in this folder and its subfolders; while searching: of the results (%@)" = "이 폴더와 하위 폴더의 모든 이미지와 비디오로 슬라이드 쇼, 검색 중에는 검색 결과로 (%@)";
 "Sort by (%@; press again to reverse)" = "정렬 기준 (%@, 다시 누르면 반대로)";
-"Grid or list (%@)" = "격자 또는 목록(%@)";
 "Mini keyboard: the keys of what's on screen, clickable (%@)" = "미니 키보드: 화면에 있는 항목의 키, 클릭 가능 (%@)";
 "Bookmarks (%@: this folder; %@: go)" = "책갈피 (%1$@: 이 폴더, %2$@: 열기)";
 "Close the playlist (%@)" = "재생 목록 닫기(%@)";
@@ -404,13 +403,19 @@
 
 /* Offline map */
 "Quit (%@ asks first)" = "종료(%@은 먼저 확인)";
-"Boss key: hidden and silent at once; %@ or the Dock icon brings it back" = "보스 키: 즉시 숨기고 음소거; %@ 또는 Dock 아이콘으로 다시 표시";
 "⌘-click" = "⌘-클릭";
-"Grid or list" = "격자 또는 목록";
+"Next view (grid, list, Atlas)" = "다음 보기(격자, 목록, 아틀라스)";
 "General" = "일반";
 "no key" = "키 없음";
 "Back, or the enclosing folder" = "뒤로 또는 상위 폴더";
 "Boss key" = "보스 키";
+"Boss key on" = "보스 키 켜기";
+"Boss key off" = "보스 키 끄기";
+"Boss key on: every window turns invisible and every video silent at once" = "보스 키 켜기: 모든 윈도우가 즉시 보이지 않게 되고 모든 비디오가 음소거됨";
+"Boss key off: press it three times within a second with Schnellbild in front (⌘-Tab)" = "보스 키 끄기: Schnellbild를 앞으로 가져온 상태에서(⌘-Tab) 1초 안에 세 번 누름";
+"Every window turns invisible and every video silent at once." = "모든 윈도우가 즉시 보이지 않게 되고 모든 비디오가 음소거됩니다.";
+"Press the boss key three times within a second with Schnellbild in front (⌘-Tab)." = "Schnellbild를 앞으로 가져온 상태에서(⌘-Tab) 보스 키를 1초 안에 세 번 누르십시오.";
+"Schnellbild disappears at once and every video goes silent. A click on the Dock icon doesn't bring it back. To bring it back, switch to Schnellbild (⌘-Tab) and press %@ three times within a second." = "Schnellbild가 즉시 사라지고 모든 비디오가 음소거됩니다. Dock 아이콘을 클릭해도 다시 표시되지 않습니다. 다시 표시하려면 Schnellbild로 전환하고(⌘-Tab) 1초 안에 %@ 키를 세 번 누르십시오.";
 "End the slideshow" = "슬라이드 쇼 끝내기";
 "First item" = "처음 항목";
 "Last item" = "마지막 항목";
@@ -570,14 +575,13 @@
 "Route" = "경로";
 "Date Source" = "날짜 출처";
 "Atlas" = "아틀라스";
-"Atlas (map)" = "아틀라스(지도)";
 "Play the tour" = "여행 재생";
 "Tour: pause / resume" = "여행: 일시 정지 / 다시 시작";
 "Tour: previous place" = "여행: 이전 장소";
 "Tour: next place" = "여행: 다음 장소";
 "End the tour" = "여행 끝내기";
 "as Atlas" = "아틀라스로";
-"Grid or list (%@), Atlas (%@)" = "격자 또는 목록(%1$@), 아틀라스(%2$@)";
+"Next view: grid, list, Atlas (%@)" = "다음 보기: 격자, 목록, 아틀라스(%@)";
 "Play Tour" = "여행 재생";
 "Left" = "왼쪽";
 "Up" = "위";
@@ -603,7 +607,7 @@
 "End of the range" = "범위 끝";
 "Resume" = "다시 시작";
 "Place %lld of %lld" = "장소 %1$lld / %2$lld";
-"Atlas: the photos and videos on the map; again: back to the grid or list" = "아틀라스: 지도 위의 사진과 비디오, 다시 누르면 격자나 목록으로";
+"From the list: the Atlas, the photos and videos on the map; from the Atlas: back to the grid" = "목록에서: 아틀라스, 지도 위의 사진과 비디오; 아틀라스에서: 격자로 돌아가기";
 "Atlas: to the nearest item on the map that way; down into the strip of items without a location" = "아틀라스: 그 방향으로 지도에서 가장 가까운 항목으로, 아래로 가면 위치 없는 항목 줄로";
 "Atlas: zoom the map in / out" = "아틀라스: 지도 확대 / 축소";
 "Atlas: on several items, zoom in until they part; on one, open it" = "아틀라스: 여러 항목이면 나뉠 때까지 확대, 하나면 열기";
@@ -671,4 +675,7 @@
 "“%@” is no longer in the Trash." = "‘%@’이(가) 더 이상 휴지통에 없습니다.";
 "“%@” couldn't be taken out of the Trash and is still there. %@" = "‘%@’을(를) 휴지통에서 꺼낼 수 없어 휴지통에 그대로 있습니다. %@";
 "Undo / redo renaming, trashing, moving, copying, a new folder" = "실행 취소 / 실행 복귀: 이름 변경, 휴지통으로 이동, 이동, 복사, 새로운 폴더";
+"Copy Path" = "경로 복사";
+"Copy Path of Selected Item" = "선택한 항목의 경로 복사";
+"Right-click to copy" = "오른쪽 클릭하여 복사";
 "%@, embedded preview" = "%@, 내장 미리보기";

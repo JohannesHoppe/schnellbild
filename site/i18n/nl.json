@@ -73,7 +73,7 @@
     },
     {
       "title": "Je foto’s op de kaart en de wereldbol",
-      "text": "<p><kbd>W</kbd> toont de foto’s en video’s van een map en de submappen op de plek waar ze gemaakt zijn. Ver uitgezoomd is de kaart een wereldbol voor de sterrenhemel, desgewenst met dag en nacht en de verlichte steden op de nachtkant; bij inzoomen wordt hij de platte kaart.</p><ul><li>De tijdlijn zet de reis op volgorde van tijd: sleep over een stuk en de kaart toont alleen dat deel</li><li><kbd>T</kbd> speelt de reis af: de kaart glijdt van plek naar plek, de foto’s verschijnen groot, de video’s spelen een paar seconden</li><li>De kaart zit in de app: er gaat niets online, geen locatie verlaat je Mac</li></ul>",
+      "text": "<p><kbd>L</kbd> gaat van het raster naar de lijst en verder naar de atlas. De atlas toont de foto’s en video’s van een map en de submappen op de plek waar ze gemaakt zijn. Ver uitgezoomd is de kaart een wereldbol voor de sterrenhemel, desgewenst met dag en nacht en de verlichte steden op de nachtkant; bij inzoomen wordt hij de platte kaart.</p><ul><li>De tijdlijn zet de reis op volgorde van tijd: sleep over een stuk en de kaart toont alleen dat deel</li><li><kbd>T</kbd> speelt de reis af: de kaart glijdt van plek naar plek, de foto’s verschijnen groot, de video’s spelen een paar seconden</li><li>De kaart zit in de app: er gaat niets online, geen locatie verlaat je Mac</li></ul>",
       "alt": "De foto’s van een reis op de wereldbol, in de atlasweergave"
     },
     {
@@ -108,7 +108,7 @@
     },
     {
       "title": "Elke toets bij de hand",
-      "text": "<p><kbd>F1</kbd> toont alle toetsen, ook om af te drukken; <kbd>K</kbd> toont een klein toetsenbord om op te klikken. Kies je eigen toetsen, of de toetsen zoals in Phiewer. Raster of lijst (<kbd>L</kbd>), sorteren op naam, soort, datum, grootte of afstand tot een plek, meerdere vensters en een baastoets (<kbd>X</kbd>).</p>",
+      "text": "<p><kbd>F1</kbd> toont alle toetsen, ook om af te drukken; <kbd>K</kbd> toont een klein toetsenbord om op te klikken. Kies je eigen toetsen, of de toetsen zoals in Phiewer. Raster, lijst of atlas (<kbd>L</kbd>), sorteren op naam, soort, datum, grootte of afstand tot een plek, meerdere vensters en een baastoets (<kbd>X</kbd>).</p>",
       "alt": "De lijst met toetsen (F1)"
     },
     {

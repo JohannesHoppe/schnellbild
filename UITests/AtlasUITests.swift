@@ -1,6 +1,6 @@
 import XCTest
 
-/// The Atlas view (W) on the Norway trip of `UITests/Fixtures` (norway-*:
+/// The Atlas view (L after the list) on the Norway trip of `UITests/Fixtures` (norway-*:
 /// 13 photos and a video on five days, one photo without a place):
 /// switching to it, selecting on the map and in the strip (the grid's
 /// selection), opening, narrowing the timeline, the tour, and the globe's
@@ -24,7 +24,7 @@ final class AtlasUITests: SchnellbildUITestCase {
     private func openAtlas(extra: [String] = []) {
         launch(open: tempDir.path, extra: extra)
         XCTAssertTrue(app.staticTexts["norway-01-bryggen.jpg"].waitForExistence(timeout: 15), "the grid")
-        app.typeKey("w", modifierFlags: [])
+        showAtlasFromTheGrid()
         XCTAssertTrue(element("atlas").waitForExistence(timeout: 10))
         eventually("the places are read", timeout: 20) { self.text(of: self.element("atlasCount")).contains("13 on the map") }
     }
@@ -50,14 +50,14 @@ final class AtlasUITests: SchnellbildUITestCase {
         // The photo without a place, in the strip: selected here, selected in the grid
         atlasTile("norway-13-evening.jpg").click()
         eventually("selected in the strip") { self.atlasSelected("norway-13-evening.jpg") }
-        app.typeKey("w", modifierFlags: [])
+        app.typeKey("l", modifierFlags: [])
         eventually("the grid again") { self.tile("norway-13-evening.jpg").exists }
         waitForSelected("norway-13-evening.jpg")
 
         // Selected in the grid, ringed on the map
         tile("norway-14-trollstigen.jpg").click()
         waitForSelected("norway-14-trollstigen.jpg")
-        app.typeKey("w", modifierFlags: [])
+        showAtlasFromTheGrid()
         XCTAssertTrue(element("atlas").waitForExistence(timeout: 5))
         eventually("Trollstigen's tile is the selected one") {
             app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH 'atlas.norway-'"))
