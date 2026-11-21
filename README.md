@@ -442,10 +442,10 @@ Schnellbild → Settings (⌘,) has two tabs. Keyboard holds [your own keys](#yo
 |---|---|
 | Photos and graphics | JPEG (`.jpg`, `.jpeg`, `.jpe`), HEIC / HEIF (`.heic`, `.heif`, `.hif`, `.heics`, `.avci`), AVIF (`.avif`, `.avifs`), JPEG XL (`.jxl`), PNG and animated PNG (`.png`, `.apng`), GIF, WebP, TIFF (`.tif`, `.tiff`), BMP (`.bmp`, `.dib`), JPEG 2000 (`.jp2`, `.j2k`, `.j2c`, `.jpf`, `.jpx`), MPO |
 | Vector and documents | SVG (`.svg`, `.svgz`), PDF (page by page, as vector pictures), Adobe Illustrator (`.ai`: as a PDF; saved without PDF content, its built-in thumbnail) |
-| HDR and editing | OpenEXR (`.exr`), Radiance (`.hdr`), Photoshop (`.psd`, `.psb`), Targa (`.tga`), SGI (`.sgi`), Netpbm (`.pbm`, `.pgm`, `.ppm`, `.pnm`, `.pfm`), QuickDraw PICT (`.pict`, `.pct`), DICOM (`.dcm`, `.dicom`), icons and cursors (`.ico`, `.icns`, `.cur`) |
+| HDR and editing | OpenEXR (`.exr`), Radiance (`.hdr`), Photoshop (`.psd`, `.psb`), Targa (`.tga`), SGI (`.sgi`), Netpbm (`.pbm`, `.pgm`, `.ppm`, `.pnm`, `.pfm`), QuickDraw PICT (`.pict`, `.pct`), DICOM (`.dcm`, `.dicom`, macOS 26 and later), icons and cursors (`.ico`, `.icns`, `.cur`) |
 | Textures | DDS, ASTC, KTX (`.ktx`, `.ktx2`), PVRTC (`.pvr`), ATX |
 | By the picture they carry | EPS and PostScript (`.eps`, `.epsf`, `.epsi`, `.epi`, `.ps`: their TIFF, XMP or EPSI preview), Krita (`.kra`), OpenRaster (`.ora`), Procreate (`.procreate`), Sketch (`.sketch`) |
-| Camera RAW (the models macOS knows) | Canon `.cr2` `.cr3` `.crw`, Nikon `.nef` `.nefx` `.nrw`, Sony `.arw` `.axr` `.sr2` `.srf`, Fujifilm `.raf`, Olympus / OM `.orf` `.ori`, Panasonic / Leica `.rw2` `.rwl` `.raw`, Pentax `.pef`, Samsung `.srw`, Hasselblad `.3fr` `.fff`, Phase One `.iiq`, Adobe `.dng`, Epson `.erf`, Kodak `.dcr`, Leaf `.mos`, Minolta `.mrw`, DxO `.dxo` |
+| Camera RAW (the models macOS knows) | Canon `.cr2` `.cr3` `.crw`, Nikon `.nef` `.nefx` `.nrw`, Sony `.arw` `.axr` `.sr2` `.srf`, Fujifilm `.raf`, Olympus / OM `.orf` `.ori` (`.ori` from macOS 26 on), Panasonic / Leica `.rw2` `.rwl` `.raw`, Pentax `.pef`, Samsung `.srw`, Hasselblad `.3fr` `.fff`, Phase One `.iiq`, Adobe `.dng`, Epson `.erf`, Kodak `.dcr`, Leaf `.mos`, Minolta `.mrw`, DxO `.dxo` |
 
 Animated GIF, PNG and WebP play. RAW files show their built-in preview as a tile and are developed by macOS in the full view. PostScript is never run: macOS draws no PostScript since macOS 14, so an EPS or PS file shows the preview it carries, and one without a preview stays among the other files. The Inspector says "embedded preview" for such files.
 

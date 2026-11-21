@@ -59,8 +59,14 @@ final class ImageFormatTests: XCTestCase {
     func testEveryFormatImageIOReadsIsShown() async throws {
         for (ext, data) in FormatFixtures.all() {
             guard let data else { print("formats: no fixture for .\(ext) on this macOS"); continue }
-            XCTAssertTrue(BrowserModel.imageExtensions.contains(ext), ".\(ext) isn't listed")
             let url = try file("picture.\(ext)", data)
+            if BrowserModel.systemImageExtensions.contains(ext), !BrowserModel.imageExtensions.contains(ext) {
+                // This macOS doesn't read it (DICOM on macOS 15): another file
+                print("formats: .\(ext) not read by this macOS")
+                XCTAssertNil(BrowserModel.mediaKind(of: url), ext)
+                continue
+            }
+            XCTAssertTrue(BrowserModel.imageExtensions.contains(ext), ".\(ext) isn't listed")
             XCTAssertEqual(BrowserModel.mediaKind(of: url), .image, ext)
             let image = try await decoded(url)
             XCTAssertGreaterThan(image.width, 0, ext)

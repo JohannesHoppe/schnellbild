@@ -300,6 +300,9 @@ public enum VLCSafety {
         // Transport streams: a sync byte every 188 bytes, or every 192 after a 4-byte time code
         if b.count >= 377, b[0] == 0x47, b[188] == 0x47, b[376] == 0x47 { return ("ts", nil) }
         if b.count >= 389, b[4] == 0x47, b[196] == 0x47, b[388] == 0x47 { return ("ts", nil) }
+        // F4V (Flash video in an MP4 box structure, its brand "f4v "): VLC's
+        // MP4 reader refuses it (modules/demux/mp4/mp4.c), FFmpeg's reads it
+        if ascii(4, "ftyp"), ascii(8, "f4v") { return ("avformat", "mov") }
         if ["ftyp", "moov", "mdat", "wide", "free", "skip"].contains(where: { ascii(4, $0) }) { return ("mp4", nil) }
         if ascii(0, "RIFF"), ascii(8, "AVI ") { return ("avi", nil) }
         if at(0, [0x00, 0x00, 0x01, 0xBA]) { return ("ps", nil) }
@@ -325,7 +328,8 @@ public enum VLCSafety {
         case "mkv", "webm":                                  return ("mkv", nil)
         case "avi", "divx":                                  return ("avi", nil)
         // Insta360's ".insv" and GoPro MAX's ".360" are MP4 files
-        case "mp4", "m4v", "mov", "qt", "3gp", "3g2", "f4v", "insv", "360": return ("mp4", nil)
+        case "mp4", "m4v", "mov", "qt", "3gp", "3g2", "insv", "360": return ("mp4", nil)
+        case "f4v":                                          return ("avformat", "mov")
         case "mpg", "mpeg", "vob":                           return ("ps", nil)
         case "ts", "m2ts", "mts", "m2t":                     return ("ts", nil)
         case "m2v", "m1v":                                   return ("mpgv", nil)   // an MPEG video stream on its own

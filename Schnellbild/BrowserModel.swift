@@ -1800,16 +1800,28 @@ final class BrowserModel: ObservableObject {
     /// each one), SVG (AppKit; ".svgz" unpacked first) and PDF (PDFKit). PostScript, Illustrator
     /// files and ZIP documents are pictures by their content
     /// (`EmbeddedPreview`).
-    nonisolated static let imageExtensions: Set<String> = [
+    nonisolated static let imageExtensions: Set<String> = Set<String>([
         "jpg", "jpeg", "jpe", "png", "apng", "gif", "heic", "heif", "hif", "heics", "avci", "avif", "avifs", "jxl",
         "tiff", "tif", "bmp", "dib", "webp", "psd", "psb", "pdf", "jp2", "j2k", "j2c", "jpf", "jpx", "exr", "hdr", "tga",
-        "ico", "cur", "icns", "mpo", "svg", "svgz", "pict", "pct", "sgi", "pbm", "pgm", "ppm", "pnm", "pfm", "dcm", "dicom",
+        "ico", "cur", "icns", "mpo", "svg", "svgz", "pict", "pct", "sgi", "pbm", "pgm", "ppm", "pnm", "pfm",
         // textures
         "dds", "astc", "ktx", "ktx2", "pvr", "atx",
         // camera RAW formats ImageIO reads
         "cr2", "cr3", "crw", "nef", "nefx", "nrw", "arw", "axr", "sr2", "srf", "dng", "raf", "orf",
-        "ori", "rw2", "rwl", "raw", "pef", "srw", "3fr", "fff", "erf", "dcr", "mos", "mrw", "iiq", "dxo"
-    ]
+        "rw2", "rwl", "raw", "pef", "srw", "3fr", "fff", "erf", "dcr", "mos", "mrw", "iiq", "dxo"
+    ]).union(systemImageExtensions.filter(imageIOReads))
+
+    /// Read by ImageIO from macOS 26 on, not by macOS 15 (`SystemFormatsTests`
+    /// on both): DICOM, Olympus' ".ori". Pictures only where this macOS
+    /// reads them, else other files.
+    nonisolated static let systemImageExtensions: Set<String> = ["dcm", "dicom", "ori"]
+
+    /// Whether ImageIO reads a type that the extension's type is.
+    nonisolated private static func imageIOReads(_ ext: String) -> Bool {
+        guard let type = UTType(filenameExtension: ext), !type.isDynamic else { return false }
+        let readable = (CGImageSourceCopyTypeIdentifiers() as? [String] ?? []).compactMap(UTType.init)
+        return readable.contains { type.conforms(to: $0) }
+    }
     nonisolated static let videoExtensions: Set<String> = [
         "mp4", "mov", "qt", "m4v", "f4v", "insv", "360", "avi", "divx", "mkv", "webm", "m2ts", "mts", "m2t",
         "mpg", "mpeg", "m2v", "m1v", "vob", "3gp", "3g2", "dv", "wmv", "asf", "flv", "ogv", "ogm",
